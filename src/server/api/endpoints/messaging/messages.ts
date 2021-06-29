@@ -9,11 +9,6 @@ import { Brackets } from 'typeorm';
 import { readUserMessagingMessage, readGroupMessagingMessage, deliverReadActivity } from '../../common/read-messaging-message';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'トークメッセージ一覧を取得します。',
-		'en-US': 'Get messages of messaging.'
-	},
-
 	tags: ['messaging'],
 
 	requireCredential: true as const,
@@ -23,18 +18,10 @@ export const meta = {
 	params: {
 		userId: {
 			validator: $.optional.type(ID),
-			desc: {
-				'ja-JP': '対象のユーザーのID',
-				'en-US': 'Target user ID'
-			}
 		},
 
 		groupId: {
 			validator: $.optional.type(ID),
-			desc: {
-				'ja-JP': '対象のグループのID',
-				'en-US': 'Target group ID'
-			}
 		},
 
 		limit: {

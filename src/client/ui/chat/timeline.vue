@@ -121,33 +121,33 @@ export default defineComponent({
 			this.query = {
 				antennaId: this.antenna
 			};
-			this.connection = os.stream.connectToChannel('antenna', {
+			this.connection = os.stream.useChannel('antenna', {
 				antennaId: this.antenna
 			});
 			this.connection.on('note', prepend);
 		} else if (this.src == 'home') {
 			endpoint = 'notes/timeline';
-			this.connection = os.stream.useSharedConnection('homeTimeline');
+			this.connection = os.stream.useChannel('homeTimeline');
 			this.connection.on('note', prepend);
 
-			this.connection2 = os.stream.useSharedConnection('main');
+			this.connection2 = os.stream.useChannel('main');
 			this.connection2.on('follow', onChangeFollowing);
 			this.connection2.on('unfollow', onChangeFollowing);
 		} else if (this.src == 'local') {
 			endpoint = 'notes/local-timeline';
-			this.connection = os.stream.useSharedConnection('localTimeline');
+			this.connection = os.stream.useChannel('localTimeline');
 			this.connection.on('note', prepend);
 		} else if (this.src == 'social') {
 			endpoint = 'notes/hybrid-timeline';
-			this.connection = os.stream.useSharedConnection('hybridTimeline');
+			this.connection = os.stream.useChannel('hybridTimeline');
 			this.connection.on('note', prepend);
 		} else if (this.src == 'global') {
 			endpoint = 'notes/global-timeline';
-			this.connection = os.stream.useSharedConnection('globalTimeline');
+			this.connection = os.stream.useChannel('globalTimeline');
 			this.connection.on('note', prepend);
 		} else if (this.src == 'mentions') {
 			endpoint = 'notes/mentions';
-			this.connection = os.stream.useSharedConnection('main');
+			this.connection = os.stream.useChannel('main');
 			this.connection.on('mention', prepend);
 		} else if (this.src == 'directs') {
 			endpoint = 'notes/mentions';
@@ -159,14 +159,14 @@ export default defineComponent({
 					prepend(note);
 				}
 			};
-			this.connection = os.stream.useSharedConnection('main');
+			this.connection = os.stream.useChannel('main');
 			this.connection.on('mention', onNote);
 		} else if (this.src == 'list') {
 			endpoint = 'notes/user-list-timeline';
 			this.query = {
 				listId: this.list
 			};
-			this.connection = os.stream.connectToChannel('userList', {
+			this.connection = os.stream.useChannel('userList', {
 				listId: this.list
 			});
 			this.connection.on('note', prepend);
@@ -178,7 +178,7 @@ export default defineComponent({
 			this.query = {
 				channelId: this.channel
 			};
-			this.connection = os.stream.connectToChannel('channel', {
+			this.connection = os.stream.useChannel('channel', {
 				channelId: this.channel
 			});
 			this.connection.on('note', prepend);

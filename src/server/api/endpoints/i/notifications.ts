@@ -5,13 +5,9 @@ import define from '../../define';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 import { Notifications, Followings, Mutings, Users } from '../../../../models';
 import { notificationTypes } from '../../../../types';
+import read from '@/services/note/read';
 
 export const meta = {
-	desc: {
-		'ja-JP': '通知一覧を取得します。',
-		'en-US': 'Get notifications.'
-	},
-
 	tags: ['account', 'notifications'],
 
 	requireCredential: true as const,
@@ -103,9 +99,9 @@ export default define(meta, async (ps, user) => {
 		query.setParameters(followingQuery.getParameters());
 	}
 
-	if (ps.includeTypes?.length > 0) {
+	if (ps.includeTypes && ps.includeTypes.length > 0) {
 		query.andWhere(`notification.type IN (:...includeTypes)`, { includeTypes: ps.includeTypes });
-	} else if (ps.excludeTypes?.length > 0) {
+	} else if (ps.excludeTypes && ps.excludeTypes.length > 0) {
 		query.andWhere(`notification.type NOT IN (:...excludeTypes)`, { excludeTypes: ps.excludeTypes });
 	}
 
@@ -114,6 +110,12 @@ export default define(meta, async (ps, user) => {
 	// Mark all as read
 	if (notifications.length > 0 && ps.markAsRead) {
 		readNotification(user.id, notifications.map(x => x.id));
+	}
+
+	const notes = notifications.filter(notification => ['mention', 'reply', 'quote'].includes(notification.type)).map(notification => notification.note!);
+
+	if (notes.length > 0) {
+		read(user.id, notes);
 	}
 
 	return await Notifications.packMany(notifications, user.id);

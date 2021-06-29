@@ -2,11 +2,6 @@ import define from '../../../define';
 import { listRelay } from '../../../../../services/relay';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'リレー一覧を表示します。',
-		'en-US': 'List relay'
-	},
-
 	tags: ['admin'],
 
 	requireCredential: true as const,

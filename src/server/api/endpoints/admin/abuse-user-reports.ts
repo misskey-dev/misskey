@@ -5,11 +5,6 @@ import { AbuseUserReports } from '../../../../models';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 
 export const meta = {
-	desc: {
-		'ja-JP': '通報一覧を表示します。',
-		'en-US': 'Show list of abuse user reports.'
-	},
-
 	tags: ['admin'],
 
 	requireCredential: true as const,
@@ -64,43 +59,36 @@ export const meta = {
 					type: 'string' as const,
 					nullable: false as const, optional: false as const,
 					format: 'id',
-					description: 'The unique identifier for this User.',
 					example: 'xxxxxxxxxx',
 				},
 				createdAt: {
 					type: 'string' as const,
 					nullable: false as const, optional: false as const,
 					format: 'date-time',
-					description: 'The date that the abuse user report was created on Misskey.'
 				},
 				comment: {
 					type: 'string' as const,
 					nullable: false as const, optional: false as const,
-					description: 'The content of the report.',
 				},
 				resolved: {
 					type: 'boolean' as const,
 					nullable: false as const, optional: false as const,
-					description: 'Returns whether this report has been resolved',
 					example: false
 				},
 				reporterId: {
 					type: 'string' as const,
 					nullable: false as const, optional: false as const,
 					format: 'id',
-					description: 'Reporter\'s user ID.'
 				},
 				targetUserId: {
 					type: 'string' as const,
 					nullable: false as const, optional: false as const,
 					format: 'id',
-					description: 'User ID of the person to be reported.'
 				},
 				assigneeId: {
 					type: 'string' as const,
 					nullable: true as const, optional: false as const,
 					format: 'id',
-					description: 'User ID of the person who responded to the report.'
 				},
 				reporter: {
 					type: 'object' as const,

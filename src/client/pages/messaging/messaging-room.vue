@@ -141,7 +141,7 @@ const Component = defineComponent({
 				this.group = group;
 			}
 
-			this.connection = os.stream.connectToChannel('messaging', {
+			this.connection = os.stream.useChannel('messaging', {
 				otherparty: this.user ? this.user.id : undefined,
 				group: this.group ? this.group.id : undefined,
 			});

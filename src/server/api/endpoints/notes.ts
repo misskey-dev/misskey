@@ -5,46 +5,27 @@ import { makePaginationQuery } from '../common/make-pagination-query';
 import { Notes } from '../../../models';
 
 export const meta = {
-	desc: {
-		'ja-JP': '投稿を取得します。'
-	},
-
 	tags: ['notes'],
 
 	params: {
 		local: {
 			validator: $.optional.bool,
-			desc: {
-				'ja-JP': 'ローカルの投稿に限定するか否か'
-			}
 		},
 
 		reply: {
 			validator: $.optional.bool,
-			desc: {
-				'ja-JP': '返信に限定するか否か'
-			}
 		},
 
 		renote: {
 			validator: $.optional.bool,
-			desc: {
-				'ja-JP': 'Renoteに限定するか否か'
-			}
 		},
 
 		withFiles: {
 			validator: $.optional.bool,
-			desc: {
-				'ja-JP': 'ファイルが添付された投稿に限定するか否か'
-			}
 		},
 
 		poll: {
 			validator: $.optional.bool,
-			desc: {
-				'ja-JP': 'アンケートが添付された投稿に限定するか否か'
-			}
 		},
 
 		limit: {

@@ -241,7 +241,6 @@ export default defineComponent({
 			> .text {
 				display: none;
 			}
-
 		}
 	}
 
@@ -309,7 +308,7 @@ export default defineComponent({
 		> .indicator {
 			position: absolute;
 			top: 0;
-			left: 20px;
+			left: 0;
 			color: var(--navIndicator);
 			font-size: 8px;
 			animation: blink 1s infinite;

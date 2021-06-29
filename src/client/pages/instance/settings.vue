@@ -19,6 +19,11 @@
 			<span>{{ $ts.bannerUrl }}</span>
 		</FormInput>
 
+		<FormInput v-model:value="backgroundImageUrl">
+			<template #prefix><i class="fas fa-link"></i></template>
+			<span>{{ $ts.backgroundImageUrl }}</span>
+		</FormInput>
+
 		<FormInput v-model:value="tosUrl">
 			<template #prefix><i class="fas fa-link"></i></template>
 			<span>{{ $ts.tosUrl }}</span>
@@ -88,6 +93,7 @@ export default defineComponent({
 			maintainerEmail: null,
 			iconUrl: null,
 			bannerUrl: null,
+			backgroundImageUrl: null,
 			maxNoteTextLength: 0,
 			enableLocalTimeline: false,
 			enableGlobalTimeline: false,
@@ -106,6 +112,7 @@ export default defineComponent({
 			this.tosUrl = meta.tosUrl;
 			this.iconUrl = meta.iconUrl;
 			this.bannerUrl = meta.bannerUrl;
+			this.backgroundImageUrl = meta.backgroundImageUrl;
 			this.maintainerName = meta.maintainerName;
 			this.maintainerEmail = meta.maintainerEmail;
 			this.maxNoteTextLength = meta.maxNoteTextLength;
@@ -120,6 +127,7 @@ export default defineComponent({
 				tosUrl: this.tosUrl,
 				iconUrl: this.iconUrl,
 				bannerUrl: this.bannerUrl,
+				backgroundImageUrl: this.backgroundImageUrl,
 				maintainerName: this.maintainerName,
 				maintainerEmail: this.maintainerEmail,
 				maxNoteTextLength: this.maxNoteTextLength,

@@ -14,33 +14,20 @@ import { generateMutedNoteQuery } from '../../common/generate-muted-note-query';
 import { generateChannelQuery } from '../../common/generate-channel-query';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'ローカルタイムラインを取得します。'
-	},
-
 	tags: ['notes'],
 
 	params: {
 		withFiles: {
 			validator: $.optional.bool,
-			desc: {
-				'ja-JP': 'ファイルが添付された投稿に限定するか否か'
-			}
 		},
 
 		fileType: {
 			validator: $.optional.arr($.str),
-			desc: {
-				'ja-JP': '指定された種類のファイルが添付された投稿のみを取得します'
-			}
 		},
 
 		excludeNsfw: {
 			validator: $.optional.bool,
 			default: false,
-			desc: {
-				'ja-JP': 'true にすると、NSFW指定されたファイルを除外します(fileTypeが指定されている場合のみ有効)'
-			}
 		},
 
 		limit: {

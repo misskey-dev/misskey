@@ -63,7 +63,7 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.connection = os.stream.useSharedConnection('messagingIndex');
+		this.connection = os.stream.useChannel('messagingIndex');
 
 		this.connection.on('message', this.onMessage);
 		this.connection.on('read', this.onRead);

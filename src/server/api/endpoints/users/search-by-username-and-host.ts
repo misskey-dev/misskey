@@ -3,10 +3,6 @@ import define from '../../define';
 import { Users } from '../../../../models';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'ユーザーを検索します。'
-	},
-
 	tags: ['users'],
 
 	requireCredential: false as const,
@@ -14,40 +10,25 @@ export const meta = {
 	params: {
 		username: {
 			validator: $.optional.nullable.str,
-			desc: {
-				'ja-JP': 'クエリ'
-			}
 		},
 
 		host: {
 			validator: $.optional.nullable.str,
-			desc: {
-				'ja-JP': 'クエリ'
-			}
 		},
 
 		offset: {
 			validator: $.optional.num.min(0),
 			default: 0,
-			desc: {
-				'ja-JP': 'オフセット'
-			}
 		},
 
 		limit: {
 			validator: $.optional.num.range(1, 100),
 			default: 10,
-			desc: {
-				'ja-JP': '取得する数'
-			}
 		},
 
 		detail: {
 			validator: $.optional.bool,
 			default: true,
-			desc: {
-				'ja-JP': '詳細なユーザー情報を含めるか否か'
-			}
 		},
 	},
 

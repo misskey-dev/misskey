@@ -6,11 +6,6 @@ import rndstr from 'rndstr';
 import { Users, UserProfiles } from '../../../../models';
 
 export const meta = {
-	desc: {
-		'ja-JP': '指定したユーザーのパスワードをリセットします。',
-		'en-US': 'Reset password to specified user.'
-	},
-
 	tags: ['admin'],
 
 	requireCredential: true as const,
@@ -19,10 +14,6 @@ export const meta = {
 	params: {
 		userId: {
 			validator: $.type(ID),
-			desc: {
-				'ja-JP': '対象のユーザーID',
-				'en-US': 'The user ID which you want to suspend'
-			}
 		},
 	},
 

@@ -1,5 +1,5 @@
 ---
-_lang_: "Bahasa Jepang"
+_lang_: "Bahasa Indonesia"
 headlineMisskey: "Jaringan terhubung melalui note"
 introMisskey: "Selamat datang! Misskey adalah perangkat mikroblog tercatu bersifat sumber terbuka.\nMulailah menuliskan catatan, bagikan peristiwa terkini, serta ceritakan segala tentangmu.📡\nTunjukkan juga reaksimu pada catatan pengguna lain.👍\nMari jelajahi dunia baru🚀"
 monthAndDay: "{day} {month}"
@@ -310,8 +310,6 @@ monthX: "{month}"
 yearX: "{year}"
 pages: "Halaman"
 integration: "Integrasi"
-connectSerice: "Sambungkan"
-disconnectSerice: "Putuskan"
 enableLocalTimeline: "Nyalakan linimasa lokal"
 enableGlobalTimeline: "Nyalakan linimasa global"
 disablingTimelinesInfo: "Admin dan Moderator akan selalu memiliki akses ke semua linimasa meskipun linimasa tersebut tidak diaktifkan."
@@ -977,9 +975,9 @@ _theme:
     infoFg: "Teks informasi"
     infoWarnBg: "Latar belakang peringatan"
     infoWarnFg: "Teks peringatan"
-    cwBg: "Latar belakang tombol CW"
-    cwFg: "Teks tombol CW"
-    cwHoverBg: "Latar belakang tombol CW (Mengambang)"
+    cwBg: "Latar belakang tombol Sembunyikan Konten"
+    cwFg: "Teks tombol Sembunyikan Konten"
+    cwHoverBg: "Latar belakang tombol Sembunyikan Konten (Mengambang)"
     toastBg: "Latar belakang pemberitahuan"
     toastFg: "Teks pemberitahuan"
     buttonBg: "Latar belakang tombol"
@@ -1122,7 +1120,7 @@ _widgets:
   aiscript: "Konsol AiScript"
 _cw:
   hide: "Sembunyikan"
-  show: "Selebihnya"
+  show: "Lihat konten"
   chars: "{count} karakter"
   files: "{count} berkas"
 _poll:
@@ -1551,7 +1549,7 @@ _pages:
       fn: "Fungsi"
       _fn:
         slots: "Slot"
-        slots-info: "Pisahkan setiap slow dengan baris baru"
+        slots-info: "Pisahkan setiap slot dengan baris baru"
         arg1: "Keluaran"
       for: "Ulangi"
       _for:

@@ -8,11 +8,6 @@ import { Brackets } from 'typeorm';
 import { Notes } from '../../../../models';
 
 export const meta = {
-	desc: {
-		'ja-JP': '指定した投稿への返信/引用を取得します。',
-		'en-US': 'Get replies/quotes of a note.'
-	},
-
 	tags: ['notes'],
 
 	requireCredential: false as const,
@@ -20,10 +15,6 @@ export const meta = {
 	params: {
 		noteId: {
 			validator: $.type(ID),
-			desc: {
-				'ja-JP': '対象の投稿のID',
-				'en-US': 'Target note ID'
-			}
 		},
 
 		limit: {

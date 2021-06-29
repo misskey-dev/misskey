@@ -3,11 +3,6 @@ import define from '../../define';
 import { Notifications } from '../../../../models';
 
 export const meta = {
-	desc: {
-		'ja-JP': '全ての通知を既読にします。',
-		'en-US': 'Mark all notifications as read.'
-	},
-
 	tags: ['notifications', 'account'],
 
 	requireCredential: true as const,

@@ -8,11 +8,6 @@ import { getUser } from '../../common/getters';
 import { Followings, Users } from '../../../../models';
 
 export const meta = {
-	desc: {
-		'ja-JP': '指定したユーザーをフォローします。',
-		'en-US': 'Follow a user.'
-	},
-
 	tags: ['following', 'users'],
 
 	limit: {
@@ -27,10 +22,6 @@ export const meta = {
 	params: {
 		userId: {
 			validator: $.type(ID),
-			desc: {
-				'ja-JP': '対象のユーザーのID',
-				'en-US': 'Target user ID'
-			}
 		}
 	},
 

@@ -5,11 +5,6 @@ import { Pages } from '../../../../models';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 
 export const meta = {
-	desc: {
-		'ja-JP': '自分の作成したページ一覧を取得します。',
-		'en-US': 'Get my pages.'
-	},
-
 	tags: ['account', 'pages'],
 
 	requireCredential: true as const,

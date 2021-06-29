@@ -5,11 +5,6 @@ import { DriveFiles } from '../../../../models';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'ドライブのファイル一覧を取得します。',
-		'en-US': 'Get files of drive.'
-	},
-
 	tags: ['drive'],
 
 	requireCredential: true as const,
@@ -32,7 +27,7 @@ export const meta = {
 
 		folderId: {
 			validator: $.optional.nullable.type(ID),
-			default: null as any,
+			default: null,
 		},
 
 		type: {

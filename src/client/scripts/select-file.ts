@@ -47,7 +47,7 @@ export function selectFile(src: any, label: string | null, multiple = false) {
 
 				const marker = Math.random().toString(); // TODO: UUIDとか使う
 
-				const connection = os.stream.useSharedConnection('main');
+				const connection = os.stream.useChannel('main');
 				connection.on('urlUploadFinished', data => {
 					if (data.marker === marker) {
 						res(multiple ? [data.file] : data.file);
@@ -55,7 +55,7 @@ export function selectFile(src: any, label: string | null, multiple = false) {
 					}
 				});
 
-				os.api('drive/files/upload_from_url', {
+				os.api('drive/files/upload-from-url', {
 					url: url,
 					marker
 				});

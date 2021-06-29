@@ -7,11 +7,6 @@ import { generateVisibilityQuery } from '../../common/generate-visibility-query'
 import { generateMutedUserQuery } from '../../common/generate-muted-user-query';
 
 export const meta = {
-	desc: {
-		'ja-JP': '指定した投稿への返信を取得します。',
-		'en-US': 'Get replies of a note.'
-	},
-
 	tags: ['notes'],
 
 	requireCredential: false as const,
@@ -19,24 +14,14 @@ export const meta = {
 	params: {
 		noteId: {
 			validator: $.type(ID),
-			desc: {
-				'ja-JP': '対象の投稿のID',
-				'en-US': 'Target note ID'
-			}
 		},
 
 		sinceId: {
 			validator: $.optional.type(ID),
-			desc: {
-				'ja-JP': '指定すると、その投稿を基点としてより新しい投稿を取得します'
-			}
 		},
 
 		untilId: {
 			validator: $.optional.type(ID),
-			desc: {
-				'ja-JP': '指定すると、その投稿を基点としてより古い投稿を取得します'
-			}
 		},
 
 		limit: {

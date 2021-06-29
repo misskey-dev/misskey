@@ -35,14 +35,12 @@ export const packedNoteFavoriteSchema = {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
 			format: 'id',
-			description: 'The unique identifier for this favorite.',
 			example: 'xxxxxxxxxx',
 		},
 		createdAt: {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
 			format: 'date-time',
-			description: 'The date that the favorite was created.'
 		},
 		note: {
 			type: 'object' as const,

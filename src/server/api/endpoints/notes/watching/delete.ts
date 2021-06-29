@@ -6,11 +6,6 @@ import { getNote } from '../../../common/getters';
 import { ApiError } from '../../../error';
 
 export const meta = {
-	desc: {
-		'ja-JP': '指定した投稿のウォッチを解除します。',
-		'en-US': 'Unwatch a note.'
-	},
-
 	tags: ['notes'],
 
 	requireCredential: true as const,
@@ -20,10 +15,6 @@ export const meta = {
 	params: {
 		noteId: {
 			validator: $.type(ID),
-			desc: {
-				'ja-JP': '対象の投稿のID',
-				'en-US': 'Target note ID.'
-			}
 		}
 	},
 

@@ -1,5 +1,5 @@
 import { IRemoteUser } from '../../../../models/entities/user';
-import { IUndo, IFollow, IBlock, ILike, IAnnounce } from '../../type';
+import { IUndo, isFollow, isBlock, isLike, isAnnounce, getApType } from '../../type';
 import unfollow from './follow';
 import unblock from './block';
 import undoLike from './like';
@@ -9,7 +9,7 @@ import { apLogger } from '../../logger';
 
 const logger = apLogger;
 
-export default async (actor: IRemoteUser, activity: IUndo): Promise<void> => {
+export default async (actor: IRemoteUser, activity: IUndo): Promise<string> => {
 	if ('actor' in activity && actor.uri !== activity.actor) {
 		throw new Error('invalid actor');
 	}
@@ -25,20 +25,10 @@ export default async (actor: IRemoteUser, activity: IUndo): Promise<void> => {
 		throw e;
 	});
 
-	switch (object.type) {
-		case 'Follow':
-			unfollow(actor, object as IFollow);
-			break;
-		case 'Block':
-			unblock(actor, object as IBlock);
-			break;
-		case 'Like':
-		case 'EmojiReaction':
-		case 'EmojiReact':
-			undoLike(actor, object as ILike);
-			break;
-		case 'Announce':
-			undoAnnounce(actor, object as IAnnounce);
-			break;
-	}
+	if (isFollow(object)) return await unfollow(actor, object);
+	if (isBlock(object)) return await unblock(actor, object);
+	if (isLike(object)) return await undoLike(actor, object);
+	if (isAnnounce(object)) return await undoAnnounce(actor, object);
+
+	return `skip: unknown object type ${getApType(object)}`;
 };
