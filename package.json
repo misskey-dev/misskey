@@ -31,7 +31,6 @@
 		"built"
 	],
 	"dependencies": {
-		"@vue/reactivity": "^3.1.2",
 		"autobind-decorator": "^2.4.0",
 		"eventemitter3": "^4.0.7",
 		"reconnecting-websocket": "^4.4.0"

@@ -2,7 +2,6 @@ import autobind from 'autobind-decorator';
 import { EventEmitter } from 'eventemitter3';
 import ReconnectingWebsocket from 'reconnecting-websocket';
 import { stringify } from 'querystring';
-import { markRaw } from '@vue/reactivity';
 import { BroadcasrEvents, Channels } from './streaming.types';
 
 function urlQuery(obj: {}): string {
@@ -72,7 +71,7 @@ export default class Stream extends EventEmitter<StreamEvents> {
 			this.sharedConnectionPools.push(pool);
 		}
 
-		const connection = markRaw(new SharedConnection(this, channel, pool, name));
+		const connection = new SharedConnection(this, channel, pool, name);
 		this.sharedConnections.push(connection);
 		return connection;
 	}
@@ -89,7 +88,7 @@ export default class Stream extends EventEmitter<StreamEvents> {
 
 	@autobind
 	private connectToChannel<C extends keyof Channels>(channel: C, params: Channels[C]['params']): NonSharedConnection<Channels[C]> {
-		const connection = markRaw(new NonSharedConnection(this, channel, this.genId(), params));
+		const connection = new NonSharedConnection(this, channel, this.genId(), params);
 		this.nonSharedConnections.push(connection);
 		return connection;
 	}
