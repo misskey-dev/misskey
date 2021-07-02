@@ -10,6 +10,8 @@ function urlQuery(obj: {}): string {
 		.reduce((a, [k, v]) => (a[k] = v, a), {} as Record<string, any>));
 }
 
+type AnyOf<T extends Record<any, any>> = T[keyof T];
+
 type StreamEvents = {
 	_connected_: void;
 	_disconnected_: void;
@@ -39,7 +41,9 @@ export default class Stream extends EventEmitter<StreamEvents> {
 			_t: Date.now(),
 		});
 
-		this.stream = new ReconnectingWebsocket(`${origin.replace('http://', 'ws://').replace('https://', 'wss://')}/streaming?${query}`, '', {
+		const wsOrigin = origin.replace('http://', 'ws://').replace('https://', 'wss://');
+
+		this.stream = new ReconnectingWebsocket(`${wsOrigin}/streaming?${query}`, '', {
 			minReconnectionDelay: 1, // https://github.com/pladaria/reconnecting-websocket/issues/91
 			WebSocket: options.WebSocket
 		});
@@ -250,7 +254,7 @@ class Pool {
 	}
 }
 
-abstract class Connection<Channel extends Channels[keyof Channels] = any> extends EventEmitter<Channel['events']> {
+abstract class Connection<Channel extends AnyOf<Channels> = any> extends EventEmitter<Channel['events']> {
 	public channel: string;
 	protected stream: Stream;
 	public abstract id: string;
@@ -281,7 +285,7 @@ abstract class Connection<Channel extends Channels[keyof Channels] = any> extend
 	public abstract dispose(): void;
 }
 
-class SharedConnection<Channel extends Channels[keyof Channels] = any> extends Connection<Channel> {
+class SharedConnection<Channel extends AnyOf<Channels> = any> extends Connection<Channel> {
 	private pool: Pool;
 
 	public get id(): string {
@@ -303,7 +307,7 @@ class SharedConnection<Channel extends Channels[keyof Channels] = any> extends C
 	}
 }
 
-class NonSharedConnection<Channel extends Channels[keyof Channels] = any> extends Connection<Channel> {
+class NonSharedConnection<Channel extends AnyOf<Channels> = any> extends Connection<Channel> {
 	public id: string;
 	protected params: Channel['params'];
 
