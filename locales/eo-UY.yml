@@ -3,7 +3,7 @@ _lang_: "Esperanto"
 monthAndDay: "la {day}-a tago de {month}-a monato"
 search: "Serĉi"
 notifications: "Sciigoj"
-username: "Uzulnomo"
+username: "Uzantnomo"
 password: "Pasvorto"
 forgotPassword: "Ĉu vi forgesis pasvorton?"
 fetchingAsApObject: "Estas Informpetante de la fedelacioj"
@@ -25,7 +25,7 @@ signup: "Registriĝi"
 uploading: "Estas alŝutante"
 users: "Uzanto"
 instances: "Instanco"
-smtpUser: "Uzulnomo"
+smtpUser: "Uzantnomo"
 smtpPass: "Pasvorto"
 user: "Uzanto"
 _mfm:
@@ -36,7 +36,7 @@ _widgets:
   notifications: "Sciigoj"
   timeline: "Tempolinio"
 _profile:
-  username: "Uzulnomo"
+  username: "Uzantnomo"
 _deck:
   _columns:
     notifications: "Sciigoj"
