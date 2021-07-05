@@ -1,1 +1,21 @@
 ---
+_lang_: "Esperanto"
+monthAndDay: "la {day}-a tago de {month}-a monato"
+search: "Serĉi"
+notifications: "Sciigoj"
+username: "Uzulnomo"
+password: "Pasvorto"
+forgotPassword: "Ĉu vi forgesis pasvorton?"
+smtpUser: "Uzulnomo"
+smtpPass: "Pasvorto"
+_mfm:
+  search: "Serĉi"
+_sfx:
+  notification: "Sciigoj"
+_widgets:
+  notifications: "Sciigoj"
+_profile:
+  username: "Uzulnomo"
+_deck:
+  _columns:
+    notifications: "Sciigoj"
