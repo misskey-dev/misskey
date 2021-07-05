@@ -36,7 +36,7 @@ note: "Notico"
 notes: "Notico"
 error: "Eraro"
 retry: "Provi denove"
-renote: "Renotico"
+renote: "Renotici"
 instances: "Instanco"
 editProfile: "Redakti profilon"
 changePassword: "Ŝanĝi pasvorton"
@@ -51,7 +51,7 @@ _mfm:
   search: "Serĉi"
 _theme:
   keys:
-    renote: "Renotico"
+    renote: "Renotici"
 _sfx:
   note: "Notico"
   notification: "Sciigoj"
@@ -85,7 +85,7 @@ _pages:
       array: "Listoj"
 _notification:
   _types:
-    renote: "Renotico"
+    renote: "Renotici"
 _deck:
   _columns:
     notifications: "Sciigoj"
