@@ -29,12 +29,16 @@ searchUser: "Serĉi uzanton"
 reply: "Respondi"
 loadMore: "Vidi plu"
 showMore: "Vidi plu"
+files: "Dosieroj"
+download: "Elŝuti"
+lists: "Listoj"
 instances: "Instanco"
 editProfile: "Redakti profilon"
 changePassword: "Ŝanĝi pasvorton"
 currentPassword: "Aktuala pasvorto"
 newPassword: "Nova pasvorto"
 noSuchUser: "Neniuj uzantoj trovitaj."
+userList: "Listoj"
 smtpUser: "Uzantnomo"
 smtpPass: "Pasvorto"
 user: "Uzanto"
@@ -49,7 +53,29 @@ _cw:
   show: "Vidi plu"
 _profile:
   username: "Uzantnomo"
+_exportOrImport:
+  userLists: "Listoj"
+_pages:
+  script:
+    categories:
+      list: "Listoj"
+    blocks:
+      _join:
+        arg1: "Listoj"
+      _randomPick:
+        arg1: "Listoj"
+      _dailyRandomPick:
+        arg1: "Listoj"
+      _seedRandomPick:
+        arg2: "Listoj"
+      _pick:
+        arg1: "Listoj"
+      _listLen:
+        arg1: "Listoj"
+    types:
+      array: "Listoj"
 _deck:
   _columns:
     notifications: "Sciigoj"
     tl: "Tempolinio"
+    list: "Listoj"
