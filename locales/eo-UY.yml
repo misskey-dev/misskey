@@ -33,6 +33,10 @@ files: "Dosieroj"
 download: "Elŝuti"
 lists: "Listoj"
 note: "Notico"
+notes: "Notico"
+error: "Eraro"
+retry: "Provi denove"
+renote: "Renotico"
 instances: "Instanco"
 editProfile: "Redakti profilon"
 changePassword: "Ŝanĝi pasvorton"
@@ -45,7 +49,11 @@ smtpPass: "Pasvorto"
 user: "Uzanto"
 _mfm:
   search: "Serĉi"
+_theme:
+  keys:
+    renote: "Renotico"
 _sfx:
+  note: "Notico"
   notification: "Sciigoj"
 _widgets:
   notifications: "Sciigoj"
@@ -75,6 +83,9 @@ _pages:
         arg1: "Listoj"
     types:
       array: "Listoj"
+_notification:
+  _types:
+    renote: "Renotico"
 _deck:
   _columns:
     notifications: "Sciigoj"
