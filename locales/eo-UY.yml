@@ -13,6 +13,12 @@ cancel: "Nuligi"
 enterUsername: "Entajpi uzulnomon"
 renotedBy: "{user} estas Renote'inta"
 instance: "Instanco"
+settings: "Agordoj"
+basicSettings: "Ĝeneralaj agordoj"
+otherSettings: "Aliaj agordoj"
+profile: "Profilo"
+timeline: "Tempolinio"
+login: "Ensaluti"
 instances: "Instanco"
 smtpUser: "Uzulnomo"
 smtpPass: "Pasvorto"
@@ -22,8 +28,10 @@ _sfx:
   notification: "Sciigoj"
 _widgets:
   notifications: "Sciigoj"
+  timeline: "Tempolinio"
 _profile:
   username: "Uzulnomo"
 _deck:
   _columns:
     notifications: "Sciigoj"
+    tl: "Tempolinio"
