@@ -24,6 +24,11 @@ logout: "Elsaluti"
 signup: "Registriĝi"
 uploading: "Estas alŝutante"
 users: "Uzanto"
+sendMessage: "Sendi mesaĝon"
+searchUser: "Serĉi uzanton"
+reply: "Respondi"
+loadMore: "Vidi plu"
+showMore: "Vidi plu"
 instances: "Instanco"
 smtpUser: "Uzantnomo"
 smtpPass: "Pasvorto"
@@ -35,6 +40,8 @@ _sfx:
 _widgets:
   notifications: "Sciigoj"
   timeline: "Tempolinio"
+_cw:
+  show: "Vidi plu"
 _profile:
   username: "Uzantnomo"
 _deck:
