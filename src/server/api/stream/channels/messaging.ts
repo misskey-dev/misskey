@@ -10,7 +10,7 @@ export default class extends Channel {
 	public static requireCredential = true;
 
 	private otherpartyId: string | null;
-	private otherparty?: User;
+	private otherparty: User | null;
 	private groupId: string | null;
 	private subCh: string;
 	private typers: Record<User['id'], Date> = {};
@@ -18,9 +18,9 @@ export default class extends Channel {
 
 	@autobind
 	public async init(params: any) {
-		this.otherpartyId = params.otherparty as string;
-		this.otherparty = await Users.findOne({ id: this.otherpartyId });
-		this.groupId = params.group as string;
+		this.otherpartyId = params.otherparty;
+		this.otherparty = this.otherpartyId ? await Users.findOneOrFail({ id: this.otherpartyId }) : null;
+		this.groupId = params.group;
 
 		// Check joining
 		if (this.groupId) {
