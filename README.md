@@ -13,7 +13,7 @@ JavaScript(TypeScript)用の公式MisskeySDKです。ブラウザ/Node.js上で�
 - APIリクエスト
 - ストリーミング
 - ユーティリティ関数
-- Misskeyの各種モデル(ノート、ユーザー等)の型定義
+- Misskeyの各種型定義
 
 ## Install
 ```
