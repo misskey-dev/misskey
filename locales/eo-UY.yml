@@ -44,16 +44,22 @@ reply: "Respondi"
 loadMore: "Vidi plu"
 showMore: "Vidi plu"
 mention: "Mencioj"
-importAndExport: "Importi / Eksporti"
+importAndExport: "Importi / eksporti"
 import: "Importi"
 export: "Eksporti"
 files: "Dosieroj"
 download: "Elŝuti"
 lists: "Listoj"
+noLists: "Neniuj listoj"
 note: "Notico"
 notes: "Notico"
+following: "Aboni"
+followers: "Sekvantoj"
+followsYou: "Sekvas vin"
+createList: "Kreii liston"
 error: "Eraro"
 retry: "Reprovi"
+follow: "Aboni"
 renote: "Renotici"
 unrenote: "Forigi renotici"
 renoted: "Estas renotinte"
@@ -90,9 +96,12 @@ _widgets:
   federation: "Fediverso"
 _cw:
   show: "Vidi plu"
+_visibility:
+  followers: "Sekvantoj"
 _profile:
   username: "Uzantnomo"
 _exportOrImport:
+  followingList: "Aboni"
   userLists: "Listoj"
 _pages:
   script:
@@ -115,6 +124,7 @@ _pages:
       array: "Listoj"
 _notification:
   _types:
+    follow: "Aboni"
     mention: "Mencioj"
     renote: "Renotici"
 _deck:
