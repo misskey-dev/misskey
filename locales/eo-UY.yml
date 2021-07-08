@@ -53,13 +53,13 @@ lists: "Listoj"
 noLists: "Neniuj listoj"
 note: "Notico"
 notes: "Notico"
-following: "Aboni"
+following: "Sekvi"
 followers: "Sekvantoj"
 followsYou: "Sekvas vin"
 createList: "Kreii liston"
 error: "Eraro"
 retry: "Reprovi"
-follow: "Aboni"
+follow: "Sekvi"
 renote: "Renotici"
 unrenote: "Forigi renotici"
 renoted: "Estas renotinte"
@@ -101,7 +101,7 @@ _visibility:
 _profile:
   username: "Uzantnomo"
 _exportOrImport:
-  followingList: "Aboni"
+  followingList: "Sekvi"
   userLists: "Listoj"
 _pages:
   script:
@@ -124,7 +124,7 @@ _pages:
       array: "Listoj"
 _notification:
   _types:
-    follow: "Aboni"
+    follow: "Sekvi"
     mention: "Mencioj"
     renote: "Renotici"
 _deck:
