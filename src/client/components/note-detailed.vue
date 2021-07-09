@@ -30,7 +30,7 @@
 				<i v-else-if="note.visibility === 'followers'" class="fas fa-unlock"></i>
 				<i v-else-if="note.visibility === 'specified'" class="fas fa-envelope"></i>
 			</span>
-			<span class="localOnly" v-if="note.localOnly"><i class="far fa-unlink"></i></span>
+			<span class="localOnly" v-if="note.localOnly"><i class="fas fa-biohazard"></i></span>
 		</div>
 	</div>
 	<article class="article" @contextmenu.stop="onContextmenu">
@@ -43,13 +43,13 @@
 					</MkA>
 					<span class="is-bot" v-if="appearNote.user.isBot">bot</span>
 					<span class="admin" v-if="appearNote.user.isAdmin"><i class="fas fa-paw" style="color: #ffb7c5;"></i></span>
-					<span class="moderator" v-if="!appearNote.user.isAdmin && appearNote.user.isModerator"><i class="fas fa-badge-check" style="color: #faff72;"></i></span>
+					<span class="moderator" v-if="!appearNote.user.isAdmin && appearNote.user.isModerator"><i class="far fa-bookmark"></i></span>
 					<span class="visibility" v-if="appearNote.visibility !== 'public'">
 						<i v-if="appearNote.visibility === 'home'" class="fas fa-home"></i>
 						<i v-else-if="appearNote.visibility === 'followers'" class="fas fa-unlock"></i>
 						<i v-else-if="appearNote.visibility === 'specified'" class="fas fa-envelope"></i>
 					</span>
-					<span class="localOnly" v-if="appearNote.localOnly"><i class="far fa-unlink" style="color: #5f5f5f;"></i></span>
+					<span class="localOnly" v-if="appearNote.localOnly"><i class="fas fa-biohazard" style="color: #5f5f5f;"></i></span>
 				</div>
 				<div class="username"><MkAcct :user="appearNote.user"/></div>
 				<MkInstanceTicker v-if="showTicker" class="ticker" :instance="appearNote.user.instance"/>

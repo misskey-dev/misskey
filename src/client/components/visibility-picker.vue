@@ -31,7 +31,7 @@
 		</button>
 		<div class="divider"></div>
 		<button class="_button localOnly" @click="localOnly = !localOnly" :class="{ active: localOnly }" data-index="5" key="localOnly">
-			<div><i class="far fa-unlink" style="color: #5f5f5f;"></i></div>
+			<div><i class="fas fa-biohazard"></i></div>
 			<div>
 				<span>{{ $ts._visibility.localOnly }}</span>
 				<span>{{ $ts._visibility.localOnlyDescription }}</span>
