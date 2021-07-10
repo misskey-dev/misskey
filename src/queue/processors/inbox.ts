@@ -65,6 +65,11 @@ export default async (job: Bull.Job<InboxJobData>): Promise<string> => {
 		return `skip: failed to resolve user`;
 	}
 
+	// publicKey がなくても終了
+	if (authUser.key == null) {
+		return `skip: failed to resolve user publicKey`;
+	}
+
 	// HTTP-Signatureの検証
 	const httpSignatureValidated = httpSignature.verifySignature(signature, authUser.key.keyPem);
 
@@ -87,6 +92,10 @@ export default async (job: Bull.Job<InboxJobData>): Promise<string> => {
 			authUser = await dbResolver.getAuthUserFromKeyId(activity.signature.creator);
 			if (authUser == null) {
 				return `skip: LD-Signatureのユーザーが取得できませんでした`;
+			}
+
+			if (authUser.key == null) {
+				return `skip: LD-SignatureのユーザーはpublicKeyを持っていませんでした`;
 			}
 
 			// LD-Signature検証
