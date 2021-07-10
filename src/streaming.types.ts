@@ -126,7 +126,7 @@ export type NoteUpdatedEvent = {
 	};
 };
 
-export type BroadcasrEvents = {
+export type BroadcastEvents = {
 	noteUpdated: (payload: NoteUpdatedEvent) => void;
 	emojiAdded: (payload: {
 		emoji: CustomEmoji;

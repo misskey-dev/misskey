@@ -2,7 +2,7 @@ import autobind from 'autobind-decorator';
 import { EventEmitter } from 'eventemitter3';
 import ReconnectingWebsocket from 'reconnecting-websocket';
 import { stringify } from 'querystring';
-import { BroadcasrEvents, Channels } from './streaming.types';
+import { BroadcastEvents, Channels } from './streaming.types';
 
 function urlQuery(obj: {}): string {
 	return stringify(Object.entries(obj)
@@ -15,7 +15,7 @@ type AnyOf<T extends Record<any, any>> = T[keyof T];
 type StreamEvents = {
 	_connected_: void;
 	_disconnected_: void;
-} & BroadcasrEvents;
+} & BroadcastEvents;
 
 /**
  * Misskey stream connection
