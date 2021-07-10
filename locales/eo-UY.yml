@@ -45,7 +45,8 @@ searchUser: "Serĉi uzanton"
 reply: "Respondi"
 loadMore: "Vidi plu"
 showMore: "Vidi plu"
-youGotNewFollower: "Vi estas sekvita."
+youGotNewFollower: "Vi estas eksekvita."
+receiveFollowRequest: "Vi estas petita eksekvo."
 mention: "Mencioj"
 mentions: "Menciiĝoj"
 directNotes: "Senperajn Noticojn"
@@ -112,7 +113,7 @@ smtpPass: "Pasvorto"
 user: "Uzanto"
 _email:
   _follow:
-    title: "Vi estas sekvita."
+    title: "Vi estas eksekvita."
 _mfm:
   mention: "Mencioj"
   quote: "Citi"
@@ -159,7 +160,7 @@ _pages:
     types:
       array: "Listoj"
 _notification:
-  youWereFollowed: "Vi estas sekvita."
+  youWereFollowed: "Vi estas eksekvita."
   _types:
     follow: "Sekvi"
     mention: "Mencioj"
