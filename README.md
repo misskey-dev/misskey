@@ -37,6 +37,10 @@ const meta = await cli.request('meta', { detail: true });
 ```
 
 ## Streaming
+misskey.jsのストリーミングでは、二つのクラスが提供されます。
+ひとつは、ストリーミングのコネクション自体を司る`Stream`クラスと、もうひとつはストリーミングのチャンネルの概念を表す`Channel`クラスです。
+ストリーミングを利用する際は、まず`Stream`クラスのインスタンスを初期化し、その後で`Stream`インスタンスのメソッドを利用して`Channel`クラスのインスタンスを取得する形になります。
+
 ``` ts
 import * as Misskey from 'misskey-js';
 
@@ -50,7 +54,7 @@ mainChannel.on('notification', notification => {
 コネクションが途切れても自動で再接続されます。
 
 ### チャンネルへの接続
-チャンネルへの接続は`useChannel`メソッドを使用します。
+チャンネルへの接続は`Stream`クラスの`useChannel`メソッドを使用します。
 
 パラメータなし
 ``` ts
@@ -69,7 +73,7 @@ const messagingChannel = stream.useChannel('messaging', {
 ```
 
 ### チャンネルから切断
-`dispose`メソッドを呼び出します。
+`Channel`クラスの`dispose`メソッドを呼び出します。
 
 ``` ts
 const stream = new Misskey.Stream('https://misskey.test', { token: 'TOKEN' });
@@ -80,7 +84,7 @@ mainChannel.dispose();
 ```
 
 ### メッセージの受信
-チャンネル接続インスタンスはEventEmitterを継承しており、メッセージがサーバーから受信されると受け取ったイベント名でペイロードをemitします。
+`Channel`クラスはEventEmitterを継承しており、メッセージがサーバーから受信されると受け取ったイベント名でペイロードをemitします。
 
 ``` ts
 import * as Misskey from 'misskey-js';
@@ -93,7 +97,7 @@ mainChannel.on('notification', notification => {
 ```
 
 ### メッセージの送信
-チャンネル接続インスタンスの`send`メソッドを使用してメッセージをサーバーに送信することができます。
+`Channel`クラスの`send`メソッドを使用してメッセージをサーバーに送信することができます。
 
 ``` ts
 import * as Misskey from 'misskey-js';
@@ -109,7 +113,7 @@ messagingChannel.send('read', {
 ```
 
 ### コネクション確立イベント
-ストリーミングインスタンスの`_connected_`イベントが利用可能です。
+`Stream`クラスの`_connected_`イベントが利用可能です。
 
 ``` ts
 import * as Misskey from 'misskey-js';
@@ -121,7 +125,7 @@ stream.on('_connected_', () => {
 ```
 
 ### コネクション切断イベント
-ストリーミングインスタンスの`_disconnected_`イベントが利用可能です。
+`Stream`クラスの`_disconnected_`イベントが利用可能です。
 
 ``` ts
 import * as Misskey from 'misskey-js';
@@ -132,6 +136,12 @@ stream.on('_disconnected_', () => {
 });
 ```
 
+### コネクションの状態
+`Stream`クラスの`state`プロパティで確認できます。
+
+- `initializing`: 接続確立前
+- `connected`: 接続完了
+- `reconnecting`: 再接続中
 
 ---
 
