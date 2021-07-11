@@ -129,6 +129,7 @@ startMessaging: "Komenci babiladon"
 tos: "Kondiĉoj de Uzado"
 start: "Komenciĝi"
 home: "Ĉefpaĝo"
+drive: "Diskilo"
 nsfw: "Enhavo ne estas deca por laborejo (NSFW)"
 pinnedNotes: "Pinglita notico"
 userList: "Listoj"
@@ -153,6 +154,8 @@ _sfx:
   note: "Notico"
   notification: "Sciigoj"
   chat: "Babilejoj"
+_tutorial:
+  title: "Uzula gvidilo"
 _widgets:
   notifications: "Sciigoj"
   timeline: "Tempolinio"
