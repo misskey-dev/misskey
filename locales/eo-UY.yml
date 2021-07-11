@@ -139,6 +139,8 @@ user: "Uzanto"
 _email:
   _follow:
     title: "Vi estas eksekvita."
+_aboutMisskey:
+  translation: "Tradukado de Misskey"
 _mfm:
   mention: "Mencii"
   quote: "Citi"
