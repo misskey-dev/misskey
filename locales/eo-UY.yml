@@ -154,8 +154,6 @@ _sfx:
   note: "Notico"
   notification: "Sciigoj"
   chat: "Babilejoj"
-_tutorial:
-  title: "Uzula gvidilo"
 _widgets:
   notifications: "Sciigoj"
   timeline: "Tempolinio"
