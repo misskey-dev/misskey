@@ -25,6 +25,8 @@ npm i misskey-js
 todo
 
 ## API request
+APIを利用する際は、利用するサーバーの情報とアクセストークンを与えて`APIClient`クラスのインスタンスを初期化し、そのインスタンスの`request`メソッドを呼び出してリクエストを行います。
+
 ``` ts
 import * as Misskey from 'misskey-js';
 
@@ -36,9 +38,11 @@ const cli = new Misskey.api.APIClient({
 const meta = await cli.request('meta', { detail: true });
 ```
 
+`request`の第一引数には呼び出すエンドポイント名、第二引数にはパラメータオブジェクトを渡します。レスポンスはPromiseとして返ります。
+
 ## Streaming
 misskey.jsのストリーミングでは、二つのクラスが提供されます。
-ひとつは、ストリーミングのコネクション自体を司る`Stream`クラスと、もうひとつはストリーミングのチャンネルの概念を表す`Channel`クラスです。
+ひとつは、ストリーミングのコネクション自体を司る`Stream`クラスと、もうひとつはストリーミング上のチャンネルの概念を表す`Channel`クラスです。
 ストリーミングを利用する際は、まず`Stream`クラスのインスタンスを初期化し、その後で`Stream`インスタンスのメソッドを利用して`Channel`クラスのインスタンスを取得する形になります。
 
 ``` ts
