@@ -47,6 +47,8 @@ mainChannel.on('notification', notification => {
 });
 ```
 
+コネクションが途切れても自動で再接続されます。
+
 ### チャンネルへの接続
 チャンネルへの接続は`useChannel`メソッドを使用します。
 
@@ -105,6 +107,31 @@ messagingChannel.send('read', {
 	id: 'xxxxxxxxxx'
 });
 ```
+
+### コネクション確立イベント
+ストリーミングインスタンスの`_connected_`イベントが利用可能です。
+
+``` ts
+import * as Misskey from 'misskey-js';
+
+const stream = new Misskey.Stream('https://misskey.test', { token: 'TOKEN' });
+stream.on('_connected_', () => {
+	console.log('connected');
+});
+```
+
+### コネクション切断イベント
+ストリーミングインスタンスの`_disconnected_`イベントが利用可能です。
+
+``` ts
+import * as Misskey from 'misskey-js';
+
+const stream = new Misskey.Stream('https://misskey.test', { token: 'TOKEN' });
+stream.on('_disconnected_', () => {
+	console.log('disconnected');
+});
+```
+
 
 ---
 
