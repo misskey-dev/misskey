@@ -119,6 +119,7 @@ attachFile: "Aldoni dosieron"
 more: "Plu!"
 noSuchUser: "Neniuj uzantoj trovitaj."
 remove: "Forviŝi"
+messaging: "Babilejoj"
 upload: "Alŝuti"
 fromDrive: "El miskejo-diskilo"
 fromUrl: "El retadreso"
@@ -127,6 +128,9 @@ uploadFromUrlDescription: "Adreso de dosiero ke vi volas aldoni"
 games: "Ludo de Miskejo"
 messageRead: "Legita"
 startMessaging: "Komenci babiladon"
+tos: "Kondiĉoj de Uzado"
+start: "Komenciĝi"
+home: "Ĉefpaĝo"
 nsfw: "Enhavo ne estas deca por laborejo (NSFW)"
 pinnedNotes: "Pinglita notico"
 userList: "Listoj"
@@ -147,6 +151,7 @@ _theme:
 _sfx:
   note: "Notico"
   notification: "Sciigoj"
+  chat: "Babilejoj"
 _widgets:
   notifications: "Sciigoj"
   timeline: "Tempolinio"
@@ -154,6 +159,7 @@ _widgets:
 _cw:
   show: "Vidi plu"
 _visibility:
+  home: "Ĉefpaĝo"
   followers: "Sekvantoj"
 _profile:
   username: "Uzantnomo"
@@ -162,6 +168,8 @@ _exportOrImport:
   muteList: "Mutigi"
   blockingList: "Bloki"
   userLists: "Listoj"
+_timelines:
+  home: "Ĉefpaĝo"
 _pages:
   script:
     categories:
