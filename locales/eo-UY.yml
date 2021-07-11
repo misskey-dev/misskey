@@ -83,7 +83,7 @@ sensitive: "Enhavo ne estas deca por laborejo (NSFW)"
 add: "Aldoni"
 reaction: "Reagoj"
 enterFileName: "Tajpi dosiernomon"
-mute: "Mutigi"
+mute: "Silentigi"
 unmute: "Malmutigi"
 block: "Bloki"
 unblock: "Malbloki"
@@ -167,7 +167,7 @@ _profile:
   username: "Uzantnomo"
 _exportOrImport:
   followingList: "Sekvi"
-  muteList: "Mutigi"
+  muteList: "Silentigi"
   blockingList: "Bloki"
   userLists: "Listoj"
 _timelines:
