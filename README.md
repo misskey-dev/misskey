@@ -15,6 +15,8 @@ JavaScript(TypeScript)用の公式MisskeySDKです。ブラウザ/Node.js上で�
 - ユーティリティ関数
 - Misskeyの各種型定義
 
+対応するMisskeyのバージョンは12以上です。
+
 ## Install
 ```
 npm i misskey-js
