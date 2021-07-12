@@ -227,7 +227,6 @@ export default defineComponent({
 				text: this.text,
 				files: this.files,
 				poll: this.poll,
-				// TODO: custom emojis
 			};
 		}
 	},
