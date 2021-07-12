@@ -19,6 +19,9 @@ export default define(meta, async (ps, user) => {
 	const token = await AccessTokens.findOne(ps.tokenId);
 
 	if (token) {
-		AccessTokens.delete(token.id);
+		await AccessTokens.delete({
+			id: ps.tokenId,
+			userId: user.id,
+		});
 	}
 });
