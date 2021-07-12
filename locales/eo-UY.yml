@@ -20,7 +20,7 @@ basicSettings: "Ĝeneralaj agordoj"
 otherSettings: "Aliaj agordoj"
 openInWindow: "Malfermi al fenestro"
 profile: "Profilo"
-timeline: "Tempolinio"
+timeline: "Templinio"
 login: "Ensaluti"
 loggingIn: "Estas ensalutante..."
 logout: "Elsaluti"
@@ -154,7 +154,7 @@ _sfx:
   chat: "Babilejoj"
 _widgets:
   notifications: "Sciigoj"
-  timeline: "Tempolinio"
+  timeline: "Templinio"
   federation: "Fediverso"
 _cw:
   show: "Vidi plu"
@@ -200,6 +200,6 @@ _notification:
 _deck:
   _columns:
     notifications: "Sciigoj"
-    tl: "Tempolinio"
+    tl: "Templinio"
     list: "Listoj"
     mentions: "Mencioj"
