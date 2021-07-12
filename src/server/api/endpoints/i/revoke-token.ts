@@ -2,6 +2,7 @@ import $ from 'cafy';
 import define from '../../define';
 import { AccessTokens } from '../../../../models';
 import { ID } from '@/misc/cafy-id';
+import { publishUserEvent } from '@/services/stream';
 
 export const meta = {
 	requireCredential: true as const,
@@ -23,5 +24,8 @@ export default define(meta, async (ps, user) => {
 			id: ps.tokenId,
 			userId: user.id,
 		});
+
+		// Terminate streaming
+		publishUserEvent(user.id, 'terminate');
 	}
 });
