@@ -39,7 +39,7 @@
 		<textarea v-model="text" class="text" :class="{ withCw: useCw }" ref="text" :disabled="posting" :placeholder="placeholder" @keydown="onKeydown" @paste="onPaste" @compositionupdate="onCompositionUpdate" @compositionend="onCompositionEnd" />
 		<XPostFormAttaches class="attaches" :files="files" @updated="updateFiles" @detach="detachFile" @changeSensitive="updateFileSensitive" @changeName="updateFileName"/>
 		<XPollEditor v-if="poll" :poll="poll" @destroyed="poll = null" @updated="onPollUpdate"/>
-		<XNotePreview class="preview" v-if="showPreview" :note="this"/>
+		<XNotePreview class="preview" v-if="showPreview" :note="draftedNote"/>
 		<footer>
 			<button class="_button" @click="chooseFileFrom" v-tooltip="$ts.attachFile"><i class="fas fa-photo-video"></i></button>
 			<button class="_button" @click="togglePoll" :class="{ active: poll }" v-tooltip="$ts.poll"><i class="fas fa-poll-h"></i></button>
@@ -215,6 +215,20 @@ export default defineComponent({
 
 		max(): number {
 			return this.$instance ? this.$instance.maxNoteTextLength : 1000;
+		},
+
+		draftedNote(): object {
+			return {
+				user: this.$i,
+				createdAt: new Date(),
+				visibility: this.visibility,
+				localOnly: this.localOnly,
+				cw: this.cw || null,
+				text: this.text,
+				files: this.files,
+				poll: this.poll,
+				// TODO: custom emojis
+			};
 		}
 	},
 
