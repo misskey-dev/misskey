@@ -751,6 +751,7 @@ middle: "中"
 low: "低"
 emailNotConfiguredWarning: "沒有設定電子郵件地址"
 ratio: "%"
+global: "公開"
 _ad:
   back: "返回"
   reduceFrequencyOfThisAd: "降低此廣告的頻率 "
