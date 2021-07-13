@@ -132,6 +132,7 @@ home: "Ĉefpaĝo"
 drive: "Diskilo"
 nsfw: "Enhavo ne estas deca por laborejo (NSFW)"
 pinnedNotes: "Pinglita noto"
+notesAndReplies: "Kun respondoj"
 userList: "Listoj"
 aboutMisskey: "Pri Misskey"
 invisibleNote: "Malpublika noto"
@@ -141,6 +142,8 @@ smtpPass: "Pasvorto"
 i18nInfo: "Ĉiujn niajn tradukojn faras volontuloj. Se vi volus kontribui al jama traduko aŭ komenci novan, bonvolu aniĝi al {link} kaj elekti la lingvojn, kiun vi volus traduki."
 publish: "Publikigi"
 user: "Uzanto"
+_gallery:
+  liked: "Ŝatitaj notoj"
 _email:
   _follow:
     title: "Vi estas eksekvita."
@@ -167,7 +170,7 @@ _cw:
 _visibility:
   publicDescription: "La noton povas legi ĉiuj uzantoj."
   home: "Ĉefpaĝo"
-  homeDescription: "Publike nur sur templinio de uzanto"
+  homeDescription: "Publike nur sur templinio de la uzanto"
   followers: "Sekvantoj"
   followersDescription: "Publike nur al miaj sekvantoj"
   specifiedDescription: "Dissendi private nur al specifitaj uzantoj de mi"
