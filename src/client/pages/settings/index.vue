@@ -123,6 +123,7 @@ export default defineComponent({
 				case 'theme/manage': return defineAsyncComponent(() => import('./theme.manage.vue'));
 				case 'sidebar': return defineAsyncComponent(() => import('./sidebar.vue'));
 				case 'sounds': return defineAsyncComponent(() => import('./sounds.vue'));
+				case 'custom-css': return defineAsyncComponent(() => import('./custom-css.vue'));
 				case 'deck': return defineAsyncComponent(() => import('./deck.vue'));
 				case 'plugin': return defineAsyncComponent(() => import('./plugin.vue'));
 				case 'plugin/install': return defineAsyncComponent(() => import('./plugin.install.vue'));
