@@ -761,6 +761,7 @@ middle: "보통"
 low: "낮음"
 emailNotConfiguredWarning: "메일 주소가 설정되어 있지 않습니다."
 ratio: "비율"
+global: "글로벌"
 _ad:
   back: "뒤로"
   reduceFrequencyOfThisAd: "이 광고의 표시 빈도 낮추기"
