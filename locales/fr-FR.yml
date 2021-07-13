@@ -761,6 +761,7 @@ middle: "Moyen"
 low: "Basse"
 emailNotConfiguredWarning: "Vous n'avez pas configuré d'adresse e-mail."
 ratio: "Ratio"
+global: "Global"
 _ad:
   back: "Retour"
   reduceFrequencyOfThisAd: "Voir cette publicité moins souvent"
