@@ -761,6 +761,7 @@ middle: "中"
 low: "低"
 emailNotConfiguredWarning: "电子邮件地址未设置。"
 ratio: "比率"
+global: "全局"
 _ad:
   back: "返回"
   reduceFrequencyOfThisAd: "减少此广告的频率"
