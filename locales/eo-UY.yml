@@ -145,7 +145,6 @@ aboutMisskey: "Pri Misskey"
 deleteAllFiles: "Forvisi ĉiujn dosierojn"
 deleteAllFilesConfirm: "Ĉu vi certas, ke vi volas forviŝi ĉiujn viajn dosierojn?"
 invisibleNote: "Malpublika noto"
-visibility: "Videbleco"
 smtpUser: "Uzantnomo"
 smtpPass: "Pasvorto"
 i18nInfo: "Ĉiujn niajn tradukojn faras volontuloj. Se vi volus kontribui al jama traduko aŭ komenci novan, bonvolu aniĝi al {link} kaj elekti la lingvojn, kiun vi volus traduki."
@@ -179,10 +178,7 @@ _cw:
 _visibility:
   publicDescription: "La noton povas legi ĉiuj uzantoj."
   home: "Ĉefpaĝo"
-  homeDescription: "Publike nur sur templinio de la uzanto"
   followers: "Sekvantoj"
-  followersDescription: "Publike nur al miaj sekvantoj"
-  specifiedDescription: "Dissendi private nur al specifitaj uzantoj de mi"
 _profile:
   username: "Uzantnomo"
 _exportOrImport:
