@@ -741,6 +741,7 @@ middle: "Media"
 low: "Bassa"
 emailNotConfiguredWarning: "Non hai impostato nessun indirizzo e-mail."
 ratio: "Rapporto"
+global: "Federata"
 _ad:
   back: "Indietro"
   reduceFrequencyOfThisAd: "Visualizza questa pubblicità meno spesso"
