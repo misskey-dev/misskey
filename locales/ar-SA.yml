@@ -430,6 +430,7 @@ user: "المستخدمون"
 administration: "إدارة "
 expiration: "ينتهي استطلاع الرأي في"
 middle: "متوسط"
+global: "الشامل"
 _email:
   _follow:
     title: "يتابعك"
