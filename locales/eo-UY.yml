@@ -139,7 +139,7 @@ visibility: "Videbleco"
 smtpUser: "Uzantnomo"
 smtpPass: "Pasvorto"
 i18nInfo: "Ĉiujn niajn tradukojn faras volontuloj. Se vi volus kontribui al jama traduko aŭ komenci novan, bonvolu aniĝi al {link} kaj elekti la lingvojn, kiun vi volus traduki."
-publish: "Publike"
+publish: "Publikigi"
 user: "Uzanto"
 _email:
   _follow:
@@ -165,11 +165,11 @@ _widgets:
 _cw:
   show: "Vidi plu"
 _visibility:
-  publicDescription: "Publikigi al ĉiuj uzantoj"
+  publicDescription: "La noton povas legi ĉiuj uzantoj."
   home: "Ĉefpaĝo"
   homeDescription: "Dissendi nur sur templinio de uzanto"
   followers: "Sekvantoj"
-  followersDescription: "Publikigi nur al miaj sekvantoj"
+  followersDescription: "Dissendi private nur al miaj sekvantoj"
 _profile:
   username: "Uzantnomo"
 _exportOrImport:
