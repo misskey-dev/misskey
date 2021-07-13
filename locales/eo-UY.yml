@@ -136,6 +136,7 @@ userList: "Listoj"
 aboutMisskey: "Pri Misskey"
 smtpUser: "Uzantnomo"
 smtpPass: "Pasvorto"
+i18nInfo: "Ĉiujn niajn tradukojn faras volontuloj. Se vi volus kontribui al jama traduko aŭ komenci novan, bonvolu aniĝi al {link} kaj Elekti la lingvojn, kiun vi volus traduki."
 user: "Uzanto"
 _email:
   _follow:
