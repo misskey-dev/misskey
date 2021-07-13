@@ -761,6 +761,7 @@ middle: "Medium"
 low: "Low"
 emailNotConfiguredWarning: "Email address not set"
 ratio: "Ratio"
+customCss: "Custom CSS"
 global: "Global"
 _ad:
   back: "Back"
