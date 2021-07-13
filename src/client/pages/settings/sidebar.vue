@@ -29,6 +29,7 @@ import * as os from '@client/os';
 import { sidebarDef } from '@client/sidebar';
 import { defaultStore } from '@client/store';
 import * as symbols from '@client/symbols';
+import { unisonReload } from '@client/scripts/unison-reload';
 
 export default defineComponent({
 	components: {
@@ -106,7 +107,7 @@ export default defineComponent({
 			});
 			if (canceled) return;
 
-			location.reload();
+			unisonReload();
 		}
 	},
 });
