@@ -735,6 +735,7 @@ middle: "Średnie"
 low: "Niski"
 emailNotConfiguredWarning: "Nie podano adresu e-mail"
 ratio: "Stosunek"
+global: "Globalna"
 _ad:
   back: "Wróć"
   reduceFrequencyOfThisAd: "Pokazuj tę reklamę rzadziej"
