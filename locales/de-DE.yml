@@ -762,6 +762,7 @@ low: "Niedrig"
 emailNotConfiguredWarning: "Keine Email-Adresse hinterlegt"
 ratio: "Verhältnis"
 customCss: "Benutzerdefiniertes CSS"
+customCssWarn: "Verwende diese Einstellung nur, wenn du weißt, was sie tut. Ungültige Eingaben können dazu führen, dass der Client nicht mehr normal funktioniert."
 global: "Global"
 _ad:
   back: "Zurück"
