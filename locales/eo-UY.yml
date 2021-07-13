@@ -140,6 +140,8 @@ user: "Uzanto"
 _email:
   _follow:
     title: "Vi estas eksekvita."
+_aboutMisskey:
+  translation: "Traduki Miskejon"
 _mfm:
   mention: "Mencii"
   quote: "Citi"
