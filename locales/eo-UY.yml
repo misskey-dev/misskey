@@ -167,9 +167,10 @@ _cw:
 _visibility:
   publicDescription: "La noton povas legi ĉiuj uzantoj."
   home: "Ĉefpaĝo"
-  homeDescription: "Dissendi nur sur templinio de uzanto"
+  homeDescription: "Publike nur sur templinio de uzanto"
   followers: "Sekvantoj"
-  followersDescription: "Dissendi private nur al miaj sekvantoj"
+  followersDescription: "Publike nur al miaj sekvantoj"
+  specifiedDescription: "Dissendi private nur al specifitaj uzantoj de mi"
 _profile:
   username: "Uzantnomo"
 _exportOrImport:
