@@ -164,6 +164,7 @@ _cw:
 _visibility:
   home: "Ĉefpaĝo"
   followers: "Sekvantoj"
+  followersDescription: "Publike nur al miaj sekvantoj"
 _profile:
   username: "Uzantnomo"
 _exportOrImport:
