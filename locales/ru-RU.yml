@@ -761,6 +761,7 @@ middle: "Средне"
 low: "Низкий"
 emailNotConfiguredWarning: "Не указан адрес электронной почты"
 ratio: "Соотношение"
+global: "Всеобщая"
 _ad:
   back: "Выход"
   reduceFrequencyOfThisAd: "Реже показывать эту рекламу"
