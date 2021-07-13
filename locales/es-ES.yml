@@ -665,6 +665,7 @@ user: "Usuarios"
 administration: "Administrar"
 expiration: "Termina el"
 middle: "Mediano"
+global: "Global"
 _ad:
   back: "Deseleccionar"
 _gallery:
