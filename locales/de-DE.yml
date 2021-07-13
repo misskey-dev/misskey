@@ -761,6 +761,7 @@ middle: "Mittel"
 low: "Niedrig"
 emailNotConfiguredWarning: "Keine Email-Adresse hinterlegt"
 ratio: "Verhältnis"
+global: "Global"
 _ad:
   back: "Zurück"
   reduceFrequencyOfThisAd: "Diese Werbung weniger anzeigen"
