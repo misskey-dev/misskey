@@ -23,6 +23,17 @@ npm i misskey-js
 ```
 
 # Usage
+インポートは以下のようにまとめて行えます。
+
+``` ts
+import * as Misskey from 'misskey-js';
+```
+
+便宜上、以後のコード例は上記のように`* as Misskey`としてインポートしている前提のものになります。
+
+まとめてインポートを行うとTree-Shakingできなくなるので、適宜変更をおすすめします。
+
+
 ## Authenticate
 todo
 
@@ -30,8 +41,6 @@ todo
 APIを利用する際は、利用するサーバーの情報とアクセストークンを与えて`APIClient`クラスのインスタンスを初期化し、そのインスタンスの`request`メソッドを呼び出してリクエストを行います。
 
 ``` ts
-import * as Misskey from 'misskey-js';
-
 const cli = new Misskey.api.APIClient({
 	origin: 'https://misskey.test',
 	credential: 'TOKEN',
@@ -48,8 +57,6 @@ misskey.jsのストリーミングでは、二つのクラスが提供されま�
 ストリーミングを利用する際は、まず`Stream`クラスのインスタンスを初期化し、その後で`Stream`インスタンスのメソッドを利用して`Channel`クラスのインスタンスを取得する形になります。
 
 ``` ts
-import * as Misskey from 'misskey-js';
-
 const stream = new Misskey.Stream('https://misskey.test', { token: 'TOKEN' });
 const mainChannel = stream.useChannel('main');
 mainChannel.on('notification', notification => {
@@ -93,8 +100,6 @@ mainChannel.dispose();
 `Channel`クラスはEventEmitterを継承しており、メッセージがサーバーから受信されると受け取ったイベント名でペイロードをemitします。
 
 ``` ts
-import * as Misskey from 'misskey-js';
-
 const stream = new Misskey.Stream('https://misskey.test', { token: 'TOKEN' });
 const mainChannel = stream.useChannel('main');
 mainChannel.on('notification', notification => {
@@ -106,8 +111,6 @@ mainChannel.on('notification', notification => {
 `Channel`クラスの`send`メソッドを使用してメッセージをサーバーに送信することができます。
 
 ``` ts
-import * as Misskey from 'misskey-js';
-
 const stream = new Misskey.Stream('https://misskey.test', { token: 'TOKEN' });
 const messagingChannel = stream.useChannel('messaging', {
 	otherparty: 'xxxxxxxxxx',
@@ -122,8 +125,6 @@ messagingChannel.send('read', {
 `Stream`クラスの`_connected_`イベントが利用可能です。
 
 ``` ts
-import * as Misskey from 'misskey-js';
-
 const stream = new Misskey.Stream('https://misskey.test', { token: 'TOKEN' });
 stream.on('_connected_', () => {
 	console.log('connected');
@@ -134,8 +135,6 @@ stream.on('_connected_', () => {
 `Stream`クラスの`_disconnected_`イベントが利用可能です。
 
 ``` ts
-import * as Misskey from 'misskey-js';
-
 const stream = new Misskey.Stream('https://misskey.test', { token: 'TOKEN' });
 stream.on('_disconnected_', () => {
 	console.log('disconnected');
