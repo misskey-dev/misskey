@@ -1,5 +1,6 @@
 import * as os from '@client/os';
 import { i18n } from '@client/i18n';
+import { defaultStore } from '@client/store';
 
 export function selectFile(src: any, label: string | null, multiple = false) {
 	return new Promise((res, rej) => {
@@ -8,7 +9,7 @@ export function selectFile(src: any, label: string | null, multiple = false) {
 			input.type = 'file';
 			input.multiple = multiple;
 			input.onchange = () => {
-				const promises = Array.from(input.files).map(file => os.upload(file));
+				const promises = Array.from(input.files).map(file => os.upload(file, defaultStore.state.uploadFolder));
 
 				Promise.all(promises).then(driveFiles => {
 					res(multiple ? driveFiles : driveFiles[0]);
@@ -57,6 +58,7 @@ export function selectFile(src: any, label: string | null, multiple = false) {
 
 				os.api('drive/files/upload-from-url', {
 					url: url,
+					folderId: defaultStore.state.uploadFolder,
 					marker
 				});
 
