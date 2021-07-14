@@ -27,11 +27,11 @@ export default define(meta, async (ps, user) => {
 		throw new Error('incorrect password');
 	}
 
-	// Terminate streaming
-	publishUserEvent(user.id, 'terminate', {});
-
 	// 物理削除する前にDelete activityを送信する
 	await doPostSuspend(user).catch(e => {});
 
 	await Users.delete(user.id);
+
+	// Terminate streaming
+	publishUserEvent(user.id, 'terminate', {});
 });
