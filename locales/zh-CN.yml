@@ -762,7 +762,7 @@ low: "低"
 emailNotConfiguredWarning: "电子邮件地址未设置。"
 ratio: "比率"
 customCss: "自定义 CSS"
-customCssWarn: "这些设置始终应当由有相关基础知识的人完成，不当的配置可能导致客户端无法正常工作。"
+customCssWarn: "这些设置必须有相关的基础知识，不当的配置可能导致客户端无法正常使用！"
 global: "全局"
 _ad:
   back: "返回"
