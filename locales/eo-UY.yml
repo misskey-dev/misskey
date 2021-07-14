@@ -222,7 +222,7 @@ _pages:
     types:
       array: "Listoj"
 _notification:
-  fileUploaded: "La dosierojn alŝutiĝis."
+  fileUploaded: "Dosiero sukcese alŝutiĝis."
   youWereFollowed: "Vi estas eksekvita."
   _types:
     follow: "Sekvi"
