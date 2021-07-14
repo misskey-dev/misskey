@@ -37,7 +37,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	uploadFolder: {
 		where: 'account',
-		default: null
+		default: null as string | null
 	},
 	pastedFileName: {
 		where: 'account',
