@@ -1,4 +1,4 @@
-import getAcct from '@/misc/acct/render';
+import { getAcct } from '@/misc/acct';
 import getUserName from '@/misc/get-user-name';
 import { url } from '@client/config';
 

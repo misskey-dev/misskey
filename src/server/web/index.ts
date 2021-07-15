@@ -18,7 +18,7 @@ import { fetchMeta } from '@/misc/fetch-meta';
 import { genOpenapiSpec } from '../api/openapi/gen-spec';
 import config from '@/config';
 import { Users, Notes, Emojis, UserProfiles, Pages, Channels, Clips, GalleryPosts } from '../../models';
-import parseAcct from '@/misc/acct/parse';
+import { parseAcct } from '@/misc/acct';
 import { getNoteSummary } from '@/misc/get-note-summary';
 import { getConnection } from 'typeorm';
 import { redisClient } from '../../db/redis';
