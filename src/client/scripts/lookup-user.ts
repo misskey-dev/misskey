@@ -1,4 +1,4 @@
-import parseAcct from '@/misc/acct/parse';
+import { parseAcct } from '@/misc/acct';
 import { i18n } from '@client/i18n';
 import * as os from '@client/os';
 
