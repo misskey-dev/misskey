@@ -1,7 +1,7 @@
 {
 	"name": "misskey-neko",
 	"author": "syuilo <syuilotan@yahoo.co.jp> / shyamean4151 <yi@neko.ci>",
-	"version": "12.83.0-neko-rc2",
+	"version": "12.83.0-neko-rc3",
 	"codename": "indigo",
 	"repository": {
 		"type": "git",
