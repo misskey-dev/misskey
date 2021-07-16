@@ -194,6 +194,8 @@ _sfx:
   note: "Dissendi noto"
   notification: "Sciigoj"
   chat: "Babilejoj"
+_permissions:
+  "read:blocks": "Vidi listo de la uzantoj kiun vi blokis."
 _widgets:
   notifications: "Sciigoj"
   timeline: "Templinio"
