@@ -87,7 +87,6 @@ reaction: "Reagoj"
 enterFileName: "Entajpu dosiernomon"
 mute: "Silentigi"
 unmute: "Malsilentigi"
-block: "Bloki"
 unblock: "Malbloki"
 suspend: "Flostigi"
 unsuspend: "Fandi"
@@ -212,7 +211,7 @@ _profile:
 _exportOrImport:
   followingList: "Sekvi"
   muteList: "Silentigi"
-  blockingList: "Bloki"
+  blockingList: "Blokado"
   userLists: "Listoj"
 _timelines:
   home: "Ĉefpaĝo"
