@@ -173,6 +173,7 @@ smtpUser: "Uzantnomo"
 smtpPass: "Pasvorto"
 i18nInfo: "Ĉiujn niajn tradukojn faras volontuloj. Se vi volus kontribui al jama traduko aŭ komenci novan, bonvolu aniĝi al {link} kaj elekti la lingvojn, kiun vi volus traduki."
 publish: "Publikigi"
+instanceBlocking: "Instanco blokado"
 user: "Uzanto"
 _gallery:
   liked: "Ŝatitaj notoj"
@@ -214,6 +215,8 @@ _exportOrImport:
 _timelines:
   home: "Ĉefpaĝo"
 _pages:
+  content: "Blokado de paĝo"
+  chooseBlock: "Eldoni blokado"
   script:
     categories:
       list: "Listoj"
