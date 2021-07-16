@@ -198,7 +198,7 @@ _sfx:
   chat: "Babilejoj"
 _permissions:
   "read:blocks": "Vidi la listo de la uzantoj kiun vi blokis."
-  "read:drive": "Vidi diskilon"
+  "read:drive": "Vidi dosierojn en la diskilo"
 _widgets:
   notifications: "Sciigoj"
   timeline: "Templinio"
