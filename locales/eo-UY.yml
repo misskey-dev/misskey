@@ -195,7 +195,7 @@ _sfx:
   notification: "Sciigoj"
   chat: "Babilejoj"
 _permissions:
-  "read:blocks": "Vidi listo de la uzantoj kiun vi blokis."
+  "read:blocks": "Vidi la listo de la uzantoj kiun vi blokis."
 _widgets:
   notifications: "Sciigoj"
   timeline: "Templinio"
