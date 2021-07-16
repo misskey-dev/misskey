@@ -144,11 +144,11 @@ start: "Komenciĝi"
 home: "Ĉefpaĝo"
 drive: "Diskilo"
 fileName: "Dosiernomo"
-selectFile: "Elekti dosiero(j)n"
-selectFiles: "Elekti dosiero(j)n"
+selectFile: "Elekti dosieron"
+selectFiles: "Elekti dosieron"
 renameFile: "Renomigi dosieron"
 deleteFolder: "Forviŝi dosierujon"
-addFile: "Aldoni dosiero(j)n..."
+addFile: "Aldoni dosieron..."
 unableToDelete: "Ne povas forviŝi"
 inputNewFileName: "Entajpu nova dosiernomon"
 hasChildFilesOrFolders: "La dosierujo ne povas forviŝiĝi pro tio ke ĝi haviĝis dosiero."
@@ -217,7 +217,7 @@ _timelines:
   home: "Ĉefpaĝo"
 _pages:
   content: "Blokado de paĝo"
-  chooseBlock: "Eldoni blokado"
+  chooseBlock: "Aldoni blokado"
   script:
     categories:
       list: "Listoj"
