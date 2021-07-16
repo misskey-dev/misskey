@@ -156,6 +156,7 @@ hasChildFilesOrFolders: "La dosierujo ne forviŝiĝis pro tio, ke ĝi enhavas do
 nsfw: "Enhavo ne estas deca por laborejo (NSFW)"
 instanceName: "Nomo de la instanco"
 driveCapacityPerLocalAccount: "Volumo po unu loka-uzanto"
+driveCapacityPerRemoteAccount: "Volumo po unu distanc-uzanto"
 pinnedNotes: "Pinglita noto"
 withFileAntenna: "Nur kun aldonaĵo"
 notesAndReplies: "Kun respondoj"
