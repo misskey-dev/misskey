@@ -189,8 +189,6 @@ _mfm:
   mention: "Mencii"
   quote: "Citi"
   search: "Serĉi"
-_instanceTicker:
-  remote: "Montri eksterinstancajn uzantojn"
 _theme:
   keys:
     mention: "Mencii"
