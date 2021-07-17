@@ -21,7 +21,7 @@ basicSettings: "Ĝeneralaj agordoj"
 otherSettings: "Aliaj agordoj"
 openInWindow: "Malfermi en nova fenestro"
 profile: "Profilo"
-timeline: "Templinio"
+timeline: "Tempolinio"
 login: "Ensaluti"
 loggingIn: "Estas ensalutante..."
 logout: "Elsaluti"
@@ -170,6 +170,7 @@ aboutMisskey: "Pri Misskey"
 passwordLessLogin: "Ensaluti sen pasvorto"
 resetPassword: "Restarigi pasvorton"
 newPasswordIs: "La nova pasvorto estas {password}."
+local: "Loka"
 deleteAllFiles: "Forvisi ĉiujn dosierojn"
 deleteAllFilesConfirm: "Ĉu vi certas, ke vi volas forviŝi ĉiujn viajn dosierojn?"
 invisibleNote: "Malpublika noto"
@@ -207,7 +208,7 @@ _permissions:
   "read:drive": "Vidi dosierojn en la diskilo"
 _widgets:
   notifications: "Sciigoj"
-  timeline: "Templinio"
+  timeline: "Tempolinio"
   federation: "Fediverso"
 _cw:
   show: "Vidi plu"
@@ -225,7 +226,9 @@ _exportOrImport:
   blockingList: "Blokado"
   userLists: "Listoj"
 _timelines:
-  home: "Ĉefpaĝo"
+  home: "Hejmo"
+  local: "Loka"
+  social: "Hejmo kaj loka"
 _pages:
   content: "Blokado de paĝo"
   chooseBlock: "Aldoni blokado"
@@ -259,6 +262,6 @@ _notification:
 _deck:
   _columns:
     notifications: "Sciigoj"
-    tl: "Templinio"
+    tl: "Tempolinio"
     list: "Listoj"
     mentions: "Mencioj"
