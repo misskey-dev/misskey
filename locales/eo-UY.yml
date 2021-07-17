@@ -99,6 +99,7 @@ selectList: "Elekti liston"
 flagAsBot: "Tiu uzanto estas roboto"
 flagAsCat: "Tiu uzanto estas kato"
 addAccount: "Aldoni konton"
+showOnRemote: "Vidi sur la transa ekzemplo"
 general: "Ĝenerala"
 searchWith: "Serĉi: {q}"
 followConfirm: "Ĉu vi certas ke vi volas sekvi {name}'n?"
@@ -218,6 +219,7 @@ _visibility:
   publicDescription: "La noto montriĝos al ĉiuj uzantoj sur transserviltempolinio"
   home: "Ĉefpaĝo"
   followers: "Sekvantoj"
+  localOnly: "Nur loka"
   localOnlyDescription: "Kaŝi al transaj uzantoj"
 _profile:
   username: "Uzantnomo"
@@ -230,6 +232,9 @@ _timelines:
   home: "Hejmo"
   local: "Loka"
   social: "Hejmo kaj loka"
+_rooms:
+  _furnitures:
+    server: "Servilo"
 _pages:
   content: "Blokado de paĝo"
   chooseBlock: "Aldoni blokado"
