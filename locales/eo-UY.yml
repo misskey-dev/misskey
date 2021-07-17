@@ -160,6 +160,7 @@ emptyDrive: "La diskilo enhavas neniun."
 unableToDelete: "Ne forigebla"
 inputNewFileName: "Entajpu nova dosiernomon"
 hasChildFilesOrFolders: "La dosierujo estas neforviŝebla pro tio, ke ĝi enhavas dosieron."
+copyUrl: "Kopii retadreson"
 nsfw: "Enhavo ne estas deca por laborejo (NSFW)"
 instanceName: "Nomo de la ekzemplo"
 driveCapacityPerLocalAccount: "Volumo po unu loka-uzanto"
@@ -207,6 +208,7 @@ _aboutMisskey:
   translation: "Traduki Miskejon"
 _mfm:
   mention: "Mencii"
+  url: "Retadreso"
   quote: "Citi"
   search: "Serĉi"
 _instanceTicker:
@@ -242,7 +244,7 @@ _visibility:
   followers: "Sekvantoj"
   followersDescription: "Elsendi nur al sekvantoj de mi"
   localOnly: "Nur loka"
-  localOnlyDescription: "Kaŝi al transaj uzantoj"
+  localOnlyDescription: "Nelegabla al transaj uzantoj"
 _postForm:
   channelPlaceholder: "Elsendi sur la kanalo"
 _profile:
