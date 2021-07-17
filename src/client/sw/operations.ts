@@ -5,7 +5,7 @@
 declare var self: ServiceWorkerGlobalScope;
 
 import { SwMessage, swMessageOrderType } from './types';
-import renderAcct from '@/misc/acct/render';
+import { getAcct } from '@/misc/acct';
 import { getAccountFromId } from '@client/scripts/get-account-from-id';
 import { appendLoginId } from '@client/scripts/login-id';
 
@@ -41,7 +41,7 @@ export function openNote(noteId: string, loginId: string) {
 
 export async function openChat(body: any, loginId: string) {
 	if (body.groupId === null) {
-		return openClient('push', `/my/messaging/${renderAcct(body.user)}`, loginId, { body });
+		return openClient('push', `/my/messaging/${getAcct(body.user)}`, loginId, { body });
 	} else {
 		return openClient('push', `/my/messaging/group/${body.groupId}`, loginId, { body });
 	}
