@@ -31,7 +31,7 @@ import MkButton from '@client/components/ui/button.vue';
 import XPostForm from '@client/components/post-form.vue';
 import * as os from '@client/os';
 import { noteVisibilities } from '@/types';
-import parseAcct from '@/misc/acct/parse';
+import { parseAcct } from '@/misc/acct';
 import * as symbols from '@client/symbols';
 
 export default defineComponent({
