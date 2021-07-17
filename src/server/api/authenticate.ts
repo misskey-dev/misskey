@@ -8,7 +8,14 @@ import { Cache } from '@/misc/cache';
 // ref. https://github.com/typeorm/typeorm/blob/master/docs/caching.md
 const cache = new Cache<User>(1000 * 60 * 60);
 
-export default async (token: string): Promise<[User | null | undefined, AccessToken | null | undefined]> => {
+export class AuthenticationError extends Error {
+	constructor(message: string) {
+		super(message);
+		this.name = 'AuthenticationError';
+	}
+}
+
+export default async (token: string): Promise<[User | null | undefined, App | null | undefined]> => {
 	if (token == null) {
 		return [null, null];
 	}
@@ -24,7 +31,7 @@ export default async (token: string): Promise<[User | null | undefined, AccessTo
 			.findOne({ token });
 
 		if (user == null) {
-			throw new Error('user not found');
+			throw new AuthenticationError('user not found');
 		}
 
 		cache.set(token, user);
@@ -41,7 +48,7 @@ export default async (token: string): Promise<[User | null | undefined, AccessTo
 		});
 
 		if (accessToken == null) {
-			throw new Error('invalid signature');
+			throw new AuthenticationError('invalid signature');
 		}
 
 		AccessTokens.update(accessToken.id, {
