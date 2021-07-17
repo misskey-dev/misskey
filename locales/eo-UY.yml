@@ -1,5 +1,6 @@
 ---
 _lang_: "Esperanto"
+introMisskey: "Bonvenon! Miskejoは、オープンソースの分散型マイクロブログサービスです。\n「ノート」を作成して、いま起こっていることを共有したり、あなたについて皆に発信しよう📡\n「リアクション」機能で、皆のノートに素早く反応を追加することもできます👍\n新しい世界を探検しよう🚀"
 monthAndDay: "{day}-a/{month}"
 search: "Serĉi"
 notifications: "Sciigoj"
@@ -156,7 +157,7 @@ hasChildFilesOrFolders: "La dosierujo ne forviŝiĝis pro tio, ke ĝi enhavas do
 nsfw: "Enhavo ne estas deca por laborejo (NSFW)"
 instanceName: "Nomo de la instanco"
 driveCapacityPerLocalAccount: "Volumo po unu loka-uzanto"
-driveCapacityPerRemoteAccount: "Volumo po unu distanc-uzanto"
+driveCapacityPerRemoteAccount: "Volumo po unu ekstaza uzanto"
 pinnedNotes: "Pinglita noto"
 withFileAntenna: "Nur kun aldonaĵo"
 notesAndReplies: "Kun respondoj"
@@ -173,6 +174,7 @@ deleteAllFilesConfirm: "Ĉu vi certas, ke vi volas forviŝi ĉiujn viajn dosiero
 invisibleNote: "Malpublika noto"
 smtpUser: "Uzantnomo"
 smtpPass: "Pasvorto"
+database: "Datumbazo"
 i18nInfo: "Ĉiujn niajn tradukojn faras volontuloj. Se vi volus kontribui al jama traduko aŭ komenci novan, bonvolu aniĝi al {link} kaj elekti la lingvojn, kiun vi volus traduki."
 driveFilesCount: "Numero de dosieroj en la diskilo"
 publish: "Publikigi"
@@ -190,7 +192,7 @@ _mfm:
   quote: "Citi"
   search: "Serĉi"
 _instanceTicker:
-  remote: "Montri al distanca uzantoj ekster tiu ĉi instanco"
+  remote: "Montri al eksteraj uzantoj"
 _theme:
   keys:
     mention: "Mencii"
@@ -213,7 +215,7 @@ _visibility:
   publicDescription: "La noton povas legi ĉiuj uzantoj."
   home: "Ĉefpaĝo"
   followers: "Sekvantoj"
-  localOnlyDescription: "Kaŝi al distanca uzantoj ekster tiu ĉi instanco"
+  localOnlyDescription: "Kaŝi al eksteraj uzantoj"
 _profile:
   username: "Uzantnomo"
 _exportOrImport:
