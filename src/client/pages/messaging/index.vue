@@ -38,7 +38,7 @@
 
 <script lang="ts">
 import { defineAsyncComponent, defineComponent } from 'vue';
-import getAcct from '@/misc/acct/render';
+import { getAcct } from '@/misc/acct';
 import MkButton from '@client/components/ui/button.vue';
 import { acct } from '../../filters/user';
 import * as os from '@client/os';

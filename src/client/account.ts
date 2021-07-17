@@ -9,6 +9,8 @@ import { unisonReload, reloadChannel } from '@client/scripts/unison-reload';
 type Account = {
 	id: string;
 	token: string;
+	isModerator: boolean;
+	isAdmin: boolean;
 };
 
 const data = localStorage.getItem('account');
