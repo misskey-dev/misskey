@@ -235,8 +235,8 @@ _cw:
   show: "Vidi plu"
   files: "{count} dosiero(j)"
 _visibility:
-  publicDescription: "La noto montriĝos al ĉiuj uzantoj sur transserviltempolinio"
   home: "Ĉefpaĝo"
+  homeDescription: "Publikigi nur sur hejma tempolinio"
   followers: "Sekvantoj"
   localOnly: "Nur loka"
   localOnlyDescription: "Kaŝi al transaj uzantoj"
