@@ -158,7 +158,7 @@ hasChildFilesOrFolders: "La dosierujo ne forviŝiĝis pro tio, ke ĝi enhavas do
 nsfw: "Enhavo ne estas deca por laborejo (NSFW)"
 instanceName: "Nomo de la ekzemplo"
 driveCapacityPerLocalAccount: "Volumo po unu loka-uzanto"
-driveCapacityPerRemoteAccount: "Volumo po unu ekstaza uzanto"
+driveCapacityPerRemoteAccount: "Volumo po unu transa uzanto"
 pinnedNotes: "Pinglita noto"
 withFileAntenna: "Nur kun aldonaĵo"
 notesAndReplies: "Kun respondoj"
@@ -171,6 +171,7 @@ passwordLessLogin: "Ensaluti sen pasvorto"
 resetPassword: "Restarigi pasvorton"
 newPasswordIs: "La nova pasvorto estas {password}."
 local: "Loka"
+remote: "Transa"
 deleteAllFiles: "Forvisi ĉiujn dosierojn"
 deleteAllFilesConfirm: "Ĉu vi certas, ke vi volas forviŝi ĉiujn viajn dosierojn?"
 invisibleNote: "Malpublika noto"
@@ -194,7 +195,7 @@ _mfm:
   quote: "Citi"
   search: "Serĉi"
 _instanceTicker:
-  remote: "Montri al eksteraj uzantoj"
+  remote: "Montri al transa uzantoj"
 _theme:
   keys:
     mention: "Mencii"
@@ -217,7 +218,7 @@ _visibility:
   publicDescription: "La noto montriĝos al ĉiuj uzantoj sur transserviltempolinio"
   home: "Ĉefpaĝo"
   followers: "Sekvantoj"
-  localOnlyDescription: "Kaŝi al eksteraj uzantoj"
+  localOnlyDescription: "Kaŝi al transaj uzantoj"
 _profile:
   username: "Uzantnomo"
 _exportOrImport:
