@@ -30,7 +30,7 @@ export class DriveFileRepository extends Repository<DriveFile> {
 		);
 	}
 
-	public getPublicUrl(file: DriveFile, thumbnail = false, meta?: Meta): string | null {
+	public getPublicUrl(file: DriveFile, thumbnail = false): string | null {
 		// リモートかつメディアプロキシ
 		if (file.uri != null && file.userHost != null && config.mediaProxy != null) {
 			return appendQuery(config.mediaProxy, query({
@@ -40,7 +40,7 @@ export class DriveFileRepository extends Repository<DriveFile> {
 		}
 
 		// リモートかつ期限切れはローカルプロキシを試みる
-		if (file.uri != null && file.isLink && meta && meta.proxyRemoteFiles) {
+		if (file.uri != null && file.isLink && config.proxyRemoteFiles) {
 			const key = thumbnail ? file.thumbnailAccessKey : file.webpublicAccessKey;
 
 			if (key && !key.match('/')) {	// 古いものはここにオブジェクトストレージキーが入ってるので除外
@@ -113,8 +113,6 @@ export class DriveFileRepository extends Repository<DriveFile> {
 		const file = typeof src === 'object' ? src : await this.findOne(src);
 		if (file == null) return null;
 
-		const meta = await fetchMeta();
-
 		return await awaitAll({
 			id: file.id,
 			createdAt: file.createdAt.toISOString(),
@@ -125,8 +123,8 @@ export class DriveFileRepository extends Repository<DriveFile> {
 			isSensitive: file.isSensitive,
 			blurhash: file.blurhash,
 			properties: file.properties,
-			url: opts.self ? file.url : this.getPublicUrl(file, false, meta),
-			thumbnailUrl: this.getPublicUrl(file, true, meta),
+			url: opts.self ? file.url : this.getPublicUrl(file, false),
+			thumbnailUrl: this.getPublicUrl(file, true),
 			comment: file.comment,
 			folderId: file.folderId,
 			folder: opts.detail && file.folderId ? DriveFolders.pack(file.folderId, {

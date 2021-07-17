@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import { EntityRepository, Repository, In, Not } from 'typeorm';
 import { User, ILocalUser, IRemoteUser } from '@/models/entities/user';
-import { Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings, UserProfiles, UserSecurityKeys, UserGroupJoinings, Pages, Announcements, AnnouncementReads, Antennas, AntennaNotes, ChannelFollowings, Instances } from '../index';
+import { Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings, UserProfiles, UserSecurityKeys, UserGroupJoinings, Pages, Announcements, AnnouncementReads, Antennas, AntennaNotes, ChannelFollowings, Instances, DriveFiles } from '../index';
 import config from '@/config/index';
 import { SchemaType } from '@/misc/schema';
 import { awaitAll } from '@/prelude/await-all';
@@ -170,7 +170,18 @@ export class UserRepository extends Repository<User> {
 			includeSecrets: false
 		}, options);
 
-		const user = typeof src === 'object' ? src : await this.findOneOrFail(src);
+		let user: User;
+
+		if (typeof src === 'object') {
+			user = src;
+			if (src.avatar === undefined && src.avatarId) src.avatar = await DriveFiles.findOne(src.avatarId) || null;
+			if (src.banner === undefined && src.bannerId) src.banner = await DriveFiles.findOne(src.bannerId) || null;
+		} else {
+			user = await this.findOneOrFail(src, {
+				relations: ['avatar', 'banner']
+			});
+		}
+
 		const meId = me ? me.id : null;
 
 		const relation = meId && (meId !== user.id) && opts.detail ? await this.getRelation(meId, user.id) : null;
@@ -188,8 +199,8 @@ export class UserRepository extends Repository<User> {
 			name: user.name,
 			username: user.username,
 			host: user.host,
-			avatarUrl: user.avatarUrl ? user.avatarUrl : config.url + '/avatar/' + user.id,
-			avatarBlurhash: user.avatarBlurhash,
+			avatarUrl: user.avatar ? DriveFiles.getPublicUrl(user.avatar, true) : config.url + '/avatar/' + user.id,
+			avatarBlurhash: user.avatar?.blurhash || null,
 			avatarColor: null, // 後方互換性のため
 			isAdmin: user.isAdmin || falsy,
 			isModerator: user.isModerator || falsy,
@@ -212,8 +223,8 @@ export class UserRepository extends Repository<User> {
 				createdAt: user.createdAt.toISOString(),
 				updatedAt: user.updatedAt ? user.updatedAt.toISOString() : null,
 				lastFetchedAt: user.lastFetchedAt?.toISOString(),
-				bannerUrl: user.bannerUrl,
-				bannerBlurhash: user.bannerBlurhash,
+				bannerUrl: user.banner ? DriveFiles.getPublicUrl(user.banner, false) : null,
+				bannerBlurhash: user.banner?.blurhash || null,
 				bannerColor: null, // 後方互換性のため
 				isLocked: user.isLocked,
 				isModerator: user.isModerator || falsy,
