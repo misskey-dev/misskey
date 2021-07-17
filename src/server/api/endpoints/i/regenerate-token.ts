@@ -38,5 +38,7 @@ export default define(meta, async (ps, user) => {
 	publishMainStream(user.id, 'myTokenRegenerated');
 
 	// Terminate streaming
-	publishUserEvent(user.id, 'terminate', {});
+	setTimeout(() => {
+		publishUserEvent(user.id, 'terminate', {});
+	}, 5000);
 });
