@@ -68,7 +68,7 @@ createList: "Kreii liston"
 error: "Eraro"
 somethingHappened: "Problemo okazis."
 retry: "Reprovi"
-enterListName: "Entajpu nomon de listo"
+enterListName: "Entajpu nomon de la listo"
 privacy: "Privateco"
 follow: "Sekvi"
 followRequest: "Peti de eksekvi"
@@ -179,6 +179,7 @@ inputMessageHere: "Entajpu masaĝo tie ĉi"
 noteOf: "Noto far {user}"
 newMessageExists: "Vi ricevis novan mesaĝon."
 onlyOneFileCanBeAttached: "Vi povas aldoni nur unu dosieron po unu mesaĝo."
+uiLanguage: "Lingvo de la interfaco"
 local: "Loka"
 remote: "Transa"
 hideThisNote: "Kaŝi tiun noton"
@@ -208,6 +209,7 @@ _mfm:
   quote: "Citi"
   search: "Serĉi"
 _instanceTicker:
+  none: "Ne montri"
   remote: "Montri al transaj uzantoj"
 _channel:
   create: "Krei kanalon"
@@ -269,6 +271,7 @@ _pages:
         arg1: "Listoj"
       _seedRandomPick:
         arg2: "Listoj"
+      pick: "Elekti de la listo"
       _pick:
         arg1: "Listoj"
       _listLen:
