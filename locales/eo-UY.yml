@@ -236,7 +236,6 @@ _cw:
   files: "{count} dosiero(j)"
 _visibility:
   home: "Ĉefpaĝo"
-  homeDescription: "Publikigi nur sur hejma tempolinio"
   followers: "Sekvantoj"
   localOnly: "Nur loka"
   localOnlyDescription: "Kaŝi al transaj uzantoj"
