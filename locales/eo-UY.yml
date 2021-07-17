@@ -189,6 +189,8 @@ _mfm:
   mention: "Mencii"
   quote: "Citi"
   search: "Serĉi"
+_instanceTicker:
+  remote: "Montri al distanca uzantoj ekster tiu ĉi instanco"
 _theme:
   keys:
     mention: "Mencii"
@@ -211,6 +213,7 @@ _visibility:
   publicDescription: "La noton povas legi ĉiuj uzantoj."
   home: "Ĉefpaĝo"
   followers: "Sekvantoj"
+  localOnlyDescription: "Kaŝi al distanca uzantoj ekster tiu ĉi instanco"
 _profile:
   username: "Uzantnomo"
 _exportOrImport:
