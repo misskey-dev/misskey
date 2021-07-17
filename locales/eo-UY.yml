@@ -179,7 +179,7 @@ database: "Datumbazo"
 i18nInfo: "Ĉiujn tradukojn de Miskejo faras volontuloj. Se vi volus kontribui al jama traduko aŭ komenci novan, bonvolu aniĝi al {link} kaj elekti la lingvojn, kiun vi volus traduki."
 driveFilesCount: "Numero de dosieroj en la diskilo"
 publish: "Publikigi"
-instanceBlocking: "Instanco blokado"
+instanceBlocking: "Ekzemplo blokado"
 user: "Uzanto"
 _gallery:
   liked: "Ŝatitaj notoj"
