@@ -189,9 +189,11 @@ emailServer: "Retpoŝta servilo"
 smtpUser: "Uzantnomo"
 smtpPass: "Pasvorto"
 database: "Datumbazo"
+channel: "Kanaloj"
 i18nInfo: "Ĉiujn tradukojn de Miskejo faras volontuloj. Se vi volus kontribui al jama traduko aŭ komenci novan, bonvolu aniĝi al {link} kaj elekti la lingvojn, kiun vi volus traduki."
 driveFilesCount: "Numero de dosieroj en la diskilo"
 publish: "Publikigi"
+inChannelSearch: "Serĉi en kanalo"
 instanceBlocking: "Ekzemplo blokado"
 user: "Uzanto"
 _gallery:
@@ -207,6 +209,9 @@ _mfm:
   search: "Serĉi"
 _instanceTicker:
   remote: "Montri al transa uzantoj"
+_channel:
+  create: "Krei kanalon"
+  edit: "Redakti kanalon"
 _theme:
   keys:
     mention: "Mencii"
@@ -215,9 +220,11 @@ _sfx:
   note: "Dissendi noto"
   notification: "Sciigoj"
   chat: "Babilejoj"
+  channel: "Kanala sciigoj"
 _permissions:
   "read:blocks": "Vidi la listo de la uzantoj kiun vi blokis."
   "read:drive": "Vidi dosierojn en la diskilo"
+  "read:channels": "Legi kanalon"
 _widgets:
   notifications: "Sciigoj"
   timeline: "Tempolinio"
