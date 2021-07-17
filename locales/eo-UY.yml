@@ -215,8 +215,7 @@ _email:
   _follow:
     title: "Vi estas eksekvita."
 _aboutMisskey:
-  about: "Misskey ([miskejo]) estas malferma koda programo evoluigata de syuilo ekde la jaro 2014."
-  translation: "Traduki Misskey'on"
+  about: "Misskey (E-e: [miskejo]) estas malferma koda programo evoluigata de syuilo ekde la jaro 2014."
 _mfm:
   mention: "Mencii"
   url: "Retadreso"
