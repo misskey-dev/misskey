@@ -59,7 +59,7 @@ driveFileDeleteConfirm: "Ĉu vi certas ke vi volas forviŝi la dosieron \"{name}
 unfollowConfirm: "Ĉu vi certas, ke vi volas ne plu sekvi {name}?"
 lists: "Listoj"
 noLists: "Neniu listo"
-note: "Sendi noto"
+note: "Elsendi noto"
 notes: "Notoj"
 following: "Sekvi"
 followers: "Sekvantoj"
@@ -191,6 +191,7 @@ smtpUser: "Uzantnomo"
 smtpPass: "Pasvorto"
 database: "Datumbazo"
 channel: "Kanalo"
+send: "Sendi"
 i18nInfo: "Ĉiujn tradukojn de Miskejo faras volontuloj. Se vi volus kontribui al jama traduko aŭ komenci novan, bonvolu aniĝi al {link} kaj elekti la lingvojn, kiun vi volus traduki."
 driveFilesCount: "Numero de dosieroj en la diskilo"
 publish: "Publikigi"
@@ -243,7 +244,7 @@ _visibility:
   localOnly: "Nur loka"
   localOnlyDescription: "Kaŝi al transaj uzantoj"
 _postForm:
-  channelPlaceholder: "Dissendi en la kanalo"
+  channelPlaceholder: "Elsendi sur la kanalo"
 _profile:
   username: "Uzantnomo"
 _exportOrImport:
