@@ -1,42 +1,29 @@
 import $ from 'cafy';
 import { ID } from '@/misc/cafy-id';
-import { publishMainStream } from '../../../../services/stream';
 import define from '../../define';
-import { Notifications } from '../../../../models';
 import { readNotification } from '../../common/read-notification';
-import { ApiError } from '../../error';
 
 export const meta = {
+	desc: {
+		'ja-JP': '通知を既読にします。',
+		'en-US': 'Mark a notification as read.'
+	},
+
 	tags: ['notifications', 'account'],
 
 	requireCredential: true as const,
 
-	kind: 'write:notifications',
-
 	params: {
-		notificationId: {
-			validator: $.type(ID),
-		},
+		notificationIds: {
+			validator: $.arr($.type(ID)),
+			desc: {
+				'ja-JP': '対象の通知のIDの配列',
+				'en-US': 'Target notification IDs.'
+			}
+		}
 	},
 
-	errors: {
-		noSuchNotification: {
-			message: 'No such notification.',
-			code: 'NO_SUCH_NOTIFICATION',
-			id: 'efa929d5-05b5-47d1-beec-e6a4dbed011e'
-		},
-	},
+	kind: 'write:notifications'
 };
 
-export default define(meta, async (ps, user) => {
-	const notification = await Notifications.findOne({
-		notifieeId: user.id,
-		id: ps.notificationId,
-	});
-
-	if (notification == null) {
-		throw new ApiError(meta.errors.noSuchNotification);
-	}
-
-	readNotification(user.id, [notification.id]);
-});
+export default define(meta, async (ps, user) => readNotification(user.id, ps.notificationIds));
