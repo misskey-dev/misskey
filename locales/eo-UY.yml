@@ -1,6 +1,5 @@
 ---
 _lang_: "Esperanto"
-introMisskey: "Bonvenon! Miskejoは、オープンソースの分散型マイクロブログサービスです。\n「ノート」を作成して、いま起こっていることを共有したり、あなたについて皆に発信しよう📡\n「リアクション」機能で、皆のノートに素早く反応を追加することもできます👍\n新しい世界を探検しよう🚀"
 monthAndDay: "{day}-a/{month}"
 search: "Serĉi"
 notifications: "Sciigoj"
@@ -78,7 +77,7 @@ unfollow: "Ne plu sekvi"
 renote: "Renotici"
 unrenote: "Forigi renotici"
 cantRenote: "Tiu noto ne povas renotigiĝos"
-cantReRenote: "Renotigo ne povas renotigiĝos."
+cantReRenote: "Renotigo ne estas renotigebla."
 quote: "Citi"
 pinnedNote: "Pinglita noto"
 pinned: "Alpingli sur la profilo"
@@ -115,7 +114,7 @@ blockedInstances: "Blokitaj ekzemploj"
 muteAndBlock: "Silentigi kaj bloki"
 mutedUsers: "Silentigitaj uzantoj"
 blockedUsers: "Blokitaj uzantoj"
-noUsers: "Oni trovis tie ĉi neniu uzanto."
+noUsers: "Oni trovis neniun uzanton."
 editProfile: "Redakti profilon"
 noteDeleteConfirm: "Ĉu vi certas ke vi volas forviŝi la noton?"
 pinLimitExceeded: "Vi ne plu povas pingli noton."
@@ -238,6 +237,8 @@ _visibility:
   followers: "Sekvantoj"
   localOnly: "Nur loka"
   localOnlyDescription: "Kaŝi al transaj uzantoj"
+_postForm:
+  channelPlaceholder: "Dissendi en la kanalo"
 _profile:
   username: "Uzantnomo"
 _exportOrImport:
