@@ -45,7 +45,9 @@ export default define(meta, async (ps, me) => {
 	});
 
 	// Terminate streaming
-	publishUserEvent(user.id, 'terminate', {});
+	if (Users.isLocalUser(user)) {
+		publishUserEvent(user.id, 'terminate', {});
+	}
 
 	(async () => {
 		await doPostSuspend(user).catch(e => {});
