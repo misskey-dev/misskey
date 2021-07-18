@@ -76,7 +76,6 @@ enterListName: "Entajpu nomon de la listo"
 privacy: "Privateco"
 follow: "Sekvi"
 followRequest: "Peti eksekvi"
-followRequests: "Eksekvaj petoj"
 unfollow: "Ne plu sekvi"
 renote: "Renotici"
 unrenote: "Forigi renotici"
@@ -192,7 +191,7 @@ noteOf: "Noto de {user}"
 newMessageExists: "Vi ricevis novan mesaĝon."
 onlyOneFileCanBeAttached: "Vi povas aldoni nur unu dosieron po unu mesaĝo."
 uiLanguage: "Lingvo de la interfaco"
-noFollowRequests: "Vi ne havas eksekvaj petoj."
+noFollowRequests: "Vi ne havas eksekvopetojn."
 local: "Loka"
 remote: "Transa"
 hideThisNote: "Kaŝi tiun noton"
@@ -227,7 +226,7 @@ _email:
   _follow:
     title: "Vi estas eksekvita."
   _receiveFollowRequest:
-    title: "Vi ricevis eksekva peto."
+    title: "Vi ricevis eksekvopeton."
 _aboutMisskey:
   about: "Misskey (E-e [miskejo]) estas malferma koda programo evoluigata de syuilo ekde la jaro 2014."
   translation: "Traduki Misskey'on"
@@ -316,15 +315,15 @@ _pages:
 _notification:
   fileUploaded: "La dosiero sukcese alŝutiĝis."
   youWereFollowed: "Vi estas eksekvita."
-  youReceivedFollowRequest: "Vi ricevis eksekva peto."
-  yourFollowRequestAccepted: "Via eksekva peto estas akceptita."
+  youReceivedFollowRequest: "Vi ricevis eksekvopeton."
+  yourFollowRequestAccepted: "Via eksekvopeto estas akceptita."
   _types:
     follow: "Sekvi"
     mention: "Mencii"
     renote: "Renotici"
     quote: "Citi"
     reaction: "Reagoj"
-    receiveFollowRequest: "Eksekva peto ricevita"
+    receiveFollowRequest: "Eksekvopeto ricevita"
 _deck:
   _columns:
     notifications: "Sciigoj"
