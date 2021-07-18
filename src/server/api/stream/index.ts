@@ -92,6 +92,11 @@ export default class Connection {
 				this.userProfile = body;
 				break;
 
+			case 'terminate':
+				this.wsConnection.close();
+				this.dispose();
+				break;
+
 			default:
 				break;
 		}
