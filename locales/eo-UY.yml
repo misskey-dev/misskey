@@ -229,6 +229,8 @@ _aboutMisskey:
 _mfm:
   mention: "Mencii"
   url: "Retadreso"
+  blockCode: "Kodo (Ujo)"
+  blockMath: "Formulo (Ujo)"
   quote: "Citi"
   search: "Serĉi"
 _instanceTicker:
