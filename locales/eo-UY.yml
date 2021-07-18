@@ -51,7 +51,6 @@ reply: "Respondi"
 loadMore: "Legi plu"
 showMore: "Vidi plu"
 youGotNewFollower: "Vi estas eksekvita."
-receiveFollowRequest: "Certe petinta de eksekvi"
 mention: "Mencii"
 mentions: "Mencioj"
 directNotes: "Senpere noto"
@@ -77,7 +76,7 @@ enterListName: "Entajpu nomon de la listo"
 privacy: "Privateco"
 follow: "Sekvi"
 followRequest: "Peti eksekvi"
-followRequests: "Eksekva petoj"
+followRequests: "Eksekvaj petoj"
 unfollow: "Ne plu sekvi"
 renote: "Renotici"
 unrenote: "Forigi renotici"
@@ -227,6 +226,8 @@ _gallery:
 _email:
   _follow:
     title: "Vi estas eksekvita."
+  _receiveFollowRequest:
+    title: "Vi ricevis eksekva peto."
 _aboutMisskey:
   about: "Misskey (E-e [miskejo]) estas malferma koda programo evoluigata de syuilo ekde la jaro 2014."
   translation: "Traduki Misskey'on"
@@ -315,14 +316,15 @@ _pages:
 _notification:
   fileUploaded: "La dosiero sukcese alŝutiĝis."
   youWereFollowed: "Vi estas eksekvita."
-  youReceivedFollowRequest: "Vi havas eksekvaj petoj."
-  yourFollowRequestAccepted: "Via sekva peto estas akceptita."
+  youReceivedFollowRequest: "Vi ricevis eksekva peto."
+  yourFollowRequestAccepted: "Via eksekva peto estas akceptita."
   _types:
     follow: "Sekvi"
     mention: "Mencii"
     renote: "Renotici"
     quote: "Citi"
     reaction: "Reagoj"
+    receiveFollowRequest: "Eksekva peto ricevita"
 _deck:
   _columns:
     notifications: "Sciigoj"
