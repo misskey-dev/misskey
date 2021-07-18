@@ -51,6 +51,7 @@ reply: "Respondi"
 loadMore: "Legi plu"
 showMore: "Vidi plu"
 youGotNewFollower: "Vi estas eksekvita."
+receiveFollowRequest: "Certe petinta de eksekvi"
 mention: "Mencii"
 mentions: "Mencioj"
 directNotes: "Senpere noto"
@@ -242,6 +243,7 @@ _instanceTicker:
 _channel:
   create: "Krei kanalon"
   edit: "Redakti kanalon"
+  following: "Sekvaton"
 _theme:
   keys:
     mention: "Mencii"
@@ -313,7 +315,7 @@ _pages:
 _notification:
   fileUploaded: "La dosiero sukcese alŝutiĝis."
   youWereFollowed: "Vi estas eksekvita."
-  youReceivedFollowRequest: "Vi ricevis eksekvaj petoj."
+  youReceivedFollowRequest: "Vi havas eksekvaj petoj."
   yourFollowRequestAccepted: "Via sekva peto estas akceptita."
   _types:
     follow: "Sekvi"
