@@ -514,7 +514,6 @@ removeAllFollowing: "Cancella tutti i follows"
 removeAllFollowingDescription: "Cancella tutti i follows del server {host}. Per favore, esegui se, ad esempio, l'istanza non esiste più."
 userSuspended: "L'utente è sospes@."
 userSilenced: "L'utente è silenziat@."
-sidebar: "Barra laterale"
 divider: "Linea di separazione"
 addItem: "Aggiungi elemento"
 rooms: "Camera"
@@ -826,9 +825,7 @@ _channel:
   following: "Seguiti"
   usersCount: "{n} partecipanti"
   notesCount: "{n} note"
-_sidebar:
-  full: "Intera"
-  icon: "Icone"
+_menuDisplay:
   hide: "Nascondere"
 _wordMute:
   muteWords: "Parole da filtrare"
