@@ -528,7 +528,6 @@ removeAllFollowing: "Удалить всех подписчиков"
 removeAllFollowingDescription: "Отменить все подписки с домена {host}? Пожалуйста, применяйте это действие, если инстанс больше не существует."
 userSuspended: "Эта учётная запись заморожена"
 userSilenced: "Этот пользователь был заглушен"
-sidebar: "Боковая панель"
 divider: "Линия-разделитель"
 addItem: "Добавить элемент"
 rooms: "Комната"
@@ -911,9 +910,7 @@ _channel:
   following: "Подписки"
   usersCount: "Участников: {n}"
   notesCount: "Заметок: {n}"
-_sidebar:
-  full: "Полностью"
-  icon: "Только значки"
+_menuDisplay:
   hide: "Спрятать"
 _wordMute:
   muteWords: "Скрыть слово"
