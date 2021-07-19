@@ -523,7 +523,6 @@ removeAllFollowing: "解除所有追蹤"
 removeAllFollowingDescription: "解除{host}所有的追蹤。在實例不再存在時執行。"
 userSuspended: "該使用者已被停用"
 userSilenced: "該用戶已被禁言。"
-sidebar: "側邊列"
 divider: "分割線"
 addItem: "新增項目"
 rooms: "房間"
@@ -885,9 +884,7 @@ _channel:
   following: "關注中"
   usersCount: "有{n}人參與"
   notesCount: "有{n}個貼文"
-_sidebar:
-  full: "全部"
-  icon: "大頭貼"
+_menuDisplay:
   hide: "隱藏"
 _wordMute:
   muteWords: "加入靜音文字"
