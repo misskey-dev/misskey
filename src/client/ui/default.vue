@@ -303,7 +303,6 @@ export default defineComponent({
 				-webkit-backdrop-filter: blur(32px);
 				backdrop-filter: blur(32px);
 				background-color: var(--header);
-				border-bottom: solid 0.5px var(--divider);
 			}
 
 			> .content {
