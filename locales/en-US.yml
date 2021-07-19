@@ -528,7 +528,6 @@ removeAllFollowing: "Withhold All Followings"
 removeAllFollowingDescription: "Unfollow all accounts from {host}. Please run this if the instance no longer exists."
 userSuspended: "This user has been suspended."
 userSilenced: "This user has been silenced."
-sidebar: "Sidebar"
 divider: "Divider"
 addItem: "Add Item"
 rooms: "Room"
@@ -913,9 +912,7 @@ _channel:
   following: "Followed"
   usersCount: "{n} Participants"
   notesCount: "{n} Notes"
-_sidebar:
-  full: "Full"
-  icon: "Icons"
+_menuDisplay:
   hide: "Hide"
 _wordMute:
   muteWords: "Word to mute"
