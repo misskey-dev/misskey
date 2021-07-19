@@ -528,7 +528,7 @@ removeAllFollowing: "フォローを全解除"
 removeAllFollowingDescription: "{host}からのフォローをすべて解除します。そのインスタンスがもう存在しなくなった場合などに実行してください。"
 userSuspended: "このユーザーは凍結されています。"
 userSilenced: "このユーザーはサイレンスされています。"
-sidebar: "サイドバー"
+menu: "メニュー"
 divider: "分割線"
 addItem: "項目を追加"
 rooms: "ルーム"
@@ -927,9 +927,10 @@ _channel:
   usersCount: "{n}人が参加中"
   notesCount: "{n}投稿があります"
 
-_sidebar:
-  full: "フル"
-  icon: "アイコン"
+_menuDisplay:
+  sideFull: "横"
+  sideIcon: "横(アイコン)"
+  top: "上部"
   hide: "隠す"
 
 _wordMute:

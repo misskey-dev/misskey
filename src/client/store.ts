@@ -90,6 +90,7 @@ export const defaultStore = markRaw(new Storage('base', {
 		default: [] as {
 			name: string;
 			id: string;
+			place: string;
 			data: Record<string, any>;
 		}[]
 	},
@@ -185,9 +186,9 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false
 	},
-	sidebarDisplay: {
+	menuDisplay: {
 		where: 'device',
-		default: 'full' as 'full' | 'icon'
+		default: 'sideFull' as 'sideFull' | 'sideIcon' | 'top'
 	},
 	reportError: {
 		where: 'device',
