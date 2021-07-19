@@ -517,7 +517,6 @@ removeAllFollowing: "Скасувати всі підписки"
 removeAllFollowingDescription: "Скасувати підписку на всі акаунти з {host}. Будь ласка, робіть це, якщо інстанс більше не існує."
 userSuspended: "Обліковий запис заблокований."
 userSilenced: "Обліковий запис приглушений."
-sidebar: "Бокова панель"
 divider: "Розділювач"
 addItem: "Додати елемент"
 rooms: "Кімнати"
@@ -817,9 +816,7 @@ _channel:
   following: "Підписки"
   usersCount: "{n} учасників"
   notesCount: "{n} дописів"
-_sidebar:
-  full: "Повна"
-  icon: "Аватар"
+_menuDisplay:
   hide: "Сховати"
 _wordMute:
   muteWords: "Заглушені слова"
