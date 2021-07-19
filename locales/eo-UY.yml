@@ -210,7 +210,7 @@ database: "Datumbazo"
 channel: "Kanalo"
 fileIdOrUrl: "Dosirero ID aŭ retadreso"
 send: "Sendi"
-i18nInfo: "Tradukojn de Miskejo en diversaj lingvoj faras volontuloj.Vi povas kunlabori en tradukado sur {link}."
+i18nInfo: "Miskejo estas tradukata en diversaj lingvoj far volontuloj.Vi povas kunlabori en tradukado sur {link}."
 driveFilesCount: "Numero de dosieroj en la diskilo"
 onlineUsersCount: "{n} uzanto(j) estas surkonektita"
 nUsers: "{n} uzanto(j)"
@@ -231,6 +231,7 @@ _email:
     title: "Vi ricevis eksekvopeton."
 _aboutMisskey:
   about: "Misskey estas malferma koda programo evoluigata far syuilo ekde la 2014."
+  source: "Fontkodo"
   translation: "Traduki Misskey'on"
 _mfm:
   mention: "Mencioj"
@@ -255,6 +256,8 @@ _sfx:
   notification: "Sciigoj"
   chat: "Babilejoj"
   channel: "Kanala sciigoj"
+_tutorial:
+  title: "Uzado de Miskejo"
 _permissions:
   "read:blocks": "Vidi la listo de la uzantoj kiun vi blokis."
   "read:drive": "Vidi dosierojn en la diskilo"
