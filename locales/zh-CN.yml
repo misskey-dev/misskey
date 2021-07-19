@@ -528,7 +528,6 @@ removeAllFollowing: "取消所有关注"
 removeAllFollowingDescription: "取消{host}的所有关注者。当实例不存在时执行。"
 userSuspended: "该用户已被冻结。"
 userSilenced: "该用户已被禁言。"
-sidebar: "侧边栏"
 divider: "分割线"
 addItem: "添加项目"
 rooms: "房间"
@@ -913,9 +912,7 @@ _channel:
   following: "正在关注"
   usersCount: "有{n}人参与"
   notesCount: "有{n}个帖子"
-_sidebar:
-  full: "全部"
-  icon: "图标"
+_menuDisplay:
   hide: "隐藏"
 _wordMute:
   muteWords: "禁用词"
