@@ -528,7 +528,6 @@ removeAllFollowing: "Tahan semua mengikuti"
 removeAllFollowingDescription: "Batal mengikuti semua akun dari {host}. Mohon jalankan ini ketika instansi sudah tidak ada lagi."
 userSuspended: "Pengguna ini telah dibekukan."
 userSilenced: "Pengguna ini telah dibungkam."
-sidebar: "Bilah samping"
 divider: "Pembagi"
 addItem: "Tambahkan item"
 rooms: "Ruang"
@@ -911,9 +910,7 @@ _channel:
   following: "Mengikuti"
   usersCount: "{n} Partisipan"
   notesCount: "terdapat {n} catatan"
-_sidebar:
-  full: "Penuh"
-  icon: "Avatar"
+_menuDisplay:
   hide: "Sembunyikan"
 _wordMute:
   muteWords: "Kata yang dibisukan"
