@@ -513,7 +513,6 @@ deleteAllFilesConfirm: "Czy na pewno chcesz usunąć wszystkie pliki?"
 removeAllFollowingDescription: "Przestań obserwować wszystkie konta z {host}. Wykonaj to, jeżeli instancja już nie istnieje."
 userSuspended: "To konto zostało zawieszone."
 userSilenced: "Ten użytkownik został wyciszony."
-sidebar: "Pasek boczny"
 divider: "Rozdzielacz"
 addItem: "Dodaj element"
 rooms: "Pokój"
@@ -859,9 +858,7 @@ _channel:
   following: "Śledzeni"
   usersCount: "{n} uczestnicy"
   notesCount: "{n} wpisy"
-_sidebar:
-  full: "Pełne"
-  icon: "Awatar"
+_menuDisplay:
   hide: "Ukryj"
 _wordMute:
   muteWords: "Słowo do wyciszenia"
