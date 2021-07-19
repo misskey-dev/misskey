@@ -4,7 +4,7 @@
 
 import '@client/style.scss';
 
-//#region account indexedDB migration 
+//#region account indexedDB migration
 import { set } from '@client/scripts/idb-proxy';
 
 if (localStorage.getItem('accounts') != null) {
