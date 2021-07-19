@@ -53,5 +53,5 @@ export default define(meta, async (ps, user) => {
 		throw new ApiError(meta.errors.noNotificationRequested);
 	}
 
-	return readNotification(user.id, notificationIds)
+	return readNotification(user.id, notificationIds);
 });
