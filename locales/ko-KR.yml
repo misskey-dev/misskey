@@ -528,7 +528,6 @@ removeAllFollowing: "모든 팔로잉 해제"
 removeAllFollowingDescription: "{host}(으)로부터 모든 팔로잉을 해제합니다. 해당 인스턴스가 더 이상 존재하지 않게 된 경우 등에 실행해 주세요."
 userSuspended: "이 계정은 정지된 상태입니다."
 userSilenced: "이 계정은 사일런스된 상태입니다."
-sidebar: "사이드바"
 divider: "구분선"
 addItem: "항목 추가"
 rooms: "방"
@@ -911,9 +910,7 @@ _channel:
   following: "팔로잉"
   usersCount: "{n}명 참여 중"
   notesCount: "{n}노트"
-_sidebar:
-  full: "전체"
-  icon: "아이콘"
+_menuDisplay:
   hide: "숨기기"
 _wordMute:
   muteWords: "뮤트할 단어"
