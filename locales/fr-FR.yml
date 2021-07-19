@@ -528,7 +528,6 @@ removeAllFollowing: "Retenir tous les abonnements"
 removeAllFollowingDescription: "Se désabonner de tous les comptes de {host}. Veuillez lancer cette action uniquement si l’instance n’existe plus."
 userSuspended: "Cet·te utilisateur·rice a été suspendu·e."
 userSilenced: "Cette utilisateur·trice a été mis·e en sourdine."
-sidebar: "Barre latérale"
 divider: "Séparateur"
 addItem: "Ajouter un élément"
 rooms: "Chambre"
@@ -911,9 +910,7 @@ _channel:
   following: "Abonné·e"
   usersCount: "{n} Participant·e·s"
   notesCount: "{n} Notes"
-_sidebar:
-  full: "Complet"
-  icon: "Icônes"
+_menuDisplay:
   hide: "Masquer"
 _wordMute:
   muteWords: "Mots à filtrer"
