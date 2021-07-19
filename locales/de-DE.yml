@@ -528,7 +528,6 @@ removeAllFollowing: "Allen gefolgten Benutzern entfolgen"
 removeAllFollowingDescription: "Allen Benutzerkonten von {host} entfolgen. Bitte führe dies durch, falls diese Instanz nicht mehr existiert."
 userSuspended: "Dieser Benutzer wurde gesperrt."
 userSilenced: "Dieser Benutzer wurde instanzweit stummgeschaltet."
-sidebar: "Seitenleiste"
 divider: "Trenner"
 addItem: "Element hinzufügen"
 rooms: "Raum"
@@ -913,9 +912,7 @@ _channel:
   following: "Gefolgt"
   usersCount: "{n} Teilnehmer"
   notesCount: "{n} Notizen"
-_sidebar:
-  full: "Voll"
-  icon: "Symbole"
+_menuDisplay:
   hide: "Ausblenden"
 _wordMute:
   muteWords: "Wort stummschalten"
