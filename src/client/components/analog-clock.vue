@@ -5,7 +5,8 @@
 					:cy="5 - (Math.cos(angle) * (5 - graduationsPadding))"
 					:r="i % 5 == 0 ? 0.125 : 0.05"
 					:fill="i % 5 == 0 ? majorGraduationColor : minorGraduationColor"
-					:key="i"/>
+					:key="i"
+	/>
 
 	<line
 		:x1="5 - (Math.sin(sAngle) * (sHandLengthRatio * handsTailLength))"
@@ -13,7 +14,8 @@
 		:x2="5 + (Math.sin(sAngle) * ((sHandLengthRatio * 5) - handsPadding))"
 		:y2="5 - (Math.cos(sAngle) * ((sHandLengthRatio * 5) - handsPadding))"
 		:stroke="sHandColor"
-		stroke-width="0.05"/>
+		:stroke-width="thickness / 2"
+	/>
 
 	<line
 		:x1="5 - (Math.sin(mAngle) * (mHandLengthRatio * handsTailLength))"
@@ -21,7 +23,8 @@
 		:x2="5 + (Math.sin(mAngle) * ((mHandLengthRatio * 5) - handsPadding))"
 		:y2="5 - (Math.cos(mAngle) * ((mHandLengthRatio * 5) - handsPadding))"
 		:stroke="mHandColor"
-		stroke-width="0.1"/>
+		:stroke-width="thickness"
+	/>
 
 	<line
 		:x1="5 - (Math.sin(hAngle) * (hHandLengthRatio * handsTailLength))"
@@ -29,16 +32,23 @@
 		:x2="5 + (Math.sin(hAngle) * ((hHandLengthRatio * 5) - handsPadding))"
 		:y2="5 - (Math.cos(hAngle) * ((hHandLengthRatio * 5) - handsPadding))"
 		:stroke="hHandColor"
-		stroke-width="0.1"/>
+		:stroke-width="thickness"
+	/>
 </svg>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import * as tinycolor from 'tinycolor2';
-import * as os from '@client/os';
 
 export default defineComponent({
+	props: {
+		thickness: {
+			type: Number,
+			default: 0.1
+		}
+	},
+
 	data() {
 		return {
 			now: new Date(),
