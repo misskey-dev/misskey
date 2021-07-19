@@ -4,6 +4,15 @@
 
 import '@client/style.scss';
 
+//#region account indexedDB migration 
+import { set } from '@client/scripts/idb-proxy';
+
+if (localStorage.getItem('accounts') != null) {
+	set('accounts', JSON.parse(localStorage.getItem('accounts')));
+	localStorage.removeItem('accounts');
+}
+//#endregion
+
 import * as Sentry from '@sentry/browser';
 import { Integrations } from '@sentry/tracing';
 import { computed, createApp, watch } from 'vue';
