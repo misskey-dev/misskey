@@ -23,14 +23,17 @@ export default defineComponent({
 	},
 	render() {
 		const label = this.$slots.desc();
-		const options = this.$slots.default();
+		let options = this.$slots.default();
+
+		// なぜかFragmentになることがあるため
+		if (options.length === 1 && options[0].props == null) options = options[0].children;
 
 		return h('div', {
 			class: 'novjtcto'
 		}, [
 			h('div', label),
 			...options.map(option => h(MkRadio, {
-				key: option.props.value,
+				key: option.key,
 				value: option.props.value,
 				modelValue: this.value,
 				'onUpdate:modelValue': value => this.value = value,
