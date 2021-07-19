@@ -6,6 +6,7 @@ import { Users, Followings, Notifications } from '../../../../models';
 import { User } from '../../../../models/entities/user';
 import { insertModerationLog } from '../../../../services/insert-moderation-log';
 import { doPostSuspend } from '../../../../services/suspend-user';
+import { publishUserEvent } from '@/services/stream';
 
 export const meta = {
 	tags: ['admin'],
@@ -42,6 +43,11 @@ export default define(meta, async (ps, me) => {
 	insertModerationLog(me, 'suspend', {
 		targetId: user.id,
 	});
+
+	// Terminate streaming
+	if (Users.isLocalUser(user)) {
+		publishUserEvent(user.id, 'terminate', {});
+	}
 
 	(async () => {
 		await doPostSuspend(user).catch(e => {});

@@ -1,4 +1,5 @@
-// FirefoxのプライベートモードなどではindexedDBが使用不可能なので、使う
+// FirefoxのプライベートモードなどではindexedDBが使用不可能なので、
+// indexedDBが使えない環境ではlocalStorageを使う
 import {
 	get as iget,
 	set as iset,
