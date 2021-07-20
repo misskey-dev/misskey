@@ -8,6 +8,7 @@ export const meta = {
 	tags: ['users', 'reactions'],
 
 	requireCredential: false,
+	requireCredentialPrivateMode: true,
 
 	description: 'Show all reactions this user made.',
 

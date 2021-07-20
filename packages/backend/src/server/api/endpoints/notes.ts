@@ -5,6 +5,7 @@ import { makePaginationQuery } from '../common/make-pagination-query.js';
 export const meta = {
 	tags: ['notes'],
 
+	requireCredentialPrivateMode: true,
 	res: {
 		type: 'array',
 		optional: false, nullable: false,

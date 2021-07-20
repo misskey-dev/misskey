@@ -4,6 +4,7 @@ import { GalleryPosts } from '@/models/index.js';
 
 export const meta = {
 	tags: ['gallery'],
+	requireCredentialPrivateMode: true,
 
 	res: {
 		type: 'array',

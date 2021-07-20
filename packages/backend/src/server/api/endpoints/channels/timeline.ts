@@ -8,6 +8,7 @@ export const meta = {
 	tags: ['notes', 'channels'],
 
 	requireCredential: false,
+	requireCredentialPrivateMode: true,
 
 	res: {
 		type: 'array',

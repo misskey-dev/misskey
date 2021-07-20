@@ -12,6 +12,7 @@ import { generateBlockedUserQuery } from '../../common/generate-block-query.js';
 export const meta = {
 	tags: ['notes'],
 
+	requireCredentialPrivateMode: true,
 	res: {
 		type: 'array',
 		optional: false, nullable: false,

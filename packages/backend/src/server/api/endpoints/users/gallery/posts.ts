@@ -4,6 +4,7 @@ import { makePaginationQuery } from '../../../common/make-pagination-query.js';
 
 export const meta = {
 	tags: ['users', 'gallery'],
+	requireCredentialPrivateMode: true,
 
 	description: 'Show all gallery posts by the given user.',
 

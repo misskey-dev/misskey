@@ -4,6 +4,7 @@ import { makePaginationQuery } from '../../common/make-pagination-query.js';
 
 export const meta = {
 	tags: ['users', 'clips'],
+	requireCredentialPrivateMode: true,
 
 	description: 'Show all clips this user owns.',
 

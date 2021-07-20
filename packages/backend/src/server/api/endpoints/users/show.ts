@@ -10,6 +10,7 @@ export const meta = {
 	tags: ['users'],
 
 	requireCredential: false,
+	requireCredentialPrivateMode: true,
 
 	description: 'Show the properties of a user.',
 

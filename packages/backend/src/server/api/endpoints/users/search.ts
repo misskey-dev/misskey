@@ -7,6 +7,7 @@ export const meta = {
 	tags: ['users'],
 
 	requireCredential: false,
+	requireCredentialPrivateMode: true,
 
 	description: 'Search for users.',
 

@@ -4,6 +4,7 @@ import define from '../../../define.js';
 
 export const meta = {
 	tags: ['charts', 'drive', 'users'],
+	requireCredentialPrivateMode: true,
 
 	res: getJsonSchema(perUserDriveChart.schema),
 

@@ -5,6 +5,7 @@ import { IsNull } from 'typeorm';
 
 export const meta = {
 	requireCredential: false,
+	requireCredentialPrivateMode: true,
 
 	tags: ['meta'],
 

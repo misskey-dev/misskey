@@ -6,6 +6,7 @@ export const meta = {
 	tags: ['meta'],
 
 	requireCredential: false,
+	requireCredentialPrivateMode: true,
 
 	res: {
 		type: 'array',

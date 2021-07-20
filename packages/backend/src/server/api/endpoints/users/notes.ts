@@ -11,6 +11,7 @@ import { generateBlockedUserQuery } from '../../common/generate-block-query.js';
 export const meta = {
 	tags: ['users', 'notes'],
 
+	requireCredentialPrivateMode: true,
 	description: 'Show all notes that this user created.',
 
 	res: {

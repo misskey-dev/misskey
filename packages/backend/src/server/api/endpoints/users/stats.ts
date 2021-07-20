@@ -7,6 +7,7 @@ export const meta = {
 	tags: ['users'],
 
 	requireCredential: false,
+	requireCredentialPrivateMode: true,
 
 	description: 'Show statistics about a user.',
 

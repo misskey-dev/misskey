@@ -10,6 +10,7 @@ import { generateBlockedUserQuery } from '../../common/generate-block-query.js';
 
 export const meta = {
 	tags: ['notes', 'hashtags'],
+	requireCredentialPrivateMode: true,
 
 	res: {
 		type: 'array',

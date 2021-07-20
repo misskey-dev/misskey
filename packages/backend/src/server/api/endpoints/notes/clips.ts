@@ -8,6 +8,7 @@ export const meta = {
 	tags: ['clips', 'notes'],
 
 	requireCredential: false,
+	requireCredentialPrivateMode: true,
 
 	res: {
 		type: 'array',

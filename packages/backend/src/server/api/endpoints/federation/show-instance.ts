@@ -6,6 +6,7 @@ export const meta = {
 	tags: ['federation'],
 
 	requireCredential: false,
+	requireCredentialPrivateMode: true,
 
 	res: {
 		oneOf: [{

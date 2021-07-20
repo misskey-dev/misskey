@@ -4,6 +4,7 @@ import define from '../../../define.js';
 
 export const meta = {
 	tags: ['charts', 'users', 'reactions'],
+	requireCredentialPrivateMode: true,
 
 	res: getJsonSchema(perUserReactionsChart.schema),
 

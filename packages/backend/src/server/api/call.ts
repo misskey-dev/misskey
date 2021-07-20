@@ -7,6 +7,8 @@ import { limiter } from './limiter.js';
 import endpoints, { IEndpointMeta } from './endpoints.js';
 import { ApiError } from './error.js';
 import { apiLogger } from './logger.js';
+import { AccessToken } from '@/models/entities/access-token.js';
+import { fetchMeta } from '@/misc/fetch-meta.js';
 
 const accessDenied = {
 	message: 'Access denied.',
@@ -90,6 +92,17 @@ export default async (endpoint: string, user: CacheableLocalUser | null | undefi
 			message: 'Your app does not have the necessary permissions to use this endpoint.',
 			code: 'PERMISSION_DENIED',
 			id: '1370e5b7-d4eb-4566-bb1d-7748ee6a1838',
+		});
+	}
+
+	// private mode
+	const meta = await fetchMeta();
+	if (meta.privateMode && ep.meta.requireCredentialPrivateMode && user == null) {
+		throw new ApiError({
+			message: 'Credential required.',
+			code: 'CREDENTIAL_REQUIRED',
+			id: '1384574d-a912-4b81-8601-c7b1c4085df1',
+			httpStatusCode: 401
 		});
 	}
 

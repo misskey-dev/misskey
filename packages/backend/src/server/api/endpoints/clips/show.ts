@@ -6,6 +6,7 @@ export const meta = {
 	tags: ['clips', 'account'],
 
 	requireCredential: false,
+	requireCredentialPrivateMode: true,
 
 	kind: 'read:account',
 

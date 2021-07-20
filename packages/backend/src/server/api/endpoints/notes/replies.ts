@@ -9,6 +9,7 @@ export const meta = {
 	tags: ['notes'],
 
 	requireCredential: false,
+	requireCredentialPrivateMode: true,
 
 	res: {
 		type: 'array',

@@ -336,7 +336,7 @@ export default define(meta, paramDef, async (ps, me) => {
 			expiresAt: MoreThan(new Date()),
 		},
 	});
-	// TODO: add secure mode, etc
+
 	const response: any = {
 		maintainerName: instance.maintainerName,
 		maintainerEmail: instance.maintainerEmail,
@@ -350,6 +350,10 @@ export default define(meta, paramDef, async (ps, me) => {
 		tosUrl: instance.ToSUrl,
 		repositoryUrl: instance.repositoryUrl,
 		feedbackUrl: instance.feedbackUrl,
+
+		secureMode: instance.secureMode,
+		privateMode: instance.privateMode,
+
 		disableRegistration: instance.disableRegistration,
 		disableLocalTimeline: instance.disableLocalTimeline,
 		disableGlobalTimeline: instance.disableGlobalTimeline,
@@ -369,10 +373,10 @@ export default define(meta, paramDef, async (ps, me) => {
 		backgroundImageUrl: instance.backgroundImageUrl,
 		logoImageUrl: instance.logoImageUrl,
 		maxNoteTextLength: MAX_NOTE_TEXT_LENGTH, // 後方互換性のため
-		emojis: await Emojis.packMany(emojis),
+		emojis: instance.privateMode && !me ? [] : await Emojis.packMany(emojis),
 		defaultLightTheme: instance.defaultLightTheme,
 		defaultDarkTheme: instance.defaultDarkTheme,
-		ads: ads.map(ad => ({
+		ads: instance.privateMode && !me ? [] : ads.map(ad => ({
 			id: ad.id,
 			url: ad.url,
 			place: ad.place,
@@ -390,8 +394,8 @@ export default define(meta, paramDef, async (ps, me) => {
 		translatorAvailable: instance.deeplAuthKey != null,
 
 		...(ps.detail ? {
-			pinnedPages: instance.pinnedPages,
-			pinnedClipId: instance.pinnedClipId,
+			pinnedPages: instance.privateMode && !me ? [] : instance.pinnedPages,
+			pinnedClipId: instance.privateMode && !me ? [] : instance.pinnedClipId,
 			cacheRemoteFiles: instance.cacheRemoteFiles,
 			requireSetup: (await Users.countBy({
 				host: IsNull(),
@@ -400,9 +404,11 @@ export default define(meta, paramDef, async (ps, me) => {
 	};
 
 	if (ps.detail) {
-		const proxyAccount = instance.proxyAccountId ? await Users.pack(instance.proxyAccountId).catch(() => null) : null;
+		if (!instance.privateMode || me) {
+			const proxyAccount = instance.proxyAccountId ? await Users.pack(instance.proxyAccountId).catch(() => null) : null;
+			response.proxyAccountName = proxyAccount ? proxyAccount.username : null;
+		}
 
-		response.proxyAccountName = proxyAccount ? proxyAccount.username : null;
 		response.features = {
 			registration: !instance.disableRegistration,
 			localTimeLine: !instance.disableLocalTimeline,

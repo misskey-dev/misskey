@@ -5,6 +5,7 @@ export const meta = {
 	tags: ['gallery'],
 
 	requireCredential: false,
+	requireCredentialPrivateMode: true,
 
 	res: {
 		type: 'array',

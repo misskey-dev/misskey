@@ -7,6 +7,7 @@ export const meta = {
 	tags: ['meta'],
 
 	requireCredential: false,
+	requireCredentialPrivateMode: true,
 } as const;
 
 export const paramDef = {

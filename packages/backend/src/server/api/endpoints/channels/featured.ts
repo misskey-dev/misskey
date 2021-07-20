@@ -5,6 +5,7 @@ export const meta = {
 	tags: ['channels'],
 
 	requireCredential: false,
+	requireCredentialPrivateMode: true,
 
 	res: {
 		type: 'array',

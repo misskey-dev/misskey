@@ -8,6 +8,7 @@ export const meta = {
 	tags: ['pages'],
 
 	requireCredential: false,
+	requireCredentialPrivateMode: true,
 
 	res: {
 		type: 'object',

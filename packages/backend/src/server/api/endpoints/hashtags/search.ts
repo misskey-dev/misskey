@@ -5,6 +5,7 @@ export const meta = {
 	tags: ['hashtags'],
 
 	requireCredential: false,
+	requireCredentialPrivateMode: true,
 
 	res: {
 		type: 'array',

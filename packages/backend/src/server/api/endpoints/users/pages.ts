@@ -4,6 +4,7 @@ import { makePaginationQuery } from '../../common/make-pagination-query.js';
 
 export const meta = {
 	tags: ['users', 'pages'],
+	requireCredentialPrivateMode: true,
 
 	description: 'Show all pages this user created.',
 

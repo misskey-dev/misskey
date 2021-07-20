@@ -9,6 +9,7 @@ export const meta = {
 	tags: ['users'],
 
 	requireCredential: false,
+	requireCredentialPrivateMode: true,
 
 	description: 'Show everyone that this user is following.',
 

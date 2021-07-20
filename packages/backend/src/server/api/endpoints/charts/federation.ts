@@ -4,6 +4,7 @@ import define from '../../define.js';
 
 export const meta = {
 	tags: ['charts'],
+	requireCredentialPrivateMode: true,
 
 	res: getJsonSchema(federationChart.schema),
 
