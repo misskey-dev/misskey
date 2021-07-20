@@ -915,6 +915,9 @@ _channel:
   usersCount: "{n} Partisipan"
   notesCount: "terdapat {n} catatan"
 _menuDisplay:
+  sideFull: "Horisontal"
+  sideIcon: "Horisontal (Ikon)"
+  top: "Atas"
   hide: "Sembunyikan"
 _wordMute:
   muteWords: "Kata yang dibisukan"
