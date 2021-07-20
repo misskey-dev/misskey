@@ -1,10 +1,14 @@
-# Pages
+# Laman
 
 ## Variabel
-変数を使うことで動的なページを作成できます。テキスト内で <b>{ 変数名 }</b> と書くとそこに変数の値を埋め込めます。例えば <b>Hello { thing } world!</b> というテキストで、変数(thing)の値が <b>ai</b> だった場合、テキストは <b>Hello ai world!</b> になります。
+Kamu bisa buat laman dinamis menggunakan variabel. Dengan menulis <b>{ nama-variabel }</b> di teksmu, nilai variabel tersebut bisa disematkan.Contohnya, jika nilai suatu variabel thing di dalam teks <b>Hello {thing} world!</b> adalah <b>ai</b>, maka teksnya akan berubah menjadi <b>Hello ai world!</b>
 
-変数の評価(値を算出すること)は上から下に行われるので、ある変数の中で自分より下の変数を参照することはできません。例えば上から <b>A、B、C</b> と3つの変数を定義したとき、<b>C</b>の中で<b>A</b>や<b>B</b>を参照することはできますが、<b>A</b>の中で<b>B</b>や<b>C</b>を参照することはできません。
+Variabel dievaluasi dari atas ke bawah, makanya tidak mungkin merujuk variabel sebelum dideklarasikan.Contohnya, saat mendeklarasikan tiga variable <b>A, B, C</b> dalam urutan seperti itu, merujuk <b>A</b> atau <b>B</b> dari dalam <b>C</b> itu mungkin, tapi merujuk <b>B</b> atau <b>C</b> dari dalam <b>A<0> tidak.</p> 
 
-ユーザーからの入力を受け取るには、ページに「ユーザー入力」ブロックを設置し、「変数名」に入力を格納したい変数名を設定します(変数は自動で作成されます)。その変数を使ってユーザー入力に応じた動作を行えます。
+<p spaces-before="0">
+  ユーザーからの入力を受け取るには、ページに「ユーザー入力」ブロックを設置し、「変数名」に入力を格納したい変数名を設定します(変数は自動で作成されます)。その変数を使ってユーザー入力に応じた動作を行えます。
+</p>
 
-関数を使うと、値の算出処理を再利用可能な形にまとめることができます。関数を作るには、「関数」タイプの変数を作成します。関数にはスロット(引数)を設定することができ、スロットの値は関数内で変数として利用可能です。また、関数を引数に取る関数(高階関数と呼ばれます)も存在します。関数は予め定義しておくほかに、このような高階関数のスロットに即席でセットすることもできます。
+<p spaces-before="0">
+  関数を使うと、値の算出処理を再利用可能な形にまとめることができます。関数を作るには、「関数」タイプの変数を作成します。関数にはスロット(引数)を設定することができ、スロットの値は関数内で変数として利用可能です。また、関数を引数に取る関数(高階関数と呼ばれます)も存在します。関数は予め定義しておくほかに、このような高階関数のスロットに即席でセットすることもできます。
+</p>
