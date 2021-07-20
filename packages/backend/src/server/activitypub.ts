@@ -12,12 +12,15 @@ import Followers from './activitypub/followers.js';
 import Following from './activitypub/following.js';
 import Featured from './activitypub/featured.js';
 import { inbox as processInbox } from '@/queue/index.js';
-import { isSelfHost } from '@/misc/convert-host.js';
+import { isSelfHost, toPuny } from '@/misc/convert-host.js';
 import { Notes, Users, Emojis, NoteReactions } from '@/models/index.js';
 import { ILocalUser, User } from '@/models/entities/user.js';
 import { In, IsNull, Not } from 'typeorm';
 import { renderLike } from '@/remote/activitypub/renderer/like.js';
 import { getUserKeypair } from '@/misc/keypair-store.js';
+import checkFetch from '@/remote/activitypub/check-fetch.js';
+import { getInstanceActor } from '@/services/instance-actor.js';
+import { fetchMeta } from '@/misc/fetch-meta.js';
 import renderFollow from '@/remote/activitypub/renderer/follow.js';
 
 // Init router
@@ -66,6 +69,12 @@ router.post('/users/:user/inbox', json(), inbox);
 router.get('/notes/:note', async (ctx, next) => {
 	if (!isActivityPubReq(ctx)) return await next();
 
+	const verify = await checkFetch(ctx.req);
+	if (verify != 200) {
+		ctx.status = verify;
+		return;
+	}
+
 	const note = await Notes.findOneBy({
 		id: ctx.params.note,
 		visibility: In(['public' as const, 'home' as const]),
@@ -88,12 +97,24 @@ router.get('/notes/:note', async (ctx, next) => {
 	}
 
 	ctx.body = renderActivity(await renderNote(note, false));
-	ctx.set('Cache-Control', 'public, max-age=180');
+
+	const meta = await fetchMeta();
+	if (meta.secureMode || meta.privateMode) {
+		ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
+	} else {
+		ctx.set('Cache-Control', 'public, max-age=180');
+	}
 	setResponseType(ctx);
 });
 
 // note activity
 router.get('/notes/:note/activity', async ctx => {
+	const verify = await checkFetch(ctx.req);
+	if (verify != 200) {
+		ctx.status = verify;
+		return;
+	}
+
 	const note = await Notes.findOneBy({
 		id: ctx.params.note,
 		userHost: IsNull(),
@@ -107,7 +128,12 @@ router.get('/notes/:note/activity', async ctx => {
 	}
 
 	ctx.body = renderActivity(await packActivity(note));
-	ctx.set('Cache-Control', 'public, max-age=180');
+	const meta = await fetchMeta();
+	if (meta.secureMode || meta.privateMode) {
+		ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
+	} else {
+		ctx.set('Cache-Control', 'public, max-age=180');
+	}
 	setResponseType(ctx);
 });
 
@@ -125,6 +151,20 @@ router.get('/users/:user/collections/featured', Featured);
 
 // publickey
 router.get('/users/:user/publickey', async ctx => {
+	const instanceActor = await getInstanceActor();
+	if (ctx.params.user === instanceActor.id) {
+		ctx.body = renderActivity(renderKey(instanceActor, await getUserKeypair(instanceActor.id)));
+		ctx.set('Cache-Control', 'public, max-age=180');
+		setResponseType(ctx);
+		return;
+	}
+
+	const verify = await checkFetch(ctx.req);
+	if (verify != 200) {
+		ctx.status = verify;
+		return;
+	}
+
 	const userId = ctx.params.user;
 
 	const user = await Users.findOneBy({
@@ -141,7 +181,12 @@ router.get('/users/:user/publickey', async ctx => {
 
 	if (Users.isLocalUser(user)) {
 		ctx.body = renderActivity(renderKey(user, keypair));
-		ctx.set('Cache-Control', 'public, max-age=180');
+		const meta = await fetchMeta();
+		if (meta.secureMode || meta.privateMode) {
+			ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
+		} else {
+			ctx.set('Cache-Control', 'public, max-age=180');
+		}
 		setResponseType(ctx);
 	} else {
 		ctx.status = 400;
@@ -156,12 +201,29 @@ async function userInfo(ctx: Router.RouterContext, user: User | null) {
 	}
 
 	ctx.body = renderActivity(await renderPerson(user as ILocalUser));
-	ctx.set('Cache-Control', 'public, max-age=180');
+	const meta = await fetchMeta();
+	if (meta.secureMode || meta.privateMode) {
+		ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
+	} else {
+		ctx.set('Cache-Control', 'public, max-age=180');
+	}
 	setResponseType(ctx);
 }
 
 router.get('/users/:user', async (ctx, next) => {
 	if (!isActivityPubReq(ctx)) return await next();
+
+	const instanceActor = await getInstanceActor();
+	if (ctx.params.user === instanceActor.id) {
+		await userInfo(ctx, instanceActor);
+		return;
+	}
+
+	const verify = await checkFetch(ctx.req);
+	if (verify != 200) {
+		ctx.status = verify;
+		return;
+	}
 
 	const userId = ctx.params.user;
 
@@ -177,6 +239,18 @@ router.get('/users/:user', async (ctx, next) => {
 router.get('/@:user', async (ctx, next) => {
 	if (!isActivityPubReq(ctx)) return await next();
 
+	if (ctx.params.user === 'instance.actor') {
+		const instanceActor = await getInstanceActor();
+		await userInfo(ctx, instanceActor);
+		return;
+	}
+
+	const verify = await checkFetch(ctx.req);
+	if (verify != 200) {
+		ctx.status = verify;
+		return;
+	}
+
 	const user = await Users.findOneBy({
 		usernameLower: ctx.params.user.toLowerCase(),
 		host: IsNull(),
@@ -185,10 +259,21 @@ router.get('/@:user', async (ctx, next) => {
 
 	await userInfo(ctx, user);
 });
+
+router.get('/actor', async (ctx, next) => {
+	const instanceActor = await getInstanceActor();
+	await userInfo(ctx, instanceActor);
+});
 //#endregion
 
 // emoji
 router.get('/emojis/:emoji', async ctx => {
+	const verify = await checkFetch(ctx.req);
+	if (verify != 200) {
+		ctx.status = verify;
+		return;
+	}
+
 	const emoji = await Emojis.findOneBy({
 		host: IsNull(),
 		name: ctx.params.emoji,
@@ -200,12 +285,23 @@ router.get('/emojis/:emoji', async ctx => {
 	}
 
 	ctx.body = renderActivity(await renderEmoji(emoji));
-	ctx.set('Cache-Control', 'public, max-age=180');
+	const meta = await fetchMeta();
+	if (meta.secureMode || meta.privateMode) {
+		ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
+	} else {
+		ctx.set('Cache-Control', 'public, max-age=180');
+	}
 	setResponseType(ctx);
 });
 
 // like
 router.get('/likes/:like', async ctx => {
+	const verify = await checkFetch(ctx.req);
+	if (verify != 200) {
+		ctx.status = verify;
+		return;
+	}
+
 	const reaction = await NoteReactions.findOneBy({ id: ctx.params.like });
 
 	if (reaction == null) {
@@ -221,12 +317,22 @@ router.get('/likes/:like', async ctx => {
 	}
 
 	ctx.body = renderActivity(await renderLike(reaction, note));
-	ctx.set('Cache-Control', 'public, max-age=180');
+	const meta = await fetchMeta();
+	if (meta.secureMode || meta.privateMode) {
+		ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
+	} else {
+		ctx.set('Cache-Control', 'public, max-age=180');
+	}
 	setResponseType(ctx);
 });
 
 // follow
 router.get('/follows/:follower/:followee', async ctx => {
+	const verify = await checkFetch(ctx.req);
+	if (verify != 200) {
+		ctx.status = verify;
+		return;
+	}
 	// This may be used before the follow is completed, so we do not
 	// check if the following exists.
 
@@ -247,7 +353,12 @@ router.get('/follows/:follower/:followee', async ctx => {
 	}
 
 	ctx.body = renderActivity(renderFollow(follower, followee));
-	ctx.set('Cache-Control', 'public, max-age=180');
+	const meta = await fetchMeta();
+	if (meta.secureMode || meta.privateMode) {
+		ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
+	} else {
+		ctx.set('Cache-Control', 'public, max-age=180');
+	}
 	setResponseType(ctx);
 });
 

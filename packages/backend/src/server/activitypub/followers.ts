@@ -9,8 +9,16 @@ import renderFollowUser from '@/remote/activitypub/renderer/follow-user.js';
 import { Users, Followings, UserProfiles } from '@/models/index.js';
 import { Following } from '@/models/entities/following.js';
 import { setResponseType } from '../activitypub.js';
+import checkFetch from '@/remote/activitypub/check-fetch.js';
+import { fetchMeta } from '@/misc/fetch-meta.js';
 
 export default async (ctx: Router.RouterContext) => {
+	const verify = await checkFetch(ctx.req);
+	if (verify != 200) {
+		ctx.status = verify;
+		return;
+	}
+
 	const userId = ctx.params.user;
 
 	const cursor = ctx.request.query.cursor;
@@ -89,7 +97,12 @@ export default async (ctx: Router.RouterContext) => {
 		// index page
 		const rendered = renderOrderedCollection(partOf, user.followersCount, `${partOf}?page=true`);
 		ctx.body = renderActivity(rendered);
-		ctx.set('Cache-Control', 'public, max-age=180');
 		setResponseType(ctx);
+	}
+	const meta = await fetchMeta();
+	if (meta.secureMode || meta.privateMode) {
+		ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
+	} else {
+		ctx.set('Cache-Control', 'public, max-age=180');
 	}
 };

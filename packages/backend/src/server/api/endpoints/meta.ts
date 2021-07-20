@@ -291,6 +291,16 @@ export const meta = {
 					},
 				},
 			},
+			secureMode: {
+				type: 'boolean',
+				optional: true, nullable: false,
+				default: false,
+			},
+			privateMode: {
+				type: 'boolean',
+				optional: true, nullable: false,
+				default: false,
+			},
 		},
 	},
 } as const;
@@ -326,7 +336,7 @@ export default define(meta, paramDef, async (ps, me) => {
 			expiresAt: MoreThan(new Date()),
 		},
 	});
-
+	// TODO: add secure mode, etc
 	const response: any = {
 		maintainerName: instance.maintainerName,
 		maintainerEmail: instance.maintainerEmail,

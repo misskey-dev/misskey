@@ -77,6 +77,21 @@ export class Meta {
 	})
 	public blockedHosts: string[];
 
+	@Column('boolean', {
+		default: false
+	})
+	public secureMode: boolean;
+
+	@Column('boolean', {
+		default: false
+	})
+	public privateMode: boolean;
+
+	@Column('varchar', {
+		length: 256, array: true, default: '{}'
+	})
+	public allowedHosts: string[];
+
 	@Column('varchar', {
 		length: 512, array: true, default: '{/featured,/channels,/explore,/pages,/about-misskey}',
 	})

@@ -39,6 +39,11 @@ export default async (job: Bull.Job<InboxJobData>): Promise<string> => {
 		return `Blocked request: ${host}`;
 	}
 
+	// 非公開モードなら許可なインスタンスのみ
+	if (meta.privateMode && !meta.allowedHosts.includes(host)) {
+		return `Blocked request: ${host}`;
+	}
+
 	const keyIdLower = signature.keyId.toLowerCase();
 	if (keyIdLower.startsWith('acct:')) {
 		return `Old keyId is no longer supported. ${keyIdLower}`;
