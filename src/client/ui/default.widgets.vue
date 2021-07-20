@@ -1,6 +1,6 @@
 <template>
 <div class="ddiqwdnk">
-	<XWidgets class="widgets" :edit="editMode" :widgets="$store.reactiveState.widgets.value" @add-widget="addWidget" @remove-widget="removeWidget" @update-widget="updateWidget" @update-widgets="updateWidgets" @exit="editMode = false"/>
+	<XWidgets class="widgets" :edit="editMode" :widgets="$store.reactiveState.widgets.value.filter(w => w.place === place)" @add-widget="addWidget" @remove-widget="removeWidget" @update-widget="updateWidget" @update-widgets="updateWidgets" @exit="editMode = false"/>
 	<MkAd class="a" prefer="square"/>
 
 	<button v-if="editMode" @click="editMode = false" class="_textButton edit" style="font-size: 0.9em;"><i class="fas fa-check"></i> {{ $ts.editWidgetsExit }}</button>
@@ -11,11 +11,16 @@
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
 import XWidgets from '@client/components/widgets.vue';
-import * as os from '@client/os';
 
 export default defineComponent({
 	components: {
 		XWidgets
+	},
+
+	props: {
+		place: {
+			type: String,
+		}
 	},
 
 	emits: ['mounted'],
@@ -34,7 +39,7 @@ export default defineComponent({
 		addWidget(widget) {
 			this.$store.set('widgets', [{
 				...widget,
-				place: null,
+				place: this.place,
 			}, ...this.$store.state.widgets]);
 		},
 
@@ -50,7 +55,10 @@ export default defineComponent({
 		},
 
 		updateWidgets(widgets) {
-			this.$store.set('widgets', widgets);
+			this.$store.set('widgets', [
+				...this.$store.state.widgets.filter(w => w.place !== this.place),
+				...widgets
+			]);
 		}
 	}
 });

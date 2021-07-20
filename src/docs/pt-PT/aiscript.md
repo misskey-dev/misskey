@@ -1,4 +1,4 @@
 # AiScript
 
-## 関数
-デフォルトで値渡しです。
+## Funções
+Por padrão, são passados por valores.
