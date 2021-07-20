@@ -764,7 +764,7 @@ ratio: "비율"
 customCss: "CSS 사용자화"
 customCssWarn: "이 설정은 기능을 알고 있는 경우에만 사용해야 합니다. 잘못된 값을 입력하면 클라이언트가 정상적으로 작동하지 않을 수 있습니다."
 global: "글로벌"
-squareAvatars: "아이콘을 사각형으로 표시"
+squareAvatars: "프로필 아이콘을 사각형으로 표시"
 _ad:
   back: "뒤로"
   reduceFrequencyOfThisAd: "이 광고의 표시 빈도 낮추기"
