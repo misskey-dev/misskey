@@ -27,6 +27,11 @@ export const paramDef = {
 		blockedHosts: { type: 'array', nullable: true, items: {
 			type: 'string',
 		} },
+		allowedHosts: { type: 'array', nullable: true, items: {
+			type: 'string',
+    } },
+		secureMode: { type: 'boolean', nullable: true },
+		privateMode: { type: 'boolean', nullable: true },
 		themeColor: { type: 'string', nullable: true, pattern: '^#[0-9a-fA-F]{6}$' },
 		mascotImageUrl: { type: 'string', nullable: true },
 		bannerUrl: { type: 'string', nullable: true },
@@ -140,6 +145,18 @@ export default define(meta, paramDef, async (ps, me) => {
 
 	if (ps.themeColor !== undefined) {
 		set.themeColor = ps.themeColor;
+	}
+
+	if (Array.isArray(ps.allowedHosts)) {
+		set.allowedHosts = ps.allowedHosts.filter(Boolean);
+	}
+
+	if (typeof ps.privateMode === 'boolean') {
+		set.privateMode = ps.privateMode;
+	}
+
+	if (typeof ps.secureMode === 'boolean') {
+		set.secureMode = ps.secureMode;
 	}
 
 	if (ps.mascotImageUrl !== undefined) {

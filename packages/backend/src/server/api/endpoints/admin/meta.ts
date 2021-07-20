@@ -187,6 +187,22 @@ export const meta = {
 					optional: false, nullable: false,
 				},
 			},
+			allowedHosts: {
+				type: 'array',
+				optional: true, nullable: false,
+				items: {
+					type: 'string',
+					optional: false, nullable: false,
+				},
+			},
+			privateMode: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			secureMode: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
 			hcaptchaSecretKey: {
 				type: 'string',
 				optional: true, nullable: true,
@@ -388,6 +404,9 @@ export default define(meta, paramDef, async (ps, me) => {
 		pinnedUsers: instance.pinnedUsers,
 		hiddenTags: instance.hiddenTags,
 		blockedHosts: instance.blockedHosts,
+		allowedHosts: instance.allowedHosts,
+		privateMode: instance.privateMode,
+		secureMode: instance.secureMode,
 		hcaptchaSecretKey: instance.hcaptchaSecretKey,
 		recaptchaSecretKey: instance.recaptchaSecretKey,
 		sensitiveMediaDetection: instance.sensitiveMediaDetection,

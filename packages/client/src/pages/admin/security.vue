@@ -94,6 +94,26 @@
 						<FormButton primary class="_formBlock" @click="save"><i class="fas fa-save"></i> {{ i18n.ts.save }}</FormButton>
 					</div>
 				</FormFolder>
+
+				<FormFolder class="_formBlock">
+					<template #label>{{ i18n.ts.instanceSecurity }}</template>
+
+					<div class="_formRoot">
+						<FormSwitch v-if="!privateMode" v-model="secureMode">
+							<template #label>{{ i18n.ts.secureMode }}</template>
+							<template #caption>{{ i18n.ts.secureModeInfo }}</template>
+						</FormSwitch>
+						<FormSwitch v-model="privateMode">
+							<template #label>{{ i18n.ts.privateMode }}</template>
+							<template #caption>{{ i18n.ts.privateModeInfo }}</template>
+						</FormSwitch>
+						<FormTextarea v-if="privateMode" v-model="allowedHosts">
+							<template #label>{{ i18n.ts.allowedInstances }}</template>
+							<template #caption>{{ i18n.ts.allowedInstancesDescription }}</template>
+						</FormTextarea>
+						<FormButton primary class="_formBlock" @click="saveInstance"><i class="fas fa-save"></i> {{ i18n.ts.save }}</FormButton>
+					</div>
+				</FormFolder>
 			</div>
 		</FormSuspense>
 	</MkSpacer>
@@ -112,6 +132,7 @@ import FormSuspense from '@/components/form/suspense.vue';
 import FormRange from '@/components/form/range.vue';
 import FormInput from '@/components/form/input.vue';
 import FormButton from '@/components/MkButton.vue';
+import FormTextarea from '@/components/form/textarea.vue';
 import * as os from '@/os';
 import { fetchInstance } from '@/instance';
 import { i18n } from '@/i18n';
@@ -126,6 +147,10 @@ let setSensitiveFlagAutomatically: boolean = $ref(false);
 let enableSensitiveMediaDetectionForVideos: boolean = $ref(false);
 let enableIpLogging: boolean = $ref(false);
 let enableActiveEmailValidation: boolean = $ref(false);
+
+let secureMode: boolean = $ref(false);
+let privateMode: boolean = $ref(false);
+let allowedHosts: string = $ref('');
 
 async function init() {
 	const meta = await os.api('admin/meta');
@@ -143,6 +168,10 @@ async function init() {
 	enableSensitiveMediaDetectionForVideos = meta.enableSensitiveMediaDetectionForVideos;
 	enableIpLogging = meta.enableIpLogging;
 	enableActiveEmailValidation = meta.enableActiveEmailValidation;
+
+	secureMode = meta.secureMode;
+	privateMode = meta.privateMode;
+	allowedHosts = meta.allowedHosts.join('\n');
 }
 
 function save() {
@@ -160,6 +189,16 @@ function save() {
 		enableSensitiveMediaDetectionForVideos,
 		enableIpLogging,
 		enableActiveEmailValidation,
+	}).then(() => {
+		fetchInstance();
+	});
+}
+
+function saveInstance() {
+	os.apiWithDialog('admin/update-meta', {
+		secureMode,
+		privateMode,
+		allowedHosts: allowedHosts.split('\n'),
 	}).then(() => {
 		fetchInstance();
 	});
