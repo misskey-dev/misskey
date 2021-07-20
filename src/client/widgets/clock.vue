@@ -1,7 +1,7 @@
 <template>
 <MkContainer :naked="props.transparent" :show-header="false">
 	<div class="vubelbmv">
-		<MkAnalogClock class="clock"/>
+		<MkAnalogClock class="clock" :thickness="props.thickness"/>
 	</div>
 </MkContainer>
 </template>
@@ -20,6 +20,17 @@ const widget = define({
 			type: 'boolean',
 			default: false,
 		},
+		thickness: {
+			type: 'radio',
+			default: 0.1,
+			options: [{
+				value: 0.1, label: 'thin'
+			}, {
+				value: 0.2, label: 'medium'
+			}, {
+				value: 0.3, label: 'thick'
+			}]
+		}
 	})
 });
 

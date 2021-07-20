@@ -1,5 +1,5 @@
-# MisskeyリバーシBotの開発
-Misskeyのリバーシ機能に対応したBotの開発方法をここに記します。
+# Pengembangan Bot Reversi Misskey
+Laman ini akan menjelaskan bagaimana caranya mengembangkan bot untuk fungsi Reversi Misskey.
 
 1. `games/reversi`ストリームに以下のパラメータを付けて接続する:
     * `i`: botアカウントのAPIキー

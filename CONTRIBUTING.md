@@ -28,12 +28,7 @@ If your language is not listed in Crowdin, please open an issue.
 
 ![Crowdin](https://d322cqt584bo4o.cloudfront.net/misskey/localized.svg)
 
-## Internationalization (i18n)
-Misskey uses the Vue.js plugin [Vue I18n](https://github.com/kazupon/vue-i18n).
-Documentation of Vue I18n is available at http://kazupon.github.io/vue-i18n/introduction.html .
-
 ## Documentation
-* Documents for contributors are located in [`/docs`](/docs).
 * Documents for instance admins are located in [`/docs`](/docs).
 * Documents for end users are located in [`/src/docs`](/src/docs).
 
@@ -41,8 +36,8 @@ Documentation of Vue I18n is available at http://kazupon.github.io/vue-i18n/intr
 * Test codes are located in [`/test`](/test).
 
 ## Continuous integration
-Misskey uses CircleCI for executing automated tests.
-Configuration files are located in [`/.circleci`](/.circleci).
+Misskey uses GitHub Actions for executing automated tests.
+Configuration files are located in [`/.github/workflows`](/.github/workflows).
 
 ## Adding MisskeyRoom items
 * Use English for material, object and texture names.

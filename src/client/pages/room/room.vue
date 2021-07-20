@@ -52,7 +52,7 @@
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
 import { Room } from '@client/scripts/room/room';
-import parseAcct from '@/misc/acct/parse';
+import { parseAcct } from '@/misc/acct';
 import XPreview from './preview.vue';
 const storeItems = require('@client/scripts/room/furnitures.json5');
 import { query as urlQuery } from '../../../prelude/url';
