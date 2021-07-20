@@ -41,6 +41,18 @@ export const meta = {
 			validator: $.optional.nullable.arr($.str),
 		},
 
+		allowedHosts: {
+			validator: $.optional.nullable.arr($.str),
+		},
+
+		secureMode: {
+			validator: $.optional.nullable.bool,
+		},
+
+		privateMode: {
+			validator: $.optional.nullable.bool,
+		},
+
 		mascotImageUrl: {
 			validator: $.optional.nullable.str,
 		},
@@ -316,6 +328,18 @@ export default define(meta, async (ps, me) => {
 
 	if (Array.isArray(ps.blockedHosts)) {
 		set.blockedHosts = ps.blockedHosts.filter(Boolean);
+	}
+
+	if (Array.isArray(ps.allowedHosts)) {
+		set.allowedHosts = ps.allowedHosts.filter(Boolean);
+	}
+
+	if (typeof ps.privateMode === 'boolean') {
+		set.privateMode = ps.privateMode;
+	}
+
+	if (typeof ps.secureMode === 'boolean') {
+		set.secureMode = ps.secureMode;
 	}
 
 	if (ps.mascotImageUrl !== undefined) {
