@@ -49,7 +49,7 @@ sendMessage: "Sendi mesaĝon"
 copyUsername: "Kopii uzantonomon"
 searchUser: "Serĉi uzanton"
 reply: "Respondi"
-loadMore: "Vidu plu"
+loadMore: "Vidu pli"
 showMore: "Vidi pli"
 youGotNewFollower: "Vi estas eksekvita."
 mention: "Mencioj"
@@ -258,6 +258,7 @@ _sfx:
   channel: "Kanala sciigoj"
 _tutorial:
   title: "Uzado de Miskejo"
+  step7_2: "Se vi volus scii pli pri Miskejon, bonvolu vidi la paĝon {help}."
 _permissions:
   "read:blocks": "Vidi la listo de la uzantoj kiun vi blokis."
   "read:drive": "Vidi dosierojn en la diskilo"
@@ -268,7 +269,7 @@ _widgets:
   federation: "Fediverso"
   onlineUsers: "Surkonektita uzanto"
 _cw:
-  show: "Vidu plu"
+  show: "Vidu pli"
   files: "{count} dosiero(j)"
 _visibility:
   publicDescription: "Via noto aperiĝos sur la konfederacia templinio"
