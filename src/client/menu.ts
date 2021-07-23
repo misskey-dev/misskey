@@ -5,7 +5,7 @@ import { i18n } from '@client/i18n';
 import { $i } from './account';
 import { unisonReload } from '@client/scripts/unison-reload';
 
-export const sidebarDef = {
+export const menuDef = {
 	notifications: {
 		title: 'notifications',
 		icon: 'fas fa-bell',

@@ -61,7 +61,7 @@ import XCommon from './_common_/common.vue';
 import XHeader from './_common_/header.vue';
 import XSide from './default.side.vue';
 import * as os from '@client/os';
-import { sidebarDef } from '@client/sidebar';
+import { menuDef } from '@client/menu';
 import * as symbols from '@client/symbols';
 
 const DESKTOP_THRESHOLD = 1100;
@@ -87,7 +87,7 @@ export default defineComponent({
 		return {
 			pageInfo: null,
 			isDesktop: window.innerWidth >= DESKTOP_THRESHOLD,
-			menuDef: sidebarDef,
+			menuDef: menuDef,
 			navHidden: false,
 			widgetsShowing: false,
 			wallpaper: localStorage.getItem('wallpaper') != null,
