@@ -11633,6 +11633,10 @@ viewerjs@1.9.1:
   version "1.9.1"
   resolved "https://registry.yarnpkg.com/viewerjs/-/viewerjs-1.9.1.tgz#559a37c0efee1ad03cd577c7779667615a9f6592"
   integrity sha512-ivllTQh63M0nRvphzX8pgmz+TJsgLUs6o4gseh5kKsJ3eqb+IJzJInrfyqrLNgpDhiHloz2Fv70ZZeQK8VeaeQ==
+  dependencies:
+    "@vue/compiler-dom" "3.2.0-beta.4"
+    "@vue/runtime-dom" "3.2.0-beta.4"
+    "@vue/shared" "3.2.0-beta.4"
 
 vuedraggable@4.0.1:
   version "4.0.1"
