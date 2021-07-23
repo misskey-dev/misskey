@@ -172,6 +172,7 @@ hasChildFilesOrFolders: "La dosierujo estas neforviŝebla pro tio, ke ĝi enhava
 copyUrl: "Kopii retadreson"
 nsfw: "Enhavo ne estas deca por laborejo (NSFW)"
 instanceName: "Nomo de la ekzemplo"
+maintainerEmail: "Retpoŝto de la administranto"
 connectService: "Konekti"
 disconnectService: "Farkonektiĝi"
 driveCapacityPerLocalAccount: "Volumo po unu loka-uzanto"
