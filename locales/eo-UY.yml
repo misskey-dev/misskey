@@ -2,7 +2,7 @@
 _lang_: "Esperanto"
 headlineMisskey: "Reto ligiĝas per notoj"
 introMisskey: "Bonvenon! Miskejo (Misskey en Esperanto) estas kunfederaciĝita mikrobloga servico kaj malfermitkoda programo.\nVolu krei \"noto\"n kaj📡\nreaktigoj👍\nla nova mondo!🚀"
-monthAndDay: "{day}a/{month}"
+monthAndDay: "{day}-a/{month}"
 search: "Serĉi"
 notifications: "Sciigoj"
 username: "Uzantonomo"
@@ -175,6 +175,8 @@ copyUrl: "Kopii retadreson"
 nsfw: "Enhavo ne estas deca por laborejo (NSFW)"
 instanceName: "Nomo de la ekzemplo"
 maintainerEmail: "Retpoŝto de la administranto"
+thisMonth: "Ĉi-monato"
+monthX: "{month}"
 connectService: "Konekti"
 disconnectService: "Farkonektiĝi"
 driveCapacityPerLocalAccount: "Volumo po unu loka-uzanto"
@@ -270,6 +272,8 @@ _sfx:
   notification: "Sciigoj"
   chat: "Babilejoj"
   channel: "Kanala sciigoj"
+_ago:
+  monthsAgo: "antaŭ {n} monatoj"
 _tutorial:
   title: "Uzado de Miskejo"
   step7_2: "Se vi volus scii pli pri Miskejon, bonvolu vidi la paĝon {help}."
@@ -278,6 +282,14 @@ _permissions:
   "read:drive": "Vidi dosierojn en la diskilo"
   "write:notes": "Krei / Forigi noton"
   "read:channels": "Legi kanalon"
+_weekday:
+  sunday: "dimanĉo"
+  monday: "lundo"
+  tuesday: "mardo"
+  wednesday: "merkredo"
+  thursday: "ĵaŭdo"
+  friday: "vendredo"
+  saturday: "sabato"
 _widgets:
   notifications: "Sciigoj"
   timeline: "Templinio"
@@ -312,6 +324,7 @@ _rooms:
   chooseImage: "Elekti bildon"
   _furnitures:
     server: "Servilo"
+    moon: "Monato"
 _pages:
   deleted: "La paĝo estas forigita."
   content: "Blokado de paĝo"
