@@ -142,7 +142,7 @@ import XTimeline from './timeline.vue';
 import XHeaderClock from './header-clock.vue';
 import * as os from '@client/os';
 import { router } from '@client/router';
-import { sidebarDef } from '@client/sidebar';
+import { menuDef } from '@client/menu';
 import { search } from '@client/scripts/search';
 import copyToClipboard from '@client/scripts/copy-to-clipboard';
 import { store } from './store';
@@ -190,7 +190,7 @@ export default defineComponent({
 			followedChannels: null,
 			featuredChannels: null,
 			currentChannel: null,
-			menuDef: sidebarDef,
+			menuDef: menuDef,
 			sideViewOpening: false,
 			instanceName,
 		};

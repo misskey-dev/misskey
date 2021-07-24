@@ -5,11 +5,6 @@ import { Blockings } from '../../../../models';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'ブロックしているユーザー一覧を取得します。',
-		'en-US': 'Get blocking users.'
-	},
-
 	tags: ['account'],
 
 	requireCredential: true as const,

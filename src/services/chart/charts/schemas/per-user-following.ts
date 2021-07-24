@@ -12,7 +12,6 @@ export const logSchema = {
 			total: {
 				type: 'number' as const,
 				optional: false as const, nullable: false as const,
-				description: 'フォローしている合計',
 			},
 
 			/**
@@ -21,7 +20,6 @@ export const logSchema = {
 			inc: {
 				type: 'number' as const,
 				optional: false as const, nullable: false as const,
-				description: 'フォローした数',
 			},
 
 			/**
@@ -30,7 +28,6 @@ export const logSchema = {
 			dec: {
 				type: 'number' as const,
 				optional: false as const, nullable: false as const,
-				description: 'フォロー解除した数',
 			},
 		}
 	},
@@ -48,7 +45,6 @@ export const logSchema = {
 			total: {
 				type: 'number' as const,
 				optional: false as const, nullable: false as const,
-				description: 'フォローされている合計',
 			},
 
 			/**
@@ -57,7 +53,6 @@ export const logSchema = {
 			inc: {
 				type: 'number' as const,
 				optional: false as const, nullable: false as const,
-				description: 'フォローされた数',
 			},
 
 			/**
@@ -66,7 +61,6 @@ export const logSchema = {
 			dec: {
 				type: 'number' as const,
 				optional: false as const, nullable: false as const,
-				description: 'フォロー解除された数',
 			},
 		}
 	},

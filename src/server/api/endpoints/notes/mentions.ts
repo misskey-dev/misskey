@@ -9,11 +9,6 @@ import { makePaginationQuery } from '../../common/make-pagination-query';
 import { Brackets } from 'typeorm';
 
 export const meta = {
-	desc: {
-		'ja-JP': '自分に言及している投稿の一覧を取得します。',
-		'en-US': 'Get mentions of myself.'
-	},
-
 	tags: ['notes'],
 
 	requireCredential: true as const,

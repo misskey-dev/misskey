@@ -4,11 +4,6 @@ import { Polls, Mutings, Notes, PollVotes } from '../../../../../models';
 import { Brackets, In } from 'typeorm';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'おすすめのアンケート一覧を取得します。',
-		'en-US': 'Get recommended polls.'
-	},
-
 	tags: ['notes'],
 
 	requireCredential: true as const,

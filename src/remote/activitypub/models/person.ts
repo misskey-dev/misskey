@@ -1,10 +1,11 @@
 import { URL } from 'url';
 import * as promiseLimit from 'promise-limit';
 
+import $, { Context } from 'cafy';
 import config from '@/config';
 import Resolver from '../resolver';
 import { resolveImage } from './image';
-import { isCollectionOrOrderedCollection, isCollection, IPerson, getApId, getOneApHrefNullable, IObject, isPropertyValue, IApPropertyValue, getApType } from '../type';
+import { isCollectionOrOrderedCollection, isCollection, IActor, getApId, getOneApHrefNullable, IObject, isPropertyValue, IApPropertyValue, getApType, isActor } from '../type';
 import { fromHtml } from '../../../mfm/from-html';
 import { htmlToMfm } from '../misc/html-to-mfm';
 import { resolveNote, extractEmojis } from './note';
@@ -23,7 +24,6 @@ import { UserPublickey } from '../../../models/entities/user-publickey';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error';
 import { toPuny } from '@/misc/convert-host';
 import { UserProfile } from '../../../models/entities/user-profile';
-import { validActor } from '../../../remote/activitypub/type';
 import { getConnection } from 'typeorm';
 import { toArray } from '../../../prelude/array';
 import { fetchInstanceMetadata } from '../../../services/fetch-instance-metadata';
@@ -32,58 +32,49 @@ import { normalizeForSearch } from '@/misc/normalize-for-search';
 const logger = apLogger;
 
 /**
- * Validate Person object
- * @param x Fetched person object
+ * Validate and convert to actor object
+ * @param x Fetched object
  * @param uri Fetch target URI
  */
-function validatePerson(x: any, uri: string) {
+function validateActor(x: IObject, uri: string): IActor {
 	const expectHost = toPuny(new URL(uri).hostname);
 
 	if (x == null) {
-		return new Error('invalid person: object is null');
+		throw new Error('invalid Actor: object is null');
 	}
 
-	if (!validActor.includes(x.type)) {
-		return new Error(`invalid person: object is not a person or service '${x.type}'`);
+	if (!isActor(x)) {
+		throw new Error(`invalid Actor type '${x.type}'`);
 	}
 
-	if (typeof x.preferredUsername !== 'string') {
-		return new Error('invalid person: preferredUsername is not a string');
+	const validate = (name: string, value: any, validater: Context) => {
+		const e = validater.test(value);
+		if (e) throw new Error(`invalid Actor: ${name} ${e.message}`);
+	};
+
+	validate('id', x.id, $.str.min(1));
+	validate('inbox', x.inbox, $.str.min(1));
+	validate('preferredUsername', x.preferredUsername, $.str.min(1).max(128).match(/^\w([\w-.]*\w)?$/));
+	validate('name', x.name, $.optional.nullable.str.max(128));
+	validate('summary', x.summary, $.optional.nullable.str.max(2048));
+
+	const idHost = toPuny(new URL(x.id!).hostname);
+	if (idHost !== expectHost) {
+		throw new Error('invalid Actor: id has different host');
 	}
 
-	if (typeof x.inbox !== 'string') {
-		return new Error('invalid person: inbox is not a string');
-	}
+	if (x.publicKey) {
+		if (typeof x.publicKey.id !== 'string') {
+			throw new Error('invalid Actor: publicKey.id is not a string');
+		}
 
-	if (!Users.validateRemoteUsername.ok(x.preferredUsername)) {
-		return new Error('invalid person: invalid username');
-	}
-
-	if (x.name != null && x.name != '') {
-		if (!Users.validateName.ok(x.name)) {
-			return new Error('invalid person: invalid name');
+		const publicKeyIdHost = toPuny(new URL(x.publicKey.id).hostname);
+		if (publicKeyIdHost !== expectHost) {
+			throw new Error('invalid Actor: publicKey.id has different host');
 		}
 	}
 
-	if (typeof x.id !== 'string') {
-		return new Error('invalid person: id is not a string');
-	}
-
-	const idHost = toPuny(new URL(x.id).hostname);
-	if (idHost !== expectHost) {
-		return new Error('invalid person: id has different host');
-	}
-
-	if (typeof x.publicKey.id !== 'string') {
-		return new Error('invalid person: publicKey.id is not a string');
-	}
-
-	const publicKeyIdHost = toPuny(new URL(x.publicKey.id).hostname);
-	if (publicKeyIdHost !== expectHost) {
-		return new Error('invalid person: publicKey.id has different host');
-	}
-
-	return null;
+	return x;
 }
 
 /**
@@ -121,13 +112,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 
 	const object = await resolver.resolve(uri) as any;
 
-	const err = validatePerson(object, uri);
-
-	if (err) {
-		throw err;
-	}
-
-	const person: IPerson = object;
+	const person = validateActor(object, uri);
 
 	logger.info(`Creating the Person: ${person.id}`);
 
@@ -178,11 +163,13 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 				userHost: host
 			}));
 
-			await transactionalEntityManager.save(new UserPublickey({
-				userId: user.id,
-				keyId: person.publicKey.id,
-				keyPem: person.publicKey.publicKeyPem
-			}));
+			if (person.publicKey) {
+				await transactionalEntityManager.save(new UserPublickey({
+					userId: user.id,
+					keyId: person.publicKey.id,
+					keyPem: person.publicKey.publicKeyPem
+				}));
+			}
 		});
 	} catch (e) {
 		// duplicate key error
@@ -294,13 +281,7 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 
 	const object = hint || await resolver.resolve(uri) as any;
 
-	const err = validatePerson(object, uri);
-
-	if (err) {
-		throw err;
-	}
-
-	const person: IPerson = object;
+	const person = validateActor(object, uri);
 
 	logger.info(`Updating the Person: ${person.id}`);
 
@@ -358,10 +339,12 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 	// Update user
 	await Users.update(exist.id, updates);
 
-	await UserPublickeys.update({ userId: exist.id }, {
-		keyId: person.publicKey.id,
-		keyPem: person.publicKey.publicKeyPem
-	});
+	if (person.publicKey) {
+		await UserPublickeys.update({ userId: exist.id }, {
+			keyId: person.publicKey.id,
+			keyPem: person.publicKey.publicKeyPem
+		});
+	}
 
 	await UserProfiles.update({ userId: exist.id }, {
 		url: getOneApHrefNullable(person.url),

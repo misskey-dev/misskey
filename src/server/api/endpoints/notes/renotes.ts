@@ -9,11 +9,6 @@ import { makePaginationQuery } from '../../common/make-pagination-query';
 import { Notes } from '../../../../models';
 
 export const meta = {
-	desc: {
-		'ja-JP': '指定した投稿のRenote一覧を取得します。',
-		'en-US': 'Show a renotes of a note.'
-	},
-
 	tags: ['notes'],
 
 	requireCredential: false as const,
@@ -21,10 +16,6 @@ export const meta = {
 	params: {
 		noteId: {
 			validator: $.type(ID),
-			desc: {
-				'ja-JP': '対象の投稿のID',
-				'en-US': 'Target note ID'
-			}
 		},
 
 		limit: {

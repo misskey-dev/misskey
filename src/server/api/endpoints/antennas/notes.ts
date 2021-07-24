@@ -8,11 +8,6 @@ import { generateMutedUserQuery } from '../../common/generate-muted-user-query';
 import { ApiError } from '../../error';
 
 export const meta = {
-	desc: {
-		'ja-JP': '指定したアンテナのノート一覧を表示します。',
-		'en-US': 'Displays a list of notes for the specified antenna.'
-	},
-
 	tags: ['antennas', 'account', 'notes'],
 
 	requireCredential: true as const,

@@ -326,6 +326,7 @@ driveCapacityPerRemoteAccount: "リモートユーザーひとりあたりのド
 inMb: "メガバイト単位"
 iconUrl: "アイコン画像のURL (faviconなど)"
 bannerUrl: "バナー画像のURL"
+backgroundImageUrl: "背景画像のURL"
 basicInfo: "基本情報"
 pinnedUsers: "ピン留めユーザー"
 pinnedUsersDescription: "「みつける」ページなどにピン留めしたいユーザーを改行で区切って記述します。"
@@ -527,7 +528,7 @@ removeAllFollowing: "フォローを全解除"
 removeAllFollowingDescription: "{host}からのフォローをすべて解除します。そのインスタンスがもう存在しなくなった場合などに実行してください。"
 userSuspended: "このユーザーは凍結されています。"
 userSilenced: "このユーザーはサイレンスされています。"
-sidebar: "サイドバー"
+menu: "メニュー"
 divider: "分割線"
 addItem: "項目を追加"
 rooms: "ルーム"
@@ -761,6 +762,10 @@ middle: "中"
 low: "低"
 emailNotConfiguredWarning: "メールアドレスの設定がされていません。"
 ratio: "比率"
+customCss: "カスタムCSS"
+customCssWarn: "この設定は必ず知識のある方が行ってください。不適切な設定を行うとクライアントが正常に使用できなくなる恐れがあります。"
+global: "グローバル"
+squareAvatars: "アイコンを四角形で表示"
 
 _ad:
   back: "戻る"
@@ -924,9 +929,10 @@ _channel:
   usersCount: "{n}人が参加中"
   notesCount: "{n}投稿があります"
 
-_sidebar:
-  full: "フル"
-  icon: "アイコン"
+_menuDisplay:
+  sideFull: "横"
+  sideIcon: "横(アイコン)"
+  top: "上部"
   hide: "隠す"
 
 _wordMute:

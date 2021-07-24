@@ -325,7 +325,6 @@ export class UserRepository extends Repository<User> {
 
 	//#region Validators
 	public validateLocalUsername = $.str.match(/^\w{1,20}$/);
-	public validateRemoteUsername = $.str.match(/^\w([\w-.]*\w)?$/);
 	public validatePassword = $.str.min(1);
 	public validateName = $.str.min(1).max(50);
 	public validateDescription = $.str.min(1).max(500);
@@ -342,19 +341,16 @@ export const packedUserSchema = {
 			type: 'string' as const,
 			nullable: false as const, optional: false as const,
 			format: 'id',
-			description: 'The unique identifier for this User.',
 			example: 'xxxxxxxxxx',
 		},
 		name: {
 			type: 'string' as const,
 			nullable: true as const, optional: false as const,
-			description: 'The name of the user, as they’ve defined it.',
 			example: '藍'
 		},
 		username: {
 			type: 'string' as const,
 			nullable: false as const, optional: false as const,
-			description: 'The screen name, handle, or alias that this user identifies themselves with.',
 			example: 'ai'
 		},
 		host: {
@@ -379,24 +375,20 @@ export const packedUserSchema = {
 		isAdmin: {
 			type: 'boolean' as const,
 			nullable: false as const, optional: false as const,
-			description: 'Whether this account is the admin.',
 			default: false
 		},
 		isModerator: {
 			type: 'boolean' as const,
 			nullable: false as const, optional: false as const,
-			description: 'Whether this account is a moderator.',
 			default: false
 		},
 		isBot: {
 			type: 'boolean' as const,
 			nullable: false as const, optional: true as const,
-			description: 'Whether this account is a bot.'
 		},
 		isCat: {
 			type: 'boolean' as const,
 			nullable: false as const, optional: true as const,
-			description: 'Whether this account is a cat.'
 		},
 		emojis: {
 			type: 'array' as const,
@@ -438,7 +430,6 @@ export const packedUserSchema = {
 			type: 'string' as const,
 			nullable: false as const, optional: true as const,
 			format: 'date-time',
-			description: 'The date that the user account was created on Misskey.'
 		},
 		updatedAt: {
 			type: 'string' as const,
@@ -471,7 +462,6 @@ export const packedUserSchema = {
 		description: {
 			type: 'string' as const,
 			nullable: true as const, optional: true as const,
-			description: 'The user-defined UTF-8 string describing their account.',
 			example: 'Hi masters, I am Ai!'
 		},
 		location: {
@@ -505,17 +495,14 @@ export const packedUserSchema = {
 		followersCount: {
 			type: 'number' as const,
 			nullable: false as const, optional: true as const,
-			description: 'The number of followers this account currently has.'
 		},
 		followingCount: {
 			type: 'number' as const,
 			nullable: false as const, optional: true as const,
-			description: 'The number of users this account is following.'
 		},
 		notesCount: {
 			type: 'number' as const,
 			nullable: false as const, optional: true as const,
-			description: 'The number of Notes (including renotes) issued by the user.'
 		},
 		pinnedNoteIds: {
 			type: 'array' as const,

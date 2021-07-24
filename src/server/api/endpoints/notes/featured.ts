@@ -4,11 +4,6 @@ import { generateMutedUserQuery } from '../../common/generate-muted-user-query';
 import { Notes } from '../../../../models';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'Featuredな投稿を取得します。',
-		'en-US': 'Get featured notes.'
-	},
-
 	tags: ['notes'],
 
 	requireCredential: false as const,
@@ -17,9 +12,6 @@ export const meta = {
 		limit: {
 			validator: $.optional.num.range(1, 100),
 			default: 10,
-			desc: {
-				'ja-JP': '最大数'
-			}
 		},
 
 		offset: {

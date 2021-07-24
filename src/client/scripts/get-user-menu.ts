@@ -1,7 +1,7 @@
 import { i18n } from '@client/i18n';
 import copyToClipboard from '@client/scripts/copy-to-clipboard';
 import { host } from '@client/config';
-import getAcct from '@/misc/acct/render';
+import { getAcct } from '@/misc/acct';
 import * as os from '@client/os';
 import { userActions } from '@client/store';
 import { router } from '@client/router';

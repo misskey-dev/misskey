@@ -5,11 +5,6 @@ import { genId } from '@/misc/gen-id';
 import { UserList } from '../../../../../models/entities/user-list';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'ユーザーリストを作成します。',
-		'en-US': 'Create a user list'
-	},
-
 	tags: ['lists'],
 
 	requireCredential: true as const,

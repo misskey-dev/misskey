@@ -52,7 +52,7 @@ import MkInput from '@client/components/ui/input.vue';
 import MkTextarea from '@client/components/ui/textarea.vue';
 import MkSelect from '@client/components/ui/select.vue';
 import MkSwitch from '@client/components/ui/switch.vue';
-import getAcct from '@/misc/acct/render';
+import { getAcct } from '@/misc/acct';
 import * as os from '@client/os';
 
 export default defineComponent({
