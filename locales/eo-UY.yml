@@ -142,6 +142,7 @@ attachFile: "Aldoni dosieron"
 more: "Plu!"
 usernameOrUserId: "Uzantonomo aŭ ID de uzanto"
 noSuchUser: "Neniuj uzantoj trovitaj."
+imageUrl: "Retadreso de la bildo"
 remove: "Forviŝi"
 removed: "Forviŝis"
 removeAreYouSure: "Ĉu vi certas ke vi volas forviŝi \"{x}\"?"
@@ -178,6 +179,7 @@ connectService: "Konekti"
 disconnectService: "Farkonektiĝi"
 driveCapacityPerLocalAccount: "Volumo po unu loka-uzanto"
 driveCapacityPerRemoteAccount: "Volumo po unu transa uzanto"
+iconUrl: "Retadreso de ikono (retpaĝsimbolo, ktp.)"
 pinnedUsers: "Alpinglita uzanto"
 pinnedNotes: "Pinglita noto"
 withFileAntenna: "Nur kun aldonaĵo"
@@ -295,6 +297,7 @@ _postForm:
   channelPlaceholder: "Elsendi sur la kanalo"
 _profile:
   username: "Uzantonomo"
+  changeAvatar: "Ŝanĝi profilbildon"
 _exportOrImport:
   followingList: "Sekvi"
   muteList: "Silentigi"
@@ -305,6 +308,7 @@ _timelines:
   local: "Loka"
   social: "Hejmo kaj loka"
 _rooms:
+  chooseImage: "Elekti bildon"
   _furnitures:
     server: "Servilo"
 _pages:
