@@ -1,6 +1,7 @@
 ---
 _lang_: "Esperanto"
 headlineMisskey: "Reto ligiĝas per notoj"
+introMisskey: "Bonvenon! Misskey (aŭ \"Miskejo\") estas malfermitkoda 分散型 mikrobloga servico.\nVolu krei \"noto\"n kaj -i nuna okazoを共有したり、あなたについて皆に発信しよう📡\n「 reaktigoj 」機能で、皆のnotojに素早く反応を追加することもできます👍\nEsploru la nova mondo!🚀"
 monthAndDay: "{day}-a/{month}"
 search: "Serĉi"
 notifications: "Sciigoj"
@@ -238,7 +239,7 @@ _email:
   _receiveFollowRequest:
     title: "Vi ricevis eksekvopeton."
 _aboutMisskey:
-  about: "Misskey estas malferma koda programo evoluigata far syuilo ekde la 2014."
+  about: "Misskey estas malfermitkoda programo evoluigata de syuilo ekde la 2014."
   source: "Fontkodo"
   translation: "Traduki Misskey'on"
 _mfm:
