@@ -324,7 +324,7 @@ _rooms:
   chooseImage: "Elekti bildon"
   _furnitures:
     server: "Servilo"
-    moon: "Monato"
+    moon: "La luno"
 _pages:
   deleted: "La paĝo estas forigita."
   content: "Blokado de paĝo"
