@@ -230,7 +230,7 @@ export default defineComponent({
 	$widgets-hide-threshold: 1200px;
 	$nav-icon-only-width: 78px; // TODO: どこかに集約したい
 
-	--panelShadow: none;
+	--panelShadow: 0 0 0 1px var(--divider);
 
 	// ほんとは単に 100vh と書きたいところだが... https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
 	min-height: calc(var(--vh, 1vh) * 100);
@@ -342,14 +342,14 @@ export default defineComponent({
 			--globalHeaderHeight: 60px; // TODO: 60pxと決め打ちしているのを直す
 
 			> .main {
-				margin-top: 2px;
+				margin-top: 1px;
 				border-radius: var(--radius);
-				box-shadow: 0 0 0 2px var(--divider);
+				box-shadow: 0 0 0 1px var(--divider);
 			}
 
 			> .widgets {
 				--stickyTop: var(--globalHeaderHeight);
-				margin-top: 0px;
+				margin-top: 1px;
 			}
 		}
 
