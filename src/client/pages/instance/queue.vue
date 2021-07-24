@@ -35,7 +35,7 @@ export default defineComponent({
 				title: this.$ts.jobQueue,
 				icon: 'fas fa-clipboard-list',
 			},
-			connection: os.stream.useSharedConnection('queueStats'),
+			connection: os.stream.useChannel('queueStats'),
 		}
 	},
 

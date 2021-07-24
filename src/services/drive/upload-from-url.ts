@@ -25,6 +25,12 @@ export default async (
 		name = null;
 	}
 
+	// If the comment is same as the name, skip comment
+	// (image.name is passed in when receiving attachment)
+	if (comment !== null && name == comment) {
+		comment = null;
+	}
+
 	// Create temp file
 	const [path, cleanup] = await createTemp();
 

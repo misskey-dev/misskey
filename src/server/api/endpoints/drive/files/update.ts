@@ -49,6 +49,14 @@ export const meta = {
 				'ja-JP': 'このメディアが「閲覧注意」(NSFW)かどうか',
 				'en-US': 'Whether this media is NSFW'
 			}
+		},
+
+		comment: {
+			validator: $.optional.nullable.str,
+			default: undefined as any,
+			desc: {
+				'ja-JP': 'コメント'
+			}
 		}
 	},
 
@@ -92,6 +100,8 @@ export default define(meta, async (ps, user) => {
 
 	if (ps.name) file.name = ps.name;
 
+	if (ps.comment !== undefined) file.comment = ps.comment;
+
 	if (ps.isSensitive !== undefined) file.isSensitive = ps.isSensitive;
 
 	if (ps.folderId !== undefined) {
@@ -113,6 +123,7 @@ export default define(meta, async (ps, user) => {
 
 	await DriveFiles.update(file.id, {
 		name: file.name,
+		comment: file.comment,
 		folderId: file.folderId,
 		isSensitive: file.isSensitive
 	});
