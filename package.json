@@ -1,7 +1,7 @@
 {
 	"name": "misskey",
 	"author": "syuilo <syuilotan@yahoo.co.jp>",
-	"version": "12.84.0",
+	"version": "12.84.2",
 	"codename": "indigo",
 	"repository": {
 		"type": "git",
@@ -102,7 +102,7 @@
 		"@types/websocket": "1.0.3",
 		"@types/ws": "7.4.6",
 		"@typescript-eslint/parser": "4.28.3",
-		"@vue/compiler-sfc": "3.2.0-beta.2",
+		"@vue/compiler-sfc": "3.1.5",
 		"abort-controller": "3.0.0",
 		"apexcharts": "3.27.2",
 		"autobind-decorator": "2.4.0",
@@ -239,7 +239,7 @@
 		"uuid": "8.3.2",
 		"v-debounce": "0.1.2",
 		"vanilla-tilt": "1.7.0",
-		"vue": "3.2.0-beta.2",
+		"vue": "3.1.5",
 		"vue-color": "2.8.1",
 		"vue-json-pretty": "1.8.1",
 		"vue-loader": "16.3.1",
