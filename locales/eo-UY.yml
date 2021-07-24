@@ -1,7 +1,8 @@
 ---
 _lang_: "Esperanto"
 headlineMisskey: "Reto ligiĝas per notoj"
-monthAndDay: "{day}-a/{month}"
+introMisskey: "Bonvenon! Miskejo (Misskey en Esperanto) estas kunfederaciĝita mikrobloga servico kaj malfermitkoda programo.\nVolu krei \"noto\"n kaj -i nuna okazoを共有したり、あなたについて皆に発信しよう📡\n「 reaktigoj 」機能で、皆のnotojに素早く反応を追加することもできます👍\nEsploru la nova mondo!🚀"
+monthAndDay: "{day}a/{month}"
 search: "Serĉi"
 notifications: "Sciigoj"
 username: "Uzantonomo"
