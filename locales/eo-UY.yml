@@ -179,7 +179,7 @@ nsfw: "Enhavo ne estas deca por laborejo (NSFW)"
 instanceName: "Nomo de la ekzemplo"
 maintainerEmail: "Retpoŝto de la administranto"
 thisYear: "Ĉi-jare"
-thisMonth: "Ĉi-monato"
+thisMonth: "Ĉi-monate"
 today: "Hodiaŭ"
 dayX: "{day}-a"
 monthX: "{month}"
@@ -279,13 +279,19 @@ _theme:
     renote: "Renotici"
 _sfx:
   note: "Nova noto"
+  noteMy: "Mia noto"
   notification: "Sciigoj"
   chat: "Babilejoj"
   channel: "Kanala sciigoj"
 _ago:
+  secondsAgo: "Antaŭ {n} sekundoj"
+  minutesAgo: "Antaŭ {n} minutoj"
   daysAgo: "Antaŭ {n} tagoj"
-  monthsAgo: "antaŭ {n} monatoj"
+  monthsAgo: "Antaŭ {n} monatoj"
+  yearsAgo: "Antaŭ {n} jaroj"
 _time:
+  second: "s"
+  minute: "min"
   day: "Tago"
 _tutorial:
   title: "Uzado de Miskejo"
@@ -340,6 +346,7 @@ _rooms:
     moon: "La luno"
 _pages:
   deleted: "La paĝo estas forigita."
+  my: "Miaj paĝoj"
   content: "Blokado de paĝo"
   url: "Retadreso de la paĝo"
   chooseBlock: "Aldoni blokado"
