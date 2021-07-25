@@ -103,6 +103,7 @@ unblockConfirm: "Ĉu vi certas ke vi volas malbloki la uzanton?"
 suspendConfirm: "Ĉu vi certas ke vi volas frostigi la uzanton?"
 unsuspendConfirm: "Ĉu vi certas ke vi volas fandi la uzanton?"
 selectList: "Elekti liston"
+emojiName: "Nomo de emoĵi"
 emojiUrl: "Retadreso de la emoĵio"
 flagAsBot: "Tiu uzanto estas roboto"
 flagAsCat: "Tiu uzanto estas kato"
@@ -378,6 +379,12 @@ _pages:
   chooseBlock: "Aldoni blokado"
   blocks:
     image: "Bildoj"
+    _post:
+      canvasId: "Kanvasa identigilo"
+    _canvas:
+      id: "Kanvasa identigilo"
+    _note:
+      id: "Identigilo de noto"
   script:
     categories:
       list: "Listoj"
