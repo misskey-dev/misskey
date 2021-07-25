@@ -59,7 +59,6 @@ import: "Importi"
 export: "Eksporti"
 files: "Dosieroj"
 download: "Elŝuti"
-driveFileDeleteConfirm: "Ĉu vi certas ke vi volas forviŝi la dosieron \"{name}\"? La notoj kun la aldonaĵo ankaŭ forviŝiĝos."
 unfollowConfirm: "Ĉu vi certas, ke vi volas ne plu sekvi {name}?"
 lists: "Listoj"
 noLists: "Neniu listo"
@@ -168,9 +167,9 @@ drive: "Diskilo"
 fileName: "Dosiernomo"
 selectFile: "Elekti dosieron"
 selectFiles: "Elekti dosieron"
-renameFile: "Alinomi  dosieron"
+renameFile: "Alinomi la dosieron"
 folderName: "Nomo de la dosierujo"
-renameFolder: "Alinomi nomon de la dosierujo"
+renameFolder: "Alinomi la dosierujon"
 deleteFolder: "Forviŝi dosierujon"
 addFile: "Aldoni dosieron"
 emptyDrive: "La diskilo enhavas neniun."
@@ -214,6 +213,7 @@ resetPassword: "Restarigi pasvorton"
 newPasswordIs: "La nova pasvorto estas {password}."
 help: "Manlibro de uzado"
 inputMessageHere: "Entajpu masaĝo tie ĉi"
+groupName: "Grupa nomo"
 noteOf: "Noto de {user}"
 newMessageExists: "Vi ricevis novan mesaĝon."
 onlyOneFileCanBeAttached: "Vi povas aldoni nur unu dosieron po unu mesaĝo."
@@ -388,6 +388,10 @@ _pages:
       id: "Kanvasa identigilo"
     _note:
       id: "Identigilo de noto"
+    _button:
+      _action:
+        _pushEvent:
+          event: "Eventa nomo"
   script:
     categories:
       list: "Listoj"
