@@ -1,7 +1,6 @@
 ---
 _lang_: "Esperanto"
 headlineMisskey: "Reto ligiĝas per notoj"
-introMisskey: "Bonvenon! Misskey (E-e: [Miskejo]) estas malfermita koda kunfederebla mikrobloga servico.\nreaktigoj"
 monthAndDay: "{day}-a/{month}"
 search: "Serĉi"
 notifications: "Sciigoj"
@@ -156,7 +155,7 @@ fromDrive: "De la diskilo"
 fromUrl: "De retadreso"
 uploadFromUrl: "Aldoni de retadreso"
 uploadFromUrlDescription: "Retadreso de la dosiero kiun vi volu alŝuti"
-games: "Ludoj sur Miskejo"
+games: "Ludoj sur Misskey"
 messageRead: "Legita"
 startMessaging: "Komenci babiladon"
 tos: "Kondiĉoj de Uzado"
@@ -321,6 +320,7 @@ _time:
   day: "Tago"
 _tutorial:
   title: "Uzado de Miskejo"
+  step1_1: "Bonvenon."
   step7_2: "Se vi volus scii pli pri Miskejon, bonvolu vidi la paĝon {help}."
 _permissions:
   "read:blocks": "Vidi la listo de la uzantoj kiun vi blokis."
