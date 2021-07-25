@@ -7,7 +7,7 @@ notifications: "Sciigoj"
 username: "Uzantonomo"
 password: "Pasvorto"
 forgotPassword: "Ĉu vi forgesis pasvorton?"
-fetchingAsApObject: "Informpetado de fediverso..."
+fetchingAsApObject: "Informpetado de Fediverso..."
 ok: "Okej"
 gotIt: "Mi konprenas!"
 cancel: "Nuligi"
@@ -321,7 +321,7 @@ _time:
 _tutorial:
   title: "Uzado de Miskejo"
   step1_1: "Bonvenon."
-  step7_2: "Se vi volus scii pli pri Miskejon, bonvolu vidi la paĝon {help}."
+  step7_2: "Se vi volus scii pli pri Miskejon, volu rigardi la fako {help}."
 _permissions:
   "read:blocks": "Vidi la listo de la uzantoj kiun vi blokis."
   "read:drive": "Vidi dosierojn en la diskilo"
