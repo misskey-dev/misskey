@@ -37,7 +37,7 @@
 </template>
 
 <script lang="ts">
-import { defineAsyncComponent, defineComponent } from 'vue';
+import { defineAsyncComponent, defineComponent, markRaw } from 'vue';
 import { getAcct } from '@/misc/acct';
 import MkButton from '@client/components/ui/button.vue';
 import { acct } from '../../filters/user';
@@ -63,7 +63,7 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.connection = os.stream.useChannel('messagingIndex');
+		this.connection = markRaw(os.stream.useChannel('messagingIndex'));
 
 		this.connection.on('message', this.onMessage);
 		this.connection.on('read', this.onRead);

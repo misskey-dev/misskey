@@ -1,18 +1,18 @@
 <template>
 <FormBase>
-	<FormTextarea v-model:value="items" tall>
-		<span>{{ $ts.sidebar }}</span>
+	<FormTextarea v-model:value="items" tall manual-save>
+		<span>{{ $ts.menu }}</span>
 		<template #desc><button class="_textButton" @click="addItem">{{ $ts.addItem }}</button></template>
 	</FormTextarea>
 
-	<FormRadios v-model="sidebarDisplay">
+	<FormRadios v-model="menuDisplay">
 		<template #desc>{{ $ts.display }}</template>
-		<option value="full">{{ $ts._sidebar.full }}</option>
-		<option value="icon">{{ $ts._sidebar.icon }}</option>
-		<!-- <MkRadio v-model="sidebarDisplay" value="hide" disabled>{{ $ts._sidebar.hide }}</MkRadio>--> <!-- TODO: サイドバーを完全に隠せるようにすると、別途ハンバーガーボタンのようなものをUIに表示する必要があり面倒 -->
+		<option value="sideFull">{{ $ts._menuDisplay.sideFull }}</option>
+		<option value="sideIcon">{{ $ts._menuDisplay.sideIcon }}</option>
+		<option value="top">{{ $ts._menuDisplay.top }}</option>
+		<!-- <MkRadio v-model="menuDisplay" value="hide" disabled>{{ $ts._menuDisplay.hide }}</MkRadio>--> <!-- TODO: サイドバーを完全に隠せるようにすると、別途ハンバーガーボタンのようなものをUIに表示する必要があり面倒 -->
 	</FormRadios>
 
-	<FormButton @click="save()" primary><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
 	<FormButton @click="reset()" danger><i class="fas fa-redo"></i> {{ $ts.default }}</FormButton>
 </FormBase>
 </template>
@@ -26,7 +26,7 @@ import FormBase from '@client/components/form/base.vue';
 import FormGroup from '@client/components/form/group.vue';
 import FormButton from '@client/components/form/button.vue';
 import * as os from '@client/os';
-import { sidebarDef } from '@client/sidebar';
+import { menuDef } from '@client/menu';
 import { defaultStore } from '@client/store';
 import * as symbols from '@client/symbols';
 import { unisonReload } from '@client/scripts/unison-reload';
@@ -44,11 +44,11 @@ export default defineComponent({
 	data() {
 		return {
 			[symbols.PAGE_INFO]: {
-				title: this.$ts.sidebar,
+				title: this.$ts.menu,
 				icon: 'fas fa-list-ul'
 			},
-			menuDef: sidebarDef,
-			items: '',
+			menuDef: menuDef,
+			items: defaultStore.state.menu.join('\n'),
 		}
 	},
 
@@ -57,11 +57,17 @@ export default defineComponent({
 			return this.items.trim().split('\n').filter(x => x.trim() !== '');
 		},
 
-		sidebarDisplay: defaultStore.makeGetterSetter('sidebarDisplay')
+		menuDisplay: defaultStore.makeGetterSetter('menuDisplay')
 	},
 
-	created() {
-		this.items = this.$store.state.menu.join('\n');
+	watch: {
+		menuDisplay() {
+			this.reloadAsk();
+		},
+
+		items() {
+			this.save();
+		},
 	},
 
 	mounted() {
@@ -85,7 +91,6 @@ export default defineComponent({
 			});
 			if (canceled) return;
 			this.items = [...this.splited, item].join('\n');
-			this.save();
 		},
 
 		save() {
@@ -96,7 +101,6 @@ export default defineComponent({
 		reset() {
 			this.$store.reset('menu');
 			this.items = this.$store.state.menu.join('\n');
-			this.reloadAsk();
 		},
 
 		async reloadAsk() {

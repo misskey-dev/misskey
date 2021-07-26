@@ -191,6 +191,8 @@ export default defineComponent({
 	}
 
 	> .content {
+		--stickyTop: 0px;
+
 		&.omitted {
 			position: relative;
 			max-height: var(--maxHeight);

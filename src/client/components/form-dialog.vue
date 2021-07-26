@@ -34,6 +34,10 @@
 				<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
 				<option v-for="item in form[item].enum" :value="item.value" :key="item.value">{{ item.label }}</option>
 			</FormSelect>
+			<FormRadios v-else-if="form[item].type === 'radio'" v-model="values[item]">
+				<template #desc><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
+				<option v-for="item in form[item].options" :value="item.value" :key="item.value">{{ item.label }}</option>
+			</FormRadios>
 			<FormRange v-else-if="form[item].type === 'range'" v-model:value="values[item]" :min="form[item].mim" :max="form[item].max" :step="form[item].step">
 				<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
 				<template v-if="form[item].description" #desc>{{ form[item].description }}</template>
@@ -56,6 +60,7 @@ import FormSwitch from './form/switch.vue';
 import FormSelect from './form/select.vue';
 import FormRange from './form/range.vue';
 import FormButton from './form/button.vue';
+import FormRadios from './form/radios.vue';
 
 export default defineComponent({
 	components: {
@@ -67,6 +72,7 @@ export default defineComponent({
 		FormSelect,
 		FormRange,
 		FormButton,
+		FormRadios,
 	},
 
 	props: {

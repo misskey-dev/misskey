@@ -37,7 +37,7 @@ import DeckColumnCore from '@client/ui/deck/column-core.vue';
 import XSidebar from '@client/ui/_common_/sidebar.vue';
 import { getScrollContainer } from '@client/scripts/scroll';
 import * as os from '@client/os';
-import { sidebarDef } from '@client/sidebar';
+import { menuDef } from '@client/menu';
 import XCommon from './_common_/common.vue';
 import { deckStore, addColumn, loadDeck } from './deck/deck-store';
 
@@ -60,7 +60,7 @@ export default defineComponent({
 		return {
 			deckStore,
 			host: host,
-			menuDef: sidebarDef,
+			menuDef: menuDef,
 			wallpaper: localStorage.getItem('wallpaper') != null,
 		};
 	},
