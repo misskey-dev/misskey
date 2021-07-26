@@ -115,13 +115,13 @@ export default defineComponent({
 		if (this.$store.state.widgets.length === 0) {
 			this.$store.set('widgets', [{
 				name: 'calendar',
-				id: 'a', place: 'right', data: {}
+				id: 'a', place: null, data: {}
 			}, {
 				name: 'notifications',
-				id: 'b', place: 'right', data: {}
+				id: 'b', place: null, data: {}
 			}, {
 				name: 'trends',
-				id: 'c', place: 'right', data: {}
+				id: 'c', place: null, data: {}
 			}]);
 		}
 	},
@@ -143,7 +143,7 @@ export default defineComponent({
 		},
 
 		attachSticky(ref) {
-			const sticky = new StickySidebar(this.$refs[ref], this.$store.state.menuDisplay === 'top' ? 0 : 16, this.$store.state.menuDisplay === 'top' ? 60 : 0); // TODO: ヘッダーの高さを60pxと決め打ちしているのを直す
+			const sticky = new StickySidebar(this.$refs[ref], this.$store.state.menuDisplay === 'top' ? 1 : 16, this.$store.state.menuDisplay === 'top' ? 60 : 0); // TODO: ヘッダーの高さを60pxと決め打ちしているのを直す
 			window.addEventListener('scroll', () => {
 				sticky.calc(window.scrollY);
 			}, { passive: true });
@@ -230,7 +230,7 @@ export default defineComponent({
 	$widgets-hide-threshold: 1200px;
 	$nav-icon-only-width: 78px; // TODO: どこかに集約したい
 
-	--panelShadow: none;
+	--panelShadow: 0 0 0 1px var(--divider);
 
 	// ほんとは単に 100vh と書きたいところだが... https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
 	min-height: calc(var(--vh, 1vh) * 100);
@@ -342,14 +342,14 @@ export default defineComponent({
 			--globalHeaderHeight: 60px; // TODO: 60pxと決め打ちしているのを直す
 
 			> .main {
-				margin-top: 2px;
+				margin-top: 1px;
 				border-radius: var(--radius);
-				box-shadow: 0 0 0 2px var(--divider);
+				box-shadow: 0 0 0 1px var(--divider);
 			}
 
 			> .widgets {
 				--stickyTop: var(--globalHeaderHeight);
-				margin-top: 0px;
+				margin-top: 1px;
 			}
 		}
 
