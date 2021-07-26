@@ -6,7 +6,7 @@ import '@client/style.scss';
 
 import * as Sentry from '@sentry/browser';
 import { Integrations } from '@sentry/tracing';
-import { computed, createApp, watch } from 'vue';
+import { computed, createApp, watch, markRaw } from 'vue';
 
 import widgets from '@client/widgets';
 import directives from '@client/directives';
@@ -282,7 +282,7 @@ if ($i) {
 		}
 	}
 
-	const main = stream.useChannel('main', null, 'System');
+	const main = markRaw(stream.useChannel('main', null, 'System'));
 
 	// 自分の情報が更新されたとき
 	main.on('meUpdated', i => {

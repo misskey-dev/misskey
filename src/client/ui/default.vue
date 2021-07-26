@@ -115,13 +115,13 @@ export default defineComponent({
 		if (this.$store.state.widgets.length === 0) {
 			this.$store.set('widgets', [{
 				name: 'calendar',
-				id: 'a', place: 'right', data: {}
+				id: 'a', place: null, data: {}
 			}, {
 				name: 'notifications',
-				id: 'b', place: 'right', data: {}
+				id: 'b', place: null, data: {}
 			}, {
 				name: 'trends',
-				id: 'c', place: 'right', data: {}
+				id: 'c', place: null, data: {}
 			}]);
 		}
 	},
@@ -143,7 +143,7 @@ export default defineComponent({
 		},
 
 		attachSticky(ref) {
-			const sticky = new StickySidebar(this.$refs[ref], this.$store.state.menuDisplay === 'top' ? 0 : 16, this.$store.state.menuDisplay === 'top' ? 60 : 0); // TODO: ヘッダーの高さを60pxと決め打ちしているのを直す
+			const sticky = new StickySidebar(this.$refs[ref], this.$store.state.menuDisplay === 'top' ? 1 : 16, this.$store.state.menuDisplay === 'top' ? 60 : 0); // TODO: ヘッダーの高さを60pxと決め打ちしているのを直す
 			window.addEventListener('scroll', () => {
 				sticky.calc(window.scrollY);
 			}, { passive: true });
