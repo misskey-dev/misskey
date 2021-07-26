@@ -8,7 +8,7 @@ import { swLang } from '@client/sw/lang';
 import { swNotificationRead } from '@client/sw/notification-read';
 import { pushNotificationData } from '@/types';
 import * as ope from './operations';
-import renderAcct from '@/misc/acct/render';
+import { getAcct } from '@/misc/acct';
 
 //#region Lifecycle: Install
 self.addEventListener('install', ev => {
@@ -121,7 +121,7 @@ self.addEventListener('notificationclick', ev => {
 			client = await ope.api('following/create', id, { userId: body.userId });
 			break;
 		case 'showUser':
-			client = await ope.openUser(renderAcct(body.user), id);
+			client = await ope.openUser(getAcct(body.user), id);
 			if (body.type !== 'renote') close = false;
 			break;
 		case 'reply':
@@ -169,7 +169,7 @@ self.addEventListener('notificationclick', ev => {
 						break;
 					}
 					if ('user' in body) {
-						client = await ope.openUser(renderAcct(body.data.user), id);
+						client = await ope.openUser(getAcct(body.data.user), id);
 						break;
 					}
 			}

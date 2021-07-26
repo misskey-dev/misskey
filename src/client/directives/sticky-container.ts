@@ -6,7 +6,7 @@ export default {
 
 		const header = src.children[0];
 		const currentStickyTop = getComputedStyle(src).getPropertyValue('--stickyTop') || '0px';
-		src.style.setProperty('--stickyTop', `${parseInt(currentStickyTop) + header.offsetHeight}px`);
+		src.style.setProperty('--stickyTop', `calc(${currentStickyTop} + ${header.offsetHeight}px)`);
 		header.style.setProperty('--stickyTop', currentStickyTop);
 		header.style.position = 'sticky';
 		header.style.top = 'var(--stickyTop)';

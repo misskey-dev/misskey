@@ -4,50 +4,18 @@
 
 import '@client/style.scss';
 
+//#region account indexedDB migration
 import { set } from '@client/scripts/idb-proxy';
-
-// TODO: そのうち消す
-if (localStorage.getItem('vuex') != null) {
-	const vuex = JSON.parse(localStorage.getItem('vuex'));
-
-	localStorage.setItem('account', JSON.stringify({
-		...vuex.i,
-		token: localStorage.getItem('i')
-	}));
-	set('accounts', JSON.parse(JSON.stringify(vuex.device.accounts)));
-	localStorage.setItem('miux:themes', JSON.stringify(vuex.device.themes));
-
-	if (vuex.device.userData) {
-		for (const [k, v] of 	Object.entries(vuex.device.userData)) {
-			localStorage.setItem('pizzax::base::' + k, JSON.stringify({
-				widgets: v.widgets
-			}));
-
-			if (v.deck) {
-				localStorage.setItem('pizzax::deck::' + k, JSON.stringify({
-					columns: v.deck.columns,
-					layout: v.deck.layout,
-				}));
-			}
-		}
-	}
-
-	localStorage.setItem('vuex-old', JSON.stringify(vuex));
-	localStorage.removeItem('vuex');
-	localStorage.removeItem('i');
-	localStorage.removeItem('locale');
-
-	location.reload();
-}
 
 if (localStorage.getItem('accounts') != null) {
 	set('accounts', JSON.parse(localStorage.getItem('accounts')));
 	localStorage.removeItem('accounts');
 }
+//#endregion
 
 import * as Sentry from '@sentry/browser';
 import { Integrations } from '@sentry/tracing';
-import { computed, createApp, watch } from 'vue';
+import { computed, createApp, watch, markRaw } from 'vue';
 
 import widgets from '@client/widgets';
 import directives from '@client/directives';
@@ -76,18 +44,6 @@ console.info(`Misskey v${version}`);
 // boot.jsのやつを解除
 window.onerror = null;
 window.onunhandledrejection = null;
-
-// 後方互換性のため。
-// TODO: そのうち消す
-if ((typeof ColdDeviceStorage.get('lightTheme') === 'string') || (typeof ColdDeviceStorage.get('darkTheme') === 'string')) {
-	ColdDeviceStorage.set('lightTheme', require('@client/themes/l-light.json5'));
-	ColdDeviceStorage.set('darkTheme', require('@client/themes/d-dark.json5'));
-}
-const link = document.createElement('link');
-link.rel = 'stylesheet';
-link.href = 'https://use.fontawesome.com/releases/v5.15.3/css/all.css';
-document.head.appendChild(link);
-// TODOここまで
 
 if (_DEV_) {
 	console.warn('Development mode!!!');
@@ -355,7 +311,7 @@ if ($i) {
 		}
 	}
 
-	const main = stream.useChannel('main', null, 'System');
+	const main = markRaw(stream.useChannel('main', null, 'System'));
 
 	// 自分の情報が更新されたとき
 	main.on('meUpdated', i => {

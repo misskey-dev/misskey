@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, markRaw } from 'vue';
 import * as os from '@client/os';
 
 export default defineComponent({
@@ -71,7 +71,7 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.connection = os.stream.useChannel('main');
+		this.connection = markRaw(os.stream.useChannel('main'));
 
 		this.connection.on('follow', this.onFollowChange);
 		this.connection.on('unfollow', this.onFollowChange);
