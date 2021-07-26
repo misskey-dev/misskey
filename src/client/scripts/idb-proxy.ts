@@ -19,7 +19,7 @@ if (idbAvailable) {
 			request.onsuccess = (e) => res(e);
 		});
 	} catch (e) {
-		console.error('idb open error', e)
+		console.error('idb open error', e);
 		idbAvailable = false;
 	}
 }
