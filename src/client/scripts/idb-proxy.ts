@@ -13,11 +13,18 @@ let idbAvailable = typeof window !== 'undefined' ? !!window.indexedDB : true;
 if (idbAvailable) {
 	try {
 		const request = indexedDB.open('keyval-store');
-		if (request.error) idbAvailable = false;
+
+		await new Promise((res, rej) => {
+			request.onerror = (e) => rej(e);
+			request.onsuccess = (e) => res(e);
+		});
 	} catch (e) {
+		console.error('idb open error', e);
 		idbAvailable = false;
 	}
 }
+
+if (!idbAvailable) console.error('indexedDB is unavailable. It will use localStorage.');
 
 export async function get(key: string) {
 	if (idbAvailable) return iget(key);
