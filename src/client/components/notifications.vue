@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, PropType, markRaw } from 'vue';
 import paging from '@client/scripts/paging';
 import { markNotificationRead } from '@client/scripts/mark-notification-read';
 import XNotification from './notification.vue';
@@ -90,7 +90,7 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.connection = os.stream.useChannel('main');
+		this.connection = markRaw(os.stream.useChannel('main'));
 		this.connection.on('notification', this.onNotification);
 
 		this.connection.on('readAllNotifications', () => {
