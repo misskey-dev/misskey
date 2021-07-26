@@ -135,7 +135,7 @@ export default defineComponent({
 		},
 
 		async openAccountMenu(ev) {
-			const storedAccounts = (await getAccounts()).filter(x => x.id !== this.$i.id);
+			const storedAccounts = await getAccounts().then(accounts => accounts.filter(x => x.id !== this.$i.id));
 			const accountsPromise = os.api('users/show', { userIds: storedAccounts.map(x => x.id) });
 
 			const accountItemPromises = storedAccounts.map(a => new Promise(res => {

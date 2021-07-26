@@ -101,7 +101,7 @@ export default defineComponent({
 		},
 
 		async openAccountMenu(ev) {
-			const storedAccounts = getAccounts().filter(x => x.id !== this.$i.id);
+			const storedAccounts = await getAccounts().then(accounts => accounts.filter(x => x.id !== this.$i.id));
 			const accountsPromise = os.api('users/show', { userIds: storedAccounts.map(x => x.id) });
 
 			const accountItemPromises = storedAccounts.map(a => new Promise(res => {
@@ -161,8 +161,8 @@ export default defineComponent({
 			}, 'closed');
 		},
 
-		switchAccount(account: any) {
-			const storedAccounts = getAccounts();
+		async switchAccount(account: any) {
+			const storedAccounts = await getAccounts();
 			const token = storedAccounts.find(x => x.id === account.id).token;
 			this.switchAccountWithToken(token);
 		},

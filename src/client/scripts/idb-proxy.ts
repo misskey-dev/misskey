@@ -4,20 +4,32 @@ import {
 	get as iget,
 	set as iset,
 	del as idel,
+	createStore
 } from 'idb-keyval';
 
 const fallbackName = (key: string) => `idbfallback::${key}`;
 
 let idbAvailable = typeof window !== 'undefined' ? !!window.indexedDB : true;
 
+console.log(window.indexedDB);
+console.log(idbAvailable);
+
 if (idbAvailable) {
 	try {
 		const request = indexedDB.open('keyval-store');
-		if (request.error) idbAvailable = false;
+
+		await new Promise((res, rej) => {
+			request.onerror = (e) => rej(e);
+			request.onsuccess = (e) => res(e);
+		});
 	} catch (e) {
+		console.log('catch', e)
 		idbAvailable = false;
 	}
 }
+
+console.log(idbAvailable);
+if (!idbAvailable) console.error('indexedDB is unavailable. It will use localStorage.');
 
 export async function get(key: string) {
 	if (idbAvailable) return iget(key);
