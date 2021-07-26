@@ -43,6 +43,7 @@ export default defineComponent({
 
 	props: {
 		widgets: {
+			type: Array,
 			required: true,
 		},
 		edit: {

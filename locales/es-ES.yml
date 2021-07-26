@@ -523,7 +523,6 @@ removeAllFollowing: "Retener todos los siguientes"
 removeAllFollowingDescription: "Cancelar todos los siguientes del servidor {host}. Ejecutar en caso de que esta instancia haya dejado de existir"
 userSuspended: "Este usuario ha sido suspendido."
 userSilenced: "Este usuario ha sido silenciado."
-sidebar: "Barra lateral"
 divider: "Divisor"
 addItem: "Agregar elemento"
 rooms: "Cuartos"
@@ -665,6 +664,7 @@ user: "Usuarios"
 administration: "Administrar"
 expiration: "Termina el"
 middle: "Mediano"
+global: "Global"
 _ad:
   back: "Deseleccionar"
 _gallery:
@@ -744,9 +744,7 @@ _channel:
   following: "Siguiendo"
   usersCount: "{n} participantes"
   notesCount: "{n} notas"
-_sidebar:
-  full: "Completo"
-  icon: "Avatar"
+_menuDisplay:
   hide: "Ocultar"
 _wordMute:
   muteWords: "Palabras que silenciar"
