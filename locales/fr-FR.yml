@@ -913,6 +913,9 @@ _channel:
   usersCount: "{n} Participant·e·s"
   notesCount: "{n} Notes"
 _menuDisplay:
+  sideFull: "Latéral"
+  sideIcon: "Latéral (icônes)"
+  top: "Haut de page"
   hide: "Masquer"
 _wordMute:
   muteWords: "Mots à filtrer"
