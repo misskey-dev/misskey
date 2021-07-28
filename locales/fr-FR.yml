@@ -760,6 +760,7 @@ middle: "Moyen"
 low: "Basse"
 emailNotConfiguredWarning: "Vous n'avez pas configuré d'adresse e-mail."
 ratio: "Ratio"
+customCss: "CSS personnalisé"
 global: "Global"
 _ad:
   back: "Retour"
