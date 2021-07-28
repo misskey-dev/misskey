@@ -64,7 +64,7 @@
 			</div>
 			<div class="right">
 				<button class="_button item search" @click="search" v-tooltip="$ts.search">
-					<i class="fas fa-search"></i>
+					<i class="fas fa-search icon"></i>
 				</button>
 				<MkA class="item" to="/settings" v-tooltip="$ts.settings"><i class="fas fa-cog icon"></i></MkA>
 			</div>
@@ -373,7 +373,7 @@ export default defineComponent({
 
 			> .left, > .right {
 				> .item, > .menu {
-					display: inline-block;
+					display: inline-flex;
 					vertical-align: middle;
 					height: ($header-height - ($padding * 2));
 					width: ($header-height - ($padding * 2));
@@ -387,11 +387,6 @@ export default defineComponent({
 					}
 
 					> .icon {
-						position: absolute;
-						top: 0;
-						left: 0;
-						right: 0;
-						bottom: 0;
 						margin: auto;
 					}
 
