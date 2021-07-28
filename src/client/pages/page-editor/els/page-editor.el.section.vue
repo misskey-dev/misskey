@@ -1,12 +1,12 @@
 <template>
 <XContainer @remove="() => $emit('remove')" :draggable="true">
-	<template #header><Fa :icon="faStickyNote"/> {{ value.title }}</template>
+	<template #header><i class="fas fa-sticky-note"></i> {{ value.title }}</template>
 	<template #func>
 		<button @click="rename()" class="_button">
-			<Fa :icon="faPencilAlt"/>
+			<i class="fas fa-pencil-alt"></i>
 		</button>
 		<button @click="add()" class="_button">
-			<Fa :icon="faPlus"/>
+			<i class="fas fa-plus"></i>
 		</button>
 	</template>
 
@@ -19,10 +19,8 @@
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
 import { v4 as uuid } from 'uuid';
-import { faPlus, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
-import { faStickyNote } from '@fortawesome/free-regular-svg-icons';
 import XContainer from '../page-editor.container.vue';
-import * as os from '@/os';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {
@@ -43,7 +41,6 @@ export default defineComponent({
 
 	data() {
 		return {
-			faStickyNote, faPlus, faPencilAlt
 		};
 	},
 
@@ -75,7 +72,7 @@ export default defineComponent({
 		async add() {
 			const { canceled, result: type } = await os.dialog({
 				type: null,
-				title: this.$t('_pages.chooseBlock'),
+				title: this.$ts._pages.chooseBlock,
 				select: {
 					groupedItems: this.getPageBlockList()
 				},

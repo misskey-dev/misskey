@@ -5,8 +5,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import * as os from '@/os';
-import parseAcct from '../../misc/acct/parse';
+import * as os from '@client/os';
+import { parseAcct } from '@/misc/acct';
 
 export default defineComponent({
 	created() {
@@ -40,7 +40,7 @@ export default defineComponent({
 			});
 		}
 
-		os.promiseDialog(promise, null, null, this.$t('fetchingAsApObject'));
+		os.promiseDialog(promise, null, null, this.$ts.fetchingAsApObject);
 	},
 
 	methods: {

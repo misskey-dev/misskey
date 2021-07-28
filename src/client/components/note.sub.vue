@@ -6,7 +6,7 @@
 			<XNoteHeader class="header" :note="note" :mini="true"/>
 			<div class="body">
 				<p v-if="note.cw != null" class="cw">
-					<Mfm v-if="note.cw != ''" class="text" :text="note.cw" :author="note.user" :i="$store.state.i" :custom-emojis="note.emojis" />
+					<Mfm v-if="note.cw != ''" class="text" :text="note.cw" :author="note.user" :i="$i" :custom-emojis="note.emojis" />
 					<XCwButton v-model:value="showContent" :note="note"/>
 				</p>
 				<div class="content" v-show="note.cw == null || showContent">
@@ -24,7 +24,7 @@ import { defineComponent } from 'vue';
 import XNoteHeader from './note-header.vue';
 import XSubNoteContent from './sub-note-content.vue';
 import XCwButton from './cw-button.vue';
-import * as os from '@/os';
+import * as os from '@client/os';
 
 export default defineComponent({
 	name: 'XSub',
@@ -139,7 +139,7 @@ export default defineComponent({
 	}
 
 	> .reply {
-		border-left: solid 1px var(--divider);
+		border-left: solid 0.5px var(--divider);
 		margin-top: 10px;
 	}
 }

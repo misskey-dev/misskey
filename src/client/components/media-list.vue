@@ -17,7 +17,7 @@ import { defineComponent } from 'vue';
 import XBanner from './media-banner.vue';
 import XImage from './media-image.vue';
 import XVideo from './media-video.vue';
-import * as os from '@/os';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {
@@ -32,8 +32,6 @@ export default defineComponent({
 		raw: {
 			default: false
 		},
-		// specify the parent element
-		parentElement: {}
 	},
 	data() {
 		return {
@@ -66,7 +64,7 @@ export default defineComponent({
 
 				if (this.$refs.gridOuter) {
 					let height = 287;
-					const parent = this.parentElement || this.$parent.$el;
+					const parent = this.$parent.$el;
 
 					if (this.$refs.gridOuter.clientHeight) {
 						height = this.$refs.gridOuter.clientHeight;
@@ -81,11 +79,6 @@ export default defineComponent({
 			});
 		}
 	},
-	watch: {
-		parentElement() {
-			this.size();
-		}
-	}
 });
 </script>
 

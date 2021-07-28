@@ -1,17 +1,13 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { publishAdminStream } from '../../../../services/stream';
 import { ApiError } from '../../error';
 import { getUser } from '../../common/getters';
 import { AbuseUserReports, Users } from '../../../../models';
-import { genId } from '../../../../misc/gen-id';
+import { genId } from '@/misc/gen-id';
 
 export const meta = {
-	desc: {
-		'ja-JP': '指定したユーザーを迷惑なユーザーであると報告します。'
-	},
-
 	tags: ['users'],
 
 	requireCredential: true as const,
@@ -19,17 +15,10 @@ export const meta = {
 	params: {
 		userId: {
 			validator: $.type(ID),
-			desc: {
-				'ja-JP': '対象のユーザーのID',
-				'en-US': 'Target user ID'
-			}
 		},
 
 		comment: {
 			validator: $.str.range(1, 2048),
-			desc: {
-				'ja-JP': '迷惑行為の詳細'
-			}
 		},
 	},
 

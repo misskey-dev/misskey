@@ -1,31 +1,33 @@
 <template>
-<section class="_section">
-	<div class="_title"><slot name="title"></slot></div>
-	<div class="_content _table">
-		<div class="_row">
-			<div class="_cell"><div class="_label">Process</div>{{ number(activeSincePrevTick) }}</div>
-			<div class="_cell"><div class="_label">Active</div>{{ number(active) }}</div>
-			<div class="_cell"><div class="_label">Waiting</div>{{ number(waiting) }}</div>
-			<div class="_cell"><div class="_label">Delayed</div>{{ number(delayed) }}</div>
-		</div>
-	</div>
-	<div class="_content" style="margin-bottom: -8px;">
-		<canvas ref="chart"></canvas>
-	</div>
-	<div class="_content" style="max-height: 180px; overflow: auto;">
-		<div v-if="jobs.length > 0">
-			<div v-for="job in jobs" :key="job[0]">
-				<span>{{ job[0] }}</span>
-				<span style="margin-left: 8px; opacity: 0.7;">({{ number(job[1]) }} jobs)</span>
+<div class="_formItem">
+	<div class="_formLabel"><slot name="title"></slot></div>
+	<div class="_formPanel pumxzjhg">
+		<div class="_table status">
+			<div class="_row">
+				<div class="_cell"><div class="_label">Process</div>{{ number(activeSincePrevTick) }}</div>
+				<div class="_cell"><div class="_label">Active</div>{{ number(active) }}</div>
+				<div class="_cell"><div class="_label">Waiting</div>{{ number(waiting) }}</div>
+				<div class="_cell"><div class="_label">Delayed</div>{{ number(delayed) }}</div>
 			</div>
 		</div>
-		<span v-else style="opacity: 0.5;">{{ $t('noJobs') }}</span>
+		<div class="">
+			<canvas ref="chart"></canvas>
+		</div>
+		<div class="jobs">
+			<div v-if="jobs.length > 0">
+				<div v-for="job in jobs" :key="job[0]">
+					<span>{{ job[0] }}</span>
+					<span style="margin-left: 8px; opacity: 0.7;">({{ number(job[1]) }} jobs)</span>
+				</div>
+			</div>
+			<span v-else style="opacity: 0.5;">{{ $ts.noJobs }}</span>
+		</div>
 	</div>
-</section>
+</div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, markRaw } from 'vue';
 import Chart from 'chart.js';
 import number from '../../filters/number';
 
@@ -36,7 +38,7 @@ const alpha = (hex, a) => {
 	const b = parseInt(result[3], 16);
 	return `rgba(${r}, ${g}, ${b}, ${a})`;
 };
-import * as os from '@/os';
+import * as os from '@client/os';
 
 export default defineComponent({
 	props: {
@@ -63,11 +65,11 @@ export default defineComponent({
 		this.fetchJobs();
 
 		// TODO: var(--panel)の色が暗いか明るいかで判定する
-		const gridColor = this.$store.state.device.darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+		const gridColor = this.$store.state.darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
 
 		Chart.defaults.global.defaultFontColor = getComputedStyle(document.documentElement).getPropertyValue('--fg');
 
-		this.chart = new Chart(this.$refs.chart, {
+		this.chart = markRaw(new Chart(this.$refs.chart, {
 			type: 'line',
 			data: {
 				labels: [],
@@ -110,10 +112,10 @@ export default defineComponent({
 				aspectRatio: 3,
 				layout: {
 					padding: {
-						left: 0,
-						right: 0,
-						top: 8,
-						bottom: 0
+						left: 16,
+						right: 16,
+						top: 16,
+						bottom: 12
 					}
 				},
 				legend: {
@@ -150,7 +152,7 @@ export default defineComponent({
 					mode: 'index',
 				}
 			}
-		});
+		}));
 
 		this.connection.on('stats', this.onStats);
 		this.connection.on('statsLog', this.onStatsLog);
@@ -198,3 +200,19 @@ export default defineComponent({
 	}
 });
 </script>
+
+<style lang="scss" scoped>
+.pumxzjhg {
+	> .status {
+		padding: 16px;
+		border-bottom: solid 0.5px var(--divider);
+	}
+
+	> .jobs {
+		padding: 16px;
+		border-top: solid 0.5px var(--divider);
+		max-height: 180px;
+		overflow: auto;
+	}
+}
+</style>

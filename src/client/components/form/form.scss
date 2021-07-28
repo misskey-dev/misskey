@@ -1,0 +1,52 @@
+._formPanel {
+	background: var(--panel);
+	border-radius: var(--radius);
+	transition: background 0.2s ease;
+
+	&._formClickable {
+		&:hover {
+			//background: var(--panelHighlight);
+		}
+
+		&:active {
+			background: var(--panelHighlight);
+			transition: background 0s;
+		}
+	}
+}
+
+._formLabel,
+._formCaption {
+	font-size: 80%;
+	color: var(--fgTransparentWeak);
+
+	&:empty {
+		display: none;
+	}
+}
+
+._formLabel {
+	position: sticky;
+	top: var(--stickyTop, 0px);
+	z-index: 2;
+	margin: -8px calc(var(--formXPadding) * -1) 0 calc(var(--formXPadding) * -1);
+	padding: 8px calc(var(--formContentHMargin) + var(--formXPadding)) 8px calc(var(--formContentHMargin) + var(--formXPadding));
+	background: var(--X17);
+	-webkit-backdrop-filter: blur(10px);
+	backdrop-filter: blur(10px);
+}
+
+._themeChanging_ ._formLabel {
+	transition: none !important;
+	background: transparent;
+}
+
+._formCaption {
+	padding: 8px var(--formContentHMargin) 0 var(--formContentHMargin);
+}
+
+._formItem {
+	& + ._formItem {
+		margin-top: 24px;
+	}
+}

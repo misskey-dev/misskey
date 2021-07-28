@@ -1,40 +1,40 @@
 <template>
 <div class="mrdgzndn">
-	<Mfm :text="text" :is-note="false" :i="$store.state.i" :key="text"/>
+	<Mfm :text="text" :is-note="false" :i="$i" :key="text"/>
 	<MkUrlPreview v-for="url in urls" :url="url" :key="url" class="url"/>
 </div>
 </template>
 
 <script lang="ts">
-import { defineAsyncComponent, defineComponent } from 'vue';
-import { parse } from '../../../mfm/parse';
-import { unique } from '../../../prelude/array';
+import { TextBlock } from '@client/scripts/hpml/block';
+import { Hpml } from '@client/scripts/hpml/evaluator';
+import { defineAsyncComponent, defineComponent, PropType } from 'vue';
+import * as mfm from 'mfm-js';
+import { extractUrlFromMfm } from '@/misc/extract-url-from-mfm';
 
 export default defineComponent({
 	components: {
-		MkUrlPreview: defineAsyncComponent(() => import('@/components/url-preview.vue')),
+		MkUrlPreview: defineAsyncComponent(() => import('@client/components/url-preview.vue')),
 	},
 	props: {
-		value: {
+		block: {
+			type: Object as PropType<TextBlock>,
 			required: true
 		},
 		hpml: {
+			type: Object as PropType<Hpml>,
 			required: true
 		}
 	},
 	data() {
 		return {
-			text: this.hpml.interpolate(this.value.text),
+			text: this.hpml.interpolate(this.block.text),
 		};
 	},
 	computed: {
 		urls(): string[] {
 			if (this.text) {
-				const ast = parse(this.text);
-				// TODO: 再帰的にURL要素がないか調べる
-				return unique(ast
-					.filter(t => ((t.node.type == 'url' || t.node.type == 'link') && t.node.props.url && !t.node.props.silent))
-					.map(t => t.node.props.url));
+				return extractUrlFromMfm(mfm.parse(this.text));
 			} else {
 				return [];
 			}
@@ -43,7 +43,7 @@ export default defineComponent({
 	watch: {
 		'hpml.vars': {
 			handler() {
-				this.text = this.hpml.interpolate(this.value.text);
+				this.text = this.hpml.interpolate(this.block.text);
 			},
 			deep: true
 		}

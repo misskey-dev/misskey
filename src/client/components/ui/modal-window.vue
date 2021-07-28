@@ -1,13 +1,13 @@
 <template>
 <MkModal ref="modal" @click="$emit('click')" @closed="$emit('closed')">
-	<div class="ebkgoccj _popup _narrow_" @keydown="onKeydown" :style="{ width: `${width}px`, height: height ? `${height}px` : null }">
+	<div class="ebkgoccj _popup _narrow_" @keydown="onKeydown" :style="{ width: `${width}px`, height: scroll ? (height ? `${height}px` : null) :  (height ? `min(${height}px, 100%)` : '100%') }">
 		<div class="header">
-			<button class="_button" v-if="withOkButton" @click="$emit('close')"><Fa :icon="faTimes"/></button>
+			<button class="_button" v-if="withOkButton" @click="$emit('close')"><i class="fas fa-times"></i></button>
 			<span class="title">
 				<slot name="header"></slot>
 			</span>
-			<button class="_button" v-if="!withOkButton" @click="$emit('close')"><Fa :icon="faTimes"/></button>
-			<button class="_button" v-if="withOkButton" @click="$emit('ok')" :disabled="okButtonDisabled"><Fa :icon="faCheck"/></button>
+			<button class="_button" v-if="!withOkButton" @click="$emit('close')"><i class="fas fa-times"></i></button>
+			<button class="_button" v-if="withOkButton" @click="$emit('ok')" :disabled="okButtonDisabled"><i class="fas fa-check"></i></button>
 		</div>
 		<div class="body" v-if="padding">
 			<div class="_section">
@@ -23,7 +23,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
 import MkModal from './modal.vue';
 
 export default defineComponent({
@@ -61,13 +60,17 @@ export default defineComponent({
 			required: false,
 			default: true,
 		},
+		scroll: {
+			type: Boolean,
+			required: false,
+			default: true,
+		},
 	},
 
 	emits: ['click', 'close', 'closed', 'ok'],
 
 	data() {
 		return {
-			faTimes, faCheck
 		};
 	},
 
@@ -94,10 +97,10 @@ export default defineComponent({
 	flex-direction: column;
 	contain: content;
 
-	--section-padding: 24px;
+	--root-margin: 24px;
 
 	@media (max-width: 500px) {
-		--section-padding: 16px;
+		--root-margin: 16px;
 	}
 
 	> .header {

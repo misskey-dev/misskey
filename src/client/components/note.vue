@@ -1,6 +1,6 @@
 <template>
 <div
-	class="note _panel"
+	class="tkcbzcuz"
 	v-if="!muted"
 	v-show="!isDeleted"
 	:tabindex="!isDeleted ? '-1' : null"
@@ -8,103 +8,103 @@
 	v-hotkey="keymap"
 	v-size="{ max: [500, 450, 350, 300] }"
 >
-	<XSub v-for="note in conversation" class="reply-to-more" :key="note.id" :note="note"/>
 	<XSub :note="appearNote.reply" class="reply-to" v-if="appearNote.reply"/>
-	<div class="info" v-if="pinned"><Fa :icon="faThumbtack"/> {{ $t('pinnedNote') }}</div>
-	<div class="info" v-if="appearNote._prId_"><Fa :icon="faBullhorn"/> {{ $t('promotion') }}<button class="_textButton hide" @click="readPromo()">{{ $t('hideThisNote') }} <Fa :icon="faTimes"/></button></div>
-	<div class="info" v-if="appearNote._featuredId_"><Fa :icon="faBolt"/> {{ $t('featured') }}</div>
+	<div class="info" v-if="pinned"><i class="fas fa-thumbtack"></i> {{ $ts.pinnedNote }}</div>
+	<div class="info" v-if="appearNote._prId_"><i class="fas fa-bullhorn"></i> {{ $ts.promotion }}<button class="_textButton hide" @click="readPromo()">{{ $ts.hideThisNote }} <i class="fas fa-times"></i></button></div>
+	<div class="info" v-if="appearNote._featuredId_"><i class="fas fa-bolt"></i> {{ $ts.featured }}</div>
 	<div class="renote" v-if="isRenote">
 		<MkAvatar class="avatar" :user="note.user"/>
-		<Fa :icon="faRetweet"/>
-		<i18n-t keypath="renotedBy" tag="span">
+		<i class="fas fa-retweet"></i>
+		<I18n :src="$ts.renotedBy" tag="span">
 			<template #user>
-				<router-link class="name" :to="userPage(note.user)" v-user-preview="note.userId">
+				<MkA class="name" :to="userPage(note.user)" v-user-preview="note.userId">
 					<MkUserName :user="note.user"/>
-				</router-link>
+				</MkA>
 			</template>
-		</i18n-t>
+		</I18n>
 		<div class="info">
 			<button class="_button time" @click="showRenoteMenu()" ref="renoteTime">
-				<Fa class="dropdownIcon" v-if="isMyRenote" :icon="faEllipsisH"/>
+				<i v-if="isMyRenote" class="fas fa-ellipsis-h dropdownIcon"></i>
 				<MkTime :time="note.createdAt"/>
 			</button>
 			<span class="visibility" v-if="note.visibility !== 'public'">
-				<Fa v-if="note.visibility === 'home'" :icon="faHome"/>
-				<Fa v-if="note.visibility === 'followers'" :icon="faUnlock"/>
-				<Fa v-if="note.visibility === 'specified'" :icon="faEnvelope"/>
+				<i v-if="note.visibility === 'home'" class="fas fa-home"></i>
+				<i v-else-if="note.visibility === 'followers'" class="fas fa-unlock"></i>
+				<i v-else-if="note.visibility === 'specified'" class="fas fa-envelope"></i>
 			</span>
-			<span class="localOnly" v-if="note.localOnly"><Fa :icon="faBiohazard"/></span>
+			<span class="localOnly" v-if="note.localOnly"><i class="fas fa-biohazard"></i></span>
 		</div>
 	</div>
-	<article class="article" @contextmenu="onContextmenu">
+	<article class="article" @contextmenu.stop="onContextmenu">
 		<MkAvatar class="avatar" :user="appearNote.user"/>
 		<div class="main">
 			<XNoteHeader class="header" :note="appearNote" :mini="true"/>
-			<div class="body" ref="noteBody">
+			<MkInstanceTicker v-if="showTicker" class="ticker" :instance="appearNote.user.instance"/>
+			<div class="body">
 				<p v-if="appearNote.cw != null" class="cw">
-					<Mfm v-if="appearNote.cw != ''" class="text" :text="appearNote.cw" :author="appearNote.user" :i="$store.state.i" :custom-emojis="appearNote.emojis"/>
+					<Mfm v-if="appearNote.cw != ''" class="text" :text="appearNote.cw" :author="appearNote.user" :i="$i" :custom-emojis="appearNote.emojis"/>
 					<XCwButton v-model:value="showContent" :note="appearNote"/>
 				</p>
-				<div class="content" v-show="appearNote.cw == null || showContent">
+				<div class="content" :class="{ collapsed }" v-show="appearNote.cw == null || showContent">
 					<div class="text">
-						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ $t('private') }})</span>
-						<router-link class="reply" v-if="appearNote.replyId" :to="`/notes/${appearNote.replyId}`"><Fa :icon="faReply"/></router-link>
-						<Mfm v-if="appearNote.text" :text="appearNote.text" :author="appearNote.user" :i="$store.state.i" :custom-emojis="appearNote.emojis"/>
+						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ $ts.private }})</span>
+						<MkA class="reply" v-if="appearNote.replyId" :to="`/notes/${appearNote.replyId}`"><i class="fas fa-reply"></i></MkA>
+						<Mfm v-if="appearNote.text" :text="appearNote.text" :author="appearNote.user" :i="$i" :custom-emojis="appearNote.emojis"/>
 						<a class="rp" v-if="appearNote.renote != null">RN:</a>
 					</div>
 					<div class="files" v-if="appearNote.files.length > 0">
-						<XMediaList :media-list="appearNote.files" :parent-element="noteBody"/>
+						<XMediaList :media-list="appearNote.files"/>
 					</div>
 					<XPoll v-if="appearNote.poll" :note="appearNote" ref="pollViewer" class="poll"/>
-					<MkUrlPreview v-for="url in urls" :url="url" :key="url" :compact="true" :detail="detail" class="url-preview"/>
+					<MkUrlPreview v-for="url in urls" :url="url" :key="url" :compact="true" :detail="false" class="url-preview"/>
 					<div class="renote" v-if="appearNote.renote"><XNotePreview :note="appearNote.renote"/></div>
+					<button v-if="collapsed" class="fade _button" @click="collapsed = false">
+						<span>{{ $ts.showMore }}</span>
+					</button>
 				</div>
-				<router-link v-if="appearNote.channel && !inChannel" class="channel" :to="`/channels/${appearNote.channel.id}`"><Fa :icon="faSatelliteDish"/> {{ appearNote.channel.name }}</router-link>
+				<MkA v-if="appearNote.channel && !inChannel" class="channel" :to="`/channels/${appearNote.channel.id}`"><i class="fas fa-satellite-dish"></i> {{ appearNote.channel.name }}</MkA>
 			</div>
 			<footer class="footer">
 				<XReactionsViewer :note="appearNote" ref="reactionsViewer"/>
 				<button @click="reply()" class="button _button">
-					<template v-if="appearNote.reply"><Fa :icon="faReplyAll"/></template>
-					<template v-else><Fa :icon="faReply"/></template>
+					<template v-if="appearNote.reply"><i class="fas fa-reply-all"></i></template>
+					<template v-else><i class="fas fa-reply"></i></template>
 					<p class="count" v-if="appearNote.repliesCount > 0">{{ appearNote.repliesCount }}</p>
 				</button>
 				<button v-if="canRenote" @click="renote()" class="button _button" ref="renoteButton">
-					<Fa :icon="faRetweet"/><p class="count" v-if="appearNote.renoteCount > 0">{{ appearNote.renoteCount }}</p>
+					<i class="fas fa-retweet"></i><p class="count" v-if="appearNote.renoteCount > 0">{{ appearNote.renoteCount }}</p>
 				</button>
 				<button v-else class="button _button">
-					<Fa :icon="faBan"/>
+					<i class="fas fa-ban"></i>
 				</button>
 				<button v-if="appearNote.myReaction == null" class="button _button" @click="react()" ref="reactButton">
-					<Fa :icon="faPlus"/>
+					<i class="fas fa-plus"></i>
 				</button>
 				<button v-if="appearNote.myReaction != null" class="button _button reacted" @click="undoReact(appearNote)" ref="reactButton">
-					<Fa :icon="faMinus"/>
+					<i class="fas fa-minus"></i>
 				</button>
 				<button class="button _button" @click="menu()" ref="menuButton">
-					<Fa :icon="faEllipsisH"/>
+					<i class="fas fa-ellipsis-h"></i>
 				</button>
 			</footer>
 		</div>
 	</article>
-	<XSub v-for="note in replies" :key="note.id" :note="note" class="reply" :detail="true"/>
 </div>
-<div v-else class="_panel muted" @click="muted = false">
-	<i18n-t keypath="userSaysSomething" tag="small">
+<div v-else class="muted" @click="muted = false">
+	<I18n :src="$ts.userSaysSomething" tag="small">
 		<template #name>
-			<router-link class="name" :to="userPage(appearNote.user)" v-user-preview="appearNote.userId">
+			<MkA class="name" :to="userPage(appearNote.user)" v-user-preview="appearNote.userId">
 				<MkUserName :user="appearNote.user"/>
-			</router-link>
+			</MkA>
 		</template>
-	</i18n-t>
+	</I18n>
 </div>
 </template>
 
 <script lang="ts">
-import { computed, defineAsyncComponent, defineComponent, markRaw, ref } from 'vue';
-import { faSatelliteDish, faBolt, faTimes, faBullhorn, faStar, faLink, faExternalLinkSquareAlt, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faQuoteRight, faInfoCircle, faBiohazard, faPlug, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
-import { faCopy, faTrashAlt, faEdit, faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
-import { parse } from '../../mfm/parse';
-import { sum, unique } from '../../prelude/array';
+import { defineAsyncComponent, defineComponent, markRaw } from 'vue';
+import * as mfm from 'mfm-js';
+import { sum } from '../../prelude/array';
 import XSub from './note.sub.vue';
 import XNoteHeader from './note-header.vue';
 import XNotePreview from './note-preview.vue';
@@ -112,22 +112,16 @@ import XReactionsViewer from './reactions-viewer.vue';
 import XMediaList from './media-list.vue';
 import XCwButton from './cw-button.vue';
 import XPoll from './poll.vue';
-import { pleaseLogin } from '@/scripts/please-login';
-import { focusPrev, focusNext } from '@/scripts/focus';
-import { url } from '@/config';
-import copyToClipboard from '@/scripts/copy-to-clipboard';
-import { checkWordMute } from '@/scripts/check-word-mute';
-import { userPage } from '@/filters/user';
-import * as os from '@/os';
-import { noteActions, noteViewInterruptors } from '@/store';
-
-function markRawAll(...xs) {
-	for (const x of xs) {
-		markRaw(x);
-	}
-}
-
-markRawAll(faEdit, faBolt, faTimes, faBullhorn, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faBiohazard, faPlug, faSatelliteDish);
+import { pleaseLogin } from '@client/scripts/please-login';
+import { focusPrev, focusNext } from '@client/scripts/focus';
+import { url } from '@client/config';
+import copyToClipboard from '@client/scripts/copy-to-clipboard';
+import { checkWordMute } from '@client/scripts/check-word-mute';
+import { userPage } from '@client/filters/user';
+import * as os from '@client/os';
+import { noteActions, noteViewInterruptors } from '@client/store';
+import { reactionPicker } from '@client/scripts/reaction-picker';
+import { extractUrlFromMfm } from '@/misc/extract-url-from-mfm';
 
 export default defineComponent({
 	components: {
@@ -138,24 +132,20 @@ export default defineComponent({
 		XMediaList,
 		XCwButton,
 		XPoll,
-		MkUrlPreview: defineAsyncComponent(() => import('@/components/url-preview.vue')),
+		MkUrlPreview: defineAsyncComponent(() => import('@client/components/url-preview.vue')),
+		MkInstanceTicker: defineAsyncComponent(() => import('@client/components/instance-ticker.vue')),
 	},
 
 	inject: {
 		inChannel: {
 			default: null
-		}
+		},
 	},
 
 	props: {
 		note: {
 			type: Object,
 			required: true
-		},
-		detail: {
-			type: Boolean,
-			required: false,
-			default: false
 		},
 		pinned: {
 			type: Boolean,
@@ -169,19 +159,17 @@ export default defineComponent({
 	data() {
 		return {
 			connection: null,
-			conversation: [],
 			replies: [],
 			showContent: false,
+			collapsed: false,
 			isDeleted: false,
 			muted: false,
-			noteBody: this.$refs.noteBody,
-			faEdit, faBolt, faTimes, faBullhorn, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faBiohazard, faPlug, faSatelliteDish
 		};
 	},
 
 	computed: {
 		rs() {
-			return this.$store.state.settings.reactions;
+			return this.$store.state.reactions;
 		},
 		keymap(): any {
 			return {
@@ -221,11 +209,11 @@ export default defineComponent({
 		},
 
 		isMyNote(): boolean {
-			return this.$store.getters.isSignedIn && (this.$store.state.i.id === this.appearNote.userId);
+			return this.$i && (this.$i.id === this.appearNote.userId);
 		},
 
 		isMyRenote(): boolean {
-			return this.$store.getters.isSignedIn && (this.$store.state.i.id === this.note.userId);
+			return this.$i && (this.$i.id === this.note.userId);
 		},
 
 		canRenote(): boolean {
@@ -240,31 +228,29 @@ export default defineComponent({
 
 		urls(): string[] {
 			if (this.appearNote.text) {
-				const ast = parse(this.appearNote.text);
-				// TODO: 再帰的にURL要素がないか調べる
-				const urls = unique(ast
-					.filter(t => ((t.node.type == 'url' || t.node.type == 'link') && t.node.props.url && !t.node.props.silent))
-					.map(t => t.node.props.url));
-
-				// unique without hash
-				// [ http://a/#1, http://a/#2, http://b/#3 ] => [ http://a/#1, http://b/#3 ]
-				const removeHash = x => x.replace(/#[^#]*$/, '');
-
-				return urls.reduce((array, url) => {
-					const removed = removeHash(url);
-					if (!array.map(x => removeHash(x)).includes(removed)) array.push(url);
-					return array;
-				}, []);
+				return extractUrlFromMfm(mfm.parse(this.appearNote.text));
 			} else {
 				return null;
 			}
+		},
+
+		showTicker() {
+			if (this.$store.state.instanceTicker === 'always') return true;
+			if (this.$store.state.instanceTicker === 'remote' && this.appearNote.user.instance) return true;
+			return false;
 		}
 	},
 
 	async created() {
-		if (this.$store.getters.isSignedIn) {
+		if (this.$i) {
 			this.connection = os.stream;
 		}
+
+		this.collapsed = this.appearNote.cw == null && this.appearNote.text && (
+			(this.appearNote.text.split('\n').length > 9) ||
+			(this.appearNote.text.length > 500)
+		);
+		this.muted = await checkWordMute(this.appearNote, this.$i, this.$store.state.mutedWords);
 
 		// plugin
 		if (noteViewInterruptors.length > 0) {
@@ -274,41 +260,20 @@ export default defineComponent({
 			}
 			this.$emit('update:note', Object.freeze(result));
 		}
-
-		this.muted = await checkWordMute(this.appearNote, this.$store.state.i, this.$store.state.settings.mutedWords);
-
-		if (this.detail) {
-			os.api('notes/children', {
-				noteId: this.appearNote.id,
-				limit: 30
-			}).then(replies => {
-				this.replies = replies;
-			});
-
-			if (this.appearNote.replyId) {
-				os.api('notes/conversation', {
-					noteId: this.appearNote.replyId
-				}).then(conversation => {
-					this.conversation = conversation.reverse();
-				});
-			}
-		}
 	},
 
 	mounted() {
 		this.capture(true);
 
-		if (this.$store.getters.isSignedIn) {
+		if (this.$i) {
 			this.connection.on('_connected_', this.onStreamConnected);
 		}
-
-		this.noteBody = this.$refs.noteBody;
 	},
 
 	beforeUnmount() {
 		this.decapture(true);
 
-		if (this.$store.getters.isSignedIn) {
+		if (this.$i) {
 			this.connection.off('_connected_', this.onStreamConnected);
 		}
 	},
@@ -335,14 +300,15 @@ export default defineComponent({
 		},
 
 		capture(withHandler = false) {
-			if (this.$store.getters.isSignedIn) {
-				this.connection.send(document.body.contains(this.$el) ? 'sn' : 's', { id: this.appearNote.id });
+			if (this.$i) {
+				// TODO: このノートがストリーミング経由で流れてきた場合のみ sr する
+				this.connection.send(document.body.contains(this.$el) ? 'sr' : 's', { id: this.appearNote.id });
 				if (withHandler) this.connection.on('noteUpdated', this.onStreamNoteUpdated);
 			}
 		},
 
 		decapture(withHandler = false) {
-			if (this.$store.getters.isSignedIn) {
+			if (this.$i) {
 				this.connection.send('un', {
 					id: this.appearNote.id
 				});
@@ -384,7 +350,7 @@ export default defineComponent({
 						[reaction]: currentCount + 1
 					};
 
-					if (body.userId === this.$store.state.i.id) {
+					if (body.userId === this.$i.id) {
 						n.myReaction = reaction;
 					}
 
@@ -409,7 +375,7 @@ export default defineComponent({
 						[reaction]: Math.max(0, currentCount - 1)
 					};
 
-					if (body.userId === this.$store.state.i.id) {
+					if (body.userId === this.$i.id) {
 						n.myReaction = null;
 					}
 
@@ -429,7 +395,7 @@ export default defineComponent({
 					choices[choice] = {
 						...choices[choice],
 						votes: choices[choice].votes + 1,
-						...(body.userId === this.$store.state.i.id ? {
+						...(body.userId === this.$i.id ? {
 							isVoted: true
 						} : {})
 					};
@@ -464,16 +430,16 @@ export default defineComponent({
 			pleaseLogin();
 			this.blur();
 			os.modalMenu([{
-				text: this.$t('renote'),
-				icon: faRetweet,
+				text: this.$ts.renote,
+				icon: 'fas fa-retweet',
 				action: () => {
 					os.api('notes/create', {
 						renoteId: this.appearNote.id
 					});
 				}
 			}, {
-				text: this.$t('quote'),
-				icon: faQuoteRight,
+				text: this.$ts.quote,
+				icon: 'fas fa-quote-right',
 				action: () => {
 					os.post({
 						renote: this.appearNote,
@@ -485,28 +451,39 @@ export default defineComponent({
 		},
 
 		renoteDirectly() {
-			os.api('notes/create', {
+			os.apiWithDialog('notes/create', {
 				renoteId: this.appearNote.id
+			}, undefined, (res: any) => {
+				os.dialog({
+					type: 'success',
+					text: this.$ts.renoted,
+				});
+			}, (e: Error) => {
+				if (e.id === 'b5c90186-4ab0-49c8-9bba-a1f76c282ba4') {
+					os.dialog({
+						type: 'error',
+						text: this.$ts.cantRenote,
+					});
+				} else if (e.id === 'fd4cc33e-2a37-48dd-99cc-9b806eb2031a') {
+					os.dialog({
+						type: 'error',
+						text: this.$ts.cantReRenote,
+					});
+				}
 			});
 		},
 
 		react(viaKeyboard = false) {
 			pleaseLogin();
 			this.blur();
-			os.popup(defineAsyncComponent(() => import('@/components/reaction-picker.vue')), {
-				showFocus: viaKeyboard,
-				src: this.$refs.reactButton,
-			}, {
-				done: reaction => {
-					if (reaction) {
-						os.api('notes/reactions/create', {
-							noteId: this.appearNote.id,
-							reaction: reaction
-						});
-					}
-					this.focus();
-				},
-			}, 'closed');
+			reactionPicker.show(this.$refs.reactButton, reaction => {
+				os.api('notes/reactions/create', {
+					noteId: this.appearNote.id,
+					reaction: reaction
+				});
+			}, () => {
+				this.focus();
+			});
 		},
 
 		reactDirectly(reaction) {
@@ -528,13 +505,30 @@ export default defineComponent({
 			pleaseLogin();
 			os.apiWithDialog('notes/favorites/create', {
 				noteId: this.appearNote.id
+			}, undefined, (res: any) => {
+				os.dialog({
+					type: 'success',
+					text: this.$ts.favorited,
+				});
+			}, (e: Error) => {
+				if (e.id === 'a402c12b-34dd-41d2-97d8-4d2ffd96a1a6') {
+					os.dialog({
+						type: 'error',
+						text: this.$ts.alreadyFavorited,
+					});
+				} else if (e.id === '6dd26674-e060-4816-909a-45ba3f4da458') {
+					os.dialog({
+						type: 'error',
+						text: this.$ts.cantFavorite,
+					});
+				}
 			});
 		},
 
 		del() {
 			os.dialog({
 				type: 'warning',
-				text: this.$t('noteDeleteConfirm'),
+				text: this.$ts.noteDeleteConfirm,
 				showCancelButton: true
 			}).then(({ canceled }) => {
 				if (canceled) return;
@@ -548,7 +542,7 @@ export default defineComponent({
 		delEdit() {
 			os.dialog({
 				type: 'warning',
-				text: this.$t('deleteAndEditConfirm'),
+				text: this.$ts.deleteAndEditConfirm,
 				showCancelButton: true
 			}).then(({ canceled }) => {
 				if (canceled) return;
@@ -575,76 +569,81 @@ export default defineComponent({
 
 		getMenu() {
 			let menu;
-			if (this.$store.getters.isSignedIn) {
+			if (this.$i) {
 				const statePromise = os.api('notes/state', {
 					noteId: this.appearNote.id
 				});
 
 				menu = [{
-					type: 'link',
-					icon: faInfoCircle,
-					text: this.$t('details'),
-					to: '/notes/' + this.appearNote.id
-				}, null, {
-					icon: faCopy,
-					text: this.$t('copyContent'),
+					icon: 'fas fa-copy',
+					text: this.$ts.copyContent,
 					action: this.copyContent
 				}, {
-					icon: faLink,
-					text: this.$t('copyLink'),
+					icon: 'fas fa-link',
+					text: this.$ts.copyLink,
 					action: this.copyLink
 				}, (this.appearNote.url || this.appearNote.uri) ? {
-					icon: faExternalLinkSquareAlt,
-					text: this.$t('showOnRemote'),
+					icon: 'fas fa-external-link-square-alt',
+					text: this.$ts.showOnRemote,
 					action: () => {
 						window.open(this.appearNote.url || this.appearNote.uri, '_blank');
 					}
 				} : undefined,
+				{
+					icon: 'fas fa-share-alt',
+					text: this.$ts.share,
+					action: this.share
+				},
 				null,
 				statePromise.then(state => state.isFavorited ? {
-					icon: faStar,
-					text: this.$t('unfavorite'),
+					icon: 'fas fa-star',
+					text: this.$ts.unfavorite,
 					action: () => this.toggleFavorite(false)
 				} : {
-					icon: faStar,
-					text: this.$t('favorite'),
+					icon: 'fas fa-star',
+					text: this.$ts.favorite,
 					action: () => this.toggleFavorite(true)
 				}),
-				(this.appearNote.userId != this.$store.state.i.id) ? statePromise.then(state => state.isWatching ? {
-					icon: faEyeSlash,
-					text: this.$t('unwatch'),
+				{
+					icon: 'fas fa-paperclip',
+					text: this.$ts.clip,
+					action: () => this.clip()
+				},
+				(this.appearNote.userId != this.$i.id) ? statePromise.then(state => state.isWatching ? {
+					icon: 'fas fa-eye-slash',
+					text: this.$ts.unwatch,
 					action: () => this.toggleWatch(false)
 				} : {
-					icon: faEye,
-					text: this.$t('watch'),
+					icon: 'fas fa-eye',
+					text: this.$ts.watch,
 					action: () => this.toggleWatch(true)
 				}) : undefined,
-				this.appearNote.userId == this.$store.state.i.id ? (this.$store.state.i.pinnedNoteIds || []).includes(this.appearNote.id) ? {
-					icon: faThumbtack,
-					text: this.$t('unpin'),
+				this.appearNote.userId == this.$i.id ? (this.$i.pinnedNoteIds || []).includes(this.appearNote.id) ? {
+					icon: 'fas fa-thumbtack',
+					text: this.$ts.unpin,
 					action: () => this.togglePin(false)
 				} : {
-					icon: faThumbtack,
-					text: this.$t('pin'),
+					icon: 'fas fa-thumbtack',
+					text: this.$ts.pin,
 					action: () => this.togglePin(true)
 				} : undefined,
-				...(this.$store.state.i.isModerator || this.$store.state.i.isAdmin ? [
+				...(this.$i.isModerator || this.$i.isAdmin ? [
 					null,
 					{
-						icon: faBullhorn,
-						text: this.$t('promote'),
+						icon: 'fas fa-bullhorn',
+						text: this.$ts.promote,
 						action: this.promote
 					}]
 					: []
 				),
-				...(this.appearNote.userId != this.$store.state.i.id ? [
+				...(this.appearNote.userId != this.$i.id ? [
 					null,
 					{
-						icon: faExclamationCircle,
-						text: this.$t('reportAbuse'),
+						icon: 'fas fa-exclamation-circle',
+						text: this.$ts.reportAbuse,
 						action: () => {
 							const u = `${url}/notes/${this.appearNote.id}`;
-							os.popup(defineAsyncComponent(() => import('@/components/abuse-report-window.vue')), {
+							os.popup(import('@client/components/abuse-report-window.vue'), {
 								user: this.appearNote.user,
 								initialComment: `Note: ${u}\n-----\n`
 							}, {}, 'closed');
@@ -652,16 +651,16 @@ export default defineComponent({
 					}]
 					: []
 				),
-				...(this.appearNote.userId == this.$store.state.i.id || this.$store.state.i.isModerator || this.$store.state.i.isAdmin ? [
+				...(this.appearNote.userId == this.$i.id || this.$i.isModerator || this.$i.isAdmin ? [
 					null,
-					this.appearNote.userId == this.$store.state.i.id ? {
-						icon: faEdit,
-						text: this.$t('deleteAndEdit'),
+					this.appearNote.userId == this.$i.id ? {
+						icon: 'fas fa-edit',
+						text: this.$ts.deleteAndEdit,
 						action: this.delEdit
 					} : undefined,
 					{
-						icon: faTrashAlt,
-						text: this.$t('delete'),
+						icon: 'fas fa-trash-alt',
+						text: this.$ts.delete,
 						danger: true,
 						action: this.del
 					}]
@@ -670,16 +669,16 @@ export default defineComponent({
 				.filter(x => x !== undefined);
 			} else {
 				menu = [{
-					icon: faCopy,
-					text: this.$t('copyContent'),
+					icon: 'fas fa-copy',
+					text: this.$ts.copyContent,
 					action: this.copyContent
 				}, {
-					icon: faLink,
-					text: this.$t('copyLink'),
+					icon: 'fas fa-link',
+					text: this.$ts.copyLink,
 					action: this.copyLink
 				}, (this.appearNote.url || this.appearNote.uri) ? {
-					icon: faExternalLinkSquareAlt,
-					text: this.$t('showOnRemote'),
+					icon: 'fas fa-external-link-square-alt',
+					text: this.$ts.showOnRemote,
 					action: () => {
 						window.open(this.appearNote.url || this.appearNote.uri, '_blank');
 					}
@@ -689,7 +688,7 @@ export default defineComponent({
 
 			if (noteActions.length > 0) {
 				menu = menu.concat([null, ...noteActions.map(action => ({
-					icon: faPlug,
+					icon: 'fas fa-plug',
 					text: action.title,
 					action: () => {
 						action.handler(this.appearNote);
@@ -709,7 +708,13 @@ export default defineComponent({
 			};
 			if (isLink(e.target)) return;
 			if (window.getSelection().toString() !== '') return;
-			os.contextMenu(this.getMenu(), e).then(this.focus);
+
+			if (this.$store.state.useReactionPickerForContextMenu) {
+				e.preventDefault();
+				this.react();
+			} else {
+				os.contextMenu(this.getMenu(), e).then(this.focus);
+			}
 		},
 
 		menu(viaKeyboard = false) {
@@ -721,8 +726,8 @@ export default defineComponent({
 		showRenoteMenu(viaKeyboard = false) {
 			if (!this.isMyRenote) return;
 			os.modalMenu([{
-				text: this.$t('unrenote'),
-				icon: faTrashAlt,
+				text: this.$ts.unrenote,
+				icon: 'fas fa-trash-alt',
 				danger: true,
 				action: () => {
 					os.api('notes/delete', {
@@ -756,15 +761,53 @@ export default defineComponent({
 				if (e.id === '72dab508-c64d-498f-8740-a8eec1ba385a') {
 					os.dialog({
 						type: 'error',
-						text: this.$t('pinLimitExceeded')
+						text: this.$ts.pinLimitExceeded
 					});
 				}
 			});
 		},
 
+		async clip() {
+			const clips = await os.api('clips/list');
+			os.modalMenu([{
+				icon: 'fas fa-plus',
+				text: this.$ts.createNew,
+				action: async () => {
+					const { canceled, result } = await os.form(this.$ts.createNewClip, {
+						name: {
+							type: 'string',
+							label: this.$ts.name
+						},
+						description: {
+							type: 'string',
+							required: false,
+							multiline: true,
+							label: this.$ts.description
+						},
+						isPublic: {
+							type: 'boolean',
+							label: this.$ts.public,
+							default: false
+						}
+					});
+					if (canceled) return;
+
+					const clip = await os.apiWithDialog('clips/create', result);
+
+					os.apiWithDialog('clips/add-note', { clipId: clip.id, noteId: this.appearNote.id });
+				}
+			}, null, ...clips.map(clip => ({
+				text: clip.name,
+				action: () => {
+					os.apiWithDialog('clips/add-note', { clipId: clip.id, noteId: this.appearNote.id });
+				}
+			}))], this.$refs.menuButton, {
+			}).then(this.focus);
+		},
+
 		async promote() {
 			const { canceled, result: days } = await os.dialog({
-				title: this.$t('numberOfDays'),
+				title: this.$ts.numberOfDays,
 				input: { type: 'number' }
 			});
 
@@ -773,6 +816,14 @@ export default defineComponent({
 			os.apiWithDialog('admin/promo/create', {
 				noteId: this.appearNote.id,
 				expiresAt: Date.now() + (86400000 * days)
+			});
+		},
+
+		share() {
+			navigator.share({
+				title: this.$t('noteOf', { user: this.appearNote.user.name }),
+				text: this.appearNote.text,
+				url: `${url}/notes/${this.appearNote.id}`
 			});
 		},
 
@@ -798,11 +849,19 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.note {
+.tkcbzcuz {
 	position: relative;
 	transition: box-shadow 0.1s ease;
-	overflow: hidden;
+	overflow: clip;
 	contain: content;
+
+	// これらの指定はパフォーマンス向上には有効だが、ノートの高さは一定でないため、
+	// 下の方までスクロールすると上のノートの高さがここで決め打ちされたものに変化し、表示しているノートの位置が変わってしまう
+	// ノートがマウントされたときに自身の高さを取得し contain-intrinsic-size を設定しなおせばほぼ解決できそうだが、
+	// 今度はその処理自体がパフォーマンス低下の原因にならないか懸念される。また、被リアクションでも高さは変化するため、やはり多少のズレは生じる
+	// 一度レンダリングされた要素はブラウザがよしなにサイズを覚えておいてくれるような実装になるまで待った方が良さそう(なるのか？)
+	//content-visibility: auto;
+  //contain-intrinsic-size: 0 128px;
 
 	&:focus {
 		outline: none;
@@ -839,7 +898,7 @@ export default defineComponent({
 		white-space: pre;
 		color: #d28a3f;
 
-		> [data-icon] {
+		> i {
 			margin-right: 4px;
 		}
 
@@ -856,10 +915,6 @@ export default defineComponent({
 	> .reply-to {
 		opacity: 0.7;
 		padding-bottom: 0;
-	}
-
-	> .reply-to-more {
-		opacity: 0.7;
 	}
 
 	> .renote {
@@ -879,7 +934,7 @@ export default defineComponent({
 			border-radius: 6px;
 		}
 
-		> [data-icon] {
+		> i {
 			margin-right: 4px;
 		}
 
@@ -928,11 +983,12 @@ export default defineComponent({
 		> .avatar {
 			flex-shrink: 0;
 			display: block;
-			//position: sticky;
-			//top: 72px;
 			margin: 0 14px 8px 0;
 			width: 58px;
 			height: 58px;
+			position: sticky;
+			top: calc(22px + var(--stickyTop, 0px));
+			left: 0;
 		}
 
 		> .main {
@@ -953,6 +1009,37 @@ export default defineComponent({
 				}
 
 				> .content {
+					&.collapsed {
+						position: relative;
+						max-height: 9em;
+						overflow: hidden;
+
+						> .fade {
+							display: block;
+							position: absolute;
+							bottom: 0;
+							left: 0;
+							width: 100%;
+							height: 64px;
+							background: linear-gradient(0deg, var(--panel), var(--X15));
+
+							> span {
+								display: inline-block;
+								background: var(--panel);
+								padding: 6px 10px;
+								font-size: 0.8em;
+								border-radius: 999px;
+								box-shadow: 0 2px 6px rgb(0 0 0 / 20%);
+							}
+
+							&:hover {
+								> span {
+									background: var(--panelHighlight);
+								}
+							}
+						}
+					}
+
 					> .text {
 						overflow-wrap: break-word;
 
@@ -1022,7 +1109,7 @@ export default defineComponent({
 	}
 
 	> .reply {
-		border-top: solid 1px var(--divider);
+		border-top: solid 0.5px var(--divider);
 	}
 
 	&.max-width_500px {
@@ -1045,6 +1132,7 @@ export default defineComponent({
 				margin: 0 10px 8px 0;
 				width: 50px;
 				height: 50px;
+				top: calc(14px + var(--stickyTop, 0px));
 			}
 		}
 	}

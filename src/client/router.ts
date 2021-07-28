@@ -1,9 +1,9 @@
-import { defineAsyncComponent } from 'vue';
+import { defineAsyncComponent, markRaw } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
-import MkLoading from '@/pages/_loading_.vue';
-import MkError from '@/pages/_error_.vue';
-import MkTimeline from '@/pages/timeline.vue';
-import { store } from './store';
+import MkLoading from '@client/pages/_loading_.vue';
+import MkError from '@client/pages/_error_.vue';
+import MkTimeline from '@client/pages/timeline.vue';
+import { $i } from './account';
 
 const page = (path: string) => defineAsyncComponent({
 	loader: () => import(`./pages/${path}.vue`),
@@ -17,45 +17,36 @@ export const router = createRouter({
 	history: createWebHistory(),
 	routes: [
 		// NOTE: MkTimelineをdynamic importするとAsyncComponentWrapperが間に入るせいでkeep-aliveのコンポーネント指定が効かなくなる
-		{ path: '/', name: 'index', component: store.getters.isSignedIn ? MkTimeline : page('welcome') },
-		{ path: '/@:user', name: 'user', component: page('user/index'), children: [
-			{ path: 'following', name: 'userFollowing', component: page('user/follow-list'), props: { type: 'following' } },
-			{ path: 'followers', name: 'userFollowers', component: page('user/follow-list'), props: { type: 'followers' } },
-		]},
+		{ path: '/', name: 'index', component: $i ? MkTimeline : page('welcome') },
+		{ path: '/@:acct/:page?', name: 'user', component: page('user/index'), props: route => ({ acct: route.params.acct, page: route.params.page || 'index' }) },
 		{ path: '/@:user/pages/:page', component: page('page'), props: route => ({ pageName: route.params.page, username: route.params.user }) },
 		{ path: '/@:user/pages/:pageName/view-source', component: page('page-editor/page-editor'), props: route => ({ initUser: route.params.user, initPageName: route.params.pageName }) },
 		{ path: '/@:acct/room', props: true, component: page('room/room') },
-		{ path: '/settings', name: 'settings', component: page('settings/index'), children: [
-			{ path: 'profile', component: page('settings/profile') },
-			{ path: 'privacy', component: page('settings/privacy') },
-			{ path: 'reaction', component: page('settings/reaction') },
-			{ path: 'notifications', component: page('settings/notifications') },
-			{ path: 'mute-block', component: page('settings/mute-block') },
-			{ path: 'word-mute', component: page('settings/word-mute') },
-			{ path: 'integration', component: page('settings/integration') },
-			{ path: 'security', component: page('settings/security') },
-			{ path: 'api', component: page('settings/api') },
-			{ path: 'other', component: page('settings/other') },
-			{ path: 'general', component: page('settings/general') },
-			{ path: 'theme', component: page('settings/theme') },
-			{ path: 'sidebar', component: page('settings/sidebar') },
-			{ path: 'sounds', component: page('settings/sounds') },
-			{ path: 'plugins', component: page('settings/plugins') },
-		]},
+		{ path: '/settings/:page(.*)?', name: 'settings', component: page('settings/index'), props: route => ({ initialPage: route.params.page || null }) },
+		{ path: '/reset-password/:token?', component: page('reset-password'), props: route => ({ token: route.params.token }) },
 		{ path: '/announcements', component: page('announcements') },
 		{ path: '/about', component: page('about') },
 		{ path: '/about-misskey', component: page('about-misskey') },
 		{ path: '/featured', component: page('featured') },
 		{ path: '/docs', component: page('docs') },
 		{ path: '/theme-editor', component: page('theme-editor') },
-		{ path: '/docs/:doc', component: page('doc'), props: true },
+		{ path: '/advanced-theme-editor', component: page('advanced-theme-editor') },
+		{ path: '/docs/:doc', component: page('doc'), props: route => ({ doc: route.params.doc }) },
 		{ path: '/explore', component: page('explore') },
 		{ path: '/explore/tags/:tag', props: true, component: page('explore') },
 		{ path: '/search', component: page('search') },
+		{ path: '/pages', name: 'pages', component: page('pages') },
+		{ path: '/pages/new', component: page('page-editor/page-editor') },
+		{ path: '/pages/edit/:pageId', component: page('page-editor/page-editor'), props: route => ({ initPageId: route.params.pageId }) },
+		{ path: '/gallery', component: page('gallery/index') },
+		{ path: '/gallery/new', component: page('gallery/edit') },
+		{ path: '/gallery/:postId/edit', component: page('gallery/edit'), props: route => ({ postId: route.params.postId }) },
+		{ path: '/gallery/:postId', component: page('gallery/post'), props: route => ({ postId: route.params.postId }) },
 		{ path: '/channels', component: page('channels') },
 		{ path: '/channels/new', component: page('channel-editor') },
 		{ path: '/channels/:channelId/edit', component: page('channel-editor'), props: true },
-		{ path: '/channels/:channelId', component: page('channel'), props: true },
+		{ path: '/channels/:channelId', component: page('channel'), props: route => ({ channelId: route.params.channelId }) },
+		{ path: '/clips/:clipId', component: page('clip'), props: route => ({ clipId: route.params.clipId }) },
 		{ path: '/my/notifications', component: page('notifications') },
 		{ path: '/my/favorites', component: page('favorites') },
 		{ path: '/my/messages', component: page('messages') },
@@ -65,35 +56,31 @@ export const router = createRouter({
 		{ path: '/my/messaging/group/:group', component: page('messaging/messaging-room'), props: route => ({ groupId: route.params.group }) },
 		{ path: '/my/drive', name: 'drive', component: page('drive') },
 		{ path: '/my/drive/folder/:folder', component: page('drive') },
-		{ path: '/my/pages', name: 'pages', component: page('pages') },
-		{ path: '/my/pages/new', component: page('page-editor/page-editor') },
-		{ path: '/my/pages/edit/:pageId', component: page('page-editor/page-editor'), props: route => ({ initPageId: route.params.pageId }) },
 		{ path: '/my/follow-requests', component: page('follow-requests') },
 		{ path: '/my/lists', component: page('my-lists/index') },
 		{ path: '/my/lists/:list', component: page('my-lists/list') },
 		{ path: '/my/groups', component: page('my-groups/index') },
-		{ path: '/my/groups/:group', component: page('my-groups/group') },
+		{ path: '/my/groups/:group', component: page('my-groups/group'), props: route => ({ groupId: route.params.group }) },
 		{ path: '/my/antennas', component: page('my-antennas/index') },
-		{ path: '/my/apps', component: page('apps') },
+		{ path: '/my/clips', component: page('my-clips/index') },
 		{ path: '/scratchpad', component: page('scratchpad') },
+		{ path: '/instance/:page(.*)?', component: page('instance/index'), props: route => ({ initialPage: route.params.page || null }) },
 		{ path: '/instance', component: page('instance/index') },
-		{ path: '/instance/emojis', component: page('instance/emojis') },
-		{ path: '/instance/users', component: page('instance/users') },
-		{ path: '/instance/logs', component: page('instance/logs') },
-		{ path: '/instance/files', component: page('instance/files') },
-		{ path: '/instance/queue', component: page('instance/queue') },
-		{ path: '/instance/settings', component: page('instance/settings') },
-		{ path: '/instance/federation', component: page('instance/federation') },
-		{ path: '/instance/relays', component: page('instance/relays') },
-		{ path: '/instance/announcements', component: page('instance/announcements') },
-		{ path: '/instance/abuses', component: page('instance/abuses') },
-		{ path: '/notes/:note', name: 'note', component: page('note') },
-		{ path: '/tags/:tag', component: page('tag') },
+		{ path: '/notes/:note', name: 'note', component: page('note'), props: route => ({ noteId: route.params.note }) },
+		{ path: '/tags/:tag', component: page('tag'), props: route => ({ tag: route.params.tag }) },
+		{ path: '/user-info/:user', component: page('user-info'), props: route => ({ userId: route.params.user }) },
+		{ path: '/user-ap-info/:user', component: page('user-ap-info'), props: route => ({ userId: route.params.user }) },
+		{ path: '/instance-info/:host', component: page('instance-info'), props: route => ({ host: route.params.host }) },
+		{ path: '/games/reversi', component: page('reversi/index') },
+		{ path: '/games/reversi/:gameId', component: page('reversi/game'), props: route => ({ gameId: route.params.gameId }) },
+		{ path: '/mfm-cheat-sheet', component: page('mfm-cheat-sheet') },
+		{ path: '/api-console', component: page('api-console') },
+		{ path: '/preview', component: page('preview') },
+		{ path: '/test', component: page('test') },
 		{ path: '/auth/:token', component: page('auth') },
 		{ path: '/miauth/:session', component: page('miauth') },
 		{ path: '/authorize-follow', component: page('follow') },
 		{ path: '/share', component: page('share') },
-		{ path: '/test', component: page('test') },
 		{ path: '/:catchAll(.*)', component: page('not-found') }
 	],
 	// なんかHacky
@@ -120,3 +107,13 @@ router.afterEach((to, from) => {
 		indexScrollPos = window.scrollY;
 	}
 });
+
+export function resolve(path: string) {
+	const resolved = router.resolve(path);
+	const route = resolved.matched[0];
+	return {
+		component: markRaw(route.components.default),
+		// TODO: route.propsには関数以外も入る可能性があるのでよしなにハンドリングする
+		props: route.props?.default ? route.props.default(resolved) : resolved.params
+	};
+}

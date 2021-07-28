@@ -1,37 +1,37 @@
 <template>
 <XContainer @remove="() => $emit('remove')" :draggable="true">
-	<template #header><Fa :icon="faBolt"/> {{ $t('_pages.blocks.button') }}</template>
+	<template #header><i class="fas fa-bolt"></i> {{ $ts._pages.blocks.button }}</template>
 
 	<section class="xfhsjczc">
-		<MkInput v-model:value="value.text"><span>{{ $t('_pages.blocks._button.text') }}</span></MkInput>
-		<MkSwitch v-model:value="value.primary"><span>{{ $t('_pages.blocks._button.colored') }}</span></MkSwitch>
+		<MkInput v-model:value="value.text"><span>{{ $ts._pages.blocks._button.text }}</span></MkInput>
+		<MkSwitch v-model:value="value.primary"><span>{{ $ts._pages.blocks._button.colored }}</span></MkSwitch>
 		<MkSelect v-model:value="value.action">
-			<template #label>{{ $t('_pages.blocks._button.action') }}</template>
-			<option value="dialog">{{ $t('_pages.blocks._button._action.dialog') }}</option>
-			<option value="resetRandom">{{ $t('_pages.blocks._button._action.resetRandom') }}</option>
-			<option value="pushEvent">{{ $t('_pages.blocks._button._action.pushEvent') }}</option>
-			<option value="callAiScript">{{ $t('_pages.blocks._button._action.callAiScript') }}</option>
+			<template #label>{{ $ts._pages.blocks._button.action }}</template>
+			<option value="dialog">{{ $ts._pages.blocks._button._action.dialog }}</option>
+			<option value="resetRandom">{{ $ts._pages.blocks._button._action.resetRandom }}</option>
+			<option value="pushEvent">{{ $ts._pages.blocks._button._action.pushEvent }}</option>
+			<option value="callAiScript">{{ $ts._pages.blocks._button._action.callAiScript }}</option>
 		</MkSelect>
 		<template v-if="value.action === 'dialog'">
-			<MkInput v-model:value="value.content"><span>{{ $t('_pages.blocks._button._action._dialog.content') }}</span></MkInput>
+			<MkInput v-model:value="value.content"><span>{{ $ts._pages.blocks._button._action._dialog.content }}</span></MkInput>
 		</template>
 		<template v-else-if="value.action === 'pushEvent'">
-			<MkInput v-model:value="value.event"><span>{{ $t('_pages.blocks._button._action._pushEvent.event') }}</span></MkInput>
-			<MkInput v-model:value="value.message"><span>{{ $t('_pages.blocks._button._action._pushEvent.message') }}</span></MkInput>
+			<MkInput v-model:value="value.event"><span>{{ $ts._pages.blocks._button._action._pushEvent.event }}</span></MkInput>
+			<MkInput v-model:value="value.message"><span>{{ $ts._pages.blocks._button._action._pushEvent.message }}</span></MkInput>
 			<MkSelect v-model:value="value.var">
-				<template #label>{{ $t('_pages.blocks._button._action._pushEvent.variable') }}</template>
+				<template #label>{{ $ts._pages.blocks._button._action._pushEvent.variable }}</template>
 				<option :value="null">{{ $t('_pages.blocks._button._action._pushEvent.no-variable') }}</option>
 				<option v-for="v in hpml.getVarsByType()" :value="v.name">{{ v.name }}</option>
-				<optgroup :label="$t('_pages.script.pageVariables')">
+				<optgroup :label="$ts._pages.script.pageVariables">
 					<option v-for="v in hpml.getPageVarsByType()" :value="v">{{ v }}</option>
 				</optgroup>
-				<optgroup :label="$t('_pages.script.enviromentVariables')">
+				<optgroup :label="$ts._pages.script.enviromentVariables">
 					<option v-for="v in hpml.getEnvVarsByType()" :value="v">{{ v }}</option>
 				</optgroup>
 			</MkSelect>
 		</template>
 		<template v-else-if="value.action === 'callAiScript'">
-			<MkInput v-model:value="value.fn"><span>{{ $t('_pages.blocks._button._action._callAiScript.functionName') }}</span></MkInput>
+			<MkInput v-model:value="value.fn"><span>{{ $ts._pages.blocks._button._action._callAiScript.functionName }}</span></MkInput>
 		</template>
 	</section>
 </XContainer>
@@ -39,12 +39,11 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faBolt } from '@fortawesome/free-solid-svg-icons';
 import XContainer from '../page-editor.container.vue';
-import MkSelect from '@/components/ui/select.vue';
-import MkInput from '@/components/ui/input.vue';
-import MkSwitch from '@/components/ui/switch.vue';
-import * as os from '@/os';
+import MkSelect from '@client/components/ui/select.vue';
+import MkInput from '@client/components/ui/input.vue';
+import MkSwitch from '@client/components/ui/switch.vue';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {
@@ -62,7 +61,6 @@ export default defineComponent({
 
 	data() {
 		return {
-			faBolt
 		};
 	},
 

@@ -1,18 +1,14 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { getUser } from '../../common/getters';
-import { genId } from '../../../../misc/gen-id';
+import { genId } from '@/misc/gen-id';
 import { Mutings, NoteWatchings } from '../../../../models';
 import { Muting } from '../../../../models/entities/muting';
+import { publishUserEvent } from '../../../../services/stream';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'ユーザーをミュートします。',
-		'en-US': 'Mute a user'
-	},
-
 	tags: ['account'],
 
 	requireCredential: true as const,
@@ -22,10 +18,6 @@ export const meta = {
 	params: {
 		userId: {
 			validator: $.type(ID),
-			desc: {
-				'ja-JP': '対象のユーザーのID',
-				'en-US': 'Target user ID'
-			}
 		},
 	},
 
@@ -81,6 +73,8 @@ export default define(meta, async (ps, user) => {
 		muterId: muter.id,
 		muteeId: mutee.id,
 	} as Muting);
+
+	publishUserEvent(user.id, 'mute', mutee);
 
 	NoteWatchings.delete({
 		userId: muter.id,

@@ -1,7 +1,7 @@
 <template>
 <div class="zmdxowus">
 	<p class="caution" v-if="choices.length < 2">
-		<Fa :icon="faExclamationTriangle"/>{{ $t('_poll.noOnlyOneChoice') }}
+		<i class="fas fa-exclamation-triangle"></i>{{ $ts._poll.noOnlyOneChoice }}
 	</p>
 	<ul ref="choices">
 		<li v-for="(choice, i) in choices" :key="i">
@@ -9,38 +9,38 @@
 				<span>{{ $t('_poll.choiceN', { n: i + 1 }) }}</span>
 			</MkInput>
 			<button @click="remove(i)" class="_button">
-				<Fa :icon="faTimes"/>
+				<i class="fas fa-times"></i>
 			</button>
 		</li>
 	</ul>
-	<MkButton class="add" v-if="choices.length < 10" @click="add">{{ $t('add') }}</MkButton>
-	<MkButton class="add" v-else disabled>{{ $t('_poll.noMore') }}</MkButton>
+	<MkButton class="add" v-if="choices.length < 10" @click="add">{{ $ts.add }}</MkButton>
+	<MkButton class="add" v-else disabled>{{ $ts._poll.noMore }}</MkButton>
 	<section>
-		<MkSwitch v-model:value="multiple">{{ $t('_poll.canMultipleVote') }}</MkSwitch>
+		<MkSwitch v-model:value="multiple">{{ $ts._poll.canMultipleVote }}</MkSwitch>
 		<div>
 			<MkSelect v-model:value="expiration">
-				<template #label>{{ $t('_poll.expiration') }}</template>
-				<option value="infinite">{{ $t('_poll.infinite') }}</option>
-				<option value="at">{{ $t('_poll.at') }}</option>
-				<option value="after">{{ $t('_poll.after') }}</option>
+				<template #label>{{ $ts._poll.expiration }}</template>
+				<option value="infinite">{{ $ts._poll.infinite }}</option>
+				<option value="at">{{ $ts._poll.at }}</option>
+				<option value="after">{{ $ts._poll.after }}</option>
 			</MkSelect>
 			<section v-if="expiration === 'at'">
 				<MkInput v-model:value="atDate" type="date" class="input">
-					<span>{{ $t('_poll.deadlineDate') }}</span>
+					<span>{{ $ts._poll.deadlineDate }}</span>
 				</MkInput>
 				<MkInput v-model:value="atTime" type="time" class="input">
-					<span>{{ $t('_poll.deadlineTime') }}</span>
+					<span>{{ $ts._poll.deadlineTime }}</span>
 				</MkInput>
 			</section>
 			<section v-if="expiration === 'after'">
 				<MkInput v-model:value="after" type="number" class="input">
-					<span>{{ $t('_poll.duration') }}</span>
+					<span>{{ $ts._poll.duration }}</span>
 				</MkInput>
 				<MkSelect v-model:value="unit">
-					<option value="second">{{ $t('_time.second') }}</option>
-					<option value="minute">{{ $t('_time.minute') }}</option>
-					<option value="hour">{{ $t('_time.hour') }}</option>
-					<option value="day">{{ $t('_time.day') }}</option>
+					<option value="second">{{ $ts._time.second }}</option>
+					<option value="minute">{{ $ts._time.minute }}</option>
+					<option value="hour">{{ $ts._time.hour }}</option>
+					<option value="day">{{ $ts._time.day }}</option>
 				</MkSelect>
 			</section>
 		</div>
@@ -50,9 +50,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faExclamationTriangle, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { addTime } from '../../prelude/time';
-import { formatDateTimeString } from '../../misc/format-time-string';
+import { formatDateTimeString } from '@/misc/format-time-string';
 import MkInput from './ui/input.vue';
 import MkSelect from './ui/select.vue';
 import MkSwitch from './ui/switch.vue';
@@ -84,7 +83,6 @@ export default defineComponent({
 			atTime: '00:00',
 			after: 0,
 			unit: 'second',
-			faExclamationTriangle, faTimes
 		};
 	},
 
@@ -190,7 +188,7 @@ export default defineComponent({
 		font-size: 0.8em;
 		color: #f00;
 
-		> [data-icon] {
+		> i {
 			margin-right: 4px;
 		}
 	}

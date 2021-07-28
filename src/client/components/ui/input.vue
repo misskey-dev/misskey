@@ -5,7 +5,7 @@
 		<span class="label" ref="labelEl"><slot></slot></span>
 		<span class="title" ref="title">
 			<slot name="title"></slot>
-			<span class="warning" v-if="invalid"><Fa :icon="faExclamationCircle"/>{{ $refs.input.validationMessage }}</span>
+			<span class="warning" v-if="invalid"><i class="fas fa-exclamation-circle"></i>{{ $refs.input.validationMessage }}</span>
 		</span>
 		<div class="prefix" ref="prefixEl"><slot name="prefix"></slot></div>
 		<input v-if="debounce" ref="inputEl"
@@ -48,7 +48,7 @@
 		</datalist>
 		<div class="suffix" ref="suffixEl"><slot name="suffix"></slot></div>
 	</div>
-	<button class="save _textButton" v-if="save && changed" @click="() => { changed = false; save(); }">{{ $t('save') }}</button>
+	<button class="save _textButton" v-if="save && changed" @click="() => { changed = false; save(); }">{{ $ts.save }}</button>
 	<div class="desc _caption"><slot name="desc"></slot></div>
 </div>
 </template>
@@ -56,8 +56,7 @@
 <script lang="ts">
 import { defineComponent, onMounted, onUnmounted, nextTick, ref, watch, computed, toRefs } from 'vue';
 import debounce from 'v-debounce';
-import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
-import * as os from '@/os';
+import * as os from '@client/os';
 
 export default defineComponent({
 	directives: {
@@ -205,7 +204,6 @@ export default defineComponent({
 			focus,
 			onInput,
 			onKeydown,
-			faExclamationCircle,
 		};
 	},
 });

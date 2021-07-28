@@ -11,6 +11,17 @@ export const meta = {
 		username: {
 			validator: $.use(Users.validateLocalUsername)
 		}
+	},
+
+	res: {
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
+		properties: {
+			available: {
+				type: 'boolean' as const,
+				optional: false as const, nullable: false as const,
+			}
+		}
 	}
 };
 

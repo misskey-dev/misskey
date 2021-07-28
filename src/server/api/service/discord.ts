@@ -1,16 +1,15 @@
 import * as Koa from 'koa';
 import * as Router from '@koa/router';
-import { getJson } from '../../../misc/fetch';
+import { getJson } from '@/misc/fetch';
 import { OAuth2 } from 'oauth';
-import config from '../../../config';
+import config from '@/config';
 import { publishMainStream } from '../../../services/stream';
-import redis from '../../../db/redis';
+import { redisClient } from '../../../db/redis';
 import { v4 as uuid } from 'uuid';
 import signin from '../common/signin';
-import { fetchMeta } from '../../../misc/fetch-meta';
+import { fetchMeta } from '@/misc/fetch-meta';
 import { Users, UserProfiles } from '../../../models';
 import { ILocalUser } from '../../../models/entities/user';
-import { ensure } from '../../../prelude/ensure';
 
 function getUserToken(ctx: Koa.Context) {
 	return ((ctx.headers['cookie'] || '').match(/igi=(\w+)/) || [null, null])[1];
@@ -41,12 +40,12 @@ router.get('/disconnect/discord', async ctx => {
 		return;
 	}
 
-	const user = await Users.findOne({
+	const user = await Users.findOneOrFail({
 		host: null,
 		token: userToken
-	}).then(ensure);
+	});
 
-	const profile = await UserProfiles.findOne(user.id).then(ensure);
+	const profile = await UserProfiles.findOneOrFail(user.id);
 
 	delete profile.integrations.discord;
 
@@ -70,7 +69,7 @@ async function getOAuth2() {
 		return new OAuth2(
 			meta.discordClientId!,
 			meta.discordClientSecret!,
-			'https://discordapp.com/',
+			'https://discord.com/',
 			'api/oauth2/authorize',
 			'api/oauth2/token');
 	} else {
@@ -97,7 +96,7 @@ router.get('/connect/discord', async ctx => {
 		response_type: 'code'
 	};
 
-	redis.set(userToken, JSON.stringify(params));
+	redisClient.set(userToken, JSON.stringify(params));
 
 	const oauth2 = await getOAuth2();
 	ctx.redirect(oauth2!.getAuthorizeUrl(params));
@@ -119,7 +118,7 @@ router.get('/signin/discord', async ctx => {
 		httpOnly: true
 	});
 
-	redis.set(sessid, JSON.stringify(params));
+	redisClient.set(sessid, JSON.stringify(params));
 
 	const oauth2 = await getOAuth2();
 	ctx.redirect(oauth2!.getAuthorizeUrl(params));
@@ -146,7 +145,7 @@ router.get('/dc/cb', async ctx => {
 		}
 
 		const { redirect_uri, state } = await new Promise<any>((res, rej) => {
-			redis.get(sessid, async (_, state) => {
+			redisClient.get(sessid, async (_, state) => {
 				res(JSON.parse(state));
 			});
 		});
@@ -174,7 +173,7 @@ router.get('/dc/cb', async ctx => {
 				}
 			}));
 
-		const { id, username, discriminator } = await getJson('https://discordapp.com/api/users/@me', '*/*', 10 * 1000, {
+		const { id, username, discriminator } = await getJson('https://discord.com/api/users/@me', '*/*', 10 * 1000, {
 			'Authorization': `Bearer ${accessToken}`,
 		});
 
@@ -217,7 +216,7 @@ router.get('/dc/cb', async ctx => {
 		}
 
 		const { redirect_uri, state } = await new Promise<any>((res, rej) => {
-			redis.get(userToken, async (_, state) => {
+			redisClient.get(userToken, async (_, state) => {
 				res(JSON.parse(state));
 			});
 		});
@@ -245,7 +244,7 @@ router.get('/dc/cb', async ctx => {
 				}
 			}));
 
-		const { id, username, discriminator } = await getJson('https://discordapp.com/api/users/@me', '*/*', 10 * 1000, {
+		const { id, username, discriminator } = await getJson('https://discord.com/api/users/@me', '*/*', 10 * 1000, {
 			'Authorization': `Bearer ${accessToken}`,
 		});
 		if (!id || !username || !discriminator) {
@@ -253,12 +252,12 @@ router.get('/dc/cb', async ctx => {
 			return;
 		}
 
-		const user = await Users.findOne({
+		const user = await Users.findOneOrFail({
 			host: null,
 			token: userToken
-		}).then(ensure);
+		});
 
-		const profile = await UserProfiles.findOne(user.id).then(ensure);
+		const profile = await UserProfiles.findOneOrFail(user.id);
 
 		await UserProfiles.update(user.id, {
 			integrations: {

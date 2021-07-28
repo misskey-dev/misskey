@@ -1,4 +1,4 @@
-import { publishMainStream } from '../stream';
+import { publishMainStream, publishUserEvent } from '../stream';
 import { renderActivity } from '../../remote/activitypub/renderer';
 import renderFollow from '../../remote/activitypub/renderer/follow';
 import renderAccept from '../../remote/activitypub/renderer/accept';
@@ -7,23 +7,22 @@ import { deliver } from '../../queue';
 import createFollowRequest from './requests/create';
 import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
 import Logger from '../logger';
-import { IdentifiableError } from '../../misc/identifiable-error';
+import { IdentifiableError } from '@/misc/identifiable-error';
 import { User } from '../../models/entities/user';
 import { Followings, Users, FollowRequests, Blockings, Instances, UserProfiles } from '../../models';
 import { instanceChart, perUserFollowingChart } from '../chart';
-import { genId } from '../../misc/gen-id';
+import { genId } from '@/misc/gen-id';
 import { createNotification } from '../create-notification';
-import { isDuplicateKeyValueError } from '../../misc/is-duplicate-key-value-error';
-import { ensure } from '../../prelude/ensure';
+import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error';
 
 const logger = new Logger('following/create');
 
-export async function insertFollowingDoc(followee: User, follower: User) {
+export async function insertFollowingDoc(followee: { id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox'] }, follower: { id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox'] }) {
 	if (follower.id === followee.id) return;
 
 	let alreadyFollowed = false;
 
-	await Followings.save({
+	await Followings.insert({
 		id: genId(),
 		createdAt: new Date(),
 		followerId: follower.id,
@@ -87,14 +86,17 @@ export async function insertFollowingDoc(followee: User, follower: User) {
 
 	// Publish follow event
 	if (Users.isLocalUser(follower)) {
-		Users.pack(followee, follower, {
+		Users.pack(followee.id, follower, {
 			detail: true
-		}).then(packed => publishMainStream(follower.id, 'follow', packed));
+		}).then(packed => {
+			publishUserEvent(follower.id, 'follow', packed);
+			publishMainStream(follower.id, 'follow', packed);
+		});
 	}
 
 	// Publish followed event
 	if (Users.isLocalUser(followee)) {
-		Users.pack(follower, followee).then(packed => publishMainStream(followee.id, 'followed', packed)),
+		Users.pack(follower.id, followee).then(packed => publishMainStream(followee.id, 'followed', packed));
 
 		// 通知を作成
 		createNotification(followee.id, 'follow', {
@@ -103,7 +105,12 @@ export async function insertFollowingDoc(followee: User, follower: User) {
 	}
 }
 
-export default async function(follower: User, followee: User, requestId?: string) {
+export default async function(_follower: { id: User['id'] }, _followee: { id: User['id'] }, requestId?: string) {
+	const [follower, followee] = await Promise.all([
+		Users.findOneOrFail(_follower.id),
+		Users.findOneOrFail(_followee.id)
+	]);
+
 	// check blocking
 	const [blocking, blocked] = await Promise.all([
 		Blockings.findOne({
@@ -130,7 +137,7 @@ export default async function(follower: User, followee: User, requestId?: string
 		if (blocked != null) throw new IdentifiableError('3338392a-f764-498d-8855-db939dcf8c48', 'blocked');
 	}
 
-	const followeeProfile = await UserProfiles.findOne(followee.id).then(ensure);
+	const followeeProfile = await UserProfiles.findOneOrFail(followee.id);
 
 	// フォロー対象が鍵アカウントである or
 	// フォロワーがBotであり、フォロー対象がBotからのフォローに慎重である or

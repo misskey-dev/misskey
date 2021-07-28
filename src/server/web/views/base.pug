@@ -2,7 +2,11 @@ block vars
 
 doctype html
 
-!= '\n<!-- Thank you for using Misskey! @syuilo -->\n'
+!= '\n'
+!= '<!-- Thank you for using Misskey! -->\n'
+!= '<!-- If you are reading this message... how about joining the development of Misskey? -->\n'
+!= '<!-- https://github.com/misskey-dev/misskey -->'
+!= '\n'
 
 html
 
@@ -11,6 +15,7 @@ html
 		meta(name='application-name' content='Misskey')
 		meta(name='referrer' content='origin')
 		meta(name='theme-color' content='#86b300')
+		meta(name='theme-color-orig' content='#86b300')
 		meta(property='og:site_name' content= instanceName || 'Misskey')
 		meta(name='viewport' content='width=device-width, initial-scale=1')
 		link(rel='icon' href= icon || '/favicon.ico')
@@ -19,92 +24,32 @@ html
 		link(rel='prefetch' href='https://xn--931a.moe/assets/info.jpg')
 		link(rel='prefetch' href='https://xn--931a.moe/assets/not-found.jpg')
 		link(rel='prefetch' href='https://xn--931a.moe/assets/error.jpg')
+		link(rel='preload' href='https://use.fontawesome.com/releases/v5.15.3/css/all.css' as='style')
+		link(rel='stylesheet' href='https://use.fontawesome.com/releases/v5.15.3/css/all.css')
 
 		title
 			block title
 				= title || 'Misskey'
 
 		block desc
-			meta(name='description' content= desc || '✨🌎✨ A federated blogging platform ✨🚀✨')
+			meta(name='description' content= desc || '✨🌎✨ A interplanetary communication platform ✨🚀✨')
 
 		block meta
 
 		block og
 			meta(property='og:image' content=img)
 
-		style.
-			html {
-				background-color: var(--bg);
-				color: var(--fg);
-			}
+		style
+			include ../style.css
 
-			#ini {
-				position: fixed;
-				z-index: 1;
-				top: 0;
-				left: 0;
-				width: 100%;
-				height: 100%;
-				cursor: wait;
-			}
-
-			#ini > svg {
-				position: absolute;
-				top: 0;
-				right: 0;
-				bottom: 0;
-				left: 0;
-				margin: auto;
-				width: 64px;
-				height: 64px;
-				animation: ini 0.6s infinite linear;
-				color: var(--accent);
-				fill: currentColor;
-			}
-
-			@keyframes ini {
-				from {
-					transform: rotate(0deg);
-				}
-				to {
-					transform: rotate(360deg);
-				}
-			}
-
-		script(src=`/assets/app.${version}.js` async defer)
-		script.
-			const theme = localStorage.getItem('theme');
-			if (theme) {
-				for (const [k, v] of Object.entries(JSON.parse(theme))) {
-					document.documentElement.style.setProperty(`--${k}`, v.toString());
-					if (k === 'htmlThemeColor') {
-						for (const tag of document.head.children) {
-							if (tag.tagName === 'META' && tag.getAttribute('name') === 'theme-color') {
-								tag.setAttribute('content', v);
-								break;
-							}
-						}
-					}
-				}
-			}
-
-			const fontSize = localStorage.getItem('fontSize');
-			if (fontSize) {
-				document.documentElement.classList.add('f-' + fontSize);
-			}
-
-			const wallpaper = localStorage.getItem('wallpaper');
-			if (wallpaper) {
-				document.documentElement.style.backgroundImage = `url(${wallpaper})`;
-			}
+		script
+			include ../boot.js
 
 	body
 		noscript: p
 			| JavaScriptを有効にしてください
 			br
 			| Please turn on your JavaScript
-		div#ini.
-			<svg viewBox="0 0 50 50">
-				<path d="M25.251,6.461c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615V6.461z" />
-			</svg>
+		div#splash
+			img(src='/favicon.ico')
 		block content

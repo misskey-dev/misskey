@@ -5,17 +5,15 @@
 	@close="$refs.dialog.close()"
 	@closed="$emit('closed')"
 >
-	<template #header>{{ $t('login') }}</template>
+	<template #header>{{ $ts.login }}</template>
 
-	<div class="_section">
-		<MkSignin :auto-set="autoSet" @login="onLogin"/>
-	</div>
+	<MkSignin :auto-set="autoSet" @login="onLogin"/>
 </XModalWindow>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import XModalWindow from '@/components/ui/modal-window.vue';
+import XModalWindow from '@client/components/ui/modal-window.vue';
 import MkSignin from './signin.vue';
 
 export default defineComponent({

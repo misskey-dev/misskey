@@ -1,7 +1,6 @@
 import * as Koa from 'koa';
-import { fetchMeta } from '../../../misc/fetch-meta';
-import { verify } from 'hcaptcha';
-import * as recaptcha from 'recaptcha-promise';
+import { fetchMeta } from '@/misc/fetch-meta';
+import { verifyHcaptcha, verifyRecaptcha } from '@/misc/captcha';
 import { Users, RegistrationTickets } from '../../../models';
 import { signup } from '../common/signup';
 
@@ -14,26 +13,15 @@ export default async (ctx: Koa.Context) => {
 	// ただしテスト時はこの機構は障害となるため無効にする
 	if (process.env.NODE_ENV !== 'test') {
 		if (instance.enableHcaptcha && instance.hcaptchaSecretKey) {
-			const success = await verify(instance.hcaptchaSecretKey, body['hcaptcha-response']).then(
-				({ success }) => success,
-				() => false,
-			);
-
-			if (!success) {
-				ctx.throw(400, 'hcaptcha-failed');
-			}
+			await verifyHcaptcha(instance.hcaptchaSecretKey, body['hcaptcha-response']).catch(e => {
+				ctx.throw(400, e);
+			});
 		}
 
 		if (instance.enableRecaptcha && instance.recaptchaSecretKey) {
-			recaptcha.init({
-				secret_key: instance.recaptchaSecretKey
+			await verifyRecaptcha(instance.recaptchaSecretKey, body['g-recaptcha-response']).catch(e => {
+				ctx.throw(400, e);
 			});
-
-			const success = await recaptcha(body['g-recaptcha-response']);
-
-			if (!success) {
-				ctx.throw(400, 'recaptcha-failed');
-			}
 		}
 	}
 

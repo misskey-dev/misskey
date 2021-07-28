@@ -3,27 +3,27 @@
 	<transition name="zoom" mode="out-in">
 		<div v-if="group" class="_section">
 			<div class="_content">
-				<MkButton inline @click="invite()">{{ $t('invite') }}</MkButton>
-				<MkButton inline @click="renameGroup()">{{ $t('rename') }}</MkButton>
-				<MkButton inline @click="transfer()">{{ $t('transfer') }}</MkButton>
-				<MkButton inline @click="deleteGroup()">{{ $t('delete') }}</MkButton>
+				<MkButton inline @click="invite()">{{ $ts.invite }}</MkButton>
+				<MkButton inline @click="renameGroup()">{{ $ts.rename }}</MkButton>
+				<MkButton inline @click="transfer()">{{ $ts.transfer }}</MkButton>
+				<MkButton inline @click="deleteGroup()">{{ $ts.delete }}</MkButton>
 			</div>
 		</div>
 	</transition>
 
 	<transition name="zoom" mode="out-in">
-		<div v-if="group" class="_section members _vMargin">
-			<div class="_title">{{ $t('members') }}</div>
+		<div v-if="group" class="_section members _gap">
+			<div class="_title">{{ $ts.members }}</div>
 			<div class="_content">
 				<div class="users">
 					<div class="user _panel" v-for="user in users" :key="user.id">
-						<MkAvatar :user="user" class="avatar"/>
+						<MkAvatar :user="user" class="avatar" :show-indicator="true"/>
 						<div class="body">
 							<MkUserName :user="user" class="name"/>
 							<MkAcct :user="user" class="acct"/>
 						</div>
 						<div class="action">
-							<button class="_button" @click="removeUser(user)"><Fa :icon="faTimes"/></button>
+							<button class="_button" @click="removeUser(user)"><i class="fas fa-times"></i></button>
 						</div>
 					</div>
 				</div>
@@ -35,32 +35,36 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
-import { faTimes, faUsers } from '@fortawesome/free-solid-svg-icons';
-import Progress from '@/scripts/loading';
-import MkButton from '@/components/ui/button.vue';
-import * as os from '@/os';
+import Progress from '@client/scripts/loading';
+import MkButton from '@client/components/ui/button.vue';
+import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
 		MkButton
 	},
 
+	props: {
+		groupId: {
+			type: String,
+			required: true,
+		},
+	},
+
 	data() {
 		return {
-			INFO: computed(() => this.group ? {
-				header: [{
-					title: this.group.name,
-					icon: faUsers,
-				}],
+			[symbols.PAGE_INFO]: computed(() => this.group ? {
+				title: this.group.name,
+				icon: 'fas fa-users',
 			} : null),
 			group: null,
 			users: [],
-			faTimes, faUsers
 		};
 	},
 
 	watch: {
-		$route: 'fetch'
+		groupId: 'fetch',
 	},
 
 	created() {
@@ -71,7 +75,7 @@ export default defineComponent({
 		fetch() {
 			Progress.start();
 			os.api('users/groups/show', {
-				groupId: this.$route.params.group
+				groupId: this.groupId
 			}).then(group => {
 				this.group = group;
 				os.api('users/show', {
@@ -103,7 +107,7 @@ export default defineComponent({
 
 		async renameGroup() {
 			const { canceled, result: name } = await os.dialog({
-				title: this.$t('groupName'),
+				title: this.$ts.groupName,
 				input: {
 					default: this.group.name
 				}

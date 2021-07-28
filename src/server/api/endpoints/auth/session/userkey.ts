@@ -2,7 +2,6 @@ import $ from 'cafy';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { Apps, AuthSessions, AccessTokens, Users } from '../../../../../models';
-import { ensure } from '../../../../../prelude/ensure';
 
 export const meta = {
 	tags: ['auth'],
@@ -12,18 +11,10 @@ export const meta = {
 	params: {
 		appSecret: {
 			validator: $.str,
-			desc: {
-				'ja-JP': 'アプリケーションのシークレットキー',
-				'en-US': 'The secret key of your application.'
-			}
 		},
 
 		token: {
 			validator: $.str,
-			desc: {
-				'ja-JP': 'セッションのトークン',
-				'en-US': 'The token of a session.'
-			}
 		}
 	},
 
@@ -34,14 +25,12 @@ export const meta = {
 			accessToken: {
 				type: 'string' as const,
 				optional: false as const, nullable: false as const,
-				description: 'ユーザーのアクセストークン',
 			},
 
 			user: {
 				type: 'object' as const,
 				optional: false as const, nullable: false as const,
 				ref: 'User',
-				description: '認証したユーザー'
 			},
 		}
 	},
@@ -92,10 +81,10 @@ export default define(meta, async (ps) => {
 	}
 
 	// Lookup access token
-	const accessToken = await AccessTokens.findOne({
+	const accessToken = await AccessTokens.findOneOrFail({
 		appId: app.id,
 		userId: session.userId
-	}).then(ensure);
+	});
 
 	// Delete session
 	AuthSessions.delete(session.id);

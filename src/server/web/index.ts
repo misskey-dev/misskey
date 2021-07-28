@@ -14,22 +14,23 @@ import * as glob from 'glob';
 import * as MarkdownIt from 'markdown-it';
 
 import packFeed from './feed';
-import { fetchMeta } from '../../misc/fetch-meta';
+import { fetchMeta } from '@/misc/fetch-meta';
 import { genOpenapiSpec } from '../api/openapi/gen-spec';
-import config from '../../config';
-import { Users, Notes, Emojis, UserProfiles, Pages, Channels } from '../../models';
-import parseAcct from '../../misc/acct/parse';
-import getNoteSummary from '../../misc/get-note-summary';
-import { ensure } from '../../prelude/ensure';
+import config from '@/config';
+import { Users, Notes, Emojis, UserProfiles, Pages, Channels, Clips, GalleryPosts } from '../../models';
+import { parseAcct } from '@/misc/acct';
+import { getNoteSummary } from '@/misc/get-note-summary';
 import { getConnection } from 'typeorm';
-import redis from '../../db/redis';
+import { redisClient } from '../../db/redis';
 import locales = require('../../../locales');
 
 const markdown = MarkdownIt({
 	html: true
 });
 
-const client = `${__dirname}/../../client/`;
+const staticAssets = `${__dirname}/../../../assets/`;
+const docAssets = `${__dirname}/../../../src/docs/`;
+const assets = `${__dirname}/../../assets/`;
 
 // Init app
 const app = new Koa();
@@ -44,7 +45,7 @@ app.use(views(__dirname + '/views', {
 }));
 
 // Serve favicon
-app.use(favicon(`${__dirname}/../../../assets/favicon.png`));
+app.use(favicon(`${__dirname}/../../../assets/favicon.ico`));
 
 // Common request handler
 app.use(async (ctx, next) => {
@@ -58,24 +59,38 @@ const router = new Router();
 
 //#region static assets
 
+router.get('/static-assets/(.*)', async ctx => {
+	await send(ctx as any, ctx.path.replace('/static-assets/', ''), {
+		root: staticAssets,
+		maxage: ms('7 days'),
+	});
+});
+
+router.get('/doc-assets/(.*)', async ctx => {
+	await send(ctx as any, ctx.path.replace('/doc-assets/', ''), {
+		root: docAssets,
+		maxage: ms('7 days'),
+	});
+});
+
 router.get('/assets/(.*)', async ctx => {
-	await send(ctx as any, ctx.path, {
-		root: client,
+	await send(ctx as any, ctx.path.replace('/assets/', ''), {
+		root: assets,
 		maxage: ms('7 days'),
 	});
 });
 
 // Apple touch icon
 router.get('/apple-touch-icon.png', async ctx => {
-	await send(ctx as any, '/assets/apple-touch-icon.png', {
-		root: client
+	await send(ctx as any, '/apple-touch-icon.png', {
+		root: staticAssets
 	});
 });
 
 // ServiceWorker
-router.get(/^\/sw\.(.+?)\.js$/, async ctx => {
-	await send(ctx as any, `/assets/sw.${ctx.params[0]}.js`, {
-		root: client
+router.get('/sw.js', async ctx => {
+	await send(ctx as any, `/sw.${config.version}.js`, {
+		root: assets
 	});
 });
 
@@ -83,8 +98,8 @@ router.get(/^\/sw\.(.+?)\.js$/, async ctx => {
 router.get('/manifest.json', require('./manifest'));
 
 router.get('/robots.txt', async ctx => {
-	await send(ctx as any, '/assets/robots.txt', {
-		root: client
+	await send(ctx as any, '/robots.txt', {
+		root: staticAssets
 	});
 });
 
@@ -92,8 +107,8 @@ router.get('/robots.txt', async ctx => {
 
 // Docs
 router.get('/api-doc', async ctx => {
-	await send(ctx as any, '/assets/redoc.html', {
-		root: client
+	await send(ctx as any, '/redoc.html', {
+		root: staticAssets
 	});
 });
 
@@ -110,7 +125,7 @@ router.get('/docs.json', async ctx => {
 		ctx.body = [];
 		return;
 	}
-	const paths = glob.sync(__dirname + `/../../../src/docs/*.${lang}.md`);
+	const paths = glob.sync(__dirname + `/../../../src/docs/${lang}/*.md`);
 	const docs: { path: string; title: string; }[] = [];
 	for (const path of paths) {
 		const md = fs.readFileSync(path, { encoding: 'utf8' });
@@ -199,7 +214,7 @@ router.get(['/@:user', '/@:user/:sub'], async (ctx, next) => {
 	});
 
 	if (user != null) {
-		const profile = await UserProfiles.findOne(user.id).then(ensure);
+		const profile = await UserProfiles.findOneOrFail(user.id);
 		const meta = await fetchMeta();
 		const me = profile.fields
 			? profile.fields
@@ -237,14 +252,16 @@ router.get('/users/:user', async ctx => {
 });
 
 // Note
-router.get('/notes/:note', async ctx => {
+router.get('/notes/:note', async (ctx, next) => {
 	const note = await Notes.findOne(ctx.params.note);
 
 	if (note) {
 		const _note = await Notes.pack(note);
+		const profile = await UserProfiles.findOneOrFail(note.userId);
 		const meta = await fetchMeta();
 		await ctx.render('note', {
 			note: _note,
+			profile,
 			// TODO: Let locale changeable by instance setting
 			summary: getNoteSummary(_note, locales['ja-JP']),
 			instanceName: meta.name || 'Misskey',
@@ -260,11 +277,11 @@ router.get('/notes/:note', async ctx => {
 		return;
 	}
 
-	ctx.status = 404;
+	await next();
 });
 
 // Page
-router.get('/@:user/pages/:page', async ctx => {
+router.get('/@:user/pages/:page', async (ctx, next) => {
 	const { username, host } = parseAcct(ctx.params.user);
 	const user = await Users.findOne({
 		usernameLower: username.toLowerCase(),
@@ -280,9 +297,11 @@ router.get('/@:user/pages/:page', async ctx => {
 
 	if (page) {
 		const _page = await Pages.pack(page);
+		const profile = await UserProfiles.findOneOrFail(page.userId);
 		const meta = await fetchMeta();
 		await ctx.render('page', {
 			page: _page,
+			profile,
 			instanceName: meta.name || 'Misskey'
 		});
 
@@ -295,11 +314,59 @@ router.get('/@:user/pages/:page', async ctx => {
 		return;
 	}
 
-	ctx.status = 404;
+	await next();
+});
+
+// Clip
+// TODO: 非publicなclipのハンドリング
+router.get('/clips/:clip', async (ctx, next) => {
+	const clip = await Clips.findOne({
+		id: ctx.params.clip,
+	});
+
+	if (clip) {
+		const _clip = await Clips.pack(clip);
+		const profile = await UserProfiles.findOneOrFail(clip.userId);
+		const meta = await fetchMeta();
+		await ctx.render('clip', {
+			clip: _clip,
+			profile,
+			instanceName: meta.name || 'Misskey'
+		});
+
+		ctx.set('Cache-Control', 'public, max-age=180');
+
+		return;
+	}
+
+	await next();
+});
+
+// Gallery post
+router.get('/gallery/:post', async (ctx, next) => {
+	const post = await GalleryPosts.findOne(ctx.params.post);
+
+	if (post) {
+		const _post = await GalleryPosts.pack(post);
+		const profile = await UserProfiles.findOneOrFail(post.userId);
+		const meta = await fetchMeta();
+		await ctx.render('gallery-post', {
+			post: _post,
+			profile,
+			instanceName: meta.name || 'Misskey',
+			icon: meta.iconUrl
+		});
+
+		ctx.set('Cache-Control', 'public, max-age=180');
+
+		return;
+	}
+
+	await next();
 });
 
 // Channel
-router.get('/channels/:channel', async ctx => {
+router.get('/channels/:channel', async (ctx, next) => {
 	const channel = await Channels.findOne({
 		id: ctx.params.channel,
 	});
@@ -317,7 +384,7 @@ router.get('/channels/:channel', async ctx => {
 		return;
 	}
 
-	ctx.status = 404;
+	await next();
 });
 //#endregion
 
@@ -335,7 +402,7 @@ router.get('/info', async ctx => {
 		os: os.platform(),
 		node: process.version,
 		psql: await getConnection().query('SHOW server_version').then(x => x[0].server_version),
-		redis: redis.server_info.redis_version,
+		redis: redisClient.server_info.redis_version,
 		cpu: {
 			model: os.cpus()[0].model,
 			cores: os.cpus().length
@@ -345,6 +412,18 @@ router.get('/info', async ctx => {
 		proxyAccountName: proxyAccount ? proxyAccount.username : null,
 		originalUsersCount: await Users.count({ host: null }),
 		originalNotesCount: await Notes.count({ userHost: null })
+	});
+});
+
+router.get('/bios', async ctx => {
+	await ctx.render('bios', {
+		version: config.version,
+	});
+});
+
+router.get('/cli', async ctx => {
+	await ctx.render('cli', {
+		version: config.version,
 	});
 });
 

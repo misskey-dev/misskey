@@ -1,7 +1,7 @@
 <template>
 <div class="_section">
 	<div class="_content">
-		<div class="_card _vMargin">
+		<div class="_card _gap">
 			<div class="_title">Dialog</div>
 			<div class="_content">
 				<MkInput v-model:value="dialogTitle">
@@ -10,6 +10,10 @@
 				<MkInput v-model:value="dialogBody">
 					<span>Body</span>
 				</MkInput>
+				<MkRadio v-model="dialogType" value="info">Info</MkRadio>
+				<MkRadio v-model="dialogType" value="success">Success</MkRadio>
+				<MkRadio v-model="dialogType" value="warning">Warn</MkRadio>
+				<MkRadio v-model="dialogType" value="error">Error</MkRadio>
 				<MkSwitch v-model:value="dialogCancel">
 					<span>With cancel button</span>
 				</MkSwitch>
@@ -26,7 +30,7 @@
 			</div>
 		</div>
 
-		<div class="_card _vMargin">
+		<div class="_card _gap">
 			<div class="_title">Form</div>
 			<div class="_content">
 				<MkInput v-model:value="formTitle">
@@ -42,7 +46,7 @@
 			</div>
 		</div>
 
-		<div class="_card _vMargin">
+		<div class="_card _gap">
 			<div class="_title">MFM</div>
 			<div class="_content">
 				<MkTextarea v-model:value="mfm">
@@ -54,7 +58,7 @@
 			</div>
 		</div>
 
-		<div class="_card _vMargin">
+		<div class="_card _gap">
 			<div class="_title">selectDriveFile</div>
 			<div class="_content">
 				<MkSwitch v-model:value="selectDriveFileMultiple">
@@ -67,7 +71,7 @@
 			</div>
 		</div>
 
-		<div class="_card _vMargin">
+		<div class="_card _gap">
 			<div class="_title">selectDriveFolder</div>
 			<div class="_content">
 				<MkSwitch v-model:value="selectDriveFolderMultiple">
@@ -80,7 +84,7 @@
 			</div>
 		</div>
 
-		<div class="_card _vMargin">
+		<div class="_card _gap">
 			<div class="_title">selectUser</div>
 			<div class="_content">
 				<MkButton @click="selectUser()">selectUser</MkButton>
@@ -90,7 +94,7 @@
 			</div>
 		</div>
 
-		<div class="_card _vMargin">
+		<div class="_card _gap">
 			<div class="_title">Notification</div>
 			<div class="_content">
 				<MkInput v-model:value="notificationIconUrl">
@@ -106,7 +110,7 @@
 			</div>
 		</div>
 
-		<div class="_card _vMargin">
+		<div class="_card _gap">
 			<div class="_title">Waiting dialog</div>
 			<div class="_content">
 				<MkButton inline @click="openWaitingDialog()">icon only</MkButton>
@@ -114,7 +118,7 @@
 			</div>
 		</div>
 
-		<div class="_card _vMargin">
+		<div class="_card _gap">
 			<div class="_title">Messaging window</div>
 			<div class="_content">
 				<MkButton @click="messagingWindowOpen()">open</MkButton>
@@ -128,12 +132,13 @@
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
-import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
-import MkButton from '@/components/ui/button.vue';
-import MkInput from '@/components/ui/input.vue';
-import MkSwitch from '@/components/ui/switch.vue';
-import MkTextarea from '@/components/ui/textarea.vue';
-import * as os from '@/os';
+import MkButton from '@client/components/ui/button.vue';
+import MkInput from '@client/components/ui/input.vue';
+import MkSwitch from '@client/components/ui/switch.vue';
+import MkTextarea from '@client/components/ui/textarea.vue';
+import MkRadio from '@client/components/ui/radio.vue';
+import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -141,23 +146,23 @@ export default defineComponent({
 		MkInput,
 		MkSwitch,
 		MkTextarea,
+		MkRadio,
 	},
 
 	data() {
 		return {
-			INFO: {
-				header: [{
-					title: 'TEST',
-					icon: faExclamationTriangle
-				}]
+			[symbols.PAGE_INFO]: {
+				title: 'TEST',
+				icon: 'fas fa-exclamation-triangle'
 			},
 			dialogTitle: 'Hello',
 			dialogBody: 'World!',
+			dialogType: 'info',
 			dialogCancel: false,
 			dialogCancelByBgClick: true,
 			dialogInput: false,
 			dialogResult: null,
-			formTitle: null,
+			formTitle: 'Test form',
 			formForm: JSON.stringify({
 				foo: {
 					type: 'boolean',
@@ -173,6 +178,12 @@ export default defineComponent({
 					type: 'string',
 					default: 'Misskey makes you happy.',
 					label: 'This is a string property'
+				},
+				qux: {
+					type: 'string',
+					multiline: true,
+					default: 'Misskey makes\nyou happy.',
+					label: 'Multiline string'
 				},
 			}, null, '\t'),
 			formResult: null,
@@ -192,6 +203,7 @@ export default defineComponent({
 		async showDialog() {
 			this.dialogResult = null;
 			this.dialogResult = await os.dialog({
+				type: this.dialogType,
 				title: this.dialogTitle,
 				text: this.dialogBody,
 				showCancelButton: this.dialogCancel,
@@ -229,7 +241,7 @@ export default defineComponent({
 		},
 
 		messagingWindowOpen() {
-			os.pageWindow('/my/messaging', defineAsyncComponent(() => import('@/pages/messaging/index.vue')));
+			os.pageWindow('/my/messaging');
 		},
 
 		openWaitingDialog(text?) {
@@ -240,7 +252,7 @@ export default defineComponent({
 		},
 
 		resetTutorial() {
-			this.$store.dispatch('settings/set', { key: 'tutorial', value: 0 });
+			this.$store.set('tutorial', 0);
 		},
 	}
 });

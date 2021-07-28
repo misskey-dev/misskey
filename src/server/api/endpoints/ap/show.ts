@@ -1,32 +1,25 @@
 import $ from 'cafy';
 import define from '../../define';
-import config from '../../../../config';
+import config from '@/config';
 import { createPerson } from '../../../../remote/activitypub/models/person';
 import { createNote } from '../../../../remote/activitypub/models/note';
 import Resolver from '../../../../remote/activitypub/resolver';
 import { ApiError } from '../../error';
-import { extractDbHost } from '../../../../misc/convert-host';
+import { extractDbHost } from '@/misc/convert-host';
 import { Users, Notes } from '../../../../models';
 import { Note } from '../../../../models/entities/note';
 import { User } from '../../../../models/entities/user';
-import { fetchMeta } from '../../../../misc/fetch-meta';
-import { validActor, validPost } from '../../../../remote/activitypub/type';
+import { fetchMeta } from '@/misc/fetch-meta';
+import { isActor, isPost, getApId } from '../../../../remote/activitypub/type';
 
 export const meta = {
 	tags: ['federation'],
-
-	desc: {
-		'ja-JP': 'URIを指定してActivityPubオブジェクトを参照します。'
-	},
 
 	requireCredential: false as const,
 
 	params: {
 		uri: {
 			validator: $.str,
-			desc: {
-				'ja-JP': 'ActivityPubオブジェクトのURI'
-			}
 		},
 	},
 
@@ -35,6 +28,22 @@ export const meta = {
 			message: 'No such object.',
 			code: 'NO_SUCH_OBJECT',
 			id: 'dc94d745-1262-4e63-a17d-fecaa57efc82'
+		}
+	},
+
+	res: {
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
+		properties: {
+			type: {
+				type: 'string' as const,
+				optional: false as const, nullable: false as const,
+				enum: ['User', 'Note']
+			},
+			object: {
+				type: 'object' as const,
+				optional: false as const, nullable: false as const
+			}
 		}
 	}
 };
@@ -137,16 +146,16 @@ async function fetchAny(uri: string) {
 	}
 
 	// それでもみつからなければ新規であるため登録
-	if (validActor.includes(object.type)) {
-		const user = await createPerson(object.id);
+	if (isActor(object)) {
+		const user = await createPerson(getApId(object));
 		return {
 			type: 'User',
 			object: await Users.pack(user, null, { detail: true })
 		};
 	}
 
-	if (validPost.includes(object.type)) {
-		const note = await createNote(object.id, undefined, true);
+	if (isPost(object)) {
+		const note = await createNote(getApId(object), undefined, true);
 		return {
 			type: 'Note',
 			object: await Notes.pack(note!, null, { detail: true })

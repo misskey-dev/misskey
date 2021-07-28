@@ -9,11 +9,11 @@ import { Users, Notes, Polls } from '../../../models';
 import { MoreThan } from 'typeorm';
 import { Note } from '../../../models/entities/note';
 import { Poll } from '../../../models/entities/poll';
-import { ensure } from '../../../prelude/ensure';
+import { DbUserJobData } from '@/queue/types';
 
 const logger = queueLogger.createSubLogger('export-notes');
 
-export async function exportNotes(job: Bull.Job, done: any): Promise<void> {
+export async function exportNotes(job: Bull.Job<DbUserJobData>, done: any): Promise<void> {
 	logger.info(`Exporting notes of ${job.data.user.id} ...`);
 
 	const user = await Users.findOne(job.data.user.id);
@@ -34,7 +34,7 @@ export async function exportNotes(job: Bull.Job, done: any): Promise<void> {
 
 	const stream = fs.createWriteStream(path, { flags: 'a' });
 
-	await new Promise((res, rej) => {
+	await new Promise<void>((res, rej) => {
 		stream.write('[', err => {
 			if (err) {
 				logger.error(err);
@@ -70,10 +70,10 @@ export async function exportNotes(job: Bull.Job, done: any): Promise<void> {
 		for (const note of notes) {
 			let poll: Poll | undefined;
 			if (note.hasPoll) {
-				poll = await Polls.findOne({ noteId: note.id }).then(ensure);
+				poll = await Polls.findOneOrFail({ noteId: note.id });
 			}
 			const content = JSON.stringify(serialize(note, poll));
-			await new Promise((res, rej) => {
+			await new Promise<void>((res, rej) => {
 				stream.write(exportedNotesCount === 0 ? content : ',\n' + content, err => {
 					if (err) {
 						logger.error(err);
@@ -93,7 +93,7 @@ export async function exportNotes(job: Bull.Job, done: any): Promise<void> {
 		job.progress(exportedNotesCount / total);
 	}
 
-	await new Promise((res, rej) => {
+	await new Promise<void>((res, rej) => {
 		stream.write(']', err => {
 			if (err) {
 				logger.error(err);

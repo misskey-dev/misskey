@@ -1,5 +1,5 @@
 <template>
-<div class="mk-app" v-hotkey.global="keymap">
+<div class="mk-app">
 	<div class="contents">
 		<header class="header">
 			<XHeader :info="pageInfo"/>
@@ -7,7 +7,7 @@
 		<main ref="main">
 			<div class="content">
 				<router-view v-slot="{ Component }">
-					<transition :name="$store.state.device.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
+					<transition :name="$store.state.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
 						<keep-alive :include="['timeline']">
 							<component :is="Component" :ref="changePage"/>
 						</keep-alive>
@@ -17,67 +17,39 @@
 		</main>
 	</div>
 
-	<StreamIndicator/>
+	<XCommon/>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
-import { faLayerGroup, faBars, faHome, faCircle } from '@fortawesome/free-solid-svg-icons';
-import { faBell } from '@fortawesome/free-regular-svg-icons';
-import { host } from '@/config';
-import { search } from '@/scripts/search';
+import { host } from '@client/config';
 import XHeader from './_common_/header.vue';
-import * as os from '@/os';
+import XCommon from './_common_/common.vue';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
+		XCommon,
 		XHeader,
 	},
 
 	data() {
 		return {
 			host: host,
-			pageKey: 0,
 			pageInfo: null,
-			connection: null,
-			faLayerGroup, faBars, faBell, faHome, faCircle,
 		};
-	},
-
-	computed: {
-		keymap(): any {
-			return {
-				'd': () => {
-					if (this.$store.state.device.syncDeviceDarkMode) return;
-					this.$store.commit('device/set', { key: 'darkMode', value: !this.$store.state.device.darkMode });
-				},
-				'p': os.post,
-				'n': os.post,
-				's': search,
-				'h|/': this.help
-			};
-		},
-	},
-
-	watch: {
-		$route(to, from) {
-			this.pageKey++;
-		},
 	},
 
 	created() {
 		document.documentElement.style.overflowY = 'scroll';
-
-		this.connection = os.stream.useSharedConnection('main');
-		this.connection.on('notification', this.onNotification);
 	},
 
 	methods: {
 		changePage(page) {
 			if (page == null) return;
-			if (page.INFO) {
-				this.pageInfo = page.INFO;
+			if (page[symbols.PAGE_INFO]) {
+				this.pageInfo = page[symbols.PAGE_INFO];
 			}
 		},
 
@@ -91,23 +63,6 @@ export default defineComponent({
 
 		onTransition() {
 			if (window._scroll) window._scroll();
-		},
-
-		async onNotification(notification) {
-			if (this.$store.state.i.mutingNotificationTypes.includes(notification.type)) {
-				return;
-			}
-			if (document.visibilityState === 'visible') {
-				os.stream.send('readNotification', {
-					id: notification.id
-				});
-
-				os.popup(await import('@/components/toast.vue'), {
-					notification
-				}, {}, 'closed');
-			}
-
-			os.sound('notification');
 		},
 	}
 });
@@ -137,7 +92,7 @@ export default defineComponent({
 			-webkit-backdrop-filter: blur(32px);
 			backdrop-filter: blur(32px);
 			background-color: var(--header);
-			border-bottom: solid 1px var(--divider);
+			border-bottom: solid 0.5px var(--divider);
 		}
 
 		> main {

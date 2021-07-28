@@ -1,38 +1,45 @@
 <template>
-<section class="_section" v-if="enableTwitterIntegration || enableDiscordIntegration || enableGithubIntegration">
-	<div class="_content" v-if="enableTwitterIntegration">
-		<header><Fa :icon="faTwitter"/> Twitter</header>
-		<p v-if="integrations.twitter">{{ $t('connectedTo') }}: <a :href="`https://twitter.com/${integrations.twitter.screenName}`" rel="nofollow noopener" target="_blank">@{{ integrations.twitter.screenName }}</a></p>
-		<MkButton v-if="integrations.twitter" @click="disconnectTwitter">{{ $t('disconnectSerice') }}</MkButton>
-		<MkButton v-else @click="connectTwitter">{{ $t('connectSerice') }}</MkButton>
+<FormBase>
+	<div class="_formItem" v-if="enableTwitterIntegration">
+		<div class="_formLabel"><i class="fab fa-twitter"></i> Twitter</div>
+		<div class="_formPanel" style="padding: 16px;">
+			<p v-if="integrations.twitter">{{ $ts.connectedTo }}: <a :href="`https://twitter.com/${integrations.twitter.screenName}`" rel="nofollow noopener" target="_blank">@{{ integrations.twitter.screenName }}</a></p>
+			<MkButton v-if="integrations.twitter" @click="disconnectTwitter" danger>{{ $ts.disconnectService }}</MkButton>
+			<MkButton v-else @click="connectTwitter" primary>{{ $ts.connectService }}</MkButton>
+		</div>
 	</div>
 
-	<div class="_content" v-if="enableDiscordIntegration">
-		<header><Fa :icon="faDiscord"/> Discord</header>
-		<p v-if="integrations.discord">{{ $t('connectedTo') }}: <a :href="`https://discordapp.com/users/${integrations.discord.id}`" rel="nofollow noopener" target="_blank">@{{ integrations.discord.username }}#{{ integrations.discord.discriminator }}</a></p>
-		<MkButton v-if="integrations.discord" @click="disconnectDiscord">{{ $t('disconnectSerice') }}</MkButton>
-		<MkButton v-else @click="connectDiscord">{{ $t('connectSerice') }}</MkButton>
+	<div class="_formItem" v-if="enableDiscordIntegration">
+		<div class="_formLabel"><i class="fab fa-discord"></i> Discord</div>
+		<div class="_formPanel" style="padding: 16px;">
+			<p v-if="integrations.discord">{{ $ts.connectedTo }}: <a :href="`https://discord.com/users/${integrations.discord.id}`" rel="nofollow noopener" target="_blank">@{{ integrations.discord.username }}#{{ integrations.discord.discriminator }}</a></p>
+			<MkButton v-if="integrations.discord" @click="disconnectDiscord" danger>{{ $ts.disconnectService }}</MkButton>
+			<MkButton v-else @click="connectDiscord" primary>{{ $ts.connectService }}</MkButton>
+		</div>
 	</div>
 
-	<div class="_content" v-if="enableGithubIntegration">
-		<header><Fa :icon="faGithub"/> GitHub</header>
-		<p v-if="integrations.github">{{ $t('connectedTo') }}: <a :href="`https://github.com/${integrations.github.login}`" rel="nofollow noopener" target="_blank">@{{ integrations.github.login }}</a></p>
-		<MkButton v-if="integrations.github" @click="disconnectGithub">{{ $t('disconnectSerice') }}</MkButton>
-		<MkButton v-else @click="connectGithub">{{ $t('connectSerice') }}</MkButton>
+	<div class="_formItem" v-if="enableGithubIntegration">
+		<div class="_formLabel"><i class="fab fa-github"></i> GitHub</div>
+		<div class="_formPanel" style="padding: 16px;">
+			<p v-if="integrations.github">{{ $ts.connectedTo }}: <a :href="`https://github.com/${integrations.github.login}`" rel="nofollow noopener" target="_blank">@{{ integrations.github.login }}</a></p>
+			<MkButton v-if="integrations.github" @click="disconnectGithub" danger>{{ $ts.disconnectService }}</MkButton>
+			<MkButton v-else @click="connectGithub" primary>{{ $ts.connectService }}</MkButton>
+		</div>
 	</div>
-</section>
+</FormBase>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faShareAlt } from '@fortawesome/free-solid-svg-icons';
-import { faTwitter, faDiscord, faGithub } from '@fortawesome/free-brands-svg-icons';
-import { apiUrl } from '@/config';
-import MkButton from '@/components/ui/button.vue';
-import * as os from '@/os';
+import { apiUrl } from '@client/config';
+import FormBase from '@client/components/form/base.vue';
+import MkButton from '@client/components/ui/button.vue';
+import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
+		FormBase,
 		MkButton
 	},
 
@@ -40,11 +47,9 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
-				header: [{
-					title: this.$t('integration'),
-					icon: faShareAlt
-				}]
+			[symbols.PAGE_INFO]: {
+				title: this.$ts.integration,
+				icon: 'fas fa-share-alt'
 			},
 			apiUrl,
 			twitterForm: null,
@@ -53,17 +58,16 @@ export default defineComponent({
 			enableTwitterIntegration: false,
 			enableDiscordIntegration: false,
 			enableGithubIntegration: false,
-			faShareAlt, faTwitter, faDiscord, faGithub
 		};
 	},
 
 	computed: {
 		integrations() {
-			return this.$store.state.i.integrations;
+			return this.$i.integrations;
 		},
 		
 		meta() {
-			return this.$store.state.instance.meta;
+			return this.$instance;
 		},
 	},
 
@@ -74,9 +78,9 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.$emit('info', this.INFO);
+		this.$emit('info', this[symbols.PAGE_INFO]);
 
-		document.cookie = `igi=${this.$store.state.i.token}; path=/;` +
+		document.cookie = `igi=${this.$i.token}; path=/;` +
 			` max-age=31536000;` +
 			(document.location.protocol.startsWith('https') ? ' secure' : '');
 

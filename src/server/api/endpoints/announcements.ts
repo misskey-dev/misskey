@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import { ID } from '../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import define from '../define';
 import { Announcements, AnnouncementReads } from '../../../models';
 import { makePaginationQuery } from '../common/make-pagination-query';
@@ -27,6 +27,49 @@ export const meta = {
 		untilId: {
 			validator: $.optional.type(ID),
 		},
+	},
+
+	res: {
+		type: 'array' as const,
+		optional: false as const, nullable: false as const,
+		items: {
+			type: 'object' as const,
+			optional: false as const, nullable: false as const,
+			properties: {
+				id: {
+					type: 'string' as const,
+					optional: false as const, nullable: false as const,
+					format: 'id',
+					example: 'xxxxxxxxxx',
+				},
+				createdAt: {
+					type: 'string' as const,
+					optional: false as const, nullable: false as const,
+					format: 'date-time',
+				},
+				updatedAt: {
+					type: 'string' as const,
+					optional: false as const, nullable: true as const,
+					format: 'date-time',
+				},
+				text: {
+					type: 'string' as const,
+					optional: false as const, nullable: false as const,
+				},
+				title: {
+					type: 'string' as const,
+					optional: false as const, nullable: false as const,
+				},
+				imageUrl: {
+					type: 'string' as const,
+					optional: false as const, nullable: true as const,
+				},
+				isRead: {
+					type: 'boolean' as const,
+					optional: false as const, nullable: false as const,
+				}
+			}
+		}
 	}
 };
 

@@ -3,7 +3,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { TextBlock } from '@client/scripts/hpml/block';
+import { Hpml } from '@client/scripts/hpml/evaluator';
+import { defineComponent, PropType } from 'vue';
 import MkTextarea from '../ui/textarea.vue';
 
 export default defineComponent({
@@ -11,22 +13,24 @@ export default defineComponent({
 		MkTextarea
 	},
 	props: {
-		value: {
+		block: {
+			type: Object as PropType<TextBlock>,
 			required: true
 		},
 		hpml: {
+			type: Object as PropType<Hpml>,
 			required: true
 		}
 	},
 	data() {
 		return {
-			text: this.hpml.interpolate(this.value.text),
+			text: this.hpml.interpolate(this.block.text),
 		};
 	},
 	watch: {
 		'hpml.vars': {
 			handler() {
-				this.text = this.hpml.interpolate(this.value.text);
+				this.text = this.hpml.interpolate(this.block.text);
 			},
 			deep: true
 		}

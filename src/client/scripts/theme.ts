@@ -9,25 +9,21 @@ export type Theme = {
 	props: Record<string, string>;
 };
 
-export const lightTheme: Theme = require('../themes/_light.json5');
-export const darkTheme: Theme = require('../themes/_dark.json5');
+export const lightTheme: Theme = require('@client/themes/_light.json5');
+export const darkTheme: Theme = require('@client/themes/_dark.json5');
 
 export const themeProps = Object.keys(lightTheme.props).filter(key => !key.startsWith('X'));
 
 export const builtinThemes = [
-	require('../themes/l-white.json5'),
-	require('../themes/l-red.json5'),
-	require('../themes/l-green.json5'),
-	require('../themes/l-blue.json5'),
-	require('../themes/l-apricot.json5'),
+	require('@client/themes/l-light.json5'),
+	require('@client/themes/l-apricot.json5'),
+	require('@client/themes/l-rainy.json5'),
+	require('@client/themes/l-vivid.json5'),
 
-	require('../themes/d-black.json5'),
-	require('../themes/d-red.json5'),
-	require('../themes/d-green.json5'),
-	require('../themes/d-blue.json5'),
-	require('../themes/d-persimmon.json5'),
-
-	require('../themes/d-battery-saver.json5'),
+	require('@client/themes/d-dark.json5'),
+	require('@client/themes/d-persimmon.json5'),
+	require('@client/themes/d-astro.json5'),
+	require('@client/themes/d-black.json5'),
 ] as Theme[];
 
 let timeout = null;
@@ -35,10 +31,10 @@ let timeout = null;
 export function applyTheme(theme: Theme, persist = true) {
 	if (timeout) clearTimeout(timeout);
 
-	document.documentElement.classList.add('changing-theme');
+	document.documentElement.classList.add('_themeChanging_');
 
 	timeout = setTimeout(() => {
-		document.documentElement.classList.remove('changing-theme');
+		document.documentElement.classList.remove('_themeChanging_');
 	}, 1000);
 
 	// Deep copy

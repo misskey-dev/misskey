@@ -1,7 +1,7 @@
 <template>
 <MkContainer :naked="props.transparent" :show-header="false">
 	<div class="vubelbmv">
-		<MkAnalogClock class="clock"/>
+		<MkAnalogClock class="clock" :thickness="props.thickness"/>
 	</div>
 </MkContainer>
 </template>
@@ -9,9 +9,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import define from './define';
-import MkContainer from '@/components/ui/container.vue';
-import MkAnalogClock from '@/components/analog-clock.vue';
-import * as os from '@/os';
+import MkContainer from '@client/components/ui/container.vue';
+import MkAnalogClock from '@client/components/analog-clock.vue';
+import * as os from '@client/os';
 
 const widget = define({
 	name: 'clock',
@@ -20,6 +20,17 @@ const widget = define({
 			type: 'boolean',
 			default: false,
 		},
+		thickness: {
+			type: 'radio',
+			default: 0.1,
+			options: [{
+				value: 0.1, label: 'thin'
+			}, {
+				value: 0.2, label: 'medium'
+			}, {
+				value: 0.3, label: 'thick'
+			}]
+		}
 	})
 });
 

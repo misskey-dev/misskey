@@ -1,22 +1,22 @@
 <template>
 <MkError v-if="error" @retry="init()"/>
 
-<div v-else class="efvhhmdq">
+<div v-else class="efvhhmdq _isolated">
 	<div class="no-users" v-if="empty">
-		<p>{{ $t('noUsers') }}</p>
+		<p>{{ $ts.noUsers }}</p>
 	</div>
 	<div class="users">
 		<MkUserInfo class="user" v-for="user in users" :user="user" :key="user.id"/>
 	</div>
-	<button class="more" v-appear="$store.state.device.enableInfiniteScroll ? fetchMore : null" @click="fetchMore" :class="{ fetching: moreFetching }" v-show="more" :disabled="moreFetching">
-		<template v-if="moreFetching"><Fa icon="spinner" pulse fixed-width/></template>{{ moreFetching ? $t('loading') : $t('loadMore') }}
+	<button class="more" v-appear="$store.state.enableInfiniteScroll ? fetchMore : null" @click="fetchMore" :class="{ fetching: moreFetching }" v-show="more" :disabled="moreFetching">
+		<template v-if="moreFetching"><i class="fas fa-spinner fa-pulse fa-fw"></i></template>{{ moreFetching ? $ts.loading : $ts.loadMore }}
 	</button>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import paging from '@/scripts/paging';
+import paging from '@client/scripts/paging';
 import MkUserInfo from './user-info.vue';
 import { userPage } from '../filters/user';
 
@@ -83,7 +83,7 @@ export default defineComponent({
 			cursor: wait;
 		}
 
-		> [data-icon] {
+		> i {
 			margin-right: 4px;
 		}
 	}

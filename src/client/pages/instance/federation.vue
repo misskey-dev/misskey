@@ -1,72 +1,67 @@
 <template>
-<div>
-	<div class="_section">
-		<div class="_content">
-			<MkInput v-model:value="host" :debounce="true"><span>{{ $t('host') }}</span></MkInput>
-			<div class="inputs" style="display: flex;">
-				<MkSelect v-model:value="state" style="margin: 0; flex: 1;">
-					<template #label>{{ $t('state') }}</template>
-					<option value="all">{{ $t('all') }}</option>
-					<option value="federating">{{ $t('federating') }}</option>
-					<option value="subscribing">{{ $t('subscribing') }}</option>
-					<option value="publishing">{{ $t('publishing') }}</option>
-					<option value="suspended">{{ $t('suspended') }}</option>
-					<option value="blocked">{{ $t('blocked') }}</option>
-					<option value="notResponding">{{ $t('notResponding') }}</option>
-				</MkSelect>
-				<MkSelect v-model:value="sort" style="margin: 0; flex: 1;">
-					<template #label>{{ $t('sort') }}</template>
-					<option value="+pubSub">{{ $t('pubSub') }} ({{ $t('descendingOrder') }})</option>
-					<option value="-pubSub">{{ $t('pubSub') }} ({{ $t('ascendingOrder') }})</option>
-					<option value="+notes">{{ $t('notes') }} ({{ $t('descendingOrder') }})</option>
-					<option value="-notes">{{ $t('notes') }} ({{ $t('ascendingOrder') }})</option>
-					<option value="+users">{{ $t('users') }} ({{ $t('descendingOrder') }})</option>
-					<option value="-users">{{ $t('users') }} ({{ $t('ascendingOrder') }})</option>
-					<option value="+following">{{ $t('following') }} ({{ $t('descendingOrder') }})</option>
-					<option value="-following">{{ $t('following') }} ({{ $t('ascendingOrder') }})</option>
-					<option value="+followers">{{ $t('followers') }} ({{ $t('descendingOrder') }})</option>
-					<option value="-followers">{{ $t('followers') }} ({{ $t('ascendingOrder') }})</option>
-					<option value="+caughtAt">{{ $t('caughtAt') }} ({{ $t('descendingOrder') }})</option>
-					<option value="-caughtAt">{{ $t('caughtAt') }} ({{ $t('ascendingOrder') }})</option>
-					<option value="+lastCommunicatedAt">{{ $t('lastCommunicatedAt') }} ({{ $t('descendingOrder') }})</option>
-					<option value="-lastCommunicatedAt">{{ $t('lastCommunicatedAt') }} ({{ $t('ascendingOrder') }})</option>
-					<option value="+driveUsage">{{ $t('driveUsage') }} ({{ $t('descendingOrder') }})</option>
-					<option value="-driveUsage">{{ $t('driveUsage') }} ({{ $t('ascendingOrder') }})</option>
-					<option value="+driveFiles">{{ $t('driveFiles') }} ({{ $t('descendingOrder') }})</option>
-					<option value="-driveFiles">{{ $t('driveFiles') }} ({{ $t('ascendingOrder') }})</option>
-				</MkSelect>
+<div class="enuoauvw">
+	<div class="query">
+		<MkInput v-model:value="host" :debounce="true"><span>{{ $ts.host }}</span></MkInput>
+		<div class="inputs" style="display: flex;">
+			<MkSelect v-model:value="state" style="margin: 0; flex: 1;">
+				<template #label>{{ $ts.state }}</template>
+				<option value="all">{{ $ts.all }}</option>
+				<option value="federating">{{ $ts.federating }}</option>
+				<option value="subscribing">{{ $ts.subscribing }}</option>
+				<option value="publishing">{{ $ts.publishing }}</option>
+				<option value="suspended">{{ $ts.suspended }}</option>
+				<option value="blocked">{{ $ts.blocked }}</option>
+				<option value="notResponding">{{ $ts.notResponding }}</option>
+			</MkSelect>
+			<MkSelect v-model:value="sort" style="margin: 0; flex: 1;">
+				<template #label>{{ $ts.sort }}</template>
+				<option value="+pubSub">{{ $ts.pubSub }} ({{ $ts.descendingOrder }})</option>
+				<option value="-pubSub">{{ $ts.pubSub }} ({{ $ts.ascendingOrder }})</option>
+				<option value="+notes">{{ $ts.notes }} ({{ $ts.descendingOrder }})</option>
+				<option value="-notes">{{ $ts.notes }} ({{ $ts.ascendingOrder }})</option>
+				<option value="+users">{{ $ts.users }} ({{ $ts.descendingOrder }})</option>
+				<option value="-users">{{ $ts.users }} ({{ $ts.ascendingOrder }})</option>
+				<option value="+following">{{ $ts.following }} ({{ $ts.descendingOrder }})</option>
+				<option value="-following">{{ $ts.following }} ({{ $ts.ascendingOrder }})</option>
+				<option value="+followers">{{ $ts.followers }} ({{ $ts.descendingOrder }})</option>
+				<option value="-followers">{{ $ts.followers }} ({{ $ts.ascendingOrder }})</option>
+				<option value="+caughtAt">{{ $ts.caughtAt }} ({{ $ts.descendingOrder }})</option>
+				<option value="-caughtAt">{{ $ts.caughtAt }} ({{ $ts.ascendingOrder }})</option>
+				<option value="+lastCommunicatedAt">{{ $ts.lastCommunicatedAt }} ({{ $ts.descendingOrder }})</option>
+				<option value="-lastCommunicatedAt">{{ $ts.lastCommunicatedAt }} ({{ $ts.ascendingOrder }})</option>
+				<option value="+driveUsage">{{ $ts.driveUsage }} ({{ $ts.descendingOrder }})</option>
+				<option value="-driveUsage">{{ $ts.driveUsage }} ({{ $ts.ascendingOrder }})</option>
+				<option value="+driveFiles">{{ $ts.driveFiles }} ({{ $ts.descendingOrder }})</option>
+				<option value="-driveFiles">{{ $ts.driveFiles }} ({{ $ts.ascendingOrder }})</option>
+			</MkSelect>
+		</div>
+	</div>
+
+	<MkPagination :pagination="pagination" #default="{items}" ref="instances" :key="host + state">
+		<div class="ppgwaixt _block" v-for="instance in items" :key="instance.id" @click="info(instance)">
+			<div class="host"><i class="fas fa-circle indicator" :class="getStatus(instance)"></i><b>{{ instance.host }}</b></div>
+			<div class="status">
+				<span class="sub" v-if="instance.followersCount > 0"><i class="fas fa-caret-down icon"></i>Sub</span>
+				<span class="sub" v-else><i class="fas fa-caret-down icon"></i>-</span>
+				<span class="pub" v-if="instance.followingCount > 0"><i class="fas fa-caret-up icon"></i>Pub</span>
+				<span class="pub" v-else><i class="fas fa-caret-up icon"></i>-</span>
+				<span class="lastCommunicatedAt"><i class="fas fa-exchange-alt icon"></i><MkTime :time="instance.lastCommunicatedAt"/></span>
+				<span class="latestStatus"><i class="fas fa-traffic-light icon"></i>{{ instance.latestStatus || '-' }}</span>
 			</div>
 		</div>
-	</div>
-	<div class="_section">
-		<div class="_content">
-			<MkPagination :pagination="pagination" #default="{items}" ref="instances" :key="host + state">
-				<div class="ppgwaixt _panel" v-for="instance in items" :key="instance.id" @click="info(instance)">
-					<div class="host"><Fa :icon="faCircle" class="indicator" :class="getStatus(instance)"/><b>{{ instance.host }}</b></div>
-					<div class="status">
-						<span class="sub" v-if="instance.followersCount > 0"><Fa :icon="faCaretDown" class="icon"/>Sub</span>
-						<span class="sub" v-else><Fa :icon="faCaretDown" class="icon"/>-</span>
-						<span class="pub" v-if="instance.followingCount > 0"><Fa :icon="faCaretUp" class="icon"/>Pub</span>
-						<span class="pub" v-else><Fa :icon="faCaretUp" class="icon"/>-</span>
-						<span class="lastCommunicatedAt"><Fa :icon="faExchangeAlt" class="icon"/><MkTime :time="instance.lastCommunicatedAt"/></span>
-						<span class="latestStatus"><Fa :icon="faTrafficLight" class="icon"/>{{ instance.latestStatus || '-' }}</span>
-					</div>
-				</div>
-			</MkPagination>
-		</div>
-	</div>
+	</MkPagination>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faGlobe, faCircle, faExchangeAlt, faCaretDown, faCaretUp, faTrafficLight } from '@fortawesome/free-solid-svg-icons';
-import MkButton from '@/components/ui/button.vue';
-import MkInput from '@/components/ui/input.vue';
-import MkSelect from '@/components/ui/select.vue';
-import MkPagination from '@/components/ui/pagination.vue';
+import MkButton from '@client/components/ui/button.vue';
+import MkInput from '@client/components/ui/input.vue';
+import MkSelect from '@client/components/ui/select.vue';
+import MkPagination from '@client/components/ui/pagination.vue';
 import MkInstanceInfo from './instance.vue';
-import * as os from '@/os';
+import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -76,13 +71,13 @@ export default defineComponent({
 		MkPagination,
 	},
 
+	emits: ['info'],
+
 	data() {
 		return {
-			INFO: {
-				header: [{
-					title: this.$t('federation'),
-					icon: faGlobe
-				}],
+			[symbols.PAGE_INFO]: {
+				title: this.$ts.federation,
+				icon: 'fas fa-globe'
 			},
 			host: '',
 			state: 'federating',
@@ -104,7 +99,6 @@ export default defineComponent({
 						{})
 				})
 			},
-			faGlobe, faCircle, faExchangeAlt, faCaretDown, faCaretUp, faTrafficLight
 		}
 	},
 
@@ -115,6 +109,10 @@ export default defineComponent({
 		state() {
 			this.$refs.instances.reload();
 		}
+	},
+
+	mounted() {
+		this.$emit('info', this[symbols.PAGE_INFO]);
 	},
 
 	methods: {
@@ -134,6 +132,12 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.enuoauvw {
+	> .query {
+		margin: var(--margin);
+	}
+}
+
 .ppgwaixt {
 	cursor: pointer;
 	padding: 16px;

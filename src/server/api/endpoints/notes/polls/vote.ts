@@ -1,6 +1,5 @@
 import $ from 'cafy';
-import { ID } from '../../../../../misc/cafy-id';
-import watch from '../../../../../services/note/watch';
+import { ID } from '@/misc/cafy-id';
 import { publishNoteStream } from '../../../../../services/stream';
 import { createNotification } from '../../../../../services/create-notification';
 import define from '../../../define';
@@ -10,18 +9,12 @@ import { deliver } from '../../../../../queue';
 import { renderActivity } from '../../../../../remote/activitypub/renderer';
 import renderVote from '../../../../../remote/activitypub/renderer/vote';
 import { deliverQuestionUpdate } from '../../../../../services/note/polls/update';
-import { PollVotes, NoteWatchings, Users, Polls, UserProfiles } from '../../../../../models';
+import { PollVotes, NoteWatchings, Users, Polls } from '../../../../../models';
 import { Not } from 'typeorm';
 import { IRemoteUser } from '../../../../../models/entities/user';
-import { genId } from '../../../../../misc/gen-id';
-import { ensure } from '../../../../../prelude/ensure';
+import { genId } from '@/misc/gen-id';
 
 export const meta = {
-	desc: {
-		'ja-JP': '指定した投稿のアンケートに投票します。',
-		'en-US': 'Vote poll of a note.'
-	},
-
 	tags: ['notes'],
 
 	requireCredential: true as const,
@@ -31,10 +24,6 @@ export const meta = {
 	params: {
 		noteId: {
 			validator: $.type(ID),
-			desc: {
-				'ja-JP': '対象の投稿のID',
-				'en-US': 'Target note ID'
-			}
 		},
 
 		choice: {
@@ -88,7 +77,7 @@ export default define(meta, async (ps, user) => {
 		throw new ApiError(meta.errors.noPoll);
 	}
 
-	const poll = await Polls.findOne({ noteId: note.id }).then(ensure);
+	const poll = await Polls.findOneOrFail({ noteId: note.id });
 
 	if (poll.expiresAt && poll.expiresAt < createdAt) {
 		throw new ApiError(meta.errors.alreadyExpired);
@@ -152,16 +141,9 @@ export default define(meta, async (ps, user) => {
 		}
 	});
 
-	const profile = await UserProfiles.findOne(user.id).then(ensure);
-
-	// この投稿をWatchする
-	if (profile.autoWatch !== false) {
-		watch(user.id, note);
-	}
-
 	// リモート投票の場合リプライ送信
 	if (note.userHost != null) {
-		const pollOwner = await Users.findOne(note.userId).then(ensure) as IRemoteUser;
+		const pollOwner = await Users.findOneOrFail(note.userId) as IRemoteUser;
 
 		deliver(user, renderActivity(await renderVote(user, vote, note, poll, pollOwner)), pollOwner.inbox);
 	}

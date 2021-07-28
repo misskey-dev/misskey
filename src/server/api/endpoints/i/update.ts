@@ -1,27 +1,22 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
-import { publishMainStream } from '../../../../services/stream';
+import * as mfm from 'mfm-js';
+import { ID } from '@/misc/cafy-id';
+import { publishMainStream, publishUserEvent } from '../../../../services/stream';
 import acceptAllFollowRequests from '../../../../services/following/requests/accept-all';
 import { publishToFollowers } from '../../../../services/i/update';
 import define from '../../define';
-import { parse, parsePlain } from '../../../../mfm/parse';
-import extractEmojis from '../../../../misc/extract-emojis';
-import extractHashtags from '../../../../misc/extract-hashtags';
+import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm';
+import { extractHashtags } from '@/misc/extract-hashtags';
 import * as langmap from 'langmap';
 import { updateUsertags } from '../../../../services/update-hashtag';
 import { ApiError } from '../../error';
 import { Users, DriveFiles, UserProfiles, Pages } from '../../../../models';
 import { User } from '../../../../models/entities/user';
 import { UserProfile } from '../../../../models/entities/user-profile';
-import { ensure } from '../../../../prelude/ensure';
 import { notificationTypes } from '../../../../types';
+import { normalizeForSearch } from '@/misc/normalize-for-search';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'アカウント情報を更新します。',
-		'en-US': 'Update myself'
-	},
-
 	tags: ['account'],
 
 	requireCredential: true as const,
@@ -31,118 +26,82 @@ export const meta = {
 	params: {
 		name: {
 			validator: $.optional.nullable.use(Users.validateName),
-			desc: {
-				'ja-JP': '名前(ハンドルネームやニックネーム)'
-			}
 		},
 
 		description: {
 			validator: $.optional.nullable.use(Users.validateDescription),
-			desc: {
-				'ja-JP': 'アカウントの説明や自己紹介'
-			}
 		},
 
 		lang: {
 			validator: $.optional.nullable.str.or(Object.keys(langmap)),
-			desc: {
-				'ja-JP': '言語'
-			}
 		},
 
 		location: {
 			validator: $.optional.nullable.use(Users.validateLocation),
-			desc: {
-				'ja-JP': '住んでいる地域、所在'
-			}
 		},
 
 		birthday: {
 			validator: $.optional.nullable.use(Users.validateBirthday),
-			desc: {
-				'ja-JP': '誕生日 (YYYY-MM-DD形式)'
-			}
 		},
 
 		avatarId: {
 			validator: $.optional.nullable.type(ID),
-			desc: {
-				'ja-JP': 'アバターに設定する画像のドライブファイルID'
-			}
 		},
 
 		bannerId: {
 			validator: $.optional.nullable.type(ID),
-			desc: {
-				'ja-JP': 'バナーに設定する画像のドライブファイルID'
-			}
 		},
 
 		fields: {
 			validator: $.optional.arr($.object()).range(1, 4),
-			desc: {
-				'ja-JP': 'プロフィール補足情報'
-			}
 		},
 
 		isLocked: {
 			validator: $.optional.bool,
-			desc: {
-				'ja-JP': '鍵アカウントか否か'
-			}
+		},
+
+		isExplorable: {
+			validator: $.optional.bool,
+		},
+
+		hideOnlineStatus: {
+			validator: $.optional.bool,
 		},
 
 		carefulBot: {
 			validator: $.optional.bool,
-			desc: {
-				'ja-JP': 'Botからのフォローを承認制にするか'
-			}
 		},
 
 		autoAcceptFollowed: {
 			validator: $.optional.bool,
-			desc: {
-				'ja-JP': 'フォローしているユーザーからのフォローリクエストを自動承認するか'
-			}
+		},
+
+		noCrawle: {
+			validator: $.optional.bool,
 		},
 
 		isBot: {
 			validator: $.optional.bool,
-			desc: {
-				'ja-JP': 'Botか否か'
-			}
 		},
 
 		isCat: {
 			validator: $.optional.bool,
-			desc: {
-				'ja-JP': '猫か否か'
-			}
-		},
-
-		autoWatch: {
-			validator: $.optional.bool,
-			desc: {
-				'ja-JP': '投稿の自動ウォッチをするか否か'
-			}
 		},
 
 		injectFeaturedNote: {
 			validator: $.optional.bool,
 		},
 
+		receiveAnnouncementEmail: {
+			validator: $.optional.bool,
+		},
+
 		alwaysMarkNsfw: {
 			validator: $.optional.bool,
-			desc: {
-				'ja-JP': 'アップロードするメディアをデフォルトで「閲覧注意」として設定するか'
-			}
 		},
 
 		pinnedPageId: {
 			validator: $.optional.nullable.type(ID),
-			desc: {
-				'ja-JP': 'ピン留めするページID'
-			}
 		},
 
 		mutedWords: {
@@ -151,6 +110,10 @@ export const meta = {
 
 		mutingNotificationTypes: {
 			validator: $.optional.arr($.str.or(notificationTypes as unknown as string[]))
+		},
+
+		emailNotificationTypes: {
+			validator: $.optional.arr($.str)
 		},
 	},
 
@@ -184,20 +147,27 @@ export const meta = {
 			code: 'NO_SUCH_PAGE',
 			id: '8e01b590-7eb9-431b-a239-860e086c408e'
 		},
+	},
+
+	res: {
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
+		ref: 'User'
 	}
 };
 
-export default define(meta, async (ps, user, token) => {
+export default define(meta, async (ps, _user, token) => {
+	const user = await Users.findOneOrFail(_user.id);
 	const isSecure = token == null;
 
 	const updates = {} as Partial<User>;
 	const profileUpdates = {} as Partial<UserProfile>;
 
-	const profile = await UserProfiles.findOne(user.id).then(ensure);
+	const profile = await UserProfiles.findOneOrFail(user.id);
 
 	if (ps.name !== undefined) updates.name = ps.name;
 	if (ps.description !== undefined) profileUpdates.description = ps.description;
-	//if (ps.lang !== undefined) updates.lang = ps.lang;
+	if (ps.lang !== undefined) profileUpdates.lang = ps.lang;
 	if (ps.location !== undefined) profileUpdates.location = ps.location;
 	if (ps.birthday !== undefined) profileUpdates.birthday = ps.birthday;
 	if (ps.avatarId !== undefined) updates.avatarId = ps.avatarId;
@@ -208,13 +178,17 @@ export default define(meta, async (ps, user, token) => {
 	}
 	if (ps.mutingNotificationTypes !== undefined) profileUpdates.mutingNotificationTypes = ps.mutingNotificationTypes as typeof notificationTypes[number][];
 	if (typeof ps.isLocked === 'boolean') updates.isLocked = ps.isLocked;
+	if (typeof ps.isExplorable === 'boolean') updates.isExplorable = ps.isExplorable;
+	if (typeof ps.hideOnlineStatus === 'boolean') updates.hideOnlineStatus = ps.hideOnlineStatus;
 	if (typeof ps.isBot === 'boolean') updates.isBot = ps.isBot;
 	if (typeof ps.carefulBot === 'boolean') profileUpdates.carefulBot = ps.carefulBot;
 	if (typeof ps.autoAcceptFollowed === 'boolean') profileUpdates.autoAcceptFollowed = ps.autoAcceptFollowed;
+	if (typeof ps.noCrawle === 'boolean') profileUpdates.noCrawle = ps.noCrawle;
 	if (typeof ps.isCat === 'boolean') updates.isCat = ps.isCat;
-	if (typeof ps.autoWatch === 'boolean') profileUpdates.autoWatch = ps.autoWatch;
 	if (typeof ps.injectFeaturedNote === 'boolean') profileUpdates.injectFeaturedNote = ps.injectFeaturedNote;
+	if (typeof ps.receiveAnnouncementEmail === 'boolean') profileUpdates.receiveAnnouncementEmail = ps.receiveAnnouncementEmail;
 	if (typeof ps.alwaysMarkNsfw === 'boolean') profileUpdates.alwaysMarkNsfw = ps.alwaysMarkNsfw;
+	if (ps.emailNotificationTypes !== undefined) profileUpdates.emailNotificationTypes = ps.emailNotificationTypes;
 
 	if (ps.avatarId) {
 		const avatar = await DriveFiles.findOne(ps.avatarId);
@@ -269,14 +243,14 @@ export default define(meta, async (ps, user, token) => {
 	const newDescription = profileUpdates.description === undefined ? profile.description : profileUpdates.description;
 
 	if (newName != null) {
-		const tokens = parsePlain(newName);
-		emojis = emojis.concat(extractEmojis(tokens!));
+		const tokens = mfm.parsePlain(newName);
+		emojis = emojis.concat(extractCustomEmojisFromMfm(tokens!));
 	}
 
 	if (newDescription != null) {
-		const tokens = parse(newDescription);
-		emojis = emojis.concat(extractEmojis(tokens!));
-		tags = extractHashtags(tokens!).map(tag => tag.toLowerCase()).splice(0, 32);
+		const tokens = mfm.parse(newDescription);
+		emojis = emojis.concat(extractCustomEmojisFromMfm(tokens!));
+		tags = extractHashtags(tokens!).map(tag => normalizeForSearch(tag)).splice(0, 32);
 	}
 
 	updates.emojis = emojis;
@@ -296,6 +270,7 @@ export default define(meta, async (ps, user, token) => {
 
 	// Publish meUpdated event
 	publishMainStream(user.id, 'meUpdated', iObj);
+	publishUserEvent(user.id, 'updateUserProfile', await UserProfiles.findOne(user.id));
 
 	// 鍵垢を解除したとき、溜まっていたフォローリクエストがあるならすべて承認
 	if (user.isLocked && ps.isLocked === false) {

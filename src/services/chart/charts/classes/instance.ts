@@ -1,11 +1,11 @@
 import autobind from 'autobind-decorator';
 import Chart, { Obj, DeepPartial } from '../../core';
-import { SchemaType } from '../../../../misc/schema';
+import { SchemaType } from '@/misc/schema';
 import { DriveFiles, Followings, Users, Notes } from '../../../../models';
 import { DriveFile } from '../../../../models/entities/drive-file';
 import { name, schema } from '../schemas/instance';
 import { Note } from '../../../../models/entities/note';
-import { toPuny } from '../../../../misc/convert-host';
+import { toPuny } from '@/misc/convert-host';
 
 type InstanceLog = SchemaType<typeof schema>;
 
@@ -37,6 +37,50 @@ export default class InstanceChart extends Chart<InstanceLog> {
 	}
 
 	@autobind
+	protected aggregate(logs: InstanceLog[]): InstanceLog {
+		return {
+			requests: {
+				failed: logs.reduce((a, b) => a + b.requests.failed, 0),
+				succeeded: logs.reduce((a, b) => a + b.requests.succeeded, 0),
+				received: logs.reduce((a, b) => a + b.requests.received, 0),
+			},
+			notes: {
+				total: logs[0].notes.total,
+				inc: logs.reduce((a, b) => a + b.notes.inc, 0),
+				dec: logs.reduce((a, b) => a + b.notes.dec, 0),
+				diffs: {
+					reply: logs.reduce((a, b) => a + b.notes.diffs.reply, 0),
+					renote: logs.reduce((a, b) => a + b.notes.diffs.renote, 0),
+					normal: logs.reduce((a, b) => a + b.notes.diffs.normal, 0),
+				},
+			},
+			users: {
+				total: logs[0].users.total,
+				inc: logs.reduce((a, b) => a + b.users.inc, 0),
+				dec: logs.reduce((a, b) => a + b.users.dec, 0),
+			},
+			following: {
+				total: logs[0].following.total,
+				inc: logs.reduce((a, b) => a + b.following.inc, 0),
+				dec: logs.reduce((a, b) => a + b.following.dec, 0),
+			},
+			followers: {
+				total: logs[0].followers.total,
+				inc: logs.reduce((a, b) => a + b.followers.inc, 0),
+				dec: logs.reduce((a, b) => a + b.followers.dec, 0),
+			},
+			drive: {
+				totalFiles: logs[0].drive.totalFiles,
+				totalUsage: logs[0].drive.totalUsage,
+				incFiles: logs.reduce((a, b) => a + b.drive.incFiles, 0),
+				incUsage: logs.reduce((a, b) => a + b.drive.incUsage, 0),
+				decFiles: logs.reduce((a, b) => a + b.drive.decFiles, 0),
+				decUsage: logs.reduce((a, b) => a + b.drive.decUsage, 0),
+			},
+		};
+	}
+
+	@autobind
 	protected async fetchActual(group: string): Promise<DeepPartial<InstanceLog>> {
 		const [
 			notesCount,
@@ -51,7 +95,7 @@ export default class InstanceChart extends Chart<InstanceLog> {
 			Followings.count({ followerHost: group }),
 			Followings.count({ followeeHost: group }),
 			DriveFiles.count({ userHost: group }),
-			DriveFiles.clacDriveUsageOfHost(group),
+			DriveFiles.calcDriveUsageOfHost(group),
 		]);
 
 		return {

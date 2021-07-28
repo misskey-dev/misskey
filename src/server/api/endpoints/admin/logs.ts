@@ -17,12 +17,62 @@ export const meta = {
 
 		level: {
 			validator: $.optional.nullable.str,
-			default: null as any
+			default: null
 		},
 
 		domain: {
 			validator: $.optional.nullable.str,
-			default: null as any
+			default: null
+		}
+	},
+
+	res: {
+		type: 'array' as const,
+		optional: false as const, nullable: false as const,
+		items: {
+			type: 'object' as const,
+			optional: false as const, nullable: false as const,
+			properties: {
+				id: {
+					type: 'string' as const,
+					optional: false as const, nullable: false as const,
+					format: 'id',
+					example: 'xxxxxxxxxx',
+				},
+				createdAt: {
+					type: 'string' as const,
+					optional: false as const, nullable: false as const,
+					format: 'date-time',
+				},
+				domain: {
+					type: 'array' as const,
+					optional: false as const, nullable: false as const,
+					items: {
+						type: 'string' as const,
+						optional: true as const, nullable: false as const
+					}
+				},
+				level: {
+					type: 'string' as const,
+					optional: false as const, nullable: false as const
+				},
+				worker: {
+					type: 'string' as const,
+					optional: false as const, nullable: false as const
+				},
+				machine: {
+					type: 'string' as const,
+					optional: false as const, nullable: false as const,
+				},
+				message: {
+					type: 'string' as const,
+					optional: false as const, nullable: false as const,
+				},
+				data: {
+					type: 'object' as const,
+					optional: false as const, nullable: false as const
+				}
+			}
 		}
 	}
 };

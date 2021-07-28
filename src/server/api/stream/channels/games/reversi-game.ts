@@ -5,7 +5,8 @@ import Reversi from '../../../../../games/reversi/core';
 import * as maps from '../../../../../games/reversi/maps';
 import Channel from '../../channel';
 import { ReversiGame } from '../../../../../models/entities/games/reversi/game';
-import { ReversiGames } from '../../../../../models';
+import { ReversiGames, Users } from '../../../../../models';
+import { User } from '../../../../../models/entities/user';
 
 export default class extends Channel {
 	public readonly chName = 'gamesReversiGame';
@@ -13,15 +14,56 @@ export default class extends Channel {
 	public static requireCredential = false;
 
 	private gameId: ReversiGame['id'] | null = null;
+	private watchers: Record<User['id'], Date> = {};
+	private emitWatchersIntervalId: ReturnType<typeof setInterval>;
 
 	@autobind
 	public async init(params: any) {
 		this.gameId = params.gameId;
 
 		// Subscribe game stream
-		this.subscriber.on(`reversiGameStream:${this.gameId}`, data => {
+		this.subscriber.on(`reversiGameStream:${this.gameId}`, this.onEvent);
+		this.emitWatchersIntervalId = setInterval(this.emitWatchers, 5000);
+
+		const game = await ReversiGames.findOne(this.gameId!);
+		if (game == null) throw new Error('game not found');
+
+		// 観戦者イベント
+		this.watch(game);
+	}
+
+	@autobind
+	private onEvent(data: any) {
+		if (data.type === 'watching') {
+			const id = data.body;
+			this.watchers[id] = new Date();
+		} else {
 			this.send(data);
+		}
+	}
+
+	@autobind
+	private async emitWatchers() {
+		const now = new Date();
+
+		// Remove not watching users
+		for (const [userId, date] of Object.entries(this.watchers)) {
+			if (now.getTime() - date.getTime() > 5000) delete this.watchers[userId];
+		}
+
+		const users = await Users.packMany(Object.keys(this.watchers), null, { detail: false });
+
+		this.send({
+			type: 'watchers',
+			body: users,
 		});
+	}
+
+	@autobind
+	public dispose() {
+		// Unsubscribe events
+		this.subscriber.off(`reversiGameStream:${this.gameId}`, this.onEvent);
+		clearInterval(this.emitWatchersIntervalId);
 	}
 
 	@autobind
@@ -243,20 +285,23 @@ export default class extends Channel {
 		if (game.isEnded) return;
 		if ((game.user1Id !== this.user.id) && (game.user2Id !== this.user.id)) return;
 
+		const myColor =
+			((game.user1Id === this.user.id) && game.black == 1) || ((game.user2Id === this.user.id) && game.black == 2)
+				? true
+				: false;
+
 		const o = new Reversi(game.map, {
 			isLlotheo: game.isLlotheo,
 			canPutEverywhere: game.canPutEverywhere,
 			loopedBoard: game.loopedBoard
 		});
 
+		// 盤面の状態を再生
 		for (const log of game.logs) {
 			o.put(log.color, log.pos);
 		}
 
-		const myColor =
-			((game.user1Id === this.user.id) && game.black == 1) || ((game.user2Id === this.user.id) && game.black == 2)
-				? true
-				: false;
+		if (o.turn !== myColor) return;
 
 		if (!o.canPut(myColor, pos)) return;
 		o.put(myColor, pos);
@@ -310,6 +355,18 @@ export default class extends Channel {
 
 		if (crc32.toString() !== game.crc32) {
 			this.send('rescue', await ReversiGames.pack(game, this.user));
+		}
+
+		// ついでに観戦者イベントを発行
+		this.watch(game);
+	}
+
+	@autobind
+	private watch(game: ReversiGame) {
+		if (this.user != null) {
+			if ((game.user1Id !== this.user.id) && (game.user2Id !== this.user.id)) {
+				publishReversiGameStream(this.gameId!, 'watching', this.user.id);
+			}
 		}
 	}
 }

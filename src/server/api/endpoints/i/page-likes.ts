@@ -1,15 +1,10 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { PageLikes } from '../../../../models';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 
 export const meta = {
-	desc: {
-		'ja-JP': '「いいね」したページ一覧を取得します。',
-		'en-US': 'Get liked pages'
-	},
-
 	tags: ['account', 'pages'],
 
 	requireCredential: true as const,
@@ -29,6 +24,23 @@ export const meta = {
 		untilId: {
 			validator: $.optional.type(ID),
 		},
+	},
+
+	res: {
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
+		properties: {
+			id: {
+				type: 'string' as const,
+				optional: false as const, nullable: false as const,
+				format: 'id'
+			},
+			page: {
+				type: 'object' as const,
+				optional: false as const, nullable: false as const,
+				ref: 'Page'
+			}
+		}
 	}
 };
 

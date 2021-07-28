@@ -1,37 +1,35 @@
 <template>
 <button class="kpoogebi _button"
-	:class="{ wait, active: isFollowing || hasPendingFollowRequestFromYou, full }"
+	:class="{ wait, active: isFollowing || hasPendingFollowRequestFromYou, full, large }"
 	@click="onClick"
 	:disabled="wait"
-	v-if="isFollowing != null && !(isNotification && isFollowing)"
 >
 	<template v-if="!wait">
 		<template v-if="hasPendingFollowRequestFromYou && user.isLocked">
-			<span v-if="full">{{ $t('followRequestPending') }}</span><Fa :icon="faHourglassHalf"/>
+			<span v-if="full">{{ $ts.followRequestPending }}</span><i class="fas fa-hourglass-half"></i>
 		</template>
 		<template v-else-if="hasPendingFollowRequestFromYou && !user.isLocked"> <!-- つまりリモートフォローの場合。 -->
-			<span v-if="full">{{ $t('processing') }}</span><Fa :icon="faSpinner" pulse/>
+			<span v-if="full">{{ $ts.processing }}</span><i class="fas fa-spinner fa-pulse"></i>
 		</template>
 		<template v-else-if="isFollowing">
-			<span v-if="full">{{ $t('unfollow') }}</span><Fa :icon="faMinus"/>
+			<span v-if="full">{{ $ts.unfollow }}</span><i class="fas fa-minus"></i>
 		</template>
 		<template v-else-if="!isFollowing && user.isLocked">
-			<span v-if="full">{{ $t('followRequest') }}</span><Fa :icon="faPlus"/>
+			<span v-if="full">{{ $ts.followRequest }}</span><i class="fas fa-plus"></i>
 		</template>
 		<template v-else-if="!isFollowing && !user.isLocked">
-			<span v-if="full">{{ $t('follow') }}</span><Fa :icon="faPlus"/>
+			<span v-if="full">{{ $ts.follow }}</span><i class="fas fa-plus"></i>
 		</template>
 	</template>
 	<template v-else>
-		<span v-if="full">{{ $t('processing') }}</span><Fa :icon="faSpinner" pulse fixed-width/>
+		<span v-if="full">{{ $ts.processing }}</span><i class="fas fa-spinner fa-pulse fa-fw"></i>
 	</template>
 </button>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { faSpinner, faPlus, faMinus, faHourglassHalf } from '@fortawesome/free-solid-svg-icons';
-import * as os from '@/os';
+import { defineComponent, markRaw } from 'vue';
+import * as os from '@client/os';
 
 export default defineComponent({
 	props: {
@@ -44,7 +42,7 @@ export default defineComponent({
 			required: false,
 			default: false,
 		},
-		isNotification: {
+		large: {
 			type: Boolean,
 			required: false,
 			default: false,
@@ -57,7 +55,6 @@ export default defineComponent({
 			hasPendingFollowRequestFromYou: this.user.hasPendingFollowRequestFromYou,
 			wait: false,
 			connection: null,
-			faSpinner, faPlus, faMinus, faHourglassHalf
 		};
 	},
 
@@ -74,7 +71,7 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.connection = os.stream.useSharedConnection('main');
+		this.connection = markRaw(os.stream.useChannel('main'));
 
 		this.connection.on('follow', this.onFollowChange);
 		this.connection.on('unfollow', this.onFollowChange);
@@ -152,6 +149,12 @@ export default defineComponent({
 	&.full {
 		padding: 0 8px 0 12px;
 		font-size: 14px;
+	}
+
+	&.large {
+		font-size: 16px;
+		height: 38px;
+		padding: 0 12px 0 16px;
 	}
 
 	&:not(.full) {

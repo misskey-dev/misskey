@@ -15,7 +15,7 @@
 		<MkButton inline>This is</MkButton>
 		<MkButton inline primary>the button</MkButton>
 	</div>
-	<div class="_content">
+	<div class="_content" style="pointer-events: none;">
 		<Mfm :text="mfm"/>
 	</div>
 	<div class="_content">
@@ -29,13 +29,13 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import MkButton from '@/components/ui/button.vue';
-import MkInput from '@/components/ui/input.vue';
-import MkSwitch from '@/components/ui/switch.vue';
-import MkTextarea from '@/components/ui/textarea.vue';
-import MkRadio from '@/components/ui/radio.vue';
-import * as os from '@/os';
-import * as config from '@/config';
+import MkButton from '@client/components/ui/button.vue';
+import MkInput from '@client/components/ui/input.vue';
+import MkSwitch from '@client/components/ui/switch.vue';
+import MkTextarea from '@client/components/ui/textarea.vue';
+import MkRadio from '@client/components/ui/radio.vue';
+import * as os from '@client/os';
+import * as config from '@client/config';
 
 export default defineComponent({
 	components: {
@@ -49,9 +49,9 @@ export default defineComponent({
 	data() {
 		return {
 			text: '',
-			flag: false,
+			flag: true,
 			radio: 'misskey',
-			mfm: `Hello world! This is an @example mention. BTW you are @${this.$store.state.i.username}.\nAlso, here is ${config.url} and [example link](${config.url}). for more details, see https://example.com.\nAs you know #misskey is open-source software.`
+			mfm: `Hello world! This is an @example mention. BTW you are @${this.$i ? this.$i.username : 'guest'}.\nAlso, here is ${config.url} and [example link](${config.url}). for more details, see https://example.com.\nAs you know #misskey is open-source software.`
 		}
 	},
 

@@ -1,8 +1,8 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { MessagingMessage } from '../entities/messaging-message';
 import { Users, DriveFiles, UserGroups } from '..';
-import { ensure } from '../../prelude/ensure';
-import { SchemaType } from '../../misc/schema';
+import { SchemaType } from '@/misc/schema';
+import { User } from '../entities/user';
 
 export type PackedMessagingMessage = SchemaType<typeof packedMessagingMessageSchema>;
 
@@ -14,7 +14,7 @@ export class MessagingMessageRepository extends Repository<MessagingMessage> {
 
 	public async pack(
 		src: MessagingMessage['id'] | MessagingMessage,
-		me?: any,
+		me?: { id: User['id'] } | null | undefined,
 		options?: {
 			populateRecipient?: boolean,
 			populateGroup?: boolean,
@@ -25,7 +25,7 @@ export class MessagingMessageRepository extends Repository<MessagingMessage> {
 			populateGroup: true,
 		};
 
-		const message = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
+		const message = typeof src === 'object' ? src : await this.findOneOrFail(src);
 
 		return {
 			id: message.id,
@@ -53,14 +53,12 @@ export const packedMessagingMessageSchema = {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
 			format: 'id',
-			description: 'The unique identifier for this MessagingMessage.',
 			example: 'xxxxxxxxxx',
 		},
 		createdAt: {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
 			format: 'date-time',
-			description: 'The date that the MessagingMessage was created.'
 		},
 		userId: {
 			type: 'string' as const,

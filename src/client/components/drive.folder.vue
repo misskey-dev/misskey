@@ -2,6 +2,7 @@
 <div class="rghtznwe"
 	:class="{ draghover }"
 	@click="onClick"
+	@contextmenu.stop="onContextmenu"
 	@mouseover="onMouseover"
 	@mouseout="onMouseout"
 	@dragover.prevent.stop="onDragover"
@@ -14,12 +15,12 @@
 	:title="title"
 >
 	<p class="name">
-		<template v-if="hover"><Fa :icon="faFolderOpen" fixed-width/></template>
-		<template v-if="!hover"><Fa :icon="faFolder" fixed-width/></template>
+		<template v-if="hover"><i class="fas fa-folder-open fa-fw"></i></template>
+		<template v-if="!hover"><i class="fas fa-folder fa-fw"></i></template>
 		{{ folder.name }}
 	</p>
-	<p class="upload" v-if="$store.state.settings.uploadFolder == folder.id">
-		{{ $t('uploadFolder') }}
+	<p class="upload" v-if="$store.state.uploadFolder == folder.id">
+		{{ $ts.uploadFolder }}
 	</p>
 	<button v-if="selectMode" class="checkbox _button" :class="{ checked: isSelected }" @click.prevent.stop="checkboxClicked"></button>
 </div>
@@ -27,8 +28,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faFolder, faFolderOpen } from '@fortawesome/free-regular-svg-icons';
-import * as os from '@/os';
+import * as os from '@client/os';
 
 export default defineComponent({
 	props: {
@@ -55,7 +55,6 @@ export default defineComponent({
 			hover: false,
 			draghover: false,
 			isDragging: false,
-			faFolder, faFolderOpen
 		};
 	},
 
@@ -153,14 +152,14 @@ export default defineComponent({
 					switch (err) {
 						case 'detected-circular-definition':
 							os.dialog({
-								title: this.$t('unableToProcess'),
-								text: this.$t('circularReferenceFolder')
+								title: this.$ts.unableToProcess,
+								text: this.$ts.circularReferenceFolder
 							});
 							break;
 						default:
 							os.dialog({
 								type: 'error',
-								text: this.$t('somethingHappened')
+								text: this.$ts.somethingHappened
 							});
 					}
 				});
@@ -193,9 +192,9 @@ export default defineComponent({
 
 		rename() {
 			os.dialog({
-				title: this.$t('renameFolder'),
+				title: this.$ts.renameFolder,
 				input: {
-					placeholder: this.$t('inputNewFolderName'),
+					placeholder: this.$ts.inputNewFolderName,
 					default: this.folder.name
 				}
 			}).then(({ canceled, result: name }) => {
@@ -211,35 +210,51 @@ export default defineComponent({
 			os.api('drive/folders/delete', {
 				folderId: this.folder.id
 			}).then(() => {
-				if (this.$store.state.settings.uploadFolder === this.folder.id) {
-					this.$store.dispatch('settings/set', {
-						key: 'uploadFolder',
-						value: null
-					});
+				if (this.$store.state.uploadFolder === this.folder.id) {
+					this.$store.set('uploadFolder', null);
 				}
 			}).catch(err => {
 				switch(err.id) {
 					case 'b0fc8a17-963c-405d-bfbc-859a487295e1':
 						os.dialog({
 							type: 'error',
-							title: this.$t('unableToDelete'),
-							text: this.$t('hasChildFilesOrFolders')
+							title: this.$ts.unableToDelete,
+							text: this.$ts.hasChildFilesOrFolders
 						});
 						break;
 					default:
 						os.dialog({
 							type: 'error',
-							text: this.$t('unableToDelete')
+							text: this.$ts.unableToDelete
 						});
 				}
 			});
 		},
 
 		setAsUploadFolder() {
-			this.$store.dispatch('settings/set', {
-				key: 'uploadFolder',
-				value: this.folder.id
-			});
+			this.$store.set('uploadFolder', this.folder.id);
+		},
+
+		onContextmenu(e) {
+			os.contextMenu([{
+				text: this.$ts.openInWindow,
+				icon: 'fas fa-window-restore',
+				action: () => {
+					os.popup(import('./drive-window.vue'), {
+						initialFolder: this.folder
+					}, {
+					}, 'closed');
+				}
+			}, null, {
+				text: this.$ts.rename,
+				icon: 'fas fa-i-cursor',
+				action: this.rename
+			}, null, {
+				text: this.$ts.delete,
+				icon: 'fas fa-trash-alt',
+				danger: true,
+				action: this.deleteFolder
+			}], e);
 		},
 	}
 });
@@ -294,7 +309,7 @@ export default defineComponent({
 		font-size: 0.9em;
 		color: var(--desktopDriveFolderFg);
 
-		> [data-icon] {
+		> i {
 			margin-right: 4px;
 			margin-left: 2px;
 			text-align: left;

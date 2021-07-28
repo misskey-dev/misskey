@@ -1,4 +1,4 @@
-import config from '../../../config';
+import config from '@/config';
 import { Relay } from '../../../models/entities/relay';
 import { ILocalUser } from '../../../models/entities/user';
 

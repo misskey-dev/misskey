@@ -1,2 +1,78 @@
 ---
 _lang_: "Português"
+monthAndDay: "{day}/{month}"
+search: "Pesquisar"
+notifications: "Notificações"
+username: "Nome de usuário"
+password: "Senha"
+ok: "OK"
+gotIt: "Entendi"
+cancel: "Cancelar"
+enterUsername: "Digite o nome de usuário"
+renotedBy: "Repostado por {user}"
+noNotes: "Sem posts"
+settings: "Configurações"
+basicSettings: "Configurações básicas"
+otherSettings: "Outras configurações"
+profile: "Perfil"
+timeline: "Timeline"
+logout: "Sair"
+users: "Usuários"
+favorite: "Favoritar"
+favorites: "Favoritar"
+showMore: "Ver mais"
+youGotNewFollower: "Você tem um novo seguidor"
+followRequestAccepted: "Pedido de seguir aceito"
+note: "Post"
+notes: "Posts"
+enterEmoji: "Inserir emoji"
+renote: "Repostar"
+renoted: "Repostado"
+cantRenote: "Não pode repostar"
+cantReRenote: "Não pode repostar este repost"
+pinnedNote: "Post fixado"
+sensitive: "Conteúdo sensível"
+mute: "Silenciar"
+unmute: "Dessilenciar"
+settingGuide: "Guia de configuração"
+instances: "Instância"
+registeredAt: "Registrado em"
+perHour: "por hora"
+perDay: "por dia"
+noUsers: "Sem usuários"
+messageRead: "Lida"
+lightThemes: "Tema claro"
+darkThemes: "Tema escuro"
+addFile: "Adicionar arquivo"
+nsfw: "Conteúdo sensível"
+monthX: "mês de {month}"
+pinnedNotes: "Post fixado"
+smtpUser: "Nome de usuário"
+smtpPass: "Senha"
+user: "Usuários"
+_email:
+  _follow:
+    title: "Você tem um novo seguidor"
+_mfm:
+  search: "Pesquisar"
+_theme:
+  keys:
+    renote: "Repostar"
+_sfx:
+  note: "Posts"
+  notification: "Notificações"
+_widgets:
+  notifications: "Notificações"
+  timeline: "Timeline"
+_profile:
+  username: "Nome de usuário"
+_exportOrImport:
+  muteList: "Silenciar"
+_notification:
+  youWereFollowed: "Você tem um novo seguidor"
+  _types:
+    renote: "Repostar"
+_deck:
+  _columns:
+    notifications: "Notificações"
+    tl: "Timeline"

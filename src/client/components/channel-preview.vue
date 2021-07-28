@@ -1,24 +1,24 @@
 <template>
-<router-link :to="`/channels/${channel.id}`" class="eftoefju _panel" tabindex="-1">
-	<div class="banner" v-if="channel.bannerUrl" :style="`background-image: url('${channel.bannerUrl}')`">
+<MkA :to="`/channels/${channel.id}`" class="eftoefju _panel" tabindex="-1">
+	<div class="banner" :style="bannerStyle">
 		<div class="fade"></div>
-		<div class="name"><Fa :icon="faSatelliteDish"/> {{ channel.name }}</div>
+		<div class="name"><i class="fas fa-satellite-dish"></i> {{ channel.name }}</div>
 		<div class="status">
 			<div>
-				<Fa :icon="faUsers" fixed-width/>
-				<i18n-t keypath="_channel.usersCount" tag="span" style="margin-left: 4px;">
+				<i class="fas fa-users fa-fw"></i>
+				<I18n :src="$ts._channel.usersCount" tag="span" style="margin-left: 4px;">
 					<template #n>
 						<b>{{ channel.usersCount }}</b>
 					</template>
-				</i18n-t>
+				</I18n>
 			</div>
 			<div>
-				<Fa :icon="faPencilAlt" fixed-width/>
-				<i18n-t keypath="_channel.notesCount" tag="span" style="margin-left: 4px;">
+				<i class="fas fa-pencil-alt fa-fw"></i>
+				<I18n :src="$ts._channel.notesCount" tag="span" style="margin-left: 4px;">
 					<template #n>
 						<b>{{ channel.notesCount }}</b>
 					</template>
-				</i18n-t>
+				</I18n>
 			</div>
 		</div>
 	</div>
@@ -27,15 +27,14 @@
 	</article>
 	<footer>
 		<span v-if="channel.lastNotedAt">
-			{{ $t('updatedAt') }}: <MkTime :time="channel.lastNotedAt"/>
+			{{ $ts.updatedAt }}: <MkTime :time="channel.lastNotedAt"/>
 		</span>
 	</footer>
-</router-link>
+</MkA>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faSatelliteDish, faUsers, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 
 export default defineComponent({
 	props: {
@@ -45,9 +44,18 @@ export default defineComponent({
 		},
 	},
 
+	computed: {
+		bannerStyle() {
+			if (this.channel.bannerUrl) {
+				return { backgroundImage: `url(${this.channel.bannerUrl})` };
+			} else {
+				return { backgroundColor: '#4c5e6d' };
+			}
+		}
+	},
+
 	data() {
 		return {
-			faSatelliteDish, faUsers, faPencilAlt,
 		};
 	},
 });
@@ -113,7 +121,7 @@ export default defineComponent({
 
 	> footer {
 		padding: 12px 16px;
-		border-top: solid 1px var(--divider);
+		border-top: solid 0.5px var(--divider);
 
 		> span {
 			opacity: 0.7;

@@ -4,19 +4,19 @@ import { v4 as uuid } from 'uuid';
 
 import { publishMainStream, publishDriveStream } from '../stream';
 import { deleteFile } from './delete-file';
-import { fetchMeta } from '../../misc/fetch-meta';
+import { fetchMeta } from '@/misc/fetch-meta';
 import { GenerateVideoThumbnail } from './generate-video-thumbnail';
 import { driveLogger } from './logger';
 import { IImage, convertSharpToJpeg, convertSharpToWebp, convertSharpToPng, convertSharpToPngOrJpeg } from './image-processor';
-import { contentDisposition } from '../../misc/content-disposition';
-import { getFileInfo } from '../../misc/get-file-info';
+import { contentDisposition } from '@/misc/content-disposition';
+import { getFileInfo } from '@/misc/get-file-info';
 import { DriveFiles, DriveFolders, Users, Instances, UserProfiles } from '../../models';
 import { InternalStorage } from './internal-storage';
 import { DriveFile } from '../../models/entities/drive-file';
 import { IRemoteUser, User } from '../../models/entities/user';
 import { driveChart, perUserDriveChart, instanceChart } from '../chart';
-import { genId } from '../../misc/gen-id';
-import { isDuplicateKeyValueError } from '../../misc/is-duplicate-key-value-error';
+import { genId } from '@/misc/gen-id';
+import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error';
 import * as S3 from 'aws-sdk/clients/s3';
 import { getS3 } from './s3';
 import * as sharp from 'sharp';
@@ -267,7 +267,8 @@ async function upload(key: string, stream: fs.ReadStream | Buffer, type: string,
 
 async function deleteOldFile(user: IRemoteUser) {
 	const q = DriveFiles.createQueryBuilder('file')
-		.where('file.userId = :userId', { userId: user.id });
+		.where('file.userId = :userId', { userId: user.id })
+		.andWhere('file.isLink = FALSE');
 
 	if (user.avatarId) {
 		q.andWhere('file.id != :avatarId', { avatarId: user.avatarId });
@@ -302,7 +303,7 @@ async function deleteOldFile(user: IRemoteUser) {
  * @return Created drive file
  */
 export default async function(
-	user: User | null,
+	user: { id: User['id']; host: User['host'] } | null,
 	path: string,
 	name: string | null = null,
 	comment: string | null = null,
@@ -334,7 +335,7 @@ export default async function(
 
 	//#region Check drive usage
 	if (user && !isLink) {
-		const usage = await DriveFiles.clacDriveUsageOf(user);
+		const usage = await DriveFiles.calcDriveUsageOf(user);
 
 		const instance = await fetchMeta();
 		const driveCapacity = 1024 * 1024 * (Users.isLocalUser(user) ? instance.localDriveCapacityMb : instance.remoteDriveCapacityMb);
@@ -347,7 +348,7 @@ export default async function(
 				throw new Error('no-free-space');
 			} else {
 				// (アバターまたはバナーを含まず)最も古いファイルを削除する
-				deleteOldFile(user as IRemoteUser);
+				deleteOldFile(await Users.findOneOrFail(user.id) as IRemoteUser);
 			}
 		}
 	}

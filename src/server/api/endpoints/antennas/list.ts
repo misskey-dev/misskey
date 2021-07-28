@@ -7,6 +7,16 @@ export const meta = {
 	requireCredential: true as const,
 
 	kind: 'read:account',
+
+	res: {
+		type: 'array' as const,
+		optional: false as const, nullable: false as const,
+		items: {
+			type: 'object' as const,
+			optional: false as const, nullable: false as const,
+			ref: 'Antenna'
+		}
+	}
 };
 
 export default define(meta, async (ps, me) => {

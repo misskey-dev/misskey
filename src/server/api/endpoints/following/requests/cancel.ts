@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import { ID } from '../../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import cancelFollowRequest from '../../../../../services/following/requests/cancel';
 import define from '../../../define';
 import { ApiError } from '../../../error';
@@ -7,11 +7,6 @@ import { getUser } from '../../../common/getters';
 import { Users } from '../../../../../models';
 
 export const meta = {
-	desc: {
-		'ja-JP': '自分が作成した、指定したフォローリクエストをキャンセルします。',
-		'en-US': 'Cancel a follow request.'
-	},
-
 	tags: ['following', 'account'],
 
 	requireCredential: true as const,
@@ -21,10 +16,6 @@ export const meta = {
 	params: {
 		userId: {
 			validator: $.type(ID),
-			desc: {
-				'ja-JP': '対象のユーザーのID',
-				'en-US': 'Target user ID'
-			}
 		}
 	},
 
@@ -40,6 +31,12 @@ export const meta = {
 			code: 'FOLLOW_REQUEST_NOT_FOUND',
 			id: '089b125b-d338-482a-9a09-e2622ac9f8d4'
 		},
+	},
+
+	res: {
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
+		ref: 'User'
 	}
 };
 

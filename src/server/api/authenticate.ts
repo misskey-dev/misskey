@@ -1,10 +1,16 @@
 import isNativeToken from './common/is-native-token';
 import { User } from '../../models/entities/user';
 import { Users, AccessTokens, Apps } from '../../models';
-import { ensure } from '../../prelude/ensure';
 import { AccessToken } from '../../models/entities/access-token';
 
-export default async (token: string): Promise<[User | null | undefined, AccessToken | null | undefined]> => {
+export class AuthenticationError extends Error {
+	constructor(message: string) {
+		super(message);
+		this.name = 'AuthenticationError';
+	}
+}
+
+export default async (token: string): Promise<[User | null | undefined, App | null | undefined]> => {
 	if (token == null) {
 		return [null, null];
 	}
@@ -15,7 +21,7 @@ export default async (token: string): Promise<[User | null | undefined, AccessTo
 			.findOne({ token });
 
 		if (user == null) {
-			throw new Error('user not found');
+			throw new AuthenticationError('user not found');
 		}
 
 		return [user, null];
@@ -29,7 +35,7 @@ export default async (token: string): Promise<[User | null | undefined, AccessTo
 		});
 
 		if (accessToken == null) {
-			throw new Error('invalid signature');
+			throw new AuthenticationError('invalid signature');
 		}
 
 		AccessTokens.update(accessToken.id, {
@@ -43,7 +49,7 @@ export default async (token: string): Promise<[User | null | undefined, AccessTo
 
 		if (accessToken.appId) {
 			const app = await Apps
-				.findOne(accessToken.appId).then(ensure);
+				.findOneOrFail(accessToken.appId);
 
 			return [user, {
 				id: accessToken.id,

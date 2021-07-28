@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import read from '../../../../services/note/read';
 import { Notes, Followings } from '../../../../models';
@@ -9,11 +9,6 @@ import { makePaginationQuery } from '../../common/make-pagination-query';
 import { Brackets } from 'typeorm';
 
 export const meta = {
-	desc: {
-		'ja-JP': '自分に言及している投稿の一覧を取得します。',
-		'en-US': 'Get mentions of myself.'
-	},
-
 	tags: ['notes'],
 
 	requireCredential: true as const,
@@ -60,10 +55,14 @@ export default define(meta, async (ps, user) => {
 
 	const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 		.andWhere(new Brackets(qb => { qb
-			.where(`:meId = ANY(note.mentions)`, { meId: user.id })
-			.orWhere(`:meId = ANY(note.visibleUserIds)`, { meId: user.id });
+			.where(`'{"${user.id}"}' <@ note.mentions`)
+			.orWhere(`'{"${user.id}"}' <@ note.visibleUserIds`);
 		}))
-		.leftJoinAndSelect('note.user', 'user');
+		.innerJoinAndSelect('note.user', 'user')
+		.leftJoinAndSelect('note.reply', 'reply')
+		.leftJoinAndSelect('note.renote', 'renote')
+		.leftJoinAndSelect('reply.user', 'replyUser')
+		.leftJoinAndSelect('renote.user', 'renoteUser');
 
 	generateVisibilityQuery(query, user);
 	generateMutedUserQuery(query, user);
@@ -79,9 +78,7 @@ export default define(meta, async (ps, user) => {
 
 	const mentions = await query.take(ps.limit!).getMany();
 
-	for (const note of mentions) {
-		read(user.id, note.id);
-	}
+	read(user.id, mentions);
 
 	return await Notes.packMany(mentions, user);
 });

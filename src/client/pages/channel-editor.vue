@@ -2,20 +2,20 @@
 <div>
 	<div class="_section">
 		<div class="_content">
-			<MkInput v-model:value="name">{{ $t('name') }}</MkInput>
+			<MkInput v-model:value="name">{{ $ts.name }}</MkInput>
 
-			<MkTextarea v-model:value="description">{{ $t('description') }}</MkTextarea>
+			<MkTextarea v-model:value="description">{{ $ts.description }}</MkTextarea>
 
 			<div class="banner">
-				<MkButton v-if="bannerId == null" @click="setBannerImage"><Fa :icon="faPlus"/> {{ $t('_channel.setBanner') }}</MkButton>
+				<MkButton v-if="bannerId == null" @click="setBannerImage"><i class="fas fa-plus"></i> {{ $ts._channel.setBanner }}</MkButton>
 				<div v-else-if="bannerUrl">
 					<img :src="bannerUrl" style="width: 100%;"/>
-					<MkButton @click="removeBannerImage()"><Fa :icon="faTrashAlt"/> {{ $t('_channel.removeBanner') }}</MkButton>
+					<MkButton @click="removeBannerImage()"><i class="fas fa-trash-alt"></i> {{ $ts._channel.removeBanner }}</MkButton>
 				</div>
 			</div>
 		</div>
 		<div class="_footer">
-			<MkButton @click="save()" primary><Fa :icon="faSave"/> {{ channelId ? $t('save') : $t('create') }}</MkButton>
+			<MkButton @click="save()" primary><i class="fas fa-save"></i> {{ channelId ? $ts.save : $ts.create }}</MkButton>
 		</div>
 	</div>
 </div>
@@ -23,13 +23,12 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
-import { faPlus, faSatelliteDish } from '@fortawesome/free-solid-svg-icons';
-import { faSave, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
-import MkTextarea from '@/components/ui/textarea.vue';
-import MkButton from '@/components/ui/button.vue';
-import MkInput from '@/components/ui/input.vue';
-import { selectFile } from '@/scripts/select-file';
-import * as os from '@/os';
+import MkTextarea from '@client/components/ui/textarea.vue';
+import MkButton from '@client/components/ui/button.vue';
+import MkInput from '@client/components/ui/input.vue';
+import { selectFile } from '@client/scripts/select-file';
+import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -45,23 +44,18 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: computed(() => this.channelId ? {
-				header: [{
-					title: this.$t('_channel.edit'),
-					icon: faSatelliteDish,
-				}],
+			[symbols.PAGE_INFO]: computed(() => this.channelId ? {
+				title: this.$ts._channel.edit,
+				icon: 'fas fa-satellite-dish',
 			} : {
-				header: [{
-					title: this.$t('_channel.create'),
-					icon: faSatelliteDish,
-				}],
+				title: this.$ts._channel.create,
+				icon: 'fas fa-satellite-dish',
 			}),
 			channel: null,
 			name: null,
 			description: null,
 			bannerUrl: null,
 			bannerId: null,
-			faSave, faTrashAlt, faPlus,faSatelliteDish,
 		};
 	},
 

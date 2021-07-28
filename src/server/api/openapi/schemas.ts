@@ -1,5 +1,5 @@
 import { packedUserSchema } from '../../../models/repositories/user';
-import { Schema } from '../../../misc/schema';
+import { Schema } from '@/misc/schema';
 import { packedNoteSchema } from '../../../models/repositories/note';
 import { packedUserListSchema } from '../../../models/repositories/user-list';
 import { packedAppSchema } from '../../../models/repositories/app';
@@ -16,6 +16,11 @@ import { packedPageSchema } from '../../../models/repositories/page';
 import { packedUserGroupSchema } from '../../../models/repositories/user-group';
 import { packedNoteFavoriteSchema } from '../../../models/repositories/note-favorite';
 import { packedChannelSchema } from '../../../models/repositories/channel';
+import { packedAntennaSchema } from '../../../models/repositories/antenna';
+import { packedClipSchema } from '../../../models/repositories/clip';
+import { packedFederationInstanceSchema } from '../../../models/repositories/federation-instance';
+import { packedQueueCountSchema } from '../../../models/repositories/queue';
+import { packedGalleryPostSchema } from '@/models/repositories/gallery-post';
 
 export function convertSchemaToOpenApiSchema(schema: Schema) {
 	const res: any = schema;
@@ -84,4 +89,9 @@ export const schemas = {
 	Hashtag: convertSchemaToOpenApiSchema(packedHashtagSchema),
 	Page: convertSchemaToOpenApiSchema(packedPageSchema),
 	Channel: convertSchemaToOpenApiSchema(packedChannelSchema),
+	QueueCount: convertSchemaToOpenApiSchema(packedQueueCountSchema),
+	Antenna: convertSchemaToOpenApiSchema(packedAntennaSchema),
+	Clip: convertSchemaToOpenApiSchema(packedClipSchema),
+	FederationInstance: convertSchemaToOpenApiSchema(packedFederationInstanceSchema),
+	GalleryPost: convertSchemaToOpenApiSchema(packedGalleryPostSchema),
 };

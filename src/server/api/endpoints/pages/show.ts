@@ -2,14 +2,10 @@ import $ from 'cafy';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { Pages, Users } from '../../../../models';
-import { ID } from '../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import { Page } from '../../../../models/entities/page';
 
 export const meta = {
-	desc: {
-		'ja-JP': '指定したページの情報を取得します。',
-	},
-
 	tags: ['pages'],
 
 	requireCredential: false as const,
@@ -17,10 +13,6 @@ export const meta = {
 	params: {
 		pageId: {
 			validator: $.optional.type(ID),
-			desc: {
-				'ja-JP': '対象のページのID',
-				'en-US': 'Target page ID.'
-			}
 		},
 
 		name: {

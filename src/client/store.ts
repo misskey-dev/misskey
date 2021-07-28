@@ -1,99 +1,6 @@
-import { createStore } from 'vuex';
-import createPersistedState from 'vuex-persistedstate';
-import * as nestedProperty from 'nested-property';
-import { api } from '@/os';
-import { erase } from '../prelude/array';
-
-export const defaultSettings = {
-	tutorial: 0,
-	keepCw: false,
-	showFullAcct: false,
-	rememberNoteVisibility: false,
-	defaultNoteVisibility: 'public',
-	defaultNoteLocalOnly: false,
-	uploadFolder: null,
-	pastedFileName: 'yyyy-MM-dd HH-mm-ss [{{number}}]',
-	memo: null,
-	reactions: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
-	mutedWords: [],
-};
-
-export const defaultDeviceUserSettings = {
-	visibility: 'public',
-	localOnly: false,
-	widgets: [],
-	tl: {
-		src: 'home'
-	},
-	menu: [
-		'notifications',
-		'messaging',
-		'drive',
-		'-',
-		'followRequests',
-		'featured',
-		'explore',
-		'announcements',
-		'search',
-		'-',
-		'deck',
-	],
-	deck: {
-		columns: [],
-		layout: [],
-	},
-	plugins: [] as {
-		id: string;
-		name: string;
-		active: boolean;
-		configData: Record<string, any>;
-		token: string;
-		ast: any[];
-	}[],
-};
-
-export const defaultDeviceSettings = {
-	lang: null,
-	loadRawImages: false,
-	alwaysShowNsfw: false,
-	useOsNativeEmojis: false,
-	serverDisconnectedBehavior: 'quiet',
-	accounts: [],
-	recentEmojis: [],
-	themes: [],
-	darkTheme: '8050783a-7f63-445a-b270-36d0f6ba1677',
-	lightTheme: '4eea646f-7afa-4645-83e9-83af0333cd37',
-	darkMode: false,
-	deckMode: false,
-	syncDeviceDarkMode: true,
-	animation: true,
-	animatedMfm: true,
-	imageNewTab: false,
-	chatOpenBehavior: 'page',
-	showFixedPostForm: false,
-	disablePagesScript: false,
-	enableInfiniteScroll: true,
-	useBlurEffectForModal: true,
-	sidebarDisplay: 'full', // full, icon, hide
-	roomGraphicsQuality: 'medium',
-	roomUseOrthographicCamera: true,
-	deckColumnAlign: 'left',
-	deckAlwaysShowMainColumn: true,
-	deckMainColumnPlace: 'left',
-	sfxVolume: 0.3,
-	sfxNote: 'syuilo/down',
-	sfxNoteMy: 'syuilo/up',
-	sfxNotification: 'syuilo/pope2',
-	sfxChat: 'syuilo/pope1',
-	sfxChatBg: 'syuilo/waon',
-	sfxAntenna: 'syuilo/triple',
-	sfxChannel: 'syuilo/square-pico',
-	userData: {},
-};
-
-function copy<T>(data: T): T {
-	return JSON.parse(JSON.stringify(data));
-}
+import { markRaw, ref } from 'vue';
+import { Storage } from './pizzax';
+import { Theme } from './scripts/theme';
 
 export const postFormActions = [];
 export const userActions = [];
@@ -101,364 +8,295 @@ export const noteActions = [];
 export const noteViewInterruptors = [];
 export const notePostInterruptors = [];
 
-export const store = createStore({
-	strict: _DEV_,
-
-	plugins: [createPersistedState({
-		paths: ['i', 'device', 'deviceUser', 'settings', 'instance']
-	})],
-
-	state: {
-		i: null,
+// TODO: それぞれいちいちwhereとかdefaultというキーを付けなきゃいけないの冗長なのでなんとかする(ただ型定義が面倒になりそう)
+//       あと、現行の定義の仕方なら「whereが何であるかに関わらずキー名の重複不可」という制約を付けられるメリットもあるからそのメリットを引き継ぐ方法も考えないといけない
+export const defaultStore = markRaw(new Storage('base', {
+	tutorial: {
+		where: 'account',
+		default: 0
+	},
+	keepCw: {
+		where: 'account',
+		default: false
+	},
+	showFullAcct: {
+		where: 'account',
+		default: false
+	},
+	rememberNoteVisibility: {
+		where: 'account',
+		default: false
+	},
+	defaultNoteVisibility: {
+		where: 'account',
+		default: 'public'
+	},
+	defaultNoteLocalOnly: {
+		where: 'account',
+		default: false
+	},
+	uploadFolder: {
+		where: 'account',
+		default: null as string | null
+	},
+	pastedFileName: {
+		where: 'account',
+		default: 'yyyy-MM-dd HH-mm-ss [{{number}}]'
+	},
+	memo: {
+		where: 'account',
+		default: null
+	},
+	reactions: {
+		where: 'account',
+		default: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮']
+	},
+	mutedWords: {
+		where: 'account',
+		default: []
+	},
+	mutedAds: {
+		where: 'account',
+		default: [] as string[]
 	},
 
-	getters: {
-		isSignedIn: state => state.i != null,
+	menu: {
+		where: 'deviceAccount',
+		default: [
+			'notifications',
+			'messaging',
+			'drive',
+			'followRequests',
+			'-',
+			'gallery',
+			'featured',
+			'explore',
+			'announcements',
+			'search',
+			'-',
+			'ui',
+		]
+	},
+	visibility: {
+		where: 'deviceAccount',
+		default: 'public' as 'public' | 'home' | 'followers' | 'specified'
+	},
+	localOnly: {
+		where: 'deviceAccount',
+		default: false
+	},
+	widgets: {
+		where: 'deviceAccount',
+		default: [] as {
+			name: string;
+			id: string;
+			place: string | null;
+			data: Record<string, any>;
+		}[]
+	},
+	tl: {
+		where: 'deviceAccount',
+		default: {
+			src: 'home',
+			arg: null
+		}
 	},
 
-	mutations: {
-		updateI(state, x) {
-			state.i = x;
-		},
-
-		updateIKeyValue(state, { key, value }) {
-			state.i[key] = value;
-		},
+	serverDisconnectedBehavior: {
+		where: 'device',
+		default: 'quiet' as 'quiet' | 'reload' | 'dialog'
 	},
-
-	actions: {
-		async login(ctx, i) {
-			ctx.commit('updateI', i);
-			ctx.commit('settings/init', i.clientData);
-			ctx.commit('deviceUser/init', ctx.state.device.userData[i.id] || {});
-			// TODO: ローカルストレージを消してページリロードしたときは i が無いのでその場合のハンドリングをよしなにやる
-			await ctx.dispatch('addAcount', { id: i.id, i: localStorage.getItem('i') });
-		},
-
-		addAcount(ctx, info) {
-			if (!ctx.state.device.accounts.some(x => x.id === info.id)) {
-				ctx.commit('device/set', {
-					key: 'accounts',
-					value: ctx.state.device.accounts.concat([{ id: info.id, token: info.i }])
-				});
-			}
-		},
-
-		logout(ctx) {
-			ctx.commit('device/setUserData', { userId: ctx.state.i.id, data: ctx.state.deviceUser });
-			ctx.commit('updateI', null);
-			ctx.commit('settings/init', {});
-			ctx.commit('deviceUser/init', {});
-			localStorage.removeItem('i');
-			document.cookie = `igi=; path=/`;
-		},
-
-		async switchAccount(ctx, i) {
-			ctx.commit('device/setUserData', { userId: ctx.state.i.id, data: ctx.state.deviceUser });
-			localStorage.setItem('i', i.token);
-			await ctx.dispatch('login', i);
-		},
-
-		mergeMe(ctx, me) {
-			// TODO: プロパティ一つ一つに対してコミットが発生するのはアレなので良い感じにする
-			for (const [key, value] of Object.entries(me)) {
-				ctx.commit('updateIKeyValue', { key, value });
-			}
-
-			if (me.clientData) {
-				ctx.commit('settings/init', me.clientData);
-			}
-		},
+	nsfw: {
+		where: 'device',
+		default: 'respect' as 'respect' | 'force' | 'ignore'
 	},
+	animation: {
+		where: 'device',
+		default: true
+	},
+	animatedMfm: {
+		where: 'device',
+		default: true
+	},
+	loadRawImages: {
+		where: 'device',
+		default: false
+	},
+	imageNewTab: {
+		where: 'device',
+		default: false
+	},
+	disableShowingAnimatedImages: {
+		where: 'device',
+		default: false
+	},
+	disablePagesScript: {
+		where: 'device',
+		default: false
+	},
+	useOsNativeEmojis: {
+		where: 'device',
+		default: false
+	},
+	useBlurEffectForModal: {
+		where: 'device',
+		default: true
+	},
+	showFixedPostForm: {
+		where: 'device',
+		default: false
+	},
+	enableInfiniteScroll: {
+		where: 'device',
+		default: true
+	},
+	useReactionPickerForContextMenu: {
+		where: 'device',
+		default: true
+	},
+	showGapBetweenNotesInTimeline: {
+		where: 'device',
+		default: false
+	},
+	darkMode: {
+		where: 'device',
+		default: false
+	},
+	instanceTicker: {
+		where: 'device',
+		default: 'remote' as 'none' | 'remote' | 'always'
+	},
+	reactionPickerWidth: {
+		where: 'device',
+		default: 1
+	},
+	reactionPickerHeight: {
+		where: 'device',
+		default: 1
+	},
+	recentlyUsedEmojis: {
+		where: 'device',
+		default: [] as string[]
+	},
+	recentlyUsedUsers: {
+		where: 'device',
+		default: [] as string[]
+	},
+	defaultSideView: {
+		where: 'device',
+		default: false
+	},
+	menuDisplay: {
+		where: 'device',
+		default: 'sideFull' as 'sideFull' | 'sideIcon' | 'top'
+	},
+	reportError: {
+		where: 'device',
+		default: false
+	},
+	squareAvatars: {
+		where: 'device',
+		default: false
+	},
+}));
 
-	modules: {
-		instance: {
-			namespaced: true,
+// TODO: 他のタブと永続化されたstateを同期
 
-			state: {
-				meta: null
-			},
+const PREFIX = 'miux:';
 
-			mutations: {
-				set(state, meta) {
-					state.meta = meta;
-				},
-			},
+type Plugin = {
+	id: string;
+	name: string;
+	active: boolean;
+	configData: Record<string, any>;
+	token: string;
+	ast: any[];
+};
 
-			actions: {
-				async fetch(ctx) {
-					const meta = await api('meta', {
-						detail: false
-					});
+/**
+ * 常にメモリにロードしておく必要がないような設定情報を保管するストレージ(非リアクティブ)
+ */
+export class ColdDeviceStorage {
+	public static default = {
+		lightTheme: require('@client/themes/l-light.json5') as Theme,
+		darkTheme: require('@client/themes/d-dark.json5') as Theme,
+		syncDeviceDarkMode: true,
+		chatOpenBehavior: 'page' as 'page' | 'window' | 'popout',
+		plugins: [] as Plugin[],
+		mediaVolume: 0.5,
+		sound_masterVolume: 0.3,
+		sound_note: { type: 'syuilo/down', volume: 1 },
+		sound_noteMy: { type: 'syuilo/up', volume: 1 },
+		sound_notification: { type: 'syuilo/pope2', volume: 1 },
+		sound_chat: { type: 'syuilo/pope1', volume: 1 },
+		sound_chatBg: { type: 'syuilo/waon', volume: 1 },
+		sound_antenna: { type: 'syuilo/triple', volume: 1 },
+		sound_channel: { type: 'syuilo/square-pico', volume: 1 },
+		sound_reversiPutBlack: { type: 'syuilo/kick', volume: 0.3 },
+		sound_reversiPutWhite: { type: 'syuilo/snare', volume: 0.3 },
+		roomGraphicsQuality: 'medium' as 'cheep' | 'low' | 'medium' | 'high' | 'ultra',
+		roomUseOrthographicCamera: true,
+	};
 
-					ctx.commit('set', meta);
-				}
-			}
-		},
+	public static watchers = [];
 
-		device: {
-			namespaced: true,
-
-			state: defaultDeviceSettings,
-
-			mutations: {
-				set(state, x: { key: string; value: any }) {
-					state[x.key] = x.value;
-				},
-
-				setUserData(state, x: { userId: string; data: any }) {
-					state.userData[x.userId] = copy(x.data);
-				},
-			}
-		},
-
-		deviceUser: {
-			namespaced: true,
-
-			state: defaultDeviceUserSettings,
-
-			mutations: {
-				init(state, x) {
-					for (const [key, value] of Object.entries(defaultDeviceUserSettings)) {
-						if (x[key]) {
-							state[key] = x[key];
-						} else {
-							state[key] = value;
-						}
-					}
-				},
-
-				set(state, x: { key: string; value: any }) {
-					state[x.key] = x.value;
-				},
-
-				setTl(state, x) {
-					state.tl = {
-						src: x.src,
-						arg: x.arg
-					};
-				},
-
-				setMenu(state, menu) {
-					state.menu = menu;
-				},
-
-				setVisibility(state, visibility) {
-					state.visibility = visibility;
-				},
-
-				setLocalOnly(state, localOnly) {
-					state.localOnly = localOnly;
-				},
-
-				setWidgets(state, widgets) {
-					state.widgets = widgets;
-				},
-
-				addWidget(state, widget) {
-					state.widgets.unshift(widget);
-				},
-
-				removeWidget(state, widget) {
-					state.widgets = state.widgets.filter(w => w.id != widget.id);
-				},
-
-				updateWidget(state, x) {
-					const w = state.widgets.find(w => w.id === x.id);
-					if (w) {
-						w.data = x.data;
-					}
-				},
-
-				//#region Deck
-				addDeckColumn(state, column) {
-					if (column.name == undefined) column.name = null;
-					state.deck.columns.push(column);
-					state.deck.layout.push([column.id]);
-				},
-
-				removeDeckColumn(state, id) {
-					state.deck.columns = state.deck.columns.filter(c => c.id != id);
-					state.deck.layout = state.deck.layout.map(ids => erase(id, ids));
-					state.deck.layout = state.deck.layout.filter(ids => ids.length > 0);
-				},
-
-				swapDeckColumn(state, x) {
-					const a = x.a;
-					const b = x.b;
-					const aX = state.deck.layout.findIndex(ids => ids.indexOf(a) != -1);
-					const aY = state.deck.layout[aX].findIndex(id => id == a);
-					const bX = state.deck.layout.findIndex(ids => ids.indexOf(b) != -1);
-					const bY = state.deck.layout[bX].findIndex(id => id == b);
-					state.deck.layout[aX][aY] = b;
-					state.deck.layout[bX][bY] = a;
-				},
-
-				swapLeftDeckColumn(state, id) {
-					state.deck.layout.some((ids, i) => {
-						if (ids.indexOf(id) != -1) {
-							const left = state.deck.layout[i - 1];
-							if (left) {
-								// https://vuejs.org/v2/guide/list.html#Caveats
-								//state.deck.layout[i - 1] = state.deck.layout[i];
-								//state.deck.layout[i] = left;
-								state.deck.layout.splice(i - 1, 1, state.deck.layout[i]);
-								state.deck.layout.splice(i, 1, left);
-							}
-							return true;
-						}
-					});
-				},
-
-				swapRightDeckColumn(state, id) {
-					state.deck.layout.some((ids, i) => {
-						if (ids.indexOf(id) != -1) {
-							const right = state.deck.layout[i + 1];
-							if (right) {
-								// https://vuejs.org/v2/guide/list.html#Caveats
-								//state.deck.layout[i + 1] = state.deck.layout[i];
-								//state.deck.layout[i] = right;
-								state.deck.layout.splice(i + 1, 1, state.deck.layout[i]);
-								state.deck.layout.splice(i, 1, right);
-							}
-							return true;
-						}
-					});
-				},
-
-				swapUpDeckColumn(state, id) {
-					const ids = state.deck.layout.find(ids => ids.indexOf(id) != -1);
-					ids.some((x, i) => {
-						if (x == id) {
-							const up = ids[i - 1];
-							if (up) {
-								// https://vuejs.org/v2/guide/list.html#Caveats
-								//ids[i - 1] = id;
-								//ids[i] = up;
-								ids.splice(i - 1, 1, id);
-								ids.splice(i, 1, up);
-							}
-							return true;
-						}
-					});
-				},
-
-				swapDownDeckColumn(state, id) {
-					const ids = state.deck.layout.find(ids => ids.indexOf(id) != -1);
-					ids.some((x, i) => {
-						if (x == id) {
-							const down = ids[i + 1];
-							if (down) {
-								// https://vuejs.org/v2/guide/list.html#Caveats
-								//ids[i + 1] = id;
-								//ids[i] = down;
-								ids.splice(i + 1, 1, id);
-								ids.splice(i, 1, down);
-							}
-							return true;
-						}
-					});
-				},
-
-				stackLeftDeckColumn(state, id) {
-					const i = state.deck.layout.findIndex(ids => ids.indexOf(id) != -1);
-					state.deck.layout = state.deck.layout.map(ids => erase(id, ids));
-					const left = state.deck.layout[i - 1];
-					if (left) state.deck.layout[i - 1].push(id);
-					state.deck.layout = state.deck.layout.filter(ids => ids.length > 0);
-				},
-
-				popRightDeckColumn(state, id) {
-					const i = state.deck.layout.findIndex(ids => ids.indexOf(id) != -1);
-					state.deck.layout = state.deck.layout.map(ids => erase(id, ids));
-					state.deck.layout.splice(i + 1, 0, [id]);
-					state.deck.layout = state.deck.layout.filter(ids => ids.length > 0);
-				},
-
-				addDeckWidget(state, x) {
-					const column = state.deck.columns.find(c => c.id == x.id);
-					if (column == null) return;
-					if (column.widgets == null) column.widgets = [];
-					column.widgets.unshift(x.widget);
-				},
-
-				removeDeckWidget(state, x) {
-					const column = state.deck.columns.find(c => c.id == x.id);
-					if (column == null) return;
-					column.widgets = column.widgets.filter(w => w.id != x.widget.id);
-				},
-
-				renameDeckColumn(state, x) {
-					const column = state.deck.columns.find(c => c.id == x.id);
-					if (column == null) return;
-					column.name = x.name;
-				},
-
-				updateDeckColumn(state, x) {
-					let column = state.deck.columns.find(c => c.id == x.id);
-					if (column == null) return;
-					column = x;
-				},
-				//#endregion
-
-				installPlugin(state, { id, meta, ast, token }) {
-					state.plugins.push({
-						...meta,
-						id,
-						active: true,
-						configData: {},
-						token: token,
-						ast: ast
-					});
-				},
-
-				uninstallPlugin(state, id) {
-					state.plugins = state.plugins.filter(x => x.id != id);
-				},
-
-				configPlugin(state, { id, config }) {
-					state.plugins.find(p => p.id === id).configData = config;
-				},
-
-				changePluginActive(state, { id, active }) {
-					state.plugins.find(p => p.id === id).active = active;
-				},
-			}
-		},
-
-		settings: {
-			namespaced: true,
-
-			state: defaultSettings,
-
-			mutations: {
-				set(state, x: { key: string; value: any }) {
-					nestedProperty.set(state, x.key, x.value);
-				},
-
-				init(state, x) {
-					for (const [key, value] of Object.entries(defaultSettings)) {
-						if (x[key]) {
-							state[key] = x[key];
-						} else {
-							state[key] = value;
-						}
-					}
-				},
-			},
-
-			actions: {
-				set(ctx, x) {
-					ctx.commit('set', x);
-
-					if (ctx.rootGetters.isSignedIn) {
-						api('i/update-client-setting', {
-							name: x.key,
-							value: x.value
-						});
-					}
-				},
-			}
+	public static get<T extends keyof typeof ColdDeviceStorage.default>(key: T): typeof ColdDeviceStorage.default[T] {
+		// TODO: indexedDBにする
+		//       ただしその際はnullチェックではなくキー存在チェックにしないとダメ
+		//       (indexedDBはnullを保存できるため、ユーザーが意図してnullを格納した可能性がある)
+		const value = localStorage.getItem(PREFIX + key);
+		if (value == null) {
+			return ColdDeviceStorage.default[key];
+		} else {
+			return JSON.parse(value);
 		}
 	}
-});
+
+	public static set<T extends keyof typeof ColdDeviceStorage.default>(key: T, value: typeof ColdDeviceStorage.default[T]): void {
+		localStorage.setItem(PREFIX + key, JSON.stringify(value));
+
+		for (const watcher of this.watchers) {
+			if (watcher.key === key) watcher.callback(value);
+		}
+	}
+
+	public static watch(key, callback) {
+		this.watchers.push({ key, callback });
+	}
+
+	// TODO: VueのcustomRef使うと良い感じになるかも
+	public static ref<T extends keyof typeof ColdDeviceStorage.default>(key: T) {
+		const v = ColdDeviceStorage.get(key);
+		const r = ref(v);
+		// TODO: このままではwatcherがリークするので開放する方法を考える
+		this.watch(key, v => {
+			r.value = v;
+		});
+		return r;
+	}
+
+	/**
+	 * 特定のキーの、簡易的なgetter/setterを作ります
+	 * 主にvue場で設定コントロールのmodelとして使う用
+	 */
+	public static makeGetterSetter<K extends keyof typeof ColdDeviceStorage.default>(key: K) {
+		// TODO: VueのcustomRef使うと良い感じになるかも
+		const valueRef = ColdDeviceStorage.ref(key);
+		return {
+			get: () => {
+				return valueRef.value;
+			},
+			set: (value: unknown) => {
+				const val = value;
+				ColdDeviceStorage.set(key, val);
+			}
+		};
+	}
+}
+
+// このファイルに書きたくないけどここに書かないと何故かVeturが認識しない
+declare module '@vue/runtime-core' {
+	interface ComponentCustomProperties {
+		$store: typeof defaultStore;
+	}
+}

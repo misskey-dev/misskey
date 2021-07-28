@@ -1,10 +1,9 @@
-import config from '../../../config';
+import config from '@/config';
 import { v4 as uuid } from 'uuid';
 import { IActivity } from '../type';
 import { LdSignature } from '../misc/ld-signature';
-import { ILocalUser } from '../../../models/entities/user';
-import { UserKeypairs } from '../../../models';
-import { ensure } from '../../../prelude/ensure';
+import { getUserKeypair } from '@/misc/keypair-store';
+import { User } from '@/models/entities/user';
 
 export const renderActivity = (x: any): IActivity | null => {
 	if (x == null) return null;
@@ -16,45 +15,41 @@ export const renderActivity = (x: any): IActivity | null => {
 	return Object.assign({
 		'@context': [
 			'https://www.w3.org/ns/activitystreams',
-			'https://w3id.org/security/v1'
+			'https://w3id.org/security/v1',
+			{
+				// as non-standards
+				manuallyApprovesFollowers: 'as:manuallyApprovesFollowers',
+				sensitive: 'as:sensitive',
+				Hashtag: 'as:Hashtag',
+				quoteUrl: 'as:quoteUrl',
+				// Mastodon
+				toot: 'http://joinmastodon.org/ns#',
+				Emoji: 'toot:Emoji',
+				featured: 'toot:featured',
+				discoverable: 'toot:discoverable',
+				// schema
+				schema: 'http://schema.org#',
+				PropertyValue: 'schema:PropertyValue',
+				value: 'schema:value',
+				// Misskey
+				misskey: `${config.url}/ns#`,
+				'_misskey_content': 'misskey:_misskey_content',
+				'_misskey_quote': 'misskey:_misskey_quote',
+				'_misskey_reaction': 'misskey:_misskey_reaction',
+				'_misskey_votes': 'misskey:_misskey_votes',
+				'_misskey_talk': 'misskey:_misskey_talk',
+				'isCat': 'misskey:isCat',
+				// vcard
+				vcard: 'http://www.w3.org/2006/vcard/ns#',
+			}
 		]
 	}, x);
 };
 
-export const attachLdSignature = async (activity: any, user: ILocalUser): Promise<IActivity | null> => {
+export const attachLdSignature = async (activity: any, user: { id: User['id']; host: null; }): Promise<IActivity | null> => {
 	if (activity == null) return null;
 
-	const keypair = await UserKeypairs.findOne({
-		userId: user.id
-	}).then(ensure);
-
-	const obj = {
-		// as non-standards
-		manuallyApprovesFollowers: 'as:manuallyApprovesFollowers',
-		sensitive: 'as:sensitive',
-		Hashtag: 'as:Hashtag',
-		quoteUrl: 'as:quoteUrl',
-		// Mastodon
-		toot: 'http://joinmastodon.org/ns#',
-		Emoji: 'toot:Emoji',
-		featured: 'toot:featured',
-		// schema
-		schema: 'http://schema.org#',
-		PropertyValue: 'schema:PropertyValue',
-		value: 'schema:value',
-		// Misskey
-		misskey: `${config.url}/ns#`,
-		'_misskey_content': 'misskey:_misskey_content',
-		'_misskey_quote': 'misskey:_misskey_quote',
-		'_misskey_reaction': 'misskey:_misskey_reaction',
-		'_misskey_votes': 'misskey:_misskey_votes',
-		'_misskey_talk': 'misskey:_misskey_talk',
-		'isCat': 'misskey:isCat',
-		// vcard
-		vcard: 'http://www.w3.org/2006/vcard/ns#',
-	};
-
-	activity['@context'].push(obj);
+	const keypair = await getUserKeypair(user.id);
 
 	const ldSignature = new LdSignature();
 	ldSignature.debug = false;

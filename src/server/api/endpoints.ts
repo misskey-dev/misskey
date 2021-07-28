@@ -1,21 +1,18 @@
 import { Context } from 'cafy';
 import * as path from 'path';
 import * as glob from 'glob';
-import { Schema } from '../../misc/schema';
+import { Schema } from '@/misc/schema';
 
 export type Param = {
 	validator: Context<any>;
 	transform?: any;
 	default?: any;
 	deprecated?: boolean;
-	desc?: { [key: string]: string };
 	ref?: string;
 };
 
 export interface IEndpointMeta {
 	stability?: string; //'deprecated' | 'experimental' | 'stable';
-
-	desc?: { [key: string]: string };
 
 	tags?: string[];
 

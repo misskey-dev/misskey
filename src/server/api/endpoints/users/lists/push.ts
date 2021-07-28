@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import { ID } from '../../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { getUser } from '../../../common/getters';
@@ -7,11 +7,6 @@ import { pushUserToUserList } from '../../../../../services/user-list/push';
 import { UserLists, UserListJoinings } from '../../../../../models';
 
 export const meta = {
-	desc: {
-		'ja-JP': '指定したユーザーリストに指定したユーザーを追加します。',
-		'en-US': 'Add a user to a user list.'
-	},
-
 	tags: ['lists', 'users'],
 
 	requireCredential: true as const,
@@ -25,10 +20,6 @@ export const meta = {
 
 		userId: {
 			validator: $.type(ID),
-			desc: {
-				'ja-JP': '対象のユーザーのID',
-				'en-US': 'Target user ID'
-			}
 		},
 	},
 

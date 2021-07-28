@@ -1,12 +1,14 @@
 <template>
 <div class="skeikyzd" v-show="files.length != 0">
-	<XDraggable class="files" :list="files" animation="150" delay="100" delay-on-touch-only="true">
-		<div v-for="file in files" :key="file.id" @click="showFileMenu(file, $event)" @contextmenu.prevent="showFileMenu(file, $event)">
-			<MkDriveFileThumbnail :data-id="file.id" class="thumbnail" :file="file" fit="cover"/>
-			<div class="sensitive" v-if="file.isSensitive">
-				<Fa class="icon" :icon="faExclamationTriangle"/>
+	<XDraggable class="files" v-model="_files" item-key="id" animation="150" delay="100" delay-on-touch-only="true">
+		<template #item="{element}">
+			<div @click="showFileMenu(element, $event)" @contextmenu.prevent="showFileMenu(element, $event)">
+				<MkDriveFileThumbnail :data-id="element.id" class="thumbnail" :file="element" fit="cover"/>
+				<div class="sensitive" v-if="element.isSensitive">
+					<i class="fas fa-exclamation-triangle icon"></i>
+				</div>
 			</div>
-		</div>
+		</template>
 	</XDraggable>
 	<p class="remain">{{ 4 - files.length }}/4</p>
 </div>
@@ -14,14 +16,12 @@
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
-import { faTimesCircle, faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
-import { faExclamationTriangle, faICursor } from '@fortawesome/free-solid-svg-icons';
 import MkDriveFileThumbnail from './drive-file-thumbnail.vue'
-import * as os from '@/os';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {
-		XDraggable: defineAsyncComponent(() => import('vue-draggable-next').then(x => x.VueDraggableNext)),
+		XDraggable: defineAsyncComponent(() => import('vuedraggable').then(x => x.default)),
 		MkDriveFileThumbnail
 	},
 
@@ -36,14 +36,24 @@ export default defineComponent({
 		}
 	},
 
-	emits: ['updated', 'detach'],
+	emits: ['updated', 'detach', 'changeSensitive', 'changeName'],
 
 	data() {
 		return {
 			menu: null as Promise<null> | null,
 
-			faExclamationTriangle
 		};
+	},
+
+	computed: {
+		_files: {
+			get() {
+				return this.files;
+			},
+			set(value) {
+				this.$emit('updated', value);
+			}
+		}
 	},
 
 	methods: {
@@ -59,13 +69,12 @@ export default defineComponent({
 				fileId: file.id,
 				isSensitive: !file.isSensitive
 			}).then(() => {
-				file.isSensitive = !file.isSensitive;
-				this.$emit('updated', file);
+				this.$emit('changeSensitive', file, !file.isSensitive);
 			});
 		},
 		async rename(file) {
 			const { canceled, result } = await os.dialog({
-				title: this.$t('enterFileName'),
+				title: this.$ts.enterFileName,
 				input: {
 					default: file.name
 				},
@@ -76,23 +85,48 @@ export default defineComponent({
 				fileId: file.id,
 				name: result
 			}).then(() => {
+				this.$emit('changeName', file, result);
 				file.name = result;
-				this.$emit('updated', file);
 			});
 		},
+
+		async describe(file) {
+			os.popup(import("@client/components/media-caption.vue"), {
+				title: this.$ts.describeFile,
+				input: {
+					placeholder: this.$ts.inputNewDescription,
+					default: file.comment !== null ? file.comment : "",
+				},
+				image: file
+			}, {
+				done: result => {
+					if (!result || result.canceled) return;
+					let comment = result.result;
+					os.api('drive/files/update', {
+						fileId: file.id,
+						comment: comment.length == 0 ? null : comment
+					});
+				}
+			}, 'closed');
+		},
+
 		showFileMenu(file, ev: MouseEvent) {
 			if (this.menu) return;
 			this.menu = os.modalMenu([{
-				text: this.$t('renameFile'),
-				icon: faICursor,
+				text: this.$ts.renameFile,
+				icon: 'fas fa-i-cursor',
 				action: () => { this.rename(file) }
 			}, {
-				text: file.isSensitive ? this.$t('unmarkAsSensitive') : this.$t('markAsSensitive'),
-				icon: file.isSensitive ? faEyeSlash : faEye,
+				text: file.isSensitive ? this.$ts.unmarkAsSensitive : this.$ts.markAsSensitive,
+				icon: file.isSensitive ? 'fas fa-eye-slash' : 'fas fa-eye',
 				action: () => { this.toggleSensitive(file) }
 			}, {
-				text: this.$t('attachCancel'),
-				icon: faTimesCircle,
+				text: this.$ts.describeFile,
+				icon: 'fas fa-i-cursor',
+				action: () => { this.describe(file) }
+			}, {
+				text: this.$ts.attachCancel,
+				icon: 'fas fa-times-circle',
 				action: () => { this.detachMedia(file.id) }
 			}], ev.currentTarget || ev.target).then(() => this.menu = null);
 		}

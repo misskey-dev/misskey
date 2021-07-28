@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import * as ms from 'ms';
 import deleteBlocking from '../../../../services/blocking/delete';
 import define from '../../define';
@@ -8,11 +8,6 @@ import { getUser } from '../../common/getters';
 import { Blockings, Users } from '../../../../models';
 
 export const meta = {
-	desc: {
-		'ja-JP': '指定したユーザーのブロックを解除します。',
-		'en-US': 'Unblock a user.'
-	},
-
 	tags: ['account'],
 
 	limit: {
@@ -27,10 +22,6 @@ export const meta = {
 	params: {
 		userId: {
 			validator: $.type(ID),
-			desc: {
-				'ja-JP': '対象のユーザーのID',
-				'en-US': 'Target user ID'
-			}
 		}
 	},
 
@@ -52,11 +43,17 @@ export const meta = {
 			code: 'NOT_BLOCKING',
 			id: '291b2efa-60c6-45c0-9f6a-045c8f9b02cd'
 		},
-	}
+	},
+
+	res: {
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
+		ref: 'User',
+	},
 };
 
 export default define(meta, async (ps, user) => {
-	const blocker = user;
+	const blocker = await Users.findOneOrFail(user.id);
 
 	// Check if the blockee is yourself
 	if (user.id === ps.userId) {
@@ -82,5 +79,7 @@ export default define(meta, async (ps, user) => {
 	// Delete blocking
 	await deleteBlocking(blocker, blockee);
 
-	return await Users.pack(blockee.id, user);
+	return await Users.pack(blockee.id, blocker, {
+		detail: true
+	});
 });

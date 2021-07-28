@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import define from '../../../define';
 import { Announcements } from '../../../../../models';
-import { genId } from '../../../../../misc/gen-id';
+import { genId } from '@/misc/gen-id';
 
 export const meta = {
 	tags: ['admin'],
@@ -18,6 +18,41 @@ export const meta = {
 		},
 		imageUrl: {
 			validator: $.nullable.str.min(1)
+		}
+	},
+
+	res: {
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
+		properties: {
+			id: {
+				type: 'string' as const,
+				optional: false as const, nullable: false as const,
+				format: 'id',
+				example: 'xxxxxxxxxx',
+			},
+			createdAt: {
+				type: 'string' as const,
+				optional: false as const, nullable: false as const,
+				format: 'date-time',
+			},
+			updatedAt: {
+				type: 'string' as const,
+				optional: false as const, nullable: true as const,
+				format: 'date-time',
+			},
+			title: {
+				type: 'string' as const,
+				optional: false as const, nullable: false as const,
+			},
+			text: {
+				type: 'string' as const,
+				optional: false as const, nullable: false as const,
+			},
+			imageUrl: {
+				type: 'string' as const,
+				optional: false as const, nullable: true as const,
+			}
 		}
 	}
 };

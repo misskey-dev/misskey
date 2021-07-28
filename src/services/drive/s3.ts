@@ -1,6 +1,7 @@
+import { URL } from 'url';
 import * as S3 from 'aws-sdk/clients/s3';
 import { Meta } from '../../models/entities/meta';
-import { getAgentByUrl } from '../../misc/fetch';
+import { getAgentByUrl } from '@/misc/fetch';
 
 export function getS3(meta: Meta) {
 	const u = meta.objectStorageEndpoint != null
@@ -13,7 +14,9 @@ export function getS3(meta: Meta) {
 		secretAccessKey: meta.objectStorageSecretKey!,
 		region: meta.objectStorageRegion || undefined,
 		sslEnabled: meta.objectStorageUseSSL,
-		s3ForcePathStyle: !!meta.objectStorageEndpoint,
+		s3ForcePathStyle: !meta.objectStorageEndpoint	// AWS with endPoint omitted
+			? false
+			: meta.objectStorageS3ForcePathStyle,
 		httpOptions: {
 			agent: getAgentByUrl(new URL(u), !meta.objectStorageUseProxy)
 		}

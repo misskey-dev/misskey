@@ -1,17 +1,12 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { Users, Followings } from '../../../../models';
 import { makePaginationQuery } from '../../common/make-pagination-query';
-import { toPunyNullable } from '../../../../misc/convert-host';
+import { toPunyNullable } from '@/misc/convert-host';
 
 export const meta = {
-	desc: {
-		'ja-JP': '指定したユーザーのフォロワー一覧を取得します。',
-		'en-US': 'Get followers of a user.'
-	},
-
 	tags: ['users'],
 
 	requireCredential: false as const,
@@ -19,10 +14,6 @@ export const meta = {
 	params: {
 		userId: {
 			validator: $.optional.type(ID),
-			desc: {
-				'ja-JP': '対象のユーザーのID',
-				'en-US': 'Target user ID'
-			}
 		},
 
 		username: {
@@ -76,7 +67,8 @@ export default define(meta, async (ps, me) => {
 	}
 
 	const query = makePaginationQuery(Followings.createQueryBuilder('following'), ps.sinceId, ps.untilId)
-		.andWhere(`following.followeeId = :userId`, { userId: user.id });
+		.andWhere(`following.followeeId = :userId`, { userId: user.id })
+		.innerJoinAndSelect('following.follower', 'follower');
 
 	const followings = await query
 		.take(ps.limit!)

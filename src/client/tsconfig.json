@@ -15,12 +15,13 @@
 		"removeComments": false,
 		"noLib": false,
 		"strict": true,
-		"strictNullChecks": false,
+		"strictNullChecks": true,
 		"experimentalDecorators": true,
 		"resolveJsonModule": true,
 		"baseUrl": ".",
 		"paths": {
-			"@/*": ["./*"]
+			"@/*": ["../*"],
+			"@client/*": ["./*"]
 		},
 		"typeRoots": [
 			"node_modules/@types",

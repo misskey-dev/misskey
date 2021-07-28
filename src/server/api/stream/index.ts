@@ -12,6 +12,9 @@ import { Users, Followings, Mutings, UserProfiles, ChannelFollowings } from '../
 import { ApiError } from '../error';
 import { AccessToken } from '../../../models/entities/access-token';
 import { UserProfile } from '../../../models/entities/user-profile';
+import { publishChannelStream, publishGroupMessagingStream, publishMessagingStream } from '../../../services/stream';
+import { UserGroup } from '../../../models/entities/user-group';
+import { PackedNote } from '../../../models/repositories/note';
 
 /**
  * Main stream connection
@@ -19,18 +22,15 @@ import { UserProfile } from '../../../models/entities/user-profile';
 export default class Connection {
 	public user?: User;
 	public userProfile?: UserProfile;
-	public following: User['id'][] = [];
-	public muting: User['id'][] = [];
-	public followingChannels: ChannelModel['id'][] = [];
+	public following: Set<User['id']> = new Set();
+	public muting: Set<User['id']> = new Set();
+	public followingChannels: Set<ChannelModel['id']> = new Set();
 	public token?: AccessToken;
 	private wsConnection: websocket.connection;
 	public subscriber: EventEmitter;
 	private channels: Channel[] = [];
 	private subscribingNotes: any = {};
-	private followingClock: NodeJS.Timer;
-	private mutingClock: NodeJS.Timer;
-	private followingChannelsClock: NodeJS.Timer;
-	private userProfileClock: NodeJS.Timer;
+	private cachedNotes: PackedNote[] = [];
 
 	constructor(
 		wsConnection: websocket.connection,
@@ -51,16 +51,54 @@ export default class Connection {
 
 		if (this.user) {
 			this.updateFollowing();
-			this.followingClock = setInterval(this.updateFollowing, 5000);
-
 			this.updateMuting();
-			this.mutingClock = setInterval(this.updateMuting, 5000);
-
 			this.updateFollowingChannels();
-			this.followingChannelsClock = setInterval(this.updateFollowingChannels, 5000);
-
 			this.updateUserProfile();
-			this.userProfileClock = setInterval(this.updateUserProfile, 5000);
+
+			this.subscriber.on(`user:${this.user.id}`, ({ type, body }) => {
+				this.onUserEvent(type, body);
+			});
+		}
+	}
+
+	@autobind
+	private onUserEvent(type: string, body: any) {
+		switch (type) {
+			case 'follow':
+				this.following.add(body.id);
+				break;
+
+			case 'unfollow':
+				this.following.delete(body.id);
+				break;
+
+			case 'mute':
+				this.muting.add(body.id);
+				break;
+
+			case 'unmute':
+				this.muting.delete(body.id);
+				break;
+
+			case 'followChannel':
+				this.followingChannels.add(body.id);
+				break;
+
+			case 'unfollowChannel':
+				this.followingChannels.delete(body.id);
+				break;
+
+			case 'updateUserProfile':
+				this.userProfile = body;
+				break;
+
+			case 'terminate':
+				this.wsConnection.close();
+				this.dispose();
+				break;
+
+			default:
+				break;
 		}
 	}
 
@@ -84,21 +122,62 @@ export default class Connection {
 		switch (type) {
 			case 'api': this.onApiRequest(body); break;
 			case 'readNotification': this.onReadNotification(body); break;
-			case 'subNote': this.onSubscribeNote(body, true); break;
-			case 'sn': this.onSubscribeNote(body, true); break; // alias
-			case 's': this.onSubscribeNote(body, false); break;
+			case 'subNote': this.onSubscribeNote(body); break;
+			case 's': this.onSubscribeNote(body); break; // alias
+			case 'sr': this.onSubscribeNote(body); this.readNote(body); break;
 			case 'unsubNote': this.onUnsubscribeNote(body); break;
 			case 'un': this.onUnsubscribeNote(body); break; // alias
 			case 'connect': this.onChannelConnectRequested(body); break;
 			case 'disconnect': this.onChannelDisconnectRequested(body); break;
 			case 'channel': this.onChannelMessageRequested(body); break;
 			case 'ch': this.onChannelMessageRequested(body); break; // alias
+
+			// 個々のチャンネルではなくルートレベルでこれらのメッセージを受け取る理由は、
+			// クライアントの事情を考慮したとき、入力フォームはノートチャンネルやメッセージのメインコンポーネントとは別
+			// なこともあるため、それらのコンポーネントがそれぞれ各チャンネルに接続するようにするのは面倒なため。
+			case 'typingOnChannel': this.typingOnChannel(body.channel); break;
+			case 'typingOnMessaging': this.typingOnMessaging(body); break;
 		}
 	}
 
 	@autobind
 	private onBroadcastMessage(type: string, body: any) {
 		this.sendMessageToWs(type, body);
+	}
+
+	@autobind
+	public cacheNote(note: PackedNote) {
+		const add = (note: PackedNote) => {
+			const existIndex = this.cachedNotes.findIndex(n => n.id === note.id);
+			if (existIndex > -1) {
+				this.cachedNotes[existIndex] = note;
+				return;
+			}
+
+			this.cachedNotes.unshift(note);
+			if (this.cachedNotes.length > 32) {
+				this.cachedNotes.splice(32);
+			}
+		};
+
+		add(note);
+		if (note.reply) add(note.reply as PackedNote);
+		if (note.renote) add(note.renote as PackedNote);
+	}
+
+	@autobind
+	private readNote(body: any) {
+		const id = body.id;
+
+		const note = this.cachedNotes.find(n => n.id === id);
+		if (note == null) return;
+
+		if (this.user && (note.userId !== this.user.id)) {
+			readNote(this.user.id, [note], {
+				following: this.following,
+				followingChannels: this.followingChannels,
+			});
+		}
 	}
 
 	/**
@@ -137,7 +216,7 @@ export default class Connection {
 	 * 投稿購読要求時
 	 */
 	@autobind
-	private onSubscribeNote(payload: any, read: boolean) {
+	private onSubscribeNote(payload: any) {
 		if (!payload.id) return;
 
 		if (this.subscribingNotes[payload.id] == null) {
@@ -148,10 +227,6 @@ export default class Connection {
 
 		if (this.subscribingNotes[payload.id] === 1) {
 			this.subscriber.on(`noteStream:${payload.id}`, this.onNoteStreamMessage);
-		}
-
-		if (this.user && read) {
-			readNote(this.user.id, payload.id);
 		}
 	}
 
@@ -259,6 +334,24 @@ export default class Connection {
 	}
 
 	@autobind
+	private typingOnChannel(channel: ChannelModel['id']) {
+		if (this.user) {
+			publishChannelStream(channel, 'typing', this.user.id);
+		}
+	}
+
+	@autobind
+	private typingOnMessaging(param: { partner?: User['id']; group?: UserGroup['id']; }) {
+		if (this.user) {
+			if (param.partner) {
+				publishMessagingStream(param.partner, this.user.id, 'typing', this.user.id);
+			} else if (param.group) {
+				publishGroupMessagingStream(param.group, 'typing', this.user.id);
+			}
+		}
+	}
+
+	@autobind
 	private async updateFollowing() {
 		const followings = await Followings.find({
 			where: {
@@ -267,7 +360,7 @@ export default class Connection {
 			select: ['followeeId']
 		});
 
-		this.following = followings.map(x => x.followeeId);
+		this.following = new Set<string>(followings.map(x => x.followeeId));
 	}
 
 	@autobind
@@ -279,7 +372,7 @@ export default class Connection {
 			select: ['muteeId']
 		});
 
-		this.muting = mutings.map(x => x.muteeId);
+		this.muting = new Set<string>(mutings.map(x => x.muteeId));
 	}
 
 	@autobind
@@ -291,7 +384,7 @@ export default class Connection {
 			select: ['followeeId']
 		});
 
-		this.followingChannels = followings.map(x => x.followeeId);
+		this.followingChannels = new Set<string>(followings.map(x => x.followeeId));
 	}
 
 	@autobind
@@ -309,10 +402,5 @@ export default class Connection {
 		for (const c of this.channels.filter(c => c.dispose)) {
 			if (c.dispose) c.dispose();
 		}
-
-		if (this.followingClock) clearInterval(this.followingClock);
-		if (this.mutingClock) clearInterval(this.mutingClock);
-		if (this.followingChannelsClock) clearInterval(this.followingChannelsClock);
-		if (this.userProfileClock) clearInterval(this.userProfileClock);
 	}
 }

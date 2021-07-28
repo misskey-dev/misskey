@@ -9,17 +9,17 @@
 	@closed="$emit('closed')"
 	@ok="ok()"
 >
-	<template #header>{{ title || $t('generateAccessToken') }}</template>
+	<template #header>{{ title || $ts.generateAccessToken }}</template>
 	<div v-if="information" class="_section">
 		<MkInfo warn>{{ information }}</MkInfo>
 	</div>
 	<div class="_section">
-		<MkInput v-model:value="name">{{ $t('name') }}</MkInput>
+		<MkInput v-model:value="name">{{ $ts.name }}</MkInput>
 	</div>
 	<div class="_section">
-		<div style="margin-bottom: 16px;"><b>{{ $t('permission') }}</b></div>
-		<MkButton inline @click="disableAll">{{ $t('disableAll') }}</MkButton>
-		<MkButton inline @click="enableAll">{{ $t('enableAll') }}</MkButton>
+		<div style="margin-bottom: 16px;"><b>{{ $ts.permission }}</b></div>
+		<MkButton inline @click="disableAll">{{ $ts.disableAll }}</MkButton>
+		<MkButton inline @click="enableAll">{{ $ts.enableAll }}</MkButton>
 		<MkSwitch v-for="kind in (initialPermissions || kinds)" :key="kind" v-model:value="permissions[kind]">{{ $t(`_permissions.${kind}`) }}</MkSwitch>
 	</div>
 </XModalWindow>
@@ -27,8 +27,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { kinds } from '../../misc/api-permissions';
-import XModalWindow from '@/components/ui/modal-window.vue';
+import { kinds } from '@/misc/api-permissions';
+import XModalWindow from '@client/components/ui/modal-window.vue';
 import MkInput from './ui/input.vue';
 import MkTextarea from './ui/textarea.vue';
 import MkSwitch from './ui/switch.vue';

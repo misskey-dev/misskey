@@ -1,3 +1,4 @@
+import { URL } from 'url';
 import define from '../../../define';
 import { inboxQueue } from '../../../../../queue';
 
@@ -8,6 +9,29 @@ export const meta = {
 	requireModerator: true,
 
 	params: {
+	},
+
+	res: {
+		type: 'array' as const,
+		optional: false as const, nullable: false as const,
+		items: {
+			type: 'array' as const,
+			optional: false as const, nullable: false as const,
+			items: {
+				anyOf: [
+					{
+						type: 'string' as const,
+					},
+					{
+						type: 'number' as const,
+					}
+				]
+			}
+		},
+		example: [[
+			'example.com',
+			12
+		]]
 	}
 };
 

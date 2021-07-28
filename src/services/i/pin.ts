@@ -1,13 +1,13 @@
-import config from '../../config';
+import config from '@/config';
 import renderAdd from '../../remote/activitypub/renderer/add';
 import renderRemove from '../../remote/activitypub/renderer/remove';
 import { renderActivity } from '../../remote/activitypub/renderer';
-import { IdentifiableError } from '../../misc/identifiable-error';
+import { IdentifiableError } from '@/misc/identifiable-error';
 import { User } from '../../models/entities/user';
 import { Note } from '../../models/entities/note';
 import { Notes, UserNotePinings, Users } from '../../models';
 import { UserNotePining } from '../../models/entities/user-note-pining';
-import { genId } from '../../misc/gen-id';
+import { genId } from '@/misc/gen-id';
 import { deliverToFollowers } from '../../remote/activitypub/deliver-manager';
 import { deliverToRelays } from '../relay';
 
@@ -16,7 +16,7 @@ import { deliverToRelays } from '../relay';
  * @param user
  * @param noteId
  */
-export async function addPinned(user: User, noteId: Note['id']) {
+export async function addPinned(user: { id: User['id']; host: User['host']; }, noteId: Note['id']) {
 	// Fetch pinee
 	const note = await Notes.findOne({
 		id: noteId,
@@ -37,7 +37,7 @@ export async function addPinned(user: User, noteId: Note['id']) {
 		throw new IdentifiableError('23f0cf4e-59a3-4276-a91d-61a5891c1514', 'That note has already been pinned.');
 	}
 
-	await UserNotePinings.save({
+	await UserNotePinings.insert({
 		id: genId(),
 		createdAt: new Date(),
 		userId: user.id,
@@ -55,7 +55,7 @@ export async function addPinned(user: User, noteId: Note['id']) {
  * @param user
  * @param noteId
  */
-export async function removePinned(user: User, noteId: Note['id']) {
+export async function removePinned(user: { id: User['id']; host: User['host']; }, noteId: Note['id']) {
 	// Fetch unpinee
 	const note = await Notes.findOne({
 		id: noteId,

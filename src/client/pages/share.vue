@@ -4,7 +4,7 @@
 		<div class="_title" v-if="title">{{ title }}</div>
 		<div class="_content">
 			<XPostForm v-if="!posted" fixed :instant="true" :initial-text="initialText" @posted="posted = true" class="_panel"/>
-			<MkButton v-else primary @click="close()">{{ $t('close') }}</MkButton>
+			<MkButton v-else primary @click="close()">{{ $ts.close }}</MkButton>
 		</div>
 		<div class="_footer" v-if="url">{{ url }}</div>
 	</section>
@@ -13,10 +13,10 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faShareAlt } from '@fortawesome/free-solid-svg-icons';
-import MkButton from '@/components/ui/button.vue';
-import XPostForm from '@/components/post-form.vue';
-import * as os from '@/os';
+import MkButton from '@client/components/ui/button.vue';
+import XPostForm from '@client/components/post-form.vue';
+import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -26,11 +26,9 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
-				header: [{
-					title: this.$t('share'),
-					icon: faShareAlt
-				}],
+			[symbols.PAGE_INFO]: {
+				title: this.$ts.share,
+				icon: 'fas fa-share-alt'
 			},
 			title: null,
 			text: null,
@@ -38,7 +36,6 @@ export default defineComponent({
 			initialText: null,
 			posted: false,
 
-			faShareAlt
 		}
 	},
 

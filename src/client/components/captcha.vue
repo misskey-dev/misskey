@@ -1,12 +1,12 @@
 <template>
 <div>
-	<span v-if="!available">{{ $t('waiting') }}<MkEllipsis/></span>
+	<span v-if="!available">{{ $ts.waiting }}<MkEllipsis/></span>
 	<div ref="captcha"></div>
 </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, PropType } from 'vue';
 
 type Captcha = {
 	render(container: string | Node, options: {
@@ -18,7 +18,7 @@ type Captcha = {
 	getResponse(id: string): string;
 };
 
-type CaptchaProvider = 'hcaptcha' | 'grecaptcha';
+type CaptchaProvider = 'hcaptcha' | 'recaptcha';
 
 type CaptchaContainer = {
 	readonly [_ in CaptchaProvider]?: Captcha;
@@ -28,12 +28,11 @@ declare global {
 	interface Window extends CaptchaContainer {
 	}
 }
-import * as os from '@/os';
 
 export default defineComponent({
 	props: {
 		provider: {
-			type: String,
+			type: String as PropType<CaptchaProvider>,
 			required: true,
 		},
 		sitekey: {
@@ -52,19 +51,25 @@ export default defineComponent({
 	},
 
 	computed: {
-		loaded() {
-			return !!window[this.provider as CaptchaProvider];
+		variable(): string {
+			switch (this.provider) {
+				case 'hcaptcha': return 'hcaptcha';
+				case 'recaptcha': return 'grecaptcha';
+			}
 		},
-		src() {
+		loaded(): boolean {
+			return !!window[this.variable];
+		},
+		src(): string {
 			const endpoint = ({
 				hcaptcha: 'https://hcaptcha.com/1',
-				grecaptcha: 'https://www.google.com/recaptcha',
-			} as Record<PropertyKey, unknown>)[this.provider];
+				recaptcha: 'https://www.recaptcha.net/recaptcha',
+			} as Record<CaptchaProvider, string>)[this.provider];
 
-			return `${typeof endpoint == 'string' ? endpoint : 'about:invalid'}/api.js?render=explicit`;
+			return `${typeof endpoint === 'string' ? endpoint : 'about:invalid'}/api.js?render=explicit`;
 		},
-		captcha() {
-			return window[this.provider as CaptchaProvider] || {} as unknown as Captcha;
+		captcha(): Captcha {
+			return window[this.variable] || {} as unknown as Captcha;
 		},
 	},
 
@@ -95,13 +100,13 @@ export default defineComponent({
 
 	methods: {
 		reset() {
-			this.captcha?.reset();
+			if (this.captcha?.reset) this.captcha.reset();
 		},
 		requestRender() {
 			if (this.captcha.render && this.$refs.captcha instanceof Element) {
 				this.captcha.render(this.$refs.captcha, {
 					sitekey: this.sitekey,
-					theme: this.$store.state.device.darkMode ? 'dark' : 'light',
+					theme: this.$store.state.darkMode ? 'dark' : 'light',
 					callback: this.callback,
 					'expired-callback': this.callback,
 					'error-callback': this.callback,

@@ -1,135 +1,246 @@
 <template>
-<div class="mk-user-page" v-if="user" v-size="{ max: [500] }">
-	<!-- TODO -->
-	<!-- <div class="punished" v-if="user.isSuspended"><Fa :icon="faExclamationTriangle" style="margin-right: 8px;"/> {{ $t('userSuspended') }}</div> -->
-	<!-- <div class="punished" v-if="user.isSilenced"><Fa :icon="faExclamationTriangle" style="margin-right: 8px;"/> {{ $t('userSilenced') }}</div> -->
+<transition name="fade" mode="out-in">
+	<div class="ftskorzw wide" v-if="user && narrow === false">
+		<MkRemoteCaution v-if="user.host != null" :href="user.url" class="_gap"/>
 
-	<div class="profile _section _fitBottom">
-		<MkRemoteCaution v-if="user.host != null" :href="user.url" class="_content _vMargin"/>
-
-		<div class="_content _vMargin" :key="user.id">
-			<div class="banner-container" :style="style">
-				<div class="banner" ref="banner" :style="style"></div>
-				<div class="fade"></div>
-				<div class="title">
-					<MkUserName class="name" :user="user" :nowrap="true"/>
-					<div class="bottom">
-						<span class="username"><MkAcct :user="user" :detail="true" /></span>
-						<span v-if="user.isAdmin" :title="$t('isAdmin')" style="color: var(--badge);"><Fa :icon="faBookmark"/></span>
-						<span v-if="!user.isAdmin && user.isModerator" :title="$t('isModerator')" style="color: var(--badge);"><Fa :icon="farBookmark"/></span>
-						<span v-if="user.isLocked" :title="$t('isLocked')"><Fa :icon="faLock"/></span>
-						<span v-if="user.isBot" :title="$t('isBot')"><Fa :icon="faRobot"/></span>
+		<div class="banner-container _gap" :style="style">
+			<div class="banner" ref="banner" :style="style"></div>
+		</div>
+		<div class="contents">
+			<div class="side _forceContainerFull_">
+				<MkAvatar class="avatar" :user="user" :disable-preview="true" :show-indicator="true"/>
+				<div class="name">
+					<MkUserName :user="user" :nowrap="false" class="name"/>
+					<MkAcct :user="user" :detail="true" class="acct"/>
+				</div>
+				<div class="followed" v-if="$i && $i.id != user.id && user.isFollowed"><span>{{ $ts.followsYou }}</span></div>
+				<div class="status">
+					<MkA :to="userPage(user)" :class="{ active: page === 'index' }">
+						<b>{{ number(user.notesCount) }}</b>
+						<span>{{ $ts.notes }}</span>
+					</MkA>
+					<MkA :to="userPage(user, 'following')" :class="{ active: page === 'following' }">
+						<b>{{ number(user.followingCount) }}</b>
+						<span>{{ $ts.following }}</span>
+					</MkA>
+					<MkA :to="userPage(user, 'followers')" :class="{ active: page === 'followers' }">
+						<b>{{ number(user.followersCount) }}</b>
+						<span>{{ $ts.followers }}</span>
+					</MkA>
+				</div>
+				<div class="description">
+					<Mfm v-if="user.description" :text="user.description" :is-note="false" :author="user" :i="$i" :custom-emojis="user.emojis"/>
+					<p v-else class="empty">{{ $ts.noAccountDescription }}</p>
+				</div>
+				<div class="fields system">
+					<dl class="field" v-if="user.location">
+						<dt class="name"><i class="fas fa-map-marker fa-fw"></i> {{ $ts.location }}</dt>
+						<dd class="value">{{ user.location }}</dd>
+					</dl>
+					<dl class="field" v-if="user.birthday">
+						<dt class="name"><i class="fas fa-birthday-cake fa-fw"></i> {{ $ts.birthday }}</dt>
+						<dd class="value">{{ user.birthday.replace('-', '/').replace('-', '/') }} ({{ $t('yearsOld', { age }) }})</dd>
+					</dl>
+					<dl class="field">
+						<dt class="name"><i class="fas fa-calendar-alt fa-fw"></i> {{ $ts.registeredDate }}</dt>
+						<dd class="value">{{ new Date(user.createdAt).toLocaleString() }} (<MkTime :time="user.createdAt"/>)</dd>
+					</dl>
+				</div>
+				<div class="fields" v-if="user.fields.length > 0">
+					<dl class="field" v-for="(field, i) in user.fields" :key="i">
+						<dt class="name">
+							<Mfm :text="field.name" :plain="true" :custom-emojis="user.emojis" :colored="false"/>
+						</dt>
+						<dd class="value">
+							<Mfm :text="field.value" :author="user" :i="$i" :custom-emojis="user.emojis" :colored="false"/>
+						</dd>
+					</dl>
+				</div>
+				<XActivity :user="user" :key="user.id" class="_gap"/>
+				<XPhotos :user="user" :key="user.id" class="_gap"/>
+			</div>
+			<div class="main">
+				<div class="nav _gap">
+					<MkA :to="userPage(user)" :class="{ active: page === 'index' }" class="link">
+						<i class="fas fa-comment-alt icon"></i>
+						<span>{{ $ts.notes }}</span>
+					</MkA>
+					<MkA :to="userPage(user, 'clips')" :class="{ active: page === 'clips' }" class="link">
+						<i class="fas fa-paperclip icon"></i>
+						<span>{{ $ts.clips }}</span>
+					</MkA>
+					<MkA :to="userPage(user, 'pages')" :class="{ active: page === 'pages' }" class="link">
+						<i class="fas fa-file-alt icon"></i>
+						<span>{{ $ts.pages }}</span>
+					</MkA>
+					<div class="actions">
+						<button @click="menu" class="menu _button"><i class="fas fa-ellipsis-h"></i></button>
+						<MkFollowButton v-if="!$i || $i.id != user.id" :user="user" :inline="true" :transparent="false" :full="true" large class="koudoku"/>
 					</div>
 				</div>
-				<span class="followed" v-if="$store.getters.isSignedIn && $store.state.i.id != user.id && user.isFollowed">{{ $t('followsYou') }}</span>
-				<div class="actions" v-if="$store.getters.isSignedIn">
-					<button @click="menu" class="menu _button"><Fa :icon="faEllipsisH"/></button>
-					<MkFollowButton v-if="$store.state.i.id != user.id" :user="user" :inline="true" :transparent="false" :full="true" class="koudoku"/>
-				</div>
-			</div>
-			<MkAvatar class="avatar" :user="user" :disable-preview="true"/>
-			<div class="title">
-				<MkUserName :user="user" :nowrap="false" class="name"/>
-				<div class="bottom">
-					<span class="username"><MkAcct :user="user" :detail="true" /></span>
-					<span v-if="user.isAdmin" :title="$t('isAdmin')" style="color: var(--badge);"><Fa :icon="faBookmark"/></span>
-					<span v-if="!user.isAdmin && user.isModerator" :title="$t('isModerator')" style="color: var(--badge);"><Fa :icon="farBookmark"/></span>
-					<span v-if="user.isLocked" :title="$t('isLocked')"><Fa :icon="faLock"/></span>
-					<span v-if="user.isBot" :title="$t('isBot')"><Fa :icon="faRobot"/></span>
-				</div>
-			</div>
-			<div class="description">
-				<Mfm v-if="user.description" :text="user.description" :is-note="false" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
-				<p v-else class="empty">{{ $t('noAccountDescription') }}</p>
-			</div>
-			<div class="fields system">
-				<dl class="field" v-if="user.location">
-					<dt class="name"><Fa :icon="faMapMarker" fixed-width/> {{ $t('location') }}</dt>
-					<dd class="value">{{ user.location }}</dd>
-				</dl>
-				<dl class="field" v-if="user.birthday">
-					<dt class="name"><Fa :icon="faBirthdayCake" fixed-width/> {{ $t('birthday') }}</dt>
-					<dd class="value">{{ user.birthday.replace('-', '/').replace('-', '/') }} ({{ $t('yearsOld', { age }) }})</dd>
-				</dl>
-				<dl class="field">
-					<dt class="name"><Fa :icon="faCalendarAlt" fixed-width/> {{ $t('registeredDate') }}</dt>
-					<dd class="value">{{ new Date(user.createdAt).toLocaleString() }} (<MkTime :time="user.createdAt"/>)</dd>
-				</dl>
-			</div>
-			<div class="fields" v-if="user.fields.length > 0">
-				<dl class="field" v-for="(field, i) in user.fields" :key="i">
-					<dt class="name">
-						<Mfm :text="field.name" :plain="true" :custom-emojis="user.emojis" :colored="false"/>
-					</dt>
-					<dd class="value">
-						<Mfm :text="field.value" :author="user" :i="$store.state.i" :custom-emojis="user.emojis" :colored="false"/>
-					</dd>
-				</dl>
-			</div>
-			<div class="status">
-				<router-link :to="userPage(user)" :class="{ active: $route.name === 'user' }">
-					<b>{{ number(user.notesCount) }}</b>
-					<span>{{ $t('notes') }}</span>
-				</router-link>
-				<router-link :to="userPage(user, 'following')" :class="{ active: $route.name === 'userFollowing' }">
-					<b>{{ number(user.followingCount) }}</b>
-					<span>{{ $t('following') }}</span>
-				</router-link>
-				<router-link :to="userPage(user, 'followers')" :class="{ active: $route.name === 'userFollowers' }">
-					<b>{{ number(user.followersCount) }}</b>
-					<span>{{ $t('followers') }}</span>
-				</router-link>
+				<template v-if="page === 'index'">
+					<div v-if="user.pinnedNotes.length > 0" class="_gap">
+						<XNote v-for="note in user.pinnedNotes" class="note _gap" :note="note" @update:note="pinnedNoteUpdated(note, $event)" :key="note.id" :pinned="true"/>
+					</div>
+					<div class="_gap">
+						<XUserTimeline :user="user"/>
+					</div>
+				</template>
+				<XFollowList v-else-if="page === 'following'" type="following" :user="user" class="_gap"/>
+				<XFollowList v-else-if="page === 'followers'" type="followers" :user="user" class="_gap"/>
+				<XClips v-else-if="page === 'clips'" :user="user" class="_gap"/>
+				<XPages v-else-if="page === 'pages'" :user="user" class="_gap"/>
 			</div>
 		</div>
 	</div>
+	<div class="ftskorzw narrow _root" v-else-if="user && narrow === true" v-size="{ max: [500] }">
+		<!-- TODO -->
+		<!-- <div class="punished" v-if="user.isSuspended"><i class="fas fa-exclamation-triangle" style="margin-right: 8px;"></i> {{ $ts.userSuspended }}</div> -->
+		<!-- <div class="punished" v-if="user.isSilenced"><i class="fas fa-exclamation-triangle" style="margin-right: 8px;"></i> {{ $ts.userSilenced }}</div> -->
 
-	<router-view :user="user"></router-view>
-	<template v-if="$route.name == 'user'">
-		<div class="_section">
-			<div class="_content _vMargin" v-if="user.pinnedNotes.length > 0">
-				<XNote v-for="note in user.pinnedNotes" class="note _vMargin" :note="note" @update:note="pinnedNoteUpdated(note, $event)" :key="note.id" :detail="true" :pinned="true"/>
-			</div>
-			<MkFolder :body-togglable="true" class="_content _vMargin" persist-key="user-images">
-				<template #header><Fa :icon="faImage" style="margin-right: 0.5em;"/>{{ $t('images') }}</template>
-				<div>
-					<XPhotos :user="user" :key="user.id"/>
+		<div class="profile">
+			<MkRemoteCaution v-if="user.host != null" :href="user.url" class="warn"/>
+
+			<div class="_block main" :key="user.id">
+				<div class="banner-container" :style="style">
+					<div class="banner" ref="banner" :style="style"></div>
+					<div class="fade"></div>
+					<div class="title">
+						<MkUserName class="name" :user="user" :nowrap="true"/>
+						<div class="bottom">
+							<span class="username"><MkAcct :user="user" :detail="true" /></span>
+							<span v-if="user.isAdmin" :title="$ts.isAdmin" style="color: var(--badge);"><i class="fas fa-bookmark"></i></span>
+							<span v-if="!user.isAdmin && user.isModerator" :title="$ts.isModerator" style="color: var(--badge);"><i class="far fa-bookmark"></i></span>
+							<span v-if="user.isLocked" :title="$ts.isLocked"><i class="fas fa-lock"></i></span>
+							<span v-if="user.isBot" :title="$ts.isBot"><i class="fas fa-robot"></i></span>
+						</div>
+					</div>
+					<span class="followed" v-if="$i && $i.id != user.id && user.isFollowed">{{ $ts.followsYou }}</span>
+					<div class="actions" v-if="$i">
+						<button @click="menu" class="menu _button"><i class="fas fa-ellipsis-h"></i></button>
+						<MkFollowButton v-if="$i.id != user.id" :user="user" :inline="true" :transparent="false" :full="true" class="koudoku"/>
+					</div>
 				</div>
-			</MkFolder>
-			<MkFolder :body-togglable="true" class="_content _vMargin" persist-key="user-activity">
-				<template #header><Fa :icon="faChartBar" style="margin-right: 0.5em;"/>{{ $t('activity') }}</template>
+				<MkAvatar class="avatar" :user="user" :disable-preview="true" :show-indicator="true"/>
+				<div class="title">
+					<MkUserName :user="user" :nowrap="false" class="name"/>
+					<div class="bottom">
+						<span class="username"><MkAcct :user="user" :detail="true" /></span>
+						<span v-if="user.isAdmin" :title="$ts.isAdmin" style="color: var(--badge);"><i class="fas fa-bookmark"></i></span>
+						<span v-if="!user.isAdmin && user.isModerator" :title="$ts.isModerator" style="color: var(--badge);"><i class="far fa-bookmark"></i></span>
+						<span v-if="user.isLocked" :title="$ts.isLocked"><i class="fas fa-lock"></i></span>
+						<span v-if="user.isBot" :title="$ts.isBot"><i class="fas fa-robot"></i></span>
+					</div>
+				</div>
+				<div class="description">
+					<Mfm v-if="user.description" :text="user.description" :is-note="false" :author="user" :i="$i" :custom-emojis="user.emojis"/>
+					<p v-else class="empty">{{ $ts.noAccountDescription }}</p>
+				</div>
+				<div class="fields system">
+					<dl class="field" v-if="user.location">
+						<dt class="name"><i class="fas fa-map-marker fa-fw"></i> {{ $ts.location }}</dt>
+						<dd class="value">{{ user.location }}</dd>
+					</dl>
+					<dl class="field" v-if="user.birthday">
+						<dt class="name"><i class="fas fa-birthday-cake fa-fw"></i> {{ $ts.birthday }}</dt>
+						<dd class="value">{{ user.birthday.replace('-', '/').replace('-', '/') }} ({{ $t('yearsOld', { age }) }})</dd>
+					</dl>
+					<dl class="field">
+						<dt class="name"><i class="fas fa-calendar-alt fa-fw"></i> {{ $ts.registeredDate }}</dt>
+						<dd class="value">{{ new Date(user.createdAt).toLocaleString() }} (<MkTime :time="user.createdAt"/>)</dd>
+					</dl>
+				</div>
+				<div class="fields" v-if="user.fields.length > 0">
+					<dl class="field" v-for="(field, i) in user.fields" :key="i">
+						<dt class="name">
+							<Mfm :text="field.name" :plain="true" :custom-emojis="user.emojis" :colored="false"/>
+						</dt>
+						<dd class="value">
+							<Mfm :text="field.value" :author="user" :i="$i" :custom-emojis="user.emojis" :colored="false"/>
+						</dd>
+					</dl>
+				</div>
+				<div class="status">
+					<MkA :to="userPage(user)" :class="{ active: page === 'index' }" v-click-anime>
+						<b>{{ number(user.notesCount) }}</b>
+						<span>{{ $ts.notes }}</span>
+					</MkA>
+					<MkA :to="userPage(user, 'following')" :class="{ active: page === 'following' }" v-click-anime>
+						<b>{{ number(user.followingCount) }}</b>
+						<span>{{ $ts.following }}</span>
+					</MkA>
+					<MkA :to="userPage(user, 'followers')" :class="{ active: page === 'followers' }" v-click-anime>
+						<b>{{ number(user.followersCount) }}</b>
+						<span>{{ $ts.followers }}</span>
+					</MkA>
+				</div>
+			</div>
+		</div>
+
+		<div class="contents">
+			<div class="nav _gap">
+				<MkA :to="userPage(user)" :class="{ active: page === 'index' }" class="link" v-click-anime>
+					<i class="fas fa-comment-alt icon"></i>
+					<span>{{ $ts.notes }}</span>
+				</MkA>
+				<MkA :to="userPage(user, 'clips')" :class="{ active: page === 'clips' }" class="link" v-click-anime>
+					<i class="fas fa-paperclip icon"></i>
+					<span>{{ $ts.clips }}</span>
+				</MkA>
+				<MkA :to="userPage(user, 'pages')" :class="{ active: page === 'pages' }" class="link" v-click-anime>
+					<i class="fas fa-file-alt icon"></i>
+					<span>{{ $ts.pages }}</span>
+				</MkA>
+				<MkA :to="userPage(user, 'gallery')" :class="{ active: page === 'gallery' }" class="link" v-click-anime>
+					<i class="fas fa-icons icon"></i>
+					<span>{{ $ts.gallery }}</span>
+				</MkA>
+			</div>
+
+			<template v-if="page === 'index'">
 				<div>
+					<div v-if="user.pinnedNotes.length > 0" class="_gap">
+						<XNote v-for="note in user.pinnedNotes" class="note _block" :note="note" @update:note="pinnedNoteUpdated(note, $event)" :key="note.id" :pinned="true"/>
+					</div>
+					<MkInfo v-else-if="$i && $i.id === user.id">{{ $ts.userPagePinTip }}</MkInfo>
+					<XPhotos :user="user" :key="user.id"/>
 					<XActivity :user="user" :key="user.id"/>
 				</div>
-			</MkFolder>
+				<div>
+					<XUserTimeline :user="user"/>
+				</div>
+			</template>
+			<XFollowList v-else-if="page === 'following'" type="following" :user="user" class="_content _gap"/>
+			<XFollowList v-else-if="page === 'followers'" type="followers" :user="user" class="_content _gap"/>
+			<XClips v-else-if="page === 'clips'" :user="user" class="_gap"/>
+			<XPages v-else-if="page === 'pages'" :user="user" class="_gap"/>
+			<XGallery v-else-if="page === 'gallery'" :user="user" class="_gap"/>
 		</div>
-		<div class="_section">
-			<XUserTimeline :user="user" class="_content"/>
-		</div>
-	</template>
-</div>
-<div v-else-if="error">
-	<MkError @retry="fetch()"/>
-</div>
+	</div>
+	<MkError v-else-if="error" @retry="fetch()"/>
+	<MkLoading v-else/>
+</transition>
 </template>
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent, computed } from 'vue';
-import { faExclamationTriangle, faEllipsisH, faRobot, faLock, faBookmark, faChartBar, faImage, faBirthdayCake, faMapMarker } from '@fortawesome/free-solid-svg-icons';
-import { faCalendarAlt, faBookmark as farBookmark } from '@fortawesome/free-regular-svg-icons';
 import * as age from 's-age';
 import XUserTimeline from './index.timeline.vue';
-import XNote from '@/components/note.vue';
-import MkFollowButton from '@/components/follow-button.vue';
-import MkContainer from '@/components/ui/container.vue';
-import MkFolder from '@/components/ui/folder.vue';
-import MkRemoteCaution from '@/components/remote-caution.vue';
-import Progress from '@/scripts/loading';
-import parseAcct from '../../../misc/acct/parse';
-import { getScrollPosition } from '@/scripts/scroll';
-import { getUserMenu } from '@/scripts/get-user-menu';
+import XNote from '@client/components/note.vue';
+import MkFollowButton from '@client/components/follow-button.vue';
+import MkContainer from '@client/components/ui/container.vue';
+import MkFolder from '@client/components/ui/folder.vue';
+import MkRemoteCaution from '@client/components/remote-caution.vue';
+import MkTab from '@client/components/tab.vue';
+import MkInfo from '@client/components/ui/info.vue';
+import Progress from '@client/scripts/loading';
+import { parseAcct } from '@/misc/acct';
+import { getScrollPosition } from '@client/scripts/scroll';
+import { getUserMenu } from '@client/scripts/get-user-menu';
 import number from '../../filters/number';
-import { userPage, acct } from '../../filters/user';
-import * as os from '@/os';
+import { userPage, acct as getAcct } from '../../filters/user';
+import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -139,26 +250,44 @@ export default defineComponent({
 		MkContainer,
 		MkRemoteCaution,
 		MkFolder,
+		MkTab,
+		MkInfo,
+		XFollowList: defineAsyncComponent(() => import('./follow-list.vue')),
+		XClips: defineAsyncComponent(() => import('./clips.vue')),
+		XPages: defineAsyncComponent(() => import('./pages.vue')),
+		XGallery: defineAsyncComponent(() => import('./gallery.vue')),
 		XPhotos: defineAsyncComponent(() => import('./index.photos.vue')),
 		XActivity: defineAsyncComponent(() => import('./index.activity.vue')),
 	},
 
+	props: {
+		acct: {
+			type: String,
+			required: true
+		},
+		page: {
+			type: String,
+			required: false,
+			default: 'index'
+		}
+	},
+
 	data() {
 		return {
-			INFO: computed(() => this.user ? {
-				header: [{
-					userName: this.user,
-					avatar: this.user,
-				}],
-				action: {
-					icon: faEllipsisH,
-					handler: this.menu
-				}
+			[symbols.PAGE_INFO]: computed(() => this.user ? {
+				title: this.user.name ? `${this.user.name} (@${this.user.username})` : `@${this.user.username}`,
+				userName: this.user,
+				avatar: this.user,
+				path: `/@${this.user.username}`,
+				share: {
+					title: this.user.name,
+				},
+				menu: () => getUserMenu(this.user),
 			} : null),
 			user: null,
 			error: null,
 			parallaxAnimationId: null,
-			faExclamationTriangle, faEllipsisH, faRobot, faLock, faBookmark, farBookmark, faChartBar, faImage, faBirthdayCake, faMapMarker, faCalendarAlt
+			narrow: null,
 		};
 	},
 
@@ -176,7 +305,7 @@ export default defineComponent({
 	},
 
 	watch: {
-		$route: 'fetch'
+		acct: 'fetch'
 	},
 
 	created() {
@@ -185,6 +314,7 @@ export default defineComponent({
 
 	mounted() {
 		window.requestAnimationFrame(this.parallaxLoop);
+		this.narrow = true; //this.$el.clientWidth < 1000;
 	},
 
 	beforeUnmount() {
@@ -192,10 +322,13 @@ export default defineComponent({
 	},
 
 	methods: {
+		getAcct,
+
 		fetch() {
-			if (this.$route.params.user == null) return;
+			if (this.acct == null) return;
+			this.user = null;
 			Progress.start();
-			os.api('users/show', parseAcct(this.$route.params.user)).then(user => {
+			os.api('users/show', parseAcct(this.acct)).then(user => {
 				this.user = user;
 			}).catch(e => {
 				this.error = e;
@@ -239,14 +372,205 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.mk-user-page {
+.fade-enter-active,
+.fade-leave-active {
+	transition: opacity 0.125s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+	opacity: 0;
+}
+
+.ftskorzw.wide {
+	max-width: 1150px;
+	margin: 0 auto;
+
+	> .banner-container {
+		position: relative;
+		height: 450px;
+		border-radius: 16px;
+		overflow: hidden;
+		background-size: cover;
+		background-position: center;
+
+		> .banner {
+			height: 100%;
+			background-color: #4c5e6d;
+			background-size: cover;
+			background-position: center;
+			box-shadow: 0 0 128px rgba(0, 0, 0, 0.5) inset;
+			will-change: background-position;
+		}
+	}
+
+	> .contents {
+		display: flex;
+
+		> .side {
+			width: 360px;
+
+			> .avatar {
+				display: block;
+				width: 180px;
+				height: 180px;
+				margin: -130px auto 0 auto;
+			}
+
+			> .name {
+				padding: 16px 0px 20px 0;
+				text-align: center;
+
+				> .name {
+					display: block;
+					font-size: 1.75em;
+					font-weight: bold;
+				}
+			}
+
+			> .followed {
+				text-align: center;
+
+				> span {
+					display: inline-block;
+					font-size: 80%;
+					padding: 8px 12px;
+					margin-bottom: 20px;
+					border: solid 0.5px var(--divider);
+					border-radius: 999px;
+				}
+			}
+
+			> .status {
+				display: flex;
+				padding: 20px 16px;
+				border-top: solid 0.5px var(--divider);
+				font-size: 90%;
+
+				> a {
+					flex: 1;
+					text-align: center;
+
+					&.active {
+						color: var(--accent);
+					}
+
+					&:hover {
+						text-decoration: none;
+					}
+
+					> b {
+						display: block;
+						line-height: 16px;
+					}
+
+					> span {
+						font-size: 75%;
+					}
+				}
+			}
+
+			> .description {
+				padding: 20px 16px;
+				border-top: solid 0.5px var(--divider);
+				font-size: 90%;
+			}
+
+			> .fields {
+				padding: 20px 16px;
+				border-top: solid 0.5px var(--divider);
+				font-size: 90%;
+
+				> .field {
+					display: flex;
+					padding: 0;
+					margin: 0;
+					align-items: center;
+
+					&:not(:last-child) {
+						margin-bottom: 8px;
+					}
+
+					> .name {
+						width: 30%;
+						overflow: hidden;
+						white-space: nowrap;
+						text-overflow: ellipsis;
+						font-weight: bold;
+					}
+
+					> .value {
+						width: 70%;
+						overflow: hidden;
+						white-space: nowrap;
+						text-overflow: ellipsis;
+						margin: 0;
+					}
+				}
+			}
+		}
+
+		> .main {
+			flex: 1;
+			margin-left: var(--margin);
+			min-width: 0;
+
+			> .nav {
+				display: flex;
+				align-items: center;
+				margin-top: var(--margin);
+				//font-size: 120%;
+				font-weight: bold;
+
+				> .link {
+					display: inline-block;
+					padding: 15px 24px 12px 24px;
+					text-align: center;
+					border-bottom: solid 3px transparent;
+
+					&:hover {
+						text-decoration: none;
+					}
+
+					&.active {
+						color: var(--accent);
+						border-bottom-color: var(--accent);
+					}
+
+					&:not(.active):hover {
+						color: var(--fgHighlighted);
+					}
+
+					> .icon {
+						margin-right: 6px;
+					}
+				}
+
+				> .actions {
+					display: flex;
+					align-items: center;
+					margin-left: auto;
+
+					> .menu {
+						padding: 12px 16px;
+					}
+				}
+			}
+		}
+	}
+}
+
+.ftskorzw.narrow {
+	box-sizing: border-box;
+	overflow: clip;
+
 	> .punished {
 		font-size: 0.8em;
 		padding: 16px;
 	}
 
 	> .profile {
-		> ._content {
+
+		> .main {
 			position: relative;
 			overflow: hidden;
 
@@ -256,7 +580,6 @@ export default defineComponent({
 				overflow: hidden;
 				background-size: cover;
 				background-position: center;
-				border-radius: 12px;
 
 				> .banner {
 					height: 100%;
@@ -350,7 +673,7 @@ export default defineComponent({
 				text-align: center;
 				padding: 50px 8px 16px 8px;
 				font-weight: bold;
-				border-bottom: solid 1px var(--divider);
+				border-bottom: solid 0.5px var(--divider);
 
 				> .bottom {
 					> * {
@@ -385,7 +708,7 @@ export default defineComponent({
 			> .fields {
 				padding: 24px;
 				font-size: 0.9em;
-				border-top: solid 1px var(--divider);
+				border-top: solid 0.5px var(--divider);
 
 				> .field {
 					display: flex;
@@ -411,6 +734,7 @@ export default defineComponent({
 						overflow: hidden;
 						white-space: nowrap;
 						text-overflow: ellipsis;
+						margin: 0;
 					}
 				}
 
@@ -421,7 +745,7 @@ export default defineComponent({
 			> .status {
 				display: flex;
 				padding: 24px;
-				border-top: solid 1px var(--divider);
+				border-top: solid 0.5px var(--divider);
 
 				> a {
 					flex: 1;
@@ -448,12 +772,45 @@ export default defineComponent({
 		}
 	}
 
-	> .content {
-		margin-bottom: var(--margin);
+	> .contents {
+		> .nav {
+			display: flex;
+			align-items: center;
+			font-size: 90%;
+
+			> .link {
+				flex: 1;
+				display: inline-block;
+				padding: 16px;
+				text-align: center;
+				border-bottom: solid 3px transparent;
+
+				&:hover {
+					text-decoration: none;
+				}
+
+				&.active {
+					color: var(--accent);
+					border-bottom-color: var(--accent);
+				}
+
+				&:not(.active):hover {
+					color: var(--fgHighlighted);
+				}
+
+				> .icon {
+					margin-right: 6px;
+				}
+			}
+		}
+
+		> .content {
+			margin-bottom: var(--margin);
+		}
 	}
 
 	&.max-width_500px {
-		> .profile > ._content {
+		> .profile > .main {
 			> .banner-container {
 				height: 140px;
 
@@ -491,6 +848,24 @@ export default defineComponent({
 			> .status {
 				padding: 16px;
 			}
+		}
+
+		> .contents {
+			> .nav {
+				font-size: 80%;
+			}
+		}
+	}
+}
+
+._flat_ .ftskorzw.narrow {
+	> .profile {
+		> .warn {
+			margin: 0;
+		}
+
+		> .main {
+			margin-top: 0;
 		}
 	}
 }

@@ -6,10 +6,6 @@ And is distributed under The GNU Affero General Public License Version 3, you sh
 
 Misskey includes several third-party Open-Source softwares.
 
-Unicode emoji regular expressions by Twitter, Inc.
-License: MIT
-https://github.com/twitter/twemoji-parser/blob/master/LICENSE.md
-
 Emoji keywords for Unicode 11 and below by Mu-An Chiou
 License: MIT
 https://github.com/muan/emojilib/blob/master/LICENSE

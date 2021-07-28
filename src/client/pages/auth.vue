@@ -1,8 +1,8 @@
 <template>
-<div class="" v-if="$store.getters.isSignedIn && fetching">
+<div class="" v-if="$i && fetching">
 	<MkLoading/>
 </div>
-<div v-else-if="$store.getters.isSignedIn">
+<div v-else-if="$i">
 	<XForm
 		class="form"
 		ref="form"
@@ -12,15 +12,15 @@
 		@accepted="accepted"
 	/>
 	<div class="denied" v-if="state == 'denied'">
-		<h1>{{ $t('_auth.denied') }}</h1>
+		<h1>{{ $ts._auth.denied }}</h1>
 	</div>
 	<div class="accepted" v-if="state == 'accepted'">
-		<h1>{{ session.app.isAuthorized ? this.$t('already-authorized') : this.$t('allowed') }}</h1>
-		<p v-if="session.app.callbackUrl">{{ $t('_auth.callback') }}<MkEllipsis/></p>
-		<p v-if="!session.app.callbackUrl">{{ $t('_auth.pleaseGoBack') }}</p>
+		<h1>{{ session.app.isAuthorized ? this.$t('already-authorized') : this.$ts.allowed }}</h1>
+		<p v-if="session.app.callbackUrl">{{ $ts._auth.callback }}<MkEllipsis/></p>
+		<p v-if="!session.app.callbackUrl">{{ $ts._auth.pleaseGoBack }}</p>
 	</div>
 	<div class="error" v-if="state == 'fetch-session-error'">
-		<p>{{ $t('somethingHappened') }}</p>
+		<p>{{ $ts.somethingHappened }}</p>
 	</div>
 </div>
 <div class="signin" v-else>
@@ -31,8 +31,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import XForm from './auth.form.vue';
-import MkSignin from '@/components/signin.vue';
-import * as os from '@/os';
+import MkSignin from '@client/components/signin.vue';
+import * as os from '@client/os';
+import { login } from '@client/account';
 
 export default defineComponent({
 	components: {
@@ -52,7 +53,7 @@ export default defineComponent({
 		}
 	},
 	mounted() {
-		if (!this.$store.getters.isSignedIn) return;
+		if (!this.$i) return;
 
 		// Fetch session
 		os.api('auth/session/show', {
@@ -83,8 +84,7 @@ export default defineComponent({
 				location.href = `${this.session.app.callbackUrl}?token=${this.session.token}`;
 			}
 		}, onLogin(res) {
-			localStorage.setItem('i', res.i);
-			location.reload();
+			login(res.i);
 		}
 	}
 });

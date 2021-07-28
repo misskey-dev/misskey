@@ -10,6 +10,7 @@ import PerUserReactionsChart from './charts/classes/per-user-reactions';
 import HashtagChart from './charts/classes/hashtag';
 import PerUserFollowingChart from './charts/classes/per-user-following';
 import PerUserDriveChart from './charts/classes/per-user-drive';
+import { beforeShutdown } from '@/misc/before-shutdown';
 
 export const federationChart = new FederationChart();
 export const notesChart = new NotesChart();
@@ -23,3 +24,27 @@ export const perUserReactionsChart = new PerUserReactionsChart();
 export const hashtagChart = new HashtagChart();
 export const perUserFollowingChart = new PerUserFollowingChart();
 export const perUserDriveChart = new PerUserDriveChart();
+
+const charts = [
+	federationChart,
+	notesChart,
+	usersChart,
+	networkChart,
+	activeUsersChart,
+	instanceChart,
+	perUserNotesChart,
+	driveChart,
+	perUserReactionsChart,
+	hashtagChart,
+	perUserFollowingChart,
+	perUserDriveChart,
+];
+
+// 20分おきにメモリ情報をDBに書き込み
+setInterval(() => {
+	for (const chart of charts) {
+		chart.save();
+	}
+}, 1000 * 60 * 20);
+
+beforeShutdown(() => Promise.all(charts.map(chart => chart.save())));

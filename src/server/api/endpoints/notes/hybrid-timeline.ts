@@ -1,7 +1,7 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import define from '../../define';
-import { fetchMeta } from '../../../../misc/fetch-meta';
+import { fetchMeta } from '@/misc/fetch-meta';
 import { ApiError } from '../../error';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 import { Followings, Notes } from '../../../../models';
@@ -10,16 +10,10 @@ import { generateVisibilityQuery } from '../../common/generate-visibility-query'
 import { generateMutedUserQuery } from '../../common/generate-muted-user-query';
 import { activeUsersChart } from '../../../../services/chart';
 import { generateRepliesQuery } from '../../common/generate-replies-query';
-import { injectPromo } from '../../common/inject-promo';
-import { injectFeatured } from '../../common/inject-featured';
 import { generateMutedNoteQuery } from '../../common/generate-muted-note-query';
 import { generateChannelQuery } from '../../common/generate-channel-query';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'ソーシャルタイムラインを取得します。'
-	},
-
 	tags: ['notes'],
 
 	requireCredential: true as const,
@@ -28,68 +22,41 @@ export const meta = {
 		limit: {
 			validator: $.optional.num.range(1, 100),
 			default: 10,
-			desc: {
-				'ja-JP': '最大数'
-			}
 		},
 
 		sinceId: {
 			validator: $.optional.type(ID),
-			desc: {
-				'ja-JP': '指定すると、その投稿を基点としてより新しい投稿を取得します'
-			}
 		},
 
 		untilId: {
 			validator: $.optional.type(ID),
-			desc: {
-				'ja-JP': '指定すると、その投稿を基点としてより古い投稿を取得します'
-			}
 		},
 
 		sinceDate: {
 			validator: $.optional.num,
-			desc: {
-				'ja-JP': '指定した時間を基点としてより新しい投稿を取得します。数値は、1970年1月1日 00:00:00 UTC から指定した日時までの経過時間をミリ秒単位で表します。'
-			}
 		},
 
 		untilDate: {
 			validator: $.optional.num,
-			desc: {
-				'ja-JP': '指定した時間を基点としてより古い投稿を取得します。数値は、1970年1月1日 00:00:00 UTC から指定した日時までの経過時間をミリ秒単位で表します。'
-			}
 		},
 
 		includeMyRenotes: {
 			validator: $.optional.bool,
 			default: true,
-			desc: {
-				'ja-JP': '自分の行ったRenoteを含めるかどうか'
-			}
 		},
 
 		includeRenotedMyNotes: {
 			validator: $.optional.bool,
 			default: true,
-			desc: {
-				'ja-JP': 'Renoteされた自分の投稿を含めるかどうか'
-			}
 		},
 
 		includeLocalRenotes: {
 			validator: $.optional.bool,
 			default: true,
-			desc: {
-				'ja-JP': 'Renoteされたローカルの投稿を含めるかどうか'
-			}
 		},
 
 		withFiles: {
 			validator: $.optional.bool,
-			desc: {
-				'ja-JP': 'true にすると、ファイルが添付された投稿だけ取得します'
-			}
 		},
 	},
 
@@ -129,7 +96,11 @@ export default define(meta, async (ps, user) => {
 			qb.where(`((note.userId IN (${ followingQuery.getQuery() })) OR (note.userId = :meId))`, { meId: user.id })
 				.orWhere('(note.visibility = \'public\') AND (note.userHost IS NULL)');
 		}))
-		.leftJoinAndSelect('note.user', 'user')
+		.innerJoinAndSelect('note.user', 'user')
+		.leftJoinAndSelect('note.reply', 'reply')
+		.leftJoinAndSelect('note.renote', 'renote')
+		.leftJoinAndSelect('reply.user', 'replyUser')
+		.leftJoinAndSelect('renote.user', 'renoteUser')
 		.setParameters(followingQuery.getParameters());
 
 	generateChannelQuery(query, user);
@@ -174,9 +145,6 @@ export default define(meta, async (ps, user) => {
 	//#endregion
 
 	const timeline = await query.take(ps.limit!).getMany();
-
-	await injectPromo(timeline, user);
-	await injectFeatured(timeline, user);
 
 	process.nextTick(() => {
 		if (user) {

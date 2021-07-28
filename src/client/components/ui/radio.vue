@@ -18,7 +18,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import * as os from '@/os';
 
 export default defineComponent({
 	props: {
@@ -51,7 +50,8 @@ export default defineComponent({
 .novjtctn {
 	position: relative;
 	display: inline-block;
-	margin: 0 32px 0 0;
+	margin: 8px 20px 0 0;
+	text-align: left;
 	cursor: pointer;
 	transition: all 0.3s;
 

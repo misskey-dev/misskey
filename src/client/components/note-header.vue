@@ -1,34 +1,32 @@
 <template>
 <header class="kkwtjztg">
-	<router-link class="name" :to="userPage(note.user)" v-user-preview="note.user.id">
+	<MkA class="name" :to="userPage(note.user)" v-user-preview="note.user.id">
 		<MkUserName :user="note.user"/>
-	</router-link>
+	</MkA>
 	<span class="is-bot" v-if="note.user.isBot">bot</span>
 	<span class="username"><MkAcct :user="note.user"/></span>
-	<span class="admin" v-if="note.user.isAdmin"><Fa :icon="faBookmark"/></span>
-	<span class="moderator" v-if="!note.user.isAdmin && note.user.isModerator"><Fa :icon="farBookmark"/></span>
+	<span class="admin" v-if="note.user.isAdmin"><i class="fas fa-bookmark"></i></span>
+	<span class="moderator" v-if="!note.user.isAdmin && note.user.isModerator"><i class="far fa-bookmark"></i></span>
 	<div class="info">
-		<span class="mobile" v-if="note.viaMobile"><Fa :icon="faMobileAlt"/></span>
-		<router-link class="created-at" :to="notePage(note)">
+		<span class="mobile" v-if="note.viaMobile"><i class="fas fa-mobile-alt"></i></span>
+		<MkA class="created-at" :to="notePage(note)">
 			<MkTime :time="note.createdAt"/>
-		</router-link>
+		</MkA>
 		<span class="visibility" v-if="note.visibility !== 'public'">
-			<Fa v-if="note.visibility === 'home'" :icon="faHome"/>
-			<Fa v-if="note.visibility === 'followers'" :icon="faUnlock"/>
-			<Fa v-if="note.visibility === 'specified'" :icon="faEnvelope"/>
+			<i v-if="note.visibility === 'home'" class="fas fa-home"></i>
+			<i v-else-if="note.visibility === 'followers'" class="fas fa-unlock"></i>
+			<i v-else-if="note.visibility === 'specified'" class="fas fa-envelope"></i>
 		</span>
-		<span class="localOnly" v-if="note.localOnly"><Fa :icon="faBiohazard"/></span>
+		<span class="localOnly" v-if="note.localOnly"><i class="fas fa-biohazard"></i></span>
 	</div>
 </header>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faHome, faUnlock, faEnvelope, faMobileAlt, faBookmark, faBiohazard } from '@fortawesome/free-solid-svg-icons';
-import { faBookmark as farBookmark } from '@fortawesome/free-regular-svg-icons';
 import notePage from '../filters/note';
 import { userPage } from '../filters/user';
-import * as os from '@/os';
+import * as os from '@client/os';
 
 export default defineComponent({
 	props: {
@@ -40,7 +38,6 @@ export default defineComponent({
 
 	data() {
 		return {
-			faHome, faUnlock, faEnvelope, faMobileAlt, faBookmark, farBookmark, faBiohazard
 		};
 	},
 
@@ -78,7 +75,7 @@ export default defineComponent({
 		margin: 0 .5em 0 0;
 		padding: 1px 6px;
 		font-size: 80%;
-		border: solid 1px var(--divider);
+		border: solid 0.5px var(--divider);
 		border-radius: 3px;
 	}
 

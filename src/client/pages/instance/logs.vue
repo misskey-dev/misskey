@@ -2,16 +2,16 @@
 <div class="_section">
 	<div class="_inputs">
 		<MkInput v-model:value="logDomain" :debounce="true">
-			<span>{{ $t('domain') }}</span>
+			<span>{{ $ts.domain }}</span>
 		</MkInput>
 		<MkSelect v-model:value="logLevel">
-			<template #label>{{ $t('level') }}</template>
-			<option value="all">{{ $t('levels.all') }}</option>
-			<option value="info">{{ $t('levels.info') }}</option>
-			<option value="success">{{ $t('levels.success') }}</option>
-			<option value="warning">{{ $t('levels.warning') }}</option>
-			<option value="error">{{ $t('levels.error') }}</option>
-			<option value="debug">{{ $t('levels.debug') }}</option>
+			<template #label>Level</template>
+			<option value="all">All</option>
+			<option value="info">Info</option>
+			<option value="success">Success</option>
+			<option value="warning">Warning</option>
+			<option value="error">Error</option>
+			<option value="debug">Debug</option>
 		</MkSelect>
 	</div>
 
@@ -24,19 +24,18 @@
 		</code>
 	</div>
 
-	<MkButton @click="deleteAllLogs()" primary><Fa :icon="faTrashAlt"/> {{ $t('deleteAll') }}</MkButton>
+	<MkButton @click="deleteAllLogs()" primary><i class="fas fa-trash-alt"></i> {{ $ts.deleteAll }}</MkButton>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faStream } from '@fortawesome/free-solid-svg-icons';
-import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
-import MkButton from '@/components/ui/button.vue';
-import MkInput from '@/components/ui/input.vue';
-import MkSelect from '@/components/ui/select.vue';
-import MkTextarea from '@/components/ui/textarea.vue';
-import * as os from '@/os';
+import MkButton from '@client/components/ui/button.vue';
+import MkInput from '@client/components/ui/input.vue';
+import MkSelect from '@client/components/ui/select.vue';
+import MkTextarea from '@client/components/ui/textarea.vue';
+import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -46,18 +45,17 @@ export default defineComponent({
 		MkTextarea,
 	},
 
+	emits: ['info'],
+
 	data() {
 		return {
-			INFO: {
-				header: [{
-					title: this.$t('serverLogs'),
-					icon: faStream
-				}]
+			[symbols.PAGE_INFO]: {
+				title: this.$ts.serverLogs,
+				icon: 'fas fa-stream'
 			},
 			logs: [],
 			logLevel: 'all',
 			logDomain: '',
-			faTrashAlt,
 		}
 	},
 
@@ -74,6 +72,10 @@ export default defineComponent({
 
 	created() {
 		this.fetchLogs();
+	},
+
+	mounted() {
+		this.$emit('info', this[symbols.PAGE_INFO]);
 	},
 
 	methods: {

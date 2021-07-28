@@ -9,8 +9,7 @@ import {
 	AttestationChallenges,
 	Users
 } from '../../../../../models';
-import { ensure } from '../../../../../prelude/ensure';
-import config from '../../../../../config';
+import config from '@/config';
 import { procedures, hash } from '../../../2fa';
 import { publishMainStream } from '../../../../../services/stream';
 
@@ -43,7 +42,7 @@ export const meta = {
 const rpIdHashReal = hash(Buffer.from(config.hostname, 'utf-8'));
 
 export default define(meta, async (ps, user) => {
-	const profile = await UserProfiles.findOne(user.id).then(ensure);
+	const profile = await UserProfiles.findOneOrFail(user.id);
 
 	// Compare password
 	const same = await bcrypt.compare(ps.password, profile.password!);

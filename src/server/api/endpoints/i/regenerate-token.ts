@@ -1,10 +1,9 @@
 import $ from 'cafy';
 import * as bcrypt from 'bcryptjs';
-import { publishMainStream } from '../../../../services/stream';
+import { publishMainStream, publishUserEvent } from '../../../../services/stream';
 import generateUserToken from '../../common/generate-native-user-token';
 import define from '../../define';
 import { Users, UserProfiles } from '../../../../models';
-import { ensure } from '../../../../prelude/ensure';
 
 export const meta = {
 	requireCredential: true as const,
@@ -19,7 +18,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const profile = await UserProfiles.findOne(user.id).then(ensure);
+	const profile = await UserProfiles.findOneOrFail(user.id);
 
 	// Compare password
 	const same = await bcrypt.compare(ps.password, profile.password!);
@@ -37,4 +36,9 @@ export default define(meta, async (ps, user) => {
 
 	// Publish event
 	publishMainStream(user.id, 'myTokenRegenerated');
+
+	// Terminate streaming
+	setTimeout(() => {
+		publishUserEvent(user.id, 'terminate', {});
+	}, 5000);
 });

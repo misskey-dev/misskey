@@ -1,6 +1,6 @@
 <template>
 <MkContainer :show-header="props.showHeader" :naked="props.transparent" :class="$style.root" :data-transparent="props.transparent ? true : null">
-	<template #header><Fa :icon="faCamera"/>{{ $t('_widgets.photos') }}</template>
+	<template #header><i class="fas fa-camera"></i>{{ $ts._widgets.photos }}</template>
 
 	<div class="">
 		<MkLoading v-if="fetching"/>
@@ -15,12 +15,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { faCamera } from '@fortawesome/free-solid-svg-icons';
-import MkContainer from '@/components/ui/container.vue';
+import { defineComponent, markRaw } from 'vue';
+import MkContainer from '@client/components/ui/container.vue';
 import define from './define';
-import { getStaticImageUrl } from '@/scripts/get-static-image-url';
-import * as os from '@/os';
+import { getStaticImageUrl } from '@client/scripts/get-static-image-url';
+import * as os from '@client/os';
 
 const widget = define({
 	name: 'photos',
@@ -46,11 +45,10 @@ export default defineComponent({
 			images: [],
 			fetching: true,
 			connection: null,
-			faCamera
 		};
 	},
 	mounted() {
-		this.connection = os.stream.useSharedConnection('main');
+		this.connection = markRaw(os.stream.useChannel('main'));
 
 		this.connection.on('driveFileCreated', this.onDriveFileCreated);
 
@@ -74,7 +72,7 @@ export default defineComponent({
 		},
 
 		thumbnail(image: any): string {
-			return this.$store.state.device.disableShowingAnimatedImages
+			return this.$store.state.disableShowingAnimatedImages
 				? getStaticImageUrl(image.thumbnailUrl)
 				: image.thumbnailUrl;
 		},

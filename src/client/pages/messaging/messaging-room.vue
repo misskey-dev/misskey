@@ -6,19 +6,27 @@
 	<div class="_content mk-messaging-room">
 		<div class="body">
 			<MkLoading v-if="fetching"/>
-			<p class="empty" v-if="!fetching && messages.length == 0"><Fa :icon="faInfoCircle"/>{{ $t('noMessagesYet') }}</p>
-			<p class="no-history" v-if="!fetching && messages.length > 0 && !existMoreMessages"><Fa :icon="faFlag"/>{{ $t('noMoreHistory') }}</p>
+			<p class="empty" v-if="!fetching && messages.length == 0"><i class="fas fa-info-circle"></i>{{ $ts.noMessagesYet }}</p>
+			<p class="no-history" v-if="!fetching && messages.length > 0 && !existMoreMessages"><i class="fas fa-flag"></i>{{ $ts.noMoreHistory }}</p>
 			<button class="more _button" ref="loadMore" :class="{ fetching: fetchingMoreMessages }" v-show="existMoreMessages" @click="fetchMoreMessages" :disabled="fetchingMoreMessages">
-				<template v-if="fetchingMoreMessages"><Fa icon="spinner" pulse fixed-width/></template>{{ fetchingMoreMessages ? $t('loading') : $t('loadMore') }}
+				<template v-if="fetchingMoreMessages"><i class="fas fa-spinner fa-pulse fa-fw"></i></template>{{ fetchingMoreMessages ? $ts.loading : $ts.loadMore }}
 			</button>
 			<XList class="messages" :items="messages" v-slot="{ item: message }" direction="up" reversed>
 				<XMessage :message="message" :is-group="group != null" :key="message.id"/>
 			</XList>
 		</div>
 		<footer>
+			<div class="typers" v-if="typers.length > 0">
+				<I18n :src="$ts.typingUsers" text-tag="span" class="users">
+					<template #users>
+						<b v-for="user in typers" :key="user.id" class="user">{{ user.username }}</b>
+					</template>
+				</I18n>
+				<MkEllipsis/>
+			</div>
 			<transition name="fade">
 				<div class="new-message" v-show="showIndicator">
-					<button class="_buttonPrimary" @click="onIndicatorClick"><i><Fa :icon="faArrowCircleDown"/></i>{{ $t('newMessageExists') }}</button>
+					<button class="_buttonPrimary" @click="onIndicatorClick"><i class="fas fa-arrow-circle-down"></i>{{ $ts.newMessageExists }}</button>
 				</div>
 			</transition>
 			<XForm v-if="!fetching" :user="user" :group="group" ref="form"/>
@@ -28,16 +36,16 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue';
-import { faArrowCircleDown, faFlag, faUsers, faInfoCircle, faEllipsisH, faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
-import { faWindowMaximize } from '@fortawesome/free-regular-svg-icons';
-import XList from '@/components/date-separated-list.vue';
+import { computed, defineComponent, markRaw } from 'vue';
+import XList from '@client/components/date-separated-list.vue';
 import XMessage from './messaging-room.message.vue';
 import XForm from './messaging-room.form.vue';
-import parseAcct from '../../../misc/acct/parse';
-import { isBottom, onScrollBottom, scroll } from '@/scripts/scroll';
-import * as os from '@/os';
-import { popout } from '@/scripts/popout';
+import { parseAcct } from '@/misc/acct';
+import { isBottom, onScrollBottom, scroll } from '@client/scripts/scroll';
+import * as os from '@client/os';
+import { popout } from '@client/scripts/popout';
+import * as sound from '@client/scripts/sound';
+import * as symbols from '@client/symbols';
 
 const Component = defineComponent({
 	components: {
@@ -61,22 +69,18 @@ const Component = defineComponent({
 
 	data() {
 		return {
-			INFO: computed(() => !this.fetching ? this.user ? {
-				header: [{
-					userName: this.user,
-					avatar: this.user,
-				}],
+			[symbols.PAGE_INFO]: computed(() => !this.fetching ? this.user ? {
+				userName: this.user,
+				avatar: this.user,
 				action: {
-					icon: faEllipsisH,
+					icon: 'fas fa-ellipsis-h',
 					handler: this.menu,
 				},
 			} : {
-				header: [{
-					title: this.group.name,
-					icon: faUsers
-				}],
+				title: this.group.name,
+				icon: 'fas fa-users',
 				action: {
-					icon: faEllipsisH,
+					icon: 'fas fa-ellipsis-h',
 					handler: this.menu,
 				},
 			} : null),
@@ -89,6 +93,7 @@ const Component = defineComponent({
 			connection: null,
 			showIndicator: false,
 			timer: null,
+			typers: [],
 			ilObserver: new IntersectionObserver(
 				(entries) => entries.some((entry) => entry.isIntersecting)
 					&& !this.fetching
@@ -96,7 +101,6 @@ const Component = defineComponent({
 					&& this.existMoreMessages
 					&& this.fetchMoreMessages()
 			),
-			faArrowCircleDown, faFlag, faInfoCircle
 		};
 	},
 
@@ -113,7 +117,7 @@ const Component = defineComponent({
 
 	mounted() {
 		this.fetch();
-		if (this.$store.state.device.enableInfiniteScroll) {
+		if (this.$store.state.enableInfiniteScroll) {
 			this.$nextTick(() => this.ilObserver.observe(this.$refs.loadMore as Element));
 		}
 	},
@@ -137,14 +141,17 @@ const Component = defineComponent({
 				this.group = group;
 			}
 
-			this.connection = os.stream.connectToChannel('messaging', {
+			this.connection = markRaw(os.stream.useChannel('messaging', {
 				otherparty: this.user ? this.user.id : undefined,
 				group: this.group ? this.group.id : undefined,
-			});
+			}));
 
 			this.connection.on('message', this.onMessage);
 			this.connection.on('read', this.onRead);
 			this.connection.on('deleted', this.onDeleted);
+			this.connection.on('typers', typers => {
+				this.typers = typers.filter(u => u.id !== this.$i.id);
+			});
 
 			document.addEventListener('visibilitychange', this.onVisibilitychange);
 
@@ -177,7 +184,7 @@ const Component = defineComponent({
 			} else if (e.dataTransfer.files.length > 1) {
 				os.dialog({
 					type: 'error',
-					text: this.$t('onlyOneFileCanBeAttached')
+					text: this.$ts.onlyOneFileCanBeAttached
 				});
 				return;
 			}
@@ -222,12 +229,12 @@ const Component = defineComponent({
 		},
 
 		onMessage(message) {
-			os.sound('chat');
+			sound.play('chat');
 
 			const _isBottom = isBottom(this.$el, 64);
 
 			this.messages.push(message);
-			if (message.userId != this.$store.state.i.id && !document.hidden) {
+			if (message.userId != this.$i.id && !document.hidden) {
 				this.connection.send('read', {
 					id: message.id
 				});
@@ -238,7 +245,7 @@ const Component = defineComponent({
 				this.$nextTick(() => {
 					this.scrollToBottom();
 				});
-			} else if (message.userId != this.$store.state.i.id) {
+			} else if (message.userId != this.$i.id) {
 				// Notify
 				this.notifyNewMessage();
 			}
@@ -302,7 +309,7 @@ const Component = defineComponent({
 		onVisibilitychange() {
 			if (document.hidden) return;
 			for (const message of this.messages) {
-				if (message.userId !== this.$store.state.i.id && !message.isRead) {
+				if (message.userId !== this.$i.id && !message.isRead) {
 					this.connection.send('read', {
 						id: message.id
 					});
@@ -311,20 +318,20 @@ const Component = defineComponent({
 		},
 
 		menu(ev) {
-			const url = this.groupId ? `/my/messaging/group/${this.groupId}` : `/my/messaging/${this.userAcct}`;
+			const path = this.groupId ? `/my/messaging/group/${this.groupId}` : `/my/messaging/${this.userAcct}`;
 
 			os.modalMenu([this.inWindow ? undefined : {
-				text: this.$t('openInWindow'),
-				icon: faWindowMaximize,
+				text: this.$ts.openInWindow,
+				icon: 'fas fa-window-maximize',
 				action: () => {
-					os.pageWindow(url, Component, this.$props);
+					os.pageWindow(path);
 					this.$router.back();
 				},
 			}, this.inWindow ? undefined : {
-				text: this.$t('popout'),
-				icon: faExternalLinkAlt,
+				text: this.$ts.popout,
+				icon: 'fas fa-external-link-alt',
 				action: () => {
-					popout(url);
+					popout(path);
 					this.$router.back();
 				},
 			}], ev.currentTarget || ev.target);
@@ -346,7 +353,7 @@ export default Component;
 			font-size: 0.8em;
 			opacity: 0.5;
 
-			[data-icon] {
+			i {
 				margin-right: 4px;
 			}
 		}
@@ -360,7 +367,7 @@ export default Component;
 			color: var(--messagingRoomInfo);
 			opacity: 0.5;
 
-			[data-icon] {
+			i {
 				margin-right: 4px;
 			}
 		}
@@ -386,7 +393,7 @@ export default Component;
 				cursor: wait;
 			}
 
-			> [data-icon] {
+			> i {
 				margin-right: 4px;
 			}
 		}
@@ -400,6 +407,7 @@ export default Component;
 
 	> footer {
 		width: 100%;
+		position: relative;
 
 		> .new-message {
 			position: absolute;
@@ -422,6 +430,25 @@ export default Component;
 					left: 10px;
 					line-height: 32px;
 					font-size: 16px;
+				}
+			}
+		}
+
+		> .typers {
+			position: absolute;
+			bottom: 100%;
+			padding: 0 8px 0 8px;
+			font-size: 0.9em;
+			color: var(--fgTransparentWeak);
+
+			> .users {
+				> .user + .user:before {
+					content: ", ";
+					font-weight: normal;
+				}
+
+				> .user:last-of-type:after {
+					content: " ";
 				}
 			}
 		}

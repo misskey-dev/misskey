@@ -4,7 +4,7 @@ import * as cache from 'lookup-dns-cache';
 import fetch, { HeadersInit } from 'node-fetch';
 import { HttpProxyAgent } from 'http-proxy-agent';
 import { HttpsProxyAgent } from 'https-proxy-agent';
-import config from '../config';
+import config from '@/config';
 import { URL } from 'url';
 
 export async function getJson(url: string, accept = 'application/json, */*', timeout = 10000, headers?: HeadersInit) {
@@ -55,7 +55,8 @@ export async function getHtml(url: string, accept = 'text/html, */*', timeout = 
 const _http = new http.Agent({
 	keepAlive: true,
 	keepAliveMsecs: 30 * 1000,
-});
+	lookup: cache.lookup,
+} as http.AgentOptions);
 
 /**
  * Get https non-proxy agent
@@ -70,14 +71,14 @@ const _https = new https.Agent({
  * Get http proxy or non-proxy agent
  */
 export const httpAgent = config.proxy
-	? new HttpProxyAgent(config.proxy) as unknown as http.Agent
+	? new HttpProxyAgent(config.proxy)
 	: _http;
 
 /**
  * Get https proxy or non-proxy agent
  */
 export const httpsAgent = config.proxy
-	? new HttpsProxyAgent(config.proxy) as unknown as https.Agent
+	? new HttpsProxyAgent(config.proxy)
 	: _https;
 
 /**

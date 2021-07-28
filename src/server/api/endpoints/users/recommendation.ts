@@ -6,10 +6,6 @@ import { generateMutedUserQueryForUsers } from '../../common/generate-muted-user
 import { generateBlockQueryForUsers } from '../../common/generate-block-query';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'おすすめのユーザー一覧を取得します。'
-	},
-
 	tags: ['users'],
 
 	requireCredential: true as const,
@@ -42,6 +38,7 @@ export const meta = {
 export default define(meta, async (ps, me) => {
 	const query = Users.createQueryBuilder('user')
 		.where('user.isLocked = FALSE')
+		.andWhere('user.isExplorable = TRUE')
 		.andWhere('user.host IS NULL')
 		.andWhere('user.updatedAt >= :date', { date: new Date(Date.now() - ms('7days')) })
 		.andWhere('user.id != :meId', { meId: me.id })

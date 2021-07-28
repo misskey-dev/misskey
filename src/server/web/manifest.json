@@ -1,0 +1,28 @@
+{
+	"short_name": "Misskey",
+	"name": "Misskey",
+	"start_url": "/",
+	"display": "standalone",
+	"background_color": "#313a42",
+	"theme_color": "#86b300",
+	"icons": [
+		{
+			"src": "/static-assets/icons/192.png",
+			"sizes": "192x192",
+			"type": "image/png"
+		},
+		{
+			"src": "/static-assets/icons/512.png",
+			"sizes": "512x512",
+			"type": "image/png"
+		}
+	],
+	"share_target": {
+		"action": "/share/",
+		"params": {
+			"title": "title",
+			"text": "text",
+			"url": "url"
+		}
+	}
+}

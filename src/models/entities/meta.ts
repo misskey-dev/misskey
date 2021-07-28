@@ -1,6 +1,7 @@
 import { Entity, Column, PrimaryColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { User } from './user';
 import { id } from '../id';
+import { Clip } from './clip';
 
 @Entity()
 export class Meta {
@@ -77,6 +78,17 @@ export class Meta {
 	public blockedHosts: string[];
 
 	@Column('varchar', {
+		length: 512, array: true, default: '{"/featured", "/channels", "/explore", "/pages", "/about-misskey"}'
+	})
+	public pinnedPages: string[];
+
+	@Column({
+		...id(),
+		nullable: true,
+	})
+	public pinnedClipId: Clip['id'] | null;
+
+	@Column('varchar', {
 		length: 512,
 		nullable: true,
 		default: '/assets/ai.png'
@@ -88,6 +100,18 @@ export class Meta {
 		nullable: true
 	})
 	public bannerUrl: string | null;
+
+	@Column('varchar', {
+		length: 512,
+		nullable: true
+	})
+	public backgroundImageUrl: string | null;
+
+	@Column('varchar', {
+		length: 512,
+		nullable: true
+	})
+	public logoImageUrl: string | null;
 
 	@Column('varchar', {
 		length: 512,
@@ -297,14 +321,14 @@ export class Meta {
 
 	@Column('varchar', {
 		length: 512,
-		default: 'https://github.com/syuilo/misskey',
+		default: 'https://github.com/misskey-dev/misskey',
 		nullable: false
 	})
 	public repositoryUrl: string;
 
 	@Column('varchar', {
 		length: 512,
-		default: 'https://github.com/syuilo/misskey/issues/new',
+		default: 'https://github.com/misskey-dev/misskey/issues/new',
 		nullable: true
 	})
 	public feedbackUrl: string | null;
@@ -375,4 +399,9 @@ export class Meta {
 		default: false,
 	})
 	public objectStorageSetPublicRead: boolean;
+
+	@Column('boolean', {
+		default: true,
+	})
+	public objectStorageS3ForcePathStyle: boolean;
 }

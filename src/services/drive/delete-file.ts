@@ -3,14 +3,14 @@ import { InternalStorage } from './internal-storage';
 import { DriveFiles, Instances, Notes, Users } from '../../models';
 import { driveChart, perUserDriveChart, instanceChart } from '../chart';
 import { createDeleteObjectStorageFileJob } from '../../queue';
-import { fetchMeta } from '../../misc/fetch-meta';
+import { fetchMeta } from '@/misc/fetch-meta';
 import { getS3 } from './s3';
 import { v4 as uuid } from 'uuid';
 import { Note } from '../../models/entities/note';
 import { renderActivity } from '../../remote/activitypub/renderer';
 import renderDelete from '../../remote/activitypub/renderer/delete';
 import renderTombstone from '../../remote/activitypub/renderer/tombstone';
-import config from '../../config';
+import config from '@/config';
 import { deliverToFollowers } from '../../remote/activitypub/deliver-manager';
 import { Brackets } from 'typeorm';
 import { deliverToRelays } from '../relay';
@@ -79,7 +79,7 @@ async function postProcess(file: DriveFile, isExpired = false) {
 			url: file.uri,
 			thumbnailUrl: null,
 			webpublicUrl: null,
-			size: 0,
+			storedInternal: false,
 			// ローカルプロキシ用
 			accessKey: uuid(),
 			thumbnailAccessKey: 'thumbnail-' + uuid(),

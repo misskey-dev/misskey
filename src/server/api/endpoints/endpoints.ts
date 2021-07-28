@@ -8,6 +8,21 @@ export const meta = {
 
 	params: {
 	},
+
+	res: {
+		type: 'array' as const,
+		optional: false as const, nullable: false as const,
+		items: {
+			type: 'string' as const,
+			optional: false as const, nullable: false as const
+		},
+		example: [
+			'admin/abuse-user-reports',
+			'admin/accounts/create',
+			'admin/announcements/create',
+			'...'
+		]
+	}
 };
 
 export default define(meta, async () => {

@@ -1,7 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Channel } from '../entities/channel';
-import { ensure } from '../../prelude/ensure';
-import { SchemaType } from '../../misc/schema';
+import { SchemaType } from '@/misc/schema';
 import { DriveFiles, ChannelFollowings, NoteUnreads } from '..';
 import { User } from '../entities/user';
 
@@ -11,19 +10,19 @@ export type PackedChannel = SchemaType<typeof packedChannelSchema>;
 export class ChannelRepository extends Repository<Channel> {
 	public async pack(
 		src: Channel['id'] | Channel,
-		me?: User['id'] | User | null | undefined,
+		me?: { id: User['id'] } | null | undefined,
 	): Promise<PackedChannel> {
-		const channel = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
-		const meId = me ? typeof me === 'string' ? me : me.id : null;
+		const channel = typeof src === 'object' ? src : await this.findOneOrFail(src);
+		const meId = me ? me.id : null;
 
 		const banner = channel.bannerId ? await DriveFiles.findOne(channel.bannerId) : null;
 
-		const hasUnreadNote = me ? (await NoteUnreads.findOne({ noteChannelId: channel.id, userId: meId })) != null : undefined;
+		const hasUnreadNote = meId ? (await NoteUnreads.findOne({ noteChannelId: channel.id, userId: meId })) != null : undefined;
 
-		const following = await ChannelFollowings.findOne({
+		const following = meId ? await ChannelFollowings.findOne({
 			followerId: meId,
 			followeeId: channel.id,
-		});
+		}) : null;
 
 		return {
 			id: channel.id,
@@ -52,14 +51,12 @@ export const packedChannelSchema = {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
 			format: 'id',
-			description: 'The unique identifier for this Channel.',
 			example: 'xxxxxxxxxx',
 		},
 		createdAt: {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
 			format: 'date-time',
-			description: 'The date that the Channel was created.'
 		},
 		lastNotedAt: {
 			type: 'string' as const,
@@ -69,7 +66,6 @@ export const packedChannelSchema = {
 		name: {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
-			description: 'The name of the Channel.'
 		},
 		description: {
 			type: 'string' as const,

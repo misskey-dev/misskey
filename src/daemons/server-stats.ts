@@ -6,6 +6,9 @@ const ev = new Xev();
 
 const interval = 2000;
 
+const roundCpu = (num: number) => Math.round(num * 1000) / 1000;
+const round = (num: number) => Math.round(num * 10) / 10;
+
 /**
  * Report server stats regularly
  */
@@ -23,18 +26,18 @@ export default function() {
 		const fsStats = await fs();
 
 		const stats = {
-			cpu: cpu,
+			cpu: roundCpu(cpu),
 			mem: {
-				used: memStats.used,
-				active: memStats.active,
+				used: round(memStats.used - memStats.buffers - memStats.cached),
+				active: round(memStats.active),
 			},
 			net: {
-				rx: Math.max(0, netStats.rx_sec),
-				tx: Math.max(0, netStats.tx_sec),
+				rx: round(Math.max(0, netStats.rx_sec)),
+				tx: round(Math.max(0, netStats.tx_sec)),
 			},
 			fs: {
-				r: Math.max(0, fsStats.rIO_sec),
-				w: Math.max(0, fsStats.wIO_sec),
+				r: round(Math.max(0, fsStats.rIO_sec)),
+				w: round(Math.max(0, fsStats.wIO_sec)),
 			}
 		};
 		ev.emit('serverStats', stats);
@@ -72,5 +75,5 @@ async function net() {
 // FS STAT
 async function fs() {
 	const data = await si.disksIO().catch(() => ({ rIO_sec: 0, wIO_sec: 0 }));
-	return data;
+	return data || { rIO_sec: 0, wIO_sec: 0 };
 }

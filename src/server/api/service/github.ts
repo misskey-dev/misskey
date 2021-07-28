@@ -1,16 +1,15 @@
 import * as Koa from 'koa';
 import * as Router from '@koa/router';
-import { getJson } from '../../../misc/fetch';
+import { getJson } from '@/misc/fetch';
 import { OAuth2 } from 'oauth';
-import config from '../../../config';
+import config from '@/config';
 import { publishMainStream } from '../../../services/stream';
-import redis from '../../../db/redis';
+import { redisClient } from '../../../db/redis';
 import { v4 as uuid } from 'uuid';
 import signin from '../common/signin';
-import { fetchMeta } from '../../../misc/fetch-meta';
+import { fetchMeta } from '@/misc/fetch-meta';
 import { Users, UserProfiles } from '../../../models';
 import { ILocalUser } from '../../../models/entities/user';
-import { ensure } from '../../../prelude/ensure';
 
 function getUserToken(ctx: Koa.Context) {
 	return ((ctx.headers['cookie'] || '').match(/igi=(\w+)/) || [null, null])[1];
@@ -41,12 +40,12 @@ router.get('/disconnect/github', async ctx => {
 		return;
 	}
 
-	const user = await Users.findOne({
+	const user = await Users.findOneOrFail({
 		host: null,
 		token: userToken
-	}).then(ensure);
+	});
 
-	const profile = await UserProfiles.findOne(user.id).then(ensure);
+	const profile = await UserProfiles.findOneOrFail(user.id);
 
 	delete profile.integrations.github;
 
@@ -96,7 +95,7 @@ router.get('/connect/github', async ctx => {
 		state: uuid()
 	};
 
-	redis.set(userToken, JSON.stringify(params));
+	redisClient.set(userToken, JSON.stringify(params));
 
 	const oauth2 = await getOath2();
 	ctx.redirect(oauth2!.getAuthorizeUrl(params));
@@ -117,7 +116,7 @@ router.get('/signin/github', async ctx => {
 		httpOnly: true
 	});
 
-	redis.set(sessid, JSON.stringify(params));
+	redisClient.set(sessid, JSON.stringify(params));
 
 	const oauth2 = await getOath2();
 	ctx.redirect(oauth2!.getAuthorizeUrl(params));
@@ -144,7 +143,7 @@ router.get('/gh/cb', async ctx => {
 		}
 
 		const { redirect_uri, state } = await new Promise<any>((res, rej) => {
-			redis.get(sessid, async (_, state) => {
+			redisClient.get(sessid, async (_, state) => {
 				res(JSON.parse(state));
 			});
 		});
@@ -195,7 +194,7 @@ router.get('/gh/cb', async ctx => {
 		}
 
 		const { redirect_uri, state } = await new Promise<any>((res, rej) => {
-			redis.get(userToken, async (_, state) => {
+			redisClient.get(userToken, async (_, state) => {
 				res(JSON.parse(state));
 			});
 		});
@@ -227,12 +226,12 @@ router.get('/gh/cb', async ctx => {
 			return;
 		}
 
-		const user = await Users.findOne({
+		const user = await Users.findOneOrFail({
 			host: null,
 			token: userToken
-		}).then(ensure);
+		});
 
-		const profile = await UserProfiles.findOne(user.id).then(ensure);
+		const profile = await UserProfiles.findOneOrFail(user.id);
 
 		await UserProfiles.update(user.id, {
 			integrations: {

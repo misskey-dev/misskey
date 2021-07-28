@@ -2,17 +2,17 @@
 <div class="xrmjdkdw">
 	<div class="_section">
 		<div class="_content">
-			<MkButton primary @click="clear()"><Fa :icon="faTrashAlt"/> {{ $t('clearCachedFiles') }}</MkButton>
+			<MkButton primary @click="clear()"><i class="fas fa-trash-alt"></i> {{ $ts.clearCachedFiles }}</MkButton>
 		</div>
 	</div>
 
 	<div class="_section lookup">
-		<div class="_title"><Fa :icon="faSearch"/> {{ $t('lookup') }}</div>
+		<div class="_title"><i class="fas fa-search"></i> {{ $ts.lookup }}</div>
 		<div class="_content">
 			<MkInput class="target" v-model:value="q" type="text" @enter="find()">
-				<span>{{ $t('fileIdOrUrl') }}</span>
+				<span>{{ $ts.fileIdOrUrl }}</span>
 			</MkInput>
-			<MkButton @click="find()" primary><Fa :icon="faSearch"/> {{ $t('lookup') }}</MkButton>
+			<MkButton @click="find()" primary><i class="fas fa-search"></i> {{ $ts.lookup }}</MkButton>
 		</div>
 	</div>
 
@@ -20,36 +20,37 @@
 		<div class="_content">
 			<div class="inputs" style="display: flex;">
 				<MkSelect v-model:value="origin" style="margin: 0; flex: 1;">
-					<template #label>{{ $t('instance') }}</template>
-					<option value="combined">{{ $t('all') }}</option>
-					<option value="local">{{ $t('local') }}</option>
-					<option value="remote">{{ $t('remote') }}</option>
+					<template #label>{{ $ts.instance }}</template>
+					<option value="combined">{{ $ts.all }}</option>
+					<option value="local">{{ $ts.local }}</option>
+					<option value="remote">{{ $ts.remote }}</option>
 				</MkSelect>
 				<MkInput v-model:value="searchHost" :debounce="true" type="search" style="margin: 0; flex: 1;" :disabled="pagination.params().origin === 'local'">
-					<span>{{ $t('host') }}</span>
+					<span>{{ $ts.host }}</span>
 				</MkInput>
 			</div>
 			<div class="inputs" style="display: flex; padding-top: 1.2em;">
 				<MkInput v-model:value="type" :debounce="true" type="search" style="margin: 0; flex: 1;">
-					<span>{{ $t('type') }}</span>
+					<span>{{ $ts.type }}</span>
 				</MkInput>
 			</div>
-			<MkPagination :pagination="pagination" #default="{items}" class="urempief" ref="files" :auto-margin="false">
-				<button class="file _panel _button _vMargin" v-for="file in items" :key="file.id" @click="show(file, $event)">
+			<MkPagination :pagination="pagination" #default="{items}" class="urempief" ref="files">
+				<button class="file _panel _button _gap" v-for="file in items" :key="file.id" @click="show(file, $event)">
 					<MkDriveFileThumbnail class="thumbnail" :file="file" fit="contain"/>
 					<div class="body">
 						<div>
 							<small style="opacity: 0.7;">{{ file.name }}</small>
 						</div>
 						<div>
-							<MkAcct :user="file.user"/>
+							<MkAcct v-if="file.user" :user="file.user"/>
+							<div v-else>{{ $ts.system }}</div>
 						</div>
 						<div>
 							<span style="margin-right: 1em;">{{ file.type }}</span>
 							<span>{{ bytes(file.size) }}</span>
 						</div>
 						<div>
-							<span>{{ $t('registeredDate') }}: <MkTime :time="file.createdAt" mode="detail"/></span>
+							<span>{{ $ts.registeredDate }}: <MkTime :time="file.createdAt" mode="detail"/></span>
 						</div>
 					</div>
 				</button>
@@ -61,15 +62,14 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faCloud, faSearch } from '@fortawesome/free-solid-svg-icons';
-import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
-import MkButton from '@/components/ui/button.vue';
-import MkInput from '@/components/ui/input.vue';
-import MkSelect from '@/components/ui/select.vue';
-import MkPagination from '@/components/ui/pagination.vue';
-import MkDriveFileThumbnail from '@/components/drive-file-thumbnail.vue';
-import bytes from '@/filters/bytes';
-import * as os from '@/os';
+import MkButton from '@client/components/ui/button.vue';
+import MkInput from '@client/components/ui/input.vue';
+import MkSelect from '@client/components/ui/select.vue';
+import MkPagination from '@client/components/ui/pagination.vue';
+import MkDriveFileThumbnail from '@client/components/drive-file-thumbnail.vue';
+import bytes from '@client/filters/bytes';
+import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -80,13 +80,13 @@ export default defineComponent({
 		MkDriveFileThumbnail,
 	},
 
+	emits: ['info'],
+
 	data() {
 		return {
-			INFO: {
-				header: [{
-					title: this.$t('files'),
-					icon: faCloud
-				}],
+			[symbols.PAGE_INFO]: {
+				title: this.$ts.files,
+				icon: 'fas fa-cloud'
 			},
 			q: null,
 			origin: 'local',
@@ -101,7 +101,6 @@ export default defineComponent({
 					hostname: (this.hostname && this.hostname !== '') ? this.hostname : null,
 				}),
 			},
-			faTrashAlt, faCloud, faSearch,
 		}
 	},
 
@@ -117,11 +116,15 @@ export default defineComponent({
 		},
 	},
 
+	mounted() {
+		this.$emit('info', this[symbols.PAGE_INFO]);
+	},
+
 	methods: {
 		clear() {
 			os.dialog({
 				type: 'warning',
-				text: this.$t('clearCachedFilesConfirm'),
+				text: this.$ts.clearCachedFilesConfirm,
 				showCancelButton: true
 			}).then(({ canceled }) => {
 				if (canceled) return;
@@ -130,8 +133,8 @@ export default defineComponent({
 			});
 		},
 
-		async show(file, ev) {
-			os.popup(await import('./file-dialog.vue'), {
+		show(file, ev) {
+			os.popup(import('./file-dialog.vue'), {
 				fileId: file.id
 			}, {}, 'closed');
 		},
@@ -143,7 +146,7 @@ export default defineComponent({
 				if (e.code === 'NO_SUCH_FILE') {
 					os.dialog({
 						type: 'error',
-						text: this.$t('notFound')
+						text: this.$ts.notFound
 					});
 				}
 			});
@@ -156,6 +159,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .xrmjdkdw {
+	margin: var(--margin);
+
 	.urempief {
 		margin-top: var(--margin);
 

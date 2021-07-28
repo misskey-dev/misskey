@@ -1,6 +1,6 @@
-import { faUpload, faCloud, faLink } from '@fortawesome/free-solid-svg-icons';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
+import * as os from '@client/os';
+import { i18n } from '@client/i18n';
+import { defaultStore } from '@client/store';
 
 export function selectFile(src: any, label: string | null, multiple = false) {
 	return new Promise((res, rej) => {
@@ -9,7 +9,7 @@ export function selectFile(src: any, label: string | null, multiple = false) {
 			input.type = 'file';
 			input.multiple = multiple;
 			input.onchange = () => {
-				const promises = Array.from(input.files).map(file => os.upload(file));
+				const promises = Array.from(input.files).map(file => os.upload(file, defaultStore.state.uploadFolder));
 
 				Promise.all(promises).then(driveFiles => {
 					res(multiple ? driveFiles : driveFiles[0]);
@@ -39,16 +39,16 @@ export function selectFile(src: any, label: string | null, multiple = false) {
 
 		const chooseFileFromUrl = () => {
 			os.dialog({
-				title: i18n.global.t('uploadFromUrl'),
+				title: i18n.locale.uploadFromUrl,
 				input: {
-					placeholder: i18n.global.t('uploadFromUrlDescription')
+					placeholder: i18n.locale.uploadFromUrlDescription
 				}
 			}).then(({ canceled, result: url }) => {
 				if (canceled) return;
 
 				const marker = Math.random().toString(); // TODO: UUIDとか使う
 
-				const connection = os.stream.useSharedConnection('main');
+				const connection = os.stream.useChannel('main');
 				connection.on('urlUploadFinished', data => {
 					if (data.marker === marker) {
 						res(multiple ? [data.file] : data.file);
@@ -56,14 +56,15 @@ export function selectFile(src: any, label: string | null, multiple = false) {
 					}
 				});
 
-				os.api('drive/files/upload_from_url', {
+				os.api('drive/files/upload-from-url', {
 					url: url,
+					folderId: defaultStore.state.uploadFolder,
 					marker
 				});
 
 				os.dialog({
-					title: i18n.global.t('uploadFromUrlRequested'),
-					text: i18n.global.t('uploadFromUrlMayTakeTime')
+					title: i18n.locale.uploadFromUrlRequested,
+					text: i18n.locale.uploadFromUrlMayTakeTime
 				});
 			});
 		};
@@ -72,16 +73,16 @@ export function selectFile(src: any, label: string | null, multiple = false) {
 			text: label,
 			type: 'label'
 		} : undefined, {
-			text: i18n.global.t('upload'),
-			icon: faUpload,
+			text: i18n.locale.upload,
+			icon: 'fas fa-upload',
 			action: chooseFileFromPc
 		}, {
-			text: i18n.global.t('fromDrive'),
-			icon: faCloud,
+			text: i18n.locale.fromDrive,
+			icon: 'fas fa-cloud',
 			action: chooseFileFromDrive
 		}, {
-			text: i18n.global.t('fromUrl'),
-			icon: faLink,
+			text: i18n.locale.fromUrl,
+			icon: 'fas fa-link',
 			action: chooseFileFromUrl
 		}], src);
 	});

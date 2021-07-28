@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { Notes, Channels } from '../../../../models';
@@ -14,45 +14,27 @@ export const meta = {
 	params: {
 		channelId: {
 			validator: $.type(ID),
-			desc: {
-				'ja-JP': 'チャンネルのID'
-			}
 		},
 
 		limit: {
 			validator: $.optional.num.range(1, 100),
 			default: 10,
-			desc: {
-				'ja-JP': '最大数'
-			}
 		},
 
 		sinceId: {
 			validator: $.optional.type(ID),
-			desc: {
-				'ja-JP': '指定すると、その投稿を基点としてより新しい投稿を取得します'
-			}
 		},
 
 		untilId: {
 			validator: $.optional.type(ID),
-			desc: {
-				'ja-JP': '指定すると、その投稿を基点としてより古い投稿を取得します'
-			}
 		},
 
 		sinceDate: {
 			validator: $.optional.num,
-			desc: {
-				'ja-JP': '指定した時間を基点としてより新しい投稿を取得します。数値は、1970年1月1日 00:00:00 UTC から指定した日時までの経過時間をミリ秒単位で表します。'
-			}
 		},
 
 		untilDate: {
 			validator: $.optional.num,
-			desc: {
-				'ja-JP': '指定した時間を基点としてより古い投稿を取得します。数値は、1970年1月1日 00:00:00 UTC から指定した日時までの経過時間をミリ秒単位で表します。'
-			}
 		},
 	},
 
@@ -85,15 +67,19 @@ export default define(meta, async (ps, user) => {
 	}
 
 	//#region Construct query
-	const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
+	const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
 		.andWhere('note.channelId = :channelId', { channelId: channel.id })
-		.leftJoinAndSelect('note.user', 'user')
+		.innerJoinAndSelect('note.user', 'user')
+		.leftJoinAndSelect('note.reply', 'reply')
+		.leftJoinAndSelect('note.renote', 'renote')
+		.leftJoinAndSelect('reply.user', 'replyUser')
+		.leftJoinAndSelect('renote.user', 'renoteUser')
 		.leftJoinAndSelect('note.channel', 'channel');
 	//#endregion
 
 	const timeline = await query.take(ps.limit!).getMany();
 
-	activeUsersChart.update(user);
+	if (user) activeUsersChart.update(user);
 
 	return await Notes.packMany(timeline, user);
 });

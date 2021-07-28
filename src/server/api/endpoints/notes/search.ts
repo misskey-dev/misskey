@@ -3,18 +3,13 @@ import es from '../../../../db/elasticsearch';
 import define from '../../define';
 import { Notes } from '../../../../models';
 import { In } from 'typeorm';
-import { ID } from '../../../../misc/cafy-id';
-import config from '../../../../config';
+import { ID } from '@/misc/cafy-id';
+import config from '@/config';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query';
 import { generateMutedUserQuery } from '../../common/generate-muted-user-query';
 
 export const meta = {
-	desc: {
-		'ja-JP': '投稿を検索します。',
-		'en-US': 'Search notes.'
-	},
-
 	tags: ['notes'],
 
 	requireCredential: false as const,
@@ -46,6 +41,11 @@ export const meta = {
 			validator: $.optional.nullable.type(ID),
 			default: null
 		},
+
+		channelId: {
+			validator: $.optional.nullable.type(ID),
+			default: null
+		},
 	},
 
 	res: {
@@ -64,9 +64,21 @@ export const meta = {
 
 export default define(meta, async (ps, me) => {
 	if (es == null) {
-		const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
+		const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId);
+
+		if (ps.userId) {
+			query.andWhere('note.userId = :userId', { userId: ps.userId });
+		} else if (ps.channelId) {
+			query.andWhere('note.channelId = :channelId', { channelId: ps.channelId });
+		}
+
+		query
 			.andWhere('note.text ILIKE :q', { q: `%${ps.query}%` })
-			.leftJoinAndSelect('note.user', 'user');
+			.innerJoinAndSelect('note.user', 'user')
+			.leftJoinAndSelect('note.reply', 'reply')
+			.leftJoinAndSelect('note.renote', 'renote')
+			.leftJoinAndSelect('reply.user', 'replyUser')
+			.leftJoinAndSelect('renote.user', 'renoteUser');
 
 		generateVisibilityQuery(query, me);
 		if (me) generateMutedUserQuery(query, me);

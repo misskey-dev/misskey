@@ -1,15 +1,11 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import { addPinned } from '../../../../services/i/pin';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { Users } from '../../../../models';
 
 export const meta = {
-	desc: {
-		'ja-JP': '指定した投稿をピン留めします。'
-	},
-
 	tags: ['account', 'notes'],
 
 	requireCredential: true as const,
@@ -19,10 +15,6 @@ export const meta = {
 	params: {
 		noteId: {
 			validator: $.type(ID),
-			desc: {
-				'ja-JP': '対象の投稿のID',
-				'en-US': 'Target note ID'
-			}
 		}
 	},
 
@@ -44,6 +36,12 @@ export const meta = {
 			code: 'ALREADY_PINNED',
 			id: '8b18c2b7-68fe-4edb-9892-c0cbaeb6c913'
 		},
+	},
+
+	res: {
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
+		ref: 'User'
 	}
 };
 
@@ -55,7 +53,7 @@ export default define(meta, async (ps, user) => {
 		throw e;
 	});
 
-	return await Users.pack(user, user, {
+	return await Users.pack(user.id, user, {
 		detail: true
 	});
 });

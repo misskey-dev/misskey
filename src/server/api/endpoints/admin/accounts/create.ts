@@ -13,10 +13,23 @@ export const meta = {
 		password: {
 			validator: Users.validatePassword,
 		}
+	},
+
+	res: {
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
+		ref: 'User',
+		properties: {
+			token: {
+				type: 'string' as const,
+				optional: false as const, nullable: false as const,
+			}
+		}
 	}
 };
 
-export default define(meta, async (ps, me) => {
+export default define(meta, async (ps, _me) => {
+	const me = _me ? await Users.findOneOrFail(_me.id) : null;
 	const noUsers = (await Users.count({
 		host: null,
 	})) === 0;

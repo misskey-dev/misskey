@@ -4,6 +4,8 @@ import { User } from './user';
 import { Page } from './page';
 import { notificationTypes } from '../../types';
 
+// TODO: このテーブルで管理している情報すべてレジストリで管理するようにしても良いかも
+//       ただ、「emailVerified が true なユーザーを find する」のようなクエリは書けなくなるからウーン
 @Entity()
 export class UserProfile {
 	@PrimaryColumn(id())
@@ -42,6 +44,11 @@ export class UserProfile {
 	}[];
 
 	@Column('varchar', {
+		length: 32, nullable: true,
+	})
+	public lang: string | null;
+
+	@Column('varchar', {
 		length: 512, nullable: true,
 		comment: 'Remote URL of the user.'
 	})
@@ -62,6 +69,11 @@ export class UserProfile {
 		default: false,
 	})
 	public emailVerified: boolean;
+
+	@Column('jsonb', {
+		default: ['follow', 'receiveFollowRequest', 'groupInvited']
+	})
+	public emailNotificationTypes: string[];
 
 	@Column('varchar', {
 		length: 128, nullable: true,
@@ -94,6 +106,7 @@ export class UserProfile {
 	})
 	public password: string | null;
 
+	// TODO: そのうち消す
 	@Column('jsonb', {
 		default: {},
 		comment: 'The client-specific data of the User.'
@@ -109,12 +122,13 @@ export class UserProfile {
 	@Column('boolean', {
 		default: false,
 	})
-	public autoWatch: boolean;
+	public autoAcceptFollowed: boolean;
 
 	@Column('boolean', {
 		default: false,
+		comment: 'Whether reject index by crawler.'
 	})
-	public autoAcceptFollowed: boolean;
+	public noCrawle: boolean;
 
 	@Column('boolean', {
 		default: false,
@@ -130,6 +144,11 @@ export class UserProfile {
 		default: true,
 	})
 	public injectFeaturedNote: boolean;
+
+	@Column('boolean', {
+		default: true,
+	})
+	public receiveAnnouncementEmail: boolean;
 
 	@Column({
 		...id(),

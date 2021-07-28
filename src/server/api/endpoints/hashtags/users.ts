@@ -1,6 +1,7 @@
 import $ from 'cafy';
 import define from '../../define';
 import { Users } from '../../../../models';
+import { normalizeForSearch } from '@/misc/normalize-for-search';
 
 export const meta = {
 	requireCredential: false as const,
@@ -59,7 +60,7 @@ export const meta = {
 
 export default define(meta, async (ps, me) => {
 	const query = Users.createQueryBuilder('user')
-		.where(':tag = ANY(user.tags)', { tag: ps.tag.toLowerCase() });
+		.where(':tag = ANY(user.tags)', { tag: normalizeForSearch(ps.tag) });
 
 	const recent = new Date(Date.now() - (1000 * 60 * 60 * 24 * 5));
 

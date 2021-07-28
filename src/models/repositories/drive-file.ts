@@ -2,16 +2,21 @@ import { EntityRepository, Repository } from 'typeorm';
 import { DriveFile } from '../entities/drive-file';
 import { Users, DriveFolders } from '..';
 import { User } from '../entities/user';
-import { toPuny } from '../../misc/convert-host';
-import { ensure } from '../../prelude/ensure';
+import { toPuny } from '@/misc/convert-host';
 import { awaitAll } from '../../prelude/await-all';
-import { SchemaType } from '../../misc/schema';
-import config from '../../config';
+import { SchemaType } from '@/misc/schema';
+import config from '@/config';
 import { query, appendQuery } from '../../prelude/url';
 import { Meta } from '../entities/meta';
-import { fetchMeta } from '../../misc/fetch-meta';
+import { fetchMeta } from '@/misc/fetch-meta';
 
 export type PackedDriveFile = SchemaType<typeof packedDriveFileSchema>;
+
+type PackOptions = {
+	detail?: boolean,
+	self?: boolean,
+	withUser?: boolean,
+};
 
 @EntityRepository(DriveFile)
 export class DriveFileRepository extends Repository<DriveFile> {
@@ -48,62 +53,65 @@ export class DriveFileRepository extends Repository<DriveFile> {
 		return thumbnail ? (file.thumbnailUrl || (isImage ? (file.webpublicUrl || file.url) : null)) : (file.webpublicUrl || file.url);
 	}
 
-	public async clacDriveUsageOf(user: User['id'] | User): Promise<number> {
+	public async calcDriveUsageOf(user: User['id'] | { id: User['id'] }): Promise<number> {
 		const id = typeof user === 'object' ? user.id : user;
 
 		const { sum } = await this
 			.createQueryBuilder('file')
 			.where('file.userId = :id', { id: id })
+			.andWhere('file.isLink = FALSE')
 			.select('SUM(file.size)', 'sum')
 			.getRawOne();
 
 		return parseInt(sum, 10) || 0;
 	}
 
-	public async clacDriveUsageOfHost(host: string): Promise<number> {
+	public async calcDriveUsageOfHost(host: string): Promise<number> {
 		const { sum } = await this
 			.createQueryBuilder('file')
 			.where('file.userHost = :host', { host: toPuny(host) })
+			.andWhere('file.isLink = FALSE')
 			.select('SUM(file.size)', 'sum')
 			.getRawOne();
 
 		return parseInt(sum, 10) || 0;
 	}
 
-	public async clacDriveUsageOfLocal(): Promise<number> {
+	public async calcDriveUsageOfLocal(): Promise<number> {
 		const { sum } = await this
 			.createQueryBuilder('file')
 			.where('file.userHost IS NULL')
+			.andWhere('file.isLink = FALSE')
 			.select('SUM(file.size)', 'sum')
 			.getRawOne();
 
 		return parseInt(sum, 10) || 0;
 	}
 
-	public async clacDriveUsageOfRemote(): Promise<number> {
+	public async calcDriveUsageOfRemote(): Promise<number> {
 		const { sum } = await this
 			.createQueryBuilder('file')
 			.where('file.userHost IS NOT NULL')
+			.andWhere('file.isLink = FALSE')
 			.select('SUM(file.size)', 'sum')
 			.getRawOne();
 
 		return parseInt(sum, 10) || 0;
 	}
 
+	public async pack(src: DriveFile['id'], options?: PackOptions): Promise<PackedDriveFile | null>;
+	public async pack(src: DriveFile, options?: PackOptions): Promise<PackedDriveFile>;
 	public async pack(
 		src: DriveFile['id'] | DriveFile,
-		options?: {
-			detail?: boolean,
-			self?: boolean,
-			withUser?: boolean,
-		}
-	): Promise<PackedDriveFile> {
+		options?: PackOptions
+	): Promise<PackedDriveFile | null> {
 		const opts = Object.assign({
 			detail: false,
 			self: false
 		}, options);
 
-		const file = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
+		const file = typeof src === 'object' ? src : await this.findOne(src);
+		if (file == null) return null;
 
 		const meta = await fetchMeta();
 
@@ -124,20 +132,17 @@ export class DriveFileRepository extends Repository<DriveFile> {
 			folder: opts.detail && file.folderId ? DriveFolders.pack(file.folderId, {
 				detail: true
 			}) : null,
-			userId: opts.withUser ? file.userId! : null,
-			user: opts.withUser ? Users.pack(file.userId!) : null
+			userId: opts.withUser ? file.userId : null,
+			user: (opts.withUser && file.userId) ? Users.pack(file.userId) : null
 		});
 	}
 
-	public packMany(
-		files: any[],
-		options?: {
-			detail?: boolean
-			self?: boolean,
-			withUser?: boolean,
-		}
+	public async packMany(
+		files: (DriveFile['id'] | DriveFile)[],
+		options?: PackOptions
 	) {
-		return Promise.all(files.map(f => this.pack(f, options)));
+		const items = await Promise.all(files.map(f => this.pack(f, options)));
+		return items.filter(x => x != null);
 	}
 }
 
@@ -149,57 +154,98 @@ export const packedDriveFileSchema = {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
 			format: 'id',
-			description: 'The unique identifier for this Drive file.',
 			example: 'xxxxxxxxxx',
 		},
 		createdAt: {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
 			format: 'date-time',
-			description: 'The date that the Drive file was created on Misskey.'
 		},
 		name: {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
-			description: 'The file name with extension.',
 			example: 'lenna.jpg'
 		},
 		type: {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
-			description: 'The MIME type of this Drive file.',
 			example: 'image/jpeg'
 		},
 		md5: {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
 			format: 'md5',
-			description: 'The MD5 hash of this Drive file.',
 			example: '15eca7fba0480996e2245f5185bf39f2'
 		},
 		size: {
 			type: 'number' as const,
 			optional: false as const, nullable: false as const,
-			description: 'The size of this Drive file. (bytes)',
 			example: 51469
+		},
+		isSensitive: {
+			type: 'boolean' as const,
+			optional: false as const, nullable: false as const,
+		},
+		blurhash: {
+			type: 'string' as const,
+			optional: false as const, nullable: true as const
+		},
+		properties: {
+			type: 'object' as const,
+			optional: false as const, nullable: false as const,
+			properties: {
+				width: {
+					type: 'number' as const,
+					optional: true as const, nullable: false as const,
+					example: 1280
+				},
+				height: {
+					type: 'number' as const,
+					optional: true as const, nullable: false as const,
+					example: 720
+				},
+				avgColor: {
+					type: 'string' as const,
+					optional: true as const, nullable: false as const,
+					example: 'rgb(40,65,87)'
+				}
+			}
 		},
 		url: {
 			type: 'string' as const,
 			optional: false as const, nullable: true as const,
 			format: 'url',
-			description: 'The URL of this Drive file.',
+		},
+		thumbnailUrl: {
+			type: 'string' as const,
+			optional: false as const, nullable: true as const,
+			format: 'url',
+		},
+		comment: {
+			type: 'string' as const,
+			optional: false as const, nullable: true as const
 		},
 		folderId: {
 			type: 'string' as const,
 			optional: false as const, nullable: true as const,
 			format: 'id',
-			description: 'The parent folder ID of this Drive file.',
 			example: 'xxxxxxxxxx',
 		},
-		isSensitive: {
-			type: 'boolean' as const,
-			optional: false as const, nullable: false as const,
-			description: 'Whether this Drive file is sensitive.',
+		folder: {
+			type: 'object' as const,
+			optional: true as const, nullable: true as const,
+			ref: 'DriveFolder'
 		},
+		userId: {
+			type: 'string' as const,
+			optional: false as const, nullable: true as const,
+			format: 'id',
+			example: 'xxxxxxxxxx',
+		},
+		user: {
+			type: 'object' as const,
+			optional: true as const, nullable: true as const,
+			ref: 'User'
+		}
 	},
 };

@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { Antennas, Notes, AntennaNotes } from '../../../../models';
 import { makePaginationQuery } from '../../common/make-pagination-query';
@@ -39,6 +39,16 @@ export const meta = {
 			code: 'NO_SUCH_ANTENNA',
 			id: '850926e0-fd3b-49b6-b69a-b28a5dbd82fe'
 		}
+	},
+
+	res: {
+		type: 'array' as const,
+		optional: false as const, nullable: false as const,
+		items: {
+			type: 'object' as const,
+			optional: false as const, nullable: false as const,
+			ref: 'Note'
+		}
 	}
 };
 
@@ -58,7 +68,11 @@ export default define(meta, async (ps, user) => {
 
 	const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 		.andWhere(`note.id IN (${ antennaQuery.getQuery() })`)
-		.leftJoinAndSelect('note.user', 'user')
+		.innerJoinAndSelect('note.user', 'user')
+		.leftJoinAndSelect('note.reply', 'reply')
+		.leftJoinAndSelect('note.renote', 'renote')
+		.leftJoinAndSelect('reply.user', 'replyUser')
+		.leftJoinAndSelect('renote.user', 'renoteUser')
 		.setParameters(antennaQuery.getParameters());
 
 	generateVisibilityQuery(query, user);

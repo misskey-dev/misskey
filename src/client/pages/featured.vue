@@ -6,9 +6,9 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faFireAlt } from '@fortawesome/free-solid-svg-icons';
-import Progress from '@/scripts/loading';
-import XNotes from '@/components/notes.vue';
+import Progress from '@client/scripts/loading';
+import XNotes from '@client/components/notes.vue';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -17,18 +17,15 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
-				header: [{
-					title: this.$t('featured'),
-					icon: faFireAlt
-				}],
+			[symbols.PAGE_INFO]: {
+				title: this.$ts.featured,
+				icon: 'fas fa-fire-alt'
 			},
 			pagination: {
 				endpoint: 'notes/featured',
 				limit: 10,
 				offsetMode: true
 			},
-			faFireAlt
 		};
 	},
 

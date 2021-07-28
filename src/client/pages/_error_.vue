@@ -1,10 +1,10 @@
 <template>
-<transition :name="$store.state.device.animation ? 'zoom' : ''" appear>
+<transition :name="$store.state.animation ? 'zoom' : ''" appear>
 	<div class="_section">
 		<div class="mjndxjch _content">
 			<img src="https://xn--931a.moe/assets/error.jpg" class="_ghost"/>
-			<p><Fa :icon="faExclamationTriangle"/> {{ $t('pageLoadError') }}</p>
-			<p>{{ $t('pageLoadErrorDescription') }}</p>
+			<p><i class="fas fa-exclamation-triangle"></i> {{ $ts.pageLoadError }}</p>
+			<p>{{ $ts.pageLoadErrorDescription }}</p>
 		</div>
 	</div>
 </transition>
@@ -12,8 +12,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
-import MkButton from '@/components/ui/button.vue';
+import MkButton from '@client/components/ui/button.vue';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -21,13 +21,10 @@ export default defineComponent({
 	},
 	data() {
 		return {
-			INFO: {
-				header: [{
-					title: this.$t('error'),
-					icon: faExclamationTriangle
-				}]
+			[symbols.PAGE_INFO]: {
+				title: this.$ts.error,
+				icon: 'fas fa-exclamation-triangle'
 			},
-			faExclamationTriangle
 		};
 	},
 });

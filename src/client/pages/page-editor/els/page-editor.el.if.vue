@@ -1,20 +1,20 @@
 <template>
 <XContainer @remove="() => $emit('remove')" :draggable="true">
-	<template #header><Fa :icon="faQuestion"/> {{ $t('_pages.blocks.if') }}</template>
+	<template #header><i class="fas fa-question"></i> {{ $ts._pages.blocks.if }}</template>
 	<template #func>
 		<button @click="add()" class="_button">
-			<Fa :icon="faPlus"/>
+			<i class="fas fa-plus"></i>
 		</button>
 	</template>
 
 	<section class="romcojzs">
 		<MkSelect v-model:value="value.var">
-			<template #label>{{ $t('_pages.blocks._if.variable') }}</template>
+			<template #label>{{ $ts._pages.blocks._if.variable }}</template>
 			<option v-for="v in hpml.getVarsByType('boolean')" :value="v.name">{{ v.name }}</option>
-			<optgroup :label="$t('_pages.script.pageVariables')">
+			<optgroup :label="$ts._pages.script.pageVariables">
 				<option v-for="v in hpml.getPageVarsByType('boolean')" :value="v">{{ v }}</option>
 			</optgroup>
-			<optgroup :label="$t('_pages.script.enviromentVariables')">
+			<optgroup :label="$ts._pages.script.enviromentVariables">
 				<option v-for="v in hpml.getEnvVarsByType('boolean')" :value="v">{{ v }}</option>
 			</optgroup>
 		</MkSelect>
@@ -27,10 +27,9 @@
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
 import { v4 as uuid } from 'uuid';
-import { faPlus, faQuestion } from '@fortawesome/free-solid-svg-icons';
 import XContainer from '../page-editor.container.vue';
-import MkSelect from '@/components/ui/select.vue';
-import * as os from '@/os';
+import MkSelect from '@client/components/ui/select.vue';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {
@@ -51,7 +50,6 @@ export default defineComponent({
 
 	data() {
 		return {
-			faPlus, faQuestion
 		};
 	},
 
@@ -64,7 +62,7 @@ export default defineComponent({
 		async add() {
 			const { canceled, result: type } = await os.dialog({
 				type: null,
-				title: this.$t('_pages.chooseBlock'),
+				title: this.$ts._pages.chooseBlock,
 				select: {
 					groupedItems: this.getPageBlockList()
 				},

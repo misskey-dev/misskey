@@ -1,10 +1,9 @@
-import watch from '../../../services/note/watch';
 import { publishNoteStream } from '../../stream';
 import { User } from '../../../models/entities/user';
 import { Note } from '../../../models/entities/note';
-import { PollVotes, Users, NoteWatchings, Polls, UserProfiles } from '../../../models';
+import { PollVotes, NoteWatchings, Polls } from '../../../models';
 import { Not } from 'typeorm';
-import { genId } from '../../../misc/gen-id';
+import { genId } from '@/misc/gen-id';
 import { createNotification } from '../../create-notification';
 
 export default async function(user: User, note: Note, choice: number) {
@@ -30,7 +29,7 @@ export default async function(user: User, note: Note, choice: number) {
 	}
 
 	// Create vote
-	await PollVotes.save({
+	await PollVotes.insert({
 		id: genId(),
 		createdAt: new Date(),
 		noteId: note.id,
@@ -68,11 +67,4 @@ export default async function(user: User, note: Note, choice: number) {
 			});
 		}
 	});
-
-	const profile = await UserProfiles.findOne(user.id);
-
-	// ローカルユーザーが投票した場合この投稿をWatchする
-	if (Users.isLocalUser(user) && profile!.autoWatch) {
-		watch(user.id, note);
-	}
 }

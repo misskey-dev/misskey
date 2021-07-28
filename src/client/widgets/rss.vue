@@ -1,7 +1,7 @@
 <template>
 <MkContainer :show-header="props.showHeader">
-	<template #header><Fa :icon="faRssSquare"/>RSS</template>
-	<template #func><button class="_button" @click="setting"><Fa :icon="faCog"/></button></template>
+	<template #header><i class="fas fa-rss-square"></i>RSS</template>
+	<template #func><button class="_button" @click="setting"><i class="fas fa-cog"></i></button></template>
 
 	<div class="ekmkgxbj">
 		<MkLoading v-if="fetching"/>
@@ -14,10 +14,9 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faRssSquare, faCog } from '@fortawesome/free-solid-svg-icons';
-import MkContainer from '@/components/ui/container.vue';
+import MkContainer from '@client/components/ui/container.vue';
 import define from './define';
-import * as os from '@/os';
+import * as os from '@client/os';
 
 const widget = define({
 	name: 'rss',
@@ -43,7 +42,6 @@ export default defineComponent({
 			items: [],
 			fetching: true,
 			clock: null,
-			faRssSquare, faCog
 		};
 	},
 	mounted() {
@@ -77,7 +75,7 @@ export default defineComponent({
 		> a {
 			display: block;
 			padding: 8px 16px;
-			color: var(--text);
+			color: var(--fg);
 			white-space: nowrap;
 			text-overflow: ellipsis;
 			overflow: hidden;

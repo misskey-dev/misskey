@@ -1,26 +1,22 @@
 <template>
 <XWindow ref="window" :initial-width="400" :initial-height="500" :can-resize="true" @closed="$emit('closed')">
 	<template #header>
-		<Fa :icon="faExclamationCircle" style="margin-right: 0.5em;"/>
-		<i18n-t keypath="reportAbuseOf" tag="span">
+		<i class="fas fa-exclamation-circle" style="margin-right: 0.5em;"></i>
+		<I18n :src="$ts.reportAbuseOf" tag="span">
 			<template #name>
 				<b><MkAcct :user="user"/></b>
 			</template>
-		</i18n-t>
+		</I18n>
 	</template>
-	<div class="dpvffvvy">
+	<div class="dpvffvvy _monolithic_">
 		<div class="_section">
-			<div class="_content">
-				<MkTextarea v-model:value="comment">
-					<span>{{ $t('details') }}</span>
-					<template #desc>{{ $t('fillAbuseReportDescription') }}</template>
-				</MkTextarea>
-			</div>
+			<MkTextarea v-model:value="comment">
+				<span>{{ $ts.details }}</span>
+				<template #desc>{{ $ts.fillAbuseReportDescription }}</template>
+			</MkTextarea>
 		</div>
 		<div class="_section">
-			<div class="_content">
-				<MkButton @click="send" primary full :disabled="comment.length === 0">{{ $t('send') }}</MkButton>
-			</div>
+			<MkButton @click="send" primary full :disabled="comment.length === 0">{{ $ts.send }}</MkButton>
 		</div>
 	</div>
 </XWindow>
@@ -28,11 +24,10 @@
 
 <script lang="ts">
 import { defineComponent, markRaw } from 'vue';
-import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
-import XWindow from '@/components/ui/window.vue';
-import MkTextarea from '@/components/ui/textarea.vue';
-import MkButton from '@/components/ui/button.vue';
-import * as os from '@/os';
+import XWindow from '@client/components/ui/window.vue';
+import MkTextarea from '@client/components/ui/textarea.vue';
+import MkButton from '@client/components/ui/button.vue';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {
@@ -57,7 +52,6 @@ export default defineComponent({
 	data() {
 		return {
 			comment: this.initialComment || '',
-			faExclamationCircle,
 		};
 	},
 
@@ -69,7 +63,7 @@ export default defineComponent({
 			}, undefined, res => {
 				os.dialog({
 					type: 'success',
-					text: this.$t('abuseReported')
+					text: this.$ts.abuseReported
 				});
 				this.$refs.window.close();
 			});
@@ -80,6 +74,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .dpvffvvy {
-	--section-padding: 16px;
+	--root-margin: 16px;
 }
 </style>

@@ -1,20 +1,19 @@
 <template>
 <MkContainer :show-header="props.showHeader">
-	<template #header><Fa :icon="faStickyNote"/>{{ $t('_widgets.memo') }}</template>
+	<template #header><i class="fas fa-sticky-note"></i>{{ $ts._widgets.memo }}</template>
 
 	<div class="otgbylcu">
-		<textarea v-model="text" :placeholder="$t('placeholder')" @input="onChange"></textarea>
-		<button @click="saveMemo" :disabled="!changed" class="_buttonPrimary">{{ $t('save') }}</button>
+		<textarea v-model="text" :placeholder="$ts.placeholder" @input="onChange"></textarea>
+		<button @click="saveMemo" :disabled="!changed" class="_buttonPrimary">{{ $ts.save }}</button>
 	</div>
 </MkContainer>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faStickyNote } from '@fortawesome/free-solid-svg-icons';
-import MkContainer from '@/components/ui/container.vue';
+import MkContainer from '@client/components/ui/container.vue';
 import define from './define';
-import * as os from '@/os';
+import * as os from '@client/os';
 
 const widget = define({
 	name: 'memo',
@@ -37,14 +36,13 @@ export default defineComponent({
 			text: null,
 			changed: false,
 			timeoutId: null,
-			faStickyNote
 		};
 	},
 
 	created() {
-		this.text = this.$store.state.settings.memo;
+		this.text = this.$store.state.memo;
 
-		this.$watch(() => this.$store.state.settings.memo, text => {
+		this.$watch(() => this.$store.reactiveState.memo, text => {
 			this.text = text;
 		});
 	},
@@ -57,10 +55,7 @@ export default defineComponent({
 		},
 
 		saveMemo() {
-			this.$store.dispatch('settings/set', {
-				key: 'memo',
-				value: this.text
-			});
+			this.$store.set('memo', this.text);
 			this.changed = false;
 		}
 	}
@@ -77,12 +72,18 @@ export default defineComponent({
 		max-width: 100%;
 		min-width: 100%;
 		padding: 16px;
-		color: var(--inputText);
-		background: var(--face);
+		color: var(--fg);
+		background: transparent;
 		border: none;
-		border-bottom: solid var(--lineWidth) var(--faceDivider);
+		border-bottom: solid 0.5px var(--divider);
 		border-radius: 0;
 		box-sizing: border-box;
+		font: inherit;
+		font-size: 0.9em;
+
+		&:focus {
+			outline: none;
+		}
 	}
 
 	> button {

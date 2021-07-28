@@ -1,17 +1,15 @@
 <template>
-<div>
-	<div class="_section">
-		<XNotifications class="_content" @before="before" @after="after" page/>
-	</div>
+<div class="_root">
+	<XNotifications class="_content" @before="before" @after="after" page/>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faBell } from '@fortawesome/free-solid-svg-icons';
-import Progress from '@/scripts/loading';
-import XNotifications from '@/components/notifications.vue';
-import * as os from '@/os';
+import Progress from '@client/scripts/loading';
+import XNotifications from '@client/components/notifications.vue';
+import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -20,10 +18,15 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
-				header: [{
-					title: this.$t('notifications'),
-					icon: faBell
+			[symbols.PAGE_INFO]: {
+				title: this.$ts.notifications,
+				icon: 'fas fa-bell',
+				actions: [{
+					text: this.$ts.markAllAsRead,
+					icon: 'fas fa-check',
+					handler: () => {
+						os.apiWithDialog('notifications/mark-all-as-read');
+					}
 				}]
 			},
 		};

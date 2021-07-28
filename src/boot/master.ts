@@ -6,13 +6,13 @@ import * as isRoot from 'is-root';
 import { getConnection } from 'typeorm';
 
 import Logger from '../services/logger';
-import loadConfig from '../config/load';
-import { Config } from '../config/types';
+import loadConfig from '@/config/load';
+import { Config } from '@/config/types';
 import { lessThan } from '../prelude/array';
 import { program } from '../argv';
-import { showMachineInfo } from '../misc/show-machine-info';
+import { showMachineInfo } from '@/misc/show-machine-info';
 import { initDb } from '../db/postgre';
-import * as meta from '../meta.json';
+const meta = require('../meta.json');
 
 const logger = new Logger('core', 'cyan');
 const bootLogger = logger.createSubLogger('boot', 'magenta', false);
@@ -45,26 +45,15 @@ function greet() {
 export async function masterMain() {
 	let config!: Config;
 
+	// initialize app
 	try {
 		greet();
-
-		// initialize app
-		config = await init();
-
-		if (config.port == null || Number.isNaN(config.port)) {
-			bootLogger.error('The port is not configured. Please configure port.', null, true);
-			process.exit(1);
-		}
-
-		if (process.platform === 'linux' && isWellKnownPort(config.port) && !isRoot()) {
-			bootLogger.error('You need root privileges to listen on well-known port on Linux', null, true);
-			process.exit(1);
-		}
-
-		if (!await isPortAvailable(config.port)) {
-			bootLogger.error(`Port ${config.port} is already in use`, null, true);
-			process.exit(1);
-		}
+		showEnvironment();
+		await showMachineInfo(bootLogger);
+		showNodejsVersion();
+		config = loadConfigBoot();
+		await connectDb();
+		await validatePort(config);
 	} catch (e) {
 		bootLogger.error('Fatal error occurred during initialization', null, true);
 		process.exit(1);
@@ -89,14 +78,6 @@ const runningNodejsVersion = process.version.slice(1).split('.').map(x => parseI
 const requiredNodejsVersion = [11, 7, 0];
 const satisfyNodejsVersion = !lessThan(runningNodejsVersion, requiredNodejsVersion);
 
-function isWellKnownPort(port: number): boolean {
-	return port < 1024;
-}
-
-async function isPortAvailable(port: number): Promise<boolean> {
-	return await portscanner.checkPortStatus(port, '127.0.0.1') === 'closed';
-}
-
 function showEnvironment(): void {
 	const env = process.env.NODE_ENV;
 	const logger = bootLogger.createSubLogger('env');
@@ -110,14 +91,7 @@ function showEnvironment(): void {
 	logger.info(`You ${isRoot() ? '' : 'do not '}have root privileges`);
 }
 
-/**
- * Init app
- */
-async function init(): Promise<Config> {
-	showEnvironment();
-
-	await showMachineInfo(bootLogger);
-
+function showNodejsVersion(): void {
 	const nodejsLogger = bootLogger.createSubLogger('nodejs');
 
 	nodejsLogger.info(`Version ${runningNodejsVersion.join('.')}`);
@@ -126,7 +100,9 @@ async function init(): Promise<Config> {
 		nodejsLogger.error(`Node.js version is less than ${requiredNodejsVersion.join('.')}. Please upgrade it.`, null, true);
 		process.exit(1);
 	}
+}
 
+function loadConfigBoot(): Config {
 	const configLogger = bootLogger.createSubLogger('config');
 	let config;
 
@@ -146,6 +122,10 @@ async function init(): Promise<Config> {
 
 	configLogger.succ('Loaded');
 
+	return config;
+}
+
+async function connectDb(): Promise<void> {
 	const dbLogger = bootLogger.createSubLogger('db');
 
 	// Try to connect to DB
@@ -159,8 +139,29 @@ async function init(): Promise<Config> {
 		dbLogger.error(e);
 		process.exit(1);
 	}
+}
 
-	return config;
+async function validatePort(config: Config): Promise<void> {
+	const isWellKnownPort = (port: number) => port < 1024;
+
+	async function isPortAvailable(port: number): Promise<boolean> {
+		return await portscanner.checkPortStatus(port, '127.0.0.1') === 'closed';
+	}
+
+	if (config.port == null || Number.isNaN(config.port)) {
+		bootLogger.error('The port is not configured. Please configure port.', null, true);
+		process.exit(1);
+	}
+
+	if (process.platform === 'linux' && isWellKnownPort(config.port) && !isRoot()) {
+		bootLogger.error('You need root privileges to listen on well-known port on Linux', null, true);
+		process.exit(1);
+	}
+
+	if (!await isPortAvailable(config.port)) {
+		bootLogger.error(`Port ${config.port} is already in use`, null, true);
+		process.exit(1);
+	}
 }
 
 async function spawnWorkers(limit: number = 1) {

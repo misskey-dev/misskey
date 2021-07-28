@@ -1,5 +1,5 @@
 <template>
-<div class="mk-messaging-form _panel"
+<div class="pemppnzi _block"
 	@dragover.stop="onDragover"
 	@drop.stop="onDrop"
 >
@@ -7,28 +7,29 @@
 		v-model="text"
 		ref="text"
 		@keypress="onKeypress"
+		@compositionupdate="onCompositionUpdate"
 		@paste="onPaste"
-		:placeholder="$t('inputMessageHere')"
+		:placeholder="$ts.inputMessageHere"
 	></textarea>
 	<div class="file" @click="file = null" v-if="file">{{ file.name }}</div>
-	<button class="send _button" @click="send" :disabled="!canSend || sending" :title="$t('send')">
-		<template v-if="!sending"><Fa :icon="faPaperPlane"/></template><template v-if="sending"><Fa icon="spinner .spin"/></template>
+	<button class="send _button" @click="send" :disabled="!canSend || sending" :title="$ts.send">
+		<template v-if="!sending"><i class="fas fa-paper-plane"></i></template><template v-if="sending"><i class="fas fa-spinner fa-pulse fa-fw"></i></template>
 	</button>
-	<button class="_button" @click="chooseFile"><Fa :icon="faPhotoVideo"/></button>
-	<button class="_button" @click="insertEmoji"><Fa :icon="faLaughSquint"/></button>
+	<button class="_button" @click="chooseFile"><i class="fas fa-photo-video"></i></button>
+	<button class="_button" @click="insertEmoji"><i class="fas fa-laugh-squint"></i></button>
 	<input ref="file" type="file" @change="onChangeFile"/>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
-import { faPaperPlane, faPhotoVideo, faLaughSquint } from '@fortawesome/free-solid-svg-icons';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import * as autosize from 'autosize';
-import { formatTimeString } from '../../../misc/format-time-string';
-import { selectFile } from '@/scripts/select-file';
-import * as os from '@/os';
-import { Autocomplete } from '@/scripts/autocomplete';
+import { formatTimeString } from '@/misc/format-time-string';
+import { selectFile } from '@client/scripts/select-file';
+import * as os from '@client/os';
+import { Autocomplete } from '@client/scripts/autocomplete';
+import { throttle } from 'throttle-debounce';
 
 export default defineComponent({
 	props: {
@@ -46,7 +47,9 @@ export default defineComponent({
 			text: null,
 			file: null,
 			sending: false,
-			faPaperPlane, faPhotoVideo, faLaughSquint
+			typing: throttle(3000, () => {
+				os.stream.send('typingOnMessaging', this.user ? { partner: this.user.id } : { group: this.group.id });
+			}),
 		};
 	},
 	computed: {
@@ -91,10 +94,10 @@ export default defineComponent({
 					const file = items[0].getAsFile();
 					const lio = file.name.lastIndexOf('.');
 					const ext = lio >= 0 ? file.name.slice(lio) : '';
-					const formatted = `${formatTimeString(new Date(file.lastModified), this.$store.state.settings.pastedFileName).replace(/{{number}}/g, '1')}${ext}`;
-					const name = this.$store.state.settings.pasteDialog
+					const formatted = `${formatTimeString(new Date(file.lastModified), this.$store.state.pastedFileName).replace(/{{number}}/g, '1')}${ext}`;
+					const name = this.$store.state.pasteDialog
 						? await os.dialog({
-							title: this.$t('enterFileName'),
+							title: this.$ts.enterFileName,
 							input: {
 								default: formatted
 							},
@@ -107,7 +110,7 @@ export default defineComponent({
 				if (items[0].kind == 'file') {
 					os.dialog({
 						type: 'error',
-						text: this.$t('onlyOneFileCanBeAttached')
+						text: this.$ts.onlyOneFileCanBeAttached
 					});
 				}
 			}
@@ -132,7 +135,7 @@ export default defineComponent({
 				e.preventDefault();
 				os.dialog({
 					type: 'error',
-					text: this.$t('onlyOneFileCanBeAttached')
+					text: this.$ts.onlyOneFileCanBeAttached
 				});
 				return;
 			}
@@ -147,13 +150,18 @@ export default defineComponent({
 		},
 
 		onKeypress(e) {
+			this.typing();
 			if ((e.which == 10 || e.which == 13) && (e.ctrlKey || e.metaKey) && this.canSend) {
 				this.send();
 			}
 		},
 
+		onCompositionUpdate() {
+			this.typing();
+		},
+
 		chooseFile(e) {
-			selectFile(e.currentTarget || e.target, this.$t('selectFile'), false).then(file => {
+			selectFile(e.currentTarget || e.target, this.$ts.selectFile, false).then(file => {
 				this.file = file;
 			});
 		},
@@ -163,7 +171,7 @@ export default defineComponent({
 		},
 
 		upload(file: File, name?: string) {
-			os.upload(file, this.$store.state.settings.uploadFolder, name).then(res => {
+			os.upload(file, this.$store.state.uploadFolder, name).then(res => {
 				this.file = res;
 			});
 		},
@@ -213,16 +221,14 @@ export default defineComponent({
 		},
 
 		async insertEmoji(ev) {
-			os.pickEmoji(ev.currentTarget || ev.target).then(emoji => {
-				insertTextAtCursor(this.$refs.text, emoji);
-			});
+			os.openEmojiPicker(ev.currentTarget || ev.target, {}, this.$refs.text);
 		}
 	}
 });
 </script>
 
 <style lang="scss" scoped>
-.mk-messaging-form {
+.pemppnzi {
 	position: relative;
 
 	> textarea {

@@ -1,9 +1,9 @@
 <template>
-<MkEmoji :emoji="reaction.startsWith(':') ? null : reaction" :name="reaction.startsWith(':') ? reaction.substr(1, reaction.length - 2) : null" :customEmojis="customEmojis" :is-reaction="true" :normal="true" :no-style="noStyle"/>
+<MkEmoji :emoji="reaction" :custom-emojis="customEmojis" :is-reaction="true" :normal="true" :no-style="noStyle"/>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';import * as os from '@/os';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
 	props: {

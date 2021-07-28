@@ -1,19 +1,15 @@
 import $ from 'cafy';
 import define from '../../../define';
 import { Emojis, DriveFiles } from '../../../../../models';
-import { genId } from '../../../../../misc/gen-id';
+import { genId } from '@/misc/gen-id';
 import { getConnection } from 'typeorm';
 import { insertModerationLog } from '../../../../../services/insert-moderation-log';
 import { ApiError } from '../../../error';
-import { ID } from '../../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import rndstr from 'rndstr';
 import { publishBroadcastStream } from '../../../../../services/stream';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'カスタム絵文字を追加します。'
-	},
-
 	tags: ['admin'],
 
 	requireCredential: true as const,

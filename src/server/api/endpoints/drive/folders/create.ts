@@ -1,17 +1,12 @@
 import $ from 'cafy';
-import { ID } from '../../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import { publishDriveStream } from '../../../../../services/stream';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { DriveFolders } from '../../../../../models';
-import { genId } from '../../../../../misc/gen-id';
+import { genId } from '@/misc/gen-id';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'ドライブのフォルダを作成します。',
-		'en-US': 'Create a folder of drive.'
-	},
-
 	tags: ['drive'],
 
 	requireCredential: true as const,
@@ -22,18 +17,10 @@ export const meta = {
 		name: {
 			validator: $.optional.str.pipe(DriveFolders.validateFolderName),
 			default: 'Untitled',
-			desc: {
-				'ja-JP': 'フォルダ名',
-				'en-US': 'Folder name'
-			}
 		},
 
 		parentId: {
 			validator: $.optional.nullable.type(ID),
-			desc: {
-				'ja-JP': '親フォルダID',
-				'en-US': 'Parent folder ID'
-			}
 		}
 	},
 
@@ -43,6 +30,12 @@ export const meta = {
 			code: 'NO_SUCH_FOLDER',
 			id: '53326628-a00d-40a6-a3cd-8975105c0f95'
 		},
+	},
+
+	res: {
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
+		ref: 'DriveFolder'
 	}
 };
 
@@ -62,13 +55,13 @@ export default define(meta, async (ps, user) => {
 	}
 
 	// Create folder
-	const folder = await DriveFolders.save({
+	const folder = await DriveFolders.insert({
 		id: genId(),
 		createdAt: new Date(),
 		name: ps.name,
 		parentId: parent !== null ? parent.id : null,
 		userId: user.id
-	});
+	}).then(x => DriveFolders.findOneOrFail(x.identifiers[0]));
 
 	const folderObj = await DriveFolders.pack(folder);
 

@@ -4,7 +4,7 @@
 		<div class="_content">
 			<ul>
 				<li v-for="doc in docs" :key="doc.path">
-					<router-link :to="`/docs/${doc.path}`">{{ doc.title }}</router-link>
+					<MkA :to="`/docs/${doc.path}`">{{ doc.title }}</MkA>
 				</li>
 			</ul>
 		</div>
@@ -14,20 +14,17 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
-import { url, lang } from '@/config';
+import { url, lang } from '@client/config';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	data() {
 		return {
-			INFO: {
-				header: [{
-					title: this.$t('help'),
-					icon: faQuestionCircle
-				}],
+			[symbols.PAGE_INFO]: {
+				title: this.$ts.help,
+				icon: 'fas fa-question-circle'
 			},
 			docs: [],
-			faQuestionCircle
 		}
 	},
 

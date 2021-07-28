@@ -1,14 +1,14 @@
 <template>
 <XContainer :removable="removable" @remove="() => $emit('remove')" :error="error" :warn="warn" :draggable="draggable">
-	<template #header><Fa v-if="icon" :icon="icon"/> <template v-if="title">{{ title }} <span class="turmquns" v-if="typeText">({{ typeText }})</span></template><template v-else-if="typeText">{{ typeText }}</template></template>
+	<template #header><i v-if="icon" :class="icon"></i> <template v-if="title">{{ title }} <span class="turmquns" v-if="typeText">({{ typeText }})</span></template><template v-else-if="typeText">{{ typeText }}</template></template>
 	<template #func>
 		<button @click="changeType()" class="_button">
-			<Fa :icon="faPencilAlt"/>
+			<i class="fas fa-pencil-alt"></i>
 		</button>
 	</template>
 
 	<section v-if="value.type === null" class="pbglfege" @click="changeType()">
-		{{ $t('_pages.script.emptySlot') }}
+		{{ $ts._pages.script.emptySlot }}
 	</section>
 	<section v-else-if="value.type === 'text'" class="tbwccoaw">
 		<input v-model="value.value"/>
@@ -17,7 +17,7 @@
 		<textarea v-model="value.value"></textarea>
 	</section>
 	<section v-else-if="value.type === 'textList'" class="tbwccoaw">
-		<textarea v-model="value.value" :placeholder="$t('_pages.script.blocks._textList.info')"></textarea>
+		<textarea v-model="value.value" :placeholder="$ts._pages.script.blocks._textList.info"></textarea>
 	</section>
 	<section v-else-if="value.type === 'number'" class="tbwccoaw">
 		<input v-model="value.value" type="number"/>
@@ -25,13 +25,13 @@
 	<section v-else-if="value.type === 'ref'" class="hpdwcrvs">
 		<select v-model="value.value">
 			<option v-for="v in hpml.getVarsByType(getExpectedType ? getExpectedType() : null).filter(x => x.name !== name)" :value="v.name">{{ v.name }}</option>
-			<optgroup :label="$t('_pages.script.argVariables')">
+			<optgroup :label="$ts._pages.script.argVariables">
 				<option v-for="v in fnSlots" :value="v.name">{{ v.name }}</option>
 			</optgroup>
-			<optgroup :label="$t('_pages.script.pageVariables')">
+			<optgroup :label="$ts._pages.script.pageVariables">
 				<option v-for="v in hpml.getPageVarsByType(getExpectedType ? getExpectedType() : null)" :value="v">{{ v }}</option>
 			</optgroup>
-			<optgroup :label="$t('_pages.script.enviromentVariables')">
+			<optgroup :label="$ts._pages.script.enviromentVariables">
 				<option v-for="v in hpml.getEnvVarsByType(getExpectedType ? getExpectedType() : null)" :value="v">{{ v }}</option>
 			</optgroup>
 		</select>
@@ -41,7 +41,7 @@
 	</section>
 	<section v-else-if="value.type === 'fn'" class="" style="padding:0 16px 16px 16px;">
 		<MkTextarea v-model:value="slots">
-			<span>{{ $t('_pages.script.blocks._fn.slots') }}</span>
+			<span>{{ $ts._pages.script.blocks._fn.slots }}</span>
 			<template #desc>{{ $t('_pages.script.blocks._fn.slots-info') }}</template>
 		</MkTextarea>
 		<XV v-if="value.value.expression" v-model:value="value.value.expression" :title="$t(`_pages.script.blocks._fn.arg1`)" :get-expected-type="() => null" :hpml="hpml" :fn-slots="value.value.slots" :name="name"/>
@@ -57,12 +57,13 @@
 
 <script lang="ts">
 import { defineAsyncComponent, defineComponent } from 'vue';
-import { faPencilAlt, faPlug } from '@fortawesome/free-solid-svg-icons';
 import { v4 as uuid } from 'uuid';
 import XContainer from './page-editor.container.vue';
-import MkTextarea from '@/components/ui/textarea.vue';
-import { isLiteralBlock, funcDefs, blockDefs } from '@/scripts/hpml/index';
-import * as os from '@/os';
+import MkTextarea from '@client/components/ui/textarea.vue';
+import { blockDefs } from '@client/scripts/hpml/index';
+import * as os from '@client/os';
+import { isLiteralValue } from '@client/scripts/hpml/expr';
+import { funcDefs } from '@client/scripts/hpml/lib';
 
 export default defineComponent({
 	components: {
@@ -107,14 +108,13 @@ export default defineComponent({
 			error: null,
 			warn: null,
 			slots: '',
-			faPencilAlt
 		};
 	},
 
 	computed: {
 		icon(): any {
 			if (this.value.type === null) return null;
-			if (this.value.type.startsWith('fn:')) return faPlug;
+			if (this.value.type.startsWith('fn:')) return 'fas fa-plug';
 			return blockDefs.find(x => x.type === this.value.type).icon;
 		},
 		typeText(): any {
@@ -166,7 +166,7 @@ export default defineComponent({
 				return;
 			}
 
-			if (isLiteralBlock(this.value)) return;
+			if (isLiteralValue(this.value)) return;
 
 			const empties = [];
 			for (let i = 0; i < funcDefs[this.value.type].in.length; i++) {
@@ -214,7 +214,7 @@ export default defineComponent({
 		async changeType() {
 			const { canceled, result: type } = await os.dialog({
 				type: null,
-				title: this.$t('_pages.selectType'),
+				title: this.$ts._pages.selectType,
 				select: {
 					groupedItems: this.getScriptBlockList(this.getExpectedType ? this.getExpectedType() : null)
 				},

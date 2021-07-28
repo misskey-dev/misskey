@@ -1,14 +1,14 @@
 <template>
 <div class="_section">
-	<MkPagination :pagination="pagination" #default="{items}" class="ruryvtyk _content" ref="list">
-		<section class="_card announcement" v-for="(announcement, i) in items" :key="announcement.id">
-			<div class="_title"><span v-if="$store.getters.isSignedIn && !announcement.isRead">🆕 </span>{{ announcement.title }}</div>
+	<MkPagination :pagination="pagination" #default="{items}" class="ruryvtyk _content">
+		<section class="_card announcement _gap" v-for="(announcement, i) in items" :key="announcement.id">
+			<div class="_title"><span v-if="$i && !announcement.isRead">🆕 </span>{{ announcement.title }}</div>
 			<div class="_content">
 				<Mfm :text="announcement.text"/>
 				<img v-if="announcement.imageUrl" :src="announcement.imageUrl"/>
 			</div>
-			<div class="_footer" v-if="$store.getters.isSignedIn && !announcement.isRead">
-				<MkButton @click="read(items, announcement, i)" primary><Fa :icon="faCheck"/> {{ $t('gotIt') }}</MkButton>
+			<div class="_footer" v-if="$i && !announcement.isRead">
+				<MkButton @click="read(items, announcement, i)" primary><i class="fas fa-check"></i> {{ $ts.gotIt }}</MkButton>
 			</div>
 		</section>
 	</MkPagination>
@@ -17,10 +17,10 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faCheck, faBroadcastTower } from '@fortawesome/free-solid-svg-icons';
-import MkPagination from '@/components/ui/pagination.vue';
-import MkButton from '@/components/ui/button.vue';
-import * as os from '@/os';
+import MkPagination from '@client/components/ui/pagination.vue';
+import MkButton from '@client/components/ui/button.vue';
+import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -30,17 +30,14 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
-				header: [{
-					title: this.$t('announcements'),
-					icon: faBroadcastTower
-				}]
+			[symbols.PAGE_INFO]: {
+				title: this.$ts.announcements,
+				icon: 'fas fa-broadcast-tower'
 			},
 			pagination: {
 				endpoint: 'announcements',
 				limit: 10,
 			},
-			faCheck,
 		};
 	},
 

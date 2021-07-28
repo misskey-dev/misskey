@@ -1,16 +1,11 @@
 import $ from 'cafy';
-import { ID } from '../../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import { publishDriveStream } from '../../../../../services/stream';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { DriveFiles, DriveFolders } from '../../../../../models';
 
 export const meta = {
-	desc: {
-		'ja-JP': '指定したドライブのファイルの情報を更新します。',
-		'en-US': 'Update specified file of drive.'
-	},
-
 	tags: ['drive'],
 
 	requireCredential: true as const,
@@ -20,35 +15,26 @@ export const meta = {
 	params: {
 		fileId: {
 			validator: $.type(ID),
-			desc: {
-				'ja-JP': '対象のファイルID'
-			}
 		},
 
 		folderId: {
 			validator: $.optional.nullable.type(ID),
 			default: undefined as any,
-			desc: {
-				'ja-JP': 'フォルダID'
-			}
 		},
 
 		name: {
 			validator: $.optional.str.pipe(DriveFiles.validateFileName),
 			default: undefined as any,
-			desc: {
-				'ja-JP': 'ファイル名',
-				'en-US': 'Name of the file'
-			}
 		},
 
 		isSensitive: {
 			validator: $.optional.bool,
 			default: undefined as any,
-			desc: {
-				'ja-JP': 'このメディアが「閲覧注意」(NSFW)かどうか',
-				'en-US': 'Whether this media is NSFW'
-			}
+		},
+
+		comment: {
+			validator: $.optional.nullable.str,
+			default: undefined as any,
 		}
 	},
 
@@ -70,6 +56,12 @@ export const meta = {
 			code: 'NO_SUCH_FOLDER',
 			id: 'ea8fb7a5-af77-4a08-b608-c0218176cd73'
 		},
+	},
+
+	res: {
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
+		ref: 'DriveFile'
 	}
 };
 
@@ -85,6 +77,8 @@ export default define(meta, async (ps, user) => {
 	}
 
 	if (ps.name) file.name = ps.name;
+
+	if (ps.comment !== undefined) file.comment = ps.comment;
 
 	if (ps.isSensitive !== undefined) file.isSensitive = ps.isSensitive;
 
@@ -107,6 +101,7 @@ export default define(meta, async (ps, user) => {
 
 	await DriveFiles.update(file.id, {
 		name: file.name,
+		comment: file.comment,
 		folderId: file.folderId,
 		isSensitive: file.isSensitive
 	});

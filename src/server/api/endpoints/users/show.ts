@@ -3,15 +3,12 @@ import { resolveUser } from '../../../../remote/resolve-user';
 import define from '../../define';
 import { apiLogger } from '../../logger';
 import { ApiError } from '../../error';
-import { ID } from '../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import { Users } from '../../../../models';
 import { In } from 'typeorm';
+import { User } from '@/models/entities/user';
 
 export const meta = {
-	desc: {
-		'ja-JP': '指定したユーザーの情報を取得します。'
-	},
-
 	tags: ['users'],
 
 	requireCredential: false as const,
@@ -19,17 +16,10 @@ export const meta = {
 	params: {
 		userId: {
 			validator: $.optional.type(ID),
-			desc: {
-				'ja-JP': '対象のユーザーのID',
-				'en-US': 'Target user ID'
-			}
 		},
 
 		userIds: {
 			validator: $.optional.arr($.type(ID)).unique(),
-			desc: {
-				'ja-JP': 'ユーザーID (配列)'
-			}
 		},
 
 		username: {
@@ -80,7 +70,13 @@ export default define(meta, async (ps, me) => {
 			isSuspended: false
 		});
 
-		return await Promise.all(users.map(u => Users.pack(u, me, {
+		// リクエストされた通りに並べ替え
+		const _users: User[] = [];
+		for (const id of ps.userIds) {
+			_users.push(users.find(x => x.id === id)!);
+		}
+
+		return await Promise.all(_users.map(u => Users.pack(u, me, {
 			detail: true
 		})));
 	} else {

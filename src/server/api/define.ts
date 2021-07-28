@@ -2,25 +2,40 @@ import * as fs from 'fs';
 import { ILocalUser } from '../../models/entities/user';
 import { IEndpointMeta } from './endpoints';
 import { ApiError } from './error';
-import { SchemaType } from '../../misc/schema';
+import { SchemaType } from '@/misc/schema';
 import { AccessToken } from '../../models/entities/access-token';
 
-// TODO: defaultが設定されている場合はその型も考慮する
+type NonOptional<T> = T extends undefined ? never : T;
+
+type SimpleUserInfo = {
+	id: ILocalUser['id'];
+	host: ILocalUser['host'];
+	username: ILocalUser['username'];
+	uri: ILocalUser['uri'];
+	inbox: ILocalUser['inbox'];
+	sharedInbox: ILocalUser['sharedInbox'];
+	isAdmin: ILocalUser['isAdmin'];
+	isModerator: ILocalUser['isModerator'];
+	isSilenced: ILocalUser['isSilenced'];
+};
+
 type Params<T extends IEndpointMeta> = {
 	[P in keyof T['params']]: NonNullable<T['params']>[P]['transform'] extends Function
 		? ReturnType<NonNullable<T['params']>[P]['transform']>
-		: ReturnType<NonNullable<T['params']>[P]['validator']['get']>[0];
+		: NonNullable<T['params']>[P]['default'] extends null | number | string
+			? NonOptional<ReturnType<NonNullable<T['params']>[P]['validator']['get']>[0]>
+			: ReturnType<NonNullable<T['params']>[P]['validator']['get']>[0];
 };
 
 export type Response = Record<string, any> | void;
 
 type executor<T extends IEndpointMeta> =
-	(params: Params<T>, user: T['requireCredential'] extends true ? ILocalUser : ILocalUser | null, token: AccessToken | null, file?: any, cleanup?: Function) =>
+	(params: Params<T>, user: T['requireCredential'] extends true ? SimpleUserInfo : SimpleUserInfo | null, token: AccessToken | null, file?: any, cleanup?: Function) =>
 		Promise<T['res'] extends undefined ? Response : SchemaType<NonNullable<T['res']>>>;
 
 export default function <T extends IEndpointMeta>(meta: T, cb: executor<T>)
-		: (params: any, user: T['requireCredential'] extends true ? ILocalUser : ILocalUser | null, token: AccessToken | null, file?: any) => Promise<any> {
-	return (params: any, user: T['requireCredential'] extends true ? ILocalUser : ILocalUser | null, token: AccessToken | null, file?: any) => {
+		: (params: any, user: T['requireCredential'] extends true ? SimpleUserInfo : SimpleUserInfo | null, token: AccessToken | null, file?: any) => Promise<any> {
+	return (params: any, user: T['requireCredential'] extends true ? SimpleUserInfo : SimpleUserInfo | null, token: AccessToken | null, file?: any) => {
 		function cleanup() {
 			fs.unlink(file.path, () => {});
 		}

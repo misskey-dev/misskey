@@ -1,11 +1,10 @@
 import uploadFromUrl from '../../../services/drive/upload-from-url';
 import { IRemoteUser } from '../../../models/entities/user';
 import Resolver from '../resolver';
-import { fetchMeta } from '../../../misc/fetch-meta';
+import { fetchMeta } from '@/misc/fetch-meta';
 import { apLogger } from '../logger';
 import { DriveFile } from '../../../models/entities/drive-file';
 import { DriveFiles } from '../../../models';
-import { ensure } from '../../../prelude/ensure';
 
 const logger = apLogger;
 
@@ -29,7 +28,7 @@ export async function createImage(actor: IRemoteUser, value: any): Promise<Drive
 	const instance = await fetchMeta();
 	const cache = instance.cacheRemoteFiles;
 
-	let file = await uploadFromUrl(image.url, actor, null, image.url, image.sensitive, false, !cache);
+	let file = await uploadFromUrl(image.url, actor, null, image.url, image.sensitive, false, !cache, image.name);
 
 	if (file.isLink) {
 		// URLが異なっている場合、同じ画像が以前に異なるURLで登録されていたということなので、
@@ -40,7 +39,7 @@ export async function createImage(actor: IRemoteUser, value: any): Promise<Drive
 				uri: image.url
 			});
 
-			file = await DriveFiles.findOne(file.id).then(ensure);
+			file = await DriveFiles.findOneOrFail(file.id);
 		}
 	}
 

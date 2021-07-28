@@ -2,7 +2,7 @@ import $ from 'cafy';
 import define from '../../../define';
 import { DriveFiles } from '../../../../../models';
 import { makePaginationQuery } from '../../../common/make-pagination-query';
-import { ID } from '../../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 
 export const meta = {
 	tags: ['admin'],
@@ -41,6 +41,16 @@ export const meta = {
 			validator: $.optional.nullable.str,
 			default: null
 		},
+	},
+
+	res: {
+		type: 'array' as const,
+		optional: false as const, nullable: false as const,
+		items: {
+			type: 'object' as const,
+			optional: false as const, nullable: false as const,
+			ref: 'DriveFile'
+		}
 	}
 };
 

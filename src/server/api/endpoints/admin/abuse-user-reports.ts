@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { AbuseUserReports } from '../../../../models';
 import { makePaginationQuery } from '../../common/make-pagination-query';
@@ -46,6 +46,67 @@ export const meta = {
 			]),
 			default: 'combined'
 		},
+	},
+
+	res: {
+		type: 'array' as const,
+		optional: false as const, nullable: false as const,
+		items: {
+			type: 'object' as const,
+			optional: false as const, nullable: false as const,
+			properties: {
+				id: {
+					type: 'string' as const,
+					nullable: false as const, optional: false as const,
+					format: 'id',
+					example: 'xxxxxxxxxx',
+				},
+				createdAt: {
+					type: 'string' as const,
+					nullable: false as const, optional: false as const,
+					format: 'date-time',
+				},
+				comment: {
+					type: 'string' as const,
+					nullable: false as const, optional: false as const,
+				},
+				resolved: {
+					type: 'boolean' as const,
+					nullable: false as const, optional: false as const,
+					example: false
+				},
+				reporterId: {
+					type: 'string' as const,
+					nullable: false as const, optional: false as const,
+					format: 'id',
+				},
+				targetUserId: {
+					type: 'string' as const,
+					nullable: false as const, optional: false as const,
+					format: 'id',
+				},
+				assigneeId: {
+					type: 'string' as const,
+					nullable: true as const, optional: false as const,
+					format: 'id',
+				},
+				reporter: {
+					type: 'object' as const,
+					nullable: false as const, optional: false as const,
+					ref: 'User'
+				},
+				targetUser: {
+					type: 'object' as const,
+					nullable: false as const, optional: false as const,
+					ref: 'User'
+				},
+				assignee: {
+					type: 'object' as const,
+					nullable: true as const, optional: true as const,
+					ref: 'User'
+				}
+			}
+		}
 	}
 };
 

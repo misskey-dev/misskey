@@ -4,38 +4,38 @@
 		<div class="path" @contextmenu.prevent.stop="() => {}">
 			<XNavFolder :class="{ current: folder == null }"/>
 			<template v-for="f in hierarchyFolders">
-				<span class="separator"><Fa :icon="faAngleRight"/></span>
+				<span class="separator"><i class="fas fa-angle-right"></i></span>
 				<XNavFolder :folder="f"/>
 			</template>
-			<span class="separator" v-if="folder != null"><Fa :icon="faAngleRight"/></span>
+			<span class="separator" v-if="folder != null"><i class="fas fa-angle-right"></i></span>
 			<span class="folder current" v-if="folder != null">{{ folder.name }}</span>
 		</div>
 	</nav>
-	<div class="main _section" :class="{ uploading: uploadings.length > 0, fetching }"
+	<div class="main" :class="{ uploading: uploadings.length > 0, fetching }"
 		ref="main"
 		@dragover.prevent.stop="onDragover"
 		@dragenter="onDragenter"
 		@dragleave="onDragleave"
 		@drop.prevent.stop="onDrop"
-		@contextmenu="onContextmenu"
+		@contextmenu.stop="onContextmenu"
 	>
 		<div class="contents" ref="contents">
 			<div class="folders" ref="foldersContainer" v-show="folders.length > 0">
-				<XFolder v-for="f in folders" :key="f.id" class="folder" :folder="f" :select-mode="select === 'folder'" :is-selected="selectedFolders.some(x => x.id === f.id)" @chosen="chooseFolder"/>
+				<XFolder v-for="(f, i) in folders" :key="f.id" class="folder" :folder="f" :select-mode="select === 'folder'" :is-selected="selectedFolders.some(x => x.id === f.id)" @chosen="chooseFolder" v-anim="i"/>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
 				<div class="padding" v-for="(n, i) in 16" :key="i"></div>
-				<MkButton ref="moreFolders" v-if="moreFolders">{{ $t('loadMore') }}</MkButton>
+				<MkButton ref="moreFolders" v-if="moreFolders">{{ $ts.loadMore }}</MkButton>
 			</div>
 			<div class="files" ref="filesContainer" v-show="files.length > 0">
-				<XFile v-for="file in files" :key="file.id" class="file" :file="file" :select-mode="select === 'file'" :is-selected="selectedFiles.some(x => x.id === file.id)" @chosen="chooseFile"/>
+				<XFile v-for="(file, i) in files" :key="file.id" class="file" :file="file" :select-mode="select === 'file'" :is-selected="selectedFiles.some(x => x.id === file.id)" @chosen="chooseFile" v-anim="i"/>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
 				<div class="padding" v-for="(n, i) in 16" :key="i"></div>
-				<MkButton ref="loadMoreFiles" @click="fetchMoreFiles" v-show="moreFiles">{{ $t('loadMore') }}</MkButton>
+				<MkButton ref="loadMoreFiles" @click="fetchMoreFiles" v-show="moreFiles">{{ $ts.loadMore }}</MkButton>
 			</div>
 			<div class="empty" v-if="files.length == 0 && folders.length == 0 && !fetching">
 				<p v-if="draghover">{{ $t('empty-draghover') }}</p>
-				<p v-if="!draghover && folder == null"><strong>{{ $t('emptyDrive') }}</strong><br/>{{ $t('empty-drive-description') }}</p>
-				<p v-if="!draghover && folder != null">{{ $t('emptyFolder') }}</p>
+				<p v-if="!draghover && folder == null"><strong>{{ $ts.emptyDrive }}</strong><br/>{{ $t('empty-drive-description') }}</p>
+				<p v-if="!draghover && folder != null">{{ $ts.emptyFolder }}</p>
 			</div>
 		</div>
 		<MkLoading v-if="fetching"/>
@@ -46,14 +46,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { faAngleRight, faFolderPlus, faICursor, faLink, faUpload } from '@fortawesome/free-solid-svg-icons';
+import { defineComponent, markRaw } from 'vue';
 import XNavFolder from './drive.nav-folder.vue';
 import XFolder from './drive.folder.vue';
 import XFile from './drive.file.vue';
 import MkButton from './ui/button.vue';
-import * as os from '@/os';
-import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {
@@ -64,7 +62,7 @@ export default defineComponent({
 	},
 
 	props: {
-		initFolder: {
+		initialFolder: {
 			type: Object,
 			required: false
 		},
@@ -125,7 +123,6 @@ export default defineComponent({
 			),
 			moreFilesElement: null as Element,
 
-			faAngleRight
 		};
 	},
 
@@ -136,13 +133,13 @@ export default defineComponent({
 	},
 
 	mounted() {
-		if (this.$store.state.device.enableInfiniteScroll && this.$refs.loadMoreFiles) {
+		if (this.$store.state.enableInfiniteScroll && this.$refs.loadMoreFiles) {
 			this.$nextTick(() => {
 				this.ilFilesObserver.observe((this.$refs.loadMoreFiles as Vue).$el)
 			});
 		}
 
-		this.connection = os.stream.useSharedConnection('drive');
+		this.connection = markRaw(os.stream.useChannel('drive'));
 
 		this.connection.on('fileCreated', this.onStreamDriveFileCreated);
 		this.connection.on('fileUpdated', this.onStreamDriveFileUpdated);
@@ -151,15 +148,15 @@ export default defineComponent({
 		this.connection.on('folderUpdated', this.onStreamDriveFolderUpdated);
 		this.connection.on('folderDeleted', this.onStreamDriveFolderDeleted);
 
-		if (this.initFolder) {
-			this.move(this.initFolder);
+		if (this.initialFolder) {
+			this.move(this.initialFolder);
 		} else {
 			this.fetch();
 		}
 	},
 
 	activated() {
-		if (this.$store.state.device.enableInfiniteScroll) {
+		if (this.$store.state.enableInfiniteScroll) {
 			this.$nextTick(() => {
 				this.ilFilesObserver.observe((this.$refs.loadMoreFiles as Vue).$el)
 			});
@@ -277,14 +274,14 @@ export default defineComponent({
 					switch (err) {
 						case 'detected-circular-definition':
 							os.dialog({
-								title: this.$t('unableToProcess'),
-								text: this.$t('circularReferenceFolder')
+								title: this.$ts.unableToProcess,
+								text: this.$ts.circularReferenceFolder
 							});
 							break;
 						default:
 							os.dialog({
 								type: 'error',
-								text: this.$t('somethingHappened')
+								text: this.$ts.somethingHappened
 							});
 					}
 				});
@@ -298,29 +295,29 @@ export default defineComponent({
 
 		urlUpload() {
 			os.dialog({
-				title: this.$t('uploadFromUrl'),
+				title: this.$ts.uploadFromUrl,
 				input: {
-					placeholder: this.$t('uploadFromUrlDescription')
+					placeholder: this.$ts.uploadFromUrlDescription
 				}
 			}).then(({ canceled, result: url }) => {
 				if (canceled) return;
-				os.api('drive/files/upload_from_url', {
+				os.api('drive/files/upload-from-url', {
 					url: url,
 					folderId: this.folder ? this.folder.id : undefined
 				});
 
 				os.dialog({
-					title: this.$t('uploadFromUrlRequested'),
-					text: this.$t('uploadFromUrlMayTakeTime')
+					title: this.$ts.uploadFromUrlRequested,
+					text: this.$ts.uploadFromUrlMayTakeTime
 				});
 			});
 		},
 
 		createFolder() {
 			os.dialog({
-				title: this.$t('createFolder'),
+				title: this.$ts.createFolder,
 				input: {
-					placeholder: this.$t('folderName')
+					placeholder: this.$ts.folderName
 				}
 			}).then(({ canceled, result: name }) => {
 				if (canceled) return;
@@ -335,9 +332,9 @@ export default defineComponent({
 
 		renameFolder(folder) {
 			os.dialog({
-				title: this.$t('renameFolder'),
+				title: this.$ts.renameFolder,
 				input: {
-					placeholder: this.$t('inputNewFolderName'),
+					placeholder: this.$ts.inputNewFolderName,
 					default: folder.name
 				}
 			}).then(({ canceled, result: name }) => {
@@ -363,14 +360,14 @@ export default defineComponent({
 					case 'b0fc8a17-963c-405d-bfbc-859a487295e1':
 						os.dialog({
 							type: 'error',
-							title: this.$t('unableToDelete'),
-							text: this.$t('hasChildFilesOrFolders')
+							title: this.$ts.unableToDelete,
+							text: this.$ts.hasChildFilesOrFolders
 						});
 						break;
 					default:
 						os.dialog({
 							type: 'error',
-							text: this.$t('unableToDelete')
+							text: this.$ts.unableToDelete
 						});
 					}
 			});
@@ -602,30 +599,30 @@ export default defineComponent({
 
 		getMenu() {
 			return [{
-				text: this.$t('addFile'),
+				text: this.$ts.addFile,
 				type: 'label'
 			}, {
-				text: this.$t('upload'),
-				icon: faUpload,
+				text: this.$ts.upload,
+				icon: 'fas fa-upload',
 				action: () => { this.selectLocalFile(); }
 			}, {
-				text: this.$t('fromUrl'),
-				icon: faLink,
+				text: this.$ts.fromUrl,
+				icon: 'fas fa-link',
 				action: () => { this.urlUpload(); }
 			}, null, {
-				text: this.folder ? this.folder.name : this.$t('drive'),
+				text: this.folder ? this.folder.name : this.$ts.drive,
 				type: 'label'
 			}, this.folder ? {
-				text: this.$t('renameFolder'),
-				icon: faICursor,
+				text: this.$ts.renameFolder,
+				icon: 'fas fa-i-cursor',
 				action: () => { this.renameFolder(this.folder); }
 			} : undefined, this.folder ? {
-				text: this.$t('deleteFolder'),
-				icon: faTrashAlt,
+				text: this.$ts.deleteFolder,
+				icon: 'fas fa-trash-alt',
 				action: () => { this.deleteFolder(this.folder); }
 			} : undefined, {
-				text: this.$t('createFolder'),
-				icon: faFolderPlus,
+				text: this.$ts.createFolder,
+				icon: 'fas fa-folder-plus',
 				action: () => { this.createFolder(); }
 			}];
 		},
@@ -639,6 +636,10 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .yfudmmck {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+
 	> nav {
 		display: block;
 		z-index: 2;
@@ -689,7 +690,7 @@ export default defineComponent({
 					opacity: 0.5;
 					cursor: default;
 
-					> [data-icon] {
+					> i {
 						margin: 0;
 					}
 				}
@@ -698,7 +699,9 @@ export default defineComponent({
 	}
 
 	> .main {
+		flex: 1;
 		overflow: auto;
+		padding: var(--margin);
 
 		&, * {
 			user-select: none;
@@ -730,7 +733,7 @@ export default defineComponent({
 				> .folder,
 				> .file {
 					flex-grow: 1;
-					width: 144px;
+					width: 128px;
 					margin: 4px;
 					box-sizing: border-box;
 				}
@@ -738,7 +741,7 @@ export default defineComponent({
 				> .padding {
 					flex-grow: 1;
 					pointer-events: none;
-					width: 144px + 8px;
+					width: 128px + 8px;
 				}
 			}
 

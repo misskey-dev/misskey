@@ -1,7 +1,7 @@
 import * as Koa from 'koa';
 
 import { IEndpoint } from './endpoints';
-import authenticate from './authenticate';
+import authenticate, { AuthenticationError } from './authenticate';
 import call from './call';
 import { ApiError } from './error';
 
@@ -11,7 +11,7 @@ export default (endpoint: IEndpoint, ctx: Koa.Context) => new Promise((res) => {
 	const reply = (x?: any, y?: ApiError) => {
 		if (x == null) {
 			ctx.status = 204;
-		} else if (typeof x === 'number') {
+		} else if (typeof x === 'number' && y) {
 			ctx.status = x;
 			ctx.body = {
 				error: {
@@ -23,7 +23,8 @@ export default (endpoint: IEndpoint, ctx: Koa.Context) => new Promise((res) => {
 				}
 			};
 		} else {
-			ctx.body = x;
+			// 文字列を返す場合は、JSON.stringify通さないとJSONと認識されない
+			ctx.body = typeof x === 'string' ? JSON.stringify(x) : x;
 		}
 		res();
 	};
@@ -36,11 +37,15 @@ export default (endpoint: IEndpoint, ctx: Koa.Context) => new Promise((res) => {
 		}).catch((e: ApiError) => {
 			reply(e.httpStatusCode ? e.httpStatusCode : e.kind === 'client' ? 400 : 500, e);
 		});
-	}).catch(() => {
-		reply(403, new ApiError({
-			message: 'Authentication failed. Please ensure your token is correct.',
-			code: 'AUTHENTICATION_FAILED',
-			id: 'b0a7f5f8-dc2f-4171-b91f-de88ad238e14'
-		}));
+	}).catch(e => {
+		if (e instanceof AuthenticationError) {
+			reply(403, new ApiError({
+				message: 'Authentication failed. Please ensure your token is correct.',
+				code: 'AUTHENTICATION_FAILED',
+				id: 'b0a7f5f8-dc2f-4171-b91f-de88ad238e14'
+			}));
+		} else {
+			reply(500, new ApiError());
+		}
 	});
 });

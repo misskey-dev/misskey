@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { Clips } from '../../../../models';
@@ -18,6 +18,14 @@ export const meta = {
 
 		name: {
 			validator: $.str.range(1, 100),
+		},
+
+		isPublic: {
+			validator: $.optional.bool
+		},
+
+		description: {
+			validator: $.optional.nullable.str.range(1, 2048)
 		}
 	},
 
@@ -27,6 +35,12 @@ export const meta = {
 			code: 'NO_SUCH_CLIP',
 			id: 'b4d92d70-b216-46fa-9a3f-a8c811699257'
 		},
+	},
+
+	res: {
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
+		ref: 'Clip'
 	}
 };
 
@@ -42,7 +56,9 @@ export default define(meta, async (ps, user) => {
 	}
 
 	await Clips.update(clip.id, {
-		name: ps.name
+		name: ps.name,
+		description: ps.description,
+		isPublic: ps.isPublic,
 	});
 
 	return await Clips.pack(clip.id);

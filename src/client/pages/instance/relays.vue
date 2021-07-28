@@ -1,51 +1,44 @@
 <template>
-<div class="relaycxt">
-	<section class="_section add">
-		<div class="_title"><Fa :icon="faPlus"/> {{ $t('addRelay') }}</div>
-		<div class="_content">
-			<MkInput v-model:value="inbox">
-				<span>{{ $t('inboxUrl') }}</span>
-			</MkInput>
-			<MkButton @click="add(inbox)" primary><Fa :icon="faPlus"/> {{ $t('add') }}</MkButton>
-		</div>
-	</section>
+<FormBase class="relaycxt">
+	<FormButton @click="addRelay" primary><i class="fas fa-plus"></i> {{ $ts.addRelay }}</FormButton>
 
-	<section class="_section relays">
-		<div class="_title"><Fa :icon="faProjectDiagram"/> {{ $t('addedRelays') }}</div>
-		<div class="_content relay" v-for="relay in relays" :key="relay.inbox">
+	<div class="_formItem" v-for="relay in relays" :key="relay.inbox">
+		<div class="_formPanel" style="padding: 16px;">
 			<div>{{ relay.inbox }}</div>
 			<div>{{ $t(`_relayStatus.${relay.status}`) }}</div>
-			<MkButton class="button" inline @click="remove(relay.inbox)"><Fa :icon="faTrashAlt"/> {{ $t('remove') }}</MkButton>
+			<MkButton class="button" inline danger @click="remove(relay.inbox)"><i class="fas fa-trash-alt"></i> {{ $ts.remove }}</MkButton>
 		</div>
-	</section>
-</div>
+	</div>
+</FormBase>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faPlus, faProjectDiagram } from '@fortawesome/free-solid-svg-icons';
-import { faSave, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
-import MkButton from '@/components/ui/button.vue';
-import MkInput from '@/components/ui/input.vue';
-import * as os from '@/os';
+import MkButton from '@client/components/ui/button.vue';
+import MkInput from '@client/components/ui/input.vue';
+import FormBase from '@client/components/form/base.vue';
+import FormButton from '@client/components/form/button.vue';
+import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
+		FormBase,
+		FormButton,
 		MkButton,
 		MkInput,
 	},
 
+	emits: ['info'],
+
 	data() {
 		return {
-			INFO: {
-				header: [{
-					title: this.$t('relays'),
-					icon: faProjectDiagram,
-				}],
+			[symbols.PAGE_INFO]: {
+				title: this.$ts.relays,
+				icon: 'fas fa-globe',
 			},
 			relays: [],
 			inbox: '',
-			faPlus, faProjectDiagram, faSave, faTrashAlt
 		}
 	},
 
@@ -53,8 +46,19 @@ export default defineComponent({
 		this.refresh();
 	},
 
+	mounted() {
+		this.$emit('info', this[symbols.PAGE_INFO]);
+	},
+
 	methods: {
-		add(inbox: string) {
+		async addRelay() {
+			const { canceled, result: inbox } = await os.dialog({
+				title: this.$ts.addRelay,
+				input: {
+					placeholder: this.$ts.inboxUrl
+				}
+			});
+			if (canceled) return;
 			os.api('admin/relays/add', {
 				inbox
 			}).then((relay: any) => {
@@ -90,9 +94,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-._content.relay {
-	div {
-		margin: 0.5em 0;
-	}
-}
+
 </style>

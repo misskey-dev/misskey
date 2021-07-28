@@ -6,36 +6,40 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faHashtag } from '@fortawesome/free-solid-svg-icons';
-import Progress from '@/scripts/loading';
-import XNotes from '@/components/notes.vue';
+import Progress from '@client/scripts/loading';
+import XNotes from '@client/components/notes.vue';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
 		XNotes
 	},
 
+	props: {
+		tag: {
+			type: String,
+			required: true
+		}
+	},
+
 	data() {
 		return {
-			INFO: {
-				header: [{
-					title: this.$route.params.tag,
-					icon: faHashtag
-				}],
+			[symbols.PAGE_INFO]: {
+				title: this.tag,
+				icon: 'fas fa-hashtag'
 			},
 			pagination: {
 				endpoint: 'notes/search-by-tag',
 				limit: 10,
 				params: () => ({
-					tag: this.$route.params.tag,
+					tag: this.tag,
 				})
 			},
-			faHashtag
 		};
 	},
 
 	watch: {
-		$route() {
+		tag() {
 			(this.$refs.notes as any).reload();
 		}
 	},

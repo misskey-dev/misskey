@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { Antennas } from '../../../../models';
@@ -23,6 +23,12 @@ export const meta = {
 			code: 'NO_SUCH_ANTENNA',
 			id: 'c06569fb-b025-4f23-b22d-1fcd20d2816b'
 		},
+	},
+
+	res: {
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
+		ref: 'Antenna'
 	}
 };
 

@@ -1,16 +1,20 @@
 <template>
 <div class="">
 	<div class="_section" style="padding: 0;">
-		<MkTab v-model:value="tab" :items="[{ label: $t('ownedGroups'), value: 'owned' }, { label: $t('joinedGroups'), value: 'joined' }, { label: $t('invites'), icon: faEnvelopeOpenText, value: 'invites' }]"/>
+		<MkTab v-model:value="tab">
+			<option value="owned">{{ $ts.ownedGroups }}</option>
+			<option value="joined">{{ $ts.joinedGroups }}</option>
+			<option value="invites"><i class="fas fa-envelope-open-text"></i> {{ $ts.invites }}</option>
+		</MkTab>
 	</div>
 
 	<div class="_section">
 		<div class="_content" v-if="tab === 'owned'">
-			<MkButton @click="create" primary style="margin: 0 auto var(--margin) auto;"><Fa :icon="faPlus"/> {{ $t('createGroup') }}</MkButton>
+			<MkButton @click="create" primary style="margin: 0 auto var(--margin) auto;"><i class="fas fa-plus"></i> {{ $ts.createGroup }}</MkButton>
 
 			<MkPagination :pagination="ownedPagination" #default="{items}" ref="owned">
 				<div class="_card" v-for="group in items" :key="group.id">
-					<div class="_title"><router-link :to="`/my/groups/${ group.id }`" class="_link">{{ group.name }}</router-link></div>
+					<div class="_title"><MkA :to="`/my/groups/${ group.id }`" class="_link">{{ group.name }}</MkA></div>
 					<div class="_content"><MkAvatars :user-ids="group.userIds"/></div>
 				</div>
 			</MkPagination>
@@ -31,8 +35,8 @@
 					<div class="_title">{{ invitation.group.name }}</div>
 					<div class="_content"><MkAvatars :user-ids="invitation.group.userIds"/></div>
 					<div class="_footer">
-						<MkButton @click="acceptInvite(invitation)" primary inline><Fa :icon="faCheck"/> {{ $t('accept') }}</MkButton>
-						<MkButton @click="rejectInvite(invitation)" primary inline><Fa :icon="faBan"/> {{ $t('reject') }}</MkButton>
+						<MkButton @click="acceptInvite(invitation)" primary inline><i class="fas fa-check"></i> {{ $ts.accept }}</MkButton>
+						<MkButton @click="rejectInvite(invitation)" primary inline><i class="fas fa-ban"></i> {{ $ts.reject }}</MkButton>
 					</div>
 				</div>
 			</MkPagination>
@@ -43,13 +47,13 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faUsers, faPlus, faEnvelopeOpenText } from '@fortawesome/free-solid-svg-icons';
-import MkPagination from '@/components/ui/pagination.vue';
-import MkButton from '@/components/ui/button.vue';
-import MkContainer from '@/components/ui/container.vue';
-import MkAvatars from '@/components/avatars.vue';
-import MkTab from '@/components/tab.vue';
-import * as os from '@/os';
+import MkPagination from '@client/components/ui/pagination.vue';
+import MkButton from '@client/components/ui/button.vue';
+import MkContainer from '@client/components/ui/container.vue';
+import MkAvatars from '@client/components/avatars.vue';
+import MkTab from '@client/components/tab.vue';
+import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -62,11 +66,9 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
-				header: [{
-					title: this.$t('groups'),
-					icon: faUsers
-				}],
+			[symbols.PAGE_INFO]: {
+				title: this.$ts.groups,
+				icon: 'fas fa-users'
 			},
 			tab: 'owned',
 			ownedPagination: {
@@ -81,14 +83,13 @@ export default defineComponent({
 				endpoint: 'i/user-group-invites',
 				limit: 10,
 			},
-			faUsers, faPlus, faEnvelopeOpenText
 		};
 	},
 
 	methods: {
 		async create() {
 			const { canceled, result: name } = await os.dialog({
-				title: this.$t('groupName'),
+				title: this.$ts.groupName,
 				input: true
 			});
 			if (canceled) return;

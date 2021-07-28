@@ -1,3 +1,7 @@
 files:
   - source: /locales/ja-JP.yml
     translation: /locales/%locale%.yml
+    update_option: update_as_unapproved
+  - source: /src/docs/ja-JP/*.md
+    translation: /src/docs/%locale%/%original_file_name%
+    update_option: update_as_unapproved

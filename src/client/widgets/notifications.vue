@@ -1,9 +1,9 @@
 <template>
 <MkContainer :style="`height: ${props.height}px;`" :show-header="props.showHeader" :scrollable="true">
-	<template #header><Fa :icon="faBell"/>{{ $t('notifications') }}</template>
-	<template #func><button @click="configure()" class="_button"><Fa :icon="faCog"/></button></template>
+	<template #header><i class="fas fa-bell"></i>{{ $ts.notifications }}</template>
+	<template #func><button @click="configure()" class="_button"><i class="fas fa-cog"></i></button></template>
 
-	<div>
+	<div class="_flat_">
 		<XNotifications :include-types="props.includingTypes"/>
 	</div>
 </MkContainer>
@@ -11,11 +11,10 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faBell, faCog } from '@fortawesome/free-solid-svg-icons';
-import MkContainer from '@/components/ui/container.vue';
-import XNotifications from '@/components/notifications.vue';
+import MkContainer from '@client/components/ui/container.vue';
+import XNotifications from '@client/components/notifications.vue';
 import define from './define';
-import * as os from '@/os';
+import * as os from '@client/os';
 
 const widget = define({
 	name: 'notifications',
@@ -46,13 +45,12 @@ export default defineComponent({
 
 	data() {
 		return {
-			faBell, faCog
 		};
 	},
 
 	methods: {
-		async configure() {
-			os.popup(await import('@/components/notification-setting-window.vue'), {
+		configure() {
+			os.popup(import('@client/components/notification-setting-window.vue'), {
 				includingTypes: this.props.includingTypes,
 			}, {
 				done: async (res) => {

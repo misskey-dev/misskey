@@ -1,11 +1,11 @@
-import config from '../../config';
+import config from '@/config';
 import { Note } from '../../models/entities/note';
 import { User, IRemoteUser } from '../../models/entities/user';
 import { UserPublickey } from '../../models/entities/user-publickey';
-import { Notes, Users, UserPublickeys } from '../../models';
+import { MessagingMessage } from '../../models/entities/messaging-message';
+import { Notes, Users, UserPublickeys, MessagingMessages } from '../../models';
 import { IObject, getApId } from './type';
 import { resolvePerson } from './models/person';
-import { ensure } from '../../prelude/ensure';
 import escapeRegexp = require('escape-regexp');
 
 export default class DbResolver {
@@ -26,6 +26,24 @@ export default class DbResolver {
 
 		if (parsed.uri) {
 			return (await Notes.findOne({
+				uri: parsed.uri
+			})) || null;
+		}
+
+		return null;
+	}
+
+	public async getMessageFromApId(value: string | IObject): Promise<MessagingMessage | null> {
+		const parsed = this.parseUri(value);
+
+		if (parsed.id) {
+			return (await MessagingMessages.findOne({
+				id: parsed.id
+			})) || null;
+		}
+
+		if (parsed.uri) {
+			return (await MessagingMessages.findOne({
 				uri: parsed.uri
 			})) || null;
 		}
@@ -80,7 +98,7 @@ export default class DbResolver {
 
 		if (user == null) return null;
 
-		const key = await UserPublickeys.findOne(user.id).then(ensure);
+		const key = await UserPublickeys.findOne(user.id);
 
 		return {
 			user,
@@ -109,7 +127,7 @@ export default class DbResolver {
 
 export type AuthUser = {
 	user: IRemoteUser;
-	key: UserPublickey;
+	key?: UserPublickey;
 };
 
 type UriParseResult = {

@@ -2,16 +2,37 @@ import define from '../../../define';
 import { FollowRequests } from '../../../../../models';
 
 export const meta = {
-	desc: {
-		'ja-JP': '自分に届いたフォローリクエストの一覧を取得します。',
-		'en-US': 'Get all pending received follow requests.'
-	},
-
 	tags: ['following', 'account'],
 
 	requireCredential: true as const,
 
-	kind: 'read:following'
+	kind: 'read:following',
+
+	res: {
+		type: 'array' as const,
+		optional: false as const, nullable: false as const,
+		items: {
+			type: 'object' as const,
+			optional: false as const, nullable: false as const,
+			properties: {
+				id: {
+					type: 'string' as const,
+					optional: false as const, nullable: false as const,
+					format: 'id'
+				},
+				follower: {
+					type: 'object' as const,
+					optional: false as const, nullable: false as const,
+					ref: 'User'
+				},
+				followee: {
+					type: 'object' as const,
+					optional: false as const, nullable: false as const,
+					ref: 'User'
+				}
+			}
+		}
+	}
 };
 
 export default define(meta, async (ps, user) => {

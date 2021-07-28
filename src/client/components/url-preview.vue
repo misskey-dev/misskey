@@ -1,16 +1,16 @@
 <template>
 <div v-if="playerEnabled" class="player" :style="`padding: ${(player.height || 0) / (player.width || 1) * 100}% 0 0`">
-	<button class="disablePlayer" @click="playerEnabled = false" :title="$t('disablePlayer')"><Fa icon="times"/></button>
+	<button class="disablePlayer" @click="playerEnabled = false" :title="$ts.disablePlayer"><i class="fas fa-times"></i></button>
 	<iframe :src="player.url + (player.url.match(/\?/) ? '&autoplay=1&auto_play=1' : '?autoplay=1&auto_play=1')" :width="player.width || '100%'" :heigth="player.height || 250" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen />
 </div>
 <div v-else-if="tweetId && tweetExpanded" class="twitter" ref="twitter">
-	<iframe ref="tweet" scrolling="no" frameborder="no" :style="{ position: 'relative', left: `${tweetLeft}px`, width: `${tweetLeft < 0 ? 'auto' : '100%'}`, height: `${tweetHeight}px` }" :src="`https://platform.twitter.com/embed/index.html?embedId=${embedId}&amp;hideCard=false&amp;hideThread=false&amp;lang=en&amp;theme=${$store.state.device.darkMode ? 'dark' : 'light'}&amp;id=${tweetId}`"></iframe>
+	<iframe ref="tweet" scrolling="no" frameborder="no" :style="{ position: 'relative', left: `${tweetLeft}px`, width: `${tweetLeft < 0 ? 'auto' : '100%'}`, height: `${tweetHeight}px` }" :src="`https://platform.twitter.com/embed/index.html?embedId=${embedId}&amp;hideCard=false&amp;hideThread=false&amp;lang=en&amp;theme=${$store.state.darkMode ? 'dark' : 'light'}&amp;id=${tweetId}`"></iframe>
 </div>
 <div v-else class="mk-url-preview" v-size="{ max: [400, 350] }">
 	<transition name="zoom" mode="out-in">
-		<component :is="self ? 'router-link' : 'a'" :class="{ compact }" :[attr]="self ? url.substr(local.length) : url" rel="nofollow noopener" :target="target" :title="url" v-if="!fetching">
+		<component :is="self ? 'MkA' : 'a'" :class="{ compact }" :[attr]="self ? url.substr(local.length) : url" rel="nofollow noopener" :target="target" :title="url" v-if="!fetching">
 			<div class="thumbnail" v-if="thumbnail" :style="`background-image: url('${thumbnail}')`">
-				<button class="_button" v-if="!playerEnabled && player.url" @click.prevent="playerEnabled = true" :title="$t('enablePlayer')"><Fa :icon="faPlayCircle"/></button>
+				<button class="_button" v-if="!playerEnabled && player.url" @click.prevent="playerEnabled = true" :title="$ts.enablePlayer"><i class="fas fa-play-circle"></i></button>
 			</div>
 			<article>
 				<header>
@@ -26,7 +26,7 @@
 	</transition>
 	<div class="expandTweet" v-if="tweetId">
 		<a @click="tweetExpanded = true">
-			<Fa :icon="faTwitter"/> {{ $t('expandTweet') }}
+			<i class="fab fa-twitter"></i> {{ $ts.expandTweet }}
 		</a>
 	</div>
 </div>
@@ -34,10 +34,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faPlayCircle } from '@fortawesome/free-regular-svg-icons';
-import { faTwitter } from '@fortawesome/free-brands-svg-icons'; 
-import { url as local, lang } from '@/config';
-import * as os from '@/os';
+import { url as local, lang } from '@client/config';
+import * as os from '@client/os';
 
 export default defineComponent({
 	props: {
@@ -83,7 +81,6 @@ export default defineComponent({
 			self: self,
 			attr: self ? 'to' : 'href',
 			target: self ? null : '_blank',
-			faPlayCircle, faTwitter
 		};
 	},
 
@@ -243,7 +240,7 @@ export default defineComponent({
 		display: block;
 		font-size: 14px;
 		box-shadow: 0 0 0 1px var(--divider);
-		border-radius: 6px;
+		border-radius: 8px;
 		overflow: hidden;
 
 		&:hover {

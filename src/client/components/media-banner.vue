@@ -1,9 +1,9 @@
 <template>
 <div class="mk-media-banner">
 	<div class="sensitive" v-if="media.isSensitive && hide" @click="hide = false">
-		<span class="icon"><Fa :icon="faExclamationTriangle"/></span>
-		<b>{{ $t('sensitive') }}</b>
-		<span>{{ $t('clickToShow') }}</span>
+		<span class="icon"><i class="fas fa-exclamation-triangle"></i></span>
+		<b>{{ $ts.sensitive }}</b>
+		<span>{{ $ts.clickToShow }}</span>
 	</div>
 	<div class="audio" v-else-if="media.type.startsWith('audio') && media.type !== 'audio/midi'">
 		<audio class="audio"
@@ -19,7 +19,7 @@
 		:title="media.name"
 		:download="media.name"
 	>
-		<span class="icon"><Fa icon="download"/></span>
+		<span class="icon"><i class="fas fa-download"></i></span>
 		<b>{{ media.name }}</b>
 	</a>
 </div>
@@ -27,8 +27,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
-import * as os from '@/os';
+import * as os from '@client/os';
+import { ColdDeviceStorage } from '@client/store';
 
 export default defineComponent({
 	props: {
@@ -40,17 +40,16 @@ export default defineComponent({
 	data() {
 		return {
 			hide: true,
-			faExclamationTriangle
 		};
 	},
 	mounted() {
 		const audioTag = this.$refs.audio as HTMLAudioElement;
-		if (audioTag) audioTag.volume = this.$store.state.device.mediaVolume;
+		if (audioTag) audioTag.volume = ColdDeviceStorage.get('mediaVolume');
 	},
 	methods: {
 		volumechange() {
 			const audioTag = this.$refs.audio as HTMLAudioElement;
-			this.$store.commit('device/set', { key: 'mediaVolume', value: audioTag.volume });
+			ColdDeviceStorage.set('mediaVolume', audioTag.volume);
 		},
 	},
 })

@@ -1,40 +1,39 @@
 <template>
 <div v-if="channel" class="_section">
-	<div class="wpgynlbz _content _panel _vMargin" :class="{ hide: !showBanner }">
+	<div class="wpgynlbz _content _panel _gap" :class="{ hide: !showBanner }">
 		<XChannelFollowButton :channel="channel" :full="true" class="subscribe"/>
 		<button class="_button toggle" @click="() => showBanner = !showBanner">
-			<template v-if="showBanner"><Fa :icon="faAngleUp"/></template>
-			<template v-else><Fa :icon="faAngleDown"/></template>
+			<template v-if="showBanner"><i class="fas fa-angle-up"></i></template>
+			<template v-else><i class="fas fa-angle-down"></i></template>
 		</button>
 		<div class="hideOverlay" v-if="!showBanner">
 		</div>
 		<div :style="{ backgroundImage: channel.bannerUrl ? `url(${channel.bannerUrl})` : null }" class="banner">
 			<div class="status">
-				<div><Fa :icon="faUsers" fixed-width/><i18n-t keypath="_channel.usersCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.usersCount }}</b></template></i18n-t></div>
-				<div><Fa :icon="faPencilAlt" fixed-width/><i18n-t keypath="_channel.notesCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.notesCount }}</b></template></i18n-t></div>
+				<div><i class="fas fa-users fa-fw"></i><I18n :src="$ts._channel.usersCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.usersCount }}</b></template></I18n></div>
+				<div><i class="fas fa-pencil-alt fa-fw"></i><I18n :src="$ts._channel.notesCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.notesCount }}</b></template></I18n></div>
 			</div>
 			<div class="fade"></div>
 		</div>
 		<div class="description" v-if="channel.description">
-			<Mfm :text="channel.description" :is-note="false" :i="$store.state.i"/>
+			<Mfm :text="channel.description" :is-note="false" :i="$i"/>
 		</div>
 	</div>
 
-	<XPostForm :channel="channel" class="post-form _content _panel _vMargin" fixed/>
+	<XPostForm :channel="channel" class="post-form _content _panel _gap" fixed v-if="$i"/>
 
-	<XTimeline class="_content _vMargin" src="channel" :channel="channelId" @before="before" @after="after"/>
+	<XTimeline class="_content _gap" src="channel" :key="channelId" :channel="channelId" @before="before" @after="after"/>
 </div>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
-import { faSatelliteDish, faUsers, faPencilAlt, faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
-import {  } from '@fortawesome/free-regular-svg-icons';
-import MkContainer from '@/components/ui/container.vue';
-import XPostForm from '@/components/post-form.vue';
-import XTimeline from '@/components/timeline.vue';
-import XChannelFollowButton from '@/components/channel-follow-button.vue';
-import * as os from '@/os';
+import MkContainer from '@client/components/ui/container.vue';
+import XPostForm from '@client/components/post-form.vue';
+import XTimeline from '@client/components/timeline.vue';
+import XChannelFollowButton from '@client/components/channel-follow-button.vue';
+import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -53,11 +52,9 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: computed(() => this.channel ? {
-				header: [{
-					title: this.channel.name,
-					icon: faSatelliteDish,
-				}],
+			[symbols.PAGE_INFO]: computed(() => this.channel ? {
+				title: this.channel.name,
+				icon: 'fas fa-satellite-dish',
 			} : null),
 			channel: null,
 			showBanner: true,
@@ -68,7 +65,6 @@ export default defineComponent({
 					channelId: this.channelId,
 				})
 			},
-			faSatelliteDish, faUsers, faPencilAlt, faAngleUp, faAngleDown,
 		};
 	},
 
@@ -112,7 +108,7 @@ export default defineComponent({
 		background: rgba(0, 0, 0, 0.5);
 		border-radius: 100%;
 		
-		> [data-icon] {
+		> i {
 			vertical-align: middle;
 		}
 	}

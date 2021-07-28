@@ -1,4 +1,5 @@
-import { getJson } from '../misc/fetch';
+import { URL } from 'url';
+import { getJson } from '@/misc/fetch';
 import { query as urlQuery } from '../prelude/url';
 
 type ILink = {

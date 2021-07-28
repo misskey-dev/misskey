@@ -2,7 +2,7 @@ import { User } from '../../../models/entities/user';
 import { Followings } from '../../../models';
 import { Brackets, SelectQueryBuilder } from 'typeorm';
 
-export function generateVisibilityQuery(q: SelectQueryBuilder<any>, me?: User | null) {
+export function generateVisibilityQuery(q: SelectQueryBuilder<any>, me?: { id: User['id'] } | null) {
 	if (me == null) {
 		q.andWhere(new Brackets(qb => { qb
 			.where(`note.visibility = 'public'`)
@@ -22,7 +22,7 @@ export function generateVisibilityQuery(q: SelectQueryBuilder<any>, me?: User | 
 			// または 自分自身
 			.orWhere('note.userId = :userId1', { userId1: me.id })
 			// または 自分宛て
-			.orWhere(':userId2 = ANY(note.visibleUserIds)', { userId2: me.id })
+			.orWhere(`'{"${me.id}"}' <@ note.visibleUserIds`)
 			.orWhere(new Brackets(qb => { qb
 				// または フォロワー宛ての投稿であり、
 				.where('note.visibility = \'followers\'')

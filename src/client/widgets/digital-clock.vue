@@ -1,5 +1,5 @@
 <template>
-<div class="mkw-digitalClock" :class="{ _panel: !props.transparent }" :style="{ fontSize: `${props.fontSize}em` }">
+<div class="mkw-digitalClock _monospace" :class="{ _panel: !props.transparent }" :style="{ fontSize: `${props.fontSize}em` }">
 	<span>
 		<span v-text="hh"></span>
 		<span :style="{ visibility: showColon ? 'visible' : 'hidden' }">:</span>
@@ -15,7 +15,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import define from './define';
-import * as os from '@/os';
+import * as os from '@client/os';
 
 const widget = define({
 	name: 'digitalClock',
@@ -74,7 +74,6 @@ export default defineComponent({
 <style lang="scss" scoped>
 .mkw-digitalClock {
 	padding: 16px 0;
-	font-family: Lucida Console, Courier, monospace;
 	text-align: center;
 }
 </style>

@@ -1,24 +1,36 @@
 <template>
 <div class="ysrxegms">
-	<canvas ref="canvas" :width="value.width" :height="value.height"/>
+	<canvas ref="canvas" :width="block.width" :height="block.height"/>
 </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import * as os from '@/os';
+import { defineComponent, onMounted, PropType, Ref, ref } from 'vue';
+import * as os from '@client/os';
+import { CanvasBlock } from '@client/scripts/hpml/block';
+import { Hpml } from '@client/scripts/hpml/evaluator';
 
 export default defineComponent({
 	props: {
-		value: {
+		block: {
+			type: Object as PropType<CanvasBlock>,
 			required: true
 		},
 		hpml: {
+			type: Object as PropType<Hpml>,
 			required: true
 		}
 	},
-	mounted() {
-		this.hpml.registerCanvas(this.value.name, this.$refs.canvas);
+	setup(props, ctx) {
+		const canvas: Ref<any> = ref(null);
+
+		onMounted(() => {
+			props.hpml.registerCanvas(props.block.name, canvas.value);
+		});
+
+		return {
+			canvas
+		};
 	}
 });
 </script>

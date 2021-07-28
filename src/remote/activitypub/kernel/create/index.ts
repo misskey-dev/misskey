@@ -1,7 +1,7 @@
 import Resolver from '../../resolver';
 import { IRemoteUser } from '../../../../models/entities/user';
 import createNote from './note';
-import { ICreate, getApId, validPost } from '../../type';
+import { ICreate, getApId, isPost, getApType } from '../../type';
 import { apLogger } from '../../logger';
 import { toArray, concat, unique } from '../../../../prelude/array';
 
@@ -35,9 +35,9 @@ export default async (actor: IRemoteUser, activity: ICreate): Promise<void> => {
 		throw e;
 	});
 
-	if (validPost.includes(object.type)) {
+	if (isPost(object)) {
 		createNote(resolver, actor, object, false, activity);
 	} else {
-		logger.warn(`Unknown type: ${object.type}`);
+		logger.warn(`Unknown type: ${getApType(object)}`);
 	}
 };

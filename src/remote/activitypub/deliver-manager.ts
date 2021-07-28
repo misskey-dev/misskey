@@ -1,5 +1,5 @@
 import { Users, Followings } from '../../models';
-import { ILocalUser, IRemoteUser } from '../../models/entities/user';
+import { ILocalUser, IRemoteUser, User } from '../../models/entities/user';
 import { deliver } from '../../queue';
 
 //#region types
@@ -24,7 +24,7 @@ const isDirect = (recipe: any): recipe is IDirectRecipe =>
 //#endregion
 
 export default class DeliverManager {
-	private actor: ILocalUser;
+	private actor: { id: User['id']; host: null; };
 	private activity: any;
 	private recipes: IRecipe[] = [];
 
@@ -33,7 +33,7 @@ export default class DeliverManager {
 	 * @param actor Actor
 	 * @param activity Activity to deliver
 	 */
-	constructor(actor: ILocalUser, activity: any) {
+	constructor(actor: { id: User['id']; host: null; }, activity: any) {
 		this.actor = actor;
 		this.activity = activity;
 	}
@@ -76,7 +76,7 @@ export default class DeliverManager {
 	public async execute() {
 		if (!Users.isLocalUser(this.actor)) return;
 
-		const inboxes: string[] = [];
+		const inboxes = new Set<string>();
 
 		// build inbox list
 		for (const recipe of this.recipes) {
@@ -89,13 +89,13 @@ export default class DeliverManager {
 				for (const following of followers) {
 					if (Followings.isRemoteFollower(following)) {
 						const inbox = following.followerSharedInbox || following.followerInbox;
-						if (!inboxes.includes(inbox)) inboxes.push(inbox);
+						inboxes.add(inbox);
 					}
 				}
 			} else if (isDirect(recipe)) {
 				// direct deliver
 				const inbox = recipe.to.inbox;
-				if (inbox && !inboxes.includes(inbox)) inboxes.push(inbox);
+				if (inbox) inboxes.add(inbox);
 			}
 		}
 

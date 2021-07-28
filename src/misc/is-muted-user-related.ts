@@ -1,13 +1,13 @@
-export function isMutedUserRelated(note: any, mutedUserIds: string[]): boolean {
-	if (mutedUserIds.includes(note.userId)) {
+export function isMutedUserRelated(note: any, mutedUserIds: Set<string>): boolean {
+	if (mutedUserIds.has(note.userId)) {
 		return true;
 	}
 
-	if (note.reply != null && mutedUserIds.includes(note.reply.userId)) {
+	if (note.reply != null && mutedUserIds.has(note.reply.userId)) {
 		return true;
 	}
 
-	if (note.renote != null && mutedUserIds.includes(note.renote.userId)) {
+	if (note.renote != null && mutedUserIds.has(note.renote.userId)) {
 		return true;
 	}
 

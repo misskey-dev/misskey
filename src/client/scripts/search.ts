@@ -1,21 +1,15 @@
-import { faHistory } from '@fortawesome/free-solid-svg-icons';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { router } from '@/router';
+import * as os from '@client/os';
+import { i18n } from '@client/i18n';
+import { router } from '@client/router';
 
-export async function search(q?: string | null | undefined) {
-	if (q == null) {
-		const { canceled, result: query } = await os.dialog({
-			title: i18n.global.t('search'),
-			input: true
-		});
+export async function search() {
+	const { canceled, result: query } = await os.dialog({
+		title: i18n.locale.search,
+		input: true
+	});
+	if (canceled || query == null || query === '') return;
 
-		if (canceled || query == null || query === '') return;
-
-		q = query;
-	}
-
-	q = q.trim();
+	const q = query.trim();
 
 	if (q.startsWith('@') && !q.includes(' ')) {
 		router.push(`/${q}`);
@@ -39,9 +33,10 @@ export async function search(q?: string | null | undefined) {
 			date.setHours(23, 59, 59, 999);
 		}
 
-		v.$root.$emit('warp', date);
+		// TODO
+		//v.$root.$emit('warp', date);
 		os.dialog({
-			icon: faHistory,
+			icon: 'fas fa-history',
 			iconOnly: true, autoClose: true
 		});
 		return;
@@ -52,7 +47,7 @@ export async function search(q?: string | null | undefined) {
 			uri: q
 		});
 
-		os.promiseDialog(promise, null, null, i18n.global.t('fetchingAsApObject'));
+		os.promiseDialog(promise, null, null, i18n.locale.fetchingAsApObject);
 
 		const res = await promise;
 

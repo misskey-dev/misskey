@@ -1,8 +1,8 @@
 @charset "utf-8";
 
 :root {
-	--baseContentWidth: 750px;
-	--radius: 8px;
+	--baseContentWidth: 760px;
+	--radius: 12px;
 	--marginFull: 16px;
 	--marginHalf: 10px;
 
@@ -11,6 +11,8 @@
 	@media (max-width: 500px) {
 		--margin: var(--marginHalf);
 	}
+
+	//--ad: rgb(255 169 0 / 10%);
 }
 
 ::selection {
@@ -26,17 +28,22 @@ html {
 	background-position: center;
 	color: var(--fg);
 	overflow: auto;
+	overflow-wrap: break-word;
+	font-family: "BIZ UDGothic", Roboto, HelveticaNeue, Arial, sans-serif;
+	line-height: 1.35;
+	text-size-adjust: 100%;
+	tab-size: 2;
 
 	&, * {
-		scrollbar-color: var(--scrollbarHandle) var(--panel);
+		scrollbar-color: var(--scrollbarHandle) inherit;
 		scrollbar-width: thin;
 
 		&:hover {
-			scrollbar-color: var(--scrollbarHandleHover) var(--panel);
+			scrollbar-color: var(--scrollbarHandleHover) inherit;
 		}
 
 		&:active {
-			scrollbar-color: var(--accent) var(--panel);
+			scrollbar-color: var(--accent) inherit;
 		}
 
 		&::-webkit-scrollbar {
@@ -45,7 +52,7 @@ html {
 		}
 
 		&::-webkit-scrollbar-track {
-			background: var(--panel);
+			background: inherit;
 		}
 
 		&::-webkit-scrollbar-thumb {
@@ -72,24 +79,22 @@ html {
 	&.f-veryLarge {
 		font-size: 1.2em;
 	}
-}
 
-html.changing-theme {
-	&, * {
-		transition: background 1s ease !important;
+	&.useSystemFont {
+		font-family: sans-serif;
 	}
 }
 
-body {
-	overflow-wrap: break-word;
+html._themeChanging_ {
+	&, * {
+		transition: background 1s ease, border 1s ease !important;
+	}
 }
 
 html, body {
 	margin: 0;
 	padding: 0;
 	scroll-behavior: smooth;
-	text-size-adjust: 100%;
-	font-family: Roboto, HelveticaNeue, Arial, sans-serif;
 }
 
 a {
@@ -141,6 +146,7 @@ hr {
 	width: 100%;
 	height: 100%;
 	background: var(--modalBg);
+	-webkit-backdrop-filter: var(--modalBgFilter);
 	backdrop-filter: var(--modalBgFilter);
 }
 
@@ -155,11 +161,13 @@ hr {
 	background: none;
 	border: none;
 	cursor: pointer;
-	color: var(--fg);
+	color: inherit;
 	touch-action: manipulation;
 	tap-highlight-color: transparent;
 	-webkit-tap-highlight-color: transparent;
 	font-size: 1em;
+	font-family: inherit;
+	line-height: inherit;
 
 	&, * {
 		@extend ._noSelect;
@@ -229,22 +237,32 @@ hr {
 }
 
 ._panel {
-	//position: relative;
-	//z-index: 1;
 	background: var(--panel);
 	border-radius: var(--radius);
-	//border: var(--panelBorder);
-	box-shadow: var(--panelShadow);
-	overflow: hidden;
+	border: var(--panelBorder);
+	overflow: clip;
+}
+
+._block {
+	@extend ._panel;
+
+	& + ._block {
+		margin-top: var(--margin);
+	}
+}
+
+._gap {
+	margin: var(--margin) 0;
 }
 
 ._card {
 	@extend ._panel;
 
+	// TODO: _cardTitle に
 	> ._title {
 		margin: 0;
 		padding: 22px 32px;
-		font-size: 1.1em;
+		font-size: 1em;
 		border-bottom: solid 1px var(--panelHeaderDivider);
 		font-weight: bold;
 		background: var(--panelHeaderBg);
@@ -256,6 +274,7 @@ hr {
 		}
 	}
 
+	// TODO: _cardContent に
 	> ._content {
 		padding: 32px;
 
@@ -268,12 +287,13 @@ hr {
 		}
 
 		& + ._content {
-			border-top: solid 1px var(--divider);
+			border-top: solid 0.5px var(--divider);
 		}
 	}
 
+	// TODO: _cardFooter に
 	> ._footer {
-		border-top: solid 1px var(--divider);
+		border-top: solid 0.5px var(--divider);
 		padding: 24px 32px;
 
 		@media (max-width: 500px) {
@@ -282,68 +302,81 @@ hr {
 	}
 }
 
-._close_ ._list_ > * {
-	border: none;
-	border-bottom: solid 1px var(--divider);
-	border-radius: 0;
-	box-shadow: none;
-	margin: 0 !important;
-}
-
-._loadMore {
-	@extend ._panel;
+._borderButton {
 	@extend ._button;
+	display: block;
 	width: 100%;
-	padding: 12px 0;
+	padding: 10px;
+	box-sizing: border-box;
+	text-align: center;
+	border: solid 0.5px var(--divider);
+	border-radius: var(--radius);
+
+	&:active {
+		border-color: var(--accent);
+	}
 }
 
 ._popup {
 	background: var(--panel);
 	border-radius: var(--radius);
+	contain: content;
 }
 
-._section {
-	padding: var(--section-padding, 32px);
+._root {
+	box-sizing: border-box;
+	margin: var(--root-margin, 32px) auto;
+	max-width: min(var(--baseContentWidth), calc(100% - (var(--root-margin, 32px) * 2)));
 
-	&:empty {
-		display: none;
+	// 子marginが突き抜けるのを防ぐため
+	// https://stackoverflow.com/questions/1762539/margin-on-child-element-moves-parent-element
+	padding-top: 1px;
+	margin-top: calc(var(--root-margin, 32px) - 1px);
+
+	@media (max-width: 500px) {
+		--root-margin: 10px;
+	}
+}
+
+._monolithic_ {
+	._section:not(:empty) {
+		box-sizing: border-box;
+		padding: var(--root-margin, 32px);
+	
+		@media (max-width: 500px) {
+			--root-margin: 10px;
+		}
+	
+		& + ._section:not(:empty) {
+			border-top: solid 0.5px var(--divider);
+		}
+	}
+}
+
+._flat_ {
+	--root-margin: 0px;
+	--baseContentWidth: 100%;
+	--panelBorder: none;
+
+	._block {
+		//border-top: solid 0.5px var(--divider);
+		//border-bottom: solid 0.5px var(--divider);
+		border-radius: 0;
+		box-shadow: none;
 	}
 
-	&:not(:empty) + ._section {
-		border-top: solid 1px var(--divider);
+	._isolated {
+		margin: var(--margin);
+	}
+
+	._block._isolated {
+		border-radius: var(--radius);
 	}
 
 	@media (max-width: 500px) {
-		padding: var(--section-padding, 10px);
-
-		> ._title {
-			font-size: 1.1em;
-			font-weight: bold;
+		._root {
+			--root-margin: 0px;
 		}
-	}
-
-	> ._title,
-	> ._content {
-		box-sizing: border-box;
-		max-width: var(--baseContentWidth);
-		margin: 0 auto;
-	}
-
-	> ._title {
-		margin-bottom: 24px;
-		font-size: 1.25em;
-		font-weight: bold;
-	}
-
-	&._fitBottom {
-		padding-bottom: 0;
-	}
-}
-
-._narrow_ ._section {
-	> ._title {
-		padding: 8px;
-		font-size: 1em;
 	}
 }
 
@@ -364,14 +397,8 @@ hr {
 
 ._acrylic {
 	background: var(--acrylicPanel);
-	-webkit-backdrop-filter: blur(10px);
-	backdrop-filter: blur(10px);
-}
-
-._vMargin {
-	& + ._vMargin {
-		margin-top: var(--margin);
-	}
+	-webkit-backdrop-filter: blur(15px);
+	backdrop-filter: blur(15px);
 }
 
 ._table {
@@ -431,10 +458,14 @@ hr {
 	opacity: 0.7;
 }
 
+._monospace {
+	font-family: Fira code, Fira Mono, Consolas, Menlo, Courier, monospace !important;
+}
+
 ._code {
+	@extend ._monospace;
 	background: #2d2d2d;
 	color: #ccc;
-	font-family: Fira code, Fira Mono, Consolas, Menlo, Courier, monospace;
 	font-size: 14px;
 	line-height: 1.5;
 	padding: 5px;
@@ -442,6 +473,12 @@ hr {
 
 .prism-editor__textarea:focus {
 	outline: none;
+}
+
+._zoom {
+	transition-duration: 0.5s, 0.5s;
+	transition-property: opacity, transform;
+	transition-timing-function: cubic-bezier(0,.5,.5,1);
 }
 
 .zoom-enter-active, .zoom-leave-active {
@@ -452,39 +489,13 @@ hr {
 	transform: scale(0.9);
 }
 
-.zoom-in-top-enter-active,
-.zoom-in-top-leave-active {
-	opacity: 1;
-	transform: scaleY(1);
-	transition: transform 300ms cubic-bezier(0.23, 1, 0.32, 1), opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
-	transform-origin: center top;
-}
-.zoom-in-top-enter-from,
-.zoom-in-top-leave-active {
-	opacity: 0;
-	transform: scaleY(0);
-}
-
 @keyframes blink {
 	0% { opacity: 1; transform: scale(1); }
 	30% { opacity: 1; transform: scale(1); }
 	90% { opacity: 0; transform: scale(0.5); }
 }
 
-@keyframes anime-spin {
-	0% { transform: rotate(0deg); }
-	100% { transform: rotate(360deg); }
-}
-
-@keyframes anime-jump {
-	0% { transform: translateY(0); }
-	25% { transform: translateY(-16px); }
-	50% { transform: translateY(0); }
-	75% { transform: translateY(-8px); }
-	100% { transform: translateY(0); }
-}
-
-@keyframes anime-tada {
+@keyframes tada {
 	from {
 		transform: scale3d(1, 1, 1);
 	}
@@ -512,32 +523,31 @@ hr {
 	}
 }
 
-@keyframes anime-rubberBand {
-  from {
-    transform: scale3d(1, 1, 1);
-  }
+._anime_bounce {
+	will-change: transform;
+  animation: bounce ease 0.7s;
+  animation-iteration-count: 1;
+  transform-origin: 50% 50%;
+}
+._anime_bounce_ready {
+	will-change: transform;
+	transform:  scaleX(0.90) scaleY(0.90) ;
+}
+._anime_bounce_standBy {
+	transition: transform 0.1s ease;
+}
 
-  30% {
-    transform: scale3d(1.25, 0.75, 1);
+@keyframes bounce{
+  0% {
+    transform:  scaleX(0.90) scaleY(0.90) ;
   }
-
-  40% {
-    transform: scale3d(0.75, 1.25, 1);
+  19% {
+    transform:  scaleX(1.10) scaleY(1.10) ;
   }
-
-  50% {
-    transform: scale3d(1.15, 0.85, 1);
+  48% {
+    transform:  scaleX(0.95) scaleY(0.95) ;
   }
-
-  65% {
-    transform: scale3d(0.95, 1.05, 1);
-  }
-
-  75% {
-    transform: scale3d(1.05, 0.95, 1);
-  }
-
-  to {
-    transform: scale3d(1, 1, 1);
+  100% {
+    transform:  scaleX(1.00) scaleY(1.00) ;
   }
 }

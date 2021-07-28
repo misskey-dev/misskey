@@ -1,23 +1,22 @@
-import { faAt, faListUl, faEye, faEyeSlash, faBan, faPencilAlt, faComments, faUsers, faMicrophoneSlash, faPlug, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
-import { faSnowflake, faEnvelope } from '@fortawesome/free-regular-svg-icons';
-import { i18n } from '@/i18n';
-import copyToClipboard from '@/scripts/copy-to-clipboard';
-import { host } from '@/config';
-import getAcct from '../../misc/acct/render';
-import * as os from '@/os';
-import { store, userActions } from '@/store';
-import { router } from '@/router';
-import { defineAsyncComponent } from 'vue';
-import { popout } from './popout';
+import { i18n } from '@client/i18n';
+import copyToClipboard from '@client/scripts/copy-to-clipboard';
+import { host } from '@client/config';
+import { getAcct } from '@/misc/acct';
+import * as os from '@client/os';
+import { userActions } from '@client/store';
+import { router } from '@client/router';
+import { $i } from '@client/account';
 
 export function getUserMenu(user) {
+	const meId = $i ? $i.id : null;
+
 	async function pushList() {
-		const t = i18n.global.t('selectList'); // なぜか後で参照すると null になるので最初にメモリに確保しておく
+		const t = i18n.locale.selectList; // なぜか後で参照すると null になるので最初にメモリに確保しておく
 		const lists = await os.api('users/lists/list');
 		if (lists.length === 0) {
 			os.dialog({
 				type: 'error',
-				text: i18n.global.t('youHaveNoLists')
+				text: i18n.locale.youHaveNoLists
 			});
 			return;
 		}
@@ -43,13 +42,13 @@ export function getUserMenu(user) {
 		if (groups.length === 0) {
 			os.dialog({
 				type: 'error',
-				text: i18n.global.t('youHaveNoGroups')
+				text: i18n.locale.youHaveNoGroups
 			});
 			return;
 		}
 		const { canceled, result: groupId } = await os.dialog({
 			type: null,
-			title: i18n.global.t('group'),
+			title: i18n.locale.group,
 			select: {
 				items: groups.map(group => ({
 					value: group.id, text: group.name
@@ -73,7 +72,7 @@ export function getUserMenu(user) {
 	}
 
 	async function toggleBlock() {
-		if (!await getConfirmed(user.isBlocking ? i18n.global.t('unblockConfirm') : i18n.global.t('blockConfirm'))) return;
+		if (!await getConfirmed(user.isBlocking ? i18n.locale.unblockConfirm : i18n.locale.blockConfirm)) return;
 
 		os.apiWithDialog(user.isBlocking ? 'blocking/delete' : 'blocking/create', {
 			userId: user.id
@@ -83,7 +82,7 @@ export function getUserMenu(user) {
 	}
 
 	async function toggleSilence() {
-		if (!await getConfirmed(i18n.global.t(user.isSilenced ? 'unsilenceConfirm' : 'silenceConfirm'))) return;
+		if (!await getConfirmed(i18n.t(user.isSilenced ? 'unsilenceConfirm' : 'silenceConfirm'))) return;
 
 		os.apiWithDialog(user.isSilenced ? 'admin/unsilence-user' : 'admin/silence-user', {
 			userId: user.id
@@ -93,7 +92,7 @@ export function getUserMenu(user) {
 	}
 
 	async function toggleSuspend() {
-		if (!await getConfirmed(i18n.global.t(user.isSuspended ? 'unsuspendConfirm' : 'suspendConfirm'))) return;
+		if (!await getConfirmed(i18n.t(user.isSuspended ? 'unsuspendConfirm' : 'suspendConfirm'))) return;
 
 		os.apiWithDialog(user.isSuspended ? 'admin/unsuspend-user' : 'admin/suspend-user', {
 			userId: user.id
@@ -102,8 +101,8 @@ export function getUserMenu(user) {
 		});
 	}
 
-	async function reportAbuse() {
-		os.popup(await import('@/components/abuse-report-window.vue'), {
+	function reportAbuse() {
+		os.popup(import('@client/components/abuse-report-window.vue'), {
 			user: user,
 		}, {}, 'closed');
 	}
@@ -120,72 +119,72 @@ export function getUserMenu(user) {
 	}
 
 	let menu = [{
-		icon: faAt,
-		text: i18n.global.t('copyUsername'),
+		icon: 'fas fa-at',
+		text: i18n.locale.copyUsername,
 		action: () => {
 			copyToClipboard(`@${user.username}@${user.host || host}`);
 		}
 	}, {
-		icon: faEnvelope,
-		text: i18n.global.t('sendMessage'),
+		icon: 'fas fa-info-circle',
+		text: i18n.locale.info,
+		action: () => {
+			os.pageWindow(`/user-info/${user.id}`);
+		}
+	}, {
+		icon: 'fas fa-envelope',
+		text: i18n.locale.sendMessage,
 		action: () => {
 			os.post({ specified: user });
 		}
-	}, store.state.i.id != user.id ? {
-		icon: faComments,
-		text: i18n.global.t('startMessaging'),
-		action: () => {
-			const acct = getAcct(user);
-			switch (store.state.device.chatOpenBehavior) {
-				case 'window': { os.pageWindow('/my/messaging/' + acct, defineAsyncComponent(() => import('@/pages/messaging/messaging-room.vue')), { userAcct: acct }); break; }
-				case 'popout': { popout('/my/messaging'); break; }
-				default: { router.push('/my/messaging'); break; }
-			}
-		}
+	}, meId != user.id ? {
+		type: 'link',
+		icon: 'fas fa-comments',
+		text: i18n.locale.startMessaging,
+		to: '/my/messaging/' + getAcct(user),
 	} : undefined, null, {
-		icon: faListUl,
-		text: i18n.global.t('addToList'),
+		icon: 'fas fa-list-ul',
+		text: i18n.locale.addToList,
 		action: pushList
-	}, store.state.i.id != user.id ? {
-		icon: faUsers,
-		text: i18n.global.t('inviteToGroup'),
+	}, meId != user.id ? {
+		icon: 'fas fa-users',
+		text: i18n.locale.inviteToGroup,
 		action: inviteGroup
 	} : undefined] as any;
 
-	if (store.getters.isSignedIn && store.state.i.id != user.id) {
+	if ($i && meId != user.id) {
 		menu = menu.concat([null, {
-			icon: user.isMuted ? faEye : faEyeSlash,
-			text: user.isMuted ? i18n.global.t('unmute') : i18n.global.t('mute'),
+			icon: user.isMuted ? 'fas fa-eye' : 'fas fa-eye-slash',
+			text: user.isMuted ? i18n.locale.unmute : i18n.locale.mute,
 			action: toggleMute
 		}, {
-			icon: faBan,
-			text: user.isBlocking ? i18n.global.t('unblock') : i18n.global.t('block'),
+			icon: 'fas fa-ban',
+			text: user.isBlocking ? i18n.locale.unblock : i18n.locale.block,
 			action: toggleBlock
 		}]);
 
 		menu = menu.concat([null, {
-			icon: faExclamationCircle,
-			text: i18n.global.t('reportAbuse'),
+			icon: 'fas fa-exclamation-circle',
+			text: i18n.locale.reportAbuse,
 			action: reportAbuse
 		}]);
 
-		if (store.getters.isSignedIn && (store.state.i.isAdmin || store.state.i.isModerator)) {
+		if ($i && ($i.isAdmin || $i.isModerator)) {
 			menu = menu.concat([null, {
-				icon: faMicrophoneSlash,
-				text: user.isSilenced ? i18n.global.t('unsilence') : i18n.global.t('silence'),
+				icon: 'fas fa-microphone-slash',
+				text: user.isSilenced ? i18n.locale.unsilence : i18n.locale.silence,
 				action: toggleSilence
 			}, {
-				icon: faSnowflake,
-				text: user.isSuspended ? i18n.global.t('unsuspend') : i18n.global.t('suspend'),
+				icon: 'fas fa-snowflake',
+				text: user.isSuspended ? i18n.locale.unsuspend : i18n.locale.suspend,
 				action: toggleSuspend
 			}]);
 		}
 	}
 
-	if (store.getters.isSignedIn && store.state.i.id === user.id) {
+	if ($i && meId === user.id) {
 		menu = menu.concat([null, {
-			icon: faPencilAlt,
-			text: i18n.global.t('editProfile'),
+			icon: 'fas fa-pencil-alt',
+			text: i18n.locale.editProfile,
 			action: () => {
 				router.push('/settings/profile');
 			}
@@ -194,7 +193,7 @@ export function getUserMenu(user) {
 
 	if (userActions.length > 0) {
 		menu = menu.concat([null, ...userActions.map(action => ({
-			icon: faPlug,
+			icon: 'fas fa-plug',
 			text: action.title,
 			action: () => {
 				action.handler(user);

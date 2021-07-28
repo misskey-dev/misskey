@@ -3,58 +3,57 @@
 	<div class="_title" v-if="antenna.name">{{ antenna.name }}</div>
 	<div class="_content body">
 		<MkInput v-model:value="name">
-			<span>{{ $t('name') }}</span>
+			<span>{{ $ts.name }}</span>
 		</MkInput>
 		<MkSelect v-model:value="src">
-			<template #label>{{ $t('antennaSource') }}</template>
-			<option value="all">{{ $t('_antennaSources.all') }}</option>
-			<option value="home">{{ $t('_antennaSources.homeTimeline') }}</option>
-			<option value="users">{{ $t('_antennaSources.users') }}</option>
-			<option value="list">{{ $t('_antennaSources.userList') }}</option>
-			<option value="group">{{ $t('_antennaSources.userGroup') }}</option>
+			<template #label>{{ $ts.antennaSource }}</template>
+			<option value="all">{{ $ts._antennaSources.all }}</option>
+			<option value="home">{{ $ts._antennaSources.homeTimeline }}</option>
+			<option value="users">{{ $ts._antennaSources.users }}</option>
+			<option value="list">{{ $ts._antennaSources.userList }}</option>
+			<option value="group">{{ $ts._antennaSources.userGroup }}</option>
 		</MkSelect>
 		<MkSelect v-model:value="userListId" v-if="src === 'list'">
-			<template #label>{{ $t('userList') }}</template>
+			<template #label>{{ $ts.userList }}</template>
 			<option v-for="list in userLists" :value="list.id" :key="list.id">{{ list.name }}</option>
 		</MkSelect>
 		<MkSelect v-model:value="userGroupId" v-else-if="src === 'group'">
-			<template #label>{{ $t('userGroup') }}</template>
+			<template #label>{{ $ts.userGroup }}</template>
 			<option v-for="group in userGroups" :value="group.id" :key="group.id">{{ group.name }}</option>
 		</MkSelect>
 		<MkTextarea v-model:value="users" v-else-if="src === 'users'">
-			<span>{{ $t('users') }}</span>
-			<template #desc>{{ $t('antennaUsersDescription') }} <button class="_textButton" @click="addUser">{{ $t('addUser') }}</button></template>
+			<span>{{ $ts.users }}</span>
+			<template #desc>{{ $ts.antennaUsersDescription }} <button class="_textButton" @click="addUser">{{ $ts.addUser }}</button></template>
 		</MkTextarea>
-		<MkSwitch v-model:value="withReplies">{{ $t('withReplies') }}</MkSwitch>
+		<MkSwitch v-model:value="withReplies">{{ $ts.withReplies }}</MkSwitch>
 		<MkTextarea v-model:value="keywords">
-			<span>{{ $t('antennaKeywords') }}</span>
-			<template #desc>{{ $t('antennaKeywordsDescription') }}</template>
+			<span>{{ $ts.antennaKeywords }}</span>
+			<template #desc>{{ $ts.antennaKeywordsDescription }}</template>
 		</MkTextarea>
 		<MkTextarea v-model:value="excludeKeywords">
-			<span>{{ $t('antennaExcludeKeywords') }}</span>
-			<template #desc>{{ $t('antennaKeywordsDescription') }}</template>
+			<span>{{ $ts.antennaExcludeKeywords }}</span>
+			<template #desc>{{ $ts.antennaKeywordsDescription }}</template>
 		</MkTextarea>
-		<MkSwitch v-model:value="caseSensitive">{{ $t('caseSensitive') }}</MkSwitch>
-		<MkSwitch v-model:value="withFile">{{ $t('withFileAntenna') }}</MkSwitch>
-		<MkSwitch v-model:value="notify">{{ $t('notifyAntenna') }}</MkSwitch>
+		<MkSwitch v-model:value="caseSensitive">{{ $ts.caseSensitive }}</MkSwitch>
+		<MkSwitch v-model:value="withFile">{{ $ts.withFileAntenna }}</MkSwitch>
+		<MkSwitch v-model:value="notify">{{ $ts.notifyAntenna }}</MkSwitch>
 	</div>
 	<div class="_footer">
-		<MkButton inline @click="saveAntenna()" primary><Fa :icon="faSave"/> {{ $t('save') }}</MkButton>
-		<MkButton inline @click="deleteAntenna()" v-if="antenna.id != null"><Fa :icon="faTrash"/> {{ $t('delete') }}</MkButton>
+		<MkButton inline @click="saveAntenna()" primary><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
+		<MkButton inline @click="deleteAntenna()" v-if="antenna.id != null"><i class="fas fa-trash"></i> {{ $ts.delete }}</MkButton>
 	</div>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faSave, faTrash } from '@fortawesome/free-solid-svg-icons';
-import MkButton from '@/components/ui/button.vue';
-import MkInput from '@/components/ui/input.vue';
-import MkTextarea from '@/components/ui/textarea.vue';
-import MkSelect from '@/components/ui/select.vue';
-import MkSwitch from '@/components/ui/switch.vue';
-import getAcct from '../../../misc/acct/render';
-import * as os from '@/os';
+import MkButton from '@client/components/ui/button.vue';
+import MkInput from '@client/components/ui/input.vue';
+import MkTextarea from '@client/components/ui/textarea.vue';
+import MkSelect from '@client/components/ui/select.vue';
+import MkSwitch from '@client/components/ui/switch.vue';
+import { getAcct } from '@/misc/acct';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {
@@ -83,7 +82,6 @@ export default defineComponent({
 			notify: false,
 			userLists: null,
 			userGroups: null,
-			faSave, faTrash
 		};
 	},
 

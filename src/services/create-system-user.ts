@@ -1,11 +1,11 @@
 import * as bcrypt from 'bcryptjs';
 import { v4 as uuid } from 'uuid';
 import generateNativeUserToken from '../server/api/common/generate-native-user-token';
-import { genRsaKeyPair } from '../misc/gen-key-pair';
+import { genRsaKeyPair } from '@/misc/gen-key-pair';
 import { User } from '../models/entities/user';
 import { UserProfile } from '../models/entities/user-profile';
 import { getConnection } from 'typeorm';
-import { genId } from '../misc/gen-id';
+import { genId } from '@/misc/gen-id';
 import { UserKeypair } from '../models/entities/user-keypair';
 import { UsedUsername } from '../models/entities/used-username';
 
@@ -25,7 +25,14 @@ export async function createSystemUser(username: string) {
 
 	// Start transaction
 	await getConnection().transaction(async transactionalEntityManager => {
-		account = await transactionalEntityManager.save(new User({
+		const exist = await transactionalEntityManager.findOne(User, {
+			usernameLower: username.toLowerCase(),
+			host: null
+		});
+
+		if (exist) throw new Error('the user is already exists');
+
+		account = await transactionalEntityManager.insert(User, {
 			id: genId(),
 			createdAt: new Date(),
 			username: username,
@@ -34,25 +41,26 @@ export async function createSystemUser(username: string) {
 			token: secret,
 			isAdmin: false,
 			isLocked: true,
+			isExplorable: false,
 			isBot: true,
-		}));
+		}).then(x => transactionalEntityManager.findOneOrFail(User, x.identifiers[0]));
 
-		await transactionalEntityManager.save(new UserKeypair({
+		await transactionalEntityManager.insert(UserKeypair, {
 			publicKey: keyPair.publicKey,
 			privateKey: keyPair.privateKey,
 			userId: account.id
-		}));
+		});
 
-		await transactionalEntityManager.save(new UserProfile({
+		await transactionalEntityManager.insert(UserProfile, {
 			userId: account.id,
 			autoAcceptFollowed: false,
 			password: hash,
-		}));
+		});
 
-		await transactionalEntityManager.save(new UsedUsername({
+		await transactionalEntityManager.insert(UsedUsername, {
 			createdAt: new Date(),
 			username: username.toLowerCase(),
-		}));
+		});
 	});
 
 	return account;

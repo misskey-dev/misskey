@@ -1,21 +1,19 @@
 <template>
 <div class="mk-google">
 	<input type="search" v-model="query" :placeholder="q">
-	<button @click="search"><Fa :icon="faSearch"/> {{ $t('search') }}</button>
+	<button @click="search"><i class="fas fa-search"></i> {{ $ts.search }}</button>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
-import * as os from '@/os';
+import * as os from '@client/os';
 
 export default defineComponent({
 	props: ['q'],
 	data() {
 		return {
 			query: null,
-			faSearch
 		};
 	},
 	mounted() {
@@ -23,7 +21,7 @@ export default defineComponent({
 	},
 	methods: {
 		search() {
-			const engine = this.$store.state.settings.webSearchEngine ||
+			const engine = this.$store.state.webSearchEngine ||
 				'https://www.google.com/search?q={{query}}';
 			const url = engine.replace('{{query}}', this.query)
 			window.open(url, '_blank');

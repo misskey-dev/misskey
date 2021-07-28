@@ -36,7 +36,7 @@ const postcss = {
 module.exports = {
 	entry: {
 		app: './src/client/init.ts',
-		sw: './src/client/sw.ts'
+		sw: './src/client/sw/sw.ts'
 	},
 	module: {
 		rules: [{
@@ -70,7 +70,7 @@ module.exports = {
 					options: {
 						implementation: require('sass'),
 						sassOptions: {
-							fiber: require('fibers')
+							fiber: false
 						}
 					}
 				}]
@@ -88,7 +88,7 @@ module.exports = {
 					options: {
 						implementation: require('sass'),
 						sassOptions: {
-							fiber: require('fibers')
+							fiber: false
 						}
 					}
 				}]
@@ -104,8 +104,14 @@ module.exports = {
 				}
 			}, postcss]
 		}, {
+			test: /\.svg$/,
+			use: [
+				'vue-loader',
+				'vue-svg-loader',
+			],
+		}, {
 			test: /\.(eot|woff|woff2|svg|ttf)([?]?.*)$/,
-			loader: 'url-loader'
+			type: 'asset/resource'
 		}, {
 			test: /\.json5$/,
 			loader: 'json5-loader',
@@ -140,7 +146,6 @@ module.exports = {
 			_DATA_TRANSFER_DECK_COLUMN_: JSON.stringify('mk_deck_column'),
 			__VUE_OPTIONS_API__: true,
 			__VUE_PROD_DEVTOOLS__: false,
-			__VUE_I18N_LEGACY_API__: false,
 		}),
 		new VueLoaderPlugin(),
 		new WebpackOnBuildPlugin((stats: any) => {
@@ -148,16 +153,18 @@ module.exports = {
 		}),
 	],
 	output: {
-		path: __dirname + '/built/client/assets',
+		path: __dirname + '/built/assets',
 		filename: `[name].${meta.version}.js`,
-		publicPath: `/assets/`
+		publicPath: `/assets/`,
+		pathinfo: false,
 	},
 	resolve: {
 		extensions: [
 			'.js', '.ts', '.json'
 		],
 		alias: {
-			'@': __dirname + '/src/client',
+			'@client': __dirname + '/src/client',
+			'@': __dirname + '/src',
 			'const.styl': __dirname + '/src/client/const.styl'
 		}
 	},

@@ -4,23 +4,23 @@
 		<template #empty>
 			<div class="_fullinfo">
 				<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
-				<div>{{ $t('noFollowRequests') }}</div>
+				<div>{{ $ts.noFollowRequests }}</div>
 			</div>
 		</template>
 		<template #default="{items}">
 			<div class="user _panel" v-for="req in items" :key="req.id">
-				<MkAvatar class="avatar" :user="req.follower"/>
+				<MkAvatar class="avatar" :user="req.follower" :show-indicator="true"/>
 				<div class="body">
 					<div class="name">
-						<router-link class="name" :to="userPage(req.follower)" v-user-preview="req.follower.id"><MkUserName :user="req.follower"/></router-link>
+						<MkA class="name" :to="userPage(req.follower)" v-user-preview="req.follower.id"><MkUserName :user="req.follower"/></MkA>
 						<p class="acct">@{{ acct(req.follower) }}</p>
 					</div>
 					<div class="description" v-if="req.follower.description" :title="req.follower.description">
-						<Mfm :text="req.follower.description" :is-note="false" :author="req.follower" :i="$store.state.i" :custom-emojis="req.follower.emojis" :plain="true" :nowrap="true"/>
+						<Mfm :text="req.follower.description" :is-note="false" :author="req.follower" :i="$i" :custom-emojis="req.follower.emojis" :plain="true" :nowrap="true"/>
 					</div>
 					<div class="actions">
-						<button class="_button" @click="accept(req.follower)"><Fa :icon="faCheck"/></button>
-						<button class="_button" @click="reject(req.follower)"><Fa :icon="faTimes"/></button>
+						<button class="_button" @click="accept(req.follower)"><i class="fas fa-check"></i></button>
+						<button class="_button" @click="reject(req.follower)"><i class="fas fa-times"></i></button>
 					</div>
 				</div>
 			</div>
@@ -31,10 +31,10 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faUserClock, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
-import MkPagination from '@/components/ui/pagination.vue';
+import MkPagination from '@client/components/ui/pagination.vue';
 import { userPage, acct } from '../filters/user';
-import * as os from '@/os';
+import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -43,17 +43,14 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
-				header: [{
-					title: this.$t('followRequests'),
-					icon: faUserClock,
-				}],
+			[symbols.PAGE_INFO]: {
+				title: this.$ts.followRequests,
+				icon: 'fas fa-user-clock',
 			},
 			pagination: {
 				endpoint: 'following/requests/list',
 				limit: 10,
 			},
-			faCheck, faTimes, faUserClock
 		};
 	},
 

@@ -6,10 +6,10 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faStar } from '@fortawesome/free-solid-svg-icons';
-import Progress from '@/scripts/loading';
-import XNotes from '@/components/notes.vue';
-import * as os from '@/os';
+import Progress from '@client/scripts/loading';
+import XNotes from '@client/components/notes.vue';
+import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -18,11 +18,9 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
-				header: [{
-					title: this.$t('favorites'),
-					icon: faStar
-				}]
+			[symbols.PAGE_INFO]: {
+				title: this.$ts.favorites,
+				icon: 'fas fa-star'
 			},
 			pagination: {
 				endpoint: 'i/favorites',

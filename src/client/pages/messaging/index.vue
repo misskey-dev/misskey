@@ -1,76 +1,69 @@
 <template>
-<div class="_section">
-	<div class="mk-messaging _content" v-size="{ max: [400] }">
-		<MkButton @click="start" primary class="start"><Fa :icon="faPlus"/> {{ $t('startMessaging') }}</MkButton>
+<div class="yweeujhr _root" v-size="{ max: [400] }">
+	<MkButton @click="start" primary class="start"><i class="fas fa-plus"></i> {{ $ts.startMessaging }}</MkButton>
 
-		<div class="history" v-if="messages.length > 0">
-			<router-link v-for="(message, i) in messages"
-				class="message _panel"
-				:class="{ isMe: isMe(message), isRead: message.groupId ? message.reads.includes($store.state.i.id) : message.isRead }"
-				:to="message.groupId ? `/my/messaging/group/${message.groupId}` : `/my/messaging/${getAcct(isMe(message) ? message.recipient : message.user)}`"
-				:data-index="i"
-				:key="message.id"
-				@click.prevent="go(message)"
-			>
-				<div>
-					<MkAvatar class="avatar" :user="message.groupId ? message.user : isMe(message) ? message.recipient : message.user"/>
-					<header v-if="message.groupId">
-						<span class="name">{{ message.group.name }}</span>
-						<MkTime :time="message.createdAt"/>
-					</header>
-					<header v-else>
-						<span class="name"><MkUserName :user="isMe(message) ? message.recipient : message.user"/></span>
-						<span class="username">@{{ acct(isMe(message) ? message.recipient : message.user) }}</span>
-						<MkTime :time="message.createdAt"/>
-					</header>
-					<div class="body">
-						<p class="text"><span class="me" v-if="isMe(message)">{{ $t('you') }}:</span>{{ message.text }}</p>
-					</div>
+	<div class="history" v-if="messages.length > 0">
+		<MkA v-for="(message, i) in messages"
+			class="message _block"
+			:class="{ isMe: isMe(message), isRead: message.groupId ? message.reads.includes($i.id) : message.isRead }"
+			:to="message.groupId ? `/my/messaging/group/${message.groupId}` : `/my/messaging/${getAcct(isMe(message) ? message.recipient : message.user)}`"
+			:data-index="i"
+			:key="message.id"
+			v-anim="i"
+		>
+			<div>
+				<MkAvatar class="avatar" :user="message.groupId ? message.user : isMe(message) ? message.recipient : message.user" :show-indicator="true"/>
+				<header v-if="message.groupId">
+					<span class="name">{{ message.group.name }}</span>
+					<MkTime :time="message.createdAt" class="time"/>
+				</header>
+				<header v-else>
+					<span class="name"><MkUserName :user="isMe(message) ? message.recipient : message.user"/></span>
+					<span class="username">@{{ acct(isMe(message) ? message.recipient : message.user) }}</span>
+					<MkTime :time="message.createdAt" class="time"/>
+				</header>
+				<div class="body">
+					<p class="text"><span class="me" v-if="isMe(message)">{{ $ts.you }}:</span>{{ message.text }}</p>
 				</div>
-			</router-link>
-		</div>
-		<div class="_fullinfo" v-if="!fetching && messages.length == 0">
-			<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
-			<div>{{ $t('noHistory') }}</div>
-		</div>
-		<MkLoading v-if="fetching"/>
+			</div>
+		</MkA>
 	</div>
+	<div class="_fullinfo" v-if="!fetching && messages.length == 0">
+		<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
+		<div>{{ $ts.noHistory }}</div>
+	</div>
+	<MkLoading v-if="fetching"/>
 </div>
 </template>
 
 <script lang="ts">
-import { defineAsyncComponent, defineComponent } from 'vue';
-import { faUser, faUsers, faComments, faPlus } from '@fortawesome/free-solid-svg-icons';
-import getAcct from '../../../misc/acct/render';
-import MkButton from '@/components/ui/button.vue';
+import { defineAsyncComponent, defineComponent, markRaw } from 'vue';
+import { getAcct } from '@/misc/acct';
+import MkButton from '@client/components/ui/button.vue';
 import { acct } from '../../filters/user';
-import * as os from '@/os';
+import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
 		MkButton
 	},
 
-	inject: ['navHook'],
-
 	data() {
 		return {
-			INFO: {
-				header: [{
-					title: this.$t('messaging'),
-					icon: faComments
-				}]
+			[symbols.PAGE_INFO]: {
+				title: this.$ts.messaging,
+				icon: 'fas fa-comments'
 			},
 			fetching: true,
 			moreFetching: false,
 			messages: [],
 			connection: null,
-			faUser, faUsers, faComments, faPlus
 		};
 	},
 
 	mounted() {
-		this.connection = os.stream.useSharedConnection('messagingIndex');
+		this.connection = markRaw(os.stream.useChannel('messagingIndex'));
 
 		this.connection.on('message', this.onMessage);
 		this.connection.on('read', this.onRead);
@@ -90,22 +83,10 @@ export default defineComponent({
 	},
 
 	methods: {
-		go(message) {
-			const url = message.groupId ? `/my/messaging/group/${message.groupId}` : `/my/messaging/${getAcct(this.isMe(message) ? message.recipient : message.user)}`;
-			if (this.navHook) {
-				this.navHook(url, defineAsyncComponent(() => import('@/pages/messaging/messaging-room.vue')), {
-					userAcct: message.groupId ? null : getAcct(this.isMe(message) ? message.recipient : message.user),
-					groupId: message.groupId
-				});
-			} else {
-				this.$router.push(url);
-			}
-		},
-
 		getAcct,
 
 		isMe(message) {
-			return message.userId == this.$store.state.i.id;
+			return message.userId == this.$i.id;
 		},
 
 		onMessage(message) {
@@ -128,7 +109,7 @@ export default defineComponent({
 					if (found.recipientId) {
 						found.isRead = true;
 					} else if (found.groupId) {
-						found.reads.push(this.$store.state.i.id);
+						found.reads.push(this.$i.id);
 					}
 				}
 			}
@@ -136,12 +117,12 @@ export default defineComponent({
 
 		start(ev) {
 			os.modalMenu([{
-				text: this.$t('messagingWithUser'),
-				icon: faUser,
+				text: this.$ts.messagingWithUser,
+				icon: 'fas fa-user',
 				action: () => { this.startUser() }
 			}, {
-				text: this.$t('messagingWithGroup'),
-				icon: faUsers,
+				text: this.$ts.messagingWithGroup,
+				icon: 'fas fa-users',
 				action: () => { this.startGroup() }
 			}], ev.currentTarget || ev.target);
 		},
@@ -158,14 +139,14 @@ export default defineComponent({
 			if (groups1.length === 0 && groups2.length === 0) {
 				os.dialog({
 					type: 'warning',
-					title: this.$t('youHaveNoGroups'),
-					text: this.$t('joinOrCreateGroup'),
+					title: this.$ts.youHaveNoGroups,
+					text: this.$ts.joinOrCreateGroup,
 				});
 				return;
 			}
 			const { canceled, result: group } = await os.dialog({
 				type: null,
-				title: this.$t('group'),
+				title: this.$ts.group,
 				select: {
 					items: groups1.concat(groups2).map(group => ({
 						value: group, text: group.name
@@ -183,10 +164,10 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.mk-messaging {
+.yweeujhr {
 
 	> .start {
-		margin: 0 auto var(--margin) auto;
+		margin: var(--margin) auto var(--margin) auto;
 	}
 
 	> .history {
@@ -216,7 +197,7 @@ export default defineComponent({
 
 			&:not(.isMe):not(.isRead) {
 				> div {
-					background-image: url("/assets/unread.svg");
+					background-image: url("/static-assets/client/unread.svg");
 					background-repeat: no-repeat;
 					background-position: 0 center;
 				}
@@ -258,7 +239,7 @@ export default defineComponent({
 						margin: 0 8px;
 					}
 
-					> .mk-time {
+					> .time {
 						margin: 0 0 0 auto;
 					}
 				}

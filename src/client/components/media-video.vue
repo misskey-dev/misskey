@@ -1,29 +1,29 @@
 <template>
 <div class="icozogqfvdetwohsdglrbswgrejoxbdj" v-if="hide" @click="hide = false">
 	<div>
-		<b><Fa :icon="faExclamationTriangle"/> {{ $t('sensitive') }}</b>
-		<span>{{ $t('clickToShow') }}</span>
+		<b><i class="fas fa-exclamation-triangle"></i> {{ $ts.sensitive }}</b>
+		<span>{{ $ts.clickToShow }}</span>
 	</div>
 </div>
 <div class="kkjnbbplepmiyuadieoenjgutgcmtsvu" v-else>
-	<i><Fa :icon="faEyeSlash" @click="hide = true"/></i>
-	<a
-		:href="video.url"
-		rel="nofollow noopener"
-		target="_blank"
-		:style="imageStyle"
+	<video
+		:poster="video.thumbnailUrl"
 		:title="video.name"
+		preload="none"
+		controls
 	>
-		<Fa :icon="faPlayCircle"/>
-	</a>
+		<source 
+			:src="video.url" 
+			:type="video.type"
+		>
+	</video>
+	<i class="fas fa-eye-slash" @click="hide = true"></i>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faPlayCircle } from '@fortawesome/free-regular-svg-icons';
-import { faExclamationTriangle, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import * as os from '@/os';
+import * as os from '@client/os';
 
 export default defineComponent({
 	props: {
@@ -35,20 +35,10 @@ export default defineComponent({
 	data() {
 		return {
 			hide: true,
-			faPlayCircle,
-			faExclamationTriangle,
-			faEyeSlash
 		};
 	},
-	computed: {
-		imageStyle(): any {
-			return {
-				'background-image': `url(${this.video.thumbnailUrl})`
-			};
-		}
-	},
 	created() {
-		this.hide = this.video.isSensitive && !this.$store.state.device.alwaysShowNsfw;
+		this.hide = (this.$store.state.nsfw === 'force') ? true : this.video.isSensitive && (this.$store.state.nsfw !== 'ignore');
 	},
 });
 </script>
@@ -72,7 +62,7 @@ export default defineComponent({
 		right: 12px;
 	}
 
-	> a {
+	> video {
 		display: flex;
 		justify-content: center;
 		align-items: center;

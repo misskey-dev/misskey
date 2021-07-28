@@ -1,5 +1,5 @@
-import config from '../../config';
-import { getJson } from '../../misc/fetch';
+import config from '@/config';
+import { getJson } from '@/misc/fetch';
 import { ILocalUser } from '../../models/entities/user';
 import { getInstanceActor } from '../../services/instance-actor';
 import { signedGet } from './request';

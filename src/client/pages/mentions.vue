@@ -6,9 +6,9 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faAt } from '@fortawesome/free-solid-svg-icons';
-import Progress from '@/scripts/loading';
-import XNotes from '@/components/notes.vue';
+import Progress from '@client/scripts/loading';
+import XNotes from '@client/components/notes.vue';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -17,17 +17,14 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
-				header: [{
-					title: this.$t('mentions'),
-					icon: faAt
-				}],
+			[symbols.PAGE_INFO]: {
+				title: this.$ts.mentions,
+				icon: 'fas fa-at'
 			},
 			pagination: {
 				endpoint: 'notes/mentions',
 				limit: 10,
 			},
-			faAt
 		};
 	},
 

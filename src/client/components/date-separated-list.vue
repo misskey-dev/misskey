@@ -1,25 +1,11 @@
-<template>
-<transition-group class="sqadhkmv _list_" name="list" tag="div" :data-direction="direction" :data-reversed="reversed ? 'true' : 'false'">
-	<template v-for="(item, i) in items">
-		<slot :item="item"></slot>
-		<div class="separator" v-if="showDate(i, item)" :key="item.id + '_date'">
-			<p class="date">
-				<span><Fa class="icon" :icon="faAngleUp"/>{{ getDateText(item.createdAt) }}</span>
-				<span>{{ getDateText(items[i + 1].createdAt) }}<Fa class="icon" :icon="faAngleDown"/></span>
-			</p>
-		</div>
-	</template>
-</transition-group>
-</template>
-
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
+import { defineComponent, h, PropType, TransitionGroup } from 'vue';
+import MkAd from '@client/components/global/ad.vue';
 
 export default defineComponent({
 	props: {
 		items: {
-			type: Array,
+			type: Array as PropType<{ id: string; createdAt: string; _shouldInsertAd_: boolean; }[]>,
 			required: true,
 		},
 		direction: {
@@ -31,16 +17,24 @@ export default defineComponent({
 			type: Boolean,
 			required: false,
 			default: false
-		}
-	},
-
-	data() {
-		return {
-			faAngleUp, faAngleDown
-		};
+		},
+		noGap: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
+		ad: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
 	},
 
 	methods: {
+		focus() {
+			this.$slots.default[0].elm.focus();
+		},
+
 		getDateText(time: string) {
 			const date = new Date(time).getDate();
 			const month = new Date(time).getMonth() + 1;
@@ -48,27 +42,73 @@ export default defineComponent({
 				month: month.toString(),
 				day: date.toString()
 			});
-		},
-
-		showDate(i, item) {
-			return (
-				i != this.items.length - 1 &&
-				new Date(item.createdAt).getDate() != new Date(this.items[i + 1].createdAt).getDate() &&
-				!item._prId_ &&
-				!this.items[i + 1]._prId_ &&
-				!item._featuredId_ &&
-				!this.items[i + 1]._featuredId_);
-		},
-
-		focus() {
-			this.$slots.default[0].elm.focus();
 		}
-	}
+	},
+
+	render() {
+		if (this.items.length === 0) return;
+
+		return h(this.$store.state.animation ? TransitionGroup : 'div', this.$store.state.animation ? {
+			class: 'sqadhkmv' + (this.noGap ? ' noGap _block' : ''),
+			name: 'list',
+			tag: 'div',
+			'data-direction': this.direction,
+			'data-reversed': this.reversed ? 'true' : 'false',
+		} : {
+			class: 'sqadhkmv' + (this.noGap ? ' noGap _block' : ''),
+		}, this.items.map((item, i) => {
+			const el = this.$slots.default({
+				item: item
+			})[0];
+			if (el.key == null && item.id) el.key = item.id;
+
+			if (
+				i != this.items.length - 1 &&
+				new Date(item.createdAt).getDate() != new Date(this.items[i + 1].createdAt).getDate()
+			) {
+				const separator = h('div', {
+					class: 'separator',
+					key: item.id + ':separator',
+				}, h('p', {
+					class: 'date'
+				}, [
+					h('span', [
+						h('i', {
+							class: 'fas fa-angle-up icon',
+						}),
+						this.getDateText(item.createdAt)
+					]),
+					h('span', [
+						this.getDateText(this.items[i + 1].createdAt),
+						h('i', {
+							class: 'fas fa-angle-down icon',
+						})
+					])
+				]));
+
+				return [el, separator];
+			} else {
+				if (this.ad && item._shouldInsertAd_) {
+					return [h(MkAd, {
+						class: 'a', // advertiseの意(ブロッカー対策)
+						key: item.id + ':ad',
+						prefer: ['horizontal', 'horizontal-big'],
+					}), el];
+				} else {
+					return el;
+				}
+			}
+		}));
+	},
 });
 </script>
 
 <style lang="scss">
 .sqadhkmv {
+	> *:empty {
+		display: none;
+	}
+
 	> *:not(:last-child) {
 		margin-bottom: var(--margin);
 	}
@@ -94,11 +134,7 @@ export default defineComponent({
 			transform: translateY(-64px);
 		}
 	}
-}
-</style>
 
-<style lang="scss" scoped>
-.sqadhkmv {
 	> .separator {
 		text-align: center;
 
@@ -128,6 +164,19 @@ export default defineComponent({
 						margin-left: 8px;
 					}
 				}
+			}
+		}
+	}
+
+	&.noGap {
+		> * {
+			margin: 0 !important;
+			border: none;
+			border-radius: 0;
+			box-shadow: none;
+
+			&:not(:last-child) {
+				border-bottom: solid 0.5px var(--divider);
 			}
 		}
 	}

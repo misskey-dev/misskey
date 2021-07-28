@@ -3,7 +3,6 @@ import { Note } from '../../../models/entities/note';
 import { User } from '../../../models/entities/user';
 import { Notes, UserProfiles, NoteReactions } from '../../../models';
 import { generateMutedUserQuery } from './generate-muted-user-query';
-import { ensure } from '../../../prelude/ensure';
 
 // TODO: リアクション、Renote、返信などをしたノートは除外する
 
@@ -11,7 +10,7 @@ export async function injectFeatured(timeline: Note[], user?: User | null) {
 	if (timeline.length < 5) return;
 
 	if (user) {
-		const profile = await UserProfiles.findOne(user.id).then(ensure);
+		const profile = await UserProfiles.findOneOrFail(user.id);
 		if (!profile.injectFeaturedNote) return;
 	}
 
@@ -24,7 +23,7 @@ export async function injectFeatured(timeline: Note[], user?: User | null) {
 		.andWhere(`note.score > 0`)
 		.andWhere(`note.createdAt > :date`, { date: new Date(Date.now() - day) })
 		.andWhere(`note.visibility = 'public'`)
-		.leftJoinAndSelect('note.user', 'user');
+		.innerJoinAndSelect('note.user', 'user');
 
 	if (user) {
 		query.andWhere('note.userId != :userId', { userId: user.id });

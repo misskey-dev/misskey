@@ -2,18 +2,18 @@
 <form class="mk-setup" @submit.prevent="submit()">
 	<h1>Welcome to Misskey!</h1>
 	<div>
-		<p>{{ $t('intro') }}</p>
+		<p>{{ $ts.intro }}</p>
 		<MkInput v-model:value="username" pattern="^[a-zA-Z0-9_]{1,20}$" spellcheck="false" required>
-			<span>{{ $t('username') }}</span>
+			<span>{{ $ts.username }}</span>
 			<template #prefix>@</template>
 			<template #suffix>@{{ host }}</template>
 		</MkInput>
 		<MkInput v-model:value="password" type="password">
-			<span>{{ $t('password') }}</span>
-			<template #prefix><Fa :icon="faLock"/></template>
+			<span>{{ $ts.password }}</span>
+			<template #prefix><i class="fas fa-lock"></i></template>
 		</MkInput>
 		<footer>
-			<MkButton primary type="submit" :disabled="submitting">{{ submitting ? $t('processing') : $t('done') }}<MkEllipsis v-if="submitting"/></MkButton>
+			<MkButton primary type="submit" :disabled="submitting">{{ submitting ? $ts.processing : $ts.done }}<MkEllipsis v-if="submitting"/></MkButton>
 		</footer>
 	</div>
 </form>
@@ -21,11 +21,11 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faLock } from '@fortawesome/free-solid-svg-icons';
-import MkButton from '@/components/ui/button.vue';
-import MkInput from '@/components/ui/input.vue';
-import { host } from '@/config';
-import * as os from '@/os';
+import MkButton from '@client/components/ui/button.vue';
+import MkInput from '@client/components/ui/input.vue';
+import { host } from '@client/config';
+import * as os from '@client/os';
+import { login } from '@client/account';
 
 export default defineComponent({
 	components: {
@@ -39,7 +39,6 @@ export default defineComponent({
 			password: '',
 			submitting: false,
 			host,
-			faLock
 		}
 	},
 
@@ -52,14 +51,13 @@ export default defineComponent({
 				username: this.username,
 				password: this.password,
 			}).then(res => {
-				localStorage.setItem('i', res.token);
-				location.href = '/';
+				login(res.i);
 			}).catch(() => {
 				this.submitting = false;
 
 				os.dialog({
 					type: 'error',
-					text: this.$t('somethingHappened')
+					text: this.$ts.somethingHappened
 				});
 			});
 		}
@@ -72,6 +70,8 @@ export default defineComponent({
 	border-radius: var(--radius);
 	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 	overflow: hidden;
+	max-width: 500px;
+	margin: 32px auto;
 
 	> h1 {
 		margin: 0;

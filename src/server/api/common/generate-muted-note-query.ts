@@ -2,7 +2,7 @@ import { User } from '../../../models/entities/user';
 import { MutedNotes } from '../../../models';
 import { SelectQueryBuilder } from 'typeorm';
 
-export function generateMutedNoteQuery(q: SelectQueryBuilder<any>, me: User) {
+export function generateMutedNoteQuery(q: SelectQueryBuilder<any>, me: { id: User['id'] }) {
 	const mutedQuery = MutedNotes.createQueryBuilder('muted')
 		.select('muted.noteId')
 		.where('muted.userId = :userId', { userId: me.id });

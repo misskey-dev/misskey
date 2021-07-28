@@ -1,7 +1,7 @@
 <template>
 <MkContainer :show-header="props.showHeader" :naked="props.transparent">
-	<template #header><Fa :icon="faChartBar"/>{{ $t('_widgets.activity') }}</template>
-	<template #func><button @click="toggleView()" class="_button"><Fa :icon="faSort"/></button></template>
+	<template #header><i class="fas fa-chart-bar"></i>{{ $ts._widgets.activity }}</template>
+	<template #func><button @click="toggleView()" class="_button"><i class="fas fa-sort"></i></button></template>
 
 	<div>
 		<MkLoading v-if="fetching"/>
@@ -15,12 +15,11 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faChartBar, faSort } from '@fortawesome/free-solid-svg-icons';
-import MkContainer from '@/components/ui/container.vue';
+import MkContainer from '@client/components/ui/container.vue';
 import define from './define';
 import XCalendar from './activity.calendar.vue';
 import XChart from './activity.chart.vue';
-import * as os from '@/os';
+import * as os from '@client/os';
 
 const widget = define({
 	name: 'activity',
@@ -52,12 +51,11 @@ export default defineComponent({
 		return {
 			fetching: true,
 			activity: null,
-			faChartBar, faSort
 		};
 	},
 	mounted() {
 		os.api('charts/user/notes', {
-			userId: this.$store.state.i.id,
+			userId: this.$i.id,
 			span: 'day',
 			limit: 7 * 21
 		}).then(activity => {

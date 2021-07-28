@@ -1,15 +1,11 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import * as bcrypt from 'bcryptjs';
 import rndstr from 'rndstr';
 import { Users, UserProfiles } from '../../../../models';
 
 export const meta = {
-	desc: {
-		'ja-JP': '指定したユーザーのパスワードをリセットします。',
-	},
-
 	tags: ['admin'],
 
 	requireCredential: true as const,
@@ -18,11 +14,20 @@ export const meta = {
 	params: {
 		userId: {
 			validator: $.type(ID),
-			desc: {
-				'ja-JP': '対象のユーザーID',
-				'en-US': 'The user ID which you want to suspend'
-			}
 		},
+	},
+
+	res: {
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
+		properties: {
+			password: {
+				type: 'string' as const,
+				optional: false as const, nullable: false as const,
+				minLength: 8,
+				maxLength: 8
+			}
+		}
 	}
 };
 

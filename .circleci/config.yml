@@ -15,7 +15,8 @@ jobs:
     executor: docker
     steps:
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker:
+          version: 19.03.13
       - run:
           name: Build
           command: |
@@ -31,7 +32,7 @@ jobs:
                     apk update && apk add jq
                     docker tag misskey/misskey misskey/misskey:$(cat package.json | jq -r .version)
                     docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
-                    docker push misskey/misskey
+                    docker push -a misskey/misskey
                    else
                     echo -e '\033[0;33mAborted deploying to Docker Hub\033[0;39m'
                   fi

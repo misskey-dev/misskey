@@ -1,9 +1,8 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { DriveFolders, DriveFiles } from '..';
 import { DriveFolder } from '../entities/drive-folder';
-import { ensure } from '../../prelude/ensure';
 import { awaitAll } from '../../prelude/await-all';
-import { SchemaType } from '../../misc/schema';
+import { SchemaType } from '@/misc/schema';
 
 export type PackedDriveFolder = SchemaType<typeof packedDriveFolderSchema>;
 
@@ -26,7 +25,7 @@ export class DriveFolderRepository extends Repository<DriveFolder> {
 			detail: false
 		}, options);
 
-		const folder = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
+		const folder = typeof src === 'object' ? src : await this.findOneOrFail(src);
 
 		return await awaitAll({
 			id: folder.id,
@@ -60,35 +59,29 @@ export const packedDriveFolderSchema = {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
 			format: 'id',
-			description: 'The unique identifier for this Drive folder.',
 			example: 'xxxxxxxxxx',
 		},
 		createdAt: {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
 			format: 'date-time',
-			description: 'The date that the Drive folder was created.'
 		},
 		name: {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
-			description: 'The folder name.',
 		},
 		foldersCount: {
 			type: 'number' as const,
 			optional: true as const, nullable: false as const,
-			description: 'The count of child folders.',
 		},
 		filesCount: {
 			type: 'number' as const,
 			optional: true as const, nullable: false as const,
-			description: 'The count of child files.',
 		},
 		parentId: {
 			type: 'string' as const,
 			optional: false as const, nullable: true as const,
 			format: 'id',
-			description: 'The parent folder ID of this folder.',
 			example: 'xxxxxxxxxx',
 		},
 		parent: {

@@ -1,9 +1,10 @@
 import { Directive, ref } from 'vue';
-import { isDeviceTouch } from '@/scripts/is-device-touch';
-import { popup } from '@/os';
+import { isDeviceTouch } from '@client/scripts/is-device-touch';
+import { popup } from '@client/os';
 
 const start = isDeviceTouch ? 'touchstart' : 'mouseover';
 const end = isDeviceTouch ? 'touchend' : 'mouseleave';
+const delay = 100;
 
 export default {
 	mounted(el: HTMLElement, binding, vn) {
@@ -23,13 +24,13 @@ export default {
 			}
 		};
 
-		const show = async e => {
+		const show = e => {
 			if (!document.body.contains(el)) return;
 			if (self._close) return;
 			if (self.text == null) return;
 
 			const showing = ref(true);
-			popup(await import('@/components/ui/tooltip.vue'), {
+			popup(import('@client/components/ui/tooltip.vue'), {
 				showing,
 				text: self.text,
 				source: el
@@ -47,13 +48,13 @@ export default {
 		el.addEventListener(start, () => {
 			clearTimeout(self.showTimer);
 			clearTimeout(self.hideTimer);
-			self.showTimer = setTimeout(show, 300);
+			self.showTimer = setTimeout(show, delay);
 		}, { passive: true });
 
 		el.addEventListener(end, () => {
 			clearTimeout(self.showTimer);
 			clearTimeout(self.hideTimer);
-			self.hideTimer = setTimeout(self.close, 300);
+			self.hideTimer = setTimeout(self.close, delay);
 		}, { passive: true });
 
 		el.addEventListener('click', () => {

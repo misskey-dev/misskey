@@ -1,5 +1,5 @@
 <template>
-<router-link :to="`/@${page.user.username}/pages/${page.name}`" class="vhpxefrj" tabindex="-1">
+<MkA :to="`/@${page.user.username}/pages/${page.name}`" class="vhpxefrj _block _isolated" tabindex="-1">
 	<div class="thumbnail" v-if="page.eyeCatchingImage" :style="`background-image: url('${page.eyeCatchingImage.thumbnailUrl}')`"></div>
 	<article>
 		<header>
@@ -11,13 +11,13 @@
 			<p>{{ userName(page.user) }}</p>
 		</footer>
 	</article>
-</router-link>
+</MkA>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { userName } from '../filters/user';
-import * as os from '@/os';
+import * as os from '@client/os';
 
 export default defineComponent({
 	props: {
@@ -35,16 +35,10 @@ export default defineComponent({
 <style lang="scss" scoped>
 .vhpxefrj {
 	display: block;
-	overflow: hidden;
-	width: 100%;
-	border: solid var(--lineWidth) var(--urlPreviewBorder);
-	border-radius: 4px;
-	overflow: hidden;
-	border: 1px solid var(--divider);
 
 	&:hover {
 		text-decoration: none;
-		border-color: var(--urlPreviewBorderHover);
+		color: var(--accent);
 	}
 
 	> .thumbnail {

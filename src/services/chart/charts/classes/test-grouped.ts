@@ -1,6 +1,6 @@
 import autobind from 'autobind-decorator';
 import Chart, { Obj, DeepPartial } from '../../core';
-import { SchemaType } from '../../../../misc/schema';
+import { SchemaType } from '@/misc/schema';
 import { name, schema } from '../schemas/test-grouped';
 
 type TestGroupedLog = SchemaType<typeof schema>;
@@ -17,6 +17,17 @@ export default class TestGroupedChart extends Chart<TestGroupedLog> {
 		return {
 			foo: {
 				total: latest.foo.total,
+			},
+		};
+	}
+
+	@autobind
+	protected aggregate(logs: TestGroupedLog[]): TestGroupedLog {
+		return {
+			foo: {
+				total: logs[0].foo.total,
+				inc: logs.reduce((a, b) => a + b.foo.inc, 0),
+				dec: logs.reduce((a, b) => a + b.foo.dec, 0),
 			},
 		};
 	}

@@ -2,41 +2,41 @@
 <MkModal ref="modal" :src="src" @click="$refs.modal.close()" @closed="$emit('closed')">
 	<div class="gqyayizv _popup">
 		<button class="_button" @click="choose('public')" :class="{ active: v == 'public' }" data-index="1" key="public">
-			<div><Fa :icon="faGlobe"/></div>
+			<div><i class="fas fa-globe"></i></div>
 			<div>
-				<span>{{ $t('_visibility.public') }}</span>
-				<span>{{ $t('_visibility.publicDescription') }}</span>
+				<span>{{ $ts._visibility.public }}</span>
+				<span>{{ $ts._visibility.publicDescription }}</span>
 			</div>
 		</button>
 		<button class="_button" @click="choose('home')" :class="{ active: v == 'home' }" data-index="2" key="home">
-			<div><Fa :icon="faHome"/></div>
+			<div><i class="fas fa-home"></i></div>
 			<div>
-				<span>{{ $t('_visibility.home') }}</span>
-				<span>{{ $t('_visibility.homeDescription') }}</span>
+				<span>{{ $ts._visibility.home }}</span>
+				<span>{{ $ts._visibility.homeDescription }}</span>
 			</div>
 		</button>
 		<button class="_button" @click="choose('followers')" :class="{ active: v == 'followers' }" data-index="3" key="followers">
-			<div><Fa :icon="faUnlock"/></div>
+			<div><i class="fas fa-unlock"></i></div>
 			<div>
-				<span>{{ $t('_visibility.followers') }}</span>
-				<span>{{ $t('_visibility.followersDescription') }}</span>
+				<span>{{ $ts._visibility.followers }}</span>
+				<span>{{ $ts._visibility.followersDescription }}</span>
 			</div>
 		</button>
 		<button :disabled="localOnly" class="_button" @click="choose('specified')" :class="{ active: v == 'specified' }" data-index="4" key="specified">
-			<div><Fa :icon="faEnvelope"/></div>
+			<div><i class="fas fa-envelope"></i></div>
 			<div>
-				<span>{{ $t('_visibility.specified') }}</span>
-				<span>{{ $t('_visibility.specifiedDescription') }}</span>
+				<span>{{ $ts._visibility.specified }}</span>
+				<span>{{ $ts._visibility.specifiedDescription }}</span>
 			</div>
 		</button>
 		<div class="divider"></div>
 		<button class="_button localOnly" @click="localOnly = !localOnly" :class="{ active: localOnly }" data-index="5" key="localOnly">
-			<div><Fa :icon="faBiohazard"/></div>
+			<div><i class="fas fa-biohazard"></i></div>
 			<div>
-				<span>{{ $t('_visibility.localOnly') }}</span>
-				<span>{{ $t('_visibility.localOnlyDescription') }}</span>
+				<span>{{ $ts._visibility.localOnly }}</span>
+				<span>{{ $ts._visibility.localOnlyDescription }}</span>
 			</div>
-			<div><Fa :icon="localOnly ? faToggleOn : faToggleOff" :key="localOnly"/></div>
+			<div><i :class="localOnly ? 'fas fa-toggle-on' : 'fas fa-toggle-off'"></i></div>
 		</button>
 	</div>
 </MkModal>
@@ -44,9 +44,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faGlobe, faUnlock, faHome, faBiohazard, faToggleOn, faToggleOff } from '@fortawesome/free-solid-svg-icons';
-import { faEnvelope } from '@fortawesome/free-regular-svg-icons';
-import MkModal from '@/components/ui/modal.vue';
+import MkModal from '@client/components/ui/modal.vue';
 
 export default defineComponent({
 	components: {
@@ -70,7 +68,6 @@ export default defineComponent({
 		return {
 			v: this.currentVisibility,
 			localOnly: this.currentLocalOnly,
-			faGlobe, faUnlock, faEnvelope, faHome, faBiohazard, faToggleOn, faToggleOff
 		}
 	},
 	watch: {
@@ -97,7 +94,7 @@ export default defineComponent({
 
 	> .divider {
 		margin: 8px 0;
-		border-top: solid 1px var(--divider);
+		border-top: solid 0.5px var(--divider);
 	}
 
 	> button {
