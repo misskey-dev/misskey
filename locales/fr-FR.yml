@@ -763,6 +763,7 @@ emailNotConfiguredWarning: "Vous n'avez pas configuré d'adresse e-mail."
 ratio: "Ratio"
 customCss: "CSS personnalisé"
 global: "Global"
+squareAvatars: "Avatars carrés"
 _ad:
   back: "Retour"
   reduceFrequencyOfThisAd: "Voir cette publicité moins souvent"
