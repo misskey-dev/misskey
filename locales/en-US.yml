@@ -915,7 +915,7 @@ _channel:
   usersCount: "{n} Participants"
   notesCount: "{n} Notes"
 _menuDisplay:
-  sideFull: "Horizontal"
+  sideFull: "Side"
   sideIcon: "Horizontal (Icons)"
   top: "Top"
   hide: "Hide"
