@@ -916,7 +916,7 @@ _channel:
   notesCount: "{n} Notes"
 _menuDisplay:
   sideFull: "Side"
-  sideIcon: "Horizontal (Icons)"
+  sideIcon: "Side (Icons)"
   top: "Top"
   hide: "Hide"
 _wordMute:
