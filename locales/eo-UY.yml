@@ -358,7 +358,7 @@ _visibility:
   localOnlyDescription: "Nelegabla al transaj uzantoj"
 _postForm:
   replyPlaceholder: "Respondado al tiu noto..."
-  quotePlaceholder: "Citado tiu noton..."
+  quotePlaceholder: "Citado tiun noton..."
   channelPlaceholder: "Sendi sur la kanalo"
 _profile:
   name: "Nomo"
