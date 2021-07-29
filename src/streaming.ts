@@ -4,7 +4,7 @@ import ReconnectingWebsocket from 'reconnecting-websocket';
 import { stringify } from 'querystring';
 import { BroadcastEvents, Channels } from './streaming.types';
 
-function urlQuery(obj: {}): string {
+function urlQuery(obj: Record<string, unknown>): string {
 	return stringify(Object.entries(obj)
 		.filter(([, v]) => Array.isArray(v) ? v.length : v !== undefined)
 		.reduce((a, [k, v]) => (a[k] = v, a), {} as Record<string, any>));

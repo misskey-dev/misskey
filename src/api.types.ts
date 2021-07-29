@@ -7,13 +7,15 @@ import {
 
 type TODO = Record<string, any> | null;
 
+type NoParams = Record<string, never>;
+
 type ShowUserReq = { username: string; host?: string; } | { userId: User['id']; };
 
 export type Endpoints = {
 	// admin
 	'admin/abuse-user-reports': { req: TODO; res: TODO; };
 	'admin/delete-all-files-of-a-user': { req: { userId: User['id']; }; res: null; };
-	'admin/delete-logs': { req: {}; res: null; };
+	'admin/delete-logs': { req: NoParams; res: null; };
 	'admin/get-index-stats': { req: TODO; res: TODO; };
 	'admin/get-table-stats': { req: TODO; res: TODO; };
 	'admin/invite': { req: TODO; res: TODO; };
@@ -73,7 +75,7 @@ export type Endpoints = {
 	// antennas
 	'antennas/create': { req: TODO; res: Antenna; };
 	'antennas/delete': { req: { antennaId: Antenna['id']; }; res: null; };
-	'antennas/list': { req: {}; res: Antenna[]; };
+	'antennas/list': { req: NoParams; res: Antenna[]; };
 	'antennas/notes': { req: { antennaId: Antenna['id']; limit?: number; sinceId?: Note['id']; untilId?: Note['id']; }; res: Note[]; };
 	'antennas/show': { req: { antennaId: Antenna['id']; }; res: Antenna; };
 	'antennas/update': { req: TODO; res: Antenna; };
@@ -256,7 +258,7 @@ export type Endpoints = {
 	'clips/update': { req: TODO; res: TODO; };
 
 	// drive
-	'drive': { req: {}; res: { capacity: number; usage: number; }; };
+	'drive': { req: NoParams; res: { capacity: number; usage: number; }; };
 	'drive/files': { req: { folderId?: DriveFolder['id'] | null; type?: DriveFile['type'] | null; limit?: number; sinceId?: DriveFile['id']; untilId?: DriveFile['id']; }; res: DriveFile[]; };
 	'drive/files/attached-notes': { req: TODO; res: TODO; };
 	'drive/files/check-existence': { req: TODO; res: TODO; };
@@ -279,7 +281,7 @@ export type Endpoints = {
 	'endpoint': { req: { endpoint: string; }; res: { params: { name: string; type: string; }[]; }; };
 
 	// endpoints
-	'endpoints': { req: {}; res: string[]; };
+	'endpoints': { req: NoParams; res: string[]; };
 
 	// federation
 	'federation/dns': { req: { host: string; }; res: {
@@ -311,7 +313,7 @@ export type Endpoints = {
 	'following/delete': { req: { userId: User['id'] }; res: User; };
 	'following/requests/accept': { req: { userId: User['id'] }; res: null; };
 	'following/requests/cancel': { req: { userId: User['id'] }; res: User; };
-	'following/requests/list': { req: {}; res: FollowRequest[]; };
+	'following/requests/list': { req: NoParams; res: FollowRequest[]; };
 	'following/requests/reject': { req: { userId: User['id'] }; res: null; };
 
 	// gallery
@@ -334,7 +336,7 @@ export type Endpoints = {
 	'games/reversi/match/cancel': { req: TODO; res: TODO; };
 
 	// get-online-users-count
-	'get-online-users-count': { req: {}; res: { count: number; }; };
+	'get-online-users-count': { req: NoParams; res: { count: number; }; };
 
 	// hashtags
 	'hashtags/list': { req: TODO; res: TODO; };
@@ -344,7 +346,7 @@ export type Endpoints = {
 	'hashtags/users': { req: TODO; res: TODO; };
 
 	// i
-	'i': { req: {}; res: User; };
+	'i': { req: NoParams; res: User; };
 	'i/apps': { req: TODO; res: TODO; };
 	'i/authorized-apps': { req: TODO; res: TODO; };
 	'i/change-password': { req: TODO; res: TODO; };
@@ -382,7 +384,7 @@ export type Endpoints = {
 	'i/registry/keys-with-type': { req: { scope?: string[]; }; res: Record<string, 'null' | 'array' | 'number' | 'string' | 'boolean' | 'object'>; };
 	'i/registry/keys': { req: { scope?: string[]; }; res: string[]; };
 	'i/registry/remove': { req: { key: string; scope?: string[]; }; res: null; };
-	'i/registry/scopes': { req: {}; res: string[][]; };
+	'i/registry/scopes': { req: NoParams; res: string[][]; };
 	'i/registry/set': { req: { key: string; value: any; scope?: string[]; }; res: null; };
 	'i/revoke-token': { req: TODO; res: TODO; };
 	'i/signin-history': { req: { limit?: number; sinceId?: Signin['id']; untilId?: Signin['id']; }; res: Signin[]; };
@@ -512,7 +514,7 @@ export type Endpoints = {
 
 	// notifications
 	'notifications/create': { req: { body: string; header?: string | null; icon?: string | null; }; res: null; };
-	'notifications/mark-all-as-read': { req: {}; res: null; };
+	'notifications/mark-all-as-read': { req: NoParams; res: null; };
 	'notifications/read': { req: { notificationId: Notification['id']; }; res: null; };
 
 	// page-push
@@ -521,14 +523,14 @@ export type Endpoints = {
 	// pages
 	'pages/create': { req: TODO; res: Page; };
 	'pages/delete': { req: { pageId: Page['id']; }; res: null; };
-	'pages/featured': { req: {}; res: Page[]; };
+	'pages/featured': { req: NoParams; res: Page[]; };
 	'pages/like': { req: { pageId: Page['id']; }; res: null; };
 	'pages/show': { req: { pageId?: Page['id']; name?: string; username?: string; }; res: Page; };
 	'pages/unlike': { req: { pageId: Page['id']; }; res: null; };
 	'pages/update': { req: TODO; res: null; };
 
 	// ping
-	'ping': { req: {}; res: { pong: number; }; };
+	'ping': { req: NoParams; res: { pong: number; }; };
 
 	// pinned-users
 	'pinned-users': { req: TODO; res: TODO; };
@@ -547,10 +549,10 @@ export type Endpoints = {
 	'room/update': { req: TODO; res: TODO; };
 
 	// stats
-	'stats': { req: {}; res: Stats; };
+	'stats': { req: NoParams; res: Stats; };
 
 	// server-info
-	'server-info': { req: {}; res: ServerInfo; };
+	'server-info': { req: NoParams; res: ServerInfo; };
 
 	// sw
 	'sw/register': { req: TODO; res: TODO; };
@@ -578,7 +580,7 @@ export type Endpoints = {
 	'users/groups/update': { req: TODO; res: TODO; };
 	'users/lists/create': { req: { name: string; }; res: UserList; };
 	'users/lists/delete': { req: { listId: UserList['id']; }; res: null; };
-	'users/lists/list': { req: {}; res: UserList[]; };
+	'users/lists/list': { req: NoParams; res: UserList[]; };
 	'users/lists/pull': { req: { listId: UserList['id']; userId: User['id']; }; res: null; };
 	'users/lists/push': { req: { listId: UserList['id']; userId: User['id']; }; res: null; };
 	'users/lists/show': { req: { listId: UserList['id']; }; res: UserList; };

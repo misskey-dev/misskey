@@ -8,6 +8,7 @@
 		"build": "npm run tsc",
 		"tsc": "tsc",
 		"tsd": "tsd",
+		"lint": "eslint . --ext .js,.jsx,.ts,.tsx",
 		"jest": "jest --coverage --detectOpenHandles",
 		"test": "npm run jest && npm run tsd"
 	},
@@ -18,6 +19,9 @@
 	"devDependencies": {
 		"@types/jest": "^26.0.23",
 		"@types/node": "16.0.0",
+		"@typescript-eslint/eslint-plugin": "4.28.5",
+		"@typescript-eslint/parser": "4.28.5",
+		"eslint": "7.31.0",
 		"jest": "^27.0.6",
 		"jest-fetch-mock": "^3.0.3",
 		"jest-websocket-mock": "^2.2.1",
