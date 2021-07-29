@@ -55,6 +55,7 @@
 					<MkA to="/my/favorites" class="item"><i class="fas fa-star icon"></i>{{ $ts.favorites }}</MkA>
 				</div>
 			</div>
+			<MkAd class="a" prefer="square"/>
 		</div>
 		<footer class="footer">
 			<div class="left">
@@ -351,7 +352,7 @@ export default defineComponent({
 		flex-direction: column;
 		width: 250px;
 		height: 100vh;
-		border-right: solid 0.5px var(--divider);
+		border-right: solid 4px var(--divider);
 
 		> .header, > .footer {
 			$padding: 8px;
@@ -498,6 +499,10 @@ export default defineComponent({
 					}
 				}
 			}
+
+			> .a {
+				margin: 12px;
+			}
 		}
 	}
 
@@ -591,7 +596,7 @@ export default defineComponent({
 
 	> .side {
 		width: 350px;
-		border-left: solid 0.5px var(--divider);
+		border-left: solid 4px var(--divider);
 
 		&.widgets.sideViewOpening {
 			@media (max-width: 1400px) {
