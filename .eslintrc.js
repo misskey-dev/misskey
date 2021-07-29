@@ -27,6 +27,6 @@ module.exports = {
 		'no-param-reassign': ['warn'],
 		'no-constant-condition': ['warn'],
 		'no-empty-pattern': ['warn'],
-		'@typescript-eslint/no-inferrable-types': ['off'],
+		'@typescript-eslint/no-inferrable-types': ['warn'],
 	},
 };
