@@ -282,7 +282,6 @@ export default defineComponent({
 				share: {
 					title: this.user.name,
 				},
-				menu: () => getUserMenu(this.user),
 			} : null),
 			user: null,
 			error: null,
