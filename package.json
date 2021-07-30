@@ -8,6 +8,8 @@
 		"build": "npm run tsc",
 		"tsc": "tsc",
 		"tsd": "tsd",
+		"api": "npx api-extractor run --local --verbose",
+		"api-prod": "npx api-extractor run --verbose",
 		"lint": "eslint . --ext .js,.jsx,.ts,.tsx",
 		"jest": "jest --coverage --detectOpenHandles",
 		"test": "npm run jest && npm run tsd"
@@ -17,6 +19,7 @@
 		"url": "git+https://github.com/misskey-dev/misskey.js.git"
 	},
 	"devDependencies": {
+		"@microsoft/api-extractor": "^7.18.4",
 		"@types/jest": "^26.0.23",
 		"@types/node": "16.0.0",
 		"@typescript-eslint/eslint-plugin": "4.28.5",
