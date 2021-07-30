@@ -37,4 +37,4 @@ jobs:
 
       - name: Show report
         if: always()
-        run: cat temp/aiscript.api.md
+        run: cat temp/misskey-js.api.md
