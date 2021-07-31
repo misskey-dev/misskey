@@ -271,6 +271,7 @@ instanceBlocking: "Blokado de ekzemplo"
 selectAccount: "Elekti konton"
 user: "Uzanto"
 accounts: "Kontoj"
+global: "Konfederacia"
 _gallery:
   liked: "Ŝatitaj notoj"
 _email:
@@ -378,6 +379,7 @@ _timelines:
   home: "Hejmo"
   local: "Loka"
   social: "Hejmo kaj loka"
+  global: "Konfederacia"
 _rooms:
   chooseImage: "Elekti bildon"
   _furnitures:
