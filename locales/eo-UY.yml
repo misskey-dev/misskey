@@ -338,11 +338,12 @@ _permissions:
   "read:blocks": "Vidi la listo de la uzantoj kiun vi blokis."
   "write:blocks": "Redakti la liston de la uzantoj kiun vi blokis."
   "read:drive": "Vidi dosierojn en la diskilo"
+  "read:following": "Vidi sekvataj de vi"
   "write:following": "Sekvi kaj/aŭ malsekvi alian uzanton"
   "write:notes": "Krei / Forviŝi noton"
   "read:channels": "Legi kanalon"
 _antennaSources:
-  homeTimeline: "Notoj de sekvatoj"
+  homeTimeline: "Notoj far uzantoj sekvataj de vi"
 _weekday:
   sunday: "dimanĉo"
   monday: "lundo"
