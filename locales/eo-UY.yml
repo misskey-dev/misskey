@@ -67,7 +67,7 @@ lists: "Listoj"
 noLists: "Neniu listo"
 note: "Elsendi noto"
 notes: "Notoj"
-following: "Sekvataj"
+following: "Sekvatoj"
 followers: "Sekvantoj"
 followsYou: "Vin sekvas "
 createList: "Kreii liston"
@@ -303,7 +303,7 @@ _instanceTicker:
 _channel:
   create: "Krei kanalon"
   edit: "Redakti kanalon"
-  following: "Sekvaton"
+  following: "Sekvata"
 _menuDisplay:
   hide: "Kaŝi"
 _theme:
@@ -338,6 +338,7 @@ _permissions:
   "read:blocks": "Vidi la listo de la uzantoj kiun vi blokis."
   "write:blocks": "Redakti la liston de la uzantoj kiun vi blokis."
   "read:drive": "Vidi dosierojn en la diskilo"
+  "write:following": "Sekvi kaj/aŭ malsekvi alian uzanton"
   "write:notes": "Krei / Forviŝi noton"
   "read:channels": "Legi kanalon"
 _antennaSources:
@@ -437,12 +438,13 @@ _notification:
   youReceivedFollowRequest: "Vi ricevis eksekvopeton."
   yourFollowRequestAccepted: "Via eksekvopeto estas akceptita."
   _types:
-    follow: "Sekvataj"
+    follow: "Sekvatoj"
     mention: "Mencioj"
     renote: "Renotici"
     quote: "Citi"
     reaction: "Reagoj"
     receiveFollowRequest: "Eksekvopeto ricevita"
+    followRequestAccepted: "Eksekvopeto akceptiĝis."
 _deck:
   _columns:
     notifications: "Sciigoj"
