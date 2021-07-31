@@ -50,7 +50,7 @@ searchUser: "Serĉi uzanton"
 reply: "Respondi"
 loadMore: "Vidu pli"
 showMore: "Vidi pli"
-youGotNewFollower: "Vi estas eksekvita."
+youGotNewFollower: "Vin eksekvis"
 followRequestAccepted: "La eksekvopeto akceptiĝis."
 mention: "Mencioj"
 mentions: "Mencioj al vi"
@@ -280,7 +280,7 @@ _gallery:
   liked: "Ŝatitaj notoj"
 _email:
   _follow:
-    title: "Vi estas eksekvita."
+    title: "Vin eksekvis"
   _receiveFollowRequest:
     title: "Vi ricevis eksekvopeton."
 _aboutMisskey:
@@ -430,7 +430,7 @@ _pages:
       stringArray: "List de teksto"
 _notification:
   fileUploaded: "La dosiero sukcese alŝutiĝis."
-  youWereFollowed: "Vi estas eksekvita."
+  youWereFollowed: "Vin eksekvis"
   youReceivedFollowRequest: "Vi ricevis eksekvopeton."
   yourFollowRequestAccepted: "Via eksekvopeto estas akceptita."
   _types:
