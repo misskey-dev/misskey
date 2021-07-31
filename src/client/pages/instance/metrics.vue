@@ -90,7 +90,7 @@ export default defineComponent({
 			stats: null,
 			serverInfo: null,
 			connection: null,
-			queueConnection: os.stream.useChannel('queueStats'),
+			queueConnection: markRaw(os.stream.useChannel('queueStats')),
 			memUsage: 0,
 			chartCpuMem: null,
 			chartNet: null,
@@ -121,7 +121,7 @@ export default defineComponent({
 		os.api('admin/server-info', {}).then(res => {
 			this.serverInfo = res;
 
-			this.connection = os.stream.useChannel('serverStats');
+			this.connection = markRaw(os.stream.useChannel('serverStats'));
 			this.connection.on('stats', this.onStats);
 			this.connection.on('statsLog', this.onStatsLog);
 			this.connection.send('requestLog', {
