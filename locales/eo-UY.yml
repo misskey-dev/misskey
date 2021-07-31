@@ -42,7 +42,7 @@ copyContent: "Kopii enhavon"
 copyLink: "Kopii ligilon"
 delete: "Forviŝi"
 deleteAndEdit: "Forviŝi kaj redakti"
-deleteAndEditConfirm: "Ĉu vi certas, ke vi volas forviŝi la noton? La ĉiuj reaktigoj, renotoj, kaj respondoj ankaŭ foriĝos."
+deleteAndEditConfirm: "Ĉu vi certas ke vi volas forigi la noton? La ĉiu reagigo, renoto, kaj respondo ankaŭ foriĝos."
 addToList: "Aldoni al la listo"
 sendMessage: "Sendi mesaĝon"
 copyUsername: "Kopii uzantonomon"
@@ -325,7 +325,7 @@ _time:
   hour: "hor"
   day: "Tago"
 _tutorial:
-  title: "Uzado de Miskejo"
+  title: "Uzado de Misskey (Ĉi-sekve Miskejo)"
   step1_1: "Bonvenon."
   step7_2: "Se vi volus scii pli pri Miskejon, volu rigardi la fako {help}."
 _permissions:
