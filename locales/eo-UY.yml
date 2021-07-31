@@ -154,7 +154,7 @@ fromDrive: "De la diskilo"
 fromUrl: "De URL"
 uploadFromUrl: "Alŝuti de URL"
 uploadFromUrlDescription: "URL de la dosiero kiun vi volu alŝuti"
-games: "Ludoj sur Misskey"
+games: "Ludoj sur Miskejo"
 messageRead: "Legita"
 startMessaging: "Komenci babiladon"
 tos: "Kondiĉoj de Uzado"
@@ -281,7 +281,7 @@ _email:
 _aboutMisskey:
   about: "Misskey estas malfermitkoda programo evoluigata de syuilo ekde la 2014."
   source: "Fontkodo"
-  translation: "Traduki Misskey'on"
+  translation: "Traduki Miskejon"
 _mfm:
   mention: "Mencioj"
   hashtag: "Kradvorto"
