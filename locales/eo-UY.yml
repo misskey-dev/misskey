@@ -45,7 +45,7 @@ deleteAndEdit: "Foriginte redakti"
 deleteAndEditConfirm: "Ĉu vi certas, ke vi volas forigi la noton kaj redakti ĝin? Ĉiuj reagoj, renotoj, kaj respondoj ankaŭ foriĝos."
 addToList: "Aldoni al la listo"
 sendMessage: "Sendi mesaĝon"
-copyUsername: "Kopii uzantnomon"
+copyUsername: "Kopii uzantonomon"
 searchUser: "Serĉi uzanton"
 reply: "Respondi"
 loadMore: "Vidu pli"
@@ -208,7 +208,7 @@ unsilenceConfirm: "Ĉu vi certas, ke vi ne plu volas ke la uzanto silentas?"
 popularTags: "Popularaj kradvortoj"
 userList: "Listoj"
 aboutMisskey: "Pri Miskejo"
-securityKeyName: "Nomo de la ŝlosilo"
+securityKeyName: "Nomo de ŝlosilo"
 passwordLessLogin: "Ensaluti sen pasvorto"
 resetPassword: "Restarigi pasvorton"
 newPasswordIs: "La nova pasvorto estas {password}."
@@ -356,6 +356,7 @@ _cw:
   show: "Vidu pli"
   files: "{count} dosiero(j)"
 _poll:
+  noMore: "Oni ne plu povas aldoni."
   deadlineTime: "hor"
 _visibility:
   publicDescription: "Via noto aperiĝos sur la konfederacia templinio"
@@ -405,7 +406,7 @@ _pages:
     _button:
       _action:
         _pushEvent:
-          event: "Eventa nomo"
+          event: "Nomo de evento"
   script:
     categories:
       list: "Listoj"
