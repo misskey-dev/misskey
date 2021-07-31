@@ -123,6 +123,7 @@ instances: "Ekzemplo"
 perHour: "Po horo"
 perDay: "Po tago"
 blockThisInstance: "Bloki tiu ekzemplo"
+withNFiles: "{n} dosiero(j)"
 disk: "Diskilo"
 blockedInstances: "Blokitaj ekzemploj"
 muteAndBlock: "Silentitaj / Blokitaj"
@@ -449,6 +450,7 @@ _notification:
     receiveFollowRequest: "Eksekvopeto ricevita"
     followRequestAccepted: "Eksekvopeto akceptiĝis."
 _deck:
+  profile: "Agordaro"
   _columns:
     notifications: "Sciigoj"
     tl: "Templinio"
