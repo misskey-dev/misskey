@@ -258,6 +258,7 @@ channel: "Kanalo"
 fileIdOrUrl: "Dosiera identigilo aŭ URL"
 abuseReports: "Signali"
 reportAbuse: "Signali"
+reportAbuseOf: "Signali {name}'(o)n"
 send: "Sendi"
 i18nInfo: "Misskey estas tradukata en diversaj lingvoj far volontuloj. Oni povas kontribui por la tradukado sur {link}."
 followingCount: "Numero de sekvatoj"
@@ -295,6 +296,7 @@ _email:
     title: "Vi ricevis eksekvopeton."
 _aboutMisskey:
   about: "Misskey estas malfermitkoda programo evoluigata de syuilo ekde la 2014."
+  allContributors: "Ĉiuj kontribuintoj"
   source: "Fontkodo"
   translation: "Traduki Miskejon"
 _mfm:
