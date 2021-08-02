@@ -110,6 +110,7 @@ export default defineComponent({
 						await os.api('following/requests/cancel', {
 							userId: this.user.id
 						});
+						this.hasPendingFollowRequestFromYou = false;						
 					} else if (this.user.isLocked) {
 						await os.api('following/create', {
 							userId: this.user.id
