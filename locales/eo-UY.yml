@@ -383,8 +383,12 @@ _cw:
   show: "Vidu pli"
   files: "{count} dosiero(j)"
 _poll:
+  choiceN: "Balotilo {n}"
   noMore: "Oni ne plu povas aldoni."
+  infinite: "Neniam"
   deadlineTime: "hor"
+  votesCount: "{n} balotiloj"
+  vote: "Baloti"
 _visibility:
   publicDescription: "Via noto aperiĝos sur la konfederacia templinio"
   home: "Hejmo"
@@ -456,6 +460,7 @@ _pages:
       stringArray: "List de teksto"
 _notification:
   fileUploaded: "La dosiero sukcese alŝutiĝis."
+  youGotPoll: "{name} balotis"
   youWereFollowed: "Vin eksekvis"
   youReceivedFollowRequest: "Vi ricevis eksekvopeton."
   yourFollowRequestAccepted: "Via eksekvopeto estas akceptita."
