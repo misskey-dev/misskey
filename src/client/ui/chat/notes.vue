@@ -16,7 +16,7 @@
 		</MkButton>
 	</div>
 
-	<XList ref="notes" :items="notes" v-slot="{ item: note }" :direction="reversed ? 'up' : 'down'" :reversed="reversed">
+	<XList ref="notes" :items="notes" v-slot="{ item: note }" :direction="reversed ? 'up' : 'down'" :reversed="reversed" :ad="true">
 		<XNote :note="note" @update:note="updated(note, $event)" :key="note._featuredId_ || note._prId_ || note.id"/>
 	</XList>
 

@@ -5,7 +5,7 @@
 		<XHeader class="title" :info="pageInfo" :with-back="false" :center="false"/>
 		<button class="_button" @click="close()"><i class="fas fa-times"></i></button>
 	</header>
-	<component :is="component" v-bind="props" :ref="changePage"/>
+	<component :is="component" v-bind="props" :ref="changePage" class="_flat_"/>
 </div>
 </template>
 

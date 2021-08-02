@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, markRaw } from 'vue';
 import MkContainer from '@client/components/ui/container.vue';
 import define from './define';
 import { getStaticImageUrl } from '@client/scripts/get-static-image-url';
@@ -48,7 +48,7 @@ export default defineComponent({
 		};
 	},
 	mounted() {
-		this.connection = os.stream.useChannel('main');
+		this.connection = markRaw(os.stream.useChannel('main'));
 
 		this.connection.on('driveFileCreated', this.onDriveFileCreated);
 

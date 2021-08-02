@@ -58,7 +58,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, markRaw } from 'vue';
 import { getNoteSummary } from '@/misc/get-note-summary';
 import XReactionIcon from './reaction-icon.vue';
 import MkFollowButton from './follow-button.vue';
@@ -109,7 +109,7 @@ export default defineComponent({
 
 			this.readObserver.observe(this.$el);
 
-			this.connection = os.stream.useChannel('main');
+			this.connection = markRaw(os.stream.useChannel('main'));
 			this.connection.on('readAllNotifications', () => this.readObserver.unobserve(this.$el));
 		}
 	},
