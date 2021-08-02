@@ -1,8 +1,8 @@
 <template>
-<div class="hoawjimk">
+<div class="mk-media-list">
 	<XBanner v-for="media in mediaList.filter(media => !previewable(media))" :media="media" :key="media.id"/>
-	<div v-if="mediaList.filter(media => previewable(media)).length > 0" class="gird-container">
-		<div :data-count="mediaList.filter(media => previewable(media)).length">
+	<div v-if="mediaList.filter(media => previewable(media)).length > 0" class="gird-container" ref="gridOuter">
+		<div :data-count="mediaList.filter(media => previewable(media)).length" :style="gridInnerStyle">
 			<template v-for="media in mediaList">
 				<XVideo :video="media" :key="media.id" v-if="media.type.startsWith('video')"/>
 				<XImage :image="media" :key="media.id" v-else-if="media.type.startsWith('image')" :raw="raw"/>
@@ -33,16 +33,57 @@ export default defineComponent({
 			default: false
 		},
 	},
+	data() {
+		return {
+			gridInnerStyle: {},
+			sizeWaiting: false
+		}
+	},
+	mounted() {
+		this.size();
+		window.addEventListener('resize', this.size);
+	},
+	beforeUnmount() {
+		window.removeEventListener('resize', this.size);
+	},
+	activated() {
+		this.size();
+	},
 	methods: {
 		previewable(file) {
 			return file.type.startsWith('video') || file.type.startsWith('image');
 		},
+		size() {
+			// for Safari bug
+			if (this.sizeWaiting) return;
+
+			this.sizeWaiting = true;
+
+			window.requestAnimationFrame(() => {
+				this.sizeWaiting = false;
+
+				if (this.$refs.gridOuter) {
+					let height = 287;
+					const parent = this.$parent.$el;
+
+					if (this.$refs.gridOuter.clientHeight) {
+						height = this.$refs.gridOuter.clientHeight;
+					} else if (parent) {
+						height = parent.getBoundingClientRect().width * 9 / 16;
+					}
+
+					this.gridInnerStyle = { height: `${height}px` };
+				} else {
+					this.gridInnerStyle = {};
+				}
+			});
+		}
 	},
 });
 </script>
 
 <style lang="scss" scoped>
-.hoawjimk {
+.mk-media-list {
 	> .gird-container {
 		position: relative;
 		width: 100%;

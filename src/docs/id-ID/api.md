@@ -51,7 +51,7 @@ UUIDを生成する。以後これをセッションIDと呼びます。
 
 [Lanjutkan untuk menggunakan API.](#APIの使い方)
 
-## APIの使い方
+## Menggunakan API
 **APIはすべてPOSTで、リクエスト/レスポンスともにJSON形式です。RESTではありません。** アクセストークンは、`i`というパラメータ名でリクエストに含めます。
 
 * [APIリファレンス](/api-doc)

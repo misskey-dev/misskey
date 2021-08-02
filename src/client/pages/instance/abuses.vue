@@ -63,7 +63,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import parseAcct from '@/misc/acct/parse';
+import { parseAcct } from '@/misc/acct';
 import MkButton from '@client/components/ui/button.vue';
 import MkInput from '@client/components/ui/input.vue';
 import MkSelect from '@client/components/ui/select.vue';

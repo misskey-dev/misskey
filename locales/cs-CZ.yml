@@ -390,7 +390,6 @@ script: "Skript"
 deleteAllFiles: "Smazat všechny soubory"
 deleteAllFilesConfirm: "Jste si jistí že chcete smazat všechny soubory?"
 userSuspended: "Tomuto uživateli byl pozastaven účet."
-sidebar: "Postranní panel"
 addItem: "Přidat položku"
 rooms: "Místnost"
 inboxUrl: "Inbox URL"
@@ -409,8 +408,6 @@ _mfm:
   search: "Vyhledávání"
 _reversi:
   total: "Celkem"
-_sidebar:
-  icon: "Avatar"
 _theme:
   keys:
     mention: "Zmínění"

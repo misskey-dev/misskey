@@ -6,7 +6,7 @@ import '@client/style.scss';
 
 import * as Sentry from '@sentry/browser';
 import { Integrations } from '@sentry/tracing';
-import { computed, createApp, watch } from 'vue';
+import { computed, createApp, watch, markRaw } from 'vue';
 
 import widgets from '@client/widgets';
 import directives from '@client/directives';
@@ -33,18 +33,6 @@ console.info(`Misskey v${version}`);
 // boot.jsのやつを解除
 window.onerror = null;
 window.onunhandledrejection = null;
-
-// 後方互換性のため。
-// TODO: そのうち消す
-if ((typeof ColdDeviceStorage.get('lightTheme') === 'string') || (typeof ColdDeviceStorage.get('darkTheme') === 'string')) {
-	ColdDeviceStorage.set('lightTheme', require('@client/themes/l-light.json5'));
-	ColdDeviceStorage.set('darkTheme', require('@client/themes/d-dark.json5'));
-}
-const link = document.createElement('link');
-link.rel = 'stylesheet';
-link.href = 'https://use.fontawesome.com/releases/v5.15.3/css/all.css';
-document.head.appendChild(link);
-// TODOここまで
 
 if (_DEV_) {
 	console.warn('Development mode!!!');
@@ -294,7 +282,7 @@ if ($i) {
 		}
 	}
 
-	const main = stream.useChannel('main', null, 'System');
+	const main = markRaw(stream.useChannel('main', null, 'System'));
 
 	// 自分の情報が更新されたとき
 	main.on('meUpdated', i => {

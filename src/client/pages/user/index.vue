@@ -234,7 +234,7 @@ import MkRemoteCaution from '@client/components/remote-caution.vue';
 import MkTab from '@client/components/tab.vue';
 import MkInfo from '@client/components/ui/info.vue';
 import Progress from '@client/scripts/loading';
-import parseAcct from '@/misc/acct/parse';
+import { parseAcct } from '@/misc/acct';
 import { getScrollPosition } from '@client/scripts/scroll';
 import { getUserMenu } from '@client/scripts/get-user-menu';
 import number from '../../filters/number';
@@ -282,7 +282,6 @@ export default defineComponent({
 				share: {
 					title: this.user.name,
 				},
-				menu: () => getUserMenu(this.user),
 			} : null),
 			user: null,
 			error: null,
