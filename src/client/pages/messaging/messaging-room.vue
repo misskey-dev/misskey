@@ -36,11 +36,11 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue';
+import { computed, defineComponent, markRaw } from 'vue';
 import XList from '@client/components/date-separated-list.vue';
 import XMessage from './messaging-room.message.vue';
 import XForm from './messaging-room.form.vue';
-import parseAcct from '@/misc/acct/parse';
+import { parseAcct } from '@/misc/acct';
 import { isBottom, onScrollBottom, scroll } from '@client/scripts/scroll';
 import * as os from '@client/os';
 import { popout } from '@client/scripts/popout';
@@ -141,10 +141,10 @@ const Component = defineComponent({
 				this.group = group;
 			}
 
-			this.connection = os.stream.useChannel('messaging', {
+			this.connection = markRaw(os.stream.useChannel('messaging', {
 				otherparty: this.user ? this.user.id : undefined,
 				group: this.group ? this.group.id : undefined,
-			});
+			}));
 
 			this.connection.on('message', this.onMessage);
 			this.connection.on('read', this.onRead);

@@ -1,9 +1,16 @@
 <template>
 <div class="mk-app" :class="{ wallpaper, isMobile }">
-	<div class="columns" :class="{ fullView }">
-		<div class="sidebar" ref="sidebar" v-if="!isMobile">
-			<XSidebar/>
-		</div>
+	<XHeaderMenu v-if="showMenuOnTop"/>
+
+	<div class="columns" :class="{ fullView, withGlobalHeader: showMenuOnTop }">
+		<template v-if="!isMobile">
+			<div class="sidebar" v-if="!showMenuOnTop">
+				<XSidebar/>
+			</div>
+			<div class="widgets left" ref="widgetsLeft" v-else>
+				<XWidgets @mounted="attachSticky('widgetsLeft')" :place="'left'"/>
+			</div>
+		</template>
 
 		<main class="main _panel" @contextmenu.stop="onContextmenu">
 			<header class="header" @click="onHeaderClick">
@@ -20,8 +27,8 @@
 			</div>
 		</main>
 
-		<div v-if="isDesktop" class="widgets" ref="widgets">
-			<XWidgets @mounted="attachSticky"/>
+		<div v-if="isDesktop" class="widgets right" ref="widgetsRight">
+			<XWidgets @mounted="attachSticky('widgetsRight')" :place="null"/>
 		</div>
 	</div>
 
@@ -60,7 +67,7 @@ import XDrawerSidebar from '@client/ui/_common_/sidebar.vue';
 import XCommon from './_common_/common.vue';
 import XHeader from './_common_/header.vue';
 import * as os from '@client/os';
-import { sidebarDef } from '@client/sidebar';
+import { menuDef } from '@client/menu';
 import * as symbols from '@client/symbols';
 
 const DESKTOP_THRESHOLD = 1100;
@@ -72,13 +79,14 @@ export default defineComponent({
 		XSidebar,
 		XDrawerSidebar,
 		XHeader,
+		XHeaderMenu: defineAsyncComponent(() => import('./default.header.vue')),
 		XWidgets: defineAsyncComponent(() => import('./default.widgets.vue')),
 	},
 
 	data() {
 		return {
 			pageInfo: null,
-			menuDef: sidebarDef,
+			menuDef: menuDef,
 			isMobile: window.innerWidth <= MOBILE_THRESHOLD,
 			isDesktop: window.innerWidth >= DESKTOP_THRESHOLD,
 			widgetsShowing: false,
@@ -94,6 +102,10 @@ export default defineComponent({
 				if (this.menuDef[def].indicated) return true;
 			}
 			return false;
+		},
+
+		showMenuOnTop(): boolean {
+			return !this.isMobile && this.$store.state.menuDisplay === 'top';
 		}
 	},
 
@@ -103,13 +115,13 @@ export default defineComponent({
 		if (this.$store.state.widgets.length === 0) {
 			this.$store.set('widgets', [{
 				name: 'calendar',
-				id: 'a', place: 'right', data: {}
+				id: 'a', place: null, data: {}
 			}, {
 				name: 'notifications',
-				id: 'b', place: 'right', data: {}
+				id: 'b', place: null, data: {}
 			}, {
 				name: 'trends',
-				id: 'c', place: 'right', data: {}
+				id: 'c', place: null, data: {}
 			}]);
 		}
 	},
@@ -130,8 +142,8 @@ export default defineComponent({
 			}
 		},
 
-		attachSticky() {
-			const sticky = new StickySidebar(this.$refs.widgets, 16);
+		attachSticky(ref) {
+			const sticky = new StickySidebar(this.$refs[ref], this.$store.state.menuDisplay === 'top' ? 0 : 16, this.$store.state.menuDisplay === 'top' ? 60 : 0); // TODO: ヘッダーの高さを60pxと決め打ちしているのを直す
 			window.addEventListener('scroll', () => {
 				sticky.calc(window.scrollY);
 			}, { passive: true });
@@ -218,8 +230,6 @@ export default defineComponent({
 	$widgets-hide-threshold: 1200px;
 	$nav-icon-only-width: 78px; // TODO: どこかに集約したい
 
-	--panelShadow: none;
-
 	// ほんとは単に 100vh と書きたいところだが... https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
 	min-height: calc(var(--vh, 1vh) * 100);
 	box-sizing: border-box;
@@ -278,25 +288,23 @@ export default defineComponent({
 			width: 750px;
 			margin: 0 16px 0 0;
 			background: var(--bg);
-			box-shadow: 0 0 0 1px var(--divider);
 			border-radius: 0;
 			--margin: 12px;
 
 			> .header {
 				position: sticky;
 				z-index: 1000;
-				top: 0;
+				top: var(--globalHeaderHeight, 0px);
 				height: $header-height;
 				line-height: $header-height;
 				-webkit-backdrop-filter: blur(32px);
 				backdrop-filter: blur(32px);
 				background-color: var(--header);
-				border-bottom: solid 0.5px var(--divider);
 			}
 
 			> .content {
 				background: var(--bg);
-				--stickyTop: #{$header-height};
+				--stickyTop: calc(var(--globalHeaderHeight, 0px) + #{$header-height});
 			}
 
 			@media (max-width: 850px) {
@@ -310,17 +318,35 @@ export default defineComponent({
 		}
 
 		> .widgets {
-			//--panelShadow: none;
+			//--panelBorder: none;
 			width: 300px;
 			margin-top: 16px;
 
 			@media (max-width: $widgets-hide-threshold) {
 				display: none;
 			}
+
+			&.left {
+				margin-right: 16px;
+			}
 		}
 
 		> .sidebar {
 			margin-top: 16px;
+		}
+
+		&.withGlobalHeader {
+			--globalHeaderHeight: 60px; // TODO: 60pxと決め打ちしているのを直す
+
+			> .main {
+				margin-top: 0;
+				border-radius: var(--radius);
+			}
+
+			> .widgets {
+				--stickyTop: var(--globalHeaderHeight);
+				margin-top: 0;
+			}
 		}
 
 		@media (max-width: 850px) {

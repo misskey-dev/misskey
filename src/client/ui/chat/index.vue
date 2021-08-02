@@ -55,6 +55,7 @@
 					<MkA to="/my/favorites" class="item"><i class="fas fa-star icon"></i>{{ $ts.favorites }}</MkA>
 				</div>
 			</div>
+			<MkAd class="a" prefer="square"/>
 		</div>
 		<footer class="footer">
 			<div class="left">
@@ -64,7 +65,7 @@
 			</div>
 			<div class="right">
 				<button class="_button item search" @click="search" v-tooltip="$ts.search">
-					<i class="fas fa-search"></i>
+					<i class="fas fa-search icon"></i>
 				</button>
 				<MkA class="item" to="/settings" v-tooltip="$ts.settings"><i class="fas fa-cog icon"></i></MkA>
 			</div>
@@ -142,7 +143,7 @@ import XTimeline from './timeline.vue';
 import XHeaderClock from './header-clock.vue';
 import * as os from '@client/os';
 import { router } from '@client/router';
-import { sidebarDef } from '@client/sidebar';
+import { menuDef } from '@client/menu';
 import { search } from '@client/scripts/search';
 import copyToClipboard from '@client/scripts/copy-to-clipboard';
 import { store } from './store';
@@ -190,7 +191,7 @@ export default defineComponent({
 			followedChannels: null,
 			featuredChannels: null,
 			currentChannel: null,
-			menuDef: sidebarDef,
+			menuDef: menuDef,
 			sideViewOpening: false,
 			instanceName,
 		};
@@ -351,7 +352,7 @@ export default defineComponent({
 		flex-direction: column;
 		width: 250px;
 		height: 100vh;
-		border-right: solid 0.5px var(--divider);
+		border-right: solid 4px var(--divider);
 
 		> .header, > .footer {
 			$padding: 8px;
@@ -373,7 +374,7 @@ export default defineComponent({
 
 			> .left, > .right {
 				> .item, > .menu {
-					display: inline-block;
+					display: inline-flex;
 					vertical-align: middle;
 					height: ($header-height - ($padding * 2));
 					width: ($header-height - ($padding * 2));
@@ -387,11 +388,6 @@ export default defineComponent({
 					}
 
 					> .icon {
-						position: absolute;
-						top: 0;
-						left: 0;
-						right: 0;
-						bottom: 0;
 						margin: auto;
 					}
 
@@ -503,6 +499,10 @@ export default defineComponent({
 					}
 				}
 			}
+
+			> .a {
+				margin: 12px;
+			}
 		}
 	}
 
@@ -596,7 +596,7 @@ export default defineComponent({
 
 	> .side {
 		width: 350px;
-		border-left: solid 0.5px var(--divider);
+		border-left: solid 4px var(--divider);
 
 		&.widgets.sideViewOpening {
 			@media (max-width: 1400px) {

@@ -8,6 +8,8 @@ import { unisonReload } from '@client/scripts/unison-reload';
 type Account = {
 	id: string;
 	token: string;
+	isModerator: boolean;
+	isAdmin: boolean;
 };
 
 const data = localStorage.getItem('account');
@@ -45,7 +47,7 @@ function fetchAccount(token): Promise<Account> {
 		})
 		.then(res => {
 			// When failed to authenticate user
-			if (res.status !== 200 && res.status < 500) {
+			if (res.status >= 400 && res.status < 500) {
 				return signout();
 			}
 

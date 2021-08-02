@@ -37,7 +37,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	uploadFolder: {
 		where: 'account',
-		default: null
+		default: null as string | null
 	},
 	pastedFileName: {
 		where: 'account',
@@ -90,6 +90,7 @@ export const defaultStore = markRaw(new Storage('base', {
 		default: [] as {
 			name: string;
 			id: string;
+			place: string | null;
 			data: Record<string, any>;
 		}[]
 	},
@@ -185,11 +186,15 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false
 	},
-	sidebarDisplay: {
+	menuDisplay: {
 		where: 'device',
-		default: 'full' as 'full' | 'icon'
+		default: 'sideFull' as 'sideFull' | 'sideIcon' | 'top'
 	},
 	reportError: {
+		where: 'device',
+		default: false
+	},
+	squareAvatars: {
 		where: 'device',
 		default: false
 	},

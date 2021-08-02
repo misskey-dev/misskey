@@ -511,7 +511,6 @@ removeAllFollowing: "フォローを全解除"
 removeAllFollowingDescription: "{host}からのフォローをすべて解除するで。そのインスタンスが消えて無くなった時とかには便利な機能やで。"
 userSuspended: "このユーザーは...凍結されとる。"
 userSilenced: "このユーザーは...サイレンスされとる。"
-sidebar: "サイドバー"
 divider: "分割線"
 rooms: "ルーム"
 relays: "リレー"
@@ -647,6 +646,7 @@ memo: "メモ"
 high: "高い"
 middle: "中"
 low: "低い"
+global: "グローバル"
 _ad:
   back: "戻る"
 _gallery:
@@ -731,9 +731,7 @@ _channel:
   removeBanner: "バナーを削除"
   featured: "トレンド"
   notesCount: "{n}こ投稿があるで"
-_sidebar:
-  full: "フル"
-  icon: "アイコン"
+_menuDisplay:
   hide: "隠す"
 _wordMute:
   soft: "ソフト"

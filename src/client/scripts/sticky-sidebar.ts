@@ -7,8 +7,9 @@ export class StickySidebar {
 	private isTop = false;
 	private isBottom = false;
 	private offsetTop: number;
+	private globalHeaderHeight: number = 59;
 
-	constructor(container: StickySidebar['container'], marginTop = 0) {
+	constructor(container: StickySidebar['container'], marginTop = 0, globalHeaderHeight = 0) {
 		this.container = container;
 		this.el = this.container.children[0] as HTMLElement;
 		this.el.style.position = 'sticky';
@@ -16,30 +17,31 @@ export class StickySidebar {
 		this.container.prepend(this.spacer);
 		this.marginTop = marginTop;
 		this.offsetTop = this.container.getBoundingClientRect().top;
+		this.globalHeaderHeight = globalHeaderHeight;
 	}
 
 	public calc(scrollTop: number) {
 		if (scrollTop > this.lastScrollTop) { // downscroll
-			const overflow = Math.max(0, (this.el.clientHeight + this.marginTop) - window.innerHeight);
+			const overflow = Math.max(0, this.globalHeaderHeight + (this.el.clientHeight + this.marginTop) - window.innerHeight);
 			this.el.style.bottom = null;
-			this.el.style.top = `${-overflow + this.marginTop}px`;
+			this.el.style.top = `${-overflow + this.marginTop + this.globalHeaderHeight}px`;
 
 			this.isBottom = (scrollTop + window.innerHeight) >= (this.el.offsetTop + this.el.clientHeight);
 
 			if (this.isTop) {
 				this.isTop = false;
-				this.spacer.style.marginTop = `${Math.max(0, this.lastScrollTop + this.marginTop - this.offsetTop)}px`;
+				this.spacer.style.marginTop = `${Math.max(0, this.globalHeaderHeight + this.lastScrollTop + this.marginTop - this.offsetTop)}px`;
 			}
 		} else { // upscroll
-			const overflow = (this.el.clientHeight + this.marginTop) - window.innerHeight;
+			const overflow = this.globalHeaderHeight + (this.el.clientHeight + this.marginTop) - window.innerHeight;
 			this.el.style.top = null;
 			this.el.style.bottom = `${-overflow}px`;
 
-			this.isTop = scrollTop <= this.el.offsetTop;
+			this.isTop = scrollTop + this.marginTop + this.globalHeaderHeight <= this.el.offsetTop;
 
 			if (this.isBottom) {
 				this.isBottom = false;
-				this.spacer.style.marginTop = `${this.lastScrollTop + this.marginTop - this.offsetTop - overflow}px`;
+				this.spacer.style.marginTop = `${this.globalHeaderHeight + this.lastScrollTop + this.marginTop - this.offsetTop - overflow}px`;
 			}
 		}
 
