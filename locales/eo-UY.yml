@@ -389,6 +389,7 @@ _poll:
   deadlineTime: "hor"
   votesCount: "{n} balotiloj"
   vote: "Baloti"
+  closed: "Oni jam balotis ĝin"
 _visibility:
   publicDescription: "Via noto aperiĝos sur la konfederacia templinio"
   home: "Hejmo"
