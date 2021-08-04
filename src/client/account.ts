@@ -29,23 +29,23 @@ export async function signout() {
 	//#endregion
 
 	//#region Remove push notification registration
-	await navigator.serviceWorker.ready.then(async r => {
-		const push = await r.pushManager.getSubscription();
-		if (!push) return;
-		return fetch(`${apiUrl}/sw/unregister`, {
-			method: 'POST',
-			body: JSON.stringify({
-				i: $i.token,
-				endpoint: push.endpoint,
-			}),
-		});
+	const registration = await navigator.serviceWorker.ready
+	
+	const push = await registration.pushManager.getSubscription();
+	if (!push) return;
+	await fetch(`${apiUrl}/sw/unregister`, {
+		method: 'POST',
+		body: JSON.stringify({
+			i: $i.token,
+			endpoint: push.endpoint,
+		}),
 	});
 	//#endregion
 
 	document.cookie = `igi=; path=/`;
 
 	if (accounts.length > 0) login(accounts[0].token);
-	else unisonReload(true);
+	else unisonReload();
 }
 
 export async function getAccounts(): Promise<{ id: Account['id'], token: Account['token'] }[]> {

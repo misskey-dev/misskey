@@ -4,6 +4,7 @@ import {
 	get as iget,
 	set as iset,
 	del as idel,
+	createStore,
 } from 'idb-keyval';
 
 const fallbackName = (key: string) => `idbfallback::${key}`;
@@ -12,12 +13,7 @@ let idbAvailable = typeof window !== 'undefined' ? !!window.indexedDB : true;
 
 if (idbAvailable) {
 	try {
-		const request = indexedDB.open('keyval-store');
-
-		await new Promise((res, rej) => {
-			request.onerror = (e) => rej(e);
-			request.onsuccess = (e) => res(e);
-		});
+		await createStore('keyval-store', 'keyval')
 	} catch (e) {
 		console.error('idb open error', e);
 		idbAvailable = false;
