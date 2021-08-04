@@ -137,7 +137,7 @@ disk: "Diskilo"
 instanceInfo: "Informo pri la ekzemplo"
 clearCachedFiles: "Forviŝi datumon en staplo"
 clearCachedFilesConfirm: "Ĉu vi certas, ke vi volas forviŝi ĉiujn transajn dosierojn en la staplo?"
-blockedInstances: "Blokitaj ekzemploj"
+blockedInstances: "Blokataj ekzemploj"
 muteAndBlock: "Silentitaj / Blokitaj"
 mutedUsers: "Silentigitaj uzantoj"
 blockedUsers: "Blokitaj uzantoj"
@@ -443,7 +443,7 @@ _pages:
   my: "Miaj paĝoj"
   content: "Blokado de paĝo"
   url: "URL de paĝo"
-  chooseBlock: "Aldoni blokadon"
+  chooseBlock: "Aldoni ujon"
   blocks:
     image: "Bildoj"
     _post:
