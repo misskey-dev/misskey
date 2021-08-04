@@ -121,14 +121,22 @@ router.get('/api.json', async ctx => {
 
 router.get('/docs.json', async ctx => {
 	const lang = ctx.query.lang;
+	const query = ctx.query.q;
 	if (!Object.keys(locales).includes(lang)) {
 		ctx.body = [];
 		return;
 	}
-	const paths = glob.sync(__dirname + `/../../../src/docs/${lang}/*.md`);
-	const docs: { path: string; title: string; }[] = [];
+	const dirPath = `${__dirname}/../../../src/docs/${lang}`.replace(/\\/g, '/');
+	const paths = glob.sync(`${dirPath}/**/*.md`);
+	const docs: { path: string; title: string; summary: string; }[] = [];
 	for (const path of paths) {
 		const md = fs.readFileSync(path, { encoding: 'utf8' });
+
+		if (query && query.length > 0) {
+			// TODO: カタカナをひらがなにして比較するなどしたい
+			if (!md.includes(query)) continue;
+		}
+
 		const parsed = markdown.parse(md, {});
 		if (parsed.length === 0) return;
 
@@ -147,9 +155,22 @@ router.get('/docs.json', async ctx => {
 			}
 		}
 
+		const firstParagrapfTokens = [];
+		while (buf[0].type !== 'paragraph_open') {
+			buf.shift();
+		}
+		buf.shift();
+		while (buf[0].type as string !== 'paragraph_close') {
+			const token = buf.shift();
+			if (token) {
+				firstParagrapfTokens.push(token);
+			}
+		}
+
 		docs.push({
-			path: path.split('/').pop()!.split('.')[0],
-			title: markdown.renderer.render(headingTokens, {}, {})
+			path: path.replace(`${dirPath}/`, '').split('.')[0],
+			title: markdown.renderer.render(headingTokens, {}, {}),
+			summary: markdown.renderer.render(firstParagrapfTokens, {}, {}),
 		});
 	}
 
