@@ -767,6 +767,9 @@ global: "Global"
 squareAvatars: "Profilbilder quadratisch anzeigen"
 _docs:
   continueReading: "Mehr lesen"
+  features: "Funktionen"
+  generalTopics: "Allgemeine Themen"
+  advancedTopics: "Erweiterte Themen"
 _ad:
   back: "Zurück"
   reduceFrequencyOfThisAd: "Diese Werbung weniger anzeigen"
