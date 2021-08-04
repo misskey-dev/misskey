@@ -1,6 +1,7 @@
 ---
 _lang_: "Esperanto"
 headlineMisskey: "Reto ligiĝas per notoj"
+introMisskey: "Bonvenon! Misskey (Ĉi-sekve Miskejo) estas malfermitkoda malcentriza mikrobloga programo.\nKreu \"noto\"n por eksendu tion kio nun okazas aŭ kunhaviĝu tion kio pri vi📡\nFunkcion \"reago\" vi povas uzi kaj aldoni vian reagon pri ciu noton de ĉiu homo👍\nVolu esplori nova mondo🚀"
 monthAndDay: "{day}-a/{month}"
 search: "Serĉi"
 notifications: "Sciigoj"
