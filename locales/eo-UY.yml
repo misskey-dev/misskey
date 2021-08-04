@@ -159,7 +159,7 @@ newPassword: "Nova pasvorto"
 newPasswordRetype: "Reentajpu la novan pasvorton"
 attachFile: "Aldoni dosieron"
 more: "Plu!"
-usernameOrUserId: "Uzantonomo aŭ identigilo de uzanto"
+usernameOrUserId: "Uzantnomo aŭ identigilo de uzanto"
 noSuchUser: "Neniuj uzantoj trovitaj."
 imageUrl: "URL de bildo"
 remove: "Forigi"
@@ -451,7 +451,7 @@ _pages:
     _button:
       _action:
         _pushEvent:
-          event: "Nomo de evento"
+          event: "Nomo de la evento"
   script:
     categories:
       list: "Listoj"
