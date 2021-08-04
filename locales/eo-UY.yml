@@ -1,6 +1,5 @@
 ---
 _lang_: "Esperanto"
-headlineMisskey: "Reto ligiĝas per notoj"
 introMisskey: "Bonvenon! Misskey (Ĉi-sekve Miskejo) estas malfermitkoda malcentriza mikrobloga servo.\nKreu \"noto\"n por ke eksendu tion kio nun okazas aŭ ke kunhaviĝu tion kio pri vi📡\nFunkcion \"reago\" vi povas uzi kaj aldoni vian reagon pri ciu noto de ĉiu homo👍\nVolu esplori nova mondo🚀"
 monthAndDay: "{day}-a/{month}"
 search: "Serĉi"
@@ -306,9 +305,11 @@ _email:
     title: "Vi ricevis eksekvopeton."
 _aboutMisskey:
   about: "Misskey estas malfermitkoda programo evoluigata de syuilo ekde la 2014."
+  contributors: "Precipaj kontribuantoj"
   allContributors: "Ĉiuj kontribuintoj"
   source: "Fontkodo"
   translation: "Traduki Miskejon"
+  patrons: "Mecenatoj"
 _mfm:
   mention: "Mencioj"
   hashtag: "Kradvorto"
