@@ -10,6 +10,7 @@
 			<span class="separator" v-if="folder != null"><i class="fas fa-angle-right"></i></span>
 			<span class="folder current" v-if="folder != null">{{ folder.name }}</span>
 		</div>
+		<button @click="showMenu" class="menu _button"><i class="fas fa-ellipsis-h"></i></button>
 	</nav>
 	<div class="main" :class="{ uploading: uploadings.length > 0, fetching }"
 		ref="main"
@@ -627,8 +628,12 @@ export default defineComponent({
 			}];
 		},
 
-		onContextmenu(e) {
-			os.contextMenu(this.getMenu(), e);
+		showMenu(ev) {
+			os.modalMenu(this.getMenu(), ev.currentTarget || ev.target);
+		},
+
+		onContextmenu(ev) {
+			os.contextMenu(this.getMenu(), ev);
 		},
 	}
 });
@@ -641,7 +646,7 @@ export default defineComponent({
 	height: 100%;
 
 	> nav {
-		display: block;
+		display: flex;
 		z-index: 2;
 		width: 100%;
 		padding: 0 8px;
@@ -695,6 +700,10 @@ export default defineComponent({
 					}
 				}
 			}
+		}
+
+		> .menu {
+			margin-left: auto;
 		}
 	}
 
