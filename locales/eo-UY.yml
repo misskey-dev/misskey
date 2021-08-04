@@ -365,8 +365,13 @@ _permissions:
   "read:drive": "Vidi dosierojn en la diskilo"
   "read:following": "Vidi tion kion vi sekvas"
   "write:following": "Sekvi kaj/aŭ malsekvi alian uzanton"
+  "read:messaging": "Vidi via babilado"
   "write:notes": "Krei / Forviŝi noton"
-  "read:channels": "Legi kanalon"
+  "read:notifications": "Vidi sciigojn"
+  "read:reactions": "Vidi reagojn"
+  "read:pages": "Vidi via paĝojn"
+  "read:page-likes": "Vidi ŝatojn de paĝo"
+  "read:channels": "Vidi kanalojn"
 _antennaSources:
   homeTimeline: "Notoj far uzantoj sekvataj de vi"
 _weekday:
@@ -428,6 +433,7 @@ _rooms:
     moon: "La luno"
 _pages:
   deleted: "La paĝo estas forigita."
+  viewPage: "Vidi via paĝojn"
   my: "Miaj paĝoj"
   content: "Blokado de paĝo"
   url: "URL de paĝo"
