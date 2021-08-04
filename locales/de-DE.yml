@@ -765,6 +765,8 @@ customCss: "Benutzerdefiniertes CSS"
 customCssWarn: "Verwende diese Einstellung nur, wenn du weißt, was sie tut. Ungültige Eingaben können dazu führen, dass der Client nicht mehr normal funktioniert."
 global: "Global"
 squareAvatars: "Profilbilder quadratisch anzeigen"
+_docs:
+  continueReading: "Mehr lesen"
 _ad:
   back: "Zurück"
   reduceFrequencyOfThisAd: "Diese Werbung weniger anzeigen"
