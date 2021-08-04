@@ -765,6 +765,8 @@ customCss: "Custom CSS"
 customCssWarn: "This setting should only be used if you know what it does. Entering improper values may cause the client to stop functioning normally."
 global: "Global"
 squareAvatars: "Display squared avatars"
+_docs:
+  continueReading: "Read more"
 _ad:
   back: "Back"
   reduceFrequencyOfThisAd: "Show this ad less"
