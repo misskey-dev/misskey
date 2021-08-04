@@ -335,6 +335,7 @@ _channel:
 _menuDisplay:
   hide: "Kaŝi"
 _wordMute:
+  muteWords: "Silentanta vorto"
   mutedNotes: "Silentigataj notoj"
 _theme:
   keys:
