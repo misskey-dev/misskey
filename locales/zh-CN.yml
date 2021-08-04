@@ -765,6 +765,11 @@ customCss: "自定义 CSS"
 customCssWarn: "这些设置必须有相关的基础知识，不当的配置可能导致客户端无法正常使用！"
 global: "全局"
 squareAvatars: "显示方形头像图标"
+_docs:
+  continueReading: "继续阅读"
+  features: "特性"
+  generalTopics: "通常提示"
+  advancedTopics: "进阶提示"
 _ad:
   back: "返回"
   reduceFrequencyOfThisAd: "减少此广告的频率"
