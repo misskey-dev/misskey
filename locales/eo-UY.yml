@@ -365,7 +365,7 @@ _permissions:
   "read:drive": "Vidi dosierojn en la diskilo"
   "read:following": "Vidi tion kion vi sekvas"
   "write:following": "Sekvi kaj/aŭ malsekvi alian uzanton"
-  "read:messaging": "Vidi via babilado"
+  "read:messaging": "Vidi via retbabilado"
   "write:notes": "Krei / Forviŝi noton"
   "read:notifications": "Vidi sciigojn"
   "read:reactions": "Vidi reagojn"
@@ -473,6 +473,7 @@ _pages:
 _notification:
   fileUploaded: "La dosiero sukcese alŝutiĝis."
   youGotPoll: "{name} balotis"
+  youGotMessagingMessageFromUser: "{name} sentis mesaĝon al vi."
   youWereFollowed: "Vin eksekvis"
   youReceivedFollowRequest: "Vi ricevis eksekvopeton."
   yourFollowRequestAccepted: "Via eksekvopeto estas akceptita."
