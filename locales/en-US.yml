@@ -767,6 +767,9 @@ global: "Global"
 squareAvatars: "Display squared avatars"
 _docs:
   continueReading: "Read more"
+  features: "Features"
+  generalTopics: "General topics"
+  advancedTopics: "Advanced Topics"
 _ad:
   back: "Back"
   reduceFrequencyOfThisAd: "Show this ad less"
