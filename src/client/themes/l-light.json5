@@ -14,7 +14,6 @@
 		header: ':alpha<0.7<@panel',
 		navBg: '#fff',
 		panel: '#fff',
-		panelShadow: '" 0 8px 24px rgb(21 43 75 / 8%)',
 		panelHeaderDivider: '@divider',
 		messageBg: '#dedede',
 	},

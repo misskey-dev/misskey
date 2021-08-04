@@ -143,7 +143,7 @@ export default defineComponent({
 		},
 
 		attachSticky(ref) {
-			const sticky = new StickySidebar(this.$refs[ref], this.$store.state.menuDisplay === 'top' ? 1 : 16, this.$store.state.menuDisplay === 'top' ? 60 : 0); // TODO: ヘッダーの高さを60pxと決め打ちしているのを直す
+			const sticky = new StickySidebar(this.$refs[ref], this.$store.state.menuDisplay === 'top' ? 0 : 16, this.$store.state.menuDisplay === 'top' ? 60 : 0); // TODO: ヘッダーの高さを60pxと決め打ちしているのを直す
 			window.addEventListener('scroll', () => {
 				sticky.calc(window.scrollY);
 			}, { passive: true });
@@ -230,8 +230,6 @@ export default defineComponent({
 	$widgets-hide-threshold: 1200px;
 	$nav-icon-only-width: 78px; // TODO: どこかに集約したい
 
-	--panelShadow: 0 0 0 1px var(--divider);
-
 	// ほんとは単に 100vh と書きたいところだが... https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
 	min-height: calc(var(--vh, 1vh) * 100);
 	box-sizing: border-box;
@@ -290,7 +288,6 @@ export default defineComponent({
 			width: 750px;
 			margin: 0 16px 0 0;
 			background: var(--bg);
-			box-shadow: 0 0 0 1px var(--divider);
 			border-radius: 0;
 			--margin: 12px;
 
@@ -321,7 +318,7 @@ export default defineComponent({
 		}
 
 		> .widgets {
-			//--panelShadow: none;
+			//--panelBorder: none;
 			width: 300px;
 			margin-top: 16px;
 
@@ -342,14 +339,13 @@ export default defineComponent({
 			--globalHeaderHeight: 60px; // TODO: 60pxと決め打ちしているのを直す
 
 			> .main {
-				margin-top: 1px;
+				margin-top: 0;
 				border-radius: var(--radius);
-				box-shadow: 0 0 0 1px var(--divider);
 			}
 
 			> .widgets {
 				--stickyTop: var(--globalHeaderHeight);
-				margin-top: 1px;
+				margin-top: 0;
 			}
 		}
 

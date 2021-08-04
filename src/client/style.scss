@@ -239,8 +239,7 @@ hr {
 ._panel {
 	background: var(--panel);
 	border-radius: var(--radius);
-	//border: var(--panelBorder);
-	box-shadow: var(--panelShadow);
+	border: var(--panelBorder);
 	overflow: clip;
 }
 
@@ -357,7 +356,7 @@ hr {
 ._flat_ {
 	--root-margin: 0px;
 	--baseContentWidth: 100%;
-	--panelShadow: none;
+	--panelBorder: none;
 
 	._block {
 		//border-top: solid 0.5px var(--divider);

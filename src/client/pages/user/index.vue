@@ -237,8 +237,8 @@ import Progress from '@client/scripts/loading';
 import { parseAcct } from '@/misc/acct';
 import { getScrollPosition } from '@client/scripts/scroll';
 import { getUserMenu } from '@client/scripts/get-user-menu';
-import number from '../../filters/number';
-import { userPage, acct as getAcct } from '../../filters/user';
+import number from '@client/filters/number';
+import { userPage, acct as getAcct } from '@client/filters/user';
 import * as os from '@client/os';
 import * as symbols from '@client/symbols';
 
@@ -282,7 +282,6 @@ export default defineComponent({
 				share: {
 					title: this.user.name,
 				},
-				menu: () => getUserMenu(this.user),
 			} : null),
 			user: null,
 			error: null,

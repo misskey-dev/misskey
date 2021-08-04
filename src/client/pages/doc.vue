@@ -107,6 +107,7 @@ export default defineComponent({
 	padding: 32px;
 	max-width: 800px;
 	margin: 0 auto;
+	background: var(--panel);
 
 	&.max-width_500px {
 		padding: 16px;
