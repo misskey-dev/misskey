@@ -211,7 +211,7 @@ monthX: "{month}"
 yearX: "La jaro {year}"
 connectService: "Konekti"
 disconnectService: "Farkonektiĝi"
-driveCapacityPerLocalAccount: "Volumo po unu loka-uzanto"
+driveCapacityPerLocalAccount: "Volumo po unu loka uzanto"
 driveCapacityPerRemoteAccount: "Volumo po unu transa uzanto"
 iconUrl: "URL de la ikono (retpaĝsimbolo, ktp.)"
 pinnedUsers: "Alpinglita uzanto"
@@ -278,7 +278,7 @@ driveFilesCount: "Numero de dosieroj en la diskilo"
 makeExplorable: "Igi videbla konto sur la paĝo \"Esplorado\""
 showTitlebar: "Montri titolobredon"
 clearCache: "Forviŝi datumon en staplo"
-onlineUsersCount: "{n} uzanto(j) estas surkonektita"
+onlineUsersCount: "{n} uzanto(j) estas surlinea"
 nUsers: "{n} uzanto(j)"
 saveAs: "Konservi kiel…"
 createdAt: "Kreita je"
@@ -329,6 +329,8 @@ _channel:
   following: "Sekvata"
 _menuDisplay:
   hide: "Kaŝi"
+_wordMute:
+  mutedNotes: "Silentigataj notoj"
 _theme:
   keys:
     hashtag: "Kradvorto"
@@ -361,7 +363,7 @@ _permissions:
   "read:blocks": "Vidi la listo de la uzantoj kiun vi blokis."
   "write:blocks": "Redakti la liston de la uzantoj kiun vi blokis."
   "read:drive": "Vidi dosierojn en la diskilo"
-  "read:following": "Vidi sekvataj de vi"
+  "read:following": "Vidi tion kion vi sekvas"
   "write:following": "Sekvi kaj/aŭ malsekvi alian uzanton"
   "write:notes": "Krei / Forviŝi noton"
   "read:channels": "Legi kanalon"
@@ -410,7 +412,7 @@ _profile:
   changeAvatar: "Ŝanĝi profilbildon"
 _exportOrImport:
   followingList: "Sekvataj"
-  muteList: "Silentigi"
+  muteList: "Silentigado"
   blockingList: "Blokado"
   userLists: "Listoj"
 _timelines:
