@@ -927,7 +927,7 @@ _menuDisplay:
   top: "Top"
   hide: "Hide"
 _wordMute:
-  muteWords: "Word to mute"
+  muteWords: "Muted words"
   muteWordsDescription: "Separate with spaces for AND condition. Separate with line breaks for OR."
   muteWordsDescription2: "Surround keywords by slashes to use regular expressions."
   softDescription: "Hide notes fulfilling the set conditions from the timeline."
