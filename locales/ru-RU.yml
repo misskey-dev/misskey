@@ -762,6 +762,7 @@ emailNotConfiguredWarning: "Не указан адрес электронной 
 ratio: "Соотношение"
 global: "Всеобщая"
 _docs:
+  continueReading: "Читать подробнее"
   features: "Возможности"
   generalTopics: "Основные темы"
   advancedTopics: "Дополнительные темы"
