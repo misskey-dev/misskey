@@ -29,8 +29,7 @@ export async function signout() {
 	//#endregion
 
 	//#region Remove push notification registration
-	const registration = await navigator.serviceWorker.ready
-	
+	const registration = await navigator.serviceWorker.ready;
 	const push = await registration.pushManager.getSubscription();
 	if (!push) return;
 	await fetch(`${apiUrl}/sw/unregister`, {
