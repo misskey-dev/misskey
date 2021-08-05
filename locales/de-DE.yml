@@ -868,6 +868,8 @@ _mfm:
   blurDescription: "Inhalte durch Weihzeichnung verschwimmen lassen. Durch das Bewegen des Mauszeigers auf den Inhalt wird er klar angezeigt."
   font: "Schriftart"
   fontDescription: "Setzt die Schriftart des Inhaltes fest."
+  rainbow: "Regenbogen"
+  rainbowDescription: "Lässt den Inhalt in Regenbogenfarben erscheinen."
 _reversi:
   reversi: "Reversi"
   gameSettings: "Spieleinstellungen"
