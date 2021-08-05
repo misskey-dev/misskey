@@ -1,9 +1,11 @@
 <template>
 <div class="qyqbqfal" v-size="{ max: [500] }">
-	<div class="title">{{ title }}</div>
-	<div class="body" v-html="body"></div>
-	<div class="footer">
-		<MkLink :url="`https://github.com/misskey-dev/misskey/blob/master/src/docs/${lang}/${doc}.md`" class="at">{{ $ts.docSource }}</MkLink>
+	<div class="main">
+		<div class="title">{{ title }}</div>
+		<div class="body" v-html="body"></div>
+		<div class="footer">
+			<MkLink :url="`https://github.com/misskey-dev/misskey/blob/master/src/docs/${lang}/${doc}.md`" class="at">{{ $ts.docSource }}</MkLink>
+		</div>
 	</div>
 </div>
 </template>
@@ -105,103 +107,106 @@ export default defineComponent({
 <style lang="scss" scoped>
 .qyqbqfal {
 	padding: 32px;
-	max-width: 800px;
-	margin: 0 auto;
 	background: var(--panel);
 
 	&.max-width_500px {
 		padding: 16px;
 	}
 
-	> .title {
-		font-size: 1.5em;
-		font-weight: bold;
-		padding: 0 0 0.75em 0;
-		margin: 0 0 1em 0;
-		border-bottom: solid 2px var(--divider);
-	}
+	> .main {
+		max-width: 800px;
+		margin: 0 auto;
 
-	> .body {
-		> *:first-child {
-			margin-top: 0;
+		> .title {
+			font-size: 1.5em;
+			font-weight: bold;
+			padding: 0 0 0.75em 0;
+			margin: 0 0 1em 0;
+			border-bottom: solid 2px var(--divider);
 		}
 
-		> *:last-child {
-			margin-bottom: 0;
-		}
+		> .body {
+			> *:first-child {
+				margin-top: 0;
+			}
 
-		::v-deep(a) {
-			color: var(--link);
-		}
+			> *:last-child {
+				margin-bottom: 0;
+			}
 
-		::v-deep(blockquote) {
-			display: block;
-			margin: 8px;
-			padding: 6px 0 6px 12px;
-			color: var(--fg);
-			border-left: solid 3px var(--fg);
-			opacity: 0.7;
+			::v-deep(a) {
+				color: var(--link);
+			}
 
-			p {
-				margin: 0;
+			::v-deep(blockquote) {
+				display: block;
+				margin: 8px;
+				padding: 6px 0 6px 12px;
+				color: var(--fg);
+				border-left: solid 3px var(--fg);
+				opacity: 0.7;
+
+				p {
+					margin: 0;
+				}
+			}
+
+			::v-deep(h2) {
+				font-size: 1.25em;
+				padding: 0 0 0.5em 0;
+				margin: 1.5em 0 1em 0;
+				border-bottom: solid 0.5px var(--divider);
+			}
+
+			::v-deep(table) {
+				width: 100%;
+				max-width: 100%;
+				overflow: auto;
+			}
+
+			::v-deep(kbd.group) {
+				display: inline-block;
+				padding: 2px;
+				border: 1px solid var(--divider);
+				border-radius: 4px;
+				box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+			}
+
+			::v-deep(kbd.key) {
+				display: inline-block;
+				padding: 6px 8px;
+				border: solid 0.5px var(--divider);
+				border-radius: 4px;
+				box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+			}
+
+			::v-deep(code) {
+				display: inline-block;
+				font-family: Fira code, Fira Mono, Consolas, Menlo, Courier, monospace;
+				tab-size: 2;
+				background: #272822;
+				color: #f8f8f2;
+				border-radius: 6px;
+				padding: 4px 6px;
+			}
+
+			::v-deep(pre) {
+				background: #272822;
+				color: #f8f8f2;
+				border-radius: 6px;
+				padding: 12px 16px;
+
+				> code {
+					padding: 0;
+				}
 			}
 		}
 
-		::v-deep(h2) {
-			font-size: 1.25em;
-			padding: 0 0 0.5em 0;
-			margin: 1.5em 0 1em 0;
-			border-bottom: solid 0.5px var(--divider);
+		> .footer {
+			padding: 1.5em 0 0 0;
+			margin: 1.5em 0 0 0;
+			border-top: solid 2px var(--divider);
 		}
-
-		::v-deep(table) {
-			width: 100%;
-			max-width: 100%;
-			overflow: auto;
-		}
-
-		::v-deep(kbd.group) {
-			display: inline-block;
-			padding: 2px;
-			border: 1px solid var(--divider);
-			border-radius: 4px;
-			box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
-		}
-
-		::v-deep(kbd.key) {
-			display: inline-block;
-			padding: 6px 8px;
-			border: solid 0.5px var(--divider);
-			border-radius: 4px;
-			box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
-		}
-
-		::v-deep(code) {
-			display: inline-block;
-			font-family: Fira code, Fira Mono, Consolas, Menlo, Courier, monospace;
-			tab-size: 2;
-			background: #272822;
-			color: #f8f8f2;
-			border-radius: 6px;
-			padding: 4px 6px;
-		}
-
-		::v-deep(pre) {
-			background: #272822;
-			color: #f8f8f2;
-			border-radius: 6px;
-			padding: 12px 16px;
-
-			> code {
-				padding: 0;
-			}
-		}
-	}
-
-	> .footer {
-		padding: 1.5em 0 0 0;
-		margin: 1.5em 0 0 0;
-		border-top: solid 2px var(--divider);
 	}
 }
 </style>
