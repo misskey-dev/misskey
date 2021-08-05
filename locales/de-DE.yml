@@ -1518,17 +1518,17 @@ _pages:
         arg2: "Maximum"
       randomPick: "Zufallswahl aus Liste"
       _randomPick:
-        arg1: "Listen"
-      dailyRandom: "Zufallswahl (Läuft für einen Tag)"
+        arg1: "Liste"
+      dailyRandom: "Zufällig (Pro Nutzer jeden Tag verschieden)"
       _dailyRandom:
         arg1: "Warscheinlichkeit"
-      dailyRannum: "Zufallsnummer (Läuft für einen Tag)"
+      dailyRannum: "Zufallsnummer (Pro Nutzer jeden Tag verschieden)"
       _dailyRannum:
         arg1: "Minimum"
         arg2: "Maximum"
-      dailyRandomPick: "Zufallswahl aus Liste (Läuft für einen Tag)"
+      dailyRandomPick: "Zufallsauswahl aus einer Liste (Pro Nutzer jeden Tag verschieden)"
       _dailyRandomPick:
-        arg1: "Listen"
+        arg1: "Liste"
       seedRandom: "Zufällig (mit Startwert / Seed)"
       _seedRandom:
         arg1: "Startwert / Seed"
@@ -1538,20 +1538,20 @@ _pages:
         arg1: "Startwert / Seed"
         arg2: "Minimum"
         arg3: "Maximum"
-      seedRandomPick: "Zufallswahl aus Liste (mit Startwert / Seed)"
+      seedRandomPick: "Zufallsauswahl aus Liste (mit Startwert / Seed)"
       _seedRandomPick:
         arg1: "Startwert / Seed"
-        arg2: "Listen"
-      DRPWPM: "Zufallswahl aus gewichteter Liste (Läuft für einen Tag)"
+        arg2: "Liste"
+      DRPWPM: "Zufallsauswahl aus gewichteter Liste (Pro Nutzer jeden Tag verschieden)"
       _DRPWPM:
         arg1: "Textliste"
       pick: "Aus einer Liste wählen"
       _pick:
-        arg1: "Listen"
+        arg1: "Liste"
         arg2: "Position"
       listLen: "Listenlänge abrufen"
       _listLen:
-        arg1: "Listen"
+        arg1: "Liste"
       number: "Nummer"
       stringToNumber: "Text zu Nummer"
       _stringToNumber:
@@ -1562,29 +1562,29 @@ _pages:
       splitStrByLine: "Text nach Zeilenumbrüchen aufteilen"
       _splitStrByLine:
         arg1: "Text"
-      ref: "Variablen"
-      aiScriptVar: "AiScript Variablen"
-      fn: "Funktionen"
+      ref: "Variable"
+      aiScriptVar: "AiScript Variable"
+      fn: "Funktion"
       _fn:
         slots: "Slots"
         slots-info: "Trenne jeden Slot mit einem Zeilenumbruch"
         arg1: "Ausgabe"
-      for: "Wiederholen"
+      for: "for-Schleife"
       _for:
-        arg1: "Anzahl der Wiederholungen"
+        arg1: "Anzahl der Schleifendurchläufe"
         arg2: "Aktion"
     typeError: "Slot {slot} akzeptiert Werte vom Typ \"{expect}\", aber es wurde ein \"{actual}\" Wert angegeben!"
     thereIsEmptySlot: "Slot {slot} ist leer!"
     types:
       string: "Text"
       number: "Nummer"
-      boolean: "Flag"
-      array: "Listen"
+      boolean: "Boolean"
+      array: "Liste"
       stringArray: "Textliste"
     emptySlot: "Leerer Slot"
     enviromentVariables: "Umgebungsvariable"
-    pageVariables: "Seitenelement"
-    argVariables: "Eingabe-Slot"
+    pageVariables: "Seitenelemente"
+    argVariables: "Eingabe-Slots"
 _relayStatus:
   requesting: "Ausstehend"
   accepted: "Akzeptiert"
@@ -1595,7 +1595,7 @@ _notification:
   youGotReply: "{name} hat dir geantwortet"
   youGotQuote: "{name} hat dich zitiert"
   youRenoted: "Renote deiner Notiz von {name}"
-  youGotPoll: "{name} hat auf deiner Umfrage abgestimmt"
+  youGotPoll: "{name} hat in deiner Umfrage abgestimmt"
   youGotMessagingMessageFromUser: "{name} hat dir eine Chatnachricht gesendet"
   youGotMessagingMessageFromGroup: "In die Gruppe {name} wurde eine Chatnachricht gesendet"
   youWereFollowed: "ist dir gefolgt"
@@ -1617,7 +1617,7 @@ _notification:
     app: "Benachrichtigungen von Apps"
 _deck:
   alwaysShowMainColumn: "Hauptspalte immer zeigen"
-  columnAlign: "Spalten ausrichten"
+  columnAlign: "Spaltenausrichtung"
   columnMargin: "Spaltenabstand"
   columnHeaderHeight: "Spaltenkopfhöhe"
   addColumn: "Spalte hinzufügen"
