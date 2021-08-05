@@ -162,6 +162,10 @@ export default defineComponent({
 				border-bottom: solid 0.5px var(--divider);
 			}
 
+			::v-deep(h3) {
+				margin: 1.25em 0 0.5em 0;
+			}
+
 			::v-deep(table) {
 				width: 100%;
 				max-width: 100%;
