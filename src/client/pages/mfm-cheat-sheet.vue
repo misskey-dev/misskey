@@ -261,6 +261,16 @@
 			</div>
 		</div>
 	</div>
+	<div class="section _block">
+		<div class="title">{{ $ts._mfm.rainbow }}</div>
+		<div class="content">
+			<p>{{ $ts._mfm.rainbowDescription }}</p>
+			<div class="preview">
+				<Mfm :text="preview_rainbow"/>
+				<MkTextarea v-model:value="preview_rainbow"><span>MFM</span></MkTextarea>
+			</div>
+		</div>
+	</div>
 </div>
 </template>
 
@@ -306,6 +316,7 @@ export default defineComponent({
 			preview_x3: `$[x3 🍮]`,
 			preview_x4: `$[x4 🍮]`,
 			preview_blur: `$[blur ${this.$ts._mfm.dummy}]`,
+			preview_rainbow: `$[rainbow 🍮]`,
 		}
 	},
 });
@@ -313,6 +324,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .mwysmxbg {
+	background: var(--bg);
+
 	> .section {
 		> .title {
 			position: sticky;
