@@ -208,6 +208,24 @@ export default defineComponent({
 					padding: 0;
 				}
 			}
+
+			::v-deep(.info) {
+				font-size: 90%;
+				background: var(--infoBg);
+				color: var(--infoFg);
+				padding: 1em;
+				margin: 0.75em 0;
+				border-radius: 6px;
+			}
+
+			::v-deep(.warn) {
+				font-size: 90%;
+				background: var(--infoWarnBg);
+				color: var(--infoWarnFg);
+				padding: 1em;
+				margin: 0.75em 0;
+				border-radius: 6px;
+			}
 		}
 
 		> .footer {
