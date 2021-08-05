@@ -1388,16 +1388,16 @@ _pages:
     _button:
       text: "Titel"
       colored: "Farbig"
-      action: "Aktion, die beim Knopfdruck ausgeführt werden soll"
+      action: "Aktion, die bei Knopfdruck ausgeführt wird"
       _action:
-        dialog: "Zeige ein Dialogfenster"
+        dialog: "Dialogfenster anzeigen"
         _dialog:
           content: "Inhalt"
-        resetRandom: "Setze den Zufallswert zurück"
-        pushEvent: "Sende ein Event"
+        resetRandom: "Zufallswert zurücksetzen"
+        pushEvent: "Ein Event senden"
         _pushEvent:
           event: "Eventname"
-          message: "Nachricht, die bei Aktivierung gezeigt werden soll"
+          message: "Nachricht, die bei Auslösung des Events angezeigt werden soll"
           variable: "Variable, die gesendet werden soll"
           no-variable: "Keine"
         callAiScript: "AiScript ausführen"
@@ -1407,7 +1407,7 @@ _pages:
     _radioButton:
       name: "Variablenname"
       title: "Titel"
-      values: "Auswahlmöglichkeiten (getrennt durch Zeilenumbrüche)"
+      values: "Durch Zeilenümbrüche getrennte Auswahlmöglichkeiten"
       default: "Standardwert"
   script:
     categories:
@@ -1416,11 +1416,11 @@ _pages:
       operation: "Berechnungen"
       comparison: "Vergleiche"
       random: "Zufällig"
-      value: "Werte"
-      fn: "Funktionen"
-      text: "Textoperationen"
+      value: "Wert"
+      fn: "Funktion"
+      text: "Textoperation"
       convert: "Konvertierung"
-      list: "Listen"
+      list: "Liste"
     blocks:
       text: "Text"
       multiLineText: "Text (Mehrzeilig)"
