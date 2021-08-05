@@ -868,6 +868,8 @@ _mfm:
   blurDescription: "Content can be blurred via this effect. It will be clearly displayed by hovering your cursor above it."
   font: "Font"
   fontDescription: "Sets the font to display contents in."
+  rainbow: "Rainbow"
+  rainbowDescription: "Makes the content appear in rainbow colors."
 _reversi:
   reversi: "Reversi"
   gameSettings: "Game settings"
