@@ -767,6 +767,9 @@ global: "Global"
 squareAvatars: "Avatars carrés"
 _docs:
   continueReading: "Lire plus"
+  features: "Fonctionnalités"
+  generalTopics: "Sujets généraux"
+  advancedTopics: "Sujets avancés"
 _ad:
   back: "Retour"
   reduceFrequencyOfThisAd: "Voir cette publicité moins souvent"
