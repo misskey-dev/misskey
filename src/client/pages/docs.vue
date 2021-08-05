@@ -69,8 +69,13 @@ export default defineComponent({
 	},
 
 	created() {
-		fetch(`${url}/docs.json?lang=${lang}`).then(res => res.json()).then(docs => {
-			this.docs = docs;
+		fetch(`${url}/docs.json?lang=ja-JP`).then(res => res.json()).then(jaDocs => {
+			fetch(`${url}/docs.json?lang=${lang}`).then(res => res.json()).then(docs => {
+				this.docs = jaDocs.map(doc => {
+					const exist = docs.find(d => d.path === doc.path);
+					return exist || doc;
+				});
+			});
 		});
 	},
 });

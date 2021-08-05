@@ -64,6 +64,10 @@ export default defineComponent({
 		fetchDoc() {
 			fetch(`${url}/doc-assets/${lang}/${this.doc}.md`).then(res => res.text()).then(md => {
 				this.parse(md);
+			}).catch(() => {
+				fetch(`${url}/doc-assets/ja-JP/${this.doc}.md`).then(res => res.text()).then(md => {
+					this.parse(md);
+				});
 			});
 		},
 
