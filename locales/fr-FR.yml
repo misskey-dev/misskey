@@ -765,6 +765,8 @@ customCss: "CSS personnalisé"
 customCssWarn: "Utilisez cette fonctionnalité uniquement si vous savez exactement ce que vous faites. Une configuration inadaptée peut empêcher le client de s'exécuter normalement."
 global: "Global"
 squareAvatars: "Avatars carrés"
+_docs:
+  continueReading: "Lire plus"
 _ad:
   back: "Retour"
   reduceFrequencyOfThisAd: "Voir cette publicité moins souvent"
