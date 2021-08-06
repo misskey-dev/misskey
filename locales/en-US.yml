@@ -899,6 +899,8 @@ _mfm:
   fontDescription: "Sets the font to display contents in."
   rainbow: "Rainbow"
   rainbowDescription: "Makes the content appear in rainbow colors."
+  sparkle: "Sparkle"
+  sparkleDescription: "Infuses a sparkling animation"
 _reversi:
   reversi: "Reversi"
   gameSettings: "Game settings"
