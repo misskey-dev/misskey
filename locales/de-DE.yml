@@ -1416,11 +1416,11 @@ _pages:
       operation: "Berechnungen"
       comparison: "Vergleiche"
       random: "Zufällig"
-      value: "Wert"
-      fn: "Funktion"
-      text: "Textoperation"
-      convert: "Konvertierung"
-      list: "Liste"
+      value: "Werte"
+      fn: "Funktionen"
+      text: "Textoperationen"
+      convert: "Konvertierungen"
+      list: "Listen"
     blocks:
       text: "Text"
       multiLineText: "Text (Mehrzeilig)"
@@ -1466,7 +1466,7 @@ _pages:
       _mod:
         arg1: "A"
         arg2: "B"
-      round: "Runden"
+      round: "Auf ganze Zahl runden"
       _round:
         arg1: "Nummer"
       eq: "A und B sind gleich"
