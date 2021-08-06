@@ -1466,7 +1466,7 @@ _pages:
       _mod:
         arg1: "A"
         arg2: "B"
-      round: "Auf ganze Zahl runden"
+      round: "Rundung von Dezimalstellen"
       _round:
         arg1: "Nummer"
       eq: "A und B sind gleich"
@@ -1578,7 +1578,7 @@ _pages:
     types:
       string: "Text"
       number: "Nummer"
-      boolean: "Boolean"
+      boolean: "Wahrheitswert"
       array: "Liste"
       stringArray: "Textliste"
     emptySlot: "Leerer Slot"
