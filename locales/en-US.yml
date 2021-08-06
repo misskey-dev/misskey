@@ -1138,14 +1138,14 @@ _widgets:
   aiscript: "AiScript console"
 _cw:
   hide: "Hide"
-  show: "Load more"
+  show: "Show content"
   chars: "{count} characters"
   files: "{count} file(s)"
 _poll:
   noOnlyOneChoice: "At least two choices are needed"
   choiceN: "Choice {n}"
   noMore: "You cannot add more choices"
-  canMultipleVote: "Allow multiple replies"
+  canMultipleVote: "Allow selecting multiple choices"
   expiration: "Poll ends on"
   infinite: "Never"
   at: "End at..."
