@@ -131,8 +131,8 @@ import MkSelect from '@client/components/ui/select.vue';
 import MkButton from '@client/components/ui/button.vue';
 import MkSwitch from '@client/components/ui/switch.vue';
 import MkInfo from '@client/components/ui/info.vue';
-import bytes from '../../filters/bytes';
-import number from '../../filters/number';
+import bytes from '@client/filters/bytes';
+import number from '@client/filters/number';
 import * as os from '@client/os';
 
 const chartLimit = 90;

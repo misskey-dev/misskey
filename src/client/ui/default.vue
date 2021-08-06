@@ -14,7 +14,7 @@
 
 		<main class="main _panel" @contextmenu.stop="onContextmenu">
 			<header class="header" @click="onHeaderClick">
-				<XHeader :info="pageInfo"/>
+				<XHeader :info="pageInfo" :back-button="true" @back="back()"/>
 			</header>
 			<div class="content" :class="{ _flat_: !fullView }">
 				<router-view v-slot="{ Component }">
@@ -157,6 +157,10 @@ export default defineComponent({
 			window.scroll({ top: 0, behavior: 'smooth' });
 		},
 
+		back() {
+			history.back();
+		},
+
 		showDrawerNav() {
 			this.$refs.drawerNav.show();
 		},
@@ -287,7 +291,7 @@ export default defineComponent({
 			min-width: 0;
 			width: 750px;
 			margin: 0 16px 0 0;
-			background: var(--bg);
+			background: var(--panel);
 			border-radius: 0;
 			--margin: 12px;
 
@@ -296,14 +300,13 @@ export default defineComponent({
 				z-index: 1000;
 				top: var(--globalHeaderHeight, 0px);
 				height: $header-height;
-				line-height: $header-height;
 				-webkit-backdrop-filter: blur(32px);
 				backdrop-filter: blur(32px);
 				background-color: var(--header);
+				border-bottom: solid 0.5px var(--divider);
 			}
 
 			> .content {
-				background: var(--bg);
 				--stickyTop: calc(var(--globalHeaderHeight, 0px) + #{$header-height});
 			}
 
