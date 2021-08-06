@@ -1138,15 +1138,15 @@ _widgets:
   aiscript: "AiScript-Konsole"
 _cw:
   hide: "Verbergen"
-  show: "Mehr anzeigen"
+  show: "Inhalt anzeigen"
   chars: "{count} Zeichen"
-  files: "{count} Dateien"
+  files: "{count} Datei(en)"
 _poll:
   noOnlyOneChoice: "Es müssen mindestens zwei Antwortmöglichkeiten vorhanden sein"
   choiceN: "Auswahl {n}"
   noMore: "Du kannst keine weiteren Auswahlmöglichkeiten hinzufügen"
   canMultipleVote: "Auswahl mehrerer Antworten erlauben"
-  expiration: "Abstimmungsende"
+  expiration: "Abstimmung beenden"
   infinite: "Nie"
   at: "Beenden am..."
   after: "Beenden nach..."
