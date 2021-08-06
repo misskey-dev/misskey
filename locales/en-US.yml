@@ -1416,10 +1416,10 @@ _pages:
       operation: "Computation"
       comparison: "Comparison"
       random: "Random"
-      value: "Value"
-      fn: "Function"
+      value: "Values"
+      fn: "Functions"
       text: "Text operations"
-      convert: "Transformation"
+      convert: "Transformations"
       list: "Lists"
     blocks:
       text: "Text"
@@ -1427,7 +1427,7 @@ _pages:
       textList: "Text list"
       _textList:
         info: "Separate each entry with a line break"
-      strLen: "Length of the text"
+      strLen: "Text length"
       _strLen:
         arg1: "Text"
       strPick: "Extract character"
@@ -1438,7 +1438,7 @@ _pages:
       _strReplace:
         arg1: "Text"
         arg2: "Text to be replaced"
-        arg3: "Replaced with"
+        arg3: "Replace with"
       strReverse: "Flip text"
       _strReverse:
         arg1: "Text"
@@ -1450,7 +1450,7 @@ _pages:
       _add:
         arg1: "A"
         arg2: "B"
-      subtract: "Substract"
+      subtract: "Subtract"
       _subtract:
         arg1: "A"
         arg2: "B"
@@ -1466,7 +1466,7 @@ _pages:
       _mod:
         arg1: "A"
         arg2: "B"
-      round: "Round decimal"
+      round: "Round to whole number"
       _round:
         arg1: "Number"
       eq: "A and B are equal"
@@ -1497,15 +1497,15 @@ _pages:
       _ltEq:
         arg1: "A"
         arg2: "B"
-      gtEq: ">= A is more than or equal to B"
+      gtEq: ">= A is greater than or equal to B"
       _gtEq:
         arg1: "A"
         arg2: "B"
       if: "Branch"
       _if:
         arg1: "If"
-        arg2: "If true"
-        arg3: "If false"
+        arg2: "Then"
+        arg3: "Else"
       not: "NOT"
       _not:
         arg1: "NOT"
