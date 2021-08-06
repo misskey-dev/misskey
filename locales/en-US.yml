@@ -1466,7 +1466,7 @@ _pages:
       _mod:
         arg1: "A"
         arg2: "B"
-      round: "Round to whole number"
+      round: "Decimal rounding"
       _round:
         arg1: "Number"
       eq: "A and B are equal"
@@ -1518,15 +1518,15 @@ _pages:
         arg2: "Maximum value"
       randomPick: "Randomly choose from list"
       _randomPick:
-        arg1: "Lists"
-      dailyRandom: "Random (lasts for a day)"
+        arg1: "List"
+      dailyRandom: "Random (Changes once a day for each user)"
       _dailyRandom:
         arg1: "Probability"
-      dailyRannum: "Random number (lasts for a day)"
+      dailyRannum: "Random number (Changes once a day for each user)"
       _dailyRannum:
         arg1: "Minimum value"
         arg2: "Maximum value"
-      dailyRandomPick: "Randomly choose from list (lasts for a day)"
+      dailyRandomPick: "Randomly choose from a list (Changes once a day for each user)"
       _dailyRandomPick:
         arg1: "Lists"
       seedRandom: "Random (with seed)"
@@ -1541,17 +1541,17 @@ _pages:
       seedRandomPick: "Randomly choose from list (with seed)"
       _seedRandomPick:
         arg1: "Seed"
-        arg2: "Lists"
-      DRPWPM: "Randomly choose from weighted list (lasts for a day)"
+        arg2: "Liste"
+      DRPWPM: "Randomly choose from weighted list (Changes once a day for each user)"
       _DRPWPM:
         arg1: "Text list"
       pick: "Select from list"
       _pick:
-        arg1: "Lists"
+        arg1: "List"
         arg2: "Position"
       listLen: "Get length of list"
       _listLen:
-        arg1: "Lists"
+        arg1: "List"
       number: "Number"
       stringToNumber: "Text to number"
       _stringToNumber:
@@ -1562,29 +1562,29 @@ _pages:
       splitStrByLine: "Split text by line breaks"
       _splitStrByLine:
         arg1: "Text"
-      ref: "Variables"
-      aiScriptVar: "Variable of AiScript"
-      fn: "Functions"
+      ref: "Variable"
+      aiScriptVar: "AiScript Variable"
+      fn: "Function"
       _fn:
         slots: "Slots"
-        slots-info: "Separate each slots with a line break"
+        slots-info: "Separate each slot with a line break"
         arg1: "Output"
-      for: "Repeat"
+      for: "for-Loop"
       _for:
         arg1: "Number of times to repeat"
         arg2: "Action"
-    typeError: "Slot {slot} accepts \"{expect}\" type, but the provided value is \"{actual}\"!"
+    typeError: "Slot {slot} accepts values of type \"{expect}\", but the provided value is of type \"{actual}\"!"
     thereIsEmptySlot: "Slot {slot} is empty!"
     types:
       string: "Text"
       number: "Number"
       boolean: "Flag"
-      array: "Lists"
+      array: "List"
       stringArray: "Text list"
     emptySlot: "Empty slot"
-    enviromentVariables: "Environment variable"
-    pageVariables: "Page element"
-    argVariables: "Input slot"
+    enviromentVariables: "Environment variables"
+    pageVariables: "Page variables"
+    argVariables: "Input slots"
 _relayStatus:
   requesting: "Pending"
   accepted: "Accepted"
