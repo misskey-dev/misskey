@@ -1047,7 +1047,7 @@ _tutorial:
   step3_3: "Fill in the modal and press the button on the top right to post."
   step3_4: "Have nothing to say? Try \"just setting up my msky\"!"
   step4_1: "Finished posting your first note?"
-  step4_2: "Hurray! Now your first note is displayed on your timeline."
+  step4_2: "Hurray! Now your first note should be displayed on your timeline."
   step5_1: "Now, let's try making your timeline more lively by following other people."
   step5_2: "{featured} will show you trending notes in this instance. {explore} will let you find trending users. Try following people you like!"
   step5_3: "To follow other users, click on their icon and press \"follow\" button on their profile."
