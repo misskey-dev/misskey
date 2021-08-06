@@ -1099,7 +1099,7 @@ _permissions:
 _auth:
   shareAccess: "Möchtest du \"{name}\" authorisieren, auf dieses Benuzerkonto zugreifen zu können?"
   shareAccessAsk: "Bist du dir sicher, dass du diese Anwendung authorisieren möchtest, auf dein Benutzerkonto zugreifen zu können?"
-  permissionAsk: "Diese Anwendung erfordert folgende Berechtigungen"
+  permissionAsk: "Diese Anwendung fordert folgende Berechtigungen"
   pleaseGoBack: "Bitte kehre zur Anwendung zurück"
   callback: "Es wird zur Anwendung zurückgekehrt"
   denied: "Zugriff verweigert"
