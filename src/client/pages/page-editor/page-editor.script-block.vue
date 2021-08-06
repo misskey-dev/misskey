@@ -40,9 +40,9 @@
 		<input v-model="value.value"/>
 	</section>
 	<section v-else-if="value.type === 'fn'" class="" style="padding:0 16px 16px 16px;">
-		<MkTextarea v-model:value="slots">
-			<span>{{ $ts._pages.script.blocks._fn.slots }}</span>
-			<template #desc>{{ $t('_pages.script.blocks._fn.slots-info') }}</template>
+		<MkTextarea v-model="slots">
+			<template #label>{{ $ts._pages.script.blocks._fn.slots }}</template>
+			<template #caption>{{ $t('_pages.script.blocks._fn.slots-info') }}</template>
 		</MkTextarea>
 		<XV v-if="value.value.expression" v-model:value="value.value.expression" :title="$t(`_pages.script.blocks._fn.arg1`)" :get-expected-type="() => null" :hpml="hpml" :fn-slots="value.value.slots" :name="name"/>
 	</section>

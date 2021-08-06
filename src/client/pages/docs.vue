@@ -1,7 +1,10 @@
 <template>
 <div class="vtaihdtm">
 	<div class="search">
-		<MkInput v-model:value="query" :debounce="true" type="search"><template #icon><i class="fas fa-search"></i></template><span>{{ $ts.search }}</span></MkInput>
+		<MkInput v-model="query" :debounce="true" type="search">
+			<template #prefix><i class="fas fa-search"></i></template>
+			<template #label>{{ $ts.search }}</template>
+		</MkInput>
 	</div>
 	<MkFolder>
 		<template #header>{{ $ts._docs.generalTopics }}</template>

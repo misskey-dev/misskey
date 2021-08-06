@@ -9,14 +9,14 @@
 
 	<form class="_monolithic_" @submit.prevent="onSubmit" v-if="$instance.enableEmail">
 		<div class="_section">
-			<MkInput v-model:value="username" type="text" pattern="^[a-zA-Z0-9_]+$" spellcheck="false" autofocus required>
-				<span>{{ $ts.username }}</span>
+			<MkInput v-model="username" type="text" pattern="^[a-zA-Z0-9_]+$" spellcheck="false" autofocus required>
+				<template #label>{{ $ts.username }}</template>
 				<template #prefix>@</template>
 			</MkInput>
 
-			<MkInput v-model:value="email" type="email" spellcheck="false" required>
-				<span>{{ $ts.emailAddress }}</span>
-				<template #desc>{{ $ts._forgotPassword.enterEmail }}</template>
+			<MkInput v-model="email" type="email" spellcheck="false" required>
+				<template #label>{{ $ts.emailAddress }}</template>
+				<template #caption>{{ $ts._forgotPassword.enterEmail }}</template>
 			</MkInput>
 
 			<MkButton type="submit" :disabled="processing" primary style="margin: 0 auto;">{{ $ts.send }}</MkButton>
