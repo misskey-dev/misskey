@@ -1152,7 +1152,7 @@ _poll:
   after: "Beenden nach..."
   deadlineDate: "Enddatum"
   deadlineTime: "Zeit"
-  duration: "Laufzeit"
+  duration: "Dauer"
   votesCount: "{n} Stimmen"
   totalVotes: "Insgesamt {n} Stimmen"
   vote: "Abstimmen"
