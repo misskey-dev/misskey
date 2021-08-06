@@ -886,7 +886,7 @@ _reversi:
   cancelReady: "Nicht bereit"
   opponentTurn: "Zug deines Gegners"
   myTurn: "Dein Zug"
-  turnOf: "Zug von {name}"
+  turnOf: "{name} ist am Zug"
   pastTurnOf: "Zug von {name}"
   surrender: "Aufgeben"
   surrendered: "Durch Aufgabe"
