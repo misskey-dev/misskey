@@ -1611,9 +1611,9 @@ _notification:
     quote: "Zitationen"
     reaction: "Reaktionen"
     pollVote: "Antworten auf Umfragen"
-    receiveFollowRequest: "Follow-Anfrage erhalten"
-    followRequestAccepted: "Follow-Anfrage akzeptiert"
-    groupInvited: "Gruppeneinladung erhalten"
+    receiveFollowRequest: "Erhaltene Follow-Anfragen"
+    followRequestAccepted: "Akzeptierte Follow-Anfragen"
+    groupInvited: "Erhaltene Gruppeneinladungen"
     app: "Benachrichtigungen von Apps"
 _deck:
   alwaysShowMainColumn: "Hauptspalte immer zeigen"
