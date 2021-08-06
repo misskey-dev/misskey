@@ -52,7 +52,7 @@ searchUser: "Nach einem Benutzer suchen"
 reply: "Antworten"
 loadMore: "Mehr laden"
 showMore: "Mehr anzeigen"
-youGotNewFollower: "Du hast einen neuen Follower"
+youGotNewFollower: "ist dir gefolgt"
 receiveFollowRequest: "Follow-Anfrage erhalten"
 followRequestAccepted: "Follow-Anfrage akzeptiert"
 mention: "Erwähnung"
@@ -784,7 +784,7 @@ _gallery:
   unlike: "\"Gefällt mir\" entfernen"
 _email:
   _follow:
-    title: "Du hast einen neuen Follower"
+    title: "ist dir gefolgt"
   _receiveFollowRequest:
     title: "Du hast eine Follow-Anfrage erhalten"
 _plugin:
