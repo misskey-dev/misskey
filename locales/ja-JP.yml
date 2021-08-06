@@ -766,6 +766,12 @@ customCssWarn: "この設定は必ず知識のある方が行ってください�
 global: "グローバル"
 squareAvatars: "アイコンを四角形で表示"
 
+_docs: 
+  continueReading: "続きを読む"
+  features: "機能"
+  generalTopics: "一般的なトピック"
+  advancedTopics: "高度なトピック"
+
 _ad:
   back: "戻る"
   reduceFrequencyOfThisAd: "この広告の表示頻度を下げる"
@@ -872,6 +878,8 @@ _mfm:
   blurDescription: "内容をぼかすことができます。ポインターを上に乗せるとはっきり見えるようになります。"
   font: "フォント"
   fontDescription: "内容のフォントを指定することができます。"
+  rainbow: "レインボー"
+  rainbowDescription: "内容をレインボーにします。"
 
 _reversi:
   reversi: "リバーシ"

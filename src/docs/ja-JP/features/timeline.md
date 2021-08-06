@@ -1,6 +1,7 @@
-# タイムラインの比較
-
-https://docs.google.com/spreadsheets/d/1lxQ2ugKrhz58Bg96HTDK_2F98BUritkMyIiBkOByjHA/edit?usp=sharing
+# タイムライン
+タイムラインは、[ノート](./note)が時系列で表示される機能です。
+タイムラインには以下で示す種類があり、種類によって表示されるノートも異なります。
+なお、タイムラインの種類によってはサーバーにより無効になっている場合があります。
 
 ## ホーム
 自分のフォローしているユーザーの投稿

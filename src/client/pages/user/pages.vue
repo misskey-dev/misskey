@@ -10,7 +10,7 @@
 import { defineComponent } from 'vue';
 import MkPagePreview from '@client/components/page-preview.vue';
 import MkPagination from '@client/components/ui/pagination.vue';
-import { userPage, acct } from '../../filters/user';
+import { userPage, acct } from '@client/filters/user';
 
 export default defineComponent({
 	components: {

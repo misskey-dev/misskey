@@ -4,7 +4,7 @@
 		<header class="header" @contextmenu.prevent.stop="onContextmenu">
 			<button class="_button" @click="back()" v-if="history.length > 0"><i class="fas fa-chevron-left"></i></button>
 			<button class="_button" style="pointer-events: none;" v-else><!-- マージンのバランスを取るためのダミー --></button>
-			<XHeader class="title" :info="pageInfo" :with-back="false"/>
+			<XHeader class="title" :info="pageInfo" :back-button="false"/>
 			<button class="_button" @click="close()"><i class="fas fa-times"></i></button>
 		</header>
 		<component :is="component" v-bind="props" :ref="changePage"/>
