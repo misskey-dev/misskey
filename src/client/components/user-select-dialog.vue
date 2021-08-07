@@ -11,8 +11,14 @@
 	<div class="tbhwbxda _monolithic_">
 		<div class="_section">
 			<div class="inputs">
-				<MkInput v-model:value="username" class="input" @update:value="search" ref="username"><span>{{ $ts.username }}</span><template #prefix>@</template></MkInput>
-				<MkInput v-model:value="host" class="input" @update:value="search"><span>{{ $ts.host }}</span><template #prefix>@</template></MkInput>
+				<MkInput v-model="username" class="input" @update:modelValue="search" ref="username">
+					<template #label>{{ $ts.username }}</template>
+					<template #prefix>@</template>
+				</MkInput>
+				<MkInput v-model="host" class="input" @update:modelValue="search">
+					<template #label>{{ $ts.host }}</template>
+					<template #prefix>@</template>
+				</MkInput>
 			</div>
 		</div>
 		<div class="_section result" v-if="username != '' || host != ''" :class="{ hit: users.length > 0 }">

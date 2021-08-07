@@ -2,12 +2,9 @@
 <MkModal ref="modal" @click="$emit('click')" @closed="$emit('closed')">
 	<div class="hrmcaedk _popup _narrow_" :style="{ width: `${width}px`, height: (height ? `min(${height}px, 100%)` : '100%') }">
 		<div class="header" @contextmenu="onContextmenu">
-			<button class="_button" @click="back()" v-if="history.length > 0"><i class="fas fa-chevron-left"></i></button>
-			<button class="_button" style="pointer-events: none;" v-else><!-- マージンのバランスを取るためのダミー --></button>
 			<span class="title">
-				<XHeader :info="pageInfo" :with-back="false"/>
+				<XHeader :info="pageInfo" :back-button="history.length > 0" @back="back()" :close-button="true" @close="$refs.modal.close()"/>
 			</span>
-			<button class="_button" @click="$refs.modal.close()"><i class="fas fa-times"></i></button>
 		</div>
 		<div class="body _flat_">
 			<keep-alive>
@@ -177,34 +174,18 @@ export default defineComponent({
 		flex-shrink: 0;
 		box-shadow: 0px 1px var(--divider);
 
-		> button {
-			height: $height;
-			width: $height;
-
-			@media (max-width: 500px) {
-				height: $height-narrow;
-				width: $height-narrow;
-			}
-		}
-
 		> .title {
 			flex: 1;
-			line-height: $height;
-			padding-left: 32px;
+			height: $height;
 			font-weight: bold;
 			white-space: nowrap;
 			overflow: hidden;
 			text-overflow: ellipsis;
-			pointer-events: none;
 
 			@media (max-width: 500px) {
-				line-height: $height-narrow;
+				height: $height-narrow;
 				padding-left: 16px;
 			}
-		}
-
-		> button + .title {
-			padding-left: 0;
 		}
 	}
 

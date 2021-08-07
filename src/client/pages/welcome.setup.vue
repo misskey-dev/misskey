@@ -3,13 +3,13 @@
 	<h1>Welcome to Misskey!</h1>
 	<div>
 		<p>{{ $ts.intro }}</p>
-		<MkInput v-model:value="username" pattern="^[a-zA-Z0-9_]{1,20}$" spellcheck="false" required>
-			<span>{{ $ts.username }}</span>
+		<MkInput v-model="username" pattern="^[a-zA-Z0-9_]{1,20}$" spellcheck="false" required>
+			<template #label>{{ $ts.username }}</template>
 			<template #prefix>@</template>
 			<template #suffix>@{{ host }}</template>
 		</MkInput>
-		<MkInput v-model:value="password" type="password">
-			<span>{{ $ts.password }}</span>
+		<MkInput v-model="password" type="password">
+			<template #label>{{ $ts.password }}</template>
 			<template #prefix><i class="fas fa-lock"></i></template>
 		</MkInput>
 		<footer>
