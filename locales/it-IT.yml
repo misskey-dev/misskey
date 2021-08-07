@@ -741,6 +741,7 @@ low: "Bassa"
 emailNotConfiguredWarning: "Non hai impostato nessun indirizzo e-mail."
 ratio: "Rapporto"
 global: "Federata"
+sent: "Inviare"
 _docs:
   continueReading: "Leggi di più"
   features: "Funzionalità"
