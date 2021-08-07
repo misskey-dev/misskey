@@ -1,9 +1,8 @@
 <template>
 <div class="vtaihdtm">
 	<div class="search">
-		<MkInput v-model="query" :debounce="true" type="search" class="_inputNoTopMargin _inputNoBottomMargin">
+		<MkInput v-model="query" :debounce="true" type="search" class="_inputNoTopMargin _inputNoBottomMargin" :placeholder="$ts.search">
 			<template #prefix><i class="fas fa-search"></i></template>
-			<template #label>{{ $ts.search }}</template>
 		</MkInput>
 	</div>
 	<MkFolder>

@@ -35,7 +35,7 @@
 		cwHoverBg: '#bbc4ce',
 		indicator: '@accent',
 		mentionMe: '@mention',
-		messageBg: '@panel',
+		messageBg: '@bg',
 		navActive: '@accent',
 		infoWarnBg: '#fff0db',
 		infoWarnFg: '#573c08',

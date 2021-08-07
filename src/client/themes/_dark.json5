@@ -59,7 +59,7 @@
 		driveFolderBg: ':alpha<0.3<@accent',
 		wallpaperOverlay: 'rgba(0, 0, 0, 0.5)',
 		badge: '#31b1ce',
-		messageBg: ':lighten<5<@bg',
+		messageBg: '@bg',
 		success: '#86b300',
 		error: '#ec4137',
 		warn: '#ecb637',

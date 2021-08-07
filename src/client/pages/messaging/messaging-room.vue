@@ -29,7 +29,7 @@
 					<button class="_buttonPrimary" @click="onIndicatorClick"><i class="fas fa-arrow-circle-down"></i>{{ $ts.newMessageExists }}</button>
 				</div>
 			</transition>
-			<XForm v-if="!fetching" :user="user" :group="group" ref="form"/>
+			<XForm v-if="!fetching" :user="user" :group="group" ref="form" class="form"/>
 		</footer>
 	</div>
 </div>
@@ -451,6 +451,10 @@ export default Component;
 					content: " ";
 				}
 			}
+		}
+
+		> .form {
+			border-top: solid 0.5px var(--divider);
 		}
 	}
 }
