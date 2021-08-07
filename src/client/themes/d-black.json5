@@ -13,6 +13,5 @@
 		panelHeaderDivider: '@divider',
 		shadow: 'rgba(255, 255, 255, 0.05)',
 		modalBg: 'rgba(255, 255, 255, 0.1)',
-		messageBg: '#1d1d1d',
 	},
 }

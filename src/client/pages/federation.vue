@@ -169,7 +169,6 @@ export default defineComponent({
 	> .query {
 		background: var(--bg);
 		padding: 16px;
-		border-bottom: solid 0.5px var(--divider);
 	}
 }
 

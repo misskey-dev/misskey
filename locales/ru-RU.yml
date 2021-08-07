@@ -761,6 +761,14 @@ low: "Низкий"
 emailNotConfiguredWarning: "Не указан адрес электронной почты"
 ratio: "Соотношение"
 global: "Всеобщая"
+sent: "Отправить"
+hashtags: "Хэштег"
+_docs:
+  continueReading: "Читать подробнее"
+  features: "Возможности"
+  generalTopics: "Основные темы"
+  advancedTopics: "Дополнительные темы"
+  admin: "Управление"
 _ad:
   back: "Выход"
   reduceFrequencyOfThisAd: "Реже показывать эту рекламу"
@@ -859,6 +867,8 @@ _mfm:
   blurDescription: "Размывает текст до нечитаемости, будто его поместили за матовое стекло. Наведение указателя мыши на размытый текст возвращает чёткость."
   font: "Шрифт"
   fontDescription: "Так можно писать произвольным шрифтом."
+  rainbow: "Радуга"
+  rainbowDescription: "Заставлять содержимое отображаться в цветах радуги."
 _reversi:
   reversi: "Реверси"
   gameSettings: "Настройки игры"
@@ -911,6 +921,9 @@ _channel:
   usersCount: "Участников: {n}"
   notesCount: "Заметок: {n}"
 _menuDisplay:
+  sideFull: "Сторона"
+  sideIcon: "Сторона (иконки)"
+  top: "Вверх"
   hide: "Спрятать"
 _wordMute:
   muteWords: "Скрыть слово"

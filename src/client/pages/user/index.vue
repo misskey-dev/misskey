@@ -1,9 +1,9 @@
 <template>
 <transition name="fade" mode="out-in">
 	<div class="ftskorzw wide" v-if="user && narrow === false">
-		<MkRemoteCaution v-if="user.host != null" :href="user.url" class="_gap"/>
+		<MkRemoteCaution v-if="user.host != null" :href="user.url"/>
 
-		<div class="banner-container _gap" :style="style">
+		<div class="banner-container" :style="style">
 			<div class="banner" ref="banner" :style="style"></div>
 		</div>
 		<div class="contents">
@@ -276,6 +276,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: computed(() => this.user ? {
 				title: this.user.name ? `${this.user.name} (@${this.user.username})` : `@${this.user.username}`,
+				subtitle: `@${getAcct(this.user)}`,
 				userName: this.user,
 				avatar: this.user,
 				path: `/@${this.user.username}`,
@@ -313,7 +314,7 @@ export default defineComponent({
 
 	mounted() {
 		window.requestAnimationFrame(this.parallaxLoop);
-		this.narrow = true; //this.$el.clientWidth < 1000;
+		this.narrow = this.$el.clientWidth < 1000;
 	},
 
 	beforeUnmount() {
@@ -381,13 +382,10 @@ export default defineComponent({
 }
 
 .ftskorzw.wide {
-	max-width: 1150px;
-	margin: 0 auto;
 
 	> .banner-container {
 		position: relative;
-		height: 450px;
-		border-radius: 16px;
+		height: 300px;
 		overflow: hidden;
 		background-size: cover;
 		background-position: center;
@@ -404,6 +402,7 @@ export default defineComponent({
 
 	> .contents {
 		display: flex;
+		padding: 16px;
 
 		> .side {
 			width: 360px;
@@ -561,6 +560,7 @@ export default defineComponent({
 .ftskorzw.narrow {
 	box-sizing: border-box;
 	overflow: clip;
+	background: var(--bg);
 
 	> .punished {
 		font-size: 0.8em;

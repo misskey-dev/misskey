@@ -768,12 +768,15 @@ squareAvatars: "アイコンを四角形で表示"
 sent: "送信"
 received: "受信"
 searchResult: "検索結果"
+hashtags: "ハッシュタグ"
+troubleshooting: "トラブルシューティング"
 
 _docs: 
   continueReading: "続きを読む"
   features: "機能"
   generalTopics: "一般的なトピック"
   advancedTopics: "高度なトピック"
+  admin: "管理"
 
 _ad:
   back: "戻る"
