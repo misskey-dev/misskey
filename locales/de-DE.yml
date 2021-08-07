@@ -772,6 +772,7 @@ _docs:
   features: "Funktionen"
   generalTopics: "Allgemeine Themen"
   advancedTopics: "Erweiterte Themen"
+  admin: "Verwaltung"
 _ad:
   back: "Zurück"
   reduceFrequencyOfThisAd: "Diese Werbung weniger anzeigen"
