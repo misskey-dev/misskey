@@ -765,6 +765,7 @@ customCss: "Custom CSS"
 customCssWarn: "Pengaturan ini seharusnya digunakan jika kamu tahu cara kerjanya. Memasukkan nilai yang tidak tepat dapat menyebabkan klien tidak berfungsi semestinya."
 global: "Global"
 squareAvatars: "Tampilkan avatar sebagai persegi"
+sent: "Kirim"
 _ad:
   back: "Kembali"
   reduceFrequencyOfThisAd: "Tampilkan iklan ini lebih sedikit"
