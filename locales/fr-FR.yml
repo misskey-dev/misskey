@@ -766,6 +766,7 @@ customCssWarn: "Utilisez cette fonctionnalité uniquement si vous savez exacteme
 global: "Global"
 squareAvatars: "Avatars carrés"
 sent: "Envoyer"
+hashtags: "Hashtags"
 _docs:
   continueReading: "Lire plus"
   features: "Fonctionnalités"
