@@ -762,6 +762,7 @@ emailNotConfiguredWarning: "Не указан адрес электронной 
 ratio: "Соотношение"
 global: "Всеобщая"
 sent: "Отправить"
+hashtags: "Хэштег"
 _docs:
   continueReading: "Читать подробнее"
   features: "Возможности"
