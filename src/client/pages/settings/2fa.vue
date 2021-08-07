@@ -20,7 +20,7 @@
 					</div>
 				</div>
 
-				<MkSwitch v-model:value="usePasswordLessLogin" @update:value="updatePasswordLessLogin" v-if="$i.securityKeysList.length > 0">{{ $ts.passwordLessLogin }}</MkSwitch>
+				<MkSwitch v-model="usePasswordLessLogin" @update:modelValue="updatePasswordLessLogin" v-if="$i.securityKeysList.length > 0">{{ $ts.passwordLessLogin }}</MkSwitch>
 
 				<MkInfo warn v-if="registration && registration.error">{{ $ts.error }} {{ registration.error }}</MkInfo>
 				<MkButton v-if="!registration || registration.error" @click="addSecurityKey">{{ $ts._2fa.registerKey }}</MkButton>
@@ -32,8 +32,8 @@
 					</li>
 					<li v-if="registration.stage >= 1">
 						<MkForm :disabled="registration.stage != 1 || registration.saving">
-							<MkInput v-model:value="keyName" :max="30">
-								<span>{{ $ts.securityKeyName }}</span>
+							<MkInput v-model="keyName" :max="30">
+								<template #label>{{ $ts.securityKeyName }}</template>
 							</MkInput>
 							<MkButton @click="registerKey" :disabled="keyName.length == 0">{{ $ts.registerSecurityKey }}</MkButton>
 							<i v-if="registration.saving && registration.stage == 1" class="fas fa-spinner fa-pulse fa-fw"></i>
@@ -56,7 +56,7 @@
 				</li>
 				<li>{{ $ts._2fa.step2 }}<br><img :src="data.qr"></li>
 				<li>{{ $ts._2fa.step3 }}<br>
-					<MkInput v-model:value="token" type="text" pattern="^[0-9]{6}$" autocomplete="off" spellcheck="false">{{ $ts.token }}</MkInput>
+					<MkInput v-model="token" type="text" pattern="^[0-9]{6}$" autocomplete="off" spellcheck="false"><template #label>{{ $ts.token }}</template></MkInput>
 					<MkButton primary @click="submit">{{ $ts.done }}</MkButton>
 				</li>
 			</ol>

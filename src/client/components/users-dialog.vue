@@ -28,7 +28,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import paging from '@client/scripts/paging';
-import { userPage } from '../filters/user';
+import { userPage } from '@client/filters/user';
 
 export default defineComponent({
 	mixins: [

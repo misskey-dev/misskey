@@ -7,7 +7,10 @@
 
 	<div class="local" v-if="tab === 'local'">
 		<MkButton primary @click="add" style="margin: var(--margin) auto;"><i class="fas fa-plus"></i> {{ $ts.addEmoji }}</MkButton>
-		<MkInput v-model:value="query" :debounce="true" type="search" style="margin: var(--margin);"><template #icon><i class="fas fa-search"></i></template><span>{{ $ts.search }}</span></MkInput>
+		<MkInput v-model="query" :debounce="true" type="search" style="margin: var(--margin);">
+			<template #prefix><i class="fas fa-search"></i></template>
+			<template #label>{{ $ts.search }}</template>
+		</MkInput>
 		<MkPagination :pagination="pagination" ref="emojis">
 			<template #empty><span>{{ $ts.noCustomEmojis }}</span></template>
 			<template #default="{items}">
@@ -25,8 +28,13 @@
 	</div>
 
 	<div class="remote" v-else-if="tab === 'remote'">
-		<MkInput v-model:value="queryRemote" :debounce="true" type="search" style="margin: var(--margin);"><template #icon><i class="fas fa-search"></i></template><span>{{ $ts.search }}</span></MkInput>
-		<MkInput v-model:value="host" :debounce="true" style="margin: var(--margin);"><span>{{ $ts.host }}</span></MkInput>
+		<MkInput v-model="queryRemote" :debounce="true" type="search" style="margin: var(--margin);">
+			<template #prefix><i class="fas fa-search"></i></template>
+			<template #label>{{ $ts.search }}</template>
+		</MkInput>
+		<MkInput v-model="host" :debounce="true" style="margin: var(--margin);">
+			<template #label>{{ $ts.host }}</template>
+		</MkInput>
 		<MkPagination :pagination="remotePagination" ref="remoteEmojis">
 			<template #empty><span>{{ $ts.noCustomEmojis }}</span></template>
 			<template #default="{items}">

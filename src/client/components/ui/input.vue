@@ -1,32 +1,9 @@
 <template>
-<div class="juejbjww" :class="{ focused, filled, inline, disabled }">
-	<div class="icon" ref="icon"><slot name="icon"></slot></div>
-	<div class="input">
-		<span class="label" ref="labelEl"><slot></slot></span>
-		<span class="title" ref="title">
-			<slot name="title"></slot>
-			<span class="warning" v-if="invalid"><i class="fas fa-exclamation-circle"></i>{{ $refs.input.validationMessage }}</span>
-		</span>
+<div class="matxzzsk">
+	<div class="label" @click="focus"><slot name="label"></slot></div>
+	<div class="input" :class="{ inline, disabled, focused }">
 		<div class="prefix" ref="prefixEl"><slot name="prefix"></slot></div>
-		<input v-if="debounce" ref="inputEl"
-			v-debounce="500"
-			:type="type"
-			v-model.lazy="v"
-			:disabled="disabled"
-			:required="required"
-			:readonly="readonly"
-			:placeholder="placeholder"
-			:pattern="pattern"
-			:autocomplete="autocomplete"
-			:spellcheck="spellcheck"
-			:step="step"
-			@focus="focused = true"
-			@blur="focused = false"
-			@keydown="onKeydown($event)"
-			@input="onInput"
-			:list="id"
-		>
-		<input v-else ref="inputEl"
+		<input ref="inputEl"
 			:type="type"
 			v-model="v"
 			:disabled="disabled"
@@ -48,23 +25,25 @@
 		</datalist>
 		<div class="suffix" ref="suffixEl"><slot name="suffix"></slot></div>
 	</div>
-	<button class="save _textButton" v-if="save && changed" @click="() => { changed = false; save(); }">{{ $ts.save }}</button>
-	<div class="desc _caption"><slot name="desc"></slot></div>
+	<div class="caption"><slot name="caption"></slot></div>
+
+	<MkButton v-if="manualSave && changed" @click="updated" primary><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, onMounted, onUnmounted, nextTick, ref, watch, computed, toRefs } from 'vue';
-import debounce from 'v-debounce';
-import * as os from '@client/os';
+import MkButton from './button.vue';
+import { debounce } from 'throttle-debounce';
 
 export default defineComponent({
-	directives: {
-		debounce
+	components: {
+		MkButton,
 	},
+
 	props: {
-		value: {
-			required: false
+		modelValue: {
+			required: true
 		},
 		type: {
 			type: String,
@@ -104,9 +83,6 @@ export default defineComponent({
 		step: {
 			required: false
 		},
-		debounce: {
-			required: false
-		},
 		datalist: {
 			type: Array,
 			required: false,
@@ -116,15 +92,23 @@ export default defineComponent({
 			required: false,
 			default: false
 		},
-		save: {
-			type: Function,
+		debounce: {
+			type: Boolean,
 			required: false,
+			default: false
+		},
+		manualSave: {
+			type: Boolean,
+			required: false,
+			default: false
 		},
 	},
-	emits: ['change', 'keydown', 'enter'],
+
+	emits: ['change', 'keydown', 'enter', 'update:modelValue'],
+
 	setup(props, context) {
-		const { value, type, autofocus } = toRefs(props);
-		const v = ref(value.value);
+		const { modelValue, type, autofocus } = toRefs(props);
+		const v = ref(modelValue.value);
 		const id = Math.random().toString(); // TODO: uuid?
 		const focused = ref(false);
 		const changed = ref(false);
@@ -133,7 +117,6 @@ export default defineComponent({
 		const inputEl = ref(null);
 		const prefixEl = ref(null);
 		const suffixEl = ref(null);
-		const labelEl = ref(null);
 
 		const focus = () => inputEl.value.focus();
 		const onInput = (ev) => {
@@ -148,15 +131,28 @@ export default defineComponent({
 			}
 		};
 
-		watch(value, newValue => {
+		const updated = () => {
+			changed.value = false;
+			if (type?.value === 'number') {
+				context.emit('update:modelValue', parseFloat(v.value));
+			} else {
+				context.emit('update:modelValue', v.value);
+			}
+		};
+
+		const debouncedUpdated = debounce(1000, updated);
+
+		watch(modelValue, newValue => {
 			v.value = newValue;
 		});
 
 		watch(v, newValue => {
-			if (type?.value === 'number') {
-				context.emit('update:value', parseFloat(newValue));
-			} else {
-				context.emit('update:value', newValue);
+			if (!props.manualSave) {
+				if (props.debounce) {
+					debouncedUpdated();
+				} else {
+					updated();
+				}
 			}
 
 			invalid.value = inputEl.value.validity.badInput;
@@ -172,7 +168,6 @@ export default defineComponent({
 				// 非表示状態だと要素の幅などは0になってしまうので、定期的に計算する
 				const clock = setInterval(() => {
 					if (prefixEl.value) {
-						labelEl.value.style.left = (prefixEl.value.offsetLeft + prefixEl.value.offsetWidth) + 'px';
 						if (prefixEl.value.offsetWidth) {
 							inputEl.value.style.paddingLeft = prefixEl.value.offsetWidth + 'px';
 						}
@@ -200,148 +195,70 @@ export default defineComponent({
 			inputEl,
 			prefixEl,
 			suffixEl,
-			labelEl,
 			focus,
 			onInput,
 			onKeydown,
+			updated,
 		};
 	},
 });
 </script>
 
 <style lang="scss" scoped>
-.juejbjww {
-	position: relative;
-	margin: 32px 0;
+.matxzzsk {
+	margin: 1em 0;
 
-	&:not(.inline):first-child {
-		margin-top: 8px;
+	> .label {
+		font-size: 0.85em;
+		padding: 0 0 6px 6px;
+		font-weight: bold;
+		user-select: none;
 	}
 
-	&:not(.inline):last-child {
-		margin-bottom: 8px;
-	}
-
-	> .icon {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 24px;
-		text-align: center;
-		line-height: 32px;
-
-		&:not(:empty) + .input {
-			margin-left: 28px;
-		}
+	> .caption {
+		font-size: 0.8em;
+		padding: 6px 0 0 6px;
+		color: var(--fgTransparentWeak);
 	}
 
 	> .input {
+		$height: 42px;
 		position: relative;
 
-		&:before {
-			content: '';
-			display: block;
-			position: absolute;
-			bottom: 0;
-			left: 0;
-			right: 0;
-			height: 1px;
-			background: var(--inputBorder);
-		}
-
-		&:after {
-			content: '';
-			display: block;
-			position: absolute;
-			bottom: 0;
-			left: 0;
-			right: 0;
-			height: 2px;
-			background: var(--accent);
-			opacity: 0;
-			transform: scaleX(0.12);
-			transition: border 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-			will-change: border opacity transform;
-		}
-
-		> .label {
-			position: absolute;
-			z-index: 1;
-			top: 0;
-			left: 0;
-			pointer-events: none;
-			transition: 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-			transition-duration: 0.3s;
-			font-size: 1em;
-			line-height: 32px;
-			color: var(--inputLabel);
-			pointer-events: none;
-			//will-change transform
-			transform-origin: top left;
-			transform: scale(1);
-		}
-
-		> .title {
-			position: absolute;
-			z-index: 1;
-			top: -17px;
-			left: 0 !important;
-			pointer-events: none;
-			font-size: 1em;
-			line-height: 32px;
-			color: var(--inputLabel);
-			pointer-events: none;
-			//will-change transform
-			transform-origin: top left;
-			transform: scale(.75);
-			white-space: nowrap;
-			width: 133%;
-			overflow: hidden;
-			text-overflow: ellipsis;
-
-			> .warning {
-				margin-left: 0.5em;
-				color: var(--infoWarnFg);
-
-				> svg {
-					margin-right: 0.1em;
-				}
-			}
-		}
-
 		> input {
-			$height: 32px;
+			appearance: none;
+			-webkit-appearance: none;
 			display: block;
 			height: $height;
 			width: 100%;
 			margin: 0;
-			padding: 0;
+			padding: 0 12px;
 			font: inherit;
 			font-weight: normal;
 			font-size: 1em;
-			line-height: $height;
-			color: var(--inputText);
-			background: transparent;
-			border: none;
-			border-radius: 0;
+			color: var(--fg);
+			background: var(--panel);
+			border: solid 1px var(--inputBorder);
+			border-radius: 6px;
 			outline: none;
 			box-shadow: none;
 			box-sizing: border-box;
 
-			&[type='file'] {
-				display: none;
+			&:hover {
+				border-color: var(--inputBorderHover);
 			}
 		}
 
 		> .prefix,
 		> .suffix {
-			display: block;
+			display: flex;
+			align-items: center;
 			position: absolute;
 			z-index: 1;
 			top: 0;
+			padding: 0 12px;
 			font-size: 1em;
-			line-height: 32px;
-			color: var(--inputLabel);
+			height: $height;
 			pointer-events: none;
 
 			&:empty {
@@ -360,66 +277,32 @@ export default defineComponent({
 
 		> .prefix {
 			left: 0;
-			padding-right: 4px;
+			padding-right: 6px;
 		}
 
 		> .suffix {
 			right: 0;
-			padding-left: 4px;
-		}
-	}
-
-	> .save {
-		margin: 6px 0 0 0;
-		font-size: 0.8em;
-	}
-
-	> .desc {
-		margin: 6px 0 0 0;
-
-		&:empty {
-			display: none;
+			padding-left: 6px;
 		}
 
-		* {
+		&.inline {
+			display: inline-block;
 			margin: 0;
 		}
-	}
 
-	&.focused {
-		> .input {
-			&:after {
-				opacity: 1;
-				transform: scaleX(1);
-			}
-
-			> .label {
-				color: var(--accent);
+		&.focused {
+			> input {
+				border-color: var(--accent);
+				//box-shadow: 0 0 0 4px var(--focus);
 			}
 		}
-	}
 
-	&.focused,
-	&.filled {
-		> .input {
-			> .label {
-				top: -17px;
-				left: 0 !important;
-				transform: scale(0.75);
+		&.disabled {
+			opacity: 0.7;
+
+			&, * {
+				cursor: not-allowed !important;
 			}
-		}
-	}
-
-	&.inline {
-		display: inline-block;
-		margin: 0;
-	}
-
-	&.disabled {
-		opacity: 0.7;
-
-		&, * {
-			cursor: not-allowed !important;
 		}
 	}
 }

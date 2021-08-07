@@ -3,14 +3,14 @@
 	<MkButton @click="add()" primary style="margin: 0 auto 16px auto;"><i class="fas fa-plus"></i> {{ $ts.add }}</MkButton>
 	<section class="_card _gap announcements" v-for="announcement in announcements">
 		<div class="_content announcement">
-			<MkInput v-model:value="announcement.title">
-				<span>{{ $ts.title }}</span>
+			<MkInput v-model="announcement.title">
+				<template #label>{{ $ts.title }}</template>
 			</MkInput>
-			<MkTextarea v-model:value="announcement.text">
-				<span>{{ $ts.text }}</span>
+			<MkTextarea v-model="announcement.text">
+				<template #label>{{ $ts.text }}</template>
 			</MkTextarea>
-			<MkInput v-model:value="announcement.imageUrl">
-				<span>{{ $ts.imageUrl }}</span>
+			<MkInput v-model="announcement.imageUrl">
+				<template #label>{{ $ts.imageUrl }}</template>
 			</MkInput>
 			<p v-if="announcement.reads">{{ $t('nUsersRead', { n: announcement.reads }) }}</p>
 			<div class="buttons">

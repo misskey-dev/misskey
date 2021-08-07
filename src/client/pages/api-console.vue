@@ -1,13 +1,13 @@
 <template>
 <div class="_root">
 	<div class="_block" style="padding: 24px;">
-		<MkInput v-model:value="endpoint" :datalist="endpoints" @update:value="onEndpointChange()">
-			<span>Endpoint</span>
+		<MkInput v-model="endpoint" :datalist="endpoints" @update:modelValue="onEndpointChange()">
+			<template #label>Endpoint</template>
 		</MkInput>
-		<MkTextarea v-model:value="body" code>
-			<span>Params (JSON or JSON5)</span>
+		<MkTextarea v-model="body" code>
+			<template #label>Params (JSON or JSON5)</template>
 		</MkTextarea>
-		<MkSwitch v-model:value="withCredential">
+		<MkSwitch v-model="withCredential">
 			With credential
 		</MkSwitch>
 		<MkButton primary full @click="send" :disabled="sending">
@@ -16,8 +16,8 @@
 		</MkButton>
 	</div>
 	<div v-if="res" class="_block" style="padding: 24px;">
-		<MkTextarea v-model:value="res" code readonly tall>
-			<span>Response</span>
+		<MkTextarea v-model="res" code readonly tall>
+			<template #label>Response</template>
 		</MkTextarea>
 	</div>
 </div>

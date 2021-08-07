@@ -1,7 +1,7 @@
 <template>
 <XColumn v-if="deckStore.state.alwaysShowMainColumn || $route.name !== 'index'" :column="column" :is-stacked="isStacked">
 	<template #header>
-		<XHeader :info="pageInfo"/>
+		<XHeader :info="pageInfo" :back-button="true" @back="back()"/>
 	</template>
 
 	<router-view v-slot="{ Component }" class="_flat_">
@@ -54,6 +54,10 @@ export default defineComponent({
 			if (page[symbols.PAGE_INFO]) {
 				this.pageInfo = page[symbols.PAGE_INFO];
 			}
+		},
+
+		back() {
+			history.back();
 		},
 
 		onContextmenu(e) {
