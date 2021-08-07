@@ -768,6 +768,7 @@ squareAvatars: "アイコンを四角形で表示"
 sent: "送信"
 received: "受信"
 searchResult: "検索結果"
+hashtags: "ハッシュタグ"
 
 _docs: 
   continueReading: "続きを読む"
