@@ -765,6 +765,7 @@ customCss: "Benutzerdefiniertes CSS"
 customCssWarn: "Verwende diese Einstellung nur, wenn du weißt, was sie tut. Ungültige Eingaben können dazu führen, dass der Client nicht mehr normal funktioniert."
 global: "Global"
 squareAvatars: "Profilbilder quadratisch anzeigen"
+sent: "Senden"
 _docs:
   continueReading: "Mehr lesen"
   features: "Funktionen"
