@@ -767,6 +767,8 @@ global: "Global"
 squareAvatars: "Tampilkan avatar sebagai persegi"
 sent: "Kirim"
 hashtags: "Tagar"
+_docs:
+  admin: "Manajemen"
 _ad:
   back: "Kembali"
   reduceFrequencyOfThisAd: "Tampilkan iklan ini lebih sedikit"
