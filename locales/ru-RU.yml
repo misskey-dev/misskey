@@ -761,6 +761,7 @@ low: "Низкий"
 emailNotConfiguredWarning: "Не указан адрес электронной почты"
 ratio: "Соотношение"
 global: "Всеобщая"
+sent: "Отправить"
 _docs:
   continueReading: "Читать подробнее"
   features: "Возможности"
