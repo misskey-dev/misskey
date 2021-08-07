@@ -743,6 +743,7 @@ ratio: "Rapporto"
 global: "Federata"
 sent: "Inviare"
 hashtags: "Hashtag"
+troubleshooting: "Risoluzione problemi"
 _docs:
   continueReading: "Leggi di più"
   features: "Funzionalità"
@@ -805,6 +806,7 @@ _mfm:
   blur: "Sfocatura"
   font: "Tipo di carattere"
   fontDescription: "Puoi scegliere il tipo di carattere per il contenuto."
+  rainbow: "Arcobaleno"
 _reversi:
   reversi: "Reversi"
   gameSettings: "Impostazioni di gioco"
