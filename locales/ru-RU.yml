@@ -768,6 +768,7 @@ _docs:
   features: "Возможности"
   generalTopics: "Основные темы"
   advancedTopics: "Дополнительные темы"
+  admin: "Управление"
 _ad:
   back: "Выход"
   reduceFrequencyOfThisAd: "Реже показывать эту рекламу"
