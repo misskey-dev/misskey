@@ -766,6 +766,7 @@ customCssWarn: "이 설정은 기능을 알고 있는 경우에만 사용해야 
 global: "글로벌"
 squareAvatars: "프로필 아이콘을 사각형으로 표시"
 sent: "전송"
+hashtags: "해시태그"
 _ad:
   back: "뒤로"
   reduceFrequencyOfThisAd: "이 광고의 표시 빈도 낮추기"
