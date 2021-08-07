@@ -5,8 +5,8 @@
 	</p>
 	<ul ref="choices">
 		<li v-for="(choice, i) in choices" :key="i">
-			<MkInput class="input" :value="choice" @update:value="onInput(i, $event)">
-				<span>{{ $t('_poll.choiceN', { n: i + 1 }) }}</span>
+			<MkInput class="input" :model-value="choice" @update:modelValue="onInput(i, $event)">
+				<template #label>{{ $t('_poll.choiceN', { n: i + 1 }) }}</template>
 			</MkInput>
 			<button @click="remove(i)" class="_button">
 				<i class="fas fa-times"></i>
@@ -16,27 +16,27 @@
 	<MkButton class="add" v-if="choices.length < 10" @click="add">{{ $ts.add }}</MkButton>
 	<MkButton class="add" v-else disabled>{{ $ts._poll.noMore }}</MkButton>
 	<section>
-		<MkSwitch v-model:value="multiple">{{ $ts._poll.canMultipleVote }}</MkSwitch>
+		<MkSwitch v-model="multiple">{{ $ts._poll.canMultipleVote }}</MkSwitch>
 		<div>
-			<MkSelect v-model:value="expiration">
+			<MkSelect v-model="expiration">
 				<template #label>{{ $ts._poll.expiration }}</template>
 				<option value="infinite">{{ $ts._poll.infinite }}</option>
 				<option value="at">{{ $ts._poll.at }}</option>
 				<option value="after">{{ $ts._poll.after }}</option>
 			</MkSelect>
 			<section v-if="expiration === 'at'">
-				<MkInput v-model:value="atDate" type="date" class="input">
-					<span>{{ $ts._poll.deadlineDate }}</span>
+				<MkInput v-model="atDate" type="date" class="input">
+					<template #label>{{ $ts._poll.deadlineDate }}</template>
 				</MkInput>
-				<MkInput v-model:value="atTime" type="time" class="input">
-					<span>{{ $ts._poll.deadlineTime }}</span>
+				<MkInput v-model="atTime" type="time" class="input">
+					<template #label>{{ $ts._poll.deadlineTime }}</template>
 				</MkInput>
 			</section>
 			<section v-if="expiration === 'after'">
-				<MkInput v-model:value="after" type="number" class="input">
-					<span>{{ $ts._poll.duration }}</span>
+				<MkInput v-model="after" type="number" class="input">
+					<template #label>{{ $ts._poll.duration }}</template>
 				</MkInput>
-				<MkSelect v-model:value="unit">
+				<MkSelect v-model="unit">
 					<option value="second">{{ $ts._time.second }}</option>
 					<option value="minute">{{ $ts._time.minute }}</option>
 					<option value="hour">{{ $ts._time.hour }}</option>

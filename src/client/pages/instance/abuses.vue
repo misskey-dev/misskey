@@ -3,19 +3,19 @@
 	<div class="_section reports">
 		<div class="_content">
 			<div class="inputs" style="display: flex;">
-				<MkSelect v-model:value="state" style="margin: 0; flex: 1;">
+				<MkSelect v-model="state" style="margin: 0; flex: 1;">
 					<template #label>{{ $ts.state }}</template>
 					<option value="all">{{ $ts.all }}</option>
 					<option value="unresolved">{{ $ts.unresolved }}</option>
 					<option value="resolved">{{ $ts.resolved }}</option>
 				</MkSelect>
-				<MkSelect v-model:value="targetUserOrigin" style="margin: 0; flex: 1;">
+				<MkSelect v-model="targetUserOrigin" style="margin: 0; flex: 1;">
 					<template #label>{{ $ts.targetUserOrigin }}</template>
 					<option value="combined">{{ $ts.all }}</option>
 					<option value="local">{{ $ts.local }}</option>
 					<option value="remote">{{ $ts.remote }}</option>
 				</MkSelect>
-				<MkSelect v-model:value="reporterOrigin" style="margin: 0; flex: 1;">
+				<MkSelect v-model="reporterOrigin" style="margin: 0; flex: 1;">
 					<template #label>{{ $ts.reporterOrigin }}</template>
 					<option value="combined">{{ $ts.all }}</option>
 					<option value="local">{{ $ts.local }}</option>
@@ -68,7 +68,7 @@ import MkButton from '@client/components/ui/button.vue';
 import MkInput from '@client/components/ui/input.vue';
 import MkSelect from '@client/components/ui/select.vue';
 import MkPagination from '@client/components/ui/pagination.vue';
-import { acct } from '../../filters/user';
+import { acct } from '@client/filters/user';
 import * as os from '@client/os';
 import * as symbols from '@client/symbols';
 

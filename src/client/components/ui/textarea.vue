@@ -1,30 +1,45 @@
 <template>
-<div class="adhpbeos" :class="{ focused, filled, tall, pre }">
-	<div class="input">
-		<span class="label" ref="label"><slot></slot></span>
-		<textarea ref="input" :class="{ code, _monospace: code }"
-			:value="value"
+<div class="adhpbeos">
+	<div class="label" @click="focus"><slot name="label"></slot></div>
+	<div class="input" :class="{ disabled, focused, tall, pre }">
+		<textarea ref="inputEl"
+			:class="{ code, _monospace: code }"
+			v-model="v"
+			:disabled="disabled"
 			:required="required"
 			:readonly="readonly"
+			:placeholder="placeholder"
 			:pattern="pattern"
 			:autocomplete="autocomplete"
-			:spellcheck="!code"
-			@input="onInput"
+			:spellcheck="spellcheck"
 			@focus="focused = true"
 			@blur="focused = false"
+			@keydown="onKeydown($event)"
+			@input="onInput"
 		></textarea>
 	</div>
-	<button class="save _textButton" v-if="save && changed" @click="() => { changed = false; save(); }">{{ $ts.save }}</button>
-	<div class="desc _caption"><slot name="desc"></slot></div>
+	<div class="caption"><slot name="caption"></slot></div>
+
+	<MkButton v-if="manualSave && changed" @click="updated" primary><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
 </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, onMounted, onUnmounted, nextTick, ref, watch, computed, toRefs } from 'vue';
+import MkButton from './button.vue';
+import { debounce } from 'throttle-debounce';
 
 export default defineComponent({
+	components: {
+		MkButton,
+	},
+
 	props: {
-		value: {
+		modelValue: {
+			required: true
+		},
+		type: {
+			type: String,
 			required: false
 		},
 		required: {
@@ -35,12 +50,27 @@ export default defineComponent({
 			type: Boolean,
 			required: false
 		},
+		disabled: {
+			type: Boolean,
+			required: false
+		},
 		pattern: {
 			type: String,
 			required: false
 		},
-		autocomplete: {
+		placeholder: {
 			type: String,
+			required: false
+		},
+		autofocus: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
+		autocomplete: {
+			required: false
+		},
+		spellcheck: {
 			required: false
 		},
 		code: {
@@ -57,169 +87,164 @@ export default defineComponent({
 			required: false,
 			default: false
 		},
-		save: {
-			type: Function,
+		debounce: {
+			type: Boolean,
 			required: false,
+			default: false
+		},
+		manualSave: {
+			type: Boolean,
+			required: false,
+			default: false
 		},
 	},
-	data() {
+
+	emits: ['change', 'keydown', 'enter', 'update:modelValue'],
+
+	setup(props, context) {
+		const { modelValue, autofocus } = toRefs(props);
+		const v = ref(modelValue.value);
+		const focused = ref(false);
+		const changed = ref(false);
+		const invalid = ref(false);
+		const filled = computed(() => v.value !== '' && v.value != null);
+		const inputEl = ref(null);
+
+		const focus = () => inputEl.value.focus();
+		const onInput = (ev) => {
+			changed.value = true;
+			context.emit('change', ev);
+		};
+		const onKeydown = (ev: KeyboardEvent) => {
+			context.emit('keydown', ev);
+
+			if (ev.code === 'Enter') {
+				context.emit('enter');
+			}
+		};
+
+		const updated = () => {
+			changed.value = false;
+			context.emit('update:modelValue', v.value);
+		};
+
+		const debouncedUpdated = debounce(1000, updated);
+
+		watch(modelValue, newValue => {
+			v.value = newValue;
+		});
+
+		watch(v, newValue => {
+			if (!props.manualSave) {
+				if (props.debounce) {
+					debouncedUpdated();
+				} else {
+					updated();
+				}
+			}
+
+			invalid.value = inputEl.value.validity.badInput;
+		});
+
+		onMounted(() => {
+			nextTick(() => {
+				if (autofocus.value) {
+					focus();
+				}
+			});
+		});
+
 		return {
-			focused: false,
-			changed: false,
-		}
+			v,
+			focused,
+			invalid,
+			changed,
+			filled,
+			inputEl,
+			focus,
+			onInput,
+			onKeydown,
+			updated,
+		};
 	},
-	computed: {
-		filled(): boolean {
-			return this.value != '' && this.value != null;
-		}
-	},
-	methods: {
-		focus() {
-			this.$refs.input.focus();
-		},
-		onInput(ev) {
-			this.changed = true;
-			this.$emit('update:value', ev.target.value);
-		}
-	}
 });
 </script>
 
 <style lang="scss" scoped>
 .adhpbeos {
-	margin: 42px 0 32px 0;
-	position: relative;
+	margin: 1.5em 0;
 
-	&:first-child {
-		margin-top: 16px;
+	> .label {
+		font-size: 0.85em;
+		padding: 0 0 6px 6px;
+		font-weight: bold;
+		user-select: none;
+
+		&:empty {
+			display: none;
+		}
 	}
 
-	&:last-child {
-		margin-bottom: 0;
+	> .caption {
+		font-size: 0.8em;
+		padding: 6px 0 0 6px;
+		color: var(--fgTransparentWeak);
+
+		&:empty {
+			display: none;
+		}
 	}
 
 	> .input {
 		position: relative;
-	
-		&:before {
-			content: '';
-			display: block;
-			position: absolute;
-			top: 0;
-			bottom: 0;
-			left: 0;
-			right: 0;
-			background: none;
-			border: solid 1px var(--inputBorder);
-			border-radius: 3px;
-			pointer-events: none;
-		}
-
-		&:after {
-			content: '';
-			display: block;
-			position: absolute;
-			top: 0;
-			bottom: 0;
-			left: 0;
-			right: 0;
-			background: none;
-			border: solid 2px var(--accent);
-			border-radius: 3px;
-			opacity: 0;
-			transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-			pointer-events: none;
-		}
-
-		> .label {
-			position: absolute;
-			top: 6px;
-			left: 12px;
-			pointer-events: none;
-			transition: 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-			transition-duration: 0.3s;
-			font-size: 1em;
-			line-height: 32px;
-			pointer-events: none;
-			//will-change transform
-			transform-origin: top left;
-			transform: scale(1);
-		}
 
 		> textarea {
+			appearance: none;
+			-webkit-appearance: none;
 			display: block;
 			width: 100%;
 			min-width: 100%;
 			max-width: 100%;
 			min-height: 130px;
+			margin: 0;
 			padding: 12px;
-			box-sizing: border-box;
 			font: inherit;
 			font-weight: normal;
 			font-size: 1em;
-			background: transparent;
-			border: none;
-			border-radius: 0;
+			color: var(--fg);
+			background: var(--panel);
+			border: solid 1px var(--inputBorder);
+			border-radius: 6px;
 			outline: none;
 			box-shadow: none;
-			color: var(--fg);
+			box-sizing: border-box;
 
-			&.code {
-				tab-size: 2;
+			&:hover {
+				border-color: var(--inputBorderHover);
 			}
 		}
-	}
 
-	> .save {
-		margin: 6px 0 0 0;
-		font-size: 0.8em;
-	}
-
-	> .desc {
-		margin: 6px 0 0 0;
-
-		&:empty {
-			display: none;
-		}
-
-		* {
-			margin: 0;
-		}
-	}
-
-	&.focused {
-		> .input {
-			&:after {
-				opacity: 1;
-			}
-
-			> .label {
-				color: var(--accent);
+		&.focused {
+			> textarea {
+				border-color: var(--accent);
 			}
 		}
-	}
 
-	&.focused,
-	&.filled {
-		> .input {
-			> .label {
-				top: -24px;
-				left: 0 !important;
-				transform: scale(0.75);
+		&.disabled {
+			opacity: 0.7;
+
+			&, * {
+				cursor: not-allowed !important;
 			}
 		}
-	}
 
-	&.tall {
-		> .input {
+		&.tall {
 			> textarea {
 				min-height: 200px;
 			}
 		}
-	}
 
-	&.pre {
-		> .input {
+		&.pre {
 			> textarea {
 				white-space: pre;
 			}

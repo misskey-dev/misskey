@@ -689,6 +689,10 @@ administration: "Управління"
 expiration: "Опитування закінчується"
 middle: "Середній"
 global: "Глобальна"
+sent: "Відправити"
+hashtags: "Хештеґ"
+_docs:
+  admin: "Управління"
 _ad:
   back: "Назад"
 _gallery:

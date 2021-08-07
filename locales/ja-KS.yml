@@ -647,6 +647,10 @@ high: "高い"
 middle: "中"
 low: "低い"
 global: "グローバル"
+sent: "送信"
+hashtags: "ハッシュタグ"
+_docs:
+  admin: "管理"
 _ad:
   back: "戻る"
 _gallery:

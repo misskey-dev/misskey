@@ -1,11 +1,11 @@
 <template>
 <transition :name="$store.state.animation ? 'zoom' : ''" appear>
-	<div class="_section">
-		<div class="mjndxjch _content">
-			<img src="https://xn--931a.moe/assets/error.jpg" class="_ghost"/>
-			<p><i class="fas fa-exclamation-triangle"></i> {{ $ts.pageLoadError }}</p>
-			<p>{{ $ts.pageLoadErrorDescription }}</p>
-		</div>
+	<div class="mjndxjch">
+		<img src="https://xn--931a.moe/assets/error.jpg" class="_ghost"/>
+		<p><b><i class="fas fa-exclamation-triangle"></i> {{ $ts.pageLoadError }}</b></p>
+		<p>{{ $ts.pageLoadErrorDescription }}</p>
+		<p><MkA to="/docs/general/troubleshooting" class="_link">{{ $ts.troubleshooting }}</MkA></p>
+		<p v-if="error" class="error">ERROR: {{ error }}</p>
 	</div>
 </transition>
 </template>
@@ -18,6 +18,11 @@ import * as symbols from '@client/symbols';
 export default defineComponent({
 	components: {
 		MkButton,
+	},
+	props: {
+		error: {
+			required: false,
+		}
 	},
 	data() {
 		return {
@@ -32,10 +37,11 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .mjndxjch {
+	padding: 32px;
 	text-align: center;
 
 	> p {
-		margin: 0 0 8px 0;
+		margin: 0 0 12px 0;
 	}
 
 	> .button {
@@ -45,8 +51,12 @@ export default defineComponent({
 	> img {
 		vertical-align: bottom;
 		height: 128px;
-		margin-bottom: 16px;
+		margin-bottom: 24px;
 		border-radius: 16px;
+	}
+
+	> .error {
+		opacity: 0.7;
 	}
 }
 </style>

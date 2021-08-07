@@ -741,6 +741,12 @@ low: "Bassa"
 emailNotConfiguredWarning: "Non hai impostato nessun indirizzo e-mail."
 ratio: "Rapporto"
 global: "Federata"
+sent: "Inviare"
+hashtags: "Hashtag"
+_docs:
+  continueReading: "Leggi di più"
+  features: "Funzionalità"
+  admin: "Gestione"
 _ad:
   back: "Indietro"
   reduceFrequencyOfThisAd: "Visualizza questa pubblicità meno spesso"

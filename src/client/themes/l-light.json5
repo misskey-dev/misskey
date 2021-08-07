@@ -15,6 +15,5 @@
 		navBg: '#fff',
 		panel: '#fff',
 		panelHeaderDivider: '@divider',
-		messageBg: '#dedede',
 	},
 }
