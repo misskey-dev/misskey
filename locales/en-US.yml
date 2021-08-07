@@ -769,6 +769,7 @@ sent: "Sent"
 received: "Received"
 searchResult: "Search results"
 hashtags: "Hashtags"
+troubleshooting: "Troubleshooting"
 _docs:
   continueReading: "Read more"
   features: "Features"
