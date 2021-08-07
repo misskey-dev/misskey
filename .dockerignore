@@ -3,6 +3,7 @@
 .github
 .travis
 .vscode
+.config
 Dockerfile
 build/
 built/

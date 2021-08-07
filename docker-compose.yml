@@ -15,6 +15,7 @@ services:
       - external_network
     volumes:
       - ./files:/misskey/files
+      - ./.config:/misskey/.config
 
   redis:
     restart: always
