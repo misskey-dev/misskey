@@ -36,6 +36,16 @@
 			</MkA>
 		</div>
 	</MkFolder>
+	<MkFolder>
+		<template #header>{{ $ts._docs.admin }}</template>
+		<div class="docs">
+			<MkA v-for="doc in docs.filter(doc => doc.path.startsWith('admin/'))" :key="doc.path" :to="`/docs/${doc.path}`" class="doc">
+				<div class="title">{{ doc.title }}</div>
+				<div class="summary">{{ doc.summary }}</div>
+				<div class="read">{{ $ts._docs.continueReading }}</div>
+			</MkA>
+		</div>
+	</MkFolder>
 </div>
 </template>
 
