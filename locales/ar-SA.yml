@@ -432,6 +432,8 @@ gallery: "المعرض"
 expiration: "ينتهي استطلاع الرأي في"
 middle: "متوسط"
 global: "الشامل"
+_docs:
+  admin: "إدارة "
 _email:
   _follow:
     title: "يتابعك"
