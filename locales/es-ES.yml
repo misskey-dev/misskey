@@ -667,6 +667,8 @@ middle: "Mediano"
 global: "Global"
 sent: "Enviar"
 hashtags: "Hashtag"
+_docs:
+  admin: "Administrar"
 _ad:
   back: "Deseleccionar"
 _gallery:
