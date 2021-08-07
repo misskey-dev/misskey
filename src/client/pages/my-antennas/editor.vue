@@ -1,8 +1,7 @@
 <template>
-<div class="shaynizk _card">
-	<div class="_title" v-if="antenna.name">{{ antenna.name }}</div>
-	<div class="_content body">
-		<MkInput v-model="name">
+<div class="shaynizk">
+	<div class="form">
+		<MkInput v-model="name" class="_inputNoTopMargin">
 			<template #label>{{ $ts.name }}</template>
 		</MkInput>
 		<MkSelect v-model="src">
@@ -38,9 +37,9 @@
 		<MkSwitch v-model="withFile">{{ $ts.withFileAntenna }}</MkSwitch>
 		<MkSwitch v-model="notify">{{ $ts.notifyAntenna }}</MkSwitch>
 	</div>
-	<div class="_footer">
+	<div class="actions">
 		<MkButton inline @click="saveAntenna()" primary><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
-		<MkButton inline @click="deleteAntenna()" v-if="antenna.id != null"><i class="fas fa-trash"></i> {{ $ts.delete }}</MkButton>
+		<MkButton inline @click="deleteAntenna()" v-if="antenna.id != null" danger><i class="fas fa-trash"></i> {{ $ts.delete }}</MkButton>
 	</div>
 </div>
 </template>
@@ -117,7 +116,7 @@ export default defineComponent({
 	methods: {
 		async saveAntenna() {
 			if (this.antenna.id == null) {
-				await os.api('antennas/create', {
+				await os.apiWithDialog('antennas/create', {
 					name: this.name,
 					src: this.src,
 					userListId: this.userListId,
@@ -132,7 +131,7 @@ export default defineComponent({
 				});
 				this.$emit('created');
 			} else {
-				await os.api('antennas/update', {
+				await os.apiWithDialog('antennas/update', {
 					antennaId: this.antenna.id,
 					name: this.name,
 					src: this.src,
@@ -146,9 +145,8 @@ export default defineComponent({
 					keywords: this.keywords.trim().split('\n').map(x => x.trim().split(' ')),
 					excludeKeywords: this.excludeKeywords.trim().split('\n').map(x => x.trim().split(' ')),
 				});
+				this.$emit('updated');
 			}
-
-			os.success();
 		},
 
 		async deleteAntenna() {
@@ -180,9 +178,13 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .shaynizk {
-	> .body {
-		max-height: 250px;
-		overflow: auto;
+	> .form {
+		padding: 32px;
+	}
+
+	> .actions {
+		padding: 24px 32px;
+		border-top: solid 0.5px var(--divider);
 	}
 }
 </style>

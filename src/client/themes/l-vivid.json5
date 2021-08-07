@@ -38,7 +38,7 @@
 		messageBg: '@bg',
 		navActive: '@accent',
 		infoWarnBg: '#fff0db',
-		infoWarnFg: '#573c08',
+		infoWarnFg: '#8f6e31',
 		navHoverFg: ':darken<17<@fg',
 		dateLabelFg: '@fg',
 		inputBorder: 'rgba(0, 0, 0, 0.1)',
