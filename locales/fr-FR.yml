@@ -767,6 +767,7 @@ global: "Global"
 squareAvatars: "Avatars carrés"
 sent: "Envoyer"
 hashtags: "Hashtags"
+troubleshooting: "Résolution de problèmes"
 _docs:
   continueReading: "Lire plus"
   features: "Fonctionnalités"
@@ -871,6 +872,8 @@ _mfm:
   blurDescription: "Le contenu peut être flouté ; il sera visible en le survolant avec le curseur."
   font: "Police de caractères"
   fontDescription: "Il est possible de choisir la police."
+  rainbow: "Arc-en-ciel"
+  rainbowDescription: "Permet d'afficher le contenu en couleurs arc-en-ciel."
 _reversi:
   reversi: "Reversi"
   gameSettings: "Réglages de la partie"
