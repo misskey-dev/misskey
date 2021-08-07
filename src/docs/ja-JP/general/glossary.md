@@ -25,6 +25,15 @@ Contents Warningの略。ノートの内容を、操作なしには表示しな�
 (読み: ふぇでぃばーす)
 Misskeyを含む様々な分散型ソフトウェアのサーバーで構成されたネットワーク。
 
+## GTL
+グローバルタイムライン(Global TimeLine)の略。タイムラインの詳細は[こちら。](../features/timeline)
+
+## HTL
+ホームタイムライン(Home TimeLine)の略。タイムラインの詳細は[こちら。](../features/timeline)
+
+## LTL
+ローカルタイムライン(Local TimeLine)の略。タイムラインの詳細は[こちら。](../features/timeline)
+
 ## MFM
 (読み: えむえふえむ)
 Misskey Flavored Markdownの略で、Misskey上で使用できるマークアップ言語です。詳細は[こちら。](../features/mfm)
@@ -36,6 +45,9 @@ Not Safe For Workの略。画像を「閲覧注意」扱いにし、操作なし
 ## Renote
 (読み: りのーと)
 既にあるノートを引用、もしくはそのノートを新しいノートとして共有する行為、またそれによって作成されたノート。詳細は[こちら。](../features/note)
+
+## STL
+ソーシャルタイムライン(Social TimeLine)の略。タイムラインの詳細は[こちら。](../features/timeline)
 
 ## 藍
 (読み: あい)
