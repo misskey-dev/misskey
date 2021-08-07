@@ -98,14 +98,14 @@ export default defineComponent({
 	background: var(--panel);
 
 	> .search {
-		padding: 12px;
+		padding: 16px;
 	}
 
 	.docs {
 		display: grid;
 		grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
 		grid-gap: 12px;
-		margin: var(--margin);
+		margin: 0 16px 16px 16px;
 
 		> .doc {
 			display: inline-block;
