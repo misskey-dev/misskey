@@ -113,6 +113,11 @@ export const menuDef = {
 		icon: 'fas fa-satellite-dish',
 		to: '/channels',
 	},
+	emojis: {
+		title: 'emojis',
+		icon: 'fas fa-laugh',
+		to: '/emojis',
+	},
 	games: {
 		title: 'games',
 		icon: 'fas fa-gamepad',
