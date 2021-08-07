@@ -766,6 +766,7 @@ customCssWarn: "Pengaturan ini seharusnya digunakan jika kamu tahu cara kerjanya
 global: "Global"
 squareAvatars: "Tampilkan avatar sebagai persegi"
 sent: "Kirim"
+hashtags: "Tagar"
 _ad:
   back: "Kembali"
   reduceFrequencyOfThisAd: "Tampilkan iklan ini lebih sedikit"
