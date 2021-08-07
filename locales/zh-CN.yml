@@ -769,6 +769,7 @@ sent: "发送"
 received: "收取"
 searchResult: "搜索结果"
 hashtags: "话题标签"
+troubleshooting: "故障排除"
 _docs:
   continueReading: "继续阅读"
   features: "特性"
