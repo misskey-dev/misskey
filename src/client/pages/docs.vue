@@ -1,7 +1,7 @@
 <template>
 <div class="vtaihdtm">
 	<div class="search">
-		<MkInput v-model="query" :debounce="true" type="search">
+		<MkInput v-model="query" :debounce="true" type="search" class="_inputNoTopMargin _inputNoBottomMargin">
 			<template #prefix><i class="fas fa-search"></i></template>
 			<template #label>{{ $ts.search }}</template>
 		</MkInput>
@@ -89,7 +89,7 @@ export default defineComponent({
 	background: var(--panel);
 
 	> .search {
-		padding: 8px;
+		padding: 12px;
 	}
 
 	.docs {
