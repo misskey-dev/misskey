@@ -766,6 +766,7 @@ customCssWarn: "Verwende diese Einstellung nur, wenn du weißt, was sie tut. Ung
 global: "Global"
 squareAvatars: "Profilbilder quadratisch anzeigen"
 sent: "Senden"
+hashtags: "Hashtag"
 _docs:
   continueReading: "Mehr lesen"
   features: "Funktionen"
