@@ -774,6 +774,7 @@ _docs:
   features: "特性"
   generalTopics: "通常提示"
   advancedTopics: "进阶提示"
+  admin: "管理"
 _ad:
   back: "返回"
   reduceFrequencyOfThisAd: "减少此广告的频率"
