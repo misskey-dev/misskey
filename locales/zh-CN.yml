@@ -768,6 +768,7 @@ squareAvatars: "显示方形头像图标"
 sent: "发送"
 received: "收取"
 searchResult: "搜索结果"
+hashtags: "话题标签"
 _docs:
   continueReading: "继续阅读"
   features: "特性"
