@@ -735,6 +735,7 @@ low: "Niski"
 emailNotConfiguredWarning: "Nie podano adresu e-mail"
 ratio: "Stosunek"
 global: "Globalna"
+sent: "Wyślij"
 _ad:
   back: "Wróć"
   reduceFrequencyOfThisAd: "Pokazuj tę reklamę rzadziej"
