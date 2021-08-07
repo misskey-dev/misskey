@@ -1608,7 +1608,7 @@ _notification:
   youWereInvitedToGroup: "Invité·e au groupe"
   _types:
     all: "Toutes"
-    follow: "Abonnements"
+    follow: "Nouvel·le abonné·e"
     mention: "Mentions"
     reply: "Réponses"
     renote: "Partager"
