@@ -301,6 +301,7 @@ selectAccount: "Elekti konton"
 user: "Uzanto"
 accounts: "Kontoj"
 global: "Konfederacia"
+sent: "Sendi"
 _gallery:
   liked: "Ŝatitaj notoj"
 _email:
