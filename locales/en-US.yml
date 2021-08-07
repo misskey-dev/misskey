@@ -766,6 +766,7 @@ customCssWarn: "This setting should only be used if you know what it does. Enter
 global: "Global"
 squareAvatars: "Display squared avatars"
 sent: "Send"
+hashtags: "Hashtag"
 _docs:
   continueReading: "Read more"
   features: "Features"
