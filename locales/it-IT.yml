@@ -1394,7 +1394,7 @@ _notification:
   youWereInvitedToGroup: "Invitat@ al gruppo"
   _types:
     all: "Tutto"
-    follow: "Follows"
+    follow: "Nuovə follower"
     mention: "Menzioni"
     reply: "Rispondi"
     renote: "Rinota"
