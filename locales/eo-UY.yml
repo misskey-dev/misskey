@@ -435,7 +435,6 @@ _exportOrImport:
 _timelines:
   home: "Hejmo"
   local: "Loka"
-  social: "Transa"
   global: "Konfederacia"
 _rooms:
   translate: "Movi"
