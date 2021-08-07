@@ -765,6 +765,7 @@ customCss: "自定义 CSS"
 customCssWarn: "这些设置必须有相关的基础知识，不当的配置可能导致客户端无法正常使用！"
 global: "全局"
 squareAvatars: "显示方形头像图标"
+sent: "发送"
 _docs:
   continueReading: "继续阅读"
   features: "特性"
