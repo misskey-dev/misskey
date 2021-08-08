@@ -2,7 +2,7 @@
 	"name": "misskey",
 	"author": "blackskye.sx <admin.blue@skye.cx>",
 	"version": "12.84.3-sx",
-	"codename": "indigo",
+	"codename": "azure",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/blackskye-sx/misskey.git"
