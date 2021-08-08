@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, PropType } from 'vue';
 
 function getFixedContainer(el: Element | null): Element | null {
 	if (el == null || el.tagName === 'BODY') return null;
@@ -31,6 +31,7 @@ export default defineComponent({
 			required: false
 		},
 		src: {
+			type: Object as PropType<HTMLElement>,
 			required: false,
 		},
 		position: {
@@ -56,6 +57,9 @@ export default defineComponent({
 
 	mounted() {
 		this.$watch('src', () => {
+			if (this.src) {
+				this.src.style.pointerEvents = 'none';
+			}
 			this.fixed = getFixedContainer(this.src) != null;
 			this.$nextTick(() => {
 				this.align();
@@ -69,7 +73,7 @@ export default defineComponent({
 			}).observe(popover);
 		});
 
-		document.addEventListener('mousedown', this.onDocumentClick);
+		document.addEventListener('mousedown', this.onDocumentClick, { passive: true });
 	},
 
 	beforeUnmount() {
@@ -155,6 +159,7 @@ export default defineComponent({
 		},
 
 		close() {
+			if (this.src) this.src.style.pointerEvents = 'auto';
 			this.showing = false;
 			this.$emit('close');
 		},
