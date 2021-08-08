@@ -86,7 +86,7 @@ export default defineComponent({
 					this.setSrc('list');
 				}
 			}));
-			os.modalMenu([{
+			os.popupMenu([{
 				text: this.$ts._timelines.home,
 				icon: 'fas fa-home',
 				action: () => { this.setSrc('home') }

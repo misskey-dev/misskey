@@ -429,7 +429,7 @@ export default defineComponent({
 		renote(viaKeyboard = false) {
 			pleaseLogin();
 			this.blur();
-			os.modalMenu([{
+			os.popupMenu([{
 				text: this.$ts.renote,
 				icon: 'fas fa-retweet',
 				action: () => {
@@ -718,14 +718,14 @@ export default defineComponent({
 		},
 
 		menu(viaKeyboard = false) {
-			os.modalMenu(this.getMenu(), this.$refs.menuButton, {
+			os.popupMenu(this.getMenu(), this.$refs.menuButton, {
 				viaKeyboard
 			}).then(this.focus);
 		},
 
 		showRenoteMenu(viaKeyboard = false) {
 			if (!this.isMyRenote) return;
-			os.modalMenu([{
+			os.popupMenu([{
 				text: this.$ts.unrenote,
 				icon: 'fas fa-trash-alt',
 				danger: true,
@@ -769,7 +769,7 @@ export default defineComponent({
 
 		async clip() {
 			const clips = await os.api('clips/list');
-			os.modalMenu([{
+			os.popupMenu([{
 				icon: 'fas fa-plus',
 				text: this.$ts.createNew,
 				action: async () => {

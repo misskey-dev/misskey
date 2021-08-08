@@ -1,20 +1,25 @@
 <template>
-<MkModal ref="modal" :src="src" @click="$refs.modal.close()" @closed="$emit('closed')">
-	<MkMenu :items="items" :align="align" @close="$refs.modal.close()" class="_popup"/>
-</MkModal>
+<MkPopup ref="popup" :src="src" @closed="$emit('closed')">
+	<MkMenu :items="items" :align="align" @close="$refs.popup.close()" class="_popup" style="box-shadow: 0 8px 32px rgb(0 0 0 / 30%);"/>
+</MkPopup>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import MkModal from './modal.vue';
+import MkPopup from './popup.vue';
 import MkMenu from './menu.vue';
 
 export default defineComponent({
 	components: {
-		MkModal,
+		MkPopup,
 		MkMenu,
 	},
+
 	props: {
+		showing: {
+			type: Boolean,
+			required: true,
+		},
 		items: {
 			type: Array,
 			required: true
@@ -31,17 +36,7 @@ export default defineComponent({
 			required: false
 		},
 	},
-	emits: ['closed'],
-	computed: {
-		keymap(): any {
-			return {
-				'esc': () => this.$refs.modal.close(),
-			};
-		},
-	},
+
+	emits: ['close', 'closed'],
 });
 </script>
-
-<style lang="scss" scoped>
-
-</style>

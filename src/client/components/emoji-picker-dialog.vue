@@ -1,17 +1,17 @@
 <template>
-<MkModal ref="modal" :manual-showing="manualShowing" :src="src" :front="true" @click="$refs.modal.close()" @opening="opening" @close="$emit('close')" @closed="$emit('closed')">
-	<MkEmojiPicker :show-pinned="showPinned" :as-reaction-picker="asReactionPicker" @chosen="chosen" ref="picker"/>
-</MkModal>
+<MkPopup ref="popup" :manual-showing="manualShowing" :src="src" :front="true" @click="$refs.popup.close()" @opening="opening" @close="$emit('close')" @closed="$emit('closed')">
+	<MkEmojiPicker :show-pinned="showPinned" :as-reaction-picker="asReactionPicker" @chosen="chosen" ref="picker" style="box-shadow: 0 8px 32px rgb(0 0 0 / 30%);"/>
+</MkPopup>
 </template>
 
 <script lang="ts">
 import { defineComponent, markRaw } from 'vue';
-import MkModal from '@client/components/ui/modal.vue';
+import MkPopup from '@client/components/ui/popup.vue';
 import MkEmojiPicker from '@client/components/emoji-picker.vue';
 
 export default defineComponent({
 	components: {
-		MkModal,
+		MkPopup,
 		MkEmojiPicker,
 	},
 
@@ -33,7 +33,7 @@ export default defineComponent({
 		},
 	},
 
-	emits: ['done', 'closed'],
+	emits: ['done', 'close', 'closed'],
 
 	data() {
 		return {
@@ -44,7 +44,7 @@ export default defineComponent({
 	methods: {
 		chosen(emoji: any) {
 			this.$emit('done', emoji);
-			this.$refs.modal.close();
+			this.$refs.popup.close();
 		},
 
 		opening() {

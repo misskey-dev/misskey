@@ -143,7 +143,7 @@ export const menuDef = {
 		title: 'switchUi',
 		icon: 'fas fa-columns',
 		action: (ev) => {
-			os.modalMenu([{
+			os.popupMenu([{
 				text: i18n.locale.default,
 				action: () => {
 					localStorage.setItem('ui', 'default');
