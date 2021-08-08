@@ -12,9 +12,9 @@
 			</div>
 		</template>
 
-		<main class="main _panel" @contextmenu.stop="onContextmenu">
+		<main class="main" @contextmenu.stop="onContextmenu">
 			<header class="header" @click="onHeaderClick">
-				<XHeader :info="pageInfo"/>
+				<XHeader :info="pageInfo" :back-button="true" @back="back()"/>
 			</header>
 			<div class="content" :class="{ _flat_: !fullView }">
 				<router-view v-slot="{ Component }">
@@ -143,7 +143,7 @@ export default defineComponent({
 		},
 
 		attachSticky(ref) {
-			const sticky = new StickySidebar(this.$refs[ref], this.$store.state.menuDisplay === 'top' ? 1 : 16, this.$store.state.menuDisplay === 'top' ? 60 : 0); // TODO: ヘッダーの高さを60pxと決め打ちしているのを直す
+			const sticky = new StickySidebar(this.$refs[ref], this.$store.state.menuDisplay === 'top' ? 0 : 16, this.$store.state.menuDisplay === 'top' ? 60 : 0); // TODO: ヘッダーの高さを60pxと決め打ちしているのを直す
 			window.addEventListener('scroll', () => {
 				sticky.calc(window.scrollY);
 			}, { passive: true });
@@ -155,6 +155,10 @@ export default defineComponent({
 
 		top() {
 			window.scroll({ top: 0, behavior: 'smooth' });
+		},
+
+		back() {
+			history.back();
 		},
 
 		showDrawerNav() {
@@ -230,8 +234,6 @@ export default defineComponent({
 	$widgets-hide-threshold: 1200px;
 	$nav-icon-only-width: 78px; // TODO: どこかに集約したい
 
-	--panelShadow: 0 0 0 1px var(--divider);
-
 	// ほんとは単に 100vh と書きたいところだが... https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
 	min-height: calc(var(--vh, 1vh) * 100);
 	box-sizing: border-box;
@@ -289,9 +291,11 @@ export default defineComponent({
 			min-width: 0;
 			width: 750px;
 			margin: 0 16px 0 0;
-			background: var(--bg);
-			box-shadow: 0 0 0 1px var(--divider);
+			background: var(--panel);
+			border-left: solid 1px var(--divider);
+			border-right: solid 1px var(--divider);
 			border-radius: 0;
+			overflow: clip;
 			--margin: 12px;
 
 			> .header {
@@ -299,14 +303,13 @@ export default defineComponent({
 				z-index: 1000;
 				top: var(--globalHeaderHeight, 0px);
 				height: $header-height;
-				line-height: $header-height;
 				-webkit-backdrop-filter: blur(32px);
 				backdrop-filter: blur(32px);
 				background-color: var(--header);
+				border-bottom: solid 0.5px var(--divider);
 			}
 
 			> .content {
-				background: var(--bg);
 				--stickyTop: calc(var(--globalHeaderHeight, 0px) + #{$header-height});
 			}
 
@@ -321,7 +324,7 @@ export default defineComponent({
 		}
 
 		> .widgets {
-			//--panelShadow: none;
+			//--panelBorder: none;
 			width: 300px;
 			margin-top: 16px;
 
@@ -342,14 +345,14 @@ export default defineComponent({
 			--globalHeaderHeight: 60px; // TODO: 60pxと決め打ちしているのを直す
 
 			> .main {
-				margin-top: 1px;
+				margin-top: 0;
+				border: solid 1px var(--divider);
 				border-radius: var(--radius);
-				box-shadow: 0 0 0 1px var(--divider);
 			}
 
 			> .widgets {
 				--stickyTop: var(--globalHeaderHeight);
-				margin-top: 1px;
+				margin-top: 0;
 			}
 		}
 

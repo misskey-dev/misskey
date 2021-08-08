@@ -7,7 +7,7 @@
 			<p>{{ $ts._mfm.mentionDescription }}</p>
 			<div class="preview">
 				<Mfm :text="preview_mention"/>
-				<MkTextarea v-model:value="preview_mention"><span>MFM</span></MkTextarea>
+				<MkTextarea v-model="preview_mention"><template #label>MFM</template></MkTextarea>
 			</div>
 		</div>
 	</div>
@@ -17,7 +17,7 @@
 			<p>{{ $ts._mfm.hashtagDescription }}</p>
 			<div class="preview">
 				<Mfm :text="preview_hashtag"/>
-				<MkTextarea v-model:value="preview_hashtag"><span>MFM</span></MkTextarea>
+				<MkTextarea v-model="preview_hashtag"><template #label>MFM</template></MkTextarea>
 			</div>
 		</div>
 	</div>
@@ -27,7 +27,7 @@
 			<p>{{ $ts._mfm.urlDescription }}</p>
 			<div class="preview">
 				<Mfm :text="preview_url"/>
-				<MkTextarea v-model:value="preview_url"><span>MFM</span></MkTextarea>
+				<MkTextarea v-model="preview_url"><template #label>MFM</template></MkTextarea>
 			</div>
 		</div>
 	</div>
@@ -37,7 +37,7 @@
 			<p>{{ $ts._mfm.linkDescription }}</p>
 			<div class="preview">
 				<Mfm :text="preview_link"/>
-				<MkTextarea v-model:value="preview_link"><span>MFM</span></MkTextarea>
+				<MkTextarea v-model="preview_link"><template #label>MFM</template></MkTextarea>
 			</div>
 		</div>
 	</div>
@@ -47,7 +47,7 @@
 			<p>{{ $ts._mfm.emojiDescription }}</p>
 			<div class="preview">
 				<Mfm :text="preview_emoji"/>
-				<MkTextarea v-model:value="preview_emoji"><span>MFM</span></MkTextarea>
+				<MkTextarea v-model="preview_emoji"><template #label>MFM</template></MkTextarea>
 			</div>
 		</div>
 	</div>
@@ -57,7 +57,7 @@
 			<p>{{ $ts._mfm.boldDescription }}</p>
 			<div class="preview">
 				<Mfm :text="preview_bold"/>
-				<MkTextarea v-model:value="preview_bold"><span>MFM</span></MkTextarea>
+				<MkTextarea v-model="preview_bold"><template #label>MFM</template></MkTextarea>
 			</div>
 		</div>
 	</div>
@@ -67,7 +67,7 @@
 			<p>{{ $ts._mfm.smallDescription }}</p>
 			<div class="preview">
 				<Mfm :text="preview_small"/>
-				<MkTextarea v-model:value="preview_small"><span>MFM</span></MkTextarea>
+				<MkTextarea v-model="preview_small"><template #label>MFM</template></MkTextarea>
 			</div>
 		</div>
 	</div>
@@ -77,7 +77,7 @@
 			<p>{{ $ts._mfm.quoteDescription }}</p>
 			<div class="preview">
 				<Mfm :text="preview_quote"/>
-				<MkTextarea v-model:value="preview_quote"><span>MFM</span></MkTextarea>
+				<MkTextarea v-model="preview_quote"><template #label>MFM</template></MkTextarea>
 			</div>
 		</div>
 	</div>
@@ -87,7 +87,7 @@
 			<p>{{ $ts._mfm.centerDescription }}</p>
 			<div class="preview">
 				<Mfm :text="preview_center"/>
-				<MkTextarea v-model:value="preview_center"><span>MFM</span></MkTextarea>
+				<MkTextarea v-model="preview_center"><template #label>MFM</template></MkTextarea>
 			</div>
 		</div>
 	</div>
@@ -97,7 +97,7 @@
 			<p>{{ $ts._mfm.inlineCodeDescription }}</p>
 			<div class="preview">
 				<Mfm :text="preview_inlineCode"/>
-				<MkTextarea v-model:value="preview_inlineCode"><span>MFM</span></MkTextarea>
+				<MkTextarea v-model="preview_inlineCode"><template #label>MFM</template></MkTextarea>
 			</div>
 		</div>
 	</div>
@@ -107,7 +107,7 @@
 			<p>{{ $ts._mfm.blockCodeDescription }}</p>
 			<div class="preview">
 				<Mfm :text="preview_blockCode"/>
-				<MkTextarea v-model:value="preview_blockCode"><span>MFM</span></MkTextarea>
+				<MkTextarea v-model="preview_blockCode"><template #label>MFM</template></MkTextarea>
 			</div>
 		</div>
 	</div>
@@ -117,7 +117,7 @@
 			<p>{{ $ts._mfm.inlineMathDescription }}</p>
 			<div class="preview">
 				<Mfm :text="preview_inlineMath"/>
-				<MkTextarea v-model:value="preview_inlineMath"><span>MFM</span></MkTextarea>
+				<MkTextarea v-model="preview_inlineMath"><template #label>MFM</template></MkTextarea>
 			</div>
 		</div>
 	</div>
@@ -127,7 +127,7 @@
 			<p>{{ $ts._mfm.searchDescription }}</p>
 			<div class="preview">
 				<Mfm :text="preview_search"/>
-				<MkTextarea v-model:value="preview_search"><span>MFM</span></MkTextarea>
+				<MkTextarea v-model="preview_search"><template #label>MFM</template></MkTextarea>
 			</div>
 		</div>
 	</div>
@@ -137,7 +137,7 @@
 			<p>{{ $ts._mfm.flipDescription }}</p>
 			<div class="preview">
 				<Mfm :text="preview_flip"/>
-				<MkTextarea v-model:value="preview_flip"><span>MFM</span></MkTextarea>
+				<MkTextarea v-model="preview_flip"><template #label>MFM</template></MkTextarea>
 			</div>
 		</div>
 	</div>
@@ -147,7 +147,7 @@
 			<p>{{ $ts._mfm.fontDescription }}</p>
 			<div class="preview">
 				<Mfm :text="preview_font"/>
-				<MkTextarea v-model:value="preview_font"><span>MFM</span></MkTextarea>
+				<MkTextarea v-model="preview_font"><template #label>MFM</template></MkTextarea>
 			</div>
 		</div>
 	</div>
@@ -157,7 +157,7 @@
 			<p>{{ $ts._mfm.x2Description }}</p>
 			<div class="preview">
 				<Mfm :text="preview_x2"/>
-				<MkTextarea v-model:value="preview_x2"><span>MFM</span></MkTextarea>
+				<MkTextarea v-model="preview_x2"><template #label>MFM</template></MkTextarea>
 			</div>
 		</div>
 	</div>
@@ -167,7 +167,7 @@
 			<p>{{ $ts._mfm.x3Description }}</p>
 			<div class="preview">
 				<Mfm :text="preview_x3"/>
-				<MkTextarea v-model:value="preview_x3"><span>MFM</span></MkTextarea>
+				<MkTextarea v-model="preview_x3"><template #label>MFM</template></MkTextarea>
 			</div>
 		</div>
 	</div>
@@ -177,7 +177,7 @@
 			<p>{{ $ts._mfm.x4Description }}</p>
 			<div class="preview">
 				<Mfm :text="preview_x4"/>
-				<MkTextarea v-model:value="preview_x4"><span>MFM</span></MkTextarea>
+				<MkTextarea v-model="preview_x4"><template #label>MFM</template></MkTextarea>
 			</div>
 		</div>
 	</div>
@@ -187,7 +187,7 @@
 			<p>{{ $ts._mfm.blurDescription }}</p>
 			<div class="preview">
 				<Mfm :text="preview_blur"/>
-				<MkTextarea v-model:value="preview_blur"><span>MFM</span></MkTextarea>
+				<MkTextarea v-model="preview_blur"><template #label>MFM</template></MkTextarea>
 			</div>
 		</div>
 	</div>
@@ -197,7 +197,7 @@
 			<p>{{ $ts._mfm.jellyDescription }}</p>
 			<div class="preview">
 				<Mfm :text="preview_jelly"/>
-				<MkTextarea v-model:value="preview_jelly"><span>MFM</span></MkTextarea>
+				<MkTextarea v-model="preview_jelly"><template #label>MFM</template></MkTextarea>
 			</div>
 		</div>
 	</div>
@@ -207,7 +207,7 @@
 			<p>{{ $ts._mfm.tadaDescription }}</p>
 			<div class="preview">
 				<Mfm :text="preview_tada"/>
-				<MkTextarea v-model:value="preview_tada"><span>MFM</span></MkTextarea>
+				<MkTextarea v-model="preview_tada"><template #label>MFM</template></MkTextarea>
 			</div>
 		</div>
 	</div>
@@ -217,7 +217,7 @@
 			<p>{{ $ts._mfm.jumpDescription }}</p>
 			<div class="preview">
 				<Mfm :text="preview_jump"/>
-				<MkTextarea v-model:value="preview_jump"><span>MFM</span></MkTextarea>
+				<MkTextarea v-model="preview_jump"><template #label>MFM</template></MkTextarea>
 			</div>
 		</div>
 	</div>
@@ -227,7 +227,7 @@
 			<p>{{ $ts._mfm.bounceDescription }}</p>
 			<div class="preview">
 				<Mfm :text="preview_bounce"/>
-				<MkTextarea v-model:value="preview_bounce"><span>MFM</span></MkTextarea>
+				<MkTextarea v-model="preview_bounce"><template #label>MFM</template></MkTextarea>
 			</div>
 		</div>
 	</div>
@@ -237,7 +237,7 @@
 			<p>{{ $ts._mfm.spinDescription }}</p>
 			<div class="preview">
 				<Mfm :text="preview_spin"/>
-				<MkTextarea v-model:value="preview_spin"><span>MFM</span></MkTextarea>
+				<MkTextarea v-model="preview_spin"><template #label>MFM</template></MkTextarea>
 			</div>
 		</div>
 	</div>
@@ -247,7 +247,7 @@
 			<p>{{ $ts._mfm.shakeDescription }}</p>
 			<div class="preview">
 				<Mfm :text="preview_shake"/>
-				<MkTextarea v-model:value="preview_shake"><span>MFM</span></MkTextarea>
+				<MkTextarea v-model="preview_shake"><template #label>MFM</template></MkTextarea>
 			</div>
 		</div>
 	</div>
@@ -257,7 +257,17 @@
 			<p>{{ $ts._mfm.twitchDescription }}</p>
 			<div class="preview">
 				<Mfm :text="preview_twitch"/>
-				<MkTextarea v-model:value="preview_twitch"><span>MFM</span></MkTextarea>
+				<MkTextarea v-model="preview_twitch"><template #label>MFM</template></MkTextarea>
+			</div>
+		</div>
+	</div>
+	<div class="section _block">
+		<div class="title">{{ $ts._mfm.rainbow }}</div>
+		<div class="content">
+			<p>{{ $ts._mfm.rainbowDescription }}</p>
+			<div class="preview">
+				<Mfm :text="preview_rainbow"/>
+				<MkTextarea v-model="preview_rainbow"><template #label>MFM</template></MkTextarea>
 			</div>
 		</div>
 	</div>
@@ -306,6 +316,7 @@ export default defineComponent({
 			preview_x3: `$[x3 🍮]`,
 			preview_x4: `$[x4 🍮]`,
 			preview_blur: `$[blur ${this.$ts._mfm.dummy}]`,
+			preview_rainbow: `$[rainbow 🍮]`,
 		}
 	},
 });
@@ -313,6 +324,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .mwysmxbg {
+	background: var(--bg);
+
 	> .section {
 		> .title {
 			position: sticky;

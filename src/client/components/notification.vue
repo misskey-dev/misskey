@@ -62,8 +62,8 @@ import { defineComponent, markRaw } from 'vue';
 import { getNoteSummary } from '@/misc/get-note-summary';
 import XReactionIcon from './reaction-icon.vue';
 import MkFollowButton from './follow-button.vue';
-import notePage from '../filters/note';
-import { userPage } from '../filters/user';
+import notePage from '@client/filters/note';
+import { userPage } from '@client/filters/user';
 import { i18n } from '@client/i18n';
 import * as os from '@client/os';
 

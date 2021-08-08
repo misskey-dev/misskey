@@ -4,11 +4,11 @@
 	<section class="_card _gap ads" v-for="ad in ads">
 		<div class="_content ad">
 			<MkAd v-if="ad.url" :specify="ad"/>
-			<MkInput v-model:value="ad.url" type="url">
-				<span>URL</span>
+			<MkInput v-model="ad.url" type="url">
+				<template #label>URL</template>
 			</MkInput>
-			<MkInput v-model:value="ad.imageUrl">
-				<span>{{ $ts.imageUrl }}</span>
+			<MkInput v-model="ad.imageUrl">
+				<template #label>{{ $ts.imageUrl }}</template>
 			</MkInput>
 			<div style="margin: 32px 0;">
 				<MkRadio v-model="ad.place" value="square">square</MkRadio>
@@ -23,14 +23,14 @@
 				<MkRadio v-model="ad.priority" value="low">{{ $ts.low }}</MkRadio>
 			</div>
 			-->
-			<MkInput v-model:value="ad.ratio" type="number">
-				<span>{{ $ts.ratio }}</span>
+			<MkInput v-model="ad.ratio" type="number">
+				<template #label>{{ $ts.ratio }}</template>
 			</MkInput>
-			<MkInput v-model:value="ad.expiresAt" type="date">
-				<span>{{ $ts.expiration }}</span>
+			<MkInput v-model="ad.expiresAt" type="date">
+				<template #label>{{ $ts.expiration }}</template>
 			</MkInput>
-			<MkTextarea v-model:value="ad.memo">
-				<span>{{ $ts.memo }}</span>
+			<MkTextarea v-model="ad.memo">
+				<template #label>{{ $ts.memo }}</template>
 			</MkTextarea>
 			<div class="buttons">
 				<MkButton class="button" inline @click="save(ad)" primary><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>

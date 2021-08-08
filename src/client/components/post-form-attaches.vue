@@ -112,7 +112,7 @@ export default defineComponent({
 
 		showFileMenu(file, ev: MouseEvent) {
 			if (this.menu) return;
-			this.menu = os.modalMenu([{
+			this.menu = os.popupMenu([{
 				text: this.$ts.renameFile,
 				icon: 'fas fa-i-cursor',
 				action: () => { this.rename(file) }
