@@ -1,6 +1,6 @@
 <template>
 <MkPopup ref="popup" :manual-showing="manualShowing" :src="src" :front="true" @click="$refs.popup.close()" @opening="opening" @close="$emit('close')" @closed="$emit('closed')">
-	<MkEmojiPicker :show-pinned="showPinned" :as-reaction-picker="asReactionPicker" @chosen="chosen" ref="picker" style="box-shadow: 0 8px 32px rgb(0 0 0 / 30%);"/>
+	<MkEmojiPicker class="_shadow" :show-pinned="showPinned" :as-reaction-picker="asReactionPicker" @chosen="chosen" ref="picker"/>
 </MkPopup>
 </template>
 
