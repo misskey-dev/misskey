@@ -147,7 +147,7 @@ export default defineComponent({
 					this.saveSrc();
 				}
 			}));
-			os.modalMenu(items, ev.currentTarget || ev.target);
+			os.popupMenu(items, ev.currentTarget || ev.target);
 		},
 
 		async chooseAntenna(ev) {
@@ -161,7 +161,7 @@ export default defineComponent({
 					this.saveSrc();
 				}
 			}));
-			os.modalMenu(items, ev.currentTarget || ev.target);
+			os.popupMenu(items, ev.currentTarget || ev.target);
 		},
 
 		async chooseChannel(ev) {
@@ -177,7 +177,7 @@ export default defineComponent({
 					this.$router.push(`/channels/${channel.id}`);
 				}
 			}));
-			os.modalMenu(items, ev.currentTarget || ev.target);
+			os.popupMenu(items, ev.currentTarget || ev.target);
 		},
 
 		saveSrc() {

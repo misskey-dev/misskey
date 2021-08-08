@@ -7,14 +7,14 @@
 
 	<div class="users">
 		<div class="inputs" style="display: flex;">
-			<MkSelect v-model:value="sort" style="margin: 0; flex: 1;">
+			<MkSelect v-model="sort" style="margin: 0; flex: 1;">
 				<template #label>{{ $ts.sort }}</template>
 				<option value="-createdAt">{{ $ts.registeredDate }} ({{ $ts.ascendingOrder }})</option>
 				<option value="+createdAt">{{ $ts.registeredDate }} ({{ $ts.descendingOrder }})</option>
 				<option value="-updatedAt">{{ $ts.lastUsed }} ({{ $ts.ascendingOrder }})</option>
 				<option value="+updatedAt">{{ $ts.lastUsed }} ({{ $ts.descendingOrder }})</option>
 			</MkSelect>
-			<MkSelect v-model:value="state" style="margin: 0; flex: 1;">
+			<MkSelect v-model="state" style="margin: 0; flex: 1;">
 				<template #label>{{ $ts.state }}</template>
 				<option value="all">{{ $ts.all }}</option>
 				<option value="available">{{ $ts.normal }}</option>
@@ -23,7 +23,7 @@
 				<option value="silenced">{{ $ts.silence }}</option>
 				<option value="suspended">{{ $ts.suspend }}</option>
 			</MkSelect>
-			<MkSelect v-model:value="origin" style="margin: 0; flex: 1;">
+			<MkSelect v-model="origin" style="margin: 0; flex: 1;">
 				<template #label>{{ $ts.instance }}</template>
 				<option value="combined">{{ $ts.all }}</option>
 				<option value="local">{{ $ts.local }}</option>
@@ -31,11 +31,11 @@
 			</MkSelect>
 		</div>
 		<div class="inputs" style="display: flex; padding-top: 1.2em;">
-			<MkInput v-model:value="searchUsername" style="margin: 0; flex: 1;" type="text" spellcheck="false" @update:value="$refs.users.reload()">
-				<span>{{ $ts.username }}</span>
+			<MkInput v-model="searchUsername" style="margin: 0; flex: 1;" type="text" spellcheck="false" @update:modelValue="$refs.users.reload()">
+				<template #label>{{ $ts.username }}</template>
 			</MkInput>
-			<MkInput v-model:value="searchHost" style="margin: 0; flex: 1;" type="text" spellcheck="false" @update:value="$refs.users.reload()" :disabled="pagination.params().origin === 'local'">
-				<span>{{ $ts.host }}</span>
+			<MkInput v-model="searchHost" style="margin: 0; flex: 1;" type="text" spellcheck="false" @update:modelValue="$refs.users.reload()" :disabled="pagination.params().origin === 'local'">
+				<template #label>{{ $ts.host }}</template>
 			</MkInput>
 		</div>
 

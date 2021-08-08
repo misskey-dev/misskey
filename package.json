@@ -1,7 +1,7 @@
 {
 	"name": "misskey",
 	"author": "blackskye.sx <admin.blue@skye.cx>",
-	"version": "12.84.3-sx",
+	"version": "12.85.0-sx0"
 	"codename": "azure",
 	"repository": {
 		"type": "git",

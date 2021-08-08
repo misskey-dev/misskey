@@ -77,7 +77,7 @@
 			<div class="header">
 				<span class="label">{{ $ts.charts }}</span>
 				<div class="selects">
-					<MkSelect v-model:value="chartSrc" style="margin: 0; flex: 1;">
+					<MkSelect v-model="chartSrc" style="margin: 0; flex: 1;">
 						<option value="requests">{{ $ts._instanceCharts.requests }}</option>
 						<option value="users">{{ $ts._instanceCharts.users }}</option>
 						<option value="users-total">{{ $ts._instanceCharts.usersTotal }}</option>
@@ -90,7 +90,7 @@
 						<option value="drive-files">{{ $ts._instanceCharts.files }}</option>
 						<option value="drive-files-total">{{ $ts._instanceCharts.filesTotal }}</option>
 					</MkSelect>
-					<MkSelect v-model:value="chartSpan" style="margin: 0;">
+					<MkSelect v-model="chartSpan" style="margin: 0;">
 						<option value="hour">{{ $ts.perHour }}</option>
 						<option value="day">{{ $ts.perDay }}</option>
 					</MkSelect>
@@ -102,8 +102,8 @@
 		</div>
 		<div class="operations section">
 			<span class="label">{{ $ts.operations }}</span>
-			<MkSwitch v-model:value="isSuspended" class="switch">{{ $ts.stopActivityDelivery }}</MkSwitch>
-			<MkSwitch :value="isBlocked" class="switch" @update:value="changeBlock">{{ $ts.blockThisInstance }}</MkSwitch>
+			<MkSwitch v-model="isSuspended" class="switch">{{ $ts.stopActivityDelivery }}</MkSwitch>
+			<MkSwitch :model-value="isBlocked" class="switch" @update:modelValue="changeBlock">{{ $ts.blockThisInstance }}</MkSwitch>
 			<details>
 				<summary>{{ $ts.deleteAllFiles }}</summary>
 				<MkButton @click="deleteAllFiles()" style="margin: 0.5em 0 0.5em 0;"><i class="fas fa-trash-alt"></i> {{ $ts.deleteAllFiles }}</MkButton>

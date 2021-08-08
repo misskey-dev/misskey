@@ -12,7 +12,7 @@
 			</div>
 		</template>
 
-		<main class="main _panel" @contextmenu.stop="onContextmenu">
+		<main class="main" @contextmenu.stop="onContextmenu">
 			<header class="header" @click="onHeaderClick">
 				<XHeader :info="pageInfo" :back-button="true" @back="back()"/>
 			</header>
@@ -292,7 +292,10 @@ export default defineComponent({
 			width: 750px;
 			margin: 0 16px 0 0;
 			background: var(--panel);
+			border-left: solid 1px var(--divider);
+			border-right: solid 1px var(--divider);
 			border-radius: 0;
+			overflow: clip;
 			--margin: 12px;
 
 			> .header {
@@ -343,6 +346,7 @@ export default defineComponent({
 
 			> .main {
 				margin-top: 0;
+				border: solid 1px var(--divider);
 				border-radius: var(--radius);
 			}
 

@@ -168,7 +168,7 @@ router.get('/docs.json', async ctx => {
 		}
 
 		docs.push({
-			path: path.replace(`${dirPath}/`, '').split('.')[0],
+			path: path.match(new RegExp(`docs\/${lang}\/(.+?)\.md$`))![1],
 			title: markdown.renderer.render(headingTokens, {}, {}),
 			summary: markdown.renderer.render(firstParagrapfTokens, {}, {}),
 		});

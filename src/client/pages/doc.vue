@@ -112,6 +112,7 @@ export default defineComponent({
 .qyqbqfal {
 	padding: 32px;
 	background: var(--panel);
+	line-height: 1.5;
 
 	&.max-width_500px {
 		padding: 16px;
