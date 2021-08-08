@@ -1,7 +1,9 @@
 <template>
 <div class="vtaihdtm">
 	<div class="search">
-		<MkInput v-model:value="query" :debounce="true" type="search"><template #icon><i class="fas fa-search"></i></template><span>{{ $ts.search }}</span></MkInput>
+		<MkInput v-model="query" :debounce="true" type="search" class="_inputNoTopMargin _inputNoBottomMargin" :placeholder="$ts.search">
+			<template #prefix><i class="fas fa-search"></i></template>
+		</MkInput>
 	</div>
 	<MkFolder>
 		<template #header>{{ $ts._docs.generalTopics }}</template>
@@ -27,6 +29,16 @@
 		<template #header>{{ $ts._docs.advancedTopics }}</template>
 		<div class="docs">
 			<MkA v-for="doc in docs.filter(doc => doc.path.startsWith('advanced/'))" :key="doc.path" :to="`/docs/${doc.path}`" class="doc">
+				<div class="title">{{ doc.title }}</div>
+				<div class="summary">{{ doc.summary }}</div>
+				<div class="read">{{ $ts._docs.continueReading }}</div>
+			</MkA>
+		</div>
+	</MkFolder>
+	<MkFolder>
+		<template #header>{{ $ts._docs.admin }}</template>
+		<div class="docs">
+			<MkA v-for="doc in docs.filter(doc => doc.path.startsWith('admin/'))" :key="doc.path" :to="`/docs/${doc.path}`" class="doc">
 				<div class="title">{{ doc.title }}</div>
 				<div class="summary">{{ doc.summary }}</div>
 				<div class="read">{{ $ts._docs.continueReading }}</div>
@@ -86,14 +98,14 @@ export default defineComponent({
 	background: var(--panel);
 
 	> .search {
-		padding: 8px;
+		padding: 16px;
 	}
 
 	.docs {
 		display: grid;
 		grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
 		grid-gap: 12px;
-		margin: var(--margin);
+		margin: 0 16px 16px 16px;
 
 		> .doc {
 			display: inline-block;

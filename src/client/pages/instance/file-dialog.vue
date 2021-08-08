@@ -16,7 +16,7 @@
 		</div>
 		<div class="_section">
 			<div class="_content">
-				<MkSwitch @update:value="toggleIsSensitive" v-model:value="isSensitive">NSFW</MkSwitch>
+				<MkSwitch @update:modelValue="toggleIsSensitive" v-model="isSensitive">NSFW</MkSwitch>
 			</div>
 		</div>
 		<div class="_section">

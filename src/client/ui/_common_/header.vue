@@ -31,7 +31,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { modalMenu } from '@client/os';
+import { popupMenu } from '@client/os';
 import { url } from '@client/config';
 
 export default defineComponent({
@@ -121,7 +121,7 @@ export default defineComponent({
 				if (menu.length > 0) menu.push(null);
 				menu = menu.concat(this.menu);
 			}
-			modalMenu(menu, ev.currentTarget || ev.target);
+			popupMenu(menu, ev.currentTarget || ev.target);
 		}
 	}
 });

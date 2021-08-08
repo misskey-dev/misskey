@@ -11,28 +11,28 @@
 	<MkContainer :foldable="true" :expanded="true" class="_gap">
 		<template #header><i class="fas fa-cog"></i> {{ $ts._pages.pageSetting }}</template>
 		<div style="padding: 16px;">
-			<MkInput v-model:value="title">
-				<span>{{ $ts._pages.title }}</span>
+			<MkInput v-model="title">
+				<template #label>{{ $ts._pages.title }}</template>
 			</MkInput>
 
-			<MkInput v-model:value="summary">
-				<span>{{ $ts._pages.summary }}</span>
+			<MkInput v-model="summary">
+				<template #label>{{ $ts._pages.summary }}</template>
 			</MkInput>
 
-			<MkInput v-model:value="name">
+			<MkInput v-model="name">
 				<template #prefix>{{ url }}/@{{ author.username }}/pages/</template>
-				<span>{{ $ts._pages.url }}</span>
+				<template #label>{{ $ts._pages.url }}</template>
 			</MkInput>
 
-			<MkSwitch v-model:value="alignCenter">{{ $ts._pages.alignCenter }}</MkSwitch>
+			<MkSwitch v-model="alignCenter">{{ $ts._pages.alignCenter }}</MkSwitch>
 
-			<MkSelect v-model:value="font">
+			<MkSelect v-model="font">
 				<template #label>{{ $ts._pages.font }}</template>
 				<option value="serif">{{ $ts._pages.fontSerif }}</option>
 				<option value="sans-serif">{{ $ts._pages.fontSansSerif }}</option>
 			</MkSelect>
 
-			<MkSwitch v-model:value="hideTitleWhenPinned">{{ $ts._pages.hideTitleWhenPinned }}</MkSwitch>
+			<MkSwitch v-model="hideTitleWhenPinned">{{ $ts._pages.hideTitleWhenPinned }}</MkSwitch>
 
 			<div class="eyeCatch">
 				<MkButton v-if="eyeCatchingImageId == null && !readonly" @click="setEyeCatchingImage"><i class="fas fa-plus"></i> {{ $ts._pages.eyeCatchingImageSet }}</MkButton>
@@ -77,7 +77,7 @@
 	<MkContainer :foldable="true" :expanded="true" class="_gap">
 		<template #header><i class="fas fa-code"></i> {{ $ts.script }}</template>
 		<div>
-			<MkTextarea class="_code" v-model:value="script"/>
+			<MkTextarea class="_code" v-model="script"/>
 		</div>
 	</MkContainer>
 </div>

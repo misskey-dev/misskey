@@ -1,37 +1,46 @@
 <template>
-<div class="eiipwacr" :class="{ focused, disabled, filled, inline }">
-	<div class="icon" ref="icon"><slot name="icon"></slot></div>
-	<div class="input" @click="focus">
-		<span class="label" ref="label"><slot name="label"></slot></span>
-		<div class="prefix" ref="prefix"><slot name="prefix"></slot></div>
-		<select ref="input"
+<div class="vblkjoeq">
+	<div class="label" @click="focus"><slot name="label"></slot></div>
+	<div class="input" :class="{ inline, disabled, focused }">
+		<div class="prefix" ref="prefixEl"><slot name="prefix"></slot></div>
+		<select ref="inputEl"
 			v-model="v"
-			:required="required"
 			:disabled="disabled"
+			:required="required"
+			:readonly="readonly"
+			:placeholder="placeholder"
 			@focus="focused = true"
 			@blur="focused = false"
+			@input="onInput"
 		>
 			<slot></slot>
 		</select>
-		<div class="suffix">
-			<slot name="suffix">
-				<i class="fas fa-chevron-down"></i>
-			</slot>
-		</div>
+		<div class="suffix" ref="suffixEl"><i class="fas fa-chevron-down"></i></div>
 	</div>
-	<div class="text"><slot name="text"></slot></div>
+	<div class="caption"><slot name="caption"></slot></div>
+
+	<MkButton v-if="manualSave && changed" @click="updated" primary><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
 </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, onMounted, onUnmounted, nextTick, ref, watch, computed, toRefs } from 'vue';
+import MkButton from './button.vue';
 
 export default defineComponent({
+	components: {
+		MkButton,
+	},
+
 	props: {
-		value: {
-			required: false
+		modelValue: {
+			required: true
 		},
 		required: {
+			type: Boolean,
+			required: false
+		},
+		readonly: {
 			type: Boolean,
 			required: false
 		},
@@ -39,147 +48,171 @@ export default defineComponent({
 			type: Boolean,
 			required: false
 		},
+		placeholder: {
+			type: String,
+			required: false
+		},
+		autofocus: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
 		inline: {
 			type: Boolean,
 			required: false,
 			default: false
 		},
+		manualSave: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
 	},
-	data() {
+
+	emits: ['change', 'update:modelValue'],
+
+	setup(props, context) {
+		const { modelValue, autofocus } = toRefs(props);
+		const v = ref(modelValue.value);
+		const focused = ref(false);
+		const changed = ref(false);
+		const invalid = ref(false);
+		const filled = computed(() => v.value !== '' && v.value != null);
+		const inputEl = ref(null);
+		const prefixEl = ref(null);
+		const suffixEl = ref(null);
+
+		const focus = () => inputEl.value.focus();
+		const onInput = (ev) => {
+			changed.value = true;
+			context.emit('change', ev);
+		};
+
+		const updated = () => {
+			changed.value = false;
+			context.emit('update:modelValue', v.value);
+		};
+
+		watch(modelValue, newValue => {
+			v.value = newValue;
+		});
+
+		watch(v, newValue => {
+			if (!props.manualSave) {
+				updated();
+			}
+
+			invalid.value = inputEl.value.validity.badInput;
+		});
+
+		onMounted(() => {
+			nextTick(() => {
+				if (autofocus.value) {
+					focus();
+				}
+
+				// このコンポーネントが作成された時、非表示状態である場合がある
+				// 非表示状態だと要素の幅などは0になってしまうので、定期的に計算する
+				const clock = setInterval(() => {
+					if (prefixEl.value) {
+						if (prefixEl.value.offsetWidth) {
+							inputEl.value.style.paddingLeft = prefixEl.value.offsetWidth + 'px';
+						}
+					}
+					if (suffixEl.value) {
+						if (suffixEl.value.offsetWidth) {
+							inputEl.value.style.paddingRight = suffixEl.value.offsetWidth + 'px';
+						}
+					}
+				}, 100);
+
+				onUnmounted(() => {
+					clearInterval(clock);
+				});
+			});
+		});
+
 		return {
-			focused: false,
+			v,
+			focused,
+			invalid,
+			changed,
+			filled,
+			inputEl,
+			prefixEl,
+			suffixEl,
+			focus,
+			onInput,
+			updated,
 		};
 	},
-	computed: {
-		v: {
-			get() {
-				return this.value;
-			},
-			set(v) {
-				this.$emit('update:value', v);
-			}
-		},
-		filled(): boolean {
-			return true;
-		}
-	},
-	mounted() {
-		if (this.$refs.prefix) {
-			this.$refs.label.style.left = (this.$refs.prefix.offsetLeft + this.$refs.prefix.offsetWidth) + 'px';
-		}
-	},
-	methods: {
-		focus() {
-			this.$refs.input.focus();
-		}
-	}
 });
 </script>
 
 <style lang="scss" scoped>
-.eiipwacr {
-	position: relative;
-	margin: 32px 0;
+.vblkjoeq {
+	margin: 1.5em 0;
 
-	&:not(.inline):first-child {
-		margin-top: 8px;
+	> .label {
+		font-size: 0.85em;
+		padding: 0 0 8px 12px;
+		user-select: none;
+
+		&:empty {
+			display: none;
+		}
 	}
 
-	&:not(.inline):last-child {
-		margin-bottom: 8px;
-	}
+	> .caption {
+		font-size: 0.8em;
+		padding: 8px 0 0 12px;
+		color: var(--fgTransparentWeak);
 
-	> .icon {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 24px;
-		text-align: center;
-		line-height: 32px;
-
-		&:not(:empty) + .input {
-			margin-left: 28px;
+		&:empty {
+			display: none;
 		}
 	}
 
 	> .input {
-		display: flex;
+		$height: 42px;
 		position: relative;
 
-		&:before {
-			content: '';
-			display: block;
-			position: absolute;
-			bottom: 0;
-			left: 0;
-			right: 0;
-			height: 1px;
-			background: var(--inputBorder);
-		}
-
-		&:after {
-			content: '';
-			display: block;
-			position: absolute;
-			bottom: 0;
-			left: 0;
-			right: 0;
-			height: 2px;
-			background: var(--accent);
-			opacity: 0;
-			transform: scaleX(0.12);
-			transition: border 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-			will-change: border opacity transform;
-		}
-
-		> .label {
-			position: absolute;
-			top: 0;
-			left: 0;
-			pointer-events: none;
-			transition: 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-			transition-duration: 0.3s;
-			font-size: 1em;
-			line-height: 32px;
-			pointer-events: none;
-			//will-change transform
-			transform-origin: top left;
-			transform: scale(1);
-		}
-
 		> select {
+			appearance: none;
+			-webkit-appearance: none;
 			display: block;
-			flex: 1;
+			height: $height;
 			width: 100%;
-			padding: 0;
+			margin: 0;
+			padding: 0 12px;
 			font: inherit;
 			font-weight: normal;
 			font-size: 1em;
-			height: 32px;
-			background: none;
-			border: none;
-			border-radius: 0;
+			color: var(--fg);
+			background: var(--panel);
+			border: solid 1px var(--inputBorder);
+			border-radius: 6px;
 			outline: none;
 			box-shadow: none;
-			appearance: none;
-			-webkit-appearance: none;
-			color: var(--fg);
+			box-sizing: border-box;
+			cursor: pointer;
+			transition: border-color 0.1s ease-out;
 
-			option,
-			optgroup {
-				color: var(--fg);
-				background: var(--bg);
+			&:hover {
+				border-color: var(--inputBorderHover);
 			}
 		}
 
 		> .prefix,
 		> .suffix {
-			display: block;
-			align-self: center;
-			justify-self: center;
+			display: flex;
+			align-items: center;
+			position: absolute;
+			z-index: 1;
+			top: 0;
+			padding: 0 12px;
 			font-size: 1em;
-			line-height: 32px;
-			color: var(--inputLabel);
+			height: $height;
 			pointer-events: none;
 
 			&:empty {
@@ -187,53 +220,41 @@ export default defineComponent({
 			}
 
 			> * {
-				display: block;
+				display: inline-block;
 				min-width: 16px;
+				max-width: 150px;
+				overflow: hidden;
+				white-space: nowrap;
+				text-overflow: ellipsis;
 			}
 		}
 
 		> .prefix {
-			padding-right: 4px;
+			left: 0;
+			padding-right: 6px;
 		}
 
 		> .suffix {
-			padding-left: 4px;
-		}
-	}
-
-	> .text {
-		margin: 6px 0;
-		font-size: 0.8em;
-
-		&:empty {
-			display: none;
+			right: 0;
+			padding-left: 6px;
 		}
 
-		* {
+		&.inline {
+			display: inline-block;
 			margin: 0;
 		}
-	}
 
-	&.focused {
-		> .input {
-			&:after {
-				opacity: 1;
-				transform: scaleX(1);
-			}
-
-			> .label {
-				color: var(--accent);
+		&.focused {
+			> select {
+				border-color: var(--accent);
 			}
 		}
-	}
 
-	&.focused,
-	&.filled {
-		> .input {
-			> .label {
-				top: -17px;
-				left: 0 !important;
-				transform: scale(0.75);
+		&.disabled {
+			opacity: 0.7;
+
+			&, * {
+				cursor: not-allowed !important;
 			}
 		}
 	}

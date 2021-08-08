@@ -1,10 +1,10 @@
 <template>
 <div class="_card">
 	<div class="_content">
-		<MkInput v-model:value="text">
-			<span>Text</span>
+		<MkInput v-model="text">
+			<template #label>Text</template>
 		</MkInput>
-		<MkSwitch v-model:value="flag">
+		<MkSwitch v-model="flag">
 			<span>Switch is now {{ flag ? 'on' : 'off' }}</span>
 		</MkSwitch>
 		<div style="margin: 32px 0;">
@@ -93,7 +93,7 @@ export default defineComponent({
 		},
 
 		async openMenu(ev) {
-			os.modalMenu([{
+			os.popupMenu([{
 				type: 'label',
 				text: 'Fruits'
 			}, {
