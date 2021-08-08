@@ -16,10 +16,6 @@ export default defineComponent({
 	},
 
 	props: {
-		showing: {
-			type: Boolean,
-			required: true,
-		},
 		items: {
 			type: Array,
 			required: true
