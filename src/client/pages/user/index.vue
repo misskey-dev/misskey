@@ -1,9 +1,9 @@
 <template>
 <transition name="fade" mode="out-in">
 	<div class="ftskorzw wide" v-if="user && narrow === false">
-		<MkRemoteCaution v-if="user.host != null" :href="user.url" class="_gap"/>
+		<MkRemoteCaution v-if="user.host != null" :href="user.url"/>
 
-		<div class="banner-container _gap" :style="style">
+		<div class="banner-container" :style="style">
 			<div class="banner" ref="banner" :style="style"></div>
 		</div>
 		<div class="contents">
@@ -237,8 +237,8 @@ import Progress from '@client/scripts/loading';
 import { parseAcct } from '@/misc/acct';
 import { getScrollPosition } from '@client/scripts/scroll';
 import { getUserMenu } from '@client/scripts/get-user-menu';
-import number from '../../filters/number';
-import { userPage, acct as getAcct } from '../../filters/user';
+import number from '@client/filters/number';
+import { userPage, acct as getAcct } from '@client/filters/user';
 import * as os from '@client/os';
 import * as symbols from '@client/symbols';
 
@@ -276,13 +276,13 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: computed(() => this.user ? {
 				title: this.user.name ? `${this.user.name} (@${this.user.username})` : `@${this.user.username}`,
+				subtitle: `@${getAcct(this.user)}`,
 				userName: this.user,
 				avatar: this.user,
 				path: `/@${this.user.username}`,
 				share: {
 					title: this.user.name,
 				},
-				menu: () => getUserMenu(this.user),
 			} : null),
 			user: null,
 			error: null,
@@ -314,7 +314,7 @@ export default defineComponent({
 
 	mounted() {
 		window.requestAnimationFrame(this.parallaxLoop);
-		this.narrow = true; //this.$el.clientWidth < 1000;
+		this.narrow = this.$el.clientWidth < 1000;
 	},
 
 	beforeUnmount() {
@@ -338,7 +338,7 @@ export default defineComponent({
 		},
 
 		menu(ev) {
-			os.modalMenu(getUserMenu(this.user), ev.currentTarget || ev.target);
+			os.popupMenu(getUserMenu(this.user), ev.currentTarget || ev.target);
 		},
 
 		parallaxLoop() {
@@ -382,13 +382,10 @@ export default defineComponent({
 }
 
 .ftskorzw.wide {
-	max-width: 1150px;
-	margin: 0 auto;
 
 	> .banner-container {
 		position: relative;
-		height: 450px;
-		border-radius: 16px;
+		height: 300px;
 		overflow: hidden;
 		background-size: cover;
 		background-position: center;
@@ -405,6 +402,7 @@ export default defineComponent({
 
 	> .contents {
 		display: flex;
+		padding: 16px;
 
 		> .side {
 			width: 360px;
@@ -562,6 +560,7 @@ export default defineComponent({
 .ftskorzw.narrow {
 	box-sizing: border-box;
 	overflow: clip;
+	background: var(--bg);
 
 	> .punished {
 		font-size: 0.8em;

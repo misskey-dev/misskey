@@ -94,7 +94,11 @@ export default (opts) => ({
 				for (let i = 0; i < items.length; i++) {
 					const item = items[i];
 					markRaw(item);
-					if (i === 3) item._shouldInsertAd_ = true;
+					if (this.pagination.reversed) {
+						if (i === items.length - 2) item._shouldInsertAd_ = true;
+					} else {
+						if (i === 3) item._shouldInsertAd_ = true;
+					}
 				}
 				if (!this.pagination.noPaging && (items.length > (this.pagination.limit || 10))) {
 					items.pop();
@@ -133,7 +137,11 @@ export default (opts) => ({
 				for (let i = 0; i < items.length; i++) {
 					const item = items[i];
 					markRaw(item);
-					if (i === 10) item._shouldInsertAd_ = true;
+					if (this.pagination.reversed) {
+						if (i === items.length - 9) item._shouldInsertAd_ = true;
+					} else {
+						if (i === 10) item._shouldInsertAd_ = true;
+					}
 				}
 				if (items.length > SECOND_FETCH_LIMIT) {
 					items.pop();

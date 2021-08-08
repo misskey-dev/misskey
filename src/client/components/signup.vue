@@ -1,39 +1,39 @@
 <template>
 <form class="mk-signup" @submit.prevent="onSubmit" :autocomplete="Math.random()">
 	<template v-if="meta">
-		<MkInput v-if="meta.disableRegistration" v-model:value="invitationCode" type="text" :autocomplete="Math.random()" spellcheck="false" required>
-			<span>{{ $ts.invitationCode }}</span>
+		<MkInput v-if="meta.disableRegistration" v-model="invitationCode" type="text" :autocomplete="Math.random()" spellcheck="false" required>
+			<template #label>{{ $ts.invitationCode }}</template>
 			<template #prefix><i class="fas fa-key"></i></template>
 		</MkInput>
-		<MkInput v-model:value="username" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" :autocomplete="Math.random()" spellcheck="false" required @update:value="onChangeUsername">
-			<span>{{ $ts.username }}</span>
+		<MkInput v-model="username" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" :autocomplete="Math.random()" spellcheck="false" required @update:modelValue="onChangeUsername">
+			<template #label>{{ $ts.username }}</template>
 			<template #prefix>@</template>
 			<template #suffix>@{{ host }}</template>
-			<template #desc>
+			<template #caption>
 				<span v-if="usernameState == 'wait'" style="color:#999"><i class="fas fa-spinner fa-pulse fa-fw"></i> {{ $ts.checking }}</span>
-				<span v-if="usernameState == 'ok'" style="color:#3CB7B5"><i class="fas fa-check fa-fw"></i> {{ $ts.available }}</span>
-				<span v-if="usernameState == 'unavailable'" style="color:#FF1161"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.unavailable }}</span>
-				<span v-if="usernameState == 'error'" style="color:#FF1161"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.error }}</span>
-				<span v-if="usernameState == 'invalid-format'" style="color:#FF1161"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.usernameInvalidFormat }}</span>
-				<span v-if="usernameState == 'min-range'" style="color:#FF1161"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.tooShort }}</span>
-				<span v-if="usernameState == 'max-range'" style="color:#FF1161"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.tooLong }}</span>
+				<span v-if="usernameState == 'ok'" style="color: var(--success)"><i class="fas fa-check fa-fw"></i> {{ $ts.available }}</span>
+				<span v-if="usernameState == 'unavailable'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.unavailable }}</span>
+				<span v-if="usernameState == 'error'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.error }}</span>
+				<span v-if="usernameState == 'invalid-format'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.usernameInvalidFormat }}</span>
+				<span v-if="usernameState == 'min-range'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.tooShort }}</span>
+				<span v-if="usernameState == 'max-range'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.tooLong }}</span>
 			</template>
 		</MkInput>
-		<MkInput v-model:value="password" type="password" :autocomplete="Math.random()" required @update:value="onChangePassword">
-			<span>{{ $ts.password }}</span>
+		<MkInput v-model="password" type="password" :autocomplete="Math.random()" required @update:modelValue="onChangePassword">
+			<template #label>{{ $ts.password }}</template>
 			<template #prefix><i class="fas fa-lock"></i></template>
-			<template #desc>
-				<p v-if="passwordStrength == 'low'" style="color:#FF1161"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.weakPassword }}</p>
-				<p v-if="passwordStrength == 'medium'" style="color:#3CB7B5"><i class="fas fa-check fa-fw"></i> {{ $ts.normalPassword }}</p>
-				<p v-if="passwordStrength == 'high'" style="color:#3CB7B5"><i class="fas fa-check fa-fw"></i> {{ $ts.strongPassword }}</p>
+			<template #caption>
+				<span v-if="passwordStrength == 'low'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.weakPassword }}</span>
+				<span v-if="passwordStrength == 'medium'" style="color: var(--warn)"><i class="fas fa-check fa-fw"></i> {{ $ts.normalPassword }}</span>
+				<span v-if="passwordStrength == 'high'" style="color: var(--success)"><i class="fas fa-check fa-fw"></i> {{ $ts.strongPassword }}</span>
 			</template>
 		</MkInput>
-		<MkInput v-model:value="retypedPassword" type="password" :autocomplete="Math.random()" required @update:value="onChangePasswordRetype">
-			<span>{{ $ts.password }} ({{ $ts.retype }})</span>
+		<MkInput v-model="retypedPassword" type="password" :autocomplete="Math.random()" required @update:modelValue="onChangePasswordRetype">
+			<template #label>{{ $ts.password }} ({{ $ts.retype }})</template>
 			<template #prefix><i class="fas fa-lock"></i></template>
-			<template #desc>
-				<p v-if="passwordRetypeState == 'match'" style="color:#3CB7B5"><i class="fas fa-check fa-fw"></i> {{ $ts.passwordMatched }}</p>
-				<p v-if="passwordRetypeState == 'not-match'" style="color:#FF1161"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.passwordNotMatched }}</p>
+			<template #caption>
+				<span v-if="passwordRetypeState == 'match'" style="color: var(--success)"><i class="fas fa-check fa-fw"></i> {{ $ts.passwordMatched }}</span>
+				<span v-if="passwordRetypeState == 'not-match'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.passwordNotMatched }}</span>
 			</template>
 		</MkInput>
 		<label v-if="meta.tosUrl" class="tou">

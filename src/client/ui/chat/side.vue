@@ -1,11 +1,9 @@
 <template>
 <div class="mrajymqm _narrow_" v-if="component">
 	<header class="header" @contextmenu.prevent.stop="onContextmenu">
-		<button class="_button" @click="back()" v-if="history.length > 0"><i class="fas fa-chevron-left"></i></button>
-		<XHeader class="title" :info="pageInfo" :with-back="false" :center="false"/>
-		<button class="_button" @click="close()"><i class="fas fa-times"></i></button>
+		<XHeader class="title" :info="pageInfo" :center="false" :back-button="history.length > 0" @back="back()" :close-button="true" @close="close()"/>
 	</header>
-	<component :is="component" v-bind="props" :ref="changePage"/>
+	<component :is="component" v-bind="props" :ref="changePage" class="body _flat_"/>
 </div>
 </template>
 
@@ -130,7 +128,6 @@ export default defineComponent({
 		top: 0;
 		height: $header-height;
 		width: 100%;
-		line-height: $header-height;
 		font-weight: bold;
 		//background-color: var(--panel);
 		-webkit-backdrop-filter: blur(32px);
@@ -152,6 +149,10 @@ export default defineComponent({
 			flex: 1;
 			position: relative;
 		}
+	}
+
+	> .body {
+
 	}
 }
 </style>

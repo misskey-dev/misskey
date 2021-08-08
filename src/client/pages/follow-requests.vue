@@ -32,7 +32,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import MkPagination from '@client/components/ui/pagination.vue';
-import { userPage, acct } from '../filters/user';
+import { userPage, acct } from '@client/filters/user';
 import * as os from '@client/os';
 import * as symbols from '@client/symbols';
 
