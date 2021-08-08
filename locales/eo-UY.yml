@@ -113,6 +113,7 @@ editWidgets: "Redakti fenestraĵon"
 editWidgetsExit: "Fini la redaktadon"
 customEmojis: "Personecigitaj emoĵioj"
 emoji: "Emoĵio"
+emojis: "Emoĵio"
 emojiName: "Nomo de emoĵio"
 emojiUrl: "URL de la bildo de emoĵio"
 addEmoji: "Aldoni emoĵion"
@@ -366,7 +367,7 @@ _time:
   hour: "hor"
   day: "Tago"
 _tutorial:
-  title: "Uzado de Misskey (Ĉi-sekve Miskejo)"
+  title: "Uzado de Misskey"
   step1_1: "Bonvenon."
   step7_2: "Se vi volus scii pli pri Miskejon, volu rigardi la fako {help}."
 _permissions:
@@ -435,7 +436,7 @@ _exportOrImport:
 _timelines:
   home: "Hejmo"
   local: "Loka"
-  social: "Transa"
+  social: "Sociala"
   global: "Konfederacia"
 _rooms:
   translate: "Movi"
