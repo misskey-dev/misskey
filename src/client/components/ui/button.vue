@@ -142,7 +142,7 @@ export default defineComponent({
 
 	&.primary {
 		font-weight: bold;
-		color: #fff !important;
+		color: var(--fgOnAccent) !important;
 		background: var(--accent);
 
 		&:not(:disabled):hover {

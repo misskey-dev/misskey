@@ -1,11 +1,11 @@
 {
 	"name": "misskey",
-	"author": "blackskye.sx <admin.blue@skye.cx>",
-	"version": "12.84.3-sx",
+	"author": "syuilo <syuilotan@yahoo.co.jp>",
+	"version": "12.85.0",
 	"codename": "indigo",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/blackskye-sx/misskey.git"
+		"url": "https://github.com/misskey-dev/misskey.git"
 	},
 	"main": "./index.js",
 	"private": true,
