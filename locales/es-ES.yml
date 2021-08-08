@@ -127,6 +127,7 @@ editWidgets: "Editar widgets"
 editWidgetsExit: "Terminar edición"
 customEmojis: "Emojis personalizados"
 emoji: "Emoji"
+emojis: "Emoji"
 emojiName: "Nombre del emoji"
 emojiUrl: "URL de la imágen del emoji"
 addEmoji: "Agregar emoji"
@@ -665,6 +666,10 @@ administration: "Administrar"
 expiration: "Termina el"
 middle: "Mediano"
 global: "Global"
+sent: "Enviar"
+hashtags: "Hashtag"
+_docs:
+  admin: "Administrar"
 _ad:
   back: "Deseleccionar"
 _gallery:

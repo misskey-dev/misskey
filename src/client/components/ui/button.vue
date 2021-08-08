@@ -1,6 +1,6 @@
 <template>
 <component class="bghgjjyj _button"
-	:is="link ? 'a' : 'button'"
+	:is="link ? 'MkA' : 'button'"
 	:class="{ inline, primary, danger, full }"
 	:type="type"
 	@click="$emit('click', $event)"
@@ -115,6 +115,7 @@ export default defineComponent({
 	z-index: 1; // 他コンポーネントのbox-shadowに隠されないようにするため
 	display: block;
 	min-width: 100px;
+	width: max-content;
 	padding: 8px 14px;
 	text-align: center;
 	font-weight: normal;
@@ -125,6 +126,7 @@ export default defineComponent({
 	background: var(--buttonBg);
 	border-radius: 999px;
 	overflow: hidden;
+	box-sizing: border-box;
 
 	&:not(:disabled):hover {
 		background: var(--buttonHoverBg);
@@ -140,7 +142,7 @@ export default defineComponent({
 
 	&.primary {
 		font-weight: bold;
-		color: #fff !important;
+		color: var(--fgOnAccent) !important;
 		background: var(--accent);
 
 		&:not(:disabled):hover {

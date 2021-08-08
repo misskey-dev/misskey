@@ -1,8 +1,8 @@
 <template>
 <div class="cmuxhskf _root" v-hotkey.global="keymap">
-	<XTutorial v-if="$store.reactiveState.tutorial.value != -1" class="tutorial _block"/>
-	<XPostForm v-if="$store.reactiveState.showFixedPostForm.value" class="post-form _block" fixed/>
-	<div class="tabs _block">
+	<XTutorial v-if="$store.reactiveState.tutorial.value != -1" class="tutorial _block _isolated"/>
+	<XPostForm v-if="$store.reactiveState.showFixedPostForm.value" class="post-form _block _isolated" fixed/>
+	<div class="tabs">
 		<div class="left">
 			<button class="_button tab" @click="() => { src = 'home'; saveSrc(); }" :class="{ active: src === 'home' }" v-tooltip="$ts._timelines.home"><i class="fas fa-home"></i></button>
 			<button class="_button tab" @click="() => { src = 'local'; saveSrc(); }" :class="{ active: src === 'local' }" v-tooltip="$ts._timelines.local" v-if="isLocalTimelineAvailable"><i class="fas fa-comments"></i></button>
@@ -20,7 +20,6 @@
 	</div>
 	<div class="new" v-if="queue > 0"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
 	<XTimeline ref="tl"
-		class="_gap"
 		:key="src === 'list' ? `list:${list.id}` : src === 'antenna' ? `antenna:${antenna.id}` : src === 'channel' ? `channel:${channel.id}` : src"
 		:src="src"
 		:list="list ? list.id : null"
@@ -62,6 +61,7 @@ export default defineComponent({
 			queue: 0,
 			[symbols.PAGE_INFO]: computed(() => ({
 				title: this.$ts.timeline,
+				subtitle: this.src === 'local' ? this.$ts._timelines.local : this.src === 'social' ? this.$ts._timelines.social : this.src === 'global' ? this.$ts._timelines.global : this.$ts._timelines.home,
 				icon: this.src === 'local' ? 'fas fa-comments' : this.src === 'social' ? 'fas fa-share-alt' : this.src === 'global' ? 'fas fa-globe' : 'fas fa-home',
 				actions: [{
 					icon: 'fas fa-calendar-alt',
@@ -147,7 +147,7 @@ export default defineComponent({
 					this.saveSrc();
 				}
 			}));
-			os.modalMenu(items, ev.currentTarget || ev.target);
+			os.popupMenu(items, ev.currentTarget || ev.target);
 		},
 
 		async chooseAntenna(ev) {
@@ -161,7 +161,7 @@ export default defineComponent({
 					this.saveSrc();
 				}
 			}));
-			os.modalMenu(items, ev.currentTarget || ev.target);
+			os.popupMenu(items, ev.currentTarget || ev.target);
 		},
 
 		async chooseChannel(ev) {
@@ -177,7 +177,7 @@ export default defineComponent({
 					this.$router.push(`/channels/${channel.id}`);
 				}
 			}));
-			os.modalMenu(items, ev.currentTarget || ev.target);
+			os.popupMenu(items, ev.currentTarget || ev.target);
 		},
 
 		saveSrc() {
@@ -211,6 +211,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .cmuxhskf {
+	background: var(--bg);
+
 	> .new {
 		position: sticky;
 		top: calc(var(--stickyTop, 0px) + 16px);

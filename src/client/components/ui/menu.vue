@@ -171,13 +171,13 @@ export default defineComponent({
 		}
 
 		&:hover {
-			color: #fff;
+			color: var(--fgOnAccent);
 			background: var(--accent);
 			text-decoration: none;
 		}
 
 		&:active {
-			color: #fff;
+			color: var(--fgOnAccent);
 			background: var(--accentDarken);
 		}
 

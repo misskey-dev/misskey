@@ -4,23 +4,23 @@
 		<div class="_card _gap">
 			<div class="_title">Dialog</div>
 			<div class="_content">
-				<MkInput v-model:value="dialogTitle">
-					<span>Title</span>
+				<MkInput v-model="dialogTitle">
+					<template #label>Title</template>
 				</MkInput>
-				<MkInput v-model:value="dialogBody">
-					<span>Body</span>
+				<MkInput v-model="dialogBody">
+					<template #label>Body</template>
 				</MkInput>
 				<MkRadio v-model="dialogType" value="info">Info</MkRadio>
 				<MkRadio v-model="dialogType" value="success">Success</MkRadio>
 				<MkRadio v-model="dialogType" value="warning">Warn</MkRadio>
 				<MkRadio v-model="dialogType" value="error">Error</MkRadio>
-				<MkSwitch v-model:value="dialogCancel">
+				<MkSwitch v-model="dialogCancel">
 					<span>With cancel button</span>
 				</MkSwitch>
-				<MkSwitch v-model:value="dialogCancelByBgClick">
+				<MkSwitch v-model="dialogCancelByBgClick">
 					<span>Can cancel by modal bg click</span>
 				</MkSwitch>
-				<MkSwitch v-model:value="dialogInput">
+				<MkSwitch v-model="dialogInput">
 					<span>With input field</span>
 				</MkSwitch>
 				<MkButton @click="showDialog()">Show</MkButton>
@@ -33,11 +33,11 @@
 		<div class="_card _gap">
 			<div class="_title">Form</div>
 			<div class="_content">
-				<MkInput v-model:value="formTitle">
-					<span>Title</span>
+				<MkInput v-model="formTitle">
+					<template #label>Title</template>
 				</MkInput>
-				<MkTextarea v-model:value="formForm">
-					<span>Form</span>
+				<MkTextarea v-model="formForm">
+					<template #label>Form</template>
 				</MkTextarea>
 				<MkButton @click="form()">Show</MkButton>
 			</div>
@@ -49,8 +49,8 @@
 		<div class="_card _gap">
 			<div class="_title">MFM</div>
 			<div class="_content">
-				<MkTextarea v-model:value="mfm">
-					<span>MFM</span>
+				<MkTextarea v-model="mfm">
+					<template #label>MFM</template>
 				</MkTextarea>
 			</div>
 			<div class="_content">
@@ -61,7 +61,7 @@
 		<div class="_card _gap">
 			<div class="_title">selectDriveFile</div>
 			<div class="_content">
-				<MkSwitch v-model:value="selectDriveFileMultiple">
+				<MkSwitch v-model="selectDriveFileMultiple">
 					<span>Multiple</span>
 				</MkSwitch>
 				<MkButton @click="selectDriveFile()">selectDriveFile</MkButton>
@@ -74,7 +74,7 @@
 		<div class="_card _gap">
 			<div class="_title">selectDriveFolder</div>
 			<div class="_content">
-				<MkSwitch v-model:value="selectDriveFolderMultiple">
+				<MkSwitch v-model="selectDriveFolderMultiple">
 					<span>Multiple</span>
 				</MkSwitch>
 				<MkButton @click="selectDriveFolder()">selectDriveFolder</MkButton>
@@ -97,14 +97,14 @@
 		<div class="_card _gap">
 			<div class="_title">Notification</div>
 			<div class="_content">
-				<MkInput v-model:value="notificationIconUrl">
-					<span>Icon URL</span>
+				<MkInput v-model="notificationIconUrl">
+					<template #label>Icon URL</template>
 				</MkInput>
-				<MkInput v-model:value="notificationHeader">
-					<span>Header</span>
+				<MkInput v-model="notificationHeader">
+					<template #label>Header</template>
 				</MkInput>
-				<MkTextarea v-model:value="notificationBody">
-					<span>Body</span>
+				<MkTextarea v-model="notificationBody">
+					<template #label>Body</template>
 				</MkTextarea>
 				<MkButton @click="createNotification()">createNotification</MkButton>
 			</div>

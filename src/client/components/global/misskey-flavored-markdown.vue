@@ -117,6 +117,11 @@ export default defineComponent({
 	75% { transform: scale3d(1.05, 0.95, 1); }
 	to { transform: scale3d(1, 1, 1); }
 }
+
+@keyframes mfm-rainbow {
+	0% { filter: hue-rotate(0deg) contrast(150%) saturate(150%); }
+	100% { filter: hue-rotate(360deg) contrast(150%) saturate(150%); }
+}
 </style>
 
 <style lang="scss" scoped>
