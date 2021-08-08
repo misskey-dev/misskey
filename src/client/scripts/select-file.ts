@@ -69,7 +69,7 @@ export function selectFile(src: any, label: string | null, multiple = false) {
 			});
 		};
 
-		os.modalMenu([label ? {
+		os.popupMenu([label ? {
 			text: label,
 			type: 'label'
 		} : undefined, {

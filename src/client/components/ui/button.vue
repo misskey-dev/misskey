@@ -115,7 +115,7 @@ export default defineComponent({
 	z-index: 1; // 他コンポーネントのbox-shadowに隠されないようにするため
 	display: block;
 	min-width: 100px;
-	width: min-content;
+	width: max-content;
 	padding: 8px 14px;
 	text-align: center;
 	font-weight: normal;

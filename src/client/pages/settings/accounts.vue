@@ -64,7 +64,7 @@ export default defineComponent({
 
 	methods: {
 		menu(account, ev) {
-			os.modalMenu([{
+			os.popupMenu([{
 				text: this.$ts.switch,
 				icon: 'fas fa-exchange-alt',
 				action: () => this.switchAccount(account),
@@ -77,7 +77,7 @@ export default defineComponent({
 		},
 
 		addAccount(ev) {
-			os.modalMenu([{
+			os.popupMenu([{
 				text: this.$ts.existingAccount,
 				action: () => { this.addExistingAccount(); },
 			}, {

@@ -155,8 +155,7 @@ export default defineComponent({
 
 	> .label {
 		font-size: 0.85em;
-		padding: 0 0 6px 6px;
-		font-weight: bold;
+		padding: 0 0 8px 12px;
 		user-select: none;
 
 		&:empty {
@@ -166,7 +165,7 @@ export default defineComponent({
 
 	> .caption {
 		font-size: 0.8em;
-		padding: 6px 0 0 6px;
+		padding: 8px 0 0 12px;
 		color: var(--fgTransparentWeak);
 
 		&:empty {
@@ -197,6 +196,7 @@ export default defineComponent({
 			box-shadow: none;
 			box-sizing: border-box;
 			cursor: pointer;
+			transition: border-color 0.1s ease-out;
 
 			&:hover {
 				border-color: var(--inputBorderHover);

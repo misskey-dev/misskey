@@ -80,7 +80,7 @@ export default defineComponent({
 
 	methods: {
 		menu(emoji, ev) {
-			os.modalMenu([{
+			os.popupMenu([{
 				type: 'label',
 				text: ':' + emoji.name + ':',
 			}, {

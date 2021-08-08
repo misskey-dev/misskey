@@ -338,7 +338,7 @@ export default defineComponent({
 		},
 
 		menu(ev) {
-			os.modalMenu(getUserMenu(this.user), ev.currentTarget || ev.target);
+			os.popupMenu(getUserMenu(this.user), ev.currentTarget || ev.target);
 		},
 
 		parallaxLoop() {
