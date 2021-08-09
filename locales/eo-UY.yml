@@ -430,6 +430,7 @@ _postForm:
 _profile:
   name: "Nomo"
   username: "Uzantnomo"
+  metadataEdit: "Redakti kromaj informoj"
   changeAvatar: "Ŝanĝi profilbildon"
 _exportOrImport:
   followingList: "Sekvataj"
