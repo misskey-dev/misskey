@@ -246,6 +246,7 @@ noteOf: "Noto de {user}"
 noMessagesYet: "Neniu mesaĝo"
 newMessageExists: "Vi ricevis novan mesaĝon."
 onlyOneFileCanBeAttached: "Vi povas aldoni nur unu dosieron po unu mesaĝo."
+invitationCode: "Kodo de invito"
 uiLanguage: "Lingvo de la interfaco"
 tags: "Etikedoj"
 createAccount: "Krei konton"
@@ -355,7 +356,7 @@ _wordMute:
   muteWords: "Silentigataj vortoj"
   mutedNotes: "Silentigataj notoj"
 _theme:
-  code: "Fontkodo de temo"
+  code: "Kodo de koloraro"
   keys:
     hashtag: "Kradvorto"
     mention: "Mencioj"
