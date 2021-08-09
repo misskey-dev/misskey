@@ -318,6 +318,12 @@ hr {
 	}
 }
 
+._window {
+	background: var(--panel);
+	border-radius: var(--radius);
+	contain: content;
+}
+
 ._popup {
 	background: var(--popup);
 	border-radius: var(--radius);

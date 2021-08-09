@@ -1,6 +1,6 @@
 <template>
 <MkModal ref="modal" @click="$emit('click')" @closed="$emit('closed')">
-	<div class="hrmcaedk _popup _narrow_" :style="{ width: `${width}px`, height: (height ? `min(${height}px, 100%)` : '100%') }">
+	<div class="hrmcaedk _window _narrow_" :style="{ width: `${width}px`, height: (height ? `min(${height}px, 100%)` : '100%') }">
 		<div class="header" @contextmenu="onContextmenu">
 			<span class="title">
 				<XHeader :info="pageInfo" :back-button="history.length > 0" @back="back()" :close-button="true" @close="$refs.modal.close()"/>
