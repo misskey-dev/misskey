@@ -266,6 +266,7 @@ email: "Retpoŝto"
 emailAddress: "Retpoŝta adreso"
 smtpUser: "Uzantnomo"
 smtpPass: "Pasvorto"
+wordMute: "Silentado de vorto"
 userSaysSomething: "{name} parolis ion"
 display: "Vidi"
 database: "Datumbazo"
@@ -341,6 +342,7 @@ _channel:
 _menuDisplay:
   hide: "Kaŝi"
 _wordMute:
+  muteWords: "Silentaj vortoj"
   mutedNotes: "Silentigataj notoj"
 _theme:
   keys:
