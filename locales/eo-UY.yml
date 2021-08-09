@@ -334,7 +334,9 @@ _mfm:
   mention: "Mencioj"
   hashtag: "Kradvorto"
   url: "URL"
-  blockCode: "Kodo (Ujo)"
+  inlineCode: "Kodo (en linio)"
+  blockCode: "Kodo (bloko)"
+  inlineMath: "Formulo (en linio)"
   blockMath: "Formulo (bloko)"
   quote: "Citi"
   emoji: "Personecigitaj emoĵioj"
@@ -353,6 +355,7 @@ _wordMute:
   muteWords: "Silentigataj vortoj"
   mutedNotes: "Silentigataj notoj"
 _theme:
+  code: "Fontkodo de temo"
   keys:
     hashtag: "Kradvorto"
     mention: "Mencioj"
