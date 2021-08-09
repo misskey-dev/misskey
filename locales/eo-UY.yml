@@ -390,6 +390,7 @@ _tutorial:
 _permissions:
   "read:blocks": "Vidi la liston de uzantoj kiun vi blokas"
   "write:blocks": "Redakti vian liston de blokataj uzantoj"
+  "read:drive": "Operacio por legi la informon de dosiero en via diskingo de Miskejo"
   "write:drive": "Ĉia operacio por skribi, forviŝi, aŭ alimaniere ŝanĝi la informon de dosiero en via diskingo de Miskejo"
   "read:favorites": "Vidi vian liston de preferatoj"
   "read:following": "Vidi tion kion vi sekvas"
