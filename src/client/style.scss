@@ -189,7 +189,7 @@ hr {
 
 ._buttonPrimary {
 	@extend ._button;
-	color: #fff;
+	color: var(--fgOnAccent);
 	background: var(--accent);
 
 	&:not(:disabled):hover {
