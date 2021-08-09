@@ -416,6 +416,7 @@ export default defineComponent({
 			flex-shrink: 0;
 			user-select: none;
 			height: var(--height);
+			border-bottom: solid 1px var(--divider);
 
 			> ::v-deep(button) {
 				height: var(--height);

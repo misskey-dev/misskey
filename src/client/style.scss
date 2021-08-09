@@ -321,7 +321,7 @@ hr {
 ._popup {
 	background: var(--popup);
 	border-radius: var(--radius);
-	contain: content;
+	contain: layout; // ふき出しがボックスから飛び出て表示されるようなデザインをする場合もあるので paint は contain することができない
 }
 
 ._root {
