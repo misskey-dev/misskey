@@ -127,6 +127,7 @@ export default defineComponent({
 	border-radius: 999px;
 	overflow: hidden;
 	box-sizing: border-box;
+	transition: background 0.1s ease;
 
 	&:not(:disabled):hover {
 		background: var(--buttonHoverBg);
