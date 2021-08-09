@@ -375,7 +375,6 @@ _tutorial:
   step7_2: "Se vi volus scii pli pri Miskejon, volu rigardi la fakon {help}."
   step7_3: "Do, bonvolu amuziĝi Miskejon🚀"
 _permissions:
-  "read:blocks": "Vidi vian liston de blokataj uzantoj"
   "read:drive": "Ĉia operacio por legi la informon de dosiero en via diskingo de Miskejo"
   "write:drive": "Ĉia operacio por skribi, forviŝi, aŭ alimaniere ŝanĝi la informon de dosiero en via diskingo de Miskejo"
   "read:favorites": "Vidi la listo de la preferoj"
