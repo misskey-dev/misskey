@@ -342,7 +342,7 @@ _channel:
 _menuDisplay:
   hide: "Kaŝi"
 _wordMute:
-  muteWords: "Silentaj vortoj"
+  muteWords: "Silentigataj vortoj"
   mutedNotes: "Silentigataj notoj"
 _theme:
   keys:
@@ -384,6 +384,8 @@ _permissions:
   "read:following": "Vidi tion kion vi sekvas"
   "write:following": "Sekvi kaj/aŭ malsekvi alian uzanton"
   "read:messaging": "Vidi via retbabilado"
+  "read:mutes": "Vidi vian liston de silentigoj"
+  "write:mutes": "Redakti vian liston de silentigoj"
   "write:notes": "Krei / Forviŝi noton"
   "read:notifications": "Vidi sciigojn"
   "read:reactions": "Vidi reagojn"
@@ -437,7 +439,7 @@ _profile:
   changeAvatar: "Ŝanĝi profilbildon"
 _exportOrImport:
   followingList: "Sekvataj"
-  muteList: "Silentigado"
+  muteList: "Silentigoj"
   blockingList: "Blokado"
   userLists: "Listoj"
 _timelines:
