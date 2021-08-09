@@ -395,6 +395,7 @@ _permissions:
   "write:notes": "Krei / Forviŝi noton"
   "read:notifications": "Vidi sciigojn"
   "read:reactions": "Vidi reagojn"
+  "write:reactions": "Redakti viajn reagojn"
   "read:pages": "Vidi via paĝojn"
   "read:page-likes": "Vidi ŝatojn de paĝo"
   "read:channels": "Vidi kanalojn"
