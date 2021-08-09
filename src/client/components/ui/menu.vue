@@ -1,5 +1,5 @@
 <template>
-<div class="rrevdjwt" :class="{ left: align === 'left' }"
+<div class="rrevdjwt" :class="{ left: align === 'left', pointer: point === 'top' }"
 	ref="items"
 	@contextmenu.self="e => e.preventDefault()"
 	v-hotkey="keymap"
@@ -58,7 +58,11 @@ export default defineComponent({
 		align: {
 			type: String,
 			requried: false
-		}
+		},
+		point: {
+			type: String,
+			requried: false
+		},
 	},
 	emits: ['close'],
 	data() {
@@ -136,6 +140,22 @@ export default defineComponent({
 <style lang="scss" scoped>
 .rrevdjwt {
 	padding: 8px 0;
+
+	&.pointer {
+		&:before {
+			--size: 8px;
+			content: '';
+			display: block;
+			position: absolute;
+			top: calc(0px - (var(--size) * 2));
+			left: 0;
+			right: 0;
+			width: 0;
+			margin: auto;
+			border: solid var(--size) transparent;
+			border-bottom-color: var(--popup);
+		}
+	}
 
 	&.left {
 		> .item {
