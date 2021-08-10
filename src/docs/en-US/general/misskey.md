@@ -13,12 +13,12 @@ With anyone being able to join its development, Misskey is still continually bei
 <b>分散(distributed)型</b>とは、<b>非中央集権(decentralized)</b>とも呼ばれ、コミュニティが多数のサーバーに分散して存在し、それらが相互に<b>通信(連合、federation)</b>することでコンテンツ共有<b>ネットワーク(Fediverse)</b>を形成していることが特徴のサービスです。 単一のサーバーしか存在しない、もしくは複数存在しても互いに独立している場合は中央集権なサービスと言われ、例えばTwitterやFacebookなどほとんどのサービスがそれに該当します。 分散型のメリットは、自分に合った運営者やテーマのサーバーを選択できることです。自分でサーバーを作成することもできます。連合するおかげで、どのサーバーを選んでも、同じコミュニティにアクセスできます。
 
 ## Always Open-Source
-Misskeyはこれまでもこれからも、オープンソースであり続けます。オープンソースとは、簡単に言うと<b>ソフトウェアのソースコード(プログラム)が公開されている</b>ことです。ソースコードの修正や再配布が可能であることを定義に含めることもあります。 Misskeyのすべてのソースコードは[AGPL](https://github.com/misskey-dev/misskey/blob/develop/LICENSE)というオープンソースライセンスの下に[公開](https://github.com/misskey-dev)されていて、誰でも自由に閲覧、使用、修正、改変、再配布をすることができます。 オープンソースは、自分で好きなように変えたり、有害な処理が含まれていないことを確認することができたり、誰でも開発に参加できるなどの、様々なメリットがあります。 上述の分散型を実現するためにも、オープンソースであるということは必要不可欠な要素です。 再び引き合いに出しますが、TwitterやFacebookなどの利益を得ているほとんどのサービスはオープンソースではありません。
+Misskey has always been, and will always be, open source.Open source means, simply speaking, <b>making the source code of software (a program) publicly available</b>.ソースコードの修正や再配布が可能であることを定義に含めることもあります。 Misskeyのすべてのソースコードは[AGPL](https://github.com/misskey-dev/misskey/blob/develop/LICENSE)というオープンソースライセンスの下に[公開](https://github.com/misskey-dev)されていて、誰でも自由に閲覧、使用、修正、改変、再配布をすることができます。 オープンソースは、自分で好きなように変えたり、有害な処理が含まれていないことを確認することができたり、誰でも開発に参加できるなどの、様々なメリットがあります。 上述の分散型を実現するためにも、オープンソースであるということは必要不可欠な要素です。 再び引き合いに出しますが、TwitterやFacebookなどの利益を得ているほとんどのサービスはオープンソースではありません。
 
 <div class="info">ℹ️ Technically speaking, Misskey's source code is being managed via Git, and its repository is being hosted at <a href="https://github.com/misskey-dev" target="_blank">GitHub.</a></div>
 
 ## Joining development and supporting the project
-Misskeyを気に入っていただけたら、ぜひプロジェクトを支援してください。プロジェクトに貢献するには、以下で紹介するようにいろいろな方法があります。方法によっては開発のスキルは不要なので、誰でも気軽に参加し貢献することができます。いつでもお待ちしています。
+If you like Misskey, please support the project.Supporting the project can be done in many ways, with some of them introduced below.Some of these do not require programming skills, so anyone can feel free to support Misskey their own way.We're always waiting for you.
 
 ### Adding features or fixing bugs
 ソフトウェアエンジニアのスキルをお持ちの方であれば、ソースコードを編集する形でプロジェクトに貢献することができます。 貢献についてのガイドは[こちら](https://github.com/misskey-dev/misskey/blob/develop/CONTRIBUTING.md)です。
@@ -41,7 +41,7 @@ Misskeyはビジネスではなく、利用は無料であるため、収益は�
 また、サーバーの運営者も、基本的には収益を得ていません。サーバーの運営にはコストがかかるので、運営者の支援をすることもご検討ください。 開発には直接関係しませんが、サーバーがあってこそのプロジェクトなので、運営が維持されるというのは開発と同じくらい重要なことです。
 
 ## Credits
-Misskeyの開発者や、Misskeyに寄付をしてくださった方の一覧は[こちら](/about-misskey)で見ることができます。
+A list of Misskey's developers and donators can be seen [here](/about-misskey).
 
 ## Frequently Asked Questions
 ### What is this project aiming to achieve?
