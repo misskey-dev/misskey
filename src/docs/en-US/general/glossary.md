@@ -67,17 +67,17 @@ A functionality allowing users to organize the files they have uploaded to Missk
 ## Notes
 Content which may include text, images, surveys and others that has been posted to Misskey.For details, see [here.](../features/note)
 
-## ミスキスト
-Misskeyを使う人のこと。
+## Misskist
+Users of Misskey.
 
 ## Moderator
-スパムの凍結およびサイレンスや不適切な投稿の削除など、コミュニティ運営に関する権限を持つユーザー。
+Users with the authority to to manage the community of a server by deactivating spam accounts, deleting inappropriate posts etc.
 
 ## Remote
-他サーバーのことを指します。リモートユーザーといったように接頭辞としても使われます。ローカルの逆です。
+Used in context of servers separate from your own.Also used as prefix in other words like "Remote user".The opposite of "Local".
 
 ## Federation
-サーバー上で作成された情報が他のサーバーに伝わること。
+The act of sharing information created one one's server with other servers.
 
 ## Local
-自サーバーのことを指します。ローカルユーザー、ローカルタイムラインといったように接頭辞としても使われます。リモートの逆です。
+Used in context of your own server.Also used as prefix in other words like "Local users", "local timeline".The opposite of "Remote".
