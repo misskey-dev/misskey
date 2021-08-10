@@ -24,11 +24,11 @@ Please try the following:
 - Upgrade the specs of your used device
 
 ## Parts of the UI are weird (For example, the background is transparent)
-アップデートによりUIの改修が行われたときに、テーマのキャッシュシステムの影響でそのような表示になることがあります。 クライアントの設定の「キャッシュをクリア」すると直ります。
-<div class="warn">⚠️ 「クライアントの」キャッシュクリアです。「ブラウザの」キャッシュクリアは行わないでください。</div>
+Broken UI display may be caused by the theme cache system when the UI is changed as part of an update. Pressing "Clear cache" in the settings will fix this.
+<div class="warn">⚠️ Specifically clear the Client's cache.「ブラウザの」キャッシュクリアは行わないでください。</div>
 
 ## The blinking light of a notification or Antenna won't go away
-点滅は、未読のコンテンツがあることを示しています。通常点滅が消えない場合は、コンテンツを遡ると未読なコンテンツが残っています。 すべて既読にしたと思われるのに、それでもなお点滅が続く場合(おそらく不具合と思われます)は設定から強制的にすべて既読扱いにすることができます。
+A blinking light indicates unread content.In cases where this light won't go away, there is usually unread content that has been pushed away by new incoming content. If you believe to have read all content, but the light still won't go away (likely a bug), you can forcibly mark all content as read via the user settings.
 
 ## Renoting is not possible
 Followers-only notes cannot be renoted.
@@ -37,4 +37,4 @@ Followers-only notes cannot be renoted.
 Problems like these can arise if you are using an Adblocker.Please turn these off on Misskey.
 
 ## Some parts of the UI are untranslated
-ほとんどの場合、単に翻訳が間に合っていないだけで、不具合ではありません。翻訳が終わるまでお待ちください。 [翻訳に参加](./misskey)していただくことも可能です。
+In most cases, this is simply a matter of the translation not having been done yet instead of being a bug.Please wait until the translation of this area has been completed. You can alternatively also [participate in translation](./misskey) yourself.
