@@ -2,14 +2,14 @@
 This document will list answers to frequently asked questions regarding the usage of Misskey. Answers to frequently related questions related to Misskey as a project can be found [here](./misskey).
 
 ### "Are there any apps for iOS / Android available?"
-公式にはそういったOSのネイティブアプリを開発していませんが、サードパーティ製のアプリがいくつかあります。 詳しくは[こちら](./apps)をご覧ください。
+While no official Misskey app for either OS exists, there are several third-party applications. For details, please check [here](./apps).
 
-ただ、サードパーティ製アプリはどうしても機能への対応が遅れてしまうため、とくに拘りがなければ公式のWebクライアントの利用をおすすめします。 なお、MisskeyのWebクライアントはPWAに対応しているので、ネイティブアプリのように動作させることも可能です。 詳しくは[こちら](todo)をご覧ください。
+However, functionality of third-party applications will inevitably lag behind the official Web client, so unless you really want to use a native application, we recommend the official Web client instead. As the Misskey Web client supports PWA, it is possible to make it act as if it was a native application instead. For details regarding this, please check [here](todo).
 
-## 他のサーバーのユーザーをフォローするときは？
-メニューから検索を選び、ユーザー名をホスト込みで入力します。例: `@syuilo@misskey.io`
+## "What do I do when I want to follow users from other servers?"
+Select the search bar from the menu and enter their username including their host.E.g. `@syuilo@misskey.io`
 
-## Renoteを削除するには？
+## "How do I take back a Renote?"
 Renoteの時刻表示の隣にある「...」を押し、「Renote解除」を選択します。 Renoteについては[こちら](../features/note)をご確認ください。
 
 ## URLのプレビューを表示させたくない
