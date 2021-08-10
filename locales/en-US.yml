@@ -1077,7 +1077,7 @@ _2fa:
 _permissions:
   "read:account": "View your account information"
   "write:account": "Edit your account information"
-  "read:blocks": "View your list of blocked users"
+  "read:blocks": "View the list of people you blocked"
   "write:blocks": "Edit your list of blocked users"
   "read:drive": "Access your drive files and folders"
   "write:drive": "Edit or delete your drive files and folders"
