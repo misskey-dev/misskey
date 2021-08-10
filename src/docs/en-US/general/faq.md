@@ -1,5 +1,5 @@
 # Frequently Asked Questions
-This document will list answers to frequently asked questions regarding the usage of Misskey. Answers to frequently related questions related to Misskey as a project can be found [here](./misskey).
+This document will list answers to frequently asked questions regarding the usage of Misskey. Answers to frequently asked questions related to Misskey as a project can be found [here](./misskey).
 
 ### "Are there any apps for iOS / Android available?"
 While no official Misskey app for either OS exists, there are several third-party applications. For details, please check [here](./apps).
@@ -10,13 +10,13 @@ However, functionality of third-party applications will inevitably lag behind th
 Select the search bar from the menu and enter their username including their host.E.g. `@syuilo@misskey.io`
 
 ## "How do I take back a Renote?"
-Renoteの時刻表示の隣にある「...」を押し、「Renote解除」を選択します。 Renoteについては[こちら](../features/note)をご確認ください。
+Press the three dots ("...") to the right of the renote timestamp and select "Take back Renote". To read more about Renotes, please check [here](../features/note).
 
-## URLのプレビューを表示させたくない
-MFMには、そのURLのプレビューを無効にする構文があります。詳細は[MFMチートシート](/mfm-cheat-sheet)をご確認ください。
+## "I don't want the preview of an URL to be displayed."
+You can disable an URL from being previewed using MFM.For details, please check the [MFM Cheatsheet](/mfm-cheat-sheet).
 
-## カスタム絵文字を追加したい
-運営者のみがカスタム絵文字を追加、編集、削除できます。それらを希望する場合は運営者に依頼してください。
+## "I want to add custom emoji."
+Only administrators can add, edit or delete custom emoji.If you'd like to do either of these things, please ask your instance administrator.
 
-## Botを開発したい
-Misskey APIを利用してBotの開発が可能です。[こちら](../advanced/develop-bot)をご確認ください。
+## "I want to develop a Bot."
+Anyone can develop a Misskey bot using the Misskey API.Please see [here](../advanced/develop-bot).
