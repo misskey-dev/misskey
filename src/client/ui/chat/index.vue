@@ -55,7 +55,7 @@
 					<MkA to="/my/favorites" class="item"><i class="fas fa-star icon"></i>{{ $ts.favorites }}</MkA>
 				</div>
 			</div>
-			<MkAd class="a" prefer="square"/>
+			<MkAd class="a" :prefer="['square']"/>
 		</div>
 		<footer class="footer">
 			<div class="left">
