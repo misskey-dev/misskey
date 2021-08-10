@@ -778,6 +778,7 @@ _docs:
   generalTopics: "一般的なトピック"
   advancedTopics: "高度なトピック"
   admin: "管理"
+  translateWarn: "このドキュメントは翻訳されたものです。オリジナルとは内容が異なる場合があります。"
 
 _ad:
   back: "戻る"
