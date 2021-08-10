@@ -8,4 +8,4 @@
 
 ## Libraries
 - [misskey-dev/misskey.js](https://github.com/misskey-dev/misskey.js) - A Misskey SDK for JavaScript
-- [misskey-dev/mfm.js](https://github.com/misskey-dev/mfm.js) - A JavaScript implementation of a MFM Parser
+- [misskey-dev/mfm.js](https://github.com/misskey-dev/mfm.js) - A JavaScript implementation of an MFM Parser
