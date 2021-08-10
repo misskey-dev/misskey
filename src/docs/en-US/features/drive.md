@@ -1,5 +1,5 @@
 # Drive
-Drive is a function to manage the files you have uploaded to Misskey.
+Drive is a feature to manage the files you have uploaded to Misskey.
 
 In addition to being able to upload files to your Drive from the [Drive page](/my/drive), any images set as your avatar or those included in your notes will be added to your Drive.
 
