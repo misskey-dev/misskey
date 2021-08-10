@@ -1,20 +1,20 @@
-# 用語集
-Misskeyに関する用語集です。
+# Glossary
+A glossary about terms related to Misskey.
 
-## AcitivityPub
-(読み: あくてぃびてぃぱぶ) 分散型を実現するために用いられるプロトコル(仕様)。このプロトコルに則ってサーバー同士通信を行うことで、連合が行われ、Fediverseを形成しています。
+## ActivityPub
+The protocol (method) used for enabling the distributed nature of Misskey.By adhering to this protocol, communication with other servers that also follow it becomes possible, forming what is known as the Fediverse.
 
 ## AiScript
-(読み: あいすくりぷと) Misskey上で使用できるプログラミング言語です。詳細は[こちら。](../advanced/aiscript)
+A programming language available for use on Misskey.For details, see [here.](../advanced/aiscript)
 
 ## API
-(読み: えーぴーあい) Misskeyのサーバーが公開している、プログラムからMisskeyを扱うためのインターフェース。詳細は[こちら。](../advanced/api)
+An interface that can be used for interacting with Misskey through a program, available for each individiual instance.For details, see [here.](../advanced/api)
 
 ## Bot
-(読み: ぼっと) プログラムによって動作しているアカウント。
+An account that is being controlled by a program.
 
 ## CW
-(読み: こんてんつわーにんぐ) Contents Warningの略。ノートの内容を、操作なしには表示しないようにできる機能。主に長大な内容を隠すためや、ネタバレ防止などに使われます。
+An abbreviation of "Content Warning".ノートの内容を、操作なしには表示しないようにできる機能。主に長大な内容を隠すためや、ネタバレ防止などに使われます。
 
 ## Fediverse
 (読み: ふぇでぃばーす) Misskeyを含む様々な分散型ソフトウェアのサーバーで構成されたネットワーク。
