@@ -1,12 +1,12 @@
 # About Misskey
 
-Misskeyはオープンソースの分散型マイクロブログプラットフォームプロジェクトです。 開発は日本でsyuiloによって2014年から開始されました。 ドライブ、リアクションなどの豊富な機能や、高いカスタマイズ性を備えたUIを持つことが特徴です。
+Misskey is an open-source and distributed platform for microblogging. Development was started in 2014 by syuilo in Japan. It features an abundance of features such as Drive or Reactions as well as a very high UI customizability.
 
 ## History
 開発当初は掲示板がメインのサービスでしたが、ユーザーが短文を投稿し、それを時系列で流れるタイムライン機能を追加したところ人気が高まり、徐々にそれがメインとして開発が進むようになりました。 当初は分散型ではありませんでしたが、2018年にAcitivityPubを実装し分散型になったことで、より多くの方に認知され利用されるサービスになり、現在に至ります。
-<div class="info">ℹ️ Misskeyという名前は、syuiloが当時聴いていたMay'nというアーティストの楽曲、Brain Diverの歌詞に由来します。</div>
+<div class="info">ℹ️ The name "Misskey" comes from a song called "Brain Diver" by a band that syuilo used to listen to at the time called May'n.</div>
 
-誰でも開発に参加することができ、現在でも活発に開発が続いています。
+With anyone being able to join its development, Misskey is still continually being actively developed.
 
 ## What does "Distributed" mean?
 
@@ -15,7 +15,7 @@ Misskeyはオープンソースの分散型マイクロブログプラットフ�
 ## Always Open-Source
 Misskeyはこれまでもこれからも、オープンソースであり続けます。オープンソースとは、簡単に言うと<b>ソフトウェアのソースコード(プログラム)が公開されている</b>ことです。ソースコードの修正や再配布が可能であることを定義に含めることもあります。 Misskeyのすべてのソースコードは[AGPL](https://github.com/misskey-dev/misskey/blob/develop/LICENSE)というオープンソースライセンスの下に[公開](https://github.com/misskey-dev)されていて、誰でも自由に閲覧、使用、修正、改変、再配布をすることができます。 オープンソースは、自分で好きなように変えたり、有害な処理が含まれていないことを確認することができたり、誰でも開発に参加できるなどの、様々なメリットがあります。 上述の分散型を実現するためにも、オープンソースであるということは必要不可欠な要素です。 再び引き合いに出しますが、TwitterやFacebookなどの利益を得ているほとんどのサービスはオープンソースではありません。
 
-<div class="info">ℹ️ 技術的に言うと、MisskeyのソースコードはGitで管理されていて、リポジトリは<a href="https://github.com/misskey-dev" target="_blank">GitHub上でホスティングされています。</a></div>
+<div class="info">ℹ️ Technically speaking, Misskey's source code is being managed via Git, and its repository is being hosted at <a href="https://github.com/misskey-dev" target="_blank">GitHub.</a></div>
 
 ## Joining development and supporting the project
 Misskeyを気に入っていただけたら、ぜひプロジェクトを支援してください。プロジェクトに貢献するには、以下で紹介するようにいろいろな方法があります。方法によっては開発のスキルは不要なので、誰でも気軽に参加し貢献することができます。いつでもお待ちしています。
@@ -74,7 +74,7 @@ In addition to this, from Misskey derived technology such as MFM or AiScript are
 ### Is this a fork of Mastodon?
 No.Misskey is a project completely different from Mastodon or other alike projects. It has been in development for a long time already.However, it only became a distributed network after the appearance of Mastodon. Besides both projects implementing the ActivityPub protocol, there is no relation between the two.
 
-### "Are there any apps for iOS / Android available?"
+### Are there any apps for iOS / Android available?
 While no official Misskey app for either OS exists, there are several third-party applications. For details, please check [here](./apps).
 
 However, functionality of third-party applications will inevitably lag behind the official Web client, so unless you really want to use a native application, we recommend the official Web client instead. As the Misskey Web client supports PWA, it is possible to make it act as if it was a native application instead. For details regarding this, please check [here](todo).
@@ -83,5 +83,5 @@ However, functionality of third-party applications will inevitably lag behind th
 (Coming soon)
 
 ### Who's that cute cat-eared girl that you see sometimes?
-It's Misskey's guardian deity, Ai.ｱｲﾁｬﾝｶﾜｲｲﾔｯﾀｰ!
+It's Misskey's guardian deity, Ai.(They called Ai cute, yay!)
 <div class="info">ℹ️ To read more about Ai, check <a href="https://xn--931a.moe/" target="_blank">here</a> (Japanese-only).</div>
