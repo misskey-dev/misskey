@@ -2,5 +2,5 @@
 ## Clients
 todo
 
-## 連携サービス
+## Linked services
 todo
