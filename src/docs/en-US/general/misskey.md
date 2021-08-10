@@ -23,19 +23,19 @@ Misskeyを気に入っていただけたら、ぜひプロジェクトを支援�
 ### Adding features or fixing bugs
 ソフトウェアエンジニアのスキルをお持ちの方であれば、ソースコードを編集する形でプロジェクトに貢献することができます。 貢献についてのガイドは[こちら](https://github.com/misskey-dev/misskey/blob/develop/CONTRIBUTING.md)です。
 
-### 議論に参加する
+### Participating in discussions
 新しい機能、または既存の機能について意見を述べたり、不具合を報告したりすることでも貢献できます。 そのようなディスカッションは[GitHub](https://github.com/misskey-dev)上か、[フォーラム](https://forum.misskey.io/)等で行われます。
 
-### テキストを翻訳する
+### Translating text
 Misskeyは様々な言語に対応しています(i18n -internationalizationの略- と呼ばれます)。元の言語は基本的に日本語ですが、有志によって他の言語へと翻訳されています。 その翻訳作業に加わっていただくことでもMisskeyに貢献できます。 Misskeyは[Crowdinというサービスを使用して翻訳の管理を行っています。](https://crowdin.com/project/misskey)
 
-### 感想を投稿する
+### Sharing your impressions
 不具合報告等だけではなく、Misskeyの良い点、楽しい点といったポジティブな意見もぜひ共有してください。開発の励みになり、それは間接的ですがプロジェクトへの貢献です。
 
-### ミスキストを増やす
+### Increasing the number of Misskists
 ミスキストとは、Misskeyを使用する人のことです。 知り合いに紹介するなどしてMisskeyを広めていただければ、ミスキストが増え開発のモチベーションが上がります。
 
-### 寄付をする
+### Making donations
 Misskeyはビジネスではなく、利用は無料であるため、収益は皆様からの寄付のみです。(インスタンスによっては広告収入を得ているような場合もありますが、それは運営者の収入であり直接開発者への収入にはなりません) 寄付をしていただければ、今後も開発を続けることが可能になり、プロジェクトへの貢献になります。 寄付は基本的には[Patreon](https://www.patreon.com/syuilo)で受け付けています。 一定額寄付していただけると、Misskeyの[情報ページ](/about-misskey)に名前を記載することができます。
 
 また、サーバーの運営者も、基本的には収益を得ていません。サーバーの運営にはコストがかかるので、運営者の支援をすることもご検討ください。 開発には直接関係しませんが、サーバーがあってこそのプロジェクトなので、運営が維持されるというのは開発と同じくらい重要なことです。
@@ -44,35 +44,35 @@ Misskeyはビジネスではなく、利用は無料であるため、収益は�
 Misskeyの開発者や、Misskeyに寄付をしてくださった方の一覧は[こちら](/about-misskey)で見ることができます。
 
 ## Frequently Asked Questions
-### プロジェクトは何を目指していますか？
+### What is this project aiming to achieve?
 強いて言うと、漠然的になりますが広く使われる汎用的なプラットフォームになることを目指しています。 Misskeyは他のプロジェクトとは違い、何らかの思想(例えば、反中央集権)やビジョンに基づいて開発が行われているわけではなく、その点ではフラットです。 それが逆に、特定の方向性に縛られないフレキシブルさを生み出すことに繋がっていると感じています。
 <!-- TODO: ここにロードマップへのリンク -->
 
-### 企業によって開発されていますか？
+### Is Misskey being developed by a company?
 いいえ。Misskeyの開発は個人で行われており、商業的でもないため、特定の企業の関りはありません。 開発メンバーも基本的にはボランティアです。 また、開発に対し企業のスポンサーがつくこともありますが、その場合でもやはり開発は個人のコミュニティが主体です。
 
-### 誰が運営していますか？
+### Who is managing Misskey?
 Misskeyは分散型なため、各サーバーにそれぞれ異なった運営者がいます。従って、特定の個人や企業によって、Misskeyの全てが運営されているわけではありません。 また、開発チームが運営を行うわけでもないため、運営に関する連絡は、お使いのサーバーの運営者に行ってください。 サーバーの運営者は、[このページ](/about)で確認することができます。 あなたがサーバーを作成すれば、あなたが運営者になります。
 
-### どのサーバーを選べばいいですか？
+### Which server should I choose?
 [サーバー一覧が公開されています。](https://join.misskey.page/ja-JP/instances) サーバーによってコミュニティのテーマ(特定のこと、ものが好き 等)が決められている場合があるので、自分に合ったテーマのサーバーがあれば、そこを選ぶと良いかもしれません。 他にも、サーバーの規模、ユーザー層、国および言語、運営者が信頼できるかどうか、などの観点があります。 なお、Misskey公式のサーバーというものはありません。自身で新しくサーバーを作成するという選択肢もあります。
 
 基本的にどのサーバーを選んだとしても、他の全てのサーバーのユーザーと繋がることができます。
 
-### サーバーを建てるにはどうしたらいいですか？
+### How can I create my own server?
 Misskeyサーバーの作成に興味を持っていただきありがとうございます。 2021年現在、Misskeyのホスティングサービスは存在しないため、サーバーの作成にはある程度の知識が必要です。 サーバーの作成方法については[こちら](todo)をご覧ください。
 
 ### What kind of technology does Misskey use?
-Misskeyは開発が進むにつれ使用する技術も大きく変わってきました。開発当初はMySQL + PHP + jQueryといった構成でしたが、現在は以下のようになっています。
-- サーバーサイド: Node.js
-- データベース: PostgreSQL、Redis
-- UIフレームワーク: Vue.js
-- プログラミング言語: TypeScript
+As development on Misskey progressed, the technology it has used has changed greatly.In the beginning, it used a combination of MySQL + PHP + jQuery, but currently uses the following.
+- Server-side: Node.js
+- Database: PostgreSQL, Redis
+- UI Framework: Vue.js
+- Programming language: TypeScript
 
-また、MFMやAiScriptなどの、Misskeyから派生して独自の技術も開発しています。
+In addition to this, from Misskey derived technology such as MFM or AiScript are also being used.
 
 ### Is this a fork of Mastodon?
-いいえ。MisskeyはMastodonやその他のプロジェクトとは全く別のプロジェクトです。 開発に関しても、Misskeyの方が昔から開発されています。ただし、分散型になったのはMastodonの登場より後です。 同じAcitivityPubという分散のためのプロトコルを実装しているという点以外、両者に特に関りがあるわけでもありません。
+No.Misskey is a project completely different from Mastodon or other alike projects. It has been in development for a long time already.However, it only became a distributed network after the appearance of Mastodon. Besides both projects implementing the ActivityPub protocol, there is no relation between the two.
 
 ### "Are there any apps for iOS / Android available?"
 While no official Misskey app for either OS exists, there are several third-party applications. For details, please check [here](./apps).
