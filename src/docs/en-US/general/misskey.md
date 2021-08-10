@@ -21,16 +21,16 @@ Misskey has always been, and will always be, open source.Open source means, simp
 If you like Misskey, please support the project.Supporting the project can be done in many ways, with some of them introduced below.Some of these do not require programming skills, so anyone can feel free to support Misskey their own way.We're always waiting for you.
 
 ### Adding features or fixing bugs
-ソフトウェアエンジニアのスキルをお持ちの方であれば、ソースコードを編集する形でプロジェクトに貢献することができます。 貢献についてのガイドは[こちら](https://github.com/misskey-dev/misskey/blob/develop/CONTRIBUTING.md)です。
+If you possess software engineering skills, you can contribute to the project through editing its source code. For guidelines regarding this, please see [here](https://github.com/misskey-dev/misskey/blob/develop/CONTRIBUTING.md).
 
 ### Participating in discussions
-新しい機能、または既存の機能について意見を述べたり、不具合を報告したりすることでも貢献できます。 そのようなディスカッションは[GitHub](https://github.com/misskey-dev)上か、[フォーラム](https://forum.misskey.io/)等で行われます。
+You can contribute by sharing your opinion on new or existing features, as well as by reporting bugs. Such discussions can be held at [GitHub](https://github.com/misskey-dev) or the [Forums](https://forum.misskey.io/) etc.
 
 ### Translating text
-Misskeyは様々な言語に対応しています(i18n -internationalizationの略- と呼ばれます)。元の言語は基本的に日本語ですが、有志によって他の言語へと翻訳されています。 その翻訳作業に加わっていただくことでもMisskeyに貢献できます。 Misskeyは[Crowdinというサービスを使用して翻訳の管理を行っています。](https://crowdin.com/project/misskey)
+Misskey is available in many languages (also called i18n, which is an abbreviation for Internationalization).元の言語は基本的に日本語ですが、有志によって他の言語へと翻訳されています。 その翻訳作業に加わっていただくことでもMisskeyに貢献できます。 Misskeyは[Crowdinというサービスを使用して翻訳の管理を行っています。](https://crowdin.com/project/misskey)
 
 ### Sharing your impressions
-不具合報告等だけではなく、Misskeyの良い点、楽しい点といったポジティブな意見もぜひ共有してください。開発の励みになり、それは間接的ですがプロジェクトへの貢献です。
+Besides reporting bugs, please also feel free to share positive impressions such as which parts of Misskey you personally like, or things about Misskey that you find fun.As things like these serve as motivation for the developers, it also counts as indirect support for the project.
 
 ### Increasing the number of Misskists
 ミスキストとは、Misskeyを使用する人のことです。 知り合いに紹介するなどしてMisskeyを広めていただければ、ミスキストが増え開発のモチベーションが上がります。
@@ -60,7 +60,7 @@ Misskeyは分散型なため、各サーバーにそれぞれ異なった運営�
 基本的にどのサーバーを選んだとしても、他の全てのサーバーのユーザーと繋がることができます。
 
 ### How can I create my own server?
-Misskeyサーバーの作成に興味を持っていただきありがとうございます。 2021年現在、Misskeyのホスティングサービスは存在しないため、サーバーの作成にはある程度の知識が必要です。 サーバーの作成方法については[こちら](todo)をご覧ください。
+Thank you for having an interest in creating a Misskey server. In the current year of 2021 there is no specialized Misskey hosting service, so creating a new server requires a certain amount of knowledge. Please see [here](todo) for more information regarding this.
 
 ### What kind of technology does Misskey use?
 As development on Misskey progressed, the technology it has used has changed greatly.In the beginning, it used a combination of MySQL + PHP + jQuery, but currently uses the following.
