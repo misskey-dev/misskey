@@ -35,9 +35,9 @@ Besides reporting bugs, please also feel free to share positive impressions such
 "Misskist" refers to the people using Misskey. By spreading the word about Misskey through introducing it to your acquaintances, the number of Misskists may increase, which serves as motivation for the developers.
 
 ### Making donations
-Misskeyはビジネスではなく、利用は無料であるため、収益は皆様からの寄付のみです。(インスタンスによっては広告収入を得ているような場合もありますが、それは運営者の収入であり直接開発者への収入にはなりません) 寄付をしていただければ、今後も開発を続けることが可能になり、プロジェクトへの貢献になります。 寄付は基本的には[Patreon](https://www.patreon.com/syuilo)で受け付けています。 一定額寄付していただけると、Misskeyの[情報ページ](/about-misskey)に名前を記載することができます。
+Misskey is not a business, and stays free to use by receiving its earnings through donations from everyone.(Depending on the instance, some revenue may be earned through showing advertisments, but these earnings go straight to the instance administrator and not to the developers of Misskey) As donations make it possible for the project to continue to be developed, they are another way of supporting Misskey. Donations are generally accepted via [Patreon](https://www.patreon.com/syuilo). By donating a certain amount of money, you can also have your username displayed on Misskey's [About page](/about-misskey).
 
-また、サーバーの運営者も、基本的には収益を得ていません。サーバーの運営にはコストがかかるので、運営者の支援をすることもご検討ください。 開発には直接関係しませんが、サーバーがあってこそのプロジェクトなので、運営が維持されるというのは開発と同じくらい重要なことです。
+In addition to this, server administrators are also generally speaking not earning revenue.As operating a server costs money, please also consider supporting your server's administrator. This does not have a direct relation to the development of Misskey, but the existence of servers is what makes up the project, meaning the continued existence of servers is just about as important as that of the project itself.
 
 ## Credits
 A list of Misskey's developers and donators can be seen [here](/about-misskey).
