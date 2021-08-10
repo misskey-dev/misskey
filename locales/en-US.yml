@@ -1621,7 +1621,7 @@ _notification:
     receiveFollowRequest: "Received follow requests"
     followRequestAccepted: "Accepted follow requests"
     groupInvited: "Group invitations"
-    app: "Notifications from apps"
+    app: "Notifications from linked apps"
 _deck:
   alwaysShowMainColumn: "Always show main column"
   columnAlign: "Align columns"
