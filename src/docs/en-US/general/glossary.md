@@ -44,28 +44,28 @@ An abbreviation for "Social TimeLine".For details about timelines, please see [h
 Ai is Misskey's official mascot.
 
 ## Active users
-インスタンスにアカウントを作っているユーザーのうち、現在も実際にサービスを利用しているユーザーのこと。
+Those users amongst all existing ones who are continually using their account.
 
 ## Instance
 todo
 
-## コントロールパネル
-インスタンスの設定画面のこと。
+## Control Panel
+The settings screen of an instance.
 
 ## Server
 todo
 
 ## Silence
-ノートをパブリックな公開範囲で投稿できなくされている状態。モデレーターの判断でユーザーごとに設定されます。詳細は[こちら。](../features/silence)
+A state in which notes of a user will not be posted to the public range of an instance anymore.Can be set for individual users by Moderators.For details, see [here.](../features/silence)
 
 ## Suspend
-アカウントが使用不可に設定されている状態。
+A state which makes the account of a user unusable.
 
 ## Drive
-Misskeyにアップロードしたファイルを管理する機能。詳細は[こちら。](../features/drive)
+A functionality allowing users to organize the files they have uploaded to Misskey.For details, see [here.](../features/drive)
 
 ## Notes
-Misskeyに投稿される、文章、ファイル、アンケートなどを含めることができるコンテンツ。For details, see [here.](../features/note)
+Content which may include text, images, surveys and others that has been posted to Misskey.For details, see [here.](../features/note)
 
 ## ミスキスト
 Misskeyを使う人のこと。
