@@ -2,25 +2,25 @@
 
 Misskeyはオープンソースの分散型マイクロブログプラットフォームプロジェクトです。 開発は日本でsyuiloによって2014年から開始されました。 ドライブ、リアクションなどの豊富な機能や、高いカスタマイズ性を備えたUIを持つことが特徴です。
 
-## 歴史
+## History
 開発当初は掲示板がメインのサービスでしたが、ユーザーが短文を投稿し、それを時系列で流れるタイムライン機能を追加したところ人気が高まり、徐々にそれがメインとして開発が進むようになりました。 当初は分散型ではありませんでしたが、2018年にAcitivityPubを実装し分散型になったことで、より多くの方に認知され利用されるサービスになり、現在に至ります。
 <div class="info">ℹ️ Misskeyという名前は、syuiloが当時聴いていたMay'nというアーティストの楽曲、Brain Diverの歌詞に由来します。</div>
 
 誰でも開発に参加することができ、現在でも活発に開発が続いています。
 
-## 分散型とは何か？
+## What does "Distributed" mean?
 
 <b>分散(distributed)型</b>とは、<b>非中央集権(decentralized)</b>とも呼ばれ、コミュニティが多数のサーバーに分散して存在し、それらが相互に<b>通信(連合、federation)</b>することでコンテンツ共有<b>ネットワーク(Fediverse)</b>を形成していることが特徴のサービスです。 単一のサーバーしか存在しない、もしくは複数存在しても互いに独立している場合は中央集権なサービスと言われ、例えばTwitterやFacebookなどほとんどのサービスがそれに該当します。 分散型のメリットは、自分に合った運営者やテーマのサーバーを選択できることです。自分でサーバーを作成することもできます。連合するおかげで、どのサーバーを選んでも、同じコミュニティにアクセスできます。
 
-## 常にオープンソース
+## Always Open-Source
 Misskeyはこれまでもこれからも、オープンソースであり続けます。オープンソースとは、簡単に言うと<b>ソフトウェアのソースコード(プログラム)が公開されている</b>ことです。ソースコードの修正や再配布が可能であることを定義に含めることもあります。 Misskeyのすべてのソースコードは[AGPL](https://github.com/misskey-dev/misskey/blob/develop/LICENSE)というオープンソースライセンスの下に[公開](https://github.com/misskey-dev)されていて、誰でも自由に閲覧、使用、修正、改変、再配布をすることができます。 オープンソースは、自分で好きなように変えたり、有害な処理が含まれていないことを確認することができたり、誰でも開発に参加できるなどの、様々なメリットがあります。 上述の分散型を実現するためにも、オープンソースであるということは必要不可欠な要素です。 再び引き合いに出しますが、TwitterやFacebookなどの利益を得ているほとんどのサービスはオープンソースではありません。
 
 <div class="info">ℹ️ 技術的に言うと、MisskeyのソースコードはGitで管理されていて、リポジトリは<a href="https://github.com/misskey-dev" target="_blank">GitHub上でホスティングされています。</a></div>
 
-## 開発に参加する、プロジェクトを支援する
+## Joining development and supporting the project
 Misskeyを気に入っていただけたら、ぜひプロジェクトを支援してください。プロジェクトに貢献するには、以下で紹介するようにいろいろな方法があります。方法によっては開発のスキルは不要なので、誰でも気軽に参加し貢献することができます。いつでもお待ちしています。
 
-### 機能を追加したり、バグを修正する
+### Adding features or fixing bugs
 ソフトウェアエンジニアのスキルをお持ちの方であれば、ソースコードを編集する形でプロジェクトに貢献することができます。 貢献についてのガイドは[こちら](https://github.com/misskey-dev/misskey/blob/develop/CONTRIBUTING.md)です。
 
 ### 議論に参加する
@@ -40,7 +40,7 @@ Misskeyはビジネスではなく、利用は無料であるため、収益は�
 
 また、サーバーの運営者も、基本的には収益を得ていません。サーバーの運営にはコストがかかるので、運営者の支援をすることもご検討ください。 開発には直接関係しませんが、サーバーがあってこそのプロジェクトなので、運営が維持されるというのは開発と同じくらい重要なことです。
 
-## クレジット
+## Credits
 Misskeyの開発者や、Misskeyに寄付をしてくださった方の一覧は[こちら](/about-misskey)で見ることができます。
 
 ## Frequently Asked Questions
@@ -62,7 +62,7 @@ Misskeyは分散型なため、各サーバーにそれぞれ異なった運営�
 ### サーバーを建てるにはどうしたらいいですか？
 Misskeyサーバーの作成に興味を持っていただきありがとうございます。 2021年現在、Misskeyのホスティングサービスは存在しないため、サーバーの作成にはある程度の知識が必要です。 サーバーの作成方法については[こちら](todo)をご覧ください。
 
-### どのような技術を使用していますか？
+### What kind of technology does Misskey use?
 Misskeyは開発が進むにつれ使用する技術も大きく変わってきました。開発当初はMySQL + PHP + jQueryといった構成でしたが、現在は以下のようになっています。
 - サーバーサイド: Node.js
 - データベース: PostgreSQL、Redis
@@ -71,7 +71,7 @@ Misskeyは開発が進むにつれ使用する技術も大きく変わってき�
 
 また、MFMやAiScriptなどの、Misskeyから派生して独自の技術も開発しています。
 
-### Mastodonのフォークですか？
+### Is this a fork of Mastodon?
 いいえ。MisskeyはMastodonやその他のプロジェクトとは全く別のプロジェクトです。 開発に関しても、Misskeyの方が昔から開発されています。ただし、分散型になったのはMastodonの登場より後です。 同じAcitivityPubという分散のためのプロトコルを実装しているという点以外、両者に特に関りがあるわけでもありません。
 
 ### "Are there any apps for iOS / Android available?"
@@ -79,9 +79,9 @@ While no official Misskey app for either OS exists, there are several third-part
 
 However, functionality of third-party applications will inevitably lag behind the official Web client, so unless you really want to use a native application, we recommend the official Web client instead. As the Misskey Web client supports PWA, it is possible to make it act as if it was a native application instead. For details regarding this, please check [here](todo).
 
-### Misskeyのロゴ、アイコンはどこで入手できますか？
-(準備中)
+### Where can I download Misskey's logo or icon?
+(Coming soon)
 
-### 時折目にする猫耳の可愛い女の子は？
-Misskeyの守り神、藍ちゃんです。ｱｲﾁｬﾝｶﾜｲｲﾔｯﾀｰ!
-<div class="info">ℹ️ 藍ちゃんについては<a href="https://xn--931a.moe/" target="_blank">こちら</a>です。</div>
+### Who's that cute cat-eared girl that you see sometimes?
+It's Misskey's guardian deity, Ai.ｱｲﾁｬﾝｶﾜｲｲﾔｯﾀｰ!
+<div class="info">ℹ️ To read more about Ai, check <a href="https://xn--931a.moe/" target="_blank">here</a> (Japanese-only).</div>
