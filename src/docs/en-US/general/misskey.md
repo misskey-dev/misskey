@@ -48,13 +48,13 @@ To put it bluntly, while this is a bit vague, Misskey is aiming to be a widely-u
 <!-- TODO: ここにロードマップへのリンク -->
 
 ### Is Misskey being developed by a company?
-No.Misskeyの開発は個人で行われており、商業的でもないため、特定の企業の関りはありません。 開発メンバーも基本的にはボランティアです。 また、開発に対し企業のスポンサーがつくこともありますが、その場合でもやはり開発は個人のコミュニティが主体です。
+No.Misskey is being developed by an individual person and not commercialized through connection with any particular company. Development members are generally volunteers. Additionally, while there are some corporate sponsors, development is still centered around the community.
 
 ### Who is managing Misskey?
-Misskeyは分散型なため、各サーバーにそれぞれ異なった運営者がいます。従って、特定の個人や企業によって、Misskeyの全てが運営されているわけではありません。 また、開発チームが運営を行うわけでもないため、運営に関する連絡は、お使いのサーバーの運営者に行ってください。 サーバーの運営者は、[このページ](/about)で確認することができます。 あなたがサーバーを作成すれば、あなたが運営者になります。
+Due to the distributed nature of Misskey, each individual server has their own administration.Therefore, not all of Misskey is managed by one individual person or company. This means that, as the development team does not control individual servers, for management-related questions you should contact your server's administration instead. You can verify who is managing your individual server on [this page](/about). If you were to create a server, then you would also become its administrator.
 
 ### Which server should I choose?
-[サーバー一覧が公開されています。](https://join.misskey.page/ja-JP/instances) サーバーによってコミュニティのテーマ(特定のこと、ものが好き 等)が決められている場合があるので、自分に合ったテーマのサーバーがあれば、そこを選ぶと良いかもしれません。 他にも、サーバーの規模、ユーザー層、国および言語、運営者が信頼できるかどうか、などの観点があります。 なお、Misskey公式のサーバーというものはありません。自身で新しくサーバーを作成するという選択肢もあります。
+[You can find an (incomplete) list of servers here.](https://join.misskey.page/ja-JP/instances) サーバーによってコミュニティのテーマ(特定のこと、ものが好き 等)が決められている場合があるので、自分に合ったテーマのサーバーがあれば、そこを選ぶと良いかもしれません。 他にも、サーバーの規模、ユーザー層、国および言語、運営者が信頼できるかどうか、などの観点があります。 なお、Misskey公式のサーバーというものはありません。自身で新しくサーバーを作成するという選択肢もあります。
 
 基本的にどのサーバーを選んだとしても、他の全てのサーバーのユーザーと繋がることができます。
 
