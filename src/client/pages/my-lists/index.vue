@@ -3,7 +3,10 @@
 	<MkButton @click="create" primary class="add"><i class="fas fa-plus"></i> {{ $ts.createList }}</MkButton>
 
 	<MkPagination :pagination="pagination" #default="{items}" class="lists _content" ref="list">
-		<MkA v-for="(list, i) in items" :key="list.id" class="list _panel" :to="`/my/lists/${ list.id }`">{{ list.name }}</MkA>
+		<MkA v-for="list in items" :key="list.id" class="list _panel" :to="`/my/lists/${ list.id }`">
+			<div class="name">{{ list.name }}</div>
+			<MkAvatars :user-ids="list.userIds"/>
+		</MkA>
 	</MkPagination>
 </div>
 </template>
@@ -12,6 +15,7 @@
 import { defineComponent } from 'vue';
 import MkPagination from '@client/components/ui/pagination.vue';
 import MkButton from '@client/components/ui/button.vue';
+import MkAvatars from '@client/components/avatars.vue';
 import * as os from '@client/os';
 import * as symbols from '@client/symbols';
 
@@ -19,6 +23,7 @@ export default defineComponent({
 	components: {
 		MkPagination,
 		MkButton,
+		MkAvatars,
 	},
 
 	data() {
@@ -63,7 +68,7 @@ export default defineComponent({
 
 	> .lists {
 		> .list {
-			display: flex;
+			display: block;
 			padding: 16px;
 			border: solid 1px var(--divider);
 			border-radius: 6px;
@@ -71,6 +76,10 @@ export default defineComponent({
 			&:hover {
 				border: solid 1px var(--accent);
 				text-decoration: none;
+			}
+
+			> .name {
+				margin-bottom: 4px;
 			}
 		}
 	}
