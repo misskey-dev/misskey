@@ -615,7 +615,7 @@ export default defineComponent({
 				viaMobile: isMobile
 			};
 
-			if (this.withHashtags) {
+			if (this.withHashtags && this.hashtags && this.hashtags.trim() !== '') {
 				const hashtags = this.hashtags.trim().split(' ').map(x => x.startsWith('#') ? x : '#' + x).join(' ');
 				data.text = data.text ? `${data.text} ${hashtags}` : hashtags;
 			}
