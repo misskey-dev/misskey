@@ -1,7 +1,7 @@
 # Frequently Asked Questions
-ここでは利用上のよくある質問について掲載しています。 Misskeyのプロジェクト自体についてのよくある質問は[こちら](./misskey)に掲載されています。
+This document will list answers to frequently asked questions regarding the usage of Misskey. Answers to frequently related questions related to Misskey as a project can be found [here](./misskey).
 
-### iOS/Androidのアプリはありますか？
+### "Are there any apps for iOS / Android available?"
 公式にはそういったOSのネイティブアプリを開発していませんが、サードパーティ製のアプリがいくつかあります。 詳しくは[こちら](./apps)をご覧ください。
 
 ただ、サードパーティ製アプリはどうしても機能への対応が遅れてしまうため、とくに拘りがなければ公式のWebクライアントの利用をおすすめします。 なお、MisskeyのWebクライアントはPWAに対応しているので、ネイティブアプリのように動作させることも可能です。 詳しくは[こちら](todo)をご覧ください。
