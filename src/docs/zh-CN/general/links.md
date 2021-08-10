@@ -4,7 +4,7 @@
 - [Misskey Forum](https://forum.misskey.io/) - Misskeyに関する話題を扱うフォーラム
 
 ## 账户
-- [@repo@misskey.io](https://misskey.io/@repo) - Misskeyのリポジトリの更新を投稿するbot
+- [@repo@misskey.io](https://misskey.io/@repo) - 发布Misskey的存储库更新的机器人
 
 ## ライブラリ
 - [misskey-dev/misskey.js](https://github.com/misskey-dev/misskey.js) - JavaScriptのMisskey SDK
