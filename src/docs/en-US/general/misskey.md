@@ -44,11 +44,11 @@ A list of Misskey's developers and donators can be seen [here](/about-misskey).
 
 ## Frequently Asked Questions
 ### What is this project aiming to achieve?
-強いて言うと、漠然的になりますが広く使われる汎用的なプラットフォームになることを目指しています。 Misskeyは他のプロジェクトとは違い、何らかの思想(例えば、反中央集権)やビジョンに基づいて開発が行われているわけではなく、その点ではフラットです。 それが逆に、特定の方向性に縛られないフレキシブルさを生み出すことに繋がっていると感じています。
+To put it bluntly, while this is a bit vague, Misskey is aiming to be a widely-used all-purpose platform. Unlike other platforms, Misskey is not grounded in a specific idea (for example, anti-centralization) or vision and being developed with that in mind, so it's a bit "aimless" in this respect. On the other hand though, this creates a flexibility due to not being bound by a specific direction to go towards.
 <!-- TODO: ここにロードマップへのリンク -->
 
 ### Is Misskey being developed by a company?
-いいえ。Misskeyの開発は個人で行われており、商業的でもないため、特定の企業の関りはありません。 開発メンバーも基本的にはボランティアです。 また、開発に対し企業のスポンサーがつくこともありますが、その場合でもやはり開発は個人のコミュニティが主体です。
+No.Misskeyの開発は個人で行われており、商業的でもないため、特定の企業の関りはありません。 開発メンバーも基本的にはボランティアです。 また、開発に対し企業のスポンサーがつくこともありますが、その場合でもやはり開発は個人のコミュニティが主体です。
 
 ### Who is managing Misskey?
 Misskeyは分散型なため、各サーバーにそれぞれ異なった運営者がいます。従って、特定の個人や企業によって、Misskeyの全てが運営されているわけではありません。 また、開発チームが運営を行うわけでもないため、運営に関する連絡は、お使いのサーバーの運営者に行ってください。 サーバーの運営者は、[このページ](/about)で確認することができます。 あなたがサーバーを作成すれば、あなたが運営者になります。
