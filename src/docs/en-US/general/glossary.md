@@ -14,7 +14,7 @@ An interface that can be used for interacting with Misskey through a program, av
 An account that is being controlled by a program.
 
 ## CW
-An abbreviation of "Content Warning".A function to hide the content of a note unless explicitly requested to be shown by a user.Mainly used to hide the content of long notes or to prevent posting spoilers publicly.
+An abbreviation of "Content Warning".A feature to hide the content of a note unless explicitly requested to be shown by a user.Mainly used to hide the content of long notes or to prevent posting spoilers publicly.
 
 ## Fediverse
 A network of servers composed of various different platforms that communicate with each other, including Misskey.
@@ -32,7 +32,7 @@ An abbreviation for "Local TimeLine".For details about timelines, please see [he
 An abbreviation for "Misskey Flavored Markdown", a markdown language available for use on Misskey.For details, see [here.](../features/mfm)
 
 ## NSFW
-An abbreviation for "Not Safe For Work".A function to tag an image as "NSFW" and hide it unless explicitly requested to be shown by a user.
+An abbreviation for "Not Safe For Work".A feature to tag an image as "NSFW" and hide it unless explicitly requested to be shown by a user.
 
 ## Renote
 The act of quoting an existing note, sharing an existing note, or the note created as a result of these acts.For details, see [here.](../features/note)
@@ -62,7 +62,7 @@ A state in which the visibility of the notes by said user cannot be set to "Publ
 A state which makes the account of a user unusable.
 
 ## Drive
-A function allowing users to organize the files they have uploaded to Misskey.For details, see [here.](../features/drive)
+A feature allowing users to organize the files they have uploaded to Misskey.For details, see [here.](../features/drive)
 
 ## Notes
 Content which may include text, images, surveys and others that has been posted to Misskey.For details, see [here.](../features/note)
