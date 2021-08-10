@@ -14,36 +14,36 @@ An interface that can be used for interacting with Misskey through a program, av
 An account that is being controlled by a program.
 
 ## CW
-An abbreviation of "Content Warning".ノートの内容を、操作なしには表示しないようにできる機能。主に長大な内容を隠すためや、ネタバレ防止などに使われます。
+An abbreviation of "Content Warning".A functionality to hide the content of a note unless explicitly requested to be shown by a user.Mainly used to hide the content of long notes or to prevent posting spoilers publicly.
 
 ## Fediverse
-(読み: ふぇでぃばーす) Misskeyを含む様々な分散型ソフトウェアのサーバーで構成されたネットワーク。
+A network of servers composed of various different platforms that communicate with each other, including Misskey.
 
 ## GTL
-グローバルタイムライン(Global TimeLine)の略。タイムラインの詳細は[こちら。](../features/timeline)
+An abbreviation for "Global TimeLine".For details about timelines, please see [here](../features/timeline).
 
 ## HTL
-ホームタイムライン(Home TimeLine)の略。タイムラインの詳細は[こちら。](../features/timeline)
+An abbreviation for "Home TimeLine".For details about timelines, please see [here](../features/timeline)
 
 ## LTL
-ローカルタイムライン(Local TimeLine)の略。タイムラインの詳細は[こちら。](../features/timeline)
+An abbreviation for "Local TimeLine".For details about timelines, please see [here](../features/timeline)
 
 ## MFM
-(読み: えむえふえむ) Misskey Flavored Markdownの略で、Misskey上で使用できるマークアップ言語です。詳細は[こちら。](../features/mfm)
+An abbreviation for "Misskey Flavored Markdown", a markdown language available for use on Misskey.For details, see [here.](../features/mfm)
 
 ## NSFW
-(読み: のっとせーふふぉーわーく) Not Safe For Workの略。画像を「閲覧注意」扱いにし、操作なしには表示しないようにすることができる機能。
+An abbreviation for "Not Safe For Work".A functionality to tag an image as "NSFW" and hide it unless explicitly requested to be shown by a user.
 
 ## Renote
-(読み: りのーと) 既にあるノートを引用、もしくはそのノートを新しいノートとして共有する行為、またそれによって作成されたノート。詳細は[こちら。](../features/note)
+The act of quoting an existing note, sharing an existing note, or the note created as a result of these acts.For details, see [here.](../features/note)
 
 ## STL
-ソーシャルタイムライン(Social TimeLine)の略。タイムラインの詳細は[こちら。](../features/timeline)
+An abbreviation for "Social TimeLine".For details about timelines, please see [here](../features/timeline)
 
-## 藍
-(読み: あい) Misskeyの看板娘(公式キャラクター)です。
+## Ai
+Ai is Misskey's official mascot.
 
-## アクティブユーザー
+## Active users
 インスタンスにアカウントを作っているユーザーのうち、現在も実際にサービスを利用しているユーザーのこと。
 
 ## Instance
@@ -65,7 +65,7 @@ todo
 Misskeyにアップロードしたファイルを管理する機能。詳細は[こちら。](../features/drive)
 
 ## Notes
-Misskeyに投稿される、文章、ファイル、アンケートなどを含めることができるコンテンツ。詳細は[こちら。](../features/note)
+Misskeyに投稿される、文章、ファイル、アンケートなどを含めることができるコンテンツ。For details, see [here.](../features/note)
 
 ## ミスキスト
 Misskeyを使う人のこと。
