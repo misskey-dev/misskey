@@ -1,5 +1,5 @@
 # Troubleshooting
-<div class="info">ℹ️ Please also use the <a href="./faq">Frequently asked questions</a>.</div>
+<div class="info">ℹ️ Please also use the <a href="./faq">Frequently asked questions</a> page.</div>
 
 If you run into a problem, please check this page first. In the case that you can't find your problem here, or the steps described here don't solve your issue, please contact your server's administrator or [Report it as a bug](./report-issue).
 
@@ -8,7 +8,7 @@ In most of the cases, this is due your used browser's or operating system's vers
 
 Although this does not happen frequently, if your client will still not start after this, it is possible for the cache to be at fault.In this case, please try clearing your cache and then try again.
 
-## A page cannot be loaded
+## Pages cannot be loaded
 If your client does boot, but you get an error when trying to load a page, please check your network connection for errors.In addition, check that the server you are trying to access is not down.
 
 Although this does not happen frequently, cases where the cache is at fault can happen.In this case, please try clearing your cache and then try again.
@@ -25,12 +25,12 @@ Please try the following:
 
 ## Parts of the UI are weird (For example, the background is transparent)
 Broken UI display may be caused by the theme cache system when the UI is changed as part of an update. Pressing "Clear cache" in the settings will fix this.
-<div class="warn">⚠️ Specifically clear the Client's cache.「ブラウザの」キャッシュクリアは行わないでください。</div>
+<div class="warn">⚠️ Specifically clear the "Client's" cache.Don't clear the "Browser's" cache.</div>
 
 ## The blinking light of a notification or Antenna won't go away
 A blinking light indicates unread content.In cases where this light won't go away, there is usually unread content that has been pushed away by new incoming content. If you believe to have read all content, but the light still won't go away (likely a bug), you can forcibly mark all content as read via the user settings.
 
-## Renoting is not possible
+## The renote button is blocked out
 Followers-only notes cannot be renoted.
 
 ## Specific parts of the UI are not being displayed
