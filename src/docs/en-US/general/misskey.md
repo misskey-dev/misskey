@@ -3,7 +3,7 @@
 Misskey is an open-source and distributed platform for microblogging. Development was started in 2014 by syuilo in Japan. It features an abundance of features such as Drive or Reactions as well as a very high UI customizability.
 
 ## History
-開発当初は掲示板がメインのサービスでしたが、ユーザーが短文を投稿し、それを時系列で流れるタイムライン機能を追加したところ人気が高まり、徐々にそれがメインとして開発が進むようになりました。 当初は分散型ではありませんでしたが、2018年にAcitivityPubを実装し分散型になったことで、より多くの方に認知され利用されるサービスになり、現在に至ります。
+While Misskey started centered around Bulletin Boards as its main feature, the growth in popularity due to the addition of a timeline that let users post short messages and view them in chronological order lead to a gradual shift in the main focus of development towards this kind of functionality. Misskey was not always a decentralized service, but became decentralized through the adoption of ActivityPub in 2018. Since then, it has become a service that is acknowledged and used by many.
 <div class="info">ℹ️ The name "Misskey" comes from a song called "Brain Diver" by a band that syuilo used to listen to at the time called May'n.</div>
 
 With anyone being able to join its development, Misskey is still continually being actively developed.
@@ -54,9 +54,9 @@ No.Misskey is being developed by an individual person and not commercialized thr
 Due to the distributed nature of Misskey, each individual server has their own administration.Therefore, not all of Misskey is managed by one individual person or company. This means that, as the development team does not control individual servers, for management-related questions you should contact your server's administration instead. You can verify who is managing your individual server on [this page](/about). If you were to create a server, then you would also become its administrator.
 
 ### Which server should I choose?
-[You can find an (incomplete) list of servers here.](https://join.misskey.page/ja-JP/instances) サーバーによってコミュニティのテーマ(特定のこと、ものが好き 等)が決められている場合があるので、自分に合ったテーマのサーバーがあれば、そこを選ぶと良いかもしれません。 他にも、サーバーの規模、ユーザー層、国および言語、運営者が信頼できるかどうか、などの観点があります。 なお、Misskey公式のサーバーというものはありません。自身で新しくサーバーを作成するという選択肢もあります。
+[You can find an (incomplete) list of servers here.](https://join.misskey.page/ja-JP/instances) Depending on the server, its community or central theme (for example, liking a show) may vary, so if there is a server that suits your interests, joining it would likely be a good choice. Besides that, server size, userbase, country or spoken language, reliance or trust in the administration team and many other things can also serve as criteria. There is however no single server that serves as the official server of Misskey.You also have the choice of creating a new server of your own.
 
-基本的にどのサーバーを選んだとしても、他の全てのサーバーのユーザーと繋がることができます。
+Generally speaking, no matter which server you join, you will still be able to connect with users from all other servers.
 
 ### How can I create my own server?
 Thank you for having an interest in creating a Misskey server. In the current year of 2021 there is no specialized Misskey hosting service, so creating a new server requires a certain amount of knowledge. Please see [here](todo) for more information regarding this.
