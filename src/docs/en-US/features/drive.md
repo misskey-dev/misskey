@@ -1,9 +1,9 @@
 # Drive
-ドライブは、Misskey上でファイルを管理できる機能です。
+Drive is a functionality to manage the files you have uploaded to Misskey.
 
-[ドライブのページ](/my/drive)から任意のファイルをアップロードできるほか、アバターに設定した画像や、ノートに添付したファイルなどもすべてドライブにアップロードされます。
+In addition to being able to upload files to your Drive from the [Drive page](/my/drive), any images set as your avatar or those included in your notes will be added to your Drive.
 
-<div class="warn">⚠️ ドライブからファイルを削除すると、そのファイルが添付されたノートも消えます。</div>
+<div class="warn">⚠️ By deleting a file from your drive, any note it is attached to will also be deleted.</div>
 
 ドライブにアップロードされたファイルは、いつでもダウンロードすることができるほか、ノート作成時に「ドライブからファイルを添付」することでファイルを再利用することもできます。
 
