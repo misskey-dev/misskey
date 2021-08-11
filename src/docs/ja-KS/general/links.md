@@ -1,6 +1,7 @@
 # リンク集
 
 ## Webサイト
+- [Official Discord](https://discord.gg/Wp8gVStHW3) - Misskey公式Discordサーバー
 - [Misskey Forum](https://forum.misskey.io/) - Misskeyに関する話題を扱うフォーラム
 
 ## アカウント
