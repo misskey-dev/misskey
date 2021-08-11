@@ -25,27 +25,27 @@ Contents Warningの略で、ノートの内容を、閲覧者の操作なしに�
 ノートごとに、そのノートが公開される範囲を設定することができます。フォームの「ノート」ボタンの左にあるアイコンを押すと公開範囲を以下から選択できます。
 
 ### Public
-全ての人に対してノートが公開されるほか、サーバーの全てのタイムライン(ホームタイムライン、ローカルタイムライン、ソーシャルタイムライン、グローバルタイムライン)にノートが流れます。
-<div class="warn">⚠️ アカウントが<a href="./silence">サイレンス</a>状態の時は、この公開範囲は使用できません。</div>
+Your note will be visible to all users and will show up on all timelines (home, local, social, global).
+<div class="warn">⚠️ This visibility will be unavailable if your account is <a href="./silence">silenced</a>.</div>
 
 ### Home
-全ての人に対してノートが公開されますが、フォロワー以外のローカルタイムライン、ソーシャルタイムライン、グローバルタイムラインにはノートは流れません。
+Your note will be visible to all users, but will not show up on the local, social or global timeline for non-followers.
 
 ### Followers
-自分のフォロワーに対してのみノートを公開します。フォロワーの全てのタイムラインに流れます。
+Your note will only be visible to those that are following you.The note will show up on all timelines of your followers.
 
 ### Direct
-指定したユーザーに対してのみノートを公開します。指定したユーザーの全てのタイムラインに流れます。
+Your note will only be visible to individually specified users.The note will show up on all timelines of the specified users.
 
-### 「ローカルのみ」オプション
-このオプションを有効にすると、リモートにノートを連合しなくなります。
+### The "Local only" option
+If you enable this option, your note won't be federated to remote instances.
 
-### 公開範囲の比較
+### Visibility comparison
 <table>
     <tr><th></th><th>Public</th><th>Home</th><th>Followers</th><th>Direct</th></tr>
-    <tr><th>フォロワーのLTL/STL/GTL</th><td>✔</td><td>✔</td><td>✔</td><td></td></tr>
-    <tr><th>非フォロワーのLTL/STL/GTL</th><td>✔</td><td></td><td></td><td></td></tr>
+    <tr><th>LTL/STL/GTL of Followers</th><td>✔</td><td>✔</td><td>✔</td><td></td></tr>
+    <tr><th>LTL/STL/GTL of Others</th><td>✔</td><td></td><td></td><td></td></tr>
 </table>
 
 ## Pin to profile
-ノートをピン留めすると、ユーザーページに常にそのノートを表示しておくことができます。 ノートのメニューを開き、「ピン留め」を選択してピン留めできます。 複数のノートをピン留めできます。
+By pinning a note to your profile it will be constantly displayed on your profile page. To pin a note, open the note menu and press "Pin to profile". It's also possible to pin multiple notes to your profile.
