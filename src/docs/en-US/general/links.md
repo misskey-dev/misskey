@@ -2,6 +2,7 @@
 
 ## Websites
 - [Misskey Forum](https://forum.misskey.io/) - A forum used for questions surrounding Misskey
+- [Misskey Forum](https://forum.misskey.io/) - Misskeyに関する話題を扱うフォーラム
 
 ## Accounts
 - [@repo@misskey.io](https://misskey.io/@repo) - A bot that publishes posts about updates to the Misskey repository
