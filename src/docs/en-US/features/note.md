@@ -13,13 +13,13 @@ To compose a note, press the button with a pencil icon on the upper part of your
 <div class="info">ℹ️You can also press <kbd class="key">Ctrl + Enter</kbd> within the text box to publish your note.</div>
 
 ## Renote
-既にあるノートを引用、もしくはそのノートを新しいノートとして共有する行為、またそれによって作成されたノートをRenoteと呼びます。 自分がフォローしているユーザーの、気に入ったノートを自分のフォロワーに共有したい場合や、過去の自分のノートを再度共有したい場合に使います。 同じノートに対して無制限にRenoteを行うことができますが、あまり連続して使用すると迷惑になる場合もあるので、注意しましょう。
+The act of quoting an existing note, sharing an existing note, or the note created as a result of these acts are all called Renote (or "renoting" as verb). Most of the time, this is used when you want to share a note you like to your own followers, or when you want a share a note that you posted in the past once more. While it is possible to renote the same note multiple times, please be aware that doing so may be seen as annoying by others.
 <div class="warn">⚠️If you've set your note's visibility to Followers-only or Direct, then renoting it will not be possible</div>
 
 To take back a renote, press the "..." next to the renote timestamp and select "Take back Renote".
 
 ## CW
-Contents Warningの略で、ノートの内容を、閲覧者の操作なしには表示しないようにできる機能です。主に長大な内容を隠すためや、ネタバレ防止などに使うことができます。 設定するには、フォームの「内容を隠す」ボタン(目のアイコン)を押します。すると新しい入力エリアが表れるので、そこに内容の要約を記入します。
+An abbreviation of "Content Warning", resulting in the content of a note being hidden unless explicitly requested to be shown by a viewing user.It is mainly used to hide the content of long notes or to prevent posting spoilers publicly. To enable CW for a note, press the "Hide content" button (eye icon) in the post form.By doing so a new text input area will appear, where you can write a summary of the content hidden by the CW.
 
 ## Visiblility
 It's possible to individually set where your note will be visible (Visibility) for each of your notes.By pressing the icon to the left of the "Note" button in the post form, you can choose from the visibility settings listed below.
