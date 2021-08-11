@@ -240,7 +240,7 @@ export default defineComponent({
 
 	&.wallpaper {
 		background: var(--wallpaperOverlay);
-		//backdrop-filter: blur(4px);
+		//backdrop-filter: var(--blur, blur(4px));
 	}
 
 	&.isMobile {
@@ -303,8 +303,8 @@ export default defineComponent({
 				z-index: 1000;
 				top: var(--globalHeaderHeight, 0px);
 				height: $header-height;
-				-webkit-backdrop-filter: blur(32px);
-				backdrop-filter: blur(32px);
+				-webkit-backdrop-filter: var(--blur, blur(32px));
+				backdrop-filter: var(--blur, blur(32px));
 				background-color: var(--header);
 				border-bottom: solid 0.5px var(--divider);
 			}
@@ -380,8 +380,8 @@ export default defineComponent({
 		display: flex;
 		width: 100%;
 		box-sizing: border-box;
-		-webkit-backdrop-filter: blur(32px);
-		backdrop-filter: blur(32px);
+		-webkit-backdrop-filter: var(--blur, blur(32px));
+		backdrop-filter: var(--blur, blur(32px));
 		background-color: var(--header);
 		border-top: solid 0.5px var(--divider);
 
