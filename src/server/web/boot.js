@@ -144,7 +144,7 @@
 
 		if (meta.version != v) {
 			localStorage.setItem('v', meta.version);
-			setTimeout(() => refresh(), 200)
+			refresh();
 		}
 	}
 
