@@ -37,6 +37,7 @@
 		<MkInfo warn v-if="hasNotSpecifiedMentions" class="hasNotSpecifiedMentions">{{ $ts.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ $ts.add }}</button></MkInfo>
 		<input v-show="useCw" ref="cw" class="cw" v-model="cw" :placeholder="$ts.annotation" @keydown="onKeydown">
 		<textarea v-model="text" class="text" :class="{ withCw: useCw }" ref="text" :disabled="posting" :placeholder="placeholder" @keydown="onKeydown" @paste="onPaste" @compositionupdate="onCompositionUpdate" @compositionend="onCompositionEnd" />
+		<input v-show="withHashtags" ref="hashtags" class="hashtags" v-model="hashtags" :placeholder="$ts.hashtags" list="hashtags">
 		<XPostFormAttaches class="attaches" :files="files" @updated="updateFiles" @detach="detachFile" @changeSensitive="updateFileSensitive" @changeName="updateFileName"/>
 		<XPollEditor v-if="poll" :poll="poll" @destroyed="poll = null" @updated="onPollUpdate"/>
 		<XNotePreview class="preview" v-if="showPreview" :note="draftedNote"/>
@@ -45,10 +46,14 @@
 			<button class="_button" @click="togglePoll" :class="{ active: poll }" v-tooltip="$ts.poll"><i class="fas fa-poll-h"></i></button>
 			<button class="_button" @click="useCw = !useCw" :class="{ active: useCw }" v-tooltip="$ts.useCw"><i class="fas fa-eye-slash"></i></button>
 			<button class="_button" @click="insertMention" v-tooltip="$ts.mention"><i class="fas fa-at"></i></button>
+			<button class="_button" @click="withHashtags = !withHashtags" :class="{ active: withHashtags }" v-tooltip="$ts.hashtags"><i class="fas fa-hashtag"></i></button>
 			<button class="_button" @click="insertEmoji" v-tooltip="$ts.emoji"><i class="fas fa-laugh-squint"></i></button>
 			<button class="_button" @click="showPreview = !showPreview" :class="{ active: showPreview }" v-tooltip="$ts.notePreview"><i class="fas fa-file-code"></i></button>
 			<button class="_button" @click="showActions" v-tooltip="$ts.plugin" v-if="postFormActions.length > 0"><i class="fas fa-plug"></i></button>
 		</footer>
+		<datalist id="hashtags">
+			<option v-for="hashtag in recentHashtags" :value="hashtag" :key="hashtag"/>
+		</datalist>
 	</div>
 </div>
 </template>
@@ -69,10 +74,11 @@ import { Autocomplete } from '@client/scripts/autocomplete';
 import { noteVisibilities } from '../../types';
 import * as os from '@client/os';
 import { selectFile } from '@client/scripts/select-file';
-import { notePostInterruptors, postFormActions } from '@client/store';
+import { defaultStore, notePostInterruptors, postFormActions } from '@client/store';
 import { isMobile } from '@client/scripts/is-mobile';
 import { throttle } from 'throttle-debounce';
 import MkInfo from '@client/components/ui/info.vue';
+import { defaultStore } from '@client/store';
 
 export default defineComponent({
 	components: {
@@ -229,6 +235,8 @@ export default defineComponent({
 				poll: this.poll,
 			};
 		}
+		withHashtags: defaultStore.makeGetterSetter('postFormWithHashtags'),
+		hashtags: defaultStore.makeGetterSetter('postFormHashtags'),
 	},
 
 	watch: {
@@ -319,6 +327,7 @@ export default defineComponent({
 		// TODO: detach when unmount
 		new Autocomplete(this.$refs.text, this, { model: 'text' });
 		new Autocomplete(this.$refs.cw, this, { model: 'cw' });
+		new Autocomplete(this.$refs.hashtags, this, { model: 'hashtags' });
 
 		this.$nextTick(() => {
 			// 書きかけの投稿を復元
@@ -621,6 +630,11 @@ export default defineComponent({
 				viaMobile: isMobile
 			};
 
+			if (this.withHashtags && this.hashtags && this.hashtags.trim() !== '') {
+				const hashtags = this.hashtags.trim().split(' ').map(x => x.startsWith('#') ? x : '#' + x).join(' ');
+				data.text = data.text ? `${data.text} ${hashtags}` : hashtags;
+			}
+
 			// plugin
 			if (notePostInterruptors.length > 0) {
 				for (const interruptor of notePostInterruptors) {
@@ -634,8 +648,8 @@ export default defineComponent({
 				this.$nextTick(() => {
 					this.deleteDraft();
 					this.$emit('posted');
-					if (this.text && this.text != '') {
-						const hashtags = mfm.parse(this.text).filter(x => x.type === 'hashtag').map(x => x.props.hashtag);
+					if (data.text && data.text != '') {
+						const hashtags = mfm.parse(data.text).filter(x => x.type === 'hashtag').map(x => x.props.hashtag);
 						const history = JSON.parse(localStorage.getItem('hashtags') || '[]') as string[];
 						localStorage.setItem('hashtags', JSON.stringify(unique(hashtags.concat(history))));
 					}
@@ -665,7 +679,7 @@ export default defineComponent({
 		},
 
 		showActions(ev) {
-			os.modalMenu(postFormActions.map(action => ({
+			os.popupMenu(postFormActions.map(action => ({
 				text: action.title,
 				action: () => {
 					action.handler({
@@ -801,6 +815,7 @@ export default defineComponent({
 		}
 
 		> .cw,
+		> .hashtags,
 		> .text {
 			display: block;
 			box-sizing: border-box;
@@ -827,6 +842,13 @@ export default defineComponent({
 			z-index: 1;
 			padding-bottom: 8px;
 			border-bottom: solid 0.5px var(--divider);
+		}
+
+		> .hashtags {
+			z-index: 1;
+			padding-top: 8px;
+			padding-bottom: 8px;
+			border-top: solid 0.5px var(--divider);
 		}
 
 		> .text {
@@ -888,6 +910,7 @@ export default defineComponent({
 			}
 
 			> .cw,
+			> .hashtags,
 			> .text {
 				padding: 0 16px;
 			}

@@ -14,6 +14,8 @@
 			</FormKeyValueView>
 		</FormGroup>
 
+		<FormButton v-if="$i.isAdmin || $i.isModerator" @click="info" primary>{{ $ts.settings }}</FormButton>
+
 		<FormTextarea readonly :value="instance.description">
 			<span>{{ $ts.description }}</span>
 		</FormTextarea>
@@ -62,7 +64,7 @@
 			<div class="_formLabel">{{ $ts.statistics }}</div>
 			<div class="_formPanel cmhjzshl">
 				<div class="selects">
-					<MkSelect v-model:value="chartSrc" style="margin: 0; flex: 1;">
+					<MkSelect v-model="chartSrc" style="margin: 0; flex: 1;">
 						<option value="requests">{{ $ts._instanceCharts.requests }}</option>
 						<option value="users">{{ $ts._instanceCharts.users }}</option>
 						<option value="users-total">{{ $ts._instanceCharts.usersTotal }}</option>
@@ -75,7 +77,7 @@
 						<option value="drive-files">{{ $ts._instanceCharts.files }}</option>
 						<option value="drive-files-total">{{ $ts._instanceCharts.filesTotal }}</option>
 					</MkSelect>
-					<MkSelect v-model:value="chartSpan" style="margin: 0;">
+					<MkSelect v-model="chartSpan" style="margin: 0;">
 						<option value="hour">{{ $ts.perHour }}</option>
 						<option value="day">{{ $ts.perDay }}</option>
 					</MkSelect>
@@ -147,6 +149,7 @@ import * as os from '@client/os';
 import number from '@client/filters/number';
 import bytes from '@client/filters/bytes';
 import * as symbols from '@client/symbols';
+import MkInstanceInfo from '@client/pages/instance/instance.vue';
 
 const chartLimit = 90;
 const sum = (...arr) => arr.reduce((r, a) => r.map((b, i) => a[i] + b));
@@ -440,6 +443,12 @@ export default defineComponent({
 				}]
 			};
 		},
+
+		info() {
+			os.popup(MkInstanceInfo, {
+				instance: this.instance
+			}, {}, 'closed');
+		}
 	}
 });
 </script>

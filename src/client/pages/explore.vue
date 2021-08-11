@@ -2,7 +2,10 @@
 <div class="lznhrdub _root">
 	<div>
 		<div class="_isolated">
-			<MkInput v-model:value="query" :debounce="true" type="search"><template #icon><i class="fas fa-search"></i></template><span>{{ $ts.searchUser }}</span></MkInput>
+			<MkInput v-model="query" :debounce="true" type="search">
+				<template #prefix><i class="fas fa-search"></i></template>
+				<template #label>{{ $ts.searchUser }}</template>
+			</MkInput>
 		</div>
 
 		<XUserList v-if="query" class="_gap" :pagination="searchPagination" ref="search"/>
