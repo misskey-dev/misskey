@@ -2,9 +2,13 @@
 <div>
 	<div class="_section">
 		<div class="_content">
-			<MkInput v-model:value="name">{{ $ts.name }}</MkInput>
+			<MkInput v-model="name">
+				<template #label>{{ $ts.name }}</template>
+			</MkInput>
 
-			<MkTextarea v-model:value="description">{{ $ts.description }}</MkTextarea>
+			<MkTextarea v-model="description">
+				<template #label>{{ $ts.description }}</template>
+			</MkTextarea>
 
 			<div class="banner">
 				<MkButton v-if="bannerId == null" @click="setBannerImage"><i class="fas fa-plus"></i> {{ $ts._channel.setBanner }}</MkButton>
