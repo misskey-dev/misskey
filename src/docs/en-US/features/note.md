@@ -1,51 +1,54 @@
 # Notes
-ノートは、Misskeyに投稿される、文章、ファイル、アンケートなどを含むコンテンツで、Misskeyの中心的概念です。また、そのノートを作成する行為自体もノートと呼ばれます。
+Notes are a central concept within Misskey, and refer to content that may include text, images, surveys and more that has been posted to Misskey. In this context, "to note" is also used as a verb refering to the creation of a note.
 
-ノートが作成されると、[タイムライン](./timeline)に追加され、自分の[フォロワー](./follow)やサーバーのユーザーが見れるようになります。
+By composing a note, it will be added to the [timeline](./timeline) and become visible by your followers and other users from your server.
 
-ノートには、[リアクション](./reaction)を行うことができます。また、返信や引用もできます。
+On Misskey, it is also possible to add [Reactions](./reaction) to notes.In addition to that, you can reply to or quote notes.
 
-ノートを[お気に入り](./favorite)登録することで、後で簡単に見返すことができます。
+By adding a note to your [Favorites](./favorite), you can easily look back at it at a later point in time.
 
-## ノートを作成する
-ノートを作成するには、画面上にある鉛筆マークのボタンを押して、作成フォームを開きます。作成フォームに内容を入力し、「ノート」ボタンを押すことでノートが作成されます。 ノートには、画像、動画など任意のファイルや、[アンケート](./poll)を添付することができます。また、本文中には[MFM](./mfm)が使用でき、[メンション](./mention)や[ハッシュタグ](./hashtag)を含めることもできます。 他にも、CWや公開範囲といった設定も行えます(詳細は後述)。
-<div class="info">ℹ️ コンピューターのクリップボードに画像データがある状態で、フォーム内のテキストボックスにペーストするとその画像を添付することができます。</div>
-<div class="info">ℹ️ テキストボックス内で<kbd class="key">Ctrl + Enter</kbd>を押すことでも投稿できます。</div>
+## Composing notes
+To compose a note, press the button with a pencil icon on the upper part of your screen to open the posting form.Enter the content you want to post in the form, and press the "Note" button to publish it. Notes can contain text as well as files such as images or videos and also [Surveys](./poll).In addition, by using [MFM](./mfm) within your text, you can additionally include [Mentions](./mention) and [Hashtags](./hashtag). There are also other settings such as CW or note visibility (explained later).
+<div class="info">ℹ️ If you are on a computer and have an image saved in your clipboard, you can attach it to your note by using the usual paste shortcut within the text box.</div>
+<div class="info">ℹ️You can also press <kbd class="key">Ctrl + Enter</kbd> within the text box to publish your note.</div>
 
 ## Renote
-既にあるノートを引用、もしくはそのノートを新しいノートとして共有する行為、またそれによって作成されたノートをRenoteと呼びます。 自分がフォローしているユーザーの、気に入ったノートを自分のフォロワーに共有したい場合や、過去の自分のノートを再度共有したい場合に使います。 同じノートに対して無制限にRenoteを行うことができますが、あまり連続して使用すると迷惑になる場合もあるので、注意しましょう。
-<div class="warn">⚠️ 公開範囲がフォロワーやダイレクトのノートはRenoteできません</div>
+The act of quoting an existing note, sharing an existing note, or the note created as a result of these acts are all called Renote (or "renoting" as verb). Most of the time, this is used when you want to share a note you like to your own followers, or when you want a share a note that you posted in the past once more. While it is possible to renote the same note multiple times, please be aware that doing so may be seen as annoying by others.
+<div class="warn">⚠️If you've set your note's visibility to Followers-only or Direct, then renoting it will not be possible</div>
 
-Renoteを削除するには、Renoteの時刻表示の隣にある「...」を押し、「Renote解除」を選択します。
+To take back a renote, press the "..." next to the renote timestamp and select "Take back Renote".
 
 ## CW
-Contents Warningの略で、ノートの内容を、閲覧者の操作なしには表示しないようにできる機能です。主に長大な内容を隠すためや、ネタバレ防止などに使うことができます。 設定するには、フォームの「内容を隠す」ボタン(目のアイコン)を押します。すると新しい入力エリアが表れるので、そこに内容の要約を記入します。
+An abbreviation of "Content Warning", resulting in the content of a note being hidden unless explicitly requested to be shown by a viewing user.It is mainly used to hide the content of long notes or to prevent posting spoilers publicly. To enable CW for a note, press the "Hide content" button (eye icon) in the post form.By doing so a new text input area will appear, where you can write a summary of the content hidden by the CW.
 
 ## Visiblility
-ノートごとに、そのノートが公開される範囲を設定することができます。フォームの「ノート」ボタンの左にあるアイコンを押すと公開範囲を以下から選択できます。
+It's possible to individually set where your note will be visible (Visibility) for each of your notes.By pressing the icon to the left of the "Note" button in the post form, you can choose from the visibility settings listed below.
 
 ### Public
-全ての人に対してノートが公開されるほか、サーバーの全てのタイムライン(ホームタイムライン、ローカルタイムライン、ソーシャルタイムライン、グローバルタイムライン)にノートが流れます。
-<div class="warn">⚠️ アカウントが<a href="./silence">サイレンス</a>状態の時は、この公開範囲は使用できません。</div>
+Your note will be visible to all users and will show up on all timelines (home, local, social, global).
+<div class="warn">⚠️ This visibility will be unavailable if your account is <a href="./silence">silenced</a>.</div>
 
 ### Home
-全ての人に対してノートが公開されますが、フォロワー以外のローカルタイムライン、ソーシャルタイムライン、グローバルタイムラインにはノートは流れません。
+Your note will be visible to all users, but will not show up on the local, social or global timeline for non-followers.
 
 ### Followers
-自分のフォロワーに対してのみノートを公開します。フォロワーの全てのタイムラインに流れます。
+Your note will only be visible to those that are following you.The note will show up on all timelines of your followers.
 
 ### Direct
-指定したユーザーに対してのみノートを公開します。指定したユーザーの全てのタイムラインに流れます。
+Your note will only be visible to individually specified users.The note will show up on all timelines of the specified users.
 
-### 「ローカルのみ」オプション
-このオプションを有効にすると、リモートにノートを連合しなくなります。
+### The "Local only" option
+If you enable this option, your note won't be federated to remote instances.
 
-### 公開範囲の比較
+### Visibility comparison
 <table>
     <tr><th></th><th>Public</th><th>Home</th><th>Followers</th><th>Direct</th></tr>
-    <tr><th>フォロワーのLTL/STL/GTL</th><td>✔</td><td>✔</td><td>✔</td><td></td></tr>
-    <tr><th>非フォロワーのLTL/STL/GTL</th><td>✔</td><td></td><td></td><td></td></tr>
+    <tr><th>LTL/STL/GTL of Followers</th><td>✔</td><td>✔</td><td>✔</td><td></td></tr>
+    <tr><th>LTL/STL/GTL of Others</th><td>✔</td><td></td><td></td><td></td></tr>
 </table>
 
 ## Pin to profile
-ノートをピン留めすると、ユーザーページに常にそのノートを表示しておくことができます。 ノートのメニューを開き、「ピン留め」を選択してピン留めできます。 複数のノートをピン留めできます。
+By pinning a note to your profile it will be constantly displayed on your profile page. To pin a note, open the note menu and press "Pin to profile". It's also possible to pin multiple notes to your profile.
+
+## Watch
+ノートをウォッチすると、自分以外のノートへのリアクションや返信などの通知を受け取ることができます。 ノートのメニューを開き、「ウォッチ」を選択してウォッチできます。
