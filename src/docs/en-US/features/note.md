@@ -51,4 +51,4 @@ If you enable this option, your note won't be federated to remote instances.
 By pinning a note to your profile it will be constantly displayed on your profile page. To pin a note, open the note menu and press "Pin to profile". It's also possible to pin multiple notes to your profile.
 
 ## Watch
-ノートをウォッチすると、自分以外のノートへのリアクションや返信などの通知を受け取ることができます。 ノートのメニューを開き、「ウォッチ」を選択してウォッチできます。
+You can get notifications for replies, reactions etc. for a note that is not yours by watching it. To watch a note, select "Watch" from the respective note's menu.
