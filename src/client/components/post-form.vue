@@ -229,7 +229,7 @@ export default defineComponent({
 				createdAt: new Date(),
 				visibility: this.visibility,
 				localOnly: this.localOnly,
-				cw: this.cw || null,
+				cw: this.useCw ? this.cw : null,
 				text: this.text,
 				files: this.files,
 				poll: this.poll,
