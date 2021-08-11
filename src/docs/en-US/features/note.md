@@ -8,7 +8,7 @@ On Misskey, it is also possible to add [Reactions](./reaction) to notes.In addit
 By adding a note to your [Favorites](./favorite), you can easily look back at it at a later point in time.
 
 ## Composing notes
-ノートを作成するには、画面上にある鉛筆マークのボタンを押して、作成フォームを開きます。作成フォームに内容を入力し、「ノート」ボタンを押すことでノートが作成されます。 ノートには、画像、動画など任意のファイルや、[アンケート](./poll)を添付することができます。また、本文中には[MFM](./mfm)が使用でき、[メンション](./mention)や[ハッシュタグ](./hashtag)を含めることもできます。 他にも、CWや公開範囲といった設定も行えます(詳細は後述)。
+To compose a note, press the button with a pencil icon on the upper part of your screen to open the posting form.Enter the content you want to post in the form, and press the "Note" button to publish it. Notes can contain text as well as files such as images or videos and also [Surveys](./poll).In addition, by using [MFM](./mfm) within your text, you can additionally include [Mentions](./mention) and [Hashtags](./hashtag). There are also other settings such as CW or note visibility (explained later).
 <div class="info">ℹ️ If you are on a computer and have an image saved in your clipboard, you can attach it to your note by using the usual paste shortcut within the text box.</div>
 <div class="info">ℹ️You can also press <kbd class="key">Ctrl + Enter</kbd> within the text box to publish your note.</div>
 
