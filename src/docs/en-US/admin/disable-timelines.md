@@ -1,8 +1,8 @@
-# LTL/STL/GTLの無効化
-Misskeyでは、LTL/STL/GTLをそれぞれ無効化することができます。有効/無効を切り替えるには、インスタンスコントロールパネルで設定します。
+# Disabling the LTL/STL/GTL
+In Misskey, it's possible to individually deactivate the LTL/STL/GTL.You can enable or disable these individual timelines via the instance control panel.
 
-LTLやSTLは、そのインスタンス全員の投稿が見れるため、新規のユーザーにとってはユーザーを探す必要がなくなり、興味のあるユーザーを見つけやすいという利点があります。 しかし同時に、フォロー機能が活用されなくなったり、不適切な投稿が目につきやすくなったり、チャットのようになることで内輪感が生じて逆に新規ユーザーが参加しにくくなるといったデメリットも持ち合わせています。 サーバーによってメリット/デメリットどちらが優勢かは異なるので、オプションとして無効にできるようになっています。 もしデメリットの方が上回っていると感じたら、それらのタイムラインを無効化することも検討してください。
+As all posts across your instance can be seen in both the LTL and STL, they have the advantage of making it easy for new users to find others that they are interested in without having to use the manual user search. At the same time however, this means that following other users to see their posts is less important and inappropriate posts may be shown to users more frequently. Additionally, the experience becomes more alike that of a Chatroom, which in turn may make it more difficult for new users to join in one conversations with those who have been taking part for a long time. As the weight of these advantages and disadvantages may vary from server to server, the choice of using or not using them has been left to each individual instance. If you feel like the demerits outweigh the merits, please consider deactivating these respective timelines.
 
-<div class="warn">⚠️ 無効化を行うと、ユーザーが困惑し、短期的に見て利用者が減る可能性があります。そのため、無効化の際は影響を慎重に検討し、事前に説明してフォローを整える期間を一定程度設けることを推奨します。</div>
+<div class="warn">⚠️ Disabling timelines can lead to confusion and possibly to a short-time drop in users.Therefore, please carefully consider the effects of disabling a timeline, and explain the reasoning for doing so in advance, so that your users can prepare by e.g. following users they often talk with on the LTL/STL.</div>
 
-なお、管理者/モデレーターは、これらのタイムラインの無効化状態は適用されず、引き続き利用することが可能です。
+Additionally, Administrators / Moderators will be able to continue viewing these timelines even after they have been disabled.

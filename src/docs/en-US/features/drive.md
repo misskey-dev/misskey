@@ -1,17 +1,17 @@
 # Drive
-ドライブは、Misskey上でファイルを管理できる機能です。
+Drive is a feature to manage the files you have uploaded to Misskey.
 
-[ドライブのページ](/my/drive)から任意のファイルをアップロードできるほか、アバターに設定した画像や、ノートに添付したファイルなどもすべてドライブにアップロードされます。
+In addition to being able to upload files to your Drive from the [Drive page](/my/drive), any images set as your avatar or those included in your notes will be added to your Drive.
 
-<div class="warn">⚠️ ドライブからファイルを削除すると、そのファイルが添付されたノートも消えます。</div>
+<div class="warn">⚠️ By deleting a file from your Drive, any note it is attached to will also be deleted.</div>
 
-ドライブにアップロードされたファイルは、いつでもダウンロードすることができるほか、ノート作成時に「ドライブからファイルを添付」することでファイルを再利用することもできます。
+You can always download any file uploaded to your Drive, and also reuse it during the composition of new notes by selecting "Attach from Drive" before posting.
 
-ドライブ内にフォルダを作り、複数のファイルをまとめて整理することもできます。
+In addition, you can create folders within your Drive to easen the organization multiple files.
 
-## 閲覧注意 (NSFW)
-<div class="info">ℹ️ この項目が閲覧注意なわけではありません</div>
+## NSFW
+<div class="info">ℹ️ This text section itself is not NSFW</div>
 
-閲覧注意またはNSFW (Not safe for work) は、ドライブのファイルに設定することができるフラグです。 閲覧注意フラグを設定されたファイルは、表示される際に閲覧者の操作なしには表示されなくなります。 このフラグは、例えば職場や公共の場で閲覧するのに適切でないと思われる画像などに設定し、そのような画像が突然表示されてしまうことを防ぐ目的で使われます。
+NSFW ("Not Safe For Work") is a setting that can be applied to files in your Drive. Images with this setting will not be displayed unless explicitly requested by the viewing user. This setting is for example used to prevent an image that would not be suitable at places like one's workplace or in public from being abrubtly displayed to other users.
 
-このフラグは手動でオンオフを切り替えられるほか、モデレーターの判断で設定される場合もあります。
+This flag can be switched off and on, and may be manually set for images by the discretion of a Moderator.

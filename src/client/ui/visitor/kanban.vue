@@ -122,8 +122,8 @@ export default defineComponent({
 		background: rgba(0, 0, 0, 0.3);
 
 		&.transparent {
-			-webkit-backdrop-filter: blur(12px);
-			backdrop-filter: blur(12px);
+			-webkit-backdrop-filter: var(--blur, blur(12px));
+			backdrop-filter: var(--blur, blur(12px));
 		}
 	}
 
@@ -140,8 +140,8 @@ export default defineComponent({
 			margin: 0 auto;
 
 			> .panel {
-				-webkit-backdrop-filter: blur(8px);
-				backdrop-filter: blur(8px);
+				-webkit-backdrop-filter: var(--blur, blur(8px));
+				backdrop-filter: var(--blur, blur(8px));
 				background: rgba(0, 0, 0, 0.5);
 				border-radius: var(--radius);
 

@@ -404,8 +404,8 @@ hr {
 
 ._acrylic {
 	background: var(--acrylicPanel);
-	-webkit-backdrop-filter: blur(15px);
-	backdrop-filter: blur(15px);
+	-webkit-backdrop-filter: var(--blur, blur(15px));
+	backdrop-filter: var(--blur, blur(15px));
 }
 
 ._inputSplit {

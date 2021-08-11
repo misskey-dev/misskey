@@ -1,36 +1,40 @@
 # Troubleshooting
-<div class="info">ℹ️ <a href="./faq">よくある質問</a>も合わせてお役立てください。</div>
+<div class="info">ℹ️ Please also use the <a href="./faq">Frequently asked questions</a> page.</div>
 
-問題が発生したときは、まずこちらをご確認ください。 該当する項目が無い、もしくは手順を試しても効果がない場合は、サーバーの管理者に連絡するか[不具合を報告](./report-issue)してください。
+If you run into a problem, please check this page first. In the case that you can't find your problem here, or the steps described here don't solve your issue, please contact your server's administrator or [Report it as a bug](./report-issue).
 
-## クライアントが起動しない
-ほとんどの場合、お使いのブラウザまたはOSのバージョンが古いことが原因です。 ブラウザおよびOSのバージョンを最新のものに更新してから、再度試してみてください。
+## The client does not start
+In most of the cases, this is due your used browser's or operating system's version being outdated. Please try updating your browser or operating system to the latest version and then try again.
 
-これは稀ですが、それでも起動しない場合は、キャッシュが原因の場合があります。ブラウザのキャッシュをクリアして、再度試してみてください。
+Although this does not happen frequently, if your client will still not start after this, it is possible for the cache to be at fault.In this case, please try clearing your cache and then try again.
 
-## ページが読み込めない
-クライアントが起動するもののページが読み込めないというエラーが出る場合は、ネットワークに問題がないか確認してください。また、サーバーがダウンしていないか確認してください。
+## Pages cannot be loaded
+If your client does boot, but you get an error when trying to load a page, please check your network connection for errors.In addition, check that the server you are trying to access is not down.
 
-これは稀ですが、キャッシュが原因の場合があります。ブラウザのキャッシュをクリアして、再度試してみてください。
+Although this does not happen frequently, cases where the cache is at fault can happen.In this case, please try clearing your cache and then try again.
 
-まだ問題がある場合は、サーバーの問題と思われるのでサーバーの管理者に連絡してください。
+Any remaining problems are likely related to the server you are trying to access, so please contact its administrator.
 
-## クライアントの動作が遅い
-以下を試してみてください:
+## The client is slow
+Please try the following:
 
-- クライアント設定で「UIのアニメーションを減らす」を有効にする
-- クライアント設定で「モーダルにぼかし効果を使用」を無効にする
-- お使いのブラウザの設定でハードウェアアクセラレーションを有効にする
-- お使いのデバイスのスペックを上げる
+- Activate "Reduce UI animations" in the client settings
+- Deactivate "Use blur effect for modals" in the client settings
+- Activate hardware acceleration in your browser's settings
+- Upgrade the specs of your used device
 
-## 通知やアンテナ等の点滅が消えない
-点滅は、未読のコンテンツがあることを示しています。通常点滅が消えない場合は、コンテンツを遡ると未読なコンテンツが残っています。 すべて既読にしたと思われるのに、それでもなお点滅が続く場合(おそらく不具合と思われます)は設定から強制的にすべて既読扱いにすることができます。
+## Parts of the UI are weird (For example, the background is transparent)
+Broken UI display may be caused by the theme cache system when the UI is changed as part of an update. Pressing "Clear cache" in the settings will fix this.
+<div class="warn">⚠️ Specifically clear the "Client's" cache.Don't clear the "Browser's" cache.</div>
 
-## Renoteができない
-フォロワー限定のノートはRenoteすることはできません。
+## The blinking light of a notification or Antenna won't go away
+A blinking light indicates unread content.In cases where this light won't go away, there is usually unread content that has been pushed away by new incoming content. If you believe to have read all content, but the light still won't go away (likely a bug), you can forcibly mark all content as read via the user settings.
 
-## UI上で特定の要素が表示されない
-広告ブロッカーを使用しているとそのような不具合が発生することがあります。Misskeyではオフにしてご利用ください。
+## The renote button is blocked out
+Followers-only notes cannot be renoted.
 
-## UI上で未翻訳の部分がある
-ほとんどの場合、単に翻訳が間に合っていないだけで、不具合ではありません。翻訳が終わるまでお待ちください。 [翻訳に参加](./misskey)していただくことも可能です。
+## Specific parts of the UI are not being displayed
+Problems like these can arise if you are using an Adblocker.Please turn these off on Misskey.
+
+## Some parts of the UI are untranslated
+In most cases, this is simply a matter of the translation not having been done yet instead of being a bug.Please wait until the translation of this area has been completed. You can alternatively also [participate in translation](./misskey) yourself.

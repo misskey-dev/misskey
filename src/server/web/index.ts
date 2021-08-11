@@ -28,6 +28,13 @@ const markdown = MarkdownIt({
 	html: true
 });
 
+const changelog = fs.readFileSync(`${__dirname}/../../../CHANGELOG.md`, { encoding: 'utf8' });
+function genDoc(path: string): string {
+	let md = fs.readFileSync(path, { encoding: 'utf8' });
+	md = md.replace('<!--[CHANGELOG]-->', changelog);
+	return md;
+}
+
 const staticAssets = `${__dirname}/../../../assets/`;
 const docAssets = `${__dirname}/../../../src/docs/`;
 const assets = `${__dirname}/../../assets/`;
@@ -67,10 +74,11 @@ router.get('/static-assets/(.*)', async ctx => {
 });
 
 router.get('/doc-assets/(.*)', async ctx => {
-	await send(ctx as any, ctx.path.replace('/doc-assets/', ''), {
-		root: docAssets,
-		maxage: ms('7 days'),
-	});
+	if (ctx.path.includes('..')) return;
+	const path = `${__dirname}/../../../src/docs/${ctx.path.replace('/doc-assets/', '')}`;
+	const doc = genDoc(path);
+	ctx.set('Content-Type', 'text/plain; charset=utf-8');
+	ctx.body = doc;
 });
 
 router.get('/assets/(.*)', async ctx => {
@@ -130,7 +138,7 @@ router.get('/docs.json', async ctx => {
 	const paths = glob.sync(`${dirPath}/**/*.md`);
 	const docs: { path: string; title: string; summary: string; }[] = [];
 	for (const path of paths) {
-		const md = fs.readFileSync(path, { encoding: 'utf8' });
+		const md = genDoc(path);
 
 		if (query && query.length > 0) {
 			// TODO: カタカナをひらがなにして比較するなどしたい
