@@ -373,8 +373,8 @@ export default defineComponent({
 					position: sticky;
 					top: 0;
 					background: var(--X17);
-					-webkit-backdrop-filter: blur(8px);
-					backdrop-filter: blur(8px);
+					-webkit-backdrop-filter: var(--blur, blur(8px));
+					backdrop-filter: var(--blur, blur(8px));
 					z-index: 1;
 					color: var(--fgTransparentWeak);
 

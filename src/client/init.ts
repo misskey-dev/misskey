@@ -243,6 +243,14 @@ watch(defaultStore.reactiveState.useBlurEffectForModal, v => {
 	document.documentElement.style.setProperty('--modalBgFilter', v ? 'blur(4px)' : 'none');
 }, { immediate: true });
 
+watch(defaultStore.reactiveState.useBlurEffect, v => {
+	if (v) {
+		document.documentElement.style.removeProperty('--blur');
+	} else {
+		document.documentElement.style.setProperty('--blur', 'none');
+	}
+}, { immediate: true });
+
 let reloadDialogShowing = false;
 stream.on('_disconnected_', async () => {
 	if (defaultStore.state.serverDisconnectedBehavior === 'reload') {
