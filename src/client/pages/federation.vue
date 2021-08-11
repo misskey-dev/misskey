@@ -228,6 +228,7 @@ export default defineComponent({
 		> .footer {
 			display: flex;
 			align-items: center;
+			font-size: 0.9em;
 
 			> .status {
 				&.suspended {
@@ -249,7 +250,6 @@ export default defineComponent({
 
 			> .right {
 				margin-left: auto;
-				font-size: 0.9em;
 
 				> .latestStatus {
 					border: solid 1px var(--divider);

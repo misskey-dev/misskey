@@ -102,8 +102,8 @@ export default defineComponent({
 		background: var(--panel);
 		/* TODO panelの半透明バージョンをプログラマティックに作りたい
 		background: var(--X17);
-		-webkit-backdrop-filter: blur(8px);
-		backdrop-filter: blur(20px);
+		-webkit-backdrop-filter: var(--blur, blur(8px));
+		backdrop-filter: var(--blur, blur(20px));
 		*/
 
 		> .title {

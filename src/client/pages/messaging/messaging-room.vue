@@ -320,7 +320,7 @@ const Component = defineComponent({
 		menu(ev) {
 			const path = this.groupId ? `/my/messaging/group/${this.groupId}` : `/my/messaging/${this.userAcct}`;
 
-			os.modalMenu([this.inWindow ? undefined : {
+			os.popupMenu([this.inWindow ? undefined : {
 				text: this.$ts.openInWindow,
 				icon: 'fas fa-window-maximize',
 				action: () => {

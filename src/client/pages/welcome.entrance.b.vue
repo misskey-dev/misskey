@@ -101,7 +101,7 @@ export default defineComponent({
 		},
 
 		showMenu(ev) {
-			os.modalMenu([{
+			os.popupMenu([{
 				text: this.$t('aboutX', { x: instanceName }),
 				icon: 'fas fa-info-circle',
 				action: () => {

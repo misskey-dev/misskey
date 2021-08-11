@@ -117,7 +117,7 @@ export default defineComponent({
 		},
 
 		showMenu(ev) {
-			os.modalMenu([{
+			os.popupMenu([{
 				text: this.$t('aboutX', { x: instanceName }),
 				icon: 'fas fa-info-circle',
 				action: () => {
@@ -260,6 +260,7 @@ export default defineComponent({
 					display: block;
 					margin: 0;
 					padding: 32px 32px 24px 32px;
+					font-size: 1.5em;
 
 					> .logo {
 						vertical-align: bottom;

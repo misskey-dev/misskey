@@ -333,8 +333,8 @@ export default defineComponent({
 			top: var(--stickyTop, 0px);
 			padding: 16px;
 			font-weight: bold;
-			-webkit-backdrop-filter: blur(10px);
-			backdrop-filter: blur(10px);
+			-webkit-backdrop-filter: var(--blur, blur(10px));
+			backdrop-filter: var(--blur, blur(10px));
 			background-color: var(--X16);
 		}
 
