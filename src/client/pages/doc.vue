@@ -115,7 +115,7 @@ export default defineComponent({
 	line-height: 1.5;
 
 	&.max-width_500px {
-		padding: 16px;
+		padding: 24px;
 	}
 
 	> .main {

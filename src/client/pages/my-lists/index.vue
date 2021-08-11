@@ -1,11 +1,9 @@
 <template>
-<div class="qkcjvfiv _section">
+<div class="qkcjvfiv">
 	<MkButton @click="create" primary class="add"><i class="fas fa-plus"></i> {{ $ts.createList }}</MkButton>
 
 	<MkPagination :pagination="pagination" #default="{items}" class="lists _content" ref="list">
-		<div class="list _panel" v-for="(list, i) in items" :key="list.id">
-			<MkA :to="`/my/lists/${ list.id }`">{{ list.name }}</MkA>
-		</div>
+		<MkA v-for="(list, i) in items" :key="list.id" class="list _panel" :to="`/my/lists/${ list.id }`">{{ list.name }}</MkA>
 	</MkPagination>
 </div>
 </template>
@@ -57,6 +55,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .qkcjvfiv {
+	padding: 16px;
+
 	> .add {
 		margin: 0 auto var(--margin) auto;
 	}
@@ -65,6 +65,13 @@ export default defineComponent({
 		> .list {
 			display: flex;
 			padding: 16px;
+			border: solid 1px var(--divider);
+			border-radius: 6px;
+
+			&:hover {
+				border: solid 1px var(--accent);
+				text-decoration: none;
+			}
 		}
 	}
 }

@@ -189,7 +189,7 @@ hr {
 
 ._buttonPrimary {
 	@extend ._button;
-	color: #fff;
+	color: var(--fgOnAccent);
 	background: var(--accent);
 
 	&:not(:disabled):hover {
@@ -318,10 +318,16 @@ hr {
 	}
 }
 
+._window {
+	background: var(--panel);
+	border-radius: var(--radius);
+	contain: content;
+}
+
 ._popup {
 	background: var(--popup);
 	border-radius: var(--radius);
-	contain: content;
+	contain: layout; // ふき出しがボックスから飛び出て表示されるようなデザインをする場合もあるので paint は contain することができない
 }
 
 ._root {
