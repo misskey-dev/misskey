@@ -1,9 +1,9 @@
 # Notes
-ノートは、Misskeyに投稿される、文章、ファイル、アンケートなどを含むコンテンツで、Misskeyの中心的概念です。また、そのノートを作成する行為自体もノートと呼ばれます。
+Notes are a central concept within Misskey, and refer to content that may include text, images, surveys and more that has been posted to Misskey. In this context, "to note" is also used as a verb refering to the creation of a note.
 
-ノートが作成されると、[タイムライン](./timeline)に追加され、自分の[フォロワー](./follow)やサーバーのユーザーが見れるようになります。
+By composing a note, it will be added to the [timeline](./timeline) and become visible by your followers and other users from your server.
 
-ノートには、[リアクション](./reaction)を行うことができます。You can also reply or quote notes.
+On Misskey, it is also possible to add [Reactions](./reaction) to notes.In addition to that, you can reply to or quote notes.
 
 By adding a note to your [Favorites](./favorite), you can easily look back at it at a later point in time.
 
