@@ -1,1 +1,12 @@
-see [releases](https://github.com/misskey-dev/misskey/releases)
+## 12.86.0 (2021/08/11)
+
+### Improvements
+- ドキュメントの更新
+	- ドキュメントにchangelogを追加
+- ぼかし効果のオプションを追加
+- Vueを3.2.1に更新
+- UIの調整
+
+### Bugfixes
+- ハッシュタグ入力が空のときに#が付くのを修正
+- フォロー通知のEメール通知を修正

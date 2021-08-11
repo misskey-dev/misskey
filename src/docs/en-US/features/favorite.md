@@ -1,4 +1,4 @@
-# Favorite
-[ノート](./node)をお気に入りとして登録できる機能です。 お気に入り登録したノートは、[お気に入りページ](./my/favorites)で一覧することができます。 お気に入りに登録したことは相手に通知されず、お気に入りは自分しか見ることができません。
+# Favorites
+A feature to register a [note](./node) as part of favorites. These notes can then be viewed in a list in your [Favorites page](./my/favorites). Setting a note as favorite does not notify the author of the note, and your favorites are only visible to you.
 
-ノートをお気に入り登録するには、ノートメニューの「お気に入り」を押します。お気に入り解除するには、ノートメニューの「お気に入り解除」を押します。
+To register a note as part of your favorites, click the "Favorit" button in the menu of the respective note.To remove a note from your favorites, click the "Unfavorite" button in the same menu.

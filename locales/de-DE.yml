@@ -777,6 +777,7 @@ _docs:
   generalTopics: "Allgemeine Themen"
   advancedTopics: "Erweiterte Themen"
   admin: "Administration"
+  translateWarn: "Dies ist ein übersetztes Dokument. Es kann zu Unterschieden mit dem Original kommen."
 _ad:
   back: "Zurück"
   reduceFrequencyOfThisAd: "Diese Werbung weniger anzeigen"
@@ -1643,4 +1644,4 @@ _deck:
     antenna: "Antennen"
     list: "Listen"
     mentions: "Erwähnungen"
-    direct: "Direkt"
+    direct: "Direktnachrichten"

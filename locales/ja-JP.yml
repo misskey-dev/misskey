@@ -771,6 +771,7 @@ received: "受信"
 searchResult: "検索結果"
 hashtags: "ハッシュタグ"
 troubleshooting: "トラブルシューティング"
+useBlurEffect: "UIにぼかし効果を使用"
 
 _docs: 
   continueReading: "続きを読む"
@@ -778,6 +779,7 @@ _docs:
   generalTopics: "一般的なトピック"
   advancedTopics: "高度なトピック"
   admin: "管理"
+  translateWarn: "このドキュメントは翻訳されたものです。オリジナルとは内容が異なる場合があります。"
 
 _ad:
   back: "戻る"

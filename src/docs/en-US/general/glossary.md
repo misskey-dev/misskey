@@ -1,83 +1,83 @@
-# 用語集
-Misskeyに関する用語集です。
+# Glossary
+A glossary about terms related to Misskey.
 
-## AcitivityPub
-(読み: あくてぃびてぃぱぶ) 分散型を実現するために用いられるプロトコル(仕様)。このプロトコルに則ってサーバー同士通信を行うことで、連合が行われ、Fediverseを形成しています。
+## ActivityPub
+The protocol (method) used for enabling the distributed nature of Misskey.By adhering to this protocol, communication with other servers that also follow it becomes possible, forming what is known as the Fediverse.
 
 ## AiScript
-(読み: あいすくりぷと) Misskey上で使用できるプログラミング言語です。詳細は[こちら。](../advanced/aiscript)
+A programming language available for use on Misskey.For details, see [here.](../advanced/aiscript)
 
 ## API
-(読み: えーぴーあい) Misskeyのサーバーが公開している、プログラムからMisskeyを扱うためのインターフェース。詳細は[こちら。](../advanced/api)
+An interface that can be used for interacting with Misskey through a program, available for each individiual instance.For details, see [here.](../advanced/api)
 
 ## Bot
-(読み: ぼっと) プログラムによって動作しているアカウント。
+An account that is being controlled by a program.
 
 ## CW
-(読み: こんてんつわーにんぐ) Contents Warningの略。ノートの内容を、操作なしには表示しないようにできる機能。主に長大な内容を隠すためや、ネタバレ防止などに使われます。
+An abbreviation of "Content Warning".A feature to hide the content of a note unless explicitly requested to be shown by a user.Mainly used to hide the content of long notes or to prevent posting spoilers publicly.
 
 ## Fediverse
-(読み: ふぇでぃばーす) Misskeyを含む様々な分散型ソフトウェアのサーバーで構成されたネットワーク。
+A network of servers composed of various different platforms that communicate with each other, including Misskey.
 
 ## GTL
-グローバルタイムライン(Global TimeLine)の略。タイムラインの詳細は[こちら。](../features/timeline)
+An abbreviation for "Global TimeLine".For details about timelines, please see [here](../features/timeline).
 
 ## HTL
-ホームタイムライン(Home TimeLine)の略。タイムラインの詳細は[こちら。](../features/timeline)
+An abbreviation for "Home TimeLine".For details about timelines, please see [here](../features/timeline)
 
 ## LTL
-ローカルタイムライン(Local TimeLine)の略。タイムラインの詳細は[こちら。](../features/timeline)
+An abbreviation for "Local TimeLine".For details about timelines, please see [here](../features/timeline)
 
 ## MFM
-(読み: えむえふえむ) Misskey Flavored Markdownの略で、Misskey上で使用できるマークアップ言語です。詳細は[こちら。](../features/mfm)
+An abbreviation for "Misskey Flavored Markdown", a markdown language available for use on Misskey.For details, see [here.](../features/mfm)
 
 ## NSFW
-(読み: のっとせーふふぉーわーく) Not Safe For Workの略。画像を「閲覧注意」扱いにし、操作なしには表示しないようにすることができる機能。
+An abbreviation for "Not Safe For Work".A feature to tag an image as "NSFW" and hide it unless explicitly requested to be shown by a user.
 
 ## Renote
-(読み: りのーと) 既にあるノートを引用、もしくはそのノートを新しいノートとして共有する行為、またそれによって作成されたノート。詳細は[こちら。](../features/note)
+The act of quoting an existing note, sharing an existing note, or the note created as a result of these acts.For details, see [here.](../features/note)
 
 ## STL
-ソーシャルタイムライン(Social TimeLine)の略。タイムラインの詳細は[こちら。](../features/timeline)
+An abbreviation for "Social TimeLine".For details about timelines, please see [here](../features/timeline)
 
-## 藍
-(読み: あい) Misskeyの看板娘(公式キャラクター)です。
+## Ai
+Ai is Misskey's official mascot.
 
-## アクティブユーザー
-インスタンスにアカウントを作っているユーザーのうち、現在も実際にサービスを利用しているユーザーのこと。
+## Active users
+Those users amongst all existing ones who are continually using their account.
 
 ## Instance
 todo
 
-## コントロールパネル
-インスタンスの設定画面のこと。
+## Control Panel
+The settings screen of an instance.
 
 ## Server
 todo
 
 ## Silence
-ノートをパブリックな公開範囲で投稿できなくされている状態。モデレーターの判断でユーザーごとに設定されます。詳細は[こちら。](../features/silence)
+A state in which the visibility of the notes by said user cannot be set to "Public" anymore.Can be set for individual users by Moderators.For details, see [here.](../features/silence)
 
 ## Suspend
-アカウントが使用不可に設定されている状態。
+A state which makes the account of a user unusable.
 
 ## Drive
-Misskeyにアップロードしたファイルを管理する機能。詳細は[こちら。](../features/drive)
+A feature allowing users to organize the files they have uploaded to Misskey.For details, see [here.](../features/drive)
 
 ## Notes
-Misskeyに投稿される、文章、ファイル、アンケートなどを含めることができるコンテンツ。詳細は[こちら。](../features/note)
+Content which may include text, images, surveys and others that has been posted to Misskey.For details, see [here.](../features/note)
 
-## ミスキスト
-Misskeyを使う人のこと。
+## Misskist
+Users of Misskey.
 
 ## Moderator
-スパムの凍結およびサイレンスや不適切な投稿の削除など、コミュニティ運営に関する権限を持つユーザー。
+Users with the authority to to manage the community of a server by deactivating spam accounts, deleting inappropriate posts etc.
 
 ## Remote
-他サーバーのことを指します。リモートユーザーといったように接頭辞としても使われます。ローカルの逆です。
+Used in context of servers separate from your own.Also used as prefix in other words like "Remote user".The opposite of "Local".
 
 ## Federation
-サーバー上で作成された情報が他のサーバーに伝わること。
+The act of sharing information created one one's server with other servers.
 
 ## Local
-自サーバーのことを指します。ローカルユーザー、ローカルタイムラインといったように接頭辞としても使われます。リモートの逆です。
+Used in context of your own server.Also used as prefix in other words like "Local users", "local timeline".The opposite of "Remote".
