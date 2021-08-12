@@ -14,37 +14,37 @@ Misskey Web客户端插件功能使您可以扩展客户端并添加各种功能
 插件版本。请使用数字。
 
 ### description
-プラグインの説明
+插件说明
 
 ### permissions
-プラグインが要求する権限。MisskeyAPIにリクエストする際に用いられます。
+插件要求的权限。需要在发送Misskey API请求时使用。
 
 ### config
-プラグインの設定情報を表すオブジェクト。 キーに設定名、値に以下のプロパティを含めます。
+表示插件设置信息的对象。 在键名中包含设置名称，在键值中包含以下属性。
 
 #### type
-設定値の種類を表す文字列。以下から選択します。 string number boolean
+代表设置值的类型的字符串。从下列项中选择： string number boolean
 
 #### label
-ユーザーに表示する設定名
+向用户显示的设置名称
 
 #### description
-設定の説明
+设置说明
 
 #### default
-設定のデフォルト値
+设置的默认值
 
 ## API 参考
-AiScript標準で組み込まれているAPIは掲載しません。
+AiScript标准内置API将不会公布。
 
 ### Mk:dialog(title text type)
-ダイアログを表示します。typeには以下の値が設定できます。 info success warn error question 省略すると info になります。
+显示一个对话框。type可以设置为以下值： info success warn error question 默认值为info。
 
 ### Mk:confirm(title text type)
-確認ダイアログを表示します。typeには以下の値が設定できます。 info success warn error question 省略すると question になります。 ユーザーが"OK"を選択した場合は true を、"キャンセル"を選択した場合は false が返ります。
+显示确认对话框。type可以设置为以下值： info success warn error question 默认值为question。 如果用户选择“OK”，则返回true；如果用户选择“取消”，则返回false。
 
 ### Mk:api(endpoint params)
-Misskey APIにリクエストします。第一引数にエンドポイント名、第二引数にパラメータオブジェクトを渡します。
+通过Misskey API发送请求。在第一个参数中传入终端名称，在第二个参数中传入参数对象。
 
 ### Mk:save(key value)
 任意の値に任意の名前を付けて永続化します。永続化した値は、AiScriptコンテキストが終了しても残り、Mk:loadで読み取ることができます。
