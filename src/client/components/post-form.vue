@@ -17,7 +17,7 @@
 				<span v-if="visibility === 'followers'"><i class="fas fa-unlock"></i></span>
 				<span v-if="visibility === 'specified'"><i class="fas fa-envelope"></i></span>
 			</button>
-			<button class="_button" @click="showPreview = !showPreview" :class="{ active: showPreview }" v-tooltip="$ts.notePreview"><i class="fas fa-file-code"></i></button>
+			<button class="_button preview" @click="showPreview = !showPreview" :class="{ active: showPreview }" v-tooltip="$ts.notePreview"><i class="fas fa-file-code"></i></button>
 			<button class="submit _buttonPrimary" :disabled="!canPost" @click="post">{{ submitText }}<i :class="reply ? 'fas fa-reply' : renote ? 'fas fa-quote-right' : 'fas fa-paper-plane'"></i></button>
 		</div>
 	</header>
@@ -753,7 +753,7 @@ export default defineComponent({
 			> .visibility {
 				height: 34px;
 				width: 34px;
-				margin: 0 8px;
+				margin: 0 0 0 8px;
 
 				& + .localOnly {
 					margin-left: 0 !important;
@@ -763,6 +763,24 @@ export default defineComponent({
 			> .local-only {
 				margin: 0 0 0 12px;
 				opacity: 0.7;
+			}
+
+			> .preview {
+				display: inline-block;
+				padding: 0;
+				margin: 0 8px 0 0;
+				font-size: 16px;
+				width: 34px;
+				height: 34px;
+				border-radius: 6px;
+
+				&:hover {
+					background: var(--X5);
+				}
+
+				&.active {
+					color: var(--accent);
+				}
 			}
 
 			> .submit {
