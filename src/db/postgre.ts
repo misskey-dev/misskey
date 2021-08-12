@@ -211,3 +211,13 @@ export function initDb(justBorrow = false, sync = false, forceRecreate = false) 
 		entities: entities
 	});
 }
+
+export async function resetDb() {
+	const conn = await getConnection();
+	const tables = await conn.query(`SELECT relname AS "table"
+	FROM pg_class C LEFT JOIN pg_namespace N ON (N.oid = C.relnamespace)
+	WHERE nspname NOT IN ('pg_catalog', 'information_schema')
+		AND C.relkind = 'r'
+		AND nspname !~ '^pg_toast';`);
+	await Promise.all(tables.map(t => t.table).map(x => conn.query(`DELETE FROM "${x}" CASCADE`)));
+}
