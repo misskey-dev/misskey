@@ -40,6 +40,7 @@
 		<input v-show="withHashtags" ref="hashtags" class="hashtags" v-model="hashtags" :placeholder="$ts.hashtags" list="hashtags">
 		<XPostFormAttaches class="attaches" :files="files" @updated="updateFiles" @detach="detachFile" @changeSensitive="updateFileSensitive" @changeName="updateFileName"/>
 		<XPollEditor v-if="poll" :poll="poll" @destroyed="poll = null" @updated="onPollUpdate"/>
+		<XNotePreview class="preview" v-if="showPreview" :note="draftedNote"/>
 		<footer>
 			<button class="_button" @click="chooseFileFrom" v-tooltip="$ts.attachFile"><i class="fas fa-photo-video"></i></button>
 			<button class="_button" @click="togglePoll" :class="{ active: poll }" v-tooltip="$ts.poll"><i class="fas fa-poll-h"></i></button>
@@ -47,6 +48,7 @@
 			<button class="_button" @click="insertMention" v-tooltip="$ts.mention"><i class="fas fa-at"></i></button>
 			<button class="_button" @click="withHashtags = !withHashtags" :class="{ active: withHashtags }" v-tooltip="$ts.hashtags"><i class="fas fa-hashtag"></i></button>
 			<button class="_button" @click="insertEmoji" v-tooltip="$ts.emoji"><i class="fas fa-laugh-squint"></i></button>
+			<button class="_button" @click="showPreview = !showPreview" :class="{ active: showPreview }" v-tooltip="$ts.notePreview"><i class="fas fa-file-code"></i></button>
 			<button class="_button" @click="showActions" v-tooltip="$ts.plugin" v-if="postFormActions.length > 0"><i class="fas fa-plug"></i></button>
 		</footer>
 		<datalist id="hashtags">
@@ -160,6 +162,7 @@ export default defineComponent({
 			files: [],
 			poll: null,
 			useCw: false,
+			showPreview: false,
 			cw: null,
 			localOnly: this.$store.state.rememberNoteVisibility ? this.$store.state.localOnly : this.$store.state.defaultNoteLocalOnly,
 			visibility: (this.$store.state.rememberNoteVisibility ? this.$store.state.visibility : this.$store.state.defaultNoteVisibility) as typeof noteVisibilities[number],
@@ -236,6 +239,18 @@ export default defineComponent({
 			return this.$instance ? this.$instance.maxNoteTextLength : 1000;
 		},
 
+		draftedNote(): object {
+			return {
+				user: this.$i,
+				createdAt: new Date(),
+				visibility: this.visibility,
+				localOnly: this.localOnly,
+				cw: this.useCw ? this.cw : null,
+				text: this.text,
+				files: this.files,
+				poll: this.poll,
+			};
+		}
 		withHashtags: defaultStore.makeGetterSetter('postFormWithHashtags'),
 		hashtags: defaultStore.makeGetterSetter('postFormHashtags'),
 	},
