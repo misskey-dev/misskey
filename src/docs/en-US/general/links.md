@@ -1,8 +1,8 @@
 # A collection of links
 
 ## Websites
+- [Official Discord](https://discord.gg/Wp8gVStHW3) - The official Discord server for Misskey
 - [Misskey Forum](https://forum.misskey.io/) - A forum used for questions surrounding Misskey
-- [Misskey Forum](https://forum.misskey.io/) - Misskeyに関する話題を扱うフォーラム
 
 ## Accounts
 - [@repo@misskey.io](https://misskey.io/@repo) - A bot that publishes posts about updates to the Misskey repository
