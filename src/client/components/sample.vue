@@ -93,7 +93,7 @@ export default defineComponent({
 		},
 
 		async openMenu(ev) {
-			os.modalMenu([{
+			os.popupMenu([{
 				type: 'label',
 				text: 'Fruits'
 			}, {

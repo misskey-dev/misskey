@@ -152,8 +152,8 @@ export default defineComponent({
 		left: 0;
 		width: 100%;
 		height: 100%;
-		-webkit-backdrop-filter: blur(16px);
-		backdrop-filter: blur(16px);
+		-webkit-backdrop-filter: var(--blur, blur(16px));
+		backdrop-filter: var(--blur, blur(16px));
 		background: rgba(0, 0, 0, 0.3);
 	}
 

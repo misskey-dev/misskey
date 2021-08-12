@@ -146,7 +146,7 @@ export default defineComponent({
 		},
 
 		remoteMenu(emoji, ev) {
-			os.modalMenu([{
+			os.popupMenu([{
 				type: 'label',
 				text: ':' + emoji.name + ':',
 			}, {

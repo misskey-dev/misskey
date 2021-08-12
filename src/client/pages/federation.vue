@@ -169,7 +169,6 @@ export default defineComponent({
 	> .query {
 		background: var(--bg);
 		padding: 16px;
-		border-bottom: solid 0.5px var(--divider);
 	}
 }
 
@@ -229,6 +228,7 @@ export default defineComponent({
 		> .footer {
 			display: flex;
 			align-items: center;
+			font-size: 0.9em;
 
 			> .status {
 				&.suspended {
@@ -250,7 +250,6 @@ export default defineComponent({
 
 			> .right {
 				margin-left: auto;
-				font-size: 0.9em;
 
 				> .latestStatus {
 					border: solid 1px var(--divider);

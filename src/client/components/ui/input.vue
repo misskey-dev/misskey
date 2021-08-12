@@ -206,19 +206,26 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .matxzzsk {
-	margin: 1em 0;
+	margin: 1.5em 0;
 
 	> .label {
 		font-size: 0.85em;
-		padding: 0 0 6px 6px;
-		font-weight: bold;
+		padding: 0 0 8px 12px;
 		user-select: none;
+
+		&:empty {
+			display: none;
+		}
 	}
 
 	> .caption {
 		font-size: 0.8em;
-		padding: 6px 0 0 6px;
+		padding: 8px 0 0 12px;
 		color: var(--fgTransparentWeak);
+
+		&:empty {
+			display: none;
+		}
 	}
 
 	> .input {
@@ -243,6 +250,7 @@ export default defineComponent({
 			outline: none;
 			box-shadow: none;
 			box-sizing: border-box;
+			transition: border-color 0.1s ease-out;
 
 			&:hover {
 				border-color: var(--inputBorderHover);

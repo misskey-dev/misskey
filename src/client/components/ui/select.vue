@@ -151,19 +151,26 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .vblkjoeq {
-	margin: 1em 0;
+	margin: 1.5em 0;
 
 	> .label {
 		font-size: 0.85em;
-		padding: 0 0 6px 6px;
-		font-weight: bold;
+		padding: 0 0 8px 12px;
 		user-select: none;
+
+		&:empty {
+			display: none;
+		}
 	}
 
 	> .caption {
 		font-size: 0.8em;
-		padding: 6px 0 0 6px;
+		padding: 8px 0 0 12px;
 		color: var(--fgTransparentWeak);
+
+		&:empty {
+			display: none;
+		}
 	}
 
 	> .input {
@@ -177,7 +184,7 @@ export default defineComponent({
 			height: $height;
 			width: 100%;
 			margin: 0;
-			padding: 0 8px;
+			padding: 0 12px;
 			font: inherit;
 			font-weight: normal;
 			font-size: 1em;
@@ -189,6 +196,7 @@ export default defineComponent({
 			box-shadow: none;
 			box-sizing: border-box;
 			cursor: pointer;
+			transition: border-color 0.1s ease-out;
 
 			&:hover {
 				border-color: var(--inputBorderHover);
