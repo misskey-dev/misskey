@@ -65,7 +65,7 @@ if (_DEV_) {
 
 if (defaultStore.state.reportError && !_DEV_) {
 	Sentry.init({
-		dsn: 'https://fd273254a07a4b61857607a9ea05d629@o501808.ingest.sentry.io/5583438',
+		dsn: 'https://34b31393afa94fdfbf2dc8a79e343b1d@o954790.ingest.sentry.io/5904008',
 		tracesSampleRate: 1.0,
 	});
 
