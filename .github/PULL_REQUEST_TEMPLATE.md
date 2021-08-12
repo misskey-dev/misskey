@@ -37,3 +37,4 @@ Thanks for your cooperation 🤗
 
 # Additional info (optional)
 <!-- テスト観点など -->
+<!-- Test perspective, etc -->
