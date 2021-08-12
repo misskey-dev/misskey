@@ -10,6 +10,7 @@
 ## 12.86.1 (2021/08/12)
 
 ### Improvements
+- about-misskeyページにドキュメントへのリンクを追加
 - Docker: Node.jsを16.6.2に
 - 依存関係の更新
 
