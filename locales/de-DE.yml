@@ -771,6 +771,7 @@ received: "Erhalten"
 searchResult: "Suchergebnisse"
 hashtags: "Hashtags"
 troubleshooting: "Problembehandlung"
+useBlurEffect: "Weichzeichnungseffekt in der Benutzeroberfläche verwenden"
 _docs:
   continueReading: "Mehr lesen"
   features: "Funktionen"
