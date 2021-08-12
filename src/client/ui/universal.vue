@@ -250,7 +250,7 @@ export default defineComponent({
 
 	&.wallpaper {
 		background: var(--wallpaperOverlay);
-		//backdrop-filter: blur(4px);
+		//backdrop-filter: var(--blur, blur(4px));
 	}
 
 	> .contents {
@@ -269,8 +269,8 @@ export default defineComponent({
 			text-align: center;
 			font-weight: bold;
 			//background-color: var(--panel);
-			-webkit-backdrop-filter: blur(32px);
-			backdrop-filter: blur(32px);
+			-webkit-backdrop-filter: var(--blur, blur(32px));
+			backdrop-filter: var(--blur, blur(32px));
 			background-color: var(--header);
 			//border-bottom: solid 0.5px var(--divider);
 			user-select: none;
@@ -341,8 +341,8 @@ export default defineComponent({
 		display: flex;
 		width: 100%;
 		box-sizing: border-box;
-		-webkit-backdrop-filter: blur(32px);
-		backdrop-filter: blur(32px);
+		-webkit-backdrop-filter: var(--blur, blur(32px));
+		backdrop-filter: var(--blur, blur(32px));
 		background-color: var(--header);
 
 		&:not(.navHidden) {

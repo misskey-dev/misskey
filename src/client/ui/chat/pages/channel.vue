@@ -178,7 +178,7 @@ export default defineComponent({
 		},
 
 		openChannelMenu(ev) {
-			os.modalMenu([{
+			os.popupMenu([{
 				text: this.$ts.copyUrl,
 				icon: 'fas fa-link',
 				action: () => {

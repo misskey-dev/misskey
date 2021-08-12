@@ -25,7 +25,7 @@ import { router } from '@client/router';
 import { applyTheme } from '@client/scripts/theme';
 import { isDeviceDarkmode } from '@client/scripts/is-device-darkmode';
 import { i18n } from '@client/i18n';
-import { stream, dialog, post } from '@client/os';
+import { stream, dialog, post, popup } from '@client/os';
 import * as sound from '@client/scripts/sound';
 import { $i, refreshAccount, login, updateAccount, signout } from '@client/account';
 import { defaultStore, ColdDeviceStorage } from '@client/store';
@@ -227,6 +227,19 @@ if (splash) {
 	splash.style.pointerEvents = 'none';
 }
 
+// クライアントが更新されたか？
+const lastVersion = localStorage.getItem('lastVersion');
+if (lastVersion !== version) {
+	localStorage.setItem('lastVersion', version);
+
+	// テーマリビルドするため
+	localStorage.removeItem('theme');
+
+	// TODO: バージョンが新しくなった時だけダイアログ出す
+	//popup();
+}
+
+// NOTE: この処理は必ず↑のクライアント更新時処理より後に来ること(テーマ再構築のため)
 watch(defaultStore.reactiveState.darkMode, (darkMode) => {
 	applyTheme(darkMode ? ColdDeviceStorage.get('darkTheme') : ColdDeviceStorage.get('lightTheme'));
 }, { immediate: localStorage.theme == null });
@@ -270,6 +283,14 @@ document.addEventListener('keydown', makeHotkey({
 
 watch(defaultStore.reactiveState.useBlurEffectForModal, v => {
 	document.documentElement.style.setProperty('--modalBgFilter', v ? 'blur(4px)' : 'none');
+}, { immediate: true });
+
+watch(defaultStore.reactiveState.useBlurEffect, v => {
+	if (v) {
+		document.documentElement.style.removeProperty('--blur');
+	} else {
+		document.documentElement.style.setProperty('--blur', 'none');
+	}
 }, { immediate: true });
 
 let reloadDialogShowing = false;

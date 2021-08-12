@@ -115,7 +115,7 @@ export default defineComponent({
 	z-index: 1; // 他コンポーネントのbox-shadowに隠されないようにするため
 	display: block;
 	min-width: 100px;
-	width: min-content;
+	width: max-content;
 	padding: 8px 14px;
 	text-align: center;
 	font-weight: normal;
@@ -127,6 +127,7 @@ export default defineComponent({
 	border-radius: 999px;
 	overflow: hidden;
 	box-sizing: border-box;
+	transition: background 0.1s ease;
 
 	&:not(:disabled):hover {
 		background: var(--buttonHoverBg);
@@ -142,7 +143,7 @@ export default defineComponent({
 
 	&.primary {
 		font-weight: bold;
-		color: #fff !important;
+		color: var(--fgOnAccent) !important;
 		background: var(--accent);
 
 		&:not(:disabled):hover {
@@ -176,17 +177,8 @@ export default defineComponent({
 	}
 
 	&:focus {
-		&:after {
-			content: "";
-			pointer-events: none;
-			position: absolute;
-			top: -5px;
-			right: -5px;
-			bottom: -5px;
-			left: -5px;
-			border: 2px solid var(--accentAlpha03);
-			border-radius: 10px;
-		}
+		outline: solid 2px var(--focus);
+		outline-offset: 2px;
 	}
 
 	&.inline + .bghgjjyj {

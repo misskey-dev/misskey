@@ -338,7 +338,7 @@ export default defineComponent({
 		},
 
 		menu(ev) {
-			os.modalMenu(getUserMenu(this.user), ev.currentTarget || ev.target);
+			os.popupMenu(getUserMenu(this.user), ev.currentTarget || ev.target);
 		},
 
 		parallaxLoop() {
@@ -613,8 +613,8 @@ export default defineComponent({
 					position: absolute;
 					top: 12px;
 					right: 12px;
-					-webkit-backdrop-filter: blur(8px);
-					backdrop-filter: blur(8px);
+					-webkit-backdrop-filter: var(--blur, blur(8px));
+					backdrop-filter: var(--blur, blur(8px));
 					background: rgba(0, 0, 0, 0.2);
 					padding: 8px;
 					border-radius: 24px;

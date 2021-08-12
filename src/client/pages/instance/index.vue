@@ -167,7 +167,7 @@ export default defineComponent({
 		};
 
 		const lookup = (ev) => {
-			os.modalMenu([{
+			os.popupMenu([{
 				text: i18n.locale.user,
 				icon: 'fas fa-user',
 				action: () => {

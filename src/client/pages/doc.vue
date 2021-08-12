@@ -5,6 +5,7 @@
 		<div class="body" v-html="body"></div>
 		<div class="footer">
 			<MkLink :url="`https://github.com/misskey-dev/misskey/blob/master/src/docs/${lang}/${doc}.md`" class="at">{{ $ts.docSource }}</MkLink>
+			<p v-if="lang !== 'ja-JP'">{{ $ts.translateWarn }}</p>
 		</div>
 	</div>
 </div>
@@ -115,7 +116,7 @@ export default defineComponent({
 	line-height: 1.5;
 
 	&.max-width_500px {
-		padding: 16px;
+		padding: 24px;
 	}
 
 	> .main {
