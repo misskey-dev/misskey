@@ -1,3 +1,17 @@
+<!--
+## 12.x.x (unreleased)
+
+### Improvements
+
+### Bugfixes
+
+-->
+
+## 12.86.1 (2021/08/12)
+
+### Improvements
+- Docker: Node.jsを16.6.2に
+
 ## 12.86.0 (2021/08/11)
 
 ### Improvements
