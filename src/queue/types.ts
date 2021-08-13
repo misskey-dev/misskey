@@ -5,7 +5,9 @@ import * as httpSignature from 'http-signature';
 
 export type DeliverJobData = {
 	/** Actor */
-	user: ThinUser;
+	user: ThinUser & {
+		privateKey: string;
+	};
 	/** Activity */
 	content: unknown;
 	/** inbox URL to deliver */

@@ -13,6 +13,7 @@ import { getJobInfo } from './get-job-info';
 import { dbQueue, deliverQueue, inboxQueue, objectStorageQueue } from './queues';
 import { ThinUser } from './types';
 import { IActivity } from '@/remote/activitypub/type';
+import { getUserKeypair } from '@/misc/keypair-store';
 
 function renderError(e: Error): any {
 	return {
@@ -59,12 +60,17 @@ objectStorageQueue
 	.on('error', (job: any, err: Error) => objectStorageLogger.error(`error ${err}`, { job, e: renderError(err) }))
 	.on('stalled', (job) => objectStorageLogger.warn(`stalled id=${job.id}`));
 
-export function deliver(user: ThinUser, content: unknown, to: string | null) {
+export async function deliver(user: ThinUser, content: unknown, to: string | null) {
 	if (content == null) return null;
 	if (to == null) return null;
 
+	const keypair = await getUserKeypair(user.id);
+
 	const data = {
-		user,
+		user: {
+			...user,
+			privateKey: keypair.privateKey,
+		},
 		content,
 		to
 	};
