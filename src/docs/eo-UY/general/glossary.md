@@ -1,7 +1,7 @@
 # 用語集
 Misskeyに関する用語集です。
 
-## AcitivityPub
+## ActivityPub
 (読み: あくてぃびてぃぱぶ) 分散型を実現するために用いられるプロトコル(仕様)。このプロトコルに則ってサーバー同士通信を行うことで、連合が行われ、Fediverseを形成しています。
 
 ## AiScript
@@ -34,16 +34,16 @@ An abbreviation for "Loka TempLinio".タイムラインの詳細は[こちら。
 ## NSFW
 (読み: のっとせーふふぉーわーく) Not Safe For Workの略。画像を「閲覧注意」扱いにし、操作なしには表示しないようにすることができる機能。
 
-## Fari renoton
+## Renoto
 (読み: りのーと) 既にあるノートを引用、もしくはそのノートを新しいノートとして共有する行為、またそれによって作成されたノート。詳細は[こちら。](../features/note)
 
 ## STL
-ソーシャルタイムライン(Social TimeLine)の略。タイムラインの詳細は[こちら。](../features/timeline)
+An abbreviation for "Sociala TempLinio".タイムラインの詳細は[こちら。](../features/timeline)
 
 ## Ai
-(読み: あい) Misskeyの看板娘(公式キャラクター)です。
+Ai estas oficiala maskoto de Misskey.
 
-## アクティブユーザー
+## Aktivaj Uzantoj:
 インスタンスにアカウントを作っているユーザーのうち、現在も実際にサービスを利用しているユーザーのこと。
 
 ## Ekzemplo
