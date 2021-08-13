@@ -26,7 +26,7 @@ Misskeyに関する用語集です。
 ホームタイムライン(Home TimeLine)の略。タイムラインの詳細は[こちら。](../features/timeline)
 
 ## LTL
-ローカルタイムライン(Local TimeLine)の略。タイムラインの詳細は[こちら。](../features/timeline)
+An abbreviation for "Loka TempLinio".タイムラインの詳細は[こちら。](../features/timeline)
 
 ## MFM
 (読み: えむえふえむ) Misskey Flavored Markdownの略で、Misskey上で使用できるマークアップ言語です。詳細は[こちら。](../features/mfm)
@@ -56,7 +56,7 @@ todo
 todo
 
 ## Mutigi
-ノートをパブリックな公開範囲で投稿できなくされている状態。モデレーターの判断でユーザーごとに設定されます。詳細は[こちら。](../features/silence)
+A state in which the visibility of the notes by said user cannot be set to "Publika" anymore.Can be set for individual users by Moderators.詳細は[こちら。](../features/silence)
 
 ## Flostigi
 アカウントが使用不可に設定されている状態。
