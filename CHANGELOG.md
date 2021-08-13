@@ -7,6 +7,13 @@
 
 -->
 
+## 12.x.x (unreleased)
+
+### Improvements
+- Misskey更新時にダイアログを表示するように
+
+### Bugfixes
+
 ## 12.87.0 (2021/08/12)
 
 ### Improvements
