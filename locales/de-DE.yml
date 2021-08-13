@@ -522,7 +522,7 @@ scratchpadDescription: "Die Testumgebung bietet eine Umgebung für AiScript-Expe
 output: "Ausgabe"
 script: "Skript"
 disablePagesScript: "AiScript auf Seiten deaktivieren"
-updateRemoteUser: "Informationen über Benutzer fremder Instanzen aktualisieren"
+updateRemoteUser: "Benutzerinformationen aktualisieren"
 deleteAllFiles: "Alle Dateien löschen"
 deleteAllFilesConfirm: "Möchtest du wirklich alle Dateien löschen?"
 removeAllFollowing: "Allen gefolgten Benutzern entfolgen"
