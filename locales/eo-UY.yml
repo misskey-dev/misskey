@@ -385,7 +385,6 @@ _time:
 _tutorial:
   title: "Uzado de Misskey"
   step1_1: "Bonvenon."
-  step7_2: "Se vi volus scii pli pri Miskejon, volu rigardi la fakon {help}."
   step7_3: "Do, bonvolu amuziĝi Misskey'on🚀"
 _permissions:
   "read:blocks": "Vidi la liston de uzantoj kiun vi blokas"
