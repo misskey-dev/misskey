@@ -19,8 +19,8 @@ Misskeyに関する用語集です。
 ## Fediverse
 (読み: ふぇでぃばーす) Misskeyを含む様々な分散型ソフトウェアのサーバーで構成されたネットワーク。
 
-## GTL
-グローバルタイムライン(Global TimeLine)の略。タイムラインの詳細は[こちら。](../features/timeline)
+## MTL
+An abbreviation for "Malloka TempLinio".タイムラインの詳細は[こちら。](../features/timeline)
 
 ## HTL
 ホームタイムライン(Home TimeLine)の略。タイムラインの詳細は[こちら。](../features/timeline)
