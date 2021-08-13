@@ -314,7 +314,6 @@ instanceBlocking: "Blokado de ekzemplo"
 selectAccount: "Elekti konton"
 user: "Uzanto"
 accounts: "Kontoj"
-global: "Konfederacia"
 sent: "Sendi"
 hashtags: "Kradvorto"
 _gallery:
@@ -455,11 +454,12 @@ _exportOrImport:
   muteList: "Silentigoj"
   blockingList: "Blokado"
   userLists: "Listoj"
+_charts:
+  federationInstancesTotal: "Tuta numero de kunfederantaj ekzemploj"
 _timelines:
   home: "Hejmo"
   local: "Loka"
   social: "Sociala"
-  global: "Konfederacia"
 _rooms:
   translate: "Movi"
   chooseImage: "Elekti bildon"
