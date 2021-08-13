@@ -767,7 +767,12 @@ customCssWarn: "Pengaturan ini seharusnya digunakan jika kamu tahu cara kerjanya
 global: "Global"
 squareAvatars: "Tampilkan avatar sebagai persegi"
 sent: "Kirim"
+received: "Diterima"
+searchResult: "Hasil Penelusuran"
 hashtags: "Tagar"
+troubleshooting: "Penyelesaian Masalah"
+useBlurEffect: "Gunakan efek blur pada antarmuka"
+learnMore: "Pelajari lebih lanjut"
 _docs:
   admin: "Manajemen"
 _ad:
