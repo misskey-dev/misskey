@@ -11,7 +11,7 @@ import got from 'got';
 import * as Got from 'got';
 import { getUserKeypair } from '@/misc/keypair-store';
 
-export default async (user: { id: User['id'] }, url: string, object: any) => {
+export default async (user: { id: User['id']; privateKey: string; }, url: string, object: any) => {
 	const timeout = 10 * 1000;
 
 	const { protocol, hostname, port, pathname, search } = new URL(url);
@@ -21,8 +21,6 @@ export default async (user: { id: User['id'] }, url: string, object: any) => {
 	const sha256 = crypto.createHash('sha256');
 	sha256.update(data);
 	const hash = sha256.digest('base64');
-
-	const keypair = await getUserKeypair(user.id);
 
 	await new Promise<void>((resolve, reject) => {
 		const req = https.request({
@@ -48,7 +46,7 @@ export default async (user: { id: User['id'] }, url: string, object: any) => {
 
 		sign(req, {
 			authorizationHeaderName: 'Signature',
-			key: keypair.privateKey,
+			key: user.privateKey,
 			keyId: `${config.url}/users/${user.id}#main-key`,
 			headers: ['(request-target)', 'date', 'host', 'digest']
 		});
