@@ -67,7 +67,7 @@ Misskeyにアップロードしたファイルを管理する機能。詳細は[
 ## Notoj
 Misskeyに投稿される、文章、ファイル、アンケートなどを含めることができるコンテンツ。詳細は[こちら。](../features/note)
 
-## Miskisto
+## Miskiisto
 Uzuloj de Misskey.
 
 ## モデレーター
