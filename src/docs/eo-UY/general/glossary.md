@@ -61,7 +61,7 @@ todo
 ## Flostigi
 アカウントが使用不可に設定されている状態。
 
-## Diskingo
+## ドライブ
 Misskeyにアップロードしたファイルを管理する機能。詳細は[こちら。](../features/drive)
 
 ## Notoj
