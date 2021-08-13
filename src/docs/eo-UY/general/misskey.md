@@ -11,7 +11,7 @@ Misskeyはオープンソースの分散型マイクロブログプラットフ�
 ## Kio estas disigita?
 Disigita servo ankaŭ nome malcentralizita servo estas, kunfederiĝi al Fediverso Tvitero Facebook (Vizaĝlibro, Fejsbuko)自分でサーバーを作成することもできます。連合するおかげで、どのサーバーを選んでも、同じコミュニティにアクセスできます。
 
-## 常にオープンソース
+## Ĉiam malfermitkode
 Misskeyはこれまでもこれからも、オープンソースであり続けます。オープンソースとは、簡単に言うと<b>ソフトウェアのソースコード(プログラム)が公開されている</b>ことです。ソースコードの修正や再配布が可能であることを定義に含めることもあります。 Misskeyのすべてのソースコードは[AGPL](https://github.com/misskey-dev/misskey/blob/develop/LICENSE)というオープンソースライセンスの下に[公開](https://github.com/misskey-dev)されていて、誰でも自由に閲覧、使用、修正、改変、再配布をすることができます。 オープンソースは、自分で好きなように変えたり、有害な処理が含まれていないことを確認することができたり、誰でも開発に参加できるなどの、様々なメリットがあります。 上述の分散型を実現するためにも、オープンソースであるということは必要不可欠な要素です。 再び引き合いに出しますが、TwitterやFacebookなどの利益を得ているほとんどのサービスはオープンソースではありません。
 
 <div class="info">ℹ️ 技術的に言うと、MisskeyのソースコードはGitで管理されていて、リポジトリは<a href="https://github.com/misskey-dev" target="_blank">GitHub上でホスティングされています。</a></div>
