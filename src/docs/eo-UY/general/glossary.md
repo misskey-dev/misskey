@@ -49,7 +49,7 @@ Ai estas oficiala maskoto de Misskey.
 ## Ekzemplo
 todo
 
-## コントロールパネル
+## Ŝaltpodio
 インスタンスの設定画面のこと。
 
 ## Servilo
