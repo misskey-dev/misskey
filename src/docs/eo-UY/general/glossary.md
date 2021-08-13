@@ -40,7 +40,7 @@ An abbreviation for "Loka TempLinio".タイムラインの詳細は[こちら。
 ## STL
 ソーシャルタイムライン(Social TimeLine)の略。タイムラインの詳細は[こちら。](../features/timeline)
 
-## 藍
+## Ai
 (読み: あい) Misskeyの看板娘(公式キャラクター)です。
 
 ## アクティブユーザー
@@ -56,24 +56,24 @@ todo
 todo
 
 ## Mutigi
-A state in which the visibility of the notes by said user cannot be set to "Publika" anymore.Can be set for individual users by Moderators.詳細は[こちら。](../features/silence)
+A state in which the visibility of the notes by said user cannot be set to "Publika" anymore.Can be set for individual users by Moderators.Rigardu por sciu pli tie[.](../features/silence)
 
 ## Flostigi
 アカウントが使用不可に設定されている状態。
 
-## Diskingo
+## Diskingo (Drive)
 Misskeyにアップロードしたファイルを管理する機能。詳細は[こちら。](../features/drive)
 
 ## Notoj
 Misskeyに投稿される、文章、ファイル、アンケートなどを含めることができるコンテンツ。詳細は[こちら。](../features/note)
 
-## ミスキスト
-Misskeyを使う人のこと。
+## Miskisto
+Uzuloj de Miskejo.
 
 ## モデレーター
 スパムの凍結およびサイレンスや不適切な投稿の削除など、コミュニティ運営に関する権限を持つユーザー。
 
-## Transa
+## Transa aŭ fora
 他サーバーのことを指します。リモートユーザーといったように接頭辞としても使われます。ローカルの逆です。
 
 ## Konfederacio
