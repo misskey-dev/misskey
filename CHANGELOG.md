@@ -12,6 +12,7 @@
 ### Improvements
 - Misskey更新時にダイアログを表示するように
 - ジョブキューウィジェットに警報音を鳴らす設定を追加
+‐ UIデザインの調整
 
 ### Bugfixes
 - ActivityPub: 長いユーザーの名前や自己紹介の対応
