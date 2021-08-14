@@ -434,7 +434,7 @@ _cw:
   files: "{count} dosiero(j)"
 _poll:
   choiceN: "Balotilo {n}"
-  noMore: "Oni ne plu povas aldoni."
+  noMore: "Oni ne povas aldoni pli."
   infinite: "Neniam"
   deadlineTime: "hor"
   votesCount: "{n} balotiloj"
