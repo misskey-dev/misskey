@@ -56,7 +56,7 @@ function validateActor(x: IObject, uri: string): IActor {
 	};
 
 	const truncate = (input: string | undefined, size: number) => {
-		if(!input || input.length <= size){
+		if (!input || input.length <= size) {
 			return input;
 		} else {
 			return input.substring(0, size);
