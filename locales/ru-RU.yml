@@ -773,6 +773,8 @@ hashtags: "Хэштег"
 troubleshooting: "Разрешение проблем"
 useBlurEffect: "Размытие в интерфейсе"
 learnMore: "Подробнее"
+misskeyUpdated: "Misskey обновился!"
+whatIsNew: "Что новенького?"
 _docs:
   continueReading: "Читать подробнее"
   features: "Возможности"
