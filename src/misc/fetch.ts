@@ -83,6 +83,7 @@ export const httpAgent = config.proxy
 		keepAliveMsecs: 30 * 1000,
 		maxSockets,
 		maxFreeSockets: 256,
+		scheduling: 'lifo',
 		proxy: config.proxy
 	})
 	: _http;
@@ -96,6 +97,7 @@ export const httpsAgent = config.proxy
 		keepAliveMsecs: 30 * 1000,
 		maxSockets,
 		maxFreeSockets: 256,
+		scheduling: 'lifo',
 		proxy: config.proxy
 	})
 	: _https;
