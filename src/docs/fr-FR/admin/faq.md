@@ -1,5 +1,5 @@
 # Questions fréquentes
-ここでは、サーバー管理者向けのよくある質問を掲載しています。
+Ici sont publiées les questions que les administrateur·rice·s de serveurs posent le plus fréquemment.
 
 ## « Je veux configurer un thème par défaut »
-現在、デフォルトテーマ設定機能は実装されていません。
+Pour l'instant, il n'existe aucune fonctionnalité permettant de configurer un thème par défaut pour votre instance.
