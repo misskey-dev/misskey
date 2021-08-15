@@ -769,6 +769,8 @@ squareAvatars: "Avatars carrés"
 sent: "Envoyer"
 hashtags: "Hashtags"
 troubleshooting: "Résolution de problèmes"
+translate: "Traduire"
+translatedFrom: "Traduit depuis {x}"
 _docs:
   continueReading: "Lire plus"
   features: "Fonctionnalités"
