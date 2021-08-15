@@ -2187,13 +2187,6 @@ async-settle@^1.0.0:
   dependencies:
     async-done "^1.2.2"
 
-async@2.6.0:
-  version "2.6.0"
-  resolved "https://registry.yarnpkg.com/async/-/async-2.6.0.tgz#61a29abb6fcc026fea77e56d1c6ec53a795951f4"
-  integrity sha512-xAfGg1/NTLBBKlHFmnd7PlmUW9KhVQIUuSrYem9xzFUZy13ScvtyGGejaae9iAVRiRq9+Cx7DPFaAAhCpyxyPw==
-  dependencies:
-    lodash "^4.14.0"
-
 async@>=0.2.9:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/async/-/async-3.2.0.tgz#b3a2685c5ebb641d3de02d161002c60fc9f85720"
@@ -2687,6 +2680,11 @@ cache-content-type@^1.0.0:
   dependencies:
     mime-types "^2.1.18"
     ylru "^1.2.0"
+
+cacheable-lookup@6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/cacheable-lookup/-/cacheable-lookup-6.0.0.tgz#6fd7e364a0929ee50af00843aaf6e31b9b9f200e"
+  integrity sha512-5qeyMn8/BERrUPdIfcOLkdMrwltVbxIpgnYM61OLWOg3BuSSh9HrkUtTTRxYthQpBrocvYqD0tJ7vU0y6T7OWw==
 
 cacheable-lookup@^5.0.3:
   version "5.0.3"
@@ -5729,6 +5727,11 @@ hosted-git-info@^2.1.4:
   resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-2.8.8.tgz#7539bd4bc1e0e0a895815a2e0262420b12858488"
   integrity sha512-f/wzC2QaWBs7t9IYqB4T3sR1xviIViXJRJTWBlx2Gf3g0Xi5vI7Yy4koXQ1c9OYDGHN9sBy1DQ2AB8fqZBWhUg==
 
+hpagent@0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/hpagent/-/hpagent-0.1.2.tgz#cab39c66d4df2d4377dbd212295d878deb9bdaa9"
+  integrity sha512-ePqFXHtSQWAFXYmj+JtOTHr84iNrII4/QRlAAPPE+zqnKy4xJo7Ie1Y4kC7AdB+LxLxSTTzBMASsEcy0q8YyvQ==
+
 hpagent@^0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/hpagent/-/hpagent-0.1.1.tgz#66f67f16e5c7a8b59a068e40c2658c2c749ad5e2"
@@ -5827,7 +5830,7 @@ http-headers@^3.0.1:
   dependencies:
     next-line "^1.1.0"
 
-http-proxy-agent@4.0.1, http-proxy-agent@^4.0.1:
+http-proxy-agent@^4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/http-proxy-agent/-/http-proxy-agent-4.0.1.tgz#8a8c8ef7f5932ccf953c296ca8291b95aa74aa3a"
   integrity sha512-k0zdNgqWTGA6aeIRVpvfVob4fL52dTfaehylg0Y4UvSySvOq/Y+BOyPrgpUrA7HylqvU8vIZGsRuXmspskV0Tg==
@@ -5869,7 +5872,7 @@ http_ece@1.1.0:
   dependencies:
     urlsafe-base64 "~1.0.0"
 
-https-proxy-agent@5.0.0, https-proxy-agent@^5.0.0:
+https-proxy-agent@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/https-proxy-agent/-/https-proxy-agent-5.0.0.tgz#e2a90542abb68a762e0a0850f6c9edadfd8506b2"
   integrity sha512-EkYm5BcKUGiduxzSt3Eppko+PiNWNEpa4ySk9vTC6wDsQJW9rHSa+UhGNJoRYp7bz6Ht1eaRIa6QaJqO5rCFbA==
@@ -7253,7 +7256,7 @@ lodash.uniq@^4.5.0:
   resolved "https://registry.yarnpkg.com/lodash.uniq/-/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
   integrity sha1-0CJTc662Uq3BvILklFM5qEJ1R3M=
 
-lodash@^4.14.0, lodash@^4.15.0, lodash@^4.17.10, lodash@^4.17.14, lodash@^4.17.19, lodash@^4.17.21, lodash@^4.7.0:
+lodash@^4.15.0, lodash@^4.17.14, lodash@^4.17.19, lodash@^4.17.21, lodash@^4.7.0:
   version "4.17.21"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
@@ -7282,15 +7285,6 @@ log-update@^4.0.0:
     cli-cursor "^3.1.0"
     slice-ansi "^4.0.0"
     wrap-ansi "^6.2.0"
-
-lookup-dns-cache@2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/lookup-dns-cache/-/lookup-dns-cache-2.1.0.tgz#6362340e269071e20b6f0bcf51da98873411e051"
-  integrity sha512-tLcJ7rkqWzZ77D7pN5R2ceWKZsIJ5/6HaLQdmhw3M9fBQQmqS4LZqvBcstKzQ6kuZet5LY4TWTiShx7QmO+Q8w==
-  dependencies:
-    async "2.6.0"
-    lodash "^4.17.10"
-    rr "0.1.0"
 
 lower-case@^1.1.1:
   version "1.1.4"
@@ -10133,11 +10127,6 @@ rndstr@1.0.0:
   dependencies:
     rangestr "0.0.1"
     seedrandom "2.4.2"
-
-rr@0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/rr/-/rr-0.1.0.tgz#a18ec25ec94a67c35f210bb3a85d17914e79cd1e"
-  integrity sha1-oY7CXslKZ8NfIQuzqF0XkU55zR4=
 
 rsvp@^4.8.5:
   version "4.8.5"
