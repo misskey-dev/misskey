@@ -19,7 +19,7 @@
 		</div>
 	</div>
 	<div class="new" v-if="queue > 0"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
-	<XTimeline ref="tl"
+	<XTimeline ref="tl" class="tl"
 		:key="src === 'list' ? `list:${list.id}` : src === 'antenna' ? `antenna:${antenna.id}` : src === 'channel' ? `channel:${channel.id}` : src"
 		:src="src"
 		:list="list ? list.id : null"
@@ -211,8 +211,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .cmuxhskf {
-	background: var(--bg);
-
 	> .new {
 		position: sticky;
 		top: calc(var(--stickyTop, 0px) + 16px);
@@ -288,6 +286,10 @@ export default defineComponent({
 				background: var(--divider);
 			}
 		}
+	}
+
+	> .tl {
+		border-top: solid 0.5px var(--divider);
 	}
 }
 </style>

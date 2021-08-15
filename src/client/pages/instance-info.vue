@@ -14,6 +14,8 @@
 			</FormKeyValueView>
 		</FormGroup>
 
+		<FormButton v-if="$i.isAdmin || $i.isModerator" @click="info" primary>{{ $ts.settings }}</FormButton>
+
 		<FormTextarea readonly :value="instance.description">
 			<span>{{ $ts.description }}</span>
 		</FormTextarea>
@@ -147,6 +149,7 @@ import * as os from '@client/os';
 import number from '@client/filters/number';
 import bytes from '@client/filters/bytes';
 import * as symbols from '@client/symbols';
+import MkInstanceInfo from '@client/pages/instance/instance.vue';
 
 const chartLimit = 90;
 const sum = (...arr) => arr.reduce((r, a) => r.map((b, i) => a[i] + b));
@@ -440,6 +443,12 @@ export default defineComponent({
 				}]
 			};
 		},
+
+		info() {
+			os.popup(MkInstanceInfo, {
+				instance: this.instance
+			}, {}, 'closed');
+		}
 	}
 });
 </script>

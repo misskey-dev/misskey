@@ -1,7 +1,7 @@
 # Widgets
-ウィジェットは、MisskeyのUI上に設置できる小型の情報表示、操作が行えるパーツです。
+Widgets are small information displays or operational parts that can be added to the Misskey UI.
 
-ウィジェットを編集するには、ウィジェット編集モードに切り替えます。切り替え方法はUIによって異なります。 ウィジェット編集モードでは、ウィジェットの追加、削除、並び替え、およびそれぞれのウィジェットの設定を行えます。
+To edit which widgets are displayed, enter the Widget editing mode.Entering this mode can differ based on the used UI. In it you can add, delete, reorganize or change the configuration of individual widgets.
 
-## 利用可能なウィジェット一覧
+## List of available widgets
 todo

@@ -3,7 +3,7 @@
 	<button class="item _button account" @click="openAccountMenu" v-click-anime>
 		<MkAvatar :user="$i" class="avatar"/><MkAcct class="text" :user="$i"/>
 	</button>
-	<div class="post" @click="post">
+	<div class="post" @click="post" data-cy-open-post-form>
 		<MkButton class="button" primary full>
 			<i class="fas fa-pencil-alt fa-fw"></i><span class="text" v-if="!iconOnly">{{ $ts.note }}</span>
 		</MkButton>
