@@ -548,15 +548,15 @@ _notification:
   youGotPoll: "{name} balotis"
   youGotMessagingMessageFromUser: "{name} sentis mesaĝon al vi."
   youWereFollowed: "sksekvis vin"
-  youReceivedFollowRequest: "Vi ricevis eksekvopeton."
-  yourFollowRequestAccepted: "Via eksekvopeto estas akceptita."
+  youReceivedFollowRequest: "Vi ricevis peton de eksekvo"
+  yourFollowRequestAccepted: "Via peton de sekvado estas akceptita."
   _types:
     follow: "Sekvatoj"
     mention: "Mencioj"
     renote: "Fari renoton"
     quote: "Citi"
     reaction: "Reagoj"
-    receiveFollowRequest: "Eksekvopeto ricevita"
+    receiveFollowRequest: "Ricevita peton de sekvado"
     followRequestAccepted: "Akceptita eksekvopeto"
 _deck:
   profile: "Agordaro"
