@@ -1,5 +1,5 @@
 # Signaler un problème
-不具合と思われる状況に遭遇したときは、まず[トラブルシューティング](./troubleshooting)をご一読ください。 それでも問題が解決しないときは、以下の情報を含めて[フォーラム](https://forum.misskey.io/)に投稿してください。 投稿することで、解決策が見つかったり、不具合と判断されれば開発チームによって修正が行われます。
+Lorsque vous pensez rencontrer un bug, commencez par consulter la page [Résolution des problèmes](./troubleshooting). Si, malgré cela, vous ne parvenez toujours pas à résoudre le problème, vous pouvez le soumettre sur le [Forum](https://forum.misskey.io/) en incluant dans votre message les renseignements listés ci-dessous. Contribuer sur le Forum vous permettra soit de trouver une solution soit de conclure à un bug, auquel cas l'équipe de développement sera en mesure d'effectuer les corrections nécessaires.
 
 ## Renseignements à inclure
 - Misskeyのバージョン([情報ページ](/about)で確認できます)
