@@ -372,7 +372,7 @@ _channel:
   create: "Krei kanalon"
   edit: "Redakti kanalon"
   following: "Sekvante"
-  usersCount: "{n} kuniĝanto(j)"
+  usersCount: "{n} partoprenanto(j)"
 _menuDisplay:
   hide: "Kaŝi"
 _wordMute:
