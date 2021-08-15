@@ -52,7 +52,6 @@ searchUser: "Serĉi uzanton"
 reply: "Respondi"
 loadMore: "Vidu pli"
 showMore: "Vidi pli"
-youGotNewFollower: "Vin eksekvis"
 receiveFollowRequest: "Eksekvopeton riceviĝis."
 followRequestAccepted: "La eksekvopeto akceptiĝis."
 mention: "Mencioj"
@@ -78,7 +77,7 @@ retry: "Reprovi"
 enterListName: "Entajpu nomon de la listo"
 privacy: "Privateco"
 follow: "Sekvi"
-followRequest: "Peti akcepti de vi eksekvi"
+followRequest: "Fari eksekvopeton"
 followRequests: "Eksekvopetoj"
 unfollow: "Ne plu sekvi"
 enterEmoji: "Entajpu emoĵion"
@@ -335,8 +334,6 @@ hashtags: "Kradvorto"
 _gallery:
   liked: "Ŝatitaj notoj"
 _email:
-  _follow:
-    title: "Vin eksekvis"
   _receiveFollowRequest:
     title: "Vi ricevis eksekvopeton."
 _aboutMisskey:
@@ -545,7 +542,7 @@ _notification:
     quote: "Citi"
     reaction: "Reagoj"
     receiveFollowRequest: "Eksekvopeto ricevita"
-    followRequestAccepted: "Eksekvopeto akceptiĝis."
+    followRequestAccepted: "Akceptita eksekvopeto"
 _deck:
   profile: "Agordaro"
   _columns:
