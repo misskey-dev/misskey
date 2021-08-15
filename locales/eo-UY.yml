@@ -557,7 +557,7 @@ _notification:
     quote: "Citi"
     reaction: "Reagoj"
     receiveFollowRequest: "Ricevita peton de sekvado"
-    followRequestAccepted: "Akceptita eksekvopeto"
+    followRequestAccepted: "Peto por eksekvu akceptita"
 _deck:
   profile: "Agordaro"
   _columns:
