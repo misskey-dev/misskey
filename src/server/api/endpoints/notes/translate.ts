@@ -53,10 +53,13 @@ export default define(meta, async (ps, user) => {
 		return 204; // TODO: 良い感じのエラー返す
 	}
 
+	let targetLang = ps.targetLang;
+	if (targetLang.includes('-')) targetLang = targetLang.split('-')[0];
+
 	const params = new URLSearchParams();
 	params.append('auth_key', instance.deeplAuthKey);
 	params.append('text', note.text);
-	params.append('target_lang', ps.targetLang);
+	params.append('target_lang', targetLang);
 
 	const res = await fetch('https://api-free.deepl.com/v2/translate', {
 		method: 'POST',
