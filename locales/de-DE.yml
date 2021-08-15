@@ -775,6 +775,8 @@ useBlurEffect: "Weichzeichnungseffekt in der Benutzeroberfläche verwenden"
 learnMore: "Mehr erfahren"
 misskeyUpdated: "Misskey wurde aktualisiert!"
 whatIsNew: "Änderungen anzeigen"
+translate: "Übersetzen"
+translatedFrom: "Aus {x} übersetzt"
 _docs:
   continueReading: "Mehr lesen"
   features: "Funktionen"
