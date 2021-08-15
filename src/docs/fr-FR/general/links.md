@@ -1,7 +1,7 @@
 # Liens utiles
 
 ## Sites internet
-- [Official Discord](https://discord.gg/Wp8gVStHW3) - Misskey公式Discordサーバー
+- [Official Discord](https://discord.gg/Wp8gVStHW3) - Serveur Discord officiel de Misskey
 - [Misskey Forum](https://forum.misskey.io/) - Misskeyに関する話題を扱うフォーラム
 
 ## Comptes
