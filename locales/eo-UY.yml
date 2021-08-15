@@ -364,7 +364,7 @@ _instanceTicker:
 _channel:
   create: "Krei kanalon"
   edit: "Redakti kanalon"
-  following: "Sekvata"
+  following: "Sekvante"
 _menuDisplay:
   hide: "Kaŝi"
 _wordMute:
@@ -412,8 +412,8 @@ _permissions:
   "read:drive": "Operacio por legi la informon de dosiero en via diskingo sur Misskey"
   "write:drive": "Ĉia operacio por skribi, forviŝi, aŭ alimaniere ŝanĝi la informon de dosiero en via diskingo de Misskey"
   "read:favorites": "Vidi vian liston de preferatoj"
-  "read:following": "Vidi tion kion vi sekvas"
-  "write:following": "Sekvi kaj/aŭ malsekvi alian uzanton"
+  "read:following": "Vidi tiun kiun vi sekvas"
+  "write:following": "Sekvi aŭ malsekvi alian uzanton"
   "read:messaging": "Vidi via retbabilejo"
   "read:mutes": "Vidi vian liston de silentigoj"
   "write:mutes": "Redakti vian liston de silentigoj"
@@ -425,7 +425,7 @@ _permissions:
   "read:page-likes": "Vidi ŝatojn de paĝo"
   "read:channels": "Vidi kanalojn"
 _antennaSources:
-  homeTimeline: "Notoj far uzantoj sekvataj de vi"
+  homeTimeline: "Notoj far uzantoj, kiujn vi sekvas"
 _weekday:
   sunday: "dimanĉo"
   monday: "lundo"
@@ -457,7 +457,7 @@ _visibility:
   home: "Hejmo"
   homeDescription: "Elsendi nur sur la hejmtemplinio"
   followers: "Sekvantoj"
-  followersDescription: "Elsendi nur al sekvantoj al mi"
+  followersDescription: "Nur al sekvantoj al mi"
   localOnly: "Nur loka"
   localOnlyDescription: "Ne montri al transaj uzantoj"
 _postForm:
