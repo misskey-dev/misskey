@@ -1,6 +1,6 @@
 # Pri Misskey
 
-Misskeyはオープンソースの分散型マイクロブログプラットフォームプロジェクトです。 開発は日本でsyuiloによって2014年から開始されました。 ドライブ、リアクションなどの豊富な機能や、高いカスタマイズ性を備えたUIを持つことが特徴です。
+Misskey estas malfermitkoda disigita mikroblogo. Ĝia trajnoj estas diversaj funkcioj je diskingo aŭ reagoj ktp, kaj alte agordebla uzantinterfaco. Evoluigo ekfaris de syuilo de 2014.
 
 ## Historio
 開発当初は掲示板がメインのサービスでしたが、ユーザーが短文を投稿し、それを時系列で流れるタイムライン機能を追加したところ人気が高まり、徐々にそれがメインとして開発が進むようになりました。 当初は分散型ではありませんでしたが、2018年にAcitivityPubを実装し分散型になったことで、より多くの方に認知され利用されるサービスになり、現在に至ります。
