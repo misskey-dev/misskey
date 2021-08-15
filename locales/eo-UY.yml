@@ -152,7 +152,7 @@ federating: "Kunfederado"
 blocked: "Blokata"
 subscribing: "Abonita"
 notResponding: "Alvokato ne disponeblas"
-instanceFollowing: "Sekvatoj sur la ekzemplo"
+instanceFollowing: "Sekvatoj el la ekzemplo"
 instanceFollowers: "Sekvantoj el la ekzemplo"
 instanceUsers: "Uzantoj de la ekzemplo"
 changePassword: "Ŝanĝi pasvorton"
@@ -334,6 +334,8 @@ hashtags: "Kradvorto"
 _gallery:
   liked: "Ŝatitaj notoj"
 _email:
+  _follow:
+    title: "Vi estas eksekvita"
   _receiveFollowRequest:
     title: "Vi ricevis eksekvopeton."
 _aboutMisskey:
