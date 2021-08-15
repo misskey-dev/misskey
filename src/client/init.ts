@@ -207,8 +207,11 @@ if (lastVersion !== version) {
 	// テーマリビルドするため
 	localStorage.removeItem('theme');
 
-	if (lastVersion != null && compareVersions(version, lastVersion) === 1) {
-		popup(import('@client/components/updated.vue'), {}, {}, 'closed');
+	try { // 変なバージョン文字列来るとcompareVersionsでエラーになるため
+		if (lastVersion != null && compareVersions(version, lastVersion) === 1) {
+			popup(import('@client/components/updated.vue'), {}, {}, 'closed');
+		}
+	} catch (e) {
 	}
 }
 
