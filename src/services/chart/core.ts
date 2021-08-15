@@ -203,7 +203,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 			indices: [{
 				columns: ['date', 'group'],
 				unique: true,
-			}, { // groupにnullが含まれると↑のuniqeuは機能しないので↓の部分インデックスでカバー
+			}, { // groupにnullが含まれると↑のuniqueは機能しないので↓の部分インデックスでカバー
 				columns: ['date'],
 				unique: true,
 				where: '"group" IS NULL'
