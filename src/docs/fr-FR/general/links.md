@@ -8,5 +8,5 @@
 - [@repo@misskey.io](https://misskey.io/@repo) - Misskeyのリポジトリの更新を投稿するbot
 
 ## Programmathèques
-- [misskey-dev/misskey.js](https://github.com/misskey-dev/misskey.js) - Un SDK Misskey de JavaScript
-- [misskey-dev/mfm.js](https://github.com/misskey-dev/mfm.js) - JavaScriptのMFMパーサー実装
+- [misskey-dev/misskey.js](https://github.com/misskey-dev/misskey.js) - SDK Misskey de JavaScript
+- [misskey-dev/mfm.js](https://github.com/misskey-dev/mfm.js) - Implémentation d'un analyseur MFM en JavaScript
