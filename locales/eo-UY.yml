@@ -8,7 +8,7 @@ notifications: "Sciigoj"
 username: "Uzantnomo"
 password: "Pasvorto"
 forgotPassword: "Ĉu vi forgesis pasvorton?"
-fetchingAsApObject: "Informpetado de Fediverso"
+fetchingAsApObject: "Informpetado de Fediverso..."
 ok: "Akcepteble"
 gotIt: "Mi komprenas"
 cancel: "Nuligi"
@@ -356,6 +356,7 @@ _mfm:
   hashtag: "Kradvorto"
   url: "URL"
   small: "Malgrande"
+  center: "Centrigi"
   inlineCode: "Kodo (en linio)"
   blockCode: "Kodo (bloko)"
   inlineMath: "Formulo (en linio)"
@@ -371,6 +372,7 @@ _channel:
   create: "Krei kanalon"
   edit: "Redakti kanalon"
   following: "Sekvante"
+  usersCount: "{n} kuniĝanto(j)"
 _menuDisplay:
   hide: "Kaŝi"
 _wordMute:
@@ -503,6 +505,7 @@ _pages:
   my: "Miaj paĝoj"
   content: "Blokado de paĝo"
   url: "URL de paĝo"
+  alignCenter: "Centrigi"
   chooseBlock: "Aldoni blokon"
   blocks:
     image: "Bildo"
