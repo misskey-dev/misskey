@@ -201,11 +201,12 @@ export default abstract class Chart<T extends Record<string, any>> {
 				...Chart.convertSchemaToFlatColumnDefinitions(schema)
 			},
 			indices: [{
-				columns: ['date']
-			}, {
-				columns: ['group']
-			}, {
-				columns: ['date', 'group']
+				columns: ['date', 'group'],
+				unique: true,
+			}, { // groupにnullが含まれると↑のuniqeuは機能しないので↓の部分インデックスでカバー
+				columns: ['date'],
+				unique: true,
+				where: '"group" IS NULL'
 			}]
 		});
 	}
