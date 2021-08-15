@@ -2,7 +2,7 @@
 
 ## Sites internet
 - [Official Discord](https://discord.gg/Wp8gVStHW3) - Serveur Discord officiel de Misskey
-- [Misskey Forum](https://forum.misskey.io/) - Misskeyに関する話題を扱うフォーラム
+- [Misskey Forum](https://forum.misskey.io/) - Forum pour discuter de tout sujet en lien avec Misskey
 
 ## Comptes
 - [@repo@misskey.io](https://misskey.io/@repo) - Misskeyのリポジトリの更新を投稿するbot
