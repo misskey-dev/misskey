@@ -1,6 +1,6 @@
 # Pri Misskey
 
-Misskey estas malfermitkoda disigita mikroblogo. Ĝia trajnoj estas diversaj funkcioj je diskingo aŭ reagoj ktp, kaj alte agordebla uzantinterfaco. Evoluigo ekfaris de syuilo de 2014.
+Misskey estas malfermitkoda distribuita mikroblogo. Ĝia trajtoj estas diversaj funkcioj je diskingo aŭ reagoj ktp, kaj alte agordebla uzantinterfaco. Evoluigo ekfaris de syuilo de 2014.
 
 ## Historio
 開発当初は掲示板がメインのサービスでしたが、ユーザーが短文を投稿し、それを時系列で流れるタイムライン機能を追加したところ人気が高まり、徐々にそれがメインとして開発が進むようになりました。 当初は分散型ではありませんでしたが、2018年にAcitivityPubを実装し分散型になったことで、より多くの方に認知され利用されるサービスになり、現在に至ります。
@@ -8,7 +8,7 @@ Misskey estas malfermitkoda disigita mikroblogo. Ĝia trajnoj estas diversaj fun
 
 誰でも開発に参加することができ、現在でも活発に開発が続いています。
 
-## Kio estas disigita?
+## 分散型とは何か？
 
 <b>分散(distributed)型</b>とは、<b>非中央集権(decentralized)</b>とも呼ばれ、コミュニティが多数のサーバーに分散して存在し、それらが相互に<b>通信(連合、federation)</b>することでコンテンツ共有<b>ネットワーク(Fediverse)</b>を形成していることが特徴のサービスです。 単一のサーバーしか存在しない、もしくは複数存在しても互いに独立している場合は中央集権なサービスと言われ、例えばTwitterやFacebookなどほとんどのサービスがそれに該当します。 分散型のメリットは、自分に合った運営者やテーマのサーバーを選択できることです。自分でサーバーを作成することもできます。連合するおかげで、どのサーバーを選んでも、同じコミュニティにアクセスできます。
 
