@@ -61,7 +61,7 @@ A state in which the visibility of the notes by said user cannot be set to "Publ
 ## Flostigi
 アカウントが使用不可に設定されている状態。
 
-## Diskingo (Drive)
+## Disko
 Misskeyにアップロードしたファイルを管理する機能。詳細は[こちら。](../features/drive)
 
 ## Notoj
