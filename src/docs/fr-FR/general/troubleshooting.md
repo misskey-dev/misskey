@@ -33,8 +33,8 @@
 ## Renoteができない
 フォロワー限定のノートはRenoteすることはできません。
 
-## UI上で特定の要素が表示されない
+## Des éléments spécifiques de l'interface ne s'affichent pas
 広告ブロッカーを使用しているとそのような不具合が発生することがあります。Misskeyではオフにしてご利用ください。
 
-## UI上で未翻訳の部分がある
+## Certaines parties de l'interface ne sont pas traduites
 ほとんどの場合、単に翻訳が間に合っていないだけで、不具合ではありません。翻訳が終わるまでお待ちください。 [翻訳に参加](./misskey)していただくことも可能です。
