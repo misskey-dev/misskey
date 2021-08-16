@@ -187,6 +187,7 @@ tos: "Kondiĉoj de uzado"
 start: "Komenciĝi"
 home: "Hejmo"
 remoteUserCaution: "Ĉi tiu Infomoj estas ne tute ekzakta pro distanca uzanto."
+images: "Bildoj"
 birthday: "Naskiĝdato"
 registeredDate: "Registriĝdato"
 drive: "Diskingo"
@@ -455,6 +456,7 @@ _widgets:
   clock: "Horloĝo"
   federation: "Kunfederaĵo"
   slideshow: "Bildoprezento"
+  button: "Butono"
   onlineUsers: "Surkonektita uzanto"
 _cw:
   show: "Vidu pli"
@@ -516,6 +518,7 @@ _pages:
   chooseBlock: "Aldoni blokon"
   blocks:
     image: "Bildo"
+    button: "Butono"
     _post:
       canvasId: "Kanvasa identigilo"
     _canvas:
