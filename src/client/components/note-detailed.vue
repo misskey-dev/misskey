@@ -1,6 +1,6 @@
 <template>
 <div
-	class="note _block"
+	class="lxwezrsl _block"
 	v-if="!muted"
 	v-show="!isDeleted"
 	:tabindex="!isDeleted ? '-1' : null"
@@ -899,7 +899,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.note {
+.lxwezrsl {
 	position: relative;
 	transition: box-shadow 0.1s ease;
 	overflow: hidden;
