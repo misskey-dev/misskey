@@ -782,7 +782,7 @@ _docs:
   generalTopics: "Sujets généraux"
   advancedTopics: "Sujets avancés"
   admin: "Gestion"
-  translateWarn: "Ceci est une traduction dont le contenu peut différer de l'original."
+  translateWarn: "Ceci est une traduction dont le contenu peut différer du texte original."
 _ad:
   back: "Retour"
   reduceFrequencyOfThisAd: "Voir cette publicité moins souvent"
