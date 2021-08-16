@@ -31,6 +31,9 @@ import { normalizeForSearch } from '@/misc/normalize-for-search';
 
 const logger = apLogger;
 
+const nameLength = 128;
+const summaryLength = 2048;
+
 /**
  * Validate and convert to actor object
  * @param x Fetched object
@@ -52,11 +55,23 @@ function validateActor(x: IObject, uri: string): IActor {
 		if (e) throw new Error(`invalid Actor: ${name} ${e.message}`);
 	};
 
+	const truncate = (input: string | undefined, size: number) => {
+		if (!input || input.length <= size) {
+			return input;
+		} else {
+			return input.substring(0, size);
+		}
+	};
+
 	validate('id', x.id, $.str.min(1));
 	validate('inbox', x.inbox, $.str.min(1));
 	validate('preferredUsername', x.preferredUsername, $.str.min(1).max(128).match(/^\w([\w-.]*\w)?$/));
-	validate('name', x.name, $.optional.nullable.str.max(128));
-	validate('summary', x.summary, $.optional.nullable.str.max(2048));
+
+	// These fields are only informational, and some AP software allows these
+	// fields to be very long. If they are too long, we cut them off. This way
+	// we can at least see these users and their activities.
+	validate('name', truncate(x.name, nameLength), $.optional.nullable.str);
+	validate('summary', truncate(x.summary, summaryLength), $.optional.nullable.str);
 
 	const idHost = toPuny(new URL(x.id!).hostname);
 	if (idHost !== expectHost) {

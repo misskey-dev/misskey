@@ -330,6 +330,7 @@ hr {
 	contain: layout; // ふき出しがボックスから飛び出て表示されるようなデザインをする場合もあるので paint は contain することができない
 }
 
+// TODO: 廃止
 ._root {
 	box-sizing: border-box;
 	margin: var(--root-margin, 32px) auto;

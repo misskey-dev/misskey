@@ -773,6 +773,10 @@ hashtags: "ハッシュタグ"
 troubleshooting: "トラブルシューティング"
 useBlurEffect: "UIにぼかし効果を使用"
 learnMore: "詳しく"
+misskeyUpdated: "Misskeyが更新されました！"
+whatIsNew: "更新情報を見る"
+translate: "翻訳"
+translatedFrom: "{x}から翻訳"
 
 _docs: 
   continueReading: "続きを読む"

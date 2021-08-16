@@ -93,13 +93,13 @@ export default defineComponent({
 		});
 
 		return h(this.$store.state.animation ? TransitionGroup : 'div', this.$store.state.animation ? {
-			class: 'sqadhkmv' + (this.noGap ? ' noGap _block' : ''),
+			class: 'sqadhkmv' + (this.noGap ? ' noGap' : ''),
 			name: 'list',
 			tag: 'div',
 			'data-direction': this.direction,
 			'data-reversed': this.reversed ? 'true' : 'false',
 		} : {
-			class: 'sqadhkmv' + (this.noGap ? ' noGap _block' : ''),
+			class: 'sqadhkmv' + (this.noGap ? ' noGap' : ''),
 		}, {
 			default: renderChildren
 		});
