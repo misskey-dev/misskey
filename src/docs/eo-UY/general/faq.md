@@ -7,7 +7,7 @@
 ただ、サードパーティ製アプリはどうしても機能への対応が遅れてしまうため、とくに拘りがなければ公式のWebクライアントの利用をおすすめします。 なお、MisskeyのWebクライアントはPWAに対応しているので、ネイティブアプリのように動作させることも可能です。 詳しくは[こちら](todo)をご覧ください。
 
 ## 他のサーバーのユーザーをフォローするときは？
-メニューから検索を選び、ユーザー名をホスト込みで入力します。例: `@syuilo@misskey.io`
+Elektu la "Serĉi" el la menuo, kaj entajpu uzantnomon kiu enhavas ilian gastignomon.例: `@syuilo@misskey.io`
 
 ## Renoteを削除するには？
 Renoteの時刻表示の隣にある「...」を押し、「Renote解除」を選択します。 Renoteについては[こちら](../features/note)をご確認ください。
