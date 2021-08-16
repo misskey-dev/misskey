@@ -1,5 +1,5 @@
 # Résolution des problèmes
-<div class="info">ℹ️ <a href="./faq">よくある質問</a>も合わせてお役立てください。</div>
+<div class="info">ℹ️ N'hésitez pas à consulter les <a href="./faq">Questions fréquentes</a> en complément de cette page.</div>
 
 問題が発生したときは、まずこちらをご確認ください。 該当する項目が無い、もしくは手順を試しても効果がない場合は、サーバーの管理者に連絡するか[不具合を報告](./report-issue)してください。
 
@@ -15,7 +15,7 @@
 
 まだ問題がある場合は、サーバーの問題と思われるのでサーバーの管理者に連絡してください。
 
-## クライアントの動作が遅い
+## Le client est lent
 以下を試してみてください:
 
 - クライアント設定で「UIのアニメーションを減らす」を有効にする
