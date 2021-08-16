@@ -9,7 +9,7 @@
 		<div>{{ $ts.noNotes }}</div>
 	</div>
 
-	<div v-else>
+	<div v-else class="giivymft">
 		<div v-show="more && reversed" style="margin-bottom: var(--margin);">
 			<MkButton style="margin: 0 auto;" @click="fetchMoreFeature" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
 				<template v-if="!moreFetching">{{ $ts.loadMore }}</template>
@@ -17,8 +17,8 @@
 			</MkButton>
 		</div>
 
-		<XList ref="notes" :items="notes" v-slot="{ item: note }" :direction="reversed ? 'up' : 'down'" :reversed="reversed" :no-gap="noGap" :ad="true">
-			<XNote :note="note" class="_block" @update:note="updated(note, $event)" :key="note._featuredId_ || note._prId_ || note.id"/>
+		<XList ref="notes" :items="notes" v-slot="{ item: note }" :direction="reversed ? 'up' : 'down'" :reversed="reversed" :no-gap="noGap" :ad="true" class="notes">
+			<XNote :note="note" @update:note="updated(note, $event)" :key="note._featuredId_ || note._prId_ || note.id"/>
 		</XList>
 
 		<div v-show="more && !reversed" style="margin-top: var(--margin);">
@@ -107,5 +107,11 @@ export default defineComponent({
 .fade-enter-from,
 .fade-leave-to {
 	opacity: 0;
+}
+
+.giivymft {
+	> .notes {
+		background: var(--panel);
+	}
 }
 </style>

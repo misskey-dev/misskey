@@ -18,7 +18,7 @@
 	</span>
 	<span class="label">
 		<span><slot></slot></span>
-		<p><slot name="desc"></slot></p>
+		<p><slot name="caption"></slot></p>
 	</span>
 </div>
 </template>
@@ -28,7 +28,7 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
 	props: {
-		value: {
+		modelValue: {
 			type: Boolean,
 			default: false
 		},
@@ -39,13 +39,13 @@ export default defineComponent({
 	},
 	computed: {
 		checked(): boolean {
-			return this.value;
+			return this.modelValue;
 		}
 	},
 	methods: {
 		toggle() {
 			if (this.disabled) return;
-			this.$emit('update:value', !this.checked);
+			this.$emit('update:modelValue', !this.checked);
 		}
 	}
 });
@@ -136,7 +136,7 @@ export default defineComponent({
 
 		> p {
 			margin: 0;
-			opacity: 0.7;
+			color: var(--fgTransparentWeak);
 			font-size: 90%;
 		}
 	}

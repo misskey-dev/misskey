@@ -272,7 +272,7 @@ export default defineComponent({
 	
 		showTypeMenu(e: MouseEvent) {
 			return new Promise<ThemeValue>((resolve) => {
-				os.modalMenu([{
+				os.popupMenu([{
 					text: this.$ts._theme.defaultValue,
 					action: () => resolve(null),
 				}, {

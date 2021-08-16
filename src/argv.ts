@@ -18,7 +18,7 @@ program
 
 if (process.env.MK_ONLY_QUEUE) program.onlyQueue = true;
 if (process.env.NODE_ENV === 'test') program.disableClustering = true;
-if (process.env.NODE_ENV === 'test') program.quiet = true;
+//if (process.env.NODE_ENV === 'test') program.quiet = true;
 if (process.env.NODE_ENV === 'test') program.noDaemons = true;
 
 export { program };
