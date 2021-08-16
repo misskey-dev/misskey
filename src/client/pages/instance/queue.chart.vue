@@ -29,7 +29,7 @@
 <script lang="ts">
 import { defineComponent, markRaw } from 'vue';
 import Chart from 'chart.js';
-import number from '../../filters/number';
+import number from '@client/filters/number';
 
 const alpha = (hex, a) => {
 	const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)!;

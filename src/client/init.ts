@@ -6,7 +6,8 @@ import '@client/style.scss';
 
 import * as Sentry from '@sentry/browser';
 import { Integrations } from '@sentry/tracing';
-import { computed, createApp, watch } from 'vue';
+import { computed, createApp, watch, markRaw } from 'vue';
+import compareVersions from 'compare-versions';
 
 import widgets from '@client/widgets';
 import directives from '@client/directives';
@@ -16,7 +17,7 @@ import { router } from '@client/router';
 import { applyTheme } from '@client/scripts/theme';
 import { isDeviceDarkmode } from '@client/scripts/is-device-darkmode';
 import { i18n } from '@client/i18n';
-import { stream, dialog, post } from '@client/os';
+import { stream, dialog, post, popup } from '@client/os';
 import * as sound from '@client/scripts/sound';
 import { $i, refreshAccount, login, updateAccount, signout } from '@client/account';
 import { defaultStore, ColdDeviceStorage } from '@client/store';
@@ -198,6 +199,23 @@ if (splash) {
 	splash.style.pointerEvents = 'none';
 }
 
+// クライアントが更新されたか？
+const lastVersion = localStorage.getItem('lastVersion');
+if (lastVersion !== version) {
+	localStorage.setItem('lastVersion', version);
+
+	// テーマリビルドするため
+	localStorage.removeItem('theme');
+
+	try { // 変なバージョン文字列来るとcompareVersionsでエラーになるため
+		if (lastVersion != null && compareVersions(version, lastVersion) === 1) {
+			popup(import('@client/components/updated.vue'), {}, {}, 'closed');
+		}
+	} catch (e) {
+	}
+}
+
+// NOTE: この処理は必ず↑のクライアント更新時処理より後に来ること(テーマ再構築のため)
 watch(defaultStore.reactiveState.darkMode, (darkMode) => {
 	applyTheme(darkMode ? ColdDeviceStorage.get('darkTheme') : ColdDeviceStorage.get('lightTheme'));
 }, { immediate: localStorage.theme == null });
@@ -243,6 +261,14 @@ watch(defaultStore.reactiveState.useBlurEffectForModal, v => {
 	document.documentElement.style.setProperty('--modalBgFilter', v ? 'blur(4px)' : 'none');
 }, { immediate: true });
 
+watch(defaultStore.reactiveState.useBlurEffect, v => {
+	if (v) {
+		document.documentElement.style.removeProperty('--blur');
+	} else {
+		document.documentElement.style.setProperty('--blur', 'none');
+	}
+}, { immediate: true });
+
 let reloadDialogShowing = false;
 stream.on('_disconnected_', async () => {
 	if (defaultStore.state.serverDisconnectedBehavior === 'reload') {
@@ -282,7 +308,7 @@ if ($i) {
 		}
 	}
 
-	const main = stream.useChannel('main', null, 'System');
+	const main = markRaw(stream.useChannel('main', null, 'System'));
 
 	// 自分の情報が更新されたとき
 	main.on('meUpdated', i => {

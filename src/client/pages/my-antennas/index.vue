@@ -1,12 +1,12 @@
 <template>
 <div class="ieepwinx _section">
-	<MkButton @click="create" primary class="add"><i class="fas fa-plus"></i> {{ $ts.add }}</MkButton>
+	<MkButton :link="true" to="/my/antennas/create" primary class="add"><i class="fas fa-plus"></i> {{ $ts.add }}</MkButton>
 
 	<div class="_content">
-		<XAntenna v-if="draft" :antenna="draft" @created="onAntennaCreated" style="margin-bottom: var(--margin);"/>
-
-		<MkPagination :pagination="pagination" #default="{items}" class="antennas" ref="list">
-			<XAntenna v-for="(antenna, i) in items" :key="antenna.id" :antenna="antenna" @deleted="onAntennaDeleted"/>
+		<MkPagination :pagination="pagination" #default="{items}" ref="list">
+			<MkA class="ljoevbzj" v-for="antenna in items" :key="antenna.id" :to="`/my/antennas/${antenna.id}`">
+				<div class="name">{{ antenna.name }}</div>
+			</MkA>
 		</MkPagination>
 	</div>
 </div>
@@ -16,14 +16,12 @@
 import { defineComponent } from 'vue';
 import MkPagination from '@client/components/ui/pagination.vue';
 import MkButton from '@client/components/ui/button.vue';
-import XAntenna from './index.antenna.vue';
 import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
 		MkPagination,
 		MkButton,
-		XAntenna,
 	},
 
 	data() {
@@ -40,43 +38,34 @@ export default defineComponent({
 				endpoint: 'antennas/list',
 				limit: 10,
 			},
-			draft: null,
 		};
 	},
-
-	methods: {
-		create() {
-			this.draft = {
-				name: '',
-				src: 'all',
-				userListId: null,
-				userGroupId: null,
-				users: [],
-				keywords: [],
-				excludeKeywords: [],
-				withReplies: false,
-				caseSensitive: false,
-				withFile: false,
-				notify: false
-			};
-		},
-
-		onAntennaCreated() {
-			this.$refs.list.reload();
-			this.draft = null;
-		},
-
-		onAntennaDeleted() {
-			this.$refs.list.reload();
-		},
-	}
 });
 </script>
 
 <style lang="scss" scoped>
 .ieepwinx {
+	padding: 16px;
+
 	> .add {
 		margin: 0 auto 16px auto;
+	}
+
+	.ljoevbzj {
+		display: block;
+		padding: 16px;
+		margin-bottom: 8px;
+		border: solid 1px var(--divider);
+		border-radius: 6px;
+
+		&:hover {
+			border: solid 1px var(--accent);
+			text-decoration: none;
+		}
+
+		> .name {
+			font-weight: bold;
+		}
 	}
 }
 </style>

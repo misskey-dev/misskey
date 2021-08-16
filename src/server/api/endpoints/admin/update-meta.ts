@@ -145,6 +145,10 @@ export const meta = {
 			validator: $.optional.nullable.str,
 		},
 
+		deeplAuthKey: {
+			validator: $.optional.nullable.str,
+		},
+
 		enableTwitterIntegration: {
 			validator: $.optional.bool,
 		},
@@ -560,6 +564,14 @@ export default define(meta, async (ps, me) => {
 
 	if (ps.objectStorageS3ForcePathStyle !== undefined) {
 		set.objectStorageS3ForcePathStyle = ps.objectStorageS3ForcePathStyle;
+	}
+
+	if (ps.deeplAuthKey !== undefined) {
+		if (ps.deeplAuthKey === '') {
+			set.deeplAuthKey = null;
+		} else {
+			set.deeplAuthKey = ps.deeplAuthKey;
+		}
 	}
 
 	await getConnection().transaction(async transactionalEntityManager => {

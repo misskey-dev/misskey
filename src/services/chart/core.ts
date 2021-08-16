@@ -201,11 +201,12 @@ export default abstract class Chart<T extends Record<string, any>> {
 				...Chart.convertSchemaToFlatColumnDefinitions(schema)
 			},
 			indices: [{
-				columns: ['date']
-			}, {
-				columns: ['group']
-			}, {
-				columns: ['date', 'group']
+				columns: ['date', 'group'],
+				unique: true,
+			}, { // groupにnullが含まれると↑のuniqueは機能しないので↓の部分インデックスでカバー
+				columns: ['date'],
+				unique: true,
+				where: '"group" IS NULL'
 			}]
 		});
 	}
@@ -314,11 +315,11 @@ export default abstract class Chart<T extends Record<string, any>> {
 			if (currentLog != null) return currentLog;
 
 			// 新規ログ挿入
-			log = await this.repository.save({
+			log = await this.repository.insert({
 				group: group,
 				date: date,
 				...Chart.convertObjectToFlattenColumns(data)
-			});
+			}).then(x => this.repository.findOneOrFail(x.identifiers[0]));
 
 			logger.info(`${this.name + (group ? `:${group}` : '')}: New commit created`);
 

@@ -48,6 +48,7 @@ const soundsTypes = [
 	'syuilo/ryukyu',
 	'syuilo/kick',
 	'syuilo/snare',
+	'syuilo/queue-jammed',
 	'aisha/1',
 	'aisha/2',
 	'aisha/3',
