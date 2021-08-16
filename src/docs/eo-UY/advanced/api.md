@@ -32,7 +32,7 @@ UUIDを生成する。以後これをセッションIDと呼びます。
 表示する際、URLにクエリパラメータとしていくつかのオプションを設定できます:
 * `name` ... アプリケーション名
     * > 例: `MissDeck`
-* `icon` ... アプリケーションのアイコン画像URL
+* `icon` ... URL de la ikono de programo
     * > 例: `https://missdeck.example.com/icon.png`
 * `callback` ... 認証が終わった後にリダイレクトするURL
     * > 例: `https://missdeck.example.com/callback`
