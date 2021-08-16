@@ -8,6 +8,7 @@ import { generateVisibilityQuery } from '../../common/generate-visibility-query'
 import { Notes } from '../../../../models';
 import { generateMutedUserQuery } from '../../common/generate-muted-user-query';
 import { Brackets } from 'typeorm';
+import { generateBlockedUserQuery } from '../../common/generate-block-query';
 
 export const meta = {
 	tags: ['users', 'notes'],
@@ -100,6 +101,7 @@ export default define(meta, async (ps, me) => {
 
 	generateVisibilityQuery(query, me);
 	if (me) generateMutedUserQuery(query, me, user);
+	if (me) generateBlockedUserQuery(query, me);
 
 	if (ps.withFiles) {
 		query.andWhere('note.fileIds != \'{}\'');
