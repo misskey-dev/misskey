@@ -463,6 +463,8 @@ _mfm:
   mention: "Mencioj"
   hashtag: "Kradvorto"
   url: "URL"
+  link: "Ligilo"
+  bold: "Grasa"
   small: "Malgrande"
   center: "Centrigi"
   inlineCode: "Kodo (en linio)"
@@ -472,6 +474,10 @@ _mfm:
   quote: "Citi"
   emoji: "Personecigitaj emoĵioj"
   search: "Serĉi"
+  flip: "Inversa"
+  x2: "Granda"
+  x3: "Grandega"
+  x4: "Pli grandega"
 _reversi:
   total: "Entute"
 _instanceTicker:
@@ -490,6 +496,8 @@ _wordMute:
   mutedNotes: "Silentigataj notoj"
 _theme:
   code: "Kodo de koloraro"
+  darken: "Malbrileco"
+  lighten: "Brileco"
   keys:
     bg: "Fono"
     navBg: "Fono de flanka stango"
