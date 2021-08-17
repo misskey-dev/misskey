@@ -17,14 +17,16 @@ import { async, signup, request, post, startServer, shutdownServer } from './uti
 describe('Block', () => {
 	let p: childProcess.ChildProcess;
 
-	// alice mutes carol
+	// alice blocks bob
 	let alice: any;
 	let bob: any;
+	let carol: any;
 
 	before(async () => {
 		p = await startServer();
 		alice = await signup({ username: 'alice' });
 		bob = await signup({ username: 'bob' });
+		carol = await signup({ username: 'carol' });
 	});
 
 	after(async () => {
@@ -71,5 +73,19 @@ describe('Block', () => {
 
 		assert.strictEqual(res.status, 400);
 		assert.strictEqual(res.body.error.id, 'b390d7e1-8a5e-46ed-b625-06271cafd3d3');
+	}));
+
+	it('タイムライン(LTL)にブロックされているユーザーの投稿が含まれない', async(async () => {
+		const aliceNote = await post(alice);
+		const bobNote = await post(bob);
+		const carolNote = await post(carol);
+
+		const res = await request('/notes/local-timeline', {}, bob);
+
+		assert.strictEqual(res.status, 200);
+		assert.strictEqual(Array.isArray(res.body), true);
+		assert.strictEqual(res.body.some((note: any) => note.id === aliceNote.id), false);
+		assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
+		assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), true);
 	}));
 });
