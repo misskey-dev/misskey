@@ -16,7 +16,7 @@ MisskeyはMastodonのAPIと互換性がないため、一部を除きMastodonク
 Renoteの時刻表示の隣にある「...」を押し、「Renote解除」を選択します。 Renoteについては[こちら](../features/note)をご確認ください。
 
 ## « Je ne veux pas afficher les aperçus d'URL. »
-MFMには、そのURLのプレビューを無効にする構文があります。詳細は[MFMチートシート](/mfm-cheat-sheet)をご確認ください。
+Vous pouvez désactiver l'affichage des aperçus d'URL grâce au langage MFM. Voir l'[Antisèche MFM](/mfm-cheat-sheet) pour plus de détails.
 
 ## « Je veux ajouter des émojis personnalisés. »
 Seul·e·s les administrateur·rice·s peuvent ajouter, éditer ou effacer des émojis personnalisés. Ainsi, si vous avez une requête à ce sujet, merci de contacter votre administrateur·rice d'instance.
