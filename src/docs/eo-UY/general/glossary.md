@@ -70,7 +70,7 @@ Misskeyに投稿される、文章、ファイル、アンケートなどを含�
 ## Miskiisto
 Uzuloj de Misskey.
 
-## モデレーター
+## Moderigisto
 スパムの凍結およびサイレンスや不適切な投稿の削除など、コミュニティ運営に関する権限を持つユーザー。
 
 ## Transa aŭ fora
