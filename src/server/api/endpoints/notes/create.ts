@@ -7,7 +7,7 @@ import { fetchMeta } from '@/misc/fetch-meta';
 import { ApiError } from '../../error';
 import { ID } from '@/misc/cafy-id';
 import { User } from '../../../../models/entities/user';
-import { Users, DriveFiles, Notes, Channels } from '../../../../models';
+import { Users, DriveFiles, Notes, Channels, Blockings } from '../../../../models';
 import { DriveFile } from '../../../../models/entities/drive-file';
 import { Note } from '../../../../models/entities/note';
 import { DB_MAX_NOTE_TEXT_LENGTH } from '@/misc/hard-limits';
@@ -171,6 +171,12 @@ export const meta = {
 			code: 'NO_SUCH_CHANNEL',
 			id: 'b1653923-5453-4edc-b786-7c4f39bb0bbb'
 		},
+
+		youHaveBeenBlocked: {
+			message: 'You have been blocked by this user.',
+			code: 'YOU_HAVE_BEEN_BLOCKED',
+			id: 'b390d7e1-8a5e-46ed-b625-06271cafd3d3'
+		},
 	}
 };
 
@@ -202,6 +208,17 @@ export default define(meta, async (ps, user) => {
 		} else if (renote.renoteId && !renote.text && !renote.fileIds) {
 			throw new ApiError(meta.errors.cannotReRenote);
 		}
+
+		// Check blocking
+		if (renote.userId !== user.id) {
+			const block = await Blockings.findOne({
+				blockerId: renote.userId,
+				blockeeId: user.id,
+			});
+			if (block) {
+				throw new ApiError(meta.errors.youHaveBeenBlocked);
+			}
+		}
 	}
 
 	let reply: Note | undefined;
@@ -216,6 +233,17 @@ export default define(meta, async (ps, user) => {
 		// 返信対象が引用でないRenoteだったらエラー
 		if (reply.renoteId && !reply.text && !reply.fileIds) {
 			throw new ApiError(meta.errors.cannotReplyToPureRenote);
+		}
+
+		// Check blocking
+		if (reply.userId !== user.id) {
+			const block = await Blockings.findOne({
+				blockerId: reply.userId,
+				blockeeId: user.id,
+			});
+			if (block) {
+				throw new ApiError(meta.errors.youHaveBeenBlocked);
+			}
 		}
 	}
 

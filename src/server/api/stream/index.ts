@@ -8,7 +8,7 @@ import channels from './channels';
 import { EventEmitter } from 'events';
 import { User } from '../../../models/entities/user';
 import { Channel as ChannelModel } from '../../../models/entities/channel';
-import { Users, Followings, Mutings, UserProfiles, ChannelFollowings } from '../../../models';
+import { Users, Followings, Mutings, UserProfiles, ChannelFollowings, Blockings } from '../../../models';
 import { ApiError } from '../error';
 import { AccessToken } from '../../../models/entities/access-token';
 import { UserProfile } from '../../../models/entities/user-profile';
@@ -24,6 +24,7 @@ export default class Connection {
 	public userProfile?: UserProfile;
 	public following: Set<User['id']> = new Set();
 	public muting: Set<User['id']> = new Set();
+	public blocking: Set<User['id']> = new Set(); // "被"blocking
 	public followingChannels: Set<ChannelModel['id']> = new Set();
 	public token?: AccessToken;
 	private wsConnection: websocket.connection;
@@ -52,6 +53,7 @@ export default class Connection {
 		if (this.user) {
 			this.updateFollowing();
 			this.updateMuting();
+			this.updateBlocking();
 			this.updateFollowingChannels();
 			this.updateUserProfile();
 
@@ -79,6 +81,8 @@ export default class Connection {
 			case 'unmute':
 				this.muting.delete(body.id);
 				break;
+
+			// TODO: block events
 
 			case 'followChannel':
 				this.followingChannels.add(body.id);
@@ -373,6 +377,18 @@ export default class Connection {
 		});
 
 		this.muting = new Set<string>(mutings.map(x => x.muteeId));
+	}
+
+	@autobind
+	private async updateBlocking() { // ここでいうBlockingは被Blockingの意
+		const blockings = await Blockings.find({
+			where: {
+				blockeeId: this.user!.id
+			},
+			select: ['blockerId']
+		});
+
+		this.blocking = new Set<string>(blockings.map(x => x.blockerId));
 	}
 
 	@autobind

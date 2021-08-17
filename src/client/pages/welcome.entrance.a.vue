@@ -27,8 +27,8 @@
 					<div class="desc" v-html="meta.description || $ts.headlineMisskey"></div>
 				</div>
 				<div class="action">
-					<MkButton @click="signup()" inline primary>{{ $ts.signup }}</MkButton>
-					<MkButton @click="signin()" inline>{{ $ts.login }}</MkButton>
+					<MkButton @click="signup()" inline primary data-cy-signup>{{ $ts.signup }}</MkButton>
+					<MkButton @click="signin()" inline data-cy-signin>{{ $ts.login }}</MkButton>
 				</div>
 				<div class="status" v-if="onlineUsersCount && stats">
 					<div>

@@ -10,22 +10,22 @@
 ## Sociala
 自分のフォローしているユーザーの投稿と、全てのローカルユーザーの「ホーム」指定されていない投稿が流れます。STLと略されます。
 
-## Konfederacia
+## Malloka
 全てのローカルユーザーの「ホーム」指定されていない投稿と、サーバーに届いた全てのリモートユーザーの「ホーム」指定されていない投稿が流れます。GTLと略されます。
 
 ## 比較
-| ソース          |           |       | Templinio |         |              |
-| ------------ | --------- | ----- | --------- | ------- | ------------ |
-| Uzanto       | 公開範囲      | Hejmo | Loka      | Sociala | Konfederacia |
-| ローカル (フォロー)  | Publikigi | ✔     | ✔         | ✔       | ✔            |
-|              | Hejmo     | ✔     |           | ✔       |              |
-|              | Sekvantoj | ✔     | ✔         | ✔       | ✔            |
-| リモート (フォロー)  | Publikigi | ✔     |           | ✔       | ✔            |
-|              | Hejmo     | ✔     |           | ✔       |              |
-|              | Sekvantoj | ✔     |           | ✔       | ✔            |
-| ローカル (未フォロー) | Publikigi |       | ✔         | ✔       | ✔            |
-|              | Hejmo     |       |           |         |              |
-|              | Sekvantoj |       |           |         |              |
-| リモート (未フォロー) | Publikigi |       |           |         | ✔            |
-|              | Hejmo     |       |           |         |              |
-|              | Sekvantoj |       |           |         |              |
+| ソース          |           |       | Templinio |         |         |
+| ------------ | --------- | ----- | --------- | ------- | ------- |
+| Uzanto       | 公開範囲      | Hejmo | Loka      | Sociala | Malloka |
+| ローカル (フォロー)  | Publikigi | ✔     | ✔         | ✔       | ✔       |
+|              | Hejmo     | ✔     |           | ✔       |         |
+|              | Sekvantoj | ✔     | ✔         | ✔       | ✔       |
+| リモート (フォロー)  | Publikigi | ✔     |           | ✔       | ✔       |
+|              | Hejmo     | ✔     |           | ✔       |         |
+|              | Sekvantoj | ✔     |           | ✔       | ✔       |
+| ローカル (未フォロー) | Publikigi |       | ✔         | ✔       | ✔       |
+|              | Hejmo     |       |           |         |         |
+|              | Sekvantoj |       |           |         |         |
+| リモート (未フォロー) | Publikigi |       |           |         | ✔       |
+|              | Hejmo     |       |           |         |         |
+|              | Sekvantoj |       |           |         |         |
