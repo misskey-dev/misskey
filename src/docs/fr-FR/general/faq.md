@@ -13,7 +13,7 @@ MisskeyはMastodonのAPIと互換性がないため、一部を除きMastodonク
 メニューから検索を選び、ユーザー名をホスト込みで入力します。例: `@syuilo@misskey.io`
 
 ## « Comment puis-je annuler une Renote ? »
-Renoteの時刻表示の隣にある「...」を押し、「Renote解除」を選択します。 Renoteについては[こちら](../features/note)をご確認ください。
+Cliquez sur sur les trois points (« ... ») situés à côté de l'horodatage de votre Renote et sélectionnez « Annuler la Renote ». Pour en savoir plus sur les Renotes, vous pouvez consulter [cette page](../features/note).
 
 ## « Je ne veux pas afficher les aperçus d'URL. »
 Vous pouvez désactiver l'affichage des aperçus d'URL grâce au langage MFM. Voir l'[Antisèche MFM](/mfm-cheat-sheet) pour plus de détails.
