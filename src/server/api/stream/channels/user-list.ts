@@ -4,6 +4,7 @@ import { Notes, UserListJoinings, UserLists } from '../../../../models';
 import { isMutedUserRelated } from '@/misc/is-muted-user-related';
 import { User } from '../../../../models/entities/user';
 import { PackedNote } from '../../../../models/repositories/note';
+import { isBlockerUserRelated } from '@/misc/is-blocker-user-related';
 
 export default class extends Channel {
 	public readonly chName = 'userList';
@@ -74,6 +75,8 @@ export default class extends Channel {
 
 		// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
 		if (isMutedUserRelated(note, this.muting)) return;
+		// 流れてきたNoteがブロックされているユーザーが関わるものだったら無視する
+		if (isBlockerUserRelated(note, this.blocking)) return;
 
 		this.send('note', note);
 	}

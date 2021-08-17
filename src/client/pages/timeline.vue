@@ -1,5 +1,5 @@
 <template>
-<div class="cmuxhskf _root" v-hotkey.global="keymap">
+<div class="cmuxhskf" v-hotkey.global="keymap">
 	<XTutorial v-if="$store.reactiveState.tutorial.value != -1" class="tutorial _block _isolated"/>
 	<XPostForm v-if="$store.reactiveState.showFixedPostForm.value" class="post-form _block _isolated" fixed/>
 	<div class="tabs">
@@ -19,7 +19,7 @@
 		</div>
 	</div>
 	<div class="new" v-if="queue > 0"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
-	<XTimeline ref="tl"
+	<XTimeline ref="tl" class="tl"
 		:key="src === 'list' ? `list:${list.id}` : src === 'antenna' ? `antenna:${antenna.id}` : src === 'channel' ? `channel:${channel.id}` : src"
 		:src="src"
 		:list="list ? list.id : null"
@@ -211,8 +211,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .cmuxhskf {
-	background: var(--bg);
-
 	> .new {
 		position: sticky;
 		top: calc(var(--stickyTop, 0px) + 16px);
@@ -262,10 +260,9 @@ export default defineComponent({
 						left: 0;
 						right: 0;
 						margin: 0 auto;
-						width: calc(100% - 16px);
-						height: 4px;
+						width: 100%;
+						height: 2px;
 						background: var(--accent);
-						border-radius: 8px 8px 0 0;
 					}
 				}
 
@@ -288,6 +285,10 @@ export default defineComponent({
 				background: var(--divider);
 			}
 		}
+	}
+
+	> .tl {
+		border-top: solid 0.5px var(--divider);
 	}
 }
 </style>

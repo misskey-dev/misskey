@@ -2,6 +2,7 @@ import $ from 'cafy';
 import define from '../../define';
 import { generateMutedUserQuery } from '../../common/generate-muted-user-query';
 import { Notes } from '../../../../models';
+import { generateBlockedUserQuery } from '../../common/generate-block-query';
 
 export const meta = {
 	tags: ['notes'],
@@ -48,6 +49,7 @@ export default define(meta, async (ps, user) => {
 		.leftJoinAndSelect('renote.user', 'renoteUser');
 
 	if (user) generateMutedUserQuery(query, user);
+	if (user) generateBlockedUserQuery(query, user);
 
 	let notes = await query
 		.orderBy('note.score', 'DESC')

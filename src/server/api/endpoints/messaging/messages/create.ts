@@ -3,7 +3,7 @@ import { ID } from '@/misc/cafy-id';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { getUser } from '../../../common/getters';
-import { MessagingMessages, DriveFiles, UserGroups, UserGroupJoinings } from '../../../../../models';
+import { MessagingMessages, DriveFiles, UserGroups, UserGroupJoinings, Blockings } from '../../../../../models';
 import { User } from '../../../../../models/entities/user';
 import { UserGroup } from '../../../../../models/entities/user-group';
 import { createMessage } from '../../../../../services/messages/create';
@@ -74,7 +74,13 @@ export const meta = {
 			message: 'Content required. You need to set text or fileId.',
 			code: 'CONTENT_REQUIRED',
 			id: '25587321-b0e6-449c-9239-f8925092942c'
-		}
+		},
+
+		youHaveBeenBlocked: {
+			message: 'You cannot send a message because you have been blocked by this user.',
+			code: 'YOU_HAVE_BEEN_BLOCKED',
+			id: 'c15a5199-7422-4968-941a-2a462c478f7d'
+		},
 	}
 };
 
@@ -93,6 +99,15 @@ export default define(meta, async (ps, user) => {
 			if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
 			throw e;
 		});
+
+		// Check blocking
+		const block = await Blockings.findOne({
+			blockerId: recipientUser.id,
+			blockeeId: user.id,
+		});
+		if (block) {
+			throw new ApiError(meta.errors.youHaveBeenBlocked);
+		}
 	} else if (ps.groupId != null) {
 		// Fetch recipient (group)
 		recipientGroup = await UserGroups.findOne(ps.groupId);

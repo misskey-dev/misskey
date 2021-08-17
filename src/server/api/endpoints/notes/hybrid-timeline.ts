@@ -12,6 +12,7 @@ import { activeUsersChart } from '../../../../services/chart';
 import { generateRepliesQuery } from '../../common/generate-replies-query';
 import { generateMutedNoteQuery } from '../../common/generate-muted-note-query';
 import { generateChannelQuery } from '../../common/generate-channel-query';
+import { generateBlockedUserQuery } from '../../common/generate-block-query';
 
 export const meta = {
 	tags: ['notes'],
@@ -108,6 +109,7 @@ export default define(meta, async (ps, user) => {
 	generateVisibilityQuery(query, user);
 	generateMutedUserQuery(query, user);
 	generateMutedNoteQuery(query, user);
+	generateBlockedUserQuery(query, user);
 
 	if (ps.includeMyRenotes === false) {
 		query.andWhere(new Brackets(qb => {

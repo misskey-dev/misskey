@@ -31,6 +31,19 @@ import { normalizeForSearch } from '@/misc/normalize-for-search';
 
 const logger = apLogger;
 
+const nameLength = 128;
+const summaryLength = 2048;
+
+function truncate(input: string, size: number): string;
+function truncate(input: string | undefined, size: number): string | undefined;
+function truncate(input: string | undefined, size: number): string | undefined {
+	if (!input || input.length <= size) {
+		return input;
+	} else {
+		return input.substring(0, size);
+	}
+}
+
 /**
  * Validate and convert to actor object
  * @param x Fetched object
@@ -55,8 +68,12 @@ function validateActor(x: IObject, uri: string): IActor {
 	validate('id', x.id, $.str.min(1));
 	validate('inbox', x.inbox, $.str.min(1));
 	validate('preferredUsername', x.preferredUsername, $.str.min(1).max(128).match(/^\w([\w-.]*\w)?$/));
-	validate('name', x.name, $.optional.nullable.str.max(128));
-	validate('summary', x.summary, $.optional.nullable.str.max(2048));
+
+	// These fields are only informational, and some AP software allows these
+	// fields to be very long. If they are too long, we cut them off. This way
+	// we can at least see these users and their activities.
+	validate('name', truncate(x.name, nameLength), $.optional.nullable.str);
+	validate('summary', truncate(x.summary, summaryLength), $.optional.nullable.str);
 
 	const idHost = toPuny(new URL(x.id!).hostname);
 	if (idHost !== expectHost) {
@@ -137,7 +154,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 				bannerId: null,
 				createdAt: new Date(),
 				lastFetchedAt: new Date(),
-				name: person.name,
+				name: truncate(person.name, nameLength),
 				isLocked: !!person.manuallyApprovesFollowers,
 				isExplorable: !!person.discoverable,
 				username: person.preferredUsername,
@@ -155,7 +172,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 
 			await transactionalEntityManager.save(new UserProfile({
 				userId: user.id,
-				description: person.summary ? htmlToMfm(person.summary, person.tag) : null,
+				description: person.summary ? htmlToMfm(truncate(person.summary, summaryLength), person.tag) : null,
 				url: getOneApHrefNullable(person.url),
 				fields,
 				birthday: bday ? bday[0] : null,
@@ -316,7 +333,7 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 		followersUri: person.followers ? getApId(person.followers) : undefined,
 		featured: person.featured,
 		emojis: emojiNames,
-		name: person.name,
+		name: truncate(person.name, nameLength),
 		tags,
 		isBot: getApType(object) === 'Service',
 		isCat: (person as any).isCat === true,
@@ -349,7 +366,7 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 	await UserProfiles.update({ userId: exist.id }, {
 		url: getOneApHrefNullable(person.url),
 		fields,
-		description: person.summary ? htmlToMfm(person.summary, person.tag) : null,
+		description: person.summary ? htmlToMfm(truncate(person.summary, summaryLength), person.tag) : null,
 		birthday: bday ? bday[0] : null,
 		location: person['vcard:Address'] || null,
 	});

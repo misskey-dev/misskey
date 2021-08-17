@@ -7,6 +7,7 @@ import '@client/style.scss';
 import * as Sentry from '@sentry/browser';
 import { Integrations } from '@sentry/tracing';
 import { computed, createApp, watch, markRaw } from 'vue';
+import compareVersions from 'compare-versions';
 
 import widgets from '@client/widgets';
 import directives from '@client/directives';
@@ -206,8 +207,12 @@ if (lastVersion !== version) {
 	// テーマリビルドするため
 	localStorage.removeItem('theme');
 
-	// TODO: バージョンが新しくなった時だけダイアログ出す
-	//popup();
+	try { // 変なバージョン文字列来るとcompareVersionsでエラーになるため
+		if (lastVersion != null && compareVersions(version, lastVersion) === 1) {
+			popup(import('@client/components/updated.vue'), {}, {}, 'closed');
+		}
+	} catch (e) {
+	}
 }
 
 // NOTE: この処理は必ず↑のクライアント更新時処理より後に来ること(テーマ再構築のため)

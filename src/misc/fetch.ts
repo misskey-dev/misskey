@@ -1,9 +1,8 @@
 import * as http from 'http';
 import * as https from 'https';
-import * as cache from 'lookup-dns-cache';
+import CacheableLookup from 'cacheable-lookup';
 import fetch, { HeadersInit } from 'node-fetch';
-import { HttpProxyAgent } from 'http-proxy-agent';
-import { HttpsProxyAgent } from 'https-proxy-agent';
+import { HttpProxyAgent, HttpsProxyAgent } from 'hpagent';
 import config from '@/config';
 import { URL } from 'url';
 
@@ -49,6 +48,12 @@ export async function getHtml(url: string, accept = 'text/html, */*', timeout = 
 	return await res.text();
 }
 
+const cache = new CacheableLookup({
+	maxTtl: 3600,	// 1hours
+	errorTtl: 30,	// 30secs
+	lookup: false,	// nativeのdns.lookupにfallbackしない
+});
+
 /**
  * Get http non-proxy agent
  */
@@ -65,20 +70,36 @@ const _https = new https.Agent({
 	keepAlive: true,
 	keepAliveMsecs: 30 * 1000,
 	lookup: cache.lookup,
-});
+} as https.AgentOptions);
+
+const maxSockets = Math.max(256, config.deliverJobConcurrency || 128);
 
 /**
  * Get http proxy or non-proxy agent
  */
 export const httpAgent = config.proxy
-	? new HttpProxyAgent(config.proxy)
+	? new HttpProxyAgent({
+		keepAlive: true,
+		keepAliveMsecs: 30 * 1000,
+		maxSockets,
+		maxFreeSockets: 256,
+		scheduling: 'lifo',
+		proxy: config.proxy
+	})
 	: _http;
 
 /**
  * Get https proxy or non-proxy agent
  */
 export const httpsAgent = config.proxy
-	? new HttpsProxyAgent(config.proxy)
+	? new HttpsProxyAgent({
+		keepAlive: true,
+		keepAliveMsecs: 30 * 1000,
+		maxSockets,
+		maxFreeSockets: 256,
+		scheduling: 'lifo',
+		proxy: config.proxy
+	})
 	: _https;
 
 /**

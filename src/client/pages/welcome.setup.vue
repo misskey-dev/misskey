@@ -3,17 +3,19 @@
 	<h1>Welcome to Misskey!</h1>
 	<div>
 		<p>{{ $ts.intro }}</p>
-		<MkInput v-model="username" pattern="^[a-zA-Z0-9_]{1,20}$" spellcheck="false" required>
+		<MkInput v-model="username" pattern="^[a-zA-Z0-9_]{1,20}$" spellcheck="false" required data-cy-admin-username>
 			<template #label>{{ $ts.username }}</template>
 			<template #prefix>@</template>
 			<template #suffix>@{{ host }}</template>
 		</MkInput>
-		<MkInput v-model="password" type="password">
+		<MkInput v-model="password" type="password" data-cy-admin-password>
 			<template #label>{{ $ts.password }}</template>
 			<template #prefix><i class="fas fa-lock"></i></template>
 		</MkInput>
 		<footer>
-			<MkButton primary type="submit" :disabled="submitting">{{ submitting ? $ts.processing : $ts.done }}<MkEllipsis v-if="submitting"/></MkButton>
+			<MkButton primary type="submit" :disabled="submitting" data-cy-admin-ok>
+				{{ submitting ? $ts.processing : $ts.done }}<MkEllipsis v-if="submitting"/>
+			</MkButton>
 		</footer>
 	</div>
 </form>

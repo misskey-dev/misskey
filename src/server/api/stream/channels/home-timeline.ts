@@ -4,6 +4,7 @@ import Channel from '../channel';
 import { Notes } from '../../../../models';
 import { PackedNote } from '../../../../models/repositories/note';
 import { checkWordMute } from '@/misc/check-word-mute';
+import { isBlockerUserRelated } from '@/misc/is-blocker-user-related';
 
 export default class extends Channel {
 	public readonly chName = 'homeTimeline';
@@ -57,6 +58,8 @@ export default class extends Channel {
 
 		// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
 		if (isMutedUserRelated(note, this.muting)) return;
+		// 流れてきたNoteがブロックされているユーザーが関わるものだったら無視する
+		if (isBlockerUserRelated(note, this.blocking)) return;
 
 		// 流れてきたNoteがミュートすべきNoteだったら無視する
 		// TODO: 将来的には、単にMutedNoteテーブルにレコードがあるかどうかで判定したい(以下の理由により難しそうではある)
