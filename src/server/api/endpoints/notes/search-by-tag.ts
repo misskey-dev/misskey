@@ -8,6 +8,7 @@ import { generateVisibilityQuery } from '../../common/generate-visibility-query'
 import { Brackets } from 'typeorm';
 import { safeForSql } from '@/misc/safe-for-sql';
 import { normalizeForSearch } from '@/misc/normalize-for-search';
+import { generateBlockedUserQuery } from '../../common/generate-block-query';
 
 export const meta = {
 	tags: ['notes', 'hashtags'],
@@ -75,6 +76,7 @@ export default define(meta, async (ps, me) => {
 
 	generateVisibilityQuery(query, me);
 	if (me) generateMutedUserQuery(query, me);
+	if (me) generateBlockedUserQuery(query, me);
 
 	try {
 		if (ps.tag) {
