@@ -75,6 +75,10 @@ describe('Block', () => {
 		assert.strictEqual(res.body.error.id, 'b390d7e1-8a5e-46ed-b625-06271cafd3d3');
 	}));
 
+	// TODO: ユーザーリストに入れられないテスト
+
+	// TODO: ユーザーリストから除外されるテスト
+
 	it('タイムライン(LTL)にブロックされているユーザーの投稿が含まれない', async(async () => {
 		const aliceNote = await post(alice);
 		const bobNote = await post(bob);
