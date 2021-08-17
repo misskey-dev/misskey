@@ -16,7 +16,7 @@ import { extractMentions } from '@/misc/extract-mentions';
 import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm';
 import { extractHashtags } from '@/misc/extract-hashtags';
 import { Note, IMentionedRemoteUsers } from '../../models/entities/note';
-import { Mutings, Users, NoteWatchings, Notes, Instances, UserProfiles, Antennas, Followings, MutedNotes, Channels, ChannelFollowings } from '../../models';
+import { Mutings, Users, NoteWatchings, Notes, Instances, UserProfiles, Antennas, Followings, MutedNotes, Channels, ChannelFollowings, Blockings } from '../../models';
 import { DriveFile } from '../../models/entities/drive-file';
 import { App } from '../../models/entities/app';
 import { Not, getConnection, In } from 'typeorm';
@@ -265,8 +265,10 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 		.andWhere(`following.followeeId = :userId`, { userId: note.userId })
 		.getMany()
 		.then(async followings => {
+			const blockings = await Blockings.find({ blockerId: user.id }); // TODO: キャッシュしたい
 			const followers = followings.map(f => f.followerId);
 			for (const antenna of (await getAntennas())) {
+				if (blockings.some(blocking => blocking.blockeeId === antenna.userId)) continue; // この処理は checkHitAntenna 内でやるようにしてもいいかも
 				checkHitAntenna(antenna, note, user, followers).then(hit => {
 					if (hit) {
 						addNoteToAntenna(antenna, note, user);

@@ -12,6 +12,7 @@ import { Brackets } from 'typeorm';
 import { generateRepliesQuery } from '../../common/generate-replies-query';
 import { generateMutedNoteQuery } from '../../common/generate-muted-note-query';
 import { generateChannelQuery } from '../../common/generate-channel-query';
+import { generateBlockedUserQuery } from '../../common/generate-block-query';
 
 export const meta = {
 	tags: ['notes'],
@@ -94,6 +95,7 @@ export default define(meta, async (ps, user) => {
 	generateVisibilityQuery(query, user);
 	if (user) generateMutedUserQuery(query, user);
 	if (user) generateMutedNoteQuery(query, user);
+	if (user) generateBlockedUserQuery(query, user);
 
 	if (ps.withFiles) {
 		query.andWhere('note.fileIds != \'{}\'');
