@@ -22,4 +22,4 @@ Only administrators can add, edit or delete custom emoji.If you'd like to do eit
 Anyone can develop a Misskey bot using the Misskey API.Please see [here](../advanced/develop-bot).
 
 ## "I want to develop a Bot."
-It is possible to develop a Bot using the Misskey API. [こちら](../advanced/develop-bot)をご確認ください。
+It is possible to develop a Bot using the Misskey API. Please, [see here](../advanced/develop-bot).
