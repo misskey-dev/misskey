@@ -15,11 +15,11 @@ MisskeyはMastodonのAPIと互換性がないため、一部を除きMastodonク
 ## « Comment puis-je annuler une Renote ? »
 Renoteの時刻表示の隣にある「...」を押し、「Renote解除」を選択します。 Renoteについては[こちら](../features/note)をご確認ください。
 
-## URLのプレビューを表示させたくない
+## « Je ne veux pas afficher les aperçus d'URL. »
 MFMには、そのURLのプレビューを無効にする構文があります。詳細は[MFMチートシート](/mfm-cheat-sheet)をご確認ください。
 
-## カスタム絵文字を追加したい
+## « Je veux ajouter des émojis personnalisés. »
 運営者のみがカスタム絵文字を追加、編集、削除できます。それらを希望する場合は運営者に依頼してください。
 
-## Botを開発したい
+## « Je veux créer un Bot. »
 Misskey APIを利用してBotの開発が可能です。[こちら](../advanced/develop-bot)をご確認ください。
