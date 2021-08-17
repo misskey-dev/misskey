@@ -387,6 +387,7 @@ notSet: "Ne elektita"
 noteFavoritesCount: "Numero de la preferataj notoj"
 contact: "Kontakto"
 makeExplorable: "Videbligi konton sur la paĝo \"Esplori\""
+duplicate: "Duobligi"
 left: "Maldekstra"
 center: "Centra"
 showTitlebar: "Montri titola stango"
@@ -398,6 +399,7 @@ myTheme: "Miaj koloraroj"
 backgroundColor: "Fona koloro"
 textColor: "Teksto"
 saveAs: "Konservi kiel…"
+value: "Valoro"
 createdAt: "Kreita je"
 updatedAt: "Laste ĝisdatigita"
 deleteConfirm: "Ĉu certas forviŝi?"
@@ -424,6 +426,7 @@ accounts: "Kontoj"
 high: "Alta"
 middle: "Meza"
 low: "Malalta"
+customCss: "Uzantula CSS"
 global: "Malloka"
 sent: "Sendi"
 received: "Ricevita"
@@ -482,7 +485,7 @@ _channel:
 _menuDisplay:
   hide: "Kaŝi"
 _wordMute:
-  muteWords: "Silentigataj vortoj"
+  muteWords: "Kaŝigitaj vortoj"
   mutedNotes: "Silentigataj notoj"
 _theme:
   code: "Kodo de koloraro"
@@ -503,9 +506,11 @@ _sfx:
   antenna: "Ricevo de anteno"
   channel: "Sciigoj de kanalo"
 _ago:
+  future: "Futuro"
+  justNow: "Ĵus"
   secondsAgo: "Antaŭ {n} sekundoj"
   minutesAgo: "Antaŭ {n} minutoj"
-  hoursAgo: "Antaŭ {n} horoj"
+  hoursAgo: "Antaŭ {n} horo(j)"
   daysAgo: "Antaŭ {n} tagoj"
   weeksAgo: "Antaŭ {n} semajnoj"
   monthsAgo: "Antaŭ {n} monatoj"
@@ -539,6 +544,7 @@ _permissions:
   "read:page-likes": "Vidi ŝatojn de paĝo"
   "read:channels": "Vidi kanalojn"
 _antennaSources:
+  all: "Ĉiuj notoj"
   homeTimeline: "Notoj far uzantoj, kiujn vi sekvas"
 _weekday:
   sunday: "dimanĉo"
@@ -587,6 +593,7 @@ _profile:
   changeAvatar: "Ŝanĝi profilbildon"
   changeBanner: "Ŝanĝi standardon"
 _exportOrImport:
+  allNotes: "Ĉiuj notoj"
   followingList: "Sekvataj"
   muteList: "Silentigoj"
   blockingList: "Blokado"
@@ -611,6 +618,7 @@ _pages:
   editThisPage: "Redakti la paĝon"
   viewPage: "Vidi via paĝojn"
   my: "Miaj paĝoj"
+  featured: "Ravaĵoj"
   content: "Blokado de paĝo"
   url: "URL de paĝo"
   alignCenter: "Centrigi"
@@ -620,11 +628,16 @@ _pages:
     button: "Butono"
     _post:
       canvasId: "Kanvasa identigilo"
+    _numberInput:
+      text: "Titolo"
     _canvas:
       id: "Kanvasa identigilo"
     _note:
       id: "Identigilo de noto"
+    _counter:
+      text: "Titolo"
     _button:
+      text: "Titolo"
       _action:
         _pushEvent:
           event: "Nomo de la evento"
