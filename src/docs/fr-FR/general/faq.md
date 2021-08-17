@@ -10,7 +10,7 @@ Vous trouverez ici les questions les plus fréquentes sur l'utilisation de Missk
 MisskeyはMastodonのAPIと互換性がないため、一部を除きMastodonクライアントでMisskeyを利用することはできません。
 
 ## « Comment faire pour suivre des utilisateur·rice·s d'autres instances ? »
-メニューから検索を選び、ユーザー名をホスト込みで入力します。例: `@syuilo@misskey.io`
+Sélectionnez la fonction « Recherche » depuis le menu et tapez le nom d'utilisateur·rice suivi du nom de l'instance. Ex. : `@syuilo@misskey.io`
 
 ## « Comment puis-je annuler une Renote ? »
 Cliquez sur sur les trois points (« ... ») situés à côté de l'horodatage de votre Renote et sélectionnez « Annuler la Renote ». Pour en savoir plus sur les Renotes, vous pouvez consulter [cette page](../features/note).
