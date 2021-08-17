@@ -1,13 +1,16 @@
 # よくある質問
 ここでは利用上のよくある質問について掲載しています。 Misskeyのプロジェクト自体についてのよくある質問は[こちら](./misskey)に掲載されています。
 
-### iOS/Androidのアプリはありますか？
+## iOS/Androidのアプリはありますか？
 公式にはそういったOSのネイティブアプリを開発していませんが、サードパーティ製のアプリがいくつかあります。 詳しくは[こちら](./apps)をご覧ください。
 
 ただ、サードパーティ製アプリはどうしても機能への対応が遅れてしまうため、とくに拘りがなければ公式のWebクライアントの利用をおすすめします。 なお、MisskeyのWebクライアントはPWAに対応しているので、ネイティブアプリのように動作させることも可能です。 詳しくは[こちら](todo)をご覧ください。
 
+## Mastodonクライアントでログインできないのですが？
+MisskeyはMastodonのAPIと互換性がないため、一部を除きMastodonクライアントでMisskeyを利用することはできません。
+
 ## 他のサーバーのユーザーをフォローするときは？
-Elektu la "Serĉi" el la menuo, kaj entajpu uzantnomon inkluzive gastignomon.例: `@syuilo@misskey.io`
+メニューから検索を選び、ユーザー名をホスト込みで入力します。例: `@syuilo@misskey.io`
 
 ## Renoteを削除するには？
 Renoteの時刻表示の隣にある「...」を押し、「Renote解除」を選択します。 Renoteについては[こちら](../features/note)をご確認ください。
