@@ -7,7 +7,12 @@
 				Summaly Proxy URL
 			</FormInput>
 		</FormGroup>
-
+		<FormGroup>
+			<FormInput v-model:value="deeplAuthKey">
+				<template #prefix><i class="fas fa-key"></i></template>
+				DeepL Auth Key
+			</FormInput>
+		</FormGroup>
 		<FormButton @click="save" primary><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
 	</FormSuspense>
 </FormBase>
@@ -44,6 +49,7 @@ export default defineComponent({
 				icon: 'fas fa-cogs'
 			},
 			summalyProxy: '',
+			deeplAuthKey: '',
 		}
 	},
 
@@ -55,10 +61,12 @@ export default defineComponent({
 		async init() {
 			const meta = await os.api('meta', { detail: true });
 			this.summalyProxy = meta.summalyProxy;
+			this.deeplAuthKey = meta.deeplAuthKey;
 		},
 		save() {
 			os.apiWithDialog('admin/update-meta', {
 				summalyProxy: this.summalyProxy,
+				deeplAuthKey: this.deeplAuthKey,
 			}).then(() => {
 				fetchInstance();
 			});

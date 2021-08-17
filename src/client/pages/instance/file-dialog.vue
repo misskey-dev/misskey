@@ -93,10 +93,8 @@ export default defineComponent({
 			});
 			if (canceled) return;
 
-			os.api('drive/files/delete', {
+			os.apiWithDialog('drive/files/delete', {
 				fileId: this.file.id
-			}).then(() => {
-				this.$refs.files.removeItem(x => x.id === this.file.id);
 			});
 		},
 

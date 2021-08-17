@@ -232,6 +232,10 @@ export const meta = {
 				type: 'boolean' as const,
 				optional: false as const, nullable: false as const
 			},
+			translatorAvailable: {
+				type: 'boolean' as const,
+				optional: false as const, nullable: false as const
+			},
 			proxyAccountName: {
 				type: 'string' as const,
 				optional: false as const, nullable: true as const
@@ -511,6 +515,8 @@ export default define(meta, async (ps, me) => {
 		enableDiscordIntegration: instance.enableDiscordIntegration,
 
 		enableServiceWorker: instance.enableServiceWorker,
+
+		translatorAvailable: instance.deeplAuthKey != null,
 
 		...(ps.detail ? {
 			pinnedPages: instance.pinnedPages,
