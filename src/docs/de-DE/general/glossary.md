@@ -1,4 +1,4 @@
-# 用語集
+# Glossar
 Misskeyに関する用語集です。
 
 ## ActivityPub
