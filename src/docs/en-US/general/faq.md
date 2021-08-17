@@ -10,16 +10,16 @@ However, functionality of third-party applications will inevitably lag behind th
 MisskeyはMastodonのAPIと互換性がないため、一部を除きMastodonクライアントでMisskeyを利用することはできません。
 
 ## "What do I do when I want to follow users from other servers?"
-メニューから検索を選び、ユーザー名をホスト込みで入力します。例: `@syuilo@misskey.io`
+Select the search bar from the menu and enter their username including their host server.例: `@syuilo@misskey.io`
 
 ## "How do I take back a Renote?"
-Renoteの時刻表示の隣にある「...」を押し、「Renote解除」を選択します。 Renoteについては[こちら](../features/note)をご確認ください。
+Press the three dots ("...") displayed next to the renote timestamp and select "Take back Renote". To read more about Renotes, please check [here](../features/note).
 
 ## "I don't want the preview of an URL to be displayed."
 Only administrators can add, edit or delete custom emoji.If you'd like to do either of these things, please ask your instance administrator.
 
 ## "I want to add custom emoji."
-Anyone can develop a Misskey bot using the Misskey API.Please see [here](../advanced/develop-bot).
+Only administrators can add, edit or delete custom emoji. If you'd like to do either of these things, please ask your instance administrator.
 
 ## "I want to develop a Bot."
 It is possible to develop a Bot using the Misskey API. Please, [see here](../advanced/develop-bot).
