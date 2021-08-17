@@ -16,7 +16,7 @@ Select the search bar from the menu and enter their username including their hos
 Press the three dots ("...") displayed next to the renote timestamp and select "Take back Renote". To read more about Renotes, please check [here](../features/note).
 
 ## "I don't want the preview of an URL to be displayed."
-Only administrators can add, edit or delete custom emoji.If you'd like to do either of these things, please ask your instance administrator.
+You can prevent an URL from being previewed using MFM. Please check the [MFM Cheatsheet](/mfm-cheat-sheet) for more details.
 
 ## "I want to add custom emoji."
 Only administrators can add, edit or delete custom emoji. If you'd like to do either of these things, please ask your instance administrator.
