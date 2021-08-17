@@ -19,7 +19,7 @@ Renoteの時刻表示の隣にある「...」を押し、「Renote解除」を�
 MFMには、そのURLのプレビューを無効にする構文があります。詳細は[MFMチートシート](/mfm-cheat-sheet)をご確認ください。
 
 ## « Je veux ajouter des émojis personnalisés. »
-運営者のみがカスタム絵文字を追加、編集、削除できます。それらを希望する場合は運営者に依頼してください。
+Seul·e·s les administrateur·rice·s peuvent ajouter, éditer ou effacer des émojis personnalisés. Ainsi, si vous avez une requête à ce sujet, merci de contacter votre administrateur·rice d'instance.
 
 ## « Je veux créer un Bot. »
-Misskey APIを利用してBotの開発が可能です。[こちら](../advanced/develop-bot)をご確認ください。
+Vous pouvez développer un Bot en utilisant l'API de Misskey. Plus d'informations sur [cette page](../advanced/develop-bot).
