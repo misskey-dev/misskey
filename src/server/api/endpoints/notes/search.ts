@@ -8,6 +8,7 @@ import config from '@/config';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query';
 import { generateMutedUserQuery } from '../../common/generate-muted-user-query';
+import { generateBlockedUserQuery } from '../../common/generate-block-query';
 
 export const meta = {
 	tags: ['notes'],
@@ -82,6 +83,7 @@ export default define(meta, async (ps, me) => {
 
 		generateVisibilityQuery(query, me);
 		if (me) generateMutedUserQuery(query, me);
+		if (me) generateBlockedUserQuery(query, me);
 
 		const notes = await query.take(ps.limit!).getMany();
 
