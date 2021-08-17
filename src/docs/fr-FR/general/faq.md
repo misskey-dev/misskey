@@ -1,5 +1,5 @@
 # Questions fréquentes
-ここでは利用上のよくある質問について掲載しています。 Misskeyのプロジェクト自体についてのよくある質問は[こちら](./misskey)に掲載されています。
+Vous trouverez ici les questions les plus fréquentes sur l'utilisation de Misskey. Les questions fréquentes concernant Misskey en tant que projet sont publiées [sur cette page](./misskey).
 
 ## iOS/Androidのアプリはありますか？
 公式にはそういったOSのネイティブアプリを開発していませんが、サードパーティ製のアプリがいくつかあります。 詳しくは[こちら](./apps)をご覧ください。
