@@ -7,7 +7,7 @@ Vous trouverez ici les questions les plus fréquentes sur l'utilisation de Missk
 ただ、サードパーティ製アプリはどうしても機能への対応が遅れてしまうため、とくに拘りがなければ公式のWebクライアントの利用をおすすめします。 なお、MisskeyのWebクライアントはPWAに対応しているので、ネイティブアプリのように動作させることも可能です。 詳しくは[こちら](todo)をご覧ください。
 
 ## « Ne peut-on pas utiliser un client Mastodon pour se connecter à Misskey ? »
-MisskeyはMastodonのAPIと互換性がないため、一部を除きMastodonクライアントでMisskeyを利用することはできません。
+Étant donné que Misskey n'est pas compatible avec l'API Mastodon, sauf cas exceptionnels, il n'est pas possible d'utiliser un client Mastodon pour Misskey.
 
 ## « Comment faire pour suivre des utilisateur·rice·s d'autres instances ? »
 Sélectionnez la fonction « Recherche » depuis le menu et tapez le nom d'utilisateur·rice suivi du nom de l'instance. Ex. : `@syuilo@misskey.io`
