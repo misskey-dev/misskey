@@ -42,7 +42,8 @@ describe('Block', () => {
 	it('ブロックされているユーザーをフォローできない', async(async () => {
 		const res = await request('/following/create', { userId: alice.id }, bob);
 
-		assert.strictEqual(res.status, 400); // TODO: エラーID確認
+		assert.strictEqual(res.status, 400);
+		assert.strictEqual(res.body.error.id, 'c4ab57cc-4e41-45e9-bfd9-584f61e35ce0');
 	}));
 
 	it('ブロックされているユーザーにリアクションできない', async(async () => {
