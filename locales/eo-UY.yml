@@ -680,7 +680,7 @@ _notification:
   youGotMessagingMessageFromGroup: "Retbabilan mesaĝon oni sendis al la grupo {name}"
   youWereFollowed: "sksekvis vin"
   youReceivedFollowRequest: "Vi ricevis peton de sekvado"
-  yourFollowRequestAccepted: "Via peto por eksekvu estas akceptita."
+  yourFollowRequestAccepted: "Via peto por sekvado estis akceptata."
   _types:
     follow: "Sekvatoj"
     mention: "Mencioj"
@@ -688,7 +688,7 @@ _notification:
     quote: "Citi"
     reaction: "Reagoj"
     receiveFollowRequest: "Ricevita peton de sekvado"
-    followRequestAccepted: "Peto por eksekvu akceptita"
+    followRequestAccepted: "Akceptita peto por sekvado"
 _deck:
   profile: "Agordaro"
   _columns:
