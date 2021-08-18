@@ -2,7 +2,7 @@ import $ from 'cafy';
 import define from '../define.js';
 import { Users } from '@/models/index.js';
 import { generateMutedUserQueryForUsers } from '../common/generate-muted-user-query.js';
-import { generateBlockedUserQuery } from '../common/generate-block-query.js';
+import { generateBlockQueryForUsers } from '../common/generate-block-query.js';
 
 export const meta = {
 	tags: ['users'],
@@ -90,7 +90,7 @@ export default define(meta, async (ps, me) => {
 	}
 
 	if (me) generateMutedUserQueryForUsers(query, me);
-	if (me) generateBlockedUserQuery(query, me);
+	if (me) generateBlockQueryForUsers(query, me);
 
 	query.take(ps.limit!);
 	query.skip(ps.offset);
