@@ -23,6 +23,7 @@ export class Channel {
 	@Index()
 	@Column({
 		...id(),
+		nullable: true,
 		comment: 'The owner ID.'
 	})
 	public userId: User['id'] | null;
