@@ -9,10 +9,6 @@ import { In } from 'typeorm';
 import { User } from '@/models/entities/user';
 
 export const meta = {
-	desc: {
-		'ja-JP': '指定したユーザーの情報を取得します。'
-	},
-
 	tags: ['users'],
 
 	requireCredential: false as const,
@@ -20,17 +16,10 @@ export const meta = {
 	params: {
 		userId: {
 			validator: $.optional.type(ID),
-			desc: {
-				'ja-JP': '対象のユーザーのID',
-				'en-US': 'Target user ID'
-			}
 		},
 
 		userIds: {
 			validator: $.optional.arr($.type(ID)).unique(),
-			desc: {
-				'ja-JP': 'ユーザーID (配列)'
-			}
 		},
 
 		username: {

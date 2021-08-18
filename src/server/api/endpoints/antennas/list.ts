@@ -2,11 +2,6 @@ import define from '../../define';
 import { Antennas } from '../../../../models';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'アンテナの一覧を取得します。',
-		'en-US': 'Get a list of antennas.'
-	},
-
 	tags: ['antennas', 'account'],
 
 	requireCredential: true as const,

@@ -6,6 +6,7 @@ import { makePaginationQuery } from '../../common/make-pagination-query';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query';
 import { generateMutedUserQuery } from '../../common/generate-muted-user-query';
 import { ApiError } from '../../error';
+import { generateBlockedUserQuery } from '../../common/generate-block-query';
 
 export const meta = {
 	tags: ['account', 'notes', 'clips'],
@@ -81,6 +82,7 @@ export default define(meta, async (ps, user) => {
 	if (user) {
 		generateVisibilityQuery(query, user);
 		generateMutedUserQuery(query, user);
+		generateBlockedUserQuery(query, user);
 	}
 
 	const notes = await query

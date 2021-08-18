@@ -53,14 +53,12 @@ export const packedMessagingMessageSchema = {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
 			format: 'id',
-			description: 'The unique identifier for this MessagingMessage.',
 			example: 'xxxxxxxxxx',
 		},
 		createdAt: {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
 			format: 'date-time',
-			description: 'The date that the MessagingMessage was created.'
 		},
 		userId: {
 			type: 'string' as const,

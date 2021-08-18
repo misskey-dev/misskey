@@ -5,26 +5,16 @@ import { convertLog } from '../../../../../services/chart/core';
 import { perUserReactionsChart } from '../../../../../services/chart';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'ユーザーごとの被リアクション数のチャートを取得します。'
-	},
-
 	tags: ['charts', 'users', 'reactions'],
 
 	params: {
 		span: {
 			validator: $.str.or(['day', 'hour']),
-			desc: {
-				'ja-JP': '集計のスパン (day または hour)'
-			}
 		},
 
 		limit: {
 			validator: $.optional.num.range(1, 500),
 			default: 30,
-			desc: {
-				'ja-JP': '最大数。例えば 30 を指定したとすると、スパンが"day"の場合は30日分のデータが、スパンが"hour"の場合は30時間分のデータが返ります。'
-			}
 		},
 
 		offset: {
@@ -34,10 +24,6 @@ export const meta = {
 
 		userId: {
 			validator: $.type(ID),
-			desc: {
-				'ja-JP': '対象のユーザーのID',
-				'en-US': 'Target user ID'
-			}
 		}
 	},
 

@@ -3,11 +3,6 @@ import define from '../../../define';
 import { DriveFiles } from '../../../../../models';
 
 export const meta = {
-	desc: {
-		'ja-JP': '与えられたMD5ハッシュ値を持つファイルがドライブに存在するかどうかを返します。',
-		'en-US': 'Returns whether the file with the given MD5 hash exists in the user\'s drive.'
-	},
-
 	tags: ['drive'],
 
 	requireCredential: true as const,
@@ -17,9 +12,6 @@ export const meta = {
 	params: {
 		md5: {
 			validator: $.str,
-			desc: {
-				'ja-JP': 'ファイルのMD5ハッシュ'
-			}
 		}
 	},
 

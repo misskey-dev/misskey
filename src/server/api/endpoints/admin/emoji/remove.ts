@@ -7,10 +7,6 @@ import { insertModerationLog } from '../../../../../services/insert-moderation-l
 import { ApiError } from '../../../error';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'カスタム絵文字を削除します。'
-	},
-
 	tags: ['admin'],
 
 	requireCredential: true as const,

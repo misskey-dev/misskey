@@ -7,11 +7,6 @@ import { ApiError } from '../../../error';
 import { DriveFiles } from '../../../../../models';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'ドライブのファイルを削除します。',
-		'en-US': 'Delete a file of drive.'
-	},
-
 	tags: ['drive'],
 
 	requireCredential: true as const,
@@ -21,10 +16,6 @@ export const meta = {
 	params: {
 		fileId: {
 			validator: $.type(ID),
-			desc: {
-				'ja-JP': '対象のファイルID',
-				'en-US': 'Target file ID'
-			}
 		}
 	},
 

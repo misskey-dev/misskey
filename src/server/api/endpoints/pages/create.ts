@@ -8,10 +8,6 @@ import { Page } from '../../../../models/entities/page';
 import { ApiError } from '../../error';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'ページを作成します。',
-	},
-
 	tags: ['pages'],
 
 	requireCredential: true as const,

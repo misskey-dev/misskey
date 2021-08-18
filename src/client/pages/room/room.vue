@@ -31,7 +31,7 @@
 			<MkButton @click="add()"><i class="fas fa-box-open"></i> {{ $ts._rooms.addFurniture }}</MkButton>
 		</div>
 		<div class="_content">
-			<MkSelect :value="roomType" @update:value="updateRoomType($event)">
+			<MkSelect :model-value="roomType" @update:modelValue="updateRoomType($event)">
 				<template #label>{{ $ts._rooms.roomType }}</template>
 				<option value="default">{{ $ts._rooms._roomType.default }}</option>
 				<option value="washitsu">{{ $ts._rooms._roomType.washitsu }}</option>
@@ -52,7 +52,7 @@
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
 import { Room } from '@client/scripts/room/room';
-import parseAcct from '@/misc/acct/parse';
+import { parseAcct } from '@/misc/acct';
 import XPreview from './preview.vue';
 const storeItems = require('@client/scripts/room/furnitures.json5');
 import { query as urlQuery } from '../../../prelude/url';

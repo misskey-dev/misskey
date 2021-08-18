@@ -5,11 +5,6 @@ import { UserGroupInvitations } from '../../../../models';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'グループへの招待一覧を取得します。',
-		'en-US': 'Get user group invitations.'
-	},
-
 	tags: ['account', 'groups'],
 
 	requireCredential: true as const,

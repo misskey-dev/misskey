@@ -6,11 +6,6 @@ import { insertModerationLog } from '../../../../services/insert-moderation-log'
 import { doPostUnsuspend } from '../../../../services/unsuspend-user';
 
 export const meta = {
-	desc: {
-		'ja-JP': '指定したユーザーの凍結を解除します。',
-		'en-US': 'Unsuspend a user.'
-	},
-
 	tags: ['admin'],
 
 	requireCredential: true as const,
@@ -19,10 +14,6 @@ export const meta = {
 	params: {
 		userId: {
 			validator: $.type(ID),
-			desc: {
-				'ja-JP': '対象のユーザーID',
-				'en-US': 'The user ID which you want to unsuspend'
-			}
 		},
 	}
 };

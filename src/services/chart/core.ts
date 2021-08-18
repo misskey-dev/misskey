@@ -52,7 +52,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 	private static readonly columnDot = '_';
 
 	private name: string;
-	private queue: {
+	private buffer: {
 		diff: DeepPartial<T>;
 		group: string | null;
 	}[] = [];
@@ -201,11 +201,12 @@ export default abstract class Chart<T extends Record<string, any>> {
 				...Chart.convertSchemaToFlatColumnDefinitions(schema)
 			},
 			indices: [{
-				columns: ['date']
-			}, {
-				columns: ['group']
-			}, {
-				columns: ['date', 'group']
+				columns: ['date', 'group'],
+				unique: true,
+			}, { // groupにnullが含まれると↑のuniqueは機能しないので↓の部分インデックスでカバー
+				columns: ['date'],
+				unique: true,
+				where: '"group" IS NULL'
 			}]
 		});
 	}
@@ -314,11 +315,11 @@ export default abstract class Chart<T extends Record<string, any>> {
 			if (currentLog != null) return currentLog;
 
 			// 新規ログ挿入
-			log = await this.repository.save({
+			log = await this.repository.insert({
 				group: group,
 				date: date,
 				...Chart.convertObjectToFlattenColumns(data)
-			});
+			}).then(x => this.repository.findOneOrFail(x.identifiers[0]));
 
 			logger.info(`${this.name + (group ? `:${group}` : '')}: New commit created`);
 
@@ -330,28 +331,28 @@ export default abstract class Chart<T extends Record<string, any>> {
 
 	@autobind
 	protected commit(diff: DeepPartial<T>, group: string | null = null): void {
-		this.queue.push({
+		this.buffer.push({
 			diff, group,
 		});
 	}
 
 	@autobind
 	public async save() {
-		if (this.queue.length === 0) {
+		if (this.buffer.length === 0) {
 			logger.info(`${this.name}: Write skipped`);
 			return;
 		}
 
-		// TODO: 前の時間のログがqueueにあった場合のハンドリング
+		// TODO: 前の時間のログがbufferにあった場合のハンドリング
 		// 例えば、save が20分ごとに行われるとして、前回行われたのは 01:50 だったとする。
-		// 次に save が行われるのは 02:10 ということになるが、もし 01:55 に新規ログが queue に追加されたとすると、
+		// 次に save が行われるのは 02:10 ということになるが、もし 01:55 に新規ログが buffer に追加されたとすると、
 		// そのログは本来は 01:00~ のログとしてDBに保存されて欲しいのに、02:00~ のログ扱いになってしまう。
 		// これを回避するための実装は複雑になりそうなため、一旦保留。
 
 		const update = async (log: Log) => {
 			const finalDiffs = {} as Record<string, number | unknown[]>;
 
-			for (const diff of this.queue.filter(q => q.group === log.group).map(q => q.diff)) {
+			for (const diff of this.buffer.filter(q => q.group === log.group).map(q => q.diff)) {
 				const columns = Chart.convertObjectToFlattenColumns(diff);
 
 				for (const [k, v] of Object.entries(columns)) {
@@ -378,11 +379,11 @@ export default abstract class Chart<T extends Record<string, any>> {
 
 			logger.info(`${this.name + (log.group ? `:${log.group}` : '')}: Updated`);
 
-			// TODO: この一連の処理が始まった後に新たにqueueに入ったものは消さないようにする
-			this.queue = this.queue.filter(q => q.group !== log.group);
+			// TODO: この一連の処理が始まった後に新たにbufferに入ったものは消さないようにする
+			this.buffer = this.buffer.filter(q => q.group !== log.group);
 		};
 
-		const groups = removeDuplicates(this.queue.map(log => log.group));
+		const groups = removeDuplicates(this.buffer.map(log => log.group));
 
 		await Promise.all(groups.map(group => this.getCurrentLog(group).then(log => update(log))));
 	}

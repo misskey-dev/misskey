@@ -3,6 +3,7 @@ import * as bcrypt from 'bcryptjs';
 import define from '../../define';
 import { Users, UserProfiles } from '../../../../models';
 import { doPostSuspend } from '../../../../services/suspend-user';
+import { publishUserEvent } from '@/services/stream';
 
 export const meta = {
 	requireCredential: true as const,
@@ -30,4 +31,7 @@ export default define(meta, async (ps, user) => {
 	await doPostSuspend(user).catch(e => {});
 
 	await Users.delete(user.id);
+
+	// Terminate streaming
+	publishUserEvent(user.id, 'terminate', {});
 });

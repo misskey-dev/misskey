@@ -4,11 +4,6 @@ import define from '../../define';
 import { Users } from '../../../../models';
 
 export const meta = {
-	desc: {
-		'ja-JP': '指定したユーザーの情報を取得します（管理者向け）。',
-		'en-US': 'Gets the information of the specified user (for administrators).'
-	},
-
 	tags: ['admin'],
 
 	requireCredential: true as const,
@@ -17,10 +12,6 @@ export const meta = {
 	params: {
 		userId: {
 			validator: $.type(ID),
-			desc: {
-				'ja-JP': '対象のユーザーID',
-				'en-US': 'The user ID which you want to suspend'
-			}
 		},
 	},
 

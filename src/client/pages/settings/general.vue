@@ -33,10 +33,12 @@
 		<template #label>{{ $ts.appearance }}</template>
 		<FormSwitch v-model:value="disableAnimatedMfm">{{ $ts.disableAnimatedMfm }}</FormSwitch>
 		<FormSwitch v-model:value="reduceAnimation">{{ $ts.reduceUiAnimation }}</FormSwitch>
+		<FormSwitch v-model:value="useBlurEffect">{{ $ts.useBlurEffect }}</FormSwitch>
 		<FormSwitch v-model:value="useBlurEffectForModal">{{ $ts.useBlurEffectForModal }}</FormSwitch>
 		<FormSwitch v-model:value="showGapBetweenNotesInTimeline">{{ $ts.showGapBetweenNotesInTimeline }}</FormSwitch>
 		<FormSwitch v-model:value="loadRawImages">{{ $ts.loadRawImages }}</FormSwitch>
 		<FormSwitch v-model:value="disableShowingAnimatedImages">{{ $ts.disableShowingAnimatedImages }}</FormSwitch>
+		<FormSwitch v-model:value="squareAvatars">{{ $ts.squareAvatars }}</FormSwitch>
 		<FormSwitch v-model:value="useSystemFont">{{ $ts.useSystemFont }}</FormSwitch>
 		<FormSwitch v-model:value="useOsNativeEmojis">{{ $ts.useOsNativeEmojis }}
 			<div><Mfm text="🍮🍦🍭🍩🍰🍫🍬🥞🍪" :key="useOsNativeEmojis"/></div>
@@ -78,6 +80,8 @@
 	</FormSelect>
 
 	<FormLink to="/settings/deck">{{ $ts.deck }}</FormLink>
+
+	<FormLink to="/settings/custom-css"><template #icon><i class="fas fa-code"></i></template>{{ $ts.customCss }}</FormLink>
 </FormBase>
 </template>
 
@@ -129,6 +133,7 @@ export default defineComponent({
 		serverDisconnectedBehavior: defaultStore.makeGetterSetter('serverDisconnectedBehavior'),
 		reduceAnimation: defaultStore.makeGetterSetter('animation', v => !v, v => !v),
 		useBlurEffectForModal: defaultStore.makeGetterSetter('useBlurEffectForModal'),
+		useBlurEffect: defaultStore.makeGetterSetter('useBlurEffect'),
 		showGapBetweenNotesInTimeline: defaultStore.makeGetterSetter('showGapBetweenNotesInTimeline'),
 		disableAnimatedMfm: defaultStore.makeGetterSetter('animatedMfm', v => !v, v => !v),
 		useOsNativeEmojis: defaultStore.makeGetterSetter('useOsNativeEmojis'),
@@ -143,6 +148,7 @@ export default defineComponent({
 		instanceTicker: defaultStore.makeGetterSetter('instanceTicker'),
 		enableInfiniteScroll: defaultStore.makeGetterSetter('enableInfiniteScroll'),
 		useReactionPickerForContextMenu: defaultStore.makeGetterSetter('useReactionPickerForContextMenu'),
+		squareAvatars: defaultStore.makeGetterSetter('squareAvatars'),
 	},
 
 	watch: {
@@ -171,6 +177,10 @@ export default defineComponent({
 		},
 
 		enableInfiniteScroll() {
+			this.reloadAsk();
+		},
+
+		squareAvatars() {
 			this.reloadAsk();
 		},
 

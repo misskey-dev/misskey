@@ -2,36 +2,30 @@ import isNativeToken from './common/is-native-token';
 import { User } from '../../models/entities/user';
 import { Users, AccessTokens, Apps } from '../../models';
 import { AccessToken } from '../../models/entities/access-token';
-import { Cache } from '@/misc/cache';
 
-// TODO: TypeORMのカスタムキャッシュプロバイダを使っても良いかも
-// ref. https://github.com/typeorm/typeorm/blob/master/docs/caching.md
-const cache = new Cache<User>(1000 * 60 * 60);
+export class AuthenticationError extends Error {
+	constructor(message: string) {
+		super(message);
+		this.name = 'AuthenticationError';
+	}
+}
 
-export default async (token: string): Promise<[User | null | undefined, AccessToken | null | undefined]> => {
+export default async (token: string): Promise<[User | null | undefined, App | null | undefined]> => {
 	if (token == null) {
 		return [null, null];
 	}
 
 	if (isNativeToken(token)) {
-		const cached = cache.get(token);
-		if (cached) {
-			return [cached, null];
-		}
-
 		// Fetch user
 		const user = await Users
 			.findOne({ token });
 
 		if (user == null) {
-			throw new Error('user not found');
+			throw new AuthenticationError('user not found');
 		}
-
-		cache.set(token, user);
 
 		return [user, null];
 	} else {
-		// TODO: cache
 		const accessToken = await AccessTokens.findOne({
 			where: [{
 				hash: token.toLowerCase() // app
@@ -41,7 +35,7 @@ export default async (token: string): Promise<[User | null | undefined, AccessTo
 		});
 
 		if (accessToken == null) {
-			throw new Error('invalid signature');
+			throw new AuthenticationError('invalid signature');
 		}
 
 		AccessTokens.update(accessToken.id, {

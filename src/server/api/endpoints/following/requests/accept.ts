@@ -6,11 +6,6 @@ import { ApiError } from '../../../error';
 import { getUser } from '../../../common/getters';
 
 export const meta = {
-	desc: {
-		'ja-JP': '自分に届いた、指定したフォローリクエストを承認します。',
-		'en-US': 'Accept a follow request.'
-	},
-
 	tags: ['following', 'account'],
 
 	requireCredential: true as const,
@@ -20,10 +15,6 @@ export const meta = {
 	params: {
 		userId: {
 			validator: $.type(ID),
-			desc: {
-				'ja-JP': '対象のユーザーのID',
-				'en-US': 'Target user ID'
-			}
 		}
 	},
 

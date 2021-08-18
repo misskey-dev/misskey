@@ -5,11 +5,6 @@ import { ApiError } from '../../../error';
 import { UserGroups } from '../../../../../models';
 
 export const meta = {
-	desc: {
-		'ja-JP': '指定したユーザーグループを削除します。',
-		'en-US': 'Delete a user group'
-	},
-
 	tags: ['groups'],
 
 	requireCredential: true as const,
@@ -19,10 +14,6 @@ export const meta = {
 	params: {
 		groupId: {
 			validator: $.type(ID),
-			desc: {
-				'ja-JP': '対象となるユーザーグループのID',
-				'en-US': 'ID of target user group'
-			}
 		}
 	},
 

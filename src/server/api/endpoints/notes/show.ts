@@ -6,11 +6,6 @@ import { ApiError } from '../../error';
 import { Notes } from '../../../../models';
 
 export const meta = {
-	desc: {
-		'ja-JP': '指定した投稿を取得します。',
-		'en-US': 'Get a note.'
-	},
-
 	tags: ['notes'],
 
 	requireCredential: false as const,
@@ -18,10 +13,6 @@ export const meta = {
 	params: {
 		noteId: {
 			validator: $.type(ID),
-			desc: {
-				'ja-JP': '対象の投稿のID',
-				'en-US': 'Target note ID.'
-			}
 		}
 	},
 

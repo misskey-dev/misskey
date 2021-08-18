@@ -8,7 +8,6 @@ export const schema = {
 		totalCount: {
 			type: 'number' as const,
 			optional: false as const, nullable: false as const,
-			description: '集計期間時点での、全ドライブファイル数'
 		},
 
 		/**
@@ -17,7 +16,6 @@ export const schema = {
 		totalSize: {
 			type: 'number' as const,
 			optional: false as const, nullable: false as const,
-			description: '集計期間時点での、全ドライブファイルの合計サイズ'
 		},
 
 		/**
@@ -26,7 +24,6 @@ export const schema = {
 		incCount: {
 			type: 'number' as const,
 			optional: false as const, nullable: false as const,
-			description: '増加したドライブファイル数'
 		},
 
 		/**
@@ -35,7 +32,6 @@ export const schema = {
 		incSize: {
 			type: 'number' as const,
 			optional: false as const, nullable: false as const,
-			description: '増加したドライブ使用量'
 		},
 
 		/**
@@ -44,7 +40,6 @@ export const schema = {
 		decCount: {
 			type: 'number' as const,
 			optional: false as const, nullable: false as const,
-			description: '減少したドライブファイル数'
 		},
 
 		/**
@@ -53,7 +48,6 @@ export const schema = {
 		decSize: {
 			type: 'number' as const,
 			optional: false as const, nullable: false as const,
-			description: '減少したドライブ使用量'
 		},
 	}
 };

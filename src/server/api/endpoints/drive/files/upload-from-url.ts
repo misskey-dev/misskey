@@ -7,10 +7,6 @@ import { DriveFiles } from '../../../../../models';
 import { publishMainStream } from '../../../../../services/stream';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'ドライブに指定されたURLに存在するファイルをアップロードします。'
-	},
-
 	tags: ['drive'],
 
 	limit: {
@@ -30,34 +26,27 @@ export const meta = {
 
 		folderId: {
 			validator: $.optional.nullable.type(ID),
-			default: null as any,
+			default: null,
 		},
 
 		isSensitive: {
 			validator: $.optional.bool,
 			default: false,
-			desc: {
-				'ja-JP': 'このメディアが「閲覧注意」(NSFW)かどうか',
-				'en-US': 'Whether this media is NSFW'
-			}
 		},
 
 		comment: {
 			validator: $.optional.nullable.str,
-			default: null as any,
+			default: null,
 		},
 
 		marker: {
 			validator: $.optional.nullable.str,
-			default: null as any,
+			default: null,
 		},
 
 		force: {
 			validator: $.optional.bool,
 			default: false,
-			desc: {
-				'ja-JP': 'true にすると、同じハッシュを持つファイルが既にアップロードされていても強制的にファイルを作成します。',
-			}
 		}
 	}
 };

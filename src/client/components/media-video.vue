@@ -9,7 +9,6 @@
 	<video
 		:poster="video.thumbnailUrl"
 		:title="video.name"
-		crossorigin="anonymous"
 		preload="none"
 		controls
 	>

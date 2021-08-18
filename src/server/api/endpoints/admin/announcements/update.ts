@@ -5,11 +5,6 @@ import { Announcements } from '../../../../../models';
 import { ApiError } from '../../../error';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'アナウンスの内容を変更します。',
-		'en-US': 'Update a annoucement.'
-	},
-
 	tags: ['admin'],
 
 	requireCredential: true as const,

@@ -57,9 +57,9 @@
 			</header>
 
 			<div>
-				<MkSwitch v-model:value="game.isLlotheo" @update:value="updateSettings('isLlotheo')">{{ $ts._reversi.isLlotheo }}</MkSwitch>
-				<MkSwitch v-model:value="game.loopedBoard" @update:value="updateSettings('loopedBoard')">{{ $ts._reversi.loopedMap }}</MkSwitch>
-				<MkSwitch v-model:value="game.canPutEverywhere" @update:value="updateSettings('canPutEverywhere')">{{ $ts._reversi.canPutEverywhere }}</MkSwitch>
+				<MkSwitch v-model="game.isLlotheo" @update:modelValue="updateSettings('isLlotheo')">{{ $ts._reversi.isLlotheo }}</MkSwitch>
+				<MkSwitch v-model="game.loopedBoard" @update:modelValue="updateSettings('loopedBoard')">{{ $ts._reversi.loopedMap }}</MkSwitch>
+				<MkSwitch v-model="game.canPutEverywhere" @update:modelValue="updateSettings('canPutEverywhere')">{{ $ts._reversi.canPutEverywhere }}</MkSwitch>
 			</div>
 		</div>
 
@@ -70,7 +70,7 @@
 
 			<div>
 				<template v-for="item in form">
-					<MkSwitch v-if="item.type == 'switch'" v-model:value="item.value" :key="item.id" @change="onChangeForm(item)">{{ item.label || item.desc || '' }}</MkSwitch>
+					<MkSwitch v-if="item.type == 'switch'" v-model="item.value" :key="item.id" @change="onChangeForm(item)">{{ item.label || item.desc || '' }}</MkSwitch>
 
 					<div class="card" v-if="item.type == 'radio'" :key="item.id">
 						<header>

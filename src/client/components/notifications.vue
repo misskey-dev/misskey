@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, PropType, markRaw } from 'vue';
 import paging from '@client/scripts/paging';
 import XNotification from './notification.vue';
 import XList from './date-separated-list.vue';
@@ -89,7 +89,7 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.connection = os.stream.useChannel('main');
+		this.connection = markRaw(os.stream.useChannel('main'));
 		this.connection.on('notification', this.onNotification);
 	},
 

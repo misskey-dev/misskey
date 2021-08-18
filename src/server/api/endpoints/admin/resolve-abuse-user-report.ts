@@ -4,11 +4,6 @@ import define from '../../define';
 import { AbuseUserReports } from '../../../../models';
 
 export const meta = {
-	desc: {
-		'ja-JP': '指定した通報を解決済みにします。',
-		'en-US': 'Marks the specified report as resolved.'
-	},
-
 	tags: ['admin'],
 
 	requireCredential: true as const,

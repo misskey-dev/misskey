@@ -5,7 +5,6 @@ const logSchema = {
 	total: {
 		type: 'number' as const,
 		optional: false as const, nullable: false as const,
-		description: '集計期間時点での、全ユーザー数'
 	},
 
 	/**
@@ -14,7 +13,6 @@ const logSchema = {
 	inc: {
 		type: 'number' as const,
 		optional: false as const, nullable: false as const,
-		description: '増加したユーザー数'
 	},
 
 	/**
@@ -23,7 +21,6 @@ const logSchema = {
 	dec: {
 		type: 'number' as const,
 		optional: false as const, nullable: false as const,
-		description: '減少したユーザー数'
 	},
 };
 

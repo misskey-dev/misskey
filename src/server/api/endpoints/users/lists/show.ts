@@ -5,11 +5,6 @@ import { ApiError } from '../../../error';
 import { UserLists } from '../../../../../models';
 
 export const meta = {
-	desc: {
-		'ja-JP': '指定したユーザーリストの情報を取得します。',
-		'en-US': 'Show a user list.'
-	},
-
 	tags: ['lists', 'account'],
 
 	requireCredential: true as const,

@@ -9,11 +9,6 @@ import { UserGroupInvitation } from '../../../../../models/entities/user-group-i
 import { createNotification } from '../../../../../services/create-notification';
 
 export const meta = {
-	desc: {
-		'ja-JP': '指定したユーザーグループに指定したユーザーを招待します。',
-		'en-US': 'Invite a user to a user group.'
-	},
-
 	tags: ['groups', 'users'],
 
 	requireCredential: true as const,
@@ -27,10 +22,6 @@ export const meta = {
 
 		userId: {
 			validator: $.type(ID),
-			desc: {
-				'ja-JP': '対象のユーザーのID',
-				'en-US': 'Target user ID'
-			}
 		},
 	},
 

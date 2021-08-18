@@ -161,7 +161,7 @@ hr {
 	background: none;
 	border: none;
 	cursor: pointer;
-	color: var(--fg);
+	color: inherit;
 	touch-action: manipulation;
 	tap-highlight-color: transparent;
 	-webkit-tap-highlight-color: transparent;
@@ -189,7 +189,7 @@ hr {
 
 ._buttonPrimary {
 	@extend ._button;
-	color: #fff;
+	color: var(--fgOnAccent);
 	background: var(--accent);
 
 	&:not(:disabled):hover {
@@ -239,8 +239,7 @@ hr {
 ._panel {
 	background: var(--panel);
 	border-radius: var(--radius);
-	//border: var(--panelBorder);
-	box-shadow: var(--panelShadow);
+	border: var(--panelBorder);
 	overflow: clip;
 }
 
@@ -256,6 +255,7 @@ hr {
 	margin: var(--margin) 0;
 }
 
+// TODO: 廃止
 ._card {
 	@extend ._panel;
 
@@ -318,12 +318,19 @@ hr {
 	}
 }
 
-._popup {
+._window {
 	background: var(--panel);
 	border-radius: var(--radius);
 	contain: content;
 }
 
+._popup {
+	background: var(--popup);
+	border-radius: var(--radius);
+	contain: layout; // ふき出しがボックスから飛び出て表示されるようなデザインをする場合もあるので paint は contain することができない
+}
+
+// TODO: 廃止
 ._root {
 	box-sizing: border-box;
 	margin: var(--root-margin, 32px) auto;
@@ -357,7 +364,7 @@ hr {
 ._flat_ {
 	--root-margin: 0px;
 	--baseContentWidth: 100%;
-	--panelShadow: none;
+	--panelBorder: none;
 
 	._block {
 		//border-top: solid 0.5px var(--divider);
@@ -398,8 +405,27 @@ hr {
 
 ._acrylic {
 	background: var(--acrylicPanel);
-	-webkit-backdrop-filter: blur(15px);
-	backdrop-filter: blur(15px);
+	-webkit-backdrop-filter: var(--blur, blur(15px));
+	backdrop-filter: var(--blur, blur(15px));
+}
+
+._inputSplit {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+	grid-gap: 8px;
+	margin: 1em 0;
+
+	> * {
+		margin: 0 !important;
+	}
+}
+
+._inputNoTopMargin {
+	margin-top: 0 !important;
+}
+
+._inputNoBottomMargin {
+	margin-bottom: 0 !important;
 }
 
 ._table {

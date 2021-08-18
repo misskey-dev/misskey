@@ -2,13 +2,9 @@ import $ from 'cafy';
 import define from '../../define';
 import { generateMutedUserQuery } from '../../common/generate-muted-user-query';
 import { Notes } from '../../../../models';
+import { generateBlockedUserQuery } from '../../common/generate-block-query';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'Featuredな投稿を取得します。',
-		'en-US': 'Get featured notes.'
-	},
-
 	tags: ['notes'],
 
 	requireCredential: false as const,
@@ -17,9 +13,6 @@ export const meta = {
 		limit: {
 			validator: $.optional.num.range(1, 100),
 			default: 10,
-			desc: {
-				'ja-JP': '最大数'
-			}
 		},
 
 		offset: {
@@ -56,6 +49,7 @@ export default define(meta, async (ps, user) => {
 		.leftJoinAndSelect('renote.user', 'renoteUser');
 
 	if (user) generateMutedUserQuery(query, user);
+	if (user) generateBlockedUserQuery(query, user);
 
 	let notes = await query
 		.orderBy('note.score', 'DESC')

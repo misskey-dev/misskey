@@ -5,7 +5,6 @@ const logSchema = {
 	totalCount: {
 		type: 'number' as const,
 		optional: false as const, nullable: false as const,
-		description: '集計期間時点での、全ドライブファイル数'
 	},
 
 	/**
@@ -14,7 +13,6 @@ const logSchema = {
 	totalSize: {
 		type: 'number' as const,
 		optional: false as const, nullable: false as const,
-		description: '集計期間時点での、全ドライブファイルの合計サイズ'
 	},
 
 	/**
@@ -23,7 +21,6 @@ const logSchema = {
 	incCount: {
 		type: 'number' as const,
 		optional: false as const, nullable: false as const,
-		description: '増加したドライブファイル数'
 	},
 
 	/**
@@ -32,7 +29,6 @@ const logSchema = {
 	incSize: {
 		type: 'number' as const,
 		optional: false as const, nullable: false as const,
-		description: '増加したドライブ使用量'
 	},
 
 	/**
@@ -41,7 +37,6 @@ const logSchema = {
 	decCount: {
 		type: 'number' as const,
 		optional: false as const, nullable: false as const,
-		description: '減少したドライブファイル数'
 	},
 
 	/**
@@ -50,7 +45,6 @@ const logSchema = {
 	decSize: {
 		type: 'number' as const,
 		optional: false as const, nullable: false as const,
-		description: '減少したドライブ使用量'
 	},
 };
 

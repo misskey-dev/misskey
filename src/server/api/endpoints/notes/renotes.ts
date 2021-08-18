@@ -7,13 +7,9 @@ import { generateVisibilityQuery } from '../../common/generate-visibility-query'
 import { generateMutedUserQuery } from '../../common/generate-muted-user-query';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 import { Notes } from '../../../../models';
+import { generateBlockedUserQuery } from '../../common/generate-block-query';
 
 export const meta = {
-	desc: {
-		'ja-JP': '指定した投稿のRenote一覧を取得します。',
-		'en-US': 'Show a renotes of a note.'
-	},
-
 	tags: ['notes'],
 
 	requireCredential: false as const,
@@ -21,10 +17,6 @@ export const meta = {
 	params: {
 		noteId: {
 			validator: $.type(ID),
-			desc: {
-				'ja-JP': '対象の投稿のID',
-				'en-US': 'Target note ID'
-			}
 		},
 
 		limit: {
@@ -76,6 +68,7 @@ export default define(meta, async (ps, user) => {
 
 	generateVisibilityQuery(query, user);
 	if (user) generateMutedUserQuery(query, user);
+	if (user) generateBlockedUserQuery(query, user);
 
 	const renotes = await query.take(ps.limit!).getMany();
 

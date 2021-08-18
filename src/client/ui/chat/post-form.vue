@@ -55,7 +55,7 @@ import * as mfm from 'mfm-js';
 import { host, url } from '@client/config';
 import { erase, unique } from '../../../prelude/array';
 import { extractMentions } from '@/misc/extract-mentions';
-import getAcct from '@/misc/acct/render';
+import { getAcct } from '@/misc/acct';
 import { formatTimeString } from '@/misc/format-time-string';
 import { Autocomplete } from '@client/scripts/autocomplete';
 import { noteVisibilities } from '../../../types';
@@ -594,7 +594,7 @@ export default defineComponent({
 		},
 
 		showActions(ev) {
-			os.modalMenu(postFormActions.map(action => ({
+			os.popupMenu(postFormActions.map(action => ({
 				text: action.title,
 				action: () => {
 					action.handler({

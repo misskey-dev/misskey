@@ -7,11 +7,6 @@ import { makePaginationQuery } from '../../common/make-pagination-query';
 import { toPunyNullable } from '@/misc/convert-host';
 
 export const meta = {
-	desc: {
-		'ja-JP': '指定したユーザーのフォロー一覧を取得します。',
-		'en-US': 'Get following users of a user.'
-	},
-
 	tags: ['users'],
 
 	requireCredential: false as const,
@@ -19,10 +14,6 @@ export const meta = {
 	params: {
 		userId: {
 			validator: $.optional.type(ID),
-			desc: {
-				'ja-JP': '対象のユーザーのID',
-				'en-US': 'Target user ID'
-			}
 		},
 
 		username: {

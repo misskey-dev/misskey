@@ -2,10 +2,6 @@ import define from '../../../define';
 import { UserLists } from '../../../../../models';
 
 export const meta = {
-	desc: {
-		'ja-JP': '自分の作成したユーザーリスト一覧を取得します。'
-	},
-
 	tags: ['lists', 'account'],
 
 	requireCredential: true as const,

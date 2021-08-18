@@ -33,9 +33,9 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import parseAcct from '@/misc/acct/parse';
+import { parseAcct } from '@/misc/acct';
 import MkFollowButton from './follow-button.vue';
-import { userPage } from '../filters/user';
+import { userPage } from '@client/filters/user';
 import * as os from '@client/os';
 
 export default defineComponent({

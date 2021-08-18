@@ -14,7 +14,7 @@ export default defineComponent({
 			class: 'pxhvhrfw',
 		}, options.map(option => withDirectives(h('button', {
 			class: ['_button', { active: this.value === option.props.value }],
-			key: option.props.value,
+			key: option.key,
 			disabled: this.value === option.props.value,
 			onClick: () => {
 				this.$emit('update:value', option.props.value);

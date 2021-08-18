@@ -3,11 +3,6 @@ import { URL } from 'url';
 import define from '../../../define';
 
 export const meta = {
-	desc: {
-		'ja-JP': '他サーバーへ送るキューの遅延一覧を返します。',
-		'en-US': 'Returns a list of delays in queues sent to other servers.'
-	},
-
 	tags: ['admin'],
 
 	requireCredential: true as const,
@@ -26,11 +21,9 @@ export const meta = {
 				anyOf: [
 					{
 						type: 'string' as const,
-						description: 'FQDN to fediverse server'
 					},
 					{
 						type: 'number' as const,
-						description: 'Delayed queue counts'
 					}
 				]
 			}

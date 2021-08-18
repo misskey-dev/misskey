@@ -2,13 +2,9 @@ import $ from 'cafy';
 import define from '../define';
 import { Users } from '../../../models';
 import { generateMutedUserQueryForUsers } from '../common/generate-muted-user-query';
+import { generateBlockedUserQuery } from '../common/generate-block-query';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'ユーザー一覧を表示します。',
-		'en-US': 'Display the user list.'
-	},
-
 	tags: ['users'],
 
 	requireCredential: false as const,
@@ -94,6 +90,7 @@ export default define(meta, async (ps, me) => {
 	}
 
 	if (me) generateMutedUserQueryForUsers(query, me);
+	if (me) generateBlockedUserQuery(query, me);
 
 	query.take(ps.limit!);
 	query.skip(ps.offset);

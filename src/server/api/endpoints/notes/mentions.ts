@@ -7,13 +7,9 @@ import { generateVisibilityQuery } from '../../common/generate-visibility-query'
 import { generateMutedUserQuery } from '../../common/generate-muted-user-query';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 import { Brackets } from 'typeorm';
+import { generateBlockedUserQuery } from '../../common/generate-block-query';
 
 export const meta = {
-	desc: {
-		'ja-JP': '自分に言及している投稿の一覧を取得します。',
-		'en-US': 'Get mentions of myself.'
-	},
-
 	tags: ['notes'],
 
 	requireCredential: true as const,
@@ -71,6 +67,7 @@ export default define(meta, async (ps, user) => {
 
 	generateVisibilityQuery(query, user);
 	generateMutedUserQuery(query, user);
+	generateBlockedUserQuery(query, user);
 
 	if (ps.visibility) {
 		query.andWhere('note.visibility = :visibility', { visibility: ps.visibility });

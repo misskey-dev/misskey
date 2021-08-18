@@ -127,6 +127,7 @@ editWidgets: "Редагувати віджети"
 editWidgetsExit: "Готово"
 customEmojis: "Кастомні емоджі"
 emoji: "Емоджі"
+emojis: "Емоджі"
 emojiName: "Назва емоджі"
 emojiUrl: "URL емодзі"
 addEmoji: "Додати емодзі"
@@ -517,7 +518,6 @@ removeAllFollowing: "Скасувати всі підписки"
 removeAllFollowingDescription: "Скасувати підписку на всі акаунти з {host}. Будь ласка, робіть це, якщо інстанс більше не існує."
 userSuspended: "Обліковий запис заблокований."
 userSilenced: "Обліковий запис приглушений."
-sidebar: "Бокова панель"
 divider: "Розділювач"
 addItem: "Додати елемент"
 rooms: "Кімнати"
@@ -689,6 +689,11 @@ user: "Користувачі"
 administration: "Управління"
 expiration: "Опитування закінчується"
 middle: "Середній"
+global: "Глобальна"
+sent: "Відправити"
+hashtags: "Хештеґ"
+_docs:
+  admin: "Управління"
 _ad:
   back: "Назад"
 _gallery:
@@ -816,9 +821,7 @@ _channel:
   following: "Підписки"
   usersCount: "{n} учасників"
   notesCount: "{n} дописів"
-_sidebar:
-  full: "Повна"
-  icon: "Аватар"
+_menuDisplay:
   hide: "Сховати"
 _wordMute:
   muteWords: "Заглушені слова"

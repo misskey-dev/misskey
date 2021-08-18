@@ -13,7 +13,7 @@ import { search } from '@client/scripts/search';
 import XCommon from './_common_/common.vue';
 import * as os from '@client/os';
 import XSidebar from '@client/ui/_common_/sidebar.vue';
-import { sidebarDef } from '@client/sidebar';
+import { menuDef } from '@client/menu';
 import { ColdDeviceStorage } from '@client/store';
 
 export default defineComponent({
@@ -33,7 +33,7 @@ export default defineComponent({
 	data() {
 		return {
 			host: host,
-			menuDef: sidebarDef,
+			menuDef: menuDef,
 			wallpaper: localStorage.getItem('wallpaper') != null,
 		};
 	},

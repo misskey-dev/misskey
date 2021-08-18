@@ -5,11 +5,6 @@ import { PageLikes } from '../../../../models';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 
 export const meta = {
-	desc: {
-		'ja-JP': '「いいね」したページ一覧を取得します。',
-		'en-US': 'Get liked pages'
-	},
-
 	tags: ['account', 'pages'],
 
 	requireCredential: true as const,

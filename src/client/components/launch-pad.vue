@@ -36,7 +36,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import MkModal from '@client/components/ui/modal.vue';
-import { sidebarDef } from '@client/sidebar';
+import { menuDef } from '@client/menu';
 import { instanceName } from '@client/config';
 
 export default defineComponent({
@@ -48,7 +48,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			menuDef: sidebarDef,
+			menuDef: menuDef,
 			items: [],
 			instanceName,
 		};

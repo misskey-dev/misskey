@@ -95,14 +95,12 @@ export const packedFollowingSchema = {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
 			format: 'id',
-			description: 'The unique identifier for this following.',
 			example: 'xxxxxxxxxx',
 		},
 		createdAt: {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
 			format: 'date-time',
-			description: 'The date that the following was created.'
 		},
 		followeeId: {
 			type: 'string' as const,
@@ -113,7 +111,6 @@ export const packedFollowingSchema = {
 			type: 'object' as const,
 			optional: true as const, nullable: false as const,
 			ref: 'User',
-			description: 'The followee.'
 		},
 		followerId: {
 			type: 'string' as const,
@@ -124,7 +121,6 @@ export const packedFollowingSchema = {
 			type: 'object' as const,
 			optional: true as const, nullable: false as const,
 			ref: 'User',
-			description: 'The follower.'
 		},
 	}
 };

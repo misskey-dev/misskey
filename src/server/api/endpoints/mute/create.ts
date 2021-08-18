@@ -9,11 +9,6 @@ import { Muting } from '../../../../models/entities/muting';
 import { publishUserEvent } from '../../../../services/stream';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'ユーザーをミュートします。',
-		'en-US': 'Mute a user'
-	},
-
 	tags: ['account'],
 
 	requireCredential: true as const,
@@ -23,10 +18,6 @@ export const meta = {
 	params: {
 		userId: {
 			validator: $.type(ID),
-			desc: {
-				'ja-JP': '対象のユーザーのID',
-				'en-US': 'Target user ID'
-			}
 		},
 	},
 

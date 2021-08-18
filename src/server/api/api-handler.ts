@@ -1,7 +1,7 @@
 import * as Koa from 'koa';
 
 import { IEndpoint } from './endpoints';
-import authenticate from './authenticate';
+import authenticate, { AuthenticationError } from './authenticate';
 import call from './call';
 import { ApiError } from './error';
 
@@ -37,11 +37,15 @@ export default (endpoint: IEndpoint, ctx: Koa.Context) => new Promise((res) => {
 		}).catch((e: ApiError) => {
 			reply(e.httpStatusCode ? e.httpStatusCode : e.kind === 'client' ? 400 : 500, e);
 		});
-	}).catch(() => {
-		reply(403, new ApiError({
-			message: 'Authentication failed. Please ensure your token is correct.',
-			code: 'AUTHENTICATION_FAILED',
-			id: 'b0a7f5f8-dc2f-4171-b91f-de88ad238e14'
-		}));
+	}).catch(e => {
+		if (e instanceof AuthenticationError) {
+			reply(403, new ApiError({
+				message: 'Authentication failed. Please ensure your token is correct.',
+				code: 'AUTHENTICATION_FAILED',
+				id: 'b0a7f5f8-dc2f-4171-b91f-de88ad238e14'
+			}));
+		} else {
+			reply(500, new ApiError());
+		}
 	});
 });

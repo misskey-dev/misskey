@@ -32,25 +32,21 @@ export const packedNoteReactionSchema = {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
 			format: 'id',
-			description: 'The unique identifier for this reaction.',
 			example: 'xxxxxxxxxx',
 		},
 		createdAt: {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
 			format: 'date-time',
-			description: 'The date that the reaction was created.'
 		},
 		user: {
 			type: 'object' as const,
 			optional: false as const, nullable: false as const,
 			ref: 'User',
-			description: 'User who performed this reaction.'
 		},
 		type: {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
-			description: 'The reaction type.'
 		},
 	},
 };

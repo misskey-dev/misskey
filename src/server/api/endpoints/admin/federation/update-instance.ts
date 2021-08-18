@@ -4,11 +4,6 @@ import { Instances } from '../../../../../models';
 import { toPuny } from '@/misc/convert-host';
 
 export const meta = {
-	desc: {
-		'ja-JP': '指定したドメインのアクティビティの配信を停止するかを選択します。',
-		'en-US': 'Select whether to undeliver the activity for the specified domain.'
-	},
-
 	tags: ['admin'],
 
 	requireCredential: true as const,

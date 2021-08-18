@@ -2,11 +2,6 @@ import define from '../define';
 import endpoints from '../endpoints';
 
 export const meta = {
-	desc: {
-		'ja-JP': '使用できるAPI一覧を返します。',
-		'en-US': 'Returns a list of available APIs.'
-	},
-
 	requireCredential: false as const,
 
 	tags: ['meta'],

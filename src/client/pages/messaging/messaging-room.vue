@@ -29,18 +29,18 @@
 					<button class="_buttonPrimary" @click="onIndicatorClick"><i class="fas fa-arrow-circle-down"></i>{{ $ts.newMessageExists }}</button>
 				</div>
 			</transition>
-			<XForm v-if="!fetching" :user="user" :group="group" ref="form"/>
+			<XForm v-if="!fetching" :user="user" :group="group" ref="form" class="form"/>
 		</footer>
 	</div>
 </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue';
+import { computed, defineComponent, markRaw } from 'vue';
 import XList from '@client/components/date-separated-list.vue';
 import XMessage from './messaging-room.message.vue';
 import XForm from './messaging-room.form.vue';
-import parseAcct from '@/misc/acct/parse';
+import { parseAcct } from '@/misc/acct';
 import { isBottom, onScrollBottom, scroll } from '@client/scripts/scroll';
 import * as os from '@client/os';
 import { popout } from '@client/scripts/popout';
@@ -141,10 +141,10 @@ const Component = defineComponent({
 				this.group = group;
 			}
 
-			this.connection = os.stream.useChannel('messaging', {
+			this.connection = markRaw(os.stream.useChannel('messaging', {
 				otherparty: this.user ? this.user.id : undefined,
 				group: this.group ? this.group.id : undefined,
-			});
+			}));
 
 			this.connection.on('message', this.onMessage);
 			this.connection.on('read', this.onRead);
@@ -320,7 +320,7 @@ const Component = defineComponent({
 		menu(ev) {
 			const path = this.groupId ? `/my/messaging/group/${this.groupId}` : `/my/messaging/${this.userAcct}`;
 
-			os.modalMenu([this.inWindow ? undefined : {
+			os.popupMenu([this.inWindow ? undefined : {
 				text: this.$ts.openInWindow,
 				icon: 'fas fa-window-maximize',
 				action: () => {
@@ -451,6 +451,10 @@ export default Component;
 					content: " ";
 				}
 			}
+		}
+
+		> .form {
+			border-top: solid 0.5px var(--divider);
 		}
 	}
 }

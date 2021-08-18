@@ -10,7 +10,7 @@
 			</span>
 		</li>
 	</ul>
-	<p>
+	<p v-if="!readOnly">
 		<span>{{ $t('_poll.totalVotes', { n: total }) }}</span>
 		<span> · </span>
 		<a v-if="!closed && !isVoted" @click="toggleShowResult">{{ showResult ? $ts._poll.vote : $ts._poll.showResult }}</a>
@@ -31,6 +31,11 @@ export default defineComponent({
 		note: {
 			type: Object,
 			required: true
+		},
+		readOnly: {
+			type: Boolean,
+			required: false,
+			default: false,
 		}
 	},
 	data() {
@@ -65,7 +70,7 @@ export default defineComponent({
 		}
 	},
 	created() {
-		this.showResult = this.isVoted;
+		this.showResult = this.readOnly || this.isVoted;
 
 		if (this.note.poll.expiresAt) {
 			const update = () => {
@@ -83,7 +88,7 @@ export default defineComponent({
 			this.showResult = !this.showResult;
 		},
 		vote(id) {
-			if (this.closed || !this.poll.multiple && this.poll.choices.some(c => c.isVoted)) return;
+			if (this.readOnly || this.closed || !this.poll.multiple && this.poll.choices.some(c => c.isVoted)) return;
 			os.api('notes/polls/vote', {
 				noteId: this.note.id,
 				choice: id

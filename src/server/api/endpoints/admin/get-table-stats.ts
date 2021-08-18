@@ -5,11 +5,6 @@ export const meta = {
 	requireCredential: true as const,
 	requireModerator: true,
 
-	desc: {
-		'ja-JP': 'テーブル情報を取得します。',
-		'en-US': 'Get table stats'
-	},
-
 	tags: ['admin'],
 
 	params: {

@@ -8,14 +8,11 @@ export type Param = {
 	transform?: any;
 	default?: any;
 	deprecated?: boolean;
-	desc?: { [key: string]: string };
 	ref?: string;
 };
 
 export interface IEndpointMeta {
 	stability?: string; //'deprecated' | 'experimental' | 'stable';
-
-	desc?: { [key: string]: string };
 
 	tags?: string[];
 

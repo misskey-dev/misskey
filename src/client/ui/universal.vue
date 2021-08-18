@@ -4,7 +4,7 @@
 
 	<div class="contents" ref="contents" @contextmenu.stop="onContextmenu">
 		<header class="header" ref="header" @click="onHeaderClick">
-			<XHeader :info="pageInfo"/>
+			<XHeader :info="pageInfo" :back-button="true" @back="back()"/>
 		</header>
 		<main ref="main">
 			<div class="content">
@@ -61,7 +61,7 @@ import XCommon from './_common_/common.vue';
 import XHeader from './_common_/header.vue';
 import XSide from './default.side.vue';
 import * as os from '@client/os';
-import { sidebarDef } from '@client/sidebar';
+import { menuDef } from '@client/menu';
 import * as symbols from '@client/symbols';
 
 const DESKTOP_THRESHOLD = 1100;
@@ -87,7 +87,7 @@ export default defineComponent({
 		return {
 			pageInfo: null,
 			isDesktop: window.innerWidth >= DESKTOP_THRESHOLD,
-			menuDef: sidebarDef,
+			menuDef: menuDef,
 			navHidden: false,
 			widgetsShowing: false,
 			wallpaper: localStorage.getItem('wallpaper') != null,
@@ -175,6 +175,10 @@ export default defineComponent({
 			window.scroll({ top: 0, behavior: 'smooth' });
 		},
 
+		back() {
+			history.back();
+		},
+
 		onTransition() {
 			if (window._scroll) window._scroll();
 		},
@@ -250,7 +254,11 @@ export default defineComponent({
 
 	&.wallpaper {
 		background: var(--wallpaperOverlay);
-		//backdrop-filter: blur(4px);
+		//backdrop-filter: var(--blur, blur(4px));
+	}
+
+	> .sidebar {
+		border-right: solid 0.5px var(--divider);
 	}
 
 	> .contents {
@@ -258,6 +266,7 @@ export default defineComponent({
 		min-width: 0;
 		--stickyTop: #{$header-height};
 		padding-top: $header-height;
+		background: var(--panel);
 
 		> .header {
 			position: fixed;
@@ -269,10 +278,10 @@ export default defineComponent({
 			text-align: center;
 			font-weight: bold;
 			//background-color: var(--panel);
-			-webkit-backdrop-filter: blur(32px);
-			backdrop-filter: blur(32px);
+			-webkit-backdrop-filter: var(--blur, blur(32px));
+			backdrop-filter: var(--blur, blur(32px));
 			background-color: var(--header);
-			//border-bottom: solid 0.5px var(--divider);
+			border-bottom: solid 0.5px var(--divider);
 			user-select: none;
 		}
 
@@ -341,8 +350,8 @@ export default defineComponent({
 		display: flex;
 		width: 100%;
 		box-sizing: border-box;
-		-webkit-backdrop-filter: blur(32px);
-		backdrop-filter: blur(32px);
+		-webkit-backdrop-filter: var(--blur, blur(32px));
+		backdrop-filter: var(--blur, blur(32px));
 		background-color: var(--header);
 
 		&:not(.navHidden) {

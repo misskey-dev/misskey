@@ -1,7 +1,7 @@
 import * as Bull from 'bull';
 
 import { queueLogger } from '../../logger';
-import parseAcct from '@/misc/acct/parse';
+import { parseAcct } from '@/misc/acct';
 import { resolveUser } from '../../../remote/resolve-user';
 import { pushUserToUserList } from '../../../services/user-list/push';
 import { downloadTextFile } from '@/misc/download-text-file';

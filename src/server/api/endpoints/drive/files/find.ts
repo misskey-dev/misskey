@@ -17,10 +17,7 @@ export const meta = {
 
 		folderId: {
 			validator: $.optional.nullable.type(ID),
-			default: null as any,
-			desc: {
-				'ja-JP': 'フォルダID'
-			}
+			default: null,
 		},
 	},
 

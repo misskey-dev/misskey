@@ -17,11 +17,6 @@ import { notificationTypes } from '../../../../types';
 import { normalizeForSearch } from '@/misc/normalize-for-search';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'アカウント情報を更新します。',
-		'en-US': 'Update myself'
-	},
-
 	tags: ['account'],
 
 	requireCredential: true as const,
@@ -31,65 +26,38 @@ export const meta = {
 	params: {
 		name: {
 			validator: $.optional.nullable.use(Users.validateName),
-			desc: {
-				'ja-JP': '名前(ハンドルネームやニックネーム)'
-			}
 		},
 
 		description: {
 			validator: $.optional.nullable.use(Users.validateDescription),
-			desc: {
-				'ja-JP': 'アカウントの説明や自己紹介'
-			}
 		},
 
 		lang: {
 			validator: $.optional.nullable.str.or(Object.keys(langmap)),
-			desc: {
-				'ja-JP': '言語'
-			}
 		},
 
 		location: {
 			validator: $.optional.nullable.use(Users.validateLocation),
-			desc: {
-				'ja-JP': '住んでいる地域、所在'
-			}
 		},
 
 		birthday: {
 			validator: $.optional.nullable.use(Users.validateBirthday),
-			desc: {
-				'ja-JP': '誕生日 (YYYY-MM-DD形式)'
-			}
 		},
 
 		avatarId: {
 			validator: $.optional.nullable.type(ID),
-			desc: {
-				'ja-JP': 'アバターに設定する画像のドライブファイルID'
-			}
 		},
 
 		bannerId: {
 			validator: $.optional.nullable.type(ID),
-			desc: {
-				'ja-JP': 'バナーに設定する画像のドライブファイルID'
-			}
 		},
 
 		fields: {
 			validator: $.optional.arr($.object()).range(1, 4),
-			desc: {
-				'ja-JP': 'プロフィール補足情報'
-			}
 		},
 
 		isLocked: {
 			validator: $.optional.bool,
-			desc: {
-				'ja-JP': '鍵アカウントか否か'
-			}
 		},
 
 		isExplorable: {
@@ -102,37 +70,22 @@ export const meta = {
 
 		carefulBot: {
 			validator: $.optional.bool,
-			desc: {
-				'ja-JP': 'Botからのフォローを承認制にするか'
-			}
 		},
 
 		autoAcceptFollowed: {
 			validator: $.optional.bool,
-			desc: {
-				'ja-JP': 'フォローしているユーザーからのフォローリクエストを自動承認するか'
-			}
 		},
 
 		noCrawle: {
 			validator: $.optional.bool,
-			desc: {
-				'ja-JP': '検索エンジンによるインデックスを拒否するか否か'
-			}
 		},
 
 		isBot: {
 			validator: $.optional.bool,
-			desc: {
-				'ja-JP': 'Botか否か'
-			}
 		},
 
 		isCat: {
 			validator: $.optional.bool,
-			desc: {
-				'ja-JP': '猫か否か'
-			}
 		},
 
 		injectFeaturedNote: {
@@ -145,16 +98,10 @@ export const meta = {
 
 		alwaysMarkNsfw: {
 			validator: $.optional.bool,
-			desc: {
-				'ja-JP': 'アップロードするメディアをデフォルトで「閲覧注意」として設定するか'
-			}
 		},
 
 		pinnedPageId: {
 			validator: $.optional.nullable.type(ID),
-			desc: {
-				'ja-JP': 'ピン留めするページID'
-			}
 		},
 
 		mutedWords: {

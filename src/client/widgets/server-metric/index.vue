@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, markRaw } from 'vue';
 import define from '../define';
 import MkContainer from '@client/components/ui/container.vue';
 import XCpuMemory from './cpu-mem.vue';
@@ -63,7 +63,7 @@ export default defineComponent({
 		os.api('server-info', {}).then(res => {
 			this.meta = res;
 		});
-		this.connection = os.stream.useChannel('serverStats');
+		this.connection = markRaw(os.stream.useChannel('serverStats'));
 	},
 	unmounted() {
 		this.connection.dispose();

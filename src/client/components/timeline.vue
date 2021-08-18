@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, markRaw } from 'vue';
 import XNotes from './notes.vue';
 import * as os from '@client/os';
 import * as sound from '@client/scripts/sound';
@@ -92,33 +92,33 @@ export default defineComponent({
 			this.query = {
 				antennaId: this.antenna
 			};
-			this.connection = os.stream.useChannel('antenna', {
+			this.connection = markRaw(os.stream.useChannel('antenna', {
 				antennaId: this.antenna
-			});
+			}));
 			this.connection.on('note', prepend);
 		} else if (this.src == 'home') {
 			endpoint = 'notes/timeline';
-			this.connection = os.stream.useChannel('homeTimeline');
+			this.connection = markRaw(os.stream.useChannel('homeTimeline'));
 			this.connection.on('note', prepend);
 
-			this.connection2 = os.stream.useChannel('main');
+			this.connection2 = markRaw(os.stream.useChannel('main'));
 			this.connection2.on('follow', onChangeFollowing);
 			this.connection2.on('unfollow', onChangeFollowing);
 		} else if (this.src == 'local') {
 			endpoint = 'notes/local-timeline';
-			this.connection = os.stream.useChannel('localTimeline');
+			this.connection = markRaw(os.stream.useChannel('localTimeline'));
 			this.connection.on('note', prepend);
 		} else if (this.src == 'social') {
 			endpoint = 'notes/hybrid-timeline';
-			this.connection = os.stream.useChannel('hybridTimeline');
+			this.connection = markRaw(os.stream.useChannel('hybridTimeline'));
 			this.connection.on('note', prepend);
 		} else if (this.src == 'global') {
 			endpoint = 'notes/global-timeline';
-			this.connection = os.stream.useChannel('globalTimeline');
+			this.connection = markRaw(os.stream.useChannel('globalTimeline'));
 			this.connection.on('note', prepend);
 		} else if (this.src == 'mentions') {
 			endpoint = 'notes/mentions';
-			this.connection = os.stream.useChannel('main');
+			this.connection = markRaw(os.stream.useChannel('main'));
 			this.connection.on('mention', prepend);
 		} else if (this.src == 'directs') {
 			endpoint = 'notes/mentions';
@@ -130,16 +130,16 @@ export default defineComponent({
 					prepend(note);
 				}
 			};
-			this.connection = os.stream.useChannel('main');
+			this.connection = markRaw(os.stream.useChannel('main'));
 			this.connection.on('mention', onNote);
 		} else if (this.src == 'list') {
 			endpoint = 'notes/user-list-timeline';
 			this.query = {
 				listId: this.list
 			};
-			this.connection = os.stream.useChannel('userList', {
+			this.connection = markRaw(os.stream.useChannel('userList', {
 				listId: this.list
-			});
+			}));
 			this.connection.on('note', prepend);
 			this.connection.on('userAdded', onUserAdded);
 			this.connection.on('userRemoved', onUserRemoved);
@@ -148,9 +148,9 @@ export default defineComponent({
 			this.query = {
 				channelId: this.channel
 			};
-			this.connection = os.stream.useChannel('channel', {
+			this.connection = markRaw(os.stream.useChannel('channel', {
 				channelId: this.channel
-			});
+			}));
 			this.connection.on('note', prepend);
 		}
 

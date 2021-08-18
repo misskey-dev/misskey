@@ -5,11 +5,6 @@ import { federationChart, driveChart } from '../../../services/chart';
 export const meta = {
 	requireCredential: false as const,
 
-	desc: {
-		'ja-JP': 'インスタンスの統計を取得します。',
-		'en-US': 'Get the instance\'s statistics'
-	},
-
 	tags: ['meta'],
 
 	params: {
@@ -22,27 +17,22 @@ export const meta = {
 			notesCount: {
 				type: 'number' as const,
 				optional: false as const, nullable: false as const,
-				description: 'The count of all (local/remote) notes of this instance.',
 			},
 			originalNotesCount: {
 				type: 'number' as const,
 				optional: false as const, nullable: false as const,
-				description: 'The count of all local notes of this instance.',
 			},
 			usersCount: {
 				type: 'number' as const,
 				optional: false as const, nullable: false as const,
-				description: 'The count of all (local/remote) accounts of this instance.',
 			},
 			originalUsersCount: {
 				type: 'number' as const,
 				optional: false as const, nullable: false as const,
-				description: 'The count of all local accounts of this instance.',
 			},
 			instances: {
 				type: 'number' as const,
 				optional: false as const, nullable: false as const,
-				description: 'The count of federated instances.',
 			},
 			driveUsageLocal: {
 				type: 'number' as const,

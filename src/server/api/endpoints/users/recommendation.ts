@@ -3,13 +3,9 @@ import $ from 'cafy';
 import define from '../../define';
 import { Users, Followings } from '../../../../models';
 import { generateMutedUserQueryForUsers } from '../../common/generate-muted-user-query';
-import { generateBlockQueryForUsers } from '../../common/generate-block-query';
+import { generateBlockedUserQuery, generateBlockQueryForUsers } from '../../common/generate-block-query';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'おすすめのユーザー一覧を取得します。'
-	},
-
 	tags: ['users'],
 
 	requireCredential: true as const,
@@ -50,6 +46,7 @@ export default define(meta, async (ps, me) => {
 
 	generateMutedUserQueryForUsers(query, me);
 	generateBlockQueryForUsers(query, me);
+	generateBlockedUserQuery(query, me);
 
 	const followingQuery = Followings.createQueryBuilder('following')
 		.select('following.followeeId')

@@ -6,11 +6,6 @@ import { ID } from '@/misc/cafy-id';
 import { Emoji } from '../../../../../models/entities/emoji';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'カスタム絵文字一覧を取得します。',
-		'en-US': 'List custom emojis.'
-	},
-
 	tags: ['admin'],
 
 	requireCredential: true as const,
@@ -19,7 +14,7 @@ export const meta = {
 	params: {
 		query: {
 			validator: $.optional.nullable.str,
-			default: null as any
+			default: null
 		},
 
 		limit: {
@@ -47,12 +42,10 @@ export const meta = {
 					type: 'string' as const,
 					optional: false as const, nullable: false as const,
 					format: 'id',
-					description: 'The unique identifier for this Emoji.'
 				},
 				aliases: {
 					type: 'array' as const,
 					optional: false as const, nullable: false as const,
-					description: 'List to make it easier to be displayed as a candidate when entering emoji.',
 					items: {
 						type: 'string' as const,
 						optional: false as const, nullable: false as const
@@ -61,22 +54,18 @@ export const meta = {
 				name: {
 					type: 'string' as const,
 					optional: false as const, nullable: false as const,
-					description: 'Official name of custom emoji.'
 				},
 				category: {
 					type: 'string' as const,
 					optional: false as const, nullable: true as const,
-					description: 'Names categorized in the emoji list.'
 				},
 				host: {
 					type: 'string' as const,
 					optional: false as const, nullable: true as const,
-					description: 'If it is another server, the FQDN will be returned here.'
 				},
 				url: {
 					type: 'string' as const,
 					optional: false as const, nullable: false as const,
-					description: 'Image URL of emoji.'
 				}
 			}
 		}

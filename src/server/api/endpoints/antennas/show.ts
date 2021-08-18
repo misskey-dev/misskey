@@ -5,11 +5,6 @@ import { ApiError } from '../../error';
 import { Antennas } from '../../../../models';
 
 export const meta = {
-	desc: {
-		'ja-JP': '指定したアンテナの情報を取得します。',
-		'en-US': 'Acquires the information of the specified antenna.'
-	},
-
 	tags: ['antennas', 'account'],
 
 	requireCredential: true as const,

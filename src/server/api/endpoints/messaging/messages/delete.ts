@@ -7,11 +7,6 @@ import { MessagingMessages } from '../../../../../models';
 import { deleteMessage } from '../../../../../services/messages/delete';
 
 export const meta = {
-	desc: {
-		'ja-JP': '指定したトークメッセージを削除します。',
-		'en-US': 'Delete a message.'
-	},
-
 	tags: ['messaging'],
 
 	requireCredential: true as const,
@@ -27,10 +22,6 @@ export const meta = {
 	params: {
 		messageId: {
 			validator: $.type(ID),
-			desc: {
-				'ja-JP': '対象のメッセージのID',
-				'en-US': 'Target message ID.'
-			}
 		}
 	},
 

@@ -18,7 +18,7 @@ import { fetchMeta } from '@/misc/fetch-meta';
 import { genOpenapiSpec } from '../api/openapi/gen-spec';
 import config from '@/config';
 import { Users, Notes, Emojis, UserProfiles, Pages, Channels, Clips, GalleryPosts } from '../../models';
-import parseAcct from '@/misc/acct/parse';
+import { parseAcct } from '@/misc/acct';
 import { getNoteSummary } from '@/misc/get-note-summary';
 import { getConnection } from 'typeorm';
 import { redisClient } from '../../db/redis';
@@ -27,6 +27,13 @@ import locales = require('../../../locales');
 const markdown = MarkdownIt({
 	html: true
 });
+
+const changelog = fs.readFileSync(`${__dirname}/../../../CHANGELOG.md`, { encoding: 'utf8' });
+function genDoc(path: string): string {
+	let md = fs.readFileSync(path, { encoding: 'utf8' });
+	md = md.replace('<!--[CHANGELOG]-->', changelog);
+	return md;
+}
 
 const staticAssets = `${__dirname}/../../../assets/`;
 const docAssets = `${__dirname}/../../../src/docs/`;
@@ -67,10 +74,11 @@ router.get('/static-assets/(.*)', async ctx => {
 });
 
 router.get('/doc-assets/(.*)', async ctx => {
-	await send(ctx as any, ctx.path.replace('/doc-assets/', ''), {
-		root: docAssets,
-		maxage: ms('7 days'),
-	});
+	if (ctx.path.includes('..')) return;
+	const path = `${__dirname}/../../../src/docs/${ctx.path.replace('/doc-assets/', '')}`;
+	const doc = genDoc(path);
+	ctx.set('Content-Type', 'text/plain; charset=utf-8');
+	ctx.body = doc;
 });
 
 router.get('/assets/(.*)', async ctx => {
@@ -121,14 +129,22 @@ router.get('/api.json', async ctx => {
 
 router.get('/docs.json', async ctx => {
 	const lang = ctx.query.lang;
+	const query = ctx.query.q;
 	if (!Object.keys(locales).includes(lang)) {
 		ctx.body = [];
 		return;
 	}
-	const paths = glob.sync(__dirname + `/../../../src/docs/${lang}/*.md`);
-	const docs: { path: string; title: string; }[] = [];
+	const dirPath = `${__dirname}/../../../src/docs/${lang}`.replace(/\\/g, '/');
+	const paths = glob.sync(`${dirPath}/**/*.md`);
+	const docs: { path: string; title: string; summary: string; }[] = [];
 	for (const path of paths) {
-		const md = fs.readFileSync(path, { encoding: 'utf8' });
+		const md = genDoc(path);
+
+		if (query && query.length > 0) {
+			// TODO: カタカナをひらがなにして比較するなどしたい
+			if (!md.includes(query)) continue;
+		}
+
 		const parsed = markdown.parse(md, {});
 		if (parsed.length === 0) return;
 
@@ -147,9 +163,22 @@ router.get('/docs.json', async ctx => {
 			}
 		}
 
+		const firstParagrapfTokens = [];
+		while (buf[0].type !== 'paragraph_open') {
+			buf.shift();
+		}
+		buf.shift();
+		while (buf[0].type as string !== 'paragraph_close') {
+			const token = buf.shift();
+			if (token) {
+				firstParagrapfTokens.push(token);
+			}
+		}
+
 		docs.push({
-			path: path.split('/').pop()!.split('.')[0],
-			title: markdown.renderer.render(headingTokens, {}, {})
+			path: path.match(new RegExp(`docs\/${lang}\/(.+?)\.md$`))![1],
+			title: markdown.renderer.render(headingTokens, {}, {}),
+			summary: markdown.renderer.render(firstParagrapfTokens, {}, {}),
 		});
 	}
 

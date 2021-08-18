@@ -117,20 +117,17 @@ export const packedNotificationSchema = {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
 			format: 'id',
-			description: 'The unique identifier for this notification.',
 			example: 'xxxxxxxxxx',
 		},
 		createdAt: {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
 			format: 'date-time',
-			description: 'The date that the notification was created.'
 		},
 		type: {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
 			enum: ['follow', 'followRequestAccepted', 'receiveFollowRequest', 'mention', 'reply', 'renote', 'quote', 'reaction', 'pollVote'],
-			description: 'The type of the notification.'
 		},
 		userId: {
 			type: 'string' as const,

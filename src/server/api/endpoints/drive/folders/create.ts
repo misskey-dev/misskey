@@ -7,11 +7,6 @@ import { DriveFolders } from '../../../../../models';
 import { genId } from '@/misc/gen-id';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'ドライブのフォルダを作成します。',
-		'en-US': 'Create a folder of drive.'
-	},
-
 	tags: ['drive'],
 
 	requireCredential: true as const,
@@ -22,18 +17,10 @@ export const meta = {
 		name: {
 			validator: $.optional.str.pipe(DriveFolders.validateFolderName),
 			default: 'Untitled',
-			desc: {
-				'ja-JP': 'フォルダ名',
-				'en-US': 'Folder name'
-			}
 		},
 
 		parentId: {
 			validator: $.optional.nullable.type(ID),
-			desc: {
-				'ja-JP': '親フォルダID',
-				'en-US': 'Parent folder ID'
-			}
 		}
 	},
 

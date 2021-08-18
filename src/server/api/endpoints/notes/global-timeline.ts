@@ -9,20 +9,14 @@ import { generateMutedUserQuery } from '../../common/generate-muted-user-query';
 import { activeUsersChart } from '../../../../services/chart';
 import { generateRepliesQuery } from '../../common/generate-replies-query';
 import { generateMutedNoteQuery } from '../../common/generate-muted-note-query';
+import { generateBlockedUserQuery } from '../../common/generate-block-query';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'グローバルタイムラインを取得します。'
-	},
-
 	tags: ['notes'],
 
 	params: {
 		withFiles: {
 			validator: $.optional.bool,
-			desc: {
-				'ja-JP': 'ファイルが添付された投稿に限定するか否か'
-			}
 		},
 
 		limit: {
@@ -88,6 +82,7 @@ export default define(meta, async (ps, user) => {
 	generateRepliesQuery(query, user);
 	if (user) generateMutedUserQuery(query, user);
 	if (user) generateMutedNoteQuery(query, user);
+	if (user) generateBlockedUserQuery(query, user);
 
 	if (ps.withFiles) {
 		query.andWhere('note.fileIds != \'{}\'');

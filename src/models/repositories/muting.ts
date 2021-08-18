@@ -41,14 +41,12 @@ export const packedMutingSchema = {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
 			format: 'id',
-			description: 'The unique identifier for this muting.',
 			example: 'xxxxxxxxxx',
 		},
 		createdAt: {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
 			format: 'date-time',
-			description: 'The date that the muting was created.'
 		},
 		muteeId: {
 			type: 'string' as const,
@@ -59,7 +57,6 @@ export const packedMutingSchema = {
 			type: 'object' as const,
 			optional: false as const, nullable: false as const,
 			ref: 'User',
-			description: 'The mutee.'
 		},
 	}
 };

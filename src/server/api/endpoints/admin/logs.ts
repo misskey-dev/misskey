@@ -4,11 +4,6 @@ import { Logs } from '../../../../models';
 import { Brackets } from 'typeorm';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'ログを表示します。',
-		'en-US': 'Show logs.'
-	},
-
 	tags: ['admin'],
 
 	requireCredential: true as const,
@@ -22,12 +17,12 @@ export const meta = {
 
 		level: {
 			validator: $.optional.nullable.str,
-			default: null as any
+			default: null
 		},
 
 		domain: {
 			validator: $.optional.nullable.str,
-			default: null as any
+			default: null
 		}
 	},
 
@@ -42,14 +37,12 @@ export const meta = {
 					type: 'string' as const,
 					optional: false as const, nullable: false as const,
 					format: 'id',
-					description: 'The unique identifier for this log.',
 					example: 'xxxxxxxxxx',
 				},
 				createdAt: {
 					type: 'string' as const,
 					optional: false as const, nullable: false as const,
 					format: 'date-time',
-					description: 'The date that the Drive file was created on Misskey.'
 				},
 				domain: {
 					type: 'array' as const,
@@ -70,12 +63,10 @@ export const meta = {
 				machine: {
 					type: 'string' as const,
 					optional: false as const, nullable: false as const,
-					description: 'The name of the running machine.'
 				},
 				message: {
 					type: 'string' as const,
 					optional: false as const, nullable: false as const,
-					description: 'Log body.'
 				},
 				data: {
 					type: 'object' as const,

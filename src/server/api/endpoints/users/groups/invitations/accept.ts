@@ -7,11 +7,6 @@ import { genId } from '@/misc/gen-id';
 import { UserGroupJoining } from '../../../../../../models/entities/user-group-joining';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'ユーザーグループへの招待を承認します。',
-		'en-US': 'Accept invitation of a user group.'
-	},
-
 	tags: ['groups', 'users'],
 
 	requireCredential: true as const,
@@ -21,10 +16,6 @@ export const meta = {
 	params: {
 		invitationId: {
 			validator: $.type(ID),
-			desc: {
-				'ja-JP': '招待ID',
-				'en-US': 'The invitation ID'
-			}
 		},
 	},
 

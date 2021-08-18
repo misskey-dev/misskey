@@ -12,7 +12,7 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import * as childProcess from 'child_process';
-import { async, signup, request, post, react, connectStream, launchServer, shutdownServer } from './utils';
+import { async, signup, request, post, react, connectStream, startServer, shutdownServer } from './utils';
 
 describe('Mute', () => {
 	let p: childProcess.ChildProcess;
@@ -22,11 +22,12 @@ describe('Mute', () => {
 	let bob: any;
 	let carol: any;
 
-	before(launchServer(g => p = g, async () => {
+	before(async () => {
+		p = await startServer();
 		alice = await signup({ username: 'alice' });
 		bob = await signup({ username: 'bob' });
 		carol = await signup({ username: 'carol' });
-	}));
+	});
 
 	after(async () => {
 		await shutdownServer(p);

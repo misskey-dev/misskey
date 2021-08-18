@@ -5,11 +5,6 @@ import { Users } from '../../../../models';
 import { insertModerationLog } from '../../../../services/insert-moderation-log';
 
 export const meta = {
-	desc: {
-		'ja-JP': '指定したユーザーのサイレンスを解除します。',
-		'en-US': 'Unsilence a user.'
-	},
-
 	tags: ['admin'],
 
 	requireCredential: true as const,
@@ -18,10 +13,6 @@ export const meta = {
 	params: {
 		userId: {
 			validator: $.type(ID),
-			desc: {
-				'ja-JP': '対象のユーザーID',
-				'en-US': 'The user ID which you want to unsilence'
-			}
 		},
 	}
 };

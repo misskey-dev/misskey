@@ -7,10 +7,6 @@ import { ID } from '@/misc/cafy-id';
 import { Not } from 'typeorm';
 
 export const meta = {
-	desc: {
-		'ja-JP': '指定したページの情報を更新します。',
-	},
-
 	tags: ['pages'],
 
 	requireCredential: true as const,
@@ -25,10 +21,6 @@ export const meta = {
 	params: {
 		pageId: {
 			validator: $.type(ID),
-			desc: {
-				'ja-JP': '対象のページのID',
-				'en-US': 'Target page ID.'
-			}
 		},
 
 		title: {

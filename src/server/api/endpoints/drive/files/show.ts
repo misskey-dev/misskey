@@ -6,11 +6,6 @@ import { DriveFile } from '../../../../../models/entities/drive-file';
 import { DriveFiles } from '../../../../../models';
 
 export const meta = {
-	desc: {
-		'ja-JP': '指定したドライブのファイルの情報を取得します。',
-		'en-US': 'Get specified file of drive.'
-	},
-
 	tags: ['drive'],
 
 	requireCredential: true as const,
@@ -20,18 +15,10 @@ export const meta = {
 	params: {
 		fileId: {
 			validator: $.optional.type(ID),
-			desc: {
-				'ja-JP': '対象のファイルID',
-				'en-US': 'Target file ID'
-			}
 		},
 
 		url: {
 			validator: $.optional.str,
-			desc: {
-				'ja-JP': '対象のファイルのURL',
-				'en-US': 'Target file URL'
-			}
 		}
 	},
 

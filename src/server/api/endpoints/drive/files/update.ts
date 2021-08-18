@@ -6,11 +6,6 @@ import { ApiError } from '../../../error';
 import { DriveFiles, DriveFolders } from '../../../../../models';
 
 export const meta = {
-	desc: {
-		'ja-JP': '指定したドライブのファイルの情報を更新します。',
-		'en-US': 'Update specified file of drive.'
-	},
-
 	tags: ['drive'],
 
 	requireCredential: true as const,
@@ -20,43 +15,26 @@ export const meta = {
 	params: {
 		fileId: {
 			validator: $.type(ID),
-			desc: {
-				'ja-JP': '対象のファイルID'
-			}
 		},
 
 		folderId: {
 			validator: $.optional.nullable.type(ID),
 			default: undefined as any,
-			desc: {
-				'ja-JP': 'フォルダID'
-			}
 		},
 
 		name: {
 			validator: $.optional.str.pipe(DriveFiles.validateFileName),
 			default: undefined as any,
-			desc: {
-				'ja-JP': 'ファイル名',
-				'en-US': 'Name of the file'
-			}
 		},
 
 		isSensitive: {
 			validator: $.optional.bool,
 			default: undefined as any,
-			desc: {
-				'ja-JP': 'このメディアが「閲覧注意」(NSFW)かどうか',
-				'en-US': 'Whether this media is NSFW'
-			}
 		},
 
 		comment: {
 			validator: $.optional.nullable.str,
 			default: undefined as any,
-			desc: {
-				'ja-JP': 'コメント'
-			}
 		}
 	},
 

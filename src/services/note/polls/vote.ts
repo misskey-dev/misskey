@@ -1,7 +1,7 @@
 import { publishNoteStream } from '../../stream';
 import { User } from '../../../models/entities/user';
 import { Note } from '../../../models/entities/note';
-import { PollVotes, NoteWatchings, Polls } from '../../../models';
+import { PollVotes, NoteWatchings, Polls, Blockings } from '../../../models';
 import { Not } from 'typeorm';
 import { genId } from '@/misc/gen-id';
 import { createNotification } from '../../create-notification';
@@ -13,6 +13,17 @@ export default async function(user: User, note: Note, choice: number) {
 
 	// Check whether is valid choice
 	if (poll.choices[choice] == null) throw new Error('invalid choice param');
+
+	// Check blocking
+	if (note.userId !== user.id) {
+		const block = await Blockings.findOne({
+			blockerId: note.userId,
+			blockeeId: user.id,
+		});
+		if (block) {
+			throw new Error('blocked');
+		}
+	}
 
 	// if already voted
 	const exist = await PollVotes.find({
