@@ -90,7 +90,7 @@ export const packedChannelSchema = {
 		},
 		userId: {
 			type: 'string' as const,
-			nullable: false as const, optional: false as const,
+			nullable: true as const, optional: false as const,
 			format: 'id',
 		},
 	},
