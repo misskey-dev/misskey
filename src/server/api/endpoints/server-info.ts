@@ -1,6 +1,6 @@
 import * as os from 'os';
 import * as si from 'systeminformation';
-import define from '../define.js';
+import define from '../define';
 
 export const meta = {
 	requireCredential: false as const,

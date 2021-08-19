@@ -1,9 +1,9 @@
 import $ from 'cafy';
-import { ID } from '@/misc/cafy-id.js';
-import define from '../../define.js';
-import { ApiError } from '../../error.js';
-import { Antennas, UserLists, UserGroupJoinings } from '@/models/index.js';
-import { publishInternalEvent } from '@/services/stream.js';
+import { ID } from '@/misc/cafy-id';
+import define from '../../define';
+import { ApiError } from '../../error';
+import { Antennas, UserLists, UserGroupJoinings } from '@/models/index';
+import { publishInternalEvent } from '@/services/stream';
 
 export const meta = {
 	tags: ['antennas'],

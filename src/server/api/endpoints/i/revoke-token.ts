@@ -1,8 +1,8 @@
 import $ from 'cafy';
-import define from '../../define.js';
-import { AccessTokens } from '@/models/index.js';
-import { ID } from '@/misc/cafy-id.js';
-import { publishUserEvent } from '@/services/stream.js';
+import define from '../../define';
+import { AccessTokens } from '@/models/index';
+import { ID } from '@/misc/cafy-id';
+import { publishUserEvent } from '@/services/stream';
 
 export const meta = {
 	requireCredential: true as const,

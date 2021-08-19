@@ -1,10 +1,10 @@
 import { DOMWindow, JSDOM } from 'jsdom';
 import fetch from 'node-fetch';
-import { getJson, getHtml, getAgentByUrl } from '@/misc/fetch.js';
-import { Instance } from '@/models/entities/instance.js';
-import { Instances } from '@/models/index.js';
-import { getFetchInstanceMetadataLock } from '@/misc/app-lock.js';
-import Logger from './logger.js';
+import { getJson, getHtml, getAgentByUrl } from '@/misc/fetch';
+import { Instance } from '@/models/entities/instance';
+import { Instances } from '@/models/index';
+import { getFetchInstanceMetadataLock } from '@/misc/app-lock';
+import Logger from './logger';
 import { URL } from 'url';
 
 const logger = new Logger('metadata', 'cyan');

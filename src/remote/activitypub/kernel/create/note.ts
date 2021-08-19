@@ -1,9 +1,9 @@
-import Resolver from '../../resolver.js';
-import { IRemoteUser } from '@/models/entities/user.js';
-import { createNote, fetchNote } from '../../models/note.js';
-import { getApId, IObject, ICreate } from '../../type.js';
-import { getApLock } from '@/misc/app-lock.js';
-import { extractDbHost } from '@/misc/convert-host.js';
+import Resolver from '../../resolver';
+import { IRemoteUser } from '@/models/entities/user';
+import { createNote, fetchNote } from '../../models/note';
+import { getApId, IObject, ICreate } from '../../type';
+import { getApLock } from '@/misc/app-lock';
+import { extractDbHost } from '@/misc/convert-host';
 
 /**
  * 投稿作成アクティビティを捌きます

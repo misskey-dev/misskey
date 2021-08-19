@@ -1,4 +1,4 @@
-import { redisClient } from '../db/redis.js';
+import { redisClient } from '../db/redis';
 import { promisify } from 'util';
 import * as redisLock from 'redis-lock';
 

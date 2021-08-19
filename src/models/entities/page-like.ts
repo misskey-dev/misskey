@@ -1,7 +1,7 @@
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
-import { User } from './user.js';
-import { id } from '../id.js';
-import { Page } from './page.js';
+import { User } from './user';
+import { id } from '../id';
+import { Page } from './page';
 
 @Entity()
 @Index(['userId', 'pageId'], { unique: true })

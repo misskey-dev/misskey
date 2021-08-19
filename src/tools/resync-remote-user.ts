@@ -1,5 +1,5 @@
-import { initDb } from '@/db/postgre.js';
-import { parseAcct } from '@/misc/acct.js';
+import { initDb } from '@/db/postgre';
+import { parseAcct } from '@/misc/acct';
 
 async function main(acct: string): Promise<any> {
 	await initDb();

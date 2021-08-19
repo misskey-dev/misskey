@@ -1,13 +1,13 @@
 import $ from 'cafy';
 import { EntityRepository, Repository, In, Not } from 'typeorm';
-import { User, ILocalUser, IRemoteUser } from '../entities/user.js';
-import { Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings, UserProfiles, UserSecurityKeys, UserGroupJoinings, Pages, Announcements, AnnouncementReads, Antennas, AntennaNotes, ChannelFollowings, Instances } from '../index.js';
-import config from '@/config/index.js';
-import { SchemaType } from '@/misc/schema.js';
-import { awaitAll } from '../../prelude/await-all.js';
-import { populateEmojis } from '@/misc/populate-emojis.js';
-import { getAntennas } from '@/misc/antenna-cache.js';
-import { USER_ACTIVE_THRESHOLD, USER_ONLINE_THRESHOLD } from '@/const.js';
+import { User, ILocalUser, IRemoteUser } from '../entities/user';
+import { Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings, UserProfiles, UserSecurityKeys, UserGroupJoinings, Pages, Announcements, AnnouncementReads, Antennas, AntennaNotes, ChannelFollowings, Instances } from '../index';
+import config from '@/config/index';
+import { SchemaType } from '@/misc/schema';
+import { awaitAll } from '../../prelude/await-all';
+import { populateEmojis } from '@/misc/populate-emojis';
+import { getAntennas } from '@/misc/antenna-cache';
+import { USER_ACTIVE_THRESHOLD, USER_ONLINE_THRESHOLD } from '@/const';
 
 export type PackedUser = SchemaType<typeof packedUserSchema>;
 

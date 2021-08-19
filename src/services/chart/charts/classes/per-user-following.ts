@@ -1,10 +1,10 @@
 import autobind from 'autobind-decorator';
-import Chart, { Obj, DeepPartial } from '../../core.js';
-import { SchemaType } from '@/misc/schema.js';
-import { Followings, Users } from '@/models/index.js';
+import Chart, { Obj, DeepPartial } from '../../core';
+import { SchemaType } from '@/misc/schema';
+import { Followings, Users } from '@/models/index';
 import { Not, IsNull } from 'typeorm';
-import { User } from '@/models/entities/user.js';
-import { name, schema } from '../schemas/per-user-following.js';
+import { User } from '@/models/entities/user';
+import { name, schema } from '../schemas/per-user-following';
 
 type PerUserFollowingLog = SchemaType<typeof schema>;
 

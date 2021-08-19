@@ -1,6 +1,6 @@
-import config from '@/config/index.js';
-import { User, ILocalUser } from '@/models/entities/user.js';
-import { Users } from '@/models/index.js';
+import config from '@/config/index';
+import { User, ILocalUser } from '@/models/entities/user';
+import { Users } from '@/models/index';
 
 export default (mention: User) => ({
 	type: 'Mention',

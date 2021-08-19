@@ -5,7 +5,7 @@
 import * as Koa from 'koa';
 import * as cors from '@koa/cors';
 import * as Router from '@koa/router';
-import { proxyMedia } from './proxy-media.js';
+import { proxyMedia } from './proxy-media';
 
 // Init app
 const app = new Koa();

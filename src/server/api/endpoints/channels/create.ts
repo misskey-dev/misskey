@@ -1,10 +1,10 @@
 import $ from 'cafy';
-import define from '../../define.js';
-import { ApiError } from '../../error.js';
-import { Channels, DriveFiles } from '@/models/index.js';
-import { Channel } from '@/models/entities/channel.js';
-import { genId } from '@/misc/gen-id.js';
-import { ID } from '@/misc/cafy-id.js';
+import define from '../../define';
+import { ApiError } from '../../error';
+import { Channels, DriveFiles } from '@/models/index';
+import { Channel } from '@/models/entities/channel';
+import { genId } from '@/misc/gen-id';
+import { ID } from '@/misc/cafy-id';
 
 export const meta = {
 	tags: ['channels'],

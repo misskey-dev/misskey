@@ -1,7 +1,7 @@
 import $ from 'cafy';
-import { publishMainStream } from '@/services/stream.js';
-import define from '../../define.js';
-import { Users, UserProfiles } from '@/models/index.js';
+import { publishMainStream } from '@/services/stream';
+import define from '../../define';
+import { Users, UserProfiles } from '@/models/index';
 
 export const meta = {
 	tags: ['room'],

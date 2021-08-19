@@ -1,8 +1,8 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { Channel } from '../entities/channel.js';
-import { SchemaType } from '@/misc/schema.js';
-import { DriveFiles, ChannelFollowings, NoteUnreads } from '../index.js';
-import { User } from '../entities/user.js';
+import { Channel } from '../entities/channel';
+import { SchemaType } from '@/misc/schema';
+import { DriveFiles, ChannelFollowings, NoteUnreads } from '../index';
+import { User } from '../entities/user';
 
 export type PackedChannel = SchemaType<typeof packedChannelSchema>;
 

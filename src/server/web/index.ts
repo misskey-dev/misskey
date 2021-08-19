@@ -15,16 +15,16 @@ import * as views from 'koa-views';
 import * as glob from 'glob';
 import * as MarkdownIt from 'markdown-it';
 
-import packFeed from './feed.js';
-import { fetchMeta } from '@/misc/fetch-meta.js';
-import { genOpenapiSpec } from '../api/openapi/gen-spec.js';
-import config from '@/config/index.js';
-import { Users, Notes, Emojis, UserProfiles, Pages, Channels, Clips, GalleryPosts } from '@/models/index.js';
-import { parseAcct } from '@/misc/acct.js';
-import { getNoteSummary } from '@/misc/get-note-summary.js';
+import packFeed from './feed';
+import { fetchMeta } from '@/misc/fetch-meta';
+import { genOpenapiSpec } from '../api/openapi/gen-spec';
+import config from '@/config/index';
+import { Users, Notes, Emojis, UserProfiles, Pages, Channels, Clips, GalleryPosts } from '@/models/index';
+import { parseAcct } from '@/misc/acct';
+import { getNoteSummary } from '@/misc/get-note-summary';
 import { getConnection } from 'typeorm';
-import { redisClient } from '../../db/redis.js';
-import locales from '../../../locales/index.js';
+import { redisClient } from '../../db/redis';
+import locales from '../../../locales/index';
 
 //const _filename = fileURLToPath(import.meta.url);
 const _filename = __filename;

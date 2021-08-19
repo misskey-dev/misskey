@@ -1,9 +1,9 @@
-import { UserProfiles } from '@/models/index.js';
-import { User } from '@/models/entities/user.js';
-import { sendEmail } from './send-email.js';
-import * as locales from '../../locales/index.js';
-import { I18n } from '@/misc/i18n.js';
-import { getAcct } from '@/misc/acct.js';
+import { UserProfiles } from '@/models/index';
+import { User } from '@/models/entities/user';
+import { sendEmail } from './send-email';
+import * as locales from '../../locales/index';
+import { I18n } from '@/misc/i18n';
+import { getAcct } from '@/misc/acct';
 
 // TODO: locale ファイルをクライアント用とサーバー用で分けたい
 

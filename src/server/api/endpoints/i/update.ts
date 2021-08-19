@@ -1,20 +1,20 @@
 import $ from 'cafy';
 import * as mfm from 'mfm-js';
-import { ID } from '@/misc/cafy-id.js';
-import { publishMainStream, publishUserEvent } from '@/services/stream.js';
-import acceptAllFollowRequests from '@/services/following/requests/accept-all.js';
-import { publishToFollowers } from '@/services/i/update.js';
-import define from '../../define.js';
-import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm.js';
-import { extractHashtags } from '@/misc/extract-hashtags.js';
+import { ID } from '@/misc/cafy-id';
+import { publishMainStream, publishUserEvent } from '@/services/stream';
+import acceptAllFollowRequests from '@/services/following/requests/accept-all';
+import { publishToFollowers } from '@/services/i/update';
+import define from '../../define';
+import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm';
+import { extractHashtags } from '@/misc/extract-hashtags';
 import * as langmap from 'langmap';
-import { updateUsertags } from '@/services/update-hashtag.js';
-import { ApiError } from '../../error.js';
-import { Users, DriveFiles, UserProfiles, Pages } from '@/models/index.js';
-import { User } from '@/models/entities/user.js';
-import { UserProfile } from '@/models/entities/user-profile.js';
-import { notificationTypes } from '../../../../types.js';
-import { normalizeForSearch } from '@/misc/normalize-for-search.js';
+import { updateUsertags } from '@/services/update-hashtag';
+import { ApiError } from '../../error';
+import { Users, DriveFiles, UserProfiles, Pages } from '@/models/index';
+import { User } from '@/models/entities/user';
+import { UserProfile } from '@/models/entities/user-profile';
+import { notificationTypes } from '../../../../types';
+import { normalizeForSearch } from '@/misc/normalize-for-search';
 
 export const meta = {
 	tags: ['account'],

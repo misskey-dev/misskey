@@ -1,12 +1,12 @@
 import * as Koa from 'koa';
 import * as bcrypt from 'bcryptjs';
 import * as speakeasy from 'speakeasy';
-import signin from '../common/signin.js';
-import config from '@/config/index.js';
-import { Users, Signins, UserProfiles, UserSecurityKeys, AttestationChallenges } from '@/models/index.js';
-import { ILocalUser } from '@/models/entities/user.js';
-import { genId } from '@/misc/gen-id.js';
-import { verifyLogin, hash } from '../2fa.js';
+import signin from '../common/signin';
+import config from '@/config/index';
+import { Users, Signins, UserProfiles, UserSecurityKeys, AttestationChallenges } from '@/models/index';
+import { ILocalUser } from '@/models/entities/user';
+import { genId } from '@/misc/gen-id';
+import { verifyLogin, hash } from '../2fa';
 import { randomBytes } from 'crypto';
 
 export default async (ctx: Koa.Context) => {

@@ -1,7 +1,7 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { Users } from '../index.js';
-import { AbuseUserReport } from '../entities/abuse-user-report.js';
-import { awaitAll } from '../../prelude/await-all.js';
+import { Users } from '../index';
+import { AbuseUserReport } from '../entities/abuse-user-report';
+import { awaitAll } from '../../prelude/await-all';
 
 @EntityRepository(AbuseUserReport)
 export class AbuseUserReportRepository extends Repository<AbuseUserReport> {

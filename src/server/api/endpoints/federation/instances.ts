@@ -1,8 +1,8 @@
 import $ from 'cafy';
-import config from '@/config/index.js';
-import define from '../../define.js';
-import { Instances } from '@/models/index.js';
-import { fetchMeta } from '@/misc/fetch-meta.js';
+import config from '@/config/index';
+import define from '../../define';
+import { Instances } from '@/models/index';
+import { fetchMeta } from '@/misc/fetch-meta';
 
 export const meta = {
 	tags: ['federation'],

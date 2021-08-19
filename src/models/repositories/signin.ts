@@ -1,5 +1,5 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { Signin } from '../entities/signin.js';
+import { Signin } from '../entities/signin';
 
 @EntityRepository(Signin)
 export class SigninRepository extends Repository<Signin> {

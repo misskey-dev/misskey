@@ -1,6 +1,6 @@
 import $ from 'cafy';
-import define from '../../define.js';
-import { Logs } from '@/models/index.js';
+import define from '../../define';
+import { Logs } from '@/models/index';
 import { Brackets } from 'typeorm';
 
 export const meta = {

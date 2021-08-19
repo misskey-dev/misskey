@@ -1,10 +1,10 @@
 import $ from 'cafy';
-import { ID } from '@/misc/cafy-id.js';
-import define from '../../../define.js';
+import { ID } from '@/misc/cafy-id';
+import define from '../../../define';
 import * as ms from 'ms';
-import deleteReaction from '@/services/note/reaction/delete.js';
-import { getNote } from '../../../common/getters.js';
-import { ApiError } from '../../../error.js';
+import deleteReaction from '@/services/note/reaction/delete';
+import { getNote } from '../../../common/getters';
+import { ApiError } from '../../../error';
 
 export const meta = {
 	tags: ['reactions', 'notes'],

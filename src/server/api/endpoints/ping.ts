@@ -1,4 +1,4 @@
-import define from '../define.js';
+import define from '../define';
 
 export const meta = {
 	requireCredential: false as const,

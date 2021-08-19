@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import * as speakeasy from 'speakeasy';
-import define from '../../../define.js';
-import { UserProfiles } from '@/models/index.js';
+import define from '../../../define';
+import { UserProfiles } from '@/models/index';
 
 export const meta = {
 	requireCredential: true as const,

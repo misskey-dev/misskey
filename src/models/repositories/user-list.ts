@@ -1,7 +1,7 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { UserList } from '../entities/user-list.js';
-import { UserListJoinings } from '../index.js';
-import { SchemaType } from '@/misc/schema.js';
+import { UserList } from '../entities/user-list';
+import { UserListJoinings } from '../index';
+import { SchemaType } from '@/misc/schema';
 
 export type PackedUserList = SchemaType<typeof packedUserListSchema>;
 

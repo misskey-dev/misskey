@@ -1,10 +1,10 @@
 import $ from 'cafy';
-import { ID } from '@/misc/cafy-id.js';
-import define from '../../define.js';
-import { ApiError } from '../../error.js';
-import { Users, Followings } from '@/models/index.js';
-import { makePaginationQuery } from '../../common/make-pagination-query.js';
-import { toPunyNullable } from '@/misc/convert-host.js';
+import { ID } from '@/misc/cafy-id';
+import define from '../../define';
+import { ApiError } from '../../error';
+import { Users, Followings } from '@/models/index';
+import { makePaginationQuery } from '../../common/make-pagination-query';
+import { toPunyNullable } from '@/misc/convert-host';
 
 export const meta = {
 	tags: ['users'],

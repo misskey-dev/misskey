@@ -3,11 +3,11 @@ import * as stream from 'stream';
 import * as util from 'util';
 import { URL } from 'url';
 import fetch from 'node-fetch';
-import { getAgentByUrl } from './fetch.js';
+import { getAgentByUrl } from './fetch';
 import { AbortController } from 'abort-controller';
-import config from '@/config/index.js';
+import config from '@/config/index';
 import * as chalk from 'chalk';
-import Logger from '@/services/logger.js';
+import Logger from '@/services/logger';
 
 const pipeline = util.promisify(stream.pipeline);
 

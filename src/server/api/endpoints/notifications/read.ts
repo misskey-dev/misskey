@@ -1,10 +1,10 @@
 import $ from 'cafy';
-import { ID } from '@/misc/cafy-id.js';
-import { publishMainStream } from '@/services/stream.js';
-import define from '../../define.js';
-import { Notifications } from '@/models/index.js';
-import { readNotification } from '../../common/read-notification.js';
-import { ApiError } from '../../error.js';
+import { ID } from '@/misc/cafy-id';
+import { publishMainStream } from '@/services/stream';
+import define from '../../define';
+import { Notifications } from '@/models/index';
+import { readNotification } from '../../common/read-notification';
+import { ApiError } from '../../error';
 
 export const meta = {
 	tags: ['notifications', 'account'],

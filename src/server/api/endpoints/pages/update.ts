@@ -1,9 +1,9 @@
 import $ from 'cafy';
 import * as ms from 'ms';
-import define from '../../define.js';
-import { ApiError } from '../../error.js';
-import { Pages, DriveFiles } from '@/models/index.js';
-import { ID } from '@/misc/cafy-id.js';
+import define from '../../define';
+import { ApiError } from '../../error';
+import { Pages, DriveFiles } from '@/models/index';
+import { ID } from '@/misc/cafy-id';
 import { Not } from 'typeorm';
 
 export const meta = {

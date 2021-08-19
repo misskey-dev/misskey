@@ -1,5 +1,5 @@
-import define from '../../define.js';
-import { createExportFollowingJob } from '@/queue/index.js';
+import define from '../../define';
+import { createExportFollowingJob } from '@/queue/index';
 import * as ms from 'ms';
 
 export const meta = {

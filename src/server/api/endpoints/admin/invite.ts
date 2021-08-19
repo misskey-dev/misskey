@@ -1,7 +1,7 @@
 import rndstr from 'rndstr';
-import define from '../../define.js';
-import { RegistrationTickets } from '@/models/index.js';
-import { genId } from '@/misc/gen-id.js';
+import define from '../../define';
+import { RegistrationTickets } from '@/models/index';
+import { genId } from '@/misc/gen-id';
 
 export const meta = {
 	tags: ['admin'],

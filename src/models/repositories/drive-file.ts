@@ -1,14 +1,14 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { DriveFile } from '../entities/drive-file.js';
-import { Users, DriveFolders } from '../index.js';
-import { User } from '../entities/user.js';
-import { toPuny } from '@/misc/convert-host.js';
-import { awaitAll } from '../../prelude/await-all.js';
-import { SchemaType } from '@/misc/schema.js';
-import config from '@/config/index.js';
-import { query, appendQuery } from '../../prelude/url.js';
-import { Meta } from '../entities/meta.js';
-import { fetchMeta } from '@/misc/fetch-meta.js';
+import { DriveFile } from '../entities/drive-file';
+import { Users, DriveFolders } from '../index';
+import { User } from '../entities/user';
+import { toPuny } from '@/misc/convert-host';
+import { awaitAll } from '../../prelude/await-all';
+import { SchemaType } from '@/misc/schema';
+import config from '@/config/index';
+import { query, appendQuery } from '../../prelude/url';
+import { Meta } from '../entities/meta';
+import { fetchMeta } from '@/misc/fetch-meta';
 
 export type PackedDriveFile = SchemaType<typeof packedDriveFileSchema>;
 

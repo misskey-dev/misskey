@@ -1,9 +1,9 @@
 import autobind from 'autobind-decorator';
-import Chart, { Obj, DeepPartial } from '../../core.js';
-import { User } from '@/models/entities/user.js';
-import { SchemaType } from '@/misc/schema.js';
-import { Users } from '@/models/index.js';
-import { name, schema } from '../schemas/hashtag.js';
+import Chart, { Obj, DeepPartial } from '../../core';
+import { User } from '@/models/entities/user';
+import { SchemaType } from '@/misc/schema';
+import { Users } from '@/models/index';
+import { name, schema } from '../schemas/hashtag';
 
 type HashtagLog = SchemaType<typeof schema>;
 

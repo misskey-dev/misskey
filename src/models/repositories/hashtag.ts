@@ -1,6 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { Hashtag } from '../entities/hashtag.js';
-import { SchemaType } from '@/misc/schema.js';
+import { Hashtag } from '../entities/hashtag';
+import { SchemaType } from '@/misc/schema';
 
 export type PackedHashtag = SchemaType<typeof packedHashtagSchema>;
 

@@ -1,7 +1,7 @@
 import $ from 'cafy';
-import define from '../../define.js';
-import { convertLog } from '@/services/chart/core.js';
-import { networkChart } from '@/services/chart/index.js';
+import define from '../../define';
+import { convertLog } from '@/services/chart/core';
+import { networkChart } from '@/services/chart/index';
 
 export const meta = {
 	tags: ['charts'],

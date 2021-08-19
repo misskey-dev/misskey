@@ -1,9 +1,9 @@
 import $ from 'cafy';
-import { ID } from '@/misc/cafy-id.js';
-import { addPinned } from '@/services/i/pin.js';
-import define from '../../define.js';
-import { ApiError } from '../../error.js';
-import { Users } from '@/models/index.js';
+import { ID } from '@/misc/cafy-id';
+import { addPinned } from '@/services/i/pin';
+import define from '../../define';
+import { ApiError } from '../../error';
+import { Users } from '@/models/index';
 
 export const meta = {
 	tags: ['account', 'notes'],

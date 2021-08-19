@@ -13,19 +13,19 @@ import * as koaLogger from 'koa-logger';
 import * as requestStats from 'request-stats';
 import * as slow from 'koa-slow';
 
-import activityPub from './activitypub.js';
-import nodeinfo from './nodeinfo.js';
-import wellKnown from './well-known.js';
-import config from '@/config/index.js';
-import apiServer from './api/index.js';
-import { sum } from '../prelude/array.js';
-import Logger from '@/services/logger.js';
-import { program } from '../argv.js';
-import { UserProfiles, Users } from '@/models/index.js';
-import { networkChart } from '@/services/chart/index.js';
-import { genAvatar } from '@/misc/gen-avatar.js';
-import { createTemp } from '@/misc/create-temp.js';
-import { publishMainStream } from '@/services/stream.js';
+import activityPub from './activitypub';
+import nodeinfo from './nodeinfo';
+import wellKnown from './well-known';
+import config from '@/config/index';
+import apiServer from './api/index';
+import { sum } from '../prelude/array';
+import Logger from '@/services/logger';
+import { program } from '../argv';
+import { UserProfiles, Users } from '@/models/index';
+import { networkChart } from '@/services/chart/index';
+import { genAvatar } from '@/misc/gen-avatar';
+import { createTemp } from '@/misc/create-temp';
+import { publishMainStream } from '@/services/stream';
 
 export const serverLogger = new Logger('server', 'gray', false);
 

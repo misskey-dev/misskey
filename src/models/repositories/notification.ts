@@ -1,12 +1,12 @@
 import { EntityRepository, In, Repository } from 'typeorm';
-import { Users, Notes, UserGroupInvitations, AccessTokens, NoteReactions } from '../index.js';
-import { Notification } from '../entities/notification.js';
-import { awaitAll } from '../../prelude/await-all.js';
-import { SchemaType } from '@/misc/schema.js';
-import { Note } from '../entities/note.js';
-import { NoteReaction } from '../entities/note-reaction.js';
-import { User } from '../entities/user.js';
-import { aggregateNoteEmojis, prefetchEmojis } from '@/misc/populate-emojis.js';
+import { Users, Notes, UserGroupInvitations, AccessTokens, NoteReactions } from '../index';
+import { Notification } from '../entities/notification';
+import { awaitAll } from '../../prelude/await-all';
+import { SchemaType } from '@/misc/schema';
+import { Note } from '../entities/note';
+import { NoteReaction } from '../entities/note-reaction';
+import { User } from '../entities/user';
+import { aggregateNoteEmojis, prefetchEmojis } from '@/misc/populate-emojis';
 
 export type PackedNotification = SchemaType<typeof packedNotificationSchema>;
 

@@ -1,8 +1,8 @@
 import $ from 'cafy';
-import define from '../../../define.js';
-import { ID } from '@/misc/cafy-id.js';
-import { convertLog } from '@/services/chart/core.js';
-import { perUserNotesChart } from '@/services/chart/index.js';
+import define from '../../../define';
+import { ID } from '@/misc/cafy-id';
+import { convertLog } from '@/services/chart/core';
+import { perUserNotesChart } from '@/services/chart/index';
 
 export const meta = {
 	tags: ['charts', 'users', 'notes'],
