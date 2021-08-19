@@ -16,7 +16,7 @@ import block from './block/index';
 import flag from './flag/index';
 import { apLogger } from '../logger';
 import Resolver from '../resolver';
-import { toArray } from '../../../prelude/array';
+import { toArray } from '@/prelude/array';
 
 export async function performActivity(actor: IRemoteUser, activity: IObject) {
 	if (isCollectionOrOrderedCollection(activity)) {

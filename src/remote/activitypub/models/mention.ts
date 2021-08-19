@@ -1,4 +1,4 @@
-import { toArray, unique } from '../../../prelude/array';
+import { toArray, unique } from '@/prelude/array';
 import { IObject, isMention, IApMention } from '../type';
 import { resolvePerson } from './person';
 import * as promiseLimit from 'promise-limit';

@@ -7,7 +7,7 @@ import { getConnection } from 'typeorm';
 import Logger from '@/services/logger';
 import loadConfig from '@/config/load';
 import { Config } from '@/config/types';
-import { lessThan } from '../prelude/array';
+import { lessThan } from '@/prelude/array';
 import { program } from '../argv';
 import { showMachineInfo } from '@/misc/show-machine-info';
 import { initDb } from '../db/postgre';

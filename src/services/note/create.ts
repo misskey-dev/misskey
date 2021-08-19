@@ -9,7 +9,7 @@ import { renderActivity } from '@/remote/activitypub/renderer/index';
 import { resolveUser } from '@/remote/resolve-user';
 import config from '@/config/index';
 import { updateHashtags } from '../update-hashtag';
-import { concat } from '../../prelude/array';
+import { concat } from '@/prelude/array';
 import insertNoteUnread from './unread';
 import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
 import { extractMentions } from '@/misc/extract-mentions';

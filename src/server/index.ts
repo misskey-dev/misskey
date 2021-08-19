@@ -18,7 +18,7 @@ import nodeinfo from './nodeinfo';
 import wellKnown from './well-known';
 import config from '@/config/index';
 import apiServer from './api/index';
-import { sum } from '../prelude/array';
+import { sum } from '@/prelude/array';
 import Logger from '@/services/logger';
 import { program } from '../argv';
 import { UserProfiles, Users } from '@/models/index';

@@ -1,5 +1,5 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { Antenna } from '../entities/antenna';
+import { Antenna } from '@/models/entities/antenna';
 import { SchemaType } from '@/misc/schema';
 import { AntennaNotes, UserGroupJoinings } from '../index';
 

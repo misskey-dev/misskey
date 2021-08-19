@@ -1,5 +1,5 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { App } from '../entities/app';
+import { App } from '@/models/entities/app';
 import { AccessTokens } from '../index';
 import { SchemaType } from '@/misc/schema';
 

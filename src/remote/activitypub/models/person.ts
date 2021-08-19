@@ -25,7 +25,7 @@ import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error';
 import { toPuny } from '@/misc/convert-host';
 import { UserProfile } from '@/models/entities/user-profile';
 import { getConnection } from 'typeorm';
-import { toArray } from '../../../prelude/array';
+import { toArray } from '@/prelude/array';
 import { fetchInstanceMetadata } from '@/services/fetch-instance-metadata';
 import { normalizeForSearch } from '@/misc/normalize-for-search';
 

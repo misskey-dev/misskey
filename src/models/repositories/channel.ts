@@ -1,8 +1,8 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { Channel } from '../entities/channel';
+import { Channel } from '@/models/entities/channel';
 import { SchemaType } from '@/misc/schema';
 import { DriveFiles, ChannelFollowings, NoteUnreads } from '../index';
-import { User } from '../entities/user';
+import { User } from '@/models/entities/user';
 
 export type PackedChannel = SchemaType<typeof packedChannelSchema>;
 

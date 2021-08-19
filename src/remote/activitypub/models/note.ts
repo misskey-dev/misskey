@@ -8,7 +8,7 @@ import { resolveImage } from './image';
 import { IRemoteUser } from '@/models/entities/user';
 import { htmlToMfm } from '../misc/html-to-mfm';
 import { extractApHashtags } from './tag';
-import { unique, toArray, toSingle } from '../../../prelude/array';
+import { unique, toArray, toSingle } from '@/prelude/array';
 import { extractPollFromQuestion } from './question';
 import vote from '@/services/note/polls/vote';
 import { apLogger } from '../logger';

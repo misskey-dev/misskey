@@ -1,5 +1,5 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { UserGroup } from '../entities/user-group';
+import { UserGroup } from '@/models/entities/user-group';
 import { UserGroupJoinings } from '../index';
 import { SchemaType } from '@/misc/schema';
 

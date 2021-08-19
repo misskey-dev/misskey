@@ -7,7 +7,7 @@ import { MessagingMessages, UserGroupJoinings, Users } from '@/models/index';
 import { In } from 'typeorm';
 import { IdentifiableError } from '@/misc/identifiable-error';
 import { UserGroup } from '@/models/entities/user-group';
-import { toArray } from '../../../prelude/array';
+import { toArray } from '@/prelude/array';
 import { renderReadActivity } from '@/remote/activitypub/renderer/read';
 import { renderActivity } from '@/remote/activitypub/renderer/index';
 import { deliver } from '@/queue/index';

@@ -1,5 +1,5 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { UserList } from '../entities/user-list';
+import { UserList } from '@/models/entities/user-list';
 import { UserListJoinings } from '../index';
 import { SchemaType } from '@/misc/schema';
 

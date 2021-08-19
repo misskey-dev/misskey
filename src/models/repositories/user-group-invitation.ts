@@ -1,5 +1,5 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { UserGroupInvitation } from '../entities/user-group-invitation';
+import { UserGroupInvitation } from '@/models/entities/user-group-invitation';
 import { UserGroups } from '../index';
 
 @EntityRepository(UserGroupInvitation)

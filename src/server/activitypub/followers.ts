@@ -2,7 +2,7 @@ import * as Router from '@koa/router';
 import config from '@/config/index';
 import $ from 'cafy';
 import { ID } from '@/misc/cafy-id';
-import * as url from '../../prelude/url';
+import * as url from '@/prelude/url';
 import { renderActivity } from '@/remote/activitypub/renderer/index';
 import renderOrderedCollection from '@/remote/activitypub/renderer/ordered-collection';
 import renderOrderedCollectionPage from '@/remote/activitypub/renderer/ordered-collection-page';
