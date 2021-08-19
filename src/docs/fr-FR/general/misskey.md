@@ -77,7 +77,7 @@ Misskeyは開発が進むにつれ使用する技術も大きく変わってき�
 ### « Existe-t-il des appli pour Android / iOS ? »
 Bien qu'il n'existe d'application Misskey officielle pour aucun OS, différentes applications développées par des tiers sont disponibles. [Voir ici](./apps) pour plus de détails.
 
-ただ、サードパーティ製アプリはどうしても機能への対応が遅れてしまうため、とくに拘りがなければ公式のWebクライアントの利用をおすすめします。 なお、MisskeyのWebクライアントはPWAに対応しているので、ネイティブアプリのように動作させることも可能です。 詳しくは[こちら](todo)をご覧ください。
+Cependant, à moins que vous ne soyez particulièrement déterminé·e à utiliser une application dédiée, l'utilisation du client Web officiel est vivement recommandée du fait que les applications développées par des tiers seront forcément en retard par rapport à celui-ci. Par ailleurs, étant donné que le client Web de Misskey est compatible avec une PWA, il peut adopter le comportement d'une application native. [Voir ici](todo) pour plus d'informations.
 
 ### Misskeyのロゴ、アイコンはどこで入手できますか？
 (準備中)
