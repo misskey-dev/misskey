@@ -50,34 +50,40 @@ Those users amongst all existing ones who are continually using their account.
 todo
 
 ## Control Panel
-The settings screen of an instance.
+サーバーで用意された絵文字。カスタム絵文字ではない通常の絵文字は「Unicode絵文字」と区別して呼ばれる。
+
+## コントロールパネル
+todo
 
 ## Server
 todo
 
 ## Silence
-A state in which the visibility of the notes by said user cannot be set to "Public" anymore.Can be set for individual users by Moderators.For details, see [here.](../features/silence)
+ノートをパブリックな公開範囲で投稿できなくされている状態。モデレーターの判断でユーザーごとに設定されます。詳細は[こちら。](../features/silence)
+
+## Job Queue
+アクティビティ配送などを順番に行うためのシステム。
 
 ## Suspend
-A state which makes the account of a user unusable.
-
-## Drive
-A feature allowing users to organize the files they have uploaded to Misskey.For details, see [here.](../features/drive)
-
-## Notes
-Content which may include text, images, surveys and others that has been posted to Misskey.For details, see [here.](../features/note)
+アカウントが使用不可に設定されている状態。
 
 ## Misskist
-Users of Misskey.
+Misskeyにアップロードしたファイルを管理する機能。詳細は[こちら。](../features/drive)
+
+## Notes
+Misskeyに投稿される、文章、ファイル、アンケートなどを含めることができるコンテンツ。For details, see [here.](../features/note)
+
+## ミスキスト
+Misskeyを使う人のこと。
 
 ## Moderator
-Users with the authority to to manage the community of a server by deactivating spam accounts, deleting inappropriate posts etc.
-
-## Remote
-Used in context of servers separate from your own.Also used as prefix in other words like "Remote user".The opposite of "Local".
-
-## Federation
 The act of sharing information created one one's server with other servers.
 
-## Local
+## Remote
 Used in context of your own server.Also used as prefix in other words like "Local users", "local timeline".The opposite of "Remote".
+
+## Federation
+サーバー上で作成された情報が他のサーバーに伝わること。
+
+## Local
+自サーバーのことを指します。ローカルユーザー、ローカルタイムラインといったように接頭辞としても使われます。リモートの逆です。
