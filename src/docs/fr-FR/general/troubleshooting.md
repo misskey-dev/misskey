@@ -13,7 +13,7 @@ Si votre client démarre mais qu'un message d'erreur apparaît lors du chargemen
 
 Bien que cela arrive rarement, il se peut que le cache soit à l'origine du problème. Dans ce cas, videz le cache et essayez à nouveau.
 
-まだ問題がある場合は、サーバーの問題と思われるのでサーバーの管理者に連絡してください。
+Si le problème persiste malgré tout, il est très probable qu'il s'agisse d'une panne côté serveur ; nous vous invitons donc à contacter l'administrateur·rice de votre instance.
 
 ## Le client est lent
 以下を試してみてください:
@@ -31,10 +31,10 @@ Bien que cela arrive rarement, il se peut que le cache soit à l'origine du prob
 点滅は、未読のコンテンツがあることを示しています。通常点滅が消えない場合は、コンテンツを遡ると未読なコンテンツが残っています。 すべて既読にしたと思われるのに、それでもなお点滅が続く場合(おそらく不具合と思われます)は設定から強制的にすべて既読扱いにすることができます。
 
 ## La fonction « Renoter » ne fonctionne pas
-フォロワー限定のノートはRenoteすることはできません。
+Les notes dont l'audience est limitée aux « Abonné·e·s uniquement » ne peuvent pas être renotées.
 
 ## Des éléments spécifiques de l'interface ne s'affichent pas
 広告ブロッカーを使用しているとそのような不具合が発生することがあります。Misskeyではオフにしてご利用ください。
 
 ## Certaines parties de l'interface ne sont pas traduites
-ほとんどの場合、単に翻訳が間に合っていないだけで、不具合ではありません。翻訳が終わるまでお待ちください。 [翻訳に参加](./misskey)していただくことも可能です。
+La plupart du temps, cela n'est pas un bug mais simplement un problème de traduction qui n'a pas encore pu être faite. 翻訳が終わるまでお待ちください。 [翻訳に参加](./misskey)していただくことも可能です。
