@@ -37,4 +37,4 @@ Les notes dont l'audience est limitée aux « Abonné·e·s uniquement » ne peu
 広告ブロッカーを使用しているとそのような不具合が発生することがあります。Misskeyではオフにしてご利用ください。
 
 ## Certaines parties de l'interface ne sont pas traduites
-La plupart du temps, cela n'est pas un bug mais simplement un problème de traduction qui n'a pas encore pu être faite. 翻訳が終わるまでお待ちください。 [翻訳に参加](./misskey)していただくことも可能です。
+La plupart du temps, cela n'est pas un bug mais simplement un problème de traduction qui n'a pas encore été faite. Merci de patienter jusqu'à ce que la traduction de la portion en question soit achevée. Vous pouvez également [aider à traduire](./misskey) Misskey.
