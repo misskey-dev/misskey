@@ -10,6 +10,7 @@
 ## 12.x.x (unreleased)
 
 ### Improvements
+- 依存関係の更新
 
 ### Bugfixes
 - チャンネルを作成しているとアカウントを削除できないのを修正
