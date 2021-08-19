@@ -6,12 +6,12 @@ Lorsque vous rencontrez un problème, nous vous prions de lire cette page tout d
 ## Le client ne démarre pas
 Généralement, ce problème est dû au fait que vous utilisez une version trop ancienne de votre navigateur ou de votre système d'exploitation. Effectuez les mises à jour pour chacun d'eux vers leurs versions les plus récentes, puis essayez à nouveau.
 
-Cela arrive rarement, mais si votre client ne démarre toujours pas après cela, le problème vient du cache. ブラウザのキャッシュをクリアして、再度試してみてください。
+Cela arrive rarement, mais si votre client ne démarre toujours pas après cela, le problème vient du cache. Dans ce cas, videz le cache et essayez à nouveau.
 
-## ページが読み込めない
+## La page ne charge pas
 クライアントが起動するもののページが読み込めないというエラーが出る場合は、ネットワークに問題がないか確認してください。また、サーバーがダウンしていないか確認してください。
 
-これは稀ですが、キャッシュが原因の場合があります。ブラウザのキャッシュをクリアして、再度試してみてください。
+これは稀ですが、キャッシュが原因の場合があります。Dans ce cas, videz le cache et essayez à nouveau.
 
 まだ問題がある場合は、サーバーの問題と思われるのでサーバーの管理者に連絡してください。
 
