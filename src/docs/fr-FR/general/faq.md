@@ -4,7 +4,7 @@ Vous trouverez ici les questions les plus fréquentes sur l'utilisation de Missk
 ## « Existe-t-il des appli pour Android / iOS ? »
 Bien qu'il n'existe d'application Misskey officielle pour aucun OS, différentes applications développées par des tiers sont disponibles. [Voir ici](./apps) pour plus de détails.
 
-ただ、サードパーティ製アプリはどうしても機能への対応が遅れてしまうため、とくに拘りがなければ公式のWebクライアントの利用をおすすめします。 なお、MisskeyのWebクライアントはPWAに対応しているので、ネイティブアプリのように動作させることも可能です。 詳しくは[こちら](todo)をご覧ください。
+Cependant, à moins que vous ne soyez particulièrement déterminé·e à utiliser une application dédiée, l'utilisation du client Web officiel est vivement recommandée du fait que les applications développées par des tiers seront forcément en retard par rapport à celui-ci. Par ailleurs, étant donné que le client Web de Misskey est compatible avec une PWA, il peut adopter le comportement d'une application native. [Voir ici](todo) pour plus d'informations.
 
 ## « Ne peut-on pas utiliser un client Mastodon pour se connecter à Misskey ? »
 Étant donné que Misskey n'est pas compatible avec l'API Mastodon, sauf cas exceptionnels, il n'est pas possible d'utiliser un client Mastodon pour Misskey.
