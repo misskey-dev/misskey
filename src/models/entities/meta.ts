@@ -314,6 +314,12 @@ export class Meta {
 	public discordClientSecret: string | null;
 
 	@Column('varchar', {
+		length: 128,
+		nullable: true
+	})
+	public deeplAuthKey: string | null;
+
+	@Column('varchar', {
 		length: 512,
 		nullable: true
 	})

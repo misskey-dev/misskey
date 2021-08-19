@@ -1,16 +1,16 @@
 import $ from 'cafy';
 import define from '../../define';
-import config from '@/config';
-import { createPerson } from '../../../../remote/activitypub/models/person';
-import { createNote } from '../../../../remote/activitypub/models/note';
-import Resolver from '../../../../remote/activitypub/resolver';
+import config from '@/config/index';
+import { createPerson } from '@/remote/activitypub/models/person';
+import { createNote } from '@/remote/activitypub/models/note';
+import Resolver from '@/remote/activitypub/resolver';
 import { ApiError } from '../../error';
 import { extractDbHost } from '@/misc/convert-host';
-import { Users, Notes } from '../../../../models';
-import { Note } from '../../../../models/entities/note';
-import { User } from '../../../../models/entities/user';
+import { Users, Notes } from '@/models/index';
+import { Note } from '@/models/entities/note';
+import { User } from '@/models/entities/user';
 import { fetchMeta } from '@/misc/fetch-meta';
-import { isActor, isPost, getApId } from '../../../../remote/activitypub/type';
+import { isActor, isPost, getApId } from '@/remote/activitypub/type';
 
 export const meta = {
 	tags: ['federation'],

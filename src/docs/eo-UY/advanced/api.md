@@ -32,7 +32,7 @@ UUIDを生成する。以後これをセッションIDと呼びます。
 表示する際、URLにクエリパラメータとしていくつかのオプションを設定できます:
 * `name` ... アプリケーション名
     * > 例: `MissDeck`
-* `icon` ... アプリケーションのアイコン画像URL
+* `icon` ... URL de ikono de la programo
     * > 例: `https://missdeck.example.com/icon.png`
 * `callback` ... 認証が終わった後にリダイレクトするURL
     * > 例: `https://missdeck.example.com/callback`
@@ -51,7 +51,7 @@ UUIDを生成する。以後これをセッションIDと呼びます。
 
 [「APIの使い方」へ進む](#APIの使い方)
 
-## APIの使い方
+## Uzado de API
 **APIはすべてPOSTで、リクエスト/レスポンスともにJSON形式です。RESTではありません。** アクセストークンは、`i`というパラメータ名でリクエストに含めます。
 
 * [APIリファレンス](/api-doc)

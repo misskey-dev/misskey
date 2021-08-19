@@ -1,11 +1,11 @@
-import config from '@/config';
-import { MessagingMessages, Users } from '../../models';
-import { MessagingMessage } from '../../models/entities/messaging-message';
-import { publishGroupMessagingStream, publishMessagingStream } from '../stream';
-import { renderActivity } from '../../remote/activitypub/renderer';
-import renderDelete from '../../remote/activitypub/renderer/delete';
-import renderTombstone from '../../remote/activitypub/renderer/tombstone';
-import { deliver } from '../../queue';
+import config from '@/config/index';
+import { MessagingMessages, Users } from '@/models/index';
+import { MessagingMessage } from '@/models/entities/messaging-message';
+import { publishGroupMessagingStream, publishMessagingStream } from '@/services/stream';
+import { renderActivity } from '@/remote/activitypub/renderer/index';
+import renderDelete from '@/remote/activitypub/renderer/delete';
+import renderTombstone from '@/remote/activitypub/renderer/tombstone';
+import { deliver } from '@/queue/index';
 
 export async function deleteMessage(message: MessagingMessage) {
 	await MessagingMessages.delete(message.id);

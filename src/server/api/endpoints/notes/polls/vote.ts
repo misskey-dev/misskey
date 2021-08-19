@@ -1,17 +1,17 @@
 import $ from 'cafy';
 import { ID } from '@/misc/cafy-id';
-import { publishNoteStream } from '../../../../../services/stream';
-import { createNotification } from '../../../../../services/create-notification';
+import { publishNoteStream } from '@/services/stream';
+import { createNotification } from '@/services/create-notification';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { getNote } from '../../../common/getters';
-import { deliver } from '../../../../../queue';
-import { renderActivity } from '../../../../../remote/activitypub/renderer';
-import renderVote from '../../../../../remote/activitypub/renderer/vote';
-import { deliverQuestionUpdate } from '../../../../../services/note/polls/update';
-import { PollVotes, NoteWatchings, Users, Polls } from '../../../../../models';
+import { deliver } from '@/queue/index';
+import { renderActivity } from '@/remote/activitypub/renderer/index';
+import renderVote from '@/remote/activitypub/renderer/vote';
+import { deliverQuestionUpdate } from '@/services/note/polls/update';
+import { PollVotes, NoteWatchings, Users, Polls, Blockings } from '@/models/index';
 import { Not } from 'typeorm';
-import { IRemoteUser } from '../../../../../models/entities/user';
+import { IRemoteUser } from '@/models/entities/user';
 import { genId } from '@/misc/gen-id';
 
 export const meta = {
@@ -61,6 +61,12 @@ export const meta = {
 			code: 'ALREADY_EXPIRED',
 			id: '1022a357-b085-4054-9083-8f8de358337e'
 		},
+
+		youHaveBeenBlocked: {
+			message: 'You cannot vote this poll because you have been blocked by this user.',
+			code: 'YOU_HAVE_BEEN_BLOCKED',
+			id: '85a5377e-b1e9-4617-b0b9-5bea73331e49'
+		},
 	}
 };
 
@@ -75,6 +81,17 @@ export default define(meta, async (ps, user) => {
 
 	if (!note.hasPoll) {
 		throw new ApiError(meta.errors.noPoll);
+	}
+
+	// Check blocking
+	if (note.userId !== user.id) {
+		const block = await Blockings.findOne({
+			blockerId: note.userId,
+			blockeeId: user.id,
+		});
+		if (block) {
+			throw new ApiError(meta.errors.youHaveBeenBlocked);
+		}
 	}
 
 	const poll = await Polls.findOneOrFail({ noteId: note.id });
@@ -103,13 +120,13 @@ export default define(meta, async (ps, user) => {
 	}
 
 	// Create vote
-	const vote = await PollVotes.save({
+	const vote = await PollVotes.insert({
 		id: genId(),
 		createdAt,
 		noteId: note.id,
 		userId: user.id,
 		choice: ps.choice
-	});
+	}).then(x => PollVotes.findOneOrFail(x.identifiers[0]));
 
 	// Increment votes count
 	const index = ps.choice + 1; // In SQL, array index is 1 based

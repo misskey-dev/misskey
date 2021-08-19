@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import define from '../../../define';
-import { DriveFiles } from '../../../../../models';
+import { DriveFiles } from '@/models/index';
 import { makePaginationQuery } from '../../../common/make-pagination-query';
 import { ID } from '@/misc/cafy-id';
 

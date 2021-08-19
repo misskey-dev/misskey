@@ -50,11 +50,16 @@ import { defineComponent, markRaw } from 'vue';
 import define from './define';
 import * as os from '@client/os';
 import number from '@client/filters/number';
+import * as sound from '@client/scripts/sound';
 
 const widget = define({
 	name: 'jobQueue',
 	props: () => ({
 		transparent: {
+			type: 'boolean',
+			default: false,
+		},
+		sound: {
 			type: 'boolean',
 			default: false,
 		},
@@ -79,6 +84,7 @@ export default defineComponent({
 				delayed: 0,
 			},
 			prev: {},
+			sound: sound.setVolume(sound.getAudio('syuilo/queue-jammed'), 1)
 		};
 	},
 	created() {
@@ -107,6 +113,10 @@ export default defineComponent({
 				this[domain].active = stats[domain].active;
 				this[domain].waiting = stats[domain].waiting;
 				this[domain].delayed = stats[domain].delayed;
+
+				if (this[domain].waiting > 0 && this.props.sound && this.sound.paused) {
+					this.sound.play();
+				}
 			}
 		},
 

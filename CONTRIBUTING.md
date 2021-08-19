@@ -35,6 +35,11 @@ If your language is not listed in Crowdin, please open an issue.
 ## Test
 * Test codes are located in [`/test`](/test).
 
+### Run specify test
+```
+npx cross-env TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT="./test/tsconfig.json" npx mocha test/foo.ts --require ts-node/register
+```
+
 ## Continuous integration
 Misskey uses GitHub Actions for executing automated tests.
 Configuration files are located in [`/.github/workflows`](/.github/workflows).

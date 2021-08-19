@@ -1,11 +1,11 @@
 import $ from 'cafy';
 import { ID } from '@/misc/cafy-id';
 import * as ms from 'ms';
-import create from '../../../../services/following/create';
+import create from '@/services/following/create';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { getUser } from '../../common/getters';
-import { Followings, Users } from '../../../../models';
+import { Followings, Users } from '@/models/index';
 
 export const meta = {
 	tags: ['following', 'users'],

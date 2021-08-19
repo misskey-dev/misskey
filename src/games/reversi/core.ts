@@ -1,4 +1,4 @@
-import { count, concat } from '../../prelude/array';
+import { count, concat } from '@/prelude/array';
 
 // MISSKEY REVERSI ENGINE
 

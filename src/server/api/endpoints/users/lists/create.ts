@@ -1,8 +1,8 @@
 import $ from 'cafy';
 import define from '../../../define';
-import { UserLists } from '../../../../../models';
+import { UserLists } from '@/models/index';
 import { genId } from '@/misc/gen-id';
-import { UserList } from '../../../../../models/entities/user-list';
+import { UserList } from '@/models/entities/user-list';
 
 export const meta = {
 	tags: ['lists'],

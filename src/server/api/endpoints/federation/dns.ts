@@ -1,7 +1,7 @@
 import { promises as dns } from 'dns';
 import $ from 'cafy';
 import define from '../../define';
-import { Instances } from '../../../../models';
+import { Instances } from '@/models/index';
 import { toPuny } from '@/misc/convert-host';
 
 const resolver = new dns.Resolver();

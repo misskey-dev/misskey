@@ -1,11 +1,11 @@
 import $ from 'cafy';
 import { ID } from '@/misc/cafy-id';
-import deleteNote from '../../../../services/note/delete';
+import deleteNote from '@/services/note/delete';
 import define from '../../define';
 import * as ms from 'ms';
 import { getNote } from '../../common/getters';
 import { ApiError } from '../../error';
-import { Notes, Users } from '../../../../models';
+import { Notes, Users } from '@/models/index';
 
 export const meta = {
 	tags: ['notes'],

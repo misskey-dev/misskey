@@ -1,10 +1,10 @@
 import { createSystemUser } from './create-system-user';
-import { renderFollowRelay } from '../remote/activitypub/renderer/follow-relay';
-import { renderActivity, attachLdSignature } from '../remote/activitypub/renderer';
-import renderUndo from '../remote/activitypub/renderer/undo';
-import { deliver } from '../queue';
-import { ILocalUser, User } from '../models/entities/user';
-import { Users, Relays } from '../models';
+import { renderFollowRelay } from '@/remote/activitypub/renderer/follow-relay';
+import { renderActivity, attachLdSignature } from '@/remote/activitypub/renderer/index';
+import renderUndo from '@/remote/activitypub/renderer/undo';
+import { deliver } from '@/queue/index';
+import { ILocalUser, User } from '@/models/entities/user';
+import { Users, Relays } from '@/models/index';
 import { genId } from '@/misc/gen-id';
 
 const ACTOR_USERNAME = 'relay.actor' as const;

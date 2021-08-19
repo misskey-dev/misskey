@@ -1,5 +1,5 @@
 import Resolver from '../../resolver';
-import { IRemoteUser } from '../../../../models/entities/user';
+import { IRemoteUser } from '@/models/entities/user';
 import { createNote, fetchNote } from '../../models/note';
 import { getApId, IObject, ICreate } from '../../type';
 import { getApLock } from '@/misc/app-lock';
