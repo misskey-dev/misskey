@@ -1,7 +1,7 @@
 # Résolution des problèmes
 <div class="info">ℹ️ N'hésitez pas à consulter les <a href="./faq">Questions fréquentes</a> en complément de cette page.</div>
 
-問題が発生したときは、まずこちらをご確認ください。 該当する項目が無い、もしくは手順を試しても効果がない場合は、サーバーの管理者に連絡するか[不具合を報告](./report-issue)してください。
+Lorsque vous rencontrez un problème, nous vous prions de lire cette page tout d'abord. Si toutefois aucun des paragraphes ci-dessous ne correspond à votre problème, ou bien si vous n'arrivez pas à le résoudre en suivant les instructions détaillées ici, nous vous invitons à contacter l'administrateur·rice de votre instance ou à [Signaler un bug](./report-issue).
 
 ## Le client ne démarre pas
 ほとんどの場合、お使いのブラウザまたはOSのバージョンが古いことが原因です。 ブラウザおよびOSのバージョンを最新のものに更新してから、再度試してみてください。
