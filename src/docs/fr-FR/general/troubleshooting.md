@@ -9,9 +9,9 @@ Généralement, ce problème est dû au fait que vous utilisez une version trop 
 Cela arrive rarement, mais si votre client ne démarre toujours pas après cela, le problème vient du cache. Dans ce cas, videz le cache et essayez à nouveau.
 
 ## La page ne charge pas
-クライアントが起動するもののページが読み込めないというエラーが出る場合は、ネットワークに問題がないか確認してください。また、サーバーがダウンしていないか確認してください。
+Si votre client démarre mais qu'un message d'erreur apparaît lors du chargement de la page, assurez-vous qu'il ne s'agit pas d'un problème de connexion au réseau. Assurez-vous également que votre serveur n'est pas temporairement inaccessible.
 
-これは稀ですが、キャッシュが原因の場合があります。Dans ce cas, videz le cache et essayez à nouveau.
+Bien que cela arrive rarement, il se peut que le cache soit à l'origine du problème. Dans ce cas, videz le cache et essayez à nouveau.
 
 まだ問題がある場合は、サーバーの問題と思われるのでサーバーの管理者に連絡してください。
 
