@@ -4,7 +4,7 @@
 Lorsque vous rencontrez un problème, nous vous prions de lire cette page tout d'abord. Si toutefois aucun des paragraphes ci-dessous ne correspond à votre problème, ou bien si vous n'arrivez pas à le résoudre en suivant les instructions détaillées ici, nous vous invitons à contacter l'administrateur·rice de votre instance ou à [Signaler un bug](./report-issue).
 
 ## Le client ne démarre pas
-ほとんどの場合、お使いのブラウザまたはOSのバージョンが古いことが原因です。 ブラウザおよびOSのバージョンを最新のものに更新してから、再度試してみてください。
+Généralement, ce problème est dû au fait que vous utilisez une version trop ancienne de votre navigateur ou de votre système d'exploitation. Effectuez les mises à jour pour chacun d'eux vers leurs versions les plus récentes, puis essayez à nouveau.
 
 これは稀ですが、それでも起動しない場合は、キャッシュが原因の場合があります。ブラウザのキャッシュをクリアして、再度試してみてください。
 
