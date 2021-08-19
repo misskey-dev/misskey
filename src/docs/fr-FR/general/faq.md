@@ -24,5 +24,5 @@ Seul·e·s les administrateur·rice·s peuvent ajouter, éditer ou effacer des �
 ## « Je veux créer un Bot. »
 Vous pouvez développer un Bot en utilisant l'API de Misskey. Plus d'informations sur [cette page](../advanced/develop-bot).
 
-## ノートの翻訳機能はどのサービスを使用していますか？
-[DeepL](https://www.deepl.com/)を使用しています。
+## « Quel est le service utilisé pour la fonctionnalité de traduction des notes ? »
+Il s'agit de [DeepL](https://www.deepl.com/).
