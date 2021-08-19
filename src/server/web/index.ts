@@ -24,7 +24,7 @@ import { parseAcct } from '@/misc/acct';
 import { getNoteSummary } from '@/misc/get-note-summary';
 import { getConnection } from 'typeorm';
 import { redisClient } from '../../db/redis';
-import locales from '../../../locales/index';
+import * as locales from '../../../locales/index';
 
 //const _filename = fileURLToPath(import.meta.url);
 const _filename = __filename;
