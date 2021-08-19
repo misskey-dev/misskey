@@ -1,9 +1,9 @@
 import $ from 'cafy';
-import define from '../../../define';
-import { ID } from '@/misc/cafy-id';
-import { Emojis } from '../../../../../models';
+import define from '../../../define.js';
+import { ID } from '@/misc/cafy-id.js';
+import { Emojis } from '@/models/index.js';
 import { getConnection } from 'typeorm';
-import { ApiError } from '../../../error';
+import { ApiError } from '../../../error.js';
 
 export const meta = {
 	tags: ['admin'],

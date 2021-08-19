@@ -1,9 +1,9 @@
 import * as Router from '@koa/router';
-import config from '@/config';
-import { fetchMeta } from '@/misc/fetch-meta';
-import { Users } from '../models';
-// import User from '../models/user';
-// import Note from '../models/note';
+import config from '@/config/index.js';
+import { fetchMeta } from '@/misc/fetch-meta.js';
+import { Users } from '@/models/index.js';
+// import User from '../models/user.js';
+// import Note from '../models/note.js';
 
 const router = new Router();
 

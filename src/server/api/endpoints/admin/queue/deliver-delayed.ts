@@ -1,6 +1,6 @@
-import { deliverQueue } from '@/queue/queues';
+import { deliverQueue } from '@/queue/queues.js';
 import { URL } from 'url';
-import define from '../../../define';
+import define from '../../../define.js';
 
 export const meta = {
 	tags: ['admin'],

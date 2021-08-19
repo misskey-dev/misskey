@@ -1,12 +1,12 @@
 import $ from 'cafy';
-import { resolveUser } from '../../../../remote/resolve-user';
-import define from '../../define';
-import { apiLogger } from '../../logger';
-import { ApiError } from '../../error';
-import { ID } from '@/misc/cafy-id';
-import { Users } from '../../../../models';
+import { resolveUser } from '@/remote/resolve-user.js';
+import define from '../../define.js';
+import { apiLogger } from '../../logger.js';
+import { ApiError } from '../../error.js';
+import { ID } from '@/misc/cafy-id.js';
+import { Users } from '@/models/index.js';
 import { In } from 'typeorm';
-import { User } from '@/models/entities/user';
+import { User } from '@/models/entities/user.js';
 
 export const meta = {
 	tags: ['users'],

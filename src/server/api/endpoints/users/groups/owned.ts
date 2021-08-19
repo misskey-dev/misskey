@@ -1,5 +1,5 @@
-import define from '../../../define';
-import { UserGroups } from '../../../../../models';
+import define from '../../../define.js';
+import { UserGroups } from '@/models/index.js';
 
 export const meta = {
 	tags: ['groups', 'account'],

@@ -1,8 +1,8 @@
 import * as os from 'os';
 import * as si from 'systeminformation';
 import { getConnection } from 'typeorm';
-import define from '../../define';
-import { redisClient } from '../../../../db/redis';
+import define from '../../define.js';
+import { redisClient } from '../../../../db/redis.js';
 
 export const meta = {
 	requireCredential: true as const,

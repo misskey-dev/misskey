@@ -1,6 +1,6 @@
-import define from '../../define';
-import { createExportBlockingJob } from '../../../../queue';
-import ms = require('ms');
+import define from '../../define.js';
+import { createExportBlockingJob } from '@/queue/index.js';
+import * as ms from 'ms';
 
 export const meta = {
 	secure: true,

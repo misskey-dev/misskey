@@ -1,11 +1,11 @@
 import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
+import { ID } from '@/misc/cafy-id.js';
 import * as ms from 'ms';
-import deleteBlocking from '../../../../services/blocking/delete';
-import define from '../../define';
-import { ApiError } from '../../error';
-import { getUser } from '../../common/getters';
-import { Blockings, Users } from '../../../../models';
+import deleteBlocking from '@/services/blocking/delete.js';
+import define from '../../define.js';
+import { ApiError } from '../../error.js';
+import { getUser } from '../../common/getters.js';
+import { Blockings, Users } from '@/models/index.js';
 
 export const meta = {
 	tags: ['account'],

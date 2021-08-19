@@ -1,8 +1,8 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { DriveFolders, DriveFiles } from '..';
-import { DriveFolder } from '../entities/drive-folder';
-import { awaitAll } from '../../prelude/await-all';
-import { SchemaType } from '@/misc/schema';
+import { DriveFolders, DriveFiles } from '../index.js';
+import { DriveFolder } from '../entities/drive-folder.js';
+import { awaitAll } from '../../prelude/await-all.js';
+import { SchemaType } from '@/misc/schema.js';
 
 export type PackedDriveFolder = SchemaType<typeof packedDriveFolderSchema>;
 

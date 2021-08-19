@@ -1,8 +1,8 @@
 import * as Koa from 'koa';
-import { fetchMeta } from '@/misc/fetch-meta';
-import { verifyHcaptcha, verifyRecaptcha } from '@/misc/captcha';
-import { Users, RegistrationTickets } from '../../../models';
-import { signup } from '../common/signup';
+import { fetchMeta } from '@/misc/fetch-meta.js';
+import { verifyHcaptcha, verifyRecaptcha } from '@/misc/captcha.js';
+import { Users, RegistrationTickets } from '@/models/index.js';
+import { signup } from '../common/signup.js';
 
 export default async (ctx: Koa.Context) => {
 	const body = ctx.request.body;

@@ -1,7 +1,7 @@
 import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
-import define from '../../define';
-import { AbuseUserReports } from '../../../../models';
+import { ID } from '@/misc/cafy-id.js';
+import define from '../../define.js';
+import { AbuseUserReports } from '@/models/index.js';
 
 export const meta = {
 	tags: ['admin'],

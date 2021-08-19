@@ -1,7 +1,7 @@
 import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
-import define from '../../define';
-import { NoteFavorites, NoteWatchings } from '../../../../models';
+import { ID } from '@/misc/cafy-id.js';
+import define from '../../define.js';
+import { NoteFavorites, NoteWatchings } from '@/models/index.js';
 
 export const meta = {
 	tags: ['notes'],

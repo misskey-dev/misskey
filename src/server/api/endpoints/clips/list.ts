@@ -1,5 +1,5 @@
-import define from '../../define';
-import { Clips } from '../../../../models';
+import define from '../../define.js';
+import { Clips } from '@/models/index.js';
 
 export const meta = {
 	tags: ['clips', 'account'],

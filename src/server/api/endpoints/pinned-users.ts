@@ -1,8 +1,8 @@
-import define from '../define';
-import { Users } from '../../../models';
-import { fetchMeta } from '@/misc/fetch-meta';
-import { parseAcct } from '@/misc/acct';
-import { User } from '../../../models/entities/user';
+import define from '../define.js';
+import { Users } from '@/models/index.js';
+import { fetchMeta } from '@/misc/fetch-meta.js';
+import { parseAcct } from '@/misc/acct.js';
+import { User } from '@/models/entities/user.js';
 
 export const meta = {
 	tags: ['users'],

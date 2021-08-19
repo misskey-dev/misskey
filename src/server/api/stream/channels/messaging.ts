@@ -1,8 +1,8 @@
 import autobind from 'autobind-decorator';
-import { readUserMessagingMessage, readGroupMessagingMessage, deliverReadActivity } from '../../common/read-messaging-message';
-import Channel from '../channel';
-import { UserGroupJoinings, Users, MessagingMessages } from '../../../../models';
-import { User, ILocalUser, IRemoteUser } from '../../../../models/entities/user';
+import { readUserMessagingMessage, readGroupMessagingMessage, deliverReadActivity } from '../../common/read-messaging-message.js';
+import Channel from '../channel.js';
+import { UserGroupJoinings, Users, MessagingMessages } from '@/models/index.js';
+import { User, ILocalUser, IRemoteUser } from '@/models/entities/user.js';
 
 export default class extends Channel {
 	public readonly chName = 'messaging';

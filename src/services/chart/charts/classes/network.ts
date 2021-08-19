@@ -1,7 +1,7 @@
 import autobind from 'autobind-decorator';
-import Chart, { DeepPartial } from '../../core';
-import { SchemaType } from '@/misc/schema';
-import { name, schema } from '../schemas/network';
+import Chart, { DeepPartial } from '../../core.js';
+import { SchemaType } from '@/misc/schema.js';
+import { name, schema } from '../schemas/network.js';
 
 type NetworkLog = SchemaType<typeof schema>;
 

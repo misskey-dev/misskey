@@ -1,8 +1,8 @@
 import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
-import define from '../../define';
-import { Followings } from '../../../../models';
-import { makePaginationQuery } from '../../common/make-pagination-query';
+import { ID } from '@/misc/cafy-id.js';
+import define from '../../define.js';
+import { Followings } from '@/models/index.js';
+import { makePaginationQuery } from '../../common/make-pagination-query.js';
 
 export const meta = {
 	tags: ['federation'],

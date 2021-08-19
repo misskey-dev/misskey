@@ -1,9 +1,9 @@
 import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
-import define from '../../define';
+import { ID } from '@/misc/cafy-id.js';
+import define from '../../define.js';
 import * as bcrypt from 'bcryptjs';
 import rndstr from 'rndstr';
-import { Users, UserProfiles } from '../../../../models';
+import { Users, UserProfiles } from '@/models/index.js';
 
 export const meta = {
 	tags: ['admin'],

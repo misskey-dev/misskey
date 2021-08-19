@@ -6,13 +6,13 @@ import { User, IRemoteUser } from '../../../models/entities/user';
 import { MessagingMessage } from '../../../models/entities/messaging-message';
 import { MessagingMessages, UserGroupJoinings, Users } from '../../../models';
 import { In } from 'typeorm';
-import { IdentifiableError } from '@/misc/identifiable-error';
-import { UserGroup } from '../../../models/entities/user-group';
-import { toArray } from '../../../prelude/array';
-import { renderReadActivity } from '../../../remote/activitypub/renderer/read';
-import { renderActivity } from '../../../remote/activitypub/renderer';
-import { deliver } from '../../../queue';
-import orderedCollection from '../../../remote/activitypub/renderer/ordered-collection';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
+import { UserGroup } from '@/models/entities/user-group.js';
+import { toArray } from '../../../prelude/array.js';
+import { renderReadActivity } from '@/remote/activitypub/renderer/read.js';
+import { renderActivity } from '@/remote/activitypub/renderer/index.js';
+import { deliver } from '@/queue/index.js';
+import orderedCollection from '@/remote/activitypub/renderer/ordered-collection.js';
 
 /**
  * Mark messages as read

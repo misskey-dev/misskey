@@ -1,5 +1,5 @@
-import define from '../../define';
-import { Channels } from '../../../../models';
+import define from '../../define.js';
+import { Channels } from '@/models/index.js';
 
 export const meta = {
 	tags: ['channels'],

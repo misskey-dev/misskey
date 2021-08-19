@@ -1,10 +1,10 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { Page } from '../entities/page';
-import { SchemaType } from '@/misc/schema';
-import { Users, DriveFiles, PageLikes } from '..';
-import { awaitAll } from '../../prelude/await-all';
-import { DriveFile } from '../entities/drive-file';
-import { User } from '../entities/user';
+import { Page } from '../entities/page.js';
+import { SchemaType } from '@/misc/schema.js';
+import { Users, DriveFiles, PageLikes } from '../index.js';
+import { awaitAll } from '../../prelude/await-all.js';
+import { DriveFile } from '../entities/drive-file.js';
+import { User } from '../entities/user.js';
 
 export type PackedPage = SchemaType<typeof packedPageSchema>;
 

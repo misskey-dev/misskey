@@ -1,8 +1,8 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { Clip } from '../entities/clip';
-import { SchemaType } from '@/misc/schema';
-import { Users } from '..';
-import { awaitAll } from '../../prelude/await-all';
+import { Clip } from '../entities/clip.js';
+import { SchemaType } from '@/misc/schema.js';
+import { Users } from '../index.js';
+import { awaitAll } from '../../prelude/await-all.js';
 
 export type PackedClip = SchemaType<typeof packedClipSchema>;
 

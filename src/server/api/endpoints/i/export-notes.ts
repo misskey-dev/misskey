@@ -1,6 +1,6 @@
-import define from '../../define';
-import { createExportNotesJob } from '../../../../queue';
-import ms = require('ms');
+import define from '../../define.js';
+import { createExportNotesJob } from '@/queue/index.js';
+import * as ms from 'ms';
 
 export const meta = {
 	secure: true,

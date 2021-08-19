@@ -1,10 +1,10 @@
 import { performance } from 'perf_hooks';
-import limiter from './limiter';
-import { User } from '../../models/entities/user';
-import endpoints from './endpoints';
-import { ApiError } from './error';
-import { apiLogger } from './logger';
-import { AccessToken } from '../../models/entities/access-token';
+import limiter from './limiter.js';
+import { User } from '@/models/entities/user.js';
+import endpoints from './endpoints.js';
+import { ApiError } from './error.js';
+import { apiLogger } from './logger.js';
+import { AccessToken } from '@/models/entities/access-token.js';
 
 const accessDenied = {
 	message: 'Access denied.',

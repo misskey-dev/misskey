@@ -1,8 +1,8 @@
 import autobind from 'autobind-decorator';
-import Chart, { Obj, DeepPartial } from '../../core';
-import { SchemaType } from '@/misc/schema';
-import { Instances } from '../../../../models';
-import { name, schema } from '../schemas/federation';
+import Chart, { Obj, DeepPartial } from '../../core.js';
+import { SchemaType } from '@/misc/schema.js';
+import { Instances } from '@/models/index.js';
+import { name, schema } from '../schemas/federation.js';
 
 type FederationLog = SchemaType<typeof schema>;
 

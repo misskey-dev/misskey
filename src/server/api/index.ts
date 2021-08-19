@@ -8,14 +8,14 @@ import * as multer from '@koa/multer';
 import * as bodyParser from 'koa-bodyparser';
 import * as cors from '@koa/cors';
 
-import endpoints from './endpoints';
-import handler from './api-handler';
-import signup from './private/signup';
-import signin from './private/signin';
-import discord from './service/discord';
-import github from './service/github';
-import twitter from './service/twitter';
-import { Instances, AccessTokens, Users } from '../../models';
+import endpoints from './endpoints.js';
+import handler from './api-handler.js';
+import signup from './private/signup.js';
+import signin from './private/signin.js';
+import discord from './service/discord.js';
+import github from './service/github.js';
+import twitter from './service/twitter.js';
+import { Instances, AccessTokens, Users } from '@/models/index.js';
 
 // Init app
 const app = new Koa();

@@ -1,5 +1,5 @@
-import define from '../../define';
-import { Pages } from '../../../../models';
+import define from '../../define.js';
+import { Pages } from '@/models/index.js';
 
 export const meta = {
 	tags: ['pages'],

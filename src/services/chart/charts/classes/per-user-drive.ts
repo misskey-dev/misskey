@@ -1,9 +1,9 @@
 import autobind from 'autobind-decorator';
-import Chart, { Obj, DeepPartial } from '../../core';
-import { SchemaType } from '@/misc/schema';
-import { DriveFiles } from '../../../../models';
-import { DriveFile } from '../../../../models/entities/drive-file';
-import { name, schema } from '../schemas/per-user-drive';
+import Chart, { Obj, DeepPartial } from '../../core.js';
+import { SchemaType } from '@/misc/schema.js';
+import { DriveFiles } from '@/models/index.js';
+import { DriveFile } from '@/models/entities/drive-file.js';
+import { name, schema } from '../schemas/per-user-drive.js';
 
 type PerUserDriveLog = SchemaType<typeof schema>;
 

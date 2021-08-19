@@ -1,6 +1,6 @@
-import { createTemp } from './create-temp';
-import { downloadUrl } from './download-url';
-import { detectType } from './get-file-info';
+import { createTemp } from './create-temp.js';
+import { downloadUrl } from './download-url.js';
+import { detectType } from './get-file-info.js';
 
 export async function detectUrlMime(url: string) {
 	const [path, cleanup] = await createTemp();

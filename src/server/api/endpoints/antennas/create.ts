@@ -1,10 +1,10 @@
 import $ from 'cafy';
-import define from '../../define';
-import { genId } from '@/misc/gen-id';
-import { Antennas, UserLists, UserGroupJoinings } from '../../../../models';
-import { ID } from '@/misc/cafy-id';
-import { ApiError } from '../../error';
-import { publishInternalEvent } from '../../../../services/stream';
+import define from '../../define.js';
+import { genId } from '@/misc/gen-id.js';
+import { Antennas, UserLists, UserGroupJoinings } from '@/models/index.js';
+import { ID } from '@/misc/cafy-id.js';
+import { ApiError } from '../../error.js';
+import { publishInternalEvent } from '@/services/stream.js';
 
 export const meta = {
 	tags: ['antennas'],

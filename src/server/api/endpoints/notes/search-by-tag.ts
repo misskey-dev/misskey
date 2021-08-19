@@ -1,14 +1,14 @@
 import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
-import define from '../../define';
-import { makePaginationQuery } from '../../common/make-pagination-query';
-import { Notes } from '../../../../models';
-import { generateMutedUserQuery } from '../../common/generate-muted-user-query';
-import { generateVisibilityQuery } from '../../common/generate-visibility-query';
+import { ID } from '@/misc/cafy-id.js';
+import define from '../../define.js';
+import { makePaginationQuery } from '../../common/make-pagination-query.js';
+import { Notes } from '@/models/index.js';
+import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
+import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
 import { Brackets } from 'typeorm';
-import { safeForSql } from '@/misc/safe-for-sql';
-import { normalizeForSearch } from '@/misc/normalize-for-search';
-import { generateBlockedUserQuery } from '../../common/generate-block-query';
+import { safeForSql } from '@/misc/safe-for-sql.js';
+import { normalizeForSearch } from '@/misc/normalize-for-search.js';
+import { generateBlockedUserQuery } from '../../common/generate-block-query.js';
 
 export const meta = {
 	tags: ['notes', 'hashtags'],

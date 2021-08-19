@@ -1,7 +1,7 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { Users } from '..';
-import { ModerationLog } from '../entities/moderation-log';
-import { awaitAll } from '../../prelude/await-all';
+import { Users } from '../index.js';
+import { ModerationLog } from '../entities/moderation-log.js';
+import { awaitAll } from '../../prelude/await-all.js';
 
 @EntityRepository(ModerationLog)
 export class ModerationLogRepository extends Repository<ModerationLog> {

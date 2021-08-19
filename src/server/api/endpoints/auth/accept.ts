@@ -1,10 +1,10 @@
 import * as crypto from 'crypto';
 import $ from 'cafy';
-import define from '../../define';
-import { ApiError } from '../../error';
-import { AuthSessions, AccessTokens, Apps } from '../../../../models';
-import { genId } from '@/misc/gen-id';
-import { secureRndstr } from '@/misc/secure-rndstr';
+import define from '../../define.js';
+import { ApiError } from '../../error.js';
+import { AuthSessions, AccessTokens, Apps } from '@/models/index.js';
+import { genId } from '@/misc/gen-id.js';
+import { secureRndstr } from '@/misc/secure-rndstr.js';
 
 export const meta = {
 	tags: ['auth'],

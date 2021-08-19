@@ -7,11 +7,11 @@ import { MessagingMessage } from '../../models/entities/messaging-message';
 import { publishMessagingStream, publishMessagingIndexStream, publishMainStream, publishGroupMessagingStream } from '../stream';
 import { pushNotification } from '../push-notification';
 import { Not } from 'typeorm';
-import { Note } from '../../models/entities/note';
-import renderNote from '../../remote/activitypub/renderer/note';
-import renderCreate from '../../remote/activitypub/renderer/create';
-import { renderActivity } from '../../remote/activitypub/renderer';
-import { deliver } from '../../queue';
+import { Note } from '@/models/entities/note.js';
+import renderNote from '@/remote/activitypub/renderer/note.js';
+import renderCreate from '@/remote/activitypub/renderer/create.js';
+import { renderActivity } from '@/remote/activitypub/renderer/index.js';
+import { deliver } from '@/queue/index.js';
 
 export async function createMessage(user: { id: User['id']; host: User['host']; }, recipientUser: User | undefined, recipientGroup: UserGroup | undefined, text: string | undefined, file: DriveFile | null, uri?: string) {
 	const message = {
