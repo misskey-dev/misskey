@@ -14,6 +14,7 @@ import { InboxJobData } from '../types';
 import DbResolver from '../../remote/activitypub/db-resolver';
 import { resolvePerson } from '../../remote/activitypub/models/person';
 import { LdSignature } from '../../remote/activitypub/misc/ld-signature';
+import mrfs from '@/config/mrf';
 
 const logger = new Logger('inbox');
 
@@ -129,6 +130,15 @@ export default async (job: Bull.Job<InboxJobData>): Promise<string> => {
 		}
 	}
 
+	for (const mrf of mrfs) {
+		try {
+			const res = mrf({activity});
+			if (res === false) return 'Rejected by MRF policy';
+		} catch (e) {
+			logger.warn(`Error processing MRF: ${e.message || e.name || e}`);
+		}
+	}
+
 	// Update stats
 	registerOrFetchInstanceDoc(authUser.user.host).then(i => {
 		Instances.update(i.id, {
@@ -143,6 +153,7 @@ export default async (job: Bull.Job<InboxJobData>): Promise<string> => {
 	});
 
 	// アクティビティを処理
+	await perform(authUser.user, activity);
 	await perform(authUser.user, activity);
 	return `ok`;
 };

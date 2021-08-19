@@ -1,0 +1,13 @@
+// Mark all activities from certain hosts as sensitive.
+const hosts = ["jokesters.xyz"]
+const { URL } = require("url");
+
+module.exports = function ({activity}) {
+	if (activity.type === "Create" && typeof activity.object == "object") {
+		const actor = activity.actor || activity.object.attributedTo;
+		const host = new URL(actor).hostname;
+		if (hosts.includes(host)) {
+			activity.object.sensitive = true;
+		}
+	}
+}

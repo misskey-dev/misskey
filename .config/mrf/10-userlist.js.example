@@ -1,0 +1,15 @@
+// Reject an instance's activities, except from certain users
+let userlist = {
+	"generallybad.xyz": ["https://generallybad.xyz/@goodperson"]
+}
+const { URL } = require("url");
+
+
+module.exports = function ({activity}) {
+	const actor = activity.actor || activity.attributedTo || (activity.object && activity.object.attributedTo);
+	const host = new URL(actor).hostname;
+
+	if (userlist[host] && !userlist[host].includes(actor)) {
+		return false;
+	}
+}
