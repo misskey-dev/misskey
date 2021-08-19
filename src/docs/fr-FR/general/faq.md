@@ -2,7 +2,7 @@
 Vous trouverez ici les questions les plus fréquentes sur l'utilisation de Misskey. Les questions fréquentes concernant Misskey en tant que projet sont publiées [sur cette page](./misskey).
 
 ## « Existe-t-il des appli pour Android / iOS ? »
-公式にはそういったOSのネイティブアプリを開発していませんが、サードパーティ製のアプリがいくつかあります。 詳しくは[こちら](./apps)をご覧ください。
+Bien qu'il n'existe d'application Misskey officielle pour aucun OS, différentes applications développées par des tiers sont disponibles. [Voir ici](./apps) pour plus de détails.
 
 ただ、サードパーティ製アプリはどうしても機能への対応が遅れてしまうため、とくに拘りがなければ公式のWebクライアントの利用をおすすめします。 なお、MisskeyのWebクライアントはPWAに対応しているので、ネイティブアプリのように動作させることも可能です。 詳しくは[こちら](todo)をご覧ください。
 
