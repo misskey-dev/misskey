@@ -1,15 +1,15 @@
 import * as bcrypt from 'bcryptjs';
 import { generateKeyPair } from 'crypto';
-import generateUserToken from './generate-native-user-token';
-import { User } from '../../../models/entities/user';
-import { Users, UsedUsernames } from '../../../models';
-import { UserProfile } from '../../../models/entities/user-profile';
+import generateUserToken from './generate-native-user-token.js';
+import { User } from '@/models/entities/user.js';
+import { Users, UsedUsernames } from '@/models/index.js';
+import { UserProfile } from '@/models/entities/user-profile.js';
 import { getConnection } from 'typeorm';
-import { genId } from '@/misc/gen-id';
-import { toPunyNullable } from '@/misc/convert-host';
-import { UserKeypair } from '../../../models/entities/user-keypair';
-import { usersChart } from '../../../services/chart';
-import { UsedUsername } from '../../../models/entities/used-username';
+import { genId } from '@/misc/gen-id.js';
+import { toPunyNullable } from '@/misc/convert-host.js';
+import { UserKeypair } from '@/models/entities/user-keypair.js';
+import { usersChart } from '@/services/chart/index.js';
+import { UsedUsername } from '@/models/entities/used-username.js';
 
 export async function signup(username: User['username'], password: UserProfile['password'], host: string | null = null) {
 	// Validate username

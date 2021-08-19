@@ -10,8 +10,8 @@
 	"main": "./index.js",
 	"private": true,
 	"scripts": {
-		"start": "node ./index.js",
-		"start:test": "cross-env NODE_ENV=test node ./index.js",
+		"start": "node --experimental-json-modules ./index.js",
+		"start:test": "cross-env NODE_ENV=test node --experimental-json-modules ./index.js",
 		"init": "npm run migrate",
 		"ormconfig": "node ./built/ormconfig.js",
 		"migrate": "ts-node ./node_modules/typeorm/cli.js migration:run",

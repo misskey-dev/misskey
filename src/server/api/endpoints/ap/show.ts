@@ -1,16 +1,16 @@
 import $ from 'cafy';
-import define from '../../define';
-import config from '@/config';
-import { createPerson } from '../../../../remote/activitypub/models/person';
-import { createNote } from '../../../../remote/activitypub/models/note';
-import Resolver from '../../../../remote/activitypub/resolver';
-import { ApiError } from '../../error';
-import { extractDbHost } from '@/misc/convert-host';
-import { Users, Notes } from '../../../../models';
-import { Note } from '../../../../models/entities/note';
-import { User } from '../../../../models/entities/user';
-import { fetchMeta } from '@/misc/fetch-meta';
-import { isActor, isPost, getApId } from '../../../../remote/activitypub/type';
+import define from '../../define.js';
+import config from '@/config/index.js';
+import { createPerson } from '@/remote/activitypub/models/person.js';
+import { createNote } from '@/remote/activitypub/models/note.js';
+import Resolver from '@/remote/activitypub/resolver.js';
+import { ApiError } from '../../error.js';
+import { extractDbHost } from '@/misc/convert-host.js';
+import { Users, Notes } from '@/models/index.js';
+import { Note } from '@/models/entities/note.js';
+import { User } from '@/models/entities/user.js';
+import { fetchMeta } from '@/misc/fetch-meta.js';
+import { isActor, isPost, getApId } from '@/remote/activitypub/type.js';
 
 export const meta = {
 	tags: ['federation'],

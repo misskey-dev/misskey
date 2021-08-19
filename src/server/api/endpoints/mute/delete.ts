@@ -1,10 +1,10 @@
 import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
-import define from '../../define';
-import { ApiError } from '../../error';
-import { getUser } from '../../common/getters';
-import { Mutings } from '../../../../models';
-import { publishUserEvent } from '../../../../services/stream';
+import { ID } from '@/misc/cafy-id.js';
+import define from '../../define.js';
+import { ApiError } from '../../error.js';
+import { getUser } from '../../common/getters.js';
+import { Mutings } from '@/models/index.js';
+import { publishUserEvent } from '@/services/stream.js';
 
 export const meta = {
 	tags: ['account'],

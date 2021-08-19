@@ -1,11 +1,11 @@
 import autobind from 'autobind-decorator';
-import { isMutedUserRelated } from '@/misc/is-muted-user-related';
-import Channel from '../channel';
-import { fetchMeta } from '@/misc/fetch-meta';
-import { Notes } from '../../../../models';
-import { PackedNote } from '../../../../models/repositories/note';
-import { checkWordMute } from '@/misc/check-word-mute';
-import { isBlockerUserRelated } from '@/misc/is-blocker-user-related';
+import { isMutedUserRelated } from '@/misc/is-muted-user-related.js';
+import Channel from '../channel.js';
+import { fetchMeta } from '@/misc/fetch-meta.js';
+import { Notes } from '@/models/index.js';
+import { PackedNote } from '@/models/repositories/note.js';
+import { checkWordMute } from '@/misc/check-word-mute.js';
+import { isBlockerUserRelated } from '@/misc/is-blocker-user-related.js';
 
 export default class extends Channel {
 	public readonly chName = 'globalTimeline';

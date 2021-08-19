@@ -2,13 +2,13 @@ import * as cluster from 'cluster';
 import * as os from 'os';
 import * as chalk from 'chalk';
 import * as dateformat from 'dateformat';
-import { program } from '../argv';
+import { program } from '../argv.js';
 import { getRepository } from 'typeorm';
-import { Log } from '../models/entities/log';
-import { genId } from '@/misc/gen-id';
-import config from '@/config';
+import { Log } from '@/models/entities/log.js';
+import { genId } from '@/misc/gen-id.js';
+import config from '@/config/index.js';
 
-const SyslogPro = require('syslog-pro');
+import SyslogPro from 'syslog-pro';
 
 type Domain = {
 	name: string;

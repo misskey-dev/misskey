@@ -1,7 +1,7 @@
 import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
-import define from '../../../define';
-import { DriveFiles } from '../../../../../models';
+import { ID } from '@/misc/cafy-id.js';
+import define from '../../../define.js';
+import { DriveFiles } from '@/models/index.js';
 
 export const meta = {
 	requireCredential: true as const,

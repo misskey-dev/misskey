@@ -1,9 +1,9 @@
 import $ from 'cafy';
-import define from '../../define';
-import { ApiError } from '../../error';
-import { Users, UserProfiles } from '../../../../models';
-import { ID } from '@/misc/cafy-id';
-import { toPunyNullable } from '@/misc/convert-host';
+import define from '../../define.js';
+import { ApiError } from '../../error.js';
+import { Users, UserProfiles } from '@/models/index.js';
+import { ID } from '@/misc/cafy-id.js';
+import { toPunyNullable } from '@/misc/convert-host.js';
 
 export const meta = {
 	tags: ['room'],

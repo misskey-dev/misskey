@@ -2,13 +2,13 @@ import * as Bull from 'bull';
 import * as tmp from 'tmp';
 import * as fs from 'fs';
 
-import { queueLogger } from '../../logger';
-import addFile from '../../../services/drive/add-file';
-import dateFormat = require('dateformat');
-import { getFullApAccount } from '@/misc/convert-host';
-import { Users, Blockings } from '../../../models';
+import { queueLogger } from '../../logger.js';
+import addFile from '@/services/drive/add-file.js';
+import dateFormat from 'dateformat';
+import { getFullApAccount } from '@/misc/convert-host.js';
+import { Users, Blockings } from '@/models/index.js';
 import { MoreThan } from 'typeorm';
-import { DbUserJobData } from '@/queue/types';
+import { DbUserJobData } from '@/queue/types.js';
 
 const logger = queueLogger.createSubLogger('export-blocking');
 

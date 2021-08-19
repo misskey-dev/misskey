@@ -1,11 +1,11 @@
 import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
-import define from '../../define';
-import { publishAdminStream } from '../../../../services/stream';
-import { ApiError } from '../../error';
-import { getUser } from '../../common/getters';
-import { AbuseUserReports, Users } from '../../../../models';
-import { genId } from '@/misc/gen-id';
+import { ID } from '@/misc/cafy-id.js';
+import define from '../../define.js';
+import { publishAdminStream } from '@/services/stream.js';
+import { ApiError } from '../../error.js';
+import { getUser } from '../../common/getters.js';
+import { AbuseUserReports, Users } from '@/models/index.js';
+import { genId } from '@/misc/gen-id.js';
 
 export const meta = {
 	tags: ['users'],

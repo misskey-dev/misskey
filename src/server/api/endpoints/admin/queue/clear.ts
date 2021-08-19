@@ -1,6 +1,6 @@
-import define from '../../../define';
-import { destroy } from '../../../../../queue';
-import { insertModerationLog } from '../../../../../services/insert-moderation-log';
+import define from '../../../define.js';
+import { destroy } from '@/queue/index.js';
+import { insertModerationLog } from '@/services/insert-moderation-log.js';
 
 export const meta = {
 	tags: ['admin'],

@@ -1,10 +1,10 @@
-import uploadFromUrl from '../../../services/drive/upload-from-url';
-import { IRemoteUser } from '../../../models/entities/user';
-import Resolver from '../resolver';
-import { fetchMeta } from '@/misc/fetch-meta';
-import { apLogger } from '../logger';
-import { DriveFile } from '../../../models/entities/drive-file';
-import { DriveFiles } from '../../../models';
+import uploadFromUrl from '@/services/drive/upload-from-url.js';
+import { IRemoteUser } from '@/models/entities/user.js';
+import Resolver from '../resolver.js';
+import { fetchMeta } from '@/misc/fetch-meta.js';
+import { apLogger } from '../logger.js';
+import { DriveFile } from '@/models/entities/drive-file.js';
+import { DriveFiles } from '@/models/index.js';
 
 const logger = apLogger;
 

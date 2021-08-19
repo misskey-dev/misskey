@@ -1,9 +1,9 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { Users } from '..';
-import { Blocking } from '../entities/blocking';
-import { awaitAll } from '../../prelude/await-all';
-import { SchemaType } from '@/misc/schema';
-import { User } from '../entities/user';
+import { Users } from '../index.js';
+import { Blocking } from '../entities/blocking.js';
+import { awaitAll } from '../../prelude/await-all.js';
+import { SchemaType } from '@/misc/schema.js';
+import { User } from '../entities/user.js';
 
 export type PackedBlocking = SchemaType<typeof packedBlockingSchema>;
 

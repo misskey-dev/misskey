@@ -1,12 +1,12 @@
 import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
-import define from '../../../define';
-import { ApiError } from '../../../error';
-import { getUser } from '../../../common/getters';
-import { UserGroups, UserGroupJoinings, UserGroupInvitations } from '../../../../../models';
-import { genId } from '@/misc/gen-id';
-import { UserGroupInvitation } from '../../../../../models/entities/user-group-invitation';
-import { createNotification } from '../../../../../services/create-notification';
+import { ID } from '@/misc/cafy-id.js';
+import define from '../../../define.js';
+import { ApiError } from '../../../error.js';
+import { getUser } from '../../../common/getters.js';
+import { UserGroups, UserGroupJoinings, UserGroupInvitations } from '@/models/index.js';
+import { genId } from '@/misc/gen-id.js';
+import { UserGroupInvitation } from '@/models/entities/user-group-invitation.js';
+import { createNotification } from '@/services/create-notification.js';
 
 export const meta = {
 	tags: ['groups', 'users'],

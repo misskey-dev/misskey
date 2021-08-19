@@ -1,19 +1,19 @@
 import { URL } from 'url';
 import * as Bull from 'bull';
 import * as httpSignature from 'http-signature';
-import perform from '../../remote/activitypub/perform';
-import Logger from '../../services/logger';
-import { registerOrFetchInstanceDoc } from '../../services/register-or-fetch-instance-doc';
-import { Instances } from '../../models';
-import { instanceChart } from '../../services/chart';
-import { fetchMeta } from '@/misc/fetch-meta';
-import { toPuny, extractDbHost } from '@/misc/convert-host';
-import { getApId } from '../../remote/activitypub/type';
-import { fetchInstanceMetadata } from '../../services/fetch-instance-metadata';
-import { InboxJobData } from '../types';
-import DbResolver from '../../remote/activitypub/db-resolver';
-import { resolvePerson } from '../../remote/activitypub/models/person';
-import { LdSignature } from '../../remote/activitypub/misc/ld-signature';
+import perform from '@/remote/activitypub/perform.js';
+import Logger from '@/services/logger.js';
+import { registerOrFetchInstanceDoc } from '@/services/register-or-fetch-instance-doc.js';
+import { Instances } from '@/models/index.js';
+import { instanceChart } from '@/services/chart/index.js';
+import { fetchMeta } from '@/misc/fetch-meta.js';
+import { toPuny, extractDbHost } from '@/misc/convert-host.js';
+import { getApId } from '@/remote/activitypub/type.js';
+import { fetchInstanceMetadata } from '@/services/fetch-instance-metadata.js';
+import { InboxJobData } from '../types.js';
+import DbResolver from '@/remote/activitypub/db-resolver.js';
+import { resolvePerson } from '@/remote/activitypub/models/person.js';
+import { LdSignature } from '@/remote/activitypub/misc/ld-signature.js';
 
 const logger = new Logger('inbox');
 

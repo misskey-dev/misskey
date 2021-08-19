@@ -1,20 +1,20 @@
 import autobind from 'autobind-decorator';
 import * as websocket from 'websocket';
-import { readNotification } from '../common/read-notification';
-import call from '../call';
-import readNote from '../../../services/note/read';
-import Channel from './channel';
-import channels from './channels';
+import { readNotification } from '../common/read-notification.js';
+import call from '../call.js';
+import readNote from '@/services/note/read.js';
+import Channel from './channel.js';
+import channels from './channels/index.js';
 import { EventEmitter } from 'events';
-import { User } from '../../../models/entities/user';
-import { Channel as ChannelModel } from '../../../models/entities/channel';
-import { Users, Followings, Mutings, UserProfiles, ChannelFollowings, Blockings } from '../../../models';
-import { ApiError } from '../error';
-import { AccessToken } from '../../../models/entities/access-token';
-import { UserProfile } from '../../../models/entities/user-profile';
-import { publishChannelStream, publishGroupMessagingStream, publishMessagingStream } from '../../../services/stream';
-import { UserGroup } from '../../../models/entities/user-group';
-import { PackedNote } from '../../../models/repositories/note';
+import { User } from '@/models/entities/user.js';
+import { Channel as ChannelModel } from '@/models/entities/channel.js';
+import { Users, Followings, Mutings, UserProfiles, ChannelFollowings, Blockings } from '@/models/index.js';
+import { ApiError } from '../error.js';
+import { AccessToken } from '@/models/entities/access-token.js';
+import { UserProfile } from '@/models/entities/user-profile.js';
+import { publishChannelStream, publishGroupMessagingStream, publishMessagingStream } from '@/services/stream.js';
+import { UserGroup } from '@/models/entities/user-group.js';
+import { PackedNote } from '@/models/repositories/note.js';
 
 /**
  * Main stream connection

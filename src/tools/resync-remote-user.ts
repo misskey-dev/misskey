@@ -1,9 +1,9 @@
-import { initDb } from '@/db/postgre';
-import { parseAcct } from '@/misc/acct';
+import { initDb } from '@/db/postgre.js';
+import { parseAcct } from '@/misc/acct.js';
 
 async function main(acct: string): Promise<any> {
 	await initDb();
-	const { resolveUser } = await import('../remote/resolve-user');
+	const { resolveUser } = await import('@/remote/resolve-user');
 
 	const { username, host } = parseAcct(acct);
 	await resolveUser(username, host, {}, true);

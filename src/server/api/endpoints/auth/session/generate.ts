@@ -1,10 +1,10 @@
 import { v4 as uuid } from 'uuid';
 import $ from 'cafy';
-import config from '@/config';
-import define from '../../../define';
-import { ApiError } from '../../../error';
-import { Apps, AuthSessions } from '../../../../../models';
-import { genId } from '@/misc/gen-id';
+import config from '@/config/index.js';
+import define from '../../../define.js';
+import { ApiError } from '../../../error.js';
+import { Apps, AuthSessions } from '@/models/index.js';
+import { genId } from '@/misc/gen-id.js';
 
 export const meta = {
 	tags: ['auth'],

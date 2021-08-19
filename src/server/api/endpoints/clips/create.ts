@@ -1,7 +1,7 @@
 import $ from 'cafy';
-import define from '../../define';
-import { genId } from '@/misc/gen-id';
-import { Clips } from '../../../../models';
+import define from '../../define.js';
+import { genId } from '@/misc/gen-id.js';
+import { Clips } from '@/models/index.js';
 
 export const meta = {
 	tags: ['clips'],

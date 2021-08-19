@@ -1,8 +1,8 @@
 import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
-import define from '../../define';
-import { makePaginationQuery } from '../../common/make-pagination-query';
-import { GalleryPosts } from '../../../../models';
+import { ID } from '@/misc/cafy-id.js';
+import define from '../../define.js';
+import { makePaginationQuery } from '../../common/make-pagination-query.js';
+import { GalleryPosts } from '@/models/index.js';
 
 export const meta = {
 	tags: ['gallery'],

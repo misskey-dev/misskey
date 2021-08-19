@@ -1,7 +1,7 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { App } from '../entities/app';
-import { AccessTokens } from '..';
-import { SchemaType } from '@/misc/schema';
+import { App } from '../entities/app.js';
+import { AccessTokens } from '../index.js';
+import { SchemaType } from '@/misc/schema.js';
 
 export type PackedApp = SchemaType<typeof packedAppSchema>;
 

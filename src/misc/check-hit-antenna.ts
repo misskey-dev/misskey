@@ -1,10 +1,10 @@
-import { Antenna } from '../models/entities/antenna';
-import { Note } from '../models/entities/note';
-import { User } from '../models/entities/user';
-import { UserListJoinings, UserGroupJoinings } from '../models';
-import { getFullApAccount } from './convert-host';
-import { PackedNote } from '../models/repositories/note';
-import { parseAcct } from '@/misc/acct';
+import { Antenna } from '@/models/entities/antenna.js';
+import { Note } from '@/models/entities/note.js';
+import { User } from '@/models/entities/user.js';
+import { UserListJoinings, UserGroupJoinings } from '@/models/index.js';
+import { getFullApAccount } from './convert-host.js';
+import { PackedNote } from '../models/repositories/note.js';
+import { parseAcct } from '@/misc/acct.js';
 
 /**
  * noteUserFollowers / antennaUserFollowing はどちらか一方が指定されていればよい

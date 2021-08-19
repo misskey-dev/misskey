@@ -1,12 +1,12 @@
 import { URL } from 'url';
-import webFinger from './webfinger';
-import config from '@/config';
-import { createPerson, updatePerson } from './activitypub/models/person';
-import { remoteLogger } from './logger';
+import webFinger from './webfinger.js';
+import config from '@/config/index.js';
+import { createPerson, updatePerson } from './activitypub/models/person.js';
+import { remoteLogger } from './logger.js';
 import * as chalk from 'chalk';
-import { User, IRemoteUser } from '../models/entities/user';
-import { Users } from '../models';
-import { toPuny } from '@/misc/convert-host';
+import { User, IRemoteUser } from '@/models/entities/user.js';
+import { Users } from '@/models/index.js';
+import { toPuny } from '@/misc/convert-host.js';
 
 const logger = remoteLogger.createSubLogger('resolve-user');
 

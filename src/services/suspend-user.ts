@@ -1,9 +1,9 @@
-import renderDelete from '../remote/activitypub/renderer/delete';
-import { renderActivity } from '../remote/activitypub/renderer';
-import { deliver } from '../queue';
-import config from '@/config';
-import { User } from '../models/entities/user';
-import { Users, Followings } from '../models';
+import renderDelete from '@/remote/activitypub/renderer/delete.js';
+import { renderActivity } from '@/remote/activitypub/renderer/index.js';
+import { deliver } from '@/queue/index.js';
+import config from '@/config/index.js';
+import { User } from '@/models/entities/user.js';
+import { Users, Followings } from '@/models/index.js';
 import { Not, IsNull } from 'typeorm';
 
 export async function doPostSuspend(user: { id: User['id']; host: User['host'] }) {

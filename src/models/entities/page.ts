@@ -1,7 +1,7 @@
 import { Entity, Index, JoinColumn, Column, PrimaryColumn, ManyToOne } from 'typeorm';
-import { User } from './user';
-import { id } from '../id';
-import { DriveFile } from './drive-file';
+import { User } from './user.js';
+import { id } from '../id.js';
+import { DriveFile } from './drive-file.js';
 
 @Entity()
 @Index(['userId', 'name'], { unique: true })

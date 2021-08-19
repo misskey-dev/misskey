@@ -1,9 +1,9 @@
 import $ from 'cafy';
-import config from '@/config';
-import define from '../define';
-import { fetchMeta } from '@/misc/fetch-meta';
-import { Ads, Emojis, Users } from '../../../models';
-import { DB_MAX_NOTE_TEXT_LENGTH } from '@/misc/hard-limits';
+import config from '@/config/index.js';
+import define from '../define.js';
+import { fetchMeta } from '@/misc/fetch-meta.js';
+import { Ads, Emojis, Users } from '@/models/index.js';
+import { DB_MAX_NOTE_TEXT_LENGTH } from '@/misc/hard-limits.js';
 import { MoreThan } from 'typeorm';
 
 export const meta = {

@@ -1,6 +1,6 @@
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
-import { User } from './user';
-import { id } from '../id';
+import { User } from './user.js';
+import { id } from '../id.js';
 
 @Entity()
 @Index(['blockerId', 'blockeeId'], { unique: true })

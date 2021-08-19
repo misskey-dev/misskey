@@ -1,8 +1,8 @@
 import $ from 'cafy';
-import define from '../../define';
-import { ApiError } from '../../error';
-import { ID } from '@/misc/cafy-id';
-import { DriveFiles, Followings, NoteFavorites, NoteReactions, Notes, PageLikes, PollVotes, ReversiGames, Users } from '../../../../models';
+import define from '../../define.js';
+import { ApiError } from '../../error.js';
+import { ID } from '@/misc/cafy-id.js';
+import { DriveFiles, Followings, NoteFavorites, NoteReactions, Notes, PageLikes, PollVotes, ReversiGames, Users } from '@/models/index.js';
 
 export const meta = {
 	tags: ['users'],

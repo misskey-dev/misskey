@@ -1,9 +1,9 @@
 import $ from 'cafy';
 import * as bcrypt from 'bcryptjs';
-import define from '../../define';
-import { Users, UserProfiles } from '../../../../models';
-import { doPostSuspend } from '../../../../services/suspend-user';
-import { publishUserEvent } from '@/services/stream';
+import define from '../../define.js';
+import { Users, UserProfiles } from '@/models/index.js';
+import { doPostSuspend } from '@/services/suspend-user.js';
+import { publishUserEvent } from '@/services/stream.js';
 
 export const meta = {
 	requireCredential: true as const,

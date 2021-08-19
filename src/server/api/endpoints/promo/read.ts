@@ -1,10 +1,10 @@
 import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
-import define from '../../define';
-import { ApiError } from '../../error';
-import { getNote } from '../../common/getters';
-import { PromoReads } from '../../../../models';
-import { genId } from '@/misc/gen-id';
+import { ID } from '@/misc/cafy-id.js';
+import define from '../../define.js';
+import { ApiError } from '../../error.js';
+import { getNote } from '../../common/getters.js';
+import { PromoReads } from '@/models/index.js';
+import { genId } from '@/misc/gen-id.js';
 
 export const meta = {
 	tags: ['notes'],

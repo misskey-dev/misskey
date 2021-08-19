@@ -1,8 +1,8 @@
 import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
-import define from '../../define';
-import { Users } from '../../../../models';
-import { insertModerationLog } from '../../../../services/insert-moderation-log';
+import { ID } from '@/misc/cafy-id.js';
+import define from '../../define.js';
+import { Users } from '@/models/index.js';
+import { insertModerationLog } from '@/services/insert-moderation-log.js';
 
 export const meta = {
 	tags: ['admin'],
