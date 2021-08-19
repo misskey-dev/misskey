@@ -231,8 +231,6 @@
 		"uuid": "8.3.2",
 		"v-debounce": "0.1.2",
 		"vue": "3.2.3",
-		"vue-color": "2.8.1",
-		"vue-json-pretty": "1.8.1",
 		"vue-loader": "16.5.0",
 		"vue-prism-editor": "2.0.0-alpha.2",
 		"vue-router": "4.0.5",
