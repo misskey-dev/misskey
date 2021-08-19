@@ -28,3 +28,6 @@ MFMには、そのURLのプレビューを無効にする構文があります�
 
 ## Botを開発したい
 Misskey APIを利用してBotの開発が可能です。[こちら](../advanced/develop-bot)をご確認ください。
+
+## ノートの翻訳機能はどのサービスを使用していますか？
+[DeepL](https://www.deepl.com/)を使用しています。
