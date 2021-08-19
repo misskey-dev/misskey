@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import define from '../../../define';
 import { ID } from '@/misc/cafy-id';
-import { Emojis } from '../../../../../models';
+import { Emojis } from '@/models/index';
 import { getConnection } from 'typeorm';
 import { ApiError } from '../../../error';
 

@@ -2,9 +2,9 @@ import $ from 'cafy';
 import * as bcrypt from 'bcryptjs';
 import * as speakeasy from 'speakeasy';
 import * as QRCode from 'qrcode';
-import config from '@/config';
+import config from '@/config/index';
 import define from '../../../define';
-import { UserProfiles } from '../../../../../models';
+import { UserProfiles } from '@/models/index';
 
 export const meta = {
 	requireCredential: true as const,

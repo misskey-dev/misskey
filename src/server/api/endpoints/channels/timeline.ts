@@ -2,9 +2,9 @@ import $ from 'cafy';
 import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { ApiError } from '../../error';
-import { Notes, Channels } from '../../../../models';
+import { Notes, Channels } from '@/models/index';
 import { makePaginationQuery } from '../../common/make-pagination-query';
-import { activeUsersChart } from '../../../../services/chart';
+import { activeUsersChart } from '@/services/chart/index';
 
 export const meta = {
 	tags: ['notes', 'channels'],

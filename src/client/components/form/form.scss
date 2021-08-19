@@ -32,8 +32,8 @@
 	margin: -8px calc(var(--formXPadding) * -1) 0 calc(var(--formXPadding) * -1);
 	padding: 8px calc(var(--formContentHMargin) + var(--formXPadding)) 8px calc(var(--formContentHMargin) + var(--formXPadding));
 	background: var(--X17);
-	-webkit-backdrop-filter: blur(10px);
-	backdrop-filter: blur(10px);
+	-webkit-backdrop-filter: var(--blur, blur(10px));
+	backdrop-filter: var(--blur, blur(10px));
 }
 
 ._themeChanging_ ._formLabel {

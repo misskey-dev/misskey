@@ -1,17 +1,13 @@
 <template>
 <transition :name="$store.state.animation ? 'window' : ''" appear @after-leave="$emit('closed')">
 	<div class="ebkgocck" :class="{ front }" v-if="showing">
-		<div class="body _popup _shadow _narrow_" @mousedown="onBodyMousedown" @keydown="onKeydown">
+		<div class="body _window _shadow _narrow_" @mousedown="onBodyMousedown" @keydown="onKeydown">
 			<div class="header" :class="{ mini }" @contextmenu.prevent.stop="onContextmenu">
-				<slot v-if="closeRight" name="buttons"><button class="_button" style="pointer-events: none;"></button></slot>
-				<button v-else class="_button" @click="close()"><i class="fas fa-times"></i></button>
+				<button v-if="closeButton" class="_button" @click="close()"><i class="fas fa-times"></i></button>
 
 				<span class="title" @mousedown.prevent="onHeaderMousedown" @touchstart.prevent="onHeaderMousedown">
 					<slot name="header"></slot>
 				</span>
-
-				<button v-if="closeRight" class="_button" @click="close()"><i class="fas fa-times"></i></button>
-				<slot v-else name="buttons"><button class="_button" style="pointer-events: none;"></button></slot>
 			</div>
 			<div class="body" v-if="padding">
 				<div class="_section">
@@ -86,10 +82,10 @@ export default defineComponent({
 			required: false,
 			default: false,
 		},
-		closeRight: {
+		closeButton: {
 			type: Boolean,
 			required: false,
-			default: false,
+			default: true,
 		},
 		mini: {
 			type: Boolean,
@@ -420,6 +416,7 @@ export default defineComponent({
 			flex-shrink: 0;
 			user-select: none;
 			height: var(--height);
+			border-bottom: solid 1px var(--divider);
 
 			> ::v-deep(button) {
 				height: var(--height);

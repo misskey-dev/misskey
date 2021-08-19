@@ -20,7 +20,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { getStaticImageUrl } from '@client/scripts/get-static-image-url';
-import notePage from '../../filters/note';
+import notePage from '@client/filters/note';
 import * as os from '@client/os';
 import MkContainer from '@client/components/ui/container.vue';
 import ImgWithBlurhash from '@client/components/img-with-blurhash.vue';

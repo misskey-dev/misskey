@@ -2,7 +2,7 @@ import $ from 'cafy';
 import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { makePaginationQuery } from '../../common/make-pagination-query';
-import { GalleryPosts } from '../../../../models';
+import { GalleryPosts } from '@/models/index';
 
 export const meta = {
 	tags: ['gallery'],

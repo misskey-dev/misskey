@@ -1,7 +1,7 @@
-import { IRemoteUser } from '../../../../models/entities/user';
+import { IRemoteUser } from '@/models/entities/user';
 import { IRemove } from '../../type';
 import { resolveNote } from '../../models/note';
-import { removePinned } from '../../../../services/i/pin';
+import { removePinned } from '@/services/i/pin';
 
 export default async (actor: IRemoteUser, activity: IRemove): Promise<void> => {
 	if ('actor' in activity && actor.uri !== activity.actor) {

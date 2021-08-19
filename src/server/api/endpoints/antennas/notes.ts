@@ -1,11 +1,12 @@
 import $ from 'cafy';
 import { ID } from '@/misc/cafy-id';
 import define from '../../define';
-import { Antennas, Notes, AntennaNotes } from '../../../../models';
+import { Antennas, Notes, AntennaNotes } from '@/models/index';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query';
 import { generateMutedUserQuery } from '../../common/generate-muted-user-query';
 import { ApiError } from '../../error';
+import { generateBlockedUserQuery } from '../../common/generate-block-query';
 
 export const meta = {
 	tags: ['antennas', 'account', 'notes'],
@@ -77,6 +78,7 @@ export default define(meta, async (ps, user) => {
 
 	generateVisibilityQuery(query, user);
 	generateMutedUserQuery(query, user);
+	generateBlockedUserQuery(query, user);
 
 	const notes = await query
 		.take(ps.limit!)

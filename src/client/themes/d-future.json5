@@ -1,0 +1,25 @@
+{
+	id: '32a637ef-b47a-4775-bb7b-bacbb823f865',
+
+	name: 'Mi Future',
+	author: 'syuilo',
+
+	base: 'dark',
+
+	props: {
+		accent: '#63e2b7',
+		bg: '#101014',
+		fg: '#D5D5D6',
+		fgHighlighted: '#fff',
+		fgOnAccent: '#000',
+		divider: 'rgba(255, 255, 255, 0.1)',
+		panel: '#18181c',
+		panelHeaderBg: '@panel',
+		panelHeaderDivider: '@divider',
+		renote: '@accent',
+		mention: '#f2c97d',
+		mentionMe: '@accent',
+		hashtag: '#70c0e8',
+		link: '#e88080',
+	},
+}

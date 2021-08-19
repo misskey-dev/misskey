@@ -1,10 +1,10 @@
 import * as Router from '@koa/router';
-import config from '@/config';
-import { renderActivity } from '../../remote/activitypub/renderer';
-import renderOrderedCollection from '../../remote/activitypub/renderer/ordered-collection';
+import config from '@/config/index';
+import { renderActivity } from '@/remote/activitypub/renderer/index';
+import renderOrderedCollection from '@/remote/activitypub/renderer/ordered-collection';
 import { setResponseType } from '../activitypub';
-import renderNote from '../../remote/activitypub/renderer/note';
-import { Users, Notes, UserNotePinings } from '../../models';
+import renderNote from '@/remote/activitypub/renderer/note';
+import { Users, Notes, UserNotePinings } from '@/models/index';
 
 export default async (ctx: Router.RouterContext) => {
 	const userId = ctx.params.user;

@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import define from '../../define';
-import { Users } from '../../../../models';
+import { Users } from '@/models/index';
 import { normalizeForSearch } from '@/misc/normalize-for-search';
 
 export const meta = {

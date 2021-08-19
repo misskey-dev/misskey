@@ -4,7 +4,9 @@
 
 import * as os from 'os';
 import * as fs from 'fs';
-import ms = require('ms');
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import * as ms from 'ms';
 import * as Koa from 'koa';
 import * as Router from '@koa/router';
 import * as send from 'koa-send';
@@ -16,27 +18,38 @@ import * as MarkdownIt from 'markdown-it';
 import packFeed from './feed';
 import { fetchMeta } from '@/misc/fetch-meta';
 import { genOpenapiSpec } from '../api/openapi/gen-spec';
-import config from '@/config';
-import { Users, Notes, Emojis, UserProfiles, Pages, Channels, Clips, GalleryPosts } from '../../models';
+import config from '@/config/index';
+import { Users, Notes, Emojis, UserProfiles, Pages, Channels, Clips, GalleryPosts } from '@/models/index';
 import { parseAcct } from '@/misc/acct';
 import { getNoteSummary } from '@/misc/get-note-summary';
 import { getConnection } from 'typeorm';
 import { redisClient } from '../../db/redis';
-import locales = require('../../../locales');
+import * as locales from '../../../locales/index';
+
+//const _filename = fileURLToPath(import.meta.url);
+const _filename = __filename;
+const _dirname = dirname(_filename);
 
 const markdown = MarkdownIt({
 	html: true
 });
 
-const staticAssets = `${__dirname}/../../../assets/`;
-const docAssets = `${__dirname}/../../../src/docs/`;
-const assets = `${__dirname}/../../assets/`;
+const changelog = fs.readFileSync(`${_dirname}/../../../CHANGELOG.md`, { encoding: 'utf8' });
+function genDoc(path: string): string {
+	let md = fs.readFileSync(path, { encoding: 'utf8' });
+	md = md.replace('<!--[CHANGELOG]-->', changelog);
+	return md;
+}
+
+const staticAssets = `${_dirname}/../../../assets/`;
+const docAssets = `${_dirname}/../../../src/docs/`;
+const assets = `${_dirname}/../../assets/`;
 
 // Init app
 const app = new Koa();
 
 // Init renderer
-app.use(views(__dirname + '/views', {
+app.use(views(_dirname + '/views', {
 	extension: 'pug',
 	options: {
 		version: config.version,
@@ -45,7 +58,7 @@ app.use(views(__dirname + '/views', {
 }));
 
 // Serve favicon
-app.use(favicon(`${__dirname}/../../../assets/favicon.ico`));
+app.use(favicon(`${_dirname}/../../../assets/favicon.ico`));
 
 // Common request handler
 app.use(async (ctx, next) => {
@@ -67,10 +80,11 @@ router.get('/static-assets/(.*)', async ctx => {
 });
 
 router.get('/doc-assets/(.*)', async ctx => {
-	await send(ctx as any, ctx.path.replace('/doc-assets/', ''), {
-		root: docAssets,
-		maxage: ms('7 days'),
-	});
+	if (ctx.path.includes('..')) return;
+	const path = `${_dirname}/../../../src/docs/${ctx.path.replace('/doc-assets/', '')}`;
+	const doc = genDoc(path);
+	ctx.set('Content-Type', 'text/plain; charset=utf-8');
+	ctx.body = doc;
 });
 
 router.get('/assets/(.*)', async ctx => {
@@ -121,14 +135,22 @@ router.get('/api.json', async ctx => {
 
 router.get('/docs.json', async ctx => {
 	const lang = ctx.query.lang;
+	const query = ctx.query.q;
 	if (!Object.keys(locales).includes(lang)) {
 		ctx.body = [];
 		return;
 	}
-	const paths = glob.sync(__dirname + `/../../../src/docs/${lang}/*.md`);
-	const docs: { path: string; title: string; }[] = [];
+	const dirPath = `${_dirname}/../../../src/docs/${lang}`.replace(/\\/g, '/');
+	const paths = glob.sync(`${dirPath}/**/*.md`);
+	const docs: { path: string; title: string; summary: string; }[] = [];
 	for (const path of paths) {
-		const md = fs.readFileSync(path, { encoding: 'utf8' });
+		const md = genDoc(path);
+
+		if (query && query.length > 0) {
+			// TODO: カタカナをひらがなにして比較するなどしたい
+			if (!md.includes(query)) continue;
+		}
+
 		const parsed = markdown.parse(md, {});
 		if (parsed.length === 0) return;
 
@@ -147,9 +169,22 @@ router.get('/docs.json', async ctx => {
 			}
 		}
 
+		const firstParagrapfTokens = [];
+		while (buf[0].type !== 'paragraph_open') {
+			buf.shift();
+		}
+		buf.shift();
+		while (buf[0].type as string !== 'paragraph_close') {
+			const token = buf.shift();
+			if (token) {
+				firstParagrapfTokens.push(token);
+			}
+		}
+
 		docs.push({
-			path: path.split('/').pop()!.split('.')[0],
-			title: markdown.renderer.render(headingTokens, {}, {})
+			path: path.match(new RegExp(`docs\/${lang}\/(.+?)\.md$`))![1],
+			title: markdown.renderer.render(headingTokens, {}, {}),
+			summary: markdown.renderer.render(firstParagrapfTokens, {}, {}),
 		});
 	}
 

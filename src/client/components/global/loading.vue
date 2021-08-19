@@ -1,5 +1,5 @@
 <template>
-<div class="yxspomdl" :class="{ inline, colored }">
+<div class="yxspomdl" :class="{ inline, colored, mini }">
 	<div class="ring"></div>
 </div>
 </template>
@@ -18,7 +18,12 @@ export default defineComponent({
 			type: Boolean,
 			required: false,
 			default: true
-		}
+		},
+		mini: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
 	}
 });
 </script>
@@ -38,6 +43,8 @@ export default defineComponent({
 	text-align: center;
 	cursor: wait;
 
+	--size: 48px;
+
 	&.colored {
 		color: var(--accent);
 	}
@@ -45,19 +52,12 @@ export default defineComponent({
 	&.inline {
 		display: inline;
 		padding: 0;
+		--size: 32px;
+	}
 
-		> .ring:after {
-			width: 32px;
-			height: 32px;
-		}
-
-		> .ring {
-			&:before,
-			&:after {
-				width: 32px;
-				height: 32px;
-			}
-		}
+	&.mini {
+		padding: 16px;
+		--size: 32px;
 	}
 
 	> .ring {
@@ -70,8 +70,8 @@ export default defineComponent({
 			content: " ";
 			display: block;
 			box-sizing: border-box;
-			width: 48px;
-			height: 48px;
+			width: var(--size);
+			height: var(--size);
 			border-radius: 50%;
 			border: solid 4px;
 		}

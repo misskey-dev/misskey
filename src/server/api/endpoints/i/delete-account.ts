@@ -1,8 +1,8 @@
 import $ from 'cafy';
 import * as bcrypt from 'bcryptjs';
 import define from '../../define';
-import { Users, UserProfiles } from '../../../../models';
-import { doPostSuspend } from '../../../../services/suspend-user';
+import { Users, UserProfiles } from '@/models/index';
+import { doPostSuspend } from '@/services/suspend-user';
 import { publishUserEvent } from '@/services/stream';
 
 export const meta = {

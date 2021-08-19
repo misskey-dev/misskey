@@ -1,9 +1,9 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { GalleryPost } from '../entities/gallery-post';
+import { GalleryPost } from '@/models/entities/gallery-post';
 import { SchemaType } from '../../misc/schema';
-import { Users, DriveFiles, GalleryLikes } from '..';
-import { awaitAll } from '../../prelude/await-all';
-import { User } from '../entities/user';
+import { Users, DriveFiles, GalleryLikes } from '../index';
+import { awaitAll } from '@/prelude/await-all';
+import { User } from '@/models/entities/user';
 
 export type PackedGalleryPost = SchemaType<typeof packedGalleryPostSchema>;
 

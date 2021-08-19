@@ -1,12 +1,12 @@
 import autobind from 'autobind-decorator';
 import * as CRC32 from 'crc-32';
-import { publishReversiGameStream } from '../../../../../services/stream';
+import { publishReversiGameStream } from '@/services/stream';
 import Reversi from '../../../../../games/reversi/core';
 import * as maps from '../../../../../games/reversi/maps';
 import Channel from '../../channel';
-import { ReversiGame } from '../../../../../models/entities/games/reversi/game';
-import { ReversiGames, Users } from '../../../../../models';
-import { User } from '../../../../../models/entities/user';
+import { ReversiGame } from '@/models/entities/games/reversi/game';
+import { ReversiGames, Users } from '@/models/index';
+import { User } from '@/models/entities/user';
 
 export default class extends Channel {
 	public readonly chName = 'gamesReversiGame';

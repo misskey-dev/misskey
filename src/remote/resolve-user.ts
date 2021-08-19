@@ -1,11 +1,11 @@
 import { URL } from 'url';
 import webFinger from './webfinger';
-import config from '@/config';
+import config from '@/config/index';
 import { createPerson, updatePerson } from './activitypub/models/person';
 import { remoteLogger } from './logger';
 import * as chalk from 'chalk';
-import { User, IRemoteUser } from '../models/entities/user';
-import { Users } from '../models';
+import { User, IRemoteUser } from '@/models/entities/user';
+import { Users } from '@/models/index';
 import { toPuny } from '@/misc/convert-host';
 
 const logger = remoteLogger.createSubLogger('resolve-user');

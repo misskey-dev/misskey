@@ -3,10 +3,10 @@ import { ID } from '@/misc/cafy-id';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { getUser } from '../../../common/getters';
-import { UserGroups, UserGroupJoinings, UserGroupInvitations } from '../../../../../models';
+import { UserGroups, UserGroupJoinings, UserGroupInvitations } from '@/models/index';
 import { genId } from '@/misc/gen-id';
-import { UserGroupInvitation } from '../../../../../models/entities/user-group-invitation';
-import { createNotification } from '../../../../../services/create-notification';
+import { UserGroupInvitation } from '@/models/entities/user-group-invitation';
+import { createNotification } from '@/services/create-notification';
 
 export const meta = {
 	tags: ['groups', 'users'],

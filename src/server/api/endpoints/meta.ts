@@ -1,8 +1,8 @@
 import $ from 'cafy';
-import config from '@/config';
+import config from '@/config/index';
 import define from '../define';
 import { fetchMeta } from '@/misc/fetch-meta';
-import { Ads, Emojis, Users } from '../../../models';
+import { Ads, Emojis, Users } from '@/models/index';
 import { DB_MAX_NOTE_TEXT_LENGTH } from '@/misc/hard-limits';
 import { MoreThan } from 'typeorm';
 
@@ -229,6 +229,10 @@ export const meta = {
 				optional: false as const, nullable: false as const
 			},
 			enableServiceWorker: {
+				type: 'boolean' as const,
+				optional: false as const, nullable: false as const
+			},
+			translatorAvailable: {
 				type: 'boolean' as const,
 				optional: false as const, nullable: false as const
 			},
@@ -511,6 +515,8 @@ export default define(meta, async (ps, me) => {
 		enableDiscordIntegration: instance.enableDiscordIntegration,
 
 		enableServiceWorker: instance.enableServiceWorker,
+
+		translatorAvailable: instance.deeplAuthKey != null,
 
 		...(ps.detail ? {
 			pinnedPages: instance.pinnedPages,
