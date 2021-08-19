@@ -1,11 +1,11 @@
 import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
-import define from '../../define';
-import { maximum } from '../../../../prelude/array';
-import { ApiError } from '../../error';
-import { getUser } from '../../common/getters';
+import { ID } from '@/misc/cafy-id.js';
+import define from '../../define.js';
+import { maximum } from '../../../../prelude/array.js';
+import { ApiError } from '../../error.js';
+import { getUser } from '../../common/getters.js';
 import { Not, In, IsNull } from 'typeorm';
-import { Notes, Users } from '../../../../models';
+import { Notes, Users } from '@/models/index.js';
 
 export const meta = {
 	tags: ['users'],

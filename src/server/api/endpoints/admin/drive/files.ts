@@ -1,8 +1,8 @@
 import $ from 'cafy';
-import define from '../../../define';
-import { DriveFiles } from '../../../../../models';
-import { makePaginationQuery } from '../../../common/make-pagination-query';
-import { ID } from '@/misc/cafy-id';
+import define from '../../../define.js';
+import { DriveFiles } from '@/models/index.js';
+import { makePaginationQuery } from '../../../common/make-pagination-query.js';
+import { ID } from '@/misc/cafy-id.js';
 
 export const meta = {
 	tags: ['admin'],

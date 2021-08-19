@@ -1,7 +1,7 @@
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
-import { User } from './user';
-import { id } from '../id';
-import { DriveFile } from './drive-file';
+import { User } from './user.js';
+import { id } from '../id.js';
+import { DriveFile } from './drive-file.js';
 
 @Entity()
 export class Channel {
@@ -23,9 +23,10 @@ export class Channel {
 	@Index()
 	@Column({
 		...id(),
+		nullable: true,
 		comment: 'The owner ID.'
 	})
-	public userId: User['id'];
+	public userId: User['id'] | null;
 
 	@ManyToOne(type => User, {
 		onDelete: 'SET NULL'

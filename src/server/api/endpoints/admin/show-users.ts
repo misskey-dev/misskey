@@ -1,6 +1,6 @@
 import $ from 'cafy';
-import define from '../../define';
-import { Users } from '../../../../models';
+import define from '../../define.js';
+import { Users } from '@/models/index.js';
 
 export const meta = {
 	tags: ['admin'],

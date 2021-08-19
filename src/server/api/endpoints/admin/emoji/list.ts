@@ -1,9 +1,9 @@
 import $ from 'cafy';
-import define from '../../../define';
-import { Emojis } from '../../../../../models';
-import { makePaginationQuery } from '../../../common/make-pagination-query';
-import { ID } from '@/misc/cafy-id';
-import { Emoji } from '../../../../../models/entities/emoji';
+import define from '../../../define.js';
+import { Emojis } from '@/models/index.js';
+import { makePaginationQuery } from '../../../common/make-pagination-query.js';
+import { ID } from '@/misc/cafy-id.js';
+import { Emoji } from '@/models/entities/emoji.js';
 
 export const meta = {
 	tags: ['admin'],

@@ -1,5 +1,5 @@
-import define from '../../define';
-import { MutedNotes } from '../../../../models';
+import define from '../../define.js';
+import { MutedNotes } from '@/models/index.js';
 
 export const meta = {
 	tags: ['account'],

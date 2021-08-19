@@ -1,10 +1,10 @@
 import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
-import define from '../../../define';
+import { ID } from '@/misc/cafy-id.js';
+import define from '../../../define.js';
 import * as ms from 'ms';
-import { ApiError } from '../../../error';
-import { MessagingMessages } from '../../../../../models';
-import { deleteMessage } from '../../../../../services/messages/delete';
+import { ApiError } from '../../../error.js';
+import { MessagingMessages } from '@/models/index.js';
+import { deleteMessage } from '@/services/messages/delete.js';
 
 export const meta = {
 	tags: ['messaging'],

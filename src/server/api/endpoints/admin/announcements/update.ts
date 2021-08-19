@@ -1,8 +1,8 @@
 import $ from 'cafy';
-import define from '../../../define';
-import { ID } from '@/misc/cafy-id';
-import { Announcements } from '../../../../../models';
-import { ApiError } from '../../../error';
+import define from '../../../define.js';
+import { ID } from '@/misc/cafy-id.js';
+import { Announcements } from '@/models/index.js';
+import { ApiError } from '../../../error.js';
 
 export const meta = {
 	tags: ['admin'],

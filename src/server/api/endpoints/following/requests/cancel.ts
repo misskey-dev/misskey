@@ -1,10 +1,10 @@
 import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
-import cancelFollowRequest from '../../../../../services/following/requests/cancel';
-import define from '../../../define';
-import { ApiError } from '../../../error';
-import { getUser } from '../../../common/getters';
-import { Users } from '../../../../../models';
+import { ID } from '@/misc/cafy-id.js';
+import cancelFollowRequest from '@/services/following/requests/cancel.js';
+import define from '../../../define.js';
+import { ApiError } from '../../../error.js';
+import { getUser } from '../../../common/getters.js';
+import { Users } from '@/models/index.js';
 
 export const meta = {
 	tags: ['following', 'account'],

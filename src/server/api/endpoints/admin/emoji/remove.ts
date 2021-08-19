@@ -1,10 +1,10 @@
 import $ from 'cafy';
-import define from '../../../define';
-import { ID } from '@/misc/cafy-id';
-import { Emojis } from '../../../../../models';
+import define from '../../../define.js';
+import { ID } from '@/misc/cafy-id.js';
+import { Emojis } from '@/models/index.js';
 import { getConnection } from 'typeorm';
-import { insertModerationLog } from '../../../../../services/insert-moderation-log';
-import { ApiError } from '../../../error';
+import { insertModerationLog } from '@/services/insert-moderation-log.js';
+import { ApiError } from '../../../error.js';
 
 export const meta = {
 	tags: ['admin'],

@@ -1,11 +1,11 @@
 import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
-import { readNotification } from '../../common/read-notification';
-import define from '../../define';
-import { makePaginationQuery } from '../../common/make-pagination-query';
-import { Notifications, Followings, Mutings, Users } from '../../../../models';
-import { notificationTypes } from '../../../../types';
-import read from '@/services/note/read';
+import { ID } from '@/misc/cafy-id.js';
+import { readNotification } from '../../common/read-notification.js';
+import define from '../../define.js';
+import { makePaginationQuery } from '../../common/make-pagination-query.js';
+import { Notifications, Followings, Mutings, Users } from '@/models/index.js';
+import { notificationTypes } from '../../../../types.js';
+import read from '@/services/note/read.js';
 
 export const meta = {
 	tags: ['account', 'notifications'],

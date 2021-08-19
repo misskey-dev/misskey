@@ -1,10 +1,10 @@
 import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
+import { ID } from '@/misc/cafy-id.js';
 import * as ms from 'ms';
-import uploadFromUrl from '../../../../../services/drive/upload-from-url';
-import define from '../../../define';
-import { DriveFiles } from '../../../../../models';
-import { publishMainStream } from '../../../../../services/stream';
+import uploadFromUrl from '@/services/drive/upload-from-url.js';
+import define from '../../../define.js';
+import { DriveFiles } from '@/models/index.js';
+import { publishMainStream } from '@/services/stream.js';
 
 export const meta = {
 	tags: ['drive'],

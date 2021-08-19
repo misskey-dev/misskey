@@ -1,13 +1,13 @@
 import * as Bull from 'bull';
-import { DbJobData } from '@/queue/types';
-import { deleteDriveFiles } from './delete-drive-files';
-import { exportNotes } from './export-notes';
-import { exportFollowing } from './export-following';
-import { exportMute } from './export-mute';
-import { exportBlocking } from './export-blocking';
-import { exportUserLists } from './export-user-lists';
-import { importFollowing } from './import-following';
-import { importUserLists } from './import-user-lists';
+import { DbJobData } from '@/queue/types.js';
+import { deleteDriveFiles } from './delete-drive-files.js';
+import { exportNotes } from './export-notes.js';
+import { exportFollowing } from './export-following.js';
+import { exportMute } from './export-mute.js';
+import { exportBlocking } from './export-blocking.js';
+import { exportUserLists } from './export-user-lists.js';
+import { importFollowing } from './import-following.js';
+import { importUserLists } from './import-user-lists.js';
 
 const jobs = {
 	deleteDriveFiles,

@@ -1,13 +1,13 @@
 import $ from 'cafy';
-import define from '../../../define';
-import { Emojis } from '../../../../../models';
-import { genId } from '@/misc/gen-id';
+import define from '../../../define.js';
+import { Emojis } from '@/models/index.js';
+import { genId } from '@/misc/gen-id.js';
 import { getConnection } from 'typeorm';
-import { ApiError } from '../../../error';
-import { DriveFile } from '../../../../../models/entities/drive-file';
-import { ID } from '@/misc/cafy-id';
-import uploadFromUrl from '../../../../../services/drive/upload-from-url';
-import { publishBroadcastStream } from '@/services/stream';
+import { ApiError } from '../../../error.js';
+import { DriveFile } from '@/models/entities/drive-file.js';
+import { ID } from '@/misc/cafy-id.js';
+import uploadFromUrl from '@/services/drive/upload-from-url.js';
+import { publishBroadcastStream } from '@/services/stream.js';
 
 export const meta = {
 	tags: ['admin'],

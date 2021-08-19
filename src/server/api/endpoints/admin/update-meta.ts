@@ -1,10 +1,10 @@
 import $ from 'cafy';
-import define from '../../define';
+import define from '../../define.js';
 import { getConnection } from 'typeorm';
-import { Meta } from '../../../../models/entities/meta';
-import { insertModerationLog } from '../../../../services/insert-moderation-log';
-import { DB_MAX_NOTE_TEXT_LENGTH } from '@/misc/hard-limits';
-import { ID } from '@/misc/cafy-id';
+import { Meta } from '@/models/entities/meta.js';
+import { insertModerationLog } from '@/services/insert-moderation-log.js';
+import { DB_MAX_NOTE_TEXT_LENGTH } from '@/misc/hard-limits.js';
+import { ID } from '@/misc/cafy-id.js';
 
 export const meta = {
 	tags: ['admin'],

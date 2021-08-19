@@ -1,9 +1,9 @@
 import $ from 'cafy';
 import * as bcrypt from 'bcryptjs';
-import { publishMainStream } from '../../../services/stream';
-import define from '../define';
-import { Users, UserProfiles, PasswordResetRequests } from '../../../models';
-import { ApiError } from '../error';
+import { publishMainStream } from '@/services/stream.js';
+import define from '../define.js';
+import { Users, UserProfiles, PasswordResetRequests } from '@/models/index.js';
+import { ApiError } from '../error.js';
 
 export const meta = {
 	requireCredential: false as const,

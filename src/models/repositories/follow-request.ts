@@ -1,7 +1,7 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { FollowRequest } from '../entities/follow-request';
-import { Users } from '..';
-import { User } from '../entities/user';
+import { FollowRequest } from '../entities/follow-request.js';
+import { Users } from '../index.js';
+import { User } from '../entities/user.js';
 
 @EntityRepository(FollowRequest)
 export class FollowRequestRepository extends Repository<FollowRequest> {

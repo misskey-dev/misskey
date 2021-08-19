@@ -1,18 +1,18 @@
 import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
-import define from '../../define';
-import { fetchMeta } from '@/misc/fetch-meta';
-import { ApiError } from '../../error';
-import { Notes } from '../../../../models';
-import { generateMutedUserQuery } from '../../common/generate-muted-user-query';
-import { makePaginationQuery } from '../../common/make-pagination-query';
-import { generateVisibilityQuery } from '../../common/generate-visibility-query';
-import { activeUsersChart } from '../../../../services/chart';
+import { ID } from '@/misc/cafy-id.js';
+import define from '../../define.js';
+import { fetchMeta } from '@/misc/fetch-meta.js';
+import { ApiError } from '../../error.js';
+import { Notes } from '@/models/index.js';
+import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
+import { makePaginationQuery } from '../../common/make-pagination-query.js';
+import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
+import { activeUsersChart } from '@/services/chart/index.js';
 import { Brackets } from 'typeorm';
-import { generateRepliesQuery } from '../../common/generate-replies-query';
-import { generateMutedNoteQuery } from '../../common/generate-muted-note-query';
-import { generateChannelQuery } from '../../common/generate-channel-query';
-import { generateBlockedUserQuery } from '../../common/generate-block-query';
+import { generateRepliesQuery } from '../../common/generate-replies-query.js';
+import { generateMutedNoteQuery } from '../../common/generate-muted-note-query.js';
+import { generateChannelQuery } from '../../common/generate-channel-query.js';
+import { generateBlockedUserQuery } from '../../common/generate-block-query.js';
 
 export const meta = {
 	tags: ['notes'],

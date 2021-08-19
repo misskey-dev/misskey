@@ -1,6 +1,6 @@
 import $ from 'cafy';
-import define from '../../../define';
-import { Polls, Mutings, Notes, PollVotes } from '../../../../../models';
+import define from '../../../define.js';
+import { Polls, Mutings, Notes, PollVotes } from '@/models/index.js';
 import { Brackets, In } from 'typeorm';
 
 export const meta = {

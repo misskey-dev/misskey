@@ -1,7 +1,7 @@
 import $ from 'cafy';
-import define from '../../define';
-import { Instances } from '../../../../models';
-import { toPuny } from '@/misc/convert-host';
+import define from '../../define.js';
+import { Instances } from '@/models/index.js';
+import { toPuny } from '@/misc/convert-host.js';
 
 export const meta = {
 	tags: ['federation'],

@@ -1,7 +1,7 @@
 import $ from 'cafy';
-import define from '../../../define';
-import deleteFollowing from '../../../../../services/following/delete';
-import { Followings, Users } from '../../../../../models';
+import define from '../../../define.js';
+import deleteFollowing from '@/services/following/delete.js';
+import { Followings, Users } from '@/models/index.js';
 
 export const meta = {
 	tags: ['admin'],

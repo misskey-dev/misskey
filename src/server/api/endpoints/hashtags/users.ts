@@ -1,7 +1,7 @@
 import $ from 'cafy';
-import define from '../../define';
-import { Users } from '../../../../models';
-import { normalizeForSearch } from '@/misc/normalize-for-search';
+import define from '../../define.js';
+import { Users } from '@/models/index.js';
+import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 
 export const meta = {
 	requireCredential: false as const,

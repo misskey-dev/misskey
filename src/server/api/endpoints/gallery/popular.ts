@@ -1,5 +1,5 @@
-import define from '../../define';
-import { GalleryPosts } from '../../../../models';
+import define from '../../define.js';
+import { GalleryPosts } from '@/models/index.js';
 
 export const meta = {
 	tags: ['gallery'],

@@ -1,5 +1,5 @@
 import { Entity, Index, Column, PrimaryColumn } from 'typeorm';
-import { id } from '../id';
+import { id } from '../id.js';
 
 @Entity()
 export class Ad {

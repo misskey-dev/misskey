@@ -1,4 +1,4 @@
-import { EndoRelation, Predicate } from './relation';
+import { EndoRelation, Predicate } from './relation.js';
 
 /**
  * Count the number of elements that satisfy the predicate

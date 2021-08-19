@@ -1,9 +1,9 @@
-import endpoints from '../endpoints';
+import endpoints from '../endpoints.js';
 import { Context } from 'cafy';
-import config from '@/config';
-import { errors as basicErrors } from './errors';
-import { schemas, convertSchemaToOpenApiSchema } from './schemas';
-import { getDescription } from './description';
+import config from '@/config/index.js';
+import { errors as basicErrors } from './errors.js';
+import { schemas, convertSchemaToOpenApiSchema } from './schemas.js';
+import { getDescription } from './description.js';
 
 export function genOpenapiSpec(lang = 'ja-JP') {
 	const spec = {

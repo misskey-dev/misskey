@@ -1,8 +1,8 @@
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, OneToOne } from 'typeorm';
-import { id } from '../id';
-import { Note } from './note';
-import { User } from './user';
-import { noteVisibilities } from '../../types';
+import { id } from '../id.js';
+import { Note } from './note.js';
+import { User } from './user.js';
+import { noteVisibilities } from '../../types.js';
 
 @Entity()
 export class Poll {

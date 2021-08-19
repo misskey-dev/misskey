@@ -1,6 +1,6 @@
 import { Entity, Column, Index, OneToOne, JoinColumn, PrimaryColumn } from 'typeorm';
-import { DriveFile } from './drive-file';
-import { id } from '../id';
+import { DriveFile } from './drive-file.js';
+import { id } from '../id.js';
 
 @Entity()
 @Index(['usernameLower', 'host'], { unique: true })

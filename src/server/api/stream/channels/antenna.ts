@@ -1,8 +1,8 @@
 import autobind from 'autobind-decorator';
-import Channel from '../channel';
-import { Notes } from '../../../../models';
-import { isMutedUserRelated } from '@/misc/is-muted-user-related';
-import { isBlockerUserRelated } from '@/misc/is-blocker-user-related';
+import Channel from '../channel.js';
+import { Notes } from '@/models/index.js';
+import { isMutedUserRelated } from '@/misc/is-muted-user-related.js';
+import { isBlockerUserRelated } from '@/misc/is-blocker-user-related.js';
 
 export default class extends Channel {
 	public readonly chName = 'antenna';

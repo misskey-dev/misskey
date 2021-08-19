@@ -1,8 +1,8 @@
 import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
-import define from '../../define';
-import { getRemoteUser } from '../../common/getters';
-import { updatePerson } from '../../../../remote/activitypub/models/person';
+import { ID } from '@/misc/cafy-id.js';
+import define from '../../define.js';
+import { getRemoteUser } from '../../common/getters.js';
+import { updatePerson } from '@/remote/activitypub/models/person.js';
 
 export const meta = {
 	tags: ['federation'],

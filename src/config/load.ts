@@ -3,14 +3,20 @@
  */
 
 import * as fs from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 import * as yaml from 'js-yaml';
-import { Source, Mixin } from './types';
-const meta = require('../meta.json');
+import { Source, Mixin } from './types.js';
+import * as meta from '../meta.json';
+
+//const _filename = fileURLToPath(import.meta.url);
+const _filename = __filename;
+const _dirname = dirname(_filename);
 
 /**
  * Path of configuration directory
  */
-const dir = `${__dirname}/../../.config`;
+const dir = `${_dirname}/../../.config`;
 
 /**
  * Path of configuration file

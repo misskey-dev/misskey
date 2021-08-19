@@ -1,5 +1,5 @@
-import define from '../../../define';
-import { UserGroups, UserGroupJoinings } from '../../../../../models';
+import define from '../../../define.js';
+import { UserGroups, UserGroupJoinings } from '@/models/index.js';
 import { Not, In } from 'typeorm';
 
 export const meta = {

@@ -1,9 +1,9 @@
-import config from '@/config';
-import { getJson } from '@/misc/fetch';
-import { ILocalUser } from '../../models/entities/user';
-import { getInstanceActor } from '../../services/instance-actor';
-import { signedGet } from './request';
-import { IObject, isCollectionOrOrderedCollection, ICollection, IOrderedCollection } from './type';
+import config from '@/config/index.js';
+import { getJson } from '@/misc/fetch.js';
+import { ILocalUser } from '@/models/entities/user.js';
+import { getInstanceActor } from '@/services/instance-actor.js';
+import { signedGet } from './request.js';
+import { IObject, isCollectionOrOrderedCollection, ICollection, IOrderedCollection } from './type.js';
 
 export default class Resolver {
 	private history: Set<string>;

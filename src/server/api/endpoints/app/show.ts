@@ -1,8 +1,8 @@
 import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
-import define from '../../define';
-import { ApiError } from '../../error';
-import { Apps } from '../../../../models';
+import { ID } from '@/misc/cafy-id.js';
+import define from '../../define.js';
+import { ApiError } from '../../error.js';
+import { Apps } from '@/models/index.js';
 
 export const meta = {
 	tags: ['app'],

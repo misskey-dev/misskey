@@ -1,7 +1,7 @@
 import $ from 'cafy';
-import define from '../../../define';
-import { ApiError } from '../../../error';
-import { AuthSessions } from '../../../../../models';
+import define from '../../../define.js';
+import { ApiError } from '../../../error.js';
+import { AuthSessions } from '@/models/index.js';
 
 export const meta = {
 	tags: ['auth'],

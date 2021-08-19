@@ -7,6 +7,13 @@
 
 -->
 
+## 12.x.x (unreleased)
+
+### Improvements
+
+### Bugfixes
+- チャンネルを作成しているとアカウントを削除できないのを修正
+
 ## 12.88.0 (2021/08/17)
 
 ### Features

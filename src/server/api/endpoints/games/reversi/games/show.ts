@@ -1,9 +1,9 @@
 import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
-import Reversi from '../../../../../../games/reversi/core';
-import define from '../../../../define';
-import { ApiError } from '../../../../error';
-import { ReversiGames } from '../../../../../../models';
+import { ID } from '@/misc/cafy-id.js';
+import Reversi from '../../../../../../games/reversi/core.js';
+import define from '../../../../define.js';
+import { ApiError } from '../../../../error.js';
+import { ReversiGames } from '@/models/index.js';
 
 export const meta = {
 	tags: ['games'],

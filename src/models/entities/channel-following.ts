@@ -1,7 +1,7 @@
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
-import { User } from './user';
-import { id } from '../id';
-import { Channel } from './channel';
+import { User } from './user.js';
+import { id } from '../id.js';
+import { Channel } from './channel.js';
 
 @Entity()
 @Index(['followerId', 'followeeId'], { unique: true })
