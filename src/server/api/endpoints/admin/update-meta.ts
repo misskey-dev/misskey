@@ -1,8 +1,8 @@
 import $ from 'cafy';
 import define from '../../define';
 import { getConnection } from 'typeorm';
-import { Meta } from '../../../../models/entities/meta';
-import { insertModerationLog } from '../../../../services/insert-moderation-log';
+import { Meta } from '@/models/entities/meta';
+import { insertModerationLog } from '@/services/insert-moderation-log';
 import { DB_MAX_NOTE_TEXT_LENGTH } from '@/misc/hard-limits';
 import { ID } from '@/misc/cafy-id';
 
@@ -142,6 +142,10 @@ export const meta = {
 		},
 
 		summalyProxy: {
+			validator: $.optional.nullable.str,
+		},
+
+		deeplAuthKey: {
 			validator: $.optional.nullable.str,
 		},
 
@@ -560,6 +564,14 @@ export default define(meta, async (ps, me) => {
 
 	if (ps.objectStorageS3ForcePathStyle !== undefined) {
 		set.objectStorageS3ForcePathStyle = ps.objectStorageS3ForcePathStyle;
+	}
+
+	if (ps.deeplAuthKey !== undefined) {
+		if (ps.deeplAuthKey === '') {
+			set.deeplAuthKey = null;
+		} else {
+			set.deeplAuthKey = ps.deeplAuthKey;
+		}
 	}
 
 	await getConnection().transaction(async transactionalEntityManager => {

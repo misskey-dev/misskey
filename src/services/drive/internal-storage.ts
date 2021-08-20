@@ -1,9 +1,15 @@
 import * as fs from 'fs';
 import * as Path from 'path';
-import config from '@/config';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import config from '@/config/index';
+
+//const _filename = fileURLToPath(import.meta.url);
+const _filename = __filename;
+const _dirname = dirname(_filename);
 
 export class InternalStorage {
-	private static readonly path = Path.resolve(__dirname, '../../../files');
+	private static readonly path = Path.resolve(_dirname, '../../../files');
 
 	public static resolvePath = (key: string) => Path.resolve(InternalStorage.path, key);
 

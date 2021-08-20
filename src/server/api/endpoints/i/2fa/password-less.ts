@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import define from '../../../define';
-import { UserProfiles } from '../../../../../models';
+import { UserProfiles } from '@/models/index';
 
 export const meta = {
 	requireCredential: true as const,

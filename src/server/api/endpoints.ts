@@ -1,7 +1,13 @@
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 import { Context } from 'cafy';
 import * as path from 'path';
 import * as glob from 'glob';
 import { Schema } from '@/misc/schema';
+
+//const _filename = fileURLToPath(import.meta.url);
+const _filename = __filename;
+const _dirname = dirname(_filename);
 
 export type Param = {
 	validator: Context<any>;
@@ -102,7 +108,7 @@ export interface IEndpoint {
 }
 
 const files = glob.sync('**/*.js', {
-	cwd: path.resolve(__dirname + '/endpoints/')
+	cwd: path.resolve(_dirname + '/endpoints/')
 });
 
 const endpoints: IEndpoint[] = files.map(f => {

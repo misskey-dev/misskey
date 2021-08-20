@@ -1,14 +1,14 @@
 import * as httpSignature from 'http-signature';
 
-import config from '@/config';
+import config from '@/config/index';
 import { program } from '../argv';
 
 import processDeliver from './processors/deliver';
 import processInbox from './processors/inbox';
-import processDb from './processors/db';
-import procesObjectStorage from './processors/object-storage';
+import processDb from './processors/db/index';
+import procesObjectStorage from './processors/object-storage/index';
 import { queueLogger } from './logger';
-import { DriveFile } from '../models/entities/drive-file';
+import { DriveFile } from '@/models/entities/drive-file';
 import { getJobInfo } from './get-job-info';
 import { dbQueue, deliverQueue, inboxQueue, objectStorageQueue } from './queues';
 import { ThinUser } from './types';

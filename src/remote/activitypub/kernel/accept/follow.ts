@@ -1,8 +1,8 @@
-import { IRemoteUser } from '../../../../models/entities/user';
-import accept from '../../../../services/following/requests/accept';
+import { IRemoteUser } from '@/models/entities/user';
+import accept from '@/services/following/requests/accept';
 import { IFollow } from '../../type';
 import DbResolver from '../../db-resolver';
-import { relayAccepted } from '../../../../services/relay';
+import { relayAccepted } from '@/services/relay';
 
 export default async (actor: IRemoteUser, activity: IFollow): Promise<string> => {
 	// ※ activityはこっちから投げたフォローリクエストなので、activity.actorは存在するローカルユーザーである必要がある

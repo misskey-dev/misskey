@@ -9,7 +9,7 @@ import autobind from 'autobind-decorator';
 import Logger from '../logger';
 import { Schema } from '@/misc/schema';
 import { EntitySchema, getRepository, Repository, LessThan, Between } from 'typeorm';
-import { dateUTC, isTimeSame, isTimeBefore, subtractTime, addTime } from '../../prelude/time';
+import { dateUTC, isTimeSame, isTimeBefore, subtractTime, addTime } from '@/prelude/time';
 import { getChartInsertLock } from '@/misc/app-lock';
 
 const logger = new Logger('chart', 'white', process.env.NODE_ENV !== 'test');
@@ -203,7 +203,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 			indices: [{
 				columns: ['date', 'group'],
 				unique: true,
-			}, { // groupにnullが含まれると↑のuniqeuは機能しないので↓の部分インデックスでカバー
+			}, { // groupにnullが含まれると↑のuniqueは機能しないので↓の部分インデックスでカバー
 				columns: ['date'],
 				unique: true,
 				where: '"group" IS NULL'
@@ -315,11 +315,11 @@ export default abstract class Chart<T extends Record<string, any>> {
 			if (currentLog != null) return currentLog;
 
 			// 新規ログ挿入
-			log = await this.repository.save({
+			log = await this.repository.insert({
 				group: group,
 				date: date,
 				...Chart.convertObjectToFlattenColumns(data)
-			});
+			}).then(x => this.repository.findOneOrFail(x.identifiers[0]));
 
 			logger.info(`${this.name + (group ? `:${group}` : '')}: New commit created`);
 

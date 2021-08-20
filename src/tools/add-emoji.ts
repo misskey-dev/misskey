@@ -1,4 +1,4 @@
-import { Emojis } from '../models';
+import { Emojis } from '@/models/index';
 import { genId } from '@/misc/gen-id';
 
 async function main(name: string, url: string, alias?: string): Promise<any> {

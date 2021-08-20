@@ -4,6 +4,15 @@
 
 import '@client/style.scss';
 
+//#region account indexedDB migration
+import { set } from '@client/scripts/idb-proxy';
+
+if (localStorage.getItem('accounts') != null) {
+	set('accounts', JSON.parse(localStorage.getItem('accounts')));
+	localStorage.removeItem('accounts');
+}
+//#endregion
+
 import * as Sentry from '@sentry/browser';
 import { Integrations } from '@sentry/tracing';
 import { computed, createApp, watch, markRaw } from 'vue';
@@ -207,8 +216,11 @@ if (lastVersion !== version) {
 	// テーマリビルドするため
 	localStorage.removeItem('theme');
 
-	if (lastVersion != null && compareVersions(version, lastVersion) === 1) {
-		popup(import('@client/components/updated.vue'), {}, {}, 'closed');
+	try { // 変なバージョン文字列来るとcompareVersionsでエラーになるため
+		if (lastVersion != null && compareVersions(version, lastVersion) === 1) {
+			popup(import('@client/components/updated.vue'), {}, {}, 'closed');
+		}
+	} catch (e) {
 	}
 }
 

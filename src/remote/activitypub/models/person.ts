@@ -2,37 +2,47 @@ import { URL } from 'url';
 import * as promiseLimit from 'promise-limit';
 
 import $, { Context } from 'cafy';
-import config from '@/config';
+import config from '@/config/index';
 import Resolver from '../resolver';
 import { resolveImage } from './image';
 import { isCollectionOrOrderedCollection, isCollection, IActor, getApId, getOneApHrefNullable, IObject, isPropertyValue, IApPropertyValue, getApType, isActor } from '../type';
 import { fromHtml } from '../../../mfm/from-html';
 import { htmlToMfm } from '../misc/html-to-mfm';
 import { resolveNote, extractEmojis } from './note';
-import { registerOrFetchInstanceDoc } from '../../../services/register-or-fetch-instance-doc';
+import { registerOrFetchInstanceDoc } from '@/services/register-or-fetch-instance-doc';
 import { extractApHashtags } from './tag';
 import { apLogger } from '../logger';
-import { Note } from '../../../models/entities/note';
-import { updateUsertags } from '../../../services/update-hashtag';
-import { Users, Instances, DriveFiles, Followings, UserProfiles, UserPublickeys } from '../../../models';
-import { User, IRemoteUser } from '../../../models/entities/user';
-import { Emoji } from '../../../models/entities/emoji';
-import { UserNotePining } from '../../../models/entities/user-note-pining';
+import { Note } from '@/models/entities/note';
+import { updateUsertags } from '@/services/update-hashtag';
+import { Users, Instances, DriveFiles, Followings, UserProfiles, UserPublickeys } from '@/models/index';
+import { User, IRemoteUser } from '@/models/entities/user';
+import { Emoji } from '@/models/entities/emoji';
+import { UserNotePining } from '@/models/entities/user-note-pining';
 import { genId } from '@/misc/gen-id';
-import { instanceChart, usersChart } from '../../../services/chart';
-import { UserPublickey } from '../../../models/entities/user-publickey';
+import { instanceChart, usersChart } from '@/services/chart/index';
+import { UserPublickey } from '@/models/entities/user-publickey';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error';
 import { toPuny } from '@/misc/convert-host';
-import { UserProfile } from '../../../models/entities/user-profile';
+import { UserProfile } from '@/models/entities/user-profile';
 import { getConnection } from 'typeorm';
-import { toArray } from '../../../prelude/array';
-import { fetchInstanceMetadata } from '../../../services/fetch-instance-metadata';
+import { toArray } from '@/prelude/array';
+import { fetchInstanceMetadata } from '@/services/fetch-instance-metadata';
 import { normalizeForSearch } from '@/misc/normalize-for-search';
 
 const logger = apLogger;
 
 const nameLength = 128;
 const summaryLength = 2048;
+
+function truncate(input: string, size: number): string;
+function truncate(input: string | undefined, size: number): string | undefined;
+function truncate(input: string | undefined, size: number): string | undefined {
+	if (!input || input.length <= size) {
+		return input;
+	} else {
+		return input.substring(0, size);
+	}
+}
 
 /**
  * Validate and convert to actor object
@@ -53,14 +63,6 @@ function validateActor(x: IObject, uri: string): IActor {
 	const validate = (name: string, value: any, validater: Context) => {
 		const e = validater.test(value);
 		if (e) throw new Error(`invalid Actor: ${name} ${e.message}`);
-	};
-
-	const truncate = (input: string | undefined, size: number) => {
-		if (!input || input.length <= size) {
-			return input;
-		} else {
-			return input.substring(0, size);
-		}
 	};
 
 	validate('id', x.id, $.str.min(1));
@@ -152,7 +154,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 				bannerId: null,
 				createdAt: new Date(),
 				lastFetchedAt: new Date(),
-				name: person.name,
+				name: truncate(person.name, nameLength),
 				isLocked: !!person.manuallyApprovesFollowers,
 				isExplorable: !!person.discoverable,
 				username: person.preferredUsername,
@@ -170,7 +172,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 
 			await transactionalEntityManager.save(new UserProfile({
 				userId: user.id,
-				description: person.summary ? htmlToMfm(person.summary, person.tag) : null,
+				description: person.summary ? htmlToMfm(truncate(person.summary, summaryLength), person.tag) : null,
 				url: getOneApHrefNullable(person.url),
 				fields,
 				birthday: bday ? bday[0] : null,
@@ -331,7 +333,7 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 		followersUri: person.followers ? getApId(person.followers) : undefined,
 		featured: person.featured,
 		emojis: emojiNames,
-		name: person.name,
+		name: truncate(person.name, nameLength),
 		tags,
 		isBot: getApType(object) === 'Service',
 		isCat: (person as any).isCat === true,
@@ -364,7 +366,7 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 	await UserProfiles.update({ userId: exist.id }, {
 		url: getOneApHrefNullable(person.url),
 		fields,
-		description: person.summary ? htmlToMfm(person.summary, person.tag) : null,
+		description: person.summary ? htmlToMfm(truncate(person.summary, summaryLength), person.tag) : null,
 		birthday: bday ? bday[0] : null,
 		location: person['vcard:Address'] || null,
 	});
