@@ -3,7 +3,7 @@ import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { getUser } from '../../common/getters';
-import { MessagingMessages, UserGroups, UserGroupJoinings, Users } from '../../../../models';
+import { MessagingMessages, UserGroups, UserGroupJoinings, Users } from '@/models/index';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 import { Brackets } from 'typeorm';
 import { readUserMessagingMessage, readGroupMessagingMessage, deliverReadActivity } from '../../common/read-messaging-message';

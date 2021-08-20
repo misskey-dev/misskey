@@ -1,7 +1,7 @@
-import { IRemoteUser } from '../../../models/entities/user';
+import { IRemoteUser } from '@/models/entities/user';
 import { IRead, getApId } from '../type';
 import { isSelfHost, extractDbHost } from '@/misc/convert-host';
-import { MessagingMessages } from '../../../models';
+import { MessagingMessages } from '@/models/index';
 import { readUserMessagingMessage } from '../../../server/api/common/read-messaging-message';
 
 export const performReadActivity = async (actor: IRemoteUser, activity: IRead): Promise<string> => {

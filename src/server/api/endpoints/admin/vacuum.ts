@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import define from '../../define';
 import { getConnection } from 'typeorm';
-import { insertModerationLog } from '../../../../services/insert-moderation-log';
+import { insertModerationLog } from '@/services/insert-moderation-log';
 
 export const meta = {
 	tags: ['admin'],

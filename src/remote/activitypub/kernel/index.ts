@@ -1,22 +1,22 @@
 import { IObject, isCreate, isDelete, isUpdate, isRead, isFollow, isAccept, isReject, isAdd, isRemove, isAnnounce, isLike, isUndo, isBlock, isCollectionOrOrderedCollection, isCollection, isFlag } from '../type';
-import { IRemoteUser } from '../../../models/entities/user';
-import create from './create';
-import performDeleteActivity from './delete';
-import performUpdateActivity from './update';
+import { IRemoteUser } from '@/models/entities/user';
+import create from './create/index';
+import performDeleteActivity from './delete/index';
+import performUpdateActivity from './update/index';
 import { performReadActivity } from './read';
 import follow from './follow';
-import undo from './undo';
+import undo from './undo/index';
 import like from './like';
-import announce from './announce';
-import accept from './accept';
-import reject from './reject';
-import add from './add';
-import remove from './remove';
-import block from './block';
-import flag from './flag';
+import announce from './announce/index';
+import accept from './accept/index';
+import reject from './reject/index';
+import add from './add/index';
+import remove from './remove/index';
+import block from './block/index';
+import flag from './flag/index';
 import { apLogger } from '../logger';
 import Resolver from '../resolver';
-import { toArray } from '../../../prelude/array';
+import { toArray } from '@/prelude/array';
 
 export async function performActivity(actor: IRemoteUser, activity: IObject) {
 	if (isCollectionOrOrderedCollection(activity)) {

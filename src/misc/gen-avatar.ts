@@ -2,7 +2,7 @@
  * Random avatar generator
  */
 
-const p = require('pureimage');
+import * as p from 'pureimage';
 import * as gen from 'random-seed';
 import { WriteStream } from 'fs';
 

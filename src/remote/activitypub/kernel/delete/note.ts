@@ -1,9 +1,9 @@
-import { IRemoteUser } from '../../../../models/entities/user';
-import deleteNode from '../../../../services/note/delete';
+import { IRemoteUser } from '@/models/entities/user';
+import deleteNode from '@/services/note/delete';
 import { apLogger } from '../../logger';
 import DbResolver from '../../db-resolver';
 import { getApLock } from '@/misc/app-lock';
-import { deleteMessage } from '../../../../services/messages/delete';
+import { deleteMessage } from '@/services/messages/delete';
 
 const logger = apLogger;
 

@@ -1,6 +1,6 @@
-import { IRemoteUser } from '../../../models/entities/user';
+import { IRemoteUser } from '@/models/entities/user';
 import { ILike, getApId } from '../type';
-import create from '../../../services/note/reaction/create';
+import create from '@/services/note/reaction/create';
 import { fetchNote, extractEmojis } from '../models/note';
 
 export default async (actor: IRemoteUser, activity: ILike) => {

@@ -1,4 +1,4 @@
-import { Meta } from '../models/entities/meta';
+import { Meta } from '@/models/entities/meta';
 import { getConnection } from 'typeorm';
 
 let cache: Meta;

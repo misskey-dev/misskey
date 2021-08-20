@@ -35,6 +35,8 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - name: Install dependencies
       run: yarn install
+    - name: Check yarn.lock
+      run: git diff --exit-code yarn.lock
     - name: Copy Configure
       run: cp .circleci/misskey/*.yml .config
     - name: Build

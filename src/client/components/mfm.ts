@@ -165,6 +165,10 @@ export default defineComponent({
 								class: '_mfm_blur_',
 							}, genEl(token.children));
 						}
+						case 'rainbow': {
+							style = this.$store.state.animatedMfm ? 'animation: mfm-rainbow 1s linear infinite;' : '';
+							break;
+						}
 					}
 					if (style == null) {
 						return h('span', {}, ['[', token.props.name, ...genEl(token.children), ']']);

@@ -3,9 +3,9 @@
 	<template #header><i class="fas fa-bolt"></i> {{ $ts._pages.blocks.switch }}</template>
 
 	<section class="kjuadyyj">
-		<MkInput v-model:value="value.name"><template #prefix><i class="fas fa-magic"></i></template><span>{{ $ts._pages.blocks._switch.name }}</span></MkInput>
-		<MkInput v-model:value="value.text"><span>{{ $ts._pages.blocks._switch.text }}</span></MkInput>
-		<MkSwitch v-model:value="value.default"><span>{{ $ts._pages.blocks._switch.default }}</span></MkSwitch>
+		<MkInput v-model="value.name"><template #prefix><i class="fas fa-magic"></i></template><template #label>{{ $ts._pages.blocks._switch.name }}</template></MkInput>
+		<MkInput v-model="value.text"><template #label>{{ $ts._pages.blocks._switch.text }}</template></MkInput>
+		<MkSwitch v-model="value.default"><span>{{ $ts._pages.blocks._switch.default }}</span></MkSwitch>
 	</section>
 </XContainer>
 </template>
