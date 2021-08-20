@@ -1,6 +1,6 @@
 <template>
 <div
-	class="note _block"
+	class="lxwezrsl _block"
 	v-if="!muted"
 	v-show="!isDeleted"
 	:tabindex="!isDeleted ? '-1' : null"
@@ -86,8 +86,8 @@
 			</div>
 			<footer class="footer">
 				<div class="info">
-					<span class="mobile" v-if="note.viaMobile"><i class="fas fa-mobile-alt"></i></span>
-					<MkTime class="created-at" :time="note.createdAt" mode="detail"/>
+					<span class="mobile" v-if="appearNote.viaMobile"><i class="fas fa-mobile-alt"></i></span>
+					<MkTime class="created-at" :time="appearNote.createdAt" mode="detail"/>
 				</div>
 				<XReactionsViewer :note="appearNote" ref="reactionsViewer"/>
 				<button @click="reply()" class="button _button">
@@ -899,7 +899,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.note {
+.lxwezrsl {
 	position: relative;
 	transition: box-shadow 0.1s ease;
 	overflow: hidden;

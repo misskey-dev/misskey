@@ -1,9 +1,9 @@
 import { v4 as uuid } from 'uuid';
 import $ from 'cafy';
-import config from '@/config';
+import config from '@/config/index';
 import define from '../../../define';
 import { ApiError } from '../../../error';
-import { Apps, AuthSessions } from '../../../../../models';
+import { Apps, AuthSessions } from '@/models/index';
 import { genId } from '@/misc/gen-id';
 
 export const meta = {

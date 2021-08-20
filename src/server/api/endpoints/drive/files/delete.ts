@@ -1,10 +1,10 @@
 import $ from 'cafy';
 import { ID } from '@/misc/cafy-id';
-import { deleteFile } from '../../../../../services/drive/delete-file';
-import { publishDriveStream } from '../../../../../services/stream';
+import { deleteFile } from '@/services/drive/delete-file';
+import { publishDriveStream } from '@/services/stream';
 import define from '../../../define';
 import { ApiError } from '../../../error';
-import { DriveFiles } from '../../../../../models';
+import { DriveFiles } from '@/models/index';
 
 export const meta = {
 	tags: ['drive'],

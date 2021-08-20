@@ -1,6 +1,6 @@
 import * as push from 'web-push';
-import config from '@/config';
-import { SwSubscriptions } from '../models';
+import config from '@/config/index';
+import { SwSubscriptions } from '@/models/index';
 import { fetchMeta } from '@/misc/fetch-meta';
 import { PackedNotification } from '../models/repositories/notification';
 import { PackedMessagingMessage } from '../models/repositories/messaging-message';

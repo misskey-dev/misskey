@@ -2,7 +2,7 @@ import $ from 'cafy';
 import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { ApiError } from '../../error';
-import { Users, Followings } from '../../../../models';
+import { Users, Followings } from '@/models/index';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 import { toPunyNullable } from '@/misc/convert-host';
 

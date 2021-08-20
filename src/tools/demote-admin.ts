@@ -1,6 +1,6 @@
 import { initDb } from '../db/postgre';
 import { getRepository } from 'typeorm';
-import { User } from '../models/entities/user';
+import { User } from '@/models/entities/user';
 
 async function main(username: string) {
 	if (!username) throw `username required`;

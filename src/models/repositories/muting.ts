@@ -1,9 +1,9 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { Users } from '..';
-import { Muting } from '../entities/muting';
-import { awaitAll } from '../../prelude/await-all';
+import { Users } from '../index';
+import { Muting } from '@/models/entities/muting';
+import { awaitAll } from '@/prelude/await-all';
 import { SchemaType } from '@/misc/schema';
-import { User } from '../entities/user';
+import { User } from '@/models/entities/user';
 
 export type PackedMuting = SchemaType<typeof packedMutingSchema>;
 

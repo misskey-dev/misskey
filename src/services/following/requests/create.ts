@@ -1,9 +1,9 @@
-import { publishMainStream } from '../../stream';
-import { renderActivity } from '../../../remote/activitypub/renderer';
-import renderFollow from '../../../remote/activitypub/renderer/follow';
-import { deliver } from '../../../queue';
-import { User } from '../../../models/entities/user';
-import { Blockings, FollowRequests, Users } from '../../../models';
+import { publishMainStream } from '@/services/stream';
+import { renderActivity } from '@/remote/activitypub/renderer/index';
+import renderFollow from '@/remote/activitypub/renderer/follow';
+import { deliver } from '@/queue/index';
+import { User } from '@/models/entities/user';
+import { Blockings, FollowRequests, Users } from '@/models/index';
 import { genId } from '@/misc/gen-id';
 import { createNotification } from '../../create-notification';
 

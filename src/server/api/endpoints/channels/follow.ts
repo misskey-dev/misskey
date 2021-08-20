@@ -2,9 +2,9 @@ import $ from 'cafy';
 import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { ApiError } from '../../error';
-import { Channels, ChannelFollowings } from '../../../../models';
+import { Channels, ChannelFollowings } from '@/models/index';
 import { genId } from '@/misc/gen-id';
-import { publishUserEvent } from '../../../../services/stream';
+import { publishUserEvent } from '@/services/stream';
 
 export const meta = {
 	tags: ['channels'],

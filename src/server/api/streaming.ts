@@ -1,12 +1,12 @@
 import * as http from 'http';
 import * as websocket from 'websocket';
 
-import MainStreamConnection from './stream';
+import MainStreamConnection from './stream/index';
 import { ParsedUrlQuery } from 'querystring';
 import authenticate from './authenticate';
 import { EventEmitter } from 'events';
 import { subsdcriber as redisClient } from '../../db/redis';
-import { Users } from '@/models';
+import { Users } from '@/models/index';
 
 module.exports = (server: http.Server) => {
 	// Init websocket server

@@ -1,50 +1,54 @@
 <template>
 <div class="vtaihdtm">
-	<div class="search">
-		<MkInput v-model="query" :debounce="true" type="search" class="_inputNoTopMargin _inputNoBottomMargin" :placeholder="$ts.search">
-			<template #prefix><i class="fas fa-search"></i></template>
-		</MkInput>
+	<div class="body">
+		<div class="search">
+			<MkInput v-model="query" :debounce="true" type="search" class="_inputNoTopMargin _inputNoBottomMargin" :placeholder="$ts.search">
+				<template #prefix><i class="fas fa-search"></i></template>
+			</MkInput>
+		</div>
+		<div class="list">
+			<MkFolder>
+				<template #header>{{ $ts._docs.generalTopics }}</template>
+				<div class="docs">
+					<MkA v-for="doc in docs.filter(doc => doc.path.startsWith('general/'))" :key="doc.path" :to="`/docs/${doc.path}`" class="doc">
+						<div class="title">{{ doc.title }}</div>
+						<div class="summary">{{ doc.summary }}</div>
+						<div class="read">{{ $ts._docs.continueReading }}</div>
+					</MkA>
+				</div>
+			</MkFolder>
+			<MkFolder>
+				<template #header>{{ $ts._docs.features }}</template>
+				<div class="docs">
+					<MkA v-for="doc in docs.filter(doc => doc.path.startsWith('features/'))" :key="doc.path" :to="`/docs/${doc.path}`" class="doc">
+						<div class="title">{{ doc.title }}</div>
+						<div class="summary">{{ doc.summary }}</div>
+						<div class="read">{{ $ts._docs.continueReading }}</div>
+					</MkA>
+				</div>
+			</MkFolder>
+			<MkFolder>
+				<template #header>{{ $ts._docs.advancedTopics }}</template>
+				<div class="docs">
+					<MkA v-for="doc in docs.filter(doc => doc.path.startsWith('advanced/'))" :key="doc.path" :to="`/docs/${doc.path}`" class="doc">
+						<div class="title">{{ doc.title }}</div>
+						<div class="summary">{{ doc.summary }}</div>
+						<div class="read">{{ $ts._docs.continueReading }}</div>
+					</MkA>
+				</div>
+			</MkFolder>
+			<MkFolder>
+				<template #header>{{ $ts._docs.admin }}</template>
+				<div class="docs">
+					<MkA v-for="doc in docs.filter(doc => doc.path.startsWith('admin/'))" :key="doc.path" :to="`/docs/${doc.path}`" class="doc">
+						<div class="title">{{ doc.title }}</div>
+						<div class="summary">{{ doc.summary }}</div>
+						<div class="read">{{ $ts._docs.continueReading }}</div>
+					</MkA>
+				</div>
+			</MkFolder>
+		</div>
 	</div>
-	<MkFolder>
-		<template #header>{{ $ts._docs.generalTopics }}</template>
-		<div class="docs">
-			<MkA v-for="doc in docs.filter(doc => doc.path.startsWith('general/'))" :key="doc.path" :to="`/docs/${doc.path}`" class="doc">
-				<div class="title">{{ doc.title }}</div>
-				<div class="summary">{{ doc.summary }}</div>
-				<div class="read">{{ $ts._docs.continueReading }}</div>
-			</MkA>
-		</div>
-	</MkFolder>
-	<MkFolder>
-		<template #header>{{ $ts._docs.features }}</template>
-		<div class="docs">
-			<MkA v-for="doc in docs.filter(doc => doc.path.startsWith('features/'))" :key="doc.path" :to="`/docs/${doc.path}`" class="doc">
-				<div class="title">{{ doc.title }}</div>
-				<div class="summary">{{ doc.summary }}</div>
-				<div class="read">{{ $ts._docs.continueReading }}</div>
-			</MkA>
-		</div>
-	</MkFolder>
-	<MkFolder>
-		<template #header>{{ $ts._docs.advancedTopics }}</template>
-		<div class="docs">
-			<MkA v-for="doc in docs.filter(doc => doc.path.startsWith('advanced/'))" :key="doc.path" :to="`/docs/${doc.path}`" class="doc">
-				<div class="title">{{ doc.title }}</div>
-				<div class="summary">{{ doc.summary }}</div>
-				<div class="read">{{ $ts._docs.continueReading }}</div>
-			</MkA>
-		</div>
-	</MkFolder>
-	<MkFolder>
-		<template #header>{{ $ts._docs.admin }}</template>
-		<div class="docs">
-			<MkA v-for="doc in docs.filter(doc => doc.path.startsWith('admin/'))" :key="doc.path" :to="`/docs/${doc.path}`" class="doc">
-				<div class="title">{{ doc.title }}</div>
-				<div class="summary">{{ doc.summary }}</div>
-				<div class="read">{{ $ts._docs.continueReading }}</div>
-			</MkA>
-		</div>
-	</MkFolder>
 </div>
 </template>
 
@@ -97,41 +101,50 @@ export default defineComponent({
 .vtaihdtm {
 	background: var(--panel);
 
-	> .search {
-		padding: 16px;
-	}
+	> .body {
+		max-width: 900px;
+		margin: 0 auto;
 
-	.docs {
-		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-		grid-gap: 12px;
-		margin: 0 16px 16px 16px;
-
-		> .doc {
-			display: inline-block;
+		> .search {
 			padding: 16px;
-			border: solid 1px var(--divider);
-			border-radius: 6px;
+		}
 
-			&:hover {
-				border: solid 1px var(--accent);
-				text-decoration: none;
-			}
+		> .list {
+			padding: 0 16px;
 
-			> .title {
-				font-weight: bold;
-			}
+			.docs {
+				display: grid;
+				grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+				grid-gap: 12px;
+				margin: 0 0 16px 0;
 
-			> .summary {
-				white-space: nowrap;
-				overflow: hidden;
-				text-overflow: ellipsis;
-				font-size: 0.9em;
-			}
+				> .doc {
+					display: inline-block;
+					padding: 16px;
+					border: solid 1px var(--divider);
+					border-radius: 6px;
 
-			> .read {
-				color: var(--link);
-				font-size: 0.9em;
+					&:hover {
+						border: solid 1px var(--accent);
+						text-decoration: none;
+					}
+
+					> .title {
+						font-weight: bold;
+					}
+
+					> .summary {
+						white-space: nowrap;
+						overflow: hidden;
+						text-overflow: ellipsis;
+						font-size: 0.9em;
+					}
+
+					> .read {
+						color: var(--link);
+						font-size: 0.9em;
+					}
+				}
 			}
 		}
 	}

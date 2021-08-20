@@ -2,9 +2,9 @@ import $ from 'cafy';
 import { ID } from '@/misc/cafy-id';
 import define from '../../../../define';
 import { ApiError } from '../../../../error';
-import { UserGroupJoinings, UserGroupInvitations } from '../../../../../../models';
+import { UserGroupJoinings, UserGroupInvitations } from '@/models/index';
 import { genId } from '@/misc/gen-id';
-import { UserGroupJoining } from '../../../../../../models/entities/user-group-joining';
+import { UserGroupJoining } from '@/models/entities/user-group-joining';
 
 export const meta = {
 	tags: ['groups', 'users'],

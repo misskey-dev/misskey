@@ -257,6 +257,10 @@ export default defineComponent({
 		//backdrop-filter: var(--blur, blur(4px));
 	}
 
+	> .sidebar {
+		border-right: solid 0.5px var(--divider);
+	}
+
 	> .contents {
 		width: 100%;
 		min-width: 0;

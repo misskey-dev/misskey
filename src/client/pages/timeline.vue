@@ -1,5 +1,5 @@
 <template>
-<div class="cmuxhskf _root" v-hotkey.global="keymap">
+<div class="cmuxhskf" v-hotkey.global="keymap">
 	<XTutorial v-if="$store.reactiveState.tutorial.value != -1" class="tutorial _block _isolated"/>
 	<XPostForm v-if="$store.reactiveState.showFixedPostForm.value" class="post-form _block _isolated" fixed/>
 	<div class="tabs">
@@ -260,10 +260,9 @@ export default defineComponent({
 						left: 0;
 						right: 0;
 						margin: 0 auto;
-						width: calc(100% - 16px);
-						height: 4px;
+						width: 100%;
+						height: 2px;
 						background: var(--accent);
-						border-radius: 8px 8px 0 0;
 					}
 				}
 

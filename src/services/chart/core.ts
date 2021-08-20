@@ -9,7 +9,7 @@ import autobind from 'autobind-decorator';
 import Logger from '../logger';
 import { Schema } from '@/misc/schema';
 import { EntitySchema, getRepository, Repository, LessThan, Between } from 'typeorm';
-import { dateUTC, isTimeSame, isTimeBefore, subtractTime, addTime } from '../../prelude/time';
+import { dateUTC, isTimeSame, isTimeBefore, subtractTime, addTime } from '@/prelude/time';
 import { getChartInsertLock } from '@/misc/app-lock';
 
 const logger = new Logger('chart', 'white', process.env.NODE_ENV !== 'test');

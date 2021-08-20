@@ -1,14 +1,14 @@
 import $ from 'cafy';
 import { ID } from '@/misc/cafy-id';
-import { publishMainStream, publishReversiStream } from '../../../../../services/stream';
+import { publishMainStream, publishReversiStream } from '@/services/stream';
 import { eighteight } from '../../../../../games/reversi/maps';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { getUser } from '../../../common/getters';
 import { genId } from '@/misc/gen-id';
-import { ReversiMatchings, ReversiGames } from '../../../../../models';
-import { ReversiGame } from '../../../../../models/entities/games/reversi/game';
-import { ReversiMatching } from '../../../../../models/entities/games/reversi/matching';
+import { ReversiMatchings, ReversiGames } from '@/models/index';
+import { ReversiGame } from '@/models/entities/games/reversi/game';
+import { ReversiMatching } from '@/models/entities/games/reversi/matching';
 
 export const meta = {
 	tags: ['games'],

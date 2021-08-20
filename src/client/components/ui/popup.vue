@@ -1,5 +1,5 @@
 <template>
-<transition :name="$store.state.animation ? 'popup-menu' : ''" :duration="$store.state.animation ? 300 : 0" appear @after-leave="onClosed" @enter="$emit('opening')" @after-enter="childRendered">
+<transition :name="$store.state.animation ? 'popup-menu' : ''" appear @after-leave="onClosed" @enter="$emit('opening')" @after-enter="childRendered">
 	<div v-show="manualShowing != null ? manualShowing : showing" class="ccczpooj" :class="{ front, fixed, top: position === 'top' }" ref="content" :style="{ pointerEvents: (manualShowing != null ? manualShowing : showing) ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
 		<slot :point="point"></slot>
 	</div>

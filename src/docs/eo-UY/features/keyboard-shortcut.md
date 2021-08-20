@@ -1,6 +1,6 @@
 # キーボードショートカット
 
-## Konfederacia
+## Malloka
 これらのショートカットは基本的にどこでも使えます。
 <table>
     <thead>
