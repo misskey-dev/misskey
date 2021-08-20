@@ -22,6 +22,7 @@ export function initialize<T>(name: string, limitPerSec = -1) {
 	});
 }
 
+// ref. https://github.com/misskey-dev/misskey/pull/7635#issue-971097019
 function apBackoff(attemptsMade: number, err: Error) {
 	const baseDelay = 60 * 1000;	// 1min
 	const maxBackoff = 8 * 60 * 60 * 1000;	// 8hours
