@@ -4,7 +4,7 @@ import define from '../../define';
 import { UserProfiles } from '@/models/index';
 import { doPostSuspend } from '@/services/suspend-user';
 import { publishUserEvent } from '@/services/stream';
-import { deleteAccountJobs } from '@/queue';
+import { createDeleteAccountJob } from '@/queue';
 
 export const meta = {
 	requireCredential: true as const,
@@ -31,7 +31,7 @@ export default define(meta, async (ps, user) => {
 	// 物理削除する前にDelete activityを送信する
 	await doPostSuspend(user).catch(e => {});
 
-	deleteAccountJobs.beginDeleteAccountJobs(user);
+	createDeleteAccountJob(user);
 
 	// Terminate streaming
 	publishUserEvent(user.id, 'terminate', {});
