@@ -4,7 +4,7 @@
 
 import * as fs from 'fs';
 import * as webpack from 'webpack';
-const { VueLoaderPlugin } = require('vue-loader');
+import { VueLoaderPlugin } from 'vue-loader';
 
 class WebpackOnBuildPlugin {
 	constructor(readonly callback: (stats: any) => void) {
@@ -17,8 +17,8 @@ class WebpackOnBuildPlugin {
 
 const isProduction = process.env.NODE_ENV === 'production';
 
-const locales = require('./locales');
-const meta = require('./package.json');
+import * as locales from './locales';
+import * as meta from './package.json';
 
 const postcss = {
 	loader: 'postcss-loader',
