@@ -25,4 +25,4 @@ Only administrators can add, edit or delete custom emoji. If you'd like to do ei
 It is possible to develop a Bot using the Misskey API. Please, [see here](../advanced/develop-bot).
 
 ## ノートの翻訳機能はどのサービスを使用していますか？
-[DeepL](https://www.deepl.com/)を使用しています。
+[DeepL](https://www.deepl.com/) is being used for this.
