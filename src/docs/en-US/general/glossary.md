@@ -49,8 +49,8 @@ Those users amongst all existing ones who are continually using their account.
 ## Instance
 todo
 
-## Control Panel
-サーバーで用意された絵文字。カスタム絵文字ではない通常の絵文字は「Unicode絵文字」と区別して呼ばれる。
+## Custom Emoji
+Emoji provided by your server.Emoji that are not specifically provided by your server but are available by default are called "Unicode Emoji".
 
 ## Control Panel
 todo
@@ -62,12 +62,12 @@ todo
 A state in which the visibility of the notes by said user cannot be set to "Public" anymore.Can be set for individual users by the discretion of Moderators.For details, see [here.](../features/silence)
 
 ## Job Queue
-アクティビティ配送などを順番に行うためのシステム。
+A system used for sequentially broadcasting activities to other servers etc.
 
 ## Suspend
 A state which makes the account of a user unusable.
 
-## Misskist
+## Drive
 A feature allowing users to organize the files they have uploaded to Misskey.For details, see [here.](../features/drive)
 
 ## Notes
