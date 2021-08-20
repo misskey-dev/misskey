@@ -10,11 +10,11 @@ When a note meets the set conditions, it will be hidden behind text stating "(us
 You can display the note as it was by clicking on this text.
 
 ## Hard word mute
-ハードワードミュートは、アンテナのようにサーバーが新しいノートの本文に対して条件に合致するかどうか判断し、タイムラインから対象となったノートを除外します。
+With hard mutes, the server judges whether the content of a new incoming note meets the set conditions similar to antennas, and will completely exclude it from your timeline if so.
 
 To summarize, a hard word mute has the following features:
 
-* 条件設定後、新しい投稿のみがミュートの対象になります。
-* 条件を変更しても、過去にハードミュートされたノートはミュートされたままになります。
-* 「○○が何かを言いました」でタイムラインが埋まることがありません。
-* ソフトミュートに非対応のアプリでも、ハードミュートは適用されます。
+* Only new notes created after configuration will be affected by the mute.
+* If the conditions are changed, previously hard muted notes will still remain muted.
+* Timelines will not be filled with "(...) said something".
+* Hard mutes will function even for apps without functionality for soft mutes.
