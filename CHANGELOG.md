@@ -11,6 +11,7 @@
 
 ### Improvements
 - 依存関係の更新
+- API: sw/unregisterを追加
 
 ### Bugfixes
 - チャンネルを作成しているとアカウントを削除できないのを修正
