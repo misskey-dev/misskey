@@ -110,7 +110,7 @@
 		"autobind-decorator": "2.4.0",
 		"autosize": "4.0.4",
 		"autwh": "0.1.0",
-		"aws-sdk": "2.966.0",
+		"aws-sdk": "2.972.0",
 		"bcryptjs": "2.4.3",
 		"blurhash": "1.1.4",
 		"broadcast-channel": "4.2.0",
@@ -245,7 +245,7 @@
 		"xev": "2.0.1"
 	},
 	"devDependencies": {
-		"@redocly/openapi-core": "1.0.0-beta.44",
+		"@redocly/openapi-core": "1.0.0-beta.54",
 		"@types/fluent-ffmpeg": "2.1.17",
 		"cross-env": "7.0.3",
 		"cypress": "8.3.0",
