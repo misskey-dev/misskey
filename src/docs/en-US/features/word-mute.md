@@ -1,5 +1,5 @@
 # Word mute
-ワードミュートの設定をすると、条件に合致したノートが表示されなくなります。
+Through setting up word mutes, you can make notes satisfying set conditions not appear on your timeline anymore.
 
 ワードミュートには、ソフトワードミュートとハードワードミュートの2種類があります。それぞれについて設定の方法と挙動を説明します。
 
