@@ -2,16 +2,16 @@ import $ from 'cafy';
 import * as bcrypt from 'bcryptjs';
 import { promisify } from 'util';
 import * as cbor from 'cbor';
-import define from '../../../define.js';
+import define from '../../../define';
 import {
 	UserProfiles,
 	UserSecurityKeys,
 	AttestationChallenges,
 	Users
-} from '@/models/index.js';
-import config from '@/config/index.js';
-import { procedures, hash } from '../../../2fa.js';
-import { publishMainStream } from '@/services/stream.js';
+} from '@/models/index';
+import config from '@/config/index';
+import { procedures, hash } from '../../../2fa';
+import { publishMainStream } from '@/services/stream';
 
 const cborDecodeFirst = promisify(cbor.decodeFirst) as any;
 

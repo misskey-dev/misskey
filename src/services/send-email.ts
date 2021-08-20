@@ -1,7 +1,7 @@
 import * as nodemailer from 'nodemailer';
-import { fetchMeta } from '@/misc/fetch-meta.js';
-import Logger from './logger.js';
-import config from '@/config/index.js';
+import { fetchMeta } from '@/misc/fetch-meta';
+import Logger from './logger';
+import config from '@/config/index';
 
 export const logger = new Logger('email');
 

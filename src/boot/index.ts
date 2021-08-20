@@ -2,13 +2,13 @@ import * as cluster from 'cluster';
 import * as chalk from 'chalk';
 import Xev from 'xev';
 
-import Logger from '@/services/logger.js';
-import { program } from '../argv.js';
+import Logger from '@/services/logger';
+import { program } from '../argv';
 
 // for typeorm
 import 'reflect-metadata';
-import { masterMain } from './master.js';
-import { workerMain } from './worker.js';
+import { masterMain } from './master';
+import { workerMain } from './worker';
 
 const logger = new Logger('core', 'cyan');
 const clusterLogger = logger.createSubLogger('cluster', 'orange', false);

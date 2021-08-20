@@ -1,7 +1,7 @@
 import $ from 'cafy';
-import define from '../../../define.js';
-import { Instances } from '@/models/index.js';
-import { toPuny } from '@/misc/convert-host.js';
+import define from '../../../define';
+import { Instances } from '@/models/index';
+import { toPuny } from '@/misc/convert-host';
 
 export const meta = {
 	tags: ['admin'],

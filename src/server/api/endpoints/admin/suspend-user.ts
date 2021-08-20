@@ -1,12 +1,12 @@
 import $ from 'cafy';
-import { ID } from '@/misc/cafy-id.js';
-import define from '../../define.js';
-import deleteFollowing from '@/services/following/delete.js';
-import { Users, Followings, Notifications } from '@/models/index.js';
-import { User } from '@/models/entities/user.js';
-import { insertModerationLog } from '@/services/insert-moderation-log.js';
-import { doPostSuspend } from '@/services/suspend-user.js';
-import { publishUserEvent } from '@/services/stream.js';
+import { ID } from '@/misc/cafy-id';
+import define from '../../define';
+import deleteFollowing from '@/services/following/delete';
+import { Users, Followings, Notifications } from '@/models/index';
+import { User } from '@/models/entities/user';
+import { insertModerationLog } from '@/services/insert-moderation-log';
+import { doPostSuspend } from '@/services/suspend-user';
+import { publishUserEvent } from '@/services/stream';
 
 export const meta = {
 	tags: ['admin'],

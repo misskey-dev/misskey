@@ -1,5 +1,5 @@
 import autobind from 'autobind-decorator';
-import Channel from '../channel.js';
+import Channel from '../channel';
 
 export default class extends Channel {
 	public readonly chName = 'drive';

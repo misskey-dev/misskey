@@ -1,18 +1,18 @@
 import $ from 'cafy';
 import * as ms from 'ms';
 import { length } from 'stringz';
-import create from '@/services/note/create.js';
-import define from '../../define.js';
-import { fetchMeta } from '@/misc/fetch-meta.js';
-import { ApiError } from '../../error.js';
-import { ID } from '@/misc/cafy-id.js';
-import { User } from '@/models/entities/user.js';
-import { Users, DriveFiles, Notes, Channels, Blockings } from '@/models/index.js';
-import { DriveFile } from '@/models/entities/drive-file.js';
-import { Note } from '@/models/entities/note.js';
-import { DB_MAX_NOTE_TEXT_LENGTH } from '@/misc/hard-limits.js';
-import { noteVisibilities } from '../../../../types.js';
-import { Channel } from '@/models/entities/channel.js';
+import create from '@/services/note/create';
+import define from '../../define';
+import { fetchMeta } from '@/misc/fetch-meta';
+import { ApiError } from '../../error';
+import { ID } from '@/misc/cafy-id';
+import { User } from '@/models/entities/user';
+import { Users, DriveFiles, Notes, Channels, Blockings } from '@/models/index';
+import { DriveFile } from '@/models/entities/drive-file';
+import { Note } from '@/models/entities/note';
+import { DB_MAX_NOTE_TEXT_LENGTH } from '@/misc/hard-limits';
+import { noteVisibilities } from '../../../../types';
+import { Channel } from '@/models/entities/channel';
 
 let maxNoteTextLength = 500;
 

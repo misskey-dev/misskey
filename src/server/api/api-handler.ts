@@ -1,9 +1,9 @@
 import * as Koa from 'koa';
 
-import { IEndpoint } from './endpoints.js';
-import authenticate, { AuthenticationError } from './authenticate.js';
-import call from './call.js';
-import { ApiError } from './error.js';
+import { IEndpoint } from './endpoints';
+import authenticate, { AuthenticationError } from './authenticate';
+import call from './call';
+import { ApiError } from './error';
 
 export default (endpoint: IEndpoint, ctx: Koa.Context) => new Promise((res) => {
 	const body = ctx.request.body;

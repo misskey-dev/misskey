@@ -1,13 +1,13 @@
 import $ from 'cafy';
-import { ID } from '@/misc/cafy-id.js';
-import define from '../../define.js';
-import { getNote } from '../../common/getters.js';
-import { ApiError } from '../../error.js';
+import { ID } from '@/misc/cafy-id';
+import define from '../../define';
+import { getNote } from '../../common/getters';
+import { ApiError } from '../../error';
 import fetch from 'node-fetch';
-import config from '@/config/index.js';
-import { getAgentByUrl } from '@/misc/fetch.js';
+import config from '@/config/index';
+import { getAgentByUrl } from '@/misc/fetch';
 import { URLSearchParams } from 'url';
-import { fetchMeta } from '@/misc/fetch-meta.js';
+import { fetchMeta } from '@/misc/fetch-meta';
 
 export const meta = {
 	tags: ['notes'],

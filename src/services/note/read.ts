@@ -1,13 +1,13 @@
-import { publishMainStream } from '@/services/stream.js';
-import { Note } from '@/models/entities/note.js';
-import { User } from '@/models/entities/user.js';
-import { NoteUnreads, AntennaNotes, Users, Followings, ChannelFollowings } from '@/models/index.js';
+import { publishMainStream } from '@/services/stream';
+import { Note } from '@/models/entities/note';
+import { User } from '@/models/entities/user';
+import { NoteUnreads, AntennaNotes, Users, Followings, ChannelFollowings } from '@/models/index';
 import { Not, IsNull, In } from 'typeorm';
-import { Channel } from '@/models/entities/channel.js';
-import { checkHitAntenna } from '@/misc/check-hit-antenna.js';
-import { getAntennas } from '@/misc/antenna-cache.js';
-import { PackedNote } from '@/models/repositories/note.js';
-import { readNotificationByQuery } from '@/server/api/common/read-notification.js';
+import { Channel } from '@/models/entities/channel';
+import { checkHitAntenna } from '@/misc/check-hit-antenna';
+import { getAntennas } from '@/misc/antenna-cache';
+import { PackedNote } from '@/models/repositories/note';
+import { readNotificationByQuery } from '@/server/api/common/read-notification';
 
 /**
  * Mark notes as read

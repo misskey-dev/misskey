@@ -1,6 +1,6 @@
 import $ from 'cafy';
-import define from '../../../define.js';
-import { removeRelay } from '@/services/relay.js';
+import define from '../../../define';
+import { removeRelay } from '@/services/relay';
 
 export const meta = {
 	tags: ['admin'],

@@ -1,5 +1,5 @@
-import config from '@/config/index.js';
-import { User } from '@/models/entities/user.js';
+import config from '@/config/index';
+import { User } from '@/models/entities/user';
 
 export default (object: any, user: { id: User['id']; host: null }) => ({
 	type: 'Delete',

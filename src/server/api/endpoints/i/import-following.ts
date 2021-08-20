@@ -1,10 +1,10 @@
 import $ from 'cafy';
-import { ID } from '@/misc/cafy-id.js';
-import define from '../../define.js';
-import { createImportFollowingJob } from '@/queue/index.js';
+import { ID } from '@/misc/cafy-id';
+import define from '../../define';
+import { createImportFollowingJob } from '@/queue/index';
 import * as ms from 'ms';
-import { ApiError } from '../../error.js';
-import { DriveFiles } from '@/models/index.js';
+import { ApiError } from '../../error';
+import { DriveFiles } from '@/models/index';
 
 export const meta = {
 	secure: true,

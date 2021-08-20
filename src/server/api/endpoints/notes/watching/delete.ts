@@ -1,9 +1,9 @@
 import $ from 'cafy';
-import { ID } from '@/misc/cafy-id.js';
-import define from '../../../define.js';
-import unwatch from '@/services/note/unwatch.js';
-import { getNote } from '../../../common/getters.js';
-import { ApiError } from '../../../error.js';
+import { ID } from '@/misc/cafy-id';
+import define from '../../../define';
+import unwatch from '@/services/note/unwatch';
+import { getNote } from '../../../common/getters';
+import { ApiError } from '../../../error';
 
 export const meta = {
 	tags: ['notes'],

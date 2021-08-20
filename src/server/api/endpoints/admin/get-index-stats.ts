@@ -1,4 +1,4 @@
-import define from '../../define.js';
+import define from '../../define';
 import { getConnection } from 'typeorm';
 
 export const meta = {

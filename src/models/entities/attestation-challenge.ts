@@ -1,6 +1,6 @@
 import { PrimaryColumn, Entity, JoinColumn, Column, ManyToOne, Index } from 'typeorm';
-import { User } from './user.js';
-import { id } from '../id.js';
+import { User } from './user';
+import { id } from '../id';
 
 @Entity()
 export class AttestationChallenge {

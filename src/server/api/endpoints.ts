@@ -3,7 +3,7 @@ import { dirname } from 'path';
 import { Context } from 'cafy';
 import * as path from 'path';
 import * as glob from 'glob';
-import { Schema } from '@/misc/schema.js';
+import { Schema } from '@/misc/schema';
 
 //const _filename = fileURLToPath(import.meta.url);
 const _filename = __filename;

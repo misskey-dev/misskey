@@ -1,5 +1,5 @@
-import define from '../../../define.js';
-import { listRelay } from '@/services/relay.js';
+import define from '../../../define';
+import { listRelay } from '@/services/relay';
 
 export const meta = {
 	tags: ['admin'],

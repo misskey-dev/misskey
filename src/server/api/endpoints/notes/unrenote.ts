@@ -1,11 +1,11 @@
 import $ from 'cafy';
-import { ID } from '@/misc/cafy-id.js';
-import deleteNote from '@/services/note/delete.js';
-import define from '../../define.js';
+import { ID } from '@/misc/cafy-id';
+import deleteNote from '@/services/note/delete';
+import define from '../../define';
 import * as ms from 'ms';
-import { getNote } from '../../common/getters.js';
-import { ApiError } from '../../error.js';
-import { Notes, Users } from '@/models/index.js';
+import { getNote } from '../../common/getters';
+import { ApiError } from '../../error';
+import { Notes, Users } from '@/models/index';
 
 export const meta = {
 	tags: ['notes'],

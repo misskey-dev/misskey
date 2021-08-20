@@ -1,8 +1,8 @@
 import $ from 'cafy';
-import define from '../../define.js';
-import { fetchMeta } from '@/misc/fetch-meta.js';
-import { genId } from '@/misc/gen-id.js';
-import { SwSubscriptions } from '@/models/index.js';
+import define from '../../define';
+import { fetchMeta } from '@/misc/fetch-meta';
+import { genId } from '@/misc/gen-id';
+import { SwSubscriptions } from '@/models/index';
 
 export const meta = {
 	tags: ['account'],

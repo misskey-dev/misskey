@@ -1,7 +1,7 @@
 import $ from 'cafy';
-import define from '../../../define.js';
-import { RegistryItems } from '@/models/index.js';
-import { ApiError } from '../../../error.js';
+import define from '../../../define';
+import { RegistryItems } from '@/models/index';
+import { ApiError } from '../../../error';
 
 export const meta = {
 	requireCredential: true as const,

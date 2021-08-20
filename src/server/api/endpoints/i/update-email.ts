@@ -1,13 +1,13 @@
 import $ from 'cafy';
-import { publishMainStream } from '@/services/stream.js';
-import define from '../../define.js';
+import { publishMainStream } from '@/services/stream';
+import define from '../../define';
 import rndstr from 'rndstr';
-import config from '@/config/index.js';
+import config from '@/config/index';
 import * as ms from 'ms';
 import * as bcrypt from 'bcryptjs';
-import { Users, UserProfiles } from '@/models/index.js';
-import { sendEmail } from '@/services/send-email.js';
-import { ApiError } from '../../error.js';
+import { Users, UserProfiles } from '@/models/index';
+import { sendEmail } from '@/services/send-email';
+import { ApiError } from '../../error';
 
 export const meta = {
 	requireCredential: true as const,

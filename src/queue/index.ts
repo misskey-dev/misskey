@@ -1,18 +1,18 @@
 import * as httpSignature from 'http-signature';
 
-import config from '@/config/index.js';
-import { program } from '../argv.js';
+import config from '@/config/index';
+import { program } from '../argv';
 
-import processDeliver from './processors/deliver.js';
-import processInbox from './processors/inbox.js';
-import processDb from './processors/db/index.js';
-import procesObjectStorage from './processors/object-storage/index.js';
-import { queueLogger } from './logger.js';
-import { DriveFile } from '@/models/entities/drive-file.js';
-import { getJobInfo } from './get-job-info.js';
-import { dbQueue, deliverQueue, inboxQueue, objectStorageQueue } from './queues.js';
-import { ThinUser } from './types.js';
-import { IActivity } from '@/remote/activitypub/type.js';
+import processDeliver from './processors/deliver';
+import processInbox from './processors/inbox';
+import processDb from './processors/db/index';
+import procesObjectStorage from './processors/object-storage/index';
+import { queueLogger } from './logger';
+import { DriveFile } from '@/models/entities/drive-file';
+import { getJobInfo } from './get-job-info';
+import { dbQueue, deliverQueue, inboxQueue, objectStorageQueue } from './queues';
+import { ThinUser } from './types';
+import { IActivity } from '@/remote/activitypub/type';
 
 function renderError(e: Error): any {
 	return {

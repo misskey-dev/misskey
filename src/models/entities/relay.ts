@@ -1,5 +1,5 @@
 import { PrimaryColumn, Entity, Index, Column } from 'typeorm';
-import { id } from '../id.js';
+import { id } from '../id';
 
 @Entity()
 export class Relay {

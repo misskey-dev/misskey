@@ -1,7 +1,7 @@
-import isNativeToken from './common/is-native-token.js';
-import { User } from '@/models/entities/user.js';
-import { Users, AccessTokens, Apps } from '@/models/index.js';
-import { AccessToken } from '@/models/entities/access-token.js';
+import isNativeToken from './common/is-native-token';
+import { User } from '@/models/entities/user';
+import { Users, AccessTokens, Apps } from '@/models/index';
+import { AccessToken } from '@/models/entities/access-token';
 
 export class AuthenticationError extends Error {
 	constructor(message: string) {

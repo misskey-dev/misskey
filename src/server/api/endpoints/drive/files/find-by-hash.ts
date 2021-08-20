@@ -1,6 +1,6 @@
 import $ from 'cafy';
-import define from '../../../define.js';
-import { DriveFiles } from '@/models/index.js';
+import define from '../../../define';
+import { DriveFiles } from '@/models/index';
 
 export const meta = {
 	tags: ['drive'],

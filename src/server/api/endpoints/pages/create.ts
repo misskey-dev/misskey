@@ -1,11 +1,11 @@
 import $ from 'cafy';
 import * as ms from 'ms';
-import define from '../../define.js';
-import { ID } from '@/misc/cafy-id.js';
-import { Pages, DriveFiles } from '@/models/index.js';
-import { genId } from '@/misc/gen-id.js';
-import { Page } from '@/models/entities/page.js';
-import { ApiError } from '../../error.js';
+import define from '../../define';
+import { ID } from '@/misc/cafy-id';
+import { Pages, DriveFiles } from '@/models/index';
+import { genId } from '@/misc/gen-id';
+import { Page } from '@/models/entities/page';
+import { ApiError } from '../../error';
 
 export const meta = {
 	tags: ['pages'],

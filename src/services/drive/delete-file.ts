@@ -1,19 +1,19 @@
-import { DriveFile } from '@/models/entities/drive-file.js';
-import { InternalStorage } from './internal-storage.js';
-import { DriveFiles, Instances, Notes, Users } from '@/models/index.js';
-import { driveChart, perUserDriveChart, instanceChart } from '@/services/chart/index.js';
-import { createDeleteObjectStorageFileJob } from '@/queue/index.js';
-import { fetchMeta } from '@/misc/fetch-meta.js';
-import { getS3 } from './s3.js';
+import { DriveFile } from '@/models/entities/drive-file';
+import { InternalStorage } from './internal-storage';
+import { DriveFiles, Instances, Notes, Users } from '@/models/index';
+import { driveChart, perUserDriveChart, instanceChart } from '@/services/chart/index';
+import { createDeleteObjectStorageFileJob } from '@/queue/index';
+import { fetchMeta } from '@/misc/fetch-meta';
+import { getS3 } from './s3';
 import { v4 as uuid } from 'uuid';
-import { Note } from '@/models/entities/note.js';
-import { renderActivity } from '@/remote/activitypub/renderer/index.js';
-import renderDelete from '@/remote/activitypub/renderer/delete.js';
-import renderTombstone from '@/remote/activitypub/renderer/tombstone.js';
-import config from '@/config/index.js';
-import { deliverToFollowers } from '@/remote/activitypub/deliver-manager.js';
+import { Note } from '@/models/entities/note';
+import { renderActivity } from '@/remote/activitypub/renderer/index';
+import renderDelete from '@/remote/activitypub/renderer/delete';
+import renderTombstone from '@/remote/activitypub/renderer/tombstone';
+import config from '@/config/index';
+import { deliverToFollowers } from '@/remote/activitypub/deliver-manager';
 import { Brackets } from 'typeorm';
-import { deliverToRelays } from '../relay.js';
+import { deliverToRelays } from '../relay';
 
 export async function deleteFile(file: DriveFile, isExpired = false) {
 	if (file.storedInternal) {

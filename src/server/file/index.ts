@@ -8,7 +8,7 @@ import { dirname } from 'path';
 import * as Koa from 'koa';
 import * as cors from '@koa/cors';
 import * as Router from '@koa/router';
-import sendDriveFile from './send-drive-file.js';
+import sendDriveFile from './send-drive-file';
 
 //const _filename = fileURLToPath(import.meta.url);
 const _filename = __filename;

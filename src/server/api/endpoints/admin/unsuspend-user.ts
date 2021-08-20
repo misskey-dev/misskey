@@ -1,9 +1,9 @@
 import $ from 'cafy';
-import { ID } from '@/misc/cafy-id.js';
-import define from '../../define.js';
-import { Users } from '@/models/index.js';
-import { insertModerationLog } from '@/services/insert-moderation-log.js';
-import { doPostUnsuspend } from '@/services/unsuspend-user.js';
+import { ID } from '@/misc/cafy-id';
+import define from '../../define';
+import { Users } from '@/models/index';
+import { insertModerationLog } from '@/services/insert-moderation-log';
+import { doPostUnsuspend } from '@/services/unsuspend-user';
 
 export const meta = {
 	tags: ['admin'],

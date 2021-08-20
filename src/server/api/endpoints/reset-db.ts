@@ -1,7 +1,7 @@
 import $ from 'cafy';
-import define from '../define.js';
-import { ApiError } from '../error.js';
-import { resetDb } from '@/db/postgre.js';
+import define from '../define';
+import { ApiError } from '../error';
+import { resetDb } from '@/db/postgre';
 
 export const meta = {
 	requireCredential: false as const,

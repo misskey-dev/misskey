@@ -1,7 +1,7 @@
 import autobind from 'autobind-decorator';
-import { publishMainStream } from '@/services/stream.js';
-import Channel from '../../channel.js';
-import { ReversiMatchings } from '@/models/index.js';
+import { publishMainStream } from '@/services/stream';
+import Channel from '../../channel';
+import { ReversiMatchings } from '@/models/index';
 
 export default class extends Channel {
 	public readonly chName = 'gamesReversi';
