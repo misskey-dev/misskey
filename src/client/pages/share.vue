@@ -1,7 +1,6 @@
 <template>
 <div class="">
 	<section class="_section">
-		<div class="_title" v-if="title">{{ title }}</div>
 		<div class="_content">
 			<XPostForm
 				v-if="state === 'writing'"
@@ -24,7 +23,7 @@
 </template>
 
 <script lang="ts">
-// SPECIFICATION: https://wiki.misskey.io/ja/advanced-functions/share
+// SPECIFICATION: /src/docs/ja-JP/advanced/share-page.md
 
 import { defineComponent } from 'vue';
 import MkButton from '@client/components/ui/button.vue';
@@ -68,7 +67,7 @@ export default defineComponent({
 		const url = urlParams.get('url');
 
 		let noteText = '';
-		if (this.title) noteText += `【${this.title}】\n`;
+		if (this.title) noteText += `[ ${this.title} ]\n`;
 		// Googleニュース対策
 		if (text?.startsWith(`${this.title}.\n`)) noteText += text.replace(`${this.title}.\n`, '');
 		else if (text && this.title !== text) noteText += `${text}\n`;
@@ -83,17 +82,16 @@ export default defineComponent({
 		if (this.visibility === 'specified') {
 			const visibleUserIds = urlParams.get('visibleUserIds');
 			const visibleAccts = urlParams.get('visibleAccts');
-			this.visibleUsers = await [
+			this.visibleUsers = await Promise.all([
 				...(visibleUserIds ? visibleUserIds.split(',').map(userId => ({ userId })) : []),
 				...(visibleAccts ? visibleAccts.split(',').map(parseAcct) : [])
 			].map(q => os.api('users/show', q)
-				.catch(() => Error(`invalid user query: ${JSON.stringify(q)}`)));
+				.catch(() => console.error(`invalid user query: ${JSON.stringify(q)}`))));
 		}
 
 		const localOnly = urlParams.get('localOnly');
 		if (localOnly === '0') this.localOnly = false;
 		else if (localOnly === '1') this.localOnly = true;
-
 
 		try {
 			//#region Reply
@@ -114,29 +112,28 @@ export default defineComponent({
 			//#endregion
 
 			//#region Renote
-				const renoteId = urlParams.get('renoteId');
-				const renoteUri = urlParams.get('renoteUri');
-				if (renoteId) {
-					this.renote = await os.api('notes/show', {
-						noteId: renoteId
-					});
-				} else if (renoteUri) {
-					const obj = await os.api('ap/show', {
-						uri: renoteUri
-					}) as any;
-					if (obj.type === 'Note') {
-						this.renote = obj.object;
-					}
+			const renoteId = urlParams.get('renoteId');
+			const renoteUri = urlParams.get('renoteUri');
+			if (renoteId) {
+				this.renote = await os.api('notes/show', {
+					noteId: renoteId
+				});
+			} else if (renoteUri) {
+				const obj = await os.api('ap/show', {
+					uri: renoteUri
+				}) as any;
+				if (obj.type === 'Note') {
+					this.renote = obj.object;
 				}
+			}
 			//#endregion
 
 			//#region Drive files
-				const fileIds = urlParams.get('fileIds');
-				if (fileIds) {
-					const promises = Promise.all(fileIds.split(',')
-						.map(fileId => os.api('drive/files/show', { fileId }).catch(() => Error(`invalid fileId: ${fileId}`))));
-					await promises.then(files => this.files = files);
-				}
+			const fileIds = urlParams.get('fileIds');
+			if (fileIds) {
+				const promises = fileIds.split(',').map(fileId => os.api('drive/files/show', { fileId }).catch(() => console.error(`invalid fileId: ${fileId}`)));
+				await Promise.all(promises).then(files => this.files = files);
+			}
 			//#endregion
 		} catch (e) {
 			os.dialog({

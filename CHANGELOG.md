@@ -14,6 +14,7 @@
 - API: notifications/readは配列でも受け付けるように
 - localStorageのaccountsはindexedDBで保持するように
 - API: sw/unregisterを追加
+- /share のクエリでリプライやファイル等の情報を渡せるように
 
 ### Bugfixes
 - チャンネルを作成しているとアカウントを削除できないのを修正
