@@ -20,6 +20,8 @@ const isProduction = process.env.NODE_ENV === 'production';
 const locales = require('./locales');
 const meta = require('./package.json');
 
+console.log(meta)
+
 const postcss = {
 	loader: 'postcss-loader',
 	options: {
