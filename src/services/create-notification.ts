@@ -35,8 +35,9 @@ export async function createNotification(
 	// Publish notification event
 	publishMainStream(notifieeId, 'notification', packed);
 
+	// !C2MOD
 	// 2秒経っても(今回作成した)通知が既読にならなかったら「未読の通知がありますよ」イベントを発行する
-	setTimeout(async () => {
+	//setTimeout(async () => {
 		const fresh = await Notifications.findOne(notification.id);
 		if (fresh == null) return; // 既に削除されているかもしれない
 		if (fresh.isRead) return;
@@ -55,7 +56,7 @@ export async function createNotification(
 
 		if (type === 'follow') sendEmailNotification.follow(notifieeId, await Users.findOneOrFail(data.notifierId!));
 		if (type === 'receiveFollowRequest') sendEmailNotification.receiveFollowRequest(notifieeId, await Users.findOneOrFail(data.notifierId!));
-	}, 2000);
+	//}, 2000);
 
 	return notification;
 }
