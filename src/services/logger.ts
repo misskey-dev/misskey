@@ -8,7 +8,7 @@ import { Log } from '@/models/entities/log';
 import { genId } from '@/misc/gen-id';
 import config from '@/config/index';
 
-import SyslogPro from 'syslog-pro';
+import * as SyslogPro from 'syslog-pro';
 
 type Domain = {
 	name: string;
