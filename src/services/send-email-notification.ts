@@ -1,7 +1,7 @@
-import { UserProfiles } from '../models';
-import { User } from '../models/entities/user';
+import { UserProfiles } from '@/models/index';
+import { User } from '@/models/entities/user';
 import { sendEmail } from './send-email';
-import * as locales from '../../locales/';
+import * as locales from '../../locales/index';
 import { I18n } from '@/misc/i18n';
 import { getAcct } from '@/misc/acct';
 
@@ -16,12 +16,13 @@ async function follow(userId: User['id'], follower: User) {
 	sendEmail(userProfile.email, i18n.t('_email._follow.title'), `${follower.name} (@${getAcct(follower)})`, `${follower.name} (@${getAcct(follower)})`);
 }
 
-async function receiveFollowRequest(userId: User['id'], args: {}) {
+async function receiveFollowRequest(userId: User['id'], follower: User) {
 	const userProfile = await UserProfiles.findOneOrFail({ userId: userId });
 	if (!userProfile.email || !userProfile.emailNotificationTypes.includes('receiveFollowRequest')) return;
 	const locale = locales[userProfile.lang || 'ja-JP'];
 	const i18n = new I18n(locale);
-	sendEmail(userProfile.email, i18n.t('_email._receiveFollowRequest.title'), 'test', 'test');
+	// TODO: render user information html
+	sendEmail(userProfile.email, i18n.t('_email._receiveFollowRequest.title'), `${follower.name} (@${getAcct(follower)})`, `${follower.name} (@${getAcct(follower)})`);
 }
 
 export const sendEmailNotification = {

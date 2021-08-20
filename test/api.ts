@@ -1,13 +1,4 @@
 /*
- * Tests of API
- *
- * How to run the tests:
- * > npx cross-env TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true npx mocha test/api.ts --require ts-node/register
- *
- * To specify test:
- * > npx cross-env TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true npx mocha test/api.ts --require ts-node/register -g 'test name'
- */
-/*
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';

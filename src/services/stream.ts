@@ -1,12 +1,12 @@
 import { redisClient } from '../db/redis';
-import { User } from '../models/entities/user';
-import { Note } from '../models/entities/note';
-import { UserList } from '../models/entities/user-list';
-import { ReversiGame } from '../models/entities/games/reversi/game';
-import { UserGroup } from '../models/entities/user-group';
-import config from '@/config';
-import { Antenna } from '../models/entities/antenna';
-import { Channel } from '../models/entities/channel';
+import { User } from '@/models/entities/user';
+import { Note } from '@/models/entities/note';
+import { UserList } from '@/models/entities/user-list';
+import { ReversiGame } from '@/models/entities/games/reversi/game';
+import { UserGroup } from '@/models/entities/user-group';
+import config from '@/config/index';
+import { Antenna } from '@/models/entities/antenna';
+import { Channel } from '@/models/entities/channel';
 
 class Publisher {
 	private publish = (channel: string, type: string | null, value?: any): void => {

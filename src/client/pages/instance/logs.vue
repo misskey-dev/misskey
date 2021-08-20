@@ -1,10 +1,10 @@
 <template>
 <div class="_section">
 	<div class="_inputs">
-		<MkInput v-model:value="logDomain" :debounce="true">
-			<span>{{ $ts.domain }}</span>
+		<MkInput v-model="logDomain" :debounce="true">
+			<template #label>{{ $ts.domain }}</template>
 		</MkInput>
-		<MkSelect v-model:value="logLevel">
+		<MkSelect v-model="logLevel">
 			<template #label>Level</template>
 			<option value="all">All</option>
 			<option value="info">Info</option>

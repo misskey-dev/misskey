@@ -1,8 +1,8 @@
 import { DOMWindow, JSDOM } from 'jsdom';
 import fetch from 'node-fetch';
 import { getJson, getHtml, getAgentByUrl } from '@/misc/fetch';
-import { Instance } from '../models/entities/instance';
-import { Instances } from '../models';
+import { Instance } from '@/models/entities/instance';
+import { Instances } from '@/models/index';
 import { getFetchInstanceMetadataLock } from '@/misc/app-lock';
 import Logger from './logger';
 import { URL } from 'url';

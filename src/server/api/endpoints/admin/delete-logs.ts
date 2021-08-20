@@ -1,5 +1,5 @@
 import define from '../../define';
-import { Logs } from '../../../../models';
+import { Logs } from '@/models/index';
 
 export const meta = {
 	tags: ['admin'],

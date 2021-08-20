@@ -1,19 +1,19 @@
 import { URL } from 'url';
 import * as Bull from 'bull';
 import * as httpSignature from 'http-signature';
-import perform from '../../remote/activitypub/perform';
-import Logger from '../../services/logger';
-import { registerOrFetchInstanceDoc } from '../../services/register-or-fetch-instance-doc';
-import { Instances } from '../../models';
-import { instanceChart } from '../../services/chart';
+import perform from '@/remote/activitypub/perform';
+import Logger from '@/services/logger';
+import { registerOrFetchInstanceDoc } from '@/services/register-or-fetch-instance-doc';
+import { Instances } from '@/models/index';
+import { instanceChart } from '@/services/chart/index';
 import { fetchMeta } from '@/misc/fetch-meta';
 import { toPuny, extractDbHost } from '@/misc/convert-host';
-import { getApId } from '../../remote/activitypub/type';
-import { fetchInstanceMetadata } from '../../services/fetch-instance-metadata';
+import { getApId } from '@/remote/activitypub/type';
+import { fetchInstanceMetadata } from '@/services/fetch-instance-metadata';
 import { InboxJobData } from '../types';
-import DbResolver from '../../remote/activitypub/db-resolver';
-import { resolvePerson } from '../../remote/activitypub/models/person';
-import { LdSignature } from '../../remote/activitypub/misc/ld-signature';
+import DbResolver from '@/remote/activitypub/db-resolver';
+import { resolvePerson } from '@/remote/activitypub/models/person';
+import { LdSignature } from '@/remote/activitypub/misc/ld-signature';
 
 const logger = new Logger('inbox');
 

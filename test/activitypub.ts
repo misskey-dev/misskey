@@ -1,12 +1,3 @@
-/*
- * Tests for ActivityPub
- *
- * How to run the tests:
- * > npx cross-env TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT="./test/tsconfig.json" mocha test/activitypub.ts --require ts-node/register
- *
- * To specify test:
- * > npx cross-env TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT="./test/tsconfig.json" npx mocha test/activitypub.ts --require ts-node/register -g 'test name'
- */
 process.env.NODE_ENV = 'test';
 
 import rndstr from 'rndstr';
@@ -68,6 +59,36 @@ describe('ActivityPub', () => {
 			assert.deepStrictEqual(note?.uri, post.id);
 			assert.deepStrictEqual(note?.visibility, 'public');
 			assert.deepStrictEqual(note?.text, post.content);
+		});
+	});
+
+	describe('Truncate long name', () => {
+		const host = 'https://host1.test';
+		const preferredUsername = `${rndstr('A-Z', 4)}${rndstr('a-z', 4)}`;
+		const actorId = `${host}/users/${preferredUsername.toLowerCase()}`;
+
+		const name = rndstr('0-9a-z', 129);
+
+		const actor = {
+			'@context': 'https://www.w3.org/ns/activitystreams',
+			id: actorId,
+			type: 'Person',
+			preferredUsername,
+			name,
+			inbox: `${actorId}/inbox`,
+			outbox: `${actorId}/outbox`,
+		};
+
+		it('Actor', async () => {
+			const { MockResolver } = await import('./misc/mock-resolver');
+			const { createPerson } = await import('../src/remote/activitypub/models/person');
+
+			const resolver = new MockResolver();
+			resolver._register(actor.id, actor);
+
+			const user = await createPerson(actor.id, resolver);
+
+			assert.deepStrictEqual(user.name, actor.name.substr(0, 128));
 		});
 	});
 });

@@ -1,5 +1,6 @@
 import { redisClient } from '../db/redis';
 import { promisify } from 'util';
+import * as redisLock from 'redis-lock';
 
 /**
  * Retry delay (ms) for lock acquisition
@@ -8,7 +9,7 @@ const retryDelay = 100;
 
 const lock: (key: string, timeout?: number) => Promise<() => void>
 	= redisClient
-	? promisify(require('redis-lock')(redisClient, retryDelay))
+	? promisify(redisLock(redisClient, retryDelay))
 	: async () => () => { };
 
 /**

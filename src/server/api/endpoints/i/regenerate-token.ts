@@ -1,9 +1,9 @@
 import $ from 'cafy';
 import * as bcrypt from 'bcryptjs';
-import { publishMainStream, publishUserEvent } from '../../../../services/stream';
+import { publishMainStream, publishUserEvent } from '@/services/stream';
 import generateUserToken from '../../common/generate-native-user-token';
 import define from '../../define';
-import { Users, UserProfiles } from '../../../../models';
+import { Users, UserProfiles } from '@/models/index';
 
 export const meta = {
 	requireCredential: true as const,

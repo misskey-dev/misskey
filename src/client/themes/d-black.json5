@@ -11,9 +11,7 @@
 		panel: '#131313',
 		panelHeaderBg: '@panel',
 		panelHeaderDivider: '@divider',
-		panelShadow: '" 0 8px 24px rgb(0 0 0 / 25%)',
 		shadow: 'rgba(255, 255, 255, 0.05)',
 		modalBg: 'rgba(255, 255, 255, 0.1)',
-		messageBg: '#1d1d1d',
 	},
 }

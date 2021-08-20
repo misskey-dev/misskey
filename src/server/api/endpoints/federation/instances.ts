@@ -1,7 +1,7 @@
 import $ from 'cafy';
-import config from '@/config';
+import config from '@/config/index';
 import define from '../../define';
-import { Instances } from '../../../../models';
+import { Instances } from '@/models/index';
 import { fetchMeta } from '@/misc/fetch-meta';
 
 export const meta = {

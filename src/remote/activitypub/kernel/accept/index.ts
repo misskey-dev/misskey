@@ -1,5 +1,5 @@
 import Resolver from '../../resolver';
-import { IRemoteUser } from '../../../../models/entities/user';
+import { IRemoteUser } from '@/models/entities/user';
 import acceptFollow from './follow';
 import { IAccept, isFollow, getApType } from '../../type';
 import { apLogger } from '../../logger';

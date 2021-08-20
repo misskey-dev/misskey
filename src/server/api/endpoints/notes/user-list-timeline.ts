@@ -2,10 +2,10 @@ import $ from 'cafy';
 import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { ApiError } from '../../error';
-import { UserLists, UserListJoinings, Notes } from '../../../../models';
+import { UserLists, UserListJoinings, Notes } from '@/models/index';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query';
-import { activeUsersChart } from '../../../../services/chart';
+import { activeUsersChart } from '@/services/chart/index';
 import { Brackets } from 'typeorm';
 
 export const meta = {

@@ -1,5 +1,5 @@
 import { USER_ONLINE_THRESHOLD } from '@/const';
-import { Users } from '@/models';
+import { Users } from '@/models/index';
 import { MoreThan } from 'typeorm';
 import define from '../define';
 

@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import define from '../../define';
-import Resolver from '../../../../remote/activitypub/resolver';
+import Resolver from '@/remote/activitypub/resolver';
 import { ApiError } from '../../error';
 
 export const meta = {

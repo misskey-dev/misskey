@@ -1,5 +1,5 @@
-import { IRemoteUser } from '../../../models/entities/user';
-import follow from '../../../services/following/create';
+import { IRemoteUser } from '@/models/entities/user';
+import follow from '@/services/following/create';
 import { IFollow } from '../type';
 import DbResolver from '../db-resolver';
 
