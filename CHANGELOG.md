@@ -12,6 +12,7 @@
 ### Improvements
 - 依存関係の更新
 - API: notifications/readは配列でも受け付けるように
+- localStorageのaccountsはindexedDBで保持するように
 
 ### Bugfixes
 - チャンネルを作成しているとアカウントを削除できないのを修正

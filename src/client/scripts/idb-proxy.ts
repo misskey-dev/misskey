@@ -13,7 +13,7 @@ let idbAvailable = typeof window !== 'undefined' ? !!window.indexedDB : true;
 
 if (idbAvailable) {
 	try {
-		await createStore('keyval-store', 'keyval')
+		await createStore('keyval-store', 'keyval');
 	} catch (e) {
 		console.error('idb open error', e);
 		idbAvailable = false;
