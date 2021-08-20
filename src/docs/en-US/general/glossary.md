@@ -80,7 +80,7 @@ Users of Misskey.
 The act of sharing information created one one's server with other servers.
 
 ## Remote
-Used in context of your own server.Also used as prefix in other words like "Local users", "local timeline".The opposite of "Remote".
+Used in context of servers separate from your own.Also used as prefix in other words like "Remote user".The opposite of "Local".
 
 ## Federation
 The act of sharing information created one one's server with other servers.
