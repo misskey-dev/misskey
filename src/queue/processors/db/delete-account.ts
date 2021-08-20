@@ -33,7 +33,6 @@ export async function deleteAccount(job: Bull.Job<DbUserJobData>): Promise<strin
 			});
 
 			if (notes.length === 0) {
-				job.progress(100);
 				break;
 			}
 
@@ -61,7 +60,6 @@ export async function deleteAccount(job: Bull.Job<DbUserJobData>): Promise<strin
 			});
 
 			if (files.length === 0) {
-				job.progress(100);
 				break;
 			}
 
