@@ -1,8 +1,8 @@
 import $ from 'cafy';
-import { publishMainStream } from '@/services/stream.js';
-import define from '../../../define.js';
-import { RegistryItems } from '@/models/index.js';
-import { genId } from '@/misc/gen-id.js';
+import { publishMainStream } from '@/services/stream';
+import define from '../../../define';
+import { RegistryItems } from '@/models/index';
+import { genId } from '@/misc/gen-id';
 
 export const meta = {
 	requireCredential: true as const,

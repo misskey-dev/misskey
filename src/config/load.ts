@@ -6,7 +6,7 @@ import * as fs from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import * as yaml from 'js-yaml';
-import { Source, Mixin } from './types.js';
+import { Source, Mixin } from './types';
 import * as meta from '../meta.json';
 
 //const _filename = fileURLToPath(import.meta.url);

@@ -1,9 +1,9 @@
 import $ from 'cafy';
-import define from '../../../define.js';
-import { UserGroups, UserGroupJoinings } from '@/models/index.js';
-import { genId } from '@/misc/gen-id.js';
-import { UserGroup } from '@/models/entities/user-group.js';
-import { UserGroupJoining } from '@/models/entities/user-group-joining.js';
+import define from '../../../define';
+import { UserGroups, UserGroupJoinings } from '@/models/index';
+import { genId } from '@/misc/gen-id';
+import { UserGroup } from '@/models/entities/user-group';
+import { UserGroupJoining } from '@/models/entities/user-group-joining';
 
 export const meta = {
 	tags: ['groups'],

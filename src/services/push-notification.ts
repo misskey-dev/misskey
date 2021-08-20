@@ -1,10 +1,10 @@
 import * as push from 'web-push';
-import config from '@/config/index.js';
-import { SwSubscriptions } from '@/models/index.js';
-import { fetchMeta } from '@/misc/fetch-meta.js';
-import { PackedNotification } from '../models/repositories/notification.js';
-import { PackedMessagingMessage } from '../models/repositories/messaging-message.js';
-import { pushNotificationData } from '../types.js';
+import config from '@/config/index';
+import { SwSubscriptions } from '@/models/index';
+import { fetchMeta } from '@/misc/fetch-meta';
+import { PackedNotification } from '../models/repositories/notification';
+import { PackedMessagingMessage } from '../models/repositories/messaging-message';
+import { pushNotificationData } from '../types';
 
 type pushNotificationsTypes = {
 	'notification': PackedNotification;

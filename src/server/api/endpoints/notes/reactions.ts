@@ -1,11 +1,11 @@
 import $ from 'cafy';
-import { ID } from '@/misc/cafy-id.js';
-import define from '../../define.js';
-import { getNote } from '../../common/getters.js';
-import { ApiError } from '../../error.js';
-import { NoteReactions } from '@/models/index.js';
+import { ID } from '@/misc/cafy-id';
+import define from '../../define';
+import { getNote } from '../../common/getters';
+import { ApiError } from '../../error';
+import { NoteReactions } from '@/models/index';
 import { DeepPartial } from 'typeorm';
-import { NoteReaction } from '@/models/entities/note-reaction.js';
+import { NoteReaction } from '@/models/entities/note-reaction';
 
 export const meta = {
 	tags: ['notes', 'reactions'],

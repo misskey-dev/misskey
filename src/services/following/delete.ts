@@ -1,13 +1,13 @@
-import { publishMainStream, publishUserEvent } from '@/services/stream.js';
-import { renderActivity } from '@/remote/activitypub/renderer/index.js';
-import renderFollow from '@/remote/activitypub/renderer/follow.js';
-import renderUndo from '@/remote/activitypub/renderer/undo.js';
-import { deliver } from '@/queue/index.js';
-import Logger from '../logger.js';
-import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc.js';
-import { User } from '@/models/entities/user.js';
-import { Followings, Users, Instances } from '@/models/index.js';
-import { instanceChart, perUserFollowingChart } from '@/services/chart/index.js';
+import { publishMainStream, publishUserEvent } from '@/services/stream';
+import { renderActivity } from '@/remote/activitypub/renderer/index';
+import renderFollow from '@/remote/activitypub/renderer/follow';
+import renderUndo from '@/remote/activitypub/renderer/undo';
+import { deliver } from '@/queue/index';
+import Logger from '../logger';
+import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
+import { User } from '@/models/entities/user';
+import { Followings, Users, Instances } from '@/models/index';
+import { instanceChart, perUserFollowingChart } from '@/services/chart/index';
 
 const logger = new Logger('following/delete');
 

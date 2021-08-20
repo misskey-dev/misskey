@@ -1,11 +1,11 @@
-import { IRemoteUser } from '@/models/entities/user.js';
-import { IUndo, isFollow, isBlock, isLike, isAnnounce, getApType } from '../../type.js';
-import unfollow from './follow.js';
-import unblock from './block.js';
-import undoLike from './like.js';
-import { undoAnnounce } from './announce.js';
-import Resolver from '../../resolver.js';
-import { apLogger } from '../../logger.js';
+import { IRemoteUser } from '@/models/entities/user';
+import { IUndo, isFollow, isBlock, isLike, isAnnounce, getApType } from '../../type';
+import unfollow from './follow';
+import unblock from './block';
+import undoLike from './like';
+import { undoAnnounce } from './announce';
+import Resolver from '../../resolver';
+import { apLogger } from '../../logger';
 
 const logger = apLogger;
 

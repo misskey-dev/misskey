@@ -1,9 +1,9 @@
 import * as Limiter from 'ratelimiter';
-import { redisClient } from '../../db/redis.js';
-import { IEndpoint } from './endpoints.js';
-import { getAcct } from '@/misc/acct.js';
-import { User } from '@/models/entities/user.js';
-import Logger from '@/services/logger.js';
+import { redisClient } from '../../db/redis';
+import { IEndpoint } from './endpoints';
+import { getAcct } from '@/misc/acct';
+import { User } from '@/models/entities/user';
+import Logger from '@/services/logger';
 
 const logger = new Logger('limiter');
 

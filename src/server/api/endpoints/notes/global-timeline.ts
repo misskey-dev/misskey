@@ -1,15 +1,15 @@
 import $ from 'cafy';
-import { ID } from '@/misc/cafy-id.js';
-import define from '../../define.js';
-import { fetchMeta } from '@/misc/fetch-meta.js';
-import { ApiError } from '../../error.js';
-import { makePaginationQuery } from '../../common/make-pagination-query.js';
-import { Notes } from '@/models/index.js';
-import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
-import { activeUsersChart } from '@/services/chart/index.js';
-import { generateRepliesQuery } from '../../common/generate-replies-query.js';
-import { generateMutedNoteQuery } from '../../common/generate-muted-note-query.js';
-import { generateBlockedUserQuery } from '../../common/generate-block-query.js';
+import { ID } from '@/misc/cafy-id';
+import define from '../../define';
+import { fetchMeta } from '@/misc/fetch-meta';
+import { ApiError } from '../../error';
+import { makePaginationQuery } from '../../common/make-pagination-query';
+import { Notes } from '@/models/index';
+import { generateMutedUserQuery } from '../../common/generate-muted-user-query';
+import { activeUsersChart } from '@/services/chart/index';
+import { generateRepliesQuery } from '../../common/generate-replies-query';
+import { generateMutedNoteQuery } from '../../common/generate-muted-note-query';
+import { generateBlockedUserQuery } from '../../common/generate-block-query';
 
 export const meta = {
 	tags: ['notes'],

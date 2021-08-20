@@ -1,9 +1,9 @@
 import $ from 'cafy';
-import { ID } from '@/misc/cafy-id.js';
-import define from '../../define.js';
-import { ApiError } from '../../error.js';
-import { Pages, PageLikes } from '@/models/index.js';
-import { genId } from '@/misc/gen-id.js';
+import { ID } from '@/misc/cafy-id';
+import define from '../../define';
+import { ApiError } from '../../error';
+import { Pages, PageLikes } from '@/models/index';
+import { genId } from '@/misc/gen-id';
 
 export const meta = {
 	tags: ['pages'],

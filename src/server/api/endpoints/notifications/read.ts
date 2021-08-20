@@ -1,8 +1,8 @@
 import $ from 'cafy';
-import { ID } from '@/misc/cafy-id.js';
-import define from '../../define.js';
-import { readNotification } from '../../common/read-notification.js';
-import { ApiError } from '../../error.js';
+import { ID } from '@/misc/cafy-id';
+import define from '../../define';
+import { readNotification } from '../../common/read-notification';
+import { ApiError } from '../../error';
 
 export const meta = {
 	desc: {

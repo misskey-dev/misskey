@@ -16,21 +16,11 @@ export const meta = {
 		endpoint: {
 			validator: $.str
 		},
-
-		all: {
-			validator: $.optional.bool,
-			default: false,
-			desc: {
-				'ja-JP': 'false（デフォルト）は、自分の登録のみが解除されます。trueを指定すると、指定したエンドポイントのすべての登録を解除します。'
-			}
-		}
 	}
 };
 
 export default define(meta, async (ps, user) => {
-	await SwSubscriptions.delete(ps.all ? {
-		endpoint: ps.endpoint,
-	} : {
+	await SwSubscriptions.delete({
 		userId: user.id,
 		endpoint: ps.endpoint,
 	});

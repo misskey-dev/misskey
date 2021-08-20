@@ -1,9 +1,9 @@
 import $ from 'cafy';
-import { ID } from '@/misc/cafy-id.js';
-import { publishReversiGameStream } from '@/services/stream.js';
-import define from '../../../../define.js';
-import { ApiError } from '../../../../error.js';
-import { ReversiGames } from '@/models/index.js';
+import { ID } from '@/misc/cafy-id';
+import { publishReversiGameStream } from '@/services/stream';
+import define from '../../../../define';
+import { ApiError } from '../../../../error';
+import { ReversiGames } from '@/models/index';
 
 export const meta = {
 	tags: ['games'],

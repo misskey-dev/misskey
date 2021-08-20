@@ -1,8 +1,8 @@
 import $ from 'cafy';
-import { ID } from '@/misc/cafy-id.js';
-import define from '../../define.js';
-import { ApiError } from '../../error.js';
-import { Channels, DriveFiles } from '@/models/index.js';
+import { ID } from '@/misc/cafy-id';
+import define from '../../define';
+import { ApiError } from '../../error';
+import { Channels, DriveFiles } from '@/models/index';
 
 export const meta = {
 	tags: ['channels'],

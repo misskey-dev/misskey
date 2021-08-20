@@ -1,8 +1,8 @@
 import $ from 'cafy';
-import { ID } from '@/misc/cafy-id.js';
-import define from '../../../define.js';
-import { ReversiGames } from '@/models/index.js';
-import { makePaginationQuery } from '../../../common/make-pagination-query.js';
+import { ID } from '@/misc/cafy-id';
+import define from '../../../define';
+import { ReversiGames } from '@/models/index';
+import { makePaginationQuery } from '../../../common/make-pagination-query';
 import { Brackets } from 'typeorm';
 
 export const meta = {

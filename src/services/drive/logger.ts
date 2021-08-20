@@ -1,3 +1,3 @@
-import Logger from '../logger.js';
+import Logger from '../logger';
 
 export const driveLogger = new Logger('drive', 'blue');

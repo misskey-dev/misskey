@@ -1,8 +1,8 @@
 import $ from 'cafy';
-import { ID } from '@/misc/cafy-id.js';
-import define from '../../define.js';
-import { Clips } from '@/models/index.js';
-import { makePaginationQuery } from '../../common/make-pagination-query.js';
+import { ID } from '@/misc/cafy-id';
+import define from '../../define';
+import { Clips } from '@/models/index';
+import { makePaginationQuery } from '../../common/make-pagination-query';
 
 export const meta = {
 	tags: ['users', 'clips'],

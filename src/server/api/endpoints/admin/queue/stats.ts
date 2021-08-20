@@ -1,5 +1,5 @@
-import { deliverQueue, inboxQueue, dbQueue, objectStorageQueue } from '@/queue/queues.js';
-import define from '../../../define.js';
+import { deliverQueue, inboxQueue, dbQueue, objectStorageQueue } from '@/queue/queues';
+import define from '../../../define';
 
 export const meta = {
 	tags: ['admin'],

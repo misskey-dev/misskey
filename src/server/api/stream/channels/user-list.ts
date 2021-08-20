@@ -1,10 +1,10 @@
 import autobind from 'autobind-decorator';
-import Channel from '../channel.js';
-import { Notes, UserListJoinings, UserLists } from '@/models/index.js';
-import { isMutedUserRelated } from '@/misc/is-muted-user-related.js';
-import { User } from '@/models/entities/user.js';
-import { PackedNote } from '@/models/repositories/note.js';
-import { isBlockerUserRelated } from '@/misc/is-blocker-user-related.js';
+import Channel from '../channel';
+import { Notes, UserListJoinings, UserLists } from '@/models/index';
+import { isMutedUserRelated } from '@/misc/is-muted-user-related';
+import { User } from '@/models/entities/user';
+import { PackedNote } from '@/models/repositories/note';
+import { isBlockerUserRelated } from '@/misc/is-blocker-user-related';
 
 export default class extends Channel {
 	public readonly chName = 'userList';

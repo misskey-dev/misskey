@@ -1,14 +1,14 @@
 import $ from 'cafy';
-import es from '../../../../db/elasticsearch.js';
-import define from '../../define.js';
-import { Notes } from '@/models/index.js';
+import es from '../../../../db/elasticsearch';
+import define from '../../define';
+import { Notes } from '@/models/index';
 import { In } from 'typeorm';
-import { ID } from '@/misc/cafy-id.js';
-import config from '@/config/index.js';
-import { makePaginationQuery } from '../../common/make-pagination-query.js';
-import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
-import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
-import { generateBlockedUserQuery } from '../../common/generate-block-query.js';
+import { ID } from '@/misc/cafy-id';
+import config from '@/config/index';
+import { makePaginationQuery } from '../../common/make-pagination-query';
+import { generateVisibilityQuery } from '../../common/generate-visibility-query';
+import { generateMutedUserQuery } from '../../common/generate-muted-user-query';
+import { generateBlockedUserQuery } from '../../common/generate-block-query';
 
 export const meta = {
 	tags: ['notes'],

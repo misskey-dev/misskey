@@ -1,6 +1,6 @@
 import $ from 'cafy';
-import define from '../../define.js';
-import { createNotification } from '@/services/create-notification.js';
+import define from '../../define';
+import { createNotification } from '@/services/create-notification';
 
 export const meta = {
 	tags: ['notifications'],

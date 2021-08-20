@@ -2,13 +2,13 @@ import * as Bull from 'bull';
 import * as tmp from 'tmp';
 import * as fs from 'fs';
 
-import { queueLogger } from '../../logger.js';
-import addFile from '@/services/drive/add-file.js';
+import { queueLogger } from '../../logger';
+import addFile from '@/services/drive/add-file';
 import dateFormat from 'dateformat';
-import { getFullApAccount } from '@/misc/convert-host.js';
-import { Users, UserLists, UserListJoinings } from '@/models/index.js';
+import { getFullApAccount } from '@/misc/convert-host';
+import { Users, UserLists, UserListJoinings } from '@/models/index';
 import { In } from 'typeorm';
-import { DbUserJobData } from '@/queue/types.js';
+import { DbUserJobData } from '@/queue/types';
 
 const logger = queueLogger.createSubLogger('export-user-lists');
 

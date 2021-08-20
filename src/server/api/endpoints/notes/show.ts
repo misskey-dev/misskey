@@ -1,9 +1,9 @@
 import $ from 'cafy';
-import { ID } from '@/misc/cafy-id.js';
-import define from '../../define.js';
-import { getNote } from '../../common/getters.js';
-import { ApiError } from '../../error.js';
-import { Notes } from '@/models/index.js';
+import { ID } from '@/misc/cafy-id';
+import define from '../../define';
+import { getNote } from '../../common/getters';
+import { ApiError } from '../../error';
+import { Notes } from '@/models/index';
 
 export const meta = {
 	tags: ['notes'],

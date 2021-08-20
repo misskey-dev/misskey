@@ -1,10 +1,10 @@
 import autobind from 'autobind-decorator';
-import { isMutedUserRelated } from '@/misc/is-muted-user-related.js';
-import Channel from '../channel.js';
-import { Notes } from '@/models/index.js';
-import { PackedNote } from '@/models/repositories/note.js';
-import { normalizeForSearch } from '@/misc/normalize-for-search.js';
-import { isBlockerUserRelated } from '@/misc/is-blocker-user-related.js';
+import { isMutedUserRelated } from '@/misc/is-muted-user-related';
+import Channel from '../channel';
+import { Notes } from '@/models/index';
+import { PackedNote } from '@/models/repositories/note';
+import { normalizeForSearch } from '@/misc/normalize-for-search';
+import { isBlockerUserRelated } from '@/misc/is-blocker-user-related';
 
 export default class extends Channel {
 	public readonly chName = 'hashtag';

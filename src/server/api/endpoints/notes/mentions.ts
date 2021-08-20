@@ -1,13 +1,13 @@
 import $ from 'cafy';
-import { ID } from '@/misc/cafy-id.js';
-import define from '../../define.js';
-import read from '@/services/note/read.js';
-import { Notes, Followings } from '@/models/index.js';
-import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
-import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
-import { makePaginationQuery } from '../../common/make-pagination-query.js';
+import { ID } from '@/misc/cafy-id';
+import define from '../../define';
+import read from '@/services/note/read';
+import { Notes, Followings } from '@/models/index';
+import { generateVisibilityQuery } from '../../common/generate-visibility-query';
+import { generateMutedUserQuery } from '../../common/generate-muted-user-query';
+import { makePaginationQuery } from '../../common/make-pagination-query';
 import { Brackets } from 'typeorm';
-import { generateBlockedUserQuery } from '../../common/generate-block-query.js';
+import { generateBlockedUserQuery } from '../../common/generate-block-query';
 
 export const meta = {
 	tags: ['notes'],

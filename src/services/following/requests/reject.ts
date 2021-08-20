@@ -1,11 +1,11 @@
-import { renderActivity } from '@/remote/activitypub/renderer/index.js';
-import renderFollow from '@/remote/activitypub/renderer/follow.js';
-import renderReject from '@/remote/activitypub/renderer/reject.js';
-import { deliver } from '@/queue/index.js';
-import { publishMainStream, publishUserEvent } from '@/services/stream.js';
-import { User, ILocalUser } from '@/models/entities/user.js';
-import { Users, FollowRequests, Followings } from '@/models/index.js';
-import { decrementFollowing } from '../delete.js';
+import { renderActivity } from '@/remote/activitypub/renderer/index';
+import renderFollow from '@/remote/activitypub/renderer/follow';
+import renderReject from '@/remote/activitypub/renderer/reject';
+import { deliver } from '@/queue/index';
+import { publishMainStream, publishUserEvent } from '@/services/stream';
+import { User, ILocalUser } from '@/models/entities/user';
+import { Users, FollowRequests, Followings } from '@/models/index';
+import { decrementFollowing } from '../delete';
 
 export default async function(followee: { id: User['id']; host: User['host']; uri: User['host'] }, follower: User) {
 	if (Users.isRemoteUser(follower) && Users.isLocalUser(followee)) {

@@ -1,4 +1,4 @@
-import { updateQuestion } from '@/remote/activitypub/models/question.js';
+import { updateQuestion } from '@/remote/activitypub/models/question';
 
 async function main(uri: string): Promise<any> {
 	return await updateQuestion(uri);

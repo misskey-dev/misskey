@@ -1,7 +1,7 @@
 import $ from 'cafy';
-import define from '../../define.js';
-import Resolver from '@/remote/activitypub/resolver.js';
-import { ApiError } from '../../error.js';
+import define from '../../define';
+import Resolver from '@/remote/activitypub/resolver';
+import { ApiError } from '../../error';
 
 export const meta = {
 	tags: ['federation'],

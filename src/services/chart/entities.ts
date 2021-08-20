@@ -1,6 +1,6 @@
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import Chart from './core.js';
+import Chart from './core';
 
 //const _filename = fileURLToPath(import.meta.url);
 const _filename = __filename;
