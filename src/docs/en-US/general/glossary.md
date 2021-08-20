@@ -59,7 +59,7 @@ todo
 todo
 
 ## Silence
-ノートをパブリックな公開範囲で投稿できなくされている状態。Can be set for individual users by the discretion of Moderators.For details, see [here.](../features/silence)
+A state in which the visibility of the notes by said user cannot be set to "Public" anymore.Can be set for individual users by the discretion of Moderators.For details, see [here.](../features/silence)
 
 ## Job Queue
 アクティビティ配送などを順番に行うためのシステム。
@@ -73,7 +73,7 @@ A feature allowing users to organize the files they have uploaded to Misskey.For
 ## Notes
 Content which may include text, images, surveys and others that has been posted to Misskey.For details, see [here.](../features/note)
 
-## ミスキスト
+## Misskist
 Users of Misskey.
 
 ## Moderator
