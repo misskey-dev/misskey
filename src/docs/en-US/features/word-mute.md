@@ -1,18 +1,18 @@
 # Word mute
 Through setting up word mutes, you can make notes satisfying set conditions not appear on your timeline anymore.
 
-ワードミュートには、ソフトワードミュートとハードワードミュートの2種類があります。それぞれについて設定の方法と挙動を説明します。
+There are two types of word mutes: soft and hard.Below is an explanation of the setup process and effect of both.
 
-## ソフトワードミュート
-ソフトワードミュートは、クライアント（アプリ）側でミュートを判断するワードミュートです。
+## Soft word mute
+With soft mutes, the word mute is processed within the client (app) you are using.
 
-ノートが設定した条件に合致すると、「（ユーザー名）が何かを言いました」という表示で隠れます。  
-クリックすると元の通りに表示されます。
+When a note meets the set conditions, it will be hidden behind text stating "(username) said something".  
+You can display the note as it was by clicking on this text.
 
-## ハードワードミュート
+## Hard word mute
 ハードワードミュートは、アンテナのようにサーバーが新しいノートの本文に対して条件に合致するかどうか判断し、タイムラインから対象となったノートを除外します。
 
-つまり、ハードワードミュートには、以下のような特徴があります。
+To summarize, a hard word mute has the following features:
 
 * 条件設定後、新しい投稿のみがミュートの対象になります。
 * 条件を変更しても、過去にハードミュートされたノートはミュートされたままになります。
