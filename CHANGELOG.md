@@ -10,6 +10,7 @@
 ## 12.x.x (unreleased)
 
 ### Improvements
+- アカウント削除の安定性を向上
 - 依存関係の更新
 
 ### Bugfixes

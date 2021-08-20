@@ -173,6 +173,39 @@ export function createImportUserListsJob(user: ThinUser, fileId: DriveFile['id']
 	});
 }
 
+export const deleteAccountJobs = {
+	beginDeleteAccountJobs(user: ThinUser) {
+		return deleteAccountJobs.createDeleteNotesJob(user);
+	},
+
+	createDeleteNotesJob(user: ThinUser) {
+		return dbQueue.add('deleteAccount_deleteNotes', {
+			user: user
+		}, {
+			removeOnComplete: true,
+			removeOnFail: true
+		});
+	},
+
+	createDeleteFilesJob(user: ThinUser) {
+		return dbQueue.add('deleteAccount_deleteFiles', {
+			user: user
+		}, {
+			removeOnComplete: true,
+			removeOnFail: true
+		});
+	},
+
+	finishDeleteAccountJobs(user: ThinUser) {
+		return dbQueue.add('deleteAccount_deleteAccount', {
+			user: user
+		}, {
+			removeOnComplete: true,
+			removeOnFail: true
+		});
+	},
+};
+
 export function createDeleteObjectStorageFileJob(key: string) {
 	return objectStorageQueue.add('deleteFile', {
 		key: key
