@@ -1,8 +1,8 @@
-# 不具合の報告
-不具合と思われる状況に遭遇したときは、まず[トラブルシューティング](./troubleshooting)をご一読ください。 それでも問題が解決しないときは、以下の情報を含めて[フォーラム](https://forum.misskey.io/)に投稿してください。 投稿することで、解決策が見つかったり、不具合と判断されれば開発チームによって修正が行われます。
+# Reporting bugs
+If you run into situations you believe to be a bug, please check th [Troubleshooting](./troubleshooting) first. In the case that this doesn't solve your issue, please post to the [Forums](https://forum.misskey.io/) including the below information. By doing so a solution may be found or your situation can be noted down as a bug, which means the development team can work on fixing it.
 
-## 含める情報
-- Misskeyのバージョン([情報ページ](/about)で確認できます)
-- お使いのブラウザの種類とバージョン
-- お使いのOSの種類とバージョン
-- 問題の再現手順
+## Information to include
+- Misskey version (Can be seen on the [About page](/about))
+- Type and version of your used browser
+- Type and version of your used operating system
+- Steps to reproduce your problem

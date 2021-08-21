@@ -49,3 +49,6 @@ Contents Warningの略で、ノートの内容を、閲覧者の操作なしに�
 
 ## Alpingli sur la profilo
 ノートをピン留めすると、ユーザーページに常にそのノートを表示しておくことができます。 ノートのメニューを開き、「ピン留め」を選択してピン留めできます。 複数のノートをピン留めできます。
+
+## Observi
+Vi povas ricevi sciigojn pri reagoj, respondoj, ktp al noto, kiuj ne apartenas al vi. Por observu, malfermu respektivan menuon de noto, kaj elektu la "Observi" el ĝi.

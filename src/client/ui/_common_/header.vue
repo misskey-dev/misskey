@@ -2,7 +2,7 @@
 <div class="fdidabkb" :class="{ center }" :style="`--height:${height};`" :key="key">
 	<transition :name="$store.state.animation ? 'header' : ''" mode="out-in" appear>
 		<div class="buttons left" v-if="backButton">
-			<button class="_button button back" @click.stop="$emit('back')" v-tooltip="$ts.goBack"><i class="fas fa-chevron-left"></i></button>
+			<button class="_button button back" @click.stop="$emit('back')" @touchstart="preventDrag" v-tooltip="$ts.goBack"><i class="fas fa-chevron-left"></i></button>
 		</div>
 	</transition>
 	<template v-if="info">
@@ -20,10 +20,10 @@
 		</div>
 		<div class="buttons right">
 			<template v-if="info.actions && showActions">
-				<button v-for="action in info.actions" class="_button button" :class="{ highlighted: action.highlighted }" @click.stop="action.handler" v-tooltip="action.text"><i :class="action.icon"></i></button>
+				<button v-for="action in info.actions" class="_button button" :class="{ highlighted: action.highlighted }" @click.stop="action.handler" @touchstart="preventDrag" v-tooltip="action.text"><i :class="action.icon"></i></button>
 			</template>
-			<button v-if="shouldShowMenu" class="_button button" @click.stop="showMenu" v-tooltip="$ts.menu"><i class="fas fa-ellipsis-h"></i></button>
-			<button v-if="closeButton" class="_button button" @click.stop="$emit('close')" v-tooltip="$ts.close"><i class="fas fa-times"></i></button>
+			<button v-if="shouldShowMenu" class="_button button" @click.stop="showMenu" @touchstart="preventDrag" v-tooltip="$ts.menu"><i class="fas fa-ellipsis-h"></i></button>
+			<button v-if="closeButton" class="_button button" @click.stop="$emit('close')" @touchstart="preventDrag" v-tooltip="$ts.close"><i class="fas fa-times"></i></button>
 		</div>
 	</template>
 </div>
@@ -122,6 +122,10 @@ export default defineComponent({
 				menu = menu.concat(this.menu);
 			}
 			popupMenu(menu, ev.currentTarget || ev.target);
+		},
+
+		preventDrag(ev) {
+			ev.stopPropagation();
 		}
 	}
 });

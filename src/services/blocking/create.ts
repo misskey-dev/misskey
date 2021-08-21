@@ -6,7 +6,7 @@ import renderBlock from '../../remote/activitypub/renderer/block';
 import { deliver } from '../../queue';
 import renderReject from '../../remote/activitypub/renderer/reject';
 import { User } from '../../models/entities/user';
-import { Blockings, Users, FollowRequests, Followings } from '../../models';
+import { Blockings, Users, FollowRequests, Followings, UserListJoinings, UserLists } from '../../models';
 import { perUserFollowingChart } from '../chart';
 import { genId } from '@/misc/gen-id';
 
@@ -15,7 +15,8 @@ export default async function(blocker: User, blockee: User) {
 		cancelRequest(blocker, blockee),
 		cancelRequest(blockee, blocker),
 		unFollow(blocker, blockee),
-		unFollow(blockee, blocker)
+		unFollow(blockee, blocker),
+		removeFromList(blockee, blocker),
 	]);
 
 	await Blockings.insert({
@@ -110,5 +111,18 @@ async function unFollow(follower: User, followee: User) {
 	if (Users.isLocalUser(follower) && Users.isRemoteUser(followee)) {
 		const content = renderActivity(renderUndo(renderFollow(follower, followee), follower));
 		deliver(follower, content, followee.inbox);
+	}
+}
+
+async function removeFromList(listOwner: User, user: User) {
+	const userLists = await UserLists.find({
+		userId: listOwner.id,
+	});
+
+	for (const userList of userLists) {
+		await UserListJoinings.delete({
+			userListId: userList.id,
+			userId: user.id,
+		});
 	}
 }

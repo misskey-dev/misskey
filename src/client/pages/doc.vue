@@ -5,6 +5,7 @@
 		<div class="body" v-html="body"></div>
 		<div class="footer">
 			<MkLink :url="`https://github.com/misskey-dev/misskey/blob/master/src/docs/${lang}/${doc}.md`" class="at">{{ $ts.docSource }}</MkLink>
+			<p v-if="lang !== 'ja-JP'">{{ $ts.translateWarn }}</p>
 		</div>
 	</div>
 </div>

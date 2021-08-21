@@ -1,4 +1,4 @@
 # Antennas
-アンテナは、自由に条件を設定して、合致するノートを自動で収集することができる機能です。
+Antennas are a feature through which you can automatically collect notes meeting freely specified conditions.
 
-条件を設定したアンテナが作成された状態で、条件に合致するノートが投稿されると、リアルタイムでそのアンテナのタイムラインにノートが追加されます。
+If a note meeting the conditions of an existing antenna is posted, this note will be added to the timeline of that antenna in real-time.

@@ -1,11 +1,11 @@
-# テーマ
+# Koloraro
 
 テーマを設定して、Misskeyクライアントの見た目を変更できます。
 
-## テーマの設定
-設定 > テーマ
+## Agordoj de koloraro
+Agordoj > Koloraro
 
-## テーマを作成する
+## Krei koloraron
 テーマコードはJSON5で記述されたテーマオブジェクトです。 テーマは以下のようなオブジェクトです。
 ``` js
 {

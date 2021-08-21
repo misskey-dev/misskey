@@ -1,5 +1,5 @@
 <template>
-<div class="_root">
+<div class="">
 	<XNotifications class="_content" @before="before" @after="after" page/>
 </div>
 </template>
