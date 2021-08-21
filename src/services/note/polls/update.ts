@@ -1,9 +1,9 @@
-import renderUpdate from '../../../remote/activitypub/renderer/update';
-import { renderActivity } from '../../../remote/activitypub/renderer';
-import renderNote from '../../../remote/activitypub/renderer/note';
-import { Users, Notes } from '../../../models';
-import { Note } from '../../../models/entities/note';
-import { deliverToFollowers } from '../../../remote/activitypub/deliver-manager';
+import renderUpdate from '@/remote/activitypub/renderer/update';
+import { renderActivity } from '@/remote/activitypub/renderer/index';
+import renderNote from '@/remote/activitypub/renderer/note';
+import { Users, Notes } from '@/models/index';
+import { Note } from '@/models/entities/note';
+import { deliverToFollowers } from '@/remote/activitypub/deliver-manager';
 import { deliverToRelays } from '../../relay';
 
 export async function deliverQuestionUpdate(noteId: Note['id']) {

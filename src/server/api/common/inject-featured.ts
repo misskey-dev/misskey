@@ -1,7 +1,7 @@
 import rndstr from 'rndstr';
-import { Note } from '../../../models/entities/note';
-import { User } from '../../../models/entities/user';
-import { Notes, UserProfiles, NoteReactions } from '../../../models';
+import { Note } from '@/models/entities/note';
+import { User } from '@/models/entities/user';
+import { Notes, UserProfiles, NoteReactions } from '@/models/index';
 import { generateMutedUserQuery } from './generate-muted-user-query';
 import { generateBlockedUserQuery } from './generate-block-query';
 

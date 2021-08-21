@@ -1,9 +1,9 @@
 import Resolver from '../../resolver';
-import { IRemoteUser } from '../../../../models/entities/user';
+import { IRemoteUser } from '@/models/entities/user';
 import createNote from './note';
 import { ICreate, getApId, isPost, getApType } from '../../type';
 import { apLogger } from '../../logger';
-import { toArray, concat, unique } from '../../../../prelude/array';
+import { toArray, concat, unique } from '@/prelude/array';
 
 const logger = apLogger;
 

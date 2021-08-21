@@ -1,17 +1,17 @@
 import $ from 'cafy';
 import { ID } from '@/misc/cafy-id';
-import { publishNoteStream } from '../../../../../services/stream';
-import { createNotification } from '../../../../../services/create-notification';
+import { publishNoteStream } from '@/services/stream';
+import { createNotification } from '@/services/create-notification';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { getNote } from '../../../common/getters';
-import { deliver } from '../../../../../queue';
-import { renderActivity } from '../../../../../remote/activitypub/renderer';
-import renderVote from '../../../../../remote/activitypub/renderer/vote';
-import { deliverQuestionUpdate } from '../../../../../services/note/polls/update';
-import { PollVotes, NoteWatchings, Users, Polls, Blockings } from '../../../../../models';
+import { deliver } from '@/queue/index';
+import { renderActivity } from '@/remote/activitypub/renderer/index';
+import renderVote from '@/remote/activitypub/renderer/vote';
+import { deliverQuestionUpdate } from '@/services/note/polls/update';
+import { PollVotes, NoteWatchings, Users, Polls, Blockings } from '@/models/index';
 import { Not } from 'typeorm';
-import { IRemoteUser } from '../../../../../models/entities/user';
+import { IRemoteUser } from '@/models/entities/user';
 import { genId } from '@/misc/gen-id';
 
 export const meta = {

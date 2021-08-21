@@ -1,6 +1,6 @@
 import autobind from 'autobind-decorator';
 import Channel from '../channel';
-import { Notes } from '../../../../models';
+import { Notes } from '@/models/index';
 import { isMutedUserRelated } from '@/misc/is-muted-user-related';
 import { isBlockerUserRelated } from '@/misc/is-blocker-user-related';
 

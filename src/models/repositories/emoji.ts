@@ -1,5 +1,5 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { Emoji } from '../entities/emoji';
+import { Emoji } from '@/models/entities/emoji';
 
 @EntityRepository(Emoji)
 export class EmojiRepository extends Repository<Emoji> {

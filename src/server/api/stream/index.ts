@@ -2,19 +2,19 @@ import autobind from 'autobind-decorator';
 import * as websocket from 'websocket';
 import { readNotification } from '../common/read-notification';
 import call from '../call';
-import readNote from '../../../services/note/read';
+import readNote from '@/services/note/read';
 import Channel from './channel';
-import channels from './channels';
+import channels from './channels/index';
 import { EventEmitter } from 'events';
-import { User } from '../../../models/entities/user';
-import { Channel as ChannelModel } from '../../../models/entities/channel';
-import { Users, Followings, Mutings, UserProfiles, ChannelFollowings, Blockings } from '../../../models';
+import { User } from '@/models/entities/user';
+import { Channel as ChannelModel } from '@/models/entities/channel';
+import { Users, Followings, Mutings, UserProfiles, ChannelFollowings, Blockings } from '@/models/index';
 import { ApiError } from '../error';
-import { AccessToken } from '../../../models/entities/access-token';
-import { UserProfile } from '../../../models/entities/user-profile';
-import { publishChannelStream, publishGroupMessagingStream, publishMessagingStream } from '../../../services/stream';
-import { UserGroup } from '../../../models/entities/user-group';
-import { PackedNote } from '../../../models/repositories/note';
+import { AccessToken } from '@/models/entities/access-token';
+import { UserProfile } from '@/models/entities/user-profile';
+import { publishChannelStream, publishGroupMessagingStream, publishMessagingStream } from '@/services/stream';
+import { UserGroup } from '@/models/entities/user-group';
+import { PackedNote } from '@/models/repositories/note';
 
 /**
  * Main stream connection

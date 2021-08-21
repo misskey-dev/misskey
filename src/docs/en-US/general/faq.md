@@ -23,3 +23,6 @@ Only administrators can add, edit or delete custom emoji. If you'd like to do ei
 
 ## "I want to develop a Bot."
 It is possible to develop a Bot using the Misskey API. Please, [see here](../advanced/develop-bot).
+
+## Which service does the note translation function use?
+[DeepL](https://www.deepl.com/) is being used for this.

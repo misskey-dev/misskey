@@ -3,8 +3,8 @@ import { ID } from '@/misc/cafy-id';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { getUser } from '../../../common/getters';
-import { pushUserToUserList } from '../../../../../services/user-list/push';
-import { UserLists, UserListJoinings, Blockings } from '../../../../../models';
+import { pushUserToUserList } from '@/services/user-list/push';
+import { UserLists, UserListJoinings, Blockings } from '@/models/index';
 
 export const meta = {
 	tags: ['lists', 'users'],

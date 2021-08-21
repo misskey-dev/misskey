@@ -26,7 +26,7 @@
 	<FormLink to="/bios" behavior="browser"><template #icon><i class="fas fa-door-open"></i></template>BIOS</FormLink>
 	<FormLink to="/cli" behavior="browser"><template #icon><i class="fas fa-door-open"></i></template>CLI</FormLink>
 
-	<FormButton @click="closeAccount" danger>{{ $ts.closeAccount }}</FormButton>
+	<FormLink to="./delete-account"><template #icon><i class="fas fa-exclamation-triangle"></i></template>{{ $ts.closeAccount }}</FormLink>
 </FormBase>
 </template>
 
@@ -41,7 +41,6 @@ import FormButton from '@client/components/form/button.vue';
 import * as os from '@client/os';
 import { debug } from '@client/config';
 import { defaultStore } from '@client/store';
-import { signout } from '@client/account';
 import { unisonReload } from '@client/scripts/unison-reload';
 import * as symbols from '@client/symbols';
 
@@ -92,22 +91,6 @@ export default defineComponent({
 			os.popup(import('@client/components/taskmanager.vue'), {
 			}, {}, 'closed');
 		},
-
-		closeAccount() {
-			os.dialog({
-				title: this.$ts.password,
-				input: {
-					type: 'password'
-				}
-			}).then(({ canceled, result: password }) => {
-				if (canceled) return;
-				os.api('i/delete-account', {
-					password: password
-				}).then(() => {
-					signout();
-				});
-			});
-		}
 	}
 });
 </script>

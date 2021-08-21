@@ -2,8 +2,8 @@ import autobind from 'autobind-decorator';
 import { isMutedUserRelated } from '@/misc/is-muted-user-related';
 import Channel from '../channel';
 import { fetchMeta } from '@/misc/fetch-meta';
-import { Notes } from '../../../../models';
-import { PackedNote } from '../../../../models/repositories/note';
+import { Notes } from '@/models/index';
+import { PackedNote } from '@/models/repositories/note';
 import { checkWordMute } from '@/misc/check-word-mute';
 import { isBlockerUserRelated } from '@/misc/is-blocker-user-related';
 

@@ -1,10 +1,10 @@
 import autobind from 'autobind-decorator';
 import Channel from '../channel';
-import { Notes, Users } from '../../../../models';
+import { Notes, Users } from '@/models/index';
 import { isMutedUserRelated } from '@/misc/is-muted-user-related';
 import { isBlockerUserRelated } from '@/misc/is-blocker-user-related';
-import { PackedNote } from '../../../../models/repositories/note';
-import { User } from '../../../../models/entities/user';
+import { PackedNote } from '@/models/repositories/note';
+import { User } from '@/models/entities/user';
 
 export default class extends Channel {
 	public readonly chName = 'channel';

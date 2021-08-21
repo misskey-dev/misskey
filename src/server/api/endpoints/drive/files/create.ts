@@ -1,11 +1,11 @@
 import * as ms from 'ms';
 import $ from 'cafy';
 import { ID } from '@/misc/cafy-id';
-import create from '../../../../../services/drive/add-file';
+import create from '@/services/drive/add-file';
 import define from '../../../define';
 import { apiLogger } from '../../../logger';
 import { ApiError } from '../../../error';
-import { DriveFiles } from '../../../../../models';
+import { DriveFiles } from '@/models/index';
 
 export const meta = {
 	tags: ['drive'],

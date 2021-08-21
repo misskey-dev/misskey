@@ -1,8 +1,8 @@
 import $ from 'cafy';
 import define from '../../../define';
-import { Instances } from '../../../../../models';
+import { Instances } from '@/models/index';
 import { toPuny } from '@/misc/convert-host';
-import { fetchInstanceMetadata } from '../../../../../services/fetch-instance-metadata';
+import { fetchInstanceMetadata } from '@/services/fetch-instance-metadata';
 
 export const meta = {
 	tags: ['admin'],

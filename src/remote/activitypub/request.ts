@@ -3,7 +3,7 @@ import * as https from 'https';
 import { sign } from 'http-signature';
 import * as crypto from 'crypto';
 
-import config from '@/config';
+import config from '@/config/index';
 import { User } from '@/models/entities/user';
 import { getAgentByUrl } from '@/misc/fetch';
 import { URL } from 'url';

@@ -1,4 +1,4 @@
-# サードパーティアプリのリスト
+# Liste von Drittanbieter-Apps
 ## クライアント
 todo
 

@@ -5,7 +5,7 @@ import { ApiError } from '../../error';
 import { getUser } from '../../common/getters';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query';
-import { Notes } from '../../../../models';
+import { Notes } from '@/models/index';
 import { generateMutedUserQuery } from '../../common/generate-muted-user-query';
 import { Brackets } from 'typeorm';
 import { generateBlockedUserQuery } from '../../common/generate-block-query';

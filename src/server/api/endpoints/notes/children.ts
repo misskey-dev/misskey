@@ -5,7 +5,7 @@ import { makePaginationQuery } from '../../common/make-pagination-query';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query';
 import { generateMutedUserQuery } from '../../common/generate-muted-user-query';
 import { Brackets } from 'typeorm';
-import { Notes } from '../../../../models';
+import { Notes } from '@/models/index';
 import { generateBlockedUserQuery } from '../../common/generate-block-query';
 
 export const meta = {
