@@ -15,6 +15,7 @@
 - localStorageのaccountsはindexedDBで保持するように
 - ActivityPub: ジョブキューの試行タイミングを調整 (#7635)
 - API: sw/unregisterを追加
+- ワードミュートのドキュメントを追加
 - 依存関係の更新
 
 ### Bugfixes
