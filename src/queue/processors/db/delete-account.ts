@@ -1,11 +1,12 @@
 import * as Bull from 'bull';
 import { queueLogger } from '../../logger';
-import { DriveFiles, Notes, Users } from '@/models/index';
+import { DriveFiles, Notes, UserProfiles, Users } from '@/models/index';
 import { DbUserJobData } from '@/queue/types';
 import { Note } from '@/models/entities/note';
 import { DriveFile } from '@/models/entities/drive-file';
 import { MoreThan } from 'typeorm';
 import { deleteFileSync } from '@/services/drive/delete-file';
+import { sendEmail } from '@/services/send-email';
 
 const logger = queueLogger.createSubLogger('delete-account');
 
@@ -71,6 +72,15 @@ export async function deleteAccount(job: Bull.Job<DbUserJobData>): Promise<strin
 		}
 
 		logger.succ(`All of files deleted`);
+	}
+
+	{ // Send email notification
+		const profile = await UserProfiles.findOneOrFail(user.id);
+		if (profile.email && profile.emailVerified) {
+			sendEmail(profile.email, 'Account deleted',
+				`Your account has been deleted.`,
+				`Your account has been deleted.`);
+		}
 	}
 
 	await Users.delete(job.data.user.id);
