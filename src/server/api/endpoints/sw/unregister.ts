@@ -7,11 +7,6 @@ export const meta = {
 
 	requireCredential: true as const,
 
-	desc: {
-		'ja-JP': 'Push通知の登録を削除します。',
-		'en-US': 'Remove push noticfication registration'
-	},
-
 	params: {
 		endpoint: {
 			validator: $.str
