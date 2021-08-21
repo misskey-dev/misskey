@@ -9,7 +9,6 @@ export class isUserDeleted1629512953000 implements MigrationInterface {
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`COMMENT ON COLUMN "user"."isDeleted" IS 'Whether the User is deleted.'`);
         await queryRunner.query(`ALTER TABLE "user" DROP COLUMN "isDeleted"`);
     }
 
