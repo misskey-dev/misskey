@@ -779,6 +779,7 @@ translate: "Translate"
 translatedFrom: "Translated from {x}"
 accountDeletionInProgress: "Account deletion is currently in progress"
 _accountDelete:
+  accountDelete: "Delete Account"
   requestAccountDelete: "Request account deletion"
   started: "Deletion has been started."
   inProgress: "Deletion is currently in progress"
