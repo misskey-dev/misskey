@@ -7,7 +7,6 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import * as yaml from 'js-yaml';
 import { Source, Mixin } from './types';
-import * as meta from '../meta.json';
 
 //const _filename = fileURLToPath(import.meta.url);
 const _filename = __filename;
@@ -26,6 +25,7 @@ const path = process.env.NODE_ENV === 'test'
 	: `${dir}/default.yml`;
 
 export default function load() {
+	const meta = JSON.parse(fs.readFileSync(`${_dirname}/../meta.json`, 'utf-8'));
 	const config = yaml.load(fs.readFileSync(path, 'utf-8')) as Source;
 
 	const mixin = {} as Mixin;

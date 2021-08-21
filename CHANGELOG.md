@@ -2,22 +2,28 @@
 ## 12.x.x (unreleased)
 
 ### Improvements
+- API: notifications/readは配列でも受け付けるように
+- /share のクエリでリプライやファイル等の情報を渡せるように
 
 ### Bugfixes
 
 -->
 
-## 12.x.x (unreleased)
+## 12.89.0 (2021/08/21)
 
 ### Improvements
-- 依存関係の更新
-- API: notifications/readは配列でも受け付けるように
+- アカウント削除の安定性を向上
+- 絵文字オートコンプリートの挙動を改修
 - localStorageのaccountsはindexedDBで保持するように
+- ActivityPub: ジョブキューの試行タイミングを調整 (#7635)
 - API: sw/unregisterを追加
-- /share のクエリでリプライやファイル等の情報を渡せるように
+- ワードミュートのドキュメントを追加
+- クライアントのデザインの調整
+- 依存関係の更新
 
 ### Bugfixes
 - チャンネルを作成しているとアカウントを削除できないのを修正
+- ノートの「削除して編集」をするとアンケートの選択肢が[object Object]になる問題を修正
 
 ## 12.88.0 (2021/08/17)
 

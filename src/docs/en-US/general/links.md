@@ -1,4 +1,4 @@
-# A collection of links
+# Links
 
 ## Websites
 - [Official Discord](https://discord.gg/Wp8gVStHW3) - The official Discord server for Misskey
