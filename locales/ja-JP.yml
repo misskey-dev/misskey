@@ -781,7 +781,7 @@ accountDeletionInProgress: "アカウントの削除が進行中です"
 usernameInfo: "サーバー上であなたのアカウントを一意に識別するための名前。アルファベット(a~z, A~Z)、数字(0~9)、およびアンダーバー(_)が使用できます。ユーザー名は後から変更することは出来ません。"
 keepCw: "CWを維持する"
 pubSub: "Pub/Subのアカウント"
-lastRequest: "直近の通信"
+lastCommunication: "直近の通信"
 resolved: "解決済み"
 unresolved: "未解決"
 

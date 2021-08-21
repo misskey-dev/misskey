@@ -30,8 +30,8 @@
 				<option value="-followers">{{ $ts.followers }} ({{ $ts.ascendingOrder }})</option>
 				<option value="+caughtAt">{{ $ts.registeredAt }} ({{ $ts.descendingOrder }})</option>
 				<option value="-caughtAt">{{ $ts.registeredAt }} ({{ $ts.ascendingOrder }})</option>
-				<option value="+lastCommunicatedAt">{{ $ts.lastRequest }} ({{ $ts.descendingOrder }})</option>
-				<option value="-lastCommunicatedAt">{{ $ts.lastRequest }} ({{ $ts.ascendingOrder }})</option>
+				<option value="+lastCommunicatedAt">{{ $ts.lastCommunication }} ({{ $ts.descendingOrder }})</option>
+				<option value="-lastCommunicatedAt">{{ $ts.lastCommunication }} ({{ $ts.ascendingOrder }})</option>
 				<option value="+driveUsage">{{ $ts.driveUsage }} ({{ $ts.descendingOrder }})</option>
 				<option value="-driveUsage">{{ $ts.driveUsage }} ({{ $ts.ascendingOrder }})</option>
 				<option value="+driveFiles">{{ $ts.driveFilesCount }} ({{ $ts.descendingOrder }})</option>
