@@ -241,26 +241,26 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
-"@redocly/ajv@^6.12.3":
-  version "6.12.4"
-  resolved "https://registry.yarnpkg.com/@redocly/ajv/-/ajv-6.12.4.tgz#b131c9c11d1bdaa5564f69bcaefe10a4c9a5aa65"
-  integrity sha512-RB6vWO78v6c+SW/3bZh+XZMr4nGdJKAiPGsBALuUZnLuCiQ7aXCT1AuFHqnfS2gyXbEUEj+kw8p4ux8KdAfs3A==
+"@redocly/ajv@^8.6.2":
+  version "8.6.2"
+  resolved "https://registry.yarnpkg.com/@redocly/ajv/-/ajv-8.6.2.tgz#8c4e485e72f7864f91fae40093bed548ec2619b2"
+  integrity sha512-tU8fQs0D76ZKhJ2cWtnfQthWqiZgGBx0gH0+5D8JvaBEBaqA8foPPBt3Nonwr3ygyv5xrw2IzKWgIY86BlGs+w==
   dependencies:
     fast-deep-equal "^3.1.1"
-    fast-json-stable-stringify "^2.0.0"
-    json-schema-traverse "^0.4.1"
+    json-schema-traverse "^1.0.0"
+    require-from-string "^2.0.2"
     uri-js "^4.2.2"
 
-"@redocly/openapi-core@1.0.0-beta.44":
-  version "1.0.0-beta.44"
-  resolved "https://registry.yarnpkg.com/@redocly/openapi-core/-/openapi-core-1.0.0-beta.44.tgz#e9a6c50ee2bb18e93b3439ed92c53e440de3aa7a"
-  integrity sha512-9HNnh1MzvMsLK1liuidFBqWiAsZ2Yg3RY58fcEsy0QruSMdDbn7SoeI1qnXe6O+BkBS+vAP4oVzZDMHCMKGsOQ==
+"@redocly/openapi-core@1.0.0-beta.54":
+  version "1.0.0-beta.54"
+  resolved "https://registry.yarnpkg.com/@redocly/openapi-core/-/openapi-core-1.0.0-beta.54.tgz#42575a849c4dd54b9d0c6413fb8ca547e087cd11"
+  integrity sha512-uYs0N1Trjkh7u8IMIuCU2VxCXhMyGWSZUkP/WNdTR1OgBUtvNdF9C32zoQV+hyCIH4gVu42ROHkjisy333ZX+w==
   dependencies:
-    "@redocly/ajv" "^6.12.3"
+    "@redocly/ajv" "^8.6.2"
     "@types/node" "^14.11.8"
     colorette "^1.2.0"
     js-levenshtein "^1.1.6"
-    js-yaml "^3.14.0"
+    js-yaml "^3.14.1"
     lodash.isequal "^4.5.0"
     minimatch "^3.0.4"
     node-fetch "^2.6.1"
@@ -864,30 +864,15 @@
     "@types/node" "*"
     form-data "^3.0.0"
 
-"@types/node@*":
-  version "14.14.31"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.31.tgz#72286bd33d137aa0d152d47ec7c1762563d34055"
-  integrity sha512-vFHy/ezP5qI0rFgJ7aQnjDXwAMrG0KqqIH7tQG5PPv3BWBayOPIQNBjVc/P6hhdZfMx51REc6tfDNXHUio893g==
-
-"@types/node@16.6.2":
+"@types/node@*", "@types/node@16.6.2":
   version "16.6.2"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-16.6.2.tgz#331b7b9f8621c638284787c5559423822fdffc50"
   integrity sha512-LSw8TZt12ZudbpHc6EkIyDM3nHVWKYrAvGy6EAJfNfjusbwnThqjqxUKKRwuV3iWYeW/LYMzNgaq3MaLffQ2xA==
 
-"@types/node@^14.11.8":
-  version "14.14.44"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.44.tgz#df7503e6002847b834371c004b372529f3f85215"
-  integrity sha512-+gaugz6Oce6ZInfI/tK4Pq5wIIkJMEJUu92RB3Eu93mtj4wjjjz9EB5mLp5s1pSsLXdC/CPut/xF20ZzAQJbTA==
-
-"@types/node@^14.14.31":
+"@types/node@^14.11.8", "@types/node@^14.14.31", "@types/node@^14.14.41":
   version "14.17.9"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-14.17.9.tgz#b97c057e6138adb7b720df2bd0264b03c9f504fd"
   integrity sha512-CMjgRNsks27IDwI785YMY0KLt3co/c0cQ5foxHYv/shC2w8oOnVwz5Ubq1QG5KzrcW+AXk6gzdnxIkDnTvzu3g==
-
-"@types/node@^14.14.41":
-  version "14.17.0"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.17.0.tgz#3ba770047723b3eeb8dc9fca02cce8a7fb6378da"
-  integrity sha512-w8VZUN/f7SSbvVReb9SWp6cJFevxb4/nkG65yLAya//98WgocKm5PLDAtSs5CtJJJM+kHmJjO/6mmYW4MHShZA==
 
 "@types/nodemailer@6.4.4":
   version "6.4.4"
@@ -6237,15 +6222,7 @@ js-yaml@4.1.0, js-yaml@^4.0.0:
   dependencies:
     argparse "^2.0.1"
 
-js-yaml@^3.13.1:
-  version "3.14.0"
-  resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-3.14.0.tgz#a7a34170f26a21bb162424d8adacb4113a69e482"
-  integrity sha512-/4IbIeHcD9VMHFqDR/gQ7EdZdLimOvW2DdcxFjdyyZ9NsbS+ccrXqVWDtab/lRl5AlUqmpBx8EhPaWR+OtY17A==
-  dependencies:
-    argparse "^1.0.7"
-    esprima "^4.0.0"
-
-js-yaml@^3.14.0:
+js-yaml@^3.13.1, js-yaml@^3.14.1:
   version "3.14.1"
   resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-3.14.1.tgz#dae812fdb3825fa306609a8717383c50c36a0537"
   integrity sha512-okMH7OXXJ7YrN9Ok3/SXrnu4iX9yOk+25nqX4imS2npuvTYDmo/QEZoqwZkYaIDk3jVvBOTOIEgEhaLOynBS9g==

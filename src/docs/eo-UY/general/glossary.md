@@ -50,30 +50,36 @@ Ai estas oficiala maskoto de Misskey.
 todo
 
 ## Ŝaltpodio
-インスタンスの設定画面のこと。
+サーバーで用意された絵文字。カスタム絵文字ではない通常の絵文字は「Unicode絵文字」と区別して呼ばれる。
+
+## コントロールパネル
+todo
 
 ## Servilo
 todo
 
 ## Mutigi
-A state in which the visibility of the notes by said user cannot be set to "Publika" anymore.Can be set for individual users by Moderators.Rigardu por sciu pli tie[.](../features/silence)
+ノートをパブリックな公開範囲で投稿できなくされている状態。モデレーターの判断でユーザーごとに設定されます。詳細は[こちら。](../features/silence)
+
+## Disko
+アクティビティ配送などを順番に行うためのシステム。
 
 ## Flostigi
 アカウントが使用不可に設定されている状態。
 
-## Disko
+## Miskiisto
 Misskeyにアップロードしたファイルを管理する機能。詳細は[こちら。](../features/drive)
 
 ## Notoj
 Misskeyに投稿される、文章、ファイル、アンケートなどを含めることができるコンテンツ。詳細は[こちら。](../features/note)
 
-## Miskiisto
-Uzuloj de Misskey.
+## Transa aŭ fora
+Misskeyを使う人のこと。
 
 ## Moderigisto
 スパムの凍結およびサイレンスや不適切な投稿の削除など、コミュニティ運営に関する権限を持つユーザー。
 
-## Transa aŭ fora
+## Transa
 他サーバーのことを指します。リモートユーザーといったように接頭辞としても使われます。ローカルの逆です。
 
 ## Kunfederaĵo
