@@ -777,6 +777,11 @@ misskeyUpdated: "Misskey has been updated!"
 whatIsNew: "Show changes"
 translate: "Translate"
 translatedFrom: "Translated from {x}"
+accountDeletionInProgress: "Account deletion is currently in progress"
+_accountDelete:
+  requestAccountDelete: "Request account deletion"
+  started: "Deletion has been started."
+  inProgress: "Deletion is currently in progress"
 _docs:
   continueReading: "Read more"
   features: "Features"
