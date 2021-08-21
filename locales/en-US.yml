@@ -782,6 +782,8 @@ usernameInfo: "A name that identifies your account from others on this server.  
 keepCw: "Keep Content Warning"
 pubSub: "Pub/Sub Accounts"
 lastRequest: "Last communication"
+resolved: "Resolved"
+unresolved: "Unresolved"
 _accountDelete:
   accountDelete: "Delete Account"
   mayTakeTime: "As account deletion is a resource-heavy process, it may take some time to complete depending on how much content you have created and how many files you have uploaded."
