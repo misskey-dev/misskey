@@ -178,7 +178,7 @@ export function createDeleteAccountJob(user: ThinUser) {
 		removeOnComplete: true,
 		removeOnFail: true
 	});
-};
+}
 
 export function createDeleteObjectStorageFileJob(key: string) {
 	return objectStorageQueue.add('deleteFile', {
