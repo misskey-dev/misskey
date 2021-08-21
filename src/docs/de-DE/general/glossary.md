@@ -1,4 +1,4 @@
-# 用語集
+# Glossar
 Misskeyに関する用語集です。
 
 ## ActivityPub
@@ -49,6 +49,9 @@ Misskeyに関する用語集です。
 ## Instanz
 todo
 
+## Benutzerdefinierte Emojis
+サーバーで用意された絵文字。カスタム絵文字ではない通常の絵文字は「Unicode絵文字」と区別して呼ばれる。
+
 ## コントロールパネル
 インスタンスの設定画面のこと。
 
@@ -57,6 +60,9 @@ todo
 
 ## Instanzweit stummschalten
 ノートをパブリックな公開範囲で投稿できなくされている状態。モデレーターの判断でユーザーごとに設定されます。詳細は[こちら。](../features/silence)
+
+## Job-Warteschlange
+アクティビティ配送などを順番に行うためのシステム。
 
 ## Sperren
 アカウントが使用不可に設定されている状態。

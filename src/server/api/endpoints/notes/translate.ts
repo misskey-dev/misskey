@@ -4,7 +4,7 @@ import define from '../../define';
 import { getNote } from '../../common/getters';
 import { ApiError } from '../../error';
 import fetch from 'node-fetch';
-import config from '@/config';
+import config from '@/config/index';
 import { getAgentByUrl } from '@/misc/fetch';
 import { URLSearchParams } from 'url';
 import { fetchMeta } from '@/misc/fetch-meta';

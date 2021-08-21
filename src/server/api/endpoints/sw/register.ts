@@ -2,7 +2,7 @@ import $ from 'cafy';
 import define from '../../define';
 import { fetchMeta } from '@/misc/fetch-meta';
 import { genId } from '@/misc/gen-id';
-import { SwSubscriptions } from '../../../../models';
+import { SwSubscriptions } from '@/models/index';
 
 export const meta = {
 	tags: ['account'],

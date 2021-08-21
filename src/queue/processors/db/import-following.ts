@@ -1,12 +1,12 @@
 import * as Bull from 'bull';
 
 import { queueLogger } from '../../logger';
-import follow from '../../../services/following/create';
+import follow from '@/services/following/create';
 import { parseAcct } from '@/misc/acct';
-import { resolveUser } from '../../../remote/resolve-user';
+import { resolveUser } from '@/remote/resolve-user';
 import { downloadTextFile } from '@/misc/download-text-file';
 import { isSelfHost, toPuny } from '@/misc/convert-host';
-import { Users, DriveFiles } from '../../../models';
+import { Users, DriveFiles } from '@/models/index';
 import { DbUserImportJobData } from '@/queue/types';
 
 const logger = queueLogger.createSubLogger('import-following');

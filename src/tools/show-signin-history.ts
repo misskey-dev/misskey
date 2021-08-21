@@ -1,4 +1,4 @@
-import { Users, Signins } from '../models';
+import { Users, Signins } from '@/models/index';
 
 // node built/tools/show-signin-history username
 //  => {Success} {Date} {IPAddrsss}

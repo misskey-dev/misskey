@@ -1,9 +1,9 @@
 import autobind from 'autobind-decorator';
 import Channel from '../channel';
-import { Notes, UserListJoinings, UserLists } from '../../../../models';
+import { Notes, UserListJoinings, UserLists } from '@/models/index';
 import { isMutedUserRelated } from '@/misc/is-muted-user-related';
-import { User } from '../../../../models/entities/user';
-import { PackedNote } from '../../../../models/repositories/note';
+import { User } from '@/models/entities/user';
+import { PackedNote } from '@/models/repositories/note';
 import { isBlockerUserRelated } from '@/misc/is-blocker-user-related';
 
 export default class extends Channel {

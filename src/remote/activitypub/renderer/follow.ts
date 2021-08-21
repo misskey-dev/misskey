@@ -1,6 +1,6 @@
-import config from '@/config';
-import { User } from '../../../models/entities/user';
-import { Users } from '../../../models';
+import config from '@/config/index';
+import { User } from '@/models/entities/user';
+import { Users } from '@/models/index';
 
 export default (follower: { id: User['id']; host: User['host']; uri: User['host'] }, followee: { id: User['id']; host: User['host']; uri: User['host'] }, requestId?: string) => {
 	const follow = {

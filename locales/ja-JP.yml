@@ -777,6 +777,15 @@ misskeyUpdated: "Misskeyが更新されました！"
 whatIsNew: "更新情報を見る"
 translate: "翻訳"
 translatedFrom: "{x}から翻訳"
+accountDeletionInProgress: "アカウントの削除が進行中です"
+
+_accountDelete:
+  accountDelete: "アカウントの削除"
+  mayTakeTime: "アカウントの削除は負荷のかかる処理であるため、作成したコンテンツの数やアップロードしたファイルの数が多いと完了までに時間がかかることがあります。"
+  sendEmail: "アカウントの削除が完了する際は、登録してあったメールアドレス宛に通知を送信します。"
+  requestAccountDelete: "アカウント削除をリクエスト"
+  started: "削除処理が開始されました。"
+  inProgress: "削除が進行中"
 
 _docs: 
   continueReading: "続きを読む"

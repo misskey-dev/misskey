@@ -1,13 +1,3 @@
-/*
- * Tests for detection of file information
- *
- * How to run the tests:
- * > npx cross-env TS_NODE_FILES=true npx mocha test/get-file-info.ts --require ts-node/register
- *
- * To specify test:
- * > npx cross-env TS_NODE_FILES=true npx mocha test/get-file-info.ts --require ts-node/register -g 'test name'
- */
-
 import * as assert from 'assert';
 import { async } from './utils';
 import { getFileInfo } from '../src/misc/get-file-info';

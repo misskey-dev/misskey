@@ -15,7 +15,7 @@ import signin from './private/signin';
 import discord from './service/discord';
 import github from './service/github';
 import twitter from './service/twitter';
-import { Instances, AccessTokens, Users } from '../../models';
+import { Instances, AccessTokens, Users } from '@/models/index';
 
 // Init app
 const app = new Koa();

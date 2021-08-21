@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import define from '../../../define';
-import { Ads } from '../../../../../models';
+import { Ads } from '@/models/index';
 import { genId } from '@/misc/gen-id';
 
 export const meta = {

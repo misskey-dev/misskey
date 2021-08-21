@@ -1,7 +1,7 @@
-import { publishNoteStream } from '../../stream';
-import { User } from '../../../models/entities/user';
-import { Note } from '../../../models/entities/note';
-import { PollVotes, NoteWatchings, Polls, Blockings } from '../../../models';
+import { publishNoteStream } from '@/services/stream';
+import { User } from '@/models/entities/user';
+import { Note } from '@/models/entities/note';
+import { PollVotes, NoteWatchings, Polls, Blockings } from '@/models/index';
 import { Not } from 'typeorm';
 import { genId } from '@/misc/gen-id';
 import { createNotification } from '../../create-notification';

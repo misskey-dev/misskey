@@ -1,19 +1,19 @@
 # Résolution des problèmes
 <div class="info">ℹ️ N'hésitez pas à consulter les <a href="./faq">Questions fréquentes</a> en complément de cette page.</div>
 
-問題が発生したときは、まずこちらをご確認ください。 該当する項目が無い、もしくは手順を試しても効果がない場合は、サーバーの管理者に連絡するか[不具合を報告](./report-issue)してください。
+Lorsque vous rencontrez un problème, nous vous prions de lire cette page tout d'abord. Si toutefois aucun des paragraphes ci-dessous ne correspond à votre problème, ou bien si vous n'arrivez pas à le résoudre en suivant les instructions détaillées ici, nous vous invitons à contacter l'administrateur·rice de votre instance ou à [Signaler un bug](./report-issue).
 
 ## Le client ne démarre pas
-ほとんどの場合、お使いのブラウザまたはOSのバージョンが古いことが原因です。 ブラウザおよびOSのバージョンを最新のものに更新してから、再度試してみてください。
+Généralement, ce problème est dû au fait que vous utilisez une version trop ancienne de votre navigateur ou de votre système d'exploitation. Effectuez les mises à jour pour chacun d'eux vers leurs versions les plus récentes, puis essayez à nouveau.
 
-これは稀ですが、それでも起動しない場合は、キャッシュが原因の場合があります。ブラウザのキャッシュをクリアして、再度試してみてください。
+Cela arrive rarement, mais si votre client ne démarre toujours pas après cela, le problème vient du cache. Dans ce cas, videz le cache et essayez à nouveau.
 
-## ページが読み込めない
-クライアントが起動するもののページが読み込めないというエラーが出る場合は、ネットワークに問題がないか確認してください。また、サーバーがダウンしていないか確認してください。
+## La page ne charge pas
+Si votre client démarre mais qu'un message d'erreur apparaît lors du chargement de la page, assurez-vous qu'il ne s'agit pas d'un problème de connexion au réseau. Assurez-vous également que votre serveur n'est pas temporairement inaccessible.
 
-これは稀ですが、キャッシュが原因の場合があります。ブラウザのキャッシュをクリアして、再度試してみてください。
+Bien que cela arrive rarement, il se peut que le cache soit à l'origine du problème. Dans ce cas, videz le cache et essayez à nouveau.
 
-まだ問題がある場合は、サーバーの問題と思われるのでサーバーの管理者に連絡してください。
+Si le problème persiste malgré tout, il est très probable qu'il s'agisse d'une panne côté serveur ; nous vous invitons donc à contacter l'administrateur·rice de votre instance.
 
 ## Le client est lent
 以下を試してみてください:
@@ -31,10 +31,10 @@
 点滅は、未読のコンテンツがあることを示しています。通常点滅が消えない場合は、コンテンツを遡ると未読なコンテンツが残っています。 すべて既読にしたと思われるのに、それでもなお点滅が続く場合(おそらく不具合と思われます)は設定から強制的にすべて既読扱いにすることができます。
 
 ## La fonction « Renoter » ne fonctionne pas
-フォロワー限定のノートはRenoteすることはできません。
+Les notes dont l'audience est limitée aux « Abonné·e·s uniquement » ne peuvent pas être renotées.
 
 ## Des éléments spécifiques de l'interface ne s'affichent pas
 広告ブロッカーを使用しているとそのような不具合が発生することがあります。Misskeyではオフにしてご利用ください。
 
 ## Certaines parties de l'interface ne sont pas traduites
-ほとんどの場合、単に翻訳が間に合っていないだけで、不具合ではありません。翻訳が終わるまでお待ちください。 [翻訳に参加](./misskey)していただくことも可能です。
+La plupart du temps, cela n'est pas un bug mais simplement un problème de traduction qui n'a pas encore été faite. Merci de patienter jusqu'à ce que la traduction de la portion en question soit achevée. Vous pouvez également [aider à traduire](./misskey) Misskey.

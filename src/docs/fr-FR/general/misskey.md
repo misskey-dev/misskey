@@ -75,9 +75,9 @@ Misskeyは開発が進むにつれ使用する技術も大きく変わってき�
 いいえ。MisskeyはMastodonやその他のプロジェクトとは全く別のプロジェクトです。 開発に関しても、Misskeyの方が昔から開発されています。ただし、分散型になったのはMastodonの登場より後です。 同じActivityPubという分散のためのプロトコルを実装しているという点以外、両者に特に関りがあるわけでもありません。
 
 ### « Existe-t-il des appli pour Android / iOS ? »
-公式にはそういったOSのネイティブアプリを開発していませんが、サードパーティ製のアプリがいくつかあります。 詳しくは[こちら](./apps)をご覧ください。
+Bien qu'il n'existe d'application Misskey officielle pour aucun OS, différentes applications développées par des tiers sont disponibles. [Voir ici](./apps) pour plus de détails.
 
-ただ、サードパーティ製アプリはどうしても機能への対応が遅れてしまうため、とくに拘りがなければ公式のWebクライアントの利用をおすすめします。 なお、MisskeyのWebクライアントはPWAに対応しているので、ネイティブアプリのように動作させることも可能です。 詳しくは[こちら](todo)をご覧ください。
+Cependant, à moins que vous ne soyez particulièrement déterminé·e à utiliser une application dédiée, l'utilisation du client Web officiel est vivement recommandée du fait que les applications développées par des tiers seront forcément en retard par rapport à celui-ci. Par ailleurs, étant donné que le client Web de Misskey est compatible avec une PWA, il peut adopter le comportement d'une application native. [Voir ici](todo) pour plus d'informations.
 
 ### Misskeyのロゴ、アイコンはどこで入手できますか？
 (準備中)

@@ -1,10 +1,10 @@
 import $ from 'cafy';
 import es from '../../../../db/elasticsearch';
 import define from '../../define';
-import { Notes } from '../../../../models';
+import { Notes } from '@/models/index';
 import { In } from 'typeorm';
 import { ID } from '@/misc/cafy-id';
-import config from '@/config';
+import config from '@/config/index';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query';
 import { generateMutedUserQuery } from '../../common/generate-muted-user-query';

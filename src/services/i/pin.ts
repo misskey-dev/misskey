@@ -1,14 +1,14 @@
-import config from '@/config';
-import renderAdd from '../../remote/activitypub/renderer/add';
-import renderRemove from '../../remote/activitypub/renderer/remove';
-import { renderActivity } from '../../remote/activitypub/renderer';
+import config from '@/config/index';
+import renderAdd from '@/remote/activitypub/renderer/add';
+import renderRemove from '@/remote/activitypub/renderer/remove';
+import { renderActivity } from '@/remote/activitypub/renderer/index';
 import { IdentifiableError } from '@/misc/identifiable-error';
-import { User } from '../../models/entities/user';
-import { Note } from '../../models/entities/note';
-import { Notes, UserNotePinings, Users } from '../../models';
-import { UserNotePining } from '../../models/entities/user-note-pining';
+import { User } from '@/models/entities/user';
+import { Note } from '@/models/entities/note';
+import { Notes, UserNotePinings, Users } from '@/models/index';
+import { UserNotePining } from '@/models/entities/user-note-pining';
 import { genId } from '@/misc/gen-id';
-import { deliverToFollowers } from '../../remote/activitypub/deliver-manager';
+import { deliverToFollowers } from '@/remote/activitypub/deliver-manager';
 import { deliverToRelays } from '../relay';
 
 /**
