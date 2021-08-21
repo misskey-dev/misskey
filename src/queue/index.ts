@@ -171,6 +171,15 @@ export function createImportUserListsJob(user: ThinUser, fileId: DriveFile['id']
 	});
 }
 
+export function createDeleteAccountJob(user: ThinUser) {
+	return dbQueue.add('deleteAccount', {
+		user: user
+	}, {
+		removeOnComplete: true,
+		removeOnFail: true
+	});
+}
+
 export function createDeleteObjectStorageFileJob(key: string) {
 	return objectStorageQueue.add('deleteFile', {
 		key: key

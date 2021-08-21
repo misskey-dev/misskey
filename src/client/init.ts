@@ -310,6 +310,13 @@ for (const plugin of ColdDeviceStorage.get('plugins').filter(p => p.active)) {
 }
 
 if ($i) {
+	if ($i.isDeleted) {
+		dialog({
+			type: 'warning',
+			text: i18n.locale.accountDeletionInProgress,
+		});
+	}
+
 	if ('Notification' in window) {
 		// 許可を得ていなかったらリクエスト
 		if (Notification.permission === 'default') {
