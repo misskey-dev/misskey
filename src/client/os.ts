@@ -215,7 +215,7 @@ export function modalPageWindow(path: string) {
 }
 
 export function dialog(props: {
-	type: 'error' | 'info' | 'success' | 'warning' | 'waiting' | 'help';
+	type: 'error' | 'info' | 'success' | 'warning' | 'waiting';
 	title?: string | null;
 	text?: string | null;
 }) {

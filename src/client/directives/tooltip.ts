@@ -29,7 +29,7 @@ export default {
 				ev.preventDefault();
 				ev.stopPropagation();
 				dialog({
-					type: 'help',
+					type: 'info',
 					text: binding.value,
 				});
 				return false;
