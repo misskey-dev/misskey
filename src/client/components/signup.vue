@@ -6,7 +6,7 @@
 			<template #prefix><i class="fas fa-key"></i></template>
 		</MkInput>
 		<MkInput v-model="username" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" :autocomplete="Math.random()" spellcheck="false" required @update:modelValue="onChangeUsername" data-cy-signup-username>
-			<template #label>{{ $ts.username }}</template>
+			<template #label>{{ $ts.username }} <div class="_button _help" v-tooltip:dialog="$ts.usernameInfo"><i class="far fa-question-circle"></i></div></template>
 			<template #prefix>@</template>
 			<template #suffix>@{{ host }}</template>
 			<template #caption>

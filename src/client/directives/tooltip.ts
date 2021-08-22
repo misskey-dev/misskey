@@ -1,6 +1,6 @@
 import { Directive, ref } from 'vue';
 import { isDeviceTouch } from '@client/scripts/is-device-touch';
-import { popup } from '@client/os';
+import { popup, dialog } from '@client/os';
 
 const start = isDeviceTouch ? 'touchstart' : 'mouseover';
 const end = isDeviceTouch ? 'touchend' : 'mouseleave';
@@ -23,6 +23,20 @@ export default {
 				self._close = null;
 			}
 		};
+
+		console.log(binding.arg);
+
+		if (binding.arg === 'dialog') {
+			el.addEventListener('click', (ev) => {
+				ev.preventDefault();
+				ev.stopPropagation();
+				dialog({
+					type: 'help',
+					text: binding.value,
+				});
+				return false;
+			});
+		}
 
 		const show = e => {
 			if (!document.body.contains(el)) return;

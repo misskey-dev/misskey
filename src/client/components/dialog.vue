@@ -10,6 +10,7 @@
 			<i v-else-if="type === 'warning'" class="fas fa-exclamation-triangle"></i>
 			<i v-else-if="type === 'info'" class="fas fa-info-circle"></i>
 			<i v-else-if="type === 'question'" class="fas fa-question-circle"></i>
+			<i v-else-if="type === 'help'" class="fas fa-question-circle"></i>
 			<i v-else-if="type === 'waiting'" class="fas fa-spinner fa-pulse"></i>
 		</div>
 		<header v-if="title"><Mfm :text="title"/></header>
