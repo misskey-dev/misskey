@@ -69,6 +69,7 @@ import XHeader from './_common_/header.vue';
 import * as os from '@client/os';
 import { menuDef } from '@client/menu';
 import * as symbols from '@client/symbols';
+import { load as loadLive2d } from '@client/scripts/live2d/index';
 
 const DESKTOP_THRESHOLD = 1100;
 const MOBILE_THRESHOLD = 600;
@@ -131,6 +132,13 @@ export default defineComponent({
 			this.isMobile = (window.innerWidth <= MOBILE_THRESHOLD);
 			this.isDesktop = (window.innerWidth >= DESKTOP_THRESHOLD);
 		}, { passive: true });
+
+		if (this.$store.state.aiChanMode) {
+			const canvas = document.createElement('canvas');
+			canvas.classList.add('ivnzpscs');
+			this.$el.appendChild(canvas);
+			loadLive2d(canvas);
+		}
 	},
 
 	methods: {
@@ -458,5 +466,16 @@ export default defineComponent({
 		overflow: auto;
 		background: var(--bg);
 	}
+}
+</style>
+
+<style lang="scss">
+.ivnzpscs {
+	position: fixed;
+	bottom: 0;
+	right: 0;
+	width: 300px;
+	height: 600px;
+	pointer-events: none;
 }
 </style>

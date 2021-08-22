@@ -1,0 +1,3 @@
+[submodule "lib/CubismWebFramework"]
+	path = lib/CubismWebFramework
+	url = https://github.com/Live2D/CubismWebFramework.git
