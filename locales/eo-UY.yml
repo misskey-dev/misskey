@@ -343,6 +343,7 @@ poll: "Balotujo"
 useCw: "Kaŝi enhavo"
 themeEditor: "Redaktilo de koloraroj"
 author: "Aŭtoro"
+manage: "Administri"
 plugins: "Kromaĵoj"
 deck: "Kartaro"
 medium: "Meza"
@@ -425,6 +426,7 @@ offline: "Forkonektita"
 instanceBlocking: "Blokado de ekzemplo"
 selectAccount: "Elekti konton"
 user: "Uzanto"
+administration: "Administri"
 accounts: "Kontoj"
 high: "Alta"
 middle: "Meza"
@@ -441,6 +443,7 @@ translatedFrom: "Tradukita el {x}"
 _docs:
   continueReading: "Legi plu"
   features: "Funkcioj"
+  admin: "Administro"
 _gallery:
   liked: "Ŝatitaj notoj"
   like: "Ŝati"
@@ -449,6 +452,8 @@ _email:
     title: "Vi estas eksekvita"
   _receiveFollowRequest:
     title: "Vi ricevis peton de sekvado"
+_plugin:
+  manage: "Administri plugilon"
 _registry:
   key: "Ŝlosilo"
   keys: "Ŝlosiloj"
@@ -497,6 +502,7 @@ _wordMute:
   muteWords: "Kaŝigitaj vortoj"
   mutedNotes: "Silentigataj notoj"
 _theme:
+  manage: "Administri koloraron"
   code: "Kodo de koloraro"
   darken: "Malbrileco"
   lighten: "Brileco"
