@@ -7,6 +7,13 @@
 
 -->
 
+## 12.x.x (unreleased)
+
+### Improvements
+- クライアントのデザインの調整
+
+### Bugfixes
+
 ## 12.89.0 (2021/08/21)
 
 ### Improvements

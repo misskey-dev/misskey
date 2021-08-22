@@ -24,8 +24,6 @@ export default {
 			}
 		};
 
-		console.log(binding.arg);
-
 		if (binding.arg === 'dialog') {
 			el.addEventListener('click', (ev) => {
 				ev.preventDefault();
