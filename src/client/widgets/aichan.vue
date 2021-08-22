@@ -1,11 +1,11 @@
 <template>
 <MkContainer :naked="props.transparent" :show-header="false">
-	<canvas class="dedjhjmo" ref="canvas"></canvas>
+	<canvas class="dedjhjmo" ref="canvas" @click="touched"></canvas>
 </MkContainer>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, markRaw } from 'vue';
 import define from './define';
 import MkContainer from '@client/components/ui/container.vue';
 import * as os from '@client/os';
@@ -26,13 +26,25 @@ export default defineComponent({
 	components: {
 		MkContainer,
 	},
+	data() {
+		return {
+			live2d: null,
+		};
+	},
 	mounted() {
 		this.$nextTick(() => {
 			loadLive2d(this.$refs.canvas, {
 				scale: 1.6,
 				y: 1.1
+			}).then(live2d => {
+				this.live2d = markRaw(live2d);
 			});
 		});
+	},
+	methods: {
+		touched() {
+			this.live2d.changeExpression('gurugurume');
+		}
 	}
 });
 </script>

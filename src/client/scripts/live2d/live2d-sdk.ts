@@ -21,8 +21,11 @@ abstract class ACubismMotion extends acubismmotion.ACubismMotion {}
 // import { Live2DCubismFramework as cubismmotion } from './lib/CubismWebFramework/motion/cubismmotion'
 // class CubismMotion extends cubismmotion.CubismMotion {}
 
-// import { Live2DCubismFramework as cubismmotionmanager } from './lib/CubismWebFramework/motion/cubismmotionmanager'
-// class CubismMotionManager extends cubismmotionmanager.CubismMotionManager {}
+import { Live2DCubismFramework as cubismexpressionmotion } from './lib/CubismWebFramework/motion/cubismexpressionmotion'
+class CubismExpressionMotion extends cubismexpressionmotion.CubismExpressionMotion {}
+
+import { Live2DCubismFramework as cubismmotionmanager } from './lib/CubismWebFramework/motion/cubismmotionmanager'
+class CubismMotionManager extends cubismmotionmanager.CubismMotionManager {}
 
 // physics
 import { Live2DCubismFramework as cubismphysics } from './lib/CubismWebFramework/physics/cubismphysics'
@@ -48,7 +51,8 @@ export {
   CubismUserModel,
   ACubismMotion,
   // CubismMotion,
-  // CubismMotionManager,
+	CubismExpressionMotion,
+  CubismMotionManager,
   CubismPhysics,
   CubismEyeBlink,
   csmVector
