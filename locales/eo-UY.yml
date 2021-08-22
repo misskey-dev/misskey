@@ -189,7 +189,7 @@ fromUrl: "De URL"
 uploadFromUrl: "Alŝuti de URL"
 uploadFromUrlDescription: "URL de la dosiero kiun vi volas alŝuti"
 explore: "Esplori"
-games: "Ludoj sur Misskey"
+games: "Miskiaj Ludoj"
 messageRead: "Legita"
 startMessaging: "Komenci babiladon"
 nUsersRead: "Legita de {n} homoj"
@@ -469,6 +469,7 @@ _aboutMisskey:
   translation: "Traduki Misskey'on"
   patrons: "Mecenatoj"
 _mfm:
+  dummy: "Misskey vastigas la mondon de Fediverso"
   mention: "Mencioj"
   hashtag: "Kradvorto"
   url: "URL"
@@ -496,6 +497,7 @@ _instanceTicker:
 _channel:
   create: "Krei kanalon"
   edit: "Redakti kanalon"
+  owned: "Posedaĵo"
   following: "Sekvante"
   usersCount: "{n} partoprenanto(j)"
 _menuDisplay:
