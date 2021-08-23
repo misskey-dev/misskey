@@ -54,12 +54,14 @@
 		<XWidgets v-if="widgetsShowing" class="tray"/>
 	</transition>
 
+	<canvas class="ivnzpscs" ref="live2d" @click="onAiClick"></canvas>
+
 	<XCommon/>
 </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, defineAsyncComponent } from 'vue';
+import { defineComponent, defineAsyncComponent, markRaw } from 'vue';
 import { instanceName } from '@client/config';
 import { StickySidebar } from '@client/scripts/sticky-sidebar';
 import XSidebar from './default.sidebar.vue';
@@ -93,6 +95,7 @@ export default defineComponent({
 			widgetsShowing: false,
 			fullView: false,
 			wallpaper: localStorage.getItem('wallpaper') != null,
+			live2d: null,
 		};
 	},
 
@@ -134,10 +137,13 @@ export default defineComponent({
 		}, { passive: true });
 
 		if (this.$store.state.aiChanMode) {
-			const canvas = document.createElement('canvas');
-			canvas.classList.add('ivnzpscs');
-			this.$el.appendChild(canvas);
-			loadLive2d(canvas);
+			loadLive2d(this.$refs.live2d, {
+				x: 0,
+				y: 1.4,
+				scale: 2,
+			}).then(live2d => {
+				this.live2d = markRaw(live2d);
+			});
 		}
 	},
 
@@ -209,6 +215,10 @@ export default defineComponent({
 				}
 			}], e);
 		},
+
+		onAiClick(ev) {
+			this.live2d.click(ev);
+		}
 	}
 });
 </script>
@@ -466,16 +476,14 @@ export default defineComponent({
 		overflow: auto;
 		background: var(--bg);
 	}
-}
-</style>
 
-<style lang="scss">
-.ivnzpscs {
-	position: fixed;
-	bottom: 0;
-	right: 0;
-	width: 300px;
-	height: 600px;
-	pointer-events: none;
+	> .ivnzpscs {
+		position: fixed;
+		bottom: 0;
+		right: 0;
+		width: 300px;
+		height: 600px;
+		//pointer-events: none;
+	}
 }
 </style>
