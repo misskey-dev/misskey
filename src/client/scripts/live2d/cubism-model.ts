@@ -12,12 +12,14 @@ interface MotionResources {
 
 export default class AppCubismUserModel extends CubismUserModel {
 	private motionResources: MotionResources;
+	private expressionResources: MotionResources;
 	private lipSyncParamIds: csmVector<CubismIdHandle> = new csmVector<CubismIdHandle>();
 	private eyeBlinkParamIds: csmVector<CubismIdHandle> = new csmVector<CubismIdHandle>();
 
 	constructor() {
 		super();
 		this.motionResources = {};
+		this.expressionResources = {};
 		this.lipSyncParamIds = new csmVector<CubismIdHandle>();
 		this.eyeBlinkParamIds = new csmVector<CubismIdHandle>();
 
@@ -62,7 +64,21 @@ export default class AppCubismUserModel extends CubismUserModel {
 		this.motionResources[name] = motion;
 
 		return name;
+	}
 
+	/**
+	 * 表情を追加して、ID（インデックス）を返す
+	 * @param buffer 表情データ
+	 * @param name 表情名
+	 */
+	public addExpression(buffer: ArrayBuffer, name: string, fadeIn: number = 1, fadeOut: number = 1): string {
+		const expression = this.loadExpression(buffer, buffer.byteLength, name);
+		if (fadeIn > 0) expression.setFadeInTime(fadeIn);
+		if (fadeOut > 0) expression.setFadeOutTime(fadeOut);
+
+		this.expressionResources[name] = expression;
+
+		return name;
 	}
 
 	/**
@@ -90,6 +106,16 @@ export default class AppCubismUserModel extends CubismUserModel {
 	}
 
 	/**
+	 * 表情の名前を指定して再生する
+	 * @param name 表情名
+	 */
+	public startExpressionByName(name: string) {
+		const expression = this.expressionResources[name];
+		if (!expression) return;
+		this._expressionManager.startMotionPriority(expression, false, 1);
+	}
+
+	/**
 	 * モデルのパラメータを更新する
 	 */
 	public update(deltaTimeSecond: number) {
@@ -97,11 +123,12 @@ export default class AppCubismUserModel extends CubismUserModel {
 
 		// モデルのパラメータを更新
 		const motionUpdated = this._motionManager.updateMotion(this.getModel(), deltaTimeSecond);
+		const expressionUpdated = this._expressionManager.updateMotion(this.getModel(), deltaTimeSecond);
 
 		this.getModel().saveParameters();
 
 		// まばたき
-		if (!motionUpdated && this._eyeBlink != null) {
+		if (!motionUpdated && !expressionUpdated && this._eyeBlink != null) {
 			this._eyeBlink.updateParameters(this._model, deltaTimeSecond);
 		}
 

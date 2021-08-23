@@ -7,6 +7,7 @@ import {
 	CubismMotionManager,
 	ACubismMotion,
 	CubismExpressionMotion,
+	CubismMotion,
 } from './live2d-sdk';
 import AppCubismUserModel from './cubism-model';
 import { FacePoint } from './face-point';
@@ -16,6 +17,7 @@ export interface AvatarArrayBuffers {
 	textures: Blob[];
 	physics: ArrayBuffer;
 	expressions: [string, ArrayBuffer][];
+	motions: [string, ArrayBuffer][];
 }
 interface Live2dRendererOption {
 	autoBlink: boolean;
@@ -34,9 +36,8 @@ let isFrameworkInitialized = false;
 
 export class Live2dRenderer {
 	private canvas: HTMLCanvasElement;
+	private model = new AppCubismUserModel();
 	private point = new FacePoint();
-	private expressions = {} as Record<string, ACubismMotion>;
-	private expressionManager = new CubismMotionManager();
 
 	constructor(canvas: HTMLCanvasElement) {
 		this.canvas = canvas;
@@ -77,55 +78,58 @@ export class Live2dRenderer {
 			textures,
 			physics: physics3ArrayBuffer,
 			expressions,
+			motions,
 		} = buffers;
 
 		/**
 			* Live2Dモデルの作成と設定
 			*/
 
-		const model = new AppCubismUserModel();
-
 		// モデルデータをロード
-		model.loadModel(moc3ArrayBuffer);
+		this.model.loadModel(moc3ArrayBuffer);
 
 		// レンダラの作成（bindTextureより先にやっておく）
-		model.createRenderer();
+		this.model.createRenderer();
 
 		// テクスチャをレンダラに設定
 		let i = 0;
 		for (const buffer of textures) {
 			const texture = await createTexture(buffer, gl);
-			model.getRenderer()
+			this.model.getRenderer()
 				.bindTexture(i, texture);
 			i++;
 		}
 
 		// そのほかレンダラの設定
-		model.getRenderer().setIsPremultipliedAlpha(true);
-		model.getRenderer().startUp(gl);
+		this.model.getRenderer().setIsPremultipliedAlpha(true);
+		this.model.getRenderer().startUp(gl);
 
 		// 自動目ぱち設定
 		if (option.autoBlink) {
-			model.setEyeBlink(CubismEyeBlink.create(modelSetting));
+			this.model.setEyeBlink(CubismEyeBlink.create(modelSetting));
 		}
 
 		// モーションに適用する目ぱち用IDを設定
 		for (let i = 0, len = modelSetting.getEyeBlinkParameterCount(); i < len; i++) {
-			model.addEyeBlinkParameterId(modelSetting.getEyeBlinkParameterId(i));
+			this.model.addEyeBlinkParameterId(modelSetting.getEyeBlinkParameterId(i));
 		}
 
 		// モーションに適用する口パク用IDを設定
 		for (let i = 0, len = modelSetting.getLipSyncParameterCount(); i < len; i++) {
-			//model.addLipSyncParameterId(modelSetting.getLipSyncParameterId(i));
+			this.model.addLipSyncParameterId(modelSetting.getLipSyncParameterId(i));
 		}
 
 		// 物理演算設定
-		model.loadPhysics(physics3ArrayBuffer, physics3ArrayBuffer.byteLength);
+		this.model.loadPhysics(physics3ArrayBuffer, physics3ArrayBuffer.byteLength);
 
 		// 表情
 		for (const [k, v] of expressions) {
-			const motion = CubismExpressionMotion.create(v, v.byteLength);
-			this.expressions[k] = motion;
+			this.model.addExpression(v, k);
+		}
+
+		// モーション
+		for (const [k, v] of motions) {
+			this.model.addMotion(v, k);
 		}
 
 		/**
@@ -140,13 +144,15 @@ export class Live2dRenderer {
 			y: option.y,
 			z: option.scale
 		});
+
 		const projectionMatrix = new CubismMatrix44();
+
 		const resizeModel = () => {
 			this.canvas.width = this.canvas.clientWidth * devicePixelRatio;
 			this.canvas.height = this.canvas.clientHeight * devicePixelRatio;
 
 			// NOTE: modelMatrixは、モデルのユニット単位での幅と高さが1×1に収まるように縮めようとしている？
-			const modelMatrix = model.getModelMatrix();
+			const modelMatrix = this.model.getModelMatrix();
 			modelMatrix.bottom(0);
 			modelMatrix.centerY(-1);
 			modelMatrix.translateY(-1);
@@ -164,8 +170,7 @@ export class Live2dRenderer {
 			projectionMatrix.multiplyByMatrix(modelMatrix);
 			const scale = defaultPosition.z;
 			projectionMatrix.scaleRelative(scale, scale);
-			model.getRenderer().setMvpMatrix(projectionMatrix);
-
+			this.model.getRenderer().setMvpMatrix(projectionMatrix);
 		};
 		resizeModel();
 
@@ -184,40 +189,32 @@ export class Live2dRenderer {
 		// 最後の更新時間
 		let lastUpdateTime = Date.now();
 
+		const __model = this.model.getModel();
+		const idManager = CubismFramework.getIdManager();
+
 		const loop = () => {
 			const time = Date.now();
 			// 最後の更新からの経過時間を秒で求める
 			const deltaTimeSecond = (time - lastUpdateTime) / 1000;
 
 			// モデルの位置調整
-			const _model = model.getModel();
-			const idManager = CubismFramework.getIdManager();
-
-			_model.setParameterValueById(idManager.getId('ParamAngleX'), this.point.angleX, .5);
-			_model.setParameterValueById(idManager.getId('ParamAngleY'), this.point.angleY, .5);
-			_model.setParameterValueById(idManager.getId('ParamAngleZ'), this.point.angleZ, .5);
-			_model.setParameterValueById(idManager.getId('ParamEyeBallX'), this.point.angleEyeX, .5);
-			_model.setParameterValueById(idManager.getId('ParamEyeBallY'), this.point.angleEyeY, .5);
-			_model.setParameterValueById(idManager.getId('ParamMouthOpenY'), this.point.mouseDistance * 0.1, .5);
-			_model.setParameterValueById(idManager.getId('ParamBodyAngleZ'), this.point.angleZ / 2, .05);
-			_model.saveParameters();
+			__model.setParameterValueById(idManager.getId('ParamAngleX'), this.point.angleX, .5);
+			__model.setParameterValueById(idManager.getId('ParamAngleY'), this.point.angleY, .5);
+			__model.setParameterValueById(idManager.getId('ParamAngleZ'), this.point.angleZ, .5);
+			__model.setParameterValueById(idManager.getId('ParamEyeBallX'), this.point.angleEyeX, .5);
+			__model.setParameterValueById(idManager.getId('ParamEyeBallY'), this.point.angleEyeY, .5);
+			//__model.setParameterValueById(idManager.getId('ParamMouthOpenY'), this.point.mouseDistance * 0.1, .5);
+			__model.setParameterValueById(idManager.getId('ParamBodyAngleZ'), this.point.angleZ / 2, .05);
+			__model.saveParameters();
 			// 頂点の更新
-			model.update(deltaTimeSecond);
-
-			this.expressionManager.updateMotion(_model, deltaTimeSecond);
-
-			if (model.isMotionFinished) {
-				const idx = Math.floor(Math.random() * model.motionNames.length);
-				const name = model.motionNames[idx];
-				model.startMotionByName(name);
-			}
+			this.model.update(deltaTimeSecond);
 
 			viewport[2] = this.canvas.width;
 			viewport[3] = this.canvas.height;
-			model.getRenderer().setRenderState(frameBuffer, viewport);
+			this.model.getRenderer().setRenderState(frameBuffer, viewport);
 
 			// モデルの描画
-			model.getRenderer().drawModel();
+			this.model.getRenderer().drawModel();
 
 			lastUpdateTime = time;
 
@@ -230,14 +227,35 @@ export class Live2dRenderer {
 			loop();
 		});
 		loop();
+
+		// TODO: ランダムにあくび or aiart
+		/*
+					if (this.model.isMotionFinished) {
+				const idx = Math.floor(Math.random() * this.model.motionNames.length);
+				const name = this.model.motionNames[idx];
+				this.model.startMotionByName(name);
+			}
+*/
 	}
 
 	public updatePoint(newPoint: Partial<FacePoint>) {
 		Object.assign(this.point, newPoint);
 	}
 
-	public changeExpression(name: string) {
-		this.expressionManager.startMotionPriority(this.expressions[name], false);
+	public click(ev: MouseEvent) {
+		const rect = this.canvas.getBoundingClientRect();
+		const cx = rect.left + rect.width / 2;
+		const cy = rect.top + rect.height / 2;
+		const x = (ev.clientX - cx) / (rect.width / 2);
+		const y = (ev.clientY - cy) / (rect.height / 2);
+
+		// なんかbody->head, head->boobになってるっぽい
+		if (this.model.isHit(CubismFramework.getIdManager().getId('HitArea_Body'), x, y)) {
+			this.model.startMotionByName('mimi');
+			this.model.startExpressionByName('smile');
+		} else if (this.model.isHit(CubismFramework.getIdManager().getId('HitArea_Head'), x, y)) {
+			this.model.startExpressionByName('jitome');
+		}
 	}
 }
 

@@ -11,8 +11,16 @@ const MODEL_FILES = {
 		MODEL_PATH + 'ai.4096/texture_00.png',
 	],
 	expressions: {
-		test: MODEL_PATH + 'expressions/exp_01.exp3.json',
+		smile: MODEL_PATH + 'expressions/exp_01.exp3.json',
+		surprise: MODEL_PATH + 'expressions/exp_02.exp3.json',
+		happy: MODEL_PATH + 'expressions/exp_06.exp3.json',
+		jitome: MODEL_PATH + 'expressions/exp_11.exp3.json',
 		gurugurume: MODEL_PATH + 'expressions/exp_20.exp3.json',
+	},
+	motions: {
+		swing: MODEL_PATH + 'motions/mtn_03.motion3.json',
+		mimi: MODEL_PATH + 'motions/mtn_05.motion3.json',
+		AiArt: MODEL_PATH + 'motions/AiArt.motion3.json',
 	},
 };
 
@@ -49,7 +57,7 @@ export function load(canvas: HTMLCanvasElement, options: { x?: number; y?: numbe
 
 async function main(canvas: HTMLCanvasElement, options: { x: number; y: number; scale: number; }) {
 	try {
-		const [model, moc3, physics, textures, expressions] = await Promise.all([
+		const [model, moc3, physics, textures, expressions, motions] = await Promise.all([
 			fetch(MODEL_FILES.model3).then(res => res.arrayBuffer()),
 			fetch(MODEL_FILES.moc3).then(res => res.arrayBuffer()),
 			fetch(MODEL_FILES.physics3).then(res => res.arrayBuffer()),
@@ -59,6 +67,9 @@ async function main(canvas: HTMLCanvasElement, options: { x: number; y: number; 
 			Promise.all(Object.entries(MODEL_FILES.expressions).map(([k, v]) =>
 				fetch(v).then(res => res.arrayBuffer()).then(buffer => [k, buffer])
 			)),
+			Promise.all(Object.entries(MODEL_FILES.motions).map(([k, v]) =>
+				fetch(v).then(res => res.arrayBuffer()).then(buffer => [k, buffer])
+			)),
 		]);
 		const renderer = new Live2dRenderer(canvas);
 		await renderer.init(model, {
@@ -66,6 +77,7 @@ async function main(canvas: HTMLCanvasElement, options: { x: number; y: number; 
 			physics,
 			textures,
 			expressions,
+			motions,
 		}, {
 			autoBlink: true,
 			...options

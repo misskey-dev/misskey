@@ -18,8 +18,8 @@ class CubismUserModel extends cubismusermodel.CubismUserModel {}
 import { Live2DCubismFramework as acubismmotion } from '@lib/CubismWebFramework/src/motion/acubismmotion';
 abstract class ACubismMotion extends acubismmotion.ACubismMotion {}
 
-// import { Live2DCubismFramework as cubismmotion } from '@lib/CubismWebFramework/src/motion/cubismmotion'
-// class CubismMotion extends cubismmotion.CubismMotion {}
+import { Live2DCubismFramework as cubismmotion } from '@lib/CubismWebFramework/src/motion/cubismmotion'
+class CubismMotion extends cubismmotion.CubismMotion {}
 
 import { Live2DCubismFramework as cubismexpressionmotion } from '@lib/CubismWebFramework/src/motion/cubismexpressionmotion';
 class CubismExpressionMotion extends cubismexpressionmotion.CubismExpressionMotion {}
@@ -50,7 +50,7 @@ export {
 	CubismMatrix44,
 	CubismUserModel,
 	ACubismMotion,
-	// CubismMotion,
+	CubismMotion,
 	CubismExpressionMotion,
 	CubismMotionManager,
 	CubismPhysics,
