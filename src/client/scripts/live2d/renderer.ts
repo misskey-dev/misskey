@@ -49,18 +49,18 @@ export class Live2dRenderer {
 
 		const gl = this.canvas.getContext('webgl');
 		if (gl === null) throw new Error('WebGL未対応のブラウザです。');
-	
+
 		gl.enable(gl.BLEND);
 		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 		gl.clearColor(0.0, 0.0, 0.0, 0.0);
 		gl.enable(gl.DEPTH_TEST);
 		gl.depthFunc(gl.LEQUAL);
-	
+
 		const option = Object.assign({}, DEFAULT_OPTION, options);
-	
+
 		// フレームバッファを用意
 		const frameBuffer: WebGLFramebuffer = gl.getParameter(gl.FRAMEBUFFER_BINDING);
-	
+
 		/**
 			* Frameworkの初期化
 			*/
@@ -69,28 +69,28 @@ export class Live2dRenderer {
 			CubismFramework.initialize();
 			isFrameworkInitialized = true;
 		}
-	
+
 		const modelSetting = new CubismModelSettingJson(_model, _model.byteLength) as ICubismModelSetting;
-	
+
 		const {
 			moc3: moc3ArrayBuffer,
 			textures,
 			physics: physics3ArrayBuffer,
 			expressions,
 		} = buffers;
-	
+
 		/**
 			* Live2Dモデルの作成と設定
 			*/
-	
+
 		const model = new AppCubismUserModel();
-	
+
 		// モデルデータをロード
 		model.loadModel(moc3ArrayBuffer);
-	
+
 		// レンダラの作成（bindTextureより先にやっておく）
 		model.createRenderer();
-	
+
 		// テクスチャをレンダラに設定
 		let i = 0;
 		for (let buffer of textures) {
@@ -99,35 +99,35 @@ export class Live2dRenderer {
 				.bindTexture(i, texture);
 			i++;
 		}
-	
+
 		// そのほかレンダラの設定
 		model.getRenderer().setIsPremultipliedAlpha(true);
 		model.getRenderer().startUp(gl);
-	
+
 		// 自動目ぱち設定
 		if (option.autoBlink) {
 			model.setEyeBlink(CubismEyeBlink.create(modelSetting));
 		}
-	
+
 		// モーションに適用する目ぱち用IDを設定
 		for (let i = 0, len = modelSetting.getEyeBlinkParameterCount(); i < len; i++) {
 			model.addEyeBlinkParameterId(modelSetting.getEyeBlinkParameterId(i));
 		}
-	
+
 		// モーションに適用する口パク用IDを設定
 		for (let i = 0, len = modelSetting.getLipSyncParameterCount(); i < len; i++) {
 			//model.addLipSyncParameterId(modelSetting.getLipSyncParameterId(i));
 		}
-	
+
 		// 物理演算設定
 		model.loadPhysics(physics3ArrayBuffer, physics3ArrayBuffer.byteLength);
-	
+
 		// 表情
 		for (const [k, v] of expressions) {
 			const motion = CubismExpressionMotion.create(v, v.byteLength);
 			this.expressions[k] = motion;
 		}
-	
+
 		/**
 			* Live2Dモデルのサイズ調整
 			*/
@@ -144,7 +144,7 @@ export class Live2dRenderer {
 		const resizeModel = () => {
 			this.canvas.width = this.canvas.clientWidth * devicePixelRatio;
 			this.canvas.height = this.canvas.clientHeight * devicePixelRatio;
-	
+
 			// NOTE: modelMatrixは、モデルのユニット単位での幅と高さが1×1に収まるように縮めようとしている？
 			const modelMatrix = model.getModelMatrix();
 			modelMatrix.bottom(0);
@@ -165,14 +165,14 @@ export class Live2dRenderer {
 			const scale = defaultPosition.z;
 			projectionMatrix.scaleRelative(scale, scale);
 			model.getRenderer().setMvpMatrix(projectionMatrix);
-	
+
 		};
 		resizeModel();
-	
+
 		/**
 			* Live2Dモデルの描画
 			*/
-	
+
 			// フレームバッファとビューポートを、フレームワーク設定
 		const viewport: number[] = [
 				0,
@@ -180,19 +180,19 @@ export class Live2dRenderer {
 				this.canvas.width,
 				this.canvas.height
 			];
-	
+
 		// 最後の更新時間
 		let lastUpdateTime = Date.now();
-	
+
 		const loop = () => {
 			const time = Date.now();
 			// 最後の更新からの経過時間を秒で求める
 			const deltaTimeSecond = (time - lastUpdateTime) / 1000;
-	
+
 			// モデルの位置調整
 			const _model = model.getModel();
 			const idManager = CubismFramework.getIdManager();
-	
+
 			_model.setParameterValueById(idManager.getId('ParamAngleX'), this.point.angleX, .5);
 			_model.setParameterValueById(idManager.getId('ParamAngleY'), this.point.angleY, .5);
 			_model.setParameterValueById(idManager.getId('ParamAngleZ'), this.point.angleZ, .5);
@@ -203,28 +203,28 @@ export class Live2dRenderer {
 			_model.saveParameters();
 			// 頂点の更新
 			model.update(deltaTimeSecond);
-	
+
 			this.expressionManager.updateMotion(_model, deltaTimeSecond);
-	
+
 			if (model.isMotionFinished) {
 				const idx = Math.floor(Math.random() * model.motionNames.length);
 				const name = model.motionNames[idx];
 				model.startMotionByName(name);
 			}
-	
+
 			viewport[2] = this.canvas.width;
 			viewport[3] = this.canvas.height;
 			model.getRenderer().setRenderState(frameBuffer, viewport);
-	
+
 			// モデルの描画
 			model.getRenderer().drawModel();
-	
+
 			lastUpdateTime = time;
-	
+
 			// TODO: cancelできる仕組みを提供する
 			requestAnimationFrame(loop);
 		};
-	
+
 		window.addEventListener('resize', () => {
 			resizeModel();
 			loop();
