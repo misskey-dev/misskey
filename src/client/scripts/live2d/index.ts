@@ -2,23 +2,24 @@ import { FacePoint } from './face-point';
 import { Live2dRenderer } from './renderer';
 import { getAngle, getDistance } from './math-util';
 
+const MODEL_PATH = '/assets/live2d/ai/web/';
 const MODEL_FILES = {
-	moc3: '/assets/live2d/Ai/ai.moc3',
-	model3: '/assets/live2d/Ai/ai.model3.json',
-	physics3: '/assets/live2d/Ai/ai.physics3.json',
+	moc3: MODEL_PATH + 'ai.moc3',
+	model3: MODEL_PATH + 'ai.model3.json',
+	physics3: MODEL_PATH + 'ai.physics3.json',
 	textures: [
-		'/assets/live2d/Ai/ai.4096/texture_00.png',
+		MODEL_PATH + 'ai.4096/texture_00.png',
 	],
 	expressions: {
-		test: '/assets/live2d/Ai/expressions/exp_01.exp3.json',
-		gurugurume: '/assets/live2d/Ai/expressions/exp_20.exp3.json',
+		test: MODEL_PATH + 'expressions/exp_01.exp3.json',
+		gurugurume: MODEL_PATH + 'expressions/exp_20.exp3.json',
 	},
 };
 
 export function load(canvas: HTMLCanvasElement, options: { x?: number; y?: number; scale?: number; }) {
 	return new Promise((res, rej) => {
 		const coreSdkScript = document.createElement('script');
-		coreSdkScript.setAttribute('src', '/assets/lib/CubismCore/live2dcubismcore.js');
+		coreSdkScript.setAttribute('src', '/assets/lib/CubismCore/live2dcubismcore.min.js');
 		document.head.appendChild(coreSdkScript);
 		coreSdkScript.addEventListener('load', () => {
 			main(canvas, options).then(renderer => {

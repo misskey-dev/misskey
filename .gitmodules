@@ -1,3 +1,6 @@
 [submodule "lib/CubismWebFramework"]
 	path = lib/CubismWebFramework
 	url = https://github.com/Live2D/CubismWebFramework.git
+[submodule "misskey-assets"]
+	path = misskey-assets
+	url = https://github.com/misskey-dev/assets.git
