@@ -19,6 +19,7 @@ const MODEL_FILES = {
 	},
 	motions: {
 		swing: MODEL_PATH + 'motions/mtn_03.motion3.json',
+		akubi: MODEL_PATH + 'motions/mtn_04.motion3.json',
 		mimi: MODEL_PATH + 'motions/mtn_05.motion3.json',
 		AiArt: MODEL_PATH + 'motions/AiArt.motion3.json',
 	},

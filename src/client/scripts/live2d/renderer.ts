@@ -228,14 +228,24 @@ export class Live2dRenderer {
 		});
 		loop();
 
-		// TODO: ランダムにあくび or aiart
-		/*
-					if (this.model.isMotionFinished) {
-				const idx = Math.floor(Math.random() * this.model.motionNames.length);
-				const name = this.model.motionNames[idx];
-				this.model.startMotionByName(name);
-			}
-*/
+		const randomMotions = ['akubi', 'akubi', 'swing', 'AiArt'];
+		const randomMotion = () => {
+			setTimeout(() => {
+				if (this.model.isMotionFinished) {
+					this.model.startMotionByName(randomMotions[Math.floor(Math.random() * randomMotions.length)]);
+				}
+				randomMotion();
+			}, (1000 * 10) + (Math.random() * 1000 * 80));
+		};
+		randomMotion();
+
+		const mimi = () => {
+			setTimeout(() => {
+				this.model.startMotionByName('mimi');
+				mimi();
+			}, (1000 * 10) + (Math.random() * 1000 * 30));
+		};
+		mimi();
 	}
 
 	public updatePoint(newPoint: Partial<FacePoint>) {
@@ -249,11 +259,15 @@ export class Live2dRenderer {
 		const x = (ev.clientX - cx) / (rect.width / 2);
 		const y = (ev.clientY - cy) / (rect.height / 2);
 
-		// なんかbody->head, head->boobになってるっぽい
-		if (this.model.isHit(CubismFramework.getIdManager().getId('HitArea_Body'), x, y)) {
+		// NOTE: なんかbody->head, head->boobになってるっぽい
+		if (this.model.isHit(CubismFramework.getIdManager().getId('HitArea'), x, y)) { // 右耳
+			this.model.startMotionByName('mimi');
+		} else if (this.model.isHit(CubismFramework.getIdManager().getId('HitArea2'), x, y)) { // 左耳
+			this.model.startMotionByName('mimi');
+		} else if (this.model.isHit(CubismFramework.getIdManager().getId('HitArea_Body'), x, y)) { // 頭
 			this.model.startMotionByName('mimi');
 			this.model.startExpressionByName('smile');
-		} else if (this.model.isHit(CubismFramework.getIdManager().getId('HitArea_Head'), x, y)) {
+		} else if (this.model.isHit(CubismFramework.getIdManager().getId('HitArea_Head'), x, y)) { // 胸
 			this.model.startExpressionByName('jitome');
 		}
 	}
