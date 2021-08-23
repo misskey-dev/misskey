@@ -93,7 +93,7 @@ export class Live2dRenderer {
 
 		// テクスチャをレンダラに設定
 		let i = 0;
-		for (let buffer of textures) {
+		for (const buffer of textures) {
 			const texture = await createTexture(buffer, gl);
 			model.getRenderer()
 				.bindTexture(i, texture);

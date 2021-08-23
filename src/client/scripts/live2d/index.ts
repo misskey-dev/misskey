@@ -16,20 +16,38 @@ const MODEL_FILES = {
 	},
 };
 
+let isCoreSdkLoaded = false;
+
 export function load(canvas: HTMLCanvasElement, options: { x?: number; y?: number; scale?: number; }) {
 	return new Promise((res, rej) => {
-		const coreSdkScript = document.createElement('script');
-		coreSdkScript.setAttribute('src', '/assets/lib/CubismCore/live2dcubismcore.min.js');
-		document.head.appendChild(coreSdkScript);
-		coreSdkScript.addEventListener('load', () => {
-			main(canvas, options).then(renderer => {
-				res(renderer);
+		const existedCoreSdkScript = document.head.querySelector('script[src="/assets/lib/CubismCore/live2dcubismcore.min.js"]');
+		if (existedCoreSdkScript) {
+			if (!isCoreSdkLoaded) {
+				existedCoreSdkScript.addEventListener('load', () => {
+					main(canvas, options).then(renderer => {
+						res(renderer);
+					});
+				});
+			} else {
+				main(canvas, options).then(renderer => {
+					res(renderer);
+				});
+			}
+		} else {
+			const coreSdkScript = document.createElement('script');
+			coreSdkScript.setAttribute('src', '/assets/lib/CubismCore/live2dcubismcore.min.js');
+			document.head.appendChild(coreSdkScript);
+			coreSdkScript.addEventListener('load', () => {
+				isCoreSdkLoaded = true;
+				main(canvas, options).then(renderer => {
+					res(renderer);
+				});
 			});
-		});
+		}
 	});
 }
 
-async function main(canvas: HTMLCanvasElement, options: { x?: number; y?: number; scale?: number; }) {
+async function main(canvas: HTMLCanvasElement, options: { x: number; y: number; scale: number; }) {
 	try {
 		const [model, moc3, physics, textures, expressions] = await Promise.all([
 			fetch(MODEL_FILES.model3).then(res => res.arrayBuffer()),
@@ -50,9 +68,6 @@ async function main(canvas: HTMLCanvasElement, options: { x?: number; y?: number
 			expressions,
 		}, {
 			autoBlink: true,
-			x: 0,
-			y: 1.4,
-			scale: 2,
 			...options
 		});
 		let point = new FacePoint();
