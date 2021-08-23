@@ -2,5 +2,5 @@ const cd = require('content-disposition');
 
 export function contentDisposition(type: 'inline' | 'attachment', filename: string): string {
 	const fallback = filename.replace(/[^\w.-]/g, '_');
-	return cd(filename, { 'attachment', fallback });
+	return cd(filename, { type: 'attachment', fallback });
 }
