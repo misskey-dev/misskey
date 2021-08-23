@@ -232,6 +232,12 @@ export class User {
 	})
 	public token: string | null;
 
+	@Column('boolean', {
+		default: false,
+		comment: 'Whether to use the pleroma-style timelines'
+	})
+	public pleromaTimeline: boolean;
+
 	constructor(data: Partial<User>) {
 		if (data == null) return;
 

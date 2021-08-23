@@ -88,6 +88,10 @@ export const meta = {
 			validator: $.optional.bool,
 		},
 
+		pleromaTimeline: {
+			validator: $.optional.bool,
+		},
+
 		injectFeaturedNote: {
 			validator: $.optional.bool,
 		},
@@ -185,6 +189,7 @@ export default define(meta, async (ps, _user, token) => {
 	if (typeof ps.autoAcceptFollowed === 'boolean') profileUpdates.autoAcceptFollowed = ps.autoAcceptFollowed;
 	if (typeof ps.noCrawle === 'boolean') profileUpdates.noCrawle = ps.noCrawle;
 	if (typeof ps.isCat === 'boolean') updates.isCat = ps.isCat;
+	if (typeof ps.pleromaTimeline === 'boolean') updates.pleromaTimeline = ps.pleromaTimeline;
 	if (typeof ps.injectFeaturedNote === 'boolean') profileUpdates.injectFeaturedNote = ps.injectFeaturedNote;
 	if (typeof ps.receiveAnnouncementEmail === 'boolean') profileUpdates.receiveAnnouncementEmail = ps.receiveAnnouncementEmail;
 	if (typeof ps.alwaysMarkNsfw === 'boolean') profileUpdates.alwaysMarkNsfw = ps.alwaysMarkNsfw;

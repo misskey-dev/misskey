@@ -138,6 +138,8 @@ cacheRemoteFilesDescription: "When this setting is disabled, remote files are lo
 flagAsBot: "Mark this account as as bot"
 flagAsBotDescription: "Enable this option if this account is controlled by a program. If enabled, it will act as flag for other developers to prevent endless interaction chains with other bots and adjust Misskey's internal systems to treat this account as a bot."
 flagAsCat: "Mark this account as a cat"
+flagPleroma: "Show replies in timeline"
+flagPleromaDescription: "Show users replying to other users in the timeline"
 flagAsCatDescription: "Enable this option to mark this account as a cat."
 autoAcceptFollowed: "Automatically approve follow requests from users you're following"
 addAccount: "Add account"
