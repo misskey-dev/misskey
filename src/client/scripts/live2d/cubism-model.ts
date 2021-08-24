@@ -1,7 +1,7 @@
 import {
 	CubismUserModel,
 	ACubismMotion,
-	csmVector,
+	CsmVector,
 	CubismIdHandle,
 	CubismEyeBlink
 } from './live2d-sdk';
@@ -13,15 +13,15 @@ interface MotionResources {
 export default class AppCubismUserModel extends CubismUserModel {
 	private motionResources: MotionResources;
 	private expressionResources: MotionResources;
-	private lipSyncParamIds: csmVector<CubismIdHandle> = new csmVector<CubismIdHandle>();
-	private eyeBlinkParamIds: csmVector<CubismIdHandle> = new csmVector<CubismIdHandle>();
+	private lipSyncParamIds = new CsmVector<CubismIdHandle>();
+	private eyeBlinkParamIds = new CsmVector<CubismIdHandle>();
 
 	constructor() {
 		super();
 		this.motionResources = {};
 		this.expressionResources = {};
-		this.lipSyncParamIds = new csmVector<CubismIdHandle>();
-		this.eyeBlinkParamIds = new csmVector<CubismIdHandle>();
+		this.lipSyncParamIds = new CsmVector<CubismIdHandle>();
+		this.eyeBlinkParamIds = new CsmVector<CubismIdHandle>();
 		this._lipsync = false;
 
 	}
