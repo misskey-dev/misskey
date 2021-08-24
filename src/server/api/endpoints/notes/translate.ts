@@ -61,7 +61,9 @@ export default define(meta, async (ps, user) => {
 	params.append('text', note.text);
 	params.append('target_lang', targetLang);
 
-	const res = await fetch('https://api-free.deepl.com/v2/translate', {
+	const endpoint = instance.deeplIsPro ? 'https://api.deepl.com/v2/translate' : 'https://api-free.deepl.com/v2/translate';
+
+	const res = await fetch(endpoint, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded',
