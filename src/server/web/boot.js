@@ -60,6 +60,8 @@
 		? `?salt=${localStorage.getItem('salt')}`
 		: '';
 
+	const head = document.getElementsByTagName('head')[0];
+
 	const script = document.createElement('script');
 	script.setAttribute('src', `/assets/app.${v}.js${salt}`);
 	script.setAttribute('async', 'true');
@@ -68,7 +70,7 @@
 		renderError('APP_FETCH_FAILED');
 		checkUpdate();
 	});
-	document.head.appendChild(script);
+	head.appendChild(script);
 	//#endregion
 
 	//#region Theme
