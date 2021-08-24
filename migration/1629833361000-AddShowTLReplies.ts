@@ -1,7 +1,7 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 
-export class addShowTLReplies1629659466000 implements MigrationInterface {
-    name = 'addShowTLReplies1629659466000'
+export class addShowTLReplies1629833361000 implements MigrationInterface {
+    name = 'addShowTLReplies1629833361000'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`ALTER TABLE "user" ADD "showTimelineReplies" boolean NOT NULL DEFAULT false`);
