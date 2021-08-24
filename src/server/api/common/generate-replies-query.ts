@@ -3,7 +3,7 @@ import { Brackets, SelectQueryBuilder } from 'typeorm';
 
 export function generateRepliesQuery(q: SelectQueryBuilder<any>, me: any) {
 	const userId = me['id'] ?? null;
-	const plTimeline: boolean = me['pleromaTimeline'] ?? false;
+	const showReplies: boolean = me['showTimelineReplies'] ?? false;
 	if (userId == null) {
 		q.andWhere(new Brackets(qb => { qb
 			.where(`note.replyId IS NULL`) // 返信ではない
@@ -12,7 +12,7 @@ export function generateRepliesQuery(q: SelectQueryBuilder<any>, me: any) {
 				.andWhere('note.replyUserId = note.userId');
 			}));
 		}));
-	} else if (!plTimeline) {
+	} else if (!showReplies) {
 		q.andWhere(new Brackets(qb => { qb
 			.where(`note.replyId IS NULL`) // 返信ではない
 			.orWhere('note.replyUserId = :meId', { meId: userId }) // 返信だけど自分のノートへの返信

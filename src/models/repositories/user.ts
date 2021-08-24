@@ -195,7 +195,7 @@ export class UserRepository extends Repository<User> {
 			isModerator: user.isModerator || falsy,
 			isBot: user.isBot || falsy,
 			isCat: user.isCat || falsy,
-			pleromaTimeline: user.pleromaTimeline || falsy,
+			showTimelineReplies: user.showTimelineReplies || falsy,
 			instance: user.host ? Instances.findOne({ host: user.host }).then(instance => instance ? {
 				name: instance.name,
 				softwareName: instance.softwareName,
@@ -392,7 +392,7 @@ export const packedUserSchema = {
 			type: 'boolean' as const,
 			nullable: false as const, optional: true as const,
 		},
-		pleromaTimeline: {
+		showTimelineReplies: {
 			type: 'boolean' as const,
 			nullable: false as const, optional: true as const,
 		},

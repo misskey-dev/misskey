@@ -236,7 +236,7 @@ export class User {
 		default: false,
 		comment: 'Whether to use the pleroma-style timelines'
 	})
-	public pleromaTimeline: boolean;
+	public showTimelineReplies: boolean;
 
 	constructor(data: Partial<User>) {
 		if (data == null) return;
