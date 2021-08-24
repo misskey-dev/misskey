@@ -101,15 +101,12 @@ window.addEventListener('resize', () => {
 });
 //#endregion
 
-// Get the <head> element
-const head = document.getElementsByTagName('head')[0];
-
 // If mobile, insert the viewport meta tag
 if (isMobile || window.innerWidth <= 1024) {
 	const viewport = document.getElementsByName('viewport').item(0);
 	viewport.setAttribute('content',
 		`${viewport.getAttribute('content')},minimum-scale=1,maximum-scale=1,user-scalable=no`);
-	head.appendChild(viewport);
+	document.head.appendChild(viewport);
 }
 
 //#region Set lang attr

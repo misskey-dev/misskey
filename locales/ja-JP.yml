@@ -778,6 +778,7 @@ whatIsNew: "更新情報を見る"
 translate: "翻訳"
 translatedFrom: "{x}から翻訳"
 accountDeletionInProgress: "アカウントの削除が進行中です"
+usernameInfo: "サーバー上であなたのアカウントを一意に識別するための名前。アルファベット(a~z, A~Z)、数字(0~9)、およびアンダーバー(_)が使用できます。ユーザー名は後から変更することは出来ません。"
 
 _accountDelete:
   accountDelete: "アカウントの削除"
