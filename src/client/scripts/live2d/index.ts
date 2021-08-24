@@ -83,7 +83,7 @@ async function main(canvas: HTMLCanvasElement, options: { x: number; y: number; 
 			autoBlink: true,
 			...options
 		});
-		let point = new FacePoint();
+		const point = new FacePoint();
 		const _handleOnMouseMove = (e: MouseEvent) => {
 			const x = e.clientX;
 			const y = e.clientY;
