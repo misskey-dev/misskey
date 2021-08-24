@@ -5,6 +5,8 @@ import uploadFromUrl from '@/services/drive/upload-from-url';
 import define from '../../../define';
 import { DriveFiles } from '@/models/index';
 import { publishMainStream } from '@/services/stream';
+import { truncate } from '@/misc/truncate';
+import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/misc/hard-limits';
 
 export const meta = {
 	tags: ['drive'],
@@ -52,6 +54,8 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
+	ps.comment = truncate(ps.comment, DM_MAX_IMAGE_COMMENT_LENGTH);
+
 	uploadFromUrl(ps.url, user, ps.folderId, null, ps.isSensitive, ps.force, false, ps.comment).then(file => {
 		DriveFiles.pack(file, { self: true }).then(packedFile => {
 			publishMainStream(user.id, 'urlUploadFinished', {
