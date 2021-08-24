@@ -2,8 +2,8 @@ import { User } from '@/models/entities/user';
 import { Brackets, SelectQueryBuilder } from 'typeorm';
 
 export function generateRepliesQuery(q: SelectQueryBuilder<any>, me: any) {
-	const userId = me['id'] ? me['id'] : null;
-	const plTimeline: boolean = me['pleromaTimeline'] ? me['pleromaTimeline'] : false;
+	const userId = me['id'] ?? null;
+	const plTimeline: boolean = me['pleromaTimeline'] ?? false;
 	if (userId == null) {
 		q.andWhere(new Brackets(qb => { qb
 			.where(`note.replyId IS NULL`) // 返信ではない
