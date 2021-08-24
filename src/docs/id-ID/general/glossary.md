@@ -1,8 +1,8 @@
-# 用語集
-Misskeyに関する用語集です。
+# Kosakata
+Kosakata yang terkait dengan Misskey.
 
 ## ActivityPub
-(読み: あくてぃびてぃぱぶ) 分散型を実現するために用いられるプロトコル(仕様)。このプロトコルに則ってサーバー同士通信を行うことで、連合が行われ、Fediverseを形成しています。
+Protokol yang digunakan untuk memungkinkan distribusi dari Misskey.このプロトコルに則ってサーバー同士通信を行うことで、連合が行われ、Fediverseを形成しています。
 
 ## AiScript
 (読み: あいすくりぷと) Misskey上で使用できるプログラミング言語です。詳細は[こちら。](../advanced/aiscript)
