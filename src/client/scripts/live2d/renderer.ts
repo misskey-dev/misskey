@@ -266,9 +266,9 @@ export class Live2dRenderer {
 			this.model.startMotionByName('mimi');
 		} else if (this.model.isHit(CubismFramework.getIdManager().getId('HitArea_Body'), x, y)) { // 頭
 			this.model.startMotionByName('mimi');
-			this.model.startExpressionByName('smile');
+			//this.model.startExpressionByName('smile');
 		} else if (this.model.isHit(CubismFramework.getIdManager().getId('HitArea_Head'), x, y)) { // 胸
-			this.model.startExpressionByName('jitome');
+			//this.model.startExpressionByName('jitome');
 		}
 	}
 }

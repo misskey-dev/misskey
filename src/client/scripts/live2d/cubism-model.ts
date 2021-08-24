@@ -22,6 +22,7 @@ export default class AppCubismUserModel extends CubismUserModel {
 		this.expressionResources = {};
 		this.lipSyncParamIds = new csmVector<CubismIdHandle>();
 		this.eyeBlinkParamIds = new csmVector<CubismIdHandle>();
+		this._lipsync = false;
 
 	}
 
