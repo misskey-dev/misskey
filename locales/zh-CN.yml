@@ -777,6 +777,11 @@ misskeyUpdated: "Misskey更新完成！"
 whatIsNew: "显示更新信息"
 translate: "翻译"
 translatedFrom: "从 {x} 翻译"
+accountDeletionInProgress: "正在删除账户"
+usernameInfo: "在服务器上唯一标识您的帐户的名称。您可以使用字母 (a ~ z, A ~ Z)、数字 (0 ~ 9) 和下划线 (_)。用户名以后不能更改。"
+_accountDelete:
+  accountDelete: "删除帐户"
+  inProgress: "正在删除"
 _docs:
   continueReading: "继续阅读"
   features: "特性"
