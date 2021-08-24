@@ -214,7 +214,11 @@ export function modalPageWindow(path: string) {
 	}, {}, 'closed');
 }
 
-export function dialog(props: Record<string, any>) {
+export function dialog(props: {
+	type: 'error' | 'info' | 'success' | 'warning' | 'waiting';
+	title?: string | null;
+	text?: string | null;
+}) {
 	return new Promise((resolve, reject) => {
 		popup(import('@client/components/dialog.vue'), props, {
 			done: result => {
