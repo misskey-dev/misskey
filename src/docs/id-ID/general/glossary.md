@@ -23,13 +23,13 @@ Sebuah jaringan server yang terdiri dari berbagai platform berbeda yang saling b
 Singkatan dari "Global TimeLine" (Linimasa Global).Untuk informasi lebih lanjut tentang linimasa, mohon [lihat disini](../features/timeline).
 
 ## HTL
-ホームタイムライン(Home TimeLine)の略。Untuk informasi lebih lanjut tentang linimasa, mohon [lihat disini](../features/timeline)
+Singkatan dari "Home TimeLine" (Linimasa Beranda).Untuk informasi lebih lanjut tentang linimasa, mohon [lihat disini](../features/timeline)
 
 ## LTL
-ローカルタイムライン(Local TimeLine)の略。Untuk informasi lebih lanjut tentang linimasa, mohon [lihat disini](../features/timeline)
+Singkatan dari "Local TimeLine" (Linimasa Lokal).Untuk informasi lebih lanjut tentang linimasa, mohon [lihat disini](../features/timeline)
 
 ## MFM
-(読み: えむえふえむ) Misskey Flavored Markdownの略で、Misskey上で使用できるマークアップ言語です。詳細は[こちら。](../features/mfm)
+Singkatan dari "Misskey Flavored Markdown", sebuah bahasa markdown yang tersedia untuk digunakan pada Misskey.Untuk detilnya, [lihat disini.](../features/mfm)
 
 ## NSFW
 (読み: のっとせーふふぉーわーく) Not Safe For Workの略。画像を「閲覧注意」扱いにし、操作なしには表示しないようにすることができる機能。
@@ -38,21 +38,21 @@ Singkatan dari "Global TimeLine" (Linimasa Global).Untuk informasi lebih lanjut 
 (読み: りのーと) 既にあるノートを引用、もしくはそのノートを新しいノートとして共有する行為、またそれによって作成されたノート。詳細は[こちら。](../features/note)
 
 ## STL
-ソーシャルタイムライン(Social TimeLine)の略。Untuk informasi lebih lanjut tentang linimasa, mohon [lihat disini](../features/timeline)
+Singkatan dari "Social TimeLine" (Linimasa Sosial).Untuk informasi lebih lanjut tentang linimasa, mohon [lihat disini](../features/timeline)
 
-## 藍
-(読み: あい) Misskeyの看板娘(公式キャラクター)です。
+## Ai
+Ai adalah maskot resmi milik Misskey.
 
-## アクティブユーザー
-インスタンスにアカウントを作っているユーザーのうち、現在も実際にサービスを利用しているユーザーのこと。
+## Pengguna Aktif
+Para pengguna di antara semua pengguna yang ada yang terus menggunakan akun mereka.
 
 ## Instansi
 todo
 
 ## Emoji kustom
-サーバーで用意された絵文字。カスタム絵文字ではない通常の絵文字は「Unicode絵文字」と区別して呼ばれる。
+Emoji yang disediakan oleh server kamu.Emoji yang spesifik tidak disediakan oleh server kamu tetapi tersedia secara bawaan adalah "Unicode Emoji".
 
-## コントロールパネル
+## Panel kontrol
 インスタンスの設定画面のこと。
 
 ## Server
@@ -73,8 +73,8 @@ Misskeyにアップロードしたファイルを管理する機能。詳細は[
 ## Catatan
 Misskeyに投稿される、文章、ファイル、アンケートなどを含めることができるコンテンツ。詳細は[こちら。](../features/note)
 
-## ミスキスト
-Misskeyを使う人のこと。
+## Misskist
+Pengguna dari Misskey.
 
 ## Moderator
 スパムの凍結およびサイレンスや不適切な投稿の削除など、コミュニティ運営に関する権限を持つユーザー。
