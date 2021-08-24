@@ -1,6 +1,6 @@
 # Tentang Misskey
 
-Misskeyはオープンソースの分散型マイクロブログプラットフォームプロジェクトです。 開発は日本でsyuiloによって2014年から開始されました。 ドライブ、リアクションなどの豊富な機能や、高いカスタマイズ性を備えたUIを持つことが特徴です。
+Misskey adalah platform sumber terbuka dan terdistribusi untuk mikroblogging. Pengembangan dimulai dari 2014 oleh syuilo di Jepang. Memiliki banyak fitur seperti Drive atau Reaksi dan juga kustomisasi UI yang tinggi.
 
 ## Sejarah
 開発当初は掲示板がメインのサービスでしたが、ユーザーが短文を投稿し、それを時系列で流れるタイムライン機能を追加したところ人気が高まり、徐々にそれがメインとして開発が進むようになりました。 当初は分散型ではありませんでしたが、2018年にActivityPubを実装し分散型になったことで、より多くの方に認知され利用されるサービスになり、現在に至ります。
@@ -13,7 +13,7 @@ Misskeyはオープンソースの分散型マイクロブログプラットフ�
 <b>分散(distributed)型</b>とは、<b>非中央集権(decentralized)</b>とも呼ばれ、コミュニティが多数のサーバーに分散して存在し、それらが相互に<b>通信(連合、federation)</b>することでコンテンツ共有<b>ネットワーク(Fediverse)</b>を形成していることが特徴のサービスです。 単一のサーバーしか存在しない、もしくは複数存在しても互いに独立している場合は中央集権なサービスと言われ、例えばTwitterやFacebookなどほとんどのサービスがそれに該当します。 分散型のメリットは、自分に合った運営者やテーマのサーバーを選択できることです。自分でサーバーを作成することもできます。連合するおかげで、どのサーバーを選んでも、同じコミュニティにアクセスできます。
 
 ## Selalu sumber-terbuka
-Misskeyはこれまでもこれからも、オープンソースであり続けます。オープンソースとは、簡単に言うと<b>ソフトウェアのソースコード(プログラム)が公開されている</b>ことです。ソースコードの修正や再配布が可能であることを定義に含めることもあります。 Misskeyのすべてのソースコードは[AGPL](https://github.com/misskey-dev/misskey/blob/develop/LICENSE)というオープンソースライセンスの下に[公開](https://github.com/misskey-dev)されていて、誰でも自由に閲覧、使用、修正、改変、再配布をすることができます。 オープンソースは、自分で好きなように変えたり、有害な処理が含まれていないことを確認することができたり、誰でも開発に参加できるなどの、様々なメリットがあります。 上述の分散型を実現するためにも、オープンソースであるということは必要不可欠な要素です。 再び引き合いに出しますが、TwitterやFacebookなどの利益を得ているほとんどのサービスはオープンソースではありません。
+Misskey sudah selalu, dan akan selalu menjadi perangkat lunak sumber terbuka.オープンソースとは、簡単に言うと<b>ソフトウェアのソースコード(プログラム)が公開されている</b>ことです。ソースコードの修正や再配布が可能であることを定義に含めることもあります。 Misskeyのすべてのソースコードは[AGPL](https://github.com/misskey-dev/misskey/blob/develop/LICENSE)というオープンソースライセンスの下に[公開](https://github.com/misskey-dev)されていて、誰でも自由に閲覧、使用、修正、改変、再配布をすることができます。 オープンソースは、自分で好きなように変えたり、有害な処理が含まれていないことを確認することができたり、誰でも開発に参加できるなどの、様々なメリットがあります。 上述の分散型を実現するためにも、オープンソースであるということは必要不可欠な要素です。 再び引き合いに出しますが、TwitterやFacebookなどの利益を得ているほとんどのサービスはオープンソースではありません。
 
 <div class="info">ℹ️ 技術的に言うと、MisskeyのソースコードはGitで管理されていて、リポジトリは<a href="https://github.com/misskey-dev" target="_blank">GitHub上でホスティングされています。</a></div>
 
@@ -44,7 +44,7 @@ Misskeyはビジネスではなく、利用は無料であるため、収益は�
 Misskeyの開発者や、Misskeyに寄付をしてくださった方の一覧は[こちら](/about-misskey)で見ることができます。
 
 ## Pertanyaan Yang Sering Ditanyakan (FAQ)
-### プロジェクトは何を目指していますか？
+### Apa yang ingin dicapai dari project ini?
 強いて言うと、漠然的になりますが広く使われる汎用的なプラットフォームになることを目指しています。 Misskeyは他のプロジェクトとは違い、何らかの思想(例えば、反中央集権)やビジョンに基づいて開発が行われているわけではなく、その点ではフラットです。 それが逆に、特定の方向性に縛られないフレキシブルさを生み出すことに繋がっていると感じています。
 <!-- TODO: ここにロードマップへのリンク -->
 
@@ -66,8 +66,8 @@ Misskeyサーバーの作成に興味を持っていただきありがとうご�
 Misskeyは開発が進むにつれ使用する技術も大きく変わってきました。開発当初はMySQL + PHP + jQueryといった構成でしたが、現在は以下のようになっています。
 - Server: Node.js
 - Database: PostgreSQL, Redis
-- UIフレームワーク: Vue.js
-- プログラミング言語: TypeScript
+- UI Framework: Vue.js
+- Bahasa Pemrograman: TypeScript
 
 また、MFMやAiScriptなどの、Misskeyから派生して独自の技術も開発しています。
 
