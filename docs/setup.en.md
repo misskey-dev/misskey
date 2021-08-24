@@ -131,11 +131,12 @@ You can check if the service is running with `systemctl status misskey`.
 ### How to update your Misskey server to the latest version
 1. `git checkout master`
 2. `git pull`
-3. `yarn install`
-4. `NODE_ENV=production yarn build`
-5. `yarn migrate`
-6. Restart your Misskey process to apply changes
-7. Enjoy
+3. `git submodule update --init`
+4. `yarn install`
+5. `NODE_ENV=production yarn build`
+6. `yarn migrate`
+7. Restart your Misskey process to apply changes
+8. Enjoy
 
 If you encounter any problems with updating, please try the following:
 1. `yarn clean` or `yarn cleanall`

@@ -83,10 +83,11 @@ Just `docker-compose up -d`. GLHF!
 1. `git stash`
 2. `git checkout master`
 3. `git pull`
-4. `git stash pop`
-5. `docker-compose build`
-6. Check [ChangeLog](../CHANGELOG.md) for migration information
-7. `docker-compose stop && docker-compose up -d`
+4. `git submodule update --init`
+5. `git stash pop`
+6. `docker-compose build`
+7. Check [ChangeLog](../CHANGELOG.md) for migration information
+8. `docker-compose stop && docker-compose up -d`
 
 ### How to execute [cli commands](manage.en.md):
 `docker-compose run --rm web node built/tools/mark-admin @example`

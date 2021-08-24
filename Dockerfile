@@ -20,6 +20,7 @@ RUN apk add --no-cache \
     python3 \
     zlib-dev
 
+RUN git submodule update --init
 COPY package.json yarn.lock .yarnrc ./
 RUN yarn install
 COPY . ./

@@ -54,7 +54,7 @@
 		<XWidgets v-if="widgetsShowing" class="tray"/>
 	</transition>
 
-	<canvas class="ivnzpscs" ref="live2d" @click="onAiClick"></canvas>
+	<canvas v-if="$store.state.aiChanMode" class="ivnzpscs" ref="live2d" @click="onAiClick"></canvas>
 
 	<XCommon/>
 </div>
