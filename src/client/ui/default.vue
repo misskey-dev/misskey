@@ -54,12 +54,14 @@
 		<XWidgets v-if="widgetsShowing" class="tray"/>
 	</transition>
 
+	<canvas class="ivnzpscs" ref="live2d" @click="onAiClick"></canvas>
+
 	<XCommon/>
 </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, defineAsyncComponent } from 'vue';
+import { defineComponent, defineAsyncComponent, markRaw } from 'vue';
 import { instanceName } from '@client/config';
 import { StickySidebar } from '@client/scripts/sticky-sidebar';
 import XSidebar from './default.sidebar.vue';
@@ -69,6 +71,7 @@ import XHeader from './_common_/header.vue';
 import * as os from '@client/os';
 import { menuDef } from '@client/menu';
 import * as symbols from '@client/symbols';
+import { load as loadLive2d } from '@client/scripts/live2d/index';
 
 const DESKTOP_THRESHOLD = 1100;
 const MOBILE_THRESHOLD = 600;
@@ -92,6 +95,7 @@ export default defineComponent({
 			widgetsShowing: false,
 			fullView: false,
 			wallpaper: localStorage.getItem('wallpaper') != null,
+			live2d: null,
 		};
 	},
 
@@ -131,6 +135,16 @@ export default defineComponent({
 			this.isMobile = (window.innerWidth <= MOBILE_THRESHOLD);
 			this.isDesktop = (window.innerWidth >= DESKTOP_THRESHOLD);
 		}, { passive: true });
+
+		if (this.$store.state.aiChanMode) {
+			loadLive2d(this.$refs.live2d, {
+				x: 0,
+				y: 1.4,
+				scale: 2,
+			}).then(live2d => {
+				this.live2d = markRaw(live2d);
+			});
+		}
 	},
 
 	methods: {
@@ -201,6 +215,10 @@ export default defineComponent({
 				}
 			}], e);
 		},
+
+		onAiClick(ev) {
+			this.live2d.click(ev);
+		}
 	}
 });
 </script>
@@ -457,6 +475,15 @@ export default defineComponent({
 		box-sizing: border-box;
 		overflow: auto;
 		background: var(--bg);
+	}
+
+	> .ivnzpscs {
+		position: fixed;
+		bottom: 0;
+		right: 0;
+		width: 300px;
+		height: 600px;
+		//pointer-events: none;
 	}
 }
 </style>
