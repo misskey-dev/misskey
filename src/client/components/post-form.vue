@@ -339,7 +339,12 @@ export default defineComponent({
 				this.cw = init.cw;
 				this.useCw = init.cw != null;
 				if (init.poll) {
-					this.poll = init.poll;
+					this.poll = {
+						choices: init.poll.choices.map(x => x.text),
+						multiple: init.poll.multiple,
+						expiresAt: init.poll.expiresAt,
+						expiredAfter: init.poll.expiredAfter,
+					};
 				}
 				this.visibility = init.visibility;
 				this.localOnly = init.localOnly;

@@ -12,6 +12,7 @@
 		"target": "es2017",
 		"module": "commonjs",
 		"moduleResolution": "node",
+		"allowSyntheticDefaultImports": true,
 		"removeComments": false,
 		"noLib": false,
 		"strict": true,

@@ -12,6 +12,12 @@
 				<template #prefix><i class="fas fa-key"></i></template>
 				DeepL Auth Key
 			</FormInput>
+<<<<<<< HEAD
+=======
+			<FormSwitch v-model:value="deeplIsPro">
+				Pro account
+			</FormSwitch>
+>>>>>>> f84483896edeb1f8655175b77d35ecd49f6e1985
 		</FormGroup>
 		<FormButton @click="save" primary><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
 	</FormSuspense>
@@ -50,6 +56,10 @@ export default defineComponent({
 			},
 			summalyProxy: '',
 			deeplAuthKey: '',
+<<<<<<< HEAD
+=======
+			deeplIsPro: false,
+>>>>>>> f84483896edeb1f8655175b77d35ecd49f6e1985
 		}
 	},
 
@@ -62,11 +72,19 @@ export default defineComponent({
 			const meta = await os.api('meta', { detail: true });
 			this.summalyProxy = meta.summalyProxy;
 			this.deeplAuthKey = meta.deeplAuthKey;
+<<<<<<< HEAD
+=======
+			this.deeplIsPro = meta.deeplIsPro;
+>>>>>>> f84483896edeb1f8655175b77d35ecd49f6e1985
 		},
 		save() {
 			os.apiWithDialog('admin/update-meta', {
 				summalyProxy: this.summalyProxy,
 				deeplAuthKey: this.deeplAuthKey,
+<<<<<<< HEAD
+=======
+				deeplIsPro: this.deeplIsPro,
+>>>>>>> f84483896edeb1f8655175b77d35ecd49f6e1985
 			}).then(() => {
 				fetchInstance();
 			});

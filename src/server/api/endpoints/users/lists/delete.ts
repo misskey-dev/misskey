@@ -2,7 +2,7 @@ import $ from 'cafy';
 import { ID } from '@/misc/cafy-id';
 import define from '../../../define';
 import { ApiError } from '../../../error';
-import { UserLists } from '../../../../../models';
+import { UserLists } from '@/models/index';
 
 export const meta = {
 	tags: ['lists'],

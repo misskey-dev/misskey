@@ -3,7 +3,11 @@
 Misskeyはオープンソースの分散型マイクロブログプラットフォームプロジェクトです。 開発は日本でsyuiloによって2014年から開始されました。 ドライブ、リアクションなどの豊富な機能や、高いカスタマイズ性を備えたUIを持つことが特徴です。
 
 ## 歴史
+<<<<<<< HEAD
 開発当初は掲示板がメインのサービスでしたが、ユーザーが短文を投稿し、それを時系列で流れるタイムライン機能を追加したところ人気が高まり、徐々にそれがメインとして開発が進むようになりました。 当初は分散型ではありませんでしたが、2018年にAcitivityPubを実装し分散型になったことで、より多くの方に認知され利用されるサービスになり、現在に至ります。
+=======
+開発当初は掲示板がメインのサービスでしたが、ユーザーが短文を投稿し、それを時系列で流れるタイムライン機能を追加したところ人気が高まり、徐々にそれがメインとして開発が進むようになりました。 当初は分散型ではありませんでしたが、2018年にActivityPubを実装し分散型になったことで、より多くの方に認知され利用されるサービスになり、現在に至ります。
+>>>>>>> f84483896edeb1f8655175b77d35ecd49f6e1985
 <div class="info">ℹ️ Misskeyという名前は、syuiloが当時聴いていたMay'nというアーティストの楽曲、Brain Diverの歌詞に由来します。</div>
 
 誰でも開発に参加することができ、現在でも活発に開発が続いています。
@@ -43,7 +47,11 @@ Misskeyはビジネスではなく、利用は無料であるため、収益は�
 ## クレジット
 Misskeyの開発者や、Misskeyに寄付をしてくださった方の一覧は[こちら](/about-misskey)で見ることができます。
 
+<<<<<<< HEAD
 ## よくある質問
+=======
+## Questions fréquentes
+>>>>>>> f84483896edeb1f8655175b77d35ecd49f6e1985
 ### プロジェクトは何を目指していますか？
 強いて言うと、漠然的になりますが広く使われる汎用的なプラットフォームになることを目指しています。 Misskeyは他のプロジェクトとは違い、何らかの思想(例えば、反中央集権)やビジョンに基づいて開発が行われているわけではなく、その点ではフラットです。 それが逆に、特定の方向性に縛られないフレキシブルさを生み出すことに繋がっていると感じています。
 <!-- TODO: ここにロードマップへのリンク -->
@@ -72,12 +80,21 @@ Misskeyは開発が進むにつれ使用する技術も大きく変わってき�
 また、MFMやAiScriptなどの、Misskeyから派生して独自の技術も開発しています。
 
 ### Mastodonのフォークですか？
+<<<<<<< HEAD
 いいえ。MisskeyはMastodonやその他のプロジェクトとは全く別のプロジェクトです。 開発に関しても、Misskeyの方が昔から開発されています。ただし、分散型になったのはMastodonの登場より後です。 同じAcitivityPubという分散のためのプロトコルを実装しているという点以外、両者に特に関りがあるわけでもありません。
 
 ### iOS/Androidのアプリはありますか？
 公式にはそういったOSのネイティブアプリを開発していませんが、サードパーティ製のアプリがいくつかあります。 詳しくは[こちら](./apps)をご覧ください。
 
 ただ、サードパーティ製アプリはどうしても機能への対応が遅れてしまうため、とくに拘りがなければ公式のWebクライアントの利用をおすすめします。 なお、MisskeyのWebクライアントはPWAに対応しているので、ネイティブアプリのように動作させることも可能です。 詳しくは[こちら](todo)をご覧ください。
+=======
+いいえ。MisskeyはMastodonやその他のプロジェクトとは全く別のプロジェクトです。 開発に関しても、Misskeyの方が昔から開発されています。ただし、分散型になったのはMastodonの登場より後です。 同じActivityPubという分散のためのプロトコルを実装しているという点以外、両者に特に関りがあるわけでもありません。
+
+### « Existe-t-il des appli pour Android / iOS ? »
+Bien qu'il n'existe d'application Misskey officielle pour aucun OS, différentes applications développées par des tiers sont disponibles. [Voir ici](./apps) pour plus de détails.
+
+Cependant, à moins que vous ne soyez particulièrement déterminé·e à utiliser une application dédiée, l'utilisation du client Web officiel est vivement recommandée du fait que les applications développées par des tiers seront forcément en retard par rapport à celui-ci. Par ailleurs, étant donné que le client Web de Misskey est compatible avec une PWA, il peut adopter le comportement d'une application native. [Voir ici](todo) pour plus d'informations.
+>>>>>>> f84483896edeb1f8655175b77d35ecd49f6e1985
 
 ### Misskeyのロゴ、アイコンはどこで入手できますか？
 (準備中)

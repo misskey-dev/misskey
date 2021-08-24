@@ -76,7 +76,11 @@ No.Misskey is a project completely different from Mastodon or other alike projec
 ### Are there any apps for iOS / Android available?
 While no official Misskey app for either OS exists, there are several third-party applications. For details, please check [here](./apps).
 
+<<<<<<< HEAD
 However, functionality of third-party applications will inevitably lag behind the official Web client, so unless you really want to use a native application, we recommend the official Web client instead. As the Misskey Web client supports PWA, it is possible to make it act as if it was a native application instead. For details regarding this, please check [here](todo).
+=======
+However, functionality of third-party applications will inevitably lag behind the official Web client, so unless you really want to use a native application, we recommend the official Web client instead. As the Misskey Web client supports PWA, it is also possible to make it act as if it was a native application instead. For details regarding this, please check [here](todo).
+>>>>>>> f84483896edeb1f8655175b77d35ecd49f6e1985
 
 ### Where can I download Misskey's logo or icon?
 (Coming soon)

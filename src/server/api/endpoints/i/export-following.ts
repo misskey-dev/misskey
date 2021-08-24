@@ -1,6 +1,6 @@
 import define from '../../define';
-import { createExportFollowingJob } from '../../../../queue';
-import ms = require('ms');
+import { createExportFollowingJob } from '@/queue/index';
+import * as ms from 'ms';
 
 export const meta = {
 	secure: true,

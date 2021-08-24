@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # A collection of links
+=======
+# Links
+>>>>>>> f84483896edeb1f8655175b77d35ecd49f6e1985
 
 ## Websites
 - [Official Discord](https://discord.gg/Wp8gVStHW3) - The official Discord server for Misskey

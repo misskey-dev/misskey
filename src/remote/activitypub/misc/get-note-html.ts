@@ -1,5 +1,5 @@
 import * as mfm from 'mfm-js';
-import { Note } from '../../../models/entities/note';
+import { Note } from '@/models/entities/note';
 import { toHtml } from '../../../mfm/to-html';
 
 export default function(note: Note) {

@@ -1,7 +1,11 @@
 # 用語集
 Misskeyに関する用語集です。
 
+<<<<<<< HEAD
 ## AcitivityPub
+=======
+## ActivityPub
+>>>>>>> f84483896edeb1f8655175b77d35ecd49f6e1985
 (読み: あくてぃびてぃぱぶ) 分散型を実現するために用いられるプロトコル(仕様)。このプロトコルに則ってサーバー同士通信を行うことで、連合が行われ、Fediverseを形成しています。
 
 ## AiScript
@@ -19,14 +23,23 @@ Misskeyに関する用語集です。
 ## Fediverse
 (読み: ふぇでぃばーす) Misskeyを含む様々な分散型ソフトウェアのサーバーで構成されたネットワーク。
 
+<<<<<<< HEAD
 ## GTL
 グローバルタイムライン(Global TimeLine)の略。タイムラインの詳細は[こちら。](../features/timeline)
+=======
+## MTL
+An abbreviation for "Malloka TempLinio".タイムラインの詳細は[こちら。](../features/timeline)
+>>>>>>> f84483896edeb1f8655175b77d35ecd49f6e1985
 
 ## HTL
 ホームタイムライン(Home TimeLine)の略。タイムラインの詳細は[こちら。](../features/timeline)
 
 ## LTL
+<<<<<<< HEAD
 ローカルタイムライン(Local TimeLine)の略。タイムラインの詳細は[こちら。](../features/timeline)
+=======
+An abbreviation for "Loka TempLinio".タイムラインの詳細は[こちら。](../features/timeline)
+>>>>>>> f84483896edeb1f8655175b77d35ecd49f6e1985
 
 ## MFM
 (読み: えむえふえむ) Misskey Flavored Markdownの略で、Misskey上で使用できるマークアップ言語です。詳細は[こちら。](../features/mfm)
@@ -34,6 +47,7 @@ Misskeyに関する用語集です。
 ## NSFW
 (読み: のっとせーふふぉーわーく) Not Safe For Workの略。画像を「閲覧注意」扱いにし、操作なしには表示しないようにすることができる機能。
 
+<<<<<<< HEAD
 ## Fari renoton
 (読み: りのーと) 既にあるノートを引用、もしくはそのノートを新しいノートとして共有する行為、またそれによって作成されたノート。詳細は[こちら。](../features/note)
 
@@ -44,13 +58,33 @@ Misskeyに関する用語集です。
 (読み: あい) Misskeyの看板娘(公式キャラクター)です。
 
 ## アクティブユーザー
+=======
+## Renoto
+(読み: りのーと) 既にあるノートを引用、もしくはそのノートを新しいノートとして共有する行為、またそれによって作成されたノート。詳細は[こちら。](../features/note)
+
+## STL
+An abbreviation for "Sociala TempLinio".タイムラインの詳細は[こちら。](../features/timeline)
+
+## Ai
+Ai estas oficiala maskoto de Misskey.
+
+## Aktivaj Uzantoj:
+>>>>>>> f84483896edeb1f8655175b77d35ecd49f6e1985
 インスタンスにアカウントを作っているユーザーのうち、現在も実際にサービスを利用しているユーザーのこと。
 
 ## Ekzemplo
 todo
 
+<<<<<<< HEAD
 ## コントロールパネル
 インスタンスの設定画面のこと。
+=======
+## Ŝaltpodio
+サーバーで用意された絵文字。カスタム絵文字ではない通常の絵文字は「Unicode絵文字」と区別して呼ばれる。
+
+## コントロールパネル
+todo
+>>>>>>> f84483896edeb1f8655175b77d35ecd49f6e1985
 
 ## Servilo
 todo
@@ -58,25 +92,46 @@ todo
 ## Mutigi
 ノートをパブリックな公開範囲で投稿できなくされている状態。モデレーターの判断でユーザーごとに設定されます。詳細は[こちら。](../features/silence)
 
+<<<<<<< HEAD
 ## Flostigi
 アカウントが使用不可に設定されている状態。
 
 ## Diskingo
+=======
+## Disko
+アクティビティ配送などを順番に行うためのシステム。
+
+## Flostigi
+アカウントが使用不可に設定されている状態。
+
+## Miskiisto
+>>>>>>> f84483896edeb1f8655175b77d35ecd49f6e1985
 Misskeyにアップロードしたファイルを管理する機能。詳細は[こちら。](../features/drive)
 
 ## Notoj
 Misskeyに投稿される、文章、ファイル、アンケートなどを含めることができるコンテンツ。詳細は[こちら。](../features/note)
 
+<<<<<<< HEAD
 ## ミスキスト
 Misskeyを使う人のこと。
 
 ## モデレーター
+=======
+## Transa aŭ fora
+Misskeyを使う人のこと。
+
+## Moderigisto
+>>>>>>> f84483896edeb1f8655175b77d35ecd49f6e1985
 スパムの凍結およびサイレンスや不適切な投稿の削除など、コミュニティ運営に関する権限を持つユーザー。
 
 ## Transa
 他サーバーのことを指します。リモートユーザーといったように接頭辞としても使われます。ローカルの逆です。
 
+<<<<<<< HEAD
 ## Konfederacio
+=======
+## Kunfederaĵo
+>>>>>>> f84483896edeb1f8655175b77d35ecd49f6e1985
 サーバー上で作成された情報が他のサーバーに伝わること。
 
 ## Loka

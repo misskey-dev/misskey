@@ -1,8 +1,8 @@
 import $ from 'cafy';
 import define from '../../define';
 import { getConnection } from 'typeorm';
-import { Meta } from '../../../../models/entities/meta';
-import { insertModerationLog } from '../../../../services/insert-moderation-log';
+import { Meta } from '@/models/entities/meta';
+import { insertModerationLog } from '@/services/insert-moderation-log';
 import { DB_MAX_NOTE_TEXT_LENGTH } from '@/misc/hard-limits';
 import { ID } from '@/misc/cafy-id';
 
@@ -149,6 +149,13 @@ export const meta = {
 			validator: $.optional.nullable.str,
 		},
 
+<<<<<<< HEAD
+=======
+		deeplIsPro: {
+			validator: $.optional.bool,
+		},
+
+>>>>>>> f84483896edeb1f8655175b77d35ecd49f6e1985
 		enableTwitterIntegration: {
 			validator: $.optional.bool,
 		},
@@ -574,6 +581,13 @@ export default define(meta, async (ps, me) => {
 		}
 	}
 
+<<<<<<< HEAD
+=======
+	if (ps.deeplIsPro !== undefined) {
+		set.deeplIsPro = ps.deeplIsPro;
+	}
+
+>>>>>>> f84483896edeb1f8655175b77d35ecd49f6e1985
 	await getConnection().transaction(async transactionalEntityManager => {
 		const meta = await transactionalEntityManager.findOne(Meta, {
 			order: {

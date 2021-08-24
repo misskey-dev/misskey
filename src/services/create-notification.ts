@@ -1,9 +1,13 @@
-import { publishMainStream } from './stream';
+import { publishMainStream } from '@/services/stream';
 import pushSw from './push-notification';
+<<<<<<< HEAD
 import { Notifications, Mutings, UserProfiles, Users } from '../models';
+=======
+import { Notifications, Mutings, UserProfiles, Users } from '@/models/index';
+>>>>>>> f84483896edeb1f8655175b77d35ecd49f6e1985
 import { genId } from '@/misc/gen-id';
-import { User } from '../models/entities/user';
-import { Notification } from '../models/entities/notification';
+import { User } from '@/models/entities/user';
+import { Notification } from '@/models/entities/notification';
 import { sendEmailNotification } from './send-email-notification';
 
 export async function createNotification(

@@ -118,6 +118,11 @@ export default defineComponent({
 
 	&:not(.noGap) {
 		> .notes {
+<<<<<<< HEAD
+=======
+			background: var(--bg);
+
+>>>>>>> f84483896edeb1f8655175b77d35ecd49f6e1985
 			.qtqtichx {
 				background: var(--panel);
 				border-radius: var(--radius);

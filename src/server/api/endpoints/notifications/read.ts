@@ -1,8 +1,8 @@
 import $ from 'cafy';
 import { ID } from '@/misc/cafy-id';
-import { publishMainStream } from '../../../../services/stream';
+import { publishMainStream } from '@/services/stream';
 import define from '../../define';
-import { Notifications } from '../../../../models';
+import { Notifications } from '@/models/index';
 import { readNotification } from '../../common/read-notification';
 import { ApiError } from '../../error';
 

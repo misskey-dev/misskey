@@ -1,5 +1,9 @@
 <template>
+<<<<<<< HEAD
 <div class="cmuxhskf" v-hotkey.global="keymap">
+=======
+<div class="cmuxhskf" v-hotkey.global="keymap" v-size="{ min: [800] }">
+>>>>>>> f84483896edeb1f8655175b77d35ecd49f6e1985
 	<XTutorial v-if="$store.reactiveState.tutorial.value != -1" class="tutorial _block _isolated"/>
 	<XPostForm v-if="$store.reactiveState.showFixedPostForm.value" class="post-form _block _isolated" fixed/>
 	<div class="tabs">
@@ -19,6 +23,7 @@
 		</div>
 	</div>
 	<div class="new" v-if="queue > 0"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
+<<<<<<< HEAD
 	<XTimeline ref="tl" class="tl"
 		:key="src === 'list' ? `list:${list.id}` : src === 'antenna' ? `antenna:${antenna.id}` : src === 'channel' ? `channel:${channel.id}` : src"
 		:src="src"
@@ -30,6 +35,21 @@
 		@after="after()"
 		@queue="queueUpdated"
 	/>
+=======
+	<div class="tl">
+		<XTimeline ref="tl" class="tl"
+			:key="src === 'list' ? `list:${list.id}` : src === 'antenna' ? `antenna:${antenna.id}` : src === 'channel' ? `channel:${channel.id}` : src"
+			:src="src"
+			:list="list ? list.id : null"
+			:antenna="antenna ? antenna.id : null"
+			:channel="channel ? channel.id : null"
+			:sound="true"
+			@before="before()"
+			@after="after()"
+			@queue="queueUpdated"
+		/>
+	</div>
+>>>>>>> f84483896edeb1f8655175b77d35ecd49f6e1985
 </div>
 </template>
 
@@ -231,6 +251,7 @@ export default defineComponent({
 		padding: 0 8px;
 		white-space: nowrap;
 		overflow: auto;
+		border-bottom: solid 0.5px var(--divider);
 
 		// 影の都合上
 		position: relative;
@@ -287,8 +308,21 @@ export default defineComponent({
 		}
 	}
 
+<<<<<<< HEAD
 	> .tl {
 		border-top: solid 0.5px var(--divider);
+=======
+	&.min-width_800px {
+		> .tl {
+			background: var(--bg);
+			padding: 32px 0;
+
+			> .tl {
+				max-width: 800px;
+				margin: 0 auto;
+			}
+		}
+>>>>>>> f84483896edeb1f8655175b77d35ecd49f6e1985
 	}
 }
 </style>

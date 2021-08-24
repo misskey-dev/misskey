@@ -1,7 +1,7 @@
-import config from '@/config';
+import config from '@/config/index';
 import { getJson } from '@/misc/fetch';
-import { ILocalUser } from '../../models/entities/user';
-import { getInstanceActor } from '../../services/instance-actor';
+import { ILocalUser } from '@/models/entities/user';
+import { getInstanceActor } from '@/services/instance-actor';
 import { signedGet } from './request';
 import { IObject, isCollectionOrOrderedCollection, ICollection, IOrderedCollection } from './type';
 

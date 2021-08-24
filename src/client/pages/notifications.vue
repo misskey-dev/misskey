@@ -1,6 +1,11 @@
 <template>
+<<<<<<< HEAD
 <div class="">
 	<XNotifications class="_content" @before="before" @after="after" page/>
+=======
+<div class="clupoqwt" v-size="{ min: [800] }">
+	<XNotifications class="notifications" @before="before" @after="after" page/>
+>>>>>>> f84483896edeb1f8655175b77d35ecd49f6e1985
 </div>
 </template>
 
@@ -43,3 +48,17 @@ export default defineComponent({
 	}
 });
 </script>
+
+<style lang="scss" scoped>
+.clupoqwt {
+	&.min-width_800px {
+		background: var(--bg);
+		padding: 32px 0;
+
+		> .notifications {
+			max-width: 800px;
+			margin: 0 auto;
+		}
+	}
+}
+</style>

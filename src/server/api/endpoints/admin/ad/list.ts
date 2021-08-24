@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import { ID } from '@/misc/cafy-id';
 import define from '../../../define';
-import { Ads } from '../../../../../models';
+import { Ads } from '@/models/index';
 import { makePaginationQuery } from '../../../common/make-pagination-query';
 
 export const meta = {
