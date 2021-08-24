@@ -140,7 +140,7 @@ flagAsBotDescription: "このアカウントがプログラムによって運用
 flagAsCat: "Catとして設定"
 flagAsCatDescription: "このアカウントが猫であることを示す場合は、このフラグをオンにします。"
 flagShowTimelineReplies: "タイムラインにノートへの返信を表示する"
-flagShowTimelineRepliesDescription: "オンにすると、タイムラインにユーザーのノート以外にもそのユーザーの他のノートへの返信を表示する。"
+flagShowTimelineRepliesDescription: "オンにすると、タイムラインにユーザーのノート以外にもそのユーザーの他のノートへの返信を表示します"
 autoAcceptFollowed: "フォロー中ユーザーからのフォロリクを自動承認"
 addAccount: "アカウントを追加"
 loginFailed: "ログインに失敗しました"
