@@ -2,31 +2,31 @@
 Kosakata yang terkait dengan Misskey.
 
 ## ActivityPub
-Protokol yang digunakan untuk memungkinkan distribusi dari Misskey.このプロトコルに則ってサーバー同士通信を行うことで、連合が行われ、Fediverseを形成しています。
+Protokol yang digunakan untuk memungkinkan distribusi dari Misskey.Dengan mengikuti protokol ini, komunikasi dengan server lainnya yang juga mengikuti protokol ini menjadi mungkin, yang mana membentuk suatu semesta yang disebut sebagai Fediverse.
 
 ## AiScript
-(読み: あいすくりぷと) Misskey上で使用できるプログラミング言語です。詳細は[こちら。](../advanced/aiscript)
+Bahasa pemrograman yang tersedia untuk digunakan dalam Misskey.Untuk detilnya, [lihat disini.](../advanced/aiscript)
 
 ## API
-(読み: えーぴーあい) Misskeyのサーバーが公開している、プログラムからMisskeyを扱うためのインターフェース。詳細は[こちら。](../advanced/api)
+Antarmuka yang dapat digunakan untuk berinteraksi dengan Misskey melalui program, tersedia untuk setiap instansi individual.Untuk detilnya, [lihat disini.](../advanced/api)
 
 ## Bot
-(読み: ぼっと) プログラムによって動作しているアカウント。
+Sebuah akun yang dikendalikan oleh program.
 
 ## CW
-(読み: こんてんつわーにんぐ) Contents Warningの略。ノートの内容を、操作なしには表示しないようにできる機能。主に長大な内容を隠すためや、ネタバレ防止などに使われます。
+Singkatan dari "Content Warning".Sebuah fitur untuk menyembunyikan konten dari catatan kecuali diminta untuk diperlihatkan oleh pengguna.Utamanya digunakan untuk menyembunyikan konten catatan panjang atau untuk mencegah postingan spoiler secara publik.
 
 ## Fediverse
-(読み: ふぇでぃばーす) Misskeyを含む様々な分散型ソフトウェアのサーバーで構成されたネットワーク。
+Sebuah jaringan server yang terdiri dari berbagai platform berbeda yang saling berkomunikasi, termasuk Misskey.
 
 ## GTL
-グローバルタイムライン(Global TimeLine)の略。タイムラインの詳細は[こちら。](../features/timeline)
+Singkatan dari "Global TimeLine" (Linimasa Global).Untuk informasi lebih lanjut tentang linimasa, mohon [lihat disini](../features/timeline).
 
 ## HTL
-ホームタイムライン(Home TimeLine)の略。タイムラインの詳細は[こちら。](../features/timeline)
+ホームタイムライン(Home TimeLine)の略。Untuk informasi lebih lanjut tentang linimasa, mohon [lihat disini](../features/timeline)
 
 ## LTL
-ローカルタイムライン(Local TimeLine)の略。タイムラインの詳細は[こちら。](../features/timeline)
+ローカルタイムライン(Local TimeLine)の略。Untuk informasi lebih lanjut tentang linimasa, mohon [lihat disini](../features/timeline)
 
 ## MFM
 (読み: えむえふえむ) Misskey Flavored Markdownの略で、Misskey上で使用できるマークアップ言語です。詳細は[こちら。](../features/mfm)
@@ -38,7 +38,7 @@ Protokol yang digunakan untuk memungkinkan distribusi dari Misskey.このプロ�
 (読み: りのーと) 既にあるノートを引用、もしくはそのノートを新しいノートとして共有する行為、またそれによって作成されたノート。詳細は[こちら。](../features/note)
 
 ## STL
-ソーシャルタイムライン(Social TimeLine)の略。タイムラインの詳細は[こちら。](../features/timeline)
+ソーシャルタイムライン(Social TimeLine)の略。Untuk informasi lebih lanjut tentang linimasa, mohon [lihat disini](../features/timeline)
 
 ## 藍
 (読み: あい) Misskeyの看板娘(公式キャラクター)です。
