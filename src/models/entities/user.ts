@@ -234,7 +234,7 @@ export class User {
 
 	@Column('boolean', {
 		default: false,
-		comment: 'Whether to use the pleroma-style timelines'
+		comment: 'Whether to show users replying to other users in the timeline'
 	})
 	public showTimelineReplies: boolean;
 
