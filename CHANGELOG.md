@@ -7,6 +7,13 @@
 
 -->
 
+## 12.x.x (unreleased)
+
+### Improvements
+
+### Bugfixes
+- CWを維持する設定を復活
+
 ## 12.89.2 (2021/08/24)
 
 ### Bugfixes
