@@ -33,6 +33,8 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+    - name: Init submodules
+      run: git submodule update --init
     - name: Install dependencies
       run: yarn install
     - name: Check yarn.lock
@@ -51,5 +53,6 @@ jobs:
     - uses: actions/setup-node@v1
       with:
         node-version: 12.x
+    - run: git submodule update --init
     - run: yarn install
     - run: yarn lint
