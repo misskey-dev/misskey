@@ -94,7 +94,7 @@ export default defineComponent({
 			widgetsShowing: false,
 			fullView: false,
 			wallpaper: localStorage.getItem('wallpaper') != null,
-			live2d: null as null | Promise<any>,
+			live2d: null as any,
 		};
 	},
 
@@ -136,13 +136,15 @@ export default defineComponent({
 		}, { passive: true });
 
 		if (this.$store.state.aiChanMode) {
-			this.live2d = import('@client/scripts/live2d/index')
+			import('@client/scripts/live2d/index')
 				.then(({ load }) => load(this.$refs.live2d, {
 					x: 0,
 					y: 1.4,
 					scale: 2,
 				}))
-				.then(live2d => markRaw(live2d));
+				.then(live2d => {
+					this.live2d = markRaw(live2d)
+				});
 		}
 	},
 
@@ -216,7 +218,7 @@ export default defineComponent({
 		},
 
 		onAiClick(ev) {
-			if (this.live2d) this.live2d.then(live2d => live2d.click(ev));
+			if (this.live2d) this.live2d.click(ev);
 		}
 	}
 });
