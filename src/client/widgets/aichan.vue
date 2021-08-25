@@ -27,22 +27,24 @@ export default defineComponent({
 	},
 	data() {
 		return {
-			live2d: null as null | Promise<any>,
+			live2d: null as any,
 		};
 	},
 	mounted() {
 		this.$nextTick(() => {
-			this.live2d = import('@client/scripts/live2d/index')
+			import('@client/scripts/live2d/index')
 				.then(({ load }) => load(this.$refs.canvas, {
 					scale: 1.6,
 					y: 1.1
 				}))
-				.then(live2d => markRaw(live2d));
+				.then(live2d => {
+					this.live2d = markRaw(live2d);
+				});
 		});
 	},
 	methods: {
 		touched() {
-			if (this.live2d) this.live2d.then(live2d => live2d.changeExpression('gurugurume'));
+			if (this.live2d) this.live2d.changeExpression('gurugurume');
 		}
 	}
 });
