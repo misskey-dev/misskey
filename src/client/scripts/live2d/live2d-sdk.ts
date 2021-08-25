@@ -41,7 +41,7 @@ class CubismEyeBlink extends cubismeyeblink.CubismEyeBlink {}
 
 // type
 import { Live2DCubismFramework as csmvector } from '@lib/CubismWebFramework/src/type/csmvector';
-class CsmVector<T> extends csmvector.CsmVector<T> {}
+class CsmVector<T> extends csmvector.csmVector<T> {}
 
 export {
 	CubismFramework,

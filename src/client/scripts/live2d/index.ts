@@ -2,6 +2,8 @@ import { FacePoint } from './face-point';
 import { Live2dRenderer } from './renderer';
 import { getAngle, getDistance } from './math-util';
 
+const CUBISM_CORE_URL = 'https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js';
+
 const MODEL_PATH = '/assets/live2d/ai/web/';
 const MODEL_FILES = {
 	moc3: MODEL_PATH + 'ai.moc3',
@@ -29,7 +31,7 @@ let isCoreSdkLoaded = false;
 
 export function load(canvas: HTMLCanvasElement, options: { x?: number; y?: number; scale?: number; }) {
 	return new Promise((res, rej) => {
-		const existedCoreSdkScript = document.head.querySelector('script[src="/assets/lib/CubismCore/live2dcubismcore.min.js"]');
+		const existedCoreSdkScript = document.head.querySelector(`script[src="${CUBISM_CORE_URL}"]`);
 		if (existedCoreSdkScript) {
 			if (!isCoreSdkLoaded) {
 				existedCoreSdkScript.addEventListener('load', () => {
@@ -44,7 +46,7 @@ export function load(canvas: HTMLCanvasElement, options: { x?: number; y?: numbe
 			}
 		} else {
 			const coreSdkScript = document.createElement('script');
-			coreSdkScript.setAttribute('src', '/assets/lib/CubismCore/live2dcubismcore.min.js');
+			coreSdkScript.setAttribute('src', CUBISM_CORE_URL);
 			document.head.appendChild(coreSdkScript);
 			coreSdkScript.addEventListener('load', () => {
 				isCoreSdkLoaded = true;
