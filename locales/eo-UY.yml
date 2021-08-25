@@ -425,6 +425,7 @@ inChannelSearch: "Serĉi en kanalo"
 useReactionPickerForContextMenu: "Oni malfermas reago-elektilon per dekstro-kliki"
 typingUsers: "{users} estas entajpanta(j)..."
 info: "Informoj"
+userInfo: "Informoj de uzanto"
 unknown: "Nekonata"
 online: "Surkonektita"
 offline: "Forkonektita"
@@ -625,6 +626,9 @@ _exportOrImport:
   userLists: "Listoj"
 _charts:
   federationInstancesTotal: "Tuta numero de kunfederantaj ekzemploj"
+  usersTotal: "Tuta numero de uzantoj"
+  activeUsers: "Numero de aktivaj uzantoj"
+  notesTotal: "Tuta numero de notoj"
   filesTotal: "Tuta numero de dosieroj"
 _timelines:
   home: "HEJMO"
