@@ -143,7 +143,7 @@ export default defineComponent({
 					scale: 2,
 				}))
 				.then(live2d => {
-					this.live2d = markRaw(live2d)
+					this.live2d = markRaw(live2d);
 				});
 		}
 	},
