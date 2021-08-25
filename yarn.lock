@@ -6996,10 +6996,10 @@ map-visit@^1.0.0:
   dependencies:
     object-visit "^1.0.0"
 
-markdown-it-anchor@7.1.0:
-  version "7.1.0"
-  resolved "https://registry.yarnpkg.com/markdown-it-anchor/-/markdown-it-anchor-7.1.0.tgz#30fb21497bf59e83ff4d1ddc052d821962e2489e"
-  integrity sha512-loQggrwsIkkP7TOrESvmYkV2ikbQNNKhHcWyqC7/C2CmfHl1tkUizJJU8C5aGgg7J6oXVQJx17gk7i47tNn/lQ==
+markdown-it-anchor@8.1.3:
+  version "8.1.3"
+  resolved "https://registry.yarnpkg.com/markdown-it-anchor/-/markdown-it-anchor-8.1.3.tgz#f99c09a813540483748407c89995700a2003adbe"
+  integrity sha512-kBfQVaej/TLLpgEIetiLa+QAvbVQ4T+ODOA9iAe6MC8aSd8omtypxuZiCJsw58fzMeO9uQAVoWsyCyUjc86IZQ==
 
 markdown-it@12.2.0:
   version "12.2.0"
