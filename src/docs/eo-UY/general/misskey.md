@@ -26,7 +26,7 @@ Misskeyを気に入っていただけたら、ぜひプロジェクトを支援�
 ### 議論に参加する
 新しい機能、または既存の機能について意見を述べたり、不具合を報告したりすることでも貢献できます。 そのようなディスカッションは[GitHub](https://github.com/misskey-dev)上か、[フォーラム](https://forum.misskey.io/)等で行われます。
 
-### テキストを翻訳する
+### Traduki tekston
 Misskeyは様々な言語に対応しています(i18n -internationalizationの略- と呼ばれます)。元の言語は基本的に日本語ですが、有志によって他の言語へと翻訳されています。 その翻訳作業に加わっていただくことでもMisskeyに貢献できます。 Misskeyは[Crowdinというサービスを使用して翻訳の管理を行っています。](https://crowdin.com/project/misskey)
 
 ### 感想を投稿する
