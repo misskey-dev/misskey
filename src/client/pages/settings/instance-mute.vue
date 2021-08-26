@@ -67,11 +67,14 @@ export default defineComponent({
 
 	methods: {
 		async save() {
-			let mutes = this.instanceMutes.trim().split('\n').filter(el => el.trim());
+			let mutes = this.instanceMutes.trim().split('\n').map(el => el.trim()).filter(el => el);
 			await os.api('i/update', {
 				mutedInstances: mutes,
 			});
 			this.changed = false;
+
+			// Refresh filtered list to signal to the user how they've been saved
+			this.instanceMutes = mutes.join('\n');
 		},
 
 		number //?
