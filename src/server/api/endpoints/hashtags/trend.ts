@@ -1,8 +1,8 @@
 import { Brackets } from 'typeorm';
 import define from '../../define';
 import { fetchMeta } from '@/misc/fetch-meta';
-import { Notes } from '../../../../models';
-import { Note } from '../../../../models/entities/note';
+import { Notes } from '@/models/index';
+import { Note } from '@/models/entities/note';
 import { safeForSql } from '@/misc/safe-for-sql';
 import { normalizeForSearch } from '@/misc/normalize-for-search';
 

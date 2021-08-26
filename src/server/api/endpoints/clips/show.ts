@@ -2,7 +2,7 @@ import $ from 'cafy';
 import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { ApiError } from '../../error';
-import { Clips } from '../../../../models';
+import { Clips } from '@/models/index';
 
 export const meta = {
 	tags: ['clips', 'account'],

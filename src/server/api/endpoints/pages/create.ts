@@ -2,9 +2,9 @@ import $ from 'cafy';
 import * as ms from 'ms';
 import define from '../../define';
 import { ID } from '@/misc/cafy-id';
-import { Pages, DriveFiles } from '../../../../models';
+import { Pages, DriveFiles } from '@/models/index';
 import { genId } from '@/misc/gen-id';
-import { Page } from '../../../../models/entities/page';
+import { Page } from '@/models/entities/page';
 import { ApiError } from '../../error';
 
 export const meta = {

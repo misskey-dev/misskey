@@ -2,8 +2,8 @@ import $ from 'cafy';
 import * as ms from 'ms';
 import define from '../../../define';
 import { ID } from '../../../../../misc/cafy-id';
-import { DriveFiles, GalleryPosts } from '../../../../../models';
-import { GalleryPost } from '../../../../../models/entities/gallery-post';
+import { DriveFiles, GalleryPosts } from '@/models/index';
+import { GalleryPost } from '@/models/entities/gallery-post';
 import { ApiError } from '../../../error';
 import { DriveFile } from '@/models/entities/drive-file';
 

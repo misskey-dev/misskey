@@ -1,6 +1,6 @@
 import { URL } from 'url';
 import { getJson } from '@/misc/fetch';
-import { query as urlQuery } from '../prelude/url';
+import { query as urlQuery } from '@/prelude/url';
 
 type ILink = {
 	href: string;

@@ -49,14 +49,20 @@ Those users amongst all existing ones who are continually using their account.
 ## Instance
 todo
 
+## Custom Emoji
+Emoji provided by your server.Emoji that are not specifically provided by your server but are available by default are called "Unicode Emoji".
+
 ## Control Panel
-The settings screen of an instance.
+todo
 
 ## Server
 todo
 
 ## Silence
-A state in which the visibility of the notes by said user cannot be set to "Public" anymore.Can be set for individual users by Moderators.For details, see [here.](../features/silence)
+A state in which the visibility of the notes by said user cannot be set to "Public" anymore.Can be set for individual users by the discretion of Moderators.For details, see [here.](../features/silence)
+
+## Job Queue
+A system used for sequentially broadcasting activities to other servers etc.
 
 ## Suspend
 A state which makes the account of a user unusable.

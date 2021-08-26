@@ -1,8 +1,8 @@
 import autobind from 'autobind-decorator';
 import { isMutedUserRelated } from '@/misc/is-muted-user-related';
 import Channel from '../channel';
-import { Notes } from '../../../../models';
-import { PackedNote } from '../../../../models/repositories/note';
+import { Notes } from '@/models/index';
+import { PackedNote } from '@/models/repositories/note';
 import { normalizeForSearch } from '@/misc/normalize-for-search';
 import { isBlockerUserRelated } from '@/misc/is-blocker-user-related';
 

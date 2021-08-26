@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import define from '../../define';
-import { Instances } from '../../../../models';
+import { Instances } from '@/models/index';
 import { toPuny } from '@/misc/convert-host';
 
 export const meta = {

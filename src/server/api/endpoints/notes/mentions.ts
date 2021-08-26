@@ -1,8 +1,8 @@
 import $ from 'cafy';
 import { ID } from '@/misc/cafy-id';
 import define from '../../define';
-import read from '../../../../services/note/read';
-import { Notes, Followings } from '../../../../models';
+import read from '@/services/note/read';
+import { Notes, Followings } from '@/models/index';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query';
 import { generateMutedUserQuery } from '../../common/generate-muted-user-query';
 import { makePaginationQuery } from '../../common/make-pagination-query';

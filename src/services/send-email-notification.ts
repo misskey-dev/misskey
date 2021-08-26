@@ -1,7 +1,7 @@
-import { UserProfiles } from '../models';
-import { User } from '../models/entities/user';
+import { UserProfiles } from '@/models/index';
+import { User } from '@/models/entities/user';
 import { sendEmail } from './send-email';
-import * as locales from '../../locales/';
+import * as locales from '../../locales/index';
 import { I18n } from '@/misc/i18n';
 import { getAcct } from '@/misc/acct';
 

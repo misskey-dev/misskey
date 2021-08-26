@@ -1,5 +1,5 @@
-import { User } from '../../../models/entities/user';
-import { MutedNotes } from '../../../models';
+import { User } from '@/models/entities/user';
+import { MutedNotes } from '@/models/index';
 import { SelectQueryBuilder } from 'typeorm';
 
 export function generateMutedNoteQuery(q: SelectQueryBuilder<any>, me: { id: User['id'] }) {

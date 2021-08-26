@@ -1,7 +1,7 @@
 import rndstr from 'rndstr';
-import { Note } from '../../../models/entities/note';
-import { User } from '../../../models/entities/user';
-import { PromoReads, PromoNotes, Notes, Users } from '../../../models';
+import { Note } from '@/models/entities/note';
+import { User } from '@/models/entities/user';
+import { PromoReads, PromoNotes, Notes, Users } from '@/models/index';
 
 export async function injectPromo(timeline: Note[], user?: User | null) {
 	if (timeline.length < 5) return;
