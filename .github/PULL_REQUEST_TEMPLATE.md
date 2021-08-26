@@ -25,6 +25,10 @@ Thank you for your PR! Before creating a PR, please check the following:
   - You can run it with `npm run test` and `npm run lint`.
 - If this PR includes UI changes, please attach a screenshot in the text.
 Thanks for your cooperation 🤗
+
+Important: If your language is not Japanese, you do not need to translate and write the description in Japanese.
+The accuracy of translation into Japanese is not high, so it will be easier for us to understand if you write it in the original language.
+It will also allow the reader to use the translation tool of their preference if necessary.
 -->
 
 # What
