@@ -5,6 +5,7 @@ import { Notes } from '@/models/index';
 import { PackedNote } from '@/models/repositories/note';
 import { checkWordMute } from '@/misc/check-word-mute';
 import { isBlockerUserRelated } from '@/misc/is-blocker-user-related';
+import { isInstanceMuted } from '@/misc/is-instance-muted';
 
 export default class extends Channel {
 	public readonly chName = 'homeTimeline';
@@ -25,6 +26,9 @@ export default class extends Channel {
 			// その投稿のユーザーをフォローしていなかったら弾く
 			if ((this.user!.id !== note.userId) && !this.following.has(note.userId)) return;
 		}
+
+		// Ignore notes from instances the user has muted
+		if (isInstanceMuted(note, this.userProfile?.mutedInstances ?? [])) return;
 
 		if (['followers', 'specified'].includes(note.visibility)) {
 			note = await Notes.pack(note.id, this.user!, {
