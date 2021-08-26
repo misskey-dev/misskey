@@ -2,30 +2,33 @@ extends ./base
 
 block vars
 	- const user = page.user;
-	- const title = page.title;
+	- const title = privateMode ? instanceName : page.title;
 	- const url = `${config.url}/@${user.username}/${page.name}`;
 
 block title
 	= `${title} | ${instanceName}`
 
 block desc
-	meta(name='description' content= page.summary)
+	unless privateMode
+		meta(name='description' content= page.summary)
 
 block og
-	meta(property='og:type'        content='article')
-	meta(property='og:title'       content= title)
-	meta(property='og:description' content= page.summary)
-	meta(property='og:url'         content= url)
-	meta(property='og:image'       content= page.eyeCatchingImage ? page.eyeCatchingImage.thumbnailUrl : avatarUrl)
+	unless privateMode
+		meta(property='og:type'        content='article')
+		meta(property='og:title'       content= title)
+		meta(property='og:description' content= page.summary)
+		meta(property='og:url'         content= url)
+		meta(property='og:image'       content= page.eyeCatchingImage ? page.eyeCatchingImage.thumbnailUrl : avatarUrl)
 
 block meta
-	if profile.noCrawle
-		meta(name='robots' content='noindex')
+	unless privateMode
+		if profile.noCrawle
+			meta(name='robots' content='noindex')
 
-	meta(name='misskey:user-username' content=user.username)
-	meta(name='misskey:user-id' content=user.id)
-	meta(name='misskey:page-id' content=page.id)
+		meta(name='misskey:user-username' content=user.username)
+		meta(name='misskey:user-id' content=user.id)
+		meta(name='misskey:page-id' content=page.id)
 
-	// todo
-	if user.twitter
-		meta(name='twitter:creator' content=`@${user.twitter.screenName}`)
+		// todo
+		if user.twitter
+			meta(name='twitter:creator' content=`@${user.twitter.screenName}`)

@@ -218,6 +218,10 @@ router.get('/api.json', async ctx => {
 });
 
 const getFeed = async (acct: string) => {
+	const meta = await fetchMeta();
+	if (meta.privateMode) {
+		return;
+	}
 	const { username, host } = Acct.parse(acct);
 	const user = await Users.findOneBy({
 		usernameLower: username.toLowerCase(),
@@ -290,6 +294,7 @@ router.get(['/@:user', '/@:user/:sub'], async (ctx, next) => {
 			instanceName: meta.name || 'Misskey',
 			icon: meta.iconUrl,
 			themeColor: meta.themeColor,
+			privateMode: meta.privateMode,
 		});
 		ctx.set('Cache-Control', 'public, max-age=15');
 	} else {
@@ -333,6 +338,7 @@ router.get('/notes/:note', async (ctx, next) => {
 			summary: getNoteSummary(_note),
 			instanceName: meta.name || 'Misskey',
 			icon: meta.iconUrl,
+			privateMode: meta.privateMode,
 			themeColor: meta.themeColor,
 		});
 
@@ -370,6 +376,7 @@ router.get('/@:user/pages/:page', async (ctx, next) => {
 			instanceName: meta.name || 'Misskey',
 			icon: meta.iconUrl,
 			themeColor: meta.themeColor,
+			privateMode: meta.privateMode,
 		});
 
 		if (['public'].includes(page.visibility)) {
@@ -400,6 +407,7 @@ router.get('/clips/:clip', async (ctx, next) => {
 			profile,
 			avatarUrl: await Users.getAvatarUrl(await Users.findOneByOrFail({ id: clip.userId })),
 			instanceName: meta.name || 'Misskey',
+			privateMode: meta.privateMode,
 			icon: meta.iconUrl,
 			themeColor: meta.themeColor,
 		});
@@ -427,6 +435,7 @@ router.get('/gallery/:post', async (ctx, next) => {
 			instanceName: meta.name || 'Misskey',
 			icon: meta.iconUrl,
 			themeColor: meta.themeColor,
+			privateMode: meta.privateMode,
 		});
 
 		ctx.set('Cache-Control', 'public, max-age=15');
@@ -451,6 +460,7 @@ router.get('/channels/:channel', async (ctx, next) => {
 			instanceName: meta.name || 'Misskey',
 			icon: meta.iconUrl,
 			themeColor: meta.themeColor,
+			privateMode: meta.privateMode,
 		});
 
 		ctx.set('Cache-Control', 'public, max-age=15');
@@ -464,6 +474,10 @@ router.get('/channels/:channel', async (ctx, next) => {
 
 router.get('/_info_card_', async ctx => {
 	const meta = await fetchMeta(true);
+	if (meta.privateMode) {
+		ctx.status = 403;
+		return;
+	}
 
 	ctx.remove('X-Frame-Options');
 
@@ -511,6 +525,7 @@ router.get('(.*)', async ctx => {
 		desc: meta.description,
 		icon: meta.iconUrl,
 		themeColor: meta.themeColor,
+		privateMode: meta.privateMode,
 	});
 	ctx.set('Cache-Control', 'public, max-age=15');
 });

@@ -51,10 +51,12 @@ html
 			meta(name='description' content= desc || '✨🌎✨ A interplanetary communication platform ✨🚀✨')
 
 		block meta
+			if privateMode
+				meta(name='robots' content='noindex')
 
 		block og
-			meta(property='og:title'       content= title || 'Misskey') 
-			meta(property='og:description' content= desc || '✨🌎✨ A interplanetary communication platform ✨🚀✨') 
+			meta(property='og:title'       content= title || 'Misskey')
+			meta(property='og:description' content= desc || '✨🌎✨ A interplanetary communication platform ✨🚀✨')
 			meta(property='og:image'       content= img)
 
 		style
