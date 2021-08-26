@@ -521,8 +521,8 @@ export default define(meta, async (ps, me) => {
 		backgroundImageUrl: instance.backgroundImageUrl,
 		logoImageUrl: instance.logoImageUrl,
 		maxNoteTextLength: Math.min(instance.maxNoteTextLength, DB_MAX_NOTE_TEXT_LENGTH),
-		emojis: instance.privateMode ? [] : await Emojis.packMany(emojis),
-		ads: instance.privateMode ? [] : ads.map(ad => ({
+		emojis: instance.privateMode && !me ? [] : await Emojis.packMany(emojis),
+		ads: instance.privateMode && !me ? [] : ads.map(ad => ({
 			id: ad.id,
 			url: ad.url,
 			place: ad.place,
@@ -540,8 +540,8 @@ export default define(meta, async (ps, me) => {
 		translatorAvailable: instance.deeplAuthKey != null,
 
 		...(ps.detail ? {
-			pinnedPages: instance.privateMode ? [] : instance.pinnedPages,
-			pinnedClipId: instance.privateMode ? [] : instance.pinnedClipId,
+			pinnedPages: instance.privateMode && !me ? [] : instance.pinnedPages,
+			pinnedClipId: instance.privateMode && !me ? [] : instance.pinnedClipId,
 			cacheRemoteFiles: instance.cacheRemoteFiles,
 			proxyRemoteFiles: instance.proxyRemoteFiles,
 			requireSetup: (await Users.count({
@@ -551,7 +551,7 @@ export default define(meta, async (ps, me) => {
 	};
 
 	if (ps.detail) {
-		if (!instance.privateMode) {
+		if (!instance.privateMode || me) {
 			const proxyAccount = instance.proxyAccountId ? await Users.pack(instance.proxyAccountId).catch(() => null) : null;
 			response.proxyAccountName = proxyAccount ? proxyAccount.username : null;
 		}
