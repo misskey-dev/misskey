@@ -1,0 +1,82 @@
+<template>
+	<div>
+		<FormBase>
+			<div class="_formItem">
+				<FormInfo>{{ $ts._instanceMute.title}}</FormInfo>
+				<FormTextarea v-model:value="instanceMutes">
+					<span>{{$ts._instanceMute.heading}}</span>
+					<template #desc>{{ $ts._instanceMute.instanceMuteDescription}}<br>{{$ts._instanceMute.instanceMuteDescription2}}</template>
+				</FormTextarea>
+			</div>
+		<FormButton @click="save()" primary inline :disabled="!changed"><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
+		</FormBase>
+	</div>
+</template>
+
+<script>
+import { defineComponent } from 'vue'
+import FormBase from '@client/components/form/base.vue';
+import FormTextarea from '@client/components/form/textarea.vue';
+import FormInfo from '@client/components/form/info.vue';
+import FormKeyValueView from '@client/components/form/key-value-view.vue';
+import FormButton from '@client/components/form/button.vue';
+import * as os from '@client/os';
+import number from '@client/filters/number';
+import * as symbols from '@client/symbols';
+
+export default defineComponent({
+	components: {
+		FormBase,
+		FormButton,
+		FormTextarea,
+		FormKeyValueView,
+		FormInfo,
+	},
+
+	emits: ['info'],
+
+	data() {
+		return {
+			[symbols.PAGE_INFO]: {
+				title: this.$ts.instanceMute,
+				icon: 'fas fa-volume-mute'
+			},
+			tab: 'soft',
+			instanceMutes: '',
+			changed: false,
+		}
+	},
+
+		watch: {
+		instanceMutes: {
+			handler() {
+				this.changed = true;
+			},
+			deep: true
+		},
+	},
+
+	mounted() {
+		this.$emit('info', this[symbols.PAGE_INFO]);
+	},
+
+
+	async created() {
+		console.log(this.$i);
+		this.instanceMutes = this.$i.mutedInstances.join('\n');
+	},
+
+	methods: {
+		async save() {
+			let mutes = this.instanceMutes.trim().split('\n');
+			console.log(mutes);
+			await os.api('i/update', {
+				mutedInstances: mutes,
+			});
+			this.changed = false;
+		},
+
+		number //?
+	}
+})
+</script>
