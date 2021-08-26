@@ -2,27 +2,26 @@ extends ./base
 
 block vars
 	- const user = post.user;
-	- const title = post.title;
+	- const title = privateMode ? '非公開インスタンス' : post.title;
 	- const url = `${config.url}/gallery/${post.id}`;
 
-unless privateMode
-	block title
-		= `${title} | ${instanceName}`
+block title
+	= `${title} | ${instanceName}`
 
-unless privateMode
-	block desc
+block desc
+	unless privateMode
 		meta(name='description' content= post.description)
 
-unless privateMode
-	block og
+block og
+	unless privateMode
 		meta(property='og:type'        content='article')
 		meta(property='og:title'       content= title)
 		meta(property='og:description' content= post.description)
 		meta(property='og:url'         content= url)
 		meta(property='og:image'       content= post.files[0].thumbnailUrl)
 
-unless privateMode
-	block meta
+block meta
+	unless privateMode
 		if user.host || profile.noCrawle
 			meta(name='robots' content='noindex')
 

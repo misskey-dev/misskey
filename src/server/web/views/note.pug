@@ -2,27 +2,26 @@ extends ./base
 
 block vars
 	- const user = note.user;
-	- const title = user.name ? `${user.name} (@${user.username})` : `@${user.username}`;
+	- const title = privateMode ? '非公開インスタンス' : (user.name ? `${user.name} (@${user.username})` : `@${user.username}`);
 	- const url = `${config.url}/notes/${note.id}`;
 
-unless privateMode
-	block title
-		= `${title} | ${instanceName}`
+block title
+	= `${title} | ${instanceName}`
 
-unless privateMode
-	block desc
+block desc
+	unless privateMode
 		meta(name='description' content= summary)
 
-unless privateMode
-	block og
+block og
+	unless privateMode
 		meta(property='og:type'        content='article')
 		meta(property='og:title'       content= title)
 		meta(property='og:description' content= summary)
 		meta(property='og:url'         content= url)
 		meta(property='og:image'       content= user.avatarUrl)
 
-unless privateMode
-	block meta
+block meta
+	unless privateMode
 		if user.host || profile.noCrawle
 			meta(name='robots' content='noindex')
 

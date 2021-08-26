@@ -2,27 +2,28 @@ extends ./base
 
 block vars
 	- const user = clip.user;
-	- const title = clip.name;
+	- const title = privateMode ? '非公開インスタンス' : clip.name;
 	- const url = `${config.url}/clips/${clip.id}`;
 
-unless privateMode
-	block title
-		= `${title} | ${instanceName}`
+block title
+	= `${title} | ${instanceName}`
 
-unless privateMode
-	block desc
+
+block desc
+	unless privateMode
 		meta(name='description' content= clip.description)
 
-unless privateMode
-	block og
+block og
+	unless privateMode
 		meta(property='og:type'        content='article')
 		meta(property='og:title'       content= title)
 		meta(property='og:description' content= clip.description)
 		meta(property='og:url'         content= url)
 		meta(property='og:image'       content= user.avatarUrl)
 
-unless privateMode
-	block meta
+
+block meta
+	unless privateMode
 		if profile.noCrawle
 			meta(name='robots' content='noindex')
 		meta(name='misskey:user-username' content=user.username)

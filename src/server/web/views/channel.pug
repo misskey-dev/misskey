@@ -1,25 +1,26 @@
 extends ./base
 
 block vars
-	- const title = channel.name;
+	- const title = privateMode ? '非公開インスタンス' : channel.name;
 	- const url = `${config.url}/channels/${channel.id}`;
 
-unless privateMode
-	block title
-		= `${title} | ${instanceName}`
+block title
+	= `${title} | ${instanceName}`
 
-unless secureMode
-	block desc
-			meta(name='description' content= channel.description)
+block desc
+	unless privateMode
+		meta(name='description' content=channel.description)
 
-unless secureMode
-	block og
+
+block og
+	unless privateMode
 		meta(property='og:type'        content='article')
 		meta(property='og:title'       content= title)
 		meta(property='og:description' content= channel.description)
 		meta(property='og:url'         content= url)
 		meta(property='og:image'       content= channel.bannerUrl)
 
-unless secureMode
-	block meta
+
+block meta
+	unless privateMode
 		meta(name='twitter:card' content='summary')
