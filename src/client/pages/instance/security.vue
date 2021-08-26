@@ -9,7 +9,7 @@
 		</FormLink>
 
 		<FormSwitch v-model:value="enableRegistration">{{ $ts.enableRegistration }}</FormSwitch>
-		<FormSwitch v-model:value="secureMode || privateMode" disabled="{{privateMode}}">
+		<FormSwitch v-model:value="secureMode" disabled="{{privateMode}}">
 			{{ $ts.secureMode }}
 			<template #desc>{{ $ts.secureModeInfo }}</template>
 		</FormSwitch>
