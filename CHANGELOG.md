@@ -9,6 +9,9 @@
 
 ## 12.x.x (unreleased)
 
+### Features
+- Added a toggle to show replies for followed users in all timelines
+
 ### Improvements
 - クライアントのデザインの調整
 
