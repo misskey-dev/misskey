@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import define from '../../../define';
-import { deleteFile } from '../../../../../services/drive/delete-file';
-import { DriveFiles } from '../../../../../models';
+import { deleteFile } from '@/services/drive/delete-file';
+import { DriveFiles } from '@/models/index';
 
 export const meta = {
 	tags: ['admin'],

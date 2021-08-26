@@ -1,8 +1,8 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { Apps } from '..';
-import { AuthSession } from '../entities/auth-session';
-import { awaitAll } from '../../prelude/await-all';
-import { User } from '../entities/user';
+import { Apps } from '../index';
+import { AuthSession } from '@/models/entities/auth-session';
+import { awaitAll } from '@/prelude/await-all';
+import { User } from '@/models/entities/user';
 
 @EntityRepository(AuthSession)
 export class AuthSessionRepository extends Repository<AuthSession> {

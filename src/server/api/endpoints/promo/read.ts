@@ -3,7 +3,7 @@ import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { getNote } from '../../common/getters';
-import { PromoReads } from '../../../../models';
+import { PromoReads } from '@/models/index';
 import { genId } from '@/misc/gen-id';
 
 export const meta = {

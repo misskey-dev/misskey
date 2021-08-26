@@ -1,4 +1,4 @@
-import { Notes } from '../models';
+import { Notes } from '@/models/index';
 
 export async function countSameRenotes(userId: string, renoteId: string, excludeNoteId: string | undefined): Promise<number> {
 	// 指定したユーザーの指定したノートのリノートがいくつあるか数える

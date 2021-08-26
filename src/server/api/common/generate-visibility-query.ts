@@ -1,5 +1,5 @@
-import { User } from '../../../models/entities/user';
-import { Followings } from '../../../models';
+import { User } from '@/models/entities/user';
+import { Followings } from '@/models/index';
 import { Brackets, SelectQueryBuilder } from 'typeorm';
 
 export function generateVisibilityQuery(q: SelectQueryBuilder<any>, me?: { id: User['id'] } | null) {

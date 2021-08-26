@@ -1,8 +1,8 @@
 import $ from 'cafy';
 import * as bcrypt from 'bcryptjs';
-import { publishMainStream } from '../../../services/stream';
+import { publishMainStream } from '@/services/stream';
 import define from '../define';
-import { Users, UserProfiles, PasswordResetRequests } from '../../../models';
+import { Users, UserProfiles, PasswordResetRequests } from '@/models/index';
 import { ApiError } from '../error';
 
 export const meta = {

@@ -1,8 +1,8 @@
 import { JSDOM } from 'jsdom';
 import * as mfm from 'mfm-js';
-import config from '@/config';
-import { intersperse } from '../prelude/array';
-import { IMentionedRemoteUsers } from '../models/entities/note';
+import config from '@/config/index';
+import { intersperse } from '@/prelude/array';
+import { IMentionedRemoteUsers } from '@/models/entities/note';
 import { wellKnownServices } from '../well-known-services';
 
 export function toHtml(nodes: mfm.MfmNode[] | null, mentionedRemoteUsers: IMentionedRemoteUsers = []) {

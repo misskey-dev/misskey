@@ -1,5 +1,5 @@
 import define from '../../../define';
-import { createCleanRemoteFilesJob } from '../../../../../queue';
+import { createCleanRemoteFilesJob } from '@/queue/index';
 
 export const meta = {
 	tags: ['admin'],

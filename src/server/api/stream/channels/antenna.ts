@@ -1,7 +1,8 @@
 import autobind from 'autobind-decorator';
 import Channel from '../channel';
-import { Notes } from '../../../../models';
+import { Notes } from '@/models/index';
 import { isMutedUserRelated } from '@/misc/is-muted-user-related';
+import { isBlockerUserRelated } from '@/misc/is-blocker-user-related';
 
 export default class extends Channel {
 	public readonly chName = 'antenna';
@@ -26,6 +27,8 @@ export default class extends Channel {
 
 			// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
 			if (isMutedUserRelated(note, this.muting)) return;
+			// 流れてきたNoteがブロックされているユーザーが関わるものだったら無視する
+			if (isBlockerUserRelated(note, this.blocking)) return;
 
 			this.connection.cacheNote(note);
 

@@ -1,10 +1,10 @@
 import $ from 'cafy';
 import { ID } from '@/misc/cafy-id';
-import { publishUserListStream } from '../../../../../services/stream';
+import { publishUserListStream } from '@/services/stream';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { getUser } from '../../../common/getters';
-import { UserLists, UserListJoinings, Users } from '../../../../../models';
+import { UserLists, UserListJoinings, Users } from '@/models/index';
 
 export const meta = {
 	tags: ['lists', 'users'],

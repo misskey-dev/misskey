@@ -1,9 +1,9 @@
 import * as fs from 'fs';
-import { ILocalUser } from '../../models/entities/user';
+import { ILocalUser } from '@/models/entities/user';
 import { IEndpointMeta } from './endpoints';
 import { ApiError } from './error';
 import { SchemaType } from '@/misc/schema';
-import { AccessToken } from '../../models/entities/access-token';
+import { AccessToken } from '@/models/entities/access-token';
 
 type NonOptional<T> = T extends undefined ? never : T;
 

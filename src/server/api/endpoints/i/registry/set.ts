@@ -1,7 +1,7 @@
 import $ from 'cafy';
-import { publishMainStream } from '../../../../../services/stream';
+import { publishMainStream } from '@/services/stream';
 import define from '../../../define';
-import { RegistryItems } from '../../../../../models';
+import { RegistryItems } from '@/models/index';
 import { genId } from '@/misc/gen-id';
 
 export const meta = {

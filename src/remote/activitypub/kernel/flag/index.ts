@@ -1,7 +1,7 @@
-import { IRemoteUser } from '../../../../models/entities/user';
-import config from '@/config';
+import { IRemoteUser } from '@/models/entities/user';
+import config from '@/config/index';
 import { IFlag, getApIds } from '../../type';
-import { AbuseUserReports, Users } from '../../../../models';
+import { AbuseUserReports, Users } from '@/models/index';
 import { In } from 'typeorm';
 import { genId } from '@/misc/gen-id';
 

@@ -1,8 +1,8 @@
-import { User } from '../models/entities/user';
-import { Hashtags, Users } from '../models';
-import { hashtagChart } from './chart';
+import { User } from '@/models/entities/user';
+import { Hashtags, Users } from '@/models/index';
+import { hashtagChart } from '@/services/chart/index';
 import { genId } from '@/misc/gen-id';
-import { Hashtag } from '../models/entities/hashtag';
+import { Hashtag } from '@/models/entities/hashtag';
 import { normalizeForSearch } from '@/misc/normalize-for-search';
 
 export async function updateHashtags(user: { id: User['id']; host: User['host']; }, tags: string[]) {

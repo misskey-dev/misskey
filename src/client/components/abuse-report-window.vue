@@ -10,9 +10,9 @@
 	</template>
 	<div class="dpvffvvy _monolithic_">
 		<div class="_section">
-			<MkTextarea v-model:value="comment">
-				<span>{{ $ts.details }}</span>
-				<template #desc>{{ $ts.fillAbuseReportDescription }}</template>
+			<MkTextarea v-model="comment">
+				<template #label>{{ $ts.details }}</template>
+				<template #caption>{{ $ts.fillAbuseReportDescription }}</template>
 			</MkTextarea>
 		</div>
 		<div class="_section">

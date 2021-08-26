@@ -1,6 +1,6 @@
 import { IBlock } from '../../type';
-import block from '../../../../services/blocking/create';
-import { IRemoteUser } from '../../../../models/entities/user';
+import block from '@/services/blocking/create';
+import { IRemoteUser } from '@/models/entities/user';
 import DbResolver from '../../db-resolver';
 
 export default async (actor: IRemoteUser, activity: IBlock): Promise<string> => {

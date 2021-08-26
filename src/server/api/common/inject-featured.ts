@@ -1,8 +1,9 @@
 import rndstr from 'rndstr';
-import { Note } from '../../../models/entities/note';
-import { User } from '../../../models/entities/user';
-import { Notes, UserProfiles, NoteReactions } from '../../../models';
+import { Note } from '@/models/entities/note';
+import { User } from '@/models/entities/user';
+import { Notes, UserProfiles, NoteReactions } from '@/models/index';
 import { generateMutedUserQuery } from './generate-muted-user-query';
+import { generateBlockedUserQuery } from './generate-block-query';
 
 // TODO: リアクション、Renote、返信などをしたノートは除外する
 
@@ -29,6 +30,7 @@ export async function injectFeatured(timeline: Note[], user?: User | null) {
 		query.andWhere('note.userId != :userId', { userId: user.id });
 
 		generateMutedUserQuery(query, user);
+		generateBlockedUserQuery(query, user);
 
 		const reactionQuery = NoteReactions.createQueryBuilder('reaction')
 			.select('reaction.noteId')

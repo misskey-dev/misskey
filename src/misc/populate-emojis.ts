@@ -1,11 +1,11 @@
 import { In } from 'typeorm';
-import { Emojis } from '../models';
-import { Emoji } from '../models/entities/emoji';
-import { Note } from '../models/entities/note';
+import { Emojis } from '@/models/index';
+import { Emoji } from '@/models/entities/emoji';
+import { Note } from '@/models/entities/note';
 import { Cache } from './cache';
 import { isSelfHost, toPunyNullable } from './convert-host';
 import { decodeReaction } from './reaction-lib';
-import config from '@/config';
+import config from '@/config/index';
 import { query } from '@/prelude/url';
 
 const cache = new Cache<Emoji | null>(1000 * 60 * 60 * 12);

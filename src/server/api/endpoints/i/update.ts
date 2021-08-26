@@ -1,18 +1,18 @@
 import $ from 'cafy';
 import * as mfm from 'mfm-js';
 import { ID } from '@/misc/cafy-id';
-import { publishMainStream, publishUserEvent } from '../../../../services/stream';
-import acceptAllFollowRequests from '../../../../services/following/requests/accept-all';
-import { publishToFollowers } from '../../../../services/i/update';
+import { publishMainStream, publishUserEvent } from '@/services/stream';
+import acceptAllFollowRequests from '@/services/following/requests/accept-all';
+import { publishToFollowers } from '@/services/i/update';
 import define from '../../define';
 import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm';
 import { extractHashtags } from '@/misc/extract-hashtags';
 import * as langmap from 'langmap';
-import { updateUsertags } from '../../../../services/update-hashtag';
+import { updateUsertags } from '@/services/update-hashtag';
 import { ApiError } from '../../error';
-import { Users, DriveFiles, UserProfiles, Pages } from '../../../../models';
-import { User } from '../../../../models/entities/user';
-import { UserProfile } from '../../../../models/entities/user-profile';
+import { Users, DriveFiles, UserProfiles, Pages } from '@/models/index';
+import { User } from '@/models/entities/user';
+import { UserProfile } from '@/models/entities/user-profile';
 import { notificationTypes } from '../../../../types';
 import { normalizeForSearch } from '@/misc/normalize-for-search';
 

@@ -201,7 +201,11 @@ export default (opts) => ({
 				if (isBottom) {
 					// オーバーフローしたら古いアイテムは捨てる
 					if (this.items.length >= opts.displayLimit) {
-						this.items = this.items.slice(-opts.displayLimit);
+						// このやり方だとVue 3.2以降アニメーションが動かなくなる
+						//this.items = this.items.slice(-opts.displayLimit);
+						while (this.items.length >= opts.displayLimit) {
+							this.items.shift();
+						}
 						this.more = true;
 					}
 				}
@@ -216,7 +220,11 @@ export default (opts) => ({
 
 					// オーバーフローしたら古いアイテムは捨てる
 					if (this.items.length >= opts.displayLimit) {
-						this.items = this.items.slice(0, opts.displayLimit);
+						// このやり方だとVue 3.2以降アニメーションが動かなくなる
+						//this.items = this.items.slice(0, opts.displayLimit);
+						while (this.items.length >= opts.displayLimit) {
+							this.items.pop();
+						}
 						this.more = true;
 					}
 				} else {

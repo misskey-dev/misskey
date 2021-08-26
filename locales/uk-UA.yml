@@ -127,6 +127,7 @@ editWidgets: "Редагувати віджети"
 editWidgetsExit: "Готово"
 customEmojis: "Кастомні емоджі"
 emoji: "Емоджі"
+emojis: "Емоджі"
 emojiName: "Назва емоджі"
 emojiUrl: "URL емодзі"
 addEmoji: "Додати емодзі"
@@ -689,6 +690,10 @@ administration: "Управління"
 expiration: "Опитування закінчується"
 middle: "Середній"
 global: "Глобальна"
+sent: "Відправити"
+hashtags: "Хештеґ"
+_docs:
+  admin: "Управління"
 _ad:
   back: "Назад"
 _gallery:

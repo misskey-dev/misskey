@@ -1,15 +1,15 @@
 import { URL } from 'url';
 import * as Bull from 'bull';
-import request from '../../remote/activitypub/request';
-import { registerOrFetchInstanceDoc } from '../../services/register-or-fetch-instance-doc';
-import Logger from '../../services/logger';
-import { Instances } from '../../models';
-import { instanceChart } from '../../services/chart';
-import { fetchInstanceMetadata } from '../../services/fetch-instance-metadata';
+import request from '@/remote/activitypub/request';
+import { registerOrFetchInstanceDoc } from '@/services/register-or-fetch-instance-doc';
+import Logger from '@/services/logger';
+import { Instances } from '@/models/index';
+import { instanceChart } from '@/services/chart/index';
+import { fetchInstanceMetadata } from '@/services/fetch-instance-metadata';
 import { fetchMeta } from '@/misc/fetch-meta';
 import { toPuny } from '@/misc/convert-host';
 import { Cache } from '@/misc/cache';
-import { Instance } from '../../models/entities/instance';
+import { Instance } from '@/models/entities/instance';
 import { DeliverJobData } from '../types';
 
 const logger = new Logger('deliver');

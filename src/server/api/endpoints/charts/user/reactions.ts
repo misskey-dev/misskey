@@ -1,8 +1,8 @@
 import $ from 'cafy';
 import define from '../../../define';
 import { ID } from '@/misc/cafy-id';
-import { convertLog } from '../../../../../services/chart/core';
-import { perUserReactionsChart } from '../../../../../services/chart';
+import { convertLog } from '@/services/chart/core';
+import { perUserReactionsChart } from '@/services/chart/index';
 
 export const meta = {
 	tags: ['charts', 'users', 'reactions'],

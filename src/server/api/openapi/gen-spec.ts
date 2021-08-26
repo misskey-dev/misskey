@@ -1,6 +1,6 @@
 import endpoints from '../endpoints';
 import { Context } from 'cafy';
-import config from '@/config';
+import config from '@/config/index';
 import { errors as basicErrors } from './errors';
 import { schemas, convertSchemaToOpenApiSchema } from './schemas';
 import { getDescription } from './description';

@@ -1,7 +1,7 @@
-import { Note } from '../../models/entities/note';
-import { publishMainStream } from '../stream';
-import { User } from '../../models/entities/user';
-import { Mutings, NoteUnreads } from '../../models';
+import { Note } from '@/models/entities/note';
+import { publishMainStream } from '@/services/stream';
+import { User } from '@/models/entities/user';
+import { Mutings, NoteUnreads } from '@/models/index';
 import { genId } from '@/misc/gen-id';
 
 export default async function(userId: User['id'], note: Note, params: {

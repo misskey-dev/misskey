@@ -3,7 +3,7 @@ import { ID } from '@/misc/cafy-id';
 import Reversi from '../../../../../../games/reversi/core';
 import define from '../../../../define';
 import { ApiError } from '../../../../error';
-import { ReversiGames } from '../../../../../../models';
+import { ReversiGames } from '@/models/index';
 
 export const meta = {
 	tags: ['games'],

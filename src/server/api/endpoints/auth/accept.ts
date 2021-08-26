@@ -2,7 +2,7 @@ import * as crypto from 'crypto';
 import $ from 'cafy';
 import define from '../../define';
 import { ApiError } from '../../error';
-import { AuthSessions, AccessTokens, Apps } from '../../../../models';
+import { AuthSessions, AccessTokens, Apps } from '@/models/index';
 import { genId } from '@/misc/gen-id';
 import { secureRndstr } from '@/misc/secure-rndstr';
 

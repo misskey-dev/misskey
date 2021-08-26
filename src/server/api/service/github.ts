@@ -2,14 +2,14 @@ import * as Koa from 'koa';
 import * as Router from '@koa/router';
 import { getJson } from '@/misc/fetch';
 import { OAuth2 } from 'oauth';
-import config from '@/config';
-import { publishMainStream } from '../../../services/stream';
+import config from '@/config/index';
+import { publishMainStream } from '@/services/stream';
 import { redisClient } from '../../../db/redis';
 import { v4 as uuid } from 'uuid';
 import signin from '../common/signin';
 import { fetchMeta } from '@/misc/fetch-meta';
-import { Users, UserProfiles } from '../../../models';
-import { ILocalUser } from '../../../models/entities/user';
+import { Users, UserProfiles } from '@/models/index';
+import { ILocalUser } from '@/models/entities/user';
 
 function getUserToken(ctx: Koa.Context) {
 	return ((ctx.headers['cookie'] || '').match(/igi=(\w+)/) || [null, null])[1];

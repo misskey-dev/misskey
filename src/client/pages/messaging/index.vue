@@ -40,7 +40,7 @@
 import { defineAsyncComponent, defineComponent, markRaw } from 'vue';
 import { getAcct } from '@/misc/acct';
 import MkButton from '@client/components/ui/button.vue';
-import { acct } from '../../filters/user';
+import { acct } from '@client/filters/user';
 import * as os from '@client/os';
 import * as symbols from '@client/symbols';
 
@@ -116,7 +116,7 @@ export default defineComponent({
 		},
 
 		start(ev) {
-			os.modalMenu([{
+			os.popupMenu([{
 				text: this.$ts.messagingWithUser,
 				icon: 'fas fa-user',
 				action: () => { this.startUser() }

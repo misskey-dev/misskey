@@ -1,7 +1,7 @@
-import { Notes } from '../../../../models';
-import { IRemoteUser } from '../../../../models/entities/user';
+import { Notes } from '@/models/index';
+import { IRemoteUser } from '@/models/entities/user';
 import { IAnnounce, getApId } from '../../type';
-import deleteNote from '../../../../services/note/delete';
+import deleteNote from '@/services/note/delete';
 
 export const undoAnnounce = async (actor: IRemoteUser, activity: IAnnounce): Promise<string> => {
 	const uri = getApId(activity);

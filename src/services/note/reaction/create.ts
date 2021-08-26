@@ -1,21 +1,32 @@
-import { publishNoteStream } from '../../stream';
-import { renderLike } from '../../../remote/activitypub/renderer/like';
-import DeliverManager from '../../../remote/activitypub/deliver-manager';
-import { renderActivity } from '../../../remote/activitypub/renderer';
+import { publishNoteStream } from '@/services/stream';
+import { renderLike } from '@/remote/activitypub/renderer/like';
+import DeliverManager from '@/remote/activitypub/deliver-manager';
+import { renderActivity } from '@/remote/activitypub/renderer/index';
 import { toDbReaction, decodeReaction } from '@/misc/reaction-lib';
-import { User, IRemoteUser } from '../../../models/entities/user';
-import { Note } from '../../../models/entities/note';
-import { NoteReactions, Users, NoteWatchings, Notes, Emojis } from '../../../models';
+import { User, IRemoteUser } from '@/models/entities/user';
+import { Note } from '@/models/entities/note';
+import { NoteReactions, Users, NoteWatchings, Notes, Emojis, Blockings } from '@/models/index';
 import { Not } from 'typeorm';
-import { perUserReactionsChart } from '../../chart';
+import { perUserReactionsChart } from '@/services/chart/index';
 import { genId } from '@/misc/gen-id';
 import { createNotification } from '../../create-notification';
 import deleteReaction from './delete';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error';
-import { NoteReaction } from '../../../models/entities/note-reaction';
+import { NoteReaction } from '@/models/entities/note-reaction';
 import { IdentifiableError } from '@/misc/identifiable-error';
 
 export default async (user: { id: User['id']; host: User['host']; }, note: Note, reaction?: string) => {
+	// Check blocking
+	if (note.userId !== user.id) {
+		const block = await Blockings.findOne({
+			blockerId: note.userId,
+			blockeeId: user.id,
+		});
+		if (block) {
+			throw new IdentifiableError('e70412a4-7197-4726-8e74-f3e0deb92aa7');
+		}
+	}
+
 	// TODO: cache
 	reaction = await toDbReaction(reaction, user.host);
 

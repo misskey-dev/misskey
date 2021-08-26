@@ -3,16 +3,12 @@
 	:initial-width="500"
 	:initial-height="500"
 	:can-resize="true"
-	:close-right="true"
+	:close-button="false"
 	:contextmenu="contextmenu"
 	@closed="$emit('closed')"
 >
 	<template #header>
-		<XHeader :info="pageInfo" :with-back="false"/>
-	</template>
-	<template #buttons>
-		<button class="_button" @click="back()" v-if="history.length > 0"><i class="fas fa-chevron-left"></i></button>
-		<button class="_button" style="pointer-events: none;" v-else><!-- マージンのバランスを取るためのダミー --></button>
+		<XHeader :info="pageInfo" :back-button="history.length > 0" @back="back()" :close-button="true" @close="close()"/>
 	</template>
 	<div class="yrolvcoq _flat_">
 		<component :is="component" v-bind="props" :ref="changePage"/>
@@ -139,6 +135,10 @@ export default defineComponent({
 			this.navigate(this.history.pop(), false);
 		},
 
+		close() {
+			this.$refs.window.close();
+		},
+
 		expand() {
 			this.$router.push(this.path);
 			this.$refs.window.close();
@@ -155,6 +155,5 @@ export default defineComponent({
 <style lang="scss" scoped>
 .yrolvcoq {
 	min-height: 100%;
-	background: var(--bg);
 }
 </style>

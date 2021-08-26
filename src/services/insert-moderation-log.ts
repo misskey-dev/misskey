@@ -1,4 +1,4 @@
-import { ModerationLogs } from '../models';
+import { ModerationLogs } from '@/models/index';
 import { genId } from '@/misc/gen-id';
 import { User } from '@/models/entities/user';
 

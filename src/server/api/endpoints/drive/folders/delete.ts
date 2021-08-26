@@ -1,9 +1,9 @@
 import $ from 'cafy';
 import { ID } from '@/misc/cafy-id';
 import define from '../../../define';
-import { publishDriveStream } from '../../../../../services/stream';
+import { publishDriveStream } from '@/services/stream';
 import { ApiError } from '../../../error';
-import { DriveFolders, DriveFiles } from '../../../../../models';
+import { DriveFolders, DriveFiles } from '@/models/index';
 
 export const meta = {
 	tags: ['drive'],

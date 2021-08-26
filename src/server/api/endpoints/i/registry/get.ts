@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import define from '../../../define';
-import { RegistryItems } from '../../../../../models';
+import { RegistryItems } from '@/models/index';
 import { ApiError } from '../../../error';
 
 export const meta = {

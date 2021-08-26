@@ -9,8 +9,8 @@
 	<div class="_section lookup">
 		<div class="_title"><i class="fas fa-search"></i> {{ $ts.lookup }}</div>
 		<div class="_content">
-			<MkInput class="target" v-model:value="q" type="text" @enter="find()">
-				<span>{{ $ts.fileIdOrUrl }}</span>
+			<MkInput class="target" v-model="q" type="text" @enter="find()">
+				<template #label>{{ $ts.fileIdOrUrl }}</template>
 			</MkInput>
 			<MkButton @click="find()" primary><i class="fas fa-search"></i> {{ $ts.lookup }}</MkButton>
 		</div>
@@ -19,19 +19,19 @@
 	<div class="_section">
 		<div class="_content">
 			<div class="inputs" style="display: flex;">
-				<MkSelect v-model:value="origin" style="margin: 0; flex: 1;">
+				<MkSelect v-model="origin" style="margin: 0; flex: 1;">
 					<template #label>{{ $ts.instance }}</template>
 					<option value="combined">{{ $ts.all }}</option>
 					<option value="local">{{ $ts.local }}</option>
 					<option value="remote">{{ $ts.remote }}</option>
 				</MkSelect>
-				<MkInput v-model:value="searchHost" :debounce="true" type="search" style="margin: 0; flex: 1;" :disabled="pagination.params().origin === 'local'">
-					<span>{{ $ts.host }}</span>
+				<MkInput v-model="searchHost" :debounce="true" type="search" style="margin: 0; flex: 1;" :disabled="pagination.params().origin === 'local'">
+					<template #label>{{ $ts.host }}</template>
 				</MkInput>
 			</div>
 			<div class="inputs" style="display: flex; padding-top: 1.2em;">
-				<MkInput v-model:value="type" :debounce="true" type="search" style="margin: 0; flex: 1;">
-					<span>{{ $ts.type }}</span>
+				<MkInput v-model="type" :debounce="true" type="search" style="margin: 0; flex: 1;">
+					<template #label>{{ $ts.type }}</template>
 				</MkInput>
 			</div>
 			<MkPagination :pagination="pagination" #default="{items}" class="urempief" ref="files">

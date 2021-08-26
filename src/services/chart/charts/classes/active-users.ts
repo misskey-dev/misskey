@@ -1,8 +1,8 @@
 import autobind from 'autobind-decorator';
 import Chart, { Obj, DeepPartial } from '../../core';
-import { User } from '../../../../models/entities/user';
+import { User } from '@/models/entities/user';
 import { SchemaType } from '@/misc/schema';
-import { Users } from '../../../../models';
+import { Users } from '@/models/index';
 import { name, schema } from '../schemas/active-users';
 
 type ActiveUsersLog = SchemaType<typeof schema>;

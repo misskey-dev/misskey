@@ -24,7 +24,7 @@ Please install and setup these softwares:
 
 #### Dependencies :package:
 * **[Node.js](https://nodejs.org/en/)** (12.x, 14.x)
-* **[PostgreSQL](https://www.postgresql.org/)** (>= 10)
+* **[PostgreSQL](https://www.postgresql.org/)** (12.x / 13.x is preferred)
 * **[Redis](https://redis.io/)**
 
 ##### Optional

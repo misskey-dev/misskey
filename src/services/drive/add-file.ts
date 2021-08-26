@@ -2,7 +2,7 @@ import * as fs from 'fs';
 
 import { v4 as uuid } from 'uuid';
 
-import { publishMainStream, publishDriveStream } from '../stream';
+import { publishMainStream, publishDriveStream } from '@/services/stream';
 import { deleteFile } from './delete-file';
 import { fetchMeta } from '@/misc/fetch-meta';
 import { GenerateVideoThumbnail } from './generate-video-thumbnail';
@@ -10,11 +10,11 @@ import { driveLogger } from './logger';
 import { IImage, convertSharpToJpeg, convertSharpToWebp, convertSharpToPng, convertSharpToPngOrJpeg } from './image-processor';
 import { contentDisposition } from '@/misc/content-disposition';
 import { getFileInfo } from '@/misc/get-file-info';
-import { DriveFiles, DriveFolders, Users, Instances, UserProfiles } from '../../models';
+import { DriveFiles, DriveFolders, Users, Instances, UserProfiles } from '@/models/index';
 import { InternalStorage } from './internal-storage';
-import { DriveFile } from '../../models/entities/drive-file';
-import { IRemoteUser, User } from '../../models/entities/user';
-import { driveChart, perUserDriveChart, instanceChart } from '../chart';
+import { DriveFile } from '@/models/entities/drive-file';
+import { IRemoteUser, User } from '@/models/entities/user';
+import { driveChart, perUserDriveChart, instanceChart } from '@/services/chart/index';
 import { genId } from '@/misc/gen-id';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error';
 import * as S3 from 'aws-sdk/clients/s3';

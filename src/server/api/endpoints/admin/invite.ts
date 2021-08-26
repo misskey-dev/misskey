@@ -1,6 +1,6 @@
 import rndstr from 'rndstr';
 import define from '../../define';
-import { RegistrationTickets } from '../../../../models';
+import { RegistrationTickets } from '@/models/index';
 import { genId } from '@/misc/gen-id';
 
 export const meta = {

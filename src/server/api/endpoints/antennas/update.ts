@@ -2,8 +2,8 @@ import $ from 'cafy';
 import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { ApiError } from '../../error';
-import { Antennas, UserLists, UserGroupJoinings } from '../../../../models';
-import { publishInternalEvent } from '../../../../services/stream';
+import { Antennas, UserLists, UserGroupJoinings } from '@/models/index';
+import { publishInternalEvent } from '@/services/stream';
 
 export const meta = {
 	tags: ['antennas'],

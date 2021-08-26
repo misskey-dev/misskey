@@ -1,28 +1,28 @@
 import * as promiseLimit from 'promise-limit';
 
-import config from '@/config';
+import config from '@/config/index';
 import Resolver from '../resolver';
-import post from '../../../services/note/create';
+import post from '@/services/note/create';
 import { resolvePerson, updatePerson } from './person';
 import { resolveImage } from './image';
-import { IRemoteUser } from '../../../models/entities/user';
+import { IRemoteUser } from '@/models/entities/user';
 import { htmlToMfm } from '../misc/html-to-mfm';
 import { extractApHashtags } from './tag';
-import { unique, toArray, toSingle } from '../../../prelude/array';
+import { unique, toArray, toSingle } from '@/prelude/array';
 import { extractPollFromQuestion } from './question';
-import vote from '../../../services/note/polls/vote';
+import vote from '@/services/note/polls/vote';
 import { apLogger } from '../logger';
-import { DriveFile } from '../../../models/entities/drive-file';
-import { deliverQuestionUpdate } from '../../../services/note/polls/update';
+import { DriveFile } from '@/models/entities/drive-file';
+import { deliverQuestionUpdate } from '@/services/note/polls/update';
 import { extractDbHost, toPuny } from '@/misc/convert-host';
-import { Emojis, Polls, MessagingMessages } from '../../../models';
-import { Note } from '../../../models/entities/note';
+import { Emojis, Polls, MessagingMessages } from '@/models/index';
+import { Note } from '@/models/entities/note';
 import { IObject, getOneApId, getApId, getOneApHrefNullable, validPost, IPost, isEmoji, getApType } from '../type';
-import { Emoji } from '../../../models/entities/emoji';
+import { Emoji } from '@/models/entities/emoji';
 import { genId } from '@/misc/gen-id';
 import { fetchMeta } from '@/misc/fetch-meta';
 import { getApLock } from '@/misc/app-lock';
-import { createMessage } from '../../../services/messages/create';
+import { createMessage } from '@/services/messages/create';
 import { parseAudience } from '../audience';
 import { extractApMentions } from './mention';
 import DbResolver from '../db-resolver';
@@ -217,15 +217,6 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 
 		if (note.name) {
 			return await tryCreateVote(note.name, poll.choices.findIndex(x => x === note.name));
-		}
-
-		// 後方互換性のため
-		if (text) {
-			const m = text.match(/(\d+)$/);
-
-			if (m) {
-				return await tryCreateVote(m[0], Number(m[1]));
-			}
 		}
 	}
 

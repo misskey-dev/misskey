@@ -1,11 +1,11 @@
 import $ from 'cafy';
-import { publishMainStream } from '../../../services/stream';
+import { publishMainStream } from '@/services/stream';
 import define from '../define';
 import rndstr from 'rndstr';
-import config from '@/config';
+import config from '@/config/index';
 import * as ms from 'ms';
-import { Users, UserProfiles, PasswordResetRequests } from '../../../models';
-import { sendEmail } from '../../../services/send-email';
+import { Users, UserProfiles, PasswordResetRequests } from '@/models/index';
+import { sendEmail } from '@/services/send-email';
 import { ApiError } from '../error';
 import { genId } from '@/misc/gen-id';
 import { IsNull } from 'typeorm';

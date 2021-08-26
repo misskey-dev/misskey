@@ -1,8 +1,8 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { Channel } from '../entities/channel';
+import { Channel } from '@/models/entities/channel';
 import { SchemaType } from '@/misc/schema';
-import { DriveFiles, ChannelFollowings, NoteUnreads } from '..';
-import { User } from '../entities/user';
+import { DriveFiles, ChannelFollowings, NoteUnreads } from '../index';
+import { User } from '@/models/entities/user';
 
 export type PackedChannel = SchemaType<typeof packedChannelSchema>;
 
@@ -90,7 +90,7 @@ export const packedChannelSchema = {
 		},
 		userId: {
 			type: 'string' as const,
-			nullable: false as const, optional: false as const,
+			nullable: true as const, optional: false as const,
 			format: 'id',
 		},
 	},

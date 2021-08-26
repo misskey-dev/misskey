@@ -8,9 +8,9 @@
 
 			<div class="main _gap">
 				<MkButton v-if="!showNext && hasNext" class="load next" @click="showNext = true"><i class="fas fa-chevron-up"></i></MkButton>
-				<div class="_content _gap">
-					<MkRemoteCaution v-if="note.user.host != null" :href="note.url || note.uri" class="_gap"/>
-					<XNoteDetailed v-model:note="note" :key="note.id" class="_gap"/>
+				<div class="note _gap">
+					<MkRemoteCaution v-if="note.user.host != null" :href="note.url || note.uri" class="_isolated"/>
+					<XNoteDetailed v-model:note="note" :key="note.id" class="_isolated note"/>
 				</div>
 				<div class="_content clips _gap" v-if="clips && clips.length > 0">
 					<div class="title">{{ $ts.clip }}</div>
@@ -108,6 +108,7 @@ export default defineComponent({
 			os.api('notes/show', {
 				noteId: this.noteId
 			}).then(note => {
+				this.note = note;
 				Promise.all([
 					os.api('notes/clips', {
 						noteId: note.id,
@@ -126,7 +127,6 @@ export default defineComponent({
 					this.clips = clips;
 					this.hasPrev = prev.length !== 0;
 					this.hasNext = next.length !== 0;
-					this.note = note;
 				});
 			}).catch(e => {
 				this.error = e;
@@ -147,6 +147,8 @@ export default defineComponent({
 }
 
 .fcuexfpr {
+	background: var(--bg);
+
 	> .note {
 		> .main {
 			> .load {
@@ -160,6 +162,13 @@ export default defineComponent({
 
 				&.prev {
 					margin-top: var(--margin);
+				}
+			}
+
+			> .note {
+				> .note {
+					border-radius: var(--radius);
+					background: var(--panel);
 				}
 			}
 

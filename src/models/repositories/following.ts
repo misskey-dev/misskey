@@ -1,9 +1,9 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { Users } from '..';
-import { Following } from '../entities/following';
-import { awaitAll } from '../../prelude/await-all';
+import { Users } from '../index';
+import { Following } from '@/models/entities/following';
+import { awaitAll } from '@/prelude/await-all';
 import { SchemaType } from '@/misc/schema';
-import { User } from '../entities/user';
+import { User } from '@/models/entities/user';
 
 type LocalFollowerFollowing = Following & {
 	followerHost: null;

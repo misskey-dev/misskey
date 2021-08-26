@@ -1,9 +1,9 @@
-import config from '@/config';
+import config from '@/config/index';
 import Resolver from '../resolver';
 import { IObject, IQuestion, isQuestion,  } from '../type';
 import { apLogger } from '../logger';
-import { Notes, Polls } from '../../../models';
-import { IPoll } from '../../../models/entities/poll';
+import { Notes, Polls } from '@/models/index';
+import { IPoll } from '@/models/entities/poll';
 
 export async function extractPollFromQuestion(source: string | IObject, resolver?: Resolver): Promise<IPoll> {
 	if (resolver == null) resolver = new Resolver();

@@ -79,7 +79,7 @@ export default defineComponent({
 
 	methods: {
 		menu(ev) {
-			os.modalMenu([this.isOwned ? {
+			os.popupMenu([this.isOwned ? {
 				icon: 'fas fa-pencil-alt',
 				text: this.$ts.edit,
 				action: async () => {

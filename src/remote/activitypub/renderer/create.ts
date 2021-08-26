@@ -1,5 +1,5 @@
-import config from '@/config';
-import { Note } from '../../../models/entities/note';
+import config from '@/config/index';
+import { Note } from '@/models/entities/note';
 
 export default (object: any, note: Note) => {
 	const activity = {

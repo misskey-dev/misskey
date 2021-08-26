@@ -35,6 +35,7 @@ import { twemojiSvgBase } from '@/misc/twemoji-base';
 import { getStaticImageUrl } from '@client/scripts/get-static-image-url';
 import { acct } from '@client/filters/user';
 import * as os from '@client/os';
+import { instance } from '@client/instance';
 
 type EmojiDef = {
 	emoji: string;
@@ -74,6 +75,36 @@ for (const x of lib) {
 }
 
 emjdb.sort((a, b) => a.name.length - b.name.length);
+
+//#region Construct Emoji DB
+const customEmojis = instance.emojis;
+const emojiDefinitions: EmojiDef[] = [];
+
+for (const x of customEmojis) {
+	emojiDefinitions.push({
+		name: x.name,
+		emoji: `:${x.name}:`,
+		url: x.url,
+		isCustomEmoji: true
+	});
+
+	if (x.aliases) {
+		for (const alias of x.aliases) {
+			emojiDefinitions.push({
+				name: alias,
+				aliasOf: x.name,
+				emoji: `:${x.name}:`,
+				url: x.url,
+				isCustomEmoji: true
+			});
+		}
+	}
+}
+
+emojiDefinitions.sort((a, b) => a.name.length - b.name.length);
+
+const emojiDb = markRaw(emojiDefinitions.concat(emjdb));
+//#endregion
 
 export default defineComponent({
 	props: {
@@ -124,7 +155,6 @@ export default defineComponent({
 			emojis: [],
 			items: [],
 			select: -1,
-			emojiDb: [] as EmojiDef[]
 		}
 	},
 
@@ -143,36 +173,6 @@ export default defineComponent({
 
 	mounted() {
 		this.setPosition();
-
-		//#region Construct Emoji DB
-		const customEmojis = this.$instance.emojis;
-		const emojiDefinitions: EmojiDef[] = [];
-
-		for (const x of customEmojis) {
-			emojiDefinitions.push({
-				name: x.name,
-				emoji: `:${x.name}:`,
-				url: x.url,
-				isCustomEmoji: true
-			});
-
-			if (x.aliases) {
-				for (const alias of x.aliases) {
-					emojiDefinitions.push({
-						name: alias,
-						aliasOf: x.name,
-						emoji: `:${x.name}:`,
-						url: x.url,
-						isCustomEmoji: true
-					});
-				}
-			}
-		}
-
-		emojiDefinitions.sort((a, b) => a.name.length - b.name.length);
-
-		this.emojiDb = markRaw(emojiDefinitions.concat(emjdb));
-		//#endregion
 
 		this.textarea.addEventListener('keydown', this.onKeydown);
 
@@ -203,6 +203,13 @@ export default defineComponent({
 		complete(type, value) {
 			this.$emit('done', { type, value });
 			this.$emit('closed');
+
+			if (type === 'emoji') {
+				let recents = this.$store.state.recentlyUsedEmojis;
+				recents = recents.filter((e: any) => e !== value);
+				recents.unshift(value);
+				this.$store.set('recentlyUsedEmojis', recents.splice(0, 32));
+			}
 		},
 
 		setPosition() {
@@ -281,29 +288,26 @@ export default defineComponent({
 				}
 			} else if (this.type == 'emoji') {
 				if (this.q == null || this.q == '') {
-					this.emojis = this.emojiDb.filter(x => x.isCustomEmoji && !x.aliasOf).sort((a, b) => {
-						var textA = a.name.toUpperCase();
-						var textB = b.name.toUpperCase();
-						return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
-					});
+					// 最近使った絵文字をサジェスト
+					this.emojis = this.$store.state.recentlyUsedEmojis.map(emoji => emojiDb.find(e => e.emoji == emoji)).filter(x => x != null);
 					return;
 				}
 
 				const matched = [];
 				const max = 30;
 
-				this.emojiDb.some(x => {
+				emojiDb.some(x => {
 					if (x.name.startsWith(this.q) && !x.aliasOf && !matched.some(y => y.emoji == x.emoji)) matched.push(x);
 					return matched.length == max;
 				});
 				if (matched.length < max) {
-					this.emojiDb.some(x => {
+					emojiDb.some(x => {
 						if (x.name.startsWith(this.q) && !matched.some(y => y.emoji == x.emoji)) matched.push(x);
 						return matched.length == max;
 					});
 				}
 				if (matched.length < max) {
-					this.emojiDb.some(x => {
+					emojiDb.some(x => {
 						if (x.name.includes(this.q) && !matched.some(y => y.emoji == x.emoji)) matched.push(x);
 						return matched.length == max;
 					});

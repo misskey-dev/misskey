@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import define from '../../define';
-import { UserProfiles, Users } from '../../../../models';
-import { User } from '../../../../models/entities/user';
+import { UserProfiles, Users } from '@/models/index';
+import { User } from '@/models/entities/user';
 
 export const meta = {
 	tags: ['users'],

@@ -2,7 +2,7 @@ import $ from 'cafy';
 import { ID } from '@/misc/cafy-id';
 import define from '../../../../define';
 import { ApiError } from '../../../../error';
-import { UserGroupInvitations } from '../../../../../../models';
+import { UserGroupInvitations } from '@/models/index';
 
 export const meta = {
 	tags: ['groups', 'users'],

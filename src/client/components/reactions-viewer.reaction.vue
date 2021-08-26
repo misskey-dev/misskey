@@ -170,7 +170,7 @@ export default defineComponent({
 		}
 
 		> span {
-			color: #fff;
+			color: var(--fgOnAccent);
 		}
 	}
 

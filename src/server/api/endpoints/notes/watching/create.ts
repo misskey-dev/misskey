@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import { ID } from '@/misc/cafy-id';
 import define from '../../../define';
-import watch from '../../../../../services/note/watch';
+import watch from '@/services/note/watch';
 import { getNote } from '../../../common/getters';
 import { ApiError } from '../../../error';
 

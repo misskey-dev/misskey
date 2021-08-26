@@ -90,8 +90,8 @@ export default defineComponent({
 	left: 0;
 	z-index: 1000;
 	line-height: $height;
-	-webkit-backdrop-filter: blur(32px);
-	backdrop-filter: blur(32px);
+	-webkit-backdrop-filter: var(--blur, blur(32px));
+	backdrop-filter: var(--blur, blur(32px));
 	background-color: var(--X16);
 
 	> .wide {

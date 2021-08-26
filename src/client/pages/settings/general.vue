@@ -33,6 +33,7 @@
 		<template #label>{{ $ts.appearance }}</template>
 		<FormSwitch v-model:value="disableAnimatedMfm">{{ $ts.disableAnimatedMfm }}</FormSwitch>
 		<FormSwitch v-model:value="reduceAnimation">{{ $ts.reduceUiAnimation }}</FormSwitch>
+		<FormSwitch v-model:value="useBlurEffect">{{ $ts.useBlurEffect }}</FormSwitch>
 		<FormSwitch v-model:value="useBlurEffectForModal">{{ $ts.useBlurEffectForModal }}</FormSwitch>
 		<FormSwitch v-model:value="showGapBetweenNotesInTimeline">{{ $ts.showGapBetweenNotesInTimeline }}</FormSwitch>
 		<FormSwitch v-model:value="loadRawImages">{{ $ts.loadRawImages }}</FormSwitch>
@@ -132,6 +133,7 @@ export default defineComponent({
 		serverDisconnectedBehavior: defaultStore.makeGetterSetter('serverDisconnectedBehavior'),
 		reduceAnimation: defaultStore.makeGetterSetter('animation', v => !v, v => !v),
 		useBlurEffectForModal: defaultStore.makeGetterSetter('useBlurEffectForModal'),
+		useBlurEffect: defaultStore.makeGetterSetter('useBlurEffect'),
 		showGapBetweenNotesInTimeline: defaultStore.makeGetterSetter('showGapBetweenNotesInTimeline'),
 		disableAnimatedMfm: defaultStore.makeGetterSetter('animatedMfm', v => !v, v => !v),
 		useOsNativeEmojis: defaultStore.makeGetterSetter('useOsNativeEmojis'),

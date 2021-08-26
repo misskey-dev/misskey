@@ -1,10 +1,10 @@
 import $ from 'cafy';
 import { EntityRepository, Repository, In, Not } from 'typeorm';
-import { User, ILocalUser, IRemoteUser } from '../entities/user';
-import { Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings, UserProfiles, UserSecurityKeys, UserGroupJoinings, Pages, Announcements, AnnouncementReads, Antennas, AntennaNotes, ChannelFollowings, Instances } from '..';
-import config from '@/config';
+import { User, ILocalUser, IRemoteUser } from '@/models/entities/user';
+import { Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings, UserProfiles, UserSecurityKeys, UserGroupJoinings, Pages, Announcements, AnnouncementReads, Antennas, AntennaNotes, ChannelFollowings, Instances } from '../index';
+import config from '@/config/index';
 import { SchemaType } from '@/misc/schema';
-import { awaitAll } from '../../prelude/await-all';
+import { awaitAll } from '@/prelude/await-all';
 import { populateEmojis } from '@/misc/populate-emojis';
 import { getAntennas } from '@/misc/antenna-cache';
 import { USER_ACTIVE_THRESHOLD, USER_ONLINE_THRESHOLD } from '@/const';
@@ -252,6 +252,7 @@ export class UserRepository extends Repository<User> {
 				autoAcceptFollowed: profile!.autoAcceptFollowed,
 				noCrawle: profile!.noCrawle,
 				isExplorable: user.isExplorable,
+				isDeleted: user.isDeleted,
 				hideOnlineStatus: user.hideOnlineStatus,
 				hasUnreadSpecifiedNotes: NoteUnreads.count({
 					where: { userId: user.id, isSpecified: true },

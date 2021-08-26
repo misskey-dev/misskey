@@ -1,7 +1,7 @@
 <template>
 <div class="zbcjwnqg" style="margin-top: -8px;">
 	<div class="selects" style="display: flex;">
-		<MkSelect v-model:value="chartSrc" style="margin: 0; flex: 1;">
+		<MkSelect v-model="chartSrc" style="margin: 0; flex: 1;">
 			<optgroup :label="$ts.federation">
 				<option value="federation-instances">{{ $ts._charts.federationInstancesIncDec }}</option>
 				<option value="federation-instances-total">{{ $ts._charts.federationInstancesTotal }}</option>
@@ -24,7 +24,7 @@
 				<option value="drive-total">{{ $ts._charts.storageUsageTotal }}</option>
 			</optgroup>
 		</MkSelect>
-		<MkSelect v-model:value="chartSpan" style="margin: 0;">
+		<MkSelect v-model="chartSpan" style="margin: 0;">
 			<option value="hour">{{ $ts.perHour }}</option>
 			<option value="day">{{ $ts.perDay }}</option>
 		</MkSelect>

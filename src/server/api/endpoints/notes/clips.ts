@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import { ID } from '@/misc/cafy-id';
 import define from '../../define';
-import { ClipNotes, Clips } from '../../../../models';
+import { ClipNotes, Clips } from '@/models/index';
 import { getNote } from '../../common/getters';
 import { ApiError } from '../../error';
 import { In } from 'typeorm';

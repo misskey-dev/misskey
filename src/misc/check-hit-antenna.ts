@@ -1,7 +1,7 @@
-import { Antenna } from '../models/entities/antenna';
-import { Note } from '../models/entities/note';
-import { User } from '../models/entities/user';
-import { UserListJoinings, UserGroupJoinings } from '../models';
+import { Antenna } from '@/models/entities/antenna';
+import { Note } from '@/models/entities/note';
+import { User } from '@/models/entities/user';
+import { UserListJoinings, UserGroupJoinings } from '@/models/index';
 import { getFullApAccount } from './convert-host';
 import { PackedNote } from '../models/repositories/note';
 import { parseAcct } from '@/misc/acct';

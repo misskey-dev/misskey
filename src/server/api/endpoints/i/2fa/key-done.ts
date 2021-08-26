@@ -8,10 +8,10 @@ import {
 	UserSecurityKeys,
 	AttestationChallenges,
 	Users
-} from '../../../../../models';
-import config from '@/config';
+} from '@/models/index';
+import config from '@/config/index';
 import { procedures, hash } from '../../../2fa';
-import { publishMainStream } from '../../../../../services/stream';
+import { publishMainStream } from '@/services/stream';
 
 const cborDecodeFirst = promisify(cbor.decodeFirst) as any;
 

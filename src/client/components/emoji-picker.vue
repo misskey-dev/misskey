@@ -1,5 +1,5 @@
 <template>
-<div class="omfetrab _popup" :class="['w' + width, 'h' + height, { big }]">
+<div class="omfetrab" :class="['w' + width, 'h' + height, { big }]">
 	<input ref="search" class="search" data-prevent-emoji-insert :class="{ filled: q != null && q != '' }" v-model.trim="q" :placeholder="$ts.search" @paste.stop="paste" @keyup.enter="done()">
 	<div class="emojis" ref="emojis">
 		<section class="result">
@@ -346,7 +346,6 @@ export default defineComponent({
 
 	display: flex;
 	flex-direction: column;
-	contain: content;
 
 	&.big {
 		--eachSize: 44px;

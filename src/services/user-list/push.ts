@@ -1,8 +1,8 @@
-import { publishUserListStream } from '../stream';
-import { User } from '../../models/entities/user';
-import { UserList } from '../../models/entities/user-list';
-import { UserListJoinings, Users } from '../../models';
-import { UserListJoining } from '../../models/entities/user-list-joining';
+import { publishUserListStream } from '@/services/stream';
+import { User } from '@/models/entities/user';
+import { UserList } from '@/models/entities/user-list';
+import { UserListJoinings, Users } from '@/models/index';
+import { UserListJoining } from '@/models/entities/user-list-joining';
 import { genId } from '@/misc/gen-id';
 import { fetchProxyAccount } from '@/misc/fetch-proxy-account';
 import createFollowing from '../following/create';

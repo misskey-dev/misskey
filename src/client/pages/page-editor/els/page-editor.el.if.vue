@@ -8,7 +8,7 @@
 	</template>
 
 	<section class="romcojzs">
-		<MkSelect v-model:value="value.var">
+		<MkSelect v-model="value.var">
 			<template #label>{{ $ts._pages.blocks._if.variable }}</template>
 			<option v-for="v in hpml.getVarsByType('boolean')" :value="v.name">{{ v.name }}</option>
 			<optgroup :label="$ts._pages.script.pageVariables">

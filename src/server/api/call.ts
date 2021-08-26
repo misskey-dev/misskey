@@ -1,10 +1,10 @@
 import { performance } from 'perf_hooks';
 import limiter from './limiter';
-import { User } from '../../models/entities/user';
+import { User } from '@/models/entities/user';
 import endpoints from './endpoints';
 import { ApiError } from './error';
 import { apiLogger } from './logger';
-import { AccessToken } from '../../models/entities/access-token';
+import { AccessToken } from '@/models/entities/access-token';
 import { fetchMeta } from '@/misc/fetch-meta';
 
 const accessDenied = {

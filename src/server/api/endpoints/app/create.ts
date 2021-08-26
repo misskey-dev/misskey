@@ -1,8 +1,8 @@
 import $ from 'cafy';
 import define from '../../define';
-import { Apps } from '../../../../models';
+import { Apps } from '@/models/index';
 import { genId } from '@/misc/gen-id';
-import { unique } from '../../../../prelude/array';
+import { unique } from '@/prelude/array';
 import { secureRndstr } from '@/misc/secure-rndstr';
 
 export const meta = {

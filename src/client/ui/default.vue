@@ -12,9 +12,9 @@
 			</div>
 		</template>
 
-		<main class="main _panel" @contextmenu.stop="onContextmenu">
+		<main class="main" @contextmenu.stop="onContextmenu">
 			<header class="header" @click="onHeaderClick">
-				<XHeader :info="pageInfo"/>
+				<XHeader :info="pageInfo" :back-button="true" @back="back()"/>
 			</header>
 			<div class="content" :class="{ _flat_: !fullView }">
 				<router-view v-slot="{ Component }">
@@ -157,6 +157,10 @@ export default defineComponent({
 			window.scroll({ top: 0, behavior: 'smooth' });
 		},
 
+		back() {
+			history.back();
+		},
+
 		showDrawerNav() {
 			this.$refs.drawerNav.show();
 		},
@@ -236,7 +240,7 @@ export default defineComponent({
 
 	&.wallpaper {
 		background: var(--wallpaperOverlay);
-		//backdrop-filter: blur(4px);
+		//backdrop-filter: var(--blur, blur(4px));
 	}
 
 	&.isMobile {
@@ -287,8 +291,11 @@ export default defineComponent({
 			min-width: 0;
 			width: 750px;
 			margin: 0 16px 0 0;
-			background: var(--bg);
+			background: var(--panel);
+			border-left: solid 1px var(--divider);
+			border-right: solid 1px var(--divider);
 			border-radius: 0;
+			overflow: clip;
 			--margin: 12px;
 
 			> .header {
@@ -296,14 +303,13 @@ export default defineComponent({
 				z-index: 1000;
 				top: var(--globalHeaderHeight, 0px);
 				height: $header-height;
-				line-height: $header-height;
-				-webkit-backdrop-filter: blur(32px);
-				backdrop-filter: blur(32px);
+				-webkit-backdrop-filter: var(--blur, blur(32px));
+				backdrop-filter: var(--blur, blur(32px));
 				background-color: var(--header);
+				border-bottom: solid 0.5px var(--divider);
 			}
 
 			> .content {
-				background: var(--bg);
 				--stickyTop: calc(var(--globalHeaderHeight, 0px) + #{$header-height});
 			}
 
@@ -340,6 +346,7 @@ export default defineComponent({
 
 			> .main {
 				margin-top: 0;
+				border: solid 1px var(--divider);
 				border-radius: var(--radius);
 			}
 
@@ -373,8 +380,8 @@ export default defineComponent({
 		display: flex;
 		width: 100%;
 		box-sizing: border-box;
-		-webkit-backdrop-filter: blur(32px);
-		backdrop-filter: blur(32px);
+		-webkit-backdrop-filter: var(--blur, blur(32px));
+		backdrop-filter: var(--blur, blur(32px));
 		background-color: var(--header);
 		border-top: solid 0.5px var(--divider);
 

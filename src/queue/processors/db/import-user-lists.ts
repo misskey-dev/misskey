@@ -2,11 +2,11 @@ import * as Bull from 'bull';
 
 import { queueLogger } from '../../logger';
 import { parseAcct } from '@/misc/acct';
-import { resolveUser } from '../../../remote/resolve-user';
-import { pushUserToUserList } from '../../../services/user-list/push';
+import { resolveUser } from '@/remote/resolve-user';
+import { pushUserToUserList } from '@/services/user-list/push';
 import { downloadTextFile } from '@/misc/download-text-file';
 import { isSelfHost, toPuny } from '@/misc/convert-host';
-import { DriveFiles, Users, UserLists, UserListJoinings } from '../../../models';
+import { DriveFiles, Users, UserLists, UserListJoinings } from '@/models/index';
 import { genId } from '@/misc/gen-id';
 import { DbUserImportJobData } from '@/queue/types';
 

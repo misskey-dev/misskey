@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import define from '../../../define';
-import { Announcements } from '../../../../../models';
+import { Announcements } from '@/models/index';
 import { genId } from '@/misc/gen-id';
 
 export const meta = {

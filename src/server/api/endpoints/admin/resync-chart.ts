@@ -1,6 +1,6 @@
 import define from '../../define';
-import { driveChart, notesChart, usersChart, instanceChart } from '../../../../services/chart';
-import { insertModerationLog } from '../../../../services/insert-moderation-log';
+import { driveChart, notesChart, usersChart, instanceChart } from '@/services/chart/index';
+import { insertModerationLog } from '@/services/insert-moderation-log';
 
 export const meta = {
 	tags: ['admin'],

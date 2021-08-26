@@ -94,7 +94,7 @@ export default defineComponent({
 		},
 
 		remove(reaction, ev) {
-			os.modalMenu([{
+			os.popupMenu([{
 				text: this.$ts.remove,
 				action: () => {
 					this.reactions = this.reactions.filter(x => x !== reaction)

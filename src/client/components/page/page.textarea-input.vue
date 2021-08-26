@@ -1,6 +1,8 @@
 <template>
 <div>
-	<MkTextarea :value="value" @update:value="updateValue($event)">{{ hpml.interpolate(block.text) }}</MkTextarea>
+	<MkTextarea :model-value="value" @update:modelValue="updateValue($event)">
+		<template #label>{{ hpml.interpolate(block.text) }}</template>
+	</MkTextarea>
 </div>
 </template>
 

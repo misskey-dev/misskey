@@ -4,9 +4,19 @@
 
 import '@client/style.scss';
 
+//#region account indexedDB migration
+import { set } from '@client/scripts/idb-proxy';
+
+if (localStorage.getItem('accounts') != null) {
+	set('accounts', JSON.parse(localStorage.getItem('accounts')));
+	localStorage.removeItem('accounts');
+}
+//#endregion
+
 import * as Sentry from '@sentry/browser';
 import { Integrations } from '@sentry/tracing';
 import { computed, createApp, watch, markRaw } from 'vue';
+import compareVersions from 'compare-versions';
 
 import widgets from '@client/widgets';
 import directives from '@client/directives';
@@ -16,7 +26,7 @@ import { router } from '@client/router';
 import { applyTheme } from '@client/scripts/theme';
 import { isDeviceDarkmode } from '@client/scripts/is-device-darkmode';
 import { i18n } from '@client/i18n';
-import { stream, dialog, post } from '@client/os';
+import { stream, dialog, post, popup } from '@client/os';
 import * as sound from '@client/scripts/sound';
 import { $i, refreshAccount, login, updateAccount, signout } from '@client/account';
 import { defaultStore, ColdDeviceStorage } from '@client/store';
@@ -91,15 +101,12 @@ window.addEventListener('resize', () => {
 });
 //#endregion
 
-// Get the <head> element
-const head = document.getElementsByTagName('head')[0];
-
 // If mobile, insert the viewport meta tag
 if (isMobile || window.innerWidth <= 1024) {
 	const viewport = document.getElementsByName('viewport').item(0);
 	viewport.setAttribute('content',
 		`${viewport.getAttribute('content')},minimum-scale=1,maximum-scale=1,user-scalable=no`);
-	head.appendChild(viewport);
+	document.head.appendChild(viewport);
 }
 
 //#region Set lang attr
@@ -198,6 +205,23 @@ if (splash) {
 	splash.style.pointerEvents = 'none';
 }
 
+// クライアントが更新されたか？
+const lastVersion = localStorage.getItem('lastVersion');
+if (lastVersion !== version) {
+	localStorage.setItem('lastVersion', version);
+
+	// テーマリビルドするため
+	localStorage.removeItem('theme');
+
+	try { // 変なバージョン文字列来るとcompareVersionsでエラーになるため
+		if (lastVersion != null && compareVersions(version, lastVersion) === 1) {
+			popup(import('@client/components/updated.vue'), {}, {}, 'closed');
+		}
+	} catch (e) {
+	}
+}
+
+// NOTE: この処理は必ず↑のクライアント更新時処理より後に来ること(テーマ再構築のため)
 watch(defaultStore.reactiveState.darkMode, (darkMode) => {
 	applyTheme(darkMode ? ColdDeviceStorage.get('darkTheme') : ColdDeviceStorage.get('lightTheme'));
 }, { immediate: localStorage.theme == null });
@@ -243,6 +267,14 @@ watch(defaultStore.reactiveState.useBlurEffectForModal, v => {
 	document.documentElement.style.setProperty('--modalBgFilter', v ? 'blur(4px)' : 'none');
 }, { immediate: true });
 
+watch(defaultStore.reactiveState.useBlurEffect, v => {
+	if (v) {
+		document.documentElement.style.removeProperty('--blur');
+	} else {
+		document.documentElement.style.setProperty('--blur', 'none');
+	}
+}, { immediate: true });
+
 let reloadDialogShowing = false;
 stream.on('_disconnected_', async () => {
 	if (defaultStore.state.serverDisconnectedBehavior === 'reload') {
@@ -275,6 +307,13 @@ for (const plugin of ColdDeviceStorage.get('plugins').filter(p => p.active)) {
 }
 
 if ($i) {
+	if ($i.isDeleted) {
+		dialog({
+			type: 'warning',
+			text: i18n.locale.accountDeletionInProgress,
+		});
+	}
+
 	if ('Notification' in window) {
 		// 許可を得ていなかったらリクエスト
 		if (Notification.permission === 'default') {

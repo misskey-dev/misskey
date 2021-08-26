@@ -1,9 +1,9 @@
 import $ from 'cafy';
 import { ID } from '@/misc/cafy-id';
-import { publishReversiGameStream } from '../../../../../../services/stream';
+import { publishReversiGameStream } from '@/services/stream';
 import define from '../../../../define';
 import { ApiError } from '../../../../error';
-import { ReversiGames } from '../../../../../../models';
+import { ReversiGames } from '@/models/index';
 
 export const meta = {
 	tags: ['games'],

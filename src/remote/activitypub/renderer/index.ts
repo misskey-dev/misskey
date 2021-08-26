@@ -1,4 +1,4 @@
-import config from '@/config';
+import config from '@/config/index';
 import { v4 as uuid } from 'uuid';
 import { IActivity } from '../type';
 import { LdSignature } from '../misc/ld-signature';

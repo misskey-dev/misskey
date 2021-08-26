@@ -1,6 +1,6 @@
 import define from '../define';
-import { NoteReactions, Notes, Users } from '../../../models';
-import { federationChart, driveChart } from '../../../services/chart';
+import { NoteReactions, Notes, Users } from '@/models/index';
+import { federationChart, driveChart } from '@/services/chart/index';
 
 export const meta = {
 	requireCredential: false as const,

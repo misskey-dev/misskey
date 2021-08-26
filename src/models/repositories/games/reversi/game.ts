@@ -1,7 +1,7 @@
 import { User } from '@/models/entities/user';
 import { EntityRepository, Repository } from 'typeorm';
-import { Users } from '../../..';
-import { ReversiGame } from '../../../entities/games/reversi/game';
+import { Users } from '../../../index';
+import { ReversiGame } from '@/models/entities/games/reversi/game';
 
 @EntityRepository(ReversiGame)
 export class ReversiGameRepository extends Repository<ReversiGame> {

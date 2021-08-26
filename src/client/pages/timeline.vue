@@ -1,8 +1,8 @@
 <template>
-<div class="cmuxhskf _root" v-hotkey.global="keymap">
-	<XTutorial v-if="$store.reactiveState.tutorial.value != -1" class="tutorial _block"/>
-	<XPostForm v-if="$store.reactiveState.showFixedPostForm.value" class="post-form _block" fixed/>
-	<div class="tabs _block">
+<div class="cmuxhskf" v-hotkey.global="keymap" v-size="{ min: [800] }">
+	<XTutorial v-if="$store.reactiveState.tutorial.value != -1" class="tutorial _block _isolated"/>
+	<XPostForm v-if="$store.reactiveState.showFixedPostForm.value" class="post-form _block _isolated" fixed/>
+	<div class="tabs">
 		<div class="left">
 			<button class="_button tab" @click="() => { src = 'home'; saveSrc(); }" :class="{ active: src === 'home' }" v-tooltip="$ts._timelines.home"><i class="fas fa-home"></i></button>
 			<button class="_button tab" @click="() => { src = 'local'; saveSrc(); }" :class="{ active: src === 'local' }" v-tooltip="$ts._timelines.local" v-if="isLocalTimelineAvailable"><i class="fas fa-comments"></i></button>
@@ -19,18 +19,19 @@
 		</div>
 	</div>
 	<div class="new" v-if="queue > 0"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
-	<XTimeline ref="tl"
-		class="_gap"
-		:key="src === 'list' ? `list:${list.id}` : src === 'antenna' ? `antenna:${antenna.id}` : src === 'channel' ? `channel:${channel.id}` : src"
-		:src="src"
-		:list="list ? list.id : null"
-		:antenna="antenna ? antenna.id : null"
-		:channel="channel ? channel.id : null"
-		:sound="true"
-		@before="before()"
-		@after="after()"
-		@queue="queueUpdated"
-	/>
+	<div class="tl">
+		<XTimeline ref="tl" class="tl"
+			:key="src === 'list' ? `list:${list.id}` : src === 'antenna' ? `antenna:${antenna.id}` : src === 'channel' ? `channel:${channel.id}` : src"
+			:src="src"
+			:list="list ? list.id : null"
+			:antenna="antenna ? antenna.id : null"
+			:channel="channel ? channel.id : null"
+			:sound="true"
+			@before="before()"
+			@after="after()"
+			@queue="queueUpdated"
+		/>
+	</div>
 </div>
 </template>
 
@@ -62,6 +63,7 @@ export default defineComponent({
 			queue: 0,
 			[symbols.PAGE_INFO]: computed(() => ({
 				title: this.$ts.timeline,
+				subtitle: this.src === 'local' ? this.$ts._timelines.local : this.src === 'social' ? this.$ts._timelines.social : this.src === 'global' ? this.$ts._timelines.global : this.$ts._timelines.home,
 				icon: this.src === 'local' ? 'fas fa-comments' : this.src === 'social' ? 'fas fa-share-alt' : this.src === 'global' ? 'fas fa-globe' : 'fas fa-home',
 				actions: [{
 					icon: 'fas fa-calendar-alt',
@@ -147,7 +149,7 @@ export default defineComponent({
 					this.saveSrc();
 				}
 			}));
-			os.modalMenu(items, ev.currentTarget || ev.target);
+			os.popupMenu(items, ev.currentTarget || ev.target);
 		},
 
 		async chooseAntenna(ev) {
@@ -161,7 +163,7 @@ export default defineComponent({
 					this.saveSrc();
 				}
 			}));
-			os.modalMenu(items, ev.currentTarget || ev.target);
+			os.popupMenu(items, ev.currentTarget || ev.target);
 		},
 
 		async chooseChannel(ev) {
@@ -177,7 +179,7 @@ export default defineComponent({
 					this.$router.push(`/channels/${channel.id}`);
 				}
 			}));
-			os.modalMenu(items, ev.currentTarget || ev.target);
+			os.popupMenu(items, ev.currentTarget || ev.target);
 		},
 
 		saveSrc() {
@@ -231,6 +233,7 @@ export default defineComponent({
 		padding: 0 8px;
 		white-space: nowrap;
 		overflow: auto;
+		border-bottom: solid 0.5px var(--divider);
 
 		// 影の都合上
 		position: relative;
@@ -260,10 +263,9 @@ export default defineComponent({
 						left: 0;
 						right: 0;
 						margin: 0 auto;
-						width: calc(100% - 16px);
-						height: 4px;
+						width: 100%;
+						height: 2px;
 						background: var(--accent);
-						border-radius: 8px 8px 0 0;
 					}
 				}
 
@@ -284,6 +286,18 @@ export default defineComponent({
 				vertical-align: middle;
 				margin: 0 8px;
 				background: var(--divider);
+			}
+		}
+	}
+
+	&.min-width_800px {
+		> .tl {
+			background: var(--bg);
+			padding: 32px 0;
+
+			> .tl {
+				max-width: 800px;
+				margin: 0 auto;
 			}
 		}
 	}

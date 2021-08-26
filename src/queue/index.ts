@@ -1,14 +1,14 @@
 import * as httpSignature from 'http-signature';
 
-import config from '@/config';
+import config from '@/config/index';
 import { program } from '../argv';
 
 import processDeliver from './processors/deliver';
 import processInbox from './processors/inbox';
-import processDb from './processors/db';
-import procesObjectStorage from './processors/object-storage';
+import processDb from './processors/db/index';
+import procesObjectStorage from './processors/object-storage/index';
 import { queueLogger } from './logger';
-import { DriveFile } from '../models/entities/drive-file';
+import { DriveFile } from '@/models/entities/drive-file';
 import { getJobInfo } from './get-job-info';
 import { dbQueue, deliverQueue, inboxQueue, objectStorageQueue } from './queues';
 import { ThinUser } from './types';
@@ -73,8 +73,7 @@ export function deliver(user: ThinUser, content: unknown, to: string | null) {
 		attempts: config.deliverJobMaxAttempts || 12,
 		timeout: 1 * 60 * 1000,	// 1min
 		backoff: {
-			type: 'exponential',
-			delay: 60 * 1000
+			type: 'apBackoff'
 		},
 		removeOnComplete: true,
 		removeOnFail: true
@@ -91,8 +90,7 @@ export function inbox(activity: IActivity, signature: httpSignature.IParsedSigna
 		attempts: config.inboxJobMaxAttempts || 8,
 		timeout: 5 * 60 * 1000,	// 5min
 		backoff: {
-			type: 'exponential',
-			delay: 60 * 1000
+			type: 'apBackoff'
 		},
 		removeOnComplete: true,
 		removeOnFail: true
@@ -167,6 +165,15 @@ export function createImportUserListsJob(user: ThinUser, fileId: DriveFile['id']
 	return dbQueue.add('importUserLists', {
 		user: user,
 		fileId: fileId
+	}, {
+		removeOnComplete: true,
+		removeOnFail: true
+	});
+}
+
+export function createDeleteAccountJob(user: ThinUser) {
+	return dbQueue.add('deleteAccount', {
+		user: user
 	}, {
 		removeOnComplete: true,
 		removeOnFail: true

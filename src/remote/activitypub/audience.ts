@@ -1,9 +1,9 @@
 import { ApObject, getApIds } from './type';
 import Resolver from './resolver';
 import { resolvePerson } from './models/person';
-import { unique, concat } from '../../prelude/array';
+import { unique, concat } from '@/prelude/array';
 import * as promiseLimit from 'promise-limit';
-import { User, IRemoteUser } from '../../models/entities/user';
+import { User, IRemoteUser } from '@/models/entities/user';
 
 type Visibility = 'public' | 'home' | 'followers' | 'specified';
 

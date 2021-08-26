@@ -1,5 +1,5 @@
 import * as elasticsearch from '@elastic/elasticsearch';
-import config from '@/config';
+import config from '@/config/index';
 
 const index = {
 	settings: {

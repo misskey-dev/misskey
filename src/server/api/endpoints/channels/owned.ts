@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import { ID } from '@/misc/cafy-id';
 import define from '../../define';
-import { Channels } from '../../../../models';
+import { Channels } from '@/models/index';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 
 export const meta = {

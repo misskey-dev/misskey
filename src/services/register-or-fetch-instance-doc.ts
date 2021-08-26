@@ -1,6 +1,6 @@
-import { Instance } from '../models/entities/instance';
-import { Instances } from '../models';
-import { federationChart } from './chart';
+import { Instance } from '@/models/entities/instance';
+import { Instances } from '@/models/index';
+import { federationChart } from '@/services/chart/index';
 import { genId } from '@/misc/gen-id';
 import { toPuny } from '@/misc/convert-host';
 import { Cache } from '@/misc/cache';

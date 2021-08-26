@@ -1,7 +1,7 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { Antenna } from '../entities/antenna';
+import { Antenna } from '@/models/entities/antenna';
 import { SchemaType } from '@/misc/schema';
-import { AntennaNotes, UserGroupJoinings } from '..';
+import { AntennaNotes, UserGroupJoinings } from '../index';
 
 export type PackedAntenna = SchemaType<typeof packedAntennaSchema>;
 

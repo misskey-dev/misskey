@@ -1,9 +1,9 @@
-import config from '@/config';
-import { Note } from '../../models/entities/note';
-import { User, IRemoteUser } from '../../models/entities/user';
-import { UserPublickey } from '../../models/entities/user-publickey';
-import { MessagingMessage } from '../../models/entities/messaging-message';
-import { Notes, Users, UserPublickeys, MessagingMessages } from '../../models';
+import config from '@/config/index';
+import { Note } from '@/models/entities/note';
+import { User, IRemoteUser } from '@/models/entities/user';
+import { UserPublickey } from '@/models/entities/user-publickey';
+import { MessagingMessage } from '@/models/entities/messaging-message';
+import { Notes, Users, UserPublickeys, MessagingMessages } from '@/models/index';
 import { IObject, getApId } from './type';
 import { resolvePerson } from './models/person';
 import escapeRegexp = require('escape-regexp');

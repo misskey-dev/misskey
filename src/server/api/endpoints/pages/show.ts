@@ -1,9 +1,9 @@
 import $ from 'cafy';
 import define from '../../define';
 import { ApiError } from '../../error';
-import { Pages, Users } from '../../../../models';
+import { Pages, Users } from '@/models/index';
 import { ID } from '@/misc/cafy-id';
-import { Page } from '../../../../models/entities/page';
+import { Page } from '@/models/entities/page';
 
 export const meta = {
 	tags: ['pages'],

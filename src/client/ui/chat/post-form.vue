@@ -594,7 +594,7 @@ export default defineComponent({
 		},
 
 		showActions(ev) {
-			os.modalMenu(postFormActions.map(action => ({
+			os.popupMenu(postFormActions.map(action => ({
 				text: action.title,
 				action: () => {
 					action.handler({

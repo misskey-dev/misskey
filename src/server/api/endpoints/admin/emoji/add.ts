@@ -1,13 +1,13 @@
 import $ from 'cafy';
 import define from '../../../define';
-import { Emojis, DriveFiles } from '../../../../../models';
+import { Emojis, DriveFiles } from '@/models/index';
 import { genId } from '@/misc/gen-id';
 import { getConnection } from 'typeorm';
-import { insertModerationLog } from '../../../../../services/insert-moderation-log';
+import { insertModerationLog } from '@/services/insert-moderation-log';
 import { ApiError } from '../../../error';
 import { ID } from '@/misc/cafy-id';
 import rndstr from 'rndstr';
-import { publishBroadcastStream } from '../../../../../services/stream';
+import { publishBroadcastStream } from '@/services/stream';
 
 export const meta = {
 	tags: ['admin'],

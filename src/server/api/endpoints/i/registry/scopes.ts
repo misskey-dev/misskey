@@ -1,5 +1,5 @@
 import define from '../../../define';
-import { RegistryItems } from '../../../../../models';
+import { RegistryItems } from '@/models/index';
 
 export const meta = {
 	requireCredential: true as const,

@@ -629,7 +629,7 @@ export default defineComponent({
 		},
 
 		showMenu(ev) {
-			os.modalMenu(this.getMenu(), ev.currentTarget || ev.target);
+			os.popupMenu(this.getMenu(), ev.currentTarget || ev.target);
 		},
 
 		onContextmenu(ev) {

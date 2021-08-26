@@ -1,6 +1,8 @@
 <template>
 <div>
-	<MkInput class="kudkigyw" :value="value" @update:value="updateValue($event)" type="text">{{ hpml.interpolate(block.text) }}</MkInput>
+	<MkInput class="kudkigyw" :model-value="value" @update:modelValue="updateValue($event)" type="text">
+		<template #label>{{ hpml.interpolate(block.text) }}</template>
+	</MkInput>
 </div>
 </template>
 

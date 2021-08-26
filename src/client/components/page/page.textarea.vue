@@ -1,5 +1,5 @@
 <template>
-<MkTextarea :value="text" readonly></MkTextarea>
+<MkTextarea :model-value="text" readonly></MkTextarea>
 </template>
 
 <script lang="ts">

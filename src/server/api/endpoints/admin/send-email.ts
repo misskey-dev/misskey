@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import define from '../../define';
-import { sendEmail } from '../../../../services/send-email';
+import { sendEmail } from '@/services/send-email';
 
 export const meta = {
 	tags: ['admin'],

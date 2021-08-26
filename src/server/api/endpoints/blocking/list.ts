@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import { ID } from '@/misc/cafy-id';
 import define from '../../define';
-import { Blockings } from '../../../../models';
+import { Blockings } from '@/models/index';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 
 export const meta = {

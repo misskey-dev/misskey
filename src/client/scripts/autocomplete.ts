@@ -65,7 +65,7 @@ export class Autocomplete {
 	 */
 	private onInput() {
 		const caretPos = this.textarea.selectionStart;
-		const text = this.text.substr(0, caretPos).split('\n').pop();
+		const text = this.text.substr(0, caretPos).split('\n').pop()!;
 
 		const mentionIndex = text.lastIndexOf('@');
 		const hashtagIndex = text.lastIndexOf('#');
@@ -83,7 +83,7 @@ export class Autocomplete {
 
 		const isMention = mentionIndex != -1;
 		const isHashtag = hashtagIndex != -1;
-		const isEmoji = emojiIndex != -1;
+		const isEmoji = emojiIndex != -1 && text.split(/:[a-z0-9_+\-]+:/).pop()!.includes(':');
 
 		let opened = false;
 

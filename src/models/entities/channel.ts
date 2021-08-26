@@ -23,9 +23,10 @@ export class Channel {
 	@Index()
 	@Column({
 		...id(),
+		nullable: true,
 		comment: 'The owner ID.'
 	})
-	public userId: User['id'];
+	public userId: User['id'] | null;
 
 	@ManyToOne(type => User, {
 		onDelete: 'SET NULL'

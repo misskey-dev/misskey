@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import define from '../../define';
 import { ID } from '@/misc/cafy-id';
-import { Users } from '../../../../models';
+import { Users } from '@/models/index';
 
 export const meta = {
 	tags: ['users'],

@@ -1,11 +1,11 @@
-import { renderActivity } from '../../../remote/activitypub/renderer';
-import renderFollow from '../../../remote/activitypub/renderer/follow';
-import renderAccept from '../../../remote/activitypub/renderer/accept';
-import { deliver } from '../../../queue';
-import { publishMainStream } from '../../stream';
+import { renderActivity } from '@/remote/activitypub/renderer/index';
+import renderFollow from '@/remote/activitypub/renderer/follow';
+import renderAccept from '@/remote/activitypub/renderer/accept';
+import { deliver } from '@/queue/index';
+import { publishMainStream } from '@/services/stream';
 import { insertFollowingDoc } from '../create';
-import { User, ILocalUser } from '../../../models/entities/user';
-import { FollowRequests, Users } from '../../../models';
+import { User, ILocalUser } from '@/models/entities/user';
+import { FollowRequests, Users } from '@/models/index';
 import { IdentifiableError } from '@/misc/identifiable-error';
 
 export default async function(followee: { id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox']; }, follower: User) {

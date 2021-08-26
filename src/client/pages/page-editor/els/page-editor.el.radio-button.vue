@@ -3,10 +3,10 @@
 	<template #header><i class="fas fa-bolt"></i> {{ $ts._pages.blocks.radioButton }}</template>
 
 	<section style="padding: 0 16px 16px 16px;">
-		<MkInput v-model:value="value.name"><template #prefix><i class="fas fa-magic"></i></template><span>{{ $ts._pages.blocks._radioButton.name }}</span></MkInput>
-		<MkInput v-model:value="value.title"><span>{{ $ts._pages.blocks._radioButton.title }}</span></MkInput>
-		<MkTextarea v-model:value="values"><span>{{ $ts._pages.blocks._radioButton.values }}</span></MkTextarea>
-		<MkInput v-model:value="value.default"><span>{{ $ts._pages.blocks._radioButton.default }}</span></MkInput>
+		<MkInput v-model="value.name"><template #prefix><i class="fas fa-magic"></i></template><template #label>{{ $ts._pages.blocks._radioButton.name }}</template></MkInput>
+		<MkInput v-model="value.title"><template #label>{{ $ts._pages.blocks._radioButton.title }}</template></MkInput>
+		<MkTextarea v-model="values"><template #label>{{ $ts._pages.blocks._radioButton.values }}</template></MkTextarea>
+		<MkInput v-model="value.default"><template #label>{{ $ts._pages.blocks._radioButton.default }}</template></MkInput>
 	</section>
 </XContainer>
 </template>

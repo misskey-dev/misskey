@@ -2,7 +2,7 @@ import $ from 'cafy';
 import { ID } from '@/misc/cafy-id';
 import define from '../../../define';
 import { ApiError } from '../../../error';
-import { DriveFiles } from '../../../../../models';
+import { DriveFiles } from '@/models/index';
 
 export const meta = {
 	tags: ['admin'],

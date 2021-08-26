@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import { ID } from '@/misc/cafy-id';
 import define from '../../../define';
-import { DriveFolders } from '../../../../../models';
+import { DriveFolders } from '@/models/index';
 
 export const meta = {
 	tags: ['drive'],

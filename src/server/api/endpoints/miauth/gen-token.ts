@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import define from '../../define';
-import { AccessTokens } from '../../../../models';
+import { AccessTokens } from '@/models/index';
 import { genId } from '@/misc/gen-id';
 import { secureRndstr } from '@/misc/secure-rndstr';
 

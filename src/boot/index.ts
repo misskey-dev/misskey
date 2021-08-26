@@ -2,7 +2,7 @@ import * as cluster from 'cluster';
 import * as chalk from 'chalk';
 import Xev from 'xev';
 
-import Logger from '../services/logger';
+import Logger from '@/services/logger';
 import { program } from '../argv';
 
 // for typeorm

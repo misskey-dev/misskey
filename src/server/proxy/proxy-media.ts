@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as Koa from 'koa';
-import { serverLogger } from '..';
-import { IImage, convertToPng, convertToJpeg } from '../../services/drive/image-processor';
+import { serverLogger } from '../index';
+import { IImage, convertToPng, convertToJpeg } from '@/services/drive/image-processor';
 import { createTemp } from '@/misc/create-temp';
 import { downloadUrl } from '@/misc/download-url';
 import { detectType } from '@/misc/get-file-info';

@@ -1,11 +1,11 @@
 import $ from 'cafy';
 import { ID } from '@/misc/cafy-id';
 import define from '../../define';
-import deleteFollowing from '../../../../services/following/delete';
-import { Users, Followings, Notifications } from '../../../../models';
-import { User } from '../../../../models/entities/user';
-import { insertModerationLog } from '../../../../services/insert-moderation-log';
-import { doPostSuspend } from '../../../../services/suspend-user';
+import deleteFollowing from '@/services/following/delete';
+import { Users, Followings, Notifications } from '@/models/index';
+import { User } from '@/models/entities/user';
+import { insertModerationLog } from '@/services/insert-moderation-log';
+import { doPostSuspend } from '@/services/suspend-user';
 import { publishUserEvent } from '@/services/stream';
 
 export const meta = {

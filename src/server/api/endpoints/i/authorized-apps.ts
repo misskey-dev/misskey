@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import define from '../../define';
-import { AccessTokens, Apps } from '../../../../models';
+import { AccessTokens, Apps } from '@/models/index';
 
 export const meta = {
 	requireCredential: true as const,

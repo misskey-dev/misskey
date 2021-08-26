@@ -135,7 +135,7 @@ export default defineComponent({
 		},
 
 		async openAccountMenu(ev) {
-			const storedAccounts = getAccounts().filter(x => x.id !== this.$i.id);
+			const storedAccounts = await getAccounts().then(accounts => accounts.filter(x => x.id !== this.$i.id));
 			const accountsPromise = os.api('users/show', { userIds: storedAccounts.map(x => x.id) });
 
 			const accountItemPromises = storedAccounts.map(a => new Promise(res => {
@@ -150,7 +150,7 @@ export default defineComponent({
 				});
 			}));
 
-			os.modalMenu([...[{
+			os.popupMenu([...[{
 				type: 'link',
 				text: this.$ts.profile,
 				to: `/@${ this.$i.username }`,
@@ -159,7 +159,7 @@ export default defineComponent({
 				icon: 'fas fa-plus',
 				text: this.$ts.addAccount,
 				action: () => {
-					os.modalMenu([{
+					os.popupMenu([{
 						text: this.$ts.existingAccount,
 						action: () => { this.addAccount(); },
 					}, {
@@ -195,8 +195,8 @@ export default defineComponent({
 			}, 'closed');
 		},
 
-		switchAccount(account: any) {
-			const storedAccounts = getAccounts();
+		async switchAccount(account: any) {
+			const storedAccounts = await getAccounts();
 			const token = storedAccounts.find(x => x.id === account.id).token;
 			this.switchAccountWithToken(token);
 		},
@@ -374,8 +374,8 @@ export default defineComponent({
 					padding-top: 8px;
 					padding-bottom: 8px;
 					background: var(--X14);
-					-webkit-backdrop-filter: blur(8px);
-					backdrop-filter: blur(8px);
+					-webkit-backdrop-filter: var(--blur, blur(8px));
+					backdrop-filter: var(--blur, blur(8px));
 				}
 
 				&:first-child {

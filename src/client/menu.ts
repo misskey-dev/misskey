@@ -113,6 +113,16 @@ export const menuDef = {
 		icon: 'fas fa-satellite-dish',
 		to: '/channels',
 	},
+	federation: {
+		title: 'federation',
+		icon: 'fas fa-globe',
+		to: '/federation',
+	},
+	emojis: {
+		title: 'emojis',
+		icon: 'fas fa-laugh',
+		to: '/emojis',
+	},
 	games: {
 		title: 'games',
 		icon: 'fas fa-gamepad',
@@ -133,7 +143,7 @@ export const menuDef = {
 		title: 'switchUi',
 		icon: 'fas fa-columns',
 		action: (ev) => {
-			os.modalMenu([{
+			os.popupMenu([{
 				text: i18n.locale.default,
 				action: () => {
 					localStorage.setItem('ui', 'default');

@@ -18,7 +18,7 @@
 import { defineComponent } from 'vue';
 import paging from '@client/scripts/paging';
 import MkUserInfo from './user-info.vue';
-import { userPage } from '../filters/user';
+import { userPage } from '@client/filters/user';
 
 export default defineComponent({
 	components: {

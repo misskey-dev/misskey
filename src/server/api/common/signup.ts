@@ -1,15 +1,15 @@
 import * as bcrypt from 'bcryptjs';
 import { generateKeyPair } from 'crypto';
 import generateUserToken from './generate-native-user-token';
-import { User } from '../../../models/entities/user';
-import { Users, UsedUsernames } from '../../../models';
-import { UserProfile } from '../../../models/entities/user-profile';
+import { User } from '@/models/entities/user';
+import { Users, UsedUsernames } from '@/models/index';
+import { UserProfile } from '@/models/entities/user-profile';
 import { getConnection } from 'typeorm';
 import { genId } from '@/misc/gen-id';
 import { toPunyNullable } from '@/misc/convert-host';
-import { UserKeypair } from '../../../models/entities/user-keypair';
-import { usersChart } from '../../../services/chart';
-import { UsedUsername } from '../../../models/entities/used-username';
+import { UserKeypair } from '@/models/entities/user-keypair';
+import { usersChart } from '@/services/chart/index';
+import { UsedUsername } from '@/models/entities/used-username';
 
 export async function signup(username: User['username'], password: UserProfile['password'], host: string | null = null) {
 	// Validate username

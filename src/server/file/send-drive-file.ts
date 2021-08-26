@@ -1,18 +1,24 @@
+import * as fs from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 import * as Koa from 'koa';
 import * as send from 'koa-send';
 import * as rename from 'rename';
 import * as tmp from 'tmp';
-import * as fs from 'fs';
-import { serverLogger } from '..';
+import { serverLogger } from '../index';
 import { contentDisposition } from '@/misc/content-disposition';
-import { DriveFiles } from '../../models';
-import { InternalStorage } from '../../services/drive/internal-storage';
+import { DriveFiles } from '@/models/index';
+import { InternalStorage } from '@/services/drive/internal-storage';
 import { downloadUrl } from '@/misc/download-url';
 import { detectType } from '@/misc/get-file-info';
-import { convertToJpeg, convertToPngOrJpeg } from '../../services/drive/image-processor';
-import { GenerateVideoThumbnail } from '../../services/drive/generate-video-thumbnail';
+import { convertToJpeg, convertToPngOrJpeg } from '@/services/drive/image-processor';
+import { GenerateVideoThumbnail } from '@/services/drive/generate-video-thumbnail';
 
-const assets = `${__dirname}/../../server/file/assets/`;
+//const _filename = fileURLToPath(import.meta.url);
+const _filename = __filename;
+const _dirname = dirname(_filename);
+
+const assets = `${_dirname}/../../server/file/assets/`;
 
 const commonReadableHandlerGenerator = (ctx: Koa.Context) => (e: Error): void => {
 	serverLogger.error(e);

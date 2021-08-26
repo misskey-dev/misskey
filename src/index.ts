@@ -6,7 +6,7 @@ Error.stackTraceLimit = Infinity;
 
 require('events').EventEmitter.defaultMaxListeners = 128;
 
-import boot from './boot';
+import boot from './boot/index';
 
 export default function() {
 	return boot();

@@ -1,12 +1,12 @@
 import $ from 'cafy';
-import { publishMainStream } from '../../../../services/stream';
+import { publishMainStream } from '@/services/stream';
 import define from '../../define';
 import rndstr from 'rndstr';
-import config from '@/config';
+import config from '@/config/index';
 import * as ms from 'ms';
 import * as bcrypt from 'bcryptjs';
-import { Users, UserProfiles } from '../../../../models';
-import { sendEmail } from '../../../../services/send-email';
+import { Users, UserProfiles } from '@/models/index';
+import { sendEmail } from '@/services/send-email';
 import { ApiError } from '../../error';
 
 export const meta = {

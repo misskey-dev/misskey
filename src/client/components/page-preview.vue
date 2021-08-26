@@ -16,7 +16,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { userName } from '../filters/user';
+import { userName } from '@client/filters/user';
 import * as os from '@client/os';
 
 export default defineComponent({

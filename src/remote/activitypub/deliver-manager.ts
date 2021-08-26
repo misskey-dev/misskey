@@ -1,6 +1,6 @@
-import { Users, Followings } from '../../models';
-import { ILocalUser, IRemoteUser, User } from '../../models/entities/user';
-import { deliver } from '../../queue';
+import { Users, Followings } from '@/models/index';
+import { ILocalUser, IRemoteUser, User } from '@/models/entities/user';
+import { deliver } from '@/queue/index';
 
 //#region types
 interface IRecipe {

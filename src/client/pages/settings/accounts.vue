@@ -48,10 +48,10 @@ export default defineComponent({
 				title: this.$ts.accounts,
 				icon: 'fas fa-users',
 			},
-			storedAccounts: getAccounts().filter(x => x.id !== this.$i.id),
+			storedAccounts: getAccounts().then(accounts => accounts.filter(x => x.id !== this.$i.id)),
 			accounts: null,
-			init: () => os.api('users/show', {
-				userIds: this.storedAccounts.map(x => x.id)
+			init: async () => os.api('users/show', {
+				userIds: (await this.storedAccounts).map(x => x.id)
 			}).then(accounts => {
 				this.accounts = accounts;
 			}),
@@ -64,7 +64,7 @@ export default defineComponent({
 
 	methods: {
 		menu(account, ev) {
-			os.modalMenu([{
+			os.popupMenu([{
 				text: this.$ts.switch,
 				icon: 'fas fa-exchange-alt',
 				action: () => this.switchAccount(account),
@@ -77,7 +77,7 @@ export default defineComponent({
 		},
 
 		addAccount(ev) {
-			os.modalMenu([{
+			os.popupMenu([{
 				text: this.$ts.existingAccount,
 				action: () => { this.addExistingAccount(); },
 			}, {
@@ -104,8 +104,8 @@ export default defineComponent({
 			}, 'closed');
 		},
 
-		switchAccount(account: any) {
-			const storedAccounts = getAccounts();
+		async switchAccount(account: any) {
+			const storedAccounts = await getAccounts();
 			const token = storedAccounts.find(x => x.id === account.id).token;
 			this.switchAccountWithToken(token);
 		},

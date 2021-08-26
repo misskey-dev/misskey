@@ -1,4 +1,4 @@
-import config from '@/config';
+import config from '@/config/index';
 import { User } from '@/models/entities/user';
 
 export default (user: { id: User['id'] }, target: any, object: any) => ({

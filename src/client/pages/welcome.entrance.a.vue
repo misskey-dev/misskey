@@ -27,8 +27,8 @@
 					<div class="desc" v-html="meta.description || $ts.headlineMisskey"></div>
 				</div>
 				<div class="action">
-					<MkButton @click="signup()" inline primary>{{ $ts.signup }}</MkButton>
-					<MkButton @click="signin()" inline>{{ $ts.login }}</MkButton>
+					<MkButton @click="signup()" inline primary data-cy-signup>{{ $ts.signup }}</MkButton>
+					<MkButton @click="signin()" inline data-cy-signin>{{ $ts.login }}</MkButton>
 				</div>
 				<div class="status" v-if="onlineUsersCount && stats">
 					<div>
@@ -117,7 +117,7 @@ export default defineComponent({
 		},
 
 		showMenu(ev) {
-			os.modalMenu([{
+			os.popupMenu([{
 				text: this.$t('aboutX', { x: instanceName }),
 				icon: 'fas fa-info-circle',
 				action: () => {
@@ -260,6 +260,7 @@ export default defineComponent({
 					display: block;
 					margin: 0;
 					padding: 32px 32px 24px 32px;
+					font-size: 1.5em;
 
 					> .logo {
 						vertical-align: bottom;

@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as util from 'util';
-import Logger from '../services/logger';
+import Logger from '@/services/logger';
 import { createTemp } from './create-temp';
 import { downloadUrl } from './download-url';
 

@@ -1,6 +1,6 @@
 import { emojiRegex } from './emoji-regex';
 import { fetchMeta } from './fetch-meta';
-import { Emojis } from '../models';
+import { Emojis } from '@/models/index';
 import { toPunyNullable } from './convert-host';
 
 const legacies: Record<string, string> = {

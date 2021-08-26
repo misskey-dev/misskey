@@ -1,4 +1,4 @@
-import config from '@/config';
+import config from '@/config/index';
 import { initialize as initializeQueue } from './initialize';
 import { DeliverJobData, InboxJobData, DbJobData, ObjectStorageJobData } from './types';
 

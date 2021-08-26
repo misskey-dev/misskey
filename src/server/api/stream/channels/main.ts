@@ -1,6 +1,6 @@
 import autobind from 'autobind-decorator';
 import Channel from '../channel';
-import { Notes } from '../../../../models';
+import { Notes } from '@/models/index';
 
 export default class extends Channel {
 	public readonly chName = 'main';

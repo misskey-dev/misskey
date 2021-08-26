@@ -1,6 +1,6 @@
-import { IRemoteUser } from '../../../../models/entities/user';
+import { IRemoteUser } from '@/models/entities/user';
 import { ILike, getApId } from '../../type';
-import deleteReaction from '../../../../services/note/reaction/delete';
+import deleteReaction from '@/services/note/reaction/delete';
 import { fetchNote } from '../../models/note';
 
 /**

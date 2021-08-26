@@ -1,6 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { UserGroup } from '../entities/user-group';
-import { UserGroupJoinings } from '..';
+import { UserGroup } from '@/models/entities/user-group';
+import { UserGroupJoinings } from '../index';
 import { SchemaType } from '@/misc/schema';
 
 export type PackedUserGroup = SchemaType<typeof packedUserGroupSchema>;

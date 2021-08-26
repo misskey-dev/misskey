@@ -4,9 +4,9 @@ import define from '../../define';
 import { ApiError } from '../../error';
 import { getUser } from '../../common/getters';
 import { genId } from '@/misc/gen-id';
-import { Mutings, NoteWatchings } from '../../../../models';
-import { Muting } from '../../../../models/entities/muting';
-import { publishUserEvent } from '../../../../services/stream';
+import { Mutings, NoteWatchings } from '@/models/index';
+import { Muting } from '@/models/entities/muting';
+import { publishUserEvent } from '@/services/stream';
 
 export const meta = {
 	tags: ['account'],

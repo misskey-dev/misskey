@@ -3,10 +3,10 @@ import * as tmp from 'tmp';
 import * as fs from 'fs';
 
 import { queueLogger } from '../../logger';
-import addFile from '../../../services/drive/add-file';
-import dateFormat = require('dateformat');
+import addFile from '@/services/drive/add-file';
+import dateFormat from 'dateformat';
 import { getFullApAccount } from '@/misc/convert-host';
-import { Users, UserLists, UserListJoinings } from '../../../models';
+import { Users, UserLists, UserListJoinings } from '@/models/index';
 import { In } from 'typeorm';
 import { DbUserJobData } from '@/queue/types';
 

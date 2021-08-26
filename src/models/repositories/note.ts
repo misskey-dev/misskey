@@ -1,13 +1,13 @@
 import { EntityRepository, Repository, In } from 'typeorm';
 import * as mfm from 'mfm-js';
-import { Note } from '../entities/note';
-import { User } from '../entities/user';
-import { Users, PollVotes, DriveFiles, NoteReactions, Followings, Polls, Channels } from '..';
+import { Note } from '@/models/entities/note';
+import { User } from '@/models/entities/user';
+import { Users, PollVotes, DriveFiles, NoteReactions, Followings, Polls, Channels } from '../index';
 import { SchemaType } from '@/misc/schema';
 import { nyaize } from '@/misc/nyaize';
-import { awaitAll } from '../../prelude/await-all';
+import { awaitAll } from '@/prelude/await-all';
 import { convertLegacyReaction, convertLegacyReactions, decodeReaction } from '@/misc/reaction-lib';
-import { NoteReaction } from '../entities/note-reaction';
+import { NoteReaction } from '@/models/entities/note-reaction';
 import { aggregateNoteEmojis, populateEmojis, prefetchEmojis } from '@/misc/populate-emojis';
 
 export type PackedNote = SchemaType<typeof packedNoteSchema>;

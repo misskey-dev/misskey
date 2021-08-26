@@ -4,11 +4,11 @@ import * as chalk from 'chalk';
 import * as dateformat from 'dateformat';
 import { program } from '../argv';
 import { getRepository } from 'typeorm';
-import { Log } from '../models/entities/log';
+import { Log } from '@/models/entities/log';
 import { genId } from '@/misc/gen-id';
-import config from '@/config';
+import config from '@/config/index';
 
-const SyslogPro = require('syslog-pro');
+import * as SyslogPro from 'syslog-pro';
 
 type Domain = {
 	name: string;
