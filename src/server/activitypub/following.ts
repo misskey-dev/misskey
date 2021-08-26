@@ -12,6 +12,7 @@ import { Users, Followings } from '@/models/index';
 import { LessThan, FindConditions } from 'typeorm';
 import { Following } from '@/models/entities/following';
 import checkFetch from '@/remote/activitypub/check-fetch';
+import {fetchMeta} from '@/misc/fetch-meta';
 
 export default async (ctx: Router.RouterContext) => {
 	const verify = await checkFetch(ctx.req);
@@ -90,7 +91,12 @@ export default async (ctx: Router.RouterContext) => {
 		// index page
 		const rendered = renderOrderedCollection(partOf, user.followingCount, `${partOf}?page=true`);
 		ctx.body = renderActivity(rendered);
-		ctx.set('Cache-Control', 'public, max-age=180');
+		const meta = await fetchMeta();
+		if (meta.secureMode || meta.privateMode) {
+			ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
+		} else {
+			ctx.set('Cache-Control', 'public, max-age=180');
+		}
 		setResponseType(ctx);
 	}
 };

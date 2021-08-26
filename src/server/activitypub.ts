@@ -20,6 +20,7 @@ import { renderLike } from '../remote/activitypub/renderer/like';
 import { getUserKeypair } from '@/misc/keypair-store';
 import checkFetch from '@/remote/activitypub/check-fetch';
 import { getInstanceActor } from '@/services/instance-actor';
+import {fetchMeta} from '@/misc/fetch-meta';
 
 // Init router
 const router = new Router();
@@ -95,7 +96,13 @@ router.get('/notes/:note', async (ctx, next) => {
 	}
 
 	ctx.body = renderActivity(await renderNote(note, false));
-	ctx.set('Cache-Control', 'public, max-age=180');
+
+	const meta = await fetchMeta();
+	if (meta.secureMode || meta.privateMode) {
+		ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
+	} else {
+		ctx.set('Cache-Control', 'public, max-age=180');
+	}
 	setResponseType(ctx);
 });
 
@@ -120,7 +127,12 @@ router.get('/notes/:note/activity', async ctx => {
 	}
 
 	ctx.body = renderActivity(await packActivity(note));
-	ctx.set('Cache-Control', 'public, max-age=180');
+	const meta = await fetchMeta();
+	if (meta.secureMode || meta.privateMode) {
+		ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
+	} else {
+		ctx.set('Cache-Control', 'public, max-age=180');
+	}
 	setResponseType(ctx);
 });
 
@@ -168,7 +180,12 @@ router.get('/users/:user/publickey', async ctx => {
 
 	if (Users.isLocalUser(user)) {
 		ctx.body = renderActivity(renderKey(user, keypair));
-		ctx.set('Cache-Control', 'public, max-age=180');
+		const meta = await fetchMeta();
+		if (meta.secureMode || meta.privateMode) {
+			ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
+		} else {
+			ctx.set('Cache-Control', 'public, max-age=180');
+		}
 		setResponseType(ctx);
 	} else {
 		ctx.status = 400;
@@ -183,7 +200,12 @@ async function userInfo(ctx: Router.RouterContext, user: User | undefined) {
 	}
 
 	ctx.body = renderActivity(await renderPerson(user as ILocalUser));
-	ctx.set('Cache-Control', 'public, max-age=180');
+	const meta = await fetchMeta();
+	if (meta.secureMode || meta.privateMode) {
+		ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
+	} else {
+		ctx.set('Cache-Control', 'public, max-age=180');
+	}
 	setResponseType(ctx);
 }
 
@@ -262,7 +284,12 @@ router.get('/emojis/:emoji', async ctx => {
 	}
 
 	ctx.body = renderActivity(await renderEmoji(emoji));
-	ctx.set('Cache-Control', 'public, max-age=180');
+	const meta = await fetchMeta();
+	if (meta.secureMode || meta.privateMode) {
+		ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
+	} else {
+		ctx.set('Cache-Control', 'public, max-age=180');
+	}
 	setResponseType(ctx);
 });
 
@@ -289,7 +316,12 @@ router.get('/likes/:like', async ctx => {
 	}
 
 	ctx.body = renderActivity(await renderLike(reaction, note));
-	ctx.set('Cache-Control', 'public, max-age=180');
+	const meta = await fetchMeta();
+	if (meta.secureMode || meta.privateMode) {
+		ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
+	} else {
+		ctx.set('Cache-Control', 'public, max-age=180');
+	}
 	setResponseType(ctx);
 });
 
