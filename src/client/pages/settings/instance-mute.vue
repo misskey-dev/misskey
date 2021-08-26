@@ -67,7 +67,7 @@ export default defineComponent({
 
 	methods: {
 		async save() {
-			let mutes = this.instanceMutes.trim().split('\n');
+			let mutes = this.instanceMutes.trim().split('\n').filter(el => el.trim());
 			await os.api('i/update', {
 				mutedInstances: mutes,
 			});
