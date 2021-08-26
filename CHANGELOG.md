@@ -9,6 +9,9 @@
 
 ## 12.x.x (unreleased)
 
+### Features
+- Added a user-level instance mute in user settings
+
 ### Improvements
 - クライアントのデザインの調整
 
