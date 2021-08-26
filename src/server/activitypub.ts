@@ -16,7 +16,7 @@ import { isSelfHost, toPuny } from '@/misc/convert-host';
 import { Notes, Users, Emojis, NoteReactions } from '@/models/index';
 import { ILocalUser, User } from '@/models/entities/user';
 import { In } from 'typeorm';
-import { renderLike } from '../remote/activitypub/renderer/like';
+import { renderLike } from '@/remote/activitypub/renderer/like';
 import { getUserKeypair } from '@/misc/keypair-store';
 import checkFetch from '@/remote/activitypub/check-fetch';
 import { getInstanceActor } from '@/services/instance-actor';
