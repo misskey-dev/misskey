@@ -10,7 +10,7 @@ export function generateMutedInstanceQuery(q: SelectQueryBuilder<any>, me: { id:
 	q
 		.andWhere(new Brackets(qb => { qb
 			.andWhere('note.userHost IS NULL')
-			.orWhere(`NOT((${ mutingQuery.getQuery() })::jsonb ? note.userHost)`)
+			.orWhere(`NOT((${ mutingQuery.getQuery() })::jsonb ? note.userHost)`);
 		}))
 		.andWhere(new Brackets(qb => { qb
 			.where(`note.replyUserHost IS NULL`)
