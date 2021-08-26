@@ -62,14 +62,12 @@ export default defineComponent({
 
 
 	async created() {
-		console.log(this.$i);
 		this.instanceMutes = this.$i.mutedInstances.join('\n');
 	},
 
 	methods: {
 		async save() {
 			let mutes = this.instanceMutes.trim().split('\n');
-			console.log(mutes);
 			await os.api('i/update', {
 				mutedInstances: mutes,
 			});
