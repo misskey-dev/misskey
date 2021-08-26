@@ -90,7 +90,7 @@ export const defaultStore = markRaw(new Storage('base', {
 		default: [] as {
 			name: string;
 			id: string;
-			place: string;
+			place: string | null;
 			data: Record<string, any>;
 		}[]
 	},

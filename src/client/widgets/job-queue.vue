@@ -46,7 +46,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, markRaw } from 'vue';
 import define from './define';
 import * as os from '@client/os';
 import number from '@client/filters/number';
@@ -65,7 +65,7 @@ export default defineComponent({
 	extends: widget,
 	data() {
 		return {
-			connection: os.stream.useChannel('queueStats'),
+			connection: markRaw(os.stream.useChannel('queueStats')),
 			inbox: {
 				activeSincePrevTick: 0,
 				active: 0,

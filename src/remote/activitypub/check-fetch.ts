@@ -1,3 +1,4 @@
+import config from '@/config';
 import { IncomingMessage } from 'http';
 import { fetchMeta } from '@/misc/fetch-meta';
 import * as httpSignature from 'http-signature';
@@ -25,7 +26,7 @@ export default async function checkFetch(req: IncomingMessage): Promise<number> 
 			return 403;
 		}
 
-		if (meta.privateMode && !meta.allowedHosts.includes(host)) {
+		if (meta.privateMode && host !== config.host && !meta.allowedHosts.includes(host)) {
 			return 403;
 		}
 

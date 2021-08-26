@@ -60,7 +60,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, markRaw } from 'vue';
 import * as os from '@client/os';
 import MkButton from '@client/components/ui/button.vue';
 import MkFolder from '@client/components/ui/folder.vue';
@@ -92,7 +92,7 @@ export default defineComponent({
 
 	mounted() {
 		if (this.$i) {
-			this.connection = os.stream.useChannel('gamesReversi');
+			this.connection = markRaw(os.stream.useChannel('gamesReversi'));
 
 			this.connection.on('invited', this.onInvited);
 

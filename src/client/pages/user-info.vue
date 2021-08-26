@@ -167,13 +167,13 @@ export default defineComponent({
 		},
 
 		async resetPassword() {
-			os.apiWithDialog('admin/reset-password', {
+			const { password } = await os.api('admin/reset-password', {
 				userId: this.user.id,
-			}, undefined, ({ password }) => {
-				os.dialog({
-					type: 'success',
-					text: this.$t('newPasswordIs', { password })
-				});
+			});
+
+			os.dialog({
+				type: 'success',
+				text: this.$t('newPasswordIs', { password })
 			});
 		},
 

@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, markRaw } from 'vue';
 import MkButton from '@client/components/ui/button.vue';
 import XQueue from './queue.chart.vue';
 import FormBase from '@client/components/form/base.vue';
@@ -35,7 +35,7 @@ export default defineComponent({
 				title: this.$ts.jobQueue,
 				icon: 'fas fa-clipboard-list',
 			},
-			connection: os.stream.useChannel('queueStats'),
+			connection: markRaw(os.stream.useChannel('queueStats')),
 		}
 	},
 

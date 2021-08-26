@@ -19,6 +19,7 @@ import { In } from 'typeorm';
 import { renderLike } from '../remote/activitypub/renderer/like';
 import { getUserKeypair } from '@/misc/keypair-store';
 import checkFetch from "@/remote/activitypub/check-fetch";
+import { getInstanceActor } from '@/services/instance-actor';
 
 // Init router
 const router = new Router();
@@ -137,6 +138,14 @@ router.get('/users/:user/collections/featured', Featured);
 
 // publickey
 router.get('/users/:user/publickey', async ctx => {
+	const instanceActor = await getInstanceActor();
+	if (ctx.params.user === instanceActor.id) {
+		ctx.body = renderActivity(renderKey(instanceActor, await getUserKeypair(instanceActor.id)));
+		ctx.set('Cache-Control', 'public, max-age=180');
+		setResponseType(ctx);
+		return;
+	}
+
 	const verify = await checkFetch(ctx.req);
 	if (verify != 200) {
 		ctx.status = verify;
@@ -181,6 +190,12 @@ async function userInfo(ctx: Router.RouterContext, user: User | undefined) {
 router.get('/users/:user', async (ctx, next) => {
 	if (!isActivityPubReq(ctx)) return await next();
 
+	const instanceActor = await getInstanceActor();
+	if (ctx.params.user === instanceActor.id) {
+		await userInfo(ctx, instanceActor);
+		return;
+	}
+
 	const verify = await checkFetch(ctx.req);
 	if (verify != 200) {
 		ctx.status = verify;
@@ -201,6 +216,12 @@ router.get('/users/:user', async (ctx, next) => {
 router.get('/@:user', async (ctx, next) => {
 	if (!isActivityPubReq(ctx)) return await next();
 
+	if (ctx.params.user === 'instance.actor') {
+		const instanceActor = await getInstanceActor();
+		await userInfo(ctx, instanceActor);
+		return;
+	}
+
 	const verify = await checkFetch(ctx.req);
 	if (verify != 200) {
 		ctx.status = verify;
@@ -214,6 +235,11 @@ router.get('/@:user', async (ctx, next) => {
 	});
 
 	await userInfo(ctx, user);
+});
+
+router.get('/actor', async (ctx, next) => {
+	const instanceActor = await getInstanceActor();
+	await userInfo(ctx, instanceActor);
 });
 //#endregion
 
