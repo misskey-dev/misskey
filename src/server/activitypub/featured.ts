@@ -5,7 +5,7 @@ import renderOrderedCollection from '@/remote/activitypub/renderer/ordered-colle
 import { setResponseType } from '../activitypub';
 import renderNote from '@/remote/activitypub/renderer/note';
 import { Users, Notes, UserNotePinings } from '@/models/index';
-import checkFetch from "@/remote/activitypub/check-fetch";
+import checkFetch from '@/remote/activitypub/check-fetch';
 
 export default async (ctx: Router.RouterContext) => {
 	const verify = await checkFetch(ctx.req);

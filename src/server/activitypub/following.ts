@@ -11,7 +11,7 @@ import { setResponseType } from '../activitypub';
 import { Users, Followings } from '@/models/index';
 import { LessThan, FindConditions } from 'typeorm';
 import { Following } from '@/models/entities/following';
-import checkFetch from "@/remote/activitypub/check-fetch";
+import checkFetch from '@/remote/activitypub/check-fetch';
 
 export default async (ctx: Router.RouterContext) => {
 	const verify = await checkFetch(ctx.req);

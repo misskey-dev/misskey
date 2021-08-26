@@ -18,7 +18,7 @@ import { ILocalUser, User } from '@/models/entities/user';
 import { In } from 'typeorm';
 import { renderLike } from '../remote/activitypub/renderer/like';
 import { getUserKeypair } from '@/misc/keypair-store';
-import checkFetch from "@/remote/activitypub/check-fetch";
+import checkFetch from '@/remote/activitypub/check-fetch';
 import { getInstanceActor } from '@/services/instance-actor';
 
 // Init router

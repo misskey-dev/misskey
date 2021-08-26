@@ -10,7 +10,7 @@ import renderFollowUser from '@/remote/activitypub/renderer/follow-user';
 import { setResponseType } from '../activitypub';
 import { Users, Followings } from '@/models/index';
 import { LessThan } from 'typeorm';
-import checkFetch from "@/remote/activitypub/check-fetch";
+import checkFetch from '@/remote/activitypub/check-fetch';
 
 export default async (ctx: Router.RouterContext) => {
 	const verify = await checkFetch(ctx.req);

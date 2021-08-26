@@ -15,7 +15,7 @@ import { Users, Notes } from '@/models/index';
 import { makePaginationQuery } from '../api/common/make-pagination-query';
 import { Brackets } from 'typeorm';
 import { Note } from '@/models/entities/note';
-import checkFetch from "@/remote/activitypub/check-fetch";
+import checkFetch from '@/remote/activitypub/check-fetch';
 
 export default async (ctx: Router.RouterContext) => {
 	const verify = await checkFetch(ctx.req);
