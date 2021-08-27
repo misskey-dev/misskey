@@ -350,7 +350,10 @@ invisibleNote: "Malpublika noto"
 visibility: "Videbleco"
 poll: "Balotujo"
 useCw: "Kaŝi enhavo"
+enablePlayer: "Vidi videon"
+disablePlayer: "Fermi videon"
 themeEditor: "Redaktilo de koloraroj"
+description: "Priskriba teksto"
 author: "Aŭtoro"
 manage: "Administro"
 plugins: "Kromaĵoj"
@@ -518,6 +521,7 @@ _wordMute:
 _theme:
   manage: "Administri kolorarojn"
   code: "Kodo de koloraro"
+  description: "Priskriba teksto"
   darken: "Malbrileco"
   lighten: "Brileco"
   keys:
