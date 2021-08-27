@@ -549,7 +549,7 @@ _sfx:
 _ago:
   future: "Futuro"
   justNow: "Ĵus"
-  secondsAgo: "Antaŭ {n} sekundoj"
+  secondsAgo: "Antaŭ {n} sekundo(j)"
   minutesAgo: "Antaŭ {n} minutoj"
   hoursAgo: "Antaŭ {n} horo(j)"
   daysAgo: "Antaŭ {n} tagoj"
