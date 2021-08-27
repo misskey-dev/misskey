@@ -42,7 +42,7 @@
         <tr><th>ショートカット</th><th>効果</th><th>由来</th></tr>
     </thead>
     <tbody>
-        <tr><td><kbd class="key">Enter</kbd></td><td>Renoteする</td><td>-</td></tr>
+        <tr><td><kbd class="key">Enter</kbd></td><td>Fari renoton</td><td>-</td></tr>
         <tr><td><kbd class="key">Q</kbd></td><td>フォームを展開する</td><td><b>Q</b>uote</td></tr>
         <tr><td><kbd class="key">Esc</kbd></td><td>フォームを閉じる</td><td>-</td></tr>
     </tbody>
