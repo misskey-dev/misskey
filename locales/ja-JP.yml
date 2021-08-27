@@ -588,7 +588,7 @@ smtpSecure: "SMTP 接続に暗黙的なSSL/TLSを使用する"
 smtpSecureInfo: "STARTTLS使用時はオフにします。"
 testEmail: "配信テスト"
 wordMute: "ワードミュート"
-instanceMute: "Instance Mutes"
+instanceMute: "インスタンスミュート"
 userSaysSomething: "{name}が何かを言いました"
 makeActive: "アクティブにする"
 display: "表示"
@@ -978,10 +978,10 @@ _wordMute:
   mutedNotes: "ミュートされたノート"
 
 _instanceMute:
-  instanceMuteDescription: "Will mute any notes/renotes from the listed instances, including a user replying to a user from a muted instance."
-  instanceMuteDescription2: "Separate with newlines"
-  title: "Hides notes from listed instances"
-  heading: "List of instances to be muted"
+  instanceMuteDescription: "ミュートしましたインスタンスのユーザーの返信を含めて設定しましたインスタンスの全てのノートかRenoteをミュートします。"
+  instanceMuteDescription2: "改行で区切って設定します"
+  title: "設定しましたインスタンスのノートを隠します"
+  heading: "ミュートするインスタンス"
 
 _theme:
   explore: "テーマを探す"
