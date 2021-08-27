@@ -16,7 +16,7 @@
 ## 比較
 | ソース          |           |       | Templinio |         |         |
 | ------------ | --------- | ----- | --------- | ------- | ------- |
-| Uzanto       | 公開範囲      | Hejmo | Loka      | Sociala | Malloka |
+| Uzantoj      | Videbleco | Hejmo | Loka      | Sociala | Malloka |
 | ローカル (フォロー)  | Publikigi | ✔     | ✔         | ✔       | ✔       |
 |              | Hejmo     | ✔     |           | ✔       |         |
 |              | Sekvantoj | ✔     | ✔         | ✔       | ✔       |
