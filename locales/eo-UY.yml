@@ -562,7 +562,7 @@ _permissions:
   "read:drive": "Operacio por legi la informon de dosiero en via disko de Misskey"
   "write:drive": "Ĉia operacio por skribi, forviŝi, aŭ alimaniere ŝanĝi la informon de dosiero en via disko de Misskey"
   "read:favorites": "Vidi vian liston de preferatoj"
-  "write:favorites": "Redakti vian liston de favoratoj"
+  "write:favorites": "Redakti vian preferantan liston"
   "read:following": "Vidi tiun kiun vi sekvas"
   "write:following": "Sekvi aŭ malsekvi alian uzanton"
   "read:messaging": "Vidi vian retbabiladon"
