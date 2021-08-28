@@ -1,17 +1,35 @@
 # Contribution guide
-:v: Thanks for your contributions :v:
+**[✨ English version available](/docs/CONTRIBUTING.en.md)**
 
-## When you contribute...
-- 任意のIssueについて、せっかく実装してくださっても、実装方法や設計の認識が揃ってないとマージできない/しないことになりかねないので、初めにそのIssue上で着手することを宣言し、必要に応じて他メンバーと実装方法や設計のすり合わせを行ってください。宣言することは作業が他の人と被るのを防止する効果もあります。
-  - 設計に迷った時はプロジェクトリーダーの判断を仰いでください。
-- 時間や優先度の都合上、提出してくださったPRが長期間放置されることもありますがご理解ください。
-  - 温度感高めで見てほしいものは責付いてください。
+プロジェクトに興味を持っていただきありがとうございます！ このドキュメントでは、プロジェクトに貢献する際に必要な情報をまとめています。
+
+## 実装をする前に
+機能追加やバグ修正をしたいときは、まずIssueなどで設計、方針をレビューしてもらいましょう(無い場合は作ってください)。このステップがないと、せっかく実装してもPRがマージされない可能性が高くなります。
+
+また、実装に取り掛かるときは当該Issueに自分をアサインしてください(自分でできない場合は他メンバーに自分をアサインしてもらうようお願いしてください)。
+自分が実装するという意思表示をすることで、作業がバッティングするのを防ぎます。
 
 ## Issues
-Feature suggestions and bug reports are filed in https://github.com/misskey-dev/misskey/issues .
+Issueを作成する前に、以下をご確認ください:
+- 重複を防ぐため、既に同様の内容のIssueが作成されていないか検索してから新しいIssueを作ってください。
+- Issueを質問に使わないでください。
+	- Issueは、要望、提案、問題の報告にのみ使用してください。
+	- 質問は、[Misskey Forum](https://forum.misskey.io/)や[Discord](https://discord.gg/Wp8gVStHW3)でお願いします。
 
-* Please search existing issues to avoid duplication. If your issue is already filed, please add your reaction or comment to the existing one.
-* If you have multiple independent issues, please submit them separately.
+## PRの作成
+PRありがとうございます！ PRを作成する前に、以下をご確認ください:
+- 可能であればタイトルに、以下で示すようなPRの種類が分かるキーワードをプリフィクスしてください。
+  - fix / refactor / feat / enhance / perf / chore
+  - また、PRの粒度が適切であることを確認してください。ひとつのPRに複数の種類の変更や関心を含めることは避けてください。
+- このPRによって解決されるIssueがある場合は、そのIssueへの参照を本文内に含めてください。
+- [`CHANGELOG.md`](/CHANGELOG.md)に変更点を追記してください。リファクタリングなど、利用者に影響を与えない変更についてはこの限りではありません。
+- この変更により新たに作成、もしくは更新すべきドキュメントがないか確認してください。
+- 機能追加やバグ修正をした場合は、可能であればテストケースを追加してください。
+- テスト、Lintが通っていることを予め確認してください。
+  - `npm run test`、`npm run lint`でぞれぞれ実施可能です
+- UIに変更がある場合はスクリーンショットを本文内に添付してください。
+
+ご協力ありがとうございます🤗
 
 ## Branches
 * **master** branch is tracking the latest release and used for production purposes.
