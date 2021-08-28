@@ -15,5 +15,6 @@ Thank you for your PR! Before creating a PR, please check the following:
 Thanks for your cooperation 🤗
 
 **ℹ️ Important:** This project uses Japanese as its major language, **but you do not need to translate and write the description in Japanese.**
+Also, you might receive review comments on your PR in Japanese, but you do not need to reply to them in Japanese as well.\
 The accuracy of translation into Japanese is not high, so it will be easier for us to understand if you write it in the original language.
 It will also allow the reader to use the translation tool of their preference if necessary.
