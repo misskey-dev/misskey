@@ -12,6 +12,7 @@ Thank you for your PR! Before creating a PR, please check the following:
 - Please make sure that tests and Lint are passed in advance.
   - You can run it with `npm run test` and `npm run lint`.
 - Run `npm run api` to update the API report and commit it if there are any diffs.
+
 Thanks for your cooperation 🤗
 
 **ℹ️ Important:** This project uses Japanese as its major language, **but you do not need to translate and write the description in Japanese.**
