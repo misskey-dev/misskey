@@ -978,7 +978,7 @@ _wordMute:
   mutedNotes: "ミュートされたノート"
 
 _instanceMute:
-  instanceMuteDescription: "ミュートしましたインスタンスのユーザーの返信を含めて設定しましたインスタンスの全てのノートかRenoteをミュートします。"
+  instanceMuteDescription: "ミュートしたインスタンスのユーザーからの返信を含めて、設定したインスタンスの全てのノートとRenoteをミュートします。"
   instanceMuteDescription2: "改行で区切って設定します"
   title: "設定したインスタンスのノートを隠します。"
   heading: "ミュートするインスタンス"
