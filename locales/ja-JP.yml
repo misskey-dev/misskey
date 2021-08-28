@@ -980,7 +980,7 @@ _wordMute:
 _instanceMute:
   instanceMuteDescription: "ミュートしましたインスタンスのユーザーの返信を含めて設定しましたインスタンスの全てのノートかRenoteをミュートします。"
   instanceMuteDescription2: "改行で区切って設定します"
-  title: "設定しましたインスタンスのノートを隠します"
+  title: "設定したインスタンスのノートを隠します。"
   heading: "ミュートするインスタンス"
 
 _theme:
