@@ -16,7 +16,7 @@ Bien que cela arrive rarement, il se peut que le cache soit à l'origine du prob
 Si le problème persiste malgré tout, il est très probable qu'il s'agisse d'une panne côté serveur ; nous vous invitons donc à contacter l'administrateur·rice de votre instance.
 
 ## Le client est lent
-以下を試してみてください:
+Essayez les solutions proposées ci-dessous :
 
 - クライアント設定で「UIのアニメーションを減らす」を有効にする
 - クライアント設定で「モーダルにぼかし効果を使用」を無効にする
