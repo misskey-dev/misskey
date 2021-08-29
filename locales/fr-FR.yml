@@ -781,6 +781,8 @@ usernameInfo: "C'est un nom qui identifie votre compte sur l'instance de manièr
 keepCw: "Garder le CW"
 _accountDelete:
   accountDelete: "Supprimer le compte"
+  mayTakeTime: "La suppression de compte nécessitant beaucoup de ressources, l'exécution du processus peut prendre du temps, en fonction de la quantité de contenus que vous avez créés et du nombre de fichiers que vous avez téléversés."
+  inProgress: "Suppression en cours"
 _docs:
   continueReading: "Lire plus"
   features: "Fonctionnalités"
