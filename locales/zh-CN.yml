@@ -782,6 +782,10 @@ usernameInfo: "在服务器上唯一标识您的帐户的名称。您可以使�
 keepCw: "保留CW"
 _accountDelete:
   accountDelete: "删除帐户"
+  mayTakeTime: "删除账号是一个性能损耗较大的处理，如果账号持有的内容数量和上传的文件数量较多的话，完成需要花费一段时间。"
+  sendEmail: "账户删除完成后，将向注册的电子邮件地址发送通知。"
+  requestAccountDelete: "请求删除账户"
+  started: "账户删除过程已开始。"
   inProgress: "正在删除"
 _docs:
   continueReading: "继续阅读"
