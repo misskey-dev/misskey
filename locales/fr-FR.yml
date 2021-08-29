@@ -782,6 +782,9 @@ keepCw: "Garder le CW"
 _accountDelete:
   accountDelete: "Supprimer le compte"
   mayTakeTime: "La suppression de compte nécessitant beaucoup de ressources, l'exécution du processus peut prendre du temps, en fonction de la quantité de contenus que vous avez créés et du nombre de fichiers que vous avez téléversés."
+  sendEmail: "Une fois la suppression de votre compte effectuée, un courriel sera envoyé à l'adresse que vous aviez enregistrée."
+  requestAccountDelete: "Demander la suppression de votre compte"
+  started: "La procédure de suppression a commencé."
   inProgress: "Suppression en cours"
 _docs:
   continueReading: "Lire plus"
