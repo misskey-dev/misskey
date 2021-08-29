@@ -777,6 +777,7 @@ whatIsNew: "Voir les derniers changements"
 translate: "Traduire"
 translatedFrom: "Traduit depuis {x}"
 accountDeletionInProgress: "La suppression de votre compte est en cours"
+usernameInfo: "C'est un nom qui identifie votre compte sur l'instance de manière unique. Vous pouvez utiliser des lettres de l'alphabet (minuscules et majuscules), des chiffres (de 0 à 9), ou bien le tiret « _ ». Vous ne pourrez pas modifier votre nom d'utilisateur·rice par la suite."
 keepCw: "Garder le CW"
 _accountDelete:
   accountDelete: "Supprimer le compte"
