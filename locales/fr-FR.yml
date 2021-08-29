@@ -776,6 +776,10 @@ misskeyUpdated: "Misskey a été mis à jour !"
 whatIsNew: "Voir les derniers changements"
 translate: "Traduire"
 translatedFrom: "Traduit depuis {x}"
+accountDeletionInProgress: "La suppression de votre compte est en cours"
+keepCw: "Garder le CW"
+_accountDelete:
+  accountDelete: "Supprimer le compte"
 _docs:
   continueReading: "Lire plus"
   features: "Fonctionnalités"
