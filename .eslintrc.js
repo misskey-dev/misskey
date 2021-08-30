@@ -15,6 +15,8 @@ module.exports = {
 		'indent': ['error', 'tab', {
 			'SwitchCase': 1,
 			'flatTernaryExpressions': true,
+			'ArrayExpression': 'first',
+			'ObjectExpression': 'first',
 		}],
 		'eol-last': ['error', 'always'],
 		'semi': ['error', 'always'],
