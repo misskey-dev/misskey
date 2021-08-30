@@ -73,116 +73,11 @@ Configuration files are located in [`/.github/workflows`](/.github/workflows).
 If you have no experience on 3D modeling, we suggest to use the free 3DCG software [Blender](https://www.blender.org/).
 You can find information on glTF 2.0 at [glTF 2.0 — Blender Manual]( https://docs.blender.org/manual/en/dev/addons/io_scene_gltf2.html).
 
-## FAQ
+## Notes
 ### How to resolve conflictions occurred at yarn.lock?
 
 Just execute `yarn` to fix it.
 
-## Glossary
-### AP
-Stands for _**A**ctivity**P**ub_.
-
-### MFM
-Stands for _**M**isskey **F**lavored **M**arkdown_.
-
-### Mk
-Stands for _**M**iss**k**ey_.
-
-### SW
-Stands for _**S**ervice**W**orker_.
-
-### Nyaize
-Convert な(na) to にゃ(nya)
-
-#### Denyaize
-Revert Nyaize
-
-## TypeScript Coding Style
-### Do not omit semicolons
-This is to avoid Automatic Semicolon Insertion (ASI) hazard.
-
-Ref:
-* https://www.ecma-international.org/ecma-262/#sec-automatic-semicolon-insertion
-* https://github.com/tc39/ecma262/pull/1062
-
-### Do not omit curly brackets
-Bad:
-``` ts
-if (foo)
-	bar;
-else
-	baz;
-```
-
-Good:
-``` ts
-if (foo) {
-	bar;
-} else {
-	baz;
-}
-```
-
-As a special case, you can omit the curly brackets if
-
-* the body of the `if`-statement have only one statement and,
-* the `if`-statement does not have `else`-clause.
-
-Good:
-``` ts
-if (foo) bar;
-```
-
-Make sure that the condition and the body statement are on the same line.
-
-### Do not use `==` when it can simply be replaced with `===`.
-🥰
-
-### Use only boolean (or null related) values in the condition of an `if`-statement.
-Bad:
-``` ts
-if (foo.length)
-```
-
-Good:
-``` ts
-if (foo.length > 0)
-```
-
-### Do not use `export default`
-This is because the current language support does not work well with `export default`.
-
-Ref:
-* https://basarat.gitbooks.io/typescript/docs/tips/defaultIsBad.html
-* https://gfx.hatenablog.com/entry/2017/11/24/135343
-
-Bad:
-``` ts
-export default function(foo: string): string {
-```
-
-Good:
-``` ts
-export function something(foo: string): string {
-```
-
-## Directory structure
-```
-src ... Source code
-	@types ... Type definitions
-	prelude ... Independence utils for coding JavaScript without side effects
-	misc ... Independence utils for Misskey without side effects
-	service ... Common functions with side effects
-	queue ... Job queues and Jobs
-	server ... Web Server
-	client ... Client
-	mfm ... MFM
-
-test ... Test code
-
-```
-
-## Notes
 ### placeholder
 SQLをクエリビルダで組み立てる際、使用するプレースホルダは重複してはならない
 例えば
