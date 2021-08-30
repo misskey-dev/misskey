@@ -18,6 +18,12 @@ When you want to add a feature or fix a bug, first have the design and policy re
 
 Also, when you start implementation, assign yourself to the Issue (if you cannot do it yourself, ask another member to assign you). By expressing your intention to work the Issue, you can prevent conflicts in the work.
 
+## Well-known branches
+- **master** branch is tracking the latest release and used for production purposes.
+- **develop** branch is where we work for the next release.
+	- When you create a PR, basically target it to this branch.
+- **l10n_develop** branch is reserved for localization management.
+
 ## Creating a PR
 Thank you for your PR! Before creating a PR, please check the following:
 - If possible, prefix the title with a keyword that identifies the type of this PR, as shown below.
@@ -32,3 +38,13 @@ Thank you for your PR! Before creating a PR, please check the following:
 - If this PR includes UI changes, please attach a screenshot in the text.
 
 Thanks for your cooperation 🤗
+
+## Localization (l10n)
+Misskey uses [Crowdin](https://crowdin.com/project/misskey) for localization management.
+You can improve our translations with your Crowdin account.
+Your changes in Crowdin are automatically submitted as a PR (with the title "New Crowdin translations") to the repository.
+The owner [@syuilo](https://github.com/syuilo) merges the PR into the develop branch before the next release.
+
+If your language is not listed in Crowdin, please open an issue.
+
+![Crowdin](https://d322cqt584bo4o.cloudfront.net/misskey/localized.svg)
