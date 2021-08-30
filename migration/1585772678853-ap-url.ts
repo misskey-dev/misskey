@@ -1,4 +1,4 @@
-/* tslint:disable:quotemark class-name indent */
+/* eslint:disable:quotemark class-name indent */
 import {MigrationInterface, QueryRunner} from "typeorm";
 
 export class apUrl1585772678853 implements MigrationInterface {
