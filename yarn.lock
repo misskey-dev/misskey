@@ -629,11 +629,6 @@
     "@types/vinyl-fs" "*"
     chokidar "^3.3.1"
 
-"@types/highlight.js@^9.7.0":
-  version "9.12.4"
-  resolved "https://registry.yarnpkg.com/@types/highlight.js/-/highlight.js-9.12.4.tgz#8c3496bd1b50cc04aeefd691140aa571d4dbfa34"
-  integrity sha512-t2szdkwmg2JJyuCM20e8kR2X59WCE5Zkl4bzm1u1Oukjm79zpbiAv+QjnwLnuuV0WHEcX2NgUItu0pAMKuOPww==
-
 "@types/http-assert@*":
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/@types/http-assert/-/http-assert-1.5.1.tgz#d775e93630c2469c2f980fc27e3143240335db3b"
@@ -822,14 +817,14 @@
   resolved "https://registry.yarnpkg.com/@types/linkify-it/-/linkify-it-2.1.0.tgz#ea3dd64c4805597311790b61e872cbd1ed2cd806"
   integrity sha512-Q7DYAOi9O/+cLLhdaSvKdaumWyHbm7HAk/bFwwyTuU0arR5yyCeW5GOoqt4tJTpDRxhpx9Q8kQL6vMpuw9hDSw==
 
-"@types/markdown-it@12.0.3":
-  version "12.0.3"
-  resolved "https://registry.yarnpkg.com/@types/markdown-it/-/markdown-it-12.0.3.tgz#60a09363bebbd780fac815442b47d80f1a17bef1"
-  integrity sha512-MIhDl8e64vKJv3GX8irH5I/cNarX18edtdfg/+lbS92mArVl5VeaL4WKf8i06Zt2vsNuze2Vc8ELqrjoWO6hDQ==
+"@types/markdown-it@12.2.1":
+  version "12.2.1"
+  resolved "https://registry.yarnpkg.com/@types/markdown-it/-/markdown-it-12.2.1.tgz#ca36e1edce6f15a770f3e99e68622d1d2e2f0c65"
+  integrity sha512-iij+ilRX/vxtUPCREjn74xzHo/RorHJDwOsJ6X+TgKw7zSvazhVXnDfwlTnyLOMdiVUjtRYU4CrcUZ7Aci4PmQ==
   dependencies:
-    "@types/highlight.js" "^9.7.0"
     "@types/linkify-it" "*"
     "@types/mdurl" "*"
+    highlight.js "^10.7.2"
 
 "@types/matter-js@0.17.5":
   version "0.17.5"
@@ -5387,10 +5382,10 @@ he@1.2.0, he@^1.2.0:
   resolved "https://registry.yarnpkg.com/he/-/he-1.2.0.tgz#84ae65fa7eafb165fddb61566ae14baf05664f0f"
   integrity sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==
 
-highlight.js@^10.7.1:
-  version "10.7.2"
-  resolved "https://registry.yarnpkg.com/highlight.js/-/highlight.js-10.7.2.tgz#89319b861edc66c48854ed1e6da21ea89f847360"
-  integrity sha512-oFLl873u4usRM9K63j4ME9u3etNF0PLiJhSQ8rdfuL51Wn3zkD6drf9ZW0dOzjnZI22YYG24z30JcmfCZjMgYg==
+highlight.js@^10.7.1, highlight.js@^10.7.2:
+  version "10.7.3"
+  resolved "https://registry.yarnpkg.com/highlight.js/-/highlight.js-10.7.3.tgz#697272e3991356e40c3cac566a74eef681756531"
+  integrity sha512-tzcUFauisWKNHaRkN4Wjl/ZA07gENAjFl3J/c480dprkGTg5EQstgaNFqBfUqCq54kZRIEcreTsAgF/m2quD7A==
 
 homedir-polyfill@^1.0.1:
   version "1.0.3"

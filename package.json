@@ -70,7 +70,7 @@
 		"@types/koa__cors": "3.0.3",
 		"@types/koa__multer": "2.0.3",
 		"@types/koa__router": "8.0.7",
-		"@types/markdown-it": "12.0.3",
+		"@types/markdown-it": "12.2.1",
 		"@types/matter-js": "0.17.5",
 		"@types/mocha": "8.2.3",
 		"@types/node": "16.6.2",
