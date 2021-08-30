@@ -14,13 +14,14 @@ module.exports = {
 	rules: {
 		'indent': ['error', 'tab', {
 			'SwitchCase': 1,
+			'MemberExpression': 'off',
 			'flatTernaryExpressions': true,
 			'ArrayExpression': 'first',
 			'ObjectExpression': 'first',
 		}],
 		'eol-last': ['error', 'always'],
 		'semi': ['error', 'always'],
-		'quotes': ['error', 'single'],
+		'quotes': ['warn', 'single'],
 		'keyword-spacing': ['error', {
 			'before': true,
 			'after': true,
