@@ -19,22 +19,23 @@ Issueを作成する前に、以下をご確認ください:
 ## PRの作成
 PRありがとうございます！ PRを作成する前に、以下をご確認ください:
 - 可能であればタイトルに、以下で示すようなPRの種類が分かるキーワードをプリフィクスしてください。
-  - fix / refactor / feat / enhance / perf / chore
+  - `fix` / `refactor` / `feat` / `enhance` / `perf` / `chore` など
   - また、PRの粒度が適切であることを確認してください。ひとつのPRに複数の種類の変更や関心を含めることは避けてください。
 - このPRによって解決されるIssueがある場合は、そのIssueへの参照を本文内に含めてください。
 - [`CHANGELOG.md`](/CHANGELOG.md)に変更点を追記してください。リファクタリングなど、利用者に影響を与えない変更についてはこの限りではありません。
 - この変更により新たに作成、もしくは更新すべきドキュメントがないか確認してください。
 - 機能追加やバグ修正をした場合は、可能であればテストケースを追加してください。
 - テスト、Lintが通っていることを予め確認してください。
-  - `npm run test`、`npm run lint`でぞれぞれ実施可能です
+  - `npm run test`、`npm run lint`でぞれぞれ実施可能です。[詳細](#testing)
 - UIに変更がある場合はスクリーンショットを本文内に添付してください。
 
 ご協力ありがとうございます🤗
 
-## Branches
-* **master** branch is tracking the latest release and used for production purposes.
-* **develop** branch is where we work for the next release.
-* **l10n_develop** branch is reserved for localization management.
+## ブランチ
+- **`master`** branch is tracking the latest release and used for production purposes.
+- **`develop`** branch is where we work for the next release.
+	- PRを作成するときは、基本的にこのブランチに向けてください。
+- **`l10n_develop`** branch is reserved for localization management.
 
 ## Localization (l10n)
 Misskey uses [Crowdin](https://crowdin.com/project/misskey) for localization management.
@@ -50,13 +51,21 @@ If your language is not listed in Crowdin, please open an issue.
 * Documents for instance admins are located in [`/docs`](/docs).
 * Documents for end users are located in [`/src/docs`](/src/docs).
 
-## Test
-* Test codes are located in [`/test`](/test).
+## Testing
+- Test codes are located in [`/test`](/test).
 
-### Run specify test
+### Run test
+```
+npm run test
+```
+
+#### Run specify test
 ```
 npx cross-env TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT="./test/tsconfig.json" npx mocha test/foo.ts --require ts-node/register
 ```
+
+### e2e tests
+TODO
 
 ## Continuous integration
 Misskey uses GitHub Actions for executing automated tests.
