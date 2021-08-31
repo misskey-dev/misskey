@@ -31,7 +31,7 @@ export async function signout() {
 	else await del('accounts');
 	//#endregion
 
-	//#region Remove push notification registration
+	//#region Remove service worker registration
 	try {
 		if (navigator.serviceWorker.controller) {
 			const registration = await navigator.serviceWorker.ready;
@@ -45,6 +45,13 @@ export async function signout() {
 					}),
 				});
 			}
+		}
+
+		if (accounts.length === 0) {
+			await navigator.serviceWorker.getRegistrations()
+				.then(registrations => {
+					return Promise.all(registrations.map(registration => registration.unregister()));
+				})
 		}
 	} catch (e) {}
 	//#endregion
