@@ -55,6 +55,7 @@ export default defineComponent({
 	white-space: nowrap;
 
 	> .name {
+		flex-shrink: 1;
 		display: block;
 		margin: 0 .5em 0 0;
 		padding: 0;
@@ -81,17 +82,20 @@ export default defineComponent({
 
 	> .admin,
 	> .moderator {
+		flex-shrink: 0;
 		margin-right: 0.5em;
 		color: var(--badge);
 	}
 
 	> .username {
+		flex-shrink: 9999999;
 		margin: 0 .5em 0 0;
 		overflow: hidden;
 		text-overflow: ellipsis;
 	}
 
 	> .info {
+		flex-shrink: 0;
 		margin-left: auto;
 		font-size: 0.9em;
 
