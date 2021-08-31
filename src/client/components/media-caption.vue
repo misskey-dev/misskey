@@ -86,6 +86,7 @@ export default defineComponent({
 
 	computed: {
 		remainingLength(): number {
+			if (typeof this.inputValue != "string") return DB_MAX_IMAGE_COMMENT_LENGTH;
 			return DB_MAX_IMAGE_COMMENT_LENGTH - length(this.inputValue);
 		}
 	},
