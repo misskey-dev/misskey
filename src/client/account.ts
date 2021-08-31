@@ -51,7 +51,7 @@ export async function signout() {
 			await navigator.serviceWorker.getRegistrations()
 				.then(registrations => {
 					return Promise.all(registrations.map(registration => registration.unregister()));
-				})
+				});
 		}
 	} catch (e) {}
 	//#endregion
