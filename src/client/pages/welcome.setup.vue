@@ -53,7 +53,7 @@ export default defineComponent({
 				username: this.username,
 				password: this.password,
 			}).then(res => {
-				login(res.i);
+				return login(res.token);
 			}).catch(() => {
 				this.submitting = false;
 
