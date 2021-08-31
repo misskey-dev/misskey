@@ -185,7 +185,7 @@ export default defineComponent({
 					this.$emit('signup', res);
 
 					if (this.autoSet) {
-						return login(res.token);
+						return login(res.i);
 					}
 				});
 			}).catch(() => {

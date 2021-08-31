@@ -1,4 +1,4 @@
-import { get, set } from '@client/scripts/idb-proxy';
+import { del, get, set } from '@client/scripts/idb-proxy';
 import { reactive } from 'vue';
 import { apiUrl } from '@client/config';
 import { waiting } from '@client/os';
@@ -26,7 +26,9 @@ export async function signout() {
 	//#region Remove account
 	const accounts = await getAccounts();
 	accounts.splice(accounts.findIndex(x => x.id === $i.id), 1);
-	set('accounts', accounts);
+
+	if (accounts.length > 0) await set('accounts', accounts);
+	else await del('accounts');
 	//#endregion
 
 	//#region Remove push notification registration
