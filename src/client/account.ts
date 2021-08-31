@@ -35,14 +35,15 @@ export async function signout() {
 	try {
 		const registration = await navigator.serviceWorker.ready;
 		const push = await registration.pushManager.getSubscription();
-		if (!push) return;
-		await fetch(`${apiUrl}/sw/unregister`, {
-			method: 'POST',
-			body: JSON.stringify({
-				i: $i.token,
-				endpoint: push.endpoint,
-			}),
-		});
+		if (push) {
+			await fetch(`${apiUrl}/sw/unregister`, {
+				method: 'POST',
+				body: JSON.stringify({
+					i: $i.token,
+					endpoint: push.endpoint,
+				}),
+			});
+		}
 	} catch (e) {}
 	//#endregion
 
