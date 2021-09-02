@@ -701,6 +701,8 @@ _pages:
       list: "Listoj"
     blocks:
       text: "Teksto"
+      multiLineText: "Teksto (multaj linioj)"
+      textList: "List de teksto"
       _strLen:
         arg1: "Teksto"
       _strPick:
@@ -717,6 +719,8 @@ _pages:
         arg1: "Listoj"
       _seedRandomPick:
         arg2: "Listoj"
+      _DRPWPM:
+        arg1: "List de teksto"
       pick: "Elekti de la listo"
       _pick:
         arg1: "Listoj"
