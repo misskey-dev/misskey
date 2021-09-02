@@ -667,15 +667,19 @@ _pages:
   viewPage: "Vidi via paĝojn"
   my: "Miaj paĝoj"
   featured: "Ravaĵoj"
+  contents: "Enhavo"
   content: "Blokado de paĝo"
   url: "URL de paĝo"
   alignCenter: "Centrigi"
   chooseBlock: "Aldoni blokon"
+  contentBlocks: "Enhavo"
   blocks:
+    text: "Teksto"
     image: "Bildo"
     button: "Butono"
     _post:
       canvasId: "Kanvasa identigilo"
+    textInput: "Enigo el teksto"
     _numberInput:
       text: "Titolo"
     _canvas:
@@ -693,6 +697,15 @@ _pages:
     categories:
       list: "Listoj"
     blocks:
+      text: "Teksto"
+      _strLen:
+        arg1: "Teksto"
+      _strPick:
+        arg1: "Teksto"
+      _strReplace:
+        arg1: "Teksto"
+      _strReverse:
+        arg1: "Teksto"
       _join:
         arg1: "Listoj"
       _randomPick:
@@ -706,9 +719,12 @@ _pages:
         arg1: "Listoj"
       _listLen:
         arg1: "Listoj"
+      _stringToNumber:
+        arg1: "Teksto"
       _splitStrByLine:
         arg1: "Teksto"
     types:
+      string: "Teksto"
       array: "Listoj"
       stringArray: "List de teksto"
 _notification:
