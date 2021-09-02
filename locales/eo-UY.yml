@@ -644,7 +644,7 @@ _exportOrImport:
   blockingList: "Blokado"
   userLists: "Listoj"
 _charts:
-  federationInstancesTotal: "Tuta numero de ekzemploj kunfederantaj"
+  federationInstancesTotal: "Tuta numero de nodoj kunfederantaj"
   usersTotal: "Tuta numero de uzantoj"
   activeUsers: "Numero de aktivaj uzantoj"
   notesTotal: "Tuta numero de notoj"
