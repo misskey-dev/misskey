@@ -13,6 +13,7 @@
 
 ### Features
 - Added a user-level instance mute in user settings
+- Added a toggle to show replies for followed users in all timelines
 
 ### Improvements
 
