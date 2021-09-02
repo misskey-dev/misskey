@@ -588,6 +588,7 @@ smtpSecure: "SMTP 接続に暗黙的なSSL/TLSを使用する"
 smtpSecureInfo: "STARTTLS使用時はオフにします。"
 testEmail: "配信テスト"
 wordMute: "ワードミュート"
+instanceMute: "インスタンスミュート"
 userSaysSomething: "{name}が何かを言いました"
 makeActive: "アクティブにする"
 display: "表示"
@@ -978,6 +979,12 @@ _wordMute:
   soft: "ソフト"
   hard: "ハード"
   mutedNotes: "ミュートされたノート"
+
+_instanceMute:
+  instanceMuteDescription: "ミュートしたインスタンスのユーザーからの返信を含めて、設定したインスタンスの全てのノートとRenoteをミュートします。"
+  instanceMuteDescription2: "改行で区切って設定します"
+  title: "設定したインスタンスのノートを隠します。"
+  heading: "ミュートするインスタンス"
 
 _theme:
   explore: "テーマを探す"

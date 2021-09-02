@@ -270,6 +270,7 @@ export class UserRepository extends Repository<User> {
 				hasPendingReceivedFollowRequest: this.getHasPendingReceivedFollowRequest(user.id),
 				integrations: profile!.integrations,
 				mutedWords: profile!.mutedWords,
+				mutedInstances: profile!.mutedInstances,
 				mutingNotificationTypes: profile!.mutingNotificationTypes,
 				emailNotificationTypes: profile!.emailNotificationTypes,
 			} : {}),
@@ -614,6 +615,10 @@ export const packedUserSchema = {
 			nullable: false as const, optional: true as const
 		},
 		mutedWords: {
+			type: 'array' as const,
+			nullable: false as const, optional: true as const
+		},
+		mutedInstances: {
 			type: 'array' as const,
 			nullable: false as const, optional: true as const
 		},
