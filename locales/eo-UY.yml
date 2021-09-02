@@ -675,6 +675,7 @@ _pages:
   contentBlocks: "Enhavo"
   blocks:
     text: "Teksto"
+    textarea: "Areo de teksto"
     image: "Bildo"
     button: "Butono"
     _post:
