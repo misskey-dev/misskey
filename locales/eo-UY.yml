@@ -681,6 +681,7 @@ _pages:
     _post:
       canvasId: "Kanvasa identigilo"
     textInput: "Enigo el teksto"
+    textareaInput: "Enigo el teksto en multaj linioj"
     _numberInput:
       text: "Titolo"
     _canvas:
@@ -696,6 +697,7 @@ _pages:
           event: "Nomo de la evento"
   script:
     categories:
+      text: "Manipulo de teksto"
       list: "Listoj"
     blocks:
       text: "Teksto"
