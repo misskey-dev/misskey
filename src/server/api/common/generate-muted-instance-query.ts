@@ -31,7 +31,10 @@ export function generateMutedInstanceQuery(q: SelectQueryBuilder<any>, me: { id:
 export function generateMutedInstanceNotificationQuery(q: SelectQueryBuilder<any>, me: { id: User['id'] }) {
 	const mutingQuery = createMutesQuery(me.id);
 
-	q.andWhere(`NOT (( ${mutingQuery.getQuery()} )::jsonb ? notifier.host)`);
+	q.andWhere(new Brackets(qb => { qb 
+		.andWhere('notifier.host IS NULL')
+		.orWhere(`NOT (( ${mutingQuery.getQuery()} )::jsonb ? notifier.host)`);
+	}));
 
 	q.setParameters(mutingQuery.getParameters());
 }
