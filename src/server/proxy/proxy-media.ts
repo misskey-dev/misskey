@@ -39,8 +39,8 @@ export async function proxyMedia(ctx: Koa.Context) {
 	} catch (e) {
 		serverLogger.error(e);
 
-		if (typeof e == 'number' && e >= 400 && e < 500) {
-			ctx.status = e;
+		if (typeof e.statusCode === 'number' && e.statusCode >= 400 && e.statusCode < 500) {
+			ctx.status = e.statusCode;
 		} else {
 			ctx.status = 500;
 		}
