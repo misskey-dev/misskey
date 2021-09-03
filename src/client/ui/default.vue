@@ -71,7 +71,6 @@ import XHeader from './_common_/header.vue';
 import * as os from '@client/os';
 import { menuDef } from '@client/menu';
 import * as symbols from '@client/symbols';
-import { load as loadLive2d } from '@client/scripts/live2d/index';
 
 const DESKTOP_THRESHOLD = 1100;
 const MOBILE_THRESHOLD = 600;
@@ -95,7 +94,7 @@ export default defineComponent({
 			widgetsShowing: false,
 			fullView: false,
 			wallpaper: localStorage.getItem('wallpaper') != null,
-			live2d: null,
+			live2d: null as any,
 		};
 	},
 
@@ -137,13 +136,15 @@ export default defineComponent({
 		}, { passive: true });
 
 		if (this.$store.state.aiChanMode) {
-			loadLive2d(this.$refs.live2d, {
-				x: 0,
-				y: 1.4,
-				scale: 2,
-			}).then(live2d => {
-				this.live2d = markRaw(live2d);
-			});
+			import('@client/scripts/live2d/index')
+				.then(({ load }) => load(this.$refs.live2d, {
+					x: 0,
+					y: 1.4,
+					scale: 2,
+				}))
+				.then(live2d => {
+					this.live2d = markRaw(live2d);
+				});
 		}
 	},
 
@@ -217,7 +218,7 @@ export default defineComponent({
 		},
 
 		onAiClick(ev) {
-			this.live2d.click(ev);
+			if (this.live2d) this.live2d.click(ev);
 		}
 	}
 });

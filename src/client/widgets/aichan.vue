@@ -9,7 +9,6 @@ import { defineComponent, markRaw } from 'vue';
 import define from './define';
 import MkContainer from '@client/components/ui/container.vue';
 import * as os from '@client/os';
-import { load as loadLive2d } from '@client/scripts/live2d/index';
 
 const widget = define({
 	name: 'ai',
@@ -28,22 +27,24 @@ export default defineComponent({
 	},
 	data() {
 		return {
-			live2d: null,
+			live2d: null as any,
 		};
 	},
 	mounted() {
 		this.$nextTick(() => {
-			loadLive2d(this.$refs.canvas, {
-				scale: 1.6,
-				y: 1.1
-			}).then(live2d => {
-				this.live2d = markRaw(live2d);
-			});
+			import('@client/scripts/live2d/index')
+				.then(({ load }) => load(this.$refs.canvas, {
+					scale: 1.6,
+					y: 1.1
+				}))
+				.then(live2d => {
+					this.live2d = markRaw(live2d);
+				});
 		});
 	},
 	methods: {
 		touched() {
-			this.live2d.changeExpression('gurugurume');
+			if (this.live2d) this.live2d.changeExpression('gurugurume');
 		}
 	}
 });
