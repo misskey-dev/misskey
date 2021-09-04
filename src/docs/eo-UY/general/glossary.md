@@ -16,7 +16,7 @@ Misskeyに関する用語集です。
 ## CW
 (読み: こんてんつわーにんぐ) Contents Warningの略。ノートの内容を、操作なしには表示しないようにできる機能。主に長大な内容を隠すためや、ネタバレ防止などに使われます。
 
-## Fediverse
+## Fediverso
 (読み: ふぇでぃばーす) Misskeyを含む様々な分散型ソフトウェアのサーバーで構成されたネットワーク。
 
 ## MTL
@@ -46,14 +46,14 @@ Ai estas oficiala maskoto de Misskey.
 ## Aktivaj Uzantoj:
 インスタンスにアカウントを作っているユーザーのうち、現在も実際にサービスを利用しているユーザーのこと。
 
-## Ekzemplo
+## Nodo
 todo
 
 ## Ŝaltpodio
 サーバーで用意された絵文字。カスタム絵文字ではない通常の絵文字は「Unicode絵文字」と区別して呼ばれる。
 
 ## コントロールパネル
-todo
+インスタンスの設定画面のこと。
 
 ## Servilo
 todo
@@ -73,16 +73,16 @@ Misskeyにアップロードしたファイルを管理する機能。詳細は[
 ## Notoj
 Misskeyに投稿される、文章、ファイル、アンケートなどを含めることができるコンテンツ。詳細は[こちら。](../features/note)
 
-## Transa aŭ fora
+## Miskiisto
 Misskeyを使う人のこと。
 
-## Moderigisto
+## Kontrolisto
 スパムの凍結およびサイレンスや不適切な投稿の削除など、コミュニティ運営に関する権限を持つユーザー。
 
-## Transa
+## Transa/fora
 他サーバーのことを指します。リモートユーザーといったように接頭辞としても使われます。ローカルの逆です。
 
-## Kunfederaĵo
+## Kunfederado
 サーバー上で作成された情報が他のサーバーに伝わること。
 
 ## Loka

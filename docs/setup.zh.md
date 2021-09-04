@@ -131,11 +131,12 @@ yarn run init
 ### 如何将您的 Misskey 服务器升级至最新版本
 1. `git checkout master`
 2. `git pull`
-3. `yarn install`
-4. `NODE_ENV=production yarn build`
-5. `yarn migrate`
-6. 重启您的 Misskey 进程来应用改变。
-7. 尽情享受吧！
+3. `git submodule update --init`
+4. `yarn install`
+5. `NODE_ENV=production yarn build`
+6. `yarn migrate`
+7. 重启您的 Misskey 进程来应用改变。
+8. 尽情享受吧！
 
 如果您在更新时遇到任何问题，请尝试以下操作：
 1. `yarn clean` 或是 `yarn cleanall`

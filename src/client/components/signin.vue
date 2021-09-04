@@ -111,7 +111,9 @@ export default defineComponent({
 
 		onLogin(res) {
 			if (this.autoSet) {
-				login(res.i);
+				return login(res.i);
+			} else {
+				return;
 			}
 		},
 
@@ -144,7 +146,7 @@ export default defineComponent({
 				});
 			}).then(res => {
 				this.$emit('login', res);
-				this.onLogin(res);
+				return this.onLogin(res);
 			}).catch(err => {
 				if (err === null) return;
 				os.dialog({

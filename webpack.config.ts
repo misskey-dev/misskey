@@ -167,6 +167,7 @@ module.exports = {
 		],
 		alias: {
 			'@client': __dirname + '/src/client',
+			'@lib': __dirname + '/lib',
 			'@': __dirname + '/src',
 			'const.styl': __dirname + '/src/client/const.styl'
 		}

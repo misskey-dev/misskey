@@ -1,7 +1,7 @@
 # Templinio
 タイムラインは、[ノート](./note)が時系列で表示される機能です。 タイムラインには以下で示す種類があり、種類によって表示されるノートも異なります。 なお、タイムラインの種類によってはサーバーにより無効になっている場合があります。
 
-## Hejmo
+## Hejma
 自分のフォローしているユーザーの投稿が流れます。HTLと略されます。
 
 ## Loka
@@ -16,16 +16,16 @@
 ## 比較
 | ソース          |           |       | Templinio |         |         |
 | ------------ | --------- | ----- | --------- | ------- | ------- |
-| Uzanto       | 公開範囲      | Hejmo | Loka      | Sociala | Malloka |
+| Uzantoj      | Videbleco | Hejma | Loka      | Sociala | Malloka |
 | ローカル (フォロー)  | Publikigi | ✔     | ✔         | ✔       | ✔       |
-|              | Hejmo     | ✔     |           | ✔       |         |
+|              | Hejma     | ✔     |           | ✔       |         |
 |              | Sekvantoj | ✔     | ✔         | ✔       | ✔       |
 | リモート (フォロー)  | Publikigi | ✔     |           | ✔       | ✔       |
-|              | Hejmo     | ✔     |           | ✔       |         |
+|              | Hejma     | ✔     |           | ✔       |         |
 |              | Sekvantoj | ✔     |           | ✔       | ✔       |
 | ローカル (未フォロー) | Publikigi |       | ✔         | ✔       | ✔       |
-|              | Hejmo     |       |           |         |         |
+|              | Hejma     |       |           |         |         |
 |              | Sekvantoj |       |           |         |         |
 | リモート (未フォロー) | Publikigi |       |           |         | ✔       |
-|              | Hejmo     |       |           |         |         |
+|              | Hejma     |       |           |         |         |
 |              | Sekvantoj |       |           |         |         |

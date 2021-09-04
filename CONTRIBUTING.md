@@ -1,22 +1,41 @@
 # Contribution guide
-:v: Thanks for your contributions :v:
+**[✨ English version available](/docs/CONTRIBUTING.en.md)**
 
-## When you contribute...
-- 任意のIssueについて、せっかく実装してくださっても、実装方法や設計の認識が揃ってないとマージできない/しないことになりかねないので、初めにそのIssue上で着手することを宣言し、必要に応じて他メンバーと実装方法や設計のすり合わせを行ってください。宣言することは作業が他の人と被るのを防止する効果もあります。
-  - 設計に迷った時はプロジェクトリーダーの判断を仰いでください。
-- 時間や優先度の都合上、提出してくださったPRが長期間放置されることもありますがご理解ください。
-  - 温度感高めで見てほしいものは責付いてください。
+プロジェクトに興味を持っていただきありがとうございます！ このドキュメントでは、プロジェクトに貢献する際に必要な情報をまとめています。
 
 ## Issues
-Feature suggestions and bug reports are filed in https://github.com/misskey-dev/misskey/issues .
+Issueを作成する前に、以下をご確認ください:
+- 重複を防ぐため、既に同様の内容のIssueが作成されていないか検索してから新しいIssueを作ってください。
+- Issueを質問に使わないでください。
+	- Issueは、要望、提案、問題の報告にのみ使用してください。
+	- 質問は、[Misskey Forum](https://forum.misskey.io/)や[Discord](https://discord.gg/Wp8gVStHW3)でお願いします。
 
-* Please search existing issues to avoid duplication. If your issue is already filed, please add your reaction or comment to the existing one.
-* If you have multiple independent issues, please submit them separately.
+## 実装をする前に
+機能追加やバグ修正をしたいときは、まずIssueで設計、方針をレビューしてもらいましょう(無い場合は作ってください)。このステップがないと、せっかく実装してもPRがマージされない可能性が高くなります。
 
-## Branches
-* **master** branch is tracking the latest release and used for production purposes.
-* **develop** branch is where we work for the next release.
-* **l10n_develop** branch is reserved for localization management.
+また、実装に取り掛かるときは当該Issueに自分をアサインしてください(自分でできない場合は他メンバーに自分をアサインしてもらうようお願いしてください)。
+自分が実装するという意思表示をすることで、作業がバッティングするのを防ぎます。
+
+## PRの作成
+PRありがとうございます！ PRを作成する前に、以下をご確認ください:
+- 可能であればタイトルに、以下で示すようなPRの種類が分かるキーワードをプリフィクスしてください。
+  - `fix` / `refactor` / `feat` / `enhance` / `perf` / `chore` など
+  - また、PRの粒度が適切であることを確認してください。ひとつのPRに複数の種類の変更や関心を含めることは避けてください。
+- このPRによって解決されるIssueがある場合は、そのIssueへの参照を本文内に含めてください。
+- [`CHANGELOG.md`](/CHANGELOG.md)に変更点を追記してください。リファクタリングなど、利用者に影響を与えない変更についてはこの限りではありません。
+- この変更により新たに作成、もしくは更新すべきドキュメントがないか確認してください。
+- 機能追加やバグ修正をした場合は、可能であればテストケースを追加してください。
+- テスト、Lintが通っていることを予め確認してください。
+  - `npm run test`、`npm run lint`でぞれぞれ実施可能です。[詳細](#testing)
+- UIに変更がある場合はスクリーンショットを本文内に添付してください。
+
+ご協力ありがとうございます🤗
+
+## ブランチ
+- **`master`** branch is tracking the latest release and used for production purposes.
+- **`develop`** branch is where we work for the next release.
+	- PRを作成するときは、基本的にこのブランチに向けてください。
+- **`l10n_develop`** branch is reserved for localization management.
 
 ## Localization (l10n)
 Misskey uses [Crowdin](https://crowdin.com/project/misskey) for localization management.
@@ -32,13 +51,21 @@ If your language is not listed in Crowdin, please open an issue.
 * Documents for instance admins are located in [`/docs`](/docs).
 * Documents for end users are located in [`/src/docs`](/src/docs).
 
-## Test
-* Test codes are located in [`/test`](/test).
+## Testing
+- Test codes are located in [`/test`](/test).
 
-### Run specify test
+### Run test
+```
+npm run test
+```
+
+#### Run specify test
 ```
 npx cross-env TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT="./test/tsconfig.json" npx mocha test/foo.ts --require ts-node/register
 ```
+
+### e2e tests
+TODO
 
 ## Continuous integration
 Misskey uses GitHub Actions for executing automated tests.
@@ -55,116 +82,11 @@ Configuration files are located in [`/.github/workflows`](/.github/workflows).
 If you have no experience on 3D modeling, we suggest to use the free 3DCG software [Blender](https://www.blender.org/).
 You can find information on glTF 2.0 at [glTF 2.0 — Blender Manual]( https://docs.blender.org/manual/en/dev/addons/io_scene_gltf2.html).
 
-## FAQ
+## Notes
 ### How to resolve conflictions occurred at yarn.lock?
 
 Just execute `yarn` to fix it.
 
-## Glossary
-### AP
-Stands for _**A**ctivity**P**ub_.
-
-### MFM
-Stands for _**M**isskey **F**lavored **M**arkdown_.
-
-### Mk
-Stands for _**M**iss**k**ey_.
-
-### SW
-Stands for _**S**ervice**W**orker_.
-
-### Nyaize
-Convert な(na) to にゃ(nya)
-
-#### Denyaize
-Revert Nyaize
-
-## TypeScript Coding Style
-### Do not omit semicolons
-This is to avoid Automatic Semicolon Insertion (ASI) hazard.
-
-Ref:
-* https://www.ecma-international.org/ecma-262/#sec-automatic-semicolon-insertion
-* https://github.com/tc39/ecma262/pull/1062
-
-### Do not omit curly brackets
-Bad:
-``` ts
-if (foo)
-	bar;
-else
-	baz;
-```
-
-Good:
-``` ts
-if (foo) {
-	bar;
-} else {
-	baz;
-}
-```
-
-As a special case, you can omit the curly brackets if
-
-* the body of the `if`-statement have only one statement and,
-* the `if`-statement does not have `else`-clause.
-
-Good:
-``` ts
-if (foo) bar;
-```
-
-Make sure that the condition and the body statement are on the same line.
-
-### Do not use `==` when it can simply be replaced with `===`.
-🥰
-
-### Use only boolean (or null related) values in the condition of an `if`-statement.
-Bad:
-``` ts
-if (foo.length)
-```
-
-Good:
-``` ts
-if (foo.length > 0)
-```
-
-### Do not use `export default`
-This is because the current language support does not work well with `export default`.
-
-Ref:
-* https://basarat.gitbooks.io/typescript/docs/tips/defaultIsBad.html
-* https://gfx.hatenablog.com/entry/2017/11/24/135343
-
-Bad:
-``` ts
-export default function(foo: string): string {
-```
-
-Good:
-``` ts
-export function something(foo: string): string {
-```
-
-## Directory structure
-```
-src ... Source code
-	@types ... Type definitions
-	prelude ... Independence utils for coding JavaScript without side effects
-	misc ... Independence utils for Misskey without side effects
-	service ... Common functions with side effects
-	queue ... Job queues and Jobs
-	server ... Web Server
-	client ... Client
-	mfm ... MFM
-
-test ... Test code
-
-```
-
-## Notes
 ### placeholder
 SQLをクエリビルダで組み立てる際、使用するプレースホルダは重複してはならない
 例えば
