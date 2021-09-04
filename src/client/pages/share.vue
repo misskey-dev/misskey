@@ -16,7 +16,7 @@
 				@posted="state = 'posted'"
 				class="_panel"
 			/>
-			<MkButton v-else-if="state === 'posted'" primary @click="close()">{{ $ts.close }}</MkButton>
+			<MkButton v-else-if="state === 'posted'" primary @click="close()" class="close">{{ $ts.close }}</MkButton>
 		</div>
 	</section>
 </div>
@@ -173,4 +173,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.close {
+	margin: 16px auto;
+}
 </style>
