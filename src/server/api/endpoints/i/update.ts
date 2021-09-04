@@ -88,6 +88,10 @@ export const meta = {
 			validator: $.optional.bool,
 		},
 
+		showTimelineReplies: {
+			validator: $.optional.bool,
+		},
+
 		injectFeaturedNote: {
 			validator: $.optional.bool,
 		},
@@ -106,6 +110,10 @@ export const meta = {
 
 		mutedWords: {
 			validator: $.optional.arr($.arr($.str))
+		},
+
+		mutedInstances: {
+			validator: $.optional.arr($.str)
 		},
 
 		mutingNotificationTypes: {
@@ -176,6 +184,7 @@ export default define(meta, async (ps, _user, token) => {
 		profileUpdates.mutedWords = ps.mutedWords;
 		profileUpdates.enableWordMute = ps.mutedWords.length > 0;
 	}
+	if (ps.mutedInstances !== undefined) profileUpdates.mutedInstances = ps.mutedInstances;
 	if (ps.mutingNotificationTypes !== undefined) profileUpdates.mutingNotificationTypes = ps.mutingNotificationTypes as typeof notificationTypes[number][];
 	if (typeof ps.isLocked === 'boolean') updates.isLocked = ps.isLocked;
 	if (typeof ps.isExplorable === 'boolean') updates.isExplorable = ps.isExplorable;
@@ -185,6 +194,7 @@ export default define(meta, async (ps, _user, token) => {
 	if (typeof ps.autoAcceptFollowed === 'boolean') profileUpdates.autoAcceptFollowed = ps.autoAcceptFollowed;
 	if (typeof ps.noCrawle === 'boolean') profileUpdates.noCrawle = ps.noCrawle;
 	if (typeof ps.isCat === 'boolean') updates.isCat = ps.isCat;
+	if (typeof ps.showTimelineReplies === 'boolean') updates.showTimelineReplies = ps.showTimelineReplies;
 	if (typeof ps.injectFeaturedNote === 'boolean') profileUpdates.injectFeaturedNote = ps.injectFeaturedNote;
 	if (typeof ps.receiveAnnouncementEmail === 'boolean') profileUpdates.receiveAnnouncementEmail = ps.receiveAnnouncementEmail;
 	if (typeof ps.alwaysMarkNsfw === 'boolean') profileUpdates.alwaysMarkNsfw = ps.alwaysMarkNsfw;

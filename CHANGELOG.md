@@ -11,10 +11,15 @@
 
 ## 12.x.x (unreleased)
 
+### Features
+- Added a user-level instance mute in user settings
+- Added a toggle to show replies for followed users in all timelines
+
 ### Improvements
 
 ### Bugfixes
 - CWを維持する設定を復活
+- クライアントの表示を修正
 
 ## 12.89.2 (2021/08/24)
 
