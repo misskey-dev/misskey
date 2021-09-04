@@ -17,7 +17,8 @@ export async function readNotification(
 		isRead: true
 	});
 
-	post(userId);
+	if (!await Users.getHasUnreadNotification(userId)) return postReadAllNotifications(userId);
+	else return postReadNotifications(userId, notificationIds)
 }
 
 export async function readNotificationByQuery(
@@ -33,18 +34,15 @@ export async function readNotificationByQuery(
 		isRead: true
 	});
 
-	post(userId);
+	if (!await Users.getHasUnreadNotification(userId)) return postReadAllNotifications(userId);
 }
 
-async function post(userId: User['id']) {
-	if (!await Users.getHasUnreadNotification(userId)) {
-		// ユーザーのすべての通知が既読だったら、
-		// 全ての(いままで未読だった)通知を(これで)読みましたよというイベントを発行
-		publishMainStream(userId, 'readAllNotifications');
-		pushNotification(userId, 'readAllNotifications', undefined);
-	} else {
-		// まだすべて既読になっていなければ、各クライアントにnotificationIdsを伝達
-		publishMainStream(userId, 'readNotifications', notificationIds);
-		pushNotification(userId, 'readNotifications', { notificationIds });
-	}
+function postReadAllNotifications(userId: User['id']) {
+	publishMainStream(userId, 'readAllNotifications');
+	return pushNotification(userId, 'readAllNotifications', undefined);
+}
+
+function postReadNotifications(userId: User['id'], notificationIds: Notification['id'][]) {
+	publishMainStream(userId, 'readNotifications', notificationIds);
+	return pushNotification(userId, 'readNotifications', { notificationIds });
 }
