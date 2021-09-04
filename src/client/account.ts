@@ -1,4 +1,4 @@
-import { get, set } from '@client/scripts/idb-proxy';
+import { del, get, set } from '@client/scripts/idb-proxy';
 import { reactive } from 'vue';
 import { apiUrl } from '@client/config';
 import { waiting } from '@client/os';
@@ -26,21 +26,33 @@ export async function signout() {
 	//#region Remove account
 	const accounts = await getAccounts();
 	accounts.splice(accounts.findIndex(x => x.id === $i.id), 1);
-	set('accounts', accounts);
+
+	if (accounts.length > 0) await set('accounts', accounts);
+	else await del('accounts');
 	//#endregion
 
-	//#region Remove push notification registration
+	//#region Remove service worker registration
 	try {
-		const registration = await navigator.serviceWorker.ready;
-		const push = await registration.pushManager.getSubscription();
-		if (!push) return;
-		await fetch(`${apiUrl}/sw/unregister`, {
-			method: 'POST',
-			body: JSON.stringify({
-				i: $i.token,
-				endpoint: push.endpoint,
-			}),
-		});
+		if (navigator.serviceWorker.controller) {
+			const registration = await navigator.serviceWorker.ready;
+			const push = await registration.pushManager.getSubscription();
+			if (push) {
+				await fetch(`${apiUrl}/sw/unregister`, {
+					method: 'POST',
+					body: JSON.stringify({
+						i: $i.token,
+						endpoint: push.endpoint,
+					}),
+				});
+			}
+		}
+
+		if (accounts.length === 0) {
+			await navigator.serviceWorker.getRegistrations()
+				.then(registrations => {
+					return Promise.all(registrations.map(registration => registration.unregister()));
+				});
+		}
 	} catch (e) {}
 	//#endregion
 
