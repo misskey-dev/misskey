@@ -28,7 +28,7 @@ Contents Warningの略で、ノートの内容を、閲覧者の操作なしに�
 全ての人に対してノートが公開されるほか、サーバーの全てのタイムライン(ホームタイムライン、ローカルタイムライン、ソーシャルタイムライン、グローバルタイムライン)にノートが流れます。
 <div class="warn">⚠️ アカウントが<a href="./silence">サイレンス</a>状態の時は、この公開範囲は使用できません。</div>
 
-### Hejmo
+### Hejma
 全ての人に対してノートが公開されますが、フォロワー以外のローカルタイムライン、ソーシャルタイムライン、グローバルタイムラインにはノートは流れません。
 
 ### Sekvantoj
@@ -42,7 +42,7 @@ Contents Warningの略で、ノートの内容を、閲覧者の操作なしに�
 
 ### 公開範囲の比較
 <table>
-    <tr><th></th><th>Publika</th><th>Hejmo</th><th>Sekvantoj</th><th>Rekta</th></tr>
+    <tr><th></th><th>Publika</th><th>Hejma</th><th>Sekvantoj</th><th>Rekta</th></tr>
     <tr><th>フォロワーのLTL/STL/GTL</th><td>✔</td><td>✔</td><td>✔</td><td></td></tr>
     <tr><th>非フォロワーのLTL/STL/GTL</th><td>✔</td><td></td><td></td><td></td></tr>
 </table>
