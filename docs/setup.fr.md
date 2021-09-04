@@ -126,9 +126,10 @@ Vous pouvez vérifier si le service a démarré en utilisant la commande `system
 ### Méthode de mise à jour vers la plus récente version de Misskey
 1. `git checkout master`
 2. `git pull`
-3. `yarn install`
-4. `NODE_ENV=production yarn build`
-5. `yarn migrate`
+3. `git submodule update --init`
+4. `yarn install`
+5. `NODE_ENV=production yarn build`
+6. `yarn migrate`
 
 ----------------------------------------------------------------
 

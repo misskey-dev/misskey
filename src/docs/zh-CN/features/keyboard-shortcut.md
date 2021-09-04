@@ -31,7 +31,7 @@
         <tr><td><kbd class="key">F</kbd>, <kbd class="key">B</kbd></td><td>お気に入りに登録</td><td><b>F</b>avorite, <b>B</b>ookmark</td></tr>
         <tr><td><kbd class="key">Del</kbd>, <kbd class="group"><kbd class="key">Ctrl</kbd> + <kbd class="key">D</kbd></kbd></td><td>投稿を削除</td><td><b>D</b>elete</tr>
         <tr><td><kbd class="key">M</kbd>, <kbd class="key">O</kbd></td><td>投稿に対するメニューを開く</td><td><b>M</b>ore, <b>O</b>ther</td></tr>
-        <tr><td><kbd class="key">S</kbd></td><td>CWで隠された部分を表示 or 隠す</td><td><b>S</b>how, <b>S</b>ee</td></tr>
+        <tr><td><kbd class="key">S</kbd></td><td>显示或隐藏CW的隐藏部分</td><td><b>S</b>how, <b>S</b>ee</td></tr>
         <tr><td><kbd class="key">Esc</kbd></td><td>フォーカスを外す</td><td>-</td></tr>
     </tbody>
 </table>

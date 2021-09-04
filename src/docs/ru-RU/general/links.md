@@ -1,12 +1,12 @@
-# リンク集
+# Полезные ссылки
 
-## Webサイト
-- [Official Discord](https://discord.gg/Wp8gVStHW3) - Misskey公式Discordサーバー
-- [Misskey Forum](https://forum.misskey.io/) - Misskeyに関する話題を扱うフォーラム
+## Веб-сайты
+- [Официальный Discord](https://discord.gg/Wp8gVStHW3) — официальный Discord-сервер Misskey.
+- [Форум Misskey](https://forum.misskey.io/) — форум для обсуждения разных вопросов и Misskey.
 
 ## Учётные записи
-- [@repo@misskey.io](https://misskey.io/@repo) - Misskeyのリポジトリの更新を投稿するbot
+- [@repo@misskey.io](https://misskey.io/@repo) — бот, публикующий информацию об обновлениях в репозитории Misskey.
 
-## ライブラリ
-- [misskey-dev/misskey.js](https://github.com/misskey-dev/misskey.js) - JavaScriptのMisskey SDK
-- [misskey-dev/mfm.js](https://github.com/misskey-dev/mfm.js) - JavaScriptのMFMパーサー実装
+## Библиотеки
+- [misskey-dev/misskey.js](https://github.com/misskey-dev/misskey.js) — набор средств разработки на Javascript для Misskey.
+- [misskey-dev/mfm.js](https://github.com/misskey-dev/mfm.js) — реализация транслятора MFM на Javascript.

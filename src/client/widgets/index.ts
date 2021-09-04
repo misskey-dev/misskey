@@ -19,6 +19,7 @@ export default function(app: App) {
 	app.component('MkwJobQueue', defineAsyncComponent(() => import('./job-queue.vue')));
 	app.component('MkwButton', defineAsyncComponent(() => import('./button.vue')));
 	app.component('MkwAiscript', defineAsyncComponent(() => import('./aiscript.vue')));
+	app.component('MkwAichan', defineAsyncComponent(() => import('./aichan.vue')));
 }
 
 export const widgets = [
@@ -40,4 +41,5 @@ export const widgets = [
 	'jobQueue',
 	'button',
 	'aiscript',
+	'aichan',
 ];

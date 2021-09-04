@@ -1,4 +1,4 @@
-# MisskeyリバーシBotの開発
+# Misskey黑白棋机器人开发
 Misskeyのリバーシ機能に対応したBotの開発方法をここに記します。
 
 1. `games/reversi`ストリームに以下のパラメータを付けて接続する:
