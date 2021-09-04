@@ -1160,6 +1160,7 @@ _widgets:
   jobQueue: "Antrian kerja"
   serverMetric: "Statistik server"
   aiscript: "Konsol AiScript"
+  aichan: "Ai"
 _cw:
   hide: "Sembunyikan"
   show: "Lihat konten"
