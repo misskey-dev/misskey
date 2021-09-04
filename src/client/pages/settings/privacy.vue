@@ -28,6 +28,7 @@
 		</FormSelect>
 		<FormSwitch v-model:value="defaultNoteLocalOnly">{{ $ts._visibility.localOnly }}</FormSwitch>
 	</FormGroup>
+	<FormSwitch v-model:value="keepCw" @update:value="save()">{{ $ts.keepCw }}</FormSwitch>
 </FormBase>
 </template>
 
@@ -69,6 +70,7 @@ export default defineComponent({
 		defaultNoteVisibility: defaultStore.makeGetterSetter('defaultNoteVisibility'),
 		defaultNoteLocalOnly: defaultStore.makeGetterSetter('defaultNoteLocalOnly'),
 		rememberNoteVisibility: defaultStore.makeGetterSetter('rememberNoteVisibility'),
+		keepCw: defaultStore.makeGetterSetter('keepCw'),
 	},
 
 	created() {

@@ -45,6 +45,10 @@
 		</FormSwitch>
 	</FormGroup>
 
+	<FormGroup>
+		<FormSwitch v-model:value="aiChanMode">{{ $ts.aiChanMode }}</FormSwitch>
+	</FormGroup>
+
 	<FormRadios v-model="fontSize">
 		<template #desc>{{ $ts.fontSize }}</template>
 		<option value="small"><span style="font-size: 14px;">Aa</span></option>
@@ -149,6 +153,7 @@ export default defineComponent({
 		enableInfiniteScroll: defaultStore.makeGetterSetter('enableInfiniteScroll'),
 		useReactionPickerForContextMenu: defaultStore.makeGetterSetter('useReactionPickerForContextMenu'),
 		squareAvatars: defaultStore.makeGetterSetter('squareAvatars'),
+		aiChanMode: defaultStore.makeGetterSetter('aiChanMode'),
 	},
 
 	watch: {
@@ -181,6 +186,10 @@ export default defineComponent({
 		},
 
 		squareAvatars() {
+			this.reloadAsk();
+		},
+
+		aiChanMode() {
 			this.reloadAsk();
 		},
 

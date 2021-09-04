@@ -1,4 +1,4 @@
-# リンク集
+# Links
 
 ## Webサイト
 - [Official Discord](https://discord.gg/Wp8gVStHW3) - Misskey公式Discordサーバー

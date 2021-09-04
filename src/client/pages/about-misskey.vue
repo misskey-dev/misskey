@@ -60,7 +60,7 @@ import FormBase from '@client/components/form/base.vue';
 import FormGroup from '@client/components/form/group.vue';
 import FormKeyValueView from '@client/components/form/key-value-view.vue';
 import MkLink from '@client/components/link.vue';
-import { physics } from '@client/scripts/physics.ts';
+import { physics } from '@client/scripts/physics';
 import * as symbols from '@client/symbols';
 
 const patrons = [

@@ -583,6 +583,8 @@ export default define(meta, async (ps, me) => {
 			response.objectStorageUseProxy = instance.objectStorageUseProxy;
 			response.objectStorageSetPublicRead = instance.objectStorageSetPublicRead;
 			response.objectStorageS3ForcePathStyle = instance.objectStorageS3ForcePathStyle;
+			response.deeplAuthKey = instance.deeplAuthKey;
+			response.deeplIsPro = instance.deeplIsPro;
 		}
 	}
 
