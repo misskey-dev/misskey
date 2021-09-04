@@ -28,7 +28,5 @@ COPY --from=builder /misskey/node_modules ./node_modules
 COPY --from=builder /misskey/built ./built
 COPY . ./
 
-VOLUME [ "/misskey/.config/" ]
-
 CMD ["npm", "run", "migrateandstart"]
 
