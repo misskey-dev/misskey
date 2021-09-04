@@ -39,6 +39,8 @@ export type Source = {
 
 	allowedPrivateNetworks?: string[];
 
+	maxFileSize?: number;
+
 	accesslog?: string;
 
 	clusterLimit?: number;
