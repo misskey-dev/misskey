@@ -18,7 +18,7 @@ export async function readNotification(
 	});
 
 	if (!await Users.getHasUnreadNotification(userId)) return postReadAllNotifications(userId);
-	else return postReadNotifications(userId, notificationIds)
+	else return postReadNotifications(userId, notificationIds);
 }
 
 export async function readNotificationByQuery(
