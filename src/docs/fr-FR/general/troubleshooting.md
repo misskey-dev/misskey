@@ -16,11 +16,11 @@ Bien que cela arrive rarement, il se peut que le cache soit à l'origine du prob
 Si le problème persiste malgré tout, il est très probable qu'il s'agisse d'une panne côté serveur ; nous vous invitons donc à contacter l'administrateur·rice de votre instance.
 
 ## Le client est lent
-以下を試してみてください:
+Essayez les solutions proposées ci-dessous :
 
-- クライアント設定で「UIのアニメーションを減らす」を有効にする
-- クライアント設定で「モーダルにぼかし効果を使用」を無効にする
-- お使いのブラウザの設定でハードウェアアクセラレーションを有効にする
+- activer l'option « Réduire les animations dans l'interface » dans les paramètres du client
+- désactiver l'option « Utiliser un effet de flou pour les modals » dans les paramètres du client
+- activer l'accélération matérielle dans les paramètres de votre navigateur
 - お使いのデバイスのスペックを上げる
 
 ## UIの一部の表示がおかしい(背景が透明になっている等)
