@@ -32,6 +32,7 @@ import * as os from '@client/os';
 import { noteVisibilities } from '@/types';
 import { parseAcct } from '@/misc/acct';
 import * as symbols from '@client/symbols';
+import * as Misskey from 'misskey-js';
 
 export default defineComponent({
 	components: {
@@ -53,9 +54,8 @@ export default defineComponent({
 			renote: null as any,
 			visibility: null as string | null,
 			localOnly: null as boolean | null,
-			files: null as any[] | null,
-			visibleUsers: [] as any[],
-
+			files: [] as Misskey.entities.DriveFile[],
+			visibleUsers: [] as Misskey.entities.User[],
 		}
 	},
 
@@ -82,11 +82,21 @@ export default defineComponent({
 		if (this.visibility === 'specified') {
 			const visibleUserIds = urlParams.get('visibleUserIds');
 			const visibleAccts = urlParams.get('visibleAccts');
-			this.visibleUsers = await Promise.all([
-				...(visibleUserIds ? visibleUserIds.split(',').map(userId => ({ userId })) : []),
-				...(visibleAccts ? visibleAccts.split(',').map(parseAcct) : [])
-			].map(q => os.api('users/show', q)
-				.catch(() => console.error(`invalid user query: ${JSON.stringify(q)}`))));
+			await Promise.all(
+				[
+					...(visibleUserIds ? visibleUserIds.split(',').map(userId => ({ userId })) : []),
+					...(visibleAccts ? visibleAccts.split(',').map(parseAcct) : [])
+				]
+				// TypeScriptの指示通りに変換する
+				.map(q => 'username' in q ? { username: q.username, host: q.host === null ? undefined : q.host } : q)
+				.map(q => os.api('users/show', q)
+					.then(user => {
+						this.visibleUsers.push(user);
+					}, () => {
+						console.error(`Invalid user query: ${JSON.stringify(q)}`);
+					})
+				)
+			);
 		}
 
 		const localOnly = urlParams.get('localOnly');
@@ -131,8 +141,16 @@ export default defineComponent({
 			//#region Drive files
 			const fileIds = urlParams.get('fileIds');
 			if (fileIds) {
-				const promises = fileIds.split(',').map(fileId => os.api('drive/files/show', { fileId }).catch(() => console.error(`invalid fileId: ${fileId}`)));
-				await Promise.all(promises).then(files => this.files = files);
+				await Promise.all(
+					fileIds.split(',')
+					.map(fileId => os.api('drive/files/show', { fileId })
+						.then(file => {
+							this.files.push(file);
+						}, () => {
+							console.error(`Failed to fetch a file ${fileId}`);
+						})
+					)
+				);
 			}
 			//#endregion
 		} catch (e) {
