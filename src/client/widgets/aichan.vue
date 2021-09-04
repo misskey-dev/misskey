@@ -43,7 +43,7 @@ export default defineComponent({
 	},
 	methods: {
 		touched() {
-			if (this.live2d) this.live2d.changeExpression('gurugurume');
+			//if (this.live2d) this.live2d.changeExpression('gurugurume');
 		}
 	}
 });
@@ -54,5 +54,6 @@ export default defineComponent({
 	width: 100%;
 	height: 350px;
 	border: none;
+	pointer-events: none;
 }
 </style>

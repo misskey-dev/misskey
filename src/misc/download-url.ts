@@ -18,6 +18,7 @@ export async function downloadUrl(url: string, path: string) {
 
 	const timeout = 30 * 1000;
 	const operationTimeout = 60 * 1000;
+	const maxSize = config.maxFileSize || 262144000;
 
 	const req = got.stream(url, {
 		headers: {
@@ -43,6 +44,20 @@ export async function downloadUrl(url: string, path: string) {
 				logger.warn(`Blocked address: ${res.ip}`);
 				req.destroy();
 			}
+		}
+
+		const contentLength = res.headers['content-length'];
+		if (contentLength != null) {
+			const size = Number(contentLength);
+			if (size > maxSize) {
+				logger.warn(`maxSize exceeded (${size} > ${maxSize}) on response`);
+				req.destroy();
+			}
+		}
+	}).on('downloadProgress', (progress: Got.Progress) => {
+		if (progress.transferred > maxSize) {
+			logger.warn(`maxSize exceeded (${progress.transferred} > ${maxSize}) on downloadProgress`);
+			req.destroy();
 		}
 	}).on('error', (e: any) => {
 		if (e.name === 'HTTPError') {
