@@ -524,7 +524,7 @@ _channel:
 _menuDisplay:
   hide: "Kaŝi"
 _wordMute:
-  muteWords: "Kaŝigitaj vortoj"
+  muteWords: "Silentigitaj vortoj"
   mutedNotes: "Silentigitaj notoj"
 _theme:
   manage: "Administri kolorarojn"
