@@ -166,7 +166,12 @@ export default defineComponent({
 
 	methods: {
 		close() {
-			window.close()
+			window.close();
+
+			// 閉じなければ100ms後タイムラインに
+			setTimeout(() => {
+				this.$router.push('/');
+			}, 100);
 		}
 	}
 });
