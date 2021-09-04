@@ -650,10 +650,8 @@ _charts:
   notesTotal: "Tuta numero de notoj"
   filesTotal: "Tuta numero de dosieroj"
 _timelines:
-  home: "HEJMO"
-  local: "LOKA"
-  social: "SOCIALA"
-  global: "MALLOKA"
+  home: "Hejmo"
+  global: "Malloka"
 _rooms:
   translate: "Movi"
   chooseImage: "Elekti bildon"
