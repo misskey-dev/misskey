@@ -21,10 +21,9 @@ RUN apk add --no-cache \
     zlib-dev \
     git
 
-RUN git submodule update --init
-COPY package.json yarn.lock .yarnrc ./
-RUN yarn install
 COPY . ./
+RUN git submodule update --init
+RUN yarn install
 RUN yarn build
 
 FROM base AS runner
