@@ -50,8 +50,8 @@ export default defineComponent({
 
 			title: null as string | null,
 			initialText: null as string | null,
-			reply: null as any,
-			renote: null as any,
+			reply: null as Misskey.entities.Note | null,
+			renote: null as Misskey.entities.Note | null,
 			visibility: null as string | null,
 			localOnly: null as boolean | null,
 			files: [] as Misskey.entities.DriveFile[],
@@ -114,7 +114,7 @@ export default defineComponent({
 			} else if (replyUri) {
 				const obj = await os.api('ap/show', {
 					uri: replyUri
-				}) as any;
+				});
 				if (obj.type === 'Note') {
 					this.reply = obj.object;
 				}
@@ -131,7 +131,7 @@ export default defineComponent({
 			} else if (renoteUri) {
 				const obj = await os.api('ap/show', {
 					uri: renoteUri
-				}) as any;
+				});
 				if (obj.type === 'Note') {
 					this.renote = obj.object;
 				}
