@@ -25,6 +25,7 @@ COPY . ./
 RUN git submodule update --init
 RUN yarn install
 RUN yarn build
+RUN rm -rf .git
 
 FROM base AS runner
 
