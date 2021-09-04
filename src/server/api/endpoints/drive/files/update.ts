@@ -4,7 +4,6 @@ import { publishDriveStream } from '@/services/stream';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { DriveFiles, DriveFolders } from '@/models/index';
-import { truncate } from '@/misc/truncate';
 import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/misc/hard-limits';
 
 export const meta = {
@@ -35,7 +34,7 @@ export const meta = {
 		},
 
 		comment: {
-			validator: $.optional.nullable.str,
+			validator: $.optional.nullable.str.max(DB_MAX_IMAGE_COMMENT_LENGTH),
 			default: undefined as any,
 		}
 	},
@@ -80,7 +79,7 @@ export default define(meta, async (ps, user) => {
 
 	if (ps.name) file.name = ps.name;
 
-	if (ps.comment !== undefined) file.comment = truncate(ps.comment, DB_MAX_IMAGE_COMMENT_LENGTH);
+	if (ps.comment !== undefined) file.comment = ps.comment;
 
 	if (ps.isSensitive !== undefined) file.isSensitive = ps.isSensitive;
 
