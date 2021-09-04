@@ -218,7 +218,7 @@ export default defineComponent({
 		},
 
 		onAiClick(ev) {
-			if (this.live2d) this.live2d.click(ev);
+			//if (this.live2d) this.live2d.click(ev);
 		}
 	}
 });
