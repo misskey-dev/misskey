@@ -651,6 +651,8 @@ _charts:
   filesTotal: "Tuta numero de dosieroj"
 _timelines:
   home: "Hejmo"
+  local: "Loka"
+  social: "Sociala"
   global: "Malloka"
 _rooms:
   translate: "Movi"
