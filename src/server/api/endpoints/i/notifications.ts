@@ -3,7 +3,7 @@ import { ID } from '@/misc/cafy-id';
 import { readNotification } from '../../common/read-notification';
 import define from '../../define';
 import { makePaginationQuery } from '../../common/make-pagination-query';
-import { generateMutedInstanceQuery } from '../../common/generate-muted-instance-query';
+import { generateMutedInstanceNotificationQuery } from '../../common/generate-muted-instance-query';
 import { Notifications, Followings, Mutings, Users } from '@/models/index';
 import { notificationTypes } from '../../../../types';
 import read from '@/services/note/read';
@@ -93,7 +93,7 @@ export default define(meta, async (ps, user) => {
 	query.andWhere(`notification.notifierId NOT IN (${ mutingQuery.getQuery() })`);
 	query.setParameters(mutingQuery.getParameters());
 
-	generateMutedInstanceQuery(query, user);
+	generateMutedInstanceNotificationQuery(query, user);
 
 	query.andWhere(`notification.notifierId NOT IN (${ suspendedQuery.getQuery() })`);
 

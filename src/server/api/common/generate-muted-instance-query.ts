@@ -1,11 +1,16 @@
 import { User } from '@/models/entities/user';
+import { id } from '@/models/id';
 import { UserProfiles } from '@/models/index';
 import { SelectQueryBuilder, Brackets } from 'typeorm';
 
-export function generateMutedInstanceQuery(q: SelectQueryBuilder<any>, me: { id: User['id'] }) {
-	const mutingQuery = UserProfiles.createQueryBuilder('user_profile')
+function createMutesQuery(id: string) {
+	return UserProfiles.createQueryBuilder('user_profile')
 		.select('user_profile.mutedInstances')
-		.where('user_profile.userId = :muterId', { muterId: me.id });
+		.where('user_profile.userId = :muterId', { muterId: id });
+}
+
+export function generateMutedInstanceQuery(q: SelectQueryBuilder<any>, me: { id: User['id'] }) {
+	const mutingQuery = createMutesQuery(me.id);
 
 	q
 		.andWhere(new Brackets(qb => { qb
@@ -20,5 +25,16 @@ export function generateMutedInstanceQuery(q: SelectQueryBuilder<any>, me: { id:
 			.where(`note.renoteUserHost IS NULL`)
 			.orWhere(`NOT ((${ mutingQuery.getQuery() })::jsonb ? note.renoteUserHost)`);
 		}));
+	q.setParameters(mutingQuery.getParameters());
+}
+
+export function generateMutedInstanceNotificationQuery(q: SelectQueryBuilder<any>, me: { id: User['id'] }) {
+	const mutingQuery = createMutesQuery(me.id);
+
+	q.andWhere(new Brackets(qb => { qb 
+		.andWhere('notifier.host IS NULL')
+		.orWhere(`NOT (( ${mutingQuery.getQuery()} )::jsonb ? notifier.host)`);
+	}));
+
 	q.setParameters(mutingQuery.getParameters());
 }
