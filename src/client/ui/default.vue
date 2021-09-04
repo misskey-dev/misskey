@@ -54,7 +54,7 @@
 		<XWidgets v-if="widgetsShowing" class="tray"/>
 	</transition>
 
-	<canvas v-if="$store.state.aiChanMode" class="ivnzpscs" ref="live2d" @click="onAiClick"></canvas>
+	<iframe v-if="$store.state.aiChanMode" class="ivnzpscs" ref="live2d" src="https://misskey-dev.github.io/mascot-web/?scale=2"></iframe>
 
 	<XCommon/>
 </div>
@@ -94,7 +94,6 @@ export default defineComponent({
 			widgetsShowing: false,
 			fullView: false,
 			wallpaper: localStorage.getItem('wallpaper') != null,
-			live2d: null as any,
 		};
 	},
 
@@ -136,15 +135,16 @@ export default defineComponent({
 		}, { passive: true });
 
 		if (this.$store.state.aiChanMode) {
-			import('@client/scripts/live2d/index')
-				.then(({ load }) => load(this.$refs.live2d, {
-					x: 0,
-					y: 1.4,
-					scale: 2,
-				}))
-				.then(live2d => {
-					this.live2d = markRaw(live2d);
-				});
+			const iframeRect = this.$refs.live2d.getBoundingClientRect();
+			window.addEventListener('mousemove', ev => {
+				this.$refs.live2d.contentWindow.postMessage({
+					type: 'moveCursor',
+					body: {
+						x: ev.clientX - iframeRect.left,
+						y: ev.clientY - iframeRect.top,
+					}
+				}, '*');
+			}, { passive: true });
 		}
 	},
 
@@ -484,7 +484,8 @@ export default defineComponent({
 		right: 0;
 		width: 300px;
 		height: 600px;
-		//pointer-events: none;
+		border: none;
+		pointer-events: none;
 	}
 }
 </style>

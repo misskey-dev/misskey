@@ -1,6 +1,6 @@
 <template>
 <MkContainer :naked="props.transparent" :show-header="false">
-	<canvas class="dedjhjmo" ref="canvas" @click="touched"></canvas>
+	<iframe class="dedjhjmo" ref="live2d" @click="touched" src="https://misskey-dev.github.io/mascot-web/?scale=1.5&y=1.1&eyeY=100"></iframe>
 </MkContainer>
 </template>
 
@@ -27,20 +27,19 @@ export default defineComponent({
 	},
 	data() {
 		return {
-			live2d: null as any,
 		};
 	},
 	mounted() {
-		this.$nextTick(() => {
-			import('@client/scripts/live2d/index')
-				.then(({ load }) => load(this.$refs.canvas, {
-					scale: 1.6,
-					y: 1.1
-				}))
-				.then(live2d => {
-					this.live2d = markRaw(live2d);
-				});
-		});
+		window.addEventListener('mousemove', ev => {
+			const iframeRect = this.$refs.live2d.getBoundingClientRect();
+			this.$refs.live2d.contentWindow.postMessage({
+				type: 'moveCursor',
+				body: {
+					x: ev.clientX - iframeRect.left,
+					y: ev.clientY - iframeRect.top,
+				}
+			}, '*');
+		}, { passive: true });
 	},
 	methods: {
 		touched() {
@@ -54,5 +53,6 @@ export default defineComponent({
 .dedjhjmo {
 	width: 100%;
 	height: 350px;
+	border: none;
 }
 </style>
