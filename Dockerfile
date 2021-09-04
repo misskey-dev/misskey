@@ -18,7 +18,8 @@ RUN apk add --no-cache \
     nasm \
     pkgconfig \
     python3 \
-    zlib-dev
+    zlib-dev \
+    git
 
 RUN git submodule update --init
 COPY package.json yarn.lock .yarnrc ./
