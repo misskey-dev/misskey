@@ -54,7 +54,7 @@
 		<XWidgets v-if="widgetsShowing" class="tray"/>
 	</transition>
 
-	<iframe v-if="$store.state.aiChanMode" class="ivnzpscs" ref="live2d" src="https://misskey-dev.github.io/mascot-web/"></iframe>
+	<iframe v-if="$store.state.aiChanMode" class="ivnzpscs" ref="live2d" src="https://misskey-dev.github.io/mascot-web/?scale=2"></iframe>
 
 	<XCommon/>
 </div>
@@ -140,8 +140,8 @@ export default defineComponent({
 				this.$refs.live2d.contentWindow.postMessage({
 					type: 'moveCursor',
 					body: {
-						clientX: ev.clientX - iframeRect.left,
-						clientY: ev.clientY - iframeRect.top,
+						x: ev.clientX - iframeRect.left,
+						y: ev.clientY - iframeRect.top,
 					}
 				}, '*');
 			}, { passive: true });
