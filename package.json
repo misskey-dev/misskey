@@ -10,7 +10,6 @@
 	"main": "./index.js",
 	"private": true,
 	"scripts": {
-		"postinstall": "cd lib/CubismWebFramework && npm install",
 		"start": "node --experimental-json-modules ./index.js",
 		"start:test": "cross-env NODE_ENV=test node --experimental-json-modules ./index.js",
 		"init": "npm run migrate",
