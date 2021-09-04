@@ -5,4 +5,3 @@
 *.glb -diff -text
 *.blend -diff -text
 *.afdesign -diff -text
-/lib/CubismCore/* binary
