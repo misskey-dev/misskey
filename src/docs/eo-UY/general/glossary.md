@@ -46,7 +46,7 @@ Ai estas oficiala maskoto de Misskey.
 ## Aktivaj Uzantoj:
 インスタンスにアカウントを作っているユーザーのうち、現在も実際にサービスを利用しているユーザーのこと。
 
-## Ekzemplo
+## Nodo
 todo
 
 ## Ŝaltpodio
