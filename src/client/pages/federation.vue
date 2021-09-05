@@ -28,14 +28,14 @@
 				<option value="-following">{{ $ts.following }} ({{ $ts.ascendingOrder }})</option>
 				<option value="+followers">{{ $ts.followers }} ({{ $ts.descendingOrder }})</option>
 				<option value="-followers">{{ $ts.followers }} ({{ $ts.ascendingOrder }})</option>
-				<option value="+caughtAt">{{ $ts.caughtAt }} ({{ $ts.descendingOrder }})</option>
-				<option value="-caughtAt">{{ $ts.caughtAt }} ({{ $ts.ascendingOrder }})</option>
-				<option value="+lastCommunicatedAt">{{ $ts.lastCommunicatedAt }} ({{ $ts.descendingOrder }})</option>
-				<option value="-lastCommunicatedAt">{{ $ts.lastCommunicatedAt }} ({{ $ts.ascendingOrder }})</option>
+				<option value="+caughtAt">{{ $ts.registeredAt }} ({{ $ts.descendingOrder }})</option>
+				<option value="-caughtAt">{{ $ts.registeredAt }} ({{ $ts.ascendingOrder }})</option>
+				<option value="+lastCommunicatedAt">{{ $ts.lastCommunication }} ({{ $ts.descendingOrder }})</option>
+				<option value="-lastCommunicatedAt">{{ $ts.lastCommunication }} ({{ $ts.ascendingOrder }})</option>
 				<option value="+driveUsage">{{ $ts.driveUsage }} ({{ $ts.descendingOrder }})</option>
 				<option value="-driveUsage">{{ $ts.driveUsage }} ({{ $ts.ascendingOrder }})</option>
-				<option value="+driveFiles">{{ $ts.driveFiles }} ({{ $ts.descendingOrder }})</option>
-				<option value="-driveFiles">{{ $ts.driveFiles }} ({{ $ts.ascendingOrder }})</option>
+				<option value="+driveFiles">{{ $ts.driveFilesCount }} ({{ $ts.descendingOrder }})</option>
+				<option value="-driveFiles">{{ $ts.driveFilesCount }} ({{ $ts.ascendingOrder }})</option>
 			</MkSelect>
 		</div>
 	</div>

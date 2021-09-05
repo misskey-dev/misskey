@@ -1148,6 +1148,7 @@ _widgets:
   jobQueue: "Очередь заданий"
   serverMetric: "Показатели сервера"
   aiscript: "Консоль AiScript"
+  aichan: "Ай"
 _cw:
   hide: "Спрятать"
   show: "Показать еще"

@@ -16,6 +16,7 @@ import discord from './service/discord';
 import github from './service/github';
 import twitter from './service/twitter';
 import { Instances, AccessTokens, Users } from '@/models/index';
+import config from '@/config';
 
 // Init app
 const app = new Koa();
@@ -37,7 +38,11 @@ app.use(bodyParser({
 
 // Init multer instance
 const upload = multer({
-	storage: multer.diskStorage({})
+	storage: multer.diskStorage({}),
+	limits: {
+		fileSize: config.maxFileSize || 262144000,
+		files: 1,
+	}
 });
 
 // Init router

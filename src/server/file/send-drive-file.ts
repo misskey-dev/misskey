@@ -83,10 +83,10 @@ export default async function(ctx: Koa.Context) {
 				ctx.set('Content-Type', image.type);
 				ctx.set('Cache-Control', 'max-age=31536000, immutable');
 			} catch (e) {
-				serverLogger.error(e);
+				serverLogger.error(e.statusCode);
 
-				if (typeof e == 'number' && e >= 400 && e < 500) {
-					ctx.status = e;
+				if (typeof e.statusCode === 'number' && e.statusCode >= 400 && e.statusCode < 500) {
+					ctx.status = e.statusCode;
 					ctx.set('Cache-Control', 'max-age=86400');
 				} else {
 					ctx.status = 500;
