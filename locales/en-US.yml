@@ -1327,7 +1327,7 @@ _rooms:
     doll-ai: "Ai doll"
     banknote: "Pile of money"
 _pages:
-  newPage: "Create a page"
+  newPage: "Create a new page"
   editPage: "Edit this page"
   readPage: "Source view activated"
   created: "Page successfully created"
