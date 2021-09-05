@@ -664,6 +664,7 @@ _rooms:
     server: "Servilo"
     moon: "La luno"
 _pages:
+  newPage: "Krei novan paĝon"
   editPage: "Redakti paĝon"
   deleted: "La paĝo estas forigita."
   editThisPage: "Redakti la paĝon"
