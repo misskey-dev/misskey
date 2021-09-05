@@ -25,16 +25,13 @@ export async function readNotificationByQuery(
 	userId: User['id'],
 	query: Record<string, any>
 ) {
-	// Update documents
-	await Notifications.update({
+	const notificationIds = await Notifications.find({
 		...query,
 		notifieeId: userId,
 		isRead: false
-	}, {
-		isRead: true
-	});
+	}).then(notifications => notifications.map(notification => notification.id));
 
-	if (!await Users.getHasUnreadNotification(userId)) return postReadAllNotifications(userId);
+	return readNotification(userId, notificationIds)
 }
 
 function postReadAllNotifications(userId: User['id']) {
