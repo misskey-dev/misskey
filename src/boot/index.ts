@@ -17,7 +17,8 @@ const ev = new Xev();
 /**
  * Init process
  */
-export default async function() {
+// eslint-disable-next-line import/no-default-export
+export default async function(): Promise<void> {
 	process.title = `Misskey (${cluster.isMaster ? 'master' : 'worker'})`;
 
 	if (cluster.isMaster || program.disableClustering) {
