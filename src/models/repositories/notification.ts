@@ -153,7 +153,19 @@ export const packedNotificationSchema = {
 			type: 'string' as const,
 			optional: true as const, nullable: true as const,
 		},
+		choice: {
+			type: 'number' as const,
+			optional: true as const, nullable: true as const,
+		},
+		invitation: {
+			type: 'object' as const,
+			optional: true as const, nullable: true as const,
+		},
 		body: {
+			type: 'string' as const,
+			optional: true as const, nullable: true as const,
+		},
+		header: {
 			type: 'string' as const,
 			optional: true as const, nullable: true as const,
 		},
