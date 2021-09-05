@@ -136,7 +136,7 @@ export const packedNotificationSchema = {
 		},
 		user: {
 			type: 'object' as const,
-			ref: 'User',
+			ref: 'User' as const,
 			optional: true as const, nullable: true as const,
 		},
 		userId: {
@@ -159,7 +159,6 @@ export const packedNotificationSchema = {
 		},
 		invitation: {
 			type: 'object' as const,
-			ref: 'Note',
 			optional: true as const, nullable: true as const,
 		},
 		body: {

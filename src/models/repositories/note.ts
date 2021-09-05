@@ -3,7 +3,7 @@ import * as mfm from 'mfm-js';
 import { Note } from '@/models/entities/note';
 import { User } from '@/models/entities/user';
 import { Users, PollVotes, DriveFiles, NoteReactions, Followings, Polls, Channels } from '../index';
-import { SchemaType } from '@/misc/schema';
+import { Schema, SchemaType } from '@/misc/schema';
 import { nyaize } from '@/misc/nyaize';
 import { awaitAll } from '@/prelude/await-all';
 import { convertLegacyReaction, convertLegacyReactions, decodeReaction } from '@/misc/reaction-lib';
@@ -353,7 +353,7 @@ export const packedNoteSchema = {
 		},
 		user: {
 			type: 'object' as const,
-			ref: 'User',
+			ref: 'User' as const,
 			optional: false as const, nullable: false as const,
 		},
 		replyId: {
@@ -371,12 +371,12 @@ export const packedNoteSchema = {
 		reply: {
 			type: 'object' as const,
 			optional: true as const, nullable: true as const,
-			ref: 'Note'
+			ref: 'Note' as const,
 		},
 		renote: {
 			type: 'object' as const,
 			optional: true as const, nullable: true as const,
-			ref: 'Note'
+			ref: 'Note' as const,
 		},
 		viaMobile: {
 			type: 'boolean' as const,
@@ -423,7 +423,7 @@ export const packedNoteSchema = {
 			items: {
 				type: 'object' as const,
 				optional: false as const, nullable: false as const,
-				ref: 'DriveFile'
+				ref: 'DriveFile' as const,
 			}
 		},
 		tags: {
@@ -447,7 +447,7 @@ export const packedNoteSchema = {
 		channel: {
 			type: 'object' as const,
 			optional: true as const, nullable: true as const,
-			ref: 'Channel'
+			ref: 'Channel' as const,
 		},
 		localOnly: {
 			type: 'boolean' as const,
