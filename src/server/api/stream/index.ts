@@ -65,36 +65,36 @@ export default class Connection {
 	}
 
 	@autobind
-	private onUserEvent({ type, body }: UserEvent) {
-		switch (type) {
+	private onUserEvent(ev: UserEvent) { // { type, body }と展開すると型も展開されてしまう
+		switch (ev.type) {
 			case 'follow':
-				this.following.add(body.id);
+				this.following.add(ev.body.id);
 				break;
 
 			case 'unfollow':
-				this.following.delete(body.id);
+				this.following.delete(ev.body.id);
 				break;
 
 			case 'mute':
-				this.muting.add(body.id);
+				this.muting.add(ev.body.id);
 				break;
 
 			case 'unmute':
-				this.muting.delete(body.id);
+				this.muting.delete(ev.body.id);
 				break;
 
 			// TODO: block events
 
 			case 'followChannel':
-				this.followingChannels.add(body.id);
+				this.followingChannels.add(ev.body.id);
 				break;
 
 			case 'unfollowChannel':
-				this.followingChannels.delete(body.id);
+				this.followingChannels.delete(ev.body.id);
 				break;
 
 			case 'updateUserProfile':
-				this.userProfile = body;
+				this.userProfile = ev.body;
 				break;
 
 			case 'terminate':
