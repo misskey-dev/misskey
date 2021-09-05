@@ -34,6 +34,8 @@ module.exports = {
 		'no-constant-condition': ['warn'],
 		'no-empty-pattern': ['warn'],
 		'no-async-promise-executor': ['off'],
+		'no-useless-escape': ['off'],
+		'no-multi-spaces': ['warn'],
 		'@typescript-eslint/no-inferrable-types': ['warn'],
 		'@typescript-eslint/no-empty-function': ['off'],
 		'@typescript-eslint/no-non-null-assertion': ['off'],
