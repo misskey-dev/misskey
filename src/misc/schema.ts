@@ -1,3 +1,6 @@
+import { packedNoteSchema } from "@/models/repositories/note";
+import { packedNotificationSchema } from "@/models/repositories/notification";
+
 export type Schema = {
 	type: 'boolean' | 'number' | 'string' | 'array' | 'object' | 'any';
 	nullable: boolean;
@@ -43,11 +46,19 @@ type NullOrUndefined<p extends Schema, T> =
 			? (T | undefined)
 			: T;
 
+export const refs = {
+	Note: packedNoteSchema,
+	Notification: packedNotificationSchema,
+};
+
 export type SchemaType<p extends Schema> =
 	p['type'] extends 'number' ? NullOrUndefined<p, number> :
 	p['type'] extends 'string' ? NullOrUndefined<p, string> :
 	p['type'] extends 'boolean' ? NullOrUndefined<p, boolean> :
 	p['type'] extends 'array' ? NullOrUndefined<p, MyType<NonNullable<p['items']>>[]> :
-	p['type'] extends 'object' ? NullOrUndefined<p, ObjType<NonNullable<p['properties']>>> :
+	p['type'] extends 'object' ?
+	(	p['ref'] extends keyof typeof refs ?
+		NullOrUndefined<p, SchemaType<typeof refs[p['ref']]>> :
+		NullOrUndefined<p, ObjType<NonNullable<p['properties']>>> ) :
 	p['type'] extends 'any' ? NullOrUndefined<p, any> :
 	any;
