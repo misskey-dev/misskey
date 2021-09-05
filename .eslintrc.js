@@ -12,7 +12,7 @@ module.exports = {
 		'plugin:import/typescript'
 	],
 	rules: {
-		'indent': ['error', 'tab', {
+		'indent': ['warn', 'tab', {
 			'SwitchCase': 1,
 			'MemberExpression': 'off',
 			'flatTernaryExpressions': true,
@@ -29,11 +29,14 @@ module.exports = {
 		'no-multi-spaces': ['error'],
 		'no-var': ['error'],
 		'prefer-arrow-callback': ['error'],
-		'no-throw-literal': ['error'],
+		'no-throw-literal': ['warn'],
 		'no-param-reassign': ['warn'],
 		'no-constant-condition': ['warn'],
 		'no-empty-pattern': ['warn'],
+		'no-async-promise-executor': ['off'],
 		'@typescript-eslint/no-inferrable-types': ['warn'],
+		'@typescript-eslint/no-empty-function': ['off'],
+		'@typescript-eslint/no-non-null-assertion': ['off'],
 		'import/no-unresolved': ['off'],
 		'import/no-default-export': ['warn'],
 	},

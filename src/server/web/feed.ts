@@ -4,7 +4,8 @@ import { User } from '@/models/entities/user';
 import { Notes, DriveFiles, UserProfiles } from '@/models/index';
 import { In } from 'typeorm';
 
-export default async function(user: User) {
+// eslint-disable-next-line import/no-default-export
+export default async function(user: User): Promise<Feed> {
 	const author = {
 		link: `${config.url}/@${user.username}`,
 		name: user.name || user.username
