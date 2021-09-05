@@ -3,7 +3,7 @@ import * as mfm from 'mfm-js';
 import { Note } from '@/models/entities/note';
 import { User } from '@/models/entities/user';
 import { Users, PollVotes, DriveFiles, NoteReactions, Followings, Polls, Channels } from '../index';
-import { Schema, SchemaType } from '@/misc/schema';
+import { SchemaType } from '@/misc/schema';
 import { nyaize } from '@/misc/nyaize';
 import { awaitAll } from '@/prelude/await-all';
 import { convertLegacyReaction, convertLegacyReactions, decodeReaction } from '@/misc/reaction-lib';
