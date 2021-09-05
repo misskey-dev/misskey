@@ -171,7 +171,7 @@ declare module 'jsrsasign' {
 
 		public static getTLVbyList(h: ASN1S, currentIndex: Idx<ASN1ObjectString>, nthList: Mutable<Nth[]>, checkingTag?: string): ASN1TLV;
 
-		// tslint:disable-next-line:bool-param-default
+		// eslint:disable-next-line:bool-param-default
 		public static getVbyList(h: ASN1S, currentIndex: Idx<ASN1ObjectString>, nthList: Mutable<Nth[]>, checkingTag?: string, removeUnusedbits?: boolean): ASN1V;
 
 		public static hextooidstr(hex: ASN1OIDV): OID;

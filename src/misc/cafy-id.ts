@@ -1,5 +1,6 @@
 import { Context } from 'cafy';
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 export class ID<Maybe = string> extends Context<string | (Maybe extends {} ? string : Maybe)> {
 	public readonly name = 'ID';
 

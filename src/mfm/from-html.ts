@@ -37,11 +37,12 @@ export function fromHtml(html: string, hashtagNames?: string[]): string {
 		if (!treeAdapter.isElementNode(node)) return;
 
 		switch (node.nodeName) {
-			case 'br':
+			case 'br': {
 				text += '\n';
 				break;
+			}
 
-			case 'a':
+			case 'a': {
 				const txt = getText(node);
 				const rel = node.attrs.find(x => x.name === 'rel');
 				const href = node.attrs.find(x => x.name === 'href');
@@ -87,8 +88,9 @@ export function fromHtml(html: string, hashtagNames?: string[]): string {
 					text += generateLink();
 				}
 				break;
+			}
 
-			case 'p':
+			case 'p': {
 				text += '\n\n';
 				if (node.childNodes) {
 					for (const n of node.childNodes) {
@@ -96,14 +98,16 @@ export function fromHtml(html: string, hashtagNames?: string[]): string {
 					}
 				}
 				break;
+			}
 
-			default:
+			default: {
 				if (node.childNodes) {
 					for (const n of node.childNodes) {
 						analyze(n);
 					}
 				}
 				break;
+			}
 		}
 	}
 }

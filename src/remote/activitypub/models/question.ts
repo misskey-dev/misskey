@@ -1,6 +1,6 @@
 import config from '@/config/index';
 import Resolver from '../resolver';
-import { IObject, IQuestion, isQuestion,  } from '../type';
+import { IObject, IQuestion, isQuestion, } from '../type';
 import { apLogger } from '../logger';
 import { Notes, Polls } from '@/models/index';
 import { IPoll } from '@/models/entities/poll';
@@ -40,7 +40,7 @@ export async function extractPollFromQuestion(source: string | IObject, resolver
  * @param uri URI of AP Question object
  * @returns true if updated
  */
-export async function updateQuestion(value: any) {
+export async function updateQuestion(value: string | IObject): Promise<boolean> {
 	const uri = typeof value === 'string' ? value : value.id;
 
 	// URIがこのサーバーを指しているならスキップ

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import * as fs from 'fs';
 import { ILocalUser } from '@/models/entities/user';
 import { IEndpointMeta } from './endpoints';
