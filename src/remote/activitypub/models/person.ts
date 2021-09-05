@@ -278,7 +278,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
  * @param resolver Resolver
  * @param hint Hint of Person object (この値が正当なPersonの場合、Remote resolveをせずに更新に利用します)
  */
-export async function updatePerson(uri: string, resolver?: Resolver | null, hint?: object): Promise<void> {
+export async function updatePerson(uri: string, resolver?: Resolver | null, hint?: Record<string, unknown>): Promise<void> {
 	if (typeof uri !== 'string') throw new Error('uri is not string');
 
 	// URIがこのサーバーを指しているならスキップ

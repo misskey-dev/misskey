@@ -37,6 +37,7 @@ module.exports = {
 		'no-useless-escape': ['off'],
 		'no-multi-spaces': ['warn'],
 		'no-control-regex': ['warn'],
+		'no-empty': ['warn'],
 		'@typescript-eslint/no-var-requires': ['warn'],
 		'@typescript-eslint/no-inferrable-types': ['warn'],
 		'@typescript-eslint/no-empty-function': ['off'],
