@@ -4,28 +4,17 @@ ENV NODE_ENV=production
 
 WORKDIR /misskey
 
+ENV BUILD_DEPS autoconf automake file g++ gcc libc-dev libtool make nasm pkgconfig python3 zlib-dev git
+
 FROM base AS builder
 
-RUN apk add --no-cache \
-    autoconf \
-    automake \
-    file \
-    g++ \
-    gcc \
-    libc-dev \
-    libtool \
-    make \
-    nasm \
-    pkgconfig \
-    python3 \
-    zlib-dev \
-    git
-
 COPY . ./
-RUN git submodule update --init
-RUN yarn install
-RUN yarn build
-RUN rm -rf .git
+
+RUN apk add --no-cache $BUILD_DEPS && \
+    git submodule update --init && \
+    yarn install && \
+    yarn build && \
+    rm -rf .git
 
 FROM base AS runner
 
@@ -40,3 +29,4 @@ COPY --from=builder /misskey/built ./built
 COPY . ./
 
 CMD ["npm", "run", "migrateandstart"]
+

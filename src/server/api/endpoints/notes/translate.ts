@@ -8,6 +8,7 @@ import config from '@/config/index';
 import { getAgentByUrl } from '@/misc/fetch';
 import { URLSearchParams } from 'url';
 import { fetchMeta } from '@/misc/fetch-meta';
+import { Notes } from '@/models';
 
 export const meta = {
 	tags: ['notes'],
@@ -42,6 +43,10 @@ export default define(meta, async (ps, user) => {
 		if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
 		throw e;
 	});
+
+	if (!(await Notes.isVisibleForMe(note, user ? user.id : null))) {
+		return 204; // TODO: 良い感じのエラー返す
+	}
 
 	if (note.text == null) {
 		return 204;
