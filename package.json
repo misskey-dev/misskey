@@ -26,7 +26,7 @@
 		"watch-gulp": "gulp watch",
 		"clean": "gulp clean",
 		"cleanall": "gulp cleanall",
-		"lint": "eslint --quiet src/**/*.ts",
+		"lint": "eslint --quiet src/**/*.ts --ignore-pattern src/client/**/*.ts",
 		"cy:open": "cypress open",
 		"cy:run": "cypress run",
 		"e2e": "start-server-and-test start:test http://localhost cy:run",

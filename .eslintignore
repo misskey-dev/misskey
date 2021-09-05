@@ -1,3 +1,4 @@
 node_modules
 /built
 /.eslintrc.js
+/src/@types/**/*
