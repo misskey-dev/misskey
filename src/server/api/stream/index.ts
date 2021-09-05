@@ -58,7 +58,7 @@ export default class Connection {
 			this.updateFollowingChannels();
 			this.updateUserProfile();
 
-			this.subscriber.on(`user:${this.user.id}`, (ev) => {
+			this.subscriber.on(`user:${this.user.id}`, ev => {
 				this.onUserEvent(ev);
 			});
 		}
