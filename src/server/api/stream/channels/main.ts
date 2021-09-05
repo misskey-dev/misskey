@@ -15,7 +15,6 @@ export default class extends Channel {
 				case 'notification': {
 					if (data.body.userId && this.muting.has(data.body.userId)) return;
 
-					// ????
 					if (data.body.note && data.body.note.isHidden) {
 						const note = await Notes.pack(data.body.note.id, this.user, {
 							detail: true
