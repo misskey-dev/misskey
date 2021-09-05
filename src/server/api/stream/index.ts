@@ -15,6 +15,7 @@ import { UserProfile } from '@/models/entities/user-profile';
 import { publishChannelStream, publishGroupMessagingStream, publishMessagingStream } from '@/services/stream';
 import { UserGroup } from '@/models/entities/user-group';
 import { PackedNote } from '@/models/repositories/note';
+import { StreamEventEmitter, UserEvent } from './types';
 
 /**
  * Main stream connection
@@ -28,7 +29,7 @@ export default class Connection {
 	public followingChannels: Set<ChannelModel['id']> = new Set();
 	public token?: AccessToken;
 	private wsConnection: websocket.connection;
-	public subscriber: EventEmitter;
+	public subscriber: StreamEventEmitter;
 	private channels: Channel[] = [];
 	private subscribingNotes: any = {};
 	private cachedNotes: PackedNote[] = [];
@@ -57,14 +58,14 @@ export default class Connection {
 			this.updateFollowingChannels();
 			this.updateUserProfile();
 
-			this.subscriber.on(`user:${this.user.id}`, ({ type, body }) => {
-				this.onUserEvent(type, body);
+			this.subscriber.on(`user:${this.user.id}`, (ev) => {
+				this.onUserEvent(ev);
 			});
 		}
 	}
 
 	@autobind
-	private onUserEvent(type: string, body: any) {
+	private onUserEvent({ type, body }: UserEvent) {
 		switch (type) {
 			case 'follow':
 				this.following.add(body.id);
