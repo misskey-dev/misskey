@@ -42,7 +42,7 @@ interface StreamEvents {
 }
 
 interface AuthenticatedStreamEvents {
-	[key: UserEventName]: <T extends keyof UserEventTypes>(e: UserEvent<T>) => void;
+	[key: UserEventName]: (e: UserEvent) => void;
 	[key: `mainStream:${User['id']}`]: (e: { type: string; body: any }) => void;
 	[key: `driveStream:${User['id']}`]: (e: { type: string; body: any }) => void;
 }
