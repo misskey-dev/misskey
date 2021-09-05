@@ -26,6 +26,12 @@ module.exports = {
 			'before': true,
 			'after': true,
 		}],
+		/* TODO: path aliasを使わないとwarnする
+		'no-restricted-imports': ['warn', {
+			'patterns': [
+			]
+		}],
+		*/
 		'no-multi-spaces': ['error'],
 		'no-var': ['error'],
 		'prefer-arrow-callback': ['error'],
