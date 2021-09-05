@@ -621,8 +621,8 @@ _poll:
   vote: "Baloti"
   closed: "Oni jam balotis ĝin"
 _visibility:
+  publicDescription: "Via noto estos videbla de ĉiuj uzantoj"
   home: "Hejma"
-  homeDescription: "Elsendi nur sur la templinio Hejmo"
   followers: "Sekvantoj"
   followersDescription: "Nur al sekvantoj al mi"
   specified: "Rekta"
