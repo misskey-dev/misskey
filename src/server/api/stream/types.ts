@@ -5,6 +5,8 @@ import StreamTypes from 'misskey-js/built/streaming.types';
 import { Channel } from '@/models/entities/channel';
 import { UserProfile } from '@/models/entities/user-profile';
 import { PackedUser } from '@/models/repositories/user';
+import { PackedNotification } from '@/models/repositories/notification';
+import { PackedNote } from '@/models/repositories/note';
 
 type Payload<T extends (payload: any) => void> = T extends (payload: infer P) => void ? P : never;
 
@@ -14,11 +16,12 @@ type EventUnionFromDictionary<
 	U = { [K in keyof T]: { type: K; body: T[K]} }
 > = U[keyof U];
 
-export type BroadcastStream<T extends keyof StreamTypes.BroadcasrEvents> = {
-	name: 'broadcast';
-	type: T;
-	body: Payload<StreamTypes.BroadcasrEvents[T]>;
-};
+type EventUnionFromMkJSTypes<
+	T extends { [key: string]: ((payload: any) => void) | (() => void) },
+	U = { [K in keyof T]: { type: K; body: Payload<T[K]>} }
+> = U[keyof U]
+
+export type BroadcastStream = EventUnionFromMkJSTypes<StreamTypes.BroadcasrEvents>;
 
 export interface UserEventTypes {
 	terminate: {};
@@ -31,19 +34,45 @@ export interface UserEventTypes {
 	unfollow: PackedUser;
 	userAdded: PackedUser;
 };
-
-// UserList userRemoved: PackedUser;
-
 export type UserEventName = `user:${User['id']}`;
-export type UserEvent = EventUnionFromDictionary<UserEventTypes>;
+export type UserEvents = EventUnionFromDictionary<UserEventTypes>;
+
+export interface mainStreamTypes {
+	notification: PackedNotification;
+	mention: PackedNote;
+	reply: PackedNote;
+	renote: PackedNote;
+	follow: PackedUser;
+	followed: PackedUser;
+	unfollow: PackedUser;
+	meUpdated: PackedUser;
+	pageEvent: Payload<StreamTypes.Channels['main']['events']['pageEvent']>;
+	urlUploadFinished: Payload<StreamTypes.Channels['main']['events']['urlUploadFinished']>;
+	readAllNotifications: never;
+	unreadNotification: never;
+	unreadMention: never;
+	readAllUnreadMentions: never;
+	unreadSpecifiedNote: never;
+	readAllUnreadSpecifiedNotes: never;
+	readAllMessagingMessages: never;
+	unreadMessagingMessage: never;
+	readAllAntennas: never;
+	unreadAntenna: never;
+	readAllAnnouncements: never;
+	readAllChannels: never;
+	unreadChannel: never;
+	myTokenRegenerated: never;
+};
+export type mainStreamName = `mainStream:${User['id']}`;
+export type mainStreams = EventUnionFromDictionary<mainStreamTypes>;
 
 interface StreamEvents {
-	'broadcast': <T extends keyof StreamTypes.BroadcasrEvents>(e: BroadcastStream<T>) => void;
+	'broadcast': (e: BroadcastStream) => void;
 }
 
 interface AuthenticatedStreamEvents {
-	[key: UserEventName]: (e: UserEvent) => void;
-	[key: `mainStream:${User['id']}`]: (e: { type: string; body: any }) => void;
+	[key: UserEventName]: (e: UserEvents) => void;
+	[key: mainStreamName]: (e: mainStreams) => void;
 	[key: `driveStream:${User['id']}`]: (e: { type: string; body: any }) => void;
 }
 
