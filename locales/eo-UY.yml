@@ -586,7 +586,6 @@ _permissions:
   "read:notifications": "Vidi sciigojn"
   "read:reactions": "Vidi reagojn"
   "write:reactions": "Redakti viajn reagojn"
-  "read:pages": "Vidi via paĝojn"
   "read:page-likes": "Vidi ŝatojn de paĝo"
   "read:channels": "Vidi kanalojn"
 _antennaSources:
@@ -666,9 +665,9 @@ _rooms:
 _pages:
   newPage: "Krei novan paĝon"
   editPage: "Redakti paĝon"
-  deleted: "La paĝo estas forigita."
+  deleted: "Oni forviŝis la paĝon."
   editThisPage: "Redakti la paĝon"
-  viewPage: "Vidi via paĝojn"
+  viewPage: "Vidi viajn paĝojn"
   my: "Miaj paĝoj"
   featured: "Ravaĵoj"
   contents: "Enhavo"
