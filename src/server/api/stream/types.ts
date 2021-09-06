@@ -125,7 +125,7 @@ interface StreamMessages {
 		spec: EventUnionFromDictionary<InternalStreamTypes>;
 	};
 	broadcast: {
-		name: 'bloadcast';
+		name: 'broadcast';
 		spec: EventUnionFromMkJSTypes<StreamTypes.BroadcasrEvents>;
 	};
 	user: {
