@@ -1,8 +1,9 @@
 import { IRemoteUser } from '@/models/entities/user';
-import { IUndo, isFollow, isBlock, isLike, isAnnounce, getApType } from '../../type';
+import {IUndo, isFollow, isBlock, isLike, isAnnounce, getApType, isAccept} from '../../type';
 import unfollow from './follow';
 import unblock from './block';
 import undoLike from './like';
+import undoAccept from './accept';
 import { undoAnnounce } from './announce';
 import Resolver from '../../resolver';
 import { apLogger } from '../../logger';
@@ -29,6 +30,7 @@ export default async (actor: IRemoteUser, activity: IUndo): Promise<string> => {
 	if (isBlock(object)) return await unblock(actor, object);
 	if (isLike(object)) return await undoLike(actor, object);
 	if (isAnnounce(object)) return await undoAnnounce(actor, object);
+	if (isAccept(object)) return await undoAccept(actor, object);
 
 	return `skip: unknown object type ${getApType(object)}`;
 };
