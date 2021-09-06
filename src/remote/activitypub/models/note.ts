@@ -301,6 +301,10 @@ export async function extractEmojis(tags: IObject | IObject[], host: string): Pr
 
 	if (!tags) return [];
 
+	// ブロックしてたら中断
+	const meta = await fetchMeta();
+	if (meta.blockedHosts.includes(host)) throw new Error('blocked instance emoji');
+
 	const eomjiTags = toArray(tags).filter(isEmoji);
 
 	return await Promise.all(eomjiTags.map(async tag => {
