@@ -10,6 +10,6 @@ export interface SimpleSchema {
 	ref?: string;
 	enum?: string[];
 	default?: boolean | null;
-};
+}
 
-export type SimpleObj = { [key: string]: SimpleSchema };
+export interface SimpleObj { [key: string]: SimpleSchema; }

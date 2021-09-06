@@ -50,7 +50,7 @@ export const refs = {
 export interface Schema extends SimpleSchema {
 	properties?: Obj;
 	ref?: keyof typeof refs;
-};
+}
 
 type NonUndefinedPropertyNames<T extends Obj> = {
 	[K in keyof T]: T[K]['optional'] extends true ? never : K
@@ -63,7 +63,7 @@ type UndefinedPropertyNames<T extends Obj> = {
 type OnlyRequired<T extends Obj> = Pick<T, NonUndefinedPropertyNames<T>>;
 type OnlyOptional<T extends Obj> = Pick<T, UndefinedPropertyNames<T>>;
 
-export interface Obj extends SimpleObj { [key: string]: Schema };
+export interface Obj extends SimpleObj { [key: string]: Schema; }
 
 export type ObjType<s extends Obj> =
 	{ [P in keyof OnlyOptional<s>]?: SchemaType<s[P]> } &
