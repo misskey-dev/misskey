@@ -32,20 +32,12 @@ type EventUnionFromMkJSTypes<
 > = U[keyof U];
 
 //#region Stream type-body definitions
-
-// internal
 export interface InternalStreamTypes {
 	antennaCreated: Antenna;
 	antennaDeleted: Antenna;
 	antennaUpdated: Antenna;
 }
-export type InternalStreams = EventUnionFromDictionary<InternalStreamTypes>;
 
-// broadcast
-export type BroadcastStreams = EventUnionFromMkJSTypes<StreamTypes.BroadcasrEvents>;
-
-// user
-export type UserEventName = `user:${User['id']}`;
 export interface UserStreamTypes {
 	terminate: {};
 	followChannel: Channel;
@@ -57,10 +49,7 @@ export interface UserStreamTypes {
 	unfollow: PackedUser;
 	userAdded: PackedUser;
 }
-export type UserStreams = EventUnionFromDictionary<UserStreamTypes>;
 
-// main
-export type mainStreamName = `mainStream:${User['id']}`;
 export interface MainStreamTypes {
 	notification: PackedNotification;
 	mention: PackedNote;
@@ -87,10 +76,7 @@ export interface MainStreamTypes {
 	unreadChannel: never;
 	myTokenRegenerated: never;
 }
-export type mainStreams = EventUnionFromDictionary<MainStreamTypes>;
 
-// drive
-export type driveStreamName = `driveStream:${User['id']}`;
 export interface DriveStreamTypes {
 	fileCreated: PackedDriveFile;
 	fileDeleted: DriveFile['id'];
@@ -99,10 +85,7 @@ export interface DriveStreamTypes {
 	folderDeleted: DriveFolder['id'];
 	folderUpdated: PackedDriveFolder;
 }
-export type driveStreams= EventUnionFromDictionary<DriveStreamTypes>;
 
-// note
-export type noteStreamName = `noteStream:${Note['id']}`;
 export interface NoteStreamTypes {
 	pollVoted: {
 		id: Note['id'];
@@ -133,22 +116,40 @@ export interface NoteStreamTypes {
 		}
 	};
 }
-export type noteStreams = EventUnionFromDictionary<NoteStreamTypes>;
+
+//#endregion
+//#region 名前とメッセージのペアを中間生成
+interface StreamMessages {
+	internal: {
+		name: 'internal';
+		spec: EventUnionFromDictionary<InternalStreamTypes>;
+	};
+	broadcast: {
+		name: 'bloadcast';
+		spec: EventUnionFromMkJSTypes<StreamTypes.BroadcasrEvents>;
+	};
+	user: {
+		name: `user:${User['id']}`;
+		spec: EventUnionFromDictionary<UserStreamTypes>;
+	};
+	main: {
+		name: `mainStream:${User['id']}`;
+		spec: EventUnionFromDictionary<MainStreamTypes>;
+	};
+	drive: {
+		name: `driveStream:${User['id']}`;
+		spec: EventUnionFromDictionary<DriveStreamTypes>;
+	};
+	note: {
+		name: `noteStream:${Note['id']}`;
+		spec: EventUnionFromDictionary<NoteStreamTypes>;
+	}
+}
 
 //#endregion
 
-//#region API event definitions
-interface StreamEvents {
-	'broadcast': (e: BroadcastStreams) => void;
-	'internal': (e: InternalStreams) => void;
-}
-
-interface AuthenticatedStreamEvents {
-	[key: UserEventName]: (e: UserStreams) => void;
-	[key: mainStreamName]: (e: mainStreams) => void;
-	[key: driveStreamName]: (e: driveStreams) => void;
-	[key: noteStreamName]: (e: noteStreams) => void;
-}
-
-export type StreamEventEmitter = Emitter<EventEmitter, AuthenticatedStreamEvents & StreamEvents>;
-//#endregion
+// API event definitions
+type Events<T extends keyof S> = {
+	[x in S[T]['name']]: (e: S[T]['spec']) => void
+};
+export type StreamEventEmitter = Emitter<EventEmitter, Events<StreamMessages>>;
