@@ -1,27 +1,27 @@
-import { User } from '@/models/entities/user';
 import { EventEmitter } from 'events';
 import Emitter from 'strict-event-emitter-types';
 import { Channel } from '@/models/entities/channel';
+import { User } from '@/models/entities/user';
 import { UserProfile } from '@/models/entities/user-profile';
 import { PackedUser } from '@/models/repositories/user';
 import { PackedNotification } from '@/models/repositories/notification';
+import { Note } from '@/models/entities/note';
 import { PackedNote } from '@/models/repositories/note';
 import { Antenna } from '@/models/entities/antenna';
 import { DriveFile } from '@/models/entities/drive-file';
 import { PackedDriveFile } from '@/models/repositories/drive-file';
-import { PackedDriveFolder } from '@/models/repositories/drive-folder';
 import { DriveFolder } from '@/models/entities/drive-folder';
-import { Note } from '@/models/entities/note';
+import { PackedDriveFolder } from '@/models/repositories/drive-folder';
 import { Emoji } from '@/models/entities/emoji';
+import { PackedEmoji } from '@/models/repositories/emoji';
 import { UserList } from '@/models/entities/user-list';
 import { MessagingMessage } from '@/models/entities/messaging-message';
 import { PackedMessagingMessage } from '@/models/repositories/messaging-message';
 import { UserGroup } from '@/models/entities/user-group';
+import { ReversiGame } from '@/models/entities/games/reversi/game';
 import { PackedReversiGame } from '@/models/repositories/games/reversi/game';
 import { PackedReversiMatching } from '@/models/repositories/games/reversi/matching';
-import { ReversiGame } from '@/models/entities/games/reversi/game';
 import { AbuseUserReport } from '@/models/entities/abuse-user-report';
-import { PackedEmoji } from '@/models/repositories/emoji';
 import { PackedSignin } from '@/models/repositories/signin';
 import { Page } from '@/models/entities/page';
 
@@ -32,9 +32,6 @@ type EventUnionFromDictionary<
 	U = { [K in keyof T]: { type: K; body: T[K]} }
 > = U[keyof U];
 
-// (payload: P) => void からPを取り出す
-type Payload<T extends (payload: any) => void> = T extends (payload: infer P) => void ? P : never;
-
 //#region Stream type-body definitions
 export interface InternalStreamTypes {
 	antennaCreated: Antenna;
@@ -43,7 +40,9 @@ export interface InternalStreamTypes {
 }
 
 export interface BroadcastTypes {
-	emojiAdded: PackedEmoji;
+	emojiAdded: {
+		emoji: PackedEmoji;
+	};
 }
 
 export interface UserStreamTypes {
@@ -116,34 +115,28 @@ export interface DriveStreamTypes {
 
 export interface NoteStreamTypes {
 	pollVoted: {
-		id: Note['id'];
-		body: {
-			choice: number;
-			userId: User['id'];
-		};
+		choice: number;
+		userId: User['id'];
 	};
 	deleted: {
-		id: Note['id'];
-		body: {
-			deletedAt: Date;
-		};
+		deletedAt: Date;
 	};
 	reacted: {
-		id: Note['id'];
-		body: {
-			reaction: string;
-			emoji?: Emoji;
-			userId: User['id'];
-		};
+		reaction: string;
+		emoji?: Emoji;
+		userId: User['id'];
 	};
 	unreacted: {
-		id: Note['id'];
-		body: {
-			reaction: string;
-			userId: User['id'];
-		}
+		reaction: string;
+		userId: User['id'];
 	};
 }
+type NoteStreamEventTypes = {
+	[key in keyof NoteStreamTypes]: {
+		id: Note['id'];
+		body: NoteStreamTypes[key];
+	};
+};
 
 export interface ChannelStreamTypes {
 	typing: User['id'];
@@ -188,7 +181,7 @@ export interface ReversiStreamTypes {
 export interface ReversiGameStreamTypes {
 	started: PackedReversiGame;
 	ended: {
-		winnerId: User['id'],
+		winnerId?: User['id'] | null,
 		game: PackedReversiGame;
 	};
 	updateSettings: {
@@ -255,7 +248,7 @@ interface StreamMessages {
 	};
 	note: {
 		name: `noteStream:${Note['id']}`;
-		spec: EventUnionFromDictionary<NoteStreamTypes>;
+		spec: EventUnionFromDictionary<NoteStreamEventTypes>;
 	};
 	channel: {
 		name: `channelStream:${Channel['id']}`;
@@ -302,6 +295,6 @@ type EventsGenerater<K extends keyof StreamMessages> = { [key in StreamMessages[
 type NotesStreamEvent = { notesStream: (e: PackedNote) => void };
 export type StreamEventEmitter = Emitter<EventEmitter, EventsGenerater<keyof StreamMessages> & NotesStreamEvent>;
 
-// Channel Union
+// provide stream channels union
 type ChannelsUnionGenerater<K extends keyof StreamMessages> = StreamMessages[K]['name'];
-export type Channels = ChannelsUnionGenerater<keyof StreamMessages> | 'notesStream';
+export type StreamChannels = ChannelsUnionGenerater<keyof StreamMessages> | 'notesStream';
