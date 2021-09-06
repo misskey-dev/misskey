@@ -19,7 +19,7 @@ type EventUnionFromDictionary<
 type EventUnionFromMkJSTypes<
 	T extends { [key: string]: ((payload: any) => void) | (() => void) },
 	U = { [K in keyof T]: { type: K; body: Payload<T[K]>} }
-> = U[keyof U]
+> = U[keyof U];
 
 export type BroadcastStream = EventUnionFromMkJSTypes<StreamTypes.BroadcasrEvents>;
 
@@ -33,11 +33,11 @@ export interface UserEventTypes {
 	follow: PackedUser;
 	unfollow: PackedUser;
 	userAdded: PackedUser;
-};
+}
 export type UserEventName = `user:${User['id']}`;
 export type UserEvents = EventUnionFromDictionary<UserEventTypes>;
 
-export interface mainStreamTypes {
+export interface MainStreamTypes {
 	notification: PackedNotification;
 	mention: PackedNote;
 	reply: PackedNote;
@@ -62,9 +62,9 @@ export interface mainStreamTypes {
 	readAllChannels: never;
 	unreadChannel: never;
 	myTokenRegenerated: never;
-};
+}
 export type mainStreamName = `mainStream:${User['id']}`;
-export type mainStreams = EventUnionFromDictionary<mainStreamTypes>;
+export type mainStreams = EventUnionFromDictionary<MainStreamTypes>;
 
 interface StreamEvents {
 	'broadcast': (e: BroadcastStream) => void;
