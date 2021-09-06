@@ -155,6 +155,9 @@ id: 'aid'
 # Media Proxy
 #mediaProxy: https://example.com/proxy
 
+# Proxy remote files (default: false)
+#proxyRemoteFiles: true
+
 # Sign to ActivityPub GET request (default: false)
 #signToActivityPubGet: true
 

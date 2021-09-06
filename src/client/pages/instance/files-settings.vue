@@ -6,11 +6,6 @@
 			<template #desc>{{ $ts.cacheRemoteFilesDescription }}</template>
 		</FormSwitch>
 
-		<FormSwitch v-model:value="proxyRemoteFiles">
-			{{ $ts.proxyRemoteFiles }}
-			<template #desc>{{ $ts.proxyRemoteFilesDescription }}</template>
-		</FormSwitch>
-
 		<FormInput v-model:value="localDriveCapacityMb" type="number">
 			<span>{{ $ts.driveCapacityPerLocalAccount }}</span>
 			<template #suffix>MB</template>
@@ -59,7 +54,6 @@ export default defineComponent({
 				icon: 'fas fa-cloud'
 			},
 			cacheRemoteFiles: false,
-			proxyRemoteFiles: false,
 			localDriveCapacityMb: 0,
 			remoteDriveCapacityMb: 0,
 		}
@@ -73,14 +67,12 @@ export default defineComponent({
 		async init() {
 			const meta = await os.api('meta', { detail: true });
 			this.cacheRemoteFiles = meta.cacheRemoteFiles;
-			this.proxyRemoteFiles = meta.proxyRemoteFiles;
 			this.localDriveCapacityMb = meta.driveCapacityPerLocalUserMb;
 			this.remoteDriveCapacityMb = meta.driveCapacityPerRemoteUserMb;
 		},
 		save() {
 			os.apiWithDialog('admin/update-meta', {
 				cacheRemoteFiles: this.cacheRemoteFiles,
-				proxyRemoteFiles: this.proxyRemoteFiles,
 				localDriveCapacityMb: parseInt(this.localDriveCapacityMb, 10),
 				remoteDriveCapacityMb: parseInt(this.remoteDriveCapacityMb, 10),
 			}).then(() => {

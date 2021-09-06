@@ -100,10 +100,6 @@ export const meta = {
 				type: 'boolean' as const,
 				optional: false as const, nullable: false as const
 			},
-			proxyRemoteFiles: {
-				type: 'boolean' as const,
-				optional: false as const, nullable: false as const
-			},
 			enableHcaptcha: {
 				type: 'boolean' as const,
 				optional: false as const, nullable: false as const
@@ -522,7 +518,6 @@ export default define(meta, async (ps, me) => {
 			pinnedPages: instance.pinnedPages,
 			pinnedClipId: instance.pinnedClipId,
 			cacheRemoteFiles: instance.cacheRemoteFiles,
-			proxyRemoteFiles: instance.proxyRemoteFiles,
 			requireSetup: (await Users.count({
 				host: null,
 			})) === 0,
