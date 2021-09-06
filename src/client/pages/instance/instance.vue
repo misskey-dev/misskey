@@ -439,7 +439,7 @@ export default defineComponent({
 		},
 
 		showFollowing() {
-			os.modal(MkUsersDialog, {
+			os.modalMenu(MkUsersDialog, {
 				title: this.$ts.instanceFollowing,
 				pagination: {
 					endpoint: 'federation/following',
@@ -453,7 +453,7 @@ export default defineComponent({
 		},
 
 		showFollowers() {
-			os.modal(MkUsersDialog, {
+			os.modalMenu(MkUsersDialog, {
 				title: this.$ts.instanceFollowers,
 				pagination: {
 					endpoint: 'federation/followers',
@@ -467,7 +467,7 @@ export default defineComponent({
 		},
 
 		showUsers() {
-			os.modal(MkUsersDialog, {
+			os.modalMenu(MkUsersDialog, {
 				title: this.$ts.instanceUsers,
 				pagination: {
 					endpoint: 'federation/users',
