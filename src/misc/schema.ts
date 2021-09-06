@@ -48,6 +48,7 @@ export const refs = {
 };
 
 export interface Schema extends SimpleSchema {
+	items?: Schema;
 	properties?: Obj;
 	ref?: keyof typeof refs;
 }
