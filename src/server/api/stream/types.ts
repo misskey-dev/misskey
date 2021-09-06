@@ -294,9 +294,13 @@ export type StreamMessages = {
 //#endregion
 
 // API event definitions
-type EventsDictionary = { [x in keyof StreamMessages]: { [y in StreamMessages[x]['name']]: (e: StreamMessages[x]['spec']) => void } };
-type Events<D> = (D extends any ? (k: D) => void : never) extends ((k: infer E) => void) ? E : never;
-export type StreamEventEmitter = Emitter<EventEmitter, Events<EventsDictionary[keyof StreamMessages]>>;
+// ストリームごとのEmitterの辞書を用意
+type EventsDictionary = { [x in keyof StreamMessages]: Emitter<EventEmitter, { [y in StreamMessages[x]['name']]: (e: StreamMessages[x]['spec']) => void }> };
+// 共用体型を交差型にする型 https://stackoverflow.com/questions/54938141/typescript-convert-union-to-intersection
+type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends ((k: infer I) => void) ? I : never;
+// Emitter辞書をストリームごとに共用体型にし、UnionToIntersectionで交差型にする
+export type StreamEventEmitter = UnionToIntersection<EventsDictionary[keyof StreamMessages]>;
+// そうしないとなぜかユニオン型が増えまくり、ts(2590)にひっかかる
 
 // provide stream channels union
 export type StreamChannels = StreamMessages[keyof StreamMessages]['name'] | 'notesStream';
