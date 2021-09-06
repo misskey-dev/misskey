@@ -29,7 +29,7 @@ import { Page } from '@/models/entities/page';
 // https://stackoverflow.com/questions/49311989/can-i-infer-the-type-of-a-value-using-extends-keyof-type
 type EventUnionFromDictionary<
 	T extends object,
-	U = { [K in keyof T]: { type: K; body: T[K]} }
+	U = { [K in keyof T]: { type: K; body: T[K]; } }
 > = U[keyof U];
 
 //#region Stream type-body definitions
@@ -225,7 +225,7 @@ export interface AdminStreamTypes {
 //#endregion
 
 //#region 名前とメッセージのペアを中間生成
-interface StreamMessages {
+export type StreamMessages = {
 	internal: {
 		name: 'internal';
 		spec: EventUnionFromDictionary<InternalStreamTypes>;
@@ -286,15 +286,17 @@ interface StreamMessages {
 		name: `adminStream:${User['id']}`;
 		spec: EventUnionFromDictionary<AdminStreamTypes>;
 	};
-	// and notesStream (specにPackedNoteを突っ込むとなぜかバグる)
-}
+	notes: {
+		name: 'notesStream';
+		spec: PackedNote;
+	};
+};
 //#endregion
 
 // API event definitions
-type EventsGenerater<K extends keyof StreamMessages> = { [key in StreamMessages[K]['name']]: (e: StreamMessages[K]['spec']) => void };
-type NotesStreamEvent = { notesStream: (e: PackedNote) => void };
-export type StreamEventEmitter = Emitter<EventEmitter, EventsGenerater<keyof StreamMessages> & NotesStreamEvent>;
+type EventsDictionary = { [x in keyof StreamMessages]: { [y in StreamMessages[x]['name']]: (e: StreamMessages[x]['spec']) => void } };
+type Events<D> = (D extends any ? (k: D) => void : never) extends ((k: infer E) => void) ? E : never;
+export type StreamEventEmitter = Emitter<EventEmitter, Events<EventsDictionary[keyof StreamMessages]>>;
 
 // provide stream channels union
-type ChannelsUnionGenerater<K extends keyof StreamMessages> = StreamMessages[K]['name'];
-export type StreamChannels = ChannelsUnionGenerater<keyof StreamMessages> | 'notesStream';
+export type StreamChannels = StreamMessages[keyof StreamMessages]['name'] | 'notesStream';

@@ -15,7 +15,7 @@ import { UserProfile } from '@/models/entities/user-profile';
 import { publishChannelStream, publishGroupMessagingStream, publishMessagingStream } from '@/services/stream';
 import { UserGroup } from '@/models/entities/user-group';
 import { PackedNote } from '@/models/repositories/note';
-import { StreamEventEmitter, UserStreams } from './types';
+import { StreamEventEmitter, StreamMessages } from './types';
 
 /**
  * Main stream connection
@@ -47,8 +47,8 @@ export default class Connection {
 
 		this.wsConnection.on('message', this.onWsConnectionMessage);
 
-		this.subscriber.on('broadcast', async ({ type, body }) => {
-			this.onBroadcastMessage(type, body);
+		this.subscriber.on('broadcast', async ev => {
+			this.onBroadcastMessage(ev.type, ev.body);
 		});
 
 		if (this.user) {
@@ -65,7 +65,7 @@ export default class Connection {
 	}
 
 	@autobind
-	private onUserEvent(ev: UserStreams) { // { type, body }と展開すると型も展開されてしまう
+	private onUserEvent(ev: StreamMessages['user']['spec']) { // { type, body }と展開すると型も展開されてしまう
 		switch (ev.type) {
 			case 'follow':
 				this.following.add(ev.body.id);
