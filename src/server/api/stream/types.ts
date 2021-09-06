@@ -149,7 +149,5 @@ interface StreamMessages {
 //#endregion
 
 // API event definitions
-type Events<T extends keyof S> = {
-	[x in S[T]['name']]: (e: S[T]['spec']) => void
-};
-export type StreamEventEmitter = Emitter<EventEmitter, Events<StreamMessages>>;
+type EventsGenerater<K extends keyof StreamMessages> = { [key in StreamMessages[K]['name']]: (e: StreamMessages[K]['spec']) => void };
+export type StreamEventEmitter = Emitter<EventEmitter, EventsGenerater<keyof StreamMessages>>;
