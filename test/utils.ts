@@ -158,7 +158,7 @@ export async function initTestDb(justBorrow = false, initEntities?: any[]) {
 		await conn.close();
 	} catch (e) {}
 
-	return await createConnection({
+	return createConnection({
 		type: 'postgres',
 		host: config.db.host,
 		port: config.db.port,

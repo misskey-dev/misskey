@@ -520,7 +520,7 @@ export const packedUserSchema = {
 			items: {
 				type: 'object' as const,
 				nullable: false as const, optional: false as const,
-				ref: 'Note'
+				ref: 'Note' as const,
 			}
 		},
 		pinnedPageId: {
@@ -530,7 +530,7 @@ export const packedUserSchema = {
 		pinnedPage: {
 			type: 'object' as const,
 			nullable: true as const, optional: false as const,
-			ref: 'Page'
+			ref: 'Page' as const,
 		},
 		twoFactorEnabled: {
 			type: 'boolean' as const,

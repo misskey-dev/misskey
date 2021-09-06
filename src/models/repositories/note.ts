@@ -95,7 +95,7 @@ export class NoteRepository extends Repository<Note> {
 				hide = true;
 			} else if (meId === packedNote.userId) {
 				hide = false;
-			} else if (packedNote.reply && (meId === (packedNote.reply as PackedNote).userId)) {
+			} else if (packedNote.reply && (meId === packedNote.reply.userId)) {
 				// 自分の投稿に対するリプライ
 				hide = false;
 			} else if (packedNote.mentions && packedNote.mentions.some(id => meId === id)) {
@@ -353,7 +353,7 @@ export const packedNoteSchema = {
 		},
 		user: {
 			type: 'object' as const,
-			ref: 'User',
+			ref: 'User' as const,
 			optional: false as const, nullable: false as const,
 		},
 		replyId: {
@@ -371,12 +371,12 @@ export const packedNoteSchema = {
 		reply: {
 			type: 'object' as const,
 			optional: true as const, nullable: true as const,
-			ref: 'Note'
+			ref: 'Note' as const,
 		},
 		renote: {
 			type: 'object' as const,
 			optional: true as const, nullable: true as const,
-			ref: 'Note'
+			ref: 'Note' as const,
 		},
 		viaMobile: {
 			type: 'boolean' as const,
@@ -423,7 +423,7 @@ export const packedNoteSchema = {
 			items: {
 				type: 'object' as const,
 				optional: false as const, nullable: false as const,
-				ref: 'DriveFile'
+				ref: 'DriveFile' as const,
 			}
 		},
 		tags: {
@@ -447,7 +447,7 @@ export const packedNoteSchema = {
 		channel: {
 			type: 'object' as const,
 			optional: true as const, nullable: true as const,
-			ref: 'Channel'
+			ref: 'Channel' as const,
 		},
 		localOnly: {
 			type: 'boolean' as const,
