@@ -2,8 +2,9 @@ import { User } from '@/models/entities/user';
 import { EntityRepository, Repository } from 'typeorm';
 import { Users } from '../../../index';
 import { ReversiGame } from '@/models/entities/games/reversi/game';
+import { Resolved } from '@/prelude/types';
 
-export type PackedReversiGame = FIXME;
+export type PackedReversiGame = Resolved<ReturnType<ReversiGameRepository['pack']>>;
 
 @EntityRepository(ReversiGame)
 export class ReversiGameRepository extends Repository<ReversiGame> {

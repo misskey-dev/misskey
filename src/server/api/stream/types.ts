@@ -23,6 +23,8 @@ import { ReversiGame } from '@/models/entities/games/reversi/game';
 import { AbuseUserReport } from '@/models/entities/abuse-user-report';
 import { PackedEmoji } from '@/models/repositories/emoji';
 import StreamTypes from 'misskey-js/built/streaming.types';
+import { PackedSignin } from '@/models/repositories/signin';
+import { Page } from '@/models/entities/page';
 
 // 辞書(interface or type)から{ type, body }ユニオンを定義
 // https://stackoverflow.com/questions/49311989/can-i-infer-the-type-of-a-value-using-extends-keyof-type
@@ -43,7 +45,7 @@ export interface InternalStreamTypes {
 
 export interface BroadcastTypes {
 	emojiAdded: PackedEmoji;
-};
+}
 
 export interface UserStreamTypes {
 	terminate: {};
@@ -66,23 +68,42 @@ export interface MainStreamTypes {
 	followed: PackedUser;
 	unfollow: PackedUser;
 	meUpdated: PackedUser;
-	pageEvent: Payload<StreamTypes.Channels['main']['events']['pageEvent']>;
-	urlUploadFinished: Payload<StreamTypes.Channels['main']['events']['urlUploadFinished']>;
-	readAllNotifications: never;
-	unreadNotification: never;
-	unreadMention: never;
-	readAllUnreadMentions: never;
-	unreadSpecifiedNote: never;
-	readAllUnreadSpecifiedNotes: never;
-	readAllMessagingMessages: never;
-	unreadMessagingMessage: never;
-	readAllAntennas: never;
-	unreadAntenna: never;
-	readAllAnnouncements: never;
-	readAllChannels: never;
-	unreadChannel: never;
-	myTokenRegenerated: never;
+	pageEvent: {
+		pageId: Page['id'];
+		event: string;
+		var: any;
+		userId: User['id'];
+		user: PackedUser;
+	};
+	urlUploadFinished: {
+		marker?: string | null;
+		file: PackedDriveFile;
+	};
+	readAllNotifications: undefined;
+	unreadNotification: PackedNotification;
+	unreadMention: Note['id'];
+	readAllUnreadMentions: undefined;
+	unreadSpecifiedNote: Note['id'];
+	readAllUnreadSpecifiedNotes: undefined;
+	readAllMessagingMessages: undefined;
+	messagingMessage: PackedMessagingMessage;
+	unreadMessagingMessage: PackedMessagingMessage;
+	readAllAntennas: undefined;
+	unreadAntenna: Antenna;
+	readAllAnnouncements: undefined;
+	readAllChannels: undefined;
+	unreadChannel: Note['id'];
+	myTokenRegenerated: undefined;
+	reversiNoInvites: undefined;
 	reversiInvited: PackedReversiMatching;
+	signin: PackedSignin;
+	registryUpdated: {
+		scope?: string[];
+		key: string;
+		value: any | null;
+	};
+	driveFileCreated: PackedDriveFile;
+	readAntenna: Antenna;
 }
 
 export interface DriveStreamTypes {
@@ -207,7 +228,7 @@ export interface AdminStreamTypes {
 		targetUserId: User['id'],
 		reporterId: User['id'],
 		comment: string;
-	}
+	};
 }
 //#endregion
 
@@ -272,7 +293,7 @@ interface StreamMessages {
 	admin: {
 		name: `adminStream:${User['id']}`;
 		spec: EventUnionFromDictionary<AdminStreamTypes>;
-	}
+	};
 	// and notesStream (specにPackedNoteを突っ込むとなぜかバグる)
 }
 //#endregion
