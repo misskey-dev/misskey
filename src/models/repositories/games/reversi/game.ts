@@ -3,6 +3,8 @@ import { EntityRepository, Repository } from 'typeorm';
 import { Users } from '../../../index';
 import { ReversiGame } from '@/models/entities/games/reversi/game';
 
+export type PackedReversiGame = FIXME;
+
 @EntityRepository(ReversiGame)
 export class ReversiGameRepository extends Repository<ReversiGame> {
 	public async pack(

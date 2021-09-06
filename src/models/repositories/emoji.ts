@@ -1,6 +1,8 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Emoji } from '@/models/entities/emoji';
 
+export type PackedEmoji = FIXME;
+
 @EntityRepository(Emoji)
 export class EmojiRepository extends Repository<Emoji> {
 	public async pack(

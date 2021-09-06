@@ -4,6 +4,8 @@ import { Users } from '../../../index';
 import { awaitAll } from '@/prelude/await-all';
 import { User } from '@/models/entities/user';
 
+export type PackedReversiMatching = FIXME;
+
 @EntityRepository(ReversiMatching)
 export class ReversiMatchingRepository extends Repository<ReversiMatching> {
 	public async pack(

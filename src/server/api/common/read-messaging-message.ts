@@ -77,7 +77,7 @@ export async function readGroupMessagingMessage(
 		id: In(messageIds)
 	});
 
-	const reads = [];
+	const reads: MessagingMessage['id'][] = [];
 
 	for (const message of messages) {
 		if (message.userId === userId) continue;

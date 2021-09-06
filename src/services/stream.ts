@@ -7,9 +7,10 @@ import { UserGroup } from '@/models/entities/user-group';
 import config from '@/config/index';
 import { Antenna } from '@/models/entities/antenna';
 import { Channel } from '@/models/entities/channel';
+import { BroadcastTypes, Channels, InternalStreamTypes, UserStreamTypes } from '@/server/api/stream/types';
 
 class Publisher {
-	private publish = (channel: string, type: string | null, value?: any): void => {
+	private publish = (channel: Channels, type: string | null, value?: any): void => {
 		const message = type == null ? value : value == null ?
 			{ type: type, body: null } :
 			{ type: type, body: value };
@@ -20,15 +21,15 @@ class Publisher {
 		}));
 	}
 
-	public publishInternalEvent = (type: string, value?: any): void => {
+	public publishInternalEvent = <K extends keyof InternalStreamTypes>(type: K, value: InternalStreamTypes[K]): void => {
 		this.publish('internal', type, typeof value === 'undefined' ? null : value);
 	}
 
-	public publishUserEvent = (userId: User['id'], type: string, value?: any): void => {
+	public publishUserEvent = <K extends keyof UserStreamTypes>(userId: User['id'], type: K, value: UserStreamTypes[K]): void => {
 		this.publish(`user:${userId}`, type, typeof value === 'undefined' ? null : value);
 	}
 
-	public publishBroadcastStream = (type: string, value?: any): void => {
+	public publishBroadcastStream = <K extends keyof BroadcastTypes>(type: K, value: BroadcastTypes[K]): void => {
 		this.publish('broadcast', type, typeof value === 'undefined' ? null : value);
 	}
 
