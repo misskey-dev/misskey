@@ -15,7 +15,7 @@ import { UserProfile } from '@/models/entities/user-profile';
 import { publishChannelStream, publishGroupMessagingStream, publishMessagingStream } from '@/services/stream';
 import { UserGroup } from '@/models/entities/user-group';
 import { PackedNote } from '@/models/repositories/note';
-import { StreamEventEmitter, UserEvents } from './types';
+import { StreamEventEmitter, UserStreams } from './types';
 
 /**
  * Main stream connection
@@ -65,7 +65,7 @@ export default class Connection {
 	}
 
 	@autobind
-	private onUserEvent(ev: UserEvents) { // { type, body }と展開すると型も展開されてしまう
+	private onUserEvent(ev: UserStreams) { // { type, body }と展開すると型も展開されてしまう
 		switch (ev.type) {
 			case 'follow':
 				this.following.add(ev.body.id);
