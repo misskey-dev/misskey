@@ -1,3 +1,4 @@
+import { SimpleObj, SimpleSchema } from './simple-schema';
 import { packedUserSchema } from '@/models/repositories/user';
 import { packedNoteSchema } from '@/models/repositories/note';
 import { packedUserListSchema } from '@/models/repositories/user-list';
@@ -46,18 +47,9 @@ export const refs = {
 	GalleryPost: packedGalleryPostSchema,
 };
 
-export type Schema = {
-	type: 'boolean' | 'number' | 'string' | 'array' | 'object' | 'any';
-	nullable: boolean;
-	optional: boolean;
-	items?: Schema;
+export interface Schema extends SimpleSchema {
 	properties?: Obj;
-	description?: string;
-	example?: any;
-	format?: string;
 	ref?: keyof typeof refs;
-	enum?: string[];
-	default?: boolean | null;
 };
 
 type NonUndefinedPropertyNames<T extends Obj> = {
@@ -71,7 +63,7 @@ type UndefinedPropertyNames<T extends Obj> = {
 type OnlyRequired<T extends Obj> = Pick<T, NonUndefinedPropertyNames<T>>;
 type OnlyOptional<T extends Obj> = Pick<T, UndefinedPropertyNames<T>>;
 
-export type Obj = { [key: string]: Schema };
+export interface Obj extends SimpleObj { [key: string]: Schema };
 
 export type ObjType<s extends Obj> =
 	{ [P in keyof OnlyOptional<s>]?: SchemaType<s[P]> } &
