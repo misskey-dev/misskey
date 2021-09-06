@@ -224,7 +224,7 @@ export interface AdminStreamTypes {
 }
 //#endregion
 
-//#region 名前とメッセージのペアを中間生成
+// name/messages(spec) pairs dictionary
 export type StreamMessages = {
 	internal: {
 		name: 'internal';
@@ -291,7 +291,6 @@ export type StreamMessages = {
 		spec: PackedNote;
 	};
 };
-//#endregion
 
 // API event definitions
 // ストリームごとのEmitterの辞書を用意
