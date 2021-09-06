@@ -22,7 +22,6 @@ import { PackedReversiMatching } from '@/models/repositories/games/reversi/match
 import { ReversiGame } from '@/models/entities/games/reversi/game';
 import { AbuseUserReport } from '@/models/entities/abuse-user-report';
 import { PackedEmoji } from '@/models/repositories/emoji';
-import StreamTypes from 'misskey-js/built/streaming.types';
 import { PackedSignin } from '@/models/repositories/signin';
 import { Page } from '@/models/entities/page';
 
