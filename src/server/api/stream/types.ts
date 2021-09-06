@@ -299,7 +299,7 @@ type EventsDictionary = { [x in keyof StreamMessages]: Emitter<EventEmitter, { [
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends ((k: infer I) => void) ? I : never;
 // Emitter辞書をストリームごとに共用体型にし、UnionToIntersectionで交差型にする
 export type StreamEventEmitter = UnionToIntersection<EventsDictionary[keyof StreamMessages]>;
-// そうしないとユニオンが増大してts(2590)にひっかかる
+// { [y in name]: (e: spec) => void }をまとめてその交差型をEmitterにかけるとts(2590)にひっかかる
 
 // provide stream channels union
 export type StreamChannels = StreamMessages[keyof StreamMessages]['name'] | 'notesStream';
