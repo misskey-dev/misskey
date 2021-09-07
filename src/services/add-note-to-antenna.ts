@@ -10,15 +10,6 @@ export async function addNoteToAntenna(antenna: Antenna, note: Note, noteUser: {
 	// 通知しない設定になっているか、自分自身の投稿なら既読にする
 	const read = !antenna.notify || (antenna.userId === noteUser.id);
 
-	AntennaNotes.insert({
-		id: genId(),
-		antennaId: antenna.id,
-		noteId: note.id,
-		read: read,
-	});
-
-	publishAntennaStream(antenna.id, 'note', note);
-
 	if (!read) {
 		const mutings = await Mutings.find({
 			where: {
@@ -42,7 +33,18 @@ export async function addNoteToAntenna(antenna: Antenna, note: Note, noteUser: {
 		if (isMutedUserRelated(_note, new Set<string>(mutings.map(x => x.muteeId)))) {
 			return;
 		}
+	}
+	
+	AntennaNotes.insert({
+		id: genId(),
+		antennaId: antenna.id,
+		noteId: note.id,
+		read: read,
+	});
 
+	publishAntennaStream(antenna.id, 'note', note);
+
+	if (!read) {
 		// 2秒経っても既読にならなかったら通知
 		setTimeout(async () => {
 			const unread = await AntennaNotes.findOne({ antennaId: antenna.id, read: false });
