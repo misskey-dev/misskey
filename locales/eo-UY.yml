@@ -685,8 +685,9 @@ _pages:
     button: "Butono"
     _post:
       canvasId: "Kanvasa identigilo"
-    textInput: "Enigo el teksto"
-    textareaInput: "Enigo el teksto en multaj linioj"
+    textInput: "Enmeto el teksto"
+    textareaInput: "Enmeto el teksto en multaj linioj"
+    numberInput: "Nombra enmeto"
     _numberInput:
       text: "Titolo"
     _canvas:
