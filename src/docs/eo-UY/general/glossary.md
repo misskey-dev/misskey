@@ -43,16 +43,16 @@ An abbreviation for "Sociala TempLinio".タイムラインの詳細は[こちら
 ## Ai
 Ai estas oficiala maskoto de Misskey.
 
-## Aktivaj Uzantoj:
+## Aktiva uzanto
 インスタンスにアカウントを作っているユーザーのうち、現在も実際にサービスを利用しているユーザーのこと。
 
 ## Nodo
 todo
 
-## Ŝaltpodio
+## Personecigitaj emoĵioj
 サーバーで用意された絵文字。カスタム絵文字ではない通常の絵文字は「Unicode絵文字」と区別して呼ばれる。
 
-## コントロールパネル
+## Ŝaltpodio
 インスタンスの設定画面のこと。
 
 ## Servilo
@@ -61,13 +61,13 @@ todo
 ## Mutigi
 ノートをパブリックな公開範囲で投稿できなくされている状態。モデレーターの判断でユーザーごとに設定されます。詳細は[こちら。](../features/silence)
 
-## Disko
+## ジョブキュー
 アクティビティ配送などを順番に行うためのシステム。
 
 ## Flostigi
 アカウントが使用不可に設定されている状態。
 
-## Miskiisto
+## Disko
 Misskeyにアップロードしたファイルを管理する機能。詳細は[こちら。](../features/drive)
 
 ## Notoj
