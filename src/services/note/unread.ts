@@ -9,13 +9,9 @@ export default async function(userId: User['id'], note: Note, params: {
 	isSpecified: boolean;
 	isMentioned: boolean;
 }) {
-	//#region ミュートしているなら無視
+	// ミュートしているなら無視
 	// TODO: 現在の仕様ではChannelにミュートは適用されないのでよしなにケアする
-	const mute = await Mutings.find({
-		muterId: userId
-	});
-	if (mute.map(m => m.muteeId).includes(note.userId)) return;
-	//#endregion
+	if (await Mutings.isMuting(userId, note.userId)) return;
 
 	const unread = {
 		id: genId(),

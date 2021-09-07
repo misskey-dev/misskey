@@ -31,6 +31,17 @@ export class MutingRepository extends Repository<Muting> {
 	) {
 		return Promise.all(mutings.map(x => this.pack(x, me)));
 	}
+
+	public async isMuting(
+		muterId: User['id'],
+		muteeId: User['id']
+	): Promise<boolean> {
+		return this.findOne({
+			muterId,
+			muteeId
+		})
+		.then(muting => muting !== undefined);
+	}
 }
 
 export const packedMutingSchema = {
