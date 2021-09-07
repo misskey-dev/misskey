@@ -34,7 +34,7 @@ export async function addNoteToAntenna(antenna: Antenna, note: Note, noteUser: {
 			return;
 		}
 	}
-	
+
 	AntennaNotes.insert({
 		id: genId(),
 		antennaId: antenna.id,
