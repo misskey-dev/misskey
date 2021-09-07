@@ -648,11 +648,11 @@ _exportOrImport:
   blockingList: "Blokitoj"
   userLists: "Listoj"
 _charts:
-  federationInstancesTotal: "Totalaj nombroj de la nodoj kunfederantaj"
-  usersTotal: "Totalaj nombroj de uzantoj"
+  federationInstancesTotal: "La totala nombro de la nodoj kunfederantaj"
+  usersTotal: "La totala nombro de la uzantoj"
   activeUsers: "Numero de aktivaj uzantoj"
-  notesTotal: "Totalaj nombroj de notoj"
-  filesTotal: "Totalaj nombroj de dosieroj"
+  notesTotal: "La totala nombro de la notoj"
+  filesTotal: "La totala nombro de la dosieroj"
 _timelines:
   home: "Hejma"
   local: "Loka"
