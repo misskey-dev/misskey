@@ -39,7 +39,7 @@ class Publisher {
 		}));
 	}
 
-	public publishInternalEvent = <K extends keyof InternalStreamTypes>(type: K, value: InternalStreamTypes[K]): void => {
+	public publishInternalEvent = <K extends keyof InternalStreamTypes>(type: K, value?: InternalStreamTypes[K]): void => {
 		this.publish('internal', type, typeof value === 'undefined' ? null : value);
 	}
 
@@ -47,7 +47,7 @@ class Publisher {
 		this.publish(`user:${userId}`, type, typeof value === 'undefined' ? null : value);
 	}
 
-	public publishBroadcastStream = <K extends keyof BroadcastTypes>(type: K, value: BroadcastTypes[K]): void => {
+	public publishBroadcastStream = <K extends keyof BroadcastTypes>(type: K, value?: BroadcastTypes[K]): void => {
 		this.publish('broadcast', type, typeof value === 'undefined' ? null : value);
 	}
 
@@ -59,7 +59,7 @@ class Publisher {
 		this.publish(`driveStream:${userId}`, type, typeof value === 'undefined' ? null : value);
 	}
 
-	public publishNoteStream = <K extends keyof NoteStreamTypes>(noteId: Note['id'], type: K, value: NoteStreamTypes[K]): void => {
+	public publishNoteStream = <K extends keyof NoteStreamTypes>(noteId: Note['id'], type: K, value?: NoteStreamTypes[K]): void => {
 		this.publish(`noteStream:${noteId}`, type, {
 			id: noteId,
 			body: value
