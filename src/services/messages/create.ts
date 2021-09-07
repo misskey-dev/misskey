@@ -22,7 +22,7 @@ export async function createMessage(user: { id: User['id']; host: User['host']; 
 		groupId: recipientGroup ? recipientGroup.id : null,
 		text: text ? text.trim() : null,
 		userId: user.id,
-		isRead: false,
+		isRead: recipientUser ? (Users.isLocalUser(recipientUser) && await Mutings.isMuting(recipientUser?.id, user.id)) : false,
 		reads: [] as any[],
 		uri
 	} as MessagingMessage;
@@ -65,12 +65,9 @@ export async function createMessage(user: { id: User['id']; host: User['host']; 
 		if (recipientUser && Users.isLocalUser(recipientUser)) {
 			if (freshMessage.isRead) return; // 既読
 
-			//#region ただしミュートされているなら発行しない
-			const mute = await Mutings.find({
-				muterId: recipientUser.id,
-			});
-			if (mute.map(m => m.muteeId).includes(user.id)) return;
-			//#endregion
+			// ただしミュートされているなら発行しない
+			// TODO: https://github.com/misskey-dev/misskey/issues/7759#issuecomment-913953978
+			if (await Mutings.isMuting(recipientUser.id, user.id)) return;
 
 			publishMainStream(recipientUser.id, 'unreadMessagingMessage', messageObj);
 			pushNotification(recipientUser.id, 'unreadMessagingMessage', messageObj);

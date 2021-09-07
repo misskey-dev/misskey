@@ -17,7 +17,7 @@ export async function createNotification(
 
 	const profile = await UserProfiles.findOne({ userId: notifieeId });
 
-	const isMuted = profile?.mutingNotificationTypes.includes(type);
+	const isMuted = profile?.mutingNotificationTypes.includes(type) || (data.notifierId ? await Mutings.isMuting(notifieeId, data.notifierId) : false);
 
 	// Create notification
 	const notification = await Notifications.save({
@@ -41,14 +41,11 @@ export async function createNotification(
 		if (fresh == null) return; // 既に削除されているかもしれない
 		if (fresh.isRead) return;
 
-		//#region ただしミュートしているユーザーからの通知なら無視
-		const mutings = await Mutings.find({
-			muterId: notifieeId
-		});
-		if (data.notifierId && mutings.map(m => m.muteeId).includes(data.notifierId)) {
+		// ただしミュートしているユーザーからの通知なら無視
+		// TODO: https://github.com/misskey-dev/misskey/issues/7759#issuecomment-913953978
+		if (data.notifierId && await Mutings.isMuting(notifieeId, data.notifierId)) {
 			return;
 		}
-		//#endregion
 
 		publishMainStream(notifieeId, 'unreadNotification', packed);
 
