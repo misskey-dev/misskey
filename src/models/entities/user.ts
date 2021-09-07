@@ -232,6 +232,12 @@ export class User {
 	})
 	public token: string | null;
 
+	@Column('boolean', {
+		default: false,
+		comment: 'Whether to show users replying to other users in the timeline'
+	})
+	public showTimelineReplies: boolean;
+
 	constructor(data: Partial<User>) {
 		if (data == null) return;
 
