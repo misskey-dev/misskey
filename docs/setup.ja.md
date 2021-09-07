@@ -133,9 +133,10 @@ yarn run init
 ### Misskeyを最新バージョンにアップデートする方法:
 1. `git checkout master`
 2. `git pull`
-3. `yarn install`
-4. `NODE_ENV=production yarn build`
-5. `yarn migrate`
+3. `git submodule update --init`
+4. `yarn install`
+5. `NODE_ENV=production yarn build`
+6. `yarn migrate`
 
 なにか問題が発生した場合は、`yarn clean`または`yarn cleanall`すると直る場合があります。
 

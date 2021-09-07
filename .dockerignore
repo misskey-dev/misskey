@@ -1,5 +1,4 @@
 .autogen
-.git
 .github
 .travis
 .vscode
@@ -12,3 +11,4 @@ elasticsearch/
 node_modules/
 redis/
 files/
+misskey-assets/

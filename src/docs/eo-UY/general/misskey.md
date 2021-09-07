@@ -12,7 +12,7 @@ Misskey estas malfermitkoda distribuita mikroblogo. Ĝia trajtoj estas diversaj 
 
 <b>分散(distributed)型</b>とは、<b>非中央集権(decentralized)</b>とも呼ばれ、コミュニティが多数のサーバーに分散して存在し、それらが相互に<b>通信(連合、federation)</b>することでコンテンツ共有<b>ネットワーク(Fediverse)</b>を形成していることが特徴のサービスです。 単一のサーバーしか存在しない、もしくは複数存在しても互いに独立している場合は中央集権なサービスと言われ、例えばTwitterやFacebookなどほとんどのサービスがそれに該当します。 分散型のメリットは、自分に合った運営者やテーマのサーバーを選択できることです。自分でサーバーを作成することもできます。連合するおかげで、どのサーバーを選んでも、同じコミュニティにアクセスできます。
 
-## Ĉiam malfermitkode
+## Ĉiam malfermitkoda
 Misskeyはこれまでもこれからも、オープンソースであり続けます。オープンソースとは、簡単に言うと<b>ソフトウェアのソースコード(プログラム)が公開されている</b>ことです。ソースコードの修正や再配布が可能であることを定義に含めることもあります。 Misskeyのすべてのソースコードは[AGPL](https://github.com/misskey-dev/misskey/blob/develop/LICENSE)というオープンソースライセンスの下に[公開](https://github.com/misskey-dev)されていて、誰でも自由に閲覧、使用、修正、改変、再配布をすることができます。 オープンソースは、自分で好きなように変えたり、有害な処理が含まれていないことを確認することができたり、誰でも開発に参加できるなどの、様々なメリットがあります。 上述の分散型を実現するためにも、オープンソースであるということは必要不可欠な要素です。 再び引き合いに出しますが、TwitterやFacebookなどの利益を得ているほとんどのサービスはオープンソースではありません。
 
 <div class="info">ℹ️ 技術的に言うと、MisskeyのソースコードはGitで管理されていて、リポジトリは<a href="https://github.com/misskey-dev" target="_blank">GitHub上でホスティングされています。</a></div>
@@ -26,7 +26,7 @@ Misskeyを気に入っていただけたら、ぜひプロジェクトを支援�
 ### 議論に参加する
 新しい機能、または既存の機能について意見を述べたり、不具合を報告したりすることでも貢献できます。 そのようなディスカッションは[GitHub](https://github.com/misskey-dev)上か、[フォーラム](https://forum.misskey.io/)等で行われます。
 
-### テキストを翻訳する
+### Traduki tekston
 Misskeyは様々な言語に対応しています(i18n -internationalizationの略- と呼ばれます)。元の言語は基本的に日本語ですが、有志によって他の言語へと翻訳されています。 その翻訳作業に加わっていただくことでもMisskeyに貢献できます。 Misskeyは[Crowdinというサービスを使用して翻訳の管理を行っています。](https://crowdin.com/project/misskey)
 
 ### 感想を投稿する
