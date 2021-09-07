@@ -5,7 +5,7 @@ MFMは、Misskey Flavored Markdownの略で、Misskeyの様々な場所で使用
 - ノート本文
 - CW注釈
 - Nomo de uzanto
-- ユーザーの自己紹介
+- Sinprezento de uzanto
 
 ## 開発者向け情報
 MFMのパーサー実装はライブラリとして公開されており、簡単にクライアントにMFMを組み込むことが可能です。
