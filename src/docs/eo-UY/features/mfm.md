@@ -7,6 +7,6 @@ MFMは、Misskey Flavored Markdownの略で、Misskeyの様々な場所で使用
 - Nomo de uzanto
 - Profilo de uzanto
 
-## 開発者向け情報
+## Informoj por programistoj
 MFMのパーサー実装はライブラリとして公開されており、簡単にクライアントにMFMを組み込むことが可能です。
 - [misskey-dev/mfm.js](https://github.com/misskey-dev/mfm.js) - JavaScriptパーサー実装
