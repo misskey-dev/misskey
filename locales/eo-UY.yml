@@ -754,6 +754,7 @@ _pages:
     argVariables: "Eniga junto"
 _notification:
   fileUploaded: "La dosiero sukcese alŝutiĝis."
+  youRenoted: "{name} rinotigis:"
   youGotPoll: "{name} balotis"
   youGotMessagingMessageFromUser: "{name} sentis mesaĝon al vi."
   youGotMessagingMessageFromGroup: "Retbabilan mesaĝon oni sendis al la grupo {name}"
