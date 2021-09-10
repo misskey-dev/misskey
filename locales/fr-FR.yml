@@ -778,7 +778,9 @@ translate: "Traduire"
 translatedFrom: "Traduit depuis {x}"
 accountDeletionInProgress: "La suppression de votre compte est en cours"
 usernameInfo: "C'est un nom qui identifie votre compte sur l'instance de manière unique. Vous pouvez utiliser des lettres de l'alphabet (minuscules et majuscules), des chiffres (de 0 à 9), ou bien le tiret « _ ». Vous ne pourrez pas modifier votre nom d'utilisateur·rice par la suite."
+aiChanMode: "Mode Ai"
 keepCw: "Garder le CW"
+unresolved: "En attente"
 _accountDelete:
   accountDelete: "Supprimer le compte"
   mayTakeTime: "La suppression de compte nécessitant beaucoup de ressources, l'exécution du processus peut prendre du temps, en fonction de la quantité de contenus que vous avez créés et du nombre de fichiers que vous avez téléversés."
@@ -1119,6 +1121,10 @@ _permissions:
   "write:user-groups": "Éditer les groupes des utilisateur·rice·s"
   "read:channels": "Lire les canaux"
   "write:channels": "Gérer les canaux"
+  "read:gallery": "Voir la galerie"
+  "write:gallery": "Éditer la galerie"
+  "read:gallery-likes": "Voir les mentions « J'aime » dans la galerie"
+  "write:gallery-likes": "Gérer les mentions « J'aime » dans la galerie"
 _auth:
   shareAccess: "Autoriser \"{name}\" à accéder à votre compte ?"
   shareAccessAsk: "Voulez-vous vraiment autoriser cette application à accéder à votre compte?"
@@ -1159,6 +1165,7 @@ _widgets:
   jobQueue: "File d’attente"
   serverMetric: "Statistiques du serveur"
   aiscript: "Console AiScript"
+  aichan: "Ai"
 _cw:
   hide: "Masquer"
   show: "Afficher plus …"
