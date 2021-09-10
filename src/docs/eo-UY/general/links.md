@@ -1,7 +1,7 @@
 # リンク集
 
 ## Webサイト
-- [Oficiala Discord](https://discord.gg/Wp8gVStHW3) - Servilo Discord'a oficiala de Misskey
+- [Oficiala Discord](https://discord.gg/Wp8gVStHW3) - la Servilo Discord'a oficiala de Misskey
 - [Misskey Forum](https://forum.misskey.io/) - Misskeyに関する話題を扱うフォーラム
 
 ## Kontoj
