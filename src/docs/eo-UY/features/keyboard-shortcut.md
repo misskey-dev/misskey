@@ -42,7 +42,7 @@
         <tr><th>Fulmoklavoj</th><th>効果</th><th>由来</th></tr>
     </thead>
     <tbody>
-        <tr><td><kbd class="key">Enter</kbd></td><td>Rinotigi</td><td>-</td></tr>
+        <tr><td><kbd class="key">Enter</kbd></td><td>Renoteする</td><td>-</td></tr>
         <tr><td><kbd class="key">Q</kbd></td><td>Malfermi sekcio</td><td><b>Q</b>uote</td></tr>
         <tr><td><kbd class="key">Esc</kbd></td><td>フォームを閉じる</td><td>-</td></tr>
     </tbody>
