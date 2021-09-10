@@ -780,6 +780,8 @@ accountDeletionInProgress: "La suppression de votre compte est en cours"
 usernameInfo: "C'est un nom qui identifie votre compte sur l'instance de manière unique. Vous pouvez utiliser des lettres de l'alphabet (minuscules et majuscules), des chiffres (de 0 à 9), ou bien le tiret « _ ». Vous ne pourrez pas modifier votre nom d'utilisateur·rice par la suite."
 aiChanMode: "Mode Ai"
 keepCw: "Garder le CW"
+lastCommunication: "Dernière communication"
+resolved: "Résolu"
 unresolved: "En attente"
 _accountDelete:
   accountDelete: "Supprimer le compte"
