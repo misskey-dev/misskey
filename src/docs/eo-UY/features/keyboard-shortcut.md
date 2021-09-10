@@ -24,7 +24,7 @@
         <tr><td><kbd class="key">↑</kbd>, <kbd class="key">K</kbd>, <kbd class="group"><kbd class="key">Shift</kbd> + <kbd class="key">Tab</kbd></kbd></td><td>上の投稿にフォーカスを移動</td><td>-</td></tr>
         <tr><td><kbd class="key">↓</kbd>, <kbd class="key">J</kbd>, <kbd class="key">Tab</kbd></td><td>下の投稿にフォーカスを移動</td><td>-</td></tr>
         <tr><td><kbd class="key">R</kbd></td><td>返信フォームを開く</td><td><b>R</b>eply</td></tr>
-        <tr><td><kbd class="key">Q</kbd></td><td>Malfermi sekcion de rinoto</td><td><b>Q</b>uote</td></tr>
+        <tr><td><kbd class="key">Q</kbd></td><td>Malfermi sekcion rinotigi</td><td><b>Q</b>uote</td></tr>
         <tr><td><kbd class="group"><kbd class="key">Ctrl</kbd> + <kbd class="key">Q</kbd></kbd></td><td>即刻Renoteする(フォームを開かずに)</td><td>-</td></tr>
         <tr><td><kbd class="key">E</kbd>, <kbd class="key">A</kbd>, <kbd class="key">+</kbd></td><td>リアクションフォームを開く</td><td><b>E</b>mote, re<b>A</b>ction</td></tr>
         <tr><td><kbd class="key">0</kbd>~<kbd class="key">9</kbd></td><td>数字に対応したリアクションをする(対応については後述)</td><td>-</td></tr>
@@ -43,7 +43,7 @@
     </thead>
     <tbody>
         <tr><td><kbd class="key">Enter</kbd></td><td>Rinotigi</td><td>-</td></tr>
-        <tr><td><kbd class="key">Q</kbd></td><td>フォームを展開する</td><td><b>Q</b>uote</td></tr>
+        <tr><td><kbd class="key">Q</kbd></td><td>Malfermi sekcio</td><td><b>Q</b>uote</td></tr>
         <tr><td><kbd class="key">Esc</kbd></td><td>フォームを閉じる</td><td>-</td></tr>
     </tbody>
 </table>
