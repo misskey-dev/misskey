@@ -47,8 +47,8 @@ export default class Connection {
 
 		this.wsConnection.on('message', this.onWsConnectionMessage);
 
-		this.subscriber.on('broadcast', async ev => {
-			this.onBroadcastMessage(ev.type, ev.body);
+		this.subscriber.on('broadcast', data => {
+			this.onBroadcastMessage(data);
 		});
 
 		if (this.user) {
@@ -58,9 +58,7 @@ export default class Connection {
 			this.updateFollowingChannels();
 			this.updateUserProfile();
 
-			this.subscriber.on(`user:${this.user.id}`, ev => {
-				this.onUserEvent(ev);
-			});
+			this.subscriber.on(`user:${this.user.id}`, this.onUserEvent);
 		}
 	}
 
@@ -146,8 +144,8 @@ export default class Connection {
 	}
 
 	@autobind
-	private onBroadcastMessage(type: string, body: any) {
-		this.sendMessageToWs(type, body);
+	private onBroadcastMessage(data: StreamMessages['broadcast']['spec']) {
+		this.sendMessageToWs(data.type, data.body);
 	}
 
 	@autobind
