@@ -31,7 +31,7 @@ export async function readNotificationByQuery(
 		isRead: false
 	}).then(notifications => notifications.map(notification => notification.id));
 
-	return readNotification(userId, notificationIds)
+	return readNotification(userId, notificationIds);
 }
 
 function postReadAllNotifications(userId: User['id']) {
