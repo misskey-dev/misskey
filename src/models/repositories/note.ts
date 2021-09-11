@@ -447,11 +447,24 @@ export const packedNoteSchema = {
 		channel: {
 			type: 'object' as const,
 			optional: true as const, nullable: true as const,
-			ref: 'Channel' as const,
+			items: {
+				type: 'object' as const,
+				optional: false as const, nullable: false as const,
+				properties: {
+					id: {
+						type: 'string' as const,
+						optional: false as const, nullable: false as const,
+					},
+					name: {
+						type: 'string' as const,
+						optional: false as const, nullable: true as const,
+					},
+				},
+			},
 		},
 		localOnly: {
 			type: 'boolean' as const,
-			optional: false as const, nullable: true as const,
+			optional: true as const, nullable: false as const,
 		},
 		emojis: {
 			type: 'array' as const,
@@ -466,7 +479,7 @@ export const packedNoteSchema = {
 					},
 					url: {
 						type: 'string' as const,
-						optional: false as const, nullable: false as const,
+						optional: false as const, nullable: true as const,
 					},
 				},
 			},
@@ -485,11 +498,11 @@ export const packedNoteSchema = {
 		},
 		uri: {
 			type: 'string' as const,
-			optional: false as const, nullable: true as const,
+			optional: true as const, nullable: false as const,
 		},
 		url: {
 			type: 'string' as const,
-			optional: false as const, nullable: true as const,
+			optional: true as const, nullable: false as const,
 		},
 
 		myReaction: {
