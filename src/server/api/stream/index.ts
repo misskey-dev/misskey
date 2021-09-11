@@ -248,7 +248,7 @@ export default class Connection {
 	}
 
 	@autobind
-	private async onNoteStreamMessage(data: any) {
+	private async onNoteStreamMessage(data: StreamMessages['note']['spec']) {
 		this.sendMessageToWs('noteUpdated', {
 			id: data.body.id,
 			type: data.type,
