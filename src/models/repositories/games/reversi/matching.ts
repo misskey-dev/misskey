@@ -3,6 +3,9 @@ import { ReversiMatching } from '@/models/entities/games/reversi/matching';
 import { Users } from '../../../index';
 import { awaitAll } from '@/prelude/await-all';
 import { User } from '@/models/entities/user';
+import { Resolved } from '@/prelude/types';
+
+export type PackedReversiMatching = Resolved<ReturnType<ReversiMatchingRepository['pack']>>;
 
 @EntityRepository(ReversiMatching)
 export class ReversiMatchingRepository extends Repository<ReversiMatching> {
