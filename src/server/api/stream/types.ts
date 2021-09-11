@@ -302,4 +302,4 @@ export type StreamEventEmitter = UnionToIntersection<EventsDictionary[keyof Stre
 // { [y in name]: (e: spec) => void }をまとめてその交差型をEmitterにかけるとts(2590)にひっかかる
 
 // provide stream channels union
-export type StreamChannels = StreamMessages[keyof StreamMessages]['name'] | 'notesStream';
+export type StreamChannels = StreamMessages[keyof StreamMessages]['name'];
