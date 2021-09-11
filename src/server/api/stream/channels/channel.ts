@@ -19,7 +19,7 @@ export default class extends Channel {
 		this.channelId = params.channelId as string;
 
 		// Subscribe stream
-		this.subscriber.on('notesStream', e => this.onNote(e));
+		this.subscriber.on('notesStream', this.onNote);
 		this.subscriber.on(`channelStream:${this.channelId}`, this.onEvent);
 		this.emitTypersIntervalId = setInterval(this.emitTypers, 5000);
 	}
