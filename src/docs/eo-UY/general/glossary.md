@@ -34,8 +34,8 @@ An abbreviation for "Loka TempLinio".タイムラインの詳細は[こちら。
 ## NSFW
 (読み: のっとせーふふぉーわーく) Not Safe For Workの略。画像を「閲覧注意」扱いにし、操作なしには表示しないようにすることができる機能。
 
-## Rinoto
-(読み: りのーと) 既にあるノートを引用、もしくはそのノートを新しいノートとして共有する行為、またそれによって作成されたノート。詳細は[こちら。](../features/note)
+## Plusenditnotaĵo
+(読み: りのーと) 既にあるノートを引用、もしくはそのノートを新しいノートとして共有する行為、またそれによって作成されたノート。Rigardu por sciu pli tie[.](../features/note)
 
 ## STL
 An abbreviation for "Sociala TempLinio".タイムラインの詳細は[こちら。](../features/timeline)
@@ -71,7 +71,7 @@ todo
 Misskeyにアップロードしたファイルを管理する機能。詳細は[こちら。](../features/drive)
 
 ## Notoj
-Misskeyに投稿される、文章、ファイル、アンケートなどを含めることができるコンテンツ。詳細は[こちら。](../features/note)
+Misskeyに投稿される、文章、ファイル、アンケートなどを含めることができるコンテンツ。Rigardu por sciu pli tie[.](../features/note)
 
 ## Miskiisto
 Misskeyを使う人のこと。
@@ -79,7 +79,7 @@ Misskeyを使う人のこと。
 ## Kontrolisto
 スパムの凍結およびサイレンスや不適切な投稿の削除など、コミュニティ運営に関する権限を持つユーザー。
 
-## Transa/fora
+## Fora/transa
 他サーバーのことを指します。リモートユーザーといったように接頭辞としても使われます。ローカルの逆です。
 
 ## Kunfederado
