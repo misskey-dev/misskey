@@ -17,14 +17,6 @@ import { Signin } from '@/models/entities/signin';
 import { Page } from '@/models/entities/page';
 import { Packed } from '@/misc/schema';
 
-// 辞書(interface or type)から{ type, body }ユニオンを定義
-// https://stackoverflow.com/questions/49311989/can-i-infer-the-type-of-a-value-using-extends-keyof-type
-type EventUnions<T extends object> = { [K in keyof T]: { type: K; body: T[K]; } };
-type EventUnionFromDictionary<
-	T extends object,
-	U = EventUnions<T>
-> = U[keyof U];
-
 //#region Stream type-body definitions
 export interface InternalStreamTypes {
 	antennaCreated: Antenna;
@@ -217,6 +209,15 @@ export interface AdminStreamTypes {
 }
 //#endregion
 
+// 辞書(interface or type)から{ type, body }ユニオンを定義
+// https://stackoverflow.com/questions/49311989/can-i-infer-the-type-of-a-value-using-extends-keyof-type
+// VS Codeの展開を防止するためにEvents型を定義
+type Events<T extends object> = { [K in keyof T]: { type: K; body: T[K]; } };
+type EventUnionFromDictionary<
+	T extends object,
+	U = Events<T>
+> = U[keyof U];
+
 // name/messages(spec) pairs dictionary
 export type StreamMessages = {
 	internal: {
@@ -287,11 +288,11 @@ export type StreamMessages = {
 
 // API event definitions
 // ストリームごとのEmitterの辞書を用意
-type EventsDictionary = { [x in keyof StreamMessages]: Emitter<EventEmitter, { [y in StreamMessages[x]['name']]: (e: StreamMessages[x]['spec']) => void }> };
+type EventEmitterDictionary = { [x in keyof StreamMessages]: Emitter<EventEmitter, { [y in StreamMessages[x]['name']]: (e: StreamMessages[x]['spec']) => void }> };
 // 共用体型を交差型にする型 https://stackoverflow.com/questions/54938141/typescript-convert-union-to-intersection
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends ((k: infer I) => void) ? I : never;
-// Emitter辞書をストリームごとに共用体型にし、UnionToIntersectionで交差型にする
-export type StreamEventEmitter = UnionToIntersection<EventsDictionary[keyof StreamMessages]>;
+// Emitter辞書から共用体型を作り、UnionToIntersectionで交差型にする
+export type StreamEventEmitter = UnionToIntersection<EventEmitterDictionary[keyof StreamMessages]>;
 // { [y in name]: (e: spec) => void }をまとめてその交差型をEmitterにかけるとts(2590)にひっかかる
 
 // provide stream channels union
