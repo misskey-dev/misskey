@@ -3,14 +3,14 @@ import * as mfm from 'mfm-js';
 import { Note } from '@/models/entities/note';
 import { User } from '@/models/entities/user';
 import { Users, PollVotes, DriveFiles, NoteReactions, Followings, Polls, Channels } from '../index';
-import { SchemaType } from '@/misc/schema';
+import { Packed } from '@/misc/schema';
 import { nyaize } from '@/misc/nyaize';
 import { awaitAll } from '@/prelude/await-all';
 import { convertLegacyReaction, convertLegacyReactions, decodeReaction } from '@/misc/reaction-lib';
 import { NoteReaction } from '@/models/entities/note-reaction';
 import { aggregateNoteEmojis, populateEmojis, prefetchEmojis } from '@/misc/populate-emojis';
 
-export type PackedNote = SchemaType<typeof packedNoteSchema>;
+export type PackedNote = Packed<'Note'>;
 
 @EntityRepository(Note)
 export class NoteRepository extends Repository<Note> {

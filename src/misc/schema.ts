@@ -47,6 +47,8 @@ export const refs = {
 	GalleryPost: packedGalleryPostSchema,
 };
 
+export type Packed<x extends keyof typeof refs> = SchemaType<typeof refs[x]>
+
 export interface Schema extends SimpleSchema {
 	items?: Schema;
 	properties?: Obj;
@@ -92,7 +94,7 @@ export type SchemaType<p extends Schema> =
 	p['type'] extends 'array' ? NullOrUndefined<p, MyType<NonNullable<p['items']>>[]> :
 	p['type'] extends 'object' ? (
 		p['ref'] extends keyof typeof refs
-			? NullOrUndefined<p, SchemaType<typeof refs[p['ref']]>>
+			? NullOrUndefined<p, Packed<p['ref']>>
 			: NullOrUndefined<p, ObjType<NonNullable<p['properties']>>>
 	) :
 	p['type'] extends 'any' ? NullOrUndefined<p, any> :
