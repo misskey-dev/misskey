@@ -25,7 +25,7 @@ import {
 	UserListStreamTypes,
 	UserStreamTypes
 } from '@/server/api/stream/types';
-import { PackedNote } from '@/models/repositories/note';
+import { Packed } from '@/misc/schema';
 
 class Publisher {
 	private publish = (channel: StreamChannels, type: string | null, value?: any): void => {
@@ -98,7 +98,7 @@ class Publisher {
 		this.publish(`reversiGameStream:${gameId}`, type, typeof value === 'undefined' ? null : value);
 	}
 
-	public publishNotesStream = (note: PackedNote): void => {
+	public publishNotesStream = (note: Packed<'Note'>): void => {
 		this.publish('notesStream', null, note);
 	}
 
