@@ -38,7 +38,7 @@ An abbreviation for "Malloka TempLinio".タイムラインの詳細は[こちら
 (読み: りのーと) 既にあるノートを引用、もしくはそのノートを新しいノートとして共有する行為、またそれによって作成されたノート。Rigardu por sciu pli tie[.](../features/note)
 
 ## STL
-An abbreviation for "Sociala TempLinio".タイムラインの詳細は[こちら。](../features/timeline)
+ソーシャルタイムライン(Social TimeLine)の略。タイムラインの詳細は[こちら。](../features/timeline)
 
 ## Ai
 Ai estas oficiala maskoto de Misskey.
