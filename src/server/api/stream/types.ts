@@ -19,9 +19,10 @@ import { Packed } from '@/misc/schema';
 
 // 辞書(interface or type)から{ type, body }ユニオンを定義
 // https://stackoverflow.com/questions/49311989/can-i-infer-the-type-of-a-value-using-extends-keyof-type
+type EventUnions<T extends object> = { [K in keyof T]: { type: K; body: T[K]; } }
 type EventUnionFromDictionary<
 	T extends object,
-	U = { [K in keyof T]: { type: K; body: T[K]; } }
+	U = EventUnions<T>
 > = U[keyof U];
 
 //#region Stream type-body definitions
