@@ -47,7 +47,7 @@ export const refs = {
 	GalleryPost: packedGalleryPostSchema,
 };
 
-export type Packed<x extends keyof typeof refs> = PackRef<typeof refs[x]>
+export type Packed<x extends keyof typeof refs> = PackRef<typeof refs[x]>;
 
 type PackRef<s extends { properties: Obj, [x: string]: any }> = { [x in keyof s['properties']]: SchemaType<s['properties'][x]> };
 

@@ -6,7 +6,7 @@ import { UserProfile } from '@/models/entities/user-profile';
 import { PackedUser } from '@/models/repositories/user';
 import { PackedNotification } from '@/models/repositories/notification';
 import { Note } from '@/models/entities/note';
-import { PackedNote } from '@/models/repositories/note';
+// import { Packed<'Note'> } from '@/models/repositories/note';
 import { Antenna } from '@/models/entities/antenna';
 import { DriveFile } from '@/models/entities/drive-file';
 import { PackedDriveFile } from '@/models/repositories/drive-file';
@@ -24,6 +24,7 @@ import { PackedReversiMatching } from '@/models/repositories/games/reversi/match
 import { AbuseUserReport } from '@/models/entities/abuse-user-report';
 import { PackedSignin } from '@/models/repositories/signin';
 import { Page } from '@/models/entities/page';
+import { Packed } from '@/misc/schema';
 
 // 辞書(interface or type)から{ type, body }ユニオンを定義
 // https://stackoverflow.com/questions/49311989/can-i-infer-the-type-of-a-value-using-extends-keyof-type
@@ -59,9 +60,9 @@ export interface UserStreamTypes {
 
 export interface MainStreamTypes {
 	notification: PackedNotification;
-	mention: PackedNote;
-	reply: PackedNote;
-	renote: PackedNote;
+	mention: Packed<'Note'>;
+	reply: Packed<'Note'>;
+	renote: Packed<'Note'>;
 	follow: PackedUser;
 	followed: PackedUser;
 	unfollow: PackedUser;
@@ -288,7 +289,7 @@ export type StreamMessages = {
 	};
 	notes: {
 		name: 'notesStream';
-		spec: PackedNote;
+		spec: Packed<'Note'>;
 	};
 };
 
