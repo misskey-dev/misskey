@@ -2,9 +2,7 @@ import { User } from '@/models/entities/user';
 import { EntityRepository, Repository } from 'typeorm';
 import { Users } from '../../../index';
 import { ReversiGame } from '@/models/entities/games/reversi/game';
-import { SchemaType } from '@/misc/schema';
-
-export type PackedReversiGame = SchemaType<typeof packedReversiGameSchema>;
+import { Packed } from '@/misc/schema';
 
 @EntityRepository(ReversiGame)
 export class ReversiGameRepository extends Repository<ReversiGame> {
@@ -14,7 +12,7 @@ export class ReversiGameRepository extends Repository<ReversiGame> {
 		options?: {
 			detail?: boolean
 		}
-	): Promise<PackedReversiGame> {
+	): Promise<Packed<'ReversiGame'>> {
 		const opts = Object.assign({
 			detail: true
 		}, options);

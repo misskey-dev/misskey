@@ -2,9 +2,9 @@ import autobind from 'autobind-decorator';
 import { isMutedUserRelated } from '@/misc/is-muted-user-related';
 import Channel from '../channel';
 import { Notes } from '@/models/index';
-import { PackedNote } from '@/models/repositories/note';
 import { normalizeForSearch } from '@/misc/normalize-for-search';
 import { isBlockerUserRelated } from '@/misc/is-blocker-user-related';
+import { Packed } from '@/misc/schema';
 
 export default class extends Channel {
 	public readonly chName = 'hashtag';
@@ -23,7 +23,7 @@ export default class extends Channel {
 	}
 
 	@autobind
-	private async onNote(note: PackedNote) {
+	private async onNote(note: Packed<'Note'>) {
 		const noteTags = note.tags ? note.tags.map((t: string) => t.toLowerCase()) : [];
 		const matched = this.q.some(tags => tags.every(tag => noteTags.includes(normalizeForSearch(tag))));
 		if (!matched) return;

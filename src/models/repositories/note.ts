@@ -10,8 +10,6 @@ import { convertLegacyReaction, convertLegacyReactions, decodeReaction } from '@
 import { NoteReaction } from '@/models/entities/note-reaction';
 import { aggregateNoteEmojis, populateEmojis, prefetchEmojis } from '@/misc/populate-emojis';
 
-export type PackedNote = Packed<'Note'>;
-
 @EntityRepository(Note)
 export class NoteRepository extends Repository<Note> {
 	public validateCw(x: string) {
@@ -67,7 +65,7 @@ export class NoteRepository extends Repository<Note> {
 		return true;
 	}
 
-	private async hideNote(packedNote: PackedNote, meId: User['id'] | null) {
+	private async hideNote(packedNote: Packed<'Note'>, meId: User['id'] | null) {
 		// TODO: isVisibleForMe を使うようにしても良さそう(型違うけど)
 		let hide = false;
 
@@ -137,7 +135,7 @@ export class NoteRepository extends Repository<Note> {
 				myReactions: Map<Note['id'], NoteReaction | null>;
 			};
 		}
-	): Promise<PackedNote> {
+	): Promise<Packed<'Note'>> {
 		const opts = Object.assign({
 			detail: true,
 			skipHide: false

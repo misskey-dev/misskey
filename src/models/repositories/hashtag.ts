@@ -1,14 +1,12 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Hashtag } from '@/models/entities/hashtag';
-import { SchemaType } from '@/misc/schema';
-
-export type PackedHashtag = SchemaType<typeof packedHashtagSchema>;
+import { Packed } from '@/misc/schema';
 
 @EntityRepository(Hashtag)
 export class HashtagRepository extends Repository<Hashtag> {
 	public async pack(
 		src: Hashtag,
-	): Promise<PackedHashtag> {
+	): Promise<Packed<'Hashtag'>> {
 		return {
 			tag: src.name,
 			mentionedUsersCount: src.mentionedUsersCount,

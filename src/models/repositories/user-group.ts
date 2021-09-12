@@ -1,15 +1,13 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { UserGroup } from '@/models/entities/user-group';
 import { UserGroupJoinings } from '../index';
-import { SchemaType } from '@/misc/schema';
-
-export type PackedUserGroup = SchemaType<typeof packedUserGroupSchema>;
+import { Packed } from '@/misc/schema';
 
 @EntityRepository(UserGroup)
 export class UserGroupRepository extends Repository<UserGroup> {
 	public async pack(
 		src: UserGroup['id'] | UserGroup,
-	): Promise<PackedUserGroup> {
+	): Promise<Packed<'UserGroup'>> {
 		const userGroup = typeof src === 'object' ? src : await this.findOneOrFail(src);
 
 		const users = await UserGroupJoinings.find({
