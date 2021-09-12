@@ -1,1 +1,1 @@
-export type Resolved<P> = P extends PromiseLike<infer R> ? Resolved<R> : never;
+export type Resolved<P> = P extends PromiseLike<infer R> ? R : never;
