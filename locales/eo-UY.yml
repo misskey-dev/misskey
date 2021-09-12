@@ -584,7 +584,7 @@ _permissions:
   "write:drive": "Ĉia operacio por skribi, forviŝi, aŭ alimaniere ŝanĝi la informon de dosiero en via disko de Misskey"
   "read:favorites": "Vidi vian liston de preferataĵoj"
   "write:favorites": "Redakti vian liston de preferataĵoj."
-  "read:following": "Vidi la infomaciojn pri kiun vi sekvas"
+  "read:following": "Vidi la infomaciojn pri tio, kion vi sekvas"
   "write:following": "Sekvi aŭ malsekvi alian uzanton"
   "read:messaging": "Vidi vian retbabiladon"
   "read:mutes": "Vidi vian liston de silentigitoj"
