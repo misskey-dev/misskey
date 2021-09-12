@@ -3,26 +3,17 @@ import Emitter from 'strict-event-emitter-types';
 import { Channel } from '@/models/entities/channel';
 import { User } from '@/models/entities/user';
 import { UserProfile } from '@/models/entities/user-profile';
-import { PackedUser } from '@/models/repositories/user';
-import { PackedNotification } from '@/models/repositories/notification';
 import { Note } from '@/models/entities/note';
-// import { Packed<'Note'> } from '@/models/repositories/note';
 import { Antenna } from '@/models/entities/antenna';
 import { DriveFile } from '@/models/entities/drive-file';
-import { PackedDriveFile } from '@/models/repositories/drive-file';
 import { DriveFolder } from '@/models/entities/drive-folder';
-import { PackedDriveFolder } from '@/models/repositories/drive-folder';
 import { Emoji } from '@/models/entities/emoji';
-import { PackedEmoji } from '@/models/repositories/emoji';
 import { UserList } from '@/models/entities/user-list';
 import { MessagingMessage } from '@/models/entities/messaging-message';
-import { PackedMessagingMessage } from '@/models/repositories/messaging-message';
 import { UserGroup } from '@/models/entities/user-group';
 import { ReversiGame } from '@/models/entities/games/reversi/game';
-import { PackedReversiGame } from '@/models/repositories/games/reversi/game';
-import { PackedReversiMatching } from '@/models/repositories/games/reversi/matching';
 import { AbuseUserReport } from '@/models/entities/abuse-user-report';
-import { PackedSignin } from '@/models/repositories/signin';
+import { Signin } from '@/models/entities/signin';
 import { Page } from '@/models/entities/page';
 import { Packed } from '@/misc/schema';
 
@@ -42,7 +33,7 @@ export interface InternalStreamTypes {
 
 export interface BroadcastTypes {
 	emojiAdded: {
-		emoji: PackedEmoji;
+		emoji: Packed<'Emoji'>;
 	};
 }
 
@@ -53,40 +44,40 @@ export interface UserStreamTypes {
 	updateUserProfile: UserProfile;
 	mute: User;
 	unmute: User;
-	follow: PackedUser;
-	unfollow: PackedUser;
-	userAdded: PackedUser;
+	follow: Packed<'User'>;
+	unfollow: Packed<'User'>;
+	userAdded: Packed<'User'>;
 }
 
 export interface MainStreamTypes {
-	notification: PackedNotification;
+	notification: Packed<'Notification'>;
 	mention: Packed<'Note'>;
 	reply: Packed<'Note'>;
 	renote: Packed<'Note'>;
-	follow: PackedUser;
-	followed: PackedUser;
-	unfollow: PackedUser;
-	meUpdated: PackedUser;
+	follow: Packed<'User'>;
+	followed: Packed<'User'>;
+	unfollow: Packed<'User'>;
+	meUpdated: Packed<'User'>;
 	pageEvent: {
 		pageId: Page['id'];
 		event: string;
 		var: any;
 		userId: User['id'];
-		user: PackedUser;
+		user: Packed<'User'>;
 	};
 	urlUploadFinished: {
 		marker?: string | null;
-		file: PackedDriveFile;
+		file: Packed<'DriveFile'>;
 	};
 	readAllNotifications: undefined;
-	unreadNotification: PackedNotification;
+	unreadNotification: Packed<'Notification'>;
 	unreadMention: Note['id'];
 	readAllUnreadMentions: undefined;
 	unreadSpecifiedNote: Note['id'];
 	readAllUnreadSpecifiedNotes: undefined;
 	readAllMessagingMessages: undefined;
-	messagingMessage: PackedMessagingMessage;
-	unreadMessagingMessage: PackedMessagingMessage;
+	messagingMessage: Packed<'MessagingMessage'>;
+	unreadMessagingMessage: Packed<'MessagingMessage'>;
 	readAllAntennas: undefined;
 	unreadAntenna: Antenna;
 	readAllAnnouncements: undefined;
@@ -94,24 +85,24 @@ export interface MainStreamTypes {
 	unreadChannel: Note['id'];
 	myTokenRegenerated: undefined;
 	reversiNoInvites: undefined;
-	reversiInvited: PackedReversiMatching;
-	signin: PackedSignin;
+	reversiInvited: Packed<'ReversiMatching'>;
+	signin: Signin;
 	registryUpdated: {
 		scope?: string[];
 		key: string;
 		value: any | null;
 	};
-	driveFileCreated: PackedDriveFile;
+	driveFileCreated: Packed<'DriveFile'>;
 	readAntenna: Antenna;
 }
 
 export interface DriveStreamTypes {
-	fileCreated: PackedDriveFile;
+	fileCreated: Packed<'DriveFile'>;
 	fileDeleted: DriveFile['id'];
-	fileUpdated: PackedDriveFile;
-	folderCreated: PackedDriveFolder;
+	fileUpdated: Packed<'DriveFile'>;
+	folderCreated: Packed<'DriveFolder'>;
 	folderDeleted: DriveFolder['id'];
-	folderUpdated: PackedDriveFolder;
+	folderUpdated: Packed<'DriveFolder'>;
 }
 
 export interface NoteStreamTypes {
@@ -144,8 +135,8 @@ export interface ChannelStreamTypes {
 }
 
 export interface UserListStreamTypes {
-	userAdded: PackedUser;
-	userRemoved: PackedUser;
+	userAdded: Packed<'User'>;
+	userRemoved: Packed<'User'>;
 }
 
 export interface AntennaStreamTypes {
@@ -155,7 +146,7 @@ export interface AntennaStreamTypes {
 export interface MessagingStreamTypes {
 	read: MessagingMessage['id'][];
 	typing: User['id'];
-	message: PackedMessagingMessage;
+	message: Packed<'MessagingMessage'>;
 	deleted: MessagingMessage['id'];
 }
 
@@ -165,25 +156,25 @@ export interface GroupMessagingStreamTypes {
 		userId: User['id'];
 	};
 	typing: User['id'];
-	message: PackedMessagingMessage;
+	message: Packed<'MessagingMessage'>;
 	deleted: MessagingMessage['id'];
 }
 
 export interface MessagingIndexStreamTypes {
 	read: MessagingMessage['id'][];
-	message: PackedMessagingMessage;
+	message: Packed<'MessagingMessage'>;
 }
 
 export interface ReversiStreamTypes {
-	matched: PackedReversiGame;
-	invited: PackedReversiMatching;
+	matched: Packed<'ReversiGame'>;
+	invited: Packed<'ReversiMatching'>;
 }
 
 export interface ReversiGameStreamTypes {
-	started: PackedReversiGame;
+	started: Packed<'ReversiGame'>;
 	ended: {
 		winnerId?: User['id'] | null,
-		game: PackedReversiGame;
+		game: Packed<'ReversiGame'>;
 	};
 	updateSettings: {
 		key: string;
