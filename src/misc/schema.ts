@@ -21,6 +21,9 @@ import { packedClipSchema } from '@/models/repositories/clip';
 import { packedFederationInstanceSchema } from '@/models/repositories/federation-instance';
 import { packedQueueCountSchema } from '@/models/repositories/queue';
 import { packedGalleryPostSchema } from '@/models/repositories/gallery-post';
+import { packedEmojiSchema } from '@/models/repositories/emoji';
+import { packedReversiGameSchema } from '@/models/repositories/games/reversi/game';
+import { packedReversiMatchingSchema } from '@/models/repositories/games/reversi/matching';
 
 export const refs = {
 	User: packedUserSchema,
@@ -45,11 +48,12 @@ export const refs = {
 	Clip: packedClipSchema,
 	FederationInstance: packedFederationInstanceSchema,
 	GalleryPost: packedGalleryPostSchema,
+	Emoji: packedEmojiSchema,
+	ReversiGame: packedReversiGameSchema,
+	ReversiMatching: packedReversiMatchingSchema,
 };
 
-export type Packed<x extends keyof typeof refs> = PackRef<typeof refs[x]>;
-
-type PackRef<s extends { properties: Obj, [x: string]: any }> = { [x in keyof s['properties']]: SchemaType<s['properties'][x]> };
+export type Packed<x extends keyof typeof refs> = ObjType<(typeof refs[x])['properties']>;
 
 export interface Schema extends SimpleSchema {
 	items?: Schema;
