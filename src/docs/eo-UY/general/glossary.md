@@ -26,7 +26,7 @@ An abbreviation for "Malloka TempLinio".タイムラインの詳細は[こちら
 ホームタイムライン(Home TimeLine)の略。タイムラインの詳細は[こちら。](../features/timeline)
 
 ## LTL
-An abbreviation for "Loka TempLinio".タイムラインの詳細は[こちら。](../features/timeline)
+ローカルタイムライン(Local TimeLine)の略。タイムラインの詳細は[こちら。](../features/timeline)
 
 ## MFM
 (読み: えむえふえむ) Misskey Flavored Markdownの略で、Misskey上で使用できるマークアップ言語です。詳細は[こちら。](../features/mfm)
