@@ -2,6 +2,7 @@ import { EntityRepository, Repository } from 'typeorm';
 import { App } from '@/models/entities/app';
 import { AccessTokens } from '../index';
 import { Packed } from '@/misc/schema';
+import { User } from '../entities/user';
 
 @EntityRepository(App)
 export class AppRepository extends Repository<App> {
