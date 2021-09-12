@@ -3,16 +3,14 @@ import { ReversiMatching } from '@/models/entities/games/reversi/matching';
 import { Users } from '../../../index';
 import { awaitAll } from '@/prelude/await-all';
 import { User } from '@/models/entities/user';
-import { SchemaType } from '@/misc/schema';
-
-export type PackedReversiMatching = SchemaType<typeof packedReversiMatchingSchema>;
+import { Packed } from '@/misc/schema';
 
 @EntityRepository(ReversiMatching)
 export class ReversiMatchingRepository extends Repository<ReversiMatching> {
 	public async pack(
 		src: ReversiMatching['id'] | ReversiMatching,
 		me: { id: User['id'] }
-	): Promise<PackedReversiMatching> {
+	): Promise<Packed<'ReversiMatching'>> {
 		const matching = typeof src === 'object' ? src : await this.findOneOrFail(src);
 
 		return await awaitAll({
