@@ -1,14 +1,14 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Emoji } from '@/models/entities/emoji';
-import { Resolved } from '@/prelude/types';
+import { SchemaType } from '@/misc/schema';
 
-export type PackedEmoji = Resolved<ReturnType<EmojiRepository['pack']>>;
+export type PackedEmoji = SchemaType<typeof packedEmojiSchema>;
 
 @EntityRepository(Emoji)
 export class EmojiRepository extends Repository<Emoji> {
 	public async pack(
 		src: Emoji['id'] | Emoji,
-	) {
+	): Promise<PackedEmoji> {
 		const emoji = typeof src === 'object' ? src : await this.findOneOrFail(src);
 
 		return {
@@ -27,3 +27,41 @@ export class EmojiRepository extends Repository<Emoji> {
 		return Promise.all(emojis.map(x => this.pack(x)));
 	}
 }
+
+export const packedEmojiSchema = {
+	type: 'object' as const,
+	optional: false as const, nullable: false as const,
+	properties: {
+		id: {
+			type: 'string' as const,
+			optional: false as const, nullable: false as const,
+			format: 'id',
+			example: 'xxxxxxxxxx',
+		},
+		aliases: {
+			type: 'array' as const,
+			optional: false as const, nullable: false as const,
+			items: {
+				type: 'string' as const,
+				optional: false as const, nullable: false as const,
+				format: 'id',
+			},
+		},
+		name: {
+			type: 'string' as const,
+			optional: false as const, nullable: false as const,
+		},
+		category: {
+			type: 'string' as const,
+			optional: false as const, nullable: true as const,
+		},
+		host: {
+			type: 'string' as const,
+			optional: false as const, nullable: true as const,
+		},
+		url: {
+			type: 'string' as const,
+			optional: false as const, nullable: false as const,
+		},
+	}
+};
