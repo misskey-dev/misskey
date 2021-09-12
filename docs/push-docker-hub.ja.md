@@ -2,7 +2,7 @@ GitHub Actionsを使用してDocker Hubへpushする方法
 ================================================================
 
 [/.github/workflows/docker.yml](/.github/workflows/docker.yml) に  
-GitHub Action によりDocker Hubへpushするワークフローが記述されています。
+GitHub ActionによりDocker Hubへpushするワークフローが記述されています。
 
 オリジナルリポジトリでは、リリースされたタイミングで `latest`, `<リリース名>` それぞれのタグでDocker Hubにpushされます。  
 ※ Docker Hub に`<ブランチ名>`のようなタグがあるかもしれませんが、こちらは自動push対象ではありません。
