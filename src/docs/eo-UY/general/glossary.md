@@ -34,7 +34,7 @@ An abbreviation for "Malloka TempLinio".タイムラインの詳細は[こちら
 ## NSFW
 (読み: のっとせーふふぉーわーく) Not Safe For Workの略。画像を「閲覧注意」扱いにし、操作なしには表示しないようにすることができる機能。
 
-## Plusenditnotaĵo
+## Plusendi la noton
 (読み: りのーと) 既にあるノートを引用、もしくはそのノートを新しいノートとして共有する行為、またそれによって作成されたノート。Rigardu por sciu pli tie[.](../features/note)
 
 ## STL
