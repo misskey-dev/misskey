@@ -50,13 +50,9 @@ export const packedAppSchema = {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const
 		},
-		createdAt: {
+		callbackUrl: {
 			type: 'string' as const,
-			optional: false as const, nullable: false as const
-		},
-		lastUsedAt: {
-			type: 'string' as const,
-			optional: false as const, nullable: false as const
+			optional: false as const, nullable: true as const
 		},
 		permission: {
 			type: 'array' as const,
