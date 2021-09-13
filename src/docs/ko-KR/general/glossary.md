@@ -26,13 +26,13 @@ Misskey를 비롯한 분산형 서비스 사이의 통신 및 정보 교환으�
 홈 타임라인(Home TimeLine)의 줄임말. 타임라인에 대한 자세한 내용은 [여기로.](../features/timeline)
 
 ## LTL
-ローカルタイムライン(Local TimeLine)の略。타임라인에 대한 자세한 내용은 [여기로.](../features/timeline)
+로컬 타임라인(Local TimeLine)의 줄임말. 타임라인에 대한 자세한 내용은 [여기로.](../features/timeline)
 
 ## MFM
-(読み: えむえふえむ) Misskey Flavored Markdownの略で、Misskey上で使用できるマークアップ言語です。詳細は[こちら。](../features/mfm)
+Misskey Flavored Markdown의 줄임말. Misskey에서 사용할 수 있는 마크업 언어. 자세한 사항은 [여기로.](../features/mfm)
 
 ## NSFW
-(読み: のっとせーふふぉーわーく) Not Safe For Workの略。画像を「閲覧注意」扱いにし、操作なしには表示しないようにすることができる機能。
+Not Safe For Work의 줄임말. 열람 시 주의가 필요한 사진을 감추어, 바로 표시되지 않게 하는 기능.
 
 ## Renote
 (読み: りのーと) 既にあるノートを引用、もしくはそのノートを新しいノートとして共有する行為、またそれによって作成されたノート。詳細は[こちら。](../features/note)
