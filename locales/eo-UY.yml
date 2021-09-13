@@ -399,6 +399,7 @@ reportAbuseOf: "Signali kontraŭ {name}'(o)"
 send: "Sendi"
 openInNewTab: "Malfermi en nova langeto"
 editTheseSettingsMayBreakAccount: "Redakti ĉi tiujn agordojn estas eble damaĝi konton."
+instanceTicker: "Informoj pri la nodo kiu dissendas la noton"
 public: "Publika"
 i18nInfo: "Misskey estas tradukata en diversaj lingvoj far volontuloj. Oni povas kontribui por la tradukado ĉe {link}."
 accountInfo: "Kontaj Informoj"
@@ -600,7 +601,7 @@ _permissions:
   "read:channels": "Vidi kanalojn"
 _antennaSources:
   all: "Ĉiuj notoj"
-  homeTimeline: "Notoj far uzantoj, kiujn vi sekvas"
+  homeTimeline: "Notoj far uzantoj kiujn vi sekvas"
 _weekday:
   sunday: "dimanĉo"
   monday: "lundo"
