@@ -11,22 +11,22 @@ Misskey에서 사용하는 용어 모음입니다.
 에이-피-아이. 프로그램이 Misskey와 상호 작용하는 데에 사용하는 인터페이스. 자세한 내용은 [여기로](../advanced/api)
 
 ## Bot (봇)
-(読み: ぼっと) プログラムによって動作しているアカウント。
+프로그램 또는 기타 자동화된 수단으로 운영되는 계정.
 
 ## CW
-(読み: こんてんつわーにんぐ) Contents Warningの略。ノートの内容を、操作なしには表示しないようにできる機能。主に長大な内容を隠すためや、ネタバレ防止などに使われます。
+'Contents Warning'의 줄임말. 제목를 설정하여 노트의 내용을 숨기는 기능. 본문이 길 때, 또는 스포일러 등 상대방이 불쾌해할 수 있는 내용을 감추는 데에 주로 사용합니다.
 
-## Fediverse
-(読み: ふぇでぃばーす) Misskeyを含む様々な分散型ソフトウェアのサーバーで構成されたネットワーク。
+## 연합우주 (Fediverse)
+Misskey를 비롯한 분산형 서비스 사이의 통신 및 정보 교환으로 이루어지는 네트워크.
 
 ## GTL
-グローバルタイムライン(Global TimeLine)の略。タイムラインの詳細は[こちら。](../features/timeline)
+글로벌 타임라인(Global TimeLine)의 줄임말. 타임라인에 대한 자세한 내용은 [여기로.](../features/timeline)
 
 ## HTL
-ホームタイムライン(Home TimeLine)の略。タイムラインの詳細は[こちら。](../features/timeline)
+홈 타임라인(Home TimeLine)의 줄임말. 타임라인에 대한 자세한 내용은 [여기로.](../features/timeline)
 
 ## LTL
-ローカルタイムライン(Local TimeLine)の略。タイムラインの詳細は[こちら。](../features/timeline)
+ローカルタイムライン(Local TimeLine)の略。타임라인에 대한 자세한 내용은 [여기로.](../features/timeline)
 
 ## MFM
 (読み: えむえふえむ) Misskey Flavored Markdownの略で、Misskey上で使用できるマークアップ言語です。詳細は[こちら。](../features/mfm)
@@ -38,7 +38,7 @@ Misskey에서 사용하는 용어 모음입니다.
 (読み: りのーと) 既にあるノートを引用、もしくはそのノートを新しいノートとして共有する行為、またそれによって作成されたノート。詳細は[こちら。](../features/note)
 
 ## STL
-ソーシャルタイムライン(Social TimeLine)の略。タイムラインの詳細は[こちら。](../features/timeline)
+ソーシャルタイムライン(Social TimeLine)の略。타임라인에 대한 자세한 내용은 [여기로.](../features/timeline)
 
 ## 藍
 (読み: あい) Misskeyの看板娘(公式キャラクター)です。
