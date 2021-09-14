@@ -64,6 +64,10 @@ export type Source = {
 	mediaProxy?: string;
 
 	signToActivityPubGet?: boolean;
+
+	activityPub?: {
+		federateBlocks?: boolean;
+	}
 };
 
 /**

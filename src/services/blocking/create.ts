@@ -9,8 +9,10 @@ import { User } from '@/models/entities/user';
 import { Blockings, Users, FollowRequests, Followings, UserListJoinings, UserLists } from '@/models/index';
 import { perUserFollowingChart } from '@/services/chart/index';
 import { genId } from '@/misc/gen-id';
+import config from '@/config/index';
 
 export default async function(blocker: User, blockee: User) {
+	const shouldFederate = config?.activityPub?.federateBlocks || true;
 	await Promise.all([
 		cancelRequest(blocker, blockee),
 		cancelRequest(blockee, blocker),
@@ -26,7 +28,7 @@ export default async function(blocker: User, blockee: User) {
 		blockeeId: blockee.id,
 	});
 
-	if (Users.isLocalUser(blocker) && Users.isRemoteUser(blockee)) {
+	if (Users.isLocalUser(blocker) && Users.isRemoteUser(blockee) && shouldFederate) {
 		const content = renderActivity(renderBlock(blocker, blockee));
 		deliver(blocker, content, blockee.inbox);
 	}
