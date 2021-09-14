@@ -5,11 +5,12 @@ import { deliver } from '@/queue/index';
 import Logger from '../logger';
 import { User } from '@/models/entities/user';
 import { Blockings, Users } from '@/models/index';
+import config from '@/config/index';
 
 const logger = new Logger('blocking/delete');
 
 export default async function(blocker: User, blockee: User) {
-	const shouldFederate = config.activityPub.federateBlocks || true;
+	const shouldFederate = config?.activityPub?.federateBlocks || true;
 	const blocking = await Blockings.findOne({
 		blockerId: blocker.id,
 		blockeeId: blockee.id
