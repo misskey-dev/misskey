@@ -238,6 +238,11 @@ export class User {
 	})
 	public token: string | null;
 
+	@Column('boolean', {
+		default: true,
+	})
+	public federateBlocks: boolean;
+
 	constructor(data: Partial<User>) {
 		if (data == null) return;
 

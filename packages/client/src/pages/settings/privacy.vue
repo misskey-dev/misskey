@@ -28,6 +28,10 @@
 		{{ $ts.makeExplorable }}
 		<template #caption>{{ $ts.makeExplorableDescription }}</template>
 	</FormSwitch>
+	<FormSwitch v-model="federateBlocks" @update:value="save()">
+		{{ $ts.federateBlocks }}
+		<template #caption>{{ $ts.federateBlocksDescription }}</template>
+	</FormSwitch>
 
 	<FormSection>
 		<FormSwitch v-model="rememberNoteVisibility" class="_formBlock" @update:modelValue="save()">{{ $ts.rememberNoteVisibility }}</FormSwitch>
@@ -66,6 +70,7 @@ let isExplorable = $ref($i.isExplorable);
 let hideOnlineStatus = $ref($i.hideOnlineStatus);
 let publicReactions = $ref($i.publicReactions);
 let ffVisibility = $ref($i.ffVisibility);
+let federateBlocks = $ref($i.federateBlocks);
 
 let defaultNoteVisibility = $computed(defaultStore.makeGetterSetter('defaultNoteVisibility'));
 let defaultNoteLocalOnly = $computed(defaultStore.makeGetterSetter('defaultNoteLocalOnly'));
@@ -81,6 +86,7 @@ function save() {
 		hideOnlineStatus: !!hideOnlineStatus,
 		publicReactions: !!publicReactions,
 		ffVisibility: ffVisibility,
+		federateBlocks: federateBlocks,
 	});
 }
 

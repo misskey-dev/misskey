@@ -244,6 +244,7 @@ export class UserRepository extends Repository<User> {
 				isLocked: user.isLocked,
 				isSilenced: user.isSilenced || falsy,
 				isSuspended: user.isSuspended || falsy,
+				federateBlocks: user!.federateBlocks,
 				description: profile!.description,
 				location: profile!.location,
 				birthday: profile!.birthday,

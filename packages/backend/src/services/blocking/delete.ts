@@ -22,7 +22,7 @@ export default async function(blocker: User, blockee: User) {
 	Blockings.delete(blocking.id);
 
 	// deliver if remote bloking
-	if (Users.isLocalUser(blocker) && Users.isRemoteUser(blockee)) {
+	if (Users.isLocalUser(blocker) && Users.isRemoteUser(blockee) && blocker.federateBlocks) {
 		const content = renderActivity(renderUndo(renderBlock(blocker, blockee), blocker));
 		deliver(blocker, content, blockee.inbox);
 	}
