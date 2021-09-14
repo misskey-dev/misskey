@@ -673,8 +673,13 @@ _rooms:
   translate: "Movi"
   chooseImage: "Elekti bildon"
   _furnitures:
+    bed: "Lito"
+    low-table: "Malaltotablo"
+    book: "Libro"
+    book2: "Libro 2"
+    piano: "Piano"
     server: "Servilo"
-    moon: "La luno"
+    moon: "Luno"
 _pages:
   newPage: "Krei novan paĝon"
   editPage: "Redakti paĝon"
