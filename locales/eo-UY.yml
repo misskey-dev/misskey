@@ -644,7 +644,7 @@ _visibility:
 _postForm:
   replyPlaceholder: "Respondi tiun noton…"
   quotePlaceholder: "Citi tiun noton…"
-  channelPlaceholder: "Sendi sur la kanalo…"
+  channelPlaceholder: "Mencii en kanalo…"
 _profile:
   name: "Nomo"
   username: "Uzantnomo"
