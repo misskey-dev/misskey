@@ -1,6 +1,6 @@
 ---
 _lang_: "Esperanto"
-headlineMisskey: "Reto konektita far notoj"
+headlineMisskey: "Jen la reto konektita far notoj"
 introMisskey: "Bonvenon! Misskey estas malfermitkoda malcentraliza mikrobloga servo.\nKreu \"noto\"n por diskonigu tion kio okazas nun, aŭ por parolu pri vi. 📡\nUzu la funkcion \"reago\" por esprimu rapide vian senton pri ies noto. 👍\nBonvole esploru novan mondon. 🚀"
 monthAndDay: "{day}a/{month}"
 search: "Serĉi"
@@ -494,7 +494,7 @@ _registry:
 _aboutMisskey:
   about: "Misskey estas malfermitkoda programo evoluigata de syuilo ekde la 2014."
   contributors: "Precipaj kontribuantoj"
-  allContributors: "Ĉiuj kontribuintoj"
+  allContributors: "Ĉiuj kontribuantoj"
   source: "Fontkodo"
   translation: "Traduki Misskey'on"
   patrons: "Mecenatoj"
