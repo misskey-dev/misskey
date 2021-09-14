@@ -431,7 +431,7 @@ i18nInfo: "Misskey estas tradukata en diversaj lingvoj far volontuloj. Oni povas
 accountInfo: "Kontaj Informoj"
 notesCount: "La nombro de notoj"
 repliesCount: "La nombro de respondoj senditaj"
-renotesCount: "La nombro de notoj kiujn tiu ĉi uzanto plusendis"
+renotesCount: "La nombro de notoj kiujn la uzanto plusendis"
 repliedCount: "La nombro de respondoj ricevitaj"
 renotedCount: "La nombro de plusenditaj"
 followingCount: "La nombro de sekvatoj"
