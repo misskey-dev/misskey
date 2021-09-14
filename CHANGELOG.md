@@ -10,6 +10,14 @@
 You should also include the user name that made the change.
 -->
 
+## 12.x.x (unreleased)
+
+### Improvements
+- ActivityPub: ブロックのActivityを送信しない設定を追加 @FloatingGhost
+
+### Bugfixes
+- 
+
 ## 12.105.0 (2022/02/09)
 
 ### Improvements
