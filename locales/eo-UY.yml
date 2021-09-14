@@ -690,6 +690,7 @@ _rooms:
     moon: "Luno"
     monitor: "Monitoro"
     keyboard: "Klavaro"
+    doll-ai: "Pupa Ai"
 _pages:
   newPage: "Krei novan paĝon"
   editPage: "Redakti paĝon"
