@@ -44,7 +44,7 @@ describe('Creating a block activity', () => {
 	}));
 
 	it('Should not federate blocks if activityPub.federateBlocks is false', async () => {
-		const createBlock = (await import('../../src/services/blocking/create'))  .default;
+		const createBlock = (await import('../../src/services/blocking/create')).default;
 		const deleteBlock = (await import('../../src/services/blocking/delete')).default;
 
 		const queues = await import('../../src/queue/index');

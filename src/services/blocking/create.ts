@@ -12,7 +12,7 @@ import { genId } from '@/misc/gen-id';
 import config from '@/config/index';
 
 export default async function(blocker: User, blockee: User) {
-	const shouldFederate = config?.activityPub?.federateBlocks || true;
+	const shouldFederate = config?.activityPub?.federateBlocks ?? true;
 	await Promise.all([
 		cancelRequest(blocker, blockee),
 		cancelRequest(blockee, blocker),
