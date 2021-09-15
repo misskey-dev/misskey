@@ -21,6 +21,7 @@ describe('Creating a block activity', () => {
 		bob = await signup({ username: 'bob' });
 		carol = await signup({ username: 'carol' });
 		bob.host = 'http://remote';
+		carol.host = 'http://remote';
 	});
 
 	beforeEach(() => {
