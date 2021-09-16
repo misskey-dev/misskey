@@ -577,7 +577,7 @@ _theme:
     navBg: "Fono de flanka stango"
     hashtag: "Kradvorto"
     mention: "Mencioj"
-    renote: "Plusendita noto"
+    renote: "Noto plusendita"
     buttonBg: "Fono de butono"
     driveFolderBg: "Fono de dosierujo de la disko"
     messageBg: "Fono de retbabilejo"
@@ -814,7 +814,7 @@ _notification:
   _types:
     follow: "Sekvatoj"
     mention: "Mencioj"
-    renote: "Plusenditaj notoj"
+    renote: "Notoj plusenditaj"
     quote: "Citi"
     reaction: "Reagoj"
     receiveFollowRequest: "Ricevita peton de sekvado"
