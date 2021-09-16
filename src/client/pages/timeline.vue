@@ -60,25 +60,25 @@ export default defineComponent({
 					title: this.$ts._timelines.home,
 					icon: 'fas fa-home',
 					iconOnly: true,
-					onClick: () => { this.src = 'home'; },
+					onClick: () => { this.src = 'home'; this.saveSrc(); },
 				}, {
 					active: this.src === 'local',
 					title: this.$ts._timelines.local,
 					icon: 'fas fa-comments',
 					iconOnly: true,
-					onClick: () => { this.src = 'local'; },
+					onClick: () => { this.src = 'local'; this.saveSrc(); },
 				}, {
 					active: this.src === 'social',
 					title: this.$ts._timelines.social,
 					icon: 'fas fa-share-alt',
 					iconOnly: true,
-					onClick: () => { this.src = 'social'; },
+					onClick: () => { this.src = 'social'; this.saveSrc(); },
 				}, {
 					active: this.src === 'global',
 					title: this.$ts._timelines.global,
 					icon: 'fas fa-globe',
 					iconOnly: true,
-					onClick: () => { this.src = 'global'; },
+					onClick: () => { this.src = 'global'; this.saveSrc(); },
 				}]
 			})),
 		};
@@ -223,6 +223,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .cmuxhskf {
+	padding: var(--margin);
+
 	> .new {
 		position: sticky;
 		top: calc(var(--stickyTop, 0px) + 16px);
@@ -236,16 +238,17 @@ export default defineComponent({
 			border-radius: 32px;
 		}
 	}
-	&.min-width_800px {
-		> .tl {
-			background: var(--bg);
-			padding: 32px 0;
 
-			> .tl {
-				max-width: 800px;
-				margin: 0 auto;
-			}
-		}
+	> .tl {
+		background: var(--bg);
+		border-radius: var(--radius);
+		overflow: clip;
+		margin: var(--margin) 0;
+	}
+
+	&.min-width_800px {
+		max-width: 800px;
+		margin: 0 auto;
 	}
 }
 </style>
