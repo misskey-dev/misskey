@@ -4,7 +4,6 @@ import * as assert from 'assert';
 import * as childProcess from 'child_process';
 import { async, signup, request, post, startServer, shutdownServer, initTestDb } from '../utils';
 import * as sinon from 'sinon';
-import config from '@/config/index';
 
 describe('Creating a block activity', () => {
 	let p: childProcess.ChildProcess;
@@ -18,6 +17,7 @@ describe('Creating a block activity', () => {
 		await initTestDb();
 		p = await startServer();
 		alice = await signup({ username: 'alice' });
+		alice.federateBlocks = true;
 		bob = await signup({ username: 'bob' });
 		carol = await signup({ username: 'carol' });
 		bob.host = 'http://remote';
@@ -49,9 +49,7 @@ describe('Creating a block activity', () => {
 		const deleteBlock = (await import('../../src/services/blocking/delete')).default;
 
 		const queues = await import('../../src/queue/index');
-		config.activityPub = {
-			federateBlocks: false
-		};
+		alice.federateBlocks = false;
 		const spy = sinon.spy(queues, 'deliver');
 		await createBlock(alice, carol);
 		await deleteBlock(alice, carol);
