@@ -145,6 +145,15 @@ export default defineComponent({
 					}
 				}, '*');
 			}, { passive: true });
+			window.addEventListener('touchmove', ev => {
+				this.$refs.live2d.contentWindow.postMessage({
+					type: 'moveCursor',
+					body: {
+						x: ev.touches[0].clientX - iframeRect.left,
+						y: ev.touches[0].clientY - iframeRect.top,
+					}
+				}, '*');
+			}, { passive: true });
 		}
 	},
 
