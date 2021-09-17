@@ -1,10 +1,8 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { MessagingMessage } from '@/models/entities/messaging-message';
 import { Users, DriveFiles, UserGroups } from '../index';
-import { SchemaType } from '@/misc/schema';
+import { Packed } from '@/misc/schema';
 import { User } from '@/models/entities/user';
-
-export type PackedMessagingMessage = SchemaType<typeof packedMessagingMessageSchema>;
 
 @EntityRepository(MessagingMessage)
 export class MessagingMessageRepository extends Repository<MessagingMessage> {
@@ -19,7 +17,7 @@ export class MessagingMessageRepository extends Repository<MessagingMessage> {
 			populateRecipient?: boolean,
 			populateGroup?: boolean,
 		}
-	): Promise<PackedMessagingMessage> {
+	): Promise<Packed<'MessagingMessage'>> {
 		const opts = options || {
 			populateRecipient: true,
 			populateGroup: true,

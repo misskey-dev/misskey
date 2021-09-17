@@ -3,13 +3,13 @@ import { Note } from '@/models/entities/note';
 import { User } from '@/models/entities/user';
 import { UserListJoinings, UserGroupJoinings } from '@/models/index';
 import { getFullApAccount } from './convert-host';
-import { PackedNote } from '../models/repositories/note';
 import { parseAcct } from '@/misc/acct';
+import { Packed } from './schema';
 
 /**
  * noteUserFollowers / antennaUserFollowing はどちらか一方が指定されていればよい
  */
-export async function checkHitAntenna(antenna: Antenna, note: (Note | PackedNote), noteUser: { username: string; host: string | null; }, noteUserFollowers?: User['id'][], antennaUserFollowing?: User['id'][]): Promise<boolean> {
+export async function checkHitAntenna(antenna: Antenna, note: (Note | Packed<'Note'>), noteUser: { username: string; host: string | null; }, noteUserFollowers?: User['id'][], antennaUserFollowing?: User['id'][]): Promise<boolean> {
 	if (note.visibility === 'specified') return false;
 
 	if (note.visibility === 'followers') {

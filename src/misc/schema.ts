@@ -21,6 +21,9 @@ import { packedClipSchema } from '@/models/repositories/clip';
 import { packedFederationInstanceSchema } from '@/models/repositories/federation-instance';
 import { packedQueueCountSchema } from '@/models/repositories/queue';
 import { packedGalleryPostSchema } from '@/models/repositories/gallery-post';
+import { packedEmojiSchema } from '@/models/repositories/emoji';
+import { packedReversiGameSchema } from '@/models/repositories/games/reversi/game';
+import { packedReversiMatchingSchema } from '@/models/repositories/games/reversi/matching';
 
 export const refs = {
 	User: packedUserSchema,
@@ -45,7 +48,12 @@ export const refs = {
 	Clip: packedClipSchema,
 	FederationInstance: packedFederationInstanceSchema,
 	GalleryPost: packedGalleryPostSchema,
+	Emoji: packedEmojiSchema,
+	ReversiGame: packedReversiGameSchema,
+	ReversiMatching: packedReversiMatchingSchema,
 };
+
+export type Packed<x extends keyof typeof refs> = ObjType<(typeof refs[x])['properties']>;
 
 export interface Schema extends SimpleSchema {
 	items?: Schema;
@@ -92,7 +100,7 @@ export type SchemaType<p extends Schema> =
 	p['type'] extends 'array' ? NullOrUndefined<p, MyType<NonNullable<p['items']>>[]> :
 	p['type'] extends 'object' ? (
 		p['ref'] extends keyof typeof refs
-			? NullOrUndefined<p, SchemaType<typeof refs[p['ref']]>>
+			? NullOrUndefined<p, Packed<p['ref']>>
 			: NullOrUndefined<p, ObjType<NonNullable<p['properties']>>>
 	) :
 	p['type'] extends 'any' ? NullOrUndefined<p, any> :

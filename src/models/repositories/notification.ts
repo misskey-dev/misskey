@@ -2,14 +2,12 @@ import { EntityRepository, In, Repository } from 'typeorm';
 import { Users, Notes, UserGroupInvitations, AccessTokens, NoteReactions } from '../index';
 import { Notification } from '@/models/entities/notification';
 import { awaitAll } from '@/prelude/await-all';
-import { SchemaType } from '@/misc/schema';
+import { Packed } from '@/misc/schema';
 import { Note } from '@/models/entities/note';
 import { NoteReaction } from '@/models/entities/note-reaction';
 import { User } from '@/models/entities/user';
 import { aggregateNoteEmojis, prefetchEmojis } from '@/misc/populate-emojis';
 import { notificationTypes } from '@/types';
-
-export type PackedNotification = SchemaType<typeof packedNotificationSchema>;
 
 @EntityRepository(Notification)
 export class NotificationRepository extends Repository<Notification> {
@@ -20,7 +18,7 @@ export class NotificationRepository extends Repository<Notification> {
 				myReactions: Map<Note['id'], NoteReaction | null>;
 			};
 		}
-	): Promise<PackedNotification> {
+	): Promise<Packed<'Notification'>> {
 		const notification = typeof src === 'object' ? src : await this.findOneOrFail(src);
 		const token = notification.appAccessTokenId ? await AccessTokens.findOneOrFail(notification.appAccessTokenId) : null;
 

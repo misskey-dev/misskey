@@ -1,15 +1,13 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Antenna } from '@/models/entities/antenna';
-import { SchemaType } from '@/misc/schema';
+import { Packed } from '@/misc/schema';
 import { AntennaNotes, UserGroupJoinings } from '../index';
-
-export type PackedAntenna = SchemaType<typeof packedAntennaSchema>;
 
 @EntityRepository(Antenna)
 export class AntennaRepository extends Repository<Antenna> {
 	public async pack(
 		src: Antenna['id'] | Antenna,
-	): Promise<PackedAntenna> {
+	): Promise<Packed<'Antenna'>> {
 		const antenna = typeof src === 'object' ? src : await this.findOneOrFail(src);
 
 		const hasUnreadNote = (await AntennaNotes.findOne({ antennaId: antenna.id, read: false })) != null;

@@ -4,13 +4,11 @@ import { Users, DriveFolders } from '../index';
 import { User } from '@/models/entities/user';
 import { toPuny } from '@/misc/convert-host';
 import { awaitAll } from '@/prelude/await-all';
-import { SchemaType } from '@/misc/schema';
+import { Packed } from '@/misc/schema';
 import config from '@/config/index';
 import { query, appendQuery } from '@/prelude/url';
 import { Meta } from '@/models/entities/meta';
 import { fetchMeta } from '@/misc/fetch-meta';
-
-export type PackedDriveFile = SchemaType<typeof packedDriveFileSchema>;
 
 type PackOptions = {
 	detail?: boolean,
@@ -99,12 +97,12 @@ export class DriveFileRepository extends Repository<DriveFile> {
 		return parseInt(sum, 10) || 0;
 	}
 
-	public async pack(src: DriveFile['id'], options?: PackOptions): Promise<PackedDriveFile | null>;
-	public async pack(src: DriveFile, options?: PackOptions): Promise<PackedDriveFile>;
+	public async pack(src: DriveFile['id'], options?: PackOptions): Promise<Packed<'DriveFile'> | null>;
+	public async pack(src: DriveFile, options?: PackOptions): Promise<Packed<'DriveFile'>>;
 	public async pack(
 		src: DriveFile['id'] | DriveFile,
 		options?: PackOptions
-	): Promise<PackedDriveFile | null> {
+	): Promise<Packed<'DriveFile'> | null> {
 		const opts = Object.assign({
 			detail: false,
 			self: false
