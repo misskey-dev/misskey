@@ -1,10 +1,9 @@
-import { PackedNote } from '@/models/repositories/note';
-import { User } from '@/models/entities/user';
+import { Packed } from './schema';
 
-export function isInstanceMuted(note: PackedNote, muted_instances: string[]): boolean {
-	const note_user = (note.user as User);
-	const note_reply_user = ((note.reply as PackedNote)?.user as User);
-	const note_renote_user = ((note.renote as PackedNote)?.user as User);
+export function isInstanceMuted(note: Packed<'Note'>, muted_instances: string[]): boolean {
+	const note_user = note.user;
+	const note_reply_user = note.reply?.user;
+	const note_renote_user = note.renote?.user;
 
 	return muted_instances.includes(note_user.host ?? '') ||
 		muted_instances.includes(note_reply_user?.host ?? '') ||
