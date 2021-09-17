@@ -6,23 +6,19 @@
 		</MkInput>
 	</div>
 
-	<div class="emojis">
-		<MkFolder v-if="searchEmojis">
-			<template #header>{{ $ts.searchResult }}</template>
-			<div class="zuvgdzyt">
-				<XEmoji v-for="emoji in searchEmojis" :key="emoji.name" class="emoji" :emoji="emoji"/>
-			</div>
-		</MkFolder>
-	</div>
-
-	<div class="emojis">
-		<MkFolder v-for="category in customEmojiCategories" :key="category">
-			<template #header>{{ category || $ts.other }}</template>
-			<div class="zuvgdzyt">
-				<XEmoji v-for="emoji in customEmojis.filter(e => e.category === category)" :key="emoji.name" class="emoji" :emoji="emoji"/>
-			</div>
-		</MkFolder>
-	</div>
+	<MkFolder class="emojis" v-if="searchEmojis">
+		<template #header>{{ $ts.searchResult }}</template>
+		<div class="zuvgdzyt">
+			<XEmoji v-for="emoji in searchEmojis" :key="emoji.name" class="emoji" :emoji="emoji"/>
+		</div>
+	</MkFolder>
+	
+	<MkFolder class="emojis" v-for="category in customEmojiCategories" :key="category">
+		<template #header>{{ category || $ts.other }}</template>
+		<div class="zuvgdzyt">
+			<XEmoji v-for="emoji in customEmojis.filter(e => e.category === category)" :key="emoji.name" class="emoji" :emoji="emoji"/>
+		</div>
+	</MkFolder>
 </div>
 </template>
 
@@ -85,6 +81,9 @@ export default defineComponent({
 	}
 
 	> .emojis {
+		--x-header: var(--bg);
+		--x-padding: 0 16px;
+
 		.zuvgdzyt {
 			display: grid;
 			grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
