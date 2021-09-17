@@ -21,6 +21,7 @@ export default defineComponent({
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.notifications,
 				icon: 'fas fa-bell',
+				bg: 'var(--bg)',
 				actions: [{
 					text: this.$ts.markAllAsRead,
 					icon: 'fas fa-check',

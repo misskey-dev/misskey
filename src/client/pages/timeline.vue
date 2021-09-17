@@ -1,25 +1,10 @@
 <template>
 <div class="cmuxhskf" v-hotkey.global="keymap" v-size="{ min: [800] }">
-	<XTutorial v-if="$store.reactiveState.tutorial.value != -1" class="tutorial _block _isolated"/>
-	<XPostForm v-if="$store.reactiveState.showFixedPostForm.value" class="post-form _block _isolated" fixed/>
-	<div class="tabs">
-		<div class="left">
-			<button class="_button tab" @click="() => { src = 'home'; saveSrc(); }" :class="{ active: src === 'home' }" v-tooltip="$ts._timelines.home"><i class="fas fa-home"></i></button>
-			<button class="_button tab" @click="() => { src = 'local'; saveSrc(); }" :class="{ active: src === 'local' }" v-tooltip="$ts._timelines.local" v-if="isLocalTimelineAvailable"><i class="fas fa-comments"></i></button>
-			<button class="_button tab" @click="() => { src = 'social'; saveSrc(); }" :class="{ active: src === 'social' }" v-tooltip="$ts._timelines.social" v-if="isLocalTimelineAvailable"><i class="fas fa-share-alt"></i></button>
-			<button class="_button tab" @click="() => { src = 'global'; saveSrc(); }" :class="{ active: src === 'global' }" v-tooltip="$ts._timelines.global" v-if="isGlobalTimelineAvailable"><i class="fas fa-globe"></i></button>
-			<span class="divider"></span>
-			<button class="_button tab" @click="() => { src = 'mentions'; saveSrc(); }" :class="{ active: src === 'mentions' }" v-tooltip="$ts.mentions"><i class="fas fa-at"></i><i v-if="$i.hasUnreadMentions" class="fas fa-circle i"></i></button>
-			<button class="_button tab" @click="() => { src = 'directs'; saveSrc(); }" :class="{ active: src === 'directs' }" v-tooltip="$ts.directNotes"><i class="fas fa-envelope"></i><i v-if="$i.hasUnreadSpecifiedNotes" class="fas fa-circle i"></i></button>
-		</div>
-		<div class="right">
-			<button class="_button tab" @click="chooseChannel" :class="{ active: src === 'channel' }" v-tooltip="$ts.channel"><i class="fas fa-satellite-dish"></i><i v-if="$i.hasUnreadChannel" class="fas fa-circle i"></i></button>
-			<button class="_button tab" @click="chooseAntenna" :class="{ active: src === 'antenna' }" v-tooltip="$ts.antennas"><i class="fas fa-satellite"></i><i v-if="$i.hasUnreadAntenna" class="fas fa-circle i"></i></button>
-			<button class="_button tab" @click="chooseList" :class="{ active: src === 'list' }" v-tooltip="$ts.lists"><i class="fas fa-list-ul"></i></button>
-		</div>
-	</div>
+	<XTutorial v-if="$store.reactiveState.tutorial.value != -1" class="tutorial _block"/>
+	<XPostForm v-if="$store.reactiveState.showFixedPostForm.value" class="post-form _block" fixed/>
+
 	<div class="new" v-if="queue > 0"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
-	<div class="tl">
+	<div class="tl _block">
 		<XTimeline ref="tl" class="tl"
 			:key="src === 'list' ? `list:${list.id}` : src === 'antenna' ? `antenna:${antenna.id}` : src === 'channel' ? `channel:${channel.id}` : src"
 			:src="src"
@@ -63,12 +48,37 @@ export default defineComponent({
 			queue: 0,
 			[symbols.PAGE_INFO]: computed(() => ({
 				title: this.$ts.timeline,
-				subtitle: this.src === 'local' ? this.$ts._timelines.local : this.src === 'social' ? this.$ts._timelines.social : this.src === 'global' ? this.$ts._timelines.global : this.$ts._timelines.home,
 				icon: this.src === 'local' ? 'fas fa-comments' : this.src === 'social' ? 'fas fa-share-alt' : this.src === 'global' ? 'fas fa-globe' : 'fas fa-home',
+				bg: 'var(--bg)',
 				actions: [{
 					icon: 'fas fa-calendar-alt',
 					text: this.$ts.jumpToSpecifiedDate,
 					handler: this.timetravel
+				}],
+				tabs: [{
+					active: this.src === 'home',
+					title: this.$ts._timelines.home,
+					icon: 'fas fa-home',
+					iconOnly: true,
+					onClick: () => { this.src = 'home'; this.saveSrc(); },
+				}, {
+					active: this.src === 'local',
+					title: this.$ts._timelines.local,
+					icon: 'fas fa-comments',
+					iconOnly: true,
+					onClick: () => { this.src = 'local'; this.saveSrc(); },
+				}, {
+					active: this.src === 'social',
+					title: this.$ts._timelines.social,
+					icon: 'fas fa-share-alt',
+					iconOnly: true,
+					onClick: () => { this.src = 'social'; this.saveSrc(); },
+				}, {
+					active: this.src === 'global',
+					title: this.$ts._timelines.global,
+					icon: 'fas fa-globe',
+					iconOnly: true,
+					onClick: () => { this.src = 'global'; this.saveSrc(); },
 				}]
 			})),
 		};
@@ -213,6 +223,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .cmuxhskf {
+	padding: var(--margin);
+
 	> .new {
 		position: sticky;
 		top: calc(var(--stickyTop, 0px) + 16px);
@@ -227,79 +239,15 @@ export default defineComponent({
 		}
 	}
 
-	> .tabs {
-		display: flex;
-		box-sizing: border-box;
-		padding: 0 8px;
-		white-space: nowrap;
-		overflow: auto;
-		border-bottom: solid 0.5px var(--divider);
-
-		// 影の都合上
-		position: relative;
-
-		> .right {
-			margin-left: auto;
-		}
-
-		> .left, > .right {
-			> .tab {
-				position: relative;
-				height: 50px;
-				padding: 0 12px;
-
-				&:hover {
-					color: var(--fgHighlighted);
-				}
-
-				&.active {
-					color: var(--fgHighlighted);
-
-					&:after {
-						content: "";
-						display: block;
-						position: absolute;
-						bottom: 0;
-						left: 0;
-						right: 0;
-						margin: 0 auto;
-						width: 100%;
-						height: 2px;
-						background: var(--accent);
-					}
-				}
-
-				> .i {
-					position: absolute;
-					top: 16px;
-					right: 8px;
-					color: var(--indicator);
-					font-size: 8px;
-					animation: blink 1s infinite;
-				}
-			}
-
-			> .divider {
-				display: inline-block;
-				width: 1px;
-				height: 28px;
-				vertical-align: middle;
-				margin: 0 8px;
-				background: var(--divider);
-			}
-		}
+	> .tl {
+		background: var(--bg);
+		border-radius: var(--radius);
+		overflow: clip;
 	}
 
 	&.min-width_800px {
-		> .tl {
-			background: var(--bg);
-			padding: 32px 0;
-
-			> .tl {
-				max-width: 800px;
-				margin: 0 auto;
-			}
-		}
+		max-width: 800px;
+		margin: 0 auto;
 	}
 }
 </style>

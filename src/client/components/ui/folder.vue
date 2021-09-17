@@ -99,7 +99,8 @@ export default defineComponent({
 		z-index: 10;
 		position: sticky;
 		top: var(--stickyTop, 0px);
-		background: var(--panel);
+		padding: var(--x-padding);
+		background: var(--x-header, var(--panel));
 		/* TODO panelの半透明バージョンをプログラマティックに作りたい
 		background: var(--X17);
 		-webkit-backdrop-filter: var(--blur, blur(8px));
