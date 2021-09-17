@@ -12,6 +12,7 @@
 ### Improvements
 - リモートユーザーのDeleteアクティビティに対応
 - UIの改善
+- refactor: PackedHoge型をPacked<'Hoge'>型に書き換える
 
 ### Bugfixes
 - popupで設定ページを表示すると、アカウントの削除ページにアクセスすることができない問題を修正
