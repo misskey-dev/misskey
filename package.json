@@ -232,6 +232,7 @@
 		"ulid": "2.3.0",
 		"uuid": "8.3.2",
 		"v-debounce": "0.1.2",
+		"vanilla-tilt": "1.7.2",
 		"vue": "3.2.11",
 		"vue-loader": "16.5.0",
 		"vue-prism-editor": "2.0.0-alpha.2",
