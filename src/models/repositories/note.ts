@@ -3,14 +3,12 @@ import * as mfm from 'mfm-js';
 import { Note } from '@/models/entities/note';
 import { User } from '@/models/entities/user';
 import { Users, PollVotes, DriveFiles, NoteReactions, Followings, Polls, Channels } from '../index';
-import { SchemaType } from '@/misc/schema';
+import { Packed } from '@/misc/schema';
 import { nyaize } from '@/misc/nyaize';
 import { awaitAll } from '@/prelude/await-all';
 import { convertLegacyReaction, convertLegacyReactions, decodeReaction } from '@/misc/reaction-lib';
 import { NoteReaction } from '@/models/entities/note-reaction';
 import { aggregateNoteEmojis, populateEmojis, prefetchEmojis } from '@/misc/populate-emojis';
-
-export type PackedNote = SchemaType<typeof packedNoteSchema>;
 
 @EntityRepository(Note)
 export class NoteRepository extends Repository<Note> {
@@ -67,7 +65,7 @@ export class NoteRepository extends Repository<Note> {
 		return true;
 	}
 
-	private async hideNote(packedNote: PackedNote, meId: User['id'] | null) {
+	private async hideNote(packedNote: Packed<'Note'>, meId: User['id'] | null) {
 		// TODO: isVisibleForMe を使うようにしても良さそう(型違うけど)
 		let hide = false;
 
@@ -137,7 +135,7 @@ export class NoteRepository extends Repository<Note> {
 				myReactions: Map<Note['id'], NoteReaction | null>;
 			};
 		}
-	): Promise<PackedNote> {
+	): Promise<Packed<'Note'>> {
 		const opts = Object.assign({
 			detail: true,
 			skipHide: false

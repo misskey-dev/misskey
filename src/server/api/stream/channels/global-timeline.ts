@@ -3,10 +3,10 @@ import { isMutedUserRelated } from '@/misc/is-muted-user-related';
 import Channel from '../channel';
 import { fetchMeta } from '@/misc/fetch-meta';
 import { Notes } from '@/models/index';
-import { PackedNote } from '@/models/repositories/note';
 import { checkWordMute } from '@/misc/check-word-mute';
 import { isBlockerUserRelated } from '@/misc/is-blocker-user-related';
 import { isInstanceMuted } from '@/misc/is-instance-muted';
+import { Packed } from '@/misc/schema';
 
 export default class extends Channel {
 	public readonly chName = 'globalTimeline';
@@ -25,7 +25,7 @@ export default class extends Channel {
 	}
 
 	@autobind
-	private async onNote(note: PackedNote) {
+	private async onNote(note: Packed<'Note'>) {
 		if (note.visibility !== 'public') return;
 		if (note.channelId != null) return;
 
