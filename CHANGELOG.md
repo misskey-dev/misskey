@@ -13,6 +13,10 @@
 
 ### Improvements
 - リモートユーザーのDeleteアクティビティに対応
+- UIの改善
+- refactor: PackedHoge型をPacked<'Hoge'>型に書き換える
+- refactor: スキーマのないpack関数にスキーマを定義
+- refactor: publishHogeStreamとStreamのEventEmitterに型定義する
 
 ### Bugfixes
 - popupで設定ページを表示すると、アカウントの削除ページにアクセスすることができない問題を修正
