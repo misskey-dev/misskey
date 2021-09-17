@@ -30,7 +30,7 @@
         <tr><td><kbd class="key">0</kbd>-<kbd class="key">9</kbd></td><td>数字に対応したリアクションをする(対応については後述)</td><td>-</td></tr>
         <tr><td><kbd class="key">F</kbd>, <kbd class="key">B</kbd></td><td>Aldoni vian liston de preferaĵoj</td><td><b>F</b>avorite, <b>B</b>ookmark</td></tr>
         <tr><td><kbd class="key">Del</kbd>, <kbd class="group"><kbd class="key">Ctrl</kbd> + <kbd class="key">D</kbd></kbd></td><td>Forviŝi la noton</td><td><b>D</b>elete</tr>
-        <tr><td><kbd class="key">M</kbd>, <kbd class="key">O</kbd></td><td>投稿に対するメニューを開く</td><td><b>M</b>ore, <b>O</b>ther</td></tr>
+        <tr><td><kbd class="key">M</kbd>, <kbd class="key">O</kbd></td><td>Malfelmi poŝtaĵan menuon</td><td><b>M</b>ore, <b>O</b>ther</td></tr>
         <tr><td><kbd class="key">S</kbd></td><td>CWで隠された部分を表示 or 隠す</td><td><b>S</b>how, <b>S</b>ee</td></tr>
         <tr><td><kbd class="key">Esc</kbd></td><td>フォーカスを外す</td><td>-</td></tr>
     </tbody>
@@ -39,7 +39,7 @@
 ## Renoteフォーム
 <table>
     <thead>
-        <tr><th>Fulmoklavoj</th><th>効果</th><th>Deveno (angla)</th></tr>
+        <tr><th>Fulmoklavoj</th><th>Efektoj</th><th>Deveno (angla)</th></tr>
     </thead>
     <tbody>
         <tr><td><kbd class="key">Enter</kbd></td><td>Plusendi</td><td>-</td></tr>
