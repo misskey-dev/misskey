@@ -12,7 +12,7 @@
 			</div>
 		</template>
 
-		<main class="main" @contextmenu.stop="onContextmenu">
+		<main class="main" @contextmenu.stop="onContextmenu" :style="{ background: pageInfo?.bg }">
 			<header class="header" @click="onHeaderClick">
 				<XHeader :info="pageInfo" :back-button="true" @back="back()"/>
 			</header>
