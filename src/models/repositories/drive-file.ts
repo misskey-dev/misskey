@@ -234,7 +234,7 @@ export const packedDriveFileSchema = {
 		folder: {
 			type: 'object' as const,
 			optional: true as const, nullable: true as const,
-			ref: 'DriveFolder'
+			ref: 'DriveFolder' as const,
 		},
 		userId: {
 			type: 'string' as const,
@@ -245,7 +245,7 @@ export const packedDriveFileSchema = {
 		user: {
 			type: 'object' as const,
 			optional: true as const, nullable: true as const,
-			ref: 'User'
+			ref: 'User' as const,
 		}
 	},
 };

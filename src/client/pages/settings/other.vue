@@ -26,7 +26,7 @@
 	<FormLink to="/bios" behavior="browser"><template #icon><i class="fas fa-door-open"></i></template>BIOS</FormLink>
 	<FormLink to="/cli" behavior="browser"><template #icon><i class="fas fa-door-open"></i></template>CLI</FormLink>
 
-	<FormLink to="./delete-account"><template #icon><i class="fas fa-exclamation-triangle"></i></template>{{ $ts.closeAccount }}</FormLink>
+	<FormLink to="/settings/delete-account"><template #icon><i class="fas fa-exclamation-triangle"></i></template>{{ $ts.closeAccount }}</FormLink>
 </FormBase>
 </template>
 

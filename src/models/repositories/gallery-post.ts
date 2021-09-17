@@ -1,6 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { GalleryPost } from '@/models/entities/gallery-post';
-import { SchemaType } from '../../misc/schema';
+import { SchemaType } from '@/misc/schema';
 import { Users, DriveFiles, GalleryLikes } from '../index';
 import { awaitAll } from '@/prelude/await-all';
 import { User } from '@/models/entities/user';
@@ -76,7 +76,7 @@ export const packedGalleryPostSchema = {
 		},
 		user: {
 			type: 'object' as const,
-			ref: 'User',
+			ref: 'User' as const,
 			optional: false as const, nullable: false as const,
 		},
 		fileIds: {
@@ -94,7 +94,7 @@ export const packedGalleryPostSchema = {
 			items: {
 				type: 'object' as const,
 				optional: false as const, nullable: false as const,
-				ref: 'DriveFile'
+				ref: 'DriveFile' as const,
 			}
 		},
 		tags: {

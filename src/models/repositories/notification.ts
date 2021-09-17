@@ -136,7 +136,7 @@ export const packedNotificationSchema = {
 		},
 		user: {
 			type: 'object' as const,
-			ref: 'User',
+			ref: 'User' as const,
 			optional: true as const, nullable: true as const,
 		},
 		userId: {
@@ -146,7 +146,7 @@ export const packedNotificationSchema = {
 		},
 		note: {
 			type: 'object' as const,
-			ref: 'Note',
+			ref: 'Note' as const,
 			optional: true as const, nullable: true as const,
 		},
 		reaction: {
