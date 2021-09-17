@@ -10,25 +10,16 @@
 		<MkFolder v-if="searchEmojis">
 			<template #header>{{ $ts.searchResult }}</template>
 			<div class="zuvgdzyt">
-				<button v-for="emoji in searchEmojis" :key="emoji.name" class="emoji _button" @click="menu(emoji, $event)">
-					<img :src="emoji.url" class="img" :alt="emoji.name"/>
-					<div class="body">
-						<div class="name _monospace">{{ emoji.name }}</div>
-						<div class="info">{{ emoji.aliases.join(' ') }}</div>
-					</div>
-				</button>
+				<XEmoji v-for="emoji in searchEmojis" :key="emoji.name" class="emoji" :emoji="emoji"/>
 			</div>
 		</MkFolder>
+	</div>
+
+	<div class="emojis">
 		<MkFolder v-for="category in customEmojiCategories" :key="category">
 			<template #header>{{ category || $ts.other }}</template>
 			<div class="zuvgdzyt">
-				<button v-for="emoji in customEmojis.filter(e => e.category === category)" :key="emoji.name" class="emoji _button" @click="menu(emoji, $event)">
-					<img :src="emoji.url" class="img" :alt="emoji.name"/>
-					<div class="body">
-						<div class="name _monospace">{{ emoji.name }}</div>
-						<div class="info">{{ emoji.aliases.join(' ') }}</div>
-					</div>
-				</button>
+				<XEmoji v-for="emoji in customEmojis.filter(e => e.category === category)" :key="emoji.name" class="emoji" :emoji="emoji"/>
 			</div>
 		</MkFolder>
 	</div>
@@ -44,7 +35,7 @@ import MkFolder from '@client/components/ui/folder.vue';
 import * as os from '@client/os';
 import * as symbols from '@client/symbols';
 import { emojiCategories } from '@client/instance';
-import copyToClipboard from '@client/scripts/copy-to-clipboard';
+import XEmoji from './emojis.emoji.vue';
 
 export default defineComponent({
 	components: {
@@ -52,6 +43,7 @@ export default defineComponent({
 		MkInput,
 		MkSelect,
 		MkFolder,
+		XEmoji,
 	},
 
 	data() {
@@ -79,25 +71,14 @@ export default defineComponent({
 	},
 
 	methods: {
-		menu(emoji, ev) {
-			os.popupMenu([{
-				type: 'label',
-				text: ':' + emoji.name + ':',
-			}, {
-				text: this.$ts.copy,
-				icon: 'fas fa-copy',
-				action: () => {
-					copyToClipboard(`:${emoji.name}:`);
-					os.success();
-				}
-			}], ev.currentTarget || ev.target);
-		}
 	}
 });
 </script>
 
 <style lang="scss" scoped>
 .driuhtrh {
+	background: var(--bg);
+
 	> .query {
 		background: var(--bg);
 		padding: 16px;
@@ -109,42 +90,6 @@ export default defineComponent({
 			grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
 			grid-gap: 12px;
 			margin: 0 var(--margin) var(--margin) var(--margin);
-
-			> .emoji {
-				display: flex;
-				align-items: center;
-				padding: 12px;
-				text-align: left;
-				border: solid 1px var(--divider);
-				border-radius: 8px;
-
-				&:hover {
-					border-color: var(--accent);
-				}
-
-				> .img {
-					width: 42px;
-					height: 42px;
-				}
-
-				> .body {
-					padding: 0 0 0 8px;
-					white-space: nowrap;
-					overflow: hidden;
-
-					> .name {
-						text-overflow: ellipsis;
-						overflow: hidden;
-					}
-
-					> .info {
-						opacity: 0.5;
-						font-size: 0.9em;
-						text-overflow: ellipsis;
-						overflow: hidden;
-					}
-				}
-			}
 		}
 	}
 }
