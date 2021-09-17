@@ -252,6 +252,7 @@
 		"@types/fluent-ffmpeg": "2.1.17",
 		"cross-env": "7.0.3",
 		"cypress": "8.3.0",
+		"sinon": "11.1.2",
 		"start-server-and-test": "1.13.1"
 	}
 }

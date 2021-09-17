@@ -17,6 +17,10 @@
 		{{ $ts.makeExplorable }}
 		<template #desc>{{ $ts.makeExplorableDescription }}</template>
 	</FormSwitch>
+	<FormSwitch v-model:value="federateBlocks" @update:value="save()">
+		{{ $ts.federateBlocks }}
+		<template #desc>{{ $ts.federateBlocksDescription }}</template>
+	</FormSwitch>
 	<FormSwitch v-model:value="rememberNoteVisibility" @update:value="save()">{{ $ts.rememberNoteVisibility }}</FormSwitch>
 	<FormGroup v-if="!rememberNoteVisibility">
 		<template #label>{{ $ts.defaultNoteVisibility }}</template>
@@ -63,6 +67,7 @@ export default defineComponent({
 			noCrawle: false,
 			isExplorable: false,
 			hideOnlineStatus: false,
+			federateBlocks: true
 		}
 	},
 
@@ -79,6 +84,7 @@ export default defineComponent({
 		this.noCrawle = this.$i.noCrawle;
 		this.isExplorable = this.$i.isExplorable;
 		this.hideOnlineStatus = this.$i.hideOnlineStatus;
+		this.federateBlocks = this.$i.federateBlocks;
 	},
 
 	mounted() {
@@ -93,6 +99,7 @@ export default defineComponent({
 				noCrawle: !!this.noCrawle,
 				isExplorable: !!this.isExplorable,
 				hideOnlineStatus: !!this.hideOnlineStatus,
+				federateBlocks: !!this.federateBlocks
 			});
 		}
 	}

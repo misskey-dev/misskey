@@ -11,6 +11,7 @@
 
 ### Improvements
 - リモートユーザーのDeleteアクティビティに対応
+- ActivityPub: ブロックのActivityを送信しない設定を追加
 - UIの改善
 
 ### Bugfixes

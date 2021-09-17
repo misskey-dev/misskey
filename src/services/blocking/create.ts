@@ -26,7 +26,7 @@ export default async function(blocker: User, blockee: User) {
 		blockeeId: blockee.id,
 	});
 
-	if (Users.isLocalUser(blocker) && Users.isRemoteUser(blockee)) {
+	if (Users.isLocalUser(blocker) && Users.isRemoteUser(blockee) && blocker.federateBlock) {
 		const content = renderActivity(renderBlock(blocker, blockee));
 		deliver(blocker, content, blockee.inbox);
 	}
