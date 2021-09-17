@@ -65,9 +65,6 @@ export type Source = {
 
 	signToActivityPubGet?: boolean;
 
-	activityPub?: {
-		federateBlocks?: boolean;
-	}
 };
 
 /**
