@@ -36,7 +36,7 @@
 		navFg: '@fg',
 		navHoverFg: ':lighten<17<@fg',
 		navActive: '@accent',
-		navIndicator: '@accent',
+		navIndicator: '@indicator',
 		link: '#44a4c1',
 		hashtag: '#ff9156',
 		mention: '@accent',
