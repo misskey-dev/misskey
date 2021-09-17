@@ -3,7 +3,7 @@ import config from '@/config/index';
 import { SwSubscriptions } from '@/models/index';
 import { fetchMeta } from '@/misc/fetch-meta';
 import { Packed } from '@/misc/schema';
-import { pushNotificationData } from '../types';
+import { pushNotificationData } from '@/types';
 
 type pushNotificationsTypes = {
 	'notification': Packed<'Notification'>;
