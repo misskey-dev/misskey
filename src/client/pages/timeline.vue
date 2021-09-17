@@ -1,10 +1,10 @@
 <template>
 <div class="cmuxhskf" v-hotkey.global="keymap" v-size="{ min: [800] }">
-	<XTutorial v-if="$store.reactiveState.tutorial.value != -1" class="tutorial _block _isolated"/>
-	<XPostForm v-if="$store.reactiveState.showFixedPostForm.value" class="post-form _block _isolated" fixed/>
+	<XTutorial v-if="$store.reactiveState.tutorial.value != -1" class="tutorial _block"/>
+	<XPostForm v-if="$store.reactiveState.showFixedPostForm.value" class="post-form _block" fixed/>
 
 	<div class="new" v-if="queue > 0"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
-	<div class="tl">
+	<div class="tl _block">
 		<XTimeline ref="tl" class="tl"
 			:key="src === 'list' ? `list:${list.id}` : src === 'antenna' ? `antenna:${antenna.id}` : src === 'channel' ? `channel:${channel.id}` : src"
 			:src="src"
@@ -243,7 +243,6 @@ export default defineComponent({
 		background: var(--bg);
 		border-radius: var(--radius);
 		overflow: clip;
-		margin: var(--margin) 0;
 	}
 
 	&.min-width_800px {
