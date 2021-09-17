@@ -245,7 +245,7 @@ export default defineComponent({
 			font-size: 1em;
 			color: var(--fg);
 			background: var(--panel);
-			border: solid 1px var(--inputBorder);
+			border: solid 0.5px var(--inputBorder);
 			border-radius: 6px;
 			outline: none;
 			box-shadow: none;

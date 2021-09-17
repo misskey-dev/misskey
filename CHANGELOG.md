@@ -12,6 +12,7 @@
 ### Improvements
 - リモートユーザーのDeleteアクティビティに対応
 - ActivityPub: ブロックのActivityを送信しない設定を追加
+- UIの改善
 
 ### Bugfixes
 - popupで設定ページを表示すると、アカウントの削除ページにアクセスすることができない問題を修正
