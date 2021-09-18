@@ -51,6 +51,18 @@ export default defineComponent({
 				icon: this.src === 'local' ? 'fas fa-comments' : this.src === 'social' ? 'fas fa-share-alt' : this.src === 'global' ? 'fas fa-globe' : 'fas fa-home',
 				bg: 'var(--bg)',
 				actions: [{
+					icon: 'fas fa-list-ul',
+					text: this.$ts.lists,
+					handler: this.chooseList
+				}, {
+					icon: 'fas fa-satellite',
+					text: this.$ts.antennas,
+					handler: this.chooseAntenna
+				}, {
+					icon: 'fas fa-satellite-dish',
+					text: this.$ts.channel,
+					handler: this.chooseChannel
+				}, {
 					icon: 'fas fa-calendar-alt',
 					text: this.$ts.jumpToSpecifiedDate,
 					handler: this.timetravel
