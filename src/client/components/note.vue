@@ -50,7 +50,7 @@
 						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ $ts.private }})</span>
 						<MkA class="reply" v-if="appearNote.replyId" :to="`/notes/${appearNote.replyId}`"><i class="fas fa-reply"></i></MkA>
 						<Mfm v-if="appearNote.text" :text="appearNote.text" :author="appearNote.user" :i="$i" :custom-emojis="appearNote.emojis"/>
-						<a class="rp" v-if="appearNote.renote != null">RN:</a>
+						<a class="rp" v-if="appearNote.renote != null">{{ $ts.RN }}:</a>
 						<div class="translation" v-if="translating || translation">
 							<MkLoading v-if="translating" mini/>
 							<div class="translated" v-else>

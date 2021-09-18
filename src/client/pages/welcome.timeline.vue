@@ -6,7 +6,7 @@
 				<div class="body">
 					<MkA class="reply" v-if="note.replyId" :to="`/notes/${note.replyId}`"><i class="fas fa-reply"></i></MkA>
 					<Mfm v-if="note.text" :text="note.text" :author="note.user" :i="$i" :custom-emojis="note.emojis"/>
-					<MkA class="rp" v-if="note.renoteId" :to="`/notes/${note.renoteId}`">RN: ...</MkA>
+					<MkA class="rp" v-if="note.renoteId" :to="`/notes/${note.renoteId}`">{{ $ts.RN }}: ...</MkA>
 				</div>
 				<div v-if="note.files.length > 0" class="richcontent">
 					<XMediaList :media-list="note.files"/>

@@ -42,9 +42,9 @@ export const getNoteSummary = (note: any, locale: any): string => {
 	// Renoteのとき
 	if (note.renoteId) {
 		if (note.renote) {
-			summary += `\n\nRN: ${getNoteSummary(note.renote, locale)}`;
+			summary += `\n\n${locale['RN']}: ${getNoteSummary(note.renote, locale)}`;
 		} else {
-			summary += '\n\nRN: ...';
+			summary += `\n\n${locale['RN']}: ...`;
 		}
 	}
 
