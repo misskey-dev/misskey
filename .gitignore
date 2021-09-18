@@ -9,6 +9,9 @@
 /node_modules
 report.*.json
 
+# Cypress
+cypress/screenshots
+
 # config
 /.config/*
 !/.config/example.yml
