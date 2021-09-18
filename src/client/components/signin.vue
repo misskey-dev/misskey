@@ -188,14 +188,26 @@ export default defineComponent({
 		},
 
 		loginFailed(err) {
-			if (err.id === 'e03a5f46-d309-4865-9b69-56282d94e1eb') {
-				showSuspendedDialog();
-			} else {
-				os.dialog({
-					type: 'error',
-					title: this.$ts.loginFailed,
-					text: JSON.stringify(err)
-				});
+			switch (err.id) {
+				case '6cc579cc-885d-43d8-95c2-b8c7fc963280': {
+					os.dialog({
+						type: 'error',
+						title: this.$ts.loginFailed,
+						text: this.$ts.noSuchUser
+					});
+					break;
+				}
+				case 'e03a5f46-d309-4865-9b69-56282d94e1eb': {
+					showSuspendedDialog();
+					break;
+				}
+				default: {
+					os.dialog({
+						type: 'error',
+						title: this.$ts.loginFailed,
+						text: JSON.stringify(err)
+					});
+				}
 			}
 
 			this.challengeData = null;
