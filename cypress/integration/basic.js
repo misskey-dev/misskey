@@ -1,9 +1,7 @@
 describe('Basic', () => {
-	before(() => {
-		cy.request('POST', '/api/reset-db');
-	});
-
 	beforeEach(() => {
+		cy.request('POST', '/api/reset-db').as('reset');
+		cy.get('@reset').its('status').should('equal', 204)
 		cy.reload(true);
 	});
 
@@ -15,33 +13,45 @@ describe('Basic', () => {
     cy.visit('/');
 
 		cy.get('[data-cy-admin-username] input').type('admin');
-
 		cy.get('[data-cy-admin-password] input').type('admin1234');
-
 		cy.get('[data-cy-admin-ok]').click();
   });
 
 	it('signup', () => {
-    cy.visit('/');
+		// インスタンス初期セットアップ
+		cy.request('POST', '/api/signup', {
+			username: 'admin',
+			password: 'pass',
+		}).as('setup');
 
-		cy.get('[data-cy-signup]').click();
+		cy.get('@setup').then(() => {
+			cy.visit('/');
 
-		cy.get('[data-cy-signup-username] input').type('alice');
-
-		cy.get('[data-cy-signup-password] input').type('alice1234');
-	
-		cy.get('[data-cy-signup-password-retype] input').type('alice1234');
-
-		cy.get('[data-cy-signup-submit]').click();
+			cy.get('[data-cy-signup]').click();
+			cy.get('[data-cy-signup-username] input').type('alice');
+			cy.get('[data-cy-signup-password] input').type('alice1234');
+			cy.get('[data-cy-signup-password-retype] input').type('alice1234');
+			cy.get('[data-cy-signup-submit]').click();
+		});
   });
 
 	it('signin', () => {
+		// インスタンス初期セットアップ
+		cy.request('POST', '/api/signup', {
+			username: 'admin',
+			password: 'pass',
+		});
+
+		// ユーザー作成
+		cy.request('POST', '/api/signup', {
+			username: 'alice',
+			password: 'alice1234',
+		});
+
     cy.visit('/');
 
 		cy.get('[data-cy-signin]').click();
-
 		cy.get('[data-cy-signin-username] input').type('alice');
-
 		// Enterキーでサインインできるかの確認も兼ねる
 		cy.get('[data-cy-signin-password] input').type('alice1234{enter}');
   });
@@ -51,22 +61,42 @@ describe('Basic', () => {
 
 		//#region TODO: この辺はUI操作ではなくAPI操作でログインする
 		cy.get('[data-cy-signin]').click();
-
 		cy.get('[data-cy-signin-username] input').type('alice');
-
 		// Enterキーでサインインできるかの確認も兼ねる
 		cy.get('[data-cy-signin-password] input').type('alice1234{enter}');
 		//#endregion
 
 		cy.get('[data-cy-open-post-form]').click();
-
 		cy.get('[data-cy-post-form-text]').type('Hello, Misskey!');
-
 		cy.get('[data-cy-open-post-form-submit]').click();
 
 		// TODO: 投稿した文字列が画面内にあるか(=タイムラインに流れてきたか)のテスト
   });
 
-	// TODO: 凍結されていたらダイアログが出るかのテスト
-	//it('suspend', () => {});
+	it('suspend', function() {
+		cy.request('POST', '/api/signup', {
+			username: 'admin',
+			password: 'pass',
+		}).its('body').as('admin');
+
+		cy.request('POST', '/api/signup', {
+			username: 'alice',
+			password: 'pass',
+		}).its('body').as('alice');
+
+		cy.then(() => {
+			cy.request('POST', '/api/admin/suspend-user', {
+				i: this.admin.token,
+				userId: this.alice.id,
+			});
+	
+			cy.visit('/');
+	
+			cy.get('[data-cy-signin]').click();
+			cy.get('[data-cy-signin-username] input').type('alice');
+			cy.get('[data-cy-signin-password] input').type('alice1234{enter}');
+	
+			cy.contains('アカウントが凍結されています');
+		});
+	});
 });
