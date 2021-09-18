@@ -11,6 +11,7 @@ report.*.json
 
 # Cypress
 cypress/screenshots
+cypress/videos
 
 # config
 /.config/*
