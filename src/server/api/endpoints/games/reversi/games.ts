@@ -7,6 +7,7 @@ import { Brackets } from 'typeorm';
 
 export const meta = {
 	tags: ['games'],
+	requireCredentialPrivateMode: true as const,
 
 	params: {
 		limit: {

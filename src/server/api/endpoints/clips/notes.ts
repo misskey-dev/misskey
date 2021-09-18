@@ -12,6 +12,7 @@ export const meta = {
 	tags: ['account', 'notes', 'clips'],
 
 	requireCredential: false as const,
+	requireCredentialPrivateMode: true as const,
 
 	kind: 'read:account',
 

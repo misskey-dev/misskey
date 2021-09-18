@@ -5,6 +5,7 @@ import { networkChart } from '@/services/chart/index';
 
 export const meta = {
 	tags: ['charts'],
+	requireCredentialPrivateMode: true as const,
 
 	params: {
 		span: {

@@ -6,6 +6,7 @@ import { perUserDriveChart } from '@/services/chart/index';
 
 export const meta = {
 	tags: ['charts', 'drive', 'users'],
+	requireCredentialPrivateMode: true as const,
 
 	params: {
 		span: {

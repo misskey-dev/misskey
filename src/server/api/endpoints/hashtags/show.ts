@@ -8,6 +8,7 @@ export const meta = {
 	tags: ['hashtags'],
 
 	requireCredential: false as const,
+	requireCredentialPrivateMode: true as const,
 
 	params: {
 		tag: {

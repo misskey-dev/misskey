@@ -5,6 +5,7 @@ export const meta = {
 	tags: ['games'],
 
 	requireCredential: true as const,
+	requireCredentialPrivateMode: true as const,
 
 	res: {
 		type: 'array' as const,

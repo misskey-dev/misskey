@@ -5,6 +5,7 @@ import { normalizeForSearch } from '@/misc/normalize-for-search';
 
 export const meta = {
 	requireCredential: false as const,
+	requireCredentialPrivateMode: true as const,
 
 	tags: ['hashtags', 'users'],
 

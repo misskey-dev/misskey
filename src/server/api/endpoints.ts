@@ -95,6 +95,12 @@ export interface IEndpointMeta {
 	secure?: boolean;
 
 	/**
+	 * プライベートモードでなら、このエンドポイントにリクエストするときにユーザー情報が必要か否か
+	 * 省略した場合は false として解釈されます
+	 */
+	requireCredentialPrivateMode?: boolean;
+
+	/**
 	 * エンドポイントの種類
 	 * パーミッションの実現に利用されます。
 	 */

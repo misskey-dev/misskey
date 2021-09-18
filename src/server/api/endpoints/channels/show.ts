@@ -8,6 +8,7 @@ export const meta = {
 	tags: ['channels'],
 
 	requireCredential: false as const,
+	requireCredentialPrivateMode: true as const,
 
 	params: {
 		channelId: {

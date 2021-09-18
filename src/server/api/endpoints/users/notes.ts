@@ -13,6 +13,8 @@ import { generateBlockedUserQuery } from '../../common/generate-block-query';
 export const meta = {
 	tags: ['users', 'notes'],
 
+	requireCredentialPrivateMode: true as const,
+
 	params: {
 		userId: {
 			validator: $.type(ID),

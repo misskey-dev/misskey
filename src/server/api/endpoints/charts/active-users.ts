@@ -5,6 +5,7 @@ import { activeUsersChart } from '@/services/chart/index';
 
 export const meta = {
 	tags: ['charts', 'users'],
+	requireCredentialPrivateMode: true as const,
 
 	params: {
 		span: {

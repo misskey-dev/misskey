@@ -10,6 +10,7 @@ export const meta = {
 	tags: ['notes', 'channels'],
 
 	requireCredential: false as const,
+	requireCredentialPrivateMode: true as const,
 
 	params: {
 		channelId: {

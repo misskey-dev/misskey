@@ -5,6 +5,7 @@ import endpoints from './endpoints';
 import { ApiError } from './error';
 import { apiLogger } from './logger';
 import { AccessToken } from '@/models/entities/access-token';
+import { fetchMeta } from '@/misc/fetch-meta';
 
 const accessDenied = {
 	message: 'Access denied.',
@@ -68,6 +69,17 @@ export default async (endpoint: string, user: User | null | undefined, token: Ac
 				id: 'd5826d14-3982-4d2e-8011-b9e9f02499ef',
 				httpStatusCode: 429
 			});
+		});
+	}
+
+	// private mode
+	const meta = await fetchMeta();
+	if (meta.privateMode && ep.meta.requireCredentialPrivateMode && user == null) {
+		throw new ApiError({
+			message: 'Credential required.',
+			code: 'CREDENTIAL_REQUIRED',
+			id: '1384574d-a912-4b81-8601-c7b1c4085df1',
+			httpStatusCode: 401
 		});
 	}
 

@@ -8,6 +8,7 @@ export const meta = {
 	tags: ['meta'],
 
 	requireCredential: false as const,
+	requireCredentialPrivateMode: true as const,
 
 	params: {
 		limit: {

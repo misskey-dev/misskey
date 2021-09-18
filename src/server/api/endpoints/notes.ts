@@ -7,6 +7,8 @@ import { Notes } from '@/models/index';
 export const meta = {
 	tags: ['notes'],
 
+	requireCredentialPrivateMode: true as const,
+
 	params: {
 		local: {
 			validator: $.optional.bool,

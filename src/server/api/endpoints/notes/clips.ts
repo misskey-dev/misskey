@@ -10,6 +10,7 @@ export const meta = {
 	tags: ['clips', 'notes'],
 
 	requireCredential: false as const,
+	requireCredentialPrivateMode: true as const,
 
 	params: {
 		noteId: {

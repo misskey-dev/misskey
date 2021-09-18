@@ -9,6 +9,7 @@ export const meta = {
 	tags: ['room'],
 
 	requireCredential: false as const,
+	requireCredentialPrivateMode: true as const,
 
 	params: {
 		userId: {

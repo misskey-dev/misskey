@@ -8,6 +8,7 @@ export const meta = {
 	tags: ['gallery'],
 
 	requireCredential: false as const,
+	requireCredentialPrivateMode: true as const,
 
 	params: {
 		postId: {

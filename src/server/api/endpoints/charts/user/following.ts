@@ -6,6 +6,7 @@ import { perUserFollowingChart } from '@/services/chart/index';
 
 export const meta = {
 	tags: ['charts', 'users', 'following'],
+	requireCredentialPrivateMode: true as const,
 
 	params: {
 		span: {

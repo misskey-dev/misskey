@@ -7,6 +7,7 @@ import { ReversiGames } from '@/models/index';
 
 export const meta = {
 	tags: ['games'],
+	requireCredentialPrivateMode: true as const,
 
 	params: {
 		gameId: {

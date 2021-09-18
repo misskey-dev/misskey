@@ -11,6 +11,7 @@ export const meta = {
 	tags: ['federation'],
 
 	requireCredential: false as const,
+	requireCredentialPrivateMode: true as const,
 
 	params: {
 		host: {

@@ -2,11 +2,13 @@ import $ from 'cafy';
 import define from '../../define';
 import Resolver from '@/remote/activitypub/resolver';
 import { ApiError } from '../../error';
+import { fetchMeta } from '@/misc/fetch-meta';
 
 export const meta = {
 	tags: ['federation'],
 
 	requireCredential: false as const,
+	requireCredentialPrivateMode: true as const,
 
 	params: {
 		uri: {

@@ -6,6 +6,7 @@ import { makePaginationQuery } from '../../../common/make-pagination-query';
 
 export const meta = {
 	tags: ['users', 'gallery'],
+	requireCredentialPrivateMode: true as const,
 
 	params: {
 		userId: {

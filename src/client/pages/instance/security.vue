@@ -9,6 +9,18 @@
 		</FormLink>
 
 		<FormSwitch v-model:value="enableRegistration">{{ $ts.enableRegistration }}</FormSwitch>
+		<FormSwitch v-model:value="secureMode" v-if="!privateMode">
+			{{ $ts.secureMode }}
+			<template #desc>{{ $ts.secureModeInfo }}</template>
+		</FormSwitch>
+		<FormSwitch v-model:value="privateMode">
+			{{ $ts.privateMode }}
+			<template #desc>{{ $ts.privateModeInfo }}</template>
+		</FormSwitch>
+		<FormTextarea v-model:value="allowedHosts" v-if="privateMode">
+			<span>{{ $ts.allowedInstances }}</span>
+			<template #desc>{{ $ts.allowedInstancesDescription }}</template>
+		</FormTextarea>
 
 		<FormButton @click="save" primary><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
 	</FormSuspense>
@@ -22,6 +34,7 @@ import FormSwitch from '@client/components/form/switch.vue';
 import FormButton from '@client/components/form/button.vue';
 import FormBase from '@client/components/form/base.vue';
 import FormGroup from '@client/components/form/group.vue';
+import FormTextarea from '@client/components/form/textarea.vue';
 import FormInfo from '@client/components/form/info.vue';
 import FormSuspense from '@client/components/form/suspense.vue';
 import * as os from '@client/os';
@@ -37,6 +50,7 @@ export default defineComponent({
 		FormButton,
 		FormInfo,
 		FormSuspense,
+		FormTextarea
 	},
 
 	emits: ['info'],
@@ -50,6 +64,10 @@ export default defineComponent({
 			enableHcaptcha: false,
 			enableRecaptcha: false,
 			enableRegistration: false,
+
+			secureMode: false,
+			privateMode: false,
+			allowedHosts: ''
 		}
 	},
 
@@ -63,11 +81,21 @@ export default defineComponent({
 			this.enableHcaptcha = meta.enableHcaptcha;
 			this.enableRecaptcha = meta.enableRecaptcha;
 			this.enableRegistration = !meta.disableRegistration;
+			// TODO: misskey.js更新
+			// @ts-ignore
+			this.secureMode = meta.secureMode;
+			// @ts-ignore
+			this.privateMode = meta.privateMode;
+			// @ts-ignore
+			this.allowedHosts = meta.allowedHosts.join('\n');
 		},
 	
 		save() {
 			os.apiWithDialog('admin/update-meta', {
 				disableRegistration: !this.enableRegistration,
+				secureMode: this.secureMode,
+				privateMode: this.privateMode,
+				allowedHosts: this.allowedHosts.split('\n')
 			}).then(() => {
 				fetchInstance();
 			});

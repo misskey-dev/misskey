@@ -9,6 +9,7 @@ export const meta = {
 	tags: ['pages'],
 
 	requireCredential: false as const,
+	requireCredentialPrivateMode: true as const,
 
 	params: {
 		pageId: {

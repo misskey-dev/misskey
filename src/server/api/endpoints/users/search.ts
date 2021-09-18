@@ -7,6 +7,7 @@ export const meta = {
 	tags: ['users'],
 
 	requireCredential: false as const,
+	requireCredentialPrivateMode: true as const,
 
 	params: {
 		query: {

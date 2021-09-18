@@ -6,6 +6,7 @@ import { GalleryPosts } from '@/models/index';
 
 export const meta = {
 	tags: ['gallery'],
+	requireCredentialPrivateMode: true as const,
 
 	params: {
 		limit: {

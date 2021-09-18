@@ -261,7 +261,8 @@ router.get(['/@:user', '/@:user/:sub'], async (ctx, next) => {
 			user, profile, me,
 			sub: ctx.params.sub,
 			instanceName: meta.name || 'Misskey',
-			icon: meta.iconUrl
+			icon: meta.iconUrl,
+			privateMode: meta.privateMode,
 		});
 		ctx.set('Cache-Control', 'public, max-age=30');
 	} else {
@@ -300,7 +301,8 @@ router.get('/notes/:note', async (ctx, next) => {
 			// TODO: Let locale changeable by instance setting
 			summary: getNoteSummary(_note, locales['ja-JP']),
 			instanceName: meta.name || 'Misskey',
-			icon: meta.iconUrl
+			icon: meta.iconUrl,
+			privateMode: meta.privateMode,
 		});
 
 		if (['public', 'home'].includes(note.visibility)) {
@@ -337,7 +339,8 @@ router.get('/@:user/pages/:page', async (ctx, next) => {
 		await ctx.render('page', {
 			page: _page,
 			profile,
-			instanceName: meta.name || 'Misskey'
+			instanceName: meta.name || 'Misskey',
+			privateMode: meta.privateMode,
 		});
 
 		if (['public'].includes(page.visibility)) {
@@ -366,7 +369,8 @@ router.get('/clips/:clip', async (ctx, next) => {
 		await ctx.render('clip', {
 			clip: _clip,
 			profile,
-			instanceName: meta.name || 'Misskey'
+			instanceName: meta.name || 'Misskey',
+			privateMode: meta.privateMode,
 		});
 
 		ctx.set('Cache-Control', 'public, max-age=180');
@@ -389,7 +393,8 @@ router.get('/gallery/:post', async (ctx, next) => {
 			post: _post,
 			profile,
 			instanceName: meta.name || 'Misskey',
-			icon: meta.iconUrl
+			icon: meta.iconUrl,
+			privateMode: meta.privateMode
 		});
 
 		ctx.set('Cache-Control', 'public, max-age=180');
@@ -411,7 +416,8 @@ router.get('/channels/:channel', async (ctx, next) => {
 		const meta = await fetchMeta();
 		await ctx.render('channel', {
 			channel: _channel,
-			instanceName: meta.name || 'Misskey'
+			instanceName: meta.name || 'Misskey',
+			privateMode: meta.privateMode,
 		});
 
 		ctx.set('Cache-Control', 'public, max-age=180');

@@ -7,6 +7,8 @@ import { makePaginationQuery } from '../../common/make-pagination-query';
 export const meta = {
 	tags: ['users', 'pages'],
 
+	requireCredentialPrivateMode: true as const,
+
 	params: {
 		userId: {
 			validator: $.type(ID),

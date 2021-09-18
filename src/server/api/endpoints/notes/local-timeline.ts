@@ -16,6 +16,7 @@ import { generateBlockedUserQuery } from '../../common/generate-block-query';
 
 export const meta = {
 	tags: ['notes'],
+	requireCredentialPrivateMode: true as const,
 
 	params: {
 		withFiles: {
