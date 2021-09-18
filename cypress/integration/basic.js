@@ -2,8 +2,6 @@ describe('Basic', () => {
 	beforeEach(() => {
 		cy.request('POST', '/api/reset-db').as('reset');
 		cy.get('@reset').its('status').should('equal', 204);
-		cy.clearLocalStorage();
-		cy.clearCookies();
 		cy.reload(true);
 	});
 
@@ -121,17 +119,21 @@ describe('Basic', () => {
   });
 
 	it('suspend', function() {
+		// インスタンス初期セットアップ
 		cy.request('POST', '/api/admin/accounts/create', {
 			username: 'admin',
 			password: 'pass',
 		}).its('body').as('admin');
 
-		cy.request('POST', '/api/signup', {
-			username: 'alice',
-			password: 'pass',
-		}).its('body').as('alice');
+		cy.get('@admin').then(() => {
+			// ユーザー作成
+			cy.request('POST', '/api/signup', {
+				username: 'alice',
+				password: 'alice1234',
+			}).its('body').as('alice');
+		});
 
-		cy.then(() => {
+		cy.get('@alice').then(() => {
 			cy.request('POST', '/api/admin/suspend-user', {
 				i: this.admin.token,
 				userId: this.alice.id,
