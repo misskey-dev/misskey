@@ -3,6 +3,7 @@ import { reactive } from 'vue';
 import { apiUrl } from '@client/config';
 import { waiting } from '@client/os';
 import { unisonReload, reloadChannel } from '@client/scripts/unison-reload';
+import { showSuspendedDialog } from './scripts/show-suspended-dialog';
 
 // TODO: 他のタブと永続化されたstateを同期
 
@@ -82,17 +83,20 @@ function fetchAccount(token): Promise<Account> {
 				i: token
 			})
 		})
+		.then(res => res.json())
 		.then(res => {
-			// When failed to authenticate user
-			if (res.status !== 200 && res.status < 500) {
-				return signout();
+			if (res.error) {
+				if (res.error.id === 'a8c724b3-6e9c-4b46-b1a8-bc3ed6258370') {
+					showSuspendedDialog().then(() => {
+						signout();
+					});
+				} else {
+					signout();
+				}
+			} else {
+				res.token = token;
+				done(res);
 			}
-
-			// Parse response
-			res.json().then(i => {
-				i.token = token;
-				done(i);
-			});
 		})
 		.catch(fail);
 	});

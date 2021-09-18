@@ -54,6 +54,7 @@ import { apiUrl, host } from '@client/config';
 import { byteify, hexify } from '@client/scripts/2fa';
 import * as os from '@client/os';
 import { login } from '@client/account';
+import { showSuspendedDialog } from '../scripts/show-suspended-dialog';
 
 export default defineComponent({
 	components: {
@@ -169,15 +170,7 @@ export default defineComponent({
 						this.signing = false;
 						this.challengeData = res;
 						return this.queryKey();
-					}).catch(() => {
-						os.dialog({
-							type: 'error',
-							text: this.$ts.signinFailed
-						});
-						this.challengeData = null;
-						this.totpLogin = false;
-						this.signing = false;
-					});
+					}).catch(this.loginFailed);
 				} else {
 					this.totpLogin = true;
 					this.signing = false;
@@ -190,14 +183,24 @@ export default defineComponent({
 				}).then(res => {
 					this.$emit('login', res);
 					this.onLogin(res);
-				}).catch(() => {
-					os.dialog({
-						type: 'error',
-						text: this.$ts.loginFailed
-					});
-					this.signing = false;
+				}).catch(this.loginFailed);
+			}
+		},
+
+		loginFailed(err) {
+			if (err.id === 'e03a5f46-d309-4865-9b69-56282d94e1eb') {
+				showSuspendedDialog();
+			} else {
+				os.dialog({
+					type: 'error',
+					title: this.$ts.loginFailed,
+					text: JSON.stringify(err)
 				});
 			}
+
+			this.challengeData = null;
+			this.totpLogin = false;
+			this.signing = false;
 		},
 
 		resetPassword() {
