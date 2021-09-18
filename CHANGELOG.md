@@ -12,10 +12,13 @@
 ## 12.x.x (unreleased)
 
 ### Improvements
-- リモートユーザーのDeleteアクティビティに対応
+- ActivityPub: リモートユーザーのDeleteアクティビティに対応
+- ActivityPub: add resolver check for blocked instance
 - UIの改善
 
 ### Bugfixes
+- アカウントデータのエクスポート/インポート処理ができない問題を修正
+- アンテナの既読が付かない問題を修正
 - popupで設定ページを表示すると、アカウントの削除ページにアクセスすることができない問題を修正
 
 ## 12.90.1 (2021/09/05)
