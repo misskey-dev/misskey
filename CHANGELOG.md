@@ -12,6 +12,8 @@
 ### Improvements
 - ActivityPub: リモートユーザーのDeleteアクティビティに対応
 - ActivityPub: add resolver check for blocked instance
+- アカウントが凍結された場合に、凍結された旨を表示してからログアウトするように
+- 凍結されたアカウントにログインしようとしたときに、凍結されている旨を表示するように
 - UIの改善
 
 ### Bugfixes
