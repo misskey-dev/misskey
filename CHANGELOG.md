@@ -10,7 +10,8 @@
 ## 12.x.x (unreleased)
 
 ### Improvements
-- リモートユーザーのDeleteアクティビティに対応
+- ActivityPub: リモートユーザーのDeleteアクティビティに対応
+- ActivityPub: add resolver check for blocked instance
 - UIの改善
 
 ### Bugfixes
