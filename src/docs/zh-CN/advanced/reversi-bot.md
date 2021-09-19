@@ -5,11 +5,11 @@
     * `i`: bot账号的API Key
 
 2. 当出现对局邀请时，流中会触发`invited`事件
-    * イベントの中身に、`parent`という名前で対局へ誘ってきたユーザーの情報が含まれている
+    * 事件内容中包含邀请您参加游戏的用户信息，用户名字为`parent`。
 
-3. `games/reversi/match`へ、`user_id`として`parent`の`id`が含まれたリクエストを送信する
+3. 向`games/reversi/match`发送请求，其中`user_id`包含`parent`的`id`
 
-4. 上手くいくとゲーム情報が返ってくるので、`games/reversi-game`ストリームへ、以下のパラメータを付けて接続する:
+4. 请求成功时将返回游戏信息，可以使用以下参数连接到`games/reversi-game`流：
     * `i`: bot账号的API Key
     * `game`: `game`的`id`
 
