@@ -8,6 +8,7 @@ import { Followings, Notes } from '@/models/index';
 import { Brackets } from 'typeorm';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query';
 import { generateMutedUserQuery } from '../../common/generate-muted-user-query';
+import { generateMutedInstanceQuery } from '../../common/generate-muted-instance-query';
 import { activeUsersChart } from '@/services/chart/index';
 import { generateRepliesQuery } from '../../common/generate-replies-query';
 import { generateMutedNoteQuery } from '../../common/generate-muted-note-query';
@@ -108,6 +109,7 @@ export default define(meta, async (ps, user) => {
 	generateRepliesQuery(query, user);
 	generateVisibilityQuery(query, user);
 	generateMutedUserQuery(query, user);
+	generateMutedInstanceQuery(query, user);
 	generateMutedNoteQuery(query, user);
 	generateBlockedUserQuery(query, user);
 

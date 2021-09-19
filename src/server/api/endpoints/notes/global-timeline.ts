@@ -6,6 +6,7 @@ import { ApiError } from '../../error';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 import { Notes } from '@/models/index';
 import { generateMutedUserQuery } from '../../common/generate-muted-user-query';
+import { generateMutedInstanceQuery } from '../../common/generate-muted-instance-query';
 import { activeUsersChart } from '@/services/chart/index';
 import { generateRepliesQuery } from '../../common/generate-replies-query';
 import { generateMutedNoteQuery } from '../../common/generate-muted-note-query';
@@ -83,6 +84,7 @@ export default define(meta, async (ps, user) => {
 	if (user) generateMutedUserQuery(query, user);
 	if (user) generateMutedNoteQuery(query, user);
 	if (user) generateBlockedUserQuery(query, user);
+	if (user) generateMutedInstanceQuery(query, user);
 
 	if (ps.withFiles) {
 		query.andWhere('note.fileIds != \'{}\'');

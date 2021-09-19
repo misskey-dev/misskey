@@ -1,6 +1,7 @@
 import autobind from 'autobind-decorator';
 import Channel from '../channel';
 import { Notes } from '@/models/index';
+import { isInstanceMuted } from '@/misc/is-instance-muted';
 
 export default class extends Channel {
 	public readonly chName = 'main';
@@ -13,6 +14,9 @@ export default class extends Channel {
 		this.subscriber.on(`mainStream:${this.user!.id}`, async data => {
 			const { type } = data;
 			let { body } = data;
+
+			// Ignore notifications from instances the user has muted
+			if (isInstanceMuted(body, this.userProfile?.mutedInstances ?? [])) return;
 
 			switch (type) {
 				case 'notification': {

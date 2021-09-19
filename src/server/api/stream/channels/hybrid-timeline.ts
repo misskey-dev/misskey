@@ -6,6 +6,7 @@ import { Notes } from '@/models/index';
 import { PackedNote } from '@/models/repositories/note';
 import { checkWordMute } from '@/misc/check-word-mute';
 import { isBlockerUserRelated } from '@/misc/is-blocker-user-related';
+import { isInstanceMuted } from '@/misc/is-instance-muted';
 
 export default class extends Channel {
 	public readonly chName = 'hybridTimeline';
@@ -56,6 +57,9 @@ export default class extends Channel {
 				});
 			}
 		}
+
+		// Ignore notes from instances the user has muted
+		if (isInstanceMuted(note, this.userProfile?.mutedInstances ?? [])) return;
 
 		// 関係ない返信は除外
 		if (note.reply) {
