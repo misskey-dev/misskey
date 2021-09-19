@@ -1,10 +1,10 @@
 # Misskey黑白棋机器人开发
-Misskeyのリバーシ機能に対応したBotの開発方法をここに記します。
+下面列出的是为 Misskey 黑白棋功能开发一个Bot机器人的方法。
 
-1. `games/reversi`ストリームに以下のパラメータを付けて接続する:
+1. 使用以下参数来连接到`games/reversi`流：
     * `i`: bot账号的API Key
 
-2. 対局への招待が来たら、ストリームから`invited`イベントが流れてくる
+2. 当出现对局邀请时，流中会触发`invited`事件
     * イベントの中身に、`parent`という名前で対局へ誘ってきたユーザーの情報が含まれている
 
 3. `games/reversi/match`へ、`user_id`として`parent`の`id`が含まれたリクエストを送信する
