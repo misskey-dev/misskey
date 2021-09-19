@@ -8,7 +8,7 @@
 	@closed="$emit('closed')"
 >
 	<template #header>
-		<XHeader :info="pageInfo" :back-button="history.length > 0" @back="back()" :close-button="true" @close="close()"/>
+		<XHeader :info="pageInfo" :back-button="history.length > 0" @back="back()" :close-button="true" @close="close()" :title-only="true"/>
 	</template>
 	<div class="yrolvcoq _flat_">
 		<component :is="component" v-bind="props" :ref="changePage"/>

@@ -60,23 +60,9 @@
 				<XPhotos :user="user" :key="user.id" class="_gap"/>
 			</div>
 			<div class="main">
-				<div class="nav _gap">
-					<MkA :to="userPage(user)" :class="{ active: page === 'index' }" class="link">
-						<i class="fas fa-comment-alt icon"></i>
-						<span>{{ $ts.notes }}</span>
-					</MkA>
-					<MkA :to="userPage(user, 'clips')" :class="{ active: page === 'clips' }" class="link">
-						<i class="fas fa-paperclip icon"></i>
-						<span>{{ $ts.clips }}</span>
-					</MkA>
-					<MkA :to="userPage(user, 'pages')" :class="{ active: page === 'pages' }" class="link">
-						<i class="fas fa-file-alt icon"></i>
-						<span>{{ $ts.pages }}</span>
-					</MkA>
-					<div class="actions">
-						<button @click="menu" class="menu _button"><i class="fas fa-ellipsis-h"></i></button>
-						<MkFollowButton v-if="!$i || $i.id != user.id" :user="user" :inline="true" :transparent="false" :full="true" large class="koudoku"/>
-					</div>
+				<div class="actions">
+					<button @click="menu" class="menu _button"><i class="fas fa-ellipsis-h"></i></button>
+					<MkFollowButton v-if="!$i || $i.id != user.id" :user="user" :inline="true" :transparent="false" :full="true" large class="koudoku"/>
 				</div>
 				<template v-if="page === 'index'">
 					<div v-if="user.pinnedNotes.length > 0" class="_gap">
@@ -178,25 +164,6 @@
 		</div>
 
 		<div class="contents">
-			<div class="nav _gap">
-				<MkA :to="userPage(user)" :class="{ active: page === 'index' }" class="link" v-click-anime>
-					<i class="fas fa-comment-alt icon"></i>
-					<span>{{ $ts.notes }}</span>
-				</MkA>
-				<MkA :to="userPage(user, 'clips')" :class="{ active: page === 'clips' }" class="link" v-click-anime>
-					<i class="fas fa-paperclip icon"></i>
-					<span>{{ $ts.clips }}</span>
-				</MkA>
-				<MkA :to="userPage(user, 'pages')" :class="{ active: page === 'pages' }" class="link" v-click-anime>
-					<i class="fas fa-file-alt icon"></i>
-					<span>{{ $ts.pages }}</span>
-				</MkA>
-				<MkA :to="userPage(user, 'gallery')" :class="{ active: page === 'gallery' }" class="link" v-click-anime>
-					<i class="fas fa-icons icon"></i>
-					<span>{{ $ts.gallery }}</span>
-				</MkA>
-			</div>
-
 			<template v-if="page === 'index'">
 				<div>
 					<div v-if="user.pinnedNotes.length > 0" class="_gap">
@@ -283,6 +250,27 @@ export default defineComponent({
 				share: {
 					title: this.user.name,
 				},
+				bg: 'var(--bg)',
+				tabs: [{
+					active: this.page === 'index',
+					title: this.$ts.overview,
+					icon: 'fas fa-home',
+				}, {
+					active: this.page === 'clips',
+					title: this.$ts.clips,
+					icon: 'fas fa-paperclip',
+					onClick: () => { this.page = 'clips'; },
+				}, {
+					active: this.page === 'pages',
+					title: this.$ts.pages,
+					icon: 'fas fa-file-alt',
+					onClick: () => { this.page = 'pages'; },
+				}, {
+					active: this.page === 'gallery',
+					title: this.$ts.gallery,
+					icon: 'fas fa-icons',
+					onClick: () => { this.page = 'gallery'; },
+				}]
 			} : null),
 			user: null,
 			error: null,
@@ -314,7 +302,7 @@ export default defineComponent({
 
 	mounted() {
 		window.requestAnimationFrame(this.parallaxLoop);
-		this.narrow = this.$el.clientWidth < 1000;
+		this.narrow = true//this.$el.clientWidth < 1000;
 	},
 
 	beforeUnmount() {
@@ -772,37 +760,6 @@ export default defineComponent({
 	}
 
 	> .contents {
-		> .nav {
-			display: flex;
-			align-items: center;
-			font-size: 90%;
-
-			> .link {
-				flex: 1;
-				display: inline-block;
-				padding: 16px;
-				text-align: center;
-				border-bottom: solid 3px transparent;
-
-				&:hover {
-					text-decoration: none;
-				}
-
-				&.active {
-					color: var(--accent);
-					border-bottom-color: var(--accent);
-				}
-
-				&:not(.active):hover {
-					color: var(--fgHighlighted);
-				}
-
-				> .icon {
-					margin-right: 6px;
-				}
-			}
-		}
-
 		> .content {
 			margin-bottom: var(--margin);
 		}

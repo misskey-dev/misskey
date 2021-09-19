@@ -4,7 +4,6 @@ import Channel from '../channel';
 import { fetchMeta } from '@/misc/fetch-meta';
 import { Notes } from '@/models/index';
 import { PackedNote } from '@/models/repositories/note';
-import { PackedUser } from '@/models/repositories/user';
 import { checkWordMute } from '@/misc/check-word-mute';
 import { isBlockerUserRelated } from '@/misc/is-blocker-user-related';
 
@@ -31,7 +30,7 @@ export default class extends Channel {
 		if (!(
 			(note.channelId == null && this.user!.id === note.userId) ||
 			(note.channelId == null && this.following.has(note.userId)) ||
-			(note.channelId == null && ((note.user as PackedUser).host == null && note.visibility === 'public')) ||
+			(note.channelId == null && (note.user.host == null && note.visibility === 'public')) ||
 			(note.channelId != null && this.followingChannels.has(note.channelId))
 		)) return;
 
@@ -60,7 +59,7 @@ export default class extends Channel {
 
 		// 関係ない返信は除外
 		if (note.reply) {
-			const reply = note.reply as PackedNote;
+			const reply = note.reply;
 			// 「チャンネル接続主への返信」でもなければ、「チャンネル接続主が行った返信」でもなければ、「投稿者の投稿者自身への返信」でもない場合
 			if (reply.userId !== this.user!.id && note.userId !== this.user!.id && reply.userId !== note.userId) return;
 		}
