@@ -163,8 +163,8 @@ async function composeNotification(data: pushNotificationData): Promise<[string,
 					}];
 
 				case 'app':
-						return [body.header || body.body , {
-							body: body.header ? body.body : undefined,
+						return [body.header, {
+							body: body.body,
 							icon: body.icon,
 							data
 						}];
