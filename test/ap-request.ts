@@ -40,7 +40,7 @@ describe('ap-request', () => {
 	it('createSignedGet with verify', async () => {
 		const keypair = await genRsaKeyPair();
 		const key = { keyId: 'x', 'privateKeyPem': keypair.privateKey };
-		const url = 'https://example.com/inbox';
+		const url = 'https://example.com/outbox';
 		const headers = {
 			'User-Agent': 'UA'
 		};
