@@ -605,18 +605,23 @@ _menuDisplay:
   hide: "Kaŝi"
 _wordMute:
   muteWords: "Silentigitaj vortoj"
+  soft: "En kliento"
+  hard: "En servilo"
   mutedNotes: "Silentigitaj notoj"
 _theme:
   manage: "Administri kolorarojn"
   code: "Kodo de koloraro"
   description: "Priskribe"
+  color: "Koloro"
   darken: "Malbrileco"
   lighten: "Brileco"
   keys:
     bg: "Fono"
     navBg: "Fono de flanka stango"
+    link: "Ligilo"
     hashtag: "Kradvorto"
     mention: "Mencioj"
+    mentionMe: "Mencio al vi"
     renote: "Noto plusendita"
     buttonBg: "Fono de butono"
     driveFolderBg: "Fono de dosierujo de la disko"
@@ -649,6 +654,8 @@ _tutorial:
   step1_1: "Bonvenon."
   step7_2: "Se vi volas scii pli pri Misskey, rigardu la fakon {help}."
   step7_3: "Do, bonvolu amuziĝi Misskey'on🚀"
+_2fa:
+  registerKey: "Nove registri ŝlosilon"
 _permissions:
   "write:account": "Redakti Informojn de via konto"
   "read:blocks": "Vidi vian liston de uzantoj blokitaj"
