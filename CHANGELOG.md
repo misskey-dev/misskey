@@ -22,6 +22,7 @@
 - refactor: publishHogeStreamとStreamのEventEmitterに型定義する
 
 ### Bugfixes
+- fix image height when uses CW to hide it (#6811)
 - アカウントデータのエクスポート/インポート処理ができない問題を修正
 - アンテナの既読が付かない問題を修正
 - popupで設定ページを表示すると、アカウントの削除ページにアクセスすることができない問題を修正
