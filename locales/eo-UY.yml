@@ -521,6 +521,8 @@ user: "Uzantoj"
 administration: "Administro"
 accounts: "Kontoj"
 shareWithNote: "Kundividi en noto"
+ads: "Reklamaĵo"
+memo: "Memorigilo"
 high: "Alta"
 middle: "Meza"
 low: "Malalta"
@@ -530,6 +532,7 @@ sent: "Sendi"
 received: "Ricevita"
 searchResult: "Serĉorezultoj"
 hashtags: "Kradvorto"
+troubleshooting: "Problemsolvi"
 learnMore: "Lernu pli"
 translate: "Traduki"
 translatedFrom: "Tradukita el {x}"
@@ -537,6 +540,8 @@ _docs:
   continueReading: "Legi plu"
   features: "Funkcioj"
   admin: "Administro"
+_ad:
+  back: "Nuligi"
 _gallery:
   liked: "Ŝatitaj notoj"
   like: "Ŝati"
@@ -580,6 +585,7 @@ _mfm:
   x2: "Granda"
   x3: "Grandega"
   x4: "Pli grandega"
+  font: "Presliteraro"
 _reversi:
   total: "Entute"
 _instanceTicker:
@@ -595,6 +601,7 @@ _channel:
   following: "Sekvante"
   usersCount: "{n} partoprenanto(j)"
 _menuDisplay:
+  top: "Supro"
   hide: "Kaŝi"
 _wordMute:
   muteWords: "Silentigitaj vortoj"
