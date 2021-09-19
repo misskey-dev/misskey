@@ -657,6 +657,7 @@ _tutorial:
 _2fa:
   registerKey: "Nove registri ŝlosilon"
 _permissions:
+  "read:account": "Legi la informojn de via konto"
   "write:account": "Redakti Informojn de via konto"
   "read:blocks": "Vidi vian liston de uzantoj blokitaj"
   "write:blocks": "Redakti vian liston de blokitoj"
@@ -667,10 +668,12 @@ _permissions:
   "read:following": "Vidi la infomaciojn pri tio, kion vi sekvas"
   "write:following": "Sekvi aŭ malsekvi alian uzanton"
   "read:messaging": "Vidi vian retbabiladon"
+  "write:messaging": "Retbabilejo"
   "read:mutes": "Vidi vian liston de silentigitoj"
   "write:mutes": "Redakti vian liston de silentigitoj"
   "write:notes": "Krei / Forviŝi noton"
   "read:notifications": "Vidi sciigojn"
+  "write:notifications": "Manipulado por viaj sciigoj"
   "read:reactions": "Vidi reagojn"
   "write:reactions": "Redakti viajn reagojn"
   "read:page-likes": "Vidi ŝatojn de paĝo"
