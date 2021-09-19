@@ -10,7 +10,7 @@ Misskeyに関する用語集です。
 ## API
 (読み: えーぴーあい) Misskeyのサーバーが公開している、プログラムからMisskeyを扱うためのインターフェース。詳細は[こちら。](../advanced/api)
 
-## Bot
+## Roboto
 (読み: ぼっと) プログラムによって動作しているアカウント。
 
 ## CW
@@ -20,13 +20,13 @@ Misskeyに関する用語集です。
 (読み: ふぇでぃばーす) Misskeyを含む様々な分散型ソフトウェアのサーバーで構成されたネットワーク。
 
 ## MTL
-An abbreviation for "Malloka TempLinio".タイムラインの詳細は[こちら。](../features/timeline)
+Kaplitero de "Malloka TempLinio".タイムラインの詳細は[こちら。](../features/timeline)
 
 ## HTL
-ホームタイムライン(Home TimeLine)の略。タイムラインの詳細は[こちら。](../features/timeline)
+Kaplitero de "Hejma TempLinio".タイムラインの詳細は[こちら。](../features/timeline)
 
 ## LTL
-ローカルタイムライン(Local TimeLine)の略。タイムラインの詳細は[こちら。](../features/timeline)
+Kaplitero de "Loka TempLinio".タイムラインの詳細は[こちら。](../features/timeline)
 
 ## MFM
 (読み: えむえふえむ) Misskey Flavored Markdownの略で、Misskey上で使用できるマークアップ言語です。詳細は[こちら。](../features/mfm)
@@ -34,7 +34,7 @@ An abbreviation for "Malloka TempLinio".タイムラインの詳細は[こちら
 ## NSFW
 (読み: のっとせーふふぉーわーく) Not Safe For Workの略。画像を「閲覧注意」扱いにし、操作なしには表示しないようにすることができる機能。
 
-## Plusendi la noton
+## Notoj plusenditaj
 (読み: りのーと) 既にあるノートを引用、もしくはそのノートを新しいノートとして共有する行為、またそれによって作成されたノート。Rigardu por sciu pli tie[.](../features/note)
 
 ## STL
