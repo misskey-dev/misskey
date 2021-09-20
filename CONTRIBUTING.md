@@ -14,7 +14,7 @@ Before creating an issue, please check the following:
 	- Please ask questions in the [Misskey Forum](https://forum.misskey.io/) or [Discord](https://discord.gg/Wp8gVStHW3).
 
 ## Before implementation
-When you want to add a feature or fix a bug, first have the design and policy reviewed in an Issue (if it is not there, please make one). Without this step, there is a high possibility that the PR will not be merged even if it is implemented.
+When you want to add a feature or fix a bug, **first have the design and policy reviewed in an Issue** (if it is not there, please make one). Without this step, there is a high possibility that the PR will not be merged even if it is implemented.
 
 Also, when you start implementation, assign yourself to the Issue (if you cannot do it yourself, ask another member to assign you). By expressing your intention to work the Issue, you can prevent conflicts in the work.
 
