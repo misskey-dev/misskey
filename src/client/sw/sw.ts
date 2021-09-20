@@ -88,16 +88,6 @@ self.addEventListener('push', ev => {
 		}
 
 		createEmptyNotification();
-		setTimeout(async () => {
-			for (const n of
-				[
-					...(await self.registration.getNotifications({ tag: 'user_visible_auto_notification' })),
-					...(await self.registration.getNotifications({ tag: 'read_notification' }))
-				]
-			) {
-				n.close();
-			}
-		}, 1000);
 	}));
 });
 //#endregion
@@ -119,7 +109,7 @@ self.addEventListener('notificationclick', <K extends keyof pushNotificationData
 		case 'notification':
 			switch (action) {
 				case 'follow':
-					await swos.api('following/create', id, { userId: data.body.userId });
+					if ('userId' in data.body)await swos.api('following/create', id, { userId: data.body.userId });
 					break;
 				case 'showUser':
 					if ('user' in data.body) client = await swos.openUser(getAcct(data.body.user), id);

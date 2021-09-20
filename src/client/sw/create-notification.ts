@@ -14,11 +14,15 @@ import { getAccountFromId } from '@client/scripts/get-account-from-id';
 export async function createNotification<K extends keyof pushNotificationDataMap>(data: pushNotificationDataMap[K]) {
 	const n = await composeNotification(data);
 
-	if (n) await self.registration.showNotification(...n);
-	else await createEmptyNotification();
+	if (n) {
+		return self.registration.showNotification(...n);
+	} else {
+		console.error('Could not compose notification', data);
+		return createEmptyNotification();
+	}
 }
 
-async function composeNotification<K extends keyof pushNotificationDataMap>(data: pushNotificationDataMap[K]): Promise<[string, NotificationOptions] | null | undefined> {
+async function composeNotification<K extends keyof pushNotificationDataMap>(data: pushNotificationDataMap[K]): Promise<[string, NotificationOptions] | null> {
 	if (!swLang.i18n) swLang.fetchLocale();
 	const i18n = await swLang.i18n as I18n<any>;
 	const { t } = i18n;
@@ -151,7 +155,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 					}];
 
 				case 'groupInvited':
-					return [t('_notification.youWereInvitedToGroup', { userName: getUserName(data.body.group) }), {
+					return [t('_notification.youWereInvitedToGroup', { userName: getUserName(data.body.user) }), {
 						body: data.body.invitation.group.name,
 						data,
 						actions: [
@@ -208,4 +212,18 @@ export async function createEmptyNotification() {
 			tag: 'read_notification',
 		}
 	);
+
+	return new Promise<void>(res => {
+		setTimeout(async () => {
+			for (const n of
+				[
+					...(await self.registration.getNotifications({ tag: 'user_visible_auto_notification' })),
+					...(await self.registration.getNotifications({ tag: 'read_notification' }))
+				]
+			) {
+				n.close();
+			}
+			res();
+		}, 1000);
+	})
 }
