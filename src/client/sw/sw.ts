@@ -157,12 +157,10 @@ self.addEventListener('notificationclick', <K extends keyof pushNotificationData
 						default:
 							if ('note' in data.body) {
 								client = await swos.openNote(data.body.note.id, id);
-								break;
-							}
-							if ('user' in data.body) {
+							} else if ('user' in data.body) {
 								client = await swos.openUser(getAcct(data.body.user), id);
-								break;
 							}
+							break;
 					}
 			}
 			break;
