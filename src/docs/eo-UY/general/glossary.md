@@ -79,7 +79,7 @@ Uzuloj de Misskey.
 ## Kontrolisto
 スパムの凍結およびサイレンスや不適切な投稿の削除など、コミュニティ運営に関する権限を持つユーザー。
 
-## Fora, Transa, Surloka
+## Transa, Surloka
 他サーバーのことを指します。リモートユーザーといったように接頭辞としても使われます。ローカルの逆です。
 
 ## Kunfederado
