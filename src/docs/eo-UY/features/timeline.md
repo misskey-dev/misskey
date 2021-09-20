@@ -14,18 +14,18 @@
 全てのローカルユーザーの「ホーム」指定されていない投稿と、サーバーに届いた全てのリモートユーザーの「ホーム」指定されていない投稿が流れます。GTLと略されます。
 
 ## 比較
-| ソース          |           |       | Templinio |         |         |
-| ------------ | --------- | ----- | --------- | ------- | ------- |
-| Uzantoj      | Videbleco | Hejma | Loka      | Sociala | Malloka |
-| ローカル (フォロー)  | Publikigi | ✔     | ✔         | ✔       | ✔       |
-|              | Hejma     | ✔     |           | ✔       |         |
-|              | Sekvantoj | ✔     | ✔         | ✔       | ✔       |
-| リモート (フォロー)  | Publikigi | ✔     |           | ✔       | ✔       |
-|              | Hejma     | ✔     |           | ✔       |         |
-|              | Sekvantoj | ✔     |           | ✔       | ✔       |
-| ローカル (未フォロー) | Publikigi |       | ✔         | ✔       | ✔       |
-|              | Hejma     |       |           |         |         |
-|              | Sekvantoj |       |           |         |         |
-| リモート (未フォロー) | Publikigi |       |           |         | ✔       |
-|              | Hejma     |       |           |         |         |
-|              | Sekvantoj |       |           |         |         |
+| ソース                   |           |       | Templinio |         |         |
+| --------------------- | --------- | ----- | --------- | ------- | ------- |
+| Uzantoj               | Videbleco | Hejma | Loka      | Sociala | Malloka |
+| Lokaj (Sekvatoj)      | Publikigi | ✔     | ✔         | ✔       | ✔       |
+|                       | Hejma     | ✔     |           | ✔       |         |
+|                       | Sekvantoj | ✔     | ✔         | ✔       | ✔       |
+| Transaj (Sekvatoj)    | Publikigi | ✔     |           | ✔       | ✔       |
+|                       | Hejma     | ✔     |           | ✔       |         |
+|                       | Sekvantoj | ✔     |           | ✔       | ✔       |
+| Lokaj (ne sekvatoj)   | Publikigi |       | ✔         | ✔       | ✔       |
+|                       | Hejma     |       |           |         |         |
+|                       | Sekvantoj |       |           |         |         |
+| Transaj (ne sekvatoj) | Publikigi |       |           |         | ✔       |
+|                       | Hejma     |       |           |         |         |
+|                       | Sekvantoj |       |           |         |         |
