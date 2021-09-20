@@ -1,1 +1,1 @@
-
+- MessagingMessageの型を修正
