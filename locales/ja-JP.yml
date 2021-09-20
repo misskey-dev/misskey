@@ -1709,6 +1709,7 @@ _notification:
     app: "連携アプリからの通知"
 
   _actions:
+    followBack: "フォローバック"
     reply: "返信"
     renote: "Renote"
 
