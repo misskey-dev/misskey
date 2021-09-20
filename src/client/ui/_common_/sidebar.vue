@@ -393,7 +393,7 @@ export default defineComponent({
 					&:before {
 						content: "";
 						display: block;
-						width: calc(100% - 20px);
+						width: calc(100% - 24px);
 						height: 100%;
 						margin: auto;
 						position: absolute;

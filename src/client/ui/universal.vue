@@ -312,8 +312,8 @@ export default defineComponent({
 
 	> .widgets {
 		padding: 0 var(--margin);
-		//border-left: solid 0.5px var(--divider);
-		background: var(--navBg);
+		border-left: solid 0.5px var(--divider);
+		background: var(--bg);
 
 		@media (max-width: $widgets-hide-threshold) {
 			display: none;
