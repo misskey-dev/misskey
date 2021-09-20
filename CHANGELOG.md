@@ -8,6 +8,7 @@
 -->
 
 ## 12.x.x (unreleased)
+- ActivityPub: deliverキューのメモリ使用量を削減
 
 ### Improvements
 - ActivityPub: リモートユーザーのDeleteアクティビティに対応
