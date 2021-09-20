@@ -225,5 +225,5 @@ export async function createEmptyNotification() {
 			}
 			res();
 		}, 1000);
-	})
+	});
 }
