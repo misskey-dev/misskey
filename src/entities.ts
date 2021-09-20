@@ -150,11 +150,15 @@ export type Notification = {
 	user: User;
 	userId: User['id'];
 } | {
-	type: 'groupInvited'; // TODO
+	type: 'groupInvited';
+	invitation: UserGroup;
+	user: User;
+	userId: User['id'];
 } | {
 	type: 'app';
+	header?: string | null;
 	body: string;
-	icon: string;
+	icon?: string | null;
 });
 
 export type MessagingMessage = {

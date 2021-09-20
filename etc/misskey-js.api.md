@@ -2275,10 +2275,14 @@ type Notification_2 = {
     userId: User['id'];
 } | {
     type: 'groupInvited';
+    invitation: UserGroup;
+    user: User;
+    userId: User['id'];
 } | {
     type: 'app';
+    header?: string | null;
     body: string;
-    icon: string;
+    icon?: string | null;
 });
 
 // @public (undocumented)
