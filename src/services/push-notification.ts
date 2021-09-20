@@ -3,8 +3,8 @@ import config from '@/config/index';
 import { SwSubscriptions } from '@/models/index';
 import { fetchMeta } from '@/misc/fetch-meta';
 import { Packed } from '@/misc/schema';
-import { pushNotificationData } from '@/types';
 
+// Defined also @client/sw/types.ts#L14-L21
 type pushNotificationsTypes = {
 	'notification': Packed<'Notification'>;
 	'unreadMessagingMessage': Packed<'MessagingMessage'>;
@@ -40,7 +40,7 @@ export async function pushNotification<T extends keyof pushNotificationsTypes>(u
 
 		push.sendNotification(pushSubscription, JSON.stringify({
 			type, body, userId
-		} as pushNotificationData), {
+		}), {
 			proxy: config.proxy
 		}).catch((err: any) => {
 			//swLogger.info(err.statusCode);

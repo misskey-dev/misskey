@@ -4,29 +4,19 @@
  */
 declare var self: ServiceWorkerGlobalScope;
 
+import * as Misskey from 'misskey-js';
 import { SwMessage, swMessageOrderType } from './types';
 import { getAcct } from '@/misc/acct';
 import { getAccountFromId } from '@client/scripts/get-account-from-id';
 import { appendLoginId } from '@client/scripts/login-id';
 
-export async function api(endpoint: string, userId: string, options: any = {}) {
+export const apiFetch = new Misskey.api.APIClient({ origin, fetch });
+
+export async function api<E extends keyof Misskey.Endpoints>(endpoint: E, userId: string, options?: Misskey.Endpoints[E]['req']) {
 	const account = await getAccountFromId(userId);
 	if (!account) return;
 
-	return fetch(`${origin}/api/${endpoint}`, {
-		method: 'POST',
-		body: JSON.stringify({
-			i: account.token,
-			...options
-		}),
-		credentials: 'omit',
-		cache: 'no-cache',
-	}).then(async res => {
-		if (!res.ok) Error(`Error while fetching: ${await res.text()}`);
-
-		if (res.status === 200) return res.json();
-		return;
-	});
+	return apiFetch.request(endpoint, options, account.token);
 }
 
 // rendered acctからユーザーを開く
@@ -59,14 +49,7 @@ export async function openPost(options: any, loginId: string) {
 }
 
 export async function openClient(order: swMessageOrderType, url: string, loginId: string, query: any = {}) {
-	const client = await self.clients.matchAll({
-		type: 'window'
-	}).then(clients => {
-		for (const c of clients) {
-			if (c.url.indexOf('?zen') < 0) return c;
-		}
-		return null;
-	});
+	const client = await findClient();
 
 	if (client) {
 		client.postMessage({ type: 'order', ...query, order, loginId, url } as SwMessage);
@@ -74,4 +57,14 @@ export async function openClient(order: swMessageOrderType, url: string, loginId
 	}
 
 	return self.clients.openWindow(appendLoginId(url, loginId));
+}
+
+export async function findClient() {
+	const clients = await self.clients.matchAll({
+		type: 'window'
+	});
+	for (const c of clients) {
+		if (c.url.indexOf('?zen') < 0) return c;
+	}
+	return null;
 }
