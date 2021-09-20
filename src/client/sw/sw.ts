@@ -88,16 +88,6 @@ self.addEventListener('push', ev => {
 		}
 
 		createEmptyNotification();
-		setTimeout(async () => {
-			for (const n of
-				[
-					...(await self.registration.getNotifications({ tag: 'user_visible_auto_notification' })),
-					...(await self.registration.getNotifications({ tag: 'read_notification' }))
-				]
-			) {
-				n.close();
-			}
-		}, 1000);
 	}));
 });
 //#endregion
