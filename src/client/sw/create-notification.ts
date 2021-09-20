@@ -103,10 +103,12 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 								action: 'reply',
 								title: t('_notification._actions.reply')
 							},
+							...((data.body.note.visibility === 'public' || data.body.note.visibility === 'home') ? [
 							{
 								action: 'renote',
 								title: t('_notification._actions.renote')
 							}
+							] : [])
 						],
 					}];
 
