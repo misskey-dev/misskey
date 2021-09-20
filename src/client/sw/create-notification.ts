@@ -8,6 +8,8 @@ import getUserName from '@/misc/get-user-name';
 import { swLang } from '@client/sw/lang';
 import { I18n } from '@/misc/i18n';
 import { pushNotificationDataMap } from '@client/sw/types';
+import { apiFetch } from './operations';
+import { getAccountFromId } from '@client/scripts/get-account-from-id';
 
 export async function createNotification<K extends keyof pushNotificationDataMap>(data: pushNotificationDataMap[K]) {
 	const n = await composeNotification(data);
