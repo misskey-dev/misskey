@@ -38,20 +38,10 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 		case 'notification':
 			switch (data.body.type) {
 				case 'follow':
-					// users/showの型定義をswos.apiへ当てはめるのが困難なのでapiFetch.requestを直接使用
-					const account = await getAccountFromId(data.userId);
-					if (!account) return null;
-					const userDetail = apiFetch.request('users/show', { userId: data.body.userId }, account.token);
 					return [t('_notification.youWereFollowed'), {
 						body: getUserName(data.body.user),
 						icon: data.body.user.avatarUrl,
 						data,
-						actions: userDetail.isFollowing ? [] : [
-							{
-								action: 'follow',
-								title: t('_notification._actions.followBack')
-							}
-						],
 					}];
 
 				case 'mention':
