@@ -17,15 +17,15 @@
 | ソース                   |           |       | Templinio |         |         |
 | --------------------- | --------- | ----- | --------- | ------- | ------- |
 | Uzantoj               | Videbleco | Hejma | Loka      | Sociala | Malloka |
-| Lokaj (Sekvatoj)      | Publikigi | ✔     | ✔         | ✔       | ✔       |
-|                       | Hejma     | ✔     |           | ✔       |         |
+| Lokaj (sekvataj)      | Publika   | ✔     | ✔         | ✔       | ✔       |
+|                       | Nur hejma | ✔     |           | ✔       |         |
 |                       | Sekvantoj | ✔     | ✔         | ✔       | ✔       |
-| Transaj (Sekvatoj)    | Publikigi | ✔     |           | ✔       | ✔       |
-|                       | Hejma     | ✔     |           | ✔       |         |
+| Transaj (sekvataj)    | Publika   | ✔     |           | ✔       | ✔       |
+|                       | Nur hejma | ✔     |           | ✔       |         |
 |                       | Sekvantoj | ✔     |           | ✔       | ✔       |
-| Lokaj (ne sekvatoj)   | Publikigi |       | ✔         | ✔       | ✔       |
-|                       | Hejma     |       |           |         |         |
+| Lokaj (ne sekvataj)   | Publika   |       | ✔         | ✔       | ✔       |
+|                       | Nur hejma |       |           |         |         |
 |                       | Sekvantoj |       |           |         |         |
-| Transaj (ne sekvatoj) | Publikigi |       |           |         | ✔       |
-|                       | Hejma     |       |           |         |         |
+| Transaj (ne sekvataj) | Publika   |       |           |         | ✔       |
+|                       | Nur hejma |       |           |         |         |
 |                       | Sekvantoj |       |           |         |         |
