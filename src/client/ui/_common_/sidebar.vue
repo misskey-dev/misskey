@@ -263,22 +263,37 @@ export default defineComponent({
 
 					> .item {
 						padding-left: 0;
+						padding: 10px 0;
 						width: 100%;
 						text-align: center;
 						font-size: $ui-font-size * 1.1;
-						line-height: 3.7rem;
+						line-height: initial;
 
 						> i,
 						> .avatar {
-							margin-right: 0;
+							display: block;
+							margin: 0 auto;
 						}
 
 						> i {
-							left: 10px;
+							opacity: 0.7;
 						}
 
 						> .text {
-							display: none;
+							display: inline-block;
+							font-size: 0.5em;
+							line-height: initial;
+							overflow: hidden;
+							text-overflow: ellipsis;
+							white-space: nowrap;
+							max-width: 100%;
+							opacity: 0.7;
+						}
+
+						&:hover, &.active {
+							> i, > .text {
+								opacity: 1;
+							}
 						}
 
 						&:first-child {
@@ -317,7 +332,7 @@ export default defineComponent({
 			background: var(--navBg);
 
 			> .divider {
-				margin: 16px 0;
+				margin: 16px 16px;
 				border-top: solid 0.5px var(--divider);
 			}
 
@@ -326,7 +341,7 @@ export default defineComponent({
 				display: block;
 				padding-left: 24px;
 				font-size: $ui-font-size;
-				line-height: 3rem;
+				line-height: 2.85rem;
 				text-overflow: ellipsis;
 				overflow: hidden;
 				white-space: nowrap;
@@ -336,6 +351,7 @@ export default defineComponent({
 				color: var(--navFg);
 
 				> i {
+					position: relative;
 					width: 32px;
 				}
 
@@ -359,6 +375,11 @@ export default defineComponent({
 					animation: blink 1s infinite;
 				}
 
+				> .text {
+					position: relative;
+					font-size: 0.9em;
+				}
+
 				&:hover {
 					text-decoration: none;
 					color: var(--navHoverFg);
@@ -366,6 +387,23 @@ export default defineComponent({
 
 				&.active {
 					color: var(--navActive);
+				}
+
+				&:hover, &.active {
+					&:before {
+						content: "";
+						display: block;
+						width: calc(100% - 20px);
+						height: 100%;
+						margin: auto;
+						position: absolute;
+						top: 0;
+						left: 0;
+						right: 0;
+						bottom: 0;
+						border-radius: 8px;
+						background: var(--accentedBg);
+					}
 				}
 
 				&:first-child, &:last-child {
@@ -380,14 +418,38 @@ export default defineComponent({
 
 				&:first-child {
 					top: 0;
-					margin-bottom: 16px;
-					border-bottom: solid 0.5px var(--divider);
+
+					&:hover, &.active {
+						&:before {
+							content: none;
+						}
+					}
 				}
 
 				&:last-child {
 					bottom: 0;
-					margin-top: 16px;
-					border-top: solid 0.5px var(--divider);
+					color: var(--fgOnAccent);
+
+					&:before {
+						content: "";
+						display: block;
+						width: calc(100% - 20px);
+						height: calc(100% - 20px);
+						margin: auto;
+						position: absolute;
+						top: 0;
+						left: 0;
+						right: 0;
+						bottom: 0;
+						border-radius: 999px;
+						background: var(--accent);
+					}
+					
+					&:hover, &.active {
+						&:before {
+							background: var(--accentLighten);
+						}
+					}
 				}
 			}
 		}
