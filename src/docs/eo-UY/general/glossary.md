@@ -46,7 +46,7 @@ Ai estas oficiala maskoto de Misskey.
 ## Aktiva uzanto
 インスタンスにアカウントを作っているユーザーのうち、現在も実際にサービスを利用しているユーザーのこと。
 
-## Nodo
+## Gastiganto
 todo
 
 ## Personecigitaj emoĵioj
@@ -74,12 +74,12 @@ Misskeyにアップロードしたファイルを管理する機能。詳細は[
 Misskeyに投稿される、文章、ファイル、アンケートなどを含めることができるコンテンツ。Rigardu por sciu pli tie[.](../features/note)
 
 ## Miskiisto
-Misskeyを使う人のこと。
+Uzuloj de Misskey.
 
 ## Kontrolisto
 スパムの凍結およびサイレンスや不適切な投稿の削除など、コミュニティ運営に関する権限を持つユーザー。
 
-## Fora/transa
+## Fora, Transa, Surloka
 他サーバーのことを指します。リモートユーザーといったように接頭辞としても使われます。ローカルの逆です。
 
 ## Kunfederado
