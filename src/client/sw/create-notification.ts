@@ -8,7 +8,7 @@ import getUserName from '@/misc/get-user-name';
 import { swLang } from '@client/sw/lang';
 import { I18n } from '@/misc/i18n';
 import { pushNotificationDataMap } from '@client/sw/types';
-import { apiFetch } from './operations';
+import { cli } from './operations';
 import { getAccountFromId } from '@client/scripts/get-account-from-id';
 
 export async function createNotification<K extends keyof pushNotificationDataMap>(data: pushNotificationDataMap[K]) {
@@ -41,7 +41,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 					// users/showの型定義をswos.apiへ当てはめるのが困難なのでapiFetch.requestを直接使用
 					const account = await getAccountFromId(data.userId);
 					if (!account) return null;
-					const userDetail = apiFetch.request('users/show', { userId: data.body.userId }, account.token);
+					const userDetail = cli.request('users/show', { userId: data.body.userId }, account.token);
 					return [t('_notification.youWereFollowed'), {
 						body: getUserName(data.body.user),
 						icon: data.body.user.avatarUrl,
@@ -103,10 +103,12 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 								action: 'reply',
 								title: t('_notification._actions.reply')
 							},
+							...((data.body.note.visibility === 'public' || data.body.note.visibility === 'home') ? [
 							{
 								action: 'renote',
 								title: t('_notification._actions.renote')
 							}
+							] : [])
 						],
 					}];
 
