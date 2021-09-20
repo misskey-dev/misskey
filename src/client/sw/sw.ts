@@ -6,8 +6,8 @@ declare var self: ServiceWorkerGlobalScope;
 import { createEmptyNotification, createNotification } from '@client/sw/create-notification';
 import { swLang } from '@client/sw/lang';
 import { swNotificationRead } from '@client/sw/notification-read';
-import { pushNotificationData } from '@/types';
-import * as ope from './operations';
+import { pushNotificationDataMap } from '@client/sw/types';
+import * as swos from './operations';
 import { getAcct } from '@/misc/acct';
 
 //#region Lifecycle: Install
@@ -45,11 +45,11 @@ self.addEventListener('push', ev => {
 	ev.waitUntil(self.clients.matchAll({
 		includeUncontrolled: true,
 		type: 'window'
-	}).then(async clients => {
+	}).then(async <K extends keyof pushNotificationDataMap>(clients: readonly WindowClient[]) => {
 		// // クライアントがあったらストリームに接続しているということなので通知しない
 		// if (clients.length != 0) return;
 
-		const data: pushNotificationData = ev.data?.json();
+		const data: pushNotificationDataMap[K] = ev.data?.json();
 
 		switch (data.type) {
 			// case 'driveFileCreated':
@@ -103,7 +103,7 @@ self.addEventListener('push', ev => {
 //#endregion
 
 //#region Notification
-self.addEventListener('notificationclick', ev => {
+self.addEventListener('notificationclick', <K extends keyof pushNotificationDataMap>(ev: NotificationEvent) => {
 	ev.waitUntil((async () => {
 
 	if (_DEV_) {
@@ -111,85 +111,90 @@ self.addEventListener('notificationclick', ev => {
 	}
 
 	const { action, notification } = ev;
-	const data: pushNotificationData = notification.data;
-	const { type, userId: id, body } = data;
+	const data: pushNotificationDataMap[K] = notification.data;
+	const { userId: id } = data;
 	let client: WindowClient | null = null;
-	let close = true;
 
-	switch (action) {
-		case 'follow':
-			client = await ope.api('following/create', id, { userId: body.userId });
-			break;
-		case 'showUser':
-			client = await ope.openUser(getAcct(body.user), id);
-			if (body.type !== 'renote') close = false;
-			break;
-		case 'reply':
-			client = await ope.openPost({ reply: body.note }, id);
-			break;
-		case 'renote':
-			await ope.api('notes/create', id, { renoteId: body.note.id });
-			break;
-		case 'accept':
-			if (body.type === 'receiveFollowRequest') {
-				await ope.api('following/requests/accept', id, { userId: body.userId });
-			} else if (body.type === 'groupInvited') {
-				await ope.api('users/groups/invitations/accept', id, { invitationId: body.invitation.id });
-			}
-			break;
-		case 'reject':
-			if (body.type === 'receiveFollowRequest') {
-				await ope.api('following/requests/reject', id, { userId: body.userId });
-			} else if (body.type === 'groupInvited') {
-				await ope.api('users/groups/invitations/reject', id, { invitationId: body.invitation.id });
-			}
-			break;
-		case 'showFollowRequests':
-			client = await ope.openClient('push', '/my/follow-requests', id);
-			break;
-		default:
-			if (type === 'unreadMessagingMessage') {
-				client = await ope.openChat(body, id);
-				break;
-			}
-
-			switch (body.type) {
-				case 'receiveFollowRequest':
-					client = await ope.openClient('push', '/my/follow-requests', id);
+	switch (data.type) {
+		case 'notification':
+			switch (action) {
+				case 'follow':
+					await swos.api('following/create', id, { userId: data.body.userId });
 					break;
-				case 'groupInvited':
-					client = await ope.openClient('push', '/my/groups', id);
+				case 'showUser':
+					if ('user' in data.body) client = await swos.openUser(getAcct(data.body.user), id);
 					break;
-				case 'reaction':
-					client = await ope.openNote(body.note.id, id);
+				case 'reply':
+					if ('note' in data.body) client = await swos.openPost({ reply: data.body.note }, id);
+					break;
+				case 'renote':
+					if ('note' in data.body) await swos.api('notes/create', id, { renoteId: data.body.note.id });
+					break;
+				case 'accept':
+					switch (data.body.type) {
+						case 'receiveFollowRequest':
+							await swos.api('following/requests/accept', id, { userId: data.body.userId });
+							break;
+						case 'groupInvited':
+							await swos.api('users/groups/invitations/accept', id, { invitationId: data.body.invitation.id });
+							break;
+					}
+					break;
+				case 'reject':
+					switch (data.body.type) {
+						case 'receiveFollowRequest':
+							await swos.api('following/requests/reject', id, { userId: data.body.userId });
+							break;
+						case 'groupInvited':
+							await swos.api('users/groups/invitations/reject', id, { invitationId: data.body.invitation.id });
+							break;
+					}
+					break;
+				case 'showFollowRequests':
+					client = await swos.openClient('push', '/my/follow-requests', id);
 					break;
 				default:
-					if ('note' in body) {
-						client = await ope.openNote(body.note.id, id);
-						break;
-					}
-					if ('user' in body) {
-						client = await ope.openUser(getAcct(body.data.user), id);
-						break;
+					switch (data.body.type) {
+						case 'receiveFollowRequest':
+							client = await swos.openClient('push', '/my/follow-requests', id);
+							break;
+						case 'groupInvited':
+							client = await swos.openClient('push', '/my/groups', id);
+							break;
+						case 'reaction':
+							client = await swos.openNote(data.body.note.id, id);
+							break;
+						default:
+							if ('note' in data.body) {
+								client = await swos.openNote(data.body.note.id, id);
+								break;
+							}
+							if ('user' in data.body) {
+								client = await swos.openUser(getAcct(data.body.user), id);
+								break;
+							}
 					}
 			}
+			break;
+		case 'unreadMessagingMessage':
+			client = await swos.openChat(data.body, id);
+			break;
 	}
 
 	if (client) {
 		client.focus();
 	}
-	if (type === 'notification') {
+	if (data.type === 'notification') {
 		swNotificationRead.then(that => that.read(data));
 	}
-	if (close) {
-		notification.close();
-	}
+
+	notification.close();
 
 	})());
 });
 
-self.addEventListener('notificationclose', ev => {
-	const data: pushNotificationData = ev.notification.data;
+self.addEventListener('notificationclose', <K extends keyof pushNotificationDataMap>(ev: NotificationEvent) => {
+	const data: pushNotificationDataMap[K] = ev.notification.data;
 
 	if (data.type === 'notification') {
 		swNotificationRead.then(that => that.read(data));
