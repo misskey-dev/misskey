@@ -728,6 +728,7 @@ _profile:
   name: "Nomo"
   username: "Uzantnomo"
   description: "Pri mi"
+  metadata: "Kromaj informoj"
   metadataEdit: "Redakti kromaj informoj"
   changeAvatar: "Ŝanĝi profilbildon"
   changeBanner: "Ŝanĝi standardon"
