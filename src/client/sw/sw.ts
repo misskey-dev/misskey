@@ -56,7 +56,7 @@ self.addEventListener('push', ev => {
 			case 'notification':
 			case 'unreadMessagingMessage':
 				return createNotification(data);
-
+			/*
 			case 'readAllNotifications':
 				for (const n of await self.registration.getNotifications()) {
 					if (n?.data?.type === 'notification') n.close();
@@ -85,6 +85,7 @@ self.addEventListener('push', ev => {
 						}
 				}
 				break;
+			*/
 		}
 
 		createEmptyNotification();
