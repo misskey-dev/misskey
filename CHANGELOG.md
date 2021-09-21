@@ -8,13 +8,14 @@
 -->
 
 ## 12.x.x (unreleased)
-- ActivityPub: deliverキューのメモリ使用量を削減
 
 ### Improvements
 - ActivityPub: リモートユーザーのDeleteアクティビティに対応
 - ActivityPub: add resolver check for blocked instance
+- ActivityPub: deliverキューのメモリ使用量を削減
 - アカウントが凍結された場合に、凍結された旨を表示してからログアウトするように
 - 凍結されたアカウントにログインしようとしたときに、凍結されている旨を表示するように
+- リスト、アンテナタイムラインを個別ページとして分割
 - UIの改善
 
 ### Bugfixes
