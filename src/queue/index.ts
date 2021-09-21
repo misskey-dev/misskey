@@ -64,7 +64,9 @@ export function deliver(user: ThinUser, content: unknown, to: string | null) {
 	if (to == null) return null;
 
 	const data = {
-		user,
+		user: {
+			id: user.id
+		},
 		content,
 		to
 	};
