@@ -665,7 +665,7 @@ _permissions:
   "write:account": "Redatado de la informoj de via konto"
   "read:blocks": "Vidi vian liston de uzantoj blokitaj"
   "write:blocks": "Redakti vian liston de blokitoj"
-  "read:drive": "Operacio por legi la informon de dosiero en via disko de Misskey"
+  "read:drive": "Legi vian diskon"
   "write:drive": "Ĉia operacio por skribi, forviŝi, aŭ alimaniere ŝanĝi la informon de dosiero en via disko de Misskey"
   "read:favorites": "Vidi vian liston de preferataĵoj"
   "write:favorites": "Redakti vian liston de preferataĵoj."
