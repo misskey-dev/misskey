@@ -38,7 +38,7 @@ Kaplitero de "Loka TempLinio".タイムラインの詳細は[こちら。](../fe
 (読み: りのーと) 既にあるノートを引用、もしくはそのノートを新しいノートとして共有する行為、またそれによって作成されたノート。Rigardu por sciu pli tie[.](../features/note)
 
 ## STL
-Kaplitero de la "Sociala TempLinio".Por sciu pri la templinio, rigardu tie[.](../features/timeline)
+Kaplitero de "Sociala TempLinio".Por sciu pri la templinio, rigardu tie[.](../features/timeline)
 
 ## Ai
 Ai estas oficiala maskoto de Misskey.
