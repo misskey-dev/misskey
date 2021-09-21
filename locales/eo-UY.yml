@@ -67,7 +67,7 @@ driveFileDeleteConfirm: "Ĉu vi certas, ke vi volas forviŝi la dosieron \"{name
 unfollowConfirm: "Ĉu vi certas, ke vi volas ne plu sekvi {name}'(o)n?"
 lists: "Listoj"
 noLists: "Neniu listo"
-note: "Elsendi"
+note: "Notoj"
 notes: "Notoj"
 following: "Sekvatoj"
 followers: "Sekvantoj"
@@ -717,7 +717,7 @@ _poll:
 _visibility:
   publicDescription: "Via noto estos videbla de ĉiuj uzantoj"
   home: "Hejma"
-  homeDescription: "Elsendi nur sur la templinio Hejmo"
+  homeDescription: "Dissendi nur sur hejma templinio"
   followers: "Sekvantoj"
   followersDescription: "Nur al sekvantoj al mi"
   specified: "Rekta"
