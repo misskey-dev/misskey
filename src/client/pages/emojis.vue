@@ -1,5 +1,7 @@
 <template>
-<XCategory v-if="tab === 'category'"/>
+<div :class="$style.root">
+	<XCategory v-if="tab === 'category'"/>
+</div>
 </template>
 
 <script lang="ts">
@@ -26,5 +28,9 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" module>
+.root {
+	max-width: 1000px;
+	margin: 0 auto;
+}
 </style>
