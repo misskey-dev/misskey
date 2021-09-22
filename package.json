@@ -168,7 +168,7 @@
 		"koa-views": "7.0.1",
 		"langmap": "0.0.16",
 		"markdown-it": "12.2.0",
-		"markdown-it-anchor": "7.1.0",
+		"markdown-it-anchor": "8.3.1",
 		"matter-js": "0.17.1",
 		"mfm-js": "0.19.0",
 		"misskey-js": "0.0.6",
