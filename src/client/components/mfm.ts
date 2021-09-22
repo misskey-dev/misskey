@@ -8,6 +8,7 @@ import { concat } from '@client/../prelude/array';
 import MkFormula from '@client/components/formula.vue';
 import MkCode from '@client/components/code.vue';
 import MkGoogle from '@client/components/google.vue';
+import MkSparkle from '@client/components/sparkle.vue';
 import MkA from '@client/components/global/a.vue';
 import { host } from '@client/config';
 
@@ -168,6 +169,19 @@ export default defineComponent({
 						case 'rainbow': {
 							style = this.$store.state.animatedMfm ? 'animation: mfm-rainbow 1s linear infinite;' : '';
 							break;
+						}
+						case 'sparkle': {
+							if (!this.$store.state.animatedMfm) {
+								return genEl(token.children);
+							}
+							let count = token.props.args.count ? parseInt(token.props.args.count) : 10;
+							if (count > 100) {
+								count = 100;
+							}
+							const speed = token.props.args.speed ? parseFloat(token.props.args.speed) : 1;
+							return h(MkSparkle, {
+								count, speed,
+							}, genEl(token.children));
 						}
 					}
 					if (style == null) {
