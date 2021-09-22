@@ -30,9 +30,7 @@ export async function createImage(actor: IRemoteUser, value: any): Promise<Drive
 	const instance = await fetchMeta();
 	const cache = instance.cacheRemoteFiles;
 
-	image.name = truncate(image.name, DB_MAX_IMAGE_COMMENT_LENGTH);
-
-	let file = await uploadFromUrl(image.url, actor, null, image.url, image.sensitive, false, !cache, image.name);
+	let file = await uploadFromUrl(image.url, actor, null, image.url, image.sensitive, false, !cache, truncate(image.name, DB_MAX_IMAGE_COMMENT_LENGTH));
 
 	if (file.isLink) {
 		// URLが異なっている場合、同じ画像が以前に異なるURLで登録されていたということなので、
