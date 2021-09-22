@@ -90,7 +90,26 @@ export const menuDef = {
 		title: 'antennas',
 		icon: 'fas fa-satellite',
 		show: computed(() => $i != null),
-		to: '/my/antennas',
+		active: computed(() => router.currentRoute.value.path.startsWith('/timeline/antenna/') || router.currentRoute.value.path === '/my/antennas' || router.currentRoute.value.path.startsWith('/my/antennas/')),
+		action: (ev) => {
+			const items = ref([{
+				type: 'pending'
+			}]);
+			os.api('antennas/list').then(antennas => {
+				const _items = [...antennas.map(antenna => ({
+					type: 'link',
+					text: antenna.name,
+					to: `/timeline/antenna/${antenna.id}`
+				})), null, {
+					type: 'link',
+					to: '/my/antennas',
+					text: i18n.locale.manageAntennas,
+					icon: 'fas fa-cog',
+				}];
+				items.value = _items;
+			});
+			os.popupMenu(items, ev.currentTarget || ev.target);
+		},
 	},
 	mentions: {
 		title: 'mentions',
