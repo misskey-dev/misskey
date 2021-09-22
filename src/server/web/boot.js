@@ -48,8 +48,8 @@
 		} else if (localeOutdated) {
 			// nop
 		} else {
+			await checkUpdate();
 			renderError('LOCALE_FETCH_FAILED');
-			checkUpdate();
 			return;
 		}
 	}
@@ -65,8 +65,8 @@
 	script.setAttribute('async', 'true');
 	script.setAttribute('defer', 'true');
 	script.addEventListener('error', async () => {
+		await checkUpdate();
 		renderError('APP_FETCH_FAILED');
-		checkUpdate();
 	});
 	document.head.appendChild(script);
 	//#endregion
@@ -142,11 +142,6 @@
 
 		if (meta.version != v) {
 			localStorage.setItem('v', meta.version);
-			alert(
-				'Misskey已经更新啦！会自动重载一下页面哦～' +
-				'\n\n' +
-				'New version of Misskey available. The page will be reloaded.'
-			);
 			refresh();
 		}
 	}

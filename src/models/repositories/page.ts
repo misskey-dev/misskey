@@ -1,19 +1,17 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Page } from '@/models/entities/page';
-import { SchemaType } from '@/misc/schema';
+import { Packed } from '@/misc/schema';
 import { Users, DriveFiles, PageLikes } from '../index';
 import { awaitAll } from '@/prelude/await-all';
 import { DriveFile } from '@/models/entities/drive-file';
 import { User } from '@/models/entities/user';
-
-export type PackedPage = SchemaType<typeof packedPageSchema>;
 
 @EntityRepository(Page)
 export class PageRepository extends Repository<Page> {
 	public async pack(
 		src: Page['id'] | Page,
 		me?: { id: User['id'] } | null | undefined,
-	): Promise<PackedPage> {
+	): Promise<Packed<'Page'>> {
 		const meId = me ? me.id : null;
 		const page = typeof src === 'object' ? src : await this.findOneOrFail(src);
 
@@ -137,7 +135,7 @@ export const packedPageSchema = {
 		},
 		user: {
 			type: 'object' as const,
-			ref: 'User',
+			ref: 'User' as const,
 			optional: false as const, nullable: false as const,
 		},
 	}

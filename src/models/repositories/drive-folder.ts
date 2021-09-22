@@ -2,9 +2,7 @@ import { EntityRepository, Repository } from 'typeorm';
 import { DriveFolders, DriveFiles } from '../index';
 import { DriveFolder } from '@/models/entities/drive-folder';
 import { awaitAll } from '@/prelude/await-all';
-import { SchemaType } from '@/misc/schema';
-
-export type PackedDriveFolder = SchemaType<typeof packedDriveFolderSchema>;
+import { Packed } from '@/misc/schema';
 
 @EntityRepository(DriveFolder)
 export class DriveFolderRepository extends Repository<DriveFolder> {
@@ -20,7 +18,7 @@ export class DriveFolderRepository extends Repository<DriveFolder> {
 		options?: {
 			detail: boolean
 		}
-	): Promise<PackedDriveFolder> {
+	): Promise<Packed<'DriveFolder'>> {
 		const opts = Object.assign({
 			detail: false
 		}, options);
@@ -87,7 +85,7 @@ export const packedDriveFolderSchema = {
 		parent: {
 			type: 'object' as const,
 			optional: true as const, nullable: true as const,
-			ref: 'DriveFolder'
+			ref: 'DriveFolder' as const,
 		},
 	},
 };

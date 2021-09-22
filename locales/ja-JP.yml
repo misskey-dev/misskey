@@ -529,6 +529,8 @@ removeAllFollowing: "フォローを全解除"
 removeAllFollowingDescription: "{host}からのフォローをすべて解除します。そのインスタンスがもう存在しなくなった場合などに実行してください。"
 userSuspended: "このユーザーは凍結されています。"
 userSilenced: "このユーザーはサイレンスされています。"
+yourAccountSuspendedTitle: "アカウントが凍結されています"
+yourAccountSuspendedDescription: "このアカウントは、サーバーの利用規約に違反したなどの理由により、凍結されています。詳細については管理者までお問い合わせください。新しいアカウントを作らないでください。"
 menu: "メニュー"
 divider: "分割線"
 addItem: "項目を追加"
@@ -910,6 +912,8 @@ _mfm:
   fontDescription: "内容のフォントを指定することができます。"
   rainbow: "レインボー"
   rainbowDescription: "内容をレインボーにします。"
+  sparkle: "キラキラ"
+  sparkleDescription: "キラキラしたパーティクルのエフェクトを追加します。"
 
 _reversi:
   reversi: "リバーシ"
@@ -1150,6 +1154,10 @@ _permissions:
   "write:user-groups": "ユーザーグループを操作する"
   "read:channels": "チャンネルを見る"
   "write:channels": "チャンネルを操作する"
+  "read:gallery": "ギャラリーを見る"
+  "write:gallery": "ギャラリーを操作する"
+  "read:gallery-likes": "ギャラリーのいいねを見る"
+  "write:gallery-likes": "ギャラリーのいいねを操作する"
 
 _auth:
   shareAccess: "「{name}」がアカウントにアクセスすることを許可しますか？"

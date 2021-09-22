@@ -3,13 +3,11 @@ import { EntityRepository, Repository, In, Not } from 'typeorm';
 import { User, ILocalUser, IRemoteUser } from '@/models/entities/user';
 import { Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings, UserProfiles, UserSecurityKeys, UserGroupJoinings, Pages, Announcements, AnnouncementReads, Antennas, AntennaNotes, ChannelFollowings, Instances } from '../index';
 import config from '@/config/index';
-import { SchemaType } from '@/misc/schema';
+import { Packed } from '@/misc/schema';
 import { awaitAll } from '@/prelude/await-all';
 import { populateEmojis } from '@/misc/populate-emojis';
 import { getAntennas } from '@/misc/antenna-cache';
 import { USER_ACTIVE_THRESHOLD, USER_ONLINE_THRESHOLD } from '@/const';
-
-export type PackedUser = SchemaType<typeof packedUserSchema>;
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
@@ -164,7 +162,7 @@ export class UserRepository extends Repository<User> {
 			detail?: boolean,
 			includeSecrets?: boolean,
 		}
-	): Promise<PackedUser> {
+	): Promise<Packed<'User'>> {
 		const opts = Object.assign({
 			detail: false,
 			includeSecrets: false
@@ -375,12 +373,12 @@ export const packedUserSchema = {
 		},
 		isAdmin: {
 			type: 'boolean' as const,
-			nullable: false as const, optional: false as const,
+			nullable: false as const, optional: true as const,
 			default: false
 		},
 		isModerator: {
 			type: 'boolean' as const,
-			nullable: false as const, optional: false as const,
+			nullable: false as const, optional: true as const,
 			default: false
 		},
 		isBot: {
@@ -402,23 +400,11 @@ export const packedUserSchema = {
 						type: 'string' as const,
 						nullable: false as const, optional: false as const
 					},
-					host: {
-						type: 'string' as const,
-						nullable: true as const, optional: false as const
-					},
 					url: {
 						type: 'string' as const,
 						nullable: false as const, optional: false as const,
 						format: 'url'
 					},
-					aliases: {
-						type: 'array' as const,
-						nullable: false as const, optional: false as const,
-						items: {
-							type: 'string' as const,
-							nullable: false as const, optional: false as const
-						}
-					}
 				}
 			}
 		},
@@ -457,7 +443,7 @@ export const packedUserSchema = {
 		},
 		isSuspended: {
 			type: 'boolean' as const,
-			nullable: false as const, optional: false as const,
+			nullable: false as const, optional: true as const,
 			example: false
 		},
 		description: {
@@ -476,7 +462,7 @@ export const packedUserSchema = {
 		},
 		fields: {
 			type: 'array' as const,
-			nullable: false as const, optional: false as const,
+			nullable: false as const, optional: true as const,
 			items: {
 				type: 'object' as const,
 				nullable: false as const, optional: false as const,
@@ -520,31 +506,31 @@ export const packedUserSchema = {
 			items: {
 				type: 'object' as const,
 				nullable: false as const, optional: false as const,
-				ref: 'Note'
+				ref: 'Note' as const,
 			}
 		},
 		pinnedPageId: {
 			type: 'string' as const,
-			nullable: true as const, optional: false as const
+			nullable: true as const, optional: true as const
 		},
 		pinnedPage: {
 			type: 'object' as const,
-			nullable: true as const, optional: false as const,
-			ref: 'Page'
+			nullable: true as const, optional: true as const,
+			ref: 'Page' as const,
 		},
 		twoFactorEnabled: {
 			type: 'boolean' as const,
-			nullable: false as const, optional: false as const,
+			nullable: false as const, optional: true as const,
 			default: false
 		},
 		usePasswordLessLogin: {
 			type: 'boolean' as const,
-			nullable: false as const, optional: false as const,
+			nullable: false as const, optional: true as const,
 			default: false
 		},
 		securityKeys: {
 			type: 'boolean' as const,
-			nullable: false as const, optional: false as const,
+			nullable: false as const, optional: true as const,
 			default: false
 		},
 		avatarId: {
