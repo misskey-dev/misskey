@@ -40,7 +40,12 @@ export default async (endpoint: string, user: User | null | undefined, token: Ac
 	}
 
 	if (ep.meta.requireCredential && user!.isSuspended) {
-		throw new ApiError(accessDenied, { reason: 'Your account has been suspended.' });
+		throw new ApiError({
+			message: 'Your account has been suspended.',
+			code: 'YOUR_ACCOUNT_SUSPENDED',
+			id: 'a8c724b3-6e9c-4b46-b1a8-bc3ed6258370',
+			httpStatusCode: 403
+		});
 	}
 
 	if (ep.meta.requireAdmin && !user!.isAdmin) {

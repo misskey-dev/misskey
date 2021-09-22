@@ -11,28 +11,28 @@
 	<transition name="nav">
 		<nav class="nav" :class="{ iconOnly, hidden }" v-show="showing">
 			<div>
-				<button class="item _button account" @click="openAccountMenu">
+				<button class="item _button account" @click="openAccountMenu" v-click-anime>
 					<MkAvatar :user="$i" class="avatar"/><MkAcct class="text" :user="$i"/>
 				</button>
-				<MkA class="item index" active-class="active" to="/" exact>
+				<MkA class="item index" active-class="active" to="/" exact v-click-anime>
 					<i class="fas fa-home fa-fw"></i><span class="text">{{ $ts.timeline }}</span>
 				</MkA>
 				<template v-for="item in menu">
 					<div v-if="item === '-'" class="divider"></div>
-					<component v-else-if="menuDef[item] && (menuDef[item].show !== false)" :is="menuDef[item].to ? 'MkA' : 'button'" class="item _button" :class="item" active-class="active" v-on="menuDef[item].action ? { click: menuDef[item].action } : {}" :to="menuDef[item].to">
+					<component v-else-if="menuDef[item] && (menuDef[item].show !== false)" :is="menuDef[item].to ? 'MkA' : 'button'" class="item _button" :class="[item, { active: menuDef[item].active }]" active-class="active" v-on="menuDef[item].action ? { click: menuDef[item].action } : {}" :to="menuDef[item].to" v-click-anime>
 						<i class="fa-fw" :class="menuDef[item].icon"></i><span class="text">{{ $ts[menuDef[item].title] }}</span>
 						<span v-if="menuDef[item].indicated" class="indicator"><i class="fas fa-circle"></i></span>
 					</component>
 				</template>
 				<div class="divider"></div>
-				<MkA v-if="$i.isAdmin || $i.isModerator" class="item" active-class="active" to="/instance">
+				<MkA v-if="$i.isAdmin || $i.isModerator" class="item" active-class="active" to="/instance" v-click-anime>
 					<i class="fas fa-server fa-fw"></i><span class="text">{{ $ts.instance }}</span>
 				</MkA>
-				<button class="item _button" @click="more">
+				<button class="item _button" @click="more" v-click-anime>
 					<i class="fa fa-ellipsis-h fa-fw"></i><span class="text">{{ $ts.more }}</span>
 					<span v-if="otherNavItemIndicated" class="indicator"><i class="fas fa-circle"></i></span>
 				</button>
-				<MkA class="item" active-class="active" to="/settings">
+				<MkA class="item" active-class="active" to="/settings" v-click-anime>
 					<i class="fas fa-cog fa-fw"></i><span class="text">{{ $ts.settings }}</span>
 				</MkA>
 				<button class="item _button post" @click="post">
@@ -263,22 +263,30 @@ export default defineComponent({
 
 					> .item {
 						padding-left: 0;
+						padding: 18px 0;
 						width: 100%;
 						text-align: center;
 						font-size: $ui-font-size * 1.1;
-						line-height: 3.7rem;
+						line-height: initial;
 
 						> i,
 						> .avatar {
-							margin-right: 0;
+							display: block;
+							margin: 0 auto;
 						}
 
 						> i {
-							left: 10px;
+							opacity: 0.7;
 						}
 
 						> .text {
 							display: none;
+						}
+
+						&:hover, &.active {
+							> i, > .text {
+								opacity: 1;
+							}
 						}
 
 						&:first-child {
@@ -314,10 +322,11 @@ export default defineComponent({
 			height: calc(var(--vh, 1vh) * 100);
 			box-sizing: border-box;
 			overflow: auto;
+			overflow-x: clip;
 			background: var(--navBg);
 
 			> .divider {
-				margin: 16px 0;
+				margin: 16px 16px;
 				border-top: solid 0.5px var(--divider);
 			}
 
@@ -326,7 +335,7 @@ export default defineComponent({
 				display: block;
 				padding-left: 24px;
 				font-size: $ui-font-size;
-				line-height: 3rem;
+				line-height: 2.85rem;
 				text-overflow: ellipsis;
 				overflow: hidden;
 				white-space: nowrap;
@@ -336,6 +345,7 @@ export default defineComponent({
 				color: var(--navFg);
 
 				> i {
+					position: relative;
 					width: 32px;
 				}
 
@@ -359,6 +369,11 @@ export default defineComponent({
 					animation: blink 1s infinite;
 				}
 
+				> .text {
+					position: relative;
+					font-size: 0.9em;
+				}
+
 				&:hover {
 					text-decoration: none;
 					color: var(--navHoverFg);
@@ -366,6 +381,23 @@ export default defineComponent({
 
 				&.active {
 					color: var(--navActive);
+				}
+
+				&:hover, &.active {
+					&:before {
+						content: "";
+						display: block;
+						width: calc(100% - 24px);
+						height: 100%;
+						margin: auto;
+						position: absolute;
+						top: 0;
+						left: 0;
+						right: 0;
+						bottom: 0;
+						border-radius: 8px;
+						background: var(--accentedBg);
+					}
 				}
 
 				&:first-child, &:last-child {
@@ -380,14 +412,38 @@ export default defineComponent({
 
 				&:first-child {
 					top: 0;
-					margin-bottom: 16px;
-					border-bottom: solid 0.5px var(--divider);
+
+					&:hover, &.active {
+						&:before {
+							content: none;
+						}
+					}
 				}
 
 				&:last-child {
 					bottom: 0;
-					margin-top: 16px;
-					border-top: solid 0.5px var(--divider);
+					color: var(--fgOnAccent);
+
+					&:before {
+						content: "";
+						display: block;
+						width: calc(100% - 20px);
+						height: calc(100% - 20px);
+						margin: auto;
+						position: absolute;
+						top: 0;
+						left: 0;
+						right: 0;
+						bottom: 0;
+						border-radius: 999px;
+						background: var(--accent);
+					}
+					
+					&:hover, &.active {
+						&:before {
+							background: var(--accentLighten);
+						}
+					}
 				}
 			}
 		}

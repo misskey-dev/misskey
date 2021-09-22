@@ -217,7 +217,10 @@ if (lastVersion !== version) {
 
 	try { // 変なバージョン文字列来るとcompareVersionsでエラーになるため
 		if (lastVersion != null && compareVersions(version, lastVersion) === 1) {
-			popup(import('@client/components/updated.vue'), {}, {}, 'closed');
+			// ログインしてる場合だけ
+			if ($i) {
+				popup(import('@client/components/updated.vue'), {}, {}, 'closed');
+			}
 		}
 	} catch (e) {
 	}

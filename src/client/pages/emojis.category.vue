@@ -108,12 +108,12 @@ export default defineComponent({
 				margin: 8px 8px 0 0;
 				padding: 4px 8px;
 				font-size: 0.9em;
-				background: var(--panel);
-				border: solid 0.5px var(--divider);
+				background: var(--accentedBg);
 				border-radius: 5px;
 
 				&.active {
-					border-color: var(--accent);
+					background: var(--accent);
+					color: var(--fgOnAccent);
 				}
 			}
 		}

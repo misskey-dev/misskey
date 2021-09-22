@@ -64,7 +64,9 @@ export function deliver(user: ThinUser, content: unknown, to: string | null) {
 	if (to == null) return null;
 
 	const data = {
-		user,
+		user: {
+			id: user.id
+		},
 		content,
 		to
 	};
@@ -171,9 +173,10 @@ export function createImportUserListsJob(user: ThinUser, fileId: DriveFile['id']
 	});
 }
 
-export function createDeleteAccountJob(user: ThinUser) {
+export function createDeleteAccountJob(user: ThinUser, opts: { soft?: boolean; }) {
 	return dbQueue.add('deleteAccount', {
-		user: user
+		user: user,
+		soft: opts.soft
 	}, {
 		removeOnComplete: true,
 		removeOnFail: true
