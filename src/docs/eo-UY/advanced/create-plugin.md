@@ -11,7 +11,7 @@ Nomo de kromaĵo
 プラグイン作者
 
 ### version
-プラグインバージョン。数値を指定してください。
+Versio de kromaĵo.数値を指定してください。
 
 ### description
 プラグインの説明
