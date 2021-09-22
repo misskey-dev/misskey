@@ -263,7 +263,7 @@ export default defineComponent({
 
 					> .item {
 						padding-left: 0;
-						padding: 10px 0;
+						padding: 18px 0;
 						width: 100%;
 						text-align: center;
 						font-size: $ui-font-size * 1.1;
@@ -280,14 +280,7 @@ export default defineComponent({
 						}
 
 						> .text {
-							display: inline-block;
-							font-size: 0.5em;
-							line-height: initial;
-							overflow: hidden;
-							text-overflow: ellipsis;
-							white-space: nowrap;
-							max-width: 100%;
-							opacity: 0.7;
+							display: none;
 						}
 
 						&:hover, &.active {
