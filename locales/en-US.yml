@@ -902,7 +902,7 @@ _mfm:
   rainbow: "Rainbow"
   rainbowDescription: "Makes the content appear in rainbow colors."
   sparkle: "Sparkle"
-  sparkleDescription: "Infuses a sparkling animation"
+  sparkleDescription: "Gives content a sparkling particle effect."
 _reversi:
   reversi: "Reversi"
   gameSettings: "Game settings"
