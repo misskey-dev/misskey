@@ -13,6 +13,8 @@
 - ActivityPub: リモートユーザーのDeleteアクティビティに対応
 - ActivityPub: add resolver check for blocked instance
 - ActivityPub: deliverキューのメモリ使用量を削減
+- API: 管理者用アカウント削除APIを実装(/admin/accounts/delete)
+	- リモートユーザーの削除も可能に
 - アカウントが凍結された場合に、凍結された旨を表示してからログアウトするように
 - 凍結されたアカウントにログインしようとしたときに、凍結されている旨を表示するように
 - リスト、アンテナタイムラインを個別ページとして分割
