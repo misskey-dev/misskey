@@ -5,8 +5,8 @@
 - [Misskey Forum](https://forum.misskey.io/) - Misskey에 대한 이야기를 나누는 포럼
 
 ## 계정
-- [@repo@misskey.io](https://misskey.io/@repo) - Misskeyのリポジトリの更新を投稿するbot
+- [@repo@misskey.io](https://misskey.io/@repo) - Misskey 리포지터리의 변경 사항을 게시하는 Bot
 
-## ライブラリ
-- [misskey-dev/misskey.js](https://github.com/misskey-dev/misskey.js) - JavaScriptのMisskey SDK
-- [misskey-dev/mfm.js](https://github.com/misskey-dev/mfm.js) - JavaScriptのMFMパーサー実装
+## 라이브러리
+- [misskey-dev/misskey.js](https://github.com/misskey-dev/misskey.js) - Javascript용 Misskey SDK
+- [misskey-dev/mfm.js](https://github.com/misskey-dev/mfm.js) - Javascript 기반 MFM 구문 해석기
