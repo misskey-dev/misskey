@@ -901,6 +901,7 @@ _mfm:
   fontDescription: "可以设置内容所使用的字体。"
   rainbow: "彩虹"
   rainbowDescription: "用彩虹色来显示内容。"
+  sparkle: "闪光"
 _reversi:
   reversi: "黑白棋"
   gameSettings: "对局设置"
