@@ -372,7 +372,7 @@ export async function openEmojiPicker(src?: HTMLElement, opts, initialTextarea: 
 	});
 }
 
-export function popupMenu(items: any[], src?: HTMLElement, options?: { align?: string; viaKeyboard?: boolean }) {
+export function popupMenu(items: any[] | Ref<any[]>, src?: HTMLElement, options?: { align?: string; viaKeyboard?: boolean }) {
 	return new Promise((resolve, reject) => {
 		let dispose;
 		popup(import('@client/components/ui/popup-menu.vue'), {

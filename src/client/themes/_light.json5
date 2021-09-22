@@ -12,6 +12,7 @@
 		accent: '#86b300',
 		accentDarken: ':darken<10<@accent',
 		accentLighten: ':lighten<10<@accent',
+		accentedBg: ':alpha<0.15<@accent',
 		focus: ':alpha<0.3<@accent',
 		bg: '#fff',
 		acrylicBg: ':alpha<0.5<@bg',

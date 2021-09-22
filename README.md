@@ -104,6 +104,12 @@ Related projects
 - [misskey.js](https://github.com/misskey-dev/misskey.js) - Misskey SDK for JavaScript
 - [mfm.js](https://github.com/misskey-dev/mfm.js) - MFM parser
 
+Sponsors
+----------------------------------------------------------------
+<div align="center">
+	<a class="rss3" title="RSS3" href="https://rss3.io/" target="_blank" style="display: inline-block;"><img src="https://rss3.io/assets/images/Logo.svg" alt="RSS3" style="display: inline-block; height: 60px;"></a>
+</div>
+
 :heart: Backers
 ----------------------------------------------------------------
 <!-- PATREON_START -->

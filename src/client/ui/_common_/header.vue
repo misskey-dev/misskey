@@ -28,14 +28,14 @@
 				<span v-if="!tab.iconOnly" class="title">{{ tab.title }}</span>
 			</button>
 		</div>
-		<div class="buttons right">
-			<template v-if="info.actions && !narrow">
-				<button v-for="action in info.actions" class="_button button" :class="{ highlighted: action.highlighted }" @click.stop="action.handler" @touchstart="preventDrag" v-tooltip="action.text"><i :class="action.icon"></i></button>
-			</template>
-			<button v-if="shouldShowMenu" class="_button button" @click.stop="showMenu" @touchstart="preventDrag" v-tooltip="$ts.menu"><i class="fas fa-ellipsis-h"></i></button>
-			<button v-if="closeButton" class="_button button" @click.stop="$emit('close')" @touchstart="preventDrag" v-tooltip="$ts.close"><i class="fas fa-times"></i></button>
-		</div>
 	</template>
+	<div class="buttons right">
+		<template v-if="info && info.actions && !narrow">
+			<button v-for="action in info.actions" class="_button button" :class="{ highlighted: action.highlighted }" @click.stop="action.handler" @touchstart="preventDrag" v-tooltip="action.text"><i :class="action.icon"></i></button>
+		</template>
+		<button v-if="shouldShowMenu" class="_button button" @click.stop="showMenu" @touchstart="preventDrag" v-tooltip="$ts.menu"><i class="fas fa-ellipsis-h"></i></button>
+		<button v-if="closeButton" class="_button button" @click.stop="$emit('close')" @touchstart="preventDrag" v-tooltip="$ts.close"><i class="fas fa-times"></i></button>
+	</div>
 </div>
 </template>
 
@@ -83,6 +83,7 @@ export default defineComponent({
 		},
 
 		shouldShowMenu() {
+			if (this.info == null) return false;
 			if (this.info.actions != null && this.narrow) return true;
 			if (this.info.menu != null) return true;
 			if (this.info.share != null) return true;
