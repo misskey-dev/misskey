@@ -1,31 +1,13 @@
 <template>
 <div class="cmuxhskf" v-hotkey.global="keymap" v-size="{ min: [800] }">
-	<XTutorial v-if="$store.reactiveState.tutorial.value != -1" class="tutorial _block _isolated"/>
-	<XPostForm v-if="$store.reactiveState.showFixedPostForm.value" class="post-form _block _isolated" fixed/>
-	<div class="tabs">
-		<div class="left">
-			<button class="_button tab" @click="() => { src = 'home'; saveSrc(); }" :class="{ active: src === 'home' }" v-tooltip="$ts._timelines.home"><i class="fas fa-home"></i></button>
-			<button class="_button tab" @click="() => { src = 'local'; saveSrc(); }" :class="{ active: src === 'local' }" v-tooltip="$ts._timelines.local" v-if="isLocalTimelineAvailable"><i class="fas fa-comments"></i></button>
-			<button class="_button tab" @click="() => { src = 'social'; saveSrc(); }" :class="{ active: src === 'social' }" v-tooltip="$ts._timelines.social" v-if="isLocalTimelineAvailable"><i class="fas fa-share-alt"></i></button>
-			<button class="_button tab" @click="() => { src = 'global'; saveSrc(); }" :class="{ active: src === 'global' }" v-tooltip="$ts._timelines.global" v-if="isGlobalTimelineAvailable"><i class="fas fa-globe"></i></button>
-			<span class="divider"></span>
-			<button class="_button tab" @click="() => { src = 'mentions'; saveSrc(); }" :class="{ active: src === 'mentions' }" v-tooltip="$ts.mentions"><i class="fas fa-at"></i><i v-if="$i.hasUnreadMentions" class="fas fa-circle i"></i></button>
-			<button class="_button tab" @click="() => { src = 'directs'; saveSrc(); }" :class="{ active: src === 'directs' }" v-tooltip="$ts.directNotes"><i class="fas fa-envelope"></i><i v-if="$i.hasUnreadSpecifiedNotes" class="fas fa-circle i"></i></button>
-		</div>
-		<div class="right">
-			<button class="_button tab" @click="chooseChannel" :class="{ active: src === 'channel' }" v-tooltip="$ts.channel"><i class="fas fa-satellite-dish"></i><i v-if="$i.hasUnreadChannel" class="fas fa-circle i"></i></button>
-			<button class="_button tab" @click="chooseAntenna" :class="{ active: src === 'antenna' }" v-tooltip="$ts.antennas"><i class="fas fa-satellite"></i><i v-if="$i.hasUnreadAntenna" class="fas fa-circle i"></i></button>
-			<button class="_button tab" @click="chooseList" :class="{ active: src === 'list' }" v-tooltip="$ts.lists"><i class="fas fa-list-ul"></i></button>
-		</div>
-	</div>
+	<XTutorial v-if="$store.reactiveState.tutorial.value != -1" class="tutorial _block"/>
+	<XPostForm v-if="$store.reactiveState.showFixedPostForm.value" class="post-form _block" fixed/>
+
 	<div class="new" v-if="queue > 0"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
-	<div class="tl">
+	<div class="tl _block">
 		<XTimeline ref="tl" class="tl"
-			:key="src === 'list' ? `list:${list.id}` : src === 'antenna' ? `antenna:${antenna.id}` : src === 'channel' ? `channel:${channel.id}` : src"
+			:key="src"
 			:src="src"
-			:list="list ? list.id : null"
-			:antenna="antenna ? antenna.id : null"
-			:channel="channel ? channel.id : null"
 			:sound="true"
 			@before="before()"
 			@after="after()"
@@ -56,19 +38,52 @@ export default defineComponent({
 	data() {
 		return {
 			src: 'home',
-			list: null,
-			antenna: null,
-			channel: null,
-			menuOpened: false,
 			queue: 0,
 			[symbols.PAGE_INFO]: computed(() => ({
 				title: this.$ts.timeline,
-				subtitle: this.src === 'local' ? this.$ts._timelines.local : this.src === 'social' ? this.$ts._timelines.social : this.src === 'global' ? this.$ts._timelines.global : this.$ts._timelines.home,
 				icon: this.src === 'local' ? 'fas fa-comments' : this.src === 'social' ? 'fas fa-share-alt' : this.src === 'global' ? 'fas fa-globe' : 'fas fa-home',
+				bg: 'var(--bg)',
 				actions: [{
+					icon: 'fas fa-list-ul',
+					text: this.$ts.lists,
+					handler: this.chooseList
+				}, {
+					icon: 'fas fa-satellite',
+					text: this.$ts.antennas,
+					handler: this.chooseAntenna
+				}, {
+					icon: 'fas fa-satellite-dish',
+					text: this.$ts.channel,
+					handler: this.chooseChannel
+				}, {
 					icon: 'fas fa-calendar-alt',
 					text: this.$ts.jumpToSpecifiedDate,
 					handler: this.timetravel
+				}],
+				tabs: [{
+					active: this.src === 'home',
+					title: this.$ts._timelines.home,
+					icon: 'fas fa-home',
+					iconOnly: true,
+					onClick: () => { this.src = 'home'; this.saveSrc(); },
+				}, {
+					active: this.src === 'local',
+					title: this.$ts._timelines.local,
+					icon: 'fas fa-comments',
+					iconOnly: true,
+					onClick: () => { this.src = 'local'; this.saveSrc(); },
+				}, {
+					active: this.src === 'social',
+					title: this.$ts._timelines.social,
+					icon: 'fas fa-share-alt',
+					iconOnly: true,
+					onClick: () => { this.src = 'social'; this.saveSrc(); },
+				}, {
+					active: this.src === 'global',
+					title: this.$ts._timelines.global,
+					icon: 'fas fa-globe',
+					iconOnly: true,
+					onClick: () => { this.src = 'global'; this.saveSrc(); },
 				}]
 			})),
 		};
@@ -94,32 +109,10 @@ export default defineComponent({
 		src() {
 			this.showNav = false;
 		},
-		list(x) {
-			this.showNav = false;
-			if (x != null) this.antenna = null;
-			if (x != null) this.channel = null;
-		},
-		antenna(x) {
-			this.showNav = false;
-			if (x != null) this.list = null;
-			if (x != null) this.channel = null;
-		},
-		channel(x) {
-			this.showNav = false;
-			if (x != null) this.antenna = null;
-			if (x != null) this.list = null;
-		},
 	},
 
 	created() {
 		this.src = this.$store.state.tl.src;
-		if (this.src === 'list') {
-			this.list = this.$store.state.tl.arg;
-		} else if (this.src === 'antenna') {
-			this.antenna = this.$store.state.tl.arg;
-		} else if (this.src === 'channel') {
-			this.channel = this.$store.state.tl.arg;
-		}
 	},
 
 	methods: {
@@ -142,12 +135,9 @@ export default defineComponent({
 		async chooseList(ev) {
 			const lists = await os.api('users/lists/list');
 			const items = lists.map(list => ({
+				type: 'link',
 				text: list.name,
-				action: () => {
-					this.list = list;
-					this.src = 'list';
-					this.saveSrc();
-				}
+				to: `/timeline/list/${list.id}`
 			}));
 			os.popupMenu(items, ev.currentTarget || ev.target);
 		},
@@ -155,13 +145,10 @@ export default defineComponent({
 		async chooseAntenna(ev) {
 			const antennas = await os.api('antennas/list');
 			const items = antennas.map(antenna => ({
+				type: 'link',
 				text: antenna.name,
 				indicate: antenna.hasUnreadNote,
-				action: () => {
-					this.antenna = antenna;
-					this.src = 'antenna';
-					this.saveSrc();
-				}
+				to: `/timeline/antenna/${antenna.id}`
 			}));
 			os.popupMenu(items, ev.currentTarget || ev.target);
 		},
@@ -169,15 +156,10 @@ export default defineComponent({
 		async chooseChannel(ev) {
 			const channels = await os.api('channels/followed');
 			const items = channels.map(channel => ({
+				type: 'link',
 				text: channel.name,
 				indicate: channel.hasUnreadNote,
-				action: () => {
-					// NOTE: チャンネルタイムラインをこのコンポーネントで表示するようにすると投稿フォームはどうするかなどの問題が生じるのでとりあえずページ遷移で
-					//this.channel = channel;
-					//this.src = 'channel';
-					//this.saveSrc();
-					this.$router.push(`/channels/${channel.id}`);
-				}
+				to: `/channels/${channel.id}`
 			}));
 			os.popupMenu(items, ev.currentTarget || ev.target);
 		},
@@ -185,10 +167,6 @@ export default defineComponent({
 		saveSrc() {
 			this.$store.set('tl', {
 				src: this.src,
-				arg:
-					this.src === 'list' ? this.list :
-					this.src === 'antenna' ? this.antenna :
-					this.channel
 			});
 		},
 
@@ -213,6 +191,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .cmuxhskf {
+	padding: var(--margin);
+
 	> .new {
 		position: sticky;
 		top: calc(var(--stickyTop, 0px) + 16px);
@@ -227,79 +207,15 @@ export default defineComponent({
 		}
 	}
 
-	> .tabs {
-		display: flex;
-		box-sizing: border-box;
-		padding: 0 8px;
-		white-space: nowrap;
-		overflow: auto;
-		border-bottom: solid 0.5px var(--divider);
-
-		// 影の都合上
-		position: relative;
-
-		> .right {
-			margin-left: auto;
-		}
-
-		> .left, > .right {
-			> .tab {
-				position: relative;
-				height: 50px;
-				padding: 0 12px;
-
-				&:hover {
-					color: var(--fgHighlighted);
-				}
-
-				&.active {
-					color: var(--fgHighlighted);
-
-					&:after {
-						content: "";
-						display: block;
-						position: absolute;
-						bottom: 0;
-						left: 0;
-						right: 0;
-						margin: 0 auto;
-						width: 100%;
-						height: 2px;
-						background: var(--accent);
-					}
-				}
-
-				> .i {
-					position: absolute;
-					top: 16px;
-					right: 8px;
-					color: var(--indicator);
-					font-size: 8px;
-					animation: blink 1s infinite;
-				}
-			}
-
-			> .divider {
-				display: inline-block;
-				width: 1px;
-				height: 28px;
-				vertical-align: middle;
-				margin: 0 8px;
-				background: var(--divider);
-			}
-		}
+	> .tl {
+		background: var(--bg);
+		border-radius: var(--radius);
+		overflow: clip;
 	}
 
 	&.min-width_800px {
-		> .tl {
-			background: var(--bg);
-			padding: 32px 0;
-
-			> .tl {
-				max-width: 800px;
-				margin: 0 auto;
-			}
-		}
+		max-width: 800px;
+		margin: 0 auto;
 	}
 }
 </style>

@@ -2,8 +2,8 @@
 <div class="mk-app" :class="{ wallpaper }">
 	<XSidebar ref="nav" class="sidebar"/>
 
-	<div class="contents" ref="contents" @contextmenu.stop="onContextmenu">
-		<header class="header" ref="header" @click="onHeaderClick">
+	<div class="contents" ref="contents" @contextmenu.stop="onContextmenu" :style="{ background: pageInfo?.bg }">
+		<header class="header" ref="header" @click="onHeaderClick" :style="{ background: pageInfo?.bg }">
 			<XHeader :info="pageInfo" :back-button="true" @back="back()"/>
 		</header>
 		<main ref="main">
@@ -258,7 +258,6 @@ export default defineComponent({
 	}
 
 	> .sidebar {
-		border-right: solid 0.5px var(--divider);
 	}
 
 	> .contents {
@@ -314,6 +313,7 @@ export default defineComponent({
 	> .widgets {
 		padding: 0 var(--margin);
 		border-left: solid 0.5px var(--divider);
+		background: var(--bg);
 
 		@media (max-width: $widgets-hide-threshold) {
 			display: none;

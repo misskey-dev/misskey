@@ -1,31 +1,41 @@
 <template>
-<div class="fdidabkb" :class="{ center }" :style="`--height:${height};`" :key="key">
+<div class="fdidabkb" :class="{ slim: titleOnly || narrow }" :style="`--height:${height};`" :key="key">
 	<transition :name="$store.state.animation ? 'header' : ''" mode="out-in" appear>
 		<div class="buttons left" v-if="backButton">
 			<button class="_button button back" @click.stop="$emit('back')" @touchstart="preventDrag" v-tooltip="$ts.goBack"><i class="fas fa-chevron-left"></i></button>
 		</div>
 	</transition>
 	<template v-if="info">
-		<div class="titleContainer">
+		<div class="titleContainer" @click="showTabsPopup">
 			<i v-if="info.icon" class="icon" :class="info.icon"></i>
 			<MkAvatar v-else-if="info.avatar" class="avatar" :user="info.avatar" :disable-preview="true" :show-indicator="true"/>
 
 			<div class="title">
 				<MkUserName v-if="info.userName" :user="info.userName" :nowrap="false" class="title"/>
 				<div v-else-if="info.title" class="title">{{ info.title }}</div>
-				<div class="subtitle" v-if="info.subtitle">
+				<div class="subtitle" v-if="!narrow && info.subtitle">
 					{{ info.subtitle }}
+				</div>
+				<div class="subtitle activeTab" v-if="narrow && hasTabs">
+					{{ info.tabs.find(tab => tab.active)?.title }}
+					<i class="chevron fas fa-chevron-down"></i>
 				</div>
 			</div>
 		</div>
-		<div class="buttons right">
-			<template v-if="info.actions && showActions">
-				<button v-for="action in info.actions" class="_button button" :class="{ highlighted: action.highlighted }" @click.stop="action.handler" @touchstart="preventDrag" v-tooltip="action.text"><i :class="action.icon"></i></button>
-			</template>
-			<button v-if="shouldShowMenu" class="_button button" @click.stop="showMenu" @touchstart="preventDrag" v-tooltip="$ts.menu"><i class="fas fa-ellipsis-h"></i></button>
-			<button v-if="closeButton" class="_button button" @click.stop="$emit('close')" @touchstart="preventDrag" v-tooltip="$ts.close"><i class="fas fa-times"></i></button>
+		<div class="tabs" v-if="!narrow">
+			<button class="tab _button" v-for="tab in info.tabs" :class="{ active: tab.active }" @click="tab.onClick" v-tooltip="tab.title">
+				<i v-if="tab.icon" class="icon" :class="tab.icon"></i>
+				<span v-if="!tab.iconOnly" class="title">{{ tab.title }}</span>
+			</button>
 		</div>
 	</template>
+	<div class="buttons right">
+		<template v-if="info && info.actions && !narrow">
+			<button v-for="action in info.actions" class="_button button" :class="{ highlighted: action.highlighted }" @click.stop="action.handler" @touchstart="preventDrag" v-tooltip="action.text"><i :class="action.icon"></i></button>
+		</template>
+		<button v-if="shouldShowMenu" class="_button button" @click.stop="showMenu" @touchstart="preventDrag" v-tooltip="$ts.menu"><i class="fas fa-ellipsis-h"></i></button>
+		<button v-if="closeButton" class="_button button" @click.stop="$emit('close')" @touchstart="preventDrag" v-tooltip="$ts.close"><i class="fas fa-times"></i></button>
+	</div>
 </div>
 </template>
 
@@ -52,24 +62,29 @@ export default defineComponent({
 			required: false,
 			default: false,
 		},
-		center: {
+		titleOnly: {
 			type: Boolean,
 			required: false,
-			default: true,
+			default: false,
 		},
 	},
 
 	data() {
 		return {
-			showActions: false,
+			narrow: false,
 			height: 0,
 			key: 0,
 		};
 	},
 
 	computed: {
+		hasTabs(): boolean {
+			return this.info.tabs && this.info.tabs.length > 0;
+		},
+
 		shouldShowMenu() {
-			if (this.info.actions != null && !this.showActions) return true;
+			if (this.info == null) return false;
+			if (this.info.actions != null && this.narrow) return true;
 			if (this.info.menu != null) return true;
 			if (this.info.share != null) return true;
 			if (this.menu != null) return true;
@@ -85,10 +100,10 @@ export default defineComponent({
 
 	mounted() {
 		this.height = this.$el.parentElement.offsetHeight + 'px';
-		this.showActions = this.$el.parentElement.offsetWidth >= 500;
+		this.narrow = this.titleOnly || this.$el.parentElement.offsetWidth < 500;
 		new ResizeObserver((entries, observer) => {
 			this.height = this.$el.parentElement.offsetHeight + 'px';
-			this.showActions = this.$el.parentElement.offsetWidth >= 500;
+			this.narrow = this.titleOnly || this.$el.parentElement.offsetWidth < 500;
 		}).observe(this.$el);
 	},
 
@@ -102,7 +117,7 @@ export default defineComponent({
 
 		showMenu(ev) {
 			let menu = this.info.menu ? this.info.menu() : [];
-			if (!this.showActions && this.info.actions) {
+			if (this.narrow && this.info.actions) {
 				menu = [...this.info.actions.map(x => ({
 					text: x.text,
 					icon: x.icon,
@@ -124,6 +139,18 @@ export default defineComponent({
 			popupMenu(menu, ev.currentTarget || ev.target);
 		},
 
+		showTabsPopup(ev) {
+			if (!this.hasTabs) return;
+			ev.preventDefault();
+			ev.stopPropagation();
+			const menu = this.info.tabs.map(tab => ({
+				text: tab.title,
+				icon: tab.icon,
+				action: tab.onClick,
+			}));
+			popupMenu(menu, ev.currentTarget || ev.target);
+		},
+
 		preventDrag(ev) {
 			ev.stopPropagation();
 		}
@@ -135,7 +162,7 @@ export default defineComponent({
 .fdidabkb {
 	display: flex;
 
-	&.center {
+	&.slim {
 		text-align: center;
 
 		> .titleContainer {
@@ -190,6 +217,7 @@ export default defineComponent({
 		overflow: auto;
 		white-space: nowrap;
 		text-align: left;
+		font-weight: bold;
 
 		> .avatar {
 			$size: 32px;
@@ -219,6 +247,54 @@ export default defineComponent({
 				white-space: nowrap;
 				overflow: hidden;
 				text-overflow: ellipsis;
+
+				&.activeTab {
+					text-align: center;
+
+					> .chevron {
+						display: inline-block;
+						margin-left: 6px;
+					}
+				}
+			}
+		}
+	}
+
+	> .tabs {
+		margin-left: 16px;
+		font-size: 0.8em;
+
+		> .tab {
+			display: inline-block;
+			position: relative;
+			padding: 0 10px;
+			height: 100%;
+			font-weight: normal;
+			opacity: 0.7;
+
+			&:hover {
+				opacity: 1;
+			}
+
+			&.active {
+				opacity: 1;
+
+				&:after {
+					content: "";
+					display: block;
+					position: absolute;
+					bottom: 0;
+					left: 0;
+					right: 0;
+					margin: 0 auto;
+					width: 100%;
+					height: 3px;
+					background: var(--accent);
+				}
+			}
+
+			> .icon + .title {
+				margin-left: 8px;
 			}
 		}
 	}

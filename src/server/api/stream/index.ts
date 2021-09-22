@@ -14,7 +14,7 @@ import { AccessToken } from '@/models/entities/access-token';
 import { UserProfile } from '@/models/entities/user-profile';
 import { publishChannelStream, publishGroupMessagingStream, publishMessagingStream } from '@/services/stream';
 import { UserGroup } from '@/models/entities/user-group';
-import { PackedNote } from '@/models/repositories/note';
+import { Packed } from '@/misc/schema';
 
 /**
  * Main stream connection
@@ -31,7 +31,7 @@ export default class Connection {
 	public subscriber: EventEmitter;
 	private channels: Channel[] = [];
 	private subscribingNotes: any = {};
-	private cachedNotes: PackedNote[] = [];
+	private cachedNotes: Packed<'Note'>[] = [];
 
 	constructor(
 		wsConnection: websocket.connection,
@@ -150,8 +150,8 @@ export default class Connection {
 	}
 
 	@autobind
-	public cacheNote(note: PackedNote) {
-		const add = (note: PackedNote) => {
+	public cacheNote(note: Packed<'Note'>) {
+		const add = (note: Packed<'Note'>) => {
 			const existIndex = this.cachedNotes.findIndex(n => n.id === note.id);
 			if (existIndex > -1) {
 				this.cachedNotes[existIndex] = note;
@@ -165,8 +165,8 @@ export default class Connection {
 		};
 
 		add(note);
-		if (note.reply) add(note.reply as PackedNote);
-		if (note.renote) add(note.renote as PackedNote);
+		if (note.reply) add(note.reply);
+		if (note.renote) add(note.renote);
 	}
 
 	@autobind

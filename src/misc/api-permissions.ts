@@ -32,3 +32,4 @@ export const kinds = [
 	'read:gallery-likes',
 	'write:gallery-likes',
 ];
+// IF YOU ADD KINDS(PERMISSIONS), YOU MUST ADD TRANSLATIONS (under _permissions).

@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, unref } from 'vue';
 import { focusPrev, focusNext } from '@client/scripts/focus';
 import contains from '@client/scripts/contains';
 
@@ -79,21 +79,26 @@ export default defineComponent({
 			};
 		},
 	},
-	created() {
-		const items = ref(this.items.filter(item => item !== undefined));
+	watch: {
+		items: {
+			handler() {
+				const items = ref(unref(this.items).filter(item => item !== undefined));
 
-		for (let i = 0; i < items.value.length; i++) {
-			const item = items.value[i];
-			
-			if (item && item.then) { // if item is Promise
-				items.value[i] = { type: 'pending' };
-				item.then(actualItem => {
-					items.value[i] = actualItem;
-				});
-			}
+				for (let i = 0; i < items.value.length; i++) {
+					const item = items.value[i];
+					
+					if (item && item.then) { // if item is Promise
+						items.value[i] = { type: 'pending' };
+						item.then(actualItem => {
+							items.value[i] = actualItem;
+						});
+					}
+				}
+
+				this._items = items;
+			},
+			immediate: true
 		}
-
-		this._items = items;
 	},
 	mounted() {
 		if (this.viaKeyboard) {

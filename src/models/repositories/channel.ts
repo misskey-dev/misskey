@@ -1,17 +1,15 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Channel } from '@/models/entities/channel';
-import { SchemaType } from '@/misc/schema';
+import { Packed } from '@/misc/schema';
 import { DriveFiles, ChannelFollowings, NoteUnreads } from '../index';
 import { User } from '@/models/entities/user';
-
-export type PackedChannel = SchemaType<typeof packedChannelSchema>;
 
 @EntityRepository(Channel)
 export class ChannelRepository extends Repository<Channel> {
 	public async pack(
 		src: Channel['id'] | Channel,
 		me?: { id: User['id'] } | null | undefined,
-	): Promise<PackedChannel> {
+	): Promise<Packed<'Channel'>> {
 		const channel = typeof src === 'object' ? src : await this.findOneOrFail(src);
 		const meId = me ? me.id : null;
 
