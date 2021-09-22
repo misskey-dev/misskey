@@ -912,6 +912,8 @@ _mfm:
   fontDescription: "内容のフォントを指定することができます。"
   rainbow: "レインボー"
   rainbowDescription: "内容をレインボーにします。"
+  sparkle: "キラキラ"
+  sparkleDescription: "キラキラしたパーティクルのエフェクトを追加します。"
 
 _reversi:
   reversi: "リバーシ"
