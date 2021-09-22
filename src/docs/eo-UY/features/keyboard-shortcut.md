@@ -11,7 +11,7 @@
         <tr><td><kbd class="key">T</kbd></td><td>タイムラインの最も新しい投稿にフォーカス</td><td><b>T</b>imeline, <b>T</b>op</td></tr>
         <tr><td><kbd class="group"><kbd class="key">Shift</kbd> + <kbd class="key">N</kbd></kbd></td><td>Malfermi sekcio de sciigoj</td><td><b>N</b>otifications</td></tr>
         <tr><td><kbd class="key">S</kbd></td><td>Serĉi</td><td><b>S</b>earch</td></tr>
-        <tr><td><kbd class="key">H</kbd>, <kbd class="key">?</kbd></td><td>ヘルプを表示</td><td><b>H</b>elp</td></tr>
+        <tr><td><kbd class="key">H</kbd>, <kbd class="key">?</kbd></td><td>Malfermu helpon</td><td><b>H</b>elp</td></tr>
     </tbody>
 </table>
 
