@@ -21,8 +21,6 @@
 - UIの改善
 - MFMにsparklesエフェクトを追加
 - 非ログイン自は更新ダイアログを出さないように
-- refactor: PackedHoge型をPacked<'Hoge'>型に書き換える
-- refactor: スキーマのないpack関数にスキーマを定義
 
 ### Bugfixes
 - アカウントデータのエクスポート/インポート処理ができない問題を修正
