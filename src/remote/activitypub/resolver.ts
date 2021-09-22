@@ -4,6 +4,8 @@ import { ILocalUser } from '@/models/entities/user';
 import { getInstanceActor } from '@/services/instance-actor';
 import { signedGet } from './request';
 import { IObject, isCollectionOrOrderedCollection, ICollection, IOrderedCollection } from './type';
+import { fetchMeta } from '@/misc/fetch-meta';
+import { extractDbHost } from '@/misc/convert-host';
 
 export default class Resolver {
 	private history: Set<string>;
@@ -43,6 +45,12 @@ export default class Resolver {
 		}
 
 		this.history.add(value);
+
+		const meta = await fetchMeta();
+		const host = extractDbHost(value);
+		if (meta.blockedHosts.includes(host)) {
+			throw new Error('Instance is blocked');
+		}
 
 		if (config.signToActivityPubGet && !this.user) {
 			this.user = await getInstanceActor();

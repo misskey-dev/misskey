@@ -6,11 +6,8 @@
 	<div class="new" v-if="queue > 0"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
 	<div class="tl _block">
 		<XTimeline ref="tl" class="tl"
-			:key="src === 'list' ? `list:${list.id}` : src === 'antenna' ? `antenna:${antenna.id}` : src === 'channel' ? `channel:${channel.id}` : src"
+			:key="src"
 			:src="src"
-			:list="list ? list.id : null"
-			:antenna="antenna ? antenna.id : null"
-			:channel="channel ? channel.id : null"
 			:sound="true"
 			@before="before()"
 			@after="after()"
@@ -41,16 +38,24 @@ export default defineComponent({
 	data() {
 		return {
 			src: 'home',
-			list: null,
-			antenna: null,
-			channel: null,
-			menuOpened: false,
 			queue: 0,
 			[symbols.PAGE_INFO]: computed(() => ({
 				title: this.$ts.timeline,
 				icon: this.src === 'local' ? 'fas fa-comments' : this.src === 'social' ? 'fas fa-share-alt' : this.src === 'global' ? 'fas fa-globe' : 'fas fa-home',
 				bg: 'var(--bg)',
 				actions: [{
+					icon: 'fas fa-list-ul',
+					text: this.$ts.lists,
+					handler: this.chooseList
+				}, {
+					icon: 'fas fa-satellite',
+					text: this.$ts.antennas,
+					handler: this.chooseAntenna
+				}, {
+					icon: 'fas fa-satellite-dish',
+					text: this.$ts.channel,
+					handler: this.chooseChannel
+				}, {
 					icon: 'fas fa-calendar-alt',
 					text: this.$ts.jumpToSpecifiedDate,
 					handler: this.timetravel
@@ -104,32 +109,10 @@ export default defineComponent({
 		src() {
 			this.showNav = false;
 		},
-		list(x) {
-			this.showNav = false;
-			if (x != null) this.antenna = null;
-			if (x != null) this.channel = null;
-		},
-		antenna(x) {
-			this.showNav = false;
-			if (x != null) this.list = null;
-			if (x != null) this.channel = null;
-		},
-		channel(x) {
-			this.showNav = false;
-			if (x != null) this.antenna = null;
-			if (x != null) this.list = null;
-		},
 	},
 
 	created() {
 		this.src = this.$store.state.tl.src;
-		if (this.src === 'list') {
-			this.list = this.$store.state.tl.arg;
-		} else if (this.src === 'antenna') {
-			this.antenna = this.$store.state.tl.arg;
-		} else if (this.src === 'channel') {
-			this.channel = this.$store.state.tl.arg;
-		}
 	},
 
 	methods: {
@@ -152,12 +135,9 @@ export default defineComponent({
 		async chooseList(ev) {
 			const lists = await os.api('users/lists/list');
 			const items = lists.map(list => ({
+				type: 'link',
 				text: list.name,
-				action: () => {
-					this.list = list;
-					this.src = 'list';
-					this.saveSrc();
-				}
+				to: `/timeline/list/${list.id}`
 			}));
 			os.popupMenu(items, ev.currentTarget || ev.target);
 		},
@@ -165,13 +145,10 @@ export default defineComponent({
 		async chooseAntenna(ev) {
 			const antennas = await os.api('antennas/list');
 			const items = antennas.map(antenna => ({
+				type: 'link',
 				text: antenna.name,
 				indicate: antenna.hasUnreadNote,
-				action: () => {
-					this.antenna = antenna;
-					this.src = 'antenna';
-					this.saveSrc();
-				}
+				to: `/timeline/antenna/${antenna.id}`
 			}));
 			os.popupMenu(items, ev.currentTarget || ev.target);
 		},
@@ -179,15 +156,10 @@ export default defineComponent({
 		async chooseChannel(ev) {
 			const channels = await os.api('channels/followed');
 			const items = channels.map(channel => ({
+				type: 'link',
 				text: channel.name,
 				indicate: channel.hasUnreadNote,
-				action: () => {
-					// NOTE: チャンネルタイムラインをこのコンポーネントで表示するようにすると投稿フォームはどうするかなどの問題が生じるのでとりあえずページ遷移で
-					//this.channel = channel;
-					//this.src = 'channel';
-					//this.saveSrc();
-					this.$router.push(`/channels/${channel.id}`);
-				}
+				to: `/channels/${channel.id}`
 			}));
 			os.popupMenu(items, ev.currentTarget || ev.target);
 		},
@@ -195,10 +167,6 @@ export default defineComponent({
 		saveSrc() {
 			this.$store.set('tl', {
 				src: this.src,
-				arg:
-					this.src === 'list' ? this.list :
-					this.src === 'antenna' ? this.antenna :
-					this.channel
 			});
 		},
 

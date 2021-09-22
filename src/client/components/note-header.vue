@@ -3,10 +3,10 @@
 	<MkA class="name" :to="userPage(note.user)" v-user-preview="note.user.id">
 		<MkUserName :user="note.user"/>
 	</MkA>
-	<span class="is-bot" v-if="note.user.isBot">bot</span>
-	<span class="username"><MkAcct :user="note.user"/></span>
-	<span class="admin" v-if="note.user.isAdmin"><i class="fas fa-bookmark"></i></span>
-	<span class="moderator" v-if="!note.user.isAdmin && note.user.isModerator"><i class="far fa-bookmark"></i></span>
+	<div class="is-bot" v-if="note.user.isBot">bot</div>
+	<div class="username"><MkAcct :user="note.user"/></div>
+	<div class="admin" v-if="note.user.isAdmin"><i class="fas fa-bookmark"></i></div>
+	<div class="moderator" v-if="!note.user.isAdmin && note.user.isModerator"><i class="far fa-bookmark"></i></div>
 	<div class="info">
 		<span class="mobile" v-if="note.viaMobile"><i class="fas fa-mobile-alt"></i></span>
 		<MkA class="created-at" :to="notePage(note)">
@@ -55,6 +55,7 @@ export default defineComponent({
 	white-space: nowrap;
 
 	> .name {
+		flex-shrink: 1;
 		display: block;
 		margin: 0 .5em 0 0;
 		padding: 0;
@@ -81,17 +82,20 @@ export default defineComponent({
 
 	> .admin,
 	> .moderator {
+		flex-shrink: 0;
 		margin-right: 0.5em;
 		color: var(--badge);
 	}
 
 	> .username {
+		flex-shrink: 9999999;
 		margin: 0 .5em 0 0;
 		overflow: hidden;
 		text-overflow: ellipsis;
 	}
 
 	> .info {
+		flex-shrink: 0;
 		margin-left: auto;
 		font-size: 0.9em;
 
