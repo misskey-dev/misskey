@@ -21,6 +21,8 @@
 - 凍結されたアカウントにログインしようとしたときに、凍結されている旨を表示するように
 - リスト、アンテナタイムラインを個別ページとして分割
 - UIの改善
+- MFMにsparklesエフェクトを追加
+- 非ログイン自は更新ダイアログを出さないように
 - refactor: PackedHoge型をPacked<'Hoge'>型に書き換える
 - refactor: スキーマのないpack関数にスキーマを定義
 - refactor: publishHogeStreamとStreamのEventEmitterに型定義する
