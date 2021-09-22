@@ -7,7 +7,7 @@
 
 -->
 
-## 12.x.x (unreleased)
+## 12.91.0 (2021/09/22)
 
 ### Improvements
 - ActivityPub: リモートユーザーのDeleteアクティビティに対応
