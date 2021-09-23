@@ -7,6 +7,13 @@
 
 -->
 
+## 12.x.x (unreleased)
+
+### Improvements
+- アニメーションを減らす設定をメニューのアニメーションにも適用するように
+
+### Bugfixes
+
 ## 12.91.0 (2021/09/22)
 
 ### Improvements
