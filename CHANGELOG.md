@@ -9,7 +9,7 @@
 
 -->
 
-## 12.x.x (unreleased)
+## 12.91.0 (2021/09/22)
 
 ### Improvements
 - ActivityPub: リモートユーザーのDeleteアクティビティに対応
@@ -23,9 +23,7 @@
 - UIの改善
 - MFMにsparklesエフェクトを追加
 - 非ログイン自は更新ダイアログを出さないように
-- refactor: PackedHoge型をPacked<'Hoge'>型に書き換える
-- refactor: スキーマのないpack関数にスキーマを定義
-- refactor: publishHogeStreamとStreamのEventEmitterに型定義する
+- クライアント起動時、アップデートが利用可能な場合エラー表示およびダイアログ表示しないように
 
 ### Bugfixes
 - fix image height when uses CW to hide it (#6811)

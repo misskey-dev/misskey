@@ -48,8 +48,8 @@
 		} else if (localeOutdated) {
 			// nop
 		} else {
+			await checkUpdate();
 			renderError('LOCALE_FETCH_FAILED');
-			checkUpdate();
 			return;
 		}
 	}
@@ -65,8 +65,8 @@
 	script.setAttribute('async', 'true');
 	script.setAttribute('defer', 'true');
 	script.addEventListener('error', async () => {
+		await checkUpdate();
 		renderError('APP_FETCH_FAILED');
-		checkUpdate();
 	});
 	document.head.appendChild(script);
 	//#endregion
