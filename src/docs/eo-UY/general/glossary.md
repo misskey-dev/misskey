@@ -10,7 +10,7 @@ Misskeyに関する用語集です。
 ## API
 (読み: えーぴーあい) Misskeyのサーバーが公開している、プログラムからMisskeyを扱うためのインターフェース。詳細は[こちら。](../advanced/api)
 
-## Bot
+## Roboto
 (読み: ぼっと) プログラムによって動作しているアカウント。
 
 ## CW
@@ -19,14 +19,14 @@ Misskeyに関する用語集です。
 ## Fediverso
 (読み: ふぇでぃばーす) Misskeyを含む様々な分散型ソフトウェアのサーバーで構成されたネットワーク。
 
-## MTL
-An abbreviation for "Malloka TempLinio".タイムラインの詳細は[こちら。](../features/timeline)
+## MTL (GTL)
+Kaplitero de "Malloka TempLinio".タイムラインの詳細は[こちら。](../features/timeline)
 
 ## HTL
-ホームタイムライン(Home TimeLine)の略。タイムラインの詳細は[こちら。](../features/timeline)
+Kaplitero de "Hejma TempLinio".タイムラインの詳細は[こちら。](../features/timeline)
 
 ## LTL
-An abbreviation for "Loka TempLinio".タイムラインの詳細は[こちら。](../features/timeline)
+Kaplitero de "Loka TempLinio".タイムラインの詳細は[こちら。](../features/timeline)
 
 ## MFM
 (読み: えむえふえむ) Misskey Flavored Markdownの略で、Misskey上で使用できるマークアップ言語です。詳細は[こちら。](../features/mfm)
@@ -34,25 +34,25 @@ An abbreviation for "Loka TempLinio".タイムラインの詳細は[こちら。
 ## NSFW
 (読み: のっとせーふふぉーわーく) Not Safe For Workの略。画像を「閲覧注意」扱いにし、操作なしには表示しないようにすることができる機能。
 
-## Renoto
-(読み: りのーと) 既にあるノートを引用、もしくはそのノートを新しいノートとして共有する行為、またそれによって作成されたノート。詳細は[こちら。](../features/note)
+## Notoj plusenditaj
+(読み: りのーと) 既にあるノートを引用、もしくはそのノートを新しいノートとして共有する行為、またそれによって作成されたノート。Rigardu por sciu pli tie[.](../features/note)
 
 ## STL
-An abbreviation for "Sociala TempLinio".タイムラインの詳細は[こちら。](../features/timeline)
+Kaplitero de "Sociala TempLinio".Por sciu pri la templinio, rigardu tie[.](../features/timeline)
 
 ## Ai
 Ai estas oficiala maskoto de Misskey.
 
-## Aktivaj Uzantoj:
+## Aktiva uzanto
 インスタンスにアカウントを作っているユーザーのうち、現在も実際にサービスを利用しているユーザーのこと。
 
 ## Nodo
 todo
 
-## Ŝaltpodio
+## Personecigitaj emoĵioj
 サーバーで用意された絵文字。カスタム絵文字ではない通常の絵文字は「Unicode絵文字」と区別して呼ばれる。
 
-## コントロールパネル
+## Ŝaltpodio
 インスタンスの設定画面のこと。
 
 ## Servilo
@@ -61,25 +61,25 @@ todo
 ## Mutigi
 ノートをパブリックな公開範囲で投稿できなくされている状態。モデレーターの判断でユーザーごとに設定されます。詳細は[こちら。](../features/silence)
 
-## Disko
+## ジョブキュー
 アクティビティ配送などを順番に行うためのシステム。
 
-## Flostigi
+## Flostigita
 アカウントが使用不可に設定されている状態。
 
-## Miskiisto
+## Disko
 Misskeyにアップロードしたファイルを管理する機能。詳細は[こちら。](../features/drive)
 
 ## Notoj
-Misskeyに投稿される、文章、ファイル、アンケートなどを含めることができるコンテンツ。詳細は[こちら。](../features/note)
+Misskeyに投稿される、文章、ファイル、アンケートなどを含めることができるコンテンツ。Rigardu por sciu pli tie[.](../features/note)
 
 ## Miskiisto
-Misskeyを使う人のこと。
+Uzuloj de Misskey.
 
 ## Kontrolisto
 スパムの凍結およびサイレンスや不適切な投稿の削除など、コミュニティ運営に関する権限を持つユーザー。
 
-## Transa/fora
+## Transa, Surloka
 他サーバーのことを指します。リモートユーザーといったように接頭辞としても使われます。ローカルの逆です。
 
 ## Kunfederado
