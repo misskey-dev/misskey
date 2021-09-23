@@ -4,6 +4,7 @@
 ### Improvements
 - API: notifications/readは配列でも受け付けるように
 - /share のクエリでリプライやファイル等の情報を渡せるように
+- refactor: publishHogeStreamとStreamのEventEmitterに型定義する
 
 ### Bugfixes
 
