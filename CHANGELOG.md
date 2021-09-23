@@ -2,6 +2,7 @@
 ## 12.x.x (unreleased)
 
 ### Improvements
+- refactor: publishHogeStreamとStreamのEventEmitterに型定義する
 
 ### Bugfixes
 
