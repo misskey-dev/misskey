@@ -17,7 +17,6 @@ import { defineComponent } from 'vue';
 import XBanner from './media-banner.vue';
 import XImage from './media-image.vue';
 import XVideo from './media-video.vue';
-import * as os from '@client/os';
 
 export default defineComponent({
 	components: {
@@ -36,48 +35,12 @@ export default defineComponent({
 	data() {
 		return {
 			gridInnerStyle: {},
-			sizeWaiting: false
 		}
-	},
-	mounted() {
-		this.size();
-		window.addEventListener('resize', this.size);
-	},
-	beforeUnmount() {
-		window.removeEventListener('resize', this.size);
-	},
-	activated() {
-		this.size();
 	},
 	methods: {
 		previewable(file) {
 			return file.type.startsWith('video') || file.type.startsWith('image');
 		},
-		size() {
-			// for Safari bug
-			if (this.sizeWaiting) return;
-
-			this.sizeWaiting = true;
-
-			window.requestAnimationFrame(() => {
-				this.sizeWaiting = false;
-
-				if (this.$refs.gridOuter) {
-					let height = 287;
-					const parent = this.$parent?.$el.getElementsByClassName('main')[0];
-
-					if (this.$refs.gridOuter.clientHeight) {
-						height = this.$refs.gridOuter.clientHeight;
-					} else if (parent) {
-						height = parent.getBoundingClientRect().width * 9 / 16;
-					}
-
-					this.gridInnerStyle = { height: `${height}px` };
-				} else {
-					this.gridInnerStyle = {};
-				}
-			});
-		}
 	},
 });
 </script>
