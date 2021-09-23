@@ -1,6 +1,6 @@
 import { URL } from 'url';
 import define from '../../../define';
-import { inboxQueue } from '@/queue/index';
+import { inboxQueue } from '@/queue/queues';
 
 export const meta = {
 	tags: ['admin'],
