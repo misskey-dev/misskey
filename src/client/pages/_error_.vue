@@ -3,9 +3,8 @@
 	<div class="mjndxjch" v-show="loaded">
 		<img src="https://xn--931a.moe/assets/error.jpg" class="_ghost"/>
 		<p><b><i class="fas fa-exclamation-triangle"></i> {{ $ts.pageLoadError }}</b></p>
-		<template v-if="version === meta.version">
-			<p>{{ $ts.pageLoadErrorDescription }}</p>
-		</template>
+		<p v-if="version === meta.version">{{ $ts.pageLoadErrorDescription }}</p>
+		<p v-else-if="serverIsDead">{{ $ts.serverIsDead }}</p>
 		<template v-else>
 			<p>{{ $ts.newVersionOfClientAvailable }}</p>
 			<p>{{ $ts.youShouldUpgradeClient }}</p>
@@ -41,6 +40,7 @@ export default defineComponent({
 				icon: 'fas fa-exclamation-triangle'
 			},
 			loaded: false,
+			serverIsDead: false,
 			meta: {} as any,
 			version,
 		};
@@ -50,8 +50,12 @@ export default defineComponent({
 			detail: false
 		}).then(meta => {
 			this.loaded = true;
+			this.serverIsDead = false;
 			this.meta = meta;
 			localStorage.setItem('v', meta.version);
+		}, () => {
+			this.loaded = true;
+			this.serverIsDead = true;
 		});
 	},
 	methods: {
