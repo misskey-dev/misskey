@@ -58,7 +58,17 @@ If your language is not listed in Crowdin, please open an issue.
 
 ### Run test
 ```
-npm run test
+cp test/test.yml .config/
+```
+
+```
+docker-compose -f test/docker-compose.yml up
+```
+でテスト用のDBとRedisを上げる。
+または、空の (データが消去されてもいい) DBを準備して`.config/test.yml`を調整する。
+
+```
+yarn test
 ```
 
 #### Run specify test
