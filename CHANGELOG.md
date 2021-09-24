@@ -13,6 +13,8 @@
 - アニメーションを減らす設定をメニューのアニメーションにも適用するように
 
 ### Bugfixes
+- Fix createDeleteAccountJob
+- admin inbox queue does not show individual jobs
 
 ## 12.91.0 (2021/09/22)
 
