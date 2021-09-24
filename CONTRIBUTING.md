@@ -57,18 +57,20 @@ If your language is not listed in Crowdin, please open an issue.
 - Test codes are located in [`/test`](/test).
 
 ### Run test
+Create a config file.
 ```
 cp test/test.yml .config/
 ```
-
+Prepare DB/Redis for testing.
 ```
 docker-compose -f test/docker-compose.yml up
 ```
-でテスト用のDBとRedisを上げる。
-または、空の (データが消去されてもいい) DBを準備して`.config/test.yml`を調整する。
+Alternatively, prepare an empty (data can be erased) DB and edit `.config/test.yml`. 
 
+
+Run all test.
 ```
-yarn test
+npm run test
 ```
 
 #### Run specify test
