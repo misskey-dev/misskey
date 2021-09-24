@@ -1,10 +1,16 @@
 <template>
 <transition :name="$store.state.animation ? 'zoom' : ''" appear>
-	<div class="mjndxjch">
+	<div class="mjndxjch" v-show="loaded">
 		<img src="https://xn--931a.moe/assets/error.jpg" class="_ghost"/>
 		<p><b><i class="fas fa-exclamation-triangle"></i> {{ $ts.pageLoadError }}</b></p>
-		<p>{{ $ts.pageLoadErrorDescription }}</p>
-		<p><MkButton @click="reload">{{ $ts.reload }}</MkButton></p>
+		<template v-if="version === meta.version">
+			<p>{{ $ts.pageLoadErrorDescription }}</p>
+		</template>
+		<template v-else>
+			<p>{{ $ts.newVersionOfClientAvailable }}</p>
+			<p>{{ $ts.youShouldUpgradeClient }}</p>
+			<MkButton @click="reload" class="button primary">{{ $ts.reload }}</MkButton>
+		</template>
 		<p><MkA to="/docs/general/troubleshooting" class="_link">{{ $ts.troubleshooting }}</MkA></p>
 		<p v-if="error" class="error">ERROR: {{ error }}</p>
 	</div>
@@ -15,6 +21,8 @@
 import { defineComponent } from 'vue';
 import MkButton from '@client/components/ui/button.vue';
 import * as symbols from '@client/symbols';
+import { version } from '@client/config';
+import * as os from '@client/os';
 import { unisonReload } from '@client/scripts/unison-reload';
 
 export default defineComponent({
@@ -32,7 +40,19 @@ export default defineComponent({
 				title: this.$ts.error,
 				icon: 'fas fa-exclamation-triangle'
 			},
+			loaded: false,
+			meta: {} as any,
+			version,
 		};
+	},
+	created() {
+		os.api('meta', {
+			detail: false
+		}).then(meta => {
+			this.loaded = true;
+			this.meta = meta;
+			localStorage.setItem('v', meta.version);
+		});
 	},
 	methods: {
 		reload() {
@@ -52,7 +72,7 @@ export default defineComponent({
 	}
 
 	> .button {
-		margin: 0 auto;
+		margin: 8px auto;
 	}
 
 	> img {
