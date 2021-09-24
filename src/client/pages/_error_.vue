@@ -4,6 +4,7 @@
 		<img src="https://xn--931a.moe/assets/error.jpg" class="_ghost"/>
 		<p><b><i class="fas fa-exclamation-triangle"></i> {{ $ts.pageLoadError }}</b></p>
 		<p>{{ $ts.pageLoadErrorDescription }}</p>
+		<p><MkButton @click="reload">{{ $ts.reload }}</MkButton></p>
 		<p><MkA to="/docs/general/troubleshooting" class="_link">{{ $ts.troubleshooting }}</MkA></p>
 		<p v-if="error" class="error">ERROR: {{ error }}</p>
 	</div>
@@ -14,6 +15,7 @@
 import { defineComponent } from 'vue';
 import MkButton from '@client/components/ui/button.vue';
 import * as symbols from '@client/symbols';
+import { unisonReload } from '@client/scripts/unison-reload';
 
 export default defineComponent({
 	components: {
@@ -31,6 +33,11 @@ export default defineComponent({
 				icon: 'fas fa-exclamation-triangle'
 			},
 		};
+	},
+	methods: {
+		reload() {
+			unisonReload();
+		},
 	},
 });
 </script>
