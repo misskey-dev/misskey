@@ -67,7 +67,6 @@ docker-compose -f test/docker-compose.yml up
 ```
 Alternatively, prepare an empty (data can be erased) DB and edit `.config/test.yml`. 
 
-
 Run all test.
 ```
 npm run test
