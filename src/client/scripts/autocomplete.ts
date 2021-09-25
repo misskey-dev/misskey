@@ -120,7 +120,7 @@ export class Autocomplete {
 		if (isMfmTag && !opened) {
 			const mfmTag = text.substr(mfmTagIndex + 1);
 			if (!mfmTag.includes(' ')) {
-				this.open('mfmTag', mfmTag);
+				this.open('mfmTag', mfmTag.replace('[', ''));
 				opened = true;
 			}
 		}
