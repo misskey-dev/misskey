@@ -530,6 +530,7 @@ removeAllFollowingDescription: "Se désabonner de tous les comptes de {host}. Ve
 userSuspended: "Cet·te utilisateur·rice a été suspendu·e."
 userSilenced: "Cette utilisateur·trice a été mis·e en sourdine."
 yourAccountSuspendedTitle: "Ce compte est suspendu"
+yourAccountSuspendedDescription: "Ce compte est suspendu car vous avez enfreint les conditions d'utilisation de l'instance, ou pour un motif similaire. Si vous souhaitez connaître en détail les raisons de cette suspension, renseignez-vous auprès de l'administrateur·rice de votre instance. Merci de ne pas créer de nouveau compte."
 menu: "Menu"
 divider: "Séparateur"
 addItem: "Ajouter un élément"
@@ -900,6 +901,7 @@ _mfm:
   fontDescription: "Il est possible de choisir la police."
   rainbow: "Arc-en-ciel"
   rainbowDescription: "Permet d'afficher le contenu en couleurs arc-en-ciel."
+  sparkle: "Paillettes"
 _reversi:
   reversi: "Reversi"
   gameSettings: "Réglages de la partie"
