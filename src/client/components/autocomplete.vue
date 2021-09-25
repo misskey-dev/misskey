@@ -310,7 +310,6 @@ export default defineComponent({
 
 				this.emojis = matched;
 			} else if (this.type === 'mfmTag') {
-				console.log(this.q);
 				if (this.q == null || this.q == '') {
 					this.mfmTags = MFM_TAGS;
 					return;
