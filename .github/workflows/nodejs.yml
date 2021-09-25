@@ -16,16 +16,16 @@ jobs:
 
     services:
       postgres:
-        image: postgres:10-alpine
+        image: postgres:12.2-alpine
         ports:
-          - 5432:5432
+          - 54312:5432
         env:
           POSTGRES_DB: test-misskey
           POSTGRES_HOST_AUTH_METHOD: trust
       redis:
-        image: redis:alpine
+        image: redis:4.0-alpine
         ports:
-          - 6379:6379
+          - 56312:6379
 
     steps:
     - uses: actions/checkout@v2
@@ -40,7 +40,7 @@ jobs:
     - name: Check yarn.lock
       run: git diff --exit-code yarn.lock
     - name: Copy Configure
-      run: cp .circleci/misskey/*.yml .config
+      run: cp test/test.yml .config
     - name: Build
       run: yarn build
     - name: Test
