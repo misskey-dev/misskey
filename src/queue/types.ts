@@ -17,10 +17,15 @@ export type InboxJobData = {
 	signature: httpSignature.IParsedSignature;
 };
 
-export type DbJobData = DbUserJobData | DbUserImportJobData;
+export type DbJobData = DbUserJobData | DbUserImportJobData | DbUserDeleteJobData;
 
 export type DbUserJobData = {
 	user: ThinUser;
+};
+
+export type DbUserDeleteJobData = {
+	user: ThinUser;
+	soft?: boolean;
 };
 
 export type DbUserImportJobData = {

@@ -7,7 +7,7 @@
 import * as nestedProperty from 'nested-property';
 import autobind from 'autobind-decorator';
 import Logger from '../logger';
-import { Schema } from '@/misc/schema';
+import { SimpleSchema } from '@/misc/simple-schema';
 import { EntitySchema, getRepository, Repository, LessThan, Between } from 'typeorm';
 import { dateUTC, isTimeSame, isTimeBefore, subtractTime, addTime } from '@/prelude/time';
 import { getChartInsertLock } from '@/misc/app-lock';
@@ -56,7 +56,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 		diff: DeepPartial<T>;
 		group: string | null;
 	}[] = [];
-	public schema: Schema;
+	public schema: SimpleSchema;
 	protected repository: Repository<Log>;
 
 	protected abstract genNewLog(latest: T): DeepPartial<T>;
@@ -69,7 +69,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 	protected abstract fetchActual(group: string | null): Promise<DeepPartial<T>>;
 
 	@autobind
-	private static convertSchemaToFlatColumnDefinitions(schema: Schema) {
+	private static convertSchemaToFlatColumnDefinitions(schema: SimpleSchema) {
 		const columns = {} as any;
 		const flatColumns = (x: Obj, path?: string) => {
 			for (const [k, v] of Object.entries(x)) {
@@ -181,7 +181,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 	}
 
 	@autobind
-	public static schemaToEntity(name: string, schema: Schema): EntitySchema {
+	public static schemaToEntity(name: string, schema: SimpleSchema): EntitySchema {
 		return new EntitySchema({
 			name: `__chart__${camelToSnake(name)}`,
 			columns: {
@@ -211,7 +211,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 		});
 	}
 
-	constructor(name: string, schema: Schema, grouped = false) {
+	constructor(name: string, schema: SimpleSchema, grouped = false) {
 		this.name = name;
 		this.schema = schema;
 		const entity = Chart.schemaToEntity(name, schema);
@@ -546,8 +546,8 @@ export default abstract class Chart<T extends Record<string, any>> {
 	}
 }
 
-export function convertLog(logSchema: Schema): Schema {
-	const v: Schema = JSON.parse(JSON.stringify(logSchema)); // copy
+export function convertLog(logSchema: SimpleSchema): SimpleSchema {
+	const v: SimpleSchema = JSON.parse(JSON.stringify(logSchema)); // copy
 	if (v.type === 'number') {
 		v.type = 'array';
 		v.items = {

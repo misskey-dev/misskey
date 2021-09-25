@@ -271,6 +271,16 @@
 			</div>
 		</div>
 	</div>
+	<div class="section _block">
+		<div class="title">{{ $ts._mfm.sparkle }}</div>
+		<div class="content">
+			<p>{{ $ts._mfm.sparkleDescription }}</p>
+			<div class="preview">
+				<Mfm :text="preview_sparkle"/>
+				<MkTextarea v-model="preview_sparkle"><span>MFM</span></MkTextarea>
+			</div>
+		</div>
+	</div>
 </div>
 </template>
 
@@ -294,7 +304,7 @@ export default defineComponent({
 			preview_hashtag: '#test',
 			preview_url: `https://example.com`,
 			preview_link: `[${this.$ts._mfm.dummy}](https://example.com)`,
-			preview_emoji: `:${this.$instance.emojis[0].name}:`,
+			preview_emoji: this.$instance.emojis.length ? `:${this.$instance.emojis[0].name}:` : `:emojiname:`,
 			preview_bold: `**${this.$ts._mfm.dummy}**`,
 			preview_small: `<small>${this.$ts._mfm.dummy}</small>`,
 			preview_center: `<center>${this.$ts._mfm.dummy}</center>`,
@@ -317,6 +327,7 @@ export default defineComponent({
 			preview_x4: `$[x4 🍮]`,
 			preview_blur: `$[blur ${this.$ts._mfm.dummy}]`,
 			preview_rainbow: `$[rainbow 🍮]`,
+			preview_sparkle: `$[sparkle 🍮]`,
 		}
 	},
 });

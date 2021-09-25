@@ -1,18 +1,16 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { GalleryPost } from '@/models/entities/gallery-post';
-import { SchemaType } from '../../misc/schema';
+import { Packed } from '@/misc/schema';
 import { Users, DriveFiles, GalleryLikes } from '../index';
 import { awaitAll } from '@/prelude/await-all';
 import { User } from '@/models/entities/user';
-
-export type PackedGalleryPost = SchemaType<typeof packedGalleryPostSchema>;
 
 @EntityRepository(GalleryPost)
 export class GalleryPostRepository extends Repository<GalleryPost> {
 	public async pack(
 		src: GalleryPost['id'] | GalleryPost,
 		me?: { id: User['id'] } | null | undefined,
-	): Promise<PackedGalleryPost> {
+	): Promise<Packed<'GalleryPost'>> {
 		const meId = me ? me.id : null;
 		const post = typeof src === 'object' ? src : await this.findOneOrFail(src);
 
@@ -76,7 +74,7 @@ export const packedGalleryPostSchema = {
 		},
 		user: {
 			type: 'object' as const,
-			ref: 'User',
+			ref: 'User' as const,
 			optional: false as const, nullable: false as const,
 		},
 		fileIds: {
@@ -94,7 +92,7 @@ export const packedGalleryPostSchema = {
 			items: {
 				type: 'object' as const,
 				optional: false as const, nullable: false as const,
-				ref: 'DriveFile'
+				ref: 'DriveFile' as const,
 			}
 		},
 		tags: {

@@ -4,7 +4,7 @@ import * as fs from 'fs';
 
 import { queueLogger } from '../../logger';
 import addFile from '@/services/drive/add-file';
-import dateFormat from 'dateformat';
+import * as dateFormat from 'dateformat';
 import { getFullApAccount } from '@/misc/convert-host';
 import { Users, Followings } from '@/models/index';
 import { MoreThan } from 'typeorm';

@@ -18,4 +18,6 @@ export default define(meta, async (ps, user) => {
 	if (process.env.NODE_ENV !== 'test') throw 'NODE_ENV is not a test';
 
 	await resetDb();
+
+	await new Promise(resolve => setTimeout(resolve, 1000));
 });

@@ -48,6 +48,8 @@ const defaultRoutes = [
 	{ path: '/channels/:channelId/edit', component: page('channel-editor'), props: true },
 	{ path: '/channels/:channelId', component: page('channel'), props: route => ({ channelId: route.params.channelId }) },
 	{ path: '/clips/:clipId', component: page('clip'), props: route => ({ clipId: route.params.clipId }) },
+	{ path: '/timeline/list/:listId', component: page('user-list-timeline'), props: route => ({ listId: route.params.listId }) },
+	{ path: '/timeline/antenna/:antennaId', component: page('antenna-timeline'), props: route => ({ antennaId: route.params.antennaId }) },
 	{ path: '/my/notifications', component: page('notifications') },
 	{ path: '/my/favorites', component: page('favorites') },
 	{ path: '/my/messages', component: page('messages') },

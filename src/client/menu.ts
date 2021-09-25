@@ -1,9 +1,10 @@
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { search } from '@client/scripts/search';
 import * as os from '@client/os';
 import { i18n } from '@client/i18n';
 import { $i } from './account';
 import { unisonReload } from '@client/scripts/unison-reload';
+import { router } from './router';
 
 export const menuDef = {
 	notifications: {
@@ -58,7 +59,26 @@ export const menuDef = {
 		title: 'lists',
 		icon: 'fas fa-list-ul',
 		show: computed(() => $i != null),
-		to: '/my/lists',
+		active: computed(() => router.currentRoute.value.path.startsWith('/timeline/list/') || router.currentRoute.value.path === '/my/lists' || router.currentRoute.value.path.startsWith('/my/lists/')),
+		action: (ev) => {
+			const items = ref([{
+				type: 'pending'
+			}]);
+			os.api('users/lists/list').then(lists => {
+				const _items = [...lists.map(list => ({
+					type: 'link',
+					text: list.name,
+					to: `/timeline/list/${list.id}`
+				})), null, {
+					type: 'link',
+					to: '/my/lists',
+					text: i18n.locale.manageLists,
+					icon: 'fas fa-cog',
+				}];
+				items.value = _items;
+			});
+			os.popupMenu(items, ev.currentTarget || ev.target);
+		},
 	},
 	groups: {
 		title: 'groups',
@@ -70,7 +90,26 @@ export const menuDef = {
 		title: 'antennas',
 		icon: 'fas fa-satellite',
 		show: computed(() => $i != null),
-		to: '/my/antennas',
+		active: computed(() => router.currentRoute.value.path.startsWith('/timeline/antenna/') || router.currentRoute.value.path === '/my/antennas' || router.currentRoute.value.path.startsWith('/my/antennas/')),
+		action: (ev) => {
+			const items = ref([{
+				type: 'pending'
+			}]);
+			os.api('antennas/list').then(antennas => {
+				const _items = [...antennas.map(antenna => ({
+					type: 'link',
+					text: antenna.name,
+					to: `/timeline/antenna/${antenna.id}`
+				})), null, {
+					type: 'link',
+					to: '/my/antennas',
+					text: i18n.locale.manageAntennas,
+					icon: 'fas fa-cog',
+				}];
+				items.value = _items;
+			});
+			os.popupMenu(items, ev.currentTarget || ev.target);
+		},
 	},
 	mentions: {
 		title: 'mentions',
