@@ -231,8 +231,6 @@ export default defineComponent({
 				}
 			}
 
-			console.log(this.type);
-
 			if (this.type === 'user') {
 				if (this.q == null) {
 					this.users = [];
