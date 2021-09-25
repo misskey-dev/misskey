@@ -5,7 +5,7 @@
 			<template #prefix><i class="fas fa-search"></i></template>
 		</MkInput>
 
-		<!-- たくさんあると重い
+		<!-- たくさんあると邪魔
 		<div class="tags">
 			<span class="tag _button" v-for="tag in tags" :class="{ active: selectedTags.has(tag) }" @click="toggleTag(tag)">{{ tag }}</span>
 		</div>
