@@ -7,9 +7,9 @@ export class Autocomplete {
 	private suggestion: {
 		x: Ref<number>;
 		y: Ref<number>;
-		q: Ref<string>;
+		q: Ref<string | null>;
 		close: Function;
-	};
+	} | null;
 	private textarea: any;
 	private vm: any;
 	private currentType: string;
@@ -122,7 +122,7 @@ export class Autocomplete {
 	/**
 	 * サジェストを提示します。
 	 */
-	private async open(type: string, q: string) {
+	private async open(type: string, q: string | null) {
 		if (type != this.currentType) {
 			this.close();
 		}
