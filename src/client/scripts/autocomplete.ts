@@ -70,11 +70,13 @@ export class Autocomplete {
 		const mentionIndex = text.lastIndexOf('@');
 		const hashtagIndex = text.lastIndexOf('#');
 		const emojiIndex = text.lastIndexOf(':');
+		const mfmTagIndex = text.lastIndexOf('$');
 
 		const max = Math.max(
 			mentionIndex,
 			hashtagIndex,
-			emojiIndex);
+			emojiIndex,
+			mfmTagIndex);
 
 		if (max == -1) {
 			this.close();
@@ -83,6 +85,7 @@ export class Autocomplete {
 
 		const isMention = mentionIndex != -1;
 		const isHashtag = hashtagIndex != -1;
+		const isMfmTag = mfmTagIndex != -1;
 		const isEmoji = emojiIndex != -1 && text.split(/:[a-z0-9_+\-]+:/).pop()!.includes(':');
 
 		let opened = false;
@@ -110,6 +113,14 @@ export class Autocomplete {
 			const emoji = text.substr(emojiIndex + 1);
 			if (!emoji.includes(' ')) {
 				this.open('emoji', emoji);
+				opened = true;
+			}
+		}
+
+		if (isMfmTag && !opened) {
+			const mfmTag = text.substr(mfmTagIndex + 1);
+			if (!mfmTag.includes(' ')) {
+				this.open('mfmTag', mfmTag);
 				opened = true;
 			}
 		}
@@ -242,6 +253,22 @@ export class Autocomplete {
 			this.vm.$nextTick(() => {
 				this.textarea.focus();
 				const pos = trimmedBefore.length + value.length;
+				this.textarea.setSelectionRange(pos, pos);
+			});
+		} else if (type == 'mfmTag') {
+			const source = this.text;
+
+			const before = source.substr(0, caret);
+			const trimmedBefore = before.substring(0, before.lastIndexOf('$'));
+			const after = source.substr(caret);
+
+			// 挿入
+			this.text = `${trimmedBefore}$[${value} ]${after}`;
+
+			// キャレットを戻す
+			this.vm.$nextTick(() => {
+				this.textarea.focus();
+				const pos = trimmedBefore.length + (value.length + 3);
 				this.textarea.setSelectionRange(pos, pos);
 			});
 		}
