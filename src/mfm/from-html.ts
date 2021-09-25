@@ -101,6 +101,49 @@ export function fromHtml(html: string, hashtagNames?: string[]): string | null {
 				break;
 			}
 
+			case 'h1':
+			{
+				text += '【';
+				appendChildren(node.childNodes);
+				text += '】\n';
+				break;
+			}
+
+			case 'b':
+			case 'strong':
+			{
+				text += '**';
+				appendChildren(node.childNodes);
+				text += '**';
+				break;
+			}
+
+			case 'small':
+			{
+				text += '<small>';
+				appendChildren(node.childNodes);
+				text += '</small>';
+				break;
+			}
+
+			case 's':
+			case 'del':
+			{
+				text += '~~';
+				appendChildren(node.childNodes);
+				text += '~~';
+				break;
+			}
+
+			case 'i':
+			case 'em':
+			{
+				text += '<i>';
+				appendChildren(node.childNodes);
+				text += '</i>';
+				break;
+			}
+
 			// block code (<pre><code>)
 			case 'pre': {
 				if (node.childNodes.length === 1 && node.childNodes[0].nodeName === 'code') {
@@ -131,7 +174,6 @@ export function fromHtml(html: string, hashtagNames?: string[]): string | null {
 			}
 
 			case 'p':
-			case 'h1':
 			case 'h2':
 			case 'h3':
 			case 'h4':
