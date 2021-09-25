@@ -147,7 +147,7 @@ export function fromHtml(html: string, hashtagNames?: string[]): string | null {
 			case 'div':
 			case 'header':
 			case 'footer':
-			case 'artivle':
+			case 'article':
 			case 'li':
 			case 'dt':
 			case 'dd':
