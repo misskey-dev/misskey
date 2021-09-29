@@ -787,6 +787,8 @@ pubSub: "Pub/Sub Accounts"
 lastCommunication: "Last communication"
 resolved: "Resolved"
 unresolved: "Unresolved"
+itsOn: "Enabled"
+itsOff: "Disabled"
 _accountDelete:
   accountDelete: "Delete Account"
   mayTakeTime: "As account deletion is a resource-heavy process, it may take some time to complete depending on how much content you have created and how many files you have uploaded."
