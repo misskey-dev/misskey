@@ -1,21 +1,21 @@
 <template>
 <div>
-	<MkTab v-model:value="tab">
+	<MkTab v-model="tab">
 		<option value="soft">{{ $ts._wordMute.soft }}</option>
 		<option value="hard">{{ $ts._wordMute.hard }}</option>
 	</MkTab>
 	<FormBase>
-		<div class="_formItem">
+		<div class="_debobigegoItem">
 			<div v-show="tab === 'soft'">
 				<FormInfo>{{ $ts._wordMute.softDescription }}</FormInfo>
-				<FormTextarea v-model:value="softMutedWords">
+				<FormTextarea v-model="softMutedWords">
 					<span>{{ $ts._wordMute.muteWords }}</span>
 					<template #desc>{{ $ts._wordMute.muteWordsDescription }}<br>{{ $ts._wordMute.muteWordsDescription2 }}</template>
 				</FormTextarea>
 			</div>
 			<div v-show="tab === 'hard'">
 				<FormInfo>{{ $ts._wordMute.hardDescription }}</FormInfo>
-				<FormTextarea v-model:value="hardMutedWords">
+				<FormTextarea v-model="hardMutedWords">
 					<span>{{ $ts._wordMute.muteWords }}</span>
 					<template #desc>{{ $ts._wordMute.muteWordsDescription }}<br>{{ $ts._wordMute.muteWordsDescription2 }}</template>
 				</FormTextarea>
@@ -33,10 +33,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import FormTextarea from '@client/components/form/textarea.vue';
-import FormBase from '@client/components/form/base.vue';
-import FormKeyValueView from '@client/components/form/key-value-view.vue';
-import FormButton from '@client/components/form/button.vue';
-import FormInfo from '@client/components/form/info.vue';
+import FormBase from '@client/components/debobigego/base.vue';
+import FormKeyValueView from '@client/components/debobigego/key-value-view.vue';
+import FormButton from '@client/components/debobigego/button.vue';
+import FormInfo from '@client/components/debobigego/info.vue';
 import MkTab from '@client/components/tab.vue';
 import * as os from '@client/os';
 import number from '@client/filters/number';
@@ -58,7 +58,8 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.wordMute,
-				icon: 'fas fa-comment-slash'
+				icon: 'fas fa-comment-slash',
+				bg: 'var(--bg)',
 			},
 			tab: 'soft',
 			softMutedWords: '',

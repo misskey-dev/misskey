@@ -3,9 +3,9 @@
 	<FormGroup v-for="plugin in plugins" :key="plugin.id">
 		<template #label><span style="display: flex;"><b>{{ plugin.name }}</b><span style="margin-left: auto;">v{{ plugin.version }}</span></span></template>
 
-		<FormSwitch :value="plugin.active" @update:value="changeActive(plugin, $event)">{{ $ts.makeActive }}</FormSwitch>
-		<div class="_formItem">
-			<div class="_formPanel" style="padding: 16px;">
+		<FormSwitch :value="plugin.active" @update:modelValue="changeActive(plugin, $event)">{{ $ts.makeActive }}</FormSwitch>
+		<div class="_debobigegoItem">
+			<div class="_debobigegoPanel" style="padding: 16px;">
 				<div class="_keyValue">
 					<div>{{ $ts.author }}:</div>
 					<div>{{ plugin.author }}</div>
@@ -20,8 +20,8 @@
 				</div>
 			</div>
 		</div>
-		<div class="_formItem">
-			<div class="_formPanel" style="padding: 16px;">
+		<div class="_debobigegoItem">
+			<div class="_debobigegoPanel" style="padding: 16px;">
 				<MkButton @click="config(plugin)" inline v-if="plugin.config"><i class="fas fa-cog"></i> {{ $ts.settings }}</MkButton>
 				<MkButton @click="uninstall(plugin)" inline danger><i class="fas fa-trash-alt"></i> {{ $ts.uninstall }}</MkButton>
 			</div>
@@ -33,11 +33,11 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import MkButton from '@client/components/ui/button.vue';
-import MkTextarea from '@client/components/ui/textarea.vue';
-import MkSelect from '@client/components/ui/select.vue';
+import MkTextarea from '@client/components/form/textarea.vue';
+import MkSelect from '@client/components/form/select.vue';
 import FormSwitch from '@client/components/form/switch.vue';
-import FormBase from '@client/components/form/base.vue';
-import FormGroup from '@client/components/form/group.vue';
+import FormBase from '@client/components/debobigego/base.vue';
+import FormGroup from '@client/components/debobigego/group.vue';
 import * as os from '@client/os';
 import { ColdDeviceStorage } from '@client/store';
 import * as symbols from '@client/symbols';
@@ -58,7 +58,8 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts._plugin.manage,
-				icon: 'fas fa-plug'
+				icon: 'fas fa-plug',
+				bg: 'var(--bg)',
 			},
 			plugins: ColdDeviceStorage.get('plugins'),
 		}

@@ -17,8 +17,8 @@
 			</FormGroup>
 		</FormSuspense>
 	
-		<div class="_formItem">
-			<div class="_formPanel">
+		<div class="_debobigegoItem">
+			<div class="_debobigegoPanel">
 				<MkInstanceStats :chart-limit="300" :detailed="true"/>
 			</div>
 		</div>
@@ -47,18 +47,18 @@
 
 <script lang="ts">
 import { computed, defineComponent, markRaw } from 'vue';
-import FormKeyValueView from '@client/components/form/key-value-view.vue';
-import FormInput from '@client/components/form/input.vue';
-import FormButton from '@client/components/form/button.vue';
-import FormBase from '@client/components/form/base.vue';
-import FormGroup from '@client/components/form/group.vue';
-import FormTextarea from '@client/components/form/textarea.vue';
-import FormInfo from '@client/components/form/info.vue';
-import FormSuspense from '@client/components/form/suspense.vue';
+import FormKeyValueView from '@client/components/debobigego/key-value-view.vue';
+import FormInput from '@client/components/debobigego/input.vue';
+import FormButton from '@client/components/debobigego/button.vue';
+import FormBase from '@client/components/debobigego/base.vue';
+import FormGroup from '@client/components/debobigego/group.vue';
+import FormTextarea from '@client/components/debobigego/textarea.vue';
+import FormInfo from '@client/components/debobigego/info.vue';
+import FormSuspense from '@client/components/debobigego/suspense.vue';
 import MkInstanceStats from '@client/components/instance-stats.vue';
 import MkButton from '@client/components/ui/button.vue';
-import MkSelect from '@client/components/ui/select.vue';
-import MkInput from '@client/components/ui/input.vue';
+import MkSelect from '@client/components/form/select.vue';
+import MkInput from '@client/components/form/input.vue';
 import MkContainer from '@client/components/ui/container.vue';
 import MkFolder from '@client/components/ui/folder.vue';
 import { version, url } from '@client/config';

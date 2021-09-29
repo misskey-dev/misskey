@@ -1,19 +1,19 @@
 <template>
 <FormBase>
 	<FormSuspense :p="init">
-		<FormSwitch v-model:value="enableGithubIntegration">
+		<FormSwitch v-model="enableGithubIntegration">
 			{{ $ts.enable }}
 		</FormSwitch>
 
 		<template v-if="enableGithubIntegration">
 			<FormInfo>Callback URL: {{ `${url}/api/gh/cb` }}</FormInfo>
 		
-			<FormInput v-model:value="githubClientId">
+			<FormInput v-model="githubClientId">
 				<template #prefix><i class="fas fa-key"></i></template>
 				Client ID
 			</FormInput>
 
-			<FormInput v-model:value="githubClientSecret">
+			<FormInput v-model="githubClientSecret">
 				<template #prefix><i class="fas fa-key"></i></template>
 				Client Secret
 			</FormInput>
@@ -26,12 +26,12 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import FormSwitch from '@client/components/form/switch.vue';
-import FormInput from '@client/components/form/input.vue';
-import FormButton from '@client/components/form/button.vue';
-import FormBase from '@client/components/form/base.vue';
-import FormInfo from '@client/components/form/info.vue';
-import FormSuspense from '@client/components/form/suspense.vue';
+import FormSwitch from '@client/components/debobigego/switch.vue';
+import FormInput from '@client/components/debobigego/input.vue';
+import FormButton from '@client/components/debobigego/button.vue';
+import FormBase from '@client/components/debobigego/base.vue';
+import FormInfo from '@client/components/debobigego/info.vue';
+import FormSuspense from '@client/components/debobigego/suspense.vue';
 import * as os from '@client/os';
 import * as symbols from '@client/symbols';
 import { fetchInstance } from '@client/instance';

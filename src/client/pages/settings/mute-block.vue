@@ -1,6 +1,6 @@
 <template>
 <FormBase>
-	<MkTab v-model:value="tab" style="margin-bottom: var(--margin);">
+	<MkTab v-model="tab" style="margin-bottom: var(--margin);">
 		<option value="mute">{{ $ts.mutedUsers }}</option>
 		<option value="block">{{ $ts.blockedUsers }}</option>
 	</MkTab>
@@ -35,10 +35,10 @@
 import { defineComponent } from 'vue';
 import MkPagination from '@client/components/ui/pagination.vue';
 import MkTab from '@client/components/tab.vue';
-import FormInfo from '@client/components/form/info.vue';
-import FormLink from '@client/components/form/link.vue';
-import FormBase from '@client/components/form/base.vue';
-import FormGroup from '@client/components/form/group.vue';
+import FormInfo from '@client/components/debobigego/info.vue';
+import FormLink from '@client/components/debobigego/link.vue';
+import FormBase from '@client/components/debobigego/base.vue';
+import FormGroup from '@client/components/debobigego/group.vue';
 import { userPage } from '@client/filters/user';
 import * as os from '@client/os';
 import * as symbols from '@client/symbols';
@@ -59,7 +59,8 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.muteAndBlock,
-				icon: 'fas fa-ban'
+				icon: 'fas fa-ban',
+				bg: 'var(--bg)',
 			},
 			tab: 'mute',
 			mutingPagination: {

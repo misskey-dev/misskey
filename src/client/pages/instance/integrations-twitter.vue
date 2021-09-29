@@ -1,19 +1,19 @@
 <template>
 <FormBase>
 	<FormSuspense :p="init">
-		<FormSwitch v-model:value="enableTwitterIntegration">
+		<FormSwitch v-model="enableTwitterIntegration">
 			{{ $ts.enable }}
 		</FormSwitch>
 
 		<template v-if="enableTwitterIntegration">
 			<FormInfo>Callback URL: {{ `${url}/api/tw/cb` }}</FormInfo>
 		
-			<FormInput v-model:value="twitterConsumerKey">
+			<FormInput v-model="twitterConsumerKey">
 				<template #prefix><i class="fas fa-key"></i></template>
 				Consumer Key
 			</FormInput>
 
-			<FormInput v-model:value="twitterConsumerSecret">
+			<FormInput v-model="twitterConsumerSecret">
 				<template #prefix><i class="fas fa-key"></i></template>
 				Consumer Secret
 			</FormInput>
@@ -26,12 +26,12 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import FormSwitch from '@client/components/form/switch.vue';
-import FormInput from '@client/components/form/input.vue';
-import FormButton from '@client/components/form/button.vue';
-import FormBase from '@client/components/form/base.vue';
-import FormInfo from '@client/components/form/info.vue';
-import FormSuspense from '@client/components/form/suspense.vue';
+import FormSwitch from '@client/components/debobigego/switch.vue';
+import FormInput from '@client/components/debobigego/input.vue';
+import FormButton from '@client/components/debobigego/button.vue';
+import FormBase from '@client/components/debobigego/base.vue';
+import FormInfo from '@client/components/debobigego/info.vue';
+import FormSuspense from '@client/components/debobigego/suspense.vue';
 import * as os from '@client/os';
 import * as symbols from '@client/symbols';
 import { fetchInstance } from '@client/instance';

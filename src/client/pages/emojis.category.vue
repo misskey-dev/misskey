@@ -1,7 +1,7 @@
 <template>
 <div class="driuhtrh">
 	<div class="query">
-		<MkInput v-model="q" class="_inputNoTopMargin _inputNoBottomMargin" :placeholder="$ts.search">
+		<MkInput v-model="q" class="" :placeholder="$ts.search">
 			<template #prefix><i class="fas fa-search"></i></template>
 		</MkInput>
 
@@ -31,8 +31,8 @@
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
 import MkButton from '@client/components/ui/button.vue';
-import MkInput from '@client/components/ui/input.vue';
-import MkSelect from '@client/components/ui/select.vue';
+import MkInput from '@client/components/form/input.vue';
+import MkSelect from '@client/components/form/select.vue';
 import MkFolder from '@client/components/ui/folder.vue';
 import MkTab from '@client/components/tab.vue';
 import * as os from '@client/os';

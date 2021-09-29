@@ -1,7 +1,7 @@
 <template>
-<div class="yzpgjkxe _formItem">
-	<div class="_formLabel"><slot name="label"></slot></div>
-	<button class="main _button _formPanel _formClickable" :class="{ center, primary, danger }">
+<div class="yzpgjkxe _debobigegoItem">
+	<div class="_debobigegoLabel"><slot name="label"></slot></div>
+	<button class="main _button _debobigegoPanel _debobigegoClickable" :class="{ center, primary, danger }">
 		<slot></slot>
 		<div class="suffix">
 			<slot name="suffix"></slot>
@@ -10,13 +10,13 @@
 			</div>
 		</div>
 	</button>
-	<div class="_formCaption"><slot name="desc"></slot></div>
+	<div class="_debobigegoCaption"><slot name="desc"></slot></div>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import './form.scss';
+import './debobigego.scss';
 
 export default defineComponent({
 	props: {

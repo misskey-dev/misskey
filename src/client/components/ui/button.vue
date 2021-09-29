@@ -181,14 +181,6 @@ export default defineComponent({
 		outline-offset: 2px;
 	}
 
-	&.inline + .bghgjjyj {
-		margin-left: 12px;
-	}
-
-	&:not(.inline) + .bghgjjyj {
-		margin-top: 16px;
-	}
-
 	&.inline {
 		display: inline-block;
 		width: auto;

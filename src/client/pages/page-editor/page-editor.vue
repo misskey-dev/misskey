@@ -47,7 +47,7 @@
 	<MkContainer :foldable="true" :expanded="true" class="_gap">
 		<template #header><i class="fas fa-sticky-note"></i> {{ $ts._pages.contents }}</template>
 		<div style="padding: 16px;">
-			<XBlocks class="content" v-model:value="content" :hpml="hpml"/>
+			<XBlocks class="content" v-model="content" :hpml="hpml"/>
 
 			<MkButton @click="add()" v-if="!readonly"><i class="fas fa-plus"></i></MkButton>
 		</div>
@@ -94,12 +94,12 @@ import 'vue-prism-editor/dist/prismeditor.min.css';
 import { v4 as uuid } from 'uuid';
 import XVariable from './page-editor.script-block.vue';
 import XBlocks from './page-editor.blocks.vue';
-import MkTextarea from '@client/components/ui/textarea.vue';
+import MkTextarea from '@client/components/form/textarea.vue';
 import MkContainer from '@client/components/ui/container.vue';
 import MkButton from '@client/components/ui/button.vue';
-import MkSelect from '@client/components/ui/select.vue';
-import MkSwitch from '@client/components/ui/switch.vue';
-import MkInput from '@client/components/ui/input.vue';
+import MkSelect from '@client/components/form/select.vue';
+import MkSwitch from '@client/components/form/switch.vue';
+import MkInput from '@client/components/form/input.vue';
 import { blockDefs } from '@client/scripts/hpml/index';
 import { HpmlTypeChecker } from '@client/scripts/hpml/type-checker';
 import { url } from '@client/config';

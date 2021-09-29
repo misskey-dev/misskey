@@ -3,8 +3,8 @@
 	<div class="nav" v-if="!narrow || page == null">
 		<FormBase>
 			<FormGroup>
-				<div class="_formItem">
-					<div class="_formPanel lxpfedzu">
+				<div class="_debobigegoItem">
+					<div class="_debobigegoPanel lxpfedzu">
 						<img :src="$instance.iconUrl || '/favicon.ico'" alt="" class="icon"/>
 					</div>
 				</div>
@@ -56,10 +56,10 @@
 <script lang="ts">
 import { computed, defineAsyncComponent, defineComponent, nextTick, onMounted, reactive, ref, watch } from 'vue';
 import { i18n } from '@client/i18n';
-import FormLink from '@client/components/form/link.vue';
-import FormGroup from '@client/components/form/group.vue';
-import FormBase from '@client/components/form/base.vue';
-import FormButton from '@client/components/form/button.vue';
+import FormLink from '@client/components/debobigego/link.vue';
+import FormGroup from '@client/components/debobigego/group.vue';
+import FormBase from '@client/components/debobigego/base.vue';
+import FormButton from '@client/components/debobigego/button.vue';
 import { scroll } from '@client/scripts/scroll';
 import * as symbols from '@client/symbols';
 import * as os from '@client/os';

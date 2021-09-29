@@ -36,7 +36,7 @@
 <script lang="ts">
 import { defineComponent, markRaw } from 'vue';
 import Chart from 'chart.js';
-import MkSelect from './ui/select.vue';
+import MkSelect from './form/select.vue';
 import number from '@client/filters/number';
 
 const sum = (...arr) => arr.reduce((r, a) => r.map((b, i) => a[i] + b));

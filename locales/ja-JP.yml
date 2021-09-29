@@ -787,6 +787,8 @@ pubSub: "Pub/Subのアカウント"
 lastCommunication: "直近の通信"
 resolved: "解決済み"
 unresolved: "未解決"
+itsOn: "オンになっています"
+itsOff: "オフになっています"
 
 _accountDelete:
   accountDelete: "アカウントの削除"

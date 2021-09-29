@@ -1,6 +1,6 @@
 <template>
 <div class="ogwlenmc">
-	<MkTab v-model:value="tab">
+	<MkTab v-model="tab">
 		<option value="local">{{ $ts.local }}</option>
 		<option value="remote">{{ $ts.remote }}</option>
 	</MkTab>
@@ -56,7 +56,7 @@
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
 import MkButton from '@client/components/ui/button.vue';
-import MkInput from '@client/components/ui/input.vue';
+import MkInput from '@client/components/form/input.vue';
 import MkPagination from '@client/components/ui/pagination.vue';
 import MkTab from '@client/components/tab.vue';
 import { selectFile } from '@client/scripts/select-file';
