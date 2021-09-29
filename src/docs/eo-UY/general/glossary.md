@@ -68,7 +68,7 @@ todo
 アカウントが使用不可に設定されている状態。
 
 ## Disko
-Misskeyにアップロードしたファイルを管理する機能。詳細は[こちら。](../features/drive)
+Funkcio ebligas al uzantoj administri dosierojn kiujn ili alŝutis al Misskey.Rigardu por sciu pli tie[.](../features/drive)
 
 ## Notoj
 Misskeyに投稿される、文章、ファイル、アンケートなどを含めることができるコンテンツ。Rigardu por sciu pli tie[.](../features/note)
