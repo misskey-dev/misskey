@@ -787,6 +787,8 @@ pubSub: "Pub/Sub Benutzerkonten"
 lastCommunication: "Letzte Kommunikation"
 resolved: "Gelöst"
 unresolved: "Ungelöst"
+itsOn: "Eingeschaltet"
+itsOff: "Ausgeschaltet"
 _accountDelete:
   accountDelete: "Benutzerkonto löschen"
   mayTakeTime: "Da die Löschung eines Benutzerkontos ein aufwendiger Prozess ist, kann dessen Dauer davon abhängen, wie viel Inhalt in diesem erstellt wurde oder wie viele Dateien hochgeladen wurden."
