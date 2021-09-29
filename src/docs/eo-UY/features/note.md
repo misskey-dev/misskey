@@ -47,7 +47,7 @@ Contents Warningの略で、ノートの内容を、閲覧者の操作なしに�
     <tr><th>非フォロワーのLTL/STL/GTL</th><td>✔</td><td></td><td></td><td></td></tr>
 </table>
 
-## ピン留め
+## Alpingli sur profilo
 ノートをピン留めすると、ユーザーページに常にそのノートを表示しておくことができます。 ノートのメニューを開き、「ピン留め」を選択してピン留めできます。 複数のノートをピン留めできます。
 
 ## Observi
