@@ -13,7 +13,7 @@
 			@keydown.enter="toggle"
 		>
 		<span class="button" v-tooltip="checked ? $ts.itsOn : $ts.itsOff">
-			<span></span>
+			<span class="handle"></span>
 		</span>
 		<span class="label">
 			<span><slot></slot></span>
@@ -64,23 +64,6 @@ export default defineComponent({
 			user-select: none;
 		}
 
-		&.disabled {
-			opacity: 0.6;
-			cursor: not-allowed;
-		}
-
-		&.checked {
-			> .button {
-				background-color: var(--X10);
-				border-color: var(--X10);
-
-				> * {
-					background-color: var(--accent);
-					transform: translateX(14px);
-				}
-			}
-		}
-
 		> input {
 			position: absolute;
 			width: 0;
@@ -93,25 +76,26 @@ export default defineComponent({
 			position: relative;
 			display: inline-block;
 			flex-shrink: 0;
-			margin: 3px 0 0 0;
+			margin: 0;
 			width: 34px;
-			height: 14px;
-			background: var(--X6);
+			height: 22px;
+			background: var(--switchBg);
 			outline: none;
-			border-radius: 14px;
+			border-radius: 999px;
 			transition: all 0.3s;
 			cursor: pointer;
 
-			> * {
+			> .handle {
 				position: absolute;
-				top: -3px;
-				left: 0;
+				top: 0;
+				left: 3px;
+				bottom: 0;
+				margin: auto 0;
 				border-radius: 100%;
 				transition: background-color 0.3s, transform 0.3s;
-				width: 20px;
-				height: 20px;
+				width: 16px;
+				height: 16px;
 				background-color: #fff;
-				box-shadow: 0 2px 1px -1px rgba(#000, 0.2), 0 1px 1px 0 rgba(#000, 0.14), 0 1px 3px 0 rgba(#000, 0.12);
 			}
 		}
 
@@ -125,6 +109,21 @@ export default defineComponent({
 				display: block;
 				line-height: 20px;
 				transition: inherit;
+			}
+		}
+
+		&.disabled {
+			opacity: 0.6;
+			cursor: not-allowed;
+		}
+
+		&.checked {
+			> .button {
+				background-color: var(--accent);
+
+				> .handle {
+					transform: translateX(12px);
+				}
 			}
 		}
 	}
