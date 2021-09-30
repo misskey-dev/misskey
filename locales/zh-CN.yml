@@ -787,6 +787,8 @@ pubSub: "Pub/Sub账户"
 lastCommunication: "最近通信"
 resolved: "已解决"
 unresolved: "未解决"
+itsOn: "已开启"
+itsOff: "已关闭"
 _accountDelete:
   accountDelete: "删除帐户"
   mayTakeTime: "删除账号是一个性能损耗较大的处理，如果账号持有的内容数量和上传的文件数量较多的话，完成需要花费一段时间。"
