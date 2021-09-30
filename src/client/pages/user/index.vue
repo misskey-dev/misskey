@@ -255,21 +255,22 @@ export default defineComponent({
 					active: this.page === 'index',
 					title: this.$ts.overview,
 					icon: 'fas fa-home',
+					onClick: () => { this.$router.push('/@' + getAcct(this.user)); },
 				}, {
 					active: this.page === 'clips',
 					title: this.$ts.clips,
 					icon: 'fas fa-paperclip',
-					onClick: () => { this.page = 'clips'; },
+					onClick: () => { this.$router.push('/@' + getAcct(this.user) + '/clips'); },
 				}, {
 					active: this.page === 'pages',
 					title: this.$ts.pages,
 					icon: 'fas fa-file-alt',
-					onClick: () => { this.page = 'pages'; },
+					onClick: () => { this.$router.push('/@' + getAcct(this.user) + '/pages'); },
 				}, {
 					active: this.page === 'gallery',
 					title: this.$ts.gallery,
 					icon: 'fas fa-icons',
-					onClick: () => { this.page = 'gallery'; },
+					onClick: () => { this.$router.push('/@' + getAcct(this.user) + '/gallery'); },
 				}]
 			} : null),
 			user: null,
