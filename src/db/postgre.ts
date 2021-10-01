@@ -72,6 +72,7 @@ import { ChannelNotePining } from '@/models/entities/channel-note-pining';
 import { RegistryItem } from '@/models/entities/registry-item';
 import { Ad } from '@/models/entities/ad';
 import { PasswordResetRequest } from '@/models/entities/password-reset-request';
+import { UserPending } from '@/models/entities/user-pending';
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'white', false);
 
@@ -173,6 +174,7 @@ export const entities = [
 	RegistryItem,
 	Ad,
 	PasswordResetRequest,
+	UserPending,
 	...charts as any
 ];
 

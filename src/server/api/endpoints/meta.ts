@@ -104,6 +104,10 @@ export const meta = {
 				type: 'boolean' as const,
 				optional: false as const, nullable: false as const
 			},
+			emailRequiredForSignup: {
+				type: 'boolean' as const,
+				optional: false as const, nullable: false as const
+			},
 			enableHcaptcha: {
 				type: 'boolean' as const,
 				optional: false as const, nullable: false as const
@@ -488,6 +492,7 @@ export default define(meta, async (ps, me) => {
 		disableGlobalTimeline: instance.disableGlobalTimeline,
 		driveCapacityPerLocalUserMb: instance.localDriveCapacityMb,
 		driveCapacityPerRemoteUserMb: instance.remoteDriveCapacityMb,
+		emailRequiredForSignup: instance.emailRequiredForSignup,
 		enableHcaptcha: instance.enableHcaptcha,
 		hcaptchaSiteKey: instance.hcaptchaSiteKey,
 		enableRecaptcha: instance.enableRecaptcha,
@@ -537,6 +542,7 @@ export default define(meta, async (ps, me) => {
 			registration: !instance.disableRegistration,
 			localTimeLine: !instance.disableLocalTimeline,
 			globalTimeLine: !instance.disableGlobalTimeline,
+			emailRequiredForSignup: instance.emailRequiredForSignup,
 			elasticsearch: config.elasticsearch ? true : false,
 			hcaptcha: instance.enableHcaptcha,
 			recaptcha: instance.enableRecaptcha,
