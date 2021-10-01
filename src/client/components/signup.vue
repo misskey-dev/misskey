@@ -211,7 +211,7 @@ export default defineComponent({
 					os.dialog({
 						type: 'success',
 						title: this.$ts._signup.almostThere,
-						text: this.$ts._signup.emailSent,
+						text: this.$t('_signup.emailSent', { email: this.email }),
 					});
 					this.$emit('signupEmailPending');
 				} else {

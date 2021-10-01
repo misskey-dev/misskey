@@ -35,7 +35,7 @@ export default defineComponent({
 		os.apiWithDialog('signup-pending', {
 			code: this.code,
 		}).then(res => {
-			login(res.i);
+			login(res.i, '/');
 		});
 	},
 
