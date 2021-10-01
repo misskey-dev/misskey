@@ -13,11 +13,11 @@ export default defineComponent({
 		return withDirectives(h('div', {
 			class: 'pxhvhrfw',
 		}, options.map(option => withDirectives(h('button', {
-			class: ['_button', { active: this.modelValue === option.props.modelValue }],
+			class: ['_button', { active: this.modelValue === option.props.value }],
 			key: option.key,
-			disabled: this.modelValue === option.props.modelValue,
+			disabled: this.modelValue === option.props.value,
 			onClick: () => {
-				this.$emit('update:modelValue', option.props.modelValue);
+				this.$emit('update:modelValue', option.props.value);
 			}
 		}, option.children), [
 			[resolveDirective('click-anime')]
