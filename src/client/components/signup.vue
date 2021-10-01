@@ -21,6 +21,7 @@
 		</MkInput>
 		<MkInput v-if="meta.emailRequiredForSignup" class="_formBlock" v-model="email" type="email" :autocomplete="Math.random()" spellcheck="false" required @update:modelValue="onChangeEmail" data-cy-signup-email>
 			<template #label>{{ $ts.emailAddress }} <div class="_button _help" v-tooltip:dialog="$ts._signup.emailAddressInfo"><i class="far fa-question-circle"></i></div></template>
+			<template #prefix><i class="fas fa-envelope"></i></template>
 			<template #caption>
 				<span v-if="emailState === 'wait'" style="color:#999"><i class="fas fa-spinner fa-pulse fa-fw"></i> {{ $ts.checking }}</span>
 				<span v-else-if="emailState === 'ok'" style="color: var(--success)"><i class="fas fa-check fa-fw"></i> {{ $ts.available }}</span>
