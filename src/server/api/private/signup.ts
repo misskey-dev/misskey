@@ -7,6 +7,7 @@ import { Users, RegistrationTickets, UserPendings } from '@/models/index';
 import { signup } from '../common/signup';
 import config from '@/config';
 import { sendEmail } from '@/services/send-email';
+import { genId } from '@/misc/gen-id';
 
 export default async (ctx: Koa.Context) => {
 	const body = ctx.request.body;
@@ -68,6 +69,7 @@ export default async (ctx: Koa.Context) => {
 		const hash = await bcrypt.hash(password, salt);
 
 		await UserPendings.insert({
+			id: genId(),
 			createdAt: new Date(),
 			code,
 			email: emailAddress,
