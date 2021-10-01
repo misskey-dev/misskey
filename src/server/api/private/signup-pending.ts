@@ -16,6 +16,10 @@ export default async (ctx: Koa.Context) => {
 			passwordHash: pendingUser.password,
 		});
 
+		UserPendings.delete({
+			id: pendingUser.id,
+		});
+
 		const profile = await UserProfiles.findOneOrFail(account.id);
 
 		await UserProfiles.update({ userId: profile.userId }, {
