@@ -142,6 +142,7 @@ export default defineComponent({
 				return {
 					title: title,
 					icon: 'fas fa-pencil-alt',
+					bg: 'var(--bg)',
 				};
 			}),
 			author: this.$i,

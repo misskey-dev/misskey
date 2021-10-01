@@ -1,17 +1,13 @@
 <template>
 <div class="vvcocwet" :class="{ wide: !narrow }" ref="el">
 	<div class="nav" v-if="!narrow || page == null">
-		<FormGroup>
-			<div class="_debobigegoItem">
-				<div class="_debobigegoPanel lwjxoukj">
-					<MkAvatar :user="$i" class="avatar"/>
-				</div>
-			</div>
+		<div class="group">
+			<MkAvatar :user="$i" class="avatar"/>
 			<XLink :active="page === 'accounts'" replace to="/settings/accounts"><template #icon><i class="fas fa-users"></i></template>{{ $ts.accounts }}</XLink>
-		</FormGroup>
-		<FormInfo v-if="emailNotConfigured" warn>{{ $ts.emailNotConfiguredWarning }} <MkA to="/settings/email" class="_link">{{ $ts.configure }}</MkA></FormInfo>
-		<FormGroup>
-			<template #label>{{ $ts.basicSettings }}</template>
+		</div>
+		<MkInfo v-if="emailNotConfigured || true" warn>{{ $ts.emailNotConfiguredWarning }} <MkA to="/settings/email" class="_link">{{ $ts.configure }}</MkA></MkInfo>
+		<div class="group">
+			<div class="label">{{ $ts.basicSettings }}</div>
 			<XLink :active="page === 'profile'" replace to="/settings/profile"><template #icon><i class="fas fa-user"></i></template>{{ $ts.profile }}</XLink>
 			<XLink :active="page === 'privacy'" replace to="/settings/privacy"><template #icon><i class="fas fa-lock-open"></i></template>{{ $ts.privacy }}</XLink>
 			<XLink :active="page === 'reaction'" replace to="/settings/reaction"><template #icon><i class="fas fa-laugh"></i></template>{{ $ts.reaction }}</XLink>
@@ -20,23 +16,23 @@
 			<XLink :active="page === 'email'" replace to="/settings/email"><template #icon><i class="fas fa-envelope"></i></template>{{ $ts.email }}</XLink>
 			<XLink :active="page === 'integration'" replace to="/settings/integration"><template #icon><i class="fas fa-share-alt"></i></template>{{ $ts.integration }}</XLink>
 			<XLink :active="page === 'security'" replace to="/settings/security"><template #icon><i class="fas fa-lock"></i></template>{{ $ts.security }}</XLink>
-		</FormGroup>
-		<FormGroup>
-			<template #label>{{ $ts.clientSettings }}</template>
+		</div>
+		<div class="group">
+			<div class="label">{{ $ts.clientSettings }}</div>
 			<XLink :active="page === 'general'" replace to="/settings/general"><template #icon><i class="fas fa-cogs"></i></template>{{ $ts.general }}</XLink>
 			<XLink :active="page === 'theme'" replace to="/settings/theme"><template #icon><i class="fas fa-palette"></i></template>{{ $ts.theme }}</XLink>
 			<XLink :active="page === 'menu'" replace to="/settings/menu"><template #icon><i class="fas fa-list-ul"></i></template>{{ $ts.menu }}</XLink>
 			<XLink :active="page === 'sounds'" replace to="/settings/sounds"><template #icon><i class="fas fa-music"></i></template>{{ $ts.sounds }}</XLink>
 			<XLink :active="page === 'plugin'" replace to="/settings/plugin"><template #icon><i class="fas fa-plug"></i></template>{{ $ts.plugins }}</XLink>
-		</FormGroup>
-		<FormGroup>
-			<template #label>{{ $ts.otherSettings }}</template>
+		</div>
+		<div class="group">
+			<div class="label">{{ $ts.otherSettings }}</div>
 			<XLink :active="page === 'import-export'" replace to="/settings/import-export"><template #icon><i class="fas fa-boxes"></i></template>{{ $ts.importAndExport }}</XLink>
 			<XLink :active="page === 'mute-block'" replace to="/settings/mute-block"><template #icon><i class="fas fa-ban"></i></template>{{ $ts.muteAndBlock }}</XLink>
 			<XLink :active="page === 'word-mute'" replace to="/settings/word-mute"><template #icon><i class="fas fa-comment-slash"></i></template>{{ $ts.wordMute }}</XLink>
 			<XLink :active="page === 'api'" replace to="/settings/api"><template #icon><i class="fas fa-key"></i></template>API</XLink>
 			<XLink :active="page === 'other'" replace to="/settings/other"><template #icon><i class="fas fa-ellipsis-h"></i></template>{{ $ts.other }}</XLink>
-		</FormGroup>
+		</div>
 		<FormGroup>
 			<FormButton @click="clear">{{ $ts.clearCache }}</FormButton>
 		</FormGroup>
@@ -55,9 +51,8 @@ import { computed, defineAsyncComponent, defineComponent, nextTick, onMounted, r
 import { i18n } from '@client/i18n';
 import XLink from './index.link.vue';
 import FormGroup from '@client/components/debobigego/group.vue';
-import FormBase from '@client/components/debobigego/base.vue';
 import FormButton from '@client/components/debobigego/button.vue';
-import FormInfo from '@client/components/debobigego/info.vue';
+import MkInfo from '@client/components/ui/info.vue';
 import { scroll } from '@client/scripts/scroll';
 import { signout } from '@client/account';
 import { unisonReload } from '@client/scripts/unison-reload';
@@ -67,11 +62,10 @@ import { $i } from '@client/account';
 
 export default defineComponent({
 	components: {
-		FormBase,
 		XLink,
 		FormGroup,
 		FormButton,
-		FormInfo,
+		MkInfo,
 	},
 
 	props: {
@@ -206,6 +200,18 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .vvcocwet {
+	> .nav {
+		> .group {
+			padding: 16px;
+
+			> .label {
+				font-size: 0.9em;
+				opacity: 0.7;
+				margin: 0 0 8px 8px;
+			}
+		}
+	}
+
 	&.wide {
 		display: flex;
 		max-width: 1000px;
@@ -224,17 +230,6 @@ export default defineComponent({
 			overflow: auto;
 			--baseContentWidth: 100%;
 		}
-	}
-}
-
-.lwjxoukj {
-	padding: 16px;
-
-	> .avatar {
-		display: block;
-		margin: auto;
-		width: 42px;
-		height: 42px;
 	}
 }
 </style>
