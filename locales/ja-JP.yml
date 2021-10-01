@@ -789,6 +789,7 @@ resolved: "解決済み"
 unresolved: "未解決"
 itsOn: "オンになっています"
 itsOff: "オフになっています"
+emailRequiredForSignup: "アカウント登録にメールアドレスを必須にする"
 
 _signup:
   almostThere: "ほとんど完了です"
