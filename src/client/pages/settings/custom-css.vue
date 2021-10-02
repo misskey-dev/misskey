@@ -2,7 +2,7 @@
 <FormBase>
 	<FormInfo warn>{{ $ts.customCssWarn }}</FormInfo>
 
-	<FormTextarea v-model:value="localCustomCss" manual-save tall class="_monospace" style="tab-size: 2;">
+	<FormTextarea v-model="localCustomCss" manual-save tall class="_monospace" style="tab-size: 2;">
 		<span>{{ $ts.local }}</span>
 	</FormTextarea>
 </FormBase>
@@ -13,11 +13,11 @@ import { defineComponent } from 'vue';
 import FormTextarea from '@client/components/form/textarea.vue';
 import FormSelect from '@client/components/form/select.vue';
 import FormRadios from '@client/components/form/radios.vue';
-import FormBase from '@client/components/form/base.vue';
-import FormGroup from '@client/components/form/group.vue';
-import FormLink from '@client/components/form/link.vue';
-import FormButton from '@client/components/form/button.vue';
-import FormInfo from '@client/components/form/info.vue';
+import FormBase from '@client/components/debobigego/base.vue';
+import FormGroup from '@client/components/debobigego/group.vue';
+import FormLink from '@client/components/debobigego/link.vue';
+import FormButton from '@client/components/debobigego/button.vue';
+import FormInfo from '@client/components/debobigego/info.vue';
 import * as os from '@client/os';
 import { ColdDeviceStorage } from '@client/store';
 import { unisonReload } from '@client/scripts/unison-reload';
@@ -42,7 +42,8 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.customCss,
-				icon: 'fas fa-code'
+				icon: 'fas fa-code',
+				bg: 'var(--bg)',
 			},
 			localCustomCss: localStorage.getItem('customCss')
 		}

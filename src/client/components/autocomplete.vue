@@ -10,18 +10,23 @@
 		</li>
 		<li @click="chooseUser()" @keydown="onKeydown" tabindex="-1" class="choose">{{ $ts.selectUser }}</li>
 	</ol>
-	<ol class="hashtags" ref="suggests" v-if="hashtags.length > 0">
+	<ol class="hashtags" ref="suggests" v-else-if="hashtags.length > 0">
 		<li v-for="hashtag in hashtags" @click="complete(type, hashtag)" @keydown="onKeydown" tabindex="-1">
 			<span class="name">{{ hashtag }}</span>
 		</li>
 	</ol>
-	<ol class="emojis" ref="suggests" v-if="emojis.length > 0">
+	<ol class="emojis" ref="suggests" v-else-if="emojis.length > 0">
 		<li v-for="emoji in emojis" @click="complete(type, emoji.emoji)" @keydown="onKeydown" tabindex="-1">
 			<span class="emoji" v-if="emoji.isCustomEmoji"><img :src="$store.state.disableShowingAnimatedImages ? getStaticImageUrl(emoji.url) : emoji.url" :alt="emoji.emoji"/></span>
 			<span class="emoji" v-else-if="!$store.state.useOsNativeEmojis"><img :src="emoji.url" :alt="emoji.emoji"/></span>
 			<span class="emoji" v-else>{{ emoji.emoji }}</span>
 			<span class="name" v-html="emoji.name.replace(q, `<b>${q}</b>`)"></span>
 			<span class="alias" v-if="emoji.aliasOf">({{ emoji.aliasOf }})</span>
+		</li>
+	</ol>
+	<ol class="mfmTags" ref="suggests" v-else-if="mfmTags.length > 0">
+		<li v-for="tag in mfmTags" @click="complete(type, tag)" @keydown="onKeydown" tabindex="-1">
+			<span class="tag">{{ tag }}</span>
 		</li>
 	</ol>
 </div>
@@ -106,6 +111,8 @@ emojiDefinitions.sort((a, b) => a.name.length - b.name.length);
 const emojiDb = markRaw(emojiDefinitions.concat(emjdb));
 //#endregion
 
+const MFM_TAGS = ['tada', 'jelly', 'twitch', 'shake', 'spin', 'jump', 'bounce', 'flip', 'x2', 'x3', 'x4', 'font', 'blur', 'rainbow', 'sparkle'];
+
 export default defineComponent({
 	props: {
 		type: {
@@ -137,11 +144,6 @@ export default defineComponent({
 			type: Number,
 			required: true,
 		},
-
-		showing: {
-			type: Boolean,
-			required: true
-		},
 	},
 
 	emits: ['done', 'closed'],
@@ -154,15 +156,8 @@ export default defineComponent({
 			hashtags: [],
 			emojis: [],
 			items: [],
+			mfmTags: [],
 			select: -1,
-		}
-	},
-
-	watch: {
-		showing() {
-			if (!this.showing) {
-				this.$emit('closed');
-			}
 		}
 	},
 
@@ -236,7 +231,7 @@ export default defineComponent({
 				}
 			}
 
-			if (this.type == 'user') {
+			if (this.type === 'user') {
 				if (this.q == null) {
 					this.users = [];
 					this.fetching = false;
@@ -262,7 +257,7 @@ export default defineComponent({
 						sessionStorage.setItem(cacheKey, JSON.stringify(users));
 					});
 				}
-			} else if (this.type == 'hashtag') {
+			} else if (this.type === 'hashtag') {
 				if (this.q == null || this.q == '') {
 					this.hashtags = JSON.parse(localStorage.getItem('hashtags') || '[]');
 					this.fetching = false;
@@ -286,7 +281,7 @@ export default defineComponent({
 						});
 					}
 				}
-			} else if (this.type == 'emoji') {
+			} else if (this.type === 'emoji') {
 				if (this.q == null || this.q == '') {
 					// 最近使った絵文字をサジェスト
 					this.emojis = this.$store.state.recentlyUsedEmojis.map(emoji => emojiDb.find(e => e.emoji == emoji)).filter(x => x != null);
@@ -314,6 +309,13 @@ export default defineComponent({
 				}
 
 				this.emojis = matched;
+			} else if (this.type === 'mfmTag') {
+				if (this.q == null || this.q == '') {
+					this.mfmTags = MFM_TAGS;
+					return;
+				}
+
+				this.mfmTags = MFM_TAGS.filter(tag => tag.startsWith(this.q));
 			}
 		},
 
@@ -488,6 +490,12 @@ export default defineComponent({
 
 		.alias {
 			margin: 0 0 0 8px;
+		}
+	}
+
+	> .mfmTags > li {
+
+		.name {
 		}
 	}
 }

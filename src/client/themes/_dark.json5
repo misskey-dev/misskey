@@ -51,6 +51,7 @@
 		infoFg: '#fff',
 		infoWarnBg: '#42321c',
 		infoWarnFg: '#ffbd3e',
+		switchBg: 'rgba(255, 255, 255, 0.15)',
 		cwBg: '#687390',
 		cwFg: '#393f4f',
 		cwHoverBg: '#707b97',

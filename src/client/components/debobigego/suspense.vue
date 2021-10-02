@@ -1,15 +1,15 @@
 <template>
 <transition name="fade" mode="out-in">
-	<div class="_formItem" v-if="pending">
-		<div class="_formPanel">
+	<div class="_debobigegoItem" v-if="pending">
+		<div class="_debobigegoPanel">
 			<MkLoading/>
 		</div>
 	</div>
-	<div v-else-if="resolved" class="_formItem">
+	<div v-else-if="resolved" class="_debobigegoItem">
 		<slot :result="result"></slot>
 	</div>
-	<div class="_formItem" v-else>
-		<div class="_formPanel eiurkvay">
+	<div class="_debobigegoItem" v-else>
+		<div class="_debobigegoPanel eiurkvay">
 			<div><i class="fas fa-exclamation-triangle"></i> {{ $ts.somethingHappened }}</div>
 			<MkButton inline @click="retry" class="retry"><i class="fas fa-redo-alt"></i> {{ $ts.retry }}</MkButton>
 		</div>
@@ -19,7 +19,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, ref, watch } from 'vue';
-import './form.scss';
+import './debobigego.scss';
 import MkButton from '@client/components/ui/button.vue';
 
 export default defineComponent({

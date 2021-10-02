@@ -28,9 +28,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import FormSelect from '@client/components/form/select.vue';
-import FormButton from '@client/components/form/button.vue';
-import FormBase from '@client/components/form/base.vue';
-import FormGroup from '@client/components/form/group.vue';
+import FormButton from '@client/components/debobigego/button.vue';
+import FormBase from '@client/components/debobigego/base.vue';
+import FormGroup from '@client/components/debobigego/group.vue';
 import * as os from '@client/os';
 import { selectFile } from '@client/scripts/select-file';
 import * as symbols from '@client/symbols';
@@ -48,7 +48,8 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.importAndExport,
-				icon: 'fas fa-boxes'
+				icon: 'fas fa-boxes',
+				bg: 'var(--bg)',
 			},
 		}
 	},

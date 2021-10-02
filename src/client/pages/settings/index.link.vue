@@ -1,27 +1,18 @@
 <template>
-<div class="qmfkfnzi _formItem">
-	<a class="main _button _formPanel _formClickable" :href="to" target="_blank" v-if="external">
+<div class="qmfkfnzj">
+	<a class="main _button" :href="to" target="_blank" v-if="external">
 		<span class="icon"><slot name="icon"></slot></span>
 		<span class="text"><slot></slot></span>
-		<span class="right">
-			<span class="text"><slot name="suffix"></slot></span>
-			<i class="fas fa-external-link-alt icon"></i>
-		</span>
 	</a>
-	<MkA class="main _button _formPanel _formClickable" :class="{ active }" :to="to" :behavior="behavior" v-else>
+	<MkA class="main _button" :class="{ active }" :to="to" :behavior="behavior" v-else>
 		<span class="icon"><slot name="icon"></slot></span>
 		<span class="text"><slot></slot></span>
-		<span class="right">
-			<span class="text"><slot name="suffix"></slot></span>
-			<i class="fas fa-chevron-right icon"></i>
-		</span>
 	</MkA>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import './form.scss';
 
 export default defineComponent({
 	props: {
@@ -50,21 +41,24 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.qmfkfnzi {
+.qmfkfnzj {
 	> .main {
 		display: flex;
 		align-items: center;
 		width: 100%;
 		box-sizing: border-box;
-		padding: 14px 16px 14px 14px;
+		padding: 10px 16px 10px 14px;
+		border-radius: 999px;
+		font-size: 0.9em;
 
 		&:hover {
 			text-decoration: none;
+			background: var(--panelHighlight);
 		}
 
 		&.active {
 			color: var(--accent);
-			background: var(--panelHighlight);
+			background: var(--accentedBg);
 		}
 
 		> .icon {

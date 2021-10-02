@@ -27,9 +27,9 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
-import MkTextarea from '@client/components/ui/textarea.vue';
+import MkTextarea from '@client/components/form/textarea.vue';
 import MkButton from '@client/components/ui/button.vue';
-import MkInput from '@client/components/ui/input.vue';
+import MkInput from '@client/components/form/input.vue';
 import { selectFile } from '@client/scripts/select-file';
 import * as os from '@client/os';
 import * as symbols from '@client/symbols';

@@ -1,7 +1,7 @@
 <template>
 <button class="nrvgflfu _button" @click="toggle">
-	<b>{{ value ? $ts._cw.hide : $ts._cw.show }}</b>
-	<span v-if="!value">{{ label }}</span>
+	<b>{{ modelValue ? $ts._cw.hide : $ts._cw.show }}</b>
+	<span v-if="!modelValue">{{ label }}</span>
 </button>
 </template>
 
@@ -12,7 +12,7 @@ import { concat } from '../../prelude/array';
 
 export default defineComponent({
 	props: {
-		value: {
+		modelValue: {
 			type: Boolean,
 			required: true
 		},
@@ -36,7 +36,7 @@ export default defineComponent({
 		length,
 
 		toggle() {
-			this.$emit('update:value', !this.value);
+			this.$emit('update:modelValue', !this.modelValue);
 		}
 	}
 });

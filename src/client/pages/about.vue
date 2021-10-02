@@ -1,7 +1,7 @@
 <template>
 <FormBase>
-	<div class="_formItem">
-		<div class="_formPanel fwhjspax">
+	<div class="_debobigegoItem">
+		<div class="_debobigegoPanel fwhjspax">
 			<img :src="$instance.iconUrl || $instance.faviconUrl || '/favicon.ico'" alt="" class="icon"/>
 			<span class="name">{{ $instance.name || host }}</span>
 		</div>
@@ -59,12 +59,12 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { version, instanceName } from '@client/config';
-import FormLink from '@client/components/form/link.vue';
-import FormBase from '@client/components/form/base.vue';
-import FormGroup from '@client/components/form/group.vue';
-import FormKeyValueView from '@client/components/form/key-value-view.vue';
-import FormTextarea from '@client/components/form/textarea.vue';
-import FormSuspense from '@client/components/form/suspense.vue';
+import FormLink from '@client/components/debobigego/link.vue';
+import FormBase from '@client/components/debobigego/base.vue';
+import FormGroup from '@client/components/debobigego/group.vue';
+import FormKeyValueView from '@client/components/debobigego/key-value-view.vue';
+import FormTextarea from '@client/components/debobigego/textarea.vue';
+import FormSuspense from '@client/components/debobigego/suspense.vue';
 import * as os from '@client/os';
 import number from '@client/filters/number';
 import * as symbols from '@client/symbols';

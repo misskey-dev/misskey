@@ -18,11 +18,11 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import FormSuspense from '@client/components/form/suspense.vue';
-import FormKeyValueView from '@client/components/form/key-value-view.vue';
-import FormLink from '@client/components/form/link.vue';
-import FormBase from '@client/components/form/base.vue';
-import FormGroup from '@client/components/form/group.vue';
+import FormSuspense from '@client/components/debobigego/suspense.vue';
+import FormKeyValueView from '@client/components/debobigego/key-value-view.vue';
+import FormLink from '@client/components/debobigego/link.vue';
+import FormBase from '@client/components/debobigego/base.vue';
+import FormGroup from '@client/components/debobigego/group.vue';
 import * as os from '@client/os';
 import * as symbols from '@client/symbols';
 import bytes from '@client/filters/bytes';

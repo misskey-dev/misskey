@@ -2,18 +2,18 @@
 <FormBase>
 	<FormLink to="/settings/update">Misskey Update</FormLink>
 
-	<FormSwitch :value="$i.injectFeaturedNote" @update:value="onChangeInjectFeaturedNote">
+	<FormSwitch :value="$i.injectFeaturedNote" @update:modelValue="onChangeInjectFeaturedNote">
 		{{ $ts.showFeaturedNotesInTimeline }}
 	</FormSwitch>
 
-	<FormSwitch v-model:value="reportError">{{ $ts.sendErrorReports }}<template #desc>{{ $ts.sendErrorReportsDescription }}</template></FormSwitch>
+	<FormSwitch v-model="reportError">{{ $ts.sendErrorReports }}<template #desc>{{ $ts.sendErrorReportsDescription }}</template></FormSwitch>
 
 	<FormLink to="/settings/account-info">{{ $ts.accountInfo }}</FormLink>
 	<FormLink to="/settings/experimental-features">{{ $ts.experimentalFeatures }}</FormLink>
 
 	<FormGroup>
 		<template #label>{{ $ts.developer }}</template>
-		<FormSwitch v-model:value="debug" @update:value="changeDebug">
+		<FormSwitch v-model="debug" @update:modelValue="changeDebug">
 			DEBUG MODE
 		</FormSwitch>
 		<template v-if="debug">
@@ -34,10 +34,10 @@
 import { defineAsyncComponent, defineComponent } from 'vue';
 import FormSwitch from '@client/components/form/switch.vue';
 import FormSelect from '@client/components/form/select.vue';
-import FormLink from '@client/components/form/link.vue';
-import FormBase from '@client/components/form/base.vue';
-import FormGroup from '@client/components/form/group.vue';
-import FormButton from '@client/components/form/button.vue';
+import FormLink from '@client/components/debobigego/link.vue';
+import FormBase from '@client/components/debobigego/base.vue';
+import FormGroup from '@client/components/debobigego/group.vue';
+import FormButton from '@client/components/debobigego/button.vue';
 import * as os from '@client/os';
 import { debug } from '@client/config';
 import { defaultStore } from '@client/store';
@@ -60,7 +60,8 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.other,
-				icon: 'fas fa-ellipsis-h'
+				icon: 'fas fa-ellipsis-h',
+				bg: 'var(--bg)',
 			},
 			debug,
 		}
