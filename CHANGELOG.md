@@ -2,6 +2,7 @@
 ## 12.x.x (unreleased)
 
 ### Improvements
+- ページロードエラーページにリロードボタンを追加
 
 ### Bugfixes
 
