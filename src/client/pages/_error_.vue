@@ -1,4 +1,5 @@
 <template>
+<MkLoading v-if="!loaded" />
 <transition :name="$store.state.animation ? 'zoom' : ''" appear>
 	<div class="mjndxjch" v-show="loaded">
 		<img src="https://xn--931a.moe/assets/error.jpg" class="_ghost"/>
