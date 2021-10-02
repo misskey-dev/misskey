@@ -1,51 +1,49 @@
 <template>
 <div class="hiyeyicy" :class="{ wide: !narrow }" ref="el">
 	<div class="nav" v-if="!narrow || page == null">
-		<FormBase>
-			<FormGroup>
-				<div class="_debobigegoItem">
-					<div class="_debobigegoPanel lxpfedzu">
-						<img :src="$instance.iconUrl || '/favicon.ico'" alt="" class="icon"/>
-					</div>
+		<div class="group">
+			<div class="_debobigegoItem">
+				<div class="_debobigegoPanel lxpfedzu">
+					<img :src="$instance.iconUrl || '/favicon.ico'" alt="" class="icon"/>
 				</div>
-				<FormLink :active="page === 'overview'" replace to="/instance/overview"><template #icon><i class="fas fa-tachometer-alt"></i></template>{{ $ts.overview }}</FormLink>
-			</FormGroup>
-			<FormGroup>
-				<template #label>{{ $ts.quickAction }}</template>
-				<FormButton @click="lookup"><i class="fas fa-search"></i> {{ $ts.lookup }}</FormButton>
-				<FormButton v-if="$instance.disableRegistration" @click="invite"><i class="fas fa-user"></i> {{ $ts.invite }}</FormButton>
-			</FormGroup>
-			<FormGroup>
-				<template #label>{{ $ts.administration }}</template>
-				<FormLink :active="page === 'users'" replace to="/instance/users"><template #icon><i class="fas fa-users"></i></template>{{ $ts.users }}</FormLink>
-				<FormLink :active="page === 'emojis'" replace to="/instance/emojis"><template #icon><i class="fas fa-laugh"></i></template>{{ $ts.customEmojis }}</FormLink>
-				<FormLink :active="page === 'federation'" replace to="/instance/federation"><template #icon><i class="fas fa-globe"></i></template>{{ $ts.federation }}</FormLink>
-				<FormLink :active="page === 'queue'" replace to="/instance/queue"><template #icon><i class="fas fa-clipboard-list"></i></template>{{ $ts.jobQueue }}</FormLink>
-				<FormLink :active="page === 'files'" replace to="/instance/files"><template #icon><i class="fas fa-cloud"></i></template>{{ $ts.files }}</FormLink>
-				<FormLink :active="page === 'announcements'" replace to="/instance/announcements"><template #icon><i class="fas fa-broadcast-tower"></i></template>{{ $ts.announcements }}</FormLink>
-				<FormLink :active="page === 'ads'" replace to="/instance/ads"><template #icon><i class="fas fa-audio-description"></i></template>{{ $ts.ads }}</FormLink>
-				<FormLink :active="page === 'abuses'" replace to="/instance/abuses"><template #icon><i class="fas fa-exclamation-circle"></i></template>{{ $ts.abuseReports }}</FormLink>
-			</FormGroup>
-			<FormGroup>
-				<template #label>{{ $ts.settings }}</template>
-				<FormLink :active="page === 'settings'" replace to="/instance/settings"><template #icon><i class="fas fa-cog"></i></template>{{ $ts.general }}</FormLink>
-				<FormLink :active="page === 'files-settings'" replace to="/instance/files-settings"><template #icon><i class="fas fa-cloud"></i></template>{{ $ts.files }}</FormLink>
-				<FormLink :active="page === 'email-settings'" replace to="/instance/email-settings"><template #icon><i class="fas fa-envelope"></i></template>{{ $ts.emailServer }}</FormLink>
-				<FormLink :active="page === 'object-storage'" replace to="/instance/object-storage"><template #icon><i class="fas fa-cloud"></i></template>{{ $ts.objectStorage }}</FormLink>
-				<FormLink :active="page === 'security'" replace to="/instance/security"><template #icon><i class="fas fa-lock"></i></template>{{ $ts.security }}</FormLink>
-				<FormLink :active="page === 'service-worker'" replace to="/instance/service-worker"><template #icon><i class="fas fa-bolt"></i></template>ServiceWorker</FormLink>
-				<FormLink :active="page === 'relays'" replace to="/instance/relays"><template #icon><i class="fas fa-globe"></i></template>{{ $ts.relays }}</FormLink>
-				<FormLink :active="page === 'integrations'" replace to="/instance/integrations"><template #icon><i class="fas fa-share-alt"></i></template>{{ $ts.integration }}</FormLink>
-				<FormLink :active="page === 'instance-block'" replace to="/instance/instance-block"><template #icon><i class="fas fa-ban"></i></template>{{ $ts.instanceBlocking }}</FormLink>
-				<FormLink :active="page === 'proxy-account'" replace to="/instance/proxy-account"><template #icon><i class="fas fa-ghost"></i></template>{{ $ts.proxyAccount }}</FormLink>
-				<FormLink :active="page === 'other-settings'" replace to="/instance/other-settings"><template #icon><i class="fas fa-cogs"></i></template>{{ $ts.other }}</FormLink>
-			</FormGroup>
-			<FormGroup>
-				<template #label>{{ $ts.info }}</template>
-				<FormLink :active="page === 'database'" replace to="/instance/database"><template #icon><i class="fas fa-database"></i></template>{{ $ts.database }}</FormLink>
-				<FormLink :active="page === 'logs'" replace to="/instance/logs"><template #icon><i class="fas fa-stream"></i></template>{{ $ts.logs }}</FormLink>
-			</FormGroup>
-		</FormBase>
+			</div>
+			<XLink :active="page === 'overview'" replace to="/instance/overview"><template #icon><i class="fas fa-tachometer-alt"></i></template>{{ $ts.overview }}</XLink>
+		</div>
+		<div class="group">
+			<div class="label">{{ $ts.quickAction }}</div>
+			<FormButton @click="lookup"><i class="fas fa-search"></i> {{ $ts.lookup }}</FormButton>
+			<FormButton v-if="$instance.disableRegistration" @click="invite"><i class="fas fa-user"></i> {{ $ts.invite }}</FormButton>
+		</div>
+		<div class="group">
+			<div class="label">{{ $ts.administration }}</div>
+			<XLink :active="page === 'users'" replace to="/instance/users"><template #icon><i class="fas fa-users"></i></template>{{ $ts.users }}</XLink>
+			<XLink :active="page === 'emojis'" replace to="/instance/emojis"><template #icon><i class="fas fa-laugh"></i></template>{{ $ts.customEmojis }}</XLink>
+			<XLink :active="page === 'federation'" replace to="/instance/federation"><template #icon><i class="fas fa-globe"></i></template>{{ $ts.federation }}</XLink>
+			<XLink :active="page === 'queue'" replace to="/instance/queue"><template #icon><i class="fas fa-clipboard-list"></i></template>{{ $ts.jobQueue }}</XLink>
+			<XLink :active="page === 'files'" replace to="/instance/files"><template #icon><i class="fas fa-cloud"></i></template>{{ $ts.files }}</XLink>
+			<XLink :active="page === 'announcements'" replace to="/instance/announcements"><template #icon><i class="fas fa-broadcast-tower"></i></template>{{ $ts.announcements }}</XLink>
+			<XLink :active="page === 'ads'" replace to="/instance/ads"><template #icon><i class="fas fa-audio-description"></i></template>{{ $ts.ads }}</XLink>
+			<XLink :active="page === 'abuses'" replace to="/instance/abuses"><template #icon><i class="fas fa-exclamation-circle"></i></template>{{ $ts.abuseReports }}</XLink>
+		</div>
+		<div class="group">
+			<div class="label">{{ $ts.settings }}</div>
+			<XLink :active="page === 'settings'" replace to="/instance/settings"><template #icon><i class="fas fa-cog"></i></template>{{ $ts.general }}</XLink>
+			<XLink :active="page === 'files-settings'" replace to="/instance/files-settings"><template #icon><i class="fas fa-cloud"></i></template>{{ $ts.files }}</XLink>
+			<XLink :active="page === 'email-settings'" replace to="/instance/email-settings"><template #icon><i class="fas fa-envelope"></i></template>{{ $ts.emailServer }}</XLink>
+			<XLink :active="page === 'object-storage'" replace to="/instance/object-storage"><template #icon><i class="fas fa-cloud"></i></template>{{ $ts.objectStorage }}</XLink>
+			<XLink :active="page === 'security'" replace to="/instance/security"><template #icon><i class="fas fa-lock"></i></template>{{ $ts.security }}</XLink>
+			<XLink :active="page === 'service-worker'" replace to="/instance/service-worker"><template #icon><i class="fas fa-bolt"></i></template>ServiceWorker</XLink>
+			<XLink :active="page === 'relays'" replace to="/instance/relays"><template #icon><i class="fas fa-globe"></i></template>{{ $ts.relays }}</XLink>
+			<XLink :active="page === 'integrations'" replace to="/instance/integrations"><template #icon><i class="fas fa-share-alt"></i></template>{{ $ts.integration }}</XLink>
+			<XLink :active="page === 'instance-block'" replace to="/instance/instance-block"><template #icon><i class="fas fa-ban"></i></template>{{ $ts.instanceBlocking }}</XLink>
+			<XLink :active="page === 'proxy-account'" replace to="/instance/proxy-account"><template #icon><i class="fas fa-ghost"></i></template>{{ $ts.proxyAccount }}</XLink>
+			<XLink :active="page === 'other-settings'" replace to="/instance/other-settings"><template #icon><i class="fas fa-cogs"></i></template>{{ $ts.other }}</XLink>
+		</div>
+		<div class="group">
+			<div class="label">{{ $ts.info }}</div>
+			<XLink :active="page === 'database'" replace to="/instance/database"><template #icon><i class="fas fa-database"></i></template>{{ $ts.database }}</XLink>
+			<XLink :active="page === 'logs'" replace to="/instance/logs"><template #icon><i class="fas fa-stream"></i></template>{{ $ts.logs }}</XLink>
+		</div>
 	</div>
 	<div class="main">
 		<component :is="component" :key="page" @info="onInfo" v-bind="pageProps"/>
@@ -56,7 +54,7 @@
 <script lang="ts">
 import { computed, defineAsyncComponent, defineComponent, nextTick, onMounted, reactive, ref, watch } from 'vue';
 import { i18n } from '@client/i18n';
-import FormLink from '@client/components/debobigego/link.vue';
+import XLink from './index.link.vue';
 import FormGroup from '@client/components/debobigego/group.vue';
 import FormBase from '@client/components/debobigego/base.vue';
 import FormButton from '@client/components/debobigego/button.vue';
@@ -68,7 +66,7 @@ import { lookupUser } from '@client/scripts/lookup-user';
 export default defineComponent({
 	components: {
 		FormBase,
-		FormLink,
+		XLink,
 		FormGroup,
 		FormButton,
 	},
@@ -214,15 +212,25 @@ export default defineComponent({
 .hiyeyicy {
 	&.wide {
 		display: flex;
-		max-width: 1100px;
 		margin: 0 auto;
 		height: 100%;
 
 		> .nav {
 			width: 32%;
+			max-width: 320px;
 			box-sizing: border-box;
 			border-right: solid 0.5px var(--divider);
 			overflow: auto;
+
+			> .group {
+				padding: 16px;
+
+				> .label {
+					font-size: 0.9em;
+					opacity: 0.7;
+					margin: 0 0 8px 12px;
+				}
+			}
 		}
 
 		> .main {

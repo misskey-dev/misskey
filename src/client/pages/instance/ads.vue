@@ -64,7 +64,8 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.ads,
-				icon: 'fas fa-audio-description'
+				icon: 'fas fa-audio-description',
+				bg: 'var(--bg)',
 			},
 			ads: [],
 		}

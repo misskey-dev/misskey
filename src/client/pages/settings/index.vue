@@ -1,11 +1,11 @@
 <template>
 <div class="vvcocwet" :class="{ wide: !narrow }" ref="el">
 	<div class="nav" v-if="!narrow || page == null">
-		<div class="group">
+		<div class="group accounts">
 			<MkAvatar :user="$i" class="avatar"/>
 			<XLink :active="page === 'accounts'" replace to="/settings/accounts"><template #icon><i class="fas fa-users"></i></template>{{ $ts.accounts }}</XLink>
 		</div>
-		<MkInfo v-if="emailNotConfigured || true" warn>{{ $ts.emailNotConfiguredWarning }} <MkA to="/settings/email" class="_link">{{ $ts.configure }}</MkA></MkInfo>
+		<MkInfo v-if="emailNotConfigured || true" warn class="info">{{ $ts.emailNotConfiguredWarning }} <MkA to="/settings/email" class="_link">{{ $ts.configure }}</MkA></MkInfo>
 		<div class="group">
 			<div class="label">{{ $ts.basicSettings }}</div>
 			<XLink :active="page === 'profile'" replace to="/settings/profile"><template #icon><i class="fas fa-user"></i></template>{{ $ts.profile }}</XLink>
@@ -207,7 +207,20 @@ export default defineComponent({
 			> .label {
 				font-size: 0.9em;
 				opacity: 0.7;
-				margin: 0 0 8px 8px;
+				margin: 0 0 8px 12px;
+			}
+		}
+
+		> .info {
+			margin: 0 16px;
+		}
+
+		> .accounts {
+			> .avatar {
+				display: block;
+				width: 50px;
+				height: 50px;
+				margin: 0 auto 8px auto;
 			}
 		}
 	}

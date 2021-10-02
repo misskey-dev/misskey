@@ -86,7 +86,8 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.overview,
-				icon: 'fas fa-tachometer-alt'
+				icon: 'fas fa-tachometer-alt',
+				bg: 'var(--bg)',
 			},
 			page: 'index',
 			version,

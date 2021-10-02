@@ -78,6 +78,7 @@ export default defineComponent({
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.customEmojis,
 				icon: 'fas fa-laugh',
+				bg: 'var(--bg)',
 				action: {
 					icon: 'fas fa-plus',
 					handler: this.add
