@@ -63,8 +63,8 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import MkButton from '@client/components/ui/button.vue';
-import MkInput from '@client/components/ui/input.vue';
-import MkSelect from '@client/components/ui/select.vue';
+import MkInput from '@client/components/form/input.vue';
+import MkSelect from '@client/components/form/select.vue';
 import MkPagination from '@client/components/ui/pagination.vue';
 import MkDriveFileThumbnail from '@client/components/drive-file-thumbnail.vue';
 import bytes from '@client/filters/bytes';

@@ -75,7 +75,7 @@
 import { computed, defineComponent } from 'vue';
 import XUserList from '@client/components/user-list.vue';
 import MkFolder from '@client/components/ui/folder.vue';
-import MkInput from '@client/components/ui/input.vue';
+import MkInput from '@client/components/form/input.vue';
 import number from '@client/filters/number';
 import * as os from '@client/os';
 import * as symbols from '@client/symbols';

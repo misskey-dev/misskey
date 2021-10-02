@@ -1,6 +1,6 @@
 <template>
 <div class="yrzkoczt" v-sticky-container>
-	<MkTab v-model:value="with_" class="_gap tab">
+	<MkTab v-model="with_" class="_gap tab">
 		<option :value="null">{{ $ts.notes }}</option>
 		<option value="replies">{{ $ts.notesAndReplies }}</option>
 		<option value="files">{{ $ts.withFiles }}</option>

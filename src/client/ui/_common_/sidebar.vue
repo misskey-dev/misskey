@@ -395,7 +395,7 @@ export default defineComponent({
 						left: 0;
 						right: 0;
 						bottom: 0;
-						border-radius: 8px;
+						border-radius: 999px;
 						background: var(--accentedBg);
 					}
 				}
