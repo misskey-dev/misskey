@@ -81,7 +81,7 @@ export default defineComponent({
 		font: inherit;
 		font-size: 0.9em;
 
-		&:focus {
+		&:focus-visible {
 			outline: none;
 		}
 	}

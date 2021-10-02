@@ -206,7 +206,7 @@ export default defineComponent({
 		min-width: 100%;
 		min-height: 90px;
 
-		&:focus {
+		&:focus-visible {
 			outline: none;
 		}
 
