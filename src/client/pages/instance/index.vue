@@ -2,10 +2,8 @@
 <div class="hiyeyicy" :class="{ wide: !narrow }" ref="el">
 	<div class="nav" v-if="!narrow || page == null">
 		<div class="group">
-			<div class="_debobigegoItem">
-				<div class="_debobigegoPanel lxpfedzu">
-					<img :src="$instance.iconUrl || '/favicon.ico'" alt="" class="icon"/>
-				</div>
+			<div class="lxpfedzu">
+				<img :src="$instance.iconUrl || '/favicon.ico'" alt="" class="icon"/>
 			</div>
 			<XLink :active="page === 'overview'" replace to="/instance/overview"><template #icon><i class="fas fa-tachometer-alt"></i></template>{{ $ts.overview }}</XLink>
 		</div>
