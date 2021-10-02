@@ -185,7 +185,7 @@ export default defineComponent({
 						}
 					}
 					if (style == null) {
-						return h('span', {}, ['[', token.props.name, ...genEl(token.children), ']']);
+						return h('span', {}, ['[', token.props.name, ' ', ...genEl(token.children), ']']);
 					} else {
 						return h('span', {
 							style: 'display: inline-block;' + style,

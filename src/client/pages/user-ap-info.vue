@@ -58,14 +58,14 @@
 
 <script lang="ts">
 import { defineAsyncComponent, defineComponent } from 'vue';
-import FormObjectView from '@client/components/form/object-view.vue';
-import FormTextarea from '@client/components/form/textarea.vue';
-import FormLink from '@client/components/form/link.vue';
-import FormBase from '@client/components/form/base.vue';
-import FormGroup from '@client/components/form/group.vue';
-import FormButton from '@client/components/form/button.vue';
-import FormKeyValueView from '@client/components/form/key-value-view.vue';
-import FormSuspense from '@client/components/form/suspense.vue';
+import FormObjectView from '@client/components/debobigego/object-view.vue';
+import FormTextarea from '@client/components/debobigego/textarea.vue';
+import FormLink from '@client/components/debobigego/link.vue';
+import FormBase from '@client/components/debobigego/base.vue';
+import FormGroup from '@client/components/debobigego/group.vue';
+import FormButton from '@client/components/debobigego/button.vue';
+import FormKeyValueView from '@client/components/debobigego/key-value-view.vue';
+import FormSuspense from '@client/components/debobigego/suspense.vue';
 import * as os from '@client/os';
 import number from '@client/filters/number';
 import bytes from '@client/filters/bytes';

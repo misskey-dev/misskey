@@ -25,8 +25,8 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import MkButton from '@client/components/ui/button.vue';
-import MkInput from '@client/components/ui/input.vue';
-import MkTextarea from '@client/components/ui/textarea.vue';
+import MkInput from '@client/components/form/input.vue';
+import MkTextarea from '@client/components/form/textarea.vue';
 import * as os from '@client/os';
 import * as symbols from '@client/symbols';
 
@@ -43,7 +43,8 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.announcements,
-				icon: 'fas fa-broadcast-tower'
+				icon: 'fas fa-broadcast-tower',
+				bg: 'var(--bg)',
 			},
 			announcements: [],
 		}

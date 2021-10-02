@@ -72,11 +72,11 @@ import { hostname } from '@client/config';
 import { byteify, hexify, stringify } from '@client/scripts/2fa';
 import MkButton from '@client/components/ui/button.vue';
 import MkInfo from '@client/components/ui/info.vue';
-import MkInput from '@client/components/ui/input.vue';
-import MkSwitch from '@client/components/ui/switch.vue';
-import FormBase from '@client/components/form/base.vue';
-import FormGroup from '@client/components/form/group.vue';
-import FormButton from '@client/components/form/button.vue';
+import MkInput from '@client/components/form/input.vue';
+import MkSwitch from '@client/components/form/switch.vue';
+import FormBase from '@client/components/debobigego/base.vue';
+import FormGroup from '@client/components/debobigego/group.vue';
+import FormButton from '@client/components/debobigego/button.vue';
 import * as os from '@client/os';
 import * as symbols from '@client/symbols';
 

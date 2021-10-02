@@ -1,7 +1,7 @@
 <template>
 <div class="shaynizk">
 	<div class="form">
-		<MkInput v-model="name" class="_inputNoTopMargin">
+		<MkInput v-model="name" class="">
 			<template #label>{{ $ts.name }}</template>
 		</MkInput>
 		<MkSelect v-model="src">
@@ -47,10 +47,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import MkButton from '@client/components/ui/button.vue';
-import MkInput from '@client/components/ui/input.vue';
-import MkTextarea from '@client/components/ui/textarea.vue';
-import MkSelect from '@client/components/ui/select.vue';
-import MkSwitch from '@client/components/ui/switch.vue';
+import MkInput from '@client/components/form/input.vue';
+import MkTextarea from '@client/components/form/textarea.vue';
+import MkSelect from '@client/components/form/select.vue';
+import MkSwitch from '@client/components/form/switch.vue';
 import { getAcct } from '@/misc/acct';
 import * as os from '@client/os';
 

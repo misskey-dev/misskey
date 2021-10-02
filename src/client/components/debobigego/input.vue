@@ -1,49 +1,53 @@
 <template>
-<div class="matxzzsk">
-	<div class="label" @click="focus"><slot name="label"></slot></div>
-	<div class="input" :class="{ inline, disabled, focused }">
-		<div class="prefix" ref="prefixEl"><slot name="prefix"></slot></div>
-		<input ref="inputEl"
-			:type="type"
-			v-model="v"
-			:disabled="disabled"
-			:required="required"
-			:readonly="readonly"
-			:placeholder="placeholder"
-			:pattern="pattern"
-			:autocomplete="autocomplete"
-			:spellcheck="spellcheck"
-			:step="step"
-			@focus="focused = true"
-			@blur="focused = false"
-			@keydown="onKeydown($event)"
-			@input="onInput"
-			:list="id"
-		>
-		<datalist :id="id" v-if="datalist">
-			<option v-for="data in datalist" :value="data"/>
-		</datalist>
-		<div class="suffix" ref="suffixEl"><slot name="suffix"></slot></div>
+<FormGroup class="_debobigegoItem">
+	<template #label><slot></slot></template>
+	<div class="ztzhwixg _debobigegoItem" :class="{ inline, disabled }">
+		<div class="icon" ref="icon"><slot name="icon"></slot></div>
+		<div class="input _debobigegoPanel">
+			<div class="prefix" ref="prefixEl"><slot name="prefix"></slot></div>
+			<input ref="inputEl"
+				:type="type"
+				v-model="v"
+				:disabled="disabled"
+				:required="required"
+				:readonly="readonly"
+				:placeholder="placeholder"
+				:pattern="pattern"
+				:autocomplete="autocomplete"
+				:spellcheck="spellcheck"
+				:step="step"
+				@focus="focused = true"
+				@blur="focused = false"
+				@keydown="onKeydown($event)"
+				@input="onInput"
+				:list="id"
+			>
+			<datalist :id="id" v-if="datalist">
+				<option v-for="data in datalist" :value="data"/>
+			</datalist>
+			<div class="suffix" ref="suffixEl"><slot name="suffix"></slot></div>
+		</div>
 	</div>
-	<div class="caption"><slot name="caption"></slot></div>
+	<template #caption><slot name="desc"></slot></template>
 
-	<MkButton v-if="manualSave && changed" @click="updated" primary><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
-</div>
+	<FormButton v-if="manualSave && changed" @click="updated" primary><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
+</FormGroup>
 </template>
 
 <script lang="ts">
 import { defineComponent, onMounted, onUnmounted, nextTick, ref, watch, computed, toRefs } from 'vue';
-import MkButton from './button.vue';
-import { debounce } from 'throttle-debounce';
+import './debobigego.scss';
+import FormButton from './button.vue';
+import FormGroup from './group.vue';
 
 export default defineComponent({
 	components: {
-		MkButton,
+		FormGroup,
+		FormButton,
 	},
-
 	props: {
 		modelValue: {
-			required: true
+			required: false
 		},
 		type: {
 			type: String,
@@ -92,20 +96,13 @@ export default defineComponent({
 			required: false,
 			default: false
 		},
-		debounce: {
-			type: Boolean,
-			required: false,
-			default: false
-		},
 		manualSave: {
 			type: Boolean,
 			required: false,
 			default: false
 		},
 	},
-
 	emits: ['change', 'keydown', 'enter', 'update:modelValue'],
-
 	setup(props, context) {
 		const { modelValue, type, autofocus } = toRefs(props);
 		const v = ref(modelValue.value);
@@ -140,19 +137,13 @@ export default defineComponent({
 			}
 		};
 
-		const debouncedUpdated = debounce(1000, updated);
-
-		watch(modelValue, newValue => {
+		watch(modelValue.value, newValue => {
 			v.value = newValue;
 		});
 
 		watch(v, newValue => {
 			if (!props.manualSave) {
-				if (props.debounce) {
-					debouncedUpdated();
-				} else {
-					updated();
-				}
+				updated();
 			}
 
 			invalid.value = inputEl.value.validity.badInput;
@@ -205,68 +196,59 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.matxzzsk {
-	margin: 1.5em 0;
+.ztzhwixg {
+	position: relative;
 
-	> .label {
-		font-size: 0.85em;
-		padding: 0 0 8px 12px;
-		user-select: none;
+	> .icon {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 24px;
+		text-align: center;
+		line-height: 32px;
 
-		&:empty {
-			display: none;
-		}
-	}
-
-	> .caption {
-		font-size: 0.8em;
-		padding: 8px 0 0 12px;
-		color: var(--fgTransparentWeak);
-
-		&:empty {
-			display: none;
+		&:not(:empty) + .input {
+			margin-left: 28px;
 		}
 	}
 
 	> .input {
-		$height: 42px;
+		$height: 48px;
 		position: relative;
 
 		> input {
-			appearance: none;
-			-webkit-appearance: none;
 			display: block;
 			height: $height;
 			width: 100%;
 			margin: 0;
-			padding: 0 12px;
+			padding: 0 16px;
 			font: inherit;
 			font-weight: normal;
 			font-size: 1em;
-			color: var(--fg);
-			background: var(--panel);
-			border: solid 0.5px var(--inputBorder);
-			border-radius: 6px;
+			line-height: $height;
+			color: var(--inputText);
+			background: transparent;
+			border: none;
+			border-radius: 0;
 			outline: none;
 			box-shadow: none;
 			box-sizing: border-box;
-			transition: border-color 0.1s ease-out;
 
-			&:hover {
-				border-color: var(--inputBorderHover);
+			&[type='file'] {
+				display: none;
 			}
 		}
 
 		> .prefix,
 		> .suffix {
-			display: flex;
-			align-items: center;
+			display: block;
 			position: absolute;
 			z-index: 1;
 			top: 0;
-			padding: 0 12px;
+			padding: 0 16px;
 			font-size: 1em;
-			height: $height;
+			line-height: $height;
+			color: var(--inputLabel);
 			pointer-events: none;
 
 			&:empty {
@@ -285,32 +267,25 @@ export default defineComponent({
 
 		> .prefix {
 			left: 0;
-			padding-right: 6px;
+			padding-right: 8px;
 		}
 
 		> .suffix {
 			right: 0;
-			padding-left: 6px;
+			padding-left: 8px;
 		}
+	}
 
-		&.inline {
-			display: inline-block;
-			margin: 0;
-		}
+	&.inline {
+		display: inline-block;
+		margin: 0;
+	}
 
-		&.focused {
-			> input {
-				border-color: var(--accent);
-				//box-shadow: 0 0 0 4px var(--focus);
-			}
-		}
+	&.disabled {
+		opacity: 0.7;
 
-		&.disabled {
-			opacity: 0.7;
-
-			&, * {
-				cursor: not-allowed !important;
-			}
+		&, * {
+			cursor: not-allowed !important;
 		}
 	}
 }

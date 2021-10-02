@@ -4,7 +4,7 @@
 		<i class="fas fa-terminal" style="margin-right: 0.5em;"></i>Task Manager
 	</template>
 	<div class="qljqmnzj _monospace">
-		<MkTab v-model:value="tab" style="border-bottom: solid 0.5px var(--divider);">
+		<MkTab v-model="tab" style="border-bottom: solid 0.5px var(--divider);">
 			<option value="windows">Windows</option>
 			<option value="stream">Stream</option>
 			<option value="streamPool">Stream (Pool)</option>

@@ -1,9 +1,9 @@
-._formPanel {
+._debobigegoPanel {
 	background: var(--panel);
 	border-radius: var(--radius);
 	transition: background 0.2s ease;
 
-	&._formClickable {
+	&._debobigegoClickable {
 		&:hover {
 			//background: var(--panelHighlight);
 		}
@@ -15,8 +15,8 @@
 	}
 }
 
-._formLabel,
-._formCaption {
+._debobigegoLabel,
+._debobigegoCaption {
 	font-size: 80%;
 	color: var(--fgTransparentWeak);
 
@@ -25,28 +25,28 @@
 	}
 }
 
-._formLabel {
+._debobigegoLabel {
 	position: sticky;
 	top: var(--stickyTop, 0px);
 	z-index: 2;
-	margin: -8px calc(var(--formXPadding) * -1) 0 calc(var(--formXPadding) * -1);
-	padding: 8px calc(var(--formContentHMargin) + var(--formXPadding)) 8px calc(var(--formContentHMargin) + var(--formXPadding));
+	margin: -8px calc(var(--debobigegoXPadding) * -1) 0 calc(var(--debobigegoXPadding) * -1);
+	padding: 8px calc(var(--debobigegoContentHMargin) + var(--debobigegoXPadding)) 8px calc(var(--debobigegoContentHMargin) + var(--debobigegoXPadding));
 	background: var(--X17);
 	-webkit-backdrop-filter: var(--blur, blur(10px));
 	backdrop-filter: var(--blur, blur(10px));
 }
 
-._themeChanging_ ._formLabel {
+._themeChanging_ ._debobigegoLabel {
 	transition: none !important;
 	background: transparent;
 }
 
-._formCaption {
-	padding: 8px var(--formContentHMargin) 0 var(--formContentHMargin);
+._debobigegoCaption {
+	padding: 8px var(--debobigegoContentHMargin) 0 var(--debobigegoContentHMargin);
 }
 
-._formItem {
-	& + ._formItem {
+._debobigegoItem {
+	& + ._debobigegoItem {
 		margin-top: 24px;
 	}
 }

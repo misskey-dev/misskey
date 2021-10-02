@@ -1,8 +1,8 @@
 <template>
 <FormBase class="cwepdizn">
-	<div class="_formItem colorPicker">
-		<div class="_formLabel">{{ $ts.backgroundColor }}</div>
-		<div class="_formPanel colors">
+	<div class="_debobigegoItem colorPicker">
+		<div class="_debobigegoLabel">{{ $ts.backgroundColor }}</div>
+		<div class="_debobigegoPanel colors">
 			<div class="row">
 				<button v-for="color in bgColors.filter(x => x.kind === 'light')" :key="color.color" @click="setBgColor(color)" class="color _button" :class="{ active: theme.props.bg === color.color }">
 					<div class="preview" :style="{ background: color.forPreview }"></div>
@@ -15,9 +15,9 @@
 			</div>
 		</div>
 	</div>
-	<div class="_formItem colorPicker">
-		<div class="_formLabel">{{ $ts.accentColor }}</div>
-		<div class="_formPanel colors">
+	<div class="_debobigegoItem colorPicker">
+		<div class="_debobigegoLabel">{{ $ts.accentColor }}</div>
+		<div class="_debobigegoPanel colors">
 			<div class="row">
 				<button v-for="color in accentColors" :key="color" @click="setAccentColor(color)" class="color rounded _button" :class="{ active: theme.props.accent === color }">
 					<div class="preview" :style="{ background: color }"></div>
@@ -25,9 +25,9 @@
 			</div>
 		</div>
 	</div>
-	<div class="_formItem colorPicker">
-		<div class="_formLabel">{{ $ts.textColor }}</div>
-		<div class="_formPanel colors">
+	<div class="_debobigegoItem colorPicker">
+		<div class="_debobigegoLabel">{{ $ts.textColor }}</div>
+		<div class="_debobigegoPanel colors">
 			<div class="row">
 				<button v-for="color in fgColors" :key="color" @click="setFgColor(color)" class="color char _button" :class="{ active: (theme.props.fg === color.forLight) || (theme.props.fg === color.forDark) }">
 					<div class="preview" :style="{ color: color.forPreview ? color.forPreview : theme.base === 'light' ? '#5f5f5f' : '#dadada' }">A</div>
@@ -37,7 +37,7 @@
 	</div>
 
 	<FormGroup v-if="codeEnabled">
-		<FormTextarea v-model:value="themeCode" tall>
+		<FormTextarea v-model="themeCode" tall>
 			<span>{{ $ts._theme.code }}</span>
 		</FormTextarea>
 		<FormButton @click="applyThemeCode" primary>{{ $ts.apply }}</FormButton>
@@ -45,7 +45,7 @@
 	<FormButton v-else @click="codeEnabled = true"><i class="fas fa-code"></i> {{ $ts.editCode }}</FormButton>
 
 	<FormGroup v-if="descriptionEnabled">
-		<FormTextarea v-model:value="description">
+		<FormTextarea v-model="description">
 			<span>{{ $ts._theme.description }}</span>
 		</FormTextarea>
 	</FormGroup>
@@ -65,10 +65,10 @@ import * as tinycolor from 'tinycolor2';
 import { v4 as uuid} from 'uuid';
 import * as JSON5 from 'json5';
 
-import FormBase from '@client/components/form/base.vue';
-import FormButton from '@client/components/form/button.vue';
-import FormTextarea from '@client/components/form/textarea.vue';
-import FormGroup from '@client/components/form/group.vue';
+import FormBase from '@client/components/debobigego/base.vue';
+import FormButton from '@client/components/debobigego/button.vue';
+import FormTextarea from '@client/components/debobigego/textarea.vue';
+import FormGroup from '@client/components/debobigego/group.vue';
 
 import { Theme, applyTheme, validateTheme, darkTheme, lightTheme } from '@client/scripts/theme';
 import { host } from '@client/config';

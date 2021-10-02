@@ -1,11 +1,11 @@
 <template>
-<form class="qlvuhzng" @submit.prevent="onSubmit" :autocomplete="Math.random()">
+<form class="qlvuhzng _formRoot" @submit.prevent="onSubmit" :autocomplete="Math.random()">
 	<template v-if="meta">
-		<MkInput class="_inputNoTopMargin" v-if="meta.disableRegistration" v-model="invitationCode" type="text" :autocomplete="Math.random()" spellcheck="false" required>
+		<MkInput class="_formBlock" v-if="meta.disableRegistration" v-model="invitationCode" type="text" :autocomplete="Math.random()" spellcheck="false" required>
 			<template #label>{{ $ts.invitationCode }}</template>
 			<template #prefix><i class="fas fa-key"></i></template>
 		</MkInput>
-		<MkInput class="_inputNoTopMargin" v-model="username" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" :autocomplete="Math.random()" spellcheck="false" required @update:modelValue="onChangeUsername" data-cy-signup-username>
+		<MkInput class="_formBlock" v-model="username" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" :autocomplete="Math.random()" spellcheck="false" required @update:modelValue="onChangeUsername" data-cy-signup-username>
 			<template #label>{{ $ts.username }} <div class="_button _help" v-tooltip:dialog="$ts.usernameInfo"><i class="far fa-question-circle"></i></div></template>
 			<template #prefix>@</template>
 			<template #suffix>@{{ host }}</template>
@@ -19,7 +19,7 @@
 				<span v-if="usernameState == 'max-range'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.tooLong }}</span>
 			</template>
 		</MkInput>
-		<MkInput v-model="password" type="password" :autocomplete="Math.random()" required @update:modelValue="onChangePassword" data-cy-signup-password>
+		<MkInput class="_formBlock" v-model="password" type="password" :autocomplete="Math.random()" required @update:modelValue="onChangePassword" data-cy-signup-password>
 			<template #label>{{ $ts.password }}</template>
 			<template #prefix><i class="fas fa-lock"></i></template>
 			<template #caption>
@@ -28,7 +28,7 @@
 				<span v-if="passwordStrength == 'high'" style="color: var(--success)"><i class="fas fa-check fa-fw"></i> {{ $ts.strongPassword }}</span>
 			</template>
 		</MkInput>
-		<MkInput v-model="retypedPassword" type="password" :autocomplete="Math.random()" required @update:modelValue="onChangePasswordRetype" data-cy-signup-password-retype>
+		<MkInput class="_formBlock" v-model="retypedPassword" type="password" :autocomplete="Math.random()" required @update:modelValue="onChangePasswordRetype" data-cy-signup-password-retype>
 			<template #label>{{ $ts.password }} ({{ $ts.retype }})</template>
 			<template #prefix><i class="fas fa-lock"></i></template>
 			<template #caption>
@@ -36,7 +36,7 @@
 				<span v-if="passwordRetypeState == 'not-match'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.passwordNotMatched }}</span>
 			</template>
 		</MkInput>
-		<label v-if="meta.tosUrl" class="tou">
+		<label v-if="meta.tosUrl" class="_formBlock tou">
 			<input type="checkbox" v-model="ToSAgreement">
 			<I18n :src="$ts.agreeTo">
 				<template #0>
@@ -44,9 +44,9 @@
 				</template>
 			</I18n>
 		</label>
-		<captcha v-if="meta.enableHcaptcha" class="captcha" provider="hcaptcha" ref="hcaptcha" v-model:value="hCaptchaResponse" :sitekey="meta.hcaptchaSiteKey"/>
-		<captcha v-if="meta.enableRecaptcha" class="captcha" provider="recaptcha" ref="recaptcha" v-model:value="reCaptchaResponse" :sitekey="meta.recaptchaSiteKey"/>
-		<MkButton type="submit" :disabled="shouldDisableSubmitting" primary data-cy-signup-submit>{{ $ts.start }}</MkButton>
+		<captcha v-if="meta.enableHcaptcha" class="_formBlock captcha" provider="hcaptcha" ref="hcaptcha" v-model="hCaptchaResponse" :sitekey="meta.hcaptchaSiteKey"/>
+		<captcha v-if="meta.enableRecaptcha" class="_formBlock captcha" provider="recaptcha" ref="recaptcha" v-model="reCaptchaResponse" :sitekey="meta.recaptchaSiteKey"/>
+		<MkButton class="_formBlock" type="submit" :disabled="shouldDisableSubmitting" primary data-cy-signup-submit>{{ $ts.start }}</MkButton>
 	</template>
 </form>
 </template>
@@ -57,8 +57,8 @@ const getPasswordStrength = require('syuilo-password-strength');
 import { toUnicode } from 'punycode/';
 import { host, url } from '@client/config';
 import MkButton from './ui/button.vue';
-import MkInput from './ui/input.vue';
-import MkSwitch from './ui/switch.vue';
+import MkInput from './form/input.vue';
+import MkSwitch from './form/switch.vue';
 import * as os from '@client/os';
 import { login } from '@client/account';
 

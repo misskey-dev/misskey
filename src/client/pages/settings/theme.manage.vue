@@ -1,6 +1,6 @@
 <template>
 <FormBase>
-	<FormSelect v-model:value="selectedThemeId">
+	<FormSelect v-model="selectedThemeId">
 		<template #label>{{ $ts.theme }}</template>
 		<optgroup :label="$ts._theme.installedThemes">
 			<option v-for="x in installedThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
@@ -31,10 +31,10 @@ import * as JSON5 from 'json5';
 import FormTextarea from '@client/components/form/textarea.vue';
 import FormSelect from '@client/components/form/select.vue';
 import FormRadios from '@client/components/form/radios.vue';
-import FormBase from '@client/components/form/base.vue';
-import FormGroup from '@client/components/form/group.vue';
+import FormBase from '@client/components/debobigego/base.vue';
+import FormGroup from '@client/components/debobigego/group.vue';
 import FormInput from '@client/components/form/input.vue';
-import FormButton from '@client/components/form/button.vue';
+import FormButton from '@client/components/debobigego/button.vue';
 import { Theme, builtinThemes } from '@client/scripts/theme';
 import copyToClipboard from '@client/scripts/copy-to-clipboard';
 import * as os from '@client/os';
@@ -59,7 +59,8 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts._theme.manage,
-				icon: 'fas fa-folder-open'
+				icon: 'fas fa-folder-open',
+				bg: 'var(--bg)',
 			},
 			installedThemes: getThemes(),
 			builtinThemes,
