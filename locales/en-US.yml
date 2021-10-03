@@ -842,9 +842,9 @@ _aboutMisskey:
   morePatrons: "We also appreciate the support of many other helpers not listed here. Thank you! 🥰"
   patrons: "Patrons"
 _nsfw:
-  respect: "Hide NSFW media"
-  ignore: "Don't hide NSFW media"
-  force: "Hide all media"
+  respect: "Censor NSFW media"
+  ignore: "Don't censor NSFW media"
+  force: "Censor all media"
 _mfm:
   cheatSheet: "MFM Cheatsheet"
   intro: "MFM is a Misskey-exclusive markup language that can be used in many places. Here you can view a list of all available MFM syntax."
