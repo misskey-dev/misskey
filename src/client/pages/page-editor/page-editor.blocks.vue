@@ -32,7 +32,7 @@ export default defineComponent({
 	},
 
 	props: {
-		value: {
+		modelValue: {
 			type: Array,
 			required: true
 		},
@@ -41,15 +41,15 @@ export default defineComponent({
 		},
 	},
 
-	emits: ['update:value'],
+	emits: ['update:modelValue'],
 
 	computed: {
 		blocks: {
 			get() {
-				return this.value;
+				return this.modelValue;
 			},
 			set(value) {
-				this.$emit('update:value', value);
+				this.$emit('update:modelValue', value);
 			}
 		}
 	},
@@ -62,17 +62,16 @@ export default defineComponent({
 				v,
 				...this.blocks.slice(i + 1)
 			];
-			this.$emit('update:value', newValue);
+			this.$emit('update:modelValue', newValue);
 		},
 
 		removeItem(el) {
-			console.log(el);
 			const i = this.blocks.findIndex(x => x.id === el.id);
 			const newValue = [
 				...this.blocks.slice(0, i),
 				...this.blocks.slice(i + 1)
 			];
-			this.$emit('update:value', newValue);
+			this.$emit('update:modelValue', newValue);
 		},
 	}
 });

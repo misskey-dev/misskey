@@ -9,43 +9,43 @@
 		</FormRadios>
 
 		<template v-if="provider === 'hcaptcha'">
-			<div class="_formItem _formNoConcat" v-sticky-container>
-				<div class="_formLabel">hCaptcha</div>
+			<div class="_debobigegoItem _debobigegoNoConcat" v-sticky-container>
+				<div class="_debobigegoLabel">hCaptcha</div>
 				<div class="main">
-					<FormInput v-model:value="hcaptchaSiteKey">
+					<FormInput v-model="hcaptchaSiteKey">
 						<template #prefix><i class="fas fa-key"></i></template>
 						<span>{{ $ts.hcaptchaSiteKey }}</span>
 					</FormInput>
-					<FormInput v-model:value="hcaptchaSecretKey">
+					<FormInput v-model="hcaptchaSecretKey">
 						<template #prefix><i class="fas fa-key"></i></template>
 						<span>{{ $ts.hcaptchaSecretKey }}</span>
 					</FormInput>
 				</div>
 			</div>
-			<div class="_formItem _formNoConcat" v-sticky-container>
-				<div class="_formLabel">{{ $ts.preview }}</div>
-				<div class="_formPanel" style="padding: var(--formContentHMargin);">
+			<div class="_debobigegoItem _debobigegoNoConcat" v-sticky-container>
+				<div class="_debobigegoLabel">{{ $ts.preview }}</div>
+				<div class="_debobigegoPanel" style="padding: var(--debobigegoContentHMargin);">
 					<MkCaptcha provider="hcaptcha" :sitekey="hcaptchaSiteKey || '10000000-ffff-ffff-ffff-000000000001'"/>
 				</div>
 			</div>
 		</template>
 		<template v-else-if="provider === 'recaptcha'">
-			<div class="_formItem _formNoConcat" v-sticky-container>
-				<div class="_formLabel">reCAPTCHA</div>
+			<div class="_debobigegoItem _debobigegoNoConcat" v-sticky-container>
+				<div class="_debobigegoLabel">reCAPTCHA</div>
 				<div class="main">
-					<FormInput v-model:value="recaptchaSiteKey">
+					<FormInput v-model="recaptchaSiteKey">
 						<template #prefix><i class="fas fa-key"></i></template>
 						<span>{{ $ts.recaptchaSiteKey }}</span>
 					</FormInput>
-					<FormInput v-model:value="recaptchaSecretKey">
+					<FormInput v-model="recaptchaSecretKey">
 						<template #prefix><i class="fas fa-key"></i></template>
 						<span>{{ $ts.recaptchaSecretKey }}</span>
 					</FormInput>
 				</div>
 			</div>
-			<div v-if="recaptchaSiteKey" class="_formItem _formNoConcat" v-sticky-container>
-				<div class="_formLabel">{{ $ts.preview }}</div>
-				<div class="_formPanel" style="padding: var(--formContentHMargin);">
+			<div v-if="recaptchaSiteKey" class="_debobigegoItem _debobigegoNoConcat" v-sticky-container>
+				<div class="_debobigegoLabel">{{ $ts.preview }}</div>
+				<div class="_debobigegoPanel" style="padding: var(--debobigegoContentHMargin);">
 					<MkCaptcha provider="recaptcha" :sitekey="recaptchaSiteKey"/>
 				</div>
 			</div>
@@ -58,13 +58,13 @@
 
 <script lang="ts">
 import { defineAsyncComponent, defineComponent } from 'vue';
-import FormRadios from '@client/components/form/radios.vue';
-import FormInput from '@client/components/form/input.vue';
-import FormButton from '@client/components/form/button.vue';
-import FormBase from '@client/components/form/base.vue';
-import FormGroup from '@client/components/form/group.vue';
-import FormInfo from '@client/components/form/info.vue';
-import FormSuspense from '@client/components/form/suspense.vue';
+import FormRadios from '@client/components/debobigego/radios.vue';
+import FormInput from '@client/components/debobigego/input.vue';
+import FormButton from '@client/components/debobigego/button.vue';
+import FormBase from '@client/components/debobigego/base.vue';
+import FormGroup from '@client/components/debobigego/group.vue';
+import FormInfo from '@client/components/debobigego/info.vue';
+import FormSuspense from '@client/components/debobigego/suspense.vue';
 import * as os from '@client/os';
 import * as symbols from '@client/symbols';
 import { fetchInstance } from '@client/instance';

@@ -37,7 +37,7 @@
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
 import MkButton from '@client/components/ui/button.vue';
-import MkSwitch from '@client/components/ui/switch.vue';
+import MkSwitch from '@client/components/form/switch.vue';
 import XModalWindow from '@client/components/ui/modal-window.vue';
 import MkDriveFileThumbnail from '@client/components/drive-file-thumbnail.vue';
 import Progress from '@client/scripts/loading';

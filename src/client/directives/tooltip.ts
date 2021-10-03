@@ -36,7 +36,7 @@ export default {
 			});
 		}
 
-		const show = e => {
+		self.show = () => {
 			if (!document.body.contains(el)) return;
 			if (self._close) return;
 			if (self.text == null) return;
@@ -60,7 +60,7 @@ export default {
 		el.addEventListener(start, () => {
 			clearTimeout(self.showTimer);
 			clearTimeout(self.hideTimer);
-			self.showTimer = setTimeout(show, delay);
+			self.showTimer = setTimeout(self.show, delay);
 		}, { passive: true });
 
 		el.addEventListener(end, () => {
@@ -73,6 +73,11 @@ export default {
 			clearTimeout(self.showTimer);
 			self.close();
 		});
+	},
+
+	updated(el, binding) {
+		const self = el._tooltipDirective_;
+		self.text = binding.value as string;
 	},
 
 	unmounted(el, binding, vn) {

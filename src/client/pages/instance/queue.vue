@@ -14,8 +14,8 @@
 import { defineComponent, markRaw } from 'vue';
 import MkButton from '@client/components/ui/button.vue';
 import XQueue from './queue.chart.vue';
-import FormBase from '@client/components/form/base.vue';
-import FormButton from '@client/components/form/button.vue';
+import FormBase from '@client/components/debobigego/base.vue';
+import FormButton from '@client/components/debobigego/button.vue';
 import * as os from '@client/os';
 import * as symbols from '@client/symbols';
 

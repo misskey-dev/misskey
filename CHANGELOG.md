@@ -2,10 +2,25 @@
 ## 12.x.x (unreleased)
 
 ### Improvements
+- ページロードエラーページにリロードボタンを追加
 
 ### Bugfixes
 
 -->
+
+## 12.x.x (unreleased)
+
+### Improvements
+- クライアント: アニメーションを減らす設定をメニューのアニメーションにも適用するように
+- クライアント: MFM関数構文のサジェストを実装
+- ActivityPub: HTML -> MFMの変換を強化
+
+### Bugfixes
+- Fix createDeleteAccountJob
+- admin inbox queue does not show individual jobs
+- クライアント: ヘッダーのタブが折り返される問題を修正
+- クライアント: ヘッダーにタブが表示されている状態でタイトルをクリックしたときにタブ選択が表示されるのを修正
+- クライアント: ユーザーページのタブが機能していない問題を修正
 
 ## 12.91.0 (2021/09/22)
 

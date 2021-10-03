@@ -1,7 +1,7 @@
 <template>
 <component class="bghgjjyj _button"
 	:is="link ? 'MkA' : 'button'"
-	:class="{ inline, primary, danger, full }"
+	:class="{ inline, primary, danger, rounded, full }"
 	:type="type"
 	@click="$emit('click', $event)"
 	@mousedown="onMousedown"
@@ -23,6 +23,11 @@ export default defineComponent({
 			required: false
 		},
 		primary: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
+		rounded: {
 			type: Boolean,
 			required: false,
 			default: false
@@ -124,8 +129,8 @@ export default defineComponent({
 	box-shadow: none;
 	text-decoration: none;
 	background: var(--buttonBg);
-	border-radius: 999px;
-	overflow: hidden;
+	border-radius: 4px;
+	overflow: clip;
 	box-sizing: border-box;
 	transition: background 0.1s ease;
 
@@ -139,6 +144,10 @@ export default defineComponent({
 
 	&.full {
 		width: 100%;
+	}
+
+	&.rounded {
+		border-radius: 999px;
 	}
 
 	&.primary {
@@ -176,17 +185,9 @@ export default defineComponent({
 		opacity: 0.7;
 	}
 
-	&:focus {
+	&:focus-visible {
 		outline: solid 2px var(--focus);
 		outline-offset: 2px;
-	}
-
-	&.inline + .bghgjjyj {
-		margin-left: 12px;
-	}
-
-	&:not(.inline) + .bghgjjyj {
-		margin-top: 16px;
 	}
 
 	&.inline {

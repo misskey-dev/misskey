@@ -32,12 +32,12 @@
 import { defineAsyncComponent, defineComponent } from 'vue';
 import FormSwitch from '@client/components/form/switch.vue';
 import FormSelect from '@client/components/form/select.vue';
-import FormLink from '@client/components/form/link.vue';
-import FormBase from '@client/components/form/base.vue';
-import FormGroup from '@client/components/form/group.vue';
-import FormButton from '@client/components/form/button.vue';
-import FormKeyValueView from '@client/components/form/key-value-view.vue';
-import FormInfo from '@client/components/form/info.vue';
+import FormLink from '@client/components/debobigego/link.vue';
+import FormBase from '@client/components/debobigego/base.vue';
+import FormGroup from '@client/components/debobigego/group.vue';
+import FormButton from '@client/components/debobigego/button.vue';
+import FormKeyValueView from '@client/components/debobigego/key-value-view.vue';
+import FormInfo from '@client/components/debobigego/info.vue';
 import * as os from '@client/os';
 import { version, instanceName } from '@client/config';
 import * as symbols from '@client/symbols';
@@ -60,7 +60,8 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: 'Misskey Update',
-				icon: 'fas fa-sync-alt'
+				icon: 'fas fa-sync-alt',
+				bg: 'var(--bg)',
 			},
 			version,
 			instanceName,

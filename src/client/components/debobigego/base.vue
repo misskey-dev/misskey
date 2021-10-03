@@ -21,39 +21,39 @@ export default defineComponent({
 <style lang="scss" scoped>
 .rbusrurv {
 	// 他のCSSからも参照されるので消さないように
-	--formXPadding: 32px;
-	--formYPadding: 32px;
+	--debobigegoXPadding: 32px;
+	--debobigegoYPadding: 32px;
 
-	--formContentHMargin: 16px;
+	--debobigegoContentHMargin: 16px;
 
 	font-size: 95%;
 	line-height: 1.3em;
 	background: var(--bg);
-	padding: var(--formYPadding) var(--formXPadding);
+	padding: var(--debobigegoYPadding) var(--debobigegoXPadding);
 	max-width: 750px;
 	margin: 0 auto;
 
 	&:not(.wide).max-width_400px {
-		--formXPadding: 0px;
+		--debobigegoXPadding: 0px;
 
 		> ::v-deep(*) {
-			._formPanel {
+			._debobigegoPanel {
 				border: solid 0.5px var(--divider);
 				border-radius: 0;
 				border-left: none;
 				border-right: none;
 			}
 
-			._form_group {
-				> *:not(._formNoConcat) {
-					&:not(:last-child):not(._formNoConcatPrev) {
-						&._formPanel, ._formPanel {
+			._debobigego_group {
+				> *:not(._debobigegoNoConcat) {
+					&:not(:last-child):not(._debobigegoNoConcatPrev) {
+						&._debobigegoPanel, ._debobigegoPanel {
 							border-bottom: solid 0.5px var(--divider);
 						}
 					}
 
-					&:not(:first-child):not(._formNoConcatNext) {
-						&._formPanel, ._formPanel {
+					&:not(:first-child):not(._debobigegoNoConcatNext) {
+						&._debobigegoPanel, ._debobigegoPanel {
 							border-top: none;
 						}
 					}

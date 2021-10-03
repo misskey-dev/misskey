@@ -19,7 +19,7 @@
 		</FormGroup>
 
 		<FormGroup>
-			<FormTextarea tall v-model:value="valueForEditor" class="_monospace" style="tab-size: 2;">
+			<FormTextarea tall v-model="valueForEditor" class="_monospace" style="tab-size: 2;">
 				<span>{{ $ts.value }} (JSON)</span>
 			</FormTextarea>
 			<FormButton @click="save" primary><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
@@ -38,14 +38,14 @@
 <script lang="ts">
 import { defineAsyncComponent, defineComponent } from 'vue';
 import * as JSON5 from 'json5';
-import FormInfo from '@client/components/form/info.vue';
+import FormInfo from '@client/components/debobigego/info.vue';
 import FormSwitch from '@client/components/form/switch.vue';
 import FormSelect from '@client/components/form/select.vue';
 import FormTextarea from '@client/components/form/textarea.vue';
-import FormBase from '@client/components/form/base.vue';
-import FormGroup from '@client/components/form/group.vue';
-import FormButton from '@client/components/form/button.vue';
-import FormKeyValueView from '@client/components/form/key-value-view.vue';
+import FormBase from '@client/components/debobigego/base.vue';
+import FormGroup from '@client/components/debobigego/group.vue';
+import FormButton from '@client/components/debobigego/button.vue';
+import FormKeyValueView from '@client/components/debobigego/key-value-view.vue';
 import * as os from '@client/os';
 import * as symbols from '@client/symbols';
 
@@ -76,7 +76,8 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.registry,
-				icon: 'fas fa-cogs'
+				icon: 'fas fa-cogs',
+				bg: 'var(--bg)',
 			},
 			value: null,
 			valueForEditor: null,

@@ -286,7 +286,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import MkTextarea from '@client/components/ui/textarea.vue';
+import MkTextarea from '@client/components/form/textarea.vue';
 import * as symbols from '@client/symbols';
 
 export default defineComponent({

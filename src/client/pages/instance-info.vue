@@ -3,8 +3,8 @@
 	<FormGroup v-if="instance">
 		<template #label>{{ instance.host }}</template>
 		<FormGroup>
-			<div class="_formItem">
-				<div class="_formPanel fnfelxur">
+			<div class="_debobigegoItem">
+				<div class="_debobigegoPanel fnfelxur">
 					<img :src="instance.iconUrl || instance.faviconUrl" alt="" class="icon"/>
 				</div>
 			</div>
@@ -60,9 +60,9 @@
 				<template #value>{{ instance.openRegistrations ? $ts.yes : $ts.no }}</template>
 			</FormKeyValueView>
 		</FormGroup>
-		<div class="_formItem">
-			<div class="_formLabel">{{ $ts.statistics }}</div>
-			<div class="_formPanel cmhjzshl">
+		<div class="_debobigegoItem">
+			<div class="_debobigegoLabel">{{ $ts.statistics }}</div>
+			<div class="_debobigegoPanel cmhjzshl">
 				<div class="selects">
 					<MkSelect v-model="chartSrc" style="margin: 0; flex: 1;">
 						<option value="requests">{{ $ts._instanceCharts.requests }}</option>
@@ -136,15 +136,15 @@
 <script lang="ts">
 import { defineAsyncComponent, defineComponent } from 'vue';
 import Chart from 'chart.js';
-import FormObjectView from '@client/components/form/object-view.vue';
-import FormTextarea from '@client/components/form/textarea.vue';
-import FormLink from '@client/components/form/link.vue';
-import FormBase from '@client/components/form/base.vue';
-import FormGroup from '@client/components/form/group.vue';
-import FormButton from '@client/components/form/button.vue';
-import FormKeyValueView from '@client/components/form/key-value-view.vue';
-import FormSuspense from '@client/components/form/suspense.vue';
-import MkSelect from '@client/components/ui/select.vue';
+import FormObjectView from '@client/components/debobigego/object-view.vue';
+import FormTextarea from '@client/components/debobigego/textarea.vue';
+import FormLink from '@client/components/debobigego/link.vue';
+import FormBase from '@client/components/debobigego/base.vue';
+import FormGroup from '@client/components/debobigego/group.vue';
+import FormButton from '@client/components/debobigego/button.vue';
+import FormKeyValueView from '@client/components/debobigego/key-value-view.vue';
+import FormSuspense from '@client/components/debobigego/suspense.vue';
+import MkSelect from '@client/components/form/select.vue';
 import * as os from '@client/os';
 import number from '@client/filters/number';
 import bytes from '@client/filters/bytes';

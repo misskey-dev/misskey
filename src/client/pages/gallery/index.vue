@@ -1,6 +1,6 @@
 <template>
 <div class="xprsixdl _root">
-	<MkTab v-model:value="tab" v-if="$i">
+	<MkTab v-model="tab" v-if="$i">
 		<option value="explore"><i class="fas fa-icons"></i> {{ $ts.gallery }}</option>
 		<option value="liked"><i class="fas fa-heart"></i> {{ $ts._gallery.liked }}</option>
 		<option value="my"><i class="fas fa-edit"></i> {{ $ts._gallery.my }}</option>
@@ -46,7 +46,7 @@
 import { computed, defineComponent } from 'vue';
 import XUserList from '@client/components/user-list.vue';
 import MkFolder from '@client/components/ui/folder.vue';
-import MkInput from '@client/components/ui/input.vue';
+import MkInput from '@client/components/form/input.vue';
 import MkButton from '@client/components/ui/button.vue';
 import MkTab from '@client/components/tab.vue';
 import MkPagination from '@client/components/ui/pagination.vue';
