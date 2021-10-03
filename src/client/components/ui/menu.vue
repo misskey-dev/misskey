@@ -1,5 +1,5 @@
 <template>
-<div class="rrevdjwt" :class="{ left: align === 'left', pointer: point === 'top' }"
+<div class="rrevdjwt" :class="{ center: align === 'center' }"
 	ref="items"
 	@contextmenu.self="e => e.preventDefault()"
 	v-hotkey="keymap"
@@ -56,10 +56,6 @@ export default defineComponent({
 			required: false
 		},
 		align: {
-			type: String,
-			requried: false
-		},
-		point: {
 			type: String,
 			requried: false
 		},
@@ -145,26 +141,11 @@ export default defineComponent({
 <style lang="scss" scoped>
 .rrevdjwt {
 	padding: 8px 0;
+	min-width: 200px;
 
-	&.pointer {
-		&:before {
-			--size: 8px;
-			content: '';
-			display: block;
-			position: absolute;
-			top: calc(0px - (var(--size) * 2));
-			left: 0;
-			right: 0;
-			width: 0;
-			margin: auto;
-			border: solid var(--size) transparent;
-			border-bottom-color: var(--popup);
-		}
-	}
-
-	&.left {
+	&.center {
 		> .item {
-			text-align: left;
+			text-align: center;
 		}
 	}
 
@@ -177,33 +158,55 @@ export default defineComponent({
 		white-space: nowrap;
 		font-size: 0.9em;
 		line-height: 20px;
-		text-align: center;
+		text-align: left;
 		overflow: hidden;
 		text-overflow: ellipsis;
+
+		&:before {
+			content: "";
+			display: block;
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			margin: auto;
+			width: calc(100% - 16px);
+			height: 100%;
+			border-radius: 6px;
+		}
 
 		&.danger {
 			color: #ff2a2a;
 
 			&:hover {
 				color: #fff;
-				background: #ff4242;
+
+				&:before {
+					background: #ff4242;
+				}
 			}
 
 			&:active {
 				color: #fff;
-				background: #d42e2e;
+
+				&:before {
+					background: #d42e2e;
+				}
 			}
 		}
 
 		&:hover {
-			color: var(--fgOnAccent);
-			background: var(--accent);
+			color: var(--accent);
 			text-decoration: none;
+
+			&:before {
+				background: var(--accentedBg);
+			}
 		}
 
 		&:active {
-			color: var(--fgOnAccent);
-			background: var(--accentDarken);
+			//color: var(--fgOnAccent);
+			//background: var(--accentDarken);
 		}
 
 		&:not(:active):focus-visible {

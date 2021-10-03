@@ -96,6 +96,7 @@ export default defineComponent({
 				width: 16px;
 				height: 16px;
 				background-color: #fff;
+				pointer-events: none;
 			}
 		}
 
