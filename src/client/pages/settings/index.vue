@@ -5,7 +5,7 @@
 			<MkAvatar :user="$i" class="avatar"/>
 			<XLink :active="page === 'accounts'" replace to="/settings/accounts"><template #icon><i class="fas fa-users"></i></template>{{ $ts.accounts }}</XLink>
 		</div>
-		<MkInfo v-if="emailNotConfigured || true" warn class="info">{{ $ts.emailNotConfiguredWarning }} <MkA to="/settings/email" class="_link">{{ $ts.configure }}</MkA></MkInfo>
+		<MkInfo v-if="emailNotConfigured" warn class="info">{{ $ts.emailNotConfiguredWarning }} <MkA to="/settings/email" class="_link">{{ $ts.configure }}</MkA></MkInfo>
 		<div class="group">
 			<div class="label">{{ $ts.basicSettings }}</div>
 			<XLink :active="page === 'profile'" replace to="/settings/profile"><template #icon><i class="fas fa-user"></i></template>{{ $ts.profile }}</XLink>
