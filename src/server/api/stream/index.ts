@@ -63,7 +63,7 @@ export default class Connection {
 	}
 
 	@autobind
-	private onUserEvent(data: StreamMessages['user']['payload']) { // { type, body }と展開すると型も展開されてしまう
+	private onUserEvent(data: StreamMessages['user']['payload']) { // { type, body }と展開するとそれぞれ型が分離してしまう
 		switch (data.type) {
 			case 'follow':
 				this.following.add(data.body.id);
