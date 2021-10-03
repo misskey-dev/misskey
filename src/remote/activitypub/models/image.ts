@@ -6,7 +6,7 @@ import { apLogger } from '../logger';
 import { DriveFile } from '@/models/entities/drive-file';
 import { DriveFiles } from '@/models/index';
 import { truncate } from '@/misc/truncate';
-import { DM_MAX_IMAGE_COMMENT_LENGTH } from '@/misc/hard-limits';
+import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/misc/hard-limits';
 
 const logger = apLogger;
 
