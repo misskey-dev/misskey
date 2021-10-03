@@ -47,7 +47,7 @@ export default class extends Channel {
 	}
 
 	@autobind
-	private onEvent(data: StreamMessages['messaging']['spec'] | StreamMessages['groupMessaging']['spec']) {
+	private onEvent(data: StreamMessages['messaging']['payload'] | StreamMessages['groupMessaging']['payload']) {
 		if (data.type === 'typing') {
 			const id = data.body;
 			const begin = this.typers[id] == null;

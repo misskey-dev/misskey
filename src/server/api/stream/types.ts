@@ -222,73 +222,73 @@ type EventUnionFromDictionary<
 export type StreamMessages = {
 	internal: {
 		name: 'internal';
-		spec: EventUnionFromDictionary<InternalStreamTypes>;
+		payload: EventUnionFromDictionary<InternalStreamTypes>;
 	};
 	broadcast: {
 		name: 'broadcast';
-		spec: EventUnionFromDictionary<BroadcastTypes>;
+		payload: EventUnionFromDictionary<BroadcastTypes>;
 	};
 	user: {
 		name: `user:${User['id']}`;
-		spec: EventUnionFromDictionary<UserStreamTypes>;
+		payload: EventUnionFromDictionary<UserStreamTypes>;
 	};
 	main: {
 		name: `mainStream:${User['id']}`;
-		spec: EventUnionFromDictionary<MainStreamTypes>;
+		payload: EventUnionFromDictionary<MainStreamTypes>;
 	};
 	drive: {
 		name: `driveStream:${User['id']}`;
-		spec: EventUnionFromDictionary<DriveStreamTypes>;
+		payload: EventUnionFromDictionary<DriveStreamTypes>;
 	};
 	note: {
 		name: `noteStream:${Note['id']}`;
-		spec: EventUnionFromDictionary<NoteStreamEventTypes>;
+		payload: EventUnionFromDictionary<NoteStreamEventTypes>;
 	};
 	channel: {
 		name: `channelStream:${Channel['id']}`;
-		spec: EventUnionFromDictionary<ChannelStreamTypes>;
+		payload: EventUnionFromDictionary<ChannelStreamTypes>;
 	};
 	userList: {
 		name: `userListStream:${UserList['id']}`;
-		spec: EventUnionFromDictionary<UserListStreamTypes>;
+		payload: EventUnionFromDictionary<UserListStreamTypes>;
 	};
 	antenna: {
 		name: `antennaStream:${Antenna['id']}`;
-		spec: EventUnionFromDictionary<AntennaStreamTypes>;
+		payload: EventUnionFromDictionary<AntennaStreamTypes>;
 	};
 	messaging: {
 		name: `messagingStream:${User['id']}-${User['id']}`;
-		spec: EventUnionFromDictionary<MessagingStreamTypes>;
+		payload: EventUnionFromDictionary<MessagingStreamTypes>;
 	};
 	groupMessaging: {
 		name: `messagingStream:${UserGroup['id']}`;
-		spec: EventUnionFromDictionary<GroupMessagingStreamTypes>;
+		payload: EventUnionFromDictionary<GroupMessagingStreamTypes>;
 	};
 	messagingIndex: {
 		name: `messagingIndexStream:${User['id']}`;
-		spec: EventUnionFromDictionary<MessagingIndexStreamTypes>;
+		payload: EventUnionFromDictionary<MessagingIndexStreamTypes>;
 	};
 	reversi: {
 		name: `reversiStream:${User['id']}`;
-		spec: EventUnionFromDictionary<ReversiStreamTypes>;
+		payload: EventUnionFromDictionary<ReversiStreamTypes>;
 	};
 	reversiGame: {
 		name: `reversiGameStream:${ReversiGame['id']}`;
-		spec: EventUnionFromDictionary<ReversiGameStreamTypes>;
+		payload: EventUnionFromDictionary<ReversiGameStreamTypes>;
 	};
 	admin: {
 		name: `adminStream:${User['id']}`;
-		spec: EventUnionFromDictionary<AdminStreamTypes>;
+		payload: EventUnionFromDictionary<AdminStreamTypes>;
 	};
 	notes: {
 		name: 'notesStream';
-		spec: Packed<'Note'>;
+		payload: Packed<'Note'>;
 	};
 };
 
 // API event definitions
 // ストリームごとのEmitterの辞書を用意
-type EventEmitterDictionary = { [x in keyof StreamMessages]: Emitter<EventEmitter, { [y in StreamMessages[x]['name']]: (e: StreamMessages[x]['spec']) => void }> };
+type EventEmitterDictionary = { [x in keyof StreamMessages]: Emitter<EventEmitter, { [y in StreamMessages[x]['name']]: (e: StreamMessages[x]['payload']) => void }> };
 // 共用体型を交差型にする型 https://stackoverflow.com/questions/54938141/typescript-convert-union-to-intersection
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends ((k: infer I) => void) ? I : never;
 // Emitter辞書から共用体型を作り、UnionToIntersectionで交差型にする
