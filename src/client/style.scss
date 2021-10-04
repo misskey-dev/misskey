@@ -178,7 +178,7 @@ hr {
 		pointer-events: none;
 	}
 
-	&:focus {
+	&:focus-visible {
 		outline: none;
 	}
 
@@ -509,7 +509,7 @@ hr {
 	padding: 5px;
 }
 
-.prism-editor__textarea:focus {
+.prism-editor__textarea:focus-visible {
 	outline: none;
 }
 

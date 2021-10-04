@@ -5,7 +5,7 @@
 			<MkAvatar :user="$i" class="avatar"/>
 			<XLink :active="page === 'accounts'" replace to="/settings/accounts"><template #icon><i class="fas fa-users"></i></template>{{ $ts.accounts }}</XLink>
 		</div>
-		<MkInfo v-if="emailNotConfigured || true" warn class="info">{{ $ts.emailNotConfiguredWarning }} <MkA to="/settings/email" class="_link">{{ $ts.configure }}</MkA></MkInfo>
+		<MkInfo v-if="emailNotConfigured" warn class="info">{{ $ts.emailNotConfiguredWarning }} <MkA to="/settings/email" class="_link">{{ $ts.configure }}</MkA></MkInfo>
 		<div class="group">
 			<div class="label">{{ $ts.basicSettings }}</div>
 			<XLink :active="page === 'profile'" replace to="/settings/profile"><template #icon><i class="fas fa-user"></i></template>{{ $ts.profile }}</XLink>
@@ -34,12 +34,10 @@
 			<XLink :active="page === 'other'" replace to="/settings/other"><template #icon><i class="fas fa-ellipsis-h"></i></template>{{ $ts.other }}</XLink>
 			<XLink :active="page === 'instance-mute'" replace to="/settings/instance-mute"><template #icon><i class="fas fa-volume-mute"></i></template>{{ $ts.instanceMute }}</XLink>
 		</div>
-		<FormGroup>
-			<FormButton @click="clear">{{ $ts.clearCache }}</FormButton>
-		</FormGroup>
-		<FormGroup>
-			<FormButton @click="logout" danger>{{ $ts.logout }}</FormButton>
-		</FormGroup>
+		<div class="group">
+			<XLink @click="clear"><template #icon><i class="fas fa-trash"></i></template>{{ $ts.clearCache }}</XLink>
+			<XLink @click="logout" danger><template #icon><i class="fas fa-sign-in-alt fa-flip-horizontal"></i></template>{{ $ts.logout }}</XLink>
+		</div>
 	</div>
 	<div class="main">
 		<component :is="component" :key="page" @info="onInfo" v-bind="pageProps"/>
@@ -51,8 +49,6 @@
 import { computed, defineAsyncComponent, defineComponent, nextTick, onMounted, reactive, ref, watch } from 'vue';
 import { i18n } from '@client/i18n';
 import XLink from './index.link.vue';
-import FormGroup from '@client/components/debobigego/group.vue';
-import FormButton from '@client/components/debobigego/button.vue';
 import MkInfo from '@client/components/ui/info.vue';
 import { scroll } from '@client/scripts/scroll';
 import { signout } from '@client/account';
@@ -64,8 +60,6 @@ import { $i } from '@client/account';
 export default defineComponent({
 	components: {
 		XLink,
-		FormGroup,
-		FormButton,
 		MkInfo,
 	},
 
@@ -222,7 +216,7 @@ export default defineComponent({
 				display: block;
 				width: 50px;
 				height: 50px;
-				margin: 0 auto 8px auto;
+				margin: 8px auto 16px auto;
 			}
 		}
 	}

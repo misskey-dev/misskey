@@ -872,7 +872,7 @@ export default defineComponent({
 	//content-visibility: auto;
   //contain-intrinsic-size: 0 128px;
 
-	&:focus {
+	&:focus-visible {
 		outline: none;
 	}
 

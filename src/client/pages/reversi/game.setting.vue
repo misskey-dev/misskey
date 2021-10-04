@@ -303,7 +303,7 @@ export default defineComponent({
 						-moz-appearance: none;
 						appearance: none;
 
-						&:focus,
+						&:focus-visible,
 						&:active {
 							border-color: var(--accent);
 						}
