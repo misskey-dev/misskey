@@ -1,6 +1,6 @@
 [![Misskey](/assets/about/banner.svg)](https://join.misskey.page/)
 
-<h1 align="center">Misskey</h1>
+<h1 align="center">🤯</h1>
 
 <div align="center">
 
