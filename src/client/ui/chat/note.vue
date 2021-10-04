@@ -42,7 +42,7 @@
 			<div class="body">
 				<p v-if="appearNote.cw != null" class="cw">
 					<Mfm v-if="appearNote.cw != ''" class="text" :text="appearNote.cw" :author="appearNote.user" :i="$i" :custom-emojis="appearNote.emojis"/>
-					<XCwButton v-model:value="showContent" :note="appearNote"/>
+					<XCwButton v-model="showContent" :note="appearNote"/>
 				</p>
 				<div class="content" :class="{ collapsed }" v-show="appearNote.cw == null || showContent">
 					<div class="text">
@@ -872,7 +872,7 @@ export default defineComponent({
 	//content-visibility: auto;
   //contain-intrinsic-size: 0 128px;
 
-	&:focus {
+	&:focus-visible {
 		outline: none;
 	}
 

@@ -10,7 +10,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-import MkTextarea from '../ui/textarea.vue';
+import MkTextarea from '../form/textarea.vue';
 import MkButton from '../ui/button.vue';
 import { apiUrl } from '@client/config';
 import * as os from '@client/os';

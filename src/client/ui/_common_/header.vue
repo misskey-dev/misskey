@@ -141,6 +141,7 @@ export default defineComponent({
 
 		showTabsPopup(ev) {
 			if (!this.hasTabs) return;
+			if (!this.narrow) return;
 			ev.preventDefault();
 			ev.stopPropagation();
 			const menu = this.info.tabs.map(tab => ({
@@ -218,6 +219,7 @@ export default defineComponent({
 		white-space: nowrap;
 		text-align: left;
 		font-weight: bold;
+		flex-shrink: 0;
 
 		> .avatar {
 			$size: 32px;
@@ -263,6 +265,8 @@ export default defineComponent({
 	> .tabs {
 		margin-left: 16px;
 		font-size: 0.8em;
+		overflow: auto;
+		white-space: nowrap;
 
 		> .tab {
 			display: inline-block;

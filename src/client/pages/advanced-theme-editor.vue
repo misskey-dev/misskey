@@ -4,7 +4,7 @@
 		<div class="_content">
 			<details>
 				<summary>{{ $ts.import }}</summary>
-				<MkTextarea v-model:value="themeToImport">
+				<MkTextarea v-model="themeToImport">
 					{{ $ts._theme.importInfo }}
 				</MkTextarea>
 				<MkButton :disabled="!themeToImport.trim()" @click="importTheme">{{ $ts.import }}</MkButton>
@@ -14,9 +14,9 @@
 	<section class="_section">
 		<div class="_content _card _gap">
 			<div class="_content">
-				<MkInput v-model:value="name" required><span>{{ $ts.name }}</span></MkInput>
-				<MkInput v-model:value="author" required><span>{{ $ts.author }}</span></MkInput>
-				<MkTextarea v-model:value="description"><span>{{ $ts.description }}</span></MkTextarea>
+				<MkInput v-model="name" required><span>{{ $ts.name }}</span></MkInput>
+				<MkInput v-model="author" required><span>{{ $ts.author }}</span></MkInput>
+				<MkTextarea v-model="description"><span>{{ $ts.description }}</span></MkTextarea>
 				<div class="_inputs">
 					<div v-text="$ts._theme.base" />
 					<MkRadio v-model="baseTheme" value="light">{{ $ts.light }}</MkRadio>
@@ -41,31 +41,31 @@
 							<!-- color -->
 							<div v-else-if="typeof v === 'string'" class="color">
 								<input type="color" :value="v" @input="colorChanged($event.target.value, i)"/>
-								<MkInput class="select" :value="v" @update:value="colorChanged($event, i)"/>
+								<MkInput class="select" :value="v" @update:modelValue="colorChanged($event, i)"/>
 							</div>
 							<!-- ref const -->
-							<MkInput v-else-if="v.type === 'refConst'" v-model:value="v.key">
+							<MkInput v-else-if="v.type === 'refConst'" v-model="v.key">
 								<template #prefix>$</template>
 								<span>{{ $ts.name }}</span>
 							</MkInput>
 							<!-- ref props -->
-							<MkSelect class="select" v-else-if="v.type === 'refProp'" v-model:value="v.key">
+							<MkSelect class="select" v-else-if="v.type === 'refProp'" v-model="v.key">
 								<option v-for="key in themeProps" :value="key" :key="key">{{ $t('_theme.keys.' + key) }}</option>
 							</MkSelect>
 							<!-- func -->
 							<template v-else-if="v.type === 'func'">
-								<MkSelect class="select" v-model:value="v.name">
+								<MkSelect class="select" v-model="v.name">
 									<template #label>{{ $ts._theme.funcKind }}</template>
 									<option v-for="n in ['alpha', 'darken', 'lighten']" :value="n" :key="n">{{ $t('_theme.' + n) }}</option>
 								</MkSelect>
-								<MkInput type="number" v-model:value="v.arg"><span>{{ $ts._theme.argument }}</span></MkInput>
-								<MkSelect class="select" v-model:value="v.value">
+								<MkInput type="number" v-model="v.arg"><span>{{ $ts._theme.argument }}</span></MkInput>
+								<MkSelect class="select" v-model="v.value">
 									<template #label>{{ $ts._theme.basedProp }}</template>
 									<option v-for="key in themeProps" :value="key" :key="key">{{ $t('_theme.keys.' + key) }}</option>
 								</MkSelect>
 							</template>
 							<!-- CSS -->
-							<MkInput v-else-if="v.type === 'css'" v-model:value="v.value">
+							<MkInput v-else-if="v.type === 'css'" v-model="v.value">
 								<span>CSS</span>
 							</MkInput>
 						</div>
@@ -95,11 +95,11 @@ import { defineComponent } from 'vue';
 import * as JSON5 from 'json5';
 import { toUnicode } from 'punycode/';
 
-import MkRadio from '@client/components/ui/radio.vue';
+import MkRadio from '@client/components/form/radio.vue';
 import MkButton from '@client/components/ui/button.vue';
-import MkInput from '@client/components/ui/input.vue';
-import MkTextarea from '@client/components/ui/textarea.vue';
-import MkSelect from '@client/components/ui/select.vue';
+import MkInput from '@client/components/form/input.vue';
+import MkTextarea from '@client/components/form/textarea.vue';
+import MkSelect from '@client/components/form/select.vue';
 import MkSample from '@client/components/sample.vue';
 
 import { convertToMisskeyTheme, ThemeValue, convertToViewModel, ThemeViewModel } from '@client/scripts/theme-editor';

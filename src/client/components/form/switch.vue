@@ -1,35 +1,34 @@
 <template>
-<div class="ijnpvmgr _formItem">
-	<div class="main _formPanel _formClickable"
-		:class="{ disabled, checked }"
-		:aria-checked="checked"
-		:aria-disabled="disabled"
-		@click.prevent="toggle"
+<div
+	class="ziffeoms"
+	:class="{ disabled, checked }"
+	role="switch"
+	:aria-checked="checked"
+	:aria-disabled="disabled"
+	@click.prevent="toggle"
+>
+	<input
+		type="checkbox"
+		ref="input"
+		:disabled="disabled"
+		@keydown.enter="toggle"
 	>
-		<input
-			type="checkbox"
-			ref="input"
-			:disabled="disabled"
-			@keydown.enter="toggle"
-		>
-		<span class="button">
-			<span></span>
-		</span>
-		<span class="label">
-			<span><slot></slot></span>
-		</span>
-	</div>
-	<div class="_formCaption"><slot name="desc"></slot></div>
+	<span class="button" v-tooltip="checked ? $ts.itsOn : $ts.itsOff">
+		<span class="handle"></span>
+	</span>
+	<span class="label">
+		<span><slot></slot></span>
+		<p><slot name="caption"></slot></p>
+	</span>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import './form.scss';
 
 export default defineComponent({
 	props: {
-		value: {
+		modelValue: {
 			type: Boolean,
 			default: false
 		},
@@ -40,91 +39,110 @@ export default defineComponent({
 	},
 	computed: {
 		checked(): boolean {
-			return this.value;
+			return this.modelValue;
 		}
 	},
 	methods: {
 		toggle() {
 			if (this.disabled) return;
-			this.$emit('update:value', !this.checked);
+			this.$emit('update:modelValue', !this.checked);
 		}
 	}
 });
 </script>
 
 <style lang="scss" scoped>
-.ijnpvmgr {
-	> .main {
+.ziffeoms {
+	position: relative;
+	display: flex;
+	cursor: pointer;
+	transition: all 0.3s;
+
+	&:first-child {
+		margin-top: 0;
+	}
+
+	&:last-child {
+		margin-bottom: 0;
+	}
+
+	> * {
+		user-select: none;
+	}
+
+	> input {
+		position: absolute;
+		width: 0;
+		height: 0;
+		opacity: 0;
+		margin: 0;
+	}
+
+	> .button {
 		position: relative;
-		display: flex;
-		padding: 14px 16px;
-		cursor: pointer;
+		display: inline-block;
+		flex-shrink: 0;
+		margin: 0;
+		width: 36px;
+		height: 26px;
+		background: var(--switchBg);
+		outline: none;
+		border-radius: 999px;
+		transition: inherit;
 
-		> * {
-			user-select: none;
-		}
-
-		&.disabled {
-			opacity: 0.6;
-			cursor: not-allowed;
-		}
-
-		&.checked {
-			> .button {
-				background-color: var(--X10);
-				border-color: var(--X10);
-
-				> * {
-					background-color: var(--accent);
-					transform: translateX(14px);
-				}
-			}
-		}
-
-		> input {
+		> .handle {
 			position: absolute;
-			width: 0;
-			height: 0;
-			opacity: 0;
-			margin: 0;
+			top: 0;
+			bottom: 0;
+			left: 5px;
+			margin: auto 0;
+			border-radius: 100%;
+			transition: background-color 0.3s, transform 0.3s;
+			width: 16px;
+			height: 16px;
+			background-color: #fff;
 		}
+	}
 
-		> .button {
-			position: relative;
-			display: inline-block;
-			flex-shrink: 0;
-			margin: 3px 0 0 0;
-			width: 34px;
-			height: 14px;
-			background: var(--X6);
-			outline: none;
-			border-radius: 14px;
-			transition: all 0.3s;
-			cursor: pointer;
+	> .label {
+		margin-left: 16px;
+		margin-top: 2px;
+		display: block;
+		cursor: pointer;
+		transition: inherit;
+		color: var(--fg);
 
-			> * {
-				position: absolute;
-				top: -3px;
-				left: 0;
-				border-radius: 100%;
-				transition: background-color 0.3s, transform 0.3s;
-				width: 20px;
-				height: 20px;
-				background-color: #fff;
-				box-shadow: 0 2px 1px -1px rgba(#000, 0.2), 0 1px 1px 0 rgba(#000, 0.14), 0 1px 3px 0 rgba(#000, 0.12);
-			}
-		}
-
-		> .label {
-			margin-left: 12px;
+		> span {
 			display: block;
+			line-height: 20px;
 			transition: inherit;
-			color: var(--fg);
+		}
 
-			> span {
-				display: block;
-				line-height: 20px;
-				transition: inherit;
+		> p {
+			margin: 0;
+			color: var(--fgTransparentWeak);
+			font-size: 90%;
+		}
+	}
+
+	&:hover {
+		> .button {
+			background-color: var(--accentedBg);
+		}
+	}
+
+	&.disabled {
+		opacity: 0.6;
+		cursor: not-allowed;
+	}
+
+	&.checked {
+		> .button {
+			background-color: var(--accent);
+			border-color: var(--accent);
+
+			> .handle {
+				transform: translateX(10px);
 			}
 		}
 	}

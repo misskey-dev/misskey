@@ -51,9 +51,9 @@
 import { defineComponent } from 'vue';
 import { addTime } from '../../prelude/time';
 import { formatDateTimeString } from '@/misc/format-time-string';
-import MkInput from './ui/input.vue';
-import MkSelect from './ui/select.vue';
-import MkSwitch from './ui/switch.vue';
+import MkInput from './form/input.vue';
+import MkSelect from './form/select.vue';
+import MkSwitch from './form/switch.vue';
 import MkButton from './ui/button.vue';
 
 export default defineComponent({

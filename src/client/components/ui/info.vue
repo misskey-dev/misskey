@@ -27,7 +27,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .fpezltsf {
-	margin: 16px 0;
 	padding: 16px;
 	font-size: 90%;
 	background: var(--infoBg);
@@ -37,14 +36,6 @@ export default defineComponent({
 	&.warn {
 		background: var(--infoWarnBg);
 		color: var(--infoWarnFg);
-	}
-
-	&:first-child {
-		margin-top: 0;
-	}
-
-	&:last-child {
-		margin-bottom: 0;
 	}
 
 	> i {

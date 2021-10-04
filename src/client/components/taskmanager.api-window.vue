@@ -9,7 +9,7 @@
 	<template #header>Req Viewer</template>
 
 	<div class="rlkneywz">
-		<MkTab v-model:value="tab" style="border-bottom: solid 0.5px var(--divider);">
+		<MkTab v-model="tab" style="border-bottom: solid 0.5px var(--divider);">
 			<option value="req">Request</option>
 			<option value="res">Response</option>
 		</MkTab>

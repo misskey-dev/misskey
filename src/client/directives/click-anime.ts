@@ -1,7 +1,10 @@
 import { Directive } from 'vue';
+import { defaultStore } from '@client/store';
 
 export default {
 	mounted(el, binding, vn) {
+		if (!defaultStore.state.animation) return;
+
 		el.classList.add('_anime_bounce_standBy');
 
 		el.addEventListener('mousedown', () => {

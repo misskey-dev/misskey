@@ -18,8 +18,8 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import XContainer from '../page-editor.container.vue';
-import MkInput from '@client/components/ui/input.vue';
-import MkSwitch from '@client/components/ui/switch.vue';
+import MkInput from '@client/components/form/input.vue';
+import MkSwitch from '@client/components/form/switch.vue';
 import XNote from '@client/components/note.vue';
 import XNoteDetailed from '@client/components/note-detailed.vue';
 import * as os from '@client/os';

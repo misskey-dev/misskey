@@ -1,6 +1,6 @@
 <template>
 <div>
-	<MkTab v-model:value="tab" v-if="$i">
+	<MkTab v-model="tab" v-if="$i">
 		<option value="featured"><i class="fas fa-fire-alt"></i> {{ $ts._pages.featured }}</option>
 		<option value="my"><i class="fas fa-edit"></i> {{ $ts._pages.my }}</option>
 		<option value="liked"><i class="fas fa-heart"></i> {{ $ts._pages.liked }}</option>

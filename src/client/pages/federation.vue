@@ -1,11 +1,11 @@
 <template>
 <div class="taeiyria">
 	<div class="query">
-		<MkInput v-model="host" :debounce="true" class="_inputNoTopMargin">
+		<MkInput v-model="host" :debounce="true" class="">
 			<template #prefix><i class="fas fa-search"></i></template>
 			<template #label>{{ $ts.host }}</template>
 		</MkInput>
-		<div class="_inputSplit _inputNoBottomMargin">
+		<div class="_inputSplit">
 			<MkSelect v-model="state">
 				<template #label>{{ $ts.state }}</template>
 				<option value="all">{{ $ts.all }}</option>
@@ -96,8 +96,8 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import MkButton from '@client/components/ui/button.vue';
-import MkInput from '@client/components/ui/input.vue';
-import MkSelect from '@client/components/ui/select.vue';
+import MkInput from '@client/components/form/input.vue';
+import MkSelect from '@client/components/form/select.vue';
 import MkPagination from '@client/components/ui/pagination.vue';
 import * as os from '@client/os';
 import * as symbols from '@client/symbols';
@@ -116,7 +116,8 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.federation,
-				icon: 'fas fa-globe'
+				icon: 'fas fa-globe',
+				bg: 'var(--bg)',
 			},
 			host: '',
 			state: 'federating',

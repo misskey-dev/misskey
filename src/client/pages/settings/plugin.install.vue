@@ -3,7 +3,7 @@
 	<FormInfo warn>{{ $ts._plugin.installWarn }}</FormInfo>
 
 	<FormGroup>
-		<FormTextarea v-model:value="code" tall>
+		<FormTextarea v-model="code" tall>
 			<span>{{ $ts.code }}</span>
 		</FormTextarea>
 	</FormGroup>
@@ -20,11 +20,11 @@ import { v4 as uuid } from 'uuid';
 import FormTextarea from '@client/components/form/textarea.vue';
 import FormSelect from '@client/components/form/select.vue';
 import FormRadios from '@client/components/form/radios.vue';
-import FormBase from '@client/components/form/base.vue';
-import FormGroup from '@client/components/form/group.vue';
-import FormLink from '@client/components/form/link.vue';
-import FormButton from '@client/components/form/button.vue';
-import FormInfo from '@client/components/form/info.vue';
+import FormBase from '@client/components/debobigego/base.vue';
+import FormGroup from '@client/components/debobigego/group.vue';
+import FormLink from '@client/components/debobigego/link.vue';
+import FormButton from '@client/components/debobigego/button.vue';
+import FormInfo from '@client/components/debobigego/info.vue';
 import * as os from '@client/os';
 import { ColdDeviceStorage } from '@client/store';
 import { unisonReload } from '@client/scripts/unison-reload';
@@ -48,7 +48,8 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts._plugin.install,
-				icon: 'fas fa-download'
+				icon: 'fas fa-download',
+				bg: 'var(--bg)',
 			},
 			code: null,
 		}
