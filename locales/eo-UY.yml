@@ -719,7 +719,7 @@ _visibility:
   home: "Hejma"
   homeDescription: "Dissendi nur sur hejma templinio"
   followers: "Nur al sekvantoj"
-  followersDescription: "Nur al sekvantoj al mi"
+  followersDescription: "Publiki nur al viaj sekvantoj"
   specified: "Rekta"
   specifiedDescription: "Montri nur al specifaj uzantoj"
   localOnly: "Nur loka"
