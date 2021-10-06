@@ -1,6 +1,6 @@
 <template>
 <MkContainer :naked="props.transparent" :show-header="false">
-	<iframe class="dedjhjmo" ref="live2d" @click="touched" src="https://misskey-dev.github.io/mascot-web/?scale=1.5&y=1.1&eyeY=100"></iframe>
+	<iframe class="dedjhjmo" ref="live2d" @click="touched" src="https://ao.nya.one/?scale=1.5&y=1.1&eyeY=100"></iframe>
 </MkContainer>
 </template>
 

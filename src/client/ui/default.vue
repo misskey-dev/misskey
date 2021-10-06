@@ -54,7 +54,7 @@
 		<XWidgets v-if="widgetsShowing" class="tray"/>
 	</transition>
 
-	<iframe v-if="$store.state.aiChanMode" class="ivnzpscs" ref="live2d" src="https://misskey-dev.github.io/mascot-web/?scale=2&y=1.4"></iframe>
+	<iframe v-if="$store.state.aiChanMode" class="ivnzpscs" ref="live2d" src="https://ao.nya.one/?scale=2&y=1.4"></iframe>
 
 	<XCommon/>
 </div>
