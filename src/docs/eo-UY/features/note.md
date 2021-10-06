@@ -1,5 +1,5 @@
 # Notoj
-Notoj estas centraj konceptoj en Misskey kaj enhavoj kiuj konsistas el teksto, bildoj, dosieroj, balotujo k.t.p.Ankaŭ fari redaktadon de notoj nomiĝas noto.
+Notoj estas centraj konceptoj en Misskey kaj enhavoj kiuj konsistas el teksto, bildoj, dosieroj, balotujo k.t.p.Ankaŭ redaktado de notoj estas nomata "noto" same kiel ĝi.
 
 ノートが作成されると、[タイムライン](./timeline)に追加され、自分の[フォロワー](./follow)やサーバーのユーザーが見れるようになります。
 
