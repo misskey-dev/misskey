@@ -67,7 +67,7 @@ driveFileDeleteConfirm: "Ĉu vi certas, ke vi volas forviŝi la dosieron \"{name
 unfollowConfirm: "Ĉu vi certas, ke vi volas ĉesi sekvi {name}'(o)n?"
 lists: "Listoj"
 noLists: "Neniu listo"
-note: "Notoj"
+note: "Sendi"
 notes: "Notoj"
 following: "Sekvatoj"
 followers: "Sekvantoj"
@@ -727,8 +727,8 @@ _visibility:
   localOnly: "Nur loka"
   localOnlyDescription: "Ne montri al transaj uzantoj"
 _postForm:
-  replyPlaceholder: "Respondi tiun noton…"
-  quotePlaceholder: "Citi tiun noton…"
+  replyPlaceholder: "Respondi la noton…"
+  quotePlaceholder: "Citi la noton…"
   channelPlaceholder: "Mencii en kanalo…"
 _profile:
   name: "Nomo"
@@ -748,7 +748,7 @@ _charts:
   federationInstancesTotal: "La totala nombro de nodoj kunfederantaj"
   usersTotal: "La totala nombro de la uzantoj"
   activeUsers: "La nombro de la uzantoj aktivaj"
-  notesTotal: "La totala nombro de la notoj"
+  notesTotal: "La totala nombro de notoj"
   filesTotal: "La totala nombro de la dosieroj"
 _timelines:
   home: "Hejma"
@@ -889,4 +889,4 @@ _deck:
     antenna: "Antenoj"
     list: "Listoj"
     mentions: "Al vi"
-    direct: "Notoj rektaj"
+    direct: "Rektaj notoj"
