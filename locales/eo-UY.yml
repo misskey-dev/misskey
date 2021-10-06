@@ -860,6 +860,9 @@ _pages:
     argVariables: "Eniga junto"
 _notification:
   fileUploaded: "La dosiero sukcese alŝutiĝis."
+  youGotMention: "{name} mencis"
+  youGotReply: "{name} respondis"
+  youGotQuote: "{name} citis"
   youRenoted: "{name} plusendis"
   youGotPoll: "{name} balotis"
   youGotMessagingMessageFromUser: "{name} sentis mesaĝon al vi."
