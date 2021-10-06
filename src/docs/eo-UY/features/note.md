@@ -1,5 +1,5 @@
 # Notoj
-Notoj estas centraj konceptoj en Misskey, kaj enhavoj kiuj konsistas el teksto, bildoj, dosieroj, balotujo k.t.p.また、そのノートを作成する行為自体もノートと呼ばれます。
+Notoj estas centraj konceptoj en Misskey kaj enhavoj kiuj konsistas el teksto, bildoj, dosieroj, balotujo k.t.p.Ankaŭ fari redaktadon de notoj nomiĝas noto.
 
 ノートが作成されると、[タイムライン](./timeline)に追加され、自分の[フォロワー](./follow)やサーバーのユーザーが見れるようになります。
 
@@ -51,4 +51,4 @@ Contents Warningの略で、ノートの内容を、閲覧者の操作なしに�
 ノートをピン留めすると、ユーザーページに常にそのノートを表示しておくことができます。 ノートのメニューを開き、「ピン留め」を選択してピン留めできます。 複数のノートをピン留めできます。
 
 ## Observi
-Sciigoj pri reagoj, respondoj, k.t.p al noto kiu ne apartenas al vi estas ankaŭ ricevebla. Por fari ĝin, elektu la "Observi" el kuntekstan menuon de notoj respektivaj.
+Sciigoj pri reagoj, respondoj, k.t.p al noto kiu ne apartenas al vi estas ankaŭ ricevebla. Por fari ĝin elektu la "Observi" el menuon kuntekstan de notoj respektivaj.
