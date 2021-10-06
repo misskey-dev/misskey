@@ -4,8 +4,8 @@ MFMは、Misskey Flavored Markdownの略で、Misskeyの様々な場所で使用
 ## MFMが使用可能な場所の例
 - Teksto de notoj
 - CW注釈
-- Nomo de uzanto
-- Sinprezento de uzanto
+- La nomo de uzantoj
+- La sinprezento de profiloj
 
 ## Informoj por programistoj
 MFMのパーサー実装はライブラリとして公開されており、簡単にクライアントにMFMを組み込むことが可能です。
