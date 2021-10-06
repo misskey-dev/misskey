@@ -51,4 +51,4 @@ Contents Warningの略で、ノートの内容を、閲覧者の操作なしに�
 ノートをピン留めすると、ユーザーページに常にそのノートを表示しておくことができます。 ノートのメニューを開き、「ピン留め」を選択してピン留めできます。 複数のノートをピン留めできます。
 
 ## Observi
-Sciigoj pri reagoj, respondoj, k.t.p al noto kiu ne apartenas al vi estas ricevebla. Por fari ĝin, elektu la "Observi" el kuntekstan menuon de notoj respektivaj.
+Sciigoj pri reagoj, respondoj, k.t.p al noto kiu ne apartenas al vi estas ankaŭ ricevebla. Por fari ĝin, elektu la "Observi" el kuntekstan menuon de notoj respektivaj.
