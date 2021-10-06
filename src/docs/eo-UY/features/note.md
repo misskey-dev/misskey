@@ -1,5 +1,5 @@
 # Notoj
-Notoj estas centraj konceptoj en Misskey kaj enhavoj kiuj konsistas el teksto, bildoj, dosieroj, balotujo k.t.p.Ankaŭ redaktado de notoj estas nomata "noto" same kiel ĝi.
+Notoj estas centraj konceptoj en Misskey kaj enhavoj kiuj konsistas el teksto, bildoj, dosieroj, balotujo k.t.p.Ankaŭ redaktado de notoj estas nomata "noto" same kiel ili
 
 ノートが作成されると、[タイムライン](./timeline)に追加され、自分の[フォロワー](./follow)やサーバーのユーザーが見れるようになります。
 
@@ -14,7 +14,7 @@ Notoj estas centraj konceptoj en Misskey kaj enhavoj kiuj konsistas el teksto, b
 
 ## Plusendi noton
 既にあるノートを引用、もしくはそのノートを新しいノートとして共有する行為、またそれによって作成されたノートをRenoteと呼びます。 自分がフォローしているユーザーの、気に入ったノートを自分のフォロワーに共有したい場合や、過去の自分のノートを再度共有したい場合に使います。 同じノートに対して無制限にRenoteを行うことができますが、あまり連続して使用すると迷惑になる場合もあるので、注意しましょう。
-<div class="warn">⚠️ 公開範囲がフォロワーやダイレクトのノートはRenoteできません</div>
+<div class="warn">⚠️ Notoj kies videbleco estas la "Nur al sekvantoj" aŭ la "Rekta" ne estas plusendebla.</div>
 
 Renoteを削除するには、Renoteの時刻表示の隣にある「...」を押し、「Renote解除」を選択します。
 
@@ -42,7 +42,7 @@ Contents Warningの略で、ノートの内容を、閲覧者の操作なしに�
 
 ### 公開範囲の比較
 <table>
-    <tr><th></th><th>Publika</th><th>Hejma</th><th>Sekvantoj</th><th>Rekta</th></tr>
+    <tr><th></th><th>Publika</th><th>Hejma</th><th>Nur al sekvantoj</th><th>Rekta</th></tr>
     <tr><th>フォロワーのLTL/STL/GTL</th><td>✔</td><td>✔</td><td>✔</td><td></td></tr>
     <tr><th>非フォロワーのLTL/STL/GTL</th><td>✔</td><td></td><td></td><td></td></tr>
 </table>
