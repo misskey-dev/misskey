@@ -161,7 +161,7 @@ export default defineComponent({
 		width: 31px;
 	}
 
-	&:focus {
+	&:focus-visible {
 		&:after {
 			content: "";
 			pointer-events: none;

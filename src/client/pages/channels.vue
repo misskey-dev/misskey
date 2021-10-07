@@ -1,7 +1,7 @@
 <template>
 <div>
 	<div class="_section" style="padding: 0;" v-if="$i">
-		<MkTab class="_content" v-model:value="tab">
+		<MkTab class="_content" v-model="tab">
 			<option value="featured"><i class="fas fa-fire-alt"></i> {{ $ts._channel.featured }}</option>
 			<option value="following"><i class="fas fa-heart"></i> {{ $ts._channel.following }}</option>
 			<option value="owned"><i class="fas fa-edit"></i> {{ $ts._channel.owned }}</option>

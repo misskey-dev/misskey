@@ -465,7 +465,7 @@ export default defineComponent({
 					height: var(--eachSize);
 					border-radius: 4px;
 
-					&:focus {
+					&:focus-visible {
 						outline: solid 2px var(--focus);
 						z-index: 1;
 					}

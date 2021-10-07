@@ -19,6 +19,30 @@ describe('toHtml', () => {
 });
 
 describe('fromHtml', () => {
+	it('p', () => {
+		assert.deepStrictEqual(fromHtml('<p>a</p><p>b</p>'), 'a\n\nb');
+	});
+
+	it('block element', () => {
+		assert.deepStrictEqual(fromHtml('<div>a</div><div>b</div>'), 'a\nb');
+	});
+
+	it('inline element', () => {
+		assert.deepStrictEqual(fromHtml('<ul><li>a</li><li>b</li></ul>'), 'a\nb');
+	});
+
+	it('block code', () => {
+		assert.deepStrictEqual(fromHtml('<pre><code>a\nb</code></pre>'), '```\na\nb\n```');
+	});
+
+	it('inline code', () => {
+		assert.deepStrictEqual(fromHtml('<code>a</code>'), '`a`');
+	});
+
+	it('quote', () => {
+		assert.deepStrictEqual(fromHtml('<blockquote>a\nb</blockquote>'), '> a\n> b');
+	});
+
 	it('br', () => {
 		assert.deepStrictEqual(fromHtml('<p>abc<br><br/>d</p>'), 'abc\n\nd');
 	});

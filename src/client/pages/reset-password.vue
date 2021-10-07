@@ -1,6 +1,6 @@
 <template>
 <FormBase v-if="token">
-	<FormInput v-model:value="password" type="password">
+	<FormInput v-model="password" type="password">
 		<template #prefix><i class="fas fa-lock"></i></template>
 		<span>{{ $ts.newPassword }}</span>
 	</FormInput>
@@ -11,11 +11,11 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import FormLink from '@client/components/form/link.vue';
-import FormBase from '@client/components/form/base.vue';
-import FormGroup from '@client/components/form/group.vue';
-import FormInput from '@client/components/form/input.vue';
-import FormButton from '@client/components/form/button.vue';
+import FormLink from '@client/components/debobigego/link.vue';
+import FormBase from '@client/components/debobigego/base.vue';
+import FormGroup from '@client/components/debobigego/group.vue';
+import FormInput from '@client/components/debobigego/input.vue';
+import FormButton from '@client/components/debobigego/button.vue';
 import * as os from '@client/os';
 import * as symbols from '@client/symbols';
 

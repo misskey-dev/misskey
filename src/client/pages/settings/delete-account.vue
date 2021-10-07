@@ -9,10 +9,10 @@
 
 <script lang="ts">
 import { defineAsyncComponent, defineComponent } from 'vue';
-import FormInfo from '@client/components/form/info.vue';
-import FormBase from '@client/components/form/base.vue';
-import FormGroup from '@client/components/form/group.vue';
-import FormButton from '@client/components/form/button.vue';
+import FormInfo from '@client/components/debobigego/info.vue';
+import FormBase from '@client/components/debobigego/base.vue';
+import FormGroup from '@client/components/debobigego/group.vue';
+import FormButton from '@client/components/debobigego/button.vue';
 import * as os from '@client/os';
 import { debug } from '@client/config';
 import { signout } from '@client/account';
@@ -32,7 +32,8 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts._accountDelete.accountDelete,
-				icon: 'fas fa-exclamation-triangle'
+				icon: 'fas fa-exclamation-triangle',
+				bg: 'var(--bg)',
 			},
 			debug,
 		}

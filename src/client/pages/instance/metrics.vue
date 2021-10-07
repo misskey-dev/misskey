@@ -1,7 +1,7 @@
 <template>
-<div class="_formItem">
-	<div class="_formLabel"><i class="fas fa-microchip"></i> {{ $ts.cpuAndMemory }}</div>
-	<div class="_formPanel xhexznfu">
+<div class="_debobigegoItem">
+	<div class="_debobigegoLabel"><i class="fas fa-microchip"></i> {{ $ts.cpuAndMemory }}</div>
+	<div class="_debobigegoPanel xhexznfu">
 		<div>
 			<canvas :ref="cpumem"></canvas>
 		</div>
@@ -16,9 +16,9 @@
 		</div>
 	</div>
 </div>
-<div class="_formItem">
-	<div class="_formLabel"><i class="fas fa-hdd"></i> {{ $ts.disk }}</div>
-	<div class="_formPanel xhexznfu">
+<div class="_debobigegoItem">
+	<div class="_debobigegoLabel"><i class="fas fa-hdd"></i> {{ $ts.disk }}</div>
+	<div class="_debobigegoPanel xhexznfu">
 		<div>
 			<canvas :ref="disk"></canvas>
 		</div>
@@ -33,9 +33,9 @@
 		</div>
 	</div>
 </div>
-<div class="_formItem">
-	<div class="_formLabel"><i class="fas fa-exchange-alt"></i> {{ $ts.network }}</div>
-	<div class="_formPanel xhexznfu">
+<div class="_debobigegoItem">
+	<div class="_debobigegoLabel"><i class="fas fa-exchange-alt"></i> {{ $ts.network }}</div>
+	<div class="_debobigegoPanel xhexznfu">
 		<div>
 			<canvas :ref="net"></canvas>
 		</div>
@@ -54,8 +54,8 @@
 import { defineComponent, markRaw } from 'vue';
 import Chart from 'chart.js';
 import MkButton from '@client/components/ui/button.vue';
-import MkSelect from '@client/components/ui/select.vue';
-import MkInput from '@client/components/ui/input.vue';
+import MkSelect from '@client/components/form/select.vue';
+import MkInput from '@client/components/form/input.vue';
 import MkContainer from '@client/components/ui/container.vue';
 import MkFolder from '@client/components/ui/folder.vue';
 import MkwFederation from '../../widgets/federation.vue';

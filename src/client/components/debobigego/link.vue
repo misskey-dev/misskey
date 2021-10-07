@@ -1,6 +1,6 @@
 <template>
-<div class="qmfkfnzi _formItem">
-	<a class="main _button _formPanel _formClickable" :href="to" target="_blank" v-if="external">
+<div class="qmfkfnzi _debobigegoItem">
+	<a class="main _button _debobigegoPanel _debobigegoClickable" :href="to" target="_blank" v-if="external">
 		<span class="icon"><slot name="icon"></slot></span>
 		<span class="text"><slot></slot></span>
 		<span class="right">
@@ -8,7 +8,7 @@
 			<i class="fas fa-external-link-alt icon"></i>
 		</span>
 	</a>
-	<MkA class="main _button _formPanel _formClickable" :class="{ active }" :to="to" :behavior="behavior" v-else>
+	<MkA class="main _button _debobigegoPanel _debobigegoClickable" :class="{ active }" :to="to" :behavior="behavior" v-else>
 		<span class="icon"><slot name="icon"></slot></span>
 		<span class="text"><slot></slot></span>
 		<span class="right">
@@ -21,7 +21,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import './form.scss';
+import './debobigego.scss';
 
 export default defineComponent({
 	props: {

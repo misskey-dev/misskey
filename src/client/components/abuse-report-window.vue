@@ -25,7 +25,7 @@
 <script lang="ts">
 import { defineComponent, markRaw } from 'vue';
 import XWindow from '@client/components/ui/window.vue';
-import MkTextarea from '@client/components/ui/textarea.vue';
+import MkTextarea from '@client/components/form/textarea.vue';
 import MkButton from '@client/components/ui/button.vue';
 import * as os from '@client/os';
 

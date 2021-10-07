@@ -8,7 +8,7 @@
 			</div>
 		</template>
 		<template #default="{items}">
-			<div class="_formPanel bfomjevm" v-for="token in items" :key="token.id">
+			<div class="_debobigegoPanel bfomjevm" v-for="token in items" :key="token.id">
 				<img class="icon" :src="token.iconUrl" alt="" v-if="token.iconUrl"/>
 				<div class="body">
 					<div class="name">{{ token.name }}</div>
@@ -39,12 +39,12 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import FormPagination from '@client/components/form/pagination.vue';
+import FormPagination from '@client/components/debobigego/pagination.vue';
 import FormSelect from '@client/components/form/select.vue';
-import FormLink from '@client/components/form/link.vue';
-import FormBase from '@client/components/form/base.vue';
-import FormGroup from '@client/components/form/group.vue';
-import FormButton from '@client/components/form/button.vue';
+import FormLink from '@client/components/debobigego/link.vue';
+import FormBase from '@client/components/debobigego/base.vue';
+import FormGroup from '@client/components/debobigego/group.vue';
+import FormButton from '@client/components/debobigego/button.vue';
 import * as os from '@client/os';
 import * as symbols from '@client/symbols';
 
@@ -61,6 +61,7 @@ export default defineComponent({
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.installedApps,
 				icon: 'fas fa-plug',
+				bg: 'var(--bg)',
 			},
 			pagination: {
 				endpoint: 'i/apps',
