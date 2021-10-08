@@ -15,6 +15,7 @@
 - クライアント: アニメーションを減らす設定をメニューのアニメーションにも適用するように
 - クライアント: MFM関数構文のサジェストを実装
 - ActivityPub: HTML -> MFMの変換を強化
+- API: ap系のエンドポイントをログイン必須化+レートリミット追加
 
 ### Bugfixes
 - Fix createDeleteAccountJob
