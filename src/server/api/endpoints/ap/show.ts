@@ -11,7 +11,7 @@ import { Note } from '@/models/entities/note';
 import { User } from '@/models/entities/user';
 import { fetchMeta } from '@/misc/fetch-meta';
 import { isActor, isPost, getApId } from '@/remote/activitypub/type';
-import ms from 'ms';
+import * as ms from 'ms';
 
 export const meta = {
 	tags: ['federation'],
