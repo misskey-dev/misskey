@@ -82,10 +82,11 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.narrow = this.$el.offsetWidth < 500;
+		if (this.$el.parentElement == null) return;
+		this.narrow = this.$el.parentElement.offsetWidth < 500;
 		new ResizeObserver((entries, observer) => {
-			this.narrow = this.$el.offsetWidth < 500;
-		}).observe(this.$el);
+			this.narrow = this.$el.parentElement.offsetWidth < 500;
+		}).observe(this.$el.parentElement);
 	},
 
 	methods: {
@@ -144,6 +145,7 @@ export default defineComponent({
 .fdidabkb {
 	--height: 60px;
 	display: flex;
+	width: 100%;
 
 	&.thin {
 		--height: 50px;
