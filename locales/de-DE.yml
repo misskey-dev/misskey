@@ -791,6 +791,7 @@ resolved: "Gelöst"
 unresolved: "Ungelöst"
 itsOn: "Eingeschaltet"
 itsOff: "Ausgeschaltet"
+emailRequiredForSignup: "Angaben einer Email-Adresse als benötigt markieren"
 _signup:
   almostThere: "Fast geschafft"
   emailAddressInfo: "Bitte gib deine Email-Adresse ein."
