@@ -35,7 +35,10 @@ export default define(meta, async (ps, _me) => {
 	})) === 0;
 	if (!noUsers && !me?.isAdmin) throw new Error('access denied');
 
-	const { account, secret } = await signup(ps.username, ps.password);
+	const { account, secret } = await signup({
+		username: ps.username,
+		password: ps.password,
+	});
 
 	const res = await Users.pack(account, account, {
 		detail: true,

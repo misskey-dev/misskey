@@ -791,6 +791,12 @@ resolved: "解決済み"
 unresolved: "未解決"
 itsOn: "オンになっています"
 itsOff: "オフになっています"
+emailRequiredForSignup: "アカウント登録にメールアドレスを必須にする"
+
+_signup:
+  almostThere: "ほとんど完了です"
+  emailAddressInfo: "あなたが使っているメールアドレスを入力してください。"
+  emailSent: "入力されたメールアドレス({email})宛に確認のメールが送信されました。メールに記載されたリンクにアクセスすると、アカウントの作成が完了します。"
 
 _accountDelete:
   accountDelete: "アカウントの削除"
