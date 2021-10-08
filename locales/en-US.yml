@@ -791,6 +791,11 @@ resolved: "Resolved"
 unresolved: "Unresolved"
 itsOn: "Enabled"
 itsOff: "Disabled"
+emailRequiredForSignup: "Require email address for sign-up"
+_signup:
+  almostThere: "Almost there"
+  emailAddressInfo: "Please enter your email address."
+  emailSent: "A confirmation email has been sent to your email address ({email}). Please click the included link to complete account creation."
 _accountDelete:
   accountDelete: "Delete Account"
   mayTakeTime: "As account deletion is a resource-heavy process, it may take some time to complete depending on how much content you have created and how many files you have uploaded."
