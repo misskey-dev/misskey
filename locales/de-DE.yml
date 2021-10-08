@@ -791,6 +791,10 @@ resolved: "Gelöst"
 unresolved: "Ungelöst"
 itsOn: "Eingeschaltet"
 itsOff: "Ausgeschaltet"
+_signup:
+  almostThere: "Fast geschafft"
+  emailAddressInfo: "Bitte gib deine Email-Adresse ein."
+  emailSent: "An deine Email-Adresse ({email}) wurde soeben eine Bestätigungsmail geschickt. Bitte klicke auf den enthaltenen Link, um die Erstellung deines Benutzerkontos abzuschließen."
 _accountDelete:
   accountDelete: "Benutzerkonto löschen"
   mayTakeTime: "Da die Löschung eines Benutzerkontos ein aufwendiger Prozess ist, kann dessen Dauer davon abhängen, wie viel Inhalt in diesem erstellt wurde oder wie viele Dateien hochgeladen wurden."
