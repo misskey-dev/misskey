@@ -63,7 +63,7 @@ import { Antenna } from '@/models/entities/antenna';
 import { AntennaNote } from '@/models/entities/antenna-note';
 import { PromoNote } from '@/models/entities/promo-note';
 import { PromoRead } from '@/models/entities/promo-read';
-import { program } from '../argv';
+import { envOption } from '../env';
 import { Relay } from '@/models/entities/relay';
 import { MutedNote } from '@/models/entities/muted-note';
 import { Channel } from '@/models/entities/channel';
@@ -84,7 +84,7 @@ class MyCustomLogger implements Logger {
 	}
 
 	public logQuery(query: string, parameters?: any[]) {
-		if (program.verbose) {
+		if (envOption.verbose) {
 			sqlLogger.info(this.highlight(query));
 		}
 	}

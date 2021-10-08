@@ -16,6 +16,8 @@
 - クライアント: MFM関数構文のサジェストを実装
 - ActivityPub: HTML -> MFMの変換を強化
 - API: ap系のエンドポイントをログイン必須化+レートリミット追加
+- Misskeyのコマンドラインオプションを廃止
+	- 代わりに環境変数で設定することができます
 
 ### Bugfixes
 - Fix createDeleteAccountJob
