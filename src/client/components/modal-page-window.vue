@@ -3,10 +3,11 @@
 	<div class="hrmcaedk _window _narrow_" :style="{ width: `${width}px`, height: (height ? `min(${height}px, 100%)` : '100%') }">
 		<div class="header" @contextmenu="onContextmenu">
 			<span class="title">
-				<XHeader :info="pageInfo" :back-button="history.length > 0" @back="back()" :close-button="true" @close="$refs.modal.close()"/>
+				
 			</span>
 		</div>
 		<div class="body _flat_">
+			<XHeader :info="pageInfo"/>
 			<keep-alive>
 				<component :is="component" v-bind="props" :ref="changePage"/>
 			</keep-alive>

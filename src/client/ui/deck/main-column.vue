@@ -1,9 +1,12 @@
 <template>
 <XColumn v-if="deckStore.state.alwaysShowMainColumn || $route.name !== 'index'" :column="column" :is-stacked="isStacked">
 	<template #header>
-		<XHeader :info="pageInfo" :back-button="true" @back="back()"/>
+		<template v-if="pageInfo">
+			{{ pageInfo.title }}
+		</template>
 	</template>
 
+	<XHeader :info="pageInfo"/>
 	<router-view v-slot="{ Component }" class="_flat_">
 		<transition>
 			<keep-alive :include="['timeline']">

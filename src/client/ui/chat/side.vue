@@ -1,7 +1,7 @@
 <template>
 <div class="mrajymqm _narrow_" v-if="component">
 	<header class="header" @contextmenu.prevent.stop="onContextmenu">
-		<XHeader class="title" :info="pageInfo" :center="false" :back-button="history.length > 0" @back="back()" :close-button="true" @close="close()"/>
+		<XHeader class="title" :info="pageInfo" :center="false"/>
 	</header>
 	<component :is="component" v-bind="props" :ref="changePage" class="body _flat_"/>
 </div>

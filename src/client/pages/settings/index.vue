@@ -74,6 +74,7 @@ export default defineComponent({
 			title: i18n.locale.settings,
 			icon: 'fas fa-cog',
 			bg: 'var(--bg)',
+			hide: true,
 		};
 		const INFO = ref(indexInfo);
 		const page = ref(props.initialPage);

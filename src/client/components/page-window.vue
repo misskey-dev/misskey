@@ -3,14 +3,20 @@
 	:initial-width="500"
 	:initial-height="500"
 	:can-resize="true"
-	:close-button="false"
+	:close-button="true"
 	:contextmenu="contextmenu"
 	@closed="$emit('closed')"
 >
 	<template #header>
-		<XHeader :info="pageInfo" :back-button="history.length > 0" @back="back()" :close-button="true" @close="close()" :title-only="true"/>
+		<template v-if="pageInfo">
+			{{ pageInfo.title }}
+		</template>
+	</template>
+	<template #headerLeft>
+		<button v-if="history.length > 0" class="_button" @click="back()"><i class="fas fa-arrow-left"></i></button>
 	</template>
 	<div class="yrolvcoq _flat_">
+		<XHeader :info="pageInfo"/>
 		<component :is="component" v-bind="props" :ref="changePage"/>
 	</div>
 </XWindow>

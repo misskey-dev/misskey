@@ -1,5 +1,5 @@
 <template>
-<div class="mk-app" :class="{ wallpaper, isMobile }">
+<div class="mk-app" :class="{ wallpaper, isMobile }" :style="`--headerHeight:` + headerHeight + 'px'">
 	<XHeaderMenu v-if="showMenuOnTop"/>
 
 	<div class="columns" :class="{ fullView, withGlobalHeader: showMenuOnTop }">
@@ -14,7 +14,7 @@
 
 		<main class="main" @contextmenu.stop="onContextmenu" :style="{ background: pageInfo?.bg }">
 			<header class="header" @click="onHeaderClick">
-				<XHeader :info="pageInfo" :back-button="true" @back="back()"/>
+				<XHeader :info="pageInfo" v-get-size="(w, h) => headerHeight = h" :thin="true"/>
 			</header>
 			<div class="content" :class="{ _flat_: !fullView }">
 				<router-view v-slot="{ Component }">
@@ -88,6 +88,7 @@ export default defineComponent({
 	data() {
 		return {
 			pageInfo: null,
+			headerHeight: 0,
 			menuDef: menuDef,
 			isMobile: window.innerWidth <= MOBILE_THRESHOLD,
 			isDesktop: window.innerWidth >= DESKTOP_THRESHOLD,
@@ -257,7 +258,6 @@ export default defineComponent({
 }
 
 .mk-app {
-	$header-height: 50px;
 	$ui-font-size: 1em;
 	$widgets-hide-threshold: 1200px;
 	$nav-icon-only-width: 78px; // TODO: どこかに集約したい
@@ -330,7 +330,6 @@ export default defineComponent({
 				position: sticky;
 				z-index: 1000;
 				top: var(--globalHeaderHeight, 0px);
-				height: $header-height;
 				-webkit-backdrop-filter: var(--blur, blur(32px));
 				backdrop-filter: var(--blur, blur(32px));
 				background-color: var(--header);
@@ -338,11 +337,11 @@ export default defineComponent({
 			}
 
 			> .content {
-				--stickyTop: calc(var(--globalHeaderHeight, 0px) + #{$header-height});
+				--stickyTop: calc(var(--globalHeaderHeight, 0px) + var(--headerHeight));
 			}
 
 			@media (max-width: 850px) {
-				padding-top: $header-height;
+				padding-top: var(--headerHeight);
 
 				> .header {
 					position: fixed;

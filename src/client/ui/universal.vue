@@ -1,10 +1,10 @@
 <template>
-<div class="mk-app" :class="{ wallpaper }">
+<div class="mk-app" :class="{ wallpaper }" :style="`--headerHeight:` + headerHeight + 'px'">
 	<XSidebar ref="nav" class="sidebar"/>
 
 	<div class="contents" ref="contents" @contextmenu.stop="onContextmenu" :style="{ background: pageInfo?.bg }">
 		<header class="header" ref="header" @click="onHeaderClick" :style="{ background: pageInfo?.bg }">
-			<XHeader :info="pageInfo" :back-button="true" @back="back()"/>
+			<XHeader v-if="!pageInfo?.hide" :info="pageInfo" v-get-size="(w, h) => headerHeight = h"/>
 		</header>
 		<main ref="main">
 			<div class="content">
@@ -86,6 +86,7 @@ export default defineComponent({
 	data() {
 		return {
 			pageInfo: null,
+			headerHeight: 0,
 			isDesktop: window.innerWidth >= DESKTOP_THRESHOLD,
 			menuDef: menuDef,
 			navHidden: false,
@@ -243,7 +244,6 @@ export default defineComponent({
 }
 
 .mk-app {
-	$header-height: 58px; // TODO: どこかに集約したい
 	$ui-font-size: 1em; // TODO: どこかに集約したい
 	$widgets-hide-threshold: 1090px;
 
@@ -263,19 +263,14 @@ export default defineComponent({
 	> .contents {
 		width: 100%;
 		min-width: 0;
-		--stickyTop: #{$header-height};
-		padding-top: $header-height;
+		--stickyTop: var(--headerHeight);
+		padding-top: var(--headerHeight);
 		background: var(--panel);
 
 		> .header {
 			position: fixed;
 			z-index: 1000;
 			top: 0;
-			height: $header-height;
-			width: 100%;
-			line-height: $header-height;
-			text-align: center;
-			font-weight: bold;
 			//background-color: var(--panel);
 			-webkit-backdrop-filter: var(--blur, blur(32px));
 			backdrop-filter: var(--blur, blur(32px));
@@ -286,13 +281,6 @@ export default defineComponent({
 
 		> main {
 			min-width: 0;
-
-			> .content {
-				> * {
-					// ほんとは単に calc(100vh - #{$header-height}) と書きたいところだが... https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
-					min-height: calc((var(--vh, 1vh) * 100) - #{$header-height});
-				}
-			}
 
 			> .spacer {
 				height: 82px;

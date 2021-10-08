@@ -1,10 +1,5 @@
 <template>
-<div class="fdidabkb" :class="{ slim: titleOnly || narrow }" :style="`--height:${height};`" :key="key">
-	<transition :name="$store.state.animation ? 'header' : ''" mode="out-in" appear>
-		<div class="buttons left" v-if="backButton">
-			<button class="_button button back" @click.stop="$emit('back')" @touchstart="preventDrag" v-tooltip="$ts.goBack"><i class="fas fa-chevron-left"></i></button>
-		</div>
-	</transition>
+<div class="fdidabkb" :class="{ slim: narrow, thin }" :key="key">
 	<template v-if="info">
 		<div class="titleContainer" @click="showTabsPopup">
 			<i v-if="info.icon" class="icon" :class="info.icon"></i>
@@ -34,7 +29,6 @@
 			<button v-for="action in info.actions" class="_button button" :class="{ highlighted: action.highlighted }" @click.stop="action.handler" @touchstart="preventDrag" v-tooltip="action.text"><i :class="action.icon"></i></button>
 		</template>
 		<button v-if="shouldShowMenu" class="_button button" @click.stop="showMenu" @touchstart="preventDrag" v-tooltip="$ts.menu"><i class="fas fa-ellipsis-h"></i></button>
-		<button v-if="closeButton" class="_button button" @click.stop="$emit('close')" @touchstart="preventDrag" v-tooltip="$ts.close"><i class="fas fa-times"></i></button>
 	</div>
 </div>
 </template>
@@ -52,20 +46,9 @@ export default defineComponent({
 		menu: {
 			required: false
 		},
-		backButton: {
-			type: Boolean,
+		thin: {
 			required: false,
-			default: false,
-		},
-		closeButton: {
-			type: Boolean,
-			required: false,
-			default: false,
-		},
-		titleOnly: {
-			type: Boolean,
-			required: false,
-			default: false,
+			default: false
 		},
 	},
 
@@ -99,11 +82,9 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.height = this.$el.parentElement.offsetHeight + 'px';
-		this.narrow = this.titleOnly || this.$el.parentElement.offsetWidth < 500;
+		this.narrow = this.$el.offsetWidth < 500;
 		new ResizeObserver((entries, observer) => {
-			this.height = this.$el.parentElement.offsetHeight + 'px';
-			this.narrow = this.titleOnly || this.$el.parentElement.offsetWidth < 500;
+			this.narrow = this.$el.offsetWidth < 500;
 		}).observe(this.$el);
 	},
 
@@ -161,7 +142,12 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .fdidabkb {
+	--height: 60px;
 	display: flex;
+
+	&.thin {
+		--height: 50px;
+	}
 
 	&.slim {
 		text-align: center;
@@ -220,6 +206,7 @@ export default defineComponent({
 		text-align: left;
 		font-weight: bold;
 		flex-shrink: 0;
+		margin-left: 24px;
 
 		> .avatar {
 			$size: 32px;

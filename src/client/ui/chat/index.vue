@@ -74,7 +74,7 @@
 
 	<main class="main" @contextmenu.stop="onContextmenu">
 		<header class="header">
-			<XHeader class="header" :info="pageInfo" :menu="menu" :center="false" :back-button="true" @back="back()" @click="onHeaderClick"/>
+			<XHeader class="header" :info="pageInfo" :menu="menu" :center="false" @click="onHeaderClick"/>
 		</header>
 		<router-view v-slot="{ Component }">
 			<transition :name="$store.state.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
