@@ -793,6 +793,7 @@ itsOn: "オンになっています"
 itsOff: "オフになっています"
 emailRequiredForSignup: "アカウント登録にメールアドレスを必須にする"
 unread: "未読"
+filter: "フィルタ"
 
 _signup:
   almostThere: "ほとんど完了です"
