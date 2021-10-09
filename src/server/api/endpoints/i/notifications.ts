@@ -33,6 +33,11 @@ export const meta = {
 			default: false
 		},
 
+		unreadOnly: {
+			validator: $.optional.bool,
+			default: false
+		},
+
 		markAsRead: {
 			validator: $.optional.bool,
 			default: true
@@ -103,6 +108,10 @@ export default define(meta, async (ps, user) => {
 		query.andWhere(`notification.type IN (:...includeTypes)`, { includeTypes: ps.includeTypes });
 	} else if (ps.excludeTypes && ps.excludeTypes.length > 0) {
 		query.andWhere(`notification.type NOT IN (:...excludeTypes)`, { excludeTypes: ps.excludeTypes });
+	}
+
+	if (ps.unreadOnly) {
+		query.andWhere(`notification.isRead = false`);
 	}
 
 	const notifications = await query.take(ps.limit!).getMany();

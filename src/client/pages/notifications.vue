@@ -2,13 +2,13 @@
 <div>
 	<MkHeader :info="header"/>
 	<div class="clupoqwt" v-size="{ min: [800] }">
-		<XNotifications class="notifications" @before="before" @after="after" page/>
+		<XNotifications class="notifications" @before="before" @after="after" :unread-only="tab === 'unread'"/>
 	</div>
 </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
 import Progress from '@client/scripts/loading';
 import XNotifications from '@client/components/notifications.vue';
 import * as os from '@client/os';
@@ -26,7 +26,8 @@ export default defineComponent({
 				icon: 'fas fa-bell',
 				bg: 'var(--bg)',
 			},
-			header: {
+			tab: 'all',
+			header: computed(() => ({
 				title: this.$ts.notifications,
 				icon: 'fas fa-bell',
 				bg: 'var(--bg)',
@@ -35,9 +36,18 @@ export default defineComponent({
 					icon: 'fas fa-check',
 					handler: () => {
 						os.apiWithDialog('notifications/mark-all-as-read');
-					}
-				}]
-			},
+					},
+				}],
+				tabs: [{
+					active: this.tab === 'all',
+					title: this.$ts.all,
+					onClick: () => { this.tab = 'all'; },
+				}, {
+					active: this.tab === 'unread',
+					title: this.$ts.unread,
+					onClick: () => { this.tab = 'unread'; },
+				},]
+			})),
 		};
 	},
 
