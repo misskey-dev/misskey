@@ -795,6 +795,7 @@ filter: "Filtre"
 _signup:
   almostThere: "Bientôt fini"
   emailAddressInfo: "Insérez votre adresse e-mail."
+  emailSent: "Un courriel de confirmation vient d'être envoyé à l'adresse que vous avez renseignée ({email}). Cliquez sur le lien contenu dans le message pour terminer la création de votre compte."
 _accountDelete:
   accountDelete: "Supprimer le compte"
   mayTakeTime: "La suppression de compte nécessitant beaucoup de ressources, l'exécution du processus peut prendre du temps, en fonction de la quantité de contenus que vous avez créés et du nombre de fichiers que vous avez téléversés."
