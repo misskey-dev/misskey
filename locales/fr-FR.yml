@@ -789,6 +789,12 @@ pubSub: "Comptes Pub/Sub"
 lastCommunication: "Dernière communication"
 resolved: "Résolu"
 unresolved: "En attente"
+emailRequiredForSignup: "Une adresse e-mail est nécessaire pour créer un compte"
+unread: "Non lu"
+filter: "Filtre"
+_signup:
+  almostThere: "Bientôt fini"
+  emailAddressInfo: "Insérez votre adresse e-mail."
 _accountDelete:
   accountDelete: "Supprimer le compte"
   mayTakeTime: "La suppression de compte nécessitant beaucoup de ressources, l'exécution du processus peut prendre du temps, en fonction de la quantité de contenus que vous avez créés et du nombre de fichiers que vous avez téléversés."
