@@ -1,7 +1,7 @@
 import * as httpSignature from 'http-signature';
 
 import config from '@/config/index';
-import { program } from '../argv';
+import { envOption } from '../env';
 
 import processDeliver from './processors/deliver';
 import processInbox from './processors/inbox';
@@ -200,7 +200,7 @@ export function createCleanRemoteFilesJob() {
 }
 
 export default function() {
-	if (!program.onlyServer) {
+	if (!envOption.onlyServer) {
 		deliverQueue.process(config.deliverJobConcurrency || 128, processDeliver);
 		inboxQueue.process(config.inboxJobConcurrency || 16, processInbox);
 		processDb(dbQueue);

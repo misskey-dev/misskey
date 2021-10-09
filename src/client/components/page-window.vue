@@ -3,12 +3,18 @@
 	:initial-width="500"
 	:initial-height="500"
 	:can-resize="true"
-	:close-button="false"
+	:close-button="true"
 	:contextmenu="contextmenu"
 	@closed="$emit('closed')"
 >
 	<template #header>
-		<XHeader :info="pageInfo" :back-button="history.length > 0" @back="back()" :close-button="true" @close="close()" :title-only="true"/>
+		<template v-if="pageInfo">
+			<i v-if="pageInfo.icon" class="icon" :class="pageInfo.icon" style="margin-right: 0.5em;"></i>
+			<span>{{ pageInfo.title }}</span>
+		</template>
+	</template>
+	<template #headerLeft>
+		<button v-if="history.length > 0" class="_button" @click="back()"><i class="fas fa-arrow-left"></i></button>
 	</template>
 	<div class="yrolvcoq _flat_">
 		<component :is="component" v-bind="props" :ref="changePage"/>
@@ -19,7 +25,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import XWindow from '@client/components/ui/window.vue';
-import XHeader from '@client/ui/_common_/header.vue';
 import { popout } from '@client/scripts/popout';
 import copyToClipboard from '@client/scripts/copy-to-clipboard';
 import { resolve } from '@client/router';
@@ -29,7 +34,6 @@ import * as symbols from '@client/symbols';
 export default defineComponent({
 	components: {
 		XWindow,
-		XHeader,
 	},
 
 	inject: {

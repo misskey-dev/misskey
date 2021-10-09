@@ -39,7 +39,7 @@
 		</div>
 	</div>
 	<div class="main">
-		<component :is="component" :key="page" @info="onInfo" v-bind="pageProps"/>
+		<component :is="component" :key="page" v-bind="pageProps"/>
 	</div>
 </div>
 </template>
@@ -80,9 +80,7 @@ export default defineComponent({
 		const narrow = ref(false);
 		const view = ref(null);
 		const el = ref(null);
-		const onInfo = (viewInfo) => {
-			INFO.value = viewInfo;
-		};
+
 		const pageProps = ref({});
 		const component = computed(() => {
 			if (page.value == null) return null;
@@ -145,7 +143,7 @@ export default defineComponent({
 			}
 
 			nextTick(() => {
-				scroll(el.value, 0);
+				scroll(el.value, { top: 0 });
 			});
 		}, { immediate: true });
 
@@ -175,7 +173,6 @@ export default defineComponent({
 			narrow,
 			view,
 			el,
-			onInfo,
 			pageProps,
 			component,
 			emailNotConfigured,

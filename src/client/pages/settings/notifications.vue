@@ -15,7 +15,7 @@ import FormButton from '@client/components/debobigego/button.vue';
 import FormLink from '@client/components/debobigego/link.vue';
 import FormBase from '@client/components/debobigego/base.vue';
 import FormGroup from '@client/components/debobigego/group.vue';
-import { notificationTypes } from '../../../types';
+import { notificationTypes } from '@/types';
 import * as os from '@client/os';
 import * as symbols from '@client/symbols';
 

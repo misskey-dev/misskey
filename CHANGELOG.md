@@ -13,9 +13,16 @@
 ## 12.x.x (unreleased)
 
 ### Improvements
+- アカウント登録にメールアドレスの設定を必須にするオプション
 - クライアント: アニメーションを減らす設定をメニューのアニメーションにも適用するように
 - クライアント: MFM関数構文のサジェストを実装
+- クライアント: 未読の通知のみ表示する機能
+- クライアント: 通知ページで通知の種類によるフィルタ
 - ActivityPub: HTML -> MFMの変換を強化
+- API: i/notifications に unreadOnly オプションを追加
+- API: ap系のエンドポイントをログイン必須化+レートリミット追加
+- Misskeyのコマンドラインオプションを廃止
+	- 代わりに環境変数で設定することができます
 
 ### Bugfixes
 - Fix createDeleteAccountJob
