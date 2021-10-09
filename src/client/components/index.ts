@@ -13,6 +13,7 @@ import i18n from './global/i18n';
 import loading from './global/loading.vue';
 import error from './global/error.vue';
 import ad from './global/ad.vue';
+import header from './global/header.vue';
 
 export default function(app: App) {
 	app.component('I18n', i18n);
@@ -28,4 +29,5 @@ export default function(app: App) {
 	app.component('MkLoading', loading);
 	app.component('MkError', error);
 	app.component('MkAd', ad);
+	app.component('MkHeader', header);
 }

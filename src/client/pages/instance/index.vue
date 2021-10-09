@@ -79,7 +79,8 @@ export default defineComponent({
 	setup(props, context) {
 		const indexInfo = {
 			title: i18n.locale.instance,
-			icon: 'fas fa-cog'
+			icon: 'fas fa-cog',
+			bg: 'var(--bg)',
 		};
 		const INFO = ref(indexInfo);
 		const page = ref(props.initialPage);
@@ -126,7 +127,7 @@ export default defineComponent({
 			pageProps.value = {};
 
 			nextTick(() => {
-				scroll(el.value, 0);
+				scroll(el.value, { top: 0 });
 			});
 		}, { immediate: true });
 
@@ -234,7 +235,6 @@ export default defineComponent({
 		> .main {
 			flex: 1;
 			min-width: 0;
-			overflow: auto;
 			--baseContentWidth: 100%;
 		}
 	}

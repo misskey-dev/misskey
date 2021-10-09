@@ -11,7 +11,6 @@
 			<button class="_button" @click="$refs.modal.close()"><i class="fas fa-times"></i></button>
 		</div>
 		<div class="body _flat_">
-			<XHeader v-if="!pageInfo?.hide" :info="pageInfo"/>
 			<keep-alive>
 				<component :is="component" v-bind="props" :ref="changePage"/>
 			</keep-alive>
@@ -23,7 +22,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import MkModal from '@client/components/ui/modal.vue';
-import XHeader from '@client/ui/_common_/header.vue';
 import { popout } from '@client/scripts/popout';
 import copyToClipboard from '@client/scripts/copy-to-clipboard';
 import { resolve } from '@client/router';
@@ -34,7 +32,6 @@ import * as os from '@client/os';
 export default defineComponent({
 	components: {
 		MkModal,
-		XHeader,
 	},
 
 	inject: {

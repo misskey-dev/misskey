@@ -78,7 +78,6 @@ export default defineComponent({
 				title: this.$ts.profile,
 				icon: 'fas fa-user',
 				bg: 'var(--bg)',
-				hide: true,
 			},
 			host,
 			langs,

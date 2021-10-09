@@ -1,6 +1,9 @@
 <template>
-<div class="clupoqwt" v-size="{ min: [800] }">
-	<XNotifications class="notifications" @before="before" @after="after" page/>
+<div>
+	<MkHeader :info="header"/>
+	<div class="clupoqwt" v-size="{ min: [800] }">
+		<XNotifications class="notifications" @before="before" @after="after" page/>
+	</div>
 </div>
 </template>
 
@@ -19,6 +22,11 @@ export default defineComponent({
 	data() {
 		return {
 			[symbols.PAGE_INFO]: {
+				title: this.$ts.notifications,
+				icon: 'fas fa-bell',
+				bg: 'var(--bg)',
+			},
+			header: {
 				title: this.$ts.notifications,
 				icon: 'fas fa-bell',
 				bg: 'var(--bg)',

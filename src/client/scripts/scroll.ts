@@ -1,3 +1,5 @@
+type ScrollBehavior = 'auto' | 'smooth' | 'instant';
+
 export function getScrollContainer(el: Element | null): Element | null {
 	if (el == null || el.tagName === 'BODY') return null;
 	const overflow = window.getComputedStyle(el).getPropertyValue('overflow');
@@ -45,21 +47,25 @@ export function onScrollBottom(el: Element, cb) {
 	container.addEventListener('scroll', onScroll, { passive: true });
 }
 
-export function scroll(el: Element, top: number) {
+export function scroll(el: Element, options: {
+	top?: number;
+	left?: number;
+	behavior?: ScrollBehavior;
+}) {
 	const container = getScrollContainer(el);
 	if (container == null) {
-		window.scroll({ top: top, behavior: 'instant' });
+		window.scroll(options);
 	} else {
-		container.scrollTop = top;
+		container.scroll(options);
 	}
 }
 
-export function scrollToTop(el: Element) {
-	scroll(el, 0);
+export function scrollToTop(el: Element, options: { behavior?: ScrollBehavior; } = {}) {
+	scroll(el, { top: 0, ...options });
 }
 
-export function scrollToBottom(el: Element) {
-	scroll(el, 99999); // TODO: ちゃんと計算する
+export function scrollToBottom(el: Element, options: { behavior?: ScrollBehavior; } = {}) {
+	scroll(el, { top: 99999, ...options }); // TODO: ちゃんと計算する
 }
 
 export function isBottom(el: Element, asobi = 0) {

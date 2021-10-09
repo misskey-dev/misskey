@@ -1,24 +1,27 @@
 <template>
-<div class="ztgjmzrw">
-	<MkButton @click="add()" primary style="margin: 0 auto 16px auto;"><i class="fas fa-plus"></i> {{ $ts.add }}</MkButton>
-	<section class="_card _gap announcements" v-for="announcement in announcements">
-		<div class="_content announcement">
-			<MkInput v-model="announcement.title">
-				<template #label>{{ $ts.title }}</template>
-			</MkInput>
-			<MkTextarea v-model="announcement.text">
-				<template #label>{{ $ts.text }}</template>
-			</MkTextarea>
-			<MkInput v-model="announcement.imageUrl">
-				<template #label>{{ $ts.imageUrl }}</template>
-			</MkInput>
-			<p v-if="announcement.reads">{{ $t('nUsersRead', { n: announcement.reads }) }}</p>
-			<div class="buttons">
-				<MkButton class="button" inline @click="save(announcement)" primary><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
-				<MkButton class="button" inline @click="remove(announcement)"><i class="fas fa-trash-alt"></i> {{ $ts.remove }}</MkButton>
+<div>
+	<MkHeader :info="header"/>
+
+	<div class="ztgjmzrw">
+		<section class="_card _gap announcements" v-for="announcement in announcements">
+			<div class="_content announcement">
+				<MkInput v-model="announcement.title">
+					<template #label>{{ $ts.title }}</template>
+				</MkInput>
+				<MkTextarea v-model="announcement.text">
+					<template #label>{{ $ts.text }}</template>
+				</MkTextarea>
+				<MkInput v-model="announcement.imageUrl">
+					<template #label>{{ $ts.imageUrl }}</template>
+				</MkInput>
+				<p v-if="announcement.reads">{{ $t('nUsersRead', { n: announcement.reads }) }}</p>
+				<div class="buttons">
+					<MkButton class="button" inline @click="save(announcement)" primary><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
+					<MkButton class="button" inline @click="remove(announcement)"><i class="fas fa-trash-alt"></i> {{ $ts.remove }}</MkButton>
+				</div>
 			</div>
-		</div>
-	</section>
+		</section>
+	</div>
 </div>
 </template>
 
@@ -45,6 +48,17 @@ export default defineComponent({
 				title: this.$ts.announcements,
 				icon: 'fas fa-broadcast-tower',
 				bg: 'var(--bg)',
+			},
+			header: {
+				title: this.$ts.announcements,
+				icon: 'fas fa-broadcast-tower',
+				bg: 'var(--bg)',
+				actions: [{
+					asFullButton: true,
+					icon: 'fas fa-plus',
+					text: this.$ts.add,
+					handler: this.add,
+				}],
 			},
 			announcements: [],
 		}

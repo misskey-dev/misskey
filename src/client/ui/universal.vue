@@ -1,11 +1,8 @@
 <template>
-<div class="mk-app" :class="{ wallpaper }" :style="`--headerHeight:` + headerHeight + 'px'">
+<div class="mk-app" :class="{ wallpaper }">
 	<XSidebar ref="nav" class="sidebar"/>
 
 	<div class="contents" ref="contents" @contextmenu.stop="onContextmenu" :style="{ background: pageInfo?.bg }">
-		<header class="header" ref="header" @click="onHeaderClick" :style="{ background: pageInfo?.bg }">
-			<XHeader v-if="!pageInfo?.hide" :info="pageInfo" v-get-size="(w, h) => headerHeight = h"/>
-		</header>
 		<main ref="main">
 			<div class="content">
 				<router-view v-slot="{ Component }">
@@ -58,7 +55,6 @@ import { instanceName } from '@client/config';
 import { StickySidebar } from '@client/scripts/sticky-sidebar';
 import XSidebar from '@client/ui/_common_/sidebar.vue';
 import XCommon from './_common_/common.vue';
-import XHeader from './_common_/header.vue';
 import XSide from './default.side.vue';
 import * as os from '@client/os';
 import { menuDef } from '@client/menu';
@@ -70,7 +66,6 @@ export default defineComponent({
 	components: {
 		XCommon,
 		XSidebar,
-		XHeader,
 		XWidgets: defineAsyncComponent(() => import('./universal.widgets.vue')),
 		XSide, // NOTE: dynamic importするとAsyncComponentWrapperが間に入るせいでref取得できなくて面倒になる
 	},
@@ -86,7 +81,6 @@ export default defineComponent({
 	data() {
 		return {
 			pageInfo: null,
-			headerHeight: 0,
 			isDesktop: window.innerWidth >= DESKTOP_THRESHOLD,
 			menuDef: menuDef,
 			navHidden: false,
@@ -152,9 +146,6 @@ export default defineComponent({
 		adjustUI() {
 			const navWidth = this.$refs.nav.$el.offsetWidth;
 			this.navHidden = navWidth === 0;
-			if (this.$refs.contents == null) return;
-			const width = this.$refs.contents.offsetWidth;
-			if (this.$refs.header) this.$refs.header.style.width = `${width}px`;
 		},
 
 		showNav() {
@@ -182,10 +173,6 @@ export default defineComponent({
 
 		onTransition() {
 			if (window._scroll) window._scroll();
-		},
-
-		onHeaderClick() {
-			window.scroll({ top: 0, behavior: 'smooth' });
 		},
 
 		onContextmenu(e) {
@@ -263,21 +250,7 @@ export default defineComponent({
 	> .contents {
 		width: 100%;
 		min-width: 0;
-		--stickyTop: var(--headerHeight);
-		padding-top: var(--headerHeight);
 		background: var(--panel);
-
-		> .header {
-			position: fixed;
-			z-index: 1000;
-			top: 0;
-			//background-color: var(--panel);
-			-webkit-backdrop-filter: var(--blur, blur(32px));
-			backdrop-filter: var(--blur, blur(32px));
-			background-color: var(--header);
-			border-bottom: solid 0.5px var(--divider);
-			user-select: none;
-		}
 
 		> main {
 			min-width: 0;

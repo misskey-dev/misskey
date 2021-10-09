@@ -7,7 +7,7 @@
 			<span class="title">{{ pageInfo.title }}</span>
 			<button class="_button" @click="close()"><i class="fas fa-times"></i></button>
 		</header>
-		<XHeader class="pageHeader" :info="pageInfo"/>
+		<MkHeader class="pageHeader" :info="pageInfo"/>
 		<component :is="component" v-bind="props" :ref="changePage"/>
 	</div>
 </div>
@@ -15,7 +15,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import XHeader from './_common_/header.vue';
 import * as os from '@client/os';
 import copyToClipboard from '@client/scripts/copy-to-clipboard';
 import { resolve } from '@client/router';
@@ -23,10 +22,6 @@ import { url } from '@client/config';
 import * as symbols from '@client/symbols';
 
 export default defineComponent({
-	components: {
-		XHeader
-	},
-
 	provide() {
 		return {
 			navHook: (path) => {
