@@ -792,6 +792,8 @@ unresolved: "Unresolved"
 itsOn: "Enabled"
 itsOff: "Disabled"
 emailRequiredForSignup: "Require email address for sign-up"
+unread: "Unread"
+filter: "Filter"
 _signup:
   almostThere: "Almost there"
   emailAddressInfo: "Please enter your email address."
