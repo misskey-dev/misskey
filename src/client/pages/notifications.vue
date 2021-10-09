@@ -2,7 +2,7 @@
 <div>
 	<MkHeader :info="header"/>
 	<div class="clupoqwt" v-size="{ min: [800] }">
-		<XNotifications class="notifications" @before="before" @after="after" :unread-only="tab === 'unread'"/>
+		<XNotifications class="notifications" @before="before" @after="after" :include-types="includeTypes" :unread-only="tab === 'unread'"/>
 	</div>
 </div>
 </template>
@@ -13,6 +13,7 @@ import Progress from '@client/scripts/loading';
 import XNotifications from '@client/components/notifications.vue';
 import * as os from '@client/os';
 import * as symbols from '@client/symbols';
+import { notificationTypes } from '@/types';
 
 export default defineComponent({
 	components: {
@@ -27,11 +28,17 @@ export default defineComponent({
 				bg: 'var(--bg)',
 			},
 			tab: 'all',
+			includeTypes: null,
 			header: computed(() => ({
 				title: this.$ts.notifications,
 				icon: 'fas fa-bell',
 				bg: 'var(--bg)',
 				actions: [{
+					text: this.$ts.filter,
+					icon: 'fas fa-filter',
+					highlighted: this.includeTypes != null,
+					handler: this.setFilter,
+				}, {
 					text: this.$ts.markAllAsRead,
 					icon: 'fas fa-check',
 					handler: () => {
@@ -58,6 +65,24 @@ export default defineComponent({
 
 		after() {
 			Progress.done();
+		},
+
+		setFilter(ev) {
+			const typeItems = notificationTypes.map(t => ({
+				text: this.$t(`_notification._types.${t}`),
+				active: this.includeTypes && this.includeTypes.includes(t),
+				action: () => {
+					this.includeTypes = [t];
+				}
+			}));
+			const items = this.includeTypes != null ? [{
+				icon: 'fas fa-times',
+				text: this.$ts.clear,
+				action: () => {
+					this.includeTypes = null;
+				}
+			}, null, ...typeItems] : typeItems;
+			os.popupMenu(items, ev.currentTarget || ev.target);
 		}
 	}
 });
