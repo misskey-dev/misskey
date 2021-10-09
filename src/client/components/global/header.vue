@@ -91,11 +91,15 @@ export default defineComponent({
 		bg.setAlpha(0.85);
 		this.bg = bg.toRgbString();
 	
-		if (this.$el.parentElement == null) return;
-		this.narrow = this.$el.parentElement.offsetWidth < 500;
-		new ResizeObserver((entries, observer) => {
+		if (this.$el.parentElement) {
 			this.narrow = this.$el.parentElement.offsetWidth < 500;
-		}).observe(this.$el.parentElement);
+			new ResizeObserver((entries, observer) => {
+				this.narrow = this.$el.parentElement.offsetWidth < 500;
+			}).observe(this.$el.parentElement);
+			const currentStickyTop = getComputedStyle(this.$el).getPropertyValue('--stickyTop') || '0px';
+			this.$el.style.setProperty('--stickyTop', currentStickyTop);
+			this.$el.parentElement.style.setProperty('--stickyTop', `calc(${currentStickyTop} + ${this.$el.offsetHeight}px)`);
+		}
 	},
 
 	methods: {
