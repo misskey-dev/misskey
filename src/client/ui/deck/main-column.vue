@@ -1,7 +1,9 @@
 <template>
 <XColumn v-if="deckStore.state.alwaysShowMainColumn || $route.name !== 'index'" :column="column" :is-stacked="isStacked">
 	<template #header>
-		<XHeader :info="pageInfo" :back-button="true" @back="back()"/>
+		<template v-if="pageInfo">
+			{{ pageInfo.title }}
+		</template>
 	</template>
 
 	<router-view v-slot="{ Component }" class="_flat_">
@@ -18,7 +20,6 @@
 import { defineComponent } from 'vue';
 import XColumn from './column.vue';
 import XNotes from '@client/components/notes.vue';
-import XHeader from '@client/ui/_common_/header.vue';
 import { deckStore } from '@client/ui/deck/deck-store';
 import * as os from '@client/os';
 import * as symbols from '@client/symbols';
@@ -26,7 +27,6 @@ import * as symbols from '@client/symbols';
 export default defineComponent({
 	components: {
 		XColumn,
-		XHeader,
 		XNotes
 	},
 

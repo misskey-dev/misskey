@@ -1,6 +1,9 @@
 <template>
 <div>
-	<XNotes :pagination="pagination" @before="before()" @after="after()"/>
+	<MkHeader :info="header"/>
+	<div>
+		<XNotes :pagination="pagination" @before="before()" @after="after()"/>
+	</div>
 </div>
 </template>
 
@@ -19,7 +22,13 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.directNotes,
-				icon: 'fas fa-envelope'
+				icon: 'fas fa-envelope',
+				bg: 'var(--bg)',
+			},
+			header: {
+				title: this.$ts.directNotes,
+				icon: 'fas fa-envelope',
+				bg: 'var(--bg)',
 			},
 			pagination: {
 				endpoint: 'notes/mentions',

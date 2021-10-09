@@ -10,6 +10,8 @@
 
 		<FormSwitch v-model="enableRegistration">{{ $ts.enableRegistration }}</FormSwitch>
 
+		<FormSwitch v-model="emailRequiredForSignup">{{ $ts.emailRequiredForSignup }}</FormSwitch>
+
 		<FormButton @click="save" primary><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
 	</FormSuspense>
 </FormBase>
@@ -50,6 +52,7 @@ export default defineComponent({
 			enableHcaptcha: false,
 			enableRecaptcha: false,
 			enableRegistration: false,
+			emailRequiredForSignup: false,
 		}
 	},
 
@@ -63,11 +66,13 @@ export default defineComponent({
 			this.enableHcaptcha = meta.enableHcaptcha;
 			this.enableRecaptcha = meta.enableRecaptcha;
 			this.enableRegistration = !meta.disableRegistration;
+			this.emailRequiredForSignup = meta.emailRequiredForSignup;
 		},
 	
 		save() {
 			os.apiWithDialog('admin/update-meta', {
 				disableRegistration: !this.enableRegistration,
+				emailRequiredForSignup: this.emailRequiredForSignup,
 			}).then(() => {
 				fetchInstance();
 			});

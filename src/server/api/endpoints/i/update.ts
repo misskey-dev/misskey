@@ -13,7 +13,7 @@ import { ApiError } from '../../error';
 import { Users, DriveFiles, UserProfiles, Pages } from '@/models/index';
 import { User } from '@/models/entities/user';
 import { UserProfile } from '@/models/entities/user-profile';
-import { notificationTypes } from '../../../../types';
+import { notificationTypes } from '@/types';
 import { normalizeForSearch } from '@/misc/normalize-for-search';
 
 export const meta = {

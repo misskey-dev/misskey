@@ -1,10 +1,5 @@
 <template>
-<div class="fdidabkb" :class="{ slim: titleOnly || narrow }" :style="`--height:${height};`" :key="key">
-	<transition :name="$store.state.animation ? 'header' : ''" mode="out-in" appear>
-		<div class="buttons left" v-if="backButton">
-			<button class="_button button back" @click.stop="$emit('back')" @touchstart="preventDrag" v-tooltip="$ts.goBack"><i class="fas fa-chevron-left"></i></button>
-		</div>
-	</transition>
+<div class="fdidabkb" :class="{ slim: narrow, thin }" :style="{ background: bg }" @click="onClick">
 	<template v-if="info">
 		<div class="titleContainer" @click="showTabsPopup">
 			<i v-if="info.icon" class="icon" :class="info.icon"></i>
@@ -31,20 +26,29 @@
 	</template>
 	<div class="buttons right">
 		<template v-if="info && info.actions && !narrow">
-			<button v-for="action in info.actions" class="_button button" :class="{ highlighted: action.highlighted }" @click.stop="action.handler" @touchstart="preventDrag" v-tooltip="action.text"><i :class="action.icon"></i></button>
+			<template v-for="action in info.actions">
+				<MkButton class="fullButton" v-if="action.asFullButton" @click.stop="action.handler" primary><i :class="action.icon" style="margin-right: 6px;"></i>{{ action.text }}</MkButton>
+				<button v-else class="_button button" :class="{ highlighted: action.highlighted }" @click.stop="action.handler" @touchstart="preventDrag" v-tooltip="action.text"><i :class="action.icon"></i></button>
+			</template>
 		</template>
 		<button v-if="shouldShowMenu" class="_button button" @click.stop="showMenu" @touchstart="preventDrag" v-tooltip="$ts.menu"><i class="fas fa-ellipsis-h"></i></button>
-		<button v-if="closeButton" class="_button button" @click.stop="$emit('close')" @touchstart="preventDrag" v-tooltip="$ts.close"><i class="fas fa-times"></i></button>
 	</div>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import * as tinycolor from 'tinycolor2';
 import { popupMenu } from '@client/os';
 import { url } from '@client/config';
+import { scrollToTop } from '@client/scripts/scroll';
+import MkButton from '@client/components/ui/button.vue';
 
 export default defineComponent({
+	components: {
+		MkButton
+	},
+
 	props: {
 		info: {
 			required: true
@@ -52,28 +56,17 @@ export default defineComponent({
 		menu: {
 			required: false
 		},
-		backButton: {
-			type: Boolean,
+		thin: {
 			required: false,
-			default: false,
-		},
-		closeButton: {
-			type: Boolean,
-			required: false,
-			default: false,
-		},
-		titleOnly: {
-			type: Boolean,
-			required: false,
-			default: false,
+			default: false
 		},
 	},
 
 	data() {
 		return {
+			bg: null,
 			narrow: false,
 			height: 0,
-			key: 0,
 		};
 	},
 
@@ -92,19 +85,21 @@ export default defineComponent({
 		}
 	},
 
-	watch: {
-		info() {
-			this.key++;
-		},
-	},
-
 	mounted() {
-		this.height = this.$el.parentElement.offsetHeight + 'px';
-		this.narrow = this.titleOnly || this.$el.parentElement.offsetWidth < 500;
-		new ResizeObserver((entries, observer) => {
-			this.height = this.$el.parentElement.offsetHeight + 'px';
-			this.narrow = this.titleOnly || this.$el.parentElement.offsetWidth < 500;
-		}).observe(this.$el);
+		const rawBg = this.info?.bg || 'var(--bg)';
+		const bg = tinycolor(rawBg.startsWith('var(') ? getComputedStyle(document.documentElement).getPropertyValue(rawBg.slice(4, -1)) : rawBg);
+		bg.setAlpha(0.85);
+		this.bg = bg.toRgbString();
+	
+		if (this.$el.parentElement) {
+			this.narrow = this.$el.parentElement.offsetWidth < 500;
+			new ResizeObserver((entries, observer) => {
+				this.narrow = this.$el.parentElement.offsetWidth < 500;
+			}).observe(this.$el.parentElement);
+			const currentStickyTop = getComputedStyle(this.$el).getPropertyValue('--stickyTop') || '0px';
+			this.$el.style.setProperty('--stickyTop', currentStickyTop);
+			this.$el.parentElement.style.setProperty('--stickyTop', `calc(${currentStickyTop} + ${this.$el.offsetHeight}px)`);
+		}
 	},
 
 	methods: {
@@ -154,6 +149,10 @@ export default defineComponent({
 
 		preventDrag(ev) {
 			ev.stopPropagation();
+		},
+
+		onClick(ev) {
+			scrollToTop(this.$el, { behavior: 'smooth' });
 		}
 	}
 });
@@ -161,7 +160,18 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .fdidabkb {
+	--height: 60px;
 	display: flex;
+	position: sticky;
+	top: var(--stickyTop, 0);
+	z-index: 1000;
+	width: 100%;
+	-webkit-backdrop-filter: var(--blur, blur(15px));
+	backdrop-filter: var(--blur, blur(15px));
+
+	&.thin {
+		--height: 50px;
+	}
 
 	&.slim {
 		text-align: center;
@@ -210,6 +220,12 @@ export default defineComponent({
 				color: var(--accent);
 			}
 		}
+
+		> .fullButton {
+			& + .fullButton {
+				margin-left: 12px;
+			}
+		}
 	}
 
 	> .titleContainer {
@@ -220,6 +236,7 @@ export default defineComponent({
 		text-align: left;
 		font-weight: bold;
 		flex-shrink: 0;
+		margin-left: 24px;
 
 		> .avatar {
 			$size: 32px;

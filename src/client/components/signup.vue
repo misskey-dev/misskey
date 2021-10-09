@@ -10,13 +10,23 @@
 			<template #prefix>@</template>
 			<template #suffix>@{{ host }}</template>
 			<template #caption>
-				<span v-if="usernameState == 'wait'" style="color:#999"><i class="fas fa-spinner fa-pulse fa-fw"></i> {{ $ts.checking }}</span>
-				<span v-if="usernameState == 'ok'" style="color: var(--success)"><i class="fas fa-check fa-fw"></i> {{ $ts.available }}</span>
-				<span v-if="usernameState == 'unavailable'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.unavailable }}</span>
-				<span v-if="usernameState == 'error'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.error }}</span>
-				<span v-if="usernameState == 'invalid-format'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.usernameInvalidFormat }}</span>
-				<span v-if="usernameState == 'min-range'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.tooShort }}</span>
-				<span v-if="usernameState == 'max-range'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.tooLong }}</span>
+				<span v-if="usernameState === 'wait'" style="color:#999"><i class="fas fa-spinner fa-pulse fa-fw"></i> {{ $ts.checking }}</span>
+				<span v-else-if="usernameState === 'ok'" style="color: var(--success)"><i class="fas fa-check fa-fw"></i> {{ $ts.available }}</span>
+				<span v-else-if="usernameState === 'unavailable'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.unavailable }}</span>
+				<span v-else-if="usernameState === 'error'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.error }}</span>
+				<span v-else-if="usernameState === 'invalid-format'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.usernameInvalidFormat }}</span>
+				<span v-else-if="usernameState === 'min-range'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.tooShort }}</span>
+				<span v-else-if="usernameState === 'max-range'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.tooLong }}</span>
+			</template>
+		</MkInput>
+		<MkInput v-if="meta.emailRequiredForSignup" class="_formBlock" v-model="email" type="email" :autocomplete="Math.random()" spellcheck="false" required @update:modelValue="onChangeEmail" data-cy-signup-email>
+			<template #label>{{ $ts.emailAddress }} <div class="_button _help" v-tooltip:dialog="$ts._signup.emailAddressInfo"><i class="far fa-question-circle"></i></div></template>
+			<template #prefix><i class="fas fa-envelope"></i></template>
+			<template #caption>
+				<span v-if="emailState === 'wait'" style="color:#999"><i class="fas fa-spinner fa-pulse fa-fw"></i> {{ $ts.checking }}</span>
+				<span v-else-if="emailState === 'ok'" style="color: var(--success)"><i class="fas fa-check fa-fw"></i> {{ $ts.available }}</span>
+				<span v-else-if="emailState === 'unavailable'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.unavailable }}</span>
+				<span v-else-if="emailState === 'error'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.error }}</span>
 			</template>
 		</MkInput>
 		<MkInput class="_formBlock" v-model="password" type="password" :autocomplete="Math.random()" required @update:modelValue="onChangePassword" data-cy-signup-password>
@@ -87,8 +97,10 @@ export default defineComponent({
 			password: '',
 			retypedPassword: '',
 			invitationCode: '',
+			email: '',
 			url,
 			usernameState: null,
+			emailState: null,
 			passwordStrength: '',
 			passwordRetypeState: null,
 			submitting: false,
@@ -148,6 +160,23 @@ export default defineComponent({
 			});
 		},
 
+		onChangeEmail() {
+			if (this.email == '') {
+				this.emailState = null;
+				return;
+			}
+
+			this.emailState = 'wait';
+
+			os.api('email-address/available', {
+				emailAddress: this.email
+			}).then(result => {
+				this.emailState = result.available ? 'ok' : 'unavailable';
+			}).catch(err => {
+				this.emailState = 'error';
+			});
+		},
+
 		onChangePassword() {
 			if (this.password == '') {
 				this.passwordStrength = '';
@@ -174,20 +203,30 @@ export default defineComponent({
 			os.api('signup', {
 				username: this.username,
 				password: this.password,
+				emailAddress: this.email,
 				invitationCode: this.invitationCode,
 				'hcaptcha-response': this.hCaptchaResponse,
 				'g-recaptcha-response': this.reCaptchaResponse,
 			}).then(() => {
-				return os.api('signin', {
-					username: this.username,
-					password: this.password
-				}).then(res => {
-					this.$emit('signup', res);
+				if (this.meta.emailRequiredForSignup) {
+					os.dialog({
+						type: 'success',
+						title: this.$ts._signup.almostThere,
+						text: this.$t('_signup.emailSent', { email: this.email }),
+					});
+					this.$emit('signupEmailPending');
+				} else {
+					os.api('signin', {
+						username: this.username,
+						password: this.password
+					}).then(res => {
+						this.$emit('signup', res);
 
-					if (this.autoSet) {
-						return login(res.i);
-					}
-				});
+						if (this.autoSet) {
+							login(res.i);
+						}
+					});
+				}
 			}).catch(() => {
 				this.submitting = false;
 				this.$refs.hcaptcha?.reset?.();

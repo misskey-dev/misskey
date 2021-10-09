@@ -11,7 +11,7 @@ import { Users, DriveFiles, Notes, Channels, Blockings } from '@/models/index';
 import { DriveFile } from '@/models/entities/drive-file';
 import { Note } from '@/models/entities/note';
 import { DB_MAX_NOTE_TEXT_LENGTH } from '@/misc/hard-limits';
-import { noteVisibilities } from '../../../../types';
+import { noteVisibilities } from '@/types';
 import { Channel } from '@/models/entities/channel';
 
 let maxNoteTextLength = 500;

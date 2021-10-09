@@ -1,13 +1,16 @@
 <template>
-<div class="qkcjvfiv">
-	<MkButton @click="create" primary class="add"><i class="fas fa-plus"></i> {{ $ts.createList }}</MkButton>
+<div>
+	<MkHeader :info="header"/>
+	<div class="qkcjvfiv">
+		<MkButton @click="create" primary class="add"><i class="fas fa-plus"></i> {{ $ts.createList }}</MkButton>
 
-	<MkPagination :pagination="pagination" #default="{items}" class="lists _content" ref="list">
-		<MkA v-for="list in items" :key="list.id" class="list _panel" :to="`/my/lists/${ list.id }`">
-			<div class="name">{{ list.name }}</div>
-			<MkAvatars :user-ids="list.userIds"/>
-		</MkA>
-	</MkPagination>
+		<MkPagination :pagination="pagination" #default="{items}" class="lists _content" ref="list">
+			<MkA v-for="list in items" :key="list.id" class="list _panel" :to="`/my/lists/${ list.id }`">
+				<div class="name">{{ list.name }}</div>
+				<MkAvatars :user-ids="list.userIds"/>
+			</MkA>
+		</MkPagination>
+	</div>
 </div>
 </template>
 
@@ -31,6 +34,12 @@ export default defineComponent({
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.manageLists,
 				icon: 'fas fa-list-ul',
+				bg: 'var(--bg)',
+			},
+			header: {
+				title: this.$ts.manageLists,
+				icon: 'fas fa-list-ul',
+				bg: 'var(--bg)',
 				action: {
 					icon: 'fas fa-plus',
 					handler: this.create

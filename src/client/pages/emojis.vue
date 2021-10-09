@@ -1,6 +1,9 @@
 <template>
-<div :class="$style.root">
-	<XCategory v-if="tab === 'category'"/>
+<div>
+	<MkHeader :info="header"/>
+	<div :class="$style.root">
+		<XCategory v-if="tab === 'category'"/>
+	</div>
 </div>
 </template>
 
@@ -18,6 +21,11 @@ export default defineComponent({
 	data() {
 		return {
 			[symbols.PAGE_INFO]: computed(() => ({
+				title: this.$ts.customEmojis,
+				icon: 'fas fa-laugh',
+				bg: 'var(--bg)',
+			})),
+			header: computed(() => ({
 				title: this.$ts.customEmojis,
 				icon: 'fas fa-laugh',
 				bg: 'var(--bg)',
