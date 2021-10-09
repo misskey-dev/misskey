@@ -31,10 +31,10 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import FormSwitch from '@client/components/form/switch.vue';
+import FormSwitch from '@client/components/debobigego/switch.vue';
 import FormLink from '@client/components/debobigego/link.vue';
-import FormRadios from '@client/components/form/radios.vue';
-import FormInput from '@client/components/form/input.vue';
+import FormRadios from '@client/components/debobigego/radios.vue';
+import FormInput from '@client/components/debobigego/input.vue';
 import FormBase from '@client/components/debobigego/base.vue';
 import FormGroup from '@client/components/debobigego/group.vue';
 import { deckStore } from '@client/ui/deck/deck-store';

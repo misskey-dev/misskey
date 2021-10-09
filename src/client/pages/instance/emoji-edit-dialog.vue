@@ -11,13 +11,13 @@
 	<div class="_monolithic_">
 		<div class="yigymqpb _section">
 			<img :src="emoji.url" class="img"/>
-			<MkInput v-model="name">
+			<MkInput class="_formBlock" v-model="name">
 				<template #label>{{ $ts.name }}</template>
 			</MkInput>
-			<MkInput v-model="category" :datalist="categories">
+			<MkInput class="_formBlock" v-model="category" :datalist="categories">
 				<template #label>{{ $ts.category }}</template>
 			</MkInput>
-			<MkInput v-model="aliases">
+			<MkInput class="_formBlock" v-model="aliases">
 				<template #label>{{ $ts.tags }}</template>
 				<template #caption>{{ $ts.setMultipleBySeparatingWithSpace }}</template>
 			</MkInput>
