@@ -4,7 +4,7 @@ import { readNotification } from '../../common/read-notification';
 import define from '../../define';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 import { Notifications, Followings, Mutings, Users } from '@/models/index';
-import { notificationTypes } from '../../../../types';
+import { notificationTypes } from '@/types';
 import read from '@/services/note/read';
 
 export const meta = {

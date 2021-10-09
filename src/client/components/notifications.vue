@@ -26,7 +26,7 @@ import paging from '@client/scripts/paging';
 import XNotification from './notification.vue';
 import XList from './date-separated-list.vue';
 import XNote from './note.vue';
-import { notificationTypes } from '../../types';
+import { notificationTypes } from '@/types';
 import * as os from '@client/os';
 import MkButton from '@client/components/ui/button.vue';
 

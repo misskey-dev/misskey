@@ -5,7 +5,7 @@ import { Note } from './note';
 import { FollowRequest } from './follow-request';
 import { UserGroupInvitation } from './user-group-invitation';
 import { AccessToken } from './access-token';
-import { notificationTypes } from '../../types';
+import { notificationTypes } from '@/types';
 
 @Entity()
 export class Notification {

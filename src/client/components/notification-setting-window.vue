@@ -32,7 +32,7 @@ import XModalWindow from '@client/components/ui/modal-window.vue';
 import MkSwitch from './form/switch.vue';
 import MkInfo from './ui/info.vue';
 import MkButton from './ui/button.vue';
-import { notificationTypes } from '../../types';
+import { notificationTypes } from '@/types';
 
 export default defineComponent({
 	components: {
