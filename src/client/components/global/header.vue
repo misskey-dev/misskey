@@ -153,9 +153,15 @@ export default defineComponent({
 		
 			if (el.value.parentElement) {
 				narrow.value = el.value.parentElement.offsetWidth < 500;
-				new ResizeObserver((entries, observer) => {
-					narrow.value = el.value.parentElement.offsetWidth < 500;
-				}).observe(el.value.parentElement);
+				const ro = new ResizeObserver((entries, observer) => {
+					if (el.value) {
+						narrow.value = el.value.parentElement.offsetWidth < 500;
+					}
+				});
+				ro.observe(el.value.parentElement);
+				onUnmounted(() => {
+					ro.disconnect();
+				});
 				setTimeout(() => {
 					const currentStickyTop = getComputedStyle(el.value.parentElement).getPropertyValue('--stickyTop') || '0px';
 					el.value.style.setProperty('--stickyTop', currentStickyTop);
@@ -191,6 +197,7 @@ export default defineComponent({
 	width: 100%;
 	-webkit-backdrop-filter: var(--blur, blur(15px));
 	backdrop-filter: var(--blur, blur(15px));
+	border-bottom: solid 0.5px var(--divider);
 
 	&.thin {
 		--height: 50px;
