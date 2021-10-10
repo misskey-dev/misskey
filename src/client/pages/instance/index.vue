@@ -2,13 +2,14 @@
 <div class="hiyeyicy" :class="{ wide: !narrow }" ref="el">
 	<div class="nav" v-if="!narrow || page == null">
 		<MkHeader :info="header"></MkHeader>
-
-		<MkInfo v-if="noMaintainerInformation" warn class="info">{{ $ts.noMaintainerInformationWarning }} <MkA to="/instance/settings" class="_link">{{ $ts.configure }}</MkA></MkInfo>
-		<MkInfo v-if="noBotProtection" warn class="info">{{ $ts.noBotProtectionWarning }} <MkA to="/instance/bot-protection" class="_link">{{ $ts.configure }}</MkA></MkInfo>
 	
 		<div class="lxpfedzu">
 			<img :src="$instance.iconUrl || '/favicon.ico'" alt="" class="icon"/>
 		</div>
+
+		<MkInfo v-if="noMaintainerInformation" warn class="info">{{ $ts.noMaintainerInformationWarning }} <MkA to="/instance/settings" class="_link">{{ $ts.configure }}</MkA></MkInfo>
+		<MkInfo v-if="noBotProtection" warn class="info">{{ $ts.noBotProtectionWarning }} <MkA to="/instance/bot-protection" class="_link">{{ $ts.configure }}</MkA></MkInfo>
+
 		<MkSuperMenu :def="menuDef" :grid="page == null"></MkSuperMenu>
 	</div>
 	<div class="main">
@@ -360,7 +361,7 @@ export default defineComponent({
 }
 
 .lxpfedzu {
-	padding: 16px;
+	margin: 16px;
 
 	> .icon {
 		display: block;
