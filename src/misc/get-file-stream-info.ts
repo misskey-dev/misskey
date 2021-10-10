@@ -40,7 +40,7 @@ export async function getFileInfo(readable: stream.Readable): Promise<FileInfo> 
 	const warnings = [] as string[];
 
 	const chunks = []
-	for await (let chunk of readable) {
+	for await (const chunk of readable) {
 		chunks.push(chunk)
 	}
 	const buffer = Buffer.concat(chunks);
@@ -102,13 +102,13 @@ export async function getFileInfo(readable: stream.Readable): Promise<FileInfo> 
  * Detect MIME Type and extension
  */
 export async function detectType(readable: stream.Readable) {
-	// Check 0 byte
 	const chunks = []
 	for await (let chunk of readable) {
 		chunks.push(chunk)
 	}
 	const buffer = Buffer.concat(chunks);
 
+	// Check 0 byte
 	if (buffer.length === 0) {
 		return TYPE_OCTET_STREAM;
 	}
