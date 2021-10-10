@@ -39,27 +39,28 @@ const TYPE_SVG = {
 export async function getFileInfo(readable: stream.Readable): Promise<FileInfo> {
 	const warnings = [] as string[];
 
-	const chunks = []
-	for await (const chunk of readable) {
-		chunks.push(chunk)
-	}
-	const buffer = Buffer.concat(chunks);
+	const md5Promise = calcHash(readable);
+	const typePromise = detectType(readable);
+	const sizePromise = getFileSize(readable);
+	const imageSizePromise = detectImageSize(readable).catch(e => {
+		warnings.push(`detectImageSize failed: ${e}`);
+		return undefined;
+	});
+	const blurhashPromise = getBlurhash(readable).catch(e => {
+		warnings.push(`getBlurhash failed: ${e}`);
+		return undefined;
+	});
 
-	const size = buffer.length;
-	const md5 = await calcHash(stream.Readable.from(chunks));
-
-	let type = await detectType(stream.Readable.from(chunks));
+	const [ md5, detectedType, size, imageSize, blurhash ] = await Promise.all([
+		md5Promise, typePromise, sizePromise, imageSizePromise, blurhashPromise
+	]);
+	let type = detectedType;
 
 	// image dimensions
 	let width: number | undefined;
 	let height: number | undefined;
 
 	if (['image/jpeg', 'image/gif', 'image/png', 'image/apng', 'image/webp', 'image/bmp', 'image/tiff', 'image/svg+xml', 'image/vnd.adobe.photoshop'].includes(type.mime)) {
-		const imageSize = await detectImageSize(stream.Readable.from(chunks)).catch(e => {
-			warnings.push(`detectImageSize failed: ${e}`);
-			return undefined;
-		});
-
 		// うまく判定できない画像は octet-stream にする
 		if (!imageSize) {
 			warnings.push(`cannot detect image dimensions`);
@@ -78,13 +79,8 @@ export async function getFileInfo(readable: stream.Readable): Promise<FileInfo> 
 		}
 	}
 
-	let blurhash: string | undefined;
-
-	if (['image/jpeg', 'image/gif', 'image/png', 'image/apng', 'image/webp', 'image/svg+xml'].includes(type.mime)) {
-		blurhash = await getBlurhash(stream.Readable.from(chunks)).catch(e => {
-			warnings.push(`getBlurhash failed: ${e}`);
-			return undefined;
-		});
+	if (!['image/jpeg', 'image/gif', 'image/png', 'image/apng', 'image/webp', 'image/svg+xml'].includes(type.mime)) {
+		blurhash = undefined;
 	}
 
 	return {
@@ -102,50 +98,72 @@ export async function getFileInfo(readable: stream.Readable): Promise<FileInfo> 
  * Detect MIME Type and extension
  */
 export async function detectType(readable: stream.Readable) {
-	const chunks = []
-	for await (let chunk of readable) {
-		chunks.push(chunk)
-	}
-	const buffer = Buffer.concat(chunks);
+	return new Promise<{ mime: string; ext: string | null; }>(resolve => {
+		const chunks: Uint8Array[] = [];
 
-	// Check 0 byte
-	if (buffer.length === 0) {
-		return TYPE_OCTET_STREAM;
-	}
+		const streamPromise = new Promise<Buffer | void>(res => {
+			readable
+				.on('data', chunk => chunks.push(chunk))
+				.on('end', () => res(Buffer.concat(chunks)))
+				.on('error', e => res());
+		});
 
-	const type = await fileType.fromBuffer(buffer);
+		getFileSize(readable).then(fileSize => {
+			if (fileSize === 0) {
+				resolve(TYPE_OCTET_STREAM);
+			}
+		});
 
-	if (type) {
-		// XMLはSVGかもしれない
-		if (type.mime === 'application/xml' && await checkSvg(buffer)) {
-			return TYPE_SVG;
-		}
+		fileType.fromStream(readable).then(async type => {
+			if (type) {
+				// XMLはSVGかもしれない
+				if (type.mime === 'application/xml') {
+					const buffer = await streamPromise;
+					if (buffer && checkSvg(buffer)) {
+						return TYPE_SVG;
+					}
+				}
 
-		return {
-			mime: type.mime,
-			ext: type.ext
-		};
-	}
+				return {
+					mime: type.mime,
+					ext: type.ext
+				};
+			}
 
-	// 種類が不明でもSVGかもしれない
-	if (await checkSvg(buffer)) {
-		return TYPE_SVG;
-	}
+			// 種類が不明でもSVGかもしれない
+			const buffer = await streamPromise;
+			if (buffer && checkSvg(buffer)) {
+				return TYPE_SVG;
+			}
 
-	// それでも種類が不明なら application/octet-stream にする
-	return TYPE_OCTET_STREAM;
+			// それでも種類が不明なら application/octet-stream にする
+			return TYPE_OCTET_STREAM;
+		});
+	})
+
 }
 
 /**
  * Check the file is SVG or not
  */
-export async function checkSvg(buffer: Buffer) {
+export function checkSvg(buffer: Buffer) {
 	try {
 		if (buffer.length > 1 * 1024 * 1024) return false;
 		return isSvg(buffer);
 	} catch {
 		return false;
 	}
+}
+
+/**
+ * Get file size
+ */
+export async function getFileSize(readable: stream.Readable): Promise<number> {
+	let length = 0;
+	for await (const chunk of readable) {
+		length += chunk.length;
+	}
+	return length;
 }
 
 /**
@@ -193,7 +211,7 @@ function getBlurhash(readable: stream.Readable): Promise<string> {
 
 				resolve(hash);
 			});
-		
-		readable.pipe(generator)
+
+		readable.pipe(generator);
 	});
 }

@@ -4,9 +4,9 @@ import { getUrl } from './download-url';
 const logger = new Logger('download-text-file');
 
 export async function downloadTextFile(url: string): Promise<string> {
-	const chunks = []
+	const chunks = [];
 	for await (const chunk of getUrl(url)) {
-		chunks.push(chunk)
+		chunks.push(chunk);
 	}
 	return Buffer.concat(chunks).toString();
 }
