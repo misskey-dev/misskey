@@ -45,7 +45,6 @@ export async function getFileInfo(readable: stream.Readable): Promise<FileInfo> 
 	// ↓↓↓エラーが出る↓↓↓
 	const imageSizePromise = probeImageSize(readable).catch(e => {
 		warnings.push(`detectImageSize failed: ${e}`);
-		Error(e)
 		return undefined;
 	});
 	const blurhashPromise = getBlurhash(readable).catch(e => {
@@ -56,7 +55,7 @@ export async function getFileInfo(readable: stream.Readable): Promise<FileInfo> 
 	const [ md5, detectedType, size, imageSize, blurhash ] = await Promise.all([
 		md5Promise, typePromise, sizePromise, imageSizePromise, blurhashPromise
 	]);
-	console.log(['b', md5, detectedType, size, imageSize, blurhash])
+
 	let type = detectedType;
 
 	// image dimensions
@@ -64,7 +63,6 @@ export async function getFileInfo(readable: stream.Readable): Promise<FileInfo> 
 	let height: number | undefined;
 
 	if (['image/jpeg', 'image/gif', 'image/png', 'image/apng', 'image/webp', 'image/bmp', 'image/tiff', 'image/svg+xml', 'image/vnd.adobe.photoshop'].includes(type.mime)) {
-		console.log('c')
 		// うまく判定できない画像は octet-stream にする
 		if (!imageSize) {
 			warnings.push(`cannot detect image dimensions`);
