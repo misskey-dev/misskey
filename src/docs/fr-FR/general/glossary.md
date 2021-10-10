@@ -52,7 +52,7 @@ todo
 ## Émojis personnalisés
 サーバーで用意された絵文字。カスタム絵文字ではない通常の絵文字は「Unicode絵文字」と区別して呼ばれる。
 
-## コントロールパネル
+## Panneau de contrôle
 インスタンスの設定画面のこと。
 
 ## Serveurs
