@@ -41,7 +41,7 @@ export async function getFileInfo(readable: stream.Readable): Promise<FileInfo> 
 	const md5Promise = calcHash(readable);
 	const typePromise = detectType(readable);
 	const sizePromise = getFileSize(readable);
-	const imageSizePromise = detectImageSize(readable).catch(e => {
+	const imageSizePromise = probeImageSize(readable).catch(e => {
 		warnings.push(`detectImageSize failed: ${e}`);
 		return undefined;
 	});
@@ -168,18 +168,6 @@ async function calcHash(readable: stream.Readable): Promise<string> {
 	const hash = crypto.createHash('md5').setEncoding('hex');
 	await pipeline(readable, hash);
 	return hash.read();
-}
-
-/**
- * Detect dimensions of image
- */
-function detectImageSize(readable: stream.Readable): Promise<{
-	width: number;
-	height: number;
-	wUnits: string;
-	hUnits: string;
-}> {
-	return probeImageSize(readable);
 }
 
 /**
