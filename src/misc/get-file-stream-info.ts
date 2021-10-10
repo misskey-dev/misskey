@@ -120,24 +120,24 @@ export async function detectType(readable: stream.Readable) {
 				if (type.mime === 'application/xml') {
 					const buffer = await streamPromise;
 					if (buffer && checkSvg(buffer)) {
-						return TYPE_SVG;
+						resolve(TYPE_SVG);
 					}
 				}
 
-				return {
+				resolve({
 					mime: type.mime,
 					ext: type.ext
-				};
+				});
 			}
 
 			// 種類が不明でもSVGかもしれない
 			const buffer = await streamPromise;
 			if (buffer && checkSvg(buffer)) {
-				return TYPE_SVG;
+				resolve(TYPE_SVG);
 			}
 
 			// それでも種類が不明なら application/octet-stream にする
-			return TYPE_OCTET_STREAM;
+			resolve(TYPE_OCTET_STREAM);
 		});
 	});
 
