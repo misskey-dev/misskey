@@ -1,5 +1,5 @@
 <template>
-<div class="fdidabkb" :class="{ slim: narrow, thin }" :style="{ background: bg }" @click="onClick">
+<div class="fdidabkb" :class="{ slim: narrow, thin }" :style="{ background: bg }" @click="onClick" ref="el">
 	<template v-if="info">
 		<div class="titleContainer" @click="showTabsPopup">
 			<i v-if="info.icon" class="icon" :class="info.icon"></i>
@@ -37,12 +37,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent, onMounted, PropType, ref } from 'vue';
 import * as tinycolor from 'tinycolor2';
 import { popupMenu } from '@client/os';
 import { url } from '@client/config';
 import { scrollToTop } from '@client/scripts/scroll';
 import MkButton from '@client/components/ui/button.vue';
+import { i18n } from '../../i18n';
 
 export default defineComponent({
 	components: {
@@ -51,6 +52,10 @@ export default defineComponent({
 
 	props: {
 		info: {
+			type: Object as PropType<{
+				actions?: {}[];
+				tabs?: {}[];
+			}>,
 			required: true
 		},
 		menu: {
@@ -62,99 +67,108 @@ export default defineComponent({
 		},
 	},
 
-	data() {
-		return {
-			bg: null,
-			narrow: false,
-			height: 0,
-		};
-	},
-
-	computed: {
-		hasTabs(): boolean {
-			return this.info.tabs && this.info.tabs.length > 0;
-		},
-
-		shouldShowMenu() {
-			if (this.info == null) return false;
-			if (this.info.actions != null && this.narrow) return true;
-			if (this.info.menu != null) return true;
-			if (this.info.share != null) return true;
-			if (this.menu != null) return true;
+	setup(props) {
+		const el = ref<HTMLElement>(null);
+		const bg = ref(null);
+		const narrow = ref(false);
+		const height = ref(0);
+		const hasTabs = computed(() => {
+			return props.info.tabs && props.info.tabs.length > 0;
+		});
+		const shouldShowMenu = computed(() => {
+			if (props.info == null) return false;
+			if (props.info.actions != null && narrow.value) return true;
+			if (props.info.menu != null) return true;
+			if (props.info.share != null) return true;
+			if (props.menu != null) return true;
 			return false;
-		}
-	},
+		});
 
-	mounted() {
-		const rawBg = this.info?.bg || 'var(--bg)';
-		const bg = tinycolor(rawBg.startsWith('var(') ? getComputedStyle(document.documentElement).getPropertyValue(rawBg.slice(4, -1)) : rawBg);
-		bg.setAlpha(0.85);
-		this.bg = bg.toRgbString();
-	
-		if (this.$el.parentElement) {
-			this.narrow = this.$el.parentElement.offsetWidth < 500;
-			new ResizeObserver((entries, observer) => {
-				this.narrow = this.$el.parentElement.offsetWidth < 500;
-			}).observe(this.$el.parentElement);
-			const currentStickyTop = getComputedStyle(this.$el).getPropertyValue('--stickyTop') || '0px';
-			this.$el.style.setProperty('--stickyTop', currentStickyTop);
-			this.$el.parentElement.style.setProperty('--stickyTop', `calc(${currentStickyTop} + ${this.$el.offsetHeight}px)`);
-		}
-	},
-
-	methods: {
-		share() {
+		const share = () => {
 			navigator.share({
-				url: url + this.info.path,
-				...this.info.share,
+				url: url + props.info.path,
+				...props.info.share,
 			});
-		},
+		};
 
-		showMenu(ev) {
-			let menu = this.info.menu ? this.info.menu() : [];
-			if (this.narrow && this.info.actions) {
-				menu = [...this.info.actions.map(x => ({
+		const showMenu = (ev: MouseEvent) => {
+			let menu = props.info.menu ? props.info.menu() : [];
+			if (narrow.value && props.info.actions) {
+				menu = [...props.info.actions.map(x => ({
 					text: x.text,
 					icon: x.icon,
 					action: x.handler
 				})), menu.length > 0 ? null : undefined, ...menu];
 			}
-			if (this.info.share) {
+			if (props.info.share) {
 				if (menu.length > 0) menu.push(null);
 				menu.push({
-					text: this.$ts.share,
+					text: i18n.locale.share,
 					icon: 'fas fa-share-alt',
-					action: this.share
+					action: share
 				});
 			}
-			if (this.menu) {
+			if (props.menu) {
 				if (menu.length > 0) menu.push(null);
-				menu = menu.concat(this.menu);
+				menu = menu.concat(props.menu);
 			}
 			popupMenu(menu, ev.currentTarget || ev.target);
-		},
+		};
 
-		showTabsPopup(ev) {
-			if (!this.hasTabs) return;
-			if (!this.narrow) return;
+		const showTabsPopup = (ev: MouseEvent) => {
+			if (!hasTabs.value) return;
+			if (!narrow.value) return;
 			ev.preventDefault();
 			ev.stopPropagation();
-			const menu = this.info.tabs.map(tab => ({
+			const menu = props.info.tabs.map(tab => ({
 				text: tab.title,
 				icon: tab.icon,
 				action: tab.onClick,
 			}));
 			popupMenu(menu, ev.currentTarget || ev.target);
-		},
+		};
 
-		preventDrag(ev) {
+		const preventDrag = (ev: TouchEvent) => {
 			ev.stopPropagation();
-		},
+		};
 
-		onClick(ev) {
-			scrollToTop(this.$el, { behavior: 'smooth' });
-		}
-	}
+		const onClick = () => {
+			scrollToTop(el.value, { behavior: 'smooth' });
+		};
+
+		onMounted(() => {
+			const rawBg = props.info?.bg || 'var(--bg)';
+			const tinyBg = tinycolor(rawBg.startsWith('var(') ? getComputedStyle(document.documentElement).getPropertyValue(rawBg.slice(4, -1)) : rawBg);
+			tinyBg.setAlpha(0.85);
+			bg.value = tinyBg.toRgbString();
+		
+			if (el.value.parentElement) {
+				narrow.value = el.value.parentElement.offsetWidth < 500;
+				new ResizeObserver((entries, observer) => {
+					narrow.value = el.value.parentElement.offsetWidth < 500;
+				}).observe(el.value.parentElement);
+				setTimeout(() => {
+					const currentStickyTop = getComputedStyle(el.value.parentElement).getPropertyValue('--stickyTop') || '0px';
+					el.value.style.setProperty('--stickyTop', currentStickyTop);
+					el.value.parentElement.style.setProperty('--stickyTop', `calc(${currentStickyTop} + ${el.value.offsetHeight}px)`);
+				}, 100); // レンダリング順序の関係で親のstickyTopの設定が少し遅れることがあるため
+			}
+		});
+
+		return {
+			el,
+			bg,
+			narrow,
+			height,
+			hasTabs,
+			shouldShowMenu,
+			share,
+			showMenu,
+			showTabsPopup,
+			preventDrag,
+			onClick,
+		};
+	},
 });
 </script>
 
