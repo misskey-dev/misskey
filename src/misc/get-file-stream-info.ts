@@ -194,6 +194,6 @@ function getBlurhash(readable: stream.Readable): Promise<string> {
 				resolve(hash);
 			});
 
-		readable.pipe(preventEmptyStream()).pipe(generator);
+		pipeline(readable, preventEmptyStream(), generator).catch(reject);
 	});
 }
