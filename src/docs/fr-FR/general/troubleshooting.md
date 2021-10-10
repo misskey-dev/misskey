@@ -23,7 +23,7 @@ Essayez les solutions proposées ci-dessous :
 - activer l'accélération matérielle dans les paramètres de votre navigateur
 - effectuer les mises  à jour de votre appareil.
 
-## UIの一部の表示がおかしい(背景が透明になっている等)
+## Certaines parties de l'interface ne s'affichent pas correctement (arrière-plan transparent, etc.)
 アップデートによりUIの改修が行われたときに、テーマのキャッシュシステムの影響でそのような表示になることがあります。 クライアントの設定の「キャッシュをクリア」すると直ります。
 <div class="warn">⚠️ 「クライアントの」キャッシュクリアです。「ブラウザの」キャッシュクリアは行わないでください。</div>
 
