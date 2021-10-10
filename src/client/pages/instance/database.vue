@@ -43,7 +43,8 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.database,
-				icon: 'fas fa-database'
+				icon: 'fas fa-database',
+				bg: 'var(--bg)',
 			},
 			databasePromiseFactory: () => os.api('admin/get-table-stats', {}).then(res => Object.entries(res).sort((a, b) => b[1].size - a[1].size)),
 		}

@@ -84,7 +84,8 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.general,
-				icon: 'fas fa-cog'
+				icon: 'fas fa-cog',
+				bg: 'var(--bg)',
 			},
 			name: null,
 			description: null,

@@ -56,7 +56,8 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.files,
-				icon: 'fas fa-cloud'
+				icon: 'fas fa-cloud',
+				bg: 'var(--bg)',
 			},
 			cacheRemoteFiles: false,
 			proxyRemoteFiles: false,

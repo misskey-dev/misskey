@@ -1,9 +1,10 @@
 import { del, get, set } from '@client/scripts/idb-proxy';
 import { reactive } from 'vue';
 import { apiUrl } from '@client/config';
-import { waiting } from '@client/os';
+import { waiting, api, popup, popupMenu, success } from '@client/os';
 import { unisonReload, reloadChannel } from '@client/scripts/unison-reload';
 import { showSuspendedDialog } from './scripts/show-suspended-dialog';
+import { i18n } from './i18n';
 
 // TODO: 他のタブと永続化されたstateを同期
 
@@ -127,6 +128,77 @@ export async function login(token: Account['token'], redirect?: string) {
 	}
 
 	unisonReload();
+}
+
+export async function openAccountMenu(ev: MouseEvent) {
+	function showSigninDialog() {
+		popup(import('@client/components/signin-dialog.vue'), {}, {
+			done: res => {
+				addAccount(res.id, res.i);
+				success();
+			},
+		}, 'closed');
+	}
+
+	function createAccount() {
+		popup(import('@client/components/signup-dialog.vue'), {}, {
+			done: res => {
+				addAccount(res.id, res.i);
+				switchAccountWithToken(res.i);
+			},
+		}, 'closed');
+	}
+
+	async function switchAccount(account: any) {
+		const storedAccounts = await getAccounts();
+		const token = storedAccounts.find(x => x.id === account.id).token;
+		switchAccountWithToken(token);
+	}
+
+	function switchAccountWithToken(token: string) {
+		login(token);
+	}
+
+	const storedAccounts = await getAccounts().then(accounts => accounts.filter(x => x.id !== $i.id));
+	const accountsPromise = api('users/show', { userIds: storedAccounts.map(x => x.id) });
+
+	const accountItemPromises = storedAccounts.map(a => new Promise(res => {
+		accountsPromise.then(accounts => {
+			const account = accounts.find(x => x.id === a.id);
+			if (account == null) return res(null);
+			res({
+				type: 'user',
+				user: account,
+				action: () => { switchAccount(account); }
+			});
+		});
+	}));
+
+	popupMenu([...[{
+		type: 'link',
+		text: i18n.locale.profile,
+		to: `/@${ $i.username }`,
+		avatar: $i,
+	}, null, ...accountItemPromises, {
+		icon: 'fas fa-plus',
+		text: i18n.locale.addAccount,
+		action: () => {
+			popupMenu([{
+				text: i18n.locale.existingAccount,
+				action: () => { showSigninDialog(); },
+			}, {
+				text: i18n.locale.createAccount,
+				action: () => { createAccount(); },
+			}], ev.currentTarget || ev.target);
+		},
+	}, {
+		type: 'link',
+		icon: 'fas fa-users',
+		text: i18n.locale.manageAccounts,
+		to: `/settings/accounts`,
+	}]], ev.currentTarget || ev.target, {
+		align: 'left'
+	});
 }
 
 // このファイルに書きたくないけどここに書かないと何故かVeturが認識しない

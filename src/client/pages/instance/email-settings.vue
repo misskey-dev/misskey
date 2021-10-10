@@ -66,7 +66,8 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.emailServer,
-				icon: 'fas fa-envelope'
+				icon: 'fas fa-envelope',
+				bg: 'var(--bg)',
 			},
 			enableEmail: false,
 			email: null,

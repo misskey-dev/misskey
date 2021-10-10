@@ -1,42 +1,9 @@
 <template>
 <div class="vvcocwet" :class="{ wide: !narrow }" ref="el">
 	<div class="nav" v-if="!narrow || page == null">
-		<div class="group accounts">
-			<MkAvatar :user="$i" class="avatar"/>
-			<XLink :active="page === 'accounts'" replace to="/settings/accounts"><template #icon><i class="fas fa-users"></i></template>{{ $ts.accounts }}</XLink>
-		</div>
+		<div class="title">{{ $ts.settings }}</div>
 		<MkInfo v-if="emailNotConfigured" warn class="info">{{ $ts.emailNotConfiguredWarning }} <MkA to="/settings/email" class="_link">{{ $ts.configure }}</MkA></MkInfo>
-		<div class="group">
-			<div class="label">{{ $ts.basicSettings }}</div>
-			<XLink :active="page === 'profile'" replace to="/settings/profile"><template #icon><i class="fas fa-user"></i></template>{{ $ts.profile }}</XLink>
-			<XLink :active="page === 'privacy'" replace to="/settings/privacy"><template #icon><i class="fas fa-lock-open"></i></template>{{ $ts.privacy }}</XLink>
-			<XLink :active="page === 'reaction'" replace to="/settings/reaction"><template #icon><i class="fas fa-laugh"></i></template>{{ $ts.reaction }}</XLink>
-			<XLink :active="page === 'drive'" replace to="/settings/drive"><template #icon><i class="fas fa-cloud"></i></template>{{ $ts.drive }}</XLink>
-			<XLink :active="page === 'notifications'" replace to="/settings/notifications"><template #icon><i class="fas fa-bell"></i></template>{{ $ts.notifications }}</XLink>
-			<XLink :active="page === 'email'" replace to="/settings/email"><template #icon><i class="fas fa-envelope"></i></template>{{ $ts.email }}</XLink>
-			<XLink :active="page === 'integration'" replace to="/settings/integration"><template #icon><i class="fas fa-share-alt"></i></template>{{ $ts.integration }}</XLink>
-			<XLink :active="page === 'security'" replace to="/settings/security"><template #icon><i class="fas fa-lock"></i></template>{{ $ts.security }}</XLink>
-		</div>
-		<div class="group">
-			<div class="label">{{ $ts.clientSettings }}</div>
-			<XLink :active="page === 'general'" replace to="/settings/general"><template #icon><i class="fas fa-cogs"></i></template>{{ $ts.general }}</XLink>
-			<XLink :active="page === 'theme'" replace to="/settings/theme"><template #icon><i class="fas fa-palette"></i></template>{{ $ts.theme }}</XLink>
-			<XLink :active="page === 'menu'" replace to="/settings/menu"><template #icon><i class="fas fa-list-ul"></i></template>{{ $ts.menu }}</XLink>
-			<XLink :active="page === 'sounds'" replace to="/settings/sounds"><template #icon><i class="fas fa-music"></i></template>{{ $ts.sounds }}</XLink>
-			<XLink :active="page === 'plugin'" replace to="/settings/plugin"><template #icon><i class="fas fa-plug"></i></template>{{ $ts.plugins }}</XLink>
-		</div>
-		<div class="group">
-			<div class="label">{{ $ts.otherSettings }}</div>
-			<XLink :active="page === 'import-export'" replace to="/settings/import-export"><template #icon><i class="fas fa-boxes"></i></template>{{ $ts.importAndExport }}</XLink>
-			<XLink :active="page === 'mute-block'" replace to="/settings/mute-block"><template #icon><i class="fas fa-ban"></i></template>{{ $ts.muteAndBlock }}</XLink>
-			<XLink :active="page === 'word-mute'" replace to="/settings/word-mute"><template #icon><i class="fas fa-comment-slash"></i></template>{{ $ts.wordMute }}</XLink>
-			<XLink :active="page === 'api'" replace to="/settings/api"><template #icon><i class="fas fa-key"></i></template>API</XLink>
-			<XLink :active="page === 'other'" replace to="/settings/other"><template #icon><i class="fas fa-ellipsis-h"></i></template>{{ $ts.other }}</XLink>
-		</div>
-		<div class="group">
-			<XLink @click="clear"><template #icon><i class="fas fa-trash"></i></template>{{ $ts.clearCache }}</XLink>
-			<XLink @click="logout" danger><template #icon><i class="fas fa-sign-in-alt fa-flip-horizontal"></i></template>{{ $ts.logout }}</XLink>
-		</div>
+		<MkSuperMenu :def="menuDef" :grid="page == null"></MkSuperMenu>
 	</div>
 	<div class="main">
 		<component :is="component" :key="page" v-bind="pageProps"/>
@@ -47,8 +14,8 @@
 <script lang="ts">
 import { computed, defineAsyncComponent, defineComponent, nextTick, onMounted, reactive, ref, watch } from 'vue';
 import { i18n } from '@client/i18n';
-import XLink from './index.link.vue';
 import MkInfo from '@client/components/ui/info.vue';
+import MkSuperMenu from '@client/components/ui/super-menu.vue';
 import { scroll } from '@client/scripts/scroll';
 import { signout } from '@client/account';
 import { unisonReload } from '@client/scripts/unison-reload';
@@ -58,8 +25,8 @@ import { $i } from '@client/account';
 
 export default defineComponent({
 	components: {
-		XLink,
 		MkInfo,
+		MkSuperMenu,
 	},
 
 	props: {
@@ -71,7 +38,7 @@ export default defineComponent({
 
 	setup(props, context) {
 		const indexInfo = {
-			title: i18n.locale.settings,
+			title: i18n.locale.controllPanel,
 			icon: 'fas fa-cog',
 			bg: 'var(--bg)',
 		};
@@ -80,6 +47,125 @@ export default defineComponent({
 		const narrow = ref(false);
 		const view = ref(null);
 		const el = ref(null);
+		const menuDef = computed(() => [{
+			title: i18n.locale.basicSettings,
+			items: [{
+				icon: 'fas fa-user',
+				text: i18n.locale.profile,
+				to: '/settings/profile',
+				active: page.value === 'profile',
+			}, {
+				icon: 'fas fa-lock-open',
+				text: i18n.locale.privacy,
+				to: '/settings/privacy',
+				active: page.value === 'privacy',
+			}, {
+				icon: 'fas fa-laugh',
+				text: i18n.locale.reaction,
+				to: '/settings/reaction',
+				active: page.value === 'reaction',
+			}, {
+				icon: 'fas fa-cloud',
+				text: i18n.locale.drive,
+				to: '/settings/drive',
+				active: page.value === 'drive',
+			}, {
+				icon: 'fas fa-bell',
+				text: i18n.locale.notifications,
+				to: '/settings/notifications',
+				active: page.value === 'notifications',
+			}, {
+				icon: 'fas fa-envelope',
+				text: i18n.locale.email,
+				to: '/settings/email',
+				active: page.value === 'email',
+			}, {
+				icon: 'fas fa-share-alt',
+				text: i18n.locale.integration,
+				to: '/settings/integration',
+				active: page.value === 'integration',
+			}, {
+				icon: 'fas fa-lock',
+				text: i18n.locale.security,
+				to: '/settings/security',
+				active: page.value === 'security',
+			}],
+		}, {
+			title: i18n.locale.clientSettings,
+			items: [{
+				icon: 'fas fa-cogs',
+				text: i18n.locale.general,
+				to: '/settings/general',
+				active: page.value === 'general',
+			}, {
+				icon: 'fas fa-palette',
+				text: i18n.locale.theme,
+				to: '/settings/theme',
+				active: page.value === 'theme',
+			}, {
+				icon: 'fas fa-list-ul',
+				text: i18n.locale.menu,
+				to: '/settings/menu',
+				active: page.value === 'menu',
+			}, {
+				icon: 'fas fa-music',
+				text: i18n.locale.sounds,
+				to: '/settings/sounds',
+				active: page.value === 'sounds',
+			}, {
+				icon: 'fas fa-plug',
+				text: i18n.locale.plugins,
+				to: '/settings/plugin',
+				active: page.value === 'plugin',
+			}],
+		}, {
+			title: i18n.locale.otherSettings,
+			items: [{
+				icon: 'fas fa-boxes',
+				text: i18n.locale.importAndExport,
+				to: '/settings/import-export',
+				active: page.value === 'import-export',
+			}, {
+				icon: 'fas fa-ban',
+				text: i18n.locale.muteAndBlock,
+				to: '/settings/mute-block',
+				active: page.value === 'mute-block',
+			}, {
+				icon: 'fas fa-comment-slash',
+				text: i18n.locale.wordMute,
+				to: '/settings/word-mute',
+				active: page.value === 'word-mute',
+			}, {
+				icon: 'fas fa-key',
+				text: 'API',
+				to: '/settings/api',
+				active: page.value === 'api',
+			}, {
+				icon: 'fas fa-ellipsis-h',
+				text: i18n.locale.other,
+				to: '/settings/other',
+				active: page.value === 'other',
+			}],
+		}, {
+			items: [{
+				type: 'button',
+				icon: 'fas fa-trash',
+				text: i18n.locale.clearCache,
+				action: () => {
+					localStorage.removeItem('locale');
+					localStorage.removeItem('theme');
+					unisonReload();
+				},
+			}, {
+				type: 'button',
+				icon: 'fas fa-sign-in-alt fa-flip-horizontal',
+				text: i18n.locale.logout,
+				action: () => {
+					signout();
+				},
+				danger: true,
+			},],
+		}]);
 
 		const pageProps = ref({});
 		const component = computed(() => {
@@ -170,20 +256,13 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: INFO,
 			page,
+			menuDef,
 			narrow,
 			view,
 			el,
 			pageProps,
 			component,
 			emailNotConfigured,
-			logout: () => {
-				signout();
-			},
-			clear: () => {
-				localStorage.removeItem('locale');
-				localStorage.removeItem('theme');
-				unisonReload();
-			},
 		};
 	},
 });
@@ -192,16 +271,6 @@ export default defineComponent({
 <style lang="scss" scoped>
 .vvcocwet {
 	> .nav {
-		> .group {
-			padding: 16px;
-
-			> .label {
-				font-size: 0.9em;
-				opacity: 0.7;
-				margin: 0 0 8px 12px;
-			}
-		}
-
 		> .info {
 			margin: 0 16px;
 		}

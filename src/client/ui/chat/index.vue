@@ -109,6 +109,7 @@ import { search } from '@client/scripts/search';
 import copyToClipboard from '@client/scripts/copy-to-clipboard';
 import { store } from './store';
 import * as symbols from '@client/symbols';
+import { openAccountMenu } from '@client/account';
 
 export default defineComponent({
 	components: {
@@ -253,6 +254,8 @@ export default defineComponent({
 				}
 			}], e);
 		},
+
+		openAccountMenu,
 	}
 });
 </script>

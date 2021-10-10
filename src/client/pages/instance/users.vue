@@ -29,9 +29,11 @@
 		</div>
 		<div class="inputs">
 			<MkInput v-model="searchUsername" style="flex: 1;" type="text" spellcheck="false" @update:modelValue="$refs.users.reload()">
+				<template #prefix>@</template>
 				<template #label>{{ $ts.username }}</template>
 			</MkInput>
 			<MkInput v-model="searchHost" style="flex: 1;" type="text" spellcheck="false" @update:modelValue="$refs.users.reload()" :disabled="pagination.params().origin === 'local'">
+				<template #prefix>@</template>
 				<template #label>{{ $ts.host }}</template>
 			</MkInput>
 		</div>
