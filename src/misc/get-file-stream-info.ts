@@ -1,4 +1,3 @@
-import * as fs from 'fs';
 import * as crypto from 'crypto';
 import * as stream from 'stream';
 import * as util from 'util';
