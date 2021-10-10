@@ -792,6 +792,7 @@ unresolved: "En attente"
 emailRequiredForSignup: "Une adresse e-mail est nécessaire pour créer un compte"
 unread: "Non lu"
 filter: "Filtre"
+controllPanel: "Panneau de contrôle"
 manageAccounts: "Gérer les comptes"
 _signup:
   almostThere: "Bientôt fini"
