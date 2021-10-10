@@ -1,5 +1,5 @@
 declare module 'probe-image-size' {
-	import { ReadStream } from 'fs';
+	import { Readable } from 'stream';
 
 	type ProbeOptions = {
 		retries: 1;
@@ -17,9 +17,9 @@ declare module 'probe-image-size' {
 		url?: string;
 	};
 
-	function probeImageSize(src: string | ReadStream, options?: ProbeOptions): Promise<ProbeResult>;
-	function probeImageSize(src: string | ReadStream, callback: (err: Error | null, result?: ProbeResult) => void): void;
-	function probeImageSize(src: string | ReadStream, options: ProbeOptions, callback: (err: Error | null, result?: ProbeResult) => void): void;
+	function probeImageSize(src: string | Readable, options?: ProbeOptions): Promise<ProbeResult>;
+	function probeImageSize(src: string | Readable, callback: (err: Error | null, result?: ProbeResult) => void): void;
+	function probeImageSize(src: string | Readable, options: ProbeOptions, callback: (err: Error | null, result?: ProbeResult) => void): void;
 
 	namespace probeImageSize {} // Hack
 

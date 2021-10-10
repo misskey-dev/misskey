@@ -11,9 +11,9 @@ const PrivateIp = require('private-ip');
 
 const pipeline = util.promisify(stream.pipeline);
 
-export async function downloadUrl(url: string, path: string) {
-	const logger = new Logger('download');
+const logger = new Logger('download');
 
+export function getUrl(url: string) {
 	logger.info(`Downloading ${chalk.cyan(url)} ...`);
 
 	const timeout = 30 * 1000;
@@ -69,7 +69,11 @@ export async function downloadUrl(url: string, path: string) {
 		}
 	});
 
-	await pipeline(req, fs.createWriteStream(path));
+	return req;
+}
+
+export async function downloadUrl(url: string, path: string) {
+	await pipeline(getUrl(url), fs.createWriteStream(path));
 
 	logger.succ(`Download finished: ${chalk.cyan(url)}`);
 }
