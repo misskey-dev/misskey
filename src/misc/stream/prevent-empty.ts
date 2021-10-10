@@ -11,6 +11,7 @@ export const preventEmptyStream = () => {
 		},
 		final(cb) {
 			if (length === 0) cb(new Error('EMPTY STREAM!'));
+			else cb();
 		},
 	});
 };
