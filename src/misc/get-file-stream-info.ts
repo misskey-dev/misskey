@@ -180,7 +180,6 @@ async function detectImageSize(readable: stream.Readable): Promise<{
 	hUnits: string;
 }> {
 	const imageSize = await probeImageSize(readable);
-	readable.destroy();
 	return imageSize;
 }
 
