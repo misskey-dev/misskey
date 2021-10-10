@@ -21,7 +21,7 @@ Essayez les solutions proposées ci-dessous :
 - activer l'option « Réduire les animations dans l'interface » dans les paramètres du client
 - désactiver l'option « Utiliser un effet de flou pour les modals » dans les paramètres du client
 - activer l'accélération matérielle dans les paramètres de votre navigateur
-- お使いのデバイスのスペックを上げる
+- effectuer les mises  à jour de votre appareil.
 
 ## UIの一部の表示がおかしい(背景が透明になっている等)
 アップデートによりUIの改修が行われたときに、テーマのキャッシュシステムの影響でそのような表示になることがあります。 クライアントの設定の「キャッシュをクリア」すると直ります。
