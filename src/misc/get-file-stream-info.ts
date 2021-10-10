@@ -6,6 +6,7 @@ import isSvg from 'is-svg';
 import * as probeImageSize from 'probe-image-size';
 import * as sharp from 'sharp';
 import { encode } from 'blurhash';
+import { preventEmptyStream } from './stream/prevent-empty';
 
 const pipeline = util.promisify(stream.pipeline);
 
@@ -193,6 +194,6 @@ function getBlurhash(readable: stream.Readable): Promise<string> {
 				resolve(hash);
 			});
 
-		readable.pipe(generator);
+		readable.pipe(preventEmptyStream()).pipe(generator);
 	});
 }
