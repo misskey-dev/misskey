@@ -794,6 +794,7 @@ itsOff: "Ausgeschaltet"
 emailRequiredForSignup: "Angaben einer Email-Adresse als benötigt markieren"
 unread: "Ungelesen"
 filter: "Filter"
+manageAccounts: "Benutzerkonten verwalten"
 _signup:
   almostThere: "Fast geschafft"
   emailAddressInfo: "Bitte gib deine Email-Adresse ein."
