@@ -795,6 +795,7 @@ emailRequiredForSignup: "Require email address for sign-up"
 unread: "Unread"
 filter: "Filter"
 controllPanel: "Control Panel"
+manageAccounts: "Manage Accounts"
 _signup:
   almostThere: "Almost there"
   emailAddressInfo: "Please enter your email address."
