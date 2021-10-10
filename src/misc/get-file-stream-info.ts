@@ -139,7 +139,7 @@ export async function detectType(readable: stream.Readable) {
 			// それでも種類が不明なら application/octet-stream にする
 			return TYPE_OCTET_STREAM;
 		});
-	})
+	});
 
 }
 
