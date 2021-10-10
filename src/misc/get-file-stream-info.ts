@@ -79,10 +79,6 @@ export async function getFileInfo(readable: stream.Readable): Promise<FileInfo> 
 		}
 	}
 
-	if (!['image/jpeg', 'image/gif', 'image/png', 'image/apng', 'image/webp', 'image/svg+xml'].includes(type.mime)) {
-		blurhash = undefined;
-	}
-
 	return {
 		size,
 		md5,
