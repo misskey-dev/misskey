@@ -173,14 +173,13 @@ async function calcHash(readable: stream.Readable): Promise<string> {
 /**
  * Detect dimensions of image
  */
-async function detectImageSize(readable: stream.Readable): Promise<{
+function detectImageSize(readable: stream.Readable): Promise<{
 	width: number;
 	height: number;
 	wUnits: string;
 	hUnits: string;
 }> {
-	const imageSize = await probeImageSize(readable);
-	return imageSize;
+	return probeImageSize(readable);
 }
 
 /**
