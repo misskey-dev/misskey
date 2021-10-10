@@ -38,6 +38,11 @@
 			<span>{{ $ts.maintainerEmail }}</span>
 		</FormInput>
 
+		<FormTextarea v-model="pinnedUsers">
+			<span>{{ $ts.pinnedUsers }}</span>
+			<template #desc>{{ $ts.pinnedUsersDescription }}</template>
+		</FormTextarea>
+
 		<FormInput v-model="maxNoteTextLength" type="number">
 			<template #prefix><i class="fas fa-pencil-alt"></i></template>
 			<span>{{ $ts.maxNoteTextLength }}</span>
@@ -98,6 +103,7 @@ export default defineComponent({
 			maxNoteTextLength: 0,
 			enableLocalTimeline: false,
 			enableGlobalTimeline: false,
+			pinnedUsers: '',
 		}
 	},
 
@@ -119,6 +125,7 @@ export default defineComponent({
 			this.maxNoteTextLength = meta.maxNoteTextLength;
 			this.enableLocalTimeline = !meta.disableLocalTimeline;
 			this.enableGlobalTimeline = !meta.disableGlobalTimeline;
+			this.pinnedUsers = meta.pinnedUsers.join('\n');
 		},
 
 		save() {
@@ -134,6 +141,7 @@ export default defineComponent({
 				maxNoteTextLength: this.maxNoteTextLength,
 				disableLocalTimeline: !this.enableLocalTimeline,
 				disableGlobalTimeline: !this.enableGlobalTimeline,
+				pinnedUsers: this.pinnedUsers.split('\n'),
 			}).then(() => {
 				fetchInstance();
 			});
