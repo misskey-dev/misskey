@@ -1,5 +1,5 @@
 <template>
-<div>
+<div style="margin: 16px;">
 	<FormSection>
 		<template #label>{{ $ts._exportOrImport.allNotes }}</template>
 		<MkButton :class="$style.button" inline @click="doExport('notes')"><i class="fas fa-download"></i> {{ $ts.export }}</MkButton>

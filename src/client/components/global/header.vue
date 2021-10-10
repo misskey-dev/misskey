@@ -37,13 +37,14 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, PropType, ref } from 'vue';
+import { computed, defineComponent, onMounted, onUnmounted, PropType, ref } from 'vue';
 import * as tinycolor from 'tinycolor2';
 import { popupMenu } from '@client/os';
 import { url } from '@client/config';
 import { scrollToTop } from '@client/scripts/scroll';
 import MkButton from '@client/components/ui/button.vue';
-import { i18n } from '../../i18n';
+import { i18n } from '@client/i18n';
+import { globalEvents } from '@client/events';
 
 export default defineComponent({
 	components: {
@@ -136,11 +137,19 @@ export default defineComponent({
 			scrollToTop(el.value, { behavior: 'smooth' });
 		};
 
-		onMounted(() => {
+		const calcBg = () => {
 			const rawBg = props.info?.bg || 'var(--bg)';
 			const tinyBg = tinycolor(rawBg.startsWith('var(') ? getComputedStyle(document.documentElement).getPropertyValue(rawBg.slice(4, -1)) : rawBg);
 			tinyBg.setAlpha(0.85);
 			bg.value = tinyBg.toRgbString();
+		};
+
+		onMounted(() => {
+			calcBg();
+			globalEvents.on('themeChanged', calcBg);
+			onUnmounted(() => {
+				globalEvents.off('themeChanged', calcBg);
+			});
 		
 			if (el.value.parentElement) {
 				narrow.value = el.value.parentElement.offsetWidth < 500;

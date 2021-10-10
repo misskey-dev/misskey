@@ -1,3 +1,4 @@
+import { globalEvents } from '@client/events';
 import * as tinycolor from 'tinycolor2';
 
 export type Theme = {
@@ -62,6 +63,9 @@ export function applyTheme(theme: Theme, persist = true) {
 	if (persist) {
 		localStorage.setItem('theme', JSON.stringify(props));
 	}
+
+	// 色計算など再度行えるようにクライアント全体に通知
+	globalEvents.emit('themeChanged');
 }
 
 function compile(theme: Theme): Record<string, string> {
