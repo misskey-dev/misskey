@@ -51,6 +51,9 @@ export async function getFileInfo(readable: stream.Readable): Promise<FileInfo> 
 		return undefined;
 	});
 
+	// See https://www.geeksforgeeks.org/node-js-readable-stream-end-event/
+	readable.on('readable', () => readable.read());
+
 	const [md5, detectedType, size, imageSize, blurhash] = await Promise.all([
 		md5Promise, typePromise, sizePromise, imageSizePromise, blurhashPromise
 	]);
@@ -105,9 +108,11 @@ export async function detectType(readable: stream.Readable) {
 	});
 
 	const fileSizePromise = getFileSize(readable);
-	const typePromise = fileType.fromStream(readable.pipe(new stream.PassThrough()));
 
-	const [fileSize, type] = await Promise.all([fileSizePromise, typePromise])
+	const typeStream = readable.pipe(new stream.PassThrough());
+	const typePromise = fileType.fromStream(typeStream).finally(() => typeStream.destroy());
+
+	const [ fileSize, type ] = await Promise.all([fileSizePromise, typePromise]);
 
 	if (fileSize === 0) {
 		return TYPE_OCTET_STREAM;
@@ -194,6 +199,6 @@ function getBlurhash(readable: stream.Readable): Promise<string> {
 				resolve(hash);
 			});
 
-		pipeline(readable.pipe(new stream.PassThrough()), preventEmptyStream(), generator).catch(reject);
+		pipeline(readable, new stream.PassThrough(), preventEmptyStream(), generator).catch(reject);
 	});
 }
