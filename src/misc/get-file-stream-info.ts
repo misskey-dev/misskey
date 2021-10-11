@@ -42,8 +42,7 @@ export async function getFileInfo(readable: stream.Readable): Promise<FileInfo> 
 	const md5Promise = calcHash(readable);
 	const typePromise = detectType(readable);
 	const sizePromise = getFileSize(readable);
-	// ↓↓↓エラーが出る↓↓↓
-	const imageSizePromise = probeImageSize(readable).catch(e => {
+	const imageSizePromise = probeImageSize(readable.pipe(new stream.PassThrough())).catch(e => {
 		warnings.push(`detectImageSize failed: ${e}`);
 		return undefined;
 	});
@@ -52,7 +51,7 @@ export async function getFileInfo(readable: stream.Readable): Promise<FileInfo> 
 		return undefined;
 	});
 
-	const [ md5, detectedType, size, imageSize, blurhash ] = await Promise.all([
+	const [md5, detectedType, size, imageSize, blurhash] = await Promise.all([
 		md5Promise, typePromise, sizePromise, imageSizePromise, blurhashPromise
 	]);
 
@@ -96,49 +95,47 @@ export async function getFileInfo(readable: stream.Readable): Promise<FileInfo> 
  * Detect MIME Type and extension
  */
 export async function detectType(readable: stream.Readable) {
-	return new Promise<{ mime: string; ext: string | null; }>(resolve => {
-		const chunks: Uint8Array[] = [];
+	const chunks: Uint8Array[] = [];
 
-		const streamPromise = new Promise<Buffer | void>(res => {
-			readable
-				.on('data', chunk => chunks.push(chunk))
-				.on('end', () => res(Buffer.concat(chunks)))
-				.on('error', e => res());
-		});
-
-		getFileSize(readable).then(fileSize => {
-			if (fileSize === 0) {
-				resolve(TYPE_OCTET_STREAM);
-			}
-		});
-
-		fileType.fromStream(readable).then(async type => {
-			if (type) {
-				// XMLはSVGかもしれない
-				if (type.mime === 'application/xml') {
-					const buffer = await streamPromise;
-					if (buffer && checkSvg(buffer)) {
-						resolve(TYPE_SVG);
-					}
-				}
-
-				resolve({
-					mime: type.mime,
-					ext: type.ext
-				});
-			}
-
-			// 種類が不明でもSVGかもしれない
-			const buffer = await streamPromise;
-			if (buffer && checkSvg(buffer)) {
-				resolve(TYPE_SVG);
-			}
-
-			// それでも種類が不明なら application/octet-stream にする
-			resolve(TYPE_OCTET_STREAM);
-		});
+	const streamPromise = new Promise<Buffer | void>(res => {
+		readable.pipe(new stream.PassThrough())
+			.on('data', chunk => chunks.push(chunk))
+			.on('end', () => res(Buffer.concat(chunks)))
+			.on('error', e => res());
 	});
 
+	const fileSizePromise = getFileSize(readable);
+	const typePromise = fileType.fromStream(readable.pipe(new stream.PassThrough()));
+
+	const [fileSize, type] = await Promise.all([fileSizePromise, typePromise])
+
+	if (fileSize === 0) {
+		return TYPE_OCTET_STREAM;
+	}
+
+	if (type) {
+		// XMLはSVGかもしれない
+		if (type.mime === 'application/xml') {
+			const buffer = await streamPromise;
+			if (buffer && checkSvg(buffer)) {
+				return TYPE_SVG;
+			}
+		}
+
+		return {
+			mime: type.mime,
+			ext: type.ext
+		};
+	}
+
+	// 種類が不明でもSVGかもしれない
+	const buffer = await streamPromise;
+	if (buffer && checkSvg(buffer)) {
+		return TYPE_SVG;
+	}
+
+	// それでも種類が不明なら application/octet-stream にする
+	return TYPE_OCTET_STREAM;
 }
 
 /**
@@ -158,7 +155,7 @@ export function checkSvg(buffer: Buffer) {
  */
 export async function getFileSize(readable: stream.Readable): Promise<number> {
 	let length = 0;
-	for await (const chunk of readable) {
+	for await (const chunk of readable.pipe(new stream.PassThrough())) {
 		length += chunk.length;
 	}
 	return length;
@@ -169,7 +166,7 @@ export async function getFileSize(readable: stream.Readable): Promise<number> {
  */
 async function calcHash(readable: stream.Readable): Promise<string> {
 	const hash = crypto.createHash('md5').setEncoding('hex');
-	await pipeline(readable, hash);
+	await pipeline(readable.pipe(new stream.PassThrough()), hash);
 	return hash.read();
 }
 
@@ -182,9 +179,10 @@ function getBlurhash(readable: stream.Readable): Promise<string> {
 			.raw()
 			.ensureAlpha()
 			.resize(64, 64, { fit: 'inside' })
-			.toBuffer((err, buffer, { width, height }) => {
+			.toBuffer((err, buffer, info) => {
 				if (err) return reject(err);
 
+				const { width, height } = info;
 				let hash;
 
 				try {
@@ -196,6 +194,6 @@ function getBlurhash(readable: stream.Readable): Promise<string> {
 				resolve(hash);
 			});
 
-		pipeline(readable, preventEmptyStream(), generator).catch(reject);
+		pipeline(readable.pipe(new stream.PassThrough()), preventEmptyStream(), generator).catch(reject);
 	});
 }
