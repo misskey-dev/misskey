@@ -34,7 +34,7 @@ Une pastille clignotante indique la présence de nouveau contenu que vous n'avez
 Les notes dont l'audience est limitée aux « Abonné·e·s uniquement » ne peuvent pas être renotées.
 
 ## Des éléments spécifiques de l'interface ne s'affichent pas
-広告ブロッカーを使用しているとそのような不具合が発生することがあります。Misskeyではオフにしてご利用ください。
+Ce type de dysfonctionnement survient lorsque vous utilisez des bloqueurs de publicité. Désactivez-les pour profiter d'une expérience optimale sur Misskey.
 
 ## Certaines parties de l'interface ne sont pas traduites
 La plupart du temps, cela n'est pas un bug mais simplement un problème de traduction qui n'a pas encore été faite. Merci de patienter jusqu'à ce que la traduction de la portion en question soit achevée. Vous pouvez également [aider à traduire](./misskey) Misskey.
