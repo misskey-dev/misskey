@@ -25,7 +25,7 @@ Essayez les solutions proposées ci-dessous :
 
 ## Certaines parties de l'interface ne s'affichent pas correctement (arrière-plan transparent, etc.)
 Cela peut être lié au système de mise en cache du thème lorsqu'une mise à jour visant à améliorer l'interface a eu lieu. Pour résoudre le problème, sélectionnez la touche « Vider le cache » dans les paramètres du client.
-<div class="warn">⚠️ 「クライアントの」キャッシュクリアです。「ブラウザの」キャッシュクリアは行わないでください。</div>
+<div class="warn">⚠️ Attention de bien vider le cache du -client-... et pas celui du -navigateur- !</div>
 
 ## Les pastilles de notification clignotantes ne disparaissent pas
 点滅は、未読のコンテンツがあることを示しています。通常点滅が消えない場合は、コンテンツを遡ると未読なコンテンツが残っています。 すべて既読にしたと思われるのに、それでもなお点滅が続く場合(おそらく不具合と思われます)は設定から強制的にすべて既読扱いにすることができます。
