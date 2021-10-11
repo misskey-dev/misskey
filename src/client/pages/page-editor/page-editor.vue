@@ -3,12 +3,11 @@
 	<MkHeader :info="header"/>
 
 	<div class="_root">
-		<MkA class="view" v-if="pageId" :to="`/@${ author.username }/pages/${ currentName }`"><i class="fas fa-external-link-square-alt"></i> {{ $ts._pages.viewPage }}</MkA>
-
-		<div class="buttons" style="margin: 16px;">
-			<MkButton inline @click="save" primary class="save" v-if="!readonly"><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
-			<MkButton inline @click="duplicate" class="duplicate" v-if="pageId"><i class="fas fa-copy"></i> {{ $ts.duplicate }}</MkButton>
-			<MkButton inline @click="del" class="delete" v-if="pageId && !readonly"><i class="fas fa-trash-alt"></i> {{ $ts.delete }}</MkButton>
+		<div class="jqqmcavi" style="margin: 16px;">
+			<MkButton v-if="pageId" class="button" inline link :to="`/@${ author.username }/pages/${ currentName }`"><i class="fas fa-external-link-square-alt"></i> {{ $ts._pages.viewPage }}</MkButton>
+			<MkButton inline @click="save" primary class="button" v-if="!readonly"><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
+			<MkButton inline @click="duplicate" class="button" v-if="pageId"><i class="fas fa-copy"></i> {{ $ts.duplicate }}</MkButton>
+			<MkButton inline @click="del" class="button" v-if="pageId && !readonly" danger><i class="fas fa-trash-alt"></i> {{ $ts.delete }}</MkButton>
 		</div>
 
 		<div v-if="tab === 'settings'">
@@ -492,6 +491,14 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.jqqmcavi {
+	> .button {
+		& + .button {
+			margin-left: 8px;
+		}
+	}
+}
+
 .gwbmwxkm {
 	position: relative;
 
@@ -559,11 +566,7 @@ export default defineComponent({
 }
 
 .qmuvgica {
-	padding: 32px;
-
-	@media (max-width: 500px) {
-		padding: 16px;
-	}
+	padding: 16px;
 
 	> .variables {
 		margin-bottom: 16px;

@@ -1,6 +1,5 @@
 <template>
-<component class="bghgjjyj _button"
-	:is="link ? 'MkA' : 'button'"
+<button v-if="!link" class="bghgjjyj _button"
 	:class="{ inline, primary, danger, rounded, full }"
 	:type="type"
 	@click="$emit('click', $event)"
@@ -10,7 +9,17 @@
 	<div class="content">
 		<slot></slot>
 	</div>
-</component>
+</button>
+<MkA v-else class="bghgjjyj _button"
+	:class="{ inline, primary, danger, rounded, full }"
+	:to="to"
+	@mousedown="onMousedown"
+>
+	<div ref="ripples" class="ripples"></div>
+	<div class="content">
+		<slot></slot>
+	</div>
+</MkA>
 </template>
 
 <script lang="ts">
@@ -41,6 +50,10 @@ export default defineComponent({
 			type: Boolean,
 			required: false,
 			default: false
+		},
+		to: {
+			type: String,
+			required: false
 		},
 		autofocus: {
 			type: Boolean,
