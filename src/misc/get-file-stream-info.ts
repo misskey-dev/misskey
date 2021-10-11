@@ -40,7 +40,7 @@ const TYPE_SVG = {
 export async function getFileInfo(readable: stream.Readable): Promise<FileInfo> {
 	const warnings = [] as string[];
 
-	let streamCopy = readable.pipe(new stream.PassThrough());
+	const streamCopy = readable.pipe(new stream.PassThrough());
 
 	// See https://www.geeksforgeeks.org/node-js-readable-stream-end-event/
 	readable.on('readable', () => readable.read());
@@ -181,7 +181,7 @@ async function calcHash(readable: stream.Readable): Promise<string> {
 /**
  * Detect dimensions of image
  */
- async function detectImageSize(readable: stream.Readable): Promise<{
+async function detectImageSize(readable: stream.Readable): Promise<{
 	width: number;
 	height: number;
 	wUnits: string;
