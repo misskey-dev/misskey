@@ -7,6 +7,7 @@ import * as probeImageSize from 'probe-image-size';
 import * as sharp from 'sharp';
 import { encode } from 'blurhash';
 import { preventEmptyStream } from './stream/prevent-empty';
+import { awaitAll } from '@/prelude/await-all';
 
 const pipeline = util.promisify(stream.pipeline);
 
@@ -39,32 +40,34 @@ const TYPE_SVG = {
 export async function getFileInfo(readable: stream.Readable): Promise<FileInfo> {
 	const warnings = [] as string[];
 
-	const md5Promise = calcHash(readable);
-	const typePromise = detectType(readable);
-	const sizePromise = getFileSize(readable);
-	const imageSizePromise = probeImageSize(readable.pipe(new stream.PassThrough())).catch(e => {
-		warnings.push(`detectImageSize failed: ${e}`);
-		return undefined;
-	});
-	const blurhashPromise = getBlurhash(readable).catch(e => {
-		warnings.push(`getBlurhash failed: ${e}`);
-		return undefined;
-	});
+	let streamCopy = readable.pipe(new stream.PassThrough());
 
 	// See https://www.geeksforgeeks.org/node-js-readable-stream-end-event/
 	readable.on('readable', () => readable.read());
 
-	const [md5, detectedType, size, imageSize, blurhash] = await Promise.all([
-		md5Promise, typePromise, sizePromise, imageSizePromise, blurhashPromise
-	]);
+	let type = await detectType(readable);
 
-	let type = detectedType;
+	const sizeDetectable = ['image/jpeg', 'image/gif', 'image/png', 'image/apng', 'image/webp', 'image/bmp', 'image/tiff', 'image/svg+xml', 'image/vnd.adobe.photoshop'].includes(type.mime);
+	const blurhashEnabled = ['image/jpeg', 'image/gif', 'image/png', 'image/apng', 'image/webp', 'image/svg+xml'].includes(type.mime);
+
+	const md5Promise = calcHash(streamCopy);
+	const sizePromise = getFileSize(streamCopy);
+	const imageSizePromise = sizeDetectable ? detectImageSize(streamCopy).catch(e => {
+		warnings.push(`detectImageSize failed: ${e}`);
+		return undefined;
+	}) : Promise.resolve(undefined);
+	const blurhashPromise = blurhashEnabled ? getBlurhash(streamCopy).catch(e => {
+		warnings.push(`getBlurhash failed: ${e}`);
+		return undefined;
+	}) : Promise.resolve(undefined);
 
 	// image dimensions
 	let width: number | undefined;
 	let height: number | undefined;
 
-	if (['image/jpeg', 'image/gif', 'image/png', 'image/apng', 'image/webp', 'image/bmp', 'image/tiff', 'image/svg+xml', 'image/vnd.adobe.photoshop'].includes(type.mime)) {
+	if (sizeDetectable) {
+		const imageSize = await imageSizePromise;
+
 		// うまく判定できない画像は octet-stream にする
 		if (!imageSize) {
 			warnings.push(`cannot detect image dimensions`);
@@ -83,15 +86,15 @@ export async function getFileInfo(readable: stream.Readable): Promise<FileInfo> 
 		}
 	}
 
-	return {
-		size,
-		md5,
+	return awaitAll({
+		size: sizePromise,
+		md5: md5Promise,
 		type,
 		width,
 		height,
-		blurhash,
+		blurhash: blurhashPromise,
 		warnings,
-	};
+	});
 }
 
 /**
@@ -173,6 +176,21 @@ async function calcHash(readable: stream.Readable): Promise<string> {
 	const hash = crypto.createHash('md5').setEncoding('hex');
 	await pipeline(readable.pipe(new stream.PassThrough()), hash);
 	return hash.read();
+}
+
+/**
+ * Detect dimensions of image
+ */
+ async function detectImageSize(readable: stream.Readable): Promise<{
+	width: number;
+	height: number;
+	wUnits: string;
+	hUnits: string;
+}> {
+	const streamCopy = readable.pipe(new stream.PassThrough());
+	const imageSize = await probeImageSize(streamCopy);
+	streamCopy.destroy();
+	return imageSize;
 }
 
 /**
