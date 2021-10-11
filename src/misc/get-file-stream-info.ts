@@ -8,6 +8,7 @@ import * as sharp from 'sharp';
 import { encode } from 'blurhash';
 import { preventEmptyStream } from './stream/prevent-empty';
 import { awaitAll } from '@/prelude/await-all';
+import { readableRead } from './stream/read';
 
 const pipeline = util.promisify(stream.pipeline);
 
@@ -42,8 +43,7 @@ export async function getFileInfo(readable: stream.Readable): Promise<FileInfo> 
 
 	const streamCopy = readable.pipe(new stream.PassThrough());
 
-	// See https://www.geeksforgeeks.org/node-js-readable-stream-end-event/
-	readable.on('readable', () => readable.read());
+	readableRead(readable);
 
 	let type = await detectType(readable);
 

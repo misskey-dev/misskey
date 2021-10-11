@@ -9,10 +9,11 @@ import { serverLogger } from '../index';
 import { contentDisposition } from '@/misc/content-disposition';
 import { DriveFiles } from '@/models/index';
 import { InternalStorage } from '@/services/drive/internal-storage';
-import { downloadUrl } from '@/misc/download-url';
-import { detectType } from '@/misc/get-file-info';
-import { convertToJpeg, convertToPngOrJpeg } from '@/services/drive/image-processor';
+import { getUrl } from '@/misc/download-url';
+import { detectType } from '@/misc/get-file-stream-info';
+import { convertToJpeg, convertToPngOrJpeg } from '@/services/drive/image-stream-processor';
 import { GenerateVideoThumbnail } from '@/services/drive/generate-video-thumbnail';
+import { PassThrough } from 'stream';
 
 //const _filename = fileURLToPath(import.meta.url);
 const _filename = __filename;
@@ -48,31 +49,25 @@ export default async function(ctx: Koa.Context) {
 
 	if (!file.storedInternal) {
 		if (file.isLink && file.uri) {	// 期限切れリモートファイル
-			const [path, cleanup] = await new Promise<[string, any]>((res, rej) => {
-				tmp.file((e, path, fd, cleanup) => {
-					if (e) return rej(e);
-					res([path, cleanup]);
-				});
-			});
+			try{
+				const readable = getUrl(file.uri);
+				const clone = readable.pipe(new PassThrough());
 
-			try {
-				await downloadUrl(file.uri, path);
-
-				const { mime, ext } = await detectType(path);
+				const { mime, ext } = await detectType(readable);
 
 				const convertFile = async () => {
 					if (isThumbnail) {
 						if (['image/jpeg', 'image/webp'].includes(mime)) {
-							return await convertToJpeg(path, 498, 280);
+							return convertToJpeg(clone, 498, 280);
 						} else if (['image/png'].includes(mime)) {
-							return await convertToPngOrJpeg(path, 498, 280);
+							return convertToPngOrJpeg(clone, 498, 280);
 						} else if (mime.startsWith('video/')) {
-							return await GenerateVideoThumbnail(path);
+							return GenerateVideoThumbnail(clone);
 						}
 					}
 
 					return {
-						data: fs.readFileSync(path),
+						data: clone,
 						ext,
 						type: mime,
 					};
@@ -92,8 +87,6 @@ export default async function(ctx: Koa.Context) {
 					ctx.status = 500;
 					ctx.set('Cache-Control', 'max-age=300');
 				}
-			} finally {
-				cleanup();
 			}
 			return;
 		}
