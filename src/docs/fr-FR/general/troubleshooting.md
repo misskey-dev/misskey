@@ -24,7 +24,7 @@ Essayez les solutions proposées ci-dessous :
 - effectuer les mises  à jour de votre appareil.
 
 ## Certaines parties de l'interface ne s'affichent pas correctement (arrière-plan transparent, etc.)
-アップデートによりUIの改修が行われたときに、テーマのキャッシュシステムの影響でそのような表示になることがあります。 クライアントの設定の「キャッシュをクリア」すると直ります。
+Cela peut être lié au système de mise en cache du thème lorsqu'une mise à jour visant à améliorer l'interface a eu lieu. Pour résoudre le problème, sélectionnez la touche « Vider le cache » dans les paramètres du client.
 <div class="warn">⚠️ 「クライアントの」キャッシュクリアです。「ブラウザの」キャッシュクリアは行わないでください。</div>
 
 ## Les pastilles de notification clignotantes ne disparaissent pas
