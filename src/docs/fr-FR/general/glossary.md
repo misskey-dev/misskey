@@ -20,13 +20,13 @@ Anglicisme désignant un compte géré par un programme informatique (vous le tr
 (読み: ふぇでぃばーす) Misskeyを含む様々な分散型ソフトウェアのサーバーで構成されたネットワーク。
 
 ## FG
-グローバルタイムライン(Global TimeLine)の略。タイムラインの詳細は[こちら。](../features/timeline)
+Abréviation de « Fil global ». Pour en savoir plus sur les différents fils, [voir ici.](../features/timeline)
 
 ## FP
-ホームタイムライン(Home TimeLine)の略。タイムラインの詳細は[こちら。](../features/timeline)
+ホームタイムライン(Home TimeLine)の略。Pour en savoir plus sur les différents fils, [voir ici.](../features/timeline)
 
 ## FL
-ローカルタイムライン(Local TimeLine)の略。タイムラインの詳細は[こちら。](../features/timeline)
+ローカルタイムライン(Local TimeLine)の略。Pour en savoir plus sur les différents fils, [voir ici.](../features/timeline)
 
 ## MFM
 (読み: えむえふえむ) Misskey Flavored Markdownの略で、Misskey上で使用できるマークアップ言語です。詳細は[こちら。](../features/mfm)
@@ -38,7 +38,7 @@ Anglicisme désignant un compte géré par un programme informatique (vous le tr
 (読み: りのーと) 既にあるノートを引用、もしくはそのノートを新しいノートとして共有する行為、またそれによって作成されたノート。詳細は[こちら。](../features/note)
 
 ## FS
-ソーシャルタイムライン(Social TimeLine)の略。タイムラインの詳細は[こちら。](../features/timeline)
+ソーシャルタイムライン(Social TimeLine)の略。Pour en savoir plus sur les différents fils, [voir ici.](../features/timeline)
 
 ## Ai
 (読み: あい) Misskeyの看板娘(公式キャラクター)です。
