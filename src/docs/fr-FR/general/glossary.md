@@ -73,7 +73,7 @@ Misskeyにアップロードしたファイルを管理する機能。詳細は[
 ## Notes
 Misskeyに投稿される、文章、ファイル、アンケートなどを含めることができるコンテンツ。[Voir ici pour plus d'informations.](../features/note)
 
-## ミスキスト
+## Misskeynaute
 Misskeyを使う人のこと。
 
 ## Modérateurs
