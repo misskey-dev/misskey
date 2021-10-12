@@ -53,6 +53,7 @@ import {
 } from 'chart.js';
 import 'chartjs-adapter-date-fns';
 import { enUS } from 'date-fns/locale';
+import zoomPlugin from 'chartjs-plugin-zoom';
 import MkSelect from './form/select.vue';
 import number from '@client/filters/number';
 import * as os from '@client/os';
@@ -71,7 +72,8 @@ Chart.register(
   Legend,
   Title,
   Tooltip,
-  SubTitle
+  SubTitle,
+	zoomPlugin,
 );
 
 const sum = (...arr) => arr.reduce((r, a) => r.map((b, i) => a[i] + b));
@@ -108,9 +110,9 @@ export default defineComponent({
 		let data: {
 			series: {
 				name: string;
+				type: 'line' | 'area';
 				color: string;
 				borderDash?: number[];
-				fill?: boolean;
 				hidden?: boolean;
 				data: {
 					x: number;
@@ -145,7 +147,6 @@ export default defineComponent({
 				chartInstance.destroy();
 			}
 
-			// TODO: var(--panel)の色が暗いか明るいかで判定する
 			const gridColor = defaultStore.state.darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
 
 			// フォントカラー
@@ -160,12 +161,13 @@ export default defineComponent({
 						label: x.name,
 						data: x.data.slice().reverse(),
 						pointRadius: 0,
-						lineTension: 0,
+						tension: 0,
 						borderWidth: 2,
 						borderColor: x.color,
 						borderDash: x.borderDash || [],
+						borderJoinStyle: 'round',
 						backgroundColor: alpha(x.color, 0.1),
-						fill: x.fill == null ? true : x.fill,
+						fill: x.type === 'area',
 						hidden: !!x.hidden,
 					})),
 				},
@@ -177,12 +179,6 @@ export default defineComponent({
 							right: 16,
 							top: 16,
 							bottom: 8,
-						},
-					},
-					legend: {
-						position: 'bottom',
-						labels: {
-							boxWidth: 16,
 						},
 					},
 					scales: {
@@ -218,9 +214,46 @@ export default defineComponent({
 							},
 						},
 					},
-					tooltips: {
+					interaction: {
 						intersect: false,
-						mode: 'index',
+					},
+					plugins: {
+						legend: {
+							position: 'bottom',
+							labels: {
+								boxWidth: 16,
+							},
+						},
+						tooltip: {
+							mode: 'index',
+						},
+						zoom: {
+							pan: {
+								enabled: true,
+							},
+							zoom: {
+								wheel: {
+									enabled: true,
+								},
+								pinch: {
+									enabled: true,
+								},
+								drag: {
+									enabled: false,
+								},
+								mode: 'xy',
+							},
+							limits: {
+								x: {
+									min: 'original',
+									max: 'original',
+								},
+								y: {
+									min: 'original',
+									max: 'original',
+								},
+							}
+						},
 					},
 				},
 			});
@@ -235,6 +268,7 @@ export default defineComponent({
 			return {
 				series: [{
 					name: 'Instances',
+					type: 'area',
 					color: '#008FFB',
 					data: format(total
 						? raw.instance.total
@@ -252,7 +286,6 @@ export default defineComponent({
 					type: 'line',
 					color: '#008FFB',
 					borderDash: [5, 5],
-					fill: false,
 					data: format(type == 'combined'
 						? sum(raw.local.inc, negate(raw.local.dec), raw.remote.inc, negate(raw.remote.dec))
 						: sum(raw[type].inc, negate(raw[type].dec))
@@ -349,19 +382,19 @@ export default defineComponent({
 					name: 'Combined',
 					type: 'line',
 					color: '#008FFB',
-					data: format(sum(raw.local.count, raw.remote.count)),
+					data: format(sum(raw.local.users, raw.remote.users)),
 				}, {
 					name: 'Local',
 					type: 'area',
 					color: '#008FFB',
 					hidden: true,
-					data: format(raw.local.count),
+					data: format(raw.local.users),
 				}, {
 					name: 'Remote',
 					type: 'area',
 					color: '#008FFB',
 					hidden: true,
-					data: format(raw.remote.count),
+					data: format(raw.remote.users),
 				}],
 			};
 		};
@@ -375,7 +408,6 @@ export default defineComponent({
 					type: 'line',
 					color: '#09d8e2',
 					borderDash: [5, 5],
-					fill: false,
 					data: format(
 						sum(
 							raw.local.incSize,
@@ -441,7 +473,6 @@ export default defineComponent({
 					type: 'line',
 					color: '#09d8e2',
 					borderDash: [5, 5],
-					fill: false,
 					data: format(
 						sum(
 							raw.local.incCount,

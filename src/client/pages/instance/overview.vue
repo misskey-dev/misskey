@@ -16,7 +16,7 @@
 	
 		<div class="_debobigegoItem">
 			<div class="_debobigegoPanel">
-				<MkInstanceStats :chart-limit="300" :detailed="true"/>
+				<MkInstanceStats :chart-limit="500" :detailed="true"/>
 			</div>
 		</div>
 
