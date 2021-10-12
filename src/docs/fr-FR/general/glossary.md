@@ -50,7 +50,7 @@ Désigne les utilisateur·rice·s, parmi tou·te·s celleux inscrit·e·s sur l'
 todo
 
 ## Émojis personnalisés
-Désigne les émojis mis à disposition par votre instance. カスタム絵文字ではない通常の絵文字は「Unicode絵文字」と区別して呼ばれる。
+Désigne les émojis mis à disposition par votre instance. Par opposition, les émojis disponibles par défaut (donc pas « personnalisés ») sont appelés « émojis unicode ».
 
 ## Panneau de contrôle
 Écran de contrôle des paramètres d'instance.
