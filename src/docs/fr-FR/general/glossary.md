@@ -32,7 +32,7 @@ Abréviation de « Fil local ». Pour en savoir plus sur les différents fils, [
 Abréviation de « Misskey Flavored Markdown », un langage Markdown qui peut être utilisé sur Misskey. [Voir ici pour plus d'informations.](../features/mfm)
 
 ## NSFW
-Abréviation de « Not Safe For Work » (qui signifie littéralement « pas sûr pour le travail »). 画像を「閲覧注意」扱いにし、操作なしには表示しないようにすることができる機能。
+Abréviation de « Not Safe For Work » (qui signifie littéralement « pas sûr pour le travail »). Fonctionnalité permettant d'avertir que le contenu d'une note n'est pas approprié sur le lieu de travail et d'en assujettir l'affichage à une intervention de l'utilisateur·rice par le biais d'un bouton de masquage automatique.
 
 ## Renoter
 (読み: りのーと) 既にあるノートを引用、もしくはそのノートを新しいノートとして共有する行為、またそれによって作成されたノート。詳細は[こちら。](../features/note)
