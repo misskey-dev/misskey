@@ -82,7 +82,7 @@ Uzuloj de Misskey.
 ## Transa, Surloka
 他サーバーのことを指します。リモートユーザーといったように接頭辞としても使われます。ローカルの逆です。
 
-## Kunfederado
+## Federado
 サーバー上で作成された情報が他のサーバーに伝わること。
 
 ## Loka
