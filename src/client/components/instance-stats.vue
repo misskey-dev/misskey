@@ -134,9 +134,8 @@ export default defineComponent({
 		};
 
 		const format = (arr) => {
-			const now = Date.now();
 			return arr.map((v, i) => ({
-				x: new Date(now - ((chartSpan.value === 'day' ? 86400000 :3600000 ) * i)),
+				x: getDate(i),
 				y: v
 			}));
 		};
@@ -195,6 +194,7 @@ export default defineComponent({
 							grid: {
 								display: props.detailed,
 								color: gridColor,
+								borderColor: 'rgb(0, 0, 0, 0)',
 							},
 							ticks: {
 								display: props.detailed,
@@ -209,6 +209,7 @@ export default defineComponent({
 							position: 'left',
 							grid: {
 								color: gridColor,
+								borderColor: 'rgb(0, 0, 0, 0)',
 							},
 							ticks: {
 								display: props.detailed,
