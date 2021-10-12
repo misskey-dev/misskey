@@ -50,7 +50,7 @@ Désigne les utilisateur·rice·s, parmi tou·te·s celleux inscrit·e·s sur l'
 todo
 
 ## Émojis personnalisés
-サーバーで用意された絵文字。カスタム絵文字ではない通常の絵文字は「Unicode絵文字」と区別して呼ばれる。
+Désigne les émojis mis à disposition par votre instance. カスタム絵文字ではない通常の絵文字は「Unicode絵文字」と区別して呼ばれる。
 
 ## Panneau de contrôle
 Écran de contrôle des paramètres d'instance.
@@ -74,7 +74,7 @@ Misskeyにアップロードしたファイルを管理する機能。詳細は[
 Misskeyに投稿される、文章、ファイル、アンケートなどを含めることができるコンテンツ。[Voir ici pour plus d'informations.](../features/note)
 
 ## Misskeynaute
-Misskeyを使う人のこと。
+Désigne les utilisateur·rice·s de Misskey.
 
 ## Modérateurs
 スパムの凍結およびサイレンスや不適切な投稿の削除など、コミュニティ運営に関する権限を持つユーザー。
