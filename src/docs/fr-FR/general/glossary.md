@@ -14,7 +14,7 @@ Langage de programmation qui peut être utilisé sur Misskey. [Voir ici pour plu
 Anglicisme désignant un compte géré par un programme informatique (vous le trouverez parfois aussi sous le terme de « robot »).
 
 ## CW
-(読み: こんてんつわーにんぐ) Contents Warningの略。ノートの内容を、操作なしには表示しないようにできる機能。主に長大な内容を隠すためや、ネタバレ防止などに使われます。
+Abréviation de « Content Warning » (qui signifie littéralement « alerte de contenu »). ノートの内容を、操作なしには表示しないようにできる機能。主に長大な内容を隠すためや、ネタバレ防止などに使われます。
 
 ## Fédiverse
 Réseau social fédéré rassemblant les multiples instances de différents services dont Misskey.
