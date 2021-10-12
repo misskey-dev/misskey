@@ -2,10 +2,10 @@
 Glossaire des termes utilisés dans Misskey.
 
 ## ActivityPub
-Nom du protocole (procédé technique) utilisé par Misskey pour pouvoir fonctionner comme service décentralisé. このプロトコルに則ってサーバー同士通信を行うことで、連合が行われ、Fediverseを形成しています。
+Nom du protocole (procédé technique) utilisé par Misskey pour pouvoir fonctionner comme service décentralisé. Ce protocole permet à tous les serveurs l'ayant adopté de communiquer entre eux et de former une sorte de fédération que l'on appelle « Fédiverse ».
 
 ## AiScript
-(読み: あいすくりぷと) Misskey上で使用できるプログラミング言語です。詳細は[こちら。](../advanced/aiscript)
+Langage de programmation qui peut être utilisé sur Misskey. [Voir ici pour plus d'informations.](../advanced/aiscript)
 
 ## API
 (読み: えーぴーあい) Misskeyのサーバーが公開している、プログラムからMisskeyを扱うためのインターフェース。詳細は[こちら。](../advanced/api)
