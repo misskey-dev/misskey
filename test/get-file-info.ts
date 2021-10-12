@@ -139,4 +139,21 @@ describe('Get file info', () => {
 			height: 25000,
 		});
 	}));
+
+	it('Large File', async (async () => {
+		const path = `${__dirname}/resources/P1130536.JPG`;
+		const info = await getFileInfo(path) as any;
+		delete info.warnings;
+		delete info.blurhash;
+		assert.deepStrictEqual(info, {
+			size: 7437824,
+			md5: '7a4eceddbb272aee107507332868519a',
+			type: {
+				mime: 'image/jpeg',
+				ext: 'jpg'
+			},
+			width: 4592,
+			height: 3448,
+		});
+	}));
 });

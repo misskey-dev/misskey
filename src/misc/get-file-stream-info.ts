@@ -189,7 +189,6 @@ async function detectImageSize(readable: stream.Readable): Promise<{
 }> {
 	const streamCopy = readable.pipe(new stream.PassThrough());
 	const imageSize = await probeImageSize(streamCopy);
-	streamCopy.destroy();
 	return imageSize;
 }
 
