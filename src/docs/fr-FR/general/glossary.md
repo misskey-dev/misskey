@@ -35,7 +35,7 @@ Abréviation de « Misskey Flavored Markdown », un langage Markdown qui peut ê
 Abréviation de « Not Safe For Work » (qui signifie littéralement « pas sûr pour le travail »). Fonctionnalité permettant d'avertir que le contenu d'une note n'est pas approprié sur le lieu de travail et d'en assujettir l'affichage à une intervention de l'utilisateur·rice par le biais d'un bouton de masquage automatique.
 
 ## Renoter
-(読み: りのーと) 既にあるノートを引用、もしくはそのノートを新しいノートとして共有する行為、またそれによって作成されたノート。詳細は[こちら。](../features/note)
+Il s'agit du fait de citer une note existante ou de partager une note existante dans une nouvelle note. La note créée par l'un de ces deux biais est alors appelée une « Renote ». [Voir ici pour plus d'informations.](../features/note)
 
 ## FS
 Abréviation de « Fil social ». Pour en savoir plus sur les différents fils, [voir ici.](../features/timeline)
@@ -71,7 +71,7 @@ todo
 Misskeyにアップロードしたファイルを管理する機能。詳細は[こちら。](../features/drive)
 
 ## Notes
-Misskeyに投稿される、文章、ファイル、アンケートなどを含めることができるコンテンツ。詳細は[こちら。](../features/note)
+Misskeyに投稿される、文章、ファイル、アンケートなどを含めることができるコンテンツ。[Voir ici pour plus d'informations.](../features/note)
 
 ## ミスキスト
 Misskeyを使う人のこと。
