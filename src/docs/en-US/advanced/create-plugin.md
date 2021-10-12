@@ -5,16 +5,16 @@ Misskey Webクライアントのプラグイン機能を使うと、クライア
 プラグインは、AiScriptのメタデータ埋め込み機能を使って、デフォルトとしてプラグインのメタデータを定義する必要があります。 メタデータは次のプロパティを含むオブジェクトです。
 
 ### name
-プラグイン名
+Plugin name
 
 ### author
-プラグイン作者
+Plugin author
 
 ### version
-プラグインバージョン。数値を指定してください。
+プラグインバージョン。A number must be specified.
 
 ### description
-プラグインの説明
+Plugin description
 
 ### permissions
 プラグインが要求する権限。MisskeyAPIにリクエストする際に用いられます。
