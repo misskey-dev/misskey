@@ -1257,7 +1257,7 @@ _charts:
   federationInstancesTotal: "Nombre total d'instances fédérées"
   usersIncDec: "Variation du nombre d'utilisateur·rice·s"
   usersTotal: "Nombre des utilisateur·rice·s au total"
-  activeUsers: "Utilisateur·rice·s actif·ve·s"
+  activeUsers: "Nombre d'utilisateurices actif·ve·s"
   notesIncDec: "Variation du nombre des notes"
   localNotesIncDec: "Variation du nombre de notes locales"
   remoteNotesIncDec: "Variation du nombre de notes distantes"
