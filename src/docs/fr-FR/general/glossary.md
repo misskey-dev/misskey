@@ -11,7 +11,7 @@ Langage de programmation qui peut être utilisé sur Misskey. [Voir ici pour plu
 (読み: えーぴーあい) Misskeyのサーバーが公開している、プログラムからMisskeyを扱うためのインターフェース。詳細は[こちら。](../advanced/api)
 
 ## Bot
-(読み: ぼっと) プログラムによって動作しているアカウント。
+Anglicisme désignant un compte géré par un programme informatique (vous le trouverez parfois aussi sous le terme de « robot »).
 
 ## CW
 (読み: こんてんつわーにんぐ) Contents Warningの略。ノートの内容を、操作なしには表示しないようにできる機能。主に長大な内容を隠すためや、ネタバレ防止などに使われます。
