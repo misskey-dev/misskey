@@ -1,5 +1,5 @@
 <template>
-<FormBase>
+<div>
 	<FormSuspense :p="init">
 		<FormSuspense :p="fetchStats" v-slot="{ result: stats }">
 			<FormGroup>
@@ -39,7 +39,7 @@
 			</FormGroup>
 		</FormSuspense>
 	</FormSuspense>
-</FormBase>
+</div>
 </template>
 
 <script lang="ts">

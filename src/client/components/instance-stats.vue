@@ -135,7 +135,7 @@ export default defineComponent({
 
 		const format = (arr) => {
 			return arr.map((v, i) => ({
-				x: getDate(i),
+				x: getDate(i).getTime(),
 				y: v
 			}));
 		};
@@ -156,6 +156,7 @@ export default defineComponent({
 				data: {
 					labels: new Array(props.chartLimit).fill(0).map((_, i) => getDate(i).toLocaleString()).slice().reverse(),
 					datasets: data.series.map(x => ({
+						parsing: false,
 						label: x.name,
 						data: x.data.slice().reverse(),
 						pointRadius: 0,
@@ -204,6 +205,7 @@ export default defineComponent({
 									locale: enUS,
 								},
 							},
+							min: getDate(props.chartLimit).getTime(),
 						},
 						y: {
 							position: 'left',
