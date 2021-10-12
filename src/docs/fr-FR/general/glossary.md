@@ -14,10 +14,10 @@ Langage de programmation qui peut être utilisé sur Misskey. [Voir ici pour plu
 Anglicisme désignant un compte géré par un programme informatique (vous le trouverez parfois aussi sous le terme de « robot »).
 
 ## CW
-Abréviation de « Content Warning » (qui signifie littéralement « alerte de contenu »). Fonctionnalité permettant d'assujettir l'affichage du contenu d'une note à une intervention de l'utilisateur par le biais d'un bouton de masquage automatique. Principalement employée pour cacher le contenu des notes très longues, ou pour éviter de dévoiler publiquement des spoils potentiels, etc.
+Abréviation de « Content Warning » (qui signifie littéralement « alerte de contenu »). Fonctionnalité permettant d'assujettir l'affichage du contenu d'une note à une intervention de l'utilisateur·rice par le biais d'un bouton de masquage automatique. Principalement employée pour cacher le contenu des notes très longues, ou pour éviter de dévoiler publiquement des spoils potentiels, etc.
 
 ## Fédiverse
-Réseau social fédéré rassemblant les multiples instances de différents services dont Misskey.
+Nom du réseau social fédéré qui rassemble une multitude d'instances appartenant à différents services et dont fait partie Misskey.
 
 ## FG
 Abréviation de « Fil global ». Pour en savoir plus sur les différents fils, [voir ici.](../features/timeline)
@@ -29,10 +29,10 @@ Abréviation de « Fil principal ». Pour en savoir plus sur les différents fil
 Abréviation de « Fil local ». Pour en savoir plus sur les différents fils, [voir ici.](../features/timeline)
 
 ## MFM
-(読み: えむえふえむ) Misskey Flavored Markdownの略で、Misskey上で使用できるマークアップ言語です。詳細は[こちら。](../features/mfm)
+Abréviation de « Misskey Flavored Markdown », un langage Markdown qui peut être utilisé sur Misskey. [Voir ici pour plus d'informations.](../features/mfm)
 
 ## NSFW
-(読み: のっとせーふふぉーわーく) Not Safe For Workの略。画像を「閲覧注意」扱いにし、操作なしには表示しないようにすることができる機能。
+Abréviation de « Not Safe For Work » (qui signifie littéralement « pas sûr pour le travail »). 画像を「閲覧注意」扱いにし、操作なしには表示しないようにすることができる機能。
 
 ## Renoter
 (読み: りのーと) 既にあるノートを引用、もしくはそのノートを新しいノートとして共有する行為、またそれによって作成されたノート。詳細は[こちら。](../features/note)
