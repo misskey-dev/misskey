@@ -8,7 +8,7 @@ Nom du protocole (procédé technique) utilisé par Misskey pour pouvoir fonctio
 Langage de programmation qui peut être utilisé sur Misskey. [Voir ici pour plus d'informations.](../advanced/aiscript)
 
 ## API
-(読み: えーぴーあい) Misskeyのサーバーが公開している、プログラムからMisskeyを扱うためのインターフェース。詳細は[こちら。](../advanced/api)
+(読み: えーぴーあい) Misskeyのサーバーが公開している、プログラムからMisskeyを扱うためのインターフェース。[Voir ici pour plus d'informations. ](../advanced/api)
 
 ## Bot
 Anglicisme désignant un compte géré par un programme informatique (vous le trouverez parfois aussi sous le terme de « robot »).
@@ -59,7 +59,7 @@ Désigne les émojis mis à disposition par votre instance. Par opposition, les 
 todo
 
 ## Mettre en sourdine
-ノートをパブリックな公開範囲で投稿できなくされている状態。モデレーターの判断でユーザーごとに設定されます。詳細は[こちら。](../features/silence)
+ノートをパブリックな公開範囲で投稿できなくされている状態。モデレーターの判断でユーザーごとに設定されます。[Voir ici pour plus d'informations. ](../features/silence)
 
 ## File d’attente
 アクティビティ配送などを順番に行うためのシステム。
@@ -68,7 +68,7 @@ todo
 アカウントが使用不可に設定されている状態。
 
 ## Drive
-Misskeyにアップロードしたファイルを管理する機能。詳細は[こちら。](../features/drive)
+Fonctionnalité vous permettant de gérer les fichiers que vous avez téléversés sur Misskey. [Voir ici pour plus d'informations. ](../features/drive)
 
 ## Notes
 Misskeyに投稿される、文章、ファイル、アンケートなどを含めることができるコンテンツ。[Voir ici pour plus d'informations.](../features/note)
