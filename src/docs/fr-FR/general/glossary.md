@@ -44,7 +44,7 @@ Abréviation de « Fil social ». Pour en savoir plus sur les différents fils, 
 Nom de la mascotte officielle de Misskey. (Le mot japonais, à prononcer « a-i », signifie littéralement « indigo »).
 
 ## Utilisateurices actif·ve·s
-インスタンスにアカウントを作っているユーザーのうち、現在も実際にサービスを利用しているユーザーのこと。
+Désigne les utilisateur·rice·s, parmi tou·te·s celleux inscrit·e·s sur l'instance, qui utilisent effectivement leur compte au moment présent.
 
 ## Instance
 todo
