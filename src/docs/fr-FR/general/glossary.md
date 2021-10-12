@@ -41,7 +41,7 @@ Il s'agit du fait de citer une note existante ou de partager une note existante 
 Abréviation de « Fil social ». Pour en savoir plus sur les différents fils, [voir ici.](../features/timeline)
 
 ## Ai
-(読み: あい) Misskeyの看板娘(公式キャラクター)です。
+Nom de la mascotte officielle de Misskey. (Le mot japonais, à prononcer « a-i », signifie littéralement « indigo »).
 
 ## アクティブユーザー
 インスタンスにアカウントを作っているユーザーのうち、現在も実際にサービスを利用しているユーザーのこと。
