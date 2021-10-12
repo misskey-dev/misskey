@@ -17,7 +17,7 @@ Anglicisme désignant un compte géré par un programme informatique (vous le tr
 (読み: こんてんつわーにんぐ) Contents Warningの略。ノートの内容を、操作なしには表示しないようにできる機能。主に長大な内容を隠すためや、ネタバレ防止などに使われます。
 
 ## Fédiverse
-(読み: ふぇでぃばーす) Misskeyを含む様々な分散型ソフトウェアのサーバーで構成されたネットワーク。
+Réseau social fédéré rassemblant les multiples instances de différents services dont Misskey.
 
 ## FG
 Abréviation de « Fil global ». Pour en savoir plus sur les différents fils, [voir ici.](../features/timeline)
