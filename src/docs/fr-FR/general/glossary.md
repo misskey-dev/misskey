@@ -19,13 +19,13 @@ Glossaire des termes utilisés dans Misskey.
 ## Fédiverse
 (読み: ふぇでぃばーす) Misskeyを含む様々な分散型ソフトウェアのサーバーで構成されたネットワーク。
 
-## GTL
+## FG
 グローバルタイムライン(Global TimeLine)の略。タイムラインの詳細は[こちら。](../features/timeline)
 
-## HTL
+## FP
 ホームタイムライン(Home TimeLine)の略。タイムラインの詳細は[こちら。](../features/timeline)
 
-## LTL
+## FL
 ローカルタイムライン(Local TimeLine)の略。タイムラインの詳細は[こちら。](../features/timeline)
 
 ## MFM
@@ -37,7 +37,7 @@ Glossaire des termes utilisés dans Misskey.
 ## Renoter
 (読み: りのーと) 既にあるノートを引用、もしくはそのノートを新しいノートとして共有する行為、またそれによって作成されたノート。詳細は[こちら。](../features/note)
 
-## STL
+## FS
 ソーシャルタイムライン(Social TimeLine)の略。タイムラインの詳細は[こちら。](../features/timeline)
 
 ## Ai
