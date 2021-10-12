@@ -71,12 +71,12 @@ todo
 Fonctionnalité vous permettant de gérer les fichiers que vous avez téléversés sur Misskey. [Voir ici pour plus d'informations. ](../features/drive)
 
 ## Notes
-Misskeyに投稿される、文章、ファイル、アンケートなどを含めることができるコンテンツ。[Voir ici pour plus d'informations.](../features/note)
+Nom des publications sur Misskey. Leur contenu peut être du texte, mais aussi des fichiers, des enquêtes, etc. [Voir ici pour plus d'informations.](../features/note)
 
 ## Misskeynaute
 Désigne les utilisateur·rice·s de Misskey.
 
-## Modérateurs
+## Modérateur·rice·s
 スパムの凍結およびサイレンスや不適切な投稿の削除など、コミュニティ運営に関する権限を持つユーザー。
 
 ## Distant
