@@ -43,7 +43,7 @@ Abréviation de « Fil social ». Pour en savoir plus sur les différents fils, 
 ## Ai
 Nom de la mascotte officielle de Misskey. (Le mot japonais, à prononcer « a-i », signifie littéralement « indigo »).
 
-## アクティブユーザー
+## Utilisateurices actif·ve·s
 インスタンスにアカウントを作っているユーザーのうち、現在も実際にサービスを利用しているユーザーのこと。
 
 ## Instance
@@ -53,7 +53,7 @@ todo
 サーバーで用意された絵文字。カスタム絵文字ではない通常の絵文字は「Unicode絵文字」と区別して呼ばれる。
 
 ## Panneau de contrôle
-インスタンスの設定画面のこと。
+Écran de contrôle des paramètres d'instance.
 
 ## Serveurs
 todo
