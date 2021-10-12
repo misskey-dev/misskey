@@ -38,7 +38,7 @@ export default defineComponent({
 
 	setup(props, context) {
 		const indexInfo = {
-			title: i18n.locale.controllPanel,
+			title: i18n.locale.settings,
 			icon: 'fas fa-cog',
 			bg: 'var(--bg)',
 		};
