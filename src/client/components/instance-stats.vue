@@ -29,15 +29,50 @@
 			<option value="day">{{ $ts.perDay }}</option>
 		</MkSelect>
 	</div>
-	<canvas ref="chart"></canvas>
+	<canvas ref="chartEl"></canvas>
 </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, markRaw } from 'vue';
-import Chart from 'chart.js';
+import { defineComponent, onMounted, ref, watch } from 'vue';
+import {
+  Chart,
+  ArcElement,
+  LineElement,
+  BarElement,
+  PointElement,
+  BarController,
+  LineController,
+  CategoryScale,
+  LinearScale,
+	TimeScale,
+  Legend,
+  Title,
+  Tooltip,
+  SubTitle
+} from 'chart.js';
+import 'chartjs-adapter-date-fns';
+import { enUS } from 'date-fns/locale';
 import MkSelect from './form/select.vue';
 import number from '@client/filters/number';
+import * as os from '@client/os';
+import { defaultStore } from '@client/store';
+
+Chart.register(
+  ArcElement,
+  LineElement,
+  BarElement,
+  PointElement,
+  BarController,
+  LineController,
+  CategoryScale,
+  LinearScale,
+	TimeScale,
+  Legend,
+  Title,
+  Tooltip,
+  SubTitle
+);
 
 const sum = (...arr) => arr.reduce((r, a) => r.map((b, i) => a[i] + b));
 const negate = arr => arr.map(x => -x);
@@ -48,7 +83,6 @@ const alpha = (hex, a) => {
 	const b = parseInt(result[3], 16);
 	return `rgba(${r}, ${g}, ${b}, ${a})`;
 };
-import * as os from '@client/os';
 
 export default defineComponent({
 	components: {
@@ -68,122 +102,61 @@ export default defineComponent({
 		},
 	},
 
-	data() {
-		return {
-			notesLocalWoW: 0,
-			notesLocalDoD: 0,
-			notesRemoteWoW: 0,
-			notesRemoteDoD: 0,
-			usersLocalWoW: 0,
-			usersLocalDoD: 0,
-			usersRemoteWoW: 0,
-			usersRemoteDoD: 0,
-			now: null,
-			chart: null,
-			chartInstance: null,
-			chartSrc: 'notes',
-			chartSpan: 'hour',
-		}
-	},
+	setup(props) {
+		const now = new Date();
+		let chartInstance: Chart = null;
+		let data: {
+			series: {
+				name: string;
+				color: string;
+				borderDash?: number[];
+				fill?: boolean;
+				hidden?: boolean;
+				data: {
+					x: number;
+					y: number;
+				}[];
+			}[];
+		} = null;
 
-	computed: {
-		data(): any {
-			if (this.chart == null) return null;
-			switch (this.chartSrc) {
-				case 'federation-instances': return this.federationInstancesChart(false);
-				case 'federation-instances-total': return this.federationInstancesChart(true);
-				case 'users': return this.usersChart(false);
-				case 'users-total': return this.usersChart(true);
-				case 'active-users': return this.activeUsersChart();
-				case 'notes': return this.notesChart('combined');
-				case 'local-notes': return this.notesChart('local');
-				case 'remote-notes': return this.notesChart('remote');
-				case 'notes-total': return this.notesTotalChart();
-				case 'drive': return this.driveChart();
-				case 'drive-total': return this.driveTotalChart();
-				case 'drive-files': return this.driveFilesChart();
-				case 'drive-files-total': return this.driveFilesTotalChart();
-			}
-		},
+		const chartEl = ref<HTMLCanvasElement>(null);
+		const chartSpan = ref<'hour' | 'day'>('hour');
+		const chartSrc = ref('notes');
+		const fetching = ref(true);
 
-		stats(): any[] {
-			const stats =
-				this.chartSpan == 'day' ? this.chart.perDay :
-				this.chartSpan == 'hour' ? this.chart.perHour :
-				null;
+		const getDate = (ago: number) => {
+			const y = now.getFullYear();
+			const m = now.getMonth();
+			const d = now.getDate();
+			const h = now.getHours();
 
-			return stats;
-		}
-	},
+			return chartSpan.value === 'day' ? new Date(y, m, d - ago) : new Date(y, m, d, h - ago);
+		};
 
-	watch: {
-		chartSrc() {
-			this.renderChart();
-		},
+		const format = (arr) => {
+			const now = Date.now();
+			return arr.map((v, i) => ({
+				x: new Date(now - ((chartSpan.value === 'day' ? 86400000 :3600000 ) * i)),
+				y: v
+			}));
+		};
 
-		chartSpan() {
-			this.renderChart();
-		}
-	},
-
-	async created() {
-		this.now = new Date();
-
-		this.fetchChart();
-	},
-
-	methods: {
-		async fetchChart() {
-			const [perHour, perDay] = await Promise.all([Promise.all([
-				os.api('charts/federation', { limit: this.chartLimit, span: 'hour' }),
-				os.api('charts/users', { limit: this.chartLimit, span: 'hour' }),
-				os.api('charts/active-users', { limit: this.chartLimit, span: 'hour' }),
-				os.api('charts/notes', { limit: this.chartLimit, span: 'hour' }),
-				os.api('charts/drive', { limit: this.chartLimit, span: 'hour' }),
-			]), Promise.all([
-				os.api('charts/federation', { limit: this.chartLimit, span: 'day' }),
-				os.api('charts/users', { limit: this.chartLimit, span: 'day' }),
-				os.api('charts/active-users', { limit: this.chartLimit, span: 'day' }),
-				os.api('charts/notes', { limit: this.chartLimit, span: 'day' }),
-				os.api('charts/drive', { limit: this.chartLimit, span: 'day' }),
-			])]);
-
-			const chart = {
-				perHour: {
-					federation: perHour[0],
-					users: perHour[1],
-					activeUsers: perHour[2],
-					notes: perHour[3],
-					drive: perHour[4],
-				},
-				perDay: {
-					federation: perDay[0],
-					users: perDay[1],
-					activeUsers: perDay[2],
-					notes: perDay[3],
-					drive: perDay[4],
-				}
-			};
-
-			this.chart = chart;
-
-			this.renderChart();
-		},
-
-		renderChart() {
-			if (this.chartInstance) {
-				this.chartInstance.destroy();
+		const render = () => {
+			if (chartInstance) {
+				chartInstance.destroy();
 			}
 
 			// TODO: var(--panel)の色が暗いか明るいかで判定する
-			const gridColor = this.$store.state.darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+			const gridColor = defaultStore.state.darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
 
-			Chart.defaults.global.defaultFontColor = getComputedStyle(document.documentElement).getPropertyValue('--fg');
-			this.chartInstance = markRaw(new Chart(this.$refs.chart, {
+			// フォントカラー
+			Chart.defaults.color = getComputedStyle(document.documentElement).getPropertyValue('--fg');
+
+			chartInstance = new Chart(chartEl.value, {
 				type: 'line',
 				data: {
-					labels: new Array(this.chartLimit).fill(0).map((_, i) => this.getDate(i).toLocaleString()).slice().reverse(),
-					datasets: this.data.series.map(x => ({
+					labels: new Array(props.chartLimit).fill(0).map((_, i) => getDate(i).toLocaleString()).slice().reverse(),
+					datasets: data.series.map(x => ({
 						label: x.name,
 						data: x.data.slice().reverse(),
 						pointRadius: 0,
@@ -193,8 +166,8 @@ export default defineComponent({
 						borderDash: x.borderDash || [],
 						backgroundColor: alpha(x.color, 0.1),
 						fill: x.fill == null ? true : x.fill,
-						hidden: !!x.hidden
-					}))
+						hidden: !!x.hidden,
+					})),
 				},
 				options: {
 					aspectRatio: 2.5,
@@ -203,81 +176,73 @@ export default defineComponent({
 							left: 16,
 							right: 16,
 							top: 16,
-							bottom: 8
-						}
+							bottom: 8,
+						},
 					},
 					legend: {
 						position: 'bottom',
 						labels: {
 							boxWidth: 16,
-						}
+						},
 					},
 					scales: {
-						xAxes: [{
+						x: {
 							type: 'time',
 							time: {
 								stepSize: 1,
-								unit: this.chartSpan == 'day' ? 'month' : 'day',
+								unit: chartSpan.value == 'day' ? 'month' : 'day',
 							},
-							gridLines: {
-								display: this.detailed,
+							grid: {
+								display: props.detailed,
 								color: gridColor,
-								zeroLineColor: gridColor,
 							},
 							ticks: {
-								display: this.detailed
-							}
-						}],
-						yAxes: [{
+								display: props.detailed,
+							},
+							adapters: {
+								date: {
+									locale: enUS,
+								},
+							},
+						},
+						y: {
 							position: 'left',
-							gridLines: {
+							grid: {
 								color: gridColor,
-								zeroLineColor: gridColor,
 							},
 							ticks: {
-								display: this.detailed
-							}
-						}]
+								display: props.detailed,
+							},
+						},
 					},
 					tooltips: {
 						intersect: false,
 						mode: 'index',
-					}
-				}
-			}));
-		},
+					},
+				},
+			});
+		};
 
-		getDate(ago: number) {
-			const y = this.now.getFullYear();
-			const m = this.now.getMonth();
-			const d = this.now.getDate();
-			const h = this.now.getHours();
+		const exportData = () => {
+			// TODO
+		};
 
-			return this.chartSpan == 'day' ? new Date(y, m, d - ago) : new Date(y, m, d, h - ago);
-		},
-
-		format(arr) {
-			const now = Date.now();
-			return arr.map((v, i) => ({
-				x: new Date(now - ((this.chartSpan == 'day' ? 86400000 :3600000 ) * i)),
-				y: v
-			}));
-		},
-
-		federationInstancesChart(total: boolean): any {
+		const fetchFederationInstancesChart = async (total: boolean): Promise<typeof data> => {
+			const raw = await os.api('charts/federation', { limit: props.chartLimit, span: chartSpan.value });
 			return {
 				series: [{
 					name: 'Instances',
 					color: '#008FFB',
-					data: this.format(total
-						? this.stats.federation.instance.total
-						: sum(this.stats.federation.instance.inc, negate(this.stats.federation.instance.dec))
-					)
-				}]
+					data: format(total
+						? raw.instance.total
+						: sum(raw.instance.inc, negate(raw.instance.dec))
+					),
+				}],
 			};
-		},
+		};
 
-		notesChart(type: string): any {
+		const fetchNotesChart = async (type: string): Promise<typeof data> => {
+			const raw = await os.api('charts/notes', { limit: props.chartLimit, span: chartSpan.value });
 			return {
 				series: [{
 					name: 'All',
@@ -285,117 +250,121 @@ export default defineComponent({
 					color: '#008FFB',
 					borderDash: [5, 5],
 					fill: false,
-					data: this.format(type == 'combined'
-						? sum(this.stats.notes.local.inc, negate(this.stats.notes.local.dec), this.stats.notes.remote.inc, negate(this.stats.notes.remote.dec))
-						: sum(this.stats.notes[type].inc, negate(this.stats.notes[type].dec))
-					)
+					data: format(type == 'combined'
+						? sum(raw.local.inc, negate(raw.local.dec), raw.remote.inc, negate(raw.remote.dec))
+						: sum(raw[type].inc, negate(raw[type].dec))
+					),
 				}, {
 					name: 'Renotes',
 					type: 'area',
 					color: '#00E396',
-					data: this.format(type == 'combined'
-						? sum(this.stats.notes.local.diffs.renote, this.stats.notes.remote.diffs.renote)
-						: this.stats.notes[type].diffs.renote
-					)
+					data: format(type == 'combined'
+						? sum(raw.local.diffs.renote, raw.remote.diffs.renote)
+						: raw[type].diffs.renote
+					),
 				}, {
 					name: 'Replies',
 					type: 'area',
 					color: '#FEB019',
-					data: this.format(type == 'combined'
-						? sum(this.stats.notes.local.diffs.reply, this.stats.notes.remote.diffs.reply)
-						: this.stats.notes[type].diffs.reply
-					)
+					data: format(type == 'combined'
+						? sum(raw.local.diffs.reply, raw.remote.diffs.reply)
+						: raw[type].diffs.reply
+					),
 				}, {
 					name: 'Normal',
 					type: 'area',
 					color: '#FF4560',
-					data: this.format(type == 'combined'
-						? sum(this.stats.notes.local.diffs.normal, this.stats.notes.remote.diffs.normal)
-						: this.stats.notes[type].diffs.normal
-					)
-				}]
+					data: format(type == 'combined'
+						? sum(raw.local.diffs.normal, raw.remote.diffs.normal)
+						: raw[type].diffs.normal
+					),
+				}],
 			};
-		},
+		};
 
-		notesTotalChart(): any {
+		const fetchNotesTotalChart = async (): Promise<typeof data> => {
+			const raw = await os.api('charts/notes', { limit: props.chartLimit, span: chartSpan.value });
 			return {
 				series: [{
 					name: 'Combined',
 					type: 'line',
 					color: '#008FFB',
-					data: this.format(sum(this.stats.notes.local.total, this.stats.notes.remote.total))
+					data: format(sum(raw.local.total, raw.remote.total)),
 				}, {
 					name: 'Local',
 					type: 'area',
 					color: '#008FFB',
 					hidden: true,
-					data: this.format(this.stats.notes.local.total)
+					data: format(raw.local.total),
 				}, {
 					name: 'Remote',
 					type: 'area',
 					color: '#008FFB',
 					hidden: true,
-					data: this.format(this.stats.notes.remote.total)
-				}]
+					data: format(raw.remote.total),
+				}],
 			};
-		},
+		};
 
-		usersChart(total: boolean): any {
+		const fetchUsersChart = async (total: boolean): Promise<typeof data> => {
+			const raw = await os.api('charts/users', { limit: props.chartLimit, span: chartSpan.value });
 			return {
 				series: [{
 					name: 'Combined',
 					type: 'line',
 					color: '#008FFB',
-					data: this.format(total
-						? sum(this.stats.users.local.total, this.stats.users.remote.total)
-						: sum(this.stats.users.local.inc, negate(this.stats.users.local.dec), this.stats.users.remote.inc, negate(this.stats.users.remote.dec))
-					)
+					data: format(total
+						? sum(raw.local.total, raw.remote.total)
+						: sum(raw.local.inc, negate(raw.local.dec), raw.remote.inc, negate(raw.remote.dec))
+					),
 				}, {
 					name: 'Local',
 					type: 'area',
 					color: '#008FFB',
 					hidden: true,
-					data: this.format(total
-						? this.stats.users.local.total
-						: sum(this.stats.users.local.inc, negate(this.stats.users.local.dec))
-					)
+					data: format(total
+						? raw.local.total
+						: sum(raw.local.inc, negate(raw.local.dec))
+					),
 				}, {
 					name: 'Remote',
 					type: 'area',
 					color: '#008FFB',
 					hidden: true,
-					data: this.format(total
-						? this.stats.users.remote.total
-						: sum(this.stats.users.remote.inc, negate(this.stats.users.remote.dec))
-					)
-				}]
+					data: format(total
+						? raw.remote.total
+						: sum(raw.remote.inc, negate(raw.remote.dec))
+					),
+				}],
 			};
-		},
+		};
 
-		activeUsersChart(): any {
+		const fetchActiveUsersChart = async (): Promise<typeof data> => {
+			const raw = await os.api('charts/active-users', { limit: props.chartLimit, span: chartSpan.value });
 			return {
 				series: [{
 					name: 'Combined',
 					type: 'line',
 					color: '#008FFB',
-					data: this.format(sum(this.stats.activeUsers.local.count, this.stats.activeUsers.remote.count))
+					data: format(sum(raw.local.count, raw.remote.count)),
 				}, {
 					name: 'Local',
 					type: 'area',
 					color: '#008FFB',
 					hidden: true,
-					data: this.format(this.stats.activeUsers.local.count)
+					data: format(raw.local.count),
 				}, {
 					name: 'Remote',
 					type: 'area',
 					color: '#008FFB',
 					hidden: true,
-					data: this.format(this.stats.activeUsers.remote.count)
-				}]
+					data: format(raw.remote.count),
+				}],
 			};
-		},
+		};
 
-		driveChart(): any {
+		const fetchDriveChart = async (): Promise<typeof data> => {
+			const raw = await os.api('charts/drive', { limit: props.chartLimit, span: chartSpan.value });
 			return {
 				bytes: true,
 				series: [{
@@ -404,63 +373,65 @@ export default defineComponent({
 					color: '#09d8e2',
 					borderDash: [5, 5],
 					fill: false,
-					data: this.format(
+					data: format(
 						sum(
-							this.stats.drive.local.incSize,
-							negate(this.stats.drive.local.decSize),
-							this.stats.drive.remote.incSize,
-							negate(this.stats.drive.remote.decSize)
+							raw.local.incSize,
+							negate(raw.local.decSize),
+							raw.remote.incSize,
+							negate(raw.remote.decSize)
 						)
-					)
+					),
 				}, {
 					name: 'Local +',
 					type: 'area',
 					color: '#008FFB',
-					data: this.format(this.stats.drive.local.incSize)
+					data: format(raw.local.incSize),
 				}, {
 					name: 'Local -',
 					type: 'area',
 					color: '#FF4560',
-					data: this.format(negate(this.stats.drive.local.decSize))
+					data: format(negate(raw.local.decSize)),
 				}, {
 					name: 'Remote +',
 					type: 'area',
 					color: '#00E396',
-					data: this.format(this.stats.drive.remote.incSize)
+					data: format(raw.remote.incSize),
 				}, {
 					name: 'Remote -',
 					type: 'area',
 					color: '#FEB019',
-					data: this.format(negate(this.stats.drive.remote.decSize))
-				}]
+					data: format(negate(raw.remote.decSize)),
+				}],
 			};
-		},
+		};
 
-		driveTotalChart(): any {
+		const fetchDriveTotalChart = async (): Promise<typeof data> => {
+			const raw = await os.api('charts/drive', { limit: props.chartLimit, span: chartSpan.value });
 			return {
 				bytes: true,
 				series: [{
 					name: 'Combined',
 					type: 'line',
 					color: '#008FFB',
-					data: this.format(sum(this.stats.drive.local.totalSize, this.stats.drive.remote.totalSize))
+					data: format(sum(raw.local.totalSize, raw.remote.totalSize)),
 				}, {
 					name: 'Local',
 					type: 'area',
 					color: '#008FFB',
 					hidden: true,
-					data: this.format(this.stats.drive.local.totalSize)
+					data: format(raw.local.totalSize),
 				}, {
 					name: 'Remote',
 					type: 'area',
 					color: '#008FFB',
 					hidden: true,
-					data: this.format(this.stats.drive.remote.totalSize)
-				}]
+					data: format(raw.remote.totalSize),
+				}],
 			};
-		},
+		};
 
-		driveFilesChart(): any {
+		const fetchDriveFilesChart = async (): Promise<typeof data> => {
+			const raw = await os.api('charts/drive', { limit: props.chartLimit, span: chartSpan.value });
 			return {
 				series: [{
 					name: 'All',
@@ -468,63 +439,98 @@ export default defineComponent({
 					color: '#09d8e2',
 					borderDash: [5, 5],
 					fill: false,
-					data: this.format(
+					data: format(
 						sum(
-							this.stats.drive.local.incCount,
-							negate(this.stats.drive.local.decCount),
-							this.stats.drive.remote.incCount,
-							negate(this.stats.drive.remote.decCount)
+							raw.local.incCount,
+							negate(raw.local.decCount),
+							raw.remote.incCount,
+							negate(raw.remote.decCount)
 						)
-					)
+					),
 				}, {
 					name: 'Local +',
 					type: 'area',
 					color: '#008FFB',
-					data: this.format(this.stats.drive.local.incCount)
+					data: format(raw.local.incCount),
 				}, {
 					name: 'Local -',
 					type: 'area',
 					color: '#FF4560',
-					data: this.format(negate(this.stats.drive.local.decCount))
+					data: format(negate(raw.local.decCount)),
 				}, {
 					name: 'Remote +',
 					type: 'area',
 					color: '#00E396',
-					data: this.format(this.stats.drive.remote.incCount)
+					data: format(raw.remote.incCount),
 				}, {
 					name: 'Remote -',
 					type: 'area',
 					color: '#FEB019',
-					data: this.format(negate(this.stats.drive.remote.decCount))
-				}]
+					data: format(negate(raw.remote.decCount)),
+				}],
 			};
-		},
+		};
 
-		driveFilesTotalChart(): any {
+		const fetchDriveFilesTotalChart = async (): Promise<typeof data> => {
+			const raw = await os.api('charts/drive', { limit: props.chartLimit, span: chartSpan.value });
 			return {
 				series: [{
 					name: 'Combined',
 					type: 'line',
 					color: '#008FFB',
-					data: this.format(sum(this.stats.drive.local.totalCount, this.stats.drive.remote.totalCount))
+					data: format(sum(raw.local.totalCount, raw.remote.totalCount)),
 				}, {
 					name: 'Local',
 					type: 'area',
 					color: '#008FFB',
 					hidden: true,
-					data: this.format(this.stats.drive.local.totalCount)
+					data: format(raw.local.totalCount),
 				}, {
 					name: 'Remote',
 					type: 'area',
 					color: '#008FFB',
 					hidden: true,
-					data: this.format(this.stats.drive.remote.totalCount)
-				}]
+					data: format(raw.remote.totalCount),
+				}],
 			};
-		},
+		};
 
-		number
-	}
+		const fetchAndRender = async () => {
+			const fetchData = () => {
+				switch (chartSrc.value) {
+					case 'federation-instances': return fetchFederationInstancesChart(false);
+					case 'federation-instances-total': return fetchFederationInstancesChart(true);
+					case 'users': return fetchUsersChart(false);
+					case 'users-total': return fetchUsersChart(true);
+					case 'active-users': return fetchActiveUsersChart();
+					case 'notes': return fetchNotesChart('combined');
+					case 'local-notes': return fetchNotesChart('local');
+					case 'remote-notes': return fetchNotesChart('remote');
+					case 'notes-total': return fetchNotesTotalChart();
+					case 'drive': return fetchDriveChart();
+					case 'drive-total': return fetchDriveTotalChart();
+					case 'drive-files': return fetchDriveFilesChart();
+					case 'drive-files-total': return fetchDriveFilesTotalChart();
+				}
+			};
+			fetching.value = true;
+			data = await fetchData();
+			fetching.value = false;
+			render();
+		};
+
+		watch([chartSrc, chartSpan], fetchAndRender);
+
+		onMounted(() => {
+			fetchAndRender();
+		});
+
+		return {
+			chartEl,
+			chartSrc,
+			chartSpan,
+		};
+	},
 });
 </script>
 

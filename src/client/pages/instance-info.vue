@@ -285,7 +285,7 @@ export default defineComponent({
 				this.chartInstance.destroy();
 			}
 
-			Chart.defaults.global.defaultFontColor = getComputedStyle(document.documentElement).getPropertyValue('--fg');
+			Chart.defaults.color = getComputedStyle(document.documentElement).getPropertyValue('--fg');
 			this.chartInstance = new Chart(this.canvas, {
 				type: 'line',
 				data: {

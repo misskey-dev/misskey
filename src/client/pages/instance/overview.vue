@@ -20,7 +20,7 @@
 			</div>
 		</div>
 
-		<XMetrics/>
+		<!--<XMetrics/>-->
 
 		<FormSuspense :p="fetchServerInfo" v-slot="{ result: serverInfo }">
 			<FormGroup>

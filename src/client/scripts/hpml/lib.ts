@@ -53,7 +53,7 @@ export function initAiLib(hpml: Hpml) {
 			utils.assertObject(opts);
 			const canvas = hpml.canvases[id.value];
 			const color = getComputedStyle(document.documentElement).getPropertyValue('--accent');
-			Chart.defaults.global.defaultFontColor = '#555';
+			Chart.defaults.color = '#555';
 			const chart = new Chart(canvas, {
 				type: opts.value.get('type').value,
 				data: {

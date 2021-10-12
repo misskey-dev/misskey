@@ -52,7 +52,21 @@
 
 <script lang="ts">
 import { defineComponent, markRaw } from 'vue';
-import Chart from 'chart.js';
+import {
+  Chart,
+  ArcElement,
+  LineElement,
+  BarElement,
+  PointElement,
+  BarController,
+  LineController,
+  CategoryScale,
+  LinearScale,
+  Legend,
+  Title,
+  Tooltip,
+  SubTitle
+} from 'chart.js';
 import MkButton from '@client/components/ui/button.vue';
 import MkSelect from '@client/components/form/select.vue';
 import MkInput from '@client/components/form/input.vue';
@@ -63,6 +77,21 @@ import { version, url } from '@client/config';
 import bytes from '@client/filters/bytes';
 import number from '@client/filters/number';
 import MkInstanceInfo from './instance.vue';
+
+Chart.register(
+  ArcElement,
+  LineElement,
+  BarElement,
+  PointElement,
+  BarController,
+  LineController,
+  CategoryScale,
+  LinearScale,
+  Legend,
+  Title,
+  Tooltip,
+  SubTitle
+);
 
 const alpha = (hex, a) => {
 	const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)!;
@@ -116,7 +145,7 @@ export default defineComponent({
 	mounted() {
 		this.fetchJobs();
 
-		Chart.defaults.global.defaultFontColor = getComputedStyle(document.documentElement).getPropertyValue('--fg');
+		Chart.defaults.color = getComputedStyle(document.documentElement).getPropertyValue('--fg');
 
 		os.api('admin/server-info', {}).then(res => {
 			this.serverInfo = res;
