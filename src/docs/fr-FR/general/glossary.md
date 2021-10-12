@@ -16,7 +16,7 @@ Glossaire des termes utilisés dans Misskey.
 ## CW
 (読み: こんてんつわーにんぐ) Contents Warningの略。ノートの内容を、操作なしには表示しないようにできる機能。主に長大な内容を隠すためや、ネタバレ防止などに使われます。
 
-## Fediverse
+## Fédiverse
 (読み: ふぇでぃばーす) Misskeyを含む様々な分散型ソフトウェアのサーバーで構成されたネットワーク。
 
 ## GTL
@@ -40,7 +40,7 @@ Glossaire des termes utilisés dans Misskey.
 ## STL
 ソーシャルタイムライン(Social TimeLine)の略。タイムラインの詳細は[こちら。](../features/timeline)
 
-## 藍
+## Ai
 (読み: あい) Misskeyの看板娘(公式キャラクター)です。
 
 ## アクティブユーザー
