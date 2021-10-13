@@ -43,6 +43,12 @@ export const meta = {
 			code: 'ALREADY_BLOCKING',
 			id: '787fed64-acb9-464a-82eb-afbd745b9614'
 		},
+
+		cannotBlockModerator: {
+			message: 'Cannot block a moderator or an admin.',
+			code: 'CANNOT_BLOCK_MODERATOR',
+			id: '8544aaef-89fb-e470-9f6c-385d38b474f5'
+		}
 	},
 
 	res: {
@@ -58,6 +64,10 @@ export default define(meta, async (ps, user) => {
 	// 自分自身
 	if (user.id === ps.userId) {
 		throw new ApiError(meta.errors.blockeeIsYourself);
+	}
+
+	if (user.isAdmin || user.isModerator) {
+		throw new ApiError(meta.errors.cannotBlockModerator);
 	}
 
 	// Get blockee
