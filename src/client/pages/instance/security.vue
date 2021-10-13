@@ -47,7 +47,8 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.security,
-				icon: 'fas fa-lock'
+				icon: 'fas fa-lock',
+				bg: 'var(--bg)',
 			},
 			enableHcaptcha: false,
 			enableRecaptcha: false,

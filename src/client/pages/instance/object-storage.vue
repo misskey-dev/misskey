@@ -91,7 +91,8 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.objectStorage,
-				icon: 'fas fa-cloud'
+				icon: 'fas fa-cloud',
+				bg: 'var(--bg)',
 			},
 			useObjectStorage: false,
 			objectStorageBaseUrl: null,

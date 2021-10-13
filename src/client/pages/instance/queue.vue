@@ -34,6 +34,7 @@ export default defineComponent({
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.jobQueue,
 				icon: 'fas fa-clipboard-list',
+				bg: 'var(--bg)',
 			},
 			connection: markRaw(os.stream.useChannel('queueStats')),
 		}

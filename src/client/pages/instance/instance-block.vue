@@ -43,7 +43,8 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.instanceBlocking,
-				icon: 'fas fa-ban'
+				icon: 'fas fa-ban',
+				bg: 'var(--bg)',
 			},
 			blockedHosts: '',
 		}

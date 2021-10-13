@@ -36,6 +36,7 @@ export default defineComponent({
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.relays,
 				icon: 'fas fa-globe',
+				bg: 'var(--bg)',
 			},
 			relays: [],
 			inbox: '',

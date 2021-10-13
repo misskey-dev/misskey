@@ -794,6 +794,8 @@ itsOff: "オフになっています"
 emailRequiredForSignup: "アカウント登録にメールアドレスを必須にする"
 unread: "未読"
 filter: "フィルタ"
+controllPanel: "コントロールパネル"
+manageAccounts: "アカウントを管理"
 
 _signup:
   almostThere: "ほとんど完了です"

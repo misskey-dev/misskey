@@ -49,7 +49,8 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.integration,
-				icon: 'fas fa-share-alt'
+				icon: 'fas fa-share-alt',
+				bg: 'var(--bg)',
 			},
 			enableTwitterIntegration: false,
 			enableGithubIntegration: false,
