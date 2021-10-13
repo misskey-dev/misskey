@@ -36,20 +36,21 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref, watch } from 'vue';
 import {
-  Chart,
-  ArcElement,
-  LineElement,
-  BarElement,
-  PointElement,
-  BarController,
-  LineController,
-  CategoryScale,
-  LinearScale,
+	Chart,
+	ArcElement,
+	LineElement,
+	BarElement,
+	PointElement,
+	BarController,
+	LineController,
+	CategoryScale,
+	LinearScale,
 	TimeScale,
-  Legend,
-  Title,
-  Tooltip,
-  SubTitle
+	Legend,
+	Title,
+	Tooltip,
+	SubTitle,
+	Filler,
 } from 'chart.js';
 import 'chartjs-adapter-date-fns';
 import { enUS } from 'date-fns/locale';
@@ -60,19 +61,20 @@ import * as os from '@client/os';
 import { defaultStore } from '@client/store';
 
 Chart.register(
-  ArcElement,
-  LineElement,
-  BarElement,
-  PointElement,
-  BarController,
-  LineController,
-  CategoryScale,
-  LinearScale,
+	ArcElement,
+	LineElement,
+	BarElement,
+	PointElement,
+	BarController,
+	LineController,
+	CategoryScale,
+	LinearScale,
 	TimeScale,
-  Legend,
-  Title,
-  Tooltip,
-  SubTitle,
+	Legend,
+	Title,
+	Tooltip,
+	SubTitle,
+	Filler,
 	zoomPlugin,
 );
 
@@ -84,6 +86,11 @@ const alpha = (hex, a) => {
 	const g = parseInt(result[2], 16);
 	const b = parseInt(result[3], 16);
 	return `rgba(${r}, ${g}, ${b}, ${a})`;
+};
+
+const colors = ['#008FFB', '#00E396', '#FEB019', '#FF4560'];
+const getColor = (i) => {
+	return colors[i % colors.length];
 };
 
 export default defineComponent({
@@ -111,7 +118,7 @@ export default defineComponent({
 			series: {
 				name: string;
 				type: 'line' | 'area';
-				color: string;
+				color?: string;
 				borderDash?: number[];
 				hidden?: boolean;
 				data: {
@@ -156,17 +163,17 @@ export default defineComponent({
 				type: 'line',
 				data: {
 					labels: new Array(props.chartLimit).fill(0).map((_, i) => getDate(i).toLocaleString()).slice().reverse(),
-					datasets: data.series.map(x => ({
+					datasets: data.series.map((x, i) => ({
 						parsing: false,
 						label: x.name,
 						data: x.data.slice().reverse(),
 						pointRadius: 0,
 						tension: 0,
 						borderWidth: 2,
-						borderColor: x.color,
+						borderColor: x.color ? x.color : getColor(i),
 						borderDash: x.borderDash || [],
 						borderJoinStyle: 'round',
-						backgroundColor: alpha(x.color, 0.1),
+						backgroundColor: alpha(x.color ? x.color : getColor(i), 0.1),
 						fill: x.type === 'area',
 						hidden: !!x.hidden,
 					})),
@@ -226,6 +233,9 @@ export default defineComponent({
 						},
 						tooltip: {
 							mode: 'index',
+							animation: {
+								duration: 0,
+							},
 						},
 						zoom: {
 							pan: {
@@ -241,7 +251,7 @@ export default defineComponent({
 								drag: {
 									enabled: false,
 								},
-								mode: 'xy',
+								mode: 'x',
 							},
 							limits: {
 								x: {
@@ -269,7 +279,6 @@ export default defineComponent({
 				series: [{
 					name: 'Instances',
 					type: 'area',
-					color: '#008FFB',
 					data: format(total
 						? raw.instance.total
 						: sum(raw.instance.inc, negate(raw.instance.dec))
@@ -284,7 +293,6 @@ export default defineComponent({
 				series: [{
 					name: 'All',
 					type: 'line',
-					color: '#008FFB',
 					borderDash: [5, 5],
 					data: format(type == 'combined'
 						? sum(raw.local.inc, negate(raw.local.dec), raw.remote.inc, negate(raw.remote.dec))
@@ -293,7 +301,6 @@ export default defineComponent({
 				}, {
 					name: 'Renotes',
 					type: 'area',
-					color: '#00E396',
 					data: format(type == 'combined'
 						? sum(raw.local.diffs.renote, raw.remote.diffs.renote)
 						: raw[type].diffs.renote
@@ -301,7 +308,6 @@ export default defineComponent({
 				}, {
 					name: 'Replies',
 					type: 'area',
-					color: '#FEB019',
 					data: format(type == 'combined'
 						? sum(raw.local.diffs.reply, raw.remote.diffs.reply)
 						: raw[type].diffs.reply
@@ -309,7 +315,6 @@ export default defineComponent({
 				}, {
 					name: 'Normal',
 					type: 'area',
-					color: '#FF4560',
 					data: format(type == 'combined'
 						? sum(raw.local.diffs.normal, raw.remote.diffs.normal)
 						: raw[type].diffs.normal
@@ -324,19 +329,14 @@ export default defineComponent({
 				series: [{
 					name: 'Combined',
 					type: 'line',
-					color: '#008FFB',
 					data: format(sum(raw.local.total, raw.remote.total)),
 				}, {
 					name: 'Local',
 					type: 'area',
-					color: '#008FFB',
-					hidden: true,
 					data: format(raw.local.total),
 				}, {
 					name: 'Remote',
 					type: 'area',
-					color: '#008FFB',
-					hidden: true,
 					data: format(raw.remote.total),
 				}],
 			};
@@ -348,7 +348,6 @@ export default defineComponent({
 				series: [{
 					name: 'Combined',
 					type: 'line',
-					color: '#008FFB',
 					data: format(total
 						? sum(raw.local.total, raw.remote.total)
 						: sum(raw.local.inc, negate(raw.local.dec), raw.remote.inc, negate(raw.remote.dec))
@@ -356,8 +355,6 @@ export default defineComponent({
 				}, {
 					name: 'Local',
 					type: 'area',
-					color: '#008FFB',
-					hidden: true,
 					data: format(total
 						? raw.local.total
 						: sum(raw.local.inc, negate(raw.local.dec))
@@ -365,8 +362,6 @@ export default defineComponent({
 				}, {
 					name: 'Remote',
 					type: 'area',
-					color: '#008FFB',
-					hidden: true,
 					data: format(total
 						? raw.remote.total
 						: sum(raw.remote.inc, negate(raw.remote.dec))
@@ -381,19 +376,14 @@ export default defineComponent({
 				series: [{
 					name: 'Combined',
 					type: 'line',
-					color: '#008FFB',
 					data: format(sum(raw.local.users, raw.remote.users)),
 				}, {
 					name: 'Local',
 					type: 'area',
-					color: '#008FFB',
-					hidden: true,
 					data: format(raw.local.users),
 				}, {
 					name: 'Remote',
 					type: 'area',
-					color: '#008FFB',
-					hidden: true,
 					data: format(raw.remote.users),
 				}],
 			};
@@ -406,7 +396,6 @@ export default defineComponent({
 				series: [{
 					name: 'All',
 					type: 'line',
-					color: '#09d8e2',
 					borderDash: [5, 5],
 					data: format(
 						sum(
@@ -419,22 +408,18 @@ export default defineComponent({
 				}, {
 					name: 'Local +',
 					type: 'area',
-					color: '#008FFB',
 					data: format(raw.local.incSize),
 				}, {
 					name: 'Local -',
 					type: 'area',
-					color: '#FF4560',
 					data: format(negate(raw.local.decSize)),
 				}, {
 					name: 'Remote +',
 					type: 'area',
-					color: '#00E396',
 					data: format(raw.remote.incSize),
 				}, {
 					name: 'Remote -',
 					type: 'area',
-					color: '#FEB019',
 					data: format(negate(raw.remote.decSize)),
 				}],
 			};
@@ -447,19 +432,14 @@ export default defineComponent({
 				series: [{
 					name: 'Combined',
 					type: 'line',
-					color: '#008FFB',
 					data: format(sum(raw.local.totalSize, raw.remote.totalSize)),
 				}, {
 					name: 'Local',
 					type: 'area',
-					color: '#008FFB',
-					hidden: true,
 					data: format(raw.local.totalSize),
 				}, {
 					name: 'Remote',
 					type: 'area',
-					color: '#008FFB',
-					hidden: true,
 					data: format(raw.remote.totalSize),
 				}],
 			};
@@ -471,7 +451,6 @@ export default defineComponent({
 				series: [{
 					name: 'All',
 					type: 'line',
-					color: '#09d8e2',
 					borderDash: [5, 5],
 					data: format(
 						sum(
@@ -484,22 +463,18 @@ export default defineComponent({
 				}, {
 					name: 'Local +',
 					type: 'area',
-					color: '#008FFB',
 					data: format(raw.local.incCount),
 				}, {
 					name: 'Local -',
 					type: 'area',
-					color: '#FF4560',
 					data: format(negate(raw.local.decCount)),
 				}, {
 					name: 'Remote +',
 					type: 'area',
-					color: '#00E396',
 					data: format(raw.remote.incCount),
 				}, {
 					name: 'Remote -',
 					type: 'area',
-					color: '#FEB019',
 					data: format(negate(raw.remote.decCount)),
 				}],
 			};
@@ -511,19 +486,14 @@ export default defineComponent({
 				series: [{
 					name: 'Combined',
 					type: 'line',
-					color: '#008FFB',
 					data: format(sum(raw.local.totalCount, raw.remote.totalCount)),
 				}, {
 					name: 'Local',
 					type: 'area',
-					color: '#008FFB',
-					hidden: true,
 					data: format(raw.local.totalCount),
 				}, {
 					name: 'Remote',
 					type: 'area',
-					color: '#008FFB',
-					hidden: true,
 					data: format(raw.remote.totalCount),
 				}],
 			};
