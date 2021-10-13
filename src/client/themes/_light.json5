@@ -57,6 +57,8 @@
 		cwHoverBg: '#bbc4ce',
 		buttonBg: 'rgba(0, 0, 0, 0.05)',
 		buttonHoverBg: 'rgba(0, 0, 0, 0.1)',
+		buttonGradateA: '@accent',
+		buttonGradateB: ':hue<20<@accent',
 		inputBorder: 'rgba(0, 0, 0, 0.1)',
 		inputBorderHover: 'rgba(0, 0, 0, 0.2)',
 		listItemHoverBg: 'rgba(0, 0, 0, 0.03)',
