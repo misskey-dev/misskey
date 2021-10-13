@@ -66,10 +66,6 @@ export default define(meta, async (ps, user) => {
 		throw new ApiError(meta.errors.blockeeIsYourself);
 	}
 
-	if (user.isAdmin || user.isModerator) {
-		throw new ApiError(meta.errors.cannotBlockModerator);
-	}
-
 	// Get blockee
 	const blockee = await getUser(ps.userId).catch(e => {
 		if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
@@ -86,8 +82,12 @@ export default define(meta, async (ps, user) => {
 		throw new ApiError(meta.errors.alreadyBlocking);
 	}
 
-	// Create blocking
-	await create(blocker, blockee);
+	try {
+		await create(blocker, blockee);
+	} catch (e) {
+		if (e.id === 'e42b7890-5e4d-9d9c-d54b-cf4dd30adfb5') throw new ApiError(meta.errors.cannotBlockModerator);
+		throw e;
+	}
 
 	NoteWatchings.delete({
 		userId: blocker.id,
