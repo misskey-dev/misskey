@@ -3,16 +3,7 @@
 	<MkHeader :info="header"/>
 
 	<div class="lznhrdub _root">
-		<div>
-			<div class="_isolated">
-				<MkInput v-model="query" :debounce="true" type="search">
-					<template #prefix><i class="fas fa-search"></i></template>
-					<template #label>{{ $ts.searchUser }}</template>
-				</MkInput>
-			</div>
-
-			<XUserList v-if="query" class="_gap" :pagination="searchPagination" ref="search"/>
-
+		<div v-if="tab === 'local'">
 			<div class="localfedi7 _block _isolated" v-if="meta && stats && tag == null" :style="{ backgroundImage: meta.bannerUrl ? `url(${meta.bannerUrl})` : null }">
 				<header><span>{{ $t('explore', { host: meta.name || 'Misskey' }) }}</span></header>
 				<div><span>{{ $t('exploreUsersCount', { count: num(stats.originalUsersCount) }) }}</span></div>
@@ -37,7 +28,7 @@
 				</MkFolder>
 			</template>
 		</div>
-		<div>
+		<div v-else-if="tab === 'remote'">
 			<div class="localfedi7 _block _isolated" v-if="tag == null" :style="{ backgroundImage: `url(/static-assets/client/fedi.jpg)` }">
 				<header><span>{{ $ts.exploreFediverse }}</span></header>
 			</div>
@@ -71,6 +62,16 @@
 				</MkFolder>
 			</template>
 		</div>
+		<div v-else-if="tab === 'search'">
+			<div class="_isolated">
+				<MkInput v-model="query" :debounce="true" type="search">
+					<template #prefix><i class="fas fa-search"></i></template>
+					<template #label>{{ $ts.searchUser }}</template>
+				</MkInput>
+			</div>
+
+			<XUserList v-if="query" class="_gap" :pagination="searchPagination" ref="search"/>
+		</div>
 	</div>
 </div>
 </template>
@@ -102,12 +103,28 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.explore,
-				icon: 'fas fa-hashtag'
+				icon: 'fas fa-hashtag',
+				bg: 'var(--bg)',
 			},
-			header: {
+			tab: 'local',
+			header: computed(() => ({
 				title: this.$ts.explore,
-				icon: 'fas fa-hashtag'
-			},
+				icon: 'fas fa-hashtag',
+				bg: 'var(--bg)',
+				tabs: [{
+					active: this.tab === 'local',
+					title: this.$ts.local,
+					onClick: () => { this.tab = 'local'; },
+				}, {
+					active: this.tab === 'remote',
+					title: this.$ts.remote,
+					onClick: () => { this.tab = 'remote'; },
+				}, {
+					active: this.tab === 'search',
+					title: this.$ts.search,
+					onClick: () => { this.tab = 'search'; },
+				},]
+			})),
 			pinnedUsers: { endpoint: 'pinned-users' },
 			popularUsers: { endpoint: 'users', limit: 10, noPaging: true, params: {
 				state: 'alive',
@@ -200,6 +217,7 @@ export default defineComponent({
 .lznhrdub {
 	max-width: 1400px;
 	margin: 0 auto;
+	padding: 16px;
 }
 
 .localfedi7 {

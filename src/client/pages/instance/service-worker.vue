@@ -51,7 +51,8 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: 'ServiceWorker',
-				icon: 'fas fa-bolt'
+				icon: 'fas fa-bolt',
+				bg: 'var(--bg)',
 			},
 			enableServiceWorker: false,
 			swPublicKey: null,

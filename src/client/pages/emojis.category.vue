@@ -122,7 +122,6 @@ export default defineComponent({
 	}
 
 	> .emojis {
-		--x-header: var(--bg);
 		--x-padding: 0 16px;
 
 		.zuvgdzyt {

@@ -46,7 +46,8 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.proxyAccount,
-				icon: 'fas fa-ghost'
+				icon: 'fas fa-ghost',
+				bg: 'var(--bg)',
 			},
 			proxyAccount: null,
 			proxyAccountId: null,

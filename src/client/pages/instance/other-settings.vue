@@ -49,7 +49,8 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.other,
-				icon: 'fas fa-cogs'
+				icon: 'fas fa-cogs',
+				bg: 'var(--bg)',
 			},
 			summalyProxy: '',
 			deeplAuthKey: '',
