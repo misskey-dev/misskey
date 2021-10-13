@@ -14,7 +14,7 @@
 			{{ $ts._aboutMisskey.about }}<br><MkA class="_link" to="/docs/general/misskey">{{ $ts.learnMore }}</MkA>
 		</section>
 		<FormGroup>
-			<FormLink to="https://github.com/misskey-dev/misskey" external>
+			<FormLink to="https://github.com/nyaone/misskey" external>
 				<template #icon><i class="fas fa-code"></i></template>
 				{{ $ts._aboutMisskey.source }}
 				<template #suffix>GitHub</template>
@@ -24,10 +24,10 @@
 				{{ $ts._aboutMisskey.translation }}
 				<template #suffix>Crowdin</template>
 			</FormLink>
-			<FormLink to="https://www.patreon.com/syuilo" external>
+			<FormLink to="https://www.opencollective.com/nyaone" external>
 				<template #icon><i class="fas fa-hand-holding-medical"></i></template>
 				{{ $ts._aboutMisskey.donate }}
-				<template #suffix>Patreon</template>
+				<template #suffix>OpenCollective</template>
 			</FormLink>
 		</FormGroup>
 		<FormGroup>
