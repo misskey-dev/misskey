@@ -38,7 +38,8 @@ import { deckStore } from './deck-store';
 
 export default defineComponent({
 	provide: {
-		shouldHeaderThin: true
+		shouldHeaderThin: true,
+		shouldOmitHeaderTitle: true,
 	},
 
 	props: {
