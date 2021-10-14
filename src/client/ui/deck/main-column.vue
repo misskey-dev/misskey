@@ -2,6 +2,7 @@
 <XColumn v-if="deckStore.state.alwaysShowMainColumn || $route.name !== 'index'" :column="column" :is-stacked="isStacked">
 	<template #header>
 		<template v-if="pageInfo">
+			<i :class="pageInfo.icon"></i>
 			{{ pageInfo.title }}
 		</template>
 	</template>

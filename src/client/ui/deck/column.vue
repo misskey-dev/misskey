@@ -362,7 +362,7 @@ export default defineComponent({
 		}
 
 		> .toggleActive,
-		> .action > *,
+		> .action > ::v-deep(*),
 		> .menu {
 			z-index: 1;
 			width: var(--deckColumnHeaderHeight);
