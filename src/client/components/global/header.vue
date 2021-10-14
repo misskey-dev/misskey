@@ -1,5 +1,5 @@
 <template>
-<div class="fdidabkb" :class="{ slim: narrow, thin }" :style="{ background: bg }" @click="onClick" ref="el">
+<div class="fdidabkb" :class="{ slim: narrow, thin: thin_ }" :style="{ background: bg }" @click="onClick" ref="el">
 	<template v-if="info">
 		<div class="titleContainer" @click="showTabsPopup">
 			<i v-if="info.icon" class="icon" :class="info.icon"></i>
@@ -37,7 +37,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, onUnmounted, PropType, ref } from 'vue';
+import { computed, defineComponent, onMounted, onUnmounted, PropType, ref, inject } from 'vue';
 import * as tinycolor from 'tinycolor2';
 import { popupMenu } from '@client/os';
 import { url } from '@client/config';
@@ -182,6 +182,7 @@ export default defineComponent({
 			showTabsPopup,
 			preventDrag,
 			onClick,
+			thin_: props.thin || inject('shouldHeaderThin', false)
 		};
 	},
 });

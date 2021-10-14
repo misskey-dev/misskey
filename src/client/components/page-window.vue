@@ -46,7 +46,8 @@ export default defineComponent({
 		return {
 			navHook: (path) => {
 				this.navigate(path);
-			}
+			},
+			shouldHeaderThin: true,
 		};
 	},
 

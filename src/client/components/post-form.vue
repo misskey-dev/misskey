@@ -1,6 +1,6 @@
 <template>
 <div class="gafaadew" :class="{ modal, _popup: modal }"
-	v-size="{ max: [500] }"
+	v-size="{ max: [310, 500] }"
 	@dragover.stop="onDragover"
 	@dragenter="onDragenter"
 	@dragleave="onDragleave"
@@ -911,6 +911,18 @@ export default defineComponent({
 
 			> footer {
 				padding: 0 8px 8px 8px;
+			}
+		}
+	}
+
+	&.max-width_310px {
+		> .form {
+			> footer {
+				> button {
+					font-size: 14px;
+					width: 44px;
+				height: 44px;
+				}
 			}
 		}
 	}
