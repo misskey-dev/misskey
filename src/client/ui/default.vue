@@ -80,6 +80,12 @@ export default defineComponent({
 		XWidgets: defineAsyncComponent(() => import('./default.widgets.vue')),
 	},
 
+	provide() {
+		return {
+			shouldHeaderThin: this.showMenuOnTop,
+		};
+	},
+
 	data() {
 		return {
 			pageInfo: null,
