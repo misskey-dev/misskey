@@ -271,6 +271,12 @@ export default defineComponent({
 <style lang="scss" scoped>
 .vvcocwet {
 	> .nav {
+		> .title {
+			margin: 16px;
+			font-size: 1.5em;
+			font-weight: bold;
+		}
+
 		> .info {
 			margin: 0 16px;
 		}
