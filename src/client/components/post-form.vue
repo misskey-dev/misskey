@@ -22,8 +22,8 @@
 		</div>
 	</header>
 	<div class="form" :class="{ fixed }">
-		<XNotePreview class="preview" v-if="reply" :note="reply"/>
-		<XNotePreview class="preview" v-if="renote" :note="renote"/>
+		<XNoteSimple class="preview" v-if="reply" :note="reply"/>
+		<XNoteSimple class="preview" v-if="renote" :note="renote"/>
 		<div class="with-quote" v-if="quoteId"><i class="fas fa-quote-left"></i> {{ $ts.quoteAttached }}<button @click="quoteId = null"><i class="fas fa-times"></i></button></div>
 		<div v-if="visibility === 'specified'" class="to-specified">
 			<span style="margin-right: 8px;">{{ $ts.recipient }}</span>
@@ -41,7 +41,7 @@
 		<input v-show="withHashtags" ref="hashtags" class="hashtags" v-model="hashtags" :placeholder="$ts.hashtags" list="hashtags">
 		<XPostFormAttaches class="attaches" :files="files" @updated="updateFiles" @detach="detachFile" @changeSensitive="updateFileSensitive" @changeName="updateFileName"/>
 		<XPollEditor v-if="poll" :poll="poll" @destroyed="poll = null" @updated="onPollUpdate"/>
-		<XNotePreview class="preview" v-if="showPreview" :note="draftedNote"/>
+		<XNoteSimple class="preview" v-if="showPreview" :note="draftedNote"/>
 		<footer>
 			<button class="_button" @click="chooseFileFrom" v-tooltip="$ts.attachFile"><i class="fas fa-photo-video"></i></button>
 			<button class="_button" @click="togglePoll" :class="{ active: poll }" v-tooltip="$ts.poll"><i class="fas fa-poll-h"></i></button>
@@ -63,7 +63,7 @@ import { defineComponent, defineAsyncComponent } from 'vue';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import { length } from 'stringz';
 import { toASCII } from 'punycode/';
-import XNotePreview from './note-preview.vue';
+import XNoteSimple from './note-simple.vue';
 import * as mfm from 'mfm-js';
 import { host, url } from '@client/config';
 import { erase, unique } from '../../prelude/array';
@@ -82,7 +82,7 @@ import { defaultStore } from '@client/store';
 
 export default defineComponent({
 	components: {
-		XNotePreview,
+		XNoteSimple,
 		XPostFormAttaches: defineAsyncComponent(() => import('./post-form-attaches.vue')),
 		XPollEditor: defineAsyncComponent(() => import('./poll-editor.vue')),
 		MkInfo,
