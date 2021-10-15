@@ -12,18 +12,18 @@
 
 ### Improvements
 - アカウント登録にメールアドレスの設定を必須にするオプション
-- クライアント: アニメーションを減らす設定をメニューのアニメーションにも適用するように
+- クライアント: 全体的なUIのブラッシュアップ
 - クライアント: MFM関数構文のサジェストを実装
 - クライアント: ノート本文を投稿フォーム内でプレビューできるように
 - クライアント: 未読の通知のみ表示する機能
 - クライアント: 通知ページで通知の種類によるフィルタ
+- クライアント: アニメーションを減らす設定をメニューのアニメーションにも適用するように
 - クライアント: 新しいダークテーマを追加
 - クライアント: テーマコンパイラに hue と saturate 関数を追加
 - ActivityPub: HTML -> MFMの変換を強化
 - API: i/notifications に unreadOnly オプションを追加
 - API: ap系のエンドポイントをログイン必須化+レートリミット追加
-- Misskeyのコマンドラインオプションを廃止
-	- 代わりに環境変数で設定することができます
+- MFM: Add tag syntaxes of bold <b></b> and strikethrough <s></s>
 
 ### Bugfixes
 - Fix createDeleteAccountJob
@@ -34,6 +34,15 @@
 - クライアント: ピン留めユーザーの設定項目がない問題を修正
 - クライアント: Deck UIにおいて、重ねたカラムの片方を畳んだ状態で右に出すと表示が壊れる問題を修正
 - API: 管理者およびモデレーターをブロックできてしまう問題を修正
+- MFM: Mentions in the link label are parsed as text
+- MFM: Add a property to the URL node indicating whether it was enclosed in <>
+- MFM: Disallows < and > in hashtags
+
+### Changes
+- 保守性やユーザビリティの観点から、Misskeyのコマンドラインオプションが削除されました。
+	- 必要であれば、代わりに環境変数で設定することができます
+- MFM: パフォーマンス、保守性、構文誤認識抑制の観点から、旧関数構文のサポートが削除されました。
+	- 旧構文(`[foo bar]`)を使用せず、現行の構文(`$[foo bar]`)を使用してください。
 
 ## 12.91.0 (2021/09/22)
 
