@@ -170,10 +170,9 @@ export default defineComponent({
 			left: 0;
 			right: 0;
 			margin: auto;
-			//width: calc(100% - 16px);
-			width: 100%;
+			width: calc(100% - 16px);
 			height: 100%;
-			//border-radius: 6px;
+			border-radius: 6px;
 		}
 
 		> * {
