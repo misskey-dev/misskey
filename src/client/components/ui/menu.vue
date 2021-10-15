@@ -152,7 +152,7 @@ export default defineComponent({
 	> .item {
 		display: block;
 		position: relative;
-		padding: 8px 16px;
+		padding: 8px 18px;
 		width: 100%;
 		box-sizing: border-box;
 		white-space: nowrap;
@@ -242,12 +242,12 @@ export default defineComponent({
 		}
 
 		> i {
-			margin-right: 4px;
+			margin-right: 5px;
 			width: 20px;
 		}
 
 		> .avatar {
-			margin-right: 4px;
+			margin-right: 5px;
 			width: 20px;
 			height: 20px;
 		}
