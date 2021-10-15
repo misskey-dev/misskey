@@ -45,6 +45,7 @@ export default async function(follower: { id: User['id']; host: User['host']; ur
 	if(Users.isLocalUser(followee) && Users.isRemoteUser(follower)) {
 		// local user has null host
 		const content = renderActivity(renderUndo(renderAccept(renderFollow(follower, followee), followee), followee));
+		deliver(followee, content, follower.inbox);
 	}
 }
 
