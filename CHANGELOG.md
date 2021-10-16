@@ -21,6 +21,7 @@
 - クライアント: 新しいダークテーマを追加
 - クライアント: テーマコンパイラに hue と saturate 関数を追加
 - ActivityPub: HTML -> MFMの変換を強化
+- API: グループから抜ける users/groups/leave エンドポイントを実装
 - API: i/notifications に unreadOnly オプションを追加
 - API: ap系のエンドポイントをログイン必須化+レートリミット追加
 - MFM: Add tag syntaxes of bold <b></b> and strikethrough <s></s>
