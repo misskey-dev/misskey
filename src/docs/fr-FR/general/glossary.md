@@ -80,10 +80,10 @@ Désigne les utilisateur·rice·s de Misskey.
 Utilisateur·rice·s chargé·e·s de gérer la communauté d'une instance, ayant autorité pour désactiver les comptes de spam, mettre des utilisateur·rice·s en sourdine, supprimer des publications inappropriées, etc.
 
 ## Distant
-他サーバーのことを指します。リモートユーザーといったように接頭辞としても使われます。ローカルの逆です。
+Désigne les autres instances que celle où vous êtes inscrit·e. Peut aussi être utilisé pour qualifier d'autres mots, comme « utilisateur·rice·s distant·e·s ». C'est le contraire de « local ».
 
 ## Fédération
 サーバー上で作成された情報が他のサーバーに伝わること。
 
 ## Local
-自サーバーのことを指します。ローカルユーザー、ローカルタイムラインといったように接頭辞としても使われます。リモートの逆です。
+Désigne l'instance où vous êtes inscrit·e. Peut aussi être utilisé pour qualifier d'autres mots, comme « utilisateur·rice·s locaux·cales » ou « fil local ». リモートの逆です。
