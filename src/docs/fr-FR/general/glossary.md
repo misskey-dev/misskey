@@ -59,7 +59,7 @@ Désigne les émojis mis à disposition par votre instance. Par opposition, les 
 todo
 
 ## Mettre en sourdine
-ノートをパブリックな公開範囲で投稿できなくされている状態。モデレーターの判断でユーザーごとに設定されます。[Voir ici pour plus d'informations. ](../features/silence)
+Désigne le fait de paramétrer un compte pour empêcher ses publications d'être partagées en mode « Public ». モデレーターの判断でユーザーごとに設定されます。[Voir ici pour plus d'informations. ](../features/silence)
 
 ## File d’attente
 アクティビティ配送などを順番に行うためのシステム。
