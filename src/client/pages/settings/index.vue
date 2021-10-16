@@ -301,6 +301,10 @@ export default defineComponent({
 			width: 32%;
 			box-sizing: border-box;
 			overflow: auto;
+
+			> .title {
+				margin: 24px;
+			}
 		}
 
 		> .main {

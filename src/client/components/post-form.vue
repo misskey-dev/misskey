@@ -18,7 +18,7 @@
 				<span v-if="visibility === 'specified'"><i class="fas fa-envelope"></i></span>
 			</button>
 			<button class="_button preview" @click="showPreview = !showPreview" :class="{ active: showPreview }" v-tooltip="$ts.previewNoteText"><i class="fas fa-file-code"></i></button>
-			<button class="submit _buttonPrimary" :disabled="!canPost" @click="post" data-cy-open-post-form-submit>{{ submitText }}<i :class="reply ? 'fas fa-reply' : renote ? 'fas fa-quote-right' : 'fas fa-paper-plane'"></i></button>
+			<button class="submit _buttonGradate" :disabled="!canPost" @click="post" data-cy-open-post-form-submit>{{ submitText }}<i :class="reply ? 'fas fa-reply' : renote ? 'fas fa-quote-right' : 'fas fa-paper-plane'"></i></button>
 		</div>
 	</header>
 	<div class="form" :class="{ fixed }">
@@ -759,6 +759,7 @@ export default defineComponent({
 				font-weight: bold;
 				vertical-align: bottom;
 				border-radius: 4px;
+				font-size: 0.9em;
 
 				&:disabled {
 					opacity: 0.7;
