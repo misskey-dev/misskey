@@ -2,11 +2,18 @@
 ## 12.x.x (unreleased)
 
 ### Improvements
-- ページロードエラーページにリロードボタンを追加
 
 ### Bugfixes
 
 -->
+
+## 12.x.x (unreleased)
+
+### Improvements
+- クライアント: ユーザーのリアクション一覧を見れるように
+- API: ユーザーのリアクション一覧を取得する users/reactions を追加
+
+### Bugfixes
 
 ## 12.92.0 (2021/10/16)
 
