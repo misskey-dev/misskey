@@ -77,7 +77,7 @@ Nom des publications sur Misskey. Leur contenu peut être du texte, mais aussi d
 Désigne les utilisateur·rice·s de Misskey.
 
 ## Modérateur·rice·s
-スパムの凍結およびサイレンスや不適切な投稿の削除など、コミュニティ運営に関する権限を持つユーザー。
+Utilisateur·rice·s chargé·e·s de gérer la communauté d'une instance, ayant autorité pour désactiver les comptes de spam, mettre des utilisateur·rice·s en sourdine, supprimer des publications inappropriées, etc.
 
 ## Distant
 他サーバーのことを指します。リモートユーザーといったように接頭辞としても使われます。ローカルの逆です。
