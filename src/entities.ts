@@ -18,6 +18,14 @@ export type UserLite = {
 		name: string;
 		url: string;
 	}[];
+	instance?: {
+		name: Instance['name'],
+		softwareName: Instance['softwareName'],
+		softwareVersion: Instance['softwareVersion'],
+		iconUrl: Instance['iconUrl'],
+		faviconUrl: Instance['faviconUrl'],
+		themeColor: Instance['themeColor'],
+	};
 };
 
 export type UserDetailed = UserLite & {
