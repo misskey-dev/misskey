@@ -77,7 +77,7 @@ Content which may include text, images, surveys and others that has been posted 
 Users of Misskey.
 
 ## Moderator
-Users with the authority to to manage the community of a server by deactivating spam accounts, deleting inappropriate posts etc.
+Users with the authority to manage the community of a server by deactivating spam accounts, silencing users, deleting inappropriate posts, etc.
 
 ## Remote
 Used in context of servers separate from your own.Also used as prefix in other words like "Remote user".The opposite of "Local".
