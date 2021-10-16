@@ -35,8 +35,8 @@ export default defineComponent({
 
 	> button {
 		flex: 1;
-		padding: 15px 12px 12px 12px;
-		border-bottom: solid 3px transparent;
+		padding: 10px 8px;
+		border-radius: 6px;
 
 		&:disabled {
 			opacity: 1 !important;
@@ -45,11 +45,16 @@ export default defineComponent({
 
 		&.active {
 			color: var(--accent);
-			border-bottom-color: var(--accent);
+			background: var(--accentedBg);
 		}
 
 		&:not(.active):hover {
 			color: var(--fgHighlighted);
+			background: var(--panelHighlight);
+		}
+
+		&:not(:first-child) {
+			margin-left: 8px;
 		}
 
 		> .icon {
@@ -61,7 +66,7 @@ export default defineComponent({
 		font-size: 80%;
 
 		> button {
-			padding: 11px 8px 8px 8px;
+			padding: 11px 8px;
 		}
 	}
 }

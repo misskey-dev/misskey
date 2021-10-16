@@ -2,11 +2,12 @@
 <XColumn v-if="deckStore.state.alwaysShowMainColumn || $route.name !== 'index'" :column="column" :is-stacked="isStacked">
 	<template #header>
 		<template v-if="pageInfo">
+			<i :class="pageInfo.icon"></i>
 			{{ pageInfo.title }}
 		</template>
 	</template>
 
-	<router-view v-slot="{ Component }" class="_flat_">
+	<router-view v-slot="{ Component }" class="_fitSide_">
 		<transition>
 			<keep-alive :include="['timeline']">
 				<component :is="Component" :ref="changePage" @contextmenu.stop="onContextmenu"/>

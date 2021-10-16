@@ -372,7 +372,7 @@ export default defineComponent({
 						right: 0;
 						bottom: 0;
 						border-radius: 999px;
-						background: var(--accent);
+						background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
 					}
 					
 					&:hover, &.active {

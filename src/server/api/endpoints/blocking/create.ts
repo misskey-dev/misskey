@@ -43,6 +43,12 @@ export const meta = {
 			code: 'ALREADY_BLOCKING',
 			id: '787fed64-acb9-464a-82eb-afbd745b9614'
 		},
+
+		cannotBlockModerator: {
+			message: 'Cannot block a moderator or an admin.',
+			code: 'CANNOT_BLOCK_MODERATOR',
+			id: '8544aaef-89fb-e470-9f6c-385d38b474f5'
+		}
 	},
 
 	res: {
@@ -76,8 +82,12 @@ export default define(meta, async (ps, user) => {
 		throw new ApiError(meta.errors.alreadyBlocking);
 	}
 
-	// Create blocking
-	await create(blocker, blockee);
+	try {
+		await create(blocker, blockee);
+	} catch (e) {
+		if (e.id === 'e42b7890-5e4d-9d9c-d54b-cf4dd30adfb5') throw new ApiError(meta.errors.cannotBlockModerator);
+		throw e;
+	}
 
 	NoteWatchings.delete({
 		userId: blocker.id,

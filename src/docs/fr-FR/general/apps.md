@@ -1,6 +1,6 @@
 # Liste des applications tierces
-## クライアント
+## Client
 todo
 
-## 連携サービス
+## Services connexes
 todo

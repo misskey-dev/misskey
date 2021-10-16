@@ -780,6 +780,7 @@ translatedFrom: "Terjemahkan dari {x}"
 accountDeletionInProgress: "Penghapusan akun sedang dalam proses"
 usernameInfo: "Nama yang mengidentifikasikan akun kamu dari yang lain pada server ini. Kamu dapat menggunakan alfabet (a~z, A~Z), digit (0~9) atau garis bawah (_). Username tidak dapat diubah setelahnya."
 keepCw: "Biarkan Peringatan Konten"
+controllPanel: "Panel kontrol"
 _accountDelete:
   accountDelete: "Hapus akun"
   mayTakeTime: "Karena penghapusan akun merupakan proses yang berat dan intensif, kemungkinan dapat membutuhkan waktu untuk menyelesaikan tergantung daripada berapa banyak konten yang kamu buat dan berapa banyak berkas yang telah kamu unggah."

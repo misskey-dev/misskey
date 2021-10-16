@@ -1,13 +1,15 @@
 <template>
-<div class="fefdfafb" v-size="{ min: [350, 500] }">
-	<MkAvatar class="avatar" :user="$i"/>
+<div class="yohlumlk" v-size="{ min: [350, 500] }">
+	<MkAvatar class="avatar" :user="note.user"/>
 	<div class="main">
-		<div class="header">
-			<MkUserName :user="$i"/>
-		</div>
+		<XNoteHeader class="header" :note="note" :mini="true"/>
 		<div class="body">
-			<div class="content">
-				<Mfm :text="text" :author="$i" :i="$i"/>
+			<p v-if="note.cw != null" class="cw">
+				<span class="text" v-if="note.cw != ''">{{ note.cw }}</span>
+				<XCwButton v-model="showContent" :note="note"/>
+			</p>
+			<div class="content" v-show="note.cw == null || showContent">
+				<XSubNote-content class="text" :note="note"/>
 			</div>
 		</div>
 	</div>
@@ -16,22 +18,35 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import XNoteHeader from './note-header.vue';
+import XSubNoteContent from './sub-note-content.vue';
+import XCwButton from './cw-button.vue';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {
+		XNoteHeader,
+		XSubNoteContent,
+		XCwButton,
 	},
 
 	props: {
-		text: {
-			type: String,
+		note: {
+			type: Object,
 			required: true
 		}
 	},
+
+	data() {
+		return {
+			showContent: false
+		};
+	}
 });
 </script>
 
 <style lang="scss" scoped>
-.fefdfafb {
+.yohlumlk {
 	display: flex;
 	margin: 0;
 	padding: 0;

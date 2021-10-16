@@ -827,7 +827,7 @@ export default defineComponent({
 	}
 }
 
-._flat_ .ftskorzw.narrow {
+._fitSide_ .ftskorzw.narrow {
 	> .profile {
 		> .warn {
 			margin: 0;
