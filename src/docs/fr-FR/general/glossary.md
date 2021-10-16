@@ -62,7 +62,7 @@ todo
 Désigne le fait de paramétrer un compte pour empêcher ses publications d'être partagées en mode « Public ». Peut être appliqué à des utilisateur·rice·s individuel·le·s à la discrétion des modérateur·rice·s. [Voir ici pour plus d'informations. ](../features/silence)
 
 ## File d’attente
-アクティビティ配送などを順番に行うためのシステム。
+Système permettant de distribuer les activités dans un ordre successif.
 
 ## Suspendre
 Désigne le fait de paramétrer un compte pour le rendre inutilisable à son/sa propriétaire.
