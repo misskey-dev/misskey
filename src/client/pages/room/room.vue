@@ -57,7 +57,7 @@ import XPreview from './preview.vue';
 const storeItems = require('@client/scripts/room/furnitures.json5');
 import { query as urlQuery } from '../../../prelude/url';
 import MkButton from '@client/components/ui/button.vue';
-import MkSelect from '@client/components/ui/select.vue';
+import MkSelect from '@client/components/form/select.vue';
 import { selectFile } from '@client/scripts/select-file';
 import * as os from '@client/os';
 import { ColdDeviceStorage } from '@client/store';

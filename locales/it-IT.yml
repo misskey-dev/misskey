@@ -482,7 +482,7 @@ objectStorageSetPublicRead: "Imposta \"visibilità pubblica\" al momento di cari
 serverLogs: "Log del server"
 deleteAll: "Cancella cronologia"
 showFixedPostForm: "Visualizzare la finestra di pubblicazione in cima alla timeline"
-newNoteRecived: "Nuova nota ricevuta"
+newNoteRecived: "Vedi le nuove note"
 sounds: "Impostazioni suoni"
 listen: "Ascolta"
 none: "Niente"

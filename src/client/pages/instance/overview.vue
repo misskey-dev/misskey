@@ -1,9 +1,6 @@
 <template>
 <FormBase>
 	<FormSuspense :p="init">
-		<FormInfo v-if="noMaintainerInformation" warn>{{ $ts.noMaintainerInformationWarning }} <MkA to="/instance/settings" class="_link">{{ $ts.configure }}</MkA></FormInfo>
-		<FormInfo v-if="noBotProtection" warn>{{ $ts.noBotProtectionWarning }} <MkA to="/instance/bot-protection" class="_link">{{ $ts.configure }}</MkA></FormInfo>
-
 		<FormSuspense :p="fetchStats" v-slot="{ result: stats }">
 			<FormGroup>
 				<FormKeyValueView>
@@ -17,8 +14,8 @@
 			</FormGroup>
 		</FormSuspense>
 	
-		<div class="_formItem">
-			<div class="_formPanel">
+		<div class="_debobigegoItem">
+			<div class="_debobigegoPanel">
 				<MkInstanceStats :chart-limit="300" :detailed="true"/>
 			</div>
 		</div>
@@ -47,18 +44,18 @@
 
 <script lang="ts">
 import { computed, defineComponent, markRaw } from 'vue';
-import FormKeyValueView from '@client/components/form/key-value-view.vue';
-import FormInput from '@client/components/form/input.vue';
-import FormButton from '@client/components/form/button.vue';
-import FormBase from '@client/components/form/base.vue';
-import FormGroup from '@client/components/form/group.vue';
-import FormTextarea from '@client/components/form/textarea.vue';
-import FormInfo from '@client/components/form/info.vue';
-import FormSuspense from '@client/components/form/suspense.vue';
+import FormKeyValueView from '@client/components/debobigego/key-value-view.vue';
+import FormInput from '@client/components/debobigego/input.vue';
+import FormButton from '@client/components/debobigego/button.vue';
+import FormBase from '@client/components/debobigego/base.vue';
+import FormGroup from '@client/components/debobigego/group.vue';
+import FormTextarea from '@client/components/debobigego/textarea.vue';
+import FormInfo from '@client/components/debobigego/info.vue';
+import FormSuspense from '@client/components/debobigego/suspense.vue';
 import MkInstanceStats from '@client/components/instance-stats.vue';
 import MkButton from '@client/components/ui/button.vue';
-import MkSelect from '@client/components/ui/select.vue';
-import MkInput from '@client/components/ui/input.vue';
+import MkSelect from '@client/components/form/select.vue';
+import MkInput from '@client/components/form/input.vue';
 import MkContainer from '@client/components/ui/container.vue';
 import MkFolder from '@client/components/ui/folder.vue';
 import { version, url } from '@client/config';
@@ -86,7 +83,8 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.overview,
-				icon: 'fas fa-tachometer-alt'
+				icon: 'fas fa-tachometer-alt',
+				bg: 'var(--bg)',
 			},
 			page: 'index',
 			version,
@@ -97,8 +95,6 @@ export default defineComponent({
 			fetchServerInfo: () => os.api('admin/server-info', {}),
 			fetchJobs: () => os.api('admin/queue/deliver-delayed', {}),
 			fetchModLogs: () => os.api('admin/show-moderation-logs', {}),
-			noMaintainerInformation: false,
-			noBotProtection: false,
 		}
 	},
 
@@ -109,11 +105,6 @@ export default defineComponent({
 	methods: {
 		async init() {
 			this.meta = await os.api('meta', { detail: true });
-
-			const isEmpty = (x: any) => x == null || x == '';
-
-			this.noMaintainerInformation = isEmpty(this.meta.maintainerName) || isEmpty(this.meta.maintainerEmail);
-			this.noBotProtection = !this.meta.enableHcaptcha && !this.meta.enableRecaptcha;
 		},
 	
 		async showInstanceInfo(q) {

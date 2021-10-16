@@ -39,7 +39,7 @@ export default defineComponent({
 			type: String,
 			required: true,
 		},
-		value: {
+		modelValue: {
 			type: String,
 		},
 	},
@@ -116,7 +116,7 @@ export default defineComponent({
 			}
 		},
 		callback(response?: string) {
-			this.$emit('update:value', typeof response == 'string' ? response : null);
+			this.$emit('update:modelValue', typeof response == 'string' ? response : null);
 		},
 	},
 });

@@ -73,7 +73,7 @@ A feature allowing users to organize the files they have uploaded to Misskey.For
 ## Notes
 Content which may include text, images, surveys and others that has been posted to Misskey.For details, see [here.](../features/note)
 
-## Misskist
+## Misskeyist
 Users of Misskey.
 
 ## Moderator

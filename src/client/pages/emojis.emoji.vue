@@ -23,12 +23,14 @@ export default defineComponent({
 	},
 
 	mounted() {
-		VanillaTilt.init(this.$el, {
-			reverse: true,
-			gyroscope: false,
-			scale: 1.1,
-			speed: 500,
-		});
+		if (this.$store.animation) {
+			VanillaTilt.init(this.$el, {
+				reverse: true,
+				gyroscope: false,
+				scale: 1.1,
+				speed: 500,
+			});
+		}
 	},
 
 	methods: {

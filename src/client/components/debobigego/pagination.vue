@@ -1,5 +1,5 @@
 <template>
-<FormGroup class="uljviswt _formItem">
+<FormGroup class="uljviswt _debobigegoItem">
 	<template #label><slot name="label"></slot></template>
 	<slot :items="items"></slot>
 	<div class="empty" v-if="empty" key="_empty_">

@@ -1,20 +1,14 @@
 <template>
 <div class="xrmjdkdw">
-	<div class="_section">
-		<div class="_content">
-			<MkButton primary @click="clear()"><i class="fas fa-trash-alt"></i> {{ $ts.clearCachedFiles }}</MkButton>
-		</div>
-	</div>
-
-	<div class="_section lookup">
-		<div class="_title"><i class="fas fa-search"></i> {{ $ts.lookup }}</div>
-		<div class="_content">
-			<MkInput class="target" v-model="q" type="text" @enter="find()">
+	<MkContainer :foldable="true" class="lookup">
+		<template #header><i class="fas fa-search"></i> {{ $ts.lookup }}</template>
+		<div class="xrmjdkdw-lookup">
+			<MkInput class="item" v-model="q" type="text" @enter="find()">
 				<template #label>{{ $ts.fileIdOrUrl }}</template>
 			</MkInput>
 			<MkButton @click="find()" primary><i class="fas fa-search"></i> {{ $ts.lookup }}</MkButton>
 		</div>
-	</div>
+	</MkContainer>
 
 	<div class="_section">
 		<div class="_content">
@@ -31,7 +25,7 @@
 			</div>
 			<div class="inputs" style="display: flex; padding-top: 1.2em;">
 				<MkInput v-model="type" :debounce="true" type="search" style="margin: 0; flex: 1;">
-					<template #label>{{ $ts.type }}</template>
+					<template #label>MIME type</template>
 				</MkInput>
 			</div>
 			<MkPagination :pagination="pagination" #default="{items}" class="urempief" ref="files">
@@ -63,9 +57,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import MkButton from '@client/components/ui/button.vue';
-import MkInput from '@client/components/ui/input.vue';
-import MkSelect from '@client/components/ui/select.vue';
+import MkInput from '@client/components/form/input.vue';
+import MkSelect from '@client/components/form/select.vue';
 import MkPagination from '@client/components/ui/pagination.vue';
+import MkContainer from '@client/components/ui/container.vue';
 import MkDriveFileThumbnail from '@client/components/drive-file-thumbnail.vue';
 import bytes from '@client/filters/bytes';
 import * as os from '@client/os';
@@ -77,6 +72,7 @@ export default defineComponent({
 		MkInput,
 		MkSelect,
 		MkPagination,
+		MkContainer,
 		MkDriveFileThumbnail,
 	},
 
@@ -86,7 +82,13 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.files,
-				icon: 'fas fa-cloud'
+				icon: 'fas fa-cloud',
+				bg: 'var(--bg)',
+				actions: [{
+					text: this.$ts.clearCachedFiles,
+					icon: 'fas fa-trash-alt',
+					handler: this.clear
+				}]
 			},
 			q: null,
 			origin: 'local',
@@ -161,6 +163,10 @@ export default defineComponent({
 .xrmjdkdw {
 	margin: var(--margin);
 
+	> .lookup {
+		margin-bottom: 16px;
+	}
+
 	.urempief {
 		margin-top: var(--margin);
 
@@ -190,6 +196,14 @@ export default defineComponent({
 				}
 			}
 		}
+	}
+}
+
+.xrmjdkdw-lookup {
+	padding: 16px;
+
+	> .item {
+		margin-bottom: 16px;
 	}
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
 <FormBase>
 	<FormGroup>
-		<FormTextarea v-model:value="installThemeCode">
+		<FormTextarea v-model="installThemeCode">
 			<span>{{ $ts._theme.code }}</span>
 		</FormTextarea>
 		<FormButton @click="() => preview(installThemeCode)" :disabled="installThemeCode == null" inline><i class="fas fa-eye"></i> {{ $ts.preview }}</FormButton>
@@ -17,10 +17,10 @@ import * as JSON5 from 'json5';
 import FormTextarea from '@client/components/form/textarea.vue';
 import FormSelect from '@client/components/form/select.vue';
 import FormRadios from '@client/components/form/radios.vue';
-import FormBase from '@client/components/form/base.vue';
-import FormGroup from '@client/components/form/group.vue';
-import FormLink from '@client/components/form/link.vue';
-import FormButton from '@client/components/form/button.vue';
+import FormBase from '@client/components/debobigego/base.vue';
+import FormGroup from '@client/components/debobigego/group.vue';
+import FormLink from '@client/components/debobigego/link.vue';
+import FormButton from '@client/components/debobigego/button.vue';
 import { applyTheme, validateTheme } from '@client/scripts/theme';
 import * as os from '@client/os';
 import { ColdDeviceStorage } from '@client/store';
@@ -44,7 +44,8 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts._theme.install,
-				icon: 'fas fa-download'
+				icon: 'fas fa-download',
+				bg: 'var(--bg)',
 			},
 			installThemeCode: null,
 		}

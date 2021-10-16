@@ -1,51 +1,16 @@
 <template>
 <div class="hiyeyicy" :class="{ wide: !narrow }" ref="el">
 	<div class="nav" v-if="!narrow || page == null">
-		<FormBase>
-			<FormGroup>
-				<div class="_formItem">
-					<div class="_formPanel lxpfedzu">
-						<img :src="$instance.iconUrl || '/favicon.ico'" alt="" class="icon"/>
-					</div>
-				</div>
-				<FormLink :active="page === 'overview'" replace to="/instance/overview"><template #icon><i class="fas fa-tachometer-alt"></i></template>{{ $ts.overview }}</FormLink>
-			</FormGroup>
-			<FormGroup>
-				<template #label>{{ $ts.quickAction }}</template>
-				<FormButton @click="lookup"><i class="fas fa-search"></i> {{ $ts.lookup }}</FormButton>
-				<FormButton v-if="$instance.disableRegistration" @click="invite"><i class="fas fa-user"></i> {{ $ts.invite }}</FormButton>
-			</FormGroup>
-			<FormGroup>
-				<template #label>{{ $ts.administration }}</template>
-				<FormLink :active="page === 'users'" replace to="/instance/users"><template #icon><i class="fas fa-users"></i></template>{{ $ts.users }}</FormLink>
-				<FormLink :active="page === 'emojis'" replace to="/instance/emojis"><template #icon><i class="fas fa-laugh"></i></template>{{ $ts.customEmojis }}</FormLink>
-				<FormLink :active="page === 'federation'" replace to="/instance/federation"><template #icon><i class="fas fa-globe"></i></template>{{ $ts.federation }}</FormLink>
-				<FormLink :active="page === 'queue'" replace to="/instance/queue"><template #icon><i class="fas fa-clipboard-list"></i></template>{{ $ts.jobQueue }}</FormLink>
-				<FormLink :active="page === 'files'" replace to="/instance/files"><template #icon><i class="fas fa-cloud"></i></template>{{ $ts.files }}</FormLink>
-				<FormLink :active="page === 'announcements'" replace to="/instance/announcements"><template #icon><i class="fas fa-broadcast-tower"></i></template>{{ $ts.announcements }}</FormLink>
-				<FormLink :active="page === 'ads'" replace to="/instance/ads"><template #icon><i class="fas fa-audio-description"></i></template>{{ $ts.ads }}</FormLink>
-				<FormLink :active="page === 'abuses'" replace to="/instance/abuses"><template #icon><i class="fas fa-exclamation-circle"></i></template>{{ $ts.abuseReports }}</FormLink>
-			</FormGroup>
-			<FormGroup>
-				<template #label>{{ $ts.settings }}</template>
-				<FormLink :active="page === 'settings'" replace to="/instance/settings"><template #icon><i class="fas fa-cog"></i></template>{{ $ts.general }}</FormLink>
-				<FormLink :active="page === 'files-settings'" replace to="/instance/files-settings"><template #icon><i class="fas fa-cloud"></i></template>{{ $ts.files }}</FormLink>
-				<FormLink :active="page === 'email-settings'" replace to="/instance/email-settings"><template #icon><i class="fas fa-envelope"></i></template>{{ $ts.emailServer }}</FormLink>
-				<FormLink :active="page === 'object-storage'" replace to="/instance/object-storage"><template #icon><i class="fas fa-cloud"></i></template>{{ $ts.objectStorage }}</FormLink>
-				<FormLink :active="page === 'security'" replace to="/instance/security"><template #icon><i class="fas fa-lock"></i></template>{{ $ts.security }}</FormLink>
-				<FormLink :active="page === 'service-worker'" replace to="/instance/service-worker"><template #icon><i class="fas fa-bolt"></i></template>ServiceWorker</FormLink>
-				<FormLink :active="page === 'relays'" replace to="/instance/relays"><template #icon><i class="fas fa-globe"></i></template>{{ $ts.relays }}</FormLink>
-				<FormLink :active="page === 'integrations'" replace to="/instance/integrations"><template #icon><i class="fas fa-share-alt"></i></template>{{ $ts.integration }}</FormLink>
-				<FormLink :active="page === 'instance-block'" replace to="/instance/instance-block"><template #icon><i class="fas fa-ban"></i></template>{{ $ts.instanceBlocking }}</FormLink>
-				<FormLink :active="page === 'proxy-account'" replace to="/instance/proxy-account"><template #icon><i class="fas fa-ghost"></i></template>{{ $ts.proxyAccount }}</FormLink>
-				<FormLink :active="page === 'other-settings'" replace to="/instance/other-settings"><template #icon><i class="fas fa-cogs"></i></template>{{ $ts.other }}</FormLink>
-			</FormGroup>
-			<FormGroup>
-				<template #label>{{ $ts.info }}</template>
-				<FormLink :active="page === 'database'" replace to="/instance/database"><template #icon><i class="fas fa-database"></i></template>{{ $ts.database }}</FormLink>
-				<FormLink :active="page === 'logs'" replace to="/instance/logs"><template #icon><i class="fas fa-stream"></i></template>{{ $ts.logs }}</FormLink>
-			</FormGroup>
-		</FormBase>
+		<MkHeader :info="header"></MkHeader>
+	
+		<div class="lxpfedzu">
+			<img :src="$instance.iconUrl || '/favicon.ico'" alt="" class="icon"/>
+		</div>
+
+		<MkInfo v-if="noMaintainerInformation" warn class="info">{{ $ts.noMaintainerInformationWarning }} <MkA to="/instance/settings" class="_link">{{ $ts.configure }}</MkA></MkInfo>
+		<MkInfo v-if="noBotProtection" warn class="info">{{ $ts.noBotProtectionWarning }} <MkA to="/instance/bot-protection" class="_link">{{ $ts.configure }}</MkA></MkInfo>
+
+		<MkSuperMenu :def="menuDef" :grid="page == null"></MkSuperMenu>
 	</div>
 	<div class="main">
 		<component :is="component" :key="page" @info="onInfo" v-bind="pageProps"/>
@@ -56,11 +21,13 @@
 <script lang="ts">
 import { computed, defineAsyncComponent, defineComponent, nextTick, onMounted, reactive, ref, watch } from 'vue';
 import { i18n } from '@client/i18n';
-import FormLink from '@client/components/form/link.vue';
-import FormGroup from '@client/components/form/group.vue';
-import FormBase from '@client/components/form/base.vue';
-import FormButton from '@client/components/form/button.vue';
+import MkSuperMenu from '@client/components/ui/super-menu.vue';
+import FormGroup from '@client/components/debobigego/group.vue';
+import FormBase from '@client/components/debobigego/base.vue';
+import FormButton from '@client/components/debobigego/button.vue';
+import MkInfo from '@client/components/ui/info.vue';
 import { scroll } from '@client/scripts/scroll';
+import { instance } from '@client/instance';
 import * as symbols from '@client/symbols';
 import * as os from '@client/os';
 import { lookupUser } from '@client/scripts/lookup-user';
@@ -68,9 +35,10 @@ import { lookupUser } from '@client/scripts/lookup-user';
 export default defineComponent({
 	components: {
 		FormBase,
-		FormLink,
+		MkSuperMenu,
 		FormGroup,
 		FormButton,
+		MkInfo,
 	},
 
 	props: {
@@ -83,7 +51,8 @@ export default defineComponent({
 	setup(props, context) {
 		const indexInfo = {
 			title: i18n.locale.instance,
-			icon: 'fas fa-cog'
+			icon: 'fas fa-cog',
+			bg: 'var(--bg)',
 		};
 		const INFO = ref(indexInfo);
 		const page = ref(props.initialPage);
@@ -94,6 +63,151 @@ export default defineComponent({
 			INFO.value = viewInfo;
 		};
 		const pageProps = ref({});
+
+		const isEmpty = (x: any) => x == null || x == '';
+
+		const noMaintainerInformation = ref(false);
+		const noBotProtection = ref(false);
+
+		os.api('meta', { detail: true }).then(meta => {
+			// TODO: 設定が完了しても残ったままになるので、ストリーミングでmeta更新イベントを受け取ってよしなに更新する
+			noMaintainerInformation.value = isEmpty(meta.maintainerName) || isEmpty(meta.maintainerEmail);
+			noBotProtection.value = !meta.enableHcaptcha && !meta.enableRecaptcha;
+		});
+
+		const menuDef = computed(() => [{
+			title: i18n.locale.quickAction,
+			items: [{
+				type: 'button',
+				icon: 'fas fa-search',
+				text: i18n.locale.lookup,
+				action: lookup,
+			}, ...(instance.disableRegistration ? [{
+				type: 'button',
+				icon: 'fas fa-user',
+				text: i18n.locale.invite,
+				action: invite,
+			}] : [])],
+		}, {
+			title: i18n.locale.administration,
+			items: [{
+				icon: 'fas fa-tachometer-alt',
+				text: i18n.locale.dashboard,
+				to: '/instance/overview',
+				active: page.value === 'overview',
+			}, {
+				icon: 'fas fa-users',
+				text: i18n.locale.users,
+				to: '/instance/users',
+				active: page.value === 'users',
+			}, {
+				icon: 'fas fa-laugh',
+				text: i18n.locale.customEmojis,
+				to: '/instance/emojis',
+				active: page.value === 'emojis',
+			}, {
+				icon: 'fas fa-globe',
+				text: i18n.locale.federation,
+				to: '/instance/federation',
+				active: page.value === 'federation',
+			}, {
+				icon: 'fas fa-clipboard-list',
+				text: i18n.locale.jobQueue,
+				to: '/instance/queue',
+				active: page.value === 'queue',
+			}, {
+				icon: 'fas fa-cloud',
+				text: i18n.locale.files,
+				to: '/instance/files',
+				active: page.value === 'files',
+			}, {
+				icon: 'fas fa-broadcast-tower',
+				text: i18n.locale.announcements,
+				to: '/instance/announcements',
+				active: page.value === 'announcements',
+			}, {
+				icon: 'fas fa-audio-description',
+				text: i18n.locale.ads,
+				to: '/instance/ads',
+				active: page.value === 'ads',
+			}, {
+				icon: 'fas fa-exclamation-circle',
+				text: i18n.locale.abuseReports,
+				to: '/instance/abuses',
+				active: page.value === 'abuses',
+			}],
+		}, {
+			title: i18n.locale.settings,
+			items: [{
+				icon: 'fas fa-cog',
+				text: i18n.locale.general,
+				to: '/instance/settings',
+				active: page.value === 'settings',
+			}, {
+				icon: 'fas fa-cloud',
+				text: i18n.locale.files,
+				to: '/instance/files-settings',
+				active: page.value === 'files-settings',
+			}, {
+				icon: 'fas fa-envelope',
+				text: i18n.locale.emailServer,
+				to: '/instance/email-settings',
+				active: page.value === 'email-settings',
+			}, {
+				icon: 'fas fa-cloud',
+				text: i18n.locale.objectStorage,
+				to: '/instance/object-storage',
+				active: page.value === 'object-storage',
+			}, {
+				icon: 'fas fa-lock',
+				text: i18n.locale.security,
+				to: '/instance/security',
+				active: page.value === 'security',
+			}, {
+				icon: 'fas fa-bolt',
+				text: 'ServiceWorker',
+				to: '/instance/service-worker',
+				active: page.value === 'service-worker',
+			}, {
+				icon: 'fas fa-globe',
+				text: i18n.locale.relays,
+				to: '/instance/relays',
+				active: page.value === 'relays',
+			}, {
+				icon: 'fas fa-share-alt',
+				text: i18n.locale.integration,
+				to: '/instance/integrations',
+				active: page.value === 'integrations',
+			}, {
+				icon: 'fas fa-ban',
+				text: i18n.locale.instanceBlocking,
+				to: '/instance/instance-block',
+				active: page.value === 'instance-block',
+			}, {
+				icon: 'fas fa-ghost',
+				text: i18n.locale.proxyAccount,
+				to: '/instance/proxy-account',
+				active: page.value === 'proxy-account',
+			}, {
+				icon: 'fas fa-cogs',
+				text: i18n.locale.other,
+				to: '/instance/other-settings',
+				active: page.value === 'other-settings',
+			}],
+		}, {
+			title: i18n.locale.info,
+			items: [{
+				icon: 'fas fa-database',
+				text: i18n.locale.database,
+				to: '/instance/database',
+				active: page.value === 'database',
+			}, {
+				icon: 'fas fa-stream',
+				text: i18n.locale.logs,
+				to: '/instance/logs',
+				active: page.value === 'logs',
+			}],
+		}]);
 		const component = computed(() => {
 			if (page.value == null) return null;
 			switch (page.value) {
@@ -130,7 +244,7 @@ export default defineComponent({
 			pageProps.value = {};
 
 			nextTick(() => {
-				scroll(el.value, 0);
+				scroll(el.value, { top: 0 });
 			});
 		}, { immediate: true });
 
@@ -196,6 +310,12 @@ export default defineComponent({
 
 		return {
 			[symbols.PAGE_INFO]: INFO,
+			menuDef,
+			header: {
+				title: i18n.locale.controllPanel,
+			},
+			noMaintainerInformation,
+			noBotProtection,
 			page,
 			narrow,
 			view,
@@ -214,28 +334,34 @@ export default defineComponent({
 .hiyeyicy {
 	&.wide {
 		display: flex;
-		max-width: 1100px;
 		margin: 0 auto;
 		height: 100%;
 
 		> .nav {
 			width: 32%;
+			max-width: 280px;
 			box-sizing: border-box;
 			border-right: solid 0.5px var(--divider);
 			overflow: auto;
+			height: 100%;
 		}
 
 		> .main {
 			flex: 1;
 			min-width: 0;
-			overflow: auto;
 			--baseContentWidth: 100%;
+		}
+	}
+
+	> .nav {
+		> .info {
+			margin: 16px;
 		}
 	}
 }
 
 .lxpfedzu {
-	padding: 16px;
+	margin: 16px;
 
 	> .icon {
 		display: block;

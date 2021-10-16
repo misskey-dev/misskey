@@ -127,8 +127,8 @@
 import { defineComponent } from 'vue';
 import * as maps from '../../../games/reversi/maps';
 import MkButton from '@client/components/ui/button.vue';
-import MkSwitch from '@client/components/ui/switch.vue';
-import MkRadio from '@client/components/ui/radio.vue';
+import MkSwitch from '@client/components/form/switch.vue';
+import MkRadio from '@client/components/form/radio.vue';
 
 export default defineComponent({
 	components: {
@@ -303,7 +303,7 @@ export default defineComponent({
 						-moz-appearance: none;
 						appearance: none;
 
-						&:focus,
+						&:focus-visible,
 						&:active {
 							border-color: var(--accent);
 						}

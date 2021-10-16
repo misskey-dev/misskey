@@ -62,6 +62,7 @@ import { ChannelNotePining } from './entities/channel-note-pining';
 import { RegistryItem } from './entities/registry-item';
 import { Ad } from './entities/ad';
 import { PasswordResetRequest } from './entities/password-reset-request';
+import { UserPending } from './entities/user-pending';
 
 export const Announcements = getRepository(Announcement);
 export const AnnouncementReads = getRepository(AnnouncementRead);
@@ -76,6 +77,7 @@ export const PollVotes = getRepository(PollVote);
 export const Users = getCustomRepository(UserRepository);
 export const UserProfiles = getRepository(UserProfile);
 export const UserKeypairs = getRepository(UserKeypair);
+export const UserPendings = getRepository(UserPending);
 export const AttestationChallenges = getRepository(AttestationChallenge);
 export const UserSecurityKeys = getRepository(UserSecurityKey);
 export const UserPublickeys = getRepository(UserPublickey);

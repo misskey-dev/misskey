@@ -1,10 +1,10 @@
 <template>
 <div class="shaynizk">
 	<div class="form">
-		<MkInput v-model="name" class="_inputNoTopMargin">
+		<MkInput v-model="name" class="_formBlock">
 			<template #label>{{ $ts.name }}</template>
 		</MkInput>
-		<MkSelect v-model="src">
+		<MkSelect v-model="src" class="_formBlock">
 			<template #label>{{ $ts.antennaSource }}</template>
 			<option value="all">{{ $ts._antennaSources.all }}</option>
 			<option value="home">{{ $ts._antennaSources.homeTimeline }}</option>
@@ -12,30 +12,30 @@
 			<option value="list">{{ $ts._antennaSources.userList }}</option>
 			<option value="group">{{ $ts._antennaSources.userGroup }}</option>
 		</MkSelect>
-		<MkSelect v-model="userListId" v-if="src === 'list'">
+		<MkSelect v-model="userListId" v-if="src === 'list'" class="_formBlock">
 			<template #label>{{ $ts.userList }}</template>
 			<option v-for="list in userLists" :value="list.id" :key="list.id">{{ list.name }}</option>
 		</MkSelect>
-		<MkSelect v-model="userGroupId" v-else-if="src === 'group'">
+		<MkSelect v-model="userGroupId" v-else-if="src === 'group'" class="_formBlock">
 			<template #label>{{ $ts.userGroup }}</template>
 			<option v-for="group in userGroups" :value="group.id" :key="group.id">{{ group.name }}</option>
 		</MkSelect>
-		<MkTextarea v-model="users" v-else-if="src === 'users'">
+		<MkTextarea v-model="users" v-else-if="src === 'users'" class="_formBlock">
 			<template #label>{{ $ts.users }}</template>
 			<template #caption>{{ $ts.antennaUsersDescription }} <button class="_textButton" @click="addUser">{{ $ts.addUser }}</button></template>
 		</MkTextarea>
-		<MkSwitch v-model="withReplies">{{ $ts.withReplies }}</MkSwitch>
-		<MkTextarea v-model="keywords">
+		<MkSwitch v-model="withReplies" class="_formBlock">{{ $ts.withReplies }}</MkSwitch>
+		<MkTextarea v-model="keywords" class="_formBlock">
 			<template #label>{{ $ts.antennaKeywords }}</template>
 			<template #caption>{{ $ts.antennaKeywordsDescription }}</template>
 		</MkTextarea>
-		<MkTextarea v-model="excludeKeywords">
+		<MkTextarea v-model="excludeKeywords" class="_formBlock">
 			<template #label>{{ $ts.antennaExcludeKeywords }}</template>
 			<template #caption>{{ $ts.antennaKeywordsDescription }}</template>
 		</MkTextarea>
-		<MkSwitch v-model="caseSensitive">{{ $ts.caseSensitive }}</MkSwitch>
-		<MkSwitch v-model="withFile">{{ $ts.withFileAntenna }}</MkSwitch>
-		<MkSwitch v-model="notify">{{ $ts.notifyAntenna }}</MkSwitch>
+		<MkSwitch v-model="caseSensitive" class="_formBlock">{{ $ts.caseSensitive }}</MkSwitch>
+		<MkSwitch v-model="withFile" class="_formBlock">{{ $ts.withFileAntenna }}</MkSwitch>
+		<MkSwitch v-model="notify" class="_formBlock">{{ $ts.notifyAntenna }}</MkSwitch>
 	</div>
 	<div class="actions">
 		<MkButton inline @click="saveAntenna()" primary><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
@@ -47,10 +47,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import MkButton from '@client/components/ui/button.vue';
-import MkInput from '@client/components/ui/input.vue';
-import MkTextarea from '@client/components/ui/textarea.vue';
-import MkSelect from '@client/components/ui/select.vue';
-import MkSwitch from '@client/components/ui/switch.vue';
+import MkInput from '@client/components/form/input.vue';
+import MkTextarea from '@client/components/form/textarea.vue';
+import MkSelect from '@client/components/form/select.vue';
+import MkSwitch from '@client/components/form/switch.vue';
 import { getAcct } from '@/misc/acct';
 import * as os from '@client/os';
 

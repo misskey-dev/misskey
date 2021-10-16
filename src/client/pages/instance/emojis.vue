@@ -1,12 +1,8 @@
 <template>
 <div class="ogwlenmc">
-	<MkTab v-model:value="tab">
-		<option value="local">{{ $ts.local }}</option>
-		<option value="remote">{{ $ts.remote }}</option>
-	</MkTab>
+	<MkHeader :info="header"/>
 
 	<div class="local" v-if="tab === 'local'">
-		<MkButton primary @click="add" style="margin: var(--margin) auto;"><i class="fas fa-plus"></i> {{ $ts.addEmoji }}</MkButton>
 		<MkInput v-model="query" :debounce="true" type="search" style="margin: var(--margin);">
 			<template #prefix><i class="fas fa-search"></i></template>
 			<template #label>{{ $ts.search }}</template>
@@ -56,7 +52,7 @@
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
 import MkButton from '@client/components/ui/button.vue';
-import MkInput from '@client/components/ui/input.vue';
+import MkInput from '@client/components/form/input.vue';
 import MkPagination from '@client/components/ui/pagination.vue';
 import MkTab from '@client/components/tab.vue';
 import { selectFile } from '@client/scripts/select-file';
@@ -78,11 +74,28 @@ export default defineComponent({
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.customEmojis,
 				icon: 'fas fa-laugh',
-				action: {
-					icon: 'fas fa-plus',
-					handler: this.add
-				}
+				bg: 'var(--bg)',
 			},
+			header: computed(() => ({
+				title: this.$ts.customEmojis,
+				icon: 'fas fa-laugh',
+				bg: 'var(--bg)',
+				actions: [{
+					asFullButton: true,
+					icon: 'fas fa-plus',
+					text: this.$ts.addEmoji,
+					handler: this.add,
+				}],
+				tabs: [{
+					active: this.tab === 'local',
+					title: this.$ts.local,
+					onClick: () => { this.tab = 'local'; },
+				}, {
+					active: this.tab === 'remote',
+					title: this.$ts.remote,
+					onClick: () => { this.tab = 'remote'; },
+				},]
+			})),
 			tab: 'local',
 			query: null,
 			queryRemote: null,

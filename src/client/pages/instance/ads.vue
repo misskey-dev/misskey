@@ -1,52 +1,54 @@
 <template>
-<div class="uqshojas">
-	<MkButton @click="add()" primary style="margin: 0 auto 16px auto;"><i class="fas fa-plus"></i> {{ $ts.add }}</MkButton>
-	<section class="_card _gap ads" v-for="ad in ads">
-		<div class="_content ad">
-			<MkAd v-if="ad.url" :specify="ad"/>
-			<MkInput v-model="ad.url" type="url">
-				<template #label>URL</template>
-			</MkInput>
-			<MkInput v-model="ad.imageUrl">
-				<template #label>{{ $ts.imageUrl }}</template>
-			</MkInput>
-			<div style="margin: 32px 0;">
-				<MkRadio v-model="ad.place" value="square">square</MkRadio>
-				<MkRadio v-model="ad.place" value="horizontal">horizontal</MkRadio>
-				<MkRadio v-model="ad.place" value="horizontal-big">horizontal-big</MkRadio>
+<div>
+	<MkHeader :info="header"/>
+	<div class="uqshojas">
+		<section class="_card _gap ads" v-for="ad in ads">
+			<div class="_content ad">
+				<MkAd v-if="ad.url" :specify="ad"/>
+				<MkInput v-model="ad.url" type="url">
+					<template #label>URL</template>
+				</MkInput>
+				<MkInput v-model="ad.imageUrl">
+					<template #label>{{ $ts.imageUrl }}</template>
+				</MkInput>
+				<div style="margin: 32px 0;">
+					<MkRadio v-model="ad.place" value="square">square</MkRadio>
+					<MkRadio v-model="ad.place" value="horizontal">horizontal</MkRadio>
+					<MkRadio v-model="ad.place" value="horizontal-big">horizontal-big</MkRadio>
+				</div>
+				<!--
+				<div style="margin: 32px 0;">
+					{{ $ts.priority }}
+					<MkRadio v-model="ad.priority" value="high">{{ $ts.high }}</MkRadio>
+					<MkRadio v-model="ad.priority" value="middle">{{ $ts.middle }}</MkRadio>
+					<MkRadio v-model="ad.priority" value="low">{{ $ts.low }}</MkRadio>
+				</div>
+				-->
+				<MkInput v-model="ad.ratio" type="number">
+					<template #label>{{ $ts.ratio }}</template>
+				</MkInput>
+				<MkInput v-model="ad.expiresAt" type="date">
+					<template #label>{{ $ts.expiration }}</template>
+				</MkInput>
+				<MkTextarea v-model="ad.memo">
+					<template #label>{{ $ts.memo }}</template>
+				</MkTextarea>
+				<div class="buttons">
+					<MkButton class="button" inline @click="save(ad)" primary><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
+					<MkButton class="button" inline @click="remove(ad)" danger><i class="fas fa-trash-alt"></i> {{ $ts.remove }}</MkButton>
+				</div>
 			</div>
-			<!--
-			<div style="margin: 32px 0;">
-				{{ $ts.priority }}
-				<MkRadio v-model="ad.priority" value="high">{{ $ts.high }}</MkRadio>
-				<MkRadio v-model="ad.priority" value="middle">{{ $ts.middle }}</MkRadio>
-				<MkRadio v-model="ad.priority" value="low">{{ $ts.low }}</MkRadio>
-			</div>
-			-->
-			<MkInput v-model="ad.ratio" type="number">
-				<template #label>{{ $ts.ratio }}</template>
-			</MkInput>
-			<MkInput v-model="ad.expiresAt" type="date">
-				<template #label>{{ $ts.expiration }}</template>
-			</MkInput>
-			<MkTextarea v-model="ad.memo">
-				<template #label>{{ $ts.memo }}</template>
-			</MkTextarea>
-			<div class="buttons">
-				<MkButton class="button" inline @click="save(ad)" primary><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
-				<MkButton class="button" inline @click="remove(ad)" danger><i class="fas fa-trash-alt"></i> {{ $ts.remove }}</MkButton>
-			</div>
-		</div>
-	</section>
+		</section>
+	</div>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import MkButton from '@client/components/ui/button.vue';
-import MkInput from '@client/components/ui/input.vue';
-import MkTextarea from '@client/components/ui/textarea.vue';
-import MkRadio from '@client/components/ui/radio.vue';
+import MkInput from '@client/components/form/input.vue';
+import MkTextarea from '@client/components/form/textarea.vue';
+import MkRadio from '@client/components/form/radio.vue';
 import * as os from '@client/os';
 import * as symbols from '@client/symbols';
 
@@ -64,7 +66,19 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.ads,
-				icon: 'fas fa-audio-description'
+				icon: 'fas fa-audio-description',
+				bg: 'var(--bg)',
+			},
+			header: {
+				title: this.$ts.ads,
+				icon: 'fas fa-audio-description',
+				bg: 'var(--bg)',
+				actions: [{
+					asFullButton: true,
+					icon: 'fas fa-plus',
+					text: this.$ts.add,
+					handler: this.add,
+				}],
 			},
 			ads: [],
 		}

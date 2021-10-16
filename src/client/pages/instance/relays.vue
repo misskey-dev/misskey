@@ -2,8 +2,8 @@
 <FormBase class="relaycxt">
 	<FormButton @click="addRelay" primary><i class="fas fa-plus"></i> {{ $ts.addRelay }}</FormButton>
 
-	<div class="_formItem" v-for="relay in relays" :key="relay.inbox">
-		<div class="_formPanel" style="padding: 16px;">
+	<div class="_debobigegoItem" v-for="relay in relays" :key="relay.inbox">
+		<div class="_debobigegoPanel" style="padding: 16px;">
 			<div>{{ relay.inbox }}</div>
 			<div>{{ $t(`_relayStatus.${relay.status}`) }}</div>
 			<MkButton class="button" inline danger @click="remove(relay.inbox)"><i class="fas fa-trash-alt"></i> {{ $ts.remove }}</MkButton>
@@ -15,9 +15,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import MkButton from '@client/components/ui/button.vue';
-import MkInput from '@client/components/ui/input.vue';
-import FormBase from '@client/components/form/base.vue';
-import FormButton from '@client/components/form/button.vue';
+import MkInput from '@client/components/form/input.vue';
+import FormBase from '@client/components/debobigego/base.vue';
+import FormButton from '@client/components/debobigego/button.vue';
 import * as os from '@client/os';
 import * as symbols from '@client/symbols';
 
@@ -36,6 +36,7 @@ export default defineComponent({
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.relays,
 				icon: 'fas fa-globe',
+				bg: 'var(--bg)',
 			},
 			relays: [],
 			inbox: '',
