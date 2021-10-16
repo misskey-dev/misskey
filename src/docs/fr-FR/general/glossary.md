@@ -65,7 +65,7 @@ todo
 アクティビティ配送などを順番に行うためのシステム。
 
 ## Suspendre
-アカウントが使用不可に設定されている状態。
+Désigne le fait de paramétrer un compte pour le rendre inutilisable à son/sa propriétaire.
 
 ## Drive
 Fonctionnalité vous permettant de gérer les fichiers que vous avez téléversés sur Misskey. [Voir ici pour plus d'informations. ](../features/drive)
