@@ -1,7 +1,7 @@
 <template>
-<div class="fdidabkb" :class="{ slim: narrow, thin }" :style="{ background: bg }" @click="onClick" ref="el">
+<div class="fdidabkb" :class="{ slim: narrow, thin: thin_ }" :style="{ background: bg }" @click="onClick" ref="el">
 	<template v-if="info">
-		<div class="titleContainer" @click="showTabsPopup">
+		<div class="titleContainer" @click="showTabsPopup" v-if="!hideTitle">
 			<i v-if="info.icon" class="icon" :class="info.icon"></i>
 			<MkAvatar v-else-if="info.avatar" class="avatar" :user="info.avatar" :disable-preview="true" :show-indicator="true"/>
 
@@ -17,7 +17,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="tabs" v-if="!narrow">
+		<div class="tabs" v-if="!narrow || hideTitle">
 			<button class="tab _button" v-for="tab in info.tabs" :class="{ active: tab.active }" @click="tab.onClick" v-tooltip="tab.title">
 				<i v-if="tab.icon" class="icon" :class="tab.icon"></i>
 				<span v-if="!tab.iconOnly" class="title">{{ tab.title }}</span>
@@ -37,7 +37,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, onUnmounted, PropType, ref } from 'vue';
+import { computed, defineComponent, onMounted, onUnmounted, PropType, ref, inject } from 'vue';
 import * as tinycolor from 'tinycolor2';
 import { popupMenu } from '@client/os';
 import { url } from '@client/config';
@@ -182,6 +182,8 @@ export default defineComponent({
 			showTabsPopup,
 			preventDrag,
 			onClick,
+			hideTitle: inject('shouldOmitHeaderTitle', false),
+			thin_: props.thin || inject('shouldHeaderThin', false)
 		};
 	},
 });
@@ -207,12 +209,16 @@ export default defineComponent({
 		text-align: center;
 
 		> .titleContainer {
+			flex: 1;
 			margin: 0 auto;
-		}
+			margin-left: var(--height);
 
-		> .buttons {
-			&.right {
-				margin-left: 0;
+			> *:first-child {
+				margin-left: auto;
+			}
+
+			> *:last-child {
+				margin-right: auto;
 			}
 		}
 	}

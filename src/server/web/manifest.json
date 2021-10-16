@@ -2,7 +2,7 @@
 	"short_name": "Misskey",
 	"name": "Misskey",
 	"start_url": "/",
-	"display": "standalone",
+	"display": "minimal-ui",
 	"background_color": "#313a42",
 	"theme_color": "#86b300",
 	"icons": [

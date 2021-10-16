@@ -14,6 +14,7 @@ import loading from './global/loading.vue';
 import error from './global/error.vue';
 import ad from './global/ad.vue';
 import header from './global/header.vue';
+import spacer from './global/spacer.vue';
 
 export default function(app: App) {
 	app.component('I18n', i18n);
@@ -30,4 +31,5 @@ export default function(app: App) {
 	app.component('MkError', error);
 	app.component('MkAd', ad);
 	app.component('MkHeader', header);
+	app.component('MkSpacer', spacer);
 }

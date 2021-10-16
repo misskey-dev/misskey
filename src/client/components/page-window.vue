@@ -14,7 +14,7 @@
 		</template>
 	</template>
 	<template #headerLeft>
-		<button v-if="history.length > 0" class="_button" @click="back()"><i class="fas fa-arrow-left"></i></button>
+		<button v-if="history.length > 0" class="_button" @click="back()" v-tooltip="$ts.goBack"><i class="fas fa-arrow-left"></i></button>
 	</template>
 	<div class="yrolvcoq _flat_">
 		<component :is="component" v-bind="props" :ref="changePage"/>
@@ -46,7 +46,8 @@ export default defineComponent({
 		return {
 			navHook: (path) => {
 				this.navigate(path);
-			}
+			},
+			shouldHeaderThin: true,
 		};
 	},
 
