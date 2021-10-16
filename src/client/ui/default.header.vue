@@ -29,7 +29,7 @@
 				<MkAvatar :user="$i" class="avatar"/><MkAcct class="acct" :user="$i"/>
 			</button>
 			<div class="post" @click="post">
-				<MkButton class="button" primary full rounded>
+				<MkButton class="button" gradate full rounded>
 					<i class="fas fa-pencil-alt fa-fw"></i>
 				</MkButton>
 			</div>
