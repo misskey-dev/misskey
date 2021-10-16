@@ -29,5 +29,5 @@ jobs:
         with:
           context: .
           push: true
-          tags: develop
+          tags: misskey:develop
           labels: develop
