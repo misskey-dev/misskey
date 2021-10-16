@@ -1,20 +1,17 @@
 <template>
 <div class="lknzcolw">
-	<div class="actions">
-		<MkButton inline primary @click="addUser()"><i class="fas fa-plus"></i> {{ $ts.addUser }}</MkButton>
-		<MkButton inline primary @click="lookupUser()"><i class="fas fa-search"></i> {{ $ts.lookup }}</MkButton>
-	</div>
+	<MkHeader :info="header"/>
 
 	<div class="users">
-		<div class="inputs" style="display: flex;">
-			<MkSelect v-model="sort" style="margin: 0; flex: 1;">
+		<div class="inputs">
+			<MkSelect v-model="sort" style="flex: 1;">
 				<template #label>{{ $ts.sort }}</template>
 				<option value="-createdAt">{{ $ts.registeredDate }} ({{ $ts.ascendingOrder }})</option>
 				<option value="+createdAt">{{ $ts.registeredDate }} ({{ $ts.descendingOrder }})</option>
 				<option value="-updatedAt">{{ $ts.lastUsed }} ({{ $ts.ascendingOrder }})</option>
 				<option value="+updatedAt">{{ $ts.lastUsed }} ({{ $ts.descendingOrder }})</option>
 			</MkSelect>
-			<MkSelect v-model="state" style="margin: 0; flex: 1;">
+			<MkSelect v-model="state" style="flex: 1;">
 				<template #label>{{ $ts.state }}</template>
 				<option value="all">{{ $ts.all }}</option>
 				<option value="available">{{ $ts.normal }}</option>
@@ -23,18 +20,20 @@
 				<option value="silenced">{{ $ts.silence }}</option>
 				<option value="suspended">{{ $ts.suspend }}</option>
 			</MkSelect>
-			<MkSelect v-model="origin" style="margin: 0; flex: 1;">
+			<MkSelect v-model="origin" style="flex: 1;">
 				<template #label>{{ $ts.instance }}</template>
 				<option value="combined">{{ $ts.all }}</option>
 				<option value="local">{{ $ts.local }}</option>
 				<option value="remote">{{ $ts.remote }}</option>
 			</MkSelect>
 		</div>
-		<div class="inputs" style="display: flex; padding-top: 1.2em;">
-			<MkInput v-model="searchUsername" style="margin: 0; flex: 1;" type="text" spellcheck="false" @update:modelValue="$refs.users.reload()">
+		<div class="inputs">
+			<MkInput v-model="searchUsername" style="flex: 1;" type="text" spellcheck="false" @update:modelValue="$refs.users.reload()">
+				<template #prefix>@</template>
 				<template #label>{{ $ts.username }}</template>
 			</MkInput>
-			<MkInput v-model="searchHost" style="margin: 0; flex: 1;" type="text" spellcheck="false" @update:modelValue="$refs.users.reload()" :disabled="pagination.params().origin === 'local'">
+			<MkInput v-model="searchHost" style="flex: 1;" type="text" spellcheck="false" @update:modelValue="$refs.users.reload()" :disabled="pagination.params().origin === 'local'">
+				<template #prefix>@</template>
 				<template #label>{{ $ts.host }}</template>
 			</MkInput>
 		</div>
@@ -67,8 +66,8 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import MkButton from '@client/components/ui/button.vue';
-import MkInput from '@client/components/ui/input.vue';
-import MkSelect from '@client/components/ui/select.vue';
+import MkInput from '@client/components/form/input.vue';
+import MkSelect from '@client/components/form/select.vue';
 import MkPagination from '@client/components/ui/pagination.vue';
 import { acct } from '@client/filters/user';
 import * as os from '@client/os';
@@ -90,10 +89,27 @@ export default defineComponent({
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.users,
 				icon: 'fas fa-users',
-				action: {
+				bg: 'var(--bg)',
+			},
+			header: {
+				title: this.$ts.users,
+				icon: 'fas fa-users',
+				bg: 'var(--bg)',
+				actions: [{
 					icon: 'fas fa-search',
+					text: this.$ts.search,
 					handler: this.searchUser
-				}
+				}, {
+					asFullButton: true,
+					icon: 'fas fa-plus',
+					text: this.$ts.addUser,
+					handler: this.addUser
+				}, {
+					asFullButton: true,
+					icon: 'fas fa-search',
+					text: this.$ts.lookup,
+					handler: this.lookupUser
+				}]
 			},
 			sort: '+createdAt',
 			state: 'all',
@@ -172,12 +188,21 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .lknzcolw {
-	> .actions {
-		margin: var(--margin);
-	}
-
 	> .users {
 		margin: var(--margin);
+
+		> .inputs {
+			display: flex;
+			margin-bottom: 16px;
+
+			> * {
+				margin-right: 16px;
+
+				&:last-child {
+					margin-right: 0;
+				}
+			}
+		}
 	
 		> .users {
 			margin-top: var(--margin);

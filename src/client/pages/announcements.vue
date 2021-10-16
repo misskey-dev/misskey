@@ -1,17 +1,20 @@
 <template>
-<div class="_section">
-	<MkPagination :pagination="pagination" #default="{items}" class="ruryvtyk _content">
-		<section class="_card announcement _gap" v-for="(announcement, i) in items" :key="announcement.id">
-			<div class="_title"><span v-if="$i && !announcement.isRead">🆕 </span>{{ announcement.title }}</div>
-			<div class="_content">
-				<Mfm :text="announcement.text"/>
-				<img v-if="announcement.imageUrl" :src="announcement.imageUrl"/>
-			</div>
-			<div class="_footer" v-if="$i && !announcement.isRead">
-				<MkButton @click="read(items, announcement, i)" primary><i class="fas fa-check"></i> {{ $ts.gotIt }}</MkButton>
-			</div>
-		</section>
-	</MkPagination>
+<div>
+	<MkHeader :info="header"/>
+	<div class="_section">
+		<MkPagination :pagination="pagination" #default="{items}" class="ruryvtyk _content">
+			<section class="_card announcement _gap" v-for="(announcement, i) in items" :key="announcement.id">
+				<div class="_title"><span v-if="$i && !announcement.isRead">🆕 </span>{{ announcement.title }}</div>
+				<div class="_content">
+					<Mfm :text="announcement.text"/>
+					<img v-if="announcement.imageUrl" :src="announcement.imageUrl"/>
+				</div>
+				<div class="_footer" v-if="$i && !announcement.isRead">
+					<MkButton @click="read(items, announcement, i)" primary><i class="fas fa-check"></i> {{ $ts.gotIt }}</MkButton>
+				</div>
+			</section>
+		</MkPagination>
+	</div>
 </div>
 </template>
 
@@ -32,7 +35,13 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.announcements,
-				icon: 'fas fa-broadcast-tower'
+				icon: 'fas fa-broadcast-tower',
+				bg: 'var(--bg)',
+			},
+			header: {
+				title: this.$ts.announcements,
+				icon: 'fas fa-broadcast-tower',
+				bg: 'var(--bg)',
 			},
 			pagination: {
 				endpoint: 'announcements',

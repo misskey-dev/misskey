@@ -1,6 +1,6 @@
 <template>
-<div class="mk-app" :class="{ wallpaper, isMobile }">
-	<XHeaderMenu v-if="showMenuOnTop"/>
+<div class="mk-app" :class="{ wallpaper, isMobile }" :style="`--globalHeaderHeight:${globalHeaderHeight}px`">
+	<XHeaderMenu v-if="showMenuOnTop" v-get-size="(w, h) => globalHeaderHeight = h"/>
 
 	<div class="columns" :class="{ fullView, withGlobalHeader: showMenuOnTop }">
 		<template v-if="!isMobile">
@@ -13,10 +13,7 @@
 		</template>
 
 		<main class="main" @contextmenu.stop="onContextmenu" :style="{ background: pageInfo?.bg }">
-			<header class="header" @click="onHeaderClick">
-				<XHeader :info="pageInfo" :back-button="true" @back="back()"/>
-			</header>
-			<div class="content" :class="{ _flat_: !fullView }">
+			<div class="content" :class="{ _fitSide_: !fullView }">
 				<router-view v-slot="{ Component }">
 					<transition :name="$store.state.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
 						<keep-alive :include="['timeline']">
@@ -67,7 +64,6 @@ import { StickySidebar } from '@client/scripts/sticky-sidebar';
 import XSidebar from './default.sidebar.vue';
 import XDrawerSidebar from '@client/ui/_common_/sidebar.vue';
 import XCommon from './_common_/common.vue';
-import XHeader from './_common_/header.vue';
 import * as os from '@client/os';
 import { menuDef } from '@client/menu';
 import * as symbols from '@client/symbols';
@@ -80,15 +76,21 @@ export default defineComponent({
 		XCommon,
 		XSidebar,
 		XDrawerSidebar,
-		XHeader,
 		XHeaderMenu: defineAsyncComponent(() => import('./default.header.vue')),
 		XWidgets: defineAsyncComponent(() => import('./default.widgets.vue')),
+	},
+
+	provide() {
+		return {
+			shouldHeaderThin: this.showMenuOnTop,
+		};
 	},
 
 	data() {
 		return {
 			pageInfo: null,
 			menuDef: menuDef,
+			globalHeaderHeight: 0,
 			isMobile: window.innerWidth <= MOBILE_THRESHOLD,
 			isDesktop: window.innerWidth >= DESKTOP_THRESHOLD,
 			widgetsShowing: false,
@@ -193,10 +195,6 @@ export default defineComponent({
 			if (window._scroll) window._scroll();
 		},
 
-		onHeaderClick() {
-			window.scroll({ top: 0, behavior: 'smooth' });
-		},
-
 		onContextmenu(e) {
 			const isLink = (el: HTMLElement) => {
 				if (el.tagName === 'A') return true;
@@ -257,7 +255,6 @@ export default defineComponent({
 }
 
 .mk-app {
-	$header-height: 50px;
 	$ui-font-size: 1em;
 	$widgets-hide-threshold: 1200px;
 	$nav-icon-only-width: 78px; // TODO: どこかに集約したい
@@ -282,10 +279,6 @@ export default defineComponent({
 				border: none;
 				width: 100%;
 				border-radius: 0;
-
-				> .header {
-					width: 100%;
-				}
 			}
 		}
 	}
@@ -325,30 +318,6 @@ export default defineComponent({
 			border-radius: 0;
 			overflow: clip;
 			--margin: 12px;
-
-			> .header {
-				position: sticky;
-				z-index: 1000;
-				top: var(--globalHeaderHeight, 0px);
-				height: $header-height;
-				-webkit-backdrop-filter: var(--blur, blur(32px));
-				backdrop-filter: var(--blur, blur(32px));
-				background-color: var(--header);
-				border-bottom: solid 0.5px var(--divider);
-			}
-
-			> .content {
-				--stickyTop: calc(var(--globalHeaderHeight, 0px) + #{$header-height});
-			}
-
-			@media (max-width: 850px) {
-				padding-top: $header-height;
-
-				> .header {
-					position: fixed;
-					width: calc(100% - #{$nav-icon-only-width});
-				}
-			}
 		}
 
 		> .widgets {
@@ -370,12 +339,11 @@ export default defineComponent({
 		}
 
 		&.withGlobalHeader {
-			--globalHeaderHeight: 60px; // TODO: 60pxと決め打ちしているのを直す
-
 			> .main {
 				margin-top: 0;
 				border: solid 1px var(--divider);
 				border-radius: var(--radius);
+				--stickyTop: var(--globalHeaderHeight);
 			}
 
 			> .widgets {

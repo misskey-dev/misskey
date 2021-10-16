@@ -1,5 +1,5 @@
 <template>
-<div class="rrevdjwt" :class="{ left: align === 'left', pointer: point === 'top' }"
+<div class="rrevdjwt" :class="{ center: align === 'center' }"
 	ref="items"
 	@contextmenu.self="e => e.preventDefault()"
 	v-hotkey="keymap"
@@ -27,7 +27,7 @@
 			<MkAvatar :user="item.user" class="avatar"/><MkUserName :user="item.user"/>
 			<span v-if="item.indicate" class="indicator"><i class="fas fa-circle"></i></span>
 		</button>
-		<button v-else @click="clicked(item.action, $event)" :tabindex="i" class="_button item" :class="{ danger: item.danger }">
+		<button v-else @click="clicked(item.action, $event)" :tabindex="i" class="_button item" :class="{ danger: item.danger, active: item.active }" :disabled="item.active">
 			<i v-if="item.icon" class="fa-fw" :class="item.icon"></i>
 			<MkAvatar v-if="item.avatar" :user="item.avatar" class="avatar"/>
 			<span>{{ item.text }}</span>
@@ -56,10 +56,6 @@ export default defineComponent({
 			required: false
 		},
 		align: {
-			type: String,
-			requried: false
-		},
-		point: {
 			type: String,
 			requried: false
 		},
@@ -145,68 +141,83 @@ export default defineComponent({
 <style lang="scss" scoped>
 .rrevdjwt {
 	padding: 8px 0;
+	min-width: 200px;
 
-	&.pointer {
-		&:before {
-			--size: 8px;
-			content: '';
-			display: block;
-			position: absolute;
-			top: calc(0px - (var(--size) * 2));
-			left: 0;
-			right: 0;
-			width: 0;
-			margin: auto;
-			border: solid var(--size) transparent;
-			border-bottom-color: var(--popup);
-		}
-	}
-
-	&.left {
+	&.center {
 		> .item {
-			text-align: left;
+			text-align: center;
 		}
 	}
 
 	> .item {
 		display: block;
 		position: relative;
-		padding: 8px 16px;
+		padding: 8px 18px;
 		width: 100%;
 		box-sizing: border-box;
 		white-space: nowrap;
 		font-size: 0.9em;
 		line-height: 20px;
-		text-align: center;
+		text-align: left;
 		overflow: hidden;
 		text-overflow: ellipsis;
+
+		&:before {
+			content: "";
+			display: block;
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			margin: auto;
+			width: calc(100% - 16px);
+			height: 100%;
+			border-radius: 6px;
+		}
+
+		> * {
+			position: relative;
+		}
 
 		&.danger {
 			color: #ff2a2a;
 
 			&:hover {
 				color: #fff;
-				background: #ff4242;
+
+				&:before {
+					background: #ff4242;
+				}
 			}
 
 			&:active {
 				color: #fff;
-				background: #d42e2e;
+
+				&:before {
+					background: #d42e2e;
+				}
 			}
 		}
 
-		&:hover {
+		&.active {
 			color: var(--fgOnAccent);
-			background: var(--accent);
+			opacity: 1;
+
+			&:before {
+				background: var(--accent);
+			}
+		}
+
+		&:not(:disabled):hover {
+			color: var(--accent);
 			text-decoration: none;
+
+			&:before {
+				background: var(--accentedBg);
+			}
 		}
 
-		&:active {
-			color: var(--fgOnAccent);
-			background: var(--accentDarken);
-		}
-
-		&:not(:active):focus {
+		&:not(:active):focus-visible {
 			box-shadow: 0 0 0 2px var(--focus) inset;
 		}
 
@@ -231,12 +242,12 @@ export default defineComponent({
 		}
 
 		> i {
-			margin-right: 4px;
+			margin-right: 5px;
 			width: 20px;
 		}
 
 		> .avatar {
-			margin-right: 4px;
+			margin-right: 5px;
 			width: 20px;
 			height: 20px;
 		}

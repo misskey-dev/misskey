@@ -16,14 +16,14 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import FormKeyValueView from '@client/components/form/key-value-view.vue';
-import FormInput from '@client/components/form/input.vue';
-import FormButton from '@client/components/form/button.vue';
-import FormBase from '@client/components/form/base.vue';
-import FormGroup from '@client/components/form/group.vue';
-import FormTextarea from '@client/components/form/textarea.vue';
-import FormInfo from '@client/components/form/info.vue';
-import FormSuspense from '@client/components/form/suspense.vue';
+import FormKeyValueView from '@client/components/debobigego/key-value-view.vue';
+import FormInput from '@client/components/debobigego/input.vue';
+import FormButton from '@client/components/debobigego/button.vue';
+import FormBase from '@client/components/debobigego/base.vue';
+import FormGroup from '@client/components/debobigego/group.vue';
+import FormTextarea from '@client/components/debobigego/textarea.vue';
+import FormInfo from '@client/components/debobigego/info.vue';
+import FormSuspense from '@client/components/debobigego/suspense.vue';
 import * as os from '@client/os';
 import * as symbols from '@client/symbols';
 import { fetchInstance } from '@client/instance';
@@ -46,7 +46,8 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.proxyAccount,
-				icon: 'fas fa-ghost'
+				icon: 'fas fa-ghost',
+				bg: 'var(--bg)',
 			},
 			proxyAccount: null,
 			proxyAccountId: null,

@@ -2,10 +2,10 @@
 <FormBase>
 	<FormGroup>
 		<template #label>{{ $ts.defaultNavigationBehaviour }}</template>
-		<FormSwitch v-model:value="navWindow">{{ $ts.openInWindow }}</FormSwitch>
+		<FormSwitch v-model="navWindow">{{ $ts.openInWindow }}</FormSwitch>
 	</FormGroup>
 
-	<FormSwitch v-model:value="alwaysShowMainColumn">{{ $ts._deck.alwaysShowMainColumn }}</FormSwitch>
+	<FormSwitch v-model="alwaysShowMainColumn">{{ $ts._deck.alwaysShowMainColumn }}</FormSwitch>
 
 	<FormRadios v-model="columnAlign">
 		<template #desc>{{ $ts._deck.columnAlign }}</template>
@@ -20,7 +20,7 @@
 		<option :value="48">{{ $ts.wide }}</option>
 	</FormRadios>
 
-	<FormInput v-model:value="columnMargin" type="number">
+	<FormInput v-model="columnMargin" type="number">
 		<span>{{ $ts._deck.columnMargin }}</span>
 		<template #suffix>px</template>
 	</FormInput>
@@ -31,12 +31,12 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import FormSwitch from '@client/components/form/switch.vue';
-import FormLink from '@client/components/form/link.vue';
-import FormRadios from '@client/components/form/radios.vue';
-import FormInput from '@client/components/form/input.vue';
-import FormBase from '@client/components/form/base.vue';
-import FormGroup from '@client/components/form/group.vue';
+import FormSwitch from '@client/components/debobigego/switch.vue';
+import FormLink from '@client/components/debobigego/link.vue';
+import FormRadios from '@client/components/debobigego/radios.vue';
+import FormInput from '@client/components/debobigego/input.vue';
+import FormBase from '@client/components/debobigego/base.vue';
+import FormGroup from '@client/components/debobigego/group.vue';
 import { deckStore } from '@client/ui/deck/deck-store';
 import * as os from '@client/os';
 import { unisonReload } from '@client/scripts/unison-reload';
@@ -58,7 +58,8 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.deck,
-				icon: 'fas fa-columns'
+				icon: 'fas fa-columns',
+				bg: 'var(--bg)',
 			},
 		}
 	},

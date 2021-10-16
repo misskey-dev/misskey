@@ -1,17 +1,17 @@
 <template>
 <form class="eppvobhk _monolithic_" :class="{ signing, totpLogin }" @submit.prevent="onSubmit">
-	<div class="auth _section">
+	<div class="auth _section _formRoot">
 		<div class="avatar" :style="{ backgroundImage: user ? `url('${ user.avatarUrl }')` : null }" v-show="withAvatar"></div>
 		<div class="normal-signin" v-if="!totpLogin">
-			<MkInput v-model="username" :placeholder="$ts.username" type="text" pattern="^[a-zA-Z0-9_]+$" spellcheck="false" autofocus required @update:modelValue="onUsernameChange" data-cy-signin-username>
+			<MkInput class="_formBlock" v-model="username" :placeholder="$ts.username" type="text" pattern="^[a-zA-Z0-9_]+$" spellcheck="false" autofocus required @update:modelValue="onUsernameChange" data-cy-signin-username>
 				<template #prefix>@</template>
 				<template #suffix>@{{ host }}</template>
 			</MkInput>
-			<MkInput v-model="password" :placeholder="$ts.password" type="password" :with-password-toggle="true" v-if="!user || user && !user.usePasswordLessLogin" required data-cy-signin-password>
+			<MkInput class="_formBlock" v-model="password" :placeholder="$ts.password" type="password" :with-password-toggle="true" v-if="!user || user && !user.usePasswordLessLogin" required data-cy-signin-password>
 				<template #prefix><i class="fas fa-lock"></i></template>
 				<template #caption><button class="_textButton" @click="resetPassword" type="button">{{ $ts.forgotPassword }}</button></template>
 			</MkInput>
-			<MkButton type="submit" primary :disabled="signing" style="margin: 0 auto;">{{ signing ? $ts.loggingIn : $ts.login }}</MkButton>
+			<MkButton class="_formBlock" type="submit" primary :disabled="signing" style="margin: 0 auto;">{{ signing ? $ts.loggingIn : $ts.login }}</MkButton>
 		</div>
 		<div class="2fa-signin" v-if="totpLogin" :class="{ securityKeys: user && user.securityKeys }">
 			<div v-if="user && user.securityKeys" class="twofa-group tap-group">
@@ -49,7 +49,7 @@
 import { defineComponent } from 'vue';
 import { toUnicode } from 'punycode/';
 import MkButton from '@client/components/ui/button.vue';
-import MkInput from '@client/components/ui/input.vue';
+import MkInput from '@client/components/form/input.vue';
 import { apiUrl, host } from '@client/config';
 import { byteify, hexify } from '@client/scripts/2fa';
 import * as os from '@client/os';

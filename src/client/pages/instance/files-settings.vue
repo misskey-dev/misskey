@@ -1,23 +1,23 @@
 <template>
 <FormBase>
 	<FormSuspense :p="init">
-		<FormSwitch v-model:value="cacheRemoteFiles">
+		<FormSwitch v-model="cacheRemoteFiles">
 			{{ $ts.cacheRemoteFiles }}
 			<template #desc>{{ $ts.cacheRemoteFilesDescription }}</template>
 		</FormSwitch>
 
-		<FormSwitch v-model:value="proxyRemoteFiles">
+		<FormSwitch v-model="proxyRemoteFiles">
 			{{ $ts.proxyRemoteFiles }}
 			<template #desc>{{ $ts.proxyRemoteFilesDescription }}</template>
 		</FormSwitch>
 
-		<FormInput v-model:value="localDriveCapacityMb" type="number">
+		<FormInput v-model="localDriveCapacityMb" type="number">
 			<span>{{ $ts.driveCapacityPerLocalAccount }}</span>
 			<template #suffix>MB</template>
 			<template #desc>{{ $ts.inMb }}</template>
 		</FormInput>
 
-		<FormInput v-model:value="remoteDriveCapacityMb" type="number" :disabled="!cacheRemoteFiles">
+		<FormInput v-model="remoteDriveCapacityMb" type="number" :disabled="!cacheRemoteFiles">
 			<span>{{ $ts.driveCapacityPerRemoteAccount }}</span>
 			<template #suffix>MB</template>
 			<template #desc>{{ $ts.inMb }}</template>
@@ -30,12 +30,12 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import FormSwitch from '@client/components/form/switch.vue';
-import FormInput from '@client/components/form/input.vue';
-import FormButton from '@client/components/form/button.vue';
-import FormBase from '@client/components/form/base.vue';
-import FormGroup from '@client/components/form/group.vue';
-import FormSuspense from '@client/components/form/suspense.vue';
+import FormSwitch from '@client/components/debobigego/switch.vue';
+import FormInput from '@client/components/debobigego/input.vue';
+import FormButton from '@client/components/debobigego/button.vue';
+import FormBase from '@client/components/debobigego/base.vue';
+import FormGroup from '@client/components/debobigego/group.vue';
+import FormSuspense from '@client/components/debobigego/suspense.vue';
 import * as os from '@client/os';
 import * as symbols from '@client/symbols';
 import { fetchInstance } from '@client/instance';
@@ -56,7 +56,8 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.files,
-				icon: 'fas fa-cloud'
+				icon: 'fas fa-cloud',
+				bg: 'var(--bg)',
 			},
 			cacheRemoteFiles: false,
 			proxyRemoteFiles: false,

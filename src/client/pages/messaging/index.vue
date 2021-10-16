@@ -1,38 +1,42 @@
 <template>
-<div class="yweeujhr _root" v-size="{ max: [400] }">
-	<MkButton @click="start" primary class="start"><i class="fas fa-plus"></i> {{ $ts.startMessaging }}</MkButton>
+<div>
+	<MkHeader :info="header"/>
 
-	<div class="history" v-if="messages.length > 0">
-		<MkA v-for="(message, i) in messages"
-			class="message _block"
-			:class="{ isMe: isMe(message), isRead: message.groupId ? message.reads.includes($i.id) : message.isRead }"
-			:to="message.groupId ? `/my/messaging/group/${message.groupId}` : `/my/messaging/${getAcct(isMe(message) ? message.recipient : message.user)}`"
-			:data-index="i"
-			:key="message.id"
-			v-anim="i"
-		>
-			<div>
-				<MkAvatar class="avatar" :user="message.groupId ? message.user : isMe(message) ? message.recipient : message.user" :show-indicator="true"/>
-				<header v-if="message.groupId">
-					<span class="name">{{ message.group.name }}</span>
-					<MkTime :time="message.createdAt" class="time"/>
-				</header>
-				<header v-else>
-					<span class="name"><MkUserName :user="isMe(message) ? message.recipient : message.user"/></span>
-					<span class="username">@{{ acct(isMe(message) ? message.recipient : message.user) }}</span>
-					<MkTime :time="message.createdAt" class="time"/>
-				</header>
-				<div class="body">
-					<p class="text"><span class="me" v-if="isMe(message)">{{ $ts.you }}:</span>{{ message.text }}</p>
+	<div class="yweeujhr _root" v-size="{ max: [400] }">
+		<MkButton @click="start" primary class="start"><i class="fas fa-plus"></i> {{ $ts.startMessaging }}</MkButton>
+
+		<div class="history" v-if="messages.length > 0">
+			<MkA v-for="(message, i) in messages"
+				class="message _block"
+				:class="{ isMe: isMe(message), isRead: message.groupId ? message.reads.includes($i.id) : message.isRead }"
+				:to="message.groupId ? `/my/messaging/group/${message.groupId}` : `/my/messaging/${getAcct(isMe(message) ? message.recipient : message.user)}`"
+				:data-index="i"
+				:key="message.id"
+				v-anim="i"
+			>
+				<div>
+					<MkAvatar class="avatar" :user="message.groupId ? message.user : isMe(message) ? message.recipient : message.user" :show-indicator="true"/>
+					<header v-if="message.groupId">
+						<span class="name">{{ message.group.name }}</span>
+						<MkTime :time="message.createdAt" class="time"/>
+					</header>
+					<header v-else>
+						<span class="name"><MkUserName :user="isMe(message) ? message.recipient : message.user"/></span>
+						<span class="username">@{{ acct(isMe(message) ? message.recipient : message.user) }}</span>
+						<MkTime :time="message.createdAt" class="time"/>
+					</header>
+					<div class="body">
+						<p class="text"><span class="me" v-if="isMe(message)">{{ $ts.you }}:</span>{{ message.text }}</p>
+					</div>
 				</div>
-			</div>
-		</MkA>
+			</MkA>
+		</div>
+		<div class="_fullinfo" v-if="!fetching && messages.length == 0">
+			<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
+			<div>{{ $ts.noHistory }}</div>
+		</div>
+		<MkLoading v-if="fetching"/>
 	</div>
-	<div class="_fullinfo" v-if="!fetching && messages.length == 0">
-		<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
-		<div>{{ $ts.noHistory }}</div>
-	</div>
-	<MkLoading v-if="fetching"/>
 </div>
 </template>
 
@@ -53,7 +57,13 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.messaging,
-				icon: 'fas fa-comments'
+				icon: 'fas fa-comments',
+				bg: 'var(--bg)',
+			},
+			header: {
+				title: this.$ts.messaging,
+				icon: 'fas fa-comments',
+				bg: 'var(--bg)',
 			},
 			fetching: true,
 			moreFetching: false,

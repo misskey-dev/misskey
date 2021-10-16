@@ -1,7 +1,7 @@
 import * as httpSignature from 'http-signature';
 
 import config from '@/config/index';
-import { program } from '../argv';
+import { envOption } from '../env';
 
 import processDeliver from './processors/deliver';
 import processInbox from './processors/inbox';
@@ -173,7 +173,7 @@ export function createImportUserListsJob(user: ThinUser, fileId: DriveFile['id']
 	});
 }
 
-export function createDeleteAccountJob(user: ThinUser, opts: { soft?: boolean; }) {
+export function createDeleteAccountJob(user: ThinUser, opts: { soft?: boolean; } = {}) {
 	return dbQueue.add('deleteAccount', {
 		user: user,
 		soft: opts.soft
@@ -200,7 +200,7 @@ export function createCleanRemoteFilesJob() {
 }
 
 export default function() {
-	if (!program.onlyServer) {
+	if (!envOption.onlyServer) {
 		deliverQueue.process(config.deliverJobConcurrency || 128, processDeliver);
 		inboxQueue.process(config.inboxJobConcurrency || 16, processInbox);
 		processDb(dbQueue);

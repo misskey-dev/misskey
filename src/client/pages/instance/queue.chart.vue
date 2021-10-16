@@ -1,7 +1,7 @@
 <template>
-<div class="_formItem">
-	<div class="_formLabel"><slot name="title"></slot></div>
-	<div class="_formPanel pumxzjhg">
+<div class="_debobigegoItem">
+	<div class="_debobigegoLabel"><slot name="title"></slot></div>
+	<div class="_debobigegoPanel pumxzjhg">
 		<div class="_table status">
 			<div class="_row">
 				<div class="_cell"><div class="_label">Process</div>{{ number(activeSincePrevTick) }}</div>

@@ -219,10 +219,20 @@ export function stackLeftColumn(id: Column['id']) {
 export function popRightColumn(id: Column['id']) {
 	let layout = copy(deckStore.state.layout);
 	const i = deckStore.state.layout.findIndex(ids => ids.includes(id));
+	const affected = layout[i];
 	layout = layout.map(ids => ids.filter(_id => _id !== id));
 	layout.splice(i + 1, 0, [id]);
 	layout = layout.filter(ids => ids.length > 0);
 	deckStore.set('layout', layout);
+
+	const columns = copy(deckStore.state.columns);
+	for (const column of columns) {
+		if (affected.includes(column.id)) {
+			column.active = true;
+		}
+	}
+	deckStore.set('columns', columns);
+
 	saveDeck();
 }
 

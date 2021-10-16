@@ -1,18 +1,18 @@
 <template>
 <FormBase>
 	<FormSuspense :p="init">
-		<FormSwitch v-model:value="enableServiceWorker">
+		<FormSwitch v-model="enableServiceWorker">
 			{{ $ts.enableServiceworker }}
 			<template #desc>{{ $ts.serviceworkerInfo }}</template>
 		</FormSwitch>
 
 		<template v-if="enableServiceWorker">
-			<FormInput v-model:value="swPublicKey">
+			<FormInput v-model="swPublicKey">
 				<template #prefix><i class="fas fa-key"></i></template>
 				Public key
 			</FormInput>
 
-			<FormInput v-model:value="swPrivateKey">
+			<FormInput v-model="swPrivateKey">
 				<template #prefix><i class="fas fa-key"></i></template>
 				Private key
 			</FormInput>
@@ -25,12 +25,12 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import FormSwitch from '@client/components/form/switch.vue';
-import FormInput from '@client/components/form/input.vue';
-import FormButton from '@client/components/form/button.vue';
-import FormBase from '@client/components/form/base.vue';
-import FormGroup from '@client/components/form/group.vue';
-import FormSuspense from '@client/components/form/suspense.vue';
+import FormSwitch from '@client/components/debobigego/switch.vue';
+import FormInput from '@client/components/debobigego/input.vue';
+import FormButton from '@client/components/debobigego/button.vue';
+import FormBase from '@client/components/debobigego/base.vue';
+import FormGroup from '@client/components/debobigego/group.vue';
+import FormSuspense from '@client/components/debobigego/suspense.vue';
 import * as os from '@client/os';
 import * as symbols from '@client/symbols';
 import { fetchInstance } from '@client/instance';
@@ -51,7 +51,8 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: 'ServiceWorker',
-				icon: 'fas fa-bolt'
+				icon: 'fas fa-bolt',
+				bg: 'var(--bg)',
 			},
 			enableServiceWorker: false,
 			swPublicKey: null,

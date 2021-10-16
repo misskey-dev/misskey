@@ -14,23 +14,23 @@
 	</template>
 	<FormBase class="xkpnjxcv">
 		<template v-for="item in Object.keys(form).filter(item => !form[item].hidden)">
-			<FormInput v-if="form[item].type === 'number'" v-model:value="values[item]" type="number" :step="form[item].step || 1">
+			<FormInput v-if="form[item].type === 'number'" v-model="values[item]" type="number" :step="form[item].step || 1">
 				<span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span>
 				<template v-if="form[item].description" #desc>{{ form[item].description }}</template>
 			</FormInput>
-			<FormInput v-else-if="form[item].type === 'string' && !form[item].multiline" v-model:value="values[item]" type="text">
+			<FormInput v-else-if="form[item].type === 'string' && !form[item].multiline" v-model="values[item]" type="text">
 				<span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span>
 				<template v-if="form[item].description" #desc>{{ form[item].description }}</template>
 			</FormInput>
-			<FormTextarea v-else-if="form[item].type === 'string' && form[item].multiline" v-model:value="values[item]">
+			<FormTextarea v-else-if="form[item].type === 'string' && form[item].multiline" v-model="values[item]">
 				<span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span>
 				<template v-if="form[item].description" #desc>{{ form[item].description }}</template>
 			</FormTextarea>
-			<FormSwitch v-else-if="form[item].type === 'boolean'" v-model:value="values[item]">
+			<FormSwitch v-else-if="form[item].type === 'boolean'" v-model="values[item]">
 				<span v-text="form[item].label || item"></span>
 				<template v-if="form[item].description" #desc>{{ form[item].description }}</template>
 			</FormSwitch>
-			<FormSelect v-else-if="form[item].type === 'enum'" v-model:value="values[item]">
+			<FormSelect v-else-if="form[item].type === 'enum'" v-model="values[item]">
 				<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
 				<option v-for="item in form[item].enum" :value="item.value" :key="item.value">{{ item.label }}</option>
 			</FormSelect>
@@ -38,7 +38,7 @@
 				<template #desc><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
 				<option v-for="item in form[item].options" :value="item.value" :key="item.value">{{ item.label }}</option>
 			</FormRadios>
-			<FormRange v-else-if="form[item].type === 'range'" v-model:value="values[item]" :min="form[item].mim" :max="form[item].max" :step="form[item].step">
+			<FormRange v-else-if="form[item].type === 'range'" v-model="values[item]" :min="form[item].mim" :max="form[item].max" :step="form[item].step">
 				<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
 				<template v-if="form[item].description" #desc>{{ form[item].description }}</template>
 			</FormRange>
@@ -53,14 +53,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import XModalWindow from '@client/components/ui/modal-window.vue';
-import FormBase from './form/base.vue';
-import FormInput from './form/input.vue';
-import FormTextarea from './form/textarea.vue';
-import FormSwitch from './form/switch.vue';
-import FormSelect from './form/select.vue';
-import FormRange from './form/range.vue';
-import FormButton from './form/button.vue';
-import FormRadios from './form/radios.vue';
+import FormBase from './debobigego/base.vue';
+import FormInput from './debobigego/input.vue';
+import FormTextarea from './debobigego/textarea.vue';
+import FormSwitch from './debobigego/switch.vue';
+import FormSelect from './debobigego/select.vue';
+import FormRange from './debobigego/range.vue';
+import FormButton from './debobigego/button.vue';
+import FormRadios from './debobigego/radios.vue';
 
 export default defineComponent({
 	components: {

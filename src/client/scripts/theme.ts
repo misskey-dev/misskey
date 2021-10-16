@@ -1,3 +1,4 @@
+import { globalEvents } from '@client/events';
 import * as tinycolor from 'tinycolor2';
 
 export type Theme = {
@@ -24,6 +25,7 @@ export const builtinThemes = [
 	require('@client/themes/d-persimmon.json5'),
 	require('@client/themes/d-astro.json5'),
 	require('@client/themes/d-future.json5'),
+	require('@client/themes/d-botanical.json5'),
 	require('@client/themes/d-black.json5'),
 
 	require('@client/themes/n-light.json5'),
@@ -65,6 +67,9 @@ export function applyTheme(theme: Theme, persist = true) {
 	if (persist) {
 		localStorage.setItem('theme', JSON.stringify(props));
 	}
+
+	// 色計算など再度行えるようにクライアント全体に通知
+	globalEvents.emit('themeChanged');
 }
 
 function compile(theme: Theme): Record<string, string> {
@@ -90,6 +95,8 @@ function compile(theme: Theme): Record<string, string> {
 				case 'darken': return color.darken(arg);
 				case 'lighten': return color.lighten(arg);
 				case 'alpha': return color.setAlpha(arg);
+				case 'hue': return color.spin(arg);
+				case 'saturate': return color.saturate(arg);
 			}
 		}
 

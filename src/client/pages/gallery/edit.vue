@@ -1,23 +1,23 @@
 <template>
 <FormBase>
 	<FormSuspense :p="init">
-		<FormInput v-model:value="title">
+		<FormInput v-model="title">
 			<span>{{ $ts.title }}</span>
 		</FormInput>
 
-		<FormTextarea v-model:value="description" :max="500">
+		<FormTextarea v-model="description" :max="500">
 			<span>{{ $ts.description }}</span>
 		</FormTextarea>
 
 		<FormGroup>
-			<div v-for="file in files" :key="file.id" class="_formItem _formPanel wqugxsfx" :style="{ backgroundImage: file ? `url(${ file.thumbnailUrl })` : null }">
+			<div v-for="file in files" :key="file.id" class="_debobigegoItem _debobigegoPanel wqugxsfx" :style="{ backgroundImage: file ? `url(${ file.thumbnailUrl })` : null }">
 				<div class="name">{{ file.name }}</div>
 				<button class="remove _button" @click="remove(file)" v-tooltip="$ts.remove"><i class="fas fa-times"></i></button>
 			</div>
 			<FormButton @click="selectFile" primary><i class="fas fa-plus"></i> {{ $ts.attachFile }}</FormButton>
 		</FormGroup>
 
-		<FormSwitch v-model:value="isSensitive">{{ $ts.markAsSensitive }}</FormSwitch>
+		<FormSwitch v-model="isSensitive">{{ $ts.markAsSensitive }}</FormSwitch>
 
 		<FormButton v-if="postId" @click="save" primary><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
 		<FormButton v-else @click="save" primary><i class="fas fa-save"></i> {{ $ts.publish }}</FormButton>
@@ -29,14 +29,14 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
-import FormButton from '@client/components/form/button.vue';
-import FormInput from '@client/components/form/input.vue';
-import FormTextarea from '@client/components/form/textarea.vue';
-import FormSwitch from '@client/components/form/switch.vue';
-import FormTuple from '@client/components/form/tuple.vue';
-import FormBase from '@client/components/form/base.vue';
-import FormGroup from '@client/components/form/group.vue';
-import FormSuspense from '@client/components/form/suspense.vue';
+import FormButton from '@client/components/debobigego/button.vue';
+import FormInput from '@client/components/debobigego/input.vue';
+import FormTextarea from '@client/components/debobigego/textarea.vue';
+import FormSwitch from '@client/components/debobigego/switch.vue';
+import FormTuple from '@client/components/debobigego/tuple.vue';
+import FormBase from '@client/components/debobigego/base.vue';
+import FormGroup from '@client/components/debobigego/group.vue';
+import FormSuspense from '@client/components/debobigego/suspense.vue';
 import { selectFile } from '@client/scripts/select-file';
 import * as os from '@client/os';
 import * as symbols from '@client/symbols';

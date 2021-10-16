@@ -1,5 +1,5 @@
 <template>
-<div class="wthhikgt _formItem" v-size="{ max: [500] }">
+<div class="wthhikgt _debobigegoItem" v-size="{ max: [500] }">
 	<slot></slot>
 </div>
 </template>

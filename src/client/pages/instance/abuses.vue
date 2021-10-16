@@ -24,10 +24,10 @@
 			</div>
 			<!-- TODO
 			<div class="inputs" style="display: flex; padding-top: 1.2em;">
-				<MkInput v-model:value="searchUsername" style="margin: 0; flex: 1;" type="text" spellcheck="false" @update:value="$refs.reports.reload()">
+				<MkInput v-model="searchUsername" style="margin: 0; flex: 1;" type="text" spellcheck="false" @update:modelValue="$refs.reports.reload()">
 					<span>{{ $ts.username }}</span>
 				</MkInput>
-				<MkInput v-model:value="searchHost" style="margin: 0; flex: 1;" type="text" spellcheck="false" @update:value="$refs.reports.reload()" :disabled="pagination.params().origin === 'local'">
+				<MkInput v-model="searchHost" style="margin: 0; flex: 1;" type="text" spellcheck="false" @update:modelValue="$refs.reports.reload()" :disabled="pagination.params().origin === 'local'">
 					<span>{{ $ts.host }}</span>
 				</MkInput>
 			</div>
@@ -65,8 +65,8 @@
 import { defineComponent } from 'vue';
 import { parseAcct } from '@/misc/acct';
 import MkButton from '@client/components/ui/button.vue';
-import MkInput from '@client/components/ui/input.vue';
-import MkSelect from '@client/components/ui/select.vue';
+import MkInput from '@client/components/form/input.vue';
+import MkSelect from '@client/components/form/select.vue';
 import MkPagination from '@client/components/ui/pagination.vue';
 import { acct } from '@client/filters/user';
 import * as os from '@client/os';
@@ -86,7 +86,8 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.abuseReports,
-				icon: 'fas fa-exclamation-circle'
+				icon: 'fas fa-exclamation-circle',
+				bg: 'var(--bg)',
 			},
 			searchUsername: '',
 			searchHost: '',
