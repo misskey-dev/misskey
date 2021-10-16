@@ -23,7 +23,7 @@ npm i misskey-js
 ```
 
 # Usage
-インポートは以下のようにまとめて行えます。
+インポートは以下のようにまとめて行うと便利です。
 
 ``` ts
 import * as Misskey from 'misskey-js';
@@ -31,8 +31,11 @@ import * as Misskey from 'misskey-js';
 
 便宜上、以後のコード例は上記のように`* as Misskey`としてインポートしている前提のものになります。
 
-まとめてインポートを行うとTree-Shakingできなくなるので、適宜変更をおすすめします。
+ただし、このインポート方法だとTree-Shakingできなくなるので、コードサイズが重要なユースケースでは以下のような個別インポートをお勧めします。
 
+``` ts
+import { api as misskeyApi } from 'misskey-js';
+```
 
 ## Authenticate
 todo
