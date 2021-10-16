@@ -8,7 +8,7 @@ Nom du protocole (procédé technique) utilisé par Misskey pour pouvoir fonctio
 Langage de programmation qui peut être utilisé sur Misskey. [Voir ici pour plus d'informations.](../advanced/aiscript)
 
 ## API
-(読み: えーぴーあい) Misskeyのサーバーが公開している、プログラムからMisskeyを扱うためのインターフェース。[Voir ici pour plus d'informations. ](../advanced/api)
+Interface pour permettre à un programme d'utiliser Misskey, disponible publiquement sur le serveur de Misskey. [Voir ici pour plus d'informations. ](../advanced/api)
 
 ## Bot
 Anglicisme désignant un compte géré par un programme informatique (vous le trouverez parfois aussi sous le terme de « robot »).
