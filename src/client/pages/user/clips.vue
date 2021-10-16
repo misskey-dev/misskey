@@ -12,7 +12,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import MkPagination from '@client/components/ui/pagination.vue';
-import { userPage, acct } from '@client/filters/user';
 
 export default defineComponent({
 	components: {
@@ -43,12 +42,6 @@ export default defineComponent({
 			this.$refs.list.reload();
 		}
 	},
-
-	methods: {
-		userPage,
-		
-		acct
-	}
 });
 </script>
 
