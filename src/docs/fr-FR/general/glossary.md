@@ -83,7 +83,7 @@ Utilisateur·rice·s chargé·e·s de gérer la communauté d'une instance, ayan
 Désigne les autres instances que celle où vous êtes inscrit·e. Peut aussi être utilisé pour qualifier d'autres mots, comme « utilisateur·rice·s distant·e·s ». C'est le contraire de « local ».
 
 ## Fédération
-サーバー上で作成された情報が他のサーバーに伝わること。
+Désigne le fait de partager les informations publiées sur un serveur avec les autres serveurs du réseau.
 
 ## Local
-Désigne l'instance où vous êtes inscrit·e. Peut aussi être utilisé pour qualifier d'autres mots, comme « utilisateur·rice·s locaux·cales » ou « fil local ». リモートの逆です。
+Désigne l'instance où vous êtes inscrit·e. Peut aussi être utilisé pour qualifier d'autres mots, comme « utilisateur·rice·s locaux·cales » ou « fil local ». C'est le contraire de « distant ».
