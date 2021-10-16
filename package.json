@@ -127,7 +127,7 @@
 		"crc-32": "1.2.0",
 		"css-loader": "6.4.0",
 		"cssnano": "5.0.8",
-		"dateformat": "4.5.1",
+		"dateformat": "5.0.1",
 		"escape-regexp": "0.0.1",
 		"eslint": "8.0.1",
 		"eslint-plugin-vue": "7.19.1",
