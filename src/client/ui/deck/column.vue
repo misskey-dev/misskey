@@ -37,6 +37,11 @@ import { updateColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownCo
 import { deckStore } from './deck-store';
 
 export default defineComponent({
+	provide: {
+		shouldHeaderThin: true,
+		shouldOmitHeaderTitle: true,
+	},
+
 	props: {
 		column: {
 			type: Object,
@@ -267,6 +272,7 @@ export default defineComponent({
 	height: 100%;
 	overflow: hidden;
 	contain: content;
+	box-shadow: 0 0 8px 0 var(--shadow);
 
 	&.draghover {
 		box-shadow: 0 0 0 2px var(--focus);
@@ -320,15 +326,6 @@ export default defineComponent({
 
 	&.paged {
 		background: var(--bg) !important;
-		
-		> header {
-			background: transparent;
-			box-shadow: none;
-
-			> button {
-				color: var(--fg);
-			}
-		}
 	}
 
 	> header {
@@ -365,7 +362,7 @@ export default defineComponent({
 		}
 
 		> .toggleActive,
-		> .action > *,
+		> .action > ::v-deep(*),
 		> .menu {
 			z-index: 1;
 			width: var(--deckColumnHeaderHeight);

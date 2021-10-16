@@ -188,11 +188,11 @@ export default defineComponent({
 		background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
 
 		&:not(:disabled):hover {
-			background: var(--X8);
+			background: linear-gradient(90deg, var(--X8), var(--X8));
 		}
 
 		&:not(:disabled):active {
-			background: var(--X8);
+			background: linear-gradient(90deg, var(--X8), var(--X8));
 		}
 	}
 
