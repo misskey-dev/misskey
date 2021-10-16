@@ -209,7 +209,17 @@ export default defineComponent({
 		text-align: center;
 
 		> .titleContainer {
+			flex: 1;
 			margin: 0 auto;
+			margin-left: var(--height);
+
+			> *:first-child {
+				margin-left: auto;
+			}
+
+			> *:last-child {
+				margin-right: auto;
+			}
 		}
 	}
 
