@@ -797,6 +797,8 @@ unread: "Unread"
 filter: "Filter"
 controllPanel: "Control Panel"
 manageAccounts: "Manage Accounts"
+makeReactionsPublic: "Set reaction history to public"
+makeReactionsPublicDescription: "This will make the list of all your past reactions publicly visible."
 _signup:
   almostThere: "Almost there"
   emailAddressInfo: "Please enter your email address."
