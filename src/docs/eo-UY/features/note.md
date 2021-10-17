@@ -51,4 +51,4 @@ Viaj notoj estos senditaj nur al viaj sekvantoj.La noto aperos sur ĉiuj templin
 ノートをピン留めすると、ユーザーページに常にそのノートを表示しておくことができます。 ノートのメニューを開き、「ピン留め」を選択してピン留めできます。 複数のノートをピン留めできます。
 
 ## Observi
-Vi povas ricevi sciigojn pri reagoj, respondoj, k.t.p al tiu noto kiu ne apartenas al vi. Por komenci tion elektu la "Observi" el la menuo kunteksta de la notoj respektivaj.
+Per la funkcio Observi vi povas ricevi novajn sciigojn pri reagoj, respondoj, k.t.p al tiu noto kiu ne apartenas al vi. Por observi noton elektu la "Observi" el la menuo kunteksta de la noto respektiva.
