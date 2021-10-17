@@ -1,9 +1,10 @@
 import $ from 'cafy';
 import { ID } from '@/misc/cafy-id';
 import define from '../../define';
-import { NoteReactions } from '@/models/index';
+import { NoteReactions, UserProfiles } from '@/models/index';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query';
+import { ApiError } from '../../error';
 
 export const meta = {
 	tags: ['users', 'reactions'],
@@ -48,10 +49,21 @@ export const meta = {
 	},
 
 	errors: {
+		reactionsNotPublic: {
+			message: 'Reactions of the user is not public.',
+			code: 'REACTIONS_NOT_PUBLIC',
+			id: '673a7dd2-6924-1093-e0c0-e68456ceae5c'
+		},
 	}
 };
 
 export default define(meta, async (ps, me) => {
+	const profile = await UserProfiles.findOneOrFail(ps.userId);
+
+	if (me == null || (me.id !== ps.userId && !profile.publicReactions)) {
+		throw new ApiError(meta.errors.reactionsNotPublic);
+	}
+
 	const query = makePaginationQuery(NoteReactions.createQueryBuilder('reaction'),
 			ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
 		.andWhere(`reaction.userId = :userId`, { userId: ps.userId })

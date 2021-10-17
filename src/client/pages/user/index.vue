@@ -270,12 +270,12 @@ export default defineComponent({
 					title: this.$ts.overview,
 					icon: 'fas fa-home',
 					onClick: () => { this.$router.push('/@' + getAcct(this.user)); },
-				}, {
+				}, ...(this.$i && (this.$i.id === this.user.id)) || this.user.publicReactions ? [{
 					active: this.page === 'reactions',
 					title: this.$ts.reaction,
 					icon: 'fas fa-laugh',
 					onClick: () => { this.$router.push('/@' + getAcct(this.user) + '/reactions'); },
-				}, {
+				}] : [], {
 					active: this.page === 'clips',
 					title: this.$ts.clips,
 					icon: 'fas fa-paperclip',
