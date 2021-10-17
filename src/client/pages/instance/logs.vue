@@ -2,7 +2,7 @@
 <div class="_section">
 	<div class="_inputs">
 		<MkInput v-model="logDomain" :debounce="true">
-			<template #label>{{ $ts.domain }}</template>
+			<template #label>{{ $ts._registry.domain }}</template>
 		</MkInput>
 		<MkSelect v-model="logLevel">
 			<template #label>Level</template>
@@ -95,3 +95,13 @@ export default defineComponent({
 	}
 });
 </script>
+
+<style lang="scss" scoped>
+._section {
+	margin: var(--margin);
+	
+	> .logs {
+		margin-bottom: 16px;	
+	}
+}
+</style>
