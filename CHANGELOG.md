@@ -17,6 +17,7 @@
 - API: users/search および users/search-by-username-and-host を強化
 
 ### Bugfixes
+- クライアント: テーマの管理が行えない問題を修正
 
 ## 12.92.0 (2021/10/16)
 
