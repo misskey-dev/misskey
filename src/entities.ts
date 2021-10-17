@@ -86,8 +86,12 @@ export type Note = {
 	files: DriveFile[];
 	fileIds: DriveFile['id'][];
 	visibility: 'public' | 'home' | 'followers' | 'specified';
+	visibleUserIds?: User['id'][];
+	localOnly?: boolean;
 	myReaction?: string;
 	reactions: Record<string, number>;
+	renoteCount: number;
+	repliesCount: number;
 	poll?: {
 		expiresAt: DateString | null;
 		multiple: boolean;
@@ -101,6 +105,8 @@ export type Note = {
 		name: string;
 		url: string;
 	}[];
+	uri?: string;
+	url?: string;
 };
 
 export type NoteReaction = {

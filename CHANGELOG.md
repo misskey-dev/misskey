@@ -1,5 +1,6 @@
 # 0.0.8(wip)
 - add type definition for `messagingMessage` event to main stream channel
+- Update Note type
 
 # 0.0.7
 - Notificationsの型を修正
