@@ -34,6 +34,7 @@ import { deliverToRelays } from '../relay';
 import { Channel } from '@/models/entities/channel';
 import { normalizeForSearch } from '@/misc/normalize-for-search';
 import { getAntennas } from '@/misc/antenna-cache';
+import { fnNameList } from '@/mfm/fn-name-list';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -182,10 +183,10 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 
 	// Parse MFM if needed
 	if (!tags || !emojis || !mentionedUsers) {
-		const tokens = data.text ? mfm.parse(data.text)! : [];
-		const cwTokens = data.cw ? mfm.parse(data.cw)! : [];
+		const tokens = data.text ? mfm.parse(data.text, { fnNameList })! : [];
+		const cwTokens = data.cw ? mfm.parse(data.cw, { fnNameList })! : [];
 		const choiceTokens = data.poll && data.poll.choices
-			? concat(data.poll.choices.map(choice => mfm.parse(choice)!))
+			? concat(data.poll.choices.map(choice => mfm.parse(choice, { fnNameList })!))
 			: [];
 
 		const combinedTokens = tokens.concat(cwTokens).concat(choiceTokens);
