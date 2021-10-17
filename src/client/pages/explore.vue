@@ -174,7 +174,7 @@ export default defineComponent({
 			tagsRemote: [],
 			stats: null,
 			searchQuery: null,
-			searchOrigin: 'both',
+			searchOrigin: 'combined',
 			num: number,
 		};
 	},
