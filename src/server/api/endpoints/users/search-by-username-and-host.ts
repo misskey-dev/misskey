@@ -1,6 +1,8 @@
 import $ from 'cafy';
 import define from '../../define';
 import { Users } from '@/models/index';
+import { Brackets } from 'typeorm';
+import { USER_ACTIVE_THRESHOLD } from '@/const';
 
 export const meta = {
 	tags: ['users'],
@@ -64,8 +66,11 @@ export default define(meta, async (ps, me) => {
 			.where('user.host IS NULL')
 			.andWhere('user.isSuspended = FALSE')
 			.andWhere('user.usernameLower like :username', { username: ps.username.toLowerCase() + '%' })
-			.andWhere('user.updatedAt IS NOT NULL')
-			.orderBy('user.updatedAt', 'DESC')
+			.andWhere(new Brackets(qb => { qb
+				.where('user.lastActiveDate IS NULL')
+				.orWhere('user.lastActiveDate > :activeThreshold', { activeThreshold: new Date(Date.now() - USER_ACTIVE_THRESHOLD) });
+			}))
+			.orderBy('user.lastActiveDate', 'DESC', 'NULLS LAST')
 			.take(ps.limit!)
 			.skip(ps.offset)
 			.getMany();

@@ -11,7 +11,9 @@
 
 ### Improvements
 - クライアント: ユーザーのリアクション一覧を見れるように
+- クライアント: ユーザー検索の精度を強化
 - API: ユーザーのリアクション一覧を取得する users/reactions を追加
+- API: users/search および users/search-by-username-and-host を強化
 
 ### Bugfixes
 

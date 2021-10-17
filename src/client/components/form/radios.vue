@@ -22,7 +22,6 @@ export default defineComponent({
 		}
 	},
 	render() {
-		const label = this.$slots.desc();
 		let options = this.$slots.default();
 
 		// なぜかFragmentになることがあるため
@@ -31,7 +30,6 @@ export default defineComponent({
 		return h('div', {
 			class: 'novjtcto'
 		}, [
-			h('div', { class: 'label' }, label),
 			...options.map(option => h(MkRadio, {
 				key: option.key,
 				value: option.props.value,
@@ -45,16 +43,6 @@ export default defineComponent({
 
 <style lang="scss">
 .novjtcto {
-	> .label {
-		font-size: 0.85em;
-		padding: 0 0 8px 12px;
-		user-select: none;
-
-		&:empty {
-			display: none;
-		}
-	}
-
 	&:first-child {
 		margin-top: 0;
 	}
