@@ -69,7 +69,7 @@
 						<template #prefix><i class="fas fa-search"></i></template>
 						<template #label>{{ $ts.searchUser }}</template>
 					</MkInput>
-					<MkRadios v-model="searchScope">
+					<MkRadios v-model="searchOrigin">
 						<option value="local">{{ $ts.local }}</option>
 						<option value="remote">{{ $ts.remote }}</option>
 						<option value="both">{{ $ts.both }}</option>
@@ -167,14 +167,14 @@ export default defineComponent({
 				limit: 10,
 				params: computed(() => (this.searchQuery && this.searchQuery !== '') ? {
 					query: this.searchQuery,
-					scope: this.searchScope,
+					origin: this.searchOrigin,
 				} : null)
 			},
 			tagsLocal: [],
 			tagsRemote: [],
 			stats: null,
 			searchQuery: null,
-			searchScope: 'both',
+			searchOrigin: 'both',
 			num: number,
 		};
 	},

@@ -3,7 +3,6 @@ import define from '../../define';
 import { UserProfiles, Users } from '@/models/index';
 import { User } from '@/models/entities/user';
 import { Brackets } from 'typeorm';
-import { USER_ACTIVE_THRESHOLD } from '@/const';
 
 export const meta = {
 	tags: ['users'],
@@ -25,9 +24,9 @@ export const meta = {
 			default: 10,
 		},
 
-		scope: {
-			validator: $.optional.str.or(['local', 'remote', 'both']),
-			default: 'both',
+		origin: {
+			validator: $.optional.str.or(['local', 'remote', 'combined']),
+			default: 'combined',
 		},
 
 		detail: {
@@ -48,59 +47,49 @@ export const meta = {
 };
 
 export default define(meta, async (ps, me) => {
+	const activeThreshold = new Date(Date.now() - (1000 * 60 * 60 * 24 * 30)); // 30日
+
 	const isUsername = ps.query.startsWith('@');
 
 	let users: User[] = [];
 
 	if (isUsername) {
 		const usernameQuery = Users.createQueryBuilder('user')
-			.where('user.usernameLower like :username', { username: ps.query.replace('@', '').toLowerCase() + '%' })
+			.where('user.usernameLower LIKE :username', { username: ps.query.replace('@', '').toLowerCase() + '%' })
 			.andWhere(new Brackets(qb => { qb
-				.where('user.lastActiveDate IS NULL')
-				.orWhere('user.lastActiveDate > :activeThreshold', { activeThreshold: new Date(Date.now() - USER_ACTIVE_THRESHOLD) });
+				.where('user.updatedAt IS NULL')
+				.orWhere('user.updatedAt > :activeThreshold', { activeThreshold: activeThreshold });
 			}))
 			.andWhere('user.isSuspended = FALSE');
 
-		if (ps.scope === 'local') {
-			usernameQuery
-				.andWhere('user.host IS NULL')
-				.orderBy('user.lastActiveDate', 'DESC', 'NULLS LAST');
-		} else if (ps.scope === 'remote') {
-			usernameQuery
-				.andWhere('user.host IS NOT NULL')
-				.orderBy('user.updatedAt', 'DESC', 'NULLS LAST');
-		} else { // both
-			usernameQuery
-				.orderBy('user.updatedAt', 'DESC', 'NULLS LAST');
+		if (ps.origin === 'local') {
+			usernameQuery.andWhere('user.host IS NULL');
+		} else if (ps.origin === 'remote') {
+			usernameQuery.andWhere('user.host IS NOT NULL');
 		}
 
 		users = await usernameQuery
+			.orderBy('user.updatedAt', 'DESC', 'NULLS LAST')
 			.take(ps.limit!)
 			.skip(ps.offset)
 			.getMany();
 	} else {
 		const nameQuery = Users.createQueryBuilder('user')
-			.where('user.name ilike :query', { query: '%' + ps.query + '%' })
+			.where('user.name ILIKE :query', { query: '%' + ps.query + '%' })
 			.andWhere(new Brackets(qb => { qb
-				.where('user.lastActiveDate IS NULL')
-				.orWhere('user.lastActiveDate > :activeThreshold', { activeThreshold: new Date(Date.now() - USER_ACTIVE_THRESHOLD) });
+				.where('user.updatedAt IS NULL')
+				.orWhere('user.updatedAt > :activeThreshold', { activeThreshold: activeThreshold });
 			}))
 			.andWhere('user.isSuspended = FALSE');
 
-		if (ps.scope === 'local') {
-			nameQuery
-				.andWhere('user.host IS NULL')
-				.orderBy('user.lastActiveDate', 'DESC', 'NULLS LAST');
-		} else if (ps.scope === 'remote') {
-			nameQuery
-				.andWhere('user.host IS NOT NULL')
-				.orderBy('user.updatedAt', 'DESC', 'NULLS LAST');
-		} else { // both
-			nameQuery
-				.orderBy('user.updatedAt', 'DESC', 'NULLS LAST');
+		if (ps.origin === 'local') {
+			nameQuery.andWhere('user.host IS NULL');
+		} else if (ps.origin === 'remote') {
+			nameQuery.andWhere('user.host IS NOT NULL');
 		}
 
 		users = await nameQuery
+			.orderBy('user.updatedAt', 'DESC', 'NULLS LAST')
 			.take(ps.limit!)
 			.skip(ps.offset)
 			.getMany();
@@ -108,32 +97,25 @@ export default define(meta, async (ps, me) => {
 		if (users.length < ps.limit!) {
 			const profQuery = UserProfiles.createQueryBuilder('prof')
 				.select('prof.userId')
-				.where('prof.description ilike :query', { query: '%' + ps.query + '%' });
+				.where('prof.description ILIKE :query', { query: '%' + ps.query + '%' });
 
-			if (ps.scope === 'local') {
+			if (ps.origin === 'local') {
 				profQuery.andWhere('prof.userHost IS NULL');
-			} else if (ps.scope === 'remote') {
+			} else if (ps.origin === 'remote') {
 				profQuery.andWhere('prof.userHost IS NOT NULL');
 			}
 
 			const query = Users.createQueryBuilder('user')
 				.where(`user.id IN (${ profQuery.getQuery() })`)
 				.andWhere(new Brackets(qb => { qb
-					.where('user.lastActiveDate IS NULL')
-					.orWhere('user.lastActiveDate > :activeThreshold', { activeThreshold: new Date(Date.now() - USER_ACTIVE_THRESHOLD) });
+					.where('user.updatedAt IS NULL')
+					.orWhere('user.updatedAt > :activeThreshold', { activeThreshold: activeThreshold });
 				}))
 				.andWhere('user.isSuspended = FALSE')
 				.setParameters(profQuery.getParameters());
 
-			if (ps.scope === 'local') {
-				query.orderBy('user.lastActiveDate', 'DESC', 'NULLS LAST');
-			} else if (ps.scope === 'remote') {
-				query.orderBy('user.updatedAt', 'DESC', 'NULLS LAST');
-			} else { // both
-				query.orderBy('user.updatedAt', 'DESC', 'NULLS LAST');
-			}
-
 			users = users.concat(await query
+				.orderBy('user.updatedAt', 'DESC', 'NULLS LAST')
 				.take(ps.limit!)
 				.skip(ps.offset)
 				.getMany()
