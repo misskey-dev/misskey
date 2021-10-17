@@ -1,4 +1,4 @@
-# 0.0.8(wip)
+# 0.0.8
 - add type definition for `messagingMessage` event to main stream channel
 - Update Note type
 
