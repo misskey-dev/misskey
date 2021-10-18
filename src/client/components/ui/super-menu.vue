@@ -65,8 +65,8 @@ export default defineComponent({
 				align-items: center;
 				width: 100%;
 				box-sizing: border-box;
-				padding: 10px 16px 10px 14px;
-				border-radius: 999px;
+				padding: 10px 16px 10px 8px;
+				border-radius: 9px;
 				font-size: 0.9em;
 
 				&:hover {

@@ -13,7 +13,7 @@
 		</template>
 
 		<main class="main" @contextmenu.stop="onContextmenu" :style="{ background: pageInfo?.bg }">
-			<div class="content" :class="{ _flat_: !fullView }">
+			<div class="content" :class="{ _fitSide_: !fullView }">
 				<router-view v-slot="{ Component }">
 					<transition :name="$store.state.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
 						<keep-alive :include="['timeline']">
@@ -78,6 +78,12 @@ export default defineComponent({
 		XDrawerSidebar,
 		XHeaderMenu: defineAsyncComponent(() => import('./default.header.vue')),
 		XWidgets: defineAsyncComponent(() => import('./default.widgets.vue')),
+	},
+
+	provide() {
+		return {
+			shouldHeaderThin: this.showMenuOnTop,
+		};
 	},
 
 	data() {

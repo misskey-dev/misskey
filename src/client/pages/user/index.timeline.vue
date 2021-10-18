@@ -1,6 +1,6 @@
 <template>
 <div class="yrzkoczt" v-sticky-container>
-	<MkTab v-model="with_" class="_gap tab">
+	<MkTab v-model="with_" class="tab">
 		<option :value="null">{{ $ts.notes }}</option>
 		<option value="replies">{{ $ts.notesAndReplies }}</option>
 		<option value="files">{{ $ts.withFiles }}</option>
@@ -60,7 +60,16 @@ export default defineComponent({
 <style lang="scss" scoped>
 .yrzkoczt {
 	> .tab {
+		margin: calc(var(--margin) / 2) 0;
+		padding: calc(var(--margin) / 2) 0;
 		background: var(--bg);
+	}
+}
+
+._fitSide_ .yrzkoczt {
+	> .tab {
+		padding-left: var(--margin);
+		padding-right: var(--margin);
 	}
 }
 </style>

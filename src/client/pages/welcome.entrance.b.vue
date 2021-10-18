@@ -12,7 +12,7 @@
 				<div class="desc" v-html="meta.description || $ts.headlineMisskey"></div>
 			</div>
 			<div class="action">
-				<MkButton class="signup" @click="signup()" inline primary>{{ $ts.signup }}</MkButton>
+				<MkButton class="signup" @click="signup()" inline gradate>{{ $ts.signup }}</MkButton>
 				<MkButton class="signin" @click="signin()" inline>{{ $ts.login }}</MkButton>
 			</div>
 			<div class="status" v-if="onlineUsersCount && stats">

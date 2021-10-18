@@ -64,7 +64,7 @@
 					</div>
 					<XPoll v-if="appearNote.poll" :note="appearNote" ref="pollViewer" class="poll"/>
 					<MkUrlPreview v-for="url in urls" :url="url" :key="url" :compact="true" :detail="false" class="url-preview"/>
-					<div class="renote" v-if="appearNote.renote"><XNotePreview :note="appearNote.renote"/></div>
+					<div class="renote" v-if="appearNote.renote"><XNoteSimple :note="appearNote.renote"/></div>
 					<button v-if="collapsed" class="fade _button" @click="collapsed = false">
 						<span>{{ $ts.showMore }}</span>
 					</button>
@@ -114,7 +114,7 @@ import * as mfm from 'mfm-js';
 import { sum } from '../../prelude/array';
 import XSub from './note.sub.vue';
 import XNoteHeader from './note-header.vue';
-import XNotePreview from './note-preview.vue';
+import XNoteSimple from './note-simple.vue';
 import XReactionsViewer from './reactions-viewer.vue';
 import XMediaList from './media-list.vue';
 import XCwButton from './cw-button.vue';
@@ -134,7 +134,7 @@ export default defineComponent({
 	components: {
 		XSub,
 		XNoteHeader,
-		XNotePreview,
+		XNoteSimple,
 		XReactionsViewer,
 		XMediaList,
 		XCwButton,
