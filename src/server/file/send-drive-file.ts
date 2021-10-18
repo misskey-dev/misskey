@@ -14,6 +14,7 @@ import { GenerateVideoThumbnailFromStream } from '@/services/drive/generate-vide
 import { StatusError } from '@/misc/fetch';
 import { PassThrough } from 'stream';
 import { cloneStream } from '@/misc/stream/clone';
+import { readableRead } from '@/misc/stream/read';
 
 //const _filename = fileURLToPath(import.meta.url);
 const _filename = __filename;
@@ -98,8 +99,6 @@ export default async function(ctx: Koa.Context) {
 
 	if (isThumbnail || isWebpublic) {
 		const readable = InternalStorage.read(key);
-		ctx.body = readable.pipe(new PassThrough());
-
 		const { mime, ext } = await detectType(readable);
 		const filename = rename(file.name, {
 			suffix: isThumbnail ? '-thumb' : '-web',
@@ -109,10 +108,11 @@ export default async function(ctx: Koa.Context) {
 		ctx.set('Content-Type', mime);
 		ctx.set('Cache-Control', 'max-age=31536000, immutable');
 		ctx.set('Content-Disposition', contentDisposition('inline', filename));
+		ctx.body = readableRead(cloneStream(InternalStorage.read(key)));
 	} else {
 		const readable = InternalStorage.read(file.accessKey!);
 		readable.on('error', commonReadableHandlerGenerator(ctx));
-		ctx.body = readable;
+		ctx.body = readableRead(cloneStream(readable));
 		ctx.set('Content-Type', file.type);
 		ctx.set('Cache-Control', 'max-age=31536000, immutable');
 		ctx.set('Content-Disposition', contentDisposition('inline', file.name));
