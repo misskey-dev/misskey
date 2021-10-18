@@ -112,8 +112,7 @@ export async function detectType(readable: stream.Readable) {
 
 	const fileSizePromise = getFileSize(readable);
 
-	const typeStream = readable.pipe(new stream.PassThrough());
-	const typePromise = fileType.fromStream(typeStream).finally(() => typeStream.destroy());
+	const typePromise = fileType.fromStream(readable.pipe(new stream.PassThrough()));
 
 	const [ fileSize, type ] = await Promise.all([fileSizePromise, typePromise]);
 

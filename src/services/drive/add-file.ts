@@ -20,6 +20,7 @@ import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error';
 import * as S3 from 'aws-sdk/clients/s3';
 import { getS3 } from './s3';
 import * as sharp from 'sharp';
+import { convertToJpeg, convertToPng, convertToPngOrJpeg, convertToWebp, IReadableImage } from './image-stream-processor';
 
 const logger = driveLogger.createSubLogger('register', 'yellow');
 
@@ -143,7 +144,7 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
  * @param type Content-Type for original
  * @param generateWeb Generate webpublic or not
  */
-export async function generateAlts(path: string, type: string, generateWeb: boolean) {
+export async function generateAlts(path: string, type: string, generateWeb: boolean): Promise<{ webpublic: IReadableImage | null, thumbnail: IReadableImage | null }> {
 	if (type.startsWith('video/')) {
 		try {
 			const thumbnail = await GenerateVideoThumbnail(path);
@@ -171,7 +172,7 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 	let img: sharp.Sharp | null = null;
 
 	try {
-		img = sharp(path);
+		img = fs.createReadStream(path).pipe(sharp());
 		const metadata = await img.metadata();
 		const isAnimated = metadata.pages && metadata.pages > 1;
 
@@ -191,18 +192,18 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 	}
 
 	// #region webpublic
-	let webpublic: IImage | null = null;
+	let webpublic: IReadableImage | null = null;
 
 	if (generateWeb) {
 		logger.info(`creating web image`);
 
 		try {
 			if (['image/jpeg'].includes(type)) {
-				webpublic = await convertSharpToJpeg(img, 2048, 2048);
+				webpublic = convertToJpeg(img, 2048, 2048);
 			} else if (['image/webp'].includes(type)) {
-				webpublic = await convertSharpToWebp(img, 2048, 2048);
+				webpublic = convertToWebp(img, 2048, 2048);
 			} else if (['image/png'].includes(type)) {
-				webpublic = await convertSharpToPng(img, 2048, 2048);
+				webpublic = convertToPng(img, 2048, 2048);
 			} else {
 				logger.debug(`web image not created (not an required image)`);
 			}
@@ -215,13 +216,13 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 	// #endregion webpublic
 
 	// #region thumbnail
-	let thumbnail: IImage | null = null;
+	let thumbnail: IReadableImage | null = null;
 
 	try {
 		if (['image/jpeg', 'image/webp'].includes(type)) {
-			thumbnail = await convertSharpToJpeg(img, 498, 280);
+			thumbnail = convertToJpeg(img, 498, 280);
 		} else if (['image/png'].includes(type)) {
-			thumbnail = await convertSharpToPngOrJpeg(img, 498, 280);
+			thumbnail = await convertToPngOrJpeg(img, 498, 280);
 		} else {
 			logger.debug(`thumbnail not created (not an required file)`);
 		}

@@ -9,6 +9,7 @@ import { getFullApAccount } from '@/misc/convert-host';
 import { Users, UserLists, UserListJoinings } from '@/models/index';
 import { In } from 'typeorm';
 import { DbUserJobData } from '@/queue/types';
+import { createTemp } from '@/misc/create-temp';
 
 const logger = queueLogger.createSubLogger('export-user-lists');
 
@@ -26,12 +27,7 @@ export async function exportUserLists(job: Bull.Job<DbUserJobData>, done: any): 
 	});
 
 	// Create temp file
-	const [path, cleanup] = await new Promise<[string, any]>((res, rej) => {
-		tmp.file((e, path, fd, cleanup) => {
-			if (e) return rej(e);
-			res([path, cleanup]);
-		});
-	});
+	const [path, cleanup] = await createTemp();
 
 	logger.info(`Temp file is ${path}`);
 

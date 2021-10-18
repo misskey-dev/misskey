@@ -10,6 +10,7 @@ import { MoreThan } from 'typeorm';
 import { Note } from '@/models/entities/note';
 import { Poll } from '@/models/entities/poll';
 import { DbUserJobData } from '@/queue/types';
+import { createTemp } from '@/misc/create-temp';
 
 const logger = queueLogger.createSubLogger('export-notes');
 
@@ -23,12 +24,7 @@ export async function exportNotes(job: Bull.Job<DbUserJobData>, done: any): Prom
 	}
 
 	// Create temp file
-	const [path, cleanup] = await new Promise<[string, any]>((res, rej) => {
-		tmp.file((e, path, fd, cleanup) => {
-			if (e) return rej(e);
-			res([path, cleanup]);
-		});
-	});
+	const [path, cleanup] = await createTemp();
 
 	logger.info(`Temp file is ${path}`);
 

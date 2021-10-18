@@ -1,10 +1,8 @@
-import * as fs from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import * as Koa from 'koa';
 import * as send from 'koa-send';
 import * as rename from 'rename';
-import * as tmp from 'tmp';
 import { serverLogger } from '../index';
 import { contentDisposition } from '@/misc/content-disposition';
 import { DriveFiles } from '@/models/index';
@@ -12,8 +10,9 @@ import { InternalStorage } from '@/services/drive/internal-storage';
 import { getUrl } from '@/misc/download-url';
 import { detectType } from '@/misc/get-file-stream-info';
 import { convertToJpeg, convertToPngOrJpeg } from '@/services/drive/image-stream-processor';
-import { GenerateVideoThumbnail } from '@/services/drive/generate-video-thumbnail';
+import { GenerateVideoThumbnailByStream } from '@/services/drive/generate-video-thumbnail';
 import { StatusError } from '@/misc/fetch';
+import { PassThrough } from 'stream';
 
 //const _filename = fileURLToPath(import.meta.url);
 const _filename = __filename;
@@ -62,19 +61,19 @@ export default async function(ctx: Koa.Context) {
 						} else if (['image/png'].includes(mime)) {
 							return convertToPngOrJpeg(clone, 498, 280);
 						} else if (mime.startsWith('video/')) {
-							return GenerateVideoThumbnail(clone);
+							return GenerateVideoThumbnailByStream(clone);
 						}
 					}
 
 					return {
-						data: clone,
+						readable: clone,
 						ext,
 						type: mime,
 					};
 				};
 
 				const image = await convertFile();
-				ctx.body = image.data;
+				ctx.body = image.readable;
 				ctx.set('Content-Type', image.type);
 				ctx.set('Cache-Control', 'max-age=31536000, immutable');
 			} catch (e) {
@@ -97,13 +96,14 @@ export default async function(ctx: Koa.Context) {
 	}
 
 	if (isThumbnail || isWebpublic) {
-		const { mime, ext } = await detectType(InternalStorage.resolvePath(key));
+		const readable = InternalStorage.read(key);
+		ctx.body = readable.pipe(new PassThrough());
+		const { mime, ext } = await detectType(readable);
 		const filename = rename(file.name, {
 			suffix: isThumbnail ? '-thumb' : '-web',
 			extname: ext ? `.${ext}` : undefined
 		}).toString();
 
-		ctx.body = InternalStorage.read(key);
 		ctx.set('Content-Type', mime);
 		ctx.set('Cache-Control', 'max-age=31536000, immutable');
 		ctx.set('Content-Disposition', contentDisposition('inline', filename));

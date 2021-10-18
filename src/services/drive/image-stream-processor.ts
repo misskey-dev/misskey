@@ -76,7 +76,7 @@ export function convertToPng(readable: Readable, width: number, height: number):
  * Convert to PNG or JPEG
  *   with resize, remove metadata, resolve orientation, stop animation
  */
-export async function convertToPngOrJpeg(readable: Readable, width: number, height: number): IReadableImage {
+export async function convertToPngOrJpeg(readable: Readable, width: number, height: number): Promise<IReadableImage> {
 	const sh = readable.pipe(sharp());
 	const [ stats, metadata ] = await Promise.all([sh.stats(), sh.metadata()]);
 
