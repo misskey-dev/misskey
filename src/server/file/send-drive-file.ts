@@ -13,6 +13,7 @@ import { convertToJpeg, convertToPngOrJpeg } from '@/services/drive/image-proces
 import { GenerateVideoThumbnailFromStream } from '@/services/drive/generate-video-thumbnail';
 import { StatusError } from '@/misc/fetch';
 import { PassThrough } from 'stream';
+import { cloneStream } from '@/misc/stream/clone';
 
 //const _filename = fileURLToPath(import.meta.url);
 const _filename = __filename;
@@ -50,7 +51,7 @@ export default async function(ctx: Koa.Context) {
 		if (file.isLink && file.uri) {	// 期限切れリモートファイル
 			try {
 				const readable = getUrl(file.uri);
-				const clone = readable.pipe(new PassThrough());
+				const clone = cloneStream(readable);
 
 				const { mime, ext } = await detectType(readable);
 

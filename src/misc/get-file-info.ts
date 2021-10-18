@@ -10,6 +10,7 @@ import { awaitAll } from '@/prelude/await-all';
 import { preventEmptyStream } from './stream/prevent-empty';
 import { readableRead } from './stream/read';
 import { createReadStream } from 'fs';
+import { cloneStream } from './stream/clone';
 
 const pipeline = util.promisify(stream.pipeline);
 
@@ -46,7 +47,7 @@ export function getFileInfoByPath(path: string): Promise<FileInfo> {
 export async function getFileInfo(readable: stream.Readable): Promise<FileInfo> {
 	const warnings = [] as string[];
 
-	const streamCopy = readable.pipe(new stream.PassThrough());
+	const streamCopy = cloneStream(readable);
 
 	readableRead(readable);
 
@@ -109,7 +110,7 @@ export async function detectType(readable: stream.Readable) {
 	const chunks: Uint8Array[] = [];
 
 	const streamPromise = new Promise<Buffer | void>(res => {
-		readable.pipe(new stream.PassThrough())
+		cloneStream(readable)
 			.on('data', chunk => chunks.push(chunk))
 			.on('end', () => res(Buffer.concat(chunks)))
 			.on('error', e => res());
@@ -117,7 +118,7 @@ export async function detectType(readable: stream.Readable) {
 
 	const fileSizePromise = getFileSize(readable);
 
-	const typePromise = fileType.fromStream(readable.pipe(new stream.PassThrough()));
+	const typePromise = fileType.fromStream(cloneStream(readable));
 
 	const [ fileSize, type ] = await Promise.all([fileSizePromise, typePromise]);
 
@@ -167,7 +168,7 @@ export function checkSvg(buffer: Buffer) {
  */
 export async function getFileSize(readable: stream.Readable): Promise<number> {
 	let length = 0;
-	for await (const chunk of readable.pipe(new stream.PassThrough())) {
+	for await (const chunk of cloneStream(readable)) {
 		length += chunk.length;
 	}
 	return length;
@@ -178,7 +179,7 @@ export async function getFileSize(readable: stream.Readable): Promise<number> {
  */
 async function calcHash(readable: stream.Readable): Promise<string> {
 	const hash = crypto.createHash('md5').setEncoding('hex');
-	await pipeline(readable.pipe(new stream.PassThrough()), hash);
+	await pipeline(cloneStream(readable), hash);
 	return hash.read();
 }
 
@@ -191,7 +192,7 @@ async function detectImageSize(readable: stream.Readable): Promise<{
 	wUnits: string;
 	hUnits: string;
 }> {
-	const streamCopy = readable.pipe(new stream.PassThrough());
+	const streamCopy = cloneStream(readable);
 	const imageSize = await probeImageSize(streamCopy);
 	return imageSize;
 }
