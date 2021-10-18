@@ -7,7 +7,7 @@ import { deleteFile } from './delete-file';
 import { fetchMeta } from '@/misc/fetch-meta';
 import { GenerateVideoThumbnail } from './generate-video-thumbnail';
 import { driveLogger } from './logger';
-import { IImage, convertSharpToJpeg, convertSharpToWebp, convertSharpToPng, convertSharpToPngOrJpeg } from './image-processor';
+import { convertToJpeg, convertToPng, convertToPngOrJpeg, convertToWebp, IReadableImage } from './image-stream-processor';
 import { contentDisposition } from '@/misc/content-disposition';
 import { getFileInfo } from '@/misc/get-file-info';
 import { DriveFiles, DriveFolders, Users, Instances, UserProfiles } from '@/models/index';
@@ -20,7 +20,6 @@ import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error';
 import * as S3 from 'aws-sdk/clients/s3';
 import { getS3 } from './s3';
 import * as sharp from 'sharp';
-import { convertToJpeg, convertToPng, convertToPngOrJpeg, convertToWebp, IReadableImage } from './image-stream-processor';
 
 const logger = driveLogger.createSubLogger('register', 'yellow');
 
@@ -75,7 +74,7 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 			webpublicUrl = `${ baseUrl }/${ webpublicKey }`;
 
 			logger.info(`uploading webpublic: ${webpublicKey}`);
-			uploads.push(upload(webpublicKey, alts.webpublic.data, alts.webpublic.type, name));
+			uploads.push(upload(webpublicKey, alts.webpublic.readable, alts.webpublic.type, name));
 		}
 
 		if (alts.thumbnail) {
@@ -83,7 +82,7 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 			thumbnailUrl = `${ baseUrl }/${ thumbnailKey }`;
 
 			logger.info(`uploading thumbnail: ${thumbnailKey}`);
-			uploads.push(upload(thumbnailKey, alts.thumbnail.data, alts.thumbnail.type));
+			uploads.push(upload(thumbnailKey, alts.thumbnail.readable, alts.thumbnail.type));
 		}
 
 		await Promise.all(uploads);
@@ -240,7 +239,7 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 /**
  * Upload to ObjectStorage
  */
-async function upload(key: string, stream: fs.ReadStream | Buffer, type: string, filename?: string) {
+async function upload(key: string, body: S3.Body, type: string, filename?: string) {
 	if (type === 'image/apng') type = 'image/png';
 
 	const meta = await fetchMeta();
@@ -248,7 +247,7 @@ async function upload(key: string, stream: fs.ReadStream | Buffer, type: string,
 	const params = {
 		Bucket: meta.objectStorageBucket,
 		Key: key,
-		Body: stream,
+		Body: body,
 		ContentType: type,
 		CacheControl: 'max-age=31536000, immutable',
 	} as S3.PutObjectRequest;
@@ -441,7 +440,7 @@ export default async function(
 			}
 		}
 	} else {
-		file = await (save(file, path, detectedName, info.type.mime, info.md5, info.size));
+		file = await save(file, path, detectedName, info.type.mime, info.md5, info.size);
 	}
 
 	logger.succ(`drive file has been created ${file.id}`);

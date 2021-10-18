@@ -48,7 +48,7 @@ export default async function(ctx: Koa.Context) {
 
 	if (!file.storedInternal) {
 		if (file.isLink && file.uri) {	// 期限切れリモートファイル
-			try{
+			try {
 				const readable = getUrl(file.uri);
 				const clone = readable.pipe(new PassThrough());
 
@@ -98,6 +98,7 @@ export default async function(ctx: Koa.Context) {
 	if (isThumbnail || isWebpublic) {
 		const readable = InternalStorage.read(key);
 		ctx.body = readable.pipe(new PassThrough());
+
 		const { mime, ext } = await detectType(readable);
 		const filename = rename(file.name, {
 			suffix: isThumbnail ? '-thumb' : '-web',
