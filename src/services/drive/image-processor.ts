@@ -1,7 +1,8 @@
 import * as sharp from 'sharp';
+import { Readable } from 'stream';
 
-export type IImage = {
-	data: Buffer;
+export type IReadableImage = {
+	readable: Readable;
 	ext: string | null;
 	type: string;
 };
@@ -10,12 +11,8 @@ export type IImage = {
  * Convert to JPEG
  *   with resize, remove metadata, resolve orientation, stop animation
  */
-export async function convertToJpeg(path: string, width: number, height: number): Promise<IImage> {
-	return convertSharpToJpeg(await sharp(path), width, height);
-}
-
-export async function convertSharpToJpeg(sharp: sharp.Sharp, width: number, height: number): Promise<IImage> {
-	const data = await sharp
+export function convertToJpeg(readable: Readable, width: number, height: number): IReadableImage {
+	const process = sharp()
 		.resize(width, height, {
 			fit: 'inside',
 			withoutEnlargement: true
@@ -24,11 +21,10 @@ export async function convertSharpToJpeg(sharp: sharp.Sharp, width: number, heig
 		.jpeg({
 			quality: 85,
 			progressive: true
-		})
-		.toBuffer();
+		});
 
 	return {
-		data,
+		readable: readable.pipe(process),
 		ext: 'jpg',
 		type: 'image/jpeg'
 	};
@@ -38,12 +34,8 @@ export async function convertSharpToJpeg(sharp: sharp.Sharp, width: number, heig
  * Convert to WebP
  *   with resize, remove metadata, resolve orientation, stop animation
  */
-export async function convertToWebp(path: string, width: number, height: number): Promise<IImage> {
-	return convertSharpToWebp(await sharp(path), width, height);
-}
-
-export async function convertSharpToWebp(sharp: sharp.Sharp, width: number, height: number): Promise<IImage> {
-	const data = await sharp
+export function convertToWebp(readable: Readable, width: number, height: number): IReadableImage {
+	const process = sharp()
 		.resize(width, height, {
 			fit: 'inside',
 			withoutEnlargement: true
@@ -51,11 +43,10 @@ export async function convertSharpToWebp(sharp: sharp.Sharp, width: number, heig
 		.rotate()
 		.webp({
 			quality: 85
-		})
-		.toBuffer();
+		});
 
 	return {
-		data,
+		readable: readable.pipe(process),
 		ext: 'webp',
 		type: 'image/webp'
 	};
@@ -65,22 +56,17 @@ export async function convertSharpToWebp(sharp: sharp.Sharp, width: number, heig
  * Convert to PNG
  *   with resize, remove metadata, resolve orientation, stop animation
  */
-export async function convertToPng(path: string, width: number, height: number): Promise<IImage> {
-	return convertSharpToPng(await sharp(path), width, height);
-}
-
-export async function convertSharpToPng(sharp: sharp.Sharp, width: number, height: number): Promise<IImage> {
-	const data = await sharp
+export function convertToPng(readable: Readable, width: number, height: number): IReadableImage {
+	const process = sharp()
 		.resize(width, height, {
 			fit: 'inside',
 			withoutEnlargement: true
 		})
 		.rotate()
-		.png()
-		.toBuffer();
+		.png();
 
 	return {
-		data,
+		readable: readable.pipe(process),
 		ext: 'png',
 		type: 'image/png'
 	};
@@ -90,18 +76,14 @@ export async function convertSharpToPng(sharp: sharp.Sharp, width: number, heigh
  * Convert to PNG or JPEG
  *   with resize, remove metadata, resolve orientation, stop animation
  */
-export async function convertToPngOrJpeg(path: string, width: number, height: number): Promise<IImage> {
-	return convertSharpToPngOrJpeg(await sharp(path), width, height);
-}
-
-export async function convertSharpToPngOrJpeg(sharp: sharp.Sharp, width: number, height: number): Promise<IImage> {
-	const stats = await sharp.stats();
-	const metadata = await sharp.metadata();
+export async function convertToPngOrJpeg(readable: Readable, width: number, height: number): Promise<IReadableImage> {
+	const sh = readable.pipe(sharp());
+	const [ stats, metadata ] = await Promise.all([sh.stats(), sh.metadata()]);
 
 	// 不透明で300x300pxの範囲を超えていればJPEG
 	if (stats.isOpaque && ((metadata.width && metadata.width >= 300) || (metadata.height && metadata!.height >= 300))) {
-		return await convertSharpToJpeg(sharp, width, height);
+		return convertToJpeg(sh, width, height);
 	} else {
-		return await convertSharpToPng(sharp, width, height);
+		return convertToPng(sh, width, height);
 	}
 }

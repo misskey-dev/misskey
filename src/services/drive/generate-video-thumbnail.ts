@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as stream from 'stream';
 import * as util from 'util';
-import { IReadableImage, convertToJpeg } from './image-stream-processor';
+import { IReadableImage, convertToJpeg } from './image-processor';
 import * as FFmpeg from 'fluent-ffmpeg';
 import { createTemp } from '@/misc/create-temp';
 import { readableRead } from '@/misc/stream/read';

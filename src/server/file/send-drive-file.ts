@@ -9,7 +9,7 @@ import { DriveFiles } from '@/models/index';
 import { InternalStorage } from '@/services/drive/internal-storage';
 import { getUrl } from '@/misc/download-url';
 import { detectType } from '@/misc/get-file-stream-info';
-import { convertToJpeg, convertToPngOrJpeg } from '@/services/drive/image-stream-processor';
+import { convertToJpeg, convertToPngOrJpeg } from '@/services/drive/image-processor';
 import { GenerateVideoThumbnailByStream } from '@/services/drive/generate-video-thumbnail';
 import { StatusError } from '@/misc/fetch';
 import { PassThrough } from 'stream';

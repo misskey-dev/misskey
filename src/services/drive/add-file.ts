@@ -7,7 +7,7 @@ import { deleteFile } from './delete-file';
 import { fetchMeta } from '@/misc/fetch-meta';
 import { GenerateVideoThumbnail } from './generate-video-thumbnail';
 import { driveLogger } from './logger';
-import { convertToJpeg, convertToPng, convertToPngOrJpeg, convertToWebp, IReadableImage } from './image-stream-processor';
+import { convertToJpeg, convertToPng, convertToPngOrJpeg, convertToWebp, IReadableImage } from './image-processor';
 import { contentDisposition } from '@/misc/content-disposition';
 import { getFileInfo } from '@/misc/get-file-info';
 import { DriveFiles, DriveFolders, Users, Instances, UserProfiles } from '@/models/index';
