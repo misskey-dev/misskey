@@ -112,12 +112,12 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 		let webpublicUrl: string | null = null;
 
 		if (alts.thumbnail) {
-			thumbnailUrl = InternalStorage.saveFromBuffer(thumbnailAccessKey, alts.thumbnail.data);
+			thumbnailUrl = InternalStorage.saveFromStream(thumbnailAccessKey, alts.thumbnail.readable);
 			logger.info(`thumbnail stored: ${thumbnailAccessKey}`);
 		}
 
 		if (alts.webpublic) {
-			webpublicUrl = InternalStorage.saveFromBuffer(webpublicAccessKey, alts.webpublic.data);
+			webpublicUrl = InternalStorage.saveFromStream(webpublicAccessKey, alts.webpublic.readable);
 			logger.info(`web stored: ${webpublicAccessKey}`);
 		}
 

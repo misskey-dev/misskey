@@ -3,6 +3,7 @@ import * as Path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import config from '@/config/index';
+import { Readable } from 'stream';
 
 //const _filename = fileURLToPath(import.meta.url);
 const _filename = __filename;
@@ -26,6 +27,12 @@ export class InternalStorage {
 	public static saveFromBuffer(key: string, data: Buffer) {
 		fs.mkdirSync(InternalStorage.path, { recursive: true });
 		fs.writeFileSync(InternalStorage.resolvePath(key), data);
+		return `${config.url}/files/${key}`;
+	}
+
+	public static saveFromStream(key: string, readable: Readable) {
+		fs.mkdirSync(InternalStorage.path, { recursive: true });
+		readable.pipe(fs.createWriteStream(InternalStorage.resolvePath(key)));
 		return `${config.url}/files/${key}`;
 	}
 
