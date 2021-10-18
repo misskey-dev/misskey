@@ -8,9 +8,9 @@ import { contentDisposition } from '@/misc/content-disposition';
 import { DriveFiles } from '@/models/index';
 import { InternalStorage } from '@/services/drive/internal-storage';
 import { getUrl } from '@/misc/download-url';
-import { detectType } from '@/misc/get-file-stream-info';
+import { detectType } from '@/misc/get-file-info';
 import { convertToJpeg, convertToPngOrJpeg } from '@/services/drive/image-processor';
-import { GenerateVideoThumbnailByStream } from '@/services/drive/generate-video-thumbnail';
+import { GenerateVideoThumbnailFromStream } from '@/services/drive/generate-video-thumbnail';
 import { StatusError } from '@/misc/fetch';
 import { PassThrough } from 'stream';
 
@@ -61,7 +61,7 @@ export default async function(ctx: Koa.Context) {
 						} else if (['image/png'].includes(mime)) {
 							return convertToPngOrJpeg(clone, 498, 280);
 						} else if (mime.startsWith('video/')) {
-							return GenerateVideoThumbnailByStream(clone);
+							return GenerateVideoThumbnailFromStream(clone);
 						}
 					}
 

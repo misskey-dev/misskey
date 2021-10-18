@@ -8,7 +8,7 @@ import { readableRead } from '@/misc/stream/read';
 
 const pipeline = util.promisify(stream.pipeline);
 
-export async function GenerateVideoThumbnailByStream(readable: stream.Readable): Promise<IReadableImage> {
+export async function GenerateVideoThumbnailFromStream(readable: stream.Readable): Promise<IReadableImage> {
 	const [path, cleanupVideo] = await createTemp();
 
 	await pipeline(readable, fs.createWriteStream(path));

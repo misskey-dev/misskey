@@ -9,7 +9,7 @@ import { GenerateVideoThumbnail } from './generate-video-thumbnail';
 import { driveLogger } from './logger';
 import { convertToJpeg, convertToPng, convertToPngOrJpeg, convertToWebp, IReadableImage } from './image-processor';
 import { contentDisposition } from '@/misc/content-disposition';
-import { getFileInfo } from '@/misc/get-file-info';
+import { getFileInfoByPath } from '@/misc/get-file-info';
 import { DriveFiles, DriveFolders, Users, Instances, UserProfiles } from '@/models/index';
 import { InternalStorage } from './internal-storage';
 import { DriveFile } from '@/models/entities/drive-file';
@@ -314,7 +314,7 @@ export default async function(
 	uri: string | null = null,
 	sensitive: boolean | null = null
 ): Promise<DriveFile> {
-	const info = await getFileInfo(path);
+	const info = await getFileInfoByPath(path);
 	logger.info(`${JSON.stringify(info)}`);
 
 	// detect name

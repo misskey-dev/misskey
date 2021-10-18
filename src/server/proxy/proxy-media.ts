@@ -3,7 +3,7 @@ import * as Koa from 'koa';
 import { serverLogger } from '../index';
 import { IReadableImage, convertToPng, convertToJpeg } from '@/services/drive/image-processor';
 import { downloadUrl, getUrl } from '@/misc/download-url';
-import { detectType } from '@/misc/get-file-stream-info';
+import { detectType } from '@/misc/get-file-info';
 import { StatusError } from '@/misc/fetch';
 import { PassThrough } from 'stream';
 

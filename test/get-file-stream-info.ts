@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import { async } from './utils';
-import { getFileInfo } from '../src/misc/get-file-stream-info';
+import { getFileInfo } from '../src/misc/get-file-info';
 import { createReadStream } from 'fs';
 
 describe('Get file info (stream)', () => {
