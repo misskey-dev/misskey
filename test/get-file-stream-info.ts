@@ -1,12 +1,12 @@
 import * as assert from 'assert';
 import { async } from './utils';
-import { getFileInfo } from '../src/misc/get-file-info';
+import { getFileInfoByPath } from '../src/misc/get-file-info';
 import { createReadStream } from 'fs';
 
 describe('Get file info (stream)', () => {
 	it('Empty file', async (async () => {
 		const path = `${__dirname}/resources/emptyfile`;
-		const info = await getFileInfo(createReadStream(path)) as any;
+		const info = await getFileInfoByPath(path) as any;
 		delete info.warnings;
 		delete info.blurhash;
 		assert.deepStrictEqual(info, {
@@ -23,7 +23,7 @@ describe('Get file info (stream)', () => {
 
 	it('Generic JPEG', async (async () => {
 		const path = `${__dirname}/resources/Lenna.jpg`;
-		const info = await getFileInfo(createReadStream(path)) as any;
+		const info = await getFileInfoByPath(path) as any;
 		delete info.warnings;
 		delete info.blurhash;
 		assert.deepStrictEqual(info, {
@@ -40,7 +40,7 @@ describe('Get file info (stream)', () => {
 
 	it('Generic APNG', async (async () => {
 		const path = `${__dirname}/resources/anime.png`;
-		const info = await getFileInfo(createReadStream(path)) as any;
+		const info = await getFileInfoByPath(path) as any;
 		delete info.warnings;
 		delete info.blurhash;
 		assert.deepStrictEqual(info, {
@@ -57,7 +57,7 @@ describe('Get file info (stream)', () => {
 
 	it('Generic AGIF', async (async () => {
 		const path = `${__dirname}/resources/anime.gif`;
-		const info = await getFileInfo(createReadStream(path)) as any;
+		const info = await getFileInfoByPath(path) as any;
 		delete info.warnings;
 		delete info.blurhash;
 		assert.deepStrictEqual(info, {
@@ -74,7 +74,7 @@ describe('Get file info (stream)', () => {
 
 	it('PNG with alpha', async (async () => {
 		const path = `${__dirname}/resources/with-alpha.png`;
-		const info = await getFileInfo(createReadStream(path)) as any;
+		const info = await getFileInfoByPath(path) as any;
 		delete info.warnings;
 		delete info.blurhash;
 		assert.deepStrictEqual(info, {
@@ -91,7 +91,7 @@ describe('Get file info (stream)', () => {
 
 	it('Generic SVG', async (async () => {
 		const path = `${__dirname}/resources/image.svg`;
-		const info = await getFileInfo(createReadStream(path)) as any;
+		const info = await getFileInfoByPath(path) as any;
 		delete info.warnings;
 		delete info.blurhash;
 		assert.deepStrictEqual(info, {
@@ -109,7 +109,7 @@ describe('Get file info (stream)', () => {
 	it('SVG with XML definition', async (async () => {
 		// https://github.com/misskey-dev/misskey/issues/4413
 		const path = `${__dirname}/resources/with-xml-def.svg`;
-		const info = await getFileInfo(createReadStream(path)) as any;
+		const info = await getFileInfoByPath(path) as any;
 		delete info.warnings;
 		delete info.blurhash;
 		assert.deepStrictEqual(info, {
@@ -126,7 +126,7 @@ describe('Get file info (stream)', () => {
 
 	it('Dimension limit', async (async () => {
 		const path = `${__dirname}/resources/25000x25000.png`;
-		const info = await getFileInfo(createReadStream(path)) as any;
+		const info = await getFileInfoByPath(path) as any;
 		delete info.warnings;
 		delete info.blurhash;
 		assert.deepStrictEqual(info, {
@@ -143,7 +143,7 @@ describe('Get file info (stream)', () => {
 
 	it('Large File', async (async () => {
 		const path = `${__dirname}/resources/P1130536.JPG`;
-		const info = await getFileInfo(createReadStream(path)) as any;
+		const info = await getFileInfoByPath(path) as any;
 		delete info.warnings;
 		delete info.blurhash;
 		assert.deepStrictEqual(info, {
