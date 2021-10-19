@@ -89,6 +89,7 @@ export default async function(ctx: Koa.Context) {
 
 				const image = await (async () => {
 					if (isThumbnail) {
+						console.log(`${file.uri} d-1`)
 						if (['image/jpeg', 'image/webp'].includes(mime)) {
 							return convertToJpeg(clone, 498, 280);
 						} else if (['image/png'].includes(mime)) {
@@ -98,6 +99,7 @@ export default async function(ctx: Koa.Context) {
 						}
 					}
 
+					console.log(`${file.uri} d-2`)
 					return {
 						readable: clone,
 						ext,
@@ -105,7 +107,7 @@ export default async function(ctx: Koa.Context) {
 					};
 				})();
 
-				console.log(file.uri, 'c')
+				console.log(file.uri, 'e')
 
 				ctx.body = image.readable;
 				ctx.set('Content-Type', image.type);
