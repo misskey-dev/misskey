@@ -98,7 +98,9 @@ export default async function(ctx: Koa.Context) {
 	}
 
 	if (isThumbnail || isWebpublic) {
-		const readable = InternalStorage.read(key);
+		const readable = readableRead(InternalStorage.read(key));
+		readable.on('error', commonReadableHandlerGenerator(ctx));
+		ctx.body = cloneStream(readable);
 		const { mime, ext } = await detectType(readable);
 		const filename = rename(file.name, {
 			suffix: isThumbnail ? '-thumb' : '-web',
@@ -108,11 +110,10 @@ export default async function(ctx: Koa.Context) {
 		ctx.set('Content-Type', mime);
 		ctx.set('Cache-Control', 'max-age=31536000, immutable');
 		ctx.set('Content-Disposition', contentDisposition('inline', filename));
-		ctx.body = readableRead(cloneStream(InternalStorage.read(key)));
 	} else {
 		const readable = InternalStorage.read(file.accessKey!);
 		readable.on('error', commonReadableHandlerGenerator(ctx));
-		ctx.body = readableRead(cloneStream(readable));
+		ctx.body = cloneStream(readable);
 		ctx.set('Content-Type', file.type);
 		ctx.set('Cache-Control', 'max-age=31536000, immutable');
 		ctx.set('Content-Disposition', contentDisposition('inline', file.name));
