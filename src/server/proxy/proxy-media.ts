@@ -1,11 +1,10 @@
-import * as fs from 'fs';
 import * as Koa from 'koa';
 import { serverLogger } from '../index';
 import { IReadableImage, convertToPng, convertToJpeg } from '@/services/drive/image-processor';
-import { downloadUrl, getUrl } from '@/misc/download-url';
+import { getUrl } from '@/misc/download-url';
 import { detectType } from '@/misc/get-file-info';
 import { StatusError } from '@/misc/fetch';
-import { PassThrough } from 'stream';
+import { cloneStream } from '@/misc/stream/clone';
 
 export async function proxyMedia(ctx: Koa.Context) {
 	const url = 'url' in ctx.query ? ctx.query.url : 'https://' + ctx.params.url;
@@ -15,7 +14,7 @@ export async function proxyMedia(ctx: Koa.Context) {
 	try {
 		const readable = getUrl(url);
 
-		const { mime, ext } = await detectType(readable);
+		const { mime, ext } = await detectType(cloneStream(readable));
 
 		if (!mime.startsWith('image/')) throw 403;
 
