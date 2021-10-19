@@ -5,6 +5,7 @@ import { getUrl } from '@/misc/download-url';
 import { detectType } from '@/misc/get-file-info';
 import { StatusError } from '@/misc/fetch';
 import { cloneStream } from '@/misc/stream/clone';
+import { readableRead } from '@/misc/stream/read';
 
 export async function proxyMedia(ctx: Koa.Context) {
 	const url = 'url' in ctx.query ? ctx.query.url : 'https://' + ctx.params.url;
@@ -12,8 +13,7 @@ export async function proxyMedia(ctx: Koa.Context) {
 	if (typeof url !== 'string') throw 403;
 
 	try {
-		const readable = getUrl(url);
-
+		const readable = readableRead(getUrl(url));
 		const clone = cloneStream(readable);
 
 		const { mime, ext } = await detectType(readable);
