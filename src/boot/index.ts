@@ -3,7 +3,7 @@ import * as chalk from 'chalk';
 import Xev from 'xev';
 
 import Logger from '@/services/logger';
-import { program } from '../argv';
+import { envOption } from '../env';
 
 // for typeorm
 import 'reflect-metadata';
@@ -20,7 +20,7 @@ const ev = new Xev();
 export default async function() {
 	process.title = `Misskey (${cluster.isMaster ? 'master' : 'worker'})`;
 
-	if (cluster.isMaster || program.disableClustering) {
+	if (cluster.isMaster || envOption.disableClustering) {
 		await masterMain();
 
 		if (cluster.isMaster) {
@@ -28,7 +28,7 @@ export default async function() {
 		}
 	}
 
-	if (cluster.isWorker || program.disableClustering) {
+	if (cluster.isWorker || envOption.disableClustering) {
 		await workerMain();
 	}
 
@@ -60,7 +60,7 @@ cluster.on('exit', worker => {
 });
 
 // Display detail of unhandled promise rejection
-if (!program.quiet) {
+if (!envOption.quiet) {
 	process.on('unhandledRejection', console.dir);
 }
 

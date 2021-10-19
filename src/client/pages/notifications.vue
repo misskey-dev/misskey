@@ -1,15 +1,21 @@
 <template>
-<div class="clupoqwt" v-size="{ min: [800] }">
-	<XNotifications class="notifications" @before="before" @after="after" page/>
+<div>
+	<MkHeader :info="header"/>
+	<MkSpacer :content-max="800">
+		<div class="clupoqwt">
+			<XNotifications class="notifications" @before="before" @after="after" :include-types="includeTypes" :unread-only="tab === 'unread'"/>
+		</div>
+	</MkSpacer>
 </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
 import Progress from '@client/scripts/loading';
 import XNotifications from '@client/components/notifications.vue';
 import * as os from '@client/os';
 import * as symbols from '@client/symbols';
+import { notificationTypes } from '@/types';
 
 export default defineComponent({
 	components: {
@@ -22,14 +28,35 @@ export default defineComponent({
 				title: this.$ts.notifications,
 				icon: 'fas fa-bell',
 				bg: 'var(--bg)',
+			},
+			tab: 'all',
+			includeTypes: null,
+			header: computed(() => ({
+				title: this.$ts.notifications,
+				icon: 'fas fa-bell',
+				bg: 'var(--bg)',
 				actions: [{
+					text: this.$ts.filter,
+					icon: 'fas fa-filter',
+					highlighted: this.includeTypes != null,
+					handler: this.setFilter,
+				}, {
 					text: this.$ts.markAllAsRead,
 					icon: 'fas fa-check',
 					handler: () => {
 						os.apiWithDialog('notifications/mark-all-as-read');
-					}
-				}]
-			},
+					},
+				}],
+				tabs: [{
+					active: this.tab === 'all',
+					title: this.$ts.all,
+					onClick: () => { this.tab = 'all'; },
+				}, {
+					active: this.tab === 'unread',
+					title: this.$ts.unread,
+					onClick: () => { this.tab = 'unread'; },
+				},]
+			})),
 		};
 	},
 
@@ -40,6 +67,24 @@ export default defineComponent({
 
 		after() {
 			Progress.done();
+		},
+
+		setFilter(ev) {
+			const typeItems = notificationTypes.map(t => ({
+				text: this.$t(`_notification._types.${t}`),
+				active: this.includeTypes && this.includeTypes.includes(t),
+				action: () => {
+					this.includeTypes = [t];
+				}
+			}));
+			const items = this.includeTypes != null ? [{
+				icon: 'fas fa-times',
+				text: this.$ts.clear,
+				action: () => {
+					this.includeTypes = null;
+				}
+			}, null, ...typeItems] : typeItems;
+			os.popupMenu(items, ev.currentTarget || ev.target);
 		}
 	}
 });
@@ -47,14 +92,5 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .clupoqwt {
-	&.min-width_800px {
-		background: var(--bg);
-		padding: 32px 0;
-
-		> .notifications {
-			max-width: 800px;
-			margin: 0 auto;
-		}
-	}
 }
 </style>

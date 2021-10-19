@@ -1,7 +1,7 @@
 <template>
 <transition :name="$store.state.animation ? 'popup-menu' : ''" appear @after-leave="onClosed" @enter="$emit('opening')" @after-enter="childRendered">
 	<div v-show="manualShowing != null ? manualShowing : showing" class="ccczpooj" :class="{ front, fixed, top: position === 'top' }" ref="content" :style="{ pointerEvents: (manualShowing != null ? manualShowing : showing) ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
-		<slot :point="point"></slot>
+		<slot></slot>
 	</div>
 </transition>
 </template>
@@ -52,7 +52,6 @@ export default defineComponent({
 			fixed: false,
 			transformOrigin: 'center',
 			contentClicking: false,
-			point: null,
 		};
 	},
 
@@ -136,10 +135,8 @@ export default defineComponent({
 			}
 
 			if (top > rect.top + (this.fixed ? 0 : window.pageYOffset)) {
-				this.point = 'top';
 				this.transformOrigin = 'center top';
 			} else {
-				this.point = null;
 				this.transformOrigin = 'center';
 			}
 

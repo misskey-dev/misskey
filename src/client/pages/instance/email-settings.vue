@@ -1,30 +1,30 @@
 <template>
 <FormBase>
 	<FormSuspense :p="init">
-		<FormSwitch v-model:value="enableEmail">{{ $ts.enableEmail }}<template #desc>{{ $ts.emailConfigInfo }}</template></FormSwitch>
+		<FormSwitch v-model="enableEmail">{{ $ts.enableEmail }}<template #desc>{{ $ts.emailConfigInfo }}</template></FormSwitch>
 
 		<template v-if="enableEmail">
-			<FormInput v-model:value="email" type="email">
+			<FormInput v-model="email" type="email">
 				<span>{{ $ts.emailAddress }}</span>
 			</FormInput>
 
-			<div class="_formItem _formNoConcat" v-sticky-container>
-				<div class="_formLabel">{{ $ts.smtpConfig }}</div>
+			<div class="_debobigegoItem _debobigegoNoConcat" v-sticky-container>
+				<div class="_debobigegoLabel">{{ $ts.smtpConfig }}</div>
 				<div class="main">
-					<FormInput v-model:value="smtpHost">
+					<FormInput v-model="smtpHost">
 						<span>{{ $ts.smtpHost }}</span>
 					</FormInput>
-					<FormInput v-model:value="smtpPort" type="number">
+					<FormInput v-model="smtpPort" type="number">
 						<span>{{ $ts.smtpPort }}</span>
 					</FormInput>
-					<FormInput v-model:value="smtpUser">
+					<FormInput v-model="smtpUser">
 						<span>{{ $ts.smtpUser }}</span>
 					</FormInput>
-					<FormInput v-model:value="smtpPass" type="password">
+					<FormInput v-model="smtpPass" type="password">
 						<span>{{ $ts.smtpPass }}</span>
 					</FormInput>
 					<FormInfo>{{ $ts.emptyToDisableSmtpAuth }}</FormInfo>
-					<FormSwitch v-model:value="smtpSecure">{{ $ts.smtpSecure }}<template #desc>{{ $ts.smtpSecureInfo }}</template></FormSwitch>
+					<FormSwitch v-model="smtpSecure">{{ $ts.smtpSecure }}<template #desc>{{ $ts.smtpSecureInfo }}</template></FormSwitch>
 				</div>
 			</div>
 
@@ -38,13 +38,13 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import FormSwitch from '@client/components/form/switch.vue';
-import FormInput from '@client/components/form/input.vue';
-import FormButton from '@client/components/form/button.vue';
-import FormBase from '@client/components/form/base.vue';
-import FormGroup from '@client/components/form/group.vue';
-import FormInfo from '@client/components/form/info.vue';
-import FormSuspense from '@client/components/form/suspense.vue';
+import FormSwitch from '@client/components/debobigego/switch.vue';
+import FormInput from '@client/components/debobigego/input.vue';
+import FormButton from '@client/components/debobigego/button.vue';
+import FormBase from '@client/components/debobigego/base.vue';
+import FormGroup from '@client/components/debobigego/group.vue';
+import FormInfo from '@client/components/debobigego/info.vue';
+import FormSuspense from '@client/components/debobigego/suspense.vue';
 import * as os from '@client/os';
 import * as symbols from '@client/symbols';
 import { fetchInstance } from '@client/instance';
@@ -66,7 +66,8 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.emailServer,
-				icon: 'fas fa-envelope'
+				icon: 'fas fa-envelope',
+				bg: 'var(--bg)',
 			},
 			enableEmail: false,
 			email: null,

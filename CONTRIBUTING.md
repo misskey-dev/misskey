@@ -57,6 +57,17 @@ If your language is not listed in Crowdin, please open an issue.
 - Test codes are located in [`/test`](/test).
 
 ### Run test
+Create a config file.
+```
+cp test/test.yml .config/
+```
+Prepare DB/Redis for testing.
+```
+docker-compose -f test/docker-compose.yml up
+```
+Alternatively, prepare an empty (data can be erased) DB and edit `.config/test.yml`. 
+
+Run all test.
 ```
 npm run test
 ```
@@ -176,6 +187,10 @@ npx ts-node ./node_modules/typeorm/cli.js migration:generate -n 変更の名前
 
 ### JSONのimportに気を付けよう
 TypeScriptでjsonをimportすると、tscでコンパイルするときにそのjsonファイルも一緒にdistディレクトリに吐き出されてしまう。この挙動により、意図せずファイルの書き換えが発生することがあるので、jsonをimportするときは書き換えられても良いものかどうか確認すること。書き換えされて欲しくない場合は、importで読み込むのではなく、`fs.readFileSync`などの関数を使って読み込むようにすればよい。
+
+### コンポーネントのスタイル定義でmarginを持たせない
+コンポーネント自身がmarginを設定するのは問題の元となることはよく知られている
+marginはそのコンポーネントを使う側が設定する
 
 ## その他
 ### HTMLのクラス名で follow という単語は使わない

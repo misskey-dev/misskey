@@ -34,7 +34,7 @@ A blinking light indicates unread content.In cases where this light won't go awa
 Followers-only notes cannot be renoted.
 
 ## Specific parts of the UI are not being displayed
-Problems like these can arise if you are using an Adblocker.Please turn these off on Misskey.
+Problems like these can arise if you are using an Adblocker. For an optimized experience on Misskey, please turn it off.
 
 ## Some parts of the UI are untranslated
 In most cases, this is simply a matter of the translation not having been done yet instead of being a bug.Please wait until the translation of this area has been completed. You can alternatively also [participate in translation](./misskey) yourself.

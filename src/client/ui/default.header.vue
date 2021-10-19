@@ -29,7 +29,7 @@
 				<MkAvatar :user="$i" class="avatar"/><MkAcct class="acct" :user="$i"/>
 			</button>
 			<div class="post" @click="post">
-				<MkButton class="button" primary full>
+				<MkButton class="button" gradate full rounded>
 					<i class="fas fa-pencil-alt fa-fw"></i>
 				</MkButton>
 			</div>
@@ -44,7 +44,7 @@ import { host } from '@client/config';
 import { search } from '@client/scripts/search';
 import * as os from '@client/os';
 import { menuDef } from '@client/menu';
-import { getAccounts, addAccount, login } from '@client/account';
+import { openAccountMenu } from '@client/account';
 import MkButton from '@client/components/ui/button.vue';
 
 export default defineComponent({
@@ -100,76 +100,12 @@ export default defineComponent({
 			search();
 		},
 
-		async openAccountMenu(ev) {
-			const storedAccounts = await getAccounts().then(accounts => accounts.filter(x => x.id !== this.$i.id));
-			const accountsPromise = os.api('users/show', { userIds: storedAccounts.map(x => x.id) });
-
-			const accountItemPromises = storedAccounts.map(a => new Promise(res => {
-				accountsPromise.then(accounts => {
-					const account = accounts.find(x => x.id === a.id);
-					if (account == null) return res(null);
-					res({
-						type: 'user',
-						user: account,
-						action: () => { this.switchAccount(account); }
-					});
-				});
-			}));
-
-			os.popupMenu([...[{
-				type: 'link',
-				text: this.$ts.profile,
-				to: `/@${ this.$i.username }`,
-				avatar: this.$i,
-			}, null, ...accountItemPromises, {
-				icon: 'fas fa-plus',
-				text: this.$ts.addAccount,
-				action: () => {
-					os.popupMenu([{
-						text: this.$ts.existingAccount,
-						action: () => { this.addAccount(); },
-					}, {
-						text: this.$ts.createAccount,
-						action: () => { this.createAccount(); },
-					}], ev.currentTarget || ev.target);
-				},
-			}]], ev.currentTarget || ev.target, {
-				align: 'left'
-			});
-		},
-
 		more(ev) {
 			os.popup(import('@client/components/launch-pad.vue'), {}, {
 			}, 'closed');
 		},
 
-		addAccount() {
-			os.popup(import('@client/components/signin-dialog.vue'), {}, {
-				done: res => {
-					addAccount(res.id, res.i);
-					os.success();
-				},
-			}, 'closed');
-		},
-
-		createAccount() {
-			os.popup(import('@client/components/signup-dialog.vue'), {}, {
-				done: res => {
-					addAccount(res.id, res.i);
-					this.switchAccountWithToken(res.i);
-				},
-			}, 'closed');
-		},
-
-		async switchAccount(account: any) {
-			const storedAccounts = await getAccounts();
-			const token = storedAccounts.find(x => x.id === account.id).token;
-			this.switchAccountWithToken(token);
-		},
-
-		switchAccountWithToken(token: string) {
-			login(token);
-		},
+		openAccountMenu,
 	}
 });
 </script>

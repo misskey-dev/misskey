@@ -8,7 +8,9 @@
 			<template #suffix v-else>{{ $ts.none }} ({{ $ts.notRecommended }})</template>
 		</FormLink>
 
-		<FormSwitch v-model:value="enableRegistration">{{ $ts.enableRegistration }}</FormSwitch>
+		<FormSwitch v-model="enableRegistration">{{ $ts.enableRegistration }}</FormSwitch>
+
+		<FormSwitch v-model="emailRequiredForSignup">{{ $ts.emailRequiredForSignup }}</FormSwitch>
 
 		<FormButton @click="save" primary><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
 	</FormSuspense>
@@ -17,13 +19,13 @@
 
 <script lang="ts">
 import { defineAsyncComponent, defineComponent } from 'vue';
-import FormLink from '@client/components/form/link.vue';
-import FormSwitch from '@client/components/form/switch.vue';
-import FormButton from '@client/components/form/button.vue';
-import FormBase from '@client/components/form/base.vue';
-import FormGroup from '@client/components/form/group.vue';
-import FormInfo from '@client/components/form/info.vue';
-import FormSuspense from '@client/components/form/suspense.vue';
+import FormLink from '@client/components/debobigego/link.vue';
+import FormSwitch from '@client/components/debobigego/switch.vue';
+import FormButton from '@client/components/debobigego/button.vue';
+import FormBase from '@client/components/debobigego/base.vue';
+import FormGroup from '@client/components/debobigego/group.vue';
+import FormInfo from '@client/components/debobigego/info.vue';
+import FormSuspense from '@client/components/debobigego/suspense.vue';
 import * as os from '@client/os';
 import * as symbols from '@client/symbols';
 import { fetchInstance } from '@client/instance';
@@ -45,11 +47,13 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.security,
-				icon: 'fas fa-lock'
+				icon: 'fas fa-lock',
+				bg: 'var(--bg)',
 			},
 			enableHcaptcha: false,
 			enableRecaptcha: false,
 			enableRegistration: false,
+			emailRequiredForSignup: false,
 		}
 	},
 
@@ -63,11 +67,13 @@ export default defineComponent({
 			this.enableHcaptcha = meta.enableHcaptcha;
 			this.enableRecaptcha = meta.enableRecaptcha;
 			this.enableRegistration = !meta.disableRegistration;
+			this.emailRequiredForSignup = meta.emailRequiredForSignup;
 		},
 	
 		save() {
 			os.apiWithDialog('admin/update-meta', {
 				disableRegistration: !this.enableRegistration,
+				emailRequiredForSignup: this.emailRequiredForSignup,
 			}).then(() => {
 				fetchInstance();
 			});

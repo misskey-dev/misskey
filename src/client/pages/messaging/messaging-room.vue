@@ -284,7 +284,7 @@ const Component = defineComponent({
 		},
 
 		scrollToBottom() {
-			scroll(this.$el, this.$el.offsetHeight);
+			scroll(this.$el, { top: this.$el.offsetHeight });
 		},
 
 		onIndicatorClick() {

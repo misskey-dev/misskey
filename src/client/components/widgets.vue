@@ -30,7 +30,7 @@
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
 import { v4 as uuid } from 'uuid';
-import MkSelect from '@client/components/ui/select.vue';
+import MkSelect from '@client/components/form/select.vue';
 import MkButton from '@client/components/ui/button.vue';
 import { widgets as widgetDefs } from '@client/widgets';
 

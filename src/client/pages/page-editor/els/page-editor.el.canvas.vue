@@ -22,7 +22,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import XContainer from '../page-editor.container.vue';
-import MkInput from '@client/components/ui/input.vue';
+import MkInput from '@client/components/form/input.vue';
 import * as os from '@client/os';
 
 export default defineComponent({

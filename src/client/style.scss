@@ -178,7 +178,7 @@ hr {
 		pointer-events: none;
 	}
 
-	&:focus {
+	&:focus-visible {
 		outline: none;
 	}
 
@@ -199,6 +199,20 @@ hr {
 
 	&:not(:disabled):active {
 		background: var(--X9);
+	}
+}
+
+._buttonGradate {
+	@extend ._buttonPrimary;
+	color: var(--fgOnAccent);
+	background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
+
+	&:not(:disabled):hover {
+		background: linear-gradient(90deg, var(--X8), var(--X8));
+	}
+
+	&:not(:disabled):active {
+		background: linear-gradient(90deg, var(--X8), var(--X8));
 	}
 }
 
@@ -366,7 +380,7 @@ hr {
 	}
 }
 
-._flat_ {
+._fitSide_ {
 	--root-margin: 0px;
 	--baseContentWidth: 100%;
 	--panelBorder: none;
@@ -425,12 +439,18 @@ hr {
 	}
 }
 
-._inputNoTopMargin {
-	margin-top: 0 !important;
+._formBlock {
+	margin: 20px 0;
 }
 
-._inputNoBottomMargin {
-	margin-bottom: 0 !important;
+._formRoot {
+	> ._formBlock:first-child {
+		margin-top: 0;
+	}
+
+	> ._formBlock:last-child {
+		margin-bottom: 0;
+	}
 }
 
 ._table {
@@ -503,7 +523,7 @@ hr {
 	padding: 5px;
 }
 
-.prism-editor__textarea:focus {
+.prism-editor__textarea:focus-visible {
 	outline: none;
 }
 

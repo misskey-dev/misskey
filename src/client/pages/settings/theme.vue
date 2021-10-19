@@ -1,7 +1,7 @@
 <template>
 <FormBase>
 	<FormGroup>
-		<div class="rfqxtzch _formItem _formPanel">
+		<div class="rfqxtzch _debobigegoItem _debobigegoPanel">
 			<div class="darkMode">
 				<div class="toggleWrapper">
 					<input type="checkbox" class="dn" id="dn" v-model="darkMode"/>
@@ -23,11 +23,11 @@
 				</div>
 			</div>
 		</div>
-		<FormSwitch v-model:value="syncDeviceDarkMode">{{ $ts.syncDeviceDarkMode }}</FormSwitch>
+		<FormSwitch v-model="syncDeviceDarkMode">{{ $ts.syncDeviceDarkMode }}</FormSwitch>
 	</FormGroup>
 
 	<template v-if="darkMode">
-		<FormSelect v-model:value="darkThemeId">
+		<FormSelect v-model="darkThemeId">
 			<template #label>{{ $ts.themeForDarkMode }}</template>
 			<optgroup :label="$ts.darkThemes">
 				<option v-for="x in darkThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
@@ -36,7 +36,7 @@
 				<option v-for="x in lightThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
 			</optgroup>
 		</FormSelect>
-		<FormSelect v-model:value="lightThemeId">
+		<FormSelect v-model="lightThemeId">
 			<template #label>{{ $ts.themeForLightMode }}</template>
 			<optgroup :label="$ts.lightThemes">
 				<option v-for="x in lightThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
@@ -47,7 +47,7 @@
 		</FormSelect>
 	</template>
 	<template v-else>
-		<FormSelect v-model:value="lightThemeId">
+		<FormSelect v-model="lightThemeId">
 			<template #label>{{ $ts.themeForLightMode }}</template>
 			<optgroup :label="$ts.lightThemes">
 				<option v-for="x in lightThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
@@ -56,7 +56,7 @@
 				<option v-for="x in darkThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
 			</optgroup>
 		</FormSelect>
-		<FormSelect v-model:value="darkThemeId">
+		<FormSelect v-model="darkThemeId">
 			<template #label>{{ $ts.themeForDarkMode }}</template>
 			<optgroup :label="$ts.darkThemes">
 				<option v-for="x in darkThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
@@ -86,12 +86,12 @@
 
 <script lang="ts">
 import { computed, defineComponent, onActivated, onMounted, ref, watch } from 'vue';
-import FormSwitch from '@client/components/form/switch.vue';
-import FormSelect from '@client/components/form/select.vue';
-import FormBase from '@client/components/form/base.vue';
-import FormGroup from '@client/components/form/group.vue';
-import FormLink from '@client/components/form/link.vue';
-import FormButton from '@client/components/form/button.vue';
+import FormSwitch from '@client/components/debobigego/switch.vue';
+import FormSelect from '@client/components/debobigego/select.vue';
+import FormBase from '@client/components/debobigego/base.vue';
+import FormGroup from '@client/components/debobigego/group.vue';
+import FormLink from '@client/components/debobigego/link.vue';
+import FormButton from '@client/components/debobigego/button.vue';
 import { builtinThemes } from '@client/scripts/theme';
 import { selectFile } from '@client/scripts/select-file';
 import { isDeviceDarkmode } from '@client/scripts/is-device-darkmode';
@@ -116,7 +116,8 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const INFO = {
 			title: i18n.locale.theme,
-			icon: 'fas fa-palette'
+			icon: 'fas fa-palette',
+				bg: 'var(--bg)',
 		};
 
 		const installedThemes = ref(getThemes());

@@ -1,8 +1,8 @@
 <template>
 <FormBase>
-	<div class="_formItem">
-		<div class="_formLabel">{{ $ts.reactionSettingDescription }}</div>
-		<div class="_formPanel">
+	<div class="_debobigegoItem">
+		<div class="_debobigegoLabel">{{ $ts.reactionSettingDescription }}</div>
+		<div class="_debobigegoPanel">
 			<XDraggable class="zoaiodol" v-model="reactions" :item-key="item => item" animation="150" delay="100" delay-on-touch-only="true">
 				<template #item="{element}">
 					<button class="_button item" @click="remove(element, $event)">
@@ -14,7 +14,7 @@
 				</template>
 			</XDraggable>
 		</div>
-		<div class="_formCaption">{{ $ts.reactionSettingDescription2 }} <button class="_textButton" @click="preview">{{ $ts.preview }}</button></div>
+		<div class="_debobigegoCaption">{{ $ts.reactionSettingDescription2 }} <button class="_textButton" @click="preview">{{ $ts.preview }}</button></div>
 	</div>
 
 	<FormRadios v-model="reactionPickerWidth">
@@ -37,10 +37,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import XDraggable from 'vuedraggable';
-import FormInput from '@client/components/form/input.vue';
-import FormRadios from '@client/components/form/radios.vue';
-import FormBase from '@client/components/form/base.vue';
-import FormButton from '@client/components/form/button.vue';
+import FormInput from '@client/components/debobigego/input.vue';
+import FormRadios from '@client/components/debobigego/radios.vue';
+import FormBase from '@client/components/debobigego/base.vue';
+import FormButton from '@client/components/debobigego/button.vue';
 import * as os from '@client/os';
 import { defaultStore } from '@client/store';
 import * as symbols from '@client/symbols';
@@ -64,7 +64,8 @@ export default defineComponent({
 				action: {
 					icon: 'fas fa-eye',
 					handler: this.preview
-				}
+				},
+				bg: 'var(--bg)',
 			},
 			reactions: JSON.parse(JSON.stringify(this.$store.state.reactions)),
 		}

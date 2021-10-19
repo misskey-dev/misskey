@@ -3,10 +3,15 @@
 	<div class="ebkgocck" :class="{ front }" v-if="showing">
 		<div class="body _window _shadow _narrow_" @mousedown="onBodyMousedown" @keydown="onKeydown">
 			<div class="header" :class="{ mini }" @contextmenu.prevent.stop="onContextmenu">
-				<button v-if="closeButton" class="_button" @click="close()"><i class="fas fa-times"></i></button>
-
+				<span class="left">
+					<slot name="headerLeft"></slot>
+				</span>
 				<span class="title" @mousedown.prevent="onHeaderMousedown" @touchstart.prevent="onHeaderMousedown">
 					<slot name="header"></slot>
+				</span>
+				<span class="right">
+					<slot name="headerRight"></slot>
+					<button v-if="closeButton" class="_button" @click="close()"><i class="fas fa-times"></i></button>
 				</span>
 			</div>
 			<div class="body" v-if="padding">
@@ -377,7 +382,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .window-enter-active, .window-leave-active {
-	transition: opacity 0.3s, transform 0.3s !important;
+	transition: opacity 0.2s, transform 0.2s !important;
 }
 .window-enter-from, .window-leave-to {
 	pointer-events: none;
@@ -418,12 +423,14 @@ export default defineComponent({
 			height: var(--height);
 			border-bottom: solid 1px var(--divider);
 
-			> ::v-deep(button) {
-				height: var(--height);
-				width: var(--height);
+			> .left, > .right {
+				> ::v-deep(button) {
+					height: var(--height);
+					width: var(--height);
 
-				&:hover {
-					color: var(--fgHighlighted);
+					&:hover {
+						color: var(--fgHighlighted);
+					}
 				}
 			}
 

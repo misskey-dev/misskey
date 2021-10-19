@@ -1,22 +1,22 @@
 <template>
 <FormBase>
 	<FormGroup>
-		<FormSwitch v-model:value="mention">
+		<FormSwitch v-model="mention">
 			{{ $ts._notification._types.mention }}
 		</FormSwitch>
-		<FormSwitch v-model:value="reply">
+		<FormSwitch v-model="reply">
 			{{ $ts._notification._types.reply }}
 		</FormSwitch>
-		<FormSwitch v-model:value="quote">
+		<FormSwitch v-model="quote">
 			{{ $ts._notification._types.quote }}
 		</FormSwitch>
-		<FormSwitch v-model:value="follow">
+		<FormSwitch v-model="follow">
 			{{ $ts._notification._types.follow }}
 		</FormSwitch>
-		<FormSwitch v-model:value="receiveFollowRequest">
+		<FormSwitch v-model="receiveFollowRequest">
 			{{ $ts._notification._types.receiveFollowRequest }}
 		</FormSwitch>
-		<FormSwitch v-model:value="groupInvited">
+		<FormSwitch v-model="groupInvited">
 			{{ $ts._notification._types.groupInvited }}
 		</FormSwitch>
 	</FormGroup>
@@ -25,10 +25,10 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import FormButton from '@client/components/form/button.vue';
+import FormButton from '@client/components/debobigego/button.vue';
 import FormSwitch from '@client/components/form/switch.vue';
-import FormBase from '@client/components/form/base.vue';
-import FormGroup from '@client/components/form/group.vue';
+import FormBase from '@client/components/debobigego/base.vue';
+import FormGroup from '@client/components/debobigego/group.vue';
 import * as os from '@client/os';
 import * as symbols from '@client/symbols';
 import * as symbols from '@client/symbols';
@@ -47,7 +47,8 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.emailNotification,
-				icon: 'fas fa-envelope'
+				icon: 'fas fa-envelope',
+				bg: 'var(--bg)',
 			},
 
 			mention: this.$i.emailNotificationTypes.includes('mention'),
