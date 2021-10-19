@@ -86,6 +86,7 @@ export default async function(ctx: Koa.Context) {
 				eventdetect(readable, file.uri)
 
 				const clone = cloneStream(readable);
+				readableRead(readable)
 				console.log(`${file.uri} b`)
 
 				const { mime, ext } = await detectType(readable)
