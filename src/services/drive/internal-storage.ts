@@ -27,12 +27,6 @@ export class InternalStorage {
 		return `${config.url}/files/${key}`;
 	}
 
-	public static saveFromBuffer(key: string, data: Buffer) {
-		fs.mkdirSync(InternalStorage.path, { recursive: true });
-		fs.writeFileSync(InternalStorage.resolvePath(key), data);
-		return `${config.url}/files/${key}`;
-	}
-
 	public static async saveFromStream(key: string, readable: stream.Readable) {
 		fs.mkdirSync(InternalStorage.path, { recursive: true });
 		await pipeline(readable, fs.createWriteStream(InternalStorage.resolvePath(key)));
