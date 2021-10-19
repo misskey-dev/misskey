@@ -25,20 +25,20 @@ const assets = `${_dirname}/../../server/file/assets/`;
 function eventdetect(readable: Readable, txt: string): Promise<void> {
 	return new Promise((resolve, reject) => {
 			readable.on('end', () => {
-					console.log(txt, 'end')
+					console.log(`${txt} end`)
 					resolve()
 			})
 			.on('data', chunk => {
-					console.log(txt, chunk.length)
+					console.log(`${txt} ${chunk.length}`)
 			})
 			.on('close', () => {
-					console.log(txt, 'close')
+					console.log(`${txt} close`)
 			})
 			.on('pause', () => {
-					console.log(txt, 'pause')
+					console.log(`${txt} pause`)
 			})
 			.on('resume', () => {
-					console.log(txt, 'resume')
+					console.log(`${txt} resume`)
 			})
 			.on('error', e => {
 					console.error(e)
@@ -77,13 +77,14 @@ export default async function(ctx: Koa.Context) {
 		if (file.isLink && file.uri) {	// 期限切れリモートファイル
 			try {
 				const readable = getUrl(file.uri);
-				console.log(file.uri, 'a')
+				console.log(`${file.uri} a`)
 				eventdetect(readable, file.uri)
 
 				const clone = readableRead(cloneStream(readable));
+				console.log(`${file.uri} b`)
 
 				const { mime, ext } = await detectType(readableRead(readable));
-				console.log(file.uri, 'b')
+				console.log(`${file.uri} c`)
 
 				const image = await (async () => {
 					if (isThumbnail) {
