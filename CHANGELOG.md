@@ -16,6 +16,7 @@
 - クライアント: 新しいライトテーマを追加
 - API: ユーザーのリアクション一覧を取得する users/reactions を追加
 - API: users/search および users/search-by-username-and-host を強化
+- ミュート及びブロックのインポートを行えるように
 
 ### Bugfixes
 - クライアント: テーマの管理が行えない問題を修正

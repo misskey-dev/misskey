@@ -16,11 +16,13 @@
 	</FormSection>
 	<FormSection>
 		<template #label>{{ $ts._exportOrImport.muteList }}</template>
-		<MkButton :class="$style.button" inline @click="doExport('mute')"><i class="fas fa-download"></i> {{ $ts.export }}</MkButton>
+		<MkButton :class="$style.button" inline @click="doExport('muting')"><i class="fas fa-download"></i> {{ $ts.export }}</MkButton>
+		<MkButton :class="$style.button" inline @click="doImport('muting', $event)"><i class="fas fa-upload"></i> {{ $ts.import }}</MkButton>
 	</FormSection>
 	<FormSection>
 		<template #label>{{ $ts._exportOrImport.blockingList }}</template>
 		<MkButton :class="$style.button" inline @click="doExport('blocking')"><i class="fas fa-download"></i> {{ $ts.export }}</MkButton>
+		<MkButton :class="$style.button" inline @click="doImport('blocking', $event)"><i class="fas fa-upload"></i> {{ $ts.import }}</MkButton>
 	</FormSection>
 </div>
 </template>
@@ -58,11 +60,11 @@ export default defineComponent({
 	methods: {
 		doExport(target) {
 			os.api(
-				target == 'notes' ? 'i/export-notes' :
-				target == 'following' ? 'i/export-following' :
-				target == 'blocking' ? 'i/export-blocking' :
-				target == 'user-lists' ? 'i/export-user-lists' :
-				target == 'mute' ? 'i/export-mute' :
+				target === 'notes' ? 'i/export-notes' :
+				target === 'following' ? 'i/export-following' :
+				target === 'blocking' ? 'i/export-blocking' :
+				target === 'user-lists' ? 'i/export-user-lists' :
+				target === 'muting' ? 'i/export-mute' :
 				null, {})
 			.then(() => {
 				os.dialog({
@@ -81,8 +83,10 @@ export default defineComponent({
 			const file = await selectFile(e.currentTarget || e.target);
 			
 			os.api(
-				target == 'following' ? 'i/import-following' :
-				target == 'user-lists' ? 'i/import-user-lists' :
+				target === 'following' ? 'i/import-following' :
+				target === 'user-lists' ? 'i/import-user-lists' :
+				target === 'muting' ? 'i/import-muting' :
+				target === 'blocking' ? 'i/import-blocking' :
 				null, {
 					fileId: file.id
 			}).then(() => {
