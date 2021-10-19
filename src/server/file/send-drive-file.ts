@@ -54,11 +54,10 @@ export default async function(ctx: Koa.Context) {
 
 				const clone = cloneStream(readable);
 
-				const { mime, ext } = await detectType(cloneStream(readable));
+				const { mime, ext } = await detectType(readable);
 
 				const image = await (async () => {
 					if (isThumbnail) {
-						console.log('e')
 						if (['image/jpeg', 'image/webp'].includes(mime)) {
 							return convertToJpeg(clone, 498, 280);
 						} else if (['image/png'].includes(mime)) {
