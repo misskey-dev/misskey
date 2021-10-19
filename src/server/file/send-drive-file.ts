@@ -1,18 +1,20 @@
-import * as fs from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import * as Koa from 'koa';
 import * as send from 'koa-send';
 import * as rename from 'rename';
-import * as tmp from 'tmp';
 import { serverLogger } from '../index';
 import { contentDisposition } from '@/misc/content-disposition';
 import { DriveFiles } from '@/models/index';
 import { InternalStorage } from '@/services/drive/internal-storage';
-import { downloadUrl } from '@/misc/download-url';
+import { getUrl } from '@/misc/download-url';
 import { detectType } from '@/misc/get-file-info';
 import { convertToJpeg, convertToPngOrJpeg } from '@/services/drive/image-processor';
-import { GenerateVideoThumbnail } from '@/services/drive/generate-video-thumbnail';
+import { GenerateVideoThumbnailFromStream } from '@/services/drive/generate-video-thumbnail';
+import { StatusError } from '@/misc/fetch';
+import { PassThrough } from 'stream';
+import { cloneStream } from '@/misc/stream/clone';
+import { readableRead } from '@/misc/stream/read';
 
 //const _filename = fileURLToPath(import.meta.url);
 const _filename = __filename;
@@ -48,52 +50,44 @@ export default async function(ctx: Koa.Context) {
 
 	if (!file.storedInternal) {
 		if (file.isLink && file.uri) {	// 期限切れリモートファイル
-			const [path, cleanup] = await new Promise<[string, any]>((res, rej) => {
-				tmp.file((e, path, fd, cleanup) => {
-					if (e) return rej(e);
-					res([path, cleanup]);
-				});
-			});
-
 			try {
-				await downloadUrl(file.uri, path);
+				const readable = getUrl(file.uri);
+				const clone = cloneStream(readable);
 
-				const { mime, ext } = await detectType(path);
+				const { mime, ext } = await detectType(readable);
 
 				const convertFile = async () => {
 					if (isThumbnail) {
 						if (['image/jpeg', 'image/webp'].includes(mime)) {
-							return await convertToJpeg(path, 498, 280);
+							return convertToJpeg(clone, 498, 280);
 						} else if (['image/png'].includes(mime)) {
-							return await convertToPngOrJpeg(path, 498, 280);
+							return convertToPngOrJpeg(clone, 498, 280);
 						} else if (mime.startsWith('video/')) {
-							return await GenerateVideoThumbnail(path);
+							return GenerateVideoThumbnailFromStream(clone);
 						}
 					}
 
 					return {
-						data: fs.readFileSync(path),
+						readable: clone,
 						ext,
 						type: mime,
 					};
 				};
 
 				const image = await convertFile();
-				ctx.body = image.data;
+				ctx.body = image.readable;
 				ctx.set('Content-Type', image.type);
 				ctx.set('Cache-Control', 'max-age=31536000, immutable');
 			} catch (e) {
-				serverLogger.error(e.statusCode);
+				serverLogger.error(`${e}`);
 
-				if (typeof e.statusCode === 'number' && e.statusCode >= 400 && e.statusCode < 500) {
+				if (e instanceof StatusError && e.isClientError) {
 					ctx.status = e.statusCode;
 					ctx.set('Cache-Control', 'max-age=86400');
 				} else {
 					ctx.status = 500;
 					ctx.set('Cache-Control', 'max-age=300');
 				}
-			} finally {
-				cleanup();
 			}
 			return;
 		}
@@ -104,20 +98,22 @@ export default async function(ctx: Koa.Context) {
 	}
 
 	if (isThumbnail || isWebpublic) {
-		const { mime, ext } = await detectType(InternalStorage.resolvePath(key));
+		const readable = readableRead(InternalStorage.read(key));
+		readable.on('error', commonReadableHandlerGenerator(ctx));
+		ctx.body = cloneStream(readable);
+		const { mime, ext } = await detectType(readable);
 		const filename = rename(file.name, {
 			suffix: isThumbnail ? '-thumb' : '-web',
 			extname: ext ? `.${ext}` : undefined
 		}).toString();
 
-		ctx.body = InternalStorage.read(key);
 		ctx.set('Content-Type', mime);
 		ctx.set('Cache-Control', 'max-age=31536000, immutable');
 		ctx.set('Content-Disposition', contentDisposition('inline', filename));
 	} else {
 		const readable = InternalStorage.read(file.accessKey!);
 		readable.on('error', commonReadableHandlerGenerator(ctx));
-		ctx.body = readable;
+		ctx.body = cloneStream(readable);
 		ctx.set('Content-Type', file.type);
 		ctx.set('Cache-Control', 'max-age=31536000, immutable');
 		ctx.set('Content-Disposition', contentDisposition('inline', file.name));

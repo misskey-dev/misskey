@@ -1,6 +1,8 @@
 import $ from 'cafy';
 import define from '../../define';
 import { Users } from '@/models/index';
+import { Brackets } from 'typeorm';
+import { USER_ACTIVE_THRESHOLD } from '@/const';
 
 export const meta = {
 	tags: ['users'],
@@ -44,13 +46,15 @@ export const meta = {
 };
 
 export default define(meta, async (ps, me) => {
+	const activeThreshold = new Date(Date.now() - (1000 * 60 * 60 * 24 * 30)); // 30日
+
 	if (ps.host) {
 		const q = Users.createQueryBuilder('user')
 			.where('user.isSuspended = FALSE')
 			.andWhere('user.host LIKE :host', { host: ps.host.toLowerCase() + '%' });
 
 		if (ps.username) {
-			q.andWhere('user.usernameLower like :username', { username: ps.username.toLowerCase() + '%' });
+			q.andWhere('user.usernameLower LIKE :username', { username: ps.username.toLowerCase() + '%' });
 		}
 
 		q.andWhere('user.updatedAt IS NOT NULL');
@@ -63,9 +67,12 @@ export default define(meta, async (ps, me) => {
 		let users = await Users.createQueryBuilder('user')
 			.where('user.host IS NULL')
 			.andWhere('user.isSuspended = FALSE')
-			.andWhere('user.usernameLower like :username', { username: ps.username.toLowerCase() + '%' })
-			.andWhere('user.updatedAt IS NOT NULL')
-			.orderBy('user.updatedAt', 'DESC')
+			.andWhere('user.usernameLower LIKE :username', { username: ps.username.toLowerCase() + '%' })
+			.andWhere(new Brackets(qb => { qb
+				.where('user.updatedAt IS NULL')
+				.orWhere('user.updatedAt > :activeThreshold', { activeThreshold: activeThreshold });
+			}))
+			.orderBy('user.updatedAt', 'DESC', 'NULLS LAST')
 			.take(ps.limit!)
 			.skip(ps.offset)
 			.getMany();
@@ -74,7 +81,7 @@ export default define(meta, async (ps, me) => {
 			const otherUsers = await Users.createQueryBuilder('user')
 				.where('user.host IS NOT NULL')
 				.andWhere('user.isSuspended = FALSE')
-				.andWhere('user.usernameLower like :username', { username: ps.username.toLowerCase() + '%' })
+				.andWhere('user.usernameLower LIKE :username', { username: ps.username.toLowerCase() + '%' })
 				.andWhere('user.updatedAt IS NOT NULL')
 				.orderBy('user.updatedAt', 'DESC')
 				.take(ps.limit! - users.length)

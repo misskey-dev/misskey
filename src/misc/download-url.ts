@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as stream from 'stream';
 import * as util from 'util';
 import got, * as Got from 'got';
-import { httpAgent, httpsAgent } from './fetch';
+import { httpAgent, httpsAgent, StatusError } from './fetch';
 import config from '@/config/index';
 import * as chalk from 'chalk';
 import Logger from '@/services/logger';
@@ -11,9 +11,9 @@ const PrivateIp = require('private-ip');
 
 const pipeline = util.promisify(stream.pipeline);
 
-export async function downloadUrl(url: string, path: string) {
-	const logger = new Logger('download');
+const logger = new Logger('download');
 
+export function getUrl(url: string) {
 	logger.info(`Downloading ${chalk.cyan(url)} ...`);
 
 	const timeout = 30 * 1000;
@@ -37,6 +37,7 @@ export async function downloadUrl(url: string, path: string) {
 			http: httpAgent,
 			https: httpsAgent,
 		},
+		http2: false,	// default
 		retry: 0,
 	}).on('response', (res: Got.Response) => {
 		if ((process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test') && !config.proxy && res.ip) {
@@ -59,17 +60,21 @@ export async function downloadUrl(url: string, path: string) {
 			logger.warn(`maxSize exceeded (${progress.transferred} > ${maxSize}) on downloadProgress`);
 			req.destroy();
 		}
-	}).on('error', (e: any) => {
-		if (e.name === 'HTTPError') {
-			const statusCode = e.response?.statusCode;
-			const statusMessage = e.response?.statusMessage;
-			e.name = `StatusError`;
-			e.statusCode = statusCode;
-			e.message = `${statusCode} ${statusMessage}`;
-		}
 	});
 
-	await pipeline(req, fs.createWriteStream(path));
+	return req;
+}
+
+export async function downloadUrl(url: string, path: string) {
+	try {
+		await pipeline(getUrl(url), fs.createWriteStream(path));
+	} catch (e) {
+		if (e instanceof Got.HTTPError) {
+			throw new StatusError(`${e.response.statusCode} ${e.response.statusMessage}`, e.response.statusCode, e.response.statusMessage);
+		} else {
+			throw e;
+		}
+	}
 
 	logger.succ(`Download finished: ${chalk.cyan(url)}`);
 }

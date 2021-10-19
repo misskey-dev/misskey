@@ -43,7 +43,7 @@ export default defineComponent({
 	}
 }
 
-._flat_ .fpezltsf {
+._fitSide_ .fpezltsf {
 	border-radius: 0;
 }
 </style>

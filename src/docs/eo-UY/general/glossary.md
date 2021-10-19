@@ -1,4 +1,4 @@
-# 用語集
+# Glosaro
 Misskeyに関する用語集です。
 
 ## ActivityPub
@@ -49,7 +49,7 @@ Ai estas oficiala maskoto de Misskey.
 ## Nodo
 todo
 
-## Personecigitaj emoĵioj
+## Emoĵioj personecigitaj
 サーバーで用意された絵文字。カスタム絵文字ではない通常の絵文字は「Unicode絵文字」と区別して呼ばれる。
 
 ## Ŝaltpodio
@@ -68,10 +68,10 @@ todo
 アカウントが使用不可に設定されている状態。
 
 ## Disko
-Misskeyにアップロードしたファイルを管理する機能。詳細は[こちら。](../features/drive)
+Funkcio ebligas al uzantoj administri dosierojn kiujn ili alŝutis al Misskey.Rigardu por sciu pli tie[.](../features/drive)
 
 ## Notoj
-Misskeyに投稿される、文章、ファイル、アンケートなどを含めることができるコンテンツ。Rigardu por sciu pli tie[.](../features/note)
+Enpoŝtigaĵoj en Misskey kiuj konsistas el teksto, dosiero, balotujo, ktp.Rigardu por sciu pli tie[.](../features/note)
 
 ## Miskiisto
 Uzuloj de Misskey.
@@ -82,7 +82,7 @@ Uzuloj de Misskey.
 ## Transa, Surloka
 他サーバーのことを指します。リモートユーザーといったように接頭辞としても使われます。ローカルの逆です。
 
-## Kunfederado
+## Federado
 サーバー上で作成された情報が他のサーバーに伝わること。
 
 ## Loka

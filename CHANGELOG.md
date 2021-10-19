@@ -14,6 +14,19 @@
 ## 12.x.x (unreleased)
 
 ### Improvements
+- クライアント: 自分のリアクション一覧を見れるように
+	- 設定により、リアクション一覧を全員に公開することも可能
+- クライアント: ユーザー検索の精度を強化
+- クライアント: 新しいライトテーマを追加
+- API: ユーザーのリアクション一覧を取得する users/reactions を追加
+- API: users/search および users/search-by-username-and-host を強化
+
+### Bugfixes
+- クライアント: テーマの管理が行えない問題を修正
+
+## 12.92.0 (2021/10/16)
+
+### Improvements
 - アカウント登録にメールアドレスの設定を必須にするオプション
 - クライアント: 全体的なUIのブラッシュアップ
 - クライアント: MFM関数構文のサジェストを実装
@@ -24,6 +37,7 @@
 - クライアント: 新しいダークテーマを追加
 - クライアント: テーマコンパイラに hue と saturate 関数を追加
 - ActivityPub: HTML -> MFMの変換を強化
+- API: グループから抜ける users/groups/leave エンドポイントを実装
 - API: i/notifications に unreadOnly オプションを追加
 - API: ap系のエンドポイントをログイン必須化+レートリミット追加
 - MFM: Add tag syntaxes of bold <b></b> and strikethrough <s></s>

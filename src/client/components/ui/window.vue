@@ -382,7 +382,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .window-enter-active, .window-leave-active {
-	transition: opacity 0.3s, transform 0.3s !important;
+	transition: opacity 0.2s, transform 0.2s !important;
 }
 .window-enter-from, .window-leave-to {
 	pointer-events: none;
