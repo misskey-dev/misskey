@@ -49,15 +49,12 @@ export default async function(ctx: Koa.Context) {
 
 	if (!file.storedInternal) {
 		if (file.isLink && file.uri) {	// 期限切れリモートファイル
-			console.log('a')
 			try {
-				const readable = getUrl(file.uri);
-				console.log('b')
+				const readable = readableRead(getUrl(file.uri));
+
 				const clone = cloneStream(readable);
 
-				console.log('c')
-				const { mime, ext } = await detectType(readableRead(cloneStream(readable)));
-				console.log('d')
+				const { mime, ext } = await detectType(cloneStream(readable));
 
 				const image = await (async () => {
 					if (isThumbnail) {
@@ -71,7 +68,6 @@ export default async function(ctx: Koa.Context) {
 						}
 					}
 
-					console.log('f')
 					return {
 						readable: clone,
 						ext,
@@ -79,7 +75,6 @@ export default async function(ctx: Koa.Context) {
 					};
 				})();
 
-				console.log('g')
 				ctx.body = image.readable;
 				ctx.set('Content-Type', image.type);
 				ctx.set('Cache-Control', 'max-age=31536000, immutable');
