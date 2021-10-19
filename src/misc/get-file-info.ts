@@ -108,19 +108,14 @@ export async function getFileInfo(readable: stream.Readable): Promise<FileInfo> 
  */
 export async function detectType(readable: stream.Readable) {
 	const chunks: Uint8Array[] = [];
-
 	const streamPromise = new Promise<Buffer | void>(res => {
-		cloneStream(readable)
+		readable
 			.on('data', chunk => chunks.push(chunk))
 			.on('end', () => res(Buffer.concat(chunks)))
 			.on('error', e => res());
 	});
 
-	const fileSizePromise = getFileSize(readable);
-
-	const typePromise = fileType.fromStream(cloneStream(readable));
-
-	const [ fileSize, type ] = await Promise.all([fileSizePromise, typePromise]);
+	const [ fileSize, type ] = await Promise.all([getFileSize(readable), fileType.fromStream(cloneStream(readable))]);
 
 	if (fileSize === 0) {
 		return TYPE_OCTET_STREAM;
