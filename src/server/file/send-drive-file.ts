@@ -12,7 +12,6 @@ import { detectType } from '@/misc/get-file-info';
 import { convertToJpeg, convertToPngOrJpeg } from '@/services/drive/image-processor';
 import { GenerateVideoThumbnailFromStream } from '@/services/drive/generate-video-thumbnail';
 import { StatusError } from '@/misc/fetch';
-import { PassThrough } from 'stream';
 import { cloneStream } from '@/misc/stream/clone';
 import { readableRead } from '@/misc/stream/read';
 
@@ -50,14 +49,19 @@ export default async function(ctx: Koa.Context) {
 
 	if (!file.storedInternal) {
 		if (file.isLink && file.uri) {	// 期限切れリモートファイル
+			console.log('a')
 			try {
 				const readable = getUrl(file.uri);
+				console.log('b')
 				const clone = cloneStream(readable);
 
-				const { mime, ext } = await detectType(readable);
+				console.log('c')
+				const { mime, ext } = await detectType(cloneStream(readable));
+				console.log('d')
 
-				const convertFile = async () => {
+				const image = await (async () => {
 					if (isThumbnail) {
+						console.log('e')
 						if (['image/jpeg', 'image/webp'].includes(mime)) {
 							return convertToJpeg(clone, 498, 280);
 						} else if (['image/png'].includes(mime)) {
@@ -67,14 +71,15 @@ export default async function(ctx: Koa.Context) {
 						}
 					}
 
+					console.log('f')
 					return {
 						readable: clone,
 						ext,
 						type: mime,
 					};
-				};
+				})();
 
-				const image = await convertFile();
+				console.log('g')
 				ctx.body = image.readable;
 				ctx.set('Content-Type', image.type);
 				ctx.set('Cache-Control', 'max-age=31536000, immutable');
