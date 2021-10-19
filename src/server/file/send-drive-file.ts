@@ -73,7 +73,7 @@ export default async function(ctx: Koa.Context) {
 					};
 				})();
 
-				ctx.body = image.readable;
+				ctx.body = cloneStream(image.readable);
 				ctx.set('Content-Type', image.type);
 				ctx.set('Cache-Control', 'max-age=31536000, immutable');
 			} catch (e) {
