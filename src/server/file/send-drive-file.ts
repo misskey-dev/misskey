@@ -88,7 +88,7 @@ export default async function(ctx: Koa.Context) {
 				const clone = cloneStream(readable);
 				console.log(`${file.uri} b`)
 
-				const { mime, ext } = await detectType(readable))
+				const { mime, ext } = await detectType(readable)
 				console.log(`${file.uri} c`)
 
 				const image = await (async () => {
