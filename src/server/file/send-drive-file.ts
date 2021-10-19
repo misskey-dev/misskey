@@ -50,11 +50,11 @@ export default async function(ctx: Koa.Context) {
 	if (!file.storedInternal) {
 		if (file.isLink && file.uri) {	// 期限切れリモートファイル
 			try {
-				const readable = readableRead(getUrl(file.uri));
+				const readable = getUrl(file.uri);
 
-				const clone = cloneStream(readable);
+				const clone = readableRead(cloneStream(readable));
 
-				const { mime, ext } = await detectType(readable);
+				const { mime, ext } = await detectType(readableRead(readable));
 
 				const image = await (async () => {
 					if (isThumbnail) {
