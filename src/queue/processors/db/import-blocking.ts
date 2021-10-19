@@ -60,7 +60,7 @@ export async function importBlocking(job: Bull.Job<DbUserImportJobData>, done: a
 			// skip myself
 			if (target.id === job.data.user.id) continue;
 
-			logger.info(`Mute[${linenum}] ${target.id} ...`);
+			logger.info(`Block[${linenum}] ${target.id} ...`);
 
 			await block(user, target);
 		} catch (e) {
