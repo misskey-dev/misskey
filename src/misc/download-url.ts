@@ -7,6 +7,7 @@ import config from '@/config/index';
 import * as chalk from 'chalk';
 import Logger from '@/services/logger';
 import * as IPCIDR from 'ip-cidr';
+import { readableRead } from './stream/read';
 const PrivateIp = require('private-ip');
 
 const pipeline = util.promisify(stream.pipeline);
