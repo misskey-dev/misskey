@@ -21,20 +21,20 @@ Essayez les solutions proposées ci-dessous :
 - activer l'option « Réduire les animations dans l'interface » dans les paramètres du client
 - désactiver l'option « Utiliser un effet de flou pour les modals » dans les paramètres du client
 - activer l'accélération matérielle dans les paramètres de votre navigateur
-- お使いのデバイスのスペックを上げる
+- effectuer les mises  à jour de votre appareil.
 
-## UIの一部の表示がおかしい(背景が透明になっている等)
-アップデートによりUIの改修が行われたときに、テーマのキャッシュシステムの影響でそのような表示になることがあります。 クライアントの設定の「キャッシュをクリア」すると直ります。
-<div class="warn">⚠️ 「クライアントの」キャッシュクリアです。「ブラウザの」キャッシュクリアは行わないでください。</div>
+## Certaines parties de l'interface ne s'affichent pas correctement (arrière-plan transparent, etc.)
+Cela peut être lié au système de mise en cache du thème lorsqu'une mise à jour visant à améliorer l'interface a eu lieu. Pour résoudre le problème, sélectionnez la touche « Vider le cache » dans les paramètres du client.
+<div class="warn">⚠️ Attention de bien vider le cache du -client-... et pas celui du -navigateur- !</div>
 
-## 通知やアンテナ等の点滅が消えない
-点滅は、未読のコンテンツがあることを示しています。通常点滅が消えない場合は、コンテンツを遡ると未読なコンテンツが残っています。 すべて既読にしたと思われるのに、それでもなお点滅が続く場合(おそらく不具合と思われます)は設定から強制的にすべて既読扱いにすることができます。
+## Les pastilles de notification clignotantes ne disparaissent pas
+Une pastille clignotante indique la présence de nouveau contenu que vous n'avez pas encore lu. Lorsque cette pastille ne disparaît pas, c'est généralement parce que du contenu laissé non lu a été repoussé par la réception de nouveau contenu. S'il s'avère que vous avez déjà lu le contenu dans sa totalité mais que la pastille continue tout de même de clignoter, il s'agit alors vraisemblablement d'un bug et vous pouvez forcer Misskey à tout marquer comme lu depuis vos paramètres généraux.
 
 ## La fonction « Renoter » ne fonctionne pas
 Les notes dont l'audience est limitée aux « Abonné·e·s uniquement » ne peuvent pas être renotées.
 
 ## Des éléments spécifiques de l'interface ne s'affichent pas
-広告ブロッカーを使用しているとそのような不具合が発生することがあります。Misskeyではオフにしてご利用ください。
+Ce type de dysfonctionnement survient lorsque vous utilisez des bloqueurs de publicité. Désactivez-les pour profiter d'une expérience optimale sur Misskey.
 
 ## Certaines parties de l'interface ne sont pas traduites
 La plupart du temps, cela n'est pas un bug mais simplement un problème de traduction qui n'a pas encore été faite. Merci de patienter jusqu'à ce que la traduction de la portion en question soit achevée. Vous pouvez également [aider à traduire](./misskey) Misskey.

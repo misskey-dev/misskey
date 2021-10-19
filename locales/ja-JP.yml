@@ -797,6 +797,8 @@ unread: "未読"
 filter: "フィルタ"
 controllPanel: "コントロールパネル"
 manageAccounts: "アカウントを管理"
+makeReactionsPublic: "リアクション一覧を公開する"
+makeReactionsPublicDescription: "あなたがしたリアクション一覧を誰でも見れるようにします。"
 
 _signup:
   almostThere: "ほとんど完了です"

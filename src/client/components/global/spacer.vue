@@ -33,9 +33,15 @@ export default defineComponent({
 
 		onMounted(() => {
 			ro = new ResizeObserver((entries) => {
+				/* iOSが対応していない
 				adjust({
 					width: entries[0].borderBoxSize[0].inlineSize,
 					height: entries[0].borderBoxSize[0].blockSize,
+				});
+				*/
+				adjust({
+					width: root.value.offsetWidth,
+					height: root.value.offsetHeight,
 				});
 			});
 			ro.observe(root.value);
