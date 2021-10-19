@@ -36,7 +36,7 @@ export async function proxyMedia(ctx: Koa.Context) {
 
 		ctx.set('Content-Type', image.type);
 		ctx.set('Cache-Control', 'max-age=31536000, immutable');
-		ctx.body = image.readable;
+		ctx.body = cloneStream(image.readable);
 	} catch (e) {
 		serverLogger.error(`${e}`);
 
