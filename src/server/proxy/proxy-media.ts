@@ -14,19 +14,21 @@ export async function proxyMedia(ctx: Koa.Context) {
 	try {
 		const readable = getUrl(url);
 
-		const { mime, ext } = await detectType(cloneStream(readable));
+		const clone = cloneStream(readable);
+
+		const { mime, ext } = await detectType(readable);
 
 		if (!mime.startsWith('image/')) throw 403;
 
 		let image: IReadableImage;
 
 		if ('static' in ctx.query && ['image/png', 'image/gif', 'image/apng', 'image/vnd.mozilla.apng', 'image/webp'].includes(mime)) {
-			image = convertToPng(readable, 498, 280);
+			image = convertToPng(clone, 498, 280);
 		} else if ('preview' in ctx.query && ['image/jpeg', 'image/png', 'image/gif', 'image/apng', 'image/vnd.mozilla.apng'].includes(mime)) {
-			image = convertToJpeg(readable, 200, 200);
+			image = convertToJpeg(clone, 200, 200);
 		} else {
 			image = {
-				readable: readable,
+				readable: clone,
 				ext,
 				type: mime,
 			};
