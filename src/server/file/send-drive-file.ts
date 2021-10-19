@@ -14,42 +14,12 @@ import { GenerateVideoThumbnailFromStream } from '@/services/drive/generate-vide
 import { StatusError } from '@/misc/fetch';
 import { cloneStream } from '@/misc/stream/clone';
 import { readableRead } from '@/misc/stream/read';
-import { Readable } from 'stream';
 
 //const _filename = fileURLToPath(import.meta.url);
 const _filename = __filename;
 const _dirname = dirname(_filename);
 
 const assets = `${_dirname}/../../server/file/assets/`;
-
-function eventdetect(readable: Readable, txt: string): Promise<void> {
-	const tot = setTimeout(() => {
-		console.log(`${txt} TOO LAZY STREAM!!!!!!!!!!!!!!!`)
-	}, 200)
-	return new Promise((resolve, reject) => {
-			readable.on('end', () => {
-					console.log(`${txt} end`)
-					clearTimeout(tot)
-					resolve()
-			})
-			.on('data', chunk => {
-					console.log(`${txt} ${chunk.length}`)
-			})
-			.on('close', () => {
-					console.log(`${txt} close`)
-			})
-			.on('pause', () => {
-					console.log(`${txt} pause`)
-			})
-			.on('resume', () => {
-					console.log(`${txt} resume`)
-			})
-			.on('error', e => {
-					console.error(e)
-					reject(e)
-			});
-	})
-}
 
 const commonReadableHandlerGenerator = (ctx: Koa.Context) => (e: Error): void => {
 	serverLogger.error(e);
@@ -80,21 +50,13 @@ export default async function(ctx: Koa.Context) {
 	if (!file.storedInternal) {
 		if (file.isLink && file.uri) {	// 期限切れリモートファイル
 			try {
-				console.log(`${file.uri} x`)
 				const readable = getUrl(file.uri);
-				console.log(`${file.uri} a`)
-				eventdetect(readable, file.uri)
-
 				const clone = cloneStream(readable);
-				readableRead(readable)
-				console.log(`${file.uri} b`)
 
-				const { mime, ext } = await detectType(readable)
-				console.log(`${file.uri} c`)
+				const { mime, ext } = await detectType(readable);
 
 				const image = await (async () => {
 					if (isThumbnail) {
-						console.log(`${file.uri} d-1`)
 						if (['image/jpeg', 'image/webp'].includes(mime)) {
 							return convertToJpeg(clone, 498, 280);
 						} else if (['image/png'].includes(mime)) {
@@ -104,15 +66,12 @@ export default async function(ctx: Koa.Context) {
 						}
 					}
 
-					console.log(`${file.uri} d-2`)
 					return {
 						readable: clone,
 						ext,
 						type: mime,
 					};
 				})();
-
-				console.log(file.uri, 'e')
 
 				ctx.body = image.readable;
 				ctx.set('Content-Type', image.type);
