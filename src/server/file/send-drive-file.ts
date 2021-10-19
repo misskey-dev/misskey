@@ -76,6 +76,7 @@ export default async function(ctx: Koa.Context) {
 	if (!file.storedInternal) {
 		if (file.isLink && file.uri) {	// 期限切れリモートファイル
 			try {
+				console.log(`${file.uri} x`)
 				const readable = getUrl(file.uri);
 				console.log(`${file.uri} a`)
 				eventdetect(readable, file.uri)
