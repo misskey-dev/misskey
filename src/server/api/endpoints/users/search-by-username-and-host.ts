@@ -91,14 +91,14 @@ export default define(meta, async (ps, me) => {
 					.andWhere('user.isSuspended = FALSE')
 					.andWhere('user.usernameLower LIKE :username', { username: ps.username.toLowerCase() + '%' })
 					.andWhere('user.updatedAt IS NOT NULL');
-	
+
 				otherQuery.setParameters(followingQuery.getParameters());
-	
+
 				const otherUsers = await otherQuery
 					.orderBy('user.updatedAt', 'DESC')
 					.take(ps.limit! - users.length)
 					.getMany();
-	
+
 				users = users.concat(otherUsers);
 			}
 		} else {
