@@ -14,12 +14,38 @@ import { GenerateVideoThumbnailFromStream } from '@/services/drive/generate-vide
 import { StatusError } from '@/misc/fetch';
 import { cloneStream } from '@/misc/stream/clone';
 import { readableRead } from '@/misc/stream/read';
+import { Readable } from 'stream';
 
 //const _filename = fileURLToPath(import.meta.url);
 const _filename = __filename;
 const _dirname = dirname(_filename);
 
 const assets = `${_dirname}/../../server/file/assets/`;
+
+function eventdetect(readable: Readable, txt: string): Promise<void> {
+	return new Promise((resolve, reject) => {
+			readable.on('end', () => {
+					console.log(txt, 'end')
+					resolve()
+			})
+			.on('data', chunk => {
+					console.log(txt, chunk.length)
+			})
+			.on('close', () => {
+					console.log(txt, 'close')
+			})
+			.on('pause', () => {
+					console.log(txt, 'pause')
+			})
+			.on('resume', () => {
+					console.log(txt, 'resume')
+			})
+			.on('error', e => {
+					console.error(e)
+					reject(e)
+			});
+	})
+}
 
 const commonReadableHandlerGenerator = (ctx: Koa.Context) => (e: Error): void => {
 	serverLogger.error(e);
@@ -51,10 +77,13 @@ export default async function(ctx: Koa.Context) {
 		if (file.isLink && file.uri) {	// 期限切れリモートファイル
 			try {
 				const readable = getUrl(file.uri);
+				console.log(file.uri, 'a')
+				eventdetect(readable, file.uri)
 
 				const clone = readableRead(cloneStream(readable));
 
 				const { mime, ext } = await detectType(readableRead(readable));
+				console.log(file.uri, 'b')
 
 				const image = await (async () => {
 					if (isThumbnail) {
@@ -73,6 +102,8 @@ export default async function(ctx: Koa.Context) {
 						type: mime,
 					};
 				})();
+
+				console.log(file.uri, 'c')
 
 				ctx.body = image.readable;
 				ctx.set('Content-Type', image.type);
