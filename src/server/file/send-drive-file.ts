@@ -23,9 +23,13 @@ const _dirname = dirname(_filename);
 const assets = `${_dirname}/../../server/file/assets/`;
 
 function eventdetect(readable: Readable, txt: string): Promise<void> {
+	const tot = setTimeout(() => {
+		console.log(`${txt} TOO LAZY STREAM!!!!!!!!!!!!!!!`)
+	}, 200)
 	return new Promise((resolve, reject) => {
 			readable.on('end', () => {
 					console.log(`${txt} end`)
+					clearTimeout(tot)
 					resolve()
 			})
 			.on('data', chunk => {
@@ -81,10 +85,10 @@ export default async function(ctx: Koa.Context) {
 				console.log(`${file.uri} a`)
 				eventdetect(readable, file.uri)
 
-				const clone = readableRead(cloneStream(readable));
+				const clone = cloneStream(readable);
 				console.log(`${file.uri} b`)
 
-				const { mime, ext } = await detectType(readableRead(readable));
+				const { mime, ext } = await detectType(readable))
 				console.log(`${file.uri} c`)
 
 				const image = await (async () => {
