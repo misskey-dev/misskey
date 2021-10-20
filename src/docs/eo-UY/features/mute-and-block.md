@@ -34,7 +34,7 @@
 - Se la uzanto jam sekvas vin kiam vi blokas, la uzanto ĉesos sekvi.
 - Se la uzanto jam aldonis vin al listo de uzantoj kiam vi blokas, oni forigos vin de la listo
 
-ユーザーをブロックするには、対象のユーザーのユーザーページのメニューを開き、「ブロック」ボタンを押します。
+Por bloki uzanton klaku la butonon "Bloki" el la menuo de uzula paĝo de specifa uzanto.
 
 <div class="warn">⚠️ ブロックを行ったこと自体は相手に通知されませんが、フォローを行ったりなどの上記のアクションが行えなくなるので間接的にブロックされていることは分かります。</div>
 
