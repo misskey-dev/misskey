@@ -40,6 +40,7 @@ import { getStaticImageUrl } from '@client/scripts/get-static-image-url';
 import { acct } from '@client/filters/user';
 import * as os from '@client/os';
 import { instance } from '@client/instance';
+import { twemojiSvgBase } from '@/misc/twemoji-base';
 
 type EmojiDef = {
 	emoji: string;
@@ -62,7 +63,7 @@ const emjdb: EmojiDef[] = lib.map(x => ({
 	emoji: x.char,
 	name: x.name,
 	aliasOf: null,
-	url: `/twemoji/${char2file(x.char)}`
+	url: `${twemojiSvgBase}/${char2file(x.char)}`
 }));
 
 for (const x of lib) {
@@ -72,7 +73,7 @@ for (const x of lib) {
 				emoji: x.char,
 				name: k,
 				aliasOf: x.name,
-				url: `/twemoji/${char2file(x.char)}`
+				url: `${twemojiSvgBase}/${char2file(x.char)}`
 			});
 		}
 	}
