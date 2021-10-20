@@ -91,6 +91,12 @@ describe('Fetch resource', () => {
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, 'image/png');
 		}));
+
+		it('GET twemoji svg', async(async () => {
+			const res = await simpleGet('/twemoji/2764.svg');
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(res.type, 'image/svg+xml');
+		}));
 	});
 
 	describe('/@:username', () => {
