@@ -8,7 +8,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { getStaticImageUrl } from '@client/scripts/get-static-image-url';
-import { twemojiSvgBase } from '@client/../misc/twemoji-base';
 
 export default defineComponent({
 	props: {
@@ -92,7 +91,7 @@ export default defineComponent({
 			if (!codes.includes('200d')) codes = codes.filter(x => x != 'fe0f');
 			codes = codes.filter(x => x && x.length);
 
-			this.url = `${twemojiSvgBase}/${codes.join('-')}.svg`;
+			this.url = `/twemoji/${codes.join('-')}`;
 		}
 	},
 });
