@@ -1,3 +1,4 @@
+import * as fs from 'fs';
 import * as crypto from 'crypto';
 import * as stream from 'stream';
 import * as util from 'util';
@@ -6,11 +7,6 @@ import isSvg from 'is-svg';
 import * as probeImageSize from 'probe-image-size';
 import * as sharp from 'sharp';
 import { encode } from 'blurhash';
-import { awaitAll } from '@/prelude/await-all';
-import { preventEmptyStream } from './stream/prevent-empty';
-import { readableRead } from './stream/read';
-import { createReadStream } from 'fs';
-import { cloneStream } from './stream/clone';
 
 const pipeline = util.promisify(stream.pipeline);
 
@@ -37,42 +33,26 @@ const TYPE_SVG = {
 	ext: 'svg'
 };
 
-export function getFileInfoByPath(path: string): Promise<FileInfo> {
-	return getFileInfo(createReadStream(path));
-}
-
 /**
  * Get file information
  */
-export async function getFileInfo(readable: stream.Readable): Promise<FileInfo> {
+export async function getFileInfo(path: string): Promise<FileInfo> {
 	const warnings = [] as string[];
 
-	const streamCopy = cloneStream(readable);
+	const size = await getFileSize(path);
+	const md5 = await calcHash(path);
 
-	readableRead(readable);
-
-	let type = await detectType(readable);
-
-	const sizeDetectable = ['image/jpeg', 'image/gif', 'image/png', 'image/apng', 'image/webp', 'image/bmp', 'image/tiff', 'image/svg+xml', 'image/vnd.adobe.photoshop'].includes(type.mime);
-	const blurhashEnabled = ['image/jpeg', 'image/gif', 'image/png', 'image/apng', 'image/webp', 'image/svg+xml'].includes(type.mime);
-
-	const md5Promise = calcHash(streamCopy);
-	const sizePromise = getFileSize(streamCopy);
-	const imageSizePromise = sizeDetectable ? detectImageSize(streamCopy).catch(e => {
-		warnings.push(`detectImageSize failed: ${e}`);
-		return undefined;
-	}) : Promise.resolve(undefined);
-	const blurhashPromise = blurhashEnabled ? getBlurhash(streamCopy).catch(e => {
-		warnings.push(`getBlurhash failed: ${e}`);
-		return undefined;
-	}) : Promise.resolve(undefined);
+	let type = await detectType(path);
 
 	// image dimensions
 	let width: number | undefined;
 	let height: number | undefined;
 
-	if (sizeDetectable) {
-		const imageSize = await imageSizePromise;
+	if (['image/jpeg', 'image/gif', 'image/png', 'image/apng', 'image/webp', 'image/bmp', 'image/tiff', 'image/svg+xml', 'image/vnd.adobe.photoshop'].includes(type.mime)) {
+		const imageSize = await detectImageSize(path).catch(e => {
+			warnings.push(`detectImageSize failed: ${e}`);
+			return undefined;
+		});
 
 		// うまく判定できない画像は octet-stream にする
 		if (!imageSize) {
@@ -92,42 +72,42 @@ export async function getFileInfo(readable: stream.Readable): Promise<FileInfo> 
 		}
 	}
 
-	return awaitAll({
-		size: sizePromise,
-		md5: md5Promise,
+	let blurhash: string | undefined;
+
+	if (['image/jpeg', 'image/gif', 'image/png', 'image/apng', 'image/webp', 'image/svg+xml'].includes(type.mime)) {
+		blurhash = await getBlurhash(path).catch(e => {
+			warnings.push(`getBlurhash failed: ${e}`);
+			return undefined;
+		});
+	}
+
+	return {
+		size,
+		md5,
 		type,
 		width,
 		height,
-		blurhash: blurhashPromise,
+		blurhash,
 		warnings,
-	});
+	};
 }
 
 /**
  * Detect MIME Type and extension
  */
-export async function detectType(readable: stream.Readable) {
-	const chunks: Uint8Array[] = [];
-	const streamPromise = new Promise<Buffer | void>(res => {
-		readable
-			.on('data', chunk => chunks.push(chunk))
-			.on('end', () => res(Buffer.concat(chunks)))
-			.on('error', e => res());
-	});
-
-	const [ fileSize, type ] = await Promise.all([getFileSize(readable), fileType.fromStream(cloneStream(readable))]);
-
+export async function detectType(path: string) {
+	// Check 0 byte
+	const fileSize = await getFileSize(path);
 	if (fileSize === 0) {
 		return TYPE_OCTET_STREAM;
 	}
 
+	const type = await fileType.fromFile(path);
+
 	if (type) {
 		// XMLはSVGかもしれない
-		if (type.mime === 'application/xml') {
-			const buffer = await streamPromise;
-			if (buffer && checkSvg(buffer)) {
-				return TYPE_SVG;
-			}
+		if (type.mime === 'application/xml' && await checkSvg(path)) {
+			return TYPE_SVG;
 		}
 
 		return {
@@ -137,8 +117,7 @@ export async function detectType(readable: stream.Readable) {
 	}
 
 	// 種類が不明でもSVGかもしれない
-	const buffer = await streamPromise;
-	if (buffer && checkSvg(buffer)) {
+	if (await checkSvg(path)) {
 		return TYPE_SVG;
 	}
 
@@ -149,10 +128,11 @@ export async function detectType(readable: stream.Readable) {
 /**
  * Check the file is SVG or not
  */
-export function checkSvg(buffer: Buffer) {
+export async function checkSvg(path: string) {
 	try {
-		if (buffer.length > 1 * 1024 * 1024) return false;
-		return isSvg(buffer);
+		const size = await getFileSize(path);
+		if (size > 1 * 1024 * 1024) return false;
+		return isSvg(fs.readFileSync(path));
 	} catch {
 		return false;
 	}
@@ -161,50 +141,47 @@ export function checkSvg(buffer: Buffer) {
 /**
  * Get file size
  */
-export async function getFileSize(readable: stream.Readable): Promise<number> {
-	let length = 0;
-	for await (const chunk of cloneStream(readable)) {
-		length += chunk.length;
-	}
-	return length;
+export async function getFileSize(path: string): Promise<number> {
+	const getStat = util.promisify(fs.stat);
+	return (await getStat(path)).size;
 }
 
 /**
  * Calculate MD5 hash
  */
-async function calcHash(readable: stream.Readable): Promise<string> {
+async function calcHash(path: string): Promise<string> {
 	const hash = crypto.createHash('md5').setEncoding('hex');
-	await pipeline(cloneStream(readable), hash);
+	await pipeline(fs.createReadStream(path), hash);
 	return hash.read();
 }
 
 /**
  * Detect dimensions of image
  */
-async function detectImageSize(readable: stream.Readable): Promise<{
+async function detectImageSize(path: string): Promise<{
 	width: number;
 	height: number;
 	wUnits: string;
 	hUnits: string;
 }> {
-	const streamCopy = cloneStream(readable);
-	const imageSize = await probeImageSize(streamCopy);
+	const readable = fs.createReadStream(path);
+	const imageSize = await probeImageSize(readable);
+	readable.destroy();
 	return imageSize;
 }
 
 /**
  * Calculate average color of image
  */
-function getBlurhash(readable: stream.Readable): Promise<string> {
+function getBlurhash(path: string): Promise<string> {
 	return new Promise((resolve, reject) => {
-		const generator = sharp()
+		sharp(path)
 			.raw()
 			.ensureAlpha()
 			.resize(64, 64, { fit: 'inside' })
-			.toBuffer((err, buffer, info) => {
+			.toBuffer((err, buffer, { width, height }) => {
 				if (err) return reject(err);
 
-				const { width, height } = info;
 				let hash;
 
 				try {
@@ -215,7 +192,5 @@ function getBlurhash(readable: stream.Readable): Promise<string> {
 
 				resolve(hash);
 			});
-
-		pipeline(readable, new stream.PassThrough(), preventEmptyStream(), generator).catch(reject);
 	});
 }
