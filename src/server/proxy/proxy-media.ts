@@ -5,7 +5,6 @@ import { getUrl } from '@/misc/download-url';
 import { detectType } from '@/misc/get-file-info';
 import { StatusError } from '@/misc/fetch';
 import { cloneStream } from '@/misc/stream/clone';
-import { readableRead } from '@/misc/stream/read';
 import { toBufferArray } from '@/misc/stream/to-buffer-array';
 import { fromBufferArray } from '@/misc/stream/from-buffer';
 
@@ -15,8 +14,7 @@ export async function proxyMedia(ctx: Koa.Context) {
 	if (typeof url !== 'string') throw 403;
 
 	try {
-		const readable = readableRead(getUrl(url));
-		const bufferArray = await toBufferArray(readable);
+		const bufferArray = await toBufferArray(getUrl(url));
 
 		const { mime, ext } = await detectType(bufferArray);
 

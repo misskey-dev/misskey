@@ -8,7 +8,6 @@ import * as sharp from 'sharp';
 import { encode } from 'blurhash';
 import { awaitAll } from '@/prelude/await-all';
 import { preventEmptyStream } from './stream/prevent-empty';
-import { readableRead } from './stream/read';
 import { createReadStream } from 'fs';
 import { cloneStream } from './stream/clone';
 import { BufferArray, toBufferArray } from './stream/to-buffer-array';
