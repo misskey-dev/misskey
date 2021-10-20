@@ -21,6 +21,7 @@
 ### Bugfixes
 - クライアント: テーマの管理が行えない問題を修正
 - API: アプリケーション通知が取得できない問題を修正
+- ActivityPub: not reacted な Undo.Like がinboxに滞留するのを修正
 
 ## 12.92.0 (2021/10/16)
 
