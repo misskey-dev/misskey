@@ -63,7 +63,7 @@ export default class Connection {
 	}
 
 	@autobind
-	private onUserEvent(data: StreamMessages['user']['spec']) { // { type, body }と展開すると型も展開されてしまう
+	private onUserEvent(data: StreamMessages['user']['payload']) { // { type, body }と展開するとそれぞれ型が分離してしまう
 		switch (data.type) {
 			case 'follow':
 				this.following.add(data.body.id);
@@ -144,7 +144,7 @@ export default class Connection {
 	}
 
 	@autobind
-	private onBroadcastMessage(data: StreamMessages['broadcast']['spec']) {
+	private onBroadcastMessage(data: StreamMessages['broadcast']['payload']) {
 		this.sendMessageToWs(data.type, data.body);
 	}
 
@@ -248,7 +248,7 @@ export default class Connection {
 	}
 
 	@autobind
-	private async onNoteStreamMessage(data: StreamMessages['note']['spec']) {
+	private async onNoteStreamMessage(data: StreamMessages['note']['payload']) {
 		this.sendMessageToWs('noteUpdated', {
 			id: data.body.id,
 			type: data.type,
