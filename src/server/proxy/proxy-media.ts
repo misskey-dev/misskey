@@ -6,6 +6,8 @@ import { detectType } from '@/misc/get-file-info';
 import { StatusError } from '@/misc/fetch';
 import { cloneStream } from '@/misc/stream/clone';
 import { readableRead } from '@/misc/stream/read';
+import { toBufferArray } from '@/misc/stream/to-buffer-array';
+import { fromBufferArray } from '@/misc/stream/from-buffer';
 
 export async function proxyMedia(ctx: Koa.Context) {
 	const url = 'url' in ctx.query ? ctx.query.url : 'https://' + ctx.params.url;
@@ -14,21 +16,21 @@ export async function proxyMedia(ctx: Koa.Context) {
 
 	try {
 		const readable = readableRead(getUrl(url));
-		const clone = cloneStream(readable);
+		const bufferArray = await toBufferArray(readable);
 
-		const { mime, ext } = await detectType(readable);
+		const { mime, ext } = await detectType(bufferArray);
 
 		if (!mime.startsWith('image/')) throw 403;
 
 		let image: IReadableImage;
 
 		if ('static' in ctx.query && ['image/png', 'image/gif', 'image/apng', 'image/vnd.mozilla.apng', 'image/webp'].includes(mime)) {
-			image = convertToPng(clone, 498, 280);
+			image = convertToPng(fromBufferArray(bufferArray), 498, 280);
 		} else if ('preview' in ctx.query && ['image/jpeg', 'image/png', 'image/gif', 'image/apng', 'image/vnd.mozilla.apng'].includes(mime)) {
-			image = convertToJpeg(clone, 200, 200);
+			image = convertToJpeg(fromBufferArray(bufferArray), 200, 200);
 		} else {
 			image = {
-				readable: clone,
+				readable: fromBufferArray(bufferArray),
 				ext,
 				type: mime,
 			};
