@@ -68,7 +68,7 @@ router.use(activityPub.routes());
 router.use(nodeinfo.routes());
 router.use(wellKnown.routes());
 
-router.get('/twemoji/:x', ctx => {
+router.get('/twemoji/:x([\\da-f]+)', ctx => {
 	const file = fs.createReadStream(`${__dirname}/../../twemoji/assets/svg/${ctx.params.x}.svg`);
 	ctx.body = file;
 	ctx.set('Content-Type', 'image/svg+xml');
