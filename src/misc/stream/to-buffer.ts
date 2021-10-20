@@ -1,7 +1,12 @@
-import { PassThrough, Readable } from 'stream';
+import { Readable } from 'stream';
 
-export function toBuffer(readable: Readable) {
-	return new Promise<Buffer>((resolve, reject) => {
+export async function toBuffer(readable: Readable) {
+	const chunks = await toBufferArray(readable);
+	return Buffer.concat(chunks);
+}
+
+export function toBufferArray(readable: Readable) {
+	return new Promise<Uint8Array[]>((resolve, reject) => {
 		const timeout = setTimeout(() => {
 			reject('STREAM TIMEOUT');
 		}, 5000);
@@ -11,7 +16,7 @@ export function toBuffer(readable: Readable) {
 			.on('data', chunk => chunks.push(chunk))
 			.on('end', () => {
 				clearTimeout(timeout);
-				resolve(Buffer.concat(chunks));	
+				resolve(chunks);	
 			})
 			.on('error', reject);
 	});

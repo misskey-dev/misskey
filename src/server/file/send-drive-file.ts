@@ -14,7 +14,7 @@ import { GenerateVideoThumbnailFromStream } from '@/services/drive/generate-vide
 import { StatusError } from '@/misc/fetch';
 import { cloneStream } from '@/misc/stream/clone';
 import { readableRead } from '@/misc/stream/read';
-import { toBuffer } from '@/misc/stream/to-buffer';
+import { toBufferArray } from '@/misc/stream/to-buffer';
 import { Readable } from 'stream';
 
 //const _filename = fileURLToPath(import.meta.url);
@@ -53,7 +53,7 @@ export default async function(ctx: Koa.Context) {
 		if (file.isLink && file.uri) {	// 期限切れリモートファイル
 			try {
 				const readable = readableRead(getUrl(file.uri));
-				const buffer = toBuffer(readable);
+				const buffer = toBufferArray(readable);
 
 				const { mime, ext } = await detectType(readable);
 
