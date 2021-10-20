@@ -14,7 +14,7 @@ Notoj estas centraj konceptoj en Misskey kaj enhavoj kiuj konsistas el teksto, b
 
 ## Plusendi noton
 既にあるノートを引用、もしくはそのノートを新しいノートとして共有する行為、またそれによって作成されたノートをRenoteと呼びます。 自分がフォローしているユーザーの、気に入ったノートを自分のフォロワーに共有したい場合や、過去の自分のノートを再度共有したい場合に使います。 同じノートに対して無制限にRenoteを行うことができますが、あまり連続して使用すると迷惑になる場合もあるので、注意しましょう。
-<div class="warn">⚠️ Se oni sendas notojn nur al sekvantoj aŭ rekte, iliaj ne estas plusendeblaj.</div>
+<div class="warn">⚠️ Se vi sendas viajn notojn nur al sekvantoj aŭ rekte, iliaj ne estos plusendeblaj.</div>
 
 Renoteを削除するには、Renoteの時刻表示の隣にある「...」を押し、「Renote解除」を選択します。
 
