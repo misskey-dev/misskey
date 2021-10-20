@@ -16,7 +16,7 @@ export function toBufferArray(readable: Readable) {
 			.on('data', chunk => chunks.push(chunk))
 			.on('end', () => {
 				clearTimeout(timeout);
-				resolve(chunks);	
+				resolve(chunks);
 			})
 			.on('error', reject);
 	});
