@@ -22,12 +22,12 @@
 ## Bloki
 ユーザーをブロックすると、そのユーザーからあなたのコンテンツが見えないようになり、またあなたに対して以下のようなアクションをすることができなくなります。
 
-- フォローする
-- ユーザーリストに追加する
-- 返信する、Renoteする
-- リアクションする、アンケートに投票する
-- メッセージを送信する
-- など
+- Eksekvi
+- Aldoni al listo de uzantoj
+- Respondi aŭ plusendi
+- Reagi aŭ voĉi
+- Senti mesaĝon
+- k.t.p
 
 また、
 
