@@ -1,8 +1,7 @@
 import { Readable } from 'stream';
 
 export async function toBuffer(readable: Readable) {
-	const chunks = await toBufferArray(readable);
-	return Buffer.concat(chunks);
+	return Buffer.concat(await toBufferArray(readable));
 }
 
 export function toBufferArray(readable: Readable) {
