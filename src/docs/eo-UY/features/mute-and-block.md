@@ -31,8 +31,8 @@
 
 また、
 
-- ブロックする際に既にそのユーザーからフォローされていた場合はフォローが解除されます。
-- Se la uzanto jam aldonita vin al listo de uzantoj, oni forigos vin de la listo
+- Se la uzanto jam sekvas vin kiam vi blokas, la uzanto ĉesos sekvi.
+- Se la uzanto jam aldonis vin al listo de uzantoj kiam vi blokas, oni forigos vin de la listo
 
 ユーザーをブロックするには、対象のユーザーのユーザーページのメニューを開き、「ブロック」ボタンを押します。
 
