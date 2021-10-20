@@ -14,8 +14,8 @@ import { GenerateVideoThumbnailFromStream } from '@/services/drive/generate-vide
 import { StatusError } from '@/misc/fetch';
 import { cloneStream } from '@/misc/stream/clone';
 import { readableRead } from '@/misc/stream/read';
-import { toBufferArray } from '@/misc/stream/to-buffer';
-import { Readable } from 'stream';
+import { toBufferArray } from '@/misc/stream/to-buffer-array';
+import { fromBufferArray } from '@/misc/stream/from-buffer';
 
 //const _filename = fileURLToPath(import.meta.url);
 const _filename = __filename;
@@ -52,24 +52,23 @@ export default async function(ctx: Koa.Context) {
 	if (!file.storedInternal) {
 		if (file.isLink && file.uri) {	// 期限切れリモートファイル
 			try {
-				const readable = readableRead(getUrl(file.uri));
-				const buffer = toBufferArray(readable);
+				const bufferArray = await toBufferArray(readableRead(getUrl(file.uri)));
 
-				const { mime, ext } = await detectType(readable);
+				const { mime, ext } = await detectType(bufferArray);
 
 				const image = await (async () => {
 					if (isThumbnail) {
 						if (['image/jpeg', 'image/webp'].includes(mime)) {
-							return convertToJpeg(Readable.from(await buffer), 498, 280);
+							return convertToJpeg(fromBufferArray(bufferArray), 498, 280);
 						} else if (['image/png'].includes(mime)) {
-							return convertToPngOrJpeg(Readable.from(await buffer), 498, 280);
+							return convertToPngOrJpeg(fromBufferArray(bufferArray), 498, 280);
 						} else if (mime.startsWith('video/')) {
-							return GenerateVideoThumbnailFromStream(Readable.from(await buffer));
+							return GenerateVideoThumbnailFromStream(fromBufferArray(bufferArray));
 						}
 					}
 
 					return {
-						readable: Readable.from(await buffer),
+						readable: fromBufferArray(bufferArray),
 						ext,
 						type: mime,
 					};
@@ -98,10 +97,10 @@ export default async function(ctx: Koa.Context) {
 	}
 
 	if (isThumbnail || isWebpublic) {
-		const readable = readableRead(InternalStorage.read(key));
+		const readable = InternalStorage.read(key);
 		readable.on('error', commonReadableHandlerGenerator(ctx));
 		ctx.body = cloneStream(readable);
-		const { mime, ext } = await detectType(readable);
+		const { mime, ext } = await detectType(await toBufferArray(readable));
 		const filename = rename(file.name, {
 			suffix: isThumbnail ? '-thumb' : '-web',
 			extname: ext ? `.${ext}` : undefined

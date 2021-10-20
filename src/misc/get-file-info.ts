@@ -11,6 +11,8 @@ import { preventEmptyStream } from './stream/prevent-empty';
 import { readableRead } from './stream/read';
 import { createReadStream } from 'fs';
 import { cloneStream } from './stream/clone';
+import { BufferArray, toBufferArray } from './stream/to-buffer-array';
+import { fromBufferArray } from './stream/from-buffer';
 
 const pipeline = util.promisify(stream.pipeline);
 
@@ -47,22 +49,20 @@ export function getFileInfoByPath(path: string): Promise<FileInfo> {
 export async function getFileInfo(readable: stream.Readable): Promise<FileInfo> {
 	const warnings = [] as string[];
 
-	const streamCopy = cloneStream(readable);
+	const bufferArray = await toBufferArray(readable);
 
-	readableRead(readable);
-
-	let type = await detectType(readable);
+	let type = await detectType(bufferArray);
 
 	const sizeDetectable = ['image/jpeg', 'image/gif', 'image/png', 'image/apng', 'image/webp', 'image/bmp', 'image/tiff', 'image/svg+xml', 'image/vnd.adobe.photoshop'].includes(type.mime);
 	const blurhashEnabled = ['image/jpeg', 'image/gif', 'image/png', 'image/apng', 'image/webp', 'image/svg+xml'].includes(type.mime);
 
-	const md5Promise = calcHash(streamCopy);
-	const sizePromise = getFileSize(streamCopy);
-	const imageSizePromise = sizeDetectable ? detectImageSize(streamCopy).catch(e => {
+	const size = bufferArray.size;
+	const md5Promise = calcHash(fromBufferArray(bufferArray));
+	const imageSizePromise = sizeDetectable ? detectImageSize(fromBufferArray(bufferArray)).catch(e => {
 		warnings.push(`detectImageSize failed: ${e}`);
 		return undefined;
 	}) : Promise.resolve(undefined);
-	const blurhashPromise = blurhashEnabled ? getBlurhash(streamCopy).catch(e => {
+	const blurhashPromise = blurhashEnabled ? getBlurhash(fromBufferArray(bufferArray)).catch(e => {
 		warnings.push(`getBlurhash failed: ${e}`);
 		return undefined;
 	}) : Promise.resolve(undefined);
@@ -93,7 +93,7 @@ export async function getFileInfo(readable: stream.Readable): Promise<FileInfo> 
 	}
 
 	return awaitAll({
-		size: sizePromise,
+		size,
 		md5: md5Promise,
 		type,
 		width,
@@ -106,26 +106,17 @@ export async function getFileInfo(readable: stream.Readable): Promise<FileInfo> 
 /**
  * Detect MIME Type and extension
  */
-export async function detectType(readable: stream.Readable) {
-	const chunks: Uint8Array[] = [];
-	const streamPromise = new Promise<Buffer | void>(res => {
-		readable
-			.on('data', chunk => chunks.push(chunk))
-			.on('end', () => res(Buffer.concat(chunks)))
-			.on('error', e => res());
-	});
+export async function detectType({ size, chunks }: BufferArray) {
+	const type  = await fileType.fromBuffer(Buffer.concat(chunks));
 
-	const [ fileSize, type ] = await Promise.all([getFileSize(readable), fileType.fromStream(cloneStream(readable))]);
-
-	if (fileSize === 0) {
+	if (size === 0) {
 		return TYPE_OCTET_STREAM;
 	}
 
 	if (type) {
 		// XMLはSVGかもしれない
 		if (type.mime === 'application/xml') {
-			const buffer = await streamPromise;
-			if (buffer && checkSvg(buffer)) {
+			if (checkSvg(Buffer.concat(chunks))) {
 				return TYPE_SVG;
 			}
 		}
@@ -137,8 +128,7 @@ export async function detectType(readable: stream.Readable) {
 	}
 
 	// 種類が不明でもSVGかもしれない
-	const buffer = await streamPromise;
-	if (buffer && checkSvg(buffer)) {
+	if (checkSvg(Buffer.concat(chunks))) {
 		return TYPE_SVG;
 	}
 
@@ -159,17 +149,6 @@ export function checkSvg(buffer: Buffer) {
 }
 
 /**
- * Get file size
- */
-export async function getFileSize(readable: stream.Readable): Promise<number> {
-	let length = 0;
-	for await (const chunk of cloneStream(readable)) {
-		length += chunk.length;
-	}
-	return length;
-}
-
-/**
  * Calculate MD5 hash
  */
 async function calcHash(readable: stream.Readable): Promise<string> {
@@ -187,8 +166,7 @@ async function detectImageSize(readable: stream.Readable): Promise<{
 	wUnits: string;
 	hUnits: string;
 }> {
-	const streamCopy = cloneStream(readable);
-	const imageSize = await probeImageSize(streamCopy);
+	const imageSize = await probeImageSize(cloneStream(readable));
 	return imageSize;
 }
 
