@@ -92,7 +92,7 @@ export default defineComponent({
 			if (!codes.includes('200d')) codes = codes.filter(x => x != 'fe0f');
 			codes = codes.filter(x => x && x.length);
 
-			this.url = `${twemojiSvgBase}/${codes.join('-')}`;
+			this.url = `${twemojiSvgBase}/${codes.join('-')}.svg`;
 		}
 	},
 });

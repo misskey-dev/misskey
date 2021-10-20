@@ -93,7 +93,7 @@ describe('Fetch resource', () => {
 		}));
 
 		it('GET twemoji svg', async(async () => {
-			const res = await simpleGet('/twemoji/2764');
+			const res = await simpleGet('/twemoji/2764.svg');
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, 'image/svg+xml');
 		}));
