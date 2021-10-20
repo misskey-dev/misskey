@@ -68,6 +68,13 @@ router.use(activityPub.routes());
 router.use(nodeinfo.routes());
 router.use(wellKnown.routes());
 
+router.get('/twemoji/:x', ctx => {
+	const file = fs.createReadStream(`${__dirname}/../twemoji/assets/svg/${ctx.params.x}.svg`);
+	ctx.body = file;
+	ctx.set('Content-Type', 'image/svg+xml');
+	ctx.set('Cache-Control', 'max-age=31536000, immutable');
+});
+
 router.get('/avatar/:x', async ctx => {
 	const [temp] = await createTemp();
 	await genAvatar(ctx.params.x, fs.createWriteStream(temp));
