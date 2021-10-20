@@ -101,13 +101,6 @@ router.get('/apple-touch-icon.png', async ctx => {
 	});
 });
 
-router.get('/twemoji/:x([\\da-f]+).svg', async ctx => {
-	await send(ctx as any, `/${ctx.params.x}.svg`, {
-		root: `${_dirname}/../../../twemoji/assets/svg/`,
-		maxage: ms('30 days'),
-	});
-});
-
 // ServiceWorker
 router.get('/sw.js', async ctx => {
 	await send(ctx as any, `/sw.${config.version}.js`, {
