@@ -1,3 +1,6 @@
 [submodule "misskey-assets"]
 	path = misskey-assets
 	url = https://github.com/misskey-dev/assets.git
+[submodule "twemoji"]
+	path = twemoji
+	url = https://github.com/twitter/twemoji.git
