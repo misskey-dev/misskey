@@ -7,13 +7,14 @@ import config from '@/config/index';
 import * as chalk from 'chalk';
 import Logger from '@/services/logger';
 import * as IPCIDR from 'ip-cidr';
+import { readableRead } from './stream/read';
 const PrivateIp = require('private-ip');
 
 const pipeline = util.promisify(stream.pipeline);
 
-export async function downloadUrl(url: string, path: string) {
-	const logger = new Logger('download');
+const logger = new Logger('download');
 
+export function getUrl(url: string) {
 	logger.info(`Downloading ${chalk.cyan(url)} ...`);
 
 	const timeout = 30 * 1000;
@@ -62,8 +63,12 @@ export async function downloadUrl(url: string, path: string) {
 		}
 	});
 
+	return req;
+}
+
+export async function downloadUrl(url: string, path: string) {
 	try {
-		await pipeline(req, fs.createWriteStream(path));
+		await pipeline(getUrl(url), fs.createWriteStream(path));
 	} catch (e) {
 		if (e instanceof Got.HTTPError) {
 			throw new StatusError(`${e.response.statusCode} ${e.response.statusMessage}`, e.response.statusCode, e.response.statusMessage);

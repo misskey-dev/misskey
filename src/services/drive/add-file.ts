@@ -7,9 +7,9 @@ import { deleteFile } from './delete-file';
 import { fetchMeta } from '@/misc/fetch-meta';
 import { GenerateVideoThumbnail } from './generate-video-thumbnail';
 import { driveLogger } from './logger';
-import { IImage, convertSharpToJpeg, convertSharpToWebp, convertSharpToPng, convertSharpToPngOrJpeg } from './image-processor';
+import { convertToJpeg, convertToPng, convertToPngOrJpeg, convertToWebp, IReadableImage } from './image-processor';
 import { contentDisposition } from '@/misc/content-disposition';
-import { getFileInfo } from '@/misc/get-file-info';
+import { getFileInfoByPath } from '@/misc/get-file-info';
 import { DriveFiles, DriveFolders, Users, Instances, UserProfiles } from '@/models/index';
 import { InternalStorage } from './internal-storage';
 import { DriveFile } from '@/models/entities/drive-file';
@@ -74,7 +74,7 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 			webpublicUrl = `${ baseUrl }/${ webpublicKey }`;
 
 			logger.info(`uploading webpublic: ${webpublicKey}`);
-			uploads.push(upload(webpublicKey, alts.webpublic.data, alts.webpublic.type, name));
+			uploads.push(upload(webpublicKey, alts.webpublic.readable, alts.webpublic.type, name));
 		}
 
 		if (alts.thumbnail) {
@@ -82,7 +82,7 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 			thumbnailUrl = `${ baseUrl }/${ thumbnailKey }`;
 
 			logger.info(`uploading thumbnail: ${thumbnailKey}`);
-			uploads.push(upload(thumbnailKey, alts.thumbnail.data, alts.thumbnail.type));
+			uploads.push(upload(thumbnailKey, alts.thumbnail.readable, alts.thumbnail.type));
 		}
 
 		await Promise.all(uploads);
@@ -112,12 +112,12 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 		let webpublicUrl: string | null = null;
 
 		if (alts.thumbnail) {
-			thumbnailUrl = InternalStorage.saveFromBuffer(thumbnailAccessKey, alts.thumbnail.data);
+			thumbnailUrl = await InternalStorage.saveFromStream(thumbnailAccessKey, alts.thumbnail.readable);
 			logger.info(`thumbnail stored: ${thumbnailAccessKey}`);
 		}
 
 		if (alts.webpublic) {
-			webpublicUrl = InternalStorage.saveFromBuffer(webpublicAccessKey, alts.webpublic.data);
+			webpublicUrl = await InternalStorage.saveFromStream(webpublicAccessKey, alts.webpublic.readable);
 			logger.info(`web stored: ${webpublicAccessKey}`);
 		}
 
@@ -143,7 +143,7 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
  * @param type Content-Type for original
  * @param generateWeb Generate webpublic or not
  */
-export async function generateAlts(path: string, type: string, generateWeb: boolean) {
+export async function generateAlts(path: string, type: string, generateWeb: boolean): Promise<{ webpublic: IReadableImage | null, thumbnail: IReadableImage | null }> {
 	if (type.startsWith('video/')) {
 		try {
 			const thumbnail = await GenerateVideoThumbnail(path);
@@ -171,7 +171,7 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 	let img: sharp.Sharp | null = null;
 
 	try {
-		img = sharp(path);
+		img = fs.createReadStream(path).pipe(sharp());
 		const metadata = await img.metadata();
 		const isAnimated = metadata.pages && metadata.pages > 1;
 
@@ -191,18 +191,18 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 	}
 
 	// #region webpublic
-	let webpublic: IImage | null = null;
+	let webpublic: IReadableImage | null = null;
 
 	if (generateWeb) {
 		logger.info(`creating web image`);
 
 		try {
 			if (['image/jpeg'].includes(type)) {
-				webpublic = await convertSharpToJpeg(img, 2048, 2048);
+				webpublic = convertToJpeg(img, 2048, 2048);
 			} else if (['image/webp'].includes(type)) {
-				webpublic = await convertSharpToWebp(img, 2048, 2048);
+				webpublic = convertToWebp(img, 2048, 2048);
 			} else if (['image/png'].includes(type)) {
-				webpublic = await convertSharpToPng(img, 2048, 2048);
+				webpublic = convertToPng(img, 2048, 2048);
 			} else {
 				logger.debug(`web image not created (not an required image)`);
 			}
@@ -215,13 +215,13 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 	// #endregion webpublic
 
 	// #region thumbnail
-	let thumbnail: IImage | null = null;
+	let thumbnail: IReadableImage | null = null;
 
 	try {
 		if (['image/jpeg', 'image/webp'].includes(type)) {
-			thumbnail = await convertSharpToJpeg(img, 498, 280);
+			thumbnail = convertToJpeg(img, 498, 280);
 		} else if (['image/png'].includes(type)) {
-			thumbnail = await convertSharpToPngOrJpeg(img, 498, 280);
+			thumbnail = await convertToPngOrJpeg(img, 498, 280);
 		} else {
 			logger.debug(`thumbnail not created (not an required file)`);
 		}
@@ -239,7 +239,7 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 /**
  * Upload to ObjectStorage
  */
-async function upload(key: string, stream: fs.ReadStream | Buffer, type: string, filename?: string) {
+async function upload(key: string, body: S3.Body, type: string, filename?: string) {
 	if (type === 'image/apng') type = 'image/png';
 
 	const meta = await fetchMeta();
@@ -247,7 +247,7 @@ async function upload(key: string, stream: fs.ReadStream | Buffer, type: string,
 	const params = {
 		Bucket: meta.objectStorageBucket,
 		Key: key,
-		Body: stream,
+		Body: body,
 		ContentType: type,
 		CacheControl: 'max-age=31536000, immutable',
 	} as S3.PutObjectRequest;
@@ -314,7 +314,7 @@ export default async function(
 	uri: string | null = null,
 	sensitive: boolean | null = null
 ): Promise<DriveFile> {
-	const info = await getFileInfo(path);
+	const info = await getFileInfoByPath(path);
 	logger.info(`${JSON.stringify(info)}`);
 
 	// detect name
@@ -440,7 +440,7 @@ export default async function(
 			}
 		}
 	} else {
-		file = await (save(file, path, detectedName, info.type.mime, info.md5, info.size));
+		file = await save(file, path, detectedName, info.type.mime, info.md5, info.size);
 	}
 
 	logger.succ(`drive file has been created ${file.id}`);
