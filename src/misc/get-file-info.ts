@@ -107,11 +107,11 @@ export async function getFileInfo(readable: stream.Readable): Promise<FileInfo> 
  * Detect MIME Type and extension
  */
 export async function detectType({ size, chunks }: BufferArray) {
-	const type  = await fileType.fromBuffer(Buffer.concat(chunks));
-
 	if (size === 0) {
 		return TYPE_OCTET_STREAM;
 	}
+
+	const type = await fileType.fromBuffer(Buffer.concat(chunks));
 
 	if (type) {
 		// XMLはSVGかもしれない
