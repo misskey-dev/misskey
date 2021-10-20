@@ -69,7 +69,7 @@ router.use(nodeinfo.routes());
 router.use(wellKnown.routes());
 
 router.get('/twemoji/:x', ctx => {
-	const file = fs.createReadStream(`${__dirname}/../twemoji/assets/svg/${ctx.params.x}.svg`);
+	const file = fs.createReadStream(`${__dirname}/../../twemoji/assets/svg/${ctx.params.x}.svg`);
 	ctx.body = file;
 	ctx.set('Content-Type', 'image/svg+xml');
 	ctx.set('Cache-Control', 'max-age=31536000, immutable');
