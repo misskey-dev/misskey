@@ -47,7 +47,7 @@ export function getFileInfoByPath(path: string): Promise<FileInfo> {
 export async function getFileInfo(readable: stream.Readable): Promise<FileInfo> {
 	const warnings = [] as string[];
 
-	const streamCopy = cloneStream(readable);
+	const clone = cloneStream(readable);
 
 	readableRead(readable);
 
@@ -56,13 +56,13 @@ export async function getFileInfo(readable: stream.Readable): Promise<FileInfo> 
 	const sizeDetectable = ['image/jpeg', 'image/gif', 'image/png', 'image/apng', 'image/webp', 'image/bmp', 'image/tiff', 'image/svg+xml', 'image/vnd.adobe.photoshop'].includes(type.mime);
 	const blurhashEnabled = ['image/jpeg', 'image/gif', 'image/png', 'image/apng', 'image/webp', 'image/svg+xml'].includes(type.mime);
 
-	const md5Promise = calcHash(streamCopy);
-	const sizePromise = getFileSize(streamCopy);
-	const imageSizePromise = sizeDetectable ? detectImageSize(streamCopy).catch(e => {
+	const md5Promise = calcHash(clone);
+	const sizePromise = getFileSize(clone);
+	const imageSizePromise = sizeDetectable ? detectImageSize(clone).catch(e => {
 		warnings.push(`detectImageSize failed: ${e}`);
 		return undefined;
 	}) : Promise.resolve(undefined);
-	const blurhashPromise = blurhashEnabled ? getBlurhash(streamCopy).catch(e => {
+	const blurhashPromise = blurhashEnabled ? getBlurhash(clone).catch(e => {
 		warnings.push(`getBlurhash failed: ${e}`);
 		return undefined;
 	}) : Promise.resolve(undefined);
@@ -187,8 +187,7 @@ async function detectImageSize(readable: stream.Readable): Promise<{
 	wUnits: string;
 	hUnits: string;
 }> {
-	const streamCopy = cloneStream(readable);
-	const imageSize = await probeImageSize(streamCopy);
+	const imageSize = await probeImageSize(cloneStream(readable));
 	return imageSize;
 }
 
