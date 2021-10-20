@@ -163,6 +163,26 @@ export function createImportFollowingJob(user: ThinUser, fileId: DriveFile['id']
 	});
 }
 
+export function createImportMutingJob(user: ThinUser, fileId: DriveFile['id']) {
+	return dbQueue.add('importMuting', {
+		user: user,
+		fileId: fileId
+	}, {
+		removeOnComplete: true,
+		removeOnFail: true
+	});
+}
+
+export function createImportBlockingJob(user: ThinUser, fileId: DriveFile['id']) {
+	return dbQueue.add('importBlocking', {
+		user: user,
+		fileId: fileId
+	}, {
+		removeOnComplete: true,
+		removeOnFail: true
+	});
+}
+
 export function createImportUserListsJob(user: ThinUser, fileId: DriveFile['id']) {
 	return dbQueue.add('importUserLists', {
 		user: user,
