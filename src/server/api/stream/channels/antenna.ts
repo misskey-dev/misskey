@@ -20,7 +20,7 @@ export default class extends Channel {
 	}
 
 	@autobind
-	private async onEvent(data: StreamMessages['antenna']['spec']) {
+	private async onEvent(data: StreamMessages['antenna']['payload']) {
 		if (data.type === 'note') {
 			const note = await Notes.pack(data.body.id, this.user, { detail: true });
 
@@ -32,6 +32,8 @@ export default class extends Channel {
 			this.connection.cacheNote(note);
 
 			this.send('note', note);
+		} else {
+			this.send(data.type, data.body);
 		}
 	}
 
