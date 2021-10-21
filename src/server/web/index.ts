@@ -101,7 +101,7 @@ router.get('/apple-touch-icon.png', async ctx => {
 	});
 });
 
-router.get('/twemoji/*', async ctx => {
+router.get('/twemoji/(.*)', async ctx => {
 	const path = ctx.path.replace('/twemoji/', '');
 
 	if (!path.match(/^[0-9a-f-]+\.svg$/)) {
