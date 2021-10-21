@@ -40,7 +40,7 @@ adduser --disabled-password --disabled-login misskey
 
 2. 克隆 Misskey 项目的 master 分支。
 
-	`git clone -b master git://github.com/misskey-dev/misskey.git`
+	`git clone --recursive -b master git://github.com/misskey-dev/misskey.git`
 
 3. 进入 misskey 文件夹。
 

@@ -42,7 +42,7 @@ adduser --disabled-password --disabled-login misskey
 
 2. masterブランチからMisskeyレポジトリをクローン
 
-	`git clone -b master git://github.com/misskey-dev/misskey.git`
+	`git clone --recursive -b master git://github.com/misskey-dev/misskey.git`
 
 3. misskeyディレクトリに移動
 

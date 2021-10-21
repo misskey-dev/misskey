@@ -41,7 +41,7 @@ Installez les paquets suivants :
 
 2. Clonez la branche master du dépôt misskey.
 
-	`git clone -b master git://github.com/misskey-dev/misskey.git`
+	`git clone --recursive -b master git://github.com/misskey-dev/misskey.git`
 
 3. Accédez au dossier misskey.
 
