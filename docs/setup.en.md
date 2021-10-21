@@ -40,7 +40,7 @@ Please install and setup these softwares:
 
 2. Clone the misskey repo from master branch.
 
-	`git clone -b master git://github.com/misskey-dev/misskey.git`
+	`git clone --recursive -b master git://github.com/misskey-dev/misskey.git`
 
 3. Navigate to misskey directory
 
