@@ -1,51 +1,55 @@
 <template>
-<div class="edbbcaef">
-	<div class="numbers" v-if="stats">
-		<div class="number _panel">
-			<div class="label">Users</div>
-			<div class="value _monospace">
-				{{ number(stats.originalUsersCount) }}
-				<MkNumberDiff v-if="usersComparedToThePrevDay" class="diff" :value="usersComparedToThePrevDay" v-tooltip="$ts.dayOverDayChanges"><template #before>(</template><template #after>)</template></MkNumberDiff>
+<div>
+	<MkHeader :info="header"/>
+
+	<div class="edbbcaef">
+		<div class="numbers" v-if="stats">
+			<div class="number _panel">
+				<div class="label">Users</div>
+				<div class="value _monospace">
+					{{ number(stats.originalUsersCount) }}
+					<MkNumberDiff v-if="usersComparedToThePrevDay" class="diff" :value="usersComparedToThePrevDay" v-tooltip="$ts.dayOverDayChanges"><template #before>(</template><template #after>)</template></MkNumberDiff>
+				</div>
+			</div>
+			<div class="number _panel">
+				<div class="label">Notes</div>
+				<div class="value _monospace">
+					{{ number(stats.originalNotesCount) }}
+					<MkNumberDiff v-if="notesComparedToThePrevDay" class="diff" :value="notesComparedToThePrevDay" v-tooltip="$ts.dayOverDayChanges"><template #before>(</template><template #after>)</template></MkNumberDiff>
+				</div>
 			</div>
 		</div>
-		<div class="number _panel">
-			<div class="label">Notes</div>
-			<div class="value _monospace">
-				{{ number(stats.originalNotesCount) }}
-				<MkNumberDiff v-if="notesComparedToThePrevDay" class="diff" :value="notesComparedToThePrevDay" v-tooltip="$ts.dayOverDayChanges"><template #before>(</template><template #after>)</template></MkNumberDiff>
+
+		<MkContainer :foldable="true" class="charts">
+			<template #header><i class="fas fa-chart-bar"></i>{{ $ts.charts }}</template>
+			<div style="padding-top: 12px;">
+				<MkInstanceStats :chart-limit="500" :detailed="true"/>
 			</div>
-		</div>
-	</div>
+		</MkContainer>
+		
+			<!--<XMetrics/>-->
 
-	<MkContainer :foldable="true" class="charts">
-		<template #header><i class="fas fa-chart-bar"></i>{{ $ts.charts }}</template>
-		<div style="padding-top: 12px;">
-			<MkInstanceStats :chart-limit="500" :detailed="true"/>
-		</div>
-	</MkContainer>
-	
-		<!--<XMetrics/>-->
-
-	<div class="numbers">
-		<div class="number _panel">
-			<div class="label">Misskey</div>
-			<div class="value _monospace">{{ version }}</div>
-		</div>
-		<div class="number _panel" v-if="serverInfo">
-			<div class="label">Node.js</div>
-			<div class="value _monospace">{{ serverInfo.node }}</div>
-		</div>
-		<div class="number _panel" v-if="serverInfo">
-			<div class="label">PostgreSQL</div>
-			<div class="value _monospace">{{ serverInfo.psql }}</div>
-		</div>
-		<div class="number _panel" v-if="serverInfo">
-			<div class="label">Redis</div>
-			<div class="value _monospace">{{ serverInfo.redis }}</div>
-		</div>
-		<div class="number _panel">
-			<div class="label">Vue</div>
-			<div class="value _monospace">{{ vueVersion }}</div>
+		<div class="numbers">
+			<div class="number _panel">
+				<div class="label">Misskey</div>
+				<div class="value _monospace">{{ version }}</div>
+			</div>
+			<div class="number _panel" v-if="serverInfo">
+				<div class="label">Node.js</div>
+				<div class="value _monospace">{{ serverInfo.node }}</div>
+			</div>
+			<div class="number _panel" v-if="serverInfo">
+				<div class="label">PostgreSQL</div>
+				<div class="value _monospace">{{ serverInfo.psql }}</div>
+			</div>
+			<div class="number _panel" v-if="serverInfo">
+				<div class="label">Redis</div>
+				<div class="value _monospace">{{ serverInfo.redis }}</div>
+			</div>
+			<div class="number _panel">
+				<div class="label">Vue</div>
+				<div class="value _monospace">{{ vueVersion }}</div>
+			</div>
 		</div>
 	</div>
 </div>
@@ -82,9 +86,13 @@ export default defineComponent({
 	data() {
 		return {
 			[symbols.PAGE_INFO]: {
-				title: this.$ts.overview,
+				title: this.$ts.dashboard,
 				icon: 'fas fa-tachometer-alt',
 				bg: 'var(--bg)',
+			},
+			header: {
+				title: this.$ts.dashboard,
+				icon: 'fas fa-tachometer-alt',
 			},
 			version,
 			vueVersion,

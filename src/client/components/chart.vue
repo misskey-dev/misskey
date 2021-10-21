@@ -472,6 +472,112 @@ export default defineComponent({
 			};
 		};
 
+		const fetchInstanceRequestsChart = async (): Promise<typeof data> => {
+			const raw = await os.api('charts/instance', { host: props.args.host, limit: props.limit, span: props.span });
+			return {
+				series: [{
+					name: 'In',
+					type: 'area',
+					color: '#008FFB',
+					data: format(raw.requests.received)
+				}, {
+					name: 'Out (succ)',
+					type: 'area',
+					color: '#00E396',
+					data: format(raw.requests.succeeded)
+				}, {
+					name: 'Out (fail)',
+					type: 'area',
+					color: '#FEB019',
+					data: format(raw.requests.failed)
+				}]
+			};
+		};
+
+		const fetchInstanceUsersChart = async (total: boolean): Promise<typeof data> => {
+			const raw = await os.api('charts/instance', { host: props.args.host, limit: props.limit, span: props.span });
+			return {
+				series: [{
+					name: 'Users',
+					type: 'area',
+					color: '#008FFB',
+					data: format(total
+						? raw.users.total
+						: sum(raw.users.inc, negate(raw.users.dec))
+					)
+				}]
+			};
+		};
+
+		const fetchInstanceNotesChart = async (total: boolean): Promise<typeof data> => {
+			const raw = await os.api('charts/instance', { host: props.args.host, limit: props.limit, span: props.span });
+			return {
+				series: [{
+					name: 'Notes',
+					type: 'area',
+					color: '#008FFB',
+					data: format(total
+						? raw.notes.total
+						: sum(raw.notes.inc, negate(raw.notes.dec))
+					)
+				}]
+			};
+		};
+
+		const fetchInstanceFfChart = async (total: boolean): Promise<typeof data> => {
+			const raw = await os.api('charts/instance', { host: props.args.host, limit: props.limit, span: props.span });
+			return {
+				series: [{
+					name: 'Following',
+					type: 'area',
+					color: '#008FFB',
+					data: format(total
+						? raw.following.total
+						: sum(raw.following.inc, negate(raw.following.dec))
+					)
+				}, {
+					name: 'Followers',
+					type: 'area',
+					color: '#00E396',
+					data: format(total
+						? raw.followers.total
+						: sum(raw.followers.inc, negate(raw.followers.dec))
+					)
+				}]
+			};
+		};
+
+		const fetchInstanceDriveUsageChart = async (total: boolean): Promise<typeof data> => {
+			const raw = await os.api('charts/instance', { host: props.args.host, limit: props.limit, span: props.span });
+			return {
+				bytes: true,
+				series: [{
+					name: 'Drive usage',
+					type: 'area',
+					color: '#008FFB',
+					data: format(total
+						? raw.drive.totalUsage
+						: sum(raw.drive.incUsage, negate(raw.drive.decUsage))
+					)
+				}]
+			};
+		};
+
+		const fetchInstanceDriveFilesChart = async (total: boolean): Promise<typeof data> => {
+			const raw = await os.api('charts/instance', { host: props.args.host, limit: props.limit, span: props.span });
+			return {
+				series: [{
+					name: 'Drive files',
+					type: 'area',
+					color: '#008FFB',
+					data: format(total
+						? raw.drive.totalFiles
+						: sum(raw.drive.incFiles, negate(raw.drive.decFiles))
+					)
+				}]
+			};
+		};
+
 		const fetchAndRender = async () => {
 			const fetchData = () => {
 				switch (props.src) {
@@ -488,6 +594,18 @@ export default defineComponent({
 					case 'drive-total': return fetchDriveTotalChart();
 					case 'drive-files': return fetchDriveFilesChart();
 					case 'drive-files-total': return fetchDriveFilesTotalChart();
+					
+					case 'instances-requests': return fetchInstanceRequestsChart();
+					case 'instances-users': return fetchInstanceUsersChart(false);
+					case 'instances-users-total': return fetchInstanceUsersChart(true);
+					case 'instances-notes': return fetchInstanceNotesChart(false);
+					case 'instances-notes-total': return fetchInstanceNotesChart(true);
+					case 'instances-ff': return fetchInstanceFfChart(false);
+					case 'instances-ff-total': return fetchInstanceFfChart(true);
+					case 'instances-drive-usage': return fetchInstanceDriveUsageChart(false);
+					case 'instances-drive-usage-total': return fetchInstanceDriveUsageChart(true);
+					case 'instances-drive-files': return fetchInstanceDriveFilesChart(false);
+					case 'instances-drive-files-total': return fetchInstanceDriveFilesChart(true);
 				}
 			};
 			fetching.value = true;
