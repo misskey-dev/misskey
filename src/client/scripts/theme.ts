@@ -20,6 +20,7 @@ export const builtinThemes = [
 	require('@client/themes/l-apricot.json5'),
 	require('@client/themes/l-rainy.json5'),
 	require('@client/themes/l-vivid.json5'),
+	require('@client/themes/l-sushi.json5'),
 
 	require('@client/themes/d-dark.json5'),
 	require('@client/themes/d-persimmon.json5'),
