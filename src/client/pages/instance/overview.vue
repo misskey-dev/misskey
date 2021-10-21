@@ -5,14 +5,14 @@
 			<div class="label">Users</div>
 			<div class="value _monospace">
 				{{ number(stats.originalUsersCount) }}
-				<MkNumberDiff v-if="usersComparedToThePrevDay" class="diff" :value="usersComparedToThePrevDay"><template #before>(</template><template #after>)</template></MkNumberDiff>
+				<MkNumberDiff v-if="usersComparedToThePrevDay" class="diff" :value="usersComparedToThePrevDay" v-tooltip="$ts.dayOverDayChanges"><template #before>(</template><template #after>)</template></MkNumberDiff>
 			</div>
 		</div>
 		<div class="number _panel">
 			<div class="label">Notes</div>
 			<div class="value _monospace">
 				{{ number(stats.originalNotesCount) }}
-				<MkNumberDiff v-if="notesComparedToThePrevDay" class="diff" :value="notesComparedToThePrevDay"><template #before>(</template><template #after>)</template></MkNumberDiff>
+				<MkNumberDiff v-if="notesComparedToThePrevDay" class="diff" :value="notesComparedToThePrevDay" v-tooltip="$ts.dayOverDayChanges"><template #before>(</template><template #after>)</template></MkNumberDiff>
 			</div>
 		</div>
 	</div>
