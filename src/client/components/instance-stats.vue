@@ -24,7 +24,7 @@
 				<option value="drive-total">{{ $ts._charts.storageUsageTotal }}</option>
 			</optgroup>
 		</MkSelect>
-		<MkSelect v-model="chartSpan" style="margin: 0;">
+		<MkSelect v-model="chartSpan" style="margin: 0 0 0 10px;">
 			<option value="hour">{{ $ts.perHour }}</option>
 			<option value="day">{{ $ts.perDay }}</option>
 		</MkSelect>
