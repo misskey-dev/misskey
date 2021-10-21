@@ -1,1 +1,1 @@
-export const twemojiSvgBase = '/static-assets/client/twemoji';
+export const twemojiSvgBase = '/twemoji';
