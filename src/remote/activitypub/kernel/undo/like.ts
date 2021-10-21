@@ -12,6 +12,10 @@ export default async (actor: IRemoteUser, activity: ILike) => {
 	const note = await fetchNote(targetUri);
 	if (!note) return `skip: target note not found ${targetUri}`;
 
-	await deleteReaction(actor, note);
+	await deleteReaction(actor, note).catch(e => {
+		if (e.id === '60527ec9-b4cb-4a88-a6bd-32d3ad26817d') return;
+		throw e;
+	});
+
 	return `ok`;
 };
