@@ -156,7 +156,7 @@ export default defineComponent({
 	> .numbers {
 		display: grid;
 		grid-gap: 8px;
-		grid-template-columns: repeat(auto-fill,minmax(130px,1fr));
+		grid-template-columns: repeat(auto-fill,minmax(150px,1fr));
 		margin: 16px;
 
 		> .number {
