@@ -1,8 +1,9 @@
 import { IRemoteUser } from '@/models/entities/user';
-import reject from '@/services/following/requests/reject';
+import { remoteReject } from '@/services/following/reject';
 import { IFollow } from '../../type';
 import DbResolver from '../../db-resolver';
 import { relayRejected } from '@/services/relay';
+import { Users } from '@/models';
 
 export default async (actor: IRemoteUser, activity: IFollow): Promise<string> => {
 	// ※ activityはこっちから投げたフォローリクエストなので、activity.actorは存在するローカルユーザーである必要がある
@@ -14,7 +15,7 @@ export default async (actor: IRemoteUser, activity: IFollow): Promise<string> =>
 		return `skip: follower not found`;
 	}
 
-	if (follower.host != null) {
+	if (!Users.isLocalUser(follower)) {
 		return `skip: follower is not a local user`;
 	}
 
@@ -24,6 +25,6 @@ export default async (actor: IRemoteUser, activity: IFollow): Promise<string> =>
 		return await relayRejected(match[1]);
 	}
 
-	await reject(actor, follower);
+	await remoteReject(actor, follower);
 	return `ok`;
 };
