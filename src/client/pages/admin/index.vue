@@ -201,11 +201,6 @@ export default defineComponent({
 				text: i18n.locale.database,
 				to: '/admin/database',
 				active: page.value === 'database',
-			}, {
-				icon: 'fas fa-stream',
-				text: i18n.locale.logs,
-				to: '/admin/logs',
-				active: page.value === 'logs',
 			}],
 		}]);
 		const component = computed(() => {
@@ -220,7 +215,6 @@ export default defineComponent({
 				case 'announcements': return defineAsyncComponent(() => import('./announcements.vue'));
 				case 'ads': return defineAsyncComponent(() => import('./ads.vue'));
 				case 'database': return defineAsyncComponent(() => import('./database.vue'));
-				case 'logs': return defineAsyncComponent(() => import('./logs.vue'));
 				case 'abuses': return defineAsyncComponent(() => import('./abuses.vue'));
 				case 'settings': return defineAsyncComponent(() => import('./settings.vue'));
 				case 'files-settings': return defineAsyncComponent(() => import('./files-settings.vue'));
