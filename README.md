@@ -65,7 +65,7 @@ Organize and store your files! Want to post a picture you have already uploaded?
 
 :package: Create your own instance
 ----------------------------------------------------------------
-Please see the [Setup and Installation Guide](./docs/setup.en.md).
+Please see the [Setup and Installation Guide](https://misskey-hub.net/docs/install/install.html).
 
 :wrench: Contribution
 ----------------------------------------------------------------
