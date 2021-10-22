@@ -595,17 +595,17 @@ export default defineComponent({
 					case 'drive-files': return fetchDriveFilesChart();
 					case 'drive-files-total': return fetchDriveFilesTotalChart();
 					
-					case 'instances-requests': return fetchInstanceRequestsChart();
-					case 'instances-users': return fetchInstanceUsersChart(false);
-					case 'instances-users-total': return fetchInstanceUsersChart(true);
-					case 'instances-notes': return fetchInstanceNotesChart(false);
-					case 'instances-notes-total': return fetchInstanceNotesChart(true);
-					case 'instances-ff': return fetchInstanceFfChart(false);
-					case 'instances-ff-total': return fetchInstanceFfChart(true);
-					case 'instances-drive-usage': return fetchInstanceDriveUsageChart(false);
-					case 'instances-drive-usage-total': return fetchInstanceDriveUsageChart(true);
-					case 'instances-drive-files': return fetchInstanceDriveFilesChart(false);
-					case 'instances-drive-files-total': return fetchInstanceDriveFilesChart(true);
+					case 'instance-requests': return fetchInstanceRequestsChart();
+					case 'instance-users': return fetchInstanceUsersChart(false);
+					case 'instance-users-total': return fetchInstanceUsersChart(true);
+					case 'instance-notes': return fetchInstanceNotesChart(false);
+					case 'instance-notes-total': return fetchInstanceNotesChart(true);
+					case 'instance-ff': return fetchInstanceFfChart(false);
+					case 'instance-ff-total': return fetchInstanceFfChart(true);
+					case 'instance-drive-usage': return fetchInstanceDriveUsageChart(false);
+					case 'instance-drive-usage-total': return fetchInstanceDriveUsageChart(true);
+					case 'instance-drive-files': return fetchInstanceDriveFilesChart(false);
+					case 'instance-drive-files-total': return fetchInstanceDriveFilesChart(true);
 				}
 			};
 			fetching.value = true;
