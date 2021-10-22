@@ -1,61 +1,67 @@
 <template>
-<FormBase>
-	<FormSuspense :p="init">
-		<FormSuspense :p="fetchStats" v-slot="{ result: stats }">
-			<FormGroup>
-				<FormKeyValueView>
-					<template #key>Users</template>
-					<template #value>{{ number(stats.originalUsersCount) }}</template>
-				</FormKeyValueView>
-				<FormKeyValueView>
-					<template #key>Notes</template>
-					<template #value>{{ number(stats.originalNotesCount) }}</template>
-				</FormKeyValueView>
-			</FormGroup>
-		</FormSuspense>
-	
-		<div class="_debobigegoItem">
-			<div class="_debobigegoPanel">
-				<MkInstanceStats :chart-limit="300" :detailed="true"/>
+<div>
+	<MkHeader :info="header"/>
+
+	<div class="edbbcaef">
+		<div class="numbers" v-if="stats">
+			<div class="number _panel">
+				<div class="label">Users</div>
+				<div class="value _monospace">
+					{{ number(stats.originalUsersCount) }}
+					<MkNumberDiff v-if="usersComparedToThePrevDay" class="diff" :value="usersComparedToThePrevDay" v-tooltip="$ts.dayOverDayChanges"><template #before>(</template><template #after>)</template></MkNumberDiff>
+				</div>
+			</div>
+			<div class="number _panel">
+				<div class="label">Notes</div>
+				<div class="value _monospace">
+					{{ number(stats.originalNotesCount) }}
+					<MkNumberDiff v-if="notesComparedToThePrevDay" class="diff" :value="notesComparedToThePrevDay" v-tooltip="$ts.dayOverDayChanges"><template #before>(</template><template #after>)</template></MkNumberDiff>
+				</div>
 			</div>
 		</div>
 
-		<XMetrics/>
+		<MkContainer :foldable="true" class="charts">
+			<template #header><i class="fas fa-chart-bar"></i>{{ $ts.charts }}</template>
+			<div style="padding-top: 12px;">
+				<MkInstanceStats :chart-limit="500" :detailed="true"/>
+			</div>
+		</MkContainer>
+		
+			<!--<XMetrics/>-->
 
-		<FormSuspense :p="fetchServerInfo" v-slot="{ result: serverInfo }">
-			<FormGroup>
-				<FormKeyValueView>
-					<template #key>Node.js</template>
-					<template #value>{{ serverInfo.node }}</template>
-				</FormKeyValueView>
-				<FormKeyValueView>
-					<template #key>PostgreSQL</template>
-					<template #value>{{ serverInfo.psql }}</template>
-				</FormKeyValueView>
-				<FormKeyValueView>
-					<template #key>Redis</template>
-					<template #value>{{ serverInfo.redis }}</template>
-				</FormKeyValueView>
-			</FormGroup>
-		</FormSuspense>
-	</FormSuspense>
-</FormBase>
+		<div class="numbers">
+			<div class="number _panel">
+				<div class="label">Misskey</div>
+				<div class="value _monospace">{{ version }}</div>
+			</div>
+			<div class="number _panel" v-if="serverInfo">
+				<div class="label">Node.js</div>
+				<div class="value _monospace">{{ serverInfo.node }}</div>
+			</div>
+			<div class="number _panel" v-if="serverInfo">
+				<div class="label">PostgreSQL</div>
+				<div class="value _monospace">{{ serverInfo.psql }}</div>
+			</div>
+			<div class="number _panel" v-if="serverInfo">
+				<div class="label">Redis</div>
+				<div class="value _monospace">{{ serverInfo.redis }}</div>
+			</div>
+			<div class="number _panel">
+				<div class="label">Vue</div>
+				<div class="value _monospace">{{ vueVersion }}</div>
+			</div>
+		</div>
+	</div>
+</div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, markRaw } from 'vue';
+import { computed, defineComponent, version as vueVersion } from 'vue';
 import FormKeyValueView from '@client/components/debobigego/key-value-view.vue';
-import FormInput from '@client/components/debobigego/input.vue';
-import FormButton from '@client/components/debobigego/button.vue';
-import FormBase from '@client/components/debobigego/base.vue';
-import FormGroup from '@client/components/debobigego/group.vue';
-import FormTextarea from '@client/components/debobigego/textarea.vue';
-import FormInfo from '@client/components/debobigego/info.vue';
-import FormSuspense from '@client/components/debobigego/suspense.vue';
 import MkInstanceStats from '@client/components/instance-stats.vue';
 import MkButton from '@client/components/ui/button.vue';
 import MkSelect from '@client/components/form/select.vue';
-import MkInput from '@client/components/form/input.vue';
+import MkNumberDiff from '@client/components/number-diff.vue';
 import MkContainer from '@client/components/ui/container.vue';
 import MkFolder from '@client/components/ui/folder.vue';
 import { version, url } from '@client/config';
@@ -68,12 +74,10 @@ import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
-		FormBase,
-		FormSuspense,
-		FormGroup,
-		FormInfo,
+		MkNumberDiff,
 		FormKeyValueView,
 		MkInstanceStats,
+		MkContainer,
 		XMetrics,
 	},
 
@@ -82,17 +86,22 @@ export default defineComponent({
 	data() {
 		return {
 			[symbols.PAGE_INFO]: {
-				title: this.$ts.overview,
+				title: this.$ts.dashboard,
 				icon: 'fas fa-tachometer-alt',
 				bg: 'var(--bg)',
 			},
-			page: 'index',
+			header: {
+				title: this.$ts.dashboard,
+				icon: 'fas fa-tachometer-alt',
+			},
 			version,
+			vueVersion,
 			url,
 			stats: null,
 			meta: null,
-			fetchStats: () => os.api('stats', {}),
-			fetchServerInfo: () => os.api('admin/server-info', {}),
+			serverInfo: null,
+			usersComparedToThePrevDay: null,
+			notesComparedToThePrevDay: null,
 			fetchJobs: () => os.api('admin/queue/deliver-delayed', {}),
 			fetchModLogs: () => os.api('admin/show-moderation-logs', {}),
 		}
@@ -100,13 +109,29 @@ export default defineComponent({
 
 	async mounted() {
 		this.$emit('info', this[symbols.PAGE_INFO]);
+
+		os.api('meta', { detail: true }).then(meta => {
+			this.meta = meta;
+		});
+		
+		os.api('stats', {}).then(stats => {
+			this.stats = stats;
+
+			os.api('charts/users', { limit: 2, span: 'day' }).then(chart => {
+				this.usersComparedToThePrevDay = this.stats.originalUsersCount - chart.local.total[1];
+			});
+
+			os.api('charts/notes', { limit: 2, span: 'day' }).then(chart => {
+				this.notesComparedToThePrevDay = this.stats.originalNotesCount - chart.local.total[1];
+			});
+		});
+
+		os.api('admin/server-info', {}).then(serverInfo => {
+			this.serverInfo = serverInfo;
+		});
 	},
 
 	methods: {
-		async init() {
-			this.meta = await os.api('meta', { detail: true });
-		},
-	
 		async showInstanceInfo(q) {
 			let instance = q;
 			if (typeof q === 'string') {
@@ -125,3 +150,36 @@ export default defineComponent({
 	}
 });
 </script>
+
+<style lang="scss" scoped>
+.edbbcaef {
+	> .numbers {
+		display: grid;
+		grid-gap: 8px;
+		grid-template-columns: repeat(auto-fill,minmax(130px,1fr));
+		margin: 16px;
+
+		> .number {
+			padding: 12px 16px;
+
+			> .label {
+				opacity: 0.7;
+				font-size: 0.8em;
+			}
+
+			> .value {
+				font-weight: bold;
+				font-size: 1.2em;
+
+				> .diff {
+					font-size: 0.8em;
+				}
+			}
+		}
+	}
+
+	> .charts {
+		margin: var(--margin);
+	}
+}
+</style>
