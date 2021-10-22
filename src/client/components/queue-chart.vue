@@ -121,10 +121,20 @@ export default defineComponent({
 					},
 					scales: {
 						x: {
-
+							grid: {
+								display: false,
+								color: gridColor,
+								borderColor: 'rgb(0, 0, 0, 0)',
+							},
+							ticks: {
+								display: false,
+							},
 						},
 						y: {
-
+							grid: {
+								color: gridColor,
+								borderColor: 'rgb(0, 0, 0, 0)',
+							},
 						},
 					},
 					interaction: {
