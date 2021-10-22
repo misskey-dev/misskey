@@ -22,19 +22,19 @@
 ## Bloki
 ユーザーをブロックすると、そのユーザーからあなたのコンテンツが見えないようになり、またあなたに対して以下のようなアクションをすることができなくなります。
 
-- フォローする
-- ユーザーリストに追加する
-- 返信する、Renoteする
-- リアクションする、アンケートに投票する
-- メッセージを送信する
-- など
+- Eksekvi
+- Aldoni al listo de uzantoj
+- Respondi aŭ plusendi
+- Reagi aŭ voĉi
+- Senti mesaĝon
+- k.t.p
 
 また、
 
-- ブロックする際に既にそのユーザーからフォローされていた場合はフォローが解除されます。
-- ブロックする際に既にそのユーザーがあなたをユーザーリストに入れていた場合はそのリストからあなたが削除されます。
+- Se la uzanto jam sekvas vin kiam vi blokas, la uzanto ĉesos sekvi.
+- Se la uzanto jam aldonis vin al listo de uzantoj kiam vi blokas, oni forigos vin de la listo
 
-ユーザーをブロックするには、対象のユーザーのユーザーページのメニューを開き、「ブロック」ボタンを押します。
+Por bloki uzanton klaku la butonon "Bloki" el la menuo de uzula paĝo de specifa uzanto.
 
 <div class="warn">⚠️ ブロックを行ったこと自体は相手に通知されませんが、フォローを行ったりなどの上記のアクションが行えなくなるので間接的にブロックされていることは分かります。</div>
 
