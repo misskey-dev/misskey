@@ -1,9 +1,9 @@
 <template>
 <div class="vblkjoeq">
 	<div class="label" @click="focus"><slot name="label"></slot></div>
-	<div class="input" :class="{ inline, disabled, focused }">
+	<div class="input" :class="{ inline, disabled, focused }" @click.prevent="onClick" ref="container">
 		<div class="prefix" ref="prefixEl"><slot name="prefix"></slot></div>
-		<select ref="inputEl"
+		<select class="select" ref="inputEl"
 			v-model="v"
 			:disabled="disabled"
 			:required="required"
@@ -25,7 +25,8 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, onUnmounted, nextTick, ref, watch, computed, toRefs } from 'vue';
-import MkButton from '../ui/button.vue';
+import MkButton from '@client/components/ui/button.vue';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {
@@ -81,6 +82,7 @@ export default defineComponent({
 		const inputEl = ref(null);
 		const prefixEl = ref(null);
 		const suffixEl = ref(null);
+		const container = ref(null);
 
 		const focus = () => inputEl.value.focus();
 		const onInput = (ev) => {
@@ -132,6 +134,47 @@ export default defineComponent({
 			});
 		});
 
+		const onClick = (ev: MouseEvent) => {
+			focused.value = true;
+
+			const menu = [];
+			let options = context.slots.default();
+
+			for (const optionOrOptgroup of options) {
+				if (optionOrOptgroup.type === 'optgroup') {
+					const optgroup = optionOrOptgroup;
+					menu.push({
+						type: 'label',
+						text: optgroup.props.label,
+					});
+					for (const option of optgroup.children) {
+						menu.push({
+							text: option.children,
+							active: v.value === option.props.value,
+							action: () => {
+								v.value = option.props.value;
+							},
+						});
+					}
+				} else {
+					const option = optionOrOptgroup;
+					menu.push({
+						text: option.children,
+						active: v.value === option.props.value,
+						action: () => {
+							v.value = option.props.value;
+						},
+					});
+				}
+			}
+
+			os.popupMenu(menu, container.value, {
+				width: container.value.offsetWidth,
+			}).then(() => {
+				focused.value = false;
+			});
+		};
+
 		return {
 			v,
 			focused,
@@ -141,8 +184,10 @@ export default defineComponent({
 			inputEl,
 			prefixEl,
 			suffixEl,
+			container,
 			focus,
 			onInput,
+			onClick,
 			updated,
 		};
 	},
@@ -174,8 +219,15 @@ export default defineComponent({
 	> .input {
 		$height: 42px;
 		position: relative;
+		cursor: pointer;
 
-		> select {
+		&:hover {
+			> .select {
+				border-color: var(--inputBorderHover);
+			}
+		}
+
+		> .select {
 			appearance: none;
 			-webkit-appearance: none;
 			display: block;
@@ -195,10 +247,7 @@ export default defineComponent({
 			box-sizing: border-box;
 			cursor: pointer;
 			transition: border-color 0.1s ease-out;
-
-			&:hover {
-				border-color: var(--inputBorderHover);
-			}
+			pointer-events: none;
 		}
 
 		> .prefix,

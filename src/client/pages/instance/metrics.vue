@@ -52,7 +52,21 @@
 
 <script lang="ts">
 import { defineComponent, markRaw } from 'vue';
-import Chart from 'chart.js';
+import {
+  Chart,
+  ArcElement,
+  LineElement,
+  BarElement,
+  PointElement,
+  BarController,
+  LineController,
+  CategoryScale,
+  LinearScale,
+  Legend,
+  Title,
+  Tooltip,
+  SubTitle
+} from 'chart.js';
 import MkButton from '@client/components/ui/button.vue';
 import MkSelect from '@client/components/form/select.vue';
 import MkInput from '@client/components/form/input.vue';
@@ -63,6 +77,21 @@ import { version, url } from '@client/config';
 import bytes from '@client/filters/bytes';
 import number from '@client/filters/number';
 import MkInstanceInfo from './instance.vue';
+
+Chart.register(
+  ArcElement,
+  LineElement,
+  BarElement,
+  PointElement,
+  BarController,
+  LineController,
+  CategoryScale,
+  LinearScale,
+  Legend,
+  Title,
+  Tooltip,
+  SubTitle
+);
 
 const alpha = (hex, a) => {
 	const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)!;
@@ -116,7 +145,7 @@ export default defineComponent({
 	mounted() {
 		this.fetchJobs();
 
-		Chart.defaults.global.defaultFontColor = getComputedStyle(document.documentElement).getPropertyValue('--fg');
+		Chart.defaults.color = getComputedStyle(document.documentElement).getPropertyValue('--fg');
 
 		os.api('admin/server-info', {}).then(res => {
 			this.serverInfo = res;
@@ -157,7 +186,7 @@ export default defineComponent({
 					datasets: [{
 						label: 'CPU',
 						pointRadius: 0,
-						lineTension: 0,
+						tension: 0,
 						borderWidth: 2,
 						borderColor: '#86b300',
 						backgroundColor: alpha('#86b300', 0.1),
@@ -165,7 +194,7 @@ export default defineComponent({
 					}, {
 						label: 'MEM (active)',
 						pointRadius: 0,
-						lineTension: 0,
+						tension: 0,
 						borderWidth: 2,
 						borderColor: '#935dbf',
 						backgroundColor: alpha('#935dbf', 0.02),
@@ -173,7 +202,7 @@ export default defineComponent({
 					}, {
 						label: 'MEM (used)',
 						pointRadius: 0,
-						lineTension: 0,
+						tension: 0,
 						borderWidth: 2,
 						borderColor: '#935dbf',
 						borderDash: [5, 5],
@@ -198,7 +227,7 @@ export default defineComponent({
 						}
 					},
 					scales: {
-						xAxes: [{
+						x: {
 							gridLines: {
 								display: false,
 								color: this.gridColor,
@@ -207,8 +236,8 @@ export default defineComponent({
 							ticks: {
 								display: false,
 							}
-						}],
-						yAxes: [{
+						},
+						y: {
 							position: 'right',
 							gridLines: {
 								display: true,
@@ -219,7 +248,7 @@ export default defineComponent({
 								display: false,
 								max: 100
 							}
-						}]
+						}
 					},
 					tooltips: {
 						intersect: false,
@@ -238,7 +267,7 @@ export default defineComponent({
 					datasets: [{
 						label: 'In',
 						pointRadius: 0,
-						lineTension: 0,
+						tension: 0,
 						borderWidth: 2,
 						borderColor: '#94a029',
 						backgroundColor: alpha('#94a029', 0.1),
@@ -246,7 +275,7 @@ export default defineComponent({
 					}, {
 						label: 'Out',
 						pointRadius: 0,
-						lineTension: 0,
+						tension: 0,
 						borderWidth: 2,
 						borderColor: '#ff9156',
 						backgroundColor: alpha('#ff9156', 0.1),
@@ -270,7 +299,7 @@ export default defineComponent({
 						}
 					},
 					scales: {
-						xAxes: [{
+						x: {
 							gridLines: {
 								display: false,
 								color: this.gridColor,
@@ -279,8 +308,8 @@ export default defineComponent({
 							ticks: {
 								display: false
 							}
-						}],
-						yAxes: [{
+						},
+						y: {
 							position: 'right',
 							gridLines: {
 								display: true,
@@ -290,7 +319,7 @@ export default defineComponent({
 							ticks: {
 								display: false,
 							}
-						}]
+						}
 					},
 					tooltips: {
 						intersect: false,
@@ -309,7 +338,7 @@ export default defineComponent({
 					datasets: [{
 						label: 'Read',
 						pointRadius: 0,
-						lineTension: 0,
+						tension: 0,
 						borderWidth: 2,
 						borderColor: '#94a029',
 						backgroundColor: alpha('#94a029', 0.1),
@@ -317,7 +346,7 @@ export default defineComponent({
 					}, {
 						label: 'Write',
 						pointRadius: 0,
-						lineTension: 0,
+						tension: 0,
 						borderWidth: 2,
 						borderColor: '#ff9156',
 						backgroundColor: alpha('#ff9156', 0.1),
@@ -341,7 +370,7 @@ export default defineComponent({
 						}
 					},
 					scales: {
-						xAxes: [{
+						x: {
 							gridLines: {
 								display: false,
 								color: this.gridColor,
@@ -350,8 +379,8 @@ export default defineComponent({
 							ticks: {
 								display: false
 							}
-						}],
-						yAxes: [{
+						},
+						y: {
 							position: 'right',
 							gridLines: {
 								display: true,
@@ -361,7 +390,7 @@ export default defineComponent({
 							ticks: {
 								display: false,
 							}
-						}]
+						}
 					},
 					tooltips: {
 						intersect: false,
@@ -369,18 +398,6 @@ export default defineComponent({
 					}
 				}
 			}));
-		},
-
-		async showInstanceInfo(q) {
-			let instance = q;
-			if (typeof q === 'string') {
-				instance = await os.api('federation/show-instance', {
-					host: q
-				});
-			}
-			os.popup(MkInstanceInfo, {
-				instance: instance
-			}, {}, 'closed');
 		},
 
 		fetchJobs() {
