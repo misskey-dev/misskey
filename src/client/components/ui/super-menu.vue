@@ -120,7 +120,7 @@ export default defineComponent({
 
 			> .items {
 				display: grid;
-				grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+				grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
 				grid-gap: 8px;
 				padding: 0 16px;
 
