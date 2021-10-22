@@ -12,10 +12,6 @@ import { genId } from '@/misc/gen-id';
 import { IdentifiableError } from '@/misc/identifiable-error';
 
 export default async function(blocker: User, blockee: User) {
-	if (blockee.isAdmin || blockee.isModerator) {
-		throw new IdentifiableError('e42b7890-5e4d-9d9c-d54b-cf4dd30adfb5');
-	}
-
 	await Promise.all([
 		cancelRequest(blocker, blockee),
 		cancelRequest(blockee, blocker),
