@@ -11,7 +11,7 @@
 			</div>
 		</div>
 		<div class="">
-			<canvas ref="chart"></canvas>
+			<MkQueueChart :domain="domain" :connection="connection"/>
 		</div>
 		<div class="jobs">
 			<div v-if="jobs.length > 0">
@@ -27,177 +27,61 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, markRaw } from 'vue';
-import Chart from 'chart.js';
+import { defineComponent, markRaw, onMounted, onUnmounted, ref } from 'vue';
 import number from '@client/filters/number';
-
-const alpha = (hex, a) => {
-	const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)!;
-	const r = parseInt(result[1], 16);
-	const g = parseInt(result[2], 16);
-	const b = parseInt(result[3], 16);
-	return `rgba(${r}, ${g}, ${b}, ${a})`;
-};
+import MkQueueChart from '@client/components/queue-chart.vue';
 import * as os from '@client/os';
 
 export default defineComponent({
+	components: {
+		MkQueueChart
+	},
+
 	props: {
 		domain: {
-			required: true
+			type: String,
+			required: true,
 		},
 		connection: {
-			required: true
+			required: true,
 		},
 	},
 
-	data() {
-		return {
-			chart: null,
-			jobs: [],
-			activeSincePrevTick: 0,
-			active: 0,
-			waiting: 0,
-			delayed: 0,
-		}
-	},
+	setup(props) {
+		const activeSincePrevTick = ref(0);
+		const active = ref(0);
+		const waiting = ref(0);
+		const delayed = ref(0);
+		const jobs = ref([]);
 
-	mounted() {
-		this.fetchJobs();
-
-		// TODO: var(--panel)の色が暗いか明るいかで判定する
-		const gridColor = this.$store.state.darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
-
-		Chart.defaults.color = getComputedStyle(document.documentElement).getPropertyValue('--fg');
-
-		this.chart = markRaw(new Chart(this.$refs.chart, {
-			type: 'line',
-			data: {
-				labels: [],
-				datasets: [{
-					label: 'Process',
-					pointRadius: 0,
-					lineTension: 0,
-					borderWidth: 2,
-					borderColor: '#00E396',
-					backgroundColor: alpha('#00E396', 0.1),
-					data: []
-				}, {
-					label: 'Active',
-					pointRadius: 0,
-					lineTension: 0,
-					borderWidth: 2,
-					borderColor: '#00BCD4',
-					backgroundColor: alpha('#00BCD4', 0.1),
-					data: []
-				}, {
-					label: 'Waiting',
-					pointRadius: 0,
-					lineTension: 0,
-					borderWidth: 2,
-					borderColor: '#FFB300',
-					backgroundColor: alpha('#FFB300', 0.1),
-					data: []
-				}, {
-					label: 'Delayed',
-					pointRadius: 0,
-					lineTension: 0,
-					borderWidth: 2,
-					borderColor: '#E53935',
-					borderDash: [5, 5],
-					fill: false,
-					data: []
-				}]
-			},
-			options: {
-				aspectRatio: 3,
-				layout: {
-					padding: {
-						left: 16,
-						right: 16,
-						top: 16,
-						bottom: 12
-					}
-				},
-				legend: {
-					position: 'bottom',
-					labels: {
-						boxWidth: 16,
-					}
-				},
-				scales: {
-					xAxes: [{
-						gridLines: {
-							display: false,
-							color: gridColor,
-							zeroLineColor: gridColor,
-						},
-						ticks: {
-							display: false
-						}
-					}],
-					yAxes: [{
-						position: 'right',
-						gridLines: {
-							display: true,
-							color: gridColor,
-							zeroLineColor: gridColor,
-						},
-						ticks: {
-							display: false,
-						}
-					}]
-				},
-				tooltips: {
-					intersect: false,
-					mode: 'index',
-				}
-			}
-		}));
-
-		this.connection.on('stats', this.onStats);
-		this.connection.on('statsLog', this.onStatsLog);
-	},
-
-	beforeUnmount() {
-		this.connection.off('stats', this.onStats);
-		this.connection.off('statsLog', this.onStatsLog);
-	},
-
-	methods: {
-		onStats(stats) {
-			this.activeSincePrevTick = stats[this.domain].activeSincePrevTick;
-			this.active = stats[this.domain].active;
-			this.waiting = stats[this.domain].waiting;
-			this.delayed = stats[this.domain].delayed;
-			this.chart.data.labels.push('');
-			this.chart.data.datasets[0].data.push(stats[this.domain].activeSincePrevTick);
-			this.chart.data.datasets[1].data.push(stats[this.domain].active);
-			this.chart.data.datasets[2].data.push(stats[this.domain].waiting);
-			this.chart.data.datasets[3].data.push(stats[this.domain].delayed);
-			if (this.chart.data.datasets[0].data.length > 200) {
-				this.chart.data.labels.shift();
-				this.chart.data.datasets[0].data.shift();
-				this.chart.data.datasets[1].data.shift();
-				this.chart.data.datasets[2].data.shift();
-				this.chart.data.datasets[3].data.shift();
-			}
-			this.chart.update();
-		},
-
-		onStatsLog(statsLog) {
-			for (const stats of [...statsLog].reverse()) {
-				this.onStats(stats);
-			}
-		},
-
-		fetchJobs() {
-			os.api(this.domain === 'inbox' ? 'admin/queue/inbox-delayed' : this.domain === 'deliver' ? 'admin/queue/deliver-delayed' : null, {}).then(jobs => {
-				this.jobs = jobs;
+		onMounted(() => {
+			os.api(props.domain === 'inbox' ? 'admin/queue/inbox-delayed' : props.domain === 'deliver' ? 'admin/queue/deliver-delayed' : null, {}).then(jobs => {
+				jobs.value = jobs;
 			});
-		},
 
-		number
-	}
+			const onStats = (stats) => {
+				activeSincePrevTick.value = stats[props.domain].activeSincePrevTick;
+				active.value = stats[props.domain].active;
+				waiting.value = stats[props.domain].waiting;
+				delayed.value = stats[props.domain].delayed;
+			};
+
+			props.connection.on('stats', onStats);
+
+			onUnmounted(() => {
+				props.connection.off('stats', onStats);
+			});
+		});
+
+		return {
+			jobs,
+			activeSincePrevTick,
+			active,
+			waiting,
+			delayed,
+			number,
+		};
+	},
 });
 </script>
 
