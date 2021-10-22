@@ -7,8 +7,8 @@
 			<img :src="$instance.iconUrl || '/favicon.ico'" alt="" class="icon"/>
 		</div>
 
-		<MkInfo v-if="noMaintainerInformation" warn class="info">{{ $ts.noMaintainerInformationWarning }} <MkA to="/instance/settings" class="_link">{{ $ts.configure }}</MkA></MkInfo>
-		<MkInfo v-if="noBotProtection" warn class="info">{{ $ts.noBotProtectionWarning }} <MkA to="/instance/bot-protection" class="_link">{{ $ts.configure }}</MkA></MkInfo>
+		<MkInfo v-if="noMaintainerInformation" warn class="info">{{ $ts.noMaintainerInformationWarning }} <MkA to="/admin/settings" class="_link">{{ $ts.configure }}</MkA></MkInfo>
+		<MkInfo v-if="noBotProtection" warn class="info">{{ $ts.noBotProtectionWarning }} <MkA to="/admin/bot-protection" class="_link">{{ $ts.configure }}</MkA></MkInfo>
 
 		<MkSuperMenu :def="menuDef" :grid="page == null"></MkSuperMenu>
 	</div>
@@ -93,47 +93,47 @@ export default defineComponent({
 			items: [{
 				icon: 'fas fa-tachometer-alt',
 				text: i18n.locale.dashboard,
-				to: '/instance/overview',
+				to: '/admin/overview',
 				active: page.value === 'overview',
 			}, {
 				icon: 'fas fa-users',
 				text: i18n.locale.users,
-				to: '/instance/users',
+				to: '/admin/users',
 				active: page.value === 'users',
 			}, {
 				icon: 'fas fa-laugh',
 				text: i18n.locale.customEmojis,
-				to: '/instance/emojis',
+				to: '/admin/emojis',
 				active: page.value === 'emojis',
 			}, {
 				icon: 'fas fa-globe',
 				text: i18n.locale.federation,
-				to: '/instance/federation',
+				to: '/admin/federation',
 				active: page.value === 'federation',
 			}, {
 				icon: 'fas fa-clipboard-list',
 				text: i18n.locale.jobQueue,
-				to: '/instance/queue',
+				to: '/admin/queue',
 				active: page.value === 'queue',
 			}, {
 				icon: 'fas fa-cloud',
 				text: i18n.locale.files,
-				to: '/instance/files',
+				to: '/admin/files',
 				active: page.value === 'files',
 			}, {
 				icon: 'fas fa-broadcast-tower',
 				text: i18n.locale.announcements,
-				to: '/instance/announcements',
+				to: '/admin/announcements',
 				active: page.value === 'announcements',
 			}, {
 				icon: 'fas fa-audio-description',
 				text: i18n.locale.ads,
-				to: '/instance/ads',
+				to: '/admin/ads',
 				active: page.value === 'ads',
 			}, {
 				icon: 'fas fa-exclamation-circle',
 				text: i18n.locale.abuseReports,
-				to: '/instance/abuses',
+				to: '/admin/abuses',
 				active: page.value === 'abuses',
 			}],
 		}, {
@@ -141,57 +141,57 @@ export default defineComponent({
 			items: [{
 				icon: 'fas fa-cog',
 				text: i18n.locale.general,
-				to: '/instance/settings',
+				to: '/admin/settings',
 				active: page.value === 'settings',
 			}, {
 				icon: 'fas fa-cloud',
 				text: i18n.locale.files,
-				to: '/instance/files-settings',
+				to: '/admin/files-settings',
 				active: page.value === 'files-settings',
 			}, {
 				icon: 'fas fa-envelope',
 				text: i18n.locale.emailServer,
-				to: '/instance/email-settings',
+				to: '/admin/email-settings',
 				active: page.value === 'email-settings',
 			}, {
 				icon: 'fas fa-cloud',
 				text: i18n.locale.objectStorage,
-				to: '/instance/object-storage',
+				to: '/admin/object-storage',
 				active: page.value === 'object-storage',
 			}, {
 				icon: 'fas fa-lock',
 				text: i18n.locale.security,
-				to: '/instance/security',
+				to: '/admin/security',
 				active: page.value === 'security',
 			}, {
 				icon: 'fas fa-bolt',
 				text: 'ServiceWorker',
-				to: '/instance/service-worker',
+				to: '/admin/service-worker',
 				active: page.value === 'service-worker',
 			}, {
 				icon: 'fas fa-globe',
 				text: i18n.locale.relays,
-				to: '/instance/relays',
+				to: '/admin/relays',
 				active: page.value === 'relays',
 			}, {
 				icon: 'fas fa-share-alt',
 				text: i18n.locale.integration,
-				to: '/instance/integrations',
+				to: '/admin/integrations',
 				active: page.value === 'integrations',
 			}, {
 				icon: 'fas fa-ban',
 				text: i18n.locale.instanceBlocking,
-				to: '/instance/instance-block',
+				to: '/admin/instance-block',
 				active: page.value === 'instance-block',
 			}, {
 				icon: 'fas fa-ghost',
 				text: i18n.locale.proxyAccount,
-				to: '/instance/proxy-account',
+				to: '/admin/proxy-account',
 				active: page.value === 'proxy-account',
 			}, {
 				icon: 'fas fa-cogs',
 				text: i18n.locale.other,
-				to: '/instance/other-settings',
+				to: '/admin/other-settings',
 				active: page.value === 'other-settings',
 			}],
 		}, {
@@ -199,12 +199,12 @@ export default defineComponent({
 			items: [{
 				icon: 'fas fa-database',
 				text: i18n.locale.database,
-				to: '/instance/database',
+				to: '/admin/database',
 				active: page.value === 'database',
 			}, {
 				icon: 'fas fa-stream',
 				text: i18n.locale.logs,
-				to: '/instance/logs',
+				to: '/admin/logs',
 				active: page.value === 'logs',
 			}],
 		}]);

@@ -1,15 +1,15 @@
 <template>
 <FormBase>
 	<FormSuspense :p="init">
-		<FormLink to="/instance/integrations/twitter">
+		<FormLink to="/admin/integrations/twitter">
 			<i class="fab fa-twitter"></i> Twitter
 			<template #suffix>{{ enableTwitterIntegration ? $ts.enabled : $ts.disabled }}</template>
 		</FormLink>
-		<FormLink to="/instance/integrations/github">
+		<FormLink to="/admin/integrations/github">
 			<i class="fab fa-github"></i> GitHub
 			<template #suffix>{{ enableGithubIntegration ? $ts.enabled : $ts.disabled }}</template>
 		</FormLink>
-		<FormLink to="/instance/integrations/discord">
+		<FormLink to="/admin/integrations/discord">
 			<i class="fab fa-discord"></i> Discord
 			<template #suffix>{{ enableDiscordIntegration ? $ts.enabled : $ts.disabled }}</template>
 		</FormLink>
