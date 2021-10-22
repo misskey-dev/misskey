@@ -20,6 +20,7 @@
 - API: users/search および users/search-by-username-and-host を強化
 - ミュート及びブロックのインポートを行えるように
 - クライアント: /share のクエリでリプライやファイル等の情報を渡せるように
+- チャートのsyncを毎日0時に自動で行うように
 
 ### Bugfixes
 - クライアント: テーマの管理が行えない問題を修正
