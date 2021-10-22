@@ -2,7 +2,7 @@
 <div>
 	<MkHeader :info="header"/>
 
-	<div class="edbbcaef">
+	<div class="edbbcaef" v-size="{ max: [880] }">
 		<div v-if="stats" class="cfcdecdf" style="margin: var(--margin)">
 			<div class="number _panel">
 				<div class="label">Users</div>
@@ -26,7 +26,18 @@
 				<MkInstanceStats :chart-limit="500" :detailed="true"/>
 			</div>
 		</MkContainer>
-		
+
+		<div class="queue">
+			<MkContainer :foldable="true" :thin="true" class="deliver">
+				<template #header>Queue: deliver</template>
+				<MkQueueChart :connection="queueStatsConnection" domain="deliver"/>
+			</MkContainer>
+			<MkContainer :foldable="true" :thin="true" class="inbox">
+				<template #header>Queue: inbox</template>
+				<MkQueueChart :connection="queueStatsConnection" domain="inbox"/>
+			</MkContainer>
+		</div>
+
 			<!--<XMetrics/>-->
 
 		<MkFolder style="margin: var(--margin)">
@@ -59,7 +70,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, version as vueVersion } from 'vue';
+import { computed, defineComponent, markRaw, version as vueVersion } from 'vue';
 import FormKeyValueView from '@client/components/debobigego/key-value-view.vue';
 import MkInstanceStats from '@client/components/instance-stats.vue';
 import MkButton from '@client/components/ui/button.vue';
@@ -67,6 +78,7 @@ import MkSelect from '@client/components/form/select.vue';
 import MkNumberDiff from '@client/components/number-diff.vue';
 import MkContainer from '@client/components/ui/container.vue';
 import MkFolder from '@client/components/ui/folder.vue';
+import MkQueueChart from '@client/components/queue-chart.vue';
 import { version, url } from '@client/config';
 import bytes from '@client/filters/bytes';
 import number from '@client/filters/number';
@@ -82,6 +94,7 @@ export default defineComponent({
 		MkInstanceStats,
 		MkContainer,
 		MkFolder,
+		MkQueueChart,
 		XMetrics,
 	},
 
@@ -108,6 +121,7 @@ export default defineComponent({
 			notesComparedToThePrevDay: null,
 			fetchJobs: () => os.api('admin/queue/deliver-delayed', {}),
 			fetchModLogs: () => os.api('admin/show-moderation-logs', {}),
+			queueStatsConnection: markRaw(os.stream.useChannel('queueStats')),
 		}
 	},
 
@@ -133,6 +147,17 @@ export default defineComponent({
 		os.api('admin/server-info', {}).then(serverInfo => {
 			this.serverInfo = serverInfo;
 		});
+
+		this.$nextTick(() => {
+			this.queueStatsConnection.send('requestLog', {
+				id: Math.random().toString().substr(2, 8),
+				length: 200
+			});
+		});
+	},
+
+	beforeUnmount() {
+		this.queueStatsConnection.dispose();
 	},
 
 	methods: {
@@ -183,6 +208,35 @@ export default defineComponent({
 
 	> .charts {
 		margin: var(--margin);
+	}
+
+	> .queue {
+		margin: var(--margin);
+		display: flex;
+
+		> .deliver,
+		> .inbox {
+			flex: 1;
+			width: 50%;
+
+			&:not(:first-child) {
+				margin-left: var(--margin);
+			}
+		}
+	}
+
+	&.max-width_800px {
+		> .queue {
+			display: block;
+
+			> .deliver,
+			> .inbox {
+				&:not(:first-child) {
+					margin-top: var(--margin);
+					margin-left: 0;
+				}
+			}
+		}
 	}
 }
 </style>
