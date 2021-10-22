@@ -26,7 +26,6 @@ ENTRYPOINT ["/sbin/tini", "--"]
 
 COPY --from=builder /misskey/node_modules ./node_modules
 COPY --from=builder /misskey/built ./built
-COPY --from=builder /misskey/twemoji/assets/svg ./twemoji/assets/svg 
 COPY . ./
 
 CMD ["npm", "run", "migrateandstart"]

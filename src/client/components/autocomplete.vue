@@ -63,7 +63,7 @@ const emjdb: EmojiDef[] = lib.map(x => ({
 	emoji: x.char,
 	name: x.name,
 	aliasOf: null,
-	url: `${twemojiSvgBase}/${char2file(x.char)}.svg`,
+	url: `${twemojiSvgBase}/${char2file(x.char)}.svg`
 }));
 
 for (const x of lib) {
@@ -73,7 +73,7 @@ for (const x of lib) {
 				emoji: x.char,
 				name: k,
 				aliasOf: x.name,
-				url: `${twemojiSvgBase}/${char2file(x.char)}.svg`,
+				url: `${twemojiSvgBase}/${char2file(x.char)}.svg`
 			});
 		}
 	}
