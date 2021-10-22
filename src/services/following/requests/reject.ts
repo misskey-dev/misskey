@@ -14,7 +14,7 @@ export default async function(followee: { id: User['id']; host: User['host']; ur
 			followerId: follower.id
 		});
 
-		const content = renderActivity(renderReject(renderFollow(follower, followee, request!.requestId!), followee));
+		const content = renderActivity(renderReject(renderFollow(follower, followee, request?.requestId || undefined), followee));
 		deliver(followee, content, follower.inbox);
 	}
 
