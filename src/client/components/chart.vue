@@ -1,5 +1,10 @@
 <template>
-<canvas ref="chartEl"></canvas>
+<div class="cbbedffa">
+	<canvas ref="chartEl"></canvas>
+	<div v-if="fetching" class="fetching">
+		<MkLoading/>
+	</div>
+</div>
 </template>
 
 <script lang="ts">
@@ -622,7 +627,28 @@ export default defineComponent({
 
 		return {
 			chartEl,
+			fetching,
 		};
 	},
 });
 </script>
+
+<style lang="scss" scoped>
+.cbbedffa {
+	position: relative;
+
+	> .fetching {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		-webkit-backdrop-filter: var(--blur, blur(12px));
+		backdrop-filter: var(--blur, blur(12px));
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		cursor: wait;
+	}
+}
+</style>
