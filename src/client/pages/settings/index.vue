@@ -311,7 +311,6 @@ export default defineComponent({
 			flex: 1;
 			min-width: 0;
 			overflow: auto;
-			--baseContentWidth: 100%;
 		}
 	}
 }

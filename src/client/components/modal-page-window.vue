@@ -10,7 +10,7 @@
 			</span>
 			<button class="_button" @click="$refs.modal.close()"><i class="fas fa-times"></i></button>
 		</div>
-		<div class="body _fitSide_">
+		<div class="body">
 			<keep-alive>
 				<component :is="component" v-bind="props" :ref="changePage"/>
 			</keep-alive>
