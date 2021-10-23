@@ -2,7 +2,7 @@
 <div>
 	<MkHeader :info="header"/>
 
-	<div class="edbbcaef" v-size="{ max: [880] }">
+	<div class="edbbcaef" v-size="{ max: [740] }">
 		<div v-if="stats" class="cfcdecdf" style="margin: var(--margin)">
 			<div class="number _panel">
 				<div class="label">Users</div>
@@ -225,12 +225,14 @@ export default defineComponent({
 		}
 	}
 
-	&.max-width_800px {
+	&.max-width_740px {
 		> .queue {
 			display: block;
 
 			> .deliver,
 			> .inbox {
+				width: 100%;
+
 				&:not(:first-child) {
 					margin-top: var(--margin);
 					margin-left: 0;

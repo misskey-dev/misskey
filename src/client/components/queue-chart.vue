@@ -122,12 +122,13 @@ export default defineComponent({
 					scales: {
 						x: {
 							grid: {
-								display: false,
+								display: true,
 								color: gridColor,
 								borderColor: 'rgb(0, 0, 0, 0)',
 							},
 							ticks: {
-								display: false,
+								display: true,
+								maxTicksLimit: 10
 							},
 						},
 						y: {
