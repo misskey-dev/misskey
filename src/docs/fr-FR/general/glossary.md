@@ -8,7 +8,7 @@ Nom du protocole (procédé technique) utilisé par Misskey pour pouvoir fonctio
 Langage de programmation qui peut être utilisé sur Misskey. [Voir ici pour plus d'informations.](../advanced/aiscript)
 
 ## API
-(読み: えーぴーあい) Misskeyのサーバーが公開している、プログラムからMisskeyを扱うためのインターフェース。[Voir ici pour plus d'informations. ](../advanced/api)
+Interface pour permettre à un programme d'utiliser Misskey, disponible publiquement sur le serveur de Misskey. [Voir ici pour plus d'informations. ](../advanced/api)
 
 ## Bot
 Anglicisme désignant un compte géré par un programme informatique (vous le trouverez parfois aussi sous le terme de « robot »).
@@ -59,13 +59,13 @@ Désigne les émojis mis à disposition par votre instance. Par opposition, les 
 todo
 
 ## Mettre en sourdine
-ノートをパブリックな公開範囲で投稿できなくされている状態。モデレーターの判断でユーザーごとに設定されます。[Voir ici pour plus d'informations. ](../features/silence)
+Désigne le fait de paramétrer un compte pour empêcher ses publications d'être partagées en mode « Public ». Peut être appliqué à des utilisateur·rice·s individuel·le·s à la discrétion des modérateur·rice·s. [Voir ici pour plus d'informations. ](../features/silence)
 
 ## File d’attente
-アクティビティ配送などを順番に行うためのシステム。
+Système permettant de distribuer les activités dans un ordre successif.
 
 ## Suspendre
-アカウントが使用不可に設定されている状態。
+Désigne le fait de paramétrer un compte pour le rendre inutilisable à son/sa propriétaire.
 
 ## Drive
 Fonctionnalité vous permettant de gérer les fichiers que vous avez téléversés sur Misskey. [Voir ici pour plus d'informations. ](../features/drive)
@@ -77,13 +77,13 @@ Nom des publications sur Misskey. Leur contenu peut être du texte, mais aussi d
 Désigne les utilisateur·rice·s de Misskey.
 
 ## Modérateur·rice·s
-スパムの凍結およびサイレンスや不適切な投稿の削除など、コミュニティ運営に関する権限を持つユーザー。
+Utilisateur·rice·s chargé·e·s de gérer la communauté d'une instance, ayant autorité pour désactiver les comptes de spam, mettre des utilisateur·rice·s en sourdine, supprimer des publications inappropriées, etc.
 
 ## Distant
-他サーバーのことを指します。リモートユーザーといったように接頭辞としても使われます。ローカルの逆です。
+Désigne les autres instances que celle où vous êtes inscrit·e. Peut aussi être utilisé pour qualifier d'autres mots, comme « utilisateur·rice·s distant·e·s ». C'est le contraire de « local ».
 
 ## Fédération
-サーバー上で作成された情報が他のサーバーに伝わること。
+Désigne le fait de partager les informations publiées sur un serveur avec les autres serveurs du réseau.
 
 ## Local
-自サーバーのことを指します。ローカルユーザー、ローカルタイムラインといったように接頭辞としても使われます。リモートの逆です。
+Désigne l'instance où vous êtes inscrit·e. Peut aussi être utilisé pour qualifier d'autres mots, comme « utilisateur·rice·s locaux·cales » ou « fil local ». C'est le contraire de « distant ».

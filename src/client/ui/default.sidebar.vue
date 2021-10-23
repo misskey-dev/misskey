@@ -20,7 +20,7 @@
 		</component>
 	</template>
 	<div class="divider"></div>
-	<MkA v-if="$i.isAdmin || $i.isModerator" class="item" active-class="active" to="/instance" :behavior="settingsWindowed ? 'modalWindow' : null" v-click-anime>
+	<MkA v-if="$i.isAdmin || $i.isModerator" class="item" active-class="active" to="/admin" :behavior="settingsWindowed ? 'modalWindow' : null" v-click-anime>
 		<i class="fas fa-server fa-fw"></i><span class="text">{{ $ts.instance }}</span>
 	</MkA>
 	<button class="item _button" @click="more" v-click-anime>

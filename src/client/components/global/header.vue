@@ -203,6 +203,12 @@ export default defineComponent({
 
 	&.thin {
 		--height: 50px;
+
+		> .buttons {
+			> .button {
+				font-size: 0.9em;
+			}
+		}
 	}
 
 	&.slim {

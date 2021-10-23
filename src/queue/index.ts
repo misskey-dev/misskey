@@ -10,7 +10,7 @@ import procesObjectStorage from './processors/object-storage/index';
 import { queueLogger } from './logger';
 import { DriveFile } from '@/models/entities/drive-file';
 import { getJobInfo } from './get-job-info';
-import { dbQueue, deliverQueue, inboxQueue, objectStorageQueue } from './queues';
+import { systemQueue, dbQueue, deliverQueue, inboxQueue, objectStorageQueue } from './queues';
 import { ThinUser } from './types';
 import { IActivity } from '@/remote/activitypub/type';
 
@@ -22,10 +22,19 @@ function renderError(e: Error): any {
 	};
 }
 
+const systemLogger = queueLogger.createSubLogger('system');
 const deliverLogger = queueLogger.createSubLogger('deliver');
 const inboxLogger = queueLogger.createSubLogger('inbox');
 const dbLogger = queueLogger.createSubLogger('db');
 const objectStorageLogger = queueLogger.createSubLogger('objectStorage');
+
+systemQueue
+	.on('waiting', (jobId) => systemLogger.debug(`waiting id=${jobId}`))
+	.on('active', (job) => systemLogger.debug(`active id=${job.id}`))
+	.on('completed', (job, result) => systemLogger.debug(`completed(${result}) id=${job.id}`))
+	.on('failed', (job, err) => systemLogger.warn(`failed(${err}) id=${job.id}`, { job, e: renderError(err) }))
+	.on('error', (job: any, err: Error) => systemLogger.error(`error ${err}`, { job, e: renderError(err) }))
+	.on('stalled', (job) => systemLogger.warn(`stalled id=${job.id}`));
 
 deliverQueue
 	.on('waiting', (jobId) => deliverLogger.debug(`waiting id=${jobId}`))
@@ -163,6 +172,26 @@ export function createImportFollowingJob(user: ThinUser, fileId: DriveFile['id']
 	});
 }
 
+export function createImportMutingJob(user: ThinUser, fileId: DriveFile['id']) {
+	return dbQueue.add('importMuting', {
+		user: user,
+		fileId: fileId
+	}, {
+		removeOnComplete: true,
+		removeOnFail: true
+	});
+}
+
+export function createImportBlockingJob(user: ThinUser, fileId: DriveFile['id']) {
+	return dbQueue.add('importBlocking', {
+		user: user,
+		fileId: fileId
+	}, {
+		removeOnComplete: true,
+		removeOnFail: true
+	});
+}
+
 export function createImportUserListsJob(user: ThinUser, fileId: DriveFile['id']) {
 	return dbQueue.add('importUserLists', {
 		user: user,
@@ -200,12 +229,17 @@ export function createCleanRemoteFilesJob() {
 }
 
 export default function() {
-	if (!envOption.onlyServer) {
-		deliverQueue.process(config.deliverJobConcurrency || 128, processDeliver);
-		inboxQueue.process(config.inboxJobConcurrency || 16, processInbox);
-		processDb(dbQueue);
-		procesObjectStorage(objectStorageQueue);
-	}
+	if (envOption.onlyServer) return;
+
+	deliverQueue.process(config.deliverJobConcurrency || 128, processDeliver);
+	inboxQueue.process(config.inboxJobConcurrency || 16, processInbox);
+	processDb(dbQueue);
+	procesObjectStorage(objectStorageQueue);
+
+	systemQueue.add('resyncCharts', {
+	}, {
+		repeat: { cron: '0 0 * * *' }
+	});
 }
 
 export function destroy() {

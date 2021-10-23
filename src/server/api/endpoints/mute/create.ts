@@ -67,7 +67,7 @@ export default define(meta, async (ps, user) => {
 	}
 
 	// Create mute
-	await Mutings.save({
+	await Mutings.insert({
 		id: genId(),
 		createdAt: new Date(),
 		muterId: muter.id,

@@ -13,7 +13,8 @@
 			<i v-else-if="notification.type === 'mention'" class="fas fa-at"></i>
 			<i v-else-if="notification.type === 'quote'" class="fas fa-quote-left"></i>
 			<i v-else-if="notification.type === 'pollVote'" class="fas fa-poll-h"></i>
-			<XReactionIcon v-else-if="notification.type === 'reaction'" :reaction="notification.reaction" :custom-emojis="notification.note.emojis" :no-style="true"/>
+			<!-- notification.reaction が null になることはまずないが、ここでoptional chaining使うと一部ブラウザで刺さるので念の為 -->
+			<XReactionIcon v-else-if="notification.type === 'reaction'" :reaction="notification.reaction ? notification.reaction.replace(/^:(\w+):$/, ':$1@.:') : notification.reaction" :custom-emojis="notification.note.emojis" :no-style="true"/>
 		</div>
 	</div>
 	<div class="tail">

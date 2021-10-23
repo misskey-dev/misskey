@@ -1,5 +1,5 @@
 import define from '../../define';
-import { driveChart, notesChart, usersChart, instanceChart } from '@/services/chart/index';
+import { driveChart, notesChart, usersChart } from '@/services/chart/index';
 import { insertModerationLog } from '@/services/insert-moderation-log';
 
 export const meta = {
@@ -15,7 +15,7 @@ export default define(meta, async (ps, me) => {
 	driveChart.resync();
 	notesChart.resync();
 	usersChart.resync();
-	instanceChart.resync();
 
 	// TODO: ユーザーごとのチャートもキューに入れて更新する
+	// TODO: インスタンスごとのチャートもキューに入れて更新する
 });

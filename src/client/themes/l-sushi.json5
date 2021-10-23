@@ -1,0 +1,18 @@
+{
+	id: '213273e5-7d20-d5f0-6e36-1b6a4f67115c',
+
+	name: 'Mi Sushi Light',
+	author: 'syuilo',
+
+	base: 'light',
+
+	props: {
+		accent: '#e36749',
+		bg: '#f0eee9',
+		fg: '#5f5f5f',
+		renote: '@accent',
+		link: '@accent',
+		mention: '@accent',
+		hashtag: '#229e82',
+	},
+}

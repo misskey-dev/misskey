@@ -181,6 +181,7 @@
 				</template>
 				<XFollowList v-else-if="page === 'following'" type="following" :user="user" class="_content _gap"/>
 				<XFollowList v-else-if="page === 'followers'" type="followers" :user="user" class="_content _gap"/>
+				<XReactions v-else-if="page === 'reactions'" :user="user" class="_gap"/>
 				<XClips v-else-if="page === 'clips'" :user="user" class="_gap"/>
 				<XPages v-else-if="page === 'pages'" :user="user" class="_gap"/>
 				<XGallery v-else-if="page === 'gallery'" :user="user" class="_gap"/>
@@ -223,6 +224,7 @@ export default defineComponent({
 		MkTab,
 		MkInfo,
 		XFollowList: defineAsyncComponent(() => import('./follow-list.vue')),
+		XReactions: defineAsyncComponent(() => import('./reactions.vue')),
 		XClips: defineAsyncComponent(() => import('./clips.vue')),
 		XPages: defineAsyncComponent(() => import('./pages.vue')),
 		XGallery: defineAsyncComponent(() => import('./gallery.vue')),
@@ -268,7 +270,12 @@ export default defineComponent({
 					title: this.$ts.overview,
 					icon: 'fas fa-home',
 					onClick: () => { this.$router.push('/@' + getAcct(this.user)); },
-				}, {
+				}, ...(this.$i && (this.$i.id === this.user.id)) || this.user.publicReactions ? [{
+					active: this.page === 'reactions',
+					title: this.$ts.reaction,
+					icon: 'fas fa-laugh',
+					onClick: () => { this.$router.push('/@' + getAcct(this.user) + '/reactions'); },
+				}] : [], {
 					active: this.page === 'clips',
 					title: this.$ts.clips,
 					icon: 'fas fa-paperclip',

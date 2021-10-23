@@ -1,7 +1,7 @@
 {
 	id: '080a01c5-377d-4fbb-88cc-6bb5d04977ea',
 	base: 'dark',
-	name: 'Mi Astro',
+	name: 'Mi Astro Dark',
 	author: 'syuilo',
 	props: {
 		bg: '#232125',
