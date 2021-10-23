@@ -7,6 +7,13 @@
 
 -->
 
+## 12.x.x (unreleased)
+
+### Improvements
+
+### Bugfixes
+- クライアント: ウィジェットを追加できない問題を修正
+
 ## 12.93.1 (2021/10/23)
 
 ### Bugfixes
