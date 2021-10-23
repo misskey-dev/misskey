@@ -14,7 +14,7 @@ Notoj estas centraj konceptoj en Misskey kaj enhavoj kiuj konsistas el teksto, b
 
 ## Plusendi noton
 既にあるノートを引用、もしくはそのノートを新しいノートとして共有する行為、またそれによって作成されたノートをRenoteと呼びます。 自分がフォローしているユーザーの、気に入ったノートを自分のフォロワーに共有したい場合や、過去の自分のノートを再度共有したい場合に使います。 同じノートに対して無制限にRenoteを行うことができますが、あまり連続して使用すると迷惑になる場合もあるので、注意しましょう。
-<div class="warn">⚠️ Se oni sendas notojn nur al sekvantoj aŭ rekte, iliaj ne estas plusendeblaj.</div>
+<div class="warn">⚠️ Se vi havigas al via noto videblecon ke nur al sekvantoj aŭ ke rekte, iliaj ne estos plusendeblaj.</div>
 
 Renoteを削除するには、Renoteの時刻表示の隣にある「...」を押し、「Renote解除」を選択します。
 
@@ -51,4 +51,4 @@ Viaj notoj estos senditaj nur al viaj sekvantoj.La noto aperos sur ĉiuj templin
 ノートをピン留めすると、ユーザーページに常にそのノートを表示しておくことができます。 ノートのメニューを開き、「ピン留め」を選択してピン留めできます。 複数のノートをピン留めできます。
 
 ## Observi
-Vi povas ricevi tiuj sciigoj pri reagoj, respondoj, k.t.p al noto kiuj ne apartenas al vi estas ankaŭ ricevebla. Por komenci tion elektu la "Observi" el la menuon kuntekstan de la notoj respektivaj.
+Per la funkcio Observi vi povas ricevi novajn sciigojn pri reagoj, respondoj, k.t.p al tiu noto kiu ne apartenas al vi. Por observi noton elektu la "Observi" el la menuo kunteksta de la noto respektiva.

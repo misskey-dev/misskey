@@ -1,6 +1,6 @@
 <template>
 <span class="ceaaebcd" :class="{ isPlus, isMinus, isZero }">
-	<slot name="before"></slot>{{ isPlus ? '+' : isMinus ? '-' : '' }}{{ number(value) }}<slot name="after"></slot>
+	<slot name="before"></slot>{{ isPlus ? '+' : '' }}{{ number(value) }}<slot name="after"></slot>
 </span>
 </template>
 

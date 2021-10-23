@@ -797,6 +797,8 @@ unread: "Ungelesen"
 filter: "Filter"
 controllPanel: "Systemsteuerung"
 manageAccounts: "Benutzerkonten verwalten"
+makeReactionsPublic: "Reaktionsverlauf veröffentlichen"
+makeReactionsPublicDescription: "Jeder wird die Liste deiner gesendeten Reaktionen einsehen können."
 _signup:
   almostThere: "Fast geschafft"
   emailAddressInfo: "Bitte gib deine Email-Adresse ein."
