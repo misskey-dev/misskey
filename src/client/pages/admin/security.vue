@@ -1,7 +1,7 @@
 <template>
 <FormBase>
 	<FormSuspense :p="init">
-		<FormLink to="/instance/bot-protection">
+		<FormLink to="/admin/bot-protection">
 			<i class="fas fa-shield-alt"></i> {{ $ts.botProtection }}
 			<template #suffix v-if="enableHcaptcha">hCaptcha</template>
 			<template #suffix v-else-if="enableRecaptcha">reCAPTCHA</template>

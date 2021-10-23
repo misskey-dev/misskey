@@ -12,7 +12,7 @@ MisskeyはMastodonのAPIと互換性がないため、一部を除きMastodonク
 ## 他のサーバーのユーザーをフォローするときは？
 メニューから検索を選び、ユーザー名をホスト込みで入力します。例: `@syuilo@misskey.io`
 
-## Renoteを削除するには？
+## "Kiel mi malfari plusendon de noto?"
 Renoteの時刻表示の隣にある「...」を押し、「Renote解除」を選択します。 Renoteについては[こちら](../features/note)をご確認ください。
 
 ## URLのプレビューを表示させたくない

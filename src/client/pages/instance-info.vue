@@ -149,7 +149,7 @@ import * as os from '@client/os';
 import number from '@client/filters/number';
 import bytes from '@client/filters/bytes';
 import * as symbols from '@client/symbols';
-import MkInstanceInfo from '@client/pages/instance/instance.vue';
+import MkInstanceInfo from '@client/pages/admin/instance.vue';
 
 export default defineComponent({
 	components: {

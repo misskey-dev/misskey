@@ -2,20 +2,20 @@
 <div>
 	<MkHeader :info="header"/>
 
-	<div class="edbbcaef">
-		<div class="numbers" v-if="stats">
+	<div class="edbbcaef" v-size="{ max: [880] }">
+		<div v-if="stats" class="cfcdecdf" style="margin: var(--margin)">
 			<div class="number _panel">
 				<div class="label">Users</div>
 				<div class="value _monospace">
 					{{ number(stats.originalUsersCount) }}
-					<MkNumberDiff v-if="usersComparedToThePrevDay" class="diff" :value="usersComparedToThePrevDay" v-tooltip="$ts.dayOverDayChanges"><template #before>(</template><template #after>)</template></MkNumberDiff>
+					<MkNumberDiff v-if="usersComparedToThePrevDay != null" class="diff" :value="usersComparedToThePrevDay" v-tooltip="$ts.dayOverDayChanges"><template #before>(</template><template #after>)</template></MkNumberDiff>
 				</div>
 			</div>
 			<div class="number _panel">
 				<div class="label">Notes</div>
 				<div class="value _monospace">
 					{{ number(stats.originalNotesCount) }}
-					<MkNumberDiff v-if="notesComparedToThePrevDay" class="diff" :value="notesComparedToThePrevDay" v-tooltip="$ts.dayOverDayChanges"><template #before>(</template><template #after>)</template></MkNumberDiff>
+					<MkNumberDiff v-if="notesComparedToThePrevDay != null" class="diff" :value="notesComparedToThePrevDay" v-tooltip="$ts.dayOverDayChanges"><template #before>(</template><template #after>)</template></MkNumberDiff>
 				</div>
 			</div>
 		</div>
@@ -26,37 +26,51 @@
 				<MkInstanceStats :chart-limit="500" :detailed="true"/>
 			</div>
 		</MkContainer>
-		
+
+		<div class="queue">
+			<MkContainer :foldable="true" :thin="true" class="deliver">
+				<template #header>Queue: deliver</template>
+				<MkQueueChart :connection="queueStatsConnection" domain="deliver"/>
+			</MkContainer>
+			<MkContainer :foldable="true" :thin="true" class="inbox">
+				<template #header>Queue: inbox</template>
+				<MkQueueChart :connection="queueStatsConnection" domain="inbox"/>
+			</MkContainer>
+		</div>
+
 			<!--<XMetrics/>-->
 
-		<div class="numbers">
-			<div class="number _panel">
-				<div class="label">Misskey</div>
-				<div class="value _monospace">{{ version }}</div>
+		<MkFolder style="margin: var(--margin)">
+			<template #header><i class="fas fa-info-circle"></i> {{ $ts.info }}</template>
+			<div class="cfcdecdf">
+				<div class="number _panel">
+					<div class="label">Misskey</div>
+					<div class="value _monospace">{{ version }}</div>
+				</div>
+				<div class="number _panel" v-if="serverInfo">
+					<div class="label">Node.js</div>
+					<div class="value _monospace">{{ serverInfo.node }}</div>
+				</div>
+				<div class="number _panel" v-if="serverInfo">
+					<div class="label">PostgreSQL</div>
+					<div class="value _monospace">{{ serverInfo.psql }}</div>
+				</div>
+				<div class="number _panel" v-if="serverInfo">
+					<div class="label">Redis</div>
+					<div class="value _monospace">{{ serverInfo.redis }}</div>
+				</div>
+				<div class="number _panel">
+					<div class="label">Vue</div>
+					<div class="value _monospace">{{ vueVersion }}</div>
+				</div>
 			</div>
-			<div class="number _panel" v-if="serverInfo">
-				<div class="label">Node.js</div>
-				<div class="value _monospace">{{ serverInfo.node }}</div>
-			</div>
-			<div class="number _panel" v-if="serverInfo">
-				<div class="label">PostgreSQL</div>
-				<div class="value _monospace">{{ serverInfo.psql }}</div>
-			</div>
-			<div class="number _panel" v-if="serverInfo">
-				<div class="label">Redis</div>
-				<div class="value _monospace">{{ serverInfo.redis }}</div>
-			</div>
-			<div class="number _panel">
-				<div class="label">Vue</div>
-				<div class="value _monospace">{{ vueVersion }}</div>
-			</div>
-		</div>
+		</MkFolder>
 	</div>
 </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, version as vueVersion } from 'vue';
+import { computed, defineComponent, markRaw, version as vueVersion } from 'vue';
 import FormKeyValueView from '@client/components/debobigego/key-value-view.vue';
 import MkInstanceStats from '@client/components/instance-stats.vue';
 import MkButton from '@client/components/ui/button.vue';
@@ -64,6 +78,7 @@ import MkSelect from '@client/components/form/select.vue';
 import MkNumberDiff from '@client/components/number-diff.vue';
 import MkContainer from '@client/components/ui/container.vue';
 import MkFolder from '@client/components/ui/folder.vue';
+import MkQueueChart from '@client/components/queue-chart.vue';
 import { version, url } from '@client/config';
 import bytes from '@client/filters/bytes';
 import number from '@client/filters/number';
@@ -78,6 +93,8 @@ export default defineComponent({
 		FormKeyValueView,
 		MkInstanceStats,
 		MkContainer,
+		MkFolder,
+		MkQueueChart,
 		XMetrics,
 	},
 
@@ -104,6 +121,7 @@ export default defineComponent({
 			notesComparedToThePrevDay: null,
 			fetchJobs: () => os.api('admin/queue/deliver-delayed', {}),
 			fetchModLogs: () => os.api('admin/show-moderation-logs', {}),
+			queueStatsConnection: markRaw(os.stream.useChannel('queueStats')),
 		}
 	},
 
@@ -129,6 +147,17 @@ export default defineComponent({
 		os.api('admin/server-info', {}).then(serverInfo => {
 			this.serverInfo = serverInfo;
 		});
+
+		this.$nextTick(() => {
+			this.queueStatsConnection.send('requestLog', {
+				id: Math.random().toString().substr(2, 8),
+				length: 200
+			});
+		});
+	},
+
+	beforeUnmount() {
+		this.queueStatsConnection.dispose();
 	},
 
 	methods: {
@@ -153,11 +182,10 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .edbbcaef {
-	> .numbers {
+	.cfcdecdf {
 		display: grid;
 		grid-gap: 8px;
-		grid-template-columns: repeat(auto-fill,minmax(130px,1fr));
-		margin: 16px;
+		grid-template-columns: repeat(auto-fill,minmax(150px,1fr));
 
 		> .number {
 			padding: 12px 16px;
@@ -180,6 +208,35 @@ export default defineComponent({
 
 	> .charts {
 		margin: var(--margin);
+	}
+
+	> .queue {
+		margin: var(--margin);
+		display: flex;
+
+		> .deliver,
+		> .inbox {
+			flex: 1;
+			width: 50%;
+
+			&:not(:first-child) {
+				margin-left: var(--margin);
+			}
+		}
+	}
+
+	&.max-width_800px {
+		> .queue {
+			display: block;
+
+			> .deliver,
+			> .inbox {
+				&:not(:first-child) {
+					margin-top: var(--margin);
+					margin-left: 0;
+				}
+			}
+		}
 	}
 }
 </style>
