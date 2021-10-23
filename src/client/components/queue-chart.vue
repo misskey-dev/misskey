@@ -132,7 +132,7 @@ export default defineComponent({
 								borderColor: 'rgb(0, 0, 0, 0)',
 							},
 							ticks: {
-								display: true,
+								display: false,
 								maxTicksLimit: 10
 							},
 						},
