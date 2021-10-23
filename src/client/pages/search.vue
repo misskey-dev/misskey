@@ -1,10 +1,7 @@
 <template>
-<div>
-	<MkHeader :info="header"/>
-	<div class="_section">
-		<div class="_content">
-			<XNotes ref="notes" :pagination="pagination" @before="before" @after="after"/>
-		</div>
+<div class="_section">
+	<div class="_content">
+		<XNotes ref="notes" :pagination="pagination" @before="before" @after="after"/>
 	</div>
 </div>
 </template>
@@ -23,10 +20,6 @@ export default defineComponent({
 	data() {
 		return {
 			[symbols.PAGE_INFO]: {
-				title: computed(() => this.$t('searchWith', { q: this.$route.query.q })),
-				icon: 'fas fa-search',
-			},
-			header: {
 				title: computed(() => this.$t('searchWith', { q: this.$route.query.q })),
 				icon: 'fas fa-search',
 			},

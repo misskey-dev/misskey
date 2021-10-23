@@ -13,7 +13,10 @@
 		<MkSuperMenu :def="menuDef" :grid="page == null"></MkSuperMenu>
 	</div>
 	<div class="main">
-		<component :is="component" :key="page" @info="onInfo" v-bind="pageProps"/>
+		<MkStickyContainer>
+			<template #header><MkHeader v-if="childInfo && !childInfo.hideHeader" :info="childInfo"/></template>
+			<component :is="component" :key="page" @info="onInfo" v-bind="pageProps"/>
+		</MkStickyContainer>
 	</div>
 </div>
 </template>
@@ -41,6 +44,10 @@ export default defineComponent({
 		MkInfo,
 	},
 
+	provide: {
+		shouldOmitHeaderTitle: false,
+	},
+
 	props: {
 		initialPage: {
 			type: String,
@@ -50,17 +57,19 @@ export default defineComponent({
 
 	setup(props, context) {
 		const indexInfo = {
-			title: i18n.locale.instance,
+			title: i18n.locale.controlPanel,
 			icon: 'fas fa-cog',
 			bg: 'var(--bg)',
+			hideHeader: true,
 		};
 		const INFO = ref(indexInfo);
+		const childInfo = ref(null);
 		const page = ref(props.initialPage);
 		const narrow = ref(false);
 		const view = ref(null);
 		const el = ref(null);
 		const onInfo = (viewInfo) => {
-			INFO.value = viewInfo;
+			childInfo.value = viewInfo;
 		};
 		const pageProps = ref({});
 
@@ -315,6 +324,7 @@ export default defineComponent({
 			view,
 			el,
 			onInfo,
+			childInfo,
 			pageProps,
 			component,
 			invite,

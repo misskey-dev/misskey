@@ -1,37 +1,34 @@
 <template>
-<div>
-	<MkHeader v-if="header" :info="header"/>
-	<div class="mk-list-page">
-		<transition name="zoom" mode="out-in">
-			<div v-if="list" class="_section">
-				<div class="_content">
-					<MkButton inline @click="addUser()">{{ $ts.addUser }}</MkButton>
-					<MkButton inline @click="renameList()">{{ $ts.rename }}</MkButton>
-					<MkButton inline @click="deleteList()">{{ $ts.delete }}</MkButton>
-				</div>
+<div class="mk-list-page">
+	<transition name="zoom" mode="out-in">
+		<div v-if="list" class="_section">
+			<div class="_content">
+				<MkButton inline @click="addUser()">{{ $ts.addUser }}</MkButton>
+				<MkButton inline @click="renameList()">{{ $ts.rename }}</MkButton>
+				<MkButton inline @click="deleteList()">{{ $ts.delete }}</MkButton>
 			</div>
-		</transition>
+		</div>
+	</transition>
 
-		<transition name="zoom" mode="out-in">
-			<div v-if="list" class="_section members _gap">
-				<div class="_title">{{ $ts.members }}</div>
-				<div class="_content">
-					<div class="users">
-						<div class="user _panel" v-for="user in users" :key="user.id">
-							<MkAvatar :user="user" class="avatar" :show-indicator="true"/>
-							<div class="body">
-								<MkUserName :user="user" class="name"/>
-								<MkAcct :user="user" class="acct"/>
-							</div>
-							<div class="action">
-								<button class="_button" @click="removeUser(user)"><i class="fas fa-times"></i></button>
-							</div>
+	<transition name="zoom" mode="out-in">
+		<div v-if="list" class="_section members _gap">
+			<div class="_title">{{ $ts.members }}</div>
+			<div class="_content">
+				<div class="users">
+					<div class="user _panel" v-for="user in users" :key="user.id">
+						<MkAvatar :user="user" class="avatar" :show-indicator="true"/>
+						<div class="body">
+							<MkUserName :user="user" class="name"/>
+							<MkAcct :user="user" class="acct"/>
+						</div>
+						<div class="action">
+							<button class="_button" @click="removeUser(user)"><i class="fas fa-times"></i></button>
 						</div>
 					</div>
 				</div>
 			</div>
-		</transition>
-	</div>
+		</div>
+	</transition>
 </div>
 </template>
 
@@ -50,10 +47,6 @@ export default defineComponent({
 	data() {
 		return {
 			[symbols.PAGE_INFO]: computed(() => this.list ? {
-				title: this.list.name,
-				icon: 'fas fa-list-ul',
-			} : null),
-			header: computed(() => this.list ? {
 				title: this.list.name,
 				icon: 'fas fa-list-ul',
 			} : null),

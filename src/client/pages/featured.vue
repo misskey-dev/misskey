@@ -1,9 +1,6 @@
 <template>
-<div>
-	<MkHeader :info="header"/>
-	<div class="_section">
-		<XNotes class="_content" ref="notes" :pagination="pagination" @before="before" @after="after"/>
-	</div>
+<div class="_section">
+	<XNotes class="_content" ref="notes" :pagination="pagination" @before="before" @after="after"/>
 </div>
 </template>
 
@@ -21,11 +18,6 @@ export default defineComponent({
 	data() {
 		return {
 			[symbols.PAGE_INFO]: {
-				title: this.$ts.featured,
-				icon: 'fas fa-fire-alt',
-				bg: 'var(--bg)',
-			},
-			header: {
 				title: this.$ts.featured,
 				icon: 'fas fa-fire-alt',
 				bg: 'var(--bg)',

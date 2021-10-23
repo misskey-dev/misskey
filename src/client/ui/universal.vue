@@ -5,13 +5,16 @@
 	<div class="contents" ref="contents" @contextmenu.stop="onContextmenu" :style="{ background: pageInfo?.bg }">
 		<main ref="main">
 			<div class="content">
-				<router-view v-slot="{ Component }">
-					<transition :name="$store.state.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
-						<keep-alive :include="['timeline']">
-							<component :is="Component" :ref="changePage"/>
-						</keep-alive>
-					</transition>
-				</router-view>
+				<MkStickyContainer>
+					<template #header><MkHeader v-if="pageInfo && !pageInfo.hideHeader" :info="pageInfo"/></template>
+					<router-view v-slot="{ Component }">
+						<transition :name="$store.state.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
+							<keep-alive :include="['timeline']">
+								<component :is="Component" :ref="changePage"/>
+							</keep-alive>
+						</transition>
+					</router-view>
+				</MkStickyContainer>
 			</div>
 			<div class="spacer"></div>
 		</main>
