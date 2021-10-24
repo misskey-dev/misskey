@@ -799,6 +799,7 @@ controllPanel: "コントロールパネル"
 manageAccounts: "アカウントを管理"
 makeReactionsPublic: "リアクション一覧を公開する"
 makeReactionsPublicDescription: "あなたがしたリアクション一覧を誰でも見れるようにします。"
+classic: "クラシック"
 
 _signup:
   almostThere: "ほとんど完了です"

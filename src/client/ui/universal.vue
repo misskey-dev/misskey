@@ -58,7 +58,7 @@ import { instanceName } from '@client/config';
 import { StickySidebar } from '@client/scripts/sticky-sidebar';
 import XSidebar from '@client/ui/_common_/sidebar.vue';
 import XCommon from './_common_/common.vue';
-import XSide from './default.side.vue';
+import XSide from './classic.side.vue';
 import * as os from '@client/os';
 import { menuDef } from '@client/menu';
 import * as symbols from '@client/symbols';
