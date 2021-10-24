@@ -183,6 +183,7 @@
 		"os-utils": "0.0.14",
 		"parse5": "6.0.1",
 		"pg": "8.7.1",
+		"photoswipe": "git://github.com/dimsemenov/photoswipe#v5-beta",
 		"portscanner": "2.2.0",
 		"postcss": "8.3.11",
 		"postcss-loader": "6.2.0",

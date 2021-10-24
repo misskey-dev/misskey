@@ -8271,6 +8271,10 @@ pgpass@1.x:
   dependencies:
     split "^1.0.0"
 
+"photoswipe@git://github.com/dimsemenov/photoswipe#v5-beta":
+  version "5.1.7"
+  resolved "git://github.com/dimsemenov/photoswipe#60040164333bd257409669e715e4327afdb3aec7"
+
 picocolors@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/picocolors/-/picocolors-1.0.0.tgz#cb5bdc74ff3f51892236eaf79d68bc44564ab81c"
