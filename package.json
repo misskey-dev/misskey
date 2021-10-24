@@ -1,6 +1,6 @@
 {
 	"name": "misskey",
-	"version": "12.94.0-p1.1",
+	"version": "12.94.0-p1.2",
 	"codename": "indigo",
 	"repository": {
 		"type": "git",
