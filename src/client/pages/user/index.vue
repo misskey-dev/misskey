@@ -172,7 +172,7 @@
 						</div>
 						<MkInfo v-else-if="$i && $i.id === user.id">{{ $ts.userPagePinTip }}</MkInfo>
 						<XPhotos :user="user" :key="user.id"/>
-						<XActivity :user="user" :key="user.id"/>
+						<XActivity :user="user" :key="user.id" style="margin-top: var(--margin);"/>
 					</div>
 					<div>
 						<XUserTimeline :user="user"/>
