@@ -1,11 +1,11 @@
 <template>
-<div class="mk-media-list">
+<div class="hoawjimk">
 	<XBanner v-for="media in mediaList.filter(media => !previewable(media))" :media="media" :key="media.id"/>
-	<div v-if="mediaList.filter(media => previewable(media)).length > 0" class="gird-container" ref="gridOuter">
-		<div :data-count="mediaList.filter(media => previewable(media)).length" :style="gridInnerStyle">
+	<div v-if="mediaList.filter(media => previewable(media)).length > 0" class="gird-container">
+		<div :data-count="mediaList.filter(media => previewable(media)).length" ref="gallery">
 			<template v-for="media in mediaList">
 				<XVideo :video="media" :key="media.id" v-if="media.type.startsWith('video')"/>
-				<XImage :image="media" :key="media.id" v-else-if="media.type.startsWith('image')" :raw="raw"/>
+				<XImage class="image" :data-id="media.id" :image="media" :key="media.id" v-else-if="media.type.startsWith('image')" :raw="raw"/>
 			</template>
 		</div>
 	</div>
@@ -13,11 +13,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, onMounted, PropType, ref } from 'vue';
+import * as misskey from 'misskey-js';
+import PhotoSwipeLightbox from 'photoswipe/dist/photoswipe-lightbox.esm.js';
+import PhotoSwipe from 'photoswipe/dist/photoswipe.esm.js';
+import 'photoswipe/dist/photoswipe.css';
 import XBanner from './media-banner.vue';
 import XImage from './media-image.vue';
 import XVideo from './media-video.vue';
 import * as os from '@client/os';
+import { defaultStore } from '@client/store';
 
 export default defineComponent({
 	components: {
@@ -27,63 +32,63 @@ export default defineComponent({
 	},
 	props: {
 		mediaList: {
-			required: true
+			type: Array as PropType<misskey.entities.DriveFile[]>,
+			required: true,
 		},
 		raw: {
 			default: false
 		},
 	},
-	data() {
-		return {
-			gridInnerStyle: {},
-			sizeWaiting: false
-		}
-	},
-	mounted() {
-		this.size();
-		window.addEventListener('resize', this.size);
-	},
-	beforeUnmount() {
-		window.removeEventListener('resize', this.size);
-	},
-	activated() {
-		this.size();
-	},
-	methods: {
-		previewable(file) {
-			return file.type.startsWith('video') || file.type.startsWith('image');
-		},
-		size() {
-			// for Safari bug
-			if (this.sizeWaiting) return;
+	setup(props) {
+		const gallery = ref(null);
 
-			this.sizeWaiting = true;
-
-			window.requestAnimationFrame(() => {
-				this.sizeWaiting = false;
-
-				if (this.$refs.gridOuter) {
-					let height = 287;
-					const parent = this.$parent.$el;
-
-					if (this.$refs.gridOuter.clientHeight) {
-						height = this.$refs.gridOuter.clientHeight;
-					} else if (parent) {
-						height = parent.getBoundingClientRect().width * 9 / 16;
-					}
-
-					this.gridInnerStyle = { height: `${height}px` };
-				} else {
-					this.gridInnerStyle = {};
-				}
+		onMounted(() => {
+			const lightbox = new PhotoSwipeLightbox({
+				dataSource: props.mediaList.filter(media => media.type.startsWith('image')).map(media => ({
+					src: media.url,
+					w: media.properties.width,
+					h: media.properties.height,
+					alt: media.name,
+				})),
+				gallery: gallery.value,
+				children: '.image',
+				thumbSelector: '.image',
+				pswpModule: PhotoSwipe
 			});
-		}
+
+			lightbox.on('itemData', (e) => {
+				const { itemData } = e;
+
+				// element is children
+				const { element } = itemData;
+
+				const id = element.dataset.id;
+				const file = props.mediaList.find(media => media.id === id);
+
+				itemData.src = file.url;
+				itemData.w = Number(file.properties.width);
+				itemData.h = Number(file.properties.height);
+				itemData.msrc = file.thumbnailUrl;
+				itemData.thumbCropped = true;
+			});
+
+			lightbox.init();
+		});
+
+		const previewable = (file: misskey.entities.DriveFile): boolean => {
+			return file.type.startsWith('video') || file.type.startsWith('image');
+		};
+
+		return {
+			previewable,
+			gallery,
+		};
 	},
 });
 </script>
 
 <style lang="scss" scoped>
-.mk-media-list {
+.hoawjimk {
 	> .gird-container {
 		position: relative;
 		width: 100%;

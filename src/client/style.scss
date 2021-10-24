@@ -348,6 +348,7 @@ hr {
 	contain: layout; // ふき出しがボックスから飛び出て表示されるようなデザインをする場合もあるので paint は contain することができない
 }
 
+// TODO: 廃止
 ._monolithic_ {
 	._section:not(:empty) {
 		box-sizing: border-box;
