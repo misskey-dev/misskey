@@ -7,6 +7,13 @@
 
 -->
 
+## 12.x.x (unreleased)
+
+### Improvements
+
+### Bugfixes
+- クライアント: ユーザーページのナビゲーションが失敗する問題を修正
+
 ## 12.94.0 (2021/10/25)
 
 ### Improvements
