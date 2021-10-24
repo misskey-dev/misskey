@@ -1,6 +1,7 @@
 <template>
 <MkA class="ldlomzub" :class="{ isMe }" :to="url" v-user-preview="canonical" v-if="url.startsWith('/')">
 	<span class="me" v-if="isMe">{{ $ts.you }}</span>
+	<img class="icon" :src="`/avatar/@${username}@${host}`" alt="">
 	<span class="main">
 		<span class="username">@{{ username }}</span>
 		<span class="host" v-if="(host != localHost) || $store.state.showFullAcct">@{{ toUnicode(host) }}</span>
@@ -74,6 +75,13 @@ export default defineComponent({
 		user-select: none;
 		font-size: 70%;
 		vertical-align: top;
+	}
+
+	> .icon {
+		width: 1.5em;
+		margin: 0 0.2em;
+		vertical-align: bottom;
+		border-radius: 100%;
 	}
 
 	> .main {

@@ -7,13 +7,16 @@
 		</template>
 	</template>
 
-	<router-view v-slot="{ Component }" class="_fitSide_">
-		<transition>
-			<keep-alive :include="['timeline']">
-				<component :is="Component" :ref="changePage" @contextmenu.stop="onContextmenu"/>
-			</keep-alive>
-		</transition>
-	</router-view>
+	<MkStickyContainer>
+		<template #header><MkHeader v-if="pageInfo && !pageInfo.hideHeader" :info="pageInfo"/></template>
+		<router-view v-slot="{ Component }">
+			<transition>
+				<keep-alive :include="['timeline']">
+					<component :is="Component" :ref="changePage" @contextmenu.stop="onContextmenu"/>
+				</keep-alive>
+			</transition>
+		</router-view>
+	</MkStickyContainer>
 </XColumn>
 </template>
 

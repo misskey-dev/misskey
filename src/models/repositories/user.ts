@@ -155,6 +155,14 @@ export class UserRepository extends Repository<User> {
 		);
 	}
 
+	public getAvatarUrl(user: User): string {
+		if (user.avatarUrl) {
+			return user.avatarUrl;
+		} else {
+			return `${config.url}/random-avatar/${user.id}`;
+		}
+	}
+
 	public async pack(
 		src: User['id'] | User,
 		me?: { id: User['id'] } | null | undefined,
@@ -186,7 +194,7 @@ export class UserRepository extends Repository<User> {
 			name: user.name,
 			username: user.username,
 			host: user.host,
-			avatarUrl: user.avatarUrl ? user.avatarUrl : config.url + '/avatar/' + user.id,
+			avatarUrl: this.getAvatarUrl(user),
 			avatarBlurhash: user.avatarBlurhash,
 			avatarColor: null, // 後方互換性のため
 			isAdmin: user.isAdmin || falsy,

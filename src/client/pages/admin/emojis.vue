@@ -1,7 +1,5 @@
 <template>
 <div class="ogwlenmc">
-	<MkHeader :info="header"/>
-
 	<div class="local" v-if="tab === 'local'">
 		<MkInput v-model="query" :debounce="true" type="search" style="margin: var(--margin);">
 			<template #prefix><i class="fas fa-search"></i></template>
@@ -71,12 +69,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			[symbols.PAGE_INFO]: {
-				title: this.$ts.customEmojis,
-				icon: 'fas fa-laugh',
-				bg: 'var(--bg)',
-			},
-			header: computed(() => ({
+			[symbols.PAGE_INFO]: computed(() => ({
 				title: this.$ts.customEmojis,
 				icon: 'fas fa-laugh',
 				bg: 'var(--bg)',

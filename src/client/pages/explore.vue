@@ -1,7 +1,5 @@
 <template>
 <div>
-	<MkHeader :info="header"/>
-
 	<MkSpacer :content-max="1200">
 		<div class="lznhrdub">
 			<div v-if="tab === 'local'">
@@ -110,13 +108,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			[symbols.PAGE_INFO]: {
-				title: this.$ts.explore,
-				icon: 'fas fa-hashtag',
-				bg: 'var(--bg)',
-			},
-			tab: 'local',
-			header: computed(() => ({
+			[symbols.PAGE_INFO]: computed(() => ({
 				title: this.$ts.explore,
 				icon: 'fas fa-hashtag',
 				bg: 'var(--bg)',
@@ -134,6 +126,7 @@ export default defineComponent({
 					onClick: () => { this.tab = 'search'; },
 				},]
 			})),
+			tab: 'local',
 			pinnedUsers: { endpoint: 'pinned-users' },
 			popularUsers: { endpoint: 'users', limit: 10, noPaging: true, params: {
 				state: 'alive',
