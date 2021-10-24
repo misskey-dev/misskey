@@ -166,8 +166,8 @@ const app = createApp(await (
 	ui === 'deck'                     ? import('@client/ui/deck.vue') :
 	ui === 'desktop'                  ? import('@client/ui/desktop.vue') :
 	ui === 'chat'                     ? import('@client/ui/chat/index.vue') :
-	ui === 'pope'                     ? import('@client/ui/universal.vue') :
-	import('@client/ui/default.vue')
+	ui === 'classic'                  ? import('@client/ui/classic.vue') :
+	import('@client/ui/universal.vue')
 ).then(x => x.default));
 
 if (_DEV_) {

@@ -42,8 +42,4 @@ export default defineComponent({
 		margin-right: 4px;
 	}
 }
-
-._fitSide_ .fpezltsf {
-	border-radius: 0;
-}
 </style>
