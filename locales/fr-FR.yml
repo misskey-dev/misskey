@@ -795,7 +795,7 @@ itsOff: "Désactivé"
 emailRequiredForSignup: "Une adresse e-mail est nécessaire pour créer un compte"
 unread: "Non lu"
 filter: "Filtre"
-controllPanel: "Panneau de contrôle"
+controlPanel: "Panneau de contrôle"
 manageAccounts: "Gérer les comptes"
 _signup:
   almostThere: "Bientôt fini"
