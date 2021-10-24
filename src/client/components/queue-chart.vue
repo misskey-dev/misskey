@@ -100,6 +100,7 @@ export default defineComponent({
 						borderJoinStyle: 'round',
 						borderColor: '#FFB300',
 						backgroundColor: alpha('#FFB300', 0.1),
+						yAxisID: 'y2',
 						data: []
 					}, {
 						label: 'Delayed',
