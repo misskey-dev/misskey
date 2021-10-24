@@ -79,6 +79,7 @@ export default defineComponent({
 						pointRadius: 0,
 						tension: 0,
 						borderWidth: 2,
+						borderJoinStyle: 'round',
 						borderColor: '#00E396',
 						backgroundColor: alpha('#00E396', 0.1),
 						data: []
@@ -87,6 +88,7 @@ export default defineComponent({
 						pointRadius: 0,
 						tension: 0,
 						borderWidth: 2,
+						borderJoinStyle: 'round',
 						borderColor: '#00BCD4',
 						backgroundColor: alpha('#00BCD4', 0.1),
 						data: []
@@ -95,17 +97,21 @@ export default defineComponent({
 						pointRadius: 0,
 						tension: 0,
 						borderWidth: 2,
+						borderJoinStyle: 'round',
 						borderColor: '#FFB300',
 						backgroundColor: alpha('#FFB300', 0.1),
+						yAxisID: 'y2',
 						data: []
 					}, {
 						label: 'Delayed',
 						pointRadius: 0,
 						tension: 0,
 						borderWidth: 2,
+						borderJoinStyle: 'round',
 						borderColor: '#E53935',
 						borderDash: [5, 5],
 						fill: false,
+						yAxisID: 'y2',
 						data: []
 					}],
 				},
@@ -122,15 +128,29 @@ export default defineComponent({
 					scales: {
 						x: {
 							grid: {
-								display: false,
+								display: true,
 								color: gridColor,
 								borderColor: 'rgb(0, 0, 0, 0)',
 							},
 							ticks: {
 								display: false,
+								maxTicksLimit: 10
 							},
 						},
 						y: {
+							min: 0,
+							stack: 'queue',
+							stackWeight: 2,
+							grid: {
+								color: gridColor,
+								borderColor: 'rgb(0, 0, 0, 0)',
+							},
+						},
+						y2: {
+							min: 0,
+							offset: true,
+							stack: 'queue',
+							stackWeight: 1,
 							grid: {
 								color: gridColor,
 								borderColor: 'rgb(0, 0, 0, 0)',

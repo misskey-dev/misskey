@@ -5,13 +5,16 @@
 	<div class="contents" ref="contents" @contextmenu.stop="onContextmenu" :style="{ background: pageInfo?.bg }">
 		<main ref="main">
 			<div class="content">
-				<router-view v-slot="{ Component }">
-					<transition :name="$store.state.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
-						<keep-alive :include="['timeline']">
-							<component :is="Component" :ref="changePage"/>
-						</keep-alive>
-					</transition>
-				</router-view>
+				<MkStickyContainer>
+					<template #header><MkHeader v-if="pageInfo && !pageInfo.hideHeader" :info="pageInfo"/></template>
+					<router-view v-slot="{ Component }">
+						<transition :name="$store.state.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
+							<keep-alive :include="['timeline']">
+								<component :is="Component" :ref="changePage"/>
+							</keep-alive>
+						</transition>
+					</router-view>
+				</MkStickyContainer>
 			</div>
 			<div class="spacer"></div>
 		</main>
@@ -55,7 +58,7 @@ import { instanceName } from '@client/config';
 import { StickySidebar } from '@client/scripts/sticky-sidebar';
 import XSidebar from '@client/ui/_common_/sidebar.vue';
 import XCommon from './_common_/common.vue';
-import XSide from './default.side.vue';
+import XSide from './classic.side.vue';
 import * as os from '@client/os';
 import { menuDef } from '@client/menu';
 import * as symbols from '@client/symbols';

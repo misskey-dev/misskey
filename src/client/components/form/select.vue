@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, onUnmounted, nextTick, ref, watch, computed, toRefs } from 'vue';
+import { defineComponent, onMounted, onUnmounted, nextTick, ref, watch, computed, toRefs, VNode } from 'vue';
 import MkButton from '@client/components/ui/button.vue';
 import * as os from '@client/os';
 
@@ -140,6 +140,16 @@ export default defineComponent({
 			const menu = [];
 			let options = context.slots.default();
 
+			const pushOption = (option: VNode) => {
+				menu.push({
+					text: option.children,
+					active: v.value === option.props.value,
+					action: () => {
+						v.value = option.props.value;
+					},
+				});
+			};
+
 			for (const optionOrOptgroup of options) {
 				if (optionOrOptgroup.type === 'optgroup') {
 					const optgroup = optionOrOptgroup;
@@ -148,23 +158,16 @@ export default defineComponent({
 						text: optgroup.props.label,
 					});
 					for (const option of optgroup.children) {
-						menu.push({
-							text: option.children,
-							active: v.value === option.props.value,
-							action: () => {
-								v.value = option.props.value;
-							},
-						});
+						pushOption(option);
+					}
+				} else if (Array.isArray(optionOrOptgroup.children)) { // 何故かフラグメントになってくることがある
+					const fragment = optionOrOptgroup;
+					for (const option of fragment.children) {
+						pushOption(option);
 					}
 				} else {
 					const option = optionOrOptgroup;
-					menu.push({
-						text: option.children,
-						active: v.value === option.props.value,
-						action: () => {
-							v.value = option.props.value;
-						},
-					});
+					pushOption(option);
 				}
 			}
 

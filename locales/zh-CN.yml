@@ -795,7 +795,6 @@ itsOff: "已关闭"
 emailRequiredForSignup: "注册账户需要电子邮件地址"
 unread: "未读"
 filter: "筛选"
-controllPanel: "控制面板"
 manageAccounts: "管理账户"
 _signup:
   almostThere: "即将完成"

@@ -2,8 +2,8 @@
 <div class="fdidabkb" :class="{ slim: narrow, thin: thin_ }" :style="{ background: bg }" @click="onClick" ref="el">
 	<template v-if="info">
 		<div class="titleContainer" @click="showTabsPopup" v-if="!hideTitle">
-			<i v-if="info.icon" class="icon" :class="info.icon"></i>
-			<MkAvatar v-else-if="info.avatar" class="avatar" :user="info.avatar" :disable-preview="true" :show-indicator="true"/>
+			<MkAvatar v-if="info.avatar" class="avatar" :user="info.avatar" :disable-preview="true" :show-indicator="true"/>
+			<i v-else-if="info.icon" class="icon" :class="info.icon"></i>
 
 			<div class="title">
 				<MkUserName v-if="info.userName" :user="info.userName" :nowrap="false" class="title"/>
@@ -162,11 +162,6 @@ export default defineComponent({
 				onUnmounted(() => {
 					ro.disconnect();
 				});
-				setTimeout(() => {
-					const currentStickyTop = getComputedStyle(el.value.parentElement).getPropertyValue('--stickyTop') || '0px';
-					el.value.style.setProperty('--stickyTop', currentStickyTop);
-					el.value.parentElement.style.setProperty('--stickyTop', `calc(${currentStickyTop} + ${el.value.offsetHeight}px)`);
-				}, 100); // レンダリング順序の関係で親のstickyTopの設定が少し遅れることがあるため
 			}
 		});
 

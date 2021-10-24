@@ -50,9 +50,6 @@ export default defineComponent({
 			border-top: solid 0.5px var(--divider);
 		}
 
-		margin-left: 16px;
-		margin-right: 16px;
-
 		> .title {
 			font-size: 0.9em;
 			opacity: 0.7;
@@ -120,7 +117,7 @@ export default defineComponent({
 
 			> .items {
 				display: grid;
-				grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+				grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
 				grid-gap: 8px;
 				padding: 0 16px;
 

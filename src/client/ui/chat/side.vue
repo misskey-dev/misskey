@@ -3,7 +3,7 @@
 	<header class="header" @contextmenu.prevent.stop="onContextmenu">
 		<MkHeader class="title" :info="pageInfo" :center="false"/>
 	</header>
-	<component :is="component" v-bind="props" :ref="changePage" class="body _fitSide_"/>
+	<component :is="component" v-bind="props" :ref="changePage" class="body"/>
 </div>
 </template>
 

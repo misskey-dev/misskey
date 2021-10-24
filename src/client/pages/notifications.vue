@@ -1,12 +1,9 @@
 <template>
-<div>
-	<MkHeader :info="header"/>
-	<MkSpacer :content-max="800">
-		<div class="clupoqwt">
-			<XNotifications class="notifications" @before="before" @after="after" :include-types="includeTypes" :unread-only="tab === 'unread'"/>
-		</div>
-	</MkSpacer>
-</div>
+<MkSpacer :content-max="800">
+	<div class="clupoqwt">
+		<XNotifications class="notifications" @before="before" @after="after" :include-types="includeTypes" :unread-only="tab === 'unread'"/>
+	</div>
+</MkSpacer>
 </template>
 
 <script lang="ts">
@@ -24,14 +21,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			[symbols.PAGE_INFO]: {
-				title: this.$ts.notifications,
-				icon: 'fas fa-bell',
-				bg: 'var(--bg)',
-			},
-			tab: 'all',
-			includeTypes: null,
-			header: computed(() => ({
+			[symbols.PAGE_INFO]: computed(() => ({
 				title: this.$ts.notifications,
 				icon: 'fas fa-bell',
 				bg: 'var(--bg)',
@@ -57,6 +47,8 @@ export default defineComponent({
 					onClick: () => { this.tab = 'unread'; },
 				},]
 			})),
+			tab: 'all',
+			includeTypes: null,
 		};
 	},
 

@@ -1,6 +1,6 @@
 <template>
-<div class="fcuexfpr">
-	<div class="_root">
+<MkSpacer :content-max="800">
+	<div class="fcuexfpr">
 		<transition name="fade" mode="out-in">
 			<div v-if="note" class="note">
 				<div class="_gap" v-if="showNext">
@@ -34,7 +34,7 @@
 			<MkLoading v-else/>
 		</transition>
 	</div>
-</div>
+</MkSpacer>
 </template>
 
 <script lang="ts">
@@ -153,54 +153,52 @@ export default defineComponent({
 .fcuexfpr {
 	background: var(--bg);
 
-	> ._root {
-		> .note {
-			> .main {
-				> .load {
-					min-width: 0;
-					margin: 0 auto;
-					border-radius: 999px;
+	> .note {
+		> .main {
+			> .load {
+				min-width: 0;
+				margin: 0 auto;
+				border-radius: 999px;
 
-					&.next {
-						margin-bottom: var(--margin);
-					}
-
-					&.prev {
-						margin-top: var(--margin);
-					}
+				&.next {
+					margin-bottom: var(--margin);
 				}
 
+				&.prev {
+					margin-top: var(--margin);
+				}
+			}
+
+			> .note {
 				> .note {
-					> .note {
-						border-radius: var(--radius);
-						background: var(--panel);
-					}
+					border-radius: var(--radius);
+					background: var(--panel);
+				}
+			}
+
+			> .clips {
+				> .title {
+					font-weight: bold;
+					padding: 12px;
 				}
 
-				> .clips {
-					> .title {
-						font-weight: bold;
-						padding: 12px;
+				> .item {
+					display: block;
+					padding: 16px;
+
+					> .description {
+						padding: 8px 0;
 					}
 
-					> .item {
-						display: block;
-						padding: 16px;
+					> .user {
+						$height: 32px;
+						padding-top: 16px;
+						border-top: solid 0.5px var(--divider);
+						line-height: $height;
 
-						> .description {
-							padding: 8px 0;
-						}
-
-						> .user {
-							$height: 32px;
-							padding-top: 16px;
-							border-top: solid 0.5px var(--divider);
-							line-height: $height;
-
-							> .avatar {
-								width: $height;
-								height: $height;
-							}
+						> .avatar {
+							width: $height;
+							height: $height;
 						}
 					}
 				}

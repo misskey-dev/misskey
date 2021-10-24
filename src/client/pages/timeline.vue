@@ -1,21 +1,18 @@
 <template>
-<div v-hotkey.global="keymap">
-	<MkHeader :info="header"/>
-	<div class="cmuxhskf" v-size="{ min: [800] }">
-		<XTutorial v-if="$store.reactiveState.tutorial.value != -1" class="tutorial _block"/>
-		<XPostForm v-if="$store.reactiveState.showFixedPostForm.value" class="post-form _block" fixed/>
+<div class="cmuxhskf" v-size="{ min: [800] }" v-hotkey.global="keymap">
+	<XTutorial v-if="$store.reactiveState.tutorial.value != -1" class="tutorial _block"/>
+	<XPostForm v-if="$store.reactiveState.showFixedPostForm.value" class="post-form _block" fixed/>
 
-		<div class="new" v-if="queue > 0"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
-		<div class="tl _block">
-			<XTimeline ref="tl" class="tl"
-				:key="src"
-				:src="src"
-				:sound="true"
-				@before="before()"
-				@after="after()"
-				@queue="queueUpdated"
-			/>
-		</div>
+	<div class="new" v-if="queue > 0"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
+	<div class="tl _block">
+		<XTimeline ref="tl" class="tl"
+			:key="src"
+			:src="src"
+			:sound="true"
+			@before="before()"
+			@after="after()"
+			@queue="queueUpdated"
+		/>
 	</div>
 </div>
 </template>
@@ -43,11 +40,6 @@ export default defineComponent({
 			src: 'home',
 			queue: 0,
 			[symbols.PAGE_INFO]: computed(() => ({
-				title: this.$ts.timeline,
-				icon: this.src === 'local' ? 'fas fa-comments' : this.src === 'social' ? 'fas fa-share-alt' : this.src === 'global' ? 'fas fa-globe' : 'fas fa-home',
-				bg: 'var(--bg)',
-			})),
-			header: computed(() => ({
 				title: this.$ts.timeline,
 				icon: this.src === 'local' ? 'fas fa-comments' : this.src === 'social' ? 'fas fa-share-alt' : this.src === 'global' ? 'fas fa-globe' : 'fas fa-home',
 				bg: 'var(--bg)',
@@ -92,7 +84,7 @@ export default defineComponent({
 					icon: 'fas fa-globe',
 					iconOnly: true,
 					onClick: () => { this.src = 'global'; this.saveSrc(); },
-				}]
+				}],
 			})),
 		};
 	},
