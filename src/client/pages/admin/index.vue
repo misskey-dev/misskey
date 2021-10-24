@@ -3,14 +3,18 @@
 	<div class="nav" v-if="!narrow || page == null">
 		<MkHeader :info="header"></MkHeader>
 	
-		<div class="lxpfedzu">
-			<img :src="$instance.iconUrl || '/favicon.ico'" alt="" class="icon"/>
-		</div>
+		<MkSpacer :content-max="700">
+			<div class="lxpfedzu">
+				<div class="banner">
+					<img :src="$instance.iconUrl || '/favicon.ico'" alt="" class="icon"/>
+				</div>
 
-		<MkInfo v-if="noMaintainerInformation" warn class="info">{{ $ts.noMaintainerInformationWarning }} <MkA to="/admin/settings" class="_link">{{ $ts.configure }}</MkA></MkInfo>
-		<MkInfo v-if="noBotProtection" warn class="info">{{ $ts.noBotProtectionWarning }} <MkA to="/admin/bot-protection" class="_link">{{ $ts.configure }}</MkA></MkInfo>
+				<MkInfo v-if="noMaintainerInformation" warn class="info">{{ $ts.noMaintainerInformationWarning }} <MkA to="/admin/settings" class="_link">{{ $ts.configure }}</MkA></MkInfo>
+				<MkInfo v-if="noBotProtection" warn class="info">{{ $ts.noBotProtectionWarning }} <MkA to="/admin/bot-protection" class="_link">{{ $ts.configure }}</MkA></MkInfo>
 
-		<MkSuperMenu :def="menuDef" :grid="page == null"></MkSuperMenu>
+				<MkSuperMenu :def="menuDef" :grid="page == null"></MkSuperMenu>
+			</div>
+		</MkSpacer>
 	</div>
 	<div class="main">
 		<MkStickyContainer>
@@ -315,7 +319,7 @@ export default defineComponent({
 			[symbols.PAGE_INFO]: INFO,
 			menuDef,
 			header: {
-				title: i18n.locale.controllPanel,
+				title: i18n.locale.controlPanel,
 			},
 			noMaintainerInformation,
 			noBotProtection,
@@ -357,20 +361,22 @@ export default defineComponent({
 	}
 
 	> .nav {
-		> .info {
-			margin: 16px;
+		.lxpfedzu {
+			> .info {
+				margin: 16px 0;
+			}
+
+			> .banner {
+				margin: 16px;
+
+				> .icon {
+					display: block;
+					margin: auto;
+					height: 42px;
+					border-radius: 8px;
+				}
+			}
 		}
-	}
-}
-
-.lxpfedzu {
-	margin: 16px;
-
-	> .icon {
-		display: block;
-		margin: auto;
-		height: 42px;
-		border-radius: 8px;
 	}
 }
 </style>
