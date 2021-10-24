@@ -33,7 +33,7 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, onUnmounted, nextTick, ref, watch, computed, toRefs } from 'vue';
-import MkButton from '../ui/button.vue';
+import MkButton from '@client/components/ui/button.vue';
 import { debounce } from 'throttle-debounce';
 
 export default defineComponent({

@@ -1,5 +1,6 @@
 <template>
 <div class="rrevdjwt" :class="{ center: align === 'center' }"
+	:style="{ width: width ? width + 'px' : null }"
 	ref="items"
 	@contextmenu.self="e => e.preventDefault()"
 	v-hotkey="keymap"
@@ -58,6 +59,10 @@ export default defineComponent({
 		align: {
 			type: String,
 			requried: false
+		},
+		width: {
+			type: Number,
+			required: false
 		},
 	},
 	emits: ['close'],

@@ -75,6 +75,11 @@ export class UserProfile {
 	})
 	public emailNotificationTypes: string[];
 
+	@Column('boolean', {
+		default: false,
+	})
+	public publicReactions: boolean;
+
 	@Column('varchar', {
 		length: 128, nullable: true,
 	})

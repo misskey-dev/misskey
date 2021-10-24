@@ -27,8 +27,7 @@ export default defineComponent({
 			default: false
 		},
 		customEmojis: {
-			required: false,
-			default: () => []
+			required: false
 		},
 		isReaction: {
 			type: Boolean,
@@ -58,10 +57,7 @@ export default defineComponent({
 		},
 
 		ce() {
-			let ce = [];
-			if (this.customEmojis) ce = ce.concat(this.customEmojis);
-			if (this.$instance && this.$instance.emojis) ce = ce.concat(this.$instance.emojis);
-			return ce;
+			return this.customEmojis || this.$instance?.emojis || [];
 		}
 	},
 
