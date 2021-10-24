@@ -62,8 +62,6 @@ export default defineComponent({
 				// element is children
 				const { element } = itemData;
 
-				console.log(element);
-
 				const id = element.dataset.id;
 				const file = props.mediaList.find(media => media.id === id);
 
