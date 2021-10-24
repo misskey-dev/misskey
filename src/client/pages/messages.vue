@@ -1,7 +1,7 @@
 <template>
-<div>
+<MkSpacer :content-max="800">
 	<XNotes :pagination="pagination" @before="before()" @after="after()"/>
-</div>
+</MkSpacer>
 </template>
 
 <script lang="ts">
