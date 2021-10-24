@@ -7,6 +7,13 @@
 
 -->
 
+## 12.x.x (unreleased)
+
+### Improvements
+- クライアント: メンションにユーザーのアバターを表示するように
+
+### Bugfixes
+
 ## 12.93.2 (2021/10/23)
 
 ### Bugfixes
