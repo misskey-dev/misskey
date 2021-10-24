@@ -564,6 +564,12 @@ sent: "أرسل"
 received: "اُستلم"
 searchResult: "نتائج البحث"
 hashtags: "الوسوم"
+learnMore: "راجع المزيد"
+misskeyUpdated: "حُدث ميسكي!"
+whatIsNew: "اعرض التغييرات"
+translate: "ترجم"
+translatedFrom: "تُرجم من {x}"
+accountDeletionInProgress: "حذف الحساب جارٍ"
 _docs:
   admin: "إدارة "
 _email:
@@ -683,8 +689,8 @@ _profile:
 _exportOrImport:
   allNotes: "كل الملاحظات"
   followingList: "المتابَعون"
-  muteList: "اكتم"
-  blockingList: "احجب"
+  muteList: "المستخدمون المكتومون"
+  blockingList: "المستخدمون المحجوبون"
   userLists: "القوائم"
 _charts:
   usersTotal: "مجموع عدد المستخدمين والمستخدمات"
