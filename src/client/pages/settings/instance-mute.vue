@@ -15,11 +15,11 @@
 
 <script>
 import { defineComponent } from 'vue'
-import FormBase from '@client/components/form/base.vue';
-import FormTextarea from '@client/components/form/textarea.vue';
-import FormInfo from '@client/components/form/info.vue';
-import FormKeyValueView from '@client/components/form/key-value-view.vue';
-import FormButton from '@client/components/form/button.vue';
+import FormBase from '@client/components/debobigego/base.vue';
+import FormTextarea from '@client/components/debobigego/textarea.vue';
+import FormInfo from '@client/components/debobigego/info.vue';
+import FormKeyValueView from '@client/components/debobigego/key-value-view.vue';
+import FormButton from '@client/components/debobigego/button.vue';
 import * as os from '@client/os';
 import number from '@client/filters/number';
 import * as symbols from '@client/symbols';
