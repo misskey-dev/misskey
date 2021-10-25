@@ -1,4 +1,5 @@
 <template>
+<div>
 <transition name="fade" mode="out-in">
 	<div class="ftskorzw wide" v-if="user && narrow === false">
 		<MkRemoteCaution v-if="user.host != null" :href="user.url"/>
@@ -190,6 +191,7 @@
 	<MkError v-else-if="error" @retry="fetch()"/>
 	<MkLoading v-else/>
 </transition>
+</div>
 </template>
 
 <script lang="ts">
