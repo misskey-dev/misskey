@@ -59,7 +59,7 @@ export default class extends Channel {
 		}
 
 		// Ignore notes from instances the user has muted
-		if (isInstanceMuted(note, this.userProfile?.mutedInstances ?? [])) return;
+		if (isInstanceMuted(note, new Set<string>(this.userProfile?.mutedInstances ?? []))) return;
 
 		// 関係ない返信は除外
 		if (note.reply) {

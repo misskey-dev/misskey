@@ -28,7 +28,7 @@ export default class extends Channel {
 		}
 
 		// Ignore notes from instances the user has muted
-		if (isInstanceMuted(note, this.userProfile?.mutedInstances ?? [])) return;
+		if (isInstanceMuted(note, new Set<string>(this.userProfile?.mutedInstances ?? []))) return;
 
 		if (['followers', 'specified'].includes(note.visibility)) {
 			note = await Notes.pack(note.id, this.user!, {

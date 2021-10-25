@@ -3,7 +3,7 @@
 		<FormBase>
 			<div class="_formItem">
 				<FormInfo>{{ $ts._instanceMute.title}}</FormInfo>
-				<FormTextarea v-model:value="instanceMutes">
+				<FormTextarea v-model="instanceMutes">
 					<span>{{$ts._instanceMute.heading}}</span>
 					<template #desc>{{ $ts._instanceMute.instanceMuteDescription}}<br>{{$ts._instanceMute.instanceMuteDescription2}}</template>
 				</FormTextarea>

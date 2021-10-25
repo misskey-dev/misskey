@@ -14,13 +14,10 @@ export default class extends Channel {
 		this.subscriber.on(`mainStream:${this.user!.id}`, async data => {
 			let { body } = data;
 
-			// Ignore notifications from instances the user has muted
-			if (isInstanceMuted(body, this.userProfile?.mutedInstances ?? [])) return;
-
 			switch (data.type) {
 				case 'notification': {
 					// Ignore notifications from instances the user has muted
-					if (isInstanceMuted(body, this.userProfile?.mutedInstances ?? [])) return;
+					if (isInstanceMuted(body, new Set<string>(this.userProfile?.mutedInstances ?? []))) return;
 
 					if (data.body.userId && this.muting.has(data.body.userId)) return;
 
@@ -34,7 +31,7 @@ export default class extends Channel {
 					break;
 				}
 				case 'mention': {
-					if (isInstanceMuted(body, this.userProfile?.mutedInstances ?? [])) return;
+					if (isInstanceMuted(body, new Set<string>(this.userProfile?.mutedInstances ?? []))) return;
 
 					if (this.muting.has(data.body.userId)) return;
 					if (data.body.isHidden) {
