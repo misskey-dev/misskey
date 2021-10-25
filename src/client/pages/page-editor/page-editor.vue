@@ -1,38 +1,36 @@
 <template>
-<div class="_root">
-	<MkA class="view" v-if="pageId" :to="`/@${ author.username }/pages/${ currentName }`"><i class="fas fa-external-link-square-alt"></i> {{ $ts._pages.viewPage }}</MkA>
-
-	<div class="buttons" style="margin: 16px;">
-		<MkButton inline @click="save" primary class="save" v-if="!readonly"><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
-		<MkButton inline @click="duplicate" class="duplicate" v-if="pageId"><i class="fas fa-copy"></i> {{ $ts.duplicate }}</MkButton>
-		<MkButton inline @click="del" class="delete" v-if="pageId && !readonly"><i class="fas fa-trash-alt"></i> {{ $ts.delete }}</MkButton>
+<div>
+	<div class="jqqmcavi" style="margin: 16px;">
+		<MkButton v-if="pageId" class="button" inline link :to="`/@${ author.username }/pages/${ currentName }`"><i class="fas fa-external-link-square-alt"></i> {{ $ts._pages.viewPage }}</MkButton>
+		<MkButton inline @click="save" primary class="button" v-if="!readonly"><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
+		<MkButton inline @click="duplicate" class="button" v-if="pageId"><i class="fas fa-copy"></i> {{ $ts.duplicate }}</MkButton>
+		<MkButton inline @click="del" class="button" v-if="pageId && !readonly" danger><i class="fas fa-trash-alt"></i> {{ $ts.delete }}</MkButton>
 	</div>
 
-	<MkContainer :foldable="true" :expanded="true" class="_gap">
-		<template #header><i class="fas fa-cog"></i> {{ $ts._pages.pageSetting }}</template>
-		<div style="padding: 16px;">
-			<MkInput v-model="title">
+	<div v-if="tab === 'settings'">
+		<div style="padding: 16px;" class="_formRoot">
+			<MkInput v-model="title" class="_formBlock">
 				<template #label>{{ $ts._pages.title }}</template>
 			</MkInput>
 
-			<MkInput v-model="summary">
+			<MkInput v-model="summary" class="_formBlock">
 				<template #label>{{ $ts._pages.summary }}</template>
 			</MkInput>
 
-			<MkInput v-model="name">
+			<MkInput v-model="name" class="_formBlock">
 				<template #prefix>{{ url }}/@{{ author.username }}/pages/</template>
 				<template #label>{{ $ts._pages.url }}</template>
 			</MkInput>
 
-			<MkSwitch v-model="alignCenter">{{ $ts._pages.alignCenter }}</MkSwitch>
+			<MkSwitch v-model="alignCenter" class="_formBlock">{{ $ts._pages.alignCenter }}</MkSwitch>
 
-			<MkSelect v-model="font">
+			<MkSelect v-model="font" class="_formBlock">
 				<template #label>{{ $ts._pages.font }}</template>
 				<option value="serif">{{ $ts._pages.fontSerif }}</option>
 				<option value="sans-serif">{{ $ts._pages.fontSansSerif }}</option>
 			</MkSelect>
 
-			<MkSwitch v-model="hideTitleWhenPinned">{{ $ts._pages.hideTitleWhenPinned }}</MkSwitch>
+			<MkSwitch v-model="hideTitleWhenPinned" class="_formBlock">{{ $ts._pages.hideTitleWhenPinned }}</MkSwitch>
 
 			<div class="eyeCatch">
 				<MkButton v-if="eyeCatchingImageId == null && !readonly" @click="setEyeCatchingImage"><i class="fas fa-plus"></i> {{ $ts._pages.eyeCatchingImageSet }}</MkButton>
@@ -42,24 +40,22 @@
 				</div>
 			</div>
 		</div>
-	</MkContainer>
+	</div>
 
-	<MkContainer :foldable="true" :expanded="true" class="_gap">
-		<template #header><i class="fas fa-sticky-note"></i> {{ $ts._pages.contents }}</template>
+	<div v-else-if="tab === 'contents'">
 		<div style="padding: 16px;">
-			<XBlocks class="content" v-model:value="content" :hpml="hpml"/>
+			<XBlocks class="content" v-model="content" :hpml="hpml"/>
 
 			<MkButton @click="add()" v-if="!readonly"><i class="fas fa-plus"></i></MkButton>
 		</div>
-	</MkContainer>
+	</div>
 
-	<MkContainer :foldable="true" class="_gap">
-		<template #header><i class="fas fa-magic"></i> {{ $ts._pages.variables }}</template>
+	<div v-else-if="tab === 'variables'">
 		<div class="qmuvgica">
 			<XDraggable tag="div" class="variables" v-show="variables.length > 0" v-model="variables" item-key="name" handle=".drag-handle" :group="{ name: 'variables' }" animation="150" swap-threshold="0.5">
 				<template #item="{element}">
 					<XVariable
-						:value="element"
+						:modelValue="element"
 						:removable="true"
 						@remove="() => removeVariable(element)"
 						:hpml="hpml"
@@ -72,14 +68,13 @@
 
 			<MkButton @click="addVariable()" class="add" v-if="!readonly"><i class="fas fa-plus"></i></MkButton>
 		</div>
-	</MkContainer>
+	</div>
 
-	<MkContainer :foldable="true" :expanded="true" class="_gap">
-		<template #header><i class="fas fa-code"></i> {{ $ts.script }}</template>
+	<div v-else-if="tab === 'script'">
 		<div>
 			<MkTextarea class="_code" v-model="script"/>
 		</div>
-	</MkContainer>
+	</div>
 </div>
 </template>
 
@@ -94,12 +89,12 @@ import 'vue-prism-editor/dist/prismeditor.min.css';
 import { v4 as uuid } from 'uuid';
 import XVariable from './page-editor.script-block.vue';
 import XBlocks from './page-editor.blocks.vue';
-import MkTextarea from '@client/components/ui/textarea.vue';
+import MkTextarea from '@client/components/form/textarea.vue';
 import MkContainer from '@client/components/ui/container.vue';
 import MkButton from '@client/components/ui/button.vue';
-import MkSelect from '@client/components/ui/select.vue';
-import MkSwitch from '@client/components/ui/switch.vue';
-import MkInput from '@client/components/ui/input.vue';
+import MkSelect from '@client/components/form/select.vue';
+import MkSwitch from '@client/components/form/switch.vue';
+import MkInput from '@client/components/form/input.vue';
 import { blockDefs } from '@client/scripts/hpml/index';
 import { HpmlTypeChecker } from '@client/scripts/hpml/type-checker';
 import { url } from '@client/config';
@@ -142,8 +137,31 @@ export default defineComponent({
 				return {
 					title: title,
 					icon: 'fas fa-pencil-alt',
+					bg: 'var(--bg)',
+					tabs: [{
+						active: this.tab === 'settings',
+						title: this.$ts._pages.pageSetting,
+						icon: 'fas fa-cog',
+						onClick: () => { this.tab = 'settings'; },
+					}, {
+						active: this.tab === 'contents',
+						title: this.$ts._pages.contents,
+						icon: 'fas fa-sticky-note',
+						onClick: () => { this.tab = 'contents'; },
+					}, {
+						active: this.tab === 'variables',
+						title: this.$ts._pages.variables,
+						icon: 'fas fa-magic',
+						onClick: () => { this.tab = 'variables'; },
+					}, {
+						active: this.tab === 'script',
+						title: this.$ts.script,
+						icon: 'fas fa-code',
+						onClick: () => { this.tab = 'script'; },
+					}],
 				};
 			}),
+			tab: 'settings',
 			author: this.$i,
 			readonly: false,
 			page: null,
@@ -455,6 +473,14 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.jqqmcavi {
+	> .button {
+		& + .button {
+			margin-left: 8px;
+		}
+	}
+}
+
 .gwbmwxkm {
 	position: relative;
 
@@ -522,11 +548,7 @@ export default defineComponent({
 }
 
 .qmuvgica {
-	padding: 32px;
-
-	@media (max-width: 500px) {
-		padding: 16px;
-	}
+	padding: 16px;
 
 	> .variables {
 		margin-bottom: 16px;

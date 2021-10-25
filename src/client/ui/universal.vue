@@ -2,19 +2,19 @@
 <div class="mk-app" :class="{ wallpaper }">
 	<XSidebar ref="nav" class="sidebar"/>
 
-	<div class="contents" ref="contents" @contextmenu.stop="onContextmenu">
-		<header class="header" ref="header" @click="onHeaderClick">
-			<XHeader :info="pageInfo" :back-button="true" @back="back()"/>
-		</header>
+	<div class="contents" ref="contents" @contextmenu.stop="onContextmenu" :style="{ background: pageInfo?.bg }">
 		<main ref="main">
 			<div class="content">
-				<router-view v-slot="{ Component }">
-					<transition :name="$store.state.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
-						<keep-alive :include="['timeline']">
-							<component :is="Component" :ref="changePage"/>
-						</keep-alive>
-					</transition>
-				</router-view>
+				<MkStickyContainer>
+					<template #header><MkHeader v-if="pageInfo && !pageInfo.hideHeader" :info="pageInfo"/></template>
+					<router-view v-slot="{ Component }">
+						<transition :name="$store.state.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
+							<keep-alive :include="['timeline']">
+								<component :is="Component" :ref="changePage"/>
+							</keep-alive>
+						</transition>
+					</router-view>
+				</MkStickyContainer>
 			</div>
 			<div class="spacer"></div>
 		</main>
@@ -58,8 +58,7 @@ import { instanceName } from '@client/config';
 import { StickySidebar } from '@client/scripts/sticky-sidebar';
 import XSidebar from '@client/ui/_common_/sidebar.vue';
 import XCommon from './_common_/common.vue';
-import XHeader from './_common_/header.vue';
-import XSide from './default.side.vue';
+import XSide from './classic.side.vue';
 import * as os from '@client/os';
 import { menuDef } from '@client/menu';
 import * as symbols from '@client/symbols';
@@ -70,7 +69,6 @@ export default defineComponent({
 	components: {
 		XCommon,
 		XSidebar,
-		XHeader,
 		XWidgets: defineAsyncComponent(() => import('./universal.widgets.vue')),
 		XSide, // NOTE: dynamic importするとAsyncComponentWrapperが間に入るせいでref取得できなくて面倒になる
 	},
@@ -151,9 +149,6 @@ export default defineComponent({
 		adjustUI() {
 			const navWidth = this.$refs.nav.$el.offsetWidth;
 			this.navHidden = navWidth === 0;
-			if (this.$refs.contents == null) return;
-			const width = this.$refs.contents.offsetWidth;
-			if (this.$refs.header) this.$refs.header.style.width = `${width}px`;
 		},
 
 		showNav() {
@@ -181,10 +176,6 @@ export default defineComponent({
 
 		onTransition() {
 			if (window._scroll) window._scroll();
-		},
-
-		onHeaderClick() {
-			window.scroll({ top: 0, behavior: 'smooth' });
 		},
 
 		onContextmenu(e) {
@@ -243,7 +234,6 @@ export default defineComponent({
 }
 
 .mk-app {
-	$header-height: 58px; // TODO: どこかに集約したい
 	$ui-font-size: 1em; // TODO: どこかに集約したい
 	$widgets-hide-threshold: 1090px;
 
@@ -258,42 +248,15 @@ export default defineComponent({
 	}
 
 	> .sidebar {
-		border-right: solid 0.5px var(--divider);
 	}
 
 	> .contents {
 		width: 100%;
 		min-width: 0;
-		--stickyTop: #{$header-height};
-		padding-top: $header-height;
 		background: var(--panel);
-
-		> .header {
-			position: fixed;
-			z-index: 1000;
-			top: 0;
-			height: $header-height;
-			width: 100%;
-			line-height: $header-height;
-			text-align: center;
-			font-weight: bold;
-			//background-color: var(--panel);
-			-webkit-backdrop-filter: var(--blur, blur(32px));
-			backdrop-filter: var(--blur, blur(32px));
-			background-color: var(--header);
-			border-bottom: solid 0.5px var(--divider);
-			user-select: none;
-		}
 
 		> main {
 			min-width: 0;
-
-			> .content {
-				> * {
-					// ほんとは単に calc(100vh - #{$header-height}) と書きたいところだが... https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
-					min-height: calc((var(--vh, 1vh) * 100) - #{$header-height});
-				}
-			}
 
 			> .spacer {
 				height: 82px;
@@ -314,6 +277,7 @@ export default defineComponent({
 	> .widgets {
 		padding: 0 var(--margin);
 		border-left: solid 0.5px var(--divider);
+		background: var(--bg);
 
 		@media (max-width: $widgets-hide-threshold) {
 			display: none;

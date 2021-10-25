@@ -3,7 +3,7 @@
 	<template #header><i class="fas fa-bell"></i>{{ $ts.notifications }}</template>
 	<template #func><button @click="configure()" class="_button"><i class="fas fa-cog"></i></button></template>
 
-	<div class="_flat_">
+	<div>
 		<XNotifications :include-types="props.includingTypes"/>
 	</div>
 </MkContainer>

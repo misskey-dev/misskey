@@ -8,6 +8,7 @@ import config from '@/config/index';
 import { getAgentByUrl } from '@/misc/fetch';
 import { URLSearchParams } from 'url';
 import { fetchMeta } from '@/misc/fetch-meta';
+import { Notes } from '@/models';
 
 export const meta = {
 	tags: ['notes'],
@@ -43,6 +44,10 @@ export default define(meta, async (ps, user) => {
 		throw e;
 	});
 
+	if (!(await Notes.isVisibleForMe(note, user ? user.id : null))) {
+		return 204; // TODO: 良い感じのエラー返す
+	}
+
 	if (note.text == null) {
 		return 204;
 	}
@@ -61,7 +66,9 @@ export default define(meta, async (ps, user) => {
 	params.append('text', note.text);
 	params.append('target_lang', targetLang);
 
-	const res = await fetch('https://api-free.deepl.com/v2/translate', {
+	const endpoint = instance.deeplIsPro ? 'https://api.deepl.com/v2/translate' : 'https://api-free.deepl.com/v2/translate';
+
+	const res = await fetch(endpoint, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded',

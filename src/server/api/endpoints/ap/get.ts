@@ -2,11 +2,17 @@ import $ from 'cafy';
 import define from '../../define';
 import Resolver from '@/remote/activitypub/resolver';
 import { ApiError } from '../../error';
+import * as ms from 'ms';
 
 export const meta = {
 	tags: ['federation'],
 
-	requireCredential: false as const,
+	requireCredential: true as const,
+
+	limit: {
+		duration: ms('1hour'),
+		max: 30
+	},
 
 	params: {
 		uri: {

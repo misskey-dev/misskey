@@ -1,7 +1,7 @@
 <template>
 <FormBase>
 	<FormSuspense :p="init">
-		<div class="_formItem aeakzknw">
+		<div class="_debobigegoItem aeakzknw">
 			<MkAvatar class="avatar" :user="user" :show-indicator="true"/>
 		</div>
 
@@ -20,9 +20,9 @@
 		</FormGroup>
 
 		<FormGroup v-if="iAmModerator">
-			<FormSwitch v-if="user.host == null && $i.isAdmin && (moderator || !user.isAdmin)" @update:value="toggleModerator" v-model:value="moderator">{{ $ts.moderator }}</FormSwitch>
-			<FormSwitch @update:value="toggleSilence" v-model:value="silenced">{{ $ts.silence }}</FormSwitch>
-			<FormSwitch @update:value="toggleSuspend" v-model:value="suspended">{{ $ts.suspend }}</FormSwitch>
+			<FormSwitch v-if="user.host == null && $i.isAdmin && (moderator || !user.isAdmin)" @update:modelValue="toggleModerator" v-model="moderator">{{ $ts.moderator }}</FormSwitch>
+			<FormSwitch @update:modelValue="toggleSilence" v-model="silenced">{{ $ts.silence }}</FormSwitch>
+			<FormSwitch @update:modelValue="toggleSuspend" v-model="suspended">{{ $ts.suspend }}</FormSwitch>
 		</FormGroup>
 
 		<FormGroup>
@@ -56,15 +56,15 @@
 
 <script lang="ts">
 import { computed, defineAsyncComponent, defineComponent } from 'vue';
-import FormObjectView from '@client/components/form/object-view.vue';
-import FormTextarea from '@client/components/form/textarea.vue';
-import FormSwitch from '@client/components/form/switch.vue';
-import FormLink from '@client/components/form/link.vue';
-import FormBase from '@client/components/form/base.vue';
-import FormGroup from '@client/components/form/group.vue';
-import FormButton from '@client/components/form/button.vue';
-import FormKeyValueView from '@client/components/form/key-value-view.vue';
-import FormSuspense from '@client/components/form/suspense.vue';
+import FormObjectView from '@client/components/debobigego/object-view.vue';
+import FormTextarea from '@client/components/debobigego/textarea.vue';
+import FormSwitch from '@client/components/debobigego/switch.vue';
+import FormLink from '@client/components/debobigego/link.vue';
+import FormBase from '@client/components/debobigego/base.vue';
+import FormGroup from '@client/components/debobigego/group.vue';
+import FormButton from '@client/components/debobigego/button.vue';
+import FormKeyValueView from '@client/components/debobigego/key-value-view.vue';
+import FormSuspense from '@client/components/debobigego/suspense.vue';
 import * as os from '@client/os';
 import number from '@client/filters/number';
 import bytes from '@client/filters/bytes';

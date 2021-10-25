@@ -144,7 +144,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	useBlurEffect: {
 		where: 'device',
-		default: false
+		default: true
 	},
 	showFixedPostForm: {
 		where: 'device',
@@ -209,6 +209,10 @@ export const defaultStore = markRaw(new Storage('base', {
 	postFormHashtags: {
 		where: 'device',
 		default: ''
+	},
+	aiChanMode: {
+		where: 'device',
+		default: false
 	},
 }));
 

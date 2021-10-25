@@ -27,7 +27,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .fpezltsf {
-	margin: 16px 0;
 	padding: 16px;
 	font-size: 90%;
 	background: var(--infoBg);
@@ -39,20 +38,8 @@ export default defineComponent({
 		color: var(--infoWarnFg);
 	}
 
-	&:first-child {
-		margin-top: 0;
-	}
-
-	&:last-child {
-		margin-bottom: 0;
-	}
-
 	> i {
 		margin-right: 4px;
 	}
-}
-
-._flat_ .fpezltsf {
-	border-radius: 0;
 }
 </style>

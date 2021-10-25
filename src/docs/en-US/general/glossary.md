@@ -73,17 +73,17 @@ A feature allowing users to organize the files they have uploaded to Misskey.For
 ## Notes
 Content which may include text, images, surveys and others that has been posted to Misskey.For details, see [here.](../features/note)
 
-## Misskist
+## Misskeyist
 Users of Misskey.
 
 ## Moderator
-Users with the authority to to manage the community of a server by deactivating spam accounts, deleting inappropriate posts etc.
+Users with the authority to manage the community of a server by deactivating spam accounts, silencing users, deleting inappropriate posts, etc.
 
 ## Remote
 Used in context of servers separate from your own.Also used as prefix in other words like "Remote user".The opposite of "Local".
 
 ## Federation
-The act of sharing information created one one's server with other servers.
+The act of sharing information created on one's server with other servers.
 
 ## Local
 Used in context of your own server.Also used as prefix in other words like "Local users", "local timeline".The opposite of "Remote".

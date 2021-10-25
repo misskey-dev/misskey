@@ -1,6 +1,6 @@
 <template>
 <div class="ssazuxis" v-size="{ max: [500] }">
-	<header @click="showBody = !showBody" class="_button">
+	<header @click="showBody = !showBody" class="_button" :style="{ background: bg }">
 		<div class="title"><slot name="header"></slot></div>
 		<div class="divider"></div>
 		<button class="_button">
@@ -23,6 +23,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import * as tinycolor from 'tinycolor2';
 
 const localStoragePrefix = 'ui:folder:';
 
@@ -41,6 +42,7 @@ export default defineComponent({
 	},
 	data() {
 		return {
+			bg: null,
 			showBody: (this.persistKey && localStorage.getItem(localStoragePrefix + this.persistKey)) ? localStorage.getItem(localStoragePrefix + this.persistKey) === 't' : this.expanded,
 		};
 	},
@@ -50,6 +52,21 @@ export default defineComponent({
 				localStorage.setItem(localStoragePrefix + this.persistKey, this.showBody ? 't' : 'f');
 			}
 		}
+	},
+	mounted() {
+		function getParentBg(el: Element | null): string {
+			if (el == null || el.tagName === 'BODY') return 'var(--bg)';
+			const bg = el.style.background || el.style.backgroundColor;
+			if (bg) {
+				return bg;
+			} else {
+				return getParentBg(el.parentElement);
+			}
+		}
+		const rawBg = getParentBg(this.$el);
+		const bg = tinycolor(rawBg.startsWith('var(') ? getComputedStyle(document.documentElement).getPropertyValue(rawBg.slice(4, -1)) : rawBg);
+		bg.setAlpha(0.85);
+		this.bg = bg.toRgbString();
 	},
 	methods: {
 		toggleContent(show: boolean) {
@@ -99,12 +116,9 @@ export default defineComponent({
 		z-index: 10;
 		position: sticky;
 		top: var(--stickyTop, 0px);
-		background: var(--panel);
-		/* TODO panelの半透明バージョンをプログラマティックに作りたい
-		background: var(--X17);
+		padding: var(--x-padding);
 		-webkit-backdrop-filter: var(--blur, blur(8px));
 		backdrop-filter: var(--blur, blur(20px));
-		*/
 
 		> .title {
 			margin: 0;
@@ -137,12 +151,6 @@ export default defineComponent({
 				padding: 8px 10px 8px 0;
 			}
 		}
-	}
-}
-
-._flat_ .ssazuxis {
-	> header {
-		padding: 0 16px;
 	}
 }
 </style>

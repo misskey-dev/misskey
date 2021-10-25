@@ -1,5 +1,5 @@
 <template>
-<div class="_root">
+<div>
 	<transition name="fade" mode="out-in">
 		<div v-if="page" class="xcukqgmh" :key="page.id" v-size="{ max: [450] }">
 			<div class="_block main">

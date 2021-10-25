@@ -19,7 +19,7 @@
 			</optgroup>
 		</MkSelect>
 
-		<XBlocks class="children" v-model:value="value.children" :hpml="hpml"/>
+		<XBlocks class="children" v-model="value.children" :hpml="hpml"/>
 	</section>
 </XContainer>
 </template>
@@ -28,7 +28,7 @@
 import { defineComponent, defineAsyncComponent } from 'vue';
 import { v4 as uuid } from 'uuid';
 import XContainer from '../page-editor.container.vue';
-import MkSelect from '@client/components/ui/select.vue';
+import MkSelect from '@client/components/form/select.vue';
 import * as os from '@client/os';
 
 export default defineComponent({

@@ -1,45 +1,44 @@
 <template>
-<FormBase>
-	<FormGroup>
+<div style="margin: 16px;">
+	<FormSection>
 		<template #label>{{ $ts._exportOrImport.allNotes }}</template>
-		<FormButton @click="doExport('notes')"><i class="fas fa-download"></i> {{ $ts.export }}</FormButton>
-	</FormGroup>
-	<FormGroup>
+		<MkButton :class="$style.button" inline @click="doExport('notes')"><i class="fas fa-download"></i> {{ $ts.export }}</MkButton>
+	</FormSection>
+	<FormSection>
 		<template #label>{{ $ts._exportOrImport.followingList }}</template>
-		<FormButton @click="doExport('following')"><i class="fas fa-download"></i> {{ $ts.export }}</FormButton>
-		<FormButton @click="doImport('following', $event)"><i class="fas fa-upload"></i> {{ $ts.import }}</FormButton>
-	</FormGroup>
-	<FormGroup>
+		<MkButton :class="$style.button" inline @click="doExport('following')"><i class="fas fa-download"></i> {{ $ts.export }}</MkButton>
+		<MkButton :class="$style.button" inline @click="doImport('following', $event)"><i class="fas fa-upload"></i> {{ $ts.import }}</MkButton>
+	</FormSection>
+	<FormSection>
 		<template #label>{{ $ts._exportOrImport.userLists }}</template>
-		<FormButton @click="doExport('user-lists')"><i class="fas fa-download"></i> {{ $ts.export }}</FormButton>
-		<FormButton @click="doImport('user-lists', $event)"><i class="fas fa-upload"></i> {{ $ts.import }}</FormButton>
-	</FormGroup>
-	<FormGroup>
+		<MkButton :class="$style.button" inline @click="doExport('user-lists')"><i class="fas fa-download"></i> {{ $ts.export }}</MkButton>
+		<MkButton :class="$style.button" inline @click="doImport('user-lists', $event)"><i class="fas fa-upload"></i> {{ $ts.import }}</MkButton>
+	</FormSection>
+	<FormSection>
 		<template #label>{{ $ts._exportOrImport.muteList }}</template>
-		<FormButton @click="doExport('mute')"><i class="fas fa-download"></i> {{ $ts.export }}</FormButton>
-	</FormGroup>
-	<FormGroup>
+		<MkButton :class="$style.button" inline @click="doExport('muting')"><i class="fas fa-download"></i> {{ $ts.export }}</MkButton>
+		<MkButton :class="$style.button" inline @click="doImport('muting', $event)"><i class="fas fa-upload"></i> {{ $ts.import }}</MkButton>
+	</FormSection>
+	<FormSection>
 		<template #label>{{ $ts._exportOrImport.blockingList }}</template>
-		<FormButton @click="doExport('blocking')"><i class="fas fa-download"></i> {{ $ts.export }}</FormButton>
-	</FormGroup>
-</FormBase>
+		<MkButton :class="$style.button" inline @click="doExport('blocking')"><i class="fas fa-download"></i> {{ $ts.export }}</MkButton>
+		<MkButton :class="$style.button" inline @click="doImport('blocking', $event)"><i class="fas fa-upload"></i> {{ $ts.import }}</MkButton>
+	</FormSection>
+</div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import FormSelect from '@client/components/form/select.vue';
-import FormButton from '@client/components/form/button.vue';
-import FormBase from '@client/components/form/base.vue';
-import FormGroup from '@client/components/form/group.vue';
+import MkButton from '@client/components/ui/button.vue';
+import FormSection from '@client/components/form/section.vue';
 import * as os from '@client/os';
 import { selectFile } from '@client/scripts/select-file';
 import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
-		FormBase,
-		FormGroup,
-		FormButton,
+		FormSection,
+		MkButton,
 	},
 
 	emits: ['info'],
@@ -48,7 +47,8 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.importAndExport,
-				icon: 'fas fa-boxes'
+				icon: 'fas fa-boxes',
+				bg: 'var(--bg)',
 			},
 		}
 	},
@@ -60,11 +60,11 @@ export default defineComponent({
 	methods: {
 		doExport(target) {
 			os.api(
-				target == 'notes' ? 'i/export-notes' :
-				target == 'following' ? 'i/export-following' :
-				target == 'blocking' ? 'i/export-blocking' :
-				target == 'user-lists' ? 'i/export-user-lists' :
-				target == 'mute' ? 'i/export-mute' :
+				target === 'notes' ? 'i/export-notes' :
+				target === 'following' ? 'i/export-following' :
+				target === 'blocking' ? 'i/export-blocking' :
+				target === 'user-lists' ? 'i/export-user-lists' :
+				target === 'muting' ? 'i/export-mute' :
 				null, {})
 			.then(() => {
 				os.dialog({
@@ -83,8 +83,10 @@ export default defineComponent({
 			const file = await selectFile(e.currentTarget || e.target);
 			
 			os.api(
-				target == 'following' ? 'i/import-following' :
-				target == 'user-lists' ? 'i/import-user-lists' :
+				target === 'following' ? 'i/import-following' :
+				target === 'user-lists' ? 'i/import-user-lists' :
+				target === 'muting' ? 'i/import-muting' :
+				target === 'blocking' ? 'i/import-blocking' :
 				null, {
 					fileId: file.id
 			}).then(() => {
@@ -102,3 +104,9 @@ export default defineComponent({
 	}
 });
 </script>
+
+<style module>
+.button {
+	margin-right: 16px;
+}
+</style>

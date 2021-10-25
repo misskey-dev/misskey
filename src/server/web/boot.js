@@ -48,8 +48,8 @@
 		} else if (localeOutdated) {
 			// nop
 		} else {
+			await checkUpdate();
 			renderError('LOCALE_FETCH_FAILED');
-			checkUpdate();
 			return;
 		}
 	}
@@ -65,8 +65,8 @@
 	script.setAttribute('async', 'true');
 	script.setAttribute('defer', 'true');
 	script.addEventListener('error', async () => {
+		await checkUpdate();
 		renderError('APP_FETCH_FAILED');
-		checkUpdate();
 	});
 	document.head.appendChild(script);
 	//#endregion
@@ -109,7 +109,7 @@
 	if (customCss && customCss.length > 0) {
 		const style = document.createElement('style');
 		style.innerHTML = customCss;
-		head.appendChild(style);
+		document.head.appendChild(style);
 	}
 
 	// eslint-disable-next-line no-inner-declarations
@@ -142,10 +142,6 @@
 
 		if (meta.version != v) {
 			localStorage.setItem('v', meta.version);
-			alert(
-				'Misskeyの新しいバージョンがあります。ページを再度読み込みします。' +
-				'\n\n' +
-				'New version of Misskey available. The page will be reloaded.');
 			refresh();
 		}
 	}

@@ -1,4 +1,4 @@
-# Silentigatoj kaj blokatoj
+# Silentigitoj kaj blokitoj
 好みではないユーザーがいる場合は、ミュートを行うことでそのユーザーが自分から見えないようにすることができます。 また、より強力な措置として、ブロックを行うことでそのユーザーから自分のコンテンツが見えないようになるほか、自分に対して関わることができないようにすることができます。 ミュートされていることは相手は分かりませんが、ブロックされていることは相手に分かります。どちらを選ぶかはご自身の判断で行ってください。
 
 <div class="info">ℹ️ ミュートとブロックは併用できます。</div>
@@ -22,19 +22,19 @@
 ## Bloki
 ユーザーをブロックすると、そのユーザーからあなたのコンテンツが見えないようになり、またあなたに対して以下のようなアクションをすることができなくなります。
 
-- フォローする
-- ユーザーリストに追加する
-- 返信する、Renoteする
-- リアクションする、アンケートに投票する
-- メッセージを送信する
-- など
+- Eksekvi
+- Aldoni al listo de uzantoj
+- Respondi aŭ plusendi
+- Reagi aŭ voĉi
+- Senti mesaĝon
+- k.t.p
 
 また、
 
-- ブロックする際に既にそのユーザーからフォローされていた場合はフォローが解除されます。
-- ブロックする際に既にそのユーザーがあなたをユーザーリストに入れていた場合はそのリストからあなたが削除されます。
+- Se la uzanto jam sekvas vin kiam vi blokas, la uzanto ĉesos sekvi.
+- Se la uzanto jam aldonis vin al listo de uzantoj kiam vi blokas, oni forigos vin de la listo
 
-ユーザーをブロックするには、対象のユーザーのユーザーページのメニューを開き、「ブロック」ボタンを押します。
+Por bloki uzanton klaku la butonon "Bloki" el la menuo de uzula paĝo de specifa uzanto.
 
 <div class="warn">⚠️ ブロックを行ったこと自体は相手に通知されませんが、フォローを行ったりなどの上記のアクションが行えなくなるので間接的にブロックされていることは分かります。</div>
 

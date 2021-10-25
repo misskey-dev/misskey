@@ -1,7 +1,7 @@
 # Templinio
 タイムラインは、[ノート](./note)が時系列で表示される機能です。 タイムラインには以下で示す種類があり、種類によって表示されるノートも異なります。 なお、タイムラインの種類によってはサーバーにより無効になっている場合があります。
 
-## Hejmo
+## Hejma
 自分のフォローしているユーザーの投稿が流れます。HTLと略されます。
 
 ## Loka
@@ -14,18 +14,18 @@
 全てのローカルユーザーの「ホーム」指定されていない投稿と、サーバーに届いた全てのリモートユーザーの「ホーム」指定されていない投稿が流れます。GTLと略されます。
 
 ## 比較
-| ソース          |           |       | Templinio |         |         |
-| ------------ | --------- | ----- | --------- | ------- | ------- |
-| Uzanto       | 公開範囲      | Hejmo | Loka      | Sociala | Malloka |
-| ローカル (フォロー)  | Publikigi | ✔     | ✔         | ✔       | ✔       |
-|              | Hejmo     | ✔     |           | ✔       |         |
-|              | Sekvantoj | ✔     | ✔         | ✔       | ✔       |
-| リモート (フォロー)  | Publikigi | ✔     |           | ✔       | ✔       |
-|              | Hejmo     | ✔     |           | ✔       |         |
-|              | Sekvantoj | ✔     |           | ✔       | ✔       |
-| ローカル (未フォロー) | Publikigi |       | ✔         | ✔       | ✔       |
-|              | Hejmo     |       |           |         |         |
-|              | Sekvantoj |       |           |         |         |
-| リモート (未フォロー) | Publikigi |       |           |         | ✔       |
-|              | Hejmo     |       |           |         |         |
-|              | Sekvantoj |       |           |         |         |
+| ソース                   |           |       | Templinio |         |         |
+| --------------------- | --------- | ----- | --------- | ------- | ------- |
+| Uzantoj               | Videbleco | Hejma | Loka      | Sociala | Malloka |
+| Lokaj (sekvataj)      | Publika   | ✔     | ✔         | ✔       | ✔       |
+|                       | Nur hejma | ✔     |           | ✔       |         |
+|                       | Sekvantoj | ✔     | ✔         | ✔       | ✔       |
+| Transaj (sekvataj)    | Publika   | ✔     |           | ✔       | ✔       |
+|                       | Nur hejma | ✔     |           | ✔       |         |
+|                       | Sekvantoj | ✔     |           | ✔       | ✔       |
+| Lokaj (ne sekvataj)   | Publika   |       | ✔         | ✔       | ✔       |
+|                       | Nur hejma |       |           |         |         |
+|                       | Sekvantoj |       |           |         |         |
+| Transaj (ne sekvataj) | Publika   |       |           |         | ✔       |
+|                       | Nur hejma |       |           |         |         |
+|                       | Sekvantoj |       |           |         |         |

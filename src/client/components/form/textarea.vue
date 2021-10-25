@@ -1,40 +1,45 @@
 <template>
-<FormGroup class="_formItem">
-	<template #label><slot></slot></template>
-	<div class="rivhosbp _formItem" :class="{ tall, pre }">
-		<div class="input _formPanel">
-			<textarea ref="input" :class="{ code, _monospace: code }"
-				v-model="v"
-				:required="required"
-				:readonly="readonly"
-				:pattern="pattern"
-				:autocomplete="autocomplete"
-				:spellcheck="!code"
-				@input="onInput"
-				@focus="focused = true"
-				@blur="focused = false"
-			></textarea>
-		</div>
+<div class="adhpbeos">
+	<div class="label" @click="focus"><slot name="label"></slot></div>
+	<div class="input" :class="{ disabled, focused, tall, pre }">
+		<textarea ref="inputEl"
+			:class="{ code, _monospace: code }"
+			v-model="v"
+			:disabled="disabled"
+			:required="required"
+			:readonly="readonly"
+			:placeholder="placeholder"
+			:pattern="pattern"
+			:autocomplete="autocomplete"
+			:spellcheck="spellcheck"
+			@focus="focused = true"
+			@blur="focused = false"
+			@keydown="onKeydown($event)"
+			@input="onInput"
+		></textarea>
 	</div>
-	<template #caption><slot name="desc"></slot></template>
+	<div class="caption"><slot name="caption"></slot></div>
 
-	<FormButton v-if="manualSave && changed" @click="updated" primary><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
-</FormGroup>
+	<MkButton v-if="manualSave && changed" @click="updated" primary><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
+</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, toRefs, watch } from 'vue';
-import './form.scss';
-import FormButton from './button.vue';
-import FormGroup from './group.vue';
+import { defineComponent, onMounted, onUnmounted, nextTick, ref, watch, computed, toRefs } from 'vue';
+import MkButton from '@client/components/ui/button.vue';
+import { debounce } from 'throttle-debounce';
 
 export default defineComponent({
 	components: {
-		FormGroup,
-		FormButton,
+		MkButton,
 	},
+
 	props: {
-		value: {
+		modelValue: {
+			required: true
+		},
+		type: {
+			type: String,
 			required: false
 		},
 		required: {
@@ -45,12 +50,27 @@ export default defineComponent({
 			type: Boolean,
 			required: false
 		},
+		disabled: {
+			type: Boolean,
+			required: false
+		},
 		pattern: {
 			type: String,
 			required: false
 		},
-		autocomplete: {
+		placeholder: {
 			type: String,
+			required: false
+		},
+		autofocus: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
+		autocomplete: {
+			required: false
+		},
+		spellcheck: {
 			required: false
 		},
 		code: {
@@ -67,91 +87,162 @@ export default defineComponent({
 			required: false,
 			default: false
 		},
+		debounce: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
 		manualSave: {
 			type: Boolean,
 			required: false,
 			default: false
 		},
 	},
+
+	emits: ['change', 'keydown', 'enter', 'update:modelValue'],
+
 	setup(props, context) {
-		const { value } = toRefs(props);
-		const v = ref(value.value);
+		const { modelValue, autofocus } = toRefs(props);
+		const v = ref(modelValue.value);
+		const focused = ref(false);
 		const changed = ref(false);
+		const invalid = ref(false);
+		const filled = computed(() => v.value !== '' && v.value != null);
 		const inputEl = ref(null);
+
 		const focus = () => inputEl.value.focus();
 		const onInput = (ev) => {
 			changed.value = true;
 			context.emit('change', ev);
 		};
+		const onKeydown = (ev: KeyboardEvent) => {
+			context.emit('keydown', ev);
+
+			if (ev.code === 'Enter') {
+				context.emit('enter');
+			}
+		};
 
 		const updated = () => {
 			changed.value = false;
-			context.emit('update:value', v.value);
+			context.emit('update:modelValue', v.value);
 		};
 
-		watch(value, newValue => {
+		const debouncedUpdated = debounce(1000, updated);
+
+		watch(modelValue, newValue => {
 			v.value = newValue;
 		});
 
 		watch(v, newValue => {
 			if (!props.manualSave) {
-				updated();
+				if (props.debounce) {
+					debouncedUpdated();
+				} else {
+					updated();
+				}
 			}
+
+			invalid.value = inputEl.value.validity.badInput;
 		});
-		
+
+		onMounted(() => {
+			nextTick(() => {
+				if (autofocus.value) {
+					focus();
+				}
+			});
+		});
+
 		return {
 			v,
-			updated,
+			focused,
+			invalid,
 			changed,
+			filled,
+			inputEl,
 			focus,
 			onInput,
+			onKeydown,
+			updated,
 		};
-	}
+	},
 });
 </script>
 
 <style lang="scss" scoped>
-.rivhosbp {
-	position: relative;
+.adhpbeos {
+	> .label {
+		font-size: 0.85em;
+		padding: 0 0 8px 12px;
+		user-select: none;
+
+		&:empty {
+			display: none;
+		}
+	}
+
+	> .caption {
+		font-size: 0.8em;
+		padding: 8px 0 0 12px;
+		color: var(--fgTransparentWeak);
+
+		&:empty {
+			display: none;
+		}
+	}
 
 	> .input {
 		position: relative;
-	
+
 		> textarea {
+			appearance: none;
+			-webkit-appearance: none;
 			display: block;
 			width: 100%;
 			min-width: 100%;
 			max-width: 100%;
 			min-height: 130px;
 			margin: 0;
-			padding: 16px;
-			box-sizing: border-box;
+			padding: 12px;
 			font: inherit;
 			font-weight: normal;
 			font-size: 1em;
-			background: transparent;
-			border: none;
-			border-radius: 0;
+			color: var(--fg);
+			background: var(--panel);
+			border: solid 0.5px var(--inputBorder);
+			border-radius: 6px;
 			outline: none;
 			box-shadow: none;
-			color: var(--fg);
+			box-sizing: border-box;
+			transition: border-color 0.1s ease-out;
 
-			&.code {
-				tab-size: 2;
+			&:hover {
+				border-color: var(--inputBorderHover);
 			}
 		}
-	}
 
-	&.tall {
-		> .input {
+		&.focused {
+			> textarea {
+				border-color: var(--accent);
+			}
+		}
+
+		&.disabled {
+			opacity: 0.7;
+
+			&, * {
+				cursor: not-allowed !important;
+			}
+		}
+
+		&.tall {
 			> textarea {
 				min-height: 200px;
 			}
 		}
-	}
 
-	&.pre {
-		> .input {
+		&.pre {
 			> textarea {
 				white-space: pre;
 			}

@@ -3,7 +3,7 @@ import { defineComponent, h, resolveDirective, withDirectives } from 'vue';
 
 export default defineComponent({
 	props: {
-		value: {
+		modelValue: {
 			required: true,
 		},
 	},
@@ -13,11 +13,11 @@ export default defineComponent({
 		return withDirectives(h('div', {
 			class: 'pxhvhrfw',
 		}, options.map(option => withDirectives(h('button', {
-			class: ['_button', { active: this.value === option.props.value }],
+			class: ['_button', { active: this.modelValue === option.props.value }],
 			key: option.key,
-			disabled: this.value === option.props.value,
+			disabled: this.modelValue === option.props.value,
 			onClick: () => {
-				this.$emit('update:value', option.props.value);
+				this.$emit('update:modelValue', option.props.value);
 			}
 		}, option.children), [
 			[resolveDirective('click-anime')]
@@ -35,8 +35,8 @@ export default defineComponent({
 
 	> button {
 		flex: 1;
-		padding: 15px 12px 12px 12px;
-		border-bottom: solid 3px transparent;
+		padding: 10px 8px;
+		border-radius: var(--radius);
 
 		&:disabled {
 			opacity: 1 !important;
@@ -45,11 +45,16 @@ export default defineComponent({
 
 		&.active {
 			color: var(--accent);
-			border-bottom-color: var(--accent);
+			background: var(--accentedBg);
 		}
 
 		&:not(.active):hover {
 			color: var(--fgHighlighted);
+			background: var(--panelHighlight);
+		}
+
+		&:not(:first-child) {
+			margin-left: 8px;
 		}
 
 		> .icon {
@@ -61,7 +66,7 @@ export default defineComponent({
 		font-size: 80%;
 
 		> button {
-			padding: 11px 8px 8px 8px;
+			padding: 11px 8px;
 		}
 	}
 }

@@ -2,10 +2,10 @@ import autobind from 'autobind-decorator';
 import { isMutedUserRelated } from '@/misc/is-muted-user-related';
 import Channel from '../channel';
 import { Notes } from '@/models/index';
-import { PackedNote } from '@/models/repositories/note';
 import { checkWordMute } from '@/misc/check-word-mute';
 import { isBlockerUserRelated } from '@/misc/is-blocker-user-related';
 import { isInstanceMuted } from '@/misc/is-instance-muted';
+import { Packed } from '@/misc/schema';
 
 export default class extends Channel {
 	public readonly chName = 'homeTimeline';
@@ -19,7 +19,7 @@ export default class extends Channel {
 	}
 
 	@autobind
-	private async onNote(note: PackedNote) {
+	private async onNote(note: Packed<'Note'>) {
 		if (note.channelId) {
 			if (!this.followingChannels.has(note.channelId)) return;
 		} else {
@@ -55,7 +55,7 @@ export default class extends Channel {
 
 		// 関係ない返信は除外
 		if (note.reply) {
-			const reply = note.reply as PackedNote;
+			const reply = note.reply;
 			// 「チャンネル接続主への返信」でもなければ、「チャンネル接続主が行った返信」でもなければ、「投稿者の投稿者自身への返信」でもない場合
 			if (reply.userId !== this.user!.id && note.userId !== this.user!.id && reply.userId !== note.userId) return;
 		}

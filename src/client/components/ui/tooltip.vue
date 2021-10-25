@@ -1,6 +1,6 @@
 <template>
 <transition name="tooltip" appear @after-leave="$emit('closed')">
-	<div class="buebdbiu _acrylic _shadow" v-show="showing" ref="content">
+	<div class="buebdbiu _acrylic _shadow" v-show="showing" ref="content" :style="{ maxWidth: maxWidth + 'px' }">
 		<slot>{{ text }}</slot>
 	</div>
 </transition>
@@ -21,7 +21,12 @@ export default defineComponent({
 		text: {
 			type: String,
 			required: false
-		}
+		},
+		maxWidth: {
+			type: Number,
+			required: false,
+			default: 250,
+		},
 	},
 
 	emits: ['closed'],
@@ -75,11 +80,12 @@ export default defineComponent({
 .buebdbiu {
 	position: absolute;
 	z-index: 11000;
-	max-width: 240px;
 	font-size: 0.8em;
 	padding: 8px 12px;
+	box-sizing: border-box;
 	text-align: center;
 	border-radius: 4px;
+	border: solid 0.5px var(--divider);
 	pointer-events: none;
 	transform-origin: center bottom;
 }

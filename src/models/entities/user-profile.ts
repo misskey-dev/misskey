@@ -2,7 +2,7 @@ import { Entity, Column, Index, OneToOne, JoinColumn, PrimaryColumn } from 'type
 import { id } from '../id';
 import { User } from './user';
 import { Page } from './page';
-import { notificationTypes } from '../../types';
+import { notificationTypes } from '@/types';
 
 // TODO: このテーブルで管理している情報すべてレジストリで管理するようにしても良いかも
 //       ただ、「emailVerified が true なユーザーを find する」のようなクエリは書けなくなるからウーン
@@ -74,6 +74,11 @@ export class UserProfile {
 		default: ['follow', 'receiveFollowRequest', 'groupInvited']
 	})
 	public emailNotificationTypes: string[];
+
+	@Column('boolean', {
+		default: false,
+	})
+	public publicReactions: boolean;
 
 	@Column('varchar', {
 		length: 128, nullable: true,

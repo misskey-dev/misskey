@@ -1,7 +1,7 @@
 <template>
-<div class="_section">
+<MkSpacer :content-max="800">
 	<MkPagination :pagination="pagination" #default="{items}" class="ruryvtyk _content">
-		<section class="_card announcement _gap" v-for="(announcement, i) in items" :key="announcement.id">
+		<section class="_card announcement" v-for="(announcement, i) in items" :key="announcement.id">
 			<div class="_title"><span v-if="$i && !announcement.isRead">🆕 </span>{{ announcement.title }}</div>
 			<div class="_content">
 				<Mfm :text="announcement.text"/>
@@ -12,7 +12,7 @@
 			</div>
 		</section>
 	</MkPagination>
-</div>
+</MkSpacer>
 </template>
 
 <script lang="ts">
@@ -32,7 +32,8 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.announcements,
-				icon: 'fas fa-broadcast-tower'
+				icon: 'fas fa-broadcast-tower',
+				bg: 'var(--bg)',
 			},
 			pagination: {
 				endpoint: 'announcements',
@@ -57,6 +58,10 @@ export default defineComponent({
 <style lang="scss" scoped>
 .ruryvtyk {
 	> .announcement {
+		&:not(:last-child) {
+			margin-bottom: var(--margin);
+		}
+
 		> ._content {
 			> img {
 				display: block;

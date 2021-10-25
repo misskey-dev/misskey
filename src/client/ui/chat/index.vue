@@ -74,7 +74,7 @@
 
 	<main class="main" @contextmenu.stop="onContextmenu">
 		<header class="header">
-			<XHeader class="header" :info="pageInfo" :menu="menu" :center="false" :back-button="true" @back="back()" @click="onHeaderClick"/>
+			<MkHeader class="header" :info="pageInfo" :menu="menu" :center="false" @click="onHeaderClick"/>
 		</header>
 		<router-view v-slot="{ Component }">
 			<transition :name="$store.state.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
@@ -101,7 +101,6 @@ import XSidebar from '@client/ui/_common_/sidebar.vue';
 import XWidgets from './widgets.vue';
 import XCommon from '../_common_/common.vue';
 import XSide from './side.vue';
-import XHeader from '../_common_/header.vue';
 import XHeaderClock from './header-clock.vue';
 import * as os from '@client/os';
 import { router } from '@client/router';
@@ -110,6 +109,7 @@ import { search } from '@client/scripts/search';
 import copyToClipboard from '@client/scripts/copy-to-clipboard';
 import { store } from './store';
 import * as symbols from '@client/symbols';
+import { openAccountMenu } from '@client/account';
 
 export default defineComponent({
 	components: {
@@ -117,7 +117,6 @@ export default defineComponent({
 		XSidebar,
 		XWidgets,
 		XSide, // NOTE: dynamic importするとAsyncComponentWrapperが間に入るせいでref取得できなくて面倒になる
-		XHeader,
 		XHeaderClock,
 	},
 
@@ -255,6 +254,8 @@ export default defineComponent({
 				}
 			}], e);
 		},
+
+		openAccountMenu,
 	}
 });
 </script>

@@ -15,7 +15,7 @@ if (localStorage.getItem('accounts') != null) {
 
 import * as Sentry from '@sentry/browser';
 import { Integrations } from '@sentry/tracing';
-import { computed, createApp, watch, markRaw } from 'vue';
+import { computed, createApp, watch, markRaw, version as vueVersion } from 'vue';
 import compareVersions from 'compare-versions';
 
 import widgets from '@client/widgets';
@@ -46,6 +46,8 @@ window.onunhandledrejection = null;
 
 if (_DEV_) {
 	console.warn('Development mode!!!');
+
+	console.info(`vue ${vueVersion}`);
 
 	(window as any).$i = $i;
 	(window as any).$store = defaultStore;
@@ -164,8 +166,8 @@ const app = createApp(await (
 	ui === 'deck'                     ? import('@client/ui/deck.vue') :
 	ui === 'desktop'                  ? import('@client/ui/desktop.vue') :
 	ui === 'chat'                     ? import('@client/ui/chat/index.vue') :
-	ui === 'pope'                     ? import('@client/ui/universal.vue') :
-	import('@client/ui/default.vue')
+	ui === 'classic'                  ? import('@client/ui/classic.vue') :
+	import('@client/ui/universal.vue')
 ).then(x => x.default));
 
 if (_DEV_) {
@@ -215,7 +217,10 @@ if (lastVersion !== version) {
 
 	try { // 変なバージョン文字列来るとcompareVersionsでエラーになるため
 		if (lastVersion != null && compareVersions(version, lastVersion) === 1) {
-			popup(import('@client/components/updated.vue'), {}, {}, 'closed');
+			// ログインしてる場合だけ
+			if ($i) {
+				popup(import('@client/components/updated.vue'), {}, {}, 'closed');
+			}
 		}
 	} catch (e) {
 	}

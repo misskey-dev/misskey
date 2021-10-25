@@ -93,6 +93,10 @@ export const meta = {
 			validator: $.optional.bool,
 		},
 
+		emailRequiredForSignup: {
+			validator: $.optional.bool,
+		},
+
 		enableHcaptcha: {
 			validator: $.optional.bool,
 		},
@@ -147,6 +151,10 @@ export const meta = {
 
 		deeplAuthKey: {
 			validator: $.optional.nullable.str,
+		},
+
+		deeplIsPro: {
+			validator: $.optional.bool,
 		},
 
 		enableTwitterIntegration: {
@@ -370,6 +378,10 @@ export default define(meta, async (ps, me) => {
 		set.proxyRemoteFiles = ps.proxyRemoteFiles;
 	}
 
+	if (ps.emailRequiredForSignup !== undefined) {
+		set.emailRequiredForSignup = ps.emailRequiredForSignup;
+	}
+
 	if (ps.enableHcaptcha !== undefined) {
 		set.enableHcaptcha = ps.enableHcaptcha;
 	}
@@ -572,6 +584,10 @@ export default define(meta, async (ps, me) => {
 		} else {
 			set.deeplAuthKey = ps.deeplAuthKey;
 		}
+	}
+
+	if (ps.deeplIsPro !== undefined) {
+		set.deeplIsPro = ps.deeplIsPro;
 	}
 
 	await getConnection().transaction(async transactionalEntityManager => {
