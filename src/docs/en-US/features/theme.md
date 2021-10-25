@@ -39,7 +39,7 @@
 * `desc` ... The description of the theme (optional)
 * `base` ... 明るいテーマか、暗いテーマか
     * `light`にすると明るいテーマになり、`dark`にすると暗いテーマになります。
-    * テーマはここで設定されたベーステーマを継承します。
+    * The theme will be inheriting the default values of the theme specified here.
 * `props` ... テーマのスタイル定義。これから説明します。
 
 ### テーマのスタイル定義
