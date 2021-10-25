@@ -1,9 +1,9 @@
 # Pages
 
 ## Variables
-変数を使うことで動的なページを作成できます。テキスト内で <b>{ 変数名 }</b> と書くとそこに変数の値を埋め込めます。例えば <b>Hello { thing } world!</b> というテキストで、変数(thing)の値が <b>ai</b> だった場合、テキストは <b>Hello ai world!</b> になります。
+Use variables to create dynamic pages. Put <b>{ variable-name }</b> in your content to embed the value. For example, if a variable named "thing" has the value <b>ai</b>, the string <b>Hello { thing } world!</b> turns into <b>Hello ai world!</b>.
 
-変数の評価(値を算出すること)は上から下に行われるので、ある変数の中で自分より下の変数を参照することはできません。例えば上から <b>A、B、C</b> と3つの変数を定義したとき、<b>C</b>の中で<b>A</b>や<b>B</b>を参照することはできますが、<b>A</b>の中で<b>B</b>や<b>C</b>を参照することはできません。
+Variables are evaluated from top to bottom, so referencing variables before declaring is not possible. For example, when declaring the three variables <b>A, B, C</b> in this order, you can use <b>A</b> or <b>B</b> in <b>C</b>, but you cannot use <b>B</b> or <b>C</b> in <b>A</b>.
 
 ユーザーからの入力を受け取るには、ページに「ユーザー入力」ブロックを設置し、「変数名」に入力を格納したい変数名を設定します(変数は自動で作成されます)。その変数を使ってユーザー入力に応じた動作を行えます。
 
