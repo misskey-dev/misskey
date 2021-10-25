@@ -12,10 +12,12 @@ import endpoints from './endpoints';
 import handler from './api-handler';
 import signup from './private/signup';
 import signin from './private/signin';
+import signupPending from './private/signup-pending';
 import discord from './service/discord';
 import github from './service/github';
 import twitter from './service/twitter';
 import { Instances, AccessTokens, Users } from '@/models/index';
+import config from '@/config';
 
 // Init app
 const app = new Koa();
@@ -37,7 +39,11 @@ app.use(bodyParser({
 
 // Init multer instance
 const upload = multer({
-	storage: multer.diskStorage({})
+	storage: multer.diskStorage({}),
+	limits: {
+		fileSize: config.maxFileSize || 262144000,
+		files: 1,
+	}
 });
 
 // Init router
@@ -60,6 +66,7 @@ for (const endpoint of endpoints) {
 
 router.post('/signup', signup);
 router.post('/signin', signin);
+router.post('/signup-pending', signupPending);
 
 router.use(discord.routes());
 router.use(github.routes());

@@ -1,6 +1,6 @@
 <template>
-<MkPopup ref="popup" :src="src" @closed="$emit('closed')" #default="{point}">
-	<MkMenu :items="items" :align="align" :point="point" @close="$refs.popup.close()" class="_popup _shadow"/>
+<MkPopup ref="popup" :src="src" @closed="$emit('closed')">
+	<MkMenu :items="items" :align="align" :width="width" @close="$refs.popup.close()" class="_popup _shadow"/>
 </MkPopup>
 </template>
 
@@ -22,6 +22,10 @@ export default defineComponent({
 		},
 		align: {
 			type: String,
+			required: false
+		},
+		width: {
+			type: Number,
 			required: false
 		},
 		viaKeyboard: {

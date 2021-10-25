@@ -1,9 +1,8 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { App } from '@/models/entities/app';
 import { AccessTokens } from '../index';
-import { SchemaType } from '@/misc/schema';
-
-export type PackedApp = SchemaType<typeof packedAppSchema>;
+import { Packed } from '@/misc/schema';
+import { User } from '../entities/user';
 
 @EntityRepository(App)
 export class AppRepository extends Repository<App> {
@@ -15,7 +14,7 @@ export class AppRepository extends Repository<App> {
 			includeSecret?: boolean,
 			includeProfileImageIds?: boolean
 		}
-	): Promise<PackedApp> {
+	): Promise<Packed<'App'>> {
 		const opts = Object.assign({
 			detail: false,
 			includeSecret: false,
@@ -52,13 +51,9 @@ export const packedAppSchema = {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const
 		},
-		createdAt: {
+		callbackUrl: {
 			type: 'string' as const,
-			optional: false as const, nullable: false as const
-		},
-		lastUsedAt: {
-			type: 'string' as const,
-			optional: false as const, nullable: false as const
+			optional: false as const, nullable: true as const
 		},
 		permission: {
 			type: 'array' as const,

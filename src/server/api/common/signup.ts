@@ -11,20 +11,30 @@ import { UserKeypair } from '@/models/entities/user-keypair';
 import { usersChart } from '@/services/chart/index';
 import { UsedUsername } from '@/models/entities/used-username';
 
-export async function signup(username: User['username'], password: UserProfile['password'], host: string | null = null) {
+export async function signup(opts: {
+	username: User['username'];
+	password?: string | null;
+	passwordHash?: UserProfile['password'] | null;
+	host?: string | null;
+}) {
+	const { username, password, passwordHash, host } = opts;
+	let hash = passwordHash;
+
 	// Validate username
 	if (!Users.validateLocalUsername.ok(username)) {
 		throw new Error('INVALID_USERNAME');
 	}
 
-	// Validate password
-	if (!Users.validatePassword.ok(password)) {
-		throw new Error('INVALID_PASSWORD');
-	}
+	if (password != null && passwordHash == null) {
+		// Validate password
+		if (!Users.validatePassword.ok(password)) {
+			throw new Error('INVALID_PASSWORD');
+		}
 
-	// Generate hash of password
-	const salt = await bcrypt.genSalt(8);
-	const hash = await bcrypt.hash(password, salt);
+		// Generate hash of password
+		const salt = await bcrypt.genSalt(8);
+		hash = await bcrypt.hash(password, salt);
+	}
 
 	// Generate secret
 	const secret = generateUserToken();

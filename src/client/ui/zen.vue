@@ -2,7 +2,7 @@
 <div class="mk-app">
 	<div class="contents">
 		<header class="header">
-			<XHeader :info="pageInfo"/>
+			<MkHeader :info="pageInfo"/>
 		</header>
 		<main ref="main">
 			<div class="content">
@@ -24,14 +24,12 @@
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
 import { host } from '@client/config';
-import XHeader from './_common_/header.vue';
 import XCommon from './_common_/common.vue';
 import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
 		XCommon,
-		XHeader,
 	},
 
 	data() {

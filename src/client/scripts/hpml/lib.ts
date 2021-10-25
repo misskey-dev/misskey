@@ -1,11 +1,11 @@
 import * as tinycolor from 'tinycolor2';
-import Chart from 'chart.js';
 import { Hpml } from './evaluator';
 import { values, utils } from '@syuilo/aiscript';
 import { Fn, HpmlScope } from '.';
 import { Expr } from './expr';
 import * as seedrandom from 'seedrandom';
 
+/* TODO: https://www.chartjs.org/docs/latest/configuration/canvas-background.html#color
 // https://stackoverflow.com/questions/38493564/chart-area-background-color-chartjs
 Chart.pluginService.register({
 	beforeDraw: (chart, easing) => {
@@ -18,6 +18,7 @@ Chart.pluginService.register({
 		}
 	}
 });
+*/
 
 export function initAiLib(hpml: Hpml) {
 	return {
@@ -49,11 +50,12 @@ export function initAiLib(hpml: Hpml) {
 			]));
 		}),
 		'MkPages:chart': values.FN_NATIVE(([id, opts]) => {
+			/* TODO
 			utils.assertString(id);
 			utils.assertObject(opts);
 			const canvas = hpml.canvases[id.value];
 			const color = getComputedStyle(document.documentElement).getPropertyValue('--accent');
-			Chart.defaults.global.defaultFontColor = '#555';
+			Chart.defaults.color = '#555';
 			const chart = new Chart(canvas, {
 				type: opts.value.get('type').value,
 				data: {
@@ -122,6 +124,7 @@ export function initAiLib(hpml: Hpml) {
 					})
 				}
 			});
+			*/
 		})
 	};
 }

@@ -76,7 +76,6 @@ export default define(meta, async (ps, user) => {
 		throw new ApiError(meta.errors.alreadyBlocking);
 	}
 
-	// Create blocking
 	await create(blocker, blockee);
 
 	NoteWatchings.delete({

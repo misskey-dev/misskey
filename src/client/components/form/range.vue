@@ -1,21 +1,20 @@
 <template>
-<div class="ifitouly _formItem" :class="{ focused, disabled }">
-	<div class="_formLabel"><slot name="label"></slot></div>
-	<div class="_formPanel main">
-		<input
-			type="range"
-			ref="input"
-			v-model="v"
-			:disabled="disabled"
-			:min="min"
-			:max="max"
-			:step="step"
-			@focus="focused = true"
-			@blur="focused = false"
-			@input="$emit('update:value', $event.target.value)"
-		/>
-	</div>
-	<div class="_formCaption"><slot name="caption"></slot></div>
+<div class="timctyfi" :class="{ focused, disabled }">
+	<div class="icon"><slot name="icon"></slot></div>
+	<span class="label"><slot name="label"></slot></span>
+	<input
+		type="range"
+		ref="input"
+		v-model="v"
+		:disabled="disabled"
+		:min="min"
+		:max="max"
+		:step="step"
+		:autofocus="autofocus"
+		@focus="focused = true"
+		@blur="focused = false"
+		@input="$emit('update:value', $event.target.value)"
+	/>
 </div>
 </template>
 
@@ -49,6 +48,10 @@ export default defineComponent({
 			required: false,
 			default: 1
 		},
+		autofocus: {
+			type: Boolean,
+			required: false
+		}
 	},
 	data() {
 		return {
@@ -61,61 +64,75 @@ export default defineComponent({
 			this.v = parseFloat(v);
 		}
 	},
+	mounted() {
+		if (this.autofocus) {
+			this.$nextTick(() => {
+				this.$refs.input.focus();
+			});
+		}
+	}
 });
 </script>
 
 <style lang="scss" scoped>
-.ifitouly {
+.timctyfi {
 	position: relative;
+	margin: 8px;
 
-	> .main {
-		padding: 22px 16px;
+	> .icon {
+		display: inline-block;
+		width: 24px;
+		text-align: center;
+	}
 
-		> input {
-			display: block;
+	> .title {
+		pointer-events: none;
+		font-size: 16px;
+		color: var(--inputLabel);
+		overflow: hidden;
+	}
+
+	> input {
+		-webkit-appearance: none;
+		-moz-appearance: none;
+		appearance: none;
+		background: var(--X10);
+		height: 7px;
+		margin: 0 8px;
+		outline: 0;
+		border: 0;
+		border-radius: 7px;
+
+		&.disabled {
+			opacity: 0.6;
+			cursor: not-allowed;
+		}
+
+		&::-webkit-slider-thumb {
 			-webkit-appearance: none;
+			appearance: none;
+			cursor: pointer;
+			width: 20px;
+			height: 20px;
+			display: block;
+			border-radius: 50%;
+			border: none;
+			background: var(--accent);
+			box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
+			box-sizing: content-box;
+		}
+
+		&::-moz-range-thumb {
 			-moz-appearance: none;
 			appearance: none;
-			background: var(--X10);
-			height: 4px;
-			width: 100%;
-			box-sizing: border-box;
-			margin: 0;
-			outline: 0;
-			border: 0;
-			border-radius: 7px;
-
-			&.disabled {
-				opacity: 0.6;
-				cursor: not-allowed;
-			}
-
-			&::-webkit-slider-thumb {
-				-webkit-appearance: none;
-				appearance: none;
-				cursor: pointer;
-				width: 20px;
-				height: 20px;
-				display: block;
-				border-radius: 50%;
-				border: none;
-				background: var(--accent);
-				box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
-				box-sizing: content-box;
-			}
-
-			&::-moz-range-thumb {
-				-moz-appearance: none;
-				appearance: none;
-				cursor: pointer;
-				width: 20px;
-				height: 20px;
-				display: block;
-				border-radius: 50%;
-				border: none;
-				background: var(--accent);
-				box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
-			}
+			cursor: pointer;
+			width: 20px;
+			height: 20px;
+			display: block;
+			border-radius: 50%;
+			border: none;
+			background: var(--accent);
+			box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
 		}
 	}
 }

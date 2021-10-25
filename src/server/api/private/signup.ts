@@ -1,8 +1,13 @@
 import * as Koa from 'koa';
+import rndstr from 'rndstr';
+import * as bcrypt from 'bcryptjs';
 import { fetchMeta } from '@/misc/fetch-meta';
 import { verifyHcaptcha, verifyRecaptcha } from '@/misc/captcha';
-import { Users, RegistrationTickets } from '@/models/index';
+import { Users, RegistrationTickets, UserPendings } from '@/models/index';
 import { signup } from '../common/signup';
+import config from '@/config';
+import { sendEmail } from '@/services/send-email';
+import { genId } from '@/misc/gen-id';
 
 export default async (ctx: Koa.Context) => {
 	const body = ctx.request.body;
@@ -29,8 +34,16 @@ export default async (ctx: Koa.Context) => {
 	const password = body['password'];
 	const host: string | null = process.env.NODE_ENV === 'test' ? (body['host'] || null) : null;
 	const invitationCode = body['invitationCode'];
+	const emailAddress = body['emailAddress'];
 
-	if (instance && instance.disableRegistration) {
+	if (instance.emailRequiredForSignup) {
+		if (emailAddress == null || typeof emailAddress != 'string') {
+			ctx.status = 400;
+			return;
+		}
+	}
+
+	if (instance.disableRegistration) {
 		if (invitationCode == null || typeof invitationCode != 'string') {
 			ctx.status = 400;
 			return;
@@ -48,18 +61,45 @@ export default async (ctx: Koa.Context) => {
 		RegistrationTickets.delete(ticket.id);
 	}
 
-	try {
-		const { account, secret } = await signup(username, password, host);
+	if (instance.emailRequiredForSignup) {
+		const code = rndstr('a-z0-9', 16);
 
-		const res = await Users.pack(account, account, {
-			detail: true,
-			includeSecrets: true
+		// Generate hash of password
+		const salt = await bcrypt.genSalt(8);
+		const hash = await bcrypt.hash(password, salt);
+
+		await UserPendings.insert({
+			id: genId(),
+			createdAt: new Date(),
+			code,
+			email: emailAddress,
+			username: username,
+			password: hash,
 		});
 
-		(res as any).token = secret;
+		const link = `${config.url}/signup-complete/${code}`;
 
-		ctx.body = res;
-	} catch (e) {
-		ctx.throw(400, e);
+		sendEmail(emailAddress, 'Signup',
+			`To complete signup, please click this link:<br><a href="${link}">${link}</a>`,
+			`To complete signup, please click this link: ${link}`);
+
+		ctx.status = 204;
+	} else {
+		try {
+			const { account, secret } = await signup({
+				username, password, host
+			});
+
+			const res = await Users.pack(account, account, {
+				detail: true,
+				includeSecrets: true
+			});
+
+			(res as any).token = secret;
+
+			ctx.body = res;
+		} catch (e) {
+			ctx.throw(400, e);
+		}
 	}
 };

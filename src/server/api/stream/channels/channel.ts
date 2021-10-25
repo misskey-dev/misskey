@@ -3,8 +3,9 @@ import Channel from '../channel';
 import { Notes, Users } from '@/models/index';
 import { isMutedUserRelated } from '@/misc/is-muted-user-related';
 import { isBlockerUserRelated } from '@/misc/is-blocker-user-related';
-import { PackedNote } from '@/models/repositories/note';
 import { User } from '@/models/entities/user';
+import { StreamMessages } from '../types';
+import { Packed } from '@/misc/schema';
 
 export default class extends Channel {
 	public readonly chName = 'channel';
@@ -25,7 +26,7 @@ export default class extends Channel {
 	}
 
 	@autobind
-	private async onNote(note: PackedNote) {
+	private async onNote(note: Packed<'Note'>) {
 		if (note.channelId !== this.channelId) return;
 
 		// リプライなら再pack
@@ -52,7 +53,7 @@ export default class extends Channel {
 	}
 
 	@autobind
-	private onEvent(data: any) {
+	private onEvent(data: StreamMessages['channel']['payload']) {
 		if (data.type === 'typing') {
 			const id = data.body;
 			const begin = this.typers[id] == null;

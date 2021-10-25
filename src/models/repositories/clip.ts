@@ -1,16 +1,14 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Clip } from '@/models/entities/clip';
-import { SchemaType } from '@/misc/schema';
+import { Packed } from '@/misc/schema';
 import { Users } from '../index';
 import { awaitAll } from '@/prelude/await-all';
-
-export type PackedClip = SchemaType<typeof packedClipSchema>;
 
 @EntityRepository(Clip)
 export class ClipRepository extends Repository<Clip> {
 	public async pack(
 		src: Clip['id'] | Clip,
-	): Promise<PackedClip> {
+	): Promise<Packed<'Clip'>> {
 		const clip = typeof src === 'object' ? src : await this.findOneOrFail(src);
 
 		return await awaitAll({
@@ -53,7 +51,7 @@ export const packedClipSchema = {
 		},
 		user: {
 			type: 'object' as const,
-			ref: 'User',
+			ref: 'User' as const,
 			optional: false as const, nullable: false as const,
 		},
 		name: {

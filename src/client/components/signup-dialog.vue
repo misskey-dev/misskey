@@ -9,7 +9,7 @@
 
 	<div class="_monolithic_">
 		<div class="_section">
-			<XSignup :auto-set="autoSet" @signup="onSignup"/>
+			<XSignup :auto-set="autoSet" @signup="onSignup" @signupEmailPending="onSignupEmailPending"/>
 		</div>
 	</div>
 </XModalWindow>
@@ -39,6 +39,10 @@ export default defineComponent({
 	methods: {
 		onSignup(res) {
 			this.$emit('done', res);
+			this.$refs.dialog.close();
+		},
+
+		onSignupEmailPending() {
 			this.$refs.dialog.close();
 		}
 	}

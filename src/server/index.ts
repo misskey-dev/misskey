@@ -20,12 +20,13 @@ import config from '@/config/index';
 import apiServer from './api/index';
 import { sum } from '@/prelude/array';
 import Logger from '@/services/logger';
-import { program } from '../argv';
+import { envOption } from '../env';
 import { UserProfiles, Users } from '@/models/index';
 import { networkChart } from '@/services/chart/index';
 import { genAvatar } from '@/misc/gen-avatar';
 import { createTemp } from '@/misc/create-temp';
 import { publishMainStream } from '@/services/stream';
+import { parseAcct } from '@/misc/acct';
 
 export const serverLogger = new Logger('server', 'gray', false);
 
@@ -40,7 +41,7 @@ if (!['production', 'test'].includes(process.env.NODE_ENV || '')) {
 	}));
 
 	// Delay
-	if (program.slow) {
+	if (envOption.slow) {
 		app.use(slow({
 			delay: 3000
 		}));
@@ -68,7 +69,22 @@ router.use(activityPub.routes());
 router.use(nodeinfo.routes());
 router.use(wellKnown.routes());
 
-router.get('/avatar/:x', async ctx => {
+router.get('/avatar/@:acct', async ctx => {
+	const { username, host } = parseAcct(ctx.params.acct);
+	const user = await Users.findOne({
+		usernameLower: username.toLowerCase(),
+		host: host === config.host ? null : host,
+		isSuspended: false
+	});
+
+	if (user) {
+		ctx.redirect(Users.getAvatarUrl(user));
+	} else {
+		ctx.redirect('/static-assets/user-unknown.png');
+	}
+});
+
+router.get('/random-avatar/:x', async ctx => {
 	const [temp] = await createTemp();
 	await genAvatar(ctx.params.x, fs.createWriteStream(temp));
 	ctx.set('Content-Type', 'image/png');

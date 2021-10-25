@@ -1,7 +1,6 @@
 <template>
-<component class="bghgjjyj _button"
-	:is="link ? 'MkA' : 'button'"
-	:class="{ inline, primary, danger, full }"
+<button v-if="!link" class="bghgjjyj _button"
+	:class="{ inline, primary, gradate, danger, rounded, full }"
 	:type="type"
 	@click="$emit('click', $event)"
 	@mousedown="onMousedown"
@@ -10,7 +9,17 @@
 	<div class="content">
 		<slot></slot>
 	</div>
-</component>
+</button>
+<MkA v-else class="bghgjjyj _button"
+	:class="{ inline, primary, gradate, danger, rounded, full }"
+	:to="to"
+	@mousedown="onMousedown"
+>
+	<div ref="ripples" class="ripples"></div>
+	<div class="content">
+		<slot></slot>
+	</div>
+</MkA>
 </template>
 
 <script lang="ts">
@@ -27,6 +36,16 @@ export default defineComponent({
 			required: false,
 			default: false
 		},
+		gradate: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
+		rounded: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
 		inline: {
 			type: Boolean,
 			required: false,
@@ -36,6 +55,10 @@ export default defineComponent({
 			type: Boolean,
 			required: false,
 			default: false
+		},
+		to: {
+			type: String,
+			required: false
 		},
 		autofocus: {
 			type: Boolean,
@@ -119,13 +142,13 @@ export default defineComponent({
 	padding: 8px 14px;
 	text-align: center;
 	font-weight: normal;
-	font-size: 0.9em;
-	line-height: 24px;
+	font-size: 0.8em;
+	line-height: 22px;
 	box-shadow: none;
 	text-decoration: none;
 	background: var(--buttonBg);
-	border-radius: 999px;
-	overflow: hidden;
+	border-radius: 4px;
+	overflow: clip;
 	box-sizing: border-box;
 	transition: background 0.1s ease;
 
@@ -141,6 +164,10 @@ export default defineComponent({
 		width: 100%;
 	}
 
+	&.rounded {
+		border-radius: 999px;
+	}
+
 	&.primary {
 		font-weight: bold;
 		color: var(--fgOnAccent) !important;
@@ -152,6 +179,20 @@ export default defineComponent({
 
 		&:not(:disabled):active {
 			background: var(--X8);
+		}
+	}
+
+	&.gradate {
+		font-weight: bold;
+		color: var(--fgOnAccent) !important;
+		background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
+
+		&:not(:disabled):hover {
+			background: linear-gradient(90deg, var(--X8), var(--X8));
+		}
+
+		&:not(:disabled):active {
+			background: linear-gradient(90deg, var(--X8), var(--X8));
 		}
 	}
 
@@ -176,17 +217,9 @@ export default defineComponent({
 		opacity: 0.7;
 	}
 
-	&:focus {
+	&:focus-visible {
 		outline: solid 2px var(--focus);
 		outline-offset: 2px;
-	}
-
-	&.inline + .bghgjjyj {
-		margin-left: 12px;
-	}
-
-	&:not(.inline) + .bghgjjyj {
-		margin-top: 16px;
 	}
 
 	&.inline {

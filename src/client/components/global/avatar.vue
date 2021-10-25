@@ -73,6 +73,22 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@keyframes earwiggleleft {
+	from { transform: rotate(37.6deg) skew(30deg); }
+	25% { transform: rotate(10deg) skew(30deg); }
+	50% { transform: rotate(20deg) skew(30deg); }
+	75% { transform: rotate(0deg) skew(30deg); }
+	to { transform: rotate(37.6deg) skew(30deg); }
+}
+
+@keyframes earwiggleright {
+	from { transform: rotate(-37.6deg) skew(-30deg); }
+	30% { transform: rotate(-10deg) skew(-30deg); }
+	55% { transform: rotate(-20deg) skew(-30deg); }
+	75% { transform: rotate(0deg) skew(-30deg); }
+	to { transform: rotate(-37.6deg) skew(-30deg); }
+}
+
 .eiwwqkts {
 	position: relative;
 	display: inline-block;
@@ -131,6 +147,16 @@ export default defineComponent({
 		&:after {
 			border-radius: 75% 0 75% 75%;
 			transform: rotate(-37.5deg) skew(-30deg);
+		}
+
+		&:hover {
+			&:before {
+				animation: earwiggleleft 1s infinite;
+			}
+
+			&:after {
+				animation: earwiggleright 1s infinite;
+			}
 		}
 	}
 }

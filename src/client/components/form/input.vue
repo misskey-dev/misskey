@@ -1,53 +1,49 @@
 <template>
-<FormGroup class="_formItem">
-	<template #label><slot></slot></template>
-	<div class="ztzhwixg _formItem" :class="{ inline, disabled }">
-		<div class="icon" ref="icon"><slot name="icon"></slot></div>
-		<div class="input _formPanel">
-			<div class="prefix" ref="prefixEl"><slot name="prefix"></slot></div>
-			<input ref="inputEl"
-				:type="type"
-				v-model="v"
-				:disabled="disabled"
-				:required="required"
-				:readonly="readonly"
-				:placeholder="placeholder"
-				:pattern="pattern"
-				:autocomplete="autocomplete"
-				:spellcheck="spellcheck"
-				:step="step"
-				@focus="focused = true"
-				@blur="focused = false"
-				@keydown="onKeydown($event)"
-				@input="onInput"
-				:list="id"
-			>
-			<datalist :id="id" v-if="datalist">
-				<option v-for="data in datalist" :value="data"/>
-			</datalist>
-			<div class="suffix" ref="suffixEl"><slot name="suffix"></slot></div>
-		</div>
+<div class="matxzzsk">
+	<div class="label" @click="focus"><slot name="label"></slot></div>
+	<div class="input" :class="{ inline, disabled, focused }">
+		<div class="prefix" ref="prefixEl"><slot name="prefix"></slot></div>
+		<input ref="inputEl"
+			:type="type"
+			v-model="v"
+			:disabled="disabled"
+			:required="required"
+			:readonly="readonly"
+			:placeholder="placeholder"
+			:pattern="pattern"
+			:autocomplete="autocomplete"
+			:spellcheck="spellcheck"
+			:step="step"
+			@focus="focused = true"
+			@blur="focused = false"
+			@keydown="onKeydown($event)"
+			@input="onInput"
+			:list="id"
+		>
+		<datalist :id="id" v-if="datalist">
+			<option v-for="data in datalist" :value="data"/>
+		</datalist>
+		<div class="suffix" ref="suffixEl"><slot name="suffix"></slot></div>
 	</div>
-	<template #caption><slot name="desc"></slot></template>
+	<div class="caption"><slot name="caption"></slot></div>
 
-	<FormButton v-if="manualSave && changed" @click="updated" primary><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
-</FormGroup>
+	<MkButton v-if="manualSave && changed" @click="updated" primary><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
+</div>
 </template>
 
 <script lang="ts">
 import { defineComponent, onMounted, onUnmounted, nextTick, ref, watch, computed, toRefs } from 'vue';
-import './form.scss';
-import FormButton from './button.vue';
-import FormGroup from './group.vue';
+import MkButton from '@client/components/ui/button.vue';
+import { debounce } from 'throttle-debounce';
 
 export default defineComponent({
 	components: {
-		FormGroup,
-		FormButton,
+		MkButton,
 	},
+
 	props: {
-		value: {
-			required: false
+		modelValue: {
+			required: true
 		},
 		type: {
 			type: String,
@@ -96,16 +92,23 @@ export default defineComponent({
 			required: false,
 			default: false
 		},
+		debounce: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
 		manualSave: {
 			type: Boolean,
 			required: false,
 			default: false
 		},
 	},
-	emits: ['change', 'keydown', 'enter'],
+
+	emits: ['change', 'keydown', 'enter', 'update:modelValue'],
+
 	setup(props, context) {
-		const { value, type, autofocus } = toRefs(props);
-		const v = ref(value.value);
+		const { modelValue, type, autofocus } = toRefs(props);
+		const v = ref(modelValue.value);
 		const id = Math.random().toString(); // TODO: uuid?
 		const focused = ref(false);
 		const changed = ref(false);
@@ -131,19 +134,25 @@ export default defineComponent({
 		const updated = () => {
 			changed.value = false;
 			if (type?.value === 'number') {
-				context.emit('update:value', parseFloat(v.value));
+				context.emit('update:modelValue', parseFloat(v.value));
 			} else {
-				context.emit('update:value', v.value);
+				context.emit('update:modelValue', v.value);
 			}
 		};
 
-		watch(value, newValue => {
+		const debouncedUpdated = debounce(1000, updated);
+
+		watch(modelValue, newValue => {
 			v.value = newValue;
 		});
 
 		watch(v, newValue => {
 			if (!props.manualSave) {
-				updated();
+				if (props.debounce) {
+					debouncedUpdated();
+				} else {
+					updated();
+				}
 			}
 
 			invalid.value = inputEl.value.validity.badInput;
@@ -196,59 +205,66 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.ztzhwixg {
-	position: relative;
+.matxzzsk {
+	> .label {
+		font-size: 0.85em;
+		padding: 0 0 8px 12px;
+		user-select: none;
 
-	> .icon {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 24px;
-		text-align: center;
-		line-height: 32px;
+		&:empty {
+			display: none;
+		}
+	}
 
-		&:not(:empty) + .input {
-			margin-left: 28px;
+	> .caption {
+		font-size: 0.8em;
+		padding: 8px 0 0 12px;
+		color: var(--fgTransparentWeak);
+
+		&:empty {
+			display: none;
 		}
 	}
 
 	> .input {
-		$height: 48px;
+		$height: 42px;
 		position: relative;
 
 		> input {
+			appearance: none;
+			-webkit-appearance: none;
 			display: block;
 			height: $height;
 			width: 100%;
 			margin: 0;
-			padding: 0 16px;
+			padding: 0 12px;
 			font: inherit;
 			font-weight: normal;
 			font-size: 1em;
-			line-height: $height;
-			color: var(--inputText);
-			background: transparent;
-			border: none;
-			border-radius: 0;
+			color: var(--fg);
+			background: var(--panel);
+			border: solid 0.5px var(--inputBorder);
+			border-radius: 6px;
 			outline: none;
 			box-shadow: none;
 			box-sizing: border-box;
+			transition: border-color 0.1s ease-out;
 
-			&[type='file'] {
-				display: none;
+			&:hover {
+				border-color: var(--inputBorderHover);
 			}
 		}
 
 		> .prefix,
 		> .suffix {
-			display: block;
+			display: flex;
+			align-items: center;
 			position: absolute;
 			z-index: 1;
 			top: 0;
-			padding: 0 16px;
+			padding: 0 12px;
 			font-size: 1em;
-			line-height: $height;
-			color: var(--inputLabel);
+			height: $height;
 			pointer-events: none;
 
 			&:empty {
@@ -267,25 +283,32 @@ export default defineComponent({
 
 		> .prefix {
 			left: 0;
-			padding-right: 8px;
+			padding-right: 6px;
 		}
 
 		> .suffix {
 			right: 0;
-			padding-left: 8px;
+			padding-left: 6px;
 		}
-	}
 
-	&.inline {
-		display: inline-block;
-		margin: 0;
-	}
+		&.inline {
+			display: inline-block;
+			margin: 0;
+		}
 
-	&.disabled {
-		opacity: 0.7;
+		&.focused {
+			> input {
+				border-color: var(--accent);
+				//box-shadow: 0 0 0 4px var(--focus);
+			}
+		}
 
-		&, * {
-			cursor: not-allowed !important;
+		&.disabled {
+			opacity: 0.7;
+
+			&, * {
+				cursor: not-allowed !important;
+			}
 		}
 	}
 }

@@ -31,10 +31,11 @@ export default defineComponent({
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.manageLists,
 				icon: 'fas fa-list-ul',
+				bg: 'var(--bg)',
 				action: {
 					icon: 'fas fa-plus',
 					handler: this.create
-				}
+				},
 			},
 			pagination: {
 				endpoint: 'users/lists/list',

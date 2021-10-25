@@ -1,6 +1,6 @@
 <template>
 <div class="gafaadew" :class="{ modal, _popup: modal }"
-	v-size="{ max: [500] }"
+	v-size="{ max: [310, 500] }"
 	@dragover.stop="onDragover"
 	@dragenter="onDragenter"
 	@dragleave="onDragleave"
@@ -17,12 +17,13 @@
 				<span v-if="visibility === 'followers'"><i class="fas fa-unlock"></i></span>
 				<span v-if="visibility === 'specified'"><i class="fas fa-envelope"></i></span>
 			</button>
-			<button class="submit _buttonPrimary" :disabled="!canPost" @click="post" data-cy-open-post-form-submit>{{ submitText }}<i :class="reply ? 'fas fa-reply' : renote ? 'fas fa-quote-right' : 'fas fa-paper-plane'"></i></button>
+			<button class="_button preview" @click="showPreview = !showPreview" :class="{ active: showPreview }" v-tooltip="$ts.previewNoteText"><i class="fas fa-file-code"></i></button>
+			<button class="submit _buttonGradate" :disabled="!canPost" @click="post" data-cy-open-post-form-submit>{{ submitText }}<i :class="reply ? 'fas fa-reply' : renote ? 'fas fa-quote-right' : 'fas fa-paper-plane'"></i></button>
 		</div>
 	</header>
 	<div class="form" :class="{ fixed }">
-		<XNotePreview class="preview" v-if="reply" :note="reply"/>
-		<XNotePreview class="preview" v-if="renote" :note="renote"/>
+		<XNoteSimple class="preview" v-if="reply" :note="reply"/>
+		<XNoteSimple class="preview" v-if="renote" :note="renote"/>
 		<div class="with-quote" v-if="quoteId"><i class="fas fa-quote-left"></i> {{ $ts.quoteAttached }}<button @click="quoteId = null"><i class="fas fa-times"></i></button></div>
 		<div v-if="visibility === 'specified'" class="to-specified">
 			<span style="margin-right: 8px;">{{ $ts.recipient }}</span>
@@ -40,6 +41,7 @@
 		<input v-show="withHashtags" ref="hashtags" class="hashtags" v-model="hashtags" :placeholder="$ts.hashtags" list="hashtags">
 		<XPostFormAttaches class="attaches" :files="files" @updated="updateFiles" @detach="detachFile" @changeSensitive="updateFileSensitive" @changeName="updateFileName"/>
 		<XPollEditor v-if="poll" :poll="poll" @destroyed="poll = null" @updated="onPollUpdate"/>
+		<XNotePreview class="preview" v-if="showPreview" :text="text"/>
 		<footer>
 			<button class="_button" @click="chooseFileFrom" v-tooltip="$ts.attachFile"><i class="fas fa-photo-video"></i></button>
 			<button class="_button" @click="togglePoll" :class="{ active: poll }" v-tooltip="$ts.poll"><i class="fas fa-poll-h"></i></button>
@@ -61,6 +63,7 @@ import { defineComponent, defineAsyncComponent } from 'vue';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import { length } from 'stringz';
 import { toASCII } from 'punycode/';
+import XNoteSimple from './note-simple.vue';
 import XNotePreview from './note-preview.vue';
 import * as mfm from 'mfm-js';
 import { host, url } from '@client/config';
@@ -80,6 +83,7 @@ import { defaultStore } from '@client/store';
 
 export default defineComponent({
 	components: {
+		XNoteSimple,
 		XNotePreview,
 		XPostFormAttaches: defineAsyncComponent(() => import('./post-form-attaches.vue')),
 		XPollEditor: defineAsyncComponent(() => import('./poll-editor.vue')),
@@ -113,11 +117,28 @@ export default defineComponent({
 			type: String,
 			required: false
 		},
+		initialVisibility: {
+			type: String,
+			required: false
+		},
+		initialFiles: {
+			type: Array,
+			required: false
+		},
+		initialLocalOnly: {
+			type: Boolean,
+			required: false
+		},
+		visibleUsers: {
+			type: Array,
+			required: false,
+			default: () => []
+		},
 		initialNote: {
 			type: Object,
 			required: false
 		},
-		instant: {
+		share: {
 			type: Boolean,
 			required: false,
 			default: false
@@ -143,10 +164,10 @@ export default defineComponent({
 			files: [],
 			poll: null,
 			useCw: false,
+			showPreview: false,
 			cw: null,
 			localOnly: this.$store.state.rememberNoteVisibility ? this.$store.state.localOnly : this.$store.state.defaultNoteLocalOnly,
-			visibility: this.$store.state.rememberNoteVisibility ? this.$store.state.visibility : this.$store.state.defaultNoteVisibility,
-			visibleUsers: [],
+			visibility: (this.$store.state.rememberNoteVisibility ? this.$store.state.visibility : this.$store.state.defaultNoteVisibility) as typeof noteVisibilities[number],
 			autocomplete: null,
 			draghover: false,
 			quoteId: null,
@@ -241,6 +262,18 @@ export default defineComponent({
 			this.text = this.initialText;
 		}
 
+		if (this.initialVisibility) {
+			this.visibility = this.initialVisibility;
+		}
+
+		if (this.initialFiles) {
+			this.files = this.initialFiles;
+		}
+
+		if (typeof this.initialLocalOnly === 'boolean') {
+			this.localOnly = this.initialLocalOnly;
+		}
+
 		if (this.mention) {
 			this.text = this.mention.host ? `@${this.mention.username}@${toASCII(this.mention.host)}` : `@${this.mention.username}`;
 			this.text += ' ';
@@ -316,7 +349,7 @@ export default defineComponent({
 
 		this.$nextTick(() => {
 			// 書きかけの投稿を復元
-			if (!this.instant && !this.mention && !this.specified) {
+			if (!this.share && !this.mention && !this.specified) {
 				const draft = JSON.parse(localStorage.getItem('drafts') || '{}')[this.draftKey];
 				if (draft) {
 					this.text = draft.data.text;
@@ -577,8 +610,6 @@ export default defineComponent({
 		},
 
 		saveDraft() {
-			if (this.instant) return;
-
 			const data = JSON.parse(localStorage.getItem('drafts') || '{}');
 
 			data[this.draftKey] = {
@@ -717,7 +748,7 @@ export default defineComponent({
 			> .visibility {
 				height: 34px;
 				width: 34px;
-				margin: 0 8px;
+				margin: 0 0 0 8px;
 
 				& + .localOnly {
 					margin-left: 0 !important;
@@ -729,6 +760,24 @@ export default defineComponent({
 				opacity: 0.7;
 			}
 
+			> .preview {
+				display: inline-block;
+				padding: 0;
+				margin: 0 8px 0 0;
+				font-size: 16px;
+				width: 34px;
+				height: 34px;
+				border-radius: 6px;
+
+				&:hover {
+					background: var(--X5);
+				}
+
+				&.active {
+					color: var(--accent);
+				}
+			}
+
 			> .submit {
 				margin: 16px 16px 16px 0;
 				padding: 0 12px;
@@ -736,6 +785,7 @@ export default defineComponent({
 				font-weight: bold;
 				vertical-align: bottom;
 				border-radius: 4px;
+				font-size: 0.9em;
 
 				&:disabled {
 					opacity: 0.7;
@@ -819,7 +869,7 @@ export default defineComponent({
 			color: var(--fg);
 			font-family: inherit;
 
-			&:focus {
+			&:focus-visible {
 				outline: none;
 			}
 
@@ -911,6 +961,18 @@ export default defineComponent({
 
 			> footer {
 				padding: 0 8px 8px 8px;
+			}
+		}
+	}
+
+	&.max-width_310px {
+		> .form {
+			> footer {
+				> button {
+					font-size: 14px;
+					width: 44px;
+				height: 44px;
+				}
 			}
 		}
 	}

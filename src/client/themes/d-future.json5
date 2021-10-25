@@ -1,7 +1,7 @@
 {
 	id: '32a637ef-b47a-4775-bb7b-bacbb823f865',
 
-	name: 'Mi Future',
+	name: 'Mi Future Dark',
 	author: 'syuilo',
 
 	base: 'dark',
@@ -21,5 +21,7 @@
 		mentionMe: '@accent',
 		hashtag: '#70c0e8',
 		link: '#e88080',
+		buttonGradateA: '@accent',
+		buttonGradateB: ':saturate<30<:hue<30<@accent',
 	},
 }

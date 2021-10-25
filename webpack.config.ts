@@ -95,14 +95,27 @@ module.exports = {
 			}]
 		}, {
 			test: /\.css$/,
-			use: [{
-				loader: 'vue-style-loader'
+			oneOf: [{
+				resourceQuery: /module/,
+				use: [{
+					loader: 'vue-style-loader'
+				}, {
+					loader: 'css-loader',
+					options: {
+						modules: true,
+						esModule: false, // TODO: trueにすると壊れる。Vue3移行の折にはtrueにできるかもしれない
+					}
+				}, postcss]
 			}, {
-				loader: 'css-loader',
-				options: {
-					esModule: false, // TODO: trueにすると壊れる。Vue3移行の折にはtrueにできるかもしれない
-				}
-			}, postcss]
+				use: [{
+					loader: 'vue-style-loader'
+				}, {
+					loader: 'css-loader',
+					options: {
+						esModule: false, // TODO: trueにすると壊れる。Vue3移行の折にはtrueにできるかもしれない
+					}
+				}, postcss]
+			}]
 		}, {
 			test: /\.svg$/,
 			use: [
@@ -164,6 +177,7 @@ module.exports = {
 		],
 		alias: {
 			'@client': __dirname + '/src/client',
+			'@lib': __dirname + '/lib',
 			'@': __dirname + '/src',
 			'const.styl': __dirname + '/src/client/const.styl'
 		}

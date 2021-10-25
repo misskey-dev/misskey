@@ -1,7 +1,7 @@
 <template>
-<div>
+<MkSpacer :content-max="800">
 	<XNotes :pagination="pagination" @before="before()" @after="after()"/>
-</div>
+</MkSpacer>
 </template>
 
 <script lang="ts">
@@ -19,7 +19,8 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.directNotes,
-				icon: 'fas fa-envelope'
+				icon: 'fas fa-envelope',
+				bg: 'var(--bg)',
 			},
 			pagination: {
 				endpoint: 'notes/mentions',

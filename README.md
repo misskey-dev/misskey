@@ -65,7 +65,7 @@ Organize and store your files! Want to post a picture you have already uploaded?
 
 :package: Create your own instance
 ----------------------------------------------------------------
-Please see the [Setup and Installation Guide](./docs/setup.en.md).
+Please see the [Setup and Installation Guide](https://misskey-hub.net/docs/install/install.html).
 
 :wrench: Contribution
 ----------------------------------------------------------------
@@ -103,6 +103,12 @@ Related projects
 ----------------------------------------------------------------
 - [misskey.js](https://github.com/misskey-dev/misskey.js) - Misskey SDK for JavaScript
 - [mfm.js](https://github.com/misskey-dev/mfm.js) - MFM parser
+
+Sponsors
+----------------------------------------------------------------
+<div align="center">
+	<a class="rss3" title="RSS3" href="https://rss3.io/" target="_blank" style="display: inline-block;"><img src="https://rss3.io/assets/images/Logo.svg" alt="RSS3" style="display: inline-block; height: 60px;"></a>
+</div>
 
 :heart: Backers
 ----------------------------------------------------------------

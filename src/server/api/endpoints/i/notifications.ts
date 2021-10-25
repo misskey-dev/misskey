@@ -4,8 +4,9 @@ import { readNotification } from '../../common/read-notification';
 import define from '../../define';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 import { Notifications, Followings, Mutings, Users } from '@/models/index';
-import { notificationTypes } from '../../../../types';
+import { notificationTypes } from '@/types';
 import read from '@/services/note/read';
+import { Brackets } from 'typeorm';
 
 export const meta = {
 	tags: ['account', 'notifications'],
@@ -29,6 +30,11 @@ export const meta = {
 		},
 
 		following: {
+			validator: $.optional.bool,
+			default: false
+		},
+
+		unreadOnly: {
 			validator: $.optional.bool,
 			default: false
 		},
@@ -89,10 +95,16 @@ export default define(meta, async (ps, user) => {
 		.leftJoinAndSelect('reply.user', 'replyUser')
 		.leftJoinAndSelect('renote.user', 'renoteUser');
 
-	query.andWhere(`notification.notifierId NOT IN (${ mutingQuery.getQuery() })`);
+	query.andWhere(new Brackets(qb => { qb
+		.where(`notification.notifierId NOT IN (${ mutingQuery.getQuery() })`)
+		.orWhere('notification.notifierId IS NULL');
+	}));
 	query.setParameters(mutingQuery.getParameters());
 
-	query.andWhere(`notification.notifierId NOT IN (${ suspendedQuery.getQuery() })`);
+	query.andWhere(new Brackets(qb => { qb
+		.where(`notification.notifierId NOT IN (${ suspendedQuery.getQuery() })`)
+		.orWhere('notification.notifierId IS NULL');
+	}));
 
 	if (ps.following) {
 		query.andWhere(`((notification.notifierId IN (${ followingQuery.getQuery() })) OR (notification.notifierId = :meId))`, { meId: user.id });
@@ -103,6 +115,10 @@ export default define(meta, async (ps, user) => {
 		query.andWhere(`notification.type IN (:...includeTypes)`, { includeTypes: ps.includeTypes });
 	} else if (ps.excludeTypes && ps.excludeTypes.length > 0) {
 		query.andWhere(`notification.type NOT IN (:...excludeTypes)`, { excludeTypes: ps.excludeTypes });
+	}
+
+	if (ps.unreadOnly) {
+		query.andWhere(`notification.isRead = false`);
 	}
 
 	const notifications = await query.take(ps.limit!).getMany();

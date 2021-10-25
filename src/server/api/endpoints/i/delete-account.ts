@@ -35,7 +35,9 @@ export default define(meta, async (ps, user) => {
 	// 物理削除する前にDelete activityを送信する
 	await doPostSuspend(user).catch(e => {});
 
-	createDeleteAccountJob(user);
+	createDeleteAccountJob(user, {
+		soft: false
+	});
 
 	await Users.update(user.id, {
 		isDeleted: true,

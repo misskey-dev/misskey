@@ -2,11 +2,10 @@ import * as push from 'web-push';
 import config from '@/config/index';
 import { SwSubscriptions } from '@/models/index';
 import { fetchMeta } from '@/misc/fetch-meta';
-import { PackedNotification } from '../models/repositories/notification';
-import { PackedMessagingMessage } from '../models/repositories/messaging-message';
+import { Packed } from '@/misc/schema';
 
 type notificationType = 'notification' | 'unreadMessagingMessage';
-type notificationBody = PackedNotification | PackedMessagingMessage;
+type notificationBody = Packed<'Notification'> | Packed<'MessagingMessage'>;
 
 export default async function(userId: string, type: notificationType, body: notificationBody) {
 	const meta = await fetchMeta();
