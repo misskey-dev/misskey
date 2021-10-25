@@ -1,71 +1,67 @@
 <template>
-<div>
-	<MkHeader :info="header"/>
-
-	<div class="edbbcaef" v-size="{ max: [880] }">
-		<div v-if="stats" class="cfcdecdf" style="margin: var(--margin)">
-			<div class="number _panel">
-				<div class="label">Users</div>
-				<div class="value _monospace">
-					{{ number(stats.originalUsersCount) }}
-					<MkNumberDiff v-if="usersComparedToThePrevDay != null" class="diff" :value="usersComparedToThePrevDay" v-tooltip="$ts.dayOverDayChanges"><template #before>(</template><template #after>)</template></MkNumberDiff>
-				</div>
-			</div>
-			<div class="number _panel">
-				<div class="label">Notes</div>
-				<div class="value _monospace">
-					{{ number(stats.originalNotesCount) }}
-					<MkNumberDiff v-if="notesComparedToThePrevDay != null" class="diff" :value="notesComparedToThePrevDay" v-tooltip="$ts.dayOverDayChanges"><template #before>(</template><template #after>)</template></MkNumberDiff>
-				</div>
+<div class="edbbcaef" v-size="{ max: [740] }">
+	<div v-if="stats" class="cfcdecdf" style="margin: var(--margin)">
+		<div class="number _panel">
+			<div class="label">Users</div>
+			<div class="value _monospace">
+				{{ number(stats.originalUsersCount) }}
+				<MkNumberDiff v-if="usersComparedToThePrevDay != null" class="diff" :value="usersComparedToThePrevDay" v-tooltip="$ts.dayOverDayChanges"><template #before>(</template><template #after>)</template></MkNumberDiff>
 			</div>
 		</div>
-
-		<MkContainer :foldable="true" class="charts">
-			<template #header><i class="fas fa-chart-bar"></i>{{ $ts.charts }}</template>
-			<div style="padding-top: 12px;">
-				<MkInstanceStats :chart-limit="500" :detailed="true"/>
+		<div class="number _panel">
+			<div class="label">Notes</div>
+			<div class="value _monospace">
+				{{ number(stats.originalNotesCount) }}
+				<MkNumberDiff v-if="notesComparedToThePrevDay != null" class="diff" :value="notesComparedToThePrevDay" v-tooltip="$ts.dayOverDayChanges"><template #before>(</template><template #after>)</template></MkNumberDiff>
 			</div>
-		</MkContainer>
-
-		<div class="queue">
-			<MkContainer :foldable="true" :thin="true" class="deliver">
-				<template #header>Queue: deliver</template>
-				<MkQueueChart :connection="queueStatsConnection" domain="deliver"/>
-			</MkContainer>
-			<MkContainer :foldable="true" :thin="true" class="inbox">
-				<template #header>Queue: inbox</template>
-				<MkQueueChart :connection="queueStatsConnection" domain="inbox"/>
-			</MkContainer>
 		</div>
-
-			<!--<XMetrics/>-->
-
-		<MkFolder style="margin: var(--margin)">
-			<template #header><i class="fas fa-info-circle"></i> {{ $ts.info }}</template>
-			<div class="cfcdecdf">
-				<div class="number _panel">
-					<div class="label">Misskey</div>
-					<div class="value _monospace">{{ version }}</div>
-				</div>
-				<div class="number _panel" v-if="serverInfo">
-					<div class="label">Node.js</div>
-					<div class="value _monospace">{{ serverInfo.node }}</div>
-				</div>
-				<div class="number _panel" v-if="serverInfo">
-					<div class="label">PostgreSQL</div>
-					<div class="value _monospace">{{ serverInfo.psql }}</div>
-				</div>
-				<div class="number _panel" v-if="serverInfo">
-					<div class="label">Redis</div>
-					<div class="value _monospace">{{ serverInfo.redis }}</div>
-				</div>
-				<div class="number _panel">
-					<div class="label">Vue</div>
-					<div class="value _monospace">{{ vueVersion }}</div>
-				</div>
-			</div>
-		</MkFolder>
 	</div>
+
+	<MkContainer :foldable="true" class="charts">
+		<template #header><i class="fas fa-chart-bar"></i>{{ $ts.charts }}</template>
+		<div style="padding-top: 12px;">
+			<MkInstanceStats :chart-limit="500" :detailed="true"/>
+		</div>
+	</MkContainer>
+
+	<div class="queue">
+		<MkContainer :foldable="true" :thin="true" class="deliver">
+			<template #header>Queue: deliver</template>
+			<MkQueueChart :connection="queueStatsConnection" domain="deliver"/>
+		</MkContainer>
+		<MkContainer :foldable="true" :thin="true" class="inbox">
+			<template #header>Queue: inbox</template>
+			<MkQueueChart :connection="queueStatsConnection" domain="inbox"/>
+		</MkContainer>
+	</div>
+
+		<!--<XMetrics/>-->
+
+	<MkFolder style="margin: var(--margin)">
+		<template #header><i class="fas fa-info-circle"></i> {{ $ts.info }}</template>
+		<div class="cfcdecdf">
+			<div class="number _panel">
+				<div class="label">Misskey</div>
+				<div class="value _monospace">{{ version }}</div>
+			</div>
+			<div class="number _panel" v-if="serverInfo">
+				<div class="label">Node.js</div>
+				<div class="value _monospace">{{ serverInfo.node }}</div>
+			</div>
+			<div class="number _panel" v-if="serverInfo">
+				<div class="label">PostgreSQL</div>
+				<div class="value _monospace">{{ serverInfo.psql }}</div>
+			</div>
+			<div class="number _panel" v-if="serverInfo">
+				<div class="label">Redis</div>
+				<div class="value _monospace">{{ serverInfo.redis }}</div>
+			</div>
+			<div class="number _panel">
+				<div class="label">Vue</div>
+				<div class="value _monospace">{{ vueVersion }}</div>
+			</div>
+		</div>
+	</MkFolder>
 </div>
 </template>
 
@@ -106,10 +102,6 @@ export default defineComponent({
 				title: this.$ts.dashboard,
 				icon: 'fas fa-tachometer-alt',
 				bg: 'var(--bg)',
-			},
-			header: {
-				title: this.$ts.dashboard,
-				icon: 'fas fa-tachometer-alt',
 			},
 			version,
 			vueVersion,
@@ -225,12 +217,14 @@ export default defineComponent({
 		}
 	}
 
-	&.max-width_800px {
+	&.max-width_740px {
 		> .queue {
 			display: block;
 
 			> .deliver,
 			> .inbox {
+				width: 100%;
+
 				&:not(:first-child) {
 					margin-top: var(--margin);
 					margin-left: 0;

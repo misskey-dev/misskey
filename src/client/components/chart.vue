@@ -89,6 +89,16 @@ export default defineComponent({
 			required: false,
 			default: false
 		},
+		stacked: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
+		aspectRatio: {
+			type: Number,
+			required: false,
+			default: null
+		},
 	},
 
 	setup(props) {
@@ -157,7 +167,7 @@ export default defineComponent({
 					})),
 				},
 				options: {
-					aspectRatio: 2.5,
+					aspectRatio: props.aspectRatio || 2.5,
 					layout: {
 						padding: {
 							left: 16,
@@ -174,7 +184,6 @@ export default defineComponent({
 								unit: props.span === 'day' ? 'month' : 'day',
 							},
 							grid: {
-								display: props.detailed,
 								color: gridColor,
 								borderColor: 'rgb(0, 0, 0, 0)',
 							},
@@ -190,6 +199,7 @@ export default defineComponent({
 						},
 						y: {
 							position: 'left',
+							stacked: props.stacked,
 							grid: {
 								color: gridColor,
 								borderColor: 'rgb(0, 0, 0, 0)',
@@ -204,6 +214,7 @@ export default defineComponent({
 					},
 					plugins: {
 						legend: {
+							display: props.detailed,
 							position: 'bottom',
 							labels: {
 								boxWidth: 16,
@@ -583,6 +594,30 @@ export default defineComponent({
 			};
 		};
 
+		const fetchPerUserNotesChart = async (): Promise<typeof data> => {
+			const raw = await os.api('charts/user/notes', { userId: props.args.user.id, limit: props.limit, span: props.span });
+			return {
+				series: [...(props.args.withoutAll ? [] : [{
+					name: 'All',
+					type: 'line',
+					borderDash: [5, 5],
+					data: format(sum(raw.inc, negate(raw.dec))),
+				}]), {
+					name: 'Renotes',
+					type: 'area',
+					data: format(raw.diffs.renote),
+				}, {
+					name: 'Replies',
+					type: 'area',
+					data: format(raw.diffs.reply),
+				}, {
+					name: 'Normal',
+					type: 'area',
+					data: format(raw.diffs.normal),
+				}],
+			};
+		};
+
 		const fetchAndRender = async () => {
 			const fetchData = () => {
 				switch (props.src) {
@@ -611,6 +646,8 @@ export default defineComponent({
 					case 'instance-drive-usage-total': return fetchInstanceDriveUsageChart(true);
 					case 'instance-drive-files': return fetchInstanceDriveFilesChart(false);
 					case 'instance-drive-files-total': return fetchInstanceDriveFilesChart(true);
+
+					case 'per-user-notes': return fetchPerUserNotesChart();
 				}
 			};
 			fetching.value = true;

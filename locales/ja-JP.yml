@@ -795,10 +795,11 @@ itsOff: "オフになっています"
 emailRequiredForSignup: "アカウント登録にメールアドレスを必須にする"
 unread: "未読"
 filter: "フィルタ"
-controllPanel: "コントロールパネル"
+controlPanel: "コントロールパネル"
 manageAccounts: "アカウントを管理"
 makeReactionsPublic: "リアクション一覧を公開する"
 makeReactionsPublicDescription: "あなたがしたリアクション一覧を誰でも見れるようにします。"
+classic: "クラシック"
 
 _signup:
   almostThere: "ほとんど完了です"

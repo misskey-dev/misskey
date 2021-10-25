@@ -65,11 +65,4 @@ export default defineComponent({
 		background: var(--bg);
 	}
 }
-
-._fitSide_ .yrzkoczt {
-	> .tab {
-		padding-left: var(--margin);
-		padding-right: var(--margin);
-	}
-}
 </style>

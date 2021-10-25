@@ -16,8 +16,11 @@
 	<template #headerLeft>
 		<button v-if="history.length > 0" class="_button" @click="back()" v-tooltip="$ts.goBack"><i class="fas fa-arrow-left"></i></button>
 	</template>
-	<div class="yrolvcoq _fitSide_">
-		<component :is="component" v-bind="props" :ref="changePage"/>
+	<div class="yrolvcoq">
+		<MkStickyContainer>
+			<template #header><MkHeader v-if="pageInfo && !pageInfo.hideHeader" :info="pageInfo"/></template>
+			<component :is="component" v-bind="props" :ref="changePage"/>
+		</MkStickyContainer>
 	</div>
 </XWindow>
 </template>
