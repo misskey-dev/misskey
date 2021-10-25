@@ -1,5 +1,5 @@
 # Timeline
-タイムラインは、[ノート](./note)が時系列で表示される機能です。 タイムラインには以下で示す種類があり、種類によって表示されるノートも異なります。 なお、タイムラインの種類によってはサーバーにより無効になっている場合があります。
+[Notes](./note) are shown in the timelines. There are several kinds of timelines as mentioned below and each of them displays the different set of notes. Servers might disable some of them.
 
 ## Home
 This is where you see posts from users you follow. Often abbreviated as HTL.
