@@ -13,8 +13,7 @@
 		controls
 	>
 		<source 
-			:src="video.url" 
-			:type="video.type"
+			:src="video.url"
 		>
 	</video>
 	<i class="fas fa-eye-slash" @click="hide = true"></i>
