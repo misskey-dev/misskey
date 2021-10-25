@@ -2,30 +2,30 @@
 タイムラインは、[ノート](./note)が時系列で表示される機能です。 タイムラインには以下で示す種類があり、種類によって表示されるノートも異なります。 なお、タイムラインの種類によってはサーバーにより無効になっている場合があります。
 
 ## Home
-自分のフォローしているユーザーの投稿が流れます。HTLと略されます。
+This is where you see posts from users you follow. Often abbreviated as HTL.
 
 ## Local
-全てのローカルユーザーの「ホーム」指定されていない投稿が流れます。LTLと略されます。
+This is where you see all the posts from the local users, except those with "Home" visibility. Often abbreviated as LTL.
 
 ## Social
-自分のフォローしているユーザーの投稿と、全てのローカルユーザーの「ホーム」指定されていない投稿が流れます。STLと略されます。
+This is where you see the posts from users you follow AND all the posts from the local users, except those with "Home" visibility. Often abbreviated as STL.
 
 ## Global
-全てのローカルユーザーの「ホーム」指定されていない投稿と、サーバーに届いた全てのリモートユーザーの「ホーム」指定されていない投稿が流れます。GTLと略されます。
+This is where you see the posts from the local users and the remote users in federated servers, except those with "Home" visibility. Often abbreviated as GTL.
 
 ## Comparison
-| ソース          |             |      | Timeline |        |        |
-| ------------ | ----------- | ---- | -------- | ------ | ------ |
-| Users        | Visiblility | Home | Local    | Social | Global |
-| ローカル (フォロー)  | Publish     | ✔    | ✔        | ✔      | ✔      |
-|              | Home        | ✔    |          | ✔      |        |
-|              | Followers   | ✔    | ✔        | ✔      | ✔      |
-| リモート (フォロー)  | Publish     | ✔    |          | ✔      | ✔      |
-|              | Home        | ✔    |          | ✔      |        |
-|              | Followers   | ✔    |          | ✔      | ✔      |
-| ローカル (未フォロー) | Publish     |      | ✔        | ✔      | ✔      |
-|              | Home        |      |          |        |        |
-|              | Followers   |      |          |        |        |
-| リモート (未フォロー) | Publish     |      |          |        | ✔      |
-|              | Home        |      |          |        |        |
-|              | Followers   |      |          |        |        |
+| Source                        |             |      | Timeline |        |        |
+| ----------------------------- | ----------- | ---- | -------- | ------ | ------ |
+| Users                         | Visiblility | Home | Local    | Social | Global |
+| Local users you follow        | Publish     | ✔    | ✔        | ✔      | ✔      |
+|                               | Home        | ✔    |          | ✔      |        |
+|                               | Followers   | ✔    | ✔        | ✔      | ✔      |
+| Remote users you follow       | Publish     | ✔    |          | ✔      | ✔      |
+|                               | Home        | ✔    |          | ✔      |        |
+|                               | Followers   | ✔    |          | ✔      | ✔      |
+| Local users you don't follow  | Publish     |      | ✔        | ✔      | ✔      |
+|                               | Home        |      |          |        |        |
+|                               | Followers   |      |          |        |        |
+| Remote users you don't follow | Publish     |      |          |        | ✔      |
+|                               | Home        |      |          |        |        |
+|                               | Followers   |      |          |        |        |
