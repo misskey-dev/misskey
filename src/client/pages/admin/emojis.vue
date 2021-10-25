@@ -168,6 +168,10 @@ export default defineComponent({
 <style lang="scss" scoped>
 .ogwlenmc {
 	> .local {
+	  .empty {
+    	margin: var(--margin);
+		}
+		
 		.ldhfsamy {
 			display: grid;
 			grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
@@ -210,6 +214,10 @@ export default defineComponent({
 	}
 
 	> .remote {
+	  .empty {
+      margin: var(--margin);
+    }
+								
 		.ldhfsamy {
 			display: grid;
 			grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
