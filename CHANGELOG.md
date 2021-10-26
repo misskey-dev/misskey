@@ -7,6 +7,13 @@
 
 -->
 
+## 12.x.x (unreleased)
+
+### Improvements
+
+### Bugfixes
+- 削除したノートがリモートから参照されると復活することがあるのを修正
+
 ## 12.94.1 (2021/10/25)
 
 ### Improvements
