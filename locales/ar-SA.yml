@@ -631,6 +631,8 @@ makeReactionsPublicDescription: "هذا سيجعل قائمة تفاعلاتك �
 classic: "تقليدي"
 _docs:
   admin: "إدارة "
+_gallery:
+  unlike: "أزل الإعجاب"
 _email:
   _follow:
     title: "يتابعك"
@@ -802,6 +804,8 @@ _rooms:
 _pages:
   viewPage: "اعرض صفحاتك"
   like: "أعجبني"
+  unlike: "أزل الإعجاب"
+  my: "صفحاتي"
   blocks:
     image: "الصور"
   script:
