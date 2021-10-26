@@ -652,6 +652,11 @@ _nsfw:
 _mfm:
   mention: "أشر الى"
   hashtag: "الوسوم"
+  url: "الرابط"
+  urlDescription: "يمكن عرض الروابط"
+  link: "رابط"
+  bold: "عريض"
+  small: "صغير"
   quote: "اقتبس"
   emoji: "إيموجي مخصص"
   search: "البحث"
@@ -778,12 +783,25 @@ _timelines:
   social: "الاجتماعي"
   global: "الشامل"
 _rooms:
+  leaveConfirm: "لديك تغييرات غير محفوظة. أتريد المتابعة دون حفظها؟"
+  chooseImage: "اختر صورة"
+  roomType: "نوع الغرفة"
   _roomType:
     default: "افتراضي"
+    washitsu: "الأسلوب الياباني"
   _furnitures:
+    milk: "علبة حليب"
+    bed: "سرير"
+    low-table: "طاولة قصيرة"
+    desk: "مكتب"
+    chair: "كرسي"
+    chair2: "كرسي 2"
+    pc: "حاسوب"
     monitor: "شاشة التحكم"
     banknote: "أوراق نقدية"
 _pages:
+  viewPage: "اعرض صفحاتك"
+  like: "أعجبني"
   blocks:
     image: "الصور"
   script:
