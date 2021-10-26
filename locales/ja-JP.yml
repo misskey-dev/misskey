@@ -800,6 +800,8 @@ manageAccounts: "アカウントを管理"
 makeReactionsPublic: "リアクション一覧を公開する"
 makeReactionsPublicDescription: "あなたがしたリアクション一覧を誰でも見れるようにします。"
 classic: "クラシック"
+webSearchEngine: "ウェブ検索エンジン"
+webSearchEngineDesc: "例: https://www.duckduckgo.com/?#q={{query}}"
 
 _signup:
   almostThere: "ほとんど完了です"

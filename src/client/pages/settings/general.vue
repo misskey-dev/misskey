@@ -14,6 +14,11 @@
 		</template>
 	</FormSelect>
 
+	<FormInput v-model="webSearchEngine"  manual-save>
+		<span>{{ $ts.webSearchEngine }}</span>
+		<template #caption>{{ $ts.webSearchEngineDesc }}</template>
+	</FormInput>
+
 	<FormGroup>
 		<template #label>{{ $ts.behavior }}</template>
 		<FormSwitch v-model="imageNewTab">{{ $ts.openImageInNewTab }}</FormSwitch>
@@ -91,6 +96,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import FormInput from '@client/components/debobigego/input.vue';
 import FormSwitch from '@client/components/debobigego/switch.vue';
 import FormSelect from '@client/components/debobigego/select.vue';
 import FormRadios from '@client/components/debobigego/radios.vue';
@@ -109,6 +115,7 @@ import * as symbols from '@client/symbols';
 export default defineComponent({
 	components: {
 		MkLink,
+		FormInput,
 		FormSwitch,
 		FormSelect,
 		FormRadios,
@@ -155,6 +162,7 @@ export default defineComponent({
 		useReactionPickerForContextMenu: defaultStore.makeGetterSetter('useReactionPickerForContextMenu'),
 		squareAvatars: defaultStore.makeGetterSetter('squareAvatars'),
 		aiChanMode: defaultStore.makeGetterSetter('aiChanMode'),
+		webSearchEngine: defaultStore.makeGetterSetter('webSearchEngine'),
 	},
 
 	watch: {
