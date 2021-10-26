@@ -726,6 +726,17 @@ _permissions:
   "read:favorites": "اعرض المفضلة"
   "write:favorites": "عدّل المفضلة"
   "read:notifications": "اظهر الإشعارات"
+  "read:reactions": "اعرض تفاعلاتك"
+  "write:reactions": "عدّل تفاعلاتك"
+  "write:votes": "صوّت"
+  "read:pages": "اعرض صفحاتك"
+  "write:pages": "عدّل أو احذف صفحاتك"
+  "read:user-groups": "اعرض مجموعات المستخدمين"
+  "write:user-groups": "عدّل أو احذف مجموعات المستخدمين"
+  "read:gallery": "اعرض المعرض"
+  "write:gallery": "عدّل المعرض"
+_auth:
+  shareAccess: "أتريد التفويض لـ \"{name}\" بالوصول لحسابك؟"
 _weekday:
   sunday: "الأحد"
   monday: "الإثنين"
