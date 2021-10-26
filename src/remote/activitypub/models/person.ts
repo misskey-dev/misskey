@@ -29,6 +29,7 @@ import { toArray } from '@/prelude/array';
 import { fetchInstanceMetadata } from '@/services/fetch-instance-metadata';
 import { normalizeForSearch } from '@/misc/normalize-for-search';
 import { truncate } from '@/misc/truncate';
+import { StatusError } from '@/misc/fetch';
 
 const logger = apLogger;
 
@@ -391,6 +392,10 @@ export async function resolvePerson(uri: string, resolver?: Resolver): Promise<U
 		return exist;
 	}
 	//#endregion
+
+	if (uri.startsWith(config.url)) {
+		throw new StatusError(`Local user not found: ${uri}`, 404, 'Local user not found');
+	}
 
 	// リモートサーバーからフェッチしてきて登録
 	if (resolver == null) resolver = new Resolver();
