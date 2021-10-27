@@ -103,6 +103,18 @@ describe('Fetch resource', () => {
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, 'image/svg+xml');
 		}));
+
+		it('GET twemoji png', async(async () => {
+			const res = await simpleGet('/twemoji/2764.png');
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(res.type, 'image/png');
+		}));
+
+		it('GET twemoji png with hyphen', async(async () => {
+			const res = await simpleGet('/twemoji/2764-fe0f-200d-1f525.png');
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(res.type, 'image/png');
+		}));
 	});
 
 	describe('/@:username', () => {

@@ -25,6 +25,7 @@ import { getNoteSummary } from '@/misc/get-note-summary';
 import { getConnection } from 'typeorm';
 import { redisClient } from '../../db/redis';
 import * as locales from '../../../locales/index';
+import * as sharp from 'sharp';
 
 //const _filename = fileURLToPath(import.meta.url);
 const _filename = __filename;
@@ -104,17 +105,36 @@ router.get('/apple-touch-icon.png', async ctx => {
 router.get('/twemoji/(.*)', async ctx => {
 	const path = ctx.path.replace('/twemoji/', '');
 
-	if (!path.match(/^[0-9a-f-]+\.svg$/)) {
-		ctx.status = 404;
+	if (path.match(/^[0-9a-f-]+\.svg$/)) {
+		ctx.set('Content-Security-Policy', `default-src 'none'; style-src 'unsafe-inline'`);
+
+		await send(ctx as any, path, {
+			root: `${_dirname}/../../../node_modules/@discordapp/twemoji/dist/svg/`,
+			maxage: ms('30 days'),
+		});
+
 		return;
 	}
 
-	ctx.set('Content-Security-Policy', `default-src 'none'; style-src 'unsafe-inline'`);
+	if (path.match(/^[0-9a-f-]+\.png$/)) {
+		ctx.set('Content-Security-Policy', `default-src 'none'; style-src 'unsafe-inline'`);
 
-	await send(ctx as any, path, {
-		root: `${_dirname}/../../../node_modules/@discordapp/twemoji/dist/svg/`,
-		maxage: ms('30 days'),
-	});
+		const png = await sharp(`${_dirname}/../../../node_modules/@discordapp/twemoji/dist/svg/${path.replace('.png', '')}.svg`)
+			.resize(96, 96, {
+				fit: 'inside',
+				withoutEnlargement: true
+			})
+			.png()
+			.toBuffer();
+
+		ctx.set('Cache-Control', 'max-age=2592000');
+		ctx.set('Content-Type', 'image/png');
+		ctx.body = png;
+		return;
+	}
+
+	ctx.status = 404;
+	return;
 });
 
 // ServiceWorker
