@@ -51,7 +51,7 @@ export async function proxyMedia(ctx: Koa.Context) {
 			)
 				.boolean(mask, 'eor');
 
-			const stats = await data.clone().resize(32, 32).stats();
+			const stats = await data.clone().stats();
 
 			if (stats.entropy < 0.1) {
 				// エントロピーがあまりない場合は404にする
