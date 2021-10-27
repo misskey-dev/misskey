@@ -151,6 +151,10 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 						reactionUrl = `/twemoji-badge/${char2fileName(reaction)}.png`;
 					}
 
+					if (reactionUrl ? await fetch(reactionUrl).then(res => res.status !== 200) : true) {
+						reactionUrl = iconUrl('plus');
+					}
+
 					return [`${reaction} ${getUserName(data.body.user)}`, {
 						body: getNoteSummary(data.body.note, i18n.locale),
 						icon: data.body.user.avatarUrl,
