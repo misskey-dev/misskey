@@ -393,10 +393,6 @@ export async function resolvePerson(uri: string, resolver?: Resolver): Promise<U
 	}
 	//#endregion
 
-	if (uri.startsWith(config.url)) {
-		throw new StatusError(`Local user not found: ${uri}`, 404, 'Local user not found');
-	}
-
 	// リモートサーバーからフェッチしてきて登録
 	if (resolver == null) resolver = new Resolver();
 	return await createPerson(uri, resolver);
