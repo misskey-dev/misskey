@@ -27,7 +27,13 @@ export async function proxyMedia(ctx: Koa.Context) {
 			image = await convertToPng(path, 498, 280);
 		} else if ('preview' in ctx.query && ['image/jpeg', 'image/png', 'image/gif', 'image/apng', 'image/vnd.mozilla.apng'].includes(mime)) {
 			image = await convertToJpeg(path, 200, 200);
-		} else if ('badge' in ctx.query ) {
+		} else if ('badge' in ctx.query) {
+			if (!['image/jpeg', 'image/png', 'image/gif', 'image/apng', 'image/vnd.mozilla.apng', 'image/webp', 'image/svg+xml'].includes(mime)) {
+				// 画像でないなら302でお茶を濁す
+				ctx.redirect('/static-assets/notification-badges/plus.png');
+				throw new StatusError('This image is opaque', 302);
+			}
+
 			const mask = await sharp(path)
 				.resize(96, 96, { withoutEnlargement: true })
 				.normalise(true)
@@ -46,8 +52,9 @@ export async function proxyMedia(ctx: Koa.Context) {
 			const stats = await data.clone().resize(32, 32).stats();
 
 			if (stats.isOpaque) {
-				// 不透明判定なら404でお茶を濁す
-				throw new StatusError('This image is opaque', 404);
+				// 不透明判定なら302でお茶を濁す
+				ctx.redirect('/static-assets/notification-badges/plus.png');
+				throw new StatusError('This image is opaque', 302);
 			}
 
 			image = {
@@ -69,7 +76,7 @@ export async function proxyMedia(ctx: Koa.Context) {
 	} catch (e) {
 		serverLogger.error(`${e}`);
 
-		if (e instanceof StatusError && e.isClientError) {
+		if (e instanceof StatusError && (e.statusCode === 302 || e.isClientError)) {
 			ctx.status = e.statusCode;
 		} else {
 			ctx.status = 500;
