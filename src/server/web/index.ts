@@ -4,6 +4,7 @@
 
 import * as os from 'os';
 import * as fs from 'fs';
+import * as stream from 'stream';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import * as ms from 'ms';
@@ -105,36 +106,50 @@ router.get('/apple-touch-icon.png', async ctx => {
 router.get('/twemoji/(.*)', async ctx => {
 	const path = ctx.path.replace('/twemoji/', '');
 
-	if (path.match(/^[0-9a-f-]+\.svg$/)) {
-		ctx.set('Content-Security-Policy', `default-src 'none'; style-src 'unsafe-inline'`);
-
-		await send(ctx as any, path, {
-			root: `${_dirname}/../../../node_modules/@discordapp/twemoji/dist/svg/`,
-			maxage: ms('30 days'),
-		});
-
+	if (!path.match(/^[0-9a-f-]+\.svg$/)) {
+		ctx.status = 404;
 		return;
 	}
 
-	if (path.match(/^[0-9a-f-]+\.png$/)) {
-		ctx.set('Content-Security-Policy', `default-src 'none'; style-src 'unsafe-inline'`);
+	ctx.set('Content-Security-Policy', `default-src 'none'; style-src 'unsafe-inline'`);
 
-		const png = await sharp(`${_dirname}/../../../node_modules/@discordapp/twemoji/dist/svg/${path.replace('.png', '')}.svg`)
-			.resize(96, 96, {
-				fit: 'inside',
-				withoutEnlargement: true
+	await send(ctx as any, path, {
+		root: `${_dirname}/../../../node_modules/@discordapp/twemoji/dist/svg/`,
+		maxage: ms('30 days'),
+	});
+});
+
+router.get('/twemoji-badge/(.*)', async ctx => {
+	const path = ctx.path.replace('/twemoji-badge/', '');
+
+	if (!path.match(/^[0-9a-f-]+\.png$/)) {
+		ctx.status = 404;
+		return;
+	}
+
+	ctx.set('Content-Security-Policy', `default-src 'none'; style-src 'unsafe-inline'`);
+
+	ctx.set('Cache-Control', 'max-age=2592000');
+	ctx.set('Content-Type', 'image/png');
+
+	ctx.body = fs.createReadStream(`${_dirname}/../../../node_modules/@discordapp/twemoji/dist/svg/${path.replace('.png', '')}.svg`)
+		.pipe(sharp()
+			.resize(512)
+			.extend({
+				top: 16,
+				bottom: 16,
+				left: 16,
+				right: 16,
+				background: '#000'
 			})
-			.png()
-			.toBuffer();
-
-		ctx.set('Cache-Control', 'max-age=2592000');
-		ctx.set('Content-Type', 'image/png');
-		ctx.body = png;
-		return;
-	}
-
-	ctx.status = 404;
-	return;
+			.flatten({ background: '#000' }))
+		.pipe(sharp()
+			.threshold(100))
+		.pipe(sharp()
+			.negate()
+			.resize(96)
+			.removeAlpha()
+			.png())
 });
 
 // ServiceWorker

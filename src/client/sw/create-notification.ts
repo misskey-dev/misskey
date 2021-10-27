@@ -10,7 +10,7 @@ import { I18n } from '@/misc/i18n';
 import { pushNotificationDataMap } from '@client/sw/types';
 import { cli } from './operations';
 import { getAccountFromId } from '@client/scripts/get-account-from-id';
-import { char2file } from '@/misc/twemoji-base';
+import { char2fileName } from '@/misc/twemoji-base';
 
 const iconUrl = (name: string) => `/static-assets/notification-badges/${name}.png`;
 
@@ -135,7 +135,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 						}
 					} else {
 						// Unicode絵文字の場合
-						reactionUrl = char2file(reaction);
+						reactionUrl = `/twemoji-badge/${char2fileName(reaction)}.png`;
 					}
 
 					return [`${reaction} ${getUserName(data.body.user)}`, {
