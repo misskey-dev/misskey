@@ -132,18 +132,18 @@ router.get('/twemoji-badge/(.*)', async ctx => {
 	ctx.set('Content-Type', 'image/png');
 
 	const mask = await sharp(`${_dirname}/../../../node_modules/@discordapp/twemoji/dist/svg/${path.replace('.png', '')}.svg`, { density: 1000 })
-			.flatten({ background: '#000' })
-			.extend({
-				top: 12,
-				bottom: 12,
-				left: 12,
-				right: 12,
-				background: '#000'
-			})
-			.threshold(100)
-			.toColourspace('b-w')
-			.png()
-			.toBuffer()
+		.flatten({ background: '#000' })
+		.extend({
+			top: 12,
+			bottom: 12,
+			left: 12,
+			right: 12,
+			background: '#000'
+		})
+		.threshold(100)
+		.toColourspace('b-w')
+		.png()
+		.toBuffer()
 
 	ctx.body = sharp(
 		{ create: { width: 512, height: 512, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } }
