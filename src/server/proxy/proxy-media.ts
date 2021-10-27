@@ -34,7 +34,10 @@ export async function proxyMedia(ctx: Koa.Context) {
 			}
 
 			const mask = await sharp(path)
-				.resize(96, 96, { withoutEnlargement: false })
+				.resize(96, 96, {
+					fit: 'inside',
+					withoutEnlargement: false
+				})
 				.normalise(true)
 				.clone()
 				.flatten({ background: '#000' })
