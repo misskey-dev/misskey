@@ -40,6 +40,10 @@ export default class Resolver {
 			return value;
 		}
 
+		if (value.startsWith(config.url)) {
+			throw new Error('cannot resolve local instance');
+		}
+
 		if (this.history.has(value)) {
 			throw new Error('cannot resolve already resolved one');
 		}
