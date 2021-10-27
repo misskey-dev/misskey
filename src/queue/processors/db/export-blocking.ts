@@ -9,7 +9,6 @@ import { getFullApAccount } from '@/misc/convert-host';
 import { Users, Blockings } from '@/models/index';
 import { MoreThan } from 'typeorm';
 import { DbUserJobData } from '@/queue/types';
-import { createTemp } from '@/misc/create-temp';
 
 const logger = queueLogger.createSubLogger('export-blocking');
 
@@ -23,7 +22,12 @@ export async function exportBlocking(job: Bull.Job<DbUserJobData>, done: any): P
 	}
 
 	// Create temp file
-	const [path, cleanup] = await createTemp();
+	const [path, cleanup] = await new Promise<[string, any]>((res, rej) => {
+		tmp.file((e, path, fd, cleanup) => {
+			if (e) return rej(e);
+			res([path, cleanup]);
+		});
+	});
 
 	logger.info(`Temp file is ${path}`);
 

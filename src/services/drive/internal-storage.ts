@@ -3,10 +3,6 @@ import * as Path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import config from '@/config/index';
-import * as stream from 'stream';
-import * as util from 'util';
-
-const pipeline = util.promisify(stream.pipeline);
 
 //const _filename = fileURLToPath(import.meta.url);
 const _filename = __filename;
@@ -27,9 +23,9 @@ export class InternalStorage {
 		return `${config.url}/files/${key}`;
 	}
 
-	public static async saveFromStream(key: string, readable: stream.Readable) {
+	public static saveFromBuffer(key: string, data: Buffer) {
 		fs.mkdirSync(InternalStorage.path, { recursive: true });
-		await pipeline(readable, fs.createWriteStream(InternalStorage.resolvePath(key)));
+		fs.writeFileSync(InternalStorage.resolvePath(key), data);
 		return `${config.url}/files/${key}`;
 	}
 

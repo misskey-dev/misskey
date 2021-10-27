@@ -29,3 +29,4 @@ COPY --from=builder /misskey/built ./built
 COPY . ./
 
 CMD ["npm", "run", "migrateandstart"]
+

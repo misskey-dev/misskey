@@ -1,8 +1,15 @@
-import { getUrl } from './download-url';
+import { createTemp } from './create-temp';
+import { downloadUrl } from './download-url';
 import { detectType } from './get-file-info';
-import { toBufferArray } from './stream/to-buffer-array';
 
 export async function detectUrlMime(url: string) {
-	const { mime } = await detectType(await toBufferArray(getUrl(url)));
-	return mime;
+	const [path, cleanup] = await createTemp();
+
+	try {
+		await downloadUrl(url, path);
+		const { mime } = await detectType(path);
+		return mime;
+	} finally {
+		cleanup();
+	}
 }

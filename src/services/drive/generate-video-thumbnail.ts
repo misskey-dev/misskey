@@ -1,27 +1,15 @@
 import * as fs from 'fs';
-import * as stream from 'stream';
-import * as util from 'util';
-import { IReadableImage, convertToJpeg } from './image-processor';
+import * as tmp from 'tmp';
+import { IImage, convertToJpeg } from './image-processor';
 import * as FFmpeg from 'fluent-ffmpeg';
-import { createTemp } from '@/misc/create-temp';
-import { readableRead } from '@/misc/stream/read';
 
-const pipeline = util.promisify(stream.pipeline);
-
-export async function GenerateVideoThumbnailFromStream(readable: stream.Readable): Promise<IReadableImage> {
-	const [path, cleanupVideo] = await createTemp();
-
-	await pipeline(readable, fs.createWriteStream(path));
-
-	const thumbnail = await GenerateVideoThumbnail(path);
-
-	cleanupVideo();
-
-	return thumbnail;
-}
-
-export async function GenerateVideoThumbnail(path: string): Promise<IReadableImage> {
-	const [outDir, cleanupDir] = await createTemp();
+export async function GenerateVideoThumbnail(path: string): Promise<IImage> {
+	const [outDir, cleanup] = await new Promise<[string, any]>((res, rej) => {
+		tmp.dir((e, path, cleanup) => {
+			if (e) return rej(e);
+			res([path, cleanup]);
+		});
+	});
 
 	await new Promise((res, rej) => {
 		FFmpeg({
@@ -39,9 +27,11 @@ export async function GenerateVideoThumbnail(path: string): Promise<IReadableIma
 
 	const outPath = `${outDir}/output.png`;
 
-	const thumbnail = convertToJpeg(readableRead(fs.createReadStream(outPath)), 498, 280);
+	const thumbnail = await convertToJpeg(outPath, 498, 280);
 
-	cleanupDir();
+	// cleanup
+	await fs.promises.unlink(outPath);
+	cleanup();
 
 	return thumbnail;
 }
