@@ -33,7 +33,7 @@ export async function proxyMedia(ctx: Koa.Context) {
 				.normalise(true)
 				.clone()
 				.flatten({ background: '#000' })
-				.threshold(127)
+				.threshold(120)
 				.toColourspace('b-w')
 				.png()
 				.toBuffer();
