@@ -11,6 +11,8 @@ import { pushNotificationDataMap } from '@client/sw/types';
 import { cli } from './operations';
 import { getAccountFromId } from '@client/scripts/get-account-from-id';
 
+const iconUrl = (name: string) => `/static-assets/notification-badges/${name}.png`;
+
 export async function createNotification<K extends keyof pushNotificationDataMap>(data: pushNotificationDataMap[K]) {
 	const n = await composeNotification(data);
 
@@ -45,6 +47,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 					return [t('_notification.youWereFollowed'), {
 						body: getUserName(data.body.user),
 						icon: data.body.user.avatarUrl,
+						badge: iconUrl('plus'),
 						data,
 						actions: userDetail.isFollowing ? [] : [
 							{
@@ -58,6 +61,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 					return [t('_notification.youGotMention', { name: getUserName(data.body.user) }), {
 						body: getNoteSummary(data.body.note, i18n.locale),
 						icon: data.body.user.avatarUrl,
+						badge: iconUrl('at'),
 						data,
 						actions: [
 							{
@@ -71,6 +75,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 					return [t('_notification.youGotReply', { name: getUserName(data.body.user) }), {
 						body: getNoteSummary(data.body.note, i18n.locale),
 						icon: data.body.user.avatarUrl,
+						badge: iconUrl('reply'),
 						data,
 						actions: [
 							{
@@ -84,6 +89,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 					return [t('_notification.youRenoted', { name: getUserName(data.body.user) }), {
 						body: getNoteSummary(data.body.note.renote, i18n.locale),
 						icon: data.body.user.avatarUrl,
+						badge: iconUrl('retweet'),
 						data,
 						actions: [
 							{
@@ -97,6 +103,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 					return [t('_notification.youGotQuote', { name: getUserName(data.body.user) }), {
 						body: getNoteSummary(data.body.note, i18n.locale),
 						icon: data.body.user.avatarUrl,
+						badge: iconUrl('quote-right'),
 						data,
 						actions: [
 							{
