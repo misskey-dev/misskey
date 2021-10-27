@@ -30,7 +30,7 @@ export async function proxyMedia(ctx: Koa.Context) {
 		} else if ('badge' in ctx.query) {
 			if (!['image/jpeg', 'image/png', 'image/gif', 'image/apng', 'image/vnd.mozilla.apng', 'image/webp', 'image/svg+xml'].includes(mime)) {
 				// 画像でないなら404でお茶を濁す
-				throw new StatusError('This image is opaque', 404);
+				throw new StatusError('Unexpected mime', 404);
 			}
 
 			const mask = await sharp(path)
