@@ -55,7 +55,7 @@ export async function proxyMedia(ctx: Koa.Context) {
 
 			if (stats.entropy < 0.1) {
 				// エントロピーがあまりない場合は404にする
-				throw new StatusError('This image is opaque', 404);
+				throw new StatusError('Skip to provide badge', 404);
 			}
 
 			image = {
