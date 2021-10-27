@@ -11,6 +11,7 @@ import { pushNotificationDataMap } from '@client/sw/types';
 import { cli } from './operations';
 import { getAccountFromId } from '@client/scripts/get-account-from-id';
 import { char2fileName } from '@/misc/twemoji-base';
+import * as url from '@/prelude/url';
 
 const iconUrl = (name: string) => `/static-assets/notification-badges/${name}.png`;
 
@@ -122,7 +123,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 
 				case 'reaction':
 					let reaction = data.body.reaction;
-					let reactionUrl: string | undefined = undefined;
+					let reactionUrl: string | undefined;
 
 					if (reaction.startsWith(':')) {
 						// カスタム絵文字の場合
@@ -131,7 +132,19 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 							if (reaction.includes('@')) {
 								reaction = `:${reaction.substr(1, reaction.indexOf('@') - 1)}:`;
 							}
-							reactionUrl = customEmoji.url;
+
+							const u = new URL(customEmoji.url);
+							if (u.href.startsWith(`${origin}/proxy/`)) {
+								// もう既にproxyっぽそうだったらsearchParams付けるだけ
+								u.searchParams.set('badge', '1');
+								reactionUrl = u.href;
+							} else {
+								const dummy = `${u.host}${u.pathname}`;	// 拡張子がないとキャッシュしてくれないCDNがあるので
+								reactionUrl = `${origin}/proxy/${dummy}?${url.query({
+									url: u.href,
+									badge: '1'
+								})}`;
+							}
 						}
 					} else {
 						// Unicode絵文字の場合
