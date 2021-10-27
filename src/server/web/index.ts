@@ -128,28 +128,31 @@ router.get('/twemoji-badge/(.*)', async ctx => {
 	}
 
 	ctx.set('Content-Security-Policy', `default-src 'none'; style-src 'unsafe-inline'`);
-
 	ctx.set('Cache-Control', 'max-age=2592000');
 	ctx.set('Content-Type', 'image/png');
 
-	ctx.body = fs.createReadStream(`${_dirname}/../../../node_modules/@discordapp/twemoji/dist/svg/${path.replace('.png', '')}.svg`)
-		.pipe(sharp()
-			.resize(512)
+	const mask = await sharp(`${_dirname}/../../../node_modules/@discordapp/twemoji/dist/svg/${path.replace('.png', '')}.svg`, { density: 1000 })
+			.flatten({ background: '#000' })
 			.extend({
-				top: 16,
-				bottom: 16,
-				left: 16,
-				right: 16,
+				top: 12,
+				bottom: 12,
+				left: 12,
+				right: 12,
 				background: '#000'
 			})
-			.flatten({ background: '#000' }))
-		.pipe(sharp()
-			.threshold(100))
-		.pipe(sharp()
-			.negate()
-			.resize(96)
-			.removeAlpha()
-			.png())
+			.threshold(100)
+			.toColourspace('b-w')
+			.png()
+			.toBuffer()
+
+	ctx.body = sharp(
+		{ create: { width: 512, height: 512, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } }
+	)
+		.boolean(mask, 'eor')
+		.negate({ alpha: false })
+		.resize(96, 96)
+		.png()
+
 });
 
 // ServiceWorker
