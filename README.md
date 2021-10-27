@@ -4,7 +4,6 @@
 
 <div align="center">
 
-[![CircleCI](https://img.shields.io/circleci/project/github/misskey-dev/misskey.svg?style=for-the-badge&logo=circleci)](https://circleci.com/gh/misskey-dev/misskey)
 [![Dependencies](https://img.shields.io/david/misskey-dev/misskey.svg?style=for-the-badge&logo=npm)](https://david-dm.org/misskey-dev/misskey)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=for-the-badge&logo=github)](http://makeapullrequest.com)
 [![Awesome Humane Tech](https://raw.githubusercontent.com/humanetech-community/awesome-humane-tech/main/humane-tech-badge.svg?sanitize=true)](https://github.com/humanetech-community/awesome-humane-tech)
