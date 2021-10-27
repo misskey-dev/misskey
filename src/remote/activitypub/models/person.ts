@@ -29,7 +29,6 @@ import { toArray } from '@/prelude/array';
 import { fetchInstanceMetadata } from '@/services/fetch-instance-metadata';
 import { normalizeForSearch } from '@/misc/normalize-for-search';
 import { truncate } from '@/misc/truncate';
-import { StatusError } from '@/misc/fetch';
 
 const logger = apLogger;
 
