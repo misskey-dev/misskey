@@ -11,7 +11,6 @@ import { pushNotificationDataMap } from '@client/sw/types';
 import { cli } from './operations';
 import { getAccountFromId } from '@client/scripts/get-account-from-id';
 import { char2file } from '@/misc/twemoji-base';
-import { getStaticImageUrl } from '@client/scripts/get-static-image-url';
 
 const iconUrl = (name: string) => `/static-assets/notification-badges/${name}.png`;
 
@@ -132,7 +131,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 							if (reaction.includes('@')) {
 								reaction = `:${reaction.substr(1, reaction.indexOf('@') - 1)}:`;
 							}
-							reactionUrl = getStaticImageUrl(customEmoji.url);
+							reactionUrl = customEmoji.url;
 						}
 					} else {
 						// Unicode絵文字の場合
