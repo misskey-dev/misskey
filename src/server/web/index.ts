@@ -143,16 +143,14 @@ router.get('/twemoji-badge/(.*)', async ctx => {
 		.threshold(100)
 		.toColourspace('b-w')
 		.png()
-		.toBuffer()
+		.toBuffer();
 
 	ctx.body = sharp(
 		{ create: { width: 512, height: 512, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } }
 	)
 		.boolean(mask, 'eor')
-		.negate({ alpha: false })
 		.resize(96, 96)
-		.png()
-
+		.png();
 });
 
 // ServiceWorker
