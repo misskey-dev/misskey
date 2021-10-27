@@ -53,8 +53,8 @@ export async function proxyMedia(ctx: Koa.Context) {
 
 			const stats = await data.clone().resize(32, 32).stats();
 
-			if (stats.isOpaque) {
-				// 不透明判定なら404でお茶を濁す
+			if (stats.entropy < 0.1) {
+				// エントロピーがあまりない場合は404にする
 				throw new StatusError('This image is opaque', 404);
 			}
 
