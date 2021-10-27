@@ -43,7 +43,7 @@ export async function proxyMedia(ctx: Koa.Context) {
 			)
 				.boolean(mask, 'eor');
 
-			const stats = await data.stats();
+			const stats = await data.clone().resize(32, 32).stats();
 
 			if (stats.isOpaque) {
 				// 不透明判定なら404でお茶を濁す
