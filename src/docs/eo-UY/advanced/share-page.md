@@ -23,7 +23,7 @@
 <dd>リプライ先のUrl（リモートのノートオブジェクトを指定）</dd>
 </dl>
 
-### Renote情報
+### Informo por plusendi noton
 以下のいずれか
 
 <dl>
