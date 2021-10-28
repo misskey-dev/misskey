@@ -49,7 +49,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 					return [t('_notification.youWereFollowed'), {
 						body: getUserName(data.body.user),
 						icon: data.body.user.avatarUrl,
-						badge: iconUrl('plus'),
+						badge: iconUrl('user-plus'),
 						data,
 						actions: userDetail.isFollowing ? [] : [
 							{
