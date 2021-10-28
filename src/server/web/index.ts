@@ -131,6 +131,8 @@ router.get('/twemoji-badge/(.*)', async ctx => {
 			`${_dirname}/../../../node_modules/@discordapp/twemoji/dist/svg/${path.replace('.png', '')}.svg`,
 			{ density: 1000 }
 		)
+		.resize(488, 488)
+		.clone()
 		.flatten({ background: '#000' })
 		.extend({
 			top: 12,
