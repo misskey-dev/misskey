@@ -122,7 +122,7 @@ export async function login(token: Account['token'], redirect?: string) {
 	await addAccount(me.id, token);
 
 	if (redirect) {
-		reloadChannel.postMessage('reload');
+		reloadChannel.postMessage(null);
 		location.href = redirect;
 		return;
 	}
