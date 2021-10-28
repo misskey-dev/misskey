@@ -33,7 +33,7 @@ export async function proxyMedia(ctx: Koa.Context) {
 				throw new StatusError('Unexpected mime', 404);
 			}
 
-			const mask = await sharp(path)
+			const mask = sharp(path)
 				.resize(96, 96, {
 					fit: 'inside',
 					withoutEnlargement: false
@@ -42,21 +42,19 @@ export async function proxyMedia(ctx: Koa.Context) {
 				.clone()
 				.flatten({ background: '#000' })
 				.threshold(120)
-				.toColourspace('b-w')
-				.png()
-				.toBuffer();
+				.toColourspace('b-w');
+
+			const stats = await mask.clone().stats();
+
+			if (stats.entropy < 0.1) {
+				// エントロピーがあまりない場合は404にする
+				throw new StatusError('Skip to provide badge', 404);
+			}
 
 			const data = sharp(
 				{ create: { width: 96, height: 96, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } }
 			)
-				.boolean(mask, 'eor');
-
-			const stats = await data.clone().stats();
-
-			if (stats.entropy < 0.01) {
-				// エントロピーがあまりない場合は404にする
-				throw new StatusError('Skip to provide badge', 404);
-			}
+				.boolean(await mask.png().toBuffer(), 'eor');
 
 			image = {
 				data: await data.png().toBuffer(),
