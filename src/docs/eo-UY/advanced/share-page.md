@@ -30,7 +30,7 @@
 <dt>renoteId</dt>
 <dd>la ID de la noto plusendota</dd>
 <dt>renoteUri</dt>
-<dd>la URL-on de la noto plusendota el fora nodo</dd>
+<dd>la URL de la noto plusendota el fora nodo</dd>
 </dl>
 
 ### Videbleco
