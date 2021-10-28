@@ -123,7 +123,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 
 				case 'reaction':
 					let reaction = data.body.reaction;
-					let reactionUrl: string | undefined;
+					let badge: string | undefined;
 
 					if (reaction.startsWith(':')) {
 						// カスタム絵文字の場合
@@ -137,28 +137,36 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 							if (u.href.startsWith(`${origin}/proxy/`)) {
 								// もう既にproxyっぽそうだったらsearchParams付けるだけ
 								u.searchParams.set('badge', '1');
-								reactionUrl = u.href;
+								badge = u.href;
 							} else {
 								const dummy = `${u.host}${u.pathname}`;	// 拡張子がないとキャッシュしてくれないCDNがあるので
-								reactionUrl = `${origin}/proxy/${dummy}?${url.query({
+								badge = `${origin}/proxy/${dummy}?${url.query({
 									url: u.href,
 									badge: '1'
 								})}`;
 							}
+
+							console.log('ce', customEmoji, badge)
+						} else {
+							console.log('no ce', data.body.note, reaction)
 						}
 					} else {
 						// Unicode絵文字の場合
-						reactionUrl = `/twemoji-badge/${char2fileName(reaction)}.png`;
+						console.log('str', reaction, char2fileName(reaction))
+						badge = `/twemoji-badge/${char2fileName(reaction)}.png`;
 					}
 
-					if (reactionUrl ? await fetch(reactionUrl).then(res => res.status !== 200) : true) {
-						reactionUrl = iconUrl('plus');
+					if (badge ? await fetch(badge).then(res => res.status !== 200) : true) {
+						console.log('fail', badge)
+						badge = iconUrl('plus');
+					} else {
+						console.log('show', badge)
 					}
 
 					return [`${reaction} ${getUserName(data.body.user)}`, {
 						body: getNoteSummary(data.body.note, i18n.locale),
 						icon: data.body.user.avatarUrl,
-						badge: reactionUrl,
+						badge,
 						data,
 						actions: [
 							{
