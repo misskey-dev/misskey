@@ -25,8 +25,8 @@
 			<MkA to="/about" class="_link">{{ $ts._forgotPassword.ifNoEmail }}</MkA>
 		</div>
 	</form>
-	<div v-else>
-		{{ $ts._forgotPassword.contactAdmin }}
+	<div class="_section" v-else>
+		<div class="_content">{{ $ts._forgotPassword.contactAdmin }}</div>
 	</div>
 </XModalWindow>
 </template>
@@ -69,3 +69,17 @@ export default defineComponent({
 	}
 });
 </script>
+
+<style lang="scss" scoped>
+._section {
+		--root-margin: 24px;
+
+		@media (max-width: 500px) {
+				--root-margin: 16px;
+		}
+
+		> ._content {
+				padding: var(--root-margin);
+		}
+}
+</style>
