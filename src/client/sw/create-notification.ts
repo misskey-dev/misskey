@@ -145,22 +145,14 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 									badge: '1'
 								})}`;
 							}
-
-							console.log('ce', customEmoji, badge)
-						} else {
-							console.log('no ce', data.body.note, reaction)
 						}
 					} else {
 						// Unicode絵文字の場合
-						console.log('str', reaction, char2fileName(reaction))
 						badge = `/twemoji-badge/${char2fileName(reaction)}.png`;
 					}
 
 					if (badge ? await fetch(badge).then(res => res.status !== 200) : true) {
-						console.log('fail', badge)
 						badge = iconUrl('plus');
-					} else {
-						console.log('show', badge)
 					}
 
 					return [`${reaction} ${getUserName(data.body.user)}`, {
