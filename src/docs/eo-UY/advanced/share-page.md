@@ -1,7 +1,7 @@
 # La paĝo nur por skribi novan noton
 `/share`を開くと、共有用の投稿フォームを開くことができます。 ここではシェアページで利用できるクエリ文字列の一覧を示します。
 
-## La listo de la tekstoj sur la informpeto
+## Listo de la tekstoj por informpeti
 ### Teksto
 
 <dl>
