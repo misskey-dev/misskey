@@ -1,8 +1,8 @@
-# シェアページ
+# La paĝo nur por skribi novan noton
 `/share`を開くと、共有用の投稿フォームを開くことができます。 ここではシェアページで利用できるクエリ文字列の一覧を示します。
 
-## クエリ文字列一覧
-### 文字
+## La listo de la tekstoj sur la informpeto
+### Teksto
 
 <dl>
 <dt>title</dt>
@@ -10,10 +10,10 @@
 <dt>text</dt>
 <dd>本文です。</dd>
 <dt>url</dt>
-<dd>URLです。末尾に挿入されます。</dd>
+<dd>URL.末尾に挿入されます。</dd>
 </dl>
 
-### リプライ情報
+### La  informo por respondi
 以下のいずれか
 
 <dl>
@@ -28,7 +28,7 @@
 
 <dl>
 <dt>renoteId</dt>
-<dd>Renote先のノートid</dd>
+<dd>La ID de la noto plusendota</dd>
 <dt>renoteUri</dt>
 <dd>Renote先のUrl（リモートのノートオブジェクトを指定）</dd>
 </dl>
