@@ -6,11 +6,11 @@
 
 <dl>
 <dt>title</dt>
-<dd>タイトルです。本文の先頭に[ … ]と挿入されます。</dd>
+<dd>Tiu estas titolo.本文の先頭に[ … ]と挿入されます。</dd>
 <dt>text</dt>
-<dd>本文です。</dd>
+<dd>Tiu estas teksto</dd>
 <dt>url</dt>
-<dd>URL.末尾に挿入されます。</dd>
+<dd>Tiu estas URL.末尾に挿入されます。</dd>
 </dl>
 
 ### La  informo por respondi
@@ -23,7 +23,7 @@
 <dd>リプライ先のUrl（リモートのノートオブジェクトを指定）</dd>
 </dl>
 
-### Informo por plusendi noton
+### La informo por plusendi noton
 以下のいずれか
 
 <dl>
