@@ -127,11 +127,12 @@ router.get('/twemoji-badge/(.*)', async ctx => {
 		return;
 	}
 
-	ctx.set('Content-Security-Policy', `default-src 'none'; style-src 'unsafe-inline'`);
-	ctx.set('Cache-Control', 'max-age=2592000');
-	ctx.set('Content-Type', 'image/png');
-
-	const mask = await sharp(`${_dirname}/../../../node_modules/@discordapp/twemoji/dist/svg/${path.replace('.png', '')}.svg`, { density: 1000 })
+	const mask = await sharp(
+			`${_dirname}/../../../node_modules/@discordapp/twemoji/dist/svg/${path.replace('.png', '')}.svg`,
+			{ density: 1000 }
+		)
+		.resize(488, 488)
+		.clone()
 		.flatten({ background: '#000' })
 		.extend({
 			top: 12,
@@ -145,12 +146,18 @@ router.get('/twemoji-badge/(.*)', async ctx => {
 		.png()
 		.toBuffer();
 
-	ctx.body = sharp(
-		{ create: { width: 512, height: 512, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } }
-	)
+	const buffer = await sharp(
+			{ create: { width: 512, height: 512, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } }
+		)
 		.boolean(mask, 'eor')
 		.resize(96, 96)
-		.png();
+		.png()
+		.toBuffer();
+
+	ctx.set('Content-Security-Policy', `default-src 'none'; style-src 'unsafe-inline'`);
+	ctx.set('Cache-Control', 'max-age=2592000');
+	ctx.set('Content-Type', 'image/png');
+	ctx.body = buffer;
 });
 
 // ServiceWorker
