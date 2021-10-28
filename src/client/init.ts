@@ -128,7 +128,7 @@ if (loginId) {
 	if (!$i || $i.id !== loginId) {
 		const account = await getAccountFromId(loginId);
 		if (account) {
-			login(account.token, target);
+			await login(account.token, target);
 		}
 	}
 
