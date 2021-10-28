@@ -260,6 +260,7 @@ export async function createEmptyNotification() {
 		t('_notification.emptyPushNotificationMessage'),
 		{
 			silent: true,
+			badge: iconUrl('null'),
 			tag: 'read_notification',
 		}
 	);
