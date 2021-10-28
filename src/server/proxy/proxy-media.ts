@@ -53,7 +53,7 @@ export async function proxyMedia(ctx: Koa.Context) {
 
 			const stats = await data.clone().stats();
 
-			if (stats.entropy < 0.1) {
+			if (stats.entropy < 0.01) {
 				// エントロピーがあまりない場合は404にする
 				throw new StatusError('Skip to provide badge', 404);
 			}
