@@ -146,7 +146,7 @@ router.get('/twemoji-badge/(.*)', async ctx => {
 		.png()
 		.toBuffer();
 
-	const buffer = sharp(
+	const buffer = await sharp(
 			{ create: { width: 512, height: 512, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } }
 		)
 		.boolean(mask, 'eor')
