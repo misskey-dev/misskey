@@ -50,5 +50,5 @@
 ### Dosieroj
 <dl>
 <dt>fileIds</dt>
-<dd>添付したいファイルのid（カンマ区切りで）</dd>
+<dd>La ID-oj de viaj aldonotaj dosieroj (devas esti apartigita de komoj)</dd>
 </dl>
