@@ -35,7 +35,7 @@
 				<MkA class="item" active-class="active" to="/settings" v-click-anime>
 					<i class="fas fa-cog fa-fw"></i><span class="text">{{ $ts.settings }}</span>
 				</MkA>
-				<button class="item _button post" @click="post">
+				<button class="item _button post" @click="post" data-cy-open-post-form>
 					<i class="fas fa-pencil-alt fa-fw"></i><span class="text">{{ $ts.note }}</span>
 				</button>
 			</div>

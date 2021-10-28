@@ -1,4 +1,5 @@
-name: Node.js CI
+name: Test
+
 on:
   push:
     branches:
@@ -7,12 +8,12 @@ on:
   pull_request:
 
 jobs:
-  build_and_test:
+  mocha:
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [14.x, 16.x]
+        node-version: [16.x]
 
     services:
       postgres:
@@ -44,16 +45,43 @@ jobs:
     - name: Build
       run: yarn build
     - name: Test
-      run: yarn test
+      run: yarn mocha
 
-  lint:
+  e2e:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+
+    services:
+      postgres:
+        image: postgres:12.2-alpine
+        ports:
+          - 54312:5432
+        env:
+          POSTGRES_DB: test-misskey
+          POSTGRES_HOST_AUTH_METHOD: trust
+      redis:
+        image: redis:4.0-alpine
+        ports:
+          - 56312:6379
+
     steps:
     - uses: actions/checkout@v2
       with:
         submodules: true
-    - uses: actions/setup-node@v1
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
       with:
-        node-version: 12.x
-    - run: yarn install
-    - run: yarn lint
+        node-version: ${{ matrix.node-version }}
+    - name: Install dependencies
+      run: yarn install
+    - name: Check yarn.lock
+      run: git diff --exit-code yarn.lock
+    - name: Copy Configure
+      run: cp test/test.yml .config
+    - name: Build
+      run: yarn build
+    - name: Test
+      run: yarn e2e
