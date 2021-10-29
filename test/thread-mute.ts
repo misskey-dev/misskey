@@ -7,7 +7,6 @@ import { async, signup, request, post, react, connectStream, startServer, shutdo
 describe('Note thread mute', () => {
 	let p: childProcess.ChildProcess;
 
-	// alice mutes carol
 	let alice: any;
 	let bob: any;
 	let carol: any;
