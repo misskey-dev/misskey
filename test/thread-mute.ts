@@ -4,6 +4,8 @@ import * as assert from 'assert';
 import * as childProcess from 'child_process';
 import { async, signup, request, post, react, connectStream, startServer, shutdownServer } from './utils';
 
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
 describe('Note thread mute', () => {
 	let p: childProcess.ChildProcess;
 
@@ -63,6 +65,9 @@ describe('Note thread mute', () => {
 		const bobNote = await post(bob, { text: '@alice @carol root note' });
 
 		await request('/notes/thread-muting/create', { noteId: bobNote.id }, alice);
+
+		// ノート作成APIは、OKレスポンスを返した後に後処理としてストリーミング送信処理を行ったりするため、適度(なぜか3秒くらいじゃないとだめ)に待ってからでないと↑で作成したノートのイベントが↓のストリームに流れ込んでしまう
+		await sleep(3000);
 
 		let fired = false;
 
