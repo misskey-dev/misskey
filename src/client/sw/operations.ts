@@ -8,7 +8,7 @@ import * as Misskey from 'misskey-js';
 import { SwMessage, swMessageOrderType } from './types';
 import { getAcct } from '@/misc/acct';
 import { getAccountFromId } from '@client/scripts/get-account-from-id';
-import { appendLoginId } from '@client/scripts/login-id';
+import { getUrlWithLoginId } from '@client/scripts/login-id';
 
 export const cli = new Misskey.api.APIClient({ origin, fetch: (...args) => fetch(...args) });
 
@@ -56,7 +56,7 @@ export async function openClient(order: swMessageOrderType, url: string, loginId
 		return client;
 	}
 
-	return self.clients.openWindow(appendLoginId(url, loginId));
+	return self.clients.openWindow(getUrlWithLoginId(url, loginId));
 }
 
 export async function findClient() {
