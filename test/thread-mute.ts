@@ -26,7 +26,7 @@ describe('Note thread mute', () => {
 		const bobNote = await post(bob, { text: '@alice @carol root note' });
 		const aliceReply = await post(alice, { replyId: bobNote.id, text: '@bob @carol child note' });
 
-		await request('/notes/thread-muting/create', { noteId: bobNote.id });
+		await request('/notes/thread-muting/create', { noteId: bobNote.id }, alice);
 
 		const carolReply = await post(carol, { replyId: bobNote.id, text: '@bob @alice child note' });
 		const carolReplyWithoutMention = await post(carol, { replyId: aliceReply.id, text: 'child note' });
@@ -46,7 +46,7 @@ describe('Note thread mute', () => {
 
 		const bobNote = await post(bob, { text: '@alice @carol root note' });
 
-		await request('/notes/thread-muting/create', { noteId: bobNote.id });
+		await request('/notes/thread-muting/create', { noteId: bobNote.id }, alice);
 
 		const carolReply = await post(carol, { replyId: bobNote.id, text: '@bob @alice child note' });
 
@@ -62,7 +62,7 @@ describe('Note thread mute', () => {
 
 		const bobNote = await post(bob, { text: '@alice @carol root note' });
 
-		await request('/notes/thread-muting/create', { noteId: bobNote.id });
+		await request('/notes/thread-muting/create', { noteId: bobNote.id }, alice);
 
 		let fired = false;
 
@@ -85,7 +85,7 @@ describe('Note thread mute', () => {
 		const bobNote = await post(bob, { text: '@alice @carol root note' });
 		const aliceReply = await post(alice, { replyId: bobNote.id, text: '@bob @carol child note' });
 
-		await request('/notes/thread-muting/create', { noteId: bobNote.id });
+		await request('/notes/thread-muting/create', { noteId: bobNote.id }, alice);
 
 		const carolReply = await post(carol, { replyId: bobNote.id, text: '@bob @alice child note' });
 		const carolReplyWithoutMention = await post(carol, { replyId: aliceReply.id, text: 'child note' });
