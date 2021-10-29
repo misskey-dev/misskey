@@ -37,7 +37,7 @@ import { isMobile } from '@client/scripts/is-mobile';
 import { initializeSw } from '@client/scripts/initialize-sw';
 import { reloadChannel } from '@client/scripts/unison-reload';
 import { reactionPicker } from '@client/scripts/reaction-picker';
-import { deleteLoginId } from '@client/scripts/login-id';
+import { getUrlWithoutLoginId } from '@client/scripts/login-id';
 import { getAccountFromId } from '@client/scripts/get-account-from-id';
 
 console.info(`Misskey v${version}`);
@@ -126,7 +126,7 @@ const params = new URLSearchParams(location.search);
 const loginId = params.get('loginId');
 
 if (loginId) {
-	const target = deleteLoginId(location.href);
+	const target = getUrlWithoutLoginId(location.href);
 
 	if (!$i || $i.id !== loginId) {
 		const account = await getAccountFromId(loginId);
