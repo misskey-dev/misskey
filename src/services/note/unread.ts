@@ -1,10 +1,10 @@
 import { Note } from '@/models/entities/note';
 import { publishMainStream } from '@/services/stream';
 import { User } from '@/models/entities/user';
-import { Mutings, NoteUnreads } from '@/models/index';
+import { Mutings, NoteThreadMutings, NoteUnreads } from '@/models/index';
 import { genId } from '@/misc/gen-id';
 
-export default async function(userId: User['id'], note: Note, params: {
+export async function insertNoteUnread(userId: User['id'], note: Note, params: {
 	// NOTE: isSpecifiedがtrueならisMentionedは必ずfalse
 	isSpecified: boolean;
 	isMentioned: boolean;
@@ -16,6 +16,13 @@ export default async function(userId: User['id'], note: Note, params: {
 	});
 	if (mute.map(m => m.muteeId).includes(note.userId)) return;
 	//#endregion
+
+	// スレッドミュート
+	const threadMute = await NoteThreadMutings.findOne({
+		userId: userId,
+		threadId: note.threadId || note.id,
+	});
+	if (threadMute) return;
 
 	const unread = {
 		id: genId(),

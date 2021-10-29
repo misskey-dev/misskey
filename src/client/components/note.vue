@@ -576,6 +576,12 @@ export default defineComponent({
 			});
 		},
 
+		toggleThreadMute(mute: boolean) {
+			os.apiWithDialog(mute ? 'notes/thread-muting/create' : 'notes/thread-muting/delete', {
+				noteId: this.appearNote.id
+			});
+		},
+
 		getMenu() {
 			let menu;
 			if (this.$i) {
@@ -632,6 +638,15 @@ export default defineComponent({
 					text: this.$ts.watch,
 					action: () => this.toggleWatch(true)
 				}) : undefined,
+				statePromise.then(state => state.isMutedThread ? {
+					icon: 'fas fa-comment-slash',
+					text: this.$ts.unmuteThread,
+					action: () => this.toggleThreadMute(false)
+				} : {
+					icon: 'fas fa-comment-slash',
+					text: this.$ts.muteThread,
+					action: () => this.toggleThreadMute(true)
+				}),
 				this.appearNote.userId == this.$i.id ? (this.$i.pinnedNoteIds || []).includes(this.appearNote.id) ? {
 					icon: 'fas fa-thumbtack',
 					text: this.$ts.unpin,
