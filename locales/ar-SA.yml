@@ -821,6 +821,7 @@ _visibility:
 _postForm:
   replyPlaceholder: "رد على هذه الملاحظة…"
   quotePlaceholder: "اقتبس هذه الملاحظة…"
+  channelPlaceholder: "انشر في قناة..."
 _profile:
   name: "الإسم"
   username: "اسم المستخدم"
