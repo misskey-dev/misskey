@@ -835,6 +835,8 @@ _profile:
   metadataEdit: "عدّل المعلومات الإضافية"
   metadataDescription: "يُمكنك عرض 4 حقول معلومات في ملفك الشخصي"
   metadataLabel: "التسمية"
+  changeAvatar: "غيّر الصورة الرمزية"
+  changeBanner: "غيّر اللافتة"
 _exportOrImport:
   allNotes: "كل الملاحظات"
   followingList: "المتابَعون"
