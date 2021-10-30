@@ -85,7 +85,7 @@ serverIsDead: "الخادم لا يستجيب، حاول بعد قليل"
 youShouldUpgradeClient: "حدّث الصفحة لعرضها."
 enterListName: "اسم القائمة"
 privacy: "الخصوصية"
-makeFollowManuallyApprove: "القبول يدويا طلبات الإشتراك"
+makeFollowManuallyApprove: "قبول طلبات الإشتراك يدويا"
 defaultNoteVisibility: "مدى الرؤية الافتراضي"
 follow: "تابِع"
 followRequest: "طلب اشتراك"
@@ -835,6 +835,7 @@ _profile:
   metadataEdit: "عدّل المعلومات الإضافية"
   metadataDescription: "يُمكنك عرض 4 حقول معلومات في ملفك الشخصي"
   metadataLabel: "التسمية"
+  metadataContent: "المحتوى"
   changeAvatar: "غيّر الصورة الرمزية"
   changeBanner: "غيّر اللافتة"
 _exportOrImport:
@@ -846,6 +847,7 @@ _exportOrImport:
 _charts:
   usersTotal: "مجموع عدد المستخدمين والمستخدمات"
   activeUsers: "المستخدمون النشطون"
+  notesTotal: "إجمالي الملاحظات"
 _timelines:
   home: "الرئيسي"
   local: "المحلي"
@@ -875,6 +877,12 @@ _pages:
   my: "صفحاتي"
   blocks:
     image: "الصور"
+    _post:
+      text: "المحتوى"
+    _button:
+      _action:
+        _dialog:
+          content: "المحتوى"
   script:
     categories:
       list: "القوائم"
