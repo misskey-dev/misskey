@@ -822,10 +822,19 @@ _postForm:
   replyPlaceholder: "رد على هذه الملاحظة…"
   quotePlaceholder: "اقتبس هذه الملاحظة…"
   channelPlaceholder: "انشر في قناة..."
+  _placeholders:
+    c: "ما الذي تفكر فيه؟"
+    d: "ما الذي تريد قوله؟"
+    e: "أكتب..."
 _profile:
   name: "الإسم"
   username: "اسم المستخدم"
+  description: "السيرة"
   youCanIncludeHashtags: "يمكنك أيضًا إضافة وسوم إلى نبذتك التعريفية."
+  metadata: "معلومات إضافية"
+  metadataEdit: "عدّل المعلومات الإضافية"
+  metadataDescription: "يُمكنك عرض 4 حقول معلومات في ملفك الشخصي"
+  metadataLabel: "التسمية"
 _exportOrImport:
   allNotes: "كل الملاحظات"
   followingList: "المتابَعون"
