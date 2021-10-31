@@ -10,6 +10,7 @@
 ## 12.x.x (unreleased)
 
 ### Improvements
+- スレッドミュート機能
 
 ### Bugfixes
 - リレー向けのActivityが一部実装で除外されてしまうことがあるのを修正
