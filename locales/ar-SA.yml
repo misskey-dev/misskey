@@ -698,8 +698,17 @@ _reversi:
   allGames: "كل الجولات"
   ended: "انتهت"
   playing: "يُلعب الآن"
+_serverDisconnectedBehavior:
+  reload: "إعادة تحميل تلقائية"
 _channel:
+  create: "أنشئ قناة"
+  edit: "عدّل قناة"
+  setBanner: "عيّن اللافتة"
+  removeBanner: "أزل اللافتة"
   featured: "المتداوَلة"
+  following: "متابَع"
+  usersCount: "{n} منتسب"
+  notesCount: "{n} ملاحظة"
 _menuDisplay:
   hide: "إخفاء"
 _theme:
