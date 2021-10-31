@@ -706,7 +706,7 @@ _docs:
   generalTopics: "مواضيع عامة"
   advancedTopics: "مواضيع متقدمة"
   admin: "إدارة "
-  translateWarn: "هذه الوثيقة مترجمة وقد يختلف المعنى عن المعنى الأصلي للوثيقة."
+  translateWarn: "هذه الوثيقة مترجمة وقد يختلف معناها عن المعنى الأصلي للوثيقة."
 _ad:
   back: "رجوع"
 _forgotPassword:
@@ -723,8 +723,10 @@ _email:
     title: "استلمت طلب متابعة"
 _plugin:
   install: "ثبّت إضافات"
+  installWarn: "رجاءً لا تثبت إضافات غير موثوقة."
   manage: "إدارة الإضافات"
 _registry:
+  scope: "الحيّز"
   key: "مفتاح"
   keys: "المفاتيح"
   domain: "النّطاق"
