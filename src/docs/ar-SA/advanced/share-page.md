@@ -33,7 +33,7 @@
 <dd>Renote先のUrl（リモートのノートオブジェクトを指定）</dd>
 </dl>
 
-### 公開範囲
+### الظهور
 ※specifiedに相当する値はvisibility=specifiedとvisibleAccts/visibleUserIdsで指定する
 
 <dl>

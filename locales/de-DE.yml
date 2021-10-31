@@ -799,6 +799,8 @@ manageAccounts: "Benutzerkonten verwalten"
 makeReactionsPublic: "Reaktionsverlauf veröffentlichen"
 makeReactionsPublicDescription: "Jeder wird die Liste deiner gesendeten Reaktionen einsehen können."
 classic: "Classic"
+muteThread: "Thread stummschalten"
+unmuteThread: "Threadstummschaltung aufheben"
 _signup:
   almostThere: "Fast geschafft"
   emailAddressInfo: "Bitte gib deine Email-Adresse ein."

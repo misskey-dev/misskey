@@ -1,6 +1,6 @@
 {
 	"name": "misskey",
-	"version": "12.94.1",
+	"version": "12.95.0",
 	"codename": "indigo",
 	"repository": {
 		"type": "git",
@@ -28,8 +28,9 @@
 		"lint": "tslint 'src/**/*.ts'",
 		"cy:open": "cypress open",
 		"cy:run": "cypress run",
-		"e2e": "start-server-and-test start:test http://localhost cy:run",
-		"test": "cross-env TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT=\"./test/tsconfig.json\" mocha",
+		"e2e": "start-server-and-test start:test http://localhost:61812 cy:run",
+		"mocha": "cross-env TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT=\"./test/tsconfig.json\" mocha",
+		"test": "npm run mocha",
 		"format": "gulp format"
 	},
 	"resolutions": {

@@ -150,26 +150,26 @@ export default defineComponent({
 				});
 			};
 
-			for (const optionOrOptgroup of options) {
-				if (optionOrOptgroup.type === 'optgroup') {
-					const optgroup = optionOrOptgroup;
-					menu.push({
-						type: 'label',
-						text: optgroup.props.label,
-					});
-					for (const option of optgroup.children) {
+			const scanOptions = (options: VNode[]) => {
+				for (const vnode of options) {
+					if (vnode.type === 'optgroup') {
+						const optgroup = vnode;
+						menu.push({
+							type: 'label',
+							text: optgroup.props.label,
+						});
+						scanOptions(optgroup.children);
+					} else if (Array.isArray(vnode.children)) { // 何故かフラグメントになってくることがある
+						const fragment = vnode;
+						scanOptions(fragment.children);
+					} else {
+						const option = vnode;
 						pushOption(option);
 					}
-				} else if (Array.isArray(optionOrOptgroup.children)) { // 何故かフラグメントになってくることがある
-					const fragment = optionOrOptgroup;
-					for (const option of fragment.children) {
-						pushOption(option);
-					}
-				} else {
-					const option = optionOrOptgroup;
-					pushOption(option);
 				}
-			}
+			};
+
+			scanOptions(options);
 
 			os.popupMenu(menu, container.value, {
 				width: container.value.offsetWidth,

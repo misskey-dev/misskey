@@ -10,7 +10,12 @@ import { defineComponent } from 'vue';
 import * as os from '@client/os';
 
 export default defineComponent({
-	props: ['q'],
+	props: {
+		q: {
+			type: String,
+			required: true,
+		}
+	},
 	data() {
 		return {
 			query: null,
@@ -21,10 +26,7 @@ export default defineComponent({
 	},
 	methods: {
 		search() {
-			const engine = this.$store.state.webSearchEngine ||
-				'https://www.google.com/search?q={{query}}';
-			const url = engine.replace('{{query}}', this.query)
-			window.open(url, '_blank');
+			window.open(`https://www.google.com/search?q=${this.query}`, '_blank');
 		}
 	}
 });
