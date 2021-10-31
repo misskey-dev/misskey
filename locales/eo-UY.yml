@@ -793,6 +793,7 @@ _pages:
   featured: "Ravaĵoj"
   contents: "Enhavo"
   content: "Paĝo en bloko"
+  title: "Temlinio"
   url: "URL de paĝo"
   alignCenter: "Centrigi"
   chooseBlock: "Aldoni blokon"
@@ -805,7 +806,11 @@ _pages:
     _post:
       canvasId: "Kanvasa identigilo"
     textInput: "Enmeto el teksto"
+    _textInput:
+      text: "Titolo"
     textareaInput: "Enmeto el teksto en multaj linioj"
+    _textareaInput:
+      text: "Titolo"
     numberInput: "Nombra enmeto"
     _numberInput:
       text: "Titolo"
@@ -813,6 +818,8 @@ _pages:
       id: "Kanvasa identigilo"
     _note:
       id: "Identigilo de noto"
+    _switch:
+      text: "Titolo"
     _counter:
       text: "Titolo"
     _button:
@@ -820,6 +827,8 @@ _pages:
       _action:
         _pushEvent:
           event: "Nomo de la evento"
+    _radioButton:
+      title: "Titolo"
   script:
     categories:
       text: "Manipulo de teksto"
