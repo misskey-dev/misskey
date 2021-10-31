@@ -7,6 +7,13 @@
 
 -->
 
+## 12.x.x (unreleased)
+
+### Improvements
+
+### Bugfixes
+- リレー向けのActivityが一部実装で除外されてしまうことがあるのを修正
+
 ## 12.94.1 (2021/10/25)
 
 ### Improvements
