@@ -10,13 +10,13 @@ import { resolveUser } from '@/remote/resolve-user';
 import config from '@/config/index';
 import { updateHashtags } from '../update-hashtag';
 import { concat } from '@/prelude/array';
-import insertNoteUnread from './unread';
+import { insertNoteUnread } from '@/services/note/unread';
 import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
 import { extractMentions } from '@/misc/extract-mentions';
 import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm';
 import { extractHashtags } from '@/misc/extract-hashtags';
 import { Note, IMentionedRemoteUsers } from '@/models/entities/note';
-import { Mutings, Users, NoteWatchings, Notes, Instances, UserProfiles, Antennas, Followings, MutedNotes, Channels, ChannelFollowings, Blockings } from '@/models/index';
+import { Mutings, Users, NoteWatchings, Notes, Instances, UserProfiles, Antennas, Followings, MutedNotes, Channels, ChannelFollowings, Blockings, NoteThreadMutings } from '@/models/index';
 import { DriveFile } from '@/models/entities/drive-file';
 import { App } from '@/models/entities/app';
 import { Not, getConnection, In } from 'typeorm';
@@ -344,8 +344,15 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 
 			// 通知
 			if (data.reply.userHost === null) {
-				nm.push(data.reply.userId, 'reply');
-				publishMainStream(data.reply.userId, 'reply', noteObj);
+				const threadMuted = await NoteThreadMutings.findOne({
+					userId: data.reply.userId,
+					threadId: data.reply.threadId || data.reply.id,
+				});
+
+				if (!threadMuted) {
+					nm.push(data.reply.userId, 'reply');
+					publishMainStream(data.reply.userId, 'reply', noteObj);
+				}
 			}
 		}
 
@@ -459,6 +466,11 @@ async function insertNote(user: { id: User['id']; host: User['host']; }, data: O
 		replyId: data.reply ? data.reply.id : null,
 		renoteId: data.renote ? data.renote.id : null,
 		channelId: data.channel ? data.channel.id : null,
+		threadId: data.reply
+			? data.reply.threadId
+				? data.reply.threadId
+				: data.reply.id
+			: null,
 		name: data.name,
 		text: data.text,
 		hasPoll: data.poll != null,
@@ -581,6 +593,15 @@ async function notifyToWatchersOfReplyee(reply: Note, user: { id: User['id']; },
 
 async function createMentionedEvents(mentionedUsers: User[], note: Note, nm: NotificationManager) {
 	for (const u of mentionedUsers.filter(u => Users.isLocalUser(u))) {
+		const threadMuted = await NoteThreadMutings.findOne({
+			userId: u.id,
+			threadId: note.threadId || note.id,
+		});
+
+		if (threadMuted) {
+			continue;
+		}
+
 		const detailPackedNote = await Notes.pack(note, u, {
 			detail: true
 		});

@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as WebSocket from 'ws';
+import * as misskey from 'misskey-js';
 import fetch from 'node-fetch';
 const FormData = require('form-data');
 import * as childProcess from 'child_process';
@@ -52,7 +53,7 @@ export const signup = async (params?: any): Promise<any> => {
 	return res.body;
 };
 
-export const post = async (user: any, params?: any): Promise<any> => {
+export const post = async (user: any, params?: misskey.Endpoints['notes/create']['req']): Promise<misskey.entities.Note> => {
 	const q = Object.assign({
 		text: 'test'
 	}, params);
