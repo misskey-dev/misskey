@@ -26,7 +26,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineAsyncComponent, defineComponent, nextTick, onMounted, reactive, ref, watch } from 'vue';
+import { computed, defineAsyncComponent, defineComponent, isRef, nextTick, onMounted, reactive, ref, watch } from 'vue';
 import { i18n } from '@client/i18n';
 import MkSuperMenu from '@client/components/ui/super-menu.vue';
 import FormGroup from '@client/components/debobigego/group.vue';
@@ -73,7 +73,13 @@ export default defineComponent({
 		const view = ref(null);
 		const el = ref(null);
 		const onInfo = (viewInfo) => {
-			childInfo.value = viewInfo;
+			if (isRef(viewInfo)) {
+				watch(viewInfo, () => {
+					childInfo.value = viewInfo.value;
+				}, { immediate: true });
+			} else {
+				childInfo.value = viewInfo;
+			}
 		};
 		const pageProps = ref({});
 
