@@ -112,7 +112,7 @@ export class UserRepository extends Repository<User> {
 
 		const unread = channels.length > 0 ? await NoteUnreads.findOne({
 			userId: userId,
-			noteChannelId: In(channels.map(x => x.id)),
+			noteChannelId: In(channels.map(x => x.followeeId)),
 		}) : null;
 
 		return unread != null;
