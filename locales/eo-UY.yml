@@ -543,6 +543,7 @@ learnMore: "Lernu pli"
 translate: "Traduki"
 translatedFrom: "Tradukita el {x}"
 controlPanel: "Ŝaltpodio"
+classic: "Klasika"
 _docs:
   continueReading: "Legi plu"
   features: "Funkcioj"

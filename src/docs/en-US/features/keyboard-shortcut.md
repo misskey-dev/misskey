@@ -1,24 +1,24 @@
-# キーボードショートカット
+# Keyboard shortcuts
 
 ## Global
-これらのショートカットは基本的にどこでも使えます。
+These shortcuts are usually available anywhere.
 <table>
     <thead>
-        <tr><th>ショートカット</th><th>効果</th><th>由来</th></tr>
+        <tr><th>Shortcut</th><th>Effect</th><th>Why this key?</th></tr>
     </thead>
     <tbody>
-        <tr><td><kbd class="key">P</kbd>, <kbd class="key">N</kbd></td><td>新規投稿</td><td><b>P</b>ost, <b>N</b>ew, <b>N</b>ote</td></tr>
-        <tr><td><kbd class="key">T</kbd></td><td>タイムラインの最も新しい投稿にフォーカス</td><td><b>T</b>imeline, <b>T</b>op</td></tr>
-        <tr><td><kbd class="group"><kbd class="key">Shift</kbd> + <kbd class="key">N</kbd></kbd></td><td>通知を表示/隠す</td><td><b>N</b>otifications</td></tr>
+        <tr><td><kbd class="key">P</kbd>, <kbd class="key">N</kbd></td><td>Create a note</td><td><b>P</b>ost, <b>N</b>ew, <b>N</b>ote</td></tr>
+        <tr><td><kbd class="key">T</kbd></td><td>Focus the latest note</td><td><b>T</b>imeline, <b>T</b>op</td></tr>
+        <tr><td><kbd class="group"><kbd class="key">Shift</kbd> + <kbd class="key">N</kbd></kbd></td><td>Show/hide notifications</td><td><b>N</b>otifications</td></tr>
         <tr><td><kbd class="key">S</kbd></td><td>Search</td><td><b>S</b>earch</td></tr>
-        <tr><td><kbd class="key">H</kbd>, <kbd class="key">?</kbd></td><td>ヘルプを表示</td><td><b>H</b>elp</td></tr>
+        <tr><td><kbd class="key">H</kbd>, <kbd class="key">?</kbd></td><td>Show help</td><td><b>H</b>elp</td></tr>
     </tbody>
 </table>
 
 ## 投稿にフォーカスされた状態
 <table>
     <thead>
-        <tr><th>ショートカット</th><th>効果</th><th>由来</th></tr>
+        <tr><th>Shortcut</th><th>Effect</th><th>Why this key?</th></tr>
     </thead>
     <tbody>
         <tr><td><kbd class="key">↑</kbd>, <kbd class="key">K</kbd>, <kbd class="group"><kbd class="key">Shift</kbd> + <kbd class="key">Tab</kbd></kbd></td><td>上の投稿にフォーカスを移動</td><td>-</td></tr>
@@ -39,12 +39,12 @@
 ## Renoteフォーム
 <table>
     <thead>
-        <tr><th>ショートカット</th><th>効果</th><th>由来</th></tr>
+        <tr><th>Shortcut</th><th>Effect</th><th>Why this key?</th></tr>
     </thead>
     <tbody>
-        <tr><td><kbd class="key">Enter</kbd></td><td>Renoteする</td><td>-</td></tr>
-        <tr><td><kbd class="key">Q</kbd></td><td>フォームを展開する</td><td><b>Q</b>uote</td></tr>
-        <tr><td><kbd class="key">Esc</kbd></td><td>フォームを閉じる</td><td>-</td></tr>
+        <tr><td><kbd class="key">Enter</kbd></td><td>Renote</td><td>-</td></tr>
+        <tr><td><kbd class="key">Q</kbd></td><td>Expand form</td><td><b>Q</b>uote</td></tr>
+        <tr><td><kbd class="key">Esc</kbd></td><td>Close form</td><td>-</td></tr>
     </tbody>
 </table>
 
@@ -52,7 +52,7 @@
 デフォルトで「👍」にフォーカスが当たっている状態です。
 <table>
     <thead>
-        <tr><th>ショートカット</th><th>効果</th><th>由来</th></tr>
+        <tr><th>Shortcut</th><th>Effect</th><th>Why this key?</th></tr>
     </thead>
     <tbody>
         <tr><td><kbd class="key">↑</kbd>, <kbd class="key">K</kbd></td><td>上のリアクションにフォーカスを移動</td><td>-</td></tr>
