@@ -1,6 +1,6 @@
 # Pri Misskey
 
-Misskey estas projekto de malfermitkoda distribuita etblogo. Ĝi havas diversajn funkciojn ekzemple disko, reagoj, ktp kaj alte agordeblan fasadon. Evoluigo ekfaris de syuilo de 2014.
+Misskey estas malfermitkoda projekto de distribuita etblogo. Ĝi havas diversajn funkciojn ekzemple disko, reagoj, ktp kaj alte agordeblan fasadon. Evoluigo ekfaris de syuilo de 2014.
 
 ## Historio
 開発当初は掲示板がメインのサービスでしたが、ユーザーが短文を投稿し、それを時系列で流れるタイムライン機能を追加したところ人気が高まり、徐々にそれがメインとして開発が進むようになりました。 当初は分散型ではありませんでしたが、2018年にActivityPubを実装し分散型になったことで、より多くの方に認知され利用されるサービスになり、現在に至ります。
