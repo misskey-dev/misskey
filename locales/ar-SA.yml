@@ -584,7 +584,7 @@ experimentalFeatures: "ميّزات اختبارية"
 developer: "المطور"
 makeExplorable: "أظهر الحساب في صفحة \"استكشاف\""
 makeExplorableDescription: "بتعطيل هذا الخيار لن يظهر حسابك في صفحة \"استكشاف\""
-reloadToApplySetting: "سيُطبق عذا الإعداظ بعد إعادة تحميل الصفحة، أتريد إعادة تحميلها الآن؟"
+reloadToApplySetting: "سيُطبق هذا الإعداد بعد إعادة تحميل الصفحة، أتريد إعادة تحميلها الآن؟"
 showTitlebar: "اعرض شريط العنوان"
 clearCache: "امسح التخزين المؤقت"
 onlineUsersCount: "{n} مستخدم متصل"
@@ -752,6 +752,8 @@ _reversi:
   allGames: "كل الجولات"
   ended: "انتهت"
   playing: "يُلعب الآن"
+_instanceTicker:
+  remote: "أظهر للمستخدمين البِعاد"
 _serverDisconnectedBehavior:
   reload: "إعادة تحميل تلقائية"
 _channel:
@@ -765,6 +767,11 @@ _channel:
   notesCount: "{n} ملاحظة"
 _menuDisplay:
   hide: "إخفاء"
+_wordMute:
+  muteWordsDescription2: "احصر الكلمات المفتاحية بين بين شرطتين مائلتين لاستخدامها كتعابير نمطية"
+  softDescription: "اخف الملاحظات التي تستوف الشروط من الخيط الزمني."
+  hardDescription: "يخفي الملاحظات التي تستوف الشروط من الخيط الزمني.هذه الملاحظات ستبقى مخفية حتى وإن تغيرت الشروط."
+  mutedNotes: "الملاحظات المكتومة"
 _theme:
   explore: "استكشف قوالب المظهر"
   install: "تنصيب قالب"
@@ -772,6 +779,9 @@ _theme:
   code: "شيفرة القالب"
   description: "الوصف"
   installed: "تم تنصيب {name}"
+  installedThemes: "السمات المثبتة"
+  builtinThemes: "السمات المدمجة"
+  alreadyInstalled: "هذه السمة مثبتة سلفًا"
   make: "إنشاء قالب"
   alpha: "الشفافية"
   keys:
