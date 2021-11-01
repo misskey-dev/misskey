@@ -1168,7 +1168,7 @@ _notification:
   _types:
     all: "الكل"
     follow: "المتابَعون"
-    mention: "أشر الى"
+    mention: "الإشارات"
     reply: "الردود"
     renote: "أعد النشر"
     quote: "اقتبس"
