@@ -580,7 +580,7 @@ yes: "نعم"
 no: "لا"
 driveFilesCount: "عدد الملفات في قرص التخزين"
 noteFavoritesCount: "عدد الملاحظات المفضلة"
-contact: "متراسل"
+contact: "التواصل"
 useSystemFont: "استخدم الخط الافتراضية للنظام"
 experimentalFeatures: "ميّزات اختبارية"
 developer: "المطور"
@@ -908,6 +908,10 @@ _permissions:
   "write:gallery": "عدّل المعرض"
 _auth:
   shareAccess: "أتريد التفويض لـ \"{name}\" بالوصول لحسابك؟"
+  shareAccessAsk: "هل تخول لهذا التطبيق الوصول لحسابك؟"
+  permissionAsk: "يطلب التطبيق الأذون التالية"
+  pleaseGoBack: "رجاءً عد للتطبيق"
+  callback: "العودة للتطبيق"
   denied: "رُفض الوصول"
 _antennaSources:
   all: "كل الملاحظات"
@@ -1052,15 +1056,43 @@ _pages:
         arg1: "القوائم"
       _dailyRandomPick:
         arg1: "القوائم"
+      _seedRannum:
+        arg3: "أقصى قيمة"
+      seedRandomPick: "اختيار عشوائي من القائمة (عبر بذرة)"
       _seedRandomPick:
+        arg1: "البذرة"
         arg2: "القوائم"
+      pick: "اختر من القائمة"
       _pick:
         arg1: "القوائم"
       _listLen:
         arg1: "القوائم"
+      _splitStrByLine:
+        arg1: "نص"
+      ref: "متغيّر"
+      fn: "دالة"
+      _fn:
+        arg1: "المُخرج"
+      for: "حلقة تكرار"
+      _for:
+        arg1: "عدد مرات التكرار"
+        arg2: "الإجراء"
     types:
+      string: "نص"
+      number: "رقم"
       array: "القوائم"
+      stringArray: "قائمة نصية"
+    emptySlot: "خانة فارغة"
+    enviromentVariables: "متغيرات البيئة"
+    pageVariables: "متغيرات الصفحة"
+    argVariables: "خانة إدخال"
+_relayStatus:
+  requesting: "مُعلّق"
+  accepted: "مقبول"
+  rejected: "مرفوض"
 _notification:
+  fileUploaded: "نجح رفع الملف"
+  youGotReply: "ردّ عليك {name}"
   youGotPoll: "شارك {name} في استطلاع الرأي"
   youGotMessagingMessageFromUser: "لقد تلقيت رسالة مِن {name}"
   youGotMessagingMessageFromGroup: "لقد أرسِلَت رسالة إلى الفريق {name}"
