@@ -13,7 +13,7 @@ ok: " حسناً"
 gotIt: "فهِمت"
 cancel: " إلغاء"
 enterUsername: "أدخِل إسم مسخدم"
-renotedBy: "أعاد {user} نشر ملاحظة"
+renotedBy: "أعاد نشرها {user}"
 noNotes: "لم يُعثر على أية ملاحظات"
 noNotifications: "ليس هناك أية اشعارات"
 instance: "مثيل الخادم"
@@ -1062,21 +1062,34 @@ _pages:
       _seedRandomPick:
         arg1: "البذرة"
         arg2: "القوائم"
+      DRPWPM: "اختيار عشوائي من قائمة الاحتمالات (تتغير مرة يوميًا لكل مستخدم)"
+      _DRPWPM:
+        arg1: "قائمة نصية"
       pick: "اختر من القائمة"
       _pick:
         arg1: "القوائم"
+        arg2: "الموضع"
+      listLen: "طول القائمة"
       _listLen:
         arg1: "القوائم"
+      number: "رقم"
+      _stringToNumber:
+        arg1: "نص"
+      _numberToString:
+        arg1: "رقم"
       _splitStrByLine:
         arg1: "نص"
       ref: "متغيّر"
       fn: "دالة"
       _fn:
+        slots: "خانات"
         arg1: "المُخرج"
       for: "حلقة تكرار"
       _for:
         arg1: "عدد مرات التكرار"
         arg2: "الإجراء"
+    typeError: "الخانة {slot} تقبل \"{expect}\" لكن القيمة المعطاة هي \"{actual}\"!"
+    thereIsEmptySlot: "الخانة {slot} فارغة!"
     types:
       string: "نص"
       number: "رقم"
@@ -1092,18 +1105,25 @@ _relayStatus:
   rejected: "مرفوض"
 _notification:
   fileUploaded: "نجح رفع الملف"
+  youGotMention: "{name} أشار إليك"
   youGotReply: "ردّ عليك {name}"
+  youRenoted: "إعادت نشر من {name}"
   youGotPoll: "شارك {name} في استطلاع الرأي"
   youGotMessagingMessageFromUser: "لقد تلقيت رسالة مِن {name}"
   youGotMessagingMessageFromGroup: "لقد أرسِلَت رسالة إلى الفريق {name}"
   youWereFollowed: "يتابعك"
+  youReceivedFollowRequest: "تلقيتَ طلب متابعة"
+  yourFollowRequestAccepted: "قُبل طلب المتابعة"
   youWereInvitedToGroup: "دُعيت إلى مجموعة"
   _types:
+    all: "الكل"
     follow: "المتابَعون"
     mention: "أشر الى"
+    reply: "الردود"
     renote: "أعد النشر"
     quote: "اقتبس"
     reaction: "تفاعل"
+    followRequestAccepted: "طلبات المتابعة المقبولة"
 _deck:
   _columns:
     notifications: "الإشعارات"
