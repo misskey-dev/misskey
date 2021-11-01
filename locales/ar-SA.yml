@@ -933,7 +933,12 @@ _widgets:
   photos: "الصور"
   digitalClock: "ساعة رقمية"
   federation: "الفديرالية"
+  postForm: "أنشئ ملاحظة"
+  slideshow: "عرض الشرائح"
+  button: "زر"
+  onlineUsers: "المتّصلون"
   jobQueue: "قائمة الانتظار"
+  serverMetric: "إحصائيات الخادم"
 _cw:
   hide: "إخفاء"
   show: "عرض المزيد"
