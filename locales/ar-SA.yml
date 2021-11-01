@@ -346,7 +346,7 @@ silence: "اكتم"
 silenceConfirm: "أمتأكد من كتم هذا المستخدم؟"
 unsilence: "إلغاء الكتم"
 unsilenceConfirm: "أمتأكد من إلغاء كتم هذا المستخدم؟"
-popularUsers: "المستخدمون الشائعون"
+popularUsers: "المستخدمون الرائدون"
 recentlyUpdatedUsers: "أصحاب النشاطات الأخيرة"
 recentlyRegisteredUsers: "المستخدمون المنضمون حديثًا"
 recentlyDiscoveredUsers: "المستخدمون المكتشفون حديثًا"
@@ -1052,11 +1052,61 @@ _pages:
         arg1: "القوائم"
         arg2: "فاصل"
       add: "إضافة"
+      round: "تقريب عدد عشري"
+      _round:
+        arg1: "رقم"
+      eq: "أ و ب متساويان"
+      _eq:
+        arg1: "أ"
+        arg2: "ب"
+      notEq: "أ و ب مختلفان"
+      _notEq:
+        arg1: "أ"
+        arg2: "ب"
+      and: "أ و ب"
+      _and:
+        arg1: "أ"
+        arg2: "ب"
+      or: "أ أو ب"
+      _or:
+        arg1: "أ"
+        arg2: "ب"
+      lt: "أ أصغر من ب"
+      _lt:
+        arg1: "أ"
+        arg2: "ب"
+      gt: "أ أكبر من ب"
+      _gt:
+        arg1: "أ"
+        arg2: "ب"
+      ltEq: "أ أصغر من أو يساوي ب"
+      _ltEq:
+        arg1: "أ"
+        arg2: "ب"
+      gtEq: "أ أكبر من أو يساوي ب"
+      _gtEq:
+        arg1: "أ"
+        arg2: "ب"
+      if: "فرع"
+      random: "عشوائي"
+      rannum: "رقم عشوائي"
+      _rannum:
+        arg1: "أدنى قيمة"
+        arg2: "أقصى قيمة"
+      randomPick: "اختر عشوائيًا من القائمة"
       _randomPick:
         arg1: "القوائم"
+      _dailyRannum:
+        arg1: "أدنى قيمة"
+        arg2: "أقصى قيمة"
       _dailyRandomPick:
         arg1: "القوائم"
+      seedRandom: "عشوائي (عبر بذرة)"
+      _seedRandom:
+        arg1: "البذرة"
       _seedRannum:
+        arg1: "البذرة"
+        arg2: "أدنى قيمة"
         arg3: "أقصى قيمة"
       seedRandomPick: "اختيار عشوائي من القائمة (عبر بذرة)"
       _seedRandomPick:
