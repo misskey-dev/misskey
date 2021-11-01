@@ -1,3 +1,5 @@
+// NOTE: client/components/autocomplete.vueにも関数のリスト(MFM_TAGS)があるので統合？
+
 const fnNameList = [
 	'tada',
 	'jelly',
