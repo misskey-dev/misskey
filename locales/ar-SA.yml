@@ -995,10 +995,15 @@ _poll:
   remainingSeconds: "{s} ثوانٍ متبقية"
 _visibility:
   public: "علني"
+  publicDescription: "ستكون ملاحظتك مرئية لكل المستخدمين"
   home: "الرئيسي"
+  homeDescription: "انشر في الخيط الزمني الرئيسي فقط"
   followers: "المتابِعون"
+  followersDescription: "اجعلها مرئية لمتابِعيك فقط"
   specified: "مباشرة"
+  specifiedDescription: "اجعلها مرئية لمستخدمين محددين"
   localOnly: "المحلي فقط"
+  localOnlyDescription: "ليس مرئيًا للمستخدمين البِعاد"
 _postForm:
   replyPlaceholder: "رد على هذه الملاحظة…"
   quotePlaceholder: "اقتبس هذه الملاحظة…"
