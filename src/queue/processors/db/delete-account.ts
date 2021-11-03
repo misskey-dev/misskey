@@ -67,7 +67,7 @@ export async function deleteAccount(job: Bull.Job<DbUserDeleteJobData>): Promise
 			cursor = files[files.length - 1].id;
 
 			for (const file of files) {
-				await deleteFileSync(file);
+				await deleteFileSync(file, false, false);
 			}
 		}
 
