@@ -794,6 +794,7 @@ _mfm:
   search: "البحث"
   flip: "اقلب"
   flipDescription: "يقلب المحتوى عموديًا أو أفقيًا"
+  font: "الخط"
 _reversi:
   gameSettings: "إعدادات اللعبة"
   chooseBoard: "اختر اللوح"
@@ -1084,6 +1085,8 @@ _timelines:
   global: "الشامل"
 _rooms:
   roomOf: "غرفة {user}"
+  translate: "أنقل"
+  rotate: "تدوير"
   exit: "رجوع"
   remove: "أزل"
   clear: "أزل الكل"
@@ -1128,16 +1131,45 @@ _pages:
   like: "أعجبني"
   unlike: "أزل الإعجاب"
   my: "صفحاتي"
+  contents: "المحتوى"
+  hideTitleWhenPinned: "اخف عنوان الصفحة عند تدبيسها في ملف الشخصي"
+  font: "الخط"
+  selectType: "اختر النوع"
+  enterVariableName: "أدخل اسم المتغيّر"
+  variableNameIsAlreadyUsed: "هذا الاسم محجوز"
+  contentBlocks: "المحتوى"
+  specialBlocks: "خاص"
   blocks:
+    text: "نص"
     image: "الصور"
+    button: "زرّ"
+    _if:
+      variable: "متغيّر"
+    post: "أنشئ ملاحظة"
     _post:
       text: "المحتوى"
+    textInput: "مُدخل نصي"
+    _textInput:
+      name: "اسم المتغير"
+      text: "العنوان"
+      default: "القيمة الافتراضية"
+    _textareaInput:
+      name: "اسم المتغير"
+      text: "العنوان"
+      default: "القيمة الافتراضية"
+    numberInput: "مُدخل رقمي"
+    _numberInput:
+      name: "اسم المتغير"
+      text: "العنوان"
+      default: "القيمة الافتراضية"
     _canvas:
+      width: "العُرض"
       height: "الإرتفاع"
     note: "ملاحظة مضمّنة"
     _note:
       id: "معرّف الملاحظة"
       detailed: "عرض مفصّل"
+    switch: "بدّل"
     _switch:
       name: "اسم المتغير"
       text: "العنوان"
