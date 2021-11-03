@@ -784,6 +784,8 @@ _mfm:
   quote: "اقتبس"
   emoji: "إيموجي مخصص"
   search: "البحث"
+  flip: "اقلب"
+  flipDescription: "يقلب المحتوى عموديًا أو أفقيًا"
 _reversi:
   gameSettings: "إعدادات اللعبة"
   chooseBoard: "اختر اللوح"
@@ -816,6 +818,7 @@ _instanceTicker:
   remote: "أظهر للمستخدمين البِعاد"
 _serverDisconnectedBehavior:
   reload: "إعادة تحميل تلقائية"
+  dialog: "أظهر مربع حوار التحذيرات"
 _channel:
   create: "أنشئ قناة"
   edit: "عدّل قناة"
@@ -860,16 +863,21 @@ _theme:
   inputConstantName: "أدخل اسمًا للثابت"
   deleteConstantConfirm: "أمتأكد من حذف الثابت {const}؟"
   keys:
+    accent: "طابع لوني"
     bg: "الخلفية"
     fg: "النص"
     indicator: "المؤشر"
     panel: "اللوحة"
     shadow: "الظل"
+    navBg: "خلفية الشريط الجانبي"
+    navFg: "نص الشريط الجانبي"
+    navHoverFg: "نص الشريط الجانبي (عند التمرير فوقه)"
     link: "رابط"
     hashtag: "وسم"
     mention: "أشر الى"
     renote: "أعد النشر"
     scrollbarHandle: "مقبض شريط التمرير"
+    scrollbarHandleHover: "مقبض شريط التمرير (عند التمرير فوقه)"
     infoWarnBg: "خلفية التحذير"
     infoWarnFg: "نص التحذير"
     toastBg: "خلفية الإشعارات"
@@ -877,6 +885,7 @@ _theme:
     buttonBg: "خلفية الأزرار"
     buttonHoverBg: "خلفية الأزرار (عند التمرير فوقها)"
     inputBorder: "حواف حقل الإدخال"
+    listItemHoverBg: "خلفية عناصر القائمة (عند التمرير فوقها)"
     driveFolderBg: "خلفية مجلد قرص التخزين"
     messageBg: "خلفية المحادثة"
 _sfx:
