@@ -1081,10 +1081,32 @@ _pages:
       _strReplace:
         arg1: "نص"
         arg3: "استُبدِل بـ"
+      strReverse: "اقلب النص"
+      _strReverse:
+        arg1: "نص"
       _join:
         arg1: "القوائم"
         arg2: "فاصل"
       add: "إضافة"
+      _add:
+        arg1: "أ"
+        arg2: "ب"
+      subtract: "اطرح"
+      _subtract:
+        arg1: "أ"
+        arg2: "ب"
+      multiply: "اضرب"
+      _multiply:
+        arg1: "أ"
+        arg2: "ب"
+      divide: "اقسم"
+      _divide:
+        arg1: "أ"
+        arg2: "ب"
+      mod: "الباقي"
+      _mod:
+        arg1: "أ"
+        arg2: "ب"
       round: "تقريب عدد عشري"
       _round:
         arg1: "رقم"
@@ -1129,14 +1151,18 @@ _pages:
       randomPick: "اختر عشوائيًا من القائمة"
       _randomPick:
         arg1: "القوائم"
+      dailyRandom: "عشوائي (يتغير مرة يوميًا لكل مستخدم)"
+      dailyRannum: "رقم عشوائي (يتغير مرة يوميًا لكل مستخدم)"
       _dailyRannum:
         arg1: "أدنى قيمة"
         arg2: "أقصى قيمة"
+      dailyRandomPick: "اختيار عشوائي من قائمة (يتغير مرة يوميًا لكل مستخدم)"
       _dailyRandomPick:
         arg1: "القوائم"
       seedRandom: "عشوائي (عبر بذرة)"
       _seedRandom:
         arg1: "البذرة"
+      seedRannum: "رقم عشوائي (عبر بذرة)"
       _seedRannum:
         arg1: "البذرة"
         arg2: "أدنى قيمة"
@@ -1156,13 +1182,16 @@ _pages:
       _listLen:
         arg1: "القوائم"
       number: "رقم"
+      stringToNumber: "حوّل نصًا إلى رقم"
       _stringToNumber:
         arg1: "نص"
+      numberToString: "حوّل رقمًا إلى نص"
       _numberToString:
         arg1: "رقم"
       _splitStrByLine:
         arg1: "نص"
       ref: "متغيّر"
+      aiScriptVar: "متغيّر AiScript"
       fn: "دالة"
       _fn:
         slots: "خانات"
@@ -1208,6 +1237,7 @@ _notification:
     reaction: "تفاعل"
     receiveFollowRequest: "طلبات المتابعة المتلقاة"
     followRequestAccepted: "طلبات المتابعة المقبولة"
+    app: "إشعارات التطبيقات المرتبطة"
 _deck:
   alwaysShowMainColumn: "أظهر العمود الرئيسي دائمًا"
   columnAlign: "حاذِ الأعمدة"
