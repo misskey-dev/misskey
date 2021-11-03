@@ -1070,10 +1070,44 @@ _pages:
     image: "الصور"
     _post:
       text: "المحتوى"
+    _canvas:
+      height: "الإرتفاع"
+    note: "ملاحظة مضمّنة"
+    _note:
+      id: "معرّف الملاحظة"
+      detailed: "عرض مفصّل"
+    _switch:
+      name: "اسم المتغير"
+      text: "العنوان"
+      default: "القيمة الافتراضية"
+    counter: "العداد"
+    _counter:
+      name: "اسم المتغير"
+      text: "العنوان"
+      inc: "زِد"
     _button:
+      text: "العنوان"
+      colored: "ملوّن"
+      action: "الإجراء عند ضغط الزّر"
       _action:
+        dialog: "أظهر مربع حوار"
         _dialog:
           content: "المحتوى"
+        resetRandom: "صفِّر البذرة"
+        pushEvent: "أرسل حدثًا"
+        _pushEvent:
+          event: "اسم الحدث"
+          message: "إظهار رسالة عند التفعيل"
+          variable: "أرسل المتغيّر"
+          no-variable: "لا شيء"
+        _callAiScript:
+          functionName: "اسم الدالة"
+    radioButton: "الخيار "
+    _radioButton:
+      name: "اسم المتغير"
+      title: "العنوان"
+      values: "قائمة الخيارات (كل خيار في سطر لوحده)"
+      default: "القيمة الافتراضية"
   script:
     categories:
       list: "القوائم"
