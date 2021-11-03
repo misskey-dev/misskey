@@ -1045,9 +1045,14 @@ _timelines:
   social: "الاجتماعي"
   global: "الشامل"
 _rooms:
+  exit: "رجوع"
+  remove: "أزل"
+  clear: "أزل الكل"
+  clearConfirm: "أتريد إزالة كل الأثاث من الغرفة؟"
   leaveConfirm: "لديك تغييرات غير محفوظة. أتريد المتابعة دون حفظها؟"
   chooseImage: "اختر صورة"
   roomType: "نوع الغرفة"
+  carpetColor: "لون السّجاد"
   _roomType:
     default: "افتراضي"
     washitsu: "الأسلوب الياباني"
@@ -1058,7 +1063,10 @@ _rooms:
     desk: "مكتب"
     chair: "كرسي"
     chair2: "كرسي 2"
+    fan: "مروحة"
     pc: "حاسوب"
+    eraser: "ممحاة"
+    pencil: "قلم رصاص"
     monitor: "شاشة التحكم"
     banknote: "أوراق نقدية"
 _pages:
@@ -1110,10 +1118,30 @@ _pages:
       default: "القيمة الافتراضية"
   script:
     categories:
+      logical: "عمليّة منطقيّة"
+      operation: "حساب"
+      comparison: "مقارنة"
+      random: "عشوائي"
+      value: "القيم"
+      fn: "دوال"
+      convert: "تحويل"
       list: "القوائم"
     blocks:
+      text: "نص"
+      textList: "قائمة نصية"
+      _textList:
+        info: "اجعل كل مدخل في سطر لوحده"
+      strLen: "طول النص"
+      _strLen:
+        arg1: "نص"
+      strPick: "استخرج محرفًا"
+      _strPick:
+        arg1: "نص"
+        arg2: "موضع المحرف"
+      strReplace: "استبدال النّص"
       _strReplace:
         arg1: "نص"
+        arg2: "استُبدِل بـ"
         arg3: "استُبدِل بـ"
       strReverse: "اقلب النص"
       _strReverse:
