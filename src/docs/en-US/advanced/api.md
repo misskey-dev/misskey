@@ -1,57 +1,81 @@
 # Misskey API
 
-MisskeyAPIを使ってMisskeyクライアント、Misskey連携Webサービス、Bot等(以下「アプリケーション」と呼びます)を開発できます。 ストリーミングAPIもあるので、リアルタイム性のあるアプリケーションを作ることも可能です。
+You can use the Misskey API to develop Misskey clients, Misskey-linked web services, bots, etc. (hereinafter referred to as "applications"). Since there is also a streaming API, it is possible to create real-time applications.
 
-APIを使い始めるには、まずアクセストークンを取得する必要があります。 このドキュメントでは、アクセストークンを取得する手順を説明した後、基本的なAPIの使い方を説明します。
+To get started with the API, you first need to get an access token. This document describes the steps to get an access token and then the basic API usage.
 
 ## Obtain an access token
-基本的に、APIはリクエストにはアクセストークンが必要となります。 APIにリクエストするのが自分自身なのか、不特定の利用者に使ってもらうアプリケーションなのかによって取得手順は異なります。
+The API requires an access token for requests. The acquisition procedure differs depending on whether you are requesting the API or the application to be used by an unspecified user.
 
-* 前者の場合: [「自分自身のアクセストークンを手動発行する」](#自分自身のアクセストークンを手動発行する)に進む
-* 後者の場合: [「アプリケーション利用者にアクセストークンの発行をリクエストする」](#アプリケーション利用者にアクセストークンの発行をリクエストする)に進む
+* For the former: Proceed to
+ "Manually issue your own access token" </ 0></li> 
+  
+  * In the latter case: Proceed to  "Request application user to issue access token" </ 0></li> </ul> 
+  
+  
 
-### 自分自身のアクセストークンを手動発行する
-「設定 > API」で、自分のアクセストークンを発行できます。
+### Manually issue your own access token
 
-[「APIの使い方」へ進む](#APIの使い方)
+You can issue your own access token in "Settings & API".
 
-### アプリケーション利用者にアクセストークンの発行をリクエストする
-アプリケーション利用者のアクセストークンを取得するには、以下の手順で発行をリクエストします。
+[Proceed to "How to use API".](#APIの使い方)
+
+
+
+### Request the application user to issue an access token.
+
+To obtain the access token of the application user, request issuance by following the steps below.
+
+
 
 #### Step 1
 
-Generate UUID.以後これをセッションIDと呼びます。
+Generate UUID.This is called the session ID.
 
-> このセッションIDは毎回生成し、使いまわさないようにしてください。
+
+
+> Generate this session ID every time and do not reuse it.
+
+
 
 #### Step 2
 
-`{_URL_}/miauth/{session}`をユーザーのブラウザで表示させる。`{session}`の部分は、セッションIDに置き換えてください。
+`{_URL_}/miauth/{session}` Is displayed in the user's browser. `{session}` Replace with the session ID.
+
+
 > 例: `{_URL_}/miauth/c1f6d42b-468b-4fd2-8274-e58abdedef6f`
 
 表示する際、URLにクエリパラメータとしていくつかのオプションを設定できます:
-* `name` ... App name
-    * > 例: `MissDeck`
-* `icon` ... App icon URL
-    * > 例: `https://missdeck.example.com/icon.png`
-* `callback` ... 認証が終わった後にリダイレクトするURL
-    * > 例: `https://missdeck.example.com/callback`
+
+* `name` ... App name 
+      * > 例: `MissDeck`
+* `icon` ... App icon URL 
+      * > 例: `https://missdeck.example.com/icon.png`
+* `callback` ... 認証が終わった後にリダイレクトするURL 
+      * > 例: `https://missdeck.example.com/callback`
     * リダイレクト時には、`session`というクエリパラメータでセッションIDが付きます
-* `permission` ... App permissions
-    * > 例: `write:notes,write:following,read:drive`
+* `permission` ... App permissions 
+      * > 例: `write:notes,write:following,read:drive`
     * 要求する権限を`,`で区切って列挙します
     * どのような権限があるかは[APIリファレンス](/api-doc)で確認できます
 
+
+
 #### Step 3
+
 ユーザーが発行を許可した後、`{_URL_}/api/miauth/{session}/check`にPOSTリクエストすると、レスポンスとしてアクセストークンを含むJSONが返ります。
 
 レスポンスに含まれるプロパティ:
+
 * `token` ... User access token
 * `user` ... User info
 
-[「APIの使い方」へ進む](#APIの使い方)
+[Proceed to "How to use API".](#APIの使い方)
+
+
 
 ## API usage
+
 **APIはすべてPOSTで、リクエスト/レスポンスともにJSON形式です。There is no REST support.** アクセストークンは、`i`というパラメータ名でリクエストに含めます。
 
 * [API Reference](/api-doc)
