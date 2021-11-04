@@ -52,7 +52,7 @@ Properties included in the response:
 [Proceed to "How to use API".](#APIの使い方)
 
 ## API usage
-**APIはすべてPOSTで、リクエスト/レスポンスともにJSON形式です。There is no REST support.** アクセストークンは、`i`というパラメータ名でリクエストに含めます。
+**API is all POST, and both request / response is in JSON format.There is no REST support.** Include the access token in the request with the parameter name `i`.
 
 * [API Reference](/api-doc)
 * [Streaming API](./stream)
