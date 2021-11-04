@@ -1,2 +1,2 @@
 # Custom Emoji
-カスタム絵文字は、インスタンスで用意された画像を絵文字のように使える機能です。 ノート、リアクション、チャット、自己紹介、名前などの場所で使うことができます。 カスタム絵文字をそれらの場所で使うには、絵文字ピッカーボタン(ある場合)を押すか、`:`を入力して絵文字サジェストを表示します。 テキスト内に`:foo:`のような形式の文字列が見つかると、`foo`の部分がカスタム絵文字名と解釈され、表示時には対応したカスタム絵文字に置き換わります。
+Custom emoji is a function that allows you to use the image prepared by the instance like an emoji. It can be used in places such as notes, reactions, chats, self-introductions, names, etc. To use your custom emoji in those places, press the emoji picker button (if any) or type `:` to see the emoji suggestion. If a string of the form `:foo:` is found in the text, the `foo` part will be interpreted as the custom emoji name and will be replaced with the corresponding custom emoji when displayed.
