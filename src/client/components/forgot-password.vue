@@ -7,21 +7,21 @@
 >
 	<template #header>{{ $ts.forgotPassword }}</template>
 
-	<form class="_monolithic_" @submit.prevent="onSubmit" v-if="$instance.enableEmail">
-		<div class="_section">
-			<MkInput v-model="username" type="text" pattern="^[a-zA-Z0-9_]+$" spellcheck="false" autofocus required>
+	<form class="bafeceda" @submit.prevent="onSubmit" v-if="$instance.enableEmail">
+		<div class="main _formRoot">
+			<MkInput class="_formBlock" v-model="username" type="text" pattern="^[a-zA-Z0-9_]+$" spellcheck="false" autofocus required>
 				<template #label>{{ $ts.username }}</template>
 				<template #prefix>@</template>
 			</MkInput>
 
-			<MkInput v-model="email" type="email" spellcheck="false" required>
+			<MkInput class="_formBlock" v-model="email" type="email" spellcheck="false" required>
 				<template #label>{{ $ts.emailAddress }}</template>
 				<template #caption>{{ $ts._forgotPassword.enterEmail }}</template>
 			</MkInput>
 
-			<MkButton type="submit" :disabled="processing" primary style="margin: 0 auto;">{{ $ts.send }}</MkButton>
+			<MkButton class="_formBlock" type="submit" :disabled="processing" primary style="margin: 0 auto;">{{ $ts.send }}</MkButton>
 		</div>
-		<div class="_section">
+		<div class="sub">
 			<MkA to="/about" class="_link">{{ $ts._forgotPassword.ifNoEmail }}</MkA>
 		</div>
 	</form>
@@ -69,3 +69,16 @@ export default defineComponent({
 	}
 });
 </script>
+
+<style lang="scss" scoped>
+.bafeceda {
+	> .main {
+		padding: 24px;
+	}
+
+	> .sub {
+		border-top: solid 0.5px var(--divider);
+		padding: 24px;
+	}
+}
+</style>

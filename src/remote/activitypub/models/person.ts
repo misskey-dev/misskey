@@ -29,6 +29,7 @@ import { toArray } from '@/prelude/array';
 import { fetchInstanceMetadata } from '@/services/fetch-instance-metadata';
 import { normalizeForSearch } from '@/misc/normalize-for-search';
 import { truncate } from '@/misc/truncate';
+import { StatusError } from '@/misc/fetch';
 
 const logger = apLogger;
 
@@ -115,6 +116,10 @@ export async function fetchPerson(uri: string, resolver?: Resolver): Promise<Use
  */
 export async function createPerson(uri: string, resolver?: Resolver): Promise<User> {
 	if (typeof uri !== 'string') throw new Error('uri is not string');
+
+	if (uri.startsWith(config.url)) {
+		throw new StatusError('cannot resolve local user', 400, 'cannot resolve local user');
+	}
 
 	if (resolver == null) resolver = new Resolver();
 

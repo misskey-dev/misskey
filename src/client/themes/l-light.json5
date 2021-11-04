@@ -15,5 +15,6 @@
 		navBg: '#fff',
 		panel: '#fff',
 		panelHeaderDivider: '@divider',
+		mentionMe: 'rgb(0, 179, 70)',
 	},
 }

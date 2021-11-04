@@ -1,19 +1,19 @@
-# シェアページ
+# La paĝo nur por skribi novan noton
 `/share`を開くと、共有用の投稿フォームを開くことができます。 ここではシェアページで利用できるクエリ文字列の一覧を示します。
 
-## クエリ文字列一覧
-### 文字
+## La listo de la tekstoj por informpeti
+### Teksto
 
 <dl>
 <dt>title</dt>
-<dd>タイトルです。本文の先頭に[ … ]と挿入されます。</dd>
+<dd>Tio estas titolo.本文の先頭に[ … ]と挿入されます。</dd>
 <dt>text</dt>
-<dd>本文です。</dd>
+<dd>Tio estas teksto</dd>
 <dt>url</dt>
-<dd>URLです。末尾に挿入されます。</dd>
+<dd>Tio estas URL.末尾に挿入されます。</dd>
 </dl>
 
-### リプライ情報
+### La  informo por respondi
 以下のいずれか
 
 <dl>
@@ -23,14 +23,14 @@
 <dd>リプライ先のUrl（リモートのノートオブジェクトを指定）</dd>
 </dl>
 
-### Renote情報
+### La informo por plusendi noton
 以下のいずれか
 
 <dl>
 <dt>renoteId</dt>
-<dd>Renote先のノートid</dd>
+<dd>la ID de la noto plusendota</dd>
 <dt>renoteUri</dt>
-<dd>Renote先のUrl（リモートのノートオブジェクトを指定）</dd>
+<dd>la URL de la noto plusendota el fora nodo</dd>
 </dl>
 
 ### Videbleco
@@ -50,5 +50,5 @@
 ### Dosieroj
 <dl>
 <dt>fileIds</dt>
-<dd>添付したいファイルのid（カンマ区切りで）</dd>
+<dd>La ID-oj de viaj aldonotaj dosieroj (devas esti apartigita de komoj)</dd>
 </dl>
