@@ -7,7 +7,8 @@ export default (object: any, user: { id: User['id'] }) => {
 		actor: `${config.url}/users/${user.id}`,
 		type: 'Update',
 		to: [ 'https://www.w3.org/ns/activitystreams#Public' ],
-		object
+		object,
+		published: new Date().toISOString(),
 	} as any;
 
 	return activity;

@@ -800,6 +800,8 @@ manageAccounts: "アカウントを管理"
 makeReactionsPublic: "リアクション一覧を公開する"
 makeReactionsPublicDescription: "あなたがしたリアクション一覧を誰でも見れるようにします。"
 classic: "クラシック"
+muteThread: "スレッドをミュート"
+unmuteThread: "スレッドのミュートを解除"
 
 _signup:
   almostThere: "ほとんど完了です"

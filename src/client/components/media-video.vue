@@ -11,6 +11,7 @@
 		:title="video.name"
 		preload="none"
 		controls
+		@contextmenu.stop
 	>
 		<source 
 			:src="video.url" 

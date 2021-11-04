@@ -11,6 +11,7 @@ import { IIdentifier } from '../models/identifier';
 import renderHashtag from './hashtag';
 import { DriveFiles, UserProfiles } from '@/models/index';
 import { getUserKeypair } from '@/misc/keypair-store';
+import { fnNameList } from '@/mfm/fn-name-list';
 
 export async function renderPerson(user: ILocalUser) {
 	const id = `${config.url}/users/${user.id}`;
@@ -66,7 +67,7 @@ export async function renderPerson(user: ILocalUser) {
 		url: `${config.url}/@${user.username}`,
 		preferredUsername: user.username,
 		name: user.name,
-		summary: profile.description ? toHtml(mfm.parse(profile.description)) : null,
+		summary: profile.description ? toHtml(mfm.parse(profile.description, { fnNameList })) : null,
 		icon: avatar ? renderImage(avatar) : null,
 		image: banner ? renderImage(banner) : null,
 		tag,

@@ -1,13 +1,12 @@
 <template>
-<MkA class="ldlomzub" :class="{ isMe }" :to="url" v-user-preview="canonical" v-if="url.startsWith('/')">
-	<span class="me" v-if="isMe">{{ $ts.you }}</span>
+<MkA v-if="url.startsWith('/')" class="ldlomzub" :class="{ isMe }" :to="url" v-user-preview="canonical" :style="{ background: bg }">
 	<img class="icon" :src="`/avatar/@${username}@${host}`" alt="">
 	<span class="main">
 		<span class="username">@{{ username }}</span>
 		<span class="host" v-if="(host != localHost) || $store.state.showFullAcct">@{{ toUnicode(host) }}</span>
 	</span>
 </MkA>
-<a class="ldlomzub" :href="url" target="_blank" rel="noopener" v-else>
+<a v-else class="ldlomzub" :href="url" target="_blank" rel="noopener" :style="{ background: bg }">
 	<span class="main">
 		<span class="username">@{{ username }}</span>
 		<span class="host">@{{ toUnicode(host) }}</span>
@@ -17,10 +16,11 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { toUnicode } from 'punycode/';
+import * as tinycolor from 'tinycolor2';
+import { toUnicode } from 'punycode';
 import { host as localHost } from '@client/config';
 import { wellKnownServices } from '../../well-known-services';
-import * as os from '@client/os';
+import { $i } from '@client/account';
 
 export default defineComponent({
 	props: {
@@ -33,53 +33,46 @@ export default defineComponent({
 			required: true
 		}
 	},
-	data() {
+
+	setup(props) {
+		const canonical = props.host === localHost ? `@${props.username}` : `@${props.username}@${toUnicode(props.host)}`;
+
+		const wellKnown = wellKnownServices.find(x => x[0] === props.host);
+		const url = wellKnown ? wellKnown[1](props.username) : `/${canonical}`;
+
+		const isMe = $i && (
+			`@${props.username}@${toUnicode(props.host)}` === `@${$i.username}@${toUnicode(localHost)}`.toLowerCase()
+		);
+
+		const bg = tinycolor(getComputedStyle(document.documentElement).getPropertyValue(isMe ? '--mentionMe' : '--mention'));
+		bg.setAlpha(0.20);
+
 		return {
-			localHost
+			localHost,
+			isMe,
+			url,
+			canonical,
+			toUnicode,
+			bg: bg.toRgbString(),
 		};
 	},
-	computed: {
-		url(): string {
-			const wellKnown = wellKnownServices.find(x => x[0] === this.host);
-			if (wellKnown) {
-				return wellKnown[1](this.username);
-			} else {
-				return `/${this.canonical}`;
-			}
-		},
-		canonical(): string {
-			return this.host === localHost ? `@${this.username}` : `@${this.username}@${toUnicode(this.host)}`;
-		},
-		isMe(): boolean {
-			return this.$i && (
-				`@${this.username}@${toUnicode(this.host)}` === `@${this.$i.username}@${toUnicode(localHost)}`.toLowerCase()
-			);
-		}
-	},
-	methods: {
-		toUnicode
-	}
 });
 </script>
 
 <style lang="scss" scoped>
 .ldlomzub {
+	display: inline-block;
+	padding: 4px 8px 4px 4px;
+	border-radius: 999px;
 	color: var(--mention);
 
 	&.isMe {
 		color: var(--mentionMe);
 	}
-	
-	> .me {
-		pointer-events: none;
-		user-select: none;
-		font-size: 70%;
-		vertical-align: top;
-	}
 
 	> .icon {
 		width: 1.5em;
-		margin: 0 0.2em;
+		margin: 0 0.2em 0 0;
 		vertical-align: bottom;
 		border-radius: 100%;
 	}

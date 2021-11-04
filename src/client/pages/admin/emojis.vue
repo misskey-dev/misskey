@@ -48,7 +48,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue';
+import { computed, defineComponent, toRef } from 'vue';
 import MkButton from '@client/components/ui/button.vue';
 import MkInput from '@client/components/form/input.vue';
 import MkPagination from '@client/components/ui/pagination.vue';
@@ -112,7 +112,7 @@ export default defineComponent({
 	},
 
 	async mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
+		this.$emit('info', toRef(this, symbols.PAGE_INFO));
 	},
 
 	methods: {
@@ -168,6 +168,10 @@ export default defineComponent({
 <style lang="scss" scoped>
 .ogwlenmc {
 	> .local {
+	  .empty {
+    	margin: var(--margin);
+		}
+		
 		.ldhfsamy {
 			display: grid;
 			grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
@@ -210,6 +214,10 @@ export default defineComponent({
 	}
 
 	> .remote {
+	  .empty {
+      margin: var(--margin);
+    }
+								
 		.ldhfsamy {
 			display: grid;
 			grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));

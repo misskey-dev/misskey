@@ -47,6 +47,12 @@ export class Note {
 	@JoinColumn()
 	public renote: Note | null;
 
+	@Index()
+	@Column('varchar', {
+		length: 256, nullable: true
+	})
+	public threadId: string | null;
+
 	@Column('varchar', {
 		length: 8192, nullable: true
 	})
