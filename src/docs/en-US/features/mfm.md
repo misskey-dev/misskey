@@ -1,12 +1,12 @@
 # MFM
-MFMは、Misskey Flavored Markdownの略で、Misskeyの様々な場所で使用できる専用のマークアップ言語です。 MFMで使用可能な構文は[MFMチートシート](/mfm-cheat-sheet)で確認できます。
+MFM stands for Misskey Flavored Markdown and is a dedicated markup language that can be used in various parts of Misskey. You can see the syntax available in MFM on the MFM cheat sheet.
 
-## MFMが使用可能な場所の例
-- ノート本文
-- CW注釈
-- ユーザーの名前
-- ユーザーの自己紹介
+## Example of where MFM can be used
+- Note body
+- CW annotation
+- Displaynames
+- User bio
 
-## 開発者向け情報
-MFMのパーサー実装はライブラリとして公開されており、簡単にクライアントにMFMを組み込むことが可能です。
-- [misskey-dev/mfm.js](https://github.com/misskey-dev/mfm.js) - JavaScriptパーサー実装
+## Information for developers
+The parser implementation of MFM is published as a library, and it is possible to easily embed MFM in the client.
+- [misskey-dev/mfm.js](https://github.com/misskey-dev/mfm.js) - JavaScript parser implementation
