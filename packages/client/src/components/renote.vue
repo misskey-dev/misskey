@@ -63,7 +63,7 @@ export default defineComponent({
 				icon: 'fas fa-retweet',
 				action: () => {
 					os.api('notes/create', {
-						renoteId: this.appearNote.id
+						renoteId: this.note.id
 					});
 				}
 			}, {
@@ -71,7 +71,7 @@ export default defineComponent({
 				icon: 'fas fa-quote-right',
 				action: () => {
 					os.post({
-						renote: this.appearNote,
+						renote: this.note,
 					});
 				}
 			}], this.$refs.renoteButton, {
