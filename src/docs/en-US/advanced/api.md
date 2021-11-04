@@ -43,21 +43,21 @@ Generate UUID.This is called the session ID.
 `{_URL_}/miauth/{session}` Is displayed in the user's browser. `{session}` Replace with the session ID.
 
 
-> 例: `{_URL_}/miauth/c1f6d42b-468b-4fd2-8274-e58abdedef6f`
+> Example: `{_URL_}/miauth/c1f6d42b-468b-4fd2-8274-e58abdedef6f`
 
-表示する際、URLにクエリパラメータとしていくつかのオプションを設定できます:
+When displaying, you can set some options in the URL as query parameters:
 
 * `name` ... App name 
-      * > 例: `MissDeck`
+      * > Example: `MissDeck`
 * `icon` ... App icon URL 
-      * > 例: `https://missdeck.example.com/icon.png`
-* `callback` ... 認証が終わった後にリダイレクトするURL 
-      * > 例: `https://missdeck.example.com/callback`
-    * リダイレクト時には、`session`というクエリパラメータでセッションIDが付きます
-* `permission` ... App permissions 
-      * > 例: `write:notes,write:following,read:drive`
-    * 要求する権限を`,`で区切って列挙します
-    * どのような権限があるかは[APIリファレンス](/api-doc)で確認できます
+      * > Example: `https://missdeck.example.com/icon.png`
+* `callback` ... URL to redirect after authentication 
+      * > Example: `https://missdeck.example.com/callback`
+    * At the time of redirect, the session ID is attached with the query parameter `session`.
+* `permission` ... Privileges required by the application 
+      * > Example: `write:notes,write:following,read:drive`
+    * List the required permissions separated by `,`
+    * You can check what kind of permissions you have in [API Reference](/api-doc)
 
 
 
