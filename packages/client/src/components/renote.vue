@@ -140,20 +140,6 @@ export default defineComponent({
 
 	&.renoted {
 		background: var(--accent);
-
-		&:hover {
-			background: var(--accent);
-		}
-
-		> span {
-			color: var(--fgOnAccent);
-		}
-	}
-
-	> span {
-		font-size: 0.9em;
-		line-height: 32px;
-		margin: 0 0 0 4px;
 	}
 
 	> .count {
