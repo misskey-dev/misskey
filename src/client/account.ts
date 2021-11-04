@@ -61,7 +61,7 @@ export async function signout() {
 	document.cookie = `igi=; path=/`;
 
 	if (accounts.length > 0) login(accounts[0].token);
-	else unisonReload();
+	else unisonReload('/');
 }
 
 export async function getAccounts(): Promise<{ id: Account['id'], token: Account['token'] }[]> {
@@ -122,7 +122,9 @@ export async function login(token: Account['token'], redirect?: string) {
 	await addAccount(me.id, token);
 
 	if (redirect) {
-		reloadChannel.postMessage('reload');
+		// 他のタブは再読み込みするだけ
+		reloadChannel.postMessage(null);
+		// このページはredirectで指定された先に移動
 		location.href = redirect;
 		return;
 	}

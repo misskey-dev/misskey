@@ -93,7 +93,10 @@ if (defaultStore.state.reportError && !_DEV_) {
 document.addEventListener('touchend', () => {}, { passive: true });
 
 // 一斉リロード
-reloadChannel.addEventListener('message', () => location.reload());
+reloadChannel.addEventListener('message', path => {
+	if (path !== null) location.href = path;
+	else location.reload();
+});
 
 //#region SEE: https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
 // TODO: いつの日にか消したい
