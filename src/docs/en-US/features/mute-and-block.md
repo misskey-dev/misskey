@@ -1,9 +1,9 @@
 # Mutes and Blocks
-好みではないユーザーがいる場合は、ミュートを行うことでそのユーザーが自分から見えないようにすることができます。 また、より強力な措置として、ブロックを行うことでそのユーザーから自分のコンテンツが見えないようになるほか、自分に対して関わることができないようにすることができます。 ミュートされていることは相手は分かりませんが、ブロックされていることは相手に分かります。どちらを選ぶかはご自身の判断で行ってください。
+If you have a user you don't like, you can mute it so that it isn't visible to you. Also, as a more powerful measure, blocking can make your content invisible to the user and prevent you from being involved with yourself. They don't know they're muted, but they know they're blocked.It is up to you to decide which one to choose.
 
-<div class="info">ℹ️ ミュートとブロックは併用できます。</div>
+<div class="info">ℹ️ Mute and block can be used together.</div>
 
-<div class="warn">⚠️ 利用規約に違反するような、迷惑なユーザーがいる場合は運営者に報告することも検討してください。</div>
+<div class="warn">⚠️ Consider reporting to the maintainer if there are any annoying users who violate our Terms of Service.</div>
 
 設定>ミュートとブロック から、自分がミュートまたはブロックしているユーザー一覧を確認することができます。
 
