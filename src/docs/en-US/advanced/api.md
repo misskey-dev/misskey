@@ -7,75 +7,51 @@ To get started with the API, you first need to get an access token. This documen
 ## Obtain an access token
 The API requires an access token for requests. The acquisition procedure differs depending on whether you are requesting the API or the application to be used by an unspecified user.
 
-* For the former: Proceed to
- "Manually issue your own access token" </ 0></li> 
-  
-  * In the latter case: Proceed to  "Request application user to issue access token" </ 0></li> </ul> 
-  
-  
+* For the former: Proceed to ["Manually issue your own access token"](#自分自身のアクセストークンを手動発行する)
+* In the latter case: Proceed to ["Request application user to issue access token"](#アプリケーション利用者にアクセストークンの発行をリクエストする)
 
 ### Manually issue your own access token
-
 You can issue your own access token in "Settings & API".
 
 [Proceed to "How to use API".](#APIの使い方)
 
-
-
 ### Request the application user to issue an access token.
-
 To obtain the access token of the application user, request issuance by following the steps below.
-
-
 
 #### Step 1
 
 Generate UUID.This is called the session ID.
 
-
-
 > Generate this session ID every time and do not reuse it.
-
-
 
 #### Step 2
 
 `{_URL_}/miauth/{session}` Is displayed in the user's browser. `{session}` Replace with the session ID.
-
-
 > Example: `{_URL_}/miauth/c1f6d42b-468b-4fd2-8274-e58abdedef6f`
 
 When displaying, you can set some options in the URL as query parameters:
-
-* `name` ... App name 
-      * > Example: `MissDeck`
-* `icon` ... App icon URL 
-      * > Example: `https://missdeck.example.com/icon.png`
-* `callback` ... URL to redirect after authentication 
-      * > Example: `https://missdeck.example.com/callback`
+* `name` ... App name
+    * > Example: `MissDeck`
+* `icon` ... App icon URL
+    * > Example: `https://missdeck.example.com/icon.png`
+* `callback` ... URL to redirect after authentication
+    * > Example: `https://missdeck.example.com/callback`
     * At the time of redirect, the session ID is attached with the query parameter `session`.
-* `permission` ... Privileges required by the application 
-      * > Example: `write:notes,write:following,read:drive`
+* `permission` ... Privileges required by the application
+    * > Example: `write:notes,write:following,read:drive`
     * List the required permissions separated by `,`
     * You can check what kind of permissions you have in [API Reference](/api-doc)
 
-
-
 #### Step 3
+After allowing the user to publish, a POST request to `{_URL_}/api/miauth/{session}/check` will return a JSON containing the access token as a response.
 
-ユーザーが発行を許可した後、`{_URL_}/api/miauth/{session}/check`にPOSTリクエストすると、レスポンスとしてアクセストークンを含むJSONが返ります。
-
-レスポンスに含まれるプロパティ:
-
-* `token` ... User access token
+Properties included in the response:
+* `token` ... User's access token
 * `user` ... User info
 
 [Proceed to "How to use API".](#APIの使い方)
 
-
-
 ## API usage
-
 **APIはすべてPOSTで、リクエスト/レスポンスともにJSON形式です。There is no REST support.** アクセストークンは、`i`というパラメータ名でリクエストに含めます。
 
 * [API Reference](/api-doc)
