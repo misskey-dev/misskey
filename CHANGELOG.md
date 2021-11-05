@@ -7,6 +7,13 @@
 
 -->
 
+## 12.x.x (unreleased)
+
+### Improvements
+
+### Bugfixes
+- クライアント: 長いメニューが画面からはみ出す問題を修正
+
 ## 12.95.0 (2021/10/31)
 
 ### Improvements
