@@ -752,13 +752,6 @@ _accountDelete:
   requestAccountDelete: "أرسل طلبًا لحذف الحساب"
   started: "بدأت عملية الحذف."
   inProgress: "عملية الحذف جارية"
-_docs:
-  continueReading: "اقرأ المزيد"
-  features: "الميّزات"
-  generalTopics: "مواضيع عامة"
-  advancedTopics: "مواضيع متقدمة"
-  admin: "إدارة "
-  translateWarn: "هذه الوثيقة مترجمة وقد يختلف معناها عن المعنى الأصلي للوثيقة."
 _ad:
   back: "رجوع"
 _forgotPassword:
