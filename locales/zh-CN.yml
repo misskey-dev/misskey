@@ -811,13 +811,6 @@ _accountDelete:
   requestAccountDelete: "请求删除账户"
   started: "账户删除过程已开始。"
   inProgress: "正在删除"
-_docs:
-  continueReading: "继续阅读"
-  features: "特性"
-  generalTopics: "通常提示"
-  advancedTopics: "进阶提示"
-  admin: "管理"
-  translateWarn: "本文档是翻译后的文档。内容可能与原文有所不同。"
 _ad:
   back: "返回"
   reduceFrequencyOfThisAd: "减少此广告的频率"
