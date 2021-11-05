@@ -1,19 +1,11 @@
 <template>
 <MkTooltip :source="source" ref="tooltip" @closed="$emit('closed')" :max-width="340">
 	<div class="renoteTooltip">
-		<template v-if="users.length <= 10">
-			<b v-for="u in users" :key="u.id">
-				<MkAvatar :user="u" style="width: 24px; height: 24px;"/><br/>
-				<MkUserName :user="u" :nowrap="false" style="line-height: 24px;"/>
-			</b>
-		</template>
-		<template v-if="10 < users.length">
-			<b v-for="u in users" :key="u.id">
-				<MkAvatar :user="u" style="width: 24px; height: 24px;"/><br/>
-				<MkUserName :user="u" :nowrap="false" style="line-height: 24px;"/>
-			</b>
-			<span slot="omitted">+{{ count - 10 }}</span>
-		</template>
+		<b v-for="u in users" :key="u.id">
+			<MkAvatar :user="u" style="width: 24px; height: 24px;"/><br/>
+			<MkUserName :user="u" :nowrap="false" style="line-height: 24px;"/>
+		</b>
+		<span v-if="users.length < count" slot="omitted">+{{ count - users.length }}</span>
 	</div>
 </MkTooltip>
 </template>
