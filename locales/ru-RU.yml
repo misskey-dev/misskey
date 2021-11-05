@@ -811,13 +811,6 @@ _accountDelete:
   requestAccountDelete: "Запросить удаление вашей учетной записи"
   started: "Процесс удаления начался."
   inProgress: "Удаление в процессе"
-_docs:
-  continueReading: "Читать подробнее"
-  features: "Возможности"
-  generalTopics: "Основные темы"
-  advancedTopics: "Дополнительные темы"
-  admin: "Управление"
-  translateWarn: "Это перевод документа. Он может неточно отражать содержимое оригинала."
 _ad:
   back: "Выход"
   reduceFrequencyOfThisAd: "Реже показывать эту рекламу"
@@ -1148,6 +1141,8 @@ _permissions:
   "write:channels": "Изменять каналы"
   "read:gallery": "Смотреть галерею"
   "write:gallery": "Работа с галереей"
+  "read:gallery-likes": "Посмотреть галерею лайков"
+  "write:gallery-likes": "Манипулируйте понравившейся галереей"
 _auth:
   shareAccess: "Дать доступ для «{name}» к вашей учётной записи?"
   shareAccessAsk: "Уверены, что хотите дать приложению доступ к своей учётной записи?"
