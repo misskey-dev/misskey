@@ -812,13 +812,6 @@ _accountDelete:
   requestAccountDelete: "Löschung des Benutzerkontos anfordern"
   started: "Löschung wurde eingeleitet."
   inProgress: "Löschung in Bearbeitung"
-_docs:
-  continueReading: "Mehr lesen"
-  features: "Funktionen"
-  generalTopics: "Allgemeine Themen"
-  advancedTopics: "Erweiterte Themen"
-  admin: "Administration"
-  translateWarn: "Dies ist ein übersetztes Dokument. Es kann zu Unterschieden mit dem Original kommen."
 _ad:
   back: "Zurück"
   reduceFrequencyOfThisAd: "Diese Werbung weniger anzeigen"
