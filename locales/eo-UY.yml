@@ -557,10 +557,6 @@ controlPanel: "Ŝaltpodio"
 classic: "Klasika"
 _signup:
   emailAddressInfo: "Entajpu vian retpoŝton"
-_docs:
-  continueReading: "Legi plu"
-  features: "Funkcioj"
-  admin: "Administro"
 _ad:
   back: "Nuligi"
 _forgotPassword:
