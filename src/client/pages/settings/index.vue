@@ -1,9 +1,13 @@
 <template>
 <div class="vvcocwet" :class="{ wide: !narrow }" ref="el">
 	<div class="nav" v-if="!narrow || page == null">
-		<div class="title">{{ $ts.settings }}</div>
-		<MkInfo v-if="emailNotConfigured" warn class="info">{{ $ts.emailNotConfiguredWarning }} <MkA to="/settings/email" class="_link">{{ $ts.configure }}</MkA></MkInfo>
-		<MkSuperMenu :def="menuDef" :grid="page == null"></MkSuperMenu>
+		<MkSpacer :content-max="700">
+			<div class="baaadecd">
+				<div class="title">{{ $ts.settings }}</div>
+				<MkInfo v-if="emailNotConfigured" warn class="info">{{ $ts.emailNotConfiguredWarning }} <MkA to="/settings/email" class="_link">{{ $ts.configure }}</MkA></MkInfo>
+				<MkSuperMenu :def="menuDef" :grid="page == null"></MkSuperMenu>
+			</div>
+		</MkSpacer>
 	</div>
 	<div class="main">
 		<component :is="component" :key="page" v-bind="pageProps"/>
@@ -41,6 +45,7 @@ export default defineComponent({
 			title: i18n.locale.settings,
 			icon: 'fas fa-cog',
 			bg: 'var(--bg)',
+			hideHeader: true,
 		};
 		const INFO = ref(indexInfo);
 		const page = ref(props.initialPage);
@@ -271,22 +276,24 @@ export default defineComponent({
 <style lang="scss" scoped>
 .vvcocwet {
 	> .nav {
-		> .title {
-			margin: 16px;
-			font-size: 1.5em;
-			font-weight: bold;
-		}
+		.baaadecd {
+			> .title {
+				margin: 16px;
+				font-size: 1.5em;
+				font-weight: bold;
+			}
 
-		> .info {
-			margin: 0 16px;
-		}
+			> .info {
+				margin: 0 16px;
+			}
 
-		> .accounts {
-			> .avatar {
-				display: block;
-				width: 50px;
-				height: 50px;
-				margin: 8px auto 16px auto;
+			> .accounts {
+				> .avatar {
+					display: block;
+					width: 50px;
+					height: 50px;
+					margin: 8px auto 16px auto;
+				}
 			}
 		}
 	}
@@ -302,8 +309,10 @@ export default defineComponent({
 			box-sizing: border-box;
 			overflow: auto;
 
-			> .title {
-				margin: 24px;
+			.baaadecd {
+				> .title {
+					margin: 24px 0;
+				}
 			}
 		}
 
@@ -311,7 +320,6 @@ export default defineComponent({
 			flex: 1;
 			min-width: 0;
 			overflow: auto;
-			--baseContentWidth: 100%;
 		}
 	}
 }

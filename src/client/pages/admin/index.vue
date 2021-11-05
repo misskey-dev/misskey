@@ -3,17 +3,24 @@
 	<div class="nav" v-if="!narrow || page == null">
 		<MkHeader :info="header"></MkHeader>
 	
-		<div class="lxpfedzu">
-			<img :src="$instance.iconUrl || '/favicon.ico'" alt="" class="icon"/>
-		</div>
+		<MkSpacer :content-max="700">
+			<div class="lxpfedzu">
+				<div class="banner">
+					<img :src="$instance.iconUrl || '/favicon.ico'" alt="" class="icon"/>
+				</div>
 
-		<MkInfo v-if="noMaintainerInformation" warn class="info">{{ $ts.noMaintainerInformationWarning }} <MkA to="/admin/settings" class="_link">{{ $ts.configure }}</MkA></MkInfo>
-		<MkInfo v-if="noBotProtection" warn class="info">{{ $ts.noBotProtectionWarning }} <MkA to="/admin/bot-protection" class="_link">{{ $ts.configure }}</MkA></MkInfo>
+				<MkInfo v-if="noMaintainerInformation" warn class="info">{{ $ts.noMaintainerInformationWarning }} <MkA to="/admin/settings" class="_link">{{ $ts.configure }}</MkA></MkInfo>
+				<MkInfo v-if="noBotProtection" warn class="info">{{ $ts.noBotProtectionWarning }} <MkA to="/admin/bot-protection" class="_link">{{ $ts.configure }}</MkA></MkInfo>
 
-		<MkSuperMenu :def="menuDef" :grid="page == null"></MkSuperMenu>
+				<MkSuperMenu :def="menuDef" :grid="page == null"></MkSuperMenu>
+			</div>
+		</MkSpacer>
 	</div>
 	<div class="main">
-		<component :is="component" :key="page" @info="onInfo" v-bind="pageProps"/>
+		<MkStickyContainer>
+			<template #header><MkHeader v-if="childInfo && !childInfo.hideHeader" :info="childInfo"/></template>
+			<component :is="component" :key="page" @info="onInfo" v-bind="pageProps"/>
+		</MkStickyContainer>
 	</div>
 </div>
 </template>
@@ -41,6 +48,10 @@ export default defineComponent({
 		MkInfo,
 	},
 
+	provide: {
+		shouldOmitHeaderTitle: false,
+	},
+
 	props: {
 		initialPage: {
 			type: String,
@@ -50,17 +61,19 @@ export default defineComponent({
 
 	setup(props, context) {
 		const indexInfo = {
-			title: i18n.locale.instance,
+			title: i18n.locale.controlPanel,
 			icon: 'fas fa-cog',
 			bg: 'var(--bg)',
+			hideHeader: true,
 		};
 		const INFO = ref(indexInfo);
+		const childInfo = ref(null);
 		const page = ref(props.initialPage);
 		const narrow = ref(false);
 		const view = ref(null);
 		const el = ref(null);
 		const onInfo = (viewInfo) => {
-			INFO.value = viewInfo;
+			childInfo.value = viewInfo;
 		};
 		const pageProps = ref({});
 
@@ -306,7 +319,7 @@ export default defineComponent({
 			[symbols.PAGE_INFO]: INFO,
 			menuDef,
 			header: {
-				title: i18n.locale.controllPanel,
+				title: i18n.locale.controlPanel,
 			},
 			noMaintainerInformation,
 			noBotProtection,
@@ -315,6 +328,7 @@ export default defineComponent({
 			view,
 			el,
 			onInfo,
+			childInfo,
 			pageProps,
 			component,
 			invite,
@@ -343,25 +357,26 @@ export default defineComponent({
 		> .main {
 			flex: 1;
 			min-width: 0;
-			--baseContentWidth: 100%;
 		}
 	}
 
 	> .nav {
-		> .info {
-			margin: 16px;
+		.lxpfedzu {
+			> .info {
+				margin: 16px 0;
+			}
+
+			> .banner {
+				margin: 16px;
+
+				> .icon {
+					display: block;
+					margin: auto;
+					height: 42px;
+					border-radius: 8px;
+				}
+			}
 		}
-	}
-}
-
-.lxpfedzu {
-	margin: 16px;
-
-	> .icon {
-		display: block;
-		margin: auto;
-		height: 42px;
-		border-radius: 8px;
 	}
 }
 </style>

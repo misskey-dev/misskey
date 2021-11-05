@@ -13,14 +13,17 @@
 		</template>
 
 		<main class="main" @contextmenu.stop="onContextmenu" :style="{ background: pageInfo?.bg }">
-			<div class="content" :class="{ _fitSide_: !fullView }">
-				<router-view v-slot="{ Component }">
-					<transition :name="$store.state.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
-						<keep-alive :include="['timeline']">
-							<component :is="Component" :ref="changePage"/>
-						</keep-alive>
-					</transition>
-				</router-view>
+			<div class="content">
+				<MkStickyContainer>
+					<template #header><MkHeader v-if="pageInfo && !pageInfo.hideHeader" :info="pageInfo"/></template>
+					<router-view v-slot="{ Component }">
+						<transition :name="$store.state.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
+							<keep-alive :include="['timeline']">
+								<component :is="Component" :ref="changePage"/>
+							</keep-alive>
+						</transition>
+					</router-view>
+				</MkStickyContainer>
 			</div>
 		</main>
 
@@ -61,7 +64,7 @@
 import { defineComponent, defineAsyncComponent, markRaw } from 'vue';
 import { instanceName } from '@client/config';
 import { StickySidebar } from '@client/scripts/sticky-sidebar';
-import XSidebar from './default.sidebar.vue';
+import XSidebar from './classic.sidebar.vue';
 import XDrawerSidebar from '@client/ui/_common_/sidebar.vue';
 import XCommon from './_common_/common.vue';
 import * as os from '@client/os';
@@ -76,8 +79,8 @@ export default defineComponent({
 		XCommon,
 		XSidebar,
 		XDrawerSidebar,
-		XHeaderMenu: defineAsyncComponent(() => import('./default.header.vue')),
-		XWidgets: defineAsyncComponent(() => import('./default.widgets.vue')),
+		XHeaderMenu: defineAsyncComponent(() => import('./classic.header.vue')),
+		XWidgets: defineAsyncComponent(() => import('./classic.widgets.vue')),
 	},
 
 	provide() {

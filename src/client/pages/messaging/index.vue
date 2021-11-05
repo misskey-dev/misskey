@@ -1,8 +1,6 @@
 <template>
-<div>
-	<MkHeader :info="header"/>
-
-	<div class="yweeujhr _root" v-size="{ max: [400] }">
+<MkSpacer :content-max="800">
+	<div class="yweeujhr" v-size="{ max: [400] }">
 		<MkButton @click="start" primary class="start"><i class="fas fa-plus"></i> {{ $ts.startMessaging }}</MkButton>
 
 		<div class="history" v-if="messages.length > 0">
@@ -37,7 +35,7 @@
 		</div>
 		<MkLoading v-if="fetching"/>
 	</div>
-</div>
+</MkSpacer>
 </template>
 
 <script lang="ts">
@@ -56,11 +54,6 @@ export default defineComponent({
 	data() {
 		return {
 			[symbols.PAGE_INFO]: {
-				title: this.$ts.messaging,
-				icon: 'fas fa-comments',
-				bg: 'var(--bg)',
-			},
-			header: {
 				title: this.$ts.messaging,
 				icon: 'fas fa-comments',
 				bg: 'var(--bg)',
@@ -177,7 +170,7 @@ export default defineComponent({
 .yweeujhr {
 
 	> .start {
-		margin: var(--margin) auto var(--margin) auto;
+		margin: 0 auto var(--margin) auto;
 	}
 
 	> .history {

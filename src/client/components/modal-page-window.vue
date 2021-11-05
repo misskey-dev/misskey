@@ -10,10 +10,13 @@
 			</span>
 			<button class="_button" @click="$refs.modal.close()"><i class="fas fa-times"></i></button>
 		</div>
-		<div class="body _fitSide_">
-			<keep-alive>
-				<component :is="component" v-bind="props" :ref="changePage"/>
-			</keep-alive>
+		<div class="body">
+			<MkStickyContainer>
+				<template #header><MkHeader v-if="pageInfo && !pageInfo.hideHeader" :info="pageInfo"/></template>
+				<keep-alive>
+					<component :is="component" v-bind="props" :ref="changePage"/>
+				</keep-alive>
+			</MkStickyContainer>
 		</div>
 	</div>
 </MkModal>

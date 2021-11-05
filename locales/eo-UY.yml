@@ -542,7 +542,7 @@ troubleshooting: "Problemsolvi"
 learnMore: "Lernu pli"
 translate: "Traduki"
 translatedFrom: "Tradukita el {x}"
-controllPanel: "Ŝaltpodio"
+controlPanel: "Ŝaltpodio"
 _docs:
   continueReading: "Legi plu"
   features: "Funkcioj"
