@@ -808,13 +808,6 @@ _accountDelete:
   requestAccountDelete: "Demander la suppression de votre compte"
   started: "La procédure de suppression a commencé."
   inProgress: "Suppression en cours"
-_docs:
-  continueReading: "Lire plus"
-  features: "Fonctionnalités"
-  generalTopics: "Sujets généraux"
-  advancedTopics: "Sujets avancés"
-  admin: "Gestion"
-  translateWarn: "Ceci est une traduction dont le contenu peut différer du texte original."
 _ad:
   back: "Retour"
   reduceFrequencyOfThisAd: "Voir cette publicité moins souvent"
