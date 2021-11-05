@@ -22,7 +22,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import XDetails from '@client/components/reactions-viewer.details.vue';
+import XDetails from '@client/components/renote.details.vue';
 import { pleaseLogin } from '@client/scripts/please-login';
 import * as os from '@client/os';
 
@@ -104,8 +104,6 @@ export default defineComponent({
 				const showing = ref(true);
 				os.popup(XDetails, {
 					showing,
-					reaction: '🔁',
-					emojis: [],
 					users,
 					count: this.count,
 					source: this.$refs.renoteButton
