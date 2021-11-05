@@ -147,7 +147,7 @@ export function fromHtml(html: string, hashtagNames?: string[]): string | null {
 			// block code (<pre><code>)
 			case 'pre': {
 				if (node.childNodes.length === 1 && node.childNodes[0].nodeName === 'code') {
-					text += '```\n';
+					text += '\n```\n';
 					text += getText(node.childNodes[0]);
 					text += '\n```\n';
 				} else {
