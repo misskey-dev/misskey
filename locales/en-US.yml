@@ -813,13 +813,6 @@ _accountDelete:
   requestAccountDelete: "Request account deletion"
   started: "Deletion has been started."
   inProgress: "Deletion is currently in progress"
-_docs:
-  continueReading: "Read more"
-  features: "Features"
-  generalTopics: "General topics"
-  advancedTopics: "Advanced Topics"
-  admin: "Administration"
-  translateWarn: "This is a translated document. Its contents may differ from the original."
 _ad:
   back: "Back"
   reduceFrequencyOfThisAd: "Show this ad less"
