@@ -15,7 +15,7 @@ export async function deleteActor(actor: IRemoteUser, uri: string): Promise<stri
 	if (actor.isDeleted) {
 		logger.info(`skip: already deleted`);
 	}
-
+/*
 	const job = await createDeleteAccountJob(actor);
 
 	await Users.update(actor.id, {
@@ -23,4 +23,7 @@ export async function deleteActor(actor: IRemoteUser, uri: string): Promise<stri
 	});
 
 	return `ok: queued ${job.name} ${job.id}`;
+*/
+
+	return `skip: account deletion temporaly disabled`;
 }
