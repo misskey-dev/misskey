@@ -788,13 +788,6 @@ _accountDelete:
   requestAccountDelete: "Minta penghapusan akun"
   started: "Penghapusan telah dimulai"
   inProgress: "Penghapusan sedang dalam proses"
-_docs:
-  continueReading: "Baca lebih lanjut"
-  features: "Fitur"
-  generalTopics: "Topik umum"
-  advancedTopics: "Topik tingkat lanjut"
-  admin: "Manajemen"
-  translateWarn: "Ini merupakan dokumen terjemahan. Konten di dalamnya kemungkinan dapat berbeda dari yang aslinya."
 _ad:
   back: "Kembali"
   reduceFrequencyOfThisAd: "Tampilkan iklan ini lebih sedikit"
