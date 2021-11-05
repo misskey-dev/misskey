@@ -30,7 +30,7 @@ export default defineComponent({
 	methods: {
 		whatIsNew() {
 			this.$refs.modal.close();
-			this.$router.push('/docs/general/changelog');
+			window.open(`https://misskey-hub.net/docs/releases.html#_${version.replace(/\./g, '-')}`, '_blank');
 		}
 	}
 });

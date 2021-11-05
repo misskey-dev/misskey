@@ -816,14 +816,6 @@ _accountDelete:
   started: "削除処理が開始されました。"
   inProgress: "削除が進行中"
 
-_docs: 
-  continueReading: "続きを読む"
-  features: "機能"
-  generalTopics: "一般的なトピック"
-  advancedTopics: "高度なトピック"
-  admin: "管理"
-  translateWarn: "このドキュメントは翻訳されたものです。オリジナルとは内容が異なる場合があります。"
-
 _ad:
   back: "戻る"
   reduceFrequencyOfThisAd: "この広告の表示頻度を下げる"
