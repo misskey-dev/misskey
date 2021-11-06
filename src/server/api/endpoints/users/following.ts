@@ -2,7 +2,7 @@ import $ from 'cafy';
 import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { ApiError } from '../../error';
-import { Users, Followings } from '@/models/index';
+import { Users, Followings, UserProfiles } from '@/models/index';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 import { toPunyNullable } from '@/misc/convert-host';
 
@@ -53,7 +53,13 @@ export const meta = {
 			message: 'No such user.',
 			code: 'NO_SUCH_USER',
 			id: '63e4aba4-4156-4e53-be25-c9559e42d71b'
-		}
+		},
+
+		forbidden: {
+			message: 'Forbidden.',
+			code: 'FORBIDDEN',
+			id: 'f6cdb0df-c19f-ec5c-7dbb-0ba84a1f92ba'
+		},
 	}
 };
 
@@ -64,6 +70,26 @@ export default define(meta, async (ps, me) => {
 
 	if (user == null) {
 		throw new ApiError(meta.errors.noSuchUser);
+	}
+
+	const profile = await UserProfiles.findOneOrFail(user.id);
+
+	if (profile.ffVisibility === 'private') {
+		if (me == null || (me.id !== user.id)) {
+			throw new ApiError(meta.errors.forbidden);
+		}
+	} else if (profile.ffVisibility === 'followers') {
+		if (me == null) {
+			throw new ApiError(meta.errors.forbidden);
+		} else if (me.id !== user.id) {
+			const following = await Followings.findOne({
+				followeeId: user.id,
+				followerId: me.id,
+			});
+			if (following == null) {
+				throw new ApiError(meta.errors.forbidden);
+			}
+		}
 	}
 
 	const query = makePaginationQuery(Followings.createQueryBuilder('following'), ps.sinceId, ps.untilId)
