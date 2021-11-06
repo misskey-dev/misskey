@@ -882,6 +882,9 @@ _pages:
       stringArray: "List de teksto"
     emptySlot: "Malplena junto"
     argVariables: "Eniga junto"
+_relayStatus:
+  requesting: "Atendado de aprobon"
+  accepted: "Konfirmita"
 _notification:
   fileUploaded: "La dosiero sukcese alŝutiĝis."
   youGotMention: "{name} mencis"
