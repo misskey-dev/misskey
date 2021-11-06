@@ -7,15 +7,9 @@ import { fetchMeta } from '@/misc/fetch-meta';
 import { getS3 } from './s3';
 import { v4 as uuid } from 'uuid';
 import { Note } from '@/models/entities/note';
-import { renderActivity } from '@/remote/activitypub/renderer/index';
-import renderDelete from '@/remote/activitypub/renderer/delete';
-import renderTombstone from '@/remote/activitypub/renderer/tombstone';
-import config from '@/config/index';
-import { deliverToFollowers } from '@/remote/activitypub/deliver-manager';
 import { Brackets } from 'typeorm';
-import { deliverToRelays } from '../relay';
 
-export async function deleteFile(file: DriveFile, isExpired = false, deleteRelatedNotes = true) {
+export async function deleteFile(file: DriveFile, isExpired = false) {
 	if (file.storedInternal) {
 		InternalStorage.del(file.accessKey!);
 
@@ -38,10 +32,10 @@ export async function deleteFile(file: DriveFile, isExpired = false, deleteRelat
 		}
 	}
 
-	postProcess(file, isExpired, deleteRelatedNotes);
+	postProcess(file, isExpired);
 }
 
-export async function deleteFileSync(file: DriveFile, isExpired = false, deleteRelatedNotes = true) {
+export async function deleteFileSync(file: DriveFile, isExpired = false) {
 	if (file.storedInternal) {
 		InternalStorage.del(file.accessKey!);
 
@@ -68,10 +62,10 @@ export async function deleteFileSync(file: DriveFile, isExpired = false, deleteR
 		await Promise.all(promises);
 	}
 
-	postProcess(file, isExpired, deleteRelatedNotes);
+	postProcess(file, isExpired);
 }
 
-async function postProcess(file: DriveFile, isExpired = false, deleteRelatedNotes = true) {
+async function postProcess(file: DriveFile, isExpired = false) {
 	// リモートファイル期限切れ削除後は直リンクにする
 	if (isExpired && file.userHost !== null && file.uri != null) {
 		DriveFiles.update(file.id, {
@@ -87,31 +81,6 @@ async function postProcess(file: DriveFile, isExpired = false, deleteRelatedNote
 		});
 	} else {
 		DriveFiles.delete(file.id);
-
-		// まだノートが削除されていないならノートを削除する
-		if (deleteRelatedNotes) {
-			// TODO: トランザクション
-			const relatedNotes = await findRelatedNotes(file.id);
-			for (const relatedNote of relatedNotes) { // for each note with deleted driveFile
-				const cascadingNotes = (await findCascadingNotes(relatedNote)).filter(note => !note.localOnly);
-				for (const cascadingNote of cascadingNotes) { // for each notes subject to cascade deletion
-					if (!cascadingNote.user) continue;
-					if (!Users.isLocalUser(cascadingNote.user)) continue;
-					const content = renderActivity(renderDelete(renderTombstone(`${config.url}/notes/${cascadingNote.id}`), cascadingNote.user));
-					deliverToFollowers(cascadingNote.user, content); // federate delete msg
-					deliverToRelays(cascadingNote.user, content);
-				}
-				if (!relatedNote.user) continue;
-				if (Users.isLocalUser(relatedNote.user)) {
-					const content = renderActivity(renderDelete(renderTombstone(`${config.url}/notes/${relatedNote.id}`), relatedNote.user));
-					deliverToFollowers(relatedNote.user, content);
-					deliverToRelays(relatedNote.user, content);
-				}
-			}
-			Notes.createQueryBuilder().delete()
-				.where(':id = ANY("fileIds")', { id: file.id })
-				.execute();
-		}
 	}
 
 	// 統計を更新
