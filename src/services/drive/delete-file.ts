@@ -1,13 +1,11 @@
 import { DriveFile } from '@/models/entities/drive-file';
 import { InternalStorage } from './internal-storage';
-import { DriveFiles, Instances, Notes, Users } from '@/models/index';
+import { DriveFiles, Instances } from '@/models/index';
 import { driveChart, perUserDriveChart, instanceChart } from '@/services/chart/index';
 import { createDeleteObjectStorageFileJob } from '@/queue/index';
 import { fetchMeta } from '@/misc/fetch-meta';
 import { getS3 } from './s3';
 import { v4 as uuid } from 'uuid';
-import { Note } from '@/models/entities/note';
-import { Brackets } from 'typeorm';
 
 export async function deleteFile(file: DriveFile, isExpired = false) {
 	if (file.storedInternal) {
@@ -102,37 +100,4 @@ export async function deleteObjectStorageFile(key: string) {
 		Bucket: meta.objectStorageBucket!,
 		Key: key
 	}).promise();
-}
-
-async function findRelatedNotes(fileId: string) {
-	// NOTE: When running raw query, TypeORM converts field name to lowercase. Wrap in quotes to prevent conversion.
-	const relatedNotes = await Notes.createQueryBuilder('note').where(':id = ANY("fileIds")', { id: fileId }).getMany();
-	for (const relatedNote of relatedNotes) {
-		const user = await Users.findOne({ id: relatedNote.userId });
-		if (user)
-			relatedNote.user = user;
-	}
-	return relatedNotes;
-}
-
-async function findCascadingNotes(note: Note) {
-	const cascadingNotes: Note[] = [];
-
-	const recursive = async (noteId: string) => {
-		const query = Notes.createQueryBuilder('note')
-			.where('note.replyId = :noteId', { noteId })
-			.orWhere(new Brackets(q => {
-				q.where('note.renoteId = :noteId', { noteId })
-				.andWhere('note.text IS NOT NULL');
-			}))
-			.leftJoinAndSelect('note.user', 'user');
-		const replies = await query.getMany();
-		for (const reply of replies) {
-			cascadingNotes.push(reply);
-			await recursive(reply.id);
-		}
-	};
-	await recursive(note.id);
-
-	return cascadingNotes.filter(note => note.userHost === null); // filter out non-local users
 }
