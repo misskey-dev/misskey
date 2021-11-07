@@ -11,7 +11,7 @@
 			</div>
 		</section>
 		<section class="_debobigegoItem" style="text-align: center; padding: 0 16px;">
-			{{ $ts._aboutMisskey.about }}<br><MkA class="_link" to="/docs/general/misskey">{{ $ts.learnMore }}</MkA>
+			{{ $ts._aboutMisskey.about }}<br><a href="https://misskey-hub.net/docs/misskey.html" target="_blank" class="_link">{{ $ts.learnMore }}</a>
 		</section>
 		<FormGroup>
 			<FormLink to="https://github.com/misskey-dev/misskey" external>

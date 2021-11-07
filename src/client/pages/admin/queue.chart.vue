@@ -55,8 +55,8 @@ export default defineComponent({
 		const jobs = ref([]);
 
 		onMounted(() => {
-			os.api(props.domain === 'inbox' ? 'admin/queue/inbox-delayed' : props.domain === 'deliver' ? 'admin/queue/deliver-delayed' : null, {}).then(jobs => {
-				jobs.value = jobs;
+			os.api(props.domain === 'inbox' ? 'admin/queue/inbox-delayed' : props.domain === 'deliver' ? 'admin/queue/deliver-delayed' : null, {}).then(result => {
+				jobs.value = result;
 			});
 
 			const onStats = (stats) => {

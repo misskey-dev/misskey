@@ -147,6 +147,8 @@ export default defineComponent({
 .rrevdjwt {
 	padding: 8px 0;
 	min-width: 200px;
+	max-height: 90vh;
+	overflow: auto;
 
 	&.center {
 		> .item {

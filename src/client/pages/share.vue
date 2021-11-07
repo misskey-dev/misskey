@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts">
-// SPECIFICATION: /src/docs/ja-JP/advanced/share-page.md
+// SPECIFICATION: https://misskey-hub.net/docs/features/share-form.html
 
 import { defineComponent } from 'vue';
 import MkButton from '@client/components/ui/button.vue';

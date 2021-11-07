@@ -117,7 +117,7 @@ export default defineComponent({
 				text: this.$ts.help,
 				icon: 'fas fa-question-circle',
 				action: () => {
-					os.pageWindow('/docs');
+					window.open(`https://misskey-hub.net/help.md`, '_blank');
 				}
 			}], ev.currentTarget || ev.target);
 		},

@@ -19,12 +19,17 @@
 				<span v-else-if="usernameState === 'max-range'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.tooLong }}</span>
 			</template>
 		</MkInput>
-		<MkInput v-if="meta.emailRequiredForSignup" class="_formBlock" v-model="email" type="email" :autocomplete="Math.random()" spellcheck="false" required @update:modelValue="onChangeEmail" data-cy-signup-email>
+		<MkInput v-if="meta.emailRequiredForSignup" class="_formBlock" v-model="email" :debounce="true" type="email" :autocomplete="Math.random()" spellcheck="false" required @update:modelValue="onChangeEmail" data-cy-signup-email>
 			<template #label>{{ $ts.emailAddress }} <div class="_button _help" v-tooltip:dialog="$ts._signup.emailAddressInfo"><i class="far fa-question-circle"></i></div></template>
 			<template #prefix><i class="fas fa-envelope"></i></template>
 			<template #caption>
 				<span v-if="emailState === 'wait'" style="color:#999"><i class="fas fa-spinner fa-pulse fa-fw"></i> {{ $ts.checking }}</span>
 				<span v-else-if="emailState === 'ok'" style="color: var(--success)"><i class="fas fa-check fa-fw"></i> {{ $ts.available }}</span>
+				<span v-else-if="emailState === 'unavailable:used'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts._emailUnavailable.used }}</span>
+				<span v-else-if="emailState === 'unavailable:format'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts._emailUnavailable.format }}</span>
+				<span v-else-if="emailState === 'unavailable:disposable'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts._emailUnavailable.disposable }}</span>
+				<span v-else-if="emailState === 'unavailable:mx'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts._emailUnavailable.mx }}</span>
+				<span v-else-if="emailState === 'unavailable:smtp'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts._emailUnavailable.smtp }}</span>
 				<span v-else-if="emailState === 'unavailable'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.unavailable }}</span>
 				<span v-else-if="emailState === 'error'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.error }}</span>
 			</template>
@@ -171,7 +176,13 @@ export default defineComponent({
 			os.api('email-address/available', {
 				emailAddress: this.email
 			}).then(result => {
-				this.emailState = result.available ? 'ok' : 'unavailable';
+				this.emailState = result.available ? 'ok' :
+					result.reason === 'used' ? 'unavailable:used' :
+					result.reason === 'format' ? 'unavailable:format' :
+					result.reason === 'disposable' ? 'unavailable:disposable' :
+					result.reason === 'mx' ? 'unavailable:mx' :
+					result.reason === 'smtp' ? 'unavailable:smtp' :
+					'unavailable';
 			}).catch(err => {
 				this.emailState = 'error';
 			});
