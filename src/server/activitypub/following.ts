@@ -44,9 +44,11 @@ export default async (ctx: Router.RouterContext) => {
 
 	if (profile.ffVisibility === 'private') {
 		ctx.status = 403;
+		ctx.set('Cache-Control', 'public, max-age=30');
 		return;
 	} else if (profile.ffVisibility === 'followers') {
 		ctx.status = 403;
+		ctx.set('Cache-Control', 'public, max-age=30');
 		return;
 	}
 	//#endregion
