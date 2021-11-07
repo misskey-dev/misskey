@@ -797,6 +797,8 @@ unread: "Non lu"
 filter: "Filtre"
 controlPanel: "Panneau de contrôle"
 manageAccounts: "Gérer les comptes"
+_ffVisibility:
+  public: "Public"
 _signup:
   almostThere: "Bientôt fini"
   emailAddressInfo: "Insérez votre adresse e-mail."
