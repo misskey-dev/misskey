@@ -803,6 +803,8 @@ makeReactionsPublicDescription: "Jeder wird die Liste deiner gesendeten Reaktion
 classic: "Classic"
 muteThread: "Thread stummschalten"
 unmuteThread: "Threadstummschaltung aufheben"
+_ffVisibility:
+  public: "Veröffentlichen"
 _signup:
   almostThere: "Fast geschafft"
   emailAddressInfo: "Bitte gib deine Email-Adresse ein."
