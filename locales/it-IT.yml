@@ -745,6 +745,8 @@ global: "Federata"
 sent: "Inviare"
 hashtags: "Hashtag"
 troubleshooting: "Risoluzione problemi"
+_ffVisibility:
+  public: "Pubblico"
 _ad:
   back: "Indietro"
   reduceFrequencyOfThisAd: "Visualizza questa pubblicità meno spesso"
