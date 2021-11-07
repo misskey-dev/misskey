@@ -358,28 +358,13 @@ router.get('/channels/:channel', async (ctx, next) => {
 });
 //#endregion
 
-router.get('/info', async ctx => {
+router.get('/_info_card_', async ctx => {
 	const meta = await fetchMeta(true);
-	const emojis = await Emojis.find({
-		where: { host: null }
-	});
 
-	const proxyAccount = meta.proxyAccountId ? await Users.pack(meta.proxyAccountId).catch(() => null) : null;
-
-	await ctx.render('info', {
+	await ctx.render('info-card', {
 		version: config.version,
-		machine: os.hostname(),
-		os: os.platform(),
-		node: process.version,
-		psql: await getConnection().query('SHOW server_version').then(x => x[0].server_version),
-		redis: redisClient.server_info.redis_version,
-		cpu: {
-			model: os.cpus()[0].model,
-			cores: os.cpus().length
-		},
-		emojis: emojis,
+		host: config.host,
 		meta: meta,
-		proxyAccountName: proxyAccount ? proxyAccount.username : null,
 		originalUsersCount: await Users.count({ host: null }),
 		originalNotesCount: await Notes.count({ userHost: null })
 	});
