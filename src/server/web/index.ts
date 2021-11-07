@@ -361,6 +361,8 @@ router.get('/channels/:channel', async (ctx, next) => {
 router.get('/_info_card_', async ctx => {
 	const meta = await fetchMeta(true);
 
+	ctx.remove('X-Frame-Options');
+
 	await ctx.render('info-card', {
 		version: config.version,
 		host: config.host,
