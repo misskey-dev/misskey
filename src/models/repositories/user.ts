@@ -187,6 +187,16 @@ export class UserRepository extends Repository<User> {
 			.getMany() : [];
 		const profile = opts.detail ? await UserProfiles.findOneOrFail(user.id) : null;
 
+		const followingCount = profile == null ? null :
+			(profile.ffVisibility === 'public') || (meId === user.id) ? user.followingCount :
+			(profile.ffVisibility === 'followers') && (relation!.isFollowing) ? user.followingCount :
+			null;
+
+		const followersCount = profile == null ? null :
+			(profile.ffVisibility === 'public') || (meId === user.id) ? user.followersCount :
+			(profile.ffVisibility === 'followers') && (relation!.isFollowing) ? user.followersCount :
+			null;
+
 		const falsy = opts.detail ? false : undefined;
 
 		const packed = {
@@ -230,8 +240,8 @@ export class UserRepository extends Repository<User> {
 				birthday: profile!.birthday,
 				lang: profile!.lang,
 				fields: profile!.fields,
-				followersCount: user.followersCount,
-				followingCount: user.followingCount,
+				followersCount: followersCount || 0,
+				followingCount: followingCount || 0,
 				notesCount: user.notesCount,
 				pinnedNoteIds: pins.map(pin => pin.noteId),
 				pinnedNotes: Notes.packMany(pins.map(pin => pin.note!), me, {
@@ -240,6 +250,7 @@ export class UserRepository extends Repository<User> {
 				pinnedPageId: profile!.pinnedPageId,
 				pinnedPage: profile!.pinnedPageId ? Pages.pack(profile!.pinnedPageId, me) : null,
 				publicReactions: profile!.publicReactions,
+				ffVisibility: profile!.ffVisibility,
 				twoFactorEnabled: profile!.twoFactorEnabled,
 				usePasswordLessLogin: profile!.usePasswordLessLogin,
 				securityKeys: profile!.twoFactorEnabled

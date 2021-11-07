@@ -10,7 +10,7 @@
 					<option value="resolved">{{ $ts.resolved }}</option>
 				</MkSelect>
 				<MkSelect v-model="targetUserOrigin" style="margin: 0; flex: 1;">
-					<template #label>{{ $ts.targetUserOrigin }}</template>
+					<template #label>{{ $ts.reporteeOrigin }}</template>
 					<option value="combined">{{ $ts.all }}</option>
 					<option value="local">{{ $ts.local }}</option>
 					<option value="remote">{{ $ts.remote }}</option>

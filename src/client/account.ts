@@ -122,7 +122,9 @@ export async function login(token: Account['token'], redirect?: string) {
 	await addAccount(me.id, token);
 
 	if (redirect) {
+		// 他のタブは再読み込みするだけ
 		reloadChannel.postMessage(null);
+		// このページはredirectで指定された先に移動
 		location.href = redirect;
 		return;
 	}

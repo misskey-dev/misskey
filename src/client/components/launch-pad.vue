@@ -16,10 +16,10 @@
 			</template>
 		</div>
 		<div class="sub">
-			<MkA to="/docs" @click.passive="close()" v-click-anime>
+			<a href="https://misskey-hub.net/help.html" target="_blank" @click.passive="close()" v-click-anime>
 				<i class="fas fa-question-circle icon"></i>
 				<div class="text">{{ $ts.help }}</div>
-			</MkA>
+			</a>
 			<MkA to="/about" @click.passive="close()" v-click-anime>
 				<i class="fas fa-info-circle icon"></i>
 				<div class="text">{{ $t('aboutX', { x: instanceName }) }}</div>

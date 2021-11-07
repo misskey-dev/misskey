@@ -45,7 +45,7 @@ export default defineComponent({
 		);
 
 		const bg = tinycolor(getComputedStyle(document.documentElement).getPropertyValue(isMe ? '--mentionMe' : '--mention'));
-		bg.setAlpha(0.20);
+		bg.setAlpha(0.1);
 
 		return {
 			localHost,
