@@ -1167,6 +1167,13 @@ _rooms:
     sofa: "أريكة"
     banknote: "أوراق نقدية"
 _pages:
+  newPage: "أنشئ صفحة جديدة"
+  editPage: "عدّل الصفحة"
+  readPage: "نُشّط عرض المصدر"
+  created: "نجح إنشاء الصفحة"
+  updated: "نجح تعديل الصفحة"
+  deleted: "نجح حذف الصفحة"
+  pageSetting: "إعدادات الصفحة"
   viewPage: "اعرض صفحاتك"
   like: "أعجبني"
   unlike: "أزل الإعجاب"
