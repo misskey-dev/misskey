@@ -805,6 +805,12 @@ classic: "经典"
 muteThread: "屏蔽帖子列表"
 unmuteThread: "取消屏蔽帖子列表"
 ffVisibilityDescription: "您可以设置您的关注/关注者信息的公开范围"
+_emailUnavailable:
+  used: "已经被使用过"
+  format: "无效的格式"
+  disposable: "不是永久可用的地址"
+  mx: "邮件服务器不正确"
+  smtp: "邮件服务器没有响应"
 _ffVisibility:
   public: "发布"
   followers: "只有关注你的用户能看到"
