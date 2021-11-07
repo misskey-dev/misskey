@@ -804,7 +804,9 @@ classic: "Classic"
 muteThread: "Thread stummschalten"
 unmuteThread: "Threadstummschaltung aufheben"
 _ffVisibility:
-  public: "Veröffentlichen"
+  public: "Öffentlich"
+  followers: "Nur für Follower sichtbar"
+  private: "Privat"
 _signup:
   almostThere: "Fast geschafft"
   emailAddressInfo: "Bitte gib deine Email-Adresse ein."
