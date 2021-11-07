@@ -804,6 +804,8 @@ makeReactionsPublicDescription: "This will make the list of all your past reacti
 classic: "Classic"
 muteThread: "Mute thread"
 unmuteThread: "Unmute thread"
+_ffVisibility:
+  public: "Publish"
 _signup:
   almostThere: "Almost there"
   emailAddressInfo: "Please enter your email address."
