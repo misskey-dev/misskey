@@ -808,7 +808,7 @@ ffVisibility: "Follows/Followers Visibility"
 ffVisibilityDescription: "Allows you to configure who can see who you follow and who follows you."
 _ffVisibility:
   public: "Public"
-  followers: "Make visible to followers only"
+  followers: "Visible to followers only"
   private: "Private"
 _signup:
   almostThere: "Almost there"
