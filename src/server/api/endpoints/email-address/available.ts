@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import define from '../../define';
-import { UserProfiles } from '@/models/index';
+import { validateEmailForAccount } from '@/services/validate-email-for-account';
 
 export const meta = {
 	tags: ['users'],
@@ -20,18 +20,15 @@ export const meta = {
 			available: {
 				type: 'boolean' as const,
 				optional: false as const, nullable: false as const,
-			}
+			},
+			reason: {
+				type: 'string' as const,
+				optional: false as const, nullable: true as const,
+			},
 		}
 	}
 };
 
 export default define(meta, async (ps) => {
-	const exist = await UserProfiles.count({
-		emailVerified: true,
-		email: ps.emailAddress,
-	});
-
-	return {
-		available: exist === 0
-	};
+	return await validateEmailForAccount(ps.emailAddress);
 });
