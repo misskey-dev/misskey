@@ -800,6 +800,8 @@ makeReactionsPublic: "Опубликовать список реакций"
 makeReactionsPublicDescription: "Список сделанных вами реакций доступен для просмотра всем желающим."
 classic: "Классика"
 unmuteThread: "Отключить звук"
+_ffVisibility:
+  public: "Опубликовать"
 _signup:
   almostThere: "Почти готово!"
   emailAddressInfo: "Пожалуйста, введите адрес электронной почты, который вы используете."
