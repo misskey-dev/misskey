@@ -72,6 +72,10 @@ export const meta = {
 			validator: $.optional.bool,
 		},
 
+		ffVisibility: {
+			validator: $.optional.str,
+		},
+
 		carefulBot: {
 			validator: $.optional.bool,
 		},
@@ -174,6 +178,7 @@ export default define(meta, async (ps, _user, token) => {
 	if (ps.lang !== undefined) profileUpdates.lang = ps.lang;
 	if (ps.location !== undefined) profileUpdates.location = ps.location;
 	if (ps.birthday !== undefined) profileUpdates.birthday = ps.birthday;
+	if (ps.ffVisibility !== undefined) profileUpdates.ffVisibility = ps.ffVisibility;
 	if (ps.avatarId !== undefined) updates.avatarId = ps.avatarId;
 	if (ps.bannerId !== undefined) updates.bannerId = ps.bannerId;
 	if (ps.mutedWords !== undefined) {
