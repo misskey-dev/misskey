@@ -804,6 +804,7 @@ makeReactionsPublicDescription: "将您发表过的回应设置成公开可见�
 classic: "经典"
 muteThread: "屏蔽帖子列表"
 unmuteThread: "取消屏蔽帖子列表"
+ffVisibility: "连接的可见范围"
 ffVisibilityDescription: "您可以设置您的关注/关注者信息的公开范围"
 _emailUnavailable:
   used: "已经被使用过"
