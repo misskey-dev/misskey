@@ -198,7 +198,7 @@ export default defineComponent({
 			background: var(--panel);
 			box-shadow: 0 0 0 3px var(--panel);
 			font-size: 12px;
-			pointer-events: none;
+			text-align: center;
 
 			&:empty {
 				display: none;
@@ -213,31 +213,37 @@ export default defineComponent({
 			&.follow, &.followRequestAccepted, &.receiveFollowRequest, &.groupInvited {
 				padding: 3px;
 				background: #36aed2;
+				pointer-events: none;
 			}
 
 			&.renote {
 				padding: 3px;
 				background: #36d298;
+				pointer-events: none;
 			}
 
 			&.quote {
 				padding: 3px;
 				background: #36d298;
+				pointer-events: none;
 			}
 
 			&.reply {
 				padding: 3px;
 				background: #007aff;
+				pointer-events: none;
 			}
 
 			&.mention {
 				padding: 3px;
 				background: #88a6b7;
+				pointer-events: none;
 			}
 
 			&.pollVote {
 				padding: 3px;
 				background: #88a6b7;
+				pointer-events: none;
 			}
 		}
 	}
