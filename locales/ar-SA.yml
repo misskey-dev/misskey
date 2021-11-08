@@ -1196,6 +1196,7 @@ _pages:
   enterVariableName: "أدخل اسم المتغيّر"
   variableNameIsAlreadyUsed: "هذا الاسم محجوز"
   contentBlocks: "المحتوى"
+  inputBlocks: "مُدخل"
   specialBlocks: "خاص"
   blocks:
     text: "نص"
