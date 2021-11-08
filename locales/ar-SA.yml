@@ -1426,6 +1426,7 @@ _notification:
   fileUploaded: "نجح رفع الملف"
   youGotMention: "{name} أشار إليك"
   youGotReply: "ردّ عليك {name}"
+  youGotQuote: "اقتبس منك {name}"
   youRenoted: "إعادت نشر من {name}"
   youGotPoll: "شارك {name} في استطلاع الرأي"
   youGotMessagingMessageFromUser: "لقد تلقيت رسالة مِن {name}"
