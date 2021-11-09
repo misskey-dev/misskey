@@ -791,6 +791,7 @@ keepCw: "Сохраняйте Предупреждения о содержимо
 lastCommunication: "Последнее сообщение"
 resolved: "Решен"
 unresolved: "Неразрешенные"
+itsOff: "Он выключен!"
 emailRequiredForSignup: "Требуется адрес электронной почты для регистрации аккаунта"
 unread: "Непрочитанное"
 filter: "Фильтры"
@@ -802,6 +803,7 @@ classic: "Классика"
 unmuteThread: "Отключить звук"
 _ffVisibility:
   public: "Опубликовать"
+  private: "Частный"
 _signup:
   almostThere: "Почти готово!"
   emailAddressInfo: "Пожалуйста, введите адрес электронной почты, который вы используете."
