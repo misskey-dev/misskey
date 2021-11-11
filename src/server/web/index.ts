@@ -4,8 +4,6 @@
 
 import * as os from 'os';
 import * as fs from 'fs';
-import * as stream from 'stream';
-import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import * as ms from 'ms';
 import * as Koa from 'koa';
@@ -13,8 +11,6 @@ import * as Router from '@koa/router';
 import * as send from 'koa-send';
 import * as favicon from 'koa-favicon';
 import * as views from 'koa-views';
-import * as glob from 'glob';
-import * as MarkdownIt from 'markdown-it';
 
 import packFeed from './feed';
 import { fetchMeta } from '@/misc/fetch-meta';
@@ -32,19 +28,7 @@ import * as sharp from 'sharp';
 const _filename = __filename;
 const _dirname = dirname(_filename);
 
-const markdown = MarkdownIt({
-	html: true
-});
-
-const changelog = fs.readFileSync(`${_dirname}/../../../CHANGELOG.md`, { encoding: 'utf8' });
-function genDoc(path: string): string {
-	let md = fs.readFileSync(path, { encoding: 'utf8' });
-	md = md.replace('<!--[CHANGELOG]-->', changelog);
-	return md;
-}
-
 const staticAssets = `${_dirname}/../../../assets/`;
-const docAssets = `${_dirname}/../../../src/docs/`;
 const assets = `${_dirname}/../../assets/`;
 
 // Init app
@@ -79,14 +63,6 @@ router.get('/static-assets/(.*)', async ctx => {
 		root: staticAssets,
 		maxage: ms('7 days'),
 	});
-});
-
-router.get('/doc-assets/(.*)', async ctx => {
-	if (ctx.path.includes('..')) return;
-	const path = `${_dirname}/../../../src/docs/${ctx.path.replace('/doc-assets/', '')}`;
-	const doc = genDoc(path);
-	ctx.set('Content-Type', 'text/plain; charset=utf-8');
-	ctx.body = doc;
 });
 
 router.get('/assets/(.*)', async ctx => {
@@ -190,64 +166,6 @@ router.get('/url', require('./url-preview'));
 
 router.get('/api.json', async ctx => {
 	ctx.body = genOpenapiSpec();
-});
-
-router.get('/docs.json', async ctx => {
-	const lang = ctx.query.lang;
-	const query = ctx.query.q;
-	if (!Object.keys(locales).includes(lang)) {
-		ctx.body = [];
-		return;
-	}
-	const dirPath = `${_dirname}/../../../src/docs/${lang}`.replace(/\\/g, '/');
-	const paths = glob.sync(`${dirPath}/**/*.md`);
-	const docs: { path: string; title: string; summary: string; }[] = [];
-	for (const path of paths) {
-		const md = genDoc(path);
-
-		if (query && query.length > 0) {
-			// TODO: カタカナをひらがなにして比較するなどしたい
-			if (!md.includes(query)) continue;
-		}
-
-		const parsed = markdown.parse(md, {});
-		if (parsed.length === 0) return;
-
-		const buf = [...parsed];
-		const headingTokens = [];
-
-		// もっとも上にある見出しを抽出する
-		while (buf[0].type !== 'heading_open') {
-			buf.shift();
-		}
-		buf.shift();
-		while (buf[0].type as string !== 'heading_close') {
-			const token = buf.shift();
-			if (token) {
-				headingTokens.push(token);
-			}
-		}
-
-		const firstParagrapfTokens = [];
-		while (buf[0].type !== 'paragraph_open') {
-			buf.shift();
-		}
-		buf.shift();
-		while (buf[0].type as string !== 'paragraph_close') {
-			const token = buf.shift();
-			if (token) {
-				firstParagrapfTokens.push(token);
-			}
-		}
-
-		docs.push({
-			path: path.match(new RegExp(`docs\/${lang}\/(.+?)\.md$`))![1],
-			title: markdown.renderer.render(headingTokens, {}, {}),
-			summary: markdown.renderer.render(firstParagrapfTokens, {}, {}),
-		});
-	}
-
-	ctx.body = docs;
 });
 
 const getFeed = async (acct: string) => {
@@ -482,28 +400,15 @@ router.get('/channels/:channel', async (ctx, next) => {
 });
 //#endregion
 
-router.get('/info', async ctx => {
+router.get('/_info_card_', async ctx => {
 	const meta = await fetchMeta(true);
-	const emojis = await Emojis.find({
-		where: { host: null }
-	});
 
-	const proxyAccount = meta.proxyAccountId ? await Users.pack(meta.proxyAccountId).catch(() => null) : null;
+	ctx.remove('X-Frame-Options');
 
-	await ctx.render('info', {
+	await ctx.render('info-card', {
 		version: config.version,
-		machine: os.hostname(),
-		os: os.platform(),
-		node: process.version,
-		psql: await getConnection().query('SHOW server_version').then(x => x[0].server_version),
-		redis: redisClient.server_info.redis_version,
-		cpu: {
-			model: os.cpus()[0].model,
-			cores: os.cpus().length
-		},
-		emojis: emojis,
+		host: config.host,
 		meta: meta,
-		proxyAccountName: proxyAccount ? proxyAccount.username : null,
 		originalUsersCount: await Users.count({ host: null }),
 		originalNotesCount: await Notes.count({ userHost: null })
 	});

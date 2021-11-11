@@ -8,6 +8,7 @@ import { signup } from '../common/signup';
 import config from '@/config';
 import { sendEmail } from '@/services/send-email';
 import { genId } from '@/misc/gen-id';
+import { validateEmailForAccount } from '@/services/validate-email-for-account';
 
 export default async (ctx: Koa.Context) => {
 	const body = ctx.request.body;
@@ -38,6 +39,12 @@ export default async (ctx: Koa.Context) => {
 
 	if (instance.emailRequiredForSignup) {
 		if (emailAddress == null || typeof emailAddress != 'string') {
+			ctx.status = 400;
+			return;
+		}
+
+		const available = await validateEmailForAccount(emailAddress);
+		if (!available) {
 			ctx.status = 400;
 			return;
 		}

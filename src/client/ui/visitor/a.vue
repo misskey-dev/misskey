@@ -120,7 +120,7 @@ export default defineComponent({
 		},
 
 		help() {
-			this.$router.push('/docs/keyboard-shortcut');
+			window.open(`https://misskey-hub.net/docs/keyboard-shortcut.md`, '_blank');
 		},
 
 		onTransition() {

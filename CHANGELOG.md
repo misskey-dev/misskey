@@ -11,6 +11,20 @@
 
 -->
 
+## 12.x.x (unreleased)
+
+### Improvements
+- フォロー/フォロワーを非公開にできるように
+- インスタンスプロフィールレンダリング ready
+- 通知のリアクションアイコンをホバーで拡大できるように
+- メールアドレスのバリデーションを強化
+
+### Bugfixes
+- クライアント: 長いメニューが画面からはみ出す問題を修正
+- クライアント: コントロールパネルのジョブキューに個々のジョブが表示されないのを修正
+- クライアント: fix missing i18n string
+- fix html conversion issue with code blocks
+
 ## 12.95.0 (2021/10/31)
 
 ### Improvements
