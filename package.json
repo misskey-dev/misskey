@@ -1,6 +1,6 @@
 {
 	"name": "misskey-js",
-	"version": "0.0.8",
+	"version": "0.0.9",
 	"description": "Misskey SDK for JavaScript",
 	"main": "./built/index.js",
 	"types": "./built/index.d.ts",
