@@ -72,7 +72,7 @@
 		"@types/koa__multer": "2.0.4",
 		"@types/koa__router": "8.0.8",
 		"@types/matter-js": "0.17.6",
-		"@types/mocha": "8.2.3",
+		"@types/mocha": "9.0.0",
 		"@types/node": "16.11.7",
 		"@types/node-fetch": "2.5.12",
 		"@types/nodemailer": "6.4.4",
