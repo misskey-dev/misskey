@@ -869,7 +869,7 @@ export default defineComponent({
 			color: var(--fg);
 			font-family: inherit;
 
-			&:focus-visible {
+			&:focus {
 				outline: none;
 			}
 
