@@ -1,0 +1,87 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+  pull_request:
+
+jobs:
+  mocha:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+
+    services:
+      postgres:
+        image: postgres:12.2-alpine
+        ports:
+          - 54312:5432
+        env:
+          POSTGRES_DB: test-misskey
+          POSTGRES_HOST_AUTH_METHOD: trust
+      redis:
+        image: redis:4.0-alpine
+        ports:
+          - 56312:6379
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Install dependencies
+      run: yarn install
+    - name: Check yarn.lock
+      run: git diff --exit-code yarn.lock
+    - name: Copy Configure
+      run: cp test/test.yml .config
+    - name: Build
+      run: yarn build
+    - name: Test
+      run: yarn mocha
+
+  e2e:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+
+    services:
+      postgres:
+        image: postgres:12.2-alpine
+        ports:
+          - 54312:5432
+        env:
+          POSTGRES_DB: test-misskey
+          POSTGRES_HOST_AUTH_METHOD: trust
+      redis:
+        image: redis:4.0-alpine
+        ports:
+          - 56312:6379
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Install dependencies
+      run: yarn install
+    - name: Check yarn.lock
+      run: git diff --exit-code yarn.lock
+    - name: Copy Configure
+      run: cp test/test.yml .config
+    - name: Build
+      run: yarn build
+    - name: Test
+      run: yarn e2e

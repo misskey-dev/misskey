@@ -4,7 +4,7 @@
 		<div class="title">{{ $ts.misskeyUpdated }}</div>
 		<div class="version">✨{{ version }}🚀</div>
 		<MkButton full @click="whatIsNew">{{ $ts.whatIsNew }}</MkButton>
-		<MkButton primary full @click="$refs.modal.close()">{{ $ts.gotIt }}</MkButton>
+		<MkButton class="gotIt" primary full @click="$refs.modal.close()">{{ $ts.gotIt }}</MkButton>
 	</div>
 </MkModal>
 </template>
@@ -30,7 +30,7 @@ export default defineComponent({
 	methods: {
 		whatIsNew() {
 			this.$refs.modal.close();
-			this.$router.push('/docs/general/changelog');
+			window.open(`https://misskey-hub.net/docs/releases.html#_${version.replace(/\./g, '-')}`, '_blank');
 		}
 	}
 });
@@ -53,6 +53,10 @@ export default defineComponent({
 
 	> .version {
 		margin: 1em 0;
+	}
+
+	> .gotIt {
+		margin: 8px 0 0 0;
 	}
 }
 </style>

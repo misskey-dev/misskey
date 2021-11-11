@@ -31,9 +31,9 @@
 import { defineComponent } from 'vue';
 import { kinds } from '@/misc/api-permissions';
 import XModalWindow from '@client/components/ui/modal-window.vue';
-import MkInput from './ui/input.vue';
-import MkTextarea from './ui/textarea.vue';
-import MkSwitch from './ui/switch.vue';
+import MkInput from './form/input.vue';
+import MkTextarea from './form/textarea.vue';
+import MkSwitch from './form/switch.vue';
 import MkButton from './ui/button.vue';
 import MkInfo from './ui/info.vue';
 

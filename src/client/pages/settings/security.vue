@@ -6,7 +6,7 @@
 	<FormPagination :pagination="pagination">
 		<template #label>{{ $ts.signinHistory }}</template>
 		<template #default="{items}">
-			<div class="_formPanel timnmucd" v-for="item in items" :key="item.id">
+			<div class="_debobigegoPanel timnmucd" v-for="item in items" :key="item.id">
 				<header>
 					<i v-if="item.success" class="fas fa-check icon succ"></i>
 					<i v-else class="fas fa-times-circle icon fail"></i>
@@ -25,11 +25,11 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import FormBase from '@client/components/form/base.vue';
-import FormLink from '@client/components/form/link.vue';
-import FormGroup from '@client/components/form/group.vue';
-import FormButton from '@client/components/form/button.vue';
-import FormPagination from '@client/components/form/pagination.vue';
+import FormBase from '@client/components/debobigego/base.vue';
+import FormLink from '@client/components/debobigego/link.vue';
+import FormGroup from '@client/components/debobigego/group.vue';
+import FormButton from '@client/components/debobigego/button.vue';
+import FormPagination from '@client/components/debobigego/pagination.vue';
 import * as os from '@client/os';
 import * as symbols from '@client/symbols';
 
@@ -48,7 +48,8 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.security,
-				icon: 'fas fa-lock'
+				icon: 'fas fa-lock',
+				bg: 'var(--bg)',
 			},
 			pagination: {
 				endpoint: 'i/signin-history',

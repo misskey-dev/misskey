@@ -8,7 +8,6 @@ import { entities as charts } from '@/services/chart/entities';
 import { dbLogger } from './logger';
 import * as highlight from 'cli-highlight';
 
-import { Log } from '@/models/entities/log';
 import { User } from '@/models/entities/user';
 import { DriveFile } from '@/models/entities/drive-file';
 import { DriveFolder } from '@/models/entities/drive-folder';
@@ -18,6 +17,7 @@ import { PollVote } from '@/models/entities/poll-vote';
 import { Note } from '@/models/entities/note';
 import { NoteReaction } from '@/models/entities/note-reaction';
 import { NoteWatching } from '@/models/entities/note-watching';
+import { NoteThreadMuting } from '@/models/entities/note-thread-muting';
 import { NoteUnread } from '@/models/entities/note-unread';
 import { Notification } from '@/models/entities/notification';
 import { Meta } from '@/models/entities/meta';
@@ -63,7 +63,7 @@ import { Antenna } from '@/models/entities/antenna';
 import { AntennaNote } from '@/models/entities/antenna-note';
 import { PromoNote } from '@/models/entities/promo-note';
 import { PromoRead } from '@/models/entities/promo-read';
-import { program } from '../argv';
+import { envOption } from '../env';
 import { Relay } from '@/models/entities/relay';
 import { MutedNote } from '@/models/entities/muted-note';
 import { Channel } from '@/models/entities/channel';
@@ -72,6 +72,7 @@ import { ChannelNotePining } from '@/models/entities/channel-note-pining';
 import { RegistryItem } from '@/models/entities/registry-item';
 import { Ad } from '@/models/entities/ad';
 import { PasswordResetRequest } from '@/models/entities/password-reset-request';
+import { UserPending } from '@/models/entities/user-pending';
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'white', false);
 
@@ -83,7 +84,7 @@ class MyCustomLogger implements Logger {
 	}
 
 	public logQuery(query: string, parameters?: any[]) {
-		if (program.verbose) {
+		if (envOption.verbose) {
 			sqlLogger.info(this.highlight(query));
 		}
 	}
@@ -138,12 +139,12 @@ export const entities = [
 	NoteFavorite,
 	NoteReaction,
 	NoteWatching,
+	NoteThreadMuting,
 	NoteUnread,
 	Page,
 	PageLike,
 	GalleryPost,
 	GalleryLike,
-	Log,
 	DriveFile,
 	DriveFolder,
 	Poll,
@@ -173,6 +174,7 @@ export const entities = [
 	RegistryItem,
 	Ad,
 	PasswordResetRequest,
+	UserPending,
 	...charts as any
 ];
 

@@ -302,7 +302,7 @@ export default defineComponent({
 
 					> .text {
 						&, ::v-deep(*) {
-							color: #fff !important;
+							color: var(--fgOnAccent) !important;
 						}
 					}
 				}

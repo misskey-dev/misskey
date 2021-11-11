@@ -7,7 +7,7 @@
 	<p class="mfcuwfyp" v-else-if="empty">{{ $ts.noNotifications }}</p>
 
 	<div v-else>
-		<XList class="notifications" :items="items" v-slot="{ item: notification }" :no-gap="true">
+		<XList class="elsfgstc" :items="items" v-slot="{ item: notification }" :no-gap="true">
 			<XNote v-if="['reply', 'quote', 'mention'].includes(notification.type)" :note="notification.note" @update:note="noteUpdated(notification.note, $event)" :key="notification.id"/>
 			<XNotification v-else :notification="notification" :with-time="true" :full="true" class="_panel notification" :key="notification.id"/>
 		</XList>
@@ -26,7 +26,7 @@ import paging from '@client/scripts/paging';
 import XNotification from './notification.vue';
 import XList from './date-separated-list.vue';
 import XNote from './note.vue';
-import { notificationTypes } from '../../types';
+import { notificationTypes } from '@/types';
 import * as os from '@client/os';
 import MkButton from '@client/components/ui/button.vue';
 
@@ -48,6 +48,11 @@ export default defineComponent({
 			required: false,
 			default: null,
 		},
+		unreadOnly: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
 	},
 
 	data() {
@@ -58,6 +63,7 @@ export default defineComponent({
 				limit: 10,
 				params: () => ({
 					includeTypes: this.allIncludeTypes || undefined,
+					unreadOnly: this.unreadOnly,
 				})
 			},
 		};
@@ -75,6 +81,11 @@ export default defineComponent({
 				this.reload();
 			},
 			deep: true
+		},
+		unreadOnly: {
+			handler() {
+				this.reload();
+			},
 		},
 		// TODO: vue/vuexのバグか仕様かは不明なものの、プロフィール更新するなどして $i が更新されると、
 		// mutingNotificationTypes に変化が無くてもこのハンドラーが呼び出され無駄なリロードが発生するのを直す
@@ -140,5 +151,9 @@ export default defineComponent({
 	padding: 16px;
 	text-align: center;
 	color: var(--fg);
+}
+
+.elsfgstc {
+	background: var(--panel);
 }
 </style>

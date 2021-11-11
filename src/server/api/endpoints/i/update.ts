@@ -13,7 +13,7 @@ import { ApiError } from '../../error';
 import { Users, DriveFiles, UserProfiles, Pages } from '@/models/index';
 import { User } from '@/models/entities/user';
 import { UserProfile } from '@/models/entities/user-profile';
-import { notificationTypes } from '../../../../types';
+import { notificationTypes } from '@/types';
 import { normalizeForSearch } from '@/misc/normalize-for-search';
 
 export const meta = {
@@ -66,6 +66,14 @@ export const meta = {
 
 		hideOnlineStatus: {
 			validator: $.optional.bool,
+		},
+
+		publicReactions: {
+			validator: $.optional.bool,
+		},
+
+		ffVisibility: {
+			validator: $.optional.str,
 		},
 
 		carefulBot: {
@@ -170,6 +178,7 @@ export default define(meta, async (ps, _user, token) => {
 	if (ps.lang !== undefined) profileUpdates.lang = ps.lang;
 	if (ps.location !== undefined) profileUpdates.location = ps.location;
 	if (ps.birthday !== undefined) profileUpdates.birthday = ps.birthday;
+	if (ps.ffVisibility !== undefined) profileUpdates.ffVisibility = ps.ffVisibility;
 	if (ps.avatarId !== undefined) updates.avatarId = ps.avatarId;
 	if (ps.bannerId !== undefined) updates.bannerId = ps.bannerId;
 	if (ps.mutedWords !== undefined) {
@@ -180,6 +189,7 @@ export default define(meta, async (ps, _user, token) => {
 	if (typeof ps.isLocked === 'boolean') updates.isLocked = ps.isLocked;
 	if (typeof ps.isExplorable === 'boolean') updates.isExplorable = ps.isExplorable;
 	if (typeof ps.hideOnlineStatus === 'boolean') updates.hideOnlineStatus = ps.hideOnlineStatus;
+	if (typeof ps.publicReactions === 'boolean') profileUpdates.publicReactions = ps.publicReactions;
 	if (typeof ps.isBot === 'boolean') updates.isBot = ps.isBot;
 	if (typeof ps.carefulBot === 'boolean') profileUpdates.carefulBot = ps.carefulBot;
 	if (typeof ps.autoAcceptFollowed === 'boolean') profileUpdates.autoAcceptFollowed = ps.autoAcceptFollowed;

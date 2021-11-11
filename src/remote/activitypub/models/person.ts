@@ -28,21 +28,13 @@ import { getConnection } from 'typeorm';
 import { toArray } from '@/prelude/array';
 import { fetchInstanceMetadata } from '@/services/fetch-instance-metadata';
 import { normalizeForSearch } from '@/misc/normalize-for-search';
+import { truncate } from '@/misc/truncate';
+import { StatusError } from '@/misc/fetch';
 
 const logger = apLogger;
 
 const nameLength = 128;
 const summaryLength = 2048;
-
-function truncate(input: string, size: number): string;
-function truncate(input: string | undefined, size: number): string | undefined;
-function truncate(input: string | undefined, size: number): string | undefined {
-	if (!input || input.length <= size) {
-		return input;
-	} else {
-		return input.substring(0, size);
-	}
-}
 
 /**
  * Validate and convert to actor object
@@ -124,6 +116,10 @@ export async function fetchPerson(uri: string, resolver?: Resolver): Promise<Use
  */
 export async function createPerson(uri: string, resolver?: Resolver): Promise<User> {
 	if (typeof uri !== 'string') throw new Error('uri is not string');
+
+	if (uri.startsWith(config.url)) {
+		throw new StatusError('cannot resolve local user', 400, 'cannot resolve local user');
+	}
 
 	if (resolver == null) resolver = new Resolver();
 

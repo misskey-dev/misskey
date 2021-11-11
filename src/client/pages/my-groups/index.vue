@@ -1,7 +1,7 @@
 <template>
 <div class="">
 	<div class="_section" style="padding: 0;">
-		<MkTab v-model:value="tab">
+		<MkTab v-model="tab">
 			<option value="owned">{{ $ts.ownedGroups }}</option>
 			<option value="joined">{{ $ts.joinedGroups }}</option>
 			<option value="invites"><i class="fas fa-envelope-open-text"></i> {{ $ts.invites }}</option>

@@ -4,7 +4,6 @@
 
 <div align="center">
 
-[![CircleCI](https://img.shields.io/circleci/project/github/misskey-dev/misskey.svg?style=for-the-badge&logo=circleci)](https://circleci.com/gh/misskey-dev/misskey)
 [![Dependencies](https://img.shields.io/david/misskey-dev/misskey.svg?style=for-the-badge&logo=npm)](https://david-dm.org/misskey-dev/misskey)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=for-the-badge&logo=github)](http://makeapullrequest.com)
 [![Awesome Humane Tech](https://raw.githubusercontent.com/humanetech-community/awesome-humane-tech/main/humane-tech-badge.svg?sanitize=true)](https://github.com/humanetech-community/awesome-humane-tech)
@@ -65,7 +64,7 @@ Organize and store your files! Want to post a picture you have already uploaded?
 
 :package: Create your own instance
 ----------------------------------------------------------------
-Please see the [Setup and Installation Guide](./docs/setup.en.md).
+Please see the [Setup and Installation Guide](https://misskey-hub.net/docs/install/install.html).
 
 :wrench: Contribution
 ----------------------------------------------------------------
@@ -103,6 +102,12 @@ Related projects
 ----------------------------------------------------------------
 - [misskey.js](https://github.com/misskey-dev/misskey.js) - Misskey SDK for JavaScript
 - [mfm.js](https://github.com/misskey-dev/mfm.js) - MFM parser
+
+Sponsors
+----------------------------------------------------------------
+<div align="center">
+	<a class="rss3" title="RSS3" href="https://rss3.io/" target="_blank" style="display: inline-block;"><img src="https://rss3.io/assets/images/Logo.svg" alt="RSS3" style="display: inline-block; height: 60px;"></a>
+</div>
 
 :heart: Backers
 ----------------------------------------------------------------

@@ -1,8 +1,8 @@
 .autogen
-.git
 .github
 .travis
 .vscode
+.config
 Dockerfile
 build/
 built/
@@ -12,3 +12,4 @@ elasticsearch/
 node_modules/
 redis/
 files/
+misskey-assets/

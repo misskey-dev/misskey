@@ -214,7 +214,11 @@ export function modalPageWindow(path: string) {
 	}, {}, 'closed');
 }
 
-export function dialog(props: Record<string, any>) {
+export function dialog(props: {
+	type: 'error' | 'info' | 'success' | 'warning' | 'waiting';
+	title?: string | null;
+	text?: string | null;
+}) {
 	return new Promise((resolve, reject) => {
 		popup(import('@client/components/dialog.vue'), props, {
 			done: result => {
@@ -368,12 +372,17 @@ export async function openEmojiPicker(src?: HTMLElement, opts, initialTextarea: 
 	});
 }
 
-export function popupMenu(items: any[], src?: HTMLElement, options?: { align?: string; viaKeyboard?: boolean }) {
+export function popupMenu(items: any[] | Ref<any[]>, src?: HTMLElement, options?: {
+	align?: string;
+	width?: number;
+	viaKeyboard?: boolean;
+}) {
 	return new Promise((resolve, reject) => {
 		let dispose;
 		popup(import('@client/components/ui/popup-menu.vue'), {
 			items,
 			src,
+			width: options?.width,
 			align: options?.align,
 			viaKeyboard: options?.viaKeyboard
 		}, {

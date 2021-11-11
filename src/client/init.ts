@@ -4,9 +4,18 @@
 
 import '@client/style.scss';
 
+//#region account indexedDB migration
+import { set } from '@client/scripts/idb-proxy';
+
+if (localStorage.getItem('accounts') != null) {
+	set('accounts', JSON.parse(localStorage.getItem('accounts')));
+	localStorage.removeItem('accounts');
+}
+//#endregion
+
 import * as Sentry from '@sentry/browser';
 import { Integrations } from '@sentry/tracing';
-import { computed, createApp, watch, markRaw } from 'vue';
+import { computed, createApp, watch, markRaw, version as vueVersion } from 'vue';
 import compareVersions from 'compare-versions';
 
 import widgets from '@client/widgets';
@@ -28,6 +37,8 @@ import { isMobile } from '@client/scripts/is-mobile';
 import { initializeSw } from '@client/scripts/initialize-sw';
 import { reloadChannel } from '@client/scripts/unison-reload';
 import { reactionPicker } from '@client/scripts/reaction-picker';
+import { getUrlWithoutLoginId } from '@client/scripts/login-id';
+import { getAccountFromId } from '@client/scripts/get-account-from-id';
 
 console.info(`Misskey v${version}`);
 
@@ -37,6 +48,8 @@ window.onunhandledrejection = null;
 
 if (_DEV_) {
 	console.warn('Development mode!!!');
+
+	console.info(`vue ${vueVersion}`);
 
 	(window as any).$i = $i;
 	(window as any).$store = defaultStore;
@@ -80,7 +93,10 @@ if (defaultStore.state.reportError && !_DEV_) {
 document.addEventListener('touchend', () => {}, { passive: true });
 
 // 一斉リロード
-reloadChannel.addEventListener('message', () => location.reload());
+reloadChannel.addEventListener('message', path => {
+	if (path !== null) location.href = path;
+	else location.reload();
+});
 
 //#region SEE: https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
 // TODO: いつの日にか消したい
@@ -92,20 +108,36 @@ window.addEventListener('resize', () => {
 });
 //#endregion
 
-// Get the <head> element
-const head = document.getElementsByTagName('head')[0];
-
 // If mobile, insert the viewport meta tag
 if (isMobile || window.innerWidth <= 1024) {
 	const viewport = document.getElementsByName('viewport').item(0);
 	viewport.setAttribute('content',
 		`${viewport.getAttribute('content')},minimum-scale=1,maximum-scale=1,user-scalable=no`);
-	head.appendChild(viewport);
+	document.head.appendChild(viewport);
 }
 
 //#region Set lang attr
 const html = document.documentElement;
 html.setAttribute('lang', lang);
+//#endregion
+
+//#region loginId
+const params = new URLSearchParams(location.search);
+const loginId = params.get('loginId');
+
+if (loginId) {
+	const target = getUrlWithoutLoginId(location.href);
+
+	if (!$i || $i.id !== loginId) {
+		const account = await getAccountFromId(loginId);
+		if (account) {
+			await login(account.token, target);
+		}
+	}
+
+	history.replaceState({ misskey: 'loginId' }, '', target);
+}
+
 //#endregion
 
 //#region Fetch user
@@ -158,8 +190,8 @@ const app = createApp(await (
 	ui === 'deck'                     ? import('@client/ui/deck.vue') :
 	ui === 'desktop'                  ? import('@client/ui/desktop.vue') :
 	ui === 'chat'                     ? import('@client/ui/chat/index.vue') :
-	ui === 'pope'                     ? import('@client/ui/universal.vue') :
-	import('@client/ui/default.vue')
+	ui === 'classic'                  ? import('@client/ui/classic.vue') :
+	import('@client/ui/universal.vue')
 ).then(x => x.default));
 
 if (_DEV_) {
@@ -209,7 +241,10 @@ if (lastVersion !== version) {
 
 	try { // 変なバージョン文字列来るとcompareVersionsでエラーになるため
 		if (lastVersion != null && compareVersions(version, lastVersion) === 1) {
-			popup(import('@client/components/updated.vue'), {}, {}, 'closed');
+			// ログインしてる場合だけ
+			if ($i) {
+				popup(import('@client/components/updated.vue'), {}, {}, 'closed');
+			}
 		}
 	} catch (e) {
 	}
@@ -301,6 +336,13 @@ for (const plugin of ColdDeviceStorage.get('plugins').filter(p => p.active)) {
 }
 
 if ($i) {
+	if ($i.isDeleted) {
+		dialog({
+			type: 'warning',
+			text: i18n.locale.accountDeletionInProgress,
+		});
+	}
+
 	if ('Notification' in window) {
 		// 許可を得ていなかったらリクエスト
 		if (Notification.permission === 'default') {

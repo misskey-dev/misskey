@@ -24,7 +24,7 @@
 						<div class="desc" v-html="meta.description || $ts.headlineMisskey"></div>
 					</div>
 					<div class="action">
-						<MkButton @click="signup()" inline primary>{{ $ts.signup }}</MkButton>
+						<MkButton @click="signup()" inline gradate>{{ $ts.signup }}</MkButton>
 						<MkButton @click="signin()" inline>{{ $ts.login }}</MkButton>
 					</div>
 					<div class="status" v-if="onlineUsersCount && stats">
@@ -137,7 +137,7 @@ export default defineComponent({
 				text: this.$ts.help,
 				icon: 'fas fa-question-circle',
 				action: () => {
-					os.pageWindow('/docs');
+					window.open(`https://misskey-hub.net/help.md`, '_blank');
 				}
 			}], ev.currentTarget || ev.target);
 		},

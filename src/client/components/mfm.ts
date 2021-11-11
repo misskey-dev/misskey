@@ -8,8 +8,10 @@ import { concat } from '@client/../prelude/array';
 import MkFormula from '@client/components/formula.vue';
 import MkCode from '@client/components/code.vue';
 import MkGoogle from '@client/components/google.vue';
+import MkSparkle from '@client/components/sparkle.vue';
 import MkA from '@client/components/global/a.vue';
 import { host } from '@client/config';
+import { fnNameList } from '@/mfm/fn-name-list';
 
 export default defineComponent({
 	props: {
@@ -45,7 +47,7 @@ export default defineComponent({
 	render() {
 		if (this.text == null || this.text == '') return;
 
-		const ast = (this.plain ? mfm.parsePlain : mfm.parse)(this.text);
+		const ast = (this.plain ? mfm.parsePlain : mfm.parse)(this.text, { fnNameList });
 
 		const validTime = (t: string | null | undefined) => {
 			if (t == null) return null;
@@ -169,9 +171,22 @@ export default defineComponent({
 							style = this.$store.state.animatedMfm ? 'animation: mfm-rainbow 1s linear infinite;' : '';
 							break;
 						}
+						case 'sparkle': {
+							if (!this.$store.state.animatedMfm) {
+								return genEl(token.children);
+							}
+							let count = token.props.args.count ? parseInt(token.props.args.count) : 10;
+							if (count > 100) {
+								count = 100;
+							}
+							const speed = token.props.args.speed ? parseFloat(token.props.args.speed) : 1;
+							return h(MkSparkle, {
+								count, speed,
+							}, genEl(token.children));
+						}
 					}
 					if (style == null) {
-						return h('span', {}, ['[', token.props.name, ...genEl(token.children), ']']);
+						return h('span', {}, ['$[', token.props.name, ' ', ...genEl(token.children), ']']);
 					} else {
 						return h('span', {
 							style: 'display: inline-block;' + style,

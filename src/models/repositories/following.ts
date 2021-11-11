@@ -2,7 +2,7 @@ import { EntityRepository, Repository } from 'typeorm';
 import { Users } from '../index';
 import { Following } from '@/models/entities/following';
 import { awaitAll } from '@/prelude/await-all';
-import { SchemaType } from '@/misc/schema';
+import { Packed } from '@/misc/schema';
 import { User } from '@/models/entities/user';
 
 type LocalFollowerFollowing = Following & {
@@ -29,8 +29,6 @@ type RemoteFolloweeFollowing = Following & {
 	followeeSharedInbox: string;
 };
 
-export type PackedFollowing = SchemaType<typeof packedFollowingSchema>;
-
 @EntityRepository(Following)
 export class FollowingRepository extends Repository<Following> {
 	public isLocalFollower(following: Following): following is LocalFollowerFollowing {
@@ -56,7 +54,7 @@ export class FollowingRepository extends Repository<Following> {
 			populateFollowee?: boolean;
 			populateFollower?: boolean;
 		}
-	): Promise<PackedFollowing> {
+	): Promise<Packed<'Following'>> {
 		const following = typeof src === 'object' ? src : await this.findOneOrFail(src);
 
 		if (opts == null) opts = {};
@@ -110,7 +108,7 @@ export const packedFollowingSchema = {
 		followee: {
 			type: 'object' as const,
 			optional: true as const, nullable: false as const,
-			ref: 'User',
+			ref: 'User' as const,
 		},
 		followerId: {
 			type: 'string' as const,
@@ -120,7 +118,7 @@ export const packedFollowingSchema = {
 		follower: {
 			type: 'object' as const,
 			optional: true as const, nullable: false as const,
-			ref: 'User',
+			ref: 'User' as const,
 		},
 	}
 };

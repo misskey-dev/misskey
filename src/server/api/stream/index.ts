@@ -14,7 +14,8 @@ import { AccessToken } from '@/models/entities/access-token';
 import { UserProfile } from '@/models/entities/user-profile';
 import { publishChannelStream, publishGroupMessagingStream, publishMessagingStream } from '@/services/stream';
 import { UserGroup } from '@/models/entities/user-group';
-import { PackedNote } from '@/models/repositories/note';
+import { StreamEventEmitter, StreamMessages } from './types';
+import { Packed } from '@/misc/schema';
 
 /**
  * Main stream connection
@@ -28,10 +29,10 @@ export default class Connection {
 	public followingChannels: Set<ChannelModel['id']> = new Set();
 	public token?: AccessToken;
 	private wsConnection: websocket.connection;
-	public subscriber: EventEmitter;
+	public subscriber: StreamEventEmitter;
 	private channels: Channel[] = [];
 	private subscribingNotes: any = {};
-	private cachedNotes: PackedNote[] = [];
+	private cachedNotes: Packed<'Note'>[] = [];
 
 	constructor(
 		wsConnection: websocket.connection,
@@ -46,8 +47,8 @@ export default class Connection {
 
 		this.wsConnection.on('message', this.onWsConnectionMessage);
 
-		this.subscriber.on('broadcast', async ({ type, body }) => {
-			this.onBroadcastMessage(type, body);
+		this.subscriber.on('broadcast', data => {
+			this.onBroadcastMessage(data);
 		});
 
 		if (this.user) {
@@ -57,43 +58,41 @@ export default class Connection {
 			this.updateFollowingChannels();
 			this.updateUserProfile();
 
-			this.subscriber.on(`user:${this.user.id}`, ({ type, body }) => {
-				this.onUserEvent(type, body);
-			});
+			this.subscriber.on(`user:${this.user.id}`, this.onUserEvent);
 		}
 	}
 
 	@autobind
-	private onUserEvent(type: string, body: any) {
-		switch (type) {
+	private onUserEvent(data: StreamMessages['user']['payload']) { // { type, body }と展開するとそれぞれ型が分離してしまう
+		switch (data.type) {
 			case 'follow':
-				this.following.add(body.id);
+				this.following.add(data.body.id);
 				break;
 
 			case 'unfollow':
-				this.following.delete(body.id);
+				this.following.delete(data.body.id);
 				break;
 
 			case 'mute':
-				this.muting.add(body.id);
+				this.muting.add(data.body.id);
 				break;
 
 			case 'unmute':
-				this.muting.delete(body.id);
+				this.muting.delete(data.body.id);
 				break;
 
 			// TODO: block events
 
 			case 'followChannel':
-				this.followingChannels.add(body.id);
+				this.followingChannels.add(data.body.id);
 				break;
 
 			case 'unfollowChannel':
-				this.followingChannels.delete(body.id);
+				this.followingChannels.delete(data.body.id);
 				break;
 
 			case 'updateUserProfile':
-				this.userProfile = body;
+				this.userProfile = data.body;
 				break;
 
 			case 'terminate':
@@ -145,13 +144,13 @@ export default class Connection {
 	}
 
 	@autobind
-	private onBroadcastMessage(type: string, body: any) {
-		this.sendMessageToWs(type, body);
+	private onBroadcastMessage(data: StreamMessages['broadcast']['payload']) {
+		this.sendMessageToWs(data.type, data.body);
 	}
 
 	@autobind
-	public cacheNote(note: PackedNote) {
-		const add = (note: PackedNote) => {
+	public cacheNote(note: Packed<'Note'>) {
+		const add = (note: Packed<'Note'>) => {
 			const existIndex = this.cachedNotes.findIndex(n => n.id === note.id);
 			if (existIndex > -1) {
 				this.cachedNotes[existIndex] = note;
@@ -165,8 +164,8 @@ export default class Connection {
 		};
 
 		add(note);
-		if (note.reply) add(note.reply as PackedNote);
-		if (note.renote) add(note.renote as PackedNote);
+		if (note.reply) add(note.reply);
+		if (note.renote) add(note.renote);
 	}
 
 	@autobind
@@ -249,7 +248,7 @@ export default class Connection {
 	}
 
 	@autobind
-	private async onNoteStreamMessage(data: any) {
+	private async onNoteStreamMessage(data: StreamMessages['note']['payload']) {
 		this.sendMessageToWs('noteUpdated', {
 			id: data.body.id,
 			type: data.type,

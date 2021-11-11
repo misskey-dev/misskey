@@ -1,5 +1,5 @@
 <template>
-<div class="ukygtjoj _block" :class="{ naked, hideHeader: !showHeader, scrollable, closed: !showBody }" v-size="{ max: [380] }">
+<div class="ukygtjoj _panel" :class="{ naked, thin, hideHeader: !showHeader, scrollable, closed: !showBody }" v-size="{ max: [380] }">
 	<header v-if="showHeader" ref="header">
 		<div class="title"><slot name="header"></slot></div>
 		<div class="sub">
@@ -35,6 +35,11 @@ export default defineComponent({
 			type: Boolean,
 			required: false,
 			default: true
+		},
+		thin: {
+			type: Boolean,
+			required: false,
+			default: false
 		},
 		naked: {
 			type: Boolean,
@@ -226,7 +231,7 @@ export default defineComponent({
 		}
 	}
 
-	&.max-width_380px {
+	&.max-width_380px, &.thin {
 		> header {
 			> .title {
 				padding: 8px 10px;

@@ -125,7 +125,7 @@ export default defineComponent({
 		box-sizing: border-box;
 		font: inherit;
 
-		&:focus {
+		&:focus-visible {
 			outline: none;
 		}
 	}

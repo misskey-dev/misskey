@@ -9,6 +9,7 @@ import { User } from '@/models/entities/user';
 import { Blockings, Users, FollowRequests, Followings, UserListJoinings, UserLists } from '@/models/index';
 import { perUserFollowingChart } from '@/services/chart/index';
 import { genId } from '@/misc/gen-id';
+import { IdentifiableError } from '@/misc/identifiable-error';
 
 export default async function(blocker: User, blockee: User) {
 	await Promise.all([

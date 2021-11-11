@@ -151,6 +151,11 @@ export class Meta {
 	@Column('boolean', {
 		default: false,
 	})
+	public emailRequiredForSignup: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
 	public enableHcaptcha: boolean;
 
 	@Column('varchar', {
@@ -318,6 +323,11 @@ export class Meta {
 		nullable: true
 	})
 	public deeplAuthKey: string | null;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public deeplIsPro: boolean;
 
 	@Column('varchar', {
 		length: 512,

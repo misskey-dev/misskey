@@ -21,7 +21,8 @@
 		"baseUrl": ".",
 		"paths": {
 			"@/*": ["../*"],
-			"@client/*": ["./*"]
+			"@client/*": ["./*"],
+			"@lib/*": ["../../lib/*"],
 		},
 		"typeRoots": [
 			"node_modules/@types",

@@ -1,7 +1,7 @@
 {
 	id: '080a01c5-377d-4fbb-88cc-6bb5d04977ea',
 	base: 'dark',
-	name: 'Mi Astro',
+	name: 'Mi Astro Dark',
 	author: 'syuilo',
 	props: {
 		bg: '#232125',
@@ -46,6 +46,8 @@
 		navIndicator: '@accent',
 		accentLighten: ':lighten<10<@accent',
 		buttonHoverBg: 'rgba(255, 255, 255, 0.1)',
+		buttonGradateA: '@accent',
+		buttonGradateB: ':hue<-20<@accent',
 		driveFolderBg: ':alpha<0.3<@accent',
 		fgHighlighted: ':lighten<3<@fg',
 		panelHeaderBg: ':lighten<3<@panel',

@@ -1,5 +1,5 @@
 <template>
-<div class="qglefbjs" :class="notification.type" v-size="{ max: [500, 600] }">
+<div class="qglefbjs" :class="notification.type" v-size="{ max: [500, 600] }" ref="elRef">
 	<div class="head">
 		<MkAvatar v-if="notification.user" class="icon" :user="notification.user"/>
 		<img v-else-if="notification.icon" class="icon" :src="notification.icon" alt=""/>
@@ -13,7 +13,17 @@
 			<i v-else-if="notification.type === 'mention'" class="fas fa-at"></i>
 			<i v-else-if="notification.type === 'quote'" class="fas fa-quote-left"></i>
 			<i v-else-if="notification.type === 'pollVote'" class="fas fa-poll-h"></i>
-			<XReactionIcon v-else-if="notification.type === 'reaction'" :reaction="notification.reaction" :custom-emojis="notification.note.emojis" :no-style="true"/>
+			<!-- notification.reaction が null になることはまずないが、ここでoptional chaining使うと一部ブラウザで刺さるので念の為 -->
+			<XReactionIcon v-else-if="notification.type === 'reaction'"
+				:reaction="notification.reaction ? notification.reaction.replace(/^:(\w+):$/, ':$1@.:') : notification.reaction"
+				:custom-emojis="notification.note.emojis"
+				:no-style="true"
+				@touchstart.passive="onReactionMouseover"
+				@mouseover="onReactionMouseover"
+				@mouseleave="onReactionMouseleave"
+				@touchend="onReactionMouseleave"
+				ref="reactionRef"
+			/>
 		</div>
 	</div>
 	<div class="tail">
@@ -58,10 +68,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, markRaw } from 'vue';
+import { defineComponent, ref, onMounted, onUnmounted } from 'vue';
 import { getNoteSummary } from '@/misc/get-note-summary';
 import XReactionIcon from './reaction-icon.vue';
 import MkFollowButton from './follow-button.vue';
+import XReactionTooltip from './reaction-tooltip.vue';
 import notePage from '@client/filters/note';
 import { userPage } from '@client/filters/user';
 import { i18n } from '@client/i18n';
@@ -71,6 +82,7 @@ export default defineComponent({
 	components: {
 		XReactionIcon, MkFollowButton
 	},
+
 	props: {
 		notification: {
 			type: Object,
@@ -87,60 +99,117 @@ export default defineComponent({
 			default: false,
 		},
 	},
-	data() {
+
+	setup(props) {
+		const elRef = ref<HTMLElement>(null);
+		const reactionRef = ref(null);
+
+		onMounted(() => {
+			let readObserver: IntersectionObserver = null;
+			let connection = null;
+
+			if (!props.notification.isRead) {
+				readObserver = new IntersectionObserver((entries, observer) => {
+					if (!entries.some(entry => entry.isIntersecting)) return;
+					os.stream.send('readNotification', {
+						id: props.notification.id
+					});
+					entries.map(({ target }) => observer.unobserve(target));
+				});
+
+				readObserver.observe(elRef.value);
+
+				connection = os.stream.useChannel('main');
+				connection.on('readAllNotifications', () => readObserver.unobserve(elRef.value));
+			}
+
+			onUnmounted(() => {
+				if (readObserver) readObserver.unobserve(elRef.value);
+				if (connection) connection.dispose();
+			});
+		});
+
+		const followRequestDone = ref(false);
+		const groupInviteDone = ref(false);
+
+		const acceptFollowRequest = () => {
+			followRequestDone.value = true;
+			os.api('following/requests/accept', { userId: props.notification.user.id });
+		};
+
+		const rejectFollowRequest = () => {
+			followRequestDone.value = true;
+			os.api('following/requests/reject', { userId: props.notification.user.id });
+		};
+
+		const acceptGroupInvitation = () => {
+			groupInviteDone.value = true;
+			os.apiWithDialog('users/groups/invitations/accept', { invitationId: props.notification.invitation.id });
+		};
+
+		const rejectGroupInvitation = () => {
+			groupInviteDone.value = true;
+			os.api('users/groups/invitations/reject', { invitationId: props.notification.invitation.id });
+		};
+
+		let isReactionHovering = false;
+		let reactionTooltipTimeoutId;
+
+		const onReactionMouseover = () => {
+			if (isReactionHovering) return;
+			isReactionHovering = true;
+			reactionTooltipTimeoutId = setTimeout(openReactionTooltip, 300);
+		};
+
+		const onReactionMouseleave = () => {
+			if (!isReactionHovering) return;
+			isReactionHovering = false;
+			clearTimeout(reactionTooltipTimeoutId);
+			closeReactionTooltip();
+		};
+
+		let changeReactionTooltipShowingState: () => void;
+
+		const openReactionTooltip = () => {
+			closeReactionTooltip();
+			if (!isReactionHovering) return;
+
+			const showing = ref(true);
+			os.popup(XReactionTooltip, {
+				showing,
+				reaction: props.notification.reaction ? props.notification.reaction.replace(/^:(\w+):$/, ':$1@.:') : props.notification.reaction,
+				emojis: props.notification.note.emojis,
+				source: reactionRef.value.$el,
+			}, {}, 'closed');
+
+			changeReactionTooltipShowingState = () => {
+				showing.value = false;
+			};
+		};
+
+		const closeReactionTooltip = () => {
+			if (changeReactionTooltipShowingState != null) {
+				changeReactionTooltipShowingState();
+				changeReactionTooltipShowingState = null;
+			}
+		};
+
 		return {
 			getNoteSummary: (text: string) => getNoteSummary(text, i18n.locale),
-			followRequestDone: false,
-			groupInviteDone: false,
-			connection: null,
-			readObserver: null,
+			followRequestDone,
+			groupInviteDone,
+			notePage,
+			userPage,
+			acceptFollowRequest,
+			rejectFollowRequest,
+			acceptGroupInvitation,
+			rejectGroupInvitation,
+			onReactionMouseover,
+			onReactionMouseleave,
+			elRef,
+			reactionRef,
 		};
 	},
-
-	mounted() {
-		if (!this.notification.isRead) {
-			this.readObserver = new IntersectionObserver((entries, observer) => {
-				if (!entries.some(entry => entry.isIntersecting)) return;
-				os.stream.send('readNotification', {
-					id: this.notification.id
-				});
-				entries.map(({ target }) => observer.unobserve(target));
-			});
-
-			this.readObserver.observe(this.$el);
-
-			this.connection = markRaw(os.stream.useChannel('main'));
-			this.connection.on('readAllNotifications', () => this.readObserver.unobserve(this.$el));
-		}
-	},
-
-	beforeUnmount() {
-		if (!this.notification.isRead) {
-			this.readObserver.unobserve(this.$el);
-			this.connection.dispose();
-		}
-	},
-
-	methods: {
-		acceptFollowRequest() {
-			this.followRequestDone = true;
-			os.api('following/requests/accept', { userId: this.notification.user.id });
-		},
-		rejectFollowRequest() {
-			this.followRequestDone = true;
-			os.api('following/requests/reject', { userId: this.notification.user.id });
-		},
-		acceptGroupInvitation() {
-			this.groupInviteDone = true;
-			os.apiWithDialog('users/groups/invitations/accept', { invitationId: this.notification.invitation.id });
-		},
-		rejectGroupInvitation() {
-			this.groupInviteDone = true;
-			os.api('users/groups/invitations/reject', { invitationId: this.notification.invitation.id });
-		},
-		notePage,
-		userPage
-	}
 });
 </script>
 
@@ -197,7 +266,7 @@ export default defineComponent({
 			background: var(--panel);
 			box-shadow: 0 0 0 3px var(--panel);
 			font-size: 12px;
-			pointer-events: none;
+			text-align: center;
 
 			&:empty {
 				display: none;
@@ -212,31 +281,37 @@ export default defineComponent({
 			&.follow, &.followRequestAccepted, &.receiveFollowRequest, &.groupInvited {
 				padding: 3px;
 				background: #36aed2;
+				pointer-events: none;
 			}
 
 			&.renote {
 				padding: 3px;
 				background: #36d298;
+				pointer-events: none;
 			}
 
 			&.quote {
 				padding: 3px;
 				background: #36d298;
+				pointer-events: none;
 			}
 
 			&.reply {
 				padding: 3px;
 				background: #007aff;
+				pointer-events: none;
 			}
 
 			&.mention {
 				padding: 3px;
 				background: #88a6b7;
+				pointer-events: none;
 			}
 
 			&.pollVote {
 				padding: 3px;
 				background: #88a6b7;
+				pointer-events: none;
 			}
 		}
 	}

@@ -10,7 +10,7 @@
 	<template #header>{{ $ts.selectUser }}</template>
 	<div class="tbhwbxda _monolithic_">
 		<div class="_section">
-			<div class="_inputSplit _inputNoTopMargin _inputNoBottomMargin">
+			<div class="_inputSplit">
 				<MkInput v-model="username" class="input" @update:modelValue="search" ref="username">
 					<template #label>{{ $ts.username }}</template>
 					<template #prefix>@</template>
@@ -52,7 +52,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import MkInput from './ui/input.vue';
+import MkInput from './form/input.vue';
 import XModalWindow from '@client/components/ui/modal-window.vue';
 import * as os from '@client/os';
 
