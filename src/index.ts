@@ -1,14 +1,19 @@
 import { Endpoints } from './api.types';
 import Stream from './streaming';
 import { Acct } from './acct';
-import { permissions } from './permissions';
+import * as consts from './consts';
 
 export {
 	Endpoints,
 	Stream,
 	Acct,
-	permissions,
 };
+
+export const permissions = consts.permissions;
+export const notificationTypes = consts.notificationTypes;
+export const noteVisibilities = consts.noteVisibilities;
+export const mutedNoteReasons = consts.mutedNoteReasons;
+export const ffVisibility = consts.ffVisibility;
 
 // api extractor not supported yet
 //export * as api from './api';

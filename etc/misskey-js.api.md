@@ -2047,6 +2047,9 @@ type FetchLike = (input: string, init?: {
 }>;
 
 // @public (undocumented)
+export const ffVisibility: readonly ["public", "followers", "private"];
+
+// @public (undocumented)
 type Following = {
     id: ID;
     createdAt: DateString;
@@ -2178,6 +2181,9 @@ type MessagingMessage = {
 };
 
 // @public (undocumented)
+export const mutedNoteReasons: readonly ["word", "manual", "spam", "other"];
+
+// @public (undocumented)
 type Note = {
     id: ID;
     createdAt: DateString;
@@ -2231,6 +2237,9 @@ type NoteReaction = {
     user: UserLite;
     type: string;
 };
+
+// @public (undocumented)
+export const noteVisibilities: readonly ["public", "home", "followers", "specified"];
 
 // @public (undocumented)
 type Notification_2 = {
@@ -2291,6 +2300,9 @@ type Notification_2 = {
     body: string;
     icon?: string | null;
 });
+
+// @public (undocumented)
+export const notificationTypes: readonly ["follow", "mention", "reply", "renote", "quote", "reaction", "pollVote", "receiveFollowRequest", "followRequestAccepted", "groupInvited", "app"];
 
 // @public (undocumented)
 type OriginType = 'combined' | 'local' | 'remote';

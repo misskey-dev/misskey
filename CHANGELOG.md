@@ -1,3 +1,6 @@
+# 0.0.10
+- add consts
+
 # 0.0.9
 - add list of api permission
 - Update Note type
