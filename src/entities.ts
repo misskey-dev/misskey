@@ -107,6 +107,7 @@ export type Note = {
 	}[];
 	uri?: string;
 	url?: string;
+	isHidden?: boolean;
 };
 
 export type NoteReaction = {

@@ -1,3 +1,7 @@
+# 0.0.9
+- add list of api permission
+- Update Note type
+
 # 0.0.8
 - add type definition for `messagingMessage` event to main stream channel
 - Update Note type

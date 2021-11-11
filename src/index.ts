@@ -1,11 +1,13 @@
 import { Endpoints } from './api.types';
 import Stream from './streaming';
 import { Acct } from './acct';
+import { permissions } from './permissions';
 
 export {
 	Endpoints,
 	Stream,
-	Acct
+	Acct,
+	permissions,
 };
 
 // api extractor not supported yet

@@ -2213,6 +2213,7 @@ type Note = {
     }[];
     uri?: string;
     url?: string;
+    isHidden?: boolean;
 };
 
 // @public (undocumented)
@@ -2325,6 +2326,9 @@ type PageEvent = {
     userId: User['id'];
     user: User;
 };
+
+// @public (undocumented)
+export const permissions: string[];
 
 // @public (undocumented)
 type ServerInfo = {
