@@ -53,7 +53,7 @@ export const meta = {
 	},
 };
 
-export default define(meta, async (ps) => {
+export default define(meta, async (ps, user) => {
 	const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 		.andWhere(`note.visibility = 'public'`)
 		.andWhere(`note.localOnly = FALSE`)
@@ -90,5 +90,5 @@ export default define(meta, async (ps) => {
 
 	const notes = await query.take(ps.limit!).getMany();
 
-	return await Notes.packMany(notes);
+	return await Notes.packMany(notes, user);
 });
