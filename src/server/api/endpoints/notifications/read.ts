@@ -49,9 +49,5 @@ export default define(meta, async (ps, user) => {
 	if (ps.notificationId) notificationIds.push(ps.notificationId);
 	if (ps.notificationIds) notificationIds = notificationIds.concat(ps.notificationIds);
 
-	if (notificationIds.length === 0) {
-		throw new ApiError(meta.errors.noNotificationRequested);
-	}
-
 	return readNotification(user.id, notificationIds);
 });
