@@ -132,7 +132,7 @@ import XReactionsViewer from './reactions-viewer.vue';
 import XMediaList from './media-list.vue';
 import XCwButton from './cw-button.vue';
 import XPoll from './poll.vue';
-import XRenoteButton from './renote.vue';
+import XRenoteButton from './renote-button.vue';
 import { pleaseLogin } from '@client/scripts/please-login';
 import { focusPrev, focusNext } from '@client/scripts/focus';
 import { url } from '@client/config';
