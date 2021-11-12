@@ -1,8 +1,7 @@
 <template>
-<button
+<button v-if="canRenote"
 	class="eddddedb _button canRenote"
 	@click="renote()"
-	v-if="canRenote"
 	@touchstart.passive="onMouseover"
 	@mouseover="onMouseover"
 	@mouseleave="onMouseleave"
@@ -12,10 +11,7 @@
 	<i class="fas fa-retweet"></i>
 	<p class="count" v-if="count > 0">{{ count }}</p>
 </button>
-<button
-	v-else
-	class="button _button"
->
+<button v-else class="eddddedb _button">
 	<i class="fas fa-ban"></i>
 </button>
 </template>
