@@ -31,7 +31,7 @@ export interface BroadcastTypes {
 }
 
 export interface UserStreamTypes {
-	terminate: {};
+	terminate: Record<string, unknown>;
 	followChannel: Channel;
 	unfollowChannel: Channel;
 	updateUserProfile: UserProfile;
