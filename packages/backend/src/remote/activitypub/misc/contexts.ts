@@ -1,4 +1,4 @@
-/* tslint:disable:quotemark indent */
+/* eslint:disable:quotemark indent */
 const id_v1 = {
   "@context": {
     "id": "@id",
