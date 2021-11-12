@@ -278,8 +278,8 @@ export default defineComponent({
 			this.text += ' ';
 		}
 
-		if (this.reply && this.reply.user.host != null) {
-			this.text = `@${this.reply.user.username}@${toASCII(this.reply.user.host)} `;
+		if (this.reply && (this.reply.user.username != this.$i.username || (this.reply.user.host != null && this.reply.user.host != host))) {
+			this.text = `@${this.reply.user.username}${this.reply.user.host != null ? '@' + toASCII(this.reply.user.host) : ''} `;
 		}
 
 		if (this.reply && this.reply.text != null) {
