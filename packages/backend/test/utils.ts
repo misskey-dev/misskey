@@ -179,7 +179,7 @@ export function startServer(timeout = 30 * 1000): Promise<childProcess.ChildProc
 			rej('timeout to start');
 		}, timeout);
 
-		const p = childProcess.spawn('node', [__dirname + '/../index.js'], {
+		const p = childProcess.spawn('node', [__dirname + '/../built/index.js'], {
 			stdio: ['inherit', 'inherit', 'inherit', 'ipc'],
 			env: { NODE_ENV: 'test', PATH: process.env.PATH }
 		});
