@@ -23,6 +23,7 @@ const _filename = __filename;
 const _dirname = dirname(_filename);
 
 const staticAssets = `${_dirname}/../../../assets/`;
+const clientAssets = `${_dirname}/../../../../client/assets/`;
 const assets = `${_dirname}/../../../../../built/_client_dist_/`;
 
 // Init app
@@ -55,6 +56,13 @@ const router = new Router();
 router.get('/static-assets/(.*)', async ctx => {
 	await send(ctx as any, ctx.path.replace('/static-assets/', ''), {
 		root: staticAssets,
+		maxage: ms('7 days'),
+	});
+});
+
+router.get('/client-assets/(.*)', async ctx => {
+	await send(ctx as any, ctx.path.replace('/client-assets/', ''), {
+		root: clientAssets,
 		maxage: ms('7 days'),
 	});
 });
