@@ -84,11 +84,6 @@ export class Note {
 	@Column('boolean', {
 		default: false
 	})
-	public viaMobile: boolean;
-
-	@Column('boolean', {
-		default: false
-	})
 	public localOnly: boolean;
 
 	@Column('smallint', {

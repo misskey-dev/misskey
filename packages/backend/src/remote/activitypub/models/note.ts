@@ -250,7 +250,6 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 		name: note.name,
 		cw,
 		text,
-		viaMobile: false,
 		localOnly: false,
 		visibility,
 		visibleUsers,
