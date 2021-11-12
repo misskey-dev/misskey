@@ -76,7 +76,6 @@ import { noteVisibilities } from 'misskey-js';
 import * as os from '@/os';
 import { selectFile } from '@/scripts/select-file';
 import { defaultStore, notePostInterruptors, postFormActions } from '@/store';
-import { isMobile } from '@/scripts/is-mobile';
 import { throttle } from 'throttle-debounce';
 import MkInfo from '@/components/ui/info.vue';
 import { defaultStore } from '@/store';
@@ -648,7 +647,6 @@ export default defineComponent({
 				localOnly: this.localOnly,
 				visibility: this.visibility,
 				visibleUserIds: this.visibility == 'specified' ? this.visibleUsers.map(u => u.id) : undefined,
-				viaMobile: isMobile
 			};
 
 			if (this.withHashtags && this.hashtags && this.hashtags.trim() !== '') {

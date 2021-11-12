@@ -57,11 +57,6 @@ export const meta = {
 			validator: $.optional.nullable.str.pipe(Notes.validateCw),
 		},
 
-		viaMobile: {
-			validator: $.optional.bool,
-			default: false,
-		},
-
 		localOnly: {
 			validator: $.optional.bool,
 			default: false,
@@ -283,7 +278,6 @@ export default define(meta, async (ps, user) => {
 		reply,
 		renote,
 		cw: ps.cw,
-		viaMobile: ps.viaMobile,
 		localOnly: ps.localOnly,
 		visibility: ps.visibility,
 		visibleUsers,

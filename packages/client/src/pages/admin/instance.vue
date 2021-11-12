@@ -125,7 +125,6 @@
 <script lang="ts">
 import { defineComponent, markRaw } from 'vue';
 import XModalWindow from '@/components/ui/modal-window.vue';
-import MkUsersDialog from '@/components/users-dialog.vue';
 import MkSelect from '@/components/form/select.vue';
 import MkButton from '@/components/ui/button.vue';
 import MkSwitch from '@/components/form/switch.vue';
@@ -201,44 +200,15 @@ export default defineComponent({
 		},
 
 		showFollowing() {
-			os.modal(MkUsersDialog, {
-				title: this.$ts.instanceFollowing,
-				pagination: {
-					endpoint: 'federation/following',
-					limit: 10,
-					params: {
-						host: this.instance.host
-					}
-				},
-				extract: item => item.follower
-			});
+			// TODO: ページ遷移
 		},
 
 		showFollowers() {
-			os.modal(MkUsersDialog, {
-				title: this.$ts.instanceFollowers,
-				pagination: {
-					endpoint: 'federation/followers',
-					limit: 10,
-					params: {
-						host: this.instance.host
-					}
-				},
-				extract: item => item.followee
-			});
+			// TODO: ページ遷移
 		},
 
 		showUsers() {
-			os.modal(MkUsersDialog, {
-				title: this.$ts.instanceUsers,
-				pagination: {
-					endpoint: 'federation/users',
-					limit: 10,
-					params: {
-						host: this.instance.host
-					}
-				}
-			});
+			// TODO: ページ遷移
 		},
 
 		bytes,

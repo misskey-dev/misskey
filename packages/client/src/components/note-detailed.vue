@@ -86,7 +86,6 @@
 			</div>
 			<footer class="footer">
 				<div class="info">
-					<span class="mobile" v-if="appearNote.viaMobile"><i class="fas fa-mobile-alt"></i></span>
 					<MkTime class="created-at" :time="appearNote.createdAt" mode="detail"/>
 				</div>
 				<XReactionsViewer :note="appearNote" ref="reactionsViewer"/>
