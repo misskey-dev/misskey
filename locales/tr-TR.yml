@@ -1,2 +1,22 @@
 ---
 _lang_: "Türkçe"
+introMisskey: "Açık kaynaklı bir dağıtılmış mikroblog hizmeti olan Misskey'e hoş geldiniz.\nMisskey, neler olup bittiğini paylaşmak ve herkese sizden bahsetmek için \"notlar\" oluşturmanıza olanak tanıyan, açık kaynaklı, dağıtılmış bir mikroblog hizmetidir.\nHerkesin notlarına kendi tepkilerinizi hızlıca eklemek için \"Tepkiler\" özelliğini de kullanabilirsiniz👍.\nYeni bir dünyayı keşfedin🚀."
+monthAndDay: "{month}Ay {day}Gün"
+search: "Arama"
+notifications: "Bildirim"
+username: "Kullanıcı Adı"
+password: "Şifre"
+forgotPassword: "şifremi unuttum"
+smtpUser: "Kullanıcı Adı"
+smtpPass: "Şifre"
+_mfm:
+  search: "Arama"
+_sfx:
+  notification: "Bildirim"
+_widgets:
+  notifications: "Bildirim"
+_profile:
+  username: "Kullanıcı Adı"
+_deck:
+  _columns:
+    notifications: "Bildirim"
