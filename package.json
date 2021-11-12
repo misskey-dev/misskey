@@ -21,7 +21,7 @@
 		"watch-webpack": "webpack --watch",
 		"watch-ts": "tsc -w -p packages/tsconfig.json && tsc-alias -w -p packages/tsconfig.json",
 		"watch-gulp": "gulp watch",
-		"lint": "tslint 'packages/**/*.ts'",
+		"lint": "node ./scripts/lint.js",
 		"cy:open": "cypress open",
 		"cy:run": "cypress run",
 		"e2e": "start-server-and-test start:test http://localhost:61812 cy:run",
