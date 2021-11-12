@@ -48,9 +48,10 @@ export function fromHtml(html: string, hashtagNames?: string[]): string | null {
 		if (!treeAdapter.isElementNode(node)) return;
 
 		switch (node.nodeName) {
-			case 'br':
+			case 'br': {
 				text += '\n';
 				break;
+			}
 
 			case 'a':
 			{
