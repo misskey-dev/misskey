@@ -818,6 +818,8 @@ _ffVisibility:
   private: "Tersembunyi"
 _signup:
   almostThere: "Hampir selesai"
+  emailAddressInfo: "Mohon masukkan alamat surel kamu."
+  emailSent: "Konfirmasi surel telah dikirimkan ke alamat surel kamu ({email}). Mohon klik tautan yang tercantum di dalamnya untuk menyelesaikan pembuatan akun."
 _accountDelete:
   accountDelete: "Hapus akun"
   mayTakeTime: "Karena penghapusan akun merupakan proses yang berat dan intensif, kemungkinan dapat membutuhkan waktu untuk menyelesaikan tergantung daripada berapa banyak konten yang kamu buat dan berapa banyak berkas yang telah kamu unggah."
@@ -925,6 +927,8 @@ _mfm:
   fontDescription: "Setel font yang ditampilkan untuk konten."
   rainbow: "Pelangi"
   rainbowDescription: "Membuat konten muncul dalam warna pelangi."
+  sparkle: "Kelap-kelip"
+  sparkleDescription: "Memberikan konten efek partikel kelap-kelip."
 _reversi:
   reversi: "Reversi"
   gameSettings: "Pengaturan permainan"
@@ -1151,6 +1155,10 @@ _permissions:
   "write:user-groups": "Sunting atau hapus grup pengguna"
   "read:channels": "Lihat saluran"
   "write:channels": "Sunting saluran"
+  "read:gallery": "Lihat galeri"
+  "write:gallery": "Sunting galeri"
+  "read:gallery-likes": "Lihat daftar postingan galeri yang disukai"
+  "write:gallery-likes": "Sunting daftar postingan galeri yang disukai"
 _auth:
   shareAccess: "Apakah kamu ingin mengijinkan \"{name}\" untuk mengakses akun ini?"
   shareAccessAsk: "Apakah kamu ingin mengijinkan aplikasi ini untuk mengakses akun kamu?"
