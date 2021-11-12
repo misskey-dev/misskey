@@ -805,6 +805,7 @@ _emailUnavailable:
 _ffVisibility:
   public: "Public"
   followers: "Visible uniquement pour les abonné·e·s"
+  private: "Privé"
 _signup:
   almostThere: "Bientôt fini"
   emailAddressInfo: "Insérez votre adresse e-mail."
