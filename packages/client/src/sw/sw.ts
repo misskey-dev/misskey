@@ -8,7 +8,7 @@ import { swLang } from '@/sw/lang';
 import { swNotificationRead } from '@/sw/notification-read';
 import { pushNotificationDataMap } from '@/sw/types';
 import * as swos from './operations';
-import { getAcct } from '@/scripts/acct';
+import { acct as getAcct } from '@/filters/user';
 
 //#region Lifecycle: Install
 self.addEventListener('install', ev => {
