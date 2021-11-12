@@ -1,6 +1,10 @@
 module.exports = {
 	root: true,
 	parser: '@typescript-eslint/parser',
+	parserOptions: {
+		tsconfigRootDir: __dirname,
+		project: ['./tsconfig.json'],
+	},
 	plugins: [
 		'@typescript-eslint',
 		'import'
@@ -51,6 +55,9 @@ module.exports = {
 		'@typescript-eslint/no-inferrable-types': ['warn'],
 		'@typescript-eslint/no-empty-function': ['off'],
 		'@typescript-eslint/no-non-null-assertion': ['off'],
+		'@typescript-eslint/no-misused-promises': ['error', {
+			'checksVoidReturn': false,
+		}],
 		'import/no-unresolved': ['off'],
 		'import/no-default-export': ['warn'],
 	},
