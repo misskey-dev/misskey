@@ -1,11 +1,11 @@
 import * as misskey from 'misskey-js';
-import { i18n } from '@/i18n';
+import { I18n } from '@/scripts/i18n';
 
 /**
  * 投稿を表す文字列を取得します。
  * @param {*} note (packされた)投稿
  */
-export const getNoteSummary = (note: misskey.entities.Note): string => {
+export const getNoteSummary = (note: misskey.entities.Note, i18n: I18n<any>): string => {
 	if (note.deletedAt) {
 		return `(${i18n.locale.deletedNote})`;
 	}
@@ -36,7 +36,7 @@ export const getNoteSummary = (note: misskey.entities.Note): string => {
 	// 返信のとき
 	if (note.replyId) {
 		if (note.reply) {
-			summary += `\n\nRE: ${getNoteSummary(note.reply)}`;
+			summary += `\n\nRE: ${getNoteSummary(note.reply, i18n)}`;
 		} else {
 			summary += '\n\nRE: ...';
 		}
@@ -45,7 +45,7 @@ export const getNoteSummary = (note: misskey.entities.Note): string => {
 	// Renoteのとき
 	if (note.renoteId) {
 		if (note.renote) {
-			summary += `\n\nRN: ${getNoteSummary(note.renote)}`;
+			summary += `\n\nRN: ${getNoteSummary(note.renote, i18n)}`;
 		} else {
 			summary += '\n\nRN: ...';
 		}

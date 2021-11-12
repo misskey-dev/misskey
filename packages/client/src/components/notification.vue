@@ -199,7 +199,7 @@ export default defineComponent({
 		};
 
 		return {
-			getNoteSummary: (text: string) => getNoteSummary(text, i18n.locale),
+			getNoteSummary: (text: string) => getNoteSummary(text, i18n),
 			followRequestDone,
 			groupInviteDone,
 			notePage,
