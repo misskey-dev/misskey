@@ -94,12 +94,7 @@
 					<template v-else><i class="fas fa-reply"></i></template>
 					<p class="count" v-if="appearNote.repliesCount > 0">{{ appearNote.repliesCount }}</p>
 				</button>
-				<button v-if="canRenote" @click="renote()" class="button _button" ref="renoteButton">
-					<i class="fas fa-retweet"></i><p class="count" v-if="appearNote.renoteCount > 0">{{ appearNote.renoteCount }}</p>
-				</button>
-				<button v-else class="button _button">
-					<i class="fas fa-ban"></i>
-				</button>
+				<XRenoteButton :note="appearNote" :count="appearNote.renoteCount" ref="renoteButton"/>
 				<button v-if="appearNote.myReaction == null" class="button _button" @click="react()" ref="reactButton">
 					<i class="fas fa-plus"></i>
 				</button>
@@ -136,16 +131,17 @@ import XReactionsViewer from './reactions-viewer.vue';
 import XMediaList from './media-list.vue';
 import XCwButton from './cw-button.vue';
 import XPoll from './poll.vue';
-import { pleaseLogin } from '@/scripts/please-login';
-import { focusPrev, focusNext } from '@/scripts/focus';
-import { url } from '@/config';
-import copyToClipboard from '@/scripts/copy-to-clipboard';
-import { checkWordMute } from '@/scripts/check-word-mute';
-import { userPage } from '@/filters/user';
-import * as os from '@/os';
-import { noteActions, noteViewInterruptors } from '@/store';
-import { reactionPicker } from '@/scripts/reaction-picker';
-import { extractUrlFromMfm } from '@/scripts/extract-url-from-mfm';
+import XRenoteButton from './renote-button.vue';
+import { pleaseLogin } from '@client/scripts/please-login';
+import { focusPrev, focusNext } from '@client/scripts/focus';
+import { url } from '@client/config';
+import copyToClipboard from '@client/scripts/copy-to-clipboard';
+import { checkWordMute } from '@client/scripts/check-word-mute';
+import { userPage } from '@client/filters/user';
+import * as os from '@client/os';
+import { noteActions, noteViewInterruptors } from '@client/store';
+import { reactionPicker } from '@client/scripts/reaction-picker';
+import { extractUrlFromMfm } from '@/misc/extract-url-from-mfm';
 
 // TODO: note.vueとほぼ同じなので共通化したい
 export default defineComponent({
@@ -157,8 +153,9 @@ export default defineComponent({
 		XMediaList,
 		XCwButton,
 		XPoll,
-		MkUrlPreview: defineAsyncComponent(() => import('@/components/url-preview.vue')),
-		MkInstanceTicker: defineAsyncComponent(() => import('@/components/instance-ticker.vue')),
+		XRenoteButton,
+		MkUrlPreview: defineAsyncComponent(() => import('@client/components/url-preview.vue')),
+		MkInstanceTicker: defineAsyncComponent(() => import('@client/components/instance-ticker.vue')),
 	},
 
 	inject: {
@@ -197,7 +194,7 @@ export default defineComponent({
 			return {
 				'r': () => this.reply(true),
 				'e|a|plus': () => this.react(true),
-				'q': () => this.renote(true),
+				'q': () => this.$refs.renoteButton.renote(true),
 				'f|b': this.favorite,
 				'delete|ctrl+d': this.del,
 				'ctrl+q': this.renoteDirectly,
@@ -236,10 +233,6 @@ export default defineComponent({
 
 		isMyRenote(): boolean {
 			return this.$i && (this.$i.id === this.note.userId);
-		},
-
-		canRenote(): boolean {
-			return ['public', 'home'].includes(this.appearNote.visibility) || this.isMyNote;
 		},
 
 		reactionsCount(): number {
@@ -456,30 +449,6 @@ export default defineComponent({
 				animation: !viaKeyboard,
 			}, () => {
 				this.focus();
-			});
-		},
-
-		renote(viaKeyboard = false) {
-			pleaseLogin();
-			this.blur();
-			os.popupMenu([{
-				text: this.$ts.renote,
-				icon: 'fas fa-retweet',
-				action: () => {
-					os.api('notes/create', {
-						renoteId: this.appearNote.id
-					});
-				}
-			}, {
-				text: this.$ts.quote,
-				icon: 'fas fa-quote-right',
-				action: () => {
-					os.post({
-						renote: this.appearNote,
-					});
-				}
-			}], this.$refs.renoteButton, {
-				viaKeyboard
 			});
 		},
 
