@@ -78,6 +78,7 @@ import notePage from '@/filters/note';
 import { userPage } from '@/filters/user';
 import { i18n } from '@/i18n';
 import * as os from '@/os';
+import { useTooltip } from '@/scripts/use-tooltip';
 
 export default defineComponent({
 	components: {
@@ -153,47 +154,14 @@ export default defineComponent({
 			os.api('users/groups/invitations/reject', { invitationId: props.notification.invitation.id });
 		};
 
-		let isReactionHovering = false;
-		let reactionTooltipTimeoutId;
-
-		const onReactionMouseover = () => {
-			if (isReactionHovering) return;
-			isReactionHovering = true;
-			reactionTooltipTimeoutId = setTimeout(openReactionTooltip, 300);
-		};
-
-		const onReactionMouseleave = () => {
-			if (!isReactionHovering) return;
-			isReactionHovering = false;
-			clearTimeout(reactionTooltipTimeoutId);
-			closeReactionTooltip();
-		};
-
-		let changeReactionTooltipShowingState: (() => void) | null;
-
-		const openReactionTooltip = () => {
-			closeReactionTooltip();
-			if (!isReactionHovering) return;
-
-			const showing = ref(true);
+		const { onMouseover: onReactionMouseover, onMouseleave: onReactionMouseleave } = useTooltip((showing) => {
 			os.popup(XReactionTooltip, {
 				showing,
 				reaction: props.notification.reaction ? props.notification.reaction.replace(/^:(\w+):$/, ':$1@.:') : props.notification.reaction,
 				emojis: props.notification.note.emojis,
 				source: reactionRef.value.$el,
 			}, {}, 'closed');
-
-			changeReactionTooltipShowingState = () => {
-				showing.value = false;
-			};
-		};
-
-		const closeReactionTooltip = () => {
-			if (changeReactionTooltipShowingState != null) {
-				changeReactionTooltipShowingState();
-				changeReactionTooltipShowingState = null;
-			}
-		};
+		});
 
 		return {
 			getNoteSummary: (note: misskey.entities.Note) => getNoteSummary(note),

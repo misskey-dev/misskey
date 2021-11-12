@@ -94,7 +94,7 @@
 					<template v-else><i class="fas fa-reply"></i></template>
 					<p class="count" v-if="appearNote.repliesCount > 0">{{ appearNote.repliesCount }}</p>
 				</button>
-				<XRenoteButton :note="appearNote" :count="appearNote.renoteCount" ref="renoteButton"/>
+				<XRenoteButton class="button" :note="appearNote" :count="appearNote.renoteCount" ref="renoteButton"/>
 				<button v-if="appearNote.myReaction == null" class="button _button" @click="react()" ref="reactButton">
 					<i class="fas fa-plus"></i>
 				</button>
@@ -132,16 +132,16 @@ import XMediaList from './media-list.vue';
 import XCwButton from './cw-button.vue';
 import XPoll from './poll.vue';
 import XRenoteButton from './renote-button.vue';
-import { pleaseLogin } from '@client/scripts/please-login';
-import { focusPrev, focusNext } from '@client/scripts/focus';
-import { url } from '@client/config';
-import copyToClipboard from '@client/scripts/copy-to-clipboard';
-import { checkWordMute } from '@client/scripts/check-word-mute';
-import { userPage } from '@client/filters/user';
-import * as os from '@client/os';
-import { noteActions, noteViewInterruptors } from '@client/store';
-import { reactionPicker } from '@client/scripts/reaction-picker';
-import { extractUrlFromMfm } from '@/misc/extract-url-from-mfm';
+import { pleaseLogin } from '@/scripts/please-login';
+import { focusPrev, focusNext } from '@/scripts/focus';
+import { url } from '@/config';
+import copyToClipboard from '@/scripts/copy-to-clipboard';
+import { checkWordMute } from '@/scripts/check-word-mute';
+import { userPage } from '@/filters/user';
+import * as os from '@/os';
+import { noteActions, noteViewInterruptors } from '@/store';
+import { reactionPicker } from '@/scripts/reaction-picker';
+import { extractUrlFromMfm } from '@/scripts/extract-url-from-mfm';
 
 // TODO: note.vueとほぼ同じなので共通化したい
 export default defineComponent({
@@ -154,8 +154,8 @@ export default defineComponent({
 		XCwButton,
 		XPoll,
 		XRenoteButton,
-		MkUrlPreview: defineAsyncComponent(() => import('@client/components/url-preview.vue')),
-		MkInstanceTicker: defineAsyncComponent(() => import('@client/components/instance-ticker.vue')),
+		MkUrlPreview: defineAsyncComponent(() => import('@/components/url-preview.vue')),
+		MkInstanceTicker: defineAsyncComponent(() => import('@/components/instance-ticker.vue')),
 	},
 
 	inject: {

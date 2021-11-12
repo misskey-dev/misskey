@@ -1,13 +1,13 @@
 <template>
 <button
-	class="button _button canRenote"
+	class="eddddedb _button canRenote"
 	@click="renote()"
 	v-if="canRenote"
 	@touchstart.passive="onMouseover"
 	@mouseover="onMouseover"
 	@mouseleave="onMouseleave"
 	@touchend="onMouseleave"
-	ref="renoteButton"
+	ref="buttonRef"
 >
 	<i class="fas fa-retweet"></i>
 	<p class="count" v-if="count > 0">{{ count }}</p>
@@ -21,10 +21,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
-import XDetails from '@client/components/renote.details.vue';
-import { pleaseLogin } from '@client/scripts/please-login';
-import * as os from '@client/os';
+import { computed, defineComponent, ref } from 'vue';
+import XDetails from '@/components/renote.details.vue';
+import { pleaseLogin } from '@/scripts/please-login';
+import * as os from '@/os';
+import { $i } from '@/account';
+import { useTooltip } from '@/scripts/use-tooltip';
+import { i18n } from '@/i18n';
 
 export default defineComponent({
 	props: {
@@ -37,95 +40,68 @@ export default defineComponent({
 			required: true,
 		},
 	},
-	data() {
-		return {
-			close: null,
-			detailsTimeoutId: null,
-			isHovering: false
-		};
-	},
-	computed: {
-		canRenote(): boolean {
-			return ['public', 'home'].includes(this.note.visibility) || this.note.userId === this.$i.id;
-		},
-	},
-	watch: {
-		count(newCount, oldCount) {
-			if (oldCount < newCount) this.anime();
-			if (this.close != null) this.openDetails();
-		},
-	},
-	methods: {
-		renote(viaKeyboard = false) {
+
+	setup(props) {
+		const buttonRef = ref<HTMLElement>();
+
+		const canRenote = computed(() => ['public', 'home'].includes(props.note.visibility) || props.note.userId === $i.id);
+
+		const { onMouseover, onMouseleave } = useTooltip(async (showing) => {
+			const renotes = await os.api('notes/renotes', {
+				noteId: props.note.id,
+				limit: 11
+			});
+
+			const users = renotes
+				.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+				.map(x => x.user);
+
+			if (users.length < 1) return;
+
+			os.popup(XDetails, {
+				showing,
+				users,
+				count: props.count,
+				source: buttonRef.value
+			}, {}, 'closed');
+		});
+
+		const renote = (viaKeyboard = false) => {
 			pleaseLogin();
 			os.popupMenu([{
-				text: this.$ts.renote,
+				text: i18n.locale.renote,
 				icon: 'fas fa-retweet',
 				action: () => {
 					os.api('notes/create', {
-						renoteId: this.note.id
+						renoteId: props.note.id
 					});
 				}
 			}, {
-				text: this.$ts.quote,
+				text: i18n.locale.quote,
 				icon: 'fas fa-quote-right',
 				action: () => {
 					os.post({
-						renote: this.note,
+						renote: props.note,
 					});
 				}
-			}], this.$refs.renoteButton, {
+			}], buttonRef.value, {
 				viaKeyboard
 			});
-		},
-		onMouseover() {
-			if (this.isHovering) return;
-			this.isHovering = true;
-			this.detailsTimeoutId = setTimeout(this.openDetails, 300);
-		},
-		onMouseleave() {
-			if (!this.isHovering) return;
-			this.isHovering = false;
-			clearTimeout(this.detailsTimeoutId);
-			this.closeDetails();
-		},
-		openDetails() {
-			os.api('notes/renotes', {
-				noteId: this.note.id,
-				limit: 11
-			}).then((renotes: any[]) => {
-				const users = renotes
-					.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
-					.map(x => x.user);
+		};
 
-				this.closeDetails();
-				if (!this.isHovering || users.length < 1) return;
-
-				const showing = ref(true);
-				os.popup(XDetails, {
-					showing,
-					users,
-					count: this.count,
-					source: this.$refs.renoteButton
-				}, {}, 'closed');
-
-				this.close = () => {
-					showing.value = false;
-				};
-			});
-		},
-		closeDetails() {
-			if (this.close != null) {
-				this.close();
-				this.close = null;
-			}
-		},
-	}
+		return {
+			buttonRef,
+			canRenote,
+			renote,
+			onMouseover,
+			onMouseleave,
+		};
+	},
 });
 </script>
 
 <style lang="scss" scoped>
-.button {
+.eddddedb {
 	display: inline-block;
 	height: 32px;
 	margin: 2px;
