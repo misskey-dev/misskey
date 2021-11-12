@@ -186,14 +186,6 @@ export default defineComponent({
 			os.success();
 		},
 
-		setAsAvatar() {
-			os.updateAvatar(this.file);
-		},
-
-		setAsBanner() {
-			os.updateBanner(this.file);
-		},
-
 		addApp() {
 			alert('not implemented yet');
 		},
