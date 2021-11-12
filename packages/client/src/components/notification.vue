@@ -69,6 +69,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted, onUnmounted } from 'vue';
+import * as misskey from 'misskey-js';
 import { getNoteSummary } from '@/scripts/get-note-summary';
 import XReactionIcon from './reaction-icon.vue';
 import MkFollowButton from './follow-button.vue';
@@ -105,7 +106,7 @@ export default defineComponent({
 		const reactionRef = ref(null);
 
 		onMounted(() => {
-			let readObserver: IntersectionObserver = null;
+			let readObserver: IntersectionObserver | null = null;
 			let connection = null;
 
 			if (!props.notification.isRead) {
@@ -168,7 +169,7 @@ export default defineComponent({
 			closeReactionTooltip();
 		};
 
-		let changeReactionTooltipShowingState: () => void;
+		let changeReactionTooltipShowingState: (() => void) | null;
 
 		const openReactionTooltip = () => {
 			closeReactionTooltip();
@@ -195,7 +196,7 @@ export default defineComponent({
 		};
 
 		return {
-			getNoteSummary: (text: string) => getNoteSummary(text, i18n.locale),
+			getNoteSummary: (note: misskey.entities.Note) => getNoteSummary(note),
 			followRequestDone,
 			groupInviteDone,
 			notePage,
