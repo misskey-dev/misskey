@@ -2,7 +2,7 @@ import $ from 'cafy';
 import define from '../../define';
 import Resolver from '@/remote/activitypub/resolver';
 import { ApiError } from '../../error';
-import * as ms from 'ms';
+import ms from 'ms';
 
 export const meta = {
 	tags: ['federation'],
