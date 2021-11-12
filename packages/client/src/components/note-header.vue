@@ -8,7 +8,6 @@
 	<div class="admin" v-if="note.user.isAdmin"><i class="fas fa-bookmark"></i></div>
 	<div class="moderator" v-if="!note.user.isAdmin && note.user.isModerator"><i class="far fa-bookmark"></i></div>
 	<div class="info">
-		<span class="mobile" v-if="note.viaMobile"><i class="fas fa-mobile-alt"></i></span>
 		<MkA class="created-at" :to="notePage(note)">
 			<MkTime :time="note.createdAt"/>
 		</MkA>
@@ -98,10 +97,6 @@ export default defineComponent({
 		flex-shrink: 0;
 		margin-left: auto;
 		font-size: 0.9em;
-
-		> .mobile {
-			margin-right: 8px;
-		}
 
 		> .visibility {
 			margin-left: 8px;

@@ -125,7 +125,6 @@ function serialize(note: Note, poll: Poll | null = null): Record<string, unknown
 		renoteId: note.renoteId,
 		poll: poll,
 		cw: note.cw,
-		viaMobile: note.viaMobile,
 		visibility: note.visibility,
 		visibleUserIds: note.visibleUserIds,
 		localOnly: note.localOnly,

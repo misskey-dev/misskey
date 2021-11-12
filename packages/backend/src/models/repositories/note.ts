@@ -230,7 +230,6 @@ export class NoteRepository extends Repository<Note> {
 			visibility: note.visibility,
 			localOnly: note.localOnly || undefined,
 			visibleUserIds: note.visibility === 'specified' ? note.visibleUserIds : undefined,
-			viaMobile: note.viaMobile || undefined,
 			renoteCount: note.renoteCount,
 			repliesCount: note.repliesCount,
 			reactions: convertLegacyReactions(note.reactions),
@@ -376,10 +375,6 @@ export const packedNoteSchema = {
 			type: 'object' as const,
 			optional: true as const, nullable: true as const,
 			ref: 'Note' as const,
-		},
-		viaMobile: {
-			type: 'boolean' as const,
-			optional: true as const, nullable: false as const,
 		},
 		isHidden: {
 			type: 'boolean' as const,
