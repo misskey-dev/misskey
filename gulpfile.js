@@ -50,14 +50,6 @@ gulp.task('build:backend:style', () => {
 		.pipe(gulp.dest('./packages/backend/built/server/web/'));
 });
 
-gulp.task('clean', cb =>
-	rimraf('./built', cb)
-);
-
-gulp.task('cleanall', gulp.parallel('clean', cb =>
-	rimraf('./node_modules', cb)
-));
-
 gulp.task('build', gulp.parallel(
 	'copy:client:locales', 'copy:backend:views', 'build:backend:script', 'build:backend:style', 'copy:client:fonts'
 ));
