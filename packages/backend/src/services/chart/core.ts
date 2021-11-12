@@ -70,7 +70,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 
 	@autobind
 	private static convertSchemaToFlatColumnDefinitions(schema: SimpleSchema) {
-		const columns = {} as any;
+		const columns = {} as Record<string, unknown>;
 		const flatColumns = (x: Obj, path?: string) => {
 			for (const [k, v] of Object.entries(x)) {
 				const p = path ? `${path}${this.columnDot}${k}` : k;
@@ -93,8 +93,8 @@ export default abstract class Chart<T extends Record<string, any>> {
 	}
 
 	@autobind
-	private static convertFlattenColumnsToObject(x: Record<string, any>): Record<string, any> {
-		const obj = {} as any;
+	private static convertFlattenColumnsToObject(x: Record<string, unknown>): Record<string, unknown> {
+		const obj = {} as Record<string, unknown>;
 		for (const k of Object.keys(x).filter(k => k.startsWith(Chart.columnPrefix))) {
 			// now k is ___x_y_z
 			const path = k.substr(Chart.columnPrefix.length).split(Chart.columnDot).join('.');
@@ -104,7 +104,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 	}
 
 	@autobind
-	private static convertObjectToFlattenColumns(x: Record<string, any>) {
+	private static convertObjectToFlattenColumns(x: Record<string, unknown>) {
 		const columns = {} as Record<string, number | unknown[]>;
 		const flatten = (x: Obj, path?: string) => {
 			for (const [k, v] of Object.entries(x)) {
@@ -121,9 +121,9 @@ export default abstract class Chart<T extends Record<string, any>> {
 	}
 
 	@autobind
-	private static countUniqueFields(x: Record<string, any>) {
+	private static countUniqueFields(x: Record<string, unknown>) {
 		const exec = (x: Obj) => {
-			const res = {} as Record<string, any>;
+			const res = {} as Record<string, unknown>;
 			for (const [k, v] of Object.entries(x)) {
 				if (typeof v === 'object' && !Array.isArray(v)) {
 					res[k] = exec(v);
@@ -140,7 +140,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 
 	@autobind
 	private static convertQuery(diff: Record<string, number | unknown[]>) {
-		const query: Record<string, Function> = {};
+		const query: Record<string, () => string> = {};
 
 		for (const [k, v] of Object.entries(diff)) {
 			if (typeof v === 'number') {
@@ -337,7 +337,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 	}
 
 	@autobind
-	public async save() {
+	public async save(): Promise<void> {
 		if (this.buffer.length === 0) {
 			logger.info(`${this.name}: Write skipped`);
 			return;

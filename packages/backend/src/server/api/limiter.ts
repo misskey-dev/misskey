@@ -10,16 +10,16 @@ const logger = new Logger('limiter');
 export default (endpoint: IEndpoint, user: User) => new Promise<void>((ok, reject) => {
 	const limitation = endpoint.meta.limit!;
 
-	const key = limitation.hasOwnProperty('key')
+	const key = Object.prototype.hasOwnProperty.call(limitation, 'key')
 		? limitation.key
 		: endpoint.name;
 
 	const hasShortTermLimit =
-		limitation.hasOwnProperty('minInterval');
+		Object.prototype.hasOwnProperty.call(limitation, 'minInterval');
 
 	const hasLongTermLimit =
-		limitation.hasOwnProperty('duration') &&
-		limitation.hasOwnProperty('max');
+		Object.prototype.hasOwnProperty.call(limitation, 'duration') &&
+		Object.prototype.hasOwnProperty.call(limitation, 'max');
 
 	if (hasShortTermLimit) {
 		min();
