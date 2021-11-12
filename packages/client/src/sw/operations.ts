@@ -5,7 +5,7 @@
 declare var self: ServiceWorkerGlobalScope;
 
 import * as Misskey from 'misskey-js';
-import { SwMessage, swMessageOrderType } from './types';
+import { SwMessage, swMessageOrderType } from '@/sw/types';
 import { acct as getAcct } from '@/filters/user';
 import { getAccountFromId } from '@/scripts/get-account-from-id';
 import { getUrlWithLoginId } from '@/scripts/login-id';
