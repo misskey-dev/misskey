@@ -22,6 +22,9 @@
 - クライアント: fix missing i18n string
 - fix html conversion issue with code blocks
 
+### Changes
+- ノートにモバイルからの投稿か否かの情報を含めないように
+
 ## 12.95.0 (2021/10/31)
 
 ### Improvements
