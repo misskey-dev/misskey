@@ -107,7 +107,7 @@
 			</footer>
 		</div>
 	</article>
-	<XSub v-for="note in replies" :key="note.id" :note="note" class="reply" :detail="true"/>
+	<XSub v-for="note in replies" :key="note.id" :note="note" class="reply" :detail="true" :truncate="true"/>
 </div>
 <div v-else class="_panel muted" @click="muted = false">
 	<I18n :src="$ts.userSaysSomething" tag="small">

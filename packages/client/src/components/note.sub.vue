@@ -1,5 +1,5 @@
 <template>
-<div class="wrpstxzv" :class="{ children }" v-size="{ max: [450] }">
+<div class="wrpstxzv" :class="{ children: depth > 1 }" v-size="{ max: [450] }">
 	<div class="main">
 		<MkAvatar class="avatar" :user="note.user"/>
 		<div class="body">
@@ -15,12 +15,16 @@
 			</div>
 		</div>
 	</div>
-	<XSub v-for="reply in replies" :key="reply.id" :note="reply" class="reply" :detail="true" :children="true"/>
+	<XSub v-if="!truncate || depth < 20" v-for="reply in replies" :key="reply.id" :note="reply" class="reply" :detail="true" :depth="depth + 1" :truncate="truncate"/>
+	<div v-else class="wrpstxzv children reply">
+		<MkA class="text _link" :to="notePage(note)">{{ $ts.continueThread }} <i class="fas fa-angle-double-right"></i></MkA>
+	</div>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import notePage from '@/filters/note';
 import XNoteHeader from './note-header.vue';
 import XSubNoteContent from './sub-note-content.vue';
 import XCwButton from './cw-button.vue';
@@ -45,15 +49,17 @@ export default defineComponent({
 			required: false,
 			default: false
 		},
-		children: {
+		// how many notes are in between this one and the note being viewed in detail
+		depth: {
+			type: Number
+			required: false,
+			default: 1
+		},
+		// whether to stop showing replies at some depth
+		truncate: {
 			type: Boolean,
 			required: false,
 			default: false
-		},
-		// TODO
-		truncate: {
-			type: Boolean,
-			default: true
 		}
 	},
 
@@ -74,6 +80,10 @@ export default defineComponent({
 			});
 		}
 	},
+
+	methods: {
+		notePage,
+	}
 });
 </script>
 
