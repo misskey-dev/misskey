@@ -93,7 +93,7 @@ router.get('/twemoji/(.*)', async ctx => {
 	ctx.set('Content-Security-Policy', `default-src 'none'; style-src 'unsafe-inline'`);
 
 	await send(ctx as any, path, {
-		root: `${_dirname}/../../../../../node_modules/@discordapp/twemoji/dist/svg/`,
+		root: `${_dirname}/../../../node_modules/@discordapp/twemoji/dist/svg/`,
 		maxage: ms('30 days'),
 	});
 });
@@ -107,7 +107,7 @@ router.get('/twemoji-badge/(.*)', async ctx => {
 	}
 
 	const mask = await sharp(
-			`${_dirname}/../../../../../node_modules/@discordapp/twemoji/dist/svg/${path.replace('.png', '')}.svg`,
+			`${_dirname}/../../../node_modules/@discordapp/twemoji/dist/svg/${path.replace('.png', '')}.svg`,
 			{ density: 1000 }
 		)
 		.resize(488, 488)
