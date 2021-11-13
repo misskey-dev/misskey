@@ -1,6 +1,6 @@
 {
 	"name": "misskey",
-	"version": "12.96.0",
+	"version": "12.96.1",
 	"codename": "indigo",
 	"repository": {
 		"type": "git",
@@ -28,7 +28,9 @@
 		"mocha": "cd packages/backend && cross-env TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT=\"./test/tsconfig.json\" npx mocha",
 		"test": "npm run mocha",
 		"format": "gulp format",
-		"clean": "node ./scripts/clean.js"
+		"clean": "node ./scripts/clean.js",
+		"clean-all": "node ./scripts/clean-all.js",
+		"cleanall": "npm run clean-all"
 	},
 	"dependencies": {
 		"@types/gulp": "4.0.9",
