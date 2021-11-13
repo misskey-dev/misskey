@@ -3,7 +3,7 @@
  */
 
 import { dirname } from 'path';
-import * as ms from 'ms';
+import ms from 'ms';
 import * as Koa from 'koa';
 import * as Router from '@koa/router';
 import * as send from 'koa-send';

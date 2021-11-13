@@ -2,7 +2,7 @@ import $ from 'cafy';
 import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { createImportFollowingJob } from '@/queue/index';
-import * as ms from 'ms';
+import ms from 'ms';
 import { ApiError } from '../../error';
 import { DriveFiles } from '@/models/index';
 

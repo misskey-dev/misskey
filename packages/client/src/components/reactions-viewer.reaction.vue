@@ -2,13 +2,13 @@
 <button
 	class="hkzvhatu _button"
 	:class="{ reacted: note.myReaction == reaction, canToggle }"
-	@click="toggleReaction(reaction)"
+	@click="toggleReaction()"
 	v-if="count > 0"
 	@touchstart.passive="onMouseover"
 	@mouseover="onMouseover"
 	@mouseleave="onMouseleave"
 	@touchend="onMouseleave"
-	ref="reaction"
+	ref="buttonRef"
 	v-particle="canToggle"
 >
 	<XReactionIcon :reaction="reaction" :custom-emojis="note.emojis"/>
@@ -17,15 +17,18 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { computed, defineComponent, onMounted, ref, watch } from 'vue';
 import XDetails from '@/components/reactions-viewer.details.vue';
 import XReactionIcon from '@/components/reaction-icon.vue';
 import * as os from '@/os';
+import { useTooltip } from '@/scripts/use-tooltip';
+import { $i } from '@/account';
 
 export default defineComponent({
 	components: {
 		XReactionIcon
 	},
+
 	props: {
 		reaction: {
 			type: String,
@@ -44,101 +47,78 @@ export default defineComponent({
 			required: true,
 		},
 	},
-	data() {
-		return {
-			close: null,
-			detailsTimeoutId: null,
-			isHovering: false
-		};
-	},
-	computed: {
-		canToggle(): boolean {
-			return !this.reaction.match(/@\w/) && this.$i;
-		},
-	},
-	watch: {
-		count(newCount, oldCount) {
-			if (oldCount < newCount) this.anime();
-			if (this.close != null) this.openDetails();
-		},
-	},
-	mounted() {
-		if (!this.isInitial) this.anime();
-	},
-	methods: {
-		toggleReaction() {
-			if (!this.canToggle) return;
 
-			const oldReaction = this.note.myReaction;
+	setup(props) {
+		const buttonRef = ref<HTMLElement>();
+
+		const canToggle = computed(() => !props.reaction.match(/@\w/) && $i);
+
+		const toggleReaction = () => {
+			if (!canToggle.value) return;
+
+			const oldReaction = props.note.myReaction;
 			if (oldReaction) {
 				os.api('notes/reactions/delete', {
-					noteId: this.note.id
+					noteId: props.note.id
 				}).then(() => {
-					if (oldReaction !== this.reaction) {
+					if (oldReaction !== props.reaction) {
 						os.api('notes/reactions/create', {
-							noteId: this.note.id,
-							reaction: this.reaction
+							noteId: props.note.id,
+							reaction: props.reaction
 						});
 					}
 				});
 			} else {
 				os.api('notes/reactions/create', {
-					noteId: this.note.id,
-					reaction: this.reaction
+					noteId: props.note.id,
+					reaction: props.reaction
 				});
 			}
-		},
-		onMouseover() {
-			if (this.isHovering) return;
-			this.isHovering = true;
-			this.detailsTimeoutId = setTimeout(this.openDetails, 300);
-		},
-		onMouseleave() {
-			if (!this.isHovering) return;
-			this.isHovering = false;
-			clearTimeout(this.detailsTimeoutId);
-			this.closeDetails();
-		},
-		openDetails() {
-			os.api('notes/reactions', {
-				noteId: this.note.id,
-				type: this.reaction,
-				limit: 11
-			}).then((reactions: any[]) => {
-				const users = reactions
-					.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
-					.map(x => x.user);
+		};
 
-				this.closeDetails();
-				if (!this.isHovering) return;
-
-				const showing = ref(true);
-				os.popup(XDetails, {
-					showing,
-					reaction: this.reaction,
-					emojis: this.note.emojis,
-					users,
-					count: this.count,
-					source: this.$refs.reaction
-				}, {}, 'closed');
-
-				this.close = () => {
-					showing.value = false;
-				};
-			});
-		},
-		closeDetails() {
-			if (this.close != null) {
-				this.close();
-				this.close = null;
-			}
-		},
-		anime() {
+		const anime = () => {
 			if (document.hidden) return;
 
-			// TODO
-		},
-	}
+			// TODO: 新しくリアクションが付いたことが視覚的に分かりやすいアニメーション
+		};
+
+		watch(() => props.count, (newCount, oldCount) => {
+			if (oldCount < newCount) anime();
+		});
+
+		onMounted(() => {
+			if (!props.isInitial) anime();
+		});
+
+		const { onMouseover, onMouseleave } = useTooltip(async (showing) => {
+			const reactions = await os.api('notes/reactions', {
+				noteId: props.note.id,
+				type: props.reaction,
+				limit: 11
+			});
+
+			const users = reactions
+				.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+				.map(x => x.user);
+
+			os.popup(XDetails, {
+				showing,
+				reaction: props.reaction,
+				emojis: props.note.emojis,
+				users,
+				count: props.count,
+				source: buttonRef.value
+			}, {}, 'closed');
+		});
+
+		return {
+			buttonRef,
+			canToggle,
+			toggleReaction,
+			onMouseover,
+			onMouseleave,
+		};
+	},
 });
 </script>
 

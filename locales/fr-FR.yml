@@ -797,6 +797,15 @@ unread: "Non lu"
 filter: "Filtre"
 controlPanel: "Panneau de contrôle"
 manageAccounts: "Gérer les comptes"
+classic: "Classique"
+_emailUnavailable:
+  format: "Le format de cette adresse de courriel est invalide"
+  mx: "Ce serveur de courriels est invalide"
+  smtp: "Ce serveur de courriels ne répond pas"
+_ffVisibility:
+  public: "Public"
+  followers: "Visible uniquement pour les abonné·e·s"
+  private: "Privé"
 _signup:
   almostThere: "Bientôt fini"
   emailAddressInfo: "Insérez votre adresse e-mail."
@@ -808,13 +817,6 @@ _accountDelete:
   requestAccountDelete: "Demander la suppression de votre compte"
   started: "La procédure de suppression a commencé."
   inProgress: "Suppression en cours"
-_docs:
-  continueReading: "Lire plus"
-  features: "Fonctionnalités"
-  generalTopics: "Sujets généraux"
-  advancedTopics: "Sujets avancés"
-  admin: "Gestion"
-  translateWarn: "Ceci est une traduction dont le contenu peut différer du texte original."
 _ad:
   back: "Retour"
   reduceFrequencyOfThisAd: "Voir cette publicité moins souvent"

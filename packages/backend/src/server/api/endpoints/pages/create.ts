@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import * as ms from 'ms';
+import ms from 'ms';
 import define from '../../define';
 import { ID } from '@/misc/cafy-id';
 import { Pages, DriveFiles } from '@/models/index';
