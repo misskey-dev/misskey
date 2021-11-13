@@ -1,6 +1,6 @@
 import define from '../../define';
 import { createExportFollowingJob } from '@/queue/index';
-import * as ms from 'ms';
+import ms from 'ms';
 
 export const meta = {
 	secure: true,

@@ -3,7 +3,7 @@ import { publishMainStream } from '@/services/stream';
 import define from '../define';
 import rndstr from 'rndstr';
 import config from '@/config/index';
-import * as ms from 'ms';
+import ms from 'ms';
 import { Users, UserProfiles, PasswordResetRequests } from '@/models/index';
 import { sendEmail } from '@/services/send-email';
 import { ApiError } from '../error';
