@@ -11,7 +11,7 @@ const execa = require('execa');
 
 	console.log('building packages/client ...');
 
-	await execa('npm', ['run', 'build'], {
+	await execa('npm', ['install'], {
 		cwd: __dirname + '/../packages/client',
 		stdout: process.stdout,
 		stderr: process.stderr,
