@@ -163,7 +163,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 				uri: person.id,
 				tags,
 				isBot,
-				isCat: (person as any).isCat === true
+				isCat: (person as any).isCat === true,
 			})) as IRemoteUser;
 
 			await transactionalEntityManager.save(new UserProfile({
@@ -173,14 +173,14 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 				fields,
 				birthday: bday ? bday[0] : null,
 				location: person['vcard:Address'] || null,
-				userHost: host
+				userHost: host,
 			}));
 
 			if (person.publicKey) {
 				await transactionalEntityManager.save(new UserPublickey({
 					userId: user.id,
 					keyId: person.publicKey.id,
-					keyPem: person.publicKey.publicKeyPem
+					keyPem: person.publicKey.publicKeyPem,
 				}));
 			}
 		});
@@ -189,7 +189,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 		if (isDuplicateKeyValueError(e)) {
 			// /users/@a => /users/:id のように入力がaliasなときにエラーになることがあるのを対応
 			const u = await Users.findOne({
-				uri: person.id
+				uri: person.id,
 			});
 
 			if (u) {
@@ -218,11 +218,11 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 	//#region アバターとヘッダー画像をフェッチ
 	const [avatar, banner] = await Promise.all([
 		person.icon,
-		person.image
+		person.image,
 	].map(img =>
 		img == null
 			? Promise.resolve(null)
-			: resolveImage(user!, img).catch(() => null)
+			: resolveImage(user!, img).catch(() => null),
 	));
 
 	const avatarId = avatar ? avatar.id : null;
@@ -258,7 +258,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 	const emojiNames = emojis.map(emoji => emoji.name);
 
 	await Users.update(user!.id, {
-		emojis: emojiNames
+		emojis: emojiNames,
 	});
 	//#endregion
 
@@ -301,11 +301,11 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 	// アバターとヘッダー画像をフェッチ
 	const [avatar, banner] = await Promise.all([
 		person.icon,
-		person.image
+		person.image,
 	].map(img =>
 		img == null
 			? Promise.resolve(null)
-			: resolveImage(exist, img).catch(() => null)
+			: resolveImage(exist, img).catch(() => null),
 	));
 
 	// カスタム絵文字取得
@@ -355,7 +355,7 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 	if (person.publicKey) {
 		await UserPublickeys.update({ userId: exist.id }, {
 			keyId: person.publicKey.id,
-			keyPem: person.publicKey.publicKeyPem
+			keyPem: person.publicKey.publicKeyPem,
 		});
 	}
 
@@ -372,9 +372,9 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 
 	// 該当ユーザーが既にフォロワーになっていた場合はFollowingもアップデートする
 	await Followings.update({
-		followerId: exist.id
+		followerId: exist.id,
 	}, {
-		followerSharedInbox: person.sharedInbox || (person.endpoints ? person.endpoints.sharedInbox : undefined)
+		followerSharedInbox: person.sharedInbox || (person.endpoints ? person.endpoints.sharedInbox : undefined),
 	});
 
 	await updateFeatured(exist.id).catch(err => logger.error(err));
@@ -411,8 +411,9 @@ const services: {
 };
 
 const $discord = (id: string, name: string) => {
-	if (typeof name !== 'string')
+	if (typeof name !== 'string') {
 		name = 'unknown#0000';
+	}
 	const [username, discriminator] = name.split('#');
 	return { id, username, discriminator };
 };
@@ -420,13 +421,15 @@ const $discord = (id: string, name: string) => {
 function addService(target: { [x: string]: any }, source: IApPropertyValue) {
 	const service = services[source.name];
 
-	if (typeof source.value !== 'string')
+	if (typeof source.value !== 'string') {
 		source.value = 'unknown';
+	}
 
 	const [id, username] = source.value.split('@');
 
-	if (service)
+	if (service) {
 		target[source.name.split(':')[2]] = service(id, username);
+	}
 }
 
 export function analyzeAttachments(attachments: IObject | IObject[] | undefined) {
@@ -443,7 +446,7 @@ export function analyzeAttachments(attachments: IObject | IObject[] | undefined)
 			} else {
 				fields.push({
 					name: attachment.name,
-					value: fromHtml(attachment.value)
+					value: fromHtml(attachment.value),
 				});
 			}
 		}
@@ -487,7 +490,7 @@ export async function updateFeatured(userId: User['id']) {
 				id: genId(new Date(Date.now() + td)),
 				createdAt: new Date(),
 				userId: user.id,
-				noteId: note!.id
+				noteId: note!.id,
 			});
 		}
 	});
