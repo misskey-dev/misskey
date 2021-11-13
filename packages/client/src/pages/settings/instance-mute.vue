@@ -15,14 +15,14 @@
 
 <script>
 import { defineComponent } from 'vue'
-import FormBase from '@client/components/debobigego/base.vue';
-import FormTextarea from '@client/components/debobigego/textarea.vue';
-import FormInfo from '@client/components/debobigego/info.vue';
-import FormKeyValueView from '@client/components/debobigego/key-value-view.vue';
-import FormButton from '@client/components/debobigego/button.vue';
-import * as os from '@client/os';
-import number from '@client/filters/number';
-import * as symbols from '@client/symbols';
+import FormBase from '@/components/debobigego/base.vue';
+import FormTextarea from '@/components/debobigego/textarea.vue';
+import FormInfo from '@/components/debobigego/info.vue';
+import FormKeyValueView from '@/components/debobigego/key-value-view.vue';
+import FormButton from '@/components/debobigego/button.vue';
+import * as os from '@/os';
+import number from '@/filters/number';
+import * as symbols from '@/symbols';
 
 export default defineComponent({
 	components: {
