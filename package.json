@@ -29,7 +29,8 @@
 		"test": "npm run mocha",
 		"format": "gulp format",
 		"clean": "node ./scripts/clean.js",
-		"clean-all": "node ./scripts/clean-all.js"
+		"clean-all": "node ./scripts/clean-all.js",
+		"cleanall": "npm run clean-all"
 	},
 	"dependencies": {
 		"@types/gulp": "4.0.9",
