@@ -41,7 +41,7 @@ jobs:
     - name: Check yarn.lock
       run: git diff --exit-code yarn.lock
     - name: Copy Configure
-      run: cp test/test.yml .config
+      run: cp .github/misskey/test.yml .config
     - name: Build
       run: yarn build
     - name: Test
@@ -80,7 +80,7 @@ jobs:
     - name: Check yarn.lock
       run: git diff --exit-code yarn.lock
     - name: Copy Configure
-      run: cp test/test.yml .config
+      run: cp .github/misskey/test.yml .config
     - name: Build
       run: yarn build
     - name: Test

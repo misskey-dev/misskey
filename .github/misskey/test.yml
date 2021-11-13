@@ -1,12 +1,15 @@
 url: 'http://misskey.local'
-port: 8080
+
+# ローカルでテストするときにポートを被らないようにするためデフォルトのものとは変える(以下同じ)
+port: 61812
+
 db:
   host: localhost
-  port: 5432
+  port: 54312
   db: test-misskey
   user: postgres
   pass: ''
 redis:
   host: localhost
-  port: 6379
+  port: 56312
 id: aid
