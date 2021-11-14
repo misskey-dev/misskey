@@ -31,6 +31,10 @@ module.exports = {
 			'before': true,
 			'after': true,
 		}],
+		'key-spacing': ['error', {
+			'beforeColon': false,
+			'afterColon': true,
+		}],
 		/* TODO: path aliasを使わないとwarnする
 		'no-restricted-imports': ['warn', {
 			'patterns': [
@@ -47,10 +51,15 @@ module.exports = {
 		'no-async-promise-executor': ['off'],
 		'no-useless-escape': ['off'],
 		'no-multi-spaces': ['warn'],
+		'no-multiple-empty-lines': ['error', { 'max': 1 }],
 		'no-control-regex': ['warn'],
 		'no-empty': ['warn'],
 		'no-inner-declarations': ['off'],
 		'no-sparse-arrays': ['off'],
+		'nonblock-statement-body-position': ['error', 'beside'],
+		'object-curly-spacing': ['error', 'always'],
+		'space-infix-ops': ['error'],
+		'space-before-blocks': ['error', 'always'],
 		'@typescript-eslint/no-var-requires': ['warn'],
 		'@typescript-eslint/no-inferrable-types': ['warn'],
 		'@typescript-eslint/no-empty-function': ['off'],

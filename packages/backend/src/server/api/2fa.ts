@@ -6,7 +6,7 @@ const ECC_PRELUDE = Buffer.from([0x04]);
 const NULL_BYTE = Buffer.from([0]);
 const PEM_PRELUDE = Buffer.from(
 	'3059301306072a8648ce3d020106082a8648ce3d030107034200',
-	'hex'
+	'hex',
 );
 
 // Android Safetynet attestations are signed with this cert:
@@ -68,7 +68,7 @@ function verifyCertificateChain(certificates: string[]) {
 		const signatureHex = certificate.getSignatureValueHex();
 
 		// Verify against CA
-		const Signature = new jsrsasign.KJUR.crypto.Signature({alg: algorithm});
+		const Signature = new jsrsasign.KJUR.crypto.Signature({ alg: algorithm });
 		Signature.init(CACert);
 		Signature.updateHex(certStruct);
 		valid = valid && !!Signature.verify(signatureHex); // true if CA signed the certificate
@@ -134,7 +134,7 @@ export function verifyLogin({
 
 	const verificationData = Buffer.concat(
 		[authenticatorData, hash(clientDataJSON)],
-		32 + authenticatorData.length
+		32 + authenticatorData.length,
 	);
 
 	return crypto
@@ -145,7 +145,7 @@ export function verifyLogin({
 
 export const procedures = {
 	none: {
-		verify({publicKey}: {publicKey: Map<number, Buffer>}) {
+		verify({ publicKey }: {publicKey: Map<number, Buffer>}) {
 			const negTwo = publicKey.get(-2);
 
 			if (!negTwo || negTwo.length != 32) {
@@ -158,14 +158,14 @@ export const procedures = {
 
 			const publicKeyU2F = Buffer.concat(
 				[ECC_PRELUDE, negTwo, negThree],
-				1 + 32 + 32
+				1 + 32 + 32,
 			);
 
 			return {
 				publicKey: publicKeyU2F,
-				valid: true
+				valid: true,
 			};
-		}
+		},
 	},
 	'android-key': {
 		verify({
@@ -174,7 +174,7 @@ export const procedures = {
 			clientDataHash,
 			publicKey,
 			rpIdHash,
-			credentialId
+			credentialId,
 		}: {
 			attStmt: any,
 			authenticatorData: Buffer,
@@ -189,7 +189,7 @@ export const procedures = {
 
 			const verificationData = Buffer.concat([
 				authenticatorData,
-				clientDataHash
+				clientDataHash,
 			]);
 
 			const attCert: Buffer = attStmt.x5c[0];
@@ -206,7 +206,7 @@ export const procedures = {
 
 			const publicKeyData = Buffer.concat(
 				[ECC_PRELUDE, negTwo, negThree],
-				1 + 32 + 32
+				1 + 32 + 32,
 			);
 
 			if (!attCert.equals(publicKeyData)) {
@@ -222,9 +222,9 @@ export const procedures = {
 
 			return {
 				valid: isValid,
-				publicKey: publicKeyData
+				publicKey: publicKeyData,
 			};
-		}
+		},
 	},
 	// what a stupid attestation
 	'android-safetynet': {
@@ -234,7 +234,7 @@ export const procedures = {
 			clientDataHash,
 			publicKey,
 			rpIdHash,
-			credentialId
+			credentialId,
 		}: {
 			attStmt: any,
 			authenticatorData: Buffer,
@@ -244,14 +244,14 @@ export const procedures = {
 			credentialId: Buffer,
 		}) {
 			const verificationData = hash(
-				Buffer.concat([authenticatorData, clientDataHash])
+				Buffer.concat([authenticatorData, clientDataHash]),
 			);
 
 			const jwsParts = attStmt.response.toString('utf-8').split('.');
 
 			const header = JSON.parse(base64URLDecode(jwsParts[0]).toString('utf-8'));
 			const response = JSON.parse(
-				base64URLDecode(jwsParts[1]).toString('utf-8')
+				base64URLDecode(jwsParts[1]).toString('utf-8'),
 			);
 			const signature = jwsParts[2];
 
@@ -273,7 +273,7 @@ export const procedures = {
 
 			const signatureBase = Buffer.from(
 				jwsParts[0] + '.' + jwsParts[1],
-				'utf-8'
+				'utf-8',
 			);
 
 			const valid = crypto
@@ -293,13 +293,13 @@ export const procedures = {
 
 			const publicKeyData = Buffer.concat(
 				[ECC_PRELUDE, negTwo, negThree],
-				1 + 32 + 32
+				1 + 32 + 32,
 			);
 			return {
 				valid,
-				publicKey: publicKeyData
+				publicKey: publicKeyData,
 			};
-		}
+		},
 	},
 	packed: {
 		verify({
@@ -308,7 +308,7 @@ export const procedures = {
 			clientDataHash,
 			publicKey,
 			rpIdHash,
-			credentialId
+			credentialId,
 		}: {
 			attStmt: any,
 			authenticatorData: Buffer,
@@ -319,7 +319,7 @@ export const procedures = {
 		}) {
 			const verificationData = Buffer.concat([
 				authenticatorData,
-				clientDataHash
+				clientDataHash,
 			]);
 
 			if (attStmt.x5c) {
@@ -342,12 +342,12 @@ export const procedures = {
 
 				const publicKeyData = Buffer.concat(
 					[ECC_PRELUDE, negTwo, negThree],
-					1 + 32 + 32
+					1 + 32 + 32,
 				);
 
 				return {
 					valid: validSignature,
-					publicKey: publicKeyData
+					publicKey: publicKeyData,
 				};
 			} else if (attStmt.ecdaaKeyId) {
 				// https://fidoalliance.org/specs/fido-v2.0-id-20180227/fido-ecdaa-algorithm-v2.0-id-20180227.html#ecdaa-verify-operation
@@ -357,7 +357,7 @@ export const procedures = {
 
 				throw new Error('self attestation is not supported');
 			}
-		}
+		},
 	},
 
 	'fido-u2f': {
@@ -367,7 +367,7 @@ export const procedures = {
 			clientDataHash,
 			publicKey,
 			rpIdHash,
-			credentialId
+			credentialId,
 		}: {
 			attStmt: any,
 			authenticatorData: Buffer,
@@ -397,7 +397,7 @@ export const procedures = {
 
 			const publicKeyU2F = Buffer.concat(
 				[ECC_PRELUDE, negTwo, negThree],
-				1 + 32 + 32
+				1 + 32 + 32,
 			);
 
 			const verificationData = Buffer.concat([
@@ -405,7 +405,7 @@ export const procedures = {
 				rpIdHash,
 				clientDataHash,
 				credentialId,
-				publicKeyU2F
+				publicKeyU2F,
 			]);
 
 			const validSignature = crypto
@@ -415,8 +415,8 @@ export const procedures = {
 
 			return {
 				valid: validSignature,
-				publicKey: publicKeyU2F
+				publicKey: publicKeyU2F,
 			};
-		}
-	}
+		},
+	},
 };

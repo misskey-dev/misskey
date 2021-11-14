@@ -42,10 +42,6 @@ import { getAccountFromId } from '@/scripts/get-account-from-id';
 
 console.info(`Misskey v${version}`);
 
-// boot.jsのやつを解除
-window.onerror = null;
-window.onunhandledrejection = null;
-
 if (_DEV_) {
 	console.warn('Development mode!!!');
 
@@ -222,6 +218,10 @@ if (splash) splash.addEventListener('transitionend', () => {
 const rootEl = document.createElement('div');
 document.body.appendChild(rootEl);
 app.mount(rootEl);
+
+// boot.jsのやつを解除
+window.onerror = null;
+window.onunhandledrejection = null;
 
 reactionPicker.init();
 
