@@ -7,6 +7,17 @@
 
 -->
 
+## 12.x.x (unreleased)
+
+### Improvements
+- アカウント削除に確認ダイアログを出すように
+
+### Bugfixes
+
+## 12.96.1 (2021/11/13)
+### Improvements
+- npm scriptの互換性を向上
+
 ## 12.96.0 (2021/11/13)
 
 ### Improvements

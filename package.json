@@ -1,6 +1,6 @@
 {
 	"name": "misskey",
-	"version": "12.96.0",
+	"version": "12.96.1",
 	"codename": "indigo",
 	"repository": {
 		"type": "git",
@@ -29,7 +29,8 @@
 		"test": "npm run mocha",
 		"format": "gulp format",
 		"clean": "node ./scripts/clean.js",
-		"clean-all": "node ./scripts/clean-all.js"
+		"clean-all": "node ./scripts/clean-all.js",
+		"cleanall": "npm run clean-all"
 	},
 	"dependencies": {
 		"@types/gulp": "4.0.9",
@@ -39,7 +40,8 @@
 		"gulp-cssnano": "2.1.3",
 		"gulp-rename": "2.0.0",
 		"gulp-replace": "1.1.3",
-		"gulp-terser": "2.1.0"
+		"gulp-terser": "2.1.0",
+		"js-yaml": "4.1.0"
 	},
 	"devDependencies": {
 		"@redocly/openapi-core": "1.0.0-beta.54",
