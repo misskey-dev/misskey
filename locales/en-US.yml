@@ -806,6 +806,7 @@ muteThread: "Mute thread"
 unmuteThread: "Unmute thread"
 ffVisibility: "Follows/Followers Visibility"
 ffVisibilityDescription: "Allows you to configure who can see who you follow and who follows you."
+deleteAccountConfirm: "This will irreversibly delete your account. Proceed?"
 _emailUnavailable:
   used: "This email address is already being used"
   format: "The format of this email address is invalid"
