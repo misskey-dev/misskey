@@ -45,8 +45,6 @@
 			localStorage.setItem('lang', lang);
 			localStorage.setItem('locale', await res.text());
 			localStorage.setItem('localeVersion', v);
-		} else if (localeOutdated) {
-			// nop
 		} else {
 			await checkUpdate();
 			renderError('LOCALE_FETCH_FAILED');
