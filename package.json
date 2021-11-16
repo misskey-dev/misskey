@@ -44,7 +44,7 @@
 		"js-yaml": "4.1.0"
 	},
 	"devDependencies": {
-		"@redocly/openapi-core": "1.0.0-beta.54",
+		"@redocly/openapi-core": "1.0.0-beta.68",
 		"@types/fluent-ffmpeg": "2.1.17",
 		"cross-env": "7.0.3",
 		"cypress": "9.0.0",
