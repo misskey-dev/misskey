@@ -4,6 +4,7 @@ import { Followings, Users } from '@/models/index';
 import { Brackets } from 'typeorm';
 import { USER_ACTIVE_THRESHOLD } from '@/const';
 import { User } from '@/models/entities/user';
+import { toPuny } from '@/misc/convert-host';
 
 export const meta = {
 	tags: ['users'],
@@ -47,7 +48,7 @@ export default define(meta, async (ps, me) => {
 	if (ps.host) {
 		const q = Users.createQueryBuilder('user')
 			.where('user.isSuspended = FALSE')
-			.andWhere('user.host LIKE :host', { host: ps.host.toLowerCase() + '%' });
+			.andWhere('user.host LIKE :host', { host: toPuny(ps.host) + '%' });
 
 		if (ps.username) {
 			q.andWhere('user.usernameLower LIKE :username', { username: ps.username.toLowerCase() + '%' });

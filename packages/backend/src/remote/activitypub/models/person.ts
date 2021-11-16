@@ -22,7 +22,7 @@ import { genId } from '@/misc/gen-id';
 import { instanceChart, usersChart } from '@/services/chart/index';
 import { UserPublickey } from '@/models/entities/user-publickey';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error';
-import { toPuny } from '@/misc/convert-host';
+import { extractDbHost } from '@/misc/convert-host';
 import { UserProfile } from '@/models/entities/user-profile';
 import { getConnection } from 'typeorm';
 import { toArray } from '@/prelude/array';
@@ -42,7 +42,7 @@ const summaryLength = 2048;
  * @param uri Fetch target URI
  */
 function validateActor(x: IObject, uri: string): IActor {
-	const expectHost = toPuny(new URL(uri).hostname);
+	const expectHost = extractDbHost(uri);
 
 	if (x == null) {
 		throw new Error('invalid Actor: object is null');
@@ -67,7 +67,7 @@ function validateActor(x: IObject, uri: string): IActor {
 	validate('name', truncate(x.name, nameLength), $.optional.nullable.str);
 	validate('summary', truncate(x.summary, summaryLength), $.optional.nullable.str);
 
-	const idHost = toPuny(new URL(x.id!).hostname);
+	const idHost = extractDbHost(x.id!);
 	if (idHost !== expectHost) {
 		throw new Error('invalid Actor: id has different host');
 	}
@@ -77,7 +77,7 @@ function validateActor(x: IObject, uri: string): IActor {
 			throw new Error('invalid Actor: publicKey.id is not a string');
 		}
 
-		const publicKeyIdHost = toPuny(new URL(x.publicKey.id).hostname);
+		const publicKeyIdHost = extractDbHost(x.publicKey.id);
 		if (publicKeyIdHost !== expectHost) {
 			throw new Error('invalid Actor: publicKey.id has different host');
 		}
@@ -129,7 +129,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 
 	logger.info(`Creating the Person: ${person.id}`);
 
-	const host = toPuny(new URL(object.id).hostname);
+	const host = extractDbHost(object.id);
 
 	const { fields } = analyzeAttachments(person.attachment || []);
 

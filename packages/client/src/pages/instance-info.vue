@@ -1,7 +1,7 @@
 <template>
 <FormBase>
 	<FormGroup v-if="instance">
-		<template #label>{{ instance.host }}</template>
+		<template #label>{{ toUnicode(instance.host) }}</template>
 		<FormGroup>
 			<div class="_debobigegoItem">
 				<div class="_debobigegoPanel fnfelxur">
@@ -150,6 +150,7 @@ import number from '@/filters/number';
 import bytes from '@/filters/bytes';
 import * as symbols from '@/symbols';
 import MkInstanceInfo from '@/pages/admin/instance.vue';
+import { toUnicode } from 'punycode/';
 
 export default defineComponent({
 	components: {
@@ -212,7 +213,9 @@ export default defineComponent({
 			os.popup(MkInstanceInfo, {
 				instance: this.instance
 			}, {}, 'closed');
-		}
+		},
+
+		toUnicode
 	}
 });
 </script>

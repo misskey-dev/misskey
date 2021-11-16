@@ -1,6 +1,7 @@
 import { URL } from 'url';
 import define from '../../../define';
 import { inboxQueue } from '@/queue/queues';
+import { extractDbHost } from '@/misc/convert-host';
 
 export const meta = {
 	tags: ['admin'],
@@ -41,7 +42,7 @@ export default define(meta, async (ps) => {
 	const res = [] as [string, number][];
 
 	for (const job of jobs) {
-		const host = new URL(job.data.signature.keyId).host;
+		const host = extractDbHost(job.data.signature.keyId);
 		if (res.find(x => x[0] === host)) {
 			res.find(x => x[0] === host)![1]++;
 		} else {

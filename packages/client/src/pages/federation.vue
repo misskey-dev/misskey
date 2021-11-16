@@ -43,7 +43,7 @@
 	<MkPagination :pagination="pagination" #default="{items}" ref="instances" :key="host + state">
 		<div class="dqokceoi">
 			<MkA class="instance" v-for="instance in items" :key="instance.id" :to="`/instance-info/${instance.host}`">
-				<div class="host"><img :src="instance.faviconUrl">{{ instance.host }}</div>
+				<div class="host"><img :src="instance.faviconUrl">{{ toUnicode(instance.host.toLowerCase()) }}</div>
 				<div class="table">
 					<div class="cell">
 						<div class="key">{{ $ts.registeredAt }}</div>
@@ -101,6 +101,7 @@ import MkSelect from '@/components/form/select.vue';
 import MkPagination from '@/components/ui/pagination.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
+import { toASCII, toUnicode } from 'punycode';
 
 export default defineComponent({
 	components: {
@@ -128,7 +129,7 @@ export default defineComponent({
 				offsetMode: true,
 				params: () => ({
 					sort: this.sort,
-					host: this.host != '' ? this.host : null,
+					host: this.host != '' ? toASCII(this.host.toLowerCase()) : null,
 					...(
 						this.state === 'federating' ? { federating: true } :
 						this.state === 'subscribing' ? { subscribing: true } :

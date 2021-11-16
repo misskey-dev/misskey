@@ -2,6 +2,7 @@ import $ from 'cafy';
 import define from '../../define';
 import { convertLog } from '@/services/chart/core';
 import { instanceChart } from '@/services/chart/index';
+import { toPuny } from '@/misc/convert-host';
 
 export const meta = {
 	tags: ['charts'],
@@ -30,5 +31,5 @@ export const meta = {
 };
 
 export default define(meta, async (ps) => {
-	return await instanceChart.getChart(ps.span as any, ps.limit!, ps.offset ? new Date(ps.offset) : null, ps.host);
+	return await instanceChart.getChart(ps.span as any, ps.limit!, ps.offset ? new Date(ps.offset) : null, toPuny(ps.host));
 });

@@ -17,6 +17,7 @@ import config from '@/config/index';
 import { Users, Notes, UserProfiles, Pages, Channels, Clips, GalleryPosts } from '@/models/index';
 import * as Acct from 'misskey-js/built/acct';
 import { getNoteSummary } from '@/misc/get-note-summary';
+import { toUnicode } from 'punycode';
 
 //const _filename = fileURLToPath(import.meta.url);
 const _filename = __filename;
@@ -196,7 +197,13 @@ router.get(['/@:user', '/@:user/:sub'], async (ctx, next) => {
 			: [];
 
 		await ctx.render('user', {
-			user, profile, me,
+			user: {
+				id: user.id,
+				username: user.username,
+				uri: user.uri,
+				host: user.host ? toUnicode(user.host) : null,
+			},
+			profile, me,
 			sub: ctx.params.sub,
 			instanceName: meta.name || 'Misskey',
 			icon: meta.iconUrl
@@ -221,7 +228,7 @@ router.get('/users/:user', async ctx => {
 		return;
 	}
 
-	ctx.redirect(`/@${user.username}${ user.host == null ? '' : '@' + user.host}`);
+	ctx.redirect(`/@${user.username}${ user.host == null ? '' : '@' + encodeURIComponent(toUnicode(user.host))}`);
 });
 
 // Note

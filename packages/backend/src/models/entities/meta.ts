@@ -73,7 +73,8 @@ export class Meta {
 	public hiddenTags: string[];
 
 	@Column('varchar', {
-		length: 256, array: true, default: '{}'
+		length: 256, array: true, default: '{}',
+		comment: 'list of punycode domains'
 	})
 	public blockedHosts: string[];
 

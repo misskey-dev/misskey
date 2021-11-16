@@ -1,6 +1,6 @@
 import { Ref, ref } from 'vue';
 import * as getCaretCoordinates from 'textarea-caret';
-import { toASCII } from 'punycode/';
+import { toUnicode } from 'punycode/';
 import { popup } from '@/os';
 
 export class Autocomplete {
@@ -212,7 +212,7 @@ export class Autocomplete {
 			const trimmedBefore = before.substring(0, before.lastIndexOf('@'));
 			const after = source.substr(caret);
 
-			const acct = value.host === null ? value.username : `${value.username}@${toASCII(value.host)}`;
+			const acct = value.host === null ? value.username : `${value.username}@${toUnicode(value.host)}`;
 
 			// 挿入
 			this.text = `${trimmedBefore}@${acct} ${after}`;

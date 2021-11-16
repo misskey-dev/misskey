@@ -3,6 +3,7 @@ import config from '@/config/index';
 import define from '../../define';
 import { Instances } from '@/models/index';
 import { fetchMeta } from '@/misc/fetch-meta';
+import { toPuny } from '@/misc/convert-host';
 
 export const meta = {
 	tags: ['federation'],
@@ -140,7 +141,7 @@ export default define(meta, async (ps, me) => {
 	}
 
 	if (ps.host) {
-		query.andWhere('instance.host like :host', { host: '%' + ps.host.toLowerCase() + '%' });
+		query.andWhere('instance.host like :host', { host: '%' + toPuny(ps.host) + '%' });
 	}
 
 	const instances = await query.take(ps.limit!).skip(ps.offset).getMany();

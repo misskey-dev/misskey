@@ -82,6 +82,7 @@ export default class InstanceChart extends Chart<InstanceLog> {
 
 	@autobind
 	protected async fetchActual(group: string): Promise<DeepPartial<InstanceLog>> {
+		const host = toPuny(group);
 		const [
 			notesCount,
 			usersCount,
@@ -90,12 +91,12 @@ export default class InstanceChart extends Chart<InstanceLog> {
 			driveFiles,
 			driveUsage,
 		] = await Promise.all([
-			Notes.count({ userHost: group }),
-			Users.count({ host: group }),
-			Followings.count({ followerHost: group }),
-			Followings.count({ followeeHost: group }),
-			DriveFiles.count({ userHost: group }),
-			DriveFiles.calcDriveUsageOfHost(group),
+			Notes.count({ userHost: host }),
+			Users.count({ host: host }),
+			Followings.count({ followerHost: host }),
+			Followings.count({ followeeHost: host }),
+			DriveFiles.count({ userHost: host }),
+			DriveFiles.calcDriveUsageOfHost(host),
 		]);
 
 		return {

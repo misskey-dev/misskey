@@ -12,6 +12,7 @@ import MkSparkle from '@/components/sparkle.vue';
 import MkA from '@/components/global/a.vue';
 import { host } from '@/config';
 import { MFM_TAGS } from '@/scripts/mfm-tags';
+import { toUnicode } from 'punycode';
 
 export default defineComponent({
 	props: {
@@ -225,7 +226,7 @@ export default defineComponent({
 				case 'mention': {
 					return [h(MkMention, {
 						key: Math.random(),
-						host: (token.props.host == null && this.author && this.author.host != null ? this.author.host : token.props.host) || host,
+						host: toUnicode(token.props.host || (this.author && this.author.host) || host),
 						username: token.props.username
 					})];
 				}

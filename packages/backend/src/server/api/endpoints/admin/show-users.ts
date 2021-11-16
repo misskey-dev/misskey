@@ -1,6 +1,7 @@
 import $ from 'cafy';
 import define from '../../define';
 import { Users } from '@/models/index';
+import { toPuny } from '@/misc/convert-host';
 
 export const meta = {
 	tags: ['admin'],
@@ -97,7 +98,7 @@ export default define(meta, async (ps, me) => {
 	}
 
 	if (ps.hostname) {
-		query.andWhere('user.host like :hostname', { hostname: '%' + ps.hostname.toLowerCase() + '%' });
+		query.andWhere('user.host like :hostname', { hostname: '%' + toPuny(ps.hostname) + '%' });
 	}
 
 	switch (ps.sort) {

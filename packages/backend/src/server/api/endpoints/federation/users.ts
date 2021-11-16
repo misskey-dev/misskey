@@ -3,6 +3,7 @@ import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { Users } from '@/models/index';
 import { makePaginationQuery } from '../../common/make-pagination-query';
+import { toPuny } from '@/misc/convert-host';
 
 export const meta = {
 	tags: ['federation'],
@@ -41,7 +42,7 @@ export const meta = {
 
 export default define(meta, async (ps, me) => {
 	const query = makePaginationQuery(Users.createQueryBuilder('user'), ps.sinceId, ps.untilId)
-		.andWhere(`user.host = :host`, { host: ps.host });
+		.andWhere(`user.host = :host`, { host: toPuny(ps.host) });
 
 	const users = await query
 		.take(ps.limit!)

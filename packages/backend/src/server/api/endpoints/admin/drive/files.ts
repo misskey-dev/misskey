@@ -3,6 +3,7 @@ import define from '../../../define';
 import { DriveFiles } from '@/models/index';
 import { makePaginationQuery } from '../../../common/make-pagination-query';
 import { ID } from '@/misc/cafy-id';
+import { toPuny } from '@/misc/convert-host';
 
 export const meta = {
 	tags: ['admin'],
@@ -64,7 +65,7 @@ export default define(meta, async (ps, me) => {
 	}
 
 	if (ps.hostname) {
-		query.andWhere('file.userHost = :hostname', { hostname: ps.hostname });
+		query.andWhere('file.userHost = :hostname', { hostname: toPuny(ps.hostname) });
 	}
 
 	if (ps.type) {

@@ -107,7 +107,7 @@ export function decodeReaction(str: string): DecodedReaction {
 
 	if (custom) {
 		const name = custom[1];
-		const host = custom[2] || null;
+		const host = toPunyNullable(custom[2] || null);
 
 		return {
 			reaction: `:${name}@${host || '.'}:`,	// ローカル分は@以降を省略するのではなく.にする

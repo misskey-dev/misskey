@@ -62,7 +62,7 @@
 import { defineComponent, defineAsyncComponent } from 'vue';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import { length } from 'stringz';
-import { toASCII } from 'punycode/';
+import { toUnicode } from 'punycode/';
 import XNoteSimple from './note-simple.vue';
 import XNotePreview from './note-preview.vue';
 import * as mfm from 'mfm-js';
@@ -274,19 +274,19 @@ export default defineComponent({
 		}
 
 		if (this.mention) {
-			this.text = this.mention.host ? `@${this.mention.username}@${toASCII(this.mention.host)}` : `@${this.mention.username}`;
+			this.text = this.mention.host ? `@${this.mention.username}@${toUnicode(this.mention.host)}` : `@${this.mention.username}`;
 			this.text += ' ';
 		}
 
 		if (this.reply && (this.reply.user.username != this.$i.username || (this.reply.user.host != null && this.reply.user.host != host))) {
-			this.text = `@${this.reply.user.username}${this.reply.user.host != null ? '@' + toASCII(this.reply.user.host) : ''} `;
+			this.text = `@${this.reply.user.username}${this.reply.user.host != null ? '@' + toUnicode(this.reply.user.host) : ''} `;
 		}
 
 		if (this.reply && this.reply.text != null) {
 			const ast = mfm.parse(this.reply.text);
 
 			for (const x of extractMentions(ast)) {
-				const mention = x.host ? `@${x.username}@${toASCII(x.host)}` : `@${x.username}`;
+				const mention = x.host ? `@${x.username}@${toUnicode(x.host)}` : `@${x.username}`;
 
 				// 自分は除外
 				if (this.$i.username == x.username && x.host == null) continue;

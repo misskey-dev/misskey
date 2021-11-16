@@ -100,7 +100,7 @@ export default defineComponent({
 				params: () => ({
 					type: (this.type && this.type !== '') ? this.type : null,
 					origin: this.origin,
-					hostname: (this.hostname && this.hostname !== '') ? this.hostname : null,
+					hostname: this.searchHost || null,
 				}),
 			},
 		}

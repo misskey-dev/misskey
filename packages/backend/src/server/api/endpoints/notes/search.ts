@@ -9,6 +9,7 @@ import { makePaginationQuery } from '../../common/make-pagination-query';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query';
 import { generateMutedUserQuery } from '../../common/generate-muted-user-query';
 import { generateBlockedUserQuery } from '../../common/generate-block-query';
+import { toPunyNullable } from '@/misc/convert-host';
 
 export const meta = {
 	tags: ['notes'],
@@ -106,7 +107,7 @@ export default define(meta, async (ps, me) => {
 				}
 			}] : ps.host !== undefined ? [{
 				term: {
-					userHost: ps.host
+					userHost: toPunyNullable(ps.host)
 				}
 			}] : []
 		: [];

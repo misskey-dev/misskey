@@ -6,6 +6,7 @@ import * as os from '@/os';
 import { userActions } from '@/store';
 import { router } from '@/router';
 import { $i } from '@/account';
+import { toUnicode } from 'punycode';
 
 export function getUserMenu(user) {
 	const meId = $i ? $i.id : null;
@@ -122,7 +123,7 @@ export function getUserMenu(user) {
 		icon: 'fas fa-at',
 		text: i18n.locale.copyUsername,
 		action: () => {
-			copyToClipboard(`@${user.username}@${user.host || host}`);
+			copyToClipboard(`@${user.username}@${toUnicode(user.host || host)}`);
 		}
 	}, {
 		icon: 'fas fa-info-circle',

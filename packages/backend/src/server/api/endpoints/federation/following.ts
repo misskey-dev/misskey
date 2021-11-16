@@ -3,6 +3,7 @@ import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { Followings } from '@/models/index';
 import { makePaginationQuery } from '../../common/make-pagination-query';
+import { toPuny } from '@/misc/convert-host';
 
 export const meta = {
 	tags: ['federation'],
@@ -41,7 +42,7 @@ export const meta = {
 
 export default define(meta, async (ps, me) => {
 	const query = makePaginationQuery(Followings.createQueryBuilder('following'), ps.sinceId, ps.untilId)
-		.andWhere(`following.followerHost = :host`, { host: ps.host });
+		.andWhere(`following.followerHost = :host`, { host: toPuny(ps.host) });
 
 	const followings = await query
 		.take(ps.limit!)

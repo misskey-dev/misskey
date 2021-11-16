@@ -105,7 +105,8 @@ export default defineComponent({
 				limit: 30,
 				params: computed(() => ({
 					query: (this.queryRemote && this.queryRemote !== '') ? this.queryRemote : null,
-					host: (this.host && this.host !== '') ? this.host : null
+					// empty string is also falsy
+					host: this.host || null
 				}))
 			},
 		}

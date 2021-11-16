@@ -44,7 +44,7 @@
 				<span>Raw</span>
 			</FormObjectView>
 			<FormGroup>
-				<FormLink :to="`https://${user.host}/.well-known/webfinger?resource=acct:${user.username}`" external>WebFinger</FormLink>
+				<FormLink :to="`${url}/.well-known/webfinger?resource=acct:${user.username}`" external>WebFinger</FormLink>
 			</FormGroup>
 			<FormLink v-if="user.host" :to="`/instance-info/${user.host}`">{{ $ts.instanceInfo }}<template #suffix>{{ user.host }}</template></FormLink>
 			<FormKeyValueView v-else>
@@ -98,6 +98,7 @@ export default defineComponent({
 				icon: 'fas fa-info-circle'
 			},
 			user: null,
+			url,
 			apPromiseFactory: null,
 		}
 	},

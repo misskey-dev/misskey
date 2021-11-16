@@ -1,3 +1,4 @@
+import { extractDbHost } from '@/misc/convert-host';
 import { deliverQueue } from '@/queue/queues';
 import { URL } from 'url';
 import define from '../../../define';
@@ -41,7 +42,7 @@ export default define(meta, async (ps) => {
 	const res = [] as [string, number][];
 
 	for (const job of jobs) {
-		const host = new URL(job.data.to).host;
+		const host = extractDbHost(job.data.to);
 		if (res.find(x => x[0] === host)) {
 			res.find(x => x[0] === host)![1]++;
 		} else {

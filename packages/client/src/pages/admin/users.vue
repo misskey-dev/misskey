@@ -117,7 +117,7 @@ export default defineComponent({
 					state: this.state,
 					origin: this.origin,
 					username: this.searchUsername,
-					hostname: this.searchHost,
+					hostname: toASCII(this.searchHost),
 				}),
 				offsetMode: true
 			},

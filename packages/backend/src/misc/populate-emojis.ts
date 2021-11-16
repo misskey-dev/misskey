@@ -37,7 +37,7 @@ function parseEmojiStr(emojiName: string, noteUserHost: string | null) {
 	const name = match[1];
 
 	// ホスト正規化
-	const host = toPunyNullable(normalizeHost(match[2], noteUserHost));
+	const host = normalizeHost(match[2], noteUserHost);
 
 	return { name, host };
 }
@@ -105,7 +105,7 @@ export function aggregateNoteEmojis(notes: Note[]) {
  * 与えられた絵文字のリストをデータベースから取得し、キャッシュに追加します
  */
 export async function prefetchEmojis(emojis: { name: string; host: string | null; }[]): Promise<void> {
-	const notCachedEmojis = emojis.filter(emoji => cache.get(`${emoji.name} ${emoji.host}`) == null);
+	const notCachedEmojis = emojis.filter(emoji => cache.get(`${emoji.name} ${toPunyNullable(emoji.host)}`) == null);
 	const emojisQuery: any[] = [];
 	const hosts = new Set(notCachedEmojis.map(e => e.host));
 	for (const host of hosts) {

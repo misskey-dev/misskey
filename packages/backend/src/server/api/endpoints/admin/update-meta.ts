@@ -5,6 +5,7 @@ import { Meta } from '@/models/entities/meta';
 import { insertModerationLog } from '@/services/insert-moderation-log';
 import { DB_MAX_NOTE_TEXT_LENGTH } from '@/misc/hard-limits';
 import { ID } from '@/misc/cafy-id';
+import { toPuny } from '@/misc/convert-host';
 
 export const meta = {
 	tags: ['admin'],
@@ -328,6 +329,8 @@ export default define(meta, async (ps, me) => {
 
 	if (Array.isArray(ps.blockedHosts)) {
 		set.blockedHosts = ps.blockedHosts.filter(Boolean);
+		// normalize blocked hosts to punycode
+		set.blockedHosts = set.blockedHosts.map(domain => toPuny(domain))
 	}
 
 	if (ps.mascotImageUrl !== undefined) {
