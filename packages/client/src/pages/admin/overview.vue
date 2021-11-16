@@ -153,18 +153,6 @@ export default defineComponent({
 	},
 
 	methods: {
-		async showInstanceInfo(q) {
-			let instance = q;
-			if (typeof q === 'string') {
-				instance = await os.api('federation/show-instance', {
-					host: q
-				});
-			}
-			os.popup(MkInstanceInfo, {
-				instance: instance
-			}, {}, 'closed');
-		},
-
 		bytes,
 
 		number,

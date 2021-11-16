@@ -16,7 +16,6 @@
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
 import MkContainer from '@/components/ui/container.vue';
-import XPostForm from '@/components/post-form.vue';
 import XNotes from '@/components/notes.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
@@ -24,7 +23,6 @@ import * as symbols from '@/symbols';
 export default defineComponent({
 	components: {
 		MkContainer,
-		XPostForm,
 		XNotes,
 	},
 
