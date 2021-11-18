@@ -114,10 +114,9 @@ export default defineComponent({
 				text: this.$ts.delete,
 				danger: true,
 				action: async () => {
-					const { canceled } = await os.dialog({
+					const { canceled } = await os.confirm({
 						type: 'warning',
 						text: this.$t('deleteAreYouSure', { x: this.clip.name }),
-						showCancelButton: true
 					});
 					if (canceled) return;
 

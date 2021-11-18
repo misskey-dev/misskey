@@ -168,9 +168,8 @@ export default defineComponent({
 		},
 
 		async unlike() {
-			const confirm = await os.dialog({
+			const confirm = await os.confirm({
 				type: 'warning',
-				showCancelButton: true,
 				text: this.$ts.unlikeConfirm,
 			});
 			if (confirm.canceled) return;

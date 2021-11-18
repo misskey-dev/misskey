@@ -220,7 +220,7 @@ export default defineComponent({
 				'g-recaptcha-response': this.reCaptchaResponse,
 			}).then(() => {
 				if (this.meta.emailRequiredForSignup) {
-					os.dialog({
+					os.alert({
 						type: 'success',
 						title: this.$ts._signup.almostThere,
 						text: this.$t('_signup.emailSent', { email: this.email }),
@@ -243,7 +243,7 @@ export default defineComponent({
 				this.$refs.hcaptcha?.reset?.();
 				this.$refs.recaptcha?.reset?.();
 
-				os.dialog({
+				os.alert({
 					type: 'error',
 					text: this.$ts.somethingHappened
 				});

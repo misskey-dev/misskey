@@ -95,20 +95,11 @@ export default defineComponent({
 					const lio = file.name.lastIndexOf('.');
 					const ext = lio >= 0 ? file.name.slice(lio) : '';
 					const formatted = `${formatTimeString(new Date(file.lastModified), this.$store.state.pastedFileName).replace(/{{number}}/g, '1')}${ext}`;
-					const name = this.$store.state.pasteDialog
-						? await os.dialog({
-							title: this.$ts.enterFileName,
-							input: {
-								default: formatted
-							},
-							allowEmpty: false
-						}).then(({ canceled, result }) => canceled ? false : result)
-						: formatted;
-					if (name) this.upload(file, name);
+					if (formatted) this.upload(file, formatted);
 				}
 			} else {
 				if (items[0].kind == 'file') {
-					os.dialog({
+					os.alert({
 						type: 'error',
 						text: this.$ts.onlyOneFileCanBeAttached
 					});
@@ -133,7 +124,7 @@ export default defineComponent({
 				return;
 			} else if (e.dataTransfer.files.length > 1) {
 				e.preventDefault();
-				os.dialog({
+				os.alert({
 					type: 'error',
 					text: this.$ts.onlyOneFileCanBeAttached
 				});

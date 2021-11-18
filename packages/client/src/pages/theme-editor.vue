@@ -155,10 +155,9 @@ export default defineComponent({
 		},
 
 		async leaveConfirm(): Promise<boolean> {
-			const { canceled } = await os.dialog({
+			const { canceled } = await os.confirm({
 				type: 'warning',
 				text: this.$ts.leaveConfirm,
-				showCancelButton: true
 			});
 			return !canceled;
 		},
@@ -205,7 +204,7 @@ export default defineComponent({
 			try {
 				parsed = JSON5.parse(this.themeCode);
 			} catch (e) {
-				os.dialog({
+				os.alert({
 					type: 'error',
 					text: this.$ts._theme.invalid
 				});
@@ -216,11 +215,9 @@ export default defineComponent({
 		},
 
 		async saveAs() {
-			const { canceled, result: name } = await os.dialog({
+			const { canceled, result: name } = await os.inputText({
 				title: this.$ts.name,
-				input: {
-					allowEmpty: false
-				}
+				allowEmpty: false
 			});
 			if (canceled) return;
 
@@ -236,7 +233,7 @@ export default defineComponent({
 				ColdDeviceStorage.set('lightTheme', this.theme);
 			}
 			this.changed = false;
-			os.dialog({
+			os.alert({
 				type: 'success',
 				text: this.$t('_theme.installed', { name: this.theme.name })
 			});

@@ -53,11 +53,10 @@ export default defineComponent({
 
 	methods: {
 		async addRelay() {
-			const { canceled, result: inbox } = await os.dialog({
+			const { canceled, result: inbox } = await os.inputText({
 				title: this.$ts.addRelay,
-				input: {
-					placeholder: this.$ts.inboxUrl
-				}
+				type: 'url',
+				placeholder: this.$ts.inboxUrl
 			});
 			if (canceled) return;
 			os.api('admin/relays/add', {
@@ -65,7 +64,7 @@ export default defineComponent({
 			}).then((relay: any) => {
 				this.refresh();
 			}).catch((e: any) => {
-				os.dialog({
+				os.alert({
 					type: 'error',
 					text: e.message || e
 				});
@@ -78,7 +77,7 @@ export default defineComponent({
 			}).then(() => {
 				this.refresh();
 			}).catch((e: any) => {
-				os.dialog({
+				os.alert({
 					type: 'error',
 					text: e.message || e
 				});

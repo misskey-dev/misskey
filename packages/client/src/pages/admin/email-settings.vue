@@ -96,11 +96,10 @@ export default defineComponent({
 		},
 
 		async testEmail() {
-			const { canceled, result: destination } = await os.dialog({
+			const { canceled, result: destination } = await os.inputText({
 				title: this.$ts.destination,
-				input: {
-					placeholder: this.$instance.maintainerEmail
-				}
+				type: 'email',
+				placeholder: this.$instance.maintainerEmail
 			});
 			if (canceled) return;
 			os.apiWithDialog('admin/send-email', {

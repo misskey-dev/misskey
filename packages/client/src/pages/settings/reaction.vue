@@ -111,10 +111,9 @@ export default defineComponent({
 		},
 
 		async setDefault() {
-			const { canceled } = await os.dialog({
+			const { canceled } = await os.confirm({
 				type: 'warning',
 				text: this.$ts.resetAreYouSure,
-				showCancelButton: true
 			});
 			if (canceled) return;
 

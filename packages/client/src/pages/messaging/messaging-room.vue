@@ -182,7 +182,7 @@ const Component = defineComponent({
 				this.form.upload(e.dataTransfer.files[0]);
 				return;
 			} else if (e.dataTransfer.files.length > 1) {
-				os.dialog({
+				os.alert({
 					type: 'error',
 					text: this.$ts.onlyOneFileCanBeAttached
 				});

@@ -221,7 +221,7 @@ export default defineComponent({
 			}).then(i => {
 				os.success();
 			}).catch(err => {
-				os.dialog({
+				os.alert({
 					type: 'error',
 					text: err.id
 				});

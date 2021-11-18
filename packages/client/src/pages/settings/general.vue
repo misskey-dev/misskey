@@ -209,10 +209,9 @@ export default defineComponent({
 
 	methods: {
 		async reloadAsk() {
-			const { canceled } = await os.dialog({
+			const { canceled } = await os.confirm({
 				type: 'info',
 				text: this.$ts.reloadToApplySetting,
-				showCancelButton: true
 			});
 			if (canceled) return;
 

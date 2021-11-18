@@ -126,10 +126,9 @@ export default defineComponent({
 		},
 
 		async del() {
-			const { canceled } = await os.dialog({
+			const { canceled } = await os.confirm({
 				type: 'warning',
 				text: this.$ts.deleteConfirm,
-				showCancelButton: true
 			});
 			if (canceled) return;
 			await os.apiWithDialog('gallery/posts/delete', {

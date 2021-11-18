@@ -45,11 +45,17 @@ export default defineComponent({
 
 	methods: {
 		async deleteAccount() {
-			const { canceled, result: password } = await os.dialog({
+			{
+				const { canceled } = await os.confirm({
+					type: 'warning',
+					text: this.$ts.deleteAccountConfirm,
+				});
+				if (canceled) return;
+			}
+
+			const { canceled, result: password } = await os.inputText({
 				title: this.$ts.password,
-				input: {
-					type: 'password'
-				}
+				type: 'password'
 			});
 			if (canceled) return;
 
@@ -57,7 +63,7 @@ export default defineComponent({
 				password: password
 			});
 
-			await os.dialog({
+			await os.alert({
 				title: this.$ts._accountDelete.started,
 			});
 

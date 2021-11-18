@@ -57,26 +57,18 @@ export default defineComponent({
 
 	methods: {
 		async rename() {
-			const { canceled, result: title } = await os.dialog({
+			const { canceled, result: title } = await os.inputText({
 				title: 'Enter title',
-				input: {
-					type: 'text',
-					default: this.value.title
-				},
-				showCancelButton: true
+				default: this.value.title
 			});
 			if (canceled) return;
 			this.value.title = title;
 		},
 
 		async add() {
-			const { canceled, result: type } = await os.dialog({
-				type: null,
+			const { canceled, result: type } = await os.select({
 				title: this.$ts._pages.chooseBlock,
-				select: {
-					groupedItems: this.getPageBlockList()
-				},
-				showCancelButton: true
+				groupedItems: this.getPageBlockList()
 			});
 			if (canceled) return;
 

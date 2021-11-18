@@ -52,11 +52,9 @@ export default defineComponent({
 
 	methods: {
 		save() {
-			os.dialog({
+			os.inputText({
 				title: this.$ts.password,
-				input: {
-					type: 'password'
-				}
+				type: 'password'
 			}).then(({ canceled, result: password }) => {
 				if (canceled) return;
 				os.apiWithDialog('i/update-email', {

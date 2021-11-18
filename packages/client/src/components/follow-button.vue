@@ -94,10 +94,9 @@ export default defineComponent({
 
 			try {
 				if (this.isFollowing) {
-					const { canceled } = await os.dialog({
+					const { canceled } = await os.confirm({
 						type: 'warning',
 						text: this.$t('unfollowConfirm', { name: this.user.name || this.user.username }),
-						showCancelButton: true
 					});
 
 					if (canceled) return;

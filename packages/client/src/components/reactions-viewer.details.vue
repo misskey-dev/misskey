@@ -6,19 +6,11 @@
 			<div class="name">{{ reaction.replace('@.', '') }}</div>
 		</div>
 		<div class="users">
-			<template v-if="users.length <= 10">
-				<b v-for="u in users" :key="u.id" style="margin-right: 12px;">
-					<MkAvatar :user="u" style="width: 24px; height: 24px; margin-right: 2px;"/>
-					<MkUserName :user="u" :nowrap="false" style="line-height: 24px;"/>
-				</b>
-			</template>
-			<template v-if="10 < users.length">
-				<b v-for="u in users" :key="u.id" style="margin-right: 12px;">
-					<MkAvatar :user="u" style="width: 24px; height: 24px; margin-right: 2px;"/>
-					<MkUserName :user="u" :nowrap="false" style="line-height: 24px;"/>
-				</b>
-				<span slot="omitted">+{{ count - 10 }}</span>
-			</template>
+			<div class="user" v-for="u in users" :key="u.id">
+				<MkAvatar class="avatar" :user="u"/>
+				<MkUserName class="name" :user="u" :nowrap="true"/>
+			</div>
+			<div v-if="users.length > 10" class="omitted">+{{ count - 10 }}</div>
 		</div>
 	</div>
 </MkTooltip>
@@ -64,7 +56,6 @@ export default defineComponent({
 	display: flex;
 
 	> .reaction {
-		flex: 1;
 		max-width: 100px;
 		text-align: center;
 
@@ -85,7 +76,26 @@ export default defineComponent({
 		font-size: 0.9em;
 		border-left: solid 0.5px var(--divider);
 		padding-left: 10px;
-    margin-left: 10px;
+		margin-left: 10px;
+		margin-right: 14px;
+		text-align: left;
+
+		> .user {
+			line-height: 24px;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+
+			&:not(:last-child) {
+				margin-bottom: 3px;
+			}
+
+			> .avatar {
+				width: 24px;
+				height: 24px;
+				margin-right: 3px;
+			}
+		}
 	}
 }
 </style>

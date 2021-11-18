@@ -46,9 +46,8 @@ export default defineComponent({
 
 	methods: {
 		async create() {
-			const { canceled, result: name } = await os.dialog({
+			const { canceled, result: name } = await os.inputText({
 				title: this.$ts.enterListName,
-				input: true
 			});
 			if (canceled) return;
 			await os.api('users/lists/create', { name: name });

@@ -105,11 +105,9 @@ export default defineComponent({
 
 	methods: {
 		register() {
-			os.dialog({
+			os.inputText({
 				title: this.$ts.password,
-				input: {
-					type: 'password'
-				}
+				type: 'password'
 			}).then(({ canceled, result: password }) => {
 				if (canceled) return;
 				os.api('i/2fa/register', {
@@ -121,11 +119,9 @@ export default defineComponent({
 		},
 
 		unregister() {
-			os.dialog({
+			os.inputText({
 				title: this.$ts.password,
-				input: {
-					type: 'password'
-				}
+				type: 'password'
 			}).then(({ canceled, result: password }) => {
 				if (canceled) return;
 				os.api('i/2fa/unregister', {
@@ -147,7 +143,7 @@ export default defineComponent({
 				os.success();
 				this.$i.twoFactorEnabled = true;
 			}).catch(e => {
-				os.dialog({
+				os.alert({
 					type: 'error',
 					text: e
 				});
@@ -171,11 +167,9 @@ export default defineComponent({
 		},
 
 		unregisterKey(key) {
-			os.dialog({
+			os.inputText({
 				title: this.$ts.password,
-				input: {
-					type: 'password'
-				}
+				type: 'password'
 			}).then(({ canceled, result: password }) => {
 				if (canceled) return;
 				return os.api('i/2fa/remove-key', {
@@ -191,11 +185,9 @@ export default defineComponent({
 		},
 
 		addSecurityKey() {
-			os.dialog({
+			os.inputText({
 				title: this.$ts.password,
-				input: {
-					type: 'password'
-				}
+				type: 'password'
 			}).then(({ canceled, result: password }) => {
 				if (canceled) return;
 				os.api('i/2fa/register-key', {

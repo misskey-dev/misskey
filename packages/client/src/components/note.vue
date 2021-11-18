@@ -432,18 +432,18 @@ export default defineComponent({
 			os.apiWithDialog('notes/create', {
 				renoteId: this.appearNote.id
 			}, undefined, (res: any) => {
-				os.dialog({
+				os.alert({
 					type: 'success',
 					text: this.$ts.renoted,
 				});
 			}, (e: Error) => {
 				if (e.id === 'b5c90186-4ab0-49c8-9bba-a1f76c282ba4') {
-					os.dialog({
+					os.alert({
 						type: 'error',
 						text: this.$ts.cantRenote,
 					});
 				} else if (e.id === 'fd4cc33e-2a37-48dd-99cc-9b806eb2031a') {
-					os.dialog({
+					os.alert({
 						type: 'error',
 						text: this.$ts.cantReRenote,
 					});
@@ -484,18 +484,18 @@ export default defineComponent({
 			os.apiWithDialog('notes/favorites/create', {
 				noteId: this.appearNote.id
 			}, undefined, (res: any) => {
-				os.dialog({
+				os.alert({
 					type: 'success',
 					text: this.$ts.favorited,
 				});
 			}, (e: Error) => {
 				if (e.id === 'a402c12b-34dd-41d2-97d8-4d2ffd96a1a6') {
-					os.dialog({
+					os.alert({
 						type: 'error',
 						text: this.$ts.alreadyFavorited,
 					});
 				} else if (e.id === '6dd26674-e060-4816-909a-45ba3f4da458') {
-					os.dialog({
+					os.alert({
 						type: 'error',
 						text: this.$ts.cantFavorite,
 					});
@@ -504,10 +504,9 @@ export default defineComponent({
 		},
 
 		del() {
-			os.dialog({
+			os.confirm({
 				type: 'warning',
 				text: this.$ts.noteDeleteConfirm,
-				showCancelButton: true
 			}).then(({ canceled }) => {
 				if (canceled) return;
 
@@ -518,10 +517,9 @@ export default defineComponent({
 		},
 
 		delEdit() {
-			os.dialog({
+			os.confirm({
 				type: 'warning',
 				text: this.$ts.deleteAndEditConfirm,
-				showCancelButton: true
 			}).then(({ canceled }) => {
 				if (canceled) return;
 
@@ -757,7 +755,7 @@ export default defineComponent({
 				noteId: this.appearNote.id
 			}, undefined, null, e => {
 				if (e.id === '72dab508-c64d-498f-8740-a8eec1ba385a') {
-					os.dialog({
+					os.alert({
 						type: 'error',
 						text: this.$ts.pinLimitExceeded
 					});
@@ -804,9 +802,8 @@ export default defineComponent({
 		},
 
 		async promote() {
-			const { canceled, result: days } = await os.dialog({
+			const { canceled, result: days } = await os.inputNumber({
 				title: this.$ts.numberOfDays,
-				input: { type: 'number' }
 			});
 
 			if (canceled) return;

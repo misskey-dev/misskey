@@ -61,7 +61,7 @@ export default defineComponent({
 				userId: this.user.id,
 				comment: this.comment,
 			}, undefined, res => {
-				os.dialog({
+				os.alert({
 					type: 'success',
 					text: this.$ts.abuseReported
 				});

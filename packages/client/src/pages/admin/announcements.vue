@@ -76,10 +76,9 @@ export default defineComponent({
 		},
 
 		remove(announcement) {
-			os.dialog({
+			os.confirm({
 				type: 'warning',
 				text: this.$t('removeAreYouSure', { x: announcement.title }),
-				showCancelButton: true
 			}).then(({ canceled }) => {
 				if (canceled) return;
 				this.announcements = this.announcements.filter(x => x != announcement);
@@ -90,24 +89,24 @@ export default defineComponent({
 		save(announcement) {
 			if (announcement.id == null) {
 				os.api('admin/announcements/create', announcement).then(() => {
-					os.dialog({
+					os.alert({
 						type: 'success',
 						text: this.$ts.saved
 					});
 				}).catch(e => {
-					os.dialog({
+					os.alert({
 						type: 'error',
 						text: e
 					});
 				});
 			} else {
 				os.api('admin/announcements/update', announcement).then(() => {
-					os.dialog({
+					os.alert({
 						type: 'success',
 						text: this.$ts.saved
 					});
 				}).catch(e => {
-					os.dialog({
+					os.alert({
 						type: 'error',
 						text: e
 					});

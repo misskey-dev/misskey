@@ -57,11 +57,10 @@ export default defineComponent({
 
 	methods: {
 		clear() {
-			os.dialog({
+			os.confirm({
 				type: 'warning',
 				title: this.$ts.clearQueueConfirmTitle,
 				text: this.$ts.clearQueueConfirmText,
-				showCancelButton: true
 			}).then(({ canceled }) => {
 				if (canceled) return;
 

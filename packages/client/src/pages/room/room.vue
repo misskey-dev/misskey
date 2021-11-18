@@ -137,10 +137,9 @@ export default defineComponent({
 
 	beforeRouteLeave(to, from, next) {
 		if (this.changed) {
-			os.dialog({
+			os.confirm({
 				type: 'warning',
 				text: this.$ts.leaveConfirm,
-				showCancelButton: true
 			}).then(({ canceled }) => {
 				if (canceled) {
 					next(false);
@@ -167,15 +166,11 @@ export default defineComponent({
 		},
 
 		async add() {
-			const { canceled, result: id } = await os.dialog({
-				type: null,
+			const { canceled, result: id } = await os.select({
 				title: this.$ts._rooms.addFurniture,
-				select: {
-					items: storeItems.map(item => ({
-						value: item.id, text: this.$t('_rooms._furnitures.' + item.id)
-					}))
-				},
-				showCancelButton: true
+				items: storeItems.map(item => ({
+					value: item.id, text: this.$t('_rooms._furnitures.' + item.id)
+				}))
 			});
 			if (canceled) return;
 			room.addFurniture(id);
@@ -196,7 +191,7 @@ export default defineComponent({
 				this.changed = false;
 				os.success();
 			}).catch((e: any) => {
-				os.dialog({
+				os.alert({
 					type: 'error',
 					text: e.message
 				});
@@ -204,10 +199,9 @@ export default defineComponent({
 		},
 
 		clear() {
-			os.dialog({
+			os.confirm({
 				type: 'warning',
 				text: this.$ts._rooms.clearConfirm,
-				showCancelButton: true
 			}).then(({ canceled }) => {
 				if (canceled) return;
 				room.removeAllFurnitures();

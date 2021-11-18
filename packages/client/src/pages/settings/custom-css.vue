@@ -59,10 +59,9 @@ export default defineComponent({
 		async apply() {
 			localStorage.setItem('customCss', this.localCustomCss);
 
-			const { canceled } = await os.dialog({
+			const { canceled } = await os.confirm({
 				type: 'info',
 				text: this.$ts.reloadToApplySetting,
-				showCancelButton: true
 			});
 			if (canceled) return;
 

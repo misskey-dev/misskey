@@ -118,15 +118,11 @@ export default defineComponent({
 				'direct',
 			];
 
-			const { canceled, result: column } = await os.dialog({
+			const { canceled, result: column } = await os.select({
 				title: this.$ts._deck.addColumn,
-				type: null,
-				select: {
-					items: columns.map(column => ({
-						value: column, text: this.$t('_deck._columns.' + column)
-					}))
-				},
-				showCancelButton: true
+				items: columns.map(column => ({
+					value: column, text: this.$t('_deck._columns.' + column)
+				}))
 			});
 			if (canceled) return;
 

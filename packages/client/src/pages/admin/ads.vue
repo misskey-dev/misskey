@@ -101,10 +101,9 @@ export default defineComponent({
 		},
 
 		remove(ad) {
-			os.dialog({
+			os.confirm({
 				type: 'warning',
 				text: this.$t('removeAreYouSure', { x: ad.url }),
-				showCancelButton: true
 			}).then(({ canceled }) => {
 				if (canceled) return;
 				this.ads = this.ads.filter(x => x != ad);

@@ -150,10 +150,9 @@ export default defineComponent({
 		},
 
 		async deleteAntenna() {
-			const { canceled } = await os.dialog({
+			const { canceled } = await os.confirm({
 				type: 'warning',
 				text: this.$t('removeAreYouSure', { x: this.antenna.name }),
-				showCancelButton: true
 			});
 			if (canceled) return;
 

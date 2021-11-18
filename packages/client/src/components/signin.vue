@@ -150,7 +150,7 @@ export default defineComponent({
 				return this.onLogin(res);
 			}).catch(err => {
 				if (err === null) return;
-				os.dialog({
+				os.alert({
 					type: 'error',
 					text: this.$ts.signinFailed
 				});
@@ -190,7 +190,7 @@ export default defineComponent({
 		loginFailed(err) {
 			switch (err.id) {
 				case '6cc579cc-885d-43d8-95c2-b8c7fc963280': {
-					os.dialog({
+					os.alert({
 						type: 'error',
 						title: this.$ts.loginFailed,
 						text: this.$ts.noSuchUser
@@ -202,7 +202,7 @@ export default defineComponent({
 					break;
 				}
 				default: {
-					os.dialog({
+					os.alert({
 						type: 'error',
 						title: this.$ts.loginFailed,
 						text: JSON.stringify(err)
