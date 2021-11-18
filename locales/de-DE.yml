@@ -806,6 +806,7 @@ muteThread: "Thread stummschalten"
 unmuteThread: "Threadstummschaltung aufheben"
 ffVisibility: "Sichtbarkeit von Gefolgten/Followern"
 ffVisibilityDescription: "Konfiguriere wer sehen kann, wem du folgst sowie wer dir folgt."
+continueThread: "Weiteren Threadverlauf anzeigen"
 deleteAccountConfirm: "Dein Benutzerkonto wird unwiderruflich gelöscht. Trotzdem fortfahren?"
 _emailUnavailable:
   used: "Diese Email-Adresse wird bereits verwendet"
