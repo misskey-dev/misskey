@@ -1,4 +1,5 @@
 <template>
+<!-- eslint-disable vue/no-mutating-props -->
 <XContainer @remove="() => $emit('remove')" :draggable="true">
 	<template #header><i class="fas fa-align-left"></i> {{ $ts._pages.blocks.textarea }}</template>
 
@@ -9,6 +10,7 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable vue/no-mutating-props */
 import { defineComponent } from 'vue';
 import XContainer from '../page-editor.container.vue';
 import * as os from '@/os';

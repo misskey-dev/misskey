@@ -194,10 +194,6 @@ export default defineComponent({
 			}
 		},
 
-		onTransition() {
-			if (window._scroll) window._scroll();
-		},
-
 		showMenu() {
 			this.$refs.menu.show();
 		},

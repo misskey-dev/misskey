@@ -12,7 +12,7 @@
 				:initial-local-only="localOnly"
 				:reply="reply"
 				:renote="renote"
-				:visible-users="visibleUsers"
+				:initial-visible-users="visibleUsers"
 				@posted="state = 'posted'"
 				class="_panel"
 			/>

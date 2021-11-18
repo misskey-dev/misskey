@@ -58,6 +58,7 @@ export default defineComponent({
 	mounted() {
 		this.$watch('src', () => {
 			if (this.src) {
+				// eslint-disable-next-line vue/no-mutating-props
 				this.src.style.pointerEvents = 'none';
 			}
 			this.fixed = getFixedContainer(this.src) != null;
@@ -159,6 +160,7 @@ export default defineComponent({
 		},
 
 		close() {
+			// eslint-disable-next-line vue/no-mutating-props
 			if (this.src) this.src.style.pointerEvents = 'auto';
 			this.showing = false;
 			this.$emit('close');

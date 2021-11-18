@@ -5,7 +5,7 @@
 	@contextmenu.self="e => e.preventDefault()"
 	v-hotkey="keymap"
 >
-	<template v-for="(item, i) in _items">
+	<template v-for="(item, i) in items2">
 		<div v-if="item === null" class="divider"></div>
 		<span v-else-if="item.type === 'label'" class="label item">
 			<span>{{ item.text }}</span>
@@ -35,7 +35,7 @@
 			<span v-if="item.indicate" class="indicator"><i class="fas fa-circle"></i></span>
 		</button>
 	</template>
-	<span v-if="_items.length === 0" class="none item">
+	<span v-if="items2.length === 0" class="none item">
 		<span>{{ $ts.none }}</span>
 	</span>
 </div>
@@ -68,7 +68,7 @@ export default defineComponent({
 	emits: ['close'],
 	data() {
 		return {
-			_items: [],
+			items2: [],
 		};
 	},
 	computed: {
@@ -96,7 +96,7 @@ export default defineComponent({
 					}
 				}
 
-				this._items = items;
+				this.items2 = items;
 			},
 			immediate: true
 		}

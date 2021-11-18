@@ -217,6 +217,7 @@ export default defineComponent({
 			if (page.value.startsWith('registry/value/system/')) {
 				return defineAsyncComponent(() => import('./registry.value.vue'));
 			}
+			return null;
 		});
 
 		watch(component, () => {

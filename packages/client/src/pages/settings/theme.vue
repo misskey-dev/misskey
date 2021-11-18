@@ -148,7 +148,7 @@ export default defineComponent({
 		const themesCount = installedThemes.value.length;
 
 		watch(syncDeviceDarkMode, () => {
-			if (syncDeviceDarkMode) {
+			if (syncDeviceDarkMode.value) {
 				defaultStore.set('darkMode', isDeviceDarkmode());
 			}
 		});

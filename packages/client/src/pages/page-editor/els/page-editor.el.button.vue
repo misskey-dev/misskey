@@ -1,4 +1,5 @@
 <template>
+<!-- eslint-disable vue/no-mutating-props -->
 <XContainer @remove="() => $emit('remove')" :draggable="true">
 	<template #header><i class="fas fa-bolt"></i> {{ $ts._pages.blocks.button }}</template>
 
@@ -38,6 +39,7 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable vue/no-mutating-props */
 import { defineComponent } from 'vue';
 import XContainer from '../page-editor.container.vue';
 import MkSelect from '@/components/form/select.vue';

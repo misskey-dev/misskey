@@ -1,4 +1,5 @@
 <template>
+<!-- eslint-disable vue/no-mutating-props -->
 <XContainer @remove="() => $emit('remove')" :draggable="true">
 	<template #header><i class="fas fa-sticky-note"></i> {{ $ts._pages.blocks.note }}</template>
 
@@ -16,6 +17,7 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable vue/no-mutating-props */
 import { defineComponent } from 'vue';
 import XContainer from '../page-editor.container.vue';
 import MkInput from '@/components/form/input.vue';

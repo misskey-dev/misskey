@@ -12,7 +12,7 @@
 					<XMediaList :media-list="note.files"/>
 				</div>
 				<div v-if="note.poll">
-					<XPoll :note="note" :readOnly="true" />
+					<XPoll :note="note" :readOnly="true"/>
 				</div>
 			</div>
 			<XReactionsViewer :note="note" ref="reactionsViewer"/>
