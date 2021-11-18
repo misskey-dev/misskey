@@ -63,7 +63,7 @@ module.exports = {
 		'@typescript-eslint/no-var-requires': ['warn'],
 		'@typescript-eslint/no-inferrable-types': ['warn'],
 		'@typescript-eslint/no-empty-function': ['off'],
-		'@typescript-eslint/no-non-null-assertion': ['off'],
+		'@typescript-eslint/no-non-null-assertion': ['warn'],
 		'@typescript-eslint/no-misused-promises': ['error', {
 			'checksVoidReturn': false,
 		}],
