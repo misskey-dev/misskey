@@ -103,7 +103,7 @@ export const apiWithDialog = ((
 ) => {
 	const promise = api(endpoint, data, token);
 	promiseDialog(promise, null, (e) => {
-		dialog({
+		alert({
 			type: 'error',
 			text: e.message + '\n' + (e as any).id,
 		});
@@ -136,7 +136,7 @@ export function promiseDialog<T extends Promise<any>>(
 		if (onFailure) {
 			onFailure(e);
 		} else {
-			dialog({
+			alert({
 				type: 'error',
 				text: e
 			});
