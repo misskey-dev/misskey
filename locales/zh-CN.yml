@@ -806,6 +806,8 @@ muteThread: "屏蔽帖子列表"
 unmuteThread: "取消屏蔽帖子列表"
 ffVisibility: "连接的可见范围"
 ffVisibilityDescription: "您可以设置您的关注/关注者信息的公开范围"
+continueThread: "查看更多帖子"
+deleteAccountConfirm: "将要删除账户。是否确认？"
 _emailUnavailable:
   used: "已经被使用过"
   format: "无效的格式"
