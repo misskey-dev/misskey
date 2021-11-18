@@ -154,7 +154,7 @@ export default defineComponent({
 			}
 			//#endregion
 		} catch (e) {
-			os.dialog({
+			os.alert({
 				type: 'error',
 				title: e.message,
 				text: e.name

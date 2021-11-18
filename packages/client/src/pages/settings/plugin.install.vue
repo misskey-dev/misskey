@@ -76,7 +76,7 @@ export default defineComponent({
 			try {
 				ast = parse(this.code);
 			} catch (e) {
-				os.dialog({
+				os.alert({
 					type: 'error',
 					text: 'Syntax error :('
 				});
@@ -84,7 +84,7 @@ export default defineComponent({
 			}
 			const meta = AiScript.collectMetadata(ast);
 			if (meta == null) {
-				os.dialog({
+				os.alert({
 					type: 'error',
 					text: 'No metadata found :('
 				});
@@ -92,7 +92,7 @@ export default defineComponent({
 			}
 			const data = meta.get(null);
 			if (data == null) {
-				os.dialog({
+				os.alert({
 					type: 'error',
 					text: 'No metadata found :('
 				});
@@ -100,7 +100,7 @@ export default defineComponent({
 			}
 			const { name, version, author, description, permissions, config } = data;
 			if (name == null || version == null || author == null) {
-				os.dialog({
+				os.alert({
 					type: 'error',
 					text: 'Required property not found :('
 				});

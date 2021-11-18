@@ -554,10 +554,9 @@ export default defineComponent({
 			if (!this.renote && !this.quoteId && paste.startsWith(url + '/notes/')) {
 				e.preventDefault();
 
-				os.dialog({
+				os.confirm({
 					type: 'info',
 					text: this.$ts.quoteQuestion,
-					showCancelButton: true
 				}).then(({ canceled }) => {
 					if (canceled) {
 						insertTextAtCursor(this.$refs.text, paste);
@@ -676,7 +675,7 @@ export default defineComponent({
 				});
 			}).catch(err => {
 				this.posting = false;
-				os.dialog({
+				os.alert({
 					type: 'error',
 					text: err.message + '\n' + (err as any).id,
 				});

@@ -52,16 +52,12 @@ export default defineComponent({
 	methods: {
 		async setList() {
 			const lists = await os.api('users/lists/list');
-			const { canceled, result: list } = await os.dialog({
+			const { canceled, result: list } = await os.select({
 				title: this.$ts.selectList,
-				type: null,
-				select: {
-					items: lists.map(x => ({
-						value: x, text: x.name
-					})),
-					default: this.column.listId
-				},
-				showCancelButton: true
+				items: lists.map(x => ({
+					value: x, text: x.name
+				})),
+				default: this.column.listId
 			});
 			if (canceled) return;
 			updateColumn(this.column.id, {

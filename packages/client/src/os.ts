@@ -214,13 +214,141 @@ export function modalPageWindow(path: string) {
 	}, {}, 'closed');
 }
 
-export function dialog(props: {
-	type: 'error' | 'info' | 'success' | 'warning' | 'waiting';
+export function alert(props: {
+	type?: 'error' | 'info' | 'success' | 'warning' | 'waiting' | 'question';
 	title?: string | null;
 	text?: string | null;
-}) {
+}): Promise<void> {
 	return new Promise((resolve, reject) => {
 		popup(import('@/components/dialog.vue'), props, {
+			done: result => {
+				resolve();
+			},
+		}, 'closed');
+	});
+}
+
+export function confirm(props: {
+	type: 'error' | 'info' | 'success' | 'warning' | 'waiting' | 'question';
+	title?: string | null;
+	text?: string | null;
+}): Promise<{ canceled: boolean }> {
+	return new Promise((resolve, reject) => {
+		popup(import('@/components/dialog.vue'), {
+			...props,
+			showCancelButton: true,
+		}, {
+			done: result => {
+				resolve(result ? result : { canceled: true });
+			},
+		}, 'closed');
+	});
+}
+
+export function inputText(props: {
+	type?: 'text' | 'email' | 'password' | 'url';
+	title?: string | null;
+	text?: string | null;
+	placeholder?: string | null;
+	default?: string | null;
+}): Promise<{ canceled: true; result: undefined; } | {
+	canceled: false; result: string;
+}> {
+	return new Promise((resolve, reject) => {
+		popup(import('@/components/dialog.vue'), {
+			title: props.title,
+			text: props.text,
+			input: {
+				type: props.type,
+				placeholder: props.placeholder,
+				default: props.default,
+			}
+		}, {
+			done: result => {
+				resolve(result ? result : { canceled: true });
+			},
+		}, 'closed');
+	});
+}
+
+export function inputNumber(props: {
+	title?: string | null;
+	text?: string | null;
+	placeholder?: string | null;
+	default?: number | null;
+}): Promise<{ canceled: true; result: undefined; } | {
+	canceled: false; result: number;
+}> {
+	return new Promise((resolve, reject) => {
+		popup(import('@/components/dialog.vue'), {
+			title: props.title,
+			text: props.text,
+			input: {
+				type: 'number',
+				placeholder: props.placeholder,
+				default: props.default,
+			}
+		}, {
+			done: result => {
+				resolve(result ? result : { canceled: true });
+			},
+		}, 'closed');
+	});
+}
+
+export function inputDate(props: {
+	title?: string | null;
+	text?: string | null;
+	placeholder?: string | null;
+	default?: Date | null;
+}): Promise<{ canceled: true; result: undefined; } | {
+	canceled: false; result: Date;
+}> {
+	return new Promise((resolve, reject) => {
+		popup(import('@/components/dialog.vue'), {
+			title: props.title,
+			text: props.text,
+			input: {
+				type: 'date',
+				placeholder: props.placeholder,
+				default: props.default,
+			}
+		}, {
+			done: result => {
+				resolve(result ? { result: new Date(result.result), canceled: false } : { canceled: true });
+			},
+		}, 'closed');
+	});
+}
+
+export function select(props: {
+	title?: string | null;
+	text?: string | null;
+	default?: string | null;
+	items?: {
+		value: string;
+		text: string;
+	}[];
+	groupedItems?: {
+		label: string;
+		items: {
+			value: string;
+			text: string;
+		}[];
+	}[];
+}): Promise<{ canceled: true; result: undefined; } | {
+	canceled: false; result: string;
+}> {
+	return new Promise((resolve, reject) => {
+		popup(import('@/components/dialog.vue'), {
+			title: props.title,
+			text: props.text,
+			select: {
+				items: props.items,
+				groupedItems: props.groupedItems,
+				default: props.default,
+			}
+		}, {
 			done: result => {
 				resolve(result ? result : { canceled: true });
 			},

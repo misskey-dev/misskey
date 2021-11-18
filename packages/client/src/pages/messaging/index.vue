@@ -140,22 +140,18 @@ export default defineComponent({
 			const groups1 = await os.api('users/groups/owned');
 			const groups2 = await os.api('users/groups/joined');
 			if (groups1.length === 0 && groups2.length === 0) {
-				os.dialog({
+				os.alert({
 					type: 'warning',
 					title: this.$ts.youHaveNoGroups,
 					text: this.$ts.joinOrCreateGroup,
 				});
 				return;
 			}
-			const { canceled, result: group } = await os.dialog({
-				type: null,
+			const { canceled, result: group } = await os.select({
 				title: this.$ts.group,
-				select: {
-					items: groups1.concat(groups2).map(group => ({
-						value: group, text: group.name
-					}))
-				},
-				showCancelButton: true
+				items: groups1.concat(groups2).map(group => ({
+					value: group, text: group.name
+				}))
 			});
 			if (canceled) return;
 			this.$router.push(`/my/messaging/group/${group.id}`);

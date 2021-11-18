@@ -150,15 +150,14 @@ export default defineComponent({
 		},
 
 		async addUser() {
-			const { canceled: canceled1, result: username } = await os.dialog({
+			const { canceled: canceled1, result: username } = await os.inputText({
 				title: this.$ts.username,
-				input: true
 			});
 			if (canceled1) return;
 
-			const { canceled: canceled2, result: password } = await os.dialog({
+			const { canceled: canceled2, result: password } = await os.inputText({
 				title: this.$ts.password,
-				input: { type: 'password' }
+				type: 'password'
 			});
 			if (canceled2) return;
 

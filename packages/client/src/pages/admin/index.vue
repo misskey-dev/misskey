@@ -281,12 +281,12 @@ export default defineComponent({
 
 		const invite = () => {
 			os.api('admin/invite').then(x => {
-				os.dialog({
+				os.alert({
 					type: 'info',
 					text: x.code
 				});
 			}).catch(e => {
-				os.dialog({
+				os.alert({
 					type: 'error',
 					text: e
 				});

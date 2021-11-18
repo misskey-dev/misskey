@@ -73,11 +73,9 @@ export default defineComponent({
 			});
 		},
 		async rename(file) {
-			const { canceled, result } = await os.dialog({
+			const { canceled, result } = await os.inputText({
 				title: this.$ts.enterFileName,
-				input: {
-					default: file.name
-				},
+				default: file.name,
 				allowEmpty: false
 			});
 			if (canceled) return;

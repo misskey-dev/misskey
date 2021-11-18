@@ -138,13 +138,11 @@ export default defineComponent({
 		},
 
 		rename() {
-			os.dialog({
+			os.inputText({
 				title: this.$ts.renameFile,
-				input: {
-					placeholder: this.$ts.inputNewFileName,
-					default: this.file.name,
-					allowEmpty: false
-				}
+				placeholder: this.$ts.inputNewFileName,
+				default: this.file.name,
+				allowEmpty: false
 			}).then(({ canceled, result: name }) => {
 				if (canceled) return;
 				os.api('drive/files/update', {
@@ -191,10 +189,9 @@ export default defineComponent({
 		},
 
 		async deleteFile() {
-			const { canceled } = await os.dialog({
+			const { canceled } = await os.confirm({
 				type: 'warning',
 				text: this.$t('driveFileDeleteConfirm', { name: this.file.name }),
-				showCancelButton: true
 			});
 			if (canceled) return;
 

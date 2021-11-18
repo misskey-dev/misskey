@@ -274,13 +274,13 @@ export default defineComponent({
 				}).catch(err => {
 					switch (err) {
 						case 'detected-circular-definition':
-							os.dialog({
+							os.alert({
 								title: this.$ts.unableToProcess,
 								text: this.$ts.circularReferenceFolder
 							});
 							break;
 						default:
-							os.dialog({
+							os.alert({
 								type: 'error',
 								text: this.$ts.somethingHappened
 							});
@@ -295,11 +295,10 @@ export default defineComponent({
 		},
 
 		urlUpload() {
-			os.dialog({
+			os.inputText({
 				title: this.$ts.uploadFromUrl,
-				input: {
-					placeholder: this.$ts.uploadFromUrlDescription
-				}
+				type: 'url',
+				placeholder: this.$ts.uploadFromUrlDescription
 			}).then(({ canceled, result: url }) => {
 				if (canceled) return;
 				os.api('drive/files/upload-from-url', {
@@ -307,7 +306,7 @@ export default defineComponent({
 					folderId: this.folder ? this.folder.id : undefined
 				});
 
-				os.dialog({
+				os.alert({
 					title: this.$ts.uploadFromUrlRequested,
 					text: this.$ts.uploadFromUrlMayTakeTime
 				});
@@ -315,11 +314,9 @@ export default defineComponent({
 		},
 
 		createFolder() {
-			os.dialog({
+			os.inputText({
 				title: this.$ts.createFolder,
-				input: {
-					placeholder: this.$ts.folderName
-				}
+				placeholder: this.$ts.folderName
 			}).then(({ canceled, result: name }) => {
 				if (canceled) return;
 				os.api('drive/folders/create', {
@@ -332,12 +329,10 @@ export default defineComponent({
 		},
 
 		renameFolder(folder) {
-			os.dialog({
+			os.inputText({
 				title: this.$ts.renameFolder,
-				input: {
-					placeholder: this.$ts.inputNewFolderName,
-					default: folder.name
-				}
+				placeholder: this.$ts.inputNewFolderName,
+				default: folder.name
 			}).then(({ canceled, result: name }) => {
 				if (canceled) return;
 				os.api('drive/folders/update', {
@@ -359,14 +354,14 @@ export default defineComponent({
 			}).catch(err => {
 				switch(err.id) {
 					case 'b0fc8a17-963c-405d-bfbc-859a487295e1':
-						os.dialog({
+						os.alert({
 							type: 'error',
 							title: this.$ts.unableToDelete,
 							text: this.$ts.hasChildFilesOrFolders
 						});
 						break;
 					default:
-						os.dialog({
+						os.alert({
 							type: 'error',
 							text: this.$ts.unableToDelete
 						});

@@ -155,9 +155,8 @@ export default defineComponent({
 		},
 
 		async inChannelSearch() {
-			const { canceled, result: query } = await os.dialog({
+			const { canceled, result: query } = await os.inputText({
 				title: this.$ts.inChannelSearch,
-				input: true
 			});
 			if (canceled || query == null || query === '') return;
 			router.push(`/search?q=${encodeURIComponent(query)}&channel=${this.channelId}`);

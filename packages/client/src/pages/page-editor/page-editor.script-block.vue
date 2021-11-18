@@ -212,13 +212,9 @@ export default defineComponent({
 
 	methods: {
 		async changeType() {
-			const { canceled, result: type } = await os.dialog({
-				type: null,
+			const { canceled, result: type } = await os.select({
 				title: this.$ts._pages.selectType,
-				select: {
-					groupedItems: this.getScriptBlockList(this.getExpectedType ? this.getExpectedType() : null)
-				},
-				showCancelButton: true
+				groupedItems: this.getScriptBlockList(this.getExpectedType ? this.getExpectedType() : null)
 			});
 			if (canceled) return;
 			this.modelValue.type = type;

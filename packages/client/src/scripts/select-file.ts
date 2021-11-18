@@ -14,7 +14,7 @@ export function selectFile(src: any, label: string | null, multiple = false) {
 				Promise.all(promises).then(driveFiles => {
 					res(multiple ? driveFiles : driveFiles[0]);
 				}).catch(e => {
-					os.dialog({
+					os.alert({
 						type: 'error',
 						text: e
 					});
@@ -38,11 +38,10 @@ export function selectFile(src: any, label: string | null, multiple = false) {
 		};
 
 		const chooseFileFromUrl = () => {
-			os.dialog({
+			os.inputText({
 				title: i18n.locale.uploadFromUrl,
-				input: {
-					placeholder: i18n.locale.uploadFromUrlDescription
-				}
+				type: 'url',
+				placeholder: i18n.locale.uploadFromUrlDescription
 			}).then(({ canceled, result: url }) => {
 				if (canceled) return;
 
@@ -62,7 +61,7 @@ export function selectFile(src: any, label: string | null, multiple = false) {
 					marker
 				});
 
-				os.dialog({
+				os.alert({
 					title: i18n.locale.uploadFromUrlRequested,
 					text: i18n.locale.uploadFromUrlMayTakeTime
 				});

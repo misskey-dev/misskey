@@ -88,9 +88,8 @@ export default defineComponent({
 
 	methods: {
 		async create() {
-			const { canceled, result: name } = await os.dialog({
+			const { canceled, result: name } = await os.inputText({
 				title: this.$ts.groupName,
-				input: true
 			});
 			if (canceled) return;
 			await os.api('users/groups/create', { name: name });

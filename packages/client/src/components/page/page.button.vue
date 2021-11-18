@@ -29,7 +29,7 @@ export default defineComponent({
 		click() {
 			if (this.block.action === 'dialog') {
 				this.hpml.eval();
-				os.dialog({
+				os.alert({
 					text: this.hpml.interpolate(this.block.content)
 				});
 			} else if (this.block.action === 'resetRandom') {
@@ -44,7 +44,7 @@ export default defineComponent({
 					} : {})
 				});
 
-				os.dialog({
+				os.alert({
 					type: 'success',
 					text: this.hpml.interpolate(this.block.message)
 				});

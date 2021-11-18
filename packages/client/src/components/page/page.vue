@@ -40,7 +40,7 @@ export default defineComponent({
 						ast = parse(props.page.script);
 					} catch (e) {
 						console.error(e);
-						/*os.dialog({
+						/*os.alert({
 							type: 'error',
 							text: 'Syntax error :('
 						});*/
@@ -50,7 +50,7 @@ export default defineComponent({
 						hpml.eval();
 					}).catch(e => {
 						console.error(e);
-						/*os.dialog({
+						/*os.alert({
 							type: 'error',
 							text: e
 						});*/

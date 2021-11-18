@@ -89,10 +89,9 @@ export default defineComponent({
 		},
 
 		async del() {
-			const { canceled } = await os.dialog({
+			const { canceled } = await os.confirm({
 				type: 'warning',
 				text: this.$t('removeAreYouSure', { x: this.emoji.name }),
-				showCancelButton: true
 			});
 			if (canceled) return;
 

@@ -76,17 +76,13 @@ export default defineComponent({
 	methods: {
 		async addItem() {
 			const menu = Object.keys(this.menuDef).filter(k => !this.$store.state.menu.includes(k));
-			const { canceled, result: item } = await os.dialog({
-				type: null,
+			const { canceled, result: item } = await os.select({
 				title: this.$ts.addItem,
-				select: {
-					items: [...menu.map(k => ({
-						value: k, text: this.$ts[this.menuDef[k].title]
-					})), ...[{
-						value: '-', text: this.$ts.divider
-					}]]
-				},
-				showCancelButton: true
+				items: [...menu.map(k => ({
+					value: k, text: this.$ts[this.menuDef[k].title]
+				})), ...[{
+					value: '-', text: this.$ts.divider
+				}]]
 			});
 			if (canceled) return;
 			this.items = [...this.splited, item].join('\n');
@@ -103,7 +99,7 @@ export default defineComponent({
 		},
 
 		async reloadAsk() {
-			const { canceled } = await os.dialog({
+			const { canceled } = await os.confirm({
 				type: 'info',
 				text: this.$ts.reloadToApplySetting,
 				showCancelButton: true

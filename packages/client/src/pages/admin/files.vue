@@ -124,10 +124,9 @@ export default defineComponent({
 
 	methods: {
 		clear() {
-			os.dialog({
+			os.confirm({
 				type: 'warning',
 				text: this.$ts.clearCachedFilesConfirm,
-				showCancelButton: true
 			}).then(({ canceled }) => {
 				if (canceled) return;
 
@@ -146,7 +145,7 @@ export default defineComponent({
 				this.show(file);
 			}).catch(e => {
 				if (e.code === 'NO_SUCH_FILE') {
-					os.dialog({
+					os.alert({
 						type: 'error',
 						text: this.$ts.notFound
 					});

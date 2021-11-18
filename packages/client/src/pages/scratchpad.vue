@@ -74,9 +74,8 @@ export default defineComponent({
 			}), {
 				in: (q) => {
 					return new Promise(ok => {
-						os.dialog({
+						os.inputText({
 							title: q,
-							input: {}
 						}).then(({ canceled, result: a }) => {
 							ok(a);
 						});
@@ -105,7 +104,7 @@ export default defineComponent({
 			try {
 				ast = parse(this.code);
 			} catch (e) {
-				os.dialog({
+				os.alert({
 					type: 'error',
 					text: 'Syntax error :('
 				});
@@ -114,7 +113,7 @@ export default defineComponent({
 			try {
 				await aiscript.exec(ast);
 			} catch (e) {
-				os.dialog({
+				os.alert({
 					type: 'error',
 					text: e
 				});

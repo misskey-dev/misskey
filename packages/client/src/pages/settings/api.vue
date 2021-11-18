@@ -52,7 +52,7 @@ export default defineComponent({
 						permission: permissions,
 					});
 
-					os.dialog({
+					os.alert({
 						type: 'success',
 						title: this.$ts.token,
 						text: token

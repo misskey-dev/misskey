@@ -100,11 +100,9 @@ export default defineComponent({
 		},
 
 		async renameList() {
-			const { canceled, result: name } = await os.dialog({
+			const { canceled, result: name } = await os.inputText({
 				title: this.$ts.enterListName,
-				input: {
-					default: this.list.name
-				}
+				default: this.list.name
 			});
 			if (canceled) return;
 
@@ -117,10 +115,9 @@ export default defineComponent({
 		},
 
 		async deleteList() {
-			const { canceled } = await os.dialog({
+			const { canceled } = await os.confirm({
 				type: 'warning',
 				text: this.$t('removeAreYouSure', { x: this.list.name }),
-				showCancelButton: true
 			});
 			if (canceled) return;
 

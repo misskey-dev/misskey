@@ -110,17 +110,16 @@ export default defineComponent({
 			try {
 				JSON5.parse(this.valueForEditor);
 			} catch (e) {
-				os.dialog({
+				os.alert({
 					type: 'error',
 					text: this.$ts.invalidValue
 				});
 				return;
 			}
 
-			os.dialog({
+			os.confirm({
 				type: 'warning',
 				text: this.$ts.saveConfirm,
-				showCancelButton: true
 			}).then(({ canceled }) => {
 				if (canceled) return;
 				os.apiWithDialog('i/registry/set', {
@@ -132,10 +131,9 @@ export default defineComponent({
 		},
 
 		del() {
-			os.dialog({
+			os.confirm({
 				type: 'warning',
 				text: this.$ts.deleteConfirm,
-				showCancelButton: true
 			}).then(({ canceled }) => {
 				if (canceled) return;
 				os.apiWithDialog('i/registry/remove', {
