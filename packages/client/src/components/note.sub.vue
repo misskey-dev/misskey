@@ -15,8 +15,10 @@
 			</div>
 		</div>
 	</div>
-	<XSub v-if="!truncate || depth < 20" v-for="reply in replies" :key="reply.id" :note="reply" class="reply" :detail="true" :depth="depth + 1" :truncate="truncate"/>
-	<div v-else class="wrpstxzv children reply">
+	<template v-if="depth < 5">
+		<XSub v-for="reply in replies" :key="reply.id" :note="reply" class="reply" :detail="true" :depth="depth + 1"/>
+	</template>
+	<div v-else class="more">
 		<MkA class="text _link" :to="notePage(note)">{{ $ts.continueThread }} <i class="fas fa-angle-double-right"></i></MkA>
 	</div>
 </div>
@@ -51,16 +53,10 @@ export default defineComponent({
 		},
 		// how many notes are in between this one and the note being viewed in detail
 		depth: {
-			type: Number
+			type: Number,
 			required: false,
 			default: 1
 		},
-		// whether to stop showing replies at some depth
-		truncate: {
-			type: Boolean,
-			required: false,
-			default: false
-		}
 	},
 
 	data() {
@@ -148,9 +144,13 @@ export default defineComponent({
 		}
 	}
 
-	> .reply {
+	> .reply, > .more {
 		border-left: solid 0.5px var(--divider);
 		margin-top: 10px;
+	}
+
+	> .more {
+		padding: 10px 0 0 16px;
 	}
 }
 </style>
