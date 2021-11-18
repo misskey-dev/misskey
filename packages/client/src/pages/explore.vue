@@ -68,9 +68,9 @@
 						<template #label>{{ $ts.searchUser }}</template>
 					</MkInput>
 					<MkRadios v-model="searchOrigin">
+						<option value="combined">{{ $ts.all }}</option>
 						<option value="local">{{ $ts.local }}</option>
 						<option value="remote">{{ $ts.remote }}</option>
-						<option value="both">{{ $ts.all }}</option>
 					</MkRadios>
 				</div>
 
