@@ -111,7 +111,7 @@ export default defineComponent({
 			moderator: false,
 			silenced: false,
 			suspended: false,
-		}
+		};
 	},
 
 	computed: {
