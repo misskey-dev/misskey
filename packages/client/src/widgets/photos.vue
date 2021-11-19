@@ -36,10 +36,10 @@ const widget = define({
 });
 
 export default defineComponent({
-	extends: widget,
 	components: {
 		MkContainer,
 	},
+	extends: widget,
 	data() {
 		return {
 			images: [],

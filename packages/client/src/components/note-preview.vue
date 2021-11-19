@@ -1,5 +1,5 @@
 <template>
-<div class="fefdfafb" v-size="{ min: [350, 500] }">
+<div v-size="{ min: [350, 500] }" class="fefdfafb">
 	<MkAvatar class="avatar" :user="$i"/>
 	<div class="main">
 		<div class="header">

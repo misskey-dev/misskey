@@ -44,6 +44,11 @@ export default defineComponent({
 		},
 	},
 
+	data() {
+		return {
+		};
+	},
+
 	computed: {
 		bannerStyle() {
 			if (this.channel.bannerUrl) {
@@ -52,11 +57,6 @@ export default defineComponent({
 				return { backgroundColor: '#4c5e6d' };
 			}
 		}
-	},
-
-	data() {
-		return {
-		};
 	},
 });
 </script>

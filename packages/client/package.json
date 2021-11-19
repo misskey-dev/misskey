@@ -2,7 +2,8 @@
 	"private": true,
 	"scripts": {
 		"watch": "webpack --watch",
-		"build": "webpack"
+		"build": "webpack",
+		"lint": "eslint --quiet src/**/*.{ts,vue}"
 	},
 	"resolutions": {
 		"chokidar": "^3.3.1",
@@ -72,7 +73,7 @@
 		"dateformat": "4.5.1",
 		"escape-regexp": "0.0.1",
 		"eslint": "8.2.0",
-		"eslint-plugin-vue": "8.0.3",
+		"eslint-plugin-vue": "8.1.1",
 		"eventemitter3": "4.0.7",
 		"feed": "4.2.2",
 		"glob": "7.2.0",
@@ -152,8 +153,10 @@
 	"devDependencies": {
 		"@redocly/openapi-core": "1.0.0-beta.54",
 		"@types/fluent-ffmpeg": "2.1.17",
+		"@typescript-eslint/eslint-plugin": "5.4.0",
 		"cross-env": "7.0.3",
 		"cypress": "8.5.0",
+		"eslint-plugin-import": "2.25.3",
 		"start-server-and-test": "1.14.0"
 	}
 }

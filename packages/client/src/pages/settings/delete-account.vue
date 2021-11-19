@@ -2,8 +2,8 @@
 <FormBase>
 	<FormInfo warn>{{ $ts._accountDelete.mayTakeTime }}</FormInfo>
 	<FormInfo>{{ $ts._accountDelete.sendEmail }}</FormInfo>
-	<FormButton @click="deleteAccount" danger v-if="!$i.isDeleted">{{ $ts._accountDelete.requestAccountDelete }}</FormButton>
-	<FormButton disabled v-else>{{ $ts._accountDelete.inProgress }}</FormButton>
+	<FormButton v-if="!$i.isDeleted" danger @click="deleteAccount">{{ $ts._accountDelete.requestAccountDelete }}</FormButton>
+	<FormButton v-else disabled>{{ $ts._accountDelete.inProgress }}</FormButton>
 </FormBase>
 </template>
 
@@ -46,19 +46,16 @@ export default defineComponent({
 	methods: {
 		async deleteAccount() {
 			{
-				const { canceled } = await os.dialog({
+				const { canceled } = await os.confirm({
 					type: 'warning',
 					text: this.$ts.deleteAccountConfirm,
-					showCancelButton: true
 				});
 				if (canceled) return;
 			}
 
-			const { canceled, result: password } = await os.dialog({
+			const { canceled, result: password } = await os.inputText({
 				title: this.$ts.password,
-				input: {
-					type: 'password'
-				}
+				type: 'password'
 			});
 			if (canceled) return;
 
@@ -66,7 +63,7 @@ export default defineComponent({
 				password: password
 			});
 
-			await os.dialog({
+			await os.alert({
 				title: this.$ts._accountDelete.started,
 			});
 

@@ -1,11 +1,11 @@
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
-import { dialog } from '@/os';
+import { alert } from '@/os';
 
 export function pleaseLogin() {
 	if ($i) return;
 
-	dialog({
+	alert({
 		title: i18n.locale.signinRequired,
 		text: null
 	});

@@ -4,8 +4,8 @@ import { popup } from '@/os';
 class ReactionPicker {
 	private src: Ref<HTMLElement | null> = ref(null);
 	private manualShowing = ref(false);
-	private onChosen?: Function;
-	private onClosed?: Function;
+	private onChosen?: (reaction: string) => void;
+	private onClosed?: () => void;
 
 	constructor() {
 		// nop
@@ -30,7 +30,7 @@ class ReactionPicker {
 		});
 	}
 
-	public show(src: HTMLElement, onChosen: Function, onClosed: Function) {
+	public show(src: HTMLElement, onChosen: ReactionPicker['onChosen'], onClosed: ReactionPicker['onClosed']) {
 		this.src.value = src;
 		this.manualShowing.value = true;
 		this.onChosen = onChosen;

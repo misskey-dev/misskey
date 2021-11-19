@@ -1,7 +1,7 @@
 <template>
 <div>
-	<div class="_section" style="padding: 0;" v-if="$i">
-		<MkTab class="_content" v-model="tab">
+	<div v-if="$i" class="_section" style="padding: 0;">
+		<MkTab v-model="tab" class="_content">
 			<option value="featured"><i class="fas fa-fire-alt"></i> {{ $ts._channel.featured }}</option>
 			<option value="following"><i class="fas fa-heart"></i> {{ $ts._channel.following }}</option>
 			<option value="owned"><i class="fas fa-edit"></i> {{ $ts._channel.owned }}</option>
@@ -9,22 +9,22 @@
 	</div>
 
 	<div class="_section">
-		<div class="_content grwlizim featured" v-if="tab === 'featured'">
-			<MkPagination :pagination="featuredPagination" #default="{items}">
-				<MkChannelPreview v-for="channel in items" class="_gap" :channel="channel" :key="channel.id"/>
+		<div v-if="tab === 'featured'" class="_content grwlizim featured">
+			<MkPagination #default="{items}" :pagination="featuredPagination">
+				<MkChannelPreview v-for="channel in items" :key="channel.id" class="_gap" :channel="channel"/>
 			</MkPagination>
 		</div>
 
-		<div class="_content grwlizim following" v-if="tab === 'following'">
-			<MkPagination :pagination="followingPagination" #default="{items}">
-				<MkChannelPreview v-for="channel in items" class="_gap" :channel="channel" :key="channel.id"/>
+		<div v-if="tab === 'following'" class="_content grwlizim following">
+			<MkPagination #default="{items}" :pagination="followingPagination">
+				<MkChannelPreview v-for="channel in items" :key="channel.id" class="_gap" :channel="channel"/>
 			</MkPagination>
 		</div>
 
-		<div class="_content grwlizim owned" v-if="tab === 'owned'">
+		<div v-if="tab === 'owned'" class="_content grwlizim owned">
 			<MkButton class="new" @click="create()"><i class="fas fa-plus"></i></MkButton>
-			<MkPagination :pagination="ownedPagination" #default="{items}">
-				<MkChannelPreview v-for="channel in items" class="_gap" :channel="channel" :key="channel.id"/>
+			<MkPagination #default="{items}" :pagination="ownedPagination">
+				<MkChannelPreview v-for="channel in items" :key="channel.id" class="_gap" :channel="channel"/>
 			</MkPagination>
 		</div>
 	</div>

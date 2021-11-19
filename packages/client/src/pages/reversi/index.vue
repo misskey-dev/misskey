@@ -1,16 +1,16 @@
 <template>
-<div class="bgvwxkhb" v-if="!matching">
+<div v-if="!matching" class="bgvwxkhb">
 	<h1>Misskey {{ $ts._reversi.reversi }}</h1>
 
 	<div class="play">
-		<MkButton primary round @click="match" style="margin: var(--margin) auto 0 auto;">{{ $ts.invite }}</MkButton>
+		<MkButton primary round style="margin: var(--margin) auto 0 auto;" @click="match">{{ $ts.invite }}</MkButton>
 	</div>
 
 	<div class="_section">
 		<MkFolder v-if="invitations.length > 0">
 			<template #header>{{ $ts.invitations }}</template>
 			<div class="nfcacttm">
-				<button class="invitation _panel _button" v-for="invitation in invitations" tabindex="-1" @click="accept(invitation)">
+				<button v-for="invitation in invitations" class="invitation _panel _button" tabindex="-1" @click="accept(invitation)">
 					<MkAvatar class="avatar" :user="invitation.parent" :show-indicator="true"/>
 					<span class="name"><b><MkUserName :user="invitation.parent"/></b></span>
 					<span class="username">@{{ invitation.parent.username }}</span>
@@ -22,7 +22,7 @@
 		<MkFolder v-if="myGames.length > 0">
 			<template #header>{{ $ts._reversi.myGames }}</template>
 			<div class="knextgwz">
-				<MkA class="game _panel" v-for="g in myGames" tabindex="-1" :to="`/games/reversi/${g.id}`" :key="g.id">
+				<MkA v-for="g in myGames" :key="g.id" class="game _panel" tabindex="-1" :to="`/games/reversi/${g.id}`">
 					<div class="players">
 						<MkAvatar class="avatar" :user="g.user1"/><b><MkUserName :user="g.user1"/></b> vs <b><MkUserName :user="g.user2"/></b><MkAvatar class="avatar" :user="g.user2"/>
 					</div>
@@ -34,7 +34,7 @@
 		<MkFolder v-if="games.length > 0">
 			<template #header>{{ $ts._reversi.allGames }}</template>
 			<div class="knextgwz">
-				<MkA class="game _panel" v-for="g in games" tabindex="-1" :to="`/games/reversi/${g.id}`" :key="g.id">
+				<MkA v-for="g in games" :key="g.id" class="game _panel" tabindex="-1" :to="`/games/reversi/${g.id}`">
 					<div class="players">
 						<MkAvatar class="avatar" :user="g.user1"/><b><MkUserName :user="g.user1"/></b> vs <b><MkUserName :user="g.user2"/></b><MkAvatar class="avatar" :user="g.user2"/>
 					</div>
@@ -44,7 +44,7 @@
 		</MkFolder>
 	</div>
 </div>
-<div class="sazhgisb" v-else>
+<div v-else class="sazhgisb">
 	<h1>
 		<I18n :src="$ts.waitingFor" tag="span">
 			<template #x>

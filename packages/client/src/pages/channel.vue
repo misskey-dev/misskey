@@ -6,7 +6,7 @@
 			<template v-if="showBanner"><i class="fas fa-angle-up"></i></template>
 			<template v-else><i class="fas fa-angle-down"></i></template>
 		</button>
-		<div class="hideOverlay" v-if="!showBanner">
+		<div v-if="!showBanner" class="hideOverlay">
 		</div>
 		<div :style="{ backgroundImage: channel.bannerUrl ? `url(${channel.bannerUrl})` : null }" class="banner">
 			<div class="status">
@@ -15,14 +15,14 @@
 			</div>
 			<div class="fade"></div>
 		</div>
-		<div class="description" v-if="channel.description">
+		<div v-if="channel.description" class="description">
 			<Mfm :text="channel.description" :is-note="false" :i="$i"/>
 		</div>
 	</div>
 
-	<XPostForm :channel="channel" class="post-form _content _panel _gap" fixed v-if="$i"/>
+	<XPostForm v-if="$i" :channel="channel" class="post-form _content _panel _gap" fixed/>
 
-	<XTimeline class="_content _gap" src="channel" :key="channelId" :channel="channelId" @before="before" @after="after"/>
+	<XTimeline :key="channelId" class="_content _gap" src="channel" :channel="channelId" @before="before" @after="after"/>
 </div>
 </template>
 

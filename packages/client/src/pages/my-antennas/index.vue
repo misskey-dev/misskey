@@ -3,8 +3,8 @@
 	<MkButton :link="true" to="/my/antennas/create" primary class="add"><i class="fas fa-plus"></i> {{ $ts.add }}</MkButton>
 
 	<div class="_content">
-		<MkPagination :pagination="pagination" #default="{items}" ref="list">
-			<MkA class="ljoevbzj" v-for="antenna in items" :key="antenna.id" :to="`/my/antennas/${antenna.id}`">
+		<MkPagination #default="{items}" ref="list" :pagination="pagination">
+			<MkA v-for="antenna in items" :key="antenna.id" class="ljoevbzj" :to="`/my/antennas/${antenna.id}`">
 				<div class="name">{{ antenna.name }}</div>
 			</MkA>
 		</MkPagination>

@@ -1,15 +1,15 @@
 <template>
 <button
+	v-if="count > 0"
+	ref="buttonRef"
+	v-particle="canToggle"
 	class="hkzvhatu _button"
 	:class="{ reacted: note.myReaction == reaction, canToggle }"
 	@click="toggleReaction()"
-	v-if="count > 0"
 	@touchstart.passive="onMouseover"
 	@mouseover="onMouseover"
 	@mouseleave="onMouseleave"
 	@touchend="onMouseleave"
-	ref="buttonRef"
-	v-particle="canToggle"
 >
 	<XReactionIcon :reaction="reaction" :custom-emojis="note.emojis"/>
 	<span>{{ count }}</span>

@@ -4,10 +4,10 @@
 	<div class="contents">
 		<div class="wrapper">
 			<h1 v-if="meta" :class="{ full }">
-				<MkA to="/" class="link"><img class="logo" v-if="meta.logoImageUrl" :src="meta.logoImageUrl"><span v-else class="text">{{ instanceName }}</span></MkA>
+				<MkA to="/" class="link"><img v-if="meta.logoImageUrl" class="logo" :src="meta.logoImageUrl"><span v-else class="text">{{ instanceName }}</span></MkA>
 			</h1>
 			<template v-if="full">
-				<div class="about" v-if="meta">
+				<div v-if="meta" class="about">
 					<div class="desc" v-html="meta.description || $ts.introMisskey"></div>
 				</div>
 				<div class="action">
@@ -16,8 +16,8 @@
 				</div>
 				<div class="announcements panel">
 					<header>{{ $ts.announcements }}</header>
-					<MkPagination :pagination="announcements" #default="{items}" class="list">
-						<section class="item" v-for="(announcement, i) in items" :key="announcement.id">
+					<MkPagination #default="{items}" :pagination="announcements" class="list">
+						<section v-for="announcement in items" :key="announcement.id" class="item">
 							<div class="title">{{ announcement.title }}</div>
 							<div class="content">
 								<Mfm :text="announcement.text"/>
@@ -26,7 +26,7 @@
 						</section>
 					</MkPagination>
 				</div>
-				<div class="powered-by" v-if="poweredBy">
+				<div v-if="poweredBy" class="powered-by">
 					<b><MkA to="/">{{ host }}</MkA></b>
 					<small>Powered by <a href="https://github.com/misskey-dev/misskey" target="_blank">Misskey</a></small>
 				</div>

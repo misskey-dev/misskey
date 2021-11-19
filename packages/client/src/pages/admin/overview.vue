@@ -1,18 +1,18 @@
 <template>
-<div class="edbbcaef" v-size="{ max: [740] }">
+<div v-size="{ max: [740] }" class="edbbcaef">
 	<div v-if="stats" class="cfcdecdf" style="margin: var(--margin)">
 		<div class="number _panel">
 			<div class="label">Users</div>
 			<div class="value _monospace">
 				{{ number(stats.originalUsersCount) }}
-				<MkNumberDiff v-if="usersComparedToThePrevDay != null" class="diff" :value="usersComparedToThePrevDay" v-tooltip="$ts.dayOverDayChanges"><template #before>(</template><template #after>)</template></MkNumberDiff>
+				<MkNumberDiff v-if="usersComparedToThePrevDay != null" v-tooltip="$ts.dayOverDayChanges" class="diff" :value="usersComparedToThePrevDay"><template #before>(</template><template #after>)</template></MkNumberDiff>
 			</div>
 		</div>
 		<div class="number _panel">
 			<div class="label">Notes</div>
 			<div class="value _monospace">
 				{{ number(stats.originalNotesCount) }}
-				<MkNumberDiff v-if="notesComparedToThePrevDay != null" class="diff" :value="notesComparedToThePrevDay" v-tooltip="$ts.dayOverDayChanges"><template #before>(</template><template #after>)</template></MkNumberDiff>
+				<MkNumberDiff v-if="notesComparedToThePrevDay != null" v-tooltip="$ts.dayOverDayChanges" class="diff" :value="notesComparedToThePrevDay"><template #before>(</template><template #after>)</template></MkNumberDiff>
 			</div>
 		</div>
 	</div>
@@ -44,15 +44,15 @@
 				<div class="label">Misskey</div>
 				<div class="value _monospace">{{ version }}</div>
 			</div>
-			<div class="number _panel" v-if="serverInfo">
+			<div v-if="serverInfo" class="number _panel">
 				<div class="label">Node.js</div>
 				<div class="value _monospace">{{ serverInfo.node }}</div>
 			</div>
-			<div class="number _panel" v-if="serverInfo">
+			<div v-if="serverInfo" class="number _panel">
 				<div class="label">PostgreSQL</div>
 				<div class="value _monospace">{{ serverInfo.psql }}</div>
 			</div>
-			<div class="number _panel" v-if="serverInfo">
+			<div v-if="serverInfo" class="number _panel">
 				<div class="label">Redis</div>
 				<div class="value _monospace">{{ serverInfo.redis }}</div>
 			</div>

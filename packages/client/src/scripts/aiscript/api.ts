@@ -9,16 +9,15 @@ export function createAiScriptEnv(opts) {
 		USER_NAME: $i ? values.STR($i.name) : values.NULL,
 		USER_USERNAME: $i ? values.STR($i.username) : values.NULL,
 		'Mk:dialog': values.FN_NATIVE(async ([title, text, type]) => {
-			await os.dialog({
+			await os.alert({
 				type: type ? type.value : 'info',
 				title: title.value,
 				text: text.value,
 			});
 		}),
 		'Mk:confirm': values.FN_NATIVE(async ([title, text, type]) => {
-			const confirm = await os.dialog({
+			const confirm = await os.confirm({
 				type: type ? type.value : 'question',
-				showCancelButton: true,
 				title: title.value,
 				text: text.value,
 			});

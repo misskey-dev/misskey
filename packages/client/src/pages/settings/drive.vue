@@ -24,7 +24,7 @@
 		</div>
 	</div>
 
-	<FormButton :center="false" @click="chooseUploadFolder()" primary>
+	<FormButton :center="false" primary @click="chooseUploadFolder()">
 		{{ $ts.uploadFolder }}
 		<template #suffix>{{ uploadFolder ? uploadFolder.name : '-' }}</template>
 		<template #suffixIcon><i class="fas fa-folder-open"></i></template>

@@ -1,9 +1,9 @@
 <template>
 <FormBase>
 	<FormSuspense :p="init">
-		<FormButton @click="addAccount" primary><i class="fas fa-plus"></i> {{ $ts.addAccount }}</FormButton>
+		<FormButton primary @click="addAccount"><i class="fas fa-plus"></i> {{ $ts.addAccount }}</FormButton>
 
-		<div class="_debobigegoItem _button" v-for="account in accounts" :key="account.id" @click="menu(account, $event)">
+		<div v-for="account in accounts" :key="account.id" class="_debobigegoItem _button" @click="menu(account, $event)">
 			<div class="_debobigegoPanel lcjjdxlm">
 				<div class="avatar">
 					<MkAvatar :user="account" class="avatar"/>

@@ -3,11 +3,11 @@
 	<FormBase class="znqjceqz">
 		<div id="debug"></div>
 		<section class="_debobigegoItem about">
-			<div class="_debobigegoPanel panel" :class="{ playing: easterEggEngine != null }" ref="about">
-				<img src="/client-assets/about-icon.png" alt="" class="icon" @load="iconLoaded" draggable="false" @click="gravity"/>
+			<div ref="about" class="_debobigegoPanel panel" :class="{ playing: easterEggEngine != null }">
+				<img src="/client-assets/about-icon.png" alt="" class="icon" draggable="false" @load="iconLoaded" @click="gravity"/>
 				<div class="misskey">Misskey</div>
 				<div class="version">v{{ version }}</div>
-				<span class="emoji" v-for="emoji in easterEggEmojis" :key="emoji.id" :data-physics-x="emoji.left" :data-physics-y="emoji.top" :class="{ _physics_circle_: !emoji.emoji.startsWith(':') }"><MkEmoji class="emoji" :emoji="emoji.emoji" :custom-emojis="$instance.emojis" :is-reaction="false" :normal="true" :no-style="true"/></span>
+				<span v-for="emoji in easterEggEmojis" :key="emoji.id" class="emoji" :data-physics-x="emoji.left" :data-physics-y="emoji.top" :class="{ _physics_circle_: !emoji.emoji.startsWith(':') }"><MkEmoji class="emoji" :emoji="emoji.emoji" :custom-emojis="$instance.emojis" :is-reaction="false" :normal="true" :no-style="true"/></span>
 			</div>
 		</section>
 		<section class="_debobigegoItem" style="text-align: center; padding: 0 16px;">

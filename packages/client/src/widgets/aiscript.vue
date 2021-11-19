@@ -4,9 +4,9 @@
 
 	<div class="uylguesu _monospace">
 		<textarea v-model="props.script" placeholder="(1 + 1)"></textarea>
-		<button @click="run" class="_buttonPrimary">RUN</button>
+		<button class="_buttonPrimary" @click="run">RUN</button>
 		<div class="logs">
-			<div v-for="log in logs" class="log" :key="log.id" :class="{ print: log.print }">{{ log.text }}</div>
+			<div v-for="log in logs" :key="log.id" class="log" :class="{ print: log.print }">{{ log.text }}</div>
 		</div>
 	</div>
 </MkContainer>
@@ -37,10 +37,10 @@ const widget = define({
 });
 
 export default defineComponent({
-	extends: widget,
 	components: {
 		MkContainer
 	},
+	extends: widget,
 
 	data() {
 		return {
@@ -57,9 +57,8 @@ export default defineComponent({
 			}), {
 				in: (q) => {
 					return new Promise(ok => {
-						os.dialog({
+						os.inputText({
 							title: q,
-							input: {}
 						}).then(({ canceled, result: a }) => {
 							ok(a);
 						});
@@ -88,7 +87,7 @@ export default defineComponent({
 			try {
 				ast = parse(this.props.script);
 			} catch (e) {
-				os.dialog({
+				os.alert({
 					type: 'error',
 					text: 'Syntax error :('
 				});
@@ -97,7 +96,7 @@ export default defineComponent({
 			try {
 				await aiscript.exec(ast);
 			} catch (e) {
-				os.dialog({
+				os.alert({
 					type: 'error',
 					text: e
 				});

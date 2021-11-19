@@ -58,7 +58,7 @@
 			</FormSwitch>
 		</template>
 
-		<FormButton @click="save" primary><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
+		<FormButton primary @click="save"><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
 	</FormSuspense>
 </FormBase>
 </template>

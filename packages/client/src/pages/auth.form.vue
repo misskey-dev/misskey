@@ -13,8 +13,8 @@
 		</ul>
 	</div>
 	<div class="_footer">
-		<MkButton @click="cancel" inline>{{ $ts.cancel }}</MkButton>
-		<MkButton @click="accept" inline primary>{{ $ts.accept }}</MkButton>
+		<MkButton inline @click="cancel">{{ $ts.cancel }}</MkButton>
+		<MkButton inline primary @click="accept">{{ $ts.accept }}</MkButton>
 	</div>
 </section>
 </template>

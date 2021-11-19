@@ -14,7 +14,7 @@
 			</FormKeyValueView>
 		</FormGroup>
 
-		<FormButton v-if="$i.isAdmin || $i.isModerator" @click="info" primary>{{ $ts.settings }}</FormButton>
+		<FormButton v-if="$i.isAdmin || $i.isModerator" primary @click="info">{{ $ts.settings }}</FormButton>
 
 		<FormTextarea readonly :value="instance.description">
 			<span>{{ $ts.description }}</span>
@@ -108,7 +108,7 @@
 			<FormLink :to="`https://${host}/robots.txt`" external>robots.txt</FormLink>
 			<FormLink :to="`https://${host}/manifest.json`" external>manifest.json</FormLink>
 		</FormGroup>
-		<FormSuspense :p="dnsPromiseFactory" v-slot="{ result: dns }">
+		<FormSuspense v-slot="{ result: dns }" :p="dnsPromiseFactory">
 			<FormGroup>
 				<template #label>DNS</template>
 				<FormKeyValueView v-for="record in dns.a" :key="record">

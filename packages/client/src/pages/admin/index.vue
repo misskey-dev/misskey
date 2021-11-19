@@ -1,6 +1,6 @@
 <template>
-<div class="hiyeyicy" :class="{ wide: !narrow }" ref="el">
-	<div class="nav" v-if="!narrow || page == null">
+<div ref="el" class="hiyeyicy" :class="{ wide: !narrow }">
+	<div v-if="!narrow || page == null" class="nav">
 		<MkHeader :info="header"></MkHeader>
 	
 		<MkSpacer :content-max="700">
@@ -19,7 +19,7 @@
 	<div class="main">
 		<MkStickyContainer>
 			<template #header><MkHeader v-if="childInfo && !childInfo.hideHeader" :info="childInfo"/></template>
-			<component :is="component" :key="page" @info="onInfo" v-bind="pageProps"/>
+			<component :is="component" :key="page" v-bind="pageProps" @info="onInfo"/>
 		</MkStickyContainer>
 	</div>
 </div>
@@ -281,12 +281,12 @@ export default defineComponent({
 
 		const invite = () => {
 			os.api('admin/invite').then(x => {
-				os.dialog({
+				os.alert({
 					type: 'info',
 					text: x.code
 				});
 			}).catch(e => {
-				os.dialog({
+				os.alert({
 					type: 'error',
 					text: e
 				});

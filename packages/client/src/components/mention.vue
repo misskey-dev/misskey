@@ -1,9 +1,9 @@
 <template>
-<MkA v-if="url.startsWith('/')" class="ldlomzub" :class="{ isMe }" :to="url" v-user-preview="canonical" :style="{ background: bg }">
+<MkA v-if="url.startsWith('/')" v-user-preview="canonical" class="ldlomzub" :class="{ isMe }" :to="url" :style="{ background: bg }">
 	<img class="icon" :src="`/avatar/@${username}@${host}`" alt="">
 	<span class="main">
 		<span class="username">@{{ username }}</span>
-		<span class="host" v-if="(host != localHost) || $store.state.showFullAcct">@{{ toUnicode(host) }}</span>
+		<span v-if="(host != localHost) || $store.state.showFullAcct" class="host">@{{ toUnicode(host) }}</span>
 	</span>
 </MkA>
 <a v-else class="ldlomzub" :href="url" target="_blank" rel="noopener" :style="{ background: bg }">

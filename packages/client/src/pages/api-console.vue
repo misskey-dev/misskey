@@ -1,7 +1,7 @@
 <template>
 <div class="_root">
 	<div class="_block" style="padding: 24px;">
-		<MkInput v-model="endpoint" :datalist="endpoints" @update:modelValue="onEndpointChange()" class="">
+		<MkInput v-model="endpoint" :datalist="endpoints" class="" @update:modelValue="onEndpointChange()">
 			<template #label>Endpoint</template>
 		</MkInput>
 		<MkTextarea v-model="body" code>
@@ -10,7 +10,7 @@
 		<MkSwitch v-model="withCredential">
 			With credential
 		</MkSwitch>
-		<MkButton primary full @click="send" :disabled="sending">
+		<MkButton primary full :disabled="sending" @click="send">
 			<template v-if="sending"><MkEllipsis/></template>
 			<template v-else><i class="fas fa-paper-plane"></i> Send</template>
 		</MkButton>

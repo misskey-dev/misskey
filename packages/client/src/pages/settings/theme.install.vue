@@ -4,10 +4,10 @@
 		<FormTextarea v-model="installThemeCode">
 			<span>{{ $ts._theme.code }}</span>
 		</FormTextarea>
-		<FormButton @click="() => preview(installThemeCode)" :disabled="installThemeCode == null" inline><i class="fas fa-eye"></i> {{ $ts.preview }}</FormButton>
+		<FormButton :disabled="installThemeCode == null" inline @click="() => preview(installThemeCode)"><i class="fas fa-eye"></i> {{ $ts.preview }}</FormButton>
 	</FormGroup>
 
-	<FormButton @click="() => install(installThemeCode)" :disabled="installThemeCode == null" primary inline><i class="fas fa-check"></i> {{ $ts.install }}</FormButton>
+	<FormButton :disabled="installThemeCode == null" primary inline @click="() => install(installThemeCode)"><i class="fas fa-check"></i> {{ $ts.install }}</FormButton>
 </FormBase>
 </template>
 
@@ -62,21 +62,21 @@ export default defineComponent({
 			try {
 				theme = JSON5.parse(code);
 			} catch (e) {
-				os.dialog({
+				os.alert({
 					type: 'error',
 					text: this.$ts._theme.invalid
 				});
 				return false;
 			}
 			if (!validateTheme(theme)) {
-				os.dialog({
+				os.alert({
 					type: 'error',
 					text: this.$ts._theme.invalid
 				});
 				return false;
 			}
 			if (getThemes().some(t => t.id === theme.id)) {
-				os.dialog({
+				os.alert({
 					type: 'info',
 					text: this.$ts._theme.alreadyInstalled
 				});
@@ -95,7 +95,7 @@ export default defineComponent({
 			const theme = this.parseThemeCode(code);
 			if (!theme) return;
 			await addTheme(theme);
-			os.dialog({
+			os.alert({
 				type: 'success',
 				text: this.$t('_theme.installed', { name: theme.name })
 			});

@@ -1,9 +1,9 @@
 <template>
 <MkContainer :show-header="props.showHeader" :naked="props.transparent">
 	<template #header><i class="fas fa-server"></i>{{ $ts._widgets.serverMetric }}</template>
-	<template #func><button @click="toggleView()" class="_button"><i class="fas fa-sort"></i></button></template>
+	<template #func><button class="_button" @click="toggleView()"><i class="fas fa-sort"></i></button></template>
 
-	<div class="mkw-serverMetric" v-if="meta">
+	<div v-if="meta" class="mkw-serverMetric">
 		<XCpuMemory v-if="props.view === 0" :connection="connection" :meta="meta"/>
 		<XNet v-if="props.view === 1" :connection="connection" :meta="meta"/>
 		<XCpu v-if="props.view === 2" :connection="connection" :meta="meta"/>
@@ -44,7 +44,6 @@ const widget = define({
 });
 
 export default defineComponent({
-	extends: widget,
 	components: {
 		MkContainer,
 		XCpuMemory,
@@ -53,6 +52,7 @@ export default defineComponent({
 		XMemory,
 		XDisk,
 	},
+	extends: widget,
 	data() {
 		return {
 			meta: null,

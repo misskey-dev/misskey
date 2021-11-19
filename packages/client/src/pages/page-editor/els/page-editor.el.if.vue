@@ -1,8 +1,9 @@
 <template>
-<XContainer @remove="() => $emit('remove')" :draggable="true">
+<!-- eslint-disable vue/no-mutating-props -->
+<XContainer :draggable="true" @remove="() => $emit('remove')">
 	<template #header><i class="fas fa-question"></i> {{ $ts._pages.blocks.if }}</template>
 	<template #func>
-		<button @click="add()" class="_button">
+		<button class="_button" @click="add()">
 			<i class="fas fa-plus"></i>
 		</button>
 	</template>
@@ -19,12 +20,13 @@
 			</optgroup>
 		</MkSelect>
 
-		<XBlocks class="children" v-model="value.children" :hpml="hpml"/>
+		<XBlocks v-model="value.children" class="children" :hpml="hpml"/>
 	</section>
 </XContainer>
 </template>
 
 <script lang="ts">
+/* eslint-disable vue/no-mutating-props */
 import { defineComponent, defineAsyncComponent } from 'vue';
 import { v4 as uuid } from 'uuid';
 import XContainer from '../page-editor.container.vue';
@@ -60,13 +62,9 @@ export default defineComponent({
 
 	methods: {
 		async add() {
-			const { canceled, result: type } = await os.dialog({
-				type: null,
+			const { canceled, result: type } = await os.select({
 				title: this.$ts._pages.chooseBlock,
-				select: {
-					groupedItems: this.getPageBlockList()
-				},
-				showCancelButton: true
+				groupedItems: this.getPageBlockList()
 			});
 			if (canceled) return;
 

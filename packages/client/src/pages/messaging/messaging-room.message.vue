@@ -1,32 +1,32 @@
 <template>
-<div class="thvuemwp" :class="{ isMe }" v-size="{ max: [400, 500] }">
+<div v-size="{ max: [400, 500] }" class="thvuemwp" :class="{ isMe }">
 	<MkAvatar class="avatar" :user="message.user" :show-indicator="true"/>
 	<div class="content">
 		<div class="balloon" :class="{ noText: message.text == null }" >
-			<button class="delete-button" v-if="isMe" :title="$ts.delete" @click="del">
+			<button v-if="isMe" class="delete-button" :title="$ts.delete" @click="del">
 				<img src="/client-assets/remove.png" alt="Delete"/>
 			</button>
-			<div class="content" v-if="!message.isDeleted">
-				<Mfm class="text" v-if="message.text" ref="text" :text="message.text" :i="$i"/>
-				<div class="file" v-if="message.file">
+			<div v-if="!message.isDeleted" class="content">
+				<Mfm v-if="message.text" ref="text" class="text" :text="message.text" :i="$i"/>
+				<div v-if="message.file" class="file">
 					<a :href="message.file.url" rel="noopener" target="_blank" :title="message.file.name">
 						<img v-if="message.file.type.split('/')[0] == 'image'" :src="message.file.url" :alt="message.file.name"/>
 						<p v-else>{{ message.file.name }}</p>
 					</a>
 				</div>
 			</div>
-			<div class="content" v-else>
+			<div v-else class="content">
 				<p class="is-deleted">{{ $ts.deleted }}</p>
 			</div>
 		</div>
 		<div></div>
-		<MkUrlPreview v-for="url in urls" :url="url" :key="url" style="margin: 8px 0;"/>
+		<MkUrlPreview v-for="url in urls" :key="url" :url="url" style="margin: 8px 0;"/>
 		<footer>
 			<template v-if="isGroup">
-				<span class="read" v-if="message.reads.length > 0">{{ $ts.messageRead }} {{ message.reads.length }}</span>
+				<span v-if="message.reads.length > 0" class="read">{{ $ts.messageRead }} {{ message.reads.length }}</span>
 			</template>
 			<template v-else>
-				<span class="read" v-if="isMe && message.isRead">{{ $ts.messageRead }}</span>
+				<span v-if="isMe && message.isRead" class="read">{{ $ts.messageRead }}</span>
 			</template>
 			<MkTime :time="message.createdAt"/>
 			<template v-if="message.is_edited"><i class="fas fa-pencil-alt"></i></template>

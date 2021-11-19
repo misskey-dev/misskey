@@ -1,24 +1,24 @@
 <template>
 <div v-if="$i">
-	<div class="waiting _section" v-if="state == 'waiting'">
+	<div v-if="state == 'waiting'" class="waiting _section">
 		<div class="_content">
 			<MkLoading/>
 		</div>
 	</div>
-	<div class="denied _section" v-if="state == 'denied'">
+	<div v-if="state == 'denied'" class="denied _section">
 		<div class="_content">
 			<p>{{ $ts._auth.denied }}</p>
 		</div>
 	</div>
-	<div class="accepted _section" v-else-if="state == 'accepted'">
+	<div v-else-if="state == 'accepted'" class="accepted _section">
 		<div class="_content">
 			<p v-if="callback">{{ $ts._auth.callback }}<MkEllipsis/></p>
 			<p v-else>{{ $ts._auth.pleaseGoBack }}</p>
 		</div>
 	</div>
-	<div class="_section" v-else>
-		<div class="_title" v-if="name">{{ $t('_auth.shareAccess', { name: name }) }}</div>
-		<div class="_title" v-else>{{ $ts._auth.shareAccessAsk }}</div>
+	<div v-else class="_section">
+		<div v-if="name" class="_title">{{ $t('_auth.shareAccess', { name: name }) }}</div>
+		<div v-else class="_title">{{ $ts._auth.shareAccessAsk }}</div>
 		<div class="_content">
 			<p>{{ $ts._auth.permissionAsk }}</p>
 			<ul>
@@ -26,12 +26,12 @@
 			</ul>
 		</div>
 		<div class="_footer">
-			<MkButton @click="deny" inline>{{ $ts.cancel }}</MkButton>
-			<MkButton @click="accept" inline primary>{{ $ts.accept }}</MkButton>
+			<MkButton inline @click="deny">{{ $ts.cancel }}</MkButton>
+			<MkButton inline primary @click="accept">{{ $ts.accept }}</MkButton>
 		</div>
 	</div>
 </div>
-<div class="signin" v-else>
+<div v-else class="signin">
 	<MkSignin @login="onLogin"/>
 </div>
 </template>

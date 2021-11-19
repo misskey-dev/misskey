@@ -3,7 +3,7 @@
 	<transition name="fade" mode="out-in">
 		<div v-if="post" class="rkxwuolj">
 			<div class="files">
-				<div class="file" v-for="file in post.files" :key="file.id">
+				<div v-for="file in post.files" :key="file.id" class="file">
 					<img :src="file.url"/>
 				</div>
 			</div>
@@ -15,13 +15,13 @@
 				</div>
 				<div class="actions">
 					<div class="like">
-						<MkButton class="button" @click="unlike()" v-if="post.isLiked" v-tooltip="$ts._gallery.unlike" primary><i class="fas fa-heart"></i><span class="count" v-if="post.likedCount > 0">{{ post.likedCount }}</span></MkButton>
-						<MkButton class="button" @click="like()" v-else v-tooltip="$ts._gallery.like"><i class="far fa-heart"></i><span class="count" v-if="post.likedCount > 0">{{ post.likedCount }}</span></MkButton>
+						<MkButton v-if="post.isLiked" v-tooltip="$ts._gallery.unlike" class="button" primary @click="unlike()"><i class="fas fa-heart"></i><span v-if="post.likedCount > 0" class="count">{{ post.likedCount }}</span></MkButton>
+						<MkButton v-else v-tooltip="$ts._gallery.like" class="button" @click="like()"><i class="far fa-heart"></i><span v-if="post.likedCount > 0" class="count">{{ post.likedCount }}</span></MkButton>
 					</div>
 					<div class="other">
-						<button v-if="$i && $i.id === post.user.id" class="_button" @click="edit" v-tooltip="$ts.edit" v-click-anime><i class="fas fa-pencil-alt fa-fw"></i></button>
-						<button class="_button" @click="shareWithNote" v-tooltip="$ts.shareWithNote" v-click-anime><i class="fas fa-retweet fa-fw"></i></button>
-						<button class="_button" @click="share" v-tooltip="$ts.share" v-click-anime><i class="fas fa-share-alt fa-fw"></i></button>
+						<button v-if="$i && $i.id === post.user.id" v-tooltip="$ts.edit" v-click-anime class="_button" @click="edit"><i class="fas fa-pencil-alt fa-fw"></i></button>
+						<button v-tooltip="$ts.shareWithNote" v-click-anime class="_button" @click="shareWithNote"><i class="fas fa-retweet fa-fw"></i></button>
+						<button v-tooltip="$ts.share" v-click-anime class="_button" @click="share"><i class="fas fa-share-alt fa-fw"></i></button>
 					</div>
 				</div>
 				<div class="user">
@@ -36,9 +36,9 @@
 			<MkAd :prefer="['horizontal', 'horizontal-big']"/>
 			<MkContainer :max-height="300" :foldable="true" class="other">
 				<template #header><i class="fas fa-clock"></i> {{ $ts.recentPosts }}</template>
-				<MkPagination :pagination="otherPostsPagination" #default="{items}">
+				<MkPagination #default="{items}" :pagination="otherPostsPagination">
 					<div class="sdrarzaf">
-						<MkGalleryPostPreview v-for="post in items" :post="post" :key="post.id" class="post"/>
+						<MkGalleryPostPreview v-for="post in items" :key="post.id" :post="post" class="post"/>
 					</div>
 				</MkPagination>
 			</MkContainer>
@@ -148,9 +148,8 @@ export default defineComponent({
 		},
 
 		async unlike() {
-			const confirm = await os.dialog({
+			const confirm = await os.confirm({
 				type: 'warning',
-				showCancelButton: true,
 				text: this.$ts.unlikeConfirm,
 			});
 			if (confirm.canceled) return;

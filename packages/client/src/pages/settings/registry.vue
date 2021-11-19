@@ -4,7 +4,7 @@
 		<template #label>{{ $ts.system }}</template>
 		<FormLink v-for="scope in scopes" :to="`/settings/registry/keys/system/${scope.join('/')}`" class="_monospace">{{ scope.join('/') }}</FormLink>
 	</FormGroup>
-	<FormButton @click="createKey" primary>{{ $ts._registry.createKey }}</FormButton>
+	<FormButton primary @click="createKey">{{ $ts._registry.createKey }}</FormButton>
 </FormBase>
 </template>
 
