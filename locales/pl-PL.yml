@@ -738,8 +738,8 @@ ratio: "Stosunek"
 global: "Globalna"
 sent: "Wyślij"
 hashtags: "Hashtag"
-_docs:
-  admin: "Zarządzanie"
+_ffVisibility:
+  public: "Publikuj"
 _ad:
   back: "Wróć"
   reduceFrequencyOfThisAd: "Pokazuj tę reklamę rzadziej"
