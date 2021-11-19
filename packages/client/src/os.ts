@@ -563,13 +563,19 @@ export function post(props: Record<string, any>) {
 
 export const deckGlobalEvents = new EventEmitter();
 
-export const uploads = ref([]);
+export const uploads = ref<{
+	id: string;
+	name: string;
+	progressMax: number | undefined;
+	progressValue: number | undefined;
+	img: string;
+}[]>([]);
 
 export function upload(file: File, folder?: any, name?: string) {
 	if (folder && typeof folder == 'object') folder = folder.id;
 
 	return new Promise((resolve, reject) => {
-		const id = Math.random();
+		const id = Math.random().toString();
 
 		const reader = new FileReader();
 		reader.onload = (e) => {
@@ -593,8 +599,21 @@ export function upload(file: File, folder?: any, name?: string) {
 
 			const xhr = new XMLHttpRequest();
 			xhr.open('POST', apiUrl + '/drive/files/create', true);
-			xhr.onload = (e: any) => {
-				const driveFile = JSON.parse(e.target.response);
+			xhr.onload = (ev) => {
+				if (ev.target == null || ev.target.response == null) {
+					// TODO: 消すのではなくて再送できるようにしたい
+					uploads.value = uploads.value.filter(x => x.id != id);
+
+					alert({
+						type: 'error',
+						text: 'upload failed'
+					});
+
+					reject();
+					return;
+				}
+
+				const driveFile = JSON.parse(ev.target.response);
 
 				resolve(driveFile);
 
