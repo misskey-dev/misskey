@@ -54,8 +54,8 @@
 						<div class="translation" v-if="translating || translation">
 							<MkLoading v-if="translating" mini/>
 							<div class="translated" v-else>
-								<b>{{ $t('translatedFrom', { x: translation.sourceLang }) }}:</b>
-								{{ translation.text }}
+								<b>{{ $t('translatedFrom', { x: translation.sourceLang }) }}: </b>
+								<Mfm :text="translation.text" :author="appearNote.user" :i="$i" :custom-emojis="appearNote.emojis"/>
 							</div>
 						</div>
 					</div>
