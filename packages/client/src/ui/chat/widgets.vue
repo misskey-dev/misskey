@@ -2,8 +2,8 @@
 <div class="qydbhufi">
 	<XWidgets :edit="edit" :widgets="widgets" @add-widget="addWidget" @remove-widget="removeWidget" @update-widget="updateWidget" @update-widgets="updateWidgets" @exit="edit = false"/>
 
-	<button v-if="edit" @click="edit = false" class="_textButton" style="font-size: 0.9em;">{{ $ts.editWidgetsExit }}</button>
-	<button v-else @click="edit = true" class="_textButton" style="font-size: 0.9em;">{{ $ts.editWidgets }}</button>
+	<button v-if="edit" class="_textButton" style="font-size: 0.9em;" @click="edit = false">{{ $ts.editWidgetsExit }}</button>
+	<button v-else class="_textButton" style="font-size: 0.9em;" @click="edit = true">{{ $ts.editWidgets }}</button>
 </div>
 </template>
 

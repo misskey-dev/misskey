@@ -1,9 +1,9 @@
 <template>
 <div class="mk-app">
-	<div class="banner" v-if="$route.path === '/'" :style="{ backgroundImage: `url(${ $instance.bannerUrl })` }">
+	<div v-if="$route.path === '/'" class="banner" :style="{ backgroundImage: `url(${ $instance.bannerUrl })` }">
 		<div>
-			<h1 v-if="meta"><img class="logo" v-if="meta.logoImageUrl" :src="meta.logoImageUrl"><span v-else class="text">{{ instanceName }}</span></h1>
-			<div class="about" v-if="meta">
+			<h1 v-if="meta"><img v-if="meta.logoImageUrl" class="logo" :src="meta.logoImageUrl"><span v-else class="text">{{ instanceName }}</span></h1>
+			<div v-if="meta" class="about">
 				<div class="desc" v-html="meta.description || $ts.introMisskey"></div>
 			</div>
 			<div class="action">
@@ -12,15 +12,15 @@
 			</div>
 		</div>
 	</div>
-	<div class="banner-mini" v-else :style="{ backgroundImage: `url(${ $instance.bannerUrl })` }">
+	<div v-else class="banner-mini" :style="{ backgroundImage: `url(${ $instance.bannerUrl })` }">
 		<div>
-			<h1 v-if="meta"><img class="logo" v-if="meta.logoImageUrl" :src="meta.logoImageUrl"><span v-else class="text">{{ instanceName }}</span></h1>
+			<h1 v-if="meta"><img v-if="meta.logoImageUrl" class="logo" :src="meta.logoImageUrl"><span v-else class="text">{{ instanceName }}</span></h1>
 		</div>
 	</div>
 
 	<div class="main">
-		<div class="contents" ref="contents" :class="{ wallpaper }">
-			<header class="header" ref="header" v-show="$route.path !== '/'">
+		<div ref="contents" class="contents" :class="{ wallpaper }">
+			<header v-show="$route.path !== '/'" ref="header" class="header">
 				<XHeader :info="pageInfo"/>
 			</header>
 			<main ref="main">

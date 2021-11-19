@@ -12,17 +12,17 @@
 		<FormGroup>
 			<div v-for="file in files" :key="file.id" class="_debobigegoItem _debobigegoPanel wqugxsfx" :style="{ backgroundImage: file ? `url(${ file.thumbnailUrl })` : null }">
 				<div class="name">{{ file.name }}</div>
-				<button class="remove _button" @click="remove(file)" v-tooltip="$ts.remove"><i class="fas fa-times"></i></button>
+				<button v-tooltip="$ts.remove" class="remove _button" @click="remove(file)"><i class="fas fa-times"></i></button>
 			</div>
-			<FormButton @click="selectFile" primary><i class="fas fa-plus"></i> {{ $ts.attachFile }}</FormButton>
+			<FormButton primary @click="selectFile"><i class="fas fa-plus"></i> {{ $ts.attachFile }}</FormButton>
 		</FormGroup>
 
 		<FormSwitch v-model="isSensitive">{{ $ts.markAsSensitive }}</FormSwitch>
 
-		<FormButton v-if="postId" @click="save" primary><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
-		<FormButton v-else @click="save" primary><i class="fas fa-save"></i> {{ $ts.publish }}</FormButton>
+		<FormButton v-if="postId" primary @click="save"><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
+		<FormButton v-else primary @click="save"><i class="fas fa-save"></i> {{ $ts.publish }}</FormButton>
 
-		<FormButton v-if="postId" @click="del" danger><i class="fas fa-trash-alt"></i> {{ $ts.delete }}</FormButton>
+		<FormButton v-if="postId" danger @click="del"><i class="fas fa-trash-alt"></i> {{ $ts.delete }}</FormButton>
 	</FormSuspense>
 </FormBase>
 </template>
@@ -126,10 +126,9 @@ export default defineComponent({
 		},
 
 		async del() {
-			const { canceled } = await os.dialog({
+			const { canceled } = await os.confirm({
 				type: 'warning',
 				text: this.$ts.deleteConfirm,
-				showCancelButton: true
 			});
 			if (canceled) return;
 			await os.apiWithDialog('gallery/posts/delete', {

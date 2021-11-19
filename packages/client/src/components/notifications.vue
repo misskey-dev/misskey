@@ -4,15 +4,15 @@
 
 	<MkError v-else-if="error" @retry="init()"/>
 
-	<p class="mfcuwfyp" v-else-if="empty">{{ $ts.noNotifications }}</p>
+	<p v-else-if="empty" class="mfcuwfyp">{{ $ts.noNotifications }}</p>
 
 	<div v-else>
-		<XList class="elsfgstc" :items="items" v-slot="{ item: notification }" :no-gap="true">
-			<XNote v-if="['reply', 'quote', 'mention'].includes(notification.type)" :note="notification.note" @update:note="noteUpdated(notification.note, $event)" :key="notification.id"/>
-			<XNotification v-else :notification="notification" :with-time="true" :full="true" class="_panel notification" :key="notification.id"/>
+		<XList v-slot="{ item: notification }" class="elsfgstc" :items="items" :no-gap="true">
+			<XNote v-if="['reply', 'quote', 'mention'].includes(notification.type)" :key="notification.id" :note="notification.note" @update:note="noteUpdated(notification.note, $event)"/>
+			<XNotification v-else :key="notification.id" :notification="notification" :with-time="true" :full="true" class="_panel notification"/>
 		</XList>
 
-		<MkButton primary style="margin: var(--margin) auto;" v-appear="$store.state.enableInfiniteScroll ? fetchMore : null" @click="fetchMore" v-show="more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
+		<MkButton v-show="more" v-appear="$store.state.enableInfiniteScroll ? fetchMore : null" primary style="margin: var(--margin) auto;" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" @click="fetchMore">
 			<template v-if="!moreFetching">{{ $ts.loadMore }}</template>
 			<template v-if="moreFetching"><MkLoading inline/></template>
 		</MkButton>

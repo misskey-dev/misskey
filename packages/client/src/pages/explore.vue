@@ -3,7 +3,7 @@
 	<MkSpacer :content-max="1200">
 		<div class="lznhrdub">
 			<div v-if="tab === 'local'">
-				<div class="localfedi7 _block _isolated" v-if="meta && stats && tag == null" :style="{ backgroundImage: meta.bannerUrl ? `url(${meta.bannerUrl})` : null }">
+				<div v-if="meta && stats && tag == null" class="localfedi7 _block _isolated" :style="{ backgroundImage: meta.bannerUrl ? `url(${meta.bannerUrl})` : null }">
 					<header><span>{{ $t('explore', { host: meta.name || 'Misskey' }) }}</span></header>
 					<div><span>{{ $t('exploreUsersCount', { count: num(stats.originalUsersCount) }) }}</span></div>
 				</div>
@@ -28,16 +28,16 @@
 				</template>
 			</div>
 			<div v-else-if="tab === 'remote'">
-				<div class="localfedi7 _block _isolated" v-if="tag == null" :style="{ backgroundImage: `url(/client-assets/fedi.jpg)` }">
+				<div v-if="tag == null" class="localfedi7 _block _isolated" :style="{ backgroundImage: `url(/client-assets/fedi.jpg)` }">
 					<header><span>{{ $ts.exploreFediverse }}</span></header>
 				</div>
 
-				<MkFolder :foldable="true" :expanded="false" ref="tags" class="_gap">
+				<MkFolder ref="tags" :foldable="true" :expanded="false" class="_gap">
 					<template #header><i class="fas fa-hashtag fa-fw" style="margin-right: 0.5em;"></i>{{ $ts.popularTags }}</template>
 
 					<div class="vxjfqztj">
-						<MkA v-for="tag in tagsLocal" :to="`/explore/tags/${tag.tag}`" :key="'local:' + tag.tag" class="local">{{ tag.tag }}</MkA>
-						<MkA v-for="tag in tagsRemote" :to="`/explore/tags/${tag.tag}`" :key="'remote:' + tag.tag">{{ tag.tag }}</MkA>
+						<MkA v-for="tag in tagsLocal" :key="'local:' + tag.tag" :to="`/explore/tags/${tag.tag}`" class="local">{{ tag.tag }}</MkA>
+						<MkA v-for="tag in tagsRemote" :key="'remote:' + tag.tag" :to="`/explore/tags/${tag.tag}`">{{ tag.tag }}</MkA>
 					</div>
 				</MkFolder>
 
@@ -68,13 +68,13 @@
 						<template #label>{{ $ts.searchUser }}</template>
 					</MkInput>
 					<MkRadios v-model="searchOrigin">
+						<option value="combined">{{ $ts.all }}</option>
 						<option value="local">{{ $ts.local }}</option>
 						<option value="remote">{{ $ts.remote }}</option>
-						<option value="both">{{ $ts.all }}</option>
 					</MkRadios>
 				</div>
 
-				<XUserList v-if="searchQuery" class="_gap" :pagination="searchPagination" ref="search"/>
+				<XUserList v-if="searchQuery" ref="search" class="_gap" :pagination="searchPagination"/>
 			</div>
 		</div>
 	</MkSpacer>

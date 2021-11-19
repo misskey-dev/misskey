@@ -1,6 +1,6 @@
 <template>
 <MkPopup ref="popup" :src="src" @closed="$emit('closed')">
-	<MkMenu :items="items" :align="align" :width="width" @close="$refs.popup.close()" class="_popup _shadow"/>
+	<MkMenu :items="items" :align="align" :width="width" class="_popup _shadow" @close="$refs.popup.close()"/>
 </MkPopup>
 </template>
 

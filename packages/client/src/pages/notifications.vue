@@ -1,7 +1,7 @@
 <template>
 <MkSpacer :content-max="800">
 	<div class="clupoqwt">
-		<XNotifications class="notifications" @before="before" @after="after" :include-types="includeTypes" :unread-only="tab === 'unread'"/>
+		<XNotifications class="notifications" :include-types="includeTypes" :unread-only="tab === 'unread'" @before="before" @after="after"/>
 	</div>
 </MkSpacer>
 </template>

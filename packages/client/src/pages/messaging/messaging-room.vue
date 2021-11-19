@@ -6,17 +6,17 @@
 	<div class="_content mk-messaging-room">
 		<div class="body">
 			<MkLoading v-if="fetching"/>
-			<p class="empty" v-if="!fetching && messages.length == 0"><i class="fas fa-info-circle"></i>{{ $ts.noMessagesYet }}</p>
-			<p class="no-history" v-if="!fetching && messages.length > 0 && !existMoreMessages"><i class="fas fa-flag"></i>{{ $ts.noMoreHistory }}</p>
-			<button class="more _button" ref="loadMore" :class="{ fetching: fetchingMoreMessages }" v-show="existMoreMessages" @click="fetchMoreMessages" :disabled="fetchingMoreMessages">
+			<p v-if="!fetching && messages.length == 0" class="empty"><i class="fas fa-info-circle"></i>{{ $ts.noMessagesYet }}</p>
+			<p v-if="!fetching && messages.length > 0 && !existMoreMessages" class="no-history"><i class="fas fa-flag"></i>{{ $ts.noMoreHistory }}</p>
+			<button v-show="existMoreMessages" ref="loadMore" class="more _button" :class="{ fetching: fetchingMoreMessages }" :disabled="fetchingMoreMessages" @click="fetchMoreMessages">
 				<template v-if="fetchingMoreMessages"><i class="fas fa-spinner fa-pulse fa-fw"></i></template>{{ fetchingMoreMessages ? $ts.loading : $ts.loadMore }}
 			</button>
-			<XList class="messages" :items="messages" v-slot="{ item: message }" direction="up" reversed>
-				<XMessage :message="message" :is-group="group != null" :key="message.id"/>
+			<XList v-slot="{ item: message }" class="messages" :items="messages" direction="up" reversed>
+				<XMessage :key="message.id" :message="message" :is-group="group != null"/>
 			</XList>
 		</div>
 		<footer>
-			<div class="typers" v-if="typers.length > 0">
+			<div v-if="typers.length > 0" class="typers">
 				<I18n :src="$ts.typingUsers" text-tag="span" class="users">
 					<template #users>
 						<b v-for="user in typers" :key="user.id" class="user">{{ user.username }}</b>
@@ -25,11 +25,11 @@
 				<MkEllipsis/>
 			</div>
 			<transition name="fade">
-				<div class="new-message" v-show="showIndicator">
+				<div v-show="showIndicator" class="new-message">
 					<button class="_buttonPrimary" @click="onIndicatorClick"><i class="fas fa-arrow-circle-down"></i>{{ $ts.newMessageExists }}</button>
 				</div>
 			</transition>
-			<XForm v-if="!fetching" :user="user" :group="group" ref="form" class="form"/>
+			<XForm v-if="!fetching" ref="form" :user="user" :group="group" class="form"/>
 		</footer>
 	</div>
 </div>
@@ -182,7 +182,7 @@ const Component = defineComponent({
 				this.form.upload(e.dataTransfer.files[0]);
 				return;
 			} else if (e.dataTransfer.files.length > 1) {
-				os.dialog({
+				os.alert({
 					type: 'error',
 					text: this.$ts.onlyOneFileCanBeAttached
 				});

@@ -1,7 +1,7 @@
 <template>
 <div class="fgmtyycl" :style="{ top: top + 'px', left: left + 'px' }">
 	<transition name="zoom" @after-leave="$emit('closed')">
-		<MkUrlPreview class="_popup _shadow" :url="url" v-if="showing"/>
+		<MkUrlPreview v-if="showing" class="_popup _shadow" :url="url"/>
 	</transition>
 </div>
 </template>

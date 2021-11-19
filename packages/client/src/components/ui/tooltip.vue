@@ -1,6 +1,6 @@
 <template>
 <transition name="tooltip" appear @after-leave="$emit('closed')">
-	<div class="buebdbiu _acrylic _shadow" v-show="showing" ref="content" :style="{ maxWidth: maxWidth + 'px' }">
+	<div v-show="showing" ref="content" class="buebdbiu _acrylic _shadow" :style="{ maxWidth: maxWidth + 'px' }">
 		<slot>{{ text }}</slot>
 	</div>
 </transition>

@@ -1,16 +1,16 @@
 <template>
 <div v-if="playerEnabled" class="player" :style="`padding: ${(player.height || 0) / (player.width || 1) * 100}% 0 0`">
-	<button class="disablePlayer" @click="playerEnabled = false" :title="$ts.disablePlayer"><i class="fas fa-times"></i></button>
+	<button class="disablePlayer" :title="$ts.disablePlayer" @click="playerEnabled = false"><i class="fas fa-times"></i></button>
 	<iframe :src="player.url + (player.url.match(/\?/) ? '&autoplay=1&auto_play=1' : '?autoplay=1&auto_play=1')" :width="player.width || '100%'" :heigth="player.height || 250" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen />
 </div>
-<div v-else-if="tweetId && tweetExpanded" class="twitter" ref="twitter">
+<div v-else-if="tweetId && tweetExpanded" ref="twitter" class="twitter">
 	<iframe ref="tweet" scrolling="no" frameborder="no" :style="{ position: 'relative', left: `${tweetLeft}px`, width: `${tweetLeft < 0 ? 'auto' : '100%'}`, height: `${tweetHeight}px` }" :src="`https://platform.twitter.com/embed/index.html?embedId=${embedId}&amp;hideCard=false&amp;hideThread=false&amp;lang=en&amp;theme=${$store.state.darkMode ? 'dark' : 'light'}&amp;id=${tweetId}`"></iframe>
 </div>
-<div v-else class="mk-url-preview" v-size="{ max: [400, 350] }">
+<div v-else v-size="{ max: [400, 350] }" class="mk-url-preview">
 	<transition name="zoom" mode="out-in">
-		<component :is="self ? 'MkA' : 'a'" :class="{ compact }" :[attr]="self ? url.substr(local.length) : url" rel="nofollow noopener" :target="target" :title="url" v-if="!fetching">
-			<div class="thumbnail" v-if="thumbnail" :style="`background-image: url('${thumbnail}')`">
-				<button class="_button" v-if="!playerEnabled && player.url" @click.prevent="playerEnabled = true" :title="$ts.enablePlayer"><i class="fas fa-play-circle"></i></button>
+		<component :is="self ? 'MkA' : 'a'" v-if="!fetching" :class="{ compact }" :[attr]="self ? url.substr(local.length) : url" rel="nofollow noopener" :target="target" :title="url">
+			<div v-if="thumbnail" class="thumbnail" :style="`background-image: url('${thumbnail}')`">
+				<button v-if="!playerEnabled && player.url" class="_button" :title="$ts.enablePlayer" @click.prevent="playerEnabled = true"><i class="fas fa-play-circle"></i></button>
 			</div>
 			<article>
 				<header>
@@ -18,13 +18,13 @@
 				</header>
 				<p v-if="description" :title="description">{{ description.length > 85 ? description.slice(0, 85) + '…' : description }}</p>
 				<footer>
-					<img class="icon" v-if="icon" :src="icon"/>
+					<img v-if="icon" class="icon" :src="icon"/>
 					<p :title="sitename">{{ sitename }}</p>
 				</footer>
 			</article>
 		</component>
 	</transition>
-	<div class="expandTweet" v-if="tweetId">
+	<div v-if="tweetId" class="expandTweet">
 		<a @click="tweetExpanded = true">
 			<i class="fab fa-twitter"></i> {{ $ts.expandTweet }}
 		</a>
@@ -122,6 +122,10 @@ export default defineComponent({
 		if (areaWidth && areaWidth < 300) this.tweetLeft = areaWidth - 241;
 	},
 
+	beforeUnmount() {
+		(window as any).removeEventListener('message', this.adjustTweetHeight);
+	},
+
 	methods: {
 		adjustTweetHeight(message: any) {
 			if (message.origin !== 'https://platform.twitter.com') return;
@@ -131,10 +135,6 @@ export default defineComponent({
 			const height = embed?.params[0]?.height;
 			if (height) this.tweetHeight = height;
  		},
-	},
-
-	beforeUnmount() {
-		(window as any).removeEventListener('message', this.adjustTweetHeight);
 	},
 });
 </script>

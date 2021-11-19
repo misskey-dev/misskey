@@ -7,14 +7,14 @@
 >
 	<template #header>{{ $ts.forgotPassword }}</template>
 
-	<form class="bafeceda" @submit.prevent="onSubmit" v-if="$instance.enableEmail">
+	<form v-if="$instance.enableEmail" class="bafeceda" @submit.prevent="onSubmit">
 		<div class="main _formRoot">
-			<MkInput class="_formBlock" v-model="username" type="text" pattern="^[a-zA-Z0-9_]+$" spellcheck="false" autofocus required>
+			<MkInput v-model="username" class="_formBlock" type="text" pattern="^[a-zA-Z0-9_]+$" spellcheck="false" autofocus required>
 				<template #label>{{ $ts.username }}</template>
 				<template #prefix>@</template>
 			</MkInput>
 
-			<MkInput class="_formBlock" v-model="email" type="email" spellcheck="false" required>
+			<MkInput v-model="email" class="_formBlock" type="email" spellcheck="false" required>
 				<template #label>{{ $ts.emailAddress }}</template>
 				<template #caption>{{ $ts._forgotPassword.enterEmail }}</template>
 			</MkInput>

@@ -1,19 +1,19 @@
 <template>
 <div class="zmdxowus">
-	<p class="caution" v-if="choices.length < 2">
+	<p v-if="choices.length < 2" class="caution">
 		<i class="fas fa-exclamation-triangle"></i>{{ $ts._poll.noOnlyOneChoice }}
 	</p>
 	<ul ref="choices">
 		<li v-for="(choice, i) in choices" :key="i">
-			<MkInput class="input" :model-value="choice" @update:modelValue="onInput(i, $event)" :placeholder="$t('_poll.choiceN', { n: i + 1 })">
+			<MkInput class="input" :model-value="choice" :placeholder="$t('_poll.choiceN', { n: i + 1 })" @update:modelValue="onInput(i, $event)">
 			</MkInput>
-			<button @click="remove(i)" class="_button">
+			<button class="_button" @click="remove(i)">
 				<i class="fas fa-times"></i>
 			</button>
 		</li>
 	</ul>
-	<MkButton class="add" v-if="choices.length < 10" @click="add">{{ $ts.add }}</MkButton>
-	<MkButton class="add" v-else disabled>{{ $ts._poll.noMore }}</MkButton>
+	<MkButton v-if="choices.length < 10" class="add" @click="add">{{ $ts.add }}</MkButton>
+	<MkButton v-else class="add" disabled>{{ $ts._poll.noMore }}</MkButton>
 	<section>
 		<MkSwitch v-model="multiple">{{ $ts._poll.canMultipleVote }}</MkSwitch>
 		<div>

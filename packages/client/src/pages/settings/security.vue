@@ -6,7 +6,7 @@
 	<FormPagination :pagination="pagination">
 		<template #label>{{ $ts.signinHistory }}</template>
 		<template #default="{items}">
-			<div class="_debobigegoPanel timnmucd" v-for="item in items" :key="item.id">
+			<div v-for="item in items" :key="item.id" class="_debobigegoPanel timnmucd">
 				<header>
 					<i v-if="item.success" class="fas fa-check icon succ"></i>
 					<i v-else class="fas fa-times-circle icon fail"></i>
@@ -64,32 +64,26 @@ export default defineComponent({
 
 	methods: {
 		async change() {
-			const { canceled: canceled1, result: currentPassword } = await os.dialog({
+			const { canceled: canceled1, result: currentPassword } = await os.inputText({
 				title: this.$ts.currentPassword,
-				input: {
-					type: 'password'
-				}
+				type: 'password'
 			});
 			if (canceled1) return;
 
-			const { canceled: canceled2, result: newPassword } = await os.dialog({
+			const { canceled: canceled2, result: newPassword } = await os.inputText({
 				title: this.$ts.newPassword,
-				input: {
-					type: 'password'
-				}
+				type: 'password'
 			});
 			if (canceled2) return;
 
-			const { canceled: canceled3, result: newPassword2 } = await os.dialog({
+			const { canceled: canceled3, result: newPassword2 } = await os.inputText({
 				title: this.$ts.newPasswordRetype,
-				input: {
-					type: 'password'
-				}
+				type: 'password'
 			});
 			if (canceled3) return;
 
 			if (newPassword !== newPassword2) {
-				os.dialog({
+				os.alert({
 					type: 'error',
 					text: this.$ts.retypedNotMatch
 				});
@@ -103,11 +97,9 @@ export default defineComponent({
 		},
 
 		regenerateToken() {
-			os.dialog({
+			os.inputText({
 				title: this.$ts.password,
-				input: {
-					type: 'password'
-				}
+				type: 'password'
 			}).then(({ canceled, result: password }) => {
 				if (canceled) return;
 				os.api('i/regenerate_token', {

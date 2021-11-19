@@ -4,8 +4,8 @@
 	@close="$refs.dialog.close()"
 	@closed="$emit('closed')"
 >
-	<template #header v-if="file">{{ file.name }}</template>
-	<div class="cxqhhsmd" v-if="file">
+	<template v-if="file" #header>{{ file.name }}</template>
+	<div v-if="file" class="cxqhhsmd">
 		<div class="_section">
 			<MkDriveFileThumbnail class="thumbnail" :file="file" fit="contain"/>
 			<div class="info">
@@ -16,7 +16,7 @@
 		</div>
 		<div class="_section">
 			<div class="_content">
-				<MkSwitch @update:modelValue="toggleIsSensitive" v-model="isSensitive">NSFW</MkSwitch>
+				<MkSwitch v-model="isSensitive" @update:modelValue="toggleIsSensitive">NSFW</MkSwitch>
 			</div>
 		</div>
 		<div class="_section">
@@ -25,7 +25,7 @@
 				<MkButton full danger @click="del"><i class="fas fa-trash-alt"></i> {{ $ts.delete }}</MkButton>
 			</div>
 		</div>
-		<div class="_section" v-if="info">
+		<div v-if="info" class="_section">
 			<details class="_content rawdata">
 				<pre><code>{{ JSON.stringify(info, null, 2) }}</code></pre>
 			</details>
@@ -86,10 +86,9 @@ export default defineComponent({
 		},
 
 		async del() {
-			const { canceled } = await os.dialog({
+			const { canceled } = await os.confirm({
 				type: 'warning',
 				text: this.$t('removeAreYouSure', { x: this.file.name }),
-				showCancelButton: true
 			});
 			if (canceled) return;
 

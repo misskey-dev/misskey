@@ -9,7 +9,7 @@
 			<template #caption>{{ $ts.proxyAccountDescription }}</template>
 		</FormGroup>
 
-		<FormButton @click="chooseProxyAccount" primary>{{ $ts.selectAccount }}</FormButton>
+		<FormButton primary @click="chooseProxyAccount">{{ $ts.selectAccount }}</FormButton>
 	</FormSuspense>
 </FormBase>
 </template>

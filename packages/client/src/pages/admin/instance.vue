@@ -106,11 +106,11 @@
 			<MkSwitch :model-value="isBlocked" class="switch" @update:modelValue="changeBlock">{{ $ts.blockThisInstance }}</MkSwitch>
 			<details>
 				<summary>{{ $ts.deleteAllFiles }}</summary>
-				<MkButton @click="deleteAllFiles()" style="margin: 0.5em 0 0.5em 0;"><i class="fas fa-trash-alt"></i> {{ $ts.deleteAllFiles }}</MkButton>
+				<MkButton style="margin: 0.5em 0 0.5em 0;" @click="deleteAllFiles()"><i class="fas fa-trash-alt"></i> {{ $ts.deleteAllFiles }}</MkButton>
 			</details>
 			<details>
 				<summary>{{ $ts.removeAllFollowing }}</summary>
-				<MkButton @click="removeAllFollowing()" style="margin: 0.5em 0 0.5em 0;"><i class="fas fa-minus-circle"></i> {{ $ts.removeAllFollowing }}</MkButton>
+				<MkButton style="margin: 0.5em 0 0.5em 0;" @click="removeAllFollowing()"><i class="fas fa-minus-circle"></i> {{ $ts.removeAllFollowing }}</MkButton>
 				<MkInfo warn>{{ $t('removeAllFollowingDescription', { host: instance.host }) }}</MkInfo>
 			</details>
 		</div>

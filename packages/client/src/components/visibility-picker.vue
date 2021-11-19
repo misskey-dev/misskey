@@ -1,28 +1,28 @@
 <template>
 <MkModal ref="modal" :src="src" @click="$refs.modal.close()" @closed="$emit('closed')">
 	<div class="gqyayizv _popup">
-		<button class="_button" @click="choose('public')" :class="{ active: v == 'public' }" data-index="1" key="public">
+		<button key="public" class="_button" :class="{ active: v == 'public' }" data-index="1" @click="choose('public')">
 			<div><i class="fas fa-globe"></i></div>
 			<div>
 				<span>{{ $ts._visibility.public }}</span>
 				<span>{{ $ts._visibility.publicDescription }}</span>
 			</div>
 		</button>
-		<button class="_button" @click="choose('home')" :class="{ active: v == 'home' }" data-index="2" key="home">
+		<button key="home" class="_button" :class="{ active: v == 'home' }" data-index="2" @click="choose('home')">
 			<div><i class="fas fa-home"></i></div>
 			<div>
 				<span>{{ $ts._visibility.home }}</span>
 				<span>{{ $ts._visibility.homeDescription }}</span>
 			</div>
 		</button>
-		<button class="_button" @click="choose('followers')" :class="{ active: v == 'followers' }" data-index="3" key="followers">
+		<button key="followers" class="_button" :class="{ active: v == 'followers' }" data-index="3" @click="choose('followers')">
 			<div><i class="fas fa-unlock"></i></div>
 			<div>
 				<span>{{ $ts._visibility.followers }}</span>
 				<span>{{ $ts._visibility.followersDescription }}</span>
 			</div>
 		</button>
-		<button :disabled="localOnly" class="_button" @click="choose('specified')" :class="{ active: v == 'specified' }" data-index="4" key="specified">
+		<button key="specified" :disabled="localOnly" class="_button" :class="{ active: v == 'specified' }" data-index="4" @click="choose('specified')">
 			<div><i class="fas fa-envelope"></i></div>
 			<div>
 				<span>{{ $ts._visibility.specified }}</span>
@@ -30,7 +30,7 @@
 			</div>
 		</button>
 		<div class="divider"></div>
-		<button class="_button localOnly" @click="localOnly = !localOnly" :class="{ active: localOnly }" data-index="5" key="localOnly">
+		<button key="localOnly" class="_button localOnly" :class="{ active: localOnly }" data-index="5" @click="localOnly = !localOnly">
 			<div><i class="fas fa-biohazard"></i></div>
 			<div>
 				<span>{{ $ts._visibility.localOnly }}</span>

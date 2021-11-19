@@ -1,10 +1,10 @@
 <template>
-<div class="skeikyzd" v-show="files.length != 0">
-	<XDraggable class="files" v-model="_files" item-key="id" animation="150" delay="100" delay-on-touch-only="true">
+<div v-show="files.length != 0" class="skeikyzd">
+	<XDraggable v-model="_files" class="files" item-key="id" animation="150" delay="100" delay-on-touch-only="true">
 		<template #item="{element}">
 			<div @click="showFileMenu(element, $event)" @contextmenu.prevent="showFileMenu(element, $event)">
 				<MkDriveFileThumbnail :data-id="element.id" class="thumbnail" :file="element" fit="cover"/>
-				<div class="sensitive" v-if="element.isSensitive">
+				<div v-if="element.isSensitive" class="sensitive">
 					<i class="fas fa-exclamation-triangle icon"></i>
 				</div>
 			</div>
@@ -73,11 +73,9 @@ export default defineComponent({
 			});
 		},
 		async rename(file) {
-			const { canceled, result } = await os.dialog({
+			const { canceled, result } = await os.inputText({
 				title: this.$ts.enterFileName,
-				input: {
-					default: file.name
-				},
+				default: file.name,
 				allowEmpty: false
 			});
 			if (canceled) return;

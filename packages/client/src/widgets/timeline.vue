@@ -1,7 +1,7 @@
 <template>
 <MkContainer :show-header="props.showHeader" :style="`height: ${props.height}px;`" :scrollable="true">
 	<template #header>
-		<button @click="choose" class="_button">
+		<button class="_button" @click="choose">
 			<i v-if="props.src === 'home'" class="fas fa-home"></i>
 			<i v-else-if="props.src === 'local'" class="fas fa-comments"></i>
 			<i v-else-if="props.src === 'social'" class="fas fa-share-alt"></i>
@@ -51,11 +51,11 @@ const widget = define({
 });
 
 export default defineComponent({
-	extends: widget,
 	components: {
 		MkContainer,
 		XTimeline,
 	},
+	extends: widget,
 
 	data() {
 		return {

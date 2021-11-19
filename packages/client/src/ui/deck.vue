@@ -1,6 +1,6 @@
 <template>
-<div class="mk-deck" :class="`${deckStore.reactiveState.columnAlign.value}`" @contextmenu.self.prevent="onContextmenu"
-	:style="{ '--deckMargin': deckStore.reactiveState.columnMargin.value + 'px' }"
+<div class="mk-deck" :class="`${deckStore.reactiveState.columnAlign.value}`" :style="{ '--deckMargin': deckStore.reactiveState.columnMargin.value + 'px' }"
+	@contextmenu.self.prevent="onContextmenu"
 >
 	<XSidebar ref="nav"/>
 
@@ -13,12 +13,12 @@
 			<DeckColumnCore v-for="id in ids" :ref="id" :key="id" :column="columns.find(c => c.id === id)" :is-stacked="true" @parent-focus="moveFocus(id, $event)"/>
 		</section>
 		<DeckColumnCore v-else
-			class="column"
 			:ref="ids[0]"
 			:key="ids[0]"
+			class="column"
 			:column="columns.find(c => c.id === ids[0])"
-			@parent-focus="moveFocus(ids[0], $event)"
 			:style="columns.find(c => c.id === ids[0]).flexible ? { flex: 1, minWidth: '350px' } : { width: columns.find(c => c.id === ids[0]).width + 'px' }"
+			@parent-focus="moveFocus(ids[0], $event)"
 		/>
 	</template>
 
@@ -118,15 +118,11 @@ export default defineComponent({
 				'direct',
 			];
 
-			const { canceled, result: column } = await os.dialog({
+			const { canceled, result: column } = await os.select({
 				title: this.$ts._deck.addColumn,
-				type: null,
-				select: {
-					items: columns.map(column => ({
-						value: column, text: this.$t('_deck._columns.' + column)
-					}))
-				},
-				showCancelButton: true
+				items: columns.map(column => ({
+					value: column, text: this.$t('_deck._columns.' + column)
+				}))
 			});
 			if (canceled) return;
 

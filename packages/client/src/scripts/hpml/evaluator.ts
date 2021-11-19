@@ -39,9 +39,8 @@ export class Hpml {
 			}), ...initAiLib(this)}, {
 				in: (q) => {
 					return new Promise(ok => {
-						os.dialog({
+						os.inputText({
 							title: q,
-							input: {}
 						}).then(({ canceled, result: a }) => {
 							ok(a);
 						});

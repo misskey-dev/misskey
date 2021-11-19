@@ -1,6 +1,6 @@
 <template>
 <transition :name="$store.state.animation ? 'popup-menu' : ''" appear @after-leave="onClosed" @enter="$emit('opening')" @after-enter="childRendered">
-	<div v-show="manualShowing != null ? manualShowing : showing" class="ccczpooj" :class="{ front, fixed, top: position === 'top' }" ref="content" :style="{ pointerEvents: (manualShowing != null ? manualShowing : showing) ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
+	<div v-show="manualShowing != null ? manualShowing : showing" ref="content" class="ccczpooj" :class="{ front, fixed, top: position === 'top' }" :style="{ pointerEvents: (manualShowing != null ? manualShowing : showing) ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
 		<slot></slot>
 	</div>
 </transition>
@@ -58,6 +58,7 @@ export default defineComponent({
 	mounted() {
 		this.$watch('src', () => {
 			if (this.src) {
+				// eslint-disable-next-line vue/no-mutating-props
 				this.src.style.pointerEvents = 'none';
 			}
 			this.fixed = getFixedContainer(this.src) != null;
@@ -159,6 +160,7 @@ export default defineComponent({
 		},
 
 		close() {
+			// eslint-disable-next-line vue/no-mutating-props
 			if (this.src) this.src.style.pointerEvents = 'auto';
 			this.showing = false;
 			this.$emit('close');

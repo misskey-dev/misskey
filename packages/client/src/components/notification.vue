@@ -1,5 +1,5 @@
 <template>
-<div class="qglefbjs" :class="notification.type" v-size="{ max: [500, 600] }" ref="elRef">
+<div ref="elRef" v-size="{ max: [500, 600] }" class="qglefbjs" :class="notification.type">
 	<div class="head">
 		<MkAvatar v-if="notification.user" class="icon" :user="notification.user"/>
 		<img v-else-if="notification.icon" class="icon" :src="notification.icon" alt=""/>
@@ -15,6 +15,7 @@
 			<i v-else-if="notification.type === 'pollVote'" class="fas fa-poll-h"></i>
 			<!-- notification.reaction が null になることはまずないが、ここでoptional chaining使うと一部ブラウザで刺さるので念の為 -->
 			<XReactionIcon v-else-if="notification.type === 'reaction'"
+				ref="reactionRef"
 				:reaction="notification.reaction ? notification.reaction.replace(/^:(\w+):$/, ':$1@.:') : notification.reaction"
 				:custom-emojis="notification.note.emojis"
 				:no-style="true"
@@ -22,15 +23,14 @@
 				@mouseover="onReactionMouseover"
 				@mouseleave="onReactionMouseleave"
 				@touchend="onReactionMouseleave"
-				ref="reactionRef"
 			/>
 		</div>
 	</div>
 	<div class="tail">
 		<header>
-			<MkA v-if="notification.user" class="name" :to="userPage(notification.user)" v-user-preview="notification.user.id"><MkUserName :user="notification.user"/></MkA>
+			<MkA v-if="notification.user" v-user-preview="notification.user.id" class="name" :to="userPage(notification.user)"><MkUserName :user="notification.user"/></MkA>
 			<span v-else>{{ notification.header }}</span>
-			<MkTime :time="notification.createdAt" v-if="withTime" class="time"/>
+			<MkTime v-if="withTime" :time="notification.createdAt" class="time"/>
 		</header>
 		<MkA v-if="notification.type === 'reaction'" class="text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
 			<i class="fas fa-quote-left"></i>

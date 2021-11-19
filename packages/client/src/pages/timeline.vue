@@ -1,12 +1,12 @@
 <template>
-<div class="cmuxhskf" v-size="{ min: [800] }" v-hotkey.global="keymap">
+<div v-size="{ min: [800] }" v-hotkey.global="keymap" class="cmuxhskf">
 	<XTutorial v-if="$store.reactiveState.tutorial.value != -1" class="tutorial _block"/>
 	<XPostForm v-if="$store.reactiveState.showFixedPostForm.value" class="post-form _block" fixed/>
 
-	<div class="new" v-if="queue > 0"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
+	<div v-if="queue > 0" class="new"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
 	<div class="tl _block">
-		<XTimeline ref="tl" class="tl"
-			:key="src"
+		<XTimeline ref="tl" :key="src"
+			class="tl"
 			:src="src"
 			:sound="true"
 			@before="before()"
@@ -171,15 +171,12 @@ export default defineComponent({
 		},
 
 		async timetravel() {
-			const { canceled, result: date } = await os.dialog({
+			const { canceled, result: date } = await os.inputDate({
 				title: this.$ts.date,
-				input: {
-					type: 'date'
-				}
 			});
 			if (canceled) return;
 
-			this.$refs.tl.timetravel(new Date(date));
+			this.$refs.tl.timetravel(date);
 		},
 
 		focus() {

@@ -244,8 +244,9 @@ export default define(meta, async (ps, user) => {
 
 	if (ps.poll) {
 		if (typeof ps.poll.expiresAt === 'number') {
-			if (ps.poll.expiresAt < Date.now())
+			if (ps.poll.expiresAt < Date.now()) {
 				throw new ApiError(meta.errors.cannotCreateAlreadyExpiredPoll);
+			}
 		} else if (typeof ps.poll.expiredAfter === 'number') {
 			ps.poll.expiresAt = Date.now() + ps.poll.expiredAfter;
 		}

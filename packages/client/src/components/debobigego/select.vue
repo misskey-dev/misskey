@@ -1,9 +1,9 @@
 <template>
 <div class="yrtfrpux _debobigegoItem" :class="{ disabled, inline }">
 	<div class="_debobigegoLabel"><slot name="label"></slot></div>
-	<div class="icon" ref="icon"><slot name="icon"></slot></div>
+	<div ref="icon" class="icon"><slot name="icon"></slot></div>
 	<div class="input _debobigegoPanel _debobigegoClickable" @click="focus">
-		<div class="prefix" ref="prefix"><slot name="prefix"></slot></div>
+		<div ref="prefix" class="prefix"><slot name="prefix"></slot></div>
 		<select ref="input"
 			v-model="v"
 			:required="required"

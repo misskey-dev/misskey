@@ -1,9 +1,9 @@
 <template>
-<div class="qvzfzxam _narrow_" v-if="component">
+<div v-if="component" class="qvzfzxam _narrow_">
 	<div class="container">
 		<header class="header" @contextmenu.prevent.stop="onContextmenu">
-			<button class="_button" @click="back()" v-if="history.length > 0"><i class="fas fa-chevron-left"></i></button>
-			<button class="_button" style="pointer-events: none;" v-else><!-- マージンのバランスを取るためのダミー --></button>
+			<button v-if="history.length > 0" class="_button" @click="back()"><i class="fas fa-chevron-left"></i></button>
+			<button v-else class="_button" style="pointer-events: none;"><!-- マージンのバランスを取るためのダミー --></button>
 			<span class="title">{{ pageInfo.title }}</span>
 			<button class="_button" @click="close()"><i class="fas fa-times"></i></button>
 		</header>

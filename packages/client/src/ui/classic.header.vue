@@ -2,30 +2,30 @@
 <div class="azykntjl">
 	<div class="body">
 		<div class="left">
-			<MkA class="item index" active-class="active" to="/" exact v-click-anime v-tooltip="$ts.timeline">
+			<MkA v-click-anime v-tooltip="$ts.timeline" class="item index" active-class="active" to="/" exact>
 				<i class="fas fa-home fa-fw"></i>
 			</MkA>
 			<template v-for="item in menu">
 				<div v-if="item === '-'" class="divider"></div>
-				<component v-else-if="menuDef[item] && (menuDef[item].show !== false)" :is="menuDef[item].to ? 'MkA' : 'button'" class="item _button" :class="item" active-class="active" v-on="menuDef[item].action ? { click: menuDef[item].action } : {}" :to="menuDef[item].to" v-click-anime v-tooltip="$ts[menuDef[item].title]">
+				<component :is="menuDef[item].to ? 'MkA' : 'button'" v-else-if="menuDef[item] && (menuDef[item].show !== false)" v-click-anime v-tooltip="$ts[menuDef[item].title]" class="item _button" :class="item" active-class="active" :to="menuDef[item].to" v-on="menuDef[item].action ? { click: menuDef[item].action } : {}">
 					<i class="fa-fw" :class="menuDef[item].icon"></i>
 					<span v-if="menuDef[item].indicated" class="indicator"><i class="fas fa-circle"></i></span>
 				</component>
 			</template>
 			<div class="divider"></div>
-			<MkA v-if="$i.isAdmin || $i.isModerator" class="item" active-class="active" to="/admin" :behavior="settingsWindowed ? 'modalWindow' : null" v-click-anime v-tooltip="$ts.controlPanel">
+			<MkA v-if="$i.isAdmin || $i.isModerator" v-click-anime v-tooltip="$ts.controlPanel" class="item" active-class="active" to="/admin" :behavior="settingsWindowed ? 'modalWindow' : null">
 				<i class="fas fa-door-open fa-fw"></i>
 			</MkA>
-			<button class="item _button" @click="more" v-click-anime>
+			<button v-click-anime class="item _button" @click="more">
 				<i class="fas fa-ellipsis-h fa-fw"></i>
 				<span v-if="otherNavItemIndicated" class="indicator"><i class="fas fa-circle"></i></span>
 			</button>
 		</div>
 		<div class="right">
-			<MkA class="item" active-class="active" to="/settings" :behavior="settingsWindowed ? 'modalWindow' : null" v-click-anime v-tooltip="$ts.settings">
+			<MkA v-click-anime v-tooltip="$ts.settings" class="item" active-class="active" to="/settings" :behavior="settingsWindowed ? 'modalWindow' : null">
 				<i class="fas fa-cog fa-fw"></i>
 			</MkA>
-			<button class="item _button account" @click="openAccountMenu" v-click-anime>
+			<button v-click-anime class="item _button account" @click="openAccountMenu">
 				<MkAvatar :user="$i" class="avatar"/><MkAcct class="acct" :user="$i"/>
 			</button>
 			<div class="post" @click="post">

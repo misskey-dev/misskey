@@ -1,5 +1,5 @@
 <template>
-<MkTooltip :source="source" ref="tooltip" @closed="$emit('closed')" :max-width="340">
+<MkTooltip ref="tooltip" :source="source" :max-width="340" @closed="$emit('closed')">
 	<div class="beeadbfb">
 		<XReactionIcon :reaction="reaction" :custom-emojis="emojis" class="icon" :no-style="true"/>
 		<div class="name">{{ reaction.replace('@.', '') }}</div>

@@ -3,7 +3,7 @@
 	<div class="iuyakobc" :class="{ iconOnly: (text == null) || success }">
 		<i v-if="success" class="fas fa-check icon success"></i>
 		<i v-else class="fas fa-spinner fa-pulse icon waiting"></i>
-		<div class="text" v-if="text && !success">{{ text }}<MkEllipsis/></div>
+		<div v-if="text && !success" class="text">{{ text }}<MkEllipsis/></div>
 	</div>
 </MkModal>
 </template>

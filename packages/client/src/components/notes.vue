@@ -4,25 +4,25 @@
 
 	<MkError v-else-if="error" @retry="init()"/>
 
-	<div class="_fullinfo" v-else-if="empty">
+	<div v-else-if="empty" class="_fullinfo">
 		<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
 		<div>{{ $ts.noNotes }}</div>
 	</div>
 
 	<div v-else class="giivymft" :class="{ noGap }">
 		<div v-show="more && reversed" style="margin-bottom: var(--margin);">
-			<MkButton style="margin: 0 auto;" @click="fetchMoreFeature" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
+			<MkButton style="margin: 0 auto;" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" @click="fetchMoreFeature">
 				<template v-if="!moreFetching">{{ $ts.loadMore }}</template>
 				<template v-if="moreFetching"><MkLoading inline/></template>
 			</MkButton>
 		</div>
 
-		<XList ref="notes" :items="notes" v-slot="{ item: note }" :direction="reversed ? 'up' : 'down'" :reversed="reversed" :no-gap="noGap" :ad="true" class="notes">
-			<XNote class="qtqtichx" :note="note" @update:note="updated(note, $event)" :key="note._featuredId_ || note._prId_ || note.id"/>
+		<XList ref="notes" v-slot="{ item: note }" :items="notes" :direction="reversed ? 'up' : 'down'" :reversed="reversed" :no-gap="noGap" :ad="true" class="notes">
+			<XNote :key="note._featuredId_ || note._prId_ || note.id" class="qtqtichx" :note="note" @update:note="updated(note, $event)"/>
 		</XList>
 
 		<div v-show="more && !reversed" style="margin-top: var(--margin);">
-			<MkButton style="margin: 0 auto;" v-appear="$store.state.enableInfiniteScroll ? fetchMore : null" @click="fetchMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
+			<MkButton v-appear="$store.state.enableInfiniteScroll ? fetchMore : null" style="margin: 0 auto;" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" @click="fetchMore">
 				<template v-if="!moreFetching">{{ $ts.loadMore }}</template>
 				<template v-if="moreFetching"><MkLoading inline/></template>
 			</MkButton>

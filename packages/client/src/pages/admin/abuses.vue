@@ -33,8 +33,8 @@
 			</div>
 			-->
 
-			<MkPagination :pagination="pagination" #default="{items}" ref="reports" style="margin-top: var(--margin);">
-				<div class="bcekxzvu _card _gap" v-for="report in items" :key="report.id">
+			<MkPagination #default="{items}" ref="reports" :pagination="pagination" style="margin-top: var(--margin);">
+				<div v-for="report in items" :key="report.id" class="bcekxzvu _card _gap">
 					<div class="_content target">
 						<MkAvatar class="avatar" :user="report.targetUser" :show-indicator="true"/>
 						<div class="info">
@@ -52,7 +52,7 @@
 					</div>
 					<div class="_footer">
 						<div v-if="report.assignee">Assignee: <MkAcct :user="report.assignee"/></div>
-						<MkButton @click="resolve(report)" primary v-if="!report.resolved">{{ $ts.abuseMarkAsResolved }}</MkButton>
+						<MkButton v-if="!report.resolved" primary @click="resolve(report)">{{ $ts.abuseMarkAsResolved }}</MkButton>
 					</div>
 				</div>
 			</MkPagination>

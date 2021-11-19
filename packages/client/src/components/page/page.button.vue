@@ -1,6 +1,6 @@
 <template>
 <div>
-	<MkButton class="kudkigyw" @click="click()" :primary="block.primary">{{ hpml.interpolate(block.text) }}</MkButton>
+	<MkButton class="kudkigyw" :primary="block.primary" @click="click()">{{ hpml.interpolate(block.text) }}</MkButton>
 </div>
 </template>
 
@@ -29,7 +29,7 @@ export default defineComponent({
 		click() {
 			if (this.block.action === 'dialog') {
 				this.hpml.eval();
-				os.dialog({
+				os.alert({
 					text: this.hpml.interpolate(this.block.content)
 				});
 			} else if (this.block.action === 'resetRandom') {
@@ -44,7 +44,7 @@ export default defineComponent({
 					} : {})
 				});
 
-				os.dialog({
+				os.alert({
 					type: 'success',
 					text: this.hpml.interpolate(this.block.message)
 				});
