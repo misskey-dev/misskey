@@ -31,6 +31,7 @@ module.exports = {
 		"vue/no-unused-components": "warn",
 		"vue/valid-v-for": "warn",
 		"vue/return-in-computed-property": "warn",
+		"vue/max-attributes-per-line": "off",
 	},
 	globals: {
 		"require": false,
