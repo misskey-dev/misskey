@@ -1,6 +1,6 @@
 <template>
 <div>
-	<MkPagination :pagination="pagination" class="mk-follow-requests" ref="list">
+	<MkPagination ref="list" :pagination="pagination" class="mk-follow-requests">
 		<template #empty>
 			<div class="_fullinfo">
 				<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
@@ -8,14 +8,14 @@
 			</div>
 		</template>
 		<template #default="{items}">
-			<div class="user _panel" v-for="req in items" :key="req.id">
+			<div v-for="req in items" :key="req.id" class="user _panel">
 				<MkAvatar class="avatar" :user="req.follower" :show-indicator="true"/>
 				<div class="body">
 					<div class="name">
-						<MkA class="name" :to="userPage(req.follower)" v-user-preview="req.follower.id"><MkUserName :user="req.follower"/></MkA>
+						<MkA v-user-preview="req.follower.id" class="name" :to="userPage(req.follower)"><MkUserName :user="req.follower"/></MkA>
 						<p class="acct">@{{ acct(req.follower) }}</p>
 					</div>
-					<div class="description" v-if="req.follower.description" :title="req.follower.description">
+					<div v-if="req.follower.description" class="description" :title="req.follower.description">
 						<Mfm :text="req.follower.description" :is-note="false" :author="req.follower" :i="$i" :custom-emojis="req.follower.emojis" :plain="true" :nowrap="true"/>
 					</div>
 					<div class="actions">

@@ -1,5 +1,5 @@
 <template>
-<div class="rsqzvsbo" v-if="meta">
+<div v-if="meta" class="rsqzvsbo">
 	<div class="top">
 		<MkFeaturedPhotos class="bg"/>
 		<XTimeline class="tl"/>
@@ -27,10 +27,10 @@
 					<div class="desc" v-html="meta.description || $ts.headlineMisskey"></div>
 				</div>
 				<div class="action">
-					<MkButton @click="signup()" inline gradate data-cy-signup style="margin-right: 12px;">{{ $ts.signup }}</MkButton>
-					<MkButton @click="signin()" inline data-cy-signin>{{ $ts.login }}</MkButton>
+					<MkButton inline gradate data-cy-signup style="margin-right: 12px;" @click="signup()">{{ $ts.signup }}</MkButton>
+					<MkButton inline data-cy-signin @click="signin()">{{ $ts.login }}</MkButton>
 				</div>
-				<div class="status" v-if="onlineUsersCount && stats">
+				<div v-if="onlineUsersCount && stats" class="status">
 					<div>
 						<I18n :src="$ts.nUsers" text-tag="span" class="users">
 							<template #n><b>{{ number(stats.originalUsersCount) }}</b></template>

@@ -26,7 +26,7 @@ import { router } from '@/router';
 import { applyTheme } from '@/scripts/theme';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
 import { i18n } from '@/i18n';
-import { stream, dialog, post, popup } from '@/os';
+import { stream, confirm, alert, post, popup } from '@/os';
 import * as sound from '@/scripts/sound';
 import { $i, refreshAccount, login, updateAccount, signout } from '@/account';
 import { defaultStore, ColdDeviceStorage } from '@/store';
@@ -42,10 +42,6 @@ import { getAccountFromId } from '@/scripts/get-account-from-id';
 
 console.info(`Misskey v${version}`);
 
-// boot.jsのやつを解除
-window.onerror = null;
-window.onunhandledrejection = null;
-
 if (_DEV_) {
 	console.warn('Development mode!!!');
 
@@ -57,7 +53,7 @@ if (_DEV_) {
 	window.addEventListener('error', event => {
 		console.error(event);
 		/*
-		dialog({
+		alert({
 			type: 'error',
 			title: 'DEV: Unhandled error',
 			text: event.message
@@ -68,7 +64,7 @@ if (_DEV_) {
 	window.addEventListener('unhandledrejection', event => {
 		console.error(event);
 		/*
-		dialog({
+		alert({
 			type: 'error',
 			title: 'DEV: Unhandled promise rejection',
 			text: event.reason
@@ -224,6 +220,10 @@ const rootEl = document.createElement('div');
 document.body.appendChild(rootEl);
 app.mount(rootEl);
 
+// boot.jsのやつを解除
+window.onerror = null;
+window.onunhandledrejection = null;
+
 reactionPicker.init();
 
 if (splash) {
@@ -311,11 +311,10 @@ stream.on('_disconnected_', async () => {
 	} else if (defaultStore.state.serverDisconnectedBehavior === 'dialog') {
 		if (reloadDialogShowing) return;
 		reloadDialogShowing = true;
-		const { canceled } = await dialog({
+		const { canceled } = await confirm({
 			type: 'warning',
 			title: i18n.locale.disconnectedFromServer,
 			text: i18n.locale.reloadConfirm,
-			showCancelButton: true
 		});
 		reloadDialogShowing = false;
 		if (!canceled) {
@@ -337,7 +336,7 @@ for (const plugin of ColdDeviceStorage.get('plugins').filter(p => p.active)) {
 
 if ($i) {
 	if ($i.isDeleted) {
-		dialog({
+		alert({
 			type: 'warning',
 			text: i18n.locale.accountDeletionInProgress,
 		});

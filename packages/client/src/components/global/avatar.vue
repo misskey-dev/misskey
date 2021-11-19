@@ -1,9 +1,9 @@
 <template>
-<span class="eiwwqkts _noSelect" :class="{ cat, square: $store.state.squareAvatars }" :title="acct(user)" v-if="disableLink" v-user-preview="disablePreview ? undefined : user.id" @click="onClick">
+<span v-if="disableLink" v-user-preview="disablePreview ? undefined : user.id" class="eiwwqkts _noSelect" :class="{ cat, square: $store.state.squareAvatars }" :title="acct(user)" @click="onClick">
 	<img class="inner" :src="url" decoding="async"/>
 	<MkUserOnlineIndicator v-if="showIndicator" class="indicator" :user="user"/>
 </span>
-<MkA class="eiwwqkts _noSelect" :class="{ cat, square: $store.state.squareAvatars }" :to="userPage(user)" :title="acct(user)" :target="target" v-else v-user-preview="disablePreview ? undefined : user.id">
+<MkA v-else v-user-preview="disablePreview ? undefined : user.id" class="eiwwqkts _noSelect" :class="{ cat, square: $store.state.squareAvatars }" :to="userPage(user)" :title="acct(user)" :target="target">
 	<img class="inner" :src="url" decoding="async"/>
 	<MkUserOnlineIndicator v-if="showIndicator" class="indicator" :user="user"/>
 </MkA>

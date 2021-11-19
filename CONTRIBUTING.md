@@ -49,6 +49,11 @@ If your language is not listed in Crowdin, please open an issue.
 
 ![Crowdin](https://d322cqt584bo4o.cloudfront.net/misskey/localized.svg)
 
+## Development
+During development, it is useful to use the `npm run dev` command.
+This command monitors the server-side and client-side source files and automatically builds them if they are modified.
+In addition, it will also automatically start the Misskey server process.
+
 ## Testing
 - Test codes are located in [`/test`](/test).
 

@@ -1,8 +1,8 @@
 <template>
 <div>
-	<MkPagination :pagination="pagination" #default="{items}" class="mk-following-or-followers" ref="list">
+	<MkPagination #default="{items}" ref="list" :pagination="pagination" class="mk-following-or-followers">
 		<div class="users _isolated">
-			<MkUserInfo class="user" v-for="user in items.map(x => type === 'following' ? x.followee : x.follower)" :user="user" :key="user.id"/>
+			<MkUserInfo v-for="user in items.map(x => type === 'following' ? x.followee : x.follower)" :key="user.id" class="user" :user="user"/>
 		</div>
 	</MkPagination>
 </div>

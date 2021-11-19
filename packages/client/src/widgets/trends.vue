@@ -4,7 +4,7 @@
 
 	<div class="wbrkwala">
 		<MkLoading v-if="fetching"/>
-		<transition-group tag="div" name="chart" class="tags" v-else>
+		<transition-group v-else tag="div" name="chart" class="tags">
 			<div v-for="stat in stats" :key="stat.tag">
 				<div class="tag">
 					<MkA class="a" :to="`/tags/${ encodeURIComponent(stat.tag) }`" :title="stat.tag">#{{ stat.tag }}</MkA>
@@ -35,10 +35,10 @@ const widget = define({
 });
 
 export default defineComponent({
-	extends: widget,
 	components: {
 		MkContainer, MkMiniChart
 	},
+	extends: widget,
 	data() {
 		return {
 			stats: [],

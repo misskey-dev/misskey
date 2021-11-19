@@ -3,10 +3,10 @@
 	<MkContainer :foldable="true" class="lookup">
 		<template #header><i class="fas fa-search"></i> {{ $ts.lookup }}</template>
 		<div class="xrmjdkdw-lookup">
-			<MkInput class="item" v-model="q" type="text" @enter="find()">
+			<MkInput v-model="q" class="item" type="text" @enter="find()">
 				<template #label>{{ $ts.fileIdOrUrl }}</template>
 			</MkInput>
-			<MkButton @click="find()" primary><i class="fas fa-search"></i> {{ $ts.lookup }}</MkButton>
+			<MkButton primary @click="find()"><i class="fas fa-search"></i> {{ $ts.lookup }}</MkButton>
 		</div>
 	</MkContainer>
 
@@ -28,8 +28,8 @@
 					<template #label>MIME type</template>
 				</MkInput>
 			</div>
-			<MkPagination :pagination="pagination" #default="{items}" class="urempief" ref="files">
-				<button class="file _panel _button _gap" v-for="file in items" :key="file.id" @click="show(file, $event)">
+			<MkPagination #default="{items}" ref="files" :pagination="pagination" class="urempief">
+				<button v-for="file in items" :key="file.id" class="file _panel _button _gap" @click="show(file, $event)">
 					<MkDriveFileThumbnail class="thumbnail" :file="file" fit="contain"/>
 					<div class="body">
 						<div>
@@ -124,10 +124,9 @@ export default defineComponent({
 
 	methods: {
 		clear() {
-			os.dialog({
+			os.confirm({
 				type: 'warning',
 				text: this.$ts.clearCachedFilesConfirm,
-				showCancelButton: true
 			}).then(({ canceled }) => {
 				if (canceled) return;
 
@@ -146,7 +145,7 @@ export default defineComponent({
 				this.show(file);
 			}).catch(e => {
 				if (e.code === 'NO_SUCH_FILE') {
-					os.dialog({
+					os.alert({
 						type: 'error',
 						text: this.$ts.notFound
 					});

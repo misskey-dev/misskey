@@ -8,7 +8,7 @@
 				<span>{{ $ts.emailAddress }}</span>
 			</FormInput>
 
-			<div class="_debobigegoItem _debobigegoNoConcat" v-sticky-container>
+			<div v-sticky-container class="_debobigegoItem _debobigegoNoConcat">
 				<div class="_debobigegoLabel">{{ $ts.smtpConfig }}</div>
 				<div class="main">
 					<FormInput v-model="smtpHost">
@@ -31,7 +31,7 @@
 			<FormButton @click="testEmail">{{ $ts.testEmail }}</FormButton>
 		</template>
 
-		<FormButton @click="save" primary><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
+		<FormButton primary @click="save"><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
 	</FormSuspense>
 </FormBase>
 </template>
@@ -96,11 +96,10 @@ export default defineComponent({
 		},
 
 		async testEmail() {
-			const { canceled, result: destination } = await os.dialog({
+			const { canceled, result: destination } = await os.inputText({
 				title: this.$ts.destination,
-				input: {
-					placeholder: this.$instance.maintainerEmail
-				}
+				type: 'email',
+				placeholder: this.$instance.maintainerEmail
 			});
 			if (canceled) return;
 			os.apiWithDialog('admin/send-email', {

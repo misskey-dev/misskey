@@ -4,7 +4,7 @@
 
 	<div class="otgbylcu">
 		<textarea v-model="text" :placeholder="$ts.placeholder" @input="onChange"></textarea>
-		<button @click="saveMemo" :disabled="!changed" class="_buttonPrimary">{{ $ts.save }}</button>
+		<button :disabled="!changed" class="_buttonPrimary" @click="saveMemo">{{ $ts.save }}</button>
 	</div>
 </MkContainer>
 </template>
@@ -26,10 +26,10 @@ const widget = define({
 });
 
 export default defineComponent({
-	extends: widget,
 	components: {
 		MkContainer
 	},
+	extends: widget,
 
 	data() {
 		return {

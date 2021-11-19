@@ -22,7 +22,7 @@
 					<p>{{ $ts.followers }}</p><span>{{ user.followersCount }}</span>
 				</div>
 			</div>
-			<MkFollowButton class="koudoku-button" v-if="$i && user.id != $i.id" :user="user" mini/>
+			<MkFollowButton v-if="$i && user.id != $i.id" class="koudoku-button" :user="user" mini/>
 		</div>
 		<div v-else>
 			<MkLoading/>

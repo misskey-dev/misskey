@@ -20,9 +20,9 @@
 		</FormGroup>
 
 		<FormGroup v-if="iAmModerator">
-			<FormSwitch v-if="user.host == null && $i.isAdmin && (moderator || !user.isAdmin)" @update:modelValue="toggleModerator" v-model="moderator">{{ $ts.moderator }}</FormSwitch>
-			<FormSwitch @update:modelValue="toggleSilence" v-model="silenced">{{ $ts.silence }}</FormSwitch>
-			<FormSwitch @update:modelValue="toggleSuspend" v-model="suspended">{{ $ts.suspend }}</FormSwitch>
+			<FormSwitch v-if="user.host == null && $i.isAdmin && (moderator || !user.isAdmin)" v-model="moderator" @update:modelValue="toggleModerator">{{ $ts.moderator }}</FormSwitch>
+			<FormSwitch v-model="silenced" @update:modelValue="toggleSilence">{{ $ts.silence }}</FormSwitch>
+			<FormSwitch v-model="suspended" @update:modelValue="toggleSuspend">{{ $ts.suspend }}</FormSwitch>
 		</FormGroup>
 
 		<FormGroup>
@@ -111,7 +111,7 @@ export default defineComponent({
 			moderator: false,
 			silenced: false,
 			suspended: false,
-		}
+		};
 	},
 
 	computed: {
@@ -171,16 +171,15 @@ export default defineComponent({
 				userId: this.user.id,
 			});
 
-			os.dialog({
+			os.alert({
 				type: 'success',
 				text: this.$t('newPasswordIs', { password })
 			});
 		},
 
 		async toggleSilence(v) {
-			const confirm = await os.dialog({
+			const confirm = await os.confirm({
 				type: 'warning',
-				showCancelButton: true,
 				text: v ? this.$ts.silenceConfirm : this.$ts.unsilenceConfirm,
 			});
 			if (confirm.canceled) {
@@ -192,9 +191,8 @@ export default defineComponent({
 		},
 
 		async toggleSuspend(v) {
-			const confirm = await os.dialog({
+			const confirm = await os.confirm({
 				type: 'warning',
-				showCancelButton: true,
 				text: v ? this.$ts.suspendConfirm : this.$ts.unsuspendConfirm,
 			});
 			if (confirm.canceled) {
@@ -211,9 +209,8 @@ export default defineComponent({
 		},
 
 		async deleteAllFiles() {
-			const confirm = await os.dialog({
+			const confirm = await os.confirm({
 				type: 'warning',
-				showCancelButton: true,
 				text: this.$ts.deleteAllFilesConfirm,
 			});
 			if (confirm.canceled) return;
@@ -222,7 +219,7 @@ export default defineComponent({
 				os.success();
 			};
 			await process().catch(e => {
-				os.dialog({
+				os.alert({
 					type: 'error',
 					text: e.toString()
 				});

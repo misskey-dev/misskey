@@ -1,29 +1,29 @@
 <template>
 <MkSpacer>
 	<!-- TODO: MkHeaderに統合 -->
-	<MkTab v-model="tab" v-if="$i">
+	<MkTab v-if="$i" v-model="tab">
 		<option value="featured"><i class="fas fa-fire-alt"></i> {{ $ts._pages.featured }}</option>
 		<option value="my"><i class="fas fa-edit"></i> {{ $ts._pages.my }}</option>
 		<option value="liked"><i class="fas fa-heart"></i> {{ $ts._pages.liked }}</option>
 	</MkTab>
 
 	<div class="_section">
-		<div class="rknalgpo _content" v-if="tab === 'featured'">
-			<MkPagination :pagination="featuredPagesPagination" #default="{items}">
-				<MkPagePreview v-for="page in items" class="ckltabjg" :page="page" :key="page.id"/>
+		<div v-if="tab === 'featured'" class="rknalgpo _content">
+			<MkPagination #default="{items}" :pagination="featuredPagesPagination">
+				<MkPagePreview v-for="page in items" :key="page.id" class="ckltabjg" :page="page"/>
 			</MkPagination>
 		</div>
 
-		<div class="rknalgpo _content my" v-if="tab === 'my'">
+		<div v-if="tab === 'my'" class="rknalgpo _content my">
 			<MkButton class="new" @click="create()"><i class="fas fa-plus"></i></MkButton>
-			<MkPagination :pagination="myPagesPagination" #default="{items}">
-				<MkPagePreview v-for="page in items" class="ckltabjg" :page="page" :key="page.id"/>
+			<MkPagination #default="{items}" :pagination="myPagesPagination">
+				<MkPagePreview v-for="page in items" :key="page.id" class="ckltabjg" :page="page"/>
 			</MkPagination>
 		</div>
 
-		<div class="rknalgpo _content" v-if="tab === 'liked'">
-			<MkPagination :pagination="likedPagesPagination" #default="{items}">
-				<MkPagePreview v-for="like in items" class="ckltabjg" :page="like.page" :key="like.page.id"/>
+		<div v-if="tab === 'liked'" class="rknalgpo _content">
+			<MkPagination #default="{items}" :pagination="likedPagesPagination">
+				<MkPagePreview v-for="like in items" :key="like.page.id" class="ckltabjg" :page="like.page"/>
 			</MkPagination>
 		</div>
 	</div>

@@ -16,7 +16,7 @@
 			<div class="_title">{{ $ts.members }}</div>
 			<div class="_content">
 				<div class="users">
-					<div class="user _panel" v-for="user in users" :key="user.id">
+					<div v-for="user in users" :key="user.id" class="user _panel">
 						<MkAvatar :user="user" class="avatar" :show-indicator="true"/>
 						<div class="body">
 							<MkUserName :user="user" class="name"/>
@@ -106,11 +106,9 @@ export default defineComponent({
 		},
 
 		async renameGroup() {
-			const { canceled, result: name } = await os.dialog({
+			const { canceled, result: name } = await os.inputText({
 				title: this.$ts.groupName,
-				input: {
-					default: this.group.name
-				}
+				default: this.group.name
 			});
 			if (canceled) return;
 
@@ -132,10 +130,9 @@ export default defineComponent({
 		},
 
 		async deleteGroup() {
-			const { canceled } = await os.dialog({
+			const { canceled } = await os.confirm({
 				type: 'warning',
 				text: this.$t('removeAreYouSure', { x: this.group.name }),
-				showCancelButton: true
 			});
 			if (canceled) return;
 

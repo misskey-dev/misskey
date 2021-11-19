@@ -1,41 +1,41 @@
 <template>
 <div class="mvcprjjd">
 	<transition name="nav-back">
-		<div class="nav-back _modalBg"
-			v-if="showing"
+		<div v-if="showing"
+			class="nav-back _modalBg"
 			@click="showing = false"
 			@touchstart.passive="showing = false"
 		></div>
 	</transition>
 
 	<transition name="nav">
-		<nav class="nav" :class="{ iconOnly, hidden }" v-show="showing">
+		<nav v-show="showing" class="nav" :class="{ iconOnly, hidden }">
 			<div>
-				<button class="item _button account" @click="openAccountMenu" v-click-anime>
+				<button v-click-anime class="item _button account" @click="openAccountMenu">
 					<MkAvatar :user="$i" class="avatar"/><MkAcct class="text" :user="$i"/>
 				</button>
-				<MkA class="item index" active-class="active" to="/" exact v-click-anime>
+				<MkA v-click-anime class="item index" active-class="active" to="/" exact>
 					<i class="fas fa-home fa-fw"></i><span class="text">{{ $ts.timeline }}</span>
 				</MkA>
 				<template v-for="item in menu">
 					<div v-if="item === '-'" class="divider"></div>
-					<component v-else-if="menuDef[item] && (menuDef[item].show !== false)" :is="menuDef[item].to ? 'MkA' : 'button'" class="item _button" :class="[item, { active: menuDef[item].active }]" active-class="active" v-on="menuDef[item].action ? { click: menuDef[item].action } : {}" :to="menuDef[item].to" v-click-anime>
+					<component :is="menuDef[item].to ? 'MkA' : 'button'" v-else-if="menuDef[item] && (menuDef[item].show !== false)" v-click-anime class="item _button" :class="[item, { active: menuDef[item].active }]" active-class="active" :to="menuDef[item].to" v-on="menuDef[item].action ? { click: menuDef[item].action } : {}">
 						<i class="fa-fw" :class="menuDef[item].icon"></i><span class="text">{{ $ts[menuDef[item].title] }}</span>
 						<span v-if="menuDef[item].indicated" class="indicator"><i class="fas fa-circle"></i></span>
 					</component>
 				</template>
 				<div class="divider"></div>
-				<MkA v-if="$i.isAdmin || $i.isModerator" class="item" active-class="active" to="/admin" v-click-anime>
+				<MkA v-if="$i.isAdmin || $i.isModerator" v-click-anime class="item" active-class="active" to="/admin">
 					<i class="fas fa-door-open fa-fw"></i><span class="text">{{ $ts.controlPanel }}</span>
 				</MkA>
-				<button class="item _button" @click="more" v-click-anime>
+				<button v-click-anime class="item _button" @click="more">
 					<i class="fa fa-ellipsis-h fa-fw"></i><span class="text">{{ $ts.more }}</span>
 					<span v-if="otherNavItemIndicated" class="indicator"><i class="fas fa-circle"></i></span>
 				</button>
-				<MkA class="item" active-class="active" to="/settings" v-click-anime>
+				<MkA v-click-anime class="item" active-class="active" to="/settings">
 					<i class="fas fa-cog fa-fw"></i><span class="text">{{ $ts.settings }}</span>
 				</MkA>
-				<button class="item _button post" @click="post" data-cy-open-post-form>
+				<button class="item _button post" data-cy-open-post-form @click="post">
 					<i class="fas fa-pencil-alt fa-fw"></i><span class="text">{{ $ts.note }}</span>
 				</button>
 			</div>

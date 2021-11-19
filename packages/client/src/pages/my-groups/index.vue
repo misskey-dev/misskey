@@ -9,34 +9,34 @@
 	</div>
 
 	<div class="_section">
-		<div class="_content" v-if="tab === 'owned'">
-			<MkButton @click="create" primary style="margin: 0 auto var(--margin) auto;"><i class="fas fa-plus"></i> {{ $ts.createGroup }}</MkButton>
+		<div v-if="tab === 'owned'" class="_content">
+			<MkButton primary style="margin: 0 auto var(--margin) auto;" @click="create"><i class="fas fa-plus"></i> {{ $ts.createGroup }}</MkButton>
 
-			<MkPagination :pagination="ownedPagination" #default="{items}" ref="owned">
-				<div class="_card" v-for="group in items" :key="group.id">
+			<MkPagination #default="{items}" ref="owned" :pagination="ownedPagination">
+				<div v-for="group in items" :key="group.id" class="_card">
 					<div class="_title"><MkA :to="`/my/groups/${ group.id }`" class="_link">{{ group.name }}</MkA></div>
 					<div class="_content"><MkAvatars :user-ids="group.userIds"/></div>
 				</div>
 			</MkPagination>
 		</div>
 
-		<div class="_content" v-else-if="tab === 'joined'">
-			<MkPagination :pagination="joinedPagination" #default="{items}" ref="joined">
-				<div class="_card" v-for="group in items" :key="group.id">
+		<div v-else-if="tab === 'joined'" class="_content">
+			<MkPagination #default="{items}" ref="joined" :pagination="joinedPagination">
+				<div v-for="group in items" :key="group.id" class="_card">
 					<div class="_title">{{ group.name }}</div>
 					<div class="_content"><MkAvatars :user-ids="group.userIds"/></div>
 				</div>
 			</MkPagination>
 		</div>
 	
-		<div class="_content" v-else-if="tab === 'invites'">
-			<MkPagination :pagination="invitationPagination" #default="{items}" ref="invitations">
-				<div class="_card" v-for="invitation in items" :key="invitation.id">
+		<div v-else-if="tab === 'invites'" class="_content">
+			<MkPagination #default="{items}" ref="invitations" :pagination="invitationPagination">
+				<div v-for="invitation in items" :key="invitation.id" class="_card">
 					<div class="_title">{{ invitation.group.name }}</div>
 					<div class="_content"><MkAvatars :user-ids="invitation.group.userIds"/></div>
 					<div class="_footer">
-						<MkButton @click="acceptInvite(invitation)" primary inline><i class="fas fa-check"></i> {{ $ts.accept }}</MkButton>
-						<MkButton @click="rejectInvite(invitation)" primary inline><i class="fas fa-ban"></i> {{ $ts.reject }}</MkButton>
+						<MkButton primary inline @click="acceptInvite(invitation)"><i class="fas fa-check"></i> {{ $ts.accept }}</MkButton>
+						<MkButton primary inline @click="rejectInvite(invitation)"><i class="fas fa-ban"></i> {{ $ts.reject }}</MkButton>
 					</div>
 				</div>
 			</MkPagination>
@@ -88,9 +88,8 @@ export default defineComponent({
 
 	methods: {
 		async create() {
-			const { canceled, result: name } = await os.dialog({
+			const { canceled, result: name } = await os.inputText({
 				title: this.$ts.groupName,
-				input: true
 			});
 			if (canceled) return;
 			await os.api('users/groups/create', { name: name });

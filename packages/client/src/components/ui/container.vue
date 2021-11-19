@@ -1,10 +1,10 @@
 <template>
-<div class="ukygtjoj _panel" :class="{ naked, thin, hideHeader: !showHeader, scrollable, closed: !showBody }" v-size="{ max: [380] }">
+<div v-size="{ max: [380] }" class="ukygtjoj _panel" :class="{ naked, thin, hideHeader: !showHeader, scrollable, closed: !showBody }">
 	<header v-if="showHeader" ref="header">
 		<div class="title"><slot name="header"></slot></div>
 		<div class="sub">
 			<slot name="func"></slot>
-			<button class="_button" v-if="foldable" @click="() => showBody = !showBody">
+			<button v-if="foldable" class="_button" @click="() => showBody = !showBody">
 				<template v-if="showBody"><i class="fas fa-angle-up"></i></template>
 				<template v-else><i class="fas fa-angle-down"></i></template>
 			</button>
@@ -16,7 +16,7 @@
 		@leave="leave"
 		@after-leave="afterLeave"
 	>
-		<div v-show="showBody" class="content" :class="{ omitted }" ref="content">
+		<div v-show="showBody" ref="content" class="content" :class="{ omitted }">
 			<slot></slot>
 			<button v-if="omitted" class="fade _button" @click="() => { ignoreOmit = true; omitted = false; }">
 				<span>{{ $ts.showMore }}</span>

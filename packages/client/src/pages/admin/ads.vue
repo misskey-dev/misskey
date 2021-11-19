@@ -1,6 +1,6 @@
 <template>
 <div class="uqshojas">
-	<section class="_card _gap ads" v-for="ad in ads">
+	<section v-for="ad in ads" class="_card _gap ads">
 		<div class="_content ad">
 			<MkAd v-if="ad.url" :specify="ad"/>
 			<MkInput v-model="ad.url" type="url">
@@ -32,8 +32,8 @@
 				<template #label>{{ $ts.memo }}</template>
 			</MkTextarea>
 			<div class="buttons">
-				<MkButton class="button" inline @click="save(ad)" primary><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
-				<MkButton class="button" inline @click="remove(ad)" danger><i class="fas fa-trash-alt"></i> {{ $ts.remove }}</MkButton>
+				<MkButton class="button" inline primary @click="save(ad)"><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
+				<MkButton class="button" inline danger @click="remove(ad)"><i class="fas fa-trash-alt"></i> {{ $ts.remove }}</MkButton>
 			</div>
 		</div>
 	</section>
@@ -101,10 +101,9 @@ export default defineComponent({
 		},
 
 		remove(ad) {
-			os.dialog({
+			os.confirm({
 				type: 'warning',
 				text: this.$t('removeAreYouSure', { x: ad.url }),
-				showCancelButton: true
 			}).then(({ canceled }) => {
 				if (canceled) return;
 				this.ads = this.ads.filter(x => x != ad);

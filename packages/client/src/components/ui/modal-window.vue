@@ -1,20 +1,20 @@
 <template>
 <MkModal ref="modal" @click="$emit('click')" @closed="$emit('closed')">
-	<div class="ebkgoccj _window _narrow_" @keydown="onKeydown" :style="{ width: `${width}px`, height: scroll ? (height ? `${height}px` : null) :  (height ? `min(${height}px, 100%)` : '100%') }">
+	<div class="ebkgoccj _window _narrow_" :style="{ width: `${width}px`, height: scroll ? (height ? `${height}px` : null) : (height ? `min(${height}px, 100%)` : '100%') }" @keydown="onKeydown">
 		<div class="header">
-			<button class="_button" v-if="withOkButton" @click="$emit('close')"><i class="fas fa-times"></i></button>
+			<button v-if="withOkButton" class="_button" @click="$emit('close')"><i class="fas fa-times"></i></button>
 			<span class="title">
 				<slot name="header"></slot>
 			</span>
-			<button class="_button" v-if="!withOkButton" @click="$emit('close')"><i class="fas fa-times"></i></button>
-			<button class="_button" v-if="withOkButton" @click="$emit('ok')" :disabled="okButtonDisabled"><i class="fas fa-check"></i></button>
+			<button v-if="!withOkButton" class="_button" @click="$emit('close')"><i class="fas fa-times"></i></button>
+			<button v-if="withOkButton" class="_button" :disabled="okButtonDisabled" @click="$emit('ok')"><i class="fas fa-check"></i></button>
 		</div>
-		<div class="body" v-if="padding">
+		<div v-if="padding" class="body">
 			<div class="_section">
 				<slot></slot>
 			</div>
 		</div>
-		<div class="body" v-else>
+		<div v-else class="body">
 			<slot></slot>
 		</div>
 	</div>

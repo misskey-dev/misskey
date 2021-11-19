@@ -19,7 +19,7 @@ export function createSignedPost(args: { key: PrivateKey, url: string, body: str
 	const request: Request = {
 		url: u.href,
 		method: 'POST',
-		headers:  objectAssignWithLcKey({
+		headers: objectAssignWithLcKey({
 			'Date': new Date().toUTCString(),
 			'Host': u.hostname,
 			'Content-Type': 'application/activity+json',
@@ -43,7 +43,7 @@ export function createSignedGet(args: { key: PrivateKey, url: string, additional
 	const request: Request = {
 		url: u.href,
 		method: 'GET',
-		headers:  objectAssignWithLcKey({
+		headers: objectAssignWithLcKey({
 			'Accept': 'application/activity+json, application/ld+json',
 			'Date': new Date().toUTCString(),
 			'Host': new URL(args.url).hostname,
@@ -66,7 +66,7 @@ function signToRequest(request: Request, key: PrivateKey, includeHeaders: string
 	const signatureHeader = `keyId="${key.keyId}",algorithm="rsa-sha256",headers="${includeHeaders.join(' ')}",signature="${signature}"`;
 
 	request.headers = objectAssignWithLcKey(request.headers, {
-		Signature: signatureHeader
+		Signature: signatureHeader,
 	});
 
 	return {

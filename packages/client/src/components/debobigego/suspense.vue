@@ -1,6 +1,6 @@
 <template>
 <transition name="fade" mode="out-in">
-	<div class="_debobigegoItem" v-if="pending">
+	<div v-if="pending" class="_debobigegoItem">
 		<div class="_debobigegoPanel">
 			<MkLoading/>
 		</div>
@@ -8,10 +8,10 @@
 	<div v-else-if="resolved" class="_debobigegoItem">
 		<slot :result="result"></slot>
 	</div>
-	<div class="_debobigegoItem" v-else>
+	<div v-else class="_debobigegoItem">
 		<div class="_debobigegoPanel eiurkvay">
 			<div><i class="fas fa-exclamation-triangle"></i> {{ $ts.somethingHappened }}</div>
-			<MkButton inline @click="retry" class="retry"><i class="fas fa-redo-alt"></i> {{ $ts.retry }}</MkButton>
+			<MkButton inline class="retry" @click="retry"><i class="fas fa-redo-alt"></i> {{ $ts.retry }}</MkButton>
 		</div>
 	</div>
 </transition>

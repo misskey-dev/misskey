@@ -13,7 +13,7 @@
 		{{ multiple ? ((type === 'file') ? $ts.selectFiles : $ts.selectFolders) : ((type === 'file') ? $ts.selectFile : $ts.selectFolder) }}
 		<span v-if="selected.length > 0" style="margin-left: 8px; opacity: 0.5;">({{ number(selected.length) }})</span>
 	</template>
-	<XDrive :multiple="multiple" @changeSelection="onChangeSelection" @selected="ok()" :select="type"/>
+	<XDrive :multiple="multiple" :select="type" @changeSelection="onChangeSelection" @selected="ok()"/>
 </XModalWindow>
 </template>
 

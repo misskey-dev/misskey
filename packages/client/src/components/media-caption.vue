@@ -7,9 +7,9 @@
 						<Mfm v-if="title" class="title" :text="title"/>
 						<span class="text-count" :class="{ over: remainingLength < 0 }">{{ remainingLength }}</span>
 					</header>
-					<textarea autofocus v-model="inputValue" :placeholder="input.placeholder" @keydown="onInputKeydown"></textarea>
-					<div class="buttons" v-if="(showOkButton || showCancelButton)">
-						<MkButton inline @click="ok" primary :disabled="remainingLength < 0">{{ $ts.ok }}</MkButton>
+					<textarea v-model="inputValue" autofocus :placeholder="input.placeholder" @keydown="onInputKeydown"></textarea>
+					<div v-if="(showOkButton || showCancelButton)" class="buttons">
+						<MkButton inline primary :disabled="remainingLength < 0" @click="ok">{{ $ts.ok }}</MkButton>
 						<MkButton inline @click="cancel" >{{ $ts.cancel }}</MkButton>
 					</div>
 				</div>

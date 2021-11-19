@@ -2,12 +2,12 @@
 <FormGroup class="_debobigegoItem">
 	<template #label><slot></slot></template>
 	<div class="ztzhwixg _debobigegoItem" :class="{ inline, disabled }">
-		<div class="icon" ref="icon"><slot name="icon"></slot></div>
+		<div ref="icon" class="icon"><slot name="icon"></slot></div>
 		<div class="input _debobigegoPanel">
-			<div class="prefix" ref="prefixEl"><slot name="prefix"></slot></div>
+			<div ref="prefixEl" class="prefix"><slot name="prefix"></slot></div>
 			<input ref="inputEl"
-				:type="type"
 				v-model="v"
+				:type="type"
 				:disabled="disabled"
 				:required="required"
 				:readonly="readonly"
@@ -16,21 +16,21 @@
 				:autocomplete="autocomplete"
 				:spellcheck="spellcheck"
 				:step="step"
+				:list="id"
 				@focus="focused = true"
 				@blur="focused = false"
 				@keydown="onKeydown($event)"
 				@input="onInput"
-				:list="id"
 			>
-			<datalist :id="id" v-if="datalist">
+			<datalist v-if="datalist" :id="id">
 				<option v-for="data in datalist" :value="data"/>
 			</datalist>
-			<div class="suffix" ref="suffixEl"><slot name="suffix"></slot></div>
+			<div ref="suffixEl" class="suffix"><slot name="suffix"></slot></div>
 		</div>
 	</div>
 	<template #caption><slot name="desc"></slot></template>
 
-	<FormButton v-if="manualSave && changed" @click="updated" primary><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
+	<FormButton v-if="manualSave && changed" primary @click="updated"><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
 </FormGroup>
 </template>
 

@@ -1,6 +1,8 @@
 <template>
 <div class="rghtznwe"
 	:class="{ draghover }"
+	draggable="true"
+	:title="title"
 	@click="onClick"
 	@contextmenu.stop="onContextmenu"
 	@mouseover="onMouseover"
@@ -9,17 +11,15 @@
 	@dragenter.prevent="onDragenter"
 	@dragleave="onDragleave"
 	@drop.prevent.stop="onDrop"
-	draggable="true"
 	@dragstart="onDragstart"
 	@dragend="onDragend"
-	:title="title"
 >
 	<p class="name">
 		<template v-if="hover"><i class="fas fa-folder-open fa-fw"></i></template>
 		<template v-if="!hover"><i class="fas fa-folder fa-fw"></i></template>
 		{{ folder.name }}
 	</p>
-	<p class="upload" v-if="$store.state.uploadFolder == folder.id">
+	<p v-if="$store.state.uploadFolder == folder.id" class="upload">
 		{{ $ts.uploadFolder }}
 	</p>
 	<button v-if="selectMode" class="checkbox _button" :class="{ checked: isSelected }" @click.prevent.stop="checkboxClicked"></button>
@@ -151,13 +151,13 @@ export default defineComponent({
 				}).catch(err => {
 					switch (err) {
 						case 'detected-circular-definition':
-							os.dialog({
+							os.alert({
 								title: this.$ts.unableToProcess,
 								text: this.$ts.circularReferenceFolder
 							});
 							break;
 						default:
-							os.dialog({
+							os.alert({
 								type: 'error',
 								text: this.$ts.somethingHappened
 							});
@@ -191,12 +191,10 @@ export default defineComponent({
 		},
 
 		rename() {
-			os.dialog({
+			os.inputText({
 				title: this.$ts.renameFolder,
-				input: {
-					placeholder: this.$ts.inputNewFolderName,
-					default: this.folder.name
-				}
+				placeholder: this.$ts.inputNewFolderName,
+				default: this.folder.name
 			}).then(({ canceled, result: name }) => {
 				if (canceled) return;
 				os.api('drive/folders/update', {
@@ -216,14 +214,14 @@ export default defineComponent({
 			}).catch(err => {
 				switch(err.id) {
 					case 'b0fc8a17-963c-405d-bfbc-859a487295e1':
-						os.dialog({
+						os.alert({
 							type: 'error',
 							title: this.$ts.unableToDelete,
 							text: this.$ts.hasChildFilesOrFolders
 						});
 						break;
 					default:
-						os.dialog({
+						os.alert({
 							type: 'error',
 							text: this.$ts.unableToDelete
 						});

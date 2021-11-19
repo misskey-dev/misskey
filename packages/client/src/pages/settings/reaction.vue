@@ -3,7 +3,7 @@
 	<div class="_debobigegoItem">
 		<div class="_debobigegoLabel">{{ $ts.reactionSettingDescription }}</div>
 		<div class="_debobigegoPanel">
-			<XDraggable class="zoaiodol" v-model="reactions" :item-key="item => item" animation="150" delay="100" delay-on-touch-only="true">
+			<XDraggable v-model="reactions" class="zoaiodol" :item-key="item => item" animation="150" delay="100" delay-on-touch-only="true">
 				<template #item="{element}">
 					<button class="_button item" @click="remove(element, $event)">
 						<MkEmoji :emoji="element" :normal="true"/>
@@ -111,10 +111,9 @@ export default defineComponent({
 		},
 
 		async setDefault() {
-			const { canceled } = await os.dialog({
+			const { canceled } = await os.confirm({
 				type: 'warning',
 				text: this.$ts.resetAreYouSure,
-				showCancelButton: true
 			});
 			if (canceled) return;
 

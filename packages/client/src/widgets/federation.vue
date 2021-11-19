@@ -4,7 +4,7 @@
 
 	<div class="wbrkwalb">
 		<MkLoading v-if="fetching"/>
-		<transition-group tag="div" name="chart" class="instances" v-else>
+		<transition-group v-else tag="div" name="chart" class="instances">
 			<div v-for="(instance, i) in instances" :key="instance.id" class="instance">
 				<img v-if="instance.iconUrl" :src="instance.iconUrl" alt=""/>
 				<div class="body">
@@ -36,10 +36,10 @@ const widget = define({
 });
 
 export default defineComponent({
-	extends: widget,
 	components: {
 		MkContainer, MkMiniChart
 	},
+	extends: widget,
 	props: {
 		foldable: {
 			type: Boolean,

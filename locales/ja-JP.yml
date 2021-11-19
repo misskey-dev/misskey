@@ -806,6 +806,8 @@ muteThread: "スレッドをミュート"
 unmuteThread: "スレッドのミュートを解除"
 ffVisibility: "つながりの公開範囲"
 ffVisibilityDescription: "自分のフォロー/フォロワー情報の公開範囲を設定できます。"
+continueThread: "さらにスレッドを見る"
+deleteAccountConfirm: "アカウントが削除されます。よろしいですか？"
 
 _emailUnavailable:
   used: "既に使用されています"

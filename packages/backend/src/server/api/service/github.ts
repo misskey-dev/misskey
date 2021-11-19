@@ -42,7 +42,7 @@ router.get('/disconnect/github', async ctx => {
 
 	const user = await Users.findOneOrFail({
 		host: null,
-		token: userToken
+		token: userToken,
 	});
 
 	const profile = await UserProfiles.findOneOrFail(user.id);
@@ -58,7 +58,7 @@ router.get('/disconnect/github', async ctx => {
 	// Publish i updated event
 	publishMainStream(user.id, 'meUpdated', await Users.pack(user, user, {
 		detail: true,
-		includeSecrets: true
+		includeSecrets: true,
 	}));
 });
 
@@ -209,12 +209,13 @@ router.get('/gh/cb', async ctx => {
 				code,
 				{ redirect_uri },
 				(err, accessToken, refresh, result) => {
-					if (err)
+					if (err) {
 						rej(err);
-					else if (result.error)
+					} else if (result.error) {
 						rej(result.error);
-					else
+					} else {
 						res({ accessToken });
+					}
 				}));
 
 		const { login, id } = await getJson('https://api.github.com/user', 'application/vnd.github.v3+json', 10 * 1000, {

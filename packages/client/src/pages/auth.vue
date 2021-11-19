@@ -1,29 +1,29 @@
 <template>
-<div class="" v-if="$i && fetching">
+<div v-if="$i && fetching" class="">
 	<MkLoading/>
 </div>
 <div v-else-if="$i">
 	<XForm
-		class="form"
-		ref="form"
 		v-if="state == 'waiting'"
+		ref="form"
+		class="form"
 		:session="session"
 		@denied="state = 'denied'"
 		@accepted="accepted"
 	/>
-	<div class="denied" v-if="state == 'denied'">
+	<div v-if="state == 'denied'" class="denied">
 		<h1>{{ $ts._auth.denied }}</h1>
 	</div>
-	<div class="accepted" v-if="state == 'accepted'">
+	<div v-if="state == 'accepted'" class="accepted">
 		<h1>{{ session.app.isAuthorized ? this.$t('already-authorized') : this.$ts.allowed }}</h1>
 		<p v-if="session.app.callbackUrl">{{ $ts._auth.callback }}<MkEllipsis/></p>
 		<p v-if="!session.app.callbackUrl">{{ $ts._auth.pleaseGoBack }}</p>
 	</div>
-	<div class="error" v-if="state == 'fetch-session-error'">
+	<div v-if="state == 'fetch-session-error'" class="error">
 		<p>{{ $ts.somethingHappened }}</p>
 	</div>
 </div>
-<div class="signin" v-else>
+<div v-else class="signin">
 	<MkSignin @login="onLogin"/>
 </div>
 </template>

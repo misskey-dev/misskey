@@ -1,11 +1,11 @@
 <template>
-<MkTooltip :source="source" ref="tooltip" @closed="$emit('closed')" :max-width="340">
-	<div class="renoteTooltip">
-		<b v-for="u in users" :key="u.id">
-			<MkAvatar :user="u" style="width: 24px; height: 24px;"/><br/>
-			<MkUserName :user="u" :nowrap="false" style="line-height: 24px;"/>
-		</b>
-		<span v-if="users.length < count" slot="omitted">+{{ count - users.length }}</span>
+<MkTooltip ref="tooltip" :source="source" :max-width="250" @closed="$emit('closed')">
+	<div class="beaffaef">
+		<div v-for="u in users" :key="u.id" class="user">
+			<MkAvatar class="avatar" :user="u"/>
+			<MkUserName class="name" :user="u" :nowrap="true"/>
+		</div>
+		<div v-if="users.length < count" class="omitted">+{{ count - users.length }}</div>
 	</div>
 </MkTooltip>
 </template>
@@ -36,11 +36,25 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.renoteTooltip {
-	display: flex;
-	flex: 1;
-	min-width: 0;
+.beaffaef {
 	font-size: 0.9em;
-	gap: 12px;
+	text-align: left;
+
+	> .user {
+		line-height: 24px;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+
+		&:not(:last-child) {
+			margin-bottom: 3px;
+		}
+
+		> .avatar {
+			width: 24px;
+			height: 24px;
+			margin-right: 3px;
+		}
+	}
 }
 </style>

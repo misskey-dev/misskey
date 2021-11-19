@@ -1,6 +1,6 @@
 <template>
-<div class="ssazuxis" v-size="{ max: [500] }">
-	<header @click="showBody = !showBody" class="_button" :style="{ background: bg }">
+<div v-size="{ max: [500] }" class="ssazuxis">
+	<header class="_button" :style="{ background: bg }" @click="showBody = !showBody">
 		<div class="title"><slot name="header"></slot></div>
 		<div class="divider"></div>
 		<button class="_button">

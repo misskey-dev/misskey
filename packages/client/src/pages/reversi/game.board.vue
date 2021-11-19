@@ -3,16 +3,16 @@
 	<header><b><MkA :to="userPage(blackUser)"><MkUserName :user="blackUser"/></MkA></b>({{ $ts._reversi.black }}) vs <b><MkA :to="userPage(whiteUser)"><MkUserName :user="whiteUser"/></MkA></b>({{ $ts._reversi.white }})</header>
 
 	<div style="overflow: hidden; line-height: 28px;">
-		<p class="turn" v-if="!iAmPlayer && !game.isEnded">
+		<p v-if="!iAmPlayer && !game.isEnded" class="turn">
 			<Mfm :key="'turn:' + turnUser().name" :text="$t('_reversi.turnOf', { name: turnUser().name })" :plain="true" :custom-emojis="turnUser().emojis"/>
 			<MkEllipsis/>
 		</p>
-		<p class="turn" v-if="logPos != logs.length">
+		<p v-if="logPos != logs.length" class="turn">
 			<Mfm :key="'past-turn-of:' + turnUser().name" :text="$t('_reversi.pastTurnOf', { name: turnUser().name })" :plain="true" :custom-emojis="turnUser().emojis"/>
 		</p>
-		<p class="turn1" v-if="iAmPlayer && !game.isEnded && !isMyTurn()">{{ $ts._reversi.opponentTurn }}<MkEllipsis/></p>
-		<p class="turn2" v-if="iAmPlayer && !game.isEnded && isMyTurn()" style="animation: tada 1s linear infinite both;">{{ $ts._reversi.myTurn }}</p>
-		<p class="result" v-if="game.isEnded && logPos == logs.length">
+		<p v-if="iAmPlayer && !game.isEnded && !isMyTurn()" class="turn1">{{ $ts._reversi.opponentTurn }}<MkEllipsis/></p>
+		<p v-if="iAmPlayer && !game.isEnded && isMyTurn()" class="turn2" style="animation: tada 1s linear infinite both;">{{ $ts._reversi.myTurn }}</p>
+		<p v-if="game.isEnded && logPos == logs.length" class="result">
 			<template v-if="game.winner">
 				<Mfm :key="'won'" :text="$t('_reversi.won', { name: game.winner.name })" :plain="true" :custom-emojis="game.winner.emojis"/>
 				<span v-if="game.surrendered != null"> ({{ $ts._reversi.surrendered }})</span>
@@ -22,18 +22,18 @@
 	</div>
 
 	<div class="board">
-		<div class="labels-x" v-if="$store.state.gamesReversiShowBoardLabels">
+		<div v-if="$store.state.gamesReversiShowBoardLabels" class="labels-x">
 			<span v-for="i in game.map[0].length">{{ String.fromCharCode(64 + i) }}</span>
 		</div>
 		<div class="flex">
-			<div class="labels-y" v-if="$store.state.gamesReversiShowBoardLabels">
+			<div v-if="$store.state.gamesReversiShowBoardLabels" class="labels-y">
 				<div v-for="i in game.map.length">{{ i }}</div>
 			</div>
 			<div class="cells" :style="cellsStyle">
 				<div v-for="(stone, i) in o.board"
 					:class="{ empty: stone == null, none: o.map[i] == 'null', isEnded: game.isEnded, myTurn: !game.isEnded && isMyTurn(), can: turnUser() ? o.canPut(turnUser().id == blackUser.id, i) : null, prev: o.prevPos == i }"
-					@click="set(i)"
 					:title="`${String.fromCharCode(65 + o.transformPosToXy(i)[0])}${o.transformPosToXy(i)[1] + 1}`"
+					@click="set(i)"
 				>
 					<template v-if="$store.state.gamesReversiUseAvatarStones || true">
 						<img v-if="stone === true" :src="blackUser.avatarUrl" alt="black">
@@ -45,30 +45,30 @@
 					</template>
 				</div>
 			</div>
-			<div class="labels-y" v-if="$store.state.gamesReversiShowBoardLabels">
+			<div v-if="$store.state.gamesReversiShowBoardLabels" class="labels-y">
 				<div v-for="i in game.map.length">{{ i }}</div>
 			</div>
 		</div>
-		<div class="labels-x" v-if="$store.state.gamesReversiShowBoardLabels">
+		<div v-if="$store.state.gamesReversiShowBoardLabels" class="labels-x">
 			<span v-for="i in game.map[0].length">{{ String.fromCharCode(64 + i) }}</span>
 		</div>
 	</div>
 
 	<p class="status"><b>{{ $t('_reversi.turnCount', { count: logPos }) }}</b> {{ $ts._reversi.black }}:{{ o.blackCount }} {{ $ts._reversi.white }}:{{ o.whiteCount }} {{ $ts._reversi.total }}:{{ o.blackCount + o.whiteCount }}</p>
 
-	<div class="actions" v-if="!game.isEnded && iAmPlayer">
-		<MkButton @click="surrender" inline>{{ $ts._reversi.surrender }}</MkButton>
+	<div v-if="!game.isEnded && iAmPlayer" class="actions">
+		<MkButton inline @click="surrender">{{ $ts._reversi.surrender }}</MkButton>
 	</div>
 
-	<div class="player" v-if="game.isEnded">
+	<div v-if="game.isEnded" class="player">
 		<span>{{ logPos }} / {{ logs.length }}</span>
-		<div class="buttons" v-if="!autoplaying">
-			<MkButton inline @click="logPos = 0" :disabled="logPos == 0"><i class="fas fa-angle-double-left"></i></MkButton>
-			<MkButton inline @click="logPos--" :disabled="logPos == 0"><i class="fas fa-angle-left"></i></MkButton>
-			<MkButton inline @click="logPos++" :disabled="logPos == logs.length"><i class="fas fa-angle-right"></i></MkButton>
-			<MkButton inline @click="logPos = logs.length" :disabled="logPos == logs.length"><i class="fas fa-angle-double-right"></i></MkButton>
+		<div v-if="!autoplaying" class="buttons">
+			<MkButton inline :disabled="logPos == 0" @click="logPos = 0"><i class="fas fa-angle-double-left"></i></MkButton>
+			<MkButton inline :disabled="logPos == 0" @click="logPos--"><i class="fas fa-angle-left"></i></MkButton>
+			<MkButton inline :disabled="logPos == logs.length" @click="logPos++"><i class="fas fa-angle-right"></i></MkButton>
+			<MkButton inline :disabled="logPos == logs.length" @click="logPos = logs.length"><i class="fas fa-angle-double-right"></i></MkButton>
 		</div>
-		<MkButton @click="autoplay()" :disabled="autoplaying" style="margin: var(--margin) auto 0 auto;"><i class="fas fa-play"></i></MkButton>
+		<MkButton :disabled="autoplaying" style="margin: var(--margin) auto 0 auto;" @click="autoplay()"><i class="fas fa-play"></i></MkButton>
 	</div>
 
 	<div class="info">

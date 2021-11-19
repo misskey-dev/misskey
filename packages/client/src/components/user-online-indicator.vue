@@ -1,5 +1,5 @@
 <template>
-<div class="fzgwjkgc" :class="user.onlineStatus" v-tooltip="text"></div>
+<div v-tooltip="text" class="fzgwjkgc" :class="user.onlineStatus"></div>
 </template>
 
 <script lang="ts">

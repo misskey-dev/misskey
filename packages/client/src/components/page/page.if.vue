@@ -1,6 +1,6 @@
 <template>
 <div v-show="hpml.vars.value[block.var]">
-	<XBlock v-for="child in block.children" :block="child" :hpml="hpml" :key="child.id" :h="h"/>
+	<XBlock v-for="child in block.children" :key="child.id" :block="child" :hpml="hpml" :h="h"/>
 </div>
 </template>
 

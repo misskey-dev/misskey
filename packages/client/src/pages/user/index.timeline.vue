@@ -1,5 +1,5 @@
 <template>
-<div class="yrzkoczt" v-sticky-container>
+<div v-sticky-container class="yrzkoczt">
 	<MkTab v-model="with_" class="tab">
 		<option :value="null">{{ $ts.notes }}</option>
 		<option value="replies">{{ $ts.notesAndReplies }}</option>
@@ -28,16 +28,6 @@ export default defineComponent({
 		},
 	},
 
-	watch: {
-		user() {
-			this.$refs.timeline.reload();
-		},
-
-		with_() {
-			this.$refs.timeline.reload();
-		},
-	},
-
 	data() {
 		return {
 			date: null,
@@ -53,6 +43,16 @@ export default defineComponent({
 				})
 			}
 		};
+	},
+
+	watch: {
+		user() {
+			this.$refs.timeline.reload();
+		},
+
+		with_() {
+			this.$refs.timeline.reload();
+		},
 	},
 });
 </script>

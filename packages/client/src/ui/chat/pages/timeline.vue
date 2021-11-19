@@ -1,14 +1,14 @@
 <template>
 <div class="dbiokgaf">
-	<div class="info" v-if="date">
+	<div v-if="date" class="info">
 		<MkInfo>{{ $ts.showingPastTimeline }} <button class="_textButton clear" @click="timetravel()">{{ $ts.clear }}</button></MkInfo>
 	</div>
 	<div class="top">
 		<XPostForm/>
 	</div>
-	<div class="tl" ref="body">
-		<div class="new" v-if="queue > 0" :style="{ width: width + 'px', top: top + 'px' }"><button class="_buttonPrimary" @click="goTop()">{{ $ts.newNoteRecived }}</button></div>
-		<XNotes class="tl" ref="tl" :pagination="pagination" @queue="queueUpdated"/>
+	<div ref="body" class="tl">
+		<div v-if="queue > 0" class="new" :style="{ width: width + 'px', top: top + 'px' }"><button class="_buttonPrimary" @click="goTop()">{{ $ts.newNoteRecived }}</button></div>
+		<XNotes ref="tl" class="tl" :pagination="pagination" @queue="queueUpdated"/>
 	</div>
 </div>
 </template>

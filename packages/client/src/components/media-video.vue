@@ -1,11 +1,11 @@
 <template>
-<div class="icozogqfvdetwohsdglrbswgrejoxbdj" v-if="hide" @click="hide = false">
+<div v-if="hide" class="icozogqfvdetwohsdglrbswgrejoxbdj" @click="hide = false">
 	<div>
 		<b><i class="fas fa-exclamation-triangle"></i> {{ $ts.sensitive }}</b>
 		<span>{{ $ts.clickToShow }}</span>
 	</div>
 </div>
-<div class="kkjnbbplepmiyuadieoenjgutgcmtsvu" v-else>
+<div v-else class="kkjnbbplepmiyuadieoenjgutgcmtsvu">
 	<video
 		:poster="video.thumbnailUrl"
 		:title="video.name"

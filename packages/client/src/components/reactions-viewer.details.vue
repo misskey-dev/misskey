@@ -1,26 +1,16 @@
 <template>
-<MkTooltip :source="source" ref="tooltip" @closed="$emit('closed')" :max-width="340">
+<MkTooltip ref="tooltip" :source="source" :max-width="340" @closed="$emit('closed')">
 	<div class="bqxuuuey">
 		<div class="reaction">
 			<XReactionIcon :reaction="reaction" :custom-emojis="emojis" class="icon" :no-style="true"/>
 			<div class="name">{{ reaction.replace('@.', '') }}</div>
 		</div>
 		<div class="users">
-			<template v-if="users.length <= 10">
-				<b v-for="u in users" :key="u.id" style="margin-right: 12px;">
-					<MkAvatar :user="u" style="width: 24px; height: 24px; margin-right: 2px;"/>
-					<br/>
-					<MkUserName :user="u" :nowrap="false" style="line-height: 24px;"/>
-				</b>
-			</template>
-			<template v-if="10 < users.length">
-				<b v-for="u in users" :key="u.id" style="margin-right: 12px;">
-					<MkAvatar :user="u" style="width: 24px; height: 24px; margin-right: 2px;"/>
-					<br/>
-					<MkUserName :user="u" :nowrap="false" style="line-height: 24px;"/>
-				</b>
-				<span slot="omitted">+{{ count - 10 }}</span>
-			</template>
+			<div v-for="u in users" :key="u.id" class="user">
+				<MkAvatar class="avatar" :user="u"/>
+				<MkUserName class="name" :user="u" :nowrap="true"/>
+			</div>
+			<div v-if="users.length > 10" class="omitted">+{{ count - 10 }}</div>
 		</div>
 	</div>
 </MkTooltip>
@@ -81,13 +71,31 @@ export default defineComponent({
 	}
 
 	> .users {
-		display: flex;
 		flex: 1;
 		min-width: 0;
 		font-size: 0.9em;
 		border-left: solid 0.5px var(--divider);
 		padding-left: 10px;
 		margin-left: 10px;
+		margin-right: 14px;
+		text-align: left;
+
+		> .user {
+			line-height: 24px;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+
+			&:not(:last-child) {
+				margin-bottom: 3px;
+			}
+
+			> .avatar {
+				width: 24px;
+				height: 24px;
+				margin-right: 3px;
+			}
+		}
 	}
 }
 </style>

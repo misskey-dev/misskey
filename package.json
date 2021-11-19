@@ -1,6 +1,6 @@
 {
 	"name": "misskey",
-	"version": "12.96.1",
+	"version": "12.97.1",
 	"codename": "indigo",
 	"repository": {
 		"type": "git",
@@ -17,10 +17,8 @@
 		"migrate": "cd packages/backend && npx typeorm migration:run",
 		"migrateandstart": "npm run migrate && npm run start",
 		"gulp": "gulp build",
-		"watch": "concurrently \"npm:watch-*\"",
-		"watch-webpack": "webpack --watch",
-		"watch-ts": "tsc -w -p packages/tsconfig.json && tsc-alias -w -p packages/tsconfig.json",
-		"watch-gulp": "gulp watch",
+		"watch": "npm run dev",
+		"dev": "node ./scripts/dev.js",
 		"lint": "node ./scripts/lint.js",
 		"cy:open": "cypress open",
 		"cy:run": "cypress run",
@@ -46,8 +44,10 @@
 	"devDependencies": {
 		"@redocly/openapi-core": "1.0.0-beta.54",
 		"@types/fluent-ffmpeg": "2.1.17",
+		"@typescript-eslint/parser": "5.4.0",
 		"cross-env": "7.0.3",
 		"cypress": "9.0.0",
-		"start-server-and-test": "1.14.0"
+		"start-server-and-test": "1.14.0",
+		"typescript": "4.5.2"
 	}
 }

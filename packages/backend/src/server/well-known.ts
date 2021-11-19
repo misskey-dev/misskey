@@ -41,8 +41,8 @@ router.get('/.well-known/host-meta', async ctx => {
 	ctx.set('Content-Type', xrd);
 	ctx.body = XRD({ element: 'Link', attributes: {
 		type: xrd,
-		template: `${config.url}${webFingerPath}?resource={uri}`
-	}});
+		template: `${config.url}${webFingerPath}?resource={uri}`,
+	} });
 });
 
 router.get('/.well-known/host-meta.json', async ctx => {
@@ -51,8 +51,8 @@ router.get('/.well-known/host-meta.json', async ctx => {
 		links: [{
 			rel: 'lrdd',
 			type: jrd,
-			template: `${config.url}${webFingerPath}?resource={uri}`
-		}]
+			template: `${config.url}${webFingerPath}?resource={uri}`,
+		}],
 	};
 });
 

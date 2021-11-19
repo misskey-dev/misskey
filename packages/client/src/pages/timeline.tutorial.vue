@@ -1,27 +1,27 @@
 <template>
 <div class="_card tbkwesmv">
 	<div class="_title"><i class="fas fa-info-circle"></i> {{ $ts._tutorial.title }}</div>
-	<div class="_content" v-if="tutorial === 0">
+	<div v-if="tutorial === 0" class="_content">
 		<div>{{ $ts._tutorial.step1_1 }}</div>
 		<div>{{ $ts._tutorial.step1_2 }}</div>
 		<div>{{ $ts._tutorial.step1_3 }}</div>
 	</div>
-	<div class="_content" v-else-if="tutorial === 1">
+	<div v-else-if="tutorial === 1" class="_content">
 		<div>{{ $ts._tutorial.step2_1 }}</div>
 		<div>{{ $ts._tutorial.step2_2 }}</div>
 		<MkA class="_link" to="/settings/profile">{{ $ts.editProfile }}</MkA>
 	</div>
-	<div class="_content" v-else-if="tutorial === 2">
+	<div v-else-if="tutorial === 2" class="_content">
 		<div>{{ $ts._tutorial.step3_1 }}</div>
 		<div>{{ $ts._tutorial.step3_2 }}</div>
 		<div>{{ $ts._tutorial.step3_3 }}</div>
 		<small>{{ $ts._tutorial.step3_4 }}</small>
 	</div>
-	<div class="_content" v-else-if="tutorial === 3">
+	<div v-else-if="tutorial === 3" class="_content">
 		<div>{{ $ts._tutorial.step4_1 }}</div>
 		<div>{{ $ts._tutorial.step4_2 }}</div>
 	</div>
-	<div class="_content" v-else-if="tutorial === 4">
+	<div v-else-if="tutorial === 4" class="_content">
 		<div>{{ $ts._tutorial.step5_1 }}</div>
 		<I18n :src="$ts._tutorial.step5_2" tag="div">
 			<template #featured>
@@ -34,12 +34,12 @@
 		<div>{{ $ts._tutorial.step5_3 }}</div>
 		<small>{{ $ts._tutorial.step5_4 }}</small>
 	</div>
-	<div class="_content" v-else-if="tutorial === 5">
+	<div v-else-if="tutorial === 5" class="_content">
 		<div>{{ $ts._tutorial.step6_1 }}</div>
 		<div>{{ $ts._tutorial.step6_2 }}</div>
 		<div>{{ $ts._tutorial.step6_3 }}</div>
 	</div>
-	<div class="_content" v-else-if="tutorial === 6">
+	<div v-else-if="tutorial === 6" class="_content">
 		<div>{{ $ts._tutorial.step7_1 }}</div>
 		<I18n :src="$ts._tutorial.step7_2" tag="div">
 			<template #help>
@@ -51,16 +51,16 @@
 
 	<div class="_footer navigation">
 		<div class="step">
-			<button class="arrow _button" @click="tutorial--" :disabled="tutorial === 0">
+			<button class="arrow _button" :disabled="tutorial === 0" @click="tutorial--">
 				<i class="fas fa-chevron-left"></i>
 			</button>
 			<span>{{ tutorial + 1 }} / 7</span>
-			<button class="arrow _button" @click="tutorial++" :disabled="tutorial === 6">
+			<button class="arrow _button" :disabled="tutorial === 6" @click="tutorial++">
 				<i class="fas fa-chevron-right"></i>
 			</button>
 		</div>
-		<MkButton class="ok" @click="tutorial = -1" primary v-if="tutorial === 6"><i class="fas fa-check"></i> {{ $ts.gotIt }}</MkButton>
-		<MkButton class="ok" @click="tutorial++" primary v-else><i class="fas fa-check"></i> {{ $ts.next }}</MkButton>
+		<MkButton v-if="tutorial === 6" class="ok" primary @click="tutorial = -1"><i class="fas fa-check"></i> {{ $ts.gotIt }}</MkButton>
+		<MkButton v-else class="ok" primary @click="tutorial++"><i class="fas fa-check"></i> {{ $ts.next }}</MkButton>
 	</div>
 </div>
 </template>

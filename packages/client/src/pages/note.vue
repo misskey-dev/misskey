@@ -3,7 +3,7 @@
 	<div class="fcuexfpr">
 		<transition name="fade" mode="out-in">
 			<div v-if="note" class="note">
-				<div class="_gap" v-if="showNext">
+				<div v-if="showNext" class="_gap">
 					<XNotes class="_content" :pagination="next" :no-gap="true"/>
 				</div>
 
@@ -11,9 +11,9 @@
 					<MkButton v-if="!showNext && hasNext" class="load next" @click="showNext = true"><i class="fas fa-chevron-up"></i></MkButton>
 					<div class="note _gap">
 						<MkRemoteCaution v-if="note.user.host != null" :href="note.url || note.uri" class="_isolated"/>
-						<XNoteDetailed v-model:note="note" :key="note.id" class="_isolated note"/>
+						<XNoteDetailed :key="note.id" v-model:note="note" class="_isolated note"/>
 					</div>
-					<div class="_content clips _gap" v-if="clips && clips.length > 0">
+					<div v-if="clips && clips.length > 0" class="_content clips _gap">
 						<div class="title">{{ $ts.clip }}</div>
 						<MkA v-for="item in clips" :key="item.id" :to="`/clips/${item.id}`" class="item _panel _gap">
 							<b>{{ item.name }}</b>
@@ -26,7 +26,7 @@
 					<MkButton v-if="!showPrev && hasPrev" class="load prev" @click="showPrev = true"><i class="fas fa-chevron-down"></i></MkButton>
 				</div>
 
-				<div class="_gap" v-if="showPrev">
+				<div v-if="showPrev" class="_gap">
 					<XNotes class="_content" :pagination="prev" :no-gap="true"/>
 				</div>
 			</div>

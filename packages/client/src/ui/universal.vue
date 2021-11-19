@@ -2,7 +2,7 @@
 <div class="mk-app" :class="{ wallpaper }">
 	<XSidebar ref="nav" class="sidebar"/>
 
-	<div class="contents" ref="contents" @contextmenu.stop="onContextmenu" :style="{ background: pageInfo?.bg }">
+	<div ref="contents" class="contents" :style="{ background: pageInfo?.bg }" @contextmenu.stop="onContextmenu">
 		<main ref="main">
 			<div class="content">
 				<MkStickyContainer>
@@ -20,14 +20,14 @@
 		</main>
 	</div>
 
-	<XSide v-if="isDesktop" class="side" ref="side"/>
+	<XSide v-if="isDesktop" ref="side" class="side"/>
 
-	<div v-if="isDesktop" class="widgets" ref="widgets">
+	<div v-if="isDesktop" ref="widgets" class="widgets">
 		<XWidgets @mounted="attachSticky"/>
 	</div>
 
 	<div class="buttons" :class="{ navHidden }">
-		<button class="button nav _button" @click="showNav" ref="navButton"><i class="fas fa-bars"></i><span v-if="navIndicated" class="indicator"><i class="fas fa-circle"></i></span></button>
+		<button ref="navButton" class="button nav _button" @click="showNav"><i class="fas fa-bars"></i><span v-if="navIndicated" class="indicator"><i class="fas fa-circle"></i></span></button>
 		<button class="button home _button" @click="$route.name === 'index' ? top() : $router.push('/')"><i class="fas fa-home"></i></button>
 		<button class="button notifications _button" @click="$router.push('/my/notifications')"><i class="fas fa-bell"></i><span v-if="$i.hasUnreadNotification" class="indicator"><i class="fas fa-circle"></i></span></button>
 		<button class="button widget _button" @click="widgetsShowing = true"><i class="fas fa-layer-group"></i></button>
@@ -37,8 +37,8 @@
 	<button class="widgetButton _button" :class="{ navHidden }" @click="widgetsShowing = true"><i class="fas fa-layer-group"></i></button>
 
 	<transition name="tray-back">
-		<div class="tray-back _modalBg"
-			v-if="widgetsShowing"
+		<div v-if="widgetsShowing"
+			class="tray-back _modalBg"
 			@click="widgetsShowing = false"
 			@touchstart.passive="widgetsShowing = false"
 		></div>

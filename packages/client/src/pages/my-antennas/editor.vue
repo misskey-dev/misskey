@@ -12,15 +12,15 @@
 			<option value="list">{{ $ts._antennaSources.userList }}</option>
 			<option value="group">{{ $ts._antennaSources.userGroup }}</option>
 		</MkSelect>
-		<MkSelect v-model="userListId" v-if="src === 'list'" class="_formBlock">
+		<MkSelect v-if="src === 'list'" v-model="userListId" class="_formBlock">
 			<template #label>{{ $ts.userList }}</template>
-			<option v-for="list in userLists" :value="list.id" :key="list.id">{{ list.name }}</option>
+			<option v-for="list in userLists" :key="list.id" :value="list.id">{{ list.name }}</option>
 		</MkSelect>
-		<MkSelect v-model="userGroupId" v-else-if="src === 'group'" class="_formBlock">
+		<MkSelect v-else-if="src === 'group'" v-model="userGroupId" class="_formBlock">
 			<template #label>{{ $ts.userGroup }}</template>
-			<option v-for="group in userGroups" :value="group.id" :key="group.id">{{ group.name }}</option>
+			<option v-for="group in userGroups" :key="group.id" :value="group.id">{{ group.name }}</option>
 		</MkSelect>
-		<MkTextarea v-model="users" v-else-if="src === 'users'" class="_formBlock">
+		<MkTextarea v-else-if="src === 'users'" v-model="users" class="_formBlock">
 			<template #label>{{ $ts.users }}</template>
 			<template #caption>{{ $ts.antennaUsersDescription }} <button class="_textButton" @click="addUser">{{ $ts.addUser }}</button></template>
 		</MkTextarea>
@@ -38,8 +38,8 @@
 		<MkSwitch v-model="notify" class="_formBlock">{{ $ts.notifyAntenna }}</MkSwitch>
 	</div>
 	<div class="actions">
-		<MkButton inline @click="saveAntenna()" primary><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
-		<MkButton inline @click="deleteAntenna()" v-if="antenna.id != null" danger><i class="fas fa-trash"></i> {{ $ts.delete }}</MkButton>
+		<MkButton inline primary @click="saveAntenna()"><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
+		<MkButton v-if="antenna.id != null" inline danger @click="deleteAntenna()"><i class="fas fa-trash"></i> {{ $ts.delete }}</MkButton>
 	</div>
 </div>
 </template>
@@ -150,10 +150,9 @@ export default defineComponent({
 		},
 
 		async deleteAntenna() {
-			const { canceled } = await os.dialog({
+			const { canceled } = await os.confirm({
 				type: 'warning',
 				text: this.$t('removeAreYouSure', { x: this.antenna.name }),
-				showCancelButton: true
 			});
 			if (canceled) return;
 

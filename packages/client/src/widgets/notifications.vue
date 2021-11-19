@@ -1,7 +1,7 @@
 <template>
 <MkContainer :style="`height: ${props.height}px;`" :show-header="props.showHeader" :scrollable="true">
 	<template #header><i class="fas fa-bell"></i>{{ $ts.notifications }}</template>
-	<template #func><button @click="configure()" class="_button"><i class="fas fa-cog"></i></button></template>
+	<template #func><button class="_button" @click="configure()"><i class="fas fa-cog"></i></button></template>
 
 	<div>
 		<XNotifications :include-types="props.includingTypes"/>
@@ -36,12 +36,12 @@ const widget = define({
 });
 
 export default defineComponent({
-	extends: widget,
 
 	components: {
 		MkContainer,
 		XNotifications,
 	},
+	extends: widget,
 
 	data() {
 		return {
