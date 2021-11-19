@@ -57,6 +57,6 @@ gulp.task('default', gulp.task('build'));
 
 gulp.task('watch', () => {
 	gulp.watch([
-		'./packages/**/*',
+		'./packages/*/src/**/*',
 	], { ignoreInitial: false }, gulp.task('build'));
 });

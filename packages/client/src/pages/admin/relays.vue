@@ -1,8 +1,8 @@
 <template>
 <FormBase class="relaycxt">
-	<FormButton @click="addRelay" primary><i class="fas fa-plus"></i> {{ $ts.addRelay }}</FormButton>
+	<FormButton primary @click="addRelay"><i class="fas fa-plus"></i> {{ $ts.addRelay }}</FormButton>
 
-	<div class="_debobigegoItem" v-for="relay in relays" :key="relay.inbox">
+	<div v-for="relay in relays" :key="relay.inbox" class="_debobigegoItem">
 		<div class="_debobigegoPanel" style="padding: 16px;">
 			<div>{{ relay.inbox }}</div>
 			<div>{{ $t(`_relayStatus.${relay.status}`) }}</div>
@@ -53,11 +53,10 @@ export default defineComponent({
 
 	methods: {
 		async addRelay() {
-			const { canceled, result: inbox } = await os.dialog({
+			const { canceled, result: inbox } = await os.inputText({
 				title: this.$ts.addRelay,
-				input: {
-					placeholder: this.$ts.inboxUrl
-				}
+				type: 'url',
+				placeholder: this.$ts.inboxUrl
 			});
 			if (canceled) return;
 			os.api('admin/relays/add', {
@@ -65,7 +64,7 @@ export default defineComponent({
 			}).then((relay: any) => {
 				this.refresh();
 			}).catch((e: any) => {
-				os.dialog({
+				os.alert({
 					type: 'error',
 					text: e.message || e
 				});
@@ -78,7 +77,7 @@ export default defineComponent({
 			}).then(() => {
 				this.refresh();
 			}).catch((e: any) => {
-				os.dialog({
+				os.alert({
 					type: 'error',
 					text: e.message || e
 				});

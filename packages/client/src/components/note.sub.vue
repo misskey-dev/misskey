@@ -1,5 +1,5 @@
 <template>
-<div class="wrpstxzv" :class="{ children }" v-size="{ max: [450] }">
+<div v-size="{ max: [450] }" class="wrpstxzv" :class="{ children: depth > 1 }">
 	<div class="main">
 		<MkAvatar class="avatar" :user="note.user"/>
 		<div class="body">
@@ -9,18 +9,24 @@
 					<Mfm v-if="note.cw != ''" class="text" :text="note.cw" :author="note.user" :i="$i" :custom-emojis="note.emojis" />
 					<XCwButton v-model="showContent" :note="note"/>
 				</p>
-				<div class="content" v-show="note.cw == null || showContent">
+				<div v-show="note.cw == null || showContent" class="content">
 					<XSubNote-content class="text" :note="note"/>
 				</div>
 			</div>
 		</div>
 	</div>
-	<XSub v-for="reply in replies" :key="reply.id" :note="reply" class="reply" :detail="true" :children="true"/>
+	<template v-if="depth < 5">
+		<XSub v-for="reply in replies" :key="reply.id" :note="reply" class="reply" :detail="true" :depth="depth + 1"/>
+	</template>
+	<div v-else class="more">
+		<MkA class="text _link" :to="notePage(note)">{{ $ts.continueThread }} <i class="fas fa-angle-double-right"></i></MkA>
+	</div>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import notePage from '@/filters/note';
 import XNoteHeader from './note-header.vue';
 import XSubNoteContent from './sub-note-content.vue';
 import XCwButton from './cw-button.vue';
@@ -45,16 +51,12 @@ export default defineComponent({
 			required: false,
 			default: false
 		},
-		children: {
-			type: Boolean,
+		// how many notes are in between this one and the note being viewed in detail
+		depth: {
+			type: Number,
 			required: false,
-			default: false
+			default: 1
 		},
-		// TODO
-		truncate: {
-			type: Boolean,
-			default: true
-		}
 	},
 
 	data() {
@@ -74,6 +76,10 @@ export default defineComponent({
 			});
 		}
 	},
+
+	methods: {
+		notePage,
+	}
 });
 </script>
 
@@ -138,9 +144,13 @@ export default defineComponent({
 		}
 	}
 
-	> .reply {
+	> .reply, > .more {
 		border-left: solid 0.5px var(--divider);
 		margin-top: 10px;
+	}
+
+	> .more {
+		padding: 10px 0 0 16px;
 	}
 }
 </style>

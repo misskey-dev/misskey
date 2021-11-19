@@ -31,10 +31,6 @@ export default defineComponent({
 	},
 
 	methods: {
-		focus() {
-			this.$slots.default[0].elm.focus();
-		},
-
 		getDateText(time: string) {
 			const date = new Date(time).getDate();
 			const month = new Date(time).getMonth() + 1;

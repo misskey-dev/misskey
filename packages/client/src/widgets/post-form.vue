@@ -14,10 +14,10 @@ const widget = define({
 });
 
 export default defineComponent({
-	extends: widget,
 
 	components: {
 		XPostForm,
 	},
+	extends: widget,
 });
 </script>

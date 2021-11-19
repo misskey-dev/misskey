@@ -3,8 +3,8 @@
 	<template #label><slot></slot></template>
 	<div class="drooglns _debobigegoItem" :class="{ tall }">
 		<div class="input _debobigegoPanel">
-			<textarea class="_monospace"
-				v-model="v"
+			<textarea v-model="v"
+				class="_monospace"
 				readonly
 				:spellcheck="false"
 			></textarea>

@@ -11,13 +11,13 @@
 	<div class="_monolithic_">
 		<div class="yigymqpb _section">
 			<img :src="emoji.url" class="img"/>
-			<MkInput class="_formBlock" v-model="name">
+			<MkInput v-model="name" class="_formBlock">
 				<template #label>{{ $ts.name }}</template>
 			</MkInput>
-			<MkInput class="_formBlock" v-model="category" :datalist="categories">
+			<MkInput v-model="category" class="_formBlock" :datalist="categories">
 				<template #label>{{ $ts.category }}</template>
 			</MkInput>
-			<MkInput class="_formBlock" v-model="aliases">
+			<MkInput v-model="aliases" class="_formBlock">
 				<template #label>{{ $ts.tags }}</template>
 				<template #caption>{{ $ts.setMultipleBySeparatingWithSpace }}</template>
 			</MkInput>
@@ -89,10 +89,9 @@ export default defineComponent({
 		},
 
 		async del() {
-			const { canceled } = await os.dialog({
+			const { canceled } = await os.confirm({
 				type: 'warning',
 				text: this.$t('removeAreYouSure', { x: this.emoji.name }),
-				showCancelButton: true
 			});
 			if (canceled) return;
 

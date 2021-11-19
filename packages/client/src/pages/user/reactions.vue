@@ -1,13 +1,13 @@
 <template>
 <div>
-	<MkPagination :pagination="pagination" #default="{items}" ref="list">
+	<MkPagination #default="{items}" ref="list" :pagination="pagination">
 		<div v-for="item in items" :key="item.id" :to="`/clips/${item.id}`" class="item _panel _gap afdcfbfb">
 			<div class="header">
 				<MkAvatar class="avatar" :user="user"/>
 				<MkReactionIcon class="reaction" :reaction="item.type" :custom-emojis="item.note.emojis" :no-style="true"/>
 				<MkTime :time="item.createdAt" class="createdAt"/>
 			</div>
-			<MkNote :note="item.note" @update:note="updated(note, $event)" :key="item.id"/>
+			<MkNote :key="item.id" :note="item.note" @update:note="updated(note, $event)"/>
 		</div>
 	</MkPagination>
 </div>

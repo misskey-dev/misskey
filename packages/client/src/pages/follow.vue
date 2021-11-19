@@ -25,7 +25,7 @@ export default defineComponent({
 				} else if (res.type === 'Note') {
 					this.$router.push(`/notes/${res.object.id}`);
 				} else {
-					os.dialog({
+					os.alert({
 						type: 'error',
 						text: 'Not a user'
 					}).then(() => {
@@ -45,10 +45,9 @@ export default defineComponent({
 
 	methods: {
 		async follow(user) {
-			const { canceled } = await os.dialog({
+			const { canceled } = await os.confirm({
 				type: 'question',
 				text: this.$t('followConfirm', { name: user.name || user.username }),
-				showCancelButton: true
 			});
 
 			if (canceled) {

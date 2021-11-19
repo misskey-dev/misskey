@@ -1,31 +1,31 @@
 <template>
 <form class="eppvobhk _monolithic_" :class="{ signing, totpLogin }" @submit.prevent="onSubmit">
 	<div class="auth _section _formRoot">
-		<div class="avatar" :style="{ backgroundImage: user ? `url('${ user.avatarUrl }')` : null }" v-show="withAvatar"></div>
-		<div class="normal-signin" v-if="!totpLogin">
-			<MkInput class="_formBlock" v-model="username" :placeholder="$ts.username" type="text" pattern="^[a-zA-Z0-9_]+$" spellcheck="false" autofocus required @update:modelValue="onUsernameChange" data-cy-signin-username>
+		<div v-show="withAvatar" class="avatar" :style="{ backgroundImage: user ? `url('${ user.avatarUrl }')` : null }"></div>
+		<div v-if="!totpLogin" class="normal-signin">
+			<MkInput v-model="username" class="_formBlock" :placeholder="$ts.username" type="text" pattern="^[a-zA-Z0-9_]+$" spellcheck="false" autofocus required data-cy-signin-username @update:modelValue="onUsernameChange">
 				<template #prefix>@</template>
 				<template #suffix>@{{ host }}</template>
 			</MkInput>
-			<MkInput class="_formBlock" v-model="password" :placeholder="$ts.password" type="password" :with-password-toggle="true" v-if="!user || user && !user.usePasswordLessLogin" required data-cy-signin-password>
+			<MkInput v-if="!user || user && !user.usePasswordLessLogin" v-model="password" class="_formBlock" :placeholder="$ts.password" type="password" :with-password-toggle="true" required data-cy-signin-password>
 				<template #prefix><i class="fas fa-lock"></i></template>
-				<template #caption><button class="_textButton" @click="resetPassword" type="button">{{ $ts.forgotPassword }}</button></template>
+				<template #caption><button class="_textButton" type="button" @click="resetPassword">{{ $ts.forgotPassword }}</button></template>
 			</MkInput>
 			<MkButton class="_formBlock" type="submit" primary :disabled="signing" style="margin: 0 auto;">{{ signing ? $ts.loggingIn : $ts.login }}</MkButton>
 		</div>
-		<div class="2fa-signin" v-if="totpLogin" :class="{ securityKeys: user && user.securityKeys }">
+		<div v-if="totpLogin" class="2fa-signin" :class="{ securityKeys: user && user.securityKeys }">
 			<div v-if="user && user.securityKeys" class="twofa-group tap-group">
 				<p>{{ $ts.tapSecurityKey }}</p>
-				<MkButton @click="queryKey" v-if="!queryingKey">
+				<MkButton v-if="!queryingKey" @click="queryKey">
 					{{ $ts.retry }}
 				</MkButton>
 			</div>
-			<div class="or-hr" v-if="user && user.securityKeys">
+			<div v-if="user && user.securityKeys" class="or-hr">
 				<p class="or-msg">{{ $ts.or }}</p>
 			</div>
 			<div class="twofa-group totp-group">
 				<p style="margin-bottom:0;">{{ $ts.twoStepAuthentication }}</p>
-				<MkInput v-model="password" type="password" :with-password-toggle="true" v-if="user && user.usePasswordLessLogin" required>
+				<MkInput v-if="user && user.usePasswordLessLogin" v-model="password" type="password" :with-password-toggle="true" required>
 					<template #label>{{ $ts.password }}</template>
 					<template #prefix><i class="fas fa-lock"></i></template>
 				</MkInput>
@@ -38,9 +38,9 @@
 		</div>
 	</div>
 	<div class="social _section">
-		<a class="_borderButton _gap" v-if="meta && meta.enableTwitterIntegration" :href="`${apiUrl}/signin/twitter`"><i class="fab fa-twitter" style="margin-right: 4px;"></i>{{ $t('signinWith', { x: 'Twitter' }) }}</a>
-		<a class="_borderButton _gap" v-if="meta && meta.enableGithubIntegration" :href="`${apiUrl}/signin/github`"><i class="fab fa-github" style="margin-right: 4px;"></i>{{ $t('signinWith', { x: 'GitHub' }) }}</a>
-		<a class="_borderButton _gap" v-if="meta && meta.enableDiscordIntegration" :href="`${apiUrl}/signin/discord`"><i class="fab fa-discord" style="margin-right: 4px;"></i>{{ $t('signinWith', { x: 'Discord' }) }}</a>
+		<a v-if="meta && meta.enableTwitterIntegration" class="_borderButton _gap" :href="`${apiUrl}/signin/twitter`"><i class="fab fa-twitter" style="margin-right: 4px;"></i>{{ $t('signinWith', { x: 'Twitter' }) }}</a>
+		<a v-if="meta && meta.enableGithubIntegration" class="_borderButton _gap" :href="`${apiUrl}/signin/github`"><i class="fab fa-github" style="margin-right: 4px;"></i>{{ $t('signinWith', { x: 'GitHub' }) }}</a>
+		<a v-if="meta && meta.enableDiscordIntegration" class="_borderButton _gap" :href="`${apiUrl}/signin/discord`"><i class="fab fa-discord" style="margin-right: 4px;"></i>{{ $t('signinWith', { x: 'Discord' }) }}</a>
 	</div>
 </form>
 </template>
@@ -150,7 +150,7 @@ export default defineComponent({
 				return this.onLogin(res);
 			}).catch(err => {
 				if (err === null) return;
-				os.dialog({
+				os.alert({
 					type: 'error',
 					text: this.$ts.signinFailed
 				});
@@ -190,7 +190,7 @@ export default defineComponent({
 		loginFailed(err) {
 			switch (err.id) {
 				case '6cc579cc-885d-43d8-95c2-b8c7fc963280': {
-					os.dialog({
+					os.alert({
 						type: 'error',
 						title: this.$ts.loginFailed,
 						text: this.$ts.noSuchUser
@@ -202,7 +202,7 @@ export default defineComponent({
 					break;
 				}
 				default: {
-					os.dialog({
+					os.alert({
 						type: 'error',
 						title: this.$ts.loginFailed,
 						text: JSON.stringify(err)

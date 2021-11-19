@@ -1,7 +1,7 @@
 <template>
-<MkTooltip :source="source" ref="tooltip" @closed="$emit('closed')" :max-width="250">
+<MkTooltip ref="tooltip" :source="source" :max-width="250" @closed="$emit('closed')">
 	<div class="beaffaef">
-		<div class="user" v-for="u in users" :key="u.id">
+		<div v-for="u in users" :key="u.id" class="user">
 			<MkAvatar class="avatar" :user="u"/>
 			<MkUserName class="name" :user="u" :nowrap="true"/>
 		</div>

@@ -1,7 +1,7 @@
 <template>
-<div class="vrtktovg _debobigegoItem _debobigegoNoConcat" v-size="{ max: [500] }" v-sticky-container>
+<div v-size="{ max: [500] }" v-sticky-container class="vrtktovg _debobigegoItem _debobigegoNoConcat">
 	<div class="_debobigegoLabel"><slot name="label"></slot></div>
-	<div class="main _debobigego_group" ref="child">
+	<div ref="child" class="main _debobigego_group">
 		<slot></slot>
 	</div>
 	<div class="_debobigegoCaption"><slot name="caption"></slot></div>

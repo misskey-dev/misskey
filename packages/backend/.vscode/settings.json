@@ -1,0 +1,6 @@
+{
+	"typescript.tsdk": "node_modules\\typescript\\lib",
+	"path-intellisense.mappings": {
+		"@": "${workspaceRoot}/packages/backend/src/"
+	}
+}

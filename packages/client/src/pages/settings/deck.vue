@@ -75,10 +75,9 @@ export default defineComponent({
 
 	watch: {
 		async navWindow() {
-			const { canceled } = await os.dialog({
+			const { canceled } = await os.confirm({
 				type: 'info',
 				text: this.$ts.reloadToApplySetting,
-				showCancelButton: true
 			});
 			if (canceled) return;
 
@@ -92,11 +91,9 @@ export default defineComponent({
 
 	methods: {
 		async setProfile() {
-			const { canceled, result: name } = await os.dialog({
+			const { canceled, result: name } = await os.inputText({
 				title: this.$ts._deck.profile,
-				input: {
-					allowEmpty: false
-				}
+				allowEmpty: false
 			});
 			if (canceled) return;
 			this.profile = name;

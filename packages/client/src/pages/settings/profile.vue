@@ -4,8 +4,8 @@
 		<div class="_debobigegoItem _debobigegoPanel llvierxe" :style="{ backgroundImage: $i.bannerUrl ? `url(${ $i.bannerUrl })` : null }">
 			<MkAvatar class="avatar" :user="$i"/>
 		</div>
-		<FormButton @click="changeAvatar" primary>{{ $ts._profile.changeAvatar }}</FormButton>
-		<FormButton @click="changeBanner" primary>{{ $ts._profile.changeBanner }}</FormButton>
+		<FormButton primary @click="changeAvatar">{{ $ts._profile.changeAvatar }}</FormButton>
+		<FormButton primary @click="changeBanner">{{ $ts._profile.changeBanner }}</FormButton>
 	</FormGroup>
 
 	<FormInput v-model="name" :max="30" manual-save>
@@ -29,11 +29,11 @@
 
 	<FormSelect v-model="lang">
 		<template #label>{{ $ts.language }}</template>
-		<option v-for="x in langs" :value="x[0]" :key="x[0]">{{ x[1] }}</option>
+		<option v-for="x in langs" :key="x[0]" :value="x[0]">{{ x[1] }}</option>
 	</FormSelect>
 
 	<FormGroup>
-		<FormButton @click="editMetadata" primary>{{ $ts._profile.metadataEdit }}</FormButton>
+		<FormButton primary @click="editMetadata">{{ $ts._profile.metadataEdit }}</FormButton>
 		<template #caption>{{ $ts._profile.metadataDescription }}</template>
 	</FormGroup>
 
@@ -221,7 +221,7 @@ export default defineComponent({
 			}).then(i => {
 				os.success();
 			}).catch(err => {
-				os.dialog({
+				os.alert({
 					type: 'error',
 					text: err.id
 				});

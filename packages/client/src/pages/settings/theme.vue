@@ -4,7 +4,7 @@
 		<div class="rfqxtzch _debobigegoItem _debobigegoPanel">
 			<div class="darkMode">
 				<div class="toggleWrapper">
-					<input type="checkbox" class="dn" id="dn" v-model="darkMode"/>
+					<input id="dn" v-model="darkMode" type="checkbox" class="dn"/>
 					<label for="dn" class="toggle">
 						<span class="before">{{ $ts.light }}</span>
 						<span class="after">{{ $ts.dark }}</span>
@@ -30,19 +30,19 @@
 		<FormSelect v-model="darkThemeId">
 			<template #label>{{ $ts.themeForDarkMode }}</template>
 			<optgroup :label="$ts.darkThemes">
-				<option v-for="x in darkThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
+				<option v-for="x in darkThemes" :key="x.id" :value="x.id">{{ x.name }}</option>
 			</optgroup>
 			<optgroup :label="$ts.lightThemes">
-				<option v-for="x in lightThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
+				<option v-for="x in lightThemes" :key="x.id" :value="x.id">{{ x.name }}</option>
 			</optgroup>
 		</FormSelect>
 		<FormSelect v-model="lightThemeId">
 			<template #label>{{ $ts.themeForLightMode }}</template>
 			<optgroup :label="$ts.lightThemes">
-				<option v-for="x in lightThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
+				<option v-for="x in lightThemes" :key="x.id" :value="x.id">{{ x.name }}</option>
 			</optgroup>
 			<optgroup :label="$ts.darkThemes">
-				<option v-for="x in darkThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
+				<option v-for="x in darkThemes" :key="x.id" :value="x.id">{{ x.name }}</option>
 			</optgroup>
 		</FormSelect>
 	</template>
@@ -50,25 +50,25 @@
 		<FormSelect v-model="lightThemeId">
 			<template #label>{{ $ts.themeForLightMode }}</template>
 			<optgroup :label="$ts.lightThemes">
-				<option v-for="x in lightThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
+				<option v-for="x in lightThemes" :key="x.id" :value="x.id">{{ x.name }}</option>
 			</optgroup>
 			<optgroup :label="$ts.darkThemes">
-				<option v-for="x in darkThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
+				<option v-for="x in darkThemes" :key="x.id" :value="x.id">{{ x.name }}</option>
 			</optgroup>
 		</FormSelect>
 		<FormSelect v-model="darkThemeId">
 			<template #label>{{ $ts.themeForDarkMode }}</template>
 			<optgroup :label="$ts.darkThemes">
-				<option v-for="x in darkThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
+				<option v-for="x in darkThemes" :key="x.id" :value="x.id">{{ x.name }}</option>
 			</optgroup>
 			<optgroup :label="$ts.lightThemes">
-				<option v-for="x in lightThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
+				<option v-for="x in lightThemes" :key="x.id" :value="x.id">{{ x.name }}</option>
 			</optgroup>
 		</FormSelect>
 	</template>
 
-	<FormButton primary v-if="wallpaper == null" @click="setWallpaper">{{ $ts.setWallpaper }}</FormButton>
-	<FormButton primary v-else @click="wallpaper = null">{{ $ts.removeWallpaper }}</FormButton>
+	<FormButton v-if="wallpaper == null" primary @click="setWallpaper">{{ $ts.setWallpaper }}</FormButton>
+	<FormButton v-else primary @click="wallpaper = null">{{ $ts.removeWallpaper }}</FormButton>
 
 	<FormGroup>
 		<FormLink to="https://assets.misskey.io/theme/list" external><template #icon><i class="fas fa-globe"></i></template>{{ $ts._theme.explore }}</FormLink>
@@ -148,7 +148,7 @@ export default defineComponent({
 		const themesCount = installedThemes.value.length;
 
 		watch(syncDeviceDarkMode, () => {
-			if (syncDeviceDarkMode) {
+			if (syncDeviceDarkMode.value) {
 				defaultStore.set('darkMode', isDeviceDarkmode());
 			}
 		});

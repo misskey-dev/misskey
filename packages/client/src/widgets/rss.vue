@@ -5,7 +5,7 @@
 
 	<div class="ekmkgxbj">
 		<MkLoading v-if="fetching"/>
-		<div class="feed" v-else>
+		<div v-else class="feed">
 			<a v-for="item in items" :href="item.link" rel="nofollow noopener" target="_blank" :title="item.title">{{ item.title }}</a>
 		</div>
 	</div>
@@ -33,10 +33,10 @@ const widget = define({
 });
 
 export default defineComponent({
-	extends: widget,
 	components: {
 		MkContainer
 	},
+	extends: widget,
 	data() {
 		return {
 			items: [],

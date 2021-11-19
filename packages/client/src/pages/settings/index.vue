@@ -1,6 +1,6 @@
 <template>
-<div class="vvcocwet" :class="{ wide: !narrow }" ref="el">
-	<div class="nav" v-if="!narrow || page == null">
+<div ref="el" class="vvcocwet" :class="{ wide: !narrow }">
+	<div v-if="!narrow || page == null" class="nav">
 		<MkSpacer :content-max="700">
 			<div class="baaadecd">
 				<div class="title">{{ $ts.settings }}</div>
@@ -217,6 +217,7 @@ export default defineComponent({
 			if (page.value.startsWith('registry/value/system/')) {
 				return defineAsyncComponent(() => import('./registry.value.vue'));
 			}
+			return null;
 		});
 
 		watch(component, () => {

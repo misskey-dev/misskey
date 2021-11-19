@@ -1,5 +1,5 @@
 <template>
-<div class="zdjebgpv" ref="thumbnail">
+<div ref="thumbnail" class="zdjebgpv">
 	<ImgWithBlurhash v-if="isThumbnailAvailable" :hash="file.blurhash" :src="file.thumbnailUrl" :alt="file.name" :title="file.name" :style="`object-fit: ${ fit }`"/>
 	<i v-else-if="is === 'image'" class="fas fa-file-image icon"></i>
 	<i v-else-if="is === 'video'" class="fas fa-file-video icon"></i>

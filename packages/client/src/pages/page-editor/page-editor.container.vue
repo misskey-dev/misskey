@@ -4,20 +4,20 @@
 		<div class="title"><slot name="header"></slot></div>
 		<div class="buttons">
 			<slot name="func"></slot>
-			<button v-if="removable" @click="remove()" class="_button">
+			<button v-if="removable" class="_button" @click="remove()">
 				<i class="fas fa-trash-alt"></i>
 			</button>
 			<button v-if="draggable" class="drag-handle _button">
 				<i class="fas fa-bars"></i>
 			</button>
-			<button @click="toggleContent(!showBody)" class="_button">
+			<button class="_button" @click="toggleContent(!showBody)">
 				<template v-if="showBody"><i class="fas fa-angle-up"></i></template>
 				<template v-else><i class="fas fa-angle-down"></i></template>
 			</button>
 		</div>
 	</header>
-	<p v-show="showBody" class="error" v-if="error != null">{{ $t('_pages.script.typeError', { slot: error.arg + 1, expect: $t(`script.types.${error.expect}`), actual: $t(`script.types.${error.actual}`) }) }}</p>
-	<p v-show="showBody" class="warn" v-if="warn != null">{{ $t('_pages.script.thereIsEmptySlot', { slot: warn.slot + 1 }) }}</p>
+	<p v-show="showBody" v-if="error != null" class="error">{{ $t('_pages.script.typeError', { slot: error.arg + 1, expect: $t(`script.types.${error.expect}`), actual: $t(`script.types.${error.actual}`) }) }}</p>
+	<p v-show="showBody" v-if="warn != null" class="warn">{{ $t('_pages.script.thereIsEmptySlot', { slot: warn.slot + 1 }) }}</p>
 	<div v-show="showBody" class="body">
 		<slot></slot>
 	</div>

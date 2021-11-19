@@ -16,7 +16,7 @@
 			</MkTextarea>
 		</div>
 		<div class="_section">
-			<MkButton @click="send" primary full :disabled="comment.length === 0">{{ $ts.send }}</MkButton>
+			<MkButton primary full :disabled="comment.length === 0" @click="send">{{ $ts.send }}</MkButton>
 		</div>
 	</div>
 </XWindow>
@@ -61,7 +61,7 @@ export default defineComponent({
 				userId: this.user.id,
 				comment: this.comment,
 			}, undefined, res => {
-				os.dialog({
+				os.alert({
 					type: 'success',
 					text: this.$ts.abuseReported
 				});

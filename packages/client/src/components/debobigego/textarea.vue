@@ -3,8 +3,8 @@
 	<template #label><slot></slot></template>
 	<div class="rivhosbp _debobigegoItem" :class="{ tall, pre }">
 		<div class="input _debobigegoPanel">
-			<textarea ref="input" :class="{ code, _monospace: code }"
-				v-model="v"
+			<textarea ref="input" v-model="v"
+				:class="{ code, _monospace: code }"
 				:required="required"
 				:readonly="readonly"
 				:pattern="pattern"
@@ -18,7 +18,7 @@
 	</div>
 	<template #caption><slot name="desc"></slot></template>
 
-	<FormButton v-if="manualSave && changed" @click="updated" primary><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
+	<FormButton v-if="manualSave && changed" primary @click="updated"><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
 </FormGroup>
 </template>
 

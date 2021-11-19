@@ -12,7 +12,7 @@
 		</MkTab>
 
 		<div class="content">
-			<div v-if="tab === 'windows'" class="windows" v-follow>
+			<div v-if="tab === 'windows'" v-follow class="windows">
 				<div class="header">
 					<div>#ID</div>
 					<div>Component</div>
@@ -24,7 +24,7 @@
 					<div><button class="_textButton" @click="killPopup(p)">Kill</button></div>
 				</div>
 			</div>
-			<div v-if="tab === 'stream'" class="stream" v-follow>
+			<div v-if="tab === 'stream'" v-follow class="stream">
 				<div class="header">
 					<div>#ID</div>
 					<div>Ch</div>
@@ -41,7 +41,7 @@
 					<div>{{ c.out }}</div>
 				</div>
 			</div>
-			<div v-if="tab === 'streamPool'" class="streamPool" v-follow>
+			<div v-if="tab === 'streamPool'" v-follow class="streamPool">
 				<div class="header">
 					<div>#ID</div>
 					<div>Ch</div>
@@ -53,7 +53,7 @@
 					<div>{{ p.users }}</div>
 				</div>
 			</div>
-			<div v-if="tab === 'api'" class="api" v-follow>
+			<div v-if="tab === 'api'" v-follow class="api">
 				<div class="header">
 					<div>#ID</div>
 					<div>Endpoint</div>

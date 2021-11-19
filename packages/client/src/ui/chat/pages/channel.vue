@@ -1,14 +1,14 @@
 <template>
 <div v-if="channel" class="hhizbblb">
-	<div class="info" v-if="date">
+	<div v-if="date" class="info">
 		<MkInfo>{{ $ts.showingPastTimeline }} <button class="_textButton clear" @click="timetravel()">{{ $ts.clear }}</button></MkInfo>
 	</div>
-	<div class="tl" ref="body">
-		<div class="new" v-if="queue > 0" :style="{ width: width + 'px', bottom: bottom + 'px' }"><button class="_buttonPrimary" @click="goTop()">{{ $ts.newNoteRecived }}</button></div>
-		<XNotes class="tl" ref="tl" :pagination="pagination" @queue="queueUpdated" v-follow="true"/>
+	<div ref="body" class="tl">
+		<div v-if="queue > 0" class="new" :style="{ width: width + 'px', bottom: bottom + 'px' }"><button class="_buttonPrimary" @click="goTop()">{{ $ts.newNoteRecived }}</button></div>
+		<XNotes ref="tl" v-follow="true" class="tl" :pagination="pagination" @queue="queueUpdated"/>
 	</div>
 	<div class="bottom">
-		<div class="typers" v-if="typers.length > 0">
+		<div v-if="typers.length > 0" class="typers">
 			<I18n :src="$ts.typingUsers" text-tag="span" class="users">
 				<template #users>
 					<b v-for="user in typers" :key="user.id" class="user">{{ user.username }}</b>
@@ -155,9 +155,8 @@ export default defineComponent({
 		},
 
 		async inChannelSearch() {
-			const { canceled, result: query } = await os.dialog({
+			const { canceled, result: query } = await os.inputText({
 				title: this.$ts.inChannelSearch,
-				input: true
 			});
 			if (canceled || query == null || query === '') return;
 			router.push(`/search?q=${encodeURIComponent(query)}&channel=${this.channelId}`);

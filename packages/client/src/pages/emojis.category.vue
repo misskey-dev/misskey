@@ -12,14 +12,14 @@
 		-->
 	</div>
 
-	<MkFolder class="emojis" v-if="searchEmojis">
+	<MkFolder v-if="searchEmojis" class="emojis">
 		<template #header>{{ $ts.searchResult }}</template>
 		<div class="zuvgdzyt">
 			<XEmoji v-for="emoji in searchEmojis" :key="emoji.name" class="emoji" :emoji="emoji"/>
 		</div>
 	</MkFolder>
 	
-	<MkFolder class="emojis" v-for="category in customEmojiCategories" :key="category">
+	<MkFolder v-for="category in customEmojiCategories" :key="category" class="emojis">
 		<template #header>{{ category || $ts.other }}</template>
 		<div class="zuvgdzyt">
 			<XEmoji v-for="emoji in customEmojis.filter(e => e.category === category)" :key="emoji.name" class="emoji" :emoji="emoji"/>

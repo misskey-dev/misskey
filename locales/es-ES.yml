@@ -739,8 +739,6 @@ resolved: "Resuelto"
 unresolved: "Sin resolver"
 _accountDelete:
   accountDelete: "Eliminar Cuenta"
-_docs:
-  admin: "Administrar"
 _ad:
   back: "Deseleccionar"
 _gallery:

@@ -1,7 +1,7 @@
 <template>
 <div class="rrevdjwu" :class="{ grid }">
-	<div class="group" v-for="group in def">
-		<div class="title" v-if="group.title">{{ group.title }}</div>
+	<div v-for="group in def" class="group">
+		<div v-if="group.title" class="title">{{ group.title }}</div>
 
 		<div class="items">
 			<template v-for="(item, i) in group.items">
@@ -9,7 +9,7 @@
 					<i v-if="item.icon" class="icon fa-fw" :class="item.icon"></i>
 					<span class="text">{{ item.text }}</span>
 				</a>
-				<button v-else-if="item.type === 'button'" @click="ev => item.action(ev)" :tabindex="i" class="_button item" :class="{ danger: item.danger, active: item.active }" :disabled="item.active">
+				<button v-else-if="item.type === 'button'" :tabindex="i" class="_button item" :class="{ danger: item.danger, active: item.active }" :disabled="item.active" @click="ev => item.action(ev)">
 					<i v-if="item.icon" class="icon fa-fw" :class="item.icon"></i>
 					<span class="text">{{ item.text }}</span>
 				</button>

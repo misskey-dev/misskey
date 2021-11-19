@@ -1,7 +1,7 @@
 <template>
 <div class="mrdgzndn">
-	<Mfm :text="text" :is-note="false" :i="$i" :key="text"/>
-	<MkUrlPreview v-for="url in urls" :url="url" :key="url" class="url"/>
+	<Mfm :key="text" :text="text" :is-note="false" :i="$i"/>
+	<MkUrlPreview v-for="url in urls" :key="url" :url="url" class="url"/>
 </div>
 </template>
 
