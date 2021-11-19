@@ -1,7 +1,7 @@
 <template>
 <div>
 	<div>{{ hpml.interpolate(block.title) }}</div>
-	<MkRadio v-for="item in block.values" :modelValue="value" @update:modelValue="updateValue($event)" :value="item" :key="item">{{ item }}</MkRadio>
+	<MkRadio v-for="item in block.values" :key="item" :modelValue="value" :value="item" @update:modelValue="updateValue($event)">{{ item }}</MkRadio>
 </div>
 </template>
 

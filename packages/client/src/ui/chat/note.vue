@@ -1,37 +1,37 @@
 <template>
 <div
-	class="vfzoeqcg"
 	v-if="!muted"
 	v-show="!isDeleted"
+	v-hotkey="keymap"
+	class="vfzoeqcg"
 	:tabindex="!isDeleted ? '-1' : null"
 	:class="{ renote: isRenote, highlighted: appearNote._prId_ || appearNote._featuredId_, operating }"
-	v-hotkey="keymap"
 >
-	<XSub :note="appearNote.reply" class="reply-to" v-if="appearNote.reply"/>
-	<div class="info" v-if="pinned"><i class="fas fa-thumbtack"></i> {{ $ts.pinnedNote }}</div>
-	<div class="info" v-if="appearNote._prId_"><i class="fas fa-bullhorn"></i> {{ $ts.promotion }}<button class="_textButton hide" @click="readPromo()">{{ $ts.hideThisNote }} <i class="fas fa-times"></i></button></div>
-	<div class="info" v-if="appearNote._featuredId_"><i class="fas fa-bolt"></i> {{ $ts.featured }}</div>
-	<div class="renote" v-if="isRenote">
+	<XSub v-if="appearNote.reply" :note="appearNote.reply" class="reply-to"/>
+	<div v-if="pinned" class="info"><i class="fas fa-thumbtack"></i> {{ $ts.pinnedNote }}</div>
+	<div v-if="appearNote._prId_" class="info"><i class="fas fa-bullhorn"></i> {{ $ts.promotion }}<button class="_textButton hide" @click="readPromo()">{{ $ts.hideThisNote }} <i class="fas fa-times"></i></button></div>
+	<div v-if="appearNote._featuredId_" class="info"><i class="fas fa-bolt"></i> {{ $ts.featured }}</div>
+	<div v-if="isRenote" class="renote">
 		<MkAvatar class="avatar" :user="note.user"/>
 		<i class="fas fa-retweet"></i>
 		<I18n :src="$ts.renotedBy" tag="span">
 			<template #user>
-				<MkA class="name" :to="userPage(note.user)" v-user-preview="note.userId">
+				<MkA v-user-preview="note.userId" class="name" :to="userPage(note.user)">
 					<MkUserName :user="note.user"/>
 				</MkA>
 			</template>
 		</I18n>
 		<div class="info">
-			<button class="_button time" @click="showRenoteMenu()" ref="renoteTime">
+			<button ref="renoteTime" class="_button time" @click="showRenoteMenu()">
 				<i v-if="isMyRenote" class="fas fa-ellipsis-h dropdownIcon"></i>
 				<MkTime :time="note.createdAt"/>
 			</button>
-			<span class="visibility" v-if="note.visibility !== 'public'">
+			<span v-if="note.visibility !== 'public'" class="visibility">
 				<i v-if="note.visibility === 'home'" class="fas fa-home"></i>
 				<i v-else-if="note.visibility === 'followers'" class="fas fa-unlock"></i>
 				<i v-else-if="note.visibility === 'specified'" class="fas fa-envelope"></i>
 			</span>
-			<span class="localOnly" v-if="note.localOnly"><i class="fas fa-biohazard"></i></span>
+			<span v-if="note.localOnly" class="localOnly"><i class="fas fa-biohazard"></i></span>
 		</div>
 	</div>
 	<article class="article" @contextmenu.stop="onContextmenu">
@@ -44,45 +44,45 @@
 					<Mfm v-if="appearNote.cw != ''" class="text" :text="appearNote.cw" :author="appearNote.user" :i="$i" :custom-emojis="appearNote.emojis"/>
 					<XCwButton v-model="showContent" :note="appearNote"/>
 				</p>
-				<div class="content" :class="{ collapsed }" v-show="appearNote.cw == null || showContent">
+				<div v-show="appearNote.cw == null || showContent" class="content" :class="{ collapsed }">
 					<div class="text">
 						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ $ts.private }})</span>
-						<MkA class="reply" v-if="appearNote.replyId" :to="`/notes/${appearNote.replyId}`"><i class="fas fa-reply"></i></MkA>
+						<MkA v-if="appearNote.replyId" class="reply" :to="`/notes/${appearNote.replyId}`"><i class="fas fa-reply"></i></MkA>
 						<Mfm v-if="appearNote.text" :text="appearNote.text" :author="appearNote.user" :i="$i" :custom-emojis="appearNote.emojis"/>
-						<a class="rp" v-if="appearNote.renote != null">RN:</a>
+						<a v-if="appearNote.renote != null" class="rp">RN:</a>
 					</div>
-					<div class="files" v-if="appearNote.files.length > 0">
+					<div v-if="appearNote.files.length > 0" class="files">
 						<XMediaList :media-list="appearNote.files"/>
 					</div>
-					<XPoll v-if="appearNote.poll" :note="appearNote" ref="pollViewer" class="poll"/>
-					<MkUrlPreview v-for="url in urls" :url="url" :key="url" :compact="true" :detail="false" class="url-preview"/>
-					<div class="renote" v-if="appearNote.renote"><XNoteSimple :note="appearNote.renote"/></div>
+					<XPoll v-if="appearNote.poll" ref="pollViewer" :note="appearNote" class="poll"/>
+					<MkUrlPreview v-for="url in urls" :key="url" :url="url" :compact="true" :detail="false" class="url-preview"/>
+					<div v-if="appearNote.renote" class="renote"><XNoteSimple :note="appearNote.renote"/></div>
 					<button v-if="collapsed" class="fade _button" @click="collapsed = false">
 						<span>{{ $ts.showMore }}</span>
 					</button>
 				</div>
 				<MkA v-if="appearNote.channel && !inChannel" class="channel" :to="`/channels/${appearNote.channel.id}`"><i class="fas fa-satellite-dish"></i> {{ appearNote.channel.name }}</MkA>
 			</div>
-			<XReactionsViewer :note="appearNote" ref="reactionsViewer"/>
+			<XReactionsViewer ref="reactionsViewer" :note="appearNote"/>
 			<footer class="footer _panel">
-				<button @click="reply()" class="button _button" v-tooltip="$ts.reply">
+				<button v-tooltip="$ts.reply" class="button _button" @click="reply()">
 					<template v-if="appearNote.reply"><i class="fas fa-reply-all"></i></template>
 					<template v-else><i class="fas fa-reply"></i></template>
-					<p class="count" v-if="appearNote.repliesCount > 0">{{ appearNote.repliesCount }}</p>
+					<p v-if="appearNote.repliesCount > 0" class="count">{{ appearNote.repliesCount }}</p>
 				</button>
-				<button v-if="canRenote" @click="renote()" class="button _button" ref="renoteButton" v-tooltip="$ts.renote">
-					<i class="fas fa-retweet"></i><p class="count" v-if="appearNote.renoteCount > 0">{{ appearNote.renoteCount }}</p>
+				<button v-if="canRenote" ref="renoteButton" v-tooltip="$ts.renote" class="button _button" @click="renote()">
+					<i class="fas fa-retweet"></i><p v-if="appearNote.renoteCount > 0" class="count">{{ appearNote.renoteCount }}</p>
 				</button>
 				<button v-else class="button _button">
 					<i class="fas fa-ban"></i>
 				</button>
-				<button v-if="appearNote.myReaction == null" class="button _button" @click="react()" ref="reactButton" v-tooltip="$ts.reaction">
+				<button v-if="appearNote.myReaction == null" ref="reactButton" v-tooltip="$ts.reaction" class="button _button" @click="react()">
 					<i class="fas fa-plus"></i>
 				</button>
-				<button v-if="appearNote.myReaction != null" class="button _button reacted" @click="undoReact(appearNote)" ref="reactButton" v-tooltip="$ts.reaction">
+				<button v-if="appearNote.myReaction != null" ref="reactButton" v-tooltip="$ts.reaction" class="button _button reacted" @click="undoReact(appearNote)">
 					<i class="fas fa-minus"></i>
 				</button>
-				<button class="button _button" @click="menu()" ref="menuButton">
+				<button ref="menuButton" class="button _button" @click="menu()">
 					<i class="fas fa-ellipsis-h"></i>
 				</button>
 			</footer>
@@ -92,7 +92,7 @@
 <div v-else class="muted" @click="muted = false">
 	<I18n :src="$ts.userSaysSomething" tag="small">
 		<template #name>
-			<MkA class="name" :to="userPage(appearNote.user)" v-user-preview="appearNote.userId">
+			<MkA v-user-preview="appearNote.userId" class="name" :to="userPage(appearNote.user)">
 				<MkUserName :user="appearNote.user"/>
 			</MkA>
 		</template>
@@ -459,18 +459,18 @@ export default defineComponent({
 			os.apiWithDialog('notes/create', {
 				renoteId: this.appearNote.id
 			}, undefined, (res: any) => {
-				os.dialog({
+				os.alert({
 					type: 'success',
 					text: this.$ts.renoted,
 				});
 			}, (e: Error) => {
 				if (e.id === 'b5c90186-4ab0-49c8-9bba-a1f76c282ba4') {
-					os.dialog({
+					os.alert({
 						type: 'error',
 						text: this.$ts.cantRenote,
 					});
 				} else if (e.id === 'fd4cc33e-2a37-48dd-99cc-9b806eb2031a') {
-					os.dialog({
+					os.alert({
 						type: 'error',
 						text: this.$ts.cantReRenote,
 					});
@@ -513,18 +513,18 @@ export default defineComponent({
 			os.apiWithDialog('notes/favorites/create', {
 				noteId: this.appearNote.id
 			}, undefined, (res: any) => {
-				os.dialog({
+				os.alert({
 					type: 'success',
 					text: this.$ts.favorited,
 				});
 			}, (e: Error) => {
 				if (e.id === 'a402c12b-34dd-41d2-97d8-4d2ffd96a1a6') {
-					os.dialog({
+					os.alert({
 						type: 'error',
 						text: this.$ts.alreadyFavorited,
 					});
 				} else if (e.id === '6dd26674-e060-4816-909a-45ba3f4da458') {
-					os.dialog({
+					os.alert({
 						type: 'error',
 						text: this.$ts.cantFavorite,
 					});
@@ -533,10 +533,9 @@ export default defineComponent({
 		},
 
 		del() {
-			os.dialog({
+			os.confirm({
 				type: 'warning',
 				text: this.$ts.noteDeleteConfirm,
-				showCancelButton: true
 			}).then(({ canceled }) => {
 				if (canceled) return;
 
@@ -547,10 +546,9 @@ export default defineComponent({
 		},
 
 		delEdit() {
-			os.dialog({
+			os.confirm({
 				type: 'warning',
 				text: this.$ts.deleteAndEditConfirm,
-				showCancelButton: true
 			}).then(({ canceled }) => {
 				if (canceled) return;
 
@@ -770,7 +768,7 @@ export default defineComponent({
 				noteId: this.appearNote.id
 			}, undefined, null, e => {
 				if (e.id === '72dab508-c64d-498f-8740-a8eec1ba385a') {
-					os.dialog({
+					os.alert({
 						type: 'error',
 						text: this.$ts.pinLimitExceeded
 					});
@@ -817,9 +815,8 @@ export default defineComponent({
 		},
 
 		async promote() {
-			const { canceled, result: days } = await os.dialog({
+			const { canceled, result: days } = await os.inputNumber({
 				title: this.$ts.numberOfDays,
-				input: { type: 'number' }
 			});
 
 			if (canceled) return;

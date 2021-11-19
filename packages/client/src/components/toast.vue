@@ -1,7 +1,7 @@
 <template>
 <div class="mk-toast">
 	<transition name="notification-slide" appear @after-leave="$emit('closed')">
-		<XNotification :notification="notification" class="notification _acrylic" v-if="showing"/>
+		<XNotification v-if="showing" :notification="notification" class="notification _acrylic"/>
 	</transition>
 </div>
 </template>

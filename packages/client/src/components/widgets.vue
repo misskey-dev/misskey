@@ -4,9 +4,9 @@
 		<header>
 			<MkSelect v-model="widgetAdderSelected" style="margin-bottom: var(--margin)">
 				<template #label>{{ $ts.selectWidget }}</template>
-				<option v-for="widget in widgetDefs" :value="widget" :key="widget">{{ $t(`_widgets.${widget}`) }}</option>
+				<option v-for="widget in widgetDefs" :key="widget" :value="widget">{{ $t(`_widgets.${widget}`) }}</option>
 			</MkSelect>
-			<MkButton inline @click="addWidget" primary><i class="fas fa-plus"></i> {{ $ts.add }}</MkButton>
+			<MkButton inline primary @click="addWidget"><i class="fas fa-plus"></i> {{ $ts.add }}</MkButton>
 			<MkButton inline @click="$emit('exit')">{{ $ts.close }}</MkButton>
 		</header>
 		<XDraggable
@@ -23,7 +23,7 @@
 			</template>
 		</XDraggable>
 	</template>
-	<component v-else class="widget" v-for="widget in widgets" :is="`mkw-${widget.name}`" :key="widget.id" :widget="widget" @updateProps="updateWidget(widget.id, $event)"/>
+	<component :is="`mkw-${widget.name}`" v-for="widget in widgets" v-else :key="widget.id" class="widget" :widget="widget" @updateProps="updateWidget(widget.id, $event)"/>
 </div>
 </template>
 

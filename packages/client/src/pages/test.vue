@@ -202,6 +202,7 @@ export default defineComponent({
 	methods: {
 		async showDialog() {
 			this.dialogResult = null;
+			/*
 			this.dialogResult = await os.dialog({
 				type: this.dialogType,
 				title: this.dialogTitle,
@@ -209,7 +210,7 @@ export default defineComponent({
 				showCancelButton: this.dialogCancel,
 				cancelableByBgClick: this.dialogCancelByBgClick,
 				input: this.dialogInput ? {} : null
-			});
+			});*/
 		},
 
 		async form() {

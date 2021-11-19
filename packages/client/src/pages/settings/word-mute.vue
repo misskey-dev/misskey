@@ -25,7 +25,7 @@
 				</FormKeyValueView>
 			</div>
 		</div>
-		<FormButton @click="save()" primary inline :disabled="!changed"><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
+		<FormButton primary inline :disabled="!changed" @click="save()"><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
 	</FormBase>
 </div>
 </template>

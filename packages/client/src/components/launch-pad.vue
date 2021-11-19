@@ -3,12 +3,12 @@
 	<div class="szkkfdyq _popup">
 		<div class="main">
 			<template v-for="item in items">
-				<button v-if="item.action" class="_button" @click="$event => { item.action($event); close(); }" v-click-anime>
+				<button v-if="item.action" v-click-anime class="_button" @click="$event => { item.action($event); close(); }">
 					<i class="icon" :class="item.icon"></i>
 					<div class="text">{{ item.text }}</div>
 					<span v-if="item.indicate" class="indicator"><i class="fas fa-circle"></i></span>
 				</button>
-				<MkA v-else :to="item.to" @click.passive="close()" v-click-anime>
+				<MkA v-else v-click-anime :to="item.to" @click.passive="close()">
 					<i class="icon" :class="item.icon"></i>
 					<div class="text">{{ item.text }}</div>
 					<span v-if="item.indicate" class="indicator"><i class="fas fa-circle"></i></span>
@@ -16,15 +16,15 @@
 			</template>
 		</div>
 		<div class="sub">
-			<a href="https://misskey-hub.net/help.html" target="_blank" @click.passive="close()" v-click-anime>
+			<a v-click-anime href="https://misskey-hub.net/help.html" target="_blank" @click.passive="close()">
 				<i class="fas fa-question-circle icon"></i>
 				<div class="text">{{ $ts.help }}</div>
 			</a>
-			<MkA to="/about" @click.passive="close()" v-click-anime>
+			<MkA v-click-anime to="/about" @click.passive="close()">
 				<i class="fas fa-info-circle icon"></i>
 				<div class="text">{{ $t('aboutX', { x: instanceName }) }}</div>
 			</MkA>
-			<MkA to="/about-misskey" @click.passive="close()" v-click-anime>
+			<MkA v-click-anime to="/about-misskey" @click.passive="close()">
 				<img src="/static-assets/favicon.png" class="icon"/>
 				<div class="text">{{ $ts.aboutMisskey }}</div>
 			</MkA>

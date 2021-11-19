@@ -3,9 +3,9 @@
 	<div class="_debobigegoLabel"><slot name="label"></slot></div>
 	<div class="_debobigegoPanel main">
 		<input
-			type="range"
 			ref="input"
 			v-model="v"
+			type="range"
 			:disabled="disabled"
 			:min="min"
 			:max="max"

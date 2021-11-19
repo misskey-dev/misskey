@@ -1,6 +1,6 @@
 <template>
 <transition :name="$store.state.animation ? 'window' : ''" appear @after-leave="$emit('closed')">
-	<div class="ebkgocck" :class="{ front }" v-if="showing">
+	<div v-if="showing" class="ebkgocck" :class="{ front }">
 		<div class="body _window _shadow _narrow_" @mousedown="onBodyMousedown" @keydown="onKeydown">
 			<div class="header" :class="{ mini }" @contextmenu.prevent.stop="onContextmenu">
 				<span class="left">
@@ -14,12 +14,12 @@
 					<button v-if="closeButton" class="_button" @click="close()"><i class="fas fa-times"></i></button>
 				</span>
 			</div>
-			<div class="body" v-if="padding">
+			<div v-if="padding" class="body">
 				<div class="_section">
 					<slot></slot>
 				</div>
 			</div>
-			<div class="body" v-else>
+			<div v-else class="body">
 				<slot></slot>
 			</div>
 		</div>

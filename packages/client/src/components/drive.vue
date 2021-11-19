@@ -7,33 +7,33 @@
 				<span class="separator"><i class="fas fa-angle-right"></i></span>
 				<XNavFolder :folder="f"/>
 			</template>
-			<span class="separator" v-if="folder != null"><i class="fas fa-angle-right"></i></span>
-			<span class="folder current" v-if="folder != null">{{ folder.name }}</span>
+			<span v-if="folder != null" class="separator"><i class="fas fa-angle-right"></i></span>
+			<span v-if="folder != null" class="folder current">{{ folder.name }}</span>
 		</div>
-		<button @click="showMenu" class="menu _button"><i class="fas fa-ellipsis-h"></i></button>
+		<button class="menu _button" @click="showMenu"><i class="fas fa-ellipsis-h"></i></button>
 	</nav>
-	<div class="main" :class="{ uploading: uploadings.length > 0, fetching }"
-		ref="main"
+	<div ref="main" class="main"
+		:class="{ uploading: uploadings.length > 0, fetching }"
 		@dragover.prevent.stop="onDragover"
 		@dragenter="onDragenter"
 		@dragleave="onDragleave"
 		@drop.prevent.stop="onDrop"
 		@contextmenu.stop="onContextmenu"
 	>
-		<div class="contents" ref="contents">
-			<div class="folders" ref="foldersContainer" v-show="folders.length > 0">
-				<XFolder v-for="(f, i) in folders" :key="f.id" class="folder" :folder="f" :select-mode="select === 'folder'" :is-selected="selectedFolders.some(x => x.id === f.id)" @chosen="chooseFolder" v-anim="i"/>
+		<div ref="contents" class="contents">
+			<div v-show="folders.length > 0" ref="foldersContainer" class="folders">
+				<XFolder v-for="(f, i) in folders" :key="f.id" v-anim="i" class="folder" :folder="f" :select-mode="select === 'folder'" :is-selected="selectedFolders.some(x => x.id === f.id)" @chosen="chooseFolder"/>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
-				<div class="padding" v-for="(n, i) in 16" :key="i"></div>
-				<MkButton ref="moreFolders" v-if="moreFolders">{{ $ts.loadMore }}</MkButton>
+				<div v-for="(n, i) in 16" :key="i" class="padding"></div>
+				<MkButton v-if="moreFolders" ref="moreFolders">{{ $ts.loadMore }}</MkButton>
 			</div>
-			<div class="files" ref="filesContainer" v-show="files.length > 0">
-				<XFile v-for="(file, i) in files" :key="file.id" class="file" :file="file" :select-mode="select === 'file'" :is-selected="selectedFiles.some(x => x.id === file.id)" @chosen="chooseFile" v-anim="i"/>
+			<div v-show="files.length > 0" ref="filesContainer" class="files">
+				<XFile v-for="(file, i) in files" :key="file.id" v-anim="i" class="file" :file="file" :select-mode="select === 'file'" :is-selected="selectedFiles.some(x => x.id === file.id)" @chosen="chooseFile"/>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
-				<div class="padding" v-for="(n, i) in 16" :key="i"></div>
-				<MkButton ref="loadMoreFiles" @click="fetchMoreFiles" v-show="moreFiles">{{ $ts.loadMore }}</MkButton>
+				<div v-for="(n, i) in 16" :key="i" class="padding"></div>
+				<MkButton v-show="moreFiles" ref="loadMoreFiles" @click="fetchMoreFiles">{{ $ts.loadMore }}</MkButton>
 			</div>
-			<div class="empty" v-if="files.length == 0 && folders.length == 0 && !fetching">
+			<div v-if="files.length == 0 && folders.length == 0 && !fetching" class="empty">
 				<p v-if="draghover">{{ $t('empty-draghover') }}</p>
 				<p v-if="!draghover && folder == null"><strong>{{ $ts.emptyDrive }}</strong><br/>{{ $t('empty-drive-description') }}</p>
 				<p v-if="!draghover && folder != null">{{ $ts.emptyFolder }}</p>
@@ -41,7 +41,7 @@
 		</div>
 		<MkLoading v-if="fetching"/>
 	</div>
-	<div class="dropzone" v-if="draghover"></div>
+	<div v-if="draghover" class="dropzone"></div>
 	<input ref="fileInput" type="file" accept="*/*" multiple="multiple" tabindex="-1" @change="onChangeFileInput"/>
 </div>
 </template>
@@ -274,13 +274,13 @@ export default defineComponent({
 				}).catch(err => {
 					switch (err) {
 						case 'detected-circular-definition':
-							os.dialog({
+							os.alert({
 								title: this.$ts.unableToProcess,
 								text: this.$ts.circularReferenceFolder
 							});
 							break;
 						default:
-							os.dialog({
+							os.alert({
 								type: 'error',
 								text: this.$ts.somethingHappened
 							});
@@ -295,11 +295,10 @@ export default defineComponent({
 		},
 
 		urlUpload() {
-			os.dialog({
+			os.inputText({
 				title: this.$ts.uploadFromUrl,
-				input: {
-					placeholder: this.$ts.uploadFromUrlDescription
-				}
+				type: 'url',
+				placeholder: this.$ts.uploadFromUrlDescription
 			}).then(({ canceled, result: url }) => {
 				if (canceled) return;
 				os.api('drive/files/upload-from-url', {
@@ -307,7 +306,7 @@ export default defineComponent({
 					folderId: this.folder ? this.folder.id : undefined
 				});
 
-				os.dialog({
+				os.alert({
 					title: this.$ts.uploadFromUrlRequested,
 					text: this.$ts.uploadFromUrlMayTakeTime
 				});
@@ -315,11 +314,9 @@ export default defineComponent({
 		},
 
 		createFolder() {
-			os.dialog({
+			os.inputText({
 				title: this.$ts.createFolder,
-				input: {
-					placeholder: this.$ts.folderName
-				}
+				placeholder: this.$ts.folderName
 			}).then(({ canceled, result: name }) => {
 				if (canceled) return;
 				os.api('drive/folders/create', {
@@ -332,12 +329,10 @@ export default defineComponent({
 		},
 
 		renameFolder(folder) {
-			os.dialog({
+			os.inputText({
 				title: this.$ts.renameFolder,
-				input: {
-					placeholder: this.$ts.inputNewFolderName,
-					default: folder.name
-				}
+				placeholder: this.$ts.inputNewFolderName,
+				default: folder.name
 			}).then(({ canceled, result: name }) => {
 				if (canceled) return;
 				os.api('drive/folders/update', {
@@ -359,14 +354,14 @@ export default defineComponent({
 			}).catch(err => {
 				switch(err.id) {
 					case 'b0fc8a17-963c-405d-bfbc-859a487295e1':
-						os.dialog({
+						os.alert({
 							type: 'error',
 							title: this.$ts.unableToDelete,
 							text: this.$ts.hasChildFilesOrFolders
 						});
 						break;
 					default:
-						os.dialog({
+						os.alert({
 							type: 'error',
 							text: this.$ts.unableToDelete
 						});

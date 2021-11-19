@@ -4,15 +4,15 @@
 	@drop.stop="onDrop"
 >
 	<textarea
-		v-model="text"
 		ref="text"
+		v-model="text"
+		:placeholder="$ts.inputMessageHere"
 		@keypress="onKeypress"
 		@compositionupdate="onCompositionUpdate"
 		@paste="onPaste"
-		:placeholder="$ts.inputMessageHere"
 	></textarea>
-	<div class="file" @click="file = null" v-if="file">{{ file.name }}</div>
-	<button class="send _button" @click="send" :disabled="!canSend || sending" :title="$ts.send">
+	<div v-if="file" class="file" @click="file = null">{{ file.name }}</div>
+	<button class="send _button" :disabled="!canSend || sending" :title="$ts.send" @click="send">
 		<template v-if="!sending"><i class="fas fa-paper-plane"></i></template><template v-if="sending"><i class="fas fa-spinner fa-pulse fa-fw"></i></template>
 	</button>
 	<button class="_button" @click="chooseFile"><i class="fas fa-photo-video"></i></button>
@@ -95,20 +95,11 @@ export default defineComponent({
 					const lio = file.name.lastIndexOf('.');
 					const ext = lio >= 0 ? file.name.slice(lio) : '';
 					const formatted = `${formatTimeString(new Date(file.lastModified), this.$store.state.pastedFileName).replace(/{{number}}/g, '1')}${ext}`;
-					const name = this.$store.state.pasteDialog
-						? await os.dialog({
-							title: this.$ts.enterFileName,
-							input: {
-								default: formatted
-							},
-							allowEmpty: false
-						}).then(({ canceled, result }) => canceled ? false : result)
-						: formatted;
-					if (name) this.upload(file, name);
+					if (formatted) this.upload(file, formatted);
 				}
 			} else {
 				if (items[0].kind == 'file') {
-					os.dialog({
+					os.alert({
 						type: 'error',
 						text: this.$ts.onlyOneFileCanBeAttached
 					});
@@ -133,7 +124,7 @@ export default defineComponent({
 				return;
 			} else if (e.dataTransfer.files.length > 1) {
 				e.preventDefault();
-				os.dialog({
+				os.alert({
 					type: 'error',
 					text: this.$ts.onlyOneFileCanBeAttached
 				});

@@ -1,6 +1,6 @@
 import { Directive, ref } from 'vue';
 import { isDeviceTouch } from '@/scripts/is-device-touch';
-import { popup, dialog } from '@/os';
+import { popup, alert } from '@/os';
 
 const start = isDeviceTouch ? 'touchstart' : 'mouseover';
 const end = isDeviceTouch ? 'touchend' : 'mouseleave';
@@ -28,7 +28,7 @@ export default {
 			el.addEventListener('click', (ev) => {
 				ev.preventDefault();
 				ev.stopPropagation();
-				dialog({
+				alert({
 					type: 'info',
 					text: binding.value,
 				});

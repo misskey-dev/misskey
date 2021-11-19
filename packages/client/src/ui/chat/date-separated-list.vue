@@ -20,12 +20,6 @@ export default defineComponent({
 		},
 	},
 
-	methods: {
-		focus() {
-			this.$slots.default[0].elm.focus();
-		}
-	},
-
 	render() {
 		const getDateText = (time: string) => {
 			const date = new Date(time).getDate();

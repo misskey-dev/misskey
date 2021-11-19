@@ -1,5 +1,5 @@
 <template>
-<div class="nsbbhtug" v-if="hasDisconnected && $store.state.serverDisconnectedBehavior === 'quiet'" @click="resetDisconnected">
+<div v-if="hasDisconnected && $store.state.serverDisconnectedBehavior === 'quiet'" class="nsbbhtug" @click="resetDisconnected">
 	<div>{{ $ts.disconnectedFromServer }}</div>
 	<div class="command">
 		<button class="_textButton" @click="reload">{{ $ts.reload }}</button>

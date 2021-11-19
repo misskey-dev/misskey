@@ -2,10 +2,10 @@
 <FormGroup class="uljviswt _debobigegoItem">
 	<template #label><slot name="label"></slot></template>
 	<slot :items="items"></slot>
-	<div class="empty" v-if="empty" key="_empty_">
+	<div v-if="empty" key="_empty_" class="empty">
 		<slot name="empty"></slot>
 	</div>
-	<FormButton v-show="more" class="button" @click="fetchMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary>
+	<FormButton v-show="more" class="button" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary @click="fetchMore">
 		<template v-if="!moreFetching">{{ $ts.loadMore }}</template>
 		<template v-if="moreFetching"><MkLoading inline/></template>
 	</FormButton>

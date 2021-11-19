@@ -19,10 +19,10 @@
 		</FormGroup>
 
 		<FormGroup>
-			<FormTextarea tall v-model="valueForEditor" class="_monospace" style="tab-size: 2;">
+			<FormTextarea v-model="valueForEditor" tall class="_monospace" style="tab-size: 2;">
 				<span>{{ $ts.value }} (JSON)</span>
 			</FormTextarea>
-			<FormButton @click="save" primary><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
+			<FormButton primary @click="save"><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
 		</FormGroup>
 
 		<FormKeyValueView>
@@ -110,17 +110,16 @@ export default defineComponent({
 			try {
 				JSON5.parse(this.valueForEditor);
 			} catch (e) {
-				os.dialog({
+				os.alert({
 					type: 'error',
 					text: this.$ts.invalidValue
 				});
 				return;
 			}
 
-			os.dialog({
+			os.confirm({
 				type: 'warning',
 				text: this.$ts.saveConfirm,
-				showCancelButton: true
 			}).then(({ canceled }) => {
 				if (canceled) return;
 				os.apiWithDialog('i/registry/set', {
@@ -132,10 +131,9 @@ export default defineComponent({
 		},
 
 		del() {
-			os.dialog({
+			os.confirm({
 				type: 'warning',
 				text: this.$ts.deleteConfirm,
-				showCancelButton: true
 			}).then(({ canceled }) => {
 				if (canceled) return;
 				os.apiWithDialog('i/registry/remove', {

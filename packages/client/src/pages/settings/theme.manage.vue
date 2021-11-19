@@ -3,24 +3,24 @@
 	<FormSelect v-model="selectedThemeId">
 		<template #label>{{ $ts.theme }}</template>
 		<optgroup :label="$ts._theme.installedThemes">
-			<option v-for="x in installedThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
+			<option v-for="x in installedThemes" :key="x.id" :value="x.id">{{ x.name }}</option>
 		</optgroup>
 		<optgroup :label="$ts._theme.builtinThemes">
-			<option v-for="x in builtinThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
+			<option v-for="x in builtinThemes" :key="x.id" :value="x.id">{{ x.name }}</option>
 		</optgroup>
 	</FormSelect>
 	<template v-if="selectedTheme">
 		<FormInput readonly :modelValue="selectedTheme.author">
 			<span>{{ $ts.author }}</span>
 		</FormInput>
-		<FormTextarea readonly :modelValue="selectedTheme.desc" v-if="selectedTheme.desc">
+		<FormTextarea v-if="selectedTheme.desc" readonly :modelValue="selectedTheme.desc">
 			<span>{{ $ts._theme.description }}</span>
 		</FormTextarea>
 		<FormTextarea readonly tall :modelValue="selectedThemeCode">
 			<span>{{ $ts._theme.code }}</span>
-			<template #desc><button @click="copyThemeCode()" class="_textButton">{{ $ts.copy }}</button></template>
+			<template #desc><button class="_textButton" @click="copyThemeCode()">{{ $ts.copy }}</button></template>
 		</FormTextarea>
-		<FormButton @click="uninstall()" danger v-if="!builtinThemes.some(t => t.id == selectedTheme.id)"><i class="fas fa-trash-alt"></i> {{ $ts.uninstall }}</FormButton>
+		<FormButton v-if="!builtinThemes.some(t => t.id == selectedTheme.id)" danger @click="uninstall()"><i class="fas fa-trash-alt"></i> {{ $ts.uninstall }}</FormButton>
 	</template>
 </FormBase>
 </template>

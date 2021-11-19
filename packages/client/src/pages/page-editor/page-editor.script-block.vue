@@ -1,8 +1,9 @@
 <template>
-<XContainer :removable="removable" @remove="() => $emit('remove')" :error="error" :warn="warn" :draggable="draggable">
-	<template #header><i v-if="icon" :class="icon"></i> <template v-if="title">{{ title }} <span class="turmquns" v-if="typeText">({{ typeText }})</span></template><template v-else-if="typeText">{{ typeText }}</template></template>
+<!-- eslint-disable vue/no-mutating-props -->
+<XContainer :removable="removable" :error="error" :warn="warn" :draggable="draggable" @remove="() => $emit('remove')">
+	<template #header><i v-if="icon" :class="icon"></i> <template v-if="title">{{ title }} <span v-if="typeText" class="turmquns">({{ typeText }})</span></template><template v-else-if="typeText">{{ typeText }}</template></template>
 	<template #func>
-		<button @click="changeType()" class="_button">
+		<button class="_button" @click="changeType()">
 			<i class="fas fa-pencil-alt"></i>
 		</button>
 	</template>
@@ -47,15 +48,16 @@
 		<XV v-if="modelValue.value.expression" v-model="modelValue.value.expression" :title="$t(`_pages.script.blocks._fn.arg1`)" :get-expected-type="() => null" :hpml="hpml" :fn-slots="value.value.slots" :name="name"/>
 	</section>
 	<section v-else-if="modelValue.type.startsWith('fn:')" class="" style="padding:16px;">
-		<XV v-for="(x, i) in modelValue.args" v-model="value.args[i]" :title="hpml.getVarByName(modelValue.type.split(':')[1]).value.slots[i].name" :get-expected-type="() => null" :hpml="hpml" :name="name" :key="i"/>
+		<XV v-for="(x, i) in modelValue.args" :key="i" v-model="value.args[i]" :title="hpml.getVarByName(modelValue.type.split(':')[1]).value.slots[i].name" :get-expected-type="() => null" :hpml="hpml" :name="name"/>
 	</section>
 	<section v-else class="" style="padding:16px;">
-		<XV v-for="(x, i) in modelValue.args" v-model="modelValue.args[i]" :title="$t(`_pages.script.blocks._${modelValue.type}.arg${i + 1}`)" :get-expected-type="() => _getExpectedType(i)" :hpml="hpml" :name="name" :fn-slots="fnSlots" :key="i"/>
+		<XV v-for="(x, i) in modelValue.args" :key="i" v-model="modelValue.args[i]" :title="$t(`_pages.script.blocks._${modelValue.type}.arg${i + 1}`)" :get-expected-type="() => _getExpectedType(i)" :hpml="hpml" :name="name" :fn-slots="fnSlots"/>
 	</section>
 </XContainer>
 </template>
 
 <script lang="ts">
+/* eslint-disable vue/no-mutating-props */
 import { defineAsyncComponent, defineComponent } from 'vue';
 import { v4 as uuid } from 'uuid';
 import XContainer from './page-editor.container.vue';
@@ -212,13 +214,9 @@ export default defineComponent({
 
 	methods: {
 		async changeType() {
-			const { canceled, result: type } = await os.dialog({
-				type: null,
+			const { canceled, result: type } = await os.select({
 				title: this.$ts._pages.selectType,
-				select: {
-					groupedItems: this.getScriptBlockList(this.getExpectedType ? this.getExpectedType() : null)
-				},
-				showCancelButton: true
+				groupedItems: this.getScriptBlockList(this.getExpectedType ? this.getExpectedType() : null)
 			});
 			if (canceled) return;
 			this.modelValue.type = type;

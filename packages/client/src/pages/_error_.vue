@@ -1,7 +1,7 @@
 <template>
 <MkLoading v-if="!loaded" />
 <transition :name="$store.state.animation ? 'zoom' : ''" appear>
-	<div class="mjndxjch" v-show="loaded">
+	<div v-show="loaded" class="mjndxjch">
 		<img src="https://xn--931a.moe/assets/error.jpg" class="_ghost"/>
 		<p><b><i class="fas fa-exclamation-triangle"></i> {{ $ts.pageLoadError }}</b></p>
 		<p v-if="version === meta.version">{{ $ts.pageLoadErrorDescription }}</p>
@@ -9,7 +9,7 @@
 		<template v-else>
 			<p>{{ $ts.newVersionOfClientAvailable }}</p>
 			<p>{{ $ts.youShouldUpgradeClient }}</p>
-			<MkButton @click="reload" class="button primary">{{ $ts.reload }}</MkButton>
+			<MkButton class="button primary" @click="reload">{{ $ts.reload }}</MkButton>
 		</template>
 		<p><MkA to="/docs/general/troubleshooting" class="_link">{{ $ts.troubleshooting }}</MkA></p>
 		<p v-if="error" class="error">ERROR: {{ error }}</p>

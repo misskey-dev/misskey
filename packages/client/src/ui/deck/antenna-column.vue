@@ -52,16 +52,12 @@ export default defineComponent({
 	methods: {
 		async setAntenna() {
 			const antennas = await os.api('antennas/list');
-			const { canceled, result: antenna } = await os.dialog({
+			const { canceled, result: antenna } = await os.select({
 				title: this.$ts.selectAntenna,
-				type: null,
-				select: {
-					items: antennas.map(x => ({
-						value: x, text: x.name
-					})),
+				items: antennas.map(x => ({
+					value: x, text: x.name
+				})),
 				default: this.column.antennaId
-				},
-				showCancelButton: true
 			});
 			if (canceled) return;
 			updateColumn(this.column.id, {

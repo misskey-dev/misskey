@@ -5,9 +5,9 @@
 	</header>
 	<div v-if="shown">
 		<button v-for="emoji in emojis"
+			:key="emoji"
 			class="_button"
 			@click="chosen(emoji, $event)"
-			:key="emoji"
 		>
 			<MkEmoji :emoji="emoji" :normal="true"/>
 		</button>

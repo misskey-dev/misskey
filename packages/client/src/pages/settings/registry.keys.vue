@@ -16,7 +16,7 @@
 		<FormLink v-for="key in keys" :to="`/settings/registry/value/system/${scope.join('/')}/${key[0]}`" class="_monospace">{{ key[0] }}<template #suffix>{{ key[1].toUpperCase() }}</template></FormLink>
 	</FormGroup>
 
-	<FormButton @click="createKey" primary>{{ $ts._registry.createKey }}</FormButton>
+	<FormButton primary @click="createKey">{{ $ts._registry.createKey }}</FormButton>
 </FormBase>
 </template>
 

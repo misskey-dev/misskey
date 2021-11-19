@@ -3,7 +3,7 @@
 	<FormGroup v-for="plugin in plugins" :key="plugin.id">
 		<template #label><span style="display: flex;"><b>{{ plugin.name }}</b><span style="margin-left: auto;">v{{ plugin.version }}</span></span></template>
 
-		<FormSwitch :value="plugin.active" @update:modelValue="changeActive(plugin, $event)">{{ $ts.makeActive }}</FormSwitch>
+		<FormSwitch :modelValue="plugin.active" @update:modelValue="changeActive(plugin, $event)">{{ $ts.makeActive }}</FormSwitch>
 		<div class="_debobigegoItem">
 			<div class="_debobigegoPanel" style="padding: 16px;">
 				<div class="_keyValue">
@@ -22,8 +22,8 @@
 		</div>
 		<div class="_debobigegoItem">
 			<div class="_debobigegoPanel" style="padding: 16px;">
-				<MkButton @click="config(plugin)" inline v-if="plugin.config"><i class="fas fa-cog"></i> {{ $ts.settings }}</MkButton>
-				<MkButton @click="uninstall(plugin)" inline danger><i class="fas fa-trash-alt"></i> {{ $ts.uninstall }}</MkButton>
+				<MkButton v-if="plugin.config" inline @click="config(plugin)"><i class="fas fa-cog"></i> {{ $ts.settings }}</MkButton>
+				<MkButton inline danger @click="uninstall(plugin)"><i class="fas fa-trash-alt"></i> {{ $ts.uninstall }}</MkButton>
 			</div>
 		</div>
 	</FormGroup>
@@ -41,6 +41,7 @@ import FormGroup from '@/components/debobigego/group.vue';
 import * as os from '@/os';
 import { ColdDeviceStorage } from '@/store';
 import * as symbols from '@/symbols';
+import { unisonReload } from '@/scripts/unison-reload';
 
 export default defineComponent({
 	components: {

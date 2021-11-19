@@ -6,8 +6,8 @@
 		<span v-text="mm"></span>
 		<span :style="{ visibility: showColon ? 'visible' : 'hidden' }">:</span>
 		<span v-text="ss"></span>
-		<span :style="{ visibility: showColon ? 'visible' : 'hidden' }" v-if="props.showMs">:</span>
-		<span v-text="ms" v-if="props.showMs"></span>
+		<span v-if="props.showMs" :style="{ visibility: showColon ? 'visible' : 'hidden' }">:</span>
+		<span v-if="props.showMs" v-text="ms"></span>
 	</span>
 </div>
 </template>

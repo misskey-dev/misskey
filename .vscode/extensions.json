@@ -3,7 +3,7 @@
 		"editorconfig.editorconfig",
 		"eg2.vscode-npm-script",
 		"ms-vscode.typescript-javascript-grammar",
-		"ms-vscode.vscode-typescript-tslint-plugin",
+		"dbaeumer.vscode-eslint",
 		"johnsoncodehk.volar",
 		"sysoev.language-stylus"
 	]

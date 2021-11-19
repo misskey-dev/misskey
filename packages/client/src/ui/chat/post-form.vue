@@ -6,7 +6,7 @@
 	@drop.stop="onDrop"
 >
 	<div class="form">
-		<div class="with-quote" v-if="quoteId"><i class="fas fa-quote-left"></i> {{ $ts.quoteAttached }}<button @click="quoteId = null"><i class="fas fa-times"></i></button></div>
+		<div v-if="quoteId" class="with-quote"><i class="fas fa-quote-left"></i> {{ $ts.quoteAttached }}<button @click="quoteId = null"><i class="fas fa-times"></i></button></div>
 		<div v-if="visibility === 'specified'" class="to-specified">
 			<span style="margin-right: 8px;">{{ $ts.recipient }}</span>
 			<div class="visibleUsers">
@@ -14,26 +14,26 @@
 					<MkAcct :user="u"/>
 					<button class="_button" @click="removeVisibleUser(u)"><i class="fas fa-times"></i></button>
 				</span>
-				<button @click="addVisibleUser" class="_buttonPrimary"><i class="fas fa-plus fa-fw"></i></button>
+				<button class="_buttonPrimary" @click="addVisibleUser"><i class="fas fa-plus fa-fw"></i></button>
 			</div>
 		</div>
-		<input v-show="useCw" ref="cw" class="cw" v-model="cw" :placeholder="$ts.annotation" @keydown="onKeydown">
-		<textarea v-model="text" class="text" :class="{ withCw: useCw }" ref="text" :disabled="posting" :placeholder="placeholder" @keydown="onKeydown" @paste="onPaste" @compositionupdate="onCompositionUpdate" @compositionend="onCompositionEnd" />
+		<input v-show="useCw" ref="cw" v-model="cw" class="cw" :placeholder="$ts.annotation" @keydown="onKeydown">
+		<textarea ref="text" v-model="text" class="text" :class="{ withCw: useCw }" :disabled="posting" :placeholder="placeholder" @keydown="onKeydown" @paste="onPaste" @compositionupdate="onCompositionUpdate" @compositionend="onCompositionEnd"/>
 		<XPostFormAttaches class="attaches" :files="files" @updated="updateFiles" @detach="detachFile" @changeSensitive="updateFileSensitive" @changeName="updateFileName"/>
 		<XPollEditor v-if="poll" :poll="poll" @destroyed="poll = null" @updated="onPollUpdate"/>
 		<footer>
 			<div class="left">
-				<button class="_button" @click="chooseFileFrom" v-tooltip="$ts.attachFile"><i class="fas fa-photo-video"></i></button>
-				<button class="_button" @click="togglePoll" :class="{ active: poll }" v-tooltip="$ts.poll"><i class="fas fa-poll-h"></i></button>
-				<button class="_button" @click="useCw = !useCw" :class="{ active: useCw }" v-tooltip="$ts.useCw"><i class="fas fa-eye-slash"></i></button>
-				<button class="_button" @click="insertMention" v-tooltip="$ts.mention"><i class="fas fa-at"></i></button>
-				<button class="_button" @click="insertEmoji" v-tooltip="$ts.emoji"><i class="fas fa-laugh-squint"></i></button>
-				<button class="_button" @click="showActions" v-tooltip="$ts.plugin" v-if="postFormActions.length > 0"><i class="fas fa-plug"></i></button>
+				<button v-tooltip="$ts.attachFile" class="_button" @click="chooseFileFrom"><i class="fas fa-photo-video"></i></button>
+				<button v-tooltip="$ts.poll" class="_button" :class="{ active: poll }" @click="togglePoll"><i class="fas fa-poll-h"></i></button>
+				<button v-tooltip="$ts.useCw" class="_button" :class="{ active: useCw }" @click="useCw = !useCw"><i class="fas fa-eye-slash"></i></button>
+				<button v-tooltip="$ts.mention" class="_button" @click="insertMention"><i class="fas fa-at"></i></button>
+				<button v-tooltip="$ts.emoji" class="_button" @click="insertEmoji"><i class="fas fa-laugh-squint"></i></button>
+				<button v-if="postFormActions.length > 0" v-tooltip="$ts.plugin" class="_button" @click="showActions"><i class="fas fa-plug"></i></button>
 			</div>
 			<div class="right">
 				<span class="text-count" :class="{ over: textLength > max }">{{ max - textLength }}</span>
-				<span class="local-only" v-if="localOnly"><i class="fas fa-biohazard"></i></span>
-				<button class="_button visibility" @click="setVisibility" ref="visibilityButton" v-tooltip="$ts.visibility" :disabled="channel != null">
+				<span v-if="localOnly" class="local-only"><i class="fas fa-biohazard"></i></span>
+				<button ref="visibilityButton" v-tooltip="$ts.visibility" class="_button visibility" :disabled="channel != null" @click="setVisibility">
 					<span v-if="visibility === 'public'"><i class="fas fa-globe"></i></span>
 					<span v-if="visibility === 'home'"><i class="fas fa-home"></i></span>
 					<span v-if="visibility === 'followers'"><i class="fas fa-unlock"></i></span>
@@ -450,10 +450,9 @@ export default defineComponent({
 			if (!this.renote && !this.quoteId && paste.startsWith(url + '/notes/')) {
 				e.preventDefault();
 
-				os.dialog({
+				os.confirm({
 					type: 'info',
 					text: this.$ts.quoteQuestion,
-					showCancelButton: true
 				}).then(({ canceled }) => {
 					if (canceled) {
 						insertTextAtCursor(this.$refs.text, paste);
@@ -567,7 +566,7 @@ export default defineComponent({
 				});
 			}).catch(err => {
 				this.posting = false;
-				os.dialog({
+				os.alert({
 					type: 'error',
 					text: err.message + '\n' + (err as any).id,
 				});

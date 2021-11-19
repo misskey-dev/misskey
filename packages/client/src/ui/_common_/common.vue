@@ -1,7 +1,7 @@
 <template>
-<component v-for="popup in popups"
+<component :is="popup.component"
+	v-for="popup in popups"
 	:key="popup.id"
-	:is="popup.component"
 	v-bind="popup.props"
 	v-on="popup.events"
 />
@@ -10,7 +10,7 @@
 
 <XStreamIndicator/>
 
-<div id="wait" v-if="pendingApiRequestsCount > 0"></div>
+<div v-if="pendingApiRequestsCount > 0" id="wait"></div>
 </template>
 
 <script lang="ts">

@@ -1,5 +1,5 @@
 <template>
-<div class="mrajymqm _narrow_" v-if="component">
+<div v-if="component" class="mrajymqm _narrow_">
 	<header class="header" @contextmenu.prevent.stop="onContextmenu">
 		<MkHeader class="title" :info="pageInfo" :center="false"/>
 	</header>

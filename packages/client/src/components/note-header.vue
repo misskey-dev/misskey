@@ -1,22 +1,22 @@
 <template>
 <header class="kkwtjztg">
-	<MkA class="name" :to="userPage(note.user)" v-user-preview="note.user.id">
+	<MkA v-user-preview="note.user.id" class="name" :to="userPage(note.user)">
 		<MkUserName :user="note.user"/>
 	</MkA>
-	<div class="is-bot" v-if="note.user.isBot">bot</div>
+	<div v-if="note.user.isBot" class="is-bot">bot</div>
 	<div class="username"><MkAcct :user="note.user"/></div>
-	<div class="admin" v-if="note.user.isAdmin"><i class="fas fa-bookmark"></i></div>
-	<div class="moderator" v-if="!note.user.isAdmin && note.user.isModerator"><i class="far fa-bookmark"></i></div>
+	<div v-if="note.user.isAdmin" class="admin"><i class="fas fa-bookmark"></i></div>
+	<div v-if="!note.user.isAdmin && note.user.isModerator" class="moderator"><i class="far fa-bookmark"></i></div>
 	<div class="info">
 		<MkA class="created-at" :to="notePage(note)">
 			<MkTime :time="note.createdAt"/>
 		</MkA>
-		<span class="visibility" v-if="note.visibility !== 'public'">
+		<span v-if="note.visibility !== 'public'" class="visibility">
 			<i v-if="note.visibility === 'home'" class="fas fa-home"></i>
 			<i v-else-if="note.visibility === 'followers'" class="fas fa-unlock"></i>
 			<i v-else-if="note.visibility === 'specified'" class="fas fa-envelope"></i>
 		</span>
-		<span class="localOnly" v-if="note.localOnly"><i class="fas fa-biohazard"></i></span>
+		<span v-if="note.localOnly" class="localOnly"><i class="fas fa-biohazard"></i></span>
 	</div>
 </header>
 </template>

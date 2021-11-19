@@ -2,13 +2,13 @@
 <MkError v-if="error" @retry="init()"/>
 
 <div v-else class="efvhhmdq _isolated">
-	<div class="no-users" v-if="empty">
+	<div v-if="empty" class="no-users">
 		<p>{{ $ts.noUsers }}</p>
 	</div>
 	<div class="users">
-		<MkUserInfo class="user" v-for="user in users" :user="user" :key="user.id"/>
+		<MkUserInfo v-for="user in users" :key="user.id" class="user" :user="user"/>
 	</div>
-	<button class="more" v-appear="$store.state.enableInfiniteScroll ? fetchMore : null" @click="fetchMore" :class="{ fetching: moreFetching }" v-show="more" :disabled="moreFetching">
+	<button v-show="more" v-appear="$store.state.enableInfiniteScroll ? fetchMore : null" class="more" :class="{ fetching: moreFetching }" :disabled="moreFetching" @click="fetchMore">
 		<template v-if="moreFetching"><i class="fas fa-spinner fa-pulse fa-fw"></i></template>{{ moreFetching ? $ts.loading : $ts.loadMore }}
 	</button>
 </div>

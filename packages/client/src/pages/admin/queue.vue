@@ -6,7 +6,7 @@
 	<XQueue :connection="connection" domain="deliver">
 		<template #title>Out</template>
 	</XQueue>
-	<FormButton @click="clear()" danger><i class="fas fa-trash-alt"></i> {{ $ts.clearQueue }}</FormButton>
+	<FormButton danger @click="clear()"><i class="fas fa-trash-alt"></i> {{ $ts.clearQueue }}</FormButton>
 </FormBase>
 </template>
 
@@ -57,11 +57,10 @@ export default defineComponent({
 
 	methods: {
 		clear() {
-			os.dialog({
+			os.confirm({
 				type: 'warning',
 				title: this.$ts.clearQueueConfirmTitle,
 				text: this.$ts.clearQueueConfirmText,
-				showCancelButton: true
 			}).then(({ canceled }) => {
 				if (canceled) return;
 

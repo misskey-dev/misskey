@@ -1,5 +1,5 @@
 <template>
-<div class="rbusrurv" :class="{ wide: forceWide }" v-size="{ max: [400] }">
+<div v-size="{ max: [400] }" class="rbusrurv" :class="{ wide: forceWide }">
 	<slot></slot>
 </div>
 </template>

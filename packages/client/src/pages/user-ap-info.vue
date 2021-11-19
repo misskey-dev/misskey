@@ -1,6 +1,6 @@
 <template>
 <FormBase>
-	<FormSuspense :p="apPromiseFactory" v-slot="{ result: ap }">
+	<FormSuspense v-slot="{ result: ap }" :p="apPromiseFactory">
 		<FormGroup>
 			<template #label>ActivityPub</template>
 			<FormKeyValueView>
