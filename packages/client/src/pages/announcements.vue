@@ -1,14 +1,14 @@
 <template>
 <MkSpacer :content-max="800">
-	<MkPagination :pagination="pagination" #default="{items}" class="ruryvtyk _content">
-		<section class="_card announcement" v-for="(announcement, i) in items" :key="announcement.id">
+	<MkPagination #default="{items}" :pagination="pagination" class="ruryvtyk _content">
+		<section v-for="(announcement, i) in items" :key="announcement.id" class="_card announcement">
 			<div class="_title"><span v-if="$i && !announcement.isRead">🆕 </span>{{ announcement.title }}</div>
 			<div class="_content">
 				<Mfm :text="announcement.text"/>
 				<img v-if="announcement.imageUrl" :src="announcement.imageUrl"/>
 			</div>
-			<div class="_footer" v-if="$i && !announcement.isRead">
-				<MkButton @click="read(items, announcement, i)" primary><i class="fas fa-check"></i> {{ $ts.gotIt }}</MkButton>
+			<div v-if="$i && !announcement.isRead" class="_footer">
+				<MkButton primary @click="read(items, announcement, i)"><i class="fas fa-check"></i> {{ $ts.gotIt }}</MkButton>
 			</div>
 		</section>
 	</MkPagination>

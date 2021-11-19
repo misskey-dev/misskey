@@ -1,24 +1,24 @@
 <template>
-<div class="fdidabkb" :class="{ slim: narrow, thin: thin_ }" :style="{ background: bg }" @click="onClick" ref="el">
+<div ref="el" class="fdidabkb" :class="{ slim: narrow, thin: thin_ }" :style="{ background: bg }" @click="onClick">
 	<template v-if="info">
-		<div class="titleContainer" @click="showTabsPopup" v-if="!hideTitle">
+		<div v-if="!hideTitle" class="titleContainer" @click="showTabsPopup">
 			<MkAvatar v-if="info.avatar" class="avatar" :user="info.avatar" :disable-preview="true" :show-indicator="true"/>
 			<i v-else-if="info.icon" class="icon" :class="info.icon"></i>
 
 			<div class="title">
 				<MkUserName v-if="info.userName" :user="info.userName" :nowrap="false" class="title"/>
 				<div v-else-if="info.title" class="title">{{ info.title }}</div>
-				<div class="subtitle" v-if="!narrow && info.subtitle">
+				<div v-if="!narrow && info.subtitle" class="subtitle">
 					{{ info.subtitle }}
 				</div>
-				<div class="subtitle activeTab" v-if="narrow && hasTabs">
+				<div v-if="narrow && hasTabs" class="subtitle activeTab">
 					{{ info.tabs.find(tab => tab.active)?.title }}
 					<i class="chevron fas fa-chevron-down"></i>
 				</div>
 			</div>
 		</div>
-		<div class="tabs" v-if="!narrow || hideTitle">
-			<button class="tab _button" v-for="tab in info.tabs" :class="{ active: tab.active }" @click="tab.onClick" v-tooltip="tab.title">
+		<div v-if="!narrow || hideTitle" class="tabs">
+			<button v-for="tab in info.tabs" v-tooltip="tab.title" class="tab _button" :class="{ active: tab.active }" @click="tab.onClick">
 				<i v-if="tab.icon" class="icon" :class="tab.icon"></i>
 				<span v-if="!tab.iconOnly" class="title">{{ tab.title }}</span>
 			</button>
@@ -27,11 +27,11 @@
 	<div class="buttons right">
 		<template v-if="info && info.actions && !narrow">
 			<template v-for="action in info.actions">
-				<MkButton class="fullButton" v-if="action.asFullButton" @click.stop="action.handler" primary><i :class="action.icon" style="margin-right: 6px;"></i>{{ action.text }}</MkButton>
-				<button v-else class="_button button" :class="{ highlighted: action.highlighted }" @click.stop="action.handler" @touchstart="preventDrag" v-tooltip="action.text"><i :class="action.icon"></i></button>
+				<MkButton v-if="action.asFullButton" class="fullButton" primary @click.stop="action.handler"><i :class="action.icon" style="margin-right: 6px;"></i>{{ action.text }}</MkButton>
+				<button v-else v-tooltip="action.text" class="_button button" :class="{ highlighted: action.highlighted }" @click.stop="action.handler" @touchstart="preventDrag"><i :class="action.icon"></i></button>
 			</template>
 		</template>
-		<button v-if="shouldShowMenu" class="_button button" @click.stop="showMenu" @touchstart="preventDrag" v-tooltip="$ts.menu"><i class="fas fa-ellipsis-h"></i></button>
+		<button v-if="shouldShowMenu" v-tooltip="$ts.menu" class="_button button" @click.stop="showMenu" @touchstart="preventDrag"><i class="fas fa-ellipsis-h"></i></button>
 	</div>
 </div>
 </template>

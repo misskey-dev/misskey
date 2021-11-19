@@ -4,14 +4,14 @@
 
 	<MkError v-else-if="error" @retry="init()"/>
 
-	<div class="empty" v-else-if="empty" key="_empty_">
+	<div v-else-if="empty" key="_empty_" class="empty">
 		<slot name="empty"></slot>
 	</div>
 
 	<div v-else class="cxiknjgy">
 		<slot :items="items"></slot>
-		<div class="more _gap" v-show="more" key="_more_">
-			<MkButton class="button" v-appear="($store.state.enableInfiniteScroll && !disableAutoLoad) ? fetchMore : null" @click="fetchMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary>
+		<div v-show="more" key="_more_" class="more _gap">
+			<MkButton v-appear="($store.state.enableInfiniteScroll && !disableAutoLoad) ? fetchMore : null" class="button" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary @click="fetchMore">
 				<template v-if="!moreFetching">{{ $ts.loadMore }}</template>
 				<template v-if="moreFetching"><MkLoading inline/></template>
 			</MkButton>

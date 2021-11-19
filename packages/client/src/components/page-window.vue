@@ -14,7 +14,7 @@
 		</template>
 	</template>
 	<template #headerLeft>
-		<button v-if="history.length > 0" class="_button" @click="back()" v-tooltip="$ts.goBack"><i class="fas fa-arrow-left"></i></button>
+		<button v-if="history.length > 0" v-tooltip="$ts.goBack" class="_button" @click="back()"><i class="fas fa-arrow-left"></i></button>
 	</template>
 	<div class="yrolvcoq">
 		<MkStickyContainer>

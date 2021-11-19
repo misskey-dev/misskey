@@ -1,6 +1,6 @@
 <template>
 <div class="xubzgfgb" :class="{ cover }" :title="title">
-	<canvas ref="canvas" :width="size" :height="size" :title="title" v-if="!loaded"/>
+	<canvas v-if="!loaded" ref="canvas" :width="size" :height="size" :title="title"/>
 	<img v-if="src" :src="src" :title="title" :alt="alt" @load="onLoad"/>
 </div>
 </template>

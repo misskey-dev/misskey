@@ -4,15 +4,15 @@
 
 	<div class="columns" :class="{ fullView, withGlobalHeader: showMenuOnTop }">
 		<template v-if="!isMobile">
-			<div class="sidebar" v-if="!showMenuOnTop">
+			<div v-if="!showMenuOnTop" class="sidebar">
 				<XSidebar/>
 			</div>
-			<div class="widgets left" ref="widgetsLeft" v-else>
-				<XWidgets @mounted="attachSticky('widgetsLeft')" :place="'left'"/>
+			<div v-else ref="widgetsLeft" class="widgets left">
+				<XWidgets :place="'left'" @mounted="attachSticky('widgetsLeft')"/>
 			</div>
 		</template>
 
-		<main class="main" @contextmenu.stop="onContextmenu" :style="{ background: pageInfo?.bg }">
+		<main class="main" :style="{ background: pageInfo?.bg }" @contextmenu.stop="onContextmenu">
 			<div class="content">
 				<MkStickyContainer>
 					<template #header><MkHeader v-if="pageInfo && !pageInfo.hideHeader" :info="pageInfo"/></template>
@@ -27,24 +27,24 @@
 			</div>
 		</main>
 
-		<div v-if="isDesktop" class="widgets right" ref="widgetsRight">
-			<XWidgets @mounted="attachSticky('widgetsRight')" :place="null"/>
+		<div v-if="isDesktop" ref="widgetsRight" class="widgets right">
+			<XWidgets :place="null" @mounted="attachSticky('widgetsRight')"/>
 		</div>
 	</div>
 
-	<div class="buttons" v-if="isMobile">
-		<button class="button nav _button" @click="showDrawerNav" ref="navButton"><i class="fas fa-bars"></i><span v-if="navIndicated" class="indicator"><i class="fas fa-circle"></i></span></button>
+	<div v-if="isMobile" class="buttons">
+		<button ref="navButton" class="button nav _button" @click="showDrawerNav"><i class="fas fa-bars"></i><span v-if="navIndicated" class="indicator"><i class="fas fa-circle"></i></span></button>
 		<button class="button home _button" @click="$route.name === 'index' ? top() : $router.push('/')"><i class="fas fa-home"></i></button>
 		<button class="button notifications _button" @click="$router.push('/my/notifications')"><i class="fas fa-bell"></i><span v-if="$i.hasUnreadNotification" class="indicator"><i class="fas fa-circle"></i></span></button>
 		<button class="button widget _button" @click="widgetsShowing = true"><i class="fas fa-layer-group"></i></button>
 		<button class="button post _button" @click="post"><i class="fas fa-pencil-alt"></i></button>
 	</div>
 
-	<XDrawerSidebar ref="drawerNav" class="sidebar" v-if="isMobile"/>
+	<XDrawerSidebar v-if="isMobile" ref="drawerNav" class="sidebar"/>
 
 	<transition name="tray-back">
-		<div class="tray-back _modalBg"
-			v-if="widgetsShowing"
+		<div v-if="widgetsShowing"
+			class="tray-back _modalBg"
 			@click="widgetsShowing = false"
 			@touchstart.passive="widgetsShowing = false"
 		></div>
@@ -54,7 +54,7 @@
 		<XWidgets v-if="widgetsShowing" class="tray"/>
 	</transition>
 
-	<iframe v-if="$store.state.aiChanMode" class="ivnzpscs" ref="live2d" src="https://misskey-dev.github.io/mascot-web/?scale=2&y=1.4"></iframe>
+	<iframe v-if="$store.state.aiChanMode" ref="live2d" class="ivnzpscs" src="https://misskey-dev.github.io/mascot-web/?scale=2&y=1.4"></iframe>
 
 	<XCommon/>
 </div>

@@ -1,8 +1,8 @@
 <template>
 <button class="hdcaacmi _button"
 	:class="{ wait, active: isFollowing, full }"
-	@click="onClick"
 	:disabled="wait"
+	@click="onClick"
 >
 	<template v-if="!wait">
 		<template v-if="isFollowing">

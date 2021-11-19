@@ -1,5 +1,5 @@
 <template>
-<div class="vrtktovh" v-size="{ max: [500] }" v-sticky-container>
+<div v-size="{ max: [500] }" v-sticky-container class="vrtktovh">
 	<div class="label"><slot name="label"></slot></div>
 	<div class="main">
 		<slot></slot>

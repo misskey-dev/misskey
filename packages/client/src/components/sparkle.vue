@@ -33,11 +33,25 @@ export default defineComponent({
 			ctx: null,
 		};
 	},
+	unmounted() {
+		window.cancelAnimationFrame(this.anim);
+	},
+	mounted() {
+		this.ctx = this.$refs.canvas.getContext('2d');
+
+		new ResizeObserver(this.resize).observe(this.$refs.content);
+
+		this.resize();
+		this.tick();
+	},
+	updated() {
+		this.resize();
+	},
 	methods: {
 		createSparkles(w, h, count) {
-			var holder = [];
+			const holder = [];
 
-			for (var i = 0; i < count; i++) {
+			for (let i = 0; i < count; i++) {
 
 				const color = '#' + ('000000' + Math.floor(Math.random() * 16777215).toString(16)).slice(-6);
 
@@ -142,20 +156,6 @@ export default defineComponent({
 				this.particles = this.createSparkles(this.$refs.canvas.width, this.$refs.canvas.height, this.count);
 			}
 		},
-	},
-	mounted() {
-		this.ctx = this.$refs.canvas.getContext('2d');
-
-		new ResizeObserver(this.resize).observe(this.$refs.content);
-
-		this.resize();
-		this.tick();
-	},
-	updated() {
-		this.resize();
-	},
-	destroyed() {
-		window.cancelAnimationFrame(this.anim);
 	},
 });
 </script>

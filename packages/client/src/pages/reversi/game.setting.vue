@@ -8,7 +8,7 @@
 		<div class="card map _panel">
 			<header>
 				<select v-model="mapName" :placeholder="$ts._reversi.chooseBoard" @change="onMapChange">
-					<option label="-Custom-" :value="mapName" v-if="mapName == '-Custom-'"/>
+					<option v-if="mapName == '-Custom-'" label="-Custom-" :value="mapName"/>
 					<option :label="$ts.random" :value="null"/>
 					<optgroup v-for="c in mapCategories" :key="c" :label="c">
 						<option v-for="m in Object.values(maps).filter(m => m.category == c)" :key="m.name" :label="m.name" :value="m.name">{{ m.name }}</option>
@@ -17,8 +17,8 @@
 			</header>
 
 			<div>
-				<div class="random" v-if="game.map == null"><i class="fas fa-dice"></i></div>
-				<div class="board" v-else :style="{ 'grid-template-rows': `repeat(${ game.map.length }, 1fr)`, 'grid-template-columns': `repeat(${ game.map[0].length }, 1fr)` }">
+				<div v-if="game.map == null" class="random"><i class="fas fa-dice"></i></div>
+				<div v-else class="board" :style="{ 'grid-template-rows': `repeat(${ game.map.length }, 1fr)`, 'grid-template-columns': `repeat(${ game.map[0].length }, 1fr)` }">
 					<div v-for="(x, i) in game.map.join('')" :class="{ none: x == ' ' }" @click="onPixelClick(i, x)">
 						<i v-if="x === 'b'" class="fas fa-circle"></i>
 						<i v-if="x === 'w'" class="far fa-circle"></i>
@@ -63,16 +63,16 @@
 			</div>
 		</div>
 
-		<div class="card form _panel" v-if="form">
+		<div v-if="form" class="card form _panel">
 			<header>
 				<span>{{ $ts._reversi.botSettings }}</span>
 			</header>
 
 			<div>
 				<template v-for="item in form">
-					<MkSwitch v-if="item.type == 'switch'" v-model="item.value" :key="item.id" @change="onChangeForm(item)">{{ item.label || item.desc || '' }}</MkSwitch>
+					<MkSwitch v-if="item.type == 'switch'" :key="item.id" v-model="item.value" @change="onChangeForm(item)">{{ item.label || item.desc || '' }}</MkSwitch>
 
-					<div class="card" v-if="item.type == 'radio'" :key="item.id">
+					<div v-if="item.type == 'radio'" :key="item.id" class="card">
 						<header>
 							<span>{{ item.label }}</span>
 						</header>
@@ -82,17 +82,17 @@
 						</div>
 					</div>
 
-					<div class="card" v-if="item.type == 'slider'" :key="item.id">
+					<div v-if="item.type == 'slider'" :key="item.id" class="card">
 						<header>
 							<span>{{ item.label }}</span>
 						</header>
 
 						<div>
-							<input type="range" :min="item.min" :max="item.max" :step="item.step || 1" v-model="item.value" @change="onChangeForm(item)"/>
+							<input v-model="item.value" type="range" :min="item.min" :max="item.max" :step="item.step || 1" @change="onChangeForm(item)"/>
 						</div>
 					</div>
 
-					<div class="card" v-if="item.type == 'textbox'" :key="item.id">
+					<div v-if="item.type == 'textbox'" :key="item.id" class="card">
 						<header>
 							<span>{{ item.label }}</span>
 						</header>
@@ -116,8 +116,8 @@
 
 		<div class="actions">
 			<MkButton inline @click="exit">{{ $ts.cancel }}</MkButton>
-			<MkButton inline primary @click="accept" v-if="!isAccepted">{{ $ts._reversi.ready }}</MkButton>
-			<MkButton inline primary @click="cancel" v-if="isAccepted">{{ $ts._reversi.cancelReady }}</MkButton>
+			<MkButton v-if="!isAccepted" inline primary @click="accept">{{ $ts._reversi.ready }}</MkButton>
+			<MkButton v-if="isAccepted" inline primary @click="cancel">{{ $ts._reversi.cancelReady }}</MkButton>
 		</div>
 	</footer>
 </div>

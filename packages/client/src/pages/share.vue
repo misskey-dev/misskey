@@ -12,11 +12,11 @@
 				:initial-local-only="localOnly"
 				:reply="reply"
 				:renote="renote"
-				:visible-users="visibleUsers"
-				@posted="state = 'posted'"
+				:initial-visible-users="visibleUsers"
 				class="_panel"
+				@posted="state = 'posted'"
 			/>
-			<MkButton v-else-if="state === 'posted'" primary @click="close()" class="close">{{ $ts.close }}</MkButton>
+			<MkButton v-else-if="state === 'posted'" primary class="close" @click="close()">{{ $ts.close }}</MkButton>
 		</div>
 	</section>
 </div>
@@ -154,7 +154,7 @@ export default defineComponent({
 			}
 			//#endregion
 		} catch (e) {
-			os.dialog({
+			os.alert({
 				type: 'error',
 				title: e.message,
 				text: e.name

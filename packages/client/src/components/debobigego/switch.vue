@@ -7,12 +7,12 @@
 		@click.prevent="toggle"
 	>
 		<input
-			type="checkbox"
 			ref="input"
+			type="checkbox"
 			:disabled="disabled"
 			@keydown.enter="toggle"
 		>
-		<span class="button" v-tooltip="checked ? $ts.itsOn : $ts.itsOff">
+		<span v-tooltip="checked ? $ts.itsOn : $ts.itsOff" class="button">
 			<span class="handle"></span>
 		</span>
 		<span class="label">

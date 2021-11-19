@@ -1,6 +1,6 @@
 <template>
 <FormBase>
-	<FormSuspense :p="databasePromiseFactory" v-slot="{ result: database }">
+	<FormSuspense v-slot="{ result: database }" :p="databasePromiseFactory">
 		<FormGroup v-for="table in database" :key="table[0]">
 			<template #label>{{ table[0] }}</template>
 			<FormKeyValueView>

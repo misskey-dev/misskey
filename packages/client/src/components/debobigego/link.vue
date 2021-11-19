@@ -1,6 +1,6 @@
 <template>
 <div class="qmfkfnzi _debobigegoItem">
-	<a class="main _button _debobigegoPanel _debobigegoClickable" :href="to" target="_blank" v-if="external">
+	<a v-if="external" class="main _button _debobigegoPanel _debobigegoClickable" :href="to" target="_blank">
 		<span class="icon"><slot name="icon"></slot></span>
 		<span class="text"><slot></slot></span>
 		<span class="right">
@@ -8,7 +8,7 @@
 			<i class="fas fa-external-link-alt icon"></i>
 		</span>
 	</a>
-	<MkA class="main _button _debobigegoPanel _debobigegoClickable" :class="{ active }" :to="to" :behavior="behavior" v-else>
+	<MkA v-else class="main _button _debobigegoPanel _debobigegoClickable" :class="{ active }" :to="to" :behavior="behavior">
 		<span class="icon"><slot name="icon"></slot></span>
 		<span class="text"><slot></slot></span>
 		<span class="right">

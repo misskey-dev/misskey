@@ -1,8 +1,8 @@
 <template>
 <transition :name="$store.state.animation ? popup ? 'modal-popup' : 'modal' : ''" :duration="$store.state.animation ? popup ? 500 : 300 : 0" appear @after-leave="onClosed" @enter="$emit('opening')" @after-enter="childRendered">
-	<div v-show="manualShowing != null ? manualShowing : showing" class="qzhlnise" :class="{ front }" v-hotkey.global="keymap" :style="{ pointerEvents: (manualShowing != null ? manualShowing : showing) ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
+	<div v-show="manualShowing != null ? manualShowing : showing" v-hotkey.global="keymap" class="qzhlnise" :class="{ front }" :style="{ pointerEvents: (manualShowing != null ? manualShowing : showing) ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
 		<div class="bg _modalBg" @click="onBgClick" @contextmenu.prevent.stop="() => {}"></div>
-		<div class="content" :class="{ popup, fixed, top: position === 'top' }" @click.self="onBgClick" ref="content">
+		<div ref="content" class="content" :class="{ popup, fixed, top: position === 'top' }" @click.self="onBgClick">
 			<slot></slot>
 		</div>
 	</div>

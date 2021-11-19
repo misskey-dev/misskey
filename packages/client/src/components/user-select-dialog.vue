@@ -11,7 +11,7 @@
 	<div class="tbhwbxda _monolithic_">
 		<div class="_section">
 			<div class="_inputSplit">
-				<MkInput v-model="username" class="input" @update:modelValue="search" ref="username">
+				<MkInput ref="username" v-model="username" class="input" @update:modelValue="search">
 					<template #label>{{ $ts.username }}</template>
 					<template #prefix>@</template>
 				</MkInput>
@@ -21,9 +21,9 @@
 				</MkInput>
 			</div>
 		</div>
-		<div class="_section result" v-if="username != '' || host != ''" :class="{ hit: users.length > 0 }">
-			<div class="users" v-if="users.length > 0">
-				<div class="user" v-for="user in users" :key="user.id" :class="{ selected: selected && selected.id === user.id }" @click="selected = user" @dblclick="ok()">
+		<div v-if="username != '' || host != ''" class="_section result" :class="{ hit: users.length > 0 }">
+			<div v-if="users.length > 0" class="users">
+				<div v-for="user in users" :key="user.id" class="user" :class="{ selected: selected && selected.id === user.id }" @click="selected = user" @dblclick="ok()">
 					<MkAvatar :user="user" class="avatar" :show-indicator="true"/>
 					<div class="body">
 						<MkUserName :user="user" class="name"/>
@@ -35,9 +35,9 @@
 				<span>{{ $ts.noUsers }}</span>
 			</div>
 		</div>
-		<div class="_section recent" v-if="username == '' && host == ''">
+		<div v-if="username == '' && host == ''" class="_section recent">
 			<div class="users">
-				<div class="user" v-for="user in recentUsers" :key="user.id" :class="{ selected: selected && selected.id === user.id }" @click="selected = user" @dblclick="ok()">
+				<div v-for="user in recentUsers" :key="user.id" class="user" :class="{ selected: selected && selected.id === user.id }" @click="selected = user" @dblclick="ok()">
 					<MkAvatar :user="user" class="avatar" :show-indicator="true"/>
 					<div class="body">
 						<MkUserName :user="user" class="name"/>

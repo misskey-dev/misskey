@@ -1,12 +1,12 @@
 <template>
-<div class="qiivuoyo" v-if="ad">
-	<div class="main" :class="ad.place" v-if="!showMenu">
+<div v-if="ad" class="qiivuoyo">
+	<div v-if="!showMenu" class="main" :class="ad.place">
 		<a :href="ad.url" target="_blank">
 			<img :src="ad.imageUrl">
 			<button class="_button menu" @click.prevent.stop="toggleMenu"><span class="fas fa-info-circle"></span></button>
 		</a>
 	</div>
-	<div class="menu" v-else>
+	<div v-else class="menu">
 		<div class="body">
 			<div>Ads by {{ host }}</div>
 			<!--<MkButton class="button" primary>{{ $ts._ad.like }}</MkButton>-->

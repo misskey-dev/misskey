@@ -1,6 +1,6 @@
 <template>
 <FormBase>
-	<FormPagination :pagination="pagination" ref="list">
+	<FormPagination ref="list" :pagination="pagination">
 		<template #empty>
 			<div class="_fullinfo">
 				<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
@@ -8,8 +8,8 @@
 			</div>
 		</template>
 		<template #default="{items}">
-			<div class="_debobigegoPanel bfomjevm" v-for="token in items" :key="token.id">
-				<img class="icon" :src="token.iconUrl" alt="" v-if="token.iconUrl"/>
+			<div v-for="token in items" :key="token.id" class="_debobigegoPanel bfomjevm">
+				<img v-if="token.iconUrl" class="icon" :src="token.iconUrl" alt=""/>
 				<div class="body">
 					<div class="name">{{ token.name }}</div>
 					<div class="description">{{ token.description }}</div>

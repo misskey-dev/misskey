@@ -12,18 +12,18 @@
 		</FormKeyValueView>
 		<FormKeyValueView>
 			<template #key>{{ $ts.latestVersion }}</template>
-			<template #value v-if="meta">{{ meta.version }}</template>
-			<template #value v-else><MkEllipsis/></template>
+			<template v-if="meta" #value>{{ meta.version }}</template>
+			<template v-else #value><MkEllipsis/></template>
 		</FormKeyValueView>
 	</FormGroup>
 	<FormGroup>
 		<template #label>Misskey</template>
 		<FormKeyValueView>
 			<template #key>{{ $ts.latestVersion }}</template>
-			<template #value v-if="releases">{{ releases[0].tag_name }}</template>
-			<template #value v-else><MkEllipsis/></template>
+			<template v-if="releases" #value>{{ releases[0].tag_name }}</template>
+			<template v-else #value><MkEllipsis/></template>
 		</FormKeyValueView>
-		<template #caption v-if="releases"><MkTime :time="releases[0].published_at" mode="detail"/></template>
+		<template v-if="releases" #caption><MkTime :time="releases[0].published_at" mode="detail"/></template>
 	</FormGroup>
 </FormBase>
 </template>

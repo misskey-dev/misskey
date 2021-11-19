@@ -1,12 +1,12 @@
 <template>
-<form class="qlvuhzng _formRoot" @submit.prevent="onSubmit" :autocomplete="Math.random()">
+<form class="qlvuhzng _formRoot" :autocomplete="Math.random()" @submit.prevent="onSubmit">
 	<template v-if="meta">
-		<MkInput class="_formBlock" v-if="meta.disableRegistration" v-model="invitationCode" type="text" :autocomplete="Math.random()" spellcheck="false" required>
+		<MkInput v-if="meta.disableRegistration" v-model="invitationCode" class="_formBlock" type="text" :autocomplete="Math.random()" spellcheck="false" required>
 			<template #label>{{ $ts.invitationCode }}</template>
 			<template #prefix><i class="fas fa-key"></i></template>
 		</MkInput>
-		<MkInput class="_formBlock" v-model="username" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" :autocomplete="Math.random()" spellcheck="false" required @update:modelValue="onChangeUsername" data-cy-signup-username>
-			<template #label>{{ $ts.username }} <div class="_button _help" v-tooltip:dialog="$ts.usernameInfo"><i class="far fa-question-circle"></i></div></template>
+		<MkInput v-model="username" class="_formBlock" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" :autocomplete="Math.random()" spellcheck="false" required data-cy-signup-username @update:modelValue="onChangeUsername">
+			<template #label>{{ $ts.username }} <div v-tooltip:dialog="$ts.usernameInfo" class="_button _help"><i class="far fa-question-circle"></i></div></template>
 			<template #prefix>@</template>
 			<template #suffix>@{{ host }}</template>
 			<template #caption>
@@ -19,8 +19,8 @@
 				<span v-else-if="usernameState === 'max-range'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.tooLong }}</span>
 			</template>
 		</MkInput>
-		<MkInput v-if="meta.emailRequiredForSignup" class="_formBlock" v-model="email" :debounce="true" type="email" :autocomplete="Math.random()" spellcheck="false" required @update:modelValue="onChangeEmail" data-cy-signup-email>
-			<template #label>{{ $ts.emailAddress }} <div class="_button _help" v-tooltip:dialog="$ts._signup.emailAddressInfo"><i class="far fa-question-circle"></i></div></template>
+		<MkInput v-if="meta.emailRequiredForSignup" v-model="email" class="_formBlock" :debounce="true" type="email" :autocomplete="Math.random()" spellcheck="false" required data-cy-signup-email @update:modelValue="onChangeEmail">
+			<template #label>{{ $ts.emailAddress }} <div v-tooltip:dialog="$ts._signup.emailAddressInfo" class="_button _help"><i class="far fa-question-circle"></i></div></template>
 			<template #prefix><i class="fas fa-envelope"></i></template>
 			<template #caption>
 				<span v-if="emailState === 'wait'" style="color:#999"><i class="fas fa-spinner fa-pulse fa-fw"></i> {{ $ts.checking }}</span>
@@ -34,7 +34,7 @@
 				<span v-else-if="emailState === 'error'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.error }}</span>
 			</template>
 		</MkInput>
-		<MkInput class="_formBlock" v-model="password" type="password" :autocomplete="Math.random()" required @update:modelValue="onChangePassword" data-cy-signup-password>
+		<MkInput v-model="password" class="_formBlock" type="password" :autocomplete="Math.random()" required data-cy-signup-password @update:modelValue="onChangePassword">
 			<template #label>{{ $ts.password }}</template>
 			<template #prefix><i class="fas fa-lock"></i></template>
 			<template #caption>
@@ -43,7 +43,7 @@
 				<span v-if="passwordStrength == 'high'" style="color: var(--success)"><i class="fas fa-check fa-fw"></i> {{ $ts.strongPassword }}</span>
 			</template>
 		</MkInput>
-		<MkInput class="_formBlock" v-model="retypedPassword" type="password" :autocomplete="Math.random()" required @update:modelValue="onChangePasswordRetype" data-cy-signup-password-retype>
+		<MkInput v-model="retypedPassword" class="_formBlock" type="password" :autocomplete="Math.random()" required data-cy-signup-password-retype @update:modelValue="onChangePasswordRetype">
 			<template #label>{{ $ts.password }} ({{ $ts.retype }})</template>
 			<template #prefix><i class="fas fa-lock"></i></template>
 			<template #caption>
@@ -52,15 +52,15 @@
 			</template>
 		</MkInput>
 		<label v-if="meta.tosUrl" class="_formBlock tou">
-			<input type="checkbox" v-model="ToSAgreement">
+			<input v-model="ToSAgreement" type="checkbox">
 			<I18n :src="$ts.agreeTo">
 				<template #0>
 					<a :href="meta.tosUrl" class="_link" target="_blank">{{ $ts.tos }}</a>
 				</template>
 			</I18n>
 		</label>
-		<captcha v-if="meta.enableHcaptcha" class="_formBlock captcha" provider="hcaptcha" ref="hcaptcha" v-model="hCaptchaResponse" :sitekey="meta.hcaptchaSiteKey"/>
-		<captcha v-if="meta.enableRecaptcha" class="_formBlock captcha" provider="recaptcha" ref="recaptcha" v-model="reCaptchaResponse" :sitekey="meta.recaptchaSiteKey"/>
+		<captcha v-if="meta.enableHcaptcha" ref="hcaptcha" v-model="hCaptchaResponse" class="_formBlock captcha" provider="hcaptcha" :sitekey="meta.hcaptchaSiteKey"/>
+		<captcha v-if="meta.enableRecaptcha" ref="recaptcha" v-model="reCaptchaResponse" class="_formBlock captcha" provider="recaptcha" :sitekey="meta.recaptchaSiteKey"/>
 		<MkButton class="_formBlock" type="submit" :disabled="shouldDisableSubmitting" gradate data-cy-signup-submit>{{ $ts.start }}</MkButton>
 	</template>
 </form>
@@ -220,7 +220,7 @@ export default defineComponent({
 				'g-recaptcha-response': this.reCaptchaResponse,
 			}).then(() => {
 				if (this.meta.emailRequiredForSignup) {
-					os.dialog({
+					os.alert({
 						type: 'success',
 						title: this.$ts._signup.almostThere,
 						text: this.$t('_signup.emailSent', { email: this.email }),
@@ -243,7 +243,7 @@ export default defineComponent({
 				this.$refs.hcaptcha?.reset?.();
 				this.$refs.recaptcha?.reset?.();
 
-				os.dialog({
+				os.alert({
 					type: 'error',
 					text: this.$ts.somethingHappened
 				});

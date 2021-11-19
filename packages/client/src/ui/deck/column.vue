@@ -1,11 +1,11 @@
 <template>
 <!-- sectionを利用しているのは、deck.vue側でcolumnに対してfirst-of-typeを効かせるため -->
-<section class="dnpfarvg _panel _narrow_" :class="{ paged: isMainColumn, naked, active, isStacked, draghover, dragging, dropready }"
+<section v-hotkey="keymap" class="dnpfarvg _panel _narrow_"
+	:class="{ paged: isMainColumn, naked, active, isStacked, draghover, dragging, dropready }"
+	:style="{ '--deckColumnHeaderHeight': deckStore.reactiveState.columnHeaderHeight.value + 'px' }"
 	@dragover.prevent.stop="onDragover"
 	@dragleave="onDragleave"
 	@drop.prevent.stop="onDrop"
-	v-hotkey="keymap"
-	:style="{ '--deckColumnHeaderHeight': deckStore.reactiveState.columnHeaderHeight.value + 'px' }"
 >
 	<header :class="{ indicated }"
 		draggable="true"
@@ -14,7 +14,7 @@
 		@dragend="onDragend"
 		@contextmenu.prevent.stop="onContextmenu"
 	>
-		<button class="toggleActive _button" @click="toggleActive" v-if="isStacked && !isMainColumn">
+		<button v-if="isStacked && !isMainColumn" class="toggleActive _button" @click="toggleActive">
 			<template v-if="active"><i class="fas fa-angle-up"></i></template>
 			<template v-else><i class="fas fa-angle-down"></i></template>
 		</button>
@@ -22,9 +22,9 @@
 			<slot name="action"></slot>
 		</div>
 		<span class="header"><slot name="header"></slot></span>
-		<button v-if="func" class="menu _button" v-tooltip="func.title" @click.stop="func.handler"><i :class="func.icon || 'fas fa-cog'"></i></button>
+		<button v-if="func" v-tooltip="func.title" class="menu _button" @click.stop="func.handler"><i :class="func.icon || 'fas fa-cog'"></i></button>
 	</header>
-	<div ref="body" v-show="active">
+	<div v-show="active" ref="body">
 		<slot></slot>
 	</div>
 </section>

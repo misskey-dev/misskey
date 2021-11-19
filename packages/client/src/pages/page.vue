@@ -1,7 +1,7 @@
 <template>
 <div>
 	<transition name="fade" mode="out-in">
-		<div v-if="page" class="xcukqgmh" :key="page.id" v-size="{ max: [450] }">
+		<div v-if="page" :key="page.id" v-size="{ max: [450] }" class="xcukqgmh">
 			<div class="_block main">
 				<!--
 				<div class="header">
@@ -9,19 +9,19 @@
 				</div>
 				-->
 				<div class="banner">
-					<img :src="page.eyeCatchingImage.url" v-if="page.eyeCatchingImageId"/>
+					<img v-if="page.eyeCatchingImageId" :src="page.eyeCatchingImage.url"/>
 				</div>
 				<div class="content">
 					<XPage :page="page"/>
 				</div>
 				<div class="actions">
 					<div class="like">
-						<MkButton class="button" @click="unlike()" v-if="page.isLiked" v-tooltip="$ts._pages.unlike" primary><i class="fas fa-heart"></i><span class="count" v-if="page.likedCount > 0">{{ page.likedCount }}</span></MkButton>
-						<MkButton class="button" @click="like()" v-else v-tooltip="$ts._pages.like"><i class="far fa-heart"></i><span class="count" v-if="page.likedCount > 0">{{ page.likedCount }}</span></MkButton>
+						<MkButton v-if="page.isLiked" v-tooltip="$ts._pages.unlike" class="button" primary @click="unlike()"><i class="fas fa-heart"></i><span v-if="page.likedCount > 0" class="count">{{ page.likedCount }}</span></MkButton>
+						<MkButton v-else v-tooltip="$ts._pages.like" class="button" @click="like()"><i class="far fa-heart"></i><span v-if="page.likedCount > 0" class="count">{{ page.likedCount }}</span></MkButton>
 					</div>
 					<div class="other">
-						<button class="_button" @click="shareWithNote" v-tooltip="$ts.shareWithNote" v-click-anime><i class="fas fa-retweet fa-fw"></i></button>
-						<button class="_button" @click="share" v-tooltip="$ts.share" v-click-anime><i class="fas fa-share-alt fa-fw"></i></button>
+						<button v-tooltip="$ts.shareWithNote" v-click-anime class="_button" @click="shareWithNote"><i class="fas fa-retweet fa-fw"></i></button>
+						<button v-tooltip="$ts.share" v-click-anime class="_button" @click="share"><i class="fas fa-share-alt fa-fw"></i></button>
 					</div>
 				</div>
 				<div class="user">
@@ -36,8 +36,8 @@
 					<MkA :to="`/@${username}/pages/${pageName}/view-source`" class="link">{{ $ts._pages.viewSource }}</MkA>
 					<template v-if="$i && $i.id === page.userId">
 						<MkA :to="`/pages/edit/${page.id}`" class="link">{{ $ts._pages.editThisPage }}</MkA>
-						<button v-if="$i.pinnedPageId === page.id" @click="pin(false)" class="link _textButton">{{ $ts.unpin }}</button>
-						<button v-else @click="pin(true)" class="link _textButton">{{ $ts.pin }}</button>
+						<button v-if="$i.pinnedPageId === page.id" class="link _textButton" @click="pin(false)">{{ $ts.unpin }}</button>
+						<button v-else class="link _textButton" @click="pin(true)">{{ $ts.pin }}</button>
 					</template>
 				</div>
 			</div>
@@ -48,8 +48,8 @@
 			<MkAd :prefer="['horizontal', 'horizontal-big']"/>
 			<MkContainer :max-height="300" :foldable="true" class="other">
 				<template #header><i class="fas fa-clock"></i> {{ $ts.recentPosts }}</template>
-				<MkPagination :pagination="otherPostsPagination" #default="{items}">
-					<MkPagePreview v-for="page in items" :page="page" :key="page.id" class="_gap"/>
+				<MkPagination #default="{items}" :pagination="otherPostsPagination">
+					<MkPagePreview v-for="page in items" :key="page.id" :page="page" class="_gap"/>
 				</MkPagination>
 			</MkContainer>
 		</div>
@@ -168,9 +168,8 @@ export default defineComponent({
 		},
 
 		async unlike() {
-			const confirm = await os.dialog({
+			const confirm = await os.confirm({
 				type: 'warning',
-				showCancelButton: true,
 				text: this.$ts.unlikeConfirm,
 			});
 			if (confirm.canceled) return;

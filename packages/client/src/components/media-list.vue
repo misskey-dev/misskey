@@ -1,11 +1,11 @@
 <template>
 <div class="hoawjimk">
-	<XBanner v-for="media in mediaList.filter(media => !previewable(media))" :media="media" :key="media.id"/>
+	<XBanner v-for="media in mediaList.filter(media => !previewable(media))" :key="media.id" :media="media"/>
 	<div v-if="mediaList.filter(media => previewable(media)).length > 0" class="gird-container">
-		<div :data-count="mediaList.filter(media => previewable(media)).length" ref="gallery">
+		<div ref="gallery" :data-count="mediaList.filter(media => previewable(media)).length">
 			<template v-for="media in mediaList">
-				<XVideo :video="media" :key="media.id" v-if="media.type.startsWith('video')"/>
-				<XImage class="image" :data-id="media.id" :image="media" :key="media.id" v-else-if="media.type.startsWith('image')" :raw="raw"/>
+				<XVideo v-if="media.type.startsWith('video')" :key="media.id" :video="media"/>
+				<XImage v-else-if="media.type.startsWith('image')" :key="media.id" class="image" :data-id="media.id" :image="media" :raw="raw"/>
 			</template>
 		</div>
 	</div>

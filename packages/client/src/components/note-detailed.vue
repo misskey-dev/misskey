@@ -1,36 +1,36 @@
 <template>
 <div
-	class="lxwezrsl _block"
 	v-if="!muted"
 	v-show="!isDeleted"
-	:tabindex="!isDeleted ? '-1' : null"
-	:class="{ renote: isRenote }"
 	v-hotkey="keymap"
 	v-size="{ max: [500, 450, 350, 300] }"
+	class="lxwezrsl _block"
+	:tabindex="!isDeleted ? '-1' : null"
+	:class="{ renote: isRenote }"
 >
-	<XSub v-for="note in conversation" class="reply-to-more" :key="note.id" :note="note"/>
-	<XSub :note="appearNote.reply" class="reply-to" v-if="appearNote.reply"/>
-	<div class="renote" v-if="isRenote">
+	<XSub v-for="note in conversation" :key="note.id" class="reply-to-more" :note="note"/>
+	<XSub v-if="appearNote.reply" :note="appearNote.reply" class="reply-to"/>
+	<div v-if="isRenote" class="renote">
 		<MkAvatar class="avatar" :user="note.user"/>
 		<i class="fas fa-retweet"></i>
 		<I18n :src="$ts.renotedBy" tag="span">
 			<template #user>
-				<MkA class="name" :to="userPage(note.user)" v-user-preview="note.userId">
+				<MkA v-user-preview="note.userId" class="name" :to="userPage(note.user)">
 					<MkUserName :user="note.user"/>
 				</MkA>
 			</template>
 		</I18n>
 		<div class="info">
-			<button class="_button time" @click="showRenoteMenu()" ref="renoteTime">
+			<button ref="renoteTime" class="_button time" @click="showRenoteMenu()">
 				<i v-if="isMyRenote" class="fas fa-ellipsis-h dropdownIcon"></i>
 				<MkTime :time="note.createdAt"/>
 			</button>
-			<span class="visibility" v-if="note.visibility !== 'public'">
+			<span v-if="note.visibility !== 'public'" class="visibility">
 				<i v-if="note.visibility === 'home'" class="fas fa-home"></i>
 				<i v-else-if="note.visibility === 'followers'" class="fas fa-unlock"></i>
 				<i v-else-if="note.visibility === 'specified'" class="fas fa-envelope"></i>
 			</span>
-			<span class="localOnly" v-if="note.localOnly"><i class="fas fa-biohazard"></i></span>
+			<span v-if="note.localOnly" class="localOnly"><i class="fas fa-biohazard"></i></span>
 		</div>
 	</div>
 	<article class="article" @contextmenu.stop="onContextmenu">
@@ -38,18 +38,18 @@
 			<MkAvatar class="avatar" :user="appearNote.user" :show-indicator="true"/>
 			<div class="body">
 				<div class="top">
-					<MkA class="name" :to="userPage(appearNote.user)" v-user-preview="appearNote.user.id">
+					<MkA v-user-preview="appearNote.user.id" class="name" :to="userPage(appearNote.user)">
 						<MkUserName :user="appearNote.user"/>
 					</MkA>
-					<span class="is-bot" v-if="appearNote.user.isBot">bot</span>
-					<span class="admin" v-if="appearNote.user.isAdmin"><i class="fas fa-bookmark"></i></span>
-					<span class="moderator" v-if="!appearNote.user.isAdmin && appearNote.user.isModerator"><i class="far fa-bookmark"></i></span>
-					<span class="visibility" v-if="appearNote.visibility !== 'public'">
+					<span v-if="appearNote.user.isBot" class="is-bot">bot</span>
+					<span v-if="appearNote.user.isAdmin" class="admin"><i class="fas fa-bookmark"></i></span>
+					<span v-if="!appearNote.user.isAdmin && appearNote.user.isModerator" class="moderator"><i class="far fa-bookmark"></i></span>
+					<span v-if="appearNote.visibility !== 'public'" class="visibility">
 						<i v-if="appearNote.visibility === 'home'" class="fas fa-home"></i>
 						<i v-else-if="appearNote.visibility === 'followers'" class="fas fa-unlock"></i>
 						<i v-else-if="appearNote.visibility === 'specified'" class="fas fa-envelope"></i>
 					</span>
-					<span class="localOnly" v-if="appearNote.localOnly"><i class="fas fa-biohazard"></i></span>
+					<span v-if="appearNote.localOnly" class="localOnly"><i class="fas fa-biohazard"></i></span>
 				</div>
 				<div class="username"><MkAcct :user="appearNote.user"/></div>
 				<MkInstanceTicker v-if="showTicker" class="ticker" :instance="appearNote.user.instance"/>
@@ -61,26 +61,26 @@
 					<Mfm v-if="appearNote.cw != ''" class="text" :text="appearNote.cw" :author="appearNote.user" :i="$i" :custom-emojis="appearNote.emojis"/>
 					<XCwButton v-model="showContent" :note="appearNote"/>
 				</p>
-				<div class="content" v-show="appearNote.cw == null || showContent">
+				<div v-show="appearNote.cw == null || showContent" class="content">
 					<div class="text">
 						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ $ts.private }})</span>
-						<MkA class="reply" v-if="appearNote.replyId" :to="`/notes/${appearNote.replyId}`"><i class="fas fa-reply"></i></MkA>
+						<MkA v-if="appearNote.replyId" class="reply" :to="`/notes/${appearNote.replyId}`"><i class="fas fa-reply"></i></MkA>
 						<Mfm v-if="appearNote.text" :text="appearNote.text" :author="appearNote.user" :i="$i" :custom-emojis="appearNote.emojis"/>
-						<a class="rp" v-if="appearNote.renote != null">RN:</a>
-						<div class="translation" v-if="translating || translation">
+						<a v-if="appearNote.renote != null" class="rp">RN:</a>
+						<div v-if="translating || translation" class="translation">
 							<MkLoading v-if="translating" mini/>
-							<div class="translated" v-else>
-								<b>{{ $t('translatedFrom', { x: translation.sourceLang }) }}:</b>
-								{{ translation.text }}
+							<div v-else class="translated">
+								<b>{{ $t('translatedFrom', { x: translation.sourceLang }) }}: </b>
+								<Mfm :text="translation.text" :author="appearNote.user" :i="$i" :custom-emojis="appearNote.emojis"/>
 							</div>
 						</div>
 					</div>
-					<div class="files" v-if="appearNote.files.length > 0">
+					<div v-if="appearNote.files.length > 0" class="files">
 						<XMediaList :media-list="appearNote.files"/>
 					</div>
-					<XPoll v-if="appearNote.poll" :note="appearNote" ref="pollViewer" class="poll"/>
-					<MkUrlPreview v-for="url in urls" :url="url" :key="url" :compact="true" :detail="true" class="url-preview"/>
-					<div class="renote" v-if="appearNote.renote"><XNoteSimple :note="appearNote.renote"/></div>
+					<XPoll v-if="appearNote.poll" ref="pollViewer" :note="appearNote" class="poll"/>
+					<MkUrlPreview v-for="url in urls" :key="url" :url="url" :compact="true" :detail="true" class="url-preview"/>
+					<div v-if="appearNote.renote" class="renote"><XNoteSimple :note="appearNote.renote"/></div>
 				</div>
 				<MkA v-if="appearNote.channel && !inChannel" class="channel" :to="`/channels/${appearNote.channel.id}`"><i class="fas fa-satellite-dish"></i> {{ appearNote.channel.name }}</MkA>
 			</div>
@@ -88,20 +88,20 @@
 				<div class="info">
 					<MkTime class="created-at" :time="appearNote.createdAt" mode="detail"/>
 				</div>
-				<XReactionsViewer :note="appearNote" ref="reactionsViewer"/>
-				<button @click="reply()" class="button _button">
+				<XReactionsViewer ref="reactionsViewer" :note="appearNote"/>
+				<button class="button _button" @click="reply()">
 					<template v-if="appearNote.reply"><i class="fas fa-reply-all"></i></template>
 					<template v-else><i class="fas fa-reply"></i></template>
-					<p class="count" v-if="appearNote.repliesCount > 0">{{ appearNote.repliesCount }}</p>
+					<p v-if="appearNote.repliesCount > 0" class="count">{{ appearNote.repliesCount }}</p>
 				</button>
-				<XRenoteButton class="button" :note="appearNote" :count="appearNote.renoteCount" ref="renoteButton"/>
-				<button v-if="appearNote.myReaction == null" class="button _button" @click="react()" ref="reactButton">
+				<XRenoteButton ref="renoteButton" class="button" :note="appearNote" :count="appearNote.renoteCount"/>
+				<button v-if="appearNote.myReaction == null" ref="reactButton" class="button _button" @click="react()">
 					<i class="fas fa-plus"></i>
 				</button>
-				<button v-if="appearNote.myReaction != null" class="button _button reacted" @click="undoReact(appearNote)" ref="reactButton">
+				<button v-if="appearNote.myReaction != null" ref="reactButton" class="button _button reacted" @click="undoReact(appearNote)">
 					<i class="fas fa-minus"></i>
 				</button>
-				<button class="button _button" @click="menu()" ref="menuButton">
+				<button ref="menuButton" class="button _button" @click="menu()">
 					<i class="fas fa-ellipsis-h"></i>
 				</button>
 			</footer>
@@ -112,7 +112,7 @@
 <div v-else class="_panel muted" @click="muted = false">
 	<I18n :src="$ts.userSaysSomething" tag="small">
 		<template #name>
-			<MkA class="name" :to="userPage(appearNote.user)" v-user-preview="appearNote.userId">
+			<MkA v-user-preview="appearNote.userId" class="name" :to="userPage(appearNote.user)">
 				<MkUserName :user="appearNote.user"/>
 			</MkA>
 		</template>
@@ -456,18 +456,18 @@ export default defineComponent({
 			os.apiWithDialog('notes/create', {
 				renoteId: this.appearNote.id
 			}, undefined, (res: any) => {
-				os.dialog({
+				os.alert({
 					type: 'success',
 					text: this.$ts.renoted,
 				});
 			}, (e: Error) => {
 				if (e.id === 'b5c90186-4ab0-49c8-9bba-a1f76c282ba4') {
-					os.dialog({
+					os.alert({
 						type: 'error',
 						text: this.$ts.cantRenote,
 					});
 				} else if (e.id === 'fd4cc33e-2a37-48dd-99cc-9b806eb2031a') {
-					os.dialog({
+					os.alert({
 						type: 'error',
 						text: this.$ts.cantReRenote,
 					});
@@ -508,18 +508,18 @@ export default defineComponent({
 			os.apiWithDialog('notes/favorites/create', {
 				noteId: this.appearNote.id
 			}, undefined, (res: any) => {
-				os.dialog({
+				os.alert({
 					type: 'success',
 					text: this.$ts.favorited,
 				});
 			}, (e: Error) => {
 				if (e.id === 'a402c12b-34dd-41d2-97d8-4d2ffd96a1a6') {
-					os.dialog({
+					os.alert({
 						type: 'error',
 						text: this.$ts.alreadyFavorited,
 					});
 				} else if (e.id === '6dd26674-e060-4816-909a-45ba3f4da458') {
-					os.dialog({
+					os.alert({
 						type: 'error',
 						text: this.$ts.cantFavorite,
 					});
@@ -528,10 +528,9 @@ export default defineComponent({
 		},
 
 		del() {
-			os.dialog({
+			os.confirm({
 				type: 'warning',
 				text: this.$ts.noteDeleteConfirm,
-				showCancelButton: true
 			}).then(({ canceled }) => {
 				if (canceled) return;
 
@@ -542,10 +541,9 @@ export default defineComponent({
 		},
 
 		delEdit() {
-			os.dialog({
+			os.confirm({
 				type: 'warning',
 				text: this.$ts.deleteAndEditConfirm,
-				showCancelButton: true
 			}).then(({ canceled }) => {
 				if (canceled) return;
 
@@ -781,7 +779,7 @@ export default defineComponent({
 				noteId: this.appearNote.id
 			}, undefined, null, e => {
 				if (e.id === '72dab508-c64d-498f-8740-a8eec1ba385a') {
-					os.dialog({
+					os.alert({
 						type: 'error',
 						text: this.$ts.pinLimitExceeded
 					});
@@ -828,9 +826,8 @@ export default defineComponent({
 		},
 
 		async promote() {
-			const { canceled, result: days } = await os.dialog({
+			const { canceled, result: days } = await os.inputNumber({
 				title: this.$ts.numberOfDays,
-				input: { type: 'number' }
 			});
 
 			if (canceled) return;

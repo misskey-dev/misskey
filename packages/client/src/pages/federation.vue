@@ -40,9 +40,9 @@
 		</div>
 	</div>
 
-	<MkPagination :pagination="pagination" #default="{items}" ref="instances" :key="host + state">
+	<MkPagination #default="{items}" ref="instances" :key="host + state" :pagination="pagination">
 		<div class="dqokceoi">
-			<MkA class="instance" v-for="instance in items" :key="instance.id" :to="`/instance-info/${instance.host}`">
+			<MkA v-for="instance in items" :key="instance.id" class="instance" :to="`/instance-info/${instance.host}`">
 				<div class="host"><img :src="instance.faviconUrl">{{ instance.host }}</div>
 				<div class="table">
 					<div class="cell">
@@ -77,10 +77,10 @@
 				<div class="footer">
 					<span class="status" :class="getStatus(instance)">{{ getStatus(instance) }}</span>
 					<span class="pubSub">
-						<span class="sub" v-if="instance.followersCount > 0"><i class="fas fa-caret-down icon"></i>Sub</span>
-						<span class="sub" v-else><i class="fas fa-caret-down icon"></i>-</span>
-						<span class="pub" v-if="instance.followingCount > 0"><i class="fas fa-caret-up icon"></i>Pub</span>
-						<span class="pub" v-else><i class="fas fa-caret-up icon"></i>-</span>
+						<span v-if="instance.followersCount > 0" class="sub"><i class="fas fa-caret-down icon"></i>Sub</span>
+						<span v-else class="sub"><i class="fas fa-caret-down icon"></i>-</span>
+						<span v-if="instance.followingCount > 0" class="pub"><i class="fas fa-caret-up icon"></i>Pub</span>
+						<span v-else class="pub"><i class="fas fa-caret-up icon"></i>-</span>
 					</span>
 					<span class="right">
 						<span class="latestStatus">{{ instance.latestStatus || '-' }}</span>

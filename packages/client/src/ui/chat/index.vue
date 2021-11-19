@@ -10,10 +10,10 @@
 				</button>
 			</div>
 			<div class="right">
-				<MkA class="item" to="/my/messaging" v-tooltip="$ts.messaging"><i class="fas fa-comments icon"></i><span v-if="$i.hasUnreadMessagingMessage" class="indicator"><i class="fas fa-circle"></i></span></MkA>
-				<MkA class="item" to="/my/messages" v-tooltip="$ts.directNotes"><i class="fas fa-envelope icon"></i><span v-if="$i.hasUnreadSpecifiedNotes" class="indicator"><i class="fas fa-circle"></i></span></MkA>
-				<MkA class="item" to="/my/mentions" v-tooltip="$ts.mentions"><i class="fas fa-at icon"></i><span v-if="$i.hasUnreadMentions" class="indicator"><i class="fas fa-circle"></i></span></MkA>
-				<MkA class="item" to="/my/notifications" v-tooltip="$ts.notifications"><i class="fas fa-bell icon"></i><span v-if="$i.hasUnreadNotification" class="indicator"><i class="fas fa-circle"></i></span></MkA>
+				<MkA v-tooltip="$ts.messaging" class="item" to="/my/messaging"><i class="fas fa-comments icon"></i><span v-if="$i.hasUnreadMessagingMessage" class="indicator"><i class="fas fa-circle"></i></span></MkA>
+				<MkA v-tooltip="$ts.directNotes" class="item" to="/my/messages"><i class="fas fa-envelope icon"></i><span v-if="$i.hasUnreadSpecifiedNotes" class="indicator"><i class="fas fa-circle"></i></span></MkA>
+				<MkA v-tooltip="$ts.mentions" class="item" to="/my/mentions"><i class="fas fa-at icon"></i><span v-if="$i.hasUnreadMentions" class="indicator"><i class="fas fa-circle"></i></span></MkA>
+				<MkA v-tooltip="$ts.notifications" class="item" to="/my/notifications"><i class="fas fa-bell icon"></i><span v-if="$i.hasUnreadNotification" class="indicator"><i class="fas fa-circle"></i></span></MkA>
 			</div>
 		</header>
 		<div class="body">
@@ -26,25 +26,25 @@
 					<MkA to="/timeline/global" class="item" :class="{ active: tl === 'global' }"><i class="fas fa-globe icon"></i>{{ $ts._timelines.global }}</MkA>
 				</div>
 			</div>
-			<div class="container" v-if="followedChannels">
+			<div v-if="followedChannels" class="container">
 				<div class="header">{{ $ts.channel }} ({{ $ts.following }})<button class="_button add" @click="addChannel"><i class="fas fa-plus"></i></button></div>
 				<div class="body">
 					<MkA v-for="channel in followedChannels" :key="channel.id" :to="`/channels/${ channel.id }`" class="item" :class="{ active: tl === `channel:${ channel.id }`, read: !channel.hasUnreadNote }"><i class="fas fa-satellite-dish icon"></i>{{ channel.name }}</MkA>
 				</div>
 			</div>
-			<div class="container" v-if="featuredChannels">
+			<div v-if="featuredChannels" class="container">
 				<div class="header">{{ $ts.channel }}<button class="_button add" @click="addChannel"><i class="fas fa-plus"></i></button></div>
 				<div class="body">
 					<MkA v-for="channel in featuredChannels" :key="channel.id" :to="`/channels/${ channel.id }`" class="item" :class="{ active: tl === `channel:${ channel.id }` }"><i class="fas fa-satellite-dish icon"></i>{{ channel.name }}</MkA>
 				</div>
 			</div>
-			<div class="container" v-if="lists">
+			<div v-if="lists" class="container">
 				<div class="header">{{ $ts.lists }}<button class="_button add" @click="addList"><i class="fas fa-plus"></i></button></div>
 				<div class="body">
 					<MkA v-for="list in lists" :key="list.id" :to="`/my/list/${ list.id }`" class="item" :class="{ active: tl === `list:${ list.id }` }"><i class="fas fa-list-ul icon"></i>{{ list.name }}</MkA>
 				</div>
 			</div>
-			<div class="container" v-if="antennas">
+			<div v-if="antennas" class="container">
 				<div class="header">{{ $ts.antennas }}<button class="_button add" @click="addAntenna"><i class="fas fa-plus"></i></button></div>
 				<div class="body">
 					<MkA v-for="antenna in antennas" :key="antenna.id" :to="`/my/antenna/${ antenna.id }`" class="item" :class="{ active: tl === `antenna:${ antenna.id }` }"><i class="fas fa-satellite icon"></i>{{ antenna.name }}</MkA>
@@ -64,10 +64,10 @@
 				</button>
 			</div>
 			<div class="right">
-				<button class="_button item search" @click="search" v-tooltip="$ts.search">
+				<button v-tooltip="$ts.search" class="_button item search" @click="search">
 					<i class="fas fa-search icon"></i>
 				</button>
-				<MkA class="item" to="/settings" v-tooltip="$ts.settings"><i class="fas fa-cog icon"></i></MkA>
+				<MkA v-tooltip="$ts.settings" class="item" to="/settings"><i class="fas fa-cog icon"></i></MkA>
 			</div>
 		</footer>
 	</div>
@@ -85,7 +85,7 @@
 		</router-view>
 	</main>
 
-	<XSide class="side" ref="side" @open="sideViewOpening = true" @close="sideViewOpening = false"/>
+	<XSide ref="side" class="side" @open="sideViewOpening = true" @close="sideViewOpening = false"/>
 	<div class="side widgets" :class="{ sideViewOpening }">
 		<XWidgets/>
 	</div>
@@ -192,10 +192,6 @@ export default defineComponent({
 				this.pageInfo = page[symbols.PAGE_INFO];
 				document.title = `${this.pageInfo.title} | ${instanceName}`;
 			}
-		},
-
-		onTransition() {
-			if (window._scroll) window._scroll();
 		},
 
 		showMenu() {

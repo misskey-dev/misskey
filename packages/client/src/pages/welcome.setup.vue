@@ -57,7 +57,7 @@ export default defineComponent({
 			}).catch(() => {
 				this.submitting = false;
 
-				os.dialog({
+				os.alert({
 					type: 'error',
 					text: this.$ts.somethingHappened
 				});

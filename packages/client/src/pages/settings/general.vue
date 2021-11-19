@@ -4,7 +4,7 @@
 
 	<FormSelect v-model="lang">
 		<template #label>{{ $ts.uiLanguage }}</template>
-		<option v-for="x in langs" :value="x[0]" :key="x[0]">{{ x[1] }}</option>
+		<option v-for="x in langs" :key="x[0]" :value="x[0]">{{ x[1] }}</option>
 		<template #caption>
 			<I18n :src="$ts.i18nInfo" tag="span">
 				<template #link>
@@ -41,7 +41,7 @@
 		<FormSwitch v-model="squareAvatars">{{ $ts.squareAvatars }}</FormSwitch>
 		<FormSwitch v-model="useSystemFont">{{ $ts.useSystemFont }}</FormSwitch>
 		<FormSwitch v-model="useOsNativeEmojis">{{ $ts.useOsNativeEmojis }}
-			<div><Mfm text="🍮🍦🍭🍩🍰🍫🍬🥞🍪" :key="useOsNativeEmojis"/></div>
+			<div><Mfm :key="useOsNativeEmojis" text="🍮🍦🍭🍩🍰🍫🍬🥞🍪"/></div>
 		</FormSwitch>
 	</FormGroup>
 
@@ -209,10 +209,9 @@ export default defineComponent({
 
 	methods: {
 		async reloadAsk() {
-			const { canceled } = await os.dialog({
+			const { canceled } = await os.confirm({
 				type: 'info',
 				text: this.$ts.reloadToApplySetting,
-				showCancelButton: true
 			});
 			if (canceled) return;
 

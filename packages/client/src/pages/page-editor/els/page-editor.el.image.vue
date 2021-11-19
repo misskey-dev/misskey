@@ -1,5 +1,6 @@
 <template>
-<XContainer @remove="() => $emit('remove')" :draggable="true">
+<!-- eslint-disable vue/no-mutating-props -->
+<XContainer :draggable="true" @remove="() => $emit('remove')">
 	<template #header><i class="fas fa-image"></i> {{ $ts._pages.blocks.image }}</template>
 	<template #func>
 		<button @click="choose()">
@@ -8,12 +9,13 @@
 	</template>
 
 	<section class="oyyftmcf">
-		<MkDriveFileThumbnail class="preview" v-if="file" :file="file" fit="contain" @click="choose()"/>
+		<MkDriveFileThumbnail v-if="file" class="preview" :file="file" fit="contain" @click="choose()"/>
 	</section>
 </XContainer>
 </template>
 
 <script lang="ts">
+/* eslint-disable vue/no-mutating-props */
 import { defineComponent } from 'vue';
 import XContainer from '../page-editor.container.vue';
 import MkDriveFileThumbnail from '@/components/drive-file-thumbnail.vue';

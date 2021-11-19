@@ -1,12 +1,12 @@
 <template>
 <div class="tivcixzd" :class="{ done: closed || isVoted }">
 	<ul>
-		<li v-for="(choice, i) in poll.choices" :key="i" @click="vote(i)" :class="{ voted: choice.voted }">
+		<li v-for="(choice, i) in poll.choices" :key="i" :class="{ voted: choice.voted }" @click="vote(i)">
 			<div class="backdrop" :style="{ 'width': `${showResult ? (choice.votes / total * 100) : 0}%` }"></div>
 			<span>
 				<template v-if="choice.isVoted"><i class="fas fa-check"></i></template>
 				<Mfm :text="choice.text" :plain="true" :custom-emojis="note.emojis"/>
-				<span class="votes" v-if="showResult">({{ $t('_poll.votesCount', { n: choice.votes }) }})</span>
+				<span v-if="showResult" class="votes">({{ $t('_poll.votesCount', { n: choice.votes }) }})</span>
 			</span>
 		</li>
 	</ul>
