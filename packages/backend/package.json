@@ -4,7 +4,7 @@
 	"scripts": {
 		"init": "npm run migrate",
 		"build": "tsc -p tsconfig.json || echo done. && tsc-alias -p tsconfig.json",
-		"watch": "tsc -w -p tsconfig.json && tsc-alias -w -p tsconfig.json",
+		"watch": "node watch.mjs",
 		"lint": "eslint --quiet src/**/*.ts",
 		"mocha": "cross-env TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT=\"./test/tsconfig.json\" mocha",
 		"test": "npm run mocha"
@@ -179,7 +179,7 @@
 		"tmp": "0.2.1",
 		"ts-loader": "9.2.6",
 		"ts-node": "10.4.0",
-		"tsc-alias": "1.3.10",
+		"tsc-alias": "1.4.1",
 		"tsconfig-paths": "3.11.0",
 		"twemoji-parser": "13.1.0",
 		"typeorm": "0.2.39",
@@ -194,6 +194,7 @@
 	"devDependencies": {
 		"@redocly/openapi-core": "1.0.0-beta.54",
 		"@types/fluent-ffmpeg": "2.1.17",
-		"cross-env": "7.0.3"
+		"cross-env": "7.0.3",
+		"execa": "6.0.0"
 	}
 }
