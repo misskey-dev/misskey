@@ -9,7 +9,7 @@
 		</FormRadios>
 
 		<template v-if="provider === 'hcaptcha'">
-			<div class="_debobigegoItem _debobigegoNoConcat" v-sticky-container>
+			<div v-sticky-container class="_debobigegoItem _debobigegoNoConcat">
 				<div class="_debobigegoLabel">hCaptcha</div>
 				<div class="main">
 					<FormInput v-model="hcaptchaSiteKey">
@@ -22,7 +22,7 @@
 					</FormInput>
 				</div>
 			</div>
-			<div class="_debobigegoItem _debobigegoNoConcat" v-sticky-container>
+			<div v-sticky-container class="_debobigegoItem _debobigegoNoConcat">
 				<div class="_debobigegoLabel">{{ $ts.preview }}</div>
 				<div class="_debobigegoPanel" style="padding: var(--debobigegoContentHMargin);">
 					<MkCaptcha provider="hcaptcha" :sitekey="hcaptchaSiteKey || '10000000-ffff-ffff-ffff-000000000001'"/>
@@ -30,7 +30,7 @@
 			</div>
 		</template>
 		<template v-else-if="provider === 'recaptcha'">
-			<div class="_debobigegoItem _debobigegoNoConcat" v-sticky-container>
+			<div v-sticky-container class="_debobigegoItem _debobigegoNoConcat">
 				<div class="_debobigegoLabel">reCAPTCHA</div>
 				<div class="main">
 					<FormInput v-model="recaptchaSiteKey">
@@ -43,7 +43,7 @@
 					</FormInput>
 				</div>
 			</div>
-			<div v-if="recaptchaSiteKey" class="_debobigegoItem _debobigegoNoConcat" v-sticky-container>
+			<div v-if="recaptchaSiteKey" v-sticky-container class="_debobigegoItem _debobigegoNoConcat">
 				<div class="_debobigegoLabel">{{ $ts.preview }}</div>
 				<div class="_debobigegoPanel" style="padding: var(--debobigegoContentHMargin);">
 					<MkCaptcha provider="recaptcha" :sitekey="recaptchaSiteKey"/>
@@ -51,7 +51,7 @@
 			</div>
 		</template>
 
-		<FormButton @click="save" primary><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
+		<FormButton primary @click="save"><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
 	</FormSuspense>
 </FormBase>
 </template>

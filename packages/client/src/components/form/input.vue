@@ -2,10 +2,10 @@
 <div class="matxzzsk">
 	<div class="label" @click="focus"><slot name="label"></slot></div>
 	<div class="input" :class="{ inline, disabled, focused }">
-		<div class="prefix" ref="prefixEl"><slot name="prefix"></slot></div>
+		<div ref="prefixEl" class="prefix"><slot name="prefix"></slot></div>
 		<input ref="inputEl"
-			:type="type"
 			v-model="v"
+			:type="type"
 			:disabled="disabled"
 			:required="required"
 			:readonly="readonly"
@@ -14,20 +14,20 @@
 			:autocomplete="autocomplete"
 			:spellcheck="spellcheck"
 			:step="step"
+			:list="id"
 			@focus="focused = true"
 			@blur="focused = false"
 			@keydown="onKeydown($event)"
 			@input="onInput"
-			:list="id"
 		>
-		<datalist :id="id" v-if="datalist">
+		<datalist v-if="datalist" :id="id">
 			<option v-for="data in datalist" :value="data"/>
 		</datalist>
-		<div class="suffix" ref="suffixEl"><slot name="suffix"></slot></div>
+		<div ref="suffixEl" class="suffix"><slot name="suffix"></slot></div>
 	</div>
 	<div class="caption"><slot name="caption"></slot></div>
 
-	<MkButton v-if="manualSave && changed" @click="updated" primary><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
+	<MkButton v-if="manualSave && changed" primary @click="updated"><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
 </div>
 </template>
 

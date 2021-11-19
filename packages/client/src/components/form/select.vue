@@ -1,10 +1,10 @@
 <template>
 <div class="vblkjoeq">
 	<div class="label" @click="focus"><slot name="label"></slot></div>
-	<div class="input" :class="{ inline, disabled, focused }" @click.prevent="onClick" ref="container">
-		<div class="prefix" ref="prefixEl"><slot name="prefix"></slot></div>
-		<select class="select" ref="inputEl"
-			v-model="v"
+	<div ref="container" class="input" :class="{ inline, disabled, focused }" @click.prevent="onClick">
+		<div ref="prefixEl" class="prefix"><slot name="prefix"></slot></div>
+		<select ref="inputEl" v-model="v"
+			class="select"
 			:disabled="disabled"
 			:required="required"
 			:readonly="readonly"
@@ -15,11 +15,11 @@
 		>
 			<slot></slot>
 		</select>
-		<div class="suffix" ref="suffixEl"><i class="fas fa-chevron-down"></i></div>
+		<div ref="suffixEl" class="suffix"><i class="fas fa-chevron-down"></i></div>
 	</div>
 	<div class="caption"><slot name="caption"></slot></div>
 
-	<MkButton v-if="manualSave && changed" @click="updated" primary><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
+	<MkButton v-if="manualSave && changed" primary @click="updated"><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
 </div>
 </template>
 

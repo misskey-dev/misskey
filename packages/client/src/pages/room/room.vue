@@ -1,6 +1,6 @@
 <template>
 <div class="hveuntkp">
-	<div class="controller _section" v-if="objectSelected">
+	<div v-if="objectSelected" class="controller _section">
 		<div class="_content">
 			<p class="name">{{ selectedFurnitureName }}</p>
 			<XPreview ref="preview"/>
@@ -17,16 +17,16 @@
 			</template>
 		</div>
 		<div class="_content">
-			<MkButton inline @click="translate()" :primary="isTranslateMode"><i class="fas fa-arrows-alt"></i> {{ $ts._rooms.translate }}</MkButton>
-			<MkButton inline @click="rotate()" :primary="isRotateMode"><i class="fas fa-undo"></i> {{ $ts._rooms.rotate }}</MkButton>
-			<MkButton inline v-if="isTranslateMode || isRotateMode" @click="exit()"><i class="fas fa-ban"></i> {{ $ts._rooms.exit }}</MkButton>
+			<MkButton inline :primary="isTranslateMode" @click="translate()"><i class="fas fa-arrows-alt"></i> {{ $ts._rooms.translate }}</MkButton>
+			<MkButton inline :primary="isRotateMode" @click="rotate()"><i class="fas fa-undo"></i> {{ $ts._rooms.rotate }}</MkButton>
+			<MkButton v-if="isTranslateMode || isRotateMode" inline @click="exit()"><i class="fas fa-ban"></i> {{ $ts._rooms.exit }}</MkButton>
 		</div>
 		<div class="_content">
 			<MkButton @click="remove()"><i class="fas fa-trash-alt"></i> {{ $ts._rooms.remove }}</MkButton>
 		</div>
 	</div>
 
-	<div class="menu _section" v-if="isMyRoom">
+	<div v-if="isMyRoom" class="menu _section">
 		<div class="_content">
 			<MkButton @click="add()"><i class="fas fa-box-open"></i> {{ $ts._rooms.addFurniture }}</MkButton>
 		</div>
@@ -70,6 +70,23 @@ export default defineComponent({
 		XPreview,
 		MkButton,
 		MkSelect,
+	},
+
+	beforeRouteLeave(to, from, next) {
+		if (this.changed) {
+			os.confirm({
+				type: 'warning',
+				text: this.$ts.leaveConfirm,
+			}).then(({ canceled }) => {
+				if (canceled) {
+					next(false);
+				} else {
+					next();
+				}
+			});
+		} else {
+			next();
+		}
 	},
 
 	props: {
@@ -133,23 +150,6 @@ export default defineComponent({
 			},
 			useOrthographicCamera: ColdDeviceStorage.get('roomUseOrthographicCamera'),
 		});
-	},
-
-	beforeRouteLeave(to, from, next) {
-		if (this.changed) {
-			os.confirm({
-				type: 'warning',
-				text: this.$ts.leaveConfirm,
-			}).then(({ canceled }) => {
-				if (canceled) {
-					next(false);
-				} else {
-					next();
-				}
-			});
-		} else {
-			next();
-		}
 	},
 
 	beforeUnmount() {

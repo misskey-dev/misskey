@@ -1,22 +1,22 @@
 <template>
 <div class="ncvczrfv"
 	:class="{ isSelected }"
+	draggable="true"
+	:title="title"
 	@click="onClick"
 	@contextmenu.stop="onContextmenu"
-	draggable="true"
 	@dragstart="onDragstart"
 	@dragend="onDragend"
-	:title="title"
 >
-	<div class="label" v-if="$i.avatarId == file.id">
+	<div v-if="$i.avatarId == file.id" class="label">
 		<img src="/client-assets/label.svg"/>
 		<p>{{ $ts.avatar }}</p>
 	</div>
-	<div class="label" v-if="$i.bannerId == file.id">
+	<div v-if="$i.bannerId == file.id" class="label">
 		<img src="/client-assets/label.svg"/>
 		<p>{{ $ts.banner }}</p>
 	</div>
-	<div class="label red" v-if="file.isSensitive">
+	<div v-if="file.isSensitive" class="label red">
 		<img src="/client-assets/label-red.svg"/>
 		<p>{{ $ts.nsfw }}</p>
 	</div>
@@ -25,7 +25,7 @@
 
 	<p class="name">
 		<span>{{ file.name.lastIndexOf('.') != -1 ? file.name.substr(0, file.name.lastIndexOf('.')) : file.name }}</span>
-		<span class="ext" v-if="file.name.lastIndexOf('.') != -1">{{ file.name.substr(file.name.lastIndexOf('.')) }}</span>
+		<span v-if="file.name.lastIndexOf('.') != -1" class="ext">{{ file.name.substr(file.name.lastIndexOf('.')) }}</span>
 	</p>
 </div>
 </template>

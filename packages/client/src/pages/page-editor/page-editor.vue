@@ -2,9 +2,9 @@
 <div>
 	<div class="jqqmcavi" style="margin: 16px;">
 		<MkButton v-if="pageId" class="button" inline link :to="`/@${ author.username }/pages/${ currentName }`"><i class="fas fa-external-link-square-alt"></i> {{ $ts._pages.viewPage }}</MkButton>
-		<MkButton inline @click="save" primary class="button" v-if="!readonly"><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
-		<MkButton inline @click="duplicate" class="button" v-if="pageId"><i class="fas fa-copy"></i> {{ $ts.duplicate }}</MkButton>
-		<MkButton inline @click="del" class="button" v-if="pageId && !readonly" danger><i class="fas fa-trash-alt"></i> {{ $ts.delete }}</MkButton>
+		<MkButton v-if="!readonly" inline primary class="button" @click="save"><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
+		<MkButton v-if="pageId" inline class="button" @click="duplicate"><i class="fas fa-copy"></i> {{ $ts.duplicate }}</MkButton>
+		<MkButton v-if="pageId && !readonly" inline class="button" danger @click="del"><i class="fas fa-trash-alt"></i> {{ $ts.delete }}</MkButton>
 	</div>
 
 	<div v-if="tab === 'settings'">
@@ -36,7 +36,7 @@
 				<MkButton v-if="eyeCatchingImageId == null && !readonly" @click="setEyeCatchingImage"><i class="fas fa-plus"></i> {{ $ts._pages.eyeCatchingImageSet }}</MkButton>
 				<div v-else-if="eyeCatchingImage">
 					<img :src="eyeCatchingImage.url" :alt="eyeCatchingImage.name" style="max-width: 100%;"/>
-					<MkButton @click="removeEyeCatchingImage()" v-if="!readonly"><i class="fas fa-trash-alt"></i> {{ $ts._pages.eyeCatchingImageRemove }}</MkButton>
+					<MkButton v-if="!readonly" @click="removeEyeCatchingImage()"><i class="fas fa-trash-alt"></i> {{ $ts._pages.eyeCatchingImageRemove }}</MkButton>
 				</div>
 			</div>
 		</div>
@@ -44,35 +44,35 @@
 
 	<div v-else-if="tab === 'contents'">
 		<div style="padding: 16px;">
-			<XBlocks class="content" v-model="content" :hpml="hpml"/>
+			<XBlocks v-model="content" class="content" :hpml="hpml"/>
 
-			<MkButton @click="add()" v-if="!readonly"><i class="fas fa-plus"></i></MkButton>
+			<MkButton v-if="!readonly" @click="add()"><i class="fas fa-plus"></i></MkButton>
 		</div>
 	</div>
 
 	<div v-else-if="tab === 'variables'">
 		<div class="qmuvgica">
-			<XDraggable tag="div" class="variables" v-show="variables.length > 0" v-model="variables" item-key="name" handle=".drag-handle" :group="{ name: 'variables' }" animation="150" swap-threshold="0.5">
+			<XDraggable v-show="variables.length > 0" v-model="variables" tag="div" class="variables" item-key="name" handle=".drag-handle" :group="{ name: 'variables' }" animation="150" swap-threshold="0.5">
 				<template #item="{element}">
 					<XVariable
 						:modelValue="element"
 						:removable="true"
-						@remove="() => removeVariable(element)"
 						:hpml="hpml"
 						:name="element.name"
 						:title="element.name"
 						:draggable="true"
+						@remove="() => removeVariable(element)"
 					/>
 				</template>
 			</XDraggable>
 
-			<MkButton @click="addVariable()" class="add" v-if="!readonly"><i class="fas fa-plus"></i></MkButton>
+			<MkButton v-if="!readonly" class="add" @click="addVariable()"><i class="fas fa-plus"></i></MkButton>
 		</div>
 	</div>
 
 	<div v-else-if="tab === 'script'">
 		<div>
-			<MkTextarea class="_code" v-model="script"/>
+			<MkTextarea v-model="script" class="_code"/>
 		</div>
 	</div>
 </div>
@@ -107,6 +107,14 @@ export default defineComponent({
 	components: {
 		XDraggable: defineAsyncComponent(() => import('vuedraggable').then(x => x.default)),
 		XVariable, XBlocks, MkTextarea, MkContainer, MkButton, MkSelect, MkSwitch, MkInput,
+	},
+
+	provide() {
+		return {
+			readonly: this.readonly,
+			getScriptBlockList: this.getScriptBlockList,
+			getPageBlockList: this.getPageBlockList
+		}
 	},
 
 	props: {
@@ -239,14 +247,6 @@ export default defineComponent({
 				type: 'text',
 				text: 'Hello World!'
 			}];
-		}
-	},
-
-	provide() {
-		return {
-			readonly: this.readonly,
-			getScriptBlockList: this.getScriptBlockList,
-			getPageBlockList: this.getPageBlockList
 		}
 	},
 

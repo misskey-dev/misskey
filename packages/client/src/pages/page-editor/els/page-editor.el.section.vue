@@ -1,18 +1,18 @@
 <template>
 <!-- eslint-disable vue/no-mutating-props -->
-<XContainer @remove="() => $emit('remove')" :draggable="true">
+<XContainer :draggable="true" @remove="() => $emit('remove')">
 	<template #header><i class="fas fa-sticky-note"></i> {{ value.title }}</template>
 	<template #func>
-		<button @click="rename()" class="_button">
+		<button class="_button" @click="rename()">
 			<i class="fas fa-pencil-alt"></i>
 		</button>
-		<button @click="add()" class="_button">
+		<button class="_button" @click="add()">
 			<i class="fas fa-plus"></i>
 		</button>
 	</template>
 
 	<section class="ilrvjyvi">
-		<XBlocks class="children" v-model="value.children" :hpml="hpml"/>
+		<XBlocks v-model="value.children" class="children" :hpml="hpml"/>
 	</section>
 </XContainer>
 </template>

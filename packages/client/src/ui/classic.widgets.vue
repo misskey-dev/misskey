@@ -3,8 +3,8 @@
 	<XWidgets class="widgets" :edit="editMode" :widgets="$store.reactiveState.widgets.value.filter(w => w.place === place)" @add-widget="addWidget" @remove-widget="removeWidget" @update-widget="updateWidget" @update-widgets="updateWidgets" @exit="editMode = false"/>
 	<MkAd class="a" :prefer="['square']"/>
 
-	<button v-if="editMode" @click="editMode = false" class="_textButton edit" style="font-size: 0.9em;"><i class="fas fa-check"></i> {{ $ts.editWidgetsExit }}</button>
-	<button v-else @click="editMode = true" class="_textButton edit" style="font-size: 0.9em;"><i class="fas fa-pencil-alt"></i> {{ $ts.editWidgets }}</button>
+	<button v-if="editMode" class="_textButton edit" style="font-size: 0.9em;" @click="editMode = false"><i class="fas fa-check"></i> {{ $ts.editWidgetsExit }}</button>
+	<button v-else class="_textButton edit" style="font-size: 0.9em;" @click="editMode = true"><i class="fas fa-pencil-alt"></i> {{ $ts.editWidgets }}</button>
 </div>
 </template>
 

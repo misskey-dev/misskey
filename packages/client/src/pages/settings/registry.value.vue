@@ -19,10 +19,10 @@
 		</FormGroup>
 
 		<FormGroup>
-			<FormTextarea tall v-model="valueForEditor" class="_monospace" style="tab-size: 2;">
+			<FormTextarea v-model="valueForEditor" tall class="_monospace" style="tab-size: 2;">
 				<span>{{ $ts.value }} (JSON)</span>
 			</FormTextarea>
-			<FormButton @click="save" primary><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
+			<FormButton primary @click="save"><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
 		</FormGroup>
 
 		<FormKeyValueView>

@@ -1,7 +1,7 @@
 <template>
 <div class="voxdxuby">
-	<XNote v-if="note && !block.detailed" v-model:note="note" :key="note.id + ':normal'"/>
-	<XNoteDetailed v-if="note && block.detailed" v-model:note="note" :key="note.id + ':detail'"/>
+	<XNote v-if="note && !block.detailed" :key="note.id + ':normal'" v-model:note="note"/>
+	<XNoteDetailed v-if="note && block.detailed" :key="note.id + ':detail'" v-model:note="note"/>
 </div>
 </template>
 

@@ -1,11 +1,11 @@
 <template>
 <div>
 <transition name="fade" mode="out-in">
-	<div class="ftskorzw wide" v-if="user && narrow === false">
+	<div v-if="user && narrow === false" class="ftskorzw wide">
 		<MkRemoteCaution v-if="user.host != null" :href="user.url"/>
 
 		<div class="banner-container" :style="style">
-			<div class="banner" ref="banner" :style="style"></div>
+			<div ref="banner" class="banner" :style="style"></div>
 		</div>
 		<div class="contents">
 			<div class="side _forceContainerFull_">
@@ -14,7 +14,7 @@
 					<MkUserName :user="user" :nowrap="false" class="name"/>
 					<MkAcct :user="user" :detail="true" class="acct"/>
 				</div>
-				<div class="followed" v-if="$i && $i.id != user.id && user.isFollowed"><span>{{ $ts.followsYou }}</span></div>
+				<div v-if="$i && $i.id != user.id && user.isFollowed" class="followed"><span>{{ $ts.followsYou }}</span></div>
 				<div class="status">
 					<MkA :to="userPage(user)" :class="{ active: page === 'index' }">
 						<b>{{ number(user.notesCount) }}</b>
@@ -34,11 +34,11 @@
 					<p v-else class="empty">{{ $ts.noAccountDescription }}</p>
 				</div>
 				<div class="fields system">
-					<dl class="field" v-if="user.location">
+					<dl v-if="user.location" class="field">
 						<dt class="name"><i class="fas fa-map-marker fa-fw"></i> {{ $ts.location }}</dt>
 						<dd class="value">{{ user.location }}</dd>
 					</dl>
-					<dl class="field" v-if="user.birthday">
+					<dl v-if="user.birthday" class="field">
 						<dt class="name"><i class="fas fa-birthday-cake fa-fw"></i> {{ $ts.birthday }}</dt>
 						<dd class="value">{{ user.birthday.replace('-', '/').replace('-', '/') }} ({{ $t('yearsOld', { age }) }})</dd>
 					</dl>
@@ -47,8 +47,8 @@
 						<dd class="value">{{ new Date(user.createdAt).toLocaleString() }} (<MkTime :time="user.createdAt"/>)</dd>
 					</dl>
 				</div>
-				<div class="fields" v-if="user.fields.length > 0">
-					<dl class="field" v-for="(field, i) in user.fields" :key="i">
+				<div v-if="user.fields.length > 0" class="fields">
+					<dl v-for="(field, i) in user.fields" :key="i" class="field">
 						<dt class="name">
 							<Mfm :text="field.name" :plain="true" :custom-emojis="user.emojis" :colored="false"/>
 						</dt>
@@ -57,17 +57,17 @@
 						</dd>
 					</dl>
 				</div>
-				<XActivity :user="user" :key="user.id" class="_gap"/>
-				<XPhotos :user="user" :key="user.id" class="_gap"/>
+				<XActivity :key="user.id" :user="user" class="_gap"/>
+				<XPhotos :key="user.id" :user="user" class="_gap"/>
 			</div>
 			<div class="main">
 				<div class="actions">
-					<button @click="menu" class="menu _button"><i class="fas fa-ellipsis-h"></i></button>
+					<button class="menu _button" @click="menu"><i class="fas fa-ellipsis-h"></i></button>
 					<MkFollowButton v-if="!$i || $i.id != user.id" :user="user" :inline="true" :transparent="false" :full="true" large class="koudoku"/>
 				</div>
 				<template v-if="page === 'index'">
 					<div v-if="user.pinnedNotes.length > 0" class="_gap">
-						<XNote v-for="note in user.pinnedNotes" class="note _gap" :note="note" @update:note="pinnedNoteUpdated(note, $event)" :key="note.id" :pinned="true"/>
+						<XNote v-for="note in user.pinnedNotes" :key="note.id" class="note _gap" :note="note" :pinned="true" @update:note="pinnedNoteUpdated(note, $event)"/>
 					</div>
 					<div class="_gap">
 						<XUserTimeline :user="user"/>
@@ -81,7 +81,7 @@
 		</div>
 	</div>
 	<MkSpacer v-else-if="user && narrow === true" :content-max="800">
-		<div class="ftskorzw narrow" v-size="{ max: [500] }">
+		<div v-size="{ max: [500] }" class="ftskorzw narrow">
 			<!-- TODO -->
 			<!-- <div class="punished" v-if="user.isSuspended"><i class="fas fa-exclamation-triangle" style="margin-right: 8px;"></i> {{ $ts.userSuspended }}</div> -->
 			<!-- <div class="punished" v-if="user.isSilenced"><i class="fas fa-exclamation-triangle" style="margin-right: 8px;"></i> {{ $ts.userSilenced }}</div> -->
@@ -89,9 +89,9 @@
 			<div class="profile">
 				<MkRemoteCaution v-if="user.host != null" :href="user.url" class="warn"/>
 
-				<div class="_block main" :key="user.id">
+				<div :key="user.id" class="_block main">
 					<div class="banner-container" :style="style">
-						<div class="banner" ref="banner" :style="style"></div>
+						<div ref="banner" class="banner" :style="style"></div>
 						<div class="fade"></div>
 						<div class="title">
 							<MkUserName class="name" :user="user" :nowrap="true"/>
@@ -103,9 +103,9 @@
 								<span v-if="user.isBot" :title="$ts.isBot"><i class="fas fa-robot"></i></span>
 							</div>
 						</div>
-						<span class="followed" v-if="$i && $i.id != user.id && user.isFollowed">{{ $ts.followsYou }}</span>
-						<div class="actions" v-if="$i">
-							<button @click="menu" class="menu _button"><i class="fas fa-ellipsis-h"></i></button>
+						<span v-if="$i && $i.id != user.id && user.isFollowed" class="followed">{{ $ts.followsYou }}</span>
+						<div v-if="$i" class="actions">
+							<button class="menu _button" @click="menu"><i class="fas fa-ellipsis-h"></i></button>
 							<MkFollowButton v-if="$i.id != user.id" :user="user" :inline="true" :transparent="false" :full="true" class="koudoku"/>
 						</div>
 					</div>
@@ -125,11 +125,11 @@
 						<p v-else class="empty">{{ $ts.noAccountDescription }}</p>
 					</div>
 					<div class="fields system">
-						<dl class="field" v-if="user.location">
+						<dl v-if="user.location" class="field">
 							<dt class="name"><i class="fas fa-map-marker fa-fw"></i> {{ $ts.location }}</dt>
 							<dd class="value">{{ user.location }}</dd>
 						</dl>
-						<dl class="field" v-if="user.birthday">
+						<dl v-if="user.birthday" class="field">
 							<dt class="name"><i class="fas fa-birthday-cake fa-fw"></i> {{ $ts.birthday }}</dt>
 							<dd class="value">{{ user.birthday.replace('-', '/').replace('-', '/') }} ({{ $t('yearsOld', { age }) }})</dd>
 						</dl>
@@ -138,8 +138,8 @@
 							<dd class="value">{{ new Date(user.createdAt).toLocaleString() }} (<MkTime :time="user.createdAt"/>)</dd>
 						</dl>
 					</div>
-					<div class="fields" v-if="user.fields.length > 0">
-						<dl class="field" v-for="(field, i) in user.fields" :key="i">
+					<div v-if="user.fields.length > 0" class="fields">
+						<dl v-for="(field, i) in user.fields" :key="i" class="field">
 							<dt class="name">
 								<Mfm :text="field.name" :plain="true" :custom-emojis="user.emojis" :colored="false"/>
 							</dt>
@@ -149,15 +149,15 @@
 						</dl>
 					</div>
 					<div class="status">
-						<MkA :to="userPage(user)" :class="{ active: page === 'index' }" v-click-anime>
+						<MkA v-click-anime :to="userPage(user)" :class="{ active: page === 'index' }">
 							<b>{{ number(user.notesCount) }}</b>
 							<span>{{ $ts.notes }}</span>
 						</MkA>
-						<MkA :to="userPage(user, 'following')" :class="{ active: page === 'following' }" v-click-anime>
+						<MkA v-click-anime :to="userPage(user, 'following')" :class="{ active: page === 'following' }">
 							<b>{{ number(user.followingCount) }}</b>
 							<span>{{ $ts.following }}</span>
 						</MkA>
-						<MkA :to="userPage(user, 'followers')" :class="{ active: page === 'followers' }" v-click-anime>
+						<MkA v-click-anime :to="userPage(user, 'followers')" :class="{ active: page === 'followers' }">
 							<b>{{ number(user.followersCount) }}</b>
 							<span>{{ $ts.followers }}</span>
 						</MkA>
@@ -169,11 +169,11 @@
 				<template v-if="page === 'index'">
 					<div>
 						<div v-if="user.pinnedNotes.length > 0" class="_gap">
-							<XNote v-for="note in user.pinnedNotes" class="note _block" :note="note" @update:note="pinnedNoteUpdated(note, $event)" :key="note.id" :pinned="true"/>
+							<XNote v-for="note in user.pinnedNotes" :key="note.id" class="note _block" :note="note" :pinned="true" @update:note="pinnedNoteUpdated(note, $event)"/>
 						</div>
 						<MkInfo v-else-if="$i && $i.id === user.id">{{ $ts.userPagePinTip }}</MkInfo>
-						<XPhotos :user="user" :key="user.id"/>
-						<XActivity :user="user" :key="user.id" style="margin-top: var(--margin);"/>
+						<XPhotos :key="user.id" :user="user"/>
+						<XActivity :key="user.id" :user="user" style="margin-top: var(--margin);"/>
 					</div>
 					<div>
 						<XUserTimeline :user="user"/>

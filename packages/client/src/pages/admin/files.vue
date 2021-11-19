@@ -3,10 +3,10 @@
 	<MkContainer :foldable="true" class="lookup">
 		<template #header><i class="fas fa-search"></i> {{ $ts.lookup }}</template>
 		<div class="xrmjdkdw-lookup">
-			<MkInput class="item" v-model="q" type="text" @enter="find()">
+			<MkInput v-model="q" class="item" type="text" @enter="find()">
 				<template #label>{{ $ts.fileIdOrUrl }}</template>
 			</MkInput>
-			<MkButton @click="find()" primary><i class="fas fa-search"></i> {{ $ts.lookup }}</MkButton>
+			<MkButton primary @click="find()"><i class="fas fa-search"></i> {{ $ts.lookup }}</MkButton>
 		</div>
 	</MkContainer>
 
@@ -28,8 +28,8 @@
 					<template #label>MIME type</template>
 				</MkInput>
 			</div>
-			<MkPagination :pagination="pagination" #default="{items}" class="urempief" ref="files">
-				<button class="file _panel _button _gap" v-for="file in items" :key="file.id" @click="show(file, $event)">
+			<MkPagination #default="{items}" ref="files" :pagination="pagination" class="urempief">
+				<button v-for="file in items" :key="file.id" class="file _panel _button _gap" @click="show(file, $event)">
 					<MkDriveFileThumbnail class="thumbnail" :file="file" fit="contain"/>
 					<div class="body">
 						<div>

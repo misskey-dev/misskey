@@ -22,8 +22,8 @@
 		</div>
 		<div class="_debobigegoItem">
 			<div class="_debobigegoPanel" style="padding: 16px;">
-				<MkButton @click="config(plugin)" inline v-if="plugin.config"><i class="fas fa-cog"></i> {{ $ts.settings }}</MkButton>
-				<MkButton @click="uninstall(plugin)" inline danger><i class="fas fa-trash-alt"></i> {{ $ts.uninstall }}</MkButton>
+				<MkButton v-if="plugin.config" inline @click="config(plugin)"><i class="fas fa-cog"></i> {{ $ts.settings }}</MkButton>
+				<MkButton inline danger @click="uninstall(plugin)"><i class="fas fa-trash-alt"></i> {{ $ts.uninstall }}</MkButton>
 			</div>
 		</div>
 	</FormGroup>

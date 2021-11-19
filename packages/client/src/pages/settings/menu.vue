@@ -13,7 +13,7 @@
 		<!-- <MkRadio v-model="menuDisplay" value="hide" disabled>{{ $ts._menuDisplay.hide }}</MkRadio>--> <!-- TODO: サイドバーを完全に隠せるようにすると、別途ハンバーガーボタンのようなものをUIに表示する必要があり面倒 -->
 	</FormRadios>
 
-	<FormButton @click="reset()" danger><i class="fas fa-redo"></i> {{ $ts.default }}</FormButton>
+	<FormButton danger @click="reset()"><i class="fas fa-redo"></i> {{ $ts.default }}</FormButton>
 </FormBase>
 </template>
 

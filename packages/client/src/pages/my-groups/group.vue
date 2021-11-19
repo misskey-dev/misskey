@@ -16,7 +16,7 @@
 			<div class="_title">{{ $ts.members }}</div>
 			<div class="_content">
 				<div class="users">
-					<div class="user _panel" v-for="user in users" :key="user.id">
+					<div v-for="user in users" :key="user.id" class="user _panel">
 						<MkAvatar :user="user" class="avatar" :show-indicator="true"/>
 						<div class="body">
 							<MkUserName :user="user" class="name"/>

@@ -3,9 +3,9 @@
 	<div class="body">
 		<span v-if="note.isHidden" style="opacity: 0.5">({{ $ts.private }})</span>
 		<span v-if="note.deletedAt" style="opacity: 0.5">({{ $ts.deleted }})</span>
-		<MkA class="reply" v-if="note.replyId" :to="`/notes/${note.replyId}`"><i class="fas fa-reply"></i></MkA>
+		<MkA v-if="note.replyId" class="reply" :to="`/notes/${note.replyId}`"><i class="fas fa-reply"></i></MkA>
 		<Mfm v-if="note.text" :text="note.text" :author="note.user" :i="$i" :custom-emojis="note.emojis"/>
-		<MkA class="rp" v-if="note.renoteId" :to="`/notes/${note.renoteId}`">RN: ...</MkA>
+		<MkA v-if="note.renoteId" class="rp" :to="`/notes/${note.renoteId}`">RN: ...</MkA>
 	</div>
 	<details v-if="note.files.length > 0">
 		<summary>({{ $t('withNFiles', { n: note.files.length }) }})</summary>

@@ -1,5 +1,5 @@
 <template>
-<div class="qjewsnkg" v-if="hide" @click="hide = false">
+<div v-if="hide" class="qjewsnkg" @click="hide = false">
 	<ImgWithBlurhash class="bg" :hash="image.blurhash" :title="image.comment" :alt="image.comment"/>
 	<div class="text">
 		<div>
@@ -8,13 +8,13 @@
 		</div>
 	</div>
 </div>
-<div class="gqnyydlz" :style="{ background: color }" v-else>
+<div v-else class="gqnyydlz" :style="{ background: color }">
 	<a
 		:href="image.url"
 		:title="image.name"
 	>
 		<ImgWithBlurhash :hash="image.blurhash" :src="url" :alt="image.comment" :title="image.comment" :cover="false"/>
-		<div class="gif" v-if="image.type === 'image/gif'">GIF</div>
+		<div v-if="image.type === 'image/gif'" class="gif">GIF</div>
 	</a>
 	<i class="fas fa-eye-slash" @click="hide = true"></i>
 </div>

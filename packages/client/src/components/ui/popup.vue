@@ -1,6 +1,6 @@
 <template>
 <transition :name="$store.state.animation ? 'popup-menu' : ''" appear @after-leave="onClosed" @enter="$emit('opening')" @after-enter="childRendered">
-	<div v-show="manualShowing != null ? manualShowing : showing" class="ccczpooj" :class="{ front, fixed, top: position === 'top' }" ref="content" :style="{ pointerEvents: (manualShowing != null ? manualShowing : showing) ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
+	<div v-show="manualShowing != null ? manualShowing : showing" ref="content" class="ccczpooj" :class="{ front, fixed, top: position === 'top' }" :style="{ pointerEvents: (manualShowing != null ? manualShowing : showing) ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
 		<slot></slot>
 	</div>
 </transition>

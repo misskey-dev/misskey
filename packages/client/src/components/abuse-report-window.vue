@@ -16,7 +16,7 @@
 			</MkTextarea>
 		</div>
 		<div class="_section">
-			<MkButton @click="send" primary full :disabled="comment.length === 0">{{ $ts.send }}</MkButton>
+			<MkButton primary full :disabled="comment.length === 0" @click="send">{{ $ts.send }}</MkButton>
 		</div>
 	</div>
 </XWindow>

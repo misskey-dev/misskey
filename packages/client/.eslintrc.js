@@ -14,6 +14,18 @@ module.exports = {
 		"plugin:vue/vue3-recommended"
 	],
 	rules: {
+		"vue/attributes-order": ["error", {
+			"alphabetical": false
+		}],
+		"vue/no-use-v-if-with-v-for": ["error", {
+			"allowUsingIterationVar": false
+		}],
+		"vue/no-ref-as-operand": "error",
+		"vue/no-multi-spaces": ["error", {
+			"ignoreProperties": false
+		}],
+		"vue/no-v-html": "error",
+		"vue/order-in-components": "error",
 		"vue/html-indent": ["warn", "tab", {
 			"attribute": 1,
 			"baseIndent": 0,

@@ -1,6 +1,6 @@
 <template>
 <div class="ztgjmzrw">
-	<section class="_card _gap announcements" v-for="announcement in announcements">
+	<section v-for="announcement in announcements" class="_card _gap announcements">
 		<div class="_content announcement">
 			<MkInput v-model="announcement.title">
 				<template #label>{{ $ts.title }}</template>
@@ -13,7 +13,7 @@
 			</MkInput>
 			<p v-if="announcement.reads">{{ $t('nUsersRead', { n: announcement.reads }) }}</p>
 			<div class="buttons">
-				<MkButton class="button" inline @click="save(announcement)" primary><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
+				<MkButton class="button" inline primary @click="save(announcement)"><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
 				<MkButton class="button" inline @click="remove(announcement)"><i class="fas fa-trash-alt"></i> {{ $ts.remove }}</MkButton>
 			</div>
 		</div>

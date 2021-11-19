@@ -1,5 +1,5 @@
 <template>
-<div class="wrpstxzv" :class="{ children: depth > 1 }" v-size="{ max: [450] }">
+<div v-size="{ max: [450] }" class="wrpstxzv" :class="{ children: depth > 1 }">
 	<div class="main">
 		<MkAvatar class="avatar" :user="note.user"/>
 		<div class="body">
@@ -9,7 +9,7 @@
 					<Mfm v-if="note.cw != ''" class="text" :text="note.cw" :author="note.user" :i="$i" :custom-emojis="note.emojis" />
 					<XCwButton v-model="showContent" :note="note"/>
 				</p>
-				<div class="content" v-show="note.cw == null || showContent">
+				<div v-show="note.cw == null || showContent" class="content">
 					<XSubNote-content class="text" :note="note"/>
 				</div>
 			</div>

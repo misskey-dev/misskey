@@ -4,12 +4,12 @@
 		<div class="_debobigegoLabel">{{ $ts.backgroundColor }}</div>
 		<div class="_debobigegoPanel colors">
 			<div class="row">
-				<button v-for="color in bgColors.filter(x => x.kind === 'light')" :key="color.color" @click="setBgColor(color)" class="color _button" :class="{ active: theme.props.bg === color.color }">
+				<button v-for="color in bgColors.filter(x => x.kind === 'light')" :key="color.color" class="color _button" :class="{ active: theme.props.bg === color.color }" @click="setBgColor(color)">
 					<div class="preview" :style="{ background: color.forPreview }"></div>
 				</button>
 			</div>
 			<div class="row">
-				<button v-for="color in bgColors.filter(x => x.kind === 'dark')" :key="color.color" @click="setBgColor(color)" class="color _button" :class="{ active: theme.props.bg === color.color }">
+				<button v-for="color in bgColors.filter(x => x.kind === 'dark')" :key="color.color" class="color _button" :class="{ active: theme.props.bg === color.color }" @click="setBgColor(color)">
 					<div class="preview" :style="{ background: color.forPreview }"></div>
 				</button>
 			</div>
@@ -19,7 +19,7 @@
 		<div class="_debobigegoLabel">{{ $ts.accentColor }}</div>
 		<div class="_debobigegoPanel colors">
 			<div class="row">
-				<button v-for="color in accentColors" :key="color" @click="setAccentColor(color)" class="color rounded _button" :class="{ active: theme.props.accent === color }">
+				<button v-for="color in accentColors" :key="color" class="color rounded _button" :class="{ active: theme.props.accent === color }" @click="setAccentColor(color)">
 					<div class="preview" :style="{ background: color }"></div>
 				</button>
 			</div>
@@ -29,7 +29,7 @@
 		<div class="_debobigegoLabel">{{ $ts.textColor }}</div>
 		<div class="_debobigegoPanel colors">
 			<div class="row">
-				<button v-for="color in fgColors" :key="color" @click="setFgColor(color)" class="color char _button" :class="{ active: (theme.props.fg === color.forLight) || (theme.props.fg === color.forDark) }">
+				<button v-for="color in fgColors" :key="color" class="color char _button" :class="{ active: (theme.props.fg === color.forLight) || (theme.props.fg === color.forDark) }" @click="setFgColor(color)">
 					<div class="preview" :style="{ color: color.forPreview ? color.forPreview : theme.base === 'light' ? '#5f5f5f' : '#dadada' }">A</div>
 				</button>
 			</div>
@@ -40,7 +40,7 @@
 		<FormTextarea v-model="themeCode" tall>
 			<span>{{ $ts._theme.code }}</span>
 		</FormTextarea>
-		<FormButton @click="applyThemeCode" primary>{{ $ts.apply }}</FormButton>
+		<FormButton primary @click="applyThemeCode">{{ $ts.apply }}</FormButton>
 	</FormGroup>
 	<FormButton v-else @click="codeEnabled = true"><i class="fas fa-code"></i> {{ $ts.editCode }}</FormButton>
 
@@ -53,7 +53,7 @@
 
 	<FormGroup>
 		<FormButton @click="showPreview"><i class="fas fa-eye"></i> {{ $ts.preview }}</FormButton>
-		<FormButton @click="saveAs" primary><i class="fas fa-save"></i> {{ $ts.saveAs }}</FormButton>
+		<FormButton primary @click="saveAs"><i class="fas fa-save"></i> {{ $ts.saveAs }}</FormButton>
 	</FormGroup>
 </FormBase>
 </template>
@@ -83,6 +83,12 @@ export default defineComponent({
 		FormButton,
 		FormTextarea,
 		FormGroup,
+	},
+
+	async beforeRouteLeave(to, from) {
+		if (this.changed && !(await this.leaveConfirm())) {
+			return false;
+		}
 	},
 
 	data() {
@@ -138,12 +144,6 @@ export default defineComponent({
 
 	beforeUnmount() {
 		window.removeEventListener('beforeunload', this.beforeunload);
-	},
-
-	async beforeRouteLeave(to, from) {
-		if (this.changed && !(await this.leaveConfirm())) {
-			return false;
-		}
 	},
 
 	methods: {

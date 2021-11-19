@@ -1,8 +1,8 @@
 <template>
 <FormBase class="relaycxt">
-	<FormButton @click="addRelay" primary><i class="fas fa-plus"></i> {{ $ts.addRelay }}</FormButton>
+	<FormButton primary @click="addRelay"><i class="fas fa-plus"></i> {{ $ts.addRelay }}</FormButton>
 
-	<div class="_debobigegoItem" v-for="relay in relays" :key="relay.inbox">
+	<div v-for="relay in relays" :key="relay.inbox" class="_debobigegoItem">
 		<div class="_debobigegoPanel" style="padding: 16px;">
 			<div>{{ relay.inbox }}</div>
 			<div>{{ $t(`_relayStatus.${relay.status}`) }}</div>

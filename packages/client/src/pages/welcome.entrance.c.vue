@@ -1,5 +1,5 @@
 <template>
-<div class="rsqzvsbo" v-if="meta">
+<div v-if="meta" class="rsqzvsbo">
 	<div class="top">
 		<MkFeaturedPhotos class="bg"/>
 		<div class="fade"></div>
@@ -18,16 +18,16 @@
 				</div>
 				<div class="fg">
 					<h1>
-						<img class="logo" v-if="meta.logoImageUrl" :src="meta.logoImageUrl"><span v-else class="text">{{ instanceName }}</span>
+						<img v-if="meta.logoImageUrl" class="logo" :src="meta.logoImageUrl"><span v-else class="text">{{ instanceName }}</span>
 					</h1>
 					<div class="about">
 						<div class="desc" v-html="meta.description || $ts.headlineMisskey"></div>
 					</div>
 					<div class="action">
-						<MkButton @click="signup()" inline gradate>{{ $ts.signup }}</MkButton>
-						<MkButton @click="signin()" inline>{{ $ts.login }}</MkButton>
+						<MkButton inline gradate @click="signup()">{{ $ts.signup }}</MkButton>
+						<MkButton inline @click="signin()">{{ $ts.login }}</MkButton>
 					</div>
-					<div class="status" v-if="onlineUsersCount && stats">
+					<div v-if="onlineUsersCount && stats" class="status">
 						<div>
 							<I18n :src="$ts.nUsers" text-tag="span" class="users">
 								<template #n><b>{{ number(stats.originalUsersCount) }}</b></template>

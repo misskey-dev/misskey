@@ -1,15 +1,15 @@
 <template>
 <div class="ogwlenmc">
-	<div class="local" v-if="tab === 'local'">
+	<div v-if="tab === 'local'" class="local">
 		<MkInput v-model="query" :debounce="true" type="search" style="margin: var(--margin);">
 			<template #prefix><i class="fas fa-search"></i></template>
 			<template #label>{{ $ts.search }}</template>
 		</MkInput>
-		<MkPagination :pagination="pagination" ref="emojis">
+		<MkPagination ref="emojis" :pagination="pagination">
 			<template #empty><span>{{ $ts.noCustomEmojis }}</span></template>
 			<template #default="{items}">
 				<div class="ldhfsamy">
-					<button class="emoji _panel _button" v-for="emoji in items" :key="emoji.id" @click="edit(emoji)">
+					<button v-for="emoji in items" :key="emoji.id" class="emoji _panel _button" @click="edit(emoji)">
 						<img :src="emoji.url" class="img" :alt="emoji.name"/>
 						<div class="body">
 							<div class="name _monospace">{{ emoji.name }}</div>
@@ -21,7 +21,7 @@
 		</MkPagination>
 	</div>
 
-	<div class="remote" v-else-if="tab === 'remote'">
+	<div v-else-if="tab === 'remote'" class="remote">
 		<MkInput v-model="queryRemote" :debounce="true" type="search" style="margin: var(--margin);">
 			<template #prefix><i class="fas fa-search"></i></template>
 			<template #label>{{ $ts.search }}</template>
@@ -29,11 +29,11 @@
 		<MkInput v-model="host" :debounce="true" style="margin: var(--margin);">
 			<template #label>{{ $ts.host }}</template>
 		</MkInput>
-		<MkPagination :pagination="remotePagination" ref="remoteEmojis">
+		<MkPagination ref="remoteEmojis" :pagination="remotePagination">
 			<template #empty><span>{{ $ts.noCustomEmojis }}</span></template>
 			<template #default="{items}">
 				<div class="ldhfsamy">
-					<div class="emoji _panel _button" v-for="emoji in items" :key="emoji.id" @click="remoteMenu(emoji, $event)">
+					<div v-for="emoji in items" :key="emoji.id" class="emoji _panel _button" @click="remoteMenu(emoji, $event)">
 						<img :src="emoji.url" class="img" :alt="emoji.name"/>
 						<div class="body">
 							<div class="name _monospace">{{ emoji.name }}</div>

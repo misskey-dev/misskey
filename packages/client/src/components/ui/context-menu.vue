@@ -1,7 +1,7 @@
 <template>
 <transition :name="$store.state.animation ? 'fade' : ''" appear>
 	<div class="nvlagfpb" @contextmenu.prevent.stop="() => {}">
-		<MkMenu :items="items" @close="$emit('closed')" class="_popup _shadow" :align="'left'"/>
+		<MkMenu :items="items" class="_popup _shadow" :align="'left'" @close="$emit('closed')"/>
 	</div>
 </transition>
 </template>

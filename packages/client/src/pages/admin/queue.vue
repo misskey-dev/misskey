@@ -6,7 +6,7 @@
 	<XQueue :connection="connection" domain="deliver">
 		<template #title>Out</template>
 	</XQueue>
-	<FormButton @click="clear()" danger><i class="fas fa-trash-alt"></i> {{ $ts.clearQueue }}</FormButton>
+	<FormButton danger @click="clear()"><i class="fas fa-trash-alt"></i> {{ $ts.clearQueue }}</FormButton>
 </FormBase>
 </template>
 

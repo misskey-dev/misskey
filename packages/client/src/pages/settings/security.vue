@@ -6,7 +6,7 @@
 	<FormPagination :pagination="pagination">
 		<template #label>{{ $ts.signinHistory }}</template>
 		<template #default="{items}">
-			<div class="_debobigegoPanel timnmucd" v-for="item in items" :key="item.id">
+			<div v-for="item in items" :key="item.id" class="_debobigegoPanel timnmucd">
 				<header>
 					<i v-if="item.success" class="fas fa-check icon succ"></i>
 					<i v-else class="fas fa-times-circle icon fail"></i>

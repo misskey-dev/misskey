@@ -4,15 +4,15 @@
 	@drop.stop="onDrop"
 >
 	<textarea
-		v-model="text"
 		ref="text"
+		v-model="text"
+		:placeholder="$ts.inputMessageHere"
 		@keypress="onKeypress"
 		@compositionupdate="onCompositionUpdate"
 		@paste="onPaste"
-		:placeholder="$ts.inputMessageHere"
 	></textarea>
-	<div class="file" @click="file = null" v-if="file">{{ file.name }}</div>
-	<button class="send _button" @click="send" :disabled="!canSend || sending" :title="$ts.send">
+	<div v-if="file" class="file" @click="file = null">{{ file.name }}</div>
+	<button class="send _button" :disabled="!canSend || sending" :title="$ts.send" @click="send">
 		<template v-if="!sending"><i class="fas fa-paper-plane"></i></template><template v-if="sending"><i class="fas fa-spinner fa-pulse fa-fw"></i></template>
 	</button>
 	<button class="_button" @click="chooseFile"><i class="fas fa-photo-video"></i></button>

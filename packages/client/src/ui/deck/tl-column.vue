@@ -8,14 +8,14 @@
 		<span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
 
-	<div class="iwaalbte" v-if="disabled">
+	<div v-if="disabled" class="iwaalbte">
 		<p>
 			<i class="fas fa-minus-circle"></i>
 			{{ $t('disabled-timeline.title') }}
 		</p>
 		<p class="desc">{{ $t('disabled-timeline.description') }}</p>
 	</div>
-	<XTimeline v-else-if="column.tl" ref="timeline" :src="column.tl" @after="() => $emit('loaded')" @queue="queueUpdated" @note="onNote" :key="column.tl"/>
+	<XTimeline v-else-if="column.tl" ref="timeline" :key="column.tl" :src="column.tl" @after="() => $emit('loaded')" @queue="queueUpdated" @note="onNote"/>
 </XColumn>
 </template>
 

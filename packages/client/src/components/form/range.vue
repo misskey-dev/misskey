@@ -3,9 +3,9 @@
 	<div class="icon"><slot name="icon"></slot></div>
 	<span class="label"><slot name="label"></slot></span>
 	<input
-		type="range"
 		ref="input"
 		v-model="v"
+		type="range"
 		:disabled="disabled"
 		:min="min"
 		:max="max"

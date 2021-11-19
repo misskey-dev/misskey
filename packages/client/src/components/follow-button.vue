@@ -1,8 +1,8 @@
 <template>
 <button class="kpoogebi _button"
 	:class="{ wait, active: isFollowing || hasPendingFollowRequestFromYou, full, large }"
-	@click="onClick"
 	:disabled="wait"
+	@click="onClick"
 >
 	<template v-if="!wait">
 		<template v-if="hasPendingFollowRequestFromYou && user.isLocked">

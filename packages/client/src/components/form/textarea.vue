@@ -3,8 +3,8 @@
 	<div class="label" @click="focus"><slot name="label"></slot></div>
 	<div class="input" :class="{ disabled, focused, tall, pre }">
 		<textarea ref="inputEl"
-			:class="{ code, _monospace: code }"
 			v-model="v"
+			:class="{ code, _monospace: code }"
 			:disabled="disabled"
 			:required="required"
 			:readonly="readonly"
@@ -20,7 +20,7 @@
 	</div>
 	<div class="caption"><slot name="caption"></slot></div>
 
-	<MkButton v-if="manualSave && changed" @click="updated" primary><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
+	<MkButton v-if="manualSave && changed" primary @click="updated"><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
 </div>
 </template>
 

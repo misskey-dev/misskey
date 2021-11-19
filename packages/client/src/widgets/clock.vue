@@ -35,11 +35,11 @@ const widget = define({
 });
 
 export default defineComponent({
-	extends: widget,
 	components: {
 		MkContainer,
 		MkAnalogClock
 	},
+	extends: widget,
 });
 </script>
 

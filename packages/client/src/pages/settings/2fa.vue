@@ -13,16 +13,16 @@
 				<h2 class="heading">{{ $ts.securityKey }}</h2>
 				<p>{{ $ts._2fa.securityKeyInfo }}</p>
 				<div class="key-list">
-					<div class="key" v-for="key in $i.securityKeysList">
+					<div v-for="key in $i.securityKeysList" class="key">
 						<h3>{{ key.name }}</h3>
 						<div class="last-used">{{ $ts.lastUsed }}<MkTime :time="key.lastUsed"/></div>
 						<MkButton @click="unregisterKey(key)">{{ $ts.unregister }}</MkButton>
 					</div>
 				</div>
 
-				<MkSwitch v-model="usePasswordLessLogin" @update:modelValue="updatePasswordLessLogin" v-if="$i.securityKeysList.length > 0">{{ $ts.passwordLessLogin }}</MkSwitch>
+				<MkSwitch v-if="$i.securityKeysList.length > 0" v-model="usePasswordLessLogin" @update:modelValue="updatePasswordLessLogin">{{ $ts.passwordLessLogin }}</MkSwitch>
 
-				<MkInfo warn v-if="registration && registration.error">{{ $ts.error }} {{ registration.error }}</MkInfo>
+				<MkInfo v-if="registration && registration.error" warn>{{ $ts.error }} {{ registration.error }}</MkInfo>
 				<MkButton v-if="!registration || registration.error" @click="addSecurityKey">{{ $ts._2fa.registerKey }}</MkButton>
 
 				<ol v-if="registration && !registration.error">
@@ -35,7 +35,7 @@
 							<MkInput v-model="keyName" :max="30">
 								<template #label>{{ $ts.securityKeyName }}</template>
 							</MkInput>
-							<MkButton @click="registerKey" :disabled="keyName.length == 0">{{ $ts.registerSecurityKey }}</MkButton>
+							<MkButton :disabled="keyName.length == 0" @click="registerKey">{{ $ts.registerSecurityKey }}</MkButton>
 							<i v-if="registration.saving && registration.stage == 1" class="fas fa-spinner fa-pulse fa-fw"></i>
 						</MkForm>
 					</li>

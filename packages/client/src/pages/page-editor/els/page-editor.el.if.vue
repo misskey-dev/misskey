@@ -1,9 +1,9 @@
 <template>
 <!-- eslint-disable vue/no-mutating-props -->
-<XContainer @remove="() => $emit('remove')" :draggable="true">
+<XContainer :draggable="true" @remove="() => $emit('remove')">
 	<template #header><i class="fas fa-question"></i> {{ $ts._pages.blocks.if }}</template>
 	<template #func>
-		<button @click="add()" class="_button">
+		<button class="_button" @click="add()">
 			<i class="fas fa-plus"></i>
 		</button>
 	</template>
@@ -20,7 +20,7 @@
 			</optgroup>
 		</MkSelect>
 
-		<XBlocks class="children" v-model="value.children" :hpml="hpml"/>
+		<XBlocks v-model="value.children" class="children" :hpml="hpml"/>
 	</section>
 </XContainer>
 </template>

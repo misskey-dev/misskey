@@ -1,7 +1,7 @@
 <template>
 <div v-if="clip" class="_section">
 	<div class="okzinsic _content _panel _gap">
-		<div class="description" v-if="clip.description">
+		<div v-if="clip.description" class="description">
 			<Mfm :text="clip.description" :is-note="false" :i="$i"/>
 		</div>
 		<div class="user">

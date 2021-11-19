@@ -13,7 +13,7 @@
 		</FormButton>
 	</FormGroup>
 
-	<FormButton @click="reset()" danger><i class="fas fa-redo"></i> {{ $ts.default }}</FormButton>
+	<FormButton danger @click="reset()"><i class="fas fa-redo"></i> {{ $ts.default }}</FormButton>
 </FormBase>
 </template>
 

@@ -1,6 +1,6 @@
 <template>
 <!-- eslint-disable vue/no-mutating-props -->
-<XContainer @remove="() => $emit('remove')" :draggable="true">
+<XContainer :draggable="true" @remove="() => $emit('remove')">
 	<template #header><i class="fas fa-paint-brush"></i> {{ $ts._pages.blocks.canvas }}</template>
 
 	<section style="padding: 0 16px 0 16px;">

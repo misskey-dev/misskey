@@ -26,7 +26,7 @@
 		</div>
 		<div class="_content _card _gap">
 			<div class="list-view _content">
-				<div class="item" v-for="([ k, v ], i) in theme" :key="k">
+				<div v-for="([ k, v ], i) in theme" :key="k" class="item">
 					<div class="_inputs">
 						<div>
 							{{ k.startsWith('$') ? `${k} (${$ts._theme.constant})` : $t('_theme.keys.' + k) }}
@@ -37,7 +37,7 @@
 								{{ getTypeOf(v) }} <i class="fas fa-chevron-down"></i>
 							</div>
 							<!-- default -->
-							<div v-if="v === null" v-text="baseProps[k]" class="default-value" />
+							<div v-if="v === null" class="default-value" v-text="baseProps[k]" />
 							<!-- color -->
 							<div v-else-if="typeof v === 'string'" class="color">
 								<input type="color" :value="v" @input="colorChanged($event.target.value, i)"/>
@@ -49,19 +49,19 @@
 								<span>{{ $ts.name }}</span>
 							</MkInput>
 							<!-- ref props -->
-							<MkSelect class="select" v-else-if="v.type === 'refProp'" v-model="v.key">
-								<option v-for="key in themeProps" :value="key" :key="key">{{ $t('_theme.keys.' + key) }}</option>
+							<MkSelect v-else-if="v.type === 'refProp'" v-model="v.key" class="select">
+								<option v-for="key in themeProps" :key="key" :value="key">{{ $t('_theme.keys.' + key) }}</option>
 							</MkSelect>
 							<!-- func -->
 							<template v-else-if="v.type === 'func'">
-								<MkSelect class="select" v-model="v.name">
+								<MkSelect v-model="v.name" class="select">
 									<template #label>{{ $ts._theme.funcKind }}</template>
-									<option v-for="n in ['alpha', 'darken', 'lighten']" :value="n" :key="n">{{ $t('_theme.' + n) }}</option>
+									<option v-for="n in ['alpha', 'darken', 'lighten']" :key="n" :value="n">{{ $t('_theme.' + n) }}</option>
 								</MkSelect>
-								<MkInput type="number" v-model="v.arg"><span>{{ $ts._theme.argument }}</span></MkInput>
-								<MkSelect class="select" v-model="v.value">
+								<MkInput v-model="v.arg" type="number"><span>{{ $ts._theme.argument }}</span></MkInput>
+								<MkSelect v-model="v.value" class="select">
 									<template #label>{{ $ts._theme.basedProp }}</template>
-									<option v-for="key in themeProps" :value="key" :key="key">{{ $t('_theme.keys.' + key) }}</option>
+									<option v-for="key in themeProps" :key="key" :value="key">{{ $t('_theme.keys.' + key) }}</option>
 								</MkSelect>
 							</template>
 							<!-- CSS -->
@@ -120,6 +120,14 @@ export default defineComponent({
 		MkSample,
 	},
 
+	async beforeRouteLeave(to, from, next) {
+		if (this.changed && !(await this.confirm())) {
+			next(false);
+		} else {
+			next();
+		}
+	},
+
 	data() {
 		return {
 			[symbols.PAGE_INFO]: {
@@ -145,14 +153,6 @@ export default defineComponent({
 
 	beforeUnmount() {
 		window.removeEventListener('beforeunload', this.beforeunload);
-	},
-
-	async beforeRouteLeave(to, from, next) {
-		if (this.changed && !(await this.confirm())) {
-			next(false);
-		} else {
-			next();
-		}
 	},
 
 	mounted() {

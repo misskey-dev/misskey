@@ -3,11 +3,11 @@
 	<FormGroup>
 		<FormInput v-model="emailAddress" type="email">
 			{{ $ts.emailAddress }}
-			<template #desc v-if="$i.email && !$i.emailVerified">{{ $ts.verificationEmailSent }}</template>
-			<template #desc v-else-if="emailAddress === $i.email && $i.emailVerified">{{ $ts.emailVerified }}</template>
+			<template v-if="$i.email && !$i.emailVerified" #desc>{{ $ts.verificationEmailSent }}</template>
+			<template v-else-if="emailAddress === $i.email && $i.emailVerified" #desc>{{ $ts.emailVerified }}</template>
 		</FormInput>
 	</FormGroup>
-	<FormButton @click="save" primary>{{ $ts.save }}</FormButton>
+	<FormButton primary @click="save">{{ $ts.save }}</FormButton>
 </FormBase>
 </template>
 

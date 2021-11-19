@@ -1,9 +1,9 @@
 <template>
-<div class="eqqrhokj" v-hotkey.global="keymap" v-size="{ min: [800] }">
-	<div class="new" v-if="queue > 0"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
+<div v-hotkey.global="keymap" v-size="{ min: [800] }" class="eqqrhokj">
+	<div v-if="queue > 0" class="new"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
 	<div class="tl _block">
-		<XTimeline ref="tl" class="tl"
-			:key="listId"
+		<XTimeline ref="tl" :key="listId"
+			class="tl"
 			src="list"
 			:list="listId"
 			:sound="true"

@@ -1,16 +1,16 @@
 <template>
 <MkSpacer :content-max="800">
-	<div class="yweeujhr" v-size="{ max: [400] }">
-		<MkButton @click="start" primary class="start"><i class="fas fa-plus"></i> {{ $ts.startMessaging }}</MkButton>
+	<div v-size="{ max: [400] }" class="yweeujhr">
+		<MkButton primary class="start" @click="start"><i class="fas fa-plus"></i> {{ $ts.startMessaging }}</MkButton>
 
-		<div class="history" v-if="messages.length > 0">
+		<div v-if="messages.length > 0" class="history">
 			<MkA v-for="(message, i) in messages"
+				:key="message.id"
+				v-anim="i"
 				class="message _block"
 				:class="{ isMe: isMe(message), isRead: message.groupId ? message.reads.includes($i.id) : message.isRead }"
 				:to="message.groupId ? `/my/messaging/group/${message.groupId}` : `/my/messaging/${getAcct(isMe(message) ? message.recipient : message.user)}`"
 				:data-index="i"
-				:key="message.id"
-				v-anim="i"
 			>
 				<div>
 					<MkAvatar class="avatar" :user="message.groupId ? message.user : isMe(message) ? message.recipient : message.user" :show-indicator="true"/>
@@ -24,12 +24,12 @@
 						<MkTime :time="message.createdAt" class="time"/>
 					</header>
 					<div class="body">
-						<p class="text"><span class="me" v-if="isMe(message)">{{ $ts.you }}:</span>{{ message.text }}</p>
+						<p class="text"><span v-if="isMe(message)" class="me">{{ $ts.you }}:</span>{{ message.text }}</p>
 					</div>
 				</div>
 			</MkA>
 		</div>
-		<div class="_fullinfo" v-if="!fetching && messages.length == 0">
+		<div v-if="!fetching && messages.length == 0" class="_fullinfo">
 			<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
 			<div>{{ $ts.noHistory }}</div>
 		</div>

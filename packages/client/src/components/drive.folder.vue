@@ -1,6 +1,8 @@
 <template>
 <div class="rghtznwe"
 	:class="{ draghover }"
+	draggable="true"
+	:title="title"
 	@click="onClick"
 	@contextmenu.stop="onContextmenu"
 	@mouseover="onMouseover"
@@ -9,17 +11,15 @@
 	@dragenter.prevent="onDragenter"
 	@dragleave="onDragleave"
 	@drop.prevent.stop="onDrop"
-	draggable="true"
 	@dragstart="onDragstart"
 	@dragend="onDragend"
-	:title="title"
 >
 	<p class="name">
 		<template v-if="hover"><i class="fas fa-folder-open fa-fw"></i></template>
 		<template v-if="!hover"><i class="fas fa-folder fa-fw"></i></template>
 		{{ folder.name }}
 	</p>
-	<p class="upload" v-if="$store.state.uploadFolder == folder.id">
+	<p v-if="$store.state.uploadFolder == folder.id" class="upload">
 		{{ $ts.uploadFolder }}
 	</p>
 	<button v-if="selectMode" class="checkbox _button" :class="{ checked: isSelected }" @click.prevent.stop="checkboxClicked"></button>

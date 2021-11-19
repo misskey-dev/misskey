@@ -13,10 +13,10 @@
 				:reply="reply"
 				:renote="renote"
 				:initial-visible-users="visibleUsers"
-				@posted="state = 'posted'"
 				class="_panel"
+				@posted="state = 'posted'"
 			/>
-			<MkButton v-else-if="state === 'posted'" primary @click="close()" class="close">{{ $ts.close }}</MkButton>
+			<MkButton v-else-if="state === 'posted'" primary class="close" @click="close()">{{ $ts.close }}</MkButton>
 		</div>
 	</section>
 </div>

@@ -1,6 +1,6 @@
 <template>
 <div class="xprsixdl _root">
-	<MkTab v-model="tab" v-if="$i">
+	<MkTab v-if="$i" v-model="tab">
 		<option value="explore"><i class="fas fa-icons"></i> {{ $ts.gallery }}</option>
 		<option value="liked"><i class="fas fa-heart"></i> {{ $ts._gallery.liked }}</option>
 		<option value="my"><i class="fas fa-edit"></i> {{ $ts._gallery.my }}</option>
@@ -9,33 +9,33 @@
 	<div v-if="tab === 'explore'">
 		<MkFolder class="_gap">
 			<template #header><i class="fas fa-clock"></i>{{ $ts.recentPosts }}</template>
-			<MkPagination :pagination="recentPostsPagination" #default="{items}" :disable-auto-load="true">
+			<MkPagination #default="{items}" :pagination="recentPostsPagination" :disable-auto-load="true">
 				<div class="vfpdbgtk">
-					<MkGalleryPostPreview v-for="post in items" :post="post" :key="post.id" class="post"/>
+					<MkGalleryPostPreview v-for="post in items" :key="post.id" :post="post" class="post"/>
 				</div>
 			</MkPagination>
 		</MkFolder>
 		<MkFolder class="_gap">
 			<template #header><i class="fas fa-fire-alt"></i>{{ $ts.popularPosts }}</template>
-			<MkPagination :pagination="popularPostsPagination" #default="{items}" :disable-auto-load="true">
+			<MkPagination #default="{items}" :pagination="popularPostsPagination" :disable-auto-load="true">
 				<div class="vfpdbgtk">
-					<MkGalleryPostPreview v-for="post in items" :post="post" :key="post.id" class="post"/>
+					<MkGalleryPostPreview v-for="post in items" :key="post.id" :post="post" class="post"/>
 				</div>
 			</MkPagination>
 		</MkFolder>
 	</div>
 	<div v-else-if="tab === 'liked'">
-		<MkPagination :pagination="likedPostsPagination" #default="{items}">
+		<MkPagination #default="{items}" :pagination="likedPostsPagination">
 			<div class="vfpdbgtk">
-				<MkGalleryPostPreview v-for="like in items" :post="like.post" :key="like.id" class="post"/>
+				<MkGalleryPostPreview v-for="like in items" :key="like.id" :post="like.post" class="post"/>
 			</div>
 		</MkPagination>
 	</div>
 	<div v-else-if="tab === 'my'">
 		<MkA to="/gallery/new" class="_link" style="margin: 16px;"><i class="fas fa-plus"></i> {{ $ts.postToGallery }}</MkA>
-		<MkPagination :pagination="myPostsPagination" #default="{items}">
+		<MkPagination #default="{items}" :pagination="myPostsPagination">
 			<div class="vfpdbgtk">
-				<MkGalleryPostPreview v-for="post in items" :post="post" :key="post.id" class="post"/>
+				<MkGalleryPostPreview v-for="post in items" :key="post.id" :post="post" class="post"/>
 			</div>
 		</MkPagination>
 	</div>

@@ -1,14 +1,14 @@
 <template>
 <div class="iltifgqe">
 	<div class="editor _panel _gap">
-		<PrismEditor class="_code code" v-model="code" :highlight="highlighter" :line-numbers="false"/>
-		<MkButton style="position: absolute; top: 8px; right: 8px;" @click="run()" primary><i class="fas fa-play"></i></MkButton>
+		<PrismEditor v-model="code" class="_code code" :highlight="highlighter" :line-numbers="false"/>
+		<MkButton style="position: absolute; top: 8px; right: 8px;" primary @click="run()"><i class="fas fa-play"></i></MkButton>
 	</div>
 
 	<MkContainer :foldable="true" class="_gap">
 		<template #header>{{ $ts.output }}</template>
 		<div class="bepmlvbi">
-			<div v-for="log in logs" class="log" :key="log.id" :class="{ print: log.print }">{{ log.text }}</div>
+			<div v-for="log in logs" :key="log.id" class="log" :class="{ print: log.print }">{{ log.text }}</div>
 		</div>
 	</MkContainer>
 

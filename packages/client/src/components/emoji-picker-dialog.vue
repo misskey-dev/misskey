@@ -1,6 +1,6 @@
 <template>
-<MkPopup ref="popup" :manual-showing="manualShowing" :src="src" :front="true" @click="$refs.popup.close()" @opening="opening" @close="$emit('close')" @closed="$emit('closed')" #default="{point}">
-	<MkEmojiPicker class="ryghynhb _popup _shadow" :class="{ pointer: point === 'top' }" :show-pinned="showPinned" :as-reaction-picker="asReactionPicker" @chosen="chosen" ref="picker"/>
+<MkPopup ref="popup" #default="{point}" :manual-showing="manualShowing" :src="src" :front="true" @click="$refs.popup.close()" @opening="opening" @close="$emit('close')" @closed="$emit('closed')">
+	<MkEmojiPicker ref="picker" class="ryghynhb _popup _shadow" :class="{ pointer: point === 'top' }" :show-pinned="showPinned" :as-reaction-picker="asReactionPicker" @chosen="chosen"/>
 </MkPopup>
 </template>
 

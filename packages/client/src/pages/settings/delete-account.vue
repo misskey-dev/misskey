@@ -2,8 +2,8 @@
 <FormBase>
 	<FormInfo warn>{{ $ts._accountDelete.mayTakeTime }}</FormInfo>
 	<FormInfo>{{ $ts._accountDelete.sendEmail }}</FormInfo>
-	<FormButton @click="deleteAccount" danger v-if="!$i.isDeleted">{{ $ts._accountDelete.requestAccountDelete }}</FormButton>
-	<FormButton disabled v-else>{{ $ts._accountDelete.inProgress }}</FormButton>
+	<FormButton v-if="!$i.isDeleted" danger @click="deleteAccount">{{ $ts._accountDelete.requestAccountDelete }}</FormButton>
+	<FormButton v-else disabled>{{ $ts._accountDelete.inProgress }}</FormButton>
 </FormBase>
 </template>
 

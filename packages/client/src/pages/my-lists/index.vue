@@ -1,8 +1,8 @@
 <template>
 <div class="qkcjvfiv">
-	<MkButton @click="create" primary class="add"><i class="fas fa-plus"></i> {{ $ts.createList }}</MkButton>
+	<MkButton primary class="add" @click="create"><i class="fas fa-plus"></i> {{ $ts.createList }}</MkButton>
 
-	<MkPagination :pagination="pagination" #default="{items}" class="lists _content" ref="list">
+	<MkPagination #default="{items}" ref="list" :pagination="pagination" class="lists _content">
 		<MkA v-for="list in items" :key="list.id" class="list _panel" :to="`/my/lists/${ list.id }`">
 			<div class="name">{{ list.name }}</div>
 			<MkAvatars :user-ids="list.userIds"/>

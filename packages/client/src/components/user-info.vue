@@ -7,7 +7,7 @@
 		<p class="username"><MkAcct :user="user"/></p>
 	</div>
 	<div class="description">
-		<div class="mfm" v-if="user.description">
+		<div v-if="user.description" class="mfm">
 			<Mfm :text="user.description" :author="user" :i="$i" :custom-emojis="user.emojis"/>
 		</div>
 		<span v-else style="opacity: 0.7;">{{ $ts.noAccountDescription }}</span>
@@ -23,7 +23,7 @@
 			<p>{{ $ts.followers }}</p><span>{{ user.followersCount }}</span>
 		</div>
 	</div>
-	<MkFollowButton class="koudoku-button" v-if="$i && user.id != $i.id" :user="user" mini/>
+	<MkFollowButton v-if="$i && user.id != $i.id" class="koudoku-button" :user="user" mini/>
 </div>
 </template>
 
