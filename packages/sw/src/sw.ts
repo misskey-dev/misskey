@@ -3,11 +3,11 @@
  */
 declare var self: ServiceWorkerGlobalScope;
 
-import { createEmptyNotification, createNotification } from '@/sw/create-notification';
-import { swLang } from '@/sw/lang';
-import { swNotificationRead } from '@/sw/notification-read';
-import { pushNotificationDataMap } from '@/sw/types';
-import * as swos from './operations';
+import { createEmptyNotification, createNotification } from '@/create-notification';
+import { swLang } from '@/lang';
+import { swNotificationRead } from '@/notification-read';
+import { pushNotificationDataMap } from '@/types';
+import * as swos from '@/operations';
 import { acct as getAcct } from '@/filters/user';
 
 //#region Lifecycle: Install

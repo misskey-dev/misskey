@@ -168,7 +168,7 @@ export default defineComponent({
 		});
 
 		return {
-			getNoteSummary: (note: misskey.entities.Note) => getNoteSummary(note, i18n),
+			getNoteSummary: (note: misskey.entities.Note) => getNoteSummary(note),
 			followRequestDone,
 			groupInviteDone,
 			notePage,
