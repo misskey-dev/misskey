@@ -1,4 +1,4 @@
-[![Misskey](/assets/about/banner.svg)](https://join.misskey.page/)
+[![Misskey](https://github.com/misskey-dev/assets/blob/main/banner.png?raw=true)](https://join.misskey.page/)
 
 <h1 align="center">Misskey</h1>
 
