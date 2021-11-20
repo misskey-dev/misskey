@@ -8,7 +8,10 @@
 	"resolutions": {},
 	"dependencies": {
 		"idb-keyval": "6.0.3",
-		"misskey-js": "0.0.10"
+		"misskey-js": "0.0.10",
+		"webpack": "5.64.1"
 	},
-	"devDependencies": {}
+	"devDependencies": {
+		"eslint": "8.2.0"
+	}
 }
