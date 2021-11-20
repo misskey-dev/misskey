@@ -14,7 +14,7 @@
 
 <div>
 
-<a href="https://xn--931a.moe/"><img src="https://github.com/misskey-dev/misskey/blob/develop/assets/ai-orig.png?raw=true" align="right" height="320px"/></a>
+<a href="https://xn--931a.moe/"><img src="https://github.com/misskey-dev/misskey/blob/develop/assets/ai.png?raw=true" align="right" height="320px"/></a>
 
 ## ✨ Find an instance
 Please see the [Instances list](https://misskey-hub.net/instances.html).
