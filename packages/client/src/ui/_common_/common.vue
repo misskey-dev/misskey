@@ -14,15 +14,11 @@
 </template>
 
 <script lang="ts">
-import { defineAsyncComponent, defineComponent, inject } from 'vue';
-import { stream, popup, popups, uploads, pendingApiRequestsCount, pageWindow, post } from '@/os';
+import { defineAsyncComponent, defineComponent } from 'vue';
+import { stream, popup, popups, uploads, pendingApiRequestsCount } from '@/os';
 import * as sound from '@/scripts/sound';
-import { $i, login } from '@/account';
-import { SwMessage } from '@/sw/types';
-import { popout } from '@/scripts/popout';
-import { defaultStore, ColdDeviceStorage } from '@/store';
-import { getAccountFromId } from '@/scripts/get-account-from-id';
-import { router } from '@/router';
+import { $i } from '@/account';
+import { swInject } from './sw-inject';
 
 export default defineComponent({
 	components: {
@@ -53,42 +49,7 @@ export default defineComponent({
 
 			//#region Listen message from SW
 			if ('serviceWorker' in navigator) {
-				const navHook = inject('navHook', null);
-				const sideViewHook = inject('sideViewHook', null);
-
-				navigator.serviceWorker.addEventListener('message', ev => {
-					if (_DEV_) {
-						console.log('sw msg', ev.data);
-					}
-
-					const data = ev.data as SwMessage;
-					if (data.type !== 'order') return;
-
-					if (data.loginId !== $i?.id) {
-						return getAccountFromId(data.loginId).then(account => {
-							if (!account) return;
-							return login(account.token, data.url);
-						});
-					}
-
-					switch (data.order) {
-						case 'post':
-							return post(data.options);
-						case 'push':
-							if (router.currentRoute.value.path === data.url) {
-								return window.scroll({ top: 0, behavior: 'smooth' });
-							}
-							if (navHook) {
-								return navHook(data.url);
-							}
-							if (sideViewHook && defaultStore.state.defaultSideView && data.url !== '/') {
-								return sideViewHook(data.url);
-							}
-							return router.push(data.url);
-						default:
-							return;
-					}
-				});
+				swInject();
 			}
 		}
 
