@@ -4,7 +4,6 @@
 
 const fs = require('fs');
 const webpack = require('webpack');
-const { VueLoaderPlugin } = require('vue-loader');
 
 class WebpackOnBuildPlugin {
 	constructor(callback) {
@@ -67,7 +66,6 @@ module.exports = {
 			__VUE_OPTIONS_API__: true,
 			__VUE_PROD_DEVTOOLS__: false,
 		}),
-		new VueLoaderPlugin(),
 		new WebpackOnBuildPlugin(() => {
 			fs.mkdirSync(__dirname + '/../../built', { recursive: true });
 			fs.writeFileSync(__dirname + '/../../built/meta.json', JSON.stringify({ version: meta.version }), 'utf-8');
