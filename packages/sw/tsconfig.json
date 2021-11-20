@@ -28,7 +28,7 @@
 		],
 		"lib": [
 			"esnext",
-			"dom"
+			"webworker"
 		]
 	},
 	"compileOnSave": false,

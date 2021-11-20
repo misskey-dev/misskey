@@ -1,0 +1,14 @@
+{
+	"private": true,
+	"scripts": {
+		"watch": "webpack --watch",
+		"build": "webpack",
+		"lint": "eslint --quiet src/**/*.{ts}"
+	},
+	"resolutions": {},
+	"dependencies": {
+		"idb-keyval": "6.0.3",
+		"misskey-js": "0.0.10"
+	},
+	"devDependencies": {}
+}

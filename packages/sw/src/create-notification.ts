@@ -3,12 +3,12 @@
  */
 declare var self: ServiceWorkerGlobalScope;
 
+import { swLang } from '@/lang';
+import { cli } from '@/operations';
+import { pushNotificationDataMap } from '@/types';
 import { getNoteSummary } from '@/scripts/get-note-summary';
 import getUserName from '@/scripts/get-user-name';
-import { swLang } from '@/sw/lang';
 import { I18n } from '@/scripts/i18n';
-import { pushNotificationDataMap } from '@/sw/types';
-import { cli } from './operations';
 import { getAccountFromId } from '@/scripts/get-account-from-id';
 
 export async function createNotification<K extends keyof pushNotificationDataMap>(data: pushNotificationDataMap[K]) {

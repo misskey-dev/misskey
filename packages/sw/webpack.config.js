@@ -36,103 +36,10 @@ const postcss = {
 
 module.exports = {
 	entry: {
-		app: './src/init.ts',
+		sw: './src/sw.ts'
 	},
 	module: {
 		rules: [{
-			test: /\.vue$/,
-			exclude: /node_modules/,
-			use: [{
-				loader: 'vue-loader',
-				options: {
-					cssSourceMap: false,
-					compilerOptions: {
-						preserveWhitespace: false
-					}
-				}
-			}]
-		}, {
-			test: /\.scss?$/,
-			exclude: /node_modules/,
-			oneOf: [{
-				resourceQuery: /module/,
-				use: [{
-					loader: 'vue-style-loader'
-				}, {
-					loader: 'css-loader',
-					options: {
-						modules: true,
-						esModule: false, // TODO: trueにすると壊れる。Vue3移行の折にはtrueにできるかもしれない
-						url: false,
-					}
-				}, postcss, {
-					loader: 'sass-loader',
-					options: {
-						implementation: require('sass'),
-						sassOptions: {
-							fiber: false
-						}
-					}
-				}]
-			}, {
-				use: [{
-					loader: 'vue-style-loader'
-				}, {
-					loader: 'css-loader',
-					options: {
-						url: false,
-						esModule: false, // TODO: trueにすると壊れる。Vue3移行の折にはtrueにできるかもしれない
-					}
-				}, postcss, {
-					loader: 'sass-loader',
-					options: {
-						implementation: require('sass'),
-						sassOptions: {
-							fiber: false
-						}
-					}
-				}]
-			}]
-		}, {
-			test: /\.css$/,
-			oneOf: [{
-				resourceQuery: /module/,
-				use: [{
-					loader: 'vue-style-loader'
-				}, {
-					loader: 'css-loader',
-					options: {
-						modules: true,
-						esModule: false, // TODO: trueにすると壊れる。Vue3移行の折にはtrueにできるかもしれない
-					}
-				}, postcss]
-			}, {
-				use: [{
-					loader: 'vue-style-loader'
-				}, {
-					loader: 'css-loader',
-					options: {
-						esModule: false, // TODO: trueにすると壊れる。Vue3移行の折にはtrueにできるかもしれない
-					}
-				}, postcss]
-			}]
-		}, {
-			test: /\.svg$/,
-			use: [
-				'vue-loader',
-				'vue-svg-loader',
-			],
-		}, {
-			test: /\.(eot|woff|woff2|svg|ttf)([?]?.*)$/,
-			type: 'asset/resource'
-		}, {
-			test: /\.json5$/,
-			loader: 'json5-loader',
-			options: {
-				esModule: false,
-			},
-			type: 'javascript/auto'
-		}, {
 			test: /\.ts$/,
 			exclude: /node_modules/,
 			use: [{
@@ -167,9 +74,9 @@ module.exports = {
 		}),
 	],
 	output: {
-		path: __dirname + '/../../built/_client_dist_',
+		path: __dirname + '/../../built/_sw_dist_',
 		filename: `[name].${meta.version}.js`,
-		publicPath: `/assets/`,
+		publicPath: `/`,
 		pathinfo: false,
 	},
 	resolve: {
