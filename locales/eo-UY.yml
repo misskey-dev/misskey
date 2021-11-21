@@ -574,6 +574,7 @@ classic: "Klasika"
 _emailUnavailable:
   used: "La retpoŝto jam estas registrita."
   format: "Nevalida formato."
+  disposable: "Dumtempa retpoŝto ne estas uzebla."
 _signup:
   emailAddressInfo: "Entajpu vian retpoŝton"
 _ad:
