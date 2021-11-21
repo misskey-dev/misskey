@@ -948,13 +948,13 @@ _notification:
   yourFollowRequestAccepted: "Via peto de sekvado estis akceptita."
   _types:
     all: "Ĉio"
-    follow: "Nova sekvatoj"
+    follow: "Novaj sekvatoj"
     mention: "Mencioj"
     reply: "Respondoj"
     renote: "Notoj plusenditaj"
     quote: "Citi"
     reaction: "Reagoj"
-    receiveFollowRequest: "Ricevita peton de sekvado"
+    receiveFollowRequest: "Ricevi peton de sekvado"
     followRequestAccepted: "Akceptita peto por sekvado"
 _deck:
   profile: "Agordaro"
