@@ -1,4 +1,4 @@
-import { Users, Signins } from '@/models/index';
+import { initDb } from '@/db/postgre';
 
 // node built/tools/show-signin-history username
 //  => {Success} {Date} {IPAddrsss}
@@ -10,6 +10,9 @@ import { Users, Signins } from '@/models/index';
 //  with full request headers
 
 async function main(username: string, headers?: string[]) {
+	await initDb();
+	const { Users, Signins } = await import('@/models/index');
+
 	const user = await Users.findOne({
 		host: null,
 		usernameLower: username.toLowerCase(),
