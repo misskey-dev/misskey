@@ -670,8 +670,8 @@ _menuDisplay:
   hide: "Kaŝi"
 _wordMute:
   muteWords: "Silentigitaj vortoj"
-  soft: "En kliento"
-  hard: "En servilo"
+  soft: "Per la kliento"
+  hard: "Per la servilo"
   mutedNotes: "Silentigitaj notoj"
 _theme:
   manage: "Administri kolorarojn"
