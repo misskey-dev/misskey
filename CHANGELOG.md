@@ -7,6 +7,15 @@
 
 -->
 
+## 12.x.x (unreleased)
+
+### Improvements
+
+### Bugfixes
+
+### Changes
+- クライアント: ノートにモデレーターバッジを表示するのを廃止
+
 ## 12.97.0 (2021/11/19)
 
 ### Improvements
