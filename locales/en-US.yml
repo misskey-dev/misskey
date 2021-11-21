@@ -808,6 +808,7 @@ ffVisibility: "Follows/Followers Visibility"
 ffVisibilityDescription: "Allows you to configure who can see who you follow and who follows you."
 continueThread: "View thread continuation"
 deleteAccountConfirm: "This will irreversibly delete your account. Proceed?"
+incorrectPassword: "Incorrect password."
 _emailUnavailable:
   used: "This email address is already being used"
   format: "The format of this email address is invalid"
