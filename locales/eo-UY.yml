@@ -571,6 +571,9 @@ translate: "Traduki"
 translatedFrom: "Tradukita el {x}"
 controlPanel: "Ŝaltpodio"
 classic: "Klasika"
+_emailUnavailable:
+  used: "La retpoŝto jam estas registrita."
+  format: "Nevalida formato."
 _signup:
   emailAddressInfo: "Entajpu vian retpoŝton"
 _ad:
