@@ -50,7 +50,7 @@ sendMessage: "Sendi mesaĝon"
 copyUsername: "Kopii uzantnomon"
 searchUser: "Serĉi uzanton"
 reply: "Respondi"
-loadMore: "Vidu pli"
+loadMore: "Vidi pli"
 showMore: "Vidi pli"
 youGotNewFollower: "eksekvis vin"
 receiveFollowRequest: "Peto de sekvado estas ricevita"
@@ -779,7 +779,7 @@ _widgets:
   onlineUsers: "Surkonektita uzanto"
   aichan: "Ai"
 _cw:
-  show: "Vidu pli"
+  show: "Vidi pli"
   files: "{count} dosiero(j)"
 _poll:
   choiceN: "Balotilo {n}"
