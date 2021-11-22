@@ -97,9 +97,7 @@ export default defineComponent({
 				limit: 11
 			});
 
-			const users = reactions
-				.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
-				.map(x => x.user);
+			const users = reactions.map(x => x.user);
 
 			os.popup(XDetails, {
 				showing,

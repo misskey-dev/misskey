@@ -42,8 +42,6 @@
 						<MkUserName :user="appearNote.user"/>
 					</MkA>
 					<span v-if="appearNote.user.isBot" class="is-bot">bot</span>
-					<span v-if="appearNote.user.isAdmin" class="admin"><i class="fas fa-bookmark"></i></span>
-					<span v-if="!appearNote.user.isAdmin && appearNote.user.isModerator" class="moderator"><i class="far fa-bookmark"></i></span>
 					<span v-if="appearNote.visibility !== 'public'" class="visibility">
 						<i v-if="appearNote.visibility === 'home'" class="fas fa-home"></i>
 						<i v-else-if="appearNote.visibility === 'followers'" class="fas fa-unlock"></i>
@@ -1016,12 +1014,6 @@ export default defineComponent({
 						font-size: 80%;
 						border: solid 0.5px var(--divider);
 						border-radius: 4px;
-					}
-
-					> .admin,
-					> .moderator {
-						margin-right: 0.5em;
-						color: var(--badge);
 					}
 				}
 			}
