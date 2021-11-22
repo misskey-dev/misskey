@@ -3,9 +3,9 @@
  */
 declare var self: ServiceWorkerGlobalScope;
 
-import { swLang } from '@/lang';
-import { cli } from '@/operations';
-import { pushNotificationDataMap } from '@/types';
+import { swLang } from '@/scripts/lang';
+import { cli } from '@/scripts/operations';
+import { pushNotificationDataMap } from '@/scripts/types';
 import { getNoteSummary } from '@/scripts/get-note-summary';
 import getUserName from '@/scripts/get-user-name';
 import { I18n } from '@/scripts/i18n';

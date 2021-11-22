@@ -34,6 +34,7 @@ const postcss = {
 };
 
 module.exports = {
+	target: 'webworker',
 	entry: {
 		sw: './src/sw.ts'
 	},
