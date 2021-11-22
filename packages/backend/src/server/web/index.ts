@@ -17,6 +17,7 @@ import config from '@/config/index';
 import { Users, Notes, UserProfiles, Pages, Channels, Clips, GalleryPosts } from '@/models/index';
 import * as Acct from 'misskey-js/built/acct';
 import { getNoteSummary } from '@/misc/get-note-summary';
+import * as sharp from 'sharp';
 
 //const _filename = fileURLToPath(import.meta.url);
 const _filename = __filename;
@@ -96,6 +97,47 @@ router.get('/twemoji/(.*)', async ctx => {
 		root: `${_dirname}/../../../node_modules/@discordapp/twemoji/dist/svg/`,
 		maxage: ms('30 days'),
 	});
+});
+
+router.get('/twemoji-badge/(.*)', async ctx => {
+	const path = ctx.path.replace('/twemoji-badge/', '');
+
+	if (!path.match(/^[0-9a-f-]+\.png$/)) {
+		ctx.status = 404;
+		return;
+	}
+
+	const mask = await sharp(
+			`${_dirname}/../../../node_modules/@discordapp/twemoji/dist/svg/${path.replace('.png', '')}.svg`,
+			{ density: 1000 }
+		)
+		.resize(488, 488)
+		.clone()
+		.flatten({ background: '#000' })
+		.extend({
+			top: 12,
+			bottom: 12,
+			left: 12,
+			right: 12,
+			background: '#000'
+		})
+		.threshold(100)
+		.toColourspace('b-w')
+		.png()
+		.toBuffer();
+
+	const buffer = await sharp(
+			{ create: { width: 512, height: 512, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } }
+		)
+		.boolean(mask, 'eor')
+		.resize(96, 96)
+		.png()
+		.toBuffer();
+
+	ctx.set('Content-Security-Policy', `default-src 'none'; style-src 'unsafe-inline'`);
+	ctx.set('Cache-Control', 'max-age=2592000');
+	ctx.set('Content-Type', 'image/png');
+	ctx.body = buffer;
 });
 
 // ServiceWorker
