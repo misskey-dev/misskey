@@ -119,7 +119,7 @@ export default defineComponent({
 				readObserver.observe(elRef.value);
 
 				const connection = os.stream.useChannel('main');
-				connection.on('readAllNotifications', () => readObserver.unobserve(elRef.value));
+				connection.on('readAllNotifications', () => readObserver.disconnect());
 
 				onUnmounted(() => {
 					if (readObserver) readObserver.disconnect();
