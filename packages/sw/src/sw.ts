@@ -6,7 +6,7 @@ declare var self: ServiceWorkerGlobalScope;
 import { createEmptyNotification, createNotification } from '@/scripts/create-notification';
 import { swLang } from '@/scripts/lang';
 import { swNotificationRead } from '@/scripts/notification-read';
-import { pushNotificationDataMap } from '@/scripts/types';
+import { pushNotificationDataMap } from '@/types';
 import * as swos from '@/scripts/operations';
 import { acct as getAcct } from '@/filters/user';
 
