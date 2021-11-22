@@ -113,7 +113,7 @@ export default defineComponent({
 					os.stream.send('readNotification', {
 						id: props.notification.id
 					});
-					observer.readObserver.disconnect()();
+					observer.disconnect();
 				});
 
 				readObserver.observe(elRef.value);
