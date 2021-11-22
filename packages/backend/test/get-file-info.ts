@@ -139,4 +139,21 @@ describe('Get file info', () => {
 			height: 25000,
 		});
 	}));
+
+	it('Rotate JPEG', async (async () => {
+		const path = `${__dirname}/resources/rotate.jpg`;
+		const info = await getFileInfo(path) as any;
+		delete info.warnings;
+		delete info.blurhash;
+		assert.deepStrictEqual(info, {
+			size: 12624,
+			md5: '68d5b2d8d1d1acbbce99203e3ec3857e',
+			type: {
+				mime: 'image/jpeg',
+				ext: 'jpg'
+			},
+			width: 256,
+			height: 512,
+		});
+	}));
 });
