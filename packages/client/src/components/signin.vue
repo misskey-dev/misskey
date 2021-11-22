@@ -197,6 +197,14 @@ export default defineComponent({
 					});
 					break;
 				}
+				case '932c904e-9460-45b7-9ce6-7ed33be7eb2c': {
+					os.alert({
+						type: 'error',
+						title: this.$ts.loginFailed,
+						text: this.$ts.incorrectPassword,
+					});
+					break;
+				}
 				case 'e03a5f46-d309-4865-9b69-56282d94e1eb': {
 					showSuspendedDialog();
 					break;

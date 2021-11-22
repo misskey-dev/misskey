@@ -113,7 +113,7 @@ export default defineComponent({
 					os.stream.send('readNotification', {
 						id: props.notification.id
 					});
-					entries.map(({ target }) => observer.unobserve(target));
+					observer.disconnect();
 				});
 
 				readObserver.observe(elRef.value);
@@ -122,12 +122,12 @@ export default defineComponent({
 				connection.on('readAllNotifications', () => readObserver.disconnect());
 
 				watch(props.notification.isRead, () => {
-					readObserver.unobserve(elRef.value);
+					readObserver.disconnect();
 				});
 
 				onUnmounted(() => {
-					if (readObserver) readObserver.disconnect();
-					if (connection) connection.dispose();
+					readObserver.disconnect();
+					connection.dispose();
 				});
 			}
 		});
