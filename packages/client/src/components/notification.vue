@@ -126,7 +126,6 @@ export default defineComponent({
 					if (connection) connection.dispose();
 				});
 			}
-
 		});
 
 		const followRequestDone = ref(false);
