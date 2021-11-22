@@ -107,11 +107,8 @@ export default defineComponent({
 		const reactionRef = ref(null);
 
 		onMounted(() => {
-			let readObserver: IntersectionObserver | null = null;
-			let connection = null;
-
 			if (!props.notification.isRead) {
-				readObserver = new IntersectionObserver((entries, observer) => {
+				const readObserver = new IntersectionObserver((entries, observer) => {
 					if (!entries.some(entry => entry.isIntersecting)) return;
 					os.stream.send('readNotification', {
 						id: props.notification.id
@@ -121,18 +118,19 @@ export default defineComponent({
 
 				readObserver.observe(elRef.value);
 
-				connection = os.stream.useChannel('main');
+				const connection = os.stream.useChannel('main');
 				connection.on('readAllNotifications', () => readObserver.unobserve(elRef.value));
 
 				watch(props.notification.isRead, () => {
-					readObserver?.unobserve(elRef.value);
+					readObserver.unobserve(elRef.value);
+				});
+
+				onUnmounted(() => {
+					if (readObserver) readObserver.unobserve(elRef.value);
+					if (connection) connection.dispose();
 				});
 			}
 
-			onUnmounted(() => {
-				if (readObserver) readObserver.unobserve(elRef.value);
-				if (connection) connection.dispose();
-			});
 		});
 
 		const followRequestDone = ref(false);
