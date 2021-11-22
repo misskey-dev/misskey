@@ -20,19 +20,6 @@ const isProduction = process.env.NODE_ENV === 'production';
 const locales = require('../../locales');
 const meta = require('../../package.json');
 
-const postcss = {
-	loader: 'postcss-loader',
-	options: {
-		postcssOptions: {
-			plugins: [
-				require('cssnano')({
-					preset: 'default'
-				})
-			]
-		}
-	},
-};
-
 module.exports = {
 	target: 'webworker',
 	entry: {
