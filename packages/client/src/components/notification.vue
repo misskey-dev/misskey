@@ -122,8 +122,8 @@ export default defineComponent({
 				connection.on('readAllNotifications', () => readObserver.disconnect());
 
 				onUnmounted(() => {
-					if (readObserver) readObserver.disconnect();
-					if (connection) connection.dispose();
+					readObserver.disconnect();
+					connection.dispose();
 				});
 			}
 		});
