@@ -917,6 +917,7 @@ _pages:
         arg1: "Teksto"
       _join:
         arg1: "Listoj"
+        arg2: "apartigilo"
       _randomPick:
         arg1: "Listoj"
       _dailyRandomPick:
