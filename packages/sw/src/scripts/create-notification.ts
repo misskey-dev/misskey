@@ -10,6 +10,10 @@ import { getNoteSummary } from '@/scripts/get-note-summary';
 import getUserName from '@/scripts/get-user-name';
 import { I18n } from '@/scripts/i18n';
 import { getAccountFromId } from '@/scripts/get-account-from-id';
+import { char2fileName } from '@/scripts/twemoji-base';
+import * as url from '@/scripts/url';
+
+const iconUrl = (name: string) => `/static-assets/notification-badges/${name}.png`;
 
 export async function createNotification<K extends keyof pushNotificationDataMap>(data: pushNotificationDataMap[K]) {
 	const n = await composeNotification(data);
@@ -45,6 +49,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 					return [t('_notification.youWereFollowed'), {
 						body: getUserName(data.body.user),
 						icon: data.body.user.avatarUrl,
+						badge: iconUrl('user-plus'),
 						data,
 						actions: userDetail.isFollowing ? [] : [
 							{
@@ -58,6 +63,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 					return [t('_notification.youGotMention', { name: getUserName(data.body.user) }), {
 						body: getNoteSummary(data.body.note, i18n),
 						icon: data.body.user.avatarUrl,
+						badge: iconUrl('at'),
 						data,
 						actions: [
 							{
@@ -71,6 +77,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 					return [t('_notification.youGotReply', { name: getUserName(data.body.user) }), {
 						body: getNoteSummary(data.body.note, i18n),
 						icon: data.body.user.avatarUrl,
+						badge: iconUrl('reply'),
 						data,
 						actions: [
 							{
@@ -84,6 +91,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 					return [t('_notification.youRenoted', { name: getUserName(data.body.user) }), {
 						body: getNoteSummary(data.body.note.renote, i18n),
 						icon: data.body.user.avatarUrl,
+						badge: iconUrl('retweet'),
 						data,
 						actions: [
 							{
@@ -97,6 +105,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 					return [t('_notification.youGotQuote', { name: getUserName(data.body.user) }), {
 						body: getNoteSummary(data.body.note, i18n),
 						icon: data.body.user.avatarUrl,
+						badge: iconUrl('quote-right'),
 						data,
 						actions: [
 							{
@@ -113,9 +122,43 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 					}];
 
 				case 'reaction':
-					return [`${data.body.reaction} ${getUserName(data.body.user)}`, {
+					let reaction = data.body.reaction;
+					let badge: string | undefined;
+
+					if (reaction.startsWith(':')) {
+						// カスタム絵文字の場合
+						const customEmoji = data.body.note.emojis.find(x => x.name === reaction.substr(1, reaction.length - 2));
+						if (customEmoji) {
+							if (reaction.includes('@')) {
+								reaction = `:${reaction.substr(1, reaction.indexOf('@') - 1)}:`;
+							}
+
+							const u = new URL(customEmoji.url);
+							if (u.href.startsWith(`${origin}/proxy/`)) {
+								// もう既にproxyっぽそうだったらsearchParams付けるだけ
+								u.searchParams.set('badge', '1');
+								badge = u.href;
+							} else {
+								const dummy = `${u.host}${u.pathname}`;	// 拡張子がないとキャッシュしてくれないCDNがあるので
+								badge = `${origin}/proxy/${dummy}?${url.query({
+									url: u.href,
+									badge: '1'
+								})}`;
+							}
+						}
+					} else {
+						// Unicode絵文字の場合
+						badge = `/twemoji-badge/${char2fileName(reaction)}.png`;
+					}
+
+					if (badge ? await fetch(badge).then(res => res.status !== 200) : true) {
+						badge = iconUrl('plus');
+					}
+
+					return [`${reaction} ${getUserName(data.body.user)}`, {
 						body: getNoteSummary(data.body.note, i18n),
 						icon: data.body.user.avatarUrl,
+						badge,
 						data,
 						actions: [
 							{
@@ -129,6 +172,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 					return [t('_notification.youGotPoll', { name: getUserName(data.body.user) }), {
 						body: getNoteSummary(data.body.note, i18n),
 						icon: data.body.user.avatarUrl,
+						badge: iconUrl('poll-h'),
 						data,
 					}];
 
@@ -136,6 +180,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 					return [t('_notification.youReceivedFollowRequest'), {
 						body: getUserName(data.body.user),
 						icon: data.body.user.avatarUrl,
+						badge: iconUrl('clock'),
 						data,
 						actions: [
 							{
@@ -153,12 +198,14 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 					return [t('_notification.yourFollowRequestAccepted'), {
 						body: getUserName(data.body.user),
 						icon: data.body.user.avatarUrl,
+						badge: iconUrl('check'),
 						data,
 					}];
 
 				case 'groupInvited':
 					return [t('_notification.youWereInvitedToGroup', { userName: getUserName(data.body.user) }), {
 						body: data.body.invitation.group.name,
+						badge: iconUrl('id-card-alt'),
 						data,
 						actions: [
 							{
@@ -186,6 +233,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 			if (data.body.groupId === null) {
 				return [t('_notification.youGotMessagingMessageFromUser', { name: getUserName(data.body.user) }), {
 					icon: data.body.user.avatarUrl,
+					badge: iconUrl('comments'),
 					tag: `messaging:user:${data.body.userId}`,
 					data,
 					renotify: true,
@@ -193,6 +241,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 			}
 			return [t('_notification.youGotMessagingMessageFromGroup', { name: data.body.group.name }), {
 				icon: data.body.user.avatarUrl,
+				badge: iconUrl('comments'),
 				tag: `messaging:group:${data.body.groupId}`,
 				data,
 				renotify: true,
@@ -211,6 +260,7 @@ export async function createEmptyNotification() {
 		t('_notification.emptyPushNotificationMessage'),
 		{
 			silent: true,
+			badge: iconUrl('null'),
 			tag: 'read_notification',
 		}
 	);
