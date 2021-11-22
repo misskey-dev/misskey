@@ -122,7 +122,7 @@ export default defineComponent({
 				connection.on('readAllNotifications', () => readObserver.unobserve(elRef.value));
 
 				onUnmounted(() => {
-					if (readObserver) readObserver.unobserve(elRef.value);
+					if (readObserver) readObserver.disconnect();
 					if (connection) connection.dispose();
 				});
 			}
