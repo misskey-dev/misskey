@@ -167,6 +167,10 @@ async function detectImageSize(path: string): Promise<{
 	const readable = fs.createReadStream(path);
 	const imageSize = await probeImageSize(readable);
 	readable.destroy();
+	if (imageSize.orientation && imageSize.orientation >= 5) {
+		[imageSize.width, imageSize.height] = [imageSize.height, imageSize.width];
+		[imageSize.wUnits, imageSize.hUnits] = [imageSize.hUnits, imageSize.wUnits];
+	}
 	return imageSize;
 }
 
