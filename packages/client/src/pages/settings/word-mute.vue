@@ -1,10 +1,9 @@
 <template>
-<div>
+  <FormBase>
 	<MkTab v-model="tab">
 		<option value="soft">{{ $ts._wordMute.soft }}</option>
 		<option value="hard">{{ $ts._wordMute.hard }}</option>
 	</MkTab>
-	<FormBase>
 		<div class="_debobigegoItem">
 			<div v-show="tab === 'soft'">
 				<FormInfo>{{ $ts._wordMute.softDescription }}</FormInfo>
@@ -27,7 +26,6 @@
 		</div>
 		<FormButton primary inline :disabled="!changed" @click="save()"><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
 	</FormBase>
-</div>
 </template>
 
 <script lang="ts">
