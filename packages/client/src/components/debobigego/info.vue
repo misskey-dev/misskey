@@ -33,6 +33,7 @@ export default defineComponent({
 		font-size: 90%;
 		background: var(--infoBg);
 		color: var(--infoFg);
+		margin: 16px 0;
 
 		&.warn {
 			background: var(--infoWarnBg);
