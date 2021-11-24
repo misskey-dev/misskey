@@ -194,6 +194,7 @@ export default defineComponent({
 
 	> .input {
 		position: relative;
+		margin: 16px 0;
 
 		> textarea {
 			appearance: none;
