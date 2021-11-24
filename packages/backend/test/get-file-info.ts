@@ -17,6 +17,7 @@ describe('Get file info', () => {
 			},
 			width: undefined,
 			height: undefined,
+			orientation: undefined,
 		});
 	}));
 
@@ -34,6 +35,7 @@ describe('Get file info', () => {
 			},
 			width: 512,
 			height: 512,
+			orientation: undefined,
 		});
 	}));
 
@@ -51,6 +53,7 @@ describe('Get file info', () => {
 			},
 			width: 256,
 			height: 256,
+			orientation: undefined,
 		});
 	}));
 
@@ -68,6 +71,7 @@ describe('Get file info', () => {
 			},
 			width: 256,
 			height: 256,
+			orientation: undefined,
 		});
 	}));
 
@@ -85,6 +89,7 @@ describe('Get file info', () => {
 			},
 			width: 256,
 			height: 256,
+			orientation: undefined,
 		});
 	}));
 
@@ -102,6 +107,7 @@ describe('Get file info', () => {
 			},
 			width: 256,
 			height: 256,
+			orientation: undefined,
 		});
 	}));
 
@@ -120,6 +126,7 @@ describe('Get file info', () => {
 			},
 			width: 256,
 			height: 256,
+			orientation: undefined,
 		});
 	}));
 
@@ -137,6 +144,7 @@ describe('Get file info', () => {
 			},
 			width: 25000,
 			height: 25000,
+			orientation: undefined,
 		});
 	}));
 
@@ -152,8 +160,9 @@ describe('Get file info', () => {
 				mime: 'image/jpeg',
 				ext: 'jpg'
 			},
-			width: 256,
-			height: 512,
+			width: 512,
+			height: 256,
+			orientation: 8,
 		});
 	}));
 });
