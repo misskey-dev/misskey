@@ -611,6 +611,7 @@ unread: "Nelegita"
 controlPanel: "Ŝaltpodio"
 classic: "Klasika"
 ffVisibility: "Videbleco pri viaj sekvataro/sekvantaro\n"
+ffVisibilityDescription: "Agordi la videblecon kiu povas vidi kiujn vi sekvas kaj kiuj sekvas vin."
 continueThread: "Vidi pli mesaĝarojn"
 incorrectPassword: "Nevalida pasvorto"
 _emailUnavailable:
@@ -618,6 +619,10 @@ _emailUnavailable:
   format: "Nevalida formato."
   disposable: "Dumtempa retpoŝto ne estas uzebla."
   smtp: "Tiu retpoŝta servilo ne respondas"
+_ffVisibility:
+  public: "Publika"
+  followers: "Afiŝi nur al sekvantoj"
+  private: "Malpublikigita"
 _signup:
   emailAddressInfo: "Entajpu vian retpoŝton"
 _ad:
