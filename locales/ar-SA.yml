@@ -842,6 +842,7 @@ _mfm:
   font: "الخط"
   rainbow: "قوس قزح"
   rainbowDescription: "اجعل المحتوى يظهر بألوان الطيف"
+  rotate: "تدوير"
 _reversi:
   gameSettings: "إعدادات اللعبة"
   chooseBoard: "اختر اللوح"
