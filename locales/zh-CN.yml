@@ -933,6 +933,7 @@ _mfm:
   sparkle: "闪光"
   sparkleDescription: "添加发光粒子效果。"
   rotate: "旋转"
+  rotateDescription: "旋转指定的角度。"
 _reversi:
   reversi: "黑白棋"
   gameSettings: "对局设置"
