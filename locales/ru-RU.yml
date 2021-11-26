@@ -922,6 +922,7 @@ _mfm:
   rainbowDescription: "Заставлять содержимое отображаться в цветах радуги."
   sparkle: "Блеск"
   sparkleDescription: "Добавьте эффект искрящихся частиц."
+  rotate: "Повернуть"
 _reversi:
   reversi: "Реверси"
   gameSettings: "Настройки игры"
