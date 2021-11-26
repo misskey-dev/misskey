@@ -929,6 +929,7 @@ _mfm:
   rainbowDescription: "Membuat konten muncul dalam warna pelangi."
   sparkle: "Kelap-kelip"
   sparkleDescription: "Memberikan konten efek partikel kelap-kelip."
+  rotate: "Putar"
 _reversi:
   reversi: "Reversi"
   gameSettings: "Pengaturan permainan"
