@@ -932,6 +932,7 @@ _mfm:
   rainbowDescription: "Lässt den Inhalt in Regenbogenfarben erscheinen."
   sparkle: "Glitzer"
   sparkleDescription: "Verleiht Inhalt einen glitzernden Partikeleffekt."
+  rotate: "Drehen"
 _reversi:
   reversi: "Reversi"
   gameSettings: "Spieleinstellungen"
