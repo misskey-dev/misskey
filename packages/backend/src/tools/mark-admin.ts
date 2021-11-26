@@ -1,13 +1,11 @@
 import { initDb } from '../db/postgre';
-import { getRepository } from 'typeorm';
-import { User } from '@/models/entities/user';
 
 async function main(username: string) {
 	if (!username) throw `username required`;
 	username = username.replace(/^@/, '');
 
 	await initDb();
-	const Users = getRepository(User);
+	const { Users } = await import('@/models/index');
 
 	const res = await Users.update({
 		usernameLower: username.toLowerCase(),
