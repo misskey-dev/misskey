@@ -767,6 +767,7 @@ _mfm:
   flip: "Echar de un capirotazo"
   flipDescription: "Voltea el contenido hacia arriba / abajo o hacia la izquierda / derecha."
   font: "Fuente"
+  rotate: "Rotar"
 _reversi:
   reversi: "Reversi"
   gameSettings: "Configuración del juego"
