@@ -824,7 +824,7 @@ _ffVisibility:
 
 _signup:
   almostThere: "ほとんど完了です"
-  emailAddressInfo: "あなたが使っているメールアドレスを入力してください。"
+  emailAddressInfo: "あなたが使っているメールアドレスを入力してください。メールアドレスが公開されることはありません。"
   emailSent: "入力されたメールアドレス({email})宛に確認のメールが送信されました。メールに記載されたリンクにアクセスすると、アカウントの作成が完了します。"
 
 _accountDelete:
@@ -945,6 +945,8 @@ _mfm:
   rainbowDescription: "内容をレインボーにします。"
   sparkle: "キラキラ"
   sparkleDescription: "キラキラしたパーティクルのエフェクトを追加します。"
+  rotate: "回転"
+  rotateDescription: "指定した角度で回転させます。"
 
 _reversi:
   reversi: "リバーシ"
