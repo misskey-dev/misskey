@@ -933,6 +933,7 @@ _mfm:
   sparkle: "Sparkle"
   sparkleDescription: "Gives content a sparkling particle effect."
   rotate: "Rotate"
+  rotateDescription: "Turns content by a specified angle."
 _reversi:
   reversi: "Reversi"
   gameSettings: "Game settings"
