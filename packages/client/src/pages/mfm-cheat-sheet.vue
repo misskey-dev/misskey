@@ -281,6 +281,16 @@
 			</div>
 		</div>
 	</div>
+	<div class="section _block">
+		<div class="title">{{ $ts._mfm.rotate }}</div>
+		<div class="content">
+			<p>{{ $ts._mfm.rotateDescription }}</p>
+			<div class="preview">
+				<Mfm :text="preview_rotate"/>
+				<MkTextarea v-model="preview_rotate"><span>MFM</span></MkTextarea>
+			</div>
+		</div>
+	</div>
 </div>
 </template>
 
@@ -328,6 +338,7 @@ export default defineComponent({
 			preview_blur: `$[blur ${this.$ts._mfm.dummy}]`,
 			preview_rainbow: `$[rainbow 🍮]`,
 			preview_sparkle: `$[sparkle 🍮]`,
+			preview_rotate: `$[rotate 🍮]`,
 		}
 	},
 });
