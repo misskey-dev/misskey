@@ -102,7 +102,7 @@ sensitive: "Enhavo ne estas deca por laborejo (NSFW)"
 add: "Aldoni"
 reaction: "Reagoj"
 reactionSettingDescription: "Agordi la reagojn kiujn vi volas prefere montrigi ĉe la elektilo de reagoj"
-rememberNoteVisibility: "Rememori la agordon de videbleco de la noto laste sendita "
+rememberNoteVisibility: "Rememori la agordon de videbleco de la laste sendita"
 attachCancel: "Deigi aldonaĵon"
 markAsSensitive: "Troviĝi NSFW"
 unmarkAsSensitive: "Ne troviĝi NSFW"
@@ -178,7 +178,7 @@ pinLimitExceeded: "Vi ne povas alpingli pli"
 done: "Fini"
 processing: "Prilaborado…"
 preview: "Antaŭmontro"
-default: "Defaŭlta"
+default: "Implicitaĵo"
 noCustomEmojis: "Neniu emoĵio"
 noJobs: "Neniu laboro"
 federating: "Federantaj"
@@ -699,6 +699,7 @@ _theme:
   manage: "Administri kolorarojn"
   code: "Kolorara kodo"
   description: "Priskribo"
+  defaultValue: "Implicitaĵa valoro"
   color: "Koloro"
   darken: "Malbrileco"
   lighten: "Brileco"
@@ -807,7 +808,7 @@ _visibility:
   specified: "Rekte"
   specifiedDescription: "Afiŝi nur al specifaj uzantoj"
   localOnly: "Nur loka"
-  localOnlyDescription: "Ne montri al foraj uzantoj"
+  localOnlyDescription: "Ne afiŝi al foraj uzantoj"
 _postForm:
   replyPlaceholder: "Respondi la noton…"
   quotePlaceholder: "Citi la noton…"
@@ -841,7 +842,7 @@ _rooms:
   translate: "Movi"
   chooseImage: "Elekti bildon"
   _roomType:
-    default: "Defaŭlta"
+    default: "Implicitaĵo"
   _furnitures:
     bed: "Lito"
     low-table: "Malaltotablo"
@@ -887,18 +888,22 @@ _pages:
     textInput: "Enmeto el teksto"
     _textInput:
       text: "Titolo"
+      default: "Implicitaĵa valoro"
     textareaInput: "Enmeto el teksto en multaj linioj"
     _textareaInput:
       text: "Titolo"
+      default: "Implicitaĵa valoro"
     numberInput: "Nombra enmeto"
     _numberInput:
       text: "Titolo"
+      default: "Implicitaĵa valoro"
     _canvas:
       id: "Kanvasa identigilo"
     _note:
       id: "Identigilo de noto"
     _switch:
       text: "Titolo"
+      default: "Implicitaĵa valoro"
     _counter:
       text: "Titolo"
     _button:
@@ -908,6 +913,7 @@ _pages:
           event: "Nomo de la evento"
     _radioButton:
       title: "Titolo"
+      default: "Implicitaĵa valoro"
   script:
     categories:
       text: "Manipulo de teksto"
