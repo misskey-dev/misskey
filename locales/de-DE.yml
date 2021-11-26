@@ -933,6 +933,7 @@ _mfm:
   sparkle: "Glitzer"
   sparkleDescription: "Verleiht Inhalt einen glitzernden Partikeleffekt."
   rotate: "Drehen"
+  rotateDescription: "Dreht den Inhalt um einen angegebenen Winkel"
 _reversi:
   reversi: "Reversi"
   gameSettings: "Spieleinstellungen"
