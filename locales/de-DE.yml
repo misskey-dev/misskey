@@ -809,6 +809,7 @@ ffVisibilityDescription: "Konfiguriere wer sehen kann, wem du folgst sowie wer d
 continueThread: "Weiteren Threadverlauf anzeigen"
 deleteAccountConfirm: "Dein Benutzerkonto wird unwiderruflich gelöscht. Trotzdem fortfahren?"
 incorrectPassword: "Falsches Passwort."
+voteConfirm: "Wirklich für \"{choice}\" abstimmen?"
 _emailUnavailable:
   used: "Diese Email-Adresse wird bereits verwendet"
   format: "Das Format dieser Email-Adresse ist ungültig"
