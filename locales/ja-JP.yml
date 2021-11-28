@@ -809,6 +809,7 @@ ffVisibilityDescription: "自分のフォロー/フォロワー情報の公開�
 continueThread: "さらにスレッドを見る"
 deleteAccountConfirm: "アカウントが削除されます。よろしいですか？"
 incorrectPassword: "パスワードが間違っています。"
+voteConfirm: "「{choice}」に投票しますか？"
 
 _emailUnavailable:
   used: "既に使用されています"
