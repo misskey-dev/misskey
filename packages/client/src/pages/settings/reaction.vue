@@ -1,8 +1,8 @@
 <template>
-<FormBase>
-	<div class="_debobigegoItem">
-		<div class="_debobigegoLabel">{{ $ts.reactionSettingDescription }}</div>
-		<div class="_debobigegoPanel">
+<div class="_formRoot">
+	<FromSlot class="_formBlock">
+		<template #label>{{ $ts.reactionSettingDescription }}</template>
+		<div v-panel style="border-radius: 6px;">
 			<XDraggable v-model="reactions" class="zoaiodol" :item-key="item => item" animation="150" delay="100" delay-on-touch-only="true">
 				<template #item="{element}">
 					<button class="_button item" @click="remove(element, $event)">
@@ -14,33 +14,38 @@
 				</template>
 			</XDraggable>
 		</div>
-		<div class="_debobigegoCaption">{{ $ts.reactionSettingDescription2 }} <button class="_textButton" @click="preview">{{ $ts.preview }}</button></div>
-	</div>
+		<template #caption>{{ $ts.reactionSettingDescription2 }} <button class="_textButton" @click="preview">{{ $ts.preview }}</button></template>
+	</FromSlot>
 
-	<FormRadios v-model="reactionPickerWidth">
-		<template #desc>{{ $ts.width }}</template>
+	<FormRadios v-model="reactionPickerWidth" class="_formBlock">
+		<template #label>{{ $ts.width }}</template>
 		<option :value="1">{{ $ts.small }}</option>
 		<option :value="2">{{ $ts.medium }}</option>
 		<option :value="3">{{ $ts.large }}</option>
 	</FormRadios>
-	<FormRadios v-model="reactionPickerHeight">
-		<template #desc>{{ $ts.height }}</template>
+	<FormRadios v-model="reactionPickerHeight" class="_formBlock">
+		<template #label>{{ $ts.height }}</template>
 		<option :value="1">{{ $ts.small }}</option>
 		<option :value="2">{{ $ts.medium }}</option>
 		<option :value="3">{{ $ts.large }}</option>
 	</FormRadios>
-	<FormButton @click="preview"><i class="fas fa-eye"></i> {{ $ts.preview }}</FormButton>
-	<FormButton danger @click="setDefault"><i class="fas fa-undo"></i> {{ $ts.default }}</FormButton>
-</FormBase>
+	<FormSection>
+		<FormButton @click="preview"><i class="fas fa-eye"></i> {{ $ts.preview }}</FormButton>
+	</FormSection>
+	<FormSection>
+		<FormButton danger @click="setDefault"><i class="fas fa-undo"></i> {{ $ts.default }}</FormButton>
+	</FormSection>
+</div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import XDraggable from 'vuedraggable';
-import FormInput from '@/components/debobigego/input.vue';
-import FormRadios from '@/components/debobigego/radios.vue';
-import FormBase from '@/components/debobigego/base.vue';
-import FormButton from '@/components/debobigego/button.vue';
+import FormInput from '@/components/form/input.vue';
+import FormRadios from '@/components/form/radios.vue';
+import FromSlot from '@/components/form/slot.vue';
+import FormButton from '@/components/ui/button.vue';
+import FormSection from '@/components/form/section.vue';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
 import * as symbols from '@/symbols';
@@ -49,8 +54,9 @@ export default defineComponent({
 	components: {
 		FormInput,
 		FormButton,
-		FormBase,
+		FromSlot,
 		FormRadios,
+		FormSection,
 		XDraggable,
 	},
 
@@ -135,7 +141,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .zoaiodol {
-	padding: 16px;
+	padding: 12px;
+	font-size: 1.1em;
 
 	> .item {
 		display: inline-block;

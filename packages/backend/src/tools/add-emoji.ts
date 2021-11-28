@@ -1,7 +1,10 @@
-import { Emojis } from '@/models/index';
+import { initDb } from '@/db/postgre';
 import { genId } from '@/misc/gen-id';
 
 async function main(name: string, url: string, alias?: string): Promise<any> {
+	await initDb();
+	const { Emojis } = await import('@/models/index');
+
 	const aliases = alias != null ? [ alias ] : [];
 
 	await Emojis.save({

@@ -1,8 +1,6 @@
 <template>
-<FormBase>
-	<FormSwitch v-model="showFixedPostForm">{{ $ts.showFixedPostForm }}</FormSwitch>
-
-	<FormSelect v-model="lang">
+<div class="_formRoot">
+	<FormSelect v-model="lang" class="_formBlock">
 		<template #label>{{ $ts.uiLanguage }}</template>
 		<option v-for="x in langs" :key="x[0]" :value="x[0]">{{ x[1] }}</option>
 		<template #caption>
@@ -14,57 +12,59 @@
 		</template>
 	</FormSelect>
 
-	<FormGroup>
+	<FormSwitch v-model="showFixedPostForm" class="_formBlock">{{ $ts.showFixedPostForm }}</FormSwitch>
+
+	<FormSection>
 		<template #label>{{ $ts.behavior }}</template>
-		<FormSwitch v-model="imageNewTab">{{ $ts.openImageInNewTab }}</FormSwitch>
-		<FormSwitch v-model="enableInfiniteScroll">{{ $ts.enableInfiniteScroll }}</FormSwitch>
-		<FormSwitch v-model="useReactionPickerForContextMenu">{{ $ts.useReactionPickerForContextMenu }}</FormSwitch>
-		<FormSwitch v-model="disablePagesScript">{{ $ts.disablePagesScript }}</FormSwitch>
-	</FormGroup>
+		<FormSwitch v-model="imageNewTab" class="_formBlock">{{ $ts.openImageInNewTab }}</FormSwitch>
+		<FormSwitch v-model="enableInfiniteScroll" class="_formBlock">{{ $ts.enableInfiniteScroll }}</FormSwitch>
+		<FormSwitch v-model="useReactionPickerForContextMenu" class="_formBlock">{{ $ts.useReactionPickerForContextMenu }}</FormSwitch>
+		<FormSwitch v-model="disablePagesScript" class="_formBlock">{{ $ts.disablePagesScript }}</FormSwitch>
 
-	<FormSelect v-model="serverDisconnectedBehavior">
-		<template #label>{{ $ts.whenServerDisconnected }}</template>
-		<option value="reload">{{ $ts._serverDisconnectedBehavior.reload }}</option>
-		<option value="dialog">{{ $ts._serverDisconnectedBehavior.dialog }}</option>
-		<option value="quiet">{{ $ts._serverDisconnectedBehavior.quiet }}</option>
-	</FormSelect>
+		<FormSelect v-model="serverDisconnectedBehavior" class="_formBlock">
+			<template #label>{{ $ts.whenServerDisconnected }}</template>
+			<option value="reload">{{ $ts._serverDisconnectedBehavior.reload }}</option>
+			<option value="dialog">{{ $ts._serverDisconnectedBehavior.dialog }}</option>
+			<option value="quiet">{{ $ts._serverDisconnectedBehavior.quiet }}</option>
+		</FormSelect>
+	</FormSection>
 
-	<FormGroup>
+	<FormSection>
 		<template #label>{{ $ts.appearance }}</template>
-		<FormSwitch v-model="disableAnimatedMfm">{{ $ts.disableAnimatedMfm }}</FormSwitch>
-		<FormSwitch v-model="reduceAnimation">{{ $ts.reduceUiAnimation }}</FormSwitch>
-		<FormSwitch v-model="useBlurEffect">{{ $ts.useBlurEffect }}</FormSwitch>
-		<FormSwitch v-model="useBlurEffectForModal">{{ $ts.useBlurEffectForModal }}</FormSwitch>
-		<FormSwitch v-model="showGapBetweenNotesInTimeline">{{ $ts.showGapBetweenNotesInTimeline }}</FormSwitch>
-		<FormSwitch v-model="loadRawImages">{{ $ts.loadRawImages }}</FormSwitch>
-		<FormSwitch v-model="disableShowingAnimatedImages">{{ $ts.disableShowingAnimatedImages }}</FormSwitch>
-		<FormSwitch v-model="squareAvatars">{{ $ts.squareAvatars }}</FormSwitch>
-		<FormSwitch v-model="useSystemFont">{{ $ts.useSystemFont }}</FormSwitch>
-		<FormSwitch v-model="useOsNativeEmojis">{{ $ts.useOsNativeEmojis }}
+		<FormSwitch v-model="disableAnimatedMfm" class="_formBlock">{{ $ts.disableAnimatedMfm }}</FormSwitch>
+		<FormSwitch v-model="reduceAnimation" class="_formBlock">{{ $ts.reduceUiAnimation }}</FormSwitch>
+		<FormSwitch v-model="useBlurEffect" class="_formBlock">{{ $ts.useBlurEffect }}</FormSwitch>
+		<FormSwitch v-model="useBlurEffectForModal" class="_formBlock">{{ $ts.useBlurEffectForModal }}</FormSwitch>
+		<FormSwitch v-model="showGapBetweenNotesInTimeline" class="_formBlock">{{ $ts.showGapBetweenNotesInTimeline }}</FormSwitch>
+		<FormSwitch v-model="loadRawImages" class="_formBlock">{{ $ts.loadRawImages }}</FormSwitch>
+		<FormSwitch v-model="disableShowingAnimatedImages" class="_formBlock">{{ $ts.disableShowingAnimatedImages }}</FormSwitch>
+		<FormSwitch v-model="squareAvatars" class="_formBlock">{{ $ts.squareAvatars }}</FormSwitch>
+		<FormSwitch v-model="useSystemFont" class="_formBlock">{{ $ts.useSystemFont }}</FormSwitch>
+		<FormSwitch v-model="useOsNativeEmojis" class="_formBlock">{{ $ts.useOsNativeEmojis }}
 			<div><Mfm :key="useOsNativeEmojis" text="🍮🍦🍭🍩🍰🍫🍬🥞🍪"/></div>
 		</FormSwitch>
-	</FormGroup>
 
-	<FormGroup>
+		<FormRadios v-model="fontSize" class="_formBlock">
+			<template #label>{{ $ts.fontSize }}</template>
+			<option value="small"><span style="font-size: 14px;">Aa</span></option>
+			<option :value="null"><span style="font-size: 16px;">Aa</span></option>
+			<option value="large"><span style="font-size: 18px;">Aa</span></option>
+			<option value="veryLarge"><span style="font-size: 20px;">Aa</span></option>
+		</FormRadios>
+	</FormSection>
+
+	<FormSection>
 		<FormSwitch v-model="aiChanMode">{{ $ts.aiChanMode }}</FormSwitch>
-	</FormGroup>
+	</FormSection>
 
-	<FormRadios v-model="fontSize">
-		<template #desc>{{ $ts.fontSize }}</template>
-		<option value="small"><span style="font-size: 14px;">Aa</span></option>
-		<option :value="null"><span style="font-size: 16px;">Aa</span></option>
-		<option value="large"><span style="font-size: 18px;">Aa</span></option>
-		<option value="veryLarge"><span style="font-size: 20px;">Aa</span></option>
-	</FormRadios>
-
-	<FormSelect v-model="instanceTicker">
+	<FormSelect v-model="instanceTicker" class="_formBlock">
 		<template #label>{{ $ts.instanceTicker }}</template>
 		<option value="none">{{ $ts._instanceTicker.none }}</option>
 		<option value="remote">{{ $ts._instanceTicker.remote }}</option>
 		<option value="always">{{ $ts._instanceTicker.always }}</option>
 	</FormSelect>
 
-	<FormSelect v-model="nsfw">
+	<FormSelect v-model="nsfw" class="_formBlock">
 		<template #label>{{ $ts.nsfw }}</template>
 		<option value="respect">{{ $ts._nsfw.respect }}</option>
 		<option value="ignore">{{ $ts._nsfw.ignore }}</option>
@@ -76,28 +76,27 @@
 		<FormSwitch v-model="defaultSideView">{{ $ts.openInSideView }}</FormSwitch>
 	</FormGroup>
 
-	<FormSelect v-model="chatOpenBehavior">
+	<FormSelect v-model="chatOpenBehavior" class="_formBlock">
 		<template #label>{{ $ts.chatOpenBehavior }}</template>
 		<option value="page">{{ $ts.showInPage }}</option>
 		<option value="window">{{ $ts.openInWindow }}</option>
 		<option value="popout">{{ $ts.popout }}</option>
 	</FormSelect>
 
-	<FormLink to="/settings/deck">{{ $ts.deck }}</FormLink>
+	<FormLink to="/settings/deck" class="_formBlock">{{ $ts.deck }}</FormLink>
 
-	<FormLink to="/settings/custom-css"><template #icon><i class="fas fa-code"></i></template>{{ $ts.customCss }}</FormLink>
-</FormBase>
+	<FormLink to="/settings/custom-css" class="_formBlock"><template #icon><i class="fas fa-code"></i></template>{{ $ts.customCss }}</FormLink>
+</div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import FormSwitch from '@/components/debobigego/switch.vue';
-import FormSelect from '@/components/debobigego/select.vue';
-import FormRadios from '@/components/debobigego/radios.vue';
-import FormBase from '@/components/debobigego/base.vue';
-import FormGroup from '@/components/debobigego/group.vue';
-import FormLink from '@/components/debobigego/link.vue';
-import FormButton from '@/components/debobigego/button.vue';
+import FormSwitch from '@/components/form/switch.vue';
+import FormSelect from '@/components/form/select.vue';
+import FormRadios from '@/components/form/radios.vue';
+import FormGroup from '@/components/form/group.vue';
+import FormSection from '@/components/form/section.vue';
+import FormLink from '@/components/form/link.vue';
 import MkLink from '@/components/link.vue';
 import { langs } from '@/config';
 import { defaultStore } from '@/store';
@@ -112,10 +111,9 @@ export default defineComponent({
 		FormSwitch,
 		FormSelect,
 		FormRadios,
-		FormBase,
 		FormGroup,
 		FormLink,
-		FormButton,
+		FormSection,
 	},
 
 	emits: ['info'],

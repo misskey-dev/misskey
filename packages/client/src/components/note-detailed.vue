@@ -84,7 +84,9 @@
 			</div>
 			<footer class="footer">
 				<div class="info">
-					<MkTime class="created-at" :time="appearNote.createdAt" mode="detail"/>
+					<MkA class="created-at" :to="notePage(appearNote)">
+						<MkTime :time="appearNote.createdAt" mode="detail"/>
+					</MkA>
 				</div>
 				<XReactionsViewer ref="reactionsViewer" :note="appearNote"/>
 				<button class="button _button" @click="reply()">
@@ -136,6 +138,7 @@ import { url } from '@/config';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { checkWordMute } from '@/scripts/check-word-mute';
 import { userPage } from '@/filters/user';
+import { notePage } from '@/filters/note';
 import * as os from '@/os';
 import { noteActions, noteViewInterruptors } from '@/store';
 import { reactionPicker } from '@/scripts/reaction-picker';
@@ -181,6 +184,7 @@ export default defineComponent({
 			muted: false,
 			translation: null,
 			translating: false,
+			notePage,
 		};
 	},
 

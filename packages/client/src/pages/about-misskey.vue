@@ -1,64 +1,67 @@
 <template>
 <div style="overflow: clip;">
-	<FormBase class="znqjceqz">
-		<div id="debug"></div>
-		<section class="_debobigegoItem about">
-			<div ref="about" class="_debobigegoPanel panel" :class="{ playing: easterEggEngine != null }">
+	<MkSpacer :content-max="600" :margin-min="20">
+		<div class="_formRoot znqjceqz">
+			<div id="debug"></div>
+			<div ref="about" v-panel class="_formBlock about" :class="{ playing: easterEggEngine != null }">
 				<img src="/client-assets/about-icon.png" alt="" class="icon" draggable="false" @load="iconLoaded" @click="gravity"/>
 				<div class="misskey">Misskey</div>
 				<div class="version">v{{ version }}</div>
 				<span v-for="emoji in easterEggEmojis" :key="emoji.id" class="emoji" :data-physics-x="emoji.left" :data-physics-y="emoji.top" :class="{ _physics_circle_: !emoji.emoji.startsWith(':') }"><MkEmoji class="emoji" :emoji="emoji.emoji" :custom-emojis="$instance.emojis" :is-reaction="false" :normal="true" :no-style="true"/></span>
 			</div>
-		</section>
-		<section class="_debobigegoItem" style="text-align: center; padding: 0 16px;">
-			{{ $ts._aboutMisskey.about }}<br><a href="https://misskey-hub.net/docs/misskey.html" target="_blank" class="_link">{{ $ts.learnMore }}</a>
-		</section>
-		<FormGroup>
-			<FormLink to="https://github.com/misskey-dev/misskey" external>
-				<template #icon><i class="fas fa-code"></i></template>
-				{{ $ts._aboutMisskey.source }}
-				<template #suffix>GitHub</template>
-			</FormLink>
-			<FormLink to="https://crowdin.com/project/misskey" external>
-				<template #icon><i class="fas fa-language"></i></template>
-				{{ $ts._aboutMisskey.translation }}
-				<template #suffix>Crowdin</template>
-			</FormLink>
-			<FormLink to="https://www.patreon.com/syuilo" external>
-				<template #icon><i class="fas fa-hand-holding-medical"></i></template>
-				{{ $ts._aboutMisskey.donate }}
-				<template #suffix>Patreon</template>
-			</FormLink>
-		</FormGroup>
-		<FormGroup>
-			<template #label>{{ $ts._aboutMisskey.contributors }}</template>
-			<FormLink to="https://github.com/syuilo" external>@syuilo</FormLink>
-			<FormLink to="https://github.com/AyaMorisawa" external>@AyaMorisawa</FormLink>
-			<FormLink to="https://github.com/mei23" external>@mei23</FormLink>
-			<FormLink to="https://github.com/acid-chicken" external>@acid-chicken</FormLink>
-			<FormLink to="https://github.com/tamaina" external>@tamaina</FormLink>
-			<FormLink to="https://github.com/rinsuki" external>@rinsuki</FormLink>
-			<FormLink to="https://github.com/Xeltica" external>@Xeltica</FormLink>
-			<FormLink to="https://github.com/u1-liquid" external>@u1-liquid</FormLink>
-			<FormLink to="https://github.com/marihachi" external>@marihachi</FormLink>
-			<template #caption><MkLink url="https://github.com/misskey-dev/misskey/graphs/contributors">{{ $ts._aboutMisskey.allContributors }}</MkLink></template>
-		</FormGroup>
-		<FormGroup>
-			<template #label><Mfm text="[jelly ❤]"/> {{ $ts._aboutMisskey.patrons }}</template>
-			<FormKeyValueView v-for="patron in patrons" :key="patron"><template #key>{{ patron }}</template></FormKeyValueView>
-			<template #caption>{{ $ts._aboutMisskey.morePatrons }}</template>
-		</FormGroup>
-	</FormBase>
+			<div class="_formBlock" style="text-align: center;">
+				{{ $ts._aboutMisskey.about }}<br><a href="https://misskey-hub.net/docs/misskey.html" target="_blank" class="_link">{{ $ts.learnMore }}</a>
+			</div>
+			<FormSection>
+				<div class="_formLinks">
+					<FormLink to="https://github.com/misskey-dev/misskey" external>
+						<template #icon><i class="fas fa-code"></i></template>
+						{{ $ts._aboutMisskey.source }}
+						<template #suffix>GitHub</template>
+					</FormLink>
+					<FormLink to="https://crowdin.com/project/misskey" external>
+						<template #icon><i class="fas fa-language"></i></template>
+						{{ $ts._aboutMisskey.translation }}
+						<template #suffix>Crowdin</template>
+					</FormLink>
+					<FormLink to="https://www.patreon.com/syuilo" external>
+						<template #icon><i class="fas fa-hand-holding-medical"></i></template>
+						{{ $ts._aboutMisskey.donate }}
+						<template #suffix>Patreon</template>
+					</FormLink>
+				</div>
+			</FormSection>
+			<FormSection>
+				<template #label>{{ $ts._aboutMisskey.contributors }}</template>
+				<div class="_formLinks">
+					<FormLink to="https://github.com/syuilo" external>@syuilo</FormLink>
+					<FormLink to="https://github.com/AyaMorisawa" external>@AyaMorisawa</FormLink>
+					<FormLink to="https://github.com/mei23" external>@mei23</FormLink>
+					<FormLink to="https://github.com/acid-chicken" external>@acid-chicken</FormLink>
+					<FormLink to="https://github.com/tamaina" external>@tamaina</FormLink>
+					<FormLink to="https://github.com/rinsuki" external>@rinsuki</FormLink>
+					<FormLink to="https://github.com/Xeltica" external>@Xeltica</FormLink>
+					<FormLink to="https://github.com/u1-liquid" external>@u1-liquid</FormLink>
+					<FormLink to="https://github.com/marihachi" external>@marihachi</FormLink>
+				</div>
+				<template #caption><MkLink url="https://github.com/misskey-dev/misskey/graphs/contributors">{{ $ts._aboutMisskey.allContributors }}</MkLink></template>
+			</FormSection>
+			<FormSection>
+				<template #label><Mfm text="$[jelly ❤]"/> {{ $ts._aboutMisskey.patrons }}</template>
+				<div v-for="patron in patrons" :key="patron">{{ patron }}</div>
+				<template #caption>{{ $ts._aboutMisskey.morePatrons }}</template>
+			</FormSection>
+		</div>
+	</MkSpacer>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { version } from '@/config';
-import FormLink from '@/components/debobigego/link.vue';
-import FormBase from '@/components/debobigego/base.vue';
-import FormGroup from '@/components/debobigego/group.vue';
-import FormKeyValueView from '@/components/debobigego/key-value-view.vue';
+import FormLink from '@/components/form/link.vue';
+import FormSection from '@/components/form/section.vue';
+import MkKeyValue from '@/components/key-value.vue';
 import MkLink from '@/components/link.vue';
 import { physics } from '@/scripts/physics';
 import * as symbols from '@/symbols';
@@ -122,10 +125,9 @@ const patrons = [
 
 export default defineComponent({
 	components: {
-		FormBase,
-		FormGroup,
+		FormSection,
 		FormLink,
-		FormKeyValueView,
+		MkKeyValue,
 		MkLink,
 	},
 
@@ -178,59 +180,54 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .znqjceqz {
-	max-width: 800px;
-	box-sizing: border-box;
-	margin: 0 auto;
-
 	> .about {
-		> .panel {
-			position: relative;
-			text-align: center;
-			padding: 16px;
+		position: relative;
+		text-align: center;
+		padding: 16px;
+		border-radius: var(--radius);
 
-			&.playing {
-				&, * {
-					user-select: none;
-				}
-
-				* {
-					will-change: transform;
-				}
-
-				> .emoji {
-					visibility: visible;
-				}
+		&.playing {
+			&, * {
+				user-select: none;
 			}
 
-			> .icon {
-				display: block;
-				width: 100px;
-				margin: 0 auto;
-				border-radius: 16px;
-			}
-
-			> .misskey {
-				margin: 0.75em auto 0 auto;
-				width: max-content;
-			}
-
-			> .version {
-				margin: 0 auto;
-				width: max-content;
-				opacity: 0.5;
+			* {
+				will-change: transform;
 			}
 
 			> .emoji {
-				position: absolute;
-				top: 0;
-				left: 0;
-				visibility: hidden;
+				visibility: visible;
+			}
+		}
 
-				> .emoji {
-					pointer-events: none;
-					font-size: 24px;
-					width: 24px;
-				}
+		> .icon {
+			display: block;
+			width: 100px;
+			margin: 0 auto;
+			border-radius: 16px;
+		}
+
+		> .misskey {
+			margin: 0.75em auto 0 auto;
+			width: max-content;
+		}
+
+		> .version {
+			margin: 0 auto;
+			width: max-content;
+			opacity: 0.5;
+		}
+
+		> .emoji {
+			position: absolute;
+			top: 0;
+			left: 0;
+			visibility: hidden;
+
+			> .emoji {
+				pointer-events: none;
+				font-size: 24px;
+				width: 24px;
 			}
 		}
 	}

@@ -10,7 +10,12 @@
 		</MkSpacer>
 	</div>
 	<div class="main">
-		<component :is="component" :key="page" v-bind="pageProps"/>
+		<MkSpacer :content-max="600" :margin-min="20">
+			<div class="bkzroven">
+				<div v-if="childInfo" class="title">{{ childInfo.title }}</div>
+				<component :is="component" :key="page" v-bind="pageProps" @info="onInfo"/>
+			</div>
+		</MkSpacer>
 	</div>
 </div>
 </template>
@@ -40,172 +45,143 @@ export default defineComponent({
     },
   },
 
-  setup(props, context) {
-    const indexInfo = {
-      title: i18n.locale.settings,
-      icon: "fas fa-cog",
-      bg: "var(--bg)",
-      hideHeader: true,
-    };
-    const INFO = ref(indexInfo);
-    const page = ref(props.initialPage);
-    const narrow = ref(false);
-    const view = ref(null);
-    const el = ref(null);
-    const menuDef = computed(() => [
-      {
-        title: i18n.locale.basicSettings,
-        items: [
-          {
-            icon: "fas fa-user",
-            text: i18n.locale.profile,
-            to: "/settings/profile",
-            active: page.value === "profile",
-          },
-          {
-            icon: "fas fa-lock-open",
-            text: i18n.locale.privacy,
-            to: "/settings/privacy",
-            active: page.value === "privacy",
-          },
-          {
-            icon: "fas fa-laugh",
-            text: i18n.locale.reaction,
-            to: "/settings/reaction",
-            active: page.value === "reaction",
-          },
-          {
-            icon: "fas fa-cloud",
-            text: i18n.locale.drive,
-            to: "/settings/drive",
-            active: page.value === "drive",
-          },
-          {
-            icon: "fas fa-bell",
-            text: i18n.locale.notifications,
-            to: "/settings/notifications",
-            active: page.value === "notifications",
-          },
-          {
-            icon: "fas fa-envelope",
-            text: i18n.locale.email,
-            to: "/settings/email",
-            active: page.value === "email",
-          },
-          {
-            icon: "fas fa-share-alt",
-            text: i18n.locale.integration,
-            to: "/settings/integration",
-            active: page.value === "integration",
-          },
-          {
-            icon: "fas fa-lock",
-            text: i18n.locale.security,
-            to: "/settings/security",
-            active: page.value === "security",
-          },
-        ],
-      },
-      {
-        title: i18n.locale.clientSettings,
-        items: [
-          {
-            icon: "fas fa-cogs",
-            text: i18n.locale.general,
-            to: "/settings/general",
-            active: page.value === "general",
-          },
-          {
-            icon: "fas fa-palette",
-            text: i18n.locale.theme,
-            to: "/settings/theme",
-            active: page.value === "theme",
-          },
-          {
-            icon: "fas fa-list-ul",
-            text: i18n.locale.menu,
-            to: "/settings/menu",
-            active: page.value === "menu",
-          },
-          {
-            icon: "fas fa-music",
-            text: i18n.locale.sounds,
-            to: "/settings/sounds",
-            active: page.value === "sounds",
-          },
-          {
-            icon: "fas fa-plug",
-            text: i18n.locale.plugins,
-            to: "/settings/plugin",
-            active: page.value === "plugin",
-          },
-        ],
-      },
-      {
-        title: i18n.locale.otherSettings,
-        items: [
-          {
-            icon: "fas fa-boxes",
-            text: i18n.locale.importAndExport,
-            to: "/settings/import-export",
-            active: page.value === "import-export",
-          },
-          {
-            icon: "fas fa-ban",
-            text: i18n.locale.muteAndBlock,
-            to: "/settings/mute-block",
-            active: page.value === "mute-block",
-          },
-					{
-						icon: "fas fa-volume-mute",
-						text: i18n.locale.instanceMute,
-						to: "/settings/instance-mute",
-						active: page.value === "instance-mute",
-					},
-          {
-            icon: "fas fa-comment-slash",
-            text: i18n.locale.wordMute,
-            to: "/settings/word-mute",
-            active: page.value === "word-mute",
-          },
-          {
-            icon: "fas fa-key",
-            text: "API",
-            to: "/settings/api",
-            active: page.value === "api",
-          },
-          {
-            icon: "fas fa-ellipsis-h",
-            text: i18n.locale.other,
-            to: "/settings/other",
-            active: page.value === "other",
-          },
-        ],
-      },
-      {
-        items: [
-          {
-            type: "button",
-            icon: "fas fa-trash",
-            text: i18n.locale.clearCache,
-            action: () => {
-              localStorage.removeItem("locale");
-              localStorage.removeItem("theme");
-              unisonReload();
-            },
-          },
-          {
-            type: "button",
-            icon: "fas fa-sign-in-alt fa-flip-horizontal",
-            text: i18n.locale.logout,
-            action: () => {
-              signout();
-            },
-            danger: true,
-          },
-        ],
-      },
-    ]);
+	setup(props, context) {
+		const indexInfo = {
+			title: i18n.locale.settings,
+			icon: 'fas fa-cog',
+			bg: 'var(--bg)',
+			hideHeader: true,
+		};
+		const INFO = ref(indexInfo);
+		const page = ref(props.initialPage);
+		const narrow = ref(false);
+		const view = ref(null);
+		const el = ref(null);
+		const childInfo = ref(null);
+		const menuDef = computed(() => [{
+			title: i18n.locale.basicSettings,
+			items: [{
+				icon: 'fas fa-user',
+				text: i18n.locale.profile,
+				to: '/settings/profile',
+				active: page.value === 'profile',
+			}, {
+				icon: 'fas fa-lock-open',
+				text: i18n.locale.privacy,
+				to: '/settings/privacy',
+				active: page.value === 'privacy',
+			}, {
+				icon: 'fas fa-laugh',
+				text: i18n.locale.reaction,
+				to: '/settings/reaction',
+				active: page.value === 'reaction',
+			}, {
+				icon: 'fas fa-cloud',
+				text: i18n.locale.drive,
+				to: '/settings/drive',
+				active: page.value === 'drive',
+			}, {
+				icon: 'fas fa-bell',
+				text: i18n.locale.notifications,
+				to: '/settings/notifications',
+				active: page.value === 'notifications',
+			}, {
+				icon: 'fas fa-envelope',
+				text: i18n.locale.email,
+				to: '/settings/email',
+				active: page.value === 'email',
+			}, {
+				icon: 'fas fa-share-alt',
+				text: i18n.locale.integration,
+				to: '/settings/integration',
+				active: page.value === 'integration',
+			}, {
+				icon: 'fas fa-lock',
+				text: i18n.locale.security,
+				to: '/settings/security',
+				active: page.value === 'security',
+			}],
+		}, {
+			title: i18n.locale.clientSettings,
+			items: [{
+				icon: 'fas fa-cogs',
+				text: i18n.locale.general,
+				to: '/settings/general',
+				active: page.value === 'general',
+			}, {
+				icon: 'fas fa-palette',
+				text: i18n.locale.theme,
+				to: '/settings/theme',
+				active: page.value === 'theme',
+			}, {
+				icon: 'fas fa-list-ul',
+				text: i18n.locale.menu,
+				to: '/settings/menu',
+				active: page.value === 'menu',
+			}, {
+				icon: 'fas fa-music',
+				text: i18n.locale.sounds,
+				to: '/settings/sounds',
+				active: page.value === 'sounds',
+			}, {
+				icon: 'fas fa-plug',
+				text: i18n.locale.plugins,
+				to: '/settings/plugin',
+				active: page.value === 'plugin',
+			}],
+		}, {
+			title: i18n.locale.otherSettings,
+			items: [{
+				icon: 'fas fa-boxes',
+				text: i18n.locale.importAndExport,
+				to: '/settings/import-export',
+				active: page.value === 'import-export',
+			}, {
+				icon: 'fas fa-volume-mute',
+				text: i18n.locale.instanceMute,
+				to: "/settings/instance-mute",
+				active: page.value === "instance-mute",
+			}, {
+				icon: 'fas fa-ban',
+				text: i18n.locale.muteAndBlock,
+				to: '/settings/mute-block',
+				active: page.value === 'mute-block',
+			}, {
+				icon: 'fas fa-comment-slash',
+				text: i18n.locale.wordMute,
+				to: '/settings/word-mute',
+				active: page.value === 'word-mute',
+			}, {
+				icon: 'fas fa-key',
+				text: 'API',
+				to: '/settings/api',
+				active: page.value === 'api',
+			}, {
+				icon: 'fas fa-ellipsis-h',
+				text: i18n.locale.other,
+				to: '/settings/other',
+				active: page.value === 'other',
+			}],
+		}, {
+			items: [{
+				type: 'button',
+				icon: 'fas fa-trash',
+				text: i18n.locale.clearCache,
+				action: () => {
+					localStorage.removeItem('locale');
+					localStorage.removeItem('theme');
+					unisonReload();
+				},
+			}, {
+				type: 'button',
+				icon: 'fas fa-sign-in-alt fa-flip-horizontal',
+				text: i18n.locale.logout,
+				action: () => {
+					signout();
+				},
+				danger: true,
+			},],
+		}]);
 
 		const pageProps = ref({});
 		const component = computed(() => {
@@ -228,8 +204,6 @@ export default defineComponent({
 				case 'other': return defineAsyncComponent(() => import('./other.vue'));
 				case 'general': return defineAsyncComponent(() => import('./general.vue'));
 				case 'email': return defineAsyncComponent(() => import('./email.vue'));
-				case 'email/address': return defineAsyncComponent(() => import('./email-address.vue'));
-				case 'email/notification': return defineAsyncComponent(() => import('./email-notification.vue'));
 				case 'theme': return defineAsyncComponent(() => import('./theme.vue'));
 				case 'theme/install': return defineAsyncComponent(() => import('./theme.install.vue'));
 				case 'theme/manage': return defineAsyncComponent(() => import('./theme.manage.vue'));
@@ -308,18 +282,24 @@ export default defineComponent({
       () => instance.enableEmail && ($i.email == null || !$i.emailVerified)
     );
 
-    return {
-      [symbols.PAGE_INFO]: INFO,
-      page,
-      menuDef,
-      narrow,
-      view,
-      el,
-      pageProps,
-      component,
-      emailNotConfigured,
-    };
-  },
+		const onInfo = (info) => {
+			childInfo.value = info;
+		};
+
+		return {
+			[symbols.PAGE_INFO]: INFO,
+			page,
+			menuDef,
+			narrow,
+			view,
+			el,
+			pageProps,
+			component,
+			emailNotConfigured,
+			onInfo,
+			childInfo,
+		};
+	},
 });
 </script>
 
@@ -333,9 +313,9 @@ export default defineComponent({
         font-weight: bold;
       }
 
-      > .info {
-        margin: 0 16px;
-      }
+			> .info {
+				margin: 16px 0;
+			}
 
       > .accounts {
         > .avatar {
@@ -348,11 +328,21 @@ export default defineComponent({
     }
   }
 
-  &.wide {
-    display: flex;
-    max-width: 1000px;
-    margin: 0 auto;
-    height: 100%;
+	> .main {
+		.bkzroven {
+			> .title {
+				margin: 4px 0 20px 0;
+				font-size: 1.5em;
+				font-weight: bold;
+			}
+		}
+	}
+
+	&.wide {
+		display: flex;
+		max-width: 1000px;
+		margin: 0 auto;
+		height: 100%;
 
     > .nav {
       width: 32%;
@@ -366,11 +356,17 @@ export default defineComponent({
       }
     }
 
-    > .main {
-      flex: 1;
-      min-width: 0;
-      overflow: auto;
-    }
-  }
+		> .main {
+			flex: 1;
+			min-width: 0;
+			overflow: auto;
+
+			.bkzroven {
+				> .title {
+					margin: 6px 0 24px 0;
+				}
+			}
+		}
+	}
 }
 </style>
