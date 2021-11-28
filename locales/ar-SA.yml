@@ -1195,6 +1195,7 @@ _rooms:
     tv: "تلفاز"
     pinguin: "بطريق"
     sofa: "أريكة"
+    bin: "سلة مهملات"
     banknote: "أوراق نقدية"
 _pages:
   newPage: "أنشئ صفحة جديدة"
