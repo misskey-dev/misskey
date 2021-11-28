@@ -809,6 +809,7 @@ ffVisibilityDescription: "您可以设置您的关注/关注者信息的公开�
 continueThread: "查看更多帖子"
 deleteAccountConfirm: "将要删除账户。是否确认？"
 incorrectPassword: "密码错误"
+voteConfirm: "确定投给“{choice}” ？"
 _emailUnavailable:
   used: "已经被使用过"
   format: "无效的格式"
