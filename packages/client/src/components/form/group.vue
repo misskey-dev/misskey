@@ -1,5 +1,5 @@
 <template>
-<div v-size="{ max: [500] }" v-sticky-container class="vrtktovh _formBlock">
+<div v-sticky-container v-panel class="adfeebaf _formBlock">
 	<div class="label"><slot name="label"></slot></div>
 	<div class="main _formRoot">
 		<slot></slot>
@@ -11,28 +11,13 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-
 });
 </script>
 
 <style lang="scss" scoped>
-.vrtktovh {
-	margin: 0;
-	border-top: solid 0.5px var(--divider);
-	border-bottom: solid 0.5px var(--divider);
-	padding: 24px 0;
-
-	& + .vrtktovh {
-		border-top: none;
-	}
-
-	&:first-child {
-		border-top: none;
-	}
-
-	&:last-child {
-		border-bottom: none;
-	}
+.adfeebaf {
+	padding: 24px 24px;
+	border-radius: var(--radius);
 
 	> .label {
 		font-weight: bold;
@@ -44,6 +29,7 @@ export default defineComponent({
 	}
 
 	> .main {
+
 	}
 }
 </style>

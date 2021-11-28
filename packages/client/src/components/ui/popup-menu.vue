@@ -1,6 +1,6 @@
 <template>
-<MkPopup ref="popup" :src="src" @closed="$emit('closed')">
-	<MkMenu :items="items" :align="align" :width="width" class="_popup _shadow" @close="$refs.popup.close()"/>
+<MkPopup ref="popup" v-slot="{ maxHeight, close }" :src="src" @closed="$emit('closed')">
+	<MkMenu :items="items" :align="align" :width="width" :max-height="maxHeight" class="_popup _shadow" @close="close()"/>
 </MkPopup>
 </template>
 

@@ -1,44 +1,43 @@
 <template>
-<FormBase class="">
-	<FormGroup v-if="!fetching">
+<div class="_formRoot">
+	<FormSection v-if="!fetching">
 		<template #label>{{ $ts.usageAmount }}</template>
-		<div class="_debobigegoItem uawsfosz">
-			<div class="_debobigegoPanel">
-				<div class="meter"><div :style="meterStyle"></div></div>
-			</div>
+		<div class="_formBlock uawsfosz">
+			<div class="meter"><div :style="meterStyle"></div></div>
 		</div>
-		<FormKeyValueView>
-			<template #key>{{ $ts.capacity }}</template>
-			<template #value>{{ bytes(capacity, 1) }}</template>
-		</FormKeyValueView>
-		<FormKeyValueView>
-			<template #key>{{ $ts.inUse }}</template>
-			<template #value>{{ bytes(usage, 1) }}</template>
-		</FormKeyValueView>
-	</FormGroup>
-
-	<div class="_debobigegoItem">
-		<div class="_debobigegoLabel">{{ $ts.statistics }}</div>
-		<div class="_debobigegoPanel">
-			<div ref="chart"></div>
+		<div class="_inputSplit _formBlock">
+			<MkKeyValue class="_formBlock">
+				<template #key>{{ $ts.capacity }}</template>
+				<template #value>{{ bytes(capacity, 1) }}</template>
+			</MkKeyValue>
+			<MkKeyValue class="_formBlock">
+				<template #key>{{ $ts.inUse }}</template>
+				<template #value>{{ bytes(usage, 1) }}</template>
+			</MkKeyValue>
 		</div>
-	</div>
+	</FormSection>
 
-	<FormButton :center="false" primary @click="chooseUploadFolder()">
-		{{ $ts.uploadFolder }}
-		<template #suffix>{{ uploadFolder ? uploadFolder.name : '-' }}</template>
-		<template #suffixIcon><i class="fas fa-folder-open"></i></template>
-	</FormButton>
-</FormBase>
+	<FormSection>
+		<template #label>{{ $ts.statistics }}</template>
+		<div ref="chart"></div>
+	</FormSection>
+
+	<FormSection>
+		<FormLink @click="chooseUploadFolder()">
+			{{ $ts.uploadFolder }}
+			<template #suffix>{{ uploadFolder ? uploadFolder.name : '-' }}</template>
+			<template #suffixIcon><i class="fas fa-folder-open"></i></template>
+		</FormLink>
+	</FormSection>
+</div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import * as tinycolor from 'tinycolor2';
-import FormButton from '@/components/debobigego/button.vue';
-import FormGroup from '@/components/debobigego/group.vue';
-import FormKeyValueView from '@/components/debobigego/key-value-view.vue';
-import FormBase from '@/components/debobigego/base.vue';
+import FormLink from '@/components/form/link.vue';
+import FormSection from '@/components/form/section.vue';
+import MkKeyValue from '@/components/key-value.vue';
 import * as os from '@/os';
 import bytes from '@/filters/bytes';
 import * as symbols from '@/symbols';
@@ -47,10 +46,9 @@ import * as symbols from '@/symbols';
 
 export default defineComponent({
 	components: {
-		FormBase,
-		FormButton,
-		FormGroup,
-		FormKeyValueView,
+		FormLink,
+		FormSection,
+		MkKeyValue,
 	},
 
 	emits: ['info'],
@@ -128,19 +126,16 @@ export default defineComponent({
 @use "sass:math";
 
 .uawsfosz {
-	> div {
-		padding: 24px;
 
-		> .meter {
-			$size: 12px;
-			background: rgba(0, 0, 0, 0.1);
+	> .meter {
+		$size: 12px;
+		background: rgba(0, 0, 0, 0.1);
+		border-radius: math.div($size, 2);
+		overflow: hidden;
+
+		> div {
+			height: $size;
 			border-radius: math.div($size, 2);
-			overflow: hidden;
-
-			> div {
-				height: $size;
-				border-radius: math.div($size, 2);
-			}
 		}
 	}
 }

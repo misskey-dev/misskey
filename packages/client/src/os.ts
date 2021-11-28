@@ -224,6 +224,10 @@ export function modalPageWindow(path: string) {
 	}, {}, 'closed');
 }
 
+export function toast(message: string) {
+	// TODO
+}
+
 export function alert(props: {
 	type?: 'error' | 'info' | 'success' | 'warning' | 'waiting' | 'question';
 	title?: string | null;

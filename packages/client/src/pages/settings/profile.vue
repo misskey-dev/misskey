@@ -1,59 +1,58 @@
 <template>
-<FormBase>
-	<FormGroup>
-		<div class="_debobigegoItem _debobigegoPanel llvierxe" :style="{ backgroundImage: $i.bannerUrl ? `url(${ $i.bannerUrl })` : null }">
-			<MkAvatar class="avatar" :user="$i"/>
+<div class="_formRoot">
+	<div class="llvierxe" :style="{ backgroundImage: $i.bannerUrl ? `url(${ $i.bannerUrl })` : null }">
+		<div class="avatar _acrylic">
+			<MkAvatar class="avatar" :user="$i" :disable-link="true" @click="changeAvatar"/>
+			<MkButton primary class="avatarEdit" @click="changeAvatar">{{ $ts._profile.changeAvatar }}</MkButton>
 		</div>
-		<FormButton primary @click="changeAvatar">{{ $ts._profile.changeAvatar }}</FormButton>
-		<FormButton primary @click="changeBanner">{{ $ts._profile.changeBanner }}</FormButton>
-	</FormGroup>
+		<MkButton primary class="bannerEdit" @click="changeBanner">{{ $ts._profile.changeBanner }}</MkButton>
+	</div>
 
-	<FormInput v-model="name" :max="30" manual-save>
-		<span>{{ $ts._profile.name }}</span>
+	<FormInput v-model="name" :max="30" manual-save class="_formBlock">
+		<template #label>{{ $ts._profile.name }}</template>
 	</FormInput>
 
-	<FormTextarea v-model="description" :max="500" tall manual-save>
-		<span>{{ $ts._profile.description }}</span>
-		<template #desc>{{ $ts._profile.youCanIncludeHashtags }}</template>
+	<FormTextarea v-model="description" :max="500" tall manual-save class="_formBlock">
+		<template #label>{{ $ts._profile.description }}</template>
+		<template #caption>{{ $ts._profile.youCanIncludeHashtags }}</template>
 	</FormTextarea>
 
-	<FormInput v-model="location" manual-save>
-		<span>{{ $ts.location }}</span>
+	<FormInput v-model="location" manual-save class="_formBlock">
+		<template #label>{{ $ts.location }}</template>
 		<template #prefix><i class="fas fa-map-marker-alt"></i></template>
 	</FormInput>
 
-	<FormInput v-model="birthday" type="date" manual-save>
-		<span>{{ $ts.birthday }}</span>
+	<FormInput v-model="birthday" type="date" manual-save class="_formBlock">
+		<template #label>{{ $ts.birthday }}</template>
 		<template #prefix><i class="fas fa-birthday-cake"></i></template>
 	</FormInput>
 
-	<FormSelect v-model="lang">
+	<FormSelect v-model="lang" class="_formBlock">
 		<template #label>{{ $ts.language }}</template>
 		<option v-for="x in langs" :key="x[0]" :value="x[0]">{{ x[1] }}</option>
 	</FormSelect>
 
-	<FormGroup>
-		<FormButton primary @click="editMetadata">{{ $ts._profile.metadataEdit }}</FormButton>
+	<FormSlot>
+		<MkButton @click="editMetadata">{{ $ts._profile.metadataEdit }}</MkButton>
 		<template #caption>{{ $ts._profile.metadataDescription }}</template>
-	</FormGroup>
+	</FormSlot>
 
-	<FormSwitch v-model="isCat">{{ $ts.flagAsCat }}<template #desc>{{ $ts.flagAsCatDescription }}</template></FormSwitch>
+	<FormSwitch v-model="isCat" class="_formBlock">{{ $ts.flagAsCat }}<template #caption>{{ $ts.flagAsCatDescription }}</template></FormSwitch>
 
-	<FormSwitch v-model="isBot">{{ $ts.flagAsBot }}<template #desc>{{ $ts.flagAsBotDescription }}</template></FormSwitch>
+	<FormSwitch v-model="isBot" class="_formBlock">{{ $ts.flagAsBot }}<template #caption>{{ $ts.flagAsBotDescription }}</template></FormSwitch>
 
-	<FormSwitch v-model="alwaysMarkNsfw">{{ $ts.alwaysMarkSensitive }}</FormSwitch>
-</FormBase>
+	<FormSwitch v-model="alwaysMarkNsfw" class="_formBlock">{{ $ts.alwaysMarkSensitive }}</FormSwitch>
+</div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import FormButton from '@/components/debobigego/button.vue';
-import FormInput from '@/components/debobigego/input.vue';
-import FormTextarea from '@/components/debobigego/textarea.vue';
-import FormSwitch from '@/components/debobigego/switch.vue';
-import FormSelect from '@/components/debobigego/select.vue';
-import FormBase from '@/components/debobigego/base.vue';
-import FormGroup from '@/components/debobigego/group.vue';
+import MkButton from '@/components/ui/button.vue';
+import FormInput from '@/components/form/input.vue';
+import FormTextarea from '@/components/form/textarea.vue';
+import FormSwitch from '@/components/form/switch.vue';
+import FormSelect from '@/components/form/select.vue';
+import FormSlot from '@/components/form/slot.vue';
 import { host, langs } from '@/config';
 import { selectFile } from '@/scripts/select-file';
 import * as os from '@/os';
@@ -61,13 +60,12 @@ import * as symbols from '@/symbols';
 
 export default defineComponent({
 	components: {
-		FormButton,
+		MkButton,
 		FormInput,
 		FormTextarea,
 		FormSwitch,
 		FormSelect,
-		FormBase,
-		FormGroup,
+		FormSlot,
 	},
 	
 	emits: ['info'],
@@ -257,25 +255,28 @@ export default defineComponent({
 <style lang="scss" scoped>
 .llvierxe {
 	position: relative;
-	height: 150px;
 	background-size: cover;
 	background-position: center;
-
-	> * {
-		pointer-events: none;
-	}
+	border-radius: 10px;
+	overflow: clip;
 
 	> .avatar {
+		display: inline-block;
+		text-align: center;
+		padding: 16px;
+
+		> .avatar {
+			display: inline-block;
+			width: 72px;
+			height: 72px;
+			margin: 0 auto 16px auto;
+		}
+	}
+
+	> .bannerEdit {
 		position: absolute;
-		top: 0;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		display: block;
-		width: 72px;
-		height: 72px;
-		margin: auto;
-		box-shadow: 0 0 0 6px rgba(0, 0, 0, 0.5);
+		top: 16px;
+		right: 16px;
 	}
 }
 </style>

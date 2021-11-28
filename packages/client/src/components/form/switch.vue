@@ -18,7 +18,7 @@
 	</span>
 	<span class="label">
 		<span><slot></slot></span>
-		<p><slot name="caption"></slot></p>
+		<p class="caption"><slot name="caption"></slot></p>
 	</span>
 </div>
 </template>
@@ -118,10 +118,14 @@ export default defineComponent({
 			transition: inherit;
 		}
 
-		> p {
-			margin: 0;
+		> .caption {
+			margin: 8px 0 0 0;
 			color: var(--fgTransparentWeak);
-			font-size: 90%;
+			font-size: 0.85em;
+
+			&:empty {
+				display: none;
+			}
 		}
 	}
 
