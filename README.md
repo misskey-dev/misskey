@@ -12,7 +12,7 @@
 
 [✨ Find an instance](https://misskey-hub.net/instances.html)
 •
-[📦 Create your own instance](https://misskey-hub.net/docs/install/install.html)
+[📦 Create your own instance](https://misskey-hub.net/docs/install.html)
 •
 [🛠️ Contribute](./CONTRIBUTING.md)
 •

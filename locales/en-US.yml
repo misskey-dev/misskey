@@ -931,6 +931,8 @@ _mfm:
   rainbowDescription: "Makes the content appear in rainbow colors."
   sparkle: "Sparkle"
   sparkleDescription: "Gives content a sparkling particle effect."
+  rotate: "Rotate"
+  rotateDescription: "Rotates the content by 90 degrees"
 _reversi:
   reversi: "Reversi"
   gameSettings: "Game settings"

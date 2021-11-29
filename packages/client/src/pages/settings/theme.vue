@@ -1,34 +1,35 @@
 <template>
-<FormBase>
-	<FormGroup>
-		<div class="rfqxtzch _debobigegoItem _debobigegoPanel">
-			<div class="darkMode">
-				<div class="toggleWrapper">
-					<input id="dn" v-model="darkMode" type="checkbox" class="dn"/>
-					<label for="dn" class="toggle">
-						<span class="before">{{ $ts.light }}</span>
-						<span class="after">{{ $ts.dark }}</span>
-						<span class="toggle__handler">
-							<span class="crater crater--1"></span>
-							<span class="crater crater--2"></span>
-							<span class="crater crater--3"></span>
-						</span>
-						<span class="star star--1"></span>
-						<span class="star star--2"></span>
-						<span class="star star--3"></span>
-						<span class="star star--4"></span>
-						<span class="star star--5"></span>
-						<span class="star star--6"></span>
-					</label>
-				</div>
+<div class="_formRoot">
+	<div v-panel class="rfqxtzch _formBlock">
+		<div class="toggle">
+			<div class="toggleWrapper">
+				<input id="dn" v-model="darkMode" type="checkbox" class="dn"/>
+				<label for="dn" class="toggle">
+					<span class="before">{{ $ts.light }}</span>
+					<span class="after">{{ $ts.dark }}</span>
+					<span class="toggle__handler">
+						<span class="crater crater--1"></span>
+						<span class="crater crater--2"></span>
+						<span class="crater crater--3"></span>
+					</span>
+					<span class="star star--1"></span>
+					<span class="star star--2"></span>
+					<span class="star star--3"></span>
+					<span class="star star--4"></span>
+					<span class="star star--5"></span>
+					<span class="star star--6"></span>
+				</label>
 			</div>
 		</div>
-		<FormSwitch v-model="syncDeviceDarkMode">{{ $ts.syncDeviceDarkMode }}</FormSwitch>
-	</FormGroup>
+		<div class="sync">
+			<FormSwitch v-model="syncDeviceDarkMode">{{ $ts.syncDeviceDarkMode }}</FormSwitch>
+		</div>
+	</div>
 
 	<template v-if="darkMode">
-		<FormSelect v-model="darkThemeId">
+		<FormSelect v-model="darkThemeId" class="_formBlock">
 			<template #label>{{ $ts.themeForDarkMode }}</template>
+			<template #prefix><i class="fas fa-moon"></i></template>
 			<optgroup :label="$ts.darkThemes">
 				<option v-for="x in darkThemes" :key="x.id" :value="x.id">{{ x.name }}</option>
 			</optgroup>
@@ -36,8 +37,9 @@
 				<option v-for="x in lightThemes" :key="x.id" :value="x.id">{{ x.name }}</option>
 			</optgroup>
 		</FormSelect>
-		<FormSelect v-model="lightThemeId">
+		<FormSelect v-model="lightThemeId" class="_formBlock">
 			<template #label>{{ $ts.themeForLightMode }}</template>
+			<template #prefix><i class="fas fa-sun"></i></template>
 			<optgroup :label="$ts.lightThemes">
 				<option v-for="x in lightThemes" :key="x.id" :value="x.id">{{ x.name }}</option>
 			</optgroup>
@@ -47,8 +49,9 @@
 		</FormSelect>
 	</template>
 	<template v-else>
-		<FormSelect v-model="lightThemeId">
+		<FormSelect v-model="lightThemeId" class="_formBlock">
 			<template #label>{{ $ts.themeForLightMode }}</template>
+			<template #prefix><i class="fas fa-sun"></i></template>
 			<optgroup :label="$ts.lightThemes">
 				<option v-for="x in lightThemes" :key="x.id" :value="x.id">{{ x.name }}</option>
 			</optgroup>
@@ -56,8 +59,9 @@
 				<option v-for="x in darkThemes" :key="x.id" :value="x.id">{{ x.name }}</option>
 			</optgroup>
 		</FormSelect>
-		<FormSelect v-model="darkThemeId">
+		<FormSelect v-model="darkThemeId" class="_formBlock">
 			<template #label>{{ $ts.themeForDarkMode }}</template>
+			<template #prefix><i class="fas fa-moon"></i></template>
 			<optgroup :label="$ts.darkThemes">
 				<option v-for="x in darkThemes" :key="x.id" :value="x.id">{{ x.name }}</option>
 			</optgroup>
@@ -67,31 +71,28 @@
 		</FormSelect>
 	</template>
 
-	<FormButton v-if="wallpaper == null" primary @click="setWallpaper">{{ $ts.setWallpaper }}</FormButton>
-	<FormButton v-else primary @click="wallpaper = null">{{ $ts.removeWallpaper }}</FormButton>
+	<FormSection>
+		<div class="_formLinksGrid">
+			<FormLink to="/settings/theme/manage"><template #icon><i class="fas fa-folder-open"></i></template>{{ $ts._theme.manage }}<template #suffix>{{ themesCount }}</template></FormLink>
+			<FormLink to="https://assets.misskey.io/theme/list" external><template #icon><i class="fas fa-globe"></i></template>{{ $ts._theme.explore }}</FormLink>
+			<FormLink to="/settings/theme/install"><template #icon><i class="fas fa-download"></i></template>{{ $ts._theme.install }}</FormLink>
+			<FormLink to="/theme-editor"><template #icon><i class="fas fa-paint-roller"></i></template>{{ $ts._theme.make }}</FormLink>
+		</div>
+	</FormSection>
 
-	<FormGroup>
-		<FormLink to="https://assets.misskey.io/theme/list" external><template #icon><i class="fas fa-globe"></i></template>{{ $ts._theme.explore }}</FormLink>
-		<FormLink to="/settings/theme/install"><template #icon><i class="fas fa-download"></i></template>{{ $ts._theme.install }}</FormLink>
-	</FormGroup>
-
-	<FormGroup>
-		<FormLink to="/theme-editor"><template #icon><i class="fas fa-paint-roller"></i></template>{{ $ts._theme.make }}</FormLink>
-		<!--<FormLink to="/advanced-theme-editor"><template #icon><i class="fas fa-paint-roller"></i></template>{{ $ts._theme.make }} ({{ $ts.advanced }})</FormLink>-->
-	</FormGroup>
-
-	<FormLink to="/settings/theme/manage"><template #icon><i class="fas fa-folder-open"></i></template>{{ $ts._theme.manage }}<template #suffix>{{ themesCount }}</template></FormLink>
-</FormBase>
+	<FormButton v-if="wallpaper == null" class="_formBlock" @click="setWallpaper">{{ $ts.setWallpaper }}</FormButton>
+	<FormButton v-else class="_formBlock" @click="wallpaper = null">{{ $ts.removeWallpaper }}</FormButton>
+</div>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, onActivated, onMounted, ref, watch } from 'vue';
-import FormSwitch from '@/components/debobigego/switch.vue';
-import FormSelect from '@/components/debobigego/select.vue';
-import FormBase from '@/components/debobigego/base.vue';
-import FormGroup from '@/components/debobigego/group.vue';
-import FormLink from '@/components/debobigego/link.vue';
-import FormButton from '@/components/debobigego/button.vue';
+import FormSwitch from '@/components/form/switch.vue';
+import FormSelect from '@/components/form/select.vue';
+import FormGroup from '@/components/form/group.vue';
+import FormSection from '@/components/form/section.vue';
+import FormLink from '@/components/form/link.vue';
+import FormButton from '@/components/ui/button.vue';
 import { builtinThemes } from '@/scripts/theme';
 import { selectFile } from '@/scripts/select-file';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
@@ -105,8 +106,8 @@ export default defineComponent({
 	components: {
 		FormSwitch,
 		FormSelect,
-		FormBase,
 		FormGroup,
+		FormSection,
 		FormLink,
 		FormButton,
 	},
@@ -198,11 +199,12 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .rfqxtzch {
-	padding: 16px;
+	border-radius: 6px;
 
-	> .darkMode {
+	> .toggle {
 		position: relative;
-		padding: 32px 0;
+		padding: 26px 0;
+		text-align: center;
 
 		&.disabled {
 			opacity: 0.7;
@@ -212,13 +214,11 @@ export default defineComponent({
 			}
 		}
 
-		.toggleWrapper {
-			position: absolute;
-			top: 50%;
-			left: 50%;
-			overflow: hidden;
+		> .toggleWrapper {
+			display: inline-block;
+			text-align: left;
+			overflow: clip;
 			padding: 0 100px;
-			transform: translate3d(-50%, -50%, 0);
 
 			input {
 				position: absolute;
@@ -239,7 +239,6 @@ export default defineComponent({
 			> .before, > .after {
 				position: absolute;
 				top: 15px;
-				font-size: 18px;
 				transition: color 1s ease;
 			}
 
@@ -419,6 +418,11 @@ export default defineComponent({
 				}
 			}
 		}
+	}
+
+	> .sync {
+		padding: 14px 16px;
+		border-top: solid 0.5px var(--divider);
 	}
 }
 </style>

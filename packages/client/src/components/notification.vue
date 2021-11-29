@@ -74,7 +74,7 @@ import { getNoteSummary } from '@/scripts/get-note-summary';
 import XReactionIcon from './reaction-icon.vue';
 import MkFollowButton from './follow-button.vue';
 import XReactionTooltip from './reaction-tooltip.vue';
-import notePage from '@/filters/note';
+import { notePage } from '@/filters/note';
 import { userPage } from '@/filters/user';
 import { i18n } from '@/i18n';
 import * as os from '@/os';

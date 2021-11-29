@@ -1,69 +1,66 @@
 <template>
-<section class="_card">
-	<div class="_title"><i class="fas fa-lock"></i> {{ $ts.twoStepAuthentication }}</div>
-	<div class="_content">
-		<MkButton v-if="!data && !$i.twoFactorEnabled" @click="register">{{ $ts._2fa.registerDevice }}</MkButton>
-		<template v-if="$i.twoFactorEnabled">
-			<p>{{ $ts._2fa.alreadyRegistered }}</p>
-			<MkButton @click="unregister">{{ $ts.unregister }}</MkButton>
+<div>
+	<MkButton v-if="!data && !$i.twoFactorEnabled" @click="register">{{ $ts._2fa.registerDevice }}</MkButton>
+	<template v-if="$i.twoFactorEnabled">
+		<p>{{ $ts._2fa.alreadyRegistered }}</p>
+		<MkButton @click="unregister">{{ $ts.unregister }}</MkButton>
 
-			<template v-if="supportsCredentials">
-				<hr class="totp-method-sep">
+		<template v-if="supportsCredentials">
+			<hr class="totp-method-sep">
 
-				<h2 class="heading">{{ $ts.securityKey }}</h2>
-				<p>{{ $ts._2fa.securityKeyInfo }}</p>
-				<div class="key-list">
-					<div v-for="key in $i.securityKeysList" class="key">
-						<h3>{{ key.name }}</h3>
-						<div class="last-used">{{ $ts.lastUsed }}<MkTime :time="key.lastUsed"/></div>
-						<MkButton @click="unregisterKey(key)">{{ $ts.unregister }}</MkButton>
-					</div>
+			<h2 class="heading">{{ $ts.securityKey }}</h2>
+			<p>{{ $ts._2fa.securityKeyInfo }}</p>
+			<div class="key-list">
+				<div v-for="key in $i.securityKeysList" class="key">
+					<h3>{{ key.name }}</h3>
+					<div class="last-used">{{ $ts.lastUsed }}<MkTime :time="key.lastUsed"/></div>
+					<MkButton @click="unregisterKey(key)">{{ $ts.unregister }}</MkButton>
 				</div>
+			</div>
 
-				<MkSwitch v-if="$i.securityKeysList.length > 0" v-model="usePasswordLessLogin" @update:modelValue="updatePasswordLessLogin">{{ $ts.passwordLessLogin }}</MkSwitch>
+			<MkSwitch v-if="$i.securityKeysList.length > 0" v-model="usePasswordLessLogin" @update:modelValue="updatePasswordLessLogin">{{ $ts.passwordLessLogin }}</MkSwitch>
 
-				<MkInfo v-if="registration && registration.error" warn>{{ $ts.error }} {{ registration.error }}</MkInfo>
-				<MkButton v-if="!registration || registration.error" @click="addSecurityKey">{{ $ts._2fa.registerKey }}</MkButton>
+			<MkInfo v-if="registration && registration.error" warn>{{ $ts.error }} {{ registration.error }}</MkInfo>
+			<MkButton v-if="!registration || registration.error" @click="addSecurityKey">{{ $ts._2fa.registerKey }}</MkButton>
 
-				<ol v-if="registration && !registration.error">
-					<li v-if="registration.stage >= 0">
-						{{ $ts.tapSecurityKey }}
-						<i v-if="registration.saving && registration.stage == 0" class="fas fa-spinner fa-pulse fa-fw"></i>
-					</li>
-					<li v-if="registration.stage >= 1">
-						<MkForm :disabled="registration.stage != 1 || registration.saving">
-							<MkInput v-model="keyName" :max="30">
-								<template #label>{{ $ts.securityKeyName }}</template>
-							</MkInput>
-							<MkButton :disabled="keyName.length == 0" @click="registerKey">{{ $ts.registerSecurityKey }}</MkButton>
-							<i v-if="registration.saving && registration.stage == 1" class="fas fa-spinner fa-pulse fa-fw"></i>
-						</MkForm>
-					</li>
-				</ol>
-			</template>
-		</template>
-		<div v-if="data && !$i.twoFactorEnabled">
-			<ol style="margin: 0; padding: 0 0 0 1em;">
-				<li>
-					<I18n :src="$ts._2fa.step1" tag="span">
-						<template #a>
-							<a href="https://authy.com/" rel="noopener" target="_blank" class="_link">Authy</a>
-						</template>
-						<template #b>
-							<a href="https://support.google.com/accounts/answer/1066447" rel="noopener" target="_blank" class="_link">Google Authenticator</a>
-						</template>
-					</I18n>
+			<ol v-if="registration && !registration.error">
+				<li v-if="registration.stage >= 0">
+					{{ $ts.tapSecurityKey }}
+					<i v-if="registration.saving && registration.stage == 0" class="fas fa-spinner fa-pulse fa-fw"></i>
 				</li>
-				<li>{{ $ts._2fa.step2 }}<br><img :src="data.qr"></li>
-				<li>{{ $ts._2fa.step3 }}<br>
-					<MkInput v-model="token" type="text" pattern="^[0-9]{6}$" autocomplete="off" spellcheck="false"><template #label>{{ $ts.token }}</template></MkInput>
-					<MkButton primary @click="submit">{{ $ts.done }}</MkButton>
+				<li v-if="registration.stage >= 1">
+					<MkForm :disabled="registration.stage != 1 || registration.saving">
+						<MkInput v-model="keyName" :max="30">
+							<template #label>{{ $ts.securityKeyName }}</template>
+						</MkInput>
+						<MkButton :disabled="keyName.length == 0" @click="registerKey">{{ $ts.registerSecurityKey }}</MkButton>
+						<i v-if="registration.saving && registration.stage == 1" class="fas fa-spinner fa-pulse fa-fw"></i>
+					</MkForm>
 				</li>
 			</ol>
-			<MkInfo>{{ $ts._2fa.step4 }}</MkInfo>
-		</div>
+		</template>
+	</template>
+	<div v-if="data && !$i.twoFactorEnabled">
+		<ol style="margin: 0; padding: 0 0 0 1em;">
+			<li>
+				<I18n :src="$ts._2fa.step1" tag="span">
+					<template #a>
+						<a href="https://authy.com/" rel="noopener" target="_blank" class="_link">Authy</a>
+					</template>
+					<template #b>
+						<a href="https://support.google.com/accounts/answer/1066447" rel="noopener" target="_blank" class="_link">Google Authenticator</a>
+					</template>
+				</I18n>
+			</li>
+			<li>{{ $ts._2fa.step2 }}<br><img :src="data.qr"></li>
+			<li>{{ $ts._2fa.step3 }}<br>
+				<MkInput v-model="token" type="text" pattern="^[0-9]{6}$" autocomplete="off" spellcheck="false"><template #label>{{ $ts.token }}</template></MkInput>
+				<MkButton primary @click="submit">{{ $ts.done }}</MkButton>
+			</li>
+		</ol>
+		<MkInfo>{{ $ts._2fa.step4 }}</MkInfo>
 	</div>
-</section>
+</div>
 </template>
 
 <script lang="ts">
@@ -82,18 +79,11 @@ import * as symbols from '@/symbols';
 
 export default defineComponent({
 	components: {
-		FormBase,
 		MkButton, MkInfo, MkInput, MkSwitch
 	},
 
-	emits: ['info'],
-
 	data() {
 		return {
-			[symbols.PAGE_INFO]: {
-				title: this.$ts.twoStepAuthentication,
-				icon: 'fas fa-lock'
-			},
 			data: null,
 			supportsCredentials: !!navigator.credentials,
 			usePasswordLessLogin: this.$i.usePasswordLessLogin,
