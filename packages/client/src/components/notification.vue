@@ -74,7 +74,7 @@ import { getNoteSummary } from '@/scripts/get-note-summary';
 import XReactionIcon from './reaction-icon.vue';
 import MkFollowButton from './follow-button.vue';
 import XReactionTooltip from './reaction-tooltip.vue';
-import notePage from '@/filters/note';
+import { notePage } from '@/filters/note';
 import { userPage } from '@/filters/user';
 import { i18n } from '@/i18n';
 import * as os from '@/os';
@@ -107,28 +107,25 @@ export default defineComponent({
 		const reactionRef = ref(null);
 
 		onMounted(() => {
-			let readObserver: IntersectionObserver | null = null;
-			let connection = null;
-
 			if (!props.notification.isRead) {
-				readObserver = new IntersectionObserver((entries, observer) => {
+				const readObserver = new IntersectionObserver((entries, observer) => {
 					if (!entries.some(entry => entry.isIntersecting)) return;
 					os.stream.send('readNotification', {
 						id: props.notification.id
 					});
-					entries.map(({ target }) => observer.unobserve(target));
+					observer.disconnect();
 				});
 
 				readObserver.observe(elRef.value);
 
-				connection = os.stream.useChannel('main');
-				connection.on('readAllNotifications', () => readObserver.unobserve(elRef.value));
-			}
+				const connection = os.stream.useChannel('main');
+				connection.on('readAllNotifications', () => readObserver.disconnect());
 
-			onUnmounted(() => {
-				if (readObserver) readObserver.unobserve(elRef.value);
-				if (connection) connection.dispose();
-			});
+				onUnmounted(() => {
+					readObserver.disconnect();
+					connection.dispose();
+				});
+			}
 		});
 
 		const followRequestDone = ref(false);

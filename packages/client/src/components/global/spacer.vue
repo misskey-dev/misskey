@@ -15,19 +15,29 @@ export default defineComponent({
 			type: Number,
 			required: false,
 			default: null,
-		}
+		},
+		marginMin: {
+			type: Number,
+			required: false,
+			default: 12,
+		},
+		marginMax: {
+			type: Number,
+			required: false,
+			default: 32,
+		},
 	},
 
 	setup(props, context) {
 		let ro: ResizeObserver;
-		const root = ref<HTMLElement>(null);
-		const content = ref<HTMLElement>(null);
+		const root = ref<HTMLElement>();
+		const content = ref<HTMLElement>();
 		const margin = ref(0);
 		const adjust = (rect: { width: number; height: number; }) => {
 			if (rect.width > (props.contentMax || 500)) {
-				margin.value = 32;
+				margin.value = props.marginMax;
 			} else {
-				margin.value = 12;
+				margin.value = props.marginMin;
 			}
 		};
 
@@ -40,14 +50,14 @@ export default defineComponent({
 				});
 				*/
 				adjust({
-					width: root.value.offsetWidth,
-					height: root.value.offsetHeight,
+					width: root.value!.offsetWidth,
+					height: root.value!.offsetHeight,
 				});
 			});
-			ro.observe(root.value);
+			ro.observe(root.value!);
 
 			if (props.contentMax) {
-				content.value.style.maxWidth = `${props.contentMax}px`;
+				content.value!.style.maxWidth = `${props.contentMax}px`;
 			}
 		});
 
