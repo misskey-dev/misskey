@@ -15,7 +15,7 @@ export default class extends Channel {
 			switch (data.type) {
 				case 'notification': {
 					// Ignore notifications from instances the user has muted
-					if (isInstanceMuted(data.body, new Set<string>(this.userProfile?.mutedInstances ?? []))) return;
+					if (isInstanceMuted(data.body.note, new Set<string>(this.userProfile?.mutedInstances ?? []))) return;
 					if (data.body.userId && this.muting.has(data.body.userId)) return;
 
 					if (data.body.note && data.body.note.isHidden) {
