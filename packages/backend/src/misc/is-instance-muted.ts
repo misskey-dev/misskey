@@ -7,3 +7,9 @@ export function isInstanceMuted(note: Packed<'Note'>, mutedInstances: Set<string
 
 	return false;
 }
+
+export function isUserFromMutedInstance(notif: Packed<'Notification'>, mutedInstances: Set<string>): boolean {
+	if (mutedInstances.has(notif?.user?.host ?? '')) return true;
+
+	return false;
+}
