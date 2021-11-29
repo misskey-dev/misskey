@@ -1,7 +1,9 @@
-export function isInstanceMuted(note: any, muted_instances: Set<string>): boolean {
-	if (muted_instances.has(note?.user?.host ?? '')) return true;
-	if (muted_instances.has(note?.reply?.user?.host ?? '')) return true;
-	if (muted_instances.has(note?.renote?.user?.host ?? '')) return true;
+import { Packed } from "./schema";
+
+export function isInstanceMuted(note: Packed<'Note'>, mutedInstances: Set<string>): boolean {
+	if (mutedInstances.has(note?.user?.host ?? '')) return true;
+	if (mutedInstances.has(note?.reply?.user?.host ?? '')) return true;
+	if (mutedInstances.has(note?.renote?.user?.host ?? '')) return true;
 
 	return false;
 }
