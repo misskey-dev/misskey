@@ -33,17 +33,17 @@ import { instance } from '@/instance';
 import { $i } from '@/account';
 
 export default defineComponent({
-  components: {
-    MkInfo,
-    MkSuperMenu,
-  },
+	components: {
+		MkInfo,
+		MkSuperMenu,
+	},
 
-  props: {
-    initialPage: {
-      type: String,
-      required: false,
-    },
-  },
+	props: {
+		initialPage: {
+			type: String,
+			required: false,
+		},
+	},
 
 	setup(props, context) {
 		const indexInfo = {
@@ -230,57 +230,57 @@ export default defineComponent({
 			return null;
 		});
 
-    watch(
-      component,
-      () => {
-        pageProps.value = {};
+		watch(
+			component,
+			() => {
+				pageProps.value = {};
 
-        if (page.value) {
-          if (page.value.startsWith("registry/keys/system/")) {
-            pageProps.value.scope = page.value
-              .replace("registry/keys/system/", "")
-              .split("/");
-          }
-          if (page.value.startsWith("registry/value/system/")) {
-            const path = page.value
-              .replace("registry/value/system/", "")
-              .split("/");
-            pageProps.value.xKey = path.pop();
-            pageProps.value.scope = path;
-          }
-        }
+				if (page.value) {
+					if (page.value.startsWith("registry/keys/system/")) {
+						pageProps.value.scope = page.value
+							.replace("registry/keys/system/", "")
+							.split("/");
+					}
+					if (page.value.startsWith("registry/value/system/")) {
+						const path = page.value
+							.replace("registry/value/system/", "")
+							.split("/");
+						pageProps.value.xKey = path.pop();
+						pageProps.value.scope = path;
+					}
+				}
 
-        nextTick(() => {
-          scroll(el.value, { top: 0 });
-        });
-      },
-      { immediate: true }
-    );
+				nextTick(() => {
+					scroll(el.value, { top: 0 });
+				});
+			},
+			{ immediate: true }
+		);
 
-    watch(
-      () => props.initialPage,
-      () => {
-        if (props.initialPage == null && !narrow.value) {
-          page.value = "profile";
-        } else {
-          page.value = props.initialPage;
-          if (props.initialPage == null) {
-            INFO.value = indexInfo;
-          }
-        }
-      }
-    );
+		watch(
+			() => props.initialPage,
+			() => {
+				if (props.initialPage == null && !narrow.value) {
+					page.value = "profile";
+				} else {
+					page.value = props.initialPage;
+					if (props.initialPage == null) {
+						INFO.value = indexInfo;
+					}
+				}
+			}
+		);
 
-    onMounted(() => {
-      narrow.value = el.value.offsetWidth < 800;
-      if (!narrow.value) {
-        page.value = "profile";
-      }
-    });
+		onMounted(() => {
+			narrow.value = el.value.offsetWidth < 800;
+			if (!narrow.value) {
+				page.value = "profile";
+			}
+		});
 
-    const emailNotConfigured = computed(
-      () => instance.enableEmail && ($i.email == null || !$i.emailVerified)
-    );
+		const emailNotConfigured = computed(
+			() => instance.enableEmail && ($i.email == null || !$i.emailVerified)
+		);
 
 		const onInfo = (info) => {
 			childInfo.value = info;
@@ -305,28 +305,28 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .vvcocwet {
-  > .nav {
-    .baaadecd {
-      > .title {
-        margin: 16px;
-        font-size: 1.5em;
-        font-weight: bold;
-      }
+	> .nav {
+		.baaadecd {
+			> .title {
+				margin: 16px;
+				font-size: 1.5em;
+				font-weight: bold;
+			}
 
 			> .info {
 				margin: 16px 0;
 			}
 
-      > .accounts {
-        > .avatar {
-          display: block;
-          width: 50px;
-          height: 50px;
-          margin: 8px auto 16px auto;
-        }
-      }
-    }
-  }
+			> .accounts {
+				> .avatar {
+					display: block;
+					width: 50px;
+					height: 50px;
+					margin: 8px auto 16px auto;
+				}
+			}
+		}
+	}
 
 	> .main {
 		.bkzroven {
@@ -344,17 +344,17 @@ export default defineComponent({
 		margin: 0 auto;
 		height: 100%;
 
-    > .nav {
-      width: 32%;
-      box-sizing: border-box;
-      overflow: auto;
+		> .nav {
+			width: 32%;
+			box-sizing: border-box;
+			overflow: auto;
 
-      .baaadecd {
-        > .title {
-          margin: 24px 0;
-        }
-      }
-    }
+			.baaadecd {
+				> .title {
+					margin: 24px 0;
+				}
+			}
+		}
 
 		> .main {
 			flex: 1;
