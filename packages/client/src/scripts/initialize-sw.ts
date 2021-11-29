@@ -8,7 +8,7 @@ export async function initializeSw() {
 		('serviceWorker' in navigator) &&
 		('PushManager' in window) &&
 		$i && $i.token) {
-		navigator.serviceWorker.register(`/sw.js`, { scope: '/', type: 'module' });
+		navigator.serviceWorker.register(`/sw.js`, { scope: '/', type: 'classic' });
 
 		navigator.serviceWorker.ready.then(registration => {
 			registration.active?.postMessage({

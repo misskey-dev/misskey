@@ -23,7 +23,7 @@ const meta = require('../../package.json');
 module.exports = {
 	target: 'webworker',
 	entry: {
-		sw: './src/sw.ts'
+		['sw-lib']: './src/lib.ts'
 	},
 	module: {
 		rules: [{
@@ -35,7 +35,6 @@ module.exports = {
 					happyPackMode: true,
 					transpileOnly: true,
 					configFile: __dirname + '/tsconfig.json',
-					appendTsSuffixTo: [/\.vue$/]
 				}
 			}]
 		}]
@@ -56,7 +55,7 @@ module.exports = {
 	],
 	output: {
 		path: __dirname + '/../../built/_sw_dist_',
-		filename: `[name].${meta.version}.js`,
+		filename: `[name].js`,
 		publicPath: `/`,
 		pathinfo: false,
 	},
@@ -70,9 +69,6 @@ module.exports = {
 	},
 	resolveLoader: {
 		modules: ['node_modules']
-	},
-	experiments: {
-		topLevelAwait: true
 	},
 	devtool: false, //'source-map',
 	mode: isProduction ? 'production' : 'development'

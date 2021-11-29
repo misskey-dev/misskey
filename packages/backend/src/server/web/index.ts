@@ -142,7 +142,12 @@ router.get('/twemoji-badge/(.*)', async ctx => {
 
 // ServiceWorker
 router.get('/sw.js', async ctx => {
-	await send(ctx as any, `/sw.${config.version}.js`, {
+	await send(ctx as any, `/sw.js`, {
+		root: swAssets
+	});
+});
+router.get(`/sw-lib.${config.version}.js`, async ctx => {
+	await send(ctx as any, `/sw-lib.js`, {
 		root: swAssets
 	});
 });
