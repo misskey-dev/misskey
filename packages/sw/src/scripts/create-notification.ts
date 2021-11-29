@@ -6,7 +6,6 @@ declare var self: ServiceWorkerGlobalScope;
 import { swLang } from '@/scripts/lang';
 import { cli } from '@/scripts/operations';
 import { pushNotificationDataMap } from '@/types';
-import { getNoteSummary } from '@/scripts/get-note-summary';
 import getUserName from '@/scripts/get-user-name';
 import { I18n } from '@/scripts/i18n';
 import { getAccountFromId } from '@/scripts/get-account-from-id';
@@ -61,7 +60,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 
 				case 'mention':
 					return [t('_notification.youGotMention', { name: getUserName(data.body.user) }), {
-						body: getNoteSummary(data.body.note, i18n),
+						body: data.body.note.text || '',
 						icon: data.body.user.avatarUrl,
 						badge: iconUrl('at'),
 						data,
@@ -75,7 +74,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 
 				case 'reply':
 					return [t('_notification.youGotReply', { name: getUserName(data.body.user) }), {
-						body: getNoteSummary(data.body.note, i18n),
+						body: data.body.note.text || '',
 						icon: data.body.user.avatarUrl,
 						badge: iconUrl('reply'),
 						data,
@@ -89,7 +88,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 
 				case 'renote':
 					return [t('_notification.youRenoted', { name: getUserName(data.body.user) }), {
-						body: getNoteSummary(data.body.note.renote, i18n),
+						body: data.body.note.text || '',
 						icon: data.body.user.avatarUrl,
 						badge: iconUrl('retweet'),
 						data,
@@ -103,7 +102,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 
 				case 'quote':
 					return [t('_notification.youGotQuote', { name: getUserName(data.body.user) }), {
-						body: getNoteSummary(data.body.note, i18n),
+						body: data.body.note.text || '',
 						icon: data.body.user.avatarUrl,
 						badge: iconUrl('quote-right'),
 						data,
@@ -156,7 +155,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 					}
 
 					return [`${reaction} ${getUserName(data.body.user)}`, {
-						body: getNoteSummary(data.body.note, i18n),
+						body: data.body.note.text || '',
 						icon: data.body.user.avatarUrl,
 						badge,
 						data,
@@ -170,7 +169,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 
 				case 'pollVote':
 					return [t('_notification.youGotPoll', { name: getUserName(data.body.user) }), {
-						body: getNoteSummary(data.body.note, i18n),
+						body: data.body.note.text || '',
 						icon: data.body.user.avatarUrl,
 						badge: iconUrl('poll-h'),
 						data,
