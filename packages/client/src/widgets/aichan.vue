@@ -1,6 +1,6 @@
 <template>
 <MkContainer :naked="props.transparent" :show-header="false">
-	<iframe ref="live2d" class="dedjhjmo" src="https://ao.nya.one/?scale=2&y=1.4" @click="touched"></iframe>
+	<iframe ref="live2d" class="dedjhjmo" src="https://ao.nya.one/?scale=1.5&y=1.1&eyeY=100" @click="touched"></iframe>
 </MkContainer>
 </template>
 
