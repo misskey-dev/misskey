@@ -1,7 +1,17 @@
 /**
  * Service Worker
  */
-declare var self: ServiceWorkerGlobalScope;
+declare var self: ServiceWorkerGlobalScope & {
+	lib: {
+		oninstall: (ev: ServiceWorkerGlobalScopeEventMap['install']) => void;
+		onactivate: (ev: ServiceWorkerGlobalScopeEventMap['activate']) => void;
+		onfetch: (ev: ServiceWorkerGlobalScopeEventMap['fetch']) => void;
+		onpush: (ev: ServiceWorkerGlobalScopeEventMap['push']) => void;
+		onnotificationclick: (ev: ServiceWorkerGlobalScopeEventMap['notificationclick']) => void;
+		onnotificationclose: (ev: ServiceWorkerGlobalScopeEventMap['notificationclose']) => void;
+		onmessage: (ev: ServiceWorkerGlobalScopeEventMap['message']) => void;
+	};
+};
 
 import { createEmptyNotification, createNotification } from '@/scripts/create-notification';
 import { swLang } from '@/scripts/lang';
@@ -10,14 +20,15 @@ import { pushNotificationDataMap } from '@/types';
 import * as swos from '@/scripts/operations';
 import { acct as getAcct } from '@/filters/user';
 
+self.lib = {} as any;
+
 //#region Lifecycle: Install
-self.addEventListener('install', ev => {
+self.lib.oninstall = (ev: ServiceWorkerGlobalScopeEventMap['install']) => {
 	ev.waitUntil(self.skipWaiting());
-});
-//#endregion
+}
 
 //#region Lifecycle: Activate
-self.addEventListener('activate', ev => {
+self.lib.onactivate = (ev: ServiceWorkerGlobalScopeEventMap['activate']) => {
 	ev.waitUntil(
 		caches.keys()
 			.then(cacheNames => Promise.all(
@@ -27,20 +38,20 @@ self.addEventListener('activate', ev => {
 			))
 			.then(() => self.clients.claim())
 	);
-});
+}
 //#endregion
 
 //#region When: Fetching
-self.addEventListener('fetch', ev => {
+self.lib.onfetch = (ev: ServiceWorkerGlobalScopeEventMap['fetch']) => {
 	ev.respondWith(
 		fetch(ev.request)
 		.catch(() => new Response(`Offline. Service Worker @${_VERSION_}`, { status: 200 }))
 	);
-});
+}
 //#endregion
 
 //#region When: Caught Notification
-self.addEventListener('push', ev => {
+self.lib.onpush = (ev: ServiceWorkerGlobalScopeEventMap['push']) => {
 	// クライアント取得
 	ev.waitUntil(self.clients.matchAll({
 		includeUncontrolled: true,
@@ -89,13 +100,12 @@ self.addEventListener('push', ev => {
 
 		createEmptyNotification();
 	}));
-});
+}
 //#endregion
 
 //#region Notification
-self.addEventListener('notificationclick', <K extends keyof pushNotificationDataMap>(ev: NotificationEvent) => {
-	ev.waitUntil((async () => {
-
+self.lib.onnotificationclick = <K extends keyof pushNotificationDataMap>(ev: ServiceWorkerGlobalScopeEventMap['notificationclick']) => {
+ev.waitUntil((async () => {
 	if (_DEV_) {
 		console.log('notificationclick', ev.action, ev.notification.data);
 	}
@@ -178,20 +188,21 @@ self.addEventListener('notificationclick', <K extends keyof pushNotificationData
 
 	notification.close();
 
-	})());
-});
+})());
+}
 
-self.addEventListener('notificationclose', <K extends keyof pushNotificationDataMap>(ev: NotificationEvent) => {
+self.lib.onnotificationclose = <K extends keyof pushNotificationDataMap>(ev: ServiceWorkerGlobalScopeEventMap['notificationclose']) => {
 	const data: pushNotificationDataMap[K] = ev.notification.data;
 
 	if (data.type === 'notification') {
 		swNotificationRead.then(that => that.read(data));
 	}
-});
+}
 //#endregion
 
 //#region When: Caught a message from the client
-self.addEventListener('message', async ev => {
+self.lib.onmessage = (ev: ServiceWorkerGlobalScopeEventMap['message']) => {
+ev.waitUntil((async () => {
 	switch (ev.data) {
 		case 'clear':
 			// Cache Storage全削除
@@ -212,5 +223,6 @@ self.addEventListener('message', async ev => {
 			}
 		}
 	}
-});
+})());
+}
 //#endregion
