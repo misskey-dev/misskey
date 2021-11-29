@@ -3,8 +3,9 @@ import config from '@/config/index';
 import { SwSubscriptions } from '@/models/index';
 import { fetchMeta } from '@/misc/fetch-meta';
 import { Packed } from '@/misc/schema';
+import { getNoteSummary } from '@/misc/get-note-summary';
 
-// Defined also @client/sw/types.ts#L14-L21
+// Defined also packages/sw/types.ts#L14-L21
 type pushNotificationsTypes = {
 	'notification': Packed<'Notification'>;
 	'unreadMessagingMessage': Packed<'MessagingMessage'>;
@@ -13,6 +14,28 @@ type pushNotificationsTypes = {
 	'readAllMessagingMessages': undefined;
 	'readAllMessagingMessagesOfARoom': { userId: string } | { groupId: string };
 };
+
+// プッシュメッセージサーバーには文字数制限があるため、内容を削減します
+function truncateNotification(notification: Packed<'Notification'>): Packed<'Notification'> {
+	if (notification.note) {
+		return {
+			...notification,
+			note: {
+				...notification.note,
+				// textをgetNoteSummaryしたものに置き換える
+				text: getNoteSummary(notification.type === 'renote' ? notification.note.renote as Packed<'Note'> : notification.note),
+				...{
+					cw: undefined,
+					reply: undefined,
+					renote: undefined,
+					user: undefined as any, // 通知を受け取ったユーザーである場合が多いのでこれも捨てる
+				}
+			}
+		};
+	}
+
+	return notification;
+}
 
 export async function pushNotification<T extends keyof pushNotificationsTypes>(userId: string, type: T, body: pushNotificationsTypes[T]) {
 	const meta = await fetchMeta();
@@ -39,7 +62,9 @@ export async function pushNotification<T extends keyof pushNotificationsTypes>(u
 		};
 
 		push.sendNotification(pushSubscription, JSON.stringify({
-			type, body, userId
+			type,
+			body: type === 'notification' ? truncateNotification(body as Packed<'Notification'>) : body,
+			userId,
 		}), {
 			proxy: config.proxy
 		}).catch((err: any) => {
