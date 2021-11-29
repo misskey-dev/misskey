@@ -142,12 +142,12 @@ export default defineComponent({
 	padding: 8px 14px;
 	text-align: center;
 	font-weight: normal;
-	font-size: 0.8em;
+	font-size: 0.9em;
 	line-height: 22px;
 	box-shadow: none;
 	text-decoration: none;
 	background: var(--buttonBg);
-	border-radius: 4px;
+	border-radius: 5px;
 	overflow: clip;
 	box-sizing: border-box;
 	transition: background 0.1s ease;

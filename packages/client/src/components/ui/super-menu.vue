@@ -51,7 +51,6 @@ export default defineComponent({
 		}
 
 		> .title {
-			font-size: 0.9em;
 			opacity: 0.7;
 			margin: 0 0 8px 12px;
 		}
@@ -64,7 +63,6 @@ export default defineComponent({
 				box-sizing: border-box;
 				padding: 10px 16px 10px 8px;
 				border-radius: 9px;
-				font-size: 0.9em;
 
 				&:hover {
 					text-decoration: none;

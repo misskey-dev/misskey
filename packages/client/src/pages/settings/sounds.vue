@@ -1,29 +1,28 @@
 <template>
-<FormBase>
-	<FormRange v-model="masterVolume" :min="0" :max="1" :step="0.05">
-		<template #label><i class="fas fa-volume-icon"></i> {{ $ts.masterVolume }}</template>
+<div class="_formRoot">
+	<FormRange v-model="masterVolume" :min="0" :max="1" :step="0.05" :text-converter="(v) => `${Math.floor(v * 100)}%`" class="_formBlock">
+		<template #label>{{ $ts.masterVolume }}</template>
 	</FormRange>
 
-	<FormGroup>
+	<FormSection>
 		<template #label>{{ $ts.sounds }}</template>
-		<FormButton v-for="type in Object.keys(sounds)" :key="type" :center="false" @click="edit(type)">
+		<FormLink v-for="type in Object.keys(sounds)" :key="type" style="margin-bottom: 8px;" @click="edit(type)">
 			{{ $t('_sfx.' + type) }}
 			<template #suffix>{{ sounds[type].type || $ts.none }}</template>
 			<template #suffixIcon><i class="fas fa-chevron-down"></i></template>
-		</FormButton>
-	</FormGroup>
+		</FormLink>
+	</FormSection>
 
-	<FormButton danger @click="reset()"><i class="fas fa-redo"></i> {{ $ts.default }}</FormButton>
-</FormBase>
+	<FormButton danger class="_formBlock" @click="reset()"><i class="fas fa-redo"></i> {{ $ts.default }}</FormButton>
+</div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import FormRange from '@/components/debobigego/range.vue';
-import FormSelect from '@/components/debobigego/select.vue';
-import FormBase from '@/components/debobigego/base.vue';
-import FormButton from '@/components/debobigego/button.vue';
-import FormGroup from '@/components/debobigego/group.vue';
+import FormRange from '@/components/form/range.vue';
+import FormButton from '@/components/ui/button.vue';
+import FormLink from '@/components/form/link.vue';
+import FormSection from '@/components/form/section.vue';
 import * as os from '@/os';
 import { ColdDeviceStorage } from '@/store';
 import { playFile } from '@/scripts/sound';
@@ -58,11 +57,10 @@ const soundsTypes = [
 
 export default defineComponent({
 	components: {
-		FormSelect,
+		FormLink,
 		FormButton,
-		FormBase,
 		FormRange,
-		FormGroup,
+		FormSection,
 	},
 
 	emits: ['info'],

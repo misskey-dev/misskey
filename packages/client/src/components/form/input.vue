@@ -5,6 +5,7 @@
 		<div ref="prefixEl" class="prefix"><slot name="prefix"></slot></div>
 		<input ref="inputEl"
 			v-model="v"
+			v-panel
 			:type="type"
 			:disabled="disabled"
 			:required="required"
@@ -27,7 +28,7 @@
 	</div>
 	<div class="caption"><slot name="caption"></slot></div>
 
-	<MkButton v-if="manualSave && changed" primary @click="updated"><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
+	<MkButton v-if="manualSave && changed" primary class="save" @click="updated"><i class="fas fa-check"></i> {{ $ts.save }}</MkButton>
 </div>
 </template>
 
@@ -114,9 +115,9 @@ export default defineComponent({
 		const changed = ref(false);
 		const invalid = ref(false);
 		const filled = computed(() => v.value !== '' && v.value != null);
-		const inputEl = ref(null);
-		const prefixEl = ref(null);
-		const suffixEl = ref(null);
+		const inputEl = ref<HTMLElement>();
+		const prefixEl = ref<HTMLElement>();
+		const suffixEl = ref<HTMLElement>();
 
 		const focus = () => inputEl.value.focus();
 		const onInput = (ev) => {
@@ -208,7 +209,7 @@ export default defineComponent({
 .matxzzsk {
 	> .label {
 		font-size: 0.85em;
-		padding: 0 0 8px 12px;
+		padding: 0 0 8px 0;
 		user-select: none;
 
 		&:empty {
@@ -217,8 +218,8 @@ export default defineComponent({
 	}
 
 	> .caption {
-		font-size: 0.8em;
-		padding: 8px 0 0 12px;
+		font-size: 0.85em;
+		padding: 8px 0 0 0;
 		color: var(--fgTransparentWeak);
 
 		&:empty {
@@ -242,8 +243,7 @@ export default defineComponent({
 			font-weight: normal;
 			font-size: 1em;
 			color: var(--fg);
-			background: var(--panel);
-			border: solid 0.5px var(--inputBorder);
+			border: solid 0.5px var(--panel);
 			border-radius: 6px;
 			outline: none;
 			box-shadow: none;
@@ -310,6 +310,10 @@ export default defineComponent({
 				cursor: not-allowed !important;
 			}
 		}
+	}
+
+	> .save {
+		margin: 8px 0 0 0;
 	}
 }
 </style>

@@ -23,6 +23,8 @@ export default defineComponent({
 	},
 	render() {
 		let options = this.$slots.default();
+		const label = this.$slots.label && this.$slots.label();
+		const caption = this.$slots.caption && this.$slots.caption();
 
 		// なぜかFragmentになることがあるため
 		if (options.length === 1 && options[0].props == null) options = options[0].children;
@@ -30,12 +32,21 @@ export default defineComponent({
 		return h('div', {
 			class: 'novjtcto'
 		}, [
-			...options.map(option => h(MkRadio, {
-				key: option.key,
-				value: option.props.value,
-				modelValue: this.value,
-				'onUpdate:modelValue': value => this.value = value,
-			}, option.children))
+			...(label ? [h('div', {
+				class: 'label'
+			}, [label])] : []),
+			h('div', {
+				class: 'body'
+			}, options.map(option => h(MkRadio, {
+					key: option.key,
+					value: option.props.value,
+					modelValue: this.value,
+					'onUpdate:modelValue': value => this.value = value,
+				}, option.children)),
+			),
+			...(caption ? [h('div', {
+				class: 'caption'
+			}, [caption])] : []),
 		]);
 	}
 });
@@ -43,12 +54,30 @@ export default defineComponent({
 
 <style lang="scss">
 .novjtcto {
-	&:first-child {
-		margin-top: 0;
+	> .label {
+		font-size: 0.85em;
+		padding: 0 0 8px 0;
+		user-select: none;
+
+		&:empty {
+			display: none;
+		}
 	}
 
-	&:last-child {
-		margin-bottom: 0;
+	> .body {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+		grid-gap: 12px;
+	}
+
+	> .caption {
+		font-size: 0.85em;
+		padding: 8px 0 0 0;
+		color: var(--fgTransparentWeak);
+
+		&:empty {
+			display: none;
+		}
 	}
 }
 </style>
