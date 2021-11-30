@@ -269,6 +269,7 @@ nsfw: "Enhavo ne estas deca por laborejo (NSFW)"
 disconnectedFromServer: "Malkonektita de servilo"
 reload: "Reŝargi"
 doNothing: "Ignori"
+reloadConfirm: "Ĉu vi volas reŝargi?"
 watch: "Observi"
 unwatch: "Malobservi"
 accept: "Permesi"
@@ -684,6 +685,8 @@ _instanceTicker:
   none: "Ne montri"
   remote: "Montri al foraj uzantoj"
   always: "Ĉiam montri"
+_serverDisconnectedBehavior:
+  reload: "Aŭtomate reŝargi"
 _channel:
   create: "Krei kanalon"
   edit: "Redakti kanalon"
