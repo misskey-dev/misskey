@@ -114,6 +114,12 @@ markAsSensitive: "Markeren als NSFW"
 unmarkAsSensitive: "Geen NSFW"
 enterFileName: "Invoeren bestandsnaam"
 mute: "Dempen"
+unmute: "Stop dempen"
+block: "Blokkeren"
+unblock: "Deblokkeren"
+suspend: "Opschorten"
+unsuspend: "Heractiveren"
+blockConfirm: "Weet je zeker dat je dit account wil blokkeren?"
 instances: "Server"
 remove: "Verwijderen"
 nsfw: "NSFW"
@@ -150,6 +156,7 @@ _profile:
 _exportOrImport:
   followingList: "Volgend"
   muteList: "Dempen"
+  blockingList: "Blokkeren"
   userLists: "Lijsten"
 _pages:
   script:
