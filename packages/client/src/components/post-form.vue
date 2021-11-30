@@ -289,9 +289,14 @@ export default defineComponent({
 
 		if (this.reply && this.reply.text != null) {
 			const ast = mfm.parse(this.reply.text);
+			const otherHost = this.reply.user.host;
 
 			for (const x of extractMentions(ast)) {
-				const mention = x.host ? `@${x.username}@${toASCII(x.host)}` : `@${x.username}`;
+				const mention = x.host ?
+													`@${x.username}@${toASCII(x.host)}` :
+													(otherHost == null || otherHost == host) ?
+														`@${x.username}` :
+														`@${x.username}@${toASCII(otherHost)}`;
 
 				// 自分は除外
 				if (this.$i.username == x.username && x.host == null) continue;
