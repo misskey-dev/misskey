@@ -66,7 +66,7 @@ export default defineComponent({
 					icon: 'fas fa-home',
 					iconOnly: true,
 					onClick: () => { this.src = 'home'; this.saveSrc(); },
-				}, {
+				}, ...(this.isLocalTimelineAvailable ? [{
 					active: this.src === 'local',
 					title: this.$ts._timelines.local,
 					icon: 'fas fa-comments',
@@ -78,13 +78,13 @@ export default defineComponent({
 					icon: 'fas fa-share-alt',
 					iconOnly: true,
 					onClick: () => { this.src = 'social'; this.saveSrc(); },
-				}, {
+				}] : []), ...(this.isGlobalTimelineAvailable ? [{
 					active: this.src === 'global',
 					title: this.$ts._timelines.global,
 					icon: 'fas fa-globe',
 					iconOnly: true,
 					onClick: () => { this.src = 'global'; this.saveSrc(); },
-				}],
+				}] : [])],
 			})),
 		};
 	},
