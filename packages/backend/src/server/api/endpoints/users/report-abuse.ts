@@ -9,10 +9,6 @@ import { AbuseUserReports, Users } from '@/models/index';
 import { genId } from '@/misc/gen-id';
 import { sendEmail } from '@/services/send-email';
 import { fetchMeta } from '@/misc/fetch-meta';
-import { getInstanceActor } from '@/services/instance-actor';
-import { deliver } from '@/queue/index';
-import { renderActivity } from '@/remote/activitypub/renderer/index';
-import { renderFlag } from '@/remote/activitypub/renderer/flag';
 
 export const meta = {
 	tags: ['users'],
@@ -26,11 +22,6 @@ export const meta = {
 
 		comment: {
 			validator: $.str.range(1, 2048),
-		},
-
-		forward: {
-			validator: $.optional.boolean,
-			default: false,
 		},
 	},
 
@@ -107,10 +98,4 @@ export default define(meta, async (ps, me) => {
 				sanitizeHtml(ps.comment));
 		}
 	}, 1);
-
-	if (ps.forward && user.host != null) {
-		const actor = await getInstanceActor();
-		// forward to other users instance
-		deliver(actor, renderActivity(renderFlag(actor, user.uri!, ps.comment)), user.inbox);
-	}
 });
