@@ -34,7 +34,7 @@ export default defineComponent({
 		const content = ref<HTMLElement>();
 		const margin = ref(0);
 		const adjust = (rect: { width: number; height: number; }) => {
-			if (rect.width > (props.contentMax || 500)) {
+			if (rect.width > props.contentMax || rect.width > 500) {
 				margin.value = props.marginMax;
 			} else {
 				margin.value = props.marginMin;
