@@ -16,7 +16,7 @@
 				</div>
 				<div class="announcements panel">
 					<header>{{ $ts.announcements }}</header>
-					<MkPagination #default="{items}" :pagination="announcements" class="list">
+					<MkPagination v-slot="{items}" :pagination="announcements" class="list">
 						<section v-for="announcement in items" :key="announcement.id" class="item">
 							<div class="title">{{ announcement.title }}</div>
 							<div class="content">

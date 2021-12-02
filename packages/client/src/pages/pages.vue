@@ -1,50 +1,40 @@
 <template>
-<MkSpacer>
-	<!-- TODO: MkHeaderに統合 -->
-	<MkTab v-if="$i" v-model="tab">
-		<option value="featured"><i class="fas fa-fire-alt"></i> {{ $ts._pages.featured }}</option>
-		<option value="my"><i class="fas fa-edit"></i> {{ $ts._pages.my }}</option>
-		<option value="liked"><i class="fas fa-heart"></i> {{ $ts._pages.liked }}</option>
-	</MkTab>
+<MkSpacer :content-max="700">
+	<div v-if="tab === 'featured'" class="rknalgpo">
+		<MkPagination v-slot="{items}" :pagination="featuredPagesPagination">
+			<MkPagePreview v-for="page in items" :key="page.id" class="ckltabjg" :page="page"/>
+		</MkPagination>
+	</div>
 
-	<div class="_section">
-		<div v-if="tab === 'featured'" class="rknalgpo _content">
-			<MkPagination #default="{items}" :pagination="featuredPagesPagination">
-				<MkPagePreview v-for="page in items" :key="page.id" class="ckltabjg" :page="page"/>
-			</MkPagination>
-		</div>
+	<div v-else-if="tab === 'my'" class="rknalgpo my">
+		<MkButton class="new" @click="create()"><i class="fas fa-plus"></i></MkButton>
+		<MkPagination v-slot="{items}" :pagination="myPagesPagination">
+			<MkPagePreview v-for="page in items" :key="page.id" class="ckltabjg" :page="page"/>
+		</MkPagination>
+	</div>
 
-		<div v-if="tab === 'my'" class="rknalgpo _content my">
-			<MkButton class="new" @click="create()"><i class="fas fa-plus"></i></MkButton>
-			<MkPagination #default="{items}" :pagination="myPagesPagination">
-				<MkPagePreview v-for="page in items" :key="page.id" class="ckltabjg" :page="page"/>
-			</MkPagination>
-		</div>
-
-		<div v-if="tab === 'liked'" class="rknalgpo _content">
-			<MkPagination #default="{items}" :pagination="likedPagesPagination">
-				<MkPagePreview v-for="like in items" :key="like.page.id" class="ckltabjg" :page="like.page"/>
-			</MkPagination>
-		</div>
+	<div v-else-if="tab === 'liked'" class="rknalgpo">
+		<MkPagination v-slot="{items}" :pagination="likedPagesPagination">
+			<MkPagePreview v-for="like in items" :key="like.page.id" class="ckltabjg" :page="like.page"/>
+		</MkPagination>
 	</div>
 </MkSpacer>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
 import MkPagePreview from '@/components/page-preview.vue';
 import MkPagination from '@/components/ui/pagination.vue';
 import MkButton from '@/components/ui/button.vue';
-import MkTab from '@/components/tab.vue';
 import * as symbols from '@/symbols';
 
 export default defineComponent({
 	components: {
-		MkPagePreview, MkPagination, MkButton, MkTab
+		MkPagePreview, MkPagination, MkButton
 	},
 	data() {
 		return {
-			[symbols.PAGE_INFO]: {
+			[symbols.PAGE_INFO]: computed(() => ({
 				title: this.$ts.pages,
 				icon: 'fas fa-sticky-note',
 				bg: 'var(--bg)',
@@ -53,7 +43,23 @@ export default defineComponent({
 					text: this.$ts.create,
 					handler: this.create,
 				}],
-			},
+				tabs: [{
+					active: this.tab === 'featured',
+					title: this.$ts._pages.featured,
+					icon: 'fas fa-fire-alt',
+					onClick: () => { this.tab = 'featured'; },
+				}, {
+					active: this.tab === 'my',
+					title: this.$ts._pages.my,
+					icon: 'fas fa-edit',
+					onClick: () => { this.tab = 'my'; },
+				}, {
+					active: this.tab === 'liked',
+					title: this.$ts._pages.liked,
+					icon: 'fas fa-heart',
+					onClick: () => { this.tab = 'liked'; },
+				},]
+			})),
 			tab: 'featured',
 			featuredPagesPagination: {
 				endpoint: 'pages/featured',
