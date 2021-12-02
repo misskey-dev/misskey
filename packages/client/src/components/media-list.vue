@@ -53,7 +53,16 @@ export default defineComponent({
 				gallery: gallery.value,
 				children: '.image',
 				thumbSelector: '.image',
-				pswpModule: PhotoSwipe
+				loop: false,
+				padding: {
+					top: 32,
+					bottom: 32,
+					left: 32,
+					right: 32,
+				},
+				imageClickAction: 'close',
+				tapAction: 'toggle-controls',
+				pswpModule: PhotoSwipe,
 			});
 
 			lightbox.on('itemData', (e) => {
