@@ -33,8 +33,8 @@
 			</div>
 			-->
 
-			<MkPagination  v-slot="{items}" ref="reports" :pagination="pagination" style="margin-top: var(--margin);">
-				<XAbuseReport v-for="report in items" :report="report" :key="report.id" @resolved="resolved"/>
+			<MkPagination v-slot="{items}" ref="reports" :pagination="pagination" style="margin-top: var(--margin);">
+				<XAbuseReport v-for="report in items" :key="report.id" :report="report" @resolved="resolved"/>
 			</MkPagination>
 		</div>
 	</div>
