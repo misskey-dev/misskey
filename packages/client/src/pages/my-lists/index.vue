@@ -1,14 +1,16 @@
 <template>
-<div class="qkcjvfiv">
-	<MkButton primary class="add" @click="create"><i class="fas fa-plus"></i> {{ $ts.createList }}</MkButton>
+<MkSpacer :content-max="700">
+	<div class="qkcjvfiv">
+		<MkButton primary class="add" @click="create"><i class="fas fa-plus"></i> {{ $ts.createList }}</MkButton>
 
-	<MkPagination #default="{items}" ref="list" :pagination="pagination" class="lists _content">
-		<MkA v-for="list in items" :key="list.id" class="list _panel" :to="`/my/lists/${ list.id }`">
-			<div class="name">{{ list.name }}</div>
-			<MkAvatars :user-ids="list.userIds"/>
-		</MkA>
-	</MkPagination>
-</div>
+		<MkPagination v-slot="{items}" ref="list" :pagination="pagination" class="lists _content">
+			<MkA v-for="list in items" :key="list.id" class="list _panel" :to="`/my/lists/${ list.id }`">
+				<div class="name">{{ list.name }}</div>
+				<MkAvatars :user-ids="list.userIds"/>
+			</MkA>
+		</MkPagination>
+	</div>
+</MkSpacer>
 </template>
 
 <script lang="ts">
@@ -60,8 +62,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .qkcjvfiv {
-	padding: 16px;
-
 	> .add {
 		margin: 0 auto var(--margin) auto;
 	}

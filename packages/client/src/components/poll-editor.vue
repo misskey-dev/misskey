@@ -206,8 +206,6 @@ export default defineComponent({
 
 			> .input {
 				flex: 1;
-				margin-top: 16px;
-				margin-bottom: 0;
 			}
 
 			> button {
@@ -223,7 +221,7 @@ export default defineComponent({
 	}
 
 	> section {
-		margin: 16px 0 -16px 0;
+		margin: 16px 0 0 0;
 
 		> div {
 			margin: 0 8px;

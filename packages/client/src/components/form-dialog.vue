@@ -12,66 +12,67 @@
 	<template #header>
 		{{ title }}
 	</template>
-	<FormBase class="xkpnjxcv">
-		<template v-for="item in Object.keys(form).filter(item => !form[item].hidden)">
-			<FormInput v-if="form[item].type === 'number'" v-model="values[item]" type="number" :step="form[item].step || 1">
-				<span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span>
-				<template v-if="form[item].description" #desc>{{ form[item].description }}</template>
-			</FormInput>
-			<FormInput v-else-if="form[item].type === 'string' && !form[item].multiline" v-model="values[item]" type="text">
-				<span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span>
-				<template v-if="form[item].description" #desc>{{ form[item].description }}</template>
-			</FormInput>
-			<FormTextarea v-else-if="form[item].type === 'string' && form[item].multiline" v-model="values[item]">
-				<span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span>
-				<template v-if="form[item].description" #desc>{{ form[item].description }}</template>
-			</FormTextarea>
-			<FormSwitch v-else-if="form[item].type === 'boolean'" v-model="values[item]">
-				<span v-text="form[item].label || item"></span>
-				<template v-if="form[item].description" #desc>{{ form[item].description }}</template>
-			</FormSwitch>
-			<FormSelect v-else-if="form[item].type === 'enum'" v-model="values[item]">
-				<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
-				<option v-for="item in form[item].enum" :key="item.value" :value="item.value">{{ item.label }}</option>
-			</FormSelect>
-			<FormRadios v-else-if="form[item].type === 'radio'" v-model="values[item]">
-				<template #desc><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
-				<option v-for="item in form[item].options" :key="item.value" :value="item.value">{{ item.label }}</option>
-			</FormRadios>
-			<FormRange v-else-if="form[item].type === 'range'" v-model="values[item]" :min="form[item].mim" :max="form[item].max" :step="form[item].step">
-				<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
-				<template v-if="form[item].description" #desc>{{ form[item].description }}</template>
-			</FormRange>
-			<FormButton v-else-if="form[item].type === 'button'" @click="form[item].action($event, values)">
-				<span v-text="form[item].content || item"></span>
-			</FormButton>
-		</template>
-	</FormBase>
+
+	<MkSpacer :margin-min="20" :margin-max="32">
+		<div class="xkpnjxcv _formRoot">
+			<template v-for="item in Object.keys(form).filter(item => !form[item].hidden)">
+				<FormInput v-if="form[item].type === 'number'" v-model="values[item]" type="number" :step="form[item].step || 1" class="_formBlock">
+					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
+					<template v-if="form[item].description" #caption>{{ form[item].description }}</template>
+				</FormInput>
+				<FormInput v-else-if="form[item].type === 'string' && !form[item].multiline" v-model="values[item]" type="text" class="_formBlock">
+					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
+					<template v-if="form[item].description" #caption>{{ form[item].description }}</template>
+				</FormInput>
+				<FormTextarea v-else-if="form[item].type === 'string' && form[item].multiline" v-model="values[item]" class="_formBlock">
+					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
+					<template v-if="form[item].description" #caption>{{ form[item].description }}</template>
+				</FormTextarea>
+				<FormSwitch v-else-if="form[item].type === 'boolean'" v-model="values[item]" class="_formBlock">
+					<span v-text="form[item].label || item"></span>
+					<template v-if="form[item].description" #caption>{{ form[item].description }}</template>
+				</FormSwitch>
+				<FormSelect v-else-if="form[item].type === 'enum'" v-model="values[item]" class="_formBlock">
+					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
+					<option v-for="item in form[item].enum" :key="item.value" :value="item.value">{{ item.label }}</option>
+				</FormSelect>
+				<FormRadios v-else-if="form[item].type === 'radio'" v-model="values[item]" class="_formBlock">
+					<template #caption><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
+					<option v-for="item in form[item].options" :key="item.value" :value="item.value">{{ item.label }}</option>
+				</FormRadios>
+				<FormRange v-else-if="form[item].type === 'range'" v-model="values[item]" :min="form[item].mim" :max="form[item].max" :step="form[item].step" class="_formBlock">
+					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
+					<template v-if="form[item].description" #caption>{{ form[item].description }}</template>
+				</FormRange>
+				<MkButton v-else-if="form[item].type === 'button'" @click="form[item].action($event, values)" class="_formBlock">
+					<span v-text="form[item].content || item"></span>
+				</MkButton>
+			</template>
+		</div>
+	</MkSpacer>
 </XModalWindow>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import XModalWindow from '@/components/ui/modal-window.vue';
-import FormBase from './debobigego/base.vue';
-import FormInput from './debobigego/input.vue';
-import FormTextarea from './debobigego/textarea.vue';
-import FormSwitch from './debobigego/switch.vue';
-import FormSelect from './debobigego/select.vue';
-import FormRange from './debobigego/range.vue';
-import FormButton from './debobigego/button.vue';
-import FormRadios from './debobigego/radios.vue';
+import FormInput from './form/input.vue';
+import FormTextarea from './form/textarea.vue';
+import FormSwitch from './form/switch.vue';
+import FormSelect from './form/select.vue';
+import FormRange from './form/range.vue';
+import MkButton from './ui/button.vue';
+import FormRadios from './form/radios.vue';
 
 export default defineComponent({
 	components: {
 		XModalWindow,
-		FormBase,
 		FormInput,
 		FormTextarea,
 		FormSwitch,
 		FormSelect,
 		FormRange,
-		FormButton,
+		MkButton,
 		FormRadios,
 	},
 

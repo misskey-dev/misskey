@@ -86,6 +86,7 @@ export default defineComponent({
 	provide() {
 		return {
 			shouldHeaderThin: this.showMenuOnTop,
+			shouldSpacerMin: true,
 		};
 	},
 

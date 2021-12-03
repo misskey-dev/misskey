@@ -1,20 +1,22 @@
 <template>
-<div v-size="{ min: [800] }" v-hotkey.global="keymap" class="cmuxhskf">
-	<XTutorial v-if="$store.reactiveState.tutorial.value != -1" class="tutorial _block"/>
-	<XPostForm v-if="$store.reactiveState.showFixedPostForm.value" class="post-form _block" fixed/>
+<MkSpacer :content-max="800">
+	<div v-hotkey.global="keymap" class="cmuxhskf">
+		<XTutorial v-if="$store.reactiveState.tutorial.value != -1" class="tutorial _block"/>
+		<XPostForm v-if="$store.reactiveState.showFixedPostForm.value" class="post-form _block" fixed/>
 
-	<div v-if="queue > 0" class="new"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
-	<div class="tl _block">
-		<XTimeline ref="tl" :key="src"
-			class="tl"
-			:src="src"
-			:sound="true"
-			@before="before()"
-			@after="after()"
-			@queue="queueUpdated"
-		/>
+		<div v-if="queue > 0" class="new"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
+		<div class="tl _block">
+			<XTimeline ref="tl" :key="src"
+				class="tl"
+				:src="src"
+				:sound="true"
+				@before="before()"
+				@after="after()"
+				@queue="queueUpdated"
+			/>
+		</div>
 	</div>
-</div>
+</MkSpacer>
 </template>
 
 <script lang="ts">
@@ -66,7 +68,7 @@ export default defineComponent({
 					icon: 'fas fa-home',
 					iconOnly: true,
 					onClick: () => { this.src = 'home'; this.saveSrc(); },
-				}, {
+				}, ...(this.isLocalTimelineAvailable ? [{
 					active: this.src === 'local',
 					title: this.$ts._timelines.local,
 					icon: 'fas fa-comments',
@@ -78,13 +80,13 @@ export default defineComponent({
 					icon: 'fas fa-share-alt',
 					iconOnly: true,
 					onClick: () => { this.src = 'social'; this.saveSrc(); },
-				}, {
+				}] : []), ...(this.isGlobalTimelineAvailable ? [{
 					active: this.src === 'global',
 					title: this.$ts._timelines.global,
 					icon: 'fas fa-globe',
 					iconOnly: true,
 					onClick: () => { this.src = 'global'; this.saveSrc(); },
-				}],
+				}] : [])],
 			})),
 		};
 	},
@@ -188,8 +190,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .cmuxhskf {
-	padding: var(--margin);
-
 	> .new {
 		position: sticky;
 		top: calc(var(--stickyTop, 0px) + 16px);
@@ -212,11 +212,6 @@ export default defineComponent({
 		background: var(--bg);
 		border-radius: var(--radius);
 		overflow: clip;
-	}
-
-	&.min-width_800px {
-		max-width: 800px;
-		margin: 0 auto;
 	}
 }
 </style>

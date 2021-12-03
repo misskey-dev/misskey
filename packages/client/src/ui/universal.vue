@@ -248,6 +248,7 @@ export default defineComponent({
 	}
 
 	> .sidebar {
+		border-right: solid 0.5px var(--divider);
 	}
 
 	> .contents {

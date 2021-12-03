@@ -184,6 +184,11 @@ export default defineComponent({
 								count, speed,
 							}, genEl(token.children));
 						}
+						case 'rotate': {
+							const degrees = parseInt(token.props.args.deg) || '90';
+							style = `transform: rotate(${degrees}deg); transform-origin: center center;`;
+							break;
+						}
 					}
 					if (style == null) {
 						return h('span', {}, ['$[', token.props.name, ' ', ...genEl(token.children), ']']);

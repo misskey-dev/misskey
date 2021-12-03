@@ -372,11 +372,15 @@ export default async function(
 	const properties: {
 		width?: number;
 		height?: number;
+		orientation?: number;
 	} = {};
 
 	if (info.width) {
 		properties['width'] = info.width;
 		properties['height'] = info.height;
+	}
+	if (info.orientation != null) {
+		properties['orientation'] = info.orientation;
 	}
 
 	const profile = user ? await UserProfiles.findOne(user.id) : null;
