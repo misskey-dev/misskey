@@ -49,11 +49,14 @@ export default defineComponent({
 	},
 
 	provide() {
-		return deckStore.state.navWindow ? {
-			navHook: (url) => {
-				os.pageWindow(url);
-			}
-		} : {};
+		return {
+			shouldSpacerMin: true,
+			...deckStore.state.navWindow ? {
+				navHook: (url) => {
+					os.pageWindow(url);
+				}
+			} : {}
+		};
 	},
 
 	data() {

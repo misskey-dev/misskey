@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, onUnmounted, ref } from 'vue';
+import { defineComponent, inject, onMounted, onUnmounted, ref } from 'vue';
 
 export default defineComponent({
 	props: {
@@ -33,7 +33,13 @@ export default defineComponent({
 		const root = ref<HTMLElement>();
 		const content = ref<HTMLElement>();
 		const margin = ref(0);
+		const shouldSpacerMin = inject('shouldSpacerMin', false);
 		const adjust = (rect: { width: number; height: number; }) => {
+			if (shouldSpacerMin) {
+				margin.value = props.marginMin;
+				return;
+			}
+
 			if (rect.width > props.contentMax || rect.width > 500) {
 				margin.value = props.marginMax;
 			} else {
