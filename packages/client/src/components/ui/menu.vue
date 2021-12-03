@@ -153,6 +153,7 @@ export default defineComponent({
 	box-sizing: border-box;
 	min-width: 200px;
 	overflow: auto;
+	overscroll-behavior: contain;
 
 	&.center {
 		> .item {

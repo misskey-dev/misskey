@@ -60,11 +60,16 @@ export default defineComponent({
 				children: '.image',
 				thumbSelector: '.image',
 				loop: false,
-				padding: {
+				padding: window.innerWidth > 500 ? {
 					top: 32,
 					bottom: 32,
 					left: 32,
 					right: 32,
+				} : {
+					top: 0,
+					bottom: 0,
+					left: 0,
+					right: 0,
 				},
 				imageClickAction: 'close',
 				tapAction: 'toggle-controls',
