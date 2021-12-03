@@ -7,7 +7,7 @@
 
 -->
 
-## 12.x.x (unreleased)
+## 12.98.0 (2021/12/03)
 
 ### Improvements
 - API: /antennas/notes API で日付による絞り込みができるように
