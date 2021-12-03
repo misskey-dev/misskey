@@ -1,6 +1,9 @@
-import { updateQuestion } from '@/remote/activitypub/models/question';
+import { initDb } from '@/db/postgre';
 
 async function main(uri: string): Promise<any> {
+	await initDb();
+	const { updateQuestion } = await import('@/remote/activitypub/models/question');
+
 	return await updateQuestion(uri);
 }
 

@@ -792,6 +792,7 @@ pubSub: "Pub/Subのアカウント"
 lastCommunication: "直近の通信"
 resolved: "解決済み"
 unresolved: "未解決"
+breakFollow: "フォロワーを解除"
 itsOn: "オンになっています"
 itsOff: "オフになっています"
 emailRequiredForSignup: "アカウント登録にメールアドレスを必須にする"
@@ -808,6 +809,8 @@ ffVisibility: "つながりの公開範囲"
 ffVisibilityDescription: "自分のフォロー/フォロワー情報の公開範囲を設定できます。"
 continueThread: "さらにスレッドを見る"
 deleteAccountConfirm: "アカウントが削除されます。よろしいですか？"
+incorrectPassword: "パスワードが間違っています。"
+voteConfirm: "「{choice}」に投票しますか？"
 
 _emailUnavailable:
   used: "既に使用されています"
@@ -823,7 +826,7 @@ _ffVisibility:
 
 _signup:
   almostThere: "ほとんど完了です"
-  emailAddressInfo: "あなたが使っているメールアドレスを入力してください。"
+  emailAddressInfo: "あなたが使っているメールアドレスを入力してください。メールアドレスが公開されることはありません。"
   emailSent: "入力されたメールアドレス({email})宛に確認のメールが送信されました。メールに記載されたリンクにアクセスすると、アカウントの作成が完了します。"
 
 _accountDelete:
@@ -944,6 +947,8 @@ _mfm:
   rainbowDescription: "内容をレインボーにします。"
   sparkle: "キラキラ"
   sparkleDescription: "キラキラしたパーティクルのエフェクトを追加します。"
+  rotate: "回転"
+  rotateDescription: "指定した角度で回転させます。"
 
 _reversi:
   reversi: "リバーシ"

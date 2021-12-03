@@ -10,20 +10,20 @@
 
 	<div class="_section">
 		<div v-if="tab === 'featured'" class="_content grwlizim featured">
-			<MkPagination #default="{items}" :pagination="featuredPagination">
+			<MkPagination v-slot="{items}" :pagination="featuredPagination">
 				<MkChannelPreview v-for="channel in items" :key="channel.id" class="_gap" :channel="channel"/>
 			</MkPagination>
 		</div>
 
 		<div v-if="tab === 'following'" class="_content grwlizim following">
-			<MkPagination #default="{items}" :pagination="followingPagination">
+			<MkPagination v-slot="{items}" :pagination="followingPagination">
 				<MkChannelPreview v-for="channel in items" :key="channel.id" class="_gap" :channel="channel"/>
 			</MkPagination>
 		</div>
 
 		<div v-if="tab === 'owned'" class="_content grwlizim owned">
 			<MkButton class="new" @click="create()"><i class="fas fa-plus"></i></MkButton>
-			<MkPagination #default="{items}" :pagination="ownedPagination">
+			<MkPagination v-slot="{items}" :pagination="ownedPagination">
 				<MkChannelPreview v-for="channel in items" :key="channel.id" class="_gap" :channel="channel"/>
 			</MkPagination>
 		</div>

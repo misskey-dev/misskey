@@ -623,6 +623,7 @@ export default defineComponent({
 					text: this.$ts.pin,
 					action: () => this.togglePin(true)
 				} : undefined,
+				/*
 				...(this.$i.isModerator || this.$i.isAdmin ? [
 					null,
 					{
@@ -631,7 +632,7 @@ export default defineComponent({
 						action: this.promote
 					}]
 					: []
-				),
+				),*/
 				...(this.appearNote.userId != this.$i.id ? [
 					null,
 					{
@@ -858,6 +859,7 @@ export default defineComponent({
 .tkcbzcuz {
 	position: relative;
 	transition: box-shadow 0.1s ease;
+	font-size: 1.05em;
 	overflow: clip;
 	contain: content;
 

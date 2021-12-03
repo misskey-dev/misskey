@@ -48,9 +48,7 @@ export default defineComponent({
 				limit: 11
 			});
 
-			const users = renotes
-				.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
-				.map(x => x.user);
+			const users = renotes.map(x => x.user);
 
 			if (users.length < 1) return;
 

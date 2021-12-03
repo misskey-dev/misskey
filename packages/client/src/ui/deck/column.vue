@@ -401,6 +401,7 @@ export default defineComponent({
 		height: calc(100% - var(--deckColumnHeaderHeight));
 		overflow: auto;
 		overflow-x: hidden;
+		overscroll-behavior: contain;
 		-webkit-overflow-scrolling: touch;
 		box-sizing: border-box;
 	}

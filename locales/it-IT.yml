@@ -806,6 +806,7 @@ _mfm:
   font: "Tipo di carattere"
   fontDescription: "Puoi scegliere il tipo di carattere per il contenuto."
   rainbow: "Arcobaleno"
+  rotate: "Ruota"
 _reversi:
   reversi: "Reversi"
   gameSettings: "Impostazioni di gioco"

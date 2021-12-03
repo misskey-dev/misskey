@@ -12,7 +12,7 @@
 		<div v-if="tab === 'owned'" class="_content">
 			<MkButton primary style="margin: 0 auto var(--margin) auto;" @click="create"><i class="fas fa-plus"></i> {{ $ts.createGroup }}</MkButton>
 
-			<MkPagination #default="{items}" ref="owned" :pagination="ownedPagination">
+			<MkPagination v-slot="{items}" ref="owned" :pagination="ownedPagination">
 				<div v-for="group in items" :key="group.id" class="_card">
 					<div class="_title"><MkA :to="`/my/groups/${ group.id }`" class="_link">{{ group.name }}</MkA></div>
 					<div class="_content"><MkAvatars :user-ids="group.userIds"/></div>
@@ -21,7 +21,7 @@
 		</div>
 
 		<div v-else-if="tab === 'joined'" class="_content">
-			<MkPagination #default="{items}" ref="joined" :pagination="joinedPagination">
+			<MkPagination v-slot="{items}" ref="joined" :pagination="joinedPagination">
 				<div v-for="group in items" :key="group.id" class="_card">
 					<div class="_title">{{ group.name }}</div>
 					<div class="_content"><MkAvatars :user-ids="group.userIds"/></div>
@@ -30,7 +30,7 @@
 		</div>
 	
 		<div v-else-if="tab === 'invites'" class="_content">
-			<MkPagination #default="{items}" ref="invitations" :pagination="invitationPagination">
+			<MkPagination v-slot="{items}" ref="invitations" :pagination="invitationPagination">
 				<div v-for="invitation in items" :key="invitation.id" class="_card">
 					<div class="_title">{{ invitation.group.name }}</div>
 					<div class="_content"><MkAvatars :user-ids="invitation.group.userIds"/></div>

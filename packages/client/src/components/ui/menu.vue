@@ -2,7 +2,7 @@
 <div ref="items" v-hotkey="keymap"
 	class="rrevdjwt"
 	:class="{ center: align === 'center' }"
-	:style="{ width: width ? width + 'px' : null }"
+	:style="{ width: width ? width + 'px' : null, maxHeight: maxHeight ? maxHeight + 'px' : null }"
 	@contextmenu.self="e => e.preventDefault()"
 >
 	<template v-for="(item, i) in items2">
@@ -61,6 +61,10 @@ export default defineComponent({
 			requried: false
 		},
 		width: {
+			type: Number,
+			required: false
+		},
+		maxHeight: {
 			type: Number,
 			required: false
 		},
@@ -146,9 +150,10 @@ export default defineComponent({
 <style lang="scss" scoped>
 .rrevdjwt {
 	padding: 8px 0;
+	box-sizing: border-box;
 	min-width: 200px;
-	max-height: 90vh;
 	overflow: auto;
+	overscroll-behavior: contain;
 
 	&.center {
 		> .item {

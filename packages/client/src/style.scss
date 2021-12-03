@@ -29,6 +29,7 @@ html {
 	overflow: auto;
 	overflow-wrap: break-word;
 	font-family: "BIZ UDGothic", Roboto, HelveticaNeue, Arial, sans-serif;
+	font-size: 15px;
 	line-height: 1.35;
 	text-size-adjust: 100%;
 	tab-size: 2;
@@ -387,9 +388,8 @@ hr {
 
 ._inputSplit {
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-	grid-gap: 8px;
-	margin: 1em 0;
+	grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+	grid-gap: 12px;
 
 	> * {
 		margin: 0 !important;
@@ -397,7 +397,7 @@ hr {
 }
 
 ._formBlock {
-	margin: 20px 0;
+	margin: 1.5em 0;
 }
 
 ._formRoot {
@@ -407,6 +407,18 @@ hr {
 
 	> ._formBlock:last-child {
 		margin-bottom: 0;
+	}
+}
+
+._formLinksGrid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	grid-gap: 12px;
+}
+
+._formLinks {
+	> *:not(:last-child) {
+		margin-bottom: 8px;
 	}
 }
 

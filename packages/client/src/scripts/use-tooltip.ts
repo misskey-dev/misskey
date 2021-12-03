@@ -1,4 +1,6 @@
+import { isScreenTouching } from '@/os';
 import { Ref, ref } from 'vue';
+import { isDeviceTouch } from './is-device-touch';
 
 export function useTooltip(onShow: (showing: Ref<boolean>) => void) {
 	let isHovering = false;
@@ -9,6 +11,10 @@ export function useTooltip(onShow: (showing: Ref<boolean>) => void) {
 	const open = () => {
 		close();
 		if (!isHovering) return;
+
+		// iOS(Androidも？)では、要素をタップした直後に(おせっかいで)mouseoverイベントを発火させたりするため、その対策
+		// これが無いと、画面に触れてないのにツールチップが出たりしてしまう
+		if (isDeviceTouch && !isScreenTouching) return;
 
 		const showing = ref(true);
 		onShow(showing);

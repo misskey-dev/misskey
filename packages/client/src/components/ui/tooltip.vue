@@ -1,13 +1,13 @@
 <template>
 <transition name="tooltip" appear @after-leave="$emit('closed')">
-	<div v-show="showing" ref="content" class="buebdbiu _acrylic _shadow" :style="{ maxWidth: maxWidth + 'px' }">
+	<div v-show="showing" ref="el" class="buebdbiu _acrylic _shadow" :style="{ maxWidth: maxWidth + 'px' }">
 		<slot>{{ text }}</slot>
 	</div>
 </transition>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, nextTick, onMounted, onUnmounted, ref } from 'vue';
 
 export default defineComponent({
 	props: {
@@ -31,35 +31,64 @@ export default defineComponent({
 
 	emits: ['closed'],
 
-	mounted() {
-		this.$nextTick(() => {
-			if (this.source == null) {
-				this.$emit('closed');
-				return;
-			}
+	setup(props, context) {
+		const el = ref<HTMLElement>();
 
-			const rect = this.source.getBoundingClientRect();
+		const setPosition = () => {
+			if (el.value == null) return;
 
-			const contentWidth = this.$refs.content.offsetWidth;
-			const contentHeight = this.$refs.content.offsetHeight;
+			const rect = props.source.getBoundingClientRect();
 
-			let left = rect.left + window.pageXOffset + (this.source.offsetWidth / 2);
+			const contentWidth = el.value.offsetWidth;
+			const contentHeight = el.value.offsetHeight;
+
+			let left = rect.left + window.pageXOffset + (props.source.offsetWidth / 2);
 			let top = rect.top + window.pageYOffset - contentHeight;
 
-			left -= (this.$el.offsetWidth / 2);
+			left -= (el.value.offsetWidth / 2);
 
 			if (left + contentWidth - window.pageXOffset > window.innerWidth) {
 				left = window.innerWidth - contentWidth + window.pageXOffset - 1;
 			}
 
 			if (top - window.pageYOffset < 0) {
-				top = rect.top + window.pageYOffset + this.source.offsetHeight;
-				this.$refs.content.style.transformOrigin = 'center top';
+				top = rect.top + window.pageYOffset + props.source.offsetHeight;
+				el.value.style.transformOrigin = 'center top';
 			}
 
-			this.$el.style.left = left + 'px';
-			this.$el.style.top = top + 'px';
+			el.value.style.left = left + 'px';
+			el.value.style.top = top + 'px';
+		};
+
+		onMounted(() => {
+			nextTick(() => {
+				if (props.source == null) {
+					context.emit('closed');
+					return;
+				}
+
+				setPosition();
+
+				let loopHandler;
+
+				const loop = () => {
+					loopHandler = window.requestAnimationFrame(() => {
+						setPosition();
+						loop();
+					});
+				};
+
+				loop();
+
+				onUnmounted(() => {
+					window.cancelAnimationFrame(loopHandler);
+				});
+			});
 		});
+
+		return {
+			el,
+		};
 	},
 })
 </script>

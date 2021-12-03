@@ -899,6 +899,7 @@ _mfm:
   rainbowDescription: "내용을 무지개로 표시합니다."
   sparkle: "반짝반짝"
   sparkleDescription: "반짝이는 파티클 효과를 추가합니다."
+  rotate: "회전"
 _reversi:
   reversi: "리버시"
   gameSettings: "대국 설정"

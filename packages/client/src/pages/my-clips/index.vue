@@ -1,16 +1,16 @@
 <template>
-<div class="_section qtcaoidl">
-	<MkButton primary class="add" @click="create"><i class="fas fa-plus"></i> {{ $ts.add }}</MkButton>
+<MkSpacer :content-max="700">
+	<div class="qtcaoidl">
+		<MkButton primary class="add" @click="create"><i class="fas fa-plus"></i> {{ $ts.add }}</MkButton>
 
-	<div class="_content">
-		<MkPagination #default="{items}" ref="list" :pagination="pagination" class="list">
+		<MkPagination v-slot="{items}" ref="list" :pagination="pagination" class="list">
 			<MkA v-for="item in items" :key="item.id" :to="`/clips/${item.id}`" class="item _panel _gap">
 				<b>{{ item.name }}</b>
 				<div v-if="item.description" class="description">{{ item.description }}</div>
 			</MkA>
 		</MkPagination>
 	</div>
-</div>
+</MkSpacer>
 </template>
 
 <script lang="ts">
@@ -31,6 +31,7 @@ export default defineComponent({
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.clip,
 				icon: 'fas fa-paperclip',
+				bg: 'var(--bg)',
 				action: {
 					icon: 'fas fa-plus',
 					handler: this.create
@@ -86,17 +87,15 @@ export default defineComponent({
 		margin: 0 auto 16px auto;
 	}
 
-	> ._content {
-		> .list {
-			> .item {
-				display: block;
-				padding: 16px;
+	> .list {
+		> .item {
+			display: block;
+			padding: 16px;
 
-				> .description {
-					margin-top: 8px;
-					padding-top: 8px;
-					border-top: solid 0.5px var(--divider);
-				}
+			> .description {
+				margin-top: 8px;
+				padding-top: 8px;
+				border-top: solid 0.5px var(--divider);
 			}
 		}
 	}

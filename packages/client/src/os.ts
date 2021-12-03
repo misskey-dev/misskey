@@ -12,6 +12,16 @@ import { resolve } from '@/router';
 import { $i } from '@/account';
 import { defaultStore } from '@/store';
 
+export let isScreenTouching = false;
+
+window.addEventListener('touchstart', () => {
+	isScreenTouching = true;
+}, { passive: true });
+
+window.addEventListener('touchend', () => {
+	isScreenTouching = false;
+}, { passive: true });
+
 export const stream = markRaw(new Misskey.Stream(url, $i));
 
 export const pendingApiRequestsCount = ref(0);
@@ -212,6 +222,10 @@ export function modalPageWindow(path: string) {
 		initialComponent: markRaw(component),
 		initialProps: props,
 	}, {}, 'closed');
+}
+
+export function toast(message: string) {
+	// TODO
 }
 
 export function alert(props: {
@@ -542,7 +556,7 @@ export function contextMenu(items: any[], ev: MouseEvent) {
 	});
 }
 
-export function post(props: Record<string, any>) {
+export function post(props: Record<string, any> = {}) {
 	return new Promise((resolve, reject) => {
 		// NOTE: MkPostFormDialogをdynamic importするとiOSでテキストエリアに自動フォーカスできない
 		// NOTE: ただ、dynamic importしない場合、MkPostFormDialogインスタンスが使いまわされ、

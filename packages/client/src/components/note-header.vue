@@ -5,8 +5,6 @@
 	</MkA>
 	<div v-if="note.user.isBot" class="is-bot">bot</div>
 	<div class="username"><MkAcct :user="note.user"/></div>
-	<div v-if="note.user.isAdmin" class="admin"><i class="fas fa-bookmark"></i></div>
-	<div v-if="!note.user.isAdmin && note.user.isModerator" class="moderator"><i class="far fa-bookmark"></i></div>
 	<div class="info">
 		<MkA class="created-at" :to="notePage(note)">
 			<MkTime :time="note.createdAt"/>
@@ -23,7 +21,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import notePage from '@/filters/note';
+import { notePage } from '@/filters/note';
 import { userPage } from '@/filters/user';
 import * as os from '@/os';
 
@@ -77,13 +75,6 @@ export default defineComponent({
 		font-size: 80%;
 		border: solid 0.5px var(--divider);
 		border-radius: 3px;
-	}
-
-	> .admin,
-	> .moderator {
-		flex-shrink: 0;
-		margin-right: 0.5em;
-		color: var(--badge);
 	}
 
 	> .username {

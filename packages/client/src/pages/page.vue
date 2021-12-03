@@ -1,5 +1,5 @@
 <template>
-<div>
+<MkSpacer :content-max="700">
 	<transition name="fade" mode="out-in">
 		<div v-if="page" :key="page.id" v-size="{ max: [450] }" class="xcukqgmh">
 			<div class="_block main">
@@ -48,7 +48,7 @@
 			<MkAd :prefer="['horizontal', 'horizontal-big']"/>
 			<MkContainer :max-height="300" :foldable="true" class="other">
 				<template #header><i class="fas fa-clock"></i> {{ $ts.recentPosts }}</template>
-				<MkPagination #default="{items}" :pagination="otherPostsPagination">
+				<MkPagination v-slot="{items}" :pagination="otherPostsPagination">
 					<MkPagePreview v-for="page in items" :key="page.id" :page="page" class="_gap"/>
 				</MkPagination>
 			</MkContainer>
@@ -56,7 +56,7 @@
 		<MkError v-else-if="error" @retry="fetch()"/>
 		<MkLoading v-else/>
 	</transition>
-</div>
+</MkSpacer>
 </template>
 
 <script lang="ts">
@@ -201,14 +201,7 @@ export default defineComponent({
 }
 
 .xcukqgmh {
-	--padding: 32px;
-
-	&.max-width_450px {
-		--padding: 16px;
-	}
-
 	> .main {
-		padding: var(--padding);
 
 		> .header {
 			padding: 16px;
@@ -302,7 +295,7 @@ export default defineComponent({
 	}
 
 	> .footer {
-		margin: var(--padding);
+		margin: var(--margin) 0 var(--margin) 0;
 		font-size: 85%;
 		opacity: 0.75;
 	}

@@ -33,6 +33,14 @@ export const meta = {
 		untilId: {
 			validator: $.optional.type(ID),
 		},
+
+		sinceDate: {
+			validator: $.optional.num,
+		},
+
+		untilDate: {
+			validator: $.optional.num,
+		},
 	},
 
 	errors: {
@@ -68,7 +76,8 @@ export default define(meta, async (ps, user) => {
 		.select('joining.noteId')
 		.where('joining.antennaId = :antennaId', { antennaId: antenna.id });
 
-	const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
+	const query = makePaginationQuery(Notes.createQueryBuilder('note'),
+			ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
 		.andWhere(`note.id IN (${ antennaQuery.getQuery() })`)
 		.innerJoinAndSelect('note.user', 'user')
 		.leftJoinAndSelect('note.reply', 'reply')

@@ -1,7 +1,7 @@
 <template>
 <div ref="el" class="vvcocwet" :class="{ wide: !narrow }">
 	<div v-if="!narrow || page == null" class="nav">
-		<MkSpacer :content-max="700">
+		<MkSpacer :content-max="700" :margin-min="20">
 			<div class="baaadecd">
 				<div class="title">{{ $ts.settings }}</div>
 				<MkInfo v-if="emailNotConfigured" warn class="info">{{ $ts.emailNotConfiguredWarning }} <MkA to="/settings/email" class="_link">{{ $ts.configure }}</MkA></MkInfo>
@@ -10,7 +10,12 @@
 		</MkSpacer>
 	</div>
 	<div class="main">
-		<component :is="component" :key="page" v-bind="pageProps"/>
+		<MkSpacer :content-max="600" :margin-min="20">
+			<div class="bkzroven">
+				<div v-if="childInfo" class="title">{{ childInfo.title }}</div>
+				<component :is="component" :key="page" v-bind="pageProps" @info="onInfo"/>
+			</div>
+		</MkSpacer>
 	</div>
 </div>
 </template>
@@ -52,6 +57,7 @@ export default defineComponent({
 		const narrow = ref(false);
 		const view = ref(null);
 		const el = ref(null);
+		const childInfo = ref(null);
 		const menuDef = computed(() => [{
 			title: i18n.locale.basicSettings,
 			items: [{
@@ -192,8 +198,6 @@ export default defineComponent({
 				case 'other': return defineAsyncComponent(() => import('./other.vue'));
 				case 'general': return defineAsyncComponent(() => import('./general.vue'));
 				case 'email': return defineAsyncComponent(() => import('./email.vue'));
-				case 'email/address': return defineAsyncComponent(() => import('./email-address.vue'));
-				case 'email/notification': return defineAsyncComponent(() => import('./email-notification.vue'));
 				case 'theme': return defineAsyncComponent(() => import('./theme.vue'));
 				case 'theme/install': return defineAsyncComponent(() => import('./theme.install.vue'));
 				case 'theme/manage': return defineAsyncComponent(() => import('./theme.manage.vue'));
@@ -259,6 +263,10 @@ export default defineComponent({
 
 		const emailNotConfigured = computed(() => instance.enableEmail && ($i.email == null || !$i.emailVerified));
 
+		const onInfo = (info) => {
+			childInfo.value = info;
+		};
+
 		return {
 			[symbols.PAGE_INFO]: INFO,
 			page,
@@ -269,6 +277,8 @@ export default defineComponent({
 			pageProps,
 			component,
 			emailNotConfigured,
+			onInfo,
+			childInfo,
 		};
 	},
 });
@@ -285,7 +295,7 @@ export default defineComponent({
 			}
 
 			> .info {
-				margin: 0 16px;
+				margin: 16px 0;
 			}
 
 			> .accounts {
@@ -295,6 +305,16 @@ export default defineComponent({
 					height: 50px;
 					margin: 8px auto 16px auto;
 				}
+			}
+		}
+	}
+
+	> .main {
+		.bkzroven {
+			> .title {
+				margin: 4px 0 20px 0;
+				font-size: 1.5em;
+				font-weight: bold;
 			}
 		}
 	}
@@ -321,6 +341,12 @@ export default defineComponent({
 			flex: 1;
 			min-width: 0;
 			overflow: auto;
+
+			.bkzroven {
+				> .title {
+					margin: 6px 0 24px 0;
+				}
+			}
 		}
 	}
 }
