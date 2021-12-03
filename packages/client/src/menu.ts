@@ -1,4 +1,4 @@
-import { computed, ref } from 'vue';
+import { computed, ref, reactive } from 'vue';
 import { search } from '@/scripts/search';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
@@ -7,7 +7,7 @@ import { $i } from './account';
 import { unisonReload } from '@/scripts/unison-reload';
 import { router } from './router';
 
-export const menuDef = {
+export const menuDef = reactive({
 	notifications: {
 		title: 'notifications',
 		icon: 'fas fa-bell',
@@ -221,4 +221,4 @@ export const menuDef = {
 			}*/], ev.currentTarget || ev.target);
 		},
 	},
-};
+});
