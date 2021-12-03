@@ -303,6 +303,7 @@ export default defineComponent({
 		width: 240px;
 		box-sizing: border-box;
 		overflow: auto;
+		overscroll-behavior: contain;
 		background: var(--bg);
 	}
 }
