@@ -189,12 +189,12 @@ export class UserRepository extends Repository<User> {
 
 		const followingCount = profile == null ? null :
 			(profile.ffVisibility === 'public') || (meId === user.id) ? user.followingCount :
-			(profile.ffVisibility === 'followers') && (relation!.isFollowing) ? user.followingCount :
+			(profile.ffVisibility === 'followers') && (relation && relation.isFollowing) ? user.followingCount :
 			null;
 
 		const followersCount = profile == null ? null :
 			(profile.ffVisibility === 'public') || (meId === user.id) ? user.followersCount :
-			(profile.ffVisibility === 'followers') && (relation!.isFollowing) ? user.followersCount :
+			(profile.ffVisibility === 'followers') && (relation && relation.isFollowing) ? user.followersCount :
 			null;
 
 		const falsy = opts.detail ? false : undefined;

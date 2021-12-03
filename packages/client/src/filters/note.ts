@@ -1,3 +1,3 @@
-export default note => {
+export const notePage = note => {
 	return `/notes/${note.id}`;
 };

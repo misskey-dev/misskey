@@ -1,7 +1,7 @@
 <template>
 <div class="tivcixzd" :class="{ done: closed || isVoted }">
 	<ul>
-		<li v-for="(choice, i) in poll.choices" :key="i" :class="{ voted: choice.voted }" @click="vote(i)">
+		<li v-for="(choice, i) in note.poll.choices" :key="i" :class="{ voted: choice.voted }" @click="vote(i)">
 			<div class="backdrop" :style="{ 'width': `${showResult ? (choice.votes / total * 100) : 0}%` }"></div>
 			<span>
 				<template v-if="choice.isVoted"><i class="fas fa-check"></i></template>
@@ -13,7 +13,7 @@
 	<p v-if="!readOnly">
 		<span>{{ $t('_poll.totalVotes', { n: total }) }}</span>
 		<span> · </span>
-		<a v-if="!closed && !isVoted" @click="toggleShowResult">{{ showResult ? $ts._poll.vote : $ts._poll.showResult }}</a>
+		<a v-if="!closed && !isVoted" @click="showResult = !showResult">{{ showResult ? $ts._poll.vote : $ts._poll.showResult }}</a>
 		<span v-if="isVoted">{{ $ts._poll.voted }}</span>
 		<span v-else-if="closed">{{ $ts._poll.closed }}</span>
 		<span v-if="remaining > 0"> · {{ timer }}</span>
@@ -22,9 +22,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent, onUnmounted, ref, toRef } from 'vue';
 import { sum } from '@/scripts/array';
 import * as os from '@/os';
+import { i18n } from '@/i18n';
 
 export default defineComponent({
 	props: {
@@ -38,65 +39,67 @@ export default defineComponent({
 			default: false,
 		}
 	},
-	data() {
-		return {
-			remaining: -1,
-			showResult: false,
-		};
-	},
-	computed: {
-		poll(): any {
-			return this.note.poll;
-		},
-		total(): number {
-			return sum(this.poll.choices.map(x => x.votes));
-		},
-		closed(): boolean {
-			return !this.remaining;
-		},
-		timer(): string {
-			return this.$t(
-				this.remaining >= 86400 ? '_poll.remainingDays' :
-				this.remaining >= 3600 ? '_poll.remainingHours' :
-				this.remaining >= 60 ? '_poll.remainingMinutes' : '_poll.remainingSeconds', {
-					s: Math.floor(this.remaining % 60),
-					m: Math.floor(this.remaining / 60) % 60,
-					h: Math.floor(this.remaining / 3600) % 24,
-					d: Math.floor(this.remaining / 86400)
-				});
-		},
-		isVoted(): boolean {
-			return !this.poll.multiple && this.poll.choices.some(c => c.isVoted);
-		}
-	},
-	created() {
-		this.showResult = this.readOnly || this.isVoted;
 
-		if (this.note.poll.expiresAt) {
-			const update = () => {
-				if (this.remaining = Math.floor(Math.max(new Date(this.note.poll.expiresAt).getTime() - Date.now(), 0) / 1000))
-					requestAnimationFrame(update);
-				else
-					this.showResult = true;
+	setup(props) {
+		const remaining = ref(-1);
+
+		const total = computed(() => sum(props.note.poll.choices.map(x => x.votes)));
+		const closed = computed(() => remaining.value === 0);
+		const isVoted = computed(() => !props.note.poll.multiple && props.note.poll.choices.some(c => c.isVoted));
+		const timer = computed(() => i18n.t(
+			remaining.value >= 86400 ? '_poll.remainingDays' :
+			remaining.value >= 3600 ? '_poll.remainingHours' :
+			remaining.value >= 60 ? '_poll.remainingMinutes' : '_poll.remainingSeconds', {
+				s: Math.floor(remaining.value % 60),
+				m: Math.floor(remaining.value / 60) % 60,
+				h: Math.floor(remaining.value / 3600) % 24,
+				d: Math.floor(remaining.value / 86400)
+			}));
+
+		const showResult = ref(props.readOnly || isVoted.value);
+
+		// 期限付きアンケート
+		if (props.note.poll.expiresAt) {
+			const tick = () => {
+				remaining.value = Math.floor(Math.max(new Date(props.note.poll.expiresAt).getTime() - Date.now(), 0) / 1000);
+				if (remaining.value === 0) {
+					showResult.value = true;
+				}
 			};
 
-			update();
-		}
-	},
-	methods: {
-		toggleShowResult() {
-			this.showResult = !this.showResult;
-		},
-		vote(id) {
-			if (this.readOnly || this.closed || !this.poll.multiple && this.poll.choices.some(c => c.isVoted)) return;
-			os.api('notes/polls/vote', {
-				noteId: this.note.id,
-				choice: id
-			}).then(() => {
-				if (!this.showResult) this.showResult = !this.poll.multiple;
+			tick();
+			const intevalId = window.setInterval(tick, 3000);
+			onUnmounted(() => {
+				window.clearInterval(intevalId);
 			});
 		}
-	}
+
+		const vote = async (id) => {
+			if (props.readOnly || closed.value || isVoted.value) return;
+
+			const { canceled } = await os.confirm({
+				type: 'question',
+				text: i18n.t('voteConfirm', { choice: props.note.poll.choices[id].text }),
+			});
+			if (canceled) return;
+
+			await os.api('notes/polls/vote', {
+				noteId: props.note.id,
+				choice: id,
+			});
+			if (!showResult.value) showResult.value = !props.note.poll.multiple;
+		};
+
+		return {
+			remaining,
+			showResult,
+			total,
+			isVoted,
+			closed,
+			timer,
+			vote,
+		};
+	},
 });
 </script>
 
@@ -112,19 +115,12 @@ export default defineComponent({
 			display: block;
 			position: relative;
 			margin: 4px 0;
-			padding: 4px 8px;
-			border: solid 0.5px var(--divider);
+			padding: 4px;
+			//border: solid 0.5px var(--divider);
+			background: var(--accentedBg);
 			border-radius: 4px;
 			overflow: hidden;
 			cursor: pointer;
-
-			&:hover {
-				background: rgba(#000, 0.05);
-			}
-
-			&:active {
-				background: rgba(#000, 0.1);
-			}
 
 			> .backdrop {
 				position: absolute;
@@ -132,18 +128,25 @@ export default defineComponent({
 				left: 0;
 				height: 100%;
 				background: var(--accent);
+				background: linear-gradient(90deg,var(--buttonGradateA),var(--buttonGradateB));
 				transition: width 1s ease;
 			}
 
 			> span {
 				position: relative;
+				display: inline-block;
+				padding: 3px 5px;
+				background: var(--panel);
+				border-radius: 3px;
 
 				> i {
 					margin-right: 4px;
+					color: var(--accent);
 				}
 
 				> .votes {
 					margin-left: 4px;
+					opacity: 0.7;
 				}
 			}
 		}
@@ -160,14 +163,6 @@ export default defineComponent({
 	&.done {
 		> ul > li {
 			cursor: default;
-
-			&:hover {
-				background: transparent;
-			}
-
-			&:active {
-				background: transparent;
-			}
 		}
 	}
 }

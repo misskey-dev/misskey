@@ -808,6 +808,8 @@ ffVisibility: "Follows/Followers Visibility"
 ffVisibilityDescription: "Allows you to configure who can see who you follow and who follows you."
 continueThread: "View thread continuation"
 deleteAccountConfirm: "This will irreversibly delete your account. Proceed?"
+incorrectPassword: "Incorrect password."
+voteConfirm: "Confirm your vote for \"{choice}\"?"
 _emailUnavailable:
   used: "This email address is already being used"
   format: "The format of this email address is invalid"
@@ -931,6 +933,8 @@ _mfm:
   rainbowDescription: "Makes the content appear in rainbow colors."
   sparkle: "Sparkle"
   sparkleDescription: "Gives content a sparkling particle effect."
+  rotate: "Rotate"
+  rotateDescription: "Turns content by a specified angle."
 _reversi:
   reversi: "Reversi"
   gameSettings: "Game settings"

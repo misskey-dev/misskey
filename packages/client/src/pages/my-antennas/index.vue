@@ -1,15 +1,17 @@
 <template>
-<div class="ieepwinx _section">
-	<MkButton :link="true" to="/my/antennas/create" primary class="add"><i class="fas fa-plus"></i> {{ $ts.add }}</MkButton>
+<MkSpacer :content-max="700">
+	<div class="ieepwinx">
+		<MkButton :link="true" to="/my/antennas/create" primary class="add"><i class="fas fa-plus"></i> {{ $ts.add }}</MkButton>
 
-	<div class="_content">
-		<MkPagination #default="{items}" ref="list" :pagination="pagination">
-			<MkA v-for="antenna in items" :key="antenna.id" class="ljoevbzj" :to="`/my/antennas/${antenna.id}`">
-				<div class="name">{{ antenna.name }}</div>
-			</MkA>
-		</MkPagination>
+		<div class="">
+			<MkPagination v-slot="{items}" ref="list" :pagination="pagination">
+				<MkA v-for="antenna in items" :key="antenna.id" class="ljoevbzj" :to="`/my/antennas/${antenna.id}`">
+					<div class="name">{{ antenna.name }}</div>
+				</MkA>
+			</MkPagination>
+		</div>
 	</div>
-</div>
+</MkSpacer>
 </template>
 
 <script lang="ts">
@@ -29,6 +31,7 @@ export default defineComponent({
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.manageAntennas,
 				icon: 'fas fa-satellite',
+				bg: 'var(--bg)',
 				action: {
 					icon: 'fas fa-plus',
 					handler: this.create
@@ -45,7 +48,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .ieepwinx {
-	padding: 16px;
 
 	> .add {
 		margin: 0 auto 16px auto;

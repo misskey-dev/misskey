@@ -700,6 +700,7 @@ _mfm:
   spin: "アニメーション(回転)"
   blur: "ぼかし"
   font: "フォント"
+  rotate: "回転"
 _reversi:
   reversi: "リバーシ"
   gameSettings: "対局の設定"

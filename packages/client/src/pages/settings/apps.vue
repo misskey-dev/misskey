@@ -7,7 +7,7 @@
 				<div>{{ $ts.nothing }}</div>
 			</div>
 		</template>
-		<template #default="{items}">
+		<template v-slot="{items}">
 			<div v-for="token in items" :key="token.id" class="_debobigegoPanel bfomjevm">
 				<img v-if="token.iconUrl" class="icon" :src="token.iconUrl" alt=""/>
 				<div class="body">

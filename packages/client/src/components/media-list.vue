@@ -44,16 +44,36 @@ export default defineComponent({
 
 		onMounted(() => {
 			const lightbox = new PhotoSwipeLightbox({
-				dataSource: props.mediaList.filter(media => media.type.startsWith('image')).map(media => ({
-					src: media.url,
-					w: media.properties.width,
-					h: media.properties.height,
-					alt: media.name,
-				})),
+				dataSource: props.mediaList.filter(media => media.type.startsWith('image')).map(media => {
+					const item = {
+						src: media.url,
+						w: media.properties.width,
+						h: media.properties.height,
+						alt: media.name,
+					};
+					if (media.properties.orientation != null && media.properties.orientation >= 5) {
+						[item.w, item.h] = [item.h, item.w];
+					}
+					return item;
+				}),
 				gallery: gallery.value,
 				children: '.image',
 				thumbSelector: '.image',
-				pswpModule: PhotoSwipe
+				loop: false,
+				padding: window.innerWidth > 500 ? {
+					top: 32,
+					bottom: 32,
+					left: 32,
+					right: 32,
+				} : {
+					top: 0,
+					bottom: 0,
+					left: 0,
+					right: 0,
+				},
+				imageClickAction: 'close',
+				tapAction: 'toggle-controls',
+				pswpModule: PhotoSwipe,
 			});
 
 			lightbox.on('itemData', (e) => {
@@ -68,6 +88,9 @@ export default defineComponent({
 				itemData.src = file.url;
 				itemData.w = Number(file.properties.width);
 				itemData.h = Number(file.properties.height);
+				if (file.properties.orientation != null && file.properties.orientation >= 5) {
+					[itemData.w, itemData.h] = [itemData.h, itemData.w];
+				}
 				itemData.msrc = file.thumbnailUrl;
 				itemData.thumbCropped = true;
 			});

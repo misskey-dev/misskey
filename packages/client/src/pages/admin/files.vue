@@ -28,7 +28,7 @@
 					<template #label>MIME type</template>
 				</MkInput>
 			</div>
-			<MkPagination #default="{items}" ref="files" :pagination="pagination" class="urempief">
+			<MkPagination v-slot="{items}" ref="files" :pagination="pagination" class="urempief">
 				<button v-for="file in items" :key="file.id" class="file _panel _button _gap" @click="show(file, $event)">
 					<MkDriveFileThumbnail class="thumbnail" :file="file" fit="contain"/>
 					<div class="body">

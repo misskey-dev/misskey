@@ -36,7 +36,7 @@
 			</MkInput>
 		</div>
 
-		<MkPagination #default="{items}" ref="users" :pagination="pagination" class="users">
+		<MkPagination v-slot="{items}" ref="users" :pagination="pagination" class="users">
 			<button v-for="user in items" :key="user.id" class="user _panel _button _gap" @click="show(user)">
 				<MkAvatar class="avatar" :user="user" :disable-link="true" :show-indicator="true"/>
 				<div class="body">
