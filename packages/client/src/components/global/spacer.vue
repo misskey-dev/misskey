@@ -24,7 +24,7 @@ export default defineComponent({
 		marginMax: {
 			type: Number,
 			required: false,
-			default: 32,
+			default: 24,
 		},
 	},
 
