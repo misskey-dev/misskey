@@ -232,6 +232,7 @@ export default defineComponent({
 
 		watch(component, () => {
 			pageProps.value = {};
+
 			if (page.value) {
 				if (page.value.startsWith('registry/keys/system/')) {
 					pageProps.value.scope = page.value.replace('registry/keys/system/', '').split('/');
@@ -242,10 +243,12 @@ export default defineComponent({
 					pageProps.value.scope = path;
 				}
 			}
+
 			nextTick(() => {
 				scroll(el.value, { top: 0 });
 			});
 		}, { immediate: true });
+
 		watch(() => props.initialPage, () => {
 			if (props.initialPage == null && !narrow.value) {
 				page.value = 'profile';
@@ -256,16 +259,20 @@ export default defineComponent({
 				}
 			}
 		});
+
 		onMounted(() => {
 			narrow.value = el.value.offsetWidth < 800;
 			if (!narrow.value) {
 				page.value = 'profile';
 			}
 		});
+
 		const emailNotConfigured = computed(() => instance.enableEmail && ($i.email == null || !$i.emailVerified));
+
 		const onInfo = (info) => {
 			childInfo.value = info;
 		};
+		
 		return {
 			[symbols.PAGE_INFO]: INFO,
 			page,
