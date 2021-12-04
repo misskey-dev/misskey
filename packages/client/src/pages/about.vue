@@ -24,7 +24,7 @@
 		</FormSection>
 
 		<FormSection>
-			<div class="_inputSplit">
+			<div class="_inputSplit _formBlock">
 				<MkKeyValue class="_formBlock">
 					<template #key>{{ $ts.administrator }}</template>
 					<template #value>{{ $instance.maintainerName }}</template>
@@ -34,9 +34,8 @@
 					<template #value>{{ $instance.maintainerEmail }}</template>
 				</MkKeyValue>
 			</div>
+			<FormLink v-if="$instance.tosUrl" :to="$instance.tosUrl" class="_formBlock" external>{{ $ts.tos }}</FormLink>
 		</FormSection>
-
-		<FormLink v-if="$instance.tosUrl" :to="$instance.tosUrl" external>{{ $ts.tos }}</FormLink>
 
 		<FormSuspense :p="initStats">
 			<FormSection>
