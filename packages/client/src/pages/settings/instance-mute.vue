@@ -8,7 +8,7 @@
 					<template #desc>{{ $ts._instanceMute.instanceMuteDescription}}<br>{{$ts._instanceMute.instanceMuteDescription2}}</template>
 				</FormTextarea>
 			</div>
-		<FormButton @click="save()" primary inline :disabled="!changed"><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
+		<FormButton primary inline :disabled="!changed" @click="save()"><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
 		</FormBase>
 	</div>
 </template>
