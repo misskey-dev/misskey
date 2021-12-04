@@ -40,7 +40,7 @@
 					<template #caption><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
 					<option v-for="item in form[item].options" :key="item.value" :value="item.value">{{ item.label }}</option>
 				</FormRadios>
-				<FormRange v-else-if="form[item].type === 'range'" v-model="values[item]" :min="form[item].mim" :max="form[item].max" :step="form[item].step" class="_formBlock">
+				<FormRange v-else-if="form[item].type === 'range'" v-model="values[item]" :min="form[item].mim" :max="form[item].max" :step="form[item].step" :text-converter="form[item].textConverter" class="_formBlock">
 					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
 					<template v-if="form[item].description" #caption>{{ form[item].description }}</template>
 				</FormRange>
