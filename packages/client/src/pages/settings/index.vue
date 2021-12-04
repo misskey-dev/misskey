@@ -41,8 +41,8 @@ export default defineComponent({
 	props: {
 		initialPage: {
 			type: String,
-			required: false,
-		},
+			required: false
+		}
 	},
 
 	setup(props, context) {
@@ -230,60 +230,42 @@ export default defineComponent({
 			return null;
 		});
 
-		watch(
-			component,
-			() => {
-				pageProps.value = {};
-
-				if (page.value) {
-					if (page.value.startsWith('registry/keys/system/')) {
-						pageProps.value.scope = page.value
-							.replace('registry/keys/system/', '')
-							.split('/');
-					}
-					if (page.value.startsWith('registry/value/system/')) {
-						const path = page.value
-							.replace('registry/value/system/', '')
-							.split('/');
-						pageProps.value.xKey = path.pop();
-						pageProps.value.scope = path;
-					}
+		watch(component, () => {
+			pageProps.value = {};
+			if (page.value) {
+				if (page.value.startsWith('registry/keys/system/')) {
+					pageProps.value.scope = page.value.replace('registry/keys/system/', '').split('/');
 				}
-
-				nextTick(() => {
-					scroll(el.value, { top: 0 });
-				});
-			},
-			{ immediate: true }
-		);
-
-		watch(
-			() => props.initialPage,
-			() => {
-				if (props.initialPage == null && !narrow.value) {
-					page.value = 'profile';
-				} else {
-					page.value = props.initialPage;
-					if (props.initialPage == null) {
-						INFO.value = indexInfo;
-					}
+				if (page.value.startsWith('registry/value/system/')) {
+					const path = page.value.replace('registry/value/system/', '').split('/');
+					pageProps.value.xKey = path.pop();
+					pageProps.value.scope = path;
 				}
 			}
-		);
-
+			nextTick(() => {
+				scroll(el.value, { top: 0 });
+			});
+		}, { immediate: true });
+		watch(() => props.initialPage, () => {
+			if (props.initialPage == null && !narrow.value) {
+				page.value = 'profile';
+			} else {
+				page.value = props.initialPage;
+				if (props.initialPage == null) {
+					INFO.value = indexInfo;
+				}
+			}
+		});
 		onMounted(() => {
 			narrow.value = el.value.offsetWidth < 800;
 			if (!narrow.value) {
 				page.value = 'profile';
 			}
 		});
-
 		const emailNotConfigured = computed(() => instance.enableEmail && ($i.email == null || !$i.emailVerified));
-
 		const onInfo = (info) => {
 			childInfo.value = info;
 		};
-
 		return {
 			[symbols.PAGE_INFO]: INFO,
 			page,
