@@ -272,7 +272,7 @@ export default defineComponent({
 		const onInfo = (info) => {
 			childInfo.value = info;
 		};
-		
+
 		return {
 			[symbols.PAGE_INFO]: INFO,
 			page,
