@@ -67,7 +67,7 @@ export default defineComponent({
 		send() {
 			this.sending = true;
 			const body = JSON5.parse(this.body);
-			os.api(this.endpoint, body, body.i || this.withCredential ? undefined : null).then(res => {
+			os.api(this.endpoint, body, body.i || (this.withCredential ? undefined : null)).then(res => {
 				this.sending = false;
 				this.res = JSON5.stringify(res, null, 2);
 			}, err => {
