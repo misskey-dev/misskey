@@ -41,7 +41,7 @@
 			</div>
 		</div>
 
-		<MkPagination #default="{items}" ref="instances" :key="host + state" :pagination="pagination">
+		<MkPagination v-slot="{items}" ref="instances" :key="host + state" :pagination="pagination">
 			<div class="dqokceoi">
 				<MkA v-for="instance in items" :key="instance.id" class="instance" :to="`/instance-info/${instance.host}`">
 					<div class="host"><img :src="instance.faviconUrl">{{ instance.host }}</div>

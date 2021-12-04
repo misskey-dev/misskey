@@ -1,8 +1,8 @@
 <template>
-<div class="mk-deck" :class="`${deckStore.reactiveState.columnAlign.value}`" :style="{ '--deckMargin': deckStore.reactiveState.columnMargin.value + 'px' }"
+<div class="mk-deck" :class="[{ isMobile }, `${deckStore.reactiveState.columnAlign.value}`]" :style="{ '--deckMargin': deckStore.reactiveState.columnMargin.value + 'px' }"
 	@contextmenu.self.prevent="onContextmenu"
 >
-	<XSidebar ref="nav"/>
+	<XSidebar v-if="!isMobile"/>
 
 	<template v-for="ids in layout">
 		<!-- sectionを利用しているのは、deck.vue側でcolumnに対してfirst-of-typeを効かせるため -->
@@ -22,91 +22,76 @@
 		/>
 	</template>
 
-	<button v-if="$i" class="nav _button" @click="showNav()"><i class="fas fa-bars"></i><span v-if="navIndicated" class="indicator"><i class="fas fa-circle"></i></span></button>
-	<button v-if="$i" class="post _buttonPrimary" @click="post()"><i class="fas fa-pencil-alt"></i></button>
+	<div v-if="isMobile" class="buttons">
+		<button class="button nav _button" @click="drawerMenuShowing = true"><i class="fas fa-bars"></i><span v-if="menuIndicated" class="indicator"><i class="fas fa-circle"></i></span></button>
+		<button class="button home _button" @click="$router.push('/')"><i class="fas fa-home"></i></button>
+		<button class="button notifications _button" @click="$router.push('/my/notifications')"><i class="fas fa-bell"></i><span v-if="$i.hasUnreadNotification" class="indicator"><i class="fas fa-circle"></i></span></button>
+		<button class="button post _button" @click="post()"><i class="fas fa-pencil-alt"></i></button>
+	</div>
+
+	<transition name="menu-back">
+		<div v-if="drawerMenuShowing"
+			class="menu-back _modalBg"
+			@click="drawerMenuShowing = false"
+			@touchstart.passive="drawerMenuShowing = false"
+		></div>
+	</transition>
+
+	<transition name="menu">
+		<XDrawerMenu v-if="drawerMenuShowing" class="menu"/>
+	</transition>
 
 	<XCommon/>
 </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent, provide, ref, watch } from 'vue';
 import { v4 as uuid } from 'uuid';
-import { host } from '@/config';
 import DeckColumnCore from '@/ui/deck/column-core.vue';
 import XSidebar from '@/ui/_common_/sidebar.vue';
+import XDrawerMenu from '@/ui/_common_/sidebar-for-mobile.vue';
 import { getScrollContainer } from '@/scripts/scroll';
 import * as os from '@/os';
 import { menuDef } from '@/menu';
 import XCommon from './_common_/common.vue';
-import { deckStore, addColumn, loadDeck } from './deck/deck-store';
+import { deckStore, addColumn as addColumnToStore, loadDeck } from './deck/deck-store';
+import { useRoute } from 'vue-router';
+import { $i } from '@/account';
+import { i18n } from '@/i18n';
 
 export default defineComponent({
 	components: {
 		XCommon,
 		XSidebar,
+		XDrawerMenu,
 		DeckColumnCore,
 	},
 
-	provide() {
-		return deckStore.state.navWindow ? {
-			navHook: (url) => {
-				os.pageWindow(url);
-			}
-		} : {};
-	},
+	setup() {
+		const isMobile = ref(window.innerWidth <= 500);
+		window.addEventListener('resize', () => {
+			isMobile.value = window.innerWidth <= 500;
+		});
 
-	data() {
-		return {
-			deckStore,
-			host: host,
-			menuDef: menuDef,
-			wallpaper: localStorage.getItem('wallpaper') != null,
-		};
-	},
+		const drawerMenuShowing = ref(false);
 
-	computed: {
-		columns() {
-			return deckStore.reactiveState.columns.value;
-		},
-		layout() {
-			return deckStore.reactiveState.layout.value;
-		},
-		navIndicated(): boolean {
-			if (!this.$i) return false;
-			for (const def in this.menuDef) {
-				if (this.menuDef[def].indicated) return true;
+		const route = useRoute();
+		watch(route, () => {
+			drawerMenuShowing.value = false;
+		});
+
+		const columns = deckStore.reactiveState.columns;
+		const layout = deckStore.reactiveState.layout.value;
+		const menuIndicated = computed(() => {
+			if ($i == null) return false;
+			for (const def in menuDef) {
+				if (menuDef[def].indicated) return true;
 			}
 			return false;
-		},
-	},
+		});
 
-	created() {
-		document.documentElement.style.overflowY = 'hidden';
-		document.documentElement.style.scrollBehavior = 'auto';
-		window.addEventListener('wheel', this.onWheel);
-		loadDeck();
-	},
-
-	mounted() {
-	},
-
-	methods: {
-		onWheel(e) {
-			if (getScrollContainer(e.target) == null) {
-				document.documentElement.scrollLeft += e.deltaY > 0 ? 96 : -96;
-			}
-		},
-
-		showNav() {
-			this.$refs.nav.show();
-		},
-
-		post() {
-			os.post();
-		},
-
-		async addColumn(ev) {
+		const addColumn = async (ev) => {
 			const columns = [
 				'main',
 				'widgets',
@@ -119,33 +104,83 @@ export default defineComponent({
 			];
 
 			const { canceled, result: column } = await os.select({
-				title: this.$ts._deck.addColumn,
+				title: i18n.locale._deck.addColumn,
 				items: columns.map(column => ({
-					value: column, text: this.$t('_deck._columns.' + column)
+					value: column, text: i18n.t('_deck._columns.' + column)
 				}))
 			});
 			if (canceled) return;
 
-			addColumn({
+			addColumnToStore({
 				type: column,
 				id: uuid(),
-				name: this.$t('_deck._columns.' + column),
+				name: i18n.t('_deck._columns.' + column),
 				width: 330,
 			});
-		},
+		};
 
-		onContextmenu(e) {
+		const onContextmenu = (ev) => {
 			os.contextMenu([{
-				text: this.$ts._deck.addColumn,
+				text: i18n.locale._deck.addColumn,
 				icon: null,
-				action: this.addColumn
-			}], e);
-		},
-	}
+				action: addColumn
+			}], ev);
+		};
+
+		provide('shouldSpacerMin', true);
+		if (deckStore.state.navWindow) {
+			provide('navHook', (url) => {
+				os.pageWindow(url);
+			});
+		}
+
+		document.documentElement.style.overflowY = 'hidden';
+		document.documentElement.style.scrollBehavior = 'auto';
+		window.addEventListener('wheel', (ev) => {
+			if (getScrollContainer(ev.target) == null) {
+				document.documentElement.scrollLeft += ev.deltaY > 0 ? 96 : -96;
+			}
+		});
+		loadDeck();
+
+		return {
+			isMobile,
+			deckStore,
+			drawerMenuShowing,
+			columns,
+			layout,
+			menuIndicated,
+			onContextmenu,
+			wallpaper: localStorage.getItem('wallpaper') != null,
+			post: os.post,
+		};
+	},
 });
 </script>
 
 <style lang="scss" scoped>
+.menu-enter-active,
+.menu-leave-active {
+	opacity: 1;
+	transform: translateX(0);
+	transition: transform 300ms cubic-bezier(0.23, 1, 0.32, 1), opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.menu-enter-from,
+.menu-leave-active {
+	opacity: 0;
+	transform: translateX(-240px);
+}
+
+.menu-back-enter-active,
+.menu-back-leave-active {
+	opacity: 1;
+	transition: opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.menu-back-enter-from,
+.menu-back-leave-active {
+	opacity: 0;
+}
+
 .mk-deck {
 	$nav-hide-threshold: 650px; // TODO: どこかに集約したい
 
@@ -169,6 +204,10 @@ export default defineComponent({
 		}
 	}
 
+	&.isMobile {
+		padding-bottom: 100px;
+	}
+
 	> .column {
 		flex-shrink: 0;
 		margin-right: var(--deckMargin);
@@ -183,43 +222,89 @@ export default defineComponent({
 		}
 	}
 
-	> .post,
-	> .nav {
+	> .buttons {
 		position: fixed;
 		z-index: 1000;
-		bottom: 32px;
-		width: 64px;
-		height: 64px;
-		border-radius: 100%;
-		box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12);
-		font-size: 22px;
+		bottom: 0;
+		left: 0;
+		padding: 16px;
+		display: flex;
+		width: 100%;
+		box-sizing: border-box;
 
-		@media (min-width: ($nav-hide-threshold + 1px)) {
-			display: none;
+		> .button {
+			position: relative;
+			flex: 1;
+			padding: 0;
+			margin: auto;
+			height: 64px;
+			border-radius: 8px;
+			background: var(--panel);
+			color: var(--fg);
+
+			&:not(:last-child) {
+				margin-right: 12px;
+			}
+
+			@media (max-width: 400px) {
+				height: 60px;
+
+				&:not(:last-child) {
+					margin-right: 8px;
+				}
+			}
+
+			&:hover {
+				background: var(--X2);
+			}
+
+			> .indicator {
+				position: absolute;
+				top: 0;
+				left: 0;
+				color: var(--indicator);
+				font-size: 16px;
+				animation: blink 1s infinite;
+			}
+
+			&:first-child {
+				margin-left: 0;
+			}
+
+			&:last-child {
+				margin-right: 0;
+			}
+
+			> * {
+				font-size: 22px;
+			}
+
+			&:disabled {
+				cursor: default;
+
+				> * {
+					opacity: 0.5;
+				}
+			}
 		}
 	}
 
-	> .post {
-		right: 32px;
+	> .menu-back {
+		z-index: 1001;
 	}
 
-	> .nav {
-		left: 32px;
-		background: var(--panel);
-		color: var(--fg);
-
-		&:hover {
-			background: var(--X2);
-		}
-
-		> .indicator {
-			position: absolute;
-			top: 0;
-			left: 0;
-			color: var(--indicator);
-			font-size: 16px;
-			animation: blink 1s infinite;
-		}
+	> .menu {
+		position: fixed;
+		top: 0;
+		left: 0;
+		z-index: 1001;
+		// ほんとは単に 100vh と書きたいところだが... https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
+		height: calc(var(--vh, 1vh) * 100);
+		width: 240px;
+		box-sizing: border-box;
+		overflow: auto;
+		overscroll-behavior: contain;
+		background: var(--bg);
 	}
 }
 </style>

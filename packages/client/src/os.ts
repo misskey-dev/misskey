@@ -556,7 +556,7 @@ export function contextMenu(items: any[], ev: MouseEvent) {
 	});
 }
 
-export function post(props: Record<string, any>) {
+export function post(props: Record<string, any> = {}) {
 	return new Promise((resolve, reject) => {
 		// NOTE: MkPostFormDialogをdynamic importするとiOSでテキストエリアに自動フォーカスできない
 		// NOTE: ただ、dynamic importしない場合、MkPostFormDialogインスタンスが使いまわされ、

@@ -1,16 +1,14 @@
 <template>
-<div class="mk-app" :class="{ wallpaper, isMobile }" :style="`--globalHeaderHeight:${globalHeaderHeight}px`">
+<div class="gbhvwtnk" :class="{ wallpaper }" :style="`--globalHeaderHeight:${globalHeaderHeight}px`">
 	<XHeaderMenu v-if="showMenuOnTop" v-get-size="(w, h) => globalHeaderHeight = h"/>
 
 	<div class="columns" :class="{ fullView, withGlobalHeader: showMenuOnTop }">
-		<template v-if="!isMobile">
-			<div v-if="!showMenuOnTop" class="sidebar">
-				<XSidebar/>
-			</div>
-			<div v-else ref="widgetsLeft" class="widgets left">
-				<XWidgets :place="'left'" @mounted="attachSticky('widgetsLeft')"/>
-			</div>
-		</template>
+		<div v-if="!showMenuOnTop" class="sidebar">
+			<XSidebar/>
+		</div>
+		<div v-else ref="widgetsLeft" class="widgets left">
+			<XWidgets :place="'left'" @mounted="attachSticky('widgetsLeft')"/>
+		</div>
 
 		<main class="main" :style="{ background: pageInfo?.bg }" @contextmenu.stop="onContextmenu">
 			<div class="content">
@@ -31,16 +29,6 @@
 			<XWidgets :place="null" @mounted="attachSticky('widgetsRight')"/>
 		</div>
 	</div>
-
-	<div v-if="isMobile" class="buttons">
-		<button ref="navButton" class="button nav _button" @click="showDrawerNav"><i class="fas fa-bars"></i><span v-if="navIndicated" class="indicator"><i class="fas fa-circle"></i></span></button>
-		<button class="button home _button" @click="$route.name === 'index' ? top() : $router.push('/')"><i class="fas fa-home"></i></button>
-		<button class="button notifications _button" @click="$router.push('/my/notifications')"><i class="fas fa-bell"></i><span v-if="$i.hasUnreadNotification" class="indicator"><i class="fas fa-circle"></i></span></button>
-		<button class="button widget _button" @click="widgetsShowing = true"><i class="fas fa-layer-group"></i></button>
-		<button class="button post _button" @click="post"><i class="fas fa-pencil-alt"></i></button>
-	</div>
-
-	<XDrawerSidebar v-if="isMobile" ref="drawerNav" class="sidebar"/>
 
 	<transition name="tray-back">
 		<div v-if="widgetsShowing"
@@ -65,20 +53,17 @@ import { defineComponent, defineAsyncComponent, markRaw } from 'vue';
 import { instanceName } from '@/config';
 import { StickySidebar } from '@/scripts/sticky-sidebar';
 import XSidebar from './classic.sidebar.vue';
-import XDrawerSidebar from '@/ui/_common_/sidebar.vue';
 import XCommon from './_common_/common.vue';
 import * as os from '@/os';
 import { menuDef } from '@/menu';
 import * as symbols from '@/symbols';
 
 const DESKTOP_THRESHOLD = 1100;
-const MOBILE_THRESHOLD = 600;
 
 export default defineComponent({
 	components: {
 		XCommon,
 		XSidebar,
-		XDrawerSidebar,
 		XHeaderMenu: defineAsyncComponent(() => import('./classic.header.vue')),
 		XWidgets: defineAsyncComponent(() => import('./classic.widgets.vue')),
 	},
@@ -86,6 +71,7 @@ export default defineComponent({
 	provide() {
 		return {
 			shouldHeaderThin: this.showMenuOnTop,
+			shouldSpacerMin: true,
 		};
 	},
 
@@ -94,7 +80,6 @@ export default defineComponent({
 			pageInfo: null,
 			menuDef: menuDef,
 			globalHeaderHeight: 0,
-			isMobile: window.innerWidth <= MOBILE_THRESHOLD,
 			isDesktop: window.innerWidth >= DESKTOP_THRESHOLD,
 			widgetsShowing: false,
 			fullView: false,
@@ -103,20 +88,17 @@ export default defineComponent({
 	},
 
 	computed: {
-		navIndicated(): boolean {
-			for (const def in this.menuDef) {
-				if (def === 'notifications') continue; // 通知は下にボタンとして表示されてるから
-				if (this.menuDef[def].indicated) return true;
-			}
-			return false;
-		},
-
 		showMenuOnTop(): boolean {
-			return !this.isMobile && this.$store.state.menuDisplay === 'top';
+			return this.$store.state.menuDisplay === 'top';
 		}
 	},
 
 	created() {
+		if (window.innerWidth < 1024) {
+			localStorage.setItem('ui', 'default');
+			location.reload();
+		}
+
 		document.documentElement.style.overflowY = 'scroll';
 
 		if (this.$store.state.widgets.length === 0) {
@@ -135,7 +117,6 @@ export default defineComponent({
 
 	mounted() {
 		window.addEventListener('resize', () => {
-			this.isMobile = (window.innerWidth <= MOBILE_THRESHOLD);
 			this.isDesktop = (window.innerWidth >= DESKTOP_THRESHOLD);
 		}, { passive: true });
 
@@ -178,20 +159,8 @@ export default defineComponent({
 			}, { passive: true });
 		},
 
-		post() {
-			os.post();
-		},
-
 		top() {
 			window.scroll({ top: 0, behavior: 'smooth' });
-		},
-
-		back() {
-			history.back();
-		},
-
-		showDrawerNav() {
-			this.$refs.drawerNav.show();
 		},
 
 		onTransition() {
@@ -257,10 +226,9 @@ export default defineComponent({
 	opacity: 0;
 }
 
-.mk-app {
+.gbhvwtnk {
 	$ui-font-size: 1em;
 	$widgets-hide-threshold: 1200px;
-	$nav-icon-only-width: 78px; // TODO: どこかに集約したい
 
 	// ほんとは単に 100vh と書きたいところだが... https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
 	min-height: calc(var(--vh, 1vh) * 100);
@@ -269,21 +237,6 @@ export default defineComponent({
 	&.wallpaper {
 		background: var(--wallpaperOverlay);
 		//backdrop-filter: var(--blur, blur(4px));
-	}
-
-	&.isMobile {
-		> .columns {
-			display: block;
-			margin: 0;
-
-			> .main {
-				margin: 0;
-				padding-bottom: 92px;
-				border: none;
-				width: 100%;
-				border-radius: 0;
-			}
-		}
 	}
 
 	> .columns {
@@ -367,76 +320,6 @@ export default defineComponent({
 				border-radius: 0;
 				box-shadow: none;
 				width: 100%;
-			}
-		}
-	}
-
-	> .buttons {
-		position: fixed;
-		z-index: 1000;
-		bottom: 0;
-		padding: 16px;
-		display: flex;
-		width: 100%;
-		box-sizing: border-box;
-		-webkit-backdrop-filter: var(--blur, blur(32px));
-		backdrop-filter: var(--blur, blur(32px));
-		background-color: var(--header);
-		border-top: solid 0.5px var(--divider);
-
-		> .button {
-			position: relative;
-			flex: 1;
-			padding: 0;
-			margin: auto;
-			height: 64px;
-			border-radius: 8px;
-			background: var(--panel);
-			color: var(--fg);
-
-			&:not(:last-child) {
-				margin-right: 12px;
-			}
-
-			@media (max-width: 400px) {
-				height: 60px;
-
-				&:not(:last-child) {
-					margin-right: 8px;
-				}
-			}
-
-			&:hover {
-				background: var(--X2);
-			}
-
-			> .indicator {
-				position: absolute;
-				top: 0;
-				left: 0;
-				color: var(--indicator);
-				font-size: 16px;
-				animation: blink 1s infinite;
-			}
-
-			&:first-child {
-				margin-left: 0;
-			}
-
-			&:last-child {
-				margin-right: 0;
-			}
-
-			> * {
-				font-size: 22px;
-			}
-
-			&:disabled {
-				cursor: default;
-
-				> * {
-					opacity: 0.5;
-				}
 			}
 		}
 	}

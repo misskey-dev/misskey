@@ -840,6 +840,7 @@ _mfm:
   blur: "模糊"
   font: "字型"
   fontDescription: "您可以設定顯示內容的字型"
+  rotate: "旋轉"
 _reversi:
   reversi: "黑白棋"
   gameSettings: "對弈設定"

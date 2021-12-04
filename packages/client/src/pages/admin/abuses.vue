@@ -33,7 +33,7 @@
 			</div>
 			-->
 
-			<MkPagination #default="{items}" ref="reports" :pagination="pagination" style="margin-top: var(--margin);">
+			<MkPagination v-slot="{items}" ref="reports" :pagination="pagination" style="margin-top: var(--margin);">
 				<div v-for="report in items" :key="report.id" class="bcekxzvu _card _gap">
 					<div class="_content target">
 						<MkAvatar class="avatar" :user="report.targetUser" :show-indicator="true"/>

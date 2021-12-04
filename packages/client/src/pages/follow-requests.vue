@@ -7,7 +7,7 @@
 				<div>{{ $ts.noFollowRequests }}</div>
 			</div>
 		</template>
-		<template #default="{items}">
+		<template v-slot="{items}">
 			<div v-for="req in items" :key="req.id" class="user _panel">
 				<MkAvatar class="avatar" :user="req.follower" :show-indicator="true"/>
 				<div class="body">
