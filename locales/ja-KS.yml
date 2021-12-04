@@ -653,8 +653,6 @@ low: "低い"
 global: "グローバル"
 sent: "送信"
 hashtags: "ハッシュタグ"
-_docs:
-  admin: "管理"
 _ad:
   back: "戻る"
 _gallery:
@@ -702,6 +700,7 @@ _mfm:
   spin: "アニメーション(回転)"
   blur: "ぼかし"
   font: "フォント"
+  rotate: "回転"
 _reversi:
   reversi: "リバーシ"
   gameSettings: "対局の設定"

@@ -754,8 +754,8 @@ ratio: "%"
 global: "公開"
 sent: "發送"
 hashtags: "#tag"
-_docs:
-  admin: "管理"
+_ffVisibility:
+  public: "發佈"
 _ad:
   back: "返回"
   reduceFrequencyOfThisAd: "降低此廣告的頻率 "
@@ -840,6 +840,7 @@ _mfm:
   blur: "模糊"
   font: "字型"
   fontDescription: "您可以設定顯示內容的字型"
+  rotate: "旋轉"
 _reversi:
   reversi: "黑白棋"
   gameSettings: "對弈設定"

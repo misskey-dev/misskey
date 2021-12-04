@@ -49,9 +49,10 @@ If your language is not listed in Crowdin, please open an issue.
 
 ![Crowdin](https://d322cqt584bo4o.cloudfront.net/misskey/localized.svg)
 
-## Documentation
-* Documents for instance admins are located in [`/docs`](/docs).
-* Documents for end users are located in [`/src/docs`](/src/docs).
+## Development
+During development, it is useful to use the `npm run dev` command.
+This command monitors the server-side and client-side source files and automatically builds them if they are modified.
+In addition, it will also automatically start the Misskey server process.
 
 ## Testing
 - Test codes are located in [`/test`](/test).
@@ -180,7 +181,7 @@ MongoDBは`null`で返してきてたので、その感覚で`if (x === null)`�
 
 ### Migration作成方法
 ```
-npx ts-node ./node_modules/typeorm/cli.js migration:generate -n 変更の名前
+npx ts-node ./node_modules/typeorm/cli.js migration:generate -n 変更の名前 -o
 ```
 
 作成されたスクリプトは不必要な変更を含むため除去してください。

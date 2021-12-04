@@ -1,117 +1,57 @@
-[![Misskey](/assets/about/banner.svg)](https://join.misskey.page/)
-
-<h1 align="center">Misskey</h1>
+[![Misskey](https://github.com/misskey-dev/assets/blob/main/banner.png?raw=true)](https://join.misskey.page/)
 
 <div align="center">
 
-[![CircleCI](https://img.shields.io/circleci/project/github/misskey-dev/misskey.svg?style=for-the-badge&logo=circleci)](https://circleci.com/gh/misskey-dev/misskey)
-[![Dependencies](https://img.shields.io/david/misskey-dev/misskey.svg?style=for-the-badge&logo=npm)](https://david-dm.org/misskey-dev/misskey)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=for-the-badge&logo=github)](http://makeapullrequest.com)
-[![Awesome Humane Tech](https://raw.githubusercontent.com/humanetech-community/awesome-humane-tech/main/humane-tech-badge.svg?sanitize=true)](https://github.com/humanetech-community/awesome-humane-tech)
+**🌎 A forever evolving, interplanetary microblogging platform. 🚀**
 
-**A forever evolving, interplanetary microblogging platform.**
+**Misskey** is a distributed microblogging platform with advanced features such as Reactions and a highly customizable UI.
 
-<a href="https://join.misskey.page/">Misskey</a> is a decentralized microblogging platform born on Earth.
-Since it exists within the Fediverse (a universe where various social media platforms are organized),
-it is mutually linked with other social media platforms.
-Why don't you take a short break from the hustle and bustle of the city, and dive into a new Internet? <a href="https://join.misskey.page/">Find an instance!</a>
+[Learn more](https://misskey-hub.net/)
+
+---
+
+[✨ Find an instance](https://misskey-hub.net/instances.html)
+•
+[📦 Create your own instance](https://misskey-hub.net/docs/install.html)
+•
+[🛠️ Contribute](./CONTRIBUTING.md)
+•
+[🚀 Join the community](https://discord.gg/Wp8gVStHW3)
+
+---
 
 <a href="https://www.patreon.com/syuilo"><img src="https://c5.patreon.com/external/logo/become_a_patron_button@2x.png" alt="Become a Patron!" width="160" /></a>
 
 </div>
 
----
+<div>
 
-Do you have a question? Or are you experiencing trouble?
-Visit [our forum](https://forum.misskey.io/)!
+<a href="https://xn--931a.moe/"><img src="https://github.com/misskey-dev/misskey/blob/develop/assets/ai.png?raw=true" align="right" height="320px"/></a>
 
----
+## ✨ Features
+- **ActivityPub support**\
+	It is possible to interact with other software.
+- **Reactions**\
+	You can add "reactions" to each post, making it easy for you to express your feelings.
+- **Drive**\
+	An interface to manage uploaded files such as images, videos, sounds, etc.
+	You can also organize your favorite content into folders, making it easy to share again.
+- **Rich Web UI**\
+	Misskey has a rich WebUI by default.
+	It is highly customizable by flexibly changing the layout and installing various widgets and themes.
+	Furthermore, plug-ins can be created using AiScript, a original programming language.
+- and more...
 
-![](https://ja.mstdn.wiki/images/e/ed/Deck.jpg)
+</div>
 
-:sparkles: Features
-----------------------------------------------------------------
-<a href="https://xn--931a.moe/"><img src="https://github.com/misskey-dev/misskey/blob/develop/assets/ai-orig.png?raw=true" align="right" height="320px"/></a>
+<div style="clear: both;"></div>
 
-<h3>Posting</h3>
-<p>
-Post your ideas, discussion topics, fun moments, or anything else you want to share! Misskey supports text, emoji, pictures, videos, and polls!
-</p>
-
----
-
-<h3 >Reactions</h3>
-<p>
-Reactions are the simplest way to respond to others' posts. Simply pick a reaction emote from the list! Reactions on Misskey are much more expressive than other social media services which only allow “liking”.
-</p>
-
----
-
-<h3>Interface</h3>
-<p>
-Customize the UI to your own tastes! No UI will work for everyone, so Misskey is completely customizable. Make Misskey *yours* by editing the style, adjusting timeline layouts, and placing widgets.
-</p>
-
----
-
-<h3>Misskey Drive</h3>
-<p>
-Organize and store your files! Want to post a picture you have already uploaded? Wish you could organize your files into folders? Misskey Drive is a solution!
-</p>
-
----
-
-...and more!
-
-:package: Create your own instance
-----------------------------------------------------------------
-Please see the [Setup and Installation Guide](https://misskey-hub.net/docs/install/install.html).
-
-:wrench: Contribution
-----------------------------------------------------------------
-Please see the [Contribution Guide](./CONTRIBUTING.md).
-
-### Collaborators
-<table>
-	<tr>
-		<td><img src="https://avatars3.githubusercontent.com/u/4439005?s=460&v=4" alt="syuilo" width="100"></td>
-		<td><img src="https://avatars0.githubusercontent.com/u/10798641?s=460&v=4" alt="AyaMorisawa" width="100"></td>
-		<td><img src="https://avatars1.githubusercontent.com/u/30769358?s=460&v=4" alt="mei23" width="100"></td>
-		<td><img src="https://avatars2.githubusercontent.com/u/20679825?s=460&v=4" alt="acid-chicken" width="100"></td>
-		<td><img src="https://avatars2.githubusercontent.com/u/6533808?s=460&v=4" alt="rinsuki" width="100"></td>
-		<td><img src="https://avatars0.githubusercontent.com/u/7973572?s=460&v=4" alt="tamaina" width="100"></td>
-		<td><img src="https://avatars1.githubusercontent.com/u/7106976?s=460&v=4" alt="Xeltica" width="100"></td>
-		<td><img src="https://avatars1.githubusercontent.com/u/17376330?s=460&v=4" alt="u1-liquid" width="100"></td>
-	</tr>
-	<tr>
-		<td align="center"><a href="https://github.com/syuilo">@syuilo</a></td>
-		<td align="center"><a href="https://github.com/AyaMorisawa">@AyaMorisawa</a></td>
-		<td align="center"><a href="https://github.com/mei23">@mei23</a></td>
-		<td align="center"><a href="https://github.com/acid-chicken">@acid-chicken</a></td>
-		<td align="center"><a href="https://github.com/rinsuki">@rinsuki</a></td>
-		<td align="center"><a href="https://github.com/tamaina">@tamaina</a></td>
-		<td align="center"><a href="https://github.com/Xeltica">@Xeltica</a></td>
-		<td align="center"><a href="https://github.com/u1-liquid">@u1-liquid</a></td>
-	</tr>
-</table>
-
----
-
-To receive updates of this repo, follow [@repo@misskey.io](https://misskey.io/@repo) on fediverse.
-
-Related projects
-----------------------------------------------------------------
-- [misskey.js](https://github.com/misskey-dev/misskey.js) - Misskey SDK for JavaScript
-- [mfm.js](https://github.com/misskey-dev/mfm.js) - MFM parser
-
-Sponsors
-----------------------------------------------------------------
+## Sponsors
 <div align="center">
 	<a class="rss3" title="RSS3" href="https://rss3.io/" target="_blank" style="display: inline-block;"><img src="https://rss3.io/assets/images/Logo.svg" alt="RSS3" style="display: inline-block; height: 60px;"></a>
 </div>
 
-:heart: Backers
-----------------------------------------------------------------
+## Backers
 <!-- PATREON_START -->
 <table><tr>
 <td><img src="https://c8.patreon.com/2/200/20832595" alt="Roujo " width="100"></td>

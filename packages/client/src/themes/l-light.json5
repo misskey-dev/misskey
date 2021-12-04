@@ -1,0 +1,20 @@
+{
+	id: '4eea646f-7afa-4645-83e9-83af0333cd37',
+
+	name: 'Mi Light',
+	author: 'syuilo',
+	desc: 'Default light theme',
+
+	base: 'light',
+
+	props: {
+		bg: '#f9f9f9',
+		fg: '#676767',
+		divider: '#e8e8e8',
+		header: ':alpha<0.7<@panel',
+		navBg: '#fff',
+		panel: '#fff',
+		panelHeaderDivider: '@divider',
+		mentionMe: 'rgb(0, 179, 70)',
+	},
+}
