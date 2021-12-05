@@ -13,6 +13,7 @@ export function useTooltip(onShow: (showing: Ref<boolean>) => void) {
 
 		// iOS(Androidも？)では、要素をタップした直後に(おせっかいで)mouseoverイベントを発火させたりするため、その対策
 		// これが無いと、画面に触れてないのにツールチップが出たりしてしまう
+		// TODO: タッチとマウス両方使っている環境では、マウス操作でツールチップ出せなくなるのをどうにかする
 		if (isTouchUsing && !isScreenTouching) return;
 
 		const showing = ref(true);
