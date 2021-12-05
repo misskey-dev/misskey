@@ -1,6 +1,6 @@
 <template>
 <div>
-	<MkPagination #default="{items}" :pagination="pagination">
+	<MkPagination v-slot="{items}" :pagination="pagination">
 		<div class="jrnovfpt">
 			<MkGalleryPostPreview v-for="post in items" :key="post.id" :post="post" class="post"/>
 		</div>

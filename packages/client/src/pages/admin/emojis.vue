@@ -7,7 +7,7 @@
 		</MkInput>
 		<MkPagination ref="emojis" :pagination="pagination">
 			<template #empty><span>{{ $ts.noCustomEmojis }}</span></template>
-			<template #default="{items}">
+			<template v-slot="{items}">
 				<div class="ldhfsamy">
 					<button v-for="emoji in items" :key="emoji.id" class="emoji _panel _button" @click="edit(emoji)">
 						<img :src="emoji.url" class="img" :alt="emoji.name"/>
@@ -31,7 +31,7 @@
 		</MkInput>
 		<MkPagination ref="remoteEmojis" :pagination="remotePagination">
 			<template #empty><span>{{ $ts.noCustomEmojis }}</span></template>
-			<template #default="{items}">
+			<template v-slot="{items}">
 				<div class="ldhfsamy">
 					<div v-for="emoji in items" :key="emoji.id" class="emoji _panel _button" @click="remoteMenu(emoji, $event)">
 						<img :src="emoji.url" class="img" :alt="emoji.name"/>

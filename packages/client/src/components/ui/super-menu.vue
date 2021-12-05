@@ -52,7 +52,7 @@ export default defineComponent({
 
 		> .title {
 			opacity: 0.7;
-			margin: 0 0 8px 12px;
+			margin: 0 0 8px 0;
 		}
 	
 		> .items {
