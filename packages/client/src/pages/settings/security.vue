@@ -13,7 +13,7 @@
 	<FormSection>
 		<template #label>{{ $ts.signinHistory }}</template>
 		<FormPagination :pagination="pagination">
-			<template #default="{items}">
+			<template v-slot="{items}">
 				<div>
 					<div v-for="item in items" :key="item.id" v-panel class="timnmucd">
 						<header>

@@ -919,6 +919,7 @@ _mfm:
   rainbowDescription: "Permet d'afficher le contenu en couleurs arc-en-ciel."
   sparkle: "Paillettes"
   sparkleDescription: "Ajoute un effet scintillant au contenu."
+  rotate: "Pivoter"
 _reversi:
   reversi: "Reversi"
   gameSettings: "Réglages de la partie"

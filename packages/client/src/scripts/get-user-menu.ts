@@ -109,6 +109,14 @@ export function getUserMenu(user) {
 		return !confirm.canceled;
 	}
 
+	async function invalidateFollow() {
+		os.apiWithDialog('following/invalidate', {
+			userId: user.id
+		}).then(() => {
+			user.isFollowed = !user.isFollowed;
+		})
+	}
+
 	let menu = [{
 		icon: 'fas fa-at',
 		text: i18n.locale.copyUsername,
@@ -152,6 +160,14 @@ export function getUserMenu(user) {
 			text: user.isBlocking ? i18n.locale.unblock : i18n.locale.block,
 			action: toggleBlock
 		}]);
+
+		if (user.isFollowed) {
+			menu = menu.concat([{
+				icon: 'fas fa-unlink',
+				text: i18n.locale.breakFollow,
+				action: invalidateFollow
+			}]);
+		}
 
 		menu = menu.concat([null, {
 			icon: 'fas fa-exclamation-circle',

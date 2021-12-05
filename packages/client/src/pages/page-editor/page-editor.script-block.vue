@@ -45,10 +45,10 @@
 			<template #label>{{ $ts._pages.script.blocks._fn.slots }}</template>
 			<template #caption>{{ $t('_pages.script.blocks._fn.slots-info') }}</template>
 		</MkTextarea>
-		<XV v-if="modelValue.value.expression" v-model="modelValue.value.expression" :title="$t(`_pages.script.blocks._fn.arg1`)" :get-expected-type="() => null" :hpml="hpml" :fn-slots="value.value.slots" :name="name"/>
+		<XV v-if="modelValue.value.expression" v-model="modelValue.value.expression" :title="$t(`_pages.script.blocks._fn.arg1`)" :get-expected-type="() => null" :hpml="hpml" :fn-slots="modelValue.value.slots" :name="name"/>
 	</section>
 	<section v-else-if="modelValue.type.startsWith('fn:')" class="" style="padding:16px;">
-		<XV v-for="(x, i) in modelValue.args" :key="i" v-model="value.args[i]" :title="hpml.getVarByName(modelValue.type.split(':')[1]).value.slots[i].name" :get-expected-type="() => null" :hpml="hpml" :name="name"/>
+		<XV v-for="(x, i) in modelValue.args" :key="i" v-model="modelValue.args[i]" :title="hpml.getVarByName(modelValue.type.split(':')[1]).value.slots[i].name" :get-expected-type="() => null" :hpml="hpml" :name="name"/>
 	</section>
 	<section v-else class="" style="padding:16px;">
 		<XV v-for="(x, i) in modelValue.args" :key="i" v-model="modelValue.args[i]" :title="$t(`_pages.script.blocks._${modelValue.type}.arg${i + 1}`)" :get-expected-type="() => _getExpectedType(i)" :hpml="hpml" :name="name" :fn-slots="fnSlots"/>

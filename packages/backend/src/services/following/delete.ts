@@ -2,6 +2,7 @@ import { publishMainStream, publishUserEvent } from '@/services/stream';
 import { renderActivity } from '@/remote/activitypub/renderer/index';
 import renderFollow from '@/remote/activitypub/renderer/follow';
 import renderUndo from '@/remote/activitypub/renderer/undo';
+import renderReject from '@/remote/activitypub/renderer/reject';
 import { deliver } from '@/queue/index';
 import Logger from '../logger';
 import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
@@ -39,6 +40,12 @@ export default async function(follower: { id: User['id']; host: User['host']; ur
 	if (Users.isLocalUser(follower) && Users.isRemoteUser(followee)) {
 		const content = renderActivity(renderUndo(renderFollow(follower, followee), follower));
 		deliver(follower, content, followee.inbox);
+	}
+
+	if (Users.isLocalUser(followee) && Users.isRemoteUser(follower)) {
+		// local user has null host
+		const content = renderActivity(renderReject(renderFollow(follower, followee), followee));
+		deliver(followee, content, follower.inbox);
 	}
 }
 
