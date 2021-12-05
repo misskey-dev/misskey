@@ -12,7 +12,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { url as local } from '@/config';
-import { isDeviceTouch } from '@/scripts/is-device-touch';
+import { isTouchUsing } from '@/scripts/touch';
 import * as os from '@/os';
 
 export default defineComponent({
@@ -65,13 +65,13 @@ export default defineComponent({
 			}
 		},
 		onMouseover() {
-			if (isDeviceTouch) return;
+			if (isTouchUsing) return;
 			clearTimeout(this.showTimer);
 			clearTimeout(this.hideTimer);
 			this.showTimer = setTimeout(this.showPreview, 500);
 		},
 		onMouseleave() {
-			if (isDeviceTouch) return;
+			if (isTouchUsing) return;
 			clearTimeout(this.showTimer);
 			clearTimeout(this.hideTimer);
 			this.hideTimer = setTimeout(this.closePreview, 500);
