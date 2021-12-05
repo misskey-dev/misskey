@@ -923,6 +923,7 @@ _mfm:
   sparkle: "Блеск"
   sparkleDescription: "Добавьте эффект искрящихся частиц."
   rotate: "Повернуть"
+  rotateDescription: "Повернуть на указанный угол."
 _reversi:
   reversi: "Реверси"
   gameSettings: "Настройки игры"
