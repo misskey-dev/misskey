@@ -7,7 +7,7 @@
 	<div v-if="tab === 'mute'">
 		<MkPagination :pagination="mutingPagination" class="muting">
 			<template #empty><FormInfo>{{ $ts.noUsers }}</FormInfo></template>
-			<template #default="{items}">
+			<template v-slot="{items}">
 				<FormGroup>
 					<FormLink v-for="mute in items" :key="mute.id" :to="userPage(mute.mutee)">
 						<MkAcct :user="mute.mutee"/>
@@ -19,7 +19,7 @@
 	<div v-if="tab === 'block'">
 		<MkPagination :pagination="blockingPagination" class="blocking">
 			<template #empty><FormInfo>{{ $ts.noUsers }}</FormInfo></template>
-			<template #default="{items}">
+			<template v-slot="{items}">
 				<FormGroup>
 					<FormLink v-for="block in items" :key="block.id" :to="userPage(block.blockee)">
 						<MkAcct :user="block.blockee"/>

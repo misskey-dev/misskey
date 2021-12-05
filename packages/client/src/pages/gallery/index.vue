@@ -9,7 +9,7 @@
 	<div v-if="tab === 'explore'">
 		<MkFolder class="_gap">
 			<template #header><i class="fas fa-clock"></i>{{ $ts.recentPosts }}</template>
-			<MkPagination #default="{items}" :pagination="recentPostsPagination" :disable-auto-load="true">
+			<MkPagination v-slot="{items}" :pagination="recentPostsPagination" :disable-auto-load="true">
 				<div class="vfpdbgtk">
 					<MkGalleryPostPreview v-for="post in items" :key="post.id" :post="post" class="post"/>
 				</div>
@@ -17,7 +17,7 @@
 		</MkFolder>
 		<MkFolder class="_gap">
 			<template #header><i class="fas fa-fire-alt"></i>{{ $ts.popularPosts }}</template>
-			<MkPagination #default="{items}" :pagination="popularPostsPagination" :disable-auto-load="true">
+			<MkPagination v-slot="{items}" :pagination="popularPostsPagination" :disable-auto-load="true">
 				<div class="vfpdbgtk">
 					<MkGalleryPostPreview v-for="post in items" :key="post.id" :post="post" class="post"/>
 				</div>
@@ -25,7 +25,7 @@
 		</MkFolder>
 	</div>
 	<div v-else-if="tab === 'liked'">
-		<MkPagination #default="{items}" :pagination="likedPostsPagination">
+		<MkPagination v-slot="{items}" :pagination="likedPostsPagination">
 			<div class="vfpdbgtk">
 				<MkGalleryPostPreview v-for="like in items" :key="like.id" :post="like.post" class="post"/>
 			</div>
@@ -33,7 +33,7 @@
 	</div>
 	<div v-else-if="tab === 'my'">
 		<MkA to="/gallery/new" class="_link" style="margin: 16px;"><i class="fas fa-plus"></i> {{ $ts.postToGallery }}</MkA>
-		<MkPagination #default="{items}" :pagination="myPostsPagination">
+		<MkPagination v-slot="{items}" :pagination="myPostsPagination">
 			<div class="vfpdbgtk">
 				<MkGalleryPostPreview v-for="post in items" :key="post.id" :post="post" class="post"/>
 			</div>

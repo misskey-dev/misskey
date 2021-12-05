@@ -1,7 +1,7 @@
 <template>
 <div ref="el" class="vvcocwet" :class="{ wide: !narrow }">
 	<div v-if="!narrow || page == null" class="nav">
-		<MkSpacer :content-max="700">
+		<MkSpacer :content-max="700" :margin-min="20">
 			<div class="baaadecd">
 				<div class="title">{{ $ts.settings }}</div>
 				<MkInfo v-if="emailNotConfigured" warn class="info">{{ $ts.emailNotConfiguredWarning }} <MkA to="/settings/email" class="_link">{{ $ts.configure }}</MkA></MkInfo>

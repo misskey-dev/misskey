@@ -815,6 +815,7 @@ _mfm:
   blur: "Rozmycie"
   font: "Czcionka"
   fontDescription: "Wybiera czcionkę do wyświetlania treści."
+  rotate: "Obróć"
 _reversi:
   reversi: "Reversi"
   gameSettings: "Ustawienia gry"

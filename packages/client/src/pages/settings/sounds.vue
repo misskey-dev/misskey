@@ -119,6 +119,7 @@ export default defineComponent({
 					mim: 0,
 					max: 1,
 					step: 0.05,
+					textConverter: (v) => `${Math.floor(v * 100)}%`,
 					label: this.$ts.volume,
 					default: this.sounds[type].volume
 				},

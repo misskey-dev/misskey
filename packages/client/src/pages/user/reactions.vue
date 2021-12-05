@@ -1,6 +1,6 @@
 <template>
 <div>
-	<MkPagination #default="{items}" ref="list" :pagination="pagination">
+	<MkPagination v-slot="{items}" ref="list" :pagination="pagination">
 		<div v-for="item in items" :key="item.id" :to="`/clips/${item.id}`" class="item _panel _gap afdcfbfb">
 			<div class="header">
 				<MkAvatar class="avatar" :user="user"/>

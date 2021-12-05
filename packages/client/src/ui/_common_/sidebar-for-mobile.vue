@@ -1,5 +1,5 @@
 <template>
-<div class="mvcprjjd" :class="{ iconOnly }">
+<div class="kmwsukvl">
 	<div>
 		<button v-click-anime class="item _button account" @click="openAccountMenu">
 			<MkAvatar :user="$i" class="avatar"/><MkAcct class="text" :user="$i"/>
@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from 'vue';
+import { computed, defineComponent, ref, toRef, watch } from 'vue';
 import { host } from '@/config';
 import { search } from '@/scripts/search';
 import * as os from '@/os';
@@ -43,27 +43,13 @@ import { defaultStore } from '@/store';
 
 export default defineComponent({
 	setup(props, context) {
-		const iconOnly = ref(false);
-
-		const menu = computed(() => defaultStore.state.menu);
+		const menu = toRef(defaultStore.state, 'menu');
 		const otherMenuItemIndicated = computed(() => {
 			for (const def in menuDef) {
 				if (menu.value.includes(def)) continue;
 				if (menuDef[def].indicated) return true;
 			}
 			return false;
-		});
-
-		const calcViewState = () => {
-			iconOnly.value = (window.innerWidth <= 1279) || (defaultStore.state.menuDisplay === 'sideIcon');
-		};
-
-		calcViewState();
-
-		window.addEventListener('resize', calcViewState);
-
-		watch(defaultStore.reactiveState.menuDisplay, () => {
-			calcViewState();
 		});
 
 		return {
@@ -73,7 +59,6 @@ export default defineComponent({
 			menu,
 			menuDef: menuDef,
 			otherMenuItemIndicated,
-			iconOnly,
 			post: os.post,
 			search,
 			openAccountMenu,
@@ -87,29 +72,12 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.mvcprjjd {
+.kmwsukvl {
 	$ui-font-size: 1em; // TODO: どこかに集約したい
-	$nav-width: 250px;
-	$nav-icon-only-width: 86px;
 	$avatar-size: 32px;
 	$avatar-margin: 8px;
 
-	flex: 0 0 $nav-width;
-	width: $nav-width;
-	box-sizing: border-box;
-
 	> div {
-		position: fixed;
-		top: 0;
-		left: 0;
-		z-index: 1001;
-		width: $nav-width;
-		// ほんとは単に 100vh と書きたいところだが... https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
-		height: calc(var(--vh, 1vh) * 100);
-		box-sizing: border-box;
-		overflow: auto;
-		overflow-x: clip;
-		background: var(--navBg);
 
 		> .divider {
 			margin: 16px 16px;
@@ -229,76 +197,6 @@ export default defineComponent({
 					&:before {
 						background: var(--accentLighten);
 					}
-				}
-			}
-		}
-	}
-
-	&.iconOnly {
-		flex: 0 0 $nav-icon-only-width;
-		width: $nav-icon-only-width;
-
-		> div {
-			width: $nav-icon-only-width;
-
-			> .divider {
-				margin: 8px auto;
-				width: calc(100% - 32px);
-			}
-
-			> .item {
-				padding-left: 0;
-				padding: 18px 0;
-				width: 100%;
-				text-align: center;
-				font-size: $ui-font-size * 1.1;
-				line-height: initial;
-
-				> i,
-				> .avatar {
-					display: block;
-					margin: 0 auto;
-				}
-
-				> i {
-					opacity: 0.7;
-				}
-
-				> .text {
-					display: none;
-				}
-
-				&:hover, &.active {
-					> i, > .text {
-						opacity: 1;
-					}
-				}
-
-				&:first-child {
-					margin-bottom: 8px;
-				}
-
-				&:last-child {
-					margin-top: 8px;
-				}
-
-				&:before {
-					width: 100%;
-					border-radius: 0;
-				}
-
-				&.post {
-					height: $nav-icon-only-width;
-
-					> i {
-						opacity: 1;
-					}
-				}
-
-				&.post:before {
-					width: calc(100% - 32px);
-					height: calc(100% - 32px);
-					border-radius: 100%;
 				}
 			}
 		}

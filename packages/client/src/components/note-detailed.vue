@@ -649,7 +649,7 @@ export default defineComponent({
 					text: this.$ts.pin,
 					action: () => this.togglePin(true)
 				} : undefined,
-				...(this.$i.isModerator || this.$i.isAdmin ? [
+				/*...(this.$i.isModerator || this.$i.isAdmin ? [
 					null,
 					{
 						icon: 'fas fa-bullhorn',
@@ -657,7 +657,7 @@ export default defineComponent({
 						action: this.promote
 					}]
 					: []
-				),
+				),*/
 				...(this.appearNote.userId != this.$i.id ? [
 					null,
 					{

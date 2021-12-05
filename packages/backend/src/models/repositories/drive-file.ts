@@ -28,6 +28,19 @@ export class DriveFileRepository extends Repository<DriveFile> {
 		);
 	}
 
+	public getPublicProperties(file: DriveFile): DriveFile['properties'] {
+		if (file.properties.orientation != null) {
+			const properties = JSON.parse(JSON.stringify(file.properties));
+			if (file.properties.orientation >= 5) {
+				[properties.width, properties.height] = [properties.height, properties.width];
+			}
+			properties.orientation = undefined;
+			return properties;
+		}
+
+		return file.properties;
+	}
+
 	public getPublicUrl(file: DriveFile, thumbnail = false, meta?: Meta): string | null {
 		// リモートかつメディアプロキシ
 		if (file.uri != null && file.userHost != null && config.mediaProxy != null) {
@@ -122,7 +135,7 @@ export class DriveFileRepository extends Repository<DriveFile> {
 			size: file.size,
 			isSensitive: file.isSensitive,
 			blurhash: file.blurhash,
-			properties: file.properties,
+			properties: opts.self ? file.properties : this.getPublicProperties(file),
 			url: opts.self ? file.url : this.getPublicUrl(file, false, meta),
 			thumbnailUrl: this.getPublicUrl(file, true, meta),
 			comment: file.comment,
@@ -201,6 +214,11 @@ export const packedDriveFileSchema = {
 					type: 'number' as const,
 					optional: true as const, nullable: false as const,
 					example: 720
+				},
+				orientation: {
+					type: 'number' as const,
+					optional: true as const, nullable: false as const,
+					example: 8
 				},
 				avgColor: {
 					type: 'string' as const,
