@@ -399,6 +399,7 @@ signinWith: "Ensaluti kun {x}"
 or: "Aŭ"
 language: "Lingvo"
 uiLanguage: "Lingvo de fasado"
+groupInvited: "Vi estas invitita al grupo"
 aboutX: "Pri {x}"
 useOsNativeEmojis: "Uzi la emoĵiojn implicitan de la operaciumo"
 youHaveNoGroups: "Neniuj grupoj"
@@ -585,6 +586,7 @@ youAreRunningUpToDateClient: "Vi uzas la plej novan version de via kliento."
 newVersionOfClientAvailable: "Nova versio de via kliento estas disponebla."
 inUse: "Uzata"
 editCode: "Redakti kodon"
+receiveAnnouncementFromInstance: "Ricevi informojn sciigintajn de la nodo"
 emailNotification: "Sciigoj per retpoŝto"
 inChannelSearch: "Serĉi en kanalo"
 useReactionPickerForContextMenu: "Dekstre-klaki por malfermi la elektilon de reagoj"
@@ -783,6 +785,7 @@ _permissions:
   "read:reactions": "Vidi reagojn"
   "write:reactions": "Redakti viajn reagojn"
   "read:page-likes": "Vidi ŝatojn de paĝo"
+  "read:user-groups": "Vidi viajn grupojn de uzantoj"
   "read:channels": "Vidi kanalojn"
 _antennaSources:
   all: "Ĉiuj notoj"
@@ -917,6 +920,7 @@ _pages:
       default: "Implicitaĵa valoro"
     _canvas:
       id: "Kanvasa identigilo"
+      width: "Larĝeco"
     _note:
       id: "Identigilo de noto"
     _switch:
@@ -994,6 +998,7 @@ _notification:
   youWereFollowed: "eksekvis vin"
   youReceivedFollowRequest: "Vi ricevis peton de sekvado"
   yourFollowRequestAccepted: "Via peto de sekvado estis akceptita."
+  youWereInvitedToGroup: "Vi estas invitita al grupo"
   _types:
     all: "Ĉio"
     follow: "Novaj sekvatoj"
@@ -1004,6 +1009,7 @@ _notification:
     reaction: "Reagoj"
     receiveFollowRequest: "Ricevi peton de sekvado"
     followRequestAccepted: "Akceptita peto por sekvado"
+    groupInvited: "Invito al grupo"
 _deck:
   profile: "Agordaro"
   _columns:
