@@ -592,6 +592,7 @@ smtpSecure: "Use implicit SSL/TLS for SMTP connections"
 smtpSecureInfo: "Turn this off when using STARTTLS"
 testEmail: "Test email delivery"
 wordMute: "Word mute"
+instanceMute: "Instance mutes"
 userSaysSomething: "{name} said something"
 makeActive: "Activate"
 display: "Display"
@@ -1000,6 +1001,9 @@ _wordMute:
   soft: "Soft"
   hard: "Hard"
   mutedNotes: "Muted notes"
+_instanceMute:
+  instanceMuteDescription: "This will mute any notes/renotes from the listed instances, including those of users replying to a user from a muted instance."
+  instanceMuteDescription2: "Separate with newlines"
 _theme:
   explore: "Explore Themes"
   install: "Install a theme"
@@ -1273,6 +1277,8 @@ _exportOrImport:
   muteList: "Muted users"
   blockingList: "Blocked users"
   userLists: "User lists"
+  excludeMutingUsers: "Exclude muted users"
+  excludeInactiveUsers: "Exclude inactive users"
 _charts:
   federationInstancesIncDec: "Difference in # of federating instances"
   federationInstancesTotal: "Total # of federating instances"
