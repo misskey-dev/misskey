@@ -189,6 +189,11 @@ export class UserProfile {
 	})
 	public mutedWords: string[][];
 
+	@Column('jsonb', {
+		default: []
+	})
+	public mutedInstances: string[];
+
 	@Column('enum', {
 		enum: notificationTypes,
 		array: true,

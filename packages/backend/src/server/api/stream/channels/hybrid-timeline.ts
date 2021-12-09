@@ -5,6 +5,7 @@ import { fetchMeta } from '@/misc/fetch-meta';
 import { Notes } from '@/models/index';
 import { checkWordMute } from '@/misc/check-word-mute';
 import { isBlockerUserRelated } from '@/misc/is-blocker-user-related';
+import { isInstanceMuted } from '@/misc/is-instance-muted';
 import { Packed } from '@/misc/schema';
 
 export default class extends Channel {
@@ -56,6 +57,9 @@ export default class extends Channel {
 				});
 			}
 		}
+
+		// Ignore notes from instances the user has muted
+		if (isInstanceMuted(note, new Set<string>(this.userProfile?.mutedInstances ?? []))) return;
 
 		// 関係ない返信は除外
 		if (note.reply) {

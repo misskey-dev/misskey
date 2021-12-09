@@ -234,6 +234,9 @@
 
 ## 12.89.1 (2021/08/24)
 
+### Features
+- Added a user-level instance mute in user settings
+
 ### Improvements
 - クライアントのデザインの調整
 

@@ -137,6 +137,11 @@ export default defineComponent({
 				to: '/settings/import-export',
 				active: page.value === 'import-export',
 			}, {
+				icon: 'fas fa-volume-mute',
+				text: i18n.locale.instanceMute,
+				to: '/settings/instance-mute',
+				active: page.value === 'instance-mute',
+			}, {
 				icon: 'fas fa-ban',
 				text: i18n.locale.muteAndBlock,
 				to: '/settings/mute-block',
@@ -190,6 +195,7 @@ export default defineComponent({
 				case 'notifications': return defineAsyncComponent(() => import('./notifications.vue'));
 				case 'mute-block': return defineAsyncComponent(() => import('./mute-block.vue'));
 				case 'word-mute': return defineAsyncComponent(() => import('./word-mute.vue'));
+				case 'instance-mute': return defineAsyncComponent(() => import('./instance-mute.vue'));
 				case 'integration': return defineAsyncComponent(() => import('./integration.vue'));
 				case 'security': return defineAsyncComponent(() => import('./security.vue'));
 				case '2fa': return defineAsyncComponent(() => import('./2fa.vue'));
