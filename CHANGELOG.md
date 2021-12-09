@@ -10,6 +10,7 @@
 ## 12.x.x (unreleased)
 
 ### Improvements
+- Added a user-level instance mute in user settings
 
 ### Bugfixes
 - クライアント: タッチ機能付きディスプレイを使っていてマウス操作をしている場合に一部機能が動作しない問題を修正
@@ -233,9 +234,6 @@
 - カスタムCSSを有効にしているとエラーになる問題を修正
 
 ## 12.89.1 (2021/08/24)
-
-### Features
-- Added a user-level instance mute in user settings
 
 ### Improvements
 - クライアントのデザインの調整
