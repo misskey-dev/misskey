@@ -1318,6 +1318,8 @@ _exportOrImport:
   muteList: "ミュート"
   blockingList: "ブロック"
   userLists: "リスト"
+  excludeMutingUsers: "ミュートしているユーザーを除外"
+  excludeInactiveUsers: "使われていないアカウントを除外"
 
 _charts:
   federationInstancesIncDec: "連合の増減"

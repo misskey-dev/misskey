@@ -126,9 +126,11 @@ export function createExportNotesJob(user: ThinUser) {
 	});
 }
 
-export function createExportFollowingJob(user: ThinUser) {
+export function createExportFollowingJob(user: ThinUser, excludeMuting = false, excludeInactive = false) {
 	return dbQueue.add('exportFollowing', {
 		user: user,
+		excludeMuting,
+		excludeInactive,
 	}, {
 		removeOnComplete: true,
 		removeOnFail: true,
