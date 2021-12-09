@@ -10,12 +10,11 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue'
+import { defineComponent } from 'vue';
 import FormTextarea from '@/components/form/textarea.vue';
 import MkInfo from '@/components/ui/info.vue';
 import MkButton from '@/components/ui/button.vue';
 import * as os from '@/os';
-import number from '@/filters/number';
 import * as symbols from '@/symbols';
 
 export default defineComponent({
@@ -39,7 +38,7 @@ export default defineComponent({
 		}
 	},
 
-		watch: {
+	watch: {
 		instanceMutes: {
 			handler() {
 				this.changed = true;
@@ -68,8 +67,6 @@ export default defineComponent({
 			// Refresh filtered list to signal to the user how they've been saved
 			this.instanceMutes = mutes.join('\n');
 		},
-
-		number //?
 	}
 })
 </script>
