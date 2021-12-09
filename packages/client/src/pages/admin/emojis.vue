@@ -53,7 +53,7 @@ import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/form/input.vue';
 import MkPagination from '@/components/ui/pagination.vue';
 import MkTab from '@/components/tab.vue';
-import { selectFile } from '@/scripts/select-file';
+import { selectFiles } from '@/scripts/select-file';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 
@@ -117,7 +117,7 @@ export default defineComponent({
 
 	methods: {
 		async add(e) {
-			const files = await selectFile(e.currentTarget || e.target, null, true);
+			const files = await selectFiles(e.currentTarget || e.target, null);
 
 			const promise = Promise.all(files.map(file => os.api('admin/emoji/add', {
 				fileId: file.id,

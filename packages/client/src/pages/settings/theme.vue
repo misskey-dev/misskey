@@ -188,7 +188,7 @@ export default defineComponent({
 			themesCount,
 			wallpaper,
 			setWallpaper(e) {
-				selectFile(e.currentTarget || e.target, null, false).then(file => {
+				selectFile(e.currentTarget || e.target, null).then(file => {
 					wallpaper.value = file.url;
 				});
 			},
