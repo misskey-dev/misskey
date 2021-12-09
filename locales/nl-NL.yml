@@ -158,6 +158,8 @@ _exportOrImport:
   muteList: "Dempen"
   blockingList: "Blokkeren"
   userLists: "Lijsten"
+  excludeMutingUsers: "Negeer gedempte gebruikers"
+  excludeInactiveUsers: "Negeer inactieve gebruikers"
 _pages:
   script:
     categories:
