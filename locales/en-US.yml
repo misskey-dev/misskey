@@ -1004,6 +1004,8 @@ _wordMute:
 _instanceMute:
   instanceMuteDescription: "This will mute any notes/renotes from the listed instances, including those of users replying to a user from a muted instance."
   instanceMuteDescription2: "Separate with newlines"
+  title: "Hides notes from listed instances."
+  heading: "List of instances to be muted"
 _theme:
   explore: "Explore Themes"
   install: "Install a theme"
