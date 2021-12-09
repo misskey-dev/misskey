@@ -1003,7 +1003,9 @@ _wordMute:
   hard: "Schwer"
   mutedNotes: "Stummgeschaltete Notizen"
 _instanceMute:
+  instanceMuteDescription: "Schaltet alle Notizen/Renotes stumm, die von den gelisteten Instanzen stammen, inklusive Antworten von Benutzern an einen Benutzer einer stummgeschalteten Instanz."
   instanceMuteDescription2: "Instanzen getrennt durch Zeilenumbrüchen angeben"
+  title: "Blendet Notizen von stummgeschalteten Instanzen aus."
   heading: "Liste der stummzuschaltenden Instanzen"
 _theme:
   explore: "Themen erforschen"
