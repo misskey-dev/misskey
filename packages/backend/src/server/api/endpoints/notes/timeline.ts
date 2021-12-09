@@ -67,7 +67,7 @@ export const meta = {
 			type: 'object' as const,
 			optional: false as const, nullable: false as const,
 			ref: 'Note',
-		}
+		},
 	},
 };
 
@@ -76,7 +76,7 @@ export default define(meta, async (ps, user) => {
 		where: {
 			followerId: user.id,
 		},
-		take: 1
+		take: 1,
 	})) !== 0;
 
 	//#region Construct query

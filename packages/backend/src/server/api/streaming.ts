@@ -11,7 +11,7 @@ import { Users } from '@/models/index';
 module.exports = (server: http.Server) => {
 	// Init websocket server
 	const ws = new websocket.server({
-		httpServer: server
+		httpServer: server,
 	});
 
 	ws.on('request', async (request) => {

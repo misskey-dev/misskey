@@ -18,10 +18,10 @@ module.exports = async (ctx: Koa.Context) => {
 	try {
 		const summary = meta.summalyProxy ? await getJson(`${meta.summalyProxy}?${query({
 			url: ctx.query.url,
-			lang: ctx.query.lang || 'ja-JP'
+			lang: ctx.query.lang || 'ja-JP',
 		})}`) : await summaly(ctx.query.url, {
 			followRedirects: false,
-			lang: ctx.query.lang || 'ja-JP'
+			lang: ctx.query.lang || 'ja-JP',
 		});
 
 		logger.succ(`Got preview of ${ctx.query.url}: ${summary.title}`);
@@ -46,7 +46,7 @@ function wrap(url?: string): string | null {
 		? url.match(/^https?:\/\//)
 			? `${config.url}/proxy/preview.jpg?${query({
 				url,
-				preview: '1'
+				preview: '1',
 			})}`
 			: url
 		: null;

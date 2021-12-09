@@ -8,7 +8,7 @@ export function createConnection() {
 		{
 			password: config.redis.pass,
 			prefix: config.redis.prefix,
-			db: config.redis.db || 0
+			db: config.redis.db || 0,
 		}
 	);
 }

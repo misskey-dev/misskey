@@ -9,8 +9,8 @@ export const meta = {
 
 	params: {
 		emailAddress: {
-			validator: $.str
-		}
+			validator: $.str,
+		},
 	},
 
 	res: {
@@ -25,8 +25,8 @@ export const meta = {
 				type: 'string' as const,
 				optional: false as const, nullable: true as const,
 			},
-		}
-	}
+		},
+	},
 };
 
 export default define(meta, async (ps) => {

@@ -13,7 +13,7 @@ export const meta = {
 	params: {
 		limit: {
 			validator: $.optional.num.range(1, 100),
-			default: 10
+			default: 10,
 		},
 
 		sinceId: {
@@ -35,7 +35,7 @@ export const meta = {
 				'local',
 				'remote',
 			]),
-			default: 'combined'
+			default: 'combined',
 		},
 
 		targetUserOrigin: {
@@ -44,7 +44,7 @@ export const meta = {
 				'local',
 				'remote',
 			]),
-			default: 'combined'
+			default: 'combined',
 		},
 	},
 
@@ -73,7 +73,7 @@ export const meta = {
 				resolved: {
 					type: 'boolean' as const,
 					nullable: false as const, optional: false as const,
-					example: false
+					example: false,
 				},
 				reporterId: {
 					type: 'string' as const,
@@ -93,21 +93,21 @@ export const meta = {
 				reporter: {
 					type: 'object' as const,
 					nullable: false as const, optional: false as const,
-					ref: 'User'
+					ref: 'User',
 				},
 				targetUser: {
 					type: 'object' as const,
 					nullable: false as const, optional: false as const,
-					ref: 'User'
+					ref: 'User',
 				},
 				assignee: {
 					type: 'object' as const,
 					nullable: true as const, optional: true as const,
-					ref: 'User'
-				}
-			}
-		}
-	}
+					ref: 'User',
+				},
+			},
+		},
+	},
 };
 
 export default define(meta, async (ps) => {

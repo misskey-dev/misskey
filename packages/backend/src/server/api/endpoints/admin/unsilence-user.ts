@@ -14,7 +14,7 @@ export const meta = {
 		userId: {
 			validator: $.type(ID),
 		},
-	}
+	},
 };
 
 export default define(meta, async (ps, me) => {
@@ -25,7 +25,7 @@ export default define(meta, async (ps, me) => {
 	}
 
 	await Users.update(user.id, {
-		isSilenced: false
+		isSilenced: false,
 	});
 
 	insertModerationLog(me, 'unsilence', {

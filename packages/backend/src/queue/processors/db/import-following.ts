@@ -21,7 +21,7 @@ export async function importFollowing(job: Bull.Job<DbUserImportJobData>, done: 
 	}
 
 	const file = await DriveFiles.findOne({
-		id: job.data.fileId
+		id: job.data.fileId,
 	});
 	if (file == null) {
 		done();
@@ -41,10 +41,10 @@ export async function importFollowing(job: Bull.Job<DbUserImportJobData>, done: 
 
 			let target = isSelfHost(host!) ? await Users.findOne({
 				host: null,
-				usernameLower: username.toLowerCase()
+				usernameLower: username.toLowerCase(),
 			}) : await Users.findOne({
 				host: toPuny(host!),
-				usernameLower: username.toLowerCase()
+				usernameLower: username.toLowerCase(),
 			});
 
 			if (host == null && target == null) continue;

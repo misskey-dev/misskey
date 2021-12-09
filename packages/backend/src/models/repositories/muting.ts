@@ -18,8 +18,8 @@ export class MutingRepository extends Repository<Muting> {
 			createdAt: muting.createdAt.toISOString(),
 			muteeId: muting.muteeId,
 			mutee: Users.pack(muting.muteeId, me, {
-				detail: true
-			})
+				detail: true,
+			}),
 		});
 	}
 
@@ -56,5 +56,5 @@ export const packedMutingSchema = {
 			optional: false as const, nullable: false as const,
 			ref: 'User' as const,
 		},
-	}
+	},
 };

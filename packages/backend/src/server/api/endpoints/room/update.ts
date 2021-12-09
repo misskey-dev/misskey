@@ -27,20 +27,20 @@ export const meta = {
 					props: $.optional.nullable.obj(),
 				})),
 				roomType: $.str,
-				carpetColor: $.str
-			})
+				carpetColor: $.str,
+			}),
 		},
 	},
 };
 
 export default define(meta, async (ps, user) => {
 	await UserProfiles.update(user.id, {
-		room: ps.room as any
+		room: ps.room as any,
 	});
 
 	const iObj = await Users.pack(user.id, user, {
 		detail: true,
-		includeSecrets: true
+		includeSecrets: true,
 	});
 
 	// Publish meUpdated event

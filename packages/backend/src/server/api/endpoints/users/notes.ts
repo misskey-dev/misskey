@@ -72,16 +72,16 @@ export const meta = {
 			type: 'object' as const,
 			optional: false as const, nullable: false as const,
 			ref: 'Note',
-		}
+		},
 	},
 
 	errors: {
 		noSuchUser: {
 			message: 'No such user.',
 			code: 'NO_SUCH_USER',
-			id: '27e494ba-2ac2-48e8-893b-10d4d8c2387b'
-		}
-	}
+			id: '27e494ba-2ac2-48e8-893b-10d4d8c2387b',
+		},
+	},
 };
 
 export default define(meta, async (ps, me) => {

@@ -13,9 +13,9 @@ export const meta = {
 
 	params: {
 		password: {
-			validator: $.str
-		}
-	}
+			validator: $.str,
+		},
+	},
 };
 
 export default define(meta, async (ps, user) => {
@@ -30,11 +30,11 @@ export default define(meta, async (ps, user) => {
 
 	// Generate user's secret key
 	const secret = speakeasy.generateSecret({
-		length: 32
+		length: 32,
 	});
 
 	await UserProfiles.update(user.id, {
-		twoFactorTempSecret: secret.base32
+		twoFactorTempSecret: secret.base32,
 	});
 
 	// Get the data URL of the authenticator URL
@@ -42,13 +42,13 @@ export default define(meta, async (ps, user) => {
 		secret: secret.base32,
 		encoding: 'base32',
 		label: user.username,
-		issuer: config.host
+		issuer: config.host,
 	}));
 
 	return {
 		qr: dataUrl,
 		secret: secret.base32,
 		label: user.username,
-		issuer: config.host
+		issuer: config.host,
 	};
 });

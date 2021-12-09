@@ -21,7 +21,7 @@ export default class extends Channel {
 		// Check existence and owner
 		const list = await UserLists.findOne({
 			id: this.listId,
-			userId: this.user!.id
+			userId: this.user!.id,
 		});
 		if (!list) return;
 
@@ -40,7 +40,7 @@ export default class extends Channel {
 			where: {
 				userListId: this.listId,
 			},
-			select: ['userId']
+			select: ['userId'],
 		});
 
 		this.listUsers = users.map(x => x.userId);
@@ -52,7 +52,7 @@ export default class extends Channel {
 
 		if (['followers', 'specified'].includes(note.visibility)) {
 			note = await Notes.pack(note.id, this.user, {
-				detail: true
+				detail: true,
 			});
 
 			if (note.isHidden) {
@@ -62,13 +62,13 @@ export default class extends Channel {
 			// リプライなら再pack
 			if (note.replyId != null) {
 				note.reply = await Notes.pack(note.replyId, this.user, {
-					detail: true
+					detail: true,
 				});
 			}
 			// Renoteなら再pack
 			if (note.renoteId != null) {
 				note.renote = await Notes.pack(note.renoteId, this.user, {
-					detail: true
+					detail: true,
 				});
 			}
 		}

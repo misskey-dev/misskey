@@ -32,7 +32,7 @@ export default class InstanceChart extends Chart<InstanceLog> {
 			drive: {
 				totalFiles: latest.drive.totalFiles,
 				totalUsage: latest.drive.totalUsage,
-			}
+			},
 		};
 	}
 
@@ -114,7 +114,7 @@ export default class InstanceChart extends Chart<InstanceLog> {
 			drive: {
 				totalFiles: driveFiles,
 				totalUsage: driveUsage,
-			}
+			},
 		};
 	}
 
@@ -122,8 +122,8 @@ export default class InstanceChart extends Chart<InstanceLog> {
 	public async requestReceived(host: string) {
 		await this.inc({
 			requests: {
-				received: 1
-			}
+				received: 1,
+			},
 		}, toPuny(host));
 	}
 
@@ -138,7 +138,7 @@ export default class InstanceChart extends Chart<InstanceLog> {
 		}
 
 		await this.inc({
-			requests: update
+			requests: update,
 		}, toPuny(host));
 	}
 
@@ -147,8 +147,8 @@ export default class InstanceChart extends Chart<InstanceLog> {
 		await this.inc({
 			users: {
 				total: 1,
-				inc: 1
-			}
+				inc: 1,
+			},
 		}, toPuny(host));
 	}
 
@@ -169,8 +169,8 @@ export default class InstanceChart extends Chart<InstanceLog> {
 				total: isAdditional ? 1 : -1,
 				inc: isAdditional ? 1 : 0,
 				dec: isAdditional ? 0 : 1,
-				diffs: diffs
-			}
+				diffs: diffs,
+			},
 		}, toPuny(host));
 	}
 
@@ -181,7 +181,7 @@ export default class InstanceChart extends Chart<InstanceLog> {
 				total: isAdditional ? 1 : -1,
 				inc: isAdditional ? 1 : 0,
 				dec: isAdditional ? 0 : 1,
-			}
+			},
 		}, toPuny(host));
 	}
 
@@ -192,7 +192,7 @@ export default class InstanceChart extends Chart<InstanceLog> {
 				total: isAdditional ? 1 : -1,
 				inc: isAdditional ? 1 : 0,
 				dec: isAdditional ? 0 : 1,
-			}
+			},
 		}, toPuny(host));
 	}
 
@@ -211,7 +211,7 @@ export default class InstanceChart extends Chart<InstanceLog> {
 		}
 
 		await this.inc({
-			drive: update
+			drive: update,
 		}, file.userHost);
 	}
 }

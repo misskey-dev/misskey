@@ -1,6 +1,6 @@
 import config from '@/config/index';
 import Resolver from '../resolver';
-import { IObject, IQuestion, isQuestion,  } from '../type';
+import { IObject, IQuestion, isQuestion  } from '../type';
 import { apLogger } from '../logger';
 import { Notes, Polls } from '@/models/index';
 import { IPoll } from '@/models/entities/poll';
@@ -31,7 +31,7 @@ export async function extractPollFromQuestion(source: string | IObject, resolver
 		choices,
 		votes,
 		multiple,
-		expiresAt
+		expiresAt,
 	};
 }
 
@@ -76,7 +76,7 @@ export async function updateQuestion(value: any) {
 	}
 
 	await Polls.update({ noteId: note.id }, {
-		votes: poll.votes
+		votes: poll.votes,
 	});
 
 	return changed;

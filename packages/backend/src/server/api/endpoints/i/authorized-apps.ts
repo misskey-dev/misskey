@@ -21,24 +21,24 @@ export const meta = {
 		sort: {
 			validator: $.optional.str.or('desc|asc'),
 			default: 'desc',
-		}
-	}
+		},
+	},
 };
 
 export default define(meta, async (ps, user) => {
 	// Get tokens
 	const tokens = await AccessTokens.find({
 		where: {
-			userId: user.id
+			userId: user.id,
 		},
 		take: ps.limit!,
 		skip: ps.offset,
 		order: {
-			id: ps.sort == 'asc' ? 1 : -1
-		}
+			id: ps.sort == 'asc' ? 1 : -1,
+		},
 	});
 
 	return await Promise.all(tokens.map(token => Apps.pack(token.appId, user, {
-		detail: true
+		detail: true,
 	})));
 });

@@ -18,11 +18,11 @@ export const meta = {
 		},
 
 		name: {
-			validator: $.str.range(1, 100)
+			validator: $.str.range(1, 100),
 		},
 
 		src: {
-			validator: $.str.or(['home', 'all', 'users', 'list', 'group'])
+			validator: $.str.or(['home', 'all', 'users', 'list', 'group']),
 		},
 
 		userListId: {
@@ -34,66 +34,66 @@ export const meta = {
 		},
 
 		keywords: {
-			validator: $.arr($.arr($.str))
+			validator: $.arr($.arr($.str)),
 		},
 
 		excludeKeywords: {
-			validator: $.arr($.arr($.str))
+			validator: $.arr($.arr($.str)),
 		},
 
 		users: {
-			validator: $.arr($.str)
+			validator: $.arr($.str),
 		},
 
 		caseSensitive: {
-			validator: $.bool
+			validator: $.bool,
 		},
 
 		withReplies: {
-			validator: $.bool
+			validator: $.bool,
 		},
 
 		withFile: {
-			validator: $.bool
+			validator: $.bool,
 		},
 
 		notify: {
-			validator: $.bool
-		}
+			validator: $.bool,
+		},
 	},
 
 	errors: {
 		noSuchAntenna: {
 			message: 'No such antenna.',
 			code: 'NO_SUCH_ANTENNA',
-			id: '10c673ac-8852-48eb-aa1f-f5b67f069290'
+			id: '10c673ac-8852-48eb-aa1f-f5b67f069290',
 		},
 
 		noSuchUserList: {
 			message: 'No such user list.',
 			code: 'NO_SUCH_USER_LIST',
-			id: '1c6b35c9-943e-48c2-81e4-2844989407f7'
+			id: '1c6b35c9-943e-48c2-81e4-2844989407f7',
 		},
 
 		noSuchUserGroup: {
 			message: 'No such user group.',
 			code: 'NO_SUCH_USER_GROUP',
-			id: '109ed789-b6eb-456e-b8a9-6059d567d385'
-		}
+			id: '109ed789-b6eb-456e-b8a9-6059d567d385',
+		},
 	},
 
 	res: {
 		type: 'object' as const,
 		optional: false as const, nullable: false as const,
-		ref: 'Antenna'
-	}
+		ref: 'Antenna',
+	},
 };
 
 export default define(meta, async (ps, user) => {
 	// Fetch the antenna
 	const antenna = await Antennas.findOne({
 		id: ps.antennaId,
-		userId: user.id
+		userId: user.id,
 	});
 
 	if (antenna == null) {

@@ -54,14 +54,14 @@ export async function signup(opts: {
 			modulusLength: 4096,
 			publicKeyEncoding: {
 				type: 'spki',
-				format: 'pem'
+				format: 'pem',
 			},
 			privateKeyEncoding: {
 				type: 'pkcs8',
 				format: 'pem',
 				cipher: undefined,
-				passphrase: undefined
-			}
+				passphrase: undefined,
+			},
 		} as any, (err, publicKey, privateKey) =>
 			err ? rej(err) : res([publicKey, privateKey])
 		));
@@ -72,7 +72,7 @@ export async function signup(opts: {
 	await getConnection().transaction(async transactionalEntityManager => {
 		const exist = await transactionalEntityManager.findOne(User, {
 			usernameLower: username.toLowerCase(),
-			host: null
+			host: null,
 		});
 
 		if (exist) throw new Error(' the username is already used');
@@ -92,7 +92,7 @@ export async function signup(opts: {
 		await transactionalEntityManager.save(new UserKeypair({
 			publicKey: keyPair[0],
 			privateKey: keyPair[1],
-			userId: account.id
+			userId: account.id,
 		}));
 
 		await transactionalEntityManager.save(new UserProfile({

@@ -51,7 +51,7 @@ export class NoteRepository extends Repository<Note> {
 				// フォロワーかどうか
 				const following = await Followings.findOne({
 					followeeId: note.userId,
-					followerId: meId
+					followerId: meId,
 				});
 
 				if (following == null) {
@@ -103,7 +103,7 @@ export class NoteRepository extends Repository<Note> {
 				// フォロワーかどうか
 				const following = await Followings.findOne({
 					followeeId: packedNote.userId,
-					followerId: meId
+					followerId: meId,
 				});
 
 				if (following == null) {
@@ -138,7 +138,7 @@ export class NoteRepository extends Repository<Note> {
 	): Promise<Packed<'Note'>> {
 		const opts = Object.assign({
 			detail: true,
-			skipHide: false
+			skipHide: false,
 		}, options);
 
 		const meId = me ? me.id : null;
@@ -150,13 +150,13 @@ export class NoteRepository extends Repository<Note> {
 			const choices = poll.choices.map(c => ({
 				text: c,
 				votes: poll.votes[poll.choices.indexOf(c)],
-				isVoted: false
+				isVoted: false,
 			}));
 
 			if (poll.multiple) {
 				const votes = await PollVotes.find({
 					userId: meId!,
-					noteId: note.id
+					noteId: note.id,
 				});
 
 				const myChoices = votes.map(v => v.choice);
@@ -166,7 +166,7 @@ export class NoteRepository extends Repository<Note> {
 			} else {
 				const vote = await PollVotes.findOne({
 					userId: meId!,
-					noteId: note.id
+					noteId: note.id,
 				});
 
 				if (vote) {
@@ -177,7 +177,7 @@ export class NoteRepository extends Repository<Note> {
 			return {
 				multiple: poll.multiple,
 				expiresAt: poll.expiresAt,
-				choices
+				choices,
 			};
 		}
 
@@ -251,20 +251,20 @@ export class NoteRepository extends Repository<Note> {
 			...(opts.detail ? {
 				reply: note.replyId ? this.pack(note.reply || note.replyId, me, {
 					detail: false,
-					_hint_: options?._hint_
+					_hint_: options?._hint_,
 				}) : undefined,
 
 				renote: note.renoteId ? this.pack(note.renote || note.renoteId, me, {
 					detail: true,
-					_hint_: options?._hint_
+					_hint_: options?._hint_,
 				}) : undefined,
 
 				poll: note.hasPoll ? populatePoll() : undefined,
 
 				...(meId ? {
-					myReaction: populateMyReaction()
-				} : {})
-			} : {})
+					myReaction: populateMyReaction(),
+				} : {}),
+			} : {}),
 		});
 
 		if (packed.user.isCat && packed.text) {
@@ -315,8 +315,8 @@ export class NoteRepository extends Repository<Note> {
 		return await Promise.all(notes.map(n => this.pack(n, me, {
 			...options,
 			_hint_: {
-				myReactions: myReactionsMap
-			}
+				myReactions: myReactionsMap,
+			},
 		})));
 	}
 }
@@ -390,8 +390,8 @@ export const packedNoteSchema = {
 			items: {
 				type: 'string' as const,
 				optional: false as const, nullable: false as const,
-				format: 'id'
-			}
+				format: 'id',
+			},
 		},
 		visibleUserIds: {
 			type: 'array' as const,
@@ -399,8 +399,8 @@ export const packedNoteSchema = {
 			items: {
 				type: 'string' as const,
 				optional: false as const, nullable: false as const,
-				format: 'id'
-			}
+				format: 'id',
+			},
 		},
 		fileIds: {
 			type: 'array' as const,
@@ -408,8 +408,8 @@ export const packedNoteSchema = {
 			items: {
 				type: 'string' as const,
 				optional: false as const, nullable: false as const,
-				format: 'id'
-			}
+				format: 'id',
+			},
 		},
 		files: {
 			type: 'array' as const,
@@ -418,7 +418,7 @@ export const packedNoteSchema = {
 				type: 'object' as const,
 				optional: false as const, nullable: false as const,
 				ref: 'DriveFile' as const,
-			}
+			},
 		},
 		tags: {
 			type: 'array' as const,
@@ -426,7 +426,7 @@ export const packedNoteSchema = {
 			items: {
 				type: 'string' as const,
 				optional: false as const, nullable: false as const,
-			}
+			},
 		},
 		poll: {
 			type: 'object' as const,

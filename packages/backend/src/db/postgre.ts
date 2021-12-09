@@ -175,7 +175,7 @@ export const entities = [
 	Ad,
 	PasswordResetRequest,
 	UserPending,
-	...charts as any
+	...charts as any,
 ];
 
 export function initDb(justBorrow = false, sync = false, forceRecreate = false) {
@@ -205,12 +205,12 @@ export function initDb(justBorrow = false, sync = false, forceRecreate = false) 
 				port: config.redis.port,
 				password: config.redis.pass,
 				prefix: `${config.redis.prefix}:query:`,
-				db: config.redis.db || 0
-			}
+				db: config.redis.db || 0,
+			},
 		} : false,
 		logging: log,
 		logger: log ? new MyCustomLogger() : undefined,
-		entities: entities
+		entities: entities,
 	});
 }
 

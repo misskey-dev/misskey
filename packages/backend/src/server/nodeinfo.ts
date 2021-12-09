@@ -15,7 +15,7 @@ export const links = [/* (awaiting release) {
 	href: config.url + nodeinfo2_1path
 }, */{
 	rel: 'http://nodeinfo.diaspora.software/ns/schema/2.0',
-	href: config.url + nodeinfo2_0path
+	href: config.url + nodeinfo2_0path,
 }];
 
 const nodeinfo2 = async () => {
@@ -46,11 +46,11 @@ const nodeinfo2 = async () => {
 		protocols: ['activitypub'],
 		services: {
 			inbound: [] as string[],
-			outbound: ['atom1.0', 'rss2.0']
+			outbound: ['atom1.0', 'rss2.0'],
 		},
 		openRegistrations: !meta.disableRegistration,
 		usage: {
-			users: {} // { total, activeHalfyear, activeMonth },
+			users: {}, // { total, activeHalfyear, activeMonth },
 			// localPosts,
 			// localComments
 		},
@@ -59,7 +59,7 @@ const nodeinfo2 = async () => {
 			nodeDescription: meta.description,
 			maintainer: {
 				name: meta.maintainerName,
-				email: meta.maintainerEmail
+				email: meta.maintainerEmail,
 			},
 			langs: meta.langs,
 			tosUrl: meta.ToSUrl,
@@ -78,7 +78,7 @@ const nodeinfo2 = async () => {
 			enableEmail: meta.enableEmail,
 			enableServiceWorker: meta.enableServiceWorker,
 			proxyAccountName: proxyAccount ? proxyAccount.username : null,
-		}
+		},
 	};
 };
 

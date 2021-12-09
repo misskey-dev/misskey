@@ -8,6 +8,6 @@ export async function insertModerationLog(moderator: { id: User['id'] }, type: s
 		createdAt: new Date(),
 		userId: moderator.id,
 		type: type,
-		info: info || {}
+		info: info || {},
 	});
 }

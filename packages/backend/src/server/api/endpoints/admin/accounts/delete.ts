@@ -16,7 +16,7 @@ export const meta = {
 		userId: {
 			validator: $.type(ID),
 		},
-	}
+	},
 };
 
 export default define(meta, async (ps, me) => {
@@ -39,11 +39,11 @@ export default define(meta, async (ps, me) => {
 		await doPostSuspend(user).catch(e => {});
 
 		createDeleteAccountJob(user, {
-			soft: false
+			soft: false,
 		});
 	} else {
 		createDeleteAccountJob(user, {
-			soft: true // リモートユーザーの削除は、完全にDBから物理削除してしまうと再度連合してきてアカウントが復活する可能性があるため、soft指定する
+			soft: true, // リモートユーザーの削除は、完全にDBから物理削除してしまうと再度連合してきてアカウントが復活する可能性があるため、soft指定する
 		});
 	}
 

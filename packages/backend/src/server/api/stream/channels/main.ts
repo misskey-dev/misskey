@@ -20,7 +20,7 @@ export default class extends Channel {
 
 					if (data.body.note && data.body.note.isHidden) {
 						const note = await Notes.pack(data.body.note.id, this.user, {
-							detail: true
+							detail: true,
 						});
 						this.connection.cacheNote(note);
 						data.body.note = note;
@@ -33,7 +33,7 @@ export default class extends Channel {
 					if (this.muting.has(data.body.userId)) return;
 					if (data.body.isHidden) {
 						const note = await Notes.pack(data.body.id, this.user, {
-							detail: true
+							detail: true,
 						});
 						this.connection.cacheNote(note);
 						data.body = note;

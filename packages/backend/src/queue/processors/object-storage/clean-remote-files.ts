@@ -18,12 +18,12 @@ export default async function cleanRemoteFiles(job: Bull.Job<Record<string, unkn
 			where: {
 				userHost: Not(IsNull()),
 				isLink: false,
-				...(cursor ? { id: MoreThan(cursor) } : {})
+				...(cursor ? { id: MoreThan(cursor) } : {}),
 			},
 			take: 8,
 			order: {
-				id: 1
-			}
+				id: 1,
+			},
 		});
 
 		if (files.length === 0) {

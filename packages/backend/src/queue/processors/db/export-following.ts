@@ -40,12 +40,12 @@ export async function exportFollowing(job: Bull.Job<DbUserJobData>, done: any): 
 		const followings = await Followings.find({
 			where: {
 				followerId: user.id,
-				...(cursor ? { id: MoreThan(cursor) } : {})
+				...(cursor ? { id: MoreThan(cursor) } : {}),
 			},
 			take: 100,
 			order: {
-				id: 1
-			}
+				id: 1,
+			},
 		});
 
 		if (followings.length === 0) {

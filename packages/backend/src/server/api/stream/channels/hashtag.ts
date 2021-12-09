@@ -31,7 +31,7 @@ export default class extends Channel {
 		// Renoteなら再pack
 		if (note.renoteId != null) {
 			note.renote = await Notes.pack(note.renoteId, this.user, {
-				detail: true
+				detail: true,
 			});
 		}
 

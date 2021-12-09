@@ -19,15 +19,15 @@ export const meta = {
 		noSuchPost: {
 			message: 'No such post.',
 			code: 'NO_SUCH_POST',
-			id: '1137bf14-c5b0-4604-85bb-5b5371b1cd45'
+			id: '1137bf14-c5b0-4604-85bb-5b5371b1cd45',
 		},
 	},
 
 	res: {
 		type: 'object' as const,
 		optional: false as const, nullable: false as const,
-		ref: 'GalleryPost'
-	}
+		ref: 'GalleryPost',
+	},
 };
 
 export default define(meta, async (ps, me) => {

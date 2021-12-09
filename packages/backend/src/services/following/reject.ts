@@ -56,7 +56,7 @@ export async function remoteReject(actor: Remote, follower: Local) {
 async function removeFollowRequest(followee: Both, follower: Both) {
 	const request = await FollowRequests.findOne({
 		followeeId: followee.id,
-		followerId: follower.id
+		followerId: follower.id,
 	});
 
 	if (!request) return;
@@ -70,7 +70,7 @@ async function removeFollowRequest(followee: Both, follower: Both) {
 async function removeFollow(followee: Both, follower: Both) {
 	const following = await Followings.findOne({
 		followeeId: followee.id,
-		followerId: follower.id
+		followerId: follower.id,
 	});
 
 	if (!following) return;
@@ -85,7 +85,7 @@ async function removeFollow(followee: Both, follower: Both) {
 async function deliverReject(followee: Local, follower: Remote) {
 	const request = await FollowRequests.findOne({
 		followeeId: followee.id,
-		followerId: follower.id
+		followerId: follower.id,
 	});
 
 	const content = renderActivity(renderReject(renderFollow(follower, followee, request?.requestId || undefined), followee));
@@ -97,7 +97,7 @@ async function deliverReject(followee: Local, follower: Remote) {
  */
 async function publishUnfollow(followee: Both, follower: Local) {
 	const packedFollowee = await Users.pack(followee.id, follower, {
-		detail: true
+		detail: true,
 	});
 
 	publishUserEvent(follower.id, 'unfollow', packedFollowee);

@@ -8,44 +8,44 @@ export class Ad {
 
 	@Index()
 	@Column('timestamp with time zone', {
-		comment: 'The created date of the Ad.'
+		comment: 'The created date of the Ad.',
 	})
 	public createdAt: Date;
 
 	@Index()
 	@Column('timestamp with time zone', {
-		comment: 'The expired date of the Ad.'
+		comment: 'The expired date of the Ad.',
 	})
 	public expiresAt: Date;
 
 	@Column('varchar', {
-		length: 32, nullable: false
+		length: 32, nullable: false,
 	})
 	public place: string;
 
 	// 今は使われていないが将来的に活用される可能性はある
 	@Column('varchar', {
-		length: 32, nullable: false
+		length: 32, nullable: false,
 	})
 	public priority: string;
 
 	@Column('integer', {
-		default: 1, nullable: false
+		default: 1, nullable: false,
 	})
 	public ratio: number;
 
 	@Column('varchar', {
-		length: 1024, nullable: false
+		length: 1024, nullable: false,
 	})
 	public url: string;
 
 	@Column('varchar', {
-		length: 1024, nullable: false
+		length: 1024, nullable: false,
 	})
 	public imageUrl: string;
 
 	@Column('varchar', {
-		length: 8192, nullable: false
+		length: 8192, nullable: false,
 	})
 	public memo: string;
 

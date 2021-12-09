@@ -12,7 +12,7 @@ export async function pushUserToUserList(target: User, list: UserList) {
 		id: genId(),
 		createdAt: new Date(),
 		userId: target.id,
-		userListId: list.id
+		userListId: list.id,
 	} as UserListJoining);
 
 	publishUserListStream(list.id, 'userAdded', await Users.pack(target));

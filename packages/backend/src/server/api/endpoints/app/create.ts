@@ -53,11 +53,11 @@ export default define(meta, async (ps, user) => {
 		description: ps.description,
 		permission,
 		callbackUrl: ps.callbackUrl,
-		secret: secret
+		secret: secret,
 	});
 
 	return await Apps.pack(app, null, {
 		detail: true,
-		includeSecret: true
+		includeSecret: true,
 	});
 });

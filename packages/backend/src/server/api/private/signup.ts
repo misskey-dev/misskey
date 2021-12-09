@@ -57,7 +57,7 @@ export default async (ctx: Koa.Context) => {
 		}
 
 		const ticket = await RegistrationTickets.findOne({
-			code: invitationCode
+			code: invitationCode,
 		});
 
 		if (ticket == null) {
@@ -94,12 +94,12 @@ export default async (ctx: Koa.Context) => {
 	} else {
 		try {
 			const { account, secret } = await signup({
-				username, password, host
+				username, password, host,
 			});
 
 			const res = await Users.pack(account, account, {
 				detail: true,
-				includeSecrets: true
+				includeSecrets: true,
 			});
 
 			(res as any).token = secret;

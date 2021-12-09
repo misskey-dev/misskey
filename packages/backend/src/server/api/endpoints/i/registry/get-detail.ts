@@ -10,7 +10,7 @@ export const meta = {
 
 	params: {
 		key: {
-			validator: $.str
+			validator: $.str,
 		},
 
 		scope: {
@@ -23,7 +23,7 @@ export const meta = {
 		noSuchKey: {
 			message: 'No such key.',
 			code: 'NO_SUCH_KEY',
-			id: '97a1e8e7-c0f7-47d2-957a-92e61256e01a'
+			id: '97a1e8e7-c0f7-47d2-957a-92e61256e01a',
 		},
 	},
 };

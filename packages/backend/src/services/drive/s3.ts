@@ -18,7 +18,7 @@ export function getS3(meta: Meta) {
 			? false
 			: meta.objectStorageS3ForcePathStyle,
 		httpOptions: {
-			agent: getAgentByUrl(new URL(u), !meta.objectStorageUseProxy)
-		}
+			agent: getAgentByUrl(new URL(u), !meta.objectStorageUseProxy),
+		},
 	});
 }

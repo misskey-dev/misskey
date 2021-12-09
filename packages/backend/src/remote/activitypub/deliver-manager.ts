@@ -43,7 +43,7 @@ export default class DeliverManager {
 	 */
 	public addFollowersRecipe() {
 		const deliver = {
-			type: 'Followers'
+			type: 'Followers',
 		} as IFollowersRecipe;
 
 		this.addRecipe(deliver);
@@ -56,7 +56,7 @@ export default class DeliverManager {
 	public addDirectRecipe(to: IRemoteUser) {
 		const recipe = {
 			type: 'Direct',
-			to
+			to,
 		} as IDirectRecipe;
 
 		this.addRecipe(recipe);
@@ -83,7 +83,7 @@ export default class DeliverManager {
 			if (isFollowers(recipe)) {
 				// followers deliver
 				const followers = await Followings.find({
-					followeeId: this.actor.id
+					followeeId: this.actor.id,
 				});
 
 				for (const following of followers) {

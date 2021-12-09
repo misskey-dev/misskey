@@ -42,15 +42,15 @@ export const meta = {
 					items: {
 						type: 'number' as const,
 						optional: false as const, nullable: false as const,
-					}
+					},
 				},
 				usersCount: {
 					type: 'number' as const,
 					optional: false as const, nullable: false as const,
-				}
-			}
-		}
-	}
+				},
+			},
+		},
+	},
 };
 
 export default define(meta, async () => {
@@ -92,7 +92,7 @@ export default define(meta, async () => {
 			} else {
 				tags.push({
 					name: tag,
-					users: [note.userId]
+					users: [note.userId],
 				});
 			}
 		}
@@ -139,7 +139,7 @@ export default define(meta, async () => {
 	const stats = hots.map((tag, i) => ({
 		tag,
 		chart: countsLog.map(counts => counts[i]),
-		usersCount: totalCounts[i]
+		usersCount: totalCounts[i],
 	}));
 
 	return stats;

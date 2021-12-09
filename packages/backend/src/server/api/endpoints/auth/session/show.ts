@@ -11,15 +11,15 @@ export const meta = {
 	params: {
 		token: {
 			validator: $.str,
-		}
+		},
 	},
 
 	errors: {
 		noSuchSession: {
 			message: 'No such session.',
 			code: 'NO_SUCH_SESSION',
-			id: 'bd72c97d-eba7-4adb-a467-f171b8847250'
-		}
+			id: 'bd72c97d-eba7-4adb-a467-f171b8847250',
+		},
 	},
 
 	res: {
@@ -29,25 +29,25 @@ export const meta = {
 			id: {
 				type: 'string' as const,
 				optional: false as const, nullable: false as const,
-				format: 'id'
+				format: 'id',
 			},
 			app: {
 				type: 'object' as const,
 				optional: false as const, nullable: false as const,
-				ref: 'App'
+				ref: 'App',
 			},
 			token: {
 				type: 'string' as const,
-				optional: false as const, nullable: false as const
-			}
-		}
-	}
+				optional: false as const, nullable: false as const,
+			},
+		},
+	},
 };
 
 export default define(meta, async (ps, user) => {
 	// Lookup session
 	const session = await AuthSessions.findOne({
-		token: ps.token
+		token: ps.token,
 	});
 
 	if (session == null) {

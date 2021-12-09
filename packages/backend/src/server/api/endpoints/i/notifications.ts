@@ -19,7 +19,7 @@ export const meta = {
 	params: {
 		limit: {
 			validator: $.optional.num.range(1, 100),
-			default: 10
+			default: 10,
 		},
 
 		sinceId: {
@@ -32,17 +32,17 @@ export const meta = {
 
 		following: {
 			validator: $.optional.bool,
-			default: false
+			default: false,
 		},
 
 		unreadOnly: {
 			validator: $.optional.bool,
-			default: false
+			default: false,
 		},
 
 		markAsRead: {
 			validator: $.optional.bool,
-			default: true
+			default: true,
 		},
 
 		includeTypes: {
@@ -51,7 +51,7 @@ export const meta = {
 
 		excludeTypes: {
 			validator: $.optional.arr($.str.or(notificationTypes as unknown as string[])),
-		}
+		},
 	},
 
 	res: {
@@ -61,7 +61,7 @@ export const meta = {
 			type: 'object' as const,
 			optional: false as const, nullable: false as const,
 			ref: 'Notification',
-		}
+		},
 	},
 };
 

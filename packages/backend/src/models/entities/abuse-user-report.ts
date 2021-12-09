@@ -9,7 +9,7 @@ export class AbuseUserReport {
 
 	@Index()
 	@Column('timestamp with time zone', {
-		comment: 'The created date of the AbuseUserReport.'
+		comment: 'The created date of the AbuseUserReport.',
 	})
 	public createdAt: Date;
 
@@ -18,7 +18,7 @@ export class AbuseUserReport {
 	public targetUserId: User['id'];
 
 	@ManyToOne(type => User, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public targetUser: User | null;
@@ -28,26 +28,26 @@ export class AbuseUserReport {
 	public reporterId: User['id'];
 
 	@ManyToOne(type => User, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public reporter: User | null;
 
 	@Column({
 		...id(),
-		nullable: true
+		nullable: true,
 	})
 	public assigneeId: User['id'] | null;
 
 	@ManyToOne(type => User, {
-		onDelete: 'SET NULL'
+		onDelete: 'SET NULL',
 	})
 	@JoinColumn()
 	public assignee: User | null;
 
 	@Index()
 	@Column('boolean', {
-		default: false
+		default: false,
 	})
 	public resolved: boolean;
 
@@ -60,14 +60,14 @@ export class AbuseUserReport {
 	@Index()
 	@Column('varchar', {
 		length: 128, nullable: true,
-		comment: '[Denormalized]'
+		comment: '[Denormalized]',
 	})
 	public targetUserHost: string | null;
 
 	@Index()
 	@Column('varchar', {
 		length: 128, nullable: true,
-		comment: '[Denormalized]'
+		comment: '[Denormalized]',
 	})
 	public reporterHost: string | null;
 	//#endregion

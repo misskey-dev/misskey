@@ -16,9 +16,9 @@ export async function doPostSuspend(user: { id: User['id']; host: User['host'] }
 		const followings = await Followings.find({
 			where: [
 				{ followerSharedInbox: Not(IsNull()) },
-				{ followeeSharedInbox: Not(IsNull()) }
+				{ followeeSharedInbox: Not(IsNull()) },
 			],
-			select: ['followerSharedInbox', 'followeeSharedInbox']
+			select: ['followerSharedInbox', 'followeeSharedInbox'],
 		});
 
 		const inboxes = followings.map(x => x.followerSharedInbox || x.followeeSharedInbox);

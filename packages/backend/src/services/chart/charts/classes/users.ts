@@ -21,7 +21,7 @@ export default class UsersChart extends Chart<UsersLog> {
 			},
 			remote: {
 				total: latest.remote.total,
-			}
+			},
 		};
 	}
 
@@ -45,7 +45,7 @@ export default class UsersChart extends Chart<UsersLog> {
 	protected async fetchActual(): Promise<DeepPartial<UsersLog>> {
 		const [localCount, remoteCount] = await Promise.all([
 			Users.count({ host: null }),
-			Users.count({ host: Not(IsNull()) })
+			Users.count({ host: Not(IsNull()) }),
 		]);
 
 		return {
@@ -54,7 +54,7 @@ export default class UsersChart extends Chart<UsersLog> {
 			},
 			remote: {
 				total: remoteCount,
-			}
+			},
 		};
 	}
 
@@ -70,7 +70,7 @@ export default class UsersChart extends Chart<UsersLog> {
 		}
 
 		await this.inc({
-			[Users.isLocalUser(user) ? 'local' : 'remote']: update
+			[Users.isLocalUser(user) ? 'local' : 'remote']: update,
 		});
 	}
 }

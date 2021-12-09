@@ -16,7 +16,7 @@ export const meta = {
 
 	limit: {
 		duration: ms('1hour'),
-		max: 300
+		max: 300,
 	},
 
 	params: {
@@ -33,11 +33,11 @@ export const meta = {
 		},
 
 		content: {
-			validator: $.arr($.obj())
+			validator: $.arr($.obj()),
 		},
 
 		variables: {
-			validator: $.arr($.obj())
+			validator: $.arr($.obj()),
 		},
 
 		script: {
@@ -50,17 +50,17 @@ export const meta = {
 
 		font: {
 			validator: $.optional.str.or(['serif', 'sans-serif']),
-			default: 'sans-serif'
+			default: 'sans-serif',
 		},
 
 		alignCenter: {
 			validator: $.optional.bool,
-			default: false
+			default: false,
 		},
 
 		hideTitleWhenPinned: {
 			validator: $.optional.bool,
-			default: false
+			default: false,
 		},
 	},
 
@@ -74,14 +74,14 @@ export const meta = {
 		noSuchFile: {
 			message: 'No such file.',
 			code: 'NO_SUCH_FILE',
-			id: 'b7b97489-0f66-4b12-a5ff-b21bd63f6e1c'
+			id: 'b7b97489-0f66-4b12-a5ff-b21bd63f6e1c',
 		},
 		nameAlreadyExists: {
 			message: 'Specified name already exists.',
 			code: 'NAME_ALREADY_EXISTS',
-			id: '4650348e-301c-499a-83c9-6aa988c66bc1'
-		}
-	}
+			id: '4650348e-301c-499a-83c9-6aa988c66bc1',
+		},
+	},
 };
 
 export default define(meta, async (ps, user) => {
@@ -89,7 +89,7 @@ export default define(meta, async (ps, user) => {
 	if (ps.eyeCatchingImageId != null) {
 		eyeCatchingImage = await DriveFiles.findOne({
 			id: ps.eyeCatchingImageId,
-			userId: user.id
+			userId: user.id,
 		});
 
 		if (eyeCatchingImage == null) {
@@ -99,7 +99,7 @@ export default define(meta, async (ps, user) => {
 
 	await Pages.find({
 		userId: user.id,
-		name: ps.name
+		name: ps.name,
 	}).then(result => {
 		if (result.length > 0) {
 			throw new ApiError(meta.errors.nameAlreadyExists);
@@ -121,7 +121,7 @@ export default define(meta, async (ps, user) => {
 		visibility: 'public',
 		alignCenter: ps.alignCenter,
 		hideTitleWhenPinned: ps.hideTitleWhenPinned,
-		font: ps.font
+		font: ps.font,
 	}));
 
 	return await Pages.pack(page);

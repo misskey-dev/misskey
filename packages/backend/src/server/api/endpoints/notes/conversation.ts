@@ -18,12 +18,12 @@ export const meta = {
 
 		limit: {
 			validator: $.optional.num.range(1, 100),
-			default: 10
+			default: 10,
 		},
 
 		offset: {
 			validator: $.optional.num.min(0),
-			default: 0
+			default: 0,
 		},
 	},
 
@@ -34,16 +34,16 @@ export const meta = {
 			type: 'object' as const,
 			optional: false as const, nullable: false as const,
 			ref: 'Note',
-		}
+		},
 	},
 
 	errors: {
 		noSuchNote: {
 			message: 'No such note.',
 			code: 'NO_SUCH_NOTE',
-			id: 'e1035875-9551-45ec-afa8-1ded1fcb53c8'
-		}
-	}
+			id: 'e1035875-9551-45ec-afa8-1ded1fcb53c8',
+		},
+	},
 };
 
 export default define(meta, async (ps, user) => {

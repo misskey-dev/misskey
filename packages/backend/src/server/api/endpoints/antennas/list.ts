@@ -14,9 +14,9 @@ export const meta = {
 		items: {
 			type: 'object' as const,
 			optional: false as const, nullable: false as const,
-			ref: 'Antenna'
-		}
-	}
+			ref: 'Antenna',
+		},
+	},
 };
 
 export default define(meta, async (ps, me) => {

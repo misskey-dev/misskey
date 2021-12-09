@@ -22,7 +22,7 @@ export const meta = {
 
 		limit: {
 			validator: $.optional.num.range(1, 100),
-			default: 10
+			default: 10,
 		},
 
 		sinceId: {
@@ -34,11 +34,11 @@ export const meta = {
 		},
 
 		sinceDate: {
-			validator: $.optional.num
+			validator: $.optional.num,
 		},
 
 		untilDate: {
-			validator: $.optional.num
+			validator: $.optional.num,
 		},
 	},
 
@@ -49,16 +49,16 @@ export const meta = {
 			type: 'object' as const,
 			optional: false as const, nullable: false as const,
 			ref: 'Note',
-		}
+		},
 	},
 
 	errors: {
 		gtlDisabled: {
 			message: 'Global timeline has been disabled.',
 			code: 'GTL_DISABLED',
-			id: '0332fc13-6ab2-4427-ae80-a9fadffd1a6b'
+			id: '0332fc13-6ab2-4427-ae80-a9fadffd1a6b',
 		},
-	}
+	},
 };
 
 export default define(meta, async (ps, user) => {

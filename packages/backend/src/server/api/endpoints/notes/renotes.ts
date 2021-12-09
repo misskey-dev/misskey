@@ -21,7 +21,7 @@ export const meta = {
 
 		limit: {
 			validator: $.optional.num.range(1, 100),
-			default: 10
+			default: 10,
 		},
 
 		sinceId: {
@@ -30,7 +30,7 @@ export const meta = {
 
 		untilId: {
 			validator: $.optional.type(ID),
-		}
+		},
 	},
 
 	res: {
@@ -40,16 +40,16 @@ export const meta = {
 			type: 'object' as const,
 			optional: false as const, nullable: false as const,
 			ref: 'Note',
-		}
+		},
 	},
 
 	errors: {
 		noSuchNote: {
 			message: 'No such note.',
 			code: 'NO_SUCH_NOTE',
-			id: '12908022-2e21-46cd-ba6a-3edaf6093f46'
-		}
-	}
+			id: '12908022-2e21-46cd-ba6a-3edaf6093f46',
+		},
+	},
 };
 
 export default define(meta, async (ps, user) => {

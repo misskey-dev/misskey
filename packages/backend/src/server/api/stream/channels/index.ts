@@ -33,5 +33,5 @@ export default {
 	channel,
 	admin,
 	gamesReversi,
-	gamesReversiGame
+	gamesReversiGame,
 };

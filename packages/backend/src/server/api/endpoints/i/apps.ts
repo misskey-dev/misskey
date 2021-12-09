@@ -16,7 +16,7 @@ export const meta = {
 				'-lastUsedAt',
 			]),
 		},
-	}
+	},
 };
 
 export default define(meta, async (ps, user) => {

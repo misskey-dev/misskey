@@ -10,7 +10,7 @@ export class AnnouncementRead {
 	public id: string;
 
 	@Column('timestamp with time zone', {
-		comment: 'The created date of the AnnouncementRead.'
+		comment: 'The created date of the AnnouncementRead.',
 	})
 	public createdAt: Date;
 
@@ -19,7 +19,7 @@ export class AnnouncementRead {
 	public userId: User['id'];
 
 	@ManyToOne(type => User, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public user: User | null;
@@ -29,7 +29,7 @@ export class AnnouncementRead {
 	public announcementId: Announcement['id'];
 
 	@ManyToOne(type => Announcement, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public announcement: Announcement | null;

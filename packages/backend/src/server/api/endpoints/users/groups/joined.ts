@@ -16,7 +16,7 @@ export const meta = {
 			type: 'object' as const,
 			optional: false as const, nullable: false as const,
 			ref: 'UserGroup',
-		}
+		},
 	},
 };
 
@@ -28,8 +28,8 @@ export default define(meta, async (ps, me) => {
 	const joinings = await UserGroupJoinings.find({
 		userId: me.id,
 		...(ownedGroups.length > 0 ? {
-			userGroupId: Not(In(ownedGroups.map(x => x.id)))
-		} : {})
+			userGroupId: Not(In(ownedGroups.map(x => x.id))),
+		} : {}),
 	});
 
 	return await Promise.all(joinings.map(x => UserGroups.pack(x.userGroupId)));

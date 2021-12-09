@@ -7,7 +7,7 @@ export const meta = {
 
 	requireCredential: true as const,
 
-	kind: 'write:notifications'
+	kind: 'write:notifications',
 };
 
 export default define(meta, async (ps, user) => {
@@ -16,7 +16,7 @@ export default define(meta, async (ps, user) => {
 		notifieeId: user.id,
 		isRead: false,
 	}, {
-		isRead: true
+		isRead: true,
 	});
 
 	// 全ての通知を読みましたよというイベントを発行

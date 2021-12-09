@@ -23,7 +23,7 @@ export const meta = {
 
 		host: {
 			validator: $.str,
-		}
+		},
 	},
 
 	res: convertLog(instanceChart.schema),

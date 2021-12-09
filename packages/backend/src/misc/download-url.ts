@@ -22,7 +22,7 @@ export async function downloadUrl(url: string, path: string) {
 
 	const req = got.stream(url, {
 		headers: {
-			'User-Agent': config.userAgent
+			'User-Agent': config.userAgent,
 		},
 		timeout: {
 			lookup: timeout,
