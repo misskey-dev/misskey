@@ -1002,6 +1002,9 @@ _wordMute:
   soft: "Leicht"
   hard: "Schwer"
   mutedNotes: "Stummgeschaltete Notizen"
+_instanceMute:
+  instanceMuteDescription2: "Instanzen getrennt durch Zeilenumbrüchen angeben"
+  heading: "Liste der stummzuschaltenden Instanzen"
 _theme:
   explore: "Themen erforschen"
   install: "Thema installieren"
