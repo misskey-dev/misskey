@@ -36,7 +36,7 @@
 import { defineComponent, markRaw } from 'vue';
 import { emojilist } from '@/scripts/emojilist';
 import contains from '@/scripts/contains';
-import { twemojiSvgBase } from '@/scripts/twemoji-base';
+import { char2file } from '@/scripts/twemoji-base';
 import { getStaticImageUrl } from '@/scripts/get-static-image-url';
 import { acct } from '@/filters/user';
 import * as os from '@/os';
@@ -53,18 +53,11 @@ type EmojiDef = {
 
 const lib = emojilist.filter(x => x.category !== 'flags');
 
-const char2file = (char: string) => {
-	let codes = Array.from(char).map(x => x.codePointAt(0).toString(16));
-	if (!codes.includes('200d')) codes = codes.filter(x => x != 'fe0f');
-	codes = codes.filter(x => x && x.length);
-	return codes.join('-');
-};
-
 const emjdb: EmojiDef[] = lib.map(x => ({
 	emoji: x.char,
 	name: x.name,
 	aliasOf: null,
-	url: `${twemojiSvgBase}/${char2file(x.char)}.svg`
+	url: char2file(x.char),
 }));
 
 for (const x of lib) {
@@ -74,7 +67,7 @@ for (const x of lib) {
 				emoji: x.char,
 				name: k,
 				aliasOf: x.name,
-				url: `${twemojiSvgBase}/${char2file(x.char)}.svg`
+				url: char2file(x.char),
 			});
 		}
 	}
