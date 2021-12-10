@@ -1,23 +1,25 @@
 <template>
-<div ref="el" class="vvcocwet" :class="{ wide: !narrow }">
-	<div v-if="!narrow || page == null" class="nav">
-		<MkSpacer :content-max="700" :margin-min="20">
-			<div class="baaadecd">
-				<div class="title">{{ $ts.settings }}</div>
-				<MkInfo v-if="emailNotConfigured" warn class="info">{{ $ts.emailNotConfiguredWarning }} <MkA to="/settings/email" class="_link">{{ $ts.configure }}</MkA></MkInfo>
-				<MkSuperMenu :def="menuDef" :grid="page == null"></MkSuperMenu>
+<MkSpacer :content-max="900" :margin-min="20" :margin-max="32">
+	<div ref="el" class="vvcocwet" :class="{ wide: !narrow }">
+		<div class="header">
+			<div class="title">{{ $ts.settings }}</div>
+			<div v-if="childInfo" class="subtitle">{{ childInfo.title }}</div>
+		</div>
+		<div class="body">
+			<div v-if="!narrow || page == null" class="nav">
+				<div class="baaadecd">
+					<MkInfo v-if="emailNotConfigured" warn class="info">{{ $ts.emailNotConfiguredWarning }} <MkA to="/settings/email" class="_link">{{ $ts.configure }}</MkA></MkInfo>
+					<MkSuperMenu :def="menuDef" :grid="page == null"></MkSuperMenu>
+				</div>
 			</div>
-		</MkSpacer>
-	</div>
-	<div class="main">
-		<MkSpacer :content-max="600" :margin-min="20">
-			<div class="bkzroven">
-				<div v-if="childInfo" class="title">{{ childInfo.title }}</div>
-				<component :is="component" :key="page" v-bind="pageProps" @info="onInfo"/>
+			<div class="main">
+				<div class="bkzroven">
+					<component :is="component" :key="page" v-bind="pageProps" @info="onInfo"/>
+				</div>
 			</div>
-		</MkSpacer>
+		</div>
 	</div>
-</div>
+</MkSpacer>
 </template>
 
 <script lang="ts">
@@ -292,66 +294,62 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .vvcocwet {
-	> .nav {
-		.baaadecd {
-			> .title {
-				margin: 16px;
-				font-size: 1.5em;
-				font-weight: bold;
-			}
-
-			> .info {
-				margin: 16px 0;
-			}
-
-			> .accounts {
-				> .avatar {
-					display: block;
-					width: 50px;
-					height: 50px;
-					margin: 8px auto 16px auto;
-				}
-			}
-		}
-	}
-
-	> .main {
-		.bkzroven {
-			> .title {
-				margin: 4px 0 20px 0;
-				font-size: 1.5em;
-				font-weight: bold;
-			}
-		}
-	}
-
-	&.wide {
+	> .header {
 		display: flex;
-		max-width: 1000px;
-		margin: 0 auto;
-		height: 100%;
+		margin-bottom: 24px;
+		font-size: 1.5em;
+		font-weight: bold;
 
+		> .title {
+			width: 34%;
+		}
+
+		> .subtitle {
+			flex: 1;
+			min-width: 0;
+		}
+	}
+
+	> .body {
 		> .nav {
-			width: 32%;
-			box-sizing: border-box;
-			overflow: auto;
-
 			.baaadecd {
-				> .title {
-					margin: 24px 0;
+				> .info {
+					margin: 16px 0;
+				}
+
+				> .accounts {
+					> .avatar {
+						display: block;
+						width: 50px;
+						height: 50px;
+						margin: 8px auto 16px auto;
+					}
 				}
 			}
 		}
 
 		> .main {
-			flex: 1;
-			min-width: 0;
-			overflow: auto;
-
 			.bkzroven {
-				> .title {
-					margin: 6px 0 24px 0;
-				}
+			}
+		}
+	}
+
+	&.wide {
+		> .body {
+			display: flex;
+			height: 100%;
+
+			> .nav {
+				width: 34%;
+				padding-right: 32px;
+				box-sizing: border-box;
+				overflow: auto;
+			}
+
+			> .main {
+				flex: 1;
+				min-width: 0;
+				overflow: auto;
 			}
 		}
 	}
