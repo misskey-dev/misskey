@@ -812,6 +812,7 @@ continueThread: "さらにスレッドを見る"
 deleteAccountConfirm: "アカウントが削除されます。よろしいですか？"
 incorrectPassword: "パスワードが間違っています。"
 voteConfirm: "「{choice}」に投票しますか？"
+hide: "隠す"
 
 _emailUnavailable:
   used: "既に使用されています"
