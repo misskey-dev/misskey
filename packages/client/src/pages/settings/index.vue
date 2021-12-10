@@ -297,7 +297,7 @@ export default defineComponent({
 	> .header {
 		display: flex;
 		margin-bottom: 24px;
-		font-size: 1.5em;
+		font-size: 1.3em;
 		font-weight: bold;
 
 		> .title {
