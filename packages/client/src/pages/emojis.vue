@@ -21,10 +21,38 @@ export default defineComponent({
 				title: this.$ts.customEmojis,
 				icon: 'fas fa-laugh',
 				bg: 'var(--bg)',
+				actions: [{
+					icon: 'fas fa-ellipsis-h',
+					handler: this.menu
+				}],
 			})),
 			tab: 'category',
 		}
 	},
+
+	methods: {
+		menu(ev) {
+			os.popupMenu([{
+				icon: 'fas fa-download',
+				text: this.$ts.export,
+				action: async () => {
+					os.api('export-custom-emojis', {
+					})
+					.then(() => {
+						os.alert({
+							type: 'info',
+							text: this.$ts.exportRequested,
+						});
+					}).catch((e) => {
+						os.alert({
+							type: 'error',
+							text: e.message,
+						});
+					});
+				}
+			}], ev.currentTarget || ev.target);
+		}
+	}
 });
 </script>
 

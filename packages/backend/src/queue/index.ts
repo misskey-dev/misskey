@@ -117,6 +117,15 @@ export function createDeleteDriveFilesJob(user: ThinUser) {
 	});
 }
 
+export function createExportCustomEmojisJob(user: ThinUser) {
+	return dbQueue.add('exportCustomEmojis', {
+		user: user,
+	}, {
+		removeOnComplete: true,
+		removeOnFail: true,
+	});
+}
+
 export function createExportNotesJob(user: ThinUser) {
 	return dbQueue.add('exportNotes', {
 		user: user,
