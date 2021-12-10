@@ -18,8 +18,6 @@ export const pendingApiRequestsCount = ref(0);
 let apiRequestsCount = 0; // for debug
 export const apiRequests = ref([]); // for debug
 
-export const windows = new Map();
-
 const apiClient = new Misskey.api.APIClient({
 	origin: url,
 });
@@ -163,6 +161,18 @@ export const popups = ref([]) as Ref<{
 	component: any;
 	props: Record<string, any>;
 }[]>;
+
+let popupZIndex = 1000000;
+let popupZIndexForFront = 2000000;
+export function claimZIndex(front = false): number {
+	if (front) {
+		popupZIndexForFront += 100;
+		return popupZIndexForFront;
+	} else {
+		popupZIndex += 100;
+		return popupZIndex;
+	}
+}
 
 export async function popup(component: Component | typeof import('*.vue') | Promise<Component | typeof import('*.vue')>, props: Record<string, any>, events = {}, disposeEvent?: string) {
 	if (component.then) component = await component;

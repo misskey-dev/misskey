@@ -1,6 +1,6 @@
 <template>
 <transition :name="$store.state.animation ? 'window' : ''" appear @after-leave="$emit('closed')">
-	<div v-if="showing" class="ebkgocck" :class="{ front }">
+	<div v-if="showing" class="ebkgocck">
 		<div class="body _window _shadow _narrow_" @mousedown="onBodyMousedown" @keydown="onKeydown">
 			<div class="header" :class="{ mini }" @contextmenu.prevent.stop="onContextmenu">
 				<span class="left">
@@ -124,10 +124,6 @@ export default defineComponent({
 		this.applyTransformTop((window.innerHeight / 2) - (this.$el.offsetHeight / 2));
 		this.applyTransformLeft((window.innerWidth / 2) - (this.$el.offsetWidth / 2));
 
-		os.windows.set(this.id, {
-			z: Number(document.defaultView.getComputedStyle(this.$el, null).zIndex)
-		});
-
 		// 他のウィンドウ内のボタンなどを押してこのウィンドウが開かれた場合、親が最前面になろうとするのでそれに隠されないようにする
 		this.top();
 
@@ -135,7 +131,6 @@ export default defineComponent({
 	},
 
 	unmounted() {
-		os.windows.delete(this.id);
 		window.removeEventListener('resize', this.onBrowserResize);
 	},
 
@@ -160,17 +155,7 @@ export default defineComponent({
 
 		// 最前面へ移動
 		top() {
-			let z = 0;
-			const ws = Array.from(os.windows.entries()).filter(([k, v]) => k !== this.id).map(([k, v]) => v);
-			for (const w of ws) {
-				if (w.z > z) z = w.z;
-			}
-			if (z > 0) {
-				(this.$el as any).style.zIndex = z + 1;
-				os.windows.set(this.id, {
-					z: z + 1
-				});
-			}
+			(this.$el as any).style.zIndex = os.claimZIndex(this.front);
 		},
 
 		onBodyMousedown() {
@@ -394,11 +379,6 @@ export default defineComponent({
 	position: fixed;
 	top: 0;
 	left: 0;
-	z-index: 10000; // mk-modalのと同じでなければならない
-
-	&.front {
-		z-index: 11000; // front指定の時は、mk-modalのよりも大きくなければならない
-	}
 
 	> .body {
 		overflow: hidden;
