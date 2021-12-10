@@ -1281,6 +1281,8 @@ _exportOrImport:
   muteList: "屏蔽"
   blockingList: "拉黑"
   userLists: "列表"
+  excludeMutingUsers: "排除屏蔽用户"
+  excludeInactiveUsers: "排除不活跃用户"
 _charts:
   federationInstancesIncDec: "联合：增加/减少"
   federationInstancesTotal: "联合总数"
