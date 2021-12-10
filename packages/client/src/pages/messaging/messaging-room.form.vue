@@ -152,7 +152,7 @@ export default defineComponent({
 		},
 
 		chooseFile(e) {
-			selectFile(e.currentTarget || e.target, this.$ts.selectFile, false).then(file => {
+			selectFile(e.currentTarget || e.target, this.$ts.selectFile).then(file => {
 				this.file = file;
 			});
 		},

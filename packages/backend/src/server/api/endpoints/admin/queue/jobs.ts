@@ -19,7 +19,7 @@ export const meta = {
 
 		limit: {
 			validator: $.optional.num,
-			default: 50
+			default: 50,
 		},
 	},
 
@@ -33,27 +33,27 @@ export const meta = {
 				id: {
 					type: 'string' as const,
 					optional: false as const, nullable: false as const,
-					format: 'id'
+					format: 'id',
 				},
 				data: {
 					type: 'object' as const,
-					optional: false as const, nullable: false as const
+					optional: false as const, nullable: false as const,
 				},
 				attempts: {
 					type: 'number' as const,
-					optional: false as const, nullable: false as const
+					optional: false as const, nullable: false as const,
 				},
 				maxAttempts: {
 					type: 'number' as const,
-					optional: false as const, nullable: false as const
+					optional: false as const, nullable: false as const,
 				},
 				timestamp: {
 					type: 'number' as const,
-					optional: false as const, nullable: false as const
-				}
-			}
-		}
-	}
+					optional: false as const, nullable: false as const,
+				},
+			},
+		},
+	},
 };
 
 export default define(meta, async (ps) => {

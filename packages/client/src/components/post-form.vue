@@ -74,7 +74,7 @@ import { formatTimeString } from '@/scripts/format-time-string';
 import { Autocomplete } from '@/scripts/autocomplete';
 import { noteVisibilities } from 'misskey-js';
 import * as os from '@/os';
-import { selectFile } from '@/scripts/select-file';
+import { selectFiles } from '@/scripts/select-file';
 import { defaultStore, notePostInterruptors, postFormActions } from '@/store';
 import { throttle } from 'throttle-debounce';
 import MkInfo from '@/components/ui/info.vue';
@@ -456,7 +456,7 @@ export default defineComponent({
 		},
 
 		chooseFileFrom(ev) {
-			selectFile(ev.currentTarget || ev.target, this.$ts.attachFile, true).then(files => {
+			selectFiles(ev.currentTarget || ev.target, this.$ts.attachFile).then(files => {
 				for (const file of files) {
 					this.files.push(file);
 				}

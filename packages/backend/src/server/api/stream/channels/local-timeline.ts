@@ -32,13 +32,13 @@ export default class extends Channel {
 		// リプライなら再pack
 		if (note.replyId != null) {
 			note.reply = await Notes.pack(note.replyId, this.user, {
-				detail: true
+				detail: true,
 			});
 		}
 		// Renoteなら再pack
 		if (note.renoteId != null) {
 			note.renote = await Notes.pack(note.renoteId, this.user, {
-				detail: true
+				detail: true,
 			});
 		}
 

@@ -10,13 +10,13 @@ export class GalleryPost {
 
 	@Index()
 	@Column('timestamp with time zone', {
-		comment: 'The created date of the GalleryPost.'
+		comment: 'The created date of the GalleryPost.',
 	})
 	public createdAt: Date;
 
 	@Index()
 	@Column('timestamp with time zone', {
-		comment: 'The updated date of the GalleryPost.'
+		comment: 'The updated date of the GalleryPost.',
 	})
 	public updatedAt: Date;
 
@@ -26,19 +26,19 @@ export class GalleryPost {
 	public title: string;
 
 	@Column('varchar', {
-		length: 2048, nullable: true
+		length: 2048, nullable: true,
 	})
 	public description: string | null;
 
 	@Index()
 	@Column({
 		...id(),
-		comment: 'The ID of author.'
+		comment: 'The ID of author.',
 	})
 	public userId: User['id'];
 
 	@ManyToOne(type => User, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public user: User | null;
@@ -46,26 +46,26 @@ export class GalleryPost {
 	@Index()
 	@Column({
 		...id(),
-		array: true, default: '{}'
+		array: true, default: '{}',
 	})
 	public fileIds: DriveFile['id'][];
 
 	@Index()
 	@Column('boolean', {
 		default: false,
-		comment: 'Whether the post is sensitive.'
+		comment: 'Whether the post is sensitive.',
 	})
 	public isSensitive: boolean;
 
 	@Index()
 	@Column('integer', {
-		default: 0
+		default: 0,
 	})
 	public likedCount: number;
 
 	@Index()
 	@Column('varchar', {
-		length: 128, array: true, default: '{}'
+		length: 128, array: true, default: '{}',
 	})
 	public tags: string[];
 

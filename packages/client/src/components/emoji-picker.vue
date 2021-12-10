@@ -79,7 +79,7 @@ import { emojilist } from '@/scripts/emojilist';
 import { getStaticImageUrl } from '@/scripts/get-static-image-url';
 import Particle from '@/components/particle.vue';
 import * as os from '@/os';
-import { isDeviceTouch } from '@/scripts/is-device-touch';
+import { isTouchUsing } from '@/scripts/touch';
 import { isMobile } from '@/scripts/is-mobile';
 import { emojiCategories } from '@/instance';
 import XSection from './emoji-picker.section.vue';
@@ -108,7 +108,7 @@ export default defineComponent({
 			pinned: this.$store.reactiveState.reactions,
 			width: this.asReactionPicker ? this.$store.state.reactionPickerWidth : 3,
 			height: this.asReactionPicker ? this.$store.state.reactionPickerHeight : 2,
-			big: this.asReactionPicker ? isDeviceTouch : false,
+			big: this.asReactionPicker ? isTouchUsing : false,
 			customEmojiCategories: emojiCategories,
 			customEmojis: this.$instance.emojis,
 			q: null,
@@ -268,7 +268,7 @@ export default defineComponent({
 
 	methods: {
 		focus() {
-			if (!isMobile && !isDeviceTouch) {
+			if (!isMobile && !isTouchUsing) {
 				this.$refs.search.focus({
 					preventScroll: true
 				});

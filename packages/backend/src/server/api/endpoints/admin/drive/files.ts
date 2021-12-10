@@ -13,7 +13,7 @@ export const meta = {
 	params: {
 		limit: {
 			validator: $.optional.num.range(1, 100),
-			default: 10
+			default: 10,
 		},
 
 		sinceId: {
@@ -25,7 +25,7 @@ export const meta = {
 		},
 
 		type: {
-			validator: $.optional.nullable.str.match(/^[a-zA-Z0-9\/\-*]+$/)
+			validator: $.optional.nullable.str.match(/^[a-zA-Z0-9\/\-*]+$/),
 		},
 
 		origin: {
@@ -34,12 +34,12 @@ export const meta = {
 				'local',
 				'remote',
 			]),
-			default: 'local'
+			default: 'local',
 		},
 
 		hostname: {
 			validator: $.optional.nullable.str,
-			default: null
+			default: null,
 		},
 	},
 
@@ -49,9 +49,9 @@ export const meta = {
 		items: {
 			type: 'object' as const,
 			optional: false as const, nullable: false as const,
-			ref: 'DriveFile'
-		}
-	}
+			ref: 'DriveFile',
+		},
+	},
 };
 
 export default define(meta, async (ps, me) => {

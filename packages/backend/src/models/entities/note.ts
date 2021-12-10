@@ -15,7 +15,7 @@ export class Note {
 
 	@Index()
 	@Column('timestamp with time zone', {
-		comment: 'The created date of the Note.'
+		comment: 'The created date of the Note.',
 	})
 	public createdAt: Date;
 
@@ -23,12 +23,12 @@ export class Note {
 	@Column({
 		...id(),
 		nullable: true,
-		comment: 'The ID of reply target.'
+		comment: 'The ID of reply target.',
 	})
 	public replyId: Note['id'] | null;
 
 	@ManyToOne(type => Note, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public reply: Note | null;
@@ -37,67 +37,67 @@ export class Note {
 	@Column({
 		...id(),
 		nullable: true,
-		comment: 'The ID of renote target.'
+		comment: 'The ID of renote target.',
 	})
 	public renoteId: Note['id'] | null;
 
 	@ManyToOne(type => Note, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public renote: Note | null;
 
 	@Index()
 	@Column('varchar', {
-		length: 256, nullable: true
+		length: 256, nullable: true,
 	})
 	public threadId: string | null;
 
 	@Column('varchar', {
-		length: 8192, nullable: true
+		length: 8192, nullable: true,
 	})
 	public text: string | null;
 
 	@Column('varchar', {
-		length: 256, nullable: true
+		length: 256, nullable: true,
 	})
 	public name: string | null;
 
 	@Column('varchar', {
-		length: 512, nullable: true
+		length: 512, nullable: true,
 	})
 	public cw: string | null;
 
 	@Index()
 	@Column({
 		...id(),
-		comment: 'The ID of author.'
+		comment: 'The ID of author.',
 	})
 	public userId: User['id'];
 
 	@ManyToOne(type => User, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public user: User | null;
 
 	@Column('boolean', {
-		default: false
+		default: false,
 	})
 	public localOnly: boolean;
 
 	@Column('smallint', {
-		default: 0
+		default: 0,
 	})
 	public renoteCount: number;
 
 	@Column('smallint', {
-		default: 0
+		default: 0,
 	})
 	public repliesCount: number;
 
 	@Column('jsonb', {
-		default: {}
+		default: {},
 	})
 	public reactions: Record<string, number>;
 
@@ -113,66 +113,66 @@ export class Note {
 	@Index({ unique: true })
 	@Column('varchar', {
 		length: 512, nullable: true,
-		comment: 'The URI of a note. it will be null when the note is local.'
+		comment: 'The URI of a note. it will be null when the note is local.',
 	})
 	public uri: string | null;
 
 	@Column('varchar', {
 		length: 512, nullable: true,
-		comment: 'The human readable url of a note. it will be null when the note is local.'
+		comment: 'The human readable url of a note. it will be null when the note is local.',
 	})
 	public url: string | null;
 
 	@Column('integer', {
-		default: 0, select: false
+		default: 0, select: false,
 	})
 	public score: number;
 
 	@Index()
 	@Column({
 		...id(),
-		array: true, default: '{}'
+		array: true, default: '{}',
 	})
 	public fileIds: DriveFile['id'][];
 
 	@Index()
 	@Column('varchar', {
-		length: 256, array: true, default: '{}'
+		length: 256, array: true, default: '{}',
 	})
 	public attachedFileTypes: string[];
 
 	@Index()
 	@Column({
 		...id(),
-		array: true, default: '{}'
+		array: true, default: '{}',
 	})
 	public visibleUserIds: User['id'][];
 
 	@Index()
 	@Column({
 		...id(),
-		array: true, default: '{}'
+		array: true, default: '{}',
 	})
 	public mentions: User['id'][];
 
 	@Column('text', {
-		default: '[]'
+		default: '[]',
 	})
 	public mentionedRemoteUsers: string;
 
 	@Column('varchar', {
-		length: 128, array: true, default: '{}'
+		length: 128, array: true, default: '{}',
 	})
 	public emojis: string[];
 
 	@Index()
 	@Column('varchar', {
-		length: 128, array: true, default: '{}'
+		length: 128, array: true, default: '{}',
 	})
 	public tags: string[];
 
 	@Column('boolean', {
-		default: false
+		default: false,
 	})
 	public hasPoll: boolean;
 
@@ -180,12 +180,12 @@ export class Note {
 	@Column({
 		...id(),
 		nullable: true, default: null,
-		comment: 'The ID of source channel.'
+		comment: 'The ID of source channel.',
 	})
 	public channelId: Channel['id'] | null;
 
 	@ManyToOne(type => Channel, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public channel: Channel | null;
@@ -194,33 +194,33 @@ export class Note {
 	@Index()
 	@Column('varchar', {
 		length: 128, nullable: true,
-		comment: '[Denormalized]'
+		comment: '[Denormalized]',
 	})
 	public userHost: string | null;
 
 	@Column({
 		...id(),
 		nullable: true,
-		comment: '[Denormalized]'
+		comment: '[Denormalized]',
 	})
 	public replyUserId: User['id'] | null;
 
 	@Column('varchar', {
 		length: 128, nullable: true,
-		comment: '[Denormalized]'
+		comment: '[Denormalized]',
 	})
 	public replyUserHost: string | null;
 
 	@Column({
 		...id(),
 		nullable: true,
-		comment: '[Denormalized]'
+		comment: '[Denormalized]',
 	})
 	public renoteUserId: User['id'] | null;
 
 	@Column('varchar', {
 		length: 128, nullable: true,
-		comment: '[Denormalized]'
+		comment: '[Denormalized]',
 	})
 	public renoteUserHost: string | null;
 	//#endregion

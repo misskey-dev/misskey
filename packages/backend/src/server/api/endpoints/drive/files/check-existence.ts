@@ -12,7 +12,7 @@ export const meta = {
 	params: {
 		md5: {
 			validator: $.str,
-		}
+		},
 	},
 
 	res: {

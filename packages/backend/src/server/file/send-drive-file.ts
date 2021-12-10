@@ -108,7 +108,7 @@ export default async function(ctx: Koa.Context) {
 		const { mime, ext } = await detectType(InternalStorage.resolvePath(key));
 		const filename = rename(file.name, {
 			suffix: isThumbnail ? '-thumb' : '-web',
-			extname: ext ? `.${ext}` : undefined
+			extname: ext ? `.${ext}` : undefined,
 		}).toString();
 
 		ctx.body = InternalStorage.read(key);

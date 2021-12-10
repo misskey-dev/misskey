@@ -50,7 +50,7 @@ export default class TestChart extends Chart<TestLog> {
 		this.total++;
 
 		await this.inc({
-			foo: update
+			foo: update,
 		});
 	}
 
@@ -63,7 +63,7 @@ export default class TestChart extends Chart<TestLog> {
 		this.total--;
 
 		await this.inc({
-			foo: update
+			foo: update,
 		});
 	}
 }

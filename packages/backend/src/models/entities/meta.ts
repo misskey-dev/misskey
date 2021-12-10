@@ -7,17 +7,17 @@ import { Clip } from './clip';
 export class Meta {
 	@PrimaryColumn({
 		type: 'varchar',
-		length: 32
+		length: 32,
 	})
 	public id: string;
 
 	@Column('varchar', {
-		length: 128, nullable: true
+		length: 128, nullable: true,
 	})
 	public name: string | null;
 
 	@Column('varchar', {
-		length: 1024, nullable: true
+		length: 1024, nullable: true,
 	})
 	public description: string | null;
 
@@ -25,7 +25,7 @@ export class Meta {
 	 * メンテナの名前
 	 */
 	@Column('varchar', {
-		length: 128, nullable: true
+		length: 128, nullable: true,
 	})
 	public maintainerName: string | null;
 
@@ -33,7 +33,7 @@ export class Meta {
 	 * メンテナの連絡先
 	 */
 	@Column('varchar', {
-		length: 128, nullable: true
+		length: 128, nullable: true,
 	})
 	public maintainerEmail: string | null;
 
@@ -58,27 +58,27 @@ export class Meta {
 	public useStarForReactionFallback: boolean;
 
 	@Column('varchar', {
-		length: 64, array: true, default: '{}'
+		length: 64, array: true, default: '{}',
 	})
 	public langs: string[];
 
 	@Column('varchar', {
-		length: 256, array: true, default: '{}'
+		length: 256, array: true, default: '{}',
 	})
 	public pinnedUsers: string[];
 
 	@Column('varchar', {
-		length: 256, array: true, default: '{}'
+		length: 256, array: true, default: '{}',
 	})
 	public hiddenTags: string[];
 
 	@Column('varchar', {
-		length: 256, array: true, default: '{}'
+		length: 256, array: true, default: '{}',
 	})
 	public blockedHosts: string[];
 
 	@Column('varchar', {
-		length: 512, array: true, default: '{"/featured", "/channels", "/explore", "/pages", "/about-misskey"}'
+		length: 512, array: true, default: '{"/featured", "/channels", "/explore", "/pages", "/about-misskey"}',
 	})
 	public pinnedPages: string[];
 
@@ -91,38 +91,38 @@ export class Meta {
 	@Column('varchar', {
 		length: 512,
 		nullable: true,
-		default: '/assets/ai.png'
+		default: '/assets/ai.png',
 	})
 	public mascotImageUrl: string | null;
 
 	@Column('varchar', {
 		length: 512,
-		nullable: true
+		nullable: true,
 	})
 	public bannerUrl: string | null;
 
 	@Column('varchar', {
 		length: 512,
-		nullable: true
+		nullable: true,
 	})
 	public backgroundImageUrl: string | null;
 
 	@Column('varchar', {
 		length: 512,
-		nullable: true
+		nullable: true,
 	})
 	public logoImageUrl: string | null;
 
 	@Column('varchar', {
 		length: 512,
 		nullable: true,
-		default: 'https://xn--931a.moe/aiart/yubitun.png'
+		default: 'https://xn--931a.moe/aiart/yubitun.png',
 	})
 	public errorImageUrl: string | null;
 
 	@Column('varchar', {
 		length: 512,
-		nullable: true
+		nullable: true,
 	})
 	public iconUrl: string | null;
 
@@ -143,7 +143,7 @@ export class Meta {
 	public proxyAccountId: User['id'] | null;
 
 	@ManyToOne(type => User, {
-		onDelete: 'SET NULL'
+		onDelete: 'SET NULL',
 	})
 	@JoinColumn()
 	public proxyAccount: User | null;
@@ -160,13 +160,13 @@ export class Meta {
 
 	@Column('varchar', {
 		length: 64,
-		nullable: true
+		nullable: true,
 	})
 	public hcaptchaSiteKey: string | null;
 
 	@Column('varchar', {
 		length: 64,
-		nullable: true
+		nullable: true,
 	})
 	public hcaptchaSecretKey: string | null;
 
@@ -177,37 +177,37 @@ export class Meta {
 
 	@Column('varchar', {
 		length: 64,
-		nullable: true
+		nullable: true,
 	})
 	public recaptchaSiteKey: string | null;
 
 	@Column('varchar', {
 		length: 64,
-		nullable: true
+		nullable: true,
 	})
 	public recaptchaSecretKey: string | null;
 
 	@Column('integer', {
 		default: 1024,
-		comment: 'Drive capacity of a local user (MB)'
+		comment: 'Drive capacity of a local user (MB)',
 	})
 	public localDriveCapacityMb: number;
 
 	@Column('integer', {
 		default: 32,
-		comment: 'Drive capacity of a remote user (MB)'
+		comment: 'Drive capacity of a remote user (MB)',
 	})
 	public remoteDriveCapacityMb: number;
 
 	@Column('integer', {
 		default: 500,
-		comment: 'Max allowed note text length in characters'
+		comment: 'Max allowed note text length in characters',
 	})
 	public maxNoteTextLength: number;
 
 	@Column('varchar', {
 		length: 128,
-		nullable: true
+		nullable: true,
 	})
 	public summalyProxy: string | null;
 
@@ -218,7 +218,7 @@ export class Meta {
 
 	@Column('varchar', {
 		length: 128,
-		nullable: true
+		nullable: true,
 	})
 	public email: string | null;
 
@@ -229,24 +229,24 @@ export class Meta {
 
 	@Column('varchar', {
 		length: 128,
-		nullable: true
+		nullable: true,
 	})
 	public smtpHost: string | null;
 
 	@Column('integer', {
-		nullable: true
+		nullable: true,
 	})
 	public smtpPort: number | null;
 
 	@Column('varchar', {
 		length: 128,
-		nullable: true
+		nullable: true,
 	})
 	public smtpUser: string | null;
 
 	@Column('varchar', {
 		length: 128,
-		nullable: true
+		nullable: true,
 	})
 	public smtpPass: string | null;
 
@@ -257,13 +257,13 @@ export class Meta {
 
 	@Column('varchar', {
 		length: 128,
-		nullable: true
+		nullable: true,
 	})
 	public swPublicKey: string | null;
 
 	@Column('varchar', {
 		length: 128,
-		nullable: true
+		nullable: true,
 	})
 	public swPrivateKey: string | null;
 
@@ -274,13 +274,13 @@ export class Meta {
 
 	@Column('varchar', {
 		length: 128,
-		nullable: true
+		nullable: true,
 	})
 	public twitterConsumerKey: string | null;
 
 	@Column('varchar', {
 		length: 128,
-		nullable: true
+		nullable: true,
 	})
 	public twitterConsumerSecret: string | null;
 
@@ -291,13 +291,13 @@ export class Meta {
 
 	@Column('varchar', {
 		length: 128,
-		nullable: true
+		nullable: true,
 	})
 	public githubClientId: string | null;
 
 	@Column('varchar', {
 		length: 128,
-		nullable: true
+		nullable: true,
 	})
 	public githubClientSecret: string | null;
 
@@ -308,19 +308,19 @@ export class Meta {
 
 	@Column('varchar', {
 		length: 128,
-		nullable: true
+		nullable: true,
 	})
 	public discordClientId: string | null;
 
 	@Column('varchar', {
 		length: 128,
-		nullable: true
+		nullable: true,
 	})
 	public discordClientSecret: string | null;
 
 	@Column('varchar', {
 		length: 128,
-		nullable: true
+		nullable: true,
 	})
 	public deeplAuthKey: string | null;
 
@@ -331,21 +331,21 @@ export class Meta {
 
 	@Column('varchar', {
 		length: 512,
-		nullable: true
+		nullable: true,
 	})
 	public ToSUrl: string | null;
 
 	@Column('varchar', {
 		length: 512,
 		default: 'https://github.com/misskey-dev/misskey',
-		nullable: false
+		nullable: false,
 	})
 	public repositoryUrl: string;
 
 	@Column('varchar', {
 		length: 512,
 		default: 'https://github.com/misskey-dev/misskey/issues/new',
-		nullable: true
+		nullable: true,
 	})
 	public feedbackUrl: string | null;
 
@@ -356,48 +356,48 @@ export class Meta {
 
 	@Column('varchar', {
 		length: 512,
-		nullable: true
+		nullable: true,
 	})
 	public objectStorageBucket: string | null;
 
 	@Column('varchar', {
 		length: 512,
-		nullable: true
+		nullable: true,
 	})
 	public objectStoragePrefix: string | null;
 
 	@Column('varchar', {
 		length: 512,
-		nullable: true
+		nullable: true,
 	})
 	public objectStorageBaseUrl: string | null;
 
 	@Column('varchar', {
 		length: 512,
-		nullable: true
+		nullable: true,
 	})
 	public objectStorageEndpoint: string | null;
 
 	@Column('varchar', {
 		length: 512,
-		nullable: true
+		nullable: true,
 	})
 	public objectStorageRegion: string | null;
 
 	@Column('varchar', {
 		length: 512,
-		nullable: true
+		nullable: true,
 	})
 	public objectStorageAccessKey: string | null;
 
 	@Column('varchar', {
 		length: 512,
-		nullable: true
+		nullable: true,
 	})
 	public objectStorageSecretKey: string | null;
 
 	@Column('integer', {
-		nullable: true
+		nullable: true,
 	})
 	public objectStoragePort: number | null;
 

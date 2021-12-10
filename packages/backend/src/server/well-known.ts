@@ -69,7 +69,7 @@ router.get(webFingerPath, async ctx => {
 	const fromId = (id: User['id']): Record<string, any> => ({
 		id,
 		host: null,
-		isSuspended: false
+		isSuspended: false,
 	});
 
 	const generateQuery = (resource: string) =>
@@ -84,7 +84,7 @@ router.get(webFingerPath, async ctx => {
 		!acct.host || acct.host === config.host.toLowerCase() ? {
 			usernameLower: acct.username,
 			host: null,
-			isSuspended: false
+			isSuspended: false,
 		} : 422;
 
 	if (typeof ctx.query.resource !== 'string') {
@@ -110,16 +110,16 @@ router.get(webFingerPath, async ctx => {
 	const self = {
 		rel: 'self',
 		type: 'application/activity+json',
-		href: `${config.url}/users/${user.id}`
+		href: `${config.url}/users/${user.id}`,
 	};
 	const profilePage = {
 		rel: 'http://webfinger.net/rel/profile-page',
 		type: 'text/html',
-		href: `${config.url}/@${user.username}`
+		href: `${config.url}/@${user.username}`,
 	};
 	const subscribe = {
 		rel: 'http://ostatus.org/schema/1.0/subscribe',
-		template: `${config.url}/authorize-follow?acct={uri}`
+		template: `${config.url}/authorize-follow?acct={uri}`,
 	};
 
 	if (ctx.accepts(jrd, xrd) === xrd) {
@@ -132,7 +132,7 @@ router.get(webFingerPath, async ctx => {
 	} else {
 		ctx.body = {
 			subject,
-			links: [self, profilePage, subscribe]
+			links: [self, profilePage, subscribe],
 		};
 		ctx.type = jrd;
 	}

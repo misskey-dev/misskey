@@ -1,6 +1,6 @@
 <template>
 <transition :name="$store.state.animation ? 'popup-menu' : ''" appear @after-leave="$emit('closed')" @enter="$emit('opening')">
-	<div v-show="manualShowing != null ? manualShowing : showing" ref="content" class="ccczpooj" :class="{ front, fixed, top: position === 'top' }" :style="{ pointerEvents: (manualShowing != null ? manualShowing : showing) ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
+	<div v-show="manualShowing != null ? manualShowing : showing" ref="content" class="ccczpooj" :class="{ fixed, top: position === 'top' }" :style="{ zIndex, pointerEvents: (manualShowing != null ? manualShowing : showing) ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
 		<slot :max-height="maxHeight" :close="close"></slot>
 	</div>
 </transition>
@@ -8,6 +8,7 @@
 
 <script lang="ts">
 import { defineComponent, nextTick, onMounted, onUnmounted, PropType, ref, watch } from 'vue';
+import * as os from '@/os';
 
 function getFixedContainer(el: Element | null | undefined): Element | null {
 	if (el == null || el.tagName === 'BODY') return null;
@@ -57,6 +58,7 @@ export default defineComponent({
 		const transformOrigin = ref('center');
 		const showing = ref(true);
 		const content = ref<HTMLElement>();
+		const zIndex = os.claimZIndex(props.front);
 
 		const close = () => {
 			// eslint-disable-next-line vue/no-mutating-props
@@ -204,6 +206,7 @@ export default defineComponent({
 			transformOrigin,
 			maxHeight,
 			close,
+			zIndex,
 		};
 	},
 });
@@ -226,14 +229,9 @@ export default defineComponent({
 
 .ccczpooj {
 	position: absolute;
-	z-index: 10000;
 
 	&.fixed {
 		position: fixed;
-	}
-
-	&.front {
-		z-index: 20000;
 	}
 }
 </style>

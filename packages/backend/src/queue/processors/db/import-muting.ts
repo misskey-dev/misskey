@@ -22,7 +22,7 @@ export async function importMuting(job: Bull.Job<DbUserImportJobData>, done: any
 	}
 
 	const file = await DriveFiles.findOne({
-		id: job.data.fileId
+		id: job.data.fileId,
 	});
 	if (file == null) {
 		done();
@@ -42,10 +42,10 @@ export async function importMuting(job: Bull.Job<DbUserImportJobData>, done: any
 
 			let target = isSelfHost(host!) ? await Users.findOne({
 				host: null,
-				usernameLower: username.toLowerCase()
+				usernameLower: username.toLowerCase(),
 			}) : await Users.findOne({
 				host: toPuny(host!),
-				usernameLower: username.toLowerCase()
+				usernameLower: username.toLowerCase(),
 			});
 
 			if (host == null && target == null) continue;

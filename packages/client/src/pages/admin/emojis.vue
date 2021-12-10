@@ -1,50 +1,54 @@
 <template>
-<div class="ogwlenmc">
-	<div v-if="tab === 'local'" class="local">
-		<MkInput v-model="query" :debounce="true" type="search" style="margin: var(--margin);">
-			<template #prefix><i class="fas fa-search"></i></template>
-			<template #label>{{ $ts.search }}</template>
-		</MkInput>
-		<MkPagination ref="emojis" :pagination="pagination">
-			<template #empty><span>{{ $ts.noCustomEmojis }}</span></template>
-			<template v-slot="{items}">
-				<div class="ldhfsamy">
-					<button v-for="emoji in items" :key="emoji.id" class="emoji _panel _button" @click="edit(emoji)">
-						<img :src="emoji.url" class="img" :alt="emoji.name"/>
-						<div class="body">
-							<div class="name _monospace">{{ emoji.name }}</div>
-							<div class="info">{{ emoji.category }}</div>
-						</div>
-					</button>
-				</div>
-			</template>
-		</MkPagination>
-	</div>
+<MkSpacer :content-max="900">
+	<div class="ogwlenmc">
+		<div v-if="tab === 'local'" class="local">
+			<MkInput v-model="query" :debounce="true" type="search">
+				<template #prefix><i class="fas fa-search"></i></template>
+				<template #label>{{ $ts.search }}</template>
+			</MkInput>
+			<MkPagination ref="emojis" :pagination="pagination">
+				<template #empty><span>{{ $ts.noCustomEmojis }}</span></template>
+				<template v-slot="{items}">
+					<div class="ldhfsamy">
+						<button v-for="emoji in items" :key="emoji.id" class="emoji _panel _button" @click="edit(emoji)">
+							<img :src="emoji.url" class="img" :alt="emoji.name"/>
+							<div class="body">
+								<div class="name _monospace">{{ emoji.name }}</div>
+								<div class="info">{{ emoji.category }}</div>
+							</div>
+						</button>
+					</div>
+				</template>
+			</MkPagination>
+		</div>
 
-	<div v-else-if="tab === 'remote'" class="remote">
-		<MkInput v-model="queryRemote" :debounce="true" type="search" style="margin: var(--margin);">
-			<template #prefix><i class="fas fa-search"></i></template>
-			<template #label>{{ $ts.search }}</template>
-		</MkInput>
-		<MkInput v-model="host" :debounce="true" style="margin: var(--margin);">
-			<template #label>{{ $ts.host }}</template>
-		</MkInput>
-		<MkPagination ref="remoteEmojis" :pagination="remotePagination">
-			<template #empty><span>{{ $ts.noCustomEmojis }}</span></template>
-			<template v-slot="{items}">
-				<div class="ldhfsamy">
-					<div v-for="emoji in items" :key="emoji.id" class="emoji _panel _button" @click="remoteMenu(emoji, $event)">
-						<img :src="emoji.url" class="img" :alt="emoji.name"/>
-						<div class="body">
-							<div class="name _monospace">{{ emoji.name }}</div>
-							<div class="info">{{ emoji.host }}</div>
+		<div v-else-if="tab === 'remote'" class="remote">
+			<div class="_inputSplit">
+				<MkInput v-model="queryRemote" :debounce="true" type="search">
+					<template #prefix><i class="fas fa-search"></i></template>
+					<template #label>{{ $ts.search }}</template>
+				</MkInput>
+				<MkInput v-model="host" :debounce="true">
+					<template #label>{{ $ts.host }}</template>
+				</MkInput>
+			</div>
+			<MkPagination ref="remoteEmojis" :pagination="remotePagination">
+				<template #empty><span>{{ $ts.noCustomEmojis }}</span></template>
+				<template v-slot="{items}">
+					<div class="ldhfsamy">
+						<div v-for="emoji in items" :key="emoji.id" class="emoji _panel _button" @click="remoteMenu(emoji, $event)">
+							<img :src="emoji.url" class="img" :alt="emoji.name"/>
+							<div class="body">
+								<div class="name _monospace">{{ emoji.name }}</div>
+								<div class="info">{{ emoji.host }}</div>
+							</div>
 						</div>
 					</div>
-				</div>
-			</template>
-		</MkPagination>
+				</template>
+			</MkPagination>
+		</div>
 	</div>
-</div>
+</MkSpacer>
 </template>
 
 <script lang="ts">
@@ -53,7 +57,7 @@ import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/form/input.vue';
 import MkPagination from '@/components/ui/pagination.vue';
 import MkTab from '@/components/tab.vue';
-import { selectFile } from '@/scripts/select-file';
+import { selectFiles } from '@/scripts/select-file';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 
@@ -78,6 +82,9 @@ export default defineComponent({
 					icon: 'fas fa-plus',
 					text: this.$ts.addEmoji,
 					handler: this.add,
+				}, {
+					icon: 'fas fa-ellipsis-h',
+					handler: this.menu,
 				}],
 				tabs: [{
 					active: this.tab === 'local',
@@ -117,7 +124,7 @@ export default defineComponent({
 
 	methods: {
 		async add(e) {
-			const files = await selectFile(e.currentTarget || e.target, null, true);
+			const files = await selectFiles(e.currentTarget || e.target, null);
 
 			const promise = Promise.all(files.map(file => os.api('admin/emoji/add', {
 				fileId: file.id,
@@ -160,6 +167,28 @@ export default defineComponent({
 				icon: 'fas fa-plus',
 				action: () => { this.im(emoji) }
 			}], ev.currentTarget || ev.target);
+		},
+
+		menu(ev) {
+			os.popupMenu([{
+				icon: 'fas fa-download',
+				text: this.$ts.export,
+				action: async () => {
+					os.api('export-custom-emojis', {
+					})
+					.then(() => {
+						os.alert({
+							type: 'info',
+							text: this.$ts.exportRequested,
+						});
+					}).catch((e) => {
+						os.alert({
+							type: 'error',
+							text: e.message,
+						});
+					});
+				}
+			}], ev.currentTarget || ev.target);
 		}
 	}
 });
@@ -168,15 +197,15 @@ export default defineComponent({
 <style lang="scss" scoped>
 .ogwlenmc {
 	> .local {
-	  .empty {
-    	margin: var(--margin);
+		.empty {
+			margin: var(--margin);
 		}
 		
 		.ldhfsamy {
 			display: grid;
 			grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
 			grid-gap: 12px;
-			margin: var(--margin);
+			margin: var(--margin) 0;
 	
 			> .emoji {
 				display: flex;
@@ -214,15 +243,15 @@ export default defineComponent({
 	}
 
 	> .remote {
-	  .empty {
-      margin: var(--margin);
-    }
-								
+		.empty {
+			margin: var(--margin);
+		}
+
 		.ldhfsamy {
 			display: grid;
 			grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
 			grid-gap: 12px;
-			margin: var(--margin);
+			margin: var(--margin) 0;
 
 			> .emoji {
 				display: flex;

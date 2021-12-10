@@ -12,17 +12,17 @@ export const meta = {
 
 	params: {
 		id: {
-			validator: $.type(ID)
-		}
+			validator: $.type(ID),
+		},
 	},
 
 	errors: {
 		noSuchAnnouncement: {
 			message: 'No such announcement.',
 			code: 'NO_SUCH_ANNOUNCEMENT',
-			id: 'ecad8040-a276-4e85-bda9-015a708d291e'
-		}
-	}
+			id: 'ecad8040-a276-4e85-bda9-015a708d291e',
+		},
+	},
 };
 
 export default define(meta, async (ps, me) => {

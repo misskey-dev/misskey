@@ -12,7 +12,7 @@ export const meta = {
 	params: {
 		limit: {
 			validator: $.optional.num.range(1, 100),
-			default: 10
+			default: 10,
 		},
 
 		sinceId: {
@@ -21,8 +21,8 @@ export const meta = {
 
 		untilId: {
 			validator: $.optional.type(ID),
-		}
-	}
+		},
+	},
 };
 
 export default define(meta, async (ps, user) => {

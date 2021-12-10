@@ -15,6 +15,6 @@ export default async (me: User['id'], note: Note) => {
 		createdAt: new Date(),
 		noteId: note.id,
 		userId: me,
-		noteUserId: note.userId
+		noteUserId: note.userId,
 	} as NoteWatching);
 };

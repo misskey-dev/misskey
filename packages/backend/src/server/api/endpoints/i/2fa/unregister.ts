@@ -10,9 +10,9 @@ export const meta = {
 
 	params: {
 		password: {
-			validator: $.str
-		}
-	}
+			validator: $.str,
+		},
+	},
 };
 
 export default define(meta, async (ps, user) => {
@@ -27,6 +27,6 @@ export default define(meta, async (ps, user) => {
 
 	await UserProfiles.update(user.id, {
 		twoFactorSecret: null,
-		twoFactorEnabled: false
+		twoFactorEnabled: false,
 	});
 });

@@ -38,7 +38,7 @@ export default class PerUserReactionsChart extends Chart<PerUserReactionsLog> {
 	@autobind
 	public async update(user: { id: User['id'], host: User['host'] }, note: Note) {
 		this.inc({
-			[Users.isLocalUser(user) ? 'local' : 'remote']: { count: 1 }
+			[Users.isLocalUser(user) ? 'local' : 'remote']: { count: 1 },
 		}, note.userId);
 	}
 }

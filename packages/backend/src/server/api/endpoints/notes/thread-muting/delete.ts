@@ -15,16 +15,16 @@ export const meta = {
 	params: {
 		noteId: {
 			validator: $.type(ID),
-		}
+		},
 	},
 
 	errors: {
 		noSuchNote: {
 			message: 'No such note.',
 			code: 'NO_SUCH_NOTE',
-			id: 'bddd57ac-ceb3-b29d-4334-86ea5fae481a'
-		}
-	}
+			id: 'bddd57ac-ceb3-b29d-4334-86ea5fae481a',
+		},
+	},
 };
 
 export default define(meta, async (ps, user) => {

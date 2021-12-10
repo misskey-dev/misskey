@@ -130,7 +130,7 @@ export default defineComponent({
 			bottom: 0;
 			left: 0;
 			display: grid;
-			grid-gap: 4px;
+			grid-gap: 8px;
 
 			> * {
 				overflow: hidden;

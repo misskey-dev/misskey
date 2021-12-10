@@ -14,7 +14,7 @@ export class ApiError extends Error {
 			code: 'INTERNAL_ERROR',
 			id: '5d37dbcb-891e-41ca-a3d6-e690c97775ac',
 			kind: 'server',
-			httpStatusCode: 500
+			httpStatusCode: 500,
 		};
 
 		super(e.message);

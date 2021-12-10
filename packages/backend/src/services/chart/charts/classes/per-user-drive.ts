@@ -36,7 +36,7 @@ export default class PerUserDriveChart extends Chart<PerUserDriveLog> {
 	protected async fetchActual(group: string): Promise<DeepPartial<PerUserDriveLog>> {
 		const [count, size] = await Promise.all([
 			DriveFiles.count({ userId: group }),
-			DriveFiles.calcDriveUsageOf(group)
+			DriveFiles.calcDriveUsageOf(group),
 		]);
 
 		return {

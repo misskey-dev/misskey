@@ -14,12 +14,12 @@ export const meta = {
 	params: {
 		query: {
 			validator: $.optional.nullable.str,
-			default: null
+			default: null,
 		},
 
 		limit: {
 			validator: $.optional.num.range(1, 100),
-			default: 10
+			default: 10,
 		},
 
 		sinceId: {
@@ -28,7 +28,7 @@ export const meta = {
 
 		untilId: {
 			validator: $.optional.type(ID),
-		}
+		},
 	},
 
 	res: {
@@ -48,8 +48,8 @@ export const meta = {
 					optional: false as const, nullable: false as const,
 					items: {
 						type: 'string' as const,
-						optional: false as const, nullable: false as const
-					}
+						optional: false as const, nullable: false as const,
+					},
 				},
 				name: {
 					type: 'string' as const,
@@ -66,10 +66,10 @@ export const meta = {
 				url: {
 					type: 'string' as const,
 					optional: false as const, nullable: false as const,
-				}
-			}
-		}
-	}
+				},
+			},
+		},
+	},
 };
 
 export default define(meta, async (ps) => {

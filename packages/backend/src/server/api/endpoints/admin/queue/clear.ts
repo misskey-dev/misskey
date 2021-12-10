@@ -8,7 +8,7 @@ export const meta = {
 	requireCredential: true as const,
 	requireModerator: true,
 
-	params: {}
+	params: {},
 };
 
 export default define(meta, async (ps, me) => {

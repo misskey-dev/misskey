@@ -6,7 +6,7 @@
 		</FormSwitch>
 
 		<template v-if="enableDiscordIntegration">
-			<FormInfo>Callback URL: {{ `${url}/api/dc/cb` }}</FormInfo>
+			<FormInfo>Callback URL: {{ `${uri}/api/dc/cb` }}</FormInfo>
 		
 			<FormInput v-model="discordClientId">
 				<template #prefix><i class="fas fa-key"></i></template>
@@ -67,6 +67,7 @@ export default defineComponent({
 	methods: {
 		async init() {
 			const meta = await os.api('meta', { detail: true });
+			this.uri = meta.uri;
 			this.enableDiscordIntegration = meta.enableDiscordIntegration;
 			this.discordClientId = meta.discordClientId;
 			this.discordClientSecret = meta.discordClientSecret;

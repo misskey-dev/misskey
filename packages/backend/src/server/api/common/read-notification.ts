@@ -11,9 +11,9 @@ export async function readNotification(
 	// Update documents
 	await Notifications.update({
 		id: In(notificationIds),
-		isRead: false
+		isRead: false,
 	}, {
-		isRead: true
+		isRead: true,
 	});
 
 	post(userId);
@@ -27,9 +27,9 @@ export async function readNotificationByQuery(
 	await Notifications.update({
 		...query,
 		notifieeId: userId,
-		isRead: false
+		isRead: false,
 	}, {
-		isRead: true
+		isRead: true,
 	});
 
 	post(userId);

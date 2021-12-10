@@ -11,20 +11,20 @@ export const meta = {
 
 	params: {
 		body: {
-			validator: $.str
+			validator: $.str,
 		},
 
 		header: {
-			validator: $.optional.nullable.str
+			validator: $.optional.nullable.str,
 		},
 
 		icon: {
-			validator: $.optional.nullable.str
+			validator: $.optional.nullable.str,
 		},
 	},
 
 	errors: {
-	}
+	},
 };
 
 export default define(meta, async (ps, user, token) => {

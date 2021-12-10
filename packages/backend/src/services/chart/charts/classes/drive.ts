@@ -23,7 +23,7 @@ export default class DriveChart extends Chart<DriveLog> {
 			remote: {
 				totalCount: latest.remote.totalCount,
 				totalSize: latest.remote.totalSize,
-			}
+			},
 		};
 	}
 
@@ -55,7 +55,7 @@ export default class DriveChart extends Chart<DriveLog> {
 			DriveFiles.count({ userHost: null }),
 			DriveFiles.count({ userHost: Not(IsNull()) }),
 			DriveFiles.calcDriveUsageOfLocal(),
-			DriveFiles.calcDriveUsageOfRemote()
+			DriveFiles.calcDriveUsageOfRemote(),
 		]);
 
 		return {
@@ -66,7 +66,7 @@ export default class DriveChart extends Chart<DriveLog> {
 			remote: {
 				totalCount: remoteCount,
 				totalSize: remoteSize,
-			}
+			},
 		};
 	}
 
@@ -85,7 +85,7 @@ export default class DriveChart extends Chart<DriveLog> {
 		}
 
 		await this.inc({
-			[file.userHost === null ? 'local' : 'remote']: update
+			[file.userHost === null ? 'local' : 'remote']: update,
 		});
 	}
 }

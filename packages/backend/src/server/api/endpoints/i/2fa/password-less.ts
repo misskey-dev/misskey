@@ -9,13 +9,13 @@ export const meta = {
 
 	params: {
 		value: {
-			validator: $.boolean
-		}
-	}
+			validator: $.boolean,
+		},
+	},
 };
 
 export default define(meta, async (ps, user) => {
 	await UserProfiles.update(user.id, {
-		usePasswordLessLogin: ps.value
+		usePasswordLessLogin: ps.value,
 	});
 });

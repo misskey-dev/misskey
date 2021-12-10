@@ -21,15 +21,15 @@ export const meta = {
 		noSuchGroup: {
 			message: 'No such group.',
 			code: 'NO_SUCH_GROUP',
-			id: '62780270-1f67-5dc0-daca-3eb510612e31'
+			id: '62780270-1f67-5dc0-daca-3eb510612e31',
 		},
 
 		youAreOwner: {
 			message: 'Your are the owner.',
 			code: 'YOU_ARE_OWNER',
-			id: 'b6d6e0c2-ef8a-9bb8-653d-79f4a3107c69'
+			id: 'b6d6e0c2-ef8a-9bb8-653d-79f4a3107c69',
 		},
-	}
+	},
 };
 
 export default define(meta, async (ps, me) => {

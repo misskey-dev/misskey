@@ -14,7 +14,7 @@ export const meta = {
 	params: {
 		fileId: {
 			validator: $.type(ID),
-		}
+		},
 	},
 
 	res: {
@@ -24,7 +24,7 @@ export const meta = {
 			type: 'object' as const,
 			optional: false as const, nullable: false as const,
 			ref: 'Note',
-		}
+		},
 	},
 
 	errors: {
@@ -32,8 +32,8 @@ export const meta = {
 			message: 'No such file.',
 			code: 'NO_SUCH_FILE',
 			id: 'c118ece3-2e4b-4296-99d1-51756e32d232',
-		}
-	}
+		},
+	},
 };
 
 export default define(meta, async (ps, user) => {
@@ -52,6 +52,6 @@ export default define(meta, async (ps, user) => {
 		.getMany();
 
 	return await Notes.packMany(notes, user, {
-		detail: true
+		detail: true,
 	});
 });

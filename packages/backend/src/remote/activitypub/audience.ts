@@ -28,7 +28,7 @@ export async function parseAudience(actor: IRemoteUser, to?: ApObject, cc?: ApOb
 		return {
 			visibility: 'public',
 			mentionedUsers,
-			visibleUsers: []
+			visibleUsers: [],
 		};
 	}
 
@@ -36,7 +36,7 @@ export async function parseAudience(actor: IRemoteUser, to?: ApObject, cc?: ApOb
 		return {
 			visibility: 'home',
 			mentionedUsers,
-			visibleUsers: []
+			visibleUsers: [],
 		};
 	}
 
@@ -44,14 +44,14 @@ export async function parseAudience(actor: IRemoteUser, to?: ApObject, cc?: ApOb
 		return {
 			visibility: 'followers',
 			mentionedUsers,
-			visibleUsers: []
+			visibleUsers: [],
 		};
 	}
 
 	return {
 		visibility: 'specified',
 		mentionedUsers,
-		visibleUsers: mentionedUsers
+		visibleUsers: mentionedUsers,
 	};
 }
 

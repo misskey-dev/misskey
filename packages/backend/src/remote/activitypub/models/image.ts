@@ -38,7 +38,7 @@ export async function createImage(actor: IRemoteUser, value: any): Promise<Drive
 		if (file.url !== image.url) {
 			await DriveFiles.update({ id: file.id }, {
 				url: image.url,
-				uri: image.url
+				uri: image.url,
 			});
 
 			file = await DriveFiles.findOneOrFail(file.id);

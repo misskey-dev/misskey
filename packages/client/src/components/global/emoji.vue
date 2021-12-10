@@ -6,9 +6,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent, ref, watch } from 'vue';
 import { getStaticImageUrl } from '@/scripts/get-static-image-url';
 import { twemojiSvgBase } from '@/scripts/twemoji-base';
+import { defaultStore } from '@/store';
+import { instance } from '@/instance';
 
 export default defineComponent({
 	props: {
@@ -35,61 +37,33 @@ export default defineComponent({
 		},
 	},
 
-	data() {
+	setup(props) {
+		const isCustom = computed(() => props.emoji.startsWith(':'));
+		const char = computed(() => isCustom.value ? null : props.emoji);
+		const useOsNativeEmojis = computed(() => defaultStore.state.useOsNativeEmojis && !props.isReaction);
+		const ce = computed(() => props.customEmojis || instance.emojis || []);
+		const customEmoji = computed(() => isCustom.value ? ce.value.find(x => x.name === props.emoji.substr(1, props.emoji.length - 2)) : null);
+		const url = computed(() => {
+			if (char.value) {
+				let codes = Array.from(char.value).map(x => x.codePointAt(0).toString(16));
+				if (!codes.includes('200d')) codes = codes.filter(x => x != 'fe0f');
+				codes = codes.filter(x => x && x.length);
+				return `${twemojiSvgBase}/${codes.join('-')}.svg`;
+			} else {
+				return defaultStore.state.disableShowingAnimatedImages
+					? getStaticImageUrl(customEmoji.value.url)
+					: customEmoji.value.url;
+			}
+		});
+		const alt = computed(() => customEmoji.value ? `:${customEmoji.value.name}:` : char.value);
+
 		return {
-			url: null,
-			char: null,
-			customEmoji: null
-		}
-	},
-
-	computed: {
-		isCustom(): boolean {
-			return this.emoji.startsWith(':');
-		},
-
-		alt(): string {
-			return this.customEmoji ? `:${this.customEmoji.name}:` : this.char;
-		},
-
-		useOsNativeEmojis(): boolean {
-			return this.$store.state.useOsNativeEmojis && !this.isReaction;
-		},
-
-		ce() {
-			return this.customEmojis || this.$instance?.emojis || [];
-		}
-	},
-
-	watch: {
-		ce: {
-			handler() {
-				if (this.isCustom) {
-					const customEmoji = this.ce.find(x => x.name === this.emoji.substr(1, this.emoji.length - 2));
-					if (customEmoji) {
-						this.customEmoji = customEmoji;
-						this.url = this.$store.state.disableShowingAnimatedImages
-							? getStaticImageUrl(customEmoji.url)
-							: customEmoji.url;
-					}
-				}
-			},
-			immediate: true
-		},
-	},
-
-	created() {
-		if (!this.isCustom) {
-			this.char = this.emoji;
-		}
-
-		if (this.char) {
-			let codes = Array.from(this.char).map(x => x.codePointAt(0).toString(16));
-			if (!codes.includes('200d')) codes = codes.filter(x => x != 'fe0f');
-			codes = codes.filter(x => x && x.length);
-
-			this.url = `${twemojiSvgBase}/${codes.join('-')}.svg`;
-		}
+			url,
+			char,
+			alt,
+			customEmoji,
+			useOsNativeEmojis,
+		};
 	},
 });
 </script>

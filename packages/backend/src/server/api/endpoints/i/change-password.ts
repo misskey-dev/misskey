@@ -10,13 +10,13 @@ export const meta = {
 
 	params: {
 		currentPassword: {
-			validator: $.str
+			validator: $.str,
 		},
 
 		newPassword: {
-			validator: $.str
-		}
-	}
+			validator: $.str,
+		},
+	},
 };
 
 export default define(meta, async (ps, user) => {
@@ -34,6 +34,6 @@ export default define(meta, async (ps, user) => {
 	const hash = await bcrypt.hash(ps.newPassword, salt);
 
 	await UserProfiles.update(user.id, {
-		password: hash
+		password: hash,
 	});
 });

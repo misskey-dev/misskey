@@ -6,7 +6,7 @@
 		</FormSwitch>
 
 		<template v-if="enableGithubIntegration">
-			<FormInfo>Callback URL: {{ `${url}/api/gh/cb` }}</FormInfo>
+			<FormInfo>Callback URL: {{ `${uri}/api/gh/cb` }}</FormInfo>
 		
 			<FormInput v-model="githubClientId">
 				<template #prefix><i class="fas fa-key"></i></template>
@@ -67,6 +67,7 @@ export default defineComponent({
 	methods: {
 		async init() {
 			const meta = await os.api('meta', { detail: true });
+			this.uri = meta.uri;
 			this.enableGithubIntegration = meta.enableGithubIntegration;
 			this.githubClientId = meta.githubClientId;
 			this.githubClientSecret = meta.githubClientSecret;

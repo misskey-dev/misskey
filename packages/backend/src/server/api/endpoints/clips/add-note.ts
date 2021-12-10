@@ -27,27 +27,27 @@ export const meta = {
 		noSuchClip: {
 			message: 'No such clip.',
 			code: 'NO_SUCH_CLIP',
-			id: 'd6e76cc0-a1b5-4c7c-a287-73fa9c716dcf'
+			id: 'd6e76cc0-a1b5-4c7c-a287-73fa9c716dcf',
 		},
 
 		noSuchNote: {
 			message: 'No such note.',
 			code: 'NO_SUCH_NOTE',
-			id: 'fc8c0b49-c7a3-4664-a0a6-b418d386bb8b'
+			id: 'fc8c0b49-c7a3-4664-a0a6-b418d386bb8b',
 		},
 
 		alreadyClipped: {
 			message: 'The note has already been clipped.',
 			code: 'ALREADY_CLIPPED',
-			id: '734806c4-542c-463a-9311-15c512803965'
+			id: '734806c4-542c-463a-9311-15c512803965',
 		},
-	}
+	},
 };
 
 export default define(meta, async (ps, user) => {
 	const clip = await Clips.findOne({
 		id: ps.clipId,
-		userId: user.id
+		userId: user.id,
 	});
 
 	if (clip == null) {
@@ -61,7 +61,7 @@ export default define(meta, async (ps, user) => {
 
 	const exist = await ClipNotes.findOne({
 		noteId: note.id,
-		clipId: clip.id
+		clipId: clip.id,
 	});
 
 	if (exist != null) {
@@ -71,6 +71,6 @@ export default define(meta, async (ps, user) => {
 	await ClipNotes.insert({
 		id: genId(),
 		noteId: note.id,
-		clipId: clip.id
+		clipId: clip.id,
 	});
 });

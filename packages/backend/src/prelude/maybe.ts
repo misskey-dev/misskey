@@ -9,7 +9,7 @@ export interface IJust<T> extends IMaybe<T> {
 export function just<T>(value: T): IJust<T> {
 	return {
 		isJust: () => true,
-		get: () => value
+		get: () => value,
 	};
 }
 

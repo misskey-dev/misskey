@@ -16,9 +16,9 @@ export const meta = {
 
 	params: {
 		password: {
-			validator: $.str
-		}
-	}
+			validator: $.str,
+		},
+	},
 };
 
 export default define(meta, async (ps, user) => {
@@ -49,11 +49,11 @@ export default define(meta, async (ps, user) => {
 		id: challengeId,
 		challenge: hash(Buffer.from(challenge, 'utf-8')).toString('hex'),
 		createdAt: new Date(),
-		registrationChallenge: true
+		registrationChallenge: true,
 	});
 
 	return {
 		challengeId,
-		challenge
+		challenge,
 	};
 });

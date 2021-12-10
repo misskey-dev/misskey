@@ -11,19 +11,19 @@ export class NoteWatching {
 
 	@Index()
 	@Column('timestamp with time zone', {
-		comment: 'The created date of the NoteWatching.'
+		comment: 'The created date of the NoteWatching.',
 	})
 	public createdAt: Date;
 
 	@Index()
 	@Column({
 		...id(),
-		comment: 'The watcher ID.'
+		comment: 'The watcher ID.',
 	})
 	public userId: User['id'];
 
 	@ManyToOne(type => User, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public user: User | null;
@@ -31,12 +31,12 @@ export class NoteWatching {
 	@Index()
 	@Column({
 		...id(),
-		comment: 'The target Note ID.'
+		comment: 'The target Note ID.',
 	})
 	public noteId: Note['id'];
 
 	@ManyToOne(type => Note, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public note: Note | null;
@@ -45,7 +45,7 @@ export class NoteWatching {
 	@Index()
 	@Column({
 		...id(),
-		comment: '[Denormalized]'
+		comment: '[Denormalized]',
 	})
 	public noteUserId: Note['userId'];
 	//#endregion

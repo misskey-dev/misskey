@@ -65,10 +65,10 @@ export class FollowingRepository extends Repository<Following> {
 			followeeId: following.followeeId,
 			followerId: following.followerId,
 			followee: opts.populateFollowee ? Users.pack(following.followee || following.followeeId, me, {
-				detail: true
+				detail: true,
 			}) : undefined,
 			follower: opts.populateFollower ? Users.pack(following.follower || following.followerId, me, {
-				detail: true
+				detail: true,
 			}) : undefined,
 		});
 	}
@@ -120,5 +120,5 @@ export const packedFollowingSchema = {
 			optional: true as const, nullable: false as const,
 			ref: 'User' as const,
 		},
-	}
+	},
 };

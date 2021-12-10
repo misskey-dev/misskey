@@ -20,6 +20,8 @@ export default defineComponent({
 			[symbols.PAGE_INFO]: {
 				title: computed(() => this.folder ? this.folder.name : this.$ts.drive),
 				icon: 'fas fa-cloud',
+				bg: 'var(--bg)',
+				hideHeader: true,
 			},
 			folder: null,
 		};

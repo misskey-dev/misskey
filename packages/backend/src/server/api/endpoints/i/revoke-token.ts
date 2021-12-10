@@ -11,9 +11,9 @@ export const meta = {
 
 	params: {
 		tokenId: {
-			validator: $.type(ID)
-		}
-	}
+			validator: $.type(ID),
+		},
+	},
 };
 
 export default define(meta, async (ps, user) => {

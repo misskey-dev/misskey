@@ -23,9 +23,9 @@ export const meta = {
 		noSuchInvitation: {
 			message: 'No such invitation.',
 			code: 'NO_SUCH_INVITATION',
-			id: '98c11eca-c890-4f42-9806-c8c8303ebb5e'
+			id: '98c11eca-c890-4f42-9806-c8c8303ebb5e',
 		},
-	}
+	},
 };
 
 export default define(meta, async (ps, user) => {
@@ -47,7 +47,7 @@ export default define(meta, async (ps, user) => {
 		id: genId(),
 		createdAt: new Date(),
 		userId: user.id,
-		userGroupId: invitation.userGroupId
+		userGroupId: invitation.userGroupId,
 	} as UserGroupJoining);
 
 	UserGroupInvitations.delete(invitation.id);

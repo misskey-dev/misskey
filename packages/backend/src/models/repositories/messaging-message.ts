@@ -112,8 +112,8 @@ export const packedMessagingMessageSchema = {
 			items: {
 				type: 'string' as const,
 				optional: false as const, nullable: false as const,
-				format: 'id'
-			}
+				format: 'id',
+			},
 		},
 	},
 };

@@ -18,8 +18,8 @@ export class BlockingRepository extends Repository<Blocking> {
 			createdAt: blocking.createdAt.toISOString(),
 			blockeeId: blocking.blockeeId,
 			blockee: Users.pack(blocking.blockeeId, me, {
-				detail: true
-			})
+				detail: true,
+			}),
 		});
 	}
 
@@ -56,5 +56,5 @@ export const packedBlockingSchema = {
 			optional: false as const, nullable: false as const,
 			ref: 'User' as const,
 		},
-	}
+	},
 };

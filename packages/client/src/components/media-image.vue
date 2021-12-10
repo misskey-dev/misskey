@@ -8,7 +8,7 @@
 		</div>
 	</div>
 </div>
-<div v-else class="gqnyydlz" :style="{ background: color }">
+<div v-else class="gqnyydlz">
 	<a
 		:href="image.url"
 		:title="image.name"
@@ -16,15 +16,13 @@
 		<ImgWithBlurhash :hash="image.blurhash" :src="url" :alt="image.comment" :title="image.comment" :cover="false"/>
 		<div v-if="image.type === 'image/gif'" class="gif">GIF</div>
 	</a>
-	<i class="fas fa-eye-slash" @click="hide = true"></i>
+	<button v-tooltip="$ts.hide" class="_button hide" @click="hide = true"><i class="fas fa-eye-slash"></i></button>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { getStaticImageUrl } from '@/scripts/get-static-image-url';
-import { extractAvgColorFromBlurhash } from '@/scripts/extract-avg-color-from-blurhash';
-import ImageViewer from './image-viewer.vue';
 import ImgWithBlurhash from '@/components/img-with-blurhash.vue';
 import * as os from '@/os';
 
@@ -44,7 +42,6 @@ export default defineComponent({
 	data() {
 		return {
 			hide: true,
-			color: null,
 		};
 	},
 	computed: {
@@ -64,9 +61,6 @@ export default defineComponent({
 		// Plugin:register_note_view_interruptor を使って書き換えられる可能性があるためwatchする
 		this.$watch('image', () => {
 			this.hide = (this.$store.state.nsfw === 'force') ? true : this.image.isSensitive && (this.$store.state.nsfw !== 'ignore');
-			if (this.image.blurhash) {
-				this.color = extractAvgColorFromBlurhash(this.image.blurhash);
-			}
 		}, {
 			deep: true,
 			immediate: true,
@@ -109,21 +103,26 @@ export default defineComponent({
 
 .gqnyydlz {
 	position: relative;
-	border: solid 0.5px var(--divider);
+	//box-shadow: 0 0 0 1px var(--divider) inset;
+	background: var(--bg);
 
-	> i {
+	> .hide {
 		display: block;
 		position: absolute;
 		border-radius: 6px;
-		background-color: var(--fg);
-		color: var(--accentLighten);
-		font-size: 14px;
-		opacity: .5;
-		padding: 3px 6px;
+		background-color: var(--accentedBg);
+		-webkit-backdrop-filter: var(--blur, blur(15px));
+		backdrop-filter: var(--blur, blur(15px));
+		color: var(--accent);
+		font-size: 0.8em;
+		padding: 6px 8px;
 		text-align: center;
-		cursor: pointer;
 		top: 12px;
 		right: 12px;
+
+		> i {
+			display: block;
+		}
 	}
 
 	> a {

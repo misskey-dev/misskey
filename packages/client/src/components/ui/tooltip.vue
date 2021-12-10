@@ -1,6 +1,6 @@
 <template>
 <transition name="tooltip" appear @after-leave="$emit('closed')">
-	<div v-show="showing" ref="el" class="buebdbiu _acrylic _shadow" :style="{ maxWidth: maxWidth + 'px' }">
+	<div v-show="showing" ref="el" class="buebdbiu _acrylic _shadow" :style="{ zIndex, maxWidth: maxWidth + 'px' }">
 		<slot>{{ text }}</slot>
 	</div>
 </transition>
@@ -8,6 +8,7 @@
 
 <script lang="ts">
 import { defineComponent, nextTick, onMounted, onUnmounted, ref } from 'vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	props: {
@@ -33,6 +34,7 @@ export default defineComponent({
 
 	setup(props, context) {
 		const el = ref<HTMLElement>();
+		const zIndex = os.claimZIndex(true);
 
 		const setPosition = () => {
 			if (el.value == null) return;
@@ -88,6 +90,7 @@ export default defineComponent({
 
 		return {
 			el,
+			zIndex,
 		};
 	},
 })
@@ -108,7 +111,6 @@ export default defineComponent({
 
 .buebdbiu {
 	position: absolute;
-	z-index: 11000;
 	font-size: 0.8em;
 	padding: 8px 12px;
 	box-sizing: border-box;
