@@ -788,6 +788,7 @@ lastCommunication: "마지막 통신"
 resolved: "해결됨"
 unresolved: "해결되지 않음"
 controlPanel: "제어판"
+hide: "숨기기"
 _ffVisibility:
   public: "게시"
 _accountDelete:
