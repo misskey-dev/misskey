@@ -23,7 +23,7 @@ import {
 	ReversiGameStreamTypes,
 	ReversiStreamTypes,
 	UserListStreamTypes,
-	UserStreamTypes
+	UserStreamTypes,
 } from '@/server/api/stream/types';
 import { Packed } from '@/misc/schema';
 
@@ -35,7 +35,7 @@ class Publisher {
 
 		redisClient.publish(config.host, JSON.stringify({
 			channel: channel,
-			message: message
+			message: message,
 		}));
 	};
 
@@ -62,7 +62,7 @@ class Publisher {
 	public publishNoteStream = <K extends keyof NoteStreamTypes>(noteId: Note['id'], type: K, value?: NoteStreamTypes[K]): void => {
 		this.publish(`noteStream:${noteId}`, type, {
 			id: noteId,
-			body: value
+			body: value,
 		});
 	};
 

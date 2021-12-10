@@ -28,7 +28,7 @@ export default class extends Channel {
 		if (this.groupId) {
 			const joining = await UserGroupJoinings.findOne({
 				userId: this.user!.id,
-				userGroupId: this.groupId
+				userGroupId: this.groupId,
 			});
 
 			if (joining == null) {

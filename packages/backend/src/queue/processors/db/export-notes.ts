@@ -74,7 +74,8 @@ export async function exportNotes(job: Bull.Job<DbUserJobData>, done: any): Prom
 			}
 			const content = JSON.stringify(serialize(note, poll));
 			await new Promise<void>((res, rej) => {
-				stream.write(exportedNotesCount === 0 ? content : ',\n' + content, err => {
+				const isFirst = exportedNotesCount === 0;
+				stream.write(isFirst ? content : ',\n' + content, err => {
 					if (err) {
 						logger.error(err);
 						rej(err);

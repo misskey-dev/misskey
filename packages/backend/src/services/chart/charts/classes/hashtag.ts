@@ -37,11 +37,11 @@ export default class HashtagChart extends Chart<HashtagLog> {
 	@autobind
 	public async update(hashtag: string, user: { id: User['id'], host: User['host'] }) {
 		const update: Obj = {
-			users: [user.id]
+			users: [user.id],
 		};
 
 		await this.inc({
-			[Users.isLocalUser(user) ? 'local' : 'remote']: update
+			[Users.isLocalUser(user) ? 'local' : 'remote']: update,
 		}, hashtag);
 	}
 }

@@ -7,7 +7,7 @@ export function renderFollowRelay(relay: Relay, relayActor: ILocalUser) {
 		id: `${config.url}/activities/follow-relay/${relay.id}`,
 		type: 'Follow',
 		actor: `${config.url}/users/${relayActor.id}`,
-		object: 'https://www.w3.org/ns/activitystreams#Public'
+		object: 'https://www.w3.org/ns/activitystreams#Public',
 	};
 
 	return follow;

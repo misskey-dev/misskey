@@ -37,7 +37,7 @@ import FormTuple from '@/components/debobigego/tuple.vue';
 import FormBase from '@/components/debobigego/base.vue';
 import FormGroup from '@/components/debobigego/group.vue';
 import FormSuspense from '@/components/debobigego/suspense.vue';
-import { selectFile } from '@/scripts/select-file';
+import { selectFiles } from '@/scripts/select-file';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 
@@ -95,7 +95,7 @@ export default defineComponent({
 
 	methods: {
 		selectFile(e) {
-			selectFile(e.currentTarget || e.target, null, true).then(files => {
+			selectFiles(e.currentTarget || e.target, null).then(files => {
 				this.files = this.files.concat(files);
 			});
 		},

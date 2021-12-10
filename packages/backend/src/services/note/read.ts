@@ -22,15 +22,15 @@ export default async function(
 ) {
 	const following = info?.following ? info.following : new Set<string>((await Followings.find({
 		where: {
-			followerId: userId
+			followerId: userId,
 		},
-		select: ['followeeId']
+		select: ['followeeId'],
 	})).map(x => x.followeeId));
 	const followingChannels = info?.followingChannels ? info.followingChannels : new Set<string>((await ChannelFollowings.find({
 		where: {
-			followerId: userId
+			followerId: userId,
 		},
-		select: ['followeeId']
+		select: ['followeeId'],
 	})).map(x => x.followeeId));
 
 	const myAntennas = (await getAntennas()).filter(a => a.userId === userId);
@@ -70,7 +70,7 @@ export default async function(
 
 		NoteUnreads.count({
 			userId: userId,
-			isMentioned: true
+			isMentioned: true,
 		}).then(mentionsCount => {
 			if (mentionsCount === 0) {
 				// 全て既読になったイベントを発行
@@ -80,7 +80,7 @@ export default async function(
 
 		NoteUnreads.count({
 			userId: userId,
-			isSpecified: true
+			isSpecified: true,
 		}).then(specifiedCount => {
 			if (specifiedCount === 0) {
 				// 全て既読になったイベントを発行
@@ -90,7 +90,7 @@ export default async function(
 
 		NoteUnreads.count({
 			userId: userId,
-			noteChannelId: Not(IsNull())
+			noteChannelId: Not(IsNull()),
 		}).then(channelNoteCount => {
 			if (channelNoteCount === 0) {
 				// 全て既読になったイベントを発行
@@ -106,16 +106,16 @@ export default async function(
 	if (readAntennaNotes.length > 0) {
 		await AntennaNotes.update({
 			antennaId: In(myAntennas.map(a => a.id)),
-			noteId: In(readAntennaNotes.map(n => n.id))
+			noteId: In(readAntennaNotes.map(n => n.id)),
 		}, {
-			read: true
+			read: true,
 		});
 
 		// TODO: まとめてクエリしたい
 		for (const antenna of myAntennas) {
 			const count = await AntennaNotes.count({
 				antennaId: antenna.id,
-				read: false
+				read: false,
 			});
 
 			if (count === 0) {

@@ -1,9 +1,16 @@
-import { isScreenTouching } from '@/os';
-import { Ref, ref } from 'vue';
-import { isDeviceTouch } from './is-device-touch';
+import { Ref, ref, watch } from 'vue';
 
-export function useTooltip(onShow: (showing: Ref<boolean>) => void) {
+export function useTooltip(
+	elRef: Ref<HTMLElement | { $el: HTMLElement } | null | undefined>,
+	onShow: (showing: Ref<boolean>) => void,
+): void {
 	let isHovering = false;
+
+	// iOS(Androidも？)では、要素をタップした直後に(おせっかいで)mouseoverイベントを発火させたりするため、それを無視するためのフラグ
+	// 無視しないと、画面に触れてないのにツールチップが出たりし、ユーザビリティが損なわれる
+	// TODO: 一度でもタップすると二度とマウスでツールチップ出せなくなるのをどうにかする 定期的にfalseに戻すとか...？
+	let shouldIgnoreMouseover = false;
+
 	let timeoutId: number;
 
 	let changeShowingState: (() => void) | null;
@@ -11,10 +18,6 @@ export function useTooltip(onShow: (showing: Ref<boolean>) => void) {
 	const open = () => {
 		close();
 		if (!isHovering) return;
-
-		// iOS(Androidも？)では、要素をタップした直後に(おせっかいで)mouseoverイベントを発火させたりするため、その対策
-		// これが無いと、画面に触れてないのにツールチップが出たりしてしまう
-		if (isDeviceTouch && !isScreenTouching) return;
 
 		const showing = ref(true);
 		onShow(showing);
@@ -32,6 +35,7 @@ export function useTooltip(onShow: (showing: Ref<boolean>) => void) {
 
 	const onMouseover = () => {
 		if (isHovering) return;
+		if (shouldIgnoreMouseover) return;
 		isHovering = true;
 		timeoutId = window.setTimeout(open, 300);
 	};
@@ -43,8 +47,31 @@ export function useTooltip(onShow: (showing: Ref<boolean>) => void) {
 		close();
 	};
 
-	return {
-		onMouseover,
-		onMouseleave,
+	const onTouchstart = () => {
+		shouldIgnoreMouseover = true;
+		if (isHovering) return;
+		isHovering = true;
+		timeoutId = window.setTimeout(open, 300);
 	};
+
+	const onTouchend = () => {
+		if (!isHovering) return;
+		isHovering = false;
+		window.clearTimeout(timeoutId);
+		close();
+	};
+
+	const stop = watch(elRef, () => {
+		if (elRef.value) {
+			stop();
+			const el = elRef.value instanceof Element ? elRef.value : elRef.value.$el;
+			el.addEventListener('mouseover', onMouseover, { passive: true });
+			el.addEventListener('mouseleave', onMouseleave, { passive: true });
+			el.addEventListener('touchstart', onTouchstart, { passive: true });
+			el.addEventListener('touchend', onTouchend, { passive: true });
+		}
+	}, {
+		immediate: true,
+		flush: 'post',
+	});
 }

@@ -27,7 +27,7 @@ export async function createNotification(
 		type: type,
 		// 相手がこの通知をミュートしているようなら、既読を予めつけておく
 		isRead: isMuted,
-		...data
+		...data,
 	} as Partial<Notification>);
 
 	const packed = await Notifications.pack(notification, {});
@@ -43,7 +43,7 @@ export async function createNotification(
 
 		//#region ただしミュートしているユーザーからの通知なら無視
 		const mutings = await Mutings.find({
-			muterId: notifieeId
+			muterId: notifieeId,
 		});
 		if (data.notifierId && mutings.map(m => m.muteeId).includes(data.notifierId)) {
 			return;

@@ -25,10 +25,10 @@ export const meta = {
 				type: 'string' as const,
 				optional: false as const, nullable: false as const,
 				minLength: 8,
-				maxLength: 8
-			}
-		}
-	}
+				maxLength: 8,
+			},
+		},
+	},
 };
 
 export default define(meta, async (ps) => {
@@ -48,12 +48,12 @@ export default define(meta, async (ps) => {
 	const hash = bcrypt.hashSync(passwd);
 
 	await UserProfiles.update({
-		userId: user.id
+		userId: user.id,
 	}, {
-		password: hash
+		password: hash,
 	});
 
 	return {
-		password: passwd
+		password: passwd,
 	};
 });

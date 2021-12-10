@@ -246,57 +246,57 @@ export const meta = {
 		},
 
 		useObjectStorage: {
-			validator: $.optional.bool
+			validator: $.optional.bool,
 		},
 
 		objectStorageBaseUrl: {
-			validator: $.optional.nullable.str
+			validator: $.optional.nullable.str,
 		},
 
 		objectStorageBucket: {
-			validator: $.optional.nullable.str
+			validator: $.optional.nullable.str,
 		},
 
 		objectStoragePrefix: {
-			validator: $.optional.nullable.str
+			validator: $.optional.nullable.str,
 		},
 
 		objectStorageEndpoint: {
-			validator: $.optional.nullable.str
+			validator: $.optional.nullable.str,
 		},
 
 		objectStorageRegion: {
-			validator: $.optional.nullable.str
+			validator: $.optional.nullable.str,
 		},
 
 		objectStoragePort: {
-			validator: $.optional.nullable.num
+			validator: $.optional.nullable.num,
 		},
 
 		objectStorageAccessKey: {
-			validator: $.optional.nullable.str
+			validator: $.optional.nullable.str,
 		},
 
 		objectStorageSecretKey: {
-			validator: $.optional.nullable.str
+			validator: $.optional.nullable.str,
 		},
 
 		objectStorageUseSSL: {
-			validator: $.optional.bool
+			validator: $.optional.bool,
 		},
 
 		objectStorageUseProxy: {
-			validator: $.optional.bool
+			validator: $.optional.bool,
 		},
 
 		objectStorageSetPublicRead: {
-			validator: $.optional.bool
+			validator: $.optional.bool,
 		},
 
 		objectStorageS3ForcePathStyle: {
-			validator: $.optional.bool
+			validator: $.optional.bool,
 		},
-	}
+	},
 };
 
 export default define(meta, async (ps, me) => {
@@ -593,8 +593,8 @@ export default define(meta, async (ps, me) => {
 	await getConnection().transaction(async transactionalEntityManager => {
 		const meta = await transactionalEntityManager.findOne(Meta, {
 			order: {
-				id: 'DESC'
-			}
+				id: 'DESC',
+			},
 		});
 
 		if (meta) {

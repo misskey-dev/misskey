@@ -59,7 +59,7 @@ import * as Acct from 'misskey-js/built/acct';
 import { formatTimeString } from '@/scripts/format-time-string';
 import { Autocomplete } from '@/scripts/autocomplete';
 import * as os from '@/os';
-import { selectFile } from '@/scripts/select-file';
+import { selectFiles } from '@/scripts/select-file';
 import { notePostInterruptors, postFormActions } from '@/store';
 import { throttle } from 'throttle-debounce';
 
@@ -342,7 +342,7 @@ export default defineComponent({
 		},
 
 		chooseFileFrom(ev) {
-			selectFile(ev.currentTarget || ev.target, this.$ts.attachFile, true).then(files => {
+			selectFiles(ev.currentTarget || ev.target, this.$ts.attachFile).then(files => {
 				for (const file of files) {
 					this.files.push(file);
 				}

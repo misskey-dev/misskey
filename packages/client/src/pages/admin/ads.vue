@@ -1,19 +1,20 @@
 <template>
-<div class="uqshojas">
-	<section v-for="ad in ads" class="_card _gap ads">
-		<div class="_content ad">
+<MkSpacer :content-max="900">
+	<div class="uqshojas">
+		<div v-for="ad in ads" class="_panel _formRoot ad">
 			<MkAd v-if="ad.url" :specify="ad"/>
-			<MkInput v-model="ad.url" type="url">
+			<MkInput v-model="ad.url" type="url" class="_formBlock">
 				<template #label>URL</template>
 			</MkInput>
-			<MkInput v-model="ad.imageUrl">
+			<MkInput v-model="ad.imageUrl" class="_formBlock">
 				<template #label>{{ $ts.imageUrl }}</template>
 			</MkInput>
-			<div style="margin: 32px 0;">
-				<MkRadio v-model="ad.place" value="square">square</MkRadio>
-				<MkRadio v-model="ad.place" value="horizontal">horizontal</MkRadio>
-				<MkRadio v-model="ad.place" value="horizontal-big">horizontal-big</MkRadio>
-			</div>
+			<FormRadios v-model="ad.place" class="_formBlock">
+				<template #label>Form</template>
+				<option value="square">square</option>
+				<option value="horizontal">horizontal</option>
+				<option value="horizontal-big">horizontal-big</option>
+			</FormRadios>
 			<!--
 			<div style="margin: 32px 0;">
 				{{ $ts.priority }}
@@ -22,22 +23,24 @@
 				<MkRadio v-model="ad.priority" value="low">{{ $ts.low }}</MkRadio>
 			</div>
 			-->
-			<MkInput v-model="ad.ratio" type="number">
-				<template #label>{{ $ts.ratio }}</template>
-			</MkInput>
-			<MkInput v-model="ad.expiresAt" type="date">
-				<template #label>{{ $ts.expiration }}</template>
-			</MkInput>
-			<MkTextarea v-model="ad.memo">
+			<div class="_inputSplit">
+				<MkInput v-model="ad.ratio" type="number">
+					<template #label>{{ $ts.ratio }}</template>
+				</MkInput>
+				<MkInput v-model="ad.expiresAt" type="date">
+					<template #label>{{ $ts.expiration }}</template>
+				</MkInput>
+			</div>
+			<MkTextarea v-model="ad.memo" class="_formBlock">
 				<template #label>{{ $ts.memo }}</template>
 			</MkTextarea>
-			<div class="buttons">
-				<MkButton class="button" inline primary @click="save(ad)"><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
+			<div class="buttons _formBlock">
+				<MkButton class="button" inline primary style="margin-right: 12px;" @click="save(ad)"><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
 				<MkButton class="button" inline danger @click="remove(ad)"><i class="fas fa-trash-alt"></i> {{ $ts.remove }}</MkButton>
 			</div>
 		</div>
-	</section>
-</div>
+	</div>
+</MkSpacer>
 </template>
 
 <script lang="ts">
@@ -45,7 +48,7 @@ import { defineComponent } from 'vue';
 import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/form/input.vue';
 import MkTextarea from '@/components/form/textarea.vue';
-import MkRadio from '@/components/form/radio.vue';
+import FormRadios from '@/components/form/radios.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 
@@ -54,7 +57,7 @@ export default defineComponent({
 		MkButton,
 		MkInput,
 		MkTextarea,
-		MkRadio,
+		FormRadios,
 	},
 
 	emits: ['info'],
@@ -132,6 +135,12 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .uqshojas {
-	margin: var(--margin);
+	> .ad {
+		padding: 32px;
+
+		&:not(:last-child) {
+			margin-bottom: var(--margin);
+		}
+	}
 }
 </style>

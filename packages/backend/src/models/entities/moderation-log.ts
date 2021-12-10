@@ -8,7 +8,7 @@ export class ModerationLog {
 	public id: string;
 
 	@Column('timestamp with time zone', {
-		comment: 'The created date of the ModerationLog.'
+		comment: 'The created date of the ModerationLog.',
 	})
 	public createdAt: Date;
 
@@ -17,7 +17,7 @@ export class ModerationLog {
 	public userId: User['id'];
 
 	@ManyToOne(type => User, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public user: User | null;

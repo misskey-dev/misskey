@@ -42,12 +42,12 @@ export const schemas = {
 						type: 'string',
 						format: 'uuid',
 						description: 'An error ID. This ID is static.',
-					}
+					},
 				},
-				required: ['code', 'id', 'message']
+				required: ['code', 'id', 'message'],
 			},
 		},
-		required: ['error']
+		required: ['error'],
 	},
 
 	...Object.fromEntries(

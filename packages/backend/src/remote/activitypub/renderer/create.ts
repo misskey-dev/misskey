@@ -7,7 +7,7 @@ export default (object: any, note: Note) => {
 		actor: `${config.url}/users/${note.userId}`,
 		type: 'Create',
 		published: note.createdAt.toISOString(),
-		object
+		object,
 	} as any;
 
 	if (object.to) activity.to = object.to;

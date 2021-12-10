@@ -11,19 +11,19 @@ export const meta = {
 
 	params: {
 		host: {
-			validator: $.str
-		}
-	}
+			validator: $.str,
+		},
+	},
 };
 
 export default define(meta, async (ps, me) => {
 	const followings = await Followings.find({
-		followerHost: ps.host
+		followerHost: ps.host,
 	});
 
 	const pairs = await Promise.all(followings.map(f => Promise.all([
 		Users.findOneOrFail(f.followerId),
-		Users.findOneOrFail(f.followeeId)
+		Users.findOneOrFail(f.followeeId),
 	])));
 
 	for (const pair of pairs) {

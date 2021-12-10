@@ -10,23 +10,23 @@ export const meta = {
 	kind: 'write:account',
 
 	params: {
-	}
+	},
 };
 
 export default define(meta, async (ps, user) => {
 	// Update documents
 	await MessagingMessages.update({
 		recipientId: user.id,
-		isRead: false
+		isRead: false,
 	}, {
-		isRead: true
+		isRead: true,
 	});
 
 	const joinings = await UserGroupJoinings.find({ userId: user.id });
 
 	await Promise.all(joinings.map(j => MessagingMessages.createQueryBuilder().update()
 		.set({
-			reads: (() => `array_append("reads", '${user.id}')`) as any
+			reads: (() => `array_append("reads", '${user.id}')`) as any,
 		})
 		.where(`groupId = :groupId`, { groupId: j.userGroupId })
 		.andWhere('userId != :userId', { userId: user.id })

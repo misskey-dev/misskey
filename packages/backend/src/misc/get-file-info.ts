@@ -26,12 +26,12 @@ export type FileInfo = {
 
 const TYPE_OCTET_STREAM = {
 	mime: 'application/octet-stream',
-	ext: null
+	ext: null,
 };
 
 const TYPE_SVG = {
 	mime: 'image/svg+xml',
-	ext: 'svg'
+	ext: 'svg',
 };
 
 /**
@@ -116,7 +116,7 @@ export async function detectType(path: string) {
 
 		return {
 			mime: type.mime,
-			ext: type.ext
+			ext: type.ext,
 		};
 	}
 

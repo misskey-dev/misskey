@@ -24,7 +24,7 @@ export const meta = {
 
 		userId: {
 			validator: $.type(ID),
-		}
+		},
 	},
 
 	res: convertLog(perUserNotesChart.schema),

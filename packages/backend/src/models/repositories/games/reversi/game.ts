@@ -14,7 +14,7 @@ export class ReversiGameRepository extends Repository<ReversiGame> {
 		}
 	): Promise<Packed<'ReversiGame'>> {
 		const opts = Object.assign({
-			detail: true
+			detail: true,
 		}, options);
 
 		const game = typeof src === 'object' ? src : await this.findOneOrFail(src);
@@ -45,10 +45,10 @@ export class ReversiGameRepository extends Repository<ReversiGame> {
 				logs: game.logs.map(log => ({
 					at: log.at.toISOString(),
 					color: log.color,
-					pos: log.pos
+					pos: log.pos,
 				})),
 				map: game.map,
-			} : {})
+			} : {}),
 		};
 	}
 }
@@ -176,8 +176,8 @@ export const packedReversiGameSchema = {
 						type: 'number' as const,
 						optional: false as const, nullable: false as const,
 					},
-				}
-			}
+				},
+			},
 		},
 		map: {
 			type: 'array' as const,
@@ -185,7 +185,7 @@ export const packedReversiGameSchema = {
 			items: {
 				type: 'string' as const,
 				optional: false as const, nullable: false as const,
-			}
-		}
-	}
+			},
+		},
+	},
 };

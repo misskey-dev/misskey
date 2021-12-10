@@ -85,6 +85,11 @@ TODO
 Misskey uses GitHub Actions for executing automated tests.
 Configuration files are located in [`/.github/workflows`](/.github/workflows).
 
+## Vue
+Misskey uses Vue(v3) as its front-end framework.
+**When creating a new component, please use the Composition API instead of the Options API.**
+Some of the existing components are implemented in the Options API, but it is an old implementation. Refactors that migrate those components to the Composition API are also welcome.
+
 ## Adding MisskeyRoom items
 * Use English for material, object and texture names.
 * Use meter for unit of length.

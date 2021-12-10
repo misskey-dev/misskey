@@ -11,12 +11,12 @@ export const meta = {
 
 	params: {
 		password: {
-			validator: $.str
+			validator: $.str,
 		},
 		credentialId: {
-			validator: $.str
+			validator: $.str,
 		},
-	}
+	},
 };
 
 export default define(meta, async (ps, user) => {
@@ -32,13 +32,13 @@ export default define(meta, async (ps, user) => {
 	// Make sure we only delete the user's own creds
 	await UserSecurityKeys.delete({
 		userId: user.id,
-		id: ps.credentialId
+		id: ps.credentialId,
 	});
 
 	// Publish meUpdated event
 	publishMainStream(user.id, 'meUpdated', await Users.pack(user.id, user, {
 		detail: true,
-		includeSecrets: true
+		includeSecrets: true,
 	}));
 
 	return {};

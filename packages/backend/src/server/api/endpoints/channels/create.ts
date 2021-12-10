@@ -15,16 +15,16 @@ export const meta = {
 
 	params: {
 		name: {
-			validator: $.str.range(1, 128)
+			validator: $.str.range(1, 128),
 		},
 
 		description: {
-			validator: $.nullable.optional.str.range(1, 2048)
+			validator: $.nullable.optional.str.range(1, 2048),
 		},
 
 		bannerId: {
 			validator: $.nullable.optional.type(ID),
-		}
+		},
 	},
 
 	res: {
@@ -37,9 +37,9 @@ export const meta = {
 		noSuchFile: {
 			message: 'No such file.',
 			code: 'NO_SUCH_FILE',
-			id: 'cd1e9f3e-5a12-4ab4-96f6-5d0a2cc32050'
+			id: 'cd1e9f3e-5a12-4ab4-96f6-5d0a2cc32050',
 		},
-	}
+	},
 };
 
 export default define(meta, async (ps, user) => {
@@ -47,7 +47,7 @@ export default define(meta, async (ps, user) => {
 	if (ps.bannerId != null) {
 		banner = await DriveFiles.findOne({
 			id: ps.bannerId,
-			userId: user.id
+			userId: user.id,
 		});
 
 		if (banner == null) {

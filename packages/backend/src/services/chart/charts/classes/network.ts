@@ -37,7 +37,7 @@ export default class NetworkChart extends Chart<NetworkLog> {
 			incomingRequests: incomingRequests,
 			totalTime: time,
 			incomingBytes: incomingBytes,
-			outgoingBytes: outgoingBytes
+			outgoingBytes: outgoingBytes,
 		};
 
 		await this.inc(inc);

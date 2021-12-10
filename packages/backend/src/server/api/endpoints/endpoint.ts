@@ -10,7 +10,7 @@ export const meta = {
 	params: {
 		endpoint: {
 			validator: $.str,
-		}
+		},
 	},
 };
 
@@ -20,7 +20,7 @@ export default define(meta, async (ps) => {
 	return {
 		params: Object.entries(ep.meta.params || {}).map(([k, v]) => ({
 			name: k,
-			type: v.validator.name === 'ID' ? 'String' : v.validator.name
-		}))
+			type: v.validator.name === 'ID' ? 'String' : v.validator.name,
+		})),
 	};
 });

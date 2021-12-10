@@ -24,15 +24,15 @@ export const meta = {
 					},
 					{
 						type: 'number' as const,
-					}
-				]
-			}
+					},
+				],
+			},
 		},
 		example: [[
 			'example.com',
-			12
-		]]
-	}
+			12,
+		]],
+	},
 };
 
 export default define(meta, async (ps) => {

@@ -10,13 +10,13 @@ export class Poll {
 	public noteId: Note['id'];
 
 	@OneToOne(type => Note, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public note: Note | null;
 
 	@Column('timestamp with time zone', {
-		nullable: true
+		nullable: true,
 	})
 	public expiresAt: Date | null;
 
@@ -24,7 +24,7 @@ export class Poll {
 	public multiple: boolean;
 
 	@Column('varchar', {
-		length: 128, array: true, default: '{}'
+		length: 128, array: true, default: '{}',
 	})
 	public choices: string[];
 
@@ -36,21 +36,21 @@ export class Poll {
 	//#region Denormalized fields
 	@Column('enum', {
 		enum: noteVisibilities,
-		comment: '[Denormalized]'
+		comment: '[Denormalized]',
 	})
 	public noteVisibility: typeof noteVisibilities[number];
 
 	@Index()
 	@Column({
 		...id(),
-		comment: '[Denormalized]'
+		comment: '[Denormalized]',
 	})
 	public userId: User['id'];
 
 	@Index()
 	@Column('varchar', {
 		length: 128, nullable: true,
-		comment: '[Denormalized]'
+		comment: '[Denormalized]',
 	})
 	public userHost: string | null;
 	//#endregion

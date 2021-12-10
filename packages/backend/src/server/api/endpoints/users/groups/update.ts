@@ -18,7 +18,7 @@ export const meta = {
 
 		name: {
 			validator: $.str.range(1, 100),
-		}
+		},
 	},
 
 	res: {
@@ -31,16 +31,16 @@ export const meta = {
 		noSuchGroup: {
 			message: 'No such group.',
 			code: 'NO_SUCH_GROUP',
-			id: '9081cda3-7a9e-4fac-a6ce-908d70f282f6'
+			id: '9081cda3-7a9e-4fac-a6ce-908d70f282f6',
 		},
-	}
+	},
 };
 
 export default define(meta, async (ps, me) => {
 	// Fetch the group
 	const userGroup = await UserGroups.findOne({
 		id: ps.groupId,
-		userId: me.id
+		userId: me.id,
 	});
 
 	if (userGroup == null) {
@@ -48,7 +48,7 @@ export default define(meta, async (ps, me) => {
 	}
 
 	await UserGroups.update(userGroup.id, {
-		name: ps.name
+		name: ps.name,
 	});
 
 	return await UserGroups.pack(userGroup.id);

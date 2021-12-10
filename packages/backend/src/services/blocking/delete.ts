@@ -11,7 +11,7 @@ const logger = new Logger('blocking/delete');
 export default async function(blocker: User, blockee: User) {
 	const blocking = await Blockings.findOne({
 		blockerId: blocker.id,
-		blockeeId: blockee.id
+		blockeeId: blockee.id,
 	});
 
 	if (blocking == null) {

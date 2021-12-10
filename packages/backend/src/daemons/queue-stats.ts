@@ -35,13 +35,13 @@ export default function() {
 				activeSincePrevTick: activeDeliverJobs,
 				active: deliverJobCounts.active,
 				waiting: deliverJobCounts.waiting,
-				delayed: deliverJobCounts.delayed
+				delayed: deliverJobCounts.delayed,
 			},
 			inbox: {
 				activeSincePrevTick: activeInboxJobs,
 				active: inboxJobCounts.active,
 				waiting: inboxJobCounts.waiting,
-				delayed: inboxJobCounts.delayed
+				delayed: inboxJobCounts.delayed,
 			},
 		};
 

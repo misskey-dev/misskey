@@ -13,7 +13,7 @@ export const meta = {
 		userId: {
 			validator: $.type(ID),
 		},
-	}
+	},
 };
 
 export default define(meta, async (ps) => {
@@ -24,6 +24,6 @@ export default define(meta, async (ps) => {
 	}
 
 	await Users.update(user.id, {
-		isModerator: false
+		isModerator: false,
 	});
 });

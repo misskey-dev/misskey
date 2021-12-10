@@ -22,10 +22,10 @@ export default define(meta, async () => {
 		machine: os.hostname(),
 		cpu: {
 			model: os.cpus()[0].model,
-			cores: os.cpus().length
+			cores: os.cpus().length,
 		},
 		mem: {
-			total: memStats.total
+			total: memStats.total,
 		},
 		fs: {
 			total: fsStats[0].size,

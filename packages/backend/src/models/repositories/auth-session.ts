@@ -15,7 +15,7 @@ export class AuthSessionRepository extends Repository<AuthSession> {
 		return await awaitAll({
 			id: session.id,
 			app: Apps.pack(session.appId, me),
-			token: session.token
+			token: session.token,
 		});
 	}
 }

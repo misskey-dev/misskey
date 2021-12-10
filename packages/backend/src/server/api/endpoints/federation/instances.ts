@@ -40,17 +40,17 @@ export const meta = {
 
 		limit: {
 			validator: $.optional.num.range(1, 100),
-			default: 30
+			default: 30,
 		},
 
 		offset: {
 			validator: $.optional.num.min(0),
-			default: 0
+			default: 0,
 		},
 
 		sort: {
 			validator: $.optional.str,
-		}
+		},
 	},
 
 	res: {
@@ -59,9 +59,9 @@ export const meta = {
 		items: {
 			type: 'object' as const,
 			optional: false as const, nullable: false as const,
-			ref: 'FederationInstance'
-		}
-	}
+			ref: 'FederationInstance',
+		},
+	},
 };
 
 export default define(meta, async (ps, me) => {

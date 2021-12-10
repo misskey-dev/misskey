@@ -41,8 +41,8 @@ export const renderActivity = (x: any): IActivity | null => {
 				'isCat': 'misskey:isCat',
 				// vcard
 				vcard: 'http://www.w3.org/2006/vcard/ns#',
-			}
-		]
+			},
+		],
 	}, x);
 };
 

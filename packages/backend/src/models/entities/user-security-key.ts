@@ -5,7 +5,7 @@ import { id } from '../id';
 @Entity()
 export class UserSecurityKey {
 	@PrimaryColumn('varchar', {
-		comment: 'Variable-length id given to navigator.credentials.get()'
+		comment: 'Variable-length id given to navigator.credentials.get()',
 	})
 	public id: string;
 
@@ -14,7 +14,7 @@ export class UserSecurityKey {
 	public userId: User['id'];
 
 	@ManyToOne(type => User, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public user: User | null;
@@ -22,19 +22,19 @@ export class UserSecurityKey {
 	@Index()
 	@Column('varchar', {
 		comment:
-			'Variable-length public key used to verify attestations (hex-encoded).'
+			'Variable-length public key used to verify attestations (hex-encoded).',
 	})
 	public publicKey: string;
 
 	@Column('timestamp with time zone', {
 		comment:
-			'The date of the last time the UserSecurityKey was successfully validated.'
+			'The date of the last time the UserSecurityKey was successfully validated.',
 	})
 	public lastUsed: Date;
 
 	@Column('varchar', {
 		comment: 'User-defined name for this key',
-		length: 30
+		length: 30,
 	})
 	public name: string;
 

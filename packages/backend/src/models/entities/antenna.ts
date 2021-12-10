@@ -10,26 +10,26 @@ export class Antenna {
 	public id: string;
 
 	@Column('timestamp with time zone', {
-		comment: 'The created date of the Antenna.'
+		comment: 'The created date of the Antenna.',
 	})
 	public createdAt: Date;
 
 	@Index()
 	@Column({
 		...id(),
-		comment: 'The owner ID.'
+		comment: 'The owner ID.',
 	})
 	public userId: User['id'];
 
 	@ManyToOne(type => User, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public user: User | null;
 
 	@Column('varchar', {
 		length: 128,
-		comment: 'The name of the Antenna.'
+		comment: 'The name of the Antenna.',
 	})
 	public name: string;
 
@@ -38,51 +38,51 @@ export class Antenna {
 
 	@Column({
 		...id(),
-		nullable: true
+		nullable: true,
 	})
 	public userListId: UserList['id'] | null;
 
 	@ManyToOne(type => UserList, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public userList: UserList | null;
 
 	@Column({
 		...id(),
-		nullable: true
+		nullable: true,
 	})
 	public userGroupJoiningId: UserGroupJoining['id'] | null;
 
 	@ManyToOne(type => UserGroupJoining, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public userGroupJoining: UserGroupJoining | null;
 
 	@Column('varchar', {
 		length: 1024, array: true,
-		default: '{}'
+		default: '{}',
 	})
 	public users: string[];
 
 	@Column('jsonb', {
-		default: []
+		default: [],
 	})
 	public keywords: string[][];
 
 	@Column('jsonb', {
-		default: []
+		default: [],
 	})
 	public excludeKeywords: string[][];
 
 	@Column('boolean', {
-		default: false
+		default: false,
 	})
 	public caseSensitive: boolean;
 
 	@Column('boolean', {
-		default: false
+		default: false,
 	})
 	public withReplies: boolean;
 

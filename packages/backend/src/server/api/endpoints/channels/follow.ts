@@ -23,9 +23,9 @@ export const meta = {
 		noSuchChannel: {
 			message: 'No such channel.',
 			code: 'NO_SUCH_CHANNEL',
-			id: 'c0031718-d573-4e85-928e-10039f1fbb68'
+			id: 'c0031718-d573-4e85-928e-10039f1fbb68',
 		},
-	}
+	},
 };
 
 export default define(meta, async (ps, user) => {
