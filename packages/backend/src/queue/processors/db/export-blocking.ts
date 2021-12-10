@@ -40,12 +40,12 @@ export async function exportBlocking(job: Bull.Job<DbUserJobData>, done: any): P
 		const blockings = await Blockings.find({
 			where: {
 				blockerId: user.id,
-				...(cursor ? { id: MoreThan(cursor) } : {})
+				...(cursor ? { id: MoreThan(cursor) } : {}),
 			},
 			take: 100,
 			order: {
-				id: 1
-			}
+				id: 1,
+			},
 		});
 
 		if (blockings.length === 0) {

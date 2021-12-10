@@ -29,7 +29,7 @@ export const meta = {
 
 	limit: {
 		duration: ms('1hour'),
-		max: 300
+		max: 300,
 	},
 
 	kind: 'write:notes',
@@ -106,10 +106,10 @@ export const meta = {
 					.each(c => c.length > 0 && c.length < 50),
 				multiple: $.optional.bool,
 				expiresAt: $.optional.nullable.num.int(),
-				expiredAfter: $.optional.nullable.num.int().min(1)
+				expiredAfter: $.optional.nullable.num.int().min(1),
 			}).strict(),
-			ref: 'poll'
-		}
+			ref: 'poll',
+		},
 	},
 
 	res: {
@@ -120,59 +120,59 @@ export const meta = {
 				type: 'object' as const,
 				optional: false as const, nullable: false as const,
 				ref: 'Note',
-			}
-		}
+			},
+		},
 	},
 
 	errors: {
 		noSuchRenoteTarget: {
 			message: 'No such renote target.',
 			code: 'NO_SUCH_RENOTE_TARGET',
-			id: 'b5c90186-4ab0-49c8-9bba-a1f76c282ba4'
+			id: 'b5c90186-4ab0-49c8-9bba-a1f76c282ba4',
 		},
 
 		cannotReRenote: {
 			message: 'You can not Renote a pure Renote.',
 			code: 'CANNOT_RENOTE_TO_A_PURE_RENOTE',
-			id: 'fd4cc33e-2a37-48dd-99cc-9b806eb2031a'
+			id: 'fd4cc33e-2a37-48dd-99cc-9b806eb2031a',
 		},
 
 		noSuchReplyTarget: {
 			message: 'No such reply target.',
 			code: 'NO_SUCH_REPLY_TARGET',
-			id: '749ee0f6-d3da-459a-bf02-282e2da4292c'
+			id: '749ee0f6-d3da-459a-bf02-282e2da4292c',
 		},
 
 		cannotReplyToPureRenote: {
 			message: 'You can not reply to a pure Renote.',
 			code: 'CANNOT_REPLY_TO_A_PURE_RENOTE',
-			id: '3ac74a84-8fd5-4bb0-870f-01804f82ce15'
+			id: '3ac74a84-8fd5-4bb0-870f-01804f82ce15',
 		},
 
 		contentRequired: {
 			message: 'Content required. You need to set text, fileIds, renoteId or poll.',
 			code: 'CONTENT_REQUIRED',
-			id: '6f57e42b-c348-439b-bc45-993995cc515a'
+			id: '6f57e42b-c348-439b-bc45-993995cc515a',
 		},
 
 		cannotCreateAlreadyExpiredPoll: {
 			message: 'Poll is already expired.',
 			code: 'CANNOT_CREATE_ALREADY_EXPIRED_POLL',
-			id: '04da457d-b083-4055-9082-955525eda5a5'
+			id: '04da457d-b083-4055-9082-955525eda5a5',
 		},
 
 		noSuchChannel: {
 			message: 'No such channel.',
 			code: 'NO_SUCH_CHANNEL',
-			id: 'b1653923-5453-4edc-b786-7c4f39bb0bbb'
+			id: 'b1653923-5453-4edc-b786-7c4f39bb0bbb',
 		},
 
 		youHaveBeenBlocked: {
 			message: 'You have been blocked by this user.',
 			code: 'YOU_HAVE_BEEN_BLOCKED',
-			id: 'b390d7e1-8a5e-46ed-b625-06271cafd3d3'
+			id: 'b390d7e1-8a5e-46ed-b625-06271cafd3d3',
 		},
-	}
+	},
 };
 
 export default define(meta, async (ps, user) => {
@@ -188,7 +188,7 @@ export default define(meta, async (ps, user) => {
 		files = (await Promise.all(fileIds.map(fileId =>
 			DriveFiles.findOne({
 				id: fileId,
-				userId: user.id
+				userId: user.id,
 			})
 		))).filter(file => file != null) as DriveFile[];
 	}
@@ -273,7 +273,7 @@ export default define(meta, async (ps, user) => {
 		poll: ps.poll ? {
 			choices: ps.poll.choices,
 			multiple: ps.poll.multiple || false,
-			expiresAt: ps.poll.expiresAt ? new Date(ps.poll.expiresAt) : null
+			expiresAt: ps.poll.expiresAt ? new Date(ps.poll.expiresAt) : null,
 		} : undefined,
 		text: ps.text || undefined,
 		reply,
@@ -289,6 +289,6 @@ export default define(meta, async (ps, user) => {
 	});
 
 	return {
-		createdNote: await Notes.pack(note, user)
+		createdNote: await Notes.pack(note, user),
 	};
 });

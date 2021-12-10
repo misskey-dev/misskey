@@ -25,7 +25,7 @@ export async function readUserMessagingMessage(
 	if (messageIds.length === 0) return;
 
 	const messages = await MessagingMessages.find({
-		id: In(messageIds)
+		id: In(messageIds),
 	});
 
 	for (const message of messages) {
@@ -39,9 +39,9 @@ export async function readUserMessagingMessage(
 		id: In(messageIds),
 		userId: otherpartyId,
 		recipientId: userId,
-		isRead: false
+		isRead: false,
 	}, {
-		isRead: true
+		isRead: true,
 	});
 
 	// Publish event
@@ -82,7 +82,7 @@ export async function readGroupMessagingMessage(
 	// check joined
 	const joining = await UserGroupJoinings.findOne({
 		userId: userId,
-		userGroupId: groupId
+		userGroupId: groupId,
 	});
 
 	if (joining == null) {
@@ -90,7 +90,7 @@ export async function readGroupMessagingMessage(
 	}
 
 	const messages = await MessagingMessages.find({
-		id: In(messageIds)
+		id: In(messageIds),
 	});
 
 	const reads: MessagingMessage['id'][] = [];
@@ -102,7 +102,7 @@ export async function readGroupMessagingMessage(
 		// Update document
 		await MessagingMessages.createQueryBuilder().update()
 			.set({
-				reads: (() => `array_append("reads", '${joining.userId}')`) as any
+				reads: (() => `array_append("reads", '${joining.userId}')`) as any,
 			})
 			.where('id = :id', { id: message.id })
 			.execute();
@@ -113,7 +113,7 @@ export async function readGroupMessagingMessage(
 	// Publish event
 	publishGroupMessagingStream(groupId, 'read', {
 		ids: reads,
-		userId: userId
+		userId: userId,
 	});
 	publishMessagingIndexStream(userId, 'read', reads);
 

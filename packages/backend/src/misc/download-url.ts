@@ -11,7 +11,7 @@ const PrivateIp = require('private-ip');
 
 const pipeline = util.promisify(stream.pipeline);
 
-export async function downloadUrl(url: string, path: string) {
+export async function downloadUrl(url: string, path: string): Promise<void> {
 	const logger = new Logger('download');
 
 	logger.info(`Downloading ${chalk.cyan(url)} ...`);
@@ -22,7 +22,7 @@ export async function downloadUrl(url: string, path: string) {
 
 	const req = got.stream(url, {
 		headers: {
-			'User-Agent': config.userAgent
+			'User-Agent': config.userAgent,
 		},
 		timeout: {
 			lookup: timeout,

@@ -21,9 +21,9 @@ export const meta = {
 		noSuchPost: {
 			message: 'No such post.',
 			code: 'NO_SUCH_POST',
-			id: 'ae52f367-4bd7-4ecd-afc6-5672fff427f5'
+			id: 'ae52f367-4bd7-4ecd-afc6-5672fff427f5',
 		},
-	}
+	},
 };
 
 export default define(meta, async (ps, user) => {

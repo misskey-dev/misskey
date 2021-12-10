@@ -15,7 +15,7 @@ export class NoteUnread {
 	public userId: User['id'];
 
 	@ManyToOne(type => User, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public user: User | null;
@@ -25,7 +25,7 @@ export class NoteUnread {
 	public noteId: Note['id'];
 
 	@ManyToOne(type => Note, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public note: Note | null;
@@ -48,7 +48,7 @@ export class NoteUnread {
 	@Index()
 	@Column({
 		...id(),
-		comment: '[Denormalized]'
+		comment: '[Denormalized]',
 	})
 	public noteUserId: User['id'];
 
@@ -56,7 +56,7 @@ export class NoteUnread {
 	@Column({
 		...id(),
 		nullable: true,
-		comment: '[Denormalized]'
+		comment: '[Denormalized]',
 	})
 	public noteChannelId: Channel['id'] | null;
 	//#endregion

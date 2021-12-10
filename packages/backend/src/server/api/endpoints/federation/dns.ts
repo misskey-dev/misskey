@@ -14,8 +14,8 @@ export const meta = {
 
 	params: {
 		host: {
-			validator: $.str
-		}
+			validator: $.str,
+		},
 	},
 };
 

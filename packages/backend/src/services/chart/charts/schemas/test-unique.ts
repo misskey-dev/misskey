@@ -8,9 +8,9 @@ export const schema = {
 			items: {
 				type: 'string' as const,
 				optional: false as const, nullable: false as const,
-			}
+			},
 		},
-	}
+	},
 };
 
 export const name = 'testUnique';

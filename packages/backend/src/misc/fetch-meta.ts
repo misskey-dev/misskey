@@ -10,8 +10,8 @@ export async function fetchMeta(noCache = false): Promise<Meta> {
 		// 過去のバグでレコードが複数出来てしまっている可能性があるので新しいIDを優先する
 		const meta = await transactionalEntityManager.findOne(Meta, {
 			order: {
-				id: 'DESC'
-			}
+				id: 'DESC',
+			},
 		});
 
 		if (meta) {
@@ -19,7 +19,7 @@ export async function fetchMeta(noCache = false): Promise<Meta> {
 			return meta;
 		} else {
 			const saved = await transactionalEntityManager.save(Meta, {
-				id: 'x'
+				id: 'x',
 			}) as Meta;
 
 			cache = saved;

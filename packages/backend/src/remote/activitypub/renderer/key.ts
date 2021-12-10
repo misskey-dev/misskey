@@ -9,6 +9,6 @@ export default (user: ILocalUser, key: UserKeypair, postfix?: string) => ({
 	owner: `${config.url}/users/${user.id}`,
 	publicKeyPem: createPublicKey(key.publicKey).export({
 		type: 'spki',
-		format: 'pem'
-	})
+		format: 'pem',
+	}),
 });

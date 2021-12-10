@@ -20,12 +20,12 @@ export const meta = {
 				id: {
 					type: 'string' as const,
 					optional: false as const, nullable: false as const,
-					format: 'id'
+					format: 'id',
 				},
 				inbox: {
 					type: 'string' as const,
 					optional: false as const, nullable: false as const,
-					format: 'url'
+					format: 'url',
 				},
 				status: {
 					type: 'string' as const,
@@ -34,12 +34,12 @@ export const meta = {
 					enum: [
 						'requesting',
 						'accepted',
-						'rejected'
-					]
-				}
-			}
-		}
-	}
+						'rejected',
+					],
+				},
+			},
+		},
+	},
 };
 
 export default define(meta, async (ps, user) => {

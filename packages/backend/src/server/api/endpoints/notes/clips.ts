@@ -24,16 +24,16 @@ export const meta = {
 			type: 'object' as const,
 			optional: false as const, nullable: false as const,
 			ref: 'Note',
-		}
+		},
 	},
 
 	errors: {
 		noSuchNote: {
 			message: 'No such note.',
 			code: 'NO_SUCH_NOTE',
-			id: '47db1a1c-b0af-458d-8fb4-986e4efafe1e'
-		}
-	}
+			id: '47db1a1c-b0af-458d-8fb4-986e4efafe1e',
+		},
+	},
 };
 
 export default define(meta, async (ps, me) => {
@@ -48,7 +48,7 @@ export default define(meta, async (ps, me) => {
 
 	const clips = await Clips.find({
 		id: In(clipNotes.map(x => x.clipId)),
-		isPublic: true
+		isPublic: true,
 	});
 
 	return await Promise.all(clips.map(x => Clips.pack(x)));

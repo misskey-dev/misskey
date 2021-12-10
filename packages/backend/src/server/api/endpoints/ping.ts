@@ -16,8 +16,8 @@ export const meta = {
 				type: 'number' as const,
 				optional: false as const, nullable: false as const,
 			},
-		}
-	}
+		},
+	},
 };
 
 export default define(meta, async () => {

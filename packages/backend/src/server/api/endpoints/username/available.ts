@@ -9,8 +9,8 @@ export const meta = {
 
 	params: {
 		username: {
-			validator: $.use(Users.validateLocalUsername)
-		}
+			validator: $.use(Users.validateLocalUsername),
+		},
 	},
 
 	res: {
@@ -20,21 +20,21 @@ export const meta = {
 			available: {
 				type: 'boolean' as const,
 				optional: false as const, nullable: false as const,
-			}
-		}
-	}
+			},
+		},
+	},
 };
 
 export default define(meta, async (ps) => {
 	// Get exist
 	const exist = await Users.count({
 		host: null,
-		usernameLower: ps.username.toLowerCase()
+		usernameLower: ps.username.toLowerCase(),
 	});
 
 	const exist2 = await UsedUsernames.count({ username: ps.username.toLowerCase() });
 
 	return {
-		available: exist === 0 && exist2 === 0
+		available: exist === 0 && exist2 === 0,
 	};
 });

@@ -59,7 +59,7 @@ export default async function(resolver: Resolver, actor: IRemoteUser, activity: 
 			renote,
 			visibility: activityAudience.visibility,
 			visibleUsers: activityAudience.visibleUsers,
-			uri
+			uri,
 		});
 	} finally {
 		unlock();

@@ -203,8 +203,8 @@ export default class Connection {
 					code: e.code,
 					id: e.id,
 					kind: e.kind,
-					...(e.info ? { info: e.info } : {})
-				}
+					...(e.info ? { info: e.info } : {}),
+				},
 			});
 		});
 	}
@@ -281,7 +281,7 @@ export default class Connection {
 	public sendMessageToWs(type: string, payload: any) {
 		this.wsConnection.send(JSON.stringify({
 			type: type,
-			body: payload
+			body: payload,
 		}));
 	}
 
@@ -305,7 +305,7 @@ export default class Connection {
 
 		if (pong) {
 			this.sendMessageToWs('connected', {
-				id: id
+				id: id,
 			});
 		}
 	}
@@ -358,9 +358,9 @@ export default class Connection {
 	private async updateFollowing() {
 		const followings = await Followings.find({
 			where: {
-				followerId: this.user!.id
+				followerId: this.user!.id,
 			},
-			select: ['followeeId']
+			select: ['followeeId'],
 		});
 
 		this.following = new Set<string>(followings.map(x => x.followeeId));
@@ -370,9 +370,9 @@ export default class Connection {
 	private async updateMuting() {
 		const mutings = await Mutings.find({
 			where: {
-				muterId: this.user!.id
+				muterId: this.user!.id,
 			},
-			select: ['muteeId']
+			select: ['muteeId'],
 		});
 
 		this.muting = new Set<string>(mutings.map(x => x.muteeId));
@@ -382,9 +382,9 @@ export default class Connection {
 	private async updateBlocking() { // ここでいうBlockingは被Blockingの意
 		const blockings = await Blockings.find({
 			where: {
-				blockeeId: this.user!.id
+				blockeeId: this.user!.id,
 			},
-			select: ['blockerId']
+			select: ['blockerId'],
 		});
 
 		this.blocking = new Set<string>(blockings.map(x => x.blockerId));
@@ -394,9 +394,9 @@ export default class Connection {
 	private async updateFollowingChannels() {
 		const followings = await ChannelFollowings.find({
 			where: {
-				followerId: this.user!.id
+				followerId: this.user!.id,
 			},
-			select: ['followeeId']
+			select: ['followeeId'],
 		});
 
 		this.followingChannels = new Set<string>(followings.map(x => x.followeeId));
@@ -405,7 +405,7 @@ export default class Connection {
 	@autobind
 	private async updateUserProfile() {
 		this.userProfile = await UserProfiles.findOne({
-			userId: this.user!.id
+			userId: this.user!.id,
 		});
 	}
 

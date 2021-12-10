@@ -22,7 +22,7 @@ export default class PerUserFollowingChart extends Chart<PerUserFollowingLog> {
 				},
 				followers: {
 					total: latest.local.followers.total,
-				}
+				},
 			},
 			remote: {
 				followings: {
@@ -30,8 +30,8 @@ export default class PerUserFollowingChart extends Chart<PerUserFollowingLog> {
 				},
 				followers: {
 					total: latest.remote.followers.total,
-				}
-			}
+				},
+			},
 		};
 	}
 
@@ -71,12 +71,12 @@ export default class PerUserFollowingChart extends Chart<PerUserFollowingLog> {
 			localFollowingsCount,
 			localFollowersCount,
 			remoteFollowingsCount,
-			remoteFollowersCount
+			remoteFollowersCount,
 		] = await Promise.all([
 			Followings.count({ followerId: group, followeeHost: null }),
 			Followings.count({ followeeId: group, followerHost: null }),
 			Followings.count({ followerId: group, followeeHost: Not(IsNull()) }),
-			Followings.count({ followeeId: group, followerHost: Not(IsNull()) })
+			Followings.count({ followeeId: group, followerHost: Not(IsNull()) }),
 		]);
 
 		return {
@@ -86,7 +86,7 @@ export default class PerUserFollowingChart extends Chart<PerUserFollowingLog> {
 				},
 				followers: {
 					total: localFollowersCount,
-				}
+				},
 			},
 			remote: {
 				followings: {
@@ -94,8 +94,8 @@ export default class PerUserFollowingChart extends Chart<PerUserFollowingLog> {
 				},
 				followers: {
 					total: remoteFollowersCount,
-				}
-			}
+				},
+			},
 		};
 	}
 
@@ -112,10 +112,10 @@ export default class PerUserFollowingChart extends Chart<PerUserFollowingLog> {
 		}
 
 		this.inc({
-			[Users.isLocalUser(follower) ? 'local' : 'remote']: { followings: update }
+			[Users.isLocalUser(follower) ? 'local' : 'remote']: { followings: update },
 		}, follower.id);
 		this.inc({
-			[Users.isLocalUser(followee) ? 'local' : 'remote']: { followers: update }
+			[Users.isLocalUser(followee) ? 'local' : 'remote']: { followers: update },
 		}, followee.id);
 	}
 }

@@ -22,14 +22,14 @@ export async function addNoteToAntenna(antenna: Antenna, note: Note, noteUser: {
 	if (!read) {
 		const mutings = await Mutings.find({
 			where: {
-				muterId: antenna.userId
+				muterId: antenna.userId,
 			},
-			select: ['muteeId']
+			select: ['muteeId'],
 		});
 
 		// Copy
 		const _note: Note = {
-			...note
+			...note,
 		};
 
 		if (note.replyId != null) {

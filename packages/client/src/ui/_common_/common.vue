@@ -58,7 +58,7 @@ export default defineComponent({
 			popups,
 			pendingApiRequestsCount,
 		};
-	}
+	},
 });
 </script>
 

@@ -10,7 +10,7 @@ export class Cache<T> {
 	public set(key: string | null, value: T): void {
 		this.cache.set(key, {
 			date: Date.now(),
-			value
+			value,
 		});
 	}
 

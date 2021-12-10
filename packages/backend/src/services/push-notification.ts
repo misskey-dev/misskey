@@ -49,7 +49,7 @@ export async function pushNotification<T extends keyof pushNotificationsTypes>(u
 
 	// Fetch
 	const subscriptions = await SwSubscriptions.find({
-		userId: userId
+		userId: userId,
 	});
 
 	for (const subscription of subscriptions) {
@@ -57,8 +57,8 @@ export async function pushNotification<T extends keyof pushNotificationsTypes>(u
 			endpoint: subscription.endpoint,
 			keys: {
 				auth: subscription.auth,
-				p256dh: subscription.publickey
-			}
+				p256dh: subscription.publickey,
+			},
 		};
 
 		push.sendNotification(pushSubscription, JSON.stringify({
@@ -66,7 +66,7 @@ export async function pushNotification<T extends keyof pushNotificationsTypes>(u
 			body: type === 'notification' ? truncateNotification(body as Packed<'Notification'>) : body,
 			userId,
 		}), {
-			proxy: config.proxy
+			proxy: config.proxy,
 		}).catch((err: any) => {
 			//swLogger.info(err.statusCode);
 			//swLogger.info(err.headers);
@@ -77,7 +77,7 @@ export async function pushNotification<T extends keyof pushNotificationsTypes>(u
 					userId: userId,
 					endpoint: subscription.endpoint,
 					auth: subscription.auth,
-					publickey: subscription.publickey
+					publickey: subscription.publickey,
 				});
 			}
 		});

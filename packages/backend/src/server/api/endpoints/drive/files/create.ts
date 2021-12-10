@@ -14,7 +14,7 @@ export const meta = {
 
 	limit: {
 		duration: ms('1hour'),
-		max: 120
+		max: 120,
 	},
 
 	requireFile: true,
@@ -42,7 +42,7 @@ export const meta = {
 			validator: $.optional.either($.bool, $.str),
 			default: false,
 			transform: (v: any): boolean => v === true || v === 'true',
-		}
+		},
 	},
 
 	res: {
@@ -55,9 +55,9 @@ export const meta = {
 		invalidFileName: {
 			message: 'Invalid file name.',
 			code: 'INVALID_FILE_NAME',
-			id: 'f449b209-0c60-4e51-84d5-29486263bfd4'
-		}
-	}
+			id: 'f449b209-0c60-4e51-84d5-29486263bfd4',
+		},
+	},
 };
 
 export default define(meta, async (ps, user, _, file, cleanup) => {

@@ -9,7 +9,7 @@ export class PromoNote {
 	public noteId: Note['id'];
 
 	@OneToOne(type => Note, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public note: Note | null;
@@ -21,7 +21,7 @@ export class PromoNote {
 	@Index()
 	@Column({
 		...id(),
-		comment: '[Denormalized]'
+		comment: '[Denormalized]',
 	})
 	public userId: User['id'];
 	//#endregion

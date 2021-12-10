@@ -53,6 +53,7 @@ export default defineComponent({
 		> .title {
 			opacity: 0.7;
 			margin: 0 0 8px 0;
+			font-size: 0.9em;
 		}
 	
 		> .items {
@@ -63,6 +64,7 @@ export default defineComponent({
 				box-sizing: border-box;
 				padding: 10px 16px 10px 8px;
 				border-radius: 9px;
+				font-size: 0.95em;
 
 				&:hover {
 					text-decoration: none;

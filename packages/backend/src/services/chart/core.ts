@@ -188,7 +188,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 				id: {
 					type: 'integer',
 					primary: true,
-					generated: true
+					generated: true,
 				},
 				date: {
 					type: 'integer',
@@ -196,9 +196,9 @@ export default abstract class Chart<T extends Record<string, any>> {
 				group: {
 					type: 'varchar',
 					length: 128,
-					nullable: true
+					nullable: true,
 				},
-				...Chart.convertSchemaToFlatColumnDefinitions(schema)
+				...Chart.convertSchemaToFlatColumnDefinitions(schema),
 			},
 			indices: [{
 				columns: ['date', 'group'],
@@ -206,8 +206,8 @@ export default abstract class Chart<T extends Record<string, any>> {
 			}, { // groupにnullが含まれると↑のuniqueは機能しないので↓の部分インデックスでカバー
 				columns: ['date'],
 				unique: true,
-				where: '"group" IS NULL'
-			}]
+				where: '"group" IS NULL',
+			}],
 		});
 	}
 
@@ -220,7 +220,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 		if (grouped) keys.push('group');
 
 		entity.options.uniques = [{
-			columns: keys
+			columns: keys,
 		}];
 
 		this.repository = getRepository<Log>(entity);
@@ -252,8 +252,8 @@ export default abstract class Chart<T extends Record<string, any>> {
 			group: group,
 		}, {
 			order: {
-				date: -1
-			}
+				date: -1,
+			},
 		}).then(x => x || null);
 	}
 
@@ -266,7 +266,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 		// 現在(=今のHour)のログ
 		const currentLog = await this.repository.findOne({
 			date: Chart.dateToTimestamp(current),
-			...(group ? { group: group } : {})
+			...(group ? { group: group } : {}),
 		});
 
 		// ログがあればそれを返して終了
@@ -308,7 +308,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 			// ロック内でもう1回チェックする
 			const currentLog = await this.repository.findOne({
 				date: date,
-				...(group ? { group: group } : {})
+				...(group ? { group: group } : {}),
 			});
 
 			// ログがあればそれを返して終了
@@ -318,7 +318,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 			log = await this.repository.insert({
 				group: group,
 				date: date,
-				...Chart.convertObjectToFlattenColumns(data)
+				...Chart.convertObjectToFlattenColumns(data),
 			}).then(x => this.repository.findOneOrFail(x.identifiers[0]));
 
 			logger.info(`${this.name + (group ? `:${group}` : '')}: New commit created`);
@@ -424,10 +424,10 @@ export default abstract class Chart<T extends Record<string, any>> {
 		let logs = await this.repository.find({
 			where: {
 				group: group,
-				date: Between(Chart.dateToTimestamp(gt), Chart.dateToTimestamp(lt))
+				date: Between(Chart.dateToTimestamp(gt), Chart.dateToTimestamp(lt)),
 			},
 			order: {
-				date: -1
+				date: -1,
 			},
 		});
 
@@ -439,7 +439,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 				group: group,
 			}, {
 				order: {
-					date: -1
+					date: -1,
 				},
 			});
 
@@ -453,10 +453,10 @@ export default abstract class Chart<T extends Record<string, any>> {
 			// (隙間埋めできないため)
 			const outdatedLog = await this.repository.findOne({
 				group: group,
-				date: LessThan(Chart.dateToTimestamp(gt))
+				date: LessThan(Chart.dateToTimestamp(gt)),
 			}, {
 				order: {
-					date: -1
+					date: -1,
 				},
 			});
 

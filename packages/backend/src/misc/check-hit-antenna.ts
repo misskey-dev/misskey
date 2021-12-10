@@ -24,7 +24,7 @@ export async function checkHitAntenna(antenna: Antenna, note: (Note | Packed<'No
 		if (antennaUserFollowing && !antennaUserFollowing.includes(note.userId)) return false;
 	} else if (antenna.src === 'list') {
 		const listUsers = (await UserListJoinings.find({
-			userListId: antenna.userListId!
+			userListId: antenna.userListId!,
 		})).map(x => x.userId);
 
 		if (!listUsers.includes(note.userId)) return false;
@@ -32,7 +32,7 @@ export async function checkHitAntenna(antenna: Antenna, note: (Note | Packed<'No
 		const joining = await UserGroupJoinings.findOneOrFail(antenna.userGroupJoiningId!);
 
 		const groupUsers = (await UserGroupJoinings.find({
-			userGroupId: joining.userGroupId
+			userGroupId: joining.userGroupId,
 		})).map(x => x.userId);
 
 		if (!groupUsers.includes(note.userId)) return false;

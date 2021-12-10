@@ -24,12 +24,12 @@ export async function deleteDriveFiles(job: Bull.Job<DbUserJobData>, done: any):
 		const files = await DriveFiles.find({
 			where: {
 				userId: user.id,
-				...(cursor ? { id: MoreThan(cursor) } : {})
+				...(cursor ? { id: MoreThan(cursor) } : {}),
 			},
 			take: 100,
 			order: {
-				id: 1
-			}
+				id: 1,
+			},
 		});
 
 		if (files.length === 0) {

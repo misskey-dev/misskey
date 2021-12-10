@@ -19,7 +19,7 @@ export async function renderPerson(user: ILocalUser) {
 	const [avatar, banner, profile] = await Promise.all([
 		user.avatarId ? DriveFiles.findOne(user.avatarId) : Promise.resolve(undefined),
 		user.bannerId ? DriveFiles.findOne(user.bannerId) : Promise.resolve(undefined),
-		UserProfiles.findOneOrFail(user.id)
+		UserProfiles.findOneOrFail(user.id),
 	]);
 
 	const attachment: {
@@ -36,7 +36,7 @@ export async function renderPerson(user: ILocalUser) {
 				name: field.name,
 				value: (field.value != null && field.value.match(/^https?:/))
 					? `<a href="${new URL(field.value).href}" rel="me nofollow noopener" target="_blank">${new URL(field.value).href}</a>`
-					: field.value
+					: field.value,
 			});
 		}
 	}
@@ -74,7 +74,7 @@ export async function renderPerson(user: ILocalUser) {
 		discoverable: !!user.isExplorable,
 		publicKey: renderKey(user, keypair, `#main-key`),
 		isCat: user.isCat,
-		attachment: attachment.length ? attachment : undefined
+		attachment: attachment.length ? attachment : undefined,
 	} as any;
 
 	if (profile?.birthday) {

@@ -52,7 +52,7 @@ export default abstract class Channel {
 		this.connection.sendMessageToWs('channel', {
 			id: this.id,
 			type: type,
-			body: body
+			body: body,
 		});
 	}
 

@@ -18,19 +18,19 @@ export async function convertSharpToJpeg(sharp: sharp.Sharp, width: number, heig
 	const data = await sharp
 		.resize(width, height, {
 			fit: 'inside',
-			withoutEnlargement: true
+			withoutEnlargement: true,
 		})
 		.rotate()
 		.jpeg({
 			quality: 85,
-			progressive: true
+			progressive: true,
 		})
 		.toBuffer();
 
 	return {
 		data,
 		ext: 'jpg',
-		type: 'image/jpeg'
+		type: 'image/jpeg',
 	};
 }
 
@@ -46,18 +46,18 @@ export async function convertSharpToWebp(sharp: sharp.Sharp, width: number, heig
 	const data = await sharp
 		.resize(width, height, {
 			fit: 'inside',
-			withoutEnlargement: true
+			withoutEnlargement: true,
 		})
 		.rotate()
 		.webp({
-			quality: 85
+			quality: 85,
 		})
 		.toBuffer();
 
 	return {
 		data,
 		ext: 'webp',
-		type: 'image/webp'
+		type: 'image/webp',
 	};
 }
 
@@ -73,7 +73,7 @@ export async function convertSharpToPng(sharp: sharp.Sharp, width: number, heigh
 	const data = await sharp
 		.resize(width, height, {
 			fit: 'inside',
-			withoutEnlargement: true
+			withoutEnlargement: true,
 		})
 		.rotate()
 		.png()
@@ -82,7 +82,7 @@ export async function convertSharpToPng(sharp: sharp.Sharp, width: number, heigh
 	return {
 		data,
 		ext: 'png',
-		type: 'image/png'
+		type: 'image/png',
 	};
 }
 

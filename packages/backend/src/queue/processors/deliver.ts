@@ -33,7 +33,7 @@ export default async (job: Bull.Job<DeliverJobData>) => {
 	if (suspendedHosts == null) {
 		suspendedHosts = await Instances.find({
 			where: {
-				isSuspended: true
+				isSuspended: true,
 			},
 		});
 		suspendedHostsCache.set(null, suspendedHosts);
@@ -55,7 +55,7 @@ export default async (job: Bull.Job<DeliverJobData>) => {
 				latestRequestSentAt: new Date(),
 				latestStatus: 200,
 				lastCommunicatedAt: new Date(),
-				isNotResponding: false
+				isNotResponding: false,
 			});
 
 			fetchInstanceMetadata(i);
@@ -70,7 +70,7 @@ export default async (job: Bull.Job<DeliverJobData>) => {
 			Instances.update(i.id, {
 				latestRequestSentAt: new Date(),
 				latestStatus: res instanceof StatusError ? res.statusCode : null,
-				isNotResponding: true
+				isNotResponding: true,
 			});
 
 			instanceChart.requestSent(i.host, false);

@@ -8,7 +8,7 @@ export class UserKeypair {
 	public userId: User['id'];
 
 	@OneToOne(type => User, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public user: User | null;

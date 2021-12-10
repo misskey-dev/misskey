@@ -7,6 +7,7 @@ import { generateMutedUserQuery } from '../../common/generate-muted-user-query';
 import { Brackets } from 'typeorm';
 import { Notes } from '@/models/index';
 import { generateBlockedUserQuery } from '../../common/generate-block-query';
+import { generateMutedInstanceQuery } from '../../common/generate-muted-instance-query';
 
 export const meta = {
 	tags: ['notes'],
@@ -20,7 +21,7 @@ export const meta = {
 
 		limit: {
 			validator: $.optional.num.range(1, 100),
-			default: 10
+			default: 10,
 		},
 
 		sinceId: {
@@ -39,7 +40,7 @@ export const meta = {
 			type: 'object' as const,
 			optional: false as const, nullable: false as const,
 			ref: 'Note',
-		}
+		},
 	},
 };
 
@@ -65,6 +66,7 @@ export default define(meta, async (ps, user) => {
 	generateVisibilityQuery(query, user);
 	if (user) generateMutedUserQuery(query, user);
 	if (user) generateBlockedUserQuery(query, user);
+	if (user) generateMutedInstanceQuery(query, user);
 
 	const notes = await query.take(ps.limit!).getMany();
 

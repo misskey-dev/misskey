@@ -8,7 +8,7 @@ import { FollowRequests, Users } from '@/models/index';
  */
 export default async function(user: { id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox']; }) {
 	const requests = await FollowRequests.find({
-		followeeId: user.id
+		followeeId: user.id,
 	});
 
 	for (const request of requests) {

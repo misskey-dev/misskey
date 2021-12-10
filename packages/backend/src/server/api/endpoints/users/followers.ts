@@ -17,11 +17,11 @@ export const meta = {
 		},
 
 		username: {
-			validator: $.optional.str
+			validator: $.optional.str,
 		},
 
 		host: {
-			validator: $.optional.nullable.str
+			validator: $.optional.nullable.str,
 		},
 
 		sinceId: {
@@ -34,7 +34,7 @@ export const meta = {
 
 		limit: {
 			validator: $.optional.num.range(1, 100),
-			default: 10
+			default: 10,
 		},
 	},
 
@@ -45,22 +45,22 @@ export const meta = {
 			type: 'object' as const,
 			optional: false as const, nullable: false as const,
 			ref: 'Following',
-		}
+		},
 	},
 
 	errors: {
 		noSuchUser: {
 			message: 'No such user.',
 			code: 'NO_SUCH_USER',
-			id: '27fa5435-88ab-43de-9360-387de88727cd'
+			id: '27fa5435-88ab-43de-9360-387de88727cd',
 		},
 
 		forbidden: {
 			message: 'Forbidden.',
 			code: 'FORBIDDEN',
-			id: '3c6a84db-d619-26af-ca14-06232a21df8a'
+			id: '3c6a84db-d619-26af-ca14-06232a21df8a',
 		},
-	}
+	},
 };
 
 export default define(meta, async (ps, me) => {

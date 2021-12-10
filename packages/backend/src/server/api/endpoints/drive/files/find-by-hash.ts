@@ -12,7 +12,7 @@ export const meta = {
 	params: {
 		md5: {
 			validator: $.str,
-		}
+		},
 	},
 
 	res: {
@@ -22,7 +22,7 @@ export const meta = {
 			type: 'object' as const,
 			optional: false as const, nullable: false as const,
 			ref: 'DriveFile',
-		}
+		},
 	},
 };
 

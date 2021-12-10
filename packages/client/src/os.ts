@@ -12,23 +12,11 @@ import { resolve } from '@/router';
 import { $i } from '@/account';
 import { defaultStore } from '@/store';
 
-export let isScreenTouching = false;
-
-window.addEventListener('touchstart', () => {
-	isScreenTouching = true;
-}, { passive: true });
-
-window.addEventListener('touchend', () => {
-	isScreenTouching = false;
-}, { passive: true });
-
 export const stream = markRaw(new Misskey.Stream(url, $i));
 
 export const pendingApiRequestsCount = ref(0);
 let apiRequestsCount = 0; // for debug
 export const apiRequests = ref([]); // for debug
-
-export const windows = new Map();
 
 const apiClient = new Misskey.api.APIClient({
 	origin: url,
@@ -174,6 +162,18 @@ export const popups = ref([]) as Ref<{
 	props: Record<string, any>;
 }[]>;
 
+let popupZIndex = 1000000;
+let popupZIndexForFront = 2000000;
+export function claimZIndex(front = false): number {
+	if (front) {
+		popupZIndexForFront += 100;
+		return popupZIndexForFront;
+	} else {
+		popupZIndex += 100;
+		return popupZIndex;
+	}
+}
+
 export async function popup(component: Component | typeof import('*.vue') | Promise<Component | typeof import('*.vue')>, props: Record<string, any>, events = {}, disposeEvent?: string) {
 	if (component.then) component = await component;
 
@@ -182,7 +182,6 @@ export async function popup(component: Component | typeof import('*.vue') | Prom
 
 	const id = ++popupIdCount;
 	const dispose = () => {
-		if (_DEV_) console.log('os:popup close', id, component, props, events);
 		// このsetTimeoutが無いと挙動がおかしくなる(autocompleteが閉じなくなる)。Vueのバグ？
 		setTimeout(() => {
 			popups.value = popups.value.filter(popup => popup.id !== id);
@@ -198,7 +197,6 @@ export async function popup(component: Component | typeof import('*.vue') | Prom
 		id,
 	};
 
-	if (_DEV_) console.log('os:popup open', id, component, props, events);
 	popups.value.push(state);
 
 	return {

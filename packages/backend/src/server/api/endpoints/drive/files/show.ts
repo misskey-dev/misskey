@@ -19,7 +19,7 @@ export const meta = {
 
 		url: {
 			validator: $.optional.str,
-		}
+		},
 	},
 
 	res: {
@@ -32,21 +32,21 @@ export const meta = {
 		noSuchFile: {
 			message: 'No such file.',
 			code: 'NO_SUCH_FILE',
-			id: '067bc436-2718-4795-b0fb-ecbe43949e31'
+			id: '067bc436-2718-4795-b0fb-ecbe43949e31',
 		},
 
 		accessDenied: {
 			message: 'Access denied.',
 			code: 'ACCESS_DENIED',
-			id: '25b73c73-68b1-41d0-bad1-381cfdf6579f'
+			id: '25b73c73-68b1-41d0-bad1-381cfdf6579f',
 		},
 
 		fileIdOrUrlRequired: {
 			message: 'fileId or url required.',
 			code: 'INVALID_PARAM',
-			id: '89674805-722c-440c-8d88-5641830dc3e4'
-		}
-	}
+			id: '89674805-722c-440c-8d88-5641830dc3e4',
+		},
+	},
 };
 
 export default define(meta, async (ps, user) => {
@@ -57,11 +57,11 @@ export default define(meta, async (ps, user) => {
 	} else if (ps.url) {
 		file = await DriveFiles.findOne({
 			where: [{
-				url: ps.url
+				url: ps.url,
 			}, {
-				webpublicUrl: ps.url
+				webpublicUrl: ps.url,
 			}, {
-				thumbnailUrl: ps.url
+				thumbnailUrl: ps.url,
 			}],
 		});
 	} else {
@@ -79,6 +79,6 @@ export default define(meta, async (ps, user) => {
 	return await DriveFiles.pack(file, {
 		detail: true,
 		withUser: true,
-		self: true
+		self: true,
 	});
 });

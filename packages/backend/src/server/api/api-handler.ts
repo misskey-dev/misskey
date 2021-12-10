@@ -19,8 +19,8 @@ export default (endpoint: IEndpoint, ctx: Koa.Context) => new Promise((res) => {
 					code: y!.code,
 					id: y!.id,
 					kind: y!.kind,
-					...(y!.info ? { info: y!.info } : {})
-				}
+					...(y!.info ? { info: y!.info } : {}),
+				},
 			};
 		} else {
 			// 文字列を返す場合は、JSON.stringify通さないとJSONと認識されない
@@ -42,7 +42,7 @@ export default (endpoint: IEndpoint, ctx: Koa.Context) => new Promise((res) => {
 			reply(403, new ApiError({
 				message: 'Authentication failed. Please ensure your token is correct.',
 				code: 'AUTHENTICATION_FAILED',
-				id: 'b0a7f5f8-dc2f-4171-b91f-de88ad238e14'
+				id: 'b0a7f5f8-dc2f-4171-b91f-de88ad238e14',
 			}));
 		} else {
 			reply(500, new ApiError());

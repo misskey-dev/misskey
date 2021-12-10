@@ -20,9 +20,9 @@ export const schema = {
 					type: 'number' as const,
 					optional: false as const, nullable: false as const,
 				},
-			}
-		}
-	}
+			},
+		},
+	},
 };
 
 export const name = 'test';

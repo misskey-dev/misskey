@@ -33,14 +33,6 @@ export const meta = {
 			}
 		}
 	},
-
-	errors: {
-		noNotificationRequested: {
-			message: 'You requested no notification.',
-			code: 'NO_NOTIFICATION_REQUESTED',
-			id: '1dee2109-b88b-21cf-3935-607dad60f5b0'
-		},
-	},
 };
 
 export default define(meta, async (ps, user) => {

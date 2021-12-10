@@ -14,17 +14,17 @@ export const meta = {
 
 	params: {
 		id: {
-			validator: $.type(ID)
-		}
+			validator: $.type(ID),
+		},
 	},
 
 	errors: {
 		noSuchEmoji: {
 			message: 'No such emoji.',
 			code: 'NO_SUCH_EMOJI',
-			id: 'be83669b-773a-44b7-b1f8-e5e5170ac3c2'
-		}
-	}
+			id: 'be83669b-773a-44b7-b1f8-e5e5170ac3c2',
+		},
+	},
 };
 
 export default define(meta, async (ps, me) => {
@@ -37,6 +37,6 @@ export default define(meta, async (ps, me) => {
 	await getConnection().queryResultCache!.remove(['meta_emojis']);
 
 	insertModerationLog(me, 'removeEmoji', {
-		emoji: emoji
+		emoji: emoji,
 	});
 });

@@ -2,106 +2,158 @@
 <div class="_formRoot">
 	<FormSection>
 		<template #label>{{ $ts._exportOrImport.allNotes }}</template>
-		<MkButton :class="$style.button" inline @click="doExport('notes')"><i class="fas fa-download"></i> {{ $ts.export }}</MkButton>
+		<MkButton :class="$style.button" inline @click="exportNotes()"><i class="fas fa-download"></i> {{ $ts.export }}</MkButton>
 	</FormSection>
 	<FormSection>
 		<template #label>{{ $ts._exportOrImport.followingList }}</template>
-		<MkButton :class="$style.button" inline @click="doExport('following')"><i class="fas fa-download"></i> {{ $ts.export }}</MkButton>
-		<MkButton :class="$style.button" inline @click="doImport('following', $event)"><i class="fas fa-upload"></i> {{ $ts.import }}</MkButton>
+		<FormGroup>
+			<FormSwitch v-model="excludeMutingUsers" class="_formBlock">
+				{{ $ts._exportOrImport.excludeMutingUsers }}
+			</FormSwitch>
+			<FormSwitch v-model="excludeInactiveUsers" class="_formBlock">
+				{{ $ts._exportOrImport.excludeInactiveUsers }}
+			</FormSwitch>
+			<MkButton :class="$style.button" inline @click="exportFollowing()"><i class="fas fa-download"></i> {{ $ts.export }}</MkButton>
+		</FormGroup>
+		<FormGroup>
+			<MkButton :class="$style.button" inline @click="importFollowing($event)"><i class="fas fa-upload"></i> {{ $ts.import }}</MkButton>
+		</FormGroup>
 	</FormSection>
 	<FormSection>
 		<template #label>{{ $ts._exportOrImport.userLists }}</template>
-		<MkButton :class="$style.button" inline @click="doExport('user-lists')"><i class="fas fa-download"></i> {{ $ts.export }}</MkButton>
-		<MkButton :class="$style.button" inline @click="doImport('user-lists', $event)"><i class="fas fa-upload"></i> {{ $ts.import }}</MkButton>
+		<MkButton :class="$style.button" inline @click="exportUserLists()"><i class="fas fa-download"></i> {{ $ts.export }}</MkButton>
+		<MkButton :class="$style.button" inline @click="importUserLists($event)"><i class="fas fa-upload"></i> {{ $ts.import }}</MkButton>
 	</FormSection>
 	<FormSection>
 		<template #label>{{ $ts._exportOrImport.muteList }}</template>
-		<MkButton :class="$style.button" inline @click="doExport('muting')"><i class="fas fa-download"></i> {{ $ts.export }}</MkButton>
-		<MkButton :class="$style.button" inline @click="doImport('muting', $event)"><i class="fas fa-upload"></i> {{ $ts.import }}</MkButton>
+		<MkButton :class="$style.button" inline @click="exportMuting()"><i class="fas fa-download"></i> {{ $ts.export }}</MkButton>
+		<MkButton :class="$style.button" inline @click="importMuting($event)"><i class="fas fa-upload"></i> {{ $ts.import }}</MkButton>
 	</FormSection>
 	<FormSection>
 		<template #label>{{ $ts._exportOrImport.blockingList }}</template>
-		<MkButton :class="$style.button" inline @click="doExport('blocking')"><i class="fas fa-download"></i> {{ $ts.export }}</MkButton>
-		<MkButton :class="$style.button" inline @click="doImport('blocking', $event)"><i class="fas fa-upload"></i> {{ $ts.import }}</MkButton>
+		<MkButton :class="$style.button" inline @click="exportBlocking()"><i class="fas fa-download"></i> {{ $ts.export }}</MkButton>
+		<MkButton :class="$style.button" inline @click="importBlocking($event)"><i class="fas fa-upload"></i> {{ $ts.import }}</MkButton>
 	</FormSection>
 </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, onMounted, ref } from 'vue';
 import MkButton from '@/components/ui/button.vue';
 import FormSection from '@/components/form/section.vue';
+import FormGroup from '@/components/form/group.vue';
+import FormSwitch from '@/components/form/switch.vue';
 import * as os from '@/os';
 import { selectFile } from '@/scripts/select-file';
 import * as symbols from '@/symbols';
+import { i18n } from '@/i18n';
 
 export default defineComponent({
 	components: {
 		FormSection,
+		FormGroup,
+		FormSwitch,
 		MkButton,
 	},
 
 	emits: ['info'],
 
-	data() {
+	setup(props, context) {
+		const INFO = {
+			title: i18n.locale.importAndExport,
+			icon: 'fas fa-boxes',
+			bg: 'var(--bg)',
+		};
+
+		const excludeMutingUsers = ref(false);
+		const excludeInactiveUsers = ref(false);
+
+		const onExportSuccess = () => {
+			os.alert({
+				type: 'info',
+				text: i18n.locale.exportRequested,
+			});
+		};
+
+		const onImportSuccess = () => {
+			os.alert({
+				type: 'info',
+				text: i18n.locale.importRequested,
+			});
+		};
+
+		const onError = (e) => {
+			os.alert({
+				type: 'error',
+				text: e.message,
+			});
+		};
+
+		const exportNotes = () => {
+			os.api('i/export-notes', {}).then(onExportSuccess).catch(onError);
+		};
+
+		const exportFollowing = () => {
+			os.api('i/export-following', {
+				excludeMuting: excludeMutingUsers.value,
+				excludeInactive: excludeInactiveUsers.value,
+			})
+			.then(onExportSuccess).catch(onError);
+		};
+
+		const exportBlocking = () => {
+			os.api('i/export-blocking', {}).then(onExportSuccess).catch(onError);
+		};
+
+		const exportUserLists = () => {
+			os.api('i/export-user-lists', {}).then(onExportSuccess).catch(onError);
+		};
+
+		const exportMuting = () => {
+			os.api('i/export-mute', {}).then(onExportSuccess).catch(onError);
+		};
+
+		const importFollowing = async (ev) => {
+			const file = await selectFile(ev.currentTarget || ev.target);
+			os.api('i/import-following', { fileId: file.id }).then(onImportSuccess).catch(onError);
+		};
+
+		const importUserLists = async (ev) => {
+			const file = await selectFile(ev.currentTarget || ev.target);
+			os.api('i/import-user-lists', { fileId: file.id }).then(onImportSuccess).catch(onError);
+		};
+
+		const importMuting = async (ev) => {
+			const file = await selectFile(ev.currentTarget || ev.target);
+			os.api('i/import-muting', { fileId: file.id }).then(onImportSuccess).catch(onError);
+		};
+
+		const importBlocking = async (ev) => {
+			const file = await selectFile(ev.currentTarget || ev.target);
+			os.api('i/import-blocking', { fileId: file.id }).then(onImportSuccess).catch(onError);
+		};
+
+		onMounted(() => {
+			context.emit('info', INFO);
+		});
+
 		return {
-			[symbols.PAGE_INFO]: {
-				title: this.$ts.importAndExport,
-				icon: 'fas fa-boxes',
-				bg: 'var(--bg)',
-			},
-		}
+			[symbols.PAGE_INFO]: INFO,
+			excludeMutingUsers,
+			excludeInactiveUsers,
+
+			exportNotes,
+			exportFollowing,
+			exportBlocking,
+			exportUserLists,
+			exportMuting,
+
+			importFollowing,
+			importUserLists,
+			importMuting,
+			importBlocking,
+		};
 	},
-
-	mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
-	},
-
-	methods: {
-		doExport(target) {
-			os.api(
-				target === 'notes' ? 'i/export-notes' :
-				target === 'following' ? 'i/export-following' :
-				target === 'blocking' ? 'i/export-blocking' :
-				target === 'user-lists' ? 'i/export-user-lists' :
-				target === 'muting' ? 'i/export-mute' :
-				null, {})
-			.then(() => {
-				os.alert({
-					type: 'info',
-					text: this.$ts.exportRequested
-				});
-			}).catch((e: any) => {
-				os.alert({
-					type: 'error',
-					text: e.message
-				});
-			});
-		},
-
-		async doImport(target, e) {
-			const file = await selectFile(e.currentTarget || e.target);
-			
-			os.api(
-				target === 'following' ? 'i/import-following' :
-				target === 'user-lists' ? 'i/import-user-lists' :
-				target === 'muting' ? 'i/import-muting' :
-				target === 'blocking' ? 'i/import-blocking' :
-				null, {
-					fileId: file.id
-			}).then(() => {
-				os.alert({
-					type: 'info',
-					text: this.$ts.importRequested
-				});
-			}).catch((e: any) => {
-				os.alert({
-					type: 'error',
-					text: e.message
-				});
-			});
-		},
-	}
 });
 </script>
 

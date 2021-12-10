@@ -9,7 +9,7 @@ export async function injectPromo(timeline: Note[], user?: User | null) {
 	// TODO: readやexpireフィルタはクエリ側でやる
 
 	const reads = user ? await PromoReads.find({
-		userId: user.id
+		userId: user.id,
 	}) : [];
 
 	let promos = await PromoNotes.find();

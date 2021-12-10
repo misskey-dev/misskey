@@ -21,6 +21,8 @@ export type DbJobData = DbUserJobData | DbUserImportJobData | DbUserDeleteJobDat
 
 export type DbUserJobData = {
 	user: ThinUser;
+	excludeMuting: boolean;
+	excludeInactive: boolean;
 };
 
 export type DbUserDeleteJobData = {

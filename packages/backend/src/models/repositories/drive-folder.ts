@@ -20,7 +20,7 @@ export class DriveFolderRepository extends Repository<DriveFolder> {
 		}
 	): Promise<Packed<'DriveFolder'>> {
 		const opts = Object.assign({
-			detail: false
+			detail: false,
 		}, options);
 
 		const folder = typeof src === 'object' ? src : await this.findOneOrFail(src);
@@ -33,18 +33,18 @@ export class DriveFolderRepository extends Repository<DriveFolder> {
 
 			...(opts.detail ? {
 				foldersCount: DriveFolders.count({
-					parentId: folder.id
+					parentId: folder.id,
 				}),
 				filesCount: DriveFiles.count({
-					folderId: folder.id
+					folderId: folder.id,
 				}),
 
 				...(folder.parentId ? {
 					parent: this.pack(folder.parentId, {
-						detail: true
-					})
-				} : {})
-			} : {})
+						detail: true,
+					}),
+				} : {}),
+			} : {}),
 		});
 	}
 }

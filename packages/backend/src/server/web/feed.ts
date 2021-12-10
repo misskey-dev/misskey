@@ -7,7 +7,7 @@ import { In } from 'typeorm';
 export default async function(user: User) {
 	const author = {
 		link: `${config.url}/@${user.username}`,
-		name: user.name || user.username
+		name: user.name || user.username,
 	};
 
 	const profile = await UserProfiles.findOneOrFail(user.id);
@@ -16,10 +16,10 @@ export default async function(user: User) {
 		where: {
 			userId: user.id,
 			renoteId: null,
-			visibility: In(['public', 'home'])
+			visibility: In(['public', 'home']),
 		},
 		order: { createdAt: -1 },
-		take: 20
+		take: 20,
 	});
 
 	const feed = new Feed({
@@ -35,12 +35,12 @@ export default async function(user: User) {
 			atom: `${author.link}.atom`,
 		},
 		author,
-		copyright: user.name || user.username
+		copyright: user.name || user.username,
 	});
 
 	for (const note of notes) {
 		const files = note.fileIds.length > 0 ? await DriveFiles.find({
-			id: In(note.fileIds)
+			id: In(note.fileIds),
 		}) : [];
 		const file = files.find(file => file.type.startsWith('image/'));
 
@@ -50,7 +50,7 @@ export default async function(user: User) {
 			date: note.createdAt,
 			description: note.cw || undefined,
 			content: note.text || undefined,
-			image: file ? DriveFiles.getPublicUrl(file) || undefined : undefined
+			image: file ? DriveFiles.getPublicUrl(file) || undefined : undefined,
 		});
 	}
 

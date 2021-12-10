@@ -11,7 +11,7 @@ export const meta = {
 
 	limit: {
 		duration: ms('1hour'),
-		max: 30
+		max: 30,
 	},
 
 	params: {
@@ -26,7 +26,7 @@ export const meta = {
 	res: {
 		type: 'object' as const,
 		optional: false as const, nullable: false as const,
-	}
+	},
 };
 
 export default define(meta, async (ps) => {

@@ -27,7 +27,7 @@ export class NoteReactionRepository extends Repository<NoteReaction> {
 			type: convertLegacyReaction(reaction.reaction),
 			...(opts.withNote ? {
 				note: await Notes.pack(reaction.noteId, me),
-			} : {})
+			} : {}),
 		};
 	}
 }

@@ -14,9 +14,9 @@ export default async function renderQuestion(user: { id: User['id'] }, note: Not
 			_misskey_votes: poll.votes[i],
 			replies: {
 				type: 'Collection',
-				totalItems: poll.votes[i]
-			}
-		}))
+				totalItems: poll.votes[i],
+			},
+		})),
 	};
 
 	return question;

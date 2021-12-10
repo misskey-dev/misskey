@@ -13,7 +13,7 @@ export async function getInstanceActor(): Promise<ILocalUser> {
 
 	const user = await Users.findOne({
 		host: null,
-		username: ACTOR_USERNAME
+		username: ACTOR_USERNAME,
 	}) as ILocalUser | undefined;
 
 	if (user) {

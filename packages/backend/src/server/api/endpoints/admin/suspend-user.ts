@@ -18,7 +18,7 @@ export const meta = {
 		userId: {
 			validator: $.type(ID),
 		},
-	}
+	},
 };
 
 export default define(meta, async (ps, me) => {
@@ -37,7 +37,7 @@ export default define(meta, async (ps, me) => {
 	}
 
 	await Users.update(user.id, {
-		isSuspended: true
+		isSuspended: true,
 	});
 
 	insertModerationLog(me, 'suspend', {
@@ -58,12 +58,12 @@ export default define(meta, async (ps, me) => {
 
 async function unFollowAll(follower: User) {
 	const followings = await Followings.find({
-		followerId: follower.id
+		followerId: follower.id,
 	});
 
 	for (const following of followings) {
 		const followee = await Users.findOne({
-			id: following.followeeId
+			id: following.followeeId,
 		});
 
 		if (followee == null) {
@@ -79,6 +79,6 @@ async function readAllNotify(notifier: User) {
 		notifierId: notifier.id,
 		isRead: false,
 	}, {
-		isRead: true
+		isRead: true,
 	});
 }

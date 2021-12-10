@@ -11,14 +11,14 @@ export const meta = {
 
 	params: {
 		title: {
-			validator: $.str.min(1)
+			validator: $.str.min(1),
 		},
 		text: {
-			validator: $.str.min(1)
+			validator: $.str.min(1),
 		},
 		imageUrl: {
-			validator: $.nullable.str.min(1)
-		}
+			validator: $.nullable.str.min(1),
+		},
 	},
 
 	res: {
@@ -52,9 +52,9 @@ export const meta = {
 			imageUrl: {
 				type: 'string' as const,
 				optional: false as const, nullable: true as const,
-			}
-		}
-	}
+			},
+		},
+	},
 };
 
 export default define(meta, async (ps) => {

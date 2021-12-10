@@ -12,7 +12,7 @@ const ACTOR_USERNAME = 'relay.actor' as const;
 export async function getRelayActor(): Promise<ILocalUser> {
 	const user = await Users.findOne({
 		host: null,
-		username: ACTOR_USERNAME
+		username: ACTOR_USERNAME,
 	});
 
 	if (user) return user as ILocalUser;
@@ -25,7 +25,7 @@ export async function addRelay(inbox: string) {
 	const relay = await Relays.save({
 		id: genId(),
 		inbox,
-		status: 'requesting'
+		status: 'requesting',
 	});
 
 	const relayActor = await getRelayActor();
@@ -38,7 +38,7 @@ export async function addRelay(inbox: string) {
 
 export async function removeRelay(inbox: string) {
 	const relay = await Relays.findOne({
-		inbox
+		inbox,
 	});
 
 	if (relay == null) {
@@ -61,7 +61,7 @@ export async function listRelay() {
 
 export async function relayAccepted(id: string) {
 	const result = await Relays.update(id, {
-		status: 'accepted'
+		status: 'accepted',
 	});
 
 	return JSON.stringify(result);
@@ -69,7 +69,7 @@ export async function relayAccepted(id: string) {
 
 export async function relayRejected(id: string) {
 	const result = await Relays.update(id, {
-		status: 'rejected'
+		status: 'rejected',
 	});
 
 	return JSON.stringify(result);
@@ -79,7 +79,7 @@ export async function deliverToRelays(user: { id: User['id']; host: null; }, act
 	if (activity == null) return;
 
 	const relays = await Relays.find({
-		status: 'accepted'
+		status: 'accepted',
 	});
 	if (relays.length === 0) return;
 

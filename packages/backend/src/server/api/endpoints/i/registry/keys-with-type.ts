@@ -12,7 +12,7 @@ export const meta = {
 			validator: $.optional.arr($.str.match(/^[a-zA-Z0-9_]+$/)),
 			default: [],
 		},
-	}
+	},
 };
 
 export default define(meta, async (ps, user) => {

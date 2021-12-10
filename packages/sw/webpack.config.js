@@ -48,10 +48,6 @@ module.exports = {
 			_DEV_: process.env.NODE_ENV !== 'production',
 			_PERF_PREFIX_: JSON.stringify('Misskey:'),
 		}),
-		new WebpackOnBuildPlugin(() => {
-			fs.mkdirSync(__dirname + '/../../built', { recursive: true });
-			fs.writeFileSync(__dirname + '/../../built/meta.json', JSON.stringify({ version: meta.version }), 'utf-8');
-		}),
 	],
 	output: {
 		path: __dirname + '/../../built/_sw_dist_',

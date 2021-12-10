@@ -19,9 +19,9 @@ export const meta = {
 		noSuchUser: {
 			message: 'No such user.',
 			code: 'NO_SUCH_USER',
-			id: '9e638e45-3b25-4ef7-8f95-07e8498f1819'
+			id: '9e638e45-3b25-4ef7-8f95-07e8498f1819',
 		},
-	}
+	},
 };
 
 export default define(meta, async (ps, me) => {

@@ -11,7 +11,7 @@ export class Instance {
 	 */
 	@Index()
 	@Column('timestamp with time zone', {
-		comment: 'The caught date of the Instance.'
+		comment: 'The caught date of the Instance.',
 	})
 	public caughtAt: Date;
 
@@ -21,7 +21,7 @@ export class Instance {
 	@Index({ unique: true })
 	@Column('varchar', {
 		length: 128,
-		comment: 'The host of the Instance.'
+		comment: 'The host of the Instance.',
 	})
 	public host: string;
 
@@ -30,7 +30,7 @@ export class Instance {
 	 */
 	@Column('integer', {
 		default: 0,
-		comment: 'The count of the users of the Instance.'
+		comment: 'The count of the users of the Instance.',
 	})
 	public usersCount: number;
 
@@ -39,7 +39,7 @@ export class Instance {
 	 */
 	@Column('integer', {
 		default: 0,
-		comment: 'The count of the notes of the Instance.'
+		comment: 'The count of the notes of the Instance.',
 	})
 	public notesCount: number;
 
@@ -109,7 +109,7 @@ export class Instance {
 	 * このインスタンスと不通かどうか
 	 */
 	@Column('boolean', {
-		default: false
+		default: false,
 	})
 	public isNotResponding: boolean;
 
@@ -118,13 +118,13 @@ export class Instance {
 	 */
 	@Index()
 	@Column('boolean', {
-		default: false
+		default: false,
 	})
 	public isSuspended: boolean;
 
 	@Column('varchar', {
 		length: 64, nullable: true, default: null,
-		comment: 'The software of the Instance.'
+		comment: 'The software of the Instance.',
 	})
 	public softwareName: string | null;
 

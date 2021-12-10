@@ -27,7 +27,7 @@ export class AntennaRepository extends Repository<Antenna> {
 			notify: antenna.notify,
 			withReplies: antenna.withReplies,
 			withFile: antenna.withFile,
-			hasUnreadNote
+			hasUnreadNote,
 		};
 	}
 }
@@ -39,16 +39,16 @@ export const packedAntennaSchema = {
 		id: {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
-			format: 'id'
+			format: 'id',
 		},
 		createdAt: {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
-			format: 'date-time'
+			format: 'date-time',
 		},
 		name: {
 			type: 'string' as const,
-			optional: false as const, nullable: false as const
+			optional: false as const, nullable: false as const,
 		},
 		keywords: {
 			type: 'array' as const,
@@ -58,9 +58,9 @@ export const packedAntennaSchema = {
 				optional: false as const, nullable: false as const,
 				items: {
 					type: 'string' as const,
-					optional: false as const, nullable: false as const
-				}
-			}
+					optional: false as const, nullable: false as const,
+				},
+			},
 		},
 		excludeKeywords: {
 			type: 'array' as const,
@@ -70,55 +70,55 @@ export const packedAntennaSchema = {
 				optional: false as const, nullable: false as const,
 				items: {
 					type: 'string' as const,
-					optional: false as const, nullable: false as const
-				}
-			}
+					optional: false as const, nullable: false as const,
+				},
+			},
 		},
 		src: {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
-			enum: ['home', 'all', 'users', 'list', 'group']
+			enum: ['home', 'all', 'users', 'list', 'group'],
 		},
 		userListId: {
 			type: 'string' as const,
 			optional: false as const, nullable: true as const,
-			format: 'id'
+			format: 'id',
 		},
 		userGroupId: {
 			type: 'string' as const,
 			optional: false as const, nullable: true as const,
-			format: 'id'
+			format: 'id',
 		},
 		users: {
 			type: 'array' as const,
 			optional: false as const, nullable: false as const,
 			items: {
 				type: 'string' as const,
-				optional: false as const, nullable: false as const
-			}
+				optional: false as const, nullable: false as const,
+			},
 		},
 		caseSensitive: {
 			type: 'boolean' as const,
 			optional: false as const, nullable: false as const,
-			default: false
+			default: false,
 		},
 		notify: {
 			type: 'boolean' as const,
-			optional: false as const, nullable: false as const
+			optional: false as const, nullable: false as const,
 		},
 		withReplies: {
 			type: 'boolean' as const,
 			optional: false as const, nullable: false as const,
-			default: false
+			default: false,
 		},
 		withFile: {
 			type: 'boolean' as const,
-			optional: false as const, nullable: false as const
+			optional: false as const, nullable: false as const,
 		},
 		hasUnreadNote: {
 			type: 'boolean' as const,
 			optional: false as const, nullable: false as const,
-			default: false
-		}
+			default: false,
+		},
 	},
 };

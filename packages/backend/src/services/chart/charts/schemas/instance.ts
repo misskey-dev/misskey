@@ -21,7 +21,7 @@ export const schema = {
 					type: 'number' as const,
 					optional: false as const, nullable: false as const,
 				},
-			}
+			},
 		},
 
 		notes: {
@@ -59,9 +59,9 @@ export const schema = {
 							type: 'number' as const,
 							optional: false as const, nullable: false as const,
 						},
-					}
+					},
 				},
-			}
+			},
 		},
 
 		users: {
@@ -80,7 +80,7 @@ export const schema = {
 					type: 'number' as const,
 					optional: false as const, nullable: false as const,
 				},
-			}
+			},
 		},
 
 		following: {
@@ -99,7 +99,7 @@ export const schema = {
 					type: 'number' as const,
 					optional: false as const, nullable: false as const,
 				},
-			}
+			},
 		},
 
 		followers: {
@@ -118,7 +118,7 @@ export const schema = {
 					type: 'number' as const,
 					optional: false as const, nullable: false as const,
 				},
-			}
+			},
 		},
 
 		drive: {
@@ -149,9 +149,9 @@ export const schema = {
 					type: 'number' as const,
 					optional: false as const, nullable: false as const,
 				},
-			}
+			},
 		},
-	}
+	},
 };
 
 export const name = 'instance';

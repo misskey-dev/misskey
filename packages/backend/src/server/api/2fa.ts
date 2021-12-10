@@ -112,7 +112,7 @@ export function verifyLogin({
 	clientDataJSON,
 	clientData,
 	signature,
-	challenge
+	challenge,
 }: {
 	publicKey: Buffer,
 	authenticatorData: Buffer,
