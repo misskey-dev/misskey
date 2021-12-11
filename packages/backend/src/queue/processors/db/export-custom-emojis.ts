@@ -52,7 +52,7 @@ export async function exportCustomEmojis(job: Bull.Job, done: () => void): Promi
 		});
 	};
 
-	await writeMeta('[');
+	await writeMeta(`{"metaVersion":1,"emojis":[`);
 
 	const customEmojis = await Emojis.find({
 		where: {
@@ -86,7 +86,7 @@ export async function exportCustomEmojis(job: Bull.Job, done: () => void): Promi
 		await writeMeta(isFirst ? content : ',\n' + content);
 	}
 
-	await writeMeta(']');
+	await writeMeta(']}');
 
 	metaStream.end();
 
