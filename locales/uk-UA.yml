@@ -692,6 +692,7 @@ middle: "Середній"
 global: "Глобальна"
 sent: "Відправити"
 hashtags: "Хештеґ"
+hide: "Сховати"
 _ad:
   back: "Назад"
 _gallery:
