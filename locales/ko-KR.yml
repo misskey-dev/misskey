@@ -792,6 +792,9 @@ lastCommunication: "마지막 통신"
 resolved: "해결됨"
 unresolved: "해결되지 않음"
 breakFollow: "팔로워 해제"
+itsOn: "켜짐"
+itsOff: "꺼짐"
+emailRequiredForSignup: "가입할 때 이메일 주소 입력을 필수로 하기"
 unread: "읽지 않음"
 filter: "필터"
 controlPanel: "제어판"
@@ -1001,6 +1004,8 @@ _wordMute:
 _instanceMute:
   instanceMuteDescription: "뮤트한 인스턴스에서 오는 답글을 포함한 모든 노트와 Renote를 뮤트합니다."
   instanceMuteDescription2: "한 줄에 하나씩 입력해 주세요"
+  title: "지정한 인스턴스의 노트를 숨깁니다."
+  heading: "뮤트할 인스턴스"
 _theme:
   explore: "테마 찾아보기"
   install: "테마 설치"
@@ -1274,6 +1279,8 @@ _exportOrImport:
   muteList: "뮤트"
   blockingList: "차단"
   userLists: "리스트"
+  excludeMutingUsers: "뮤트한 유저 제외하기"
+  excludeInactiveUsers: "휴면 중인 계정 제외하기"
 _charts:
   federationInstancesIncDec: "연합 인스턴스 수 증감"
   federationInstancesTotal: "연합 인스턴스 수 합계"
