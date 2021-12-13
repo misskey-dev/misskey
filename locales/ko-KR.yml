@@ -815,8 +815,13 @@ _emailUnavailable:
   mx: "메일 서버가 올바르지 않습니다"
   smtp: "메일 서버가 응답하지 않습니다"
 _ffVisibility:
-  public: "게시"
+  public: "공개"
   followers: "팔로워에게만 공개"
+  private: "비공개"
+_signup:
+  almostThere: "거의 다 끝났습니다"
+  emailAddressInfo: "당신이 사용하고 있는 이메일 주소를 입력해 주세요. 이메일 주소는 다른 유저에게 공개되지 않습니다."
+  emailSent: "입력하신 메일 주소({email})로 확인 메일을 보내드렸습니다. 가입을 완료하시려면 보내드린 메일에 있는 링크로 접속해 주세요."
 _accountDelete:
   accountDelete: "계정 삭제"
   mayTakeTime: "계정 삭제는 서버에 부하를 가하기 때문에, 작성한 콘텐츠나 업로드한 파일의 수가 많으면 완료까지 시간이 걸릴 수 있습니다."
@@ -927,6 +932,7 @@ _mfm:
   sparkle: "반짝반짝"
   sparkleDescription: "반짝이는 파티클 효과를 추가합니다."
   rotate: "회전"
+  rotateDescription: "지정한 각도로 회전시킵니다."
 _reversi:
   reversi: "리버시"
   gameSettings: "대국 설정"
@@ -992,6 +998,9 @@ _wordMute:
   soft: "보통"
   hard: "보다 높은 수준"
   mutedNotes: "뮤트된 노트"
+_instanceMute:
+  instanceMuteDescription: "뮤트한 인스턴스에서 오는 답글을 포함한 모든 노트와 Renote를 뮤트합니다."
+  instanceMuteDescription2: "한 줄에 하나씩 입력해 주세요"
 _theme:
   explore: "테마 찾아보기"
   install: "테마 설치"
