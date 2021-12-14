@@ -813,6 +813,8 @@ deleteAccountConfirm: "Dein Benutzerkonto wird unwiderruflich gelöscht. Trotzde
 incorrectPassword: "Falsches Passwort."
 voteConfirm: "Wirklich für \"{choice}\" abstimmen?"
 hide: "Inhalt verbergen"
+leaveGroup: "Gruppe verlassen"
+leaveGroupConfirm: "Möchtest du \"{name}\" wirklich verlassen?"
 _emailUnavailable:
   used: "Diese Email-Adresse wird bereits verwendet"
   format: "Das Format dieser Email-Adresse ist ungültig"
