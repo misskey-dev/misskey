@@ -812,6 +812,8 @@ deleteAccountConfirm: "This will irreversibly delete your account. Proceed?"
 incorrectPassword: "Incorrect password."
 voteConfirm: "Confirm your vote for \"{choice}\"?"
 hide: "Hide"
+leaveGroup: "Leave Group"
+leaveGroupConfirm: "Are you sure you want to leave \"{name}\"?"
 _emailUnavailable:
   used: "This email address is already being used"
   format: "The format of this email address is invalid"
