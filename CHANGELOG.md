@@ -7,7 +7,7 @@
 
 -->
 
-## 12.x.x (unreleased)
+## 12.99.0 (2021/12/14)
 
 ### Improvements
 - Added a user-level instance mute in user settings
