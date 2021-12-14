@@ -6,10 +6,6 @@
 	class="hkzvhatu _button"
 	:class="{ reacted: note.myReaction == reaction, canToggle }"
 	@click="toggleReaction()"
-	@touchstart.passive="onMouseover"
-	@mouseover="onMouseover"
-	@mouseleave="onMouseleave"
-	@touchend="onMouseleave"
 >
 	<XReactionIcon :reaction="reaction" :custom-emojis="note.emojis"/>
 	<span>{{ count }}</span>
@@ -90,7 +86,7 @@ export default defineComponent({
 			if (!props.isInitial) anime();
 		});
 
-		const { onMouseover, onMouseleave } = useTooltip(async (showing) => {
+		useTooltip(buttonRef, async (showing) => {
 			const reactions = await os.api('notes/reactions', {
 				noteId: props.note.id,
 				type: props.reaction,
@@ -113,8 +109,6 @@ export default defineComponent({
 			buttonRef,
 			canToggle,
 			toggleReaction,
-			onMouseover,
-			onMouseleave,
 		};
 	},
 });

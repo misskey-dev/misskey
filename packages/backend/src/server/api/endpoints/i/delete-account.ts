@@ -13,9 +13,9 @@ export const meta = {
 
 	params: {
 		password: {
-			validator: $.str
+			validator: $.str,
 		},
-	}
+	},
 };
 
 export default define(meta, async (ps, user) => {
@@ -36,7 +36,7 @@ export default define(meta, async (ps, user) => {
 	await doPostSuspend(user).catch(e => {});
 
 	createDeleteAccountJob(user, {
-		soft: false
+		soft: false,
 	});
 
 	await Users.update(user.id, {

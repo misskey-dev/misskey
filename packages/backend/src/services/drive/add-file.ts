@@ -66,7 +66,7 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 		//#region Uploads
 		logger.info(`uploading original: ${key}`);
 		const uploads = [
-			upload(key, fs.createReadStream(path), type, name)
+			upload(key, fs.createReadStream(path), type, name),
 		];
 
 		if (alts.webpublic) {
@@ -149,13 +149,13 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 			const thumbnail = await GenerateVideoThumbnail(path);
 			return {
 				webpublic: null,
-				thumbnail
+				thumbnail,
 			};
 		} catch (e) {
 			logger.warn(`GenerateVideoThumbnail failed: ${e}`);
 			return {
 				webpublic: null,
-				thumbnail: null
+				thumbnail: null,
 			};
 		}
 	}
@@ -164,7 +164,7 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 		logger.debug(`web image and thumbnail not created (not an required file)`);
 		return {
 			webpublic: null,
-			thumbnail: null
+			thumbnail: null,
 		};
 	}
 
@@ -179,14 +179,14 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 		if (isAnimated) {
 			return {
 				webpublic: null,
-				thumbnail: null
+				thumbnail: null,
 			};
 		}
 	} catch (e) {
 		logger.warn(`sharp failed: ${e}`);
 		return {
 			webpublic: null,
-			thumbnail: null
+			thumbnail: null,
 		};
 	}
 
@@ -258,7 +258,7 @@ async function upload(key: string, stream: fs.ReadStream | Buffer, type: string,
 	const s3 = getS3(meta);
 
 	const upload = s3.upload(params, {
-		partSize: s3.endpoint?.hostname === 'storage.googleapis.com' ? 500 * 1024 * 1024 : 8 * 1024 * 1024
+		partSize: s3.endpoint?.hostname === 'storage.googleapis.com' ? 500 * 1024 * 1024 : 8 * 1024 * 1024,
 	});
 
 	const result = await upload.promise();
@@ -361,7 +361,7 @@ export default async function(
 
 		const driveFolder = await DriveFolders.findOne({
 			id: folderId,
-			userId: user ? user.id : null
+			userId: user ? user.id : null,
 		});
 
 		if (driveFolder == null) throw new Error('folder-not-found');
@@ -436,7 +436,7 @@ export default async function(
 
 				file = await DriveFiles.findOne({
 					uri: file.uri,
-					userId: user ? user.id : null
+					userId: user ? user.id : null,
 				}) as DriveFile;
 			} else {
 				logger.error(e);

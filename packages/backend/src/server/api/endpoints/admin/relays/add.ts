@@ -12,7 +12,7 @@ export const meta = {
 
 	params: {
 		inbox: {
-			validator: $.str
+			validator: $.str,
 		},
 	},
 
@@ -20,7 +20,7 @@ export const meta = {
 		invalidUrl: {
 			message: 'Invalid URL',
 			code: 'INVALID_URL',
-			id: 'fb8c92d3-d4e5-44e7-b3d4-800d5cef8b2c'
+			id: 'fb8c92d3-d4e5-44e7-b3d4-800d5cef8b2c',
 		},
 	},
 
@@ -31,12 +31,12 @@ export const meta = {
 			id: {
 				type: 'string' as const,
 				optional: false as const, nullable: false as const,
-				format: 'id'
+				format: 'id',
 			},
 			inbox: {
 				type: 'string' as const,
 				optional: false as const, nullable: false as const,
-				format: 'url'
+				format: 'url',
 			},
 			status: {
 				type: 'string' as const,
@@ -45,11 +45,11 @@ export const meta = {
 				enum: [
 					'requesting',
 					'accepted',
-					'rejected'
-				]
-			}
-		}
-	}
+					'rejected',
+				],
+			},
+		},
+	},
 };
 
 export default define(meta, async (ps, user) => {

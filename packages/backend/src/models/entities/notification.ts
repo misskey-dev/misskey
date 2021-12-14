@@ -14,7 +14,7 @@ export class Notification {
 
 	@Index()
 	@Column('timestamp with time zone', {
-		comment: 'The created date of the Notification.'
+		comment: 'The created date of the Notification.',
 	})
 	public createdAt: Date;
 
@@ -24,12 +24,12 @@ export class Notification {
 	@Index()
 	@Column({
 		...id(),
-		comment: 'The ID of recipient user of the Notification.'
+		comment: 'The ID of recipient user of the Notification.',
 	})
 	public notifieeId: User['id'];
 
 	@ManyToOne(type => User, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public notifiee: User | null;
@@ -41,12 +41,12 @@ export class Notification {
 	@Column({
 		...id(),
 		nullable: true,
-		comment: 'The ID of sender user of the Notification.'
+		comment: 'The ID of sender user of the Notification.',
 	})
 	public notifierId: User['id'] | null;
 
 	@ManyToOne(type => User, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public notifier: User | null;
@@ -68,7 +68,7 @@ export class Notification {
 	@Index()
 	@Column('enum', {
 		enum: notificationTypes,
-		comment: 'The type of the Notification.'
+		comment: 'The type of the Notification.',
 	})
 	public type: typeof notificationTypes[number];
 
@@ -78,53 +78,53 @@ export class Notification {
 	@Index()
 	@Column('boolean', {
 		default: false,
-		comment: 'Whether the Notification is read.'
+		comment: 'Whether the Notification is read.',
 	})
 	public isRead: boolean;
 
 	@Column({
 		...id(),
-		nullable: true
+		nullable: true,
 	})
 	public noteId: Note['id'] | null;
 
 	@ManyToOne(type => Note, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public note: Note | null;
 
 	@Column({
 		...id(),
-		nullable: true
+		nullable: true,
 	})
 	public followRequestId: FollowRequest['id'] | null;
 
 	@ManyToOne(type => FollowRequest, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public followRequest: FollowRequest | null;
 
 	@Column({
 		...id(),
-		nullable: true
+		nullable: true,
 	})
 	public userGroupInvitationId: UserGroupInvitation['id'] | null;
 
 	@ManyToOne(type => UserGroupInvitation, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public userGroupInvitation: UserGroupInvitation | null;
 
 	@Column('varchar', {
-		length: 128, nullable: true
+		length: 128, nullable: true,
 	})
 	public reaction: string | null;
 
 	@Column('integer', {
-		nullable: true
+		nullable: true,
 	})
 	public choice: number | null;
 
@@ -132,7 +132,7 @@ export class Notification {
 	 * アプリ通知のbody
 	 */
 	@Column('varchar', {
-		length: 2048, nullable: true
+		length: 2048, nullable: true,
 	})
 	public customBody: string | null;
 
@@ -141,7 +141,7 @@ export class Notification {
 	 * (省略時はアプリ名で表示されることを期待)
 	 */
 	@Column('varchar', {
-		length: 256, nullable: true
+		length: 256, nullable: true,
 	})
 	public customHeader: string | null;
 
@@ -150,7 +150,7 @@ export class Notification {
 	 * (省略時はアプリアイコンで表示されることを期待)
 	 */
 	@Column('varchar', {
-		length: 1024, nullable: true
+		length: 1024, nullable: true,
 	})
 	public customIcon: string | null;
 
@@ -160,12 +160,12 @@ export class Notification {
 	@Index()
 	@Column({
 		...id(),
-		nullable: true
+		nullable: true,
 	})
 	public appAccessTokenId: AccessToken['id'] | null;
 
 	@ManyToOne(type => AccessToken, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public appAccessToken: AccessToken | null;

@@ -15,7 +15,7 @@ export const meta = {
 
 		limit: {
 			validator: $.optional.num.range(1, 100),
-			default: 10
+			default: 10,
 		},
 
 		sort: {
@@ -32,9 +32,9 @@ export const meta = {
 		state: {
 			validator: $.optional.str.or([
 				'all',
-				'alive'
+				'alive',
 			]),
-			default: 'all'
+			default: 'all',
 		},
 
 		origin: {
@@ -43,8 +43,8 @@ export const meta = {
 				'local',
 				'remote',
 			]),
-			default: 'local'
-		}
+			default: 'local',
+		},
 	},
 
 	res: {
@@ -54,7 +54,7 @@ export const meta = {
 			type: 'object' as const,
 			optional: false as const, nullable: false as const,
 			ref: 'User',
-		}
+		},
 	},
 };
 

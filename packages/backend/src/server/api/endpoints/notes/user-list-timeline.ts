@@ -66,22 +66,22 @@ export const meta = {
 			type: 'object' as const,
 			optional: false as const, nullable: false as const,
 			ref: 'Note',
-		}
+		},
 	},
 
 	errors: {
 		noSuchList: {
 			message: 'No such list.',
 			code: 'NO_SUCH_LIST',
-			id: '8fb1fbd5-e476-4c37-9fb0-43d55b63a2ff'
-		}
-	}
+			id: '8fb1fbd5-e476-4c37-9fb0-43d55b63a2ff',
+		},
+	},
 };
 
 export default define(meta, async (ps, user) => {
 	const list = await UserLists.findOne({
 		id: ps.listId,
-		userId: user.id
+		userId: user.id,
 	});
 
 	if (list == null) {

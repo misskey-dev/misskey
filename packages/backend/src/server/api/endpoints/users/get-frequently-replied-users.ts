@@ -19,7 +19,7 @@ export const meta = {
 
 		limit: {
 			validator: $.optional.num.range(1, 100),
-			default: 10
+			default: 10,
 		},
 	},
 
@@ -30,16 +30,16 @@ export const meta = {
 			type: 'object' as const,
 			optional: false as const, nullable: false as const,
 			ref: 'User',
-		}
+		},
 	},
 
 	errors: {
 		noSuchUser: {
 			message: 'No such user.',
 			code: 'NO_SUCH_USER',
-			id: 'e6965129-7b2a-40a4-bae2-cd84cd434822'
-		}
-	}
+			id: 'e6965129-7b2a-40a4-bae2-cd84cd434822',
+		},
+	},
 };
 
 export default define(meta, async (ps, me) => {
@@ -53,13 +53,13 @@ export default define(meta, async (ps, me) => {
 	const recentNotes = await Notes.find({
 		where: {
 			userId: user.id,
-			replyId: Not(IsNull())
+			replyId: Not(IsNull()),
 		},
 		order: {
-			id: -1
+			id: -1,
 		},
 		take: 1000,
-		select: ['replyId']
+		select: ['replyId'],
 	});
 
 	// 投稿が少なかったら中断
@@ -72,7 +72,7 @@ export default define(meta, async (ps, me) => {
 		where: {
 			id: In(recentNotes.map(p => p.replyId)),
 		},
-		select: ['userId']
+		select: ['userId'],
 	});
 
 	const repliedUsers: any = {};
@@ -98,7 +98,7 @@ export default define(meta, async (ps, me) => {
 	// Make replies object (includes weights)
 	const repliesObj = await Promise.all(topRepliedUsers.map(async (user) => ({
 		user: await Users.pack(user, me, { detail: true }),
-		weight: repliedUsers[user] / peak
+		weight: repliedUsers[user] / peak,
 	})));
 
 	return repliesObj;

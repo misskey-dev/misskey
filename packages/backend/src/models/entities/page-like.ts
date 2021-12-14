@@ -17,7 +17,7 @@ export class PageLike {
 	public userId: User['id'];
 
 	@ManyToOne(type => User, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public user: User | null;
@@ -26,7 +26,7 @@ export class PageLike {
 	public pageId: Page['id'];
 
 	@ManyToOne(type => Page, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public page: Page | null;

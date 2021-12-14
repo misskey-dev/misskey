@@ -745,6 +745,7 @@ global: "Federata"
 sent: "Inviare"
 hashtags: "Hashtag"
 troubleshooting: "Risoluzione problemi"
+hide: "Nascondere"
 _ffVisibility:
   public: "Pubblico"
 _ad:

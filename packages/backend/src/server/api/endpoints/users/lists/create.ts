@@ -13,8 +13,8 @@ export const meta = {
 
 	params: {
 		name: {
-			validator: $.str.range(1, 100)
-		}
+			validator: $.str.range(1, 100),
+		},
 	},
 
 	res: {

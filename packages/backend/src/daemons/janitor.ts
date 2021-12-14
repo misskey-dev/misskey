@@ -10,7 +10,7 @@ import { LessThan } from 'typeorm';
 export default function() {
 	async function tick() {
 		await AttestationChallenges.delete({
-			createdAt: LessThan(new Date(new Date().getTime() - 5 * 60 * 1000))
+			createdAt: LessThan(new Date(new Date().getTime() - 5 * 60 * 1000)),
 		});
 	}
 

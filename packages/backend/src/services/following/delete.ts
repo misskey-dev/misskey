@@ -15,7 +15,7 @@ const logger = new Logger('following/delete');
 export default async function(follower: { id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox']; }, followee: { id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox']; }, silent = false) {
 	const following = await Followings.findOne({
 		followerId: follower.id,
-		followeeId: followee.id
+		followeeId: followee.id,
 	});
 
 	if (following == null) {
@@ -30,7 +30,7 @@ export default async function(follower: { id: User['id']; host: User['host']; ur
 	// Publish unfollow event
 	if (!silent && Users.isLocalUser(follower)) {
 		Users.pack(followee.id, follower, {
-			detail: true
+			detail: true,
 		}).then(packed => {
 			publishUserEvent(follower.id, 'unfollow', packed);
 			publishMainStream(follower.id, 'unfollow', packed);

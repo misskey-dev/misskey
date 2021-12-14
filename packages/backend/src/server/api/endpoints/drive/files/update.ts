@@ -36,34 +36,34 @@ export const meta = {
 		comment: {
 			validator: $.optional.nullable.str.max(DB_MAX_IMAGE_COMMENT_LENGTH),
 			default: undefined as any,
-		}
+		},
 	},
 
 	errors: {
 		noSuchFile: {
 			message: 'No such file.',
 			code: 'NO_SUCH_FILE',
-			id: 'e7778c7e-3af9-49cd-9690-6dbc3e6c972d'
+			id: 'e7778c7e-3af9-49cd-9690-6dbc3e6c972d',
 		},
 
 		accessDenied: {
 			message: 'Access denied.',
 			code: 'ACCESS_DENIED',
-			id: '01a53b27-82fc-445b-a0c1-b558465a8ed2'
+			id: '01a53b27-82fc-445b-a0c1-b558465a8ed2',
 		},
 
 		noSuchFolder: {
 			message: 'No such folder.',
 			code: 'NO_SUCH_FOLDER',
-			id: 'ea8fb7a5-af77-4a08-b608-c0218176cd73'
+			id: 'ea8fb7a5-af77-4a08-b608-c0218176cd73',
 		},
 	},
 
 	res: {
 		type: 'object' as const,
 		optional: false as const, nullable: false as const,
-		ref: 'DriveFile'
-	}
+		ref: 'DriveFile',
+	},
 };
 
 export default define(meta, async (ps, user) => {
@@ -89,7 +89,7 @@ export default define(meta, async (ps, user) => {
 		} else {
 			const folder = await DriveFolders.findOne({
 				id: ps.folderId,
-				userId: user.id
+				userId: user.id,
 			});
 
 			if (folder == null) {
@@ -104,7 +104,7 @@ export default define(meta, async (ps, user) => {
 		name: file.name,
 		comment: file.comment,
 		folderId: file.folderId,
-		isSensitive: file.isSensitive
+		isSensitive: file.isSensitive,
 	});
 
 	const fileObj = await DriveFiles.pack(file, { self: true });

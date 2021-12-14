@@ -6,13 +6,14 @@ import { queueLogger } from '../../logger';
 import addFile from '@/services/drive/add-file';
 import * as dateFormat from 'dateformat';
 import { getFullApAccount } from '@/misc/convert-host';
-import { Users, Followings } from '@/models/index';
-import { MoreThan } from 'typeorm';
+import { Users, Followings, Mutings } from '@/models/index';
+import { In, MoreThan, Not } from 'typeorm';
 import { DbUserJobData } from '@/queue/types';
+import { Following } from '@/models/entities/following';
 
 const logger = queueLogger.createSubLogger('export-following');
 
-export async function exportFollowing(job: Bull.Job<DbUserJobData>, done: any): Promise<void> {
+export async function exportFollowing(job: Bull.Job<DbUserJobData>, done: () => void): Promise<void> {
 	logger.info(`Exporting following of ${job.data.user.id} ...`);
 
 	const user = await Users.findOne(job.data.user.id);
@@ -22,7 +23,7 @@ export async function exportFollowing(job: Bull.Job<DbUserJobData>, done: any): 
 	}
 
 	// Create temp file
-	const [path, cleanup] = await new Promise<[string, any]>((res, rej) => {
+	const [path, cleanup] = await new Promise<[string, () => void]>((res, rej) => {
 		tmp.file((e, path, fd, cleanup) => {
 			if (e) return rej(e);
 			res([path, cleanup]);
@@ -33,23 +34,26 @@ export async function exportFollowing(job: Bull.Job<DbUserJobData>, done: any): 
 
 	const stream = fs.createWriteStream(path, { flags: 'a' });
 
-	let exportedCount = 0;
-	let cursor: any = null;
+	let cursor: Following['id'] | null = null;
+
+	const mutings = job.data.excludeMuting ? await Mutings.find({
+		muterId: user.id,
+	}) : [];
 
 	while (true) {
 		const followings = await Followings.find({
 			where: {
 				followerId: user.id,
-				...(cursor ? { id: MoreThan(cursor) } : {})
+				...(mutings.length > 0 ? { followeeId: Not(In(mutings.map(x => x.muteeId))) } : {}),
+				...(cursor ? { id: MoreThan(cursor) } : {}),
 			},
 			take: 100,
 			order: {
-				id: 1
-			}
+				id: 1,
+			},
 		});
 
 		if (followings.length === 0) {
-			job.progress(100);
 			break;
 		}
 
@@ -58,7 +62,11 @@ export async function exportFollowing(job: Bull.Job<DbUserJobData>, done: any): 
 		for (const following of followings) {
 			const u = await Users.findOne({ id: following.followeeId });
 			if (u == null) {
-				exportedCount++; continue;
+				continue;
+			}
+
+			if (job.data.excludeInactive && u.updatedAt && (Date.now() - u.updatedAt.getTime() > 1000 * 60 * 60 * 24 * 90)) {
+				continue;
 			}
 
 			const content = getFullApAccount(u.username, u.host);
@@ -72,14 +80,7 @@ export async function exportFollowing(job: Bull.Job<DbUserJobData>, done: any): 
 					}
 				});
 			});
-			exportedCount++;
 		}
-
-		const total = await Followings.count({
-			followerId: user.id,
-		});
-
-		job.progress(exportedCount / total);
 	}
 
 	stream.end();

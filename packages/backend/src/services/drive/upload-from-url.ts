@@ -47,7 +47,7 @@ export default async (
 		error = e;
 		logger.error(`Failed to create drive file: ${e}`, {
 			url: url,
-			e: e
+			e: e,
 		});
 	}
 

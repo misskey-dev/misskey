@@ -70,7 +70,7 @@ function getParams<T extends IEndpointMeta>(defs: T, params: any): [Params<T>, A
 				id: '3d81ceae-475f-4600-b2a8-2bc116157532',
 			}, {
 				param: k,
-				reason: e.message
+				reason: e.message,
 			});
 			return true;
 		} else {

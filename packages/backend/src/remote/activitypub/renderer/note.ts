@@ -76,7 +76,7 @@ export default async function renderNote(note: Note, dive = true, isTalk = false
 	}
 
 	const mentionedUsers = note.mentions.length > 0 ? await Users.find({
-		id: In(note.mentions)
+		id: In(note.mentions),
 	}) : [];
 
 	const hashtagTags = (note.tags || []).map(tag => renderHashtag(tag));
@@ -101,7 +101,7 @@ export default async function renderNote(note: Note, dive = true, isTalk = false
 	const summary = note.cw === '' ? String.fromCharCode(0x200B) : note.cw;
 
 	const content = toHtml(Object.assign({}, note, {
-		text: apText
+		text: apText,
 	}));
 
 	const emojis = await getEmojis(note.emojis);
@@ -116,7 +116,7 @@ export default async function renderNote(note: Note, dive = true, isTalk = false
 	const asPoll = poll ? {
 		type: 'Question',
 		content: toHtml(Object.assign({}, note, {
-			text: text
+			text: text,
 		})),
 		[poll.expiresAt && poll.expiresAt < new Date() ? 'closed' : 'endTime']: poll.expiresAt,
 		[poll.multiple ? 'anyOf' : 'oneOf']: poll.choices.map((text, i) => ({
@@ -124,13 +124,13 @@ export default async function renderNote(note: Note, dive = true, isTalk = false
 			name: text,
 			replies: {
 				type: 'Collection',
-				totalItems: poll!.votes[i]
-			}
-		}))
+				totalItems: poll!.votes[i],
+			},
+		})),
 	} : {};
 
 	const asTalk = isTalk ? {
-		_misskey_talk: true
+		_misskey_talk: true,
 	} : {};
 
 	return {
@@ -150,7 +150,7 @@ export default async function renderNote(note: Note, dive = true, isTalk = false
 		sensitive: note.cw != null || files.some(file => file.isSensitive),
 		tag,
 		...asPoll,
-		...asTalk
+		...asTalk,
 	};
 }
 
@@ -160,7 +160,7 @@ export async function getEmojis(names: string[]): Promise<Emoji[]> {
 	const emojis = await Promise.all(
 		names.map(name => Emojis.findOne({
 			name,
-			host: null
+			host: null,
 		}))
 	);
 

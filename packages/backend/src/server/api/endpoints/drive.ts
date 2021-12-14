@@ -20,9 +20,9 @@ export const meta = {
 			usage: {
 				type: 'number' as const,
 				optional: false as const, nullable: false as const,
-			}
-		}
-	}
+			},
+		},
+	},
 };
 
 export default define(meta, async (ps, user) => {
@@ -33,6 +33,6 @@ export default define(meta, async (ps, user) => {
 
 	return {
 		capacity: 1024 * 1024 * instance.localDriveCapacityMb,
-		usage: usage
+		usage: usage,
 	};
 });

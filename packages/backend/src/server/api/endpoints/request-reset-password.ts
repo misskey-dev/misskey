@@ -15,28 +15,28 @@ export const meta = {
 
 	limit: {
 		duration: ms('1hour'),
-		max: 3
+		max: 3,
 	},
 
 	params: {
 		username: {
-			validator: $.str
+			validator: $.str,
 		},
 
 		email: {
-			validator: $.str
+			validator: $.str,
 		},
 	},
 
 	errors: {
 
-	}
+	},
 };
 
 export default define(meta, async (ps) => {
 	const user = await Users.findOne({
 		usernameLower: ps.username.toLowerCase(),
-		host: IsNull()
+		host: IsNull(),
 	});
 
 	// 合致するユーザーが登録されていなかったら無視
@@ -62,7 +62,7 @@ export default define(meta, async (ps) => {
 		id: genId(),
 		createdAt: new Date(),
 		userId: profile.userId,
-		token
+		token,
 	});
 
 	const link = `${config.url}/reset-password/${token}`;

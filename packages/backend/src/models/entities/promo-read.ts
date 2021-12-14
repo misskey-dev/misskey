@@ -10,7 +10,7 @@ export class PromoRead {
 	public id: string;
 
 	@Column('timestamp with time zone', {
-		comment: 'The created date of the PromoRead.'
+		comment: 'The created date of the PromoRead.',
 	})
 	public createdAt: Date;
 
@@ -19,7 +19,7 @@ export class PromoRead {
 	public userId: User['id'];
 
 	@ManyToOne(type => User, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public user: User | null;
@@ -28,7 +28,7 @@ export class PromoRead {
 	public noteId: Note['id'];
 
 	@ManyToOne(type => Note, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public note: Note | null;

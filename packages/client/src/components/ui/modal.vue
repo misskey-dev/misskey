@@ -1,8 +1,8 @@
 <template>
 <transition :name="$store.state.animation ? popup ? 'modal-popup' : 'modal' : ''" :duration="$store.state.animation ? popup ? 500 : 300 : 0" appear @after-leave="onClosed" @enter="$emit('opening')" @after-enter="childRendered">
-	<div v-show="manualShowing != null ? manualShowing : showing" v-hotkey.global="keymap" class="qzhlnise" :class="{ front }" :style="{ pointerEvents: (manualShowing != null ? manualShowing : showing) ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
-		<div class="bg _modalBg" @click="onBgClick" @contextmenu.prevent.stop="() => {}"></div>
-		<div ref="content" class="content" :class="{ popup, fixed, top: position === 'top' }" @click.self="onBgClick">
+	<div v-show="manualShowing != null ? manualShowing : showing" v-hotkey.global="keymap" class="qzhlnise" :style="{ pointerEvents: (manualShowing != null ? manualShowing : showing) ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
+		<div class="bg _modalBg" :style="{ zIndex }" @click="onBgClick" @contextmenu.prevent.stop="() => {}"></div>
+		<div ref="content" class="content" :class="{ popup, fixed, top: position === 'top' }" :style="{ zIndex }" @click.self="onBgClick">
 			<slot></slot>
 		</div>
 	</div>
@@ -11,6 +11,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import * as os from '@/os';
 
 function getFixedContainer(el: Element | null): Element | null {
 	if (el == null || el.tagName === 'BODY') return null;
@@ -51,6 +52,7 @@ export default defineComponent({
 	emits: ['opening', 'click', 'esc', 'close', 'closed'],
 	data() {
 		return {
+			zIndex: os.claimZIndex(this.front),
 			showing: true,
 			fixed: false,
 			transformOrigin: 'center',
@@ -230,13 +232,8 @@ export default defineComponent({
 }
 
 .qzhlnise {
-	> .bg {
-		z-index: 10000;
-	}
-
 	> .content:not(.popup) {
 		position: fixed;
-		z-index: 10000;
 		top: 0;
 		bottom: 0;
 		left: 0;
@@ -268,24 +265,9 @@ export default defineComponent({
 
 	> .content.popup {
 		position: absolute;
-		z-index: 10000;
 
 		&.fixed {
 			position: fixed;
-		}
-	}
-
-	&.front {
-		> .bg {
-			z-index: 20000;
-		}
-
-		> .content:not(.popup) {
-			z-index: 20000;
-		}
-
-		> .content.popup {
-			z-index: 20000;
 		}
 	}
 }

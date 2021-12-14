@@ -1,26 +1,28 @@
 <template>
-<div class="_root">
-	<div class="_block" style="padding: 24px;">
-		<MkInput v-model="endpoint" :datalist="endpoints" class="" @update:modelValue="onEndpointChange()">
-			<template #label>Endpoint</template>
-		</MkInput>
-		<MkTextarea v-model="body" code>
-			<template #label>Params (JSON or JSON5)</template>
-		</MkTextarea>
-		<MkSwitch v-model="withCredential">
-			With credential
-		</MkSwitch>
-		<MkButton primary full :disabled="sending" @click="send">
-			<template v-if="sending"><MkEllipsis/></template>
-			<template v-else><i class="fas fa-paper-plane"></i> Send</template>
-		</MkButton>
+<MkSpacer :content-max="700">
+	<div class="_formRoot">
+		<div class="_formBlock">
+			<MkInput v-model="endpoint" :datalist="endpoints" class="_formBlock" @update:modelValue="onEndpointChange()">
+				<template #label>Endpoint</template>
+			</MkInput>
+			<MkTextarea v-model="body" class="_formBlock" code>
+				<template #label>Params (JSON or JSON5)</template>
+			</MkTextarea>
+			<MkSwitch v-model="withCredential" class="_formBlock">
+				With credential
+			</MkSwitch>
+			<MkButton class="_formBlock" primary :disabled="sending" @click="send">
+				<template v-if="sending"><MkEllipsis/></template>
+				<template v-else><i class="fas fa-paper-plane"></i> Send</template>
+			</MkButton>
+		</div>
+		<div v-if="res" class="_formBlock">
+			<MkTextarea v-model="res" code readonly tall>
+				<template #label>Response</template>
+			</MkTextarea>
+		</div>
 	</div>
-	<div v-if="res" class="_block" style="padding: 24px;">
-		<MkTextarea v-model="res" code readonly tall>
-			<template #label>Response</template>
-		</MkTextarea>
-	</div>
-</div>
+</MkSpacer>
 </template>
 
 <script lang="ts">
@@ -64,7 +66,8 @@ export default defineComponent({
 	methods: {
 		send() {
 			this.sending = true;
-			os.api(this.endpoint, JSON5.parse(this.body)).then(res => {
+			const body = JSON5.parse(this.body);
+			os.api(this.endpoint, body, body.i || (this.withCredential ? undefined : null)).then(res => {
 				this.sending = false;
 				this.res = JSON5.stringify(res, null, 2);
 			}, err => {

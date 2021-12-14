@@ -16,10 +16,10 @@ export const meta = {
 		example: {
 			migrations: {
 				count: 66,
-				size: 32768
+				size: 32768,
 			},
-		}
-	}
+		},
+	},
 };
 
 export default define(meta, async () => {

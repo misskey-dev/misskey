@@ -653,6 +653,7 @@ low: "低い"
 global: "グローバル"
 sent: "送信"
 hashtags: "ハッシュタグ"
+hide: "隠す"
 _ad:
   back: "戻る"
 _gallery:

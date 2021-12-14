@@ -41,7 +41,7 @@ router.get('/disconnect/twitter', async ctx => {
 
 	const user = await Users.findOneOrFail({
 		host: null,
-		token: userToken
+		token: userToken,
 	});
 
 	const profile = await UserProfiles.findOneOrFail(user.id);
@@ -57,7 +57,7 @@ router.get('/disconnect/twitter', async ctx => {
 	// Publish i updated event
 	publishMainStream(user.id, 'meUpdated', await Users.pack(user, user, {
 		detail: true,
-		includeSecrets: true
+		includeSecrets: true,
 	}));
 });
 
@@ -68,7 +68,7 @@ async function getTwAuth() {
 		return autwh({
 			consumerKey: meta.twitterConsumerKey,
 			consumerSecret: meta.twitterConsumerSecret,
-			callbackUrl: `${config.url}/api/tw/cb`
+			callbackUrl: `${config.url}/api/tw/cb`,
 		});
 	} else {
 		return null;
@@ -104,7 +104,7 @@ router.get('/signin/twitter', async ctx => {
 	ctx.cookies.set('signin_with_twitter_sid', sessid, {
 		path: '/',
 		secure: config.url.startsWith('https'),
-		httpOnly: true
+		httpOnly: true,
 	});
 
 	ctx.redirect(twCtx.url);
@@ -164,7 +164,7 @@ router.get('/tw/cb', async ctx => {
 
 		const user = await Users.findOneOrFail({
 			host: null,
-			token: userToken
+			token: userToken,
 		});
 
 		const profile = await UserProfiles.findOneOrFail(user.id);
@@ -177,7 +177,7 @@ router.get('/tw/cb', async ctx => {
 					accessTokenSecret: result.accessTokenSecret,
 					userId: result.userId,
 					screenName: result.screenName,
-				}
+				},
 			},
 		});
 
@@ -186,7 +186,7 @@ router.get('/tw/cb', async ctx => {
 		// Publish i updated event
 		publishMainStream(user.id, 'meUpdated', await Users.pack(user, user, {
 			detail: true,
-			includeSecrets: true
+			includeSecrets: true,
 		}));
 	}
 });

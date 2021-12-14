@@ -24,7 +24,7 @@ export const meta = {
 			os: {
 				type: 'string' as const,
 				optional: false as const, nullable: false as const,
-				example: 'linux'
+				example: 'linux',
 			},
 			node: {
 				type: 'string' as const,
@@ -45,8 +45,8 @@ export const meta = {
 					cores: {
 						type: 'number' as const,
 						optional: false as const, nullable: false as const,
-					}
-				}
+					},
+				},
 			},
 			mem: {
 				type: 'object' as const,
@@ -56,8 +56,8 @@ export const meta = {
 						type: 'number' as const,
 						optional: false as const, nullable: false as const,
 						format: 'bytes',
-					}
-				}
+					},
+				},
 			},
 			fs: {
 				type: 'object' as const,
@@ -72,8 +72,8 @@ export const meta = {
 						type: 'number' as const,
 						optional: false as const, nullable: false as const,
 						format: 'bytes',
-					}
-				}
+					},
+				},
 			},
 			net: {
 				type: 'object' as const,
@@ -82,12 +82,12 @@ export const meta = {
 					interface: {
 						type: 'string' as const,
 						optional: false as const, nullable: false as const,
-						example: 'eth0'
-					}
-				}
-			}
-		}
-	}
+						example: 'eth0',
+					},
+				},
+			},
+		},
+	},
 };
 
 export default define(meta, async () => {
@@ -103,17 +103,17 @@ export default define(meta, async () => {
 		redis: redisClient.server_info.redis_version,
 		cpu: {
 			model: os.cpus()[0].model,
-			cores: os.cpus().length
+			cores: os.cpus().length,
 		},
 		mem: {
-			total: memStats.total
+			total: memStats.total,
 		},
 		fs: {
 			total: fsStats[0].size,
 			used: fsStats[0].used,
 		},
 		net: {
-			interface: netInterface
-		}
+			interface: netInterface,
+		},
 	};
 });

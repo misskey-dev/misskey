@@ -14,13 +14,13 @@ export const meta = {
 	params: {
 		limit: {
 			validator: $.optional.num.range(1, 100),
-			default: 10
+			default: 10,
 		},
 
 		group: {
 			validator: $.optional.bool,
-			default: false
-		}
+			default: false,
+		},
 	},
 
 	res: {
@@ -30,7 +30,7 @@ export const meta = {
 			type: 'object' as const,
 			optional: false as const, nullable: false as const,
 			ref: 'MessagingMessage',
-		}
+		},
 	},
 };
 

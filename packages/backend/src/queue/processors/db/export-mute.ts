@@ -40,12 +40,12 @@ export async function exportMute(job: Bull.Job<DbUserJobData>, done: any): Promi
 		const mutes = await Mutings.find({
 			where: {
 				muterId: user.id,
-				...(cursor ? { id: MoreThan(cursor) } : {})
+				...(cursor ? { id: MoreThan(cursor) } : {}),
 			},
 			take: 100,
 			order: {
-				id: 1
-			}
+				id: 1,
+			},
 		});
 
 		if (mutes.length === 0) {

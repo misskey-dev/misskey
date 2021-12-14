@@ -10,17 +10,17 @@ export const meta = {
 
 	params: {
 		token: {
-			validator: $.str
+			validator: $.str,
 		},
 
 		password: {
-			validator: $.str
-		}
+			validator: $.str,
+		},
 	},
 
 	errors: {
 
-	}
+	},
 };
 
 export default define(meta, async (ps, user) => {
@@ -38,7 +38,7 @@ export default define(meta, async (ps, user) => {
 	const hash = await bcrypt.hash(ps.password, salt);
 
 	await UserProfiles.update(req.userId, {
-		password: hash
+		password: hash,
 	});
 
 	PasswordResetRequests.delete(req.id);

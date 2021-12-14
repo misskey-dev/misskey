@@ -38,7 +38,7 @@ export default function() {
 			fs: {
 				r: round(Math.max(0, fsStats.rIO_sec)),
 				w: round(Math.max(0, fsStats.wIO_sec)),
-			}
+			},
 		};
 		ev.emit('serverStats', stats);
 		log.unshift(stats);

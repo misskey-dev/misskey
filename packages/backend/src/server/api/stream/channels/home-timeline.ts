@@ -4,6 +4,7 @@ import Channel from '../channel';
 import { Notes } from '@/models/index';
 import { checkWordMute } from '@/misc/check-word-mute';
 import { isBlockerUserRelated } from '@/misc/is-blocker-user-related';
+import { isInstanceMuted } from '@/misc/is-instance-muted';
 import { Packed } from '@/misc/schema';
 
 export default class extends Channel {
@@ -26,9 +27,12 @@ export default class extends Channel {
 			if ((this.user!.id !== note.userId) && !this.following.has(note.userId)) return;
 		}
 
+		// Ignore notes from instances the user has muted
+		if (isInstanceMuted(note, new Set<string>(this.userProfile?.mutedInstances ?? []))) return;
+
 		if (['followers', 'specified'].includes(note.visibility)) {
 			note = await Notes.pack(note.id, this.user!, {
-				detail: true
+				detail: true,
 			});
 
 			if (note.isHidden) {
@@ -38,13 +42,13 @@ export default class extends Channel {
 			// リプライなら再pack
 			if (note.replyId != null) {
 				note.reply = await Notes.pack(note.replyId, this.user!, {
-					detail: true
+					detail: true,
 				});
 			}
 			// Renoteなら再pack
 			if (note.renoteId != null) {
 				note.renote = await Notes.pack(note.renoteId, this.user!, {
-					detail: true
+					detail: true,
 				});
 			}
 		}

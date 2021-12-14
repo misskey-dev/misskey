@@ -18,7 +18,7 @@ export class AppRepository extends Repository<App> {
 		const opts = Object.assign({
 			detail: false,
 			includeSecret: false,
-			includeProfileImageIds: false
+			includeProfileImageIds: false,
 		}, options);
 
 		const app = typeof src === 'object' ? src : await this.findOneOrFail(src);
@@ -33,8 +33,8 @@ export class AppRepository extends Repository<App> {
 				isAuthorized: await AccessTokens.count({
 					appId: app.id,
 					userId: me,
-				}).then(count => count > 0)
-			} : {})
+				}).then(count => count > 0),
+			} : {}),
 		};
 	}
 }
@@ -45,31 +45,31 @@ export const packedAppSchema = {
 	properties: {
 		id: {
 			type: 'string' as const,
-			optional: false as const, nullable: false as const
+			optional: false as const, nullable: false as const,
 		},
 		name: {
 			type: 'string' as const,
-			optional: false as const, nullable: false as const
+			optional: false as const, nullable: false as const,
 		},
 		callbackUrl: {
 			type: 'string' as const,
-			optional: false as const, nullable: true as const
+			optional: false as const, nullable: true as const,
 		},
 		permission: {
 			type: 'array' as const,
 			optional: false as const, nullable: false as const,
 			items: {
 				type: 'string' as const,
-				optional: false as const, nullable: false as const
-			}
+				optional: false as const, nullable: false as const,
+			},
 		},
 		secret: {
 			type: 'string' as const,
-			optional: true as const, nullable: false as const
+			optional: true as const, nullable: false as const,
 		},
 		isAuthorized: {
 			type: 'boolean' as const,
-			optional: true as const, nullable: false as const
-		}
-	}
+			optional: true as const, nullable: false as const,
+		},
+	},
 };

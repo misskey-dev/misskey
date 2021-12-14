@@ -10,7 +10,7 @@ export const meta = {
 
 	params: {
 		inbox: {
-			validator: $.str
+			validator: $.str,
 		},
 	},
 };

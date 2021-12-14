@@ -33,9 +33,9 @@ export const meta = {
 		noSuchNote: {
 			message: 'No such note.',
 			code: 'NO_SUCH_NOTE',
-			id: 'bea9b03f-36e0-49c5-a4db-627a029f8971'
-		}
-	}
+			id: 'bea9b03f-36e0-49c5-a4db-627a029f8971',
+		},
+	},
 };
 
 export default define(meta, async (ps, user) => {
@@ -73,7 +73,7 @@ export default define(meta, async (ps, user) => {
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded',
 			'User-Agent': config.userAgent,
-			Accept: 'application/json, */*'
+			Accept: 'application/json, */*',
 		},
 		body: params,
 		timeout: 10000,
@@ -84,6 +84,6 @@ export default define(meta, async (ps, user) => {
 
 	return {
 		sourceLang: json.translations[0].detected_source_language,
-		text: json.translations[0].text
+		text: json.translations[0].text,
 	};
 });

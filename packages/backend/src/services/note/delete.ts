@@ -31,7 +31,7 @@ export default async function(user: User, note: Note, quiet = false) {
 
 	if (!quiet) {
 		publishNoteStream(note.id, 'deleted', {
-			deletedAt: deletedAt
+			deletedAt: deletedAt,
 		});
 
 		//#region ローカルの投稿なら削除アクティビティを配送
@@ -41,7 +41,7 @@ export default async function(user: User, note: Note, quiet = false) {
 			// if deletd note is renote
 			if (note.renoteId && note.text == null && !note.hasPoll && (note.fileIds == null || note.fileIds.length == 0)) {
 				renote = await Notes.findOne({
-					id: note.renoteId
+					id: note.renoteId,
 				});
 			}
 
@@ -76,7 +76,7 @@ export default async function(user: User, note: Note, quiet = false) {
 
 	await Notes.delete({
 		id: note.id,
-		userId: user.id
+		userId: user.id,
 	});
 }
 
@@ -116,14 +116,14 @@ async function getMentionedRemoteUsers(note: Note) {
 	// renote / quote
 	if (note.renoteUserId) {
 		where.push({
-			id: note.renoteUserId
+			id: note.renoteUserId,
 		});
 	}
 
 	if (where.length === 0) return [];
 
 	return await Users.find({
-		where
+		where,
 	}) as IRemoteUser[];
 }
 

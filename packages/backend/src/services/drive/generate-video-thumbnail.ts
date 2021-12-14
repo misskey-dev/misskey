@@ -13,7 +13,7 @@ export async function GenerateVideoThumbnail(path: string): Promise<IImage> {
 
 	await new Promise((res, rej) => {
 		FFmpeg({
-			source: path
+			source: path,
 		})
 		.on('end', res)
 		.on('error', rej)
@@ -21,7 +21,7 @@ export async function GenerateVideoThumbnail(path: string): Promise<IImage> {
 			folder: outDir,
 			filename: 'output.png',
 			count: 1,
-			timestamps: ['5%']
+			timestamps: ['5%'],
 		});
 	});
 

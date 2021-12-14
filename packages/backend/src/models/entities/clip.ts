@@ -8,37 +8,37 @@ export class Clip {
 	public id: string;
 
 	@Column('timestamp with time zone', {
-		comment: 'The created date of the Clip.'
+		comment: 'The created date of the Clip.',
 	})
 	public createdAt: Date;
 
 	@Index()
 	@Column({
 		...id(),
-		comment: 'The owner ID.'
+		comment: 'The owner ID.',
 	})
 	public userId: User['id'];
 
 	@ManyToOne(type => User, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public user: User | null;
 
 	@Column('varchar', {
 		length: 128,
-		comment: 'The name of the Clip.'
+		comment: 'The name of the Clip.',
 	})
 	public name: string;
 
 	@Column('boolean', {
-		default: false
+		default: false,
 	})
 	public isPublic: boolean;
 
 	@Column('varchar', {
 		length: 2048, nullable: true, default: null,
-		comment: 'The description of the Clip.'
+		comment: 'The description of the Clip.',
 	})
 	public description: string | null;
 }

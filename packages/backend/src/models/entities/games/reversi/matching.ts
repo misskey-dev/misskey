@@ -9,7 +9,7 @@ export class ReversiMatching {
 
 	@Index()
 	@Column('timestamp with time zone', {
-		comment: 'The created date of the ReversiMatching.'
+		comment: 'The created date of the ReversiMatching.',
 	})
 	public createdAt: Date;
 
@@ -18,7 +18,7 @@ export class ReversiMatching {
 	public parentId: User['id'];
 
 	@ManyToOne(type => User, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public parent: User | null;
@@ -28,7 +28,7 @@ export class ReversiMatching {
 	public childId: User['id'];
 
 	@ManyToOne(type => User, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public child: User | null;

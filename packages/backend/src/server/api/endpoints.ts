@@ -108,7 +108,7 @@ export interface IEndpoint {
 }
 
 const files = glob.sync('**/*.js', {
-	cwd: path.resolve(_dirname + '/endpoints/')
+	cwd: path.resolve(_dirname + '/endpoints/'),
 });
 
 const endpoints: IEndpoint[] = files.map(f => {
@@ -117,7 +117,7 @@ const endpoints: IEndpoint[] = files.map(f => {
 	return {
 		name: f.replace('.js', ''),
 		exec: ep.default,
-		meta: ep.meta || {}
+		meta: ep.meta || {},
 	};
 });
 

@@ -19,7 +19,7 @@ export default async function(follower: { id: User['id']; host: User['host']; ur
 		Blockings.findOne({
 			blockerId: followee.id,
 			blockeeId: follower.id,
-		})
+		}),
 	]);
 
 	if (blocking != null) throw new Error('blocking');
@@ -38,7 +38,7 @@ export default async function(follower: { id: User['id']; host: User['host']; ur
 		followerSharedInbox: Users.isRemoteUser(follower) ? follower.sharedInbox : undefined,
 		followeeHost: followee.host,
 		followeeInbox: Users.isRemoteUser(followee) ? followee.inbox : undefined,
-		followeeSharedInbox: Users.isRemoteUser(followee) ? followee.sharedInbox : undefined
+		followeeSharedInbox: Users.isRemoteUser(followee) ? followee.sharedInbox : undefined,
 	});
 
 	// Publish receiveRequest event
@@ -46,13 +46,13 @@ export default async function(follower: { id: User['id']; host: User['host']; ur
 		Users.pack(follower.id, followee).then(packed => publishMainStream(followee.id, 'receiveFollowRequest', packed));
 
 		Users.pack(followee.id, followee, {
-			detail: true
+			detail: true,
 		}).then(packed => publishMainStream(followee.id, 'meUpdated', packed));
 
 		// 通知を作成
 		createNotification(followee.id, 'receiveFollowRequest', {
 			notifierId: follower.id,
-			followRequestId: followRequest.id
+			followRequestId: followRequest.id,
 		});
 	}
 

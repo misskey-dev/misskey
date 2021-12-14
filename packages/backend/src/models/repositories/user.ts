@@ -15,32 +15,32 @@ export class UserRepository extends Repository<User> {
 		const [following1, following2, followReq1, followReq2, toBlocking, fromBlocked, mute] = await Promise.all([
 			Followings.findOne({
 				followerId: me,
-				followeeId: target
+				followeeId: target,
 			}),
 			Followings.findOne({
 				followerId: target,
-				followeeId: me
+				followeeId: me,
 			}),
 			FollowRequests.findOne({
 				followerId: me,
-				followeeId: target
+				followeeId: target,
 			}),
 			FollowRequests.findOne({
 				followerId: target,
-				followeeId: me
+				followeeId: me,
 			}),
 			Blockings.findOne({
 				blockerId: me,
-				blockeeId: target
+				blockeeId: target,
 			}),
 			Blockings.findOne({
 				blockerId: target,
-				blockeeId: me
+				blockeeId: me,
 			}),
 			Mutings.findOne({
 				muterId: me,
-				muteeId: target
-			})
+				muteeId: target,
+			}),
 		]);
 
 		return {
@@ -51,13 +51,13 @@ export class UserRepository extends Repository<User> {
 			isFollowed: following2 != null,
 			isBlocking: toBlocking != null,
 			isBlocked: fromBlocked != null,
-			isMuted: mute != null
+			isMuted: mute != null,
 		};
 	}
 
 	public async getHasUnreadMessagingMessage(userId: User['id']): Promise<boolean> {
 		const mute = await Mutings.find({
-			muterId: userId
+			muterId: userId,
 		});
 
 		const joinings = await UserGroupJoinings.find({ userId: userId });
@@ -76,9 +76,9 @@ export class UserRepository extends Repository<User> {
 					isRead: false,
 					...(mute.length > 0 ? { userId: Not(In(mute.map(x => x.muteeId))) } : {}),
 				},
-				take: 1
+				take: 1,
 			}).then(count => count > 0),
-			groupQs
+			groupQs,
 		]);
 
 		return withUser || withGroups.some(x => x);
@@ -86,11 +86,11 @@ export class UserRepository extends Repository<User> {
 
 	public async getHasUnreadAnnouncement(userId: User['id']): Promise<boolean> {
 		const reads = await AnnouncementReads.find({
-			userId: userId
+			userId: userId,
 		});
 
 		const count = await Announcements.count(reads.length > 0 ? {
-			id: Not(In(reads.map(read => read.announcementId)))
+			id: Not(In(reads.map(read => read.announcementId))),
 		} : {});
 
 		return count > 0;
@@ -101,7 +101,7 @@ export class UserRepository extends Repository<User> {
 
 		const unread = myAntennas.length > 0 ? await AntennaNotes.findOne({
 			antennaId: In(myAntennas.map(x => x.id)),
-			read: false
+			read: false,
 		}) : null;
 
 		return unread != null;
@@ -120,7 +120,7 @@ export class UserRepository extends Repository<User> {
 
 	public async getHasUnreadNotification(userId: User['id']): Promise<boolean> {
 		const mute = await Mutings.find({
-			muterId: userId
+			muterId: userId,
 		});
 		const mutedUserIds = mute.map(m => m.muteeId);
 
@@ -128,9 +128,9 @@ export class UserRepository extends Repository<User> {
 			where: {
 				notifieeId: userId,
 				...(mutedUserIds.length > 0 ? { notifierId: Not(In(mutedUserIds)) } : {}),
-				isRead: false
+				isRead: false,
 			},
-			take: 1
+			take: 1,
 		});
 
 		return count > 0;
@@ -138,7 +138,7 @@ export class UserRepository extends Repository<User> {
 
 	public async getHasPendingReceivedFollowRequest(userId: User['id']): Promise<boolean> {
 		const count = await FollowRequests.count({
-			followeeId: userId
+			followeeId: userId,
 		});
 
 		return count > 0;
@@ -173,7 +173,7 @@ export class UserRepository extends Repository<User> {
 	): Promise<Packed<'User'>> {
 		const opts = Object.assign({
 			detail: false,
-			includeSecrets: false
+			includeSecrets: false,
 		}, options);
 
 		const user = typeof src === 'object' ? src : await this.findOneOrFail(src);
@@ -245,7 +245,7 @@ export class UserRepository extends Repository<User> {
 				notesCount: user.notesCount,
 				pinnedNoteIds: pins.map(pin => pin.noteId),
 				pinnedNotes: Notes.packMany(pins.map(pin => pin.note!), me, {
-					detail: true
+					detail: true,
 				}),
 				pinnedPageId: profile!.pinnedPageId,
 				pinnedPage: profile!.pinnedPageId ? Pages.pack(profile!.pinnedPageId, me) : null,
@@ -255,7 +255,7 @@ export class UserRepository extends Repository<User> {
 				usePasswordLessLogin: profile!.usePasswordLessLogin,
 				securityKeys: profile!.twoFactorEnabled
 					? UserSecurityKeys.count({
-						userId: user.id
+						userId: user.id,
 					}).then(result => result >= 1)
 					: false,
 			} : {}),
@@ -274,11 +274,11 @@ export class UserRepository extends Repository<User> {
 				hideOnlineStatus: user.hideOnlineStatus,
 				hasUnreadSpecifiedNotes: NoteUnreads.count({
 					where: { userId: user.id, isSpecified: true },
-					take: 1
+					take: 1,
 				}).then(count => count > 0),
 				hasUnreadMentions: NoteUnreads.count({
 					where: { userId: user.id, isMentioned: true },
-					take: 1
+					take: 1,
 				}).then(count => count > 0),
 				hasUnreadAnnouncement: this.getHasUnreadAnnouncement(user.id),
 				hasUnreadAntenna: this.getHasUnreadAntenna(user.id),
@@ -288,6 +288,7 @@ export class UserRepository extends Repository<User> {
 				hasPendingReceivedFollowRequest: this.getHasPendingReceivedFollowRequest(user.id),
 				integrations: profile!.integrations,
 				mutedWords: profile!.mutedWords,
+				mutedInstances: profile!.mutedInstances,
 				mutingNotificationTypes: profile!.mutingNotificationTypes,
 				emailNotificationTypes: profile!.emailNotificationTypes,
 			} : {}),
@@ -298,11 +299,11 @@ export class UserRepository extends Repository<User> {
 				securityKeysList: profile!.twoFactorEnabled
 					? UserSecurityKeys.find({
 						where: {
-							userId: user.id
+							userId: user.id,
 						},
-						select: ['id', 'name', 'lastUsed']
+						select: ['id', 'name', 'lastUsed'],
 					})
-					: []
+					: [],
 			} : {}),
 
 			...(relation ? {
@@ -313,7 +314,7 @@ export class UserRepository extends Repository<User> {
 				isBlocking: relation.isBlocking,
 				isBlocked: relation.isBlocked,
 				isMuted: relation.isMuted,
-			} : {})
+			} : {}),
 		};
 
 		return await awaitAll(packed);
@@ -365,17 +366,17 @@ export const packedUserSchema = {
 		name: {
 			type: 'string' as const,
 			nullable: true as const, optional: false as const,
-			example: '藍'
+			example: '藍',
 		},
 		username: {
 			type: 'string' as const,
 			nullable: false as const, optional: false as const,
-			example: 'ai'
+			example: 'ai',
 		},
 		host: {
 			type: 'string' as const,
 			nullable: true as const, optional: false as const,
-			example: 'misskey.example.com'
+			example: 'misskey.example.com',
 		},
 		avatarUrl: {
 			type: 'string' as const,
@@ -389,17 +390,17 @@ export const packedUserSchema = {
 		avatarColor: {
 			type: 'any' as const,
 			nullable: true as const, optional: false as const,
-			default: null
+			default: null,
 		},
 		isAdmin: {
 			type: 'boolean' as const,
 			nullable: false as const, optional: true as const,
-			default: false
+			default: false,
 		},
 		isModerator: {
 			type: 'boolean' as const,
 			nullable: false as const, optional: true as const,
-			default: false
+			default: false,
 		},
 		isBot: {
 			type: 'boolean' as const,
@@ -418,15 +419,15 @@ export const packedUserSchema = {
 				properties: {
 					name: {
 						type: 'string' as const,
-						nullable: false as const, optional: false as const
+						nullable: false as const, optional: false as const,
 					},
 					url: {
 						type: 'string' as const,
 						nullable: false as const, optional: false as const,
-						format: 'url'
+						format: 'url',
 					},
-				}
-			}
+				},
+			},
 		},
 		url: {
 			type: 'string' as const,
@@ -455,7 +456,7 @@ export const packedUserSchema = {
 		bannerColor: {
 			type: 'any' as const,
 			nullable: true as const, optional: true as const,
-			default: null
+			default: null,
 		},
 		isLocked: {
 			type: 'boolean' as const,
@@ -464,12 +465,12 @@ export const packedUserSchema = {
 		isSuspended: {
 			type: 'boolean' as const,
 			nullable: false as const, optional: true as const,
-			example: false
+			example: false,
 		},
 		description: {
 			type: 'string' as const,
 			nullable: true as const, optional: true as const,
-			example: 'Hi masters, I am Ai!'
+			example: 'Hi masters, I am Ai!',
 		},
 		location: {
 			type: 'string' as const,
@@ -478,7 +479,7 @@ export const packedUserSchema = {
 		birthday: {
 			type: 'string' as const,
 			nullable: true as const, optional: true as const,
-			example: '2018-03-12'
+			example: '2018-03-12',
 		},
 		fields: {
 			type: 'array' as const,
@@ -489,15 +490,15 @@ export const packedUserSchema = {
 				properties: {
 					name: {
 						type: 'string' as const,
-						nullable: false as const, optional: false as const
+						nullable: false as const, optional: false as const,
 					},
 					value: {
 						type: 'string' as const,
-						nullable: false as const, optional: false as const
-					}
+						nullable: false as const, optional: false as const,
+					},
 				},
-				maxLength: 4
-			}
+				maxLength: 4,
+			},
 		},
 		followersCount: {
 			type: 'number' as const,
@@ -518,7 +519,7 @@ export const packedUserSchema = {
 				type: 'string' as const,
 				nullable: false as const, optional: false as const,
 				format: 'id',
-			}
+			},
 		},
 		pinnedNotes: {
 			type: 'array' as const,
@@ -527,11 +528,11 @@ export const packedUserSchema = {
 				type: 'object' as const,
 				nullable: false as const, optional: false as const,
 				ref: 'Note' as const,
-			}
+			},
 		},
 		pinnedPageId: {
 			type: 'string' as const,
-			nullable: true as const, optional: true as const
+			nullable: true as const, optional: true as const,
 		},
 		pinnedPage: {
 			type: 'object' as const,
@@ -541,47 +542,47 @@ export const packedUserSchema = {
 		twoFactorEnabled: {
 			type: 'boolean' as const,
 			nullable: false as const, optional: true as const,
-			default: false
+			default: false,
 		},
 		usePasswordLessLogin: {
 			type: 'boolean' as const,
 			nullable: false as const, optional: true as const,
-			default: false
+			default: false,
 		},
 		securityKeys: {
 			type: 'boolean' as const,
 			nullable: false as const, optional: true as const,
-			default: false
+			default: false,
 		},
 		avatarId: {
 			type: 'string' as const,
 			nullable: true as const, optional: true as const,
-			format: 'id'
+			format: 'id',
 		},
 		bannerId: {
 			type: 'string' as const,
 			nullable: true as const, optional: true as const,
-			format: 'id'
+			format: 'id',
 		},
 		autoWatch: {
 			type: 'boolean' as const,
-			nullable: false as const, optional: true as const
+			nullable: false as const, optional: true as const,
 		},
 		injectFeaturedNote: {
 			type: 'boolean' as const,
-			nullable: false as const, optional: true as const
+			nullable: false as const, optional: true as const,
 		},
 		alwaysMarkNsfw: {
 			type: 'boolean' as const,
-			nullable: false as const, optional: true as const
+			nullable: false as const, optional: true as const,
 		},
 		carefulBot: {
 			type: 'boolean' as const,
-			nullable: false as const, optional: true as const
+			nullable: false as const, optional: true as const,
 		},
 		autoAcceptFollowed: {
 			type: 'boolean' as const,
-			nullable: false as const, optional: true as const
+			nullable: false as const, optional: true as const,
 		},
 		hasUnreadSpecifiedNotes: {
 			type: 'boolean' as const,
@@ -617,43 +618,47 @@ export const packedUserSchema = {
 		},
 		integrations: {
 			type: 'object' as const,
-			nullable: false as const, optional: true as const
+			nullable: false as const, optional: true as const,
 		},
 		mutedWords: {
 			type: 'array' as const,
-			nullable: false as const, optional: true as const
+			nullable: false as const, optional: true as const,
+		},
+		mutedInstances: {
+			type: 'array' as const,
+			nullable: false as const, optional: true as const,
 		},
 		mutingNotificationTypes: {
 			type: 'array' as const,
-			nullable: false as const, optional: true as const
+			nullable: false as const, optional: true as const,
 		},
 		isFollowing: {
 			type: 'boolean' as const,
-			optional: true as const, nullable: false as const
+			optional: true as const, nullable: false as const,
 		},
 		hasPendingFollowRequestFromYou: {
 			type: 'boolean' as const,
-			optional: true as const, nullable: false as const
+			optional: true as const, nullable: false as const,
 		},
 		hasPendingFollowRequestToYou: {
 			type: 'boolean' as const,
-			optional: true as const, nullable: false as const
+			optional: true as const, nullable: false as const,
 		},
 		isFollowed: {
 			type: 'boolean' as const,
-			optional: true as const, nullable: false as const
+			optional: true as const, nullable: false as const,
 		},
 		isBlocking: {
 			type: 'boolean' as const,
-			optional: true as const, nullable: false as const
+			optional: true as const, nullable: false as const,
 		},
 		isBlocked: {
 			type: 'boolean' as const,
-			optional: true as const, nullable: false as const
+			optional: true as const, nullable: false as const,
 		},
 		isMuted: {
 			type: 'boolean' as const,
-			optional: true as const, nullable: false as const
-		}
+			optional: true as const, nullable: false as const,
+		},
 	},
 };

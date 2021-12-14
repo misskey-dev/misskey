@@ -12,7 +12,7 @@ export const meta = {
 
 	limit: {
 		duration: ms('1hour'),
-		max: 100
+		max: 100,
 	},
 
 	requireCredential: true as const,
@@ -22,34 +22,34 @@ export const meta = {
 	params: {
 		userId: {
 			validator: $.type(ID),
-		}
+		},
 	},
 
 	errors: {
 		noSuchUser: {
 			message: 'No such user.',
 			code: 'NO_SUCH_USER',
-			id: '5b12c78d-2b28-4dca-99d2-f56139b42ff8'
+			id: '5b12c78d-2b28-4dca-99d2-f56139b42ff8',
 		},
 
 		followeeIsYourself: {
 			message: 'Followee is yourself.',
 			code: 'FOLLOWEE_IS_YOURSELF',
-			id: 'd9e400b9-36b0-4808-b1d8-79e707f1296c'
+			id: 'd9e400b9-36b0-4808-b1d8-79e707f1296c',
 		},
 
 		notFollowing: {
 			message: 'You are not following that user.',
 			code: 'NOT_FOLLOWING',
-			id: '5dbf82f5-c92b-40b1-87d1-6c8c0741fd09'
+			id: '5dbf82f5-c92b-40b1-87d1-6c8c0741fd09',
 		},
 	},
 
 	res: {
 		type: 'object' as const,
 		optional: false as const, nullable: false as const,
-		ref: 'User'
-	}
+		ref: 'User',
+	},
 };
 
 export default define(meta, async (ps, user) => {
@@ -69,7 +69,7 @@ export default define(meta, async (ps, user) => {
 	// Check not following
 	const exist = await Followings.findOne({
 		followerId: follower.id,
-		followeeId: followee.id
+		followeeId: followee.id,
 	});
 
 	if (exist == null) {
