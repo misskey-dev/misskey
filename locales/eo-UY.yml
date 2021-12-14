@@ -353,7 +353,7 @@ unregister: "Malregistriĝi"
 passwordLessLogin: "Saluti sen pasvorto"
 resetPassword: "Restarigi pasvorton"
 newPasswordIs: "La nova pasvorto estas {password}."
-reduceUiAnimation: "Redukti la animacioj de la fasado"
+reduceUiAnimation: "Redukti la animaciojn de la fasado"
 share: "Kundividi"
 notFound: "Ne trovita"
 uploadFolder: "Dosierujo implicita por alŝuto"
@@ -571,7 +571,7 @@ wide: "Vasta"
 narrow: "Malvasta"
 showTitlebar: "Videbligi titolan stangon"
 clearCache: "Malplenigi staplon"
-onlineUsersCount: "{n} uzanto(j) estas surlinea"
+onlineUsersCount: "{n} uzantoj estas surlineaj"
 nUsers: "{n} uzanto(j)"
 nNotes: "{n} notoj"
 myTheme: "Miaj koloraroj"
@@ -936,8 +936,11 @@ _pages:
     _button:
       text: "Titolo"
       _action:
+        _dialog:
+          content: "Enhavo"
         _pushEvent:
           event: "Nomo de la evento"
+          no-variable: "Neniu"
     _radioButton:
       title: "Titolo"
       default: "Implicitaĵa valoro"
