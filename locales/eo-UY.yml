@@ -301,7 +301,7 @@ driveCapacityPerLocalAccount: "Volumo de disko po unu loka uzanto"
 driveCapacityPerRemoteAccount: "Volumo de disko po unu fora uzanto"
 iconUrl: "URL de la bildsimbolo (retpaĝsimbolo, ktp.)"
 bannerUrl: "URL de standardo"
-backgroundImageUrl: "URL de fona bildo"
+backgroundImageUrl: "URL de la fona bildo"
 basicInfo: "Baza informo"
 pinnedUsers: "Alpinglita uzanto"
 pinnedUsersDescription: "Listigu uzantnomojn apartige en ĉiu linio por alpingli al la paĝoj ekz \"Esplori\"."
@@ -838,7 +838,7 @@ _visibility:
 _postForm:
   replyPlaceholder: "Respondi la noton…"
   quotePlaceholder: "Citi la noton…"
-  channelPlaceholder: "Mencii en kanalo…"
+  channelPlaceholder: "Mencii en la kanalo…"
 _profile:
   name: "Nomo"
   username: "Uzantnomo"
