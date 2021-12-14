@@ -4,6 +4,8 @@ module.exports = class chartV31639325650583 {
     name = 'chartV31639325650583'
 
     async up(queryRunner) {
+			await queryRunner.query(`DELETE FROM "__chart__per_user_drive" WHERE "group" IS NULL`);
+
         await queryRunner.query(`DROP INDEX "public"."IDX_dd907becf76104e4b656659e6b"`);
         await queryRunner.query(`DROP INDEX "public"."IDX_eddfed8fb40305a04c6f941050"`);
         await queryRunner.query(`DROP INDEX "public"."IDX_f09d543e3acb16c5976bdb31fa"`);
