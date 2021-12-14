@@ -813,6 +813,8 @@ deleteAccountConfirm: "アカウントが削除されます。よろしいです
 incorrectPassword: "パスワードが間違っています。"
 voteConfirm: "「{choice}」に投票しますか？"
 hide: "隠す"
+leaveGroup: "グループから抜ける"
+leaveGroupConfirm: "「{name}」から抜けますか？"
 
 _emailUnavailable:
   used: "既に使用されています"
