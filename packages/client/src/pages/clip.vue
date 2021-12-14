@@ -1,16 +1,18 @@
 <template>
-<div v-if="clip" class="_section">
-	<div class="okzinsic _content _panel _gap">
-		<div v-if="clip.description" class="description">
-			<Mfm :text="clip.description" :is-note="false" :i="$i"/>
+<MkSpacer :content-max="800">
+	<div v-if="clip">
+		<div class="okzinsic _panel">
+			<div v-if="clip.description" class="description">
+				<Mfm :text="clip.description" :is-note="false" :i="$i"/>
+			</div>
+			<div class="user">
+				<MkAvatar :user="clip.user" class="avatar" :show-indicator="true"/> <MkUserName :user="clip.user" :nowrap="false"/>
+			</div>
 		</div>
-		<div class="user">
-			<MkAvatar :user="clip.user" class="avatar" :show-indicator="true"/> <MkUserName :user="clip.user" :nowrap="false"/>
-		</div>
-	</div>
 
-	<XNotes class="_content _gap" :pagination="pagination" :detail="true"/>
-</div>
+		<XNotes :pagination="pagination" :detail="true"/>
+	</div>
+</MkSpacer>
 </template>
 
 <script lang="ts">
@@ -40,10 +42,11 @@ export default defineComponent({
 			[symbols.PAGE_INFO]: computed(() => this.clip ? {
 				title: this.clip.name,
 				icon: 'fas fa-paperclip',
-				action: {
+				bg: 'var(--bg)',
+				actions: [{
 					icon: 'fas fa-ellipsis-h',
 					handler: this.menu
-				}
+				}],
 			} : null),
 			clip: null,
 			pagination: {
@@ -133,6 +136,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .okzinsic {
 	position: relative;
+	margin-bottom: var(--margin);
 
 	> .description {
 		padding: 16px;

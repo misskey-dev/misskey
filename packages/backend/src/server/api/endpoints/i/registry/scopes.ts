@@ -7,7 +7,7 @@ export const meta = {
 	secure: true,
 
 	params: {
-	}
+	},
 };
 
 export default define(meta, async (ps, user) => {

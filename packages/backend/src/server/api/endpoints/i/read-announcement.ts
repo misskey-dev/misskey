@@ -23,9 +23,9 @@ export const meta = {
 		noSuchAnnouncement: {
 			message: 'No such announcement.',
 			code: 'NO_SUCH_ANNOUNCEMENT',
-			id: '184663db-df88-4bc2-8b52-fb85f0681939'
+			id: '184663db-df88-4bc2-8b52-fb85f0681939',
 		},
-	}
+	},
 };
 
 export default define(meta, async (ps, user) => {
@@ -39,7 +39,7 @@ export default define(meta, async (ps, user) => {
 	// Check if already read
 	const read = await AnnouncementReads.findOne({
 		announcementId: ps.announcementId,
-		userId: user.id
+		userId: user.id,
 	});
 
 	if (read != null) {

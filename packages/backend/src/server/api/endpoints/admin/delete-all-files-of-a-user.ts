@@ -14,12 +14,12 @@ export const meta = {
 		userId: {
 			validator: $.type(ID),
 		},
-	}
+	},
 };
 
 export default define(meta, async (ps, me) => {
 	const files = await DriveFiles.find({
-		userId: ps.userId
+		userId: ps.userId,
 	});
 
 	for (const file of files) {

@@ -19,7 +19,7 @@ export default async function(userId: string, type: notificationType, body: noti
 
 	// Fetch
 	const subscriptions = await SwSubscriptions.find({
-		userId: userId
+		userId: userId,
 	});
 
 	for (const subscription of subscriptions) {
@@ -27,14 +27,14 @@ export default async function(userId: string, type: notificationType, body: noti
 			endpoint: subscription.endpoint,
 			keys: {
 				auth: subscription.auth,
-				p256dh: subscription.publickey
-			}
+				p256dh: subscription.publickey,
+			},
 		};
 
 		push.sendNotification(pushSubscription, JSON.stringify({
-			type, body
+			type, body,
 		}), {
-			proxy: config.proxy
+			proxy: config.proxy,
 		}).catch((err: any) => {
 			//swLogger.info(err.statusCode);
 			//swLogger.info(err.headers);
@@ -45,7 +45,7 @@ export default async function(userId: string, type: notificationType, body: noti
 					userId: userId,
 					endpoint: subscription.endpoint,
 					auth: subscription.auth,
-					publickey: subscription.publickey
+					publickey: subscription.publickey,
 				});
 			}
 		});

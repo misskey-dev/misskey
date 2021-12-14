@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from 'vue';
+import { computed, defineComponent, onMounted, onUnmounted, ref, watch } from 'vue';
 import * as os from '@/os';
 
 export default defineComponent({
@@ -58,6 +58,9 @@ export default defineComponent({
 	},
 
 	setup(props, context) {
+		const containerEl = ref<HTMLElement>();
+		const thumbEl = ref<HTMLElement>();
+
 		const rawValue = ref((props.modelValue - props.min) / (props.max - props.min));
 		const steppedValue = computed(() => {
 			if (props.step) {
@@ -78,10 +81,25 @@ export default defineComponent({
 			if (thumbEl.value == null) return 0;
 			return thumbEl.value!.offsetWidth;
 		});
-		const thumbPosition = computed(() => {
-			if (containerEl.value == null) return 0;
-			return (containerEl.value.offsetWidth - thumbWidth.value) * steppedValue.value;
+		const thumbPosition = ref(0);
+		const calcThumbPosition = () => {
+			if (containerEl.value == null) {
+				thumbPosition.value = 0;
+			} else {
+				thumbPosition.value = (containerEl.value.offsetWidth - thumbWidth.value) * steppedValue.value;
+			}
+		};
+		watch([steppedValue, containerEl], calcThumbPosition);
+		onMounted(() => {
+			const ro = new ResizeObserver((entries, observer) => {
+				calcThumbPosition();
+			});
+			ro.observe(containerEl.value);
+			onUnmounted(() => {
+				ro.disconnect();
+			});
 		});
+
 		const steps = computed(() => {
 			if (props.step) {
 				return (props.max - props.min) / props.step;
@@ -89,8 +107,6 @@ export default defineComponent({
 				return 0;
 			}
 		});
-		const containerEl = ref<HTMLElement>();
-		const thumbEl = ref<HTMLElement>();
 
 		const onMousedown = (ev: MouseEvent | TouchEvent) => {
 			ev.preventDefault();

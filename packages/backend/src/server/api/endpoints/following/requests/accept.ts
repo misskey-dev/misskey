@@ -15,21 +15,21 @@ export const meta = {
 	params: {
 		userId: {
 			validator: $.type(ID),
-		}
+		},
 	},
 
 	errors: {
 		noSuchUser: {
 			message: 'No such user.',
 			code: 'NO_SUCH_USER',
-			id: '66ce1645-d66c-46bb-8b79-96739af885bd'
+			id: '66ce1645-d66c-46bb-8b79-96739af885bd',
 		},
 		noFollowRequest: {
 			message: 'No follow request.',
 			code: 'NO_FOLLOW_REQUEST',
-			id: 'bcde4f8b-0913-4614-8881-614e522fb041'
+			id: 'bcde4f8b-0913-4614-8881-614e522fb041',
 		},
-	}
+	},
 };
 
 export default define(meta, async (ps, user) => {

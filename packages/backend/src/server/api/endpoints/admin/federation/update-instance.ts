@@ -11,13 +11,13 @@ export const meta = {
 
 	params: {
 		host: {
-			validator: $.str
+			validator: $.str,
 		},
 
 		isSuspended: {
-			validator: $.bool
+			validator: $.bool,
 		},
-	}
+	},
 };
 
 export default define(meta, async (ps, me) => {
@@ -28,6 +28,6 @@ export default define(meta, async (ps, me) => {
 	}
 
 	Instances.update({ host: toPuny(ps.host) }, {
-		isSuspended: ps.isSuspended
+		isSuspended: ps.isSuspended,
 	});
 });

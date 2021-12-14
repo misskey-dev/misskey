@@ -58,5 +58,5 @@ export const packedHashtagSchema = {
 			type: 'number' as const,
 			optional: false as const, nullable: false as const,
 		},
-	}
+	},
 };

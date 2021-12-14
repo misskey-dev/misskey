@@ -40,7 +40,7 @@ export default async (user: { id: User['id']; host: User['host']; }, note: Note)
 
 	publishNoteStream(note.id, 'unreacted', {
 		reaction: decodeReaction(exist.reaction).reaction,
-		userId: user.id
+		userId: user.id,
 	});
 
 	//#region 配信

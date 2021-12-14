@@ -11,16 +11,16 @@ export const meta = {
 
 	params: {
 		endpoint: {
-			validator: $.str
+			validator: $.str,
 		},
 
 		auth: {
-			validator: $.str
+			validator: $.str,
 		},
 
 		publickey: {
-			validator: $.str
-		}
+			validator: $.str,
+		},
 	},
 
 	res: {
@@ -30,14 +30,14 @@ export const meta = {
 			state: {
 				type: 'string' as const,
 				optional: false as const, nullable: false as const,
-				enum: ['already-subscribed', 'subscribed']
+				enum: ['already-subscribed', 'subscribed'],
 			},
 			key: {
 				type: 'string' as const,
-				optional: false as const, nullable: false as const
-			}
-		}
-	}
+				optional: false as const, nullable: false as const,
+			},
+		},
+	},
 };
 
 export default define(meta, async (ps, user) => {
@@ -54,7 +54,7 @@ export default define(meta, async (ps, user) => {
 	if (exist != null) {
 		return {
 			state: 'already-subscribed',
-			key: instance.swPublicKey
+			key: instance.swPublicKey,
 		};
 	}
 
@@ -64,11 +64,11 @@ export default define(meta, async (ps, user) => {
 		userId: user.id,
 		endpoint: ps.endpoint,
 		auth: ps.auth,
-		publickey: ps.publickey
+		publickey: ps.publickey,
 	});
 
 	return {
 		state: 'subscribed',
-		key: instance.swPublicKey
+		key: instance.swPublicKey,
 	};
 });

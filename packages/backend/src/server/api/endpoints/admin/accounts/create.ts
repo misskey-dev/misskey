@@ -12,7 +12,7 @@ export const meta = {
 
 		password: {
 			validator: Users.validatePassword,
-		}
+		},
 	},
 
 	res: {
@@ -23,9 +23,9 @@ export const meta = {
 			token: {
 				type: 'string' as const,
 				optional: false as const, nullable: false as const,
-			}
-		}
-	}
+			},
+		},
+	},
 };
 
 export default define(meta, async (ps, _me) => {
@@ -42,7 +42,7 @@ export default define(meta, async (ps, _me) => {
 
 	const res = await Users.pack(account, account, {
 		detail: true,
-		includeSecrets: true
+		includeSecrets: true,
 	});
 
 	(res as any).token = secret;

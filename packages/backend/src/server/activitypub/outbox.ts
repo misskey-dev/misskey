@@ -38,7 +38,7 @@ export default async (ctx: Router.RouterContext) => {
 	// Verify user
 	const user = await Users.findOne({
 		id: userId,
-		host: null
+		host: null,
 	});
 
 	if (user == null) {
@@ -67,16 +67,16 @@ export default async (ctx: Router.RouterContext) => {
 			`${partOf}?${url.query({
 				page: 'true',
 				since_id: sinceId,
-				until_id: untilId
+				until_id: untilId,
 			})}`,
 			user.notesCount, activities, partOf,
 			notes.length ? `${partOf}?${url.query({
 				page: 'true',
-				since_id: notes[0].id
+				since_id: notes[0].id,
 			})}` : undefined,
 			notes.length ? `${partOf}?${url.query({
 				page: 'true',
-				until_id: notes[notes.length - 1].id
+				until_id: notes[notes.length - 1].id,
 			})}` : undefined
 		);
 

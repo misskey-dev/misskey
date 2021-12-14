@@ -28,7 +28,7 @@ export default class extends Channel {
 				});
 				ev.emit('requestQueueStatsLog', {
 					id: body.id,
-					length: body.length
+					length: body.length,
 				});
 				break;
 		}

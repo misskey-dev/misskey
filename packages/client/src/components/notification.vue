@@ -19,10 +19,6 @@
 				:reaction="notification.reaction ? notification.reaction.replace(/^:(\w+):$/, ':$1@.:') : notification.reaction"
 				:custom-emojis="notification.note.emojis"
 				:no-style="true"
-				@touchstart.passive="onReactionMouseover"
-				@mouseover="onReactionMouseover"
-				@mouseleave="onReactionMouseleave"
-				@touchend="onReactionMouseleave"
 			/>
 		</div>
 	</div>
@@ -151,7 +147,7 @@ export default defineComponent({
 			os.api('users/groups/invitations/reject', { invitationId: props.notification.invitation.id });
 		};
 
-		const { onMouseover: onReactionMouseover, onMouseleave: onReactionMouseleave } = useTooltip((showing) => {
+		useTooltip(reactionRef, (showing) => {
 			os.popup(XReactionTooltip, {
 				showing,
 				reaction: props.notification.reaction ? props.notification.reaction.replace(/^:(\w+):$/, ':$1@.:') : props.notification.reaction,
@@ -170,8 +166,6 @@ export default defineComponent({
 			rejectFollowRequest,
 			acceptGroupInvitation,
 			rejectGroupInvitation,
-			onReactionMouseover,
-			onReactionMouseleave,
 			elRef,
 			reactionRef,
 		};

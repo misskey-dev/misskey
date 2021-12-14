@@ -13,11 +13,11 @@ export const meta = {
 
 	params: {
 		session: {
-			validator: $.nullable.str
+			validator: $.nullable.str,
 		},
 
 		name: {
-			validator: $.nullable.optional.str
+			validator: $.nullable.optional.str,
 		},
 
 		description: {
@@ -39,10 +39,10 @@ export const meta = {
 		properties: {
 			token: {
 				type: 'string' as const,
-				optional: false as const, nullable: false as const
-			}
-		}
-	}
+				optional: false as const, nullable: false as const,
+			},
+		},
+	},
 };
 
 export default define(meta, async (ps, user) => {
@@ -67,6 +67,6 @@ export default define(meta, async (ps, user) => {
 	});
 
 	return {
-		token: accessToken
+		token: accessToken,
 	};
 });

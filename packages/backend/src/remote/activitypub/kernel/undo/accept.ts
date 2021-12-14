@@ -15,7 +15,7 @@ export default async (actor: IRemoteUser, activity: IAccept): Promise<string> =>
 
 	const following = await Followings.findOne({
 		followerId: follower.id,
-		followeeId: actor.id
+		followeeId: actor.id,
 	});
 
 	if (following) {

@@ -14,22 +14,22 @@ export const meta = {
 	params: {
 		listId: {
 			validator: $.type(ID),
-		}
+		},
 	},
 
 	errors: {
 		noSuchList: {
 			message: 'No such list.',
 			code: 'NO_SUCH_LIST',
-			id: '78436795-db79-42f5-b1e2-55ea2cf19166'
-		}
-	}
+			id: '78436795-db79-42f5-b1e2-55ea2cf19166',
+		},
+	},
 };
 
 export default define(meta, async (ps, user) => {
 	const userList = await UserLists.findOne({
 		id: ps.listId,
-		userId: user.id
+		userId: user.id,
 	});
 
 	if (userList == null) {

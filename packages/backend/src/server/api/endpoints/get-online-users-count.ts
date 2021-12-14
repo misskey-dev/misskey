@@ -9,15 +9,15 @@ export const meta = {
 	requireCredential: false as const,
 
 	params: {
-	}
+	},
 };
 
 export default define(meta, async () => {
 	const count = await Users.count({
-		lastActiveDate: MoreThan(new Date(Date.now() - USER_ONLINE_THRESHOLD))
+		lastActiveDate: MoreThan(new Date(Date.now() - USER_ONLINE_THRESHOLD)),
 	});
 
 	return {
-		count
+		count,
 	};
 });

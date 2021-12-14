@@ -17,7 +17,7 @@ export const meta = {
 
 	params: {
 		fileId: {
-			validator: $.type(ID)
+			validator: $.type(ID),
 		},
 	},
 
@@ -25,9 +25,9 @@ export const meta = {
 		noSuchFile: {
 			message: 'No such file.',
 			code: 'MO_SUCH_FILE',
-			id: 'fc46b5a4-6b92-4c33-ac66-b806659bb5cf'
-		}
-	}
+			id: 'fc46b5a4-6b92-4c33-ac66-b806659bb5cf',
+		},
+	},
 };
 
 export default define(meta, async (ps, me) => {
@@ -51,14 +51,14 @@ export default define(meta, async (ps, me) => {
 	await getConnection().queryResultCache!.remove(['meta_emojis']);
 
 	publishBroadcastStream('emojiAdded', {
-		emoji: await Emojis.pack(emoji.id)
+		emoji: await Emojis.pack(emoji.id),
 	});
 
 	insertModerationLog(me, 'addEmoji', {
-		emojiId: emoji.id
+		emojiId: emoji.id,
 	});
 
 	return {
-		id: emoji.id
+		id: emoji.id,
 	};
 });

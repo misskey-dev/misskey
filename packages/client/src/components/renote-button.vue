@@ -3,10 +3,6 @@
 	ref="buttonRef"
 	class="eddddedb _button canRenote"
 	@click="renote()"
-	@touchstart.passive="onMouseover"
-	@mouseover="onMouseover"
-	@mouseleave="onMouseleave"
-	@touchend="onMouseleave"
 >
 	<i class="fas fa-retweet"></i>
 	<p v-if="count > 0" class="count">{{ count }}</p>
@@ -42,7 +38,7 @@ export default defineComponent({
 
 		const canRenote = computed(() => ['public', 'home'].includes(props.note.visibility) || props.note.userId === $i.id);
 
-		const { onMouseover, onMouseleave } = useTooltip(async (showing) => {
+		useTooltip(buttonRef, async (showing) => {
 			const renotes = await os.api('notes/renotes', {
 				noteId: props.note.id,
 				limit: 11
@@ -87,8 +83,6 @@ export default defineComponent({
 			buttonRef,
 			canRenote,
 			renote,
-			onMouseover,
-			onMouseleave,
 		};
 	},
 });

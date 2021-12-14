@@ -10,13 +10,13 @@ export const meta = {
 	params: {
 		limit: {
 			validator: $.optional.num.range(1, 100),
-			default: 10
+			default: 10,
 		},
 
 		offset: {
 			validator: $.optional.num.min(0),
-			default: 0
-		}
+			default: 0,
+		},
 	},
 
 	res: {
@@ -28,27 +28,27 @@ export const meta = {
 			properties: {
 				id: {
 					type: 'string' as const,
-					optional: false as const, nullable: false as const
+					optional: false as const, nullable: false as const,
 				},
 				name: {
 					type: 'string' as const,
-					optional: false as const, nullable: false as const
+					optional: false as const, nullable: false as const,
 				},
 				callbackUrl: {
 					type: 'string' as const,
-					optional: false as const, nullable: false as const
+					optional: false as const, nullable: false as const,
 				},
 				permission: {
 					type: 'array' as const,
 					optional: false as const, nullable: false as const,
 					items: {
 						type: 'string' as const,
-						optional: false as const, nullable: false as const
-					}
+						optional: false as const, nullable: false as const,
+					},
 				},
 				secret: {
 					type: 'string' as const,
-					optional: true as const, nullable: false as const
+					optional: true as const, nullable: false as const,
 				},
 				isAuthorized: {
 					type: 'object' as const,
@@ -56,22 +56,22 @@ export const meta = {
 					properties: {
 						appId: {
 							type: 'string' as const,
-							optional: false as const, nullable: false as const
+							optional: false as const, nullable: false as const,
 						},
 						userId: {
 							type: 'string' as const,
-							optional: false as const, nullable: false as const
-						}
-					}
-				}
-			}
-		}
-	}
+							optional: false as const, nullable: false as const,
+						},
+					},
+				},
+			},
+		},
+	},
 };
 
 export default define(meta, async (ps, user) => {
 	const query = {
-		userId: user.id
+		userId: user.id,
 	};
 
 	const apps = await Apps.find({
@@ -81,6 +81,6 @@ export default define(meta, async (ps, user) => {
 	});
 
 	return await Promise.all(apps.map(app => Apps.pack(app, user, {
-		detail: true
+		detail: true,
 	})));
 });

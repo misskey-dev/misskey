@@ -11,7 +11,7 @@ export class PollVote {
 
 	@Index()
 	@Column('timestamp with time zone', {
-		comment: 'The created date of the PollVote.'
+		comment: 'The created date of the PollVote.',
 	})
 	public createdAt: Date;
 
@@ -20,7 +20,7 @@ export class PollVote {
 	public userId: User['id'];
 
 	@ManyToOne(type => User, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public user: User | null;
@@ -30,7 +30,7 @@ export class PollVote {
 	public noteId: Note['id'];
 
 	@ManyToOne(type => Note, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public note: Note | null;

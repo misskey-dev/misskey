@@ -35,7 +35,7 @@ export default async (user: { id: User['id']; host: User['host']; }, note: Note,
 		createdAt: new Date(),
 		noteId: note.id,
 		userId: user.id,
-		reaction
+		reaction,
 	};
 
 	// Create reaction
@@ -66,7 +66,7 @@ export default async (user: { id: User['id']; host: User['host']; }, note: Note,
 	await Notes.createQueryBuilder().update()
 		.set({
 			reactions: () => sql,
-			score: () => '"score" + 1'
+			score: () => '"score" + 1',
 		})
 		.where('id = :id', { id: note.id })
 		.execute();
@@ -79,22 +79,22 @@ export default async (user: { id: User['id']; host: User['host']; }, note: Note,
 	let emoji = await Emojis.findOne({
 		where: {
 			name: decodedReaction.name,
-			host: decodedReaction.host
+			host: decodedReaction.host,
 		},
-		select: ['name', 'host', 'url']
+		select: ['name', 'host', 'url'],
 	});
 
 	if (emoji) {
 		emoji = {
 			name: emoji.host ? `${emoji.name}@${emoji.host}` : `${emoji.name}@.`,
-			url: emoji.url
+			url: emoji.url,
 		} as any;
 	}
 
 	publishNoteStream(note.id, 'reacted', {
 		reaction: decodedReaction.reaction,
 		emoji: emoji,
-		userId: user.id
+		userId: user.id,
 	});
 
 	// リアクションされたユーザーがローカルユーザーなら通知を作成
@@ -102,20 +102,20 @@ export default async (user: { id: User['id']; host: User['host']; }, note: Note,
 		createNotification(note.userId, 'reaction', {
 			notifierId: user.id,
 			noteId: note.id,
-			reaction: reaction
+			reaction: reaction,
 		});
 	}
 
 	// Fetch watchers
 	NoteWatchings.find({
 		noteId: note.id,
-		userId: Not(user.id)
+		userId: Not(user.id),
 	}).then(watchers => {
 		for (const watcher of watchers) {
 			createNotification(watcher.userId, 'reaction', {
 				notifierId: user.id,
 				noteId: note.id,
-				reaction: reaction
+				reaction: reaction,
 			});
 		}
 	});

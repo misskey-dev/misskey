@@ -289,6 +289,10 @@ export default defineComponent({
 
 				&.post {
 					height: $nav-icon-only-width;
+
+					> i {
+						opacity: 1;
+					}
 				}
 
 				&.post:before {

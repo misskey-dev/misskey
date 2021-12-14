@@ -13,7 +13,7 @@ export default function(id: string, totalItems: any, orderedItems: any, partOf: 
 		partOf,
 		type: 'OrderedCollectionPage',
 		totalItems,
-		orderedItems
+		orderedItems,
 	} as any;
 
 	if (prev) page.prev = prev;

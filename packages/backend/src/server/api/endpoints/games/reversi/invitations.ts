@@ -16,42 +16,42 @@ export const meta = {
 				id: {
 					type: 'string' as const,
 					optional: false as const, nullable: false as const,
-					format: 'id'
+					format: 'id',
 				},
 				createdAt: {
 					type: 'string' as const,
 					optional: false as const, nullable: false as const,
-					format: 'date-time'
+					format: 'date-time',
 				},
 				parentId: {
 					type: 'string' as const,
 					optional: false as const, nullable: false as const,
-					format: 'id'
+					format: 'id',
 				},
 				parent: {
 					type: 'object' as const,
 					optional: false as const, nullable: false as const,
-					ref: 'User'
+					ref: 'User',
 				},
 				childId: {
 					type: 'string' as const,
 					optional: false as const, nullable: false as const,
-					format: 'id'
+					format: 'id',
 				},
 				child: {
 					type: 'object' as const,
 					optional: false as const, nullable: false as const,
-					ref: 'User'
-				}
-			}
-		}
-	}
+					ref: 'User',
+				},
+			},
+		},
+	},
 };
 
 export default define(meta, async (ps, user) => {
 	// Find session
 	const invitations = await ReversiMatchings.find({
-		childId: user.id
+		childId: user.id,
 	});
 
 	return await Promise.all(invitations.map((i) => ReversiMatchings.pack(i, user)));

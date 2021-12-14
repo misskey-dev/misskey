@@ -11,13 +11,13 @@ export class Page {
 
 	@Index()
 	@Column('timestamp with time zone', {
-		comment: 'The created date of the Page.'
+		comment: 'The created date of the Page.',
 	})
 	public createdAt: Date;
 
 	@Index()
 	@Column('timestamp with time zone', {
-		comment: 'The updated date of the Page.'
+		comment: 'The updated date of the Page.',
 	})
 	public updatedAt: Date;
 
@@ -33,7 +33,7 @@ export class Page {
 	public name: string;
 
 	@Column('varchar', {
-		length: 256, nullable: true
+		length: 256, nullable: true,
 	})
 	public summary: string | null;
 
@@ -41,7 +41,7 @@ export class Page {
 	public alignCenter: boolean;
 
 	@Column('boolean', {
-		default: false
+		default: false,
 	})
 	public hideTitleWhenPinned: boolean;
 
@@ -53,12 +53,12 @@ export class Page {
 	@Index()
 	@Column({
 		...id(),
-		comment: 'The ID of author.'
+		comment: 'The ID of author.',
 	})
 	public userId: User['id'];
 
 	@ManyToOne(type => User, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public user: User | null;
@@ -70,24 +70,24 @@ export class Page {
 	public eyeCatchingImageId: DriveFile['id'] | null;
 
 	@ManyToOne(type => DriveFile, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public eyeCatchingImage: DriveFile | null;
 
 	@Column('jsonb', {
-		default: []
+		default: [],
 	})
 	public content: Record<string, any>[];
 
 	@Column('jsonb', {
-		default: []
+		default: [],
 	})
 	public variables: Record<string, any>[];
 
 	@Column('varchar', {
 		length: 16384,
-		default: ''
+		default: '',
 	})
 	public script: string;
 
@@ -102,12 +102,12 @@ export class Page {
 	@Index()
 	@Column({
 		...id(),
-		array: true, default: '{}'
+		array: true, default: '{}',
 	})
 	public visibleUserIds: User['id'][];
 
 	@Column('integer', {
-		default: 0
+		default: 0,
 	})
 	public likedCount: number;
 

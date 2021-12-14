@@ -27,7 +27,7 @@ export async function createSystemUser(username: string) {
 	await getConnection().transaction(async transactionalEntityManager => {
 		const exist = await transactionalEntityManager.findOne(User, {
 			usernameLower: username.toLowerCase(),
-			host: null
+			host: null,
 		});
 
 		if (exist) throw new Error('the user is already exists');
@@ -48,7 +48,7 @@ export async function createSystemUser(username: string) {
 		await transactionalEntityManager.insert(UserKeypair, {
 			publicKey: keyPair.publicKey,
 			privateKey: keyPair.privateKey,
-			userId: account.id
+			userId: account.id,
 		});
 
 		await transactionalEntityManager.insert(UserProfile, {

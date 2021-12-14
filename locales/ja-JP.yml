@@ -592,6 +592,7 @@ smtpSecure: "SMTP 接続に暗黙的なSSL/TLSを使用する"
 smtpSecureInfo: "STARTTLS使用時はオフにします。"
 testEmail: "配信テスト"
 wordMute: "ワードミュート"
+instanceMute: "インスタンスミュート"
 userSaysSomething: "{name}が何かを言いました"
 makeActive: "アクティブにする"
 display: "表示"
@@ -811,6 +812,9 @@ continueThread: "さらにスレッドを見る"
 deleteAccountConfirm: "アカウントが削除されます。よろしいですか？"
 incorrectPassword: "パスワードが間違っています。"
 voteConfirm: "「{choice}」に投票しますか？"
+hide: "隠す"
+leaveGroup: "グループから抜ける"
+leaveGroupConfirm: "「{name}」から抜けますか？"
 
 _emailUnavailable:
   used: "既に使用されています"
@@ -1020,6 +1024,12 @@ _wordMute:
   soft: "ソフト"
   hard: "ハード"
   mutedNotes: "ミュートされたノート"
+
+_instanceMute:
+  instanceMuteDescription: "ミュートしたインスタンスのユーザーへの返信を含めて、設定したインスタンスの全てのノートとRenoteをミュートします。"
+  instanceMuteDescription2: "改行で区切って設定します"
+  title: "設定したインスタンスのノートを隠します。"
+  heading: "ミュートするインスタンス"
 
 _theme:
   explore: "テーマを探す"
@@ -1311,6 +1321,8 @@ _exportOrImport:
   muteList: "ミュート"
   blockingList: "ブロック"
   userLists: "リスト"
+  excludeMutingUsers: "ミュートしているユーザーを除外"
+  excludeInactiveUsers: "使われていないアカウントを除外"
 
 _charts:
   federationInstancesIncDec: "連合の増減"

@@ -10,15 +10,15 @@ export const meta = {
 
 	params: {
 		host: {
-			validator: $.str
-		}
+			validator: $.str,
+		},
 	},
 
 	res: {
 		type: 'object' as const,
 		optional: false as const, nullable: false as const,
-		ref: 'FederationInstance'
-	}
+		ref: 'FederationInstance',
+	},
 };
 
 export default define(meta, async (ps, me) => {

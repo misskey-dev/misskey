@@ -2,11 +2,11 @@
 // ただディレクティブ内でonUnmountedなどのcomposition api使えるのか不明
 
 import { Directive, ref } from 'vue';
-import { isDeviceTouch } from '@/scripts/is-device-touch';
+import { isTouchUsing } from '@/scripts/touch';
 import { popup, alert } from '@/os';
 
-const start = isDeviceTouch ? 'touchstart' : 'mouseover';
-const end = isDeviceTouch ? 'touchend' : 'mouseleave';
+const start = isTouchUsing ? 'touchstart' : 'mouseover';
+const end = isTouchUsing ? 'touchend' : 'mouseleave';
 const delay = 100;
 
 export default {

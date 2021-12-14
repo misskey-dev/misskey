@@ -11,7 +11,7 @@ export const meta = {
 	params: {
 		limit: {
 			validator: $.optional.num.range(1, 100),
-			default: 10
+			default: 10,
 		},
 
 		sinceId: {
@@ -24,8 +24,8 @@ export const meta = {
 
 		my: {
 			validator: $.optional.bool,
-			default: false
-		}
+			default: false,
+		},
 	},
 
 	res: {
@@ -38,86 +38,86 @@ export const meta = {
 				id: {
 					type: 'string' as const,
 					optional: false as const, nullable: false as const,
-					format: 'id'
+					format: 'id',
 				},
 				createdAt: {
 					type: 'string' as const,
 					optional: false as const, nullable: false as const,
-					format: 'date-time'
+					format: 'date-time',
 				},
 				startedAt: {
 					type: 'string' as const,
 					optional: false as const, nullable: false as const,
-					format: 'date-time'
+					format: 'date-time',
 				},
 				isStarted: {
 					type: 'boolean' as const,
-					optional: false as const, nullable: false as const
+					optional: false as const, nullable: false as const,
 				},
 				isEnded: {
 					type: 'boolean' as const,
-					optional: false as const, nullable: false as const
+					optional: false as const, nullable: false as const,
 				},
 				form1: {
 					type: 'any' as const,
-					optional: false as const, nullable: true as const
+					optional: false as const, nullable: true as const,
 				},
 				form2: {
 					type: 'any' as const,
-					optional: false as const, nullable: true as const
+					optional: false as const, nullable: true as const,
 				},
 				user1Accepted: {
 					type: 'boolean' as const,
 					optional: false as const, nullable: false as const,
-					default: false
+					default: false,
 				},
 				user2Accepted: {
 					type: 'boolean' as const,
 					optional: false as const, nullable: false as const,
-					default: false
+					default: false,
 				},
 				user1Id: {
 					type: 'string' as const,
 					optional: false as const, nullable: false as const,
-					format: 'id'
+					format: 'id',
 				},
 				user2Id: {
 					type: 'string' as const,
 					optional: false as const, nullable: false as const,
-					format: 'id'
+					format: 'id',
 				},
 				user1: {
 					type: 'object' as const,
 					optional: false as const, nullable: false as const,
-					ref: 'User'
+					ref: 'User',
 				},
 				user2: {
 					type: 'object' as const,
 					optional: false as const, nullable: false as const,
-					ref: 'User'
+					ref: 'User',
 				},
 				winnerId: {
 					type: 'string' as const,
 					optional: false as const, nullable: true as const,
-					format: 'id'
+					format: 'id',
 				},
 				winner: {
 					type: 'object' as const,
 					optional: false as const, nullable: true as const,
-					ref: 'User'
+					ref: 'User',
 				},
 				surrendered: {
 					type: 'string' as const,
 					optional: false as const, nullable: true as const,
-					format: 'id'
+					format: 'id',
 				},
 				black: {
 					type: 'number' as const,
-					optional: false as const, nullable: true as const
+					optional: false as const, nullable: true as const,
 				},
 				bw: {
 					type: 'string' as const,
-					optional: false as const, nullable: false as const
+					optional: false as const, nullable: false as const,
 				},
 				isLlotheo: {
 					type: 'boolean' as const,
@@ -125,15 +125,15 @@ export const meta = {
 				},
 				canPutEverywhere: {
 					type: 'boolean' as const,
-					optional: false as const, nullable: false as const
+					optional: false as const, nullable: false as const,
 				},
 				loopedBoard: {
 					type: 'boolean' as const,
-					optional: false as const, nullable: false as const
-				}
-			}
-		}
-	}
+					optional: false as const, nullable: false as const,
+				},
+			},
+		},
+	},
 };
 
 export default define(meta, async (ps, user) => {
@@ -151,6 +151,6 @@ export default define(meta, async (ps, user) => {
 	const games = await query.take(ps.limit!).getMany();
 
 	return await Promise.all(games.map((g) => ReversiGames.pack(g, user, {
-		detail: false
+		detail: false,
 	})));
 });

@@ -1,6 +1,6 @@
 <template>
-<div>
-	<div class="jqqmcavi" style="margin: 16px;">
+<MkSpacer :content-max="700">
+	<div class="jqqmcavi">
 		<MkButton v-if="pageId" class="button" inline link :to="`/@${ author.username }/pages/${ currentName }`"><i class="fas fa-external-link-square-alt"></i> {{ $ts._pages.viewPage }}</MkButton>
 		<MkButton v-if="!readonly" inline primary class="button" @click="save"><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
 		<MkButton v-if="pageId" inline class="button" @click="duplicate"><i class="fas fa-copy"></i> {{ $ts.duplicate }}</MkButton>
@@ -8,7 +8,7 @@
 	</div>
 
 	<div v-if="tab === 'settings'">
-		<div style="padding: 16px;" class="_formRoot">
+		<div class="_formRoot">
 			<MkInput v-model="title" class="_formBlock">
 				<template #label>{{ $ts._pages.title }}</template>
 			</MkInput>
@@ -43,7 +43,7 @@
 	</div>
 
 	<div v-else-if="tab === 'contents'">
-		<div style="padding: 16px;">
+		<div>
 			<XBlocks v-model="content" class="content" :hpml="hpml"/>
 
 			<MkButton v-if="!readonly" @click="add()"><i class="fas fa-plus"></i></MkButton>
@@ -75,7 +75,7 @@
 			<MkTextarea v-model="script" class="_code"/>
 		</div>
 	</div>
-</div>
+</MkSpacer>
 </template>
 
 <script lang="ts">
@@ -448,7 +448,7 @@ export default defineComponent({
 		},
 
 		setEyeCatchingImage(e) {
-			selectFile(e.currentTarget || e.target, null, false).then(file => {
+			selectFile(e.currentTarget || e.target, null).then(file => {
 				this.eyeCatchingImageId = file.id;
 			});
 		},

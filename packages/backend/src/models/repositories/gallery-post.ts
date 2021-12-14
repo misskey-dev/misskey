@@ -83,8 +83,8 @@ export const packedGalleryPostSchema = {
 			items: {
 				type: 'string' as const,
 				optional: false as const, nullable: false as const,
-				format: 'id'
-			}
+				format: 'id',
+			},
 		},
 		files: {
 			type: 'array' as const,
@@ -93,7 +93,7 @@ export const packedGalleryPostSchema = {
 				type: 'object' as const,
 				optional: false as const, nullable: false as const,
 				ref: 'DriveFile' as const,
-			}
+			},
 		},
 		tags: {
 			type: 'array' as const,
@@ -101,11 +101,11 @@ export const packedGalleryPostSchema = {
 			items: {
 				type: 'string' as const,
 				optional: false as const, nullable: false as const,
-			}
+			},
 		},
 		isSensitive: {
 			type: 'boolean' as const,
 			optional: false as const, nullable: false as const,
 		},
-	}
+	},
 };

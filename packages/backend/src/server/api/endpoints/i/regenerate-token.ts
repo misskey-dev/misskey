@@ -12,9 +12,9 @@ export const meta = {
 
 	params: {
 		password: {
-			validator: $.str
-		}
-	}
+			validator: $.str,
+		},
+	},
 };
 
 export default define(meta, async (ps, user) => {
@@ -31,7 +31,7 @@ export default define(meta, async (ps, user) => {
 	const secret = generateUserToken();
 
 	await Users.update(user.id, {
-		token: secret
+		token: secret,
 	});
 
 	// Publish event

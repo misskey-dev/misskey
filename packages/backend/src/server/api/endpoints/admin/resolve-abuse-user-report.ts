@@ -13,7 +13,7 @@ export const meta = {
 		reportId: {
 			validator: $.type(ID),
 		},
-	}
+	},
 };
 
 export default define(meta, async (ps, me) => {

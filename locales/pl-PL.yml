@@ -738,6 +738,7 @@ ratio: "Stosunek"
 global: "Globalna"
 sent: "Wyślij"
 hashtags: "Hashtag"
+hide: "Ukryj"
 _ffVisibility:
   public: "Publikuj"
 _ad:

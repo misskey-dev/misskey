@@ -14,19 +14,19 @@ export const meta = {
 		optional: false as const, nullable: false as const,
 		properties: {
 			deliver: {
-				ref: 'QueueCount'
+				ref: 'QueueCount',
 			},
 			inbox: {
-				ref: 'QueueCount'
+				ref: 'QueueCount',
 			},
 			db: {
-				ref: 'QueueCount'
+				ref: 'QueueCount',
 			},
 			objectStorage: {
-				ref: 'QueueCount'
-			}
-		}
-	}
+				ref: 'QueueCount',
+			},
+		},
+	},
 };
 
 export default define(meta, async (ps) => {

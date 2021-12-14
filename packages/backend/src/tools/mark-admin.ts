@@ -9,9 +9,9 @@ async function main(username: string) {
 
 	const res = await Users.update({
 		usernameLower: username.toLowerCase(),
-		host: null
+		host: null,
 	}, {
-		isAdmin: true
+		isAdmin: true,
 	});
 
 	if (res.affected !== 1) {

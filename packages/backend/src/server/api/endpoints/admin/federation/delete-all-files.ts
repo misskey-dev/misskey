@@ -11,14 +11,14 @@ export const meta = {
 
 	params: {
 		host: {
-			validator: $.str
-		}
-	}
+			validator: $.str,
+		},
+	},
 };
 
 export default define(meta, async (ps, me) => {
 	const files = await DriveFiles.find({
-		userHost: ps.host
+		userHost: ps.host,
 	});
 
 	for (const file of files) {

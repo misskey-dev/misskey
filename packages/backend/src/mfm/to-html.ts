@@ -144,7 +144,7 @@ export function toHtml(nodes: mfm.MfmNode[] | null, mentionedRemoteUsers: IMenti
 			a.href = `https://www.google.com/search?q=${node.props.query}`;
 			a.textContent = node.props.content;
 			return a;
-		}
+		},
 	};
 
 	appendChildren(nodes, doc.body);

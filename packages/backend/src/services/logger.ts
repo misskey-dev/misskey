@@ -36,7 +36,7 @@ export default class Logger {
 				server: {
 					target: config.syslog.host,
 					port: config.syslog.port,
-				}
+				},
 			});
 		}
 	}

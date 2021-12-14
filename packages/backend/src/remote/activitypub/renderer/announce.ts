@@ -24,6 +24,6 @@ export default (object: any, note: Note) => {
 		published: note.createdAt.toISOString(),
 		to,
 		cc,
-		object
+		object,
 	};
 };

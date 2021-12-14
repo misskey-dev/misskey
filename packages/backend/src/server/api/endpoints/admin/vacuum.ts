@@ -16,7 +16,7 @@ export const meta = {
 		analyze: {
 			validator: $.bool,
 		},
-	}
+	},
 };
 
 export default define(meta, async (ps, me) => {

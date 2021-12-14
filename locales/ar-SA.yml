@@ -752,6 +752,7 @@ muteThread: "اكتم النقاش"
 unmuteThread: "ارفع الكتم عن النقاش"
 deleteAccountConfirm: "سيحذف حسابك نهائيًا، أتريد المتابعة؟"
 incorrectPassword: "كلمة السر خاطئة."
+hide: "إخفاء"
 _emailUnavailable:
   used: "هذا البريد الإلكتروني مستخدم"
   format: "صيغة البريد الإلكتروني غير صالحة"
