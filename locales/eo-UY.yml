@@ -906,6 +906,7 @@ _pages:
   title: "Temlinio"
   url: "URL de paĝo"
   alignCenter: "Centrigi"
+  hideTitleWhenPinned: "Kaŝi la titolon de la paĝo kiam alpinglita"
   chooseBlock: "Aldoni blokon"
   contentBlocks: "Enhavo"
   inputBlocks: "Enigo"
