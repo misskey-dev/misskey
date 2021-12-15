@@ -1,7 +1,7 @@
 import autobind from 'autobind-decorator';
-import { AiScript } from "@syuilo/aiscript";
+import { AiScript, values, utils } from "@syuilo/aiscript";
 import { ref, Ref } from 'vue';
-import { valToJs } from '@syuilo/aiscript/built/interpreter/util';
+import { HpmlError } from '.';
 
 type Page = Record<string, any> & {
 	id: any;
@@ -14,65 +14,61 @@ type Page = Record<string, any> & {
 export class HpmlEngine {
 	public page: Page;
 	public aiscript: AiScript;
-	public envVars: Record<string, any>; // js literal
-	public inputVars: Record<string, any>;
+	public inputVars: string[] = [];
 	public vars: Ref<Record<string, any>> = ref({});
+	public inputVarUpdatedCallback?: values.VFn;
 
 	constructor(page: Page, aiscript: AiScript) {
 		this.page = page;
 		this.aiscript = aiscript;
-		this.envVars = this.collectEnvVars();
-		this.inputVars = this.collectInputVars();
 
 		this.aiscript.scope.opts.onUpdated = (name, value) => {
-			this.vars.value = this.collectVars();
+			const { vars, inputVars } = this.collectVars();
+			this.vars.value = vars;
+			this.inputVars = inputVars;
 		};
-
 		// when the last line of the script is executed:
 		// this.vars.value = this.collectVars();
 	}
 
 	@autobind
-	public collectEnvVars() {
-		// TODO
-		return {};
-	}
-
-	@autobind
-	public collectInputVars() {
-		// TODO
-		return {};
-	}
-
-	@autobind
-	public collectScriptVars() {
-		const vars: Record<string, any> = {};
-		for (const [k, v] of this.aiscript.scope.getAll()) {
-			if (v.attr == null) continue;
-			const exportAttr = v.attr.find(attr => (attr.name == 'export'));
-			if (exportAttr == null) continue;
-			try {
-				vars[k] = valToJs(v);
-			} catch (e) {
-				// noop
-			}
-		}
-		return vars;
-	}
-
-	@autobind
 	public collectVars() {
+		// collects aiscript variables
 		const vars: Record<string, any> = {};
-		for (const k of Object.keys(this.envVars)) {
-			vars[k] = this.envVars[k];
+		const inputVars: string[] = [];
+		for (const [name, value] of this.aiscript.scope.getAll()) {
+			if (value.attr == null) continue;
+
+			// export attribute
+			const exportAttr = value.attr.find(attr => (attr.name == 'export'));
+			if (exportAttr == null) continue;
+
+			// input attribute
+			const inputAttr = value.attr.find(attr => (attr.name == 'input'));
+			if (inputAttr != null) {
+				if (!['str', 'num', 'bool'].includes(value.type)) {
+					throw new HpmlError(`cannot use type '${value.type}' for input variable`);
+				}
+				inputVars.push(name);
+			}
+
+			try {
+				vars[name] = utils.valToJs(value);
+			} catch (e) {}
 		}
-		for (const k of Object.keys(this.inputVars)) {
-			vars[k] = this.inputVars[k];
+		return { vars, inputVars };
+	}
+
+	@autobind
+	public updateInputVar(name: string, value: any) {
+		// if (!Object.keys(this.inputVars).includes(name)) {
+		// 	throw new HpmlError(`No such input var '${name}'`);
+		// }
+		if (this.inputVarUpdatedCallback) {
+			this.aiscript.execFn(this.inputVarUpdatedCallback, [values.STR(name), utils.jsToVal(value)]);
 		}
-		const scriptVars = this.collectScriptVars();
-		for (const k of Object.keys(scriptVars)) {
-			vars[k] = scriptVars[k];
-		}
-		return vars;
+		const { vars, inputVars } = this.collectVars();
+		this.vars.value = vars;
+		this.inputVars = inputVars;
 	}
 }
