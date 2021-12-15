@@ -711,7 +711,7 @@ _channel:
   removeBanner: "Forviŝi la standardan bildon"
   owned: "Posedaĵo"
   following: "Sekvante"
-  usersCount: "{n} partoprenanto(j)"
+  usersCount: "{n} partoprenantoj"
 _menuDisplay:
   top: "Supro"
   hide: "Kaŝi"
