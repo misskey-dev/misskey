@@ -1004,7 +1004,7 @@ _notification:
   youRenoted: "{name} plusendis"
   youGotPoll: "{name} balotis"
   youGotMessagingMessageFromUser: "{name} sendis al vi mesaĝon"
-  youGotMessagingMessageFromGroup: "Mesaĝo sendita ĉe la grupo {name}"
+  youGotMessagingMessageFromGroup: "Oni sendis al la grupo {name} mesaĝon"
   youWereFollowed: "eksekvis vin"
   youReceivedFollowRequest: "Vi ricevis peton de sekvado"
   yourFollowRequestAccepted: "Via peto de sekvado estis akceptita."
