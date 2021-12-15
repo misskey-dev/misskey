@@ -635,6 +635,8 @@ ffVisibility: "Videbleco pri viaj sekvataro/sekvantaro\n"
 ffVisibilityDescription: "Agordi la videblecon kiu povas vidi tiujn kiujn vi sekvas kaj tiujn kiuj sekvas vin."
 continueThread: "Vidi pli mesaĝarojn"
 incorrectPassword: "Nevalida pasvorto"
+leaveGroup: "Eliĝi el la grupo"
+leaveGroupConfirm: "Ĉu vi certas ke vi volas eliĝi el la grupo {name}?"
 _emailUnavailable:
   used: "La retpoŝto jam estas uzita."
   format: "Nevalida formato."
