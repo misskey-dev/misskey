@@ -78,11 +78,11 @@ export const meta = {
 		},
 
 		fileIds: {
-			validator: $.optional.arr($.type(ID)).unique().range(1, 4),
+			validator: $.optional.arr($.type(ID)).unique(),
 		},
 
 		mediaIds: {
-			validator: $.optional.arr($.type(ID)).unique().range(1, 4),
+			validator: $.optional.arr($.type(ID)).unique(),
 			deprecated: true,
 		},
 
