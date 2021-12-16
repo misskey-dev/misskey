@@ -1,5 +1,5 @@
 <template>
-<div class="fgmtyycl" :style="{ top: top + 'px', left: left + 'px' }">
+<div class="fgmtyycl" :style="{ zIndex, top: top + 'px', left: left + 'px' }">
 	<transition name="zoom" @after-leave="$emit('closed')">
 		<MkUrlPreview v-if="showing" class="_popup _shadow" :url="url"/>
 	</transition>
@@ -35,6 +35,7 @@ export default defineComponent({
 			u: null,
 			top: 0,
 			left: 0,
+			zIndex: os.claimZIndex(),
 		};
 	},
 
@@ -52,7 +53,6 @@ export default defineComponent({
 <style lang="scss" scoped>
 .fgmtyycl {
 	position: absolute;
-	z-index: 11000;
 	width: 500px;
 	max-width: calc(90vw - 12px);
 	pointer-events: none;
