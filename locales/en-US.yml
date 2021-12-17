@@ -814,7 +814,7 @@ voteConfirm: "Confirm your vote for \"{choice}\"?"
 hide: "Hide"
 leaveGroup: "Leave Group"
 leaveGroupConfirm: "Are you sure you want to leave \"{name}\"?"
-useDrawerReactionPickerForMobile: "Display picker as drawer on mobile"
+useDrawerReactionPickerForMobile: "Display reaction picker as drawer on mobile"
 _emailUnavailable:
   used: "This email address is already being used"
   format: "The format of this email address is invalid"
