@@ -203,7 +203,7 @@ noJobs: "ジョブはあらへん"
 federating: "連合しとる"
 blocked: "ブロックしとる"
 suspended: "配信せぇへん"
-all: "みな"
+all: "みんな"
 subscribing: "購読しとる"
 publishing: "配信しとる"
 notResponding: "応答してへんで"
@@ -896,7 +896,7 @@ _poll:
   votesCount: "{n}票"
   vote: "投票する"
 _visibility:
-  publicDescription: "みなのユーザーに公開"
+  publicDescription: "みんなに公開"
   home: "ホーム"
   followers: "フォロワー"
 _profile:
