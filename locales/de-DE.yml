@@ -815,6 +815,7 @@ voteConfirm: "Wirklich für \"{choice}\" abstimmen?"
 hide: "Inhalt verbergen"
 leaveGroup: "Gruppe verlassen"
 leaveGroupConfirm: "Möchtest du \"{name}\" wirklich verlassen?"
+useDrawerReactionPickerForMobile: "Auf mobilen Geräten ausfahrbare Reaktionsauswahl anzeigen"
 _emailUnavailable:
   used: "Diese Email-Adresse wird bereits verwendet"
   format: "Das Format dieser Email-Adresse ist ungültig"
