@@ -1,5 +1,5 @@
 <template>
-<MkModal ref="modal" @click="done(true)" @closed="$emit('closed')">
+<MkModal ref="modal" :prefer-type="'dialog'" :front="true" @click="done(true)" @closed="$emit('closed')">
 	<div class="mk-dialog">
 		<div v-if="icon" class="icon">
 			<i :class="icon"></i>

@@ -802,6 +802,7 @@ makeReactionsPublicDescription: "Список сделанных вами реа
 classic: "Классика"
 unmuteThread: "Отключить звук"
 ffVisibilityDescription: "Вы можете установить объем вашей следующей/последней информации."
+hide: "Спрятать"
 _emailUnavailable:
   used: "Уже используется"
   format: "Неправильный формат"
@@ -923,6 +924,7 @@ _mfm:
   sparkle: "Блеск"
   sparkleDescription: "Добавьте эффект искрящихся частиц."
   rotate: "Повернуть"
+  rotateDescription: "Повернуть на указанный угол."
 _reversi:
   reversi: "Реверси"
   gameSettings: "Настройки игры"

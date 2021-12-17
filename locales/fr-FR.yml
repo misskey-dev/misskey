@@ -798,6 +798,7 @@ filter: "Filtre"
 controlPanel: "Panneau de contrôle"
 manageAccounts: "Gérer les comptes"
 classic: "Classique"
+hide: "Masquer"
 _emailUnavailable:
   format: "Le format de cette adresse de courriel est invalide"
   mx: "Ce serveur de courriels est invalide"
