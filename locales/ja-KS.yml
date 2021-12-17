@@ -848,7 +848,7 @@ _permissions:
 _auth:
   permissionAsk: "このアプリは次の権限を要求しとるで"
 _antennaSources:
-  all: "みなのノート"
+  all: "みんなのノート"
   homeTimeline: "フォローしとるユーザーのノート"
 _weekday:
   sunday: "日曜日"
