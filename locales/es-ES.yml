@@ -738,6 +738,7 @@ lastCommunication: "Última comunicación"
 resolved: "Resuelto"
 unresolved: "Sin resolver"
 controlPanel: "Panel de control"
+hide: "Ocultar"
 _accountDelete:
   accountDelete: "Eliminar Cuenta"
 _ad:

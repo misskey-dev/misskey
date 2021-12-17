@@ -1,6 +1,6 @@
 <template>
 <transition name="popup" appear @after-leave="$emit('closed')">
-	<div v-if="showing" class="fxxzrfni _popup _shadow" :style="{ top: top + 'px', left: left + 'px' }" @mouseover="() => { $emit('mouseover'); }" @mouseleave="() => { $emit('mouseleave'); }">
+	<div v-if="showing" class="fxxzrfni _popup _shadow" :style="{ zIndex, top: top + 'px', left: left + 'px' }" @mouseover="() => { $emit('mouseover'); }" @mouseleave="() => { $emit('mouseleave'); }">
 		<div v-if="fetched" class="info">
 			<div class="banner" :style="user.bannerUrl ? `background-image: url(${user.bannerUrl})` : ''"></div>
 			<MkAvatar class="avatar" :user="user" :disable-preview="true" :show-indicator="true"/>
@@ -65,6 +65,7 @@ export default defineComponent({
 			fetched: false,
 			top: 0,
 			left: 0,
+			zIndex: os.claimZIndex(),
 		};
 	},
 
@@ -109,7 +110,6 @@ export default defineComponent({
 
 .fxxzrfni {
 	position: absolute;
-	z-index: 11000;
 	width: 300px;
 	overflow: hidden;
 	transform-origin: center top;

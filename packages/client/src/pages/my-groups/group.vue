@@ -2,7 +2,7 @@
 <div class="mk-group-page">
 	<transition name="zoom" mode="out-in">
 		<div v-if="group" class="_section">
-			<div class="_content">
+			<div class="_content" style="display: flex; gap: var(--margin); flex-wrap: wrap;">
 				<MkButton inline @click="invite()">{{ $ts.invite }}</MkButton>
 				<MkButton inline @click="renameGroup()">{{ $ts.rename }}</MkButton>
 				<MkButton inline @click="transfer()">{{ $ts.transfer }}</MkButton>

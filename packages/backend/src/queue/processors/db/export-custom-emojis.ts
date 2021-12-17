@@ -39,16 +39,20 @@ export async function exportCustomEmojis(job: Bull.Job, done: () => void): Promi
 
 	const metaStream = fs.createWriteStream(metaPath, { flags: 'a' });
 
-	await new Promise<void>((res, rej) => {
-		metaStream.write('[', err => {
-			if (err) {
-				logger.error(err);
-				rej(err);
-			} else {
-				res();
-			}
+	const writeMeta = (text: string): Promise<void> => {
+		return new Promise<void>((res, rej) => {
+			metaStream.write(text, err => {
+				if (err) {
+					logger.error(err);
+					rej(err);
+				} else {
+					res();
+				}
+			});
 		});
-	});
+	};
+
+	await writeMeta(`{"metaVersion":1,"emojis":[`);
 
 	const customEmojis = await Emojis.find({
 		where: {
@@ -72,34 +76,17 @@ export async function exportCustomEmojis(job: Bull.Job, done: () => void): Promi
 			logger.error(e);
 		}
 
-		await new Promise<void>((res, rej) => {
-			const content = JSON.stringify({
-				id: exportId,
-				downloaded: downloaded,
-				emoji: emoji,
-			});
-			const isFirst = customEmojis.indexOf(emoji) === 0;
-			metaStream.write(isFirst ? content : ',\n' + content, err => {
-				if (err) {
-					logger.error(err);
-					rej(err);
-				} else {
-					res();
-				}
-			});
+		const content = JSON.stringify({
+			id: exportId,
+			downloaded: downloaded,
+			emoji: emoji,
 		});
+		const isFirst = customEmojis.indexOf(emoji) === 0;
+
+		await writeMeta(isFirst ? content : ',\n' + content);
 	}
 
-	await new Promise<void>((res, rej) => {
-		metaStream.write(']', err => {
-			if (err) {
-				logger.error(err);
-				rej(err);
-			} else {
-				res();
-			}
-		});
-	});
+	await writeMeta(']}');
 
 	metaStream.end();
 

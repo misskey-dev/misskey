@@ -1,52 +1,45 @@
 <template>
-<div class="">
-	<div class="_section" style="padding: 0;">
-		<MkTab v-model="tab">
-			<option value="owned">{{ $ts.ownedGroups }}</option>
-			<option value="joined">{{ $ts.joinedGroups }}</option>
-			<option value="invites"><i class="fas fa-envelope-open-text"></i> {{ $ts.invites }}</option>
-		</MkTab>
+<MkSpacer :content-max="700">
+	<div v-if="tab === 'owned'" class="_content">
+		<MkButton primary style="margin: 0 auto var(--margin) auto;" @click="create"><i class="fas fa-plus"></i> {{ $ts.createGroup }}</MkButton>
+
+		<MkPagination v-slot="{items}" ref="owned" :pagination="ownedPagination">
+			<div v-for="group in items" :key="group.id" class="_card">
+				<div class="_title"><MkA :to="`/my/groups/${ group.id }`" class="_link">{{ group.name }}</MkA></div>
+				<div class="_content"><MkAvatars :user-ids="group.userIds"/></div>
+			</div>
+		</MkPagination>
 	</div>
 
-	<div class="_section">
-		<div v-if="tab === 'owned'" class="_content">
-			<MkButton primary style="margin: 0 auto var(--margin) auto;" @click="create"><i class="fas fa-plus"></i> {{ $ts.createGroup }}</MkButton>
-
-			<MkPagination v-slot="{items}" ref="owned" :pagination="ownedPagination">
-				<div v-for="group in items" :key="group.id" class="_card">
-					<div class="_title"><MkA :to="`/my/groups/${ group.id }`" class="_link">{{ group.name }}</MkA></div>
-					<div class="_content"><MkAvatars :user-ids="group.userIds"/></div>
+	<div v-else-if="tab === 'joined'" class="_content">
+		<MkPagination v-slot="{items}" ref="joined" :pagination="joinedPagination">
+			<div v-for="group in items" :key="group.id" class="_card">
+				<div class="_title">{{ group.name }}</div>
+				<div class="_content"><MkAvatars :user-ids="group.userIds"/></div>
+				<div class="_footer">
+					<MkButton danger @click="leave(group)">{{ $ts.leaveGroup }}</MkButton>
 				</div>
-			</MkPagination>
-		</div>
-
-		<div v-else-if="tab === 'joined'" class="_content">
-			<MkPagination v-slot="{items}" ref="joined" :pagination="joinedPagination">
-				<div v-for="group in items" :key="group.id" class="_card">
-					<div class="_title">{{ group.name }}</div>
-					<div class="_content"><MkAvatars :user-ids="group.userIds"/></div>
-				</div>
-			</MkPagination>
-		</div>
-	
-		<div v-else-if="tab === 'invites'" class="_content">
-			<MkPagination v-slot="{items}" ref="invitations" :pagination="invitationPagination">
-				<div v-for="invitation in items" :key="invitation.id" class="_card">
-					<div class="_title">{{ invitation.group.name }}</div>
-					<div class="_content"><MkAvatars :user-ids="invitation.group.userIds"/></div>
-					<div class="_footer">
-						<MkButton primary inline @click="acceptInvite(invitation)"><i class="fas fa-check"></i> {{ $ts.accept }}</MkButton>
-						<MkButton primary inline @click="rejectInvite(invitation)"><i class="fas fa-ban"></i> {{ $ts.reject }}</MkButton>
-					</div>
-				</div>
-			</MkPagination>
-		</div>
+			</div>
+		</MkPagination>
 	</div>
-</div>
+
+	<div v-else-if="tab === 'invites'" class="_content">
+		<MkPagination v-slot="{items}" ref="invitations" :pagination="invitationPagination">
+			<div v-for="invitation in items" :key="invitation.id" class="_card">
+				<div class="_title">{{ invitation.group.name }}</div>
+				<div class="_content"><MkAvatars :user-ids="invitation.group.userIds"/></div>
+				<div class="_footer">
+					<MkButton primary inline @click="acceptInvite(invitation)"><i class="fas fa-check"></i> {{ $ts.accept }}</MkButton>
+					<MkButton primary inline @click="rejectInvite(invitation)"><i class="fas fa-ban"></i> {{ $ts.reject }}</MkButton>
+				</div>
+			</div>
+		</MkPagination>
+	</div>
+</MkSpacer>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, computed } from 'vue';
 import MkPagination from '@/components/ui/pagination.vue';
 import MkButton from '@/components/ui/button.vue';
 import MkContainer from '@/components/ui/container.vue';
@@ -66,10 +59,32 @@ export default defineComponent({
 
 	data() {
 		return {
-			[symbols.PAGE_INFO]: {
+			[symbols.PAGE_INFO]: computed(() => ({
 				title: this.$ts.groups,
-				icon: 'fas fa-users'
-			},
+				icon: 'fas fa-users',
+				bg: 'var(--bg)',
+				actions: [{
+					icon: 'fas fa-plus',
+					text: this.$ts.createGroup,
+					handler: this.create,
+				}],
+				tabs: [{
+					active: this.tab === 'owned',
+					title: this.$ts.ownedGroups,
+					icon: 'fas fa-user-tie',
+					onClick: () => { this.tab = 'owned'; },
+				}, {
+					active: this.tab === 'joined',
+					title: this.$ts.joinedGroups,
+					icon: 'fas fa-id-badge',
+					onClick: () => { this.tab = 'joined'; },
+				}, {
+					active: this.tab === 'invites',
+					title: this.$ts.invites,
+					icon: 'fas fa-envelope-open-text',
+					onClick: () => { this.tab = 'invites'; },
+				},]
+			})),
 			tab: 'owned',
 			ownedPagination: {
 				endpoint: 'users/groups/owned',
@@ -110,6 +125,18 @@ export default defineComponent({
 				invitationId: invitation.id
 			}).then(() => {
 				this.$refs.invitations.reload();
+			});
+		},
+		async leave(group) {
+			const { canceled } = await os.confirm({
+				type: 'warning',
+				text: this.$t('leaveGroupConfirm', { name: group.name }),
+			});
+			if (canceled) return;
+			os.apiWithDialog('users/groups/leave', {
+				groupId: group.id,
+			}).then(() => {
+				this.$refs.joined.reload();
 			});
 		}
 	}

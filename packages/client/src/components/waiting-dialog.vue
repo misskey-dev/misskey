@@ -1,5 +1,5 @@
 <template>
-<MkModal ref="modal" @click="success ? done() : () => {}" @closed="$emit('closed')">
+<MkModal ref="modal" :prefer-type="'dialog'" @click="success ? done() : () => {}" @closed="$emit('closed')">
 	<div class="iuyakobc" :class="{ iconOnly: (text == null) || success }">
 		<i v-if="success" class="fas fa-check icon success"></i>
 		<i v-else class="fas fa-spinner fa-pulse icon waiting"></i>

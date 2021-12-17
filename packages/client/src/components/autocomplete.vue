@@ -1,5 +1,5 @@
 <template>
-<div class="swhvrteh _popup _shadow" @contextmenu.prevent="() => {}">
+<div class="swhvrteh _popup _shadow" :style="{ zIndex }" @contextmenu.prevent="() => {}">
 	<ol v-if="type === 'user'" ref="suggests" class="users">
 		<li v-for="user in users" tabindex="-1" class="user" @click="complete(type, user)" @keydown="onKeydown">
 			<img class="avatar" :src="user.avatarUrl"/>
@@ -157,6 +157,7 @@ export default defineComponent({
 			items: [],
 			mfmTags: [],
 			select: -1,
+			zIndex: os.claimZIndex(true),
 		}
 	},
 
@@ -403,7 +404,6 @@ export default defineComponent({
 <style lang="scss" scoped>
 .swhvrteh {
 	position: fixed;
-	z-index: 65535;
 	max-width: 100%;
 	margin-top: calc(1em + 8px);
 	overflow: hidden;

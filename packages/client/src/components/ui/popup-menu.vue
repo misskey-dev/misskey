@@ -1,17 +1,17 @@
 <template>
-<MkPopup ref="popup" v-slot="{ maxHeight, close }" :src="src" @closed="$emit('closed')">
-	<MkMenu :items="items" :align="align" :width="width" :max-height="maxHeight" class="_popup _shadow" @close="close()"/>
-</MkPopup>
+<MkModal ref="modal" v-slot="{ type, maxHeight }" :src="src" :transparent-bg="true" @click="$refs.modal.close()" @closed="$emit('closed')">
+	<MkMenu :items="items" :align="align" :width="width" :max-height="maxHeight" :as-drawer="type === 'drawer'" class="sfhdhdhq _popup _shadow" :class="{ drawer: type === 'drawer' }" @close="$refs.modal.close()"/>
+</MkModal>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import MkPopup from './popup.vue';
+import MkModal from './modal.vue';
 import MkMenu from './menu.vue';
 
 export default defineComponent({
 	components: {
-		MkPopup,
+		MkModal,
 		MkMenu,
 	},
 
@@ -40,3 +40,13 @@ export default defineComponent({
 	emits: ['close', 'closed'],
 });
 </script>
+
+<style lang="scss" scoped>
+.sfhdhdhq {
+	&.drawer {
+		border-radius: 24px;
+		border-bottom-right-radius: 0;
+		border-bottom-left-radius: 0;
+	}
+}
+</style>

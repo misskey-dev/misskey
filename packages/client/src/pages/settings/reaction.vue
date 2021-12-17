@@ -29,11 +29,14 @@
 		<option :value="2">{{ $ts.medium }}</option>
 		<option :value="3">{{ $ts.large }}</option>
 	</FormRadios>
+
+	<FormSwitch v-model="reactionPickerUseDrawerForMobile" class="_formBlock">{{ $ts.useDrawerReactionPickerForMobile }}</FormSwitch>
+
 	<FormSection>
-		<FormButton @click="preview"><i class="fas fa-eye"></i> {{ $ts.preview }}</FormButton>
-	</FormSection>
-	<FormSection>
-		<FormButton danger @click="setDefault"><i class="fas fa-undo"></i> {{ $ts.default }}</FormButton>
+		<div style="display: flex; gap: var(--margin); flex-wrap: wrap;">
+			<FormButton inline @click="preview"><i class="fas fa-eye"></i> {{ $ts.preview }}</FormButton>
+			<FormButton inline danger @click="setDefault"><i class="fas fa-undo"></i> {{ $ts.default }}</FormButton>
+		</div>
 	</FormSection>
 </div>
 </template>
@@ -46,6 +49,7 @@ import FormRadios from '@/components/form/radios.vue';
 import FromSlot from '@/components/form/slot.vue';
 import FormButton from '@/components/ui/button.vue';
 import FormSection from '@/components/form/section.vue';
+import FormSwitch from '@/components/form/switch.vue';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
 import * as symbols from '@/symbols';
@@ -57,6 +61,7 @@ export default defineComponent({
 		FromSlot,
 		FormRadios,
 		FormSection,
+		FormSwitch,
 		XDraggable,
 	},
 
@@ -80,6 +85,7 @@ export default defineComponent({
 	computed: {
 		reactionPickerWidth: defaultStore.makeGetterSetter('reactionPickerWidth'),
 		reactionPickerHeight: defaultStore.makeGetterSetter('reactionPickerHeight'),
+		reactionPickerUseDrawerForMobile: defaultStore.makeGetterSetter('reactionPickerUseDrawerForMobile'),
 	},
 
 	watch: {

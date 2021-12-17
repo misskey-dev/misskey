@@ -1,5 +1,5 @@
 <template>
-<MkModal ref="modal" :position="'top'" @click="$refs.modal.close()" @closed="$emit('closed')">
+<MkModal ref="modal" :prefer-type="'dialog:top'" @click="$refs.modal.close()" @closed="$emit('closed')">
 	<MkPostForm v-bind="$attrs" @posted="$refs.modal.close()" @cancel="$refs.modal.close()" @esc="$refs.modal.close()"/>
 </MkModal>
 </template>
