@@ -1,5 +1,5 @@
 <template>
-<MkModal ref="modal" v-slot="{ type, maxHeight }" :manual-showing="manualShowing" :src="src" :front="true" @click="$refs.modal.close()" @opening="opening" @close="$emit('close')" @closed="$emit('closed')">
+<MkModal ref="modal" v-slot="{ type, maxHeight }" :transparent-bg="true" :manual-showing="manualShowing" :src="src" :front="true" @click="$refs.modal.close()" @opening="opening" @close="$emit('close')" @closed="$emit('closed')">
 	<MkEmojiPicker ref="picker" class="ryghynhb _popup _shadow" :class="{ drawer: type === 'drawer' }" :show-pinned="showPinned" :as-reaction-picker="asReactionPicker" :as-drawer="type === 'drawer'" :max-height="maxHeight" @chosen="chosen"/>
 </MkModal>
 </template>
