@@ -1,17 +1,17 @@
 <template>
-<MkPopup ref="popup" v-slot="{ point, close }" :manual-showing="manualShowing" :src="src" :front="true" @click="close()" @opening="opening" @close="$emit('close')" @closed="$emit('closed')">
-	<MkEmojiPicker ref="picker" class="ryghynhb _popup _shadow" :class="{ pointer: point === 'top' }" :show-pinned="showPinned" :as-reaction-picker="asReactionPicker" @chosen="chosen"/>
-</MkPopup>
+<MkModal ref="modal" v-slot="{ type, maxHeight }" :prefer-type="asReactionPicker && $store.state.reactionPickerUseDrawerForMobile === false ? 'popup' : 'auto'" :transparent-bg="true" :manual-showing="manualShowing" :src="src" :front="true" @click="$refs.modal.close()" @opening="opening" @close="$emit('close')" @closed="$emit('closed')">
+	<MkEmojiPicker ref="picker" class="ryghynhb _popup _shadow" :class="{ drawer: type === 'drawer' }" :show-pinned="showPinned" :as-reaction-picker="asReactionPicker" :as-drawer="type === 'drawer'" :max-height="maxHeight" @chosen="chosen"/>
+</MkModal>
 </template>
 
 <script lang="ts">
 import { defineComponent, markRaw } from 'vue';
-import MkPopup from '@/components/ui/popup.vue';
+import MkModal from '@/components/ui/modal.vue';
 import MkEmojiPicker from '@/components/emoji-picker.vue';
 
 export default defineComponent({
 	components: {
-		MkPopup,
+		MkModal,
 		MkEmojiPicker,
 	},
 
@@ -44,7 +44,7 @@ export default defineComponent({
 	methods: {
 		chosen(emoji: any) {
 			this.$emit('done', emoji);
-			this.$refs.popup.close();
+			this.$refs.modal.close();
 		},
 
 		opening() {
@@ -57,20 +57,10 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .ryghynhb {
-	&.pointer {
-		&:before {
-			--size: 8px;
-			content: '';
-			display: block;
-			position: absolute;
-			top: calc(0px - (var(--size) * 2));
-			left: 0;
-			right: 0;
-			width: 0;
-			margin: auto;
-			border: solid var(--size) transparent;
-			border-bottom-color: var(--popup);
-		}
+	&.drawer {
+		border-radius: 24px;
+		border-bottom-right-radius: 0;
+		border-bottom-left-radius: 0;
 	}
 }
 </style>
