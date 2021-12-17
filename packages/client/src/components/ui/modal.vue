@@ -102,7 +102,7 @@ export default defineComponent({
 		};
 
 		if (type.value === 'drawer') {
-			maxHeight.value = window.innerHeight - 100;
+			maxHeight.value = window.innerHeight / 2;
 		}
 
 		const keymap = {
