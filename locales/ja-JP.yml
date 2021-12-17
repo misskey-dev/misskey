@@ -815,6 +815,7 @@ voteConfirm: "「{choice}」に投票しますか？"
 hide: "隠す"
 leaveGroup: "グループから抜ける"
 leaveGroupConfirm: "「{name}」から抜けますか？"
+useDrawerReactionPickerForMobile: "モバイルデバイスのときドロワーで表示"
 
 _emailUnavailable:
   used: "既に使用されています"

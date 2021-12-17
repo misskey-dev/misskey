@@ -178,6 +178,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: 1
 	},
+	reactionPickerUseDrawerForMobile: {
+		where: 'device',
+		default: true,
+	},
 	recentlyUsedEmojis: {
 		where: 'device',
 		default: [] as string[]
