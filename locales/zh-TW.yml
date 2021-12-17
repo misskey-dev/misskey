@@ -754,6 +754,7 @@ ratio: "%"
 global: "公開"
 sent: "發送"
 hashtags: "#tag"
+hide: "隱藏"
 _ffVisibility:
   public: "發佈"
 _ad:

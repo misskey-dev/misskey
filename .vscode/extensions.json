@@ -2,7 +2,6 @@
 	"recommendations": [
 		"editorconfig.editorconfig",
 		"eg2.vscode-npm-script",
-		"ms-vscode.typescript-javascript-grammar",
 		"dbaeumer.vscode-eslint",
 		"johnsoncodehk.volar",
 		"sysoev.language-stylus"

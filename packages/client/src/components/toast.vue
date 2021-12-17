@@ -1,5 +1,5 @@
 <template>
-<div class="mk-toast">
+<div class="mk-toast" :style="{ zIndex }">
 	<transition name="notification-slide" appear @after-leave="$emit('closed')">
 		<XNotification v-if="showing" :notification="notification" class="notification _acrylic"/>
 	</transition>
@@ -9,6 +9,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import XNotification from './notification.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -23,7 +24,8 @@ export default defineComponent({
 	emits: ['closed'],
 	data() {
 		return {
-			showing: true
+			showing: true,
+			zIndex: os.claimZIndex(true),
 		};
 	},
 	mounted() {
@@ -45,7 +47,6 @@ export default defineComponent({
 
 .mk-toast {
 	position: fixed;
-	z-index: 10000;
 	left: 0;
 	width: 250px;
 	top: 32px;
