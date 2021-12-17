@@ -802,6 +802,7 @@ classic: "Классика"
 unmuteThread: "Отключить звук"
 ffVisibilityDescription: "Вы можете установить объем вашей следующей/последней информации."
 hide: "Спрятать"
+leaveGroupConfirm: "Вы хотите оставить \"{name}\"?"
 _emailUnavailable:
   used: "Уже используется"
   format: "Неправильный формат"
