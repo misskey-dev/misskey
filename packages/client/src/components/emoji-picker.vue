@@ -391,6 +391,13 @@ export default defineComponent({
 
 		> .emojis {
 			::v-deep(section) {
+				> header {
+					height: 32px;
+					line-height: 32px;
+					padding: 0 12px;
+					font-size: 15px;
+				}
+
 				> div {
 					display: grid;
 					grid-template-columns: var(--columns);
