@@ -60,7 +60,7 @@ export default defineComponent({
 #wait {
 	display: block;
 	position: fixed;
-	z-index: 10000;
+	z-index: 3000000;
 	top: 15px;
 	right: 15px;
 

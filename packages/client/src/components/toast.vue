@@ -1,5 +1,5 @@
 <template>
-<div class="mk-toast" style="{ zIndex }">
+<div class="mk-toast" :style="{ zIndex }">
 	<transition name="notification-slide" appear @after-leave="$emit('closed')">
 		<XNotification v-if="showing" :notification="notification" class="notification _acrylic"/>
 	</transition>
