@@ -1,28 +1,27 @@
 // blocks
 
-export type BlockBase = {
-	id: string;
-	type: string;
-};
-
-export type TextBlock = BlockBase & {
+export type TextBlock = {
 	type: 'text';
+	id: string;
 	text: string;
 };
 
-export type SectionBlock = BlockBase & {
+export type SectionBlock = {
 	type: 'section';
+	id: string;
 	title: string;
 	children: (Block | VarBlock)[];
 };
 
-export type ImageBlock = BlockBase & {
+export type ImageBlock = {
 	type: 'image';
+	id: string;
 	fileId: string | null;
 };
 
-export type ButtonBlock = BlockBase & {
+export type ButtonBlock = {
 	type: 'button';
+	id: string;
 	text: any;
 	primary: boolean;
 	action: string;
@@ -33,33 +32,38 @@ export type ButtonBlock = BlockBase & {
 	fn: string;
 };
 
-export type IfBlock = BlockBase & {
+export type IfBlock = {
 	type: 'if';
+	id: string;
 	var: string;
 	children: Block[];
 };
 
-export type TextareaBlock = BlockBase & {
+export type TextareaBlock = {
 	type: 'textarea';
+	id: string;
 	text: string;
 };
 
-export type PostBlock = BlockBase & {
+export type PostBlock = {
 	type: 'post';
+	id: string;
 	text: string;
 	attachCanvasImage: boolean;
 	canvasId: string;
 };
 
-export type CanvasBlock = BlockBase & {
+export type CanvasBlock = {
 	type: 'canvas';
+	id: string;
 	name: string; // canvas id
 	width: number;
 	height: number;
 };
 
-export type NoteBlock = BlockBase & {
+export type NoteBlock = {
 	type: 'note';
+	id: string;
 	detailed: boolean;
 	note: string | null;
 };
@@ -69,33 +73,39 @@ export type Block =
 
 // variable blocks
 
-export type VarBlockBase = BlockBase & {
-	name: string;
-};
-
-export type NumberInputVarBlock = VarBlockBase & {
+export type NumberInputVarBlock = {
 	type: 'numberInput';
+	id: string;
+	name: string;
 	text: string;
 };
 
-export type TextInputVarBlock = VarBlockBase & {
+export type TextInputVarBlock = {
 	type: 'textInput';
+	id: string;
+	name: string;
 	text: string;
 };
 
-export type SwitchVarBlock = VarBlockBase & {
+export type SwitchVarBlock = {
 	type: 'switch';
+	id: string;
+	name: string;
 	text: string;
 };
 
-export type RadioButtonVarBlock = VarBlockBase & {
+export type RadioButtonVarBlock = {
 	type: 'radioButton';
+	id: string;
+	name: string;
 	title: string;
 	values: string[];
 };
 
-export type CounterVarBlock = VarBlockBase & {
+export type CounterVarBlock = {
 	type: 'counter';
+	id: string;
+	name: string;
 	text: string;
 	inc: number;
 };

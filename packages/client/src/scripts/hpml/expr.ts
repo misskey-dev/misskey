@@ -1,71 +1,73 @@
 import { literalDefs, Type } from '.';
 
-export type ExprBase = {
-	id: string;
-};
-
 // value
 
-export type EmptyValue = ExprBase & {
+export type EmptyValue = {
 	type: null;
+	id: string;
 	value: null;
 };
 
-export type TextValue = ExprBase & {
+export type TextValue = {
 	type: 'text';
+	id: string;
 	value: string;
 };
 
-export type MultiLineTextValue = ExprBase  & {
+export type MultiLineTextValue = {
 	type: 'multiLineText';
+	id: string;
 	value: string;
 };
 
-export type TextListValue = ExprBase & {
+export type TextListValue = {
 	type: 'textList';
+	id: string;
 	value: string;
 };
 
-export type NumberValue = ExprBase & {
+export type NumberValue = {
 	type: 'number';
+	id: string;
 	value: number;
 };
 
-export type RefValue = ExprBase & {
+export type RefValue = {
 	type: 'ref';
+	id: string;
 	value: string; // value is variable name
 };
 
-export type AiScriptRefValue = ExprBase & {
+export type AiScriptRefValue = {
 	type: 'aiScriptVar';
+	id: string;
 	value: string; // value is variable name
 };
 
-export type UserFnValue = ExprBase & {
+export type UserFnValue = {
 	type: 'fn';
-	value: UserFnInnerValue;
-};
-type UserFnInnerValue = {
-	slots: {
-		name: string;
-		type: Type;
-	}[];
-	expression: Expr;
+	id: string;
+	value: {
+		slots: {
+			name: string;
+			type: Type;
+		}[];
+		expression: Expr;
+	};
 };
 
 export type Value =
 	EmptyValue | TextValue | MultiLineTextValue | TextListValue | NumberValue | RefValue | AiScriptRefValue | UserFnValue;
 
 export function isLiteralValue(expr: Expr): expr is Value {
-	if (expr.type == null) return true;
-	if (literalDefs[expr.type]) return true;
-	return false;
+	return (expr.type == null || literalDefs[expr.type] != null);
 }
 
 // call function
 
-export type CallFn = ExprBase & { // "fn:hoge" or string
+export type CallFn = { // "fn:hoge" or string
 	type: string;
+	id: string;
 	args: Expr[];
 	value: null;
 };
