@@ -65,7 +65,7 @@ export default defineComponent({
 			fetched: false,
 			top: 0,
 			left: 0,
-			zIndex: os.claimZIndex(),
+			zIndex: os.claimZIndex('middle'),
 		};
 	},
 

@@ -104,7 +104,6 @@ clickToShow: "押したら見えるで"
 sensitive: "ちょっとアカンやつやで"
 add: "増やす"
 reaction: "リアクション"
-reactionSettingDescription: "リアクションピッカーに出しとくリアクションを選んでや。"
 reactionSettingDescription2: "ドラッグで並び替え、クリックで削除、＋を押して追加やで。"
 rememberNoteVisibility: "公開範囲覚えといて"
 attachCancel: "のっけるのやめる"
@@ -204,7 +203,7 @@ noJobs: "ジョブはあらへん"
 federating: "連合しとる"
 blocked: "ブロックしとる"
 suspended: "配信せぇへん"
-all: "みな"
+all: "みんな"
 subscribing: "購読しとる"
 publishing: "配信しとる"
 notResponding: "応答してへんで"
@@ -849,7 +848,7 @@ _permissions:
 _auth:
   permissionAsk: "このアプリは次の権限を要求しとるで"
 _antennaSources:
-  all: "みなのノート"
+  all: "みんなのノート"
   homeTimeline: "フォローしとるユーザーのノート"
 _weekday:
   sunday: "日曜日"
@@ -897,7 +896,7 @@ _poll:
   votesCount: "{n}票"
   vote: "投票する"
 _visibility:
-  publicDescription: "みなのユーザーに公開"
+  publicDescription: "みんなに公開"
   home: "ホーム"
   followers: "フォロワー"
 _profile:

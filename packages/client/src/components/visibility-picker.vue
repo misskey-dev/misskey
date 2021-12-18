@@ -1,5 +1,5 @@
 <template>
-<MkModal ref="modal" :src="src" @click="$refs.modal.close()" @closed="$emit('closed')">
+<MkModal ref="modal" :z-priority="'high'" :src="src" @click="$refs.modal.close()" @closed="$emit('closed')">
 	<div class="gqyayizv _popup">
 		<button key="public" class="_button" :class="{ active: v == 'public' }" data-index="1" @click="choose('public')">
 			<div><i class="fas fa-globe"></i></div>

@@ -1,6 +1,6 @@
 <template>
 <transition :name="$store.state.animation ? 'fade' : ''" appear>
-	<div class="nvlagfpb" @contextmenu.prevent.stop="() => {}">
+	<div class="nvlagfpb" :style="{ zIndex }" @contextmenu.prevent.stop="() => {}">
 		<MkMenu :items="items" class="_popup _shadow" :align="'left'" @close="$emit('closed')"/>
 	</div>
 </transition>
@@ -10,6 +10,7 @@
 import { defineComponent } from 'vue';
 import contains from '@/scripts/contains';
 import MkMenu from './menu.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -29,6 +30,11 @@ export default defineComponent({
 		},
 	},
 	emits: ['closed'],
+	data() {
+		return {
+			zIndex: os.claimZIndex('high'),
+		};
+	},
 	computed: {
 		keymap(): any {
 			return {
@@ -82,7 +88,6 @@ export default defineComponent({
 <style lang="scss" scoped>
 .nvlagfpb {
 	position: absolute;
-	z-index: 65535;
 }
 
 .fade-enter-active, .fade-leave-active {
