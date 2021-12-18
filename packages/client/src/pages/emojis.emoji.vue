@@ -12,24 +12,12 @@
 import { defineComponent } from 'vue';
 import * as os from '@/os';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
-import VanillaTilt from 'vanilla-tilt';
 
 export default defineComponent({
 	props: {
 		emoji: {
 			type: Object,
 			required: true,
-		}
-	},
-
-	mounted() {
-		if (this.$store.animation) {
-			VanillaTilt.init(this.$el, {
-				reverse: true,
-				gyroscope: false,
-				scale: 1.1,
-				speed: 500,
-			});
 		}
 	},
 
