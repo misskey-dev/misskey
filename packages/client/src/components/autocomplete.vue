@@ -157,7 +157,7 @@ export default defineComponent({
 			items: [],
 			mfmTags: [],
 			select: -1,
-			zIndex: os.claimZIndex(true),
+			zIndex: os.claimZIndex('high'),
 		}
 	},
 
