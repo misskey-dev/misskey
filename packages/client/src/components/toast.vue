@@ -42,7 +42,7 @@ export default defineComponent({
 }
 .toast-enter-from, .toast-leave-to {
 	opacity: 0;
-	transform: translateY(calc(0px - (100% - 32px)));
+	transform: translateY(-100%);
 }
 
 .mk-toast {
@@ -52,13 +52,12 @@ export default defineComponent({
 		right: 0;
 		top: 0;
 		margin: 0 auto;
-		padding-top: 32px;
-		margin-top: -32px;
+		margin-top: 16px;
 		min-width: 300px;
 		max-width: calc(100% - 32px);
 		width: min-content;
 		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-		border-radius: 0 0 8px 8px;
+		border-radius: 8px;
 		overflow: clip;
 		text-align: center;
 		pointer-events: none;
