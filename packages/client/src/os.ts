@@ -167,7 +167,7 @@ const zIndexes = {
 	middle: 2000000,
 	high: 3000000,
 };
-export function claimZIndex(priority: 'low' | 'middle' | 'high'): number {
+export function claimZIndex(priority: 'low' | 'middle' | 'high' = 'low'): number {
 	zIndexes[priority] += 100;
 	return zIndexes[priority];
 }
