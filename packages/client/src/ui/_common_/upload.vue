@@ -25,7 +25,7 @@ export default defineComponent({
 	data() {
 		return {
 			uploads: os.uploads,
-			zIndex: os.claimZIndex(true),
+			zIndex: os.claimZIndex('high'),
 		};
 	},
 });

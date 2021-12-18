@@ -25,7 +25,7 @@ export default defineComponent({
 	data() {
 		return {
 			showing: true,
-			zIndex: os.claimZIndex(true),
+			zIndex: os.claimZIndex('high'),
 		};
 	},
 	mounted() {
