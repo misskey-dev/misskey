@@ -8,7 +8,7 @@
 import { computed, defineComponent, PropType } from 'vue';
 import MkSwitch from '../form/switch.vue';
 import * as os from '@/os';
-import { Hpml } from '@/scripts/hpml/evaluator';
+import { Hpml } from '@/scripts/hpml/engine';
 import { SwitchVarBlock } from '@/scripts/hpml/block';
 
 export default defineComponent({
@@ -32,7 +32,6 @@ export default defineComponent({
 
 		function updateValue(newValue: boolean) {
 			props.hpml.updatePageVar(props.block.name, newValue);
-			props.hpml.eval();
 		}
 
 		return {

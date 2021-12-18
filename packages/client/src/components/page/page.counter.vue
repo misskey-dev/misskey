@@ -9,7 +9,7 @@ import { computed, defineComponent, PropType } from 'vue';
 import MkButton from '../ui/button.vue';
 import * as os from '@/os';
 import { CounterVarBlock } from '@/scripts/hpml/block';
-import { Hpml } from '@/scripts/hpml/evaluator';
+import { Hpml } from '@/scripts/hpml/engine';
 
 export default defineComponent({
 	components: {
@@ -32,7 +32,6 @@ export default defineComponent({
 
 		function click() {
 			props.hpml.updatePageVar(props.block.name, value.value + (props.block.inc || 1));
-			props.hpml.eval();
 		}
 
 		return {

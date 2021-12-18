@@ -15,7 +15,7 @@ import MkButton from '../ui/button.vue';
 import { apiUrl } from '@/config';
 import * as os from '@/os';
 import { PostBlock } from '@/scripts/hpml/block';
-import { Hpml } from '@/scripts/hpml/evaluator';
+import { Hpml } from '@/scripts/hpml/engine';
 
 export default defineComponent({
 	components: {

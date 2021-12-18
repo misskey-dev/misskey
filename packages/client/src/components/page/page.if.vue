@@ -6,7 +6,7 @@
 
 <script lang="ts">
 import { IfBlock } from '@/scripts/hpml/block';
-import { Hpml } from '@/scripts/hpml/evaluator';
+import { Hpml } from '@/scripts/hpml/engine';
 import { defineComponent, defineAsyncComponent, PropType } from 'vue';
 
 export default defineComponent({

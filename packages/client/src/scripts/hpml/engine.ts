@@ -1,17 +1,19 @@
 import autobind from 'autobind-decorator';
 import { AiScript, Parser, values, utils } from '@syuilo/aiscript';
 import { Node, NAttr } from '@syuilo/aiscript/built/node';
-import { markRaw, ref, Ref } from 'vue';
+import { markRaw, ref, Ref, unref } from 'vue';
 import { HpmlError } from '.';
 import { createAiScriptEnv } from '../aiscript/api';
 import { initAiLib } from './lib';
 
 type Page = Record<string, any> & {
+	version: string;
 	id: any;
 	user: any;
 	blocks: any[];
 	statements: any[];
 	script: string;
+	attachedFiles: any[];
 };
 
 type VariableInfo = {
@@ -32,7 +34,7 @@ const inputBlockTable: Record<string, 'string' | 'number' | 'boolean'> = {
 	radioButton: 'string',
 };
 
-export class HpmlEngine {
+export class Hpml {
 	public page: Page;
 	public aiscript: AiScript;
 	public variableInfos: Record<string, VariableInfo> = {}; // variable source infos
@@ -41,8 +43,11 @@ export class HpmlEngine {
 	public canvases: Record<string, HTMLCanvasElement> = {};
 	private ast: Node[];
 
-	constructor(page: Page, opts?: any) {
-		this.page = page;
+	constructor(page: Record<string, any>, opts?: any) {
+		this.page = (page as Page);
+		if (this.page.version != '2') {
+			throw new HpmlError('The version of this page is not supported.');
+		}
 		this.aiscript = markRaw(new AiScript({
 			...createAiScriptEnv({ storageKey: 'pages:' + this.page.id }),
 			...initAiLib(this)
@@ -59,6 +64,30 @@ export class HpmlEngine {
 		};
 		// when the last line of the script is executed:
 		// this.refreshVars();
+	}
+
+	@autobind
+	public interpolate(str: string) {
+		if (str == null) return null;
+		return str.replace(/{(.+?)}/g, match => {
+			const v = unref(this.vars)[match.slice(1, -1).trim()];
+			return v == null ? 'NULL' : v.toString();
+		});
+	}
+
+	@autobind
+	public registerCanvas(id: string, canvas: any) {
+		this.canvases[id] = canvas;
+	}
+
+	@autobind
+	public updatePageVar(name: string, value: any) {
+		if (this.variableInfos[name] == null || this.variableInfos[name].inputAttr == null) {
+			throw new HpmlError(`No such input var '${name}'`);
+		}
+		if (this.pageVarUpdatedCallback) {
+			this.aiscript.execFn(this.pageVarUpdatedCallback, [values.STR(name), utils.jsToVal(value)]);
+		}
 	}
 
 	@autobind
@@ -113,16 +142,6 @@ export class HpmlEngine {
 			vars[name] = info.value;
 		}
 		this.vars.value = vars;
-	}
-
-	@autobind
-	public updateInputVar(name: string, value: any) {
-		if (this.variableInfos[name] == null || this.variableInfos[name].inputAttr == null) {
-			throw new HpmlError(`No such input var '${name}'`);
-		}
-		if (this.pageVarUpdatedCallback) {
-			this.aiscript.execFn(this.pageVarUpdatedCallback, [values.STR(name), utils.jsToVal(value)]);
-		}
 	}
 
 	@autobind

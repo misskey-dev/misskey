@@ -10,7 +10,7 @@
 import { computed, defineComponent, PropType } from 'vue';
 import MkInput from '../form/input.vue';
 import * as os from '@/os';
-import { Hpml } from '@/scripts/hpml/evaluator';
+import { Hpml } from '@/scripts/hpml/engine';
 import { NumberInputVarBlock } from '@/scripts/hpml/block';
 
 export default defineComponent({
@@ -34,7 +34,6 @@ export default defineComponent({
 
 		function updateValue(newValue) {
 			props.hpml.updatePageVar(props.block.name, newValue);
-			props.hpml.eval();
 		}
 
 		return {

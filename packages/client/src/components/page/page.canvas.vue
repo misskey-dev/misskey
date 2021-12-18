@@ -8,7 +8,7 @@
 import { defineComponent, onMounted, PropType, Ref, ref } from 'vue';
 import * as os from '@/os';
 import { CanvasBlock } from '@/scripts/hpml/block';
-import { Hpml } from '@/scripts/hpml/evaluator';
+import { Hpml } from '@/scripts/hpml/engine';
 
 export default defineComponent({
 	props: {

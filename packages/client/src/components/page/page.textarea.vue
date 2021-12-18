@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import { TextBlock } from '@/scripts/hpml/block';
-import { Hpml } from '@/scripts/hpml/evaluator';
+import { Hpml } from '@/scripts/hpml/engine';
 import { defineComponent, PropType } from 'vue';
 import MkTextarea from '../form/textarea.vue';
 

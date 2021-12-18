@@ -7,7 +7,7 @@
 
 <script lang="ts">
 import { TextBlock } from '@/scripts/hpml/block';
-import { Hpml } from '@/scripts/hpml/evaluator';
+import { Hpml } from '@/scripts/hpml/engine';
 import { defineAsyncComponent, defineComponent, PropType } from 'vue';
 import * as mfm from 'mfm-js';
 import { extractUrlFromMfm } from '@/scripts/extract-url-from-mfm';

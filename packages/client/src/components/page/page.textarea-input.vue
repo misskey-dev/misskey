@@ -10,7 +10,7 @@
 import { computed, defineComponent, PropType } from 'vue';
 import MkTextarea from '../form/textarea.vue';
 import * as os from '@/os';
-import { Hpml } from '@/scripts/hpml/evaluator';
+import { Hpml } from '@/scripts/hpml/engine';
 import { HpmlTextInput } from '@/scripts/hpml';
 import { TextInputVarBlock } from '@/scripts/hpml/block';
 
@@ -35,7 +35,6 @@ export default defineComponent({
 
 		function updateValue(newValue) {
 			props.hpml.updatePageVar(props.block.name, newValue);
-			props.hpml.eval();
 		}
 
 		return {

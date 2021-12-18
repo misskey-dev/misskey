@@ -8,7 +8,7 @@
 import { defineComponent, PropType } from 'vue';
 import * as os from '@/os';
 import { ImageBlock } from '@/scripts/hpml/block';
-import { Hpml } from '@/scripts/hpml/evaluator';
+import { Hpml } from '@/scripts/hpml/engine';
 
 export default defineComponent({
 	props: {
