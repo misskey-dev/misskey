@@ -1,8 +1,10 @@
 import autobind from 'autobind-decorator';
 import { AiScript, Parser, values, utils } from '@syuilo/aiscript';
 import { Node, NAttr } from '@syuilo/aiscript/built/node';
-import { ref, Ref } from 'vue';
+import { markRaw, ref, Ref } from 'vue';
 import { HpmlError } from '.';
+import { createAiScriptEnv } from '../aiscript/api';
+import { initAiLib } from './lib';
 
 type Page = Record<string, any> & {
 	id: any;
@@ -35,11 +37,15 @@ export class HpmlEngine {
 	public aiscript: AiScript;
 	public variableInfos: Record<string, VariableInfo> = {}; // variable source infos
 	public vars: Ref<Record<string, any>> = ref({}); // variable values for blocks
-	public inputVarUpdatedCallback?: values.VFn;
+	public pageVarUpdatedCallback?: values.VFn;
+	public canvases: Record<string, HTMLCanvasElement> = {};
 
 	constructor(page: Page) {
 		this.page = page;
-		this.aiscript = new AiScript({});
+		this.aiscript = markRaw(new AiScript({
+			...createAiScriptEnv({ storageKey: 'pages:' + this.page.id }),
+			...initAiLib(this)
+		}));
 		this.analyzeVars();
 
 		this.aiscript.scope.opts.onUpdated = (name, value) => {
@@ -115,8 +121,8 @@ export class HpmlEngine {
 		if (this.variableInfos[name] == null || this.variableInfos[name].inputAttr == null) {
 			throw new HpmlError(`No such input var '${name}'`);
 		}
-		if (this.inputVarUpdatedCallback) {
-			this.aiscript.execFn(this.inputVarUpdatedCallback, [values.STR(name), utils.jsToVal(value)]);
+		if (this.pageVarUpdatedCallback) {
+			this.aiscript.execFn(this.pageVarUpdatedCallback, [values.STR(name), utils.jsToVal(value)]);
 		}
 	}
 }
