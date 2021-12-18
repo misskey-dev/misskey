@@ -39,13 +39,19 @@ export class HpmlEngine {
 	public vars: Ref<Record<string, any>> = ref({}); // variable values for blocks
 	public pageVarUpdatedCallback?: values.VFn;
 	public canvases: Record<string, HTMLCanvasElement> = {};
+	private ast: Node[];
 
-	constructor(page: Page) {
+	constructor(page: Page, opts?: any) {
 		this.page = page;
 		this.aiscript = markRaw(new AiScript({
 			...createAiScriptEnv({ storageKey: 'pages:' + this.page.id }),
 			...initAiLib(this)
-		}));
+		}, opts));
+		try {
+			this.ast = Parser.parse(this.page.script);
+		} catch (e) {
+			throw new HpmlError('Failed to parse the script.');
+		}
 		this.analyzeVars();
 
 		this.aiscript.scope.opts.onUpdated = (name, value) => {
@@ -57,16 +63,9 @@ export class HpmlEngine {
 
 	@autobind
 	private analyzeVars() {
-		// parse script
-		let nodes: Node[];
-		try {
-			nodes = Parser.parse(this.page.script);
-		} catch (e) {
-			throw new HpmlError('Failed to parse the script.');
-		}
 		// extracts all of exported variables
 		const infos: Record<string, VariableInfo> = {};
-		for (const node of nodes) {
+		for (const node of this.ast) {
 			if (node.type == 'def' && node.attr.find(attr => (attr.name == 'export')) != null) {
 				// check input attribute
 				let inputAttr: VariableInfo['inputAttr'];
@@ -124,5 +123,13 @@ export class HpmlEngine {
 		if (this.pageVarUpdatedCallback) {
 			this.aiscript.execFn(this.pageVarUpdatedCallback, [values.STR(name), utils.jsToVal(value)]);
 		}
+	}
+
+	public run() {
+		return this.aiscript.exec(this.ast);
+	}
+
+	public abort() {
+		this.aiscript.abort();
 	}
 }
