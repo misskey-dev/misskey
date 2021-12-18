@@ -12,7 +12,7 @@ type Page = Record<string, any> & {
 	user: any;
 	blocks: any[];
 	statements: any[];
-	script: string;
+	script?: string;
 	attachedFiles: any[];
 };
 
@@ -36,18 +36,19 @@ const inputBlockTable: Record<string, 'string' | 'number' | 'boolean'> = {
 
 export class Hpml {
 	public page: Page;
-	public aiscript: AiScript;
+	public aiscript?: AiScript;
 	public variableInfos: Record<string, VariableInfo> = {}; // variable source infos
 	public vars: Ref<Record<string, any>> = ref({}); // variable values for blocks
 	public pageVarUpdatedCallback?: values.VFn;
 	public canvases: Record<string, HTMLCanvasElement> = {};
-	private ast: Node[];
+	private ast?: Node[];
 
 	constructor(page: Record<string, any>, opts?: any) {
 		this.page = (page as Page);
 		if (this.page.version != '2') {
 			throw new HpmlError('The version of this page is not supported.');
 		}
+		if (this.page.script == null) return;
 		this.aiscript = markRaw(new AiScript({
 			...createAiScriptEnv({ storageKey: 'pages:' + this.page.id }),
 			...initAiLib(this)
@@ -82,6 +83,7 @@ export class Hpml {
 
 	@autobind
 	public updatePageVar(name: string, value: any) {
+		if (this.aiscript == null) return;
 		if (this.variableInfos[name] == null || this.variableInfos[name].inputAttr == null) {
 			throw new HpmlError(`No such input var '${name}'`);
 		}
@@ -92,6 +94,7 @@ export class Hpml {
 
 	@autobind
 	private analyzeVars() {
+		if (this.ast == null) return;
 		// extracts all of exported variables
 		const infos: Record<string, VariableInfo> = {};
 		for (const node of this.ast) {
@@ -127,6 +130,7 @@ export class Hpml {
 
 	@autobind
 	private refreshVars() {
+		if (this.aiscript == null) return;
 		const vars: Record<string, any> = {};
 		for (const [name, info] of Object.entries(this.variableInfos)) {
 			// TODO: validate type of input block variable
@@ -145,12 +149,14 @@ export class Hpml {
 	}
 
 	@autobind
-	public run() {
-		return this.aiscript.exec(this.ast);
+	public async run() {
+		if (this.aiscript == null) return;
+		await this.aiscript.exec(this.ast);
 	}
 
 	@autobind
 	public abort() {
+		if (this.aiscript == null) return;
 		this.aiscript.abort();
 	}
 }
