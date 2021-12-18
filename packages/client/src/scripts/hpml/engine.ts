@@ -125,10 +125,12 @@ export class HpmlEngine {
 		}
 	}
 
+	@autobind
 	public run() {
 		return this.aiscript.exec(this.ast);
 	}
 
+	@autobind
 	public abort() {
 		this.aiscript.abort();
 	}
