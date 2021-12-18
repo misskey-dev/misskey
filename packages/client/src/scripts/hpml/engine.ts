@@ -49,7 +49,8 @@ export class HpmlEngine {
 		// this.refreshVars();
 	}
 
-	public analyzeVars() {
+	@autobind
+	private analyzeVars() {
 		// parse script
 		let nodes: Node[];
 		try {
@@ -91,7 +92,7 @@ export class HpmlEngine {
 	}
 
 	@autobind
-	public refreshVars() {
+	private refreshVars() {
 		const vars: Record<string, any> = {};
 		for (const [name, info] of Object.entries(this.variableInfos)) {
 			// TODO: validate type of input block variable
