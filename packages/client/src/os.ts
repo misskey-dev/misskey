@@ -221,7 +221,9 @@ export function modalPageWindow(path: string) {
 }
 
 export function toast(message: string) {
-	// TODO
+	popup(import('@/components/toast.vue'), {
+		message
+	}, {}, 'closed');
 }
 
 export function alert(props: {

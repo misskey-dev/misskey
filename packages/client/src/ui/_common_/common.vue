@@ -34,7 +34,7 @@ export default defineComponent({
 					id: notification.id
 				});
 
-				popup(import('@/components/toast.vue'), {
+				popup(import('@/components/notification-toast.vue'), {
 					notification
 				}, {}, 'closed');
 			}

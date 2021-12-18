@@ -816,6 +816,7 @@ hide: "隠す"
 leaveGroup: "グループから抜ける"
 leaveGroupConfirm: "「{name}」から抜けますか？"
 useDrawerReactionPickerForMobile: "モバイルデバイスのときドロワーで表示"
+welcomeBackWithName: "おかえりなさい、{name}さん"
 
 _emailUnavailable:
   used: "既に使用されています"
