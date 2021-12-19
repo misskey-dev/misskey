@@ -1,74 +1,70 @@
 <template>
-<div class="mk-toast" :style="{ zIndex }">
-	<transition name="notification-slide" appear @after-leave="$emit('closed')">
-		<XNotification v-if="showing" :notification="notification" class="notification _acrylic"/>
+<div class="mk-toast">
+	<transition name="toast" appear @after-leave="$emit('closed')">
+		<div v-if="showing" class="body _acrylic" :style="{ zIndex }">
+			<div class="message">
+				{{ message }}
+			</div>
+		</div>
 	</transition>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import XNotification from './notification.vue';
 import * as os from '@/os';
 
 export default defineComponent({
-	components: {
-		XNotification
-	},
 	props: {
-		notification: {
-			type: Object,
-			required: true
-		}
+		message: {
+			type: String,
+			required: true,
+		},
 	},
 	emits: ['closed'],
 	data() {
 		return {
 			showing: true,
-			zIndex: os.claimZIndex(true),
+			zIndex: os.claimZIndex('high'),
 		};
 	},
 	mounted() {
 		setTimeout(() => {
 			this.showing = false;
-		}, 6000);
+		}, 4000);
 	}
 });
 </script>
 
 <style lang="scss" scoped>
-.notification-slide-enter-active, .notification-slide-leave-active {
+.toast-enter-active, .toast-leave-active {
 	transition: opacity 0.3s, transform 0.3s !important;
 }
-.notification-slide-enter-from, .notification-slide-leave-to {
+.toast-enter-from, .toast-leave-to {
 	opacity: 0;
-	transform: translateX(-250px);
+	transform: translateY(-100%);
 }
 
 .mk-toast {
-	position: fixed;
-	left: 0;
-	width: 250px;
-	top: 32px;
-	padding: 0 32px;
-	pointer-events: none;
-
-	@media (max-width: 700px) {
-		top: initial;
-		bottom: 112px;
-		padding: 0 16px;
-	}
-
-	@media (max-width: 500px) {
-		bottom: 92px;
-		padding: 0 8px;
-	}
-
-	> .notification {
-		height: 100%;
+	> .body {
+		position: fixed;
+		left: 0;
+		right: 0;
+		top: 0;
+		margin: 0 auto;
+		margin-top: 16px;
+		min-width: 300px;
+		max-width: calc(100% - 32px);
+		width: min-content;
 		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 		border-radius: 8px;
-		overflow: hidden;
+		overflow: clip;
+		text-align: center;
+		pointer-events: none;
+
+		> .message {
+			padding: 16px 24px;
+		}
 	}
 }
 </style>

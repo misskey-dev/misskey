@@ -12,24 +12,12 @@
 import { defineComponent } from 'vue';
 import * as os from '@/os';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
-import VanillaTilt from 'vanilla-tilt';
 
 export default defineComponent({
 	props: {
 		emoji: {
 			type: Object,
 			required: true,
-		}
-	},
-
-	mounted() {
-		if (this.$store.animation) {
-			VanillaTilt.init(this.$el, {
-				reverse: true,
-				gyroscope: false,
-				scale: 1.1,
-				speed: 500,
-			});
 		}
 	},
 
@@ -59,8 +47,6 @@ export default defineComponent({
 	text-align: left;
 	background: var(--panel);
 	border-radius: 8px;
-	transform-style: preserve-3d;
-	transform: perspective(1000px);
 
 	&:hover {
 		border-color: var(--accent);
@@ -69,14 +55,12 @@ export default defineComponent({
 	> .img {
 		width: 42px;
 		height: 42px;
-		transform: translateZ(20px);
 	}
 
 	> .body {
 		padding: 0 0 0 8px;
 		white-space: nowrap;
 		overflow: hidden;
-		transform: translateZ(10px);
 
 		> .name {
 			text-overflow: ellipsis;

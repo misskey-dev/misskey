@@ -30,7 +30,10 @@
 		<option :value="3">{{ $ts.large }}</option>
 	</FormRadios>
 
-	<FormSwitch v-model="reactionPickerUseDrawerForMobile" class="_formBlock">{{ $ts.useDrawerReactionPickerForMobile }}</FormSwitch>
+	<FormSwitch v-model="reactionPickerUseDrawerForMobile" class="_formBlock">
+		{{ $ts.useDrawerReactionPickerForMobile }}
+		<template #caption>{{ $ts.needReloadToApply }}</template>
+	</FormSwitch>
 
 	<FormSection>
 		<div style="display: flex; gap: var(--margin); flex-wrap: wrap;">

@@ -155,7 +155,7 @@ export default defineComponent({
 
 		// 最前面へ移動
 		top() {
-			(this.$el as any).style.zIndex = os.claimZIndex(this.front);
+			(this.$el as any).style.zIndex = os.claimZIndex(this.front ? 'middle' : 'low');
 		},
 
 		onBodyMousedown() {

@@ -162,16 +162,14 @@ export const popups = ref([]) as Ref<{
 	props: Record<string, any>;
 }[]>;
 
-let popupZIndex = 1000000;
-let popupZIndexForFront = 2000000;
-export function claimZIndex(front = false): number {
-	if (front) {
-		popupZIndexForFront += 100;
-		return popupZIndexForFront;
-	} else {
-		popupZIndex += 100;
-		return popupZIndex;
-	}
+const zIndexes = {
+	low: 1000000,
+	middle: 2000000,
+	high: 3000000,
+};
+export function claimZIndex(priority: 'low' | 'middle' | 'high' = 'low'): number {
+	zIndexes[priority] += 100;
+	return zIndexes[priority];
 }
 
 export async function popup(component: Component | typeof import('*.vue') | Promise<Component | typeof import('*.vue')>, props: Record<string, any>, events = {}, disposeEvent?: string) {
@@ -223,7 +221,9 @@ export function modalPageWindow(path: string) {
 }
 
 export function toast(message: string) {
-	// TODO
+	popup(import('@/components/toast.vue'), {
+		message
+	}, {}, 'closed');
 }
 
 export function alert(props: {

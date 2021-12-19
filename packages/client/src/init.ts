@@ -26,7 +26,7 @@ import { router } from '@/router';
 import { applyTheme } from '@/scripts/theme';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
 import { i18n } from '@/i18n';
-import { stream, confirm, alert, post, popup } from '@/os';
+import { stream, confirm, alert, post, popup, toast } from '@/os';
 import * as sound from '@/scripts/sound';
 import { $i, refreshAccount, login, updateAccount, signout } from '@/account';
 import { defaultStore, ColdDeviceStorage } from '@/store';
@@ -341,6 +341,18 @@ if ($i) {
 			text: i18n.locale.accountDeletionInProgress,
 		});
 	}
+
+	const lastUsed = localStorage.getItem('lastUsed');
+	if (lastUsed) {
+		const lastUsedDate = parseInt(lastUsed, 10);
+		// 二時間以上前なら
+		if (Date.now() - lastUsedDate > 1000 * 60 * 60 * 2) {
+			toast(i18n.t('welcomeBackWithName', {
+				name: $i.name || $i.username,
+			}));
+		}
+	}
+	localStorage.setItem('lastUsed', Date.now().toString());
 
 	if ('Notification' in window) {
 		// 許可を得ていなかったらリクエスト
