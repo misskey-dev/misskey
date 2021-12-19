@@ -49,10 +49,10 @@ export default defineComponent({
 			type: String,
 			default: 'auto',
 		},
-		front: {
-			type: Boolean,
+		zPriority: {
+			type: String as PropType<'low' | 'middle' | 'high'>,
 			required: false,
-			default: false,
+			default: 'low',
 		},
 		noOverlap: {
 			type: Boolean,
@@ -74,7 +74,7 @@ export default defineComponent({
 		const transformOrigin = ref('center');
 		const showing = ref(true);
 		const content = ref<HTMLElement>();
-		const zIndex = os.claimZIndex(props.front);
+		const zIndex = os.claimZIndex(props.zPriority);
 		const type = computed(() => {
 			if (props.preferType === 'auto') {
 				if (isTouchUsing && window.innerWidth < 500 && window.innerHeight < 1000) {

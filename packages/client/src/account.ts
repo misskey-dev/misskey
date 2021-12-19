@@ -1,5 +1,6 @@
 import { del, get, set } from '@/scripts/idb-proxy';
 import { reactive } from 'vue';
+import * as misskey from 'misskey-js';
 import { apiUrl } from '@/config';
 import { waiting, api, popup, popupMenu, success } from '@/os';
 import { unisonReload, reloadChannel } from '@/scripts/unison-reload';
@@ -8,13 +9,7 @@ import { i18n } from './i18n';
 
 // TODO: 他のタブと永続化されたstateを同期
 
-type Account = {
-	id: string;
-	token: string;
-	isModerator: boolean;
-	isAdmin: boolean;
-	isDeleted: boolean;
-};
+type Account = misskey.entities.MeDetailed;
 
 const data = localStorage.getItem('account');
 
