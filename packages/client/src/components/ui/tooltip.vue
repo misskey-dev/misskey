@@ -34,7 +34,7 @@ export default defineComponent({
 
 	setup(props, context) {
 		const el = ref<HTMLElement>();
-		const zIndex = os.claimZIndex(true);
+		const zIndex = os.claimZIndex('high');
 
 		const setPosition = () => {
 			if (el.value == null) return;

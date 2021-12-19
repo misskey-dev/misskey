@@ -35,7 +35,7 @@ export default defineComponent({
 					id: notification.id
 				});
 
-				popup(import('@/components/toast.vue'), {
+				popup(import('@/components/notification-toast.vue'), {
 					notification
 				}, {}, 'closed');
 			}
@@ -66,7 +66,7 @@ export default defineComponent({
 #wait {
 	display: block;
 	position: fixed;
-	z-index: 3000000;
+	z-index: 4000000;
 	top: 15px;
 	right: 15px;
 

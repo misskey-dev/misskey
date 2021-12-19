@@ -82,7 +82,7 @@ export default defineComponent({
 		});
 
 		const columns = deckStore.reactiveState.columns;
-		const layout = deckStore.reactiveState.layout.value;
+		const layout = deckStore.reactiveState.layout;
 		const menuIndicated = computed(() => {
 			if ($i == null) return false;
 			for (const def in menuDef) {
