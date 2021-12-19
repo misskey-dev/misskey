@@ -35,7 +35,9 @@ export default defineComponent({
 		onMounted(() => {
 			nextTick(() => {
 				if (props.page.script && hpml.aiscript) {
-					hpml.run().catch(e => {
+					hpml.run().then(() => {
+						hpml.refreshVars();
+					}).catch(e => {
 						console.error(e);
 						/*os.alert({
 							type: 'error',

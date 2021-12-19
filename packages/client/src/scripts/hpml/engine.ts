@@ -37,28 +37,26 @@ const inputBlockTable: Record<string, 'string' | 'number' | 'boolean'> = {
 export class Hpml {
 	public page: Page;
 	public aiscript?: AiScript;
+	public variables: any[];
+	private ast?: Node[];
 	public variableInfos: Record<string, VariableInfo> = {}; // variable source infos
 	public vars: Ref<Record<string, any>> = ref({}); // variable values for blocks
 	public pageVarUpdatedCallback?: values.VFn;
 	public canvases: Record<string, HTMLCanvasElement> = {};
-	private ast?: Node[];
 
 	constructor(page: Record<string, any>, opts?: any) {
 		this.page = (page as Page);
-		if (this.page.version != '2') {
-			throw new HpmlError('The version of this page is not supported.');
-		}
+		this.variables = [];
+		// if (this.page.version != '2') {
+		// 	throw new HpmlError('The version of this page is not supported.');
+		// }
 		if (this.page.script == null) return;
 		this.aiscript = markRaw(new AiScript({
 			...createAiScriptEnv({ storageKey: 'pages:' + this.page.id }),
 			...initAiLib(this)
 		}, opts));
-		try {
-			this.ast = Parser.parse(this.page.script);
-		} catch (e) {
-			throw new HpmlError('Failed to parse the script.');
-		}
-		this.analyzeVars();
+		this.buildAst();
+		this.collectVars();
 
 		this.aiscript.scope.opts.onUpdated = (name, value) => {
 			this.refreshVars();
@@ -82,18 +80,17 @@ export class Hpml {
 	}
 
 	@autobind
-	public updatePageVar(name: string, value: any) {
-		if (this.aiscript == null) return;
-		if (this.variableInfos[name] == null || this.variableInfos[name].inputAttr == null) {
-			throw new HpmlError(`No such input var '${name}'`);
-		}
-		if (this.pageVarUpdatedCallback) {
-			this.aiscript.execFn(this.pageVarUpdatedCallback, [values.STR(name), utils.jsToVal(value)]);
+	private buildAst() {
+		if (this.page.script == null) return;
+		try {
+			this.ast = Parser.parse(this.page.script);
+		} catch (e) {
+			throw new HpmlError('Failed to parse the script.');
 		}
 	}
 
 	@autobind
-	private analyzeVars() {
+	private collectVars() {
 		if (this.ast == null) return;
 		// extracts all of exported variables
 		const infos: Record<string, VariableInfo> = {};
@@ -129,7 +126,7 @@ export class Hpml {
 	}
 
 	@autobind
-	private refreshVars() {
+	public refreshVars() {
 		if (this.aiscript == null) return;
 		const vars: Record<string, any> = {};
 		for (const [name, info] of Object.entries(this.variableInfos)) {
@@ -146,6 +143,17 @@ export class Hpml {
 			vars[name] = info.value;
 		}
 		this.vars.value = vars;
+	}
+
+	@autobind
+	public updatePageVar(name: string, value: any) {
+		if (this.aiscript == null) return;
+		if (this.variableInfos[name] == null || this.variableInfos[name].inputAttr == null) {
+			throw new HpmlError(`No such input var '${name}'`);
+		}
+		if (this.pageVarUpdatedCallback) {
+			this.aiscript.execFn(this.pageVarUpdatedCallback, [values.STR(name), utils.jsToVal(value)]);
+		}
 	}
 
 	@autobind
