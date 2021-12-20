@@ -13,6 +13,7 @@
 import { defineComponent, nextTick, onMounted, computed, PropType, ref, watch } from 'vue';
 import * as os from '@/os';
 import { isTouchUsing } from '@/scripts/touch';
+import { defaultStore } from '@/store';
 
 function getFixedContainer(el: Element | null): Element | null {
 	if (el == null || el.tagName === 'BODY') return null;
@@ -77,7 +78,7 @@ export default defineComponent({
 		const zIndex = os.claimZIndex(props.zPriority);
 		const type = computed(() => {
 			if (props.preferType === 'auto') {
-				if (isTouchUsing && window.innerWidth < 500 && window.innerHeight < 1000) {
+				if (!defaultStore.state.disableDrawer && isTouchUsing && window.innerWidth < 500 && window.innerHeight < 1000) {
 					return 'drawer';
 				} else {
 					return props.src != null ? 'popup' : 'dialog';
