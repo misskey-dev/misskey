@@ -639,6 +639,7 @@ continueThread: "Vidi pli mesaĝarojn"
 incorrectPassword: "Nevalida pasvorto"
 leaveGroup: "Eliĝi el la grupo"
 leaveGroupConfirm: "Ĉu vi certas ke vi volas eliĝi el la grupo {name}?"
+welcomeBackWithName: "Alvenbenon! {name}"
 _emailUnavailable:
   used: "La retpoŝto jam estas uzita."
   format: "Nevalida formato."
@@ -843,6 +844,9 @@ _postForm:
   replyPlaceholder: "Respondi la noton…"
   quotePlaceholder: "Citi la noton…"
   channelPlaceholder: "Mencii en la kanalo…"
+  _placeholders:
+    a: "Kiel vi fartas?"
+    e: "Komencu skribi…"
 _profile:
   name: "Nomo"
   username: "Uzantnomo"
