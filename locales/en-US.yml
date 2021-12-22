@@ -818,6 +818,7 @@ leaveGroup: "Leave Group"
 leaveGroupConfirm: "Are you sure you want to leave \"{name}\"?"
 useDrawerReactionPickerForMobile: "Display reaction picker as drawer on mobile"
 welcomeBackWithName: "Welcome back, {name}"
+clickToFinishEmailVerification: "Please click [{ok}] to complete email verification."
 _emailUnavailable:
   used: "This email address is already being used"
   format: "The format of this email address is invalid"
