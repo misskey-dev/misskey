@@ -818,6 +818,7 @@ leaveGroup: "グループから抜ける"
 leaveGroupConfirm: "「{name}」から抜けますか？"
 useDrawerReactionPickerForMobile: "モバイルデバイスのときドロワーで表示"
 welcomeBackWithName: "おかえりなさい、{name}さん"
+clickToFinishEmailVerification: "[{ok}]を押して、メールアドレスの確認を完了してください。"
 
 _emailUnavailable:
   used: "既に使用されています"
