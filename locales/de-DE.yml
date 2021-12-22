@@ -819,6 +819,7 @@ leaveGroup: "Gruppe verlassen"
 leaveGroupConfirm: "Möchtest du \"{name}\" wirklich verlassen?"
 useDrawerReactionPickerForMobile: "Auf mobilen Geräten ausfahrbare Reaktionsauswahl anzeigen"
 welcomeBackWithName: "Willkommen zurück, {name}"
+clickToFinishEmailVerification: "Drücke bitte auf [{ok}], um die Email-Bestätigung abzuschließen."
 _emailUnavailable:
   used: "Diese Email-Adresse wird bereits verwendet"
   format: "Das Format dieser Email-Adresse ist ungültig"
