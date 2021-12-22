@@ -720,8 +720,8 @@ _channel:
   following: "Sekvante"
   usersCount: "{n} partoprenantoj"
 _menuDisplay:
-  sideFull: "Flanken"
-  sideIcon: "Flanken (bildsimbolo)"
+  sideFull: "Flanko"
+  sideIcon: "Flanko (bildsimbolo)"
   top: "Supro"
   hide: "Kaŝi"
 _wordMute:
