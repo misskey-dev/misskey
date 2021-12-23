@@ -43,6 +43,7 @@
 		<FormSwitch v-model="useOsNativeEmojis" class="_formBlock">{{ $ts.useOsNativeEmojis }}
 			<div><Mfm :key="useOsNativeEmojis" text="🍮🍦🍭🍩🍰🍫🍬🥞🍪"/></div>
 		</FormSwitch>
+		<FormSwitch v-model="disableDrawer" class="_formBlock">{{ $ts.disableDrawer }}</FormSwitch>
 
 		<FormRadios v-model="fontSize" class="_formBlock">
 			<template #label>{{ $ts.fontSize }}</template>
@@ -140,6 +141,7 @@ export default defineComponent({
 		showGapBetweenNotesInTimeline: defaultStore.makeGetterSetter('showGapBetweenNotesInTimeline'),
 		disableAnimatedMfm: defaultStore.makeGetterSetter('animatedMfm', v => !v, v => !v),
 		useOsNativeEmojis: defaultStore.makeGetterSetter('useOsNativeEmojis'),
+		disableDrawer: defaultStore.makeGetterSetter('disableDrawer'),
 		disableShowingAnimatedImages: defaultStore.makeGetterSetter('disableShowingAnimatedImages'),
 		loadRawImages: defaultStore.makeGetterSetter('loadRawImages'),
 		imageNewTab: defaultStore.makeGetterSetter('imageNewTab'),

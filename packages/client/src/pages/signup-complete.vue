@@ -31,12 +31,15 @@ export default defineComponent({
 		}
 	},
 
-	mounted() {
-		os.apiWithDialog('signup-pending', {
-			code: this.code,
-		}).then(res => {
-			login(res.i, '/');
+	async mounted() {
+		await os.alert({
+			type: 'info',
+			text: this.$t('clickToFinishEmailVerification', { ok: this.$ts.gotIt }),
 		});
+		const res = await os.apiWithDialog('signup-pending', {
+			code: this.code,
+		});
+		login(res.i, '/');
 	},
 
 	methods: {
