@@ -587,7 +587,6 @@ useGlobalSettingDesc: "Jeżeli włączone, zostaną wykorzystane ustawienia powi
 other: "Inne"
 regenerateLoginToken: "Generuj token logowania ponownie"
 setMultipleBySeparatingWithSpace: "Możesz ustawić wiele, oddzielając je spacjami."
-chatOpenBehavior: "Zachowanie okna czatu po otwarciu"
 behavior: "Zachowanie"
 sample: "Przykład"
 abuseReports: "Zgłoszenia"
