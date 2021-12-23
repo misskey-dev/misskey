@@ -39,7 +39,7 @@ export default defineComponent({
 				actions: [{
 					icon: 'fas fa-plus',
 					text: this.$ts.create,
-					handler: this.create
+					handler: this.create,
 				}],
 				tabs: [{
 					active: this.tab === 'featured',

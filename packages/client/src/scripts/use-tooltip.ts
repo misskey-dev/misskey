@@ -18,6 +18,9 @@ export function useTooltip(
 	const open = () => {
 		close();
 		if (!isHovering) return;
+		if (elRef.value == null) return;
+		const el = elRef.value instanceof Element ? elRef.value : elRef.value.$el;
+		if (!document.body.contains(el)) return; // openしようとしたときに既に元要素がDOMから消えている場合があるため
 
 		const showing = ref(true);
 		onShow(showing);
