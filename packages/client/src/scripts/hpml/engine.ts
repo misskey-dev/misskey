@@ -1,6 +1,6 @@
 import autobind from 'autobind-decorator';
 import { AiScript, Parser, values, utils } from '@syuilo/aiscript';
-import { Node, NAttr, NCall, NFn } from '@syuilo/aiscript/built/node';
+import { Node, NAttr, NCall, NFn, NIf } from '@syuilo/aiscript/built/node';
 import { markRaw, ref, Ref, unref } from 'vue';
 import { HpmlError } from '.';
 import { createAiScriptEnv } from '../aiscript/api';
@@ -35,55 +35,77 @@ const inputBlockTable: Record<string, 'string' | 'number' | 'boolean'> = {
 };
 
 // MkPages:updated()
-function generateUpdated(ast: Node[]) {
-		const updated = {
-			nameArg: 'name',
-			valueArg: 'value'
-		} as { call?: NCall, fn?: NFn, nameArg: string, valueArg: string };
+function generateUpdated(hpml: Hpml) {
+	const updated = {
+		nameArg: 'name',
+		valueArg: 'value'
+	} as { call?: NCall, fn?: NFn, nameArg: string, valueArg: string };
 
-		// find call node
-		for (const node of ast) {
-			if (node.type == 'call' && node.name == 'MkPages:updated') {
-				updated.call = node;
-			}
+	// find call node
+	for (const node of hpml.ast) {
+		if (node.type == 'call' && node.name == 'MkPages:updated') {
+			updated.call = node;
 		}
+	}
 
-		// generate fn node, call node as needed
-		if (updated.call != null) {
-			updated.fn = updated.call.args[0] as NFn;
-			updated.nameArg = updated.fn.args[0].name;
-			updated.valueArg = updated.fn.args[1].name;
-		} else {
-			updated.fn = {
-				type: 'fn',
-				args: [
-					{ name: 'name' },
-					{ name: 'value' }
-				],
-				children: []
+	// generate fn node and call node as needed
+	if (updated.call != null) {
+		updated.fn = updated.call.args[0] as NFn;
+		updated.nameArg = updated.fn.args[0].name;
+		updated.valueArg = updated.fn.args[1].name;
+	} else {
+		updated.fn = {
+			type: 'fn',
+			args: [
+				{ name: 'name' },
+				{ name: 'value' }
+			],
+			children: []
+		};
+		updated.call = {
+			type: 'call',
+			name: 'MkPages:updated',
+			args: [
+				updated.fn
+			]
+		};
+		hpml.ast.push(updated.call);
+	}
+
+	// generate updated event
+	const statements: Node[] = [];
+	for (const name of Object.keys(hpml.variableInfos)) {
+		const info = hpml.variableInfos[name];
+		if (info.inputAttr != null) {
+			// if name == 'exportedVar' { exportedVar = value }
+			const ifNode: NIf = {
+				type: 'if',
+				cond: {
+					type: 'infix',
+					operands: [
+						{ type: 'var', name: updated.nameArg },
+						{ type: 'str', value: name },
+					],
+					operators: ['==']
+				},
+				then: {
+					type: 'assign',
+					name: name,
+					expr: { type: 'var', name: updated.valueArg }
+				},
+				elseif: []
 			};
-			updated.call = {
-				type: 'call',
-				name: 'MkPages:updated',
-				args: [
-					updated.fn
-				]
-			};
-			ast.push(updated.call);
+			statements.push(ifNode);
 		}
-
-		// generate updated event
-		const statements: Node[] = [
-			{ type: 'call', name: 'print', args: [{ type: 'str', value: 'test message' }] }
-		];
-		updated.fn.children.splice(0, 0, ...statements);
+	}
+	updated.fn.children.splice(0, 0, ...statements);
 }
 
 export class Hpml {
 	public page: Page;
 	public aiscript?: AiScript;
 	public variables: any[];
-	private ast?: Node[];
+	public ast: Node[] = [];
 	public variableInfos: Record<string, VariableInfo> = {}; // variable source infos
 	public vars: Ref<Record<string, any>> = ref({}); // variable values for blocks
 	public pageVarUpdatedCallback?: values.VFn;
@@ -101,8 +123,17 @@ export class Hpml {
 			...createAiScriptEnv({ storageKey: 'pages:' + this.page.id }),
 			...initAiLib(this)
 		}, opts.ai));
-		this.buildAst();
+
+		// parse script
+		if (this.page.script != null) {
+			try {
+				this.ast = Parser.parse(this.page.script);
+			} catch (e) {
+				throw new HpmlError('Failed to parse the script.');
+			}
+		}
 		this.collectVars();
+		this.buildAst();
 
 		this.aiscript.scope.opts.onUpdated = (name, value) => {
 			this.refreshVar(name);
@@ -128,22 +159,11 @@ export class Hpml {
 
 	@autobind
 	private buildAst() {
-		if (this.page.script != null) {
-			try {
-				this.ast = Parser.parse(this.page.script);
-			} catch (e) {
-				throw new HpmlError('Failed to parse the script.');
-			}
-		} else {
-			this.ast = [];
-		}
-
-		generateUpdated(this.ast);
+		generateUpdated(this);
 	}
 
 	@autobind
 	private collectVars() {
-		if (this.ast == null) return;
 		const infos: Record<string, VariableInfo> = {};
 		for (const node of this.ast) {
 			if (node.type === 'def') {
