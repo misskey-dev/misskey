@@ -1,6 +1,6 @@
 import autobind from 'autobind-decorator';
 import { AiScript, Parser, values, utils } from '@syuilo/aiscript';
-import { Node, NAttr } from '@syuilo/aiscript/built/node';
+import { Node, NAttr, NCall, NFn } from '@syuilo/aiscript/built/node';
 import { markRaw, ref, Ref, unref } from 'vue';
 import { HpmlError } from '.';
 import { createAiScriptEnv } from '../aiscript/api';
@@ -82,11 +82,45 @@ export class Hpml {
 
 	@autobind
 	private buildAst() {
-		if (this.page.script == null) return;
-		try {
-			this.ast = Parser.parse(this.page.script);
-		} catch (e) {
-			throw new HpmlError('Failed to parse the script.');
+		if (this.page.script != null) {
+			try {
+				this.ast = Parser.parse(this.page.script);
+			} catch (e) {
+				throw new HpmlError('Failed to parse the script.');
+			}
+		} else {
+			this.ast = [];
+		}
+
+		const updatedStatements: Node[] = [];
+
+		// find MkPages:updated()
+		let updatedCall: NCall | undefined;
+		for (const node of this.ast) {
+			if (node.type == 'call' && node.name == 'MkPages:updated') {
+				updatedCall = node;
+			}
+		}
+		if (updatedCall != null) {
+			const updatedFn = updatedCall.args[0] as NFn;
+			// insert statements to the function head of the MkPages:updated()
+			updatedFn.children.splice(0, 0, ...updatedStatements);
+		} else {
+			updatedCall = {
+				type: 'call',
+				name: 'MkPages:updated',
+				args: [
+					{
+						type: 'fn',
+						args: [
+							{ name: 'name' },
+							{ name: 'value' }
+						],
+						children: updatedStatements
+					}
+				]
+			};
+			this.ast.push(updatedCall);
 		}
 	}
 
