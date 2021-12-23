@@ -34,6 +34,49 @@ const inputBlockTable: Record<string, 'string' | 'number' | 'boolean'> = {
 	radioButton: 'string',
 };
 
+// MkPages:updated()
+function generateUpdated(ast: Node[]) {
+		const updated = {
+			nameArg: 'name',
+			valueArg: 'value'
+		} as { call?: NCall, fn?: NFn, nameArg: string, valueArg: string };
+
+		// find call node
+		for (const node of ast) {
+			if (node.type == 'call' && node.name == 'MkPages:updated') {
+				updated.call = node;
+			}
+		}
+
+		// generate fn node, call node as needed
+		if (updated.call != null) {
+			updated.fn = updated.call.args[0] as NFn;
+			updated.nameArg = updated.fn.args[0].name;
+			updated.valueArg = updated.fn.args[1].name;
+		} else {
+			updated.fn = {
+				type: 'fn',
+				args: [
+					{ name: 'name' },
+					{ name: 'value' }
+				],
+				children: []
+			};
+			updated.call = {
+				type: 'call',
+				name: 'MkPages:updated',
+				args: [
+					updated.fn
+				]
+			};
+			ast.push(updated.call);
+		}
+
+		// generate updated event
+		const statements: Node[] = [];
+		updated.fn.children.splice(0, 0, ...statements);
+}
+
 export class Hpml {
 	public page: Page;
 	public aiscript?: AiScript;
@@ -92,36 +135,7 @@ export class Hpml {
 			this.ast = [];
 		}
 
-		const updatedStatements: Node[] = [];
-
-		// find MkPages:updated()
-		let updatedCall: NCall | undefined;
-		for (const node of this.ast) {
-			if (node.type == 'call' && node.name == 'MkPages:updated') {
-				updatedCall = node;
-			}
-		}
-		if (updatedCall != null) {
-			const updatedFn = updatedCall.args[0] as NFn;
-			// insert statements to the function head of the MkPages:updated()
-			updatedFn.children.splice(0, 0, ...updatedStatements);
-		} else {
-			updatedCall = {
-				type: 'call',
-				name: 'MkPages:updated',
-				args: [
-					{
-						type: 'fn',
-						args: [
-							{ name: 'name' },
-							{ name: 'value' }
-						],
-						children: updatedStatements
-					}
-				]
-			};
-			this.ast.push(updatedCall);
-		}
+		generateUpdated(this.ast);
 	}
 
 	@autobind
