@@ -131,8 +131,8 @@ addEmoji: "Aldoni emoĵion"
 settingGuide: "Agordaj rekomendoj"
 cacheRemoteFiles: "Stapli forajn dosierojn"
 flagAsBot: "Marki kiel uzata de roboto"
-flagAsCat: "Agordi kiel kat-iĝa"
-flagAsCatDescription: "Se vi estas kato, ebligu la agordon."
+flagAsCat: "Agordi kiel kata"
+flagAsCatDescription: "Se vi estas kato, faru ĉi tiun flagon"
 autoAcceptFollowed: "Aŭtomate akcepti la peton de sekvado far uzantoj kiujn vi sekvas"
 addAccount: "Aldoni konton"
 loginFailed: "Saluto malsukcesis"
@@ -741,6 +741,7 @@ _theme:
   description: "Priskribo"
   defaultValue: "Implicitaĵa valoro"
   color: "Koloro"
+  func: "Funkcio"
   darken: "Malbrileco"
   lighten: "Brileco"
   keys:
@@ -966,6 +967,9 @@ _pages:
       default: "Implicitaĵa valoro"
   script:
     categories:
+      random: "Hazardo"
+      value: "Valoro"
+      fn: "Funkcio"
       text: "Manipulo de teksto"
       list: "Listoj"
     blocks:
@@ -983,6 +987,7 @@ _pages:
       _join:
         arg1: "Listoj"
         arg2: "apartigilo"
+      random: "Hazardo"
       _randomPick:
         arg1: "Listoj"
       _dailyRandomPick:
@@ -1000,6 +1005,7 @@ _pages:
         arg1: "Teksto"
       _splitStrByLine:
         arg1: "Teksto"
+      fn: "Funkcio"
       _fn:
         slots: "Juntoj"
         arg1: "Elmeto"
