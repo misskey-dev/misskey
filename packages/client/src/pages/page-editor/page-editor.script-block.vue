@@ -37,9 +37,6 @@
 			</optgroup>
 		</select>
 	</section>
-	<section v-else-if="modelValue.type === 'aiScriptVar'" class="tbwccoaw">
-		<input v-model="modelValue.value"/>
-	</section>
 	<section v-else-if="modelValue.type === 'fn'" class="" style="padding:0 16px 16px 16px;">
 		<MkTextarea v-model="slots">
 			<template #label>{{ $ts._pages.script.blocks._fn.slots }}</template>

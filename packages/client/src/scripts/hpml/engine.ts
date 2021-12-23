@@ -59,7 +59,7 @@ export class Hpml {
 		this.collectVars();
 
 		this.aiscript.scope.opts.onUpdated = (name, value) => {
-			this.refreshVars();
+			this.refreshVar(name);
 		};
 		// when the last line of the script is executed:
 		// this.refreshVars();
@@ -68,8 +68,9 @@ export class Hpml {
 	@autobind
 	public interpolate(str: string) {
 		if (str == null) return null;
+		const vars = unref(this.vars);
 		return str.replace(/{(.+?)}/g, match => {
-			const v = unref(this.vars)[match.slice(1, -1).trim()];
+			const v = vars[match.slice(1, -1).trim()];
 			return v == null ? 'NULL' : v.toString();
 		});
 	}
@@ -128,6 +129,24 @@ export class Hpml {
 			}
 		}
 		this.variableInfos = infos;
+	}
+
+	@autobind
+	public refreshVar(name: string) {
+		if (this.aiscript == null) return;
+		if (this.variableInfos[name] == null) return;
+		const info = this.variableInfos[name];
+		// TODO: validate type of input block variable
+		try {
+			const value = this.aiscript.scope.get(name);
+			info.defined = true;
+			info.value = utils.valToJs(value);
+		} catch (e) {
+			// variable is not defined
+			info.defined = false;
+			info.value = null;
+		}
+		this.vars.value[name] = info.value;
 	}
 
 	@autobind

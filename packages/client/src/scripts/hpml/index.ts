@@ -19,7 +19,6 @@ export const literalDefs: Record<string, { out: any; category: string; icon: any
 	textList:      { out: 'stringArray', category: 'value', icon: 'fas fa-list', },
 	number:        { out: 'number',      category: 'value', icon: 'fas fa-sort-numeric-up', },
 	ref:           { out: null,          category: 'value', icon: 'fas fa-magic', },
-	aiScriptVar:   { out: null,          category: 'value', icon: 'fas fa-magic', },
 	fn:            { out: 'function',    category: 'value', icon: 'fas fa-square-root-alt', },
 };
 

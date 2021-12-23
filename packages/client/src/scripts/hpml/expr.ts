@@ -38,12 +38,6 @@ export type RefValue = {
 	value: string; // value is variable name
 };
 
-export type AiScriptRefValue = {
-	type: 'aiScriptVar';
-	id: string;
-	value: string; // value is variable name
-};
-
 export type UserFnValue = {
 	type: 'fn';
 	id: string;
@@ -57,7 +51,7 @@ export type UserFnValue = {
 };
 
 export type Value =
-	EmptyValue | TextValue | MultiLineTextValue | TextListValue | NumberValue | RefValue | AiScriptRefValue | UserFnValue;
+	EmptyValue | TextValue | MultiLineTextValue | TextListValue | NumberValue | RefValue | UserFnValue;
 
 export function isLiteralValue(expr: Expr): expr is Value {
 	return (expr.type == null || literalDefs[expr.type] != null);
