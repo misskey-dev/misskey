@@ -73,7 +73,9 @@ function generateUpdated(ast: Node[]) {
 		}
 
 		// generate updated event
-		const statements: Node[] = [];
+		const statements: Node[] = [
+			{ type: 'call', name: 'print', args: [{ type: 'str', value: 'test message' }] }
+		];
 		updated.fn.children.splice(0, 0, ...statements);
 }
 
@@ -87,7 +89,8 @@ export class Hpml {
 	public pageVarUpdatedCallback?: values.VFn;
 	public canvases: Record<string, HTMLCanvasElement> = {};
 
-	constructor(page: Record<string, any>, opts?: any) {
+	constructor(page: Record<string, any>, opts?: Record<string, any>) {
+		opts = opts || {};
 		this.page = (page as Page);
 		this.variables = [];
 		// if (this.page.version != '2') {
@@ -97,7 +100,7 @@ export class Hpml {
 		this.aiscript = markRaw(new AiScript({
 			...createAiScriptEnv({ storageKey: 'pages:' + this.page.id }),
 			...initAiLib(this)
-		}, opts));
+		}, opts.ai));
 		this.buildAst();
 		this.collectVars();
 

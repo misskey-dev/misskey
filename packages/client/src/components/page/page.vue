@@ -30,6 +30,11 @@ export default defineComponent({
 			visitor: $i,
 			url: url,
 			//enableAiScript: !defaultStore.state.disablePagesScript
+			ai: {
+				out: (value) => {
+					console.log(value);
+				}
+			}
 		});
 
 		onMounted(() => {
