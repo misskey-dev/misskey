@@ -99,7 +99,7 @@ router.get('/twemoji/(.*)', async ctx => {
 });
 
 // ServiceWorker
-router.get('/sw.js', async ctx => {
+router.get(`/sw.${config.version}.js`, async ctx => {
 	await send(ctx as any, `/sw.js`, {
 		root: swAssets,
 	});
