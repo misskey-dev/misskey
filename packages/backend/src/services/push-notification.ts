@@ -3,9 +3,32 @@ import config from '@/config/index';
 import { SwSubscriptions } from '@/models/index';
 import { fetchMeta } from '@/misc/fetch-meta';
 import { Packed } from '@/misc/schema';
+import { getNoteSummary } from '@/misc/get-note-summary';
 
 type notificationType = 'notification' | 'unreadMessagingMessage';
 type notificationBody = Packed<'Notification'> | Packed<'MessagingMessage'>;
+
+// プッシュメッセージサーバーには文字数制限があるため、内容を削減します
+function truncateNotification(notification: Packed<'Notification'>): any {
+	if (notification.note) {
+		return {
+			...notification,
+			note: {
+				...notification.note,
+				// textをgetNoteSummaryしたものに置き換える
+				text: getNoteSummary(notification.type === 'renote' ? notification.note.renote as Packed<'Note'> : notification.note),
+				...{
+					cw: undefined,
+					reply: undefined,
+					renote: undefined,
+					user: undefined as any, // 通知を受け取ったユーザーである場合が多いのでこれも捨てる
+				}
+			}
+		};
+	}
+
+	return notification;
+}
 
 export default async function(userId: string, type: notificationType, body: notificationBody) {
 	const meta = await fetchMeta();
@@ -32,7 +55,9 @@ export default async function(userId: string, type: notificationType, body: noti
 		};
 
 		push.sendNotification(pushSubscription, JSON.stringify({
-			type, body,
+			type,
+			body: type === 'notification' ? truncateNotification(body as Packed<'Notification'>) : body,
+			userId,
 		}), {
 			proxy: config.proxy,
 		}).catch((err: any) => {
