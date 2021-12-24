@@ -245,7 +245,6 @@ export class ColdDeviceStorage {
 		lightTheme: require('@/themes/l-light.json5') as Theme,
 		darkTheme: require('@/themes/d-dark.json5') as Theme,
 		syncDeviceDarkMode: true,
-		chatOpenBehavior: 'page' as 'page' | 'window' | 'popout',
 		plugins: [] as Plugin[],
 		mediaVolume: 0.5,
 		sound_masterVolume: 0.3,

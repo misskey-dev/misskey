@@ -7,6 +7,13 @@
 
 -->
 
+## 12.x.x (unreleased)
+
+### Improvements
+
+### Bugfixes
+- クライアント: 一部のコンポーネントが裏に隠れるのを修正
+
 ## 12.100.2 (2021/12/18)
 
 ### Bugfixes
