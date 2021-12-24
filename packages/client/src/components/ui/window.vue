@@ -414,6 +414,10 @@ export default defineComponent({
 				}
 			}
 
+			> .left {
+				min-width: 16px;
+			}
+
 			> .title {
 				flex: 1;
 				position: relative;
@@ -421,7 +425,6 @@ export default defineComponent({
 				white-space: nowrap;
 				overflow: hidden;
 				text-overflow: ellipsis;
-				text-align: center;
 				cursor: move;
 			}
 		}

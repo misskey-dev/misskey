@@ -1,4 +1,4 @@
-import { Ref, ref, watch } from 'vue';
+import { Ref, ref, watch, onUnmounted } from 'vue';
 
 export function useTooltip(
 	elRef: Ref<HTMLElement | { $el: HTMLElement } | null | undefined>,
@@ -72,9 +72,14 @@ export function useTooltip(
 			el.addEventListener('mouseleave', onMouseleave, { passive: true });
 			el.addEventListener('touchstart', onTouchstart, { passive: true });
 			el.addEventListener('touchend', onTouchend, { passive: true });
+			el.addEventListener('click', close, { passive: true });
 		}
 	}, {
 		immediate: true,
 		flush: 'post',
+	});
+
+	onUnmounted(() => {
+		close();
 	});
 }

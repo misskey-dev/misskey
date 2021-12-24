@@ -16,7 +16,13 @@
 	<template #headerLeft>
 		<button v-if="history.length > 0" v-tooltip="$ts.goBack" class="_button" @click="back()"><i class="fas fa-arrow-left"></i></button>
 	</template>
-	<div class="yrolvcoq">
+	<template #headerRight>
+		<button v-tooltip="$ts.showInPage" class="_button" @click="expand()"><i class="fas fa-expand-alt"></i></button>
+		<button v-tooltip="$ts.popout" class="_button" @click="popout()"><i class="fas fa-external-link-alt"></i></button>
+		<button class="_button" @click="menu"><i class="fas fa-ellipsis-h"></i></button>
+	</template>
+
+	<div class="yrolvcoq" :style="{ background: pageInfo?.bg }">
 		<MkStickyContainer>
 			<template #header><MkHeader v-if="pageInfo && !pageInfo.hideHeader" :info="pageInfo"/></template>
 			<component :is="component" v-bind="props" :ref="changePage"/>
@@ -33,6 +39,7 @@ import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { resolve } from '@/router';
 import { url } from '@/config';
 import * as symbols from '@/symbols';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -137,6 +144,23 @@ export default defineComponent({
 			const { component, props } = resolve(path);
 			this.component = component;
 			this.props = props;
+		},
+
+		menu(ev) {
+			os.popupMenu([{
+				icon: 'fas fa-external-link-alt',
+				text: this.$ts.openInNewTab,
+				action: () => {
+					window.open(this.url, '_blank');
+					this.$refs.window.close();
+				}
+			}, {
+				icon: 'fas fa-link',
+				text: this.$ts.copyLink,
+				action: () => {
+					copyToClipboard(this.url);
+				}
+			}], ev.currentTarget || ev.target);
 		},
 
 		back() {
