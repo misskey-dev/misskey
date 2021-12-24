@@ -284,7 +284,7 @@ export default defineComponent({
 	}
 
 	&.asDrawer {
-		padding: 12px 0;
+		padding: 12px 0 calc(env(safe-area-inset-bottom, 0px) + 12px) 0;
 		width: 100%;
 
 		> .item {
