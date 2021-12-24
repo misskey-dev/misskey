@@ -1047,7 +1047,7 @@ _poll:
   deadlineDate: "Data zakończenia"
   deadlineTime: "godz."
   duration: "Czas trwania"
-  votesCount: "{} głosów"
+  votesCount: "{n} głosów"
   totalVotes: "Łącznie {n} głosów"
   vote: "Głosowanie w ankiecie"
   showResult: "Pokaż wyniki"
