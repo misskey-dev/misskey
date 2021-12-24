@@ -3,7 +3,6 @@
  */
 declare var self: ServiceWorkerGlobalScope;
 
-import { getNoteSummary } from '@/scripts/get-note-summary';
 import * as misskey from 'misskey-js';
 
 function getUserName(user: misskey.entities.User): string {
@@ -26,37 +25,37 @@ export default async function(type, data, i18n): Promise<[string, NotificationOp
 			switch (data.type) {
 				case 'mention':
 					return [i18n.t('_notification.youGotMention', { name: getUserName(data.user) }), {
-						body: getNoteSummary(data.note, i18n.locale),
+						body: data.note.text,
 						icon: data.user.avatarUrl
 					}];
 
 				case 'reply':
 					return [i18n.t('_notification.youGotReply', { name: getUserName(data.user) }), {
-						body: getNoteSummary(data.note, i18n.locale),
+						body: data.note.text,
 						icon: data.user.avatarUrl
 					}];
 
 				case 'renote':
 					return [i18n.t('_notification.youRenoted', { name: getUserName(data.user) }), {
-						body: getNoteSummary(data.note, i18n.locale),
+						body: data.note.text,
 						icon: data.user.avatarUrl
 					}];
 
 				case 'quote':
 					return [i18n.t('_notification.youGotQuote', { name: getUserName(data.user) }), {
-						body: getNoteSummary(data.note, i18n.locale),
+						body: data.note.text,
 						icon: data.user.avatarUrl
 					}];
 
 				case 'reaction':
 					return [`${data.reaction} ${getUserName(data.user)}`, {
-						body: getNoteSummary(data.note, i18n.locale),
+						body: data.note.text,
 						icon: data.user.avatarUrl
 					}];
 
 				case 'pollVote':
 					return [i18n.t('_notification.youGotPoll', { name: getUserName(data.user) }), {
-						body: getNoteSummary(data.note, i18n.locale),
+						body: data.note.text,
 						icon: data.user.avatarUrl
 					}];
 
