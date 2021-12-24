@@ -1,28 +1,26 @@
 <template>
-<div>
-	<div class="_section">
-		<div class="_content">
-			<MkInput v-model="name">
-				<template #label>{{ $ts.name }}</template>
-			</MkInput>
+<MkSpacer :content-max="700">
+	<div class="_formRoot">
+		<MkInput v-model="name" class="_formBlock">
+			<template #label>{{ $ts.name }}</template>
+		</MkInput>
 
-			<MkTextarea v-model="description">
-				<template #label>{{ $ts.description }}</template>
-			</MkTextarea>
+		<MkTextarea v-model="description" class="_formBlock">
+			<template #label>{{ $ts.description }}</template>
+		</MkTextarea>
 
-			<div class="banner">
-				<MkButton v-if="bannerId == null" @click="setBannerImage"><i class="fas fa-plus"></i> {{ $ts._channel.setBanner }}</MkButton>
-				<div v-else-if="bannerUrl">
-					<img :src="bannerUrl" style="width: 100%;"/>
-					<MkButton @click="removeBannerImage()"><i class="fas fa-trash-alt"></i> {{ $ts._channel.removeBanner }}</MkButton>
-				</div>
+		<div class="banner">
+			<MkButton v-if="bannerId == null" @click="setBannerImage"><i class="fas fa-plus"></i> {{ $ts._channel.setBanner }}</MkButton>
+			<div v-else-if="bannerUrl">
+				<img :src="bannerUrl" style="width: 100%;"/>
+				<MkButton @click="removeBannerImage()"><i class="fas fa-trash-alt"></i> {{ $ts._channel.removeBanner }}</MkButton>
 			</div>
 		</div>
-		<div class="_footer">
+		<div class="_formBlock">
 			<MkButton primary @click="save()"><i class="fas fa-save"></i> {{ channelId ? $ts.save : $ts.create }}</MkButton>
 		</div>
 	</div>
-</div>
+</MkSpacer>
 </template>
 
 <script lang="ts">
@@ -51,9 +49,11 @@ export default defineComponent({
 			[symbols.PAGE_INFO]: computed(() => this.channelId ? {
 				title: this.$ts._channel.edit,
 				icon: 'fas fa-satellite-dish',
+				bg: 'var(--bg)',
 			} : {
 				title: this.$ts._channel.create,
 				icon: 'fas fa-satellite-dish',
+				bg: 'var(--bg)',
 			}),
 			channel: null,
 			name: null,

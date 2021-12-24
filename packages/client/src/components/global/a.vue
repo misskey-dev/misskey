@@ -106,11 +106,6 @@ export default defineComponent({
 				return;
 			}
 
-			if (this.to.startsWith('/my/messaging')) {
-				if (ColdDeviceStorage.get('chatOpenBehavior') === 'window') return this.window();
-				if (ColdDeviceStorage.get('chatOpenBehavior') === 'popout') return this.popout();
-			}
-
 			if (this.behavior) {
 				if (this.behavior === 'window') {
 					return this.window();

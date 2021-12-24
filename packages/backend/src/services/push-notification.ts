@@ -16,7 +16,7 @@ type pushNotificationsTypes = {
 };
 
 // プッシュメッセージサーバーには文字数制限があるため、内容を削減します
-function truncateNotification(notification: Packed<'Notification'>): Packed<'Notification'> {
+function truncateNotification(notification: Packed<'Notification'>): any {
 	if (notification.note) {
 		return {
 			...notification,

@@ -77,13 +77,6 @@
 		<FormSwitch v-model="defaultSideView">{{ $ts.openInSideView }}</FormSwitch>
 	</FormGroup>
 
-	<FormSelect v-model="chatOpenBehavior" class="_formBlock">
-		<template #label>{{ $ts.chatOpenBehavior }}</template>
-		<option value="page">{{ $ts.showInPage }}</option>
-		<option value="window">{{ $ts.openInWindow }}</option>
-		<option value="popout">{{ $ts.popout }}</option>
-	</FormSelect>
-
 	<FormLink to="/settings/deck" class="_formBlock">{{ $ts.deck }}</FormLink>
 
 	<FormLink to="/settings/custom-css" class="_formBlock"><template #icon><i class="fas fa-code"></i></template>{{ $ts.customCss }}</FormLink>
@@ -149,7 +142,6 @@ export default defineComponent({
 		disablePagesScript: defaultStore.makeGetterSetter('disablePagesScript'),
 		showFixedPostForm: defaultStore.makeGetterSetter('showFixedPostForm'),
 		defaultSideView: defaultStore.makeGetterSetter('defaultSideView'),
-		chatOpenBehavior: ColdDeviceStorage.makeGetterSetter('chatOpenBehavior'),
 		instanceTicker: defaultStore.makeGetterSetter('instanceTicker'),
 		enableInfiniteScroll: defaultStore.makeGetterSetter('enableInfiniteScroll'),
 		useReactionPickerForContextMenu: defaultStore.makeGetterSetter('useReactionPickerForContextMenu'),
