@@ -7,7 +7,7 @@
 		</div>
 		<div class="body">
 			<div class="content">
-				<Mfm :text="text" :author="$i" :i="$i"/>
+				<Mfm :text="text.trim()" :author="$i" :i="$i"/>
 			</div>
 		</div>
 	</div>
@@ -61,6 +61,7 @@ export default defineComponent({
 		width: 40px;
 		height: 40px;
 		border-radius: 8px;
+		pointer-events: none;
 	}
 
 	> .main {
@@ -69,6 +70,7 @@ export default defineComponent({
 
 		> .header {
 			margin-bottom: 2px;
+			font-weight: bold;
 		}
 
 		> .body {
