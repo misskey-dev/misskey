@@ -35,7 +35,6 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
-import Progress from '@/scripts/loading';
 import MkButton from '@/components/ui/button.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
@@ -73,7 +72,6 @@ export default defineComponent({
 
 	methods: {
 		fetch() {
-			Progress.start();
 			os.api('users/groups/show', {
 				groupId: this.groupId
 			}).then(group => {
@@ -82,7 +80,6 @@ export default defineComponent({
 					userIds: this.group.userIds
 				}).then(users => {
 					this.users = users;
-					Progress.done();
 				});
 			});
 		},
