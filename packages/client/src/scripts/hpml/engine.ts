@@ -1,6 +1,6 @@
 import autobind from 'autobind-decorator';
 import { AiScript, Parser, values, utils } from '@syuilo/aiscript';
-import { Node, NAttr, NCall, NFn, NIf } from '@syuilo/aiscript/built/node';
+import { Node, NAttr, NCall, NFn } from '@syuilo/aiscript/built/node';
 import { markRaw, ref, Ref, unref } from 'vue';
 import { HpmlError } from '.';
 import { createAiScriptEnv } from '../aiscript/api';
@@ -48,7 +48,7 @@ function generateUpdated(hpml: Hpml) {
 		}
 	}
 
-	// generate fn node and call node as needed
+	// generate the fn node and the call node as needed
 	if (updated.call != null) {
 		updated.fn = updated.call.args[0] as NFn;
 		updated.nameArg = updated.fn.args[0].name;
