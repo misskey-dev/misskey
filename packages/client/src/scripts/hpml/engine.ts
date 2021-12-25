@@ -54,21 +54,9 @@ function generateUpdated(hpml: Hpml) {
 		updated.nameArg = updated.fn.args[0].name;
 		updated.valueArg = updated.fn.args[1].name;
 	} else {
-		updated.fn = {
-			type: 'fn',
-			args: [
-				{ name: 'name' },
-				{ name: 'value' }
-			],
-			children: []
-		};
-		updated.call = {
-			type: 'call',
-			name: 'MkPages:updated',
-			args: [
-				updated.fn
-			]
-		};
+		updated.fn = Parser.parse(`@(name,value){}`)[0] as NFn;
+		updated.call = Parser.parse(`MkPages:updated()`)[0] as NCall;
+		updated.call.args.push(updated.fn);
 		hpml.ast.push(updated.call);
 	}
 
@@ -77,24 +65,7 @@ function generateUpdated(hpml: Hpml) {
 	for (const name of Object.keys(hpml.variableInfos)) {
 		const info = hpml.variableInfos[name];
 		if (info.inputAttr != null) {
-			// if name == 'exportedVar' { exportedVar = value }
-			const ifNode: NIf = {
-				type: 'if',
-				cond: {
-					type: 'infix',
-					operands: [
-						{ type: 'var', name: updated.nameArg },
-						{ type: 'str', value: name },
-					],
-					operators: ['==']
-				},
-				then: {
-					type: 'assign',
-					name: name,
-					expr: { type: 'var', name: updated.valueArg }
-				},
-				elseif: []
-			};
+			const ifNode = Parser.parse(`if ${updated.nameArg} == "${name}" { ${name} = ${updated.valueArg} }`)[0];
 			statements.push(ifNode);
 		}
 	}
