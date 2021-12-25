@@ -7,8 +7,6 @@
 			src="list"
 			:list="listId"
 			:sound="true"
-			@before="before()"
-			@after="after()"
 			@queue="queueUpdated"
 		/>
 	</div>
@@ -17,7 +15,6 @@
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent, computed } from 'vue';
-import Progress from '@/scripts/loading';
 import XTimeline from '@/components/timeline.vue';
 import { scroll } from '@/scripts/scroll';
 import * as os from '@/os';
@@ -76,14 +73,6 @@ export default defineComponent({
 	},
 
 	methods: {
-		before() {
-			Progress.start();
-		},
-
-		after() {
-			Progress.done();
-		},
-
 		queueUpdated(q) {
 			this.queue = q;
 		},

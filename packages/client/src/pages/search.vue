@@ -1,14 +1,13 @@
 <template>
 <div class="_section">
 	<div class="_content">
-		<XNotes ref="notes" :pagination="pagination" @before="before" @after="after"/>
+		<XNotes ref="notes" :pagination="pagination"/>
 	</div>
 </div>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
-import Progress from '@/scripts/loading';
 import XNotes from '@/components/notes.vue';
 import * as symbols from '@/symbols';
 
@@ -39,15 +38,5 @@ export default defineComponent({
 			(this.$refs.notes as any).reload();
 		}
 	},
-
-	methods: {
-		before() {
-			Progress.start();
-		},
-
-		after() {
-			Progress.done();
-		}
-	}
 });
 </script>
