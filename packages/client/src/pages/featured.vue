@@ -1,12 +1,11 @@
 <template>
 <MkSpacer :content-max="800">
-	<XNotes ref="notes" :pagination="pagination" @before="before" @after="after"/>
+	<XNotes ref="notes" :pagination="pagination"/>
 </MkSpacer>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import Progress from '@/scripts/loading';
 import XNotes from '@/components/notes.vue';
 import * as symbols from '@/symbols';
 
@@ -29,15 +28,5 @@ export default defineComponent({
 			},
 		};
 	},
-
-	methods: {
-		before() {
-			Progress.start();
-		},
-
-		after() {
-			Progress.done();
-		}
-	}
 });
 </script>

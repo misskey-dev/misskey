@@ -40,7 +40,6 @@ import MkButton from '@/components/ui/button.vue';
 import MkSwitch from '@/components/form/switch.vue';
 import XModalWindow from '@/components/ui/modal-window.vue';
 import MkDriveFileThumbnail from '@/components/drive-file-thumbnail.vue';
-import Progress from '@/scripts/loading';
 import bytes from '@/filters/bytes';
 import * as os from '@/os';
 
@@ -74,11 +73,9 @@ export default defineComponent({
 
 	methods: {
 		async fetch() {
-			Progress.start();
 			this.file = await os.api('drive/files/show', { fileId: this.fileId });
 			this.info = await os.api('admin/drive/show-file', { fileId: this.fileId });
 			this.isSensitive = this.file.isSensitive;
-			Progress.done();
 		},
 
 		showUser() {

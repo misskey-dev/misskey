@@ -8,7 +8,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import Progress from '@/scripts/loading';
 import XColumn from './column.vue';
 import XNotes from '@/components/notes.vue';
 import * as os from '@/os';
@@ -38,15 +37,5 @@ export default defineComponent({
 			},
 		}
 	},
-
-	methods: {
-		before() {
-			Progress.start();
-		},
-
-		after() {
-			Progress.done();
-		}
-	}
 });
 </script>

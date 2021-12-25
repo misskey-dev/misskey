@@ -205,7 +205,6 @@ import MkFolder from '@/components/ui/folder.vue';
 import MkRemoteCaution from '@/components/remote-caution.vue';
 import MkTab from '@/components/tab.vue';
 import MkInfo from '@/components/ui/info.vue';
-import Progress from '@/scripts/loading';
 import * as Acct from 'misskey-js/built/acct';
 import { getScrollPosition } from '@/scripts/scroll';
 import { getUserMenu } from '@/scripts/get-user-menu';
@@ -328,13 +327,10 @@ export default defineComponent({
 		fetch() {
 			if (this.acct == null) return;
 			this.user = null;
-			Progress.start();
 			os.api('users/show', Acct.parse(this.acct)).then(user => {
 				this.user = user;
 			}).catch(e => {
 				this.error = e;
-			}).finally(() => {
-				Progress.done();
 			});
 		},
 
