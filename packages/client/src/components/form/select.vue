@@ -3,7 +3,9 @@
 	<div class="label" @click="focus"><slot name="label"></slot></div>
 	<div ref="container" class="input" :class="{ inline, disabled, focused }" @click.prevent="onClick">
 		<div ref="prefixEl" class="prefix"><slot name="prefix"></slot></div>
-		<select ref="inputEl" v-model="v" v-panel
+		<select ref="inputEl"
+			v-model="v"
+			v-adaptive-border
 			class="select"
 			:disabled="disabled"
 			:required="required"
@@ -226,7 +228,7 @@ export default defineComponent({
 
 		&:hover {
 			> .select {
-				border-color: var(--inputBorderHover);
+				border-color: var(--inputBorderHover) !important;
 			}
 		}
 
@@ -242,6 +244,7 @@ export default defineComponent({
 			font-weight: normal;
 			font-size: 1em;
 			color: var(--fg);
+			background: var(--panel);
 			border: solid 1px var(--panel);
 			border-radius: 6px;
 			outline: none;
@@ -295,7 +298,7 @@ export default defineComponent({
 
 		&.focused {
 			> select {
-				border-color: var(--accent);
+				border-color: var(--accent) !important;
 			}
 		}
 
