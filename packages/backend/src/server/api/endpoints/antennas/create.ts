@@ -15,11 +15,11 @@ export const meta = {
 
 	params: {
 		name: {
-			validator: $.str.range(1, 100)
+			validator: $.str.range(1, 100),
 		},
 
 		src: {
-			validator: $.str.or(['home', 'all', 'users', 'list', 'group'])
+			validator: $.str.or(['home', 'all', 'users', 'list', 'group']),
 		},
 
 		userListId: {
@@ -31,53 +31,53 @@ export const meta = {
 		},
 
 		keywords: {
-			validator: $.arr($.arr($.str))
+			validator: $.arr($.arr($.str)),
 		},
 
 		excludeKeywords: {
-			validator: $.arr($.arr($.str))
+			validator: $.arr($.arr($.str)),
 		},
 
 		users: {
-			validator: $.arr($.str)
+			validator: $.arr($.str),
 		},
 
 		caseSensitive: {
-			validator: $.bool
+			validator: $.bool,
 		},
 
 		withReplies: {
-			validator: $.bool
+			validator: $.bool,
 		},
 
 		withFile: {
-			validator: $.bool
+			validator: $.bool,
 		},
 
 		notify: {
-			validator: $.bool
-		}
+			validator: $.bool,
+		},
 	},
 
 	errors: {
 		noSuchUserList: {
 			message: 'No such user list.',
 			code: 'NO_SUCH_USER_LIST',
-			id: '95063e93-a283-4b8b-9aa5-bcdb8df69a7f'
+			id: '95063e93-a283-4b8b-9aa5-bcdb8df69a7f',
 		},
 
 		noSuchUserGroup: {
 			message: 'No such user group.',
 			code: 'NO_SUCH_USER_GROUP',
-			id: 'aa3c0b9a-8cae-47c0-92ac-202ce5906682'
-		}
+			id: 'aa3c0b9a-8cae-47c0-92ac-202ce5906682',
+		},
 	},
 
 	res: {
 		type: 'object' as const,
 		optional: false as const, nullable: false as const,
-		ref: 'Antenna'
-	}
+		ref: 'Antenna',
+	},
 };
 
 export default define(meta, async (ps, user) => {

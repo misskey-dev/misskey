@@ -13,7 +13,7 @@ async function main(name: string, url: string, alias?: string): Promise<any> {
 		name,
 		url,
 		aliases,
-		updatedAt: new Date()
+		updatedAt: new Date(),
 	});
 }
 

@@ -14,7 +14,7 @@ export const meta = {
 	params: {
 		appSecret: {
 			validator: $.str,
-		}
+		},
 	},
 
 	res: {
@@ -30,22 +30,22 @@ export const meta = {
 				optional: false as const, nullable: false as const,
 				format: 'url',
 			},
-		}
+		},
 	},
 
 	errors: {
 		noSuchApp: {
 			message: 'No such app.',
 			code: 'NO_SUCH_APP',
-			id: '92f93e63-428e-4f2f-a5a4-39e1407fe998'
-		}
-	}
+			id: '92f93e63-428e-4f2f-a5a4-39e1407fe998',
+		},
+	},
 };
 
 export default define(meta, async (ps) => {
 	// Lookup app
 	const app = await Apps.findOne({
-		secret: ps.appSecret
+		secret: ps.appSecret,
 	});
 
 	if (app == null) {
@@ -60,11 +60,11 @@ export default define(meta, async (ps) => {
 		id: genId(),
 		createdAt: new Date(),
 		appId: app.id,
-		token: token
+		token: token,
 	});
 
 	return {
 		token: doc.token,
-		url: `${config.authUrl}/${doc.token}`
+		url: `${config.authUrl}/${doc.token}`,
 	};
 });

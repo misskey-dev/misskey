@@ -1,5 +1,5 @@
 <template>
-<MkModal ref="modal" @click="$emit('click')" @closed="$emit('closed')">
+<MkModal ref="modal" :prefer-type="'dialog'" @click="$emit('click')" @closed="$emit('closed')">
 	<div class="ebkgoccj _window _narrow_" :style="{ width: `${width}px`, height: scroll ? (height ? `${height}px` : null) : (height ? `min(${height}px, 100%)` : '100%') }" @keydown="onKeydown">
 		<div class="header">
 			<button v-if="withOkButton" class="_button" @click="$emit('close')"><i class="fas fa-times"></i></button>

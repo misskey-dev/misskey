@@ -11,7 +11,7 @@ import { IdentifiableError } from '@/misc/identifiable-error';
 export default async function(followee: { id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox']; }, follower: User) {
 	const request = await FollowRequests.findOne({
 		followeeId: followee.id,
-		followerId: follower.id
+		followerId: follower.id,
 	});
 
 	if (request == null) {
@@ -26,6 +26,6 @@ export default async function(followee: { id: User['id']; host: User['host']; ur
 	}
 
 	Users.pack(followee.id, followee, {
-		detail: true
+		detail: true,
 	}).then(packed => publishMainStream(followee.id, 'meUpdated', packed));
 }

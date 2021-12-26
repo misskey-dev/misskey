@@ -1,5 +1,5 @@
 <template>
-<MkModal ref="modal" @click="$refs.modal.close()" @closed="$emit('closed')">
+<MkModal ref="modal" :prefer-type="'dialog'" @click="$refs.modal.close()" @closed="$emit('closed')">
 	<div class="szkkfdyq _popup">
 		<div class="main">
 			<template v-for="item in items">

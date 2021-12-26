@@ -23,12 +23,12 @@ export const meta = {
 
 		limit: {
 			validator: $.optional.num.range(1, 100),
-			default: 10
+			default: 10,
 		},
 
 		offset: {
 			validator: $.optional.num,
-			default: 0
+			default: 0,
 		},
 
 		sinceId: {
@@ -47,16 +47,16 @@ export const meta = {
 			type: 'object' as const,
 			optional: false as const, nullable: false as const,
 			ref: 'NoteReaction',
-		}
+		},
 	},
 
 	errors: {
 		noSuchNote: {
 			message: 'No such note.',
 			code: 'NO_SUCH_NOTE',
-			id: '263fff3d-d0e1-4af4-bea7-8408059b451a'
-		}
-	}
+			id: '263fff3d-d0e1-4af4-bea7-8408059b451a',
+		},
+	},
 };
 
 export default define(meta, async (ps, user) => {
@@ -66,7 +66,7 @@ export default define(meta, async (ps, user) => {
 	});
 
 	const query = {
-		noteId: note.id
+		noteId: note.id,
 	} as DeepPartial<NoteReaction>;
 
 	if (ps.type) {
@@ -82,8 +82,8 @@ export default define(meta, async (ps, user) => {
 		take: ps.limit!,
 		skip: ps.offset,
 		order: {
-			id: -1
-		}
+			id: -1,
+		},
 	});
 
 	return await Promise.all(reactions.map(reaction => NoteReactions.pack(reaction, user)));

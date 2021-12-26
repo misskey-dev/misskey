@@ -15,22 +15,22 @@ export const meta = {
 	params: {
 		noteId: {
 			validator: $.type(ID),
-		}
+		},
 	},
 
 	errors: {
 		noSuchNote: {
 			message: 'No such note.',
 			code: 'NO_SUCH_NOTE',
-			id: '80848a2c-398f-4343-baa9-df1d57696c56'
+			id: '80848a2c-398f-4343-baa9-df1d57696c56',
 		},
 
 		notFavorited: {
 			message: 'You have not marked that note a favorite.',
 			code: 'NOT_FAVORITED',
-			id: 'b625fc69-635e-45e9-86f4-dbefbef35af5'
+			id: 'b625fc69-635e-45e9-86f4-dbefbef35af5',
 		},
-	}
+	},
 };
 
 export default define(meta, async (ps, user) => {
@@ -43,7 +43,7 @@ export default define(meta, async (ps, user) => {
 	// if already favorited
 	const exist = await NoteFavorites.findOne({
 		noteId: note.id,
-		userId: user.id
+		userId: user.id,
 	});
 
 	if (exist == null) {

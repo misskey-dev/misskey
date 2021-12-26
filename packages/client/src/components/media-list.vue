@@ -105,6 +105,7 @@ export default defineComponent({
 		return {
 			previewable,
 			gallery,
+			pswpZIndex: os.claimZIndex('middle'),
 		};
 	},
 });
@@ -130,7 +131,7 @@ export default defineComponent({
 			bottom: 0;
 			left: 0;
 			display: grid;
-			grid-gap: 4px;
+			grid-gap: 8px;
 
 			> * {
 				overflow: hidden;
@@ -186,5 +187,13 @@ export default defineComponent({
 			}
 		}
 	}
+}
+</style>
+
+<style lang="scss">
+.pswp {
+	// なぜか機能しない
+  //z-index: v-bind(pswpZIndex);
+	z-index: 2000000;
 }
 </style>

@@ -85,6 +85,10 @@ export default defineComponent({
 <style lang="scss" scoped>
 .zdjebgpv {
 	position: relative;
+	display: flex;
+	background: #e1e1e1;
+	border-radius: 8px;
+	overflow: clip;
 
 	> .icon-sub {
 		position: absolute;
@@ -95,14 +99,11 @@ export default defineComponent({
 		bottom: 4%;
 	}
 
-	> * {
-		margin: auto;
-	}
-
 	> .icon {
 		pointer-events: none;
-		height: 65%;
-		width: 65%;
+		margin: auto;
+		font-size: 32px;
+		color: #777;
 	}
 }
 </style>

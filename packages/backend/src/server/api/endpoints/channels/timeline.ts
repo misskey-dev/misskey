@@ -45,16 +45,16 @@ export const meta = {
 			type: 'object' as const,
 			optional: false as const, nullable: false as const,
 			ref: 'Note',
-		}
+		},
 	},
 
 	errors: {
 		noSuchChannel: {
 			message: 'No such channel.',
 			code: 'NO_SUCH_CHANNEL',
-			id: '4d0eeeba-a02c-4c3c-9966-ef60d38d2e7f'
-		}
-	}
+			id: '4d0eeeba-a02c-4c3c-9966-ef60d38d2e7f',
+		},
+	},
 };
 
 export default define(meta, async (ps, user) => {

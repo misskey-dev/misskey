@@ -12,7 +12,7 @@ export default async (ctx: Router.RouterContext) => {
 	// Verify user
 	const user = await Users.findOne({
 		id: userId,
-		host: null
+		host: null,
 	});
 
 	if (user == null) {
@@ -22,7 +22,7 @@ export default async (ctx: Router.RouterContext) => {
 
 	const pinings = await UserNotePinings.find({
 		where: { userId: user.id },
-		order: { id: 'DESC' }
+		order: { id: 'DESC' },
 	});
 
 	const pinnedNotes = await Promise.all(pinings.map(pining =>

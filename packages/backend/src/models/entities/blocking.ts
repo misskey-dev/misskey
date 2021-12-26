@@ -10,19 +10,19 @@ export class Blocking {
 
 	@Index()
 	@Column('timestamp with time zone', {
-		comment: 'The created date of the Blocking.'
+		comment: 'The created date of the Blocking.',
 	})
 	public createdAt: Date;
 
 	@Index()
 	@Column({
 		...id(),
-		comment: 'The blockee user ID.'
+		comment: 'The blockee user ID.',
 	})
 	public blockeeId: User['id'];
 
 	@ManyToOne(type => User, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public blockee: User | null;
@@ -30,12 +30,12 @@ export class Blocking {
 	@Index()
 	@Column({
 		...id(),
-		comment: 'The blocker user ID.'
+		comment: 'The blocker user ID.',
 	})
 	public blockerId: User['id'];
 
 	@ManyToOne(type => User, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public blocker: User | null;

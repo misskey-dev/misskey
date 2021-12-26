@@ -26,12 +26,12 @@ export type FileInfo = {
 
 const TYPE_OCTET_STREAM = {
 	mime: 'application/octet-stream',
-	ext: null
+	ext: null,
 };
 
 const TYPE_SVG = {
 	mime: 'image/svg+xml',
-	ext: 'svg'
+	ext: 'svg',
 };
 
 /**
@@ -99,7 +99,10 @@ export async function getFileInfo(path: string): Promise<FileInfo> {
 /**
  * Detect MIME Type and extension
  */
-export async function detectType(path: string) {
+export async function detectType(path: string): Promise<{
+	mime: string;
+	ext: string | null;
+}> {
 	// Check 0 byte
 	const fileSize = await getFileSize(path);
 	if (fileSize === 0) {
@@ -116,7 +119,7 @@ export async function detectType(path: string) {
 
 		return {
 			mime: type.mime,
-			ext: type.ext
+			ext: type.ext,
 		};
 	}
 

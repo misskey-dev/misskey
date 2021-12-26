@@ -11,7 +11,7 @@ export const meta = {
 	params: {
 		userId: {
 			validator: $.either($.type(ID), $.arr($.type(ID)).unique()),
-		}
+		},
 	},
 
 	res: {
@@ -23,37 +23,37 @@ export const meta = {
 					id: {
 						type: 'string' as const,
 						optional: false as const, nullable: false as const,
-						format: 'id'
+						format: 'id',
 					},
 					isFollowing: {
 						type: 'boolean' as const,
-						optional: false as const, nullable: false as const
+						optional: false as const, nullable: false as const,
 					},
 					hasPendingFollowRequestFromYou: {
 						type: 'boolean' as const,
-						optional: false as const, nullable: false as const
+						optional: false as const, nullable: false as const,
 					},
 					hasPendingFollowRequestToYou: {
 						type: 'boolean' as const,
-						optional: false as const, nullable: false as const
+						optional: false as const, nullable: false as const,
 					},
 					isFollowed: {
 						type: 'boolean' as const,
-						optional: false as const, nullable: false as const
+						optional: false as const, nullable: false as const,
 					},
 					isBlocking: {
 						type: 'boolean' as const,
-						optional: false as const, nullable: false as const
+						optional: false as const, nullable: false as const,
 					},
 					isBlocked: {
 						type: 'boolean' as const,
-						optional: false as const, nullable: false as const
+						optional: false as const, nullable: false as const,
 					},
 					isMuted: {
 						type: 'boolean' as const,
-						optional: false as const, nullable: false as const
-					}
-				}
+						optional: false as const, nullable: false as const,
+					},
+				},
 			},
 			{
 				type: 'array' as const,
@@ -65,41 +65,41 @@ export const meta = {
 						id: {
 							type: 'string' as const,
 							optional: false as const, nullable: false as const,
-							format: 'id'
+							format: 'id',
 						},
 						isFollowing: {
 							type: 'boolean' as const,
-							optional: false as const, nullable: false as const
+							optional: false as const, nullable: false as const,
 						},
 						hasPendingFollowRequestFromYou: {
 							type: 'boolean' as const,
-							optional: false as const, nullable: false as const
+							optional: false as const, nullable: false as const,
 						},
 						hasPendingFollowRequestToYou: {
 							type: 'boolean' as const,
-							optional: false as const, nullable: false as const
+							optional: false as const, nullable: false as const,
 						},
 						isFollowed: {
 							type: 'boolean' as const,
-							optional: false as const, nullable: false as const
+							optional: false as const, nullable: false as const,
 						},
 						isBlocking: {
 							type: 'boolean' as const,
-							optional: false as const, nullable: false as const
+							optional: false as const, nullable: false as const,
 						},
 						isBlocked: {
 							type: 'boolean' as const,
-							optional: false as const, nullable: false as const
+							optional: false as const, nullable: false as const,
 						},
 						isMuted: {
 							type: 'boolean' as const,
-							optional: false as const, nullable: false as const
-						}
-					}
-				}
-			}
-		]
-	}
+							optional: false as const, nullable: false as const,
+						},
+					},
+				},
+			},
+		],
+	},
 };
 
 export default define(meta, async (ps, me) => {

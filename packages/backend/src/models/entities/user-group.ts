@@ -9,7 +9,7 @@ export class UserGroup {
 
 	@Index()
 	@Column('timestamp with time zone', {
-		comment: 'The created date of the UserGroup.'
+		comment: 'The created date of the UserGroup.',
 	})
 	public createdAt: Date;
 
@@ -21,12 +21,12 @@ export class UserGroup {
 	@Index()
 	@Column({
 		...id(),
-		comment: 'The ID of owner.'
+		comment: 'The ID of owner.',
 	})
 	public userId: User['id'];
 
 	@ManyToOne(type => User, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public user: User | null;

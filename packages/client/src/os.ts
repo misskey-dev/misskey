@@ -18,8 +18,6 @@ export const pendingApiRequestsCount = ref(0);
 let apiRequestsCount = 0; // for debug
 export const apiRequests = ref([]); // for debug
 
-export const windows = new Map();
-
 const apiClient = new Misskey.api.APIClient({
 	origin: url,
 });
@@ -164,6 +162,16 @@ export const popups = ref([]) as Ref<{
 	props: Record<string, any>;
 }[]>;
 
+const zIndexes = {
+	low: 1000000,
+	middle: 2000000,
+	high: 3000000,
+};
+export function claimZIndex(priority: 'low' | 'middle' | 'high' = 'low'): number {
+	zIndexes[priority] += 100;
+	return zIndexes[priority];
+}
+
 export async function popup(component: Component | typeof import('*.vue') | Promise<Component | typeof import('*.vue')>, props: Record<string, any>, events = {}, disposeEvent?: string) {
 	if (component.then) component = await component;
 
@@ -213,7 +221,9 @@ export function modalPageWindow(path: string) {
 }
 
 export function toast(message: string) {
-	// TODO
+	popup(import('@/components/toast.vue'), {
+		message
+	}, {}, 'closed');
 }
 
 export function alert(props: {

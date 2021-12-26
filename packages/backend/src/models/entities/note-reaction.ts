@@ -11,7 +11,7 @@ export class NoteReaction {
 
 	@Index()
 	@Column('timestamp with time zone', {
-		comment: 'The created date of the NoteReaction.'
+		comment: 'The created date of the NoteReaction.',
 	})
 	public createdAt: Date;
 
@@ -20,7 +20,7 @@ export class NoteReaction {
 	public userId: User['id'];
 
 	@ManyToOne(type => User, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public user?: User | null;
@@ -30,7 +30,7 @@ export class NoteReaction {
 	public noteId: Note['id'];
 
 	@ManyToOne(type => Note, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public note?: Note | null;
@@ -38,7 +38,7 @@ export class NoteReaction {
 	// TODO: 対象noteのuserIdを非正規化したい(「受け取ったリアクション一覧」のようなものを(JOIN無しで)実装したいため)
 
 	@Column('varchar', {
-		length: 260
+		length: 260,
 	})
 	public reaction: string;
 }

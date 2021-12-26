@@ -13,28 +13,28 @@ export const meta = {
 	params: {
 		gameId: {
 			validator: $.type(ID),
-		}
+		},
 	},
 
 	errors: {
 		noSuchGame: {
 			message: 'No such game.',
 			code: 'NO_SUCH_GAME',
-			id: 'ace0b11f-e0a6-4076-a30d-e8284c81b2df'
+			id: 'ace0b11f-e0a6-4076-a30d-e8284c81b2df',
 		},
 
 		alreadyEnded: {
 			message: 'That game has already ended.',
 			code: 'ALREADY_ENDED',
-			id: '6c2ad4a6-cbf1-4a5b-b187-b772826cfc6d'
+			id: '6c2ad4a6-cbf1-4a5b-b187-b772826cfc6d',
 		},
 
 		accessDenied: {
 			message: 'Access denied.',
 			code: 'ACCESS_DENIED',
-			id: '6e04164b-a992-4c93-8489-2123069973e1'
+			id: '6e04164b-a992-4c93-8489-2123069973e1',
 		},
-	}
+	},
 };
 
 export default define(meta, async (ps, user) => {
@@ -57,11 +57,11 @@ export default define(meta, async (ps, user) => {
 	await ReversiGames.update(game.id, {
 		surrendered: user.id,
 		isEnded: true,
-		winnerId: winnerId
+		winnerId: winnerId,
 	});
 
 	publishReversiGameStream(game.id, 'ended', {
 		winnerId: winnerId,
-		game: await ReversiGames.pack(game.id, user)
+		game: await ReversiGames.pack(game.id, user),
 	});
 });

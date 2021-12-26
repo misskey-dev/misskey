@@ -1,6 +1,7 @@
 import * as Bull from 'bull';
 import { DbJobData } from '@/queue/types';
 import { deleteDriveFiles } from './delete-drive-files';
+import { exportCustomEmojis } from './export-custom-emojis';
 import { exportNotes } from './export-notes';
 import { exportFollowing } from './export-following';
 import { exportMute } from './export-mute';
@@ -14,6 +15,7 @@ import { importBlocking } from './import-blocking';
 
 const jobs = {
 	deleteDriveFiles,
+	exportCustomEmojis,
 	exportNotes,
 	exportFollowing,
 	exportMute,

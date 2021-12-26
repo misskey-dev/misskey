@@ -134,7 +134,7 @@ export default class Reversi {
 			color,
 			pos,
 			effects,
-			turn
+			turn,
 		});
 
 		this.calcTurn();
@@ -211,7 +211,7 @@ export default class Reversi {
 			[  0,  +1], // 下
 			[ -1,  +1], // 左下
 			[ -1,   0], // 左
-			[ -1,  -1]  // 左上
+			[ -1,  -1],  // 左上
 		];
 
 		const effectsInLine = ([dx, dy]: [number, number]): number[] => {

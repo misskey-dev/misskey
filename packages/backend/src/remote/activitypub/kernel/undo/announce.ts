@@ -7,7 +7,7 @@ export const undoAnnounce = async (actor: IRemoteUser, activity: IAnnounce): Pro
 	const uri = getApId(activity);
 
 	const note = await Notes.findOne({
-		uri
+		uri,
 	});
 
 	if (!note) return 'skip: no such Announce';

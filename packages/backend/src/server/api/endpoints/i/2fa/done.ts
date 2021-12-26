@@ -10,9 +10,9 @@ export const meta = {
 
 	params: {
 		token: {
-			validator: $.str
-		}
-	}
+			validator: $.str,
+		},
+	},
 };
 
 export default define(meta, async (ps, user) => {
@@ -27,7 +27,7 @@ export default define(meta, async (ps, user) => {
 	const verified = (speakeasy as any).totp.verify({
 		secret: profile.twoFactorTempSecret,
 		encoding: 'base32',
-		token: token
+		token: token,
 	});
 
 	if (!verified) {
@@ -36,6 +36,6 @@ export default define(meta, async (ps, user) => {
 
 	await UserProfiles.update(user.id, {
 		twoFactorSecret: profile.twoFactorTempSecret,
-		twoFactorEnabled: true
+		twoFactorEnabled: true,
 	});
 });

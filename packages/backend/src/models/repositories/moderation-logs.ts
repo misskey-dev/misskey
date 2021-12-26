@@ -17,7 +17,7 @@ export class ModerationLogRepository extends Repository<ModerationLog> {
 			info: log.info,
 			userId: log.userId,
 			user: Users.pack(log.user || log.userId, null, {
-				detail: true
+				detail: true,
 			}),
 		});
 	}

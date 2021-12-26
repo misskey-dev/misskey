@@ -12,7 +12,7 @@ export const meta = {
 
 	params: {
 		name: {
-			validator: $.str
+			validator: $.str,
 		},
 
 		folderId: {
@@ -28,7 +28,7 @@ export const meta = {
 			type: 'object' as const,
 			optional: false as const, nullable: false as const,
 			ref: 'DriveFile',
-		}
+		},
 	},
 };
 
@@ -36,7 +36,7 @@ export default define(meta, async (ps, user) => {
 	const files = await DriveFiles.find({
 		name: ps.name,
 		userId: user.id,
-		folderId: ps.folderId
+		folderId: ps.folderId,
 	});
 
 	return await Promise.all(files.map(file => DriveFiles.pack(file, { self: true })));

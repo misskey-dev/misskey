@@ -18,7 +18,7 @@ export const meta = {
 
 		name: {
 			validator: $.str.range(1, 100),
-		}
+		},
 	},
 
 	res: {
@@ -31,16 +31,16 @@ export const meta = {
 		noSuchList: {
 			message: 'No such list.',
 			code: 'NO_SUCH_LIST',
-			id: '796666fe-3dff-4d39-becb-8a5932c1d5b7'
+			id: '796666fe-3dff-4d39-becb-8a5932c1d5b7',
 		},
-	}
+	},
 };
 
 export default define(meta, async (ps, user) => {
 	// Fetch the list
 	const userList = await UserLists.findOne({
 		id: ps.listId,
-		userId: user.id
+		userId: user.id,
 	});
 
 	if (userList == null) {
@@ -48,7 +48,7 @@ export default define(meta, async (ps, user) => {
 	}
 
 	await UserLists.update(userList.id, {
-		name: ps.name
+		name: ps.name,
 	});
 
 	return await UserLists.pack(userList.id);

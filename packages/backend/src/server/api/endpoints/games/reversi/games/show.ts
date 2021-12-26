@@ -18,7 +18,7 @@ export const meta = {
 		noSuchGame: {
 			message: 'No such game.',
 			code: 'NO_SUCH_GAME',
-			id: 'f13a03db-fae1-46c9-87f3-43c8165419e1'
+			id: 'f13a03db-fae1-46c9-87f3-43c8165419e1',
 		},
 	},
 
@@ -32,86 +32,86 @@ export const meta = {
 				id: {
 					type: 'string' as const,
 					optional: false as const, nullable: false as const,
-					format: 'id'
+					format: 'id',
 				},
 				createdAt: {
 					type: 'string' as const,
 					optional: false as const, nullable: false as const,
-					format: 'date-time'
+					format: 'date-time',
 				},
 				startedAt: {
 					type: 'string' as const,
 					optional: false as const, nullable: false as const,
-					format: 'date-time'
+					format: 'date-time',
 				},
 				isStarted: {
 					type: 'boolean' as const,
-					optional: false as const, nullable: false as const
+					optional: false as const, nullable: false as const,
 				},
 				isEnded: {
 					type: 'boolean' as const,
-					optional: false as const, nullable: false as const
+					optional: false as const, nullable: false as const,
 				},
 				form1: {
 					type: 'any' as const,
-					optional: false as const, nullable: true as const
+					optional: false as const, nullable: true as const,
 				},
 				form2: {
 					type: 'any' as const,
-					optional: false as const, nullable: true as const
+					optional: false as const, nullable: true as const,
 				},
 				user1Accepted: {
 					type: 'boolean' as const,
 					optional: false as const, nullable: false as const,
-					default: false
+					default: false,
 				},
 				user2Accepted: {
 					type: 'boolean' as const,
 					optional: false as const, nullable: false as const,
-					default: false
+					default: false,
 				},
 				user1Id: {
 					type: 'string' as const,
 					optional: false as const, nullable: false as const,
-					format: 'id'
+					format: 'id',
 				},
 				user2Id: {
 					type: 'string' as const,
 					optional: false as const, nullable: false as const,
-					format: 'id'
+					format: 'id',
 				},
 				user1: {
 					type: 'object' as const,
 					optional: false as const, nullable: false as const,
-					ref: 'User'
+					ref: 'User',
 				},
 				user2: {
 					type: 'object' as const,
 					optional: false as const, nullable: false as const,
-					ref: 'User'
+					ref: 'User',
 				},
 				winnerId: {
 					type: 'string' as const,
 					optional: false as const, nullable: true as const,
-					format: 'id'
+					format: 'id',
 				},
 				winner: {
 					type: 'object' as const,
 					optional: false as const, nullable: true as const,
-					ref: 'User'
+					ref: 'User',
 				},
 				surrendered: {
 					type: 'string' as const,
 					optional: false as const, nullable: true as const,
-					format: 'id'
+					format: 'id',
 				},
 				black: {
 					type: 'number' as const,
-					optional: false as const, nullable: true as const
+					optional: false as const, nullable: true as const,
 				},
 				bw: {
 					type: 'string' as const,
-					optional: false as const, nullable: false as const
+					optional: false as const, nullable: false as const,
 				},
 				isLlotheo: {
 					type: 'boolean' as const,
@@ -119,27 +119,27 @@ export const meta = {
 				},
 				canPutEverywhere: {
 					type: 'boolean' as const,
-					optional: false as const, nullable: false as const
+					optional: false as const, nullable: false as const,
 				},
 				loopedBoard: {
 					type: 'boolean' as const,
-					optional: false as const, nullable: false as const
+					optional: false as const, nullable: false as const,
 				},
 				board: {
 					type: 'array' as const,
 					optional: false as const, nullable: false as const,
 					items: {
 						type: 'any' as const,
-						optional: false as const, nullable: false as const
-					}
+						optional: false as const, nullable: false as const,
+					},
 				},
 				turn: {
 					type: 'any' as const,
-					optional: false as const, nullable: false as const
-				}
-			}
-		}
-	}
+					optional: false as const, nullable: false as const,
+				},
+			},
+		},
+	},
 };
 
 export default define(meta, async (ps, user) => {
@@ -152,7 +152,7 @@ export default define(meta, async (ps, user) => {
 	const o = new Reversi(game.map, {
 		isLlotheo: game.isLlotheo,
 		canPutEverywhere: game.canPutEverywhere,
-		loopedBoard: game.loopedBoard
+		loopedBoard: game.loopedBoard,
 	});
 
 	for (const log of game.logs) {
@@ -163,6 +163,6 @@ export default define(meta, async (ps, user) => {
 
 	return Object.assign({
 		board: o.board,
-		turn: o.turn
+		turn: o.turn,
 	}, packed);
 });

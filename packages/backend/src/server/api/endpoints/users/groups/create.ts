@@ -14,8 +14,8 @@ export const meta = {
 
 	params: {
 		name: {
-			validator: $.str.range(1, 100)
-		}
+			validator: $.str.range(1, 100),
+		},
 	},
 
 	res: {
@@ -38,7 +38,7 @@ export default define(meta, async (ps, user) => {
 		id: genId(),
 		createdAt: new Date(),
 		userId: user.id,
-		userGroupId: userGroup.id
+		userGroupId: userGroup.id,
 	} as UserGroupJoining);
 
 	return await UserGroups.pack(userGroup);

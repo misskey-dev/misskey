@@ -9,13 +9,13 @@ export class ReversiGame {
 
 	@Index()
 	@Column('timestamp with time zone', {
-		comment: 'The created date of the ReversiGame.'
+		comment: 'The created date of the ReversiGame.',
 	})
 	public createdAt: Date;
 
 	@Column('timestamp with time zone', {
 		nullable: true,
-		comment: 'The started date of the ReversiGame.'
+		comment: 'The started date of the ReversiGame.',
 	})
 	public startedAt: Date | null;
 
@@ -23,7 +23,7 @@ export class ReversiGame {
 	public user1Id: User['id'];
 
 	@ManyToOne(type => User, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public user1: User | null;
@@ -32,7 +32,7 @@ export class ReversiGame {
 	public user2Id: User['id'];
 
 	@ManyToOne(type => User, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public user2: User | null;
@@ -69,13 +69,13 @@ export class ReversiGame {
 
 	@Column({
 		...id(),
-		nullable: true
+		nullable: true,
 	})
 	public winnerId: User['id'] | null;
 
 	@Column({
 		...id(),
-		nullable: true
+		nullable: true,
 	})
 	public surrendered: User['id'] | null;
 
@@ -94,7 +94,7 @@ export class ReversiGame {
 	public map: string[];
 
 	@Column('varchar', {
-		length: 32
+		length: 32,
 	})
 	public bw: string;
 
@@ -127,7 +127,7 @@ export class ReversiGame {
 	 * ログのposを文字列としてすべて連結したもののCRC32値
 	 */
 	@Column('varchar', {
-		length: 32, nullable: true
+		length: 32, nullable: true,
 	})
 	public crc32: string | null;
 }

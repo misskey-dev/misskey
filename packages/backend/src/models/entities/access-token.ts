@@ -9,7 +9,7 @@ export class AccessToken {
 	public id: string;
 
 	@Column('timestamp with time zone', {
-		comment: 'The created date of the AccessToken.'
+		comment: 'The created date of the AccessToken.',
 	})
 	public createdAt: Date;
 
@@ -21,7 +21,7 @@ export class AccessToken {
 
 	@Index()
 	@Column('varchar', {
-		length: 128
+		length: 128,
 	})
 	public token: string;
 
@@ -29,13 +29,13 @@ export class AccessToken {
 	@Column('varchar', {
 		length: 128,
 		nullable: true,
-		default: null
+		default: null,
 	})
 	public session: string | null;
 
 	@Index()
 	@Column('varchar', {
-		length: 128
+		length: 128,
 	})
 	public hash: string;
 
@@ -44,7 +44,7 @@ export class AccessToken {
 	public userId: User['id'];
 
 	@ManyToOne(type => User, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public user: User | null;
@@ -52,12 +52,12 @@ export class AccessToken {
 	@Column({
 		...id(),
 		nullable: true,
-		default: null
+		default: null,
 	})
 	public appId: App['id'] | null;
 
 	@ManyToOne(type => App, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public app: App | null;
@@ -65,32 +65,32 @@ export class AccessToken {
 	@Column('varchar', {
 		length: 128,
 		nullable: true,
-		default: null
+		default: null,
 	})
 	public name: string | null;
 
 	@Column('varchar', {
 		length: 512,
 		nullable: true,
-		default: null
+		default: null,
 	})
 	public description: string | null;
 
 	@Column('varchar', {
 		length: 512,
 		nullable: true,
-		default: null
+		default: null,
 	})
 	public iconUrl: string | null;
 
 	@Column('varchar', {
 		length: 64, array: true,
-		default: '{}'
+		default: '{}',
 	})
 	public permission: string[];
 
 	@Column('boolean', {
-		default: false
+		default: false,
 	})
 	public fetched: boolean;
 }

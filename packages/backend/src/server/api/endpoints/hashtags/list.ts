@@ -10,22 +10,22 @@ export const meta = {
 	params: {
 		limit: {
 			validator: $.optional.num.range(1, 100),
-			default: 10
+			default: 10,
 		},
 
 		attachedToUserOnly: {
 			validator: $.optional.bool,
-			default: false
+			default: false,
 		},
 
 		attachedToLocalUserOnly: {
 			validator: $.optional.bool,
-			default: false
+			default: false,
 		},
 
 		attachedToRemoteUserOnly: {
 			validator: $.optional.bool,
-			default: false
+			default: false,
 		},
 
 		sort: {
@@ -53,7 +53,7 @@ export const meta = {
 			type: 'object' as const,
 			optional: false as const, nullable: false as const,
 			ref: 'Hashtag',
-		}
+		},
 	},
 };
 

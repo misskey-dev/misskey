@@ -8,14 +8,14 @@ export async function genRsaKeyPair(modulusLength = 2048) {
 		modulusLength,
 		publicKeyEncoding: {
 			type: 'spki',
-			format: 'pem'
+			format: 'pem',
 		},
 		privateKeyEncoding: {
 			type: 'pkcs8',
 			format: 'pem',
 			cipher: undefined,
-			passphrase: undefined
-		}
+			passphrase: undefined,
+		},
 	});
 }
 
@@ -24,13 +24,13 @@ export async function genEcKeyPair(namedCurve: 'prime256v1' | 'secp384r1' | 'sec
 		namedCurve,
 		publicKeyEncoding: {
 			type: 'spki',
-			format: 'pem'
+			format: 'pem',
 		},
 		privateKeyEncoding: {
 			type: 'pkcs8',
 			format: 'pem',
 			cipher: undefined,
-			passphrase: undefined
-		}
+			passphrase: undefined,
+		},
 	});
 }

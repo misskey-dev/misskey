@@ -9,9 +9,9 @@ export const meta = {
 
 	params: {
 		endpoint: {
-			validator: $.str
+			validator: $.str,
 		},
-	}
+	},
 };
 
 export default define(meta, async (ps, user) => {

@@ -21,7 +21,7 @@ async function main(username: string, headers?: string[]) {
 	if (user == null) throw new Error('User not found');
 
 	const history = await Signins.find({
-		userId: user.id
+		userId: user.id,
 	});
 
 	for (const signin of history) {

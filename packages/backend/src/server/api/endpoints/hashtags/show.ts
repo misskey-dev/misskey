@@ -12,7 +12,7 @@ export const meta = {
 	params: {
 		tag: {
 			validator: $.str,
-		}
+		},
 	},
 
 	res: {
@@ -25,9 +25,9 @@ export const meta = {
 		noSuchHashtag: {
 			message: 'No such hashtag.',
 			code: 'NO_SUCH_HASHTAG',
-			id: '110ee688-193e-4a3a-9ecf-c167b2e6981e'
-		}
-	}
+			id: '110ee688-193e-4a3a-9ecf-c167b2e6981e',
+		},
+	},
 };
 
 export default define(meta, async (ps, user) => {

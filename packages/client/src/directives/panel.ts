@@ -7,7 +7,7 @@ export default {
 			if (style.backgroundColor && !['rgba(0, 0, 0, 0)', 'rgba(0,0,0,0)', 'transparent'].includes(style.backgroundColor)) {
 				return style.backgroundColor;
 			} else {
-				return getBgColor(el.parentElement);
+				return el.parentElement ? getBgColor(el.parentElement) : 'transparent';
 			}
 		}
 	

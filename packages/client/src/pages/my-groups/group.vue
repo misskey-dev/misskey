@@ -2,7 +2,7 @@
 <div class="mk-group-page">
 	<transition name="zoom" mode="out-in">
 		<div v-if="group" class="_section">
-			<div class="_content">
+			<div class="_content" style="display: flex; gap: var(--margin); flex-wrap: wrap;">
 				<MkButton inline @click="invite()">{{ $ts.invite }}</MkButton>
 				<MkButton inline @click="renameGroup()">{{ $ts.rename }}</MkButton>
 				<MkButton inline @click="transfer()">{{ $ts.transfer }}</MkButton>
@@ -35,7 +35,6 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
-import Progress from '@/scripts/loading';
 import MkButton from '@/components/ui/button.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
@@ -73,7 +72,6 @@ export default defineComponent({
 
 	methods: {
 		fetch() {
-			Progress.start();
 			os.api('users/groups/show', {
 				groupId: this.groupId
 			}).then(group => {
@@ -82,7 +80,6 @@ export default defineComponent({
 					userIds: this.group.userIds
 				}).then(users => {
 					this.users = users;
-					Progress.done();
 				});
 			});
 		},

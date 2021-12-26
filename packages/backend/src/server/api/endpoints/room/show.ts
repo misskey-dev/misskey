@@ -16,11 +16,11 @@ export const meta = {
 		},
 
 		username: {
-			validator: $.optional.str
+			validator: $.optional.str,
 		},
 
 		host: {
-			validator: $.optional.nullable.str
+			validator: $.optional.nullable.str,
 		},
 	},
 
@@ -28,8 +28,8 @@ export const meta = {
 		noSuchUser: {
 			message: 'No such user.',
 			code: 'NO_SUCH_USER',
-			id: '7ad3fa3e-5e12-42f0-b23a-f3d13f10ee4b'
-		}
+			id: '7ad3fa3e-5e12-42f0-b23a-f3d13f10ee4b',
+		},
 	},
 
 	res: {
@@ -39,7 +39,7 @@ export const meta = {
 			roomType: {
 				type: 'string' as const,
 				optional: false as const, nullable: false as const,
-				enum: ['default', 'washitsu']
+				enum: ['default', 'washitsu'],
 			},
 			furnitures: {
 				type: 'array' as const,
@@ -50,11 +50,11 @@ export const meta = {
 					properties: {
 						id: {
 							type: 'string' as const,
-							optional: false as const, nullable: false as const
+							optional: false as const, nullable: false as const,
 						},
 						type: {
 							type: 'string' as const,
-							optional: false as const, nullable: false as const
+							optional: false as const, nullable: false as const,
 						},
 						props: {
 							type: 'object' as const,
@@ -66,17 +66,17 @@ export const meta = {
 							properties: {
 								x: {
 									type: 'number' as const,
-									optional: false as const, nullable: false as const
+									optional: false as const, nullable: false as const,
 								},
 								y: {
 									type: 'number' as const,
-									optional: false as const, nullable: false as const
+									optional: false as const, nullable: false as const,
 								},
 								z: {
 									type: 'number' as const,
-									optional: false as const, nullable: false as const
-								}
-							}
+									optional: false as const, nullable: false as const,
+								},
+							},
 						},
 						rotation: {
 							type: 'object' as const,
@@ -84,29 +84,29 @@ export const meta = {
 							properties: {
 								x: {
 									type: 'number' as const,
-									optional: false as const, nullable: false as const
+									optional: false as const, nullable: false as const,
 								},
 								y: {
 									type: 'number' as const,
-									optional: false as const, nullable: false as const
+									optional: false as const, nullable: false as const,
 								},
 								z: {
 									type: 'number' as const,
-									optional: false as const, nullable: false as const
-								}
-							}
-						}
-					}
-				}
+									optional: false as const, nullable: false as const,
+								},
+							},
+						},
+					},
+				},
 			},
 			carpetColor: {
 				type: 'string' as const,
 				optional: false as const, nullable: false as const,
 				format: 'hex',
-				example: '#85CAF0'
-			}
-		}
-	}
+				example: '#85CAF0',
+			},
+		},
+	},
 };
 
 export default define(meta, async (ps, me) => {
@@ -124,8 +124,8 @@ export default define(meta, async (ps, me) => {
 		await UserProfiles.update(user.id, {
 			room: {
 				furnitures: [],
-				...profile.room
-			}
+				...profile.room,
+			},
 		});
 
 		profile.room.furnitures = [];
@@ -136,8 +136,8 @@ export default define(meta, async (ps, me) => {
 		await UserProfiles.update(user.id, {
 			room: {
 				roomType: initialType as any,
-				...profile.room
-			}
+				...profile.room,
+			},
 		});
 
 		profile.room.roomType = initialType;
@@ -148,8 +148,8 @@ export default define(meta, async (ps, me) => {
 		await UserProfiles.update(user.id, {
 			room: {
 				carpetColor: initialColor as any,
-				...profile.room
-			}
+				...profile.room,
+			},
 		});
 
 		profile.room.carpetColor = initialColor;

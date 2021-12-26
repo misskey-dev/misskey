@@ -3,13 +3,12 @@ process.env.NODE_ENV = 'test';
 import * as assert from 'assert';
 import * as lolex from '@sinonjs/fake-timers';
 import { async, initTestDb } from './utils';
-import TestChart from '../src/services/chart/charts/classes/test';
-import TestGroupedChart from '../src/services/chart/charts/classes/test-grouped';
-import TestUniqueChart from '../src/services/chart/charts/classes/test-unique';
-import * as _TestChart from '../src/services/chart/charts/schemas/test';
-import * as _TestGroupedChart from '../src/services/chart/charts/schemas/test-grouped';
-import * as _TestUniqueChart from '../src/services/chart/charts/schemas/test-unique';
-import Chart from '../src/services/chart/core';
+import TestChart from '../src/services/chart/charts/test';
+import TestGroupedChart from '../src/services/chart/charts/test-grouped';
+import TestUniqueChart from '../src/services/chart/charts/test-unique';
+import * as _TestChart from '../src/services/chart/charts/entities/test';
+import * as _TestGroupedChart from '../src/services/chart/charts/entities/test-grouped';
+import * as _TestUniqueChart from '../src/services/chart/charts/entities/test-unique';
 
 describe('Chart', () => {
 	let testChart: TestChart;
@@ -19,9 +18,9 @@ describe('Chart', () => {
 
 	beforeEach(async(async () => {
 		await initTestDb(false, [
-			Chart.schemaToEntity(_TestChart.name, _TestChart.schema),
-			Chart.schemaToEntity(_TestGroupedChart.name, _TestGroupedChart.schema),
-			Chart.schemaToEntity(_TestUniqueChart.name, _TestUniqueChart.schema)
+			_TestChart.entity.hour, _TestChart.entity.day,
+			_TestGroupedChart.entity.hour, _TestGroupedChart.entity.day,
+			_TestUniqueChart.entity.hour, _TestUniqueChart.entity.day,
 		]);
 
 		testChart = new TestChart();
@@ -128,6 +127,32 @@ describe('Chart', () => {
 				dec: [0, 0, 0],
 				inc: [3, 0, 0],
 				total: [3, 0, 0]
+			},
+		});
+	}));
+
+	it('複数回saveされてもデータの更新は一度だけ', async(async () => {
+		await testChart.increment();
+		await testChart.save();
+		await testChart.save();
+		await testChart.save();
+
+		const chartHours = await testChart.getChart('hour', 3, null);
+		const chartDays = await testChart.getChart('day', 3, null);
+
+		assert.deepStrictEqual(chartHours, {
+			foo: {
+				dec: [0, 0, 0],
+				inc: [1, 0, 0],
+				total: [1, 0, 0]
+			},
+		});
+
+		assert.deepStrictEqual(chartDays, {
+			foo: {
+				dec: [0, 0, 0],
+				inc: [1, 0, 0],
+				total: [1, 0, 0]
 			},
 		});
 	}));

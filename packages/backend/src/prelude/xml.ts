@@ -3,7 +3,7 @@ const map: Record<string, string> = {
 	'<': '&lt;',
 	'>': '&gt;',
 	'"': '&quot;',
-	'\'': '&apos;'
+	'\'': '&apos;',
 };
 
 const beginingOfCDATA = '<![CDATA[';

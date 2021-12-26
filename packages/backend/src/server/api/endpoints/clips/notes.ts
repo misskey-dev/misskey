@@ -22,7 +22,7 @@ export const meta = {
 
 		limit: {
 			validator: $.optional.num.range(1, 100),
-			default: 10
+			default: 10,
 		},
 
 		sinceId: {
@@ -38,8 +38,8 @@ export const meta = {
 		noSuchClip: {
 			message: 'No such clip.',
 			code: 'NO_SUCH_CLIP',
-			id: '1d7645e6-2b6d-4635-b0fe-fe22b0e72e00'
-		}
+			id: '1d7645e6-2b6d-4635-b0fe-fe22b0e72e00',
+		},
 	},
 
 	res: {
@@ -48,9 +48,9 @@ export const meta = {
 		items: {
 			type: 'object' as const,
 			optional: false as const, nullable: false as const,
-			ref: 'Note'
-		}
-	}
+			ref: 'Note',
+		},
+	},
 };
 
 export default define(meta, async (ps, user) => {

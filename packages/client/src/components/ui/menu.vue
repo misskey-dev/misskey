@@ -1,8 +1,8 @@
 <template>
 <div ref="items" v-hotkey="keymap"
 	class="rrevdjwt"
-	:class="{ center: align === 'center' }"
-	:style="{ width: width ? width + 'px' : null, maxHeight: maxHeight ? maxHeight + 'px' : null }"
+	:class="{ center: align === 'center', asDrawer }"
+	:style="{ width: (width && !asDrawer) ? width + 'px' : null, maxHeight: maxHeight ? maxHeight + 'px' : null }"
 	@contextmenu.self="e => e.preventDefault()"
 >
 	<template v-for="(item, i) in items2">
@@ -53,6 +53,10 @@ export default defineComponent({
 			required: true
 		},
 		viaKeyboard: {
+			type: Boolean,
+			required: false
+		},
+		asDrawer: {
 			type: Boolean,
 			required: false
 		},
@@ -276,8 +280,31 @@ export default defineComponent({
 
 	> .divider {
 		margin: 8px 0;
-		height: 1px;
-		background: var(--divider);
+		border-top: solid 0.5px var(--divider);
+	}
+
+	&.asDrawer {
+		padding: 12px 0 calc(env(safe-area-inset-bottom, 0px) + 12px) 0;
+		width: 100%;
+
+		> .item {
+			font-size: 1em;
+			padding: 12px 24px;
+
+			&:before {
+				width: calc(100% - 24px);
+				border-radius: 12px;
+			}
+
+			> i {
+				margin-right: 14px;
+				width: 24px;
+			}
+		}
+
+		> .divider {
+			margin: 12px 0;
+		}
 	}
 }
 </style>

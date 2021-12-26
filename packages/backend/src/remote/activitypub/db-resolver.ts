@@ -20,13 +20,13 @@ export default class DbResolver {
 
 		if (parsed.id) {
 			return (await Notes.findOne({
-				id: parsed.id
+				id: parsed.id,
 			})) || null;
 		}
 
 		if (parsed.uri) {
 			return (await Notes.findOne({
-				uri: parsed.uri
+				uri: parsed.uri,
 			})) || null;
 		}
 
@@ -38,13 +38,13 @@ export default class DbResolver {
 
 		if (parsed.id) {
 			return (await MessagingMessages.findOne({
-				id: parsed.id
+				id: parsed.id,
 			})) || null;
 		}
 
 		if (parsed.uri) {
 			return (await MessagingMessages.findOne({
-				uri: parsed.uri
+				uri: parsed.uri,
 			})) || null;
 		}
 
@@ -59,13 +59,13 @@ export default class DbResolver {
 
 		if (parsed.id) {
 			return (await Users.findOne({
-				id: parsed.id
+				id: parsed.id,
 			})) || null;
 		}
 
 		if (parsed.uri) {
 			return (await Users.findOne({
-				uri: parsed.uri
+				uri: parsed.uri,
 			})) || null;
 		}
 
@@ -77,7 +77,7 @@ export default class DbResolver {
 	 */
 	public async getAuthUserFromKeyId(keyId: string): Promise<AuthUser | null> {
 		const key = await UserPublickeys.findOne({
-			keyId
+			keyId,
 		});
 
 		if (key == null) return null;
@@ -86,7 +86,7 @@ export default class DbResolver {
 
 		return {
 			user,
-			key
+			key,
 		};
 	}
 
@@ -102,7 +102,7 @@ export default class DbResolver {
 
 		return {
 			user,
-			key
+			key,
 		};
 	}
 
@@ -115,11 +115,11 @@ export default class DbResolver {
 		if (matchLocal) {
 			return {
 				type: matchLocal[1],
-				id: matchLocal[2]
+				id: matchLocal[2],
 			};
 		} else {
 			return {
-				uri
+				uri,
 			};
 		}
 	}

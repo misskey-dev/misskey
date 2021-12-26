@@ -36,7 +36,7 @@ export class ChannelRepository extends Repository<Channel> {
 			...(me ? {
 				isFollowing: following != null,
 				hasUnreadNote,
-			} : {})
+			} : {}),
 		};
 	}
 }

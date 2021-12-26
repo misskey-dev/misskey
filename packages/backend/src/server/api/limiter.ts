@@ -35,7 +35,7 @@ export default (endpoint: IEndpoint, user: User) => new Promise<void>((ok, rejec
 			id: `${user.id}:${key}:min`,
 			duration: limitation.minInterval,
 			max: 1,
-			db: redisClient
+			db: redisClient,
 		});
 
 		minIntervalLimiter.get((err, info) => {
@@ -63,7 +63,7 @@ export default (endpoint: IEndpoint, user: User) => new Promise<void>((ok, rejec
 			id: `${user.id}:${key}`,
 			duration: limitation.duration,
 			max: limitation.max,
-			db: redisClient
+			db: redisClient,
 		});
 
 		limiter.get((err, info) => {

@@ -11,7 +11,7 @@ export const meta = {
 
 	errors: {
 
-	}
+	},
 };
 
 export default define(meta, async (ps, user) => {

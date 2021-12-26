@@ -13,7 +13,7 @@ export const meta = {
 	params: {
 		noteId: {
 			validator: $.type(ID),
-		}
+		},
 	},
 
 	res: {
@@ -26,9 +26,9 @@ export const meta = {
 		noSuchNote: {
 			message: 'No such note.',
 			code: 'NO_SUCH_NOTE',
-			id: '24fcbfc6-2e37-42b6-8388-c29b3861a08d'
-		}
-	}
+			id: '24fcbfc6-2e37-42b6-8388-c29b3861a08d',
+		},
+	},
 };
 
 export default define(meta, async (ps, user) => {
@@ -38,6 +38,6 @@ export default define(meta, async (ps, user) => {
 	});
 
 	return await Notes.pack(note, user, {
-		detail: true
+		detail: true,
 	});
 });

@@ -11,19 +11,19 @@ export class MessagingMessage {
 
 	@Index()
 	@Column('timestamp with time zone', {
-		comment: 'The created date of the MessagingMessage.'
+		comment: 'The created date of the MessagingMessage.',
 	})
 	public createdAt: Date;
 
 	@Index()
 	@Column({
 		...id(),
-		comment: 'The sender user ID.'
+		comment: 'The sender user ID.',
 	})
 	public userId: User['id'];
 
 	@ManyToOne(type => User, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public user: User | null;
@@ -31,12 +31,12 @@ export class MessagingMessage {
 	@Index()
 	@Column({
 		...id(), nullable: true,
-		comment: 'The recipient user ID.'
+		comment: 'The recipient user ID.',
 	})
 	public recipientId: User['id'] | null;
 
 	@ManyToOne(type => User, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public recipient: User | null;
@@ -44,18 +44,18 @@ export class MessagingMessage {
 	@Index()
 	@Column({
 		...id(), nullable: true,
-		comment: 'The recipient group ID.'
+		comment: 'The recipient group ID.',
 	})
 	public groupId: UserGroup['id'] | null;
 
 	@ManyToOne(type => UserGroup, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public group: UserGroup | null;
 
 	@Column('varchar', {
-		length: 4096, nullable: true
+		length: 4096, nullable: true,
 	})
 	public text: string | null;
 
@@ -71,7 +71,7 @@ export class MessagingMessage {
 
 	@Column({
 		...id(),
-		array: true, default: '{}'
+		array: true, default: '{}',
 	})
 	public reads: User['id'][];
 
@@ -82,7 +82,7 @@ export class MessagingMessage {
 	public fileId: DriveFile['id'] | null;
 
 	@ManyToOne(type => DriveFile, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public file: DriveFile | null;

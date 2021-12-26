@@ -10,13 +10,13 @@ export const meta = {
 	kind: 'write:account',
 
 	params: {
-	}
+	},
 };
 
 export default define(meta, async (ps, user) => {
 	// Remove documents
 	await NoteUnreads.delete({
-		userId: user.id
+		userId: user.id,
 	});
 
 	// 全て既読になったイベントを発行

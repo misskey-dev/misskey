@@ -11,18 +11,18 @@ export const meta = {
 
 	params: {
 		key: {
-			validator: $.str.min(1)
+			validator: $.str.min(1),
 		},
 
 		value: {
-			validator: $.nullable.any
+			validator: $.nullable.any,
 		},
 
 		scope: {
 			validator: $.optional.arr($.str.match(/^[a-zA-Z0-9_]+$/)),
 			default: [],
 		},
-	}
+	},
 };
 
 export default define(meta, async (ps, user) => {
@@ -37,7 +37,7 @@ export default define(meta, async (ps, user) => {
 	if (existingItem) {
 		await RegistryItems.update(existingItem.id, {
 			updatedAt: new Date(),
-			value: ps.value
+			value: ps.value,
 		});
 	} else {
 		await RegistryItems.insert({
@@ -48,7 +48,7 @@ export default define(meta, async (ps, user) => {
 			domain: null,
 			scope: ps.scope,
 			key: ps.key,
-			value: ps.value
+			value: ps.value,
 		});
 	}
 
@@ -56,6 +56,6 @@ export default define(meta, async (ps, user) => {
 	publishMainStream(user.id, 'registryUpdated', {
 		scope: ps.scope,
 		key: ps.key,
-		value: ps.value
+		value: ps.value,
 	});
 });
