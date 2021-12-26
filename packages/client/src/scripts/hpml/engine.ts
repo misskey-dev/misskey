@@ -5,7 +5,6 @@ import { markRaw, ref, Ref, unref } from 'vue';
 import { HpmlError } from '.';
 import { createAiScriptEnv } from '../aiscript/api';
 import { initAiLib } from './lib';
-import { Variable } from './expr';
 import { transformInputAssign } from './ast/transform-input-assign';
 import { collectVariables } from './ast/collect-variables';
 
@@ -43,7 +42,7 @@ export const inputBlockTable: Record<string, 'string' | 'number' | 'boolean'> = 
 export class Hpml {
 	public page: Page;
 	public aiscript: AiScript;
-	public statements: Variable[];
+	public statements: any[];
 	public ast?: Node[];
 	public variableInfos: Record<string, VariableInfo> = {}; // variable source infos
 	public vars: Ref<Record<string, any>> = ref({}); // variable values for blocks
