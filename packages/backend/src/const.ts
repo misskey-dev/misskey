@@ -5,6 +5,7 @@ export const USER_ACTIVE_THRESHOLD = 1000 * 60 * 60 * 24 * 3; // 3days
 // ここに含まれないものは application/octet-stream としてレスポンスされる
 // SVGはXSSを生むので許可しない
 export const FILE_TYPE_BROWSERSAFE = [
+	// Images
 	'image/png',
 	'image/gif',
 	'image/jpeg',
@@ -13,21 +14,34 @@ export const FILE_TYPE_BROWSERSAFE = [
 	'image/bmp',
 	'image/tiff',
 	'image/x-icon',
-	'video/mpeg',
-	'video/mp4',
-	'video/mp2t',
-	'video/webm',
+
+	// OggS
+	'audio/opus',
 	'video/ogg',
-	'video/3gpp',
-	'video/quicktime',
-	'video/x-m4v',
-	'video/x-msvideo',
-	'audio/mpeg',
-	'audio/aac',
-	'audio/wav',
-	'audio/webm',
 	'audio/ogg',
-	'audio/x-m4a',
-	'audio/x-flac',
 	'application/ogg',
+
+	// ISO/IEC base media file format
+	'video/quicktime',
+	'video/mp4',
+	'audio/mp4',
+	'video/x-m4v',
+	'audio/x-m4a',
+	'video/3gpp',
+	'video/3gpp2',
+
+	'video/mpeg',
+	'audio/mpeg',
+
+	'video/webm',
+	'audio/webm',
+
+	'audio/aac',
+	'audio/x-flac',
+	'audio/vnd.wave',
 ];
+/*
+https://github.com/sindresorhus/file-type/blob/main/supported.js
+https://github.com/sindresorhus/file-type/blob/main/core.js
+https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Containers
+*/
