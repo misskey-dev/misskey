@@ -43,7 +43,7 @@ export const inputBlockTable: Record<string, 'string' | 'number' | 'boolean'> = 
 export class Hpml {
 	public page: Page;
 	public aiscript: AiScript;
-	public variables: Variable[];
+	public statements: Variable[];
 	public ast?: Node[];
 	public variableInfos: Record<string, VariableInfo> = {}; // variable source infos
 	public vars: Ref<Record<string, any>> = ref({}); // variable values for blocks
@@ -56,7 +56,7 @@ export class Hpml {
 		// }
 		opts = opts || {};
 		this.page = (page as Page);
-		this.variables = [];
+		this.statements = this.page.statements;
 		this.aiscript = markRaw(new AiScript({
 			...createAiScriptEnv({ storageKey: 'pages:' + this.page.id }),
 			...initAiLib(this)
