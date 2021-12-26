@@ -4,7 +4,7 @@ export const USER_ACTIVE_THRESHOLD = 1000 * 60 * 60 * 24 * 3; // 3days
 // ブラウザで直接表示することを許可するファイルの種類のリスト
 // ここに含まれないものは application/octet-stream としてレスポンスされる
 // SVGはXSSを生むので許可しない
-export const FILE_TYPE_WHITELIST = [
+export const FILE_TYPE_BROWSERSAFE = [
 	'image/png',
 	'image/gif',
 	'image/jpeg',
