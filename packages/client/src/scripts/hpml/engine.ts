@@ -1,10 +1,13 @@
 import autobind from 'autobind-decorator';
 import { AiScript, Parser, values, utils } from '@syuilo/aiscript';
-import { Node, NAttr, NCall, NFn } from '@syuilo/aiscript/built/node';
+import { Node, NAttr } from '@syuilo/aiscript/built/node';
 import { markRaw, ref, Ref, unref } from 'vue';
 import { HpmlError } from '.';
 import { createAiScriptEnv } from '../aiscript/api';
 import { initAiLib } from './lib';
+import { Variable } from './expr';
+import { transformInputAssign } from './ast/transform-input-assign';
+import { collectVariables } from './ast/collect-variables';
 
 type Page = Record<string, any> & {
 	version: string;
@@ -16,7 +19,7 @@ type Page = Record<string, any> & {
 	attachedFiles: any[];
 };
 
-type VariableInfo = {
+export type VariableInfo = {
 	defined: boolean;
 	value?: any;
 	attrs: NAttr[];
@@ -25,7 +28,7 @@ type VariableInfo = {
 	};
 };
 
-const inputBlockTable: Record<string, 'string' | 'number' | 'boolean'> = {
+export const inputBlockTable: Record<string, 'string' | 'number' | 'boolean'> = {
 	textInput: 'string',
 	textareaInput: 'string',
 	numberInput: 'number',
@@ -34,67 +37,38 @@ const inputBlockTable: Record<string, 'string' | 'number' | 'boolean'> = {
 	radioButton: 'string',
 };
 
-// MkPages:updated()
-function generateUpdated(hpml: Hpml) {
-	const updated = {
-		nameArg: 'name',
-		valueArg: 'value'
-	} as { call?: NCall, fn?: NFn, nameArg: string, valueArg: string };
-
-	// find call node
-	for (const node of hpml.ast) {
-		if (node.type == 'call' && node.name == 'MkPages:updated') {
-			updated.call = node;
-		}
-	}
-
-	// generate the fn node and the call node as needed
-	if (updated.call != null) {
-		updated.fn = updated.call.args[0] as NFn;
-		updated.nameArg = updated.fn.args[0].name;
-		updated.valueArg = updated.fn.args[1].name;
-	} else {
-		updated.fn = Parser.parse(`@(name,value){}`)[0] as NFn;
-		updated.call = Parser.parse(`MkPages:updated()`)[0] as NCall;
-		updated.call.args.push(updated.fn);
-		hpml.ast.push(updated.call);
-	}
-
-	// generate updated event
-	const statements: Node[] = [];
-	for (const name of Object.keys(hpml.variableInfos)) {
-		const info = hpml.variableInfos[name];
-		if (info.inputAttr != null) {
-			const ifNode = Parser.parse(`if ${updated.nameArg} == "${name}" { ${name} = ${updated.valueArg} }`)[0];
-			statements.push(ifNode);
-		}
-	}
-	updated.fn.children.splice(0, 0, ...statements);
-}
-
+/**
+ * Pages Engine
+ */
 export class Hpml {
 	public page: Page;
-	public aiscript?: AiScript;
-	public variables: any[];
-	public ast: Node[] = [];
+	public aiscript: AiScript;
+	public variables: Variable[];
+	public ast?: Node[];
 	public variableInfos: Record<string, VariableInfo> = {}; // variable source infos
 	public vars: Ref<Record<string, any>> = ref({}); // variable values for blocks
 	public pageVarUpdatedCallback?: values.VFn;
 	public canvases: Record<string, HTMLCanvasElement> = {};
 
 	constructor(page: Record<string, any>, opts?: Record<string, any>) {
+		// if (page.version != '2') {
+		// 	throw new HpmlError('The version of this page is not supported.');
+		// }
 		opts = opts || {};
 		this.page = (page as Page);
 		this.variables = [];
-		// if (this.page.version != '2') {
-		// 	throw new HpmlError('The version of this page is not supported.');
-		// }
-		if (this.page.script == null) return;
 		this.aiscript = markRaw(new AiScript({
 			...createAiScriptEnv({ storageKey: 'pages:' + this.page.id }),
 			...initAiLib(this)
 		}, opts.ai));
 
+		this.aiscript.scope.opts.onUpdated = (name, value) => {
+			this.refreshVar(name);
+		};
+	}
+
+	@autobind
+	public load() {
 		// parse script
 		if (this.page.script != null) {
 			try {
@@ -102,15 +76,12 @@ export class Hpml {
 			} catch (e) {
 				throw new HpmlError('Failed to parse the script.');
 			}
+		} else {
+			this.ast = [];
 		}
-		this.collectVars();
-		this.buildAst();
-
-		this.aiscript.scope.opts.onUpdated = (name, value) => {
-			this.refreshVar(name);
-		};
-		// when the last line of the script is executed:
-		// this.refreshVars();
+		// static analysis process
+		this.variableInfos = collectVariables(this.ast);
+		transformInputAssign(this.ast, this.variableInfos);
 	}
 
 	@autobind
@@ -129,53 +100,7 @@ export class Hpml {
 	}
 
 	@autobind
-	private buildAst() {
-		generateUpdated(this);
-	}
-
-	@autobind
-	private collectVars() {
-		const infos: Record<string, VariableInfo> = {};
-		for (const node of this.ast) {
-			if (node.type === 'def') {
-				const exportAttrNode = node.attr.find(attr => (attr.name === 'export'));
-				const inputAttrNode = node.attr.find(attr => (attr.name === 'input'));
-				if (exportAttrNode != null) {
-					let inputAttr: VariableInfo['inputAttr'];
-					if (inputAttrNode != null) {
-						if (inputAttrNode.value == null || inputAttrNode.value.type != 'obj') {
-							throw new HpmlError('The input attribute expects a value of type obj.');
-						}
-						const blockTypeNode = inputAttrNode.value.value.get('type');
-						if (blockTypeNode == null || blockTypeNode.type != 'str') {
-							throw new HpmlError('The type field of the input attribute expects a value of type str.');
-						}
-						const blockType = blockTypeNode.value;
-						if (inputBlockTable[blockType] == null) {
-							throw new HpmlError('The type field of the input attribute is unknown value.');
-						}
-						inputAttr = {
-							blockType
-						};
-					}
-					infos[node.name] = {
-						defined: false,
-						attrs: node.attr,
-						inputAttr: inputAttr
-					};
-				} else {
-					if (inputAttrNode != null) {
-						throw new HpmlError("The 'export' attribute is required to add the 'input' attribute to the declaration.");
-					}
-				}
-			}
-		}
-		this.variableInfos = infos;
-	}
-
-	@autobind
 	public refreshVar(name: string) {
-		if (this.aiscript == null) return;
 		if (this.variableInfos[name] == null) return;
 		const info = this.variableInfos[name];
 		// TODO: validate type of input block variable
@@ -193,7 +118,6 @@ export class Hpml {
 
 	@autobind
 	public refreshVars() {
-		if (this.aiscript == null) return;
 		const vars: Record<string, any> = {};
 		for (const [name, info] of Object.entries(this.variableInfos)) {
 			// TODO: validate type of input block variable
@@ -213,7 +137,6 @@ export class Hpml {
 
 	@autobind
 	public updatePageVar(name: string, value: any) {
-		if (this.aiscript == null) return;
 		if (this.variableInfos[name] == null || this.variableInfos[name].inputAttr == null) {
 			throw new HpmlError(`No such input var '${name}'`);
 		}
@@ -224,13 +147,15 @@ export class Hpml {
 
 	@autobind
 	public async run() {
-		if (this.aiscript == null) return;
+		if (this.ast == null) {
+			throw new HpmlError('The load() has not been called');
+		}
 		await this.aiscript.exec(this.ast);
+		this.refreshVars();
 	}
 
 	@autobind
 	public abort() {
-		if (this.aiscript == null) return;
 		this.aiscript.abort();
 	}
 }

@@ -1,4 +1,5 @@
 import * as tinycolor from 'tinycolor2';
+import { Hpml } from './engine';
 import { values, utils } from '@syuilo/aiscript';
 import { Fn, HpmlScope } from '.';
 import { Expr } from './expr';
@@ -18,11 +19,6 @@ Chart.pluginService.register({
 	}
 });
 */
-
-type Hpml = {
-	pageVarUpdatedCallback?: values.VFn;
-	canvases: Record<string, HTMLCanvasElement>;
-};
 
 export function initAiLib(hpml: Hpml) {
 	return {

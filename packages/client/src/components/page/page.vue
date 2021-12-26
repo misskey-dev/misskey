@@ -6,12 +6,11 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, nextTick, onUnmounted, PropType } from 'vue';
-import { parse } from '@syuilo/aiscript';
 import XBlock from './page.block.vue';
 import { Hpml } from '@/scripts/hpml/engine';
 import { url } from '@/config';
 import { $i } from '@/account';
-import { defaultStore } from '@/store';
+// import { defaultStore } from '@/store';
 
 export default defineComponent({
 	components: {
@@ -36,20 +35,17 @@ export default defineComponent({
 				}
 			}
 		});
+		hpml.load();
 
 		onMounted(() => {
 			nextTick(() => {
-				if (props.page.script && hpml.aiscript) {
-					hpml.run().then(() => {
-						hpml.refreshVars();
-					}).catch(e => {
-						console.error(e);
-						/*os.alert({
-							type: 'error',
-							text: e
-						});*/
-					});
-				}
+				hpml.run().catch(e => {
+					console.error(e);
+					/*os.alert({
+						type: 'error',
+						text: e
+					});*/
+				});
 			});
 			onUnmounted(() => {
 				hpml.abort();
