@@ -9,7 +9,7 @@
 		:disabled="disabled"
 		@keydown.enter="toggle"
 	>
-	<span v-adaptive-border v-tooltip="checked ? $ts.itsOn : $ts.itsOff" class="button" @click.prevent="toggle">
+	<span ref="button" v-adaptive-border v-tooltip="checked ? $ts.itsOn : $ts.itsOff" class="button" @click.prevent="toggle">
 		<i class="check fas fa-check"></i>
 	</span>
 	<span class="label">
@@ -20,7 +20,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref, toRefs } from 'vue';
+import * as os from '@/os';
+import Ripple from '@/components/ripple.vue';
 
 export default defineComponent({
 	props: {
@@ -33,17 +35,28 @@ export default defineComponent({
 			default: false
 		}
 	},
-	computed: {
-		checked(): boolean {
-			return this.modelValue;
-		}
+
+	setup(props, context) {
+		const button = ref<HTMLElement>();
+		const checked = toRefs(props).modelValue;
+		const toggle = () => {
+			if (props.disabled) return;
+			context.emit('update:modelValue', !checked.value);
+
+			if (!checked.value) {
+				const rect = button.value.getBoundingClientRect();
+				const x = rect.left + (button.value.offsetWidth / 2);
+				const y = rect.top + (button.value.offsetHeight / 2);
+				os.popup(Ripple, { x, y, particle: false }, {}, 'end');
+			}
+		};
+
+		return {
+			button,
+			checked,
+			toggle,
+		};
 	},
-	methods: {
-		toggle() {
-			if (this.disabled) return;
-			this.$emit('update:modelValue', !this.checked);
-		}
-	}
 });
 </script>
 
@@ -51,7 +64,7 @@ export default defineComponent({
 .ziffeoms {
 	position: relative;
 	display: flex;
-	transition: all 0.2s;
+	transition: all 0.2s ease;
 
 	> * {
 		user-select: none;
@@ -85,6 +98,8 @@ export default defineComponent({
 			opacity: 0;
 			color: var(--fgOnAccent);
 			font-size: 13px;
+			transform: scale(0.5);
+			transition: all 0.2s ease;
 		}
 	}
 
@@ -131,6 +146,7 @@ export default defineComponent({
 
 			> .check {
 				opacity: 1;
+				transform: scale(1);
 			}
 		}
 	}
