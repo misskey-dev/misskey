@@ -40,6 +40,7 @@ module.exports = {
 		'no-param-reassign': ['warn'],
 		'no-constant-condition': ['warn'],
 		'no-empty-pattern': ['warn'],
+		'@typescript-eslint/no-unnecessary-condition': ['error'],
 		'@typescript-eslint/no-inferrable-types': ['warn'],
 		'@typescript-eslint/no-non-null-assertion': ['warn'],
 		'@typescript-eslint/explicit-function-return-type': ['warn'],
