@@ -856,6 +856,8 @@ _postForm:
   channelPlaceholder: "Mencii en la kanalo…"
   _placeholders:
     a: "Kiel vi fartas?"
+    b: "Kio okazis ĉirkaŭ vi?"
+    c: "Kion vi pensas?"
     d: "Kion vi parolos?"
     e: "Komencu skribi…"
 _profile:
