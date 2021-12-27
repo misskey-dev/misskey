@@ -73,10 +73,10 @@ export class APIClient {
 				method: 'POST',
 				body: JSON.stringify({
 					...params,
-					i: credential !== undefined ? credential : this.credential
+					i: credential !== undefined ? credential : this.credential,
 				}),
 				credentials: 'omit',
-				cache: 'no-cache'
+				cache: 'no-cache',
 			}).then(async (res) => {
 				const body = res.status === 204 ? null : await res.json();
 	
@@ -87,7 +87,7 @@ export class APIClient {
 				} else {
 					reject({
 						[MK_API_ERROR]: true,
-						...body.error
+						...body.error,
 					});
 				}
 			}).catch(reject);

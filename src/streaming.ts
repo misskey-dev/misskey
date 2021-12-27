@@ -49,7 +49,7 @@ export default class Stream extends EventEmitter<StreamEvents> {
 
 		this.stream = new ReconnectingWebsocket(`${wsOrigin}/streaming?${query}`, '', {
 			minReconnectionDelay: 1, // https://github.com/pladaria/reconnecting-websocket/issues/91
-			WebSocket: options.WebSocket
+			WebSocket: options.WebSocket,
 		});
 		this.stream.addEventListener('open', this.onOpen);
 		this.stream.addEventListener('close', this.onClose);
@@ -85,12 +85,12 @@ export default class Stream extends EventEmitter<StreamEvents> {
 	}
 
 	@autobind
-	public removeSharedConnection(connection: SharedConnection) {
+	public removeSharedConnection(connection: SharedConnection): void {
 		this.sharedConnections = this.sharedConnections.filter(c => c !== connection);
 	}
 
 	@autobind
-	public removeSharedConnectionPool(pool: Pool) {
+	public removeSharedConnectionPool(pool: Pool): void {
 		this.sharedConnectionPools = this.sharedConnectionPools.filter(p => p !== pool);
 	}
 
@@ -102,7 +102,7 @@ export default class Stream extends EventEmitter<StreamEvents> {
 	}
 
 	@autobind
-	public disconnectToChannel(connection: NonSharedConnection) {
+	public disconnectToChannel(connection: NonSharedConnection): void {
 		this.nonSharedConnections = this.nonSharedConnections.filter(c => c !== connection);
 	}
 
@@ -110,7 +110,7 @@ export default class Stream extends EventEmitter<StreamEvents> {
 	 * Callback of when open connection
 	 */
 	@autobind
-	private onOpen() {
+	private onOpen(): void {
 		const isReconnect = this.state === 'reconnecting';
 
 		this.state = 'connected';
@@ -118,10 +118,8 @@ export default class Stream extends EventEmitter<StreamEvents> {
 
 		// チャンネル再接続
 		if (isReconnect) {
-			for (const p of this.sharedConnectionPools)
-				p.connect();
-			for (const c of this.nonSharedConnections)
-				c.connect();
+			for (const p of this.sharedConnectionPools) p.connect();
+			for (const c of this.nonSharedConnections) c.connect();
 		}
 	}
 
@@ -129,7 +127,7 @@ export default class Stream extends EventEmitter<StreamEvents> {
 	 * Callback of when close connection
 	 */
 	@autobind
-	private onClose() {
+	private onClose(): void {
 		if (this.state === 'connected') {
 			this.state = 'reconnecting';
 			this.emit('_disconnected_');
@@ -140,7 +138,7 @@ export default class Stream extends EventEmitter<StreamEvents> {
 	 * Callback of when received a message from connection
 	 */
 	@autobind
-	private onMessage(message: { data: string; }) {
+	private onMessage(message: { data: string; }): void {
 		const { type, body } = JSON.parse(message.data);
 
 		if (type === 'channel') {
@@ -157,7 +155,7 @@ export default class Stream extends EventEmitter<StreamEvents> {
 				}
 			}
 
-			for (const c of connections.filter(c => c != null)) {
+			for (const c of connections) {
 				c.emit(body.type, Object.freeze(body.body));
 				c.inCount++;
 			}
@@ -170,10 +168,10 @@ export default class Stream extends EventEmitter<StreamEvents> {
 	 * Send a message to connection
 	 */
 	@autobind
-	public send(typeOrPayload: any, payload?: any) {
+	public send(typeOrPayload: any, payload?: any): void {
 		const data = payload === undefined ? typeOrPayload : {
 			type: typeOrPayload,
-			body: payload
+			body: payload,
 		};
 
 		this.stream.send(JSON.stringify(data));
@@ -183,7 +181,7 @@ export default class Stream extends EventEmitter<StreamEvents> {
 	 * Close this connection
 	 */
 	@autobind
-	public close() {
+	public close(): void {
 		this.stream.close();
 	}
 }
@@ -207,12 +205,12 @@ class Pool {
 	}
 
 	@autobind
-	private onStreamDisconnected() {
+	private onStreamDisconnected(): void {
 		this.isConnected = false;
 	}
 
 	@autobind
-	public inc() {
+	public inc(): void {
 		if (this.users === 0 && !this.isConnected) {
 			this.connect();
 		}
@@ -227,7 +225,7 @@ class Pool {
 	}
 
 	@autobind
-	public dec() {
+	public dec(): void {
 		this.users--;
 
 		// そのコネクションの利用者が誰もいなくなったら
@@ -241,17 +239,17 @@ class Pool {
 	}
 
 	@autobind
-	public connect() {
+	public connect(): void {
 		if (this.isConnected) return;
 		this.isConnected = true;
 		this.stream.send('connect', {
 			channel: this.channel,
-			id: this.id
+			id: this.id,
 		});
 	}
 
 	@autobind
-	private disconnect() {
+	private disconnect(): void {
 		this.stream.off('_disconnected_', this.onStreamDisconnected);
 		this.stream.send('disconnect', { id: this.id });
 		this.stream.removeSharedConnectionPool(this);
@@ -264,8 +262,8 @@ abstract class Connection<Channel extends AnyOf<Channels> = any> extends EventEm
 	public abstract id: string;
 
 	public name?: string; // for debug
-	public inCount: number = 0; // for debug
-	public outCount: number = 0; // for debug
+	public inCount = 0; // for debug
+	public outCount = 0; // for debug
 
 	constructor(stream: Stream, channel: string, name?: string) {
 		super();
@@ -276,11 +274,11 @@ abstract class Connection<Channel extends AnyOf<Channels> = any> extends EventEm
 	}
 
 	@autobind
-	public send<T extends keyof Channel['receives']>(type: T, body: Channel['receives'][T]) {
+	public send<T extends keyof Channel['receives']>(type: T, body: Channel['receives'][T]): void {
 		this.stream.send('ch', {
 			id: this.id,
 			type: type,
-			body: body
+			body: body,
 		});
 
 		this.outCount++;
@@ -304,7 +302,7 @@ class SharedConnection<Channel extends AnyOf<Channels> = any> extends Connection
 	}
 
 	@autobind
-	public dispose() {
+	public dispose(): void {
 		this.pool.dec();
 		this.removeAllListeners();
 		this.stream.removeSharedConnection(this);
@@ -325,16 +323,16 @@ class NonSharedConnection<Channel extends AnyOf<Channels> = any> extends Connect
 	}
 
 	@autobind
-	public connect() {
+	public connect(): void {
 		this.stream.send('connect', {
 			channel: this.channel,
 			id: this.id,
-			params: this.params
+			params: this.params,
 		});
 	}
 
 	@autobind
-	public dispose() {
+	public dispose(): void {
 		this.removeAllListeners();
 		this.stream.send('disconnect', { id: this.id });
 		this.stream.disconnectToChannel(this);
