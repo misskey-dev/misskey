@@ -73,8 +73,10 @@ export class Storage<T extends StateDef> {
 			}, 1);
 
 			// streamingのuser storage updateイベントを監視して更新
-			this.connection.on('registryUpdated', ({ scope, key, value }) => {
-				this.state[key] = value as typeof this.state[key]['default'];
+			this.connection.on('registryUpdated', ({ scope, key, value }: { scope: string[], key: keyof T, value: T[typeof key]['default'] }) => {
+				if (scope[1] !== this.key) return;
+
+				this.state[key] = value;
 				this.reactiveState[key].value = value;
 
 				const cache = JSON.parse(localStorage.getItem(this.keyForLocalStorage + '::cache::' + $i.id) || '{}');
