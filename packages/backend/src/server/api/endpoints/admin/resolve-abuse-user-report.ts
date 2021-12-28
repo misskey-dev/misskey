@@ -38,7 +38,7 @@ export default define(meta, async (ps, me) => {
 		const actor = await getInstanceActor();
 		const targetUser = await Users.findOne(report.targetUserId);
 
-		deliver(actor, renderActivity(renderFlag(actor, targetUser.uri, report.comment)), targetUser.inbox);
+		deliver(actor, renderActivity(renderFlag(actor, [targetUser.uri], report.comment)), targetUser.inbox);
 	}
 
 	await AbuseUserReports.update(report.id, {

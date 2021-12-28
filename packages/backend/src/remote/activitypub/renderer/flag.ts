@@ -5,7 +5,7 @@ import { getInstanceActor } from '@/services/instance-actor';
 
 // to anonymise reporters, the reporting actor must be a system user
 // object has to be a uri or array of uris
-export const renderFlag = (user: ILocalUser, object: string | [string], content: string): IActivity => {
+export const renderFlag = (user: ILocalUser, object: [string], content: string): IActivity => {
 	return {
 		type: 'Flag',
 		actor: `${config.url}/users/${user.id}`,
