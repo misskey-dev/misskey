@@ -6,7 +6,7 @@
 			<i v-else-if="info.icon" class="icon" :class="info.icon"></i>
 
 			<div class="title">
-				<MkUserName v-if="info.userName" :user="info.userName" :nowrap="false" class="title"/>
+				<MkUserName v-if="info.userName" :user="info.userName" :nowrap="true" class="title"/>
 				<div v-else-if="info.title" class="title">{{ info.title }}</div>
 				<div v-if="!narrow && info.subtitle" class="subtitle">
 					{{ info.subtitle }}
@@ -268,6 +268,7 @@ export default defineComponent({
 	> .titleContainer {
 		display: flex;
 		align-items: center;
+		max-width: 400px;
 		overflow: auto;
 		white-space: nowrap;
 		text-align: left;

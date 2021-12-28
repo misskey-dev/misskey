@@ -1,4 +1,4 @@
-import Particle from '@/components/particle.vue';
+import Ripple from '@/components/ripple.vue';
 import { popup } from '@/os';
 
 export default {
@@ -9,10 +9,10 @@ export default {
 		el.addEventListener('click', () => {
 			const rect = el.getBoundingClientRect();
 
-			const x = rect.left + (el.clientWidth / 2);
-			const y = rect.top + (el.clientHeight / 2);
+			const x = rect.left + (el.offsetWidth / 2);
+			const y = rect.top + (el.offsetHeight / 2);
 
-			popup(Particle, { x, y }, {}, 'end');
+			popup(Ripple, { x, y }, {}, 'end');
 		});
 	}
 };
