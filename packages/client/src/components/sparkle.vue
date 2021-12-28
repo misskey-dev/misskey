@@ -66,9 +66,6 @@
 import { defineComponent, onMounted, onUnmounted, ref } from 'vue';
 import * as os from '@/os';
 
-const sprite = new Image();
-sprite.src = '/client-assets/sparkle-spritesheet.png';
-
 export default defineComponent({
 	props: {
 		count: {
