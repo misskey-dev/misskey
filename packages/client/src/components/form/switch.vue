@@ -2,10 +2,6 @@
 <div
 	class="ziffeoms"
 	:class="{ disabled, checked }"
-	role="switch"
-	:aria-checked="checked"
-	:aria-disabled="disabled"
-	@click.prevent="toggle"
 >
 	<input
 		ref="input"
@@ -13,18 +9,20 @@
 		:disabled="disabled"
 		@keydown.enter="toggle"
 	>
-	<span v-tooltip="checked ? $ts.itsOn : $ts.itsOff" class="button">
-		<span class="handle"></span>
+	<span ref="button" v-adaptive-border v-tooltip="checked ? $ts.itsOn : $ts.itsOff" class="button" @click.prevent="toggle">
+		<i class="check fas fa-check"></i>
 	</span>
 	<span class="label">
-		<span><slot></slot></span>
+		<span @click="toggle"><slot></slot></span>
 		<p class="caption"><slot name="caption"></slot></p>
 	</span>
 </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref, toRefs } from 'vue';
+import * as os from '@/os';
+import Ripple from '@/components/ripple.vue';
 
 export default defineComponent({
 	props: {
@@ -37,17 +35,28 @@ export default defineComponent({
 			default: false
 		}
 	},
-	computed: {
-		checked(): boolean {
-			return this.modelValue;
-		}
+
+	setup(props, context) {
+		const button = ref<HTMLElement>();
+		const checked = toRefs(props).modelValue;
+		const toggle = () => {
+			if (props.disabled) return;
+			context.emit('update:modelValue', !checked.value);
+
+			if (!checked.value) {
+				const rect = button.value.getBoundingClientRect();
+				const x = rect.left + (button.value.offsetWidth / 2);
+				const y = rect.top + (button.value.offsetHeight / 2);
+				os.popup(Ripple, { x, y, particle: false }, {}, 'end');
+			}
+		};
+
+		return {
+			button,
+			checked,
+			toggle,
+		};
 	},
-	methods: {
-		toggle() {
-			if (this.disabled) return;
-			this.$emit('update:modelValue', !this.checked);
-		}
-	}
 });
 </script>
 
@@ -55,16 +64,7 @@ export default defineComponent({
 .ziffeoms {
 	position: relative;
 	display: flex;
-	cursor: pointer;
-	transition: all 0.3s;
-
-	&:first-child {
-		margin-top: 0;
-	}
-
-	&:last-child {
-		margin-bottom: 0;
-	}
+	transition: all 0.2s ease;
 
 	> * {
 		user-select: none;
@@ -80,27 +80,32 @@ export default defineComponent({
 
 	> .button {
 		position: relative;
-		display: inline-block;
+		display: inline-flex;
 		flex-shrink: 0;
 		margin: 0;
-		width: 36px;
-		height: 26px;
-		background: var(--switchBg);
+		box-sizing: border-box;
+		width: 23px;
+		height: 23px;
 		outline: none;
-		border-radius: 999px;
+		background: var(--panel);
+		border: solid 1px var(--panel);
+		border-radius: 4px;
+		cursor: pointer;
 		transition: inherit;
 
-		> .handle {
-			position: absolute;
-			top: 0;
-			bottom: 0;
-			left: 5px;
-			margin: auto 0;
-			border-radius: 100%;
-			transition: background-color 0.3s, transform 0.3s;
-			width: 16px;
-			height: 16px;
-			background-color: #fff;
+		> .check {
+			margin: auto;
+			opacity: 0;
+			color: var(--fgOnAccent);
+			font-size: 13px;
+			transform: scale(0.5);
+			transition: all 0.2s ease;
+		}
+	}
+
+	&:hover {
+		> .button {
+			border-color: var(--inputBorderHover) !important;
 		}
 	}
 
@@ -108,13 +113,13 @@ export default defineComponent({
 		margin-left: 16px;
 		margin-top: 2px;
 		display: block;
-		cursor: pointer;
 		transition: inherit;
 		color: var(--fg);
 
 		> span {
 			display: block;
 			line-height: 20px;
+			cursor: pointer;
 			transition: inherit;
 		}
 
@@ -129,12 +134,6 @@ export default defineComponent({
 		}
 	}
 
-	&:hover {
-		> .button {
-			background-color: var(--accentedBg);
-		}
-	}
-
 	&.disabled {
 		opacity: 0.6;
 		cursor: not-allowed;
@@ -142,11 +141,12 @@ export default defineComponent({
 
 	&.checked {
 		> .button {
-			background-color: var(--accent);
-			border-color: var(--accent);
+			background-color: var(--accent) !important;
+			border-color: var(--accent) !important;
 
-			> .handle {
-				transform: translateX(10px);
+			> .check {
+				opacity: 1;
+				transform: scale(1);
 			}
 		}
 	}

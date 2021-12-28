@@ -51,14 +51,13 @@
 				<span v-if="passwordRetypeState == 'not-match'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.passwordNotMatched }}</span>
 			</template>
 		</MkInput>
-		<label v-if="meta.tosUrl" class="_formBlock tou">
-			<input v-model="ToSAgreement" type="checkbox">
+		<MkSwitch v-if="meta.tosUrl" v-model="ToSAgreement" class="_formBlock tou">
 			<I18n :src="$ts.agreeTo">
 				<template #0>
 					<a :href="meta.tosUrl" class="_link" target="_blank">{{ $ts.tos }}</a>
 				</template>
 			</I18n>
-		</label>
+		</MkSwitch>
 		<captcha v-if="meta.enableHcaptcha" ref="hcaptcha" v-model="hCaptchaResponse" class="_formBlock captcha" provider="hcaptcha" :sitekey="meta.hcaptchaSiteKey"/>
 		<captcha v-if="meta.enableRecaptcha" ref="recaptcha" v-model="reCaptchaResponse" class="_formBlock captcha" provider="recaptcha" :sitekey="meta.recaptchaSiteKey"/>
 		<MkButton class="_formBlock" type="submit" :disabled="shouldDisableSubmitting" gradate data-cy-signup-submit>{{ $ts.start }}</MkButton>
@@ -257,12 +256,6 @@ export default defineComponent({
 .qlvuhzng {
 	.captcha {
 		margin: 16px 0;
-	}
-
-	> .tou {
-		display: block;
-		margin: 16px 0;
-		cursor: pointer;
 	}
 }
 </style>
