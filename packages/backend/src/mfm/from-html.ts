@@ -168,7 +168,7 @@ export function fromHtml(html: string, hashtagNames?: string[]): string | null {
 			case 'blockquote': {
 				const t = getText(node);
 				if (t) {
-					text += '> ';
+					text += '\n> ';
 					text += t.split('\n').join(`\n> `);
 				}
 				break;
