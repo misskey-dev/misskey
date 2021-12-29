@@ -2,7 +2,7 @@
 <button
 	v-if="count > 0"
 	ref="buttonRef"
-	v-particle="canToggle"
+	v-ripple="canToggle"
 	class="hkzvhatu _button"
 	:class="{ reacted: note.myReaction == reaction, canToggle }"
 	@click="toggleReaction()"

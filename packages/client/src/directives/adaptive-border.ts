@@ -13,12 +13,12 @@ export default {
 	
 		const parentBg = getBgColor(src.parentElement);
 
-		const myBg = getComputedStyle(document.documentElement).getPropertyValue('--panel');
+		const myBg = window.getComputedStyle(src).backgroundColor;
 
 		if (parentBg === myBg) {
-			src.style.backgroundColor = 'var(--bg)';
+			src.style.borderColor = 'var(--divider)';
 		} else {
-			src.style.backgroundColor = 'var(--panel)';
+			src.style.borderColor = myBg;
 		}
 	},
 } as Directive;

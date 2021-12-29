@@ -4,7 +4,7 @@
 	<div class="input" :class="{ disabled, focused, tall, pre }">
 		<textarea ref="inputEl"
 			v-model="v"
-			v-panel
+			v-adaptive-border
 			:class="{ code, _monospace: code }"
 			:disabled="disabled"
 			:required="required"
@@ -210,7 +210,8 @@ export default defineComponent({
 			font-weight: normal;
 			font-size: 1em;
 			color: var(--fg);
-			border: solid 0.5px var(--panel);
+			background: var(--panel);
+			border: solid 1px var(--panel);
 			border-radius: 6px;
 			outline: none;
 			box-shadow: none;
@@ -218,13 +219,13 @@ export default defineComponent({
 			transition: border-color 0.1s ease-out;
 
 			&:hover {
-				border-color: var(--inputBorderHover);
+				border-color: var(--inputBorderHover) !important;
 			}
 		}
 
 		&.focused {
 			> textarea {
-				border-color: var(--accent);
+				border-color: var(--accent) !important;
 			}
 		}
 

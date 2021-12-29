@@ -1,29 +1,31 @@
 <template>
-<div v-if="channel" class="_section">
-	<div class="wpgynlbz _content _panel _gap" :class="{ hide: !showBanner }">
-		<XChannelFollowButton :channel="channel" :full="true" class="subscribe"/>
-		<button class="_button toggle" @click="() => showBanner = !showBanner">
-			<template v-if="showBanner"><i class="fas fa-angle-up"></i></template>
-			<template v-else><i class="fas fa-angle-down"></i></template>
-		</button>
-		<div v-if="!showBanner" class="hideOverlay">
-		</div>
-		<div :style="{ backgroundImage: channel.bannerUrl ? `url(${channel.bannerUrl})` : null }" class="banner">
-			<div class="status">
-				<div><i class="fas fa-users fa-fw"></i><I18n :src="$ts._channel.usersCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.usersCount }}</b></template></I18n></div>
-				<div><i class="fas fa-pencil-alt fa-fw"></i><I18n :src="$ts._channel.notesCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.notesCount }}</b></template></I18n></div>
+<MkSpacer :content-max="700">
+	<div v-if="channel">
+		<div class="wpgynlbz _panel _gap" :class="{ hide: !showBanner }">
+			<XChannelFollowButton :channel="channel" :full="true" class="subscribe"/>
+			<button class="_button toggle" @click="() => showBanner = !showBanner">
+				<template v-if="showBanner"><i class="fas fa-angle-up"></i></template>
+				<template v-else><i class="fas fa-angle-down"></i></template>
+			</button>
+			<div v-if="!showBanner" class="hideOverlay">
 			</div>
-			<div class="fade"></div>
+			<div :style="{ backgroundImage: channel.bannerUrl ? `url(${channel.bannerUrl})` : null }" class="banner">
+				<div class="status">
+					<div><i class="fas fa-users fa-fw"></i><I18n :src="$ts._channel.usersCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.usersCount }}</b></template></I18n></div>
+					<div><i class="fas fa-pencil-alt fa-fw"></i><I18n :src="$ts._channel.notesCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.notesCount }}</b></template></I18n></div>
+				</div>
+				<div class="fade"></div>
+			</div>
+			<div v-if="channel.description" class="description">
+				<Mfm :text="channel.description" :is-note="false" :i="$i"/>
+			</div>
 		</div>
-		<div v-if="channel.description" class="description">
-			<Mfm :text="channel.description" :is-note="false" :i="$i"/>
-		</div>
+
+		<XPostForm v-if="$i" :channel="channel" class="post-form _panel _gap" fixed/>
+
+		<XTimeline :key="channelId" class="_gap" src="channel" :channel="channelId" @before="before" @after="after"/>
 	</div>
-
-	<XPostForm v-if="$i" :channel="channel" class="post-form _content _panel _gap" fixed/>
-
-	<XTimeline :key="channelId" class="_content _gap" src="channel" :channel="channelId" @before="before" @after="after"/>
-</div>
+</MkSpacer>
 </template>
 
 <script lang="ts">
@@ -55,6 +57,12 @@ export default defineComponent({
 			[symbols.PAGE_INFO]: computed(() => this.channel ? {
 				title: this.channel.name,
 				icon: 'fas fa-satellite-dish',
+				bg: 'var(--bg)',
+				actions: [...(this.$i && this.$i.id === this.channel.userId ? [{
+					icon: 'fas fa-cog',
+					text: this.$ts.edit,
+					handler: this.edit,
+				}] : [])],
 			} : null),
 			channel: null,
 			showBanner: true,
@@ -79,8 +87,10 @@ export default defineComponent({
 		}
 	},
 
-	created() {
-
+	methods: {
+		edit() {
+			this.$router.push(`/channels/${this.channel.id}/edit`);
+		}
 	},
 });
 </script>

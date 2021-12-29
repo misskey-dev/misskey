@@ -170,6 +170,8 @@ export default defineComponent({
 			}
 
 			&:hover, &.active {
+				color: var(--accent);
+
 				&:before {
 					content: "";
 					display: block;
@@ -283,8 +285,10 @@ export default defineComponent({
 				}
 
 				&:before {
-					width: 100%;
-					border-radius: 0;
+					width: min-content;
+					height: 100%;
+					aspect-ratio: 1/1;
+					border-radius: 8px;
 				}
 
 				&.post {
@@ -296,8 +300,9 @@ export default defineComponent({
 				}
 
 				&.post:before {
-					width: calc(100% - 32px);
-					height: calc(100% - 32px);
+					width: calc(100% - 28px);
+					height: min-content;
+					aspect-ratio: 1/1;
 					border-radius: 100%;
 				}
 			}

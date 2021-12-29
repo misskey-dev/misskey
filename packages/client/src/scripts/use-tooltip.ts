@@ -1,4 +1,4 @@
-import { Ref, ref, watch } from 'vue';
+import { Ref, ref, watch, onUnmounted } from 'vue';
 
 export function useTooltip(
 	elRef: Ref<HTMLElement | { $el: HTMLElement } | null | undefined>,
@@ -18,6 +18,9 @@ export function useTooltip(
 	const open = () => {
 		close();
 		if (!isHovering) return;
+		if (elRef.value == null) return;
+		const el = elRef.value instanceof Element ? elRef.value : elRef.value.$el;
+		if (!document.body.contains(el)) return; // openしようとしたときに既に元要素がDOMから消えている場合があるため
 
 		const showing = ref(true);
 		onShow(showing);
@@ -69,9 +72,14 @@ export function useTooltip(
 			el.addEventListener('mouseleave', onMouseleave, { passive: true });
 			el.addEventListener('touchstart', onTouchstart, { passive: true });
 			el.addEventListener('touchend', onTouchend, { passive: true });
+			el.addEventListener('click', close, { passive: true });
 		}
 	}, {
 		immediate: true,
 		flush: 'post',
+	});
+
+	onUnmounted(() => {
+		close();
 	});
 }
