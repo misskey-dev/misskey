@@ -1,161 +1,121 @@
 <template>
 <span class="mk-sparkle">
-	<span ref="content">
+	<span ref="el">
 		<slot></slot>
 	</span>
-	<canvas ref="canvas"></canvas>
+	<!-- なぜか path に対する key が機能しないため
+	<svg :width="width" :height="height" :viewBox="`0 0 ${width} ${height}`" xmlns="http://www.w3.org/2000/svg">
+		<path v-for="particle in particles" :key="particle.id" style="transform-origin: center; transform-box: fill-box;"
+			:transform="`translate(${particle.x} ${particle.y})`"
+			:fill="particle.color"
+			d="M29.427,2.011C29.721,0.83 30.782,0 32,0C33.218,0 34.279,0.83 34.573,2.011L39.455,21.646C39.629,22.347 39.991,22.987 40.502,23.498C41.013,24.009 41.653,24.371 42.354,24.545L61.989,29.427C63.17,29.721 64,30.782 64,32C64,33.218 63.17,34.279 61.989,34.573L42.354,39.455C41.653,39.629 41.013,39.991 40.502,40.502C39.991,41.013 39.629,41.653 39.455,42.354L34.573,61.989C34.279,63.17 33.218,64 32,64C30.782,64 29.721,63.17 29.427,61.989L24.545,42.354C24.371,41.653 24.009,41.013 23.498,40.502C22.987,39.991 22.347,39.629 21.646,39.455L2.011,34.573C0.83,34.279 0,33.218 0,32C0,30.782 0.83,29.721 2.011,29.427L21.646,24.545C22.347,24.371 22.987,24.009 23.498,23.498C24.009,22.987 24.371,22.347 24.545,21.646L29.427,2.011Z"
+		>
+			<animateTransform
+				attributeName="transform"
+				attributeType="XML"
+				type="rotate"
+				from="0 0 0"
+				to="360 0 0"
+				:dur="`${particle.dur}ms`"
+				repeatCount="indefinite"
+				additive="sum"
+			/>
+			<animateTransform
+				attributeName="transform"
+				attributeType="XML"
+				type="scale"
+				:values="`0; ${particle.size}; 0`"
+				:dur="`${particle.dur}ms`"
+				repeatCount="indefinite"
+				additive="sum"
+			/>
+		</path>
+	</svg>
+	-->
+	<svg v-for="particle in particles" :key="particle.id" :width="width" :height="height" :viewBox="`0 0 ${width} ${height}`" xmlns="http://www.w3.org/2000/svg">
+		<path style="transform-origin: center; transform-box: fill-box;"
+			:transform="`translate(${particle.x} ${particle.y})`"
+			:fill="particle.color"
+			d="M29.427,2.011C29.721,0.83 30.782,0 32,0C33.218,0 34.279,0.83 34.573,2.011L39.455,21.646C39.629,22.347 39.991,22.987 40.502,23.498C41.013,24.009 41.653,24.371 42.354,24.545L61.989,29.427C63.17,29.721 64,30.782 64,32C64,33.218 63.17,34.279 61.989,34.573L42.354,39.455C41.653,39.629 41.013,39.991 40.502,40.502C39.991,41.013 39.629,41.653 39.455,42.354L34.573,61.989C34.279,63.17 33.218,64 32,64C30.782,64 29.721,63.17 29.427,61.989L24.545,42.354C24.371,41.653 24.009,41.013 23.498,40.502C22.987,39.991 22.347,39.629 21.646,39.455L2.011,34.573C0.83,34.279 0,33.218 0,32C0,30.782 0.83,29.721 2.011,29.427L21.646,24.545C22.347,24.371 22.987,24.009 23.498,23.498C24.009,22.987 24.371,22.347 24.545,21.646L29.427,2.011Z"
+		>
+			<animateTransform
+				attributeName="transform"
+				attributeType="XML"
+				type="rotate"
+				from="0 0 0"
+				to="360 0 0"
+				:dur="`${particle.dur}ms`"
+				repeatCount="1"
+				additive="sum"
+			/>
+			<animateTransform
+				attributeName="transform"
+				attributeType="XML"
+				type="scale"
+				:values="`0; ${particle.size}; 0`"
+				:dur="`${particle.dur}ms`"
+				repeatCount="1"
+				additive="sum"
+			/>
+		</path>
+	</svg>
 </span>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, onMounted, onUnmounted, ref } from 'vue';
 import * as os from '@/os';
 
-const sprite = new Image();
-sprite.src = '/client-assets/sparkle-spritesheet.png';
-
 export default defineComponent({
-	props: {
-		count: {
-			type: Number,
-			required: true,
-		},
-		speed: {
-			type: Number,
-			required: true,
-		},
-	},
-	data() {
-		return {
-			sprites: [0,6,13,20],
-			particles: [],
-			anim: null,
-			ctx: null,
-		};
-	},
-	unmounted() {
-		window.cancelAnimationFrame(this.anim);
-	},
-	mounted() {
-		this.ctx = this.$refs.canvas.getContext('2d');
+	setup() {
+		const particles = ref([]);
+		const el = ref<HTMLElement>();
+		const width = ref(0);
+		const height = ref(0);
+		const colors = ['#FF1493', '#00FFFF', '#FFE202', '#FFE202', '#FFE202'];
 
-		new ResizeObserver(this.resize).observe(this.$refs.content);
-
-		this.resize();
-		this.tick();
-	},
-	updated() {
-		this.resize();
-	},
-	methods: {
-		createSparkles(w, h, count) {
-			const holder = [];
-
-			for (let i = 0; i < count; i++) {
-
-				const color = '#' + ('000000' + Math.floor(Math.random() * 16777215).toString(16)).slice(-6);
-
-				holder[i] = {
-					position: {
-						x: Math.floor(Math.random() * w),
-						y: Math.floor(Math.random() * h)
-					},
-					style: this.sprites[ Math.floor(Math.random() * 4) ],
-					delta: {
-						x: Math.floor(Math.random() * 1000) - 500,
-						y: Math.floor(Math.random() * 1000) - 500
-					},
-					color: color,
-					opacity: Math.random(),
+		onMounted(() => {
+			const ro = new ResizeObserver((entries, observer) => {
+				width.value = el.value?.offsetWidth + 64;
+				height.value = el.value?.offsetHeight + 64;
+			});
+			ro.observe(el.value);
+			let stop = false;
+			const add = () => {
+				if (stop) return;
+				const x = (Math.random() * (width.value - 64));
+				const y = (Math.random() * (height.value - 64));
+				const sizeFactor = Math.random();
+				const particle = {
+					id: Math.random().toString(),
+					x,
+					y,
+					size: 0.2 + ((sizeFactor / 10) * 3),
+					dur: 1000 + (sizeFactor * 1000),
+					color: colors[Math.floor(Math.random() * colors.length)],
 				};
+				particles.value.push(particle);
+				window.setTimeout(() => {
+					particles.value = particles.value.filter(x => x.id !== particle.id);
+				}, particle.dur - 100);
 
-			}
-
-			return holder;
-		},
-		draw(time) {
-			this.ctx.clearRect(0, 0, this.$refs.canvas.width, this.$refs.canvas.height);
-			this.ctx.beginPath();
-
-			const particleSize = Math.floor(this.fontSize / 2);
-			this.particles.forEach((particle) => {
-				var modulus = Math.floor(Math.random()*7);
-
-				if (Math.floor(time) % modulus === 0) {
-					particle.style = this.sprites[ Math.floor(Math.random()*4) ];
-				}
-
-				this.ctx.save();
-				this.ctx.globalAlpha = particle.opacity;
-				this.ctx.drawImage(sprite, particle.style, 0, 7, 7, particle.position.x, particle.position.y, particleSize, particleSize);
-
-				this.ctx.globalCompositeOperation = "source-atop";
-				this.ctx.globalAlpha = 0.5;
-				this.ctx.fillStyle = particle.color;
-				this.ctx.fillRect(particle.position.x, particle.position.y, particleSize, particleSize);
-
-				this.ctx.restore();
+				window.setTimeout(() => {
+					add();
+				}, 500 + (Math.random() * 500));
+			};
+			add();
+			onUnmounted(() => {
+				ro.disconnect();
+				stop = true;
 			});
-			this.ctx.stroke();
-		},
-		tick() {
-			this.anim = window.requestAnimationFrame((time) => {
-				if (!this.$refs.canvas) {
-					return;
-				}
-				this.particles.forEach((particle) => {
-					if (!particle) {
-						return;
-					}
-					var randX = Math.random() > Math.random() * 2;
-					var randY = Math.random() > Math.random() * 3;
+		});
 
-					if (randX) {
-						particle.position.x += (particle.delta.x * this.speed) / 1500;
-					}
-
-					if (!randY) {
-						particle.position.y -= (particle.delta.y * this.speed) / 800;
-					}
-
-					if( particle.position.x > this.$refs.canvas.width ) {
-						particle.position.x = -7;
-					} else if (particle.position.x < -7) {
-						particle.position.x = this.$refs.canvas.width;
-					}
-
-					if (particle.position.y > this.$refs.canvas.height) {
-						particle.position.y = -7;
-						particle.position.x = Math.floor(Math.random() * this.$refs.canvas.width);
-					} else if (particle.position.y < -7) {
-						particle.position.y = this.$refs.canvas.height;
-						particle.position.x = Math.floor(Math.random() * this.$refs.canvas.width);
-					}
-
-					particle.opacity -= 0.005;
-
-					if (particle.opacity <= 0) {
-						particle.opacity = 1;
-					}
-				});
-
-				this.draw(time);
-
-				this.tick();
-			});
-		},
-		resize() {
-			if (this.$refs.content) {
-				const contentRect = this.$refs.content.getBoundingClientRect();
-				this.fontSize = parseFloat(getComputedStyle(this.$refs.content).fontSize);
-				const padding = this.fontSize * 0.2;
-
-				this.$refs.canvas.width = parseInt(contentRect.width + padding);
-				this.$refs.canvas.height = parseInt(contentRect.height + padding);
-
-				this.particles = this.createSparkles(this.$refs.canvas.width, this.$refs.canvas.height, this.count);
-			}
-		},
+		return {
+			el,
+			width,
+			height,
+			particles,
+		};
 	},
 });
 </script>
@@ -169,10 +129,10 @@ export default defineComponent({
 		display: inline-block;
 	}
 
-	> canvas {
+	> svg {
 		position: absolute;
-		top: -0.1em;
-		left: -0.1em;
+		top: -32px;
+		left: -32px;
 		pointer-events: none;
 	}
 }

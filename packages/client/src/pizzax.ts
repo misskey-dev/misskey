@@ -41,6 +41,8 @@ export class Storage<T extends StateDef> {
 		return promise;
 	}
 
+	private connection = stream.useChannel('main');
+
 	constructor(key: string, def: T) {
 		this.key = key;
 		this.deviceStateKeyName = `pizzax::${key}`;

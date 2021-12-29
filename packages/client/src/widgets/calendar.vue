@@ -5,7 +5,8 @@
 			<span class="year">{{ $t('yearX', { year }) }}</span>
 			<span class="month">{{ $t('monthX', { month }) }}</span>
 		</p>
-		<p class="day">{{ $t('dayX', { day }) }}</p>
+		<p v-if="month === 1 && day === 1" class="day">🎉{{ $t('dayX', { day }) }}<span style="display: inline-block; transform: scaleX(-1);">🎉</span></p>
+		<p v-else class="day">{{ $t('dayX', { day }) }}</p>
 		<p class="week-day">{{ weekDay }}</p>
 	</div>
 	<div class="info">
@@ -34,7 +35,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import define from './define';
-import * as os from '@/os';
 
 const widget = define({
 	name: 'calendar',
@@ -127,12 +127,12 @@ export default defineComponent({
 			}
 		}
 
-		> p {
+		> .month-and-year, > .week-day {
 			margin: 0;
 			line-height: 18px;
 			font-size: 0.9em;
 
-			> span {
+			> .year, > .month {
 				margin: 0 4px;
 			}
 		}

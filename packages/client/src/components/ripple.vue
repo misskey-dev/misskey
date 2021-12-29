@@ -1,5 +1,5 @@
 <template>
-<div class="vswabwbm" :style="{ top: `${y - 64}px`, left: `${x - 64}px` }" :class="{ active }">
+<div class="vswabwbm" :style="{ zIndex, top: `${y - 64}px`, left: `${x - 64}px` }" :class="{ active }">
 	<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
 		<circle fill="none" cx="64" cy="64">
 			<animate attributeName="r"
@@ -52,7 +52,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, onMounted } from 'vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	props: {
@@ -63,37 +64,46 @@ export default defineComponent({
 		y: {
 			type: Number,
 			required: true
+		},
+		particle: {
+			type: Boolean,
+			required: false,
+			default: true,
 		}
 	},
 	emits: ['end'],
-	data() {
+	setup(props, context) {
 		const particles = [];
 		const origin = 64;
 		const colors = ['#FF1493', '#00FFFF', '#FFE202'];
 
-		for (let i = 0; i < 12; i++) {
-			const angle = Math.random() * (Math.PI * 2);
-			const pos = Math.random() * 16;
-			const velocity = 16 + (Math.random() * 48);
-			particles.push({
-				size: 4 + (Math.random() * 8),
-				xA: origin + (Math.sin(angle) * pos),
-				yA: origin + (Math.cos(angle) * pos),
-				xB: origin + (Math.sin(angle) * (pos + velocity)),
-				yB: origin + (Math.cos(angle) * (pos + velocity)),
-				color: colors[Math.floor(Math.random() * colors.length)]
-			});
+		if (props.particle) {
+			for (let i = 0; i < 12; i++) {
+				const angle = Math.random() * (Math.PI * 2);
+				const pos = Math.random() * 16;
+				const velocity = 16 + (Math.random() * 48);
+				particles.push({
+					size: 4 + (Math.random() * 8),
+					xA: origin + (Math.sin(angle) * pos),
+					yA: origin + (Math.cos(angle) * pos),
+					xB: origin + (Math.sin(angle) * (pos + velocity)),
+					yB: origin + (Math.cos(angle) * (pos + velocity)),
+					color: colors[Math.floor(Math.random() * colors.length)]
+				});
+			}
 		}
 
+		onMounted(() => {
+			setTimeout(() => {
+				context.emit('end');
+			}, 1100);
+		});
+
 		return {
-			particles
+			particles,
+			zIndex: os.claimZIndex('high'),
 		};
 	},
-	mounted() {
-		setTimeout(() => {
-			this.$emit('end');
-		}, 1100);
-	}
 });
 </script>
 
@@ -101,7 +111,6 @@ export default defineComponent({
 .vswabwbm {
 	pointer-events: none;
 	position: fixed;
-	z-index: 1000000;
 	width: 128px;
 	height: 128px;
 

@@ -1,7 +1,7 @@
 <template>
 <MkModal ref="modal" :z-priority="'middle'" @click="$refs.modal.close()" @closed="$emit('closed')">
 	<div class="ewlycnyt">
-		<div class="title">{{ $ts.misskeyUpdated }}</div>
+		<div class="title"><MkSparkle>{{ $ts.misskeyUpdated }}</MkSparkle></div>
 		<div class="version">✨{{ version }}🚀</div>
 		<MkButton full @click="whatIsNew">{{ $ts.whatIsNew }}</MkButton>
 		<MkButton class="gotIt" primary full @click="$refs.modal.close()">{{ $ts.gotIt }}</MkButton>
@@ -9,31 +9,19 @@
 </MkModal>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { ref } from 'vue';
 import MkModal from '@/components/ui/modal.vue';
 import MkButton from '@/components/ui/button.vue';
+import MkSparkle from '@/components/sparkle.vue';
 import { version } from '@/config';
 
-export default defineComponent({
-	components: {
-		MkModal,
-		MkButton,
-	},
+const modal = ref();
 
-	data() {
-		return {
-			version: version,
-		};
-	},
-
-	methods: {
-		whatIsNew() {
-			this.$refs.modal.close();
-			window.open(`https://misskey-hub.net/docs/releases.html#_${version.replace(/\./g, '-')}`, '_blank');
-		}
-	}
-});
+const whatIsNew = () => {
+	modal.value.close();
+	window.open(`https://misskey-hub.net/docs/releases.html#_${version.replace(/\./g, '-')}`, '_blank');
+};
 </script>
 
 <style lang="scss" scoped>
