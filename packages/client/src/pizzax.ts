@@ -70,21 +70,21 @@ export class Storage<T extends StateDef> {
 					}
 					localStorage.setItem(this.keyForLocalStorage + '::cache::' + $i.id, JSON.stringify(cache));
 				});
+
+				// streamingのuser storage updateイベントを監視して更新
+				this.connection.on('registryUpdated', ({ scope, key, value }: { scope: string[], key: keyof T, value: T[typeof key]['default'] }) => {
+					if (scope[1] !== this.key || this.state[key] === value) return;
+
+					this.state[key] = value;
+					this.reactiveState[key].value = value;
+
+					const cache = JSON.parse(localStorage.getItem(this.keyForLocalStorage + '::cache::' + $i.id) || '{}');
+					if (cache[key] !== value) {
+						cache[key] = value;
+						localStorage.setItem(this.keyForLocalStorage + '::cache::' + $i.id, JSON.stringify(cache));
+					}
+				});
 			}, 1);
-
-			// streamingのuser storage updateイベントを監視して更新
-			this.connection.on('registryUpdated', ({ scope, key, value }: { scope: string[], key: keyof T, value: T[typeof key]['default'] }) => {
-				if (scope[1] !== this.key || this.state[key] === value) return;
-
-				this.state[key] = value;
-				this.reactiveState[key].value = value;
-
-				const cache = JSON.parse(localStorage.getItem(this.keyForLocalStorage + '::cache::' + $i.id) || '{}');
-				if (cache[key] !== value) {
-					cache[key] = value;
-					localStorage.setItem(this.keyForLocalStorage + '::cache::' + $i.id, JSON.stringify(cache));
-				}
-			});
 		}
 	}
 
