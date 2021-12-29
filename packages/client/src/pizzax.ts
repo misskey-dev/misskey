@@ -10,6 +10,8 @@ type StateDef = Record<string, {
 
 type ArrayElement<A> = A extends readonly (infer T)[] ? T : never;
 
+const connection = $i && stream.useChannel('main');
+
 export class Storage<T extends StateDef> {
 	public readonly key: string;
 	public readonly keyForLocalStorage: string;
@@ -19,8 +21,6 @@ export class Storage<T extends StateDef> {
 	// TODO: これが実装されたらreadonlyにしたい: https://github.com/microsoft/TypeScript/issues/37487
 	public readonly state: { [K in keyof T]: T[K]['default'] };
 	public readonly reactiveState: { [K in keyof T]: Ref<T[K]['default']> };
-
-	private connection = stream.useChannel('main');
 
 	constructor(key: string, def: T) {
 		this.key = key;
@@ -73,7 +73,7 @@ export class Storage<T extends StateDef> {
 				});
 			}, 1);
 			// streamingのuser storage updateイベントを監視して更新
-			this.connection.on('registryUpdated', ({ scope, key, value }: { scope: string[], key: keyof T, value: T[typeof key]['default'] }) => {
+			connection?.on('registryUpdated', ({ scope, key, value }: { scope: string[], key: keyof T, value: T[typeof key]['default'] }) => {
 				if (scope[1] !== this.key || this.state[key] === value) return;
 
 				this.state[key] = value;
