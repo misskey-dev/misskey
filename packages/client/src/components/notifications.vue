@@ -28,6 +28,7 @@ import XList from './date-separated-list.vue';
 import XNote from './note.vue';
 import { notificationTypes } from 'misskey-js';
 import * as os from '@/os';
+import { stream } from '@/stream';
 import MkButton from '@/components/ui/button.vue';
 
 export default defineComponent({
@@ -100,7 +101,7 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.connection = markRaw(os.stream.useChannel('main'));
+		this.connection = markRaw(stream.useChannel('main'));
 		this.connection.on('notification', this.onNotification);
 	},
 
@@ -112,7 +113,7 @@ export default defineComponent({
 		onNotification(notification) {
 			const isMuted = !this.allIncludeTypes.includes(notification.type);
 			if (isMuted || document.visibilityState === 'visible') {
-				os.stream.send('readNotification', {
+				stream.send('readNotification', {
 					id: notification.id
 				});
 			}

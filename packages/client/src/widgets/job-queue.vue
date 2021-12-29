@@ -49,6 +49,7 @@
 import { defineComponent, markRaw } from 'vue';
 import define from './define';
 import * as os from '@/os';
+import { stream } from '@/stream';
 import number from '@/filters/number';
 import * as sound from '@/scripts/sound';
 
@@ -70,7 +71,7 @@ export default defineComponent({
 	extends: widget,
 	data() {
 		return {
-			connection: markRaw(os.stream.useChannel('queueStats')),
+			connection: markRaw(stream.useChannel('queueStats')),
 			inbox: {
 				activeSincePrevTick: 0,
 				active: 0,

@@ -59,6 +59,7 @@ import * as Acct from 'misskey-js/built/acct';
 import { formatTimeString } from '@/scripts/format-time-string';
 import { Autocomplete } from '@/scripts/autocomplete';
 import * as os from '@/os';
+import { stream } from '@/stream';
 import { selectFiles } from '@/scripts/select-file';
 import { notePostInterruptors, postFormActions } from '@/store';
 import { throttle } from 'throttle-debounce';
@@ -130,7 +131,7 @@ export default defineComponent({
 			imeText: '',
 			typing: throttle(3000, () => {
 				if (this.channel) {
-					os.stream.send('typingOnChannel', { channel: this.channel });
+					stream.send('typingOnChannel', { channel: this.channel });
 				}
 			}),
 			postFormActions,
