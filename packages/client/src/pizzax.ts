@@ -125,6 +125,7 @@ export class Storage<T extends StateDef> {
 		this.reactiveState[key].value = rawValue;
 
 		return this.addIdbSetJob(async () => {
+			if (_DEV_) console.log(`set ${key} start`);
 			switch (this.def[key].where) {
 				case 'device': {
 					const deviceState = await get(this.deviceStateKeyName) || {};
@@ -152,6 +153,7 @@ export class Storage<T extends StateDef> {
 					break;
 				}
 			}
+			if (_DEV_) console.log(`set ${key} complete`);
 		});
 	}
 
