@@ -14,7 +14,7 @@ type ReactiveState<T extends StateDef> = { [K in keyof T]: Ref<T[K]['default']>;
 
 type ArrayElement<A> = A extends readonly (infer T)[] ? T : never;
 
-const connection = $i ? stream.useChannel('main') : null;
+const connection = $i && stream.useChannel('main');
 
 export class Storage<T extends StateDef> {
 	public readonly ready: PromiseLike<void>;
