@@ -43,6 +43,7 @@
 		<FormSwitch v-model="useOsNativeEmojis" class="_formBlock">{{ $ts.useOsNativeEmojis }}
 			<div><Mfm :key="useOsNativeEmojis" text="🍮🍦🍭🍩🍰🍫🍬🥞🍪"/></div>
 		</FormSwitch>
+		<FormSwitch v-model="disableDrawer" class="_formBlock">{{ $ts.disableDrawer }}</FormSwitch>
 
 		<FormRadios v-model="fontSize" class="_formBlock">
 			<template #label>{{ $ts.fontSize }}</template>
@@ -75,13 +76,6 @@
 		<template #label>{{ $ts.defaultNavigationBehaviour }}</template>
 		<FormSwitch v-model="defaultSideView">{{ $ts.openInSideView }}</FormSwitch>
 	</FormGroup>
-
-	<FormSelect v-model="chatOpenBehavior" class="_formBlock">
-		<template #label>{{ $ts.chatOpenBehavior }}</template>
-		<option value="page">{{ $ts.showInPage }}</option>
-		<option value="window">{{ $ts.openInWindow }}</option>
-		<option value="popout">{{ $ts.popout }}</option>
-	</FormSelect>
 
 	<FormLink to="/settings/deck" class="_formBlock">{{ $ts.deck }}</FormLink>
 
@@ -140,6 +134,7 @@ export default defineComponent({
 		showGapBetweenNotesInTimeline: defaultStore.makeGetterSetter('showGapBetweenNotesInTimeline'),
 		disableAnimatedMfm: defaultStore.makeGetterSetter('animatedMfm', v => !v, v => !v),
 		useOsNativeEmojis: defaultStore.makeGetterSetter('useOsNativeEmojis'),
+		disableDrawer: defaultStore.makeGetterSetter('disableDrawer'),
 		disableShowingAnimatedImages: defaultStore.makeGetterSetter('disableShowingAnimatedImages'),
 		loadRawImages: defaultStore.makeGetterSetter('loadRawImages'),
 		imageNewTab: defaultStore.makeGetterSetter('imageNewTab'),
@@ -147,7 +142,6 @@ export default defineComponent({
 		disablePagesScript: defaultStore.makeGetterSetter('disablePagesScript'),
 		showFixedPostForm: defaultStore.makeGetterSetter('showFixedPostForm'),
 		defaultSideView: defaultStore.makeGetterSetter('defaultSideView'),
-		chatOpenBehavior: ColdDeviceStorage.makeGetterSetter('chatOpenBehavior'),
 		instanceTicker: defaultStore.makeGetterSetter('instanceTicker'),
 		enableInfiniteScroll: defaultStore.makeGetterSetter('enableInfiniteScroll'),
 		useReactionPickerForContextMenu: defaultStore.makeGetterSetter('useReactionPickerForContextMenu'),

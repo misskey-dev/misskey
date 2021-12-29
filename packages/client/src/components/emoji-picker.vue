@@ -77,7 +77,7 @@
 import { defineComponent, markRaw } from 'vue';
 import { emojilist } from '@/scripts/emojilist';
 import { getStaticImageUrl } from '@/scripts/get-static-image-url';
-import Particle from '@/components/particle.vue';
+import Ripple from '@/components/ripple.vue';
 import * as os from '@/os';
 import { isTouchUsing } from '@/scripts/touch';
 import { isMobile } from '@/scripts/is-mobile';
@@ -296,9 +296,9 @@ export default defineComponent({
 			if (ev) {
 				const el = ev.currentTarget || ev.target;
 				const rect = el.getBoundingClientRect();
-				const x = rect.left + (el.clientWidth / 2);
-				const y = rect.top + (el.clientHeight / 2);
-				os.popup(Particle, { x, y }, {}, 'end');
+				const x = rect.left + (el.offsetWidth / 2);
+				const y = rect.top + (el.offsetHeight / 2);
+				os.popup(Ripple, { x, y }, {}, 'end');
 			}
 
 			const key = this.getKey(emoji);

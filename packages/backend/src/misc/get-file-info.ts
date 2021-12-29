@@ -99,7 +99,10 @@ export async function getFileInfo(path: string): Promise<FileInfo> {
 /**
  * Detect MIME Type and extension
  */
-export async function detectType(path: string) {
+export async function detectType(path: string): Promise<{
+	mime: string;
+	ext: string | null;
+}> {
 	// Check 0 byte
 	const fileSize = await getFileSize(path);
 	if (fileSize === 0) {

@@ -1,14 +1,13 @@
 <template>
 <MkSpacer :content-max="800">
 	<div class="clupoqwt">
-		<XNotifications class="notifications" :include-types="includeTypes" :unread-only="tab === 'unread'" @before="before" @after="after"/>
+		<XNotifications class="notifications" :include-types="includeTypes" :unread-only="tab === 'unread'"/>
 	</div>
 </MkSpacer>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
-import Progress from '@/scripts/loading';
 import XNotifications from '@/components/notifications.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
@@ -53,14 +52,6 @@ export default defineComponent({
 	},
 
 	methods: {
-		before() {
-			Progress.start();
-		},
-
-		after() {
-			Progress.done();
-		},
-
 		setFilter(ev) {
 			const typeItems = notificationTypes.map(t => ({
 				text: this.$t(`_notification._types.${t}`),
