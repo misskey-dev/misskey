@@ -1,4 +1,4 @@
-import { CustomEmoji, DriveFile, MeDetailed, MessagingMessage, Note, Notification, PageEvent, User, UserGroup } from './entities';
+import { Antenna, CustomEmoji, DriveFile, MeDetailed, MessagingMessage, Note, Notification, PageEvent, User, UserGroup } from './entities';
 
 type FIXME = any;
 
@@ -16,21 +16,31 @@ export type Channels = {
 			meUpdated: (payload: MeDetailed) => void;
 			pageEvent: (payload: PageEvent) => void;
 			urlUploadFinished: (payload: { marker: string; file: DriveFile; }) => void;
-			messagingMessage: (payload: MessagingMessage) => void;
 			readAllNotifications: () => void;
-			unreadNotification: () => void;
-			unreadMention: () => void;
+			unreadNotification: (payload: Notification) => void;
+			unreadMention: (payload: Note['id']) => void;
 			readAllUnreadMentions: () => void;
-			unreadSpecifiedNote: () => void;
+			unreadSpecifiedNote: (payload: Note['id']) => void;
 			readAllUnreadSpecifiedNotes: () => void;
 			readAllMessagingMessages: () => void;
-			unreadMessagingMessage: () => void;
+			messagingMessage: (payload: MessagingMessage) => void;
+			unreadMessagingMessage: (payload: MessagingMessage) => void;
 			readAllAntennas: () => void;
-			unreadAntenna: () => void;
+			unreadAntenna: (payload: Antenna) => void;
 			readAllAnnouncements: () => void;
 			readAllChannels: () => void;
-			unreadChannel: () => void;
+			unreadChannel: (payload: Note['id']) => void;
 			myTokenRegenerated: () => void;
+			reversiNoInvites: () => void;
+			reversiInvited: (payload: FIXME) => void;
+			signin: (payload: FIXME) => void;
+			registryUpdated: (payload: {
+				scope?: string[];
+				key: string;
+				value: any | null;
+			}) => void;
+			driveFileCreated: (payload: DriveFile) => void;
+			readAntenna: (payload: Antenna) => void;
 		};
 		receives: null;
 	};

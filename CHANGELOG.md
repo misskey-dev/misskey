@@ -1,3 +1,5 @@
+- add missing main stream types
+
 # 0.0.10
 - add consts
 
