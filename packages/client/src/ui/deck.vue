@@ -68,7 +68,7 @@ export default defineComponent({
 		DeckColumnCore,
 	},
 
-	setup() {
+	async setup() {
 		const isMobile = ref(window.innerWidth <= 500);
 		window.addEventListener('resize', () => {
 			isMobile.value = window.innerWidth <= 500;
@@ -80,6 +80,8 @@ export default defineComponent({
 		watch(route, () => {
 			drawerMenuShowing.value = false;
 		});
+
+		await deckStore.ready;
 
 		const columns = deckStore.reactiveState.columns;
 		const layout = deckStore.reactiveState.layout;

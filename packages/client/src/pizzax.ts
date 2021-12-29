@@ -55,7 +55,7 @@ export class Storage<T extends StateDef> {
 		return new Promise(async (resolve, reject) => {
 			await this.migrate();
 
-			const deviceState: State<T> = await get(this.deviceStateKeyName);
+			const deviceState: State<T> = await get(this.deviceStateKeyName) || {};
 			const deviceAccountState = $i ? await get(this.deviceAccountStateKeyName) || {} : {};
 			const registryCache = $i ? await get(this.registryCacheKeyName) || {} : {};
 	

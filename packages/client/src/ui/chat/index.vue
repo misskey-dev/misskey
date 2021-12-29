@@ -160,11 +160,13 @@ export default defineComponent({
 		}
 	},
 
-	created() {
+	async created() {
 		if (window.innerWidth < 1024) {
 			localStorage.setItem('ui', 'default');
 			location.reload();
 		}
+
+		await store.ready;
 
 		os.api('users/lists/list').then(lists => {
 			this.lists = lists;

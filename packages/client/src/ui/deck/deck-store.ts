@@ -61,8 +61,6 @@ export const deckStore = markRaw(new Storage('deck', {
 export const loadDeck = async () => {
 	let deck;
 
-	await deckStore.ready;
-
 	try {
 		deck = await api('i/registry/get', {
 			scope: ['client', 'deck', 'profiles'],
