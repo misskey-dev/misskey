@@ -30,6 +30,7 @@ export class Storage<T extends StateDef> {
 	public readonly state = {} as State<T>;
 	public readonly reactiveState = {} as ReactiveState<T>;
 
+	// indexedDB保存を重複させないために簡易的にキューイング
 	private nextIdbJob: Promise<any> = Promise.resolve();
 	private addIdbSetJob<T>(job: () => Promise<T>) {
 		const promise = this.nextIdbJob.then(job, e => {
@@ -52,6 +53,8 @@ export class Storage<T extends StateDef> {
 
 	private init(): Promise<void> {
 		return new Promise(async (resolve, reject) => {
+			await this.migrate();
+
 			const deviceState: State<T> = await get(this.deviceStateKeyName);
 			const deviceAccountState = $i ? await get(this.deviceAccountStateKeyName) : {};
 			const registryCache = $i ? await get(this.registryCacheKeyName) : {};
@@ -95,6 +98,7 @@ export class Storage<T extends StateDef> {
 					})
 					.then(() => resolve());
 				}, 1);
+
 				// streamingのuser storage updateイベントを監視して更新
 				connection?.on('registryUpdated', async ({ scope, key, value }: { scope: string[], key: keyof T, value: T[typeof key]['default'] }) => {
 					if (scope[1] !== this.key || this.state[key] === value) return;
@@ -189,5 +193,26 @@ export class Storage<T extends StateDef> {
 				valueRef.value = val;
 			}
 		};
+	}
+
+	// localStorage => indexedDBのマイグレーション
+	private async migrate() {
+		const deviceState = localStorage.getItem(this.deviceStateKeyName);
+		if (deviceState) { 
+			await set(this.deviceStateKeyName, JSON.parse(deviceState));
+			localStorage.removeItem(this.deviceStateKeyName);
+		}
+
+		const deviceAccountState = $i && localStorage.getItem(this.deviceAccountStateKeyName);
+		if ($i && deviceAccountState) {
+			await set(this.deviceAccountStateKeyName, JSON.parse(deviceAccountState));
+			localStorage.removeItem(this.deviceAccountStateKeyName);
+		}
+
+		const registryCache = $i && localStorage.getItem(this.registryCacheKeyName);
+		if ($i && registryCache) {
+			await set(this.registryCacheKeyName, JSON.parse(registryCache));
+			localStorage.removeItem(this.registryCacheKeyName);
+		}
 	}
 }
