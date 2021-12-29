@@ -106,10 +106,12 @@ export class Storage<T extends StateDef> {
 					this.state[key] = value;
 					this.reactiveState[key].value = value;
 
-					const cache = JSON.parse(localStorage.getItem(this.keyForLocalStorage + '::cache::' + $i.id) || '{}');
-					if (cache[key] !== value) {
-						cache[key] = value;
-						localStorage.setItem(this.keyForLocalStorage + '::cache::' + $i.id, JSON.stringify(cache));
+					this.addIdbSetJob(async () => {
+						const cache = await get(this.registryCacheKeyName);
+						if (cache[key] !== value) {
+							cache[key] = value;
+							await set(this.registryCacheKeyName, cache);
+						}
 					}
 				});
 			}
