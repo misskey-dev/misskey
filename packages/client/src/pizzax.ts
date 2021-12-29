@@ -31,13 +31,13 @@ export class Storage<T extends StateDef> {
 	public readonly reactiveState = {} as ReactiveState<T>;
 
 	// 簡易的にキューイングして占有ロックとする
-	private nextIdbJob: Promise<any> = Promise.resolve();
+	private currentIdbJob: Promise<any> = Promise.resolve();
 	private addIdbSetJob<T>(job: () => Promise<T>) {
-		const promise = this.nextIdbJob.then(job, e => {
+		const promise = this.currentIdbJob.then(job, e => {
 			console.error('Pizzax failed to save data to idb!', e);
 			return job();
 		});
-		this.nextIdbJob = promise;
+		this.currentIdbJob = promise;
 		return promise;
 	}
 
