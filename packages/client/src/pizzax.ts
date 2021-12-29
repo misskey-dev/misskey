@@ -117,35 +117,37 @@ export class Storage<T extends StateDef> {
 	}
 
 	public set<K extends keyof T>(key: K, value: T[K]['default']): Promise<void> {
-		if (_DEV_) console.log('set', key, value);
+		const rawValue = JSON.parse(JSON.stringify(value));
 
-		this.state[key] = value;
-		this.reactiveState[key].value = value;
+		if (_DEV_) console.log('set', key, rawValue, value);
+
+		this.state[key] = rawValue;
+		this.reactiveState[key].value = rawValue;
 
 		return this.addIdbSetJob(async () => {
 			switch (this.def[key].where) {
 				case 'device': {
 					const deviceState = await get(this.deviceStateKeyName) || {};
-					deviceState[key] = value;
+					deviceState[key] = rawValue;
 					await set(this.deviceStateKeyName, deviceState);
 					break;
 				}
 				case 'deviceAccount': {
 					if ($i == null) break;
 					const deviceAccountState = await get(this.deviceAccountStateKeyName) || {};
-					deviceAccountState[key] = value;
+					deviceAccountState[key] = rawValue;
 					await set(this.deviceAccountStateKeyName, deviceAccountState);
 					break;
 				}
 				case 'account': {
 					if ($i == null) break;
 					const cache = await get(this.registryCacheKeyName) || {};
-					cache[key] = value;
+					cache[key] = rawValue;
 					await set(this.registryCacheKeyName, cache);
 					await api('i/registry/set', {
 						scope: ['client', this.key],
 						key: key,
-						value: value
+						value: rawValue
 					});
 					break;
 				}
