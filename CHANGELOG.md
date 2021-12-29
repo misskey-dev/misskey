@@ -7,9 +7,7 @@
 
 -->
 
-## 12.x.x (unreleased)
-
-### Improvements
+## 12.101.1 (2021/12/29)
 
 ### Bugfixes
 - SVG絵文字が表示できないのを修正
