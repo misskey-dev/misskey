@@ -175,14 +175,7 @@ export default defineComponent({
 							if (!this.$store.state.animatedMfm) {
 								return genEl(token.children);
 							}
-							let count = token.props.args.count ? parseInt(token.props.args.count) : 10;
-							if (count > 100) {
-								count = 100;
-							}
-							const speed = token.props.args.speed ? parseFloat(token.props.args.speed) : 1;
-							return h(MkSparkle, {
-								count, speed,
-							}, genEl(token.children));
+							return h(MkSparkle, {}, genEl(token.children));
 						}
 						case 'rotate': {
 							const degrees = parseInt(token.props.args.deg) || '90';

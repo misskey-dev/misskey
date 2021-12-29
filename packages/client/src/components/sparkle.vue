@@ -67,18 +67,7 @@ import { defineComponent, onMounted, onUnmounted, ref } from 'vue';
 import * as os from '@/os';
 
 export default defineComponent({
-	props: {
-		count: {
-			type: Number,
-			required: true,
-		},
-		speed: {
-			type: Number,
-			required: true,
-		},
-	},
-
-	setup(props) {
+	setup() {
 		const particles = ref([]);
 		const el = ref<HTMLElement>();
 		const width = ref(0);
