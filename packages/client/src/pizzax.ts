@@ -56,8 +56,8 @@ export class Storage<T extends StateDef> {
 			await this.migrate();
 
 			const deviceState: State<T> = await get(this.deviceStateKeyName);
-			const deviceAccountState = $i ? await get(this.deviceAccountStateKeyName) : {};
-			const registryCache = $i ? await get(this.registryCacheKeyName) : {};
+			const deviceAccountState = $i ? await get(this.deviceAccountStateKeyName) || {} : {};
+			const registryCache = $i ? await get(this.registryCacheKeyName) || {} : {};
 	
 			for (const [k, v] of Object.entries(this.def) as [keyof T, T[keyof T]][]) {
 				if (v.where === 'device' && Object.prototype.hasOwnProperty.call(deviceState, k)) {
