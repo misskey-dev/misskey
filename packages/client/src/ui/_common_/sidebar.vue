@@ -285,7 +285,7 @@ export default defineComponent({
 				}
 
 				&:before {
-					width: auto;
+					width: min-content;
 					height: 100%;
 					aspect-ratio: 1/1;
 					border-radius: 8px;
@@ -301,7 +301,7 @@ export default defineComponent({
 
 				&.post:before {
 					width: calc(100% - 28px);
-					height: auto;
+					height: min-content;
 					aspect-ratio: 1/1;
 					border-radius: 100%;
 				}
