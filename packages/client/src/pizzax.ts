@@ -30,7 +30,7 @@ export class Storage<T extends StateDef> {
 	public readonly state = {} as State<T>;
 	public readonly reactiveState = {} as ReactiveState<T>;
 
-	// indexedDB保存を重複させないために簡易的にキューイング
+	// 簡易的にキューイングして占有ロックとする
 	private nextIdbJob: Promise<any> = Promise.resolve();
 	private addIdbSetJob<T>(job: () => Promise<T>) {
 		const promise = this.nextIdbJob.then(job, e => {
