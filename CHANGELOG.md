@@ -7,6 +7,14 @@
 
 -->
 
+## 12.x.x (unreleased)
+
+### Improvements
+
+### Bugfixes
+- SVG絵文字が表示できないのを修正
+- エクスポートした絵文字の拡張子がfalseになることがあるのを修正
+
 ## 12.101.0 (2021/12/29)
 
 ### Improvements
