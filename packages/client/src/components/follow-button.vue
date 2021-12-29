@@ -30,6 +30,7 @@
 <script lang="ts">
 import { defineComponent, markRaw } from 'vue';
 import * as os from '@/os';
+import { stream } from '@/stream';
 
 export default defineComponent({
 	props: {
@@ -71,7 +72,7 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.connection = markRaw(os.stream.useChannel('main'));
+		this.connection = markRaw(stream.useChannel('main'));
 
 		this.connection.on('follow', this.onFollowChange);
 		this.connection.on('unfollow', this.onFollowChange);

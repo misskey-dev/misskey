@@ -11,6 +11,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import * as os from '@/os';
+import { stream } from '@/stream';
 
 export default defineComponent({
 	data() {
@@ -20,14 +21,14 @@ export default defineComponent({
 	},
 	computed: {
 		stream() {
-			return os.stream;
+			return stream;
 		},
 	},
 	created() {
-		os.stream.on('_disconnected_', this.onDisconnected);
+		stream.on('_disconnected_', this.onDisconnected);
 	},
 	beforeUnmount() {
-		os.stream.off('_disconnected_', this.onDisconnected);
+		stream.off('_disconnected_', this.onDisconnected);
 	},
 	methods: {
 		onDisconnected() {

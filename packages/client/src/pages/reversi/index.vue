@@ -62,6 +62,7 @@
 <script lang="ts">
 import { defineComponent, markRaw } from 'vue';
 import * as os from '@/os';
+import { stream } from '@/stream';
 import MkButton from '@/components/ui/button.vue';
 import MkFolder from '@/components/ui/folder.vue';
 import * as symbols from '@/symbols';
@@ -92,7 +93,7 @@ export default defineComponent({
 
 	mounted() {
 		if (this.$i) {
-			this.connection = markRaw(os.stream.useChannel('gamesReversi'));
+			this.connection = markRaw(stream.useChannel('gamesReversi'));
 
 			this.connection.on('invited', this.onInvited);
 

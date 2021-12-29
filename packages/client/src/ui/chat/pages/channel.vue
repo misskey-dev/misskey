@@ -26,6 +26,7 @@ import { computed, defineComponent, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import XNotes from '../notes.vue';
 import * as os from '@/os';
+import { stream } from '@/stream';
 import * as sound from '@/scripts/sound';
 import { scrollToBottom, getScrollPosition, getScrollContainer } from '@/scripts/scroll';
 import follow from '@/directives/follow-append';
@@ -106,7 +107,7 @@ export default defineComponent({
 			sound.play(note.userId === this.$i.id ? 'noteMy' : 'note');
 		};
 
-		this.connection = markRaw(os.stream.useChannel('channel', {
+		this.connection = markRaw(stream.useChannel('channel', {
 			channelId: this.channelId
 		}));
 		this.connection.on('note', prepend);

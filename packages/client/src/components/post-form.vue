@@ -74,11 +74,11 @@ import { formatTimeString } from '@/scripts/format-time-string';
 import { Autocomplete } from '@/scripts/autocomplete';
 import { noteVisibilities } from 'misskey-js';
 import * as os from '@/os';
+import { stream } from '@/stream';
 import { selectFiles } from '@/scripts/select-file';
 import { defaultStore, notePostInterruptors, postFormActions } from '@/store';
 import { throttle } from 'throttle-debounce';
 import MkInfo from '@/components/ui/info.vue';
-import { defaultStore } from '@/store';
 
 export default defineComponent({
 	components: {
@@ -176,7 +176,7 @@ export default defineComponent({
 			imeText: '',
 			typing: throttle(3000, () => {
 				if (this.channel) {
-					os.stream.send('typingOnChannel', { channel: this.channel.id });
+					stream.send('typingOnChannel', { channel: this.channel.id });
 				}
 			}),
 			postFormActions,
