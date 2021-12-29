@@ -74,7 +74,7 @@ export class Storage<T extends StateDef> {
 
 			// streamingのuser storage updateイベントを監視して更新
 			this.connection.on('registryUpdated', ({ scope, key, value }: { scope: string[], key: keyof T, value: T[typeof key]['default'] }) => {
-				if (scope[1] !== this.key) return;
+				if (scope[1] !== this.key || this.state[key] === value) return;
 
 				this.state[key] = value;
 				this.reactiveState[key].value = value;
