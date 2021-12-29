@@ -80,8 +80,10 @@ export class Storage<T extends StateDef> {
 				this.reactiveState[key].value = value;
 
 				const cache = JSON.parse(localStorage.getItem(this.keyForLocalStorage + '::cache::' + $i.id) || '{}');
-				cache[key] = value;
-				localStorage.setItem(this.keyForLocalStorage + '::cache::' + $i.id, JSON.stringify(cache));
+				if (cache[key] !== value) {
+					cache[key] = value;
+					localStorage.setItem(this.keyForLocalStorage + '::cache::' + $i.id, JSON.stringify(cache));
+				}
 			});
 		}
 	}
