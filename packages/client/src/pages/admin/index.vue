@@ -163,11 +163,6 @@ export default defineComponent({
 				to: '/admin/settings',
 				active: page.value === 'settings',
 			}, {
-				icon: 'fas fa-cloud',
-				text: i18n.locale.files,
-				to: '/admin/files-settings',
-				active: page.value === 'files-settings',
-			}, {
 				icon: 'fas fa-envelope',
 				text: i18n.locale.emailServer,
 				to: '/admin/email-settings',
@@ -236,7 +231,6 @@ export default defineComponent({
 				case 'database': return defineAsyncComponent(() => import('./database.vue'));
 				case 'abuses': return defineAsyncComponent(() => import('./abuses.vue'));
 				case 'settings': return defineAsyncComponent(() => import('./settings.vue'));
-				case 'files-settings': return defineAsyncComponent(() => import('./files-settings.vue'));
 				case 'email-settings': return defineAsyncComponent(() => import('./email-settings.vue'));
 				case 'object-storage': return defineAsyncComponent(() => import('./object-storage.vue'));
 				case 'security': return defineAsyncComponent(() => import('./security.vue'));
