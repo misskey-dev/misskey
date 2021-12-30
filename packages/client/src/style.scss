@@ -386,16 +386,6 @@ hr {
 	backdrop-filter: var(--blur, blur(15px));
 }
 
-._inputSplit {
-	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-	grid-gap: 12px;
-
-	> * {
-		margin: 0 !important;
-	}
-}
-
 ._formBlock {
 	margin: 1.5em 0;
 }

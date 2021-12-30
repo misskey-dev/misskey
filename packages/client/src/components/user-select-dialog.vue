@@ -1,5 +1,5 @@
 <template>
-<XModalWindow ref="dialog"
+<XModalWindow ref="dialogEl"
 	:with-ok-button="true"
 	:ok-button-disabled="selected == null"
 	@click="cancel()"
@@ -8,20 +8,20 @@
 	@closed="$emit('closed')"
 >
 	<template #header>{{ $ts.selectUser }}</template>
-	<div class="tbhwbxda _monolithic_">
-		<div class="_section">
-			<div class="_inputSplit">
-				<MkInput ref="username" v-model="username" class="input" @update:modelValue="search">
+	<div class="tbhwbxda">
+		<div class="form">
+			<FormSplit :min-width="170">
+				<MkInput ref="usernameEl" v-model="username" @update:modelValue="search">
 					<template #label>{{ $ts.username }}</template>
 					<template #prefix>@</template>
 				</MkInput>
-				<MkInput v-model="host" class="input" @update:modelValue="search">
+				<MkInput v-model="host" @update:modelValue="search">
 					<template #label>{{ $ts.host }}</template>
 					<template #prefix>@</template>
 				</MkInput>
-			</div>
+			</FormSplit>
 		</div>
-		<div v-if="username != '' || host != ''" class="_section result" :class="{ hit: users.length > 0 }">
+		<div v-if="username != '' || host != ''" class="result" :class="{ hit: users.length > 0 }">
 			<div v-if="users.length > 0" class="users">
 				<div v-for="user in users" :key="user.id" class="user" :class="{ selected: selected && selected.id === user.id }" @click="selected = user" @dblclick="ok()">
 					<MkAvatar :user="user" class="avatar" :show-indicator="true"/>
@@ -35,7 +35,7 @@
 				<span>{{ $ts.noUsers }}</span>
 			</div>
 		</div>
-		<div v-if="username == '' && host == ''" class="_section recent">
+		<div v-if="username == '' && host == ''" class="recent">
 			<div class="users">
 				<div v-for="user in recentUsers" :key="user.id" class="user" :class="{ selected: selected && selected.id === user.id }" @click="selected = user" @dblclick="ok()">
 					<MkAvatar :user="user" class="avatar" :show-indicator="true"/>
@@ -50,87 +50,89 @@
 </XModalWindow>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import MkInput from './form/input.vue';
+<script lang="ts" setup>
+import { nextTick, onMounted } from 'vue';
+import * as misskey from 'misskey-js';
+import MkInput from '@/components/form/input.vue';
+import FormSplit from '@/components/form/split.vue';
 import XModalWindow from '@/components/ui/modal-window.vue';
 import * as os from '@/os';
+import { defaultStore } from '@/store';
 
-export default defineComponent({
-	components: {
-		MkInput,
-		XModalWindow,
-	},
+const emit = defineEmits<{
+  (e: 'ok', selected: misskey.entities.UserDetailed): void;
+  (e: 'cancel'): void;
+	(e: 'closed'): void;
+}>();
 
-	props: {
-	},
+let username = $ref('');
+let host = $ref('');
+let users: misskey.entities.UserDetailed[] = $ref([]);
+let recentUsers: misskey.entities.UserDetailed[] = $ref([]);
+let selected: misskey.entities.UserDetailed | null = $ref(null);
+let usernameEl: HTMLElement = $ref();
+let dialogEl = $ref();
 
-	emits: ['ok', 'cancel', 'closed'],
-
-	data() {
-		return {
-			username: '',
-			host: '',
-			recentUsers: [],
-			users: [],
-			selected: null,
-		};
-	},
-
-	async mounted() {
-		this.focus();
-
-		this.$nextTick(() => {
-			this.focus();
-		});
-
-		this.recentUsers = await os.api('users/show', {
-			userIds: this.$store.state.recentlyUsedUsers
-		});
-	},
-
-	methods: {
-		search() {
-			if (this.username == '' && this.host == '') {
-				this.users = [];
-				return;
-			}
-			os.api('users/search-by-username-and-host', {
-				username: this.username,
-				host: this.host,
-				limit: 10,
-				detail: false
-			}).then(users => {
-				this.users = users;
-			});
-		},
-
-		focus() {
-			this.$refs.username.focus();
-		},
-
-		ok() {
-			this.$emit('ok', this.selected);
-			this.$refs.dialog.close();
-
-			// 最近使ったユーザー更新
-			let recents = this.$store.state.recentlyUsedUsers;
-			recents = recents.filter(x => x !== this.selected.id);
-			recents.unshift(this.selected.id);
-			this.$store.set('recentlyUsedUsers', recents.splice(0, 16));
-		},
-
-		cancel() {
-			this.$emit('cancel');
-			this.$refs.dialog.close();
-		},
+const focus = () => {
+	if (usernameEl) {
+		usernameEl.focus();
 	}
+};
+
+const search = () => {
+	if (username === '' && host === '') {
+		users = [];
+		return;
+	}
+	os.api('users/search-by-username-and-host', {
+		username: username,
+		host: host,
+		limit: 10,
+		detail: false
+	}).then(_users => {
+		users = _users;
+	});
+};
+
+const ok = () => {
+	if (selected == null) return;
+	emit('ok', selected);
+	dialogEl.close();
+
+	// 最近使ったユーザー更新
+	let recents = defaultStore.state.recentlyUsedUsers;
+	recents = recents.filter(x => x !== selected.id);
+	recents.unshift(selected.id);
+	defaultStore.set('recentlyUsedUsers', recents.splice(0, 16));
+};
+
+const cancel = () => {
+	emit('cancel');
+	dialogEl.close();
+};
+
+onMounted(() => {
+	focus();
+
+	nextTick(() => {
+		focus();
+	});
+
+	os.api('users/show', {
+		userIds: defaultStore.state.recentlyUsedUsers,
+	}).then(users => {
+		recentUsers = users;
+	});
 });
 </script>
 
 <style lang="scss" scoped>
 .tbhwbxda {
-	> ._section {
+	> .form {
+		padding: 0 var(--root-margin);
+	}
+
+	> .result, > .recent {
 		display: flex;
 		flex-direction: column;
 		overflow: auto;

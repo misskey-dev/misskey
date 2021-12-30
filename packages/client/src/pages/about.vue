@@ -24,7 +24,7 @@
 		</FormSection>
 
 		<FormSection>
-			<div class="_inputSplit _formBlock">
+			<FormSplit>
 				<MkKeyValue class="_formBlock">
 					<template #key>{{ $ts.administrator }}</template>
 					<template #value>{{ $instance.maintainerName }}</template>
@@ -33,14 +33,14 @@
 					<template #key>{{ $ts.contact }}</template>
 					<template #value>{{ $instance.maintainerEmail }}</template>
 				</MkKeyValue>
-			</div>
+			</FormSplit>
 			<FormLink v-if="$instance.tosUrl" :to="$instance.tosUrl" class="_formBlock" external>{{ $ts.tos }}</FormLink>
 		</FormSection>
 
 		<FormSuspense :p="initStats">
 			<FormSection>
 				<template #label>{{ $ts.statistics }}</template>
-				<div class="_inputSplit">
+				<FormSplit>
 					<MkKeyValue class="_formBlock">
 						<template #key>{{ $ts.users }}</template>
 						<template #value>{{ number(stats.originalUsersCount) }}</template>
@@ -49,7 +49,7 @@
 						<template #key>{{ $ts.notes }}</template>
 						<template #value>{{ number(stats.originalNotesCount) }}</template>
 					</MkKeyValue>
-				</div>
+				</FormSplit>
 			</FormSection>
 		</FormSuspense>
 
@@ -73,6 +73,7 @@ import { version, instanceName } from '@/config';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import FormSuspense from '@/components/form/suspense.vue';
+import FormSplit from '@/components/form/split.vue';
 import MkKeyValue from '@/components/key-value.vue';
 import * as os from '@/os';
 import number from '@/filters/number';
@@ -85,6 +86,7 @@ export default defineComponent({
 		FormSection,
 		FormLink,
 		FormSuspense,
+		FormSplit,
 	},
 
 	data() {
