@@ -1,7 +1,7 @@
 import define from '../../../define.js';
 import { getNote } from '../../../common/getters.js';
 import { ApiError } from '../../../error.js';
-import { Notes, NoteThreadMutings } from '@/models/index.js';
+import { Notes, NoteThreadMutings, NoteWatchings } from '@/models/index.js';
 import { genId } from '@/misc/gen-id.js';
 import readNote from '@/services/note/read.js';
 
@@ -52,4 +52,17 @@ export default define(meta, paramDef, async (ps, user) => {
 		threadId: note.threadId || note.id,
 		userId: user.id,
 	});
+
+	// remove all note watchings in the muted thread
+	const notesThread = Notes.createQueryBuilder("notes")
+		.select("note.id")
+		.where({
+			threadId: note.threadId ?? note.id,
+		});
+
+	await NoteWatchings.createQueryBuilder()
+		.delete()
+		.where(`"note_watching"."noteId" IN (${ notesThread.getQuery() })`)
+		.setParameters(notesThread.getParameters())
+		.execute();
 });
