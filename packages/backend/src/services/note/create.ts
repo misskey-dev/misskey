@@ -73,15 +73,18 @@ class NotificationManager {
 
 	public async deliver() {
 		for (const x of this.queue) {
-			// ミュート情報を取得
-			const mentioneeMutes = await Mutings.find({
+			// check if the sender or thread are muted
+			const userMuted = await Mutings.findOne({
 				muterId: x.target,
+				muteeId: this.notifier.id,
 			});
 
-			const mentioneesMutedUserIds = mentioneeMutes.map(m => m.muteeId);
+			const threadMuted = await NoteThreadMutings.findOne({
+				userId: x.target,
+				threadId: this.note.threadId || this.note.id,
+			});
 
-			// 通知される側のユーザーが通知する側のユーザーをミュートしていない限りは通知する
-			if (!mentioneesMutedUserIds.includes(this.notifier.id)) {
+			if (!userMuted && !threadMuted) {
 				createNotification(x.target, x.reason, {
 					notifierId: this.notifier.id,
 					noteId: this.note.id,

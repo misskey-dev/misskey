@@ -1,7 +1,7 @@
 import { publishNoteStream } from '@/services/stream.js';
 import { User } from '@/models/entities/user.js';
 import { Note } from '@/models/entities/note.js';
-import { PollVotes, NoteWatchings, Polls, Blockings } from '@/models/index.js';
+import { PollVotes, NoteWatchings, Polls, Blockings, NoteThreadMutings } from '@/models/index.js';
 import { Not } from 'typeorm';
 import { genId } from '@/misc/gen-id.js';
 import { createNotification } from '../../create-notification.js';
@@ -57,12 +57,19 @@ export default async function(user: User, note: Note, choice: number) {
 		userId: user.id,
 	});
 
-	// Notify
-	createNotification(note.userId, 'pollVote', {
-		notifierId: user.id,
-		noteId: note.id,
-		choice: choice,
+	// check if this thread is muted
+	const threadMuted = await NoteThreadMutings.findOne({
+		userId: note.userId,
+		threadId: note.threadId || note.id,
 	});
+	// Notify
+	if (!threadMuted) {
+		createNotification(note.userId, 'pollVote', {
+			notifierId: user.id,
+			noteId: note.id,
+			choice: choice,
+		});
+	}
 
 	// Fetch watchers
 	NoteWatchings.find({

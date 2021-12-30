@@ -7,7 +7,7 @@ import { deliver } from '@/queue/index.js';
 import { renderActivity } from '@/remote/activitypub/renderer/index.js';
 import renderVote from '@/remote/activitypub/renderer/vote.js';
 import { deliverQuestionUpdate } from '@/services/note/polls/update.js';
-import { PollVotes, NoteWatchings, Users, Polls, Blockings } from '@/models/index.js';
+import { PollVotes, NoteWatchings, Users, Polls, Blockings, NoteThreadMutings } from '@/models/index.js';
 import { Not } from 'typeorm';
 import { IRemoteUser } from '@/models/entities/user.js';
 import { genId } from '@/misc/gen-id.js';
@@ -136,12 +136,19 @@ export default define(meta, paramDef, async (ps, user) => {
 		userId: user.id,
 	});
 
-	// Notify
-	createNotification(note.userId, 'pollVote', {
-		notifierId: user.id,
-		noteId: note.id,
-		choice: ps.choice,
+	// check if this thread is muted
+	const threadMuted = await NoteThreadMutings.findOne({
+		userId: note.userId,
+		threadId: note.threadId || note.id,
 	});
+	// Notify
+	if (!threadMuted) {
+		createNotification(note.userId, 'pollVote', {
+			notifierId: user.id,
+			noteId: note.id,
+			choice: ps.choice,
+		});
+	}
 
 	// Fetch watchers
 	NoteWatchings.find({

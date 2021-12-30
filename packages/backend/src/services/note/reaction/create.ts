@@ -5,7 +5,7 @@ import { renderActivity } from '@/remote/activitypub/renderer/index.js';
 import { toDbReaction, decodeReaction } from '@/misc/reaction-lib.js';
 import { User, IRemoteUser } from '@/models/entities/user.js';
 import { Note } from '@/models/entities/note.js';
-import { NoteReactions, Users, NoteWatchings, Notes, Emojis, Blockings } from '@/models/index.js';
+import { NoteReactions, Users, NoteWatchings, Notes, Emojis, Blockings, NoteThreadMutings } from '@/models/index.js';
 import { Not } from 'typeorm';
 import { perUserReactionsChart } from '@/services/chart/index.js';
 import { genId } from '@/misc/gen-id.js';
@@ -93,8 +93,13 @@ export default async (user: { id: User['id']; host: User['host']; }, note: Note,
 		userId: user.id,
 	});
 
+	// check if this thread is muted
+	const threadMuted = await NoteThreadMutings.findOne({
+		userId: note.userId,
+		threadId: note.threadId || note.id,
+	});
 	// リアクションされたユーザーがローカルユーザーなら通知を作成
-	if (note.userHost === null) {
+	if (note.userHost === null && !threadMuted) {
 		createNotification(note.userId, 'reaction', {
 			notifierId: user.id,
 			noteId: note.id,
