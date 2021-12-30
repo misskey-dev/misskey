@@ -3,7 +3,7 @@
 	<div v-if="!narrow || page == null" class="nav">
 		<MkHeader :info="header"></MkHeader>
 	
-		<MkSpacer :content-max="700">
+		<MkSpacer :content-max="700" :margin-min="16">
 			<div class="lxpfedzu">
 				<div class="banner">
 					<img :src="$instance.iconUrl || '/favicon.ico'" alt="" class="icon"/>

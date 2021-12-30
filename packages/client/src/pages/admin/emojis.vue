@@ -23,7 +23,7 @@
 		</div>
 
 		<div v-else-if="tab === 'remote'" class="remote">
-			<div class="_inputSplit">
+			<FormSplit>
 				<MkInput v-model="queryRemote" :debounce="true" type="search">
 					<template #prefix><i class="fas fa-search"></i></template>
 					<template #label>{{ $ts.search }}</template>
@@ -31,7 +31,7 @@
 				<MkInput v-model="host" :debounce="true">
 					<template #label>{{ $ts.host }}</template>
 				</MkInput>
-			</div>
+			</FormSplit>
 			<MkPagination ref="remoteEmojis" :pagination="remotePagination">
 				<template #empty><span>{{ $ts.noCustomEmojis }}</span></template>
 				<template v-slot="{items}">
@@ -57,6 +57,7 @@ import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/form/input.vue';
 import MkPagination from '@/components/ui/pagination.vue';
 import MkTab from '@/components/tab.vue';
+import FormSplit from '@/components/form/split.vue';
 import { selectFiles } from '@/scripts/select-file';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
@@ -67,6 +68,7 @@ export default defineComponent({
 		MkButton,
 		MkInput,
 		MkPagination,
+		FormSplit,
 	},
 
 	emits: ['info'],

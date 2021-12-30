@@ -1,41 +1,41 @@
 <template>
-<FormBase>
+<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
 	<FormSuspense :p="init">
-		<FormSwitch v-model="cacheRemoteFiles">
-			{{ $ts.cacheRemoteFiles }}
-			<template #desc>{{ $ts.cacheRemoteFilesDescription }}</template>
-		</FormSwitch>
+		<div class="_formRoot">
+			<FormSwitch v-model="cacheRemoteFiles" class="_formBlock">
+				<template #label>{{ $ts.cacheRemoteFiles }}</template>
+				<template #caption>{{ $ts.cacheRemoteFilesDescription }}</template>
+			</FormSwitch>
 
-		<FormSwitch v-model="proxyRemoteFiles">
-			{{ $ts.proxyRemoteFiles }}
-			<template #desc>{{ $ts.proxyRemoteFilesDescription }}</template>
-		</FormSwitch>
+			<FormSwitch v-model="proxyRemoteFiles" class="_formBlock">
+				<template #label>{{ $ts.proxyRemoteFiles }}</template>
+				<template #caption>{{ $ts.proxyRemoteFilesDescription }}</template>
+			</FormSwitch>
 
-		<FormInput v-model="localDriveCapacityMb" type="number">
-			<span>{{ $ts.driveCapacityPerLocalAccount }}</span>
-			<template #suffix>MB</template>
-			<template #desc>{{ $ts.inMb }}</template>
-		</FormInput>
+			<FormSplit :min-width="280">
+				<FormInput v-model="localDriveCapacityMb" type="number" class="_formBlock">
+					<template #label>{{ $ts.driveCapacityPerLocalAccount }}</template>
+					<template #suffix>MB</template>
+					<template #caption>{{ $ts.inMb }}</template>
+				</FormInput>
 
-		<FormInput v-model="remoteDriveCapacityMb" type="number" :disabled="!cacheRemoteFiles">
-			<span>{{ $ts.driveCapacityPerRemoteAccount }}</span>
-			<template #suffix>MB</template>
-			<template #desc>{{ $ts.inMb }}</template>
-		</FormInput>
-
-		<FormButton primary @click="save"><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
+				<FormInput v-model="remoteDriveCapacityMb" type="number" :disabled="!cacheRemoteFiles" class="_formBlock">
+					<template #label>{{ $ts.driveCapacityPerRemoteAccount }}</template>
+					<template #suffix>MB</template>
+					<template #caption>{{ $ts.inMb }}</template>
+				</FormInput>
+			</FormSplit>
+		</div>
 	</FormSuspense>
-</FormBase>
+</MkSpacer>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import FormSwitch from '@/components/debobigego/switch.vue';
-import FormInput from '@/components/debobigego/input.vue';
-import FormButton from '@/components/debobigego/button.vue';
-import FormBase from '@/components/debobigego/base.vue';
-import FormGroup from '@/components/debobigego/group.vue';
-import FormSuspense from '@/components/debobigego/suspense.vue';
+import FormSwitch from '@/components/form/switch.vue';
+import FormInput from '@/components/form/input.vue';
+import FormSuspense from '@/components/form/suspense.vue';
+import FormSplit from '@/components/form/split.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { fetchInstance } from '@/instance';
@@ -44,9 +44,7 @@ export default defineComponent({
 	components: {
 		FormSwitch,
 		FormInput,
-		FormBase,
-		FormGroup,
-		FormButton,
+		FormSplit,
 		FormSuspense,
 	},
 
@@ -58,6 +56,12 @@ export default defineComponent({
 				title: this.$ts.files,
 				icon: 'fas fa-cloud',
 				bg: 'var(--bg)',
+				actions: [{
+					asFullButton: true,
+					icon: 'fas fa-check',
+					text: this.$ts.save,
+					handler: this.save,
+				}],
 			},
 			cacheRemoteFiles: false,
 			proxyRemoteFiles: false,
