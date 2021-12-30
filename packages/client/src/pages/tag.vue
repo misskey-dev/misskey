@@ -1,0 +1,46 @@
+<template>
+<div class="_section">
+	<XNotes ref="notes" class="_content" :pagination="pagination"/>
+</div>
+</template>
+
+<script lang="ts">
+import { defineComponent } from 'vue';
+import XNotes from '@/components/notes.vue';
+import * as symbols from '@/symbols';
+
+export default defineComponent({
+	components: {
+		XNotes
+	},
+
+	props: {
+		tag: {
+			type: String,
+			required: true
+		}
+	},
+
+	data() {
+		return {
+			[symbols.PAGE_INFO]: {
+				title: this.tag,
+				icon: 'fas fa-hashtag'
+			},
+			pagination: {
+				endpoint: 'notes/search-by-tag',
+				limit: 10,
+				params: () => ({
+					tag: this.tag,
+				})
+			},
+		};
+	},
+
+	watch: {
+		tag() {
+			(this.$refs.notes as any).reload();
+		}
+	},
+});
+</script>
