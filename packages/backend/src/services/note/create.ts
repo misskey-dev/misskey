@@ -79,12 +79,7 @@ class NotificationManager {
 				muteeId: this.notifier.id,
 			});
 
-			const threadMuted = await NoteThreadMutings.findOne({
-				userId: x.target,
-				threadId: this.note.threadId || this.note.id,
-			});
-
-			if (!userMuted && !threadMuted) {
+			if (!userMuted) {
 				createNotification(x.target, x.reason, {
 					notifierId: this.notifier.id,
 					noteId: this.note.id,
@@ -371,17 +366,20 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 			const type = data.text ? 'quote' : 'renote';
 
 			// Notify
-			if (data.renote.userHost === null) {
-				nm.push(data.renote.userId, type);
+			if (user.id !== data.renote.userId && data.renote.userHost === null) {
+				const threadMuted = await NoteThreadMutings.findOne({
+					userId: data.renote.userId,
+					threadId: data.renote.threadId || data.renote.id,
+				});
+
+				if (!threadMuted) {
+					nm.push(data.renote.userId, type);
+					publishMainStream(data.renote.userId, 'renote', noteObj);
+				}
 			}
 
 			// Fetch watchers
 			nmRelatedPromises.push(notifyToWatchersOfRenotee(data.renote, user, nm, type));
-
-			// Publish event
-			if ((user.id !== data.renote.userId) && data.renote.userHost === null) {
-				publishMainStream(data.renote.userId, 'renote', noteObj);
-			}
 		}
 
 		Promise.all(nmRelatedPromises).then(() => {
