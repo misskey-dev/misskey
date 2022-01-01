@@ -16,7 +16,7 @@ if (localStorage.getItem('accounts') != null) {
 import * as Sentry from '@sentry/browser';
 import { Integrations } from '@sentry/tracing';
 import { computed, createApp, watch, markRaw, version as vueVersion } from 'vue';
-import compareVersions from 'compare-versions';
+import * as compareVersions from 'compare-versions';
 
 import widgets from '@/widgets';
 import directives from '@/directives';
