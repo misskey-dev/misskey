@@ -272,7 +272,6 @@ export const soundConfigStore = markRaw(new Storage('sound', {
 }));
 
 // TODO: 他のタブと永続化されたstateを同期
-
 const PREFIX = 'miux:';
 
 type Plugin = {
@@ -352,6 +351,18 @@ export class ColdDeviceStorage {
 		};
 	}
 }
+
+await soundConfigStore.ready;
+
+//#region サウンドのColdDeviceStorage => indexedDBのマイグレーション
+for (const target of Object.keys(soundConfigStore.state) as Array<keyof typeof soundConfigStore.state>) {
+	const value = localStorage.getItem(`${PREFIX}${target}`);
+	if (value) {
+		soundConfigStore.set(target, JSON.parse(value) as typeof soundConfigStore.state[typeof target]);
+		localStorage.removeItem(`${PREFIX}${target}`);
+	}
+}
+//#endregion
 
 // このファイルに書きたくないけどここに書かないと何故かVeturが認識しない
 declare module '@vue/runtime-core' {
