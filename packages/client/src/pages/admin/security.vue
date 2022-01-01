@@ -1,31 +1,25 @@
 <template>
-<FormBase>
+<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
 	<FormSuspense :p="init">
-		<FormLink to="/admin/bot-protection">
-			<i class="fas fa-shield-alt"></i> {{ $ts.botProtection }}
-			<template v-if="enableHcaptcha" #suffix>hCaptcha</template>
-			<template v-else-if="enableRecaptcha" #suffix>reCAPTCHA</template>
-			<template v-else #suffix>{{ $ts.none }} ({{ $ts.notRecommended }})</template>
-		</FormLink>
-
-		<FormSwitch v-model="enableRegistration">{{ $ts.enableRegistration }}</FormSwitch>
-
-		<FormSwitch v-model="emailRequiredForSignup">{{ $ts.emailRequiredForSignup }}</FormSwitch>
-
-		<FormButton primary @click="save"><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
+		<div class="_formRoot">
+			<FormLink to="/admin/bot-protection" class="_formBlock">
+				<i class="fas fa-shield-alt"></i> {{ $ts.botProtection }}
+				<template v-if="enableHcaptcha" #suffix>hCaptcha</template>
+				<template v-else-if="enableRecaptcha" #suffix>reCAPTCHA</template>
+				<template v-else #suffix>{{ $ts.none }} ({{ $ts.notRecommended }})</template>
+			</FormLink>
+		</div>
 	</FormSuspense>
-</FormBase>
+</MkSpacer>
 </template>
 
 <script lang="ts">
 import { defineAsyncComponent, defineComponent } from 'vue';
-import FormLink from '@/components/debobigego/link.vue';
-import FormSwitch from '@/components/debobigego/switch.vue';
-import FormButton from '@/components/debobigego/button.vue';
-import FormBase from '@/components/debobigego/base.vue';
-import FormGroup from '@/components/debobigego/group.vue';
-import FormInfo from '@/components/debobigego/info.vue';
-import FormSuspense from '@/components/debobigego/suspense.vue';
+import FormLink from '@/components/form/link.vue';
+import FormSwitch from '@/components/form/switch.vue';
+import FormInfo from '@/components/ui/info.vue';
+import FormSuspense from '@/components/form/suspense.vue';
+import FormSection from '@/components/form/section.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { fetchInstance } from '@/instance';
@@ -34,10 +28,8 @@ export default defineComponent({
 	components: {
 		FormLink,
 		FormSwitch,
-		FormBase,
-		FormGroup,
-		FormButton,
 		FormInfo,
+		FormSection,
 		FormSuspense,
 	},
 
@@ -52,8 +44,6 @@ export default defineComponent({
 			},
 			enableHcaptcha: false,
 			enableRecaptcha: false,
-			enableRegistration: false,
-			emailRequiredForSignup: false,
 		}
 	},
 
@@ -66,18 +56,7 @@ export default defineComponent({
 			const meta = await os.api('meta', { detail: true });
 			this.enableHcaptcha = meta.enableHcaptcha;
 			this.enableRecaptcha = meta.enableRecaptcha;
-			this.enableRegistration = !meta.disableRegistration;
-			this.emailRequiredForSignup = meta.emailRequiredForSignup;
 		},
-	
-		save() {
-			os.apiWithDialog('admin/update-meta', {
-				disableRegistration: !this.enableRegistration,
-				emailRequiredForSignup: this.emailRequiredForSignup,
-			}).then(() => {
-				fetchInstance();
-			});
-		}
 	}
 });
 </script>

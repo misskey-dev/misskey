@@ -47,6 +47,7 @@ module.exports = {
 				loader: 'vue-loader',
 				options: {
 					cssSourceMap: false,
+					reactivityTransform: true,
 					compilerOptions: {
 						preserveWhitespace: false
 					}

@@ -53,6 +53,7 @@ import XFolder from './drive.folder.vue';
 import XFile from './drive.file.vue';
 import MkButton from './ui/button.vue';
 import * as os from '@/os';
+import { stream } from '@/stream';
 
 export default defineComponent({
 	components: {
@@ -140,7 +141,7 @@ export default defineComponent({
 			});
 		}
 
-		this.connection = markRaw(os.stream.useChannel('drive'));
+		this.connection = markRaw(stream.useChannel('drive'));
 
 		this.connection.on('fileCreated', this.onStreamDriveFileCreated);
 		this.connection.on('fileUpdated', this.onStreamDriveFileUpdated);

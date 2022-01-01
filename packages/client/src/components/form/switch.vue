@@ -13,7 +13,8 @@
 		<i class="check fas fa-check"></i>
 	</span>
 	<span class="label">
-		<span @click="toggle"><slot></slot></span>
+		<!-- TODO: 無名slotの方は廃止 -->
+		<span @click="toggle"><slot name="label"></slot><slot></slot></span>
 		<p class="caption"><slot name="caption"></slot></p>
 	</span>
 </div>

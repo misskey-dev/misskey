@@ -83,6 +83,7 @@ import MkTab from '@/components/tab.vue';
 import MkButton from '@/components/ui/button.vue';
 import follow from '@/directives/follow-append';
 import * as os from '@/os';
+import { stream } from '@/stream';
 
 export default defineComponent({
 	components: {
@@ -104,15 +105,15 @@ export default defineComponent({
 		const connections = shallowRef([]);
 		const pools = shallowRef([]);
 		const refreshStreamInfo = () => {
-			console.log(os.stream.sharedConnectionPools, os.stream.sharedConnections, os.stream.nonSharedConnections);
-			const conn = os.stream.sharedConnections.map(c => ({
+			console.log(stream.sharedConnectionPools, stream.sharedConnections, stream.nonSharedConnections);
+			const conn = stream.sharedConnections.map(c => ({
 				id: c.id, name: c.name, channel: c.channel, users: c.pool.users, in: c.inCount, out: c.outCount,
-			})).concat(os.stream.nonSharedConnections.map(c => ({
+			})).concat(stream.nonSharedConnections.map(c => ({
 				id: c.id, name: c.name, channel: c.channel, users: null, in: c.inCount, out: c.outCount,
 			})));
 			conn.sort((a, b) => (a.id > b.id) ? 1 : -1);
 			connections.value = conn;
-			pools.value = os.stream.sharedConnectionPools;
+			pools.value = stream.sharedConnectionPools;
 		};
 		const interval = setInterval(refreshStreamInfo, 1000);
 		onBeforeUnmount(() => {

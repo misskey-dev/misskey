@@ -17,6 +17,7 @@ import XQueue from './queue.chart.vue';
 import FormBase from '@/components/debobigego/base.vue';
 import FormButton from '@/components/debobigego/button.vue';
 import * as os from '@/os';
+import { stream } from '@/stream';
 import * as symbols from '@/symbols';
 
 export default defineComponent({
@@ -36,7 +37,7 @@ export default defineComponent({
 				icon: 'fas fa-clipboard-list',
 				bg: 'var(--bg)',
 			},
-			connection: markRaw(os.stream.useChannel('queueStats')),
+			connection: markRaw(stream.useChannel('queueStats')),
 		}
 	},
 
