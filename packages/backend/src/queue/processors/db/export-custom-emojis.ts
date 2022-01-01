@@ -65,7 +65,8 @@ export async function exportCustomEmojis(job: Bull.Job, done: () => void): Promi
 
 	for (const emoji of customEmojis) {
 		const exportId = ulid().toLowerCase();
-		const emojiPath = path + '/' + exportId + '.' + mime.extension(emoji.type);
+		const ext = mime.extension(emoji.type);
+		const emojiPath = path + '/' + exportId + (ext ? '.' + ext : '');
 		fs.writeFileSync(emojiPath, '', 'binary');
 		let downloaded = false;
 

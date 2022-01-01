@@ -122,6 +122,7 @@ import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { checkWordMute } from '@/scripts/check-word-mute';
 import { userPage } from '@/filters/user';
 import * as os from '@/os';
+import { stream } from '@/stream';
 import { noteActions, noteViewInterruptors } from '@/store';
 import { reactionPicker } from '@/scripts/reaction-picker';
 import { extractUrlFromMfm } from '@/scripts/extract-url-from-mfm';
@@ -245,7 +246,7 @@ export default defineComponent({
 
 	async created() {
 		if (this.$i) {
-			this.connection = os.stream;
+			this.connection = stream;
 		}
 
 		this.collapsed = this.appearNote.cw == null && this.appearNote.text && (

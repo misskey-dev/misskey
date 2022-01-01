@@ -1,4 +1,5 @@
 import * as os from '@/os';
+import { stream } from '@/stream';
 import { i18n } from '@/i18n';
 import { defaultStore } from '@/store';
 import { DriveFile } from 'misskey-js/built/entities';
@@ -48,7 +49,7 @@ function select(src: any, label: string | null, multiple: boolean): Promise<Driv
 
 				const marker = Math.random().toString(); // TODO: UUIDとか使う
 
-				const connection = os.stream.useChannel('main');
+				const connection = stream.useChannel('main');
 				connection.on('urlUploadFinished', data => {
 					if (data.marker === marker) {
 						res(multiple ? [data.file] : data.file);

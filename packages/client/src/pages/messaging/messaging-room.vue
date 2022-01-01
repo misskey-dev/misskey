@@ -43,6 +43,7 @@ import XForm from './messaging-room.form.vue';
 import * as Acct from 'misskey-js/built/acct';
 import { isBottom, onScrollBottom, scroll } from '@/scripts/scroll';
 import * as os from '@/os';
+import { stream } from '@/stream';
 import { popout } from '@/scripts/popout';
 import * as sound from '@/scripts/sound';
 import * as symbols from '@/symbols';
@@ -141,7 +142,7 @@ const Component = defineComponent({
 				this.group = group;
 			}
 
-			this.connection = markRaw(os.stream.useChannel('messaging', {
+			this.connection = markRaw(stream.useChannel('messaging', {
 				otherparty: this.user ? this.user.id : undefined,
 				group: this.group ? this.group.id : undefined,
 			}));

@@ -12,8 +12,6 @@ import { resolve } from '@/router';
 import { $i } from '@/account';
 import { defaultStore } from '@/store';
 
-export const stream = markRaw(new Misskey.Stream(url, $i));
-
 export const pendingApiRequestsCount = ref(0);
 let apiRequestsCount = 0; // for debug
 export const apiRequests = ref([]); // for debug
