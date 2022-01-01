@@ -23,7 +23,6 @@ import FormLink from '@/components/debobigego/link.vue';
 import FormButton from '@/components/debobigego/button.vue';
 import { applyTheme, validateTheme } from '@/scripts/theme';
 import * as os from '@/os';
-import { ColdDeviceStorage } from '@/store';
 import { addTheme, getThemes } from '@/theme-store';
 import * as symbols from '@/symbols';
 

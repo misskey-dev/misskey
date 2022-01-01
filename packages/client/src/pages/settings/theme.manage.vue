@@ -38,7 +38,6 @@ import FormButton from '@/components/ui/button.vue';
 import { Theme, builtinThemes } from '@/scripts/theme';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import * as os from '@/os';
-import { ColdDeviceStorage } from '@/store';
 import { getThemes, removeTheme } from '@/theme-store';
 import * as symbols from '@/symbols';
 

@@ -19,7 +19,6 @@ import FormLink from '@/components/debobigego/link.vue';
 import FormButton from '@/components/debobigego/button.vue';
 import FormInfo from '@/components/debobigego/info.vue';
 import * as os from '@/os';
-import { ColdDeviceStorage } from '@/store';
 import { unisonReload } from '@/scripts/unison-reload';
 import * as symbols from '@/symbols';
 import { defaultStore } from '@/store';

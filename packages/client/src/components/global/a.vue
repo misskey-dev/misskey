@@ -11,7 +11,6 @@ import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { router } from '@/router';
 import { url } from '@/config';
 import { popout } from '@/scripts/popout';
-import { ColdDeviceStorage } from '@/store';
 
 export default defineComponent({
 	inject: {

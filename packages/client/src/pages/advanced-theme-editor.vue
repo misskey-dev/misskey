@@ -106,7 +106,6 @@ import { convertToMisskeyTheme, ThemeValue, convertToViewModel, ThemeViewModel }
 import { Theme, applyTheme, lightTheme, darkTheme, themeProps, validateTheme } from '@/scripts/theme';
 import { host } from '@/config';
 import * as os from '@/os';
-import { ColdDeviceStorage } from '@/store';
 import { addTheme } from '@/theme-store';
 import * as symbols from '@/symbols';
 

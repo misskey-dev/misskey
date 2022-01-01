@@ -94,7 +94,6 @@ import FormLink from '@/components/form/link.vue';
 import MkLink from '@/components/link.vue';
 import { langs } from '@/config';
 import { defaultStore } from '@/store';
-import { ColdDeviceStorage } from '@/store';
 import * as os from '@/os';
 import { unisonReload } from '@/scripts/unison-reload';
 import * as symbols from '@/symbols';
