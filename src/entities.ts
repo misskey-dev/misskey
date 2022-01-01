@@ -19,19 +19,54 @@ export type UserLite = {
 		url: string;
 	}[];
 	instance?: {
-		name: Instance['name'],
-		softwareName: Instance['softwareName'],
-		softwareVersion: Instance['softwareVersion'],
-		iconUrl: Instance['iconUrl'],
-		faviconUrl: Instance['faviconUrl'],
-		themeColor: Instance['themeColor'],
+		name: Instance['name'];
+		softwareName: Instance['softwareName'];
+		softwareVersion: Instance['softwareVersion'];
+		iconUrl: Instance['iconUrl'];
+		faviconUrl: Instance['faviconUrl'];
+		themeColor: Instance['themeColor'];
 	};
 };
 
 export type UserDetailed = UserLite & {
+	bannerBlurhash: string | null;
+	bannerColor: string | null;
+	bannerUrl: string | null;
+	birthday: string | null;
+	createdAt: DateString;
+	description: string | null;
+	ffVisibility: 'public' | 'followers' | 'private';
+	fields: {name: string; value: string}[];
+	followersCount: number;
+	followingCount: number;
+	hasPendingFollowRequestFromYou: boolean;
+	hasPendingFollowRequestToYou: boolean;
+	isAdmin: boolean;
+	isBlocked: boolean;
+	isBlocking: boolean;
+	isBot: boolean;
+	isCat: boolean;
+	isFollowed: boolean;
+	isFollowing: boolean;
 	isLocked: boolean;
+	isModerator: boolean;
+	isMuted: boolean;
+	isSilenced: boolean;
+	isSuspended: boolean;
+	lang: string | null;
+	lastFetchedAt?: DateString;
+	location: string | null;
+	notesCount: number;
+	pinnedNoteIds: ID[];
 	pinnedNotes: Note[];
-	// TODO
+	pinnedPage: Page | null;
+	pinnedPageId: string | null;
+	publicReactions: boolean;
+	securityKeys: boolean;
+	twoFactorEnabled: boolean;
+	updatedAt: DateString | null;
+	uri: string | null;
+	url: string | null;
 };
 
 export type UserGroup = TODO;
@@ -47,10 +82,27 @@ export type MeDetailed = UserDetailed & {
 	avatarId: DriveFile['id'];
 	bannerId: DriveFile['id'];
 	autoAcceptFollowed: boolean;
-	noCrawle: boolean;
-	isExplorable: boolean;
+	alwaysMarkNsfw: boolean;
+	carefulBot: boolean;
+	emailNotificationTypes: string[];
+	hasPendingReceivedFollowRequest: boolean;
+	hasUnreadAnnouncement: boolean;
+	hasUnreadAntenna: boolean;
+	hasUnreadChannel: boolean;
+	hasUnreadMentions: boolean;
+	hasUnreadMessagingMessage: boolean;
+	hasUnreadNotification: boolean;
+	hasUnreadSpecifiedNotes: boolean;
 	hideOnlineStatus: boolean;
+	injectFeaturedNote: boolean;
+	integrations: Record<string, any>;
+	isDeleted: boolean;
+	isExplorable: boolean;
 	mutedWords: string[][];
+	mutingNotificationTypes: string[];
+	noCrawle: boolean;
+	receiveAnnouncementEmail: boolean;
+	usePasswordLessLogin: boolean;
 	[other: string]: any;
 };
 
@@ -411,5 +463,11 @@ export type Signin = {
 	success: boolean;
 };
 
-export type UserSorting = '+follower' | '-follower' | '+createdAt' | '-createdAt' | '+updatedAt' | '-updatedAt';
+export type UserSorting =
+	| '+follower'
+	| '-follower'
+	| '+createdAt'
+	| '-createdAt'
+	| '+updatedAt'
+	| '-updatedAt';
 export type OriginType = 'combined' | 'local' | 'remote';
