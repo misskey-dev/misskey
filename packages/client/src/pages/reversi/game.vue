@@ -9,6 +9,7 @@ import { defineComponent, markRaw } from 'vue';
 import GameSetting from './game.setting.vue';
 import GameBoard from './game.board.vue';
 import * as os from '@/os';
+import { stream } from '@/stream';
 import * as symbols from '@/symbols';
 
 export default defineComponent({
@@ -61,7 +62,7 @@ export default defineComponent({
 				if (this.connection) {
 					this.connection.dispose();
 				}
-				this.connection = markRaw(os.stream.useChannel('gamesReversiGame', {
+				this.connection = markRaw(stream.useChannel('gamesReversiGame', {
 					gameId: this.game.id
 				}));
 				this.connection.on('started', this.onStarted);

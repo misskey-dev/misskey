@@ -161,7 +161,7 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 		}
 	}
 
-	if (!['image/jpeg', 'image/png', 'image/webp'].includes(type)) {
+	if (!['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml'].includes(type)) {
 		logger.debug(`web image and thumbnail not created (not an required file)`);
 		return {
 			webpublic: null,
@@ -202,7 +202,7 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 				webpublic = await convertSharpToJpeg(img, 2048, 2048);
 			} else if (['image/webp'].includes(type)) {
 				webpublic = await convertSharpToWebp(img, 2048, 2048);
-			} else if (['image/png'].includes(type)) {
+			} else if (['image/png', 'image/svg+xml'].includes(type)) {
 				webpublic = await convertSharpToPng(img, 2048, 2048);
 			} else {
 				logger.debug(`web image not created (not an required image)`);
@@ -221,7 +221,7 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 	try {
 		if (['image/jpeg', 'image/webp'].includes(type)) {
 			thumbnail = await convertSharpToJpeg(img, 498, 280);
-		} else if (['image/png'].includes(type)) {
+		} else if (['image/png', 'image/svg+xml'].includes(type)) {
 			thumbnail = await convertSharpToPngOrJpeg(img, 498, 280);
 		} else {
 			logger.debug(`thumbnail not created (not an required file)`);

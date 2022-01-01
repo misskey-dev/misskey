@@ -20,6 +20,7 @@ import MkContainer from '@/components/ui/container.vue';
 import define from './define';
 import { getStaticImageUrl } from '@/scripts/get-static-image-url';
 import * as os from '@/os';
+import { stream } from '@/stream';
 
 const widget = define({
 	name: 'photos',
@@ -48,7 +49,7 @@ export default defineComponent({
 		};
 	},
 	mounted() {
-		this.connection = markRaw(os.stream.useChannel('main'));
+		this.connection = markRaw(stream.useChannel('main'));
 
 		this.connection.on('driveFileCreated', this.onDriveFileCreated);
 

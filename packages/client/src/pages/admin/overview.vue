@@ -81,6 +81,7 @@ import number from '@/filters/number';
 import MkInstanceInfo from './instance.vue';
 import XMetrics from './metrics.vue';
 import * as os from '@/os';
+import { stream } from '@/stream';
 import * as symbols from '@/symbols';
 
 export default defineComponent({
@@ -113,7 +114,7 @@ export default defineComponent({
 			notesComparedToThePrevDay: null,
 			fetchJobs: () => os.api('admin/queue/deliver-delayed', {}),
 			fetchModLogs: () => os.api('admin/show-moderation-logs', {}),
-			queueStatsConnection: markRaw(os.stream.useChannel('queueStats')),
+			queueStatsConnection: markRaw(stream.useChannel('queueStats')),
 		}
 	},
 

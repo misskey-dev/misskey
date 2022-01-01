@@ -23,6 +23,7 @@ import XCpu from './cpu.vue';
 import XMemory from './mem.vue';
 import XDisk from './disk.vue';
 import * as os from '@/os';
+import { stream } from '@/stream';
 
 const widget = define({
 	name: 'serverMetric',
@@ -63,7 +64,7 @@ export default defineComponent({
 		os.api('server-info', {}).then(res => {
 			this.meta = res;
 		});
-		this.connection = markRaw(os.stream.useChannel('serverStats'));
+		this.connection = markRaw(stream.useChannel('serverStats'));
 	},
 	unmounted() {
 		this.connection.dispose();

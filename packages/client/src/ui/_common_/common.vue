@@ -15,10 +15,11 @@
 
 <script lang="ts">
 import { defineAsyncComponent, defineComponent } from 'vue';
-import { stream, popup, popups, uploads, pendingApiRequestsCount } from '@/os';
+import { popup, popups, uploads, pendingApiRequestsCount } from '@/os';
 import * as sound from '@/scripts/sound';
 import { $i } from '@/account';
 import { swInject } from './sw-inject';
+import { stream } from '@/stream';
 
 export default defineComponent({
 	components: {

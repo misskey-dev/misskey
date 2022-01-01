@@ -6,7 +6,7 @@
 				<template #prefix><i class="fas fa-search"></i></template>
 				<template #label>{{ $ts.host }}</template>
 			</MkInput>
-			<div class="_inputSplit" style="margin-top: var(--margin);">
+			<FormSplit style="margin-top: var(--margin);">
 				<MkSelect v-model="state">
 					<template #label>{{ $ts.state }}</template>
 					<option value="all">{{ $ts.all }}</option>
@@ -38,7 +38,7 @@
 					<option value="+driveFiles">{{ $ts.driveFilesCount }} ({{ $ts.descendingOrder }})</option>
 					<option value="-driveFiles">{{ $ts.driveFilesCount }} ({{ $ts.ascendingOrder }})</option>
 				</MkSelect>
-			</div>
+			</FormSplit>
 		</div>
 
 		<MkPagination v-slot="{items}" ref="instances" :key="host + state" :pagination="pagination">
@@ -101,6 +101,7 @@ import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/form/input.vue';
 import MkSelect from '@/components/form/select.vue';
 import MkPagination from '@/components/ui/pagination.vue';
+import FormSplit from '@/components/form/split.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 
@@ -110,6 +111,7 @@ export default defineComponent({
 		MkInput,
 		MkSelect,
 		MkPagination,
+		FormSplit,
 	},
 
 	emits: ['info'],

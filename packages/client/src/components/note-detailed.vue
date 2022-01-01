@@ -140,6 +140,7 @@ import { checkWordMute } from '@/scripts/check-word-mute';
 import { userPage } from '@/filters/user';
 import { notePage } from '@/filters/note';
 import * as os from '@/os';
+import { stream } from '@/stream';
 import { noteActions, noteViewInterruptors } from '@/store';
 import { reactionPicker } from '@/scripts/reaction-picker';
 import { extractUrlFromMfm } from '@/scripts/extract-url-from-mfm';
@@ -260,7 +261,7 @@ export default defineComponent({
 
 	async created() {
 		if (this.$i) {
-			this.connection = os.stream;
+			this.connection = stream;
 		}
 
 		this.muted = await checkWordMute(this.appearNote, this.$i, this.$store.state.mutedWords);

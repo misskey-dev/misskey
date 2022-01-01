@@ -20,6 +20,7 @@ export async function proxyMedia(ctx: Koa.Context) {
 
 		const { mime, ext } = await detectType(path);
 
+		if (!mime.startsWith('image/')) throw 403;
 		if (!FILE_TYPE_BROWSERSAFE.includes(mime)) throw 403;
 
 		let image: IImage;
