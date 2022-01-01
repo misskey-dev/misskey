@@ -358,7 +358,7 @@ await soundConfigStore.ready;
 for (const target of Object.keys(soundConfigStore.state) as Array<keyof typeof soundConfigStore.state>) {
 	const value = localStorage.getItem(`${PREFIX}${target}`);
 	if (value) {
-		soundConfigStore.set(target, JSON.parse(value) as typeof soundConfigStore.state[typeof target]);
+		soundConfigStore.set(target, JSON.parse(value) as typeof soundConfigStore.def[typeof target]['default']);
 		localStorage.removeItem(`${PREFIX}${target}`);
 	}
 }
