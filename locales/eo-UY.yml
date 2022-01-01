@@ -649,6 +649,7 @@ incorrectPassword: "Nevalida pasvorto"
 leaveGroup: "Eliĝi el la grupo"
 leaveGroupConfirm: "Ĉu vi certas ke vi volas eliĝi el la grupo {name}?"
 welcomeBackWithName: "Alvenbenon! {name}"
+clickToFinishEmailVerification: "Volu klaki [{ok}] por fini la konformon de vian retpoŝtadresan"
 _emailUnavailable:
   used: "La retpoŝto jam estas uzita."
   format: "Nevalida formato."
