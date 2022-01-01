@@ -167,7 +167,7 @@ describe('API', () => {
 			});
 	
 			await cli.request('i');
-		} catch (e) {
+		} catch (e: any) {
 			expect(isAPIError(e)).toEqual(true);
 			expect(e.id).toEqual('5d37dbcb-891e-41ca-a3d6-e690c97775ac');
 		}
