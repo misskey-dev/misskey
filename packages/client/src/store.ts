@@ -352,9 +352,9 @@ export class ColdDeviceStorage {
 	}
 }
 
-await soundConfigStore.ready;
-
 //#region サウンドのColdDeviceStorage => indexedDBのマイグレーション
+await soundConfigStore.ready; // マイグレーションを消す場合は他の場所に移した方がいいかも
+
 for (const target of Object.keys(soundConfigStore.state) as Array<keyof typeof soundConfigStore.state>) {
 	const value = localStorage.getItem(`${PREFIX}${target}`);
 	if (value) {
