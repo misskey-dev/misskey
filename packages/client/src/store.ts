@@ -224,6 +224,53 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 }));
 
+export const soundConfigStore = markRaw(new Storage('sound', {
+	mediaVolume: {
+		where: 'device',
+		default: 0.5
+	},
+	sound_masterVolume: {
+		where: 'device',
+		default: 0.3
+	},
+	sound_note: {
+		where: 'account',
+		default: { type: 'syuilo/down', volume: 1 }
+	},
+	sound_noteMy: {
+		where: 'account',
+		default: { type: 'syuilo/up', volume: 1 }
+	},
+	sound_notification: {
+		where: 'account',
+		default: { type: 'syuilo/pope2', volume: 1 }
+	},
+	sound_chat: {
+		where: 'account',
+		default: { type: 'syuilo/pope1', volume: 1 }
+	},
+	sound_chatBg: {
+		where: 'account',
+		default: { type: 'syuilo/waon', volume: 1 }
+	},
+	sound_antenna: {
+		where: 'account',
+		default: { type: 'syuilo/triple', volume: 1 }
+	},
+	sound_channel: {
+		where: 'account',
+		default: { type: 'syuilo/square-pico', volume: 1 }
+	},
+	sound_reversiPutBlack: {
+		where: 'account',
+		default: { type: 'syuilo/kick', volume: 0.3 }
+	},
+	sound_reversiPutWhite: {
+		where: 'account',
+		default: { type: 'syuilo/snare', volume: 0.3 }
+	},
+}));
+
 // TODO: 他のタブと永続化されたstateを同期
 
 const PREFIX = 'miux:';
@@ -237,6 +284,8 @@ type Plugin = {
 	ast: any[];
 };
 
+
+
 /**
  * 常にメモリにロードしておく必要がないような設定情報を保管するストレージ(非リアクティブ)
  */
@@ -246,17 +295,6 @@ export class ColdDeviceStorage {
 		darkTheme: require('@/themes/d-dark.json5') as Theme,
 		syncDeviceDarkMode: true,
 		plugins: [] as Plugin[],
-		mediaVolume: 0.5,
-		sound_masterVolume: 0.3,
-		sound_note: { type: 'syuilo/down', volume: 1 },
-		sound_noteMy: { type: 'syuilo/up', volume: 1 },
-		sound_notification: { type: 'syuilo/pope2', volume: 1 },
-		sound_chat: { type: 'syuilo/pope1', volume: 1 },
-		sound_chatBg: { type: 'syuilo/waon', volume: 1 },
-		sound_antenna: { type: 'syuilo/triple', volume: 1 },
-		sound_channel: { type: 'syuilo/square-pico', volume: 1 },
-		sound_reversiPutBlack: { type: 'syuilo/kick', volume: 0.3 },
-		sound_reversiPutWhite: { type: 'syuilo/snare', volume: 0.3 },
 		roomGraphicsQuality: 'medium' as 'cheep' | 'low' | 'medium' | 'high' | 'ultra',
 		roomUseOrthographicCamera: true,
 	};

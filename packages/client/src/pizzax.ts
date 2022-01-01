@@ -166,6 +166,7 @@ export class Storage<T extends StateDef> {
 
 	public reset(key: keyof T) {
 		this.set(key, this.def[key].default);
+		return this.def[key].default;
 	}
 
 	/**

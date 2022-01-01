@@ -17,7 +17,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import ImgWithBlurhash from '@/components/img-with-blurhash.vue';
-import { ColdDeviceStorage } from '@/store';
+import { soundConfigStore } from '@/store';
 
 export default defineComponent({
 	components: {
@@ -71,12 +71,12 @@ export default defineComponent({
 	},
 	mounted() {
 		const audioTag = this.$refs.volumectrl as HTMLAudioElement;
-		if (audioTag) audioTag.volume = ColdDeviceStorage.get('mediaVolume');
+		if (audioTag) audioTag.volume = soundConfigStore.state.mediaVolume;
 	},
 	methods: {
 		volumechange() {
 			const audioTag = this.$refs.volumectrl as HTMLAudioElement;
-			ColdDeviceStorage.set('mediaVolume', audioTag.volume);
+			soundConfigStore.set('mediaVolume', audioTag.volume);
 		}
 	}
 });

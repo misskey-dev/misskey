@@ -24,7 +24,7 @@ import FormButton from '@/components/ui/button.vue';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import * as os from '@/os';
-import { ColdDeviceStorage } from '@/store';
+import { soundConfigStore } from '@/store';
 import { playFile } from '@/scripts/sound';
 import * as symbols from '@/symbols';
 
@@ -72,30 +72,27 @@ export default defineComponent({
 				icon: 'fas fa-music',
 				bg: 'var(--bg)',
 			},
-			sounds: {},
+			sounds: {} as any,
 		}
 	},
 
 	computed: {
-		masterVolume: { // TODO: (外部)関数にcomputedを使うのはアレなので直す
-			get() { return ColdDeviceStorage.get('sound_masterVolume'); },
-			set(value) { ColdDeviceStorage.set('sound_masterVolume', value); }
-		},
+		masterVolume: soundConfigStore.makeGetterSetter('sound_masterVolume'), // TODO: (外部)関数にcomputedを使うのはアレなので直す
 		volumeIcon() {
 			return this.masterVolume === 0 ? 'fas fa-volume-mute' : 'fas fa-volume-up';
 		}
 	},
 
 	created() {
-		this.sounds.note = ColdDeviceStorage.get('sound_note');
-		this.sounds.noteMy = ColdDeviceStorage.get('sound_noteMy');
-		this.sounds.notification = ColdDeviceStorage.get('sound_notification');
-		this.sounds.chat = ColdDeviceStorage.get('sound_chat');
-		this.sounds.chatBg = ColdDeviceStorage.get('sound_chatBg');
-		this.sounds.antenna = ColdDeviceStorage.get('sound_antenna');
-		this.sounds.channel = ColdDeviceStorage.get('sound_channel');
-		this.sounds.reversiPutBlack = ColdDeviceStorage.get('sound_reversiPutBlack');
-		this.sounds.reversiPutWhite = ColdDeviceStorage.get('sound_reversiPutWhite');
+		this.sounds.note = soundConfigStore.state.sound_note;
+		this.sounds.noteMy = soundConfigStore.state.sound_noteMy;
+		this.sounds.notification = soundConfigStore.state.sound_notification;
+		this.sounds.chat = soundConfigStore.state.sound_chat;
+		this.sounds.chatBg = soundConfigStore.state.sound_chatBg;
+		this.sounds.antenna = soundConfigStore.state.sound_antenna;
+		this.sounds.channel = soundConfigStore.state.sound_channel;
+		this.sounds.reversiPutBlack = soundConfigStore.state.sound_reversiPutBlack;
+		this.sounds.reversiPutWhite = soundConfigStore.state.sound_reversiPutWhite;
 	},
 
 	mounted() {
@@ -138,14 +135,13 @@ export default defineComponent({
 				volume: result.volume,
 			};
 
-			ColdDeviceStorage.set('sound_' + type, v);
+			soundConfigStore.set(`sound_${type}` as keyof typeof soundConfigStore.def, v);
 			this.sounds[type] = v;
 		},
 
 		reset() {
 			for (const sound of Object.keys(this.sounds)) {
-				const v = ColdDeviceStorage.default['sound_' + sound];
-				ColdDeviceStorage.set('sound_' + sound, v);
+				const v = soundConfigStore.reset(`sound_${sound}` as keyof typeof soundConfigStore.def);
 				this.sounds[sound] = v;
 			}
 		}
