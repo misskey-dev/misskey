@@ -10,7 +10,10 @@ describe('Streaming', () => {
 		main.on('meUpdated', payload => {
 			mainChannelReceived.push(payload);
 		});
-		await server.connected;
+
+		const ws = await server.connected;
+		expect(new URLSearchParams(new URL(ws.url).search).get('i')).toEqual('TOKEN');
+
 		const msg = JSON.parse(await server.nextMessage as string);
 		const mainChannelId = msg.body.id;
 		expect(msg.type).toEqual('connect');
@@ -44,7 +47,10 @@ describe('Streaming', () => {
 		messaging.on('message', payload => {
 			messagingChannelReceived.push(payload);
 		});
-		await server.connected;
+
+		const ws = await server.connected;
+		expect(new URLSearchParams(new URL(ws.url).search).get('i')).toEqual('TOKEN');
+
 		const msg = JSON.parse(await server.nextMessage as string);
 		const messagingChannelId = msg.body.id;
 		expect(msg.type).toEqual('connect');
@@ -78,7 +84,8 @@ describe('Streaming', () => {
 		stream.useChannel('messaging', { otherparty: 'aaa' });
 		stream.useChannel('messaging', { otherparty: 'bbb' });
 
-		await server.connected;
+		const ws = await server.connected;
+		expect(new URLSearchParams(new URL(ws.url).search).get('i')).toEqual('TOKEN');
 
 		const msg = JSON.parse(await server.nextMessage as string);
 		const messagingChannelId = msg.body.id;
@@ -100,7 +107,9 @@ describe('Streaming', () => {
 		const messaging = stream.useChannel('messaging', { otherparty: 'aaa' });
 		messaging.send('read', { id: 'aaa' });
 
-		await server.connected;
+		const ws = await server.connected;
+		expect(new URLSearchParams(new URL(ws.url).search).get('i')).toEqual('TOKEN');
+
 		const connectMsg = JSON.parse(await server.nextMessage as string);
 		const channelId = connectMsg.body.id;
 		const msg = JSON.parse(await server.nextMessage as string);
@@ -122,7 +131,10 @@ describe('Streaming', () => {
 		main.on('meUpdated', payload => {
 			mainChannelReceived.push(payload);
 		});
-		await server.connected;
+		
+		const ws = await server.connected;
+		expect(new URLSearchParams(new URL(ws.url).search).get('i')).toEqual('TOKEN');
+
 		const msg = JSON.parse(await server.nextMessage as string);
 		const mainChannelId = msg.body.id;
 		expect(msg.type).toEqual('connect');
