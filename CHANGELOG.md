@@ -1,3 +1,5 @@
+# 0.0.11
+- update user type
 - add missing main stream types
 
 # 0.0.10
