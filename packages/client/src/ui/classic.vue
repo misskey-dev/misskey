@@ -30,7 +30,7 @@
 		</div>
 	</div>
 
-	<transition name="tray-back">
+	<transition :name="$store.state.animation ? 'tray-back' : ''">
 		<div v-if="widgetsShowing"
 			class="tray-back _modalBg"
 			@click="widgetsShowing = false"
@@ -38,7 +38,7 @@
 		></div>
 	</transition>
 
-	<transition name="tray">
+	<transition :name="$store.state.animation ? 'tray' : ''">
 		<XWidgets v-if="widgetsShowing" class="tray"/>
 	</transition>
 

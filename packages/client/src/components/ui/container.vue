@@ -10,7 +10,7 @@
 			</button>
 		</div>
 	</header>
-	<transition name="container-toggle"
+	<transition :name="$store.state.animation ? 'container-toggle' : ''"
 		@enter="enter"
 		@after-enter="afterEnter"
 		@leave="leave"
