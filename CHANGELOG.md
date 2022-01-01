@@ -1,3 +1,6 @@
+# 0.0.12
+- fix a bug that cannot connect to streaming
+
 # 0.0.11
 - update user type
 - add missing main stream types
