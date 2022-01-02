@@ -1,7 +1,5 @@
 <template>
 <div class="_formRoot">
-	<FormLink to="/settings/update" class="_formBlock">Misskey Update</FormLink>
-
 	<FormSwitch :value="$i.injectFeaturedNote" @update:modelValue="onChangeInjectFeaturedNote" class="_formBlock">
 		{{ $ts.showFeaturedNotesInTimeline }}
 	</FormSwitch>
@@ -9,7 +7,6 @@
 	<FormSwitch v-model="reportError" class="_formBlock">{{ $ts.sendErrorReports }}<template #desc>{{ $ts.sendErrorReportsDescription }}</template></FormSwitch>
 
 	<FormLink to="/settings/account-info" class="_formBlock">{{ $ts.accountInfo }}</FormLink>
-	<FormLink to="/settings/experimental-features" class="_formBlock">{{ $ts.experimentalFeatures }}</FormLink>
 
 	<FormSection>
 		<template #label>{{ $ts.developer }}</template>

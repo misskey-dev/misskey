@@ -1,29 +1,25 @@
 <template>
-<FormBase v-if="token">
-	<FormInput v-model="password" type="password">
-		<template #prefix><i class="fas fa-lock"></i></template>
-		<span>{{ $ts.newPassword }}</span>
-	</FormInput>
-	
-	<FormButton primary @click="save">{{ $ts.save }}</FormButton>
-</FormBase>
+<MkSpacer v-if="token" :content-max="700" :margin-min="16" :margin-max="32">
+	<div class="_formRoot">
+		<FormInput v-model="password" type="password" class="_formBlock">
+			<template #prefix><i class="fas fa-lock"></i></template>
+			<template #label>{{ $ts.newPassword }}</template>
+		</FormInput>
+		
+		<FormButton primary class="_formBlock" @click="save">{{ $ts.save }}</FormButton>
+	</div>
+</MkSpacer>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import FormLink from '@/components/debobigego/link.vue';
-import FormBase from '@/components/debobigego/base.vue';
-import FormGroup from '@/components/debobigego/group.vue';
-import FormInput from '@/components/debobigego/input.vue';
-import FormButton from '@/components/debobigego/button.vue';
+import FormInput from '@/components/form/input.vue';
+import FormButton from '@/components/ui/button.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 
 export default defineComponent({
 	components: {
-		FormBase,
-		FormGroup,
-		FormLink,
 		FormInput,
 		FormButton,
 	},
@@ -39,7 +35,8 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.resetPassword,
-				icon: 'fas fa-lock'
+				icon: 'fas fa-lock',
+				bg: 'var(--bg)',
 			},
 			password: '',
 		}

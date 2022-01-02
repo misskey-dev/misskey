@@ -218,10 +218,8 @@ export default defineComponent({
 				case 'plugin/manage': return defineAsyncComponent(() => import('./plugin.manage.vue'));
 				case 'import-export': return defineAsyncComponent(() => import('./import-export.vue'));
 				case 'account-info': return defineAsyncComponent(() => import('./account-info.vue'));
-				case 'update': return defineAsyncComponent(() => import('./update.vue'));
 				case 'registry': return defineAsyncComponent(() => import('./registry.vue'));
 				case 'delete-account': return defineAsyncComponent(() => import('./delete-account.vue'));
-				case 'experimental-features': return defineAsyncComponent(() => import('./experimental-features.vue'));
 			}
 			if (page.value.startsWith('registry/keys/system/')) {
 				return defineAsyncComponent(() => import('./registry.keys.vue'));

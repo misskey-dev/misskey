@@ -1,5 +1,5 @@
 <template>
-<div v-sticky-container v-panel class="adfeebaf _formBlock">
+<div v-sticky-container class="adfeebaf _formBlock">
 	<div class="label"><slot name="label"></slot></div>
 	<div class="main _formRoot">
 		<slot></slot>
@@ -17,6 +17,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .adfeebaf {
 	padding: 24px 24px;
+	border: solid 1px var(--divider);
 	border-radius: var(--radius);
 
 	> .label {

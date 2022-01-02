@@ -40,7 +40,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import FormSection from '@/components/form/section.vue';
-import FormLink from '@/components/debobigego/link.vue';
 import FormSlot from '@/components/form/slot.vue';
 import FormButton from '@/components/ui/button.vue';
 import FormPagination from '@/components/form/pagination.vue';
@@ -51,7 +50,6 @@ import * as symbols from '@/symbols';
 export default defineComponent({
 	components: {
 		FormSection,
-		FormLink,
 		FormButton,
 		FormPagination,
 		FormSlot,
