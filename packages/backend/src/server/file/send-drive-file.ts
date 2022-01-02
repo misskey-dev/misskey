@@ -14,6 +14,7 @@ import { detectType } from '@/misc/get-file-info';
 import { convertToJpeg, convertToPngOrJpeg } from '@/services/drive/image-processor';
 import { GenerateVideoThumbnail } from '@/services/drive/generate-video-thumbnail';
 import { StatusError } from '@/misc/fetch';
+import { FILE_TYPE_BROWSERSAFE } from '@/const';
 
 //const _filename = fileURLToPath(import.meta.url);
 const _filename = __filename;
@@ -27,6 +28,7 @@ const commonReadableHandlerGenerator = (ctx: Koa.Context) => (e: Error): void =>
 	ctx.set('Cache-Control', 'max-age=300');
 };
 
+// eslint-disable-next-line import/no-default-export
 export default async function(ctx: Koa.Context) {
 	const key = ctx.params.key;
 
@@ -81,7 +83,7 @@ export default async function(ctx: Koa.Context) {
 
 				const image = await convertFile();
 				ctx.body = image.data;
-				ctx.set('Content-Type', image.type);
+				ctx.set('Content-Type', FILE_TYPE_BROWSERSAFE.includes(image.type) ? image.type : 'application/octet-stream');
 				ctx.set('Cache-Control', 'max-age=31536000, immutable');
 			} catch (e) {
 				serverLogger.error(`${e}`);
@@ -112,14 +114,14 @@ export default async function(ctx: Koa.Context) {
 		}).toString();
 
 		ctx.body = InternalStorage.read(key);
-		ctx.set('Content-Type', mime);
+		ctx.set('Content-Type', FILE_TYPE_BROWSERSAFE.includes(mime) ? mime : 'application/octet-stream');
 		ctx.set('Cache-Control', 'max-age=31536000, immutable');
 		ctx.set('Content-Disposition', contentDisposition('inline', filename));
 	} else {
 		const readable = InternalStorage.read(file.accessKey!);
 		readable.on('error', commonReadableHandlerGenerator(ctx));
 		ctx.body = readable;
-		ctx.set('Content-Type', file.type);
+		ctx.set('Content-Type', FILE_TYPE_BROWSERSAFE.includes(file.type) ? file.type : 'application/octet-stream');
 		ctx.set('Cache-Control', 'max-age=31536000, immutable');
 		ctx.set('Content-Disposition', contentDisposition('inline', file.name));
 	}
