@@ -218,31 +218,13 @@ export default defineComponent({
 				case 'plugin/manage': return defineAsyncComponent(() => import('./plugin.manage.vue'));
 				case 'import-export': return defineAsyncComponent(() => import('./import-export.vue'));
 				case 'account-info': return defineAsyncComponent(() => import('./account-info.vue'));
-				case 'registry': return defineAsyncComponent(() => import('./registry.vue'));
 				case 'delete-account': return defineAsyncComponent(() => import('./delete-account.vue'));
-			}
-			if (page.value.startsWith('registry/keys/system/')) {
-				return defineAsyncComponent(() => import('./registry.keys.vue'));
-			}
-			if (page.value.startsWith('registry/value/system/')) {
-				return defineAsyncComponent(() => import('./registry.value.vue'));
 			}
 			return null;
 		});
 
 		watch(component, () => {
 			pageProps.value = {};
-
-			if (page.value) {
-				if (page.value.startsWith('registry/keys/system/')) {
-					pageProps.value.scope = page.value.replace('registry/keys/system/', '').split('/');
-				}
-				if (page.value.startsWith('registry/value/system/')) {
-					const path = page.value.replace('registry/value/system/', '').split('/');
-					pageProps.value.xKey = path.pop();
-					pageProps.value.scope = path;
-				}
-			}
 
 			nextTick(() => {
 				scroll(el.value, { top: 0 });
