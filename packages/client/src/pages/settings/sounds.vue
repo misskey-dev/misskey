@@ -83,15 +83,15 @@ export default defineComponent({
 	},
 
 	created() {
-		this.sounds.note = soundConfigStore.state.sound_note;
-		this.sounds.noteMy = soundConfigStore.state.sound_noteMy;
-		this.sounds.notification = soundConfigStore.state.sound_notification;
-		this.sounds.chat = soundConfigStore.state.sound_chat;
-		this.sounds.chatBg = soundConfigStore.state.sound_chatBg;
-		this.sounds.antenna = soundConfigStore.state.sound_antenna;
-		this.sounds.channel = soundConfigStore.state.sound_channel;
-		this.sounds.reversiPutBlack = soundConfigStore.state.sound_reversiPutBlack;
-		this.sounds.reversiPutWhite = soundConfigStore.state.sound_reversiPutWhite;
+		this.sounds.note = soundConfigStore.reactiveState.sound_note;
+		this.sounds.noteMy = soundConfigStore.reactiveState.sound_noteMy;
+		this.sounds.notification = soundConfigStore.reactiveState.sound_notification;
+		this.sounds.chat = soundConfigStore.reactiveState.sound_chat;
+		this.sounds.chatBg = soundConfigStore.reactiveState.sound_chatBg;
+		this.sounds.antenna = soundConfigStore.reactiveState.sound_antenna;
+		this.sounds.channel = soundConfigStore.reactiveState.sound_channel;
+		this.sounds.reversiPutBlack = soundConfigStore.reactiveState.sound_reversiPutBlack;
+		this.sounds.reversiPutWhite = soundConfigStore.reactiveState.sound_reversiPutWhite;
 	},
 
 	mounted() {
@@ -135,13 +135,11 @@ export default defineComponent({
 			};
 
 			soundConfigStore.set(`sound_${type}` as keyof typeof soundConfigStore.def, v);
-			this.sounds[type] = v;
 		},
 
 		reset() {
 			for (const sound of Object.keys(this.sounds)) {
 				const v = soundConfigStore.reset(`sound_${sound}` as keyof typeof soundConfigStore.def);
-				this.sounds[sound] = v;
 			}
 		}
 	}
