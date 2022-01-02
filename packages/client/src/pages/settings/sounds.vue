@@ -139,7 +139,7 @@ export default defineComponent({
 
 		reset() {
 			for (const sound of Object.keys(this.sounds)) {
-				const v = soundConfigStore.reset(`sound_${sound}` as keyof typeof soundConfigStore.def);
+				soundConfigStore.reset(`sound_${sound}` as keyof typeof soundConfigStore.def);
 			}
 		}
 	}
