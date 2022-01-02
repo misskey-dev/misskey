@@ -2,16 +2,6 @@
 <MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
 	<FormSuspense :p="init">
 		<div class="_formRoot">
-			<FormSection>
-				<FormSwitch v-model="enableRegistration" class="_formBlock">
-					<template #label>{{ $ts.enableRegistration }}</template>
-				</FormSwitch>
-
-				<FormSwitch v-model="emailRequiredForSignup" class="_formBlock">
-					<template #label>{{ $ts.emailRequiredForSignup }}</template>
-				</FormSwitch>
-			</FormSection>
-
 			<FormLink to="/admin/bot-protection" class="_formBlock">
 				<i class="fas fa-shield-alt"></i> {{ $ts.botProtection }}
 				<template v-if="enableHcaptcha" #suffix>hCaptcha</template>
@@ -51,17 +41,9 @@ export default defineComponent({
 				title: this.$ts.security,
 				icon: 'fas fa-lock',
 				bg: 'var(--bg)',
-				actions: [{
-					asFullButton: true,
-					icon: 'fas fa-check',
-					text: this.$ts.save,
-					handler: this.save,
-				}],
 			},
 			enableHcaptcha: false,
 			enableRecaptcha: false,
-			enableRegistration: false,
-			emailRequiredForSignup: false,
 		}
 	},
 
@@ -74,18 +56,7 @@ export default defineComponent({
 			const meta = await os.api('meta', { detail: true });
 			this.enableHcaptcha = meta.enableHcaptcha;
 			this.enableRecaptcha = meta.enableRecaptcha;
-			this.enableRegistration = !meta.disableRegistration;
-			this.emailRequiredForSignup = meta.emailRequiredForSignup;
 		},
-	
-		save() {
-			os.apiWithDialog('admin/update-meta', {
-				disableRegistration: !this.enableRegistration,
-				emailRequiredForSignup: this.emailRequiredForSignup,
-			}).then(() => {
-				fetchInstance();
-			});
-		}
 	}
 });
 </script>
