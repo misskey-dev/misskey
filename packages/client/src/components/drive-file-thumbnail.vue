@@ -17,7 +17,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import ImgWithBlurhash from '@/components/img-with-blurhash.vue';
-import { soundConfigStore } from '@/store';
+import { soundConfigStore } from '@/scripts/sound';
 
 export default defineComponent({
 	components: {

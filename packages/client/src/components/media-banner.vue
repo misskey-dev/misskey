@@ -28,7 +28,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import * as os from '@/os';
-import { soundConfigStore } from '@/store';
+import { soundConfigStore } from '@/scripts/sound';
 
 export default defineComponent({
 	props: {

@@ -224,53 +224,6 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 }));
 
-export const soundConfigStore = markRaw(new Storage('sound', {
-	mediaVolume: {
-		where: 'device',
-		default: 0.5
-	},
-	sound_masterVolume: {
-		where: 'device',
-		default: 0.3
-	},
-	sound_note: {
-		where: 'account',
-		default: { type: 'syuilo/down', volume: 1 }
-	},
-	sound_noteMy: {
-		where: 'account',
-		default: { type: 'syuilo/up', volume: 1 }
-	},
-	sound_notification: {
-		where: 'account',
-		default: { type: 'syuilo/pope2', volume: 1 }
-	},
-	sound_chat: {
-		where: 'account',
-		default: { type: 'syuilo/pope1', volume: 1 }
-	},
-	sound_chatBg: {
-		where: 'account',
-		default: { type: 'syuilo/waon', volume: 1 }
-	},
-	sound_antenna: {
-		where: 'account',
-		default: { type: 'syuilo/triple', volume: 1 }
-	},
-	sound_channel: {
-		where: 'account',
-		default: { type: 'syuilo/square-pico', volume: 1 }
-	},
-	sound_reversiPutBlack: {
-		where: 'account',
-		default: { type: 'syuilo/kick', volume: 0.3 }
-	},
-	sound_reversiPutWhite: {
-		where: 'account',
-		default: { type: 'syuilo/snare', volume: 0.3 }
-	},
-}));
-
 // TODO: 他のタブと永続化されたstateを同期
 const PREFIX = 'miux:';
 
@@ -351,18 +304,6 @@ export class ColdDeviceStorage {
 		};
 	}
 }
-
-//#region サウンドのColdDeviceStorage => indexedDBのマイグレーション
-await soundConfigStore.ready; // マイグレーションを消す場合は他の場所に移した方がいいかも
-
-for (const target of Object.keys(soundConfigStore.state) as Array<keyof typeof soundConfigStore.state>) {
-	const value = localStorage.getItem(`${PREFIX}${target}`);
-	if (value) {
-		soundConfigStore.set(target, JSON.parse(value) as typeof soundConfigStore.def[typeof target]['default']);
-		localStorage.removeItem(`${PREFIX}${target}`);
-	}
-}
-//#endregion
 
 // このファイルに書きたくないけどここに書かないと何故かVeturが認識しない
 declare module '@vue/runtime-core' {

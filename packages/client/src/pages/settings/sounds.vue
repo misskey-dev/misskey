@@ -24,8 +24,7 @@ import FormButton from '@/components/ui/button.vue';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import * as os from '@/os';
-import { soundConfigStore } from '@/store';
-import { playFile } from '@/scripts/sound';
+import { soundConfigStore, playFile } from '@/scripts/sound';
 import * as symbols from '@/symbols';
 
 const soundsTypes = [
