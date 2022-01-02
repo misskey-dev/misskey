@@ -98,7 +98,7 @@ export class Storage<T extends StateDef> {
 	private async load(): Promise<void> {
 		return new Promise((resolve, reject) => {
 			if ($i) {
-				// なぜかsetTimeoutしないとapi関数内でエラーになる(おそらく循環参照してることに原因がありそう)
+				// api関数と循環参照なので一応setTimeoutしておく
 				setTimeout(() => {
 					api('i/registry/get-all', { scope: ['client', this.key] })
 					.then(kvs => {
