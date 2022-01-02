@@ -30,6 +30,7 @@ export const meta = {
 	},
 };
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, me) => {
 	const post = await GalleryPosts.findOne({
 		id: ps.postId,

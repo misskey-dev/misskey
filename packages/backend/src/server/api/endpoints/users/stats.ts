@@ -24,6 +24,7 @@ export const meta = {
 	},
 };
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, me) => {
 	const user = await Users.findOne(ps.userId);
 	if (user == null) {
