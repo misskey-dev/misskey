@@ -19,15 +19,14 @@ export async function proxyMedia(ctx: Koa.Context) {
 
 		const { mime, ext } = await detectType(path);
 
-		if (!mime.startsWith('image/')) throw 403;
-		if (!FILE_TYPE_BROWSERSAFE.includes(mime)) throw 403;
-
 		let image: IImage;
 
-		if ('static' in ctx.query && ['image/png', 'image/gif', 'image/apng', 'image/vnd.mozilla.apng', 'image/webp'].includes(mime)) {
+		if ('static' in ctx.query && ['image/png', 'image/gif', 'image/apng', 'image/vnd.mozilla.apng', 'image/webp', 'image/svg+xml'].includes(mime)) {
 			image = await convertToPng(path, 498, 280);
-		} else if ('preview' in ctx.query && ['image/jpeg', 'image/png', 'image/gif', 'image/apng', 'image/vnd.mozilla.apng'].includes(mime)) {
+		} else if ('preview' in ctx.query && ['image/jpeg', 'image/png', 'image/gif', 'image/apng', 'image/vnd.mozilla.apng', 'image/svg+xml'].includes(mime)) {
 			image = await convertToJpeg(path, 200, 200);
+		} else if (!mime.startsWith('image/') || !FILE_TYPE_BROWSERSAFE.includes(mime)) {
+			throw 403;
 		} else {
 			image = {
 				data: fs.readFileSync(path),
