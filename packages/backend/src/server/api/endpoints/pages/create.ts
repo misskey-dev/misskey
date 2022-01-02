@@ -107,7 +107,7 @@ export default define(meta, async (ps, user) => {
 		}
 	});
 
-	const page = await Pages.save(new Page({
+	const page = await Pages.insert(new Page({
 		id: genId(),
 		createdAt: new Date(),
 		updatedAt: new Date(),
@@ -123,7 +123,7 @@ export default define(meta, async (ps, user) => {
 		alignCenter: ps.alignCenter,
 		hideTitleWhenPinned: ps.hideTitleWhenPinned,
 		font: ps.font,
-	}));
+	})).then(x => Pages.findOneOrFail(x.identifiers[0]));
 
 	return await Pages.pack(page);
 });

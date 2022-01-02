@@ -20,7 +20,7 @@ export async function createNotification(
 	const isMuted = profile?.mutingNotificationTypes.includes(type);
 
 	// Create notification
-	const notification = await Notifications.save({
+	const notification = await Notifications.insert({
 		id: genId(),
 		createdAt: new Date(),
 		notifieeId: notifieeId,
@@ -28,7 +28,8 @@ export async function createNotification(
 		// 相手がこの通知をミュートしているようなら、既読を予めつけておく
 		isRead: isMuted,
 		...data,
-	} as Partial<Notification>);
+	} as Partial<Notification>)
+		.then(x => Notifications.findOneOrFail(x.identifiers[0]));
 
 	const packed = await Notifications.pack(notification, {});
 

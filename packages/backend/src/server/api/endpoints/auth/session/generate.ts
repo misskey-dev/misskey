@@ -57,12 +57,12 @@ export default define(meta, async (ps) => {
 	const token = uuid();
 
 	// Create session token document
-	const doc = await AuthSessions.save({
+	const doc = await AuthSessions.insert({
 		id: genId(),
 		createdAt: new Date(),
 		appId: app.id,
 		token: token,
-	});
+	}).then(x => AuthSessions.findOneOrFail(x.identifiers[0]));
 
 	return {
 		token: doc.token,
