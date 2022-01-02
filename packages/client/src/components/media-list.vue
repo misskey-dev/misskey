@@ -22,6 +22,7 @@ import XBanner from './media-banner.vue';
 import XImage from './media-image.vue';
 import XVideo from './media-video.vue';
 import * as os from '@/os';
+import { FILE_TYPE_BROWSERSAFE } from '@/const';
 import { defaultStore } from '@/store';
 
 export default defineComponent({
@@ -44,18 +45,23 @@ export default defineComponent({
 
 		onMounted(() => {
 			const lightbox = new PhotoSwipeLightbox({
-				dataSource: props.mediaList.filter(media => media.type.startsWith('image')).map(media => {
-					const item = {
-						src: media.url,
-						w: media.properties.width,
-						h: media.properties.height,
-						alt: media.name,
-					};
-					if (media.properties.orientation != null && media.properties.orientation >= 5) {
-						[item.w, item.h] = [item.h, item.w];
-					}
-					return item;
-				}),
+				dataSource: props.mediaList
+					.filter(media => {
+						if (media.type === 'image/svg+xml') return true; // svgのwebpublicはpngなのでtrue
+						return media.type.startsWith('image') && FILE_TYPE_BROWSERSAFE.includes(media.type);
+					})
+					.map(media => {
+						const item = {
+							src: media.url,
+							w: media.properties.width,
+							h: media.properties.height,
+							alt: media.name,
+						};
+						if (media.properties.orientation != null && media.properties.orientation >= 5) {
+							[item.w, item.h] = [item.h, item.w];
+						}
+						return item;
+					}),
 				gallery: gallery.value,
 				children: '.image',
 				thumbSelector: '.image',
@@ -99,7 +105,9 @@ export default defineComponent({
 		});
 
 		const previewable = (file: misskey.entities.DriveFile): boolean => {
-			return file.type.startsWith('video') || file.type.startsWith('image');
+			if (file.type === 'image/svg+xml') return true; // svgのwebpublic/thumbnailはpngなのでtrue
+			// FILE_TYPE_BROWSERSAFEに適合しないものはブラウザで表示するのに不適切
+			return (file.type.startsWith('video') || file.type.startsWith('image')) && FILE_TYPE_BROWSERSAFE.includes(file.type);
 		};
 
 		return {
