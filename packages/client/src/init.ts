@@ -13,8 +13,6 @@ if (localStorage.getItem('accounts') != null) {
 }
 //#endregion
 
-import * as Sentry from '@sentry/browser';
-import { Integrations } from '@sentry/tracing';
 import { computed, createApp, watch, markRaw, version as vueVersion } from 'vue';
 import * as compareVersions from 'compare-versions';
 
@@ -72,18 +70,6 @@ if (_DEV_) {
 		});
 		*/
 	});
-}
-
-if (defaultStore.state.reportError && !_DEV_) {
-	Sentry.init({
-		dsn: 'https://fd273254a07a4b61857607a9ea05d629@o501808.ingest.sentry.io/5583438',
-		tracesSampleRate: 1.0,
-	});
-
-	Sentry.setTag('misskey_version', version);
-	Sentry.setTag('ui', ui);
-	Sentry.setTag('lang', lang);
-	Sentry.setTag('host', host);
 }
 
 // タッチデバイスでCSSの:hoverを機能させる

@@ -1,6 +1,6 @@
 <template>
 <div
-	v-panel
+	v-adaptive-border
 	class="novjtctn"
 	:class="{ disabled, checked }"
 	:aria-checked="checked"
@@ -53,7 +53,10 @@ export default defineComponent({
 	display: inline-block;
 	text-align: left;
 	cursor: pointer;
-	padding: 11px 14px;
+	padding: 10px 12px;
+	background-color: var(--panel);
+	background-clip: padding-box !important;
+	border: solid 1px var(--panel);
 	border-radius: 6px;
 	transition: all 0.3s;
 
@@ -69,9 +72,13 @@ export default defineComponent({
 		}
 	}
 
+	&:hover {
+		border-color: var(--inputBorderHover) !important;
+	}
+
 	&.checked {
-		background: var(--accentedBg) !important;
-		border-color: var(--accent);
+		background-color: var(--accentedBg) !important;
+		border-color: var(--accentedBg) !important;
 		color: var(--accent);
 
 		&, * {
@@ -87,11 +94,6 @@ export default defineComponent({
 				opacity: 1;
 			}
 		}
-	}
-
-	&:hover {
-		border-color: var(--inputBorderHover);
-		color: var(--accent);
 	}
 
 	> input {

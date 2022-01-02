@@ -71,9 +71,6 @@ import MkButton from '@/components/ui/button.vue';
 import MkInfo from '@/components/ui/info.vue';
 import MkInput from '@/components/form/input.vue';
 import MkSwitch from '@/components/form/switch.vue';
-import FormBase from '@/components/debobigego/base.vue';
-import FormGroup from '@/components/debobigego/group.vue';
-import FormButton from '@/components/debobigego/button.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 
