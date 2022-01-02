@@ -49,6 +49,9 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 			if (type === 'image/apng') ext = '.apng';
 			if (type === 'image/vnd.mozilla.apng') ext = '.apng';
 		}
+
+		// 拡張子からContent-Typeを設定してそうな挙動を示すオブジェクトストレージ (upcloud?) も存在するので、
+		// 許可されているファイル形式でしか拡張子をつけない
 		if (!FILE_TYPE_BROWSERSAFE.includes(type)) {
 			ext = '';
 		}
