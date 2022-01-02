@@ -49,6 +49,9 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 			if (type === 'image/apng') ext = '.apng';
 			if (type === 'image/vnd.mozilla.apng') ext = '.apng';
 		}
+		if (!FILE_TYPE_BROWSERSAFE.includes(type)) {
+			ext = '';
+		}
 
 		const baseUrl = meta.objectStorageBaseUrl
 			|| `${ meta.objectStorageUseSSL ? 'https' : 'http' }://${ meta.objectStorageEndpoint }${ meta.objectStoragePort ? `:${meta.objectStoragePort}` : '' }/${ meta.objectStorageBucket }`;
