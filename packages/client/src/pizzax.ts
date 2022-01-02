@@ -17,7 +17,8 @@ type ArrayElement<A> = A extends readonly (infer T)[] ? T : never;
 const connection = $i && stream.useChannel('main');
 
 export class Storage<T extends StateDef> {
-	public readonly ready: PromiseLike<void>;
+	public readonly ready: Promise<void>;
+	public readonly loaded: Promise<void>;
 
 	public readonly key: string;
 	public readonly deviceStateKeyName: string;
@@ -49,34 +50,55 @@ export class Storage<T extends StateDef> {
 		this.def = def;
 
 		this.ready = this.init();
+		this.loaded = this.ready.then(() => this.load());
 	}
 
-	private init(): Promise<void> {
-		return new Promise(async (resolve, reject) => {
-			await this.migrate();
+	private async init(): Promise<void> {
+		await this.migrate();
 
-			const deviceState: State<T> = await get(this.deviceStateKeyName) || {};
-			const deviceAccountState = $i ? await get(this.deviceAccountStateKeyName) || {} : {};
-			const registryCache = $i ? await get(this.registryCacheKeyName) || {} : {};
+		const deviceState: State<T> = await get(this.deviceStateKeyName) || {};
+		const deviceAccountState = $i ? await get(this.deviceAccountStateKeyName) || {} : {};
+		const registryCache = $i ? await get(this.registryCacheKeyName) || {} : {};
 	
-			for (const [k, v] of Object.entries(this.def) as [keyof T, T[keyof T]][]) {
-				if (v.where === 'device' && Object.prototype.hasOwnProperty.call(deviceState, k)) {
-					this.state[k] = deviceState[k];
-				} else if (v.where === 'account' && $i && Object.prototype.hasOwnProperty.call(registryCache, k)) {
-					this.state[k] = registryCache[k];
-				} else if (v.where === 'deviceAccount' && Object.prototype.hasOwnProperty.call(deviceAccountState, k)) {
-					this.state[k] = deviceAccountState[k];
-				} else {
-					this.state[k] = v.default;
-					if (_DEV_) console.log('Use default value', k, v.default);
-				}
+		for (const [k, v] of Object.entries(this.def) as [keyof T, T[keyof T]][]) {
+			if (v.where === 'device' && Object.prototype.hasOwnProperty.call(deviceState, k)) {
+				this.state[k] = deviceState[k];
+			} else if (v.where === 'account' && $i && Object.prototype.hasOwnProperty.call(registryCache, k)) {
+				this.state[k] = registryCache[k];
+			} else if (v.where === 'deviceAccount' && Object.prototype.hasOwnProperty.call(deviceAccountState, k)) {
+				this.state[k] = deviceAccountState[k];
+			} else {
+				this.state[k] = v.default;
+				if (_DEV_) console.log('Use default value', k, v.default);
 			}
-			for (const [k, v] of Object.entries(this.state) as [keyof T, T[keyof T]][]) {
-				this.reactiveState[k] = ref(v);
-			}
+		}
+		for (const [k, v] of Object.entries(this.state) as [keyof T, T[keyof T]][]) {
+			this.reactiveState[k] = ref(v);
+		}
+
+		if ($i) {
+			// streamingのuser storage updateイベントを監視して更新
+			connection?.on('registryUpdated', ({ scope, key, value }: { scope?: string[], key: keyof T, value: T[typeof key]['default'] }) => {
+				if (!scope || scope.length !== 2 || scope[0] !== 'client' || scope[1] !== this.key || this.state[key] === value) return;
 	
+				this.state[key] = value;
+				this.reactiveState[key].value = value;
+	
+				this.addIdbSetJob(async () => {
+					const cache = await get(this.registryCacheKeyName);
+					if (cache[key] !== value) {
+						cache[key] = value;
+						await set(this.registryCacheKeyName, cache);
+					}
+				});
+			});
+		}
+	}
+
+	private async load(): Promise<void> {
+		return new Promise((resolve, reject) => {
 			if ($i) {
-				// なぜかsetTimeoutしないとapi関数内でエラーになる(おそらく循環参照してることに原因がありそう)
+				// api関数と循環参照なので一応setTimeoutしておく
 				setTimeout(() => {
 					api('i/registry/get-all', { scope: ['client', this.key] })
 					.then(kvs => {
@@ -93,28 +115,14 @@ export class Storage<T extends StateDef> {
 								}
 							}
 						}
-
+	
 						return set(this.registryCacheKeyName, cache);
 					})
 					.then(() => resolve());
 				}, 1);
-
-				// streamingのuser storage updateイベントを監視して更新
-				connection?.on('registryUpdated', ({ scope, key, value }: { scope: string[], key: keyof T, value: T[typeof key]['default'] }) => {
-					if (scope.length !== 2 || scope[0] !== 'client' || scope[1] !== this.key || this.state[key] === value) return;
-
-					this.state[key] = value;
-					this.reactiveState[key].value = value;
-
-					this.addIdbSetJob(async () => {
-						const cache = await get(this.registryCacheKeyName);
-						if (cache[key] !== value) {
-							cache[key] = value;
-							await set(this.registryCacheKeyName, cache);
-						}
-					}
-				});
 			}
+
+			resolve();
 		});
 	}
 
