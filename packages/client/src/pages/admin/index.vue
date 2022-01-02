@@ -29,9 +29,6 @@
 import { computed, defineAsyncComponent, defineComponent, isRef, nextTick, onMounted, reactive, ref, watch } from 'vue';
 import { i18n } from '@/i18n';
 import MkSuperMenu from '@/components/ui/super-menu.vue';
-import FormGroup from '@/components/debobigego/group.vue';
-import FormBase from '@/components/debobigego/base.vue';
-import FormButton from '@/components/debobigego/button.vue';
 import MkInfo from '@/components/ui/info.vue';
 import { scroll } from '@/scripts/scroll';
 import { instance } from '@/instance';
@@ -41,10 +38,7 @@ import { lookupUser } from '@/scripts/lookup-user';
 
 export default defineComponent({
 	components: {
-		FormBase,
 		MkSuperMenu,
-		FormGroup,
-		FormButton,
 		MkInfo,
 	},
 

@@ -67,7 +67,6 @@
 
 <script lang="ts">
 import { computed, defineComponent, markRaw, version as vueVersion } from 'vue';
-import FormKeyValueView from '@/components/debobigego/key-value-view.vue';
 import MkInstanceStats from '@/components/instance-stats.vue';
 import MkButton from '@/components/ui/button.vue';
 import MkSelect from '@/components/form/select.vue';
@@ -87,7 +86,6 @@ import * as symbols from '@/symbols';
 export default defineComponent({
 	components: {
 		MkNumberDiff,
-		FormKeyValueView,
 		MkInstanceStats,
 		MkContainer,
 		MkFolder,
