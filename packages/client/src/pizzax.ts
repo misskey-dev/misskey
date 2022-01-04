@@ -4,6 +4,8 @@ import { api } from './os';
 import { get, set } from './scripts/idb-proxy';
 import { defaultStore } from './store';
 import { stream } from './stream';
+// SafariがBroadcastChannel未実装なのでライブラリを使う
+import { BroadcastChannel } from 'broadcast-channel';
 
 type StateDef = Record<string, {
 	where: 'account' | 'device' | 'deviceAccount';
@@ -15,6 +17,13 @@ type ReactiveState<T extends StateDef> = { [K in keyof T]: Ref<T[K]['default']>;
 
 type ArrayElement<A> = A extends readonly (infer T)[] ? T : never;
 
+type PizzaxChannelMessage<T extends StateDef> = {
+	where: 'device' | 'deviceAccount';
+	key: keyof T;
+	value: T[keyof T];
+	userId?: string;
+};
+
 const connection = $i && stream.useChannel('main');
 
 export class Storage<T extends StateDef> {
@@ -22,15 +31,17 @@ export class Storage<T extends StateDef> {
 	public readonly loaded: Promise<void>;
 
 	public readonly key: string;
-	public readonly deviceStateKeyName: string;
-	public readonly deviceAccountStateKeyName: string;
-	public readonly registryCacheKeyName: string;
+	public readonly deviceStateKeyName: `pizzax::${this['key']}`;
+	public readonly deviceAccountStateKeyName: `pizzax::${this['key']}::${string}` | '';
+	public readonly registryCacheKeyName: `pizzax::${this['key']}::cache::${string}` | '';
 
 	public readonly def: T;
 
 	// TODO: これが実装されたらreadonlyにしたい: https://github.com/microsoft/TypeScript/issues/37487
 	public readonly state = {} as State<T>;
 	public readonly reactiveState = {} as ReactiveState<T>;
+
+	private pizzaxChannel: BroadcastChannel<PizzaxChannelMessage<T>>;
 
 	// 簡易的にキューイングして占有ロックとする
 	private currentIdbJob: Promise<any> = Promise.resolve();
@@ -49,6 +60,8 @@ export class Storage<T extends StateDef> {
 		this.deviceAccountStateKeyName = $i ? `pizzax::${key}::${$i.id}` : '';
 		this.registryCacheKeyName = $i ? `pizzax::${key}::cache::${$i.id}` : '';
 		this.def = def;
+
+		this.pizzaxChannel = new BroadcastChannel(`pizzax::${key}`);
 
 		this.ready = this.init();
 		this.loaded = this.ready.then(() => this.load());
@@ -77,11 +90,17 @@ export class Storage<T extends StateDef> {
 			this.reactiveState[k] = ref(v);
 		}
 
+		this.pizzaxChannel.addEventListener('message', ({ where, key, value, userId }) => {
+			if (where === 'deviceAccount' && !($i && userId !== $i.id)) return;
+			this.state[key] = value;
+			this.reactiveState[key].value = value;
+		});
+
 		if ($i) {
 			// streamingのuser storage updateイベントを監視して更新
 			connection?.on('registryUpdated', ({ scope, key, value }: { scope?: string[], key: keyof T, value: T[typeof key]['default'] }) => {
 				if (!scope || scope.length !== 2 || scope[0] !== 'client' || scope[1] !== this.key || this.state[key] === value) return;
-	
+
 				this.state[key] = value;
 				this.reactiveState[key].value = value;
 	
@@ -141,6 +160,11 @@ export class Storage<T extends StateDef> {
 			if (_DEV_) console.log(`set ${key} start`);
 			switch (this.def[key].where) {
 				case 'device': {
+					this.pizzaxChannel.postMessage({
+						where: 'device',
+						key,
+						value: rawValue,
+					});
 					const deviceState = await get(this.deviceStateKeyName) || {};
 					deviceState[key] = rawValue;
 					await set(this.deviceStateKeyName, deviceState);
@@ -148,6 +172,12 @@ export class Storage<T extends StateDef> {
 				}
 				case 'deviceAccount': {
 					if ($i == null) break;
+					this.pizzaxChannel.postMessage({
+						where: 'deviceAccount',
+						key,
+						value: rawValue,
+						userId: $i.id,
+					});
 					const deviceAccountState = await get(this.deviceAccountStateKeyName) || {};
 					deviceAccountState[key] = rawValue;
 					await set(this.deviceAccountStateKeyName, deviceAccountState);
