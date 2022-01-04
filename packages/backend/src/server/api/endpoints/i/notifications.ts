@@ -65,6 +65,7 @@ export const meta = {
 	},
 };
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	// includeTypes が空の場合はクエリしない
 	if (ps.includeTypes && ps.includeTypes.length === 0) {

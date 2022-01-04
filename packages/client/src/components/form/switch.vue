@@ -111,7 +111,7 @@ export default defineComponent({
 	}
 
 	> .label {
-		margin-left: 16px;
+		margin-left: 12px;
 		margin-top: 2px;
 		display: block;
 		transition: inherit;

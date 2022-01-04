@@ -27,6 +27,7 @@ export const meta = {
 	},
 };
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user, token) => {
 	createNotification(user.id, 'app', {
 		appAccessTokenId: token ? token.id : null,

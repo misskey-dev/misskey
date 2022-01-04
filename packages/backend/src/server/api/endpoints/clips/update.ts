@@ -44,6 +44,7 @@ export const meta = {
 	},
 };
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	// Fetch the clip
 	const clip = await Clips.findOne({

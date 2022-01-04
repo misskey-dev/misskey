@@ -1,37 +1,36 @@
 <template>
-<FormBase>
-	<FormSuspense :p="init">
-		<FormSwitch v-model="enableDiscordIntegration">
-			{{ $ts.enable }}
+<FormSuspense :p="init">
+	<div class="_formRoot">
+		<FormSwitch v-model="enableDiscordIntegration" class="_formBlock">
+			<template #label>{{ $ts.enable }}</template>
 		</FormSwitch>
 
 		<template v-if="enableDiscordIntegration">
-			<FormInfo>Callback URL: {{ `${uri}/api/dc/cb` }}</FormInfo>
+			<FormInfo class="_formBlock">Callback URL: {{ `${uri}/api/dc/cb` }}</FormInfo>
 		
-			<FormInput v-model="discordClientId">
+			<FormInput v-model="discordClientId" class="_formBlock">
 				<template #prefix><i class="fas fa-key"></i></template>
-				Client ID
+				<template #label>Client ID</template>
 			</FormInput>
 
-			<FormInput v-model="discordClientSecret">
+			<FormInput v-model="discordClientSecret" class="_formBlock">
 				<template #prefix><i class="fas fa-key"></i></template>
-				Client Secret
+				<template #label>Client Secret</template>
 			</FormInput>
 		</template>
 
-		<FormButton primary @click="save"><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
-	</FormSuspense>
-</FormBase>
+		<FormButton primary class="_formBlock" @click="save"><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
+	</div>
+</FormSuspense>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import FormSwitch from '@/components/debobigego/switch.vue';
-import FormInput from '@/components/debobigego/input.vue';
-import FormButton from '@/components/debobigego/button.vue';
-import FormBase from '@/components/debobigego/base.vue';
-import FormInfo from '@/components/debobigego/info.vue';
-import FormSuspense from '@/components/debobigego/suspense.vue';
+import FormSwitch from '@/components/form/switch.vue';
+import FormInput from '@/components/form/input.vue';
+import FormButton from '@/components/ui/button.vue';
+import FormInfo from '@/components/ui/info.vue';
+import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { fetchInstance } from '@/instance';
@@ -40,7 +39,6 @@ export default defineComponent({
 	components: {
 		FormSwitch,
 		FormInput,
-		FormBase,
 		FormInfo,
 		FormButton,
 		FormSuspense,

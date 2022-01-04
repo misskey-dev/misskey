@@ -136,6 +136,7 @@ export const meta = {
 	},
 };
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	const query = makePaginationQuery(ReversiGames.createQueryBuilder('game'), ps.sinceId, ps.untilId)
 		.andWhere('game.isStarted = TRUE');

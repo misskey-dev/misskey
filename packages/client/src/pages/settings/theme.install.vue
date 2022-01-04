@@ -1,40 +1,29 @@
 <template>
-<FormBase>
-	<FormGroup>
-		<FormTextarea v-model="installThemeCode">
-			<span>{{ $ts._theme.code }}</span>
-		</FormTextarea>
-		<FormButton :disabled="installThemeCode == null" inline @click="() => preview(installThemeCode)"><i class="fas fa-eye"></i> {{ $ts.preview }}</FormButton>
-	</FormGroup>
+<div class="_formRoot">
+	<FormTextarea v-model="installThemeCode" class="_formBlock">
+		<template #label>{{ $ts._theme.code }}</template>
+	</FormTextarea>
 
-	<FormButton :disabled="installThemeCode == null" primary inline @click="() => install(installThemeCode)"><i class="fas fa-check"></i> {{ $ts.install }}</FormButton>
-</FormBase>
+	<div class="_formBlock" style="display: flex; gap: var(--margin); flex-wrap: wrap;">
+		<FormButton :disabled="installThemeCode == null" inline @click="() => preview(installThemeCode)"><i class="fas fa-eye"></i> {{ $ts.preview }}</FormButton>
+		<FormButton :disabled="installThemeCode == null" primary inline @click="() => install(installThemeCode)"><i class="fas fa-check"></i> {{ $ts.install }}</FormButton>
+	</div>
+</div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import * as JSON5 from 'json5';
 import FormTextarea from '@/components/form/textarea.vue';
-import FormSelect from '@/components/form/select.vue';
-import FormRadios from '@/components/form/radios.vue';
-import FormBase from '@/components/debobigego/base.vue';
-import FormGroup from '@/components/debobigego/group.vue';
-import FormLink from '@/components/debobigego/link.vue';
-import FormButton from '@/components/debobigego/button.vue';
+import FormButton from '@/components/ui/button.vue';
 import { applyTheme, validateTheme } from '@/scripts/theme';
 import * as os from '@/os';
-import { ColdDeviceStorage } from '@/store';
 import { addTheme, getThemes } from '@/theme-store';
 import * as symbols from '@/symbols';
 
 export default defineComponent({
 	components: {
 		FormTextarea,
-		FormSelect,
-		FormRadios,
-		FormBase,
-		FormGroup,
-		FormLink,
 		FormButton,
 	},
 
