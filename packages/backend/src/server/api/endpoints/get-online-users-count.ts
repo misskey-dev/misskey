@@ -12,6 +12,7 @@ export const meta = {
 	},
 };
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async () => {
 	const count = await Users.count({
 		lastActiveDate: MoreThan(new Date(Date.now() - USER_ONLINE_THRESHOLD)),

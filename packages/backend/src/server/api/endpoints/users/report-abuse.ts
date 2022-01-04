@@ -62,7 +62,7 @@ export default define(meta, async (ps, me) => {
 		throw new ApiError(meta.errors.cannotReportAdmin);
 	}
 
-	const report = await AbuseUserReports.save({
+	const report = await AbuseUserReports.insert({
 		id: genId(),
 		createdAt: new Date(),
 		targetUserId: user.id,
@@ -70,7 +70,7 @@ export default define(meta, async (ps, me) => {
 		reporterId: me.id,
 		reporterHost: null,
 		comment: ps.comment,
-	});
+	}).then(x => AbuseUserReports.findOneOrFail(x.identifiers[0]));
 
 	// Publish event to moderators
 	setTimeout(async () => {
