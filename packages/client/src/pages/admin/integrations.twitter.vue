@@ -1,6 +1,6 @@
 <template>
-<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
-	<FormSuspense :p="init">
+<FormSuspense :p="init">
+	<div class="_formRoot">
 		<FormSwitch v-model="enableTwitterIntegration" class="_formBlock">
 			<template #label>{{ $ts.enable }}</template>
 		</FormSwitch>
@@ -20,8 +20,8 @@
 		</template>
 
 		<FormButton primary class="_formBlock" @click="save"><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
-	</FormSuspense>
-</MkSpacer>
+	</div>
+</FormSuspense>
 </template>
 
 <script lang="ts">

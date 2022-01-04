@@ -1,27 +1,27 @@
 <template>
-<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
-	<FormSuspense :p="init">
-		<FormSwitch v-model="enableGithubIntegration" class="_formBlock">
+<FormSuspense :p="init">
+	<div class="_formRoot">
+		<FormSwitch v-model="enableDiscordIntegration" class="_formBlock">
 			<template #label>{{ $ts.enable }}</template>
 		</FormSwitch>
 
-		<template v-if="enableGithubIntegration">
-			<FormInfo class="_formBlock">Callback URL: {{ `${uri}/api/gh/cb` }}</FormInfo>
+		<template v-if="enableDiscordIntegration">
+			<FormInfo class="_formBlock">Callback URL: {{ `${uri}/api/dc/cb` }}</FormInfo>
 		
-			<FormInput v-model="githubClientId" class="_formBlock">
+			<FormInput v-model="discordClientId" class="_formBlock">
 				<template #prefix><i class="fas fa-key"></i></template>
 				<template #label>Client ID</template>
 			</FormInput>
 
-			<FormInput v-model="githubClientSecret" class="_formBlock">
+			<FormInput v-model="discordClientSecret" class="_formBlock">
 				<template #prefix><i class="fas fa-key"></i></template>
 				<template #label>Client Secret</template>
 			</FormInput>
 		</template>
 
 		<FormButton primary class="_formBlock" @click="save"><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
-	</FormSuspense>
-</MkSpacer>
+	</div>
+</FormSuspense>
 </template>
 
 <script lang="ts">
@@ -49,12 +49,12 @@ export default defineComponent({
 	data() {
 		return {
 			[symbols.PAGE_INFO]: {
-				title: 'GitHub',
-				icon: 'fab fa-github'
+				title: 'Discord',
+				icon: 'fab fa-discord'
 			},
-			enableGithubIntegration: false,
-			githubClientId: null,
-			githubClientSecret: null,
+			enableDiscordIntegration: false,
+			discordClientId: null,
+			discordClientSecret: null,
 		}
 	},
 
@@ -66,15 +66,15 @@ export default defineComponent({
 		async init() {
 			const meta = await os.api('meta', { detail: true });
 			this.uri = meta.uri;
-			this.enableGithubIntegration = meta.enableGithubIntegration;
-			this.githubClientId = meta.githubClientId;
-			this.githubClientSecret = meta.githubClientSecret;
+			this.enableDiscordIntegration = meta.enableDiscordIntegration;
+			this.discordClientId = meta.discordClientId;
+			this.discordClientSecret = meta.discordClientSecret;
 		},
 		save() {
 			os.apiWithDialog('admin/update-meta', {
-				enableGithubIntegration: this.enableGithubIntegration,
-				githubClientId: this.githubClientId,
-				githubClientSecret: this.githubClientSecret,
+				enableDiscordIntegration: this.enableDiscordIntegration,
+				discordClientId: this.discordClientId,
+				discordClientSecret: this.discordClientSecret,
 			}).then(() => {
 				fetchInstance();
 			});
