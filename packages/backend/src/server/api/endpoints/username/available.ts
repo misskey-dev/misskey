@@ -25,6 +25,7 @@ export const meta = {
 	},
 };
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps) => {
 	// Get exist
 	const exist = await Users.count({

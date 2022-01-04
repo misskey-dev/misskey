@@ -33,6 +33,7 @@ export const meta = {
 	},
 };
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	await UserProfiles.update(user.id, {
 		room: ps.room as any,

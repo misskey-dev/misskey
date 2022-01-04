@@ -30,6 +30,7 @@ export const meta = {
 	},
 };
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, me) => {
 	const file = await DriveFiles.findOne(ps.fileId);
 
@@ -37,7 +38,7 @@ export default define(meta, async (ps, me) => {
 
 	const name = file.name.split('.')[0].match(/^[a-z0-9_]+$/) ? file.name.split('.')[0] : `_${rndstr('a-z0-9', 8)}_`;
 
-	const emoji = await Emojis.save({
+	const emoji = await Emojis.insert({
 		id: genId(),
 		updatedAt: new Date(),
 		name: name,
@@ -46,7 +47,7 @@ export default define(meta, async (ps, me) => {
 		aliases: [],
 		url: file.url,
 		type: file.type,
-	});
+	}).then(x => Emojis.findOneOrFail(x.identifiers[0]));
 
 	await getConnection().queryResultCache!.remove(['meta_emojis']);
 

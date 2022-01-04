@@ -34,6 +34,7 @@ export const meta = {
 	},
 };
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	// Get favoritee
 	const note = await getNote(ps.noteId).catch(e => {
