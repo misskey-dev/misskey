@@ -32,6 +32,7 @@ export const meta = {
 	},
 };
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	const folders = await DriveFolders.find({
 		name: ps.name,

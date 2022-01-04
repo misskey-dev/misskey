@@ -57,6 +57,7 @@ export const meta = {
 	},
 };
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, me) => {
 	const profile = await UserProfiles.findOneOrFail(ps.userId);
 
