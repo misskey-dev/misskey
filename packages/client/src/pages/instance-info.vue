@@ -89,9 +89,8 @@
 			</div>
 		</FormSection>
 
-		<FormObjectView tall :value="instance">
-			<span>Raw</span>
-		</FormObjectView>
+		<MkObjectView tall :value="instance">
+		</MkObjectView>
 
 		<FormSection>
 			<template #label>Well-known resources</template>
@@ -108,7 +107,7 @@
 <script lang="ts">
 import { defineAsyncComponent, defineComponent } from 'vue';
 import MkChart from '@/components/chart.vue';
-import FormObjectView from '@/components/debobigego/object-view.vue';
+import MkObjectView from '@/components/object-view.vue';
 import FormTextarea from '@/components/form/textarea.vue';
 import FormLink from '@/components/form/link.vue';
 import MkLink from '@/components/link.vue';
@@ -125,7 +124,7 @@ import * as symbols from '@/symbols';
 export default defineComponent({
 	components: {
 		FormTextarea,
-		FormObjectView,
+		MkObjectView,
 		FormButton,
 		FormLink,
 		FormSection,

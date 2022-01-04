@@ -53,9 +53,8 @@
 				<FormButton v-if="user.host != null" class="_formBlock" @click="updateRemoteUser"><i class="fas fa-sync"></i> {{ $ts.updateRemoteUser }}</FormButton>
 			</FormSection>
 
-			<FormObjectView tall :value="user">
-				<span>Raw</span>
-			</FormObjectView>
+			<MkObjectView tall :value="user">
+			</MkObjectView>
 		</div>
 	</FormSuspense>
 </MkSpacer>
@@ -63,7 +62,7 @@
 
 <script lang="ts">
 import { computed, defineAsyncComponent, defineComponent } from 'vue';
-import FormObjectView from '@/components/debobigego/object-view.vue';
+import MkObjectView from '@/components/object-view.vue';
 import FormTextarea from '@/components/form/textarea.vue';
 import FormSwitch from '@/components/form/switch.vue';
 import FormLink from '@/components/form/link.vue';
@@ -83,7 +82,7 @@ export default defineComponent({
 		FormSection,
 		FormTextarea,
 		FormSwitch,
-		FormObjectView,
+		MkObjectView,
 		FormButton,
 		FormLink,
 		MkKeyValue,
