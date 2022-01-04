@@ -19,7 +19,7 @@
 
 	<MkContainer :foldable="true" class="charts">
 		<template #header><i class="fas fa-chart-bar"></i>{{ $ts.charts }}</template>
-		<div style="padding-top: 12px;">
+		<div style="padding: 12px;">
 			<MkInstanceStats :chart-limit="500" :detailed="true"/>
 		</div>
 	</MkContainer>
@@ -77,7 +77,6 @@ import MkQueueChart from '@/components/queue-chart.vue';
 import { version, url } from '@/config';
 import bytes from '@/filters/bytes';
 import number from '@/filters/number';
-import MkInstanceInfo from './instance.vue';
 import XMetrics from './metrics.vue';
 import * as os from '@/os';
 import { stream } from '@/stream';
@@ -159,9 +158,7 @@ export default defineComponent({
 					host: q
 				});
 			}
-			os.popup(MkInstanceInfo, {
-				instance: instance
-			}, {}, 'closed');
+			// TODO
 		},
 
 		bytes,

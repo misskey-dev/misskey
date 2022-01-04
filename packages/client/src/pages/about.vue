@@ -93,7 +93,8 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.instanceInfo,
-				icon: 'fas fa-info-circle'
+				icon: 'fas fa-info-circle',
+				bg: 'var(--bg)',
 			},
 			host,
 			version,
