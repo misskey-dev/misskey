@@ -2,6 +2,7 @@ import { onUnmounted, Ref, ref, watch } from 'vue';
 import { $i } from './account';
 import { api } from './os';
 import { get, set } from './scripts/idb-proxy';
+import { defaultStore } from './store';
 import { stream } from './stream';
 
 type StateDef = Record<string, {
@@ -95,11 +96,13 @@ export class Storage<T extends StateDef> {
 		}
 	}
 
-	private async load(): Promise<void> {
+	private load(): Promise<void> {
 		return new Promise((resolve, reject) => {
 			if ($i) {
 				// api関数と循環参照なので一応setTimeoutしておく
-				setTimeout(() => {
+				setTimeout(async () => {
+					await defaultStore.ready;
+
 					api('i/registry/get-all', { scope: ['client', this.key] })
 					.then(kvs => {
 						const cache = {};
