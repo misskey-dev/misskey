@@ -1,36 +1,34 @@
 <template>
-<FormBase>
+<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
 	<FormSuspense :p="init">
-		<FormSwitch v-model="enableServiceWorker">
-			{{ $ts.enableServiceworker }}
-			<template #desc>{{ $ts.serviceworkerInfo }}</template>
+		<FormSwitch v-model="enableServiceWorker" class="_formBlock">
+			<template #label>{{ $ts.enableServiceworker }}</template>
+			<template #caption>{{ $ts.serviceworkerInfo }}</template>
 		</FormSwitch>
 
 		<template v-if="enableServiceWorker">
-			<FormInput v-model="swPublicKey">
+			<FormInput v-model="swPublicKey" class="_formBlock">
 				<template #prefix><i class="fas fa-key"></i></template>
-				Public key
+				<template #label>Public key</template>
 			</FormInput>
 
-			<FormInput v-model="swPrivateKey">
+			<FormInput v-model="swPrivateKey" class="_formBlock">
 				<template #prefix><i class="fas fa-key"></i></template>
-				Private key
+				<template #label>Private key</template>
 			</FormInput>
 		</template>
 
-		<FormButton primary @click="save"><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
+		<FormButton primary class="_formBlock" @click="save"><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
 	</FormSuspense>
-</FormBase>
+</MkSpacer>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import FormSwitch from '@/components/debobigego/switch.vue';
-import FormInput from '@/components/debobigego/input.vue';
-import FormButton from '@/components/debobigego/button.vue';
-import FormBase from '@/components/debobigego/base.vue';
-import FormGroup from '@/components/debobigego/group.vue';
-import FormSuspense from '@/components/debobigego/suspense.vue';
+import FormSwitch from '@/components/form/switch.vue';
+import FormInput from '@/components/form/input.vue';
+import FormButton from '@/components/ui/button.vue';
+import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { fetchInstance } from '@/instance';
@@ -39,8 +37,6 @@ export default defineComponent({
 	components: {
 		FormSwitch,
 		FormInput,
-		FormBase,
-		FormGroup,
 		FormButton,
 		FormSuspense,
 	},
