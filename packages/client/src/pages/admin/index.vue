@@ -10,7 +10,7 @@
 				</div>
 
 				<MkInfo v-if="noMaintainerInformation" warn class="info">{{ $ts.noMaintainerInformationWarning }} <MkA to="/admin/settings" class="_link">{{ $ts.configure }}</MkA></MkInfo>
-				<MkInfo v-if="noBotProtection" warn class="info">{{ $ts.noBotProtectionWarning }} <MkA to="/admin/bot-protection" class="_link">{{ $ts.configure }}</MkA></MkInfo>
+				<MkInfo v-if="noBotProtection" warn class="info">{{ $ts.noBotProtectionWarning }} <MkA to="/admin/security" class="_link">{{ $ts.configure }}</MkA></MkInfo>
 
 				<MkSuperMenu :def="menuDef" :grid="page == null"></MkSuperMenu>
 			</div>
@@ -29,9 +29,6 @@
 import { computed, defineAsyncComponent, defineComponent, isRef, nextTick, onMounted, reactive, ref, watch } from 'vue';
 import { i18n } from '@/i18n';
 import MkSuperMenu from '@/components/ui/super-menu.vue';
-import FormGroup from '@/components/debobigego/group.vue';
-import FormBase from '@/components/debobigego/base.vue';
-import FormButton from '@/components/debobigego/button.vue';
 import MkInfo from '@/components/ui/info.vue';
 import { scroll } from '@/scripts/scroll';
 import { instance } from '@/instance';
@@ -41,10 +38,7 @@ import { lookupUser } from '@/scripts/lookup-user';
 
 export default defineComponent({
 	components: {
-		FormBase,
 		MkSuperMenu,
-		FormGroup,
-		FormButton,
 		MkInfo,
 	},
 
@@ -234,13 +228,9 @@ export default defineComponent({
 				case 'email-settings': return defineAsyncComponent(() => import('./email-settings.vue'));
 				case 'object-storage': return defineAsyncComponent(() => import('./object-storage.vue'));
 				case 'security': return defineAsyncComponent(() => import('./security.vue'));
-				case 'bot-protection': return defineAsyncComponent(() => import('./bot-protection.vue'));
 				case 'service-worker': return defineAsyncComponent(() => import('./service-worker.vue'));
 				case 'relays': return defineAsyncComponent(() => import('./relays.vue'));
 				case 'integrations': return defineAsyncComponent(() => import('./integrations.vue'));
-				case 'integrations/twitter': return defineAsyncComponent(() => import('./integrations-twitter.vue'));
-				case 'integrations/github': return defineAsyncComponent(() => import('./integrations-github.vue'));
-				case 'integrations/discord': return defineAsyncComponent(() => import('./integrations-discord.vue'));
 				case 'instance-block': return defineAsyncComponent(() => import('./instance-block.vue'));
 				case 'proxy-account': return defineAsyncComponent(() => import('./proxy-account.vue'));
 				case 'other-settings': return defineAsyncComponent(() => import('./other-settings.vue'));

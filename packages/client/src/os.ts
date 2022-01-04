@@ -4,7 +4,6 @@ import { Component, defineAsyncComponent, markRaw, reactive, Ref, ref } from 'vu
 import { EventEmitter } from 'eventemitter3';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import * as Misskey from 'misskey-js';
-import * as Sentry from '@sentry/browser';
 import { apiUrl, debug, url } from '@/config';
 import MkPostFormDialog from '@/components/post-form-dialog.vue';
 import MkWaitingDialog from '@/components/waiting-dialog.vue';
@@ -69,19 +68,6 @@ export const api = ((endpoint: string, data: Record<string, any> = {}, token?: s
 				if (debug) {
 					log!.res = markRaw(body.error);
 					log!.state = 'failed';
-				}
-
-				if (defaultStore.state.reportError && !_DEV_) {
-					Sentry.withScope((scope) => {
-						scope.setTag('api_endpoint', endpoint);
-						scope.setContext('api params', data);
-						scope.setContext('api error info', body.info);
-						scope.setTag('api_error_id', body.id);
-						scope.setTag('api_error_code', body.code);
-						scope.setTag('api_error_kind', body.kind);
-						scope.setLevel(Sentry.Severity.Error);
-						Sentry.captureMessage('API error');
-					});
 				}
 			}
 		}).catch(reject);

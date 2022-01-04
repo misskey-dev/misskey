@@ -57,15 +57,16 @@ export const meta = {
 	},
 };
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps) => {
-	const announcement = await Announcements.save({
+	const announcement = await Announcements.insert({
 		id: genId(),
 		createdAt: new Date(),
 		updatedAt: null,
 		title: ps.title,
 		text: ps.text,
 		imageUrl: ps.imageUrl,
-	});
+	}).then(x => Announcements.findOneOrFail(x.identifiers[0]));
 
 	return announcement;
 });

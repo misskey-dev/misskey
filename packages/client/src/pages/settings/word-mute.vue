@@ -31,7 +31,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import FormTextarea from '@/components/form/textarea.vue';
-import FormBase from '@/components/debobigego/base.vue';
 import MkKeyValue from '@/components/key-value.vue';
 import MkButton from '@/components/ui/button.vue';
 import MkInfo from '@/components/ui/info.vue';
@@ -42,7 +41,6 @@ import * as symbols from '@/symbols';
 
 export default defineComponent({
 	components: {
-		FormBase,
 		MkButton,
 		FormTextarea,
 		MkKeyValue,

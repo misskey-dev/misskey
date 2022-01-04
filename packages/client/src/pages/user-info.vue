@@ -1,70 +1,75 @@
 <template>
-<FormBase>
+<MkSpacer :content-max="500" :margin-min="16" :margin-max="32">
 	<FormSuspense :p="init">
-		<div class="_debobigegoItem aeakzknw">
-			<MkAvatar class="avatar" :user="user" :show-indicator="true"/>
+		<div class="_formRoot">
+			<div class="_formBlock aeakzknw">
+				<MkAvatar class="avatar" :user="user" :show-indicator="true"/>
+			</div>
+
+			<FormLink :to="userPage(user)">Profile</FormLink>
+
+			<div class="_formBlock">
+				<MkKeyValue :copy="acct(user)" oneline style="margin: 1em 0;">
+					<template #key>Acct</template>
+					<template #value><span class="_monospace">{{ acct(user) }}</span></template>
+				</MkKeyValue>
+
+				<MkKeyValue :copy="user.id" oneline style="margin: 1em 0;">
+					<template #key>ID</template>
+					<template #value><span class="_monospace">{{ user.id }}</span></template>
+				</MkKeyValue>
+			</div>
+
+			<FormSection v-if="iAmModerator">
+				<template #label>Moderation</template>
+				<FormSwitch v-if="user.host == null && $i.isAdmin && (moderator || !user.isAdmin)" v-model="moderator" class="_formBlock" @update:modelValue="toggleModerator">{{ $ts.moderator }}</FormSwitch>
+				<FormSwitch v-model="silenced" class="_formBlock" @update:modelValue="toggleSilence">{{ $ts.silence }}</FormSwitch>
+				<FormSwitch v-model="suspended" class="_formBlock" @update:modelValue="toggleSuspend">{{ $ts.suspend }}</FormSwitch>
+				<FormButton v-if="user.host == null && iAmModerator" class="_formBlock" @click="resetPassword"><i class="fas fa-key"></i> {{ $ts.resetPassword }}</FormButton>
+			</FormSection>
+
+			<FormSection>
+				<template #label>ActivityPub</template>
+
+				<div class="_formBlock">
+					<MkKeyValue v-if="user.host" oneline style="margin: 1em 0;">
+						<template #key>{{ $ts.instanceInfo }}</template>
+						<template #value><MkA :to="`/instance-info/${user.host}`" class="_link">{{ user.host }} <i class="fas fa-angle-right"></i></MkA></template>
+					</MkKeyValue>
+					<MkKeyValue v-else oneline style="margin: 1em 0;">
+						<template #key>{{ $ts.instanceInfo }}</template>
+						<template #value>(Local user)</template>
+					</MkKeyValue>
+					<MkKeyValue oneline style="margin: 1em 0;">
+						<template #key>{{ $ts.updatedAt }}</template>
+						<template #value><MkTime v-if="user.lastFetchedAt" mode="detail" :time="user.lastFetchedAt"/><span v-else>N/A</span></template>
+					</MkKeyValue>
+					<MkKeyValue v-if="ap" oneline style="margin: 1em 0;">
+						<template #key>Type</template>
+						<template #value><span class="_monospace">{{ ap.type }}</span></template>
+					</MkKeyValue>
+				</div>
+
+				<FormButton v-if="user.host != null" class="_formBlock" @click="updateRemoteUser"><i class="fas fa-sync"></i> {{ $ts.updateRemoteUser }}</FormButton>
+			</FormSection>
+
+			<MkObjectView tall :value="user">
+			</MkObjectView>
 		</div>
-
-		<FormLink :to="userPage(user)">Profile</FormLink>
-
-		<FormGroup>
-			<FormKeyValueView>
-				<template #key>Acct</template>
-				<template #value><span class="_monospace">{{ acct(user) }}</span></template>
-			</FormKeyValueView>
-
-			<FormKeyValueView>
-				<template #key>ID</template>
-				<template #value><span class="_monospace">{{ user.id }}</span></template>
-			</FormKeyValueView>
-		</FormGroup>
-
-		<FormGroup v-if="iAmModerator">
-			<FormSwitch v-if="user.host == null && $i.isAdmin && (moderator || !user.isAdmin)" v-model="moderator" @update:modelValue="toggleModerator">{{ $ts.moderator }}</FormSwitch>
-			<FormSwitch v-model="silenced" @update:modelValue="toggleSilence">{{ $ts.silence }}</FormSwitch>
-			<FormSwitch v-model="suspended" @update:modelValue="toggleSuspend">{{ $ts.suspend }}</FormSwitch>
-		</FormGroup>
-
-		<FormGroup>
-			<FormButton v-if="user.host != null" @click="updateRemoteUser"><i class="fas fa-sync"></i> {{ $ts.updateRemoteUser }}</FormButton>
-			<FormButton v-if="user.host == null && iAmModerator" @click="resetPassword"><i class="fas fa-key"></i> {{ $ts.resetPassword }}</FormButton>
-		</FormGroup>
-
-		<FormGroup>
-			<FormLink :to="`/user-ap-info/${user.id}`">ActivityPub</FormLink>
-
-			<FormLink v-if="user.host" :to="`/instance-info/${user.host}`">{{ $ts.instanceInfo }}<template #suffix>{{ user.host }}</template></FormLink>
-			<FormKeyValueView v-else>
-				<template #key>{{ $ts.instanceInfo }}</template>
-				<template #value>(Local user)</template>
-			</FormKeyValueView>
-		</FormGroup>
-
-		<FormGroup>
-			<FormKeyValueView>
-				<template #key>{{ $ts.updatedAt }}</template>
-				<template #value><MkTime v-if="user.lastFetchedAt" mode="detail" :time="user.lastFetchedAt"/><span v-else>N/A</span></template>
-			</FormKeyValueView>
-		</FormGroup>
-
-		<FormObjectView tall :value="user">
-			<span>Raw</span>
-		</FormObjectView>
 	</FormSuspense>
-</FormBase>
+</MkSpacer>
 </template>
 
 <script lang="ts">
 import { computed, defineAsyncComponent, defineComponent } from 'vue';
-import FormObjectView from '@/components/debobigego/object-view.vue';
-import FormTextarea from '@/components/debobigego/textarea.vue';
-import FormSwitch from '@/components/debobigego/switch.vue';
-import FormLink from '@/components/debobigego/link.vue';
-import FormBase from '@/components/debobigego/base.vue';
-import FormGroup from '@/components/debobigego/group.vue';
-import FormButton from '@/components/debobigego/button.vue';
-import FormKeyValueView from '@/components/debobigego/key-value-view.vue';
-import FormSuspense from '@/components/debobigego/suspense.vue';
+import MkObjectView from '@/components/object-view.vue';
+import FormTextarea from '@/components/form/textarea.vue';
+import FormSwitch from '@/components/form/switch.vue';
+import FormLink from '@/components/form/link.vue';
+import FormSection from '@/components/form/section.vue';
+import FormButton from '@/components/ui/button.vue';
+import MkKeyValue from '@/components/key-value.vue';
+import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os';
 import number from '@/filters/number';
 import bytes from '@/filters/bytes';
@@ -74,14 +79,13 @@ import { userPage, acct } from '@/filters/user';
 
 export default defineComponent({
 	components: {
-		FormBase,
+		FormSection,
 		FormTextarea,
 		FormSwitch,
-		FormObjectView,
+		MkObjectView,
 		FormButton,
 		FormLink,
-		FormGroup,
-		FormKeyValueView,
+		MkKeyValue,
 		FormSuspense,
 	},
 
@@ -97,6 +101,7 @@ export default defineComponent({
 			[symbols.PAGE_INFO]: computed(() => ({
 				title: this.user ? acct(this.user) : this.$ts.userInfo,
 				icon: 'fas fa-info-circle',
+				bg: 'var(--bg)',
 				actions: this.user ? [this.user.url ? {
 					text: this.user.url,
 					icon: 'fas fa-external-link-alt',
@@ -108,6 +113,7 @@ export default defineComponent({
 			init: null,
 			user: null,
 			info: null,
+			ap: null,
 			moderator: false,
 			silenced: false,
 			suspended: false,
@@ -126,6 +132,13 @@ export default defineComponent({
 				this.init = this.createFetcher();
 			},
 			immediate: true
+		},
+		user() {
+			os.api('ap/get', {
+				uri: this.user.uri || `${url}/users/${this.user.id}`
+			}).then(res => {
+				this.ap = res;
+			});
 		}
 	},
 
@@ -234,7 +247,6 @@ export default defineComponent({
 .aeakzknw {
 	> .avatar {
 		display: block;
-		margin: 0 auto;
 		width: 64px;
 		height: 64px;
 	}

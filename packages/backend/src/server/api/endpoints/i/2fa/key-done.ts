@@ -41,6 +41,7 @@ export const meta = {
 
 const rpIdHashReal = hash(Buffer.from(config.hostname, 'utf-8'));
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	const profile = await UserProfiles.findOneOrFail(user.id);
 

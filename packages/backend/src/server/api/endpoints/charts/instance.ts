@@ -29,6 +29,7 @@ export const meta = {
 	res: convertLog(instanceChart.schema),
 };
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps) => {
 	return await instanceChart.getChart(ps.span as any, ps.limit!, ps.offset ? new Date(ps.offset) : null, ps.host);
 });
