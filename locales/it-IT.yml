@@ -802,8 +802,20 @@ hide: "Nascondere"
 leaveGroup: "Esci dal gruppo"
 leaveGroupConfirm: "Uscire da「{name}」?"
 useDrawerReactionPickerForMobile: "Mostra sul drawer da dispositivo mobile"
+welcomeBackWithName: "Bentornato/a, {name}"
+clickToFinishEmailVerification: "Fai click su [{ok}] per completare la verifica dell'indirizzo email."
+_emailUnavailable:
+  used: "Email già in uso"
+  format: "Formato email non valido"
+  disposable: "Email non riutilizzabile"
+  mx: "Server email non corretto"
+  smtp: "Il server email non risponde"
 _ffVisibility:
   public: "Pubblico"
+  followers: "Mostra solo ai follower"
+  private: "Invisibile"
+_signup:
+  almostThere: "Quasi completo"
 _ad:
   back: "Indietro"
   reduceFrequencyOfThisAd: "Visualizza questa pubblicità meno spesso"
