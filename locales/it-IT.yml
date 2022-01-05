@@ -816,6 +816,13 @@ _ffVisibility:
   private: "Invisibile"
 _signup:
   almostThere: "Quasi completo"
+  emailAddressInfo: "Inserisci il tuo indirizzo email. Non verrà reso pubblico."
+_accountDelete:
+  accountDelete: "Cancellazione account"
+  sendEmail: "Al termine della cancellazione dell'account, verrà inviata una mail all'indirizzo a cui era registrato."
+  requestAccountDelete: "Richiesta di cancellazione account"
+  started: "Il processo di cancellazione è iniziato."
+  inProgress: "Cancellazione in corso"
 _ad:
   back: "Indietro"
   reduceFrequencyOfThisAd: "Visualizza questa pubblicità meno spesso"
