@@ -808,7 +808,7 @@ classic: "Классика"
 muteThread: "Заглушить цепочку"
 unmuteThread: "Отменить глушение цепочки"
 ffVisibility: "Отображение подписок и подписчиков"
-ffVisibilityDescription: "Вы можете установить объем вашей следующей/последней информации."
+ffVisibilityDescription: "Здесь можно настроить, кто будет видеть ваши подписки и подпискиков."
 continueThread: "Показать следующие ответы"
 deleteAccountConfirm: "Учётная запись будет безвозвратно удалена. Подтверждаете?"
 incorrectPassword: "Пароль неверен."
@@ -822,10 +822,12 @@ clickToFinishEmailVerification: "Пожалуйста, нажмите [{ok}], ч
 _emailUnavailable:
   used: "Уже используется"
   format: "Неправильный формат"
+  disposable: "Временный адрес электронной почты не принимается"
   mx: "Это неправильный почтовый сервер!"
   smtp: "Почтовый сервер не отвечает"
 _ffVisibility:
   public: "Опубликовать"
+  followers: "Показывается только подписчикам"
   private: "Частный"
 _signup:
   almostThere: "Почти готово!"
