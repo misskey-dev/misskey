@@ -23,11 +23,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, markRaw } from 'vue';
+import { defineComponent, markRaw, ref } from 'vue';
 import XWindow from '@/components/ui/window.vue';
 import MkTextarea from '@/components/form/textarea.vue';
 import MkButton from '@/components/ui/button.vue';
 import * as os from '@/os';
+import { i18n } from '@/i18n';
 
 export default defineComponent({
 	components: {
@@ -49,25 +50,31 @@ export default defineComponent({
 
 	emits: ['closed'],
 
-	data() {
+	setup(props) {
+		const window = ref<InstanceType<typeof XWindow>>();
+		const comment = ref(props.initialComment || '');
+
+		function send() {
+			os.apiWithDialog('users/report-abuse', {
+				userId: props.user.id,
+				comment: comment.value,
+			}, undefined).then(res => {
+				os.alert({
+					type: 'success',
+					text: i18n.locale.abuseReported
+				});
+				window.value?.close();
+			});
+		}
+
 		return {
-			comment: this.initialComment || '',
+			send,
+			window,
+			comment,
 		};
 	},
 
 	methods: {
-		send() {
-			os.apiWithDialog('users/report-abuse', {
-				userId: this.user.id,
-				comment: this.comment,
-			}, undefined, res => {
-				os.alert({
-					type: 'success',
-					text: this.$ts.abuseReported
-				});
-				this.$refs.window.close();
-			});
-		}
 	},
 });
 </script>
