@@ -22,61 +22,42 @@
 </XWindow>
 </template>
 
-<script lang="ts">
-import { defineComponent, markRaw, ref } from 'vue';
+<script setup lang="ts">
+import { ref } from 'vue';
 import XWindow from '@/components/ui/window.vue';
 import MkTextarea from '@/components/form/textarea.vue';
 import MkButton from '@/components/ui/button.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		XWindow,
-		MkTextarea,
-		MkButton,
+const props = defineProps({
+	user: {
+		type: Object,
+		required: true,
 	},
-
-	props: {
-		user: {
-			type: Object,
-			required: true,
-		},
-		initialComment: {
-			type: String,
-			required: false,
-		},
-	},
-
-	emits: ['closed'],
-
-	setup(props) {
-		const window = ref<InstanceType<typeof XWindow>>();
-		const comment = ref(props.initialComment || '');
-
-		function send() {
-			os.apiWithDialog('users/report-abuse', {
-				userId: props.user.id,
-				comment: comment.value,
-			}, undefined).then(res => {
-				os.alert({
-					type: 'success',
-					text: i18n.locale.abuseReported
-				});
-				window.value?.close();
-			});
-		}
-
-		return {
-			send,
-			window,
-			comment,
-		};
-	},
-
-	methods: {
+	initialComment: {
+		type: String,
+		required: false,
 	},
 });
+
+/*const emits = */defineEmits(['closed']);
+
+const window = ref<InstanceType<typeof XWindow>>();
+const comment = ref(props.initialComment || '');
+
+function send() {
+	os.apiWithDialog('users/report-abuse', {
+		userId: props.user.id,
+		comment: comment.value,
+	}, undefined).then(res => {
+		os.alert({
+			type: 'success',
+			text: i18n.locale.abuseReported
+		});
+		window.value?.close();
+	});
+}
 </script>
 
 <style lang="scss" scoped>
