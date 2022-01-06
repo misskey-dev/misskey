@@ -858,13 +858,14 @@ _visibility:
 _postForm:
   replyPlaceholder: "Respondi la noton…"
   quotePlaceholder: "Citi la noton…"
-  channelPlaceholder: "Mencii en la kanalo…"
+  channelPlaceholder: "Afiŝi en la kanalo…"
   _placeholders:
     a: "Kion vi faras?"
     b: "Kio okazis ĉirkaŭ vi?"
     c: "Kio estas sur via penso?"
     d: "Kion vi volas diri?"
     e: "Komencu skribi…"
+    f: "Atendanta de vi skribon…"
 _profile:
   name: "Nomo"
   username: "Uzantnomo"
