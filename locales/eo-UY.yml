@@ -860,7 +860,7 @@ _postForm:
   quotePlaceholder: "Citi la noton…"
   channelPlaceholder: "Mencii en la kanalo…"
   _placeholders:
-    a: "Kiel vi fartas?"
+    a: "Kion vi faras?"
     b: "Kio okazis ĉirkaŭ vi?"
     c: "Kion vi pensas?"
     d: "Kion vi parolos?"
