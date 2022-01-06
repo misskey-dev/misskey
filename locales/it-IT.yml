@@ -902,6 +902,8 @@ _reversi:
   gameSettings: "Impostazioni di gioco"
   rules: "Regole"
   botSettings: "Opzioni del bot"
+  thisGameIsStartedSoon: "La partita inizierà tra poco."
+  waitingForOther: "In attesa dell'avversario"
   waitingBoth: "Preparati"
   ready: "Pronto"
   opponentTurn: "È il turno dell'avversario"
@@ -916,6 +918,8 @@ _reversi:
   white: "Bianco"
   total: "Totale"
   turnCount: "{count}° turno"
+  myGames: "Le tue partite"
+  allGames: "Tutte le partite"
   ended: "Esci"
   playing: "Partita in corso"
 _instanceTicker:
@@ -1484,6 +1488,10 @@ _pages:
       string: "Testo"
       array: "Liste"
       stringArray: "Lista di testo"
+_relayStatus:
+  requesting: "In attesa di approvazione"
+  accepted: "Approvato"
+  rejected: "Respinto"
 _notification:
   fileUploaded: "File caricato correttamente"
   youGotMention: "{name} ti ha menzionato"
