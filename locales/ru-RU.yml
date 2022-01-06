@@ -1269,6 +1269,7 @@ _exportOrImport:
   blockingList: "Заблокированные"
   userLists: "Списки"
   excludeMutingUsers: "Исключение отключенных пользователей"
+  excludeInactiveUsers: "Без неактивных учётных записей"
 _charts:
   federationInstancesIncDec: "Изменение внешних связей"
   federationInstancesTotal: "Количество внешних связей"
