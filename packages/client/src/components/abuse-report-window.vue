@@ -30,18 +30,14 @@ import MkButton from '@/components/ui/button.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 
-const props = defineProps({
-	user: {
-		type: Object,
-		required: true,
-	},
-	initialComment: {
-		type: String,
-		required: false,
-	},
-});
+const props = defineProps<{
+	user: Record<string, any>;
+	initialComment?: string;
+}>();
 
-/*const emits = */defineEmits(['closed']);
+const emit = defineEmits<{
+	(e: 'closed'): void;
+}>();
 
 const window = ref<InstanceType<typeof XWindow>>();
 const comment = ref(props.initialComment || '');
@@ -56,6 +52,7 @@ function send() {
 			text: i18n.locale.abuseReported
 		});
 		window.value?.close();
+		emit('closed');
 	});
 }
 </script>
