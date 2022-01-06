@@ -3,8 +3,6 @@ import { markRaw } from 'vue';
 import { $i } from '@/account';
 import { url } from '@/config';
 
-console.log($i.token);
-
 export const stream = markRaw(new Misskey.Stream(url, $i ? {
 	token: $i.token,
 } : null));
