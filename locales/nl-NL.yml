@@ -294,11 +294,6 @@ _exportOrImport:
   excludeInactiveUsers: "Negeer inactieve gebruikers"
 _timelines:
   home: "Startpagina"
-_rooms:
-  _roomType:
-    default: "Standaard"
-  _furnitures:
-    monitor: "Monitor"
 _pages:
   blocks:
     image: "Afbeeldingen"
