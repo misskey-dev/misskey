@@ -3,7 +3,7 @@ import { throttle } from 'throttle-debounce';
 import { Form, GetFormResultType } from '@/scripts/form';
 import * as os from '@/os';
 
-type Widget<P extends Record<string, unknown>> = {
+export type Widget<P extends Record<string, unknown>> = {
 	id: string;
 	data: Partial<P>;
 };
@@ -19,7 +19,7 @@ export type WidgetComponentEmits<P extends Record<string, unknown>> = {
 export type WidgetComponentExpose = {
 	name: string;
 	id: string | null;
-	oepnConfig: () => void;
+	configure: () => void;
 };
 
 export const useWidgetPropsManager = <F extends Form & Record<string, { default: any; }>>(
@@ -30,7 +30,7 @@ export const useWidgetPropsManager = <F extends Form & Record<string, { default:
 ): {
 	widgetProps: GetFormResultType<F>;
 	save: () => void;
-	oepnConfig: () => void;
+	configure: () => void;
 } => {
 	const widgetProps = reactive(props.widget ? JSON.parse(JSON.stringify(props.widget.data)) : {});
 
@@ -48,7 +48,7 @@ export const useWidgetPropsManager = <F extends Form & Record<string, { default:
 		emit('updateProps', widgetProps)
 	});
 
-	const oepnConfig = async () => {
+	const configure = async () => {
 		const form = JSON.parse(JSON.stringify(propsDef));
 		for (const item of Object.keys(form)) {
 			form[item].default = widgetProps[item];
@@ -66,6 +66,6 @@ export const useWidgetPropsManager = <F extends Form & Record<string, { default:
 	return {
 		widgetProps,
 		save,
-		oepnConfig,
+		configure,
 	};
 };

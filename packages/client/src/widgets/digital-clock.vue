@@ -13,9 +13,9 @@
 </template>
 
 <script lang="ts" setup>
-import { GetFormResultType } from '@/scripts/form';
 import { onUnmounted, ref, watch } from 'vue';
-import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
+import { GetFormResultType } from '@/scripts/form';
+import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
 
 const name = 'digitalClock';
 
@@ -37,10 +37,13 @@ const widgetPropsDef = {
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
-const props = defineProps<WidgetComponentProps<WidgetProps>>();
-const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
+// 現時点ではvueの制限によりimportしたtypeをジェネリックに渡せない
+//const props = defineProps<WidgetComponentProps<WidgetProps>>();
+//const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
+const props = defineProps<{ widget?: Widget<WidgetProps>; }>();
+const emit = defineEmits<{ (e: 'updateProps', props: WidgetProps); }>();
 
-const { widgetProps, oepnConfig } = useWidgetPropsManager(name,
+const { widgetProps, configure } = useWidgetPropsManager(name,
 	widgetPropsDef,
 	props,
 	emit,
@@ -65,7 +68,7 @@ tick();
 
 watch(() => widgetProps.showMs, () => {
 	if (intervalId) clearInterval(intervalId);
-	intervalId = setInterval(intervalId, widgetProps.showMs ? 10 : 1000);
+	intervalId = setInterval(tick, widgetProps.showMs ? 10 : 1000);
 }, { immediate: true });
 
 onUnmounted(() => {
@@ -74,7 +77,7 @@ onUnmounted(() => {
 
 defineExpose<WidgetComponentExpose>({
 	name,
-	oepnConfig,
+	configure,
 	id: props.widget ? props.widget.id : null,
 });
 </script>
