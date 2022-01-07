@@ -63,11 +63,6 @@ export default defineComponent({
 				injectFeaturedNote: v
 			});
 		},
-
-		taskmanager() {
-			os.popup(import('@/components/taskmanager.vue'), {
-			}, {}, 'closed');
-		},
 	}
 });
 </script>
