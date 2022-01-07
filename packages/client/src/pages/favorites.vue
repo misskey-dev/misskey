@@ -1,9 +1,7 @@
 <template>
-<div class="jmelgwjh">
-	<div class="body">
-		<XNotes class="notes" :pagination="pagination" :detail="true" :prop="'note'"/>
-	</div>
-</div>
+<MkSpacer :content-max="800">
+	<XNotes :pagination="pagination" :detail="true" :prop="'note'"/>
+</MkSpacer>
 </template>
 
 <script lang="ts" setup>
@@ -15,7 +13,7 @@ const pagination = {
 	endpoint: 'i/favorites',
 	limit: 10,
 	params: () => ({
-	})
+	}),
 };
 
 defineExpose({
@@ -26,16 +24,3 @@ defineExpose({
 	},
 });
 </script>
-
-<style lang="scss" scoped>
-.jmelgwjh {
-	background: var(--bg);
-
-	> .body {
-		box-sizing: border-box;
-		max-width: 800px;
-		margin: 0 auto;
-		padding: 16px;
-	}
-}
-</style>
