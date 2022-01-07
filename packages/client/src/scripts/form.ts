@@ -23,9 +23,13 @@ export type FormItem = {
 	enum: string[];
 } | {
 	label?: string;
-	type: 'array';
-	default: unknown[] | null;
+	type: 'radio';
+	default: unknown | null;
 	hidden?: boolean;
+	options: {
+		label: string;
+		value: unknown;
+	}[];
 };
 
 export type Form = Record<string, FormItem>;
@@ -34,7 +38,7 @@ type GetItemType<Item extends FormItem> =
 	Item['type'] extends 'string' ? string :
 	Item['type'] extends 'number' ? number :
 	Item['type'] extends 'boolean' ? boolean :
-	Item['type'] extends 'array' ? unknown[] :
+	Item['type'] extends 'radio' ? unknown :
 	Item['type'] extends 'enum' ? string
 	: never;
 
