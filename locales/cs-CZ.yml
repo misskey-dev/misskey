@@ -394,7 +394,6 @@ deleteAllFiles: "Smazat všechny soubory"
 deleteAllFilesConfirm: "Jste si jistí že chcete smazat všechny soubory?"
 userSuspended: "Tomuto uživateli byl pozastaven účet."
 addItem: "Přidat položku"
-rooms: "Místnost"
 inboxUrl: "Inbox URL"
 deletedNote: "Odstraněné příspěvky"
 invisibleNote: "Skryté příspěvky"
@@ -442,11 +441,6 @@ _exportOrImport:
   userLists: "Seznamy"
 _timelines:
   home: "Domů"
-_rooms:
-  _roomType:
-    default: "Výchozí"
-  _furnitures:
-    monitor: "Monitorovat"
 _pages:
   blocks:
     image: "Obrázky"
