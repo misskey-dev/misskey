@@ -859,7 +859,6 @@ _postForm:
   quotePlaceholder: "Citi la noton…"
   channelPlaceholder: "Afiŝi en la kanalo…"
   _placeholders:
-    a: "Kion vi faras?"
     b: "Kio okazis ĉirkaŭ vi?"
     c: "Kio estas sur via penso?"
     d: "Kion vi volas diri?"
