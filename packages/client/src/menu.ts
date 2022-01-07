@@ -173,12 +173,6 @@ export const menuDef = reactive({
 		icon: 'fas fa-terminal',
 		to: '/scratchpad',
 	},
-	rooms: {
-		title: 'rooms',
-		icon: 'fas fa-door-closed',
-		show: computed(() => $i != null),
-		to: computed(() => `/@${$i.username}/room`),
-	},
 	ui: {
 		title: 'switchUi',
 		icon: 'fas fa-columns',

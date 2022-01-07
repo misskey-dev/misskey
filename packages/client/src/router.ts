@@ -20,7 +20,6 @@ const defaultRoutes = [
 	{ path: '/@:acct/:page?', name: 'user', component: page('user/index'), props: route => ({ acct: route.params.acct, page: route.params.page || 'index' }) },
 	{ path: '/@:user/pages/:page', component: page('page'), props: route => ({ pageName: route.params.page, username: route.params.user }) },
 	{ path: '/@:user/pages/:pageName/view-source', component: page('page-editor/page-editor'), props: route => ({ initUser: route.params.user, initPageName: route.params.pageName }) },
-	{ path: '/@:acct/room', props: true, component: page('room/room') },
 	{ path: '/settings/:page(.*)?', name: 'settings', component: page('settings/index'), props: route => ({ initialPage: route.params.page || null }) },
 	{ path: '/reset-password/:token?', component: page('reset-password'), props: route => ({ token: route.params.token }) },
 	{ path: '/signup-complete/:code', component: page('signup-complete'), props: route => ({ code: route.params.code }) },

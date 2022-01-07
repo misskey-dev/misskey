@@ -7,19 +7,15 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import * as os from '@/os';
+<script lang="ts" setup>
 import * as symbols from '@/symbols';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: this.$ts.notFound,
-				icon: 'fas fa-exclamation-triangle'
-			},
-		}
+defineExpose({
+	[symbols.PAGE_INFO]: {
+		title: i18n.locale.notFound,
+		icon: 'fas fa-exclamation-triangle',
+		bg: 'var(--bg)',
 	},
 });
 </script>
