@@ -29,3 +29,15 @@ export type FormItem = {
 };
 
 export type Form = Record<string, FormItem>;
+
+type GetItemType<Item extends FormItem> =
+	Item['type'] extends 'string' ? string :
+	Item['type'] extends 'number' ? number :
+	Item['type'] extends 'boolean' ? boolean :
+	Item['type'] extends 'array' ? unknown[] :
+	Item['type'] extends 'enum' ? string
+	: never;
+
+export type GetFormResultType<F extends Form> = {
+	[P in keyof F]: GetItemType<F[P]>;
+};
