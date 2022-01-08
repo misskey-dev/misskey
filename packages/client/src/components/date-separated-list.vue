@@ -90,7 +90,7 @@ export default defineComponent({
 			}
 		});
 
-		return h(
+		return () => h(
 			defaultStore.state.animation ? TransitionGroup : 'div',
 			defaultStore.state.animation ? {
 					class: 'sqadhkmv' + (props.noGap ? ' noGap' : ''),
