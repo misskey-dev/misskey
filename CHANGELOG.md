@@ -7,6 +7,16 @@
 
 -->
 
+## 12.x.x (unreleased)
+
+### Changes
+- Room機能が削除されました
+  - 後日別リポジトリとして復活予定です
+
+### Improvements
+
+### Bugfixes
+
 ## 12.101.1 (2021/12/29)
 
 ### Bugfixes

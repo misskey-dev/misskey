@@ -1,61 +1,67 @@
 <template>
-<FormBase class="cwepdizn">
-	<div class="_debobigegoItem colorPicker">
-		<div class="_debobigegoLabel">{{ $ts.backgroundColor }}</div>
-		<div class="_debobigegoPanel colors">
-			<div class="row">
-				<button v-for="color in bgColors.filter(x => x.kind === 'light')" :key="color.color" class="color _button" :class="{ active: theme.props.bg === color.color }" @click="setBgColor(color)">
-					<div class="preview" :style="{ background: color.forPreview }"></div>
-				</button>
+<MkSpacer :content-max="800" :margin-min="16" :margin-max="32">
+	<div class="cwepdizn _formRoot">
+		<FormFolder :default-open="true" class="_formBlock">
+			<template #label>{{ $ts.backgroundColor }}</template>
+			<div class="cwepdizn-colors">
+				<div class="row">
+					<button v-for="color in bgColors.filter(x => x.kind === 'light')" :key="color.color" class="color _button" :class="{ active: theme.props.bg === color.color }" @click="setBgColor(color)">
+						<div class="preview" :style="{ background: color.forPreview }"></div>
+					</button>
+				</div>
+				<div class="row">
+					<button v-for="color in bgColors.filter(x => x.kind === 'dark')" :key="color.color" class="color _button" :class="{ active: theme.props.bg === color.color }" @click="setBgColor(color)">
+						<div class="preview" :style="{ background: color.forPreview }"></div>
+					</button>
+				</div>
 			</div>
-			<div class="row">
-				<button v-for="color in bgColors.filter(x => x.kind === 'dark')" :key="color.color" class="color _button" :class="{ active: theme.props.bg === color.color }" @click="setBgColor(color)">
-					<div class="preview" :style="{ background: color.forPreview }"></div>
-				</button>
-			</div>
-		</div>
-	</div>
-	<div class="_debobigegoItem colorPicker">
-		<div class="_debobigegoLabel">{{ $ts.accentColor }}</div>
-		<div class="_debobigegoPanel colors">
-			<div class="row">
-				<button v-for="color in accentColors" :key="color" class="color rounded _button" :class="{ active: theme.props.accent === color }" @click="setAccentColor(color)">
-					<div class="preview" :style="{ background: color }"></div>
-				</button>
-			</div>
-		</div>
-	</div>
-	<div class="_debobigegoItem colorPicker">
-		<div class="_debobigegoLabel">{{ $ts.textColor }}</div>
-		<div class="_debobigegoPanel colors">
-			<div class="row">
-				<button v-for="color in fgColors" :key="color" class="color char _button" :class="{ active: (theme.props.fg === color.forLight) || (theme.props.fg === color.forDark) }" @click="setFgColor(color)">
-					<div class="preview" :style="{ color: color.forPreview ? color.forPreview : theme.base === 'light' ? '#5f5f5f' : '#dadada' }">A</div>
-				</button>
-			</div>
-		</div>
-	</div>
+		</FormFolder>
 
-	<FormGroup v-if="codeEnabled">
-		<FormTextarea v-model="themeCode" tall>
-			<span>{{ $ts._theme.code }}</span>
-		</FormTextarea>
-		<FormButton primary @click="applyThemeCode">{{ $ts.apply }}</FormButton>
-	</FormGroup>
-	<FormButton v-else @click="codeEnabled = true"><i class="fas fa-code"></i> {{ $ts.editCode }}</FormButton>
+		<FormFolder :default-open="true" class="_formBlock">
+			<template #label>{{ $ts.accentColor }}</template>
+			<div class="cwepdizn-colors">
+				<div class="row">
+					<button v-for="color in accentColors" :key="color" class="color rounded _button" :class="{ active: theme.props.accent === color }" @click="setAccentColor(color)">
+						<div class="preview" :style="{ background: color }"></div>
+					</button>
+				</div>
+			</div>
+		</FormFolder>
 
-	<FormGroup v-if="descriptionEnabled">
-		<FormTextarea v-model="description">
-			<span>{{ $ts._theme.description }}</span>
-		</FormTextarea>
-	</FormGroup>
-	<FormButton v-else @click="descriptionEnabled = true">{{ $ts.addDescription }}</FormButton>
+		<FormFolder :default-open="true" class="_formBlock">
+			<template #label>{{ $ts.textColor }}</template>
+			<div class="cwepdizn-colors">
+				<div class="row">
+					<button v-for="color in fgColors" :key="color" class="color char _button" :class="{ active: (theme.props.fg === color.forLight) || (theme.props.fg === color.forDark) }" @click="setFgColor(color)">
+						<div class="preview" :style="{ color: color.forPreview ? color.forPreview : theme.base === 'light' ? '#5f5f5f' : '#dadada' }">A</div>
+					</button>
+				</div>
+			</div>
+		</FormFolder>
 
-	<FormGroup>
-		<FormButton @click="showPreview"><i class="fas fa-eye"></i> {{ $ts.preview }}</FormButton>
-		<FormButton primary @click="saveAs"><i class="fas fa-save"></i> {{ $ts.saveAs }}</FormButton>
-	</FormGroup>
-</FormBase>
+		<FormFolder :default-open="false" class="_formBlock">
+			<template #icon><i class="fas fa-code"></i></template>
+			<template #label>{{ $ts.editCode }}</template>
+
+			<div class="_formRoot">
+				<FormTextarea v-model="themeCode" tall class="_formBlock">
+					<template #label>{{ $ts._theme.code }}</template>
+				</FormTextarea>
+				<FormButton primary class="_formBlock" @click="applyThemeCode">{{ $ts.apply }}</FormButton>
+			</div>
+		</FormFolder>
+
+		<FormFolder :default-open="false" class="_formBlock">
+			<template #label>{{ $ts.addDescription }}</template>
+
+			<div class="_formRoot">
+				<FormTextarea v-model="description">
+					<template #label>{{ $ts._theme.description }}</template>
+				</FormTextarea>
+			</div>
+		</FormFolder>
+	</div>
+</MkSpacer>
 </template>
 
 <script lang="ts">
@@ -65,12 +71,11 @@ import * as tinycolor from 'tinycolor2';
 import { v4 as uuid} from 'uuid';
 import * as JSON5 from 'json5';
 
-import FormBase from '@/components/debobigego/base.vue';
-import FormButton from '@/components/debobigego/button.vue';
-import FormTextarea from '@/components/debobigego/textarea.vue';
-import FormGroup from '@/components/debobigego/group.vue';
+import FormButton from '@/components/ui/button.vue';
+import FormTextarea from '@/components/form/textarea.vue';
+import FormFolder from '@/components/form/folder.vue';
 
-import { Theme, applyTheme, validateTheme, darkTheme, lightTheme } from '@/scripts/theme';
+import { Theme, applyTheme, darkTheme, lightTheme } from '@/scripts/theme';
 import { host } from '@/config';
 import * as os from '@/os';
 import { ColdDeviceStorage } from '@/store';
@@ -79,10 +84,9 @@ import * as symbols from '@/symbols';
 
 export default defineComponent({
 	components: {
-		FormBase,
 		FormButton,
 		FormTextarea,
-		FormGroup,
+		FormFolder,
 	},
 
 	async beforeRouteLeave(to, from) {
@@ -96,13 +100,23 @@ export default defineComponent({
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.themeEditor,
 				icon: 'fas fa-palette',
+				bg: 'var(--bg)',
+				actions: [{
+					asFullButton: true,
+					icon: 'fas fa-eye',
+					text: this.$ts.preview,
+					handler: this.showPreview,
+				}, {
+					asFullButton: true,
+					icon: 'fas fa-check',
+					text: this.$ts.saveAs,
+					handler: this.saveAs,
+				}],
 			},
 			theme: {
 				base: 'light',
 				props: lightTheme.props
 			} as Theme,
-			codeEnabled: false,
-			descriptionEnabled: false,
 			description: null,
 			themeCode: null,
 			bgColors: [
@@ -244,57 +258,51 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .cwepdizn {
-	max-width: 800px;
-	margin: 0 auto;
+	::v-deep(.cwepdizn-colors) {
+		text-align: center;
 
-	> .colorPicker {
-		> .colors {
-			padding: 32px;
-			text-align: center;
+		> .row {
+			> .color {
+				display: inline-block;
+				position: relative;
+				width: 64px;
+				height: 64px;
+				border-radius: 8px;
 
-			> .row {
-				> .color {
-					display: inline-block;
-					position: relative;
-					width: 64px;
-					height: 64px;
-					border-radius: 8px;
+				> .preview {
+					position: absolute;
+					top: 0;
+					left: 0;
+					right: 0;
+					bottom: 0;
+					margin: auto;
+					width: 42px;
+					height: 42px;
+					border-radius: 4px;
+					box-shadow: 0 2px 4px rgb(0 0 0 / 30%);
+					transition: transform 0.15s ease;
+				}
+
+				&:hover {
+					> .preview {
+						transform: scale(1.1);
+					}
+				}
+
+				&.active {
+					box-shadow: 0 0 0 2px var(--divider) inset;
+				}
+
+				&.rounded {
+					border-radius: 999px;
 
 					> .preview {
-						position: absolute;
-						top: 0;
-						left: 0;
-						right: 0;
-						bottom: 0;
-						margin: auto;
-						width: 42px;
-						height: 42px;
-						border-radius: 4px;
-						box-shadow: 0 2px 4px rgb(0 0 0 / 30%);
-						transition: transform 0.15s ease;
-					}
-
-					&:hover {
-						> .preview {
-							transform: scale(1.1);
-						}
-					}
-
-					&.active {
-						box-shadow: 0 0 0 2px var(--divider) inset;
-					}
-
-					&.rounded {
 						border-radius: 999px;
-
-						> .preview {
-							border-radius: 999px;
-						}
 					}
+				}
 
-					&.char {
-						line-height: 42px;
-					}
+				&.char {
+					line-height: 42px;
 				}
 			}
 		}
