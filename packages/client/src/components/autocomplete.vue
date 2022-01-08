@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts" setup>
-import { markRaw, ref, onUpdated, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
+import { markRaw, ref, Ref, onUpdated, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
 import { emojilist } from '@/scripts/emojilist';
 import contains from '@/scripts/contains';
 import { twemojiSvgBase } from '@/scripts/twemoji-base';
@@ -46,7 +46,7 @@ import { defaultStore } from '@/store';
 
 const props = defineProps<{
 	type: string;
-	q?: string;
+	q: string | null;
 	textarea: HTMLTextAreaElement;
 	close: () => void;
 	x: number;
@@ -176,7 +176,7 @@ function exec() {
 	}
 
 	if (props.type === 'user') {
-		if (props.q == null) {
+		if (!props.q) {
 			users.value = [];
 			fetching.value = false;
 			return;
@@ -202,7 +202,7 @@ function exec() {
 			});
 		}
 	} else if (props.type === 'hashtag') {
-		if (props.q == null || props.q == '') {
+		if (!props.q || props.q == '') {
 			hashtags.value = JSON.parse(localStorage.getItem('hashtags') || '[]');
 			fetching.value = false;
 		} else {
@@ -225,7 +225,7 @@ function exec() {
 			}
 		}
 	} else if (props.type === 'emoji') {
-		if (props.q == null || props.q === undefined || props.q == '') {
+		if (!props.q || props.q == '') {
 			// 最近使った絵文字をサジェスト
 			emojis.value = defaultStore.state.recentlyUsedEmojis.map(emoji => emojiDb.find(e => e.emoji == emoji)).filter(x => x) as EmojiDef[];
 			return;
@@ -255,7 +255,7 @@ function exec() {
 
 		emojis.value = matched;
 	} else if (props.type === 'mfmTag') {
-		if (props.q == null || props.q == '') {
+		if (!props.q || props.q == '') {
 			mfmTags.value = MFM_TAGS;
 			return;
 		}
@@ -264,7 +264,7 @@ function exec() {
 	}
 }
 
-function onMousedown(e: { target: any; }: { target: any; }) {
+function onMousedown(e: Event) {
 	if (!contains(rootEl.value, e.target) && (rootEl.value != e.target)) props.close();
 }
 
@@ -347,9 +347,8 @@ onUpdated(() => {
 
 onMounted(() => {
 	setPosition();
-	fetchSuggests();
 	
-	textarea.addEventListener('keydown', onKeydown);
+	props.textarea.addEventListener('keydown', onKeydown);
 
 	for (const el of Array.from(document.querySelectorAll('body *'))) {
 		el.addEventListener('mousedown', onMousedown);
