@@ -18,54 +18,41 @@
 </button>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { ref } from 'vue';
 import * as os from '@/os';
 
-export default defineComponent({
-	props: {
-		channel: {
-			type: Object,
-			required: true
-		},
-		full: {
-			type: Boolean,
-			required: false,
-			default: false,
-		},
-	},
-
-	data() {
-		return {
-			isFollowing: this.channel.isFollowing,
-			wait: false,
-		};
-	},
-
-	methods: {
-		async onClick() {
-			this.wait = true;
-
-			try {
-				if (this.isFollowing) {
-					await os.api('channels/unfollow', {
-						channelId: this.channel.id
-					});
-					this.isFollowing = false;
-				} else {
-					await os.api('channels/follow', {
-						channelId: this.channel.id
-					});
-					this.isFollowing = true;
-				}
-			} catch (e) {
-				console.error(e);
-			} finally {
-				this.wait = false;
-			}
-		}
-	}
+const props = withDefaults(defineProps<{
+	channel: Record<string, any>;
+	full?: boolean;
+}>(), {
+	full: false,
 });
+
+const isFollowing = ref<boolean>(props.channel.isFollowing);
+const wait = ref(false);
+
+async function onClick() {
+	wait.value = true;
+
+	try {
+		if (isFollowing.value) {
+			await os.api('channels/unfollow', {
+				channelId: props.channel.id
+			});
+			isFollowing.value = false;
+		} else {
+			await os.api('channels/follow', {
+				channelId: props.channel.id
+			});
+			isFollowing.value = true;
+		}
+	} catch (e) {
+		console.error(e);
+	} finally {
+		wait.value = false;
+	}
+}
 </script>
 
 <style lang="scss" scoped>
