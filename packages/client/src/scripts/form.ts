@@ -30,6 +30,16 @@ export type FormItem = {
 		label: string;
 		value: unknown;
 	}[];
+} | {
+	label?: string;
+	type: 'object';
+	default: Record<string, unknown> | null;
+	hidden: true;
+} | {
+	label?: string;
+	type: 'array';
+	default: unknown[] | null;
+	hidden: true;
 };
 
 export type Form = Record<string, FormItem>;
@@ -39,7 +49,9 @@ type GetItemType<Item extends FormItem> =
 	Item['type'] extends 'number' ? number :
 	Item['type'] extends 'boolean' ? boolean :
 	Item['type'] extends 'radio' ? unknown :
-	Item['type'] extends 'enum' ? string
+	Item['type'] extends 'enum' ? string :
+	Item['type'] extends 'array' ? unknown[] :
+	Item['type'] extends 'object' ? Record<string, unknown>
 	: never;
 
 export type GetFormResultType<F extends Form> = {
