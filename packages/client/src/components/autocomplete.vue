@@ -399,6 +399,7 @@ export default defineComponent({
 			hashtags,
 			emojis,
 			mfmTags,
+
 			complete,
 			onKeydown,
 			acct,
