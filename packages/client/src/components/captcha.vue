@@ -111,8 +111,6 @@ onBeforeUnmount(() => {
 
 defineExpose({
 	reset,
-	requestRender,
-	callback,
 });
 
 </script>
