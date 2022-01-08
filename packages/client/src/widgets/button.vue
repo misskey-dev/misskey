@@ -6,7 +6,6 @@
 </div>
 </template>
 
-
 <script lang="ts" setup>
 import { onMounted, onUnmounted, ref, watch } from 'vue';
 import { GetFormResultType } from '@/scripts/form';

@@ -1,7 +1,7 @@
 import { App, defineAsyncComponent } from 'vue';
 
 export default function(app: App) {
-	//app.component('MkwMemo', defineAsyncComponent(() => import('./memo.vue')));
+	app.component('MkwMemo', defineAsyncComponent(() => import('./memo.vue')));
 	app.component('MkwNotifications', defineAsyncComponent(() => import('./notifications.vue')));
 	//app.component('MkwTimeline', defineAsyncComponent(() => import('./timeline.vue')));
 	app.component('MkwCalendar', defineAsyncComponent(() => import('./calendar.vue')));
