@@ -1,8 +1,8 @@
 <template>
-<XWindow ref="window" :initial-width="400" :initial-height="500" :can-resize="true" @closed="$emit('closed')">
+<XWindow ref="window" :initial-width="400" :initial-height="500" :can-resize="true" @closed="emit('closed')">
 	<template #header>
 		<i class="fas fa-exclamation-circle" style="margin-right: 0.5em;"></i>
-		<I18n :src="$ts.reportAbuseOf" tag="span">
+		<I18n :src="i18n.locale.reportAbuseOf" tag="span">
 			<template #name>
 				<b><MkAcct :user="user"/></b>
 			</template>
@@ -11,12 +11,12 @@
 	<div class="dpvffvvy _monolithic_">
 		<div class="_section">
 			<MkTextarea v-model="comment">
-				<template #label>{{ $ts.details }}</template>
-				<template #caption>{{ $ts.fillAbuseReportDescription }}</template>
+				<template #label>{{ i18n.locale.details }}</template>
+				<template #caption>{{ i18n.locale.fillAbuseReportDescription }}</template>
 			</MkTextarea>
 		</div>
 		<div class="_section">
-			<MkButton primary full :disabled="comment.length === 0" @click="send">{{ $ts.send }}</MkButton>
+			<MkButton primary full :disabled="comment.length === 0" @click="send">{{ i18n.locale.send }}</MkButton>
 		</div>
 	</div>
 </XWindow>

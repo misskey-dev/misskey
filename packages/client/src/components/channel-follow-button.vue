@@ -6,14 +6,14 @@
 >
 	<template v-if="!wait">
 		<template v-if="isFollowing">
-			<span v-if="full">{{ $ts.unfollow }}</span><i class="fas fa-minus"></i>
+			<span v-if="full">{{ i18n.locale.unfollow }}</span><i class="fas fa-minus"></i>
 		</template>
 		<template v-else>
-			<span v-if="full">{{ $ts.follow }}</span><i class="fas fa-plus"></i>
+			<span v-if="full">{{ i18n.locale.follow }}</span><i class="fas fa-plus"></i>
 		</template>
 	</template>
 	<template v-else>
-		<span v-if="full">{{ $ts.processing }}</span><i class="fas fa-spinner fa-pulse fa-fw"></i>
+		<span v-if="full">{{ i18n.locale.processing }}</span><i class="fas fa-spinner fa-pulse fa-fw"></i>
 	</template>
 </button>
 </template>
@@ -21,6 +21,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 import * as os from '@/os';
+import { i18n } from '@/i18n';
 
 const props = withDefaults(defineProps<{
 	channel: Record<string, any>;

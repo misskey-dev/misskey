@@ -6,7 +6,7 @@
 		<div class="status">
 			<div>
 				<i class="fas fa-users fa-fw"></i>
-				<I18n :src="$ts._channel.usersCount" tag="span" style="margin-left: 4px;">
+				<I18n :src="i18n.locale._channel.usersCount" tag="span" style="margin-left: 4px;">
 					<template #n>
 						<b>{{ channel.usersCount }}</b>
 					</template>
@@ -14,7 +14,7 @@
 			</div>
 			<div>
 				<i class="fas fa-pencil-alt fa-fw"></i>
-				<I18n :src="$ts._channel.notesCount" tag="span" style="margin-left: 4px;">
+				<I18n :src="i18n.locale._channel.notesCount" tag="span" style="margin-left: 4px;">
 					<template #n>
 						<b>{{ channel.notesCount }}</b>
 					</template>
@@ -27,7 +27,7 @@
 	</article>
 	<footer>
 		<span v-if="channel.lastNotedAt">
-			{{ $ts.updatedAt }}: <MkTime :time="channel.lastNotedAt"/>
+			{{ i18n.locale.updatedAt }}: <MkTime :time="channel.lastNotedAt"/>
 		</span>
 	</footer>
 </MkA>
@@ -35,6 +35,7 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue';
+import { i18n } from '@/i18n';
 
 const props = defineProps<{
 	channel: Record<string, any>;

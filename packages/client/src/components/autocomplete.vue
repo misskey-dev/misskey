@@ -8,7 +8,7 @@
 			</span>
 			<span class="username">@{{ acct(user) }}</span>
 		</li>
-		<li tabindex="-1" class="choose" @click="chooseUser()" @keydown="onKeydown">{{ $ts.selectUser }}</li>
+		<li tabindex="-1" class="choose" @click="chooseUser()" @keydown="onKeydown">{{ i18n.locale.selectUser }}</li>
 	</ol>
 	<ol v-else-if="hashtags.length > 0" ref="suggests" class="hashtags">
 		<li v-for="hashtag in hashtags" tabindex="-1" @click="complete(type, hashtag)" @keydown="onKeydown">
@@ -17,8 +17,8 @@
 	</ol>
 	<ol v-else-if="emojis.length > 0" ref="suggests" class="emojis">
 		<li v-for="emoji in emojis" tabindex="-1" @click="complete(type, emoji.emoji)" @keydown="onKeydown">
-			<span v-if="emoji.isCustomEmoji" class="emoji"><img :src="$store.state.disableShowingAnimatedImages ? getStaticImageUrl(emoji.url) : emoji.url" :alt="emoji.emoji"/></span>
-			<span v-else-if="!$store.state.useOsNativeEmojis" class="emoji"><img :src="emoji.url" :alt="emoji.emoji"/></span>
+			<span v-if="emoji.isCustomEmoji" class="emoji"><img :src="defaultStore.state.disableShowingAnimatedImages ? getStaticImageUrl(emoji.url) : emoji.url" :alt="emoji.emoji"/></span>
+			<span v-else-if="!defaultStore.state.useOsNativeEmojis" class="emoji"><img :src="emoji.url" :alt="emoji.emoji"/></span>
 			<span v-else class="emoji">{{ emoji.emoji }}</span>
 			<span class="name" v-html="emoji.name.replace(q, `<b>${q}</b>`)"></span>
 			<span v-if="emoji.aliasOf" class="alias">({{ emoji.aliasOf }})</span>
@@ -43,6 +43,7 @@ import { defaultStore } from '@/store';
 import { emojilist } from '@/scripts/emojilist';
 import { instance } from '@/instance';
 import { twemojiSvgBase } from '@/scripts/twemoji-base';
+import { i18n } from '@/i18n';
 
 type EmojiDef = {
 	emoji: string;
@@ -405,6 +406,9 @@ export default defineComponent({
 			acct,
 			chooseUser,
 			getStaticImageUrl,
+
+			i18n,
+			defaultStore,
 		};
 	},
 })

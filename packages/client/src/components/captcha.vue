@@ -1,13 +1,14 @@
 <template>
 <div>
-	<span v-if="!available">{{ $ts.waiting }}<MkEllipsis/></span>
+	<span v-if="!available">{{ i18n.locale.waiting }}<MkEllipsis/></span>
 	<div ref="captchaEl"></div>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { defaultStore } from '@/store';
 import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue';
+import { defaultStore } from '@/store';
+import { i18n } from '@/i18n';
 
 type Captcha = {
 	render(container: string | Node, options: {

@@ -1,6 +1,6 @@
 <template>
 <button class="nrvgflfu _button" @click="toggle">
-	<b>{{ modelValue ? $ts._cw.hide : $ts._cw.show }}</b>
+	<b>{{ modelValue ? i18n.locale._cw.hide : i18n.locale._cw.show }}</b>
 	<span v-if="!modelValue">{{ label }}</span>
 </button>
 </template>
