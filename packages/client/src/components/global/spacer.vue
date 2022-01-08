@@ -40,7 +40,7 @@ export default defineComponent({
 				return;
 			}
 
-			if (rect.width > props.contentMax || rect.width > 500) {
+			if (rect.width > props.contentMax || (rect.width > 360 && window.innerWidth > 400)) {
 				margin.value = props.marginMax;
 			} else {
 				margin.value = props.marginMin;

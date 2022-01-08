@@ -1,10 +1,10 @@
 <template>
 <div class="_formRoot">
-	<FormSwitch :value="$i.injectFeaturedNote" @update:modelValue="onChangeInjectFeaturedNote" class="_formBlock">
+	<FormSwitch :value="$i.injectFeaturedNote" class="_formBlock" @update:modelValue="onChangeInjectFeaturedNote">
 		{{ $ts.showFeaturedNotesInTimeline }}
 	</FormSwitch>
 
-	<FormSwitch v-model="reportError" class="_formBlock">{{ $ts.sendErrorReports }}<template #desc>{{ $ts.sendErrorReportsDescription }}</template></FormSwitch>
+	<FormSwitch v-model="reportError" class="_formBlock">{{ $ts.sendErrorReports }}<template #caption>{{ $ts.sendErrorReportsDescription }}</template></FormSwitch>
 
 	<FormLink to="/settings/account-info" class="_formBlock">{{ $ts.accountInfo }}</FormLink>
 
@@ -62,11 +62,6 @@ export default defineComponent({
 			os.api('i/update', {
 				injectFeaturedNote: v
 			});
-		},
-
-		taskmanager() {
-			os.popup(import('@/components/taskmanager.vue'), {
-			}, {}, 'closed');
 		},
 	}
 });

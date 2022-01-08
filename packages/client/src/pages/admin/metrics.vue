@@ -76,7 +76,6 @@ import MkwFederation from '../../widgets/federation.vue';
 import { version, url } from '@/config';
 import bytes from '@/filters/bytes';
 import number from '@/filters/number';
-import MkInstanceInfo from './instance.vue';
 
 Chart.register(
   ArcElement,

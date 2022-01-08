@@ -170,10 +170,10 @@ export default defineComponent({
 					aspectRatio: props.aspectRatio || 2.5,
 					layout: {
 						padding: {
-							left: 16,
-							right: 16,
-							top: 16,
-							bottom: 8,
+							left: 0,
+							right: 0,
+							top: 0,
+							bottom: 0,
 						},
 					},
 					scales: {
