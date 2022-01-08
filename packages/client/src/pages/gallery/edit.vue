@@ -10,7 +10,7 @@
 		</FormTextarea>
 
 		<FormGroup>
-			<div v-for="file in files" :key="file.id" class="_debobigegoItem _debobigegoPanel wqugxsfx" :style="{ backgroundImage: file ? `url(${ file.thumbnailUrl })` : null }">
+			<div v-for="file in files" :key="file.id" class="_formGroup wqugxsfx" :style="{ backgroundImage: file ? `url(${ file.thumbnailUrl })` : null }">
 				<div class="name">{{ file.name }}</div>
 				<button v-tooltip="$ts.remove" class="remove _button" @click="remove(file)"><i class="fas fa-times"></i></button>
 			</div>

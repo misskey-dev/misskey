@@ -1,21 +1,7 @@
 <template>
 <MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
 	<FormSuspense :p="init">
-		<FormSection>
-			<FormInput v-model="summalyProxy" class="_formBlock">
-				<template #prefix><i class="fas fa-link"></i></template>
-				<template #label>Summaly Proxy URL</template>
-			</FormInput>
-		</FormSection>
-		<FormSection>
-			<FormInput v-model="deeplAuthKey" class="_formBlock">
-				<template #prefix><i class="fas fa-key"></i></template>
-				<template #label>DeepL Auth Key</template>
-			</FormInput>
-			<FormSwitch v-model="deeplIsPro" class="_formBlock">
-				<template #label>Pro account</template>
-			</FormSwitch>
-		</FormSection>
+		none
 	</FormSuspense>
 </MkSpacer>
 </template>
@@ -53,9 +39,6 @@ export default defineComponent({
 					handler: this.save,
 				}],
 			},
-			summalyProxy: '',
-			deeplAuthKey: '',
-			deeplIsPro: false,
 		}
 	},
 
@@ -66,15 +49,9 @@ export default defineComponent({
 	methods: {
 		async init() {
 			const meta = await os.api('meta', { detail: true });
-			this.summalyProxy = meta.summalyProxy;
-			this.deeplAuthKey = meta.deeplAuthKey;
-			this.deeplIsPro = meta.deeplIsPro;
 		},
 		save() {
 			os.apiWithDialog('admin/update-meta', {
-				summalyProxy: this.summalyProxy,
-				deeplAuthKey: this.deeplAuthKey,
-				deeplIsPro: this.deeplIsPro,
 			}).then(() => {
 				fetchInstance();
 			});

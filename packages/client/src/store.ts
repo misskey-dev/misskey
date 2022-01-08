@@ -245,8 +245,6 @@ export class ColdDeviceStorage {
 		darkTheme: require('@/themes/d-dark.json5') as Theme,
 		syncDeviceDarkMode: true,
 		plugins: [] as Plugin[],
-		roomGraphicsQuality: 'medium' as 'cheep' | 'low' | 'medium' | 'high' | 'ultra',
-		roomUseOrthographicCamera: true,
 	};
 
 	public static watchers = [];

@@ -4,16 +4,13 @@ import { Component, defineAsyncComponent, markRaw, reactive, Ref, ref } from 'vu
 import { EventEmitter } from 'eventemitter3';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import * as Misskey from 'misskey-js';
-import { apiUrl, debug, url } from '@/config';
+import { apiUrl, url } from '@/config';
 import MkPostFormDialog from '@/components/post-form-dialog.vue';
 import MkWaitingDialog from '@/components/waiting-dialog.vue';
 import { resolve } from '@/router';
 import { $i } from '@/account';
-import { defaultStore } from '@/store';
 
 export const pendingApiRequestsCount = ref(0);
-let apiRequestsCount = 0; // for debug
-export const apiRequests = ref([]); // for debug
 
 const apiClient = new Misskey.api.APIClient({
 	origin: url,
@@ -25,18 +22,6 @@ export const api = ((endpoint: string, data: Record<string, any> = {}, token?: s
 	const onFinally = () => {
 		pendingApiRequestsCount.value--;
 	};
-
-	const log = debug ? reactive({
-		id: ++apiRequestsCount,
-		endpoint,
-		req: markRaw(data),
-		res: null,
-		state: 'pending',
-	}) : null;
-	if (debug) {
-		apiRequests.value.push(log);
-		if (apiRequests.value.length > 128) apiRequests.value.shift();
-	}
 
 	const promise = new Promise((resolve, reject) => {
 		// Append a credential
@@ -54,21 +39,10 @@ export const api = ((endpoint: string, data: Record<string, any> = {}, token?: s
 
 			if (res.status === 200) {
 				resolve(body);
-				if (debug) {
-					log!.res = markRaw(JSON.parse(JSON.stringify(body)));
-					log!.state = 'success';
-				}
 			} else if (res.status === 204) {
 				resolve();
-				if (debug) {
-					log!.state = 'success';
-				}
 			} else {
 				reject(body.error);
-				if (debug) {
-					log!.res = markRaw(body.error);
-					log!.state = 'failed';
-				}
 			}
 		}).catch(reject);
 	});

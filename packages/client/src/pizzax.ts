@@ -91,6 +91,8 @@ export class Storage<T extends StateDef> {
 		}
 
 		this.pizzaxChannel.addEventListener('message', ({ where, key, value, userId }) => {
+			// アカウント変更すればunisonReloadが効くため、このreturnが発火することは
+			// まずないと思うけど一応弾いておく
 			if (where === 'deviceAccount' && !($i && userId !== $i.id)) return;
 			this.state[key] = value;
 			this.reactiveState[key].value = value;

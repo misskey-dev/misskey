@@ -27,32 +27,14 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import * as misskey from 'misskey-js';
 import MkFollowButton from './follow-button.vue';
 import { userPage } from '@/filters/user';
 
-export default defineComponent({
-	components: {
-		MkFollowButton
-	},
-
-	props: {
-		user: {
-			type: Object,
-			required: true
-		},
-	},
-
-	data() {
-		return {
-		};
-	},
-
-	methods: {
-		userPage,
-	}
-});
+defineProps<{
+	user: misskey.entities.UserDetailed;
+}>();
 </script>
 
 <style lang="scss" scoped>
