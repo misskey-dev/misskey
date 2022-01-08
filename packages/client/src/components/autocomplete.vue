@@ -1,5 +1,5 @@
 <template>
-<div class="swhvrteh _popup _shadow" :style="{ zIndex }" @contextmenu.prevent="() => {}">
+<div ref="rootEl" class="swhvrteh _popup _shadow" :style="{ zIndex }" @contextmenu.prevent="() => {}">
 	<ol v-if="type === 'user'" ref="suggests" class="users">
 		<li v-for="user in users" tabindex="-1" class="user" @click="complete(type, user)" @keydown="onKeydown">
 			<img class="avatar" :src="user.avatarUrl"/>
@@ -32,8 +32,8 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, markRaw } from 'vue';
+<script lang="ts" setup>
+import { markRaw, ref, onUpdated, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
 import { emojilist } from '@/scripts/emojilist';
 import contains from '@/scripts/contains';
 import { twemojiSvgBase } from '@/scripts/twemoji-base';
@@ -42,6 +42,33 @@ import { acct } from '@/filters/user';
 import * as os from '@/os';
 import { instance } from '@/instance';
 import { MFM_TAGS } from '@/scripts/mfm-tags';
+import { defaultStore } from '@/store';
+
+const props = defineProps<{
+	type: string;
+	q?: string;
+	textarea: HTMLTextAreaElement;
+	close: () => void;
+	x: number;
+	y: number;
+}>();
+
+const emit = defineEmits<{
+	(e: 'done', v: { type: string; value: any }): void;
+	(e: 'closed'): void;
+}>();
+
+const fetching = ref(true);
+const users = ref<any[]>([]);
+const hashtags = ref<any[]>([]);
+const emojis = ref<(EmojiDef)[]>([]);
+const items = ref<Element[] | HTMLCollection>([]);
+const mfmTags = ref<string[]>([]);
+const select = ref(-1);
+const zIndex = os.claimZIndex('high');
+
+const suggests = ref<Element>();
+const rootEl = ref<HTMLDivElement>();
 
 type EmojiDef = {
 	emoji: string;
@@ -54,16 +81,14 @@ type EmojiDef = {
 const lib = emojilist.filter(x => x.category !== 'flags');
 
 const char2file = (char: string) => {
-	let codes = Array.from(char).map(x => x.codePointAt(0).toString(16));
+	let codes = Array.from(char).map(x => x.codePointAt(0)?.toString(16));
 	if (!codes.includes('200d')) codes = codes.filter(x => x != 'fe0f');
-	codes = codes.filter(x => x && x.length);
-	return codes.join('-');
+	return codes.filter(x => x && x.length).join('-');
 };
 
 const emjdb: EmojiDef[] = lib.map(x => ({
 	emoji: x.char,
 	name: x.name,
-	aliasOf: null,
 	url: `${twemojiSvgBase}/${char2file(x.char)}.svg`
 }));
 
@@ -112,293 +137,243 @@ emojiDefinitions.sort((a, b) => a.name.length - b.name.length);
 const emojiDb = markRaw(emojiDefinitions.concat(emjdb));
 //#endregion
 
-export default defineComponent({
-	props: {
-		type: {
-			type: String,
-			required: true,
-		},
+function complete(type: string, value: any) {
+	emit('done', { type, value });
+	emit('closed');
+	if (type === 'emoji') {
+		let recents = defaultStore.state.recentlyUsedEmojis;
+		recents = recents.filter((e: any) => e !== value);
+		recents.unshift(value);
+		defaultStore.set('recentlyUsedEmojis', recents.splice(0, 32));
+	}
+}
 
-		q: {
-			type: String,
-			required: false,
-		},
+function setPosition() {
+	if (!rootEl.value) return;
 
-		textarea: {
-			type: HTMLTextAreaElement,
-			required: true,
-		},
+	if (props.x + rootEl.value.offsetWidth > window.innerWidth) {
+		rootEl.value.style.left = (window.innerWidth - rootEl.value.offsetWidth) + 'px';
+	} else {
+		rootEl.value.style.left = `${props.x}px`;
+	}
 
-		close: {
-			type: Function,
-			required: true,
-		},
+	if (props.y + rootEl.value.offsetHeight > window.innerHeight) {
+		rootEl.value.style.top = (props.y - rootEl.value.offsetHeight) + 'px';
+		rootEl.value.style.marginTop = '0';
+	} else {
+		rootEl.value.style.top = props.y + 'px';
+		rootEl.value.style.marginTop = 'calc(1em + 8px)';
+	}
+}
 
-		x: {
-			type: Number,
-			required: true,
-		},
+function exec() {
+	select.value = -1;
 
-		y: {
-			type: Number,
-			required: true,
-		},
-	},
-
-	emits: ['done', 'closed'],
-
-	data() {
-		return {
-			getStaticImageUrl,
-			fetching: true,
-			users: [],
-			hashtags: [],
-			emojis: [],
-			items: [],
-			mfmTags: [],
-			select: -1,
-			zIndex: os.claimZIndex('high'),
+	if (suggests.value) {
+		for (const el of Array.from(items.value)) {
+			el.removeAttribute('data-selected');
 		}
-	},
+	}
 
-	updated() {
-		this.setPosition();
-		this.items = (this.$refs.suggests as Element | undefined)?.children || [];
-	},
-
-	mounted() {
-		this.setPosition();
-
-		this.textarea.addEventListener('keydown', this.onKeydown);
-
-		for (const el of Array.from(document.querySelectorAll('body *'))) {
-			el.addEventListener('mousedown', this.onMousedown);
+	if (props.type === 'user') {
+		if (props.q == null) {
+			users.value = [];
+			fetching.value = false;
+			return;
 		}
 
-		this.$nextTick(() => {
-			this.exec();
+		const cacheKey = `autocomplete:user:${props.q}`;
+		const cache = sessionStorage.getItem(cacheKey);
 
-			this.$watch('q', () => {
-				this.$nextTick(() => {
-					this.exec();
+		if (cache) {
+			const users = JSON.parse(cache);
+			users.value = users;
+			fetching.value = false;
+		} else {
+			os.api('users/search-by-username-and-host', {
+				username: props.q,
+				limit: 10,
+				detail: false
+			}).then(searchedUsers => {
+				users.value = searchedUsers as any[];
+				fetching.value = false;
+				// キャッシュ
+				sessionStorage.setItem(cacheKey, JSON.stringify(searchedUsers));
+			});
+		}
+	} else if (props.type === 'hashtag') {
+		if (props.q == null || props.q == '') {
+			hashtags.value = JSON.parse(localStorage.getItem('hashtags') || '[]');
+			fetching.value = false;
+		} else {
+			const cacheKey = `autocomplete:hashtag:${props.q}`;
+			const cache = sessionStorage.getItem(cacheKey);
+			if (cache) {
+				const hashtags = JSON.parse(cache);
+				hashtags.value = hashtags;
+				fetching.value = false;
+			} else {
+				os.api('hashtags/search', {
+					query: props.q,
+					limit: 30
+				}).then(searchedHashtags => {
+					hashtags.value = searchedHashtags as any[];
+					fetching.value = false;
+					// キャッシュ
+					sessionStorage.setItem(cacheKey, JSON.stringify(searchedHashtags));
 				});
+			}
+		}
+	} else if (props.type === 'emoji') {
+		if (props.q == null || props.q === undefined || props.q == '') {
+			// 最近使った絵文字をサジェスト
+			emojis.value = defaultStore.state.recentlyUsedEmojis.map(emoji => emojiDb.find(e => e.emoji == emoji)).filter(x => x) as EmojiDef[];
+			return;
+		}
+
+		const matched: EmojiDef[] = [];
+		const max = 30;
+
+		emojiDb.some(x => {
+			if (x.name.startsWith(props.q || '') && !x.aliasOf && !matched.some(y => y.emoji == x.emoji)) matched.push(x);
+			return matched.length == max;
+		});
+
+		if (matched.length < max) {
+			emojiDb.some(x => {
+				if (x.name.startsWith(props.q || '') && !matched.some(y => y.emoji == x.emoji)) matched.push(x);
+				return matched.length == max;
+			});
+		}
+
+		if (matched.length < max) {
+			emojiDb.some(x => {
+				if (x.name.includes(props.q || '') && !matched.some(y => y.emoji == x.emoji)) matched.push(x);
+				return matched.length == max;
+			});
+		}
+
+		emojis.value = matched;
+	} else if (props.type === 'mfmTag') {
+		if (props.q == null || props.q == '') {
+			mfmTags.value = MFM_TAGS;
+			return;
+		}
+
+		mfmTags.value = MFM_TAGS.filter(tag => tag.startsWith(props.q || ''));
+	}
+}
+
+function onMousedown(e: { target: any; }: { target: any; }) {
+	if (!contains(rootEl.value, e.target) && (rootEl.value != e.target)) props.close();
+}
+
+function onKeydown(e: KeyboardEvent) {
+	const cancel = () => {
+		e.preventDefault();
+		e.stopPropagation();
+	};
+
+	switch (e.key) {
+		case 'Enter':
+			if (select.value !== -1) {
+				cancel();
+				(items.value[select.value] as any).click();
+			} else {
+				props.close();
+			}
+			break;
+
+		case 'Escape':
+			cancel();
+			props.close();
+			break;
+
+		case 'ArrowUp':
+			if (select.value !== -1) {
+				cancel();
+				selectPrev();
+			} else {
+				props.close();
+			}
+			break;
+
+		case 'Tab':
+		case 'ArrowDown':
+			cancel();
+			selectNext();
+			break;
+
+		default:
+			e.stopPropagation();
+			props.textarea.focus();
+	}
+}
+
+function selectNext() {
+	if (++select.value >= items.value.length) select.value = 0;
+	if (items.value.length === 0) select.value = -1;
+	applySelect();
+}
+
+function selectPrev() {
+	if (--select.value < 0) select.value = items.value.length - 1;
+	applySelect();
+}
+
+function applySelect() {
+	for (const el of Array.from(items.value)) {
+		el.removeAttribute('data-selected');
+	}
+
+	if (select.value !== -1) {
+		items.value[select.value].setAttribute('data-selected', 'true');
+		(items.value[select.value] as any).focus();
+	}
+}
+
+function chooseUser() {
+	props.close();
+	os.selectUser().then(user => {
+		complete('user', user);
+		props.textarea.focus();
+	});
+}
+
+onUpdated(() => {
+	setPosition();
+	items.value = suggests.value?.children || [];
+});
+
+onMounted(() => {
+	setPosition();
+	fetchSuggests();
+	
+	textarea.addEventListener('keydown', onKeydown);
+
+	for (const el of Array.from(document.querySelectorAll('body *'))) {
+		el.addEventListener('mousedown', onMousedown);
+	}
+
+	nextTick(() => {
+		exec();
+
+		watch(() => props.q, () => {
+			nextTick(() => {
+				exec();
 			});
 		});
-	},
+	});
+});
 
-	beforeUnmount() {
-		this.textarea.removeEventListener('keydown', this.onKeydown);
+onBeforeUnmount(() => {
+	props.textarea.removeEventListener('keydown', onKeydown);
 
-		for (const el of Array.from(document.querySelectorAll('body *'))) {
-			el.removeEventListener('mousedown', this.onMousedown);
-		}
-	},
-
-	methods: {
-		complete(type, value) {
-			this.$emit('done', { type, value });
-			this.$emit('closed');
-
-			if (type === 'emoji') {
-				let recents = this.$store.state.recentlyUsedEmojis;
-				recents = recents.filter((e: any) => e !== value);
-				recents.unshift(value);
-				this.$store.set('recentlyUsedEmojis', recents.splice(0, 32));
-			}
-		},
-
-		setPosition() {
-			if (this.x + this.$el.offsetWidth > window.innerWidth) {
-				this.$el.style.left = (window.innerWidth - this.$el.offsetWidth) + 'px';
-			} else {
-				this.$el.style.left = this.x + 'px';
-			}
-
-			if (this.y + this.$el.offsetHeight > window.innerHeight) {
-				this.$el.style.top = (this.y - this.$el.offsetHeight) + 'px';
-				this.$el.style.marginTop = '0';
-			} else {
-				this.$el.style.top = this.y + 'px';
-				this.$el.style.marginTop = 'calc(1em + 8px)';
-			}
-		},
-
-		exec() {
-			this.select = -1;
-			if (this.$refs.suggests) {
-				for (const el of Array.from(this.items)) {
-					el.removeAttribute('data-selected');
-				}
-			}
-
-			if (this.type === 'user') {
-				if (this.q == null) {
-					this.users = [];
-					this.fetching = false;
-					return;
-				}
-
-				const cacheKey = `autocomplete:user:${this.q}`;
-				const cache = sessionStorage.getItem(cacheKey);
-				if (cache) {
-					const users = JSON.parse(cache);
-					this.users = users;
-					this.fetching = false;
-				} else {
-					os.api('users/search-by-username-and-host', {
-						username: this.q,
-						limit: 10,
-						detail: false
-					}).then(users => {
-						this.users = users;
-						this.fetching = false;
-
-						// キャッシュ
-						sessionStorage.setItem(cacheKey, JSON.stringify(users));
-					});
-				}
-			} else if (this.type === 'hashtag') {
-				if (this.q == null || this.q == '') {
-					this.hashtags = JSON.parse(localStorage.getItem('hashtags') || '[]');
-					this.fetching = false;
-				} else {
-					const cacheKey = `autocomplete:hashtag:${this.q}`;
-					const cache = sessionStorage.getItem(cacheKey);
-					if (cache) {
-						const hashtags = JSON.parse(cache);
-						this.hashtags = hashtags;
-						this.fetching = false;
-					} else {
-						os.api('hashtags/search', {
-							query: this.q,
-							limit: 30
-						}).then(hashtags => {
-							this.hashtags = hashtags;
-							this.fetching = false;
-
-							// キャッシュ
-							sessionStorage.setItem(cacheKey, JSON.stringify(hashtags));
-						});
-					}
-				}
-			} else if (this.type === 'emoji') {
-				if (this.q == null || this.q == '') {
-					// 最近使った絵文字をサジェスト
-					this.emojis = this.$store.state.recentlyUsedEmojis.map(emoji => emojiDb.find(e => e.emoji == emoji)).filter(x => x != null);
-					return;
-				}
-
-				const matched = [];
-				const max = 30;
-
-				emojiDb.some(x => {
-					if (x.name.startsWith(this.q) && !x.aliasOf && !matched.some(y => y.emoji == x.emoji)) matched.push(x);
-					return matched.length == max;
-				});
-				if (matched.length < max) {
-					emojiDb.some(x => {
-						if (x.name.startsWith(this.q) && !matched.some(y => y.emoji == x.emoji)) matched.push(x);
-						return matched.length == max;
-					});
-				}
-				if (matched.length < max) {
-					emojiDb.some(x => {
-						if (x.name.includes(this.q) && !matched.some(y => y.emoji == x.emoji)) matched.push(x);
-						return matched.length == max;
-					});
-				}
-
-				this.emojis = matched;
-			} else if (this.type === 'mfmTag') {
-				if (this.q == null || this.q == '') {
-					this.mfmTags = MFM_TAGS;
-					return;
-				}
-
-				this.mfmTags = MFM_TAGS.filter(tag => tag.startsWith(this.q));
-			}
-		},
-
-		onMousedown(e) {
-			if (!contains(this.$el, e.target) && (this.$el != e.target)) this.close();
-		},
-
-		onKeydown(e) {
-			const cancel = () => {
-				e.preventDefault();
-				e.stopPropagation();
-			};
-
-			switch (e.which) {
-				case 10: // [ENTER]
-				case 13: // [ENTER]
-					if (this.select !== -1) {
-						cancel();
-						(this.items[this.select] as any).click();
-					} else {
-						this.close();
-					}
-					break;
-
-				case 27: // [ESC]
-					cancel();
-					this.close();
-					break;
-
-				case 38: // [↑]
-					if (this.select !== -1) {
-						cancel();
-						this.selectPrev();
-					} else {
-						this.close();
-					}
-					break;
-
-				case 9: // [TAB]
-				case 40: // [↓]
-					cancel();
-					this.selectNext();
-					break;
-
-				default:
-					e.stopPropagation();
-					this.textarea.focus();
-			}
-		},
-
-		selectNext() {
-			if (++this.select >= this.items.length) this.select = 0;
-			if (this.items.length === 0) this.select = -1;
-			this.applySelect();
-		},
-
-		selectPrev() {
-			if (--this.select < 0) this.select = this.items.length - 1;
-			this.applySelect();
-		},
-
-		applySelect() {
-			for (const el of Array.from(this.items)) {
-				el.removeAttribute('data-selected');
-			}
-
-			if (this.select !== -1) {
-				this.items[this.select].setAttribute('data-selected', 'true');
-				(this.items[this.select] as any).focus();
-			}
-		},
-
-		chooseUser() {
-			this.close();
-			os.selectUser().then(user => {
-				this.complete('user', user);
-				this.textarea.focus();
-			});
-		},
-
-		acct
+	for (const el of Array.from(document.querySelectorAll('body *'))) {
+		el.removeEventListener('mousedown', onMousedown);
 	}
 });
+
 </script>
 
 <style lang="scss" scoped>
