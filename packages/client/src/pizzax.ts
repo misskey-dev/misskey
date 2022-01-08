@@ -4,6 +4,7 @@ import { api } from './os';
 import { get, set } from './scripts/idb-proxy';
 import { defaultStore } from './store';
 import { stream } from './stream';
+import * as deepcopy from 'deepcopy';
 // SafariがBroadcastChannel未実装なのでライブラリを使う
 import { BroadcastChannel } from 'broadcast-channel';
 
@@ -20,7 +21,7 @@ type ArrayElement<A> = A extends readonly (infer T)[] ? T : never;
 type PizzaxChannelMessage<T extends StateDef> = {
 	where: 'device' | 'deviceAccount';
 	key: keyof T;
-	value: T[keyof T];
+	value: T[keyof T]['default'];
 	userId?: string;
 };
 
@@ -38,8 +39,8 @@ export class Storage<T extends StateDef> {
 	public readonly def: T;
 
 	// TODO: これが実装されたらreadonlyにしたい: https://github.com/microsoft/TypeScript/issues/37487
-	public readonly state = {} as State<T>;
-	public readonly reactiveState = {} as ReactiveState<T>;
+	public readonly state: State<T>;
+	public readonly reactiveState: ReactiveState<T>;
 
 	private pizzaxChannel: BroadcastChannel<PizzaxChannelMessage<T>>;
 
@@ -63,6 +64,14 @@ export class Storage<T extends StateDef> {
 
 		this.pizzaxChannel = new BroadcastChannel(`pizzax::${key}`);
 
+		this.state = {} as State<T>;
+		this.reactiveState = {} as ReactiveState<T>;
+
+		for (const [k, v] of Object.entries(def) as [keyof T, T[keyof T]['default']][]) {
+			this.state[k] = v.default;
+			this.reactiveState[k] = ref(v.default);
+		}
+	
 		this.ready = this.init();
 		this.loaded = this.ready.then(() => this.load());
 	}
@@ -74,28 +83,24 @@ export class Storage<T extends StateDef> {
 		const deviceAccountState = $i ? await get(this.deviceAccountStateKeyName) || {} : {};
 		const registryCache = $i ? await get(this.registryCacheKeyName) || {} : {};
 	
-		for (const [k, v] of Object.entries(this.def) as [keyof T, T[keyof T]][]) {
+		for (const [k, v] of Object.entries(this.def) as [keyof T, T[keyof T]['default']][]) {
 			if (v.where === 'device' && Object.prototype.hasOwnProperty.call(deviceState, k)) {
-				this.state[k] = deviceState[k];
+				this.reactiveState[k].value = this.state[k] = deviceState[k];
 			} else if (v.where === 'account' && $i && Object.prototype.hasOwnProperty.call(registryCache, k)) {
-				this.state[k] = registryCache[k];
+				this.reactiveState[k].value = this.state[k] = registryCache[k];
 			} else if (v.where === 'deviceAccount' && Object.prototype.hasOwnProperty.call(deviceAccountState, k)) {
-				this.state[k] = deviceAccountState[k];
+				this.reactiveState[k].value = this.state[k] = deviceAccountState[k];
 			} else {
-				this.state[k] = v.default;
+				this.reactiveState[k].value = this.state[k] = v.default;
 				if (_DEV_) console.log('Use default value', k, v.default);
 			}
-		}
-		for (const [k, v] of Object.entries(this.state) as [keyof T, T[keyof T]][]) {
-			this.reactiveState[k] = ref(v);
 		}
 
 		this.pizzaxChannel.addEventListener('message', ({ where, key, value, userId }) => {
 			// アカウント変更すればunisonReloadが効くため、このreturnが発火することは
 			// まずないと思うけど一応弾いておく
 			if (where === 'deviceAccount' && !($i && userId !== $i.id)) return;
-			this.state[key] = value;
-			this.reactiveState[key].value = value;
+			this.reactiveState[key].value = this.state[key] = value;
 		});
 
 		if ($i) {
@@ -103,8 +108,7 @@ export class Storage<T extends StateDef> {
 			connection?.on('registryUpdated', ({ scope, key, value }: { scope?: string[], key: keyof T, value: T[typeof key]['default'] }) => {
 				if (!scope || scope.length !== 2 || scope[0] !== 'client' || scope[1] !== this.key || this.state[key] === value) return;
 
-				this.state[key] = value;
-				this.reactiveState[key].value = value;
+				this.reactiveState[key].value = this.state[key] = value;
 	
 				this.addIdbSetJob(async () => {
 					const cache = await get(this.registryCacheKeyName);
@@ -126,16 +130,14 @@ export class Storage<T extends StateDef> {
 
 					api('i/registry/get-all', { scope: ['client', this.key] })
 					.then(kvs => {
-						const cache = {};
-						for (const [k, v] of Object.entries(this.def)) {
+						const cache: Partial<T> = {};
+						for (const [k, v] of Object.entries(this.def) as [keyof T, T[keyof T]['default']][]) {
 							if (v.where === 'account') {
 								if (Object.prototype.hasOwnProperty.call(kvs, k)) {
-									this.state[k as keyof T] = kvs[k];
-									this.reactiveState[k as keyof T].value = kvs[k as string];
-									cache[k] = kvs[k];
+									this.reactiveState[k].value = this.state[k] = (kvs as Partial<T>)[k];
+									cache[k] = (kvs as Partial<T>)[k];
 								} else {
-									this.state[k as keyof T] = v.default;
-									this.reactiveState[k].value = v.default;
+									this.reactiveState[k].value = this.state[k] = v.default;
 								}
 							}
 						}
@@ -151,12 +153,13 @@ export class Storage<T extends StateDef> {
 	}
 
 	public set<K extends keyof T>(key: K, value: T[K]['default']): Promise<void> {
-		const rawValue = JSON.parse(JSON.stringify(value));
+		// IndexedDBやBroadcastChannelで扱うために単純なオブジェクトにする
+		// (JSON.parse(JSON.stringify(value))の代わり)
+		const rawValue = deepcopy(value);
 
 		if (_DEV_) console.log('set', key, rawValue, value);
 
-		this.state[key] = rawValue;
-		this.reactiveState[key].value = rawValue;
+		this.reactiveState[key].value = this.state[key] = rawValue;
 
 		return this.addIdbSetJob(async () => {
 			if (_DEV_) console.log(`set ${key} start`);
@@ -192,7 +195,7 @@ export class Storage<T extends StateDef> {
 					await set(this.registryCacheKeyName, cache);
 					await api('i/registry/set', {
 						scope: ['client', this.key],
-						key: key,
+						key: key.toString(),
 						value: rawValue
 					});
 					break;
