@@ -50,7 +50,7 @@ const items = ref([]);
 const fetching = ref(true);
 
 const tick = () => {
-	fetch(`https://api.rss2json.com/v1/api.json?rss_url=${this.props.url}`, {}).then(res => {
+	fetch(`https://api.rss2json.com/v1/api.json?rss_url=${widgetProps.url}`, {}).then(res => {
 		res.json().then(feed => {
 			items.value = feed.items;
 			fetching.value = false;
