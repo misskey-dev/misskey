@@ -1,29 +1,25 @@
 <template>
-<FormBase>
+<MkSpacer :content-max="800">
 	<XQueue :connection="connection" domain="inbox">
 		<template #title>In</template>
 	</XQueue>
 	<XQueue :connection="connection" domain="deliver">
 		<template #title>Out</template>
 	</XQueue>
-	<FormButton danger @click="clear()"><i class="fas fa-trash-alt"></i> {{ $ts.clearQueue }}</FormButton>
-</FormBase>
+	<MkButton danger @click="clear()"><i class="fas fa-trash-alt"></i> {{ $ts.clearQueue }}</MkButton>
+</MkSpacer>
 </template>
 
 <script lang="ts">
 import { defineComponent, markRaw } from 'vue';
 import MkButton from '@/components/ui/button.vue';
 import XQueue from './queue.chart.vue';
-import FormBase from '@/components/debobigego/base.vue';
-import FormButton from '@/components/debobigego/button.vue';
 import * as os from '@/os';
 import { stream } from '@/stream';
 import * as symbols from '@/symbols';
 
 export default defineComponent({
 	components: {
-		FormBase,
-		FormButton,
 		MkButton,
 		XQueue,
 	},

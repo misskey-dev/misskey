@@ -215,7 +215,6 @@ export default defineComponent({
 				case 'deck': return defineAsyncComponent(() => import('./deck.vue'));
 				case 'plugin': return defineAsyncComponent(() => import('./plugin.vue'));
 				case 'plugin/install': return defineAsyncComponent(() => import('./plugin.install.vue'));
-				case 'plugin/manage': return defineAsyncComponent(() => import('./plugin.manage.vue'));
 				case 'import-export': return defineAsyncComponent(() => import('./import-export.vue'));
 				case 'account-info': return defineAsyncComponent(() => import('./account-info.vue'));
 				case 'delete-account': return defineAsyncComponent(() => import('./delete-account.vue'));

@@ -4,25 +4,12 @@
 </span>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import * as os from '@/os';
+<script lang="ts" setup>
+import { computed } from 'vue';
 
-export default defineComponent({
-	props: {
-		type: {
-			type: String,
-			required: true,
-		}
-	},
-	data() {
-		return {
-		};
-	},
-	computed: {
-		kind(): string {
-			return this.type.split('/')[0];
-		}
-	}
-});
+const props = defineProps<{
+	type: string;
+}>();
+
+const kind = computed(() => props.type.split('/')[0]);
 </script>
