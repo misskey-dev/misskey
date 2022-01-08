@@ -47,7 +47,7 @@ import * as tinycolor from 'tinycolor2';
 withDefaults(defineProps<{
 	thickness: number;
 }>(), {
-  thickness: 0.1,
+	thickness: 0.1,
 });
 
 const now = ref(new Date());
