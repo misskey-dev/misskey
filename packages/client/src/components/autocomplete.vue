@@ -32,43 +32,17 @@
 </div>
 </template>
 
-<script lang="ts" setup>
-import { markRaw, ref, onUpdated, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
-import { emojilist } from '@/scripts/emojilist';
+<script lang="ts">
+import { defineComponent, markRaw, ref, onUpdated, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
 import contains from '@/scripts/contains';
-import { twemojiSvgBase } from '@/scripts/twemoji-base';
 import { getStaticImageUrl } from '@/scripts/get-static-image-url';
 import { acct } from '@/filters/user';
 import * as os from '@/os';
-import { instance } from '@/instance';
 import { MFM_TAGS } from '@/scripts/mfm-tags';
 import { defaultStore } from '@/store';
-
-const props = defineProps<{
-	type: string;
-	q: string | null;
-	textarea: HTMLTextAreaElement;
-	close: () => void;
-	x: number;
-	y: number;
-}>();
-
-const emit = defineEmits<{
-	(e: 'done', v: { type: string; value: any }): void;
-	(e: 'closed'): void;
-}>();
-
-const fetching = ref(true);
-const users = ref<any[]>([]);
-const hashtags = ref<any[]>([]);
-const emojis = ref<(EmojiDef)[]>([]);
-const items = ref<Element[] | HTMLCollection>([]);
-const mfmTags = ref<string[]>([]);
-const select = ref(-1);
-const zIndex = os.claimZIndex('high');
-
-const suggests = ref<Element>();
-const rootEl = ref<HTMLDivElement>();
+import { emojilist } from '@/scripts/emojilist';
+import { instance } from '@/instance';
+import { twemojiSvgBase } from '@/scripts/twemoji-base';
 
 type EmojiDef = {
 	emoji: string;
@@ -137,242 +111,302 @@ emojiDefinitions.sort((a, b) => a.name.length - b.name.length);
 const emojiDb = markRaw(emojiDefinitions.concat(emjdb));
 //#endregion
 
-function complete(type: string, value: any) {
-	emit('done', { type, value });
-	emit('closed');
-	if (type === 'emoji') {
-		let recents = defaultStore.state.recentlyUsedEmojis;
-		recents = recents.filter((e: any) => e !== value);
-		recents.unshift(value);
-		defaultStore.set('recentlyUsedEmojis', recents.splice(0, 32));
-	}
-}
+export default defineComponent({
+	props: {
+		type: {
+			type: String,
+			required: true,
+		},
+		q: {
+			type: String,
+			required: false,
+		},
+		textarea: {
+			type: HTMLTextAreaElement,
+			required: true,
+		},
+		close: {
+			type: Function,
+			required: true,
+		},
+		x: {
+			type: Number,
+			required: true,
+		},
+		y: {
+			type: Number,
+			required: true,
+		},
+	},
 
-function setPosition() {
-	if (!rootEl.value) return;
+	emits: ['done', 'closed'],
 
-	if (props.x + rootEl.value.offsetWidth > window.innerWidth) {
-		rootEl.value.style.left = (window.innerWidth - rootEl.value.offsetWidth) + 'px';
-	} else {
-		rootEl.value.style.left = `${props.x}px`;
-	}
+	setup(props, ctx) {
+		const suggests = ref<Element>();
+		const rootEl = ref<HTMLDivElement>();
 
-	if (props.y + rootEl.value.offsetHeight > window.innerHeight) {
-		rootEl.value.style.top = (props.y - rootEl.value.offsetHeight) + 'px';
-		rootEl.value.style.marginTop = '0';
-	} else {
-		rootEl.value.style.top = props.y + 'px';
-		rootEl.value.style.marginTop = 'calc(1em + 8px)';
-	}
-}
+		const fetching = ref(true);
+		const users = ref<any[]>([]);
+		const hashtags = ref<any[]>([]);
+		const emojis = ref<(EmojiDef)[]>([]);
+		const items = ref<Element[] | HTMLCollection>([]);
+		const mfmTags = ref<string[]>([]);
+		const select = ref(-1);
+		const zIndex = os.claimZIndex('high');
 
-function exec() {
-	select.value = -1;
-
-	if (suggests.value) {
-		for (const el of Array.from(items.value)) {
-			el.removeAttribute('data-selected');
-		}
-	}
-
-	if (props.type === 'user') {
-		if (!props.q) {
-			users.value = [];
-			fetching.value = false;
-			return;
-		}
-
-		const cacheKey = `autocomplete:user:${props.q}`;
-		const cache = sessionStorage.getItem(cacheKey);
-
-		if (cache) {
-			const users = JSON.parse(cache);
-			users.value = users;
-			fetching.value = false;
-		} else {
-			os.api('users/search-by-username-and-host', {
-				username: props.q,
-				limit: 10,
-				detail: false
-			}).then(searchedUsers => {
-				users.value = searchedUsers as any[];
-				fetching.value = false;
-				// キャッシュ
-				sessionStorage.setItem(cacheKey, JSON.stringify(searchedUsers));
-			});
-		}
-	} else if (props.type === 'hashtag') {
-		if (!props.q || props.q == '') {
-			hashtags.value = JSON.parse(localStorage.getItem('hashtags') || '[]');
-			fetching.value = false;
-		} else {
-			const cacheKey = `autocomplete:hashtag:${props.q}`;
-			const cache = sessionStorage.getItem(cacheKey);
-			if (cache) {
-				const hashtags = JSON.parse(cache);
-				hashtags.value = hashtags;
-				fetching.value = false;
-			} else {
-				os.api('hashtags/search', {
-					query: props.q,
-					limit: 30
-				}).then(searchedHashtags => {
-					hashtags.value = searchedHashtags as any[];
-					fetching.value = false;
-					// キャッシュ
-					sessionStorage.setItem(cacheKey, JSON.stringify(searchedHashtags));
-				});
+		function complete(type: string, value: any) {
+			ctx.emit('done', { type, value });
+			ctx.emit('closed');
+			if (type === 'emoji') {
+				let recents = defaultStore.state.recentlyUsedEmojis;
+				recents = recents.filter((e: any) => e !== value);
+				recents.unshift(value);
+				defaultStore.set('recentlyUsedEmojis', recents.splice(0, 32));
 			}
 		}
-	} else if (props.type === 'emoji') {
-		if (!props.q || props.q == '') {
-			// 最近使った絵文字をサジェスト
-			emojis.value = defaultStore.state.recentlyUsedEmojis.map(emoji => emojiDb.find(e => e.emoji == emoji)).filter(x => x) as EmojiDef[];
-			return;
+
+		function setPosition() {
+			if (!rootEl.value) return;
+
+			if (props.x + rootEl.value.offsetWidth > window.innerWidth) {
+				rootEl.value.style.left = (window.innerWidth - rootEl.value.offsetWidth) + 'px';
+			} else {
+				rootEl.value.style.left = `${props.x}px`;
+			}
+
+			if (props.y + rootEl.value.offsetHeight > window.innerHeight) {
+				rootEl.value.style.top = (props.y - rootEl.value.offsetHeight) + 'px';
+				rootEl.value.style.marginTop = '0';
+			} else {
+				rootEl.value.style.top = props.y + 'px';
+				rootEl.value.style.marginTop = 'calc(1em + 8px)';
+			}
 		}
 
-		const matched: EmojiDef[] = [];
-		const max = 30;
+		function exec() {
+			select.value = -1;
 
-		emojiDb.some(x => {
-			if (x.name.startsWith(props.q || '') && !x.aliasOf && !matched.some(y => y.emoji == x.emoji)) matched.push(x);
-			return matched.length == max;
+			if (suggests.value) {
+				for (const el of Array.from(items.value)) {
+					el.removeAttribute('data-selected');
+				}
+			}
+
+			if (props.type === 'user') {
+				if (!props.q) {
+					users.value = [];
+					fetching.value = false;
+					return;
+				}
+
+				const cacheKey = `autocomplete:user:${props.q}`;
+				const cache = sessionStorage.getItem(cacheKey);
+
+				if (cache) {
+					const users = JSON.parse(cache);
+					users.value = users;
+					fetching.value = false;
+				} else {
+					os.api('users/search-by-username-and-host', {
+						username: props.q,
+						limit: 10,
+						detail: false
+					}).then(searchedUsers => {
+						users.value = searchedUsers as any[];
+						fetching.value = false;
+						// キャッシュ
+						sessionStorage.setItem(cacheKey, JSON.stringify(searchedUsers));
+					});
+				}
+			} else if (props.type === 'hashtag') {
+				if (!props.q || props.q == '') {
+					hashtags.value = JSON.parse(localStorage.getItem('hashtags') || '[]');
+					fetching.value = false;
+				} else {
+					const cacheKey = `autocomplete:hashtag:${props.q}`;
+					const cache = sessionStorage.getItem(cacheKey);
+					if (cache) {
+						const hashtags = JSON.parse(cache);
+						hashtags.value = hashtags;
+						fetching.value = false;
+					} else {
+						os.api('hashtags/search', {
+							query: props.q,
+							limit: 30
+						}).then(searchedHashtags => {
+							hashtags.value = searchedHashtags as any[];
+							fetching.value = false;
+							// キャッシュ
+							sessionStorage.setItem(cacheKey, JSON.stringify(searchedHashtags));
+						});
+					}
+				}
+			} else if (props.type === 'emoji') {
+				if (!props.q || props.q == '') {
+					// 最近使った絵文字をサジェスト
+					emojis.value = defaultStore.state.recentlyUsedEmojis.map(emoji => emojiDb.find(e => e.emoji == emoji)).filter(x => x) as EmojiDef[];
+					return;
+				}
+
+				const matched: EmojiDef[] = [];
+				const max = 30;
+
+				emojiDb.some(x => {
+					if (x.name.startsWith(props.q || '') && !x.aliasOf && !matched.some(y => y.emoji == x.emoji)) matched.push(x);
+					return matched.length == max;
+				});
+
+				if (matched.length < max) {
+					emojiDb.some(x => {
+						if (x.name.startsWith(props.q || '') && !matched.some(y => y.emoji == x.emoji)) matched.push(x);
+						return matched.length == max;
+					});
+				}
+
+				if (matched.length < max) {
+					emojiDb.some(x => {
+						if (x.name.includes(props.q || '') && !matched.some(y => y.emoji == x.emoji)) matched.push(x);
+						return matched.length == max;
+					});
+				}
+
+				emojis.value = matched;
+			} else if (props.type === 'mfmTag') {
+				if (!props.q || props.q == '') {
+					mfmTags.value = MFM_TAGS;
+					return;
+				}
+
+				mfmTags.value = MFM_TAGS.filter(tag => tag.startsWith(props.q || ''));
+			}
+		}
+
+		function onMousedown(e: Event) {
+			if (!contains(rootEl.value, e.target) && (rootEl.value != e.target)) props.close();
+		}
+
+		function onKeydown(e: KeyboardEvent) {
+			const cancel = () => {
+				e.preventDefault();
+				e.stopPropagation();
+			};
+
+			switch (e.key) {
+				case 'Enter':
+					if (select.value !== -1) {
+						cancel();
+						(items.value[select.value] as any).click();
+					} else {
+						props.close();
+					}
+					break;
+
+				case 'Escape':
+					cancel();
+					props.close();
+					break;
+
+				case 'ArrowUp':
+					if (select.value !== -1) {
+						cancel();
+						selectPrev();
+					} else {
+						props.close();
+					}
+					break;
+
+				case 'Tab':
+				case 'ArrowDown':
+					cancel();
+					selectNext();
+					break;
+
+				default:
+					e.stopPropagation();
+					props.textarea.focus();
+			}
+		}
+
+		function selectNext() {
+			if (++select.value >= items.value.length) select.value = 0;
+			if (items.value.length === 0) select.value = -1;
+			applySelect();
+		}
+
+		function selectPrev() {
+			if (--select.value < 0) select.value = items.value.length - 1;
+			applySelect();
+		}
+
+		function applySelect() {
+			for (const el of Array.from(items.value)) {
+				el.removeAttribute('data-selected');
+			}
+
+			if (select.value !== -1) {
+				items.value[select.value].setAttribute('data-selected', 'true');
+				(items.value[select.value] as any).focus();
+			}
+		}
+
+		function chooseUser() {
+			props.close();
+			os.selectUser().then(user => {
+				complete('user', user);
+				props.textarea.focus();
+			});
+		}
+
+		onUpdated(() => {
+			setPosition();
+			items.value = suggests.value?.children || [];
 		});
 
-		if (matched.length < max) {
-			emojiDb.some(x => {
-				if (x.name.startsWith(props.q || '') && !matched.some(y => y.emoji == x.emoji)) matched.push(x);
-				return matched.length == max;
-			});
-		}
+		onMounted(() => {
+			setPosition();
 
-		if (matched.length < max) {
-			emojiDb.some(x => {
-				if (x.name.includes(props.q || '') && !matched.some(y => y.emoji == x.emoji)) matched.push(x);
-				return matched.length == max;
-			});
-		}
+			props.textarea.addEventListener('keydown', onKeydown);
 
-		emojis.value = matched;
-	} else if (props.type === 'mfmTag') {
-		if (!props.q || props.q == '') {
-			mfmTags.value = MFM_TAGS;
-			return;
-		}
-
-		mfmTags.value = MFM_TAGS.filter(tag => tag.startsWith(props.q || ''));
-	}
-}
-
-function onMousedown(e: Event) {
-	if (!contains(rootEl.value, e.target) && (rootEl.value != e.target)) props.close();
-}
-
-function onKeydown(e: KeyboardEvent) {
-	const cancel = () => {
-		e.preventDefault();
-		e.stopPropagation();
-	};
-
-	switch (e.key) {
-		case 'Enter':
-			if (select.value !== -1) {
-				cancel();
-				(items.value[select.value] as any).click();
-			} else {
-				props.close();
+			for (const el of Array.from(document.querySelectorAll('body *'))) {
+				el.addEventListener('mousedown', onMousedown);
 			}
-			break;
 
-		case 'Escape':
-			cancel();
-			props.close();
-			break;
-
-		case 'ArrowUp':
-			if (select.value !== -1) {
-				cancel();
-				selectPrev();
-			} else {
-				props.close();
-			}
-			break;
-
-		case 'Tab':
-		case 'ArrowDown':
-			cancel();
-			selectNext();
-			break;
-
-		default:
-			e.stopPropagation();
-			props.textarea.focus();
-	}
-}
-
-function selectNext() {
-	if (++select.value >= items.value.length) select.value = 0;
-	if (items.value.length === 0) select.value = -1;
-	applySelect();
-}
-
-function selectPrev() {
-	if (--select.value < 0) select.value = items.value.length - 1;
-	applySelect();
-}
-
-function applySelect() {
-	for (const el of Array.from(items.value)) {
-		el.removeAttribute('data-selected');
-	}
-
-	if (select.value !== -1) {
-		items.value[select.value].setAttribute('data-selected', 'true');
-		(items.value[select.value] as any).focus();
-	}
-}
-
-function chooseUser() {
-	props.close();
-	os.selectUser().then(user => {
-		complete('user', user);
-		props.textarea.focus();
-	});
-}
-
-onUpdated(() => {
-	setPosition();
-	items.value = suggests.value?.children || [];
-});
-
-onMounted(() => {
-	setPosition();
-
-	props.textarea.addEventListener('keydown', onKeydown);
-
-	for (const el of Array.from(document.querySelectorAll('body *'))) {
-		el.addEventListener('mousedown', onMousedown);
-	}
-
-	nextTick(() => {
-		exec();
-
-		watch(() => props.q, () => {
 			nextTick(() => {
 				exec();
+
+				watch(() => props.q, () => {
+					nextTick(() => {
+						exec();
+					});
+				});
 			});
 		});
-	});
-});
 
-onBeforeUnmount(() => {
-	props.textarea.removeEventListener('keydown', onKeydown);
+		onBeforeUnmount(() => {
+			props.textarea.removeEventListener('keydown', onKeydown);
 
-	for (const el of Array.from(document.querySelectorAll('body *'))) {
-		el.removeEventListener('mousedown', onMousedown);
-	}
-});
+			for (const el of Array.from(document.querySelectorAll('body *'))) {
+				el.removeEventListener('mousedown', onMousedown);
+			}
+		});
 
+		return {
+			suggests,
+			rootEl,
+
+			zIndex,
+			users,
+			hashtags,
+			emojis,
+			mfmTags,
+			complete,
+			onKeydown,
+			acct,
+			chooseUser,
+			getStaticImageUrl,
+		};
+	},
+})
 </script>
 
 <style lang="scss" scoped>
