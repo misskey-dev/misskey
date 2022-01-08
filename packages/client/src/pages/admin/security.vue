@@ -11,6 +11,19 @@
 
 				<XBotProtection/>
 			</FormFolder>
+
+			<FormFolder class="_formBlock">
+				<template #label>Summaly Proxy</template>
+
+				<div class="_formRoot">
+					<FormInput v-model="summalyProxy" class="_formBlock">
+						<template #prefix><i class="fas fa-link"></i></template>
+						<template #label>Summaly Proxy URL</template>
+					</FormInput>
+
+					<FormButton primary class="_formBlock" @click="save"><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
+				</div>
+			</FormFolder>
 		</div>
 	</FormSuspense>
 </MkSpacer>
@@ -23,6 +36,8 @@ import FormSwitch from '@/components/form/switch.vue';
 import FormInfo from '@/components/ui/info.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import FormSection from '@/components/form/section.vue';
+import FormInput from '@/components/form/input.vue';
+import FormButton from '@/components/ui/button.vue';
 import XBotProtection from './bot-protection.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
@@ -35,6 +50,8 @@ export default defineComponent({
 		FormInfo,
 		FormSection,
 		FormSuspense,
+		FormButton,
+		FormInput,
 		XBotProtection,
 	},
 
@@ -47,6 +64,7 @@ export default defineComponent({
 				icon: 'fas fa-lock',
 				bg: 'var(--bg)',
 			},
+			summalyProxy: '',
 			enableHcaptcha: false,
 			enableRecaptcha: false,
 		}
@@ -59,9 +77,18 @@ export default defineComponent({
 	methods: {
 		async init() {
 			const meta = await os.api('meta', { detail: true });
+			this.summalyProxy = meta.summalyProxy;
 			this.enableHcaptcha = meta.enableHcaptcha;
 			this.enableRecaptcha = meta.enableRecaptcha;
 		},
+
+		save() {
+			os.apiWithDialog('admin/update-meta', {
+				summalyProxy: this.summalyProxy,
+			}).then(() => {
+				fetchInstance();
+			});
+		}
 	}
 });
 </script>

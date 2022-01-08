@@ -94,6 +94,39 @@
 					</FormInput>
 				</FormSplit>
 			</FormSection>
+
+			<FormSection>
+				<template #label>ServiceWorker</template>
+
+				<FormSwitch v-model="enableServiceWorker" class="_formBlock">
+					<template #label>{{ $ts.enableServiceworker }}</template>
+					<template #caption>{{ $ts.serviceworkerInfo }}</template>
+				</FormSwitch>
+
+				<template v-if="enableServiceWorker">
+					<FormInput v-model="swPublicKey" class="_formBlock">
+						<template #prefix><i class="fas fa-key"></i></template>
+						<template #label>Public key</template>
+					</FormInput>
+
+					<FormInput v-model="swPrivateKey" class="_formBlock">
+						<template #prefix><i class="fas fa-key"></i></template>
+						<template #label>Private key</template>
+					</FormInput>
+				</template>
+			</FormSection>
+
+			<FormSection>
+				<template #label>DeepL Translation</template>
+
+				<FormInput v-model="deeplAuthKey" class="_formBlock">
+					<template #prefix><i class="fas fa-key"></i></template>
+					<template #label>DeepL Auth Key</template>
+				</FormInput>
+				<FormSwitch v-model="deeplIsPro" class="_formBlock">
+					<template #label>Pro account</template>
+				</FormSwitch>
+			</FormSection>
 		</div>
 	</FormSuspense>
 </MkSpacer>
@@ -156,6 +189,11 @@ export default defineComponent({
 			remoteDriveCapacityMb: 0,
 			enableRegistration: false,
 			emailRequiredForSignup: false,
+			enableServiceWorker: false,
+			swPublicKey: null,
+			swPrivateKey: null,
+			deeplAuthKey: '',
+			deeplIsPro: false,
 		}
 	},
 
@@ -184,6 +222,11 @@ export default defineComponent({
 			this.remoteDriveCapacityMb = meta.driveCapacityPerRemoteUserMb;
 			this.enableRegistration = !meta.disableRegistration;
 			this.emailRequiredForSignup = meta.emailRequiredForSignup;
+			this.enableServiceWorker = meta.enableServiceWorker;
+			this.swPublicKey = meta.swPublickey;
+			this.swPrivateKey = meta.swPrivateKey;
+			this.deeplAuthKey = meta.deeplAuthKey;
+			this.deeplIsPro = meta.deeplIsPro;
 		},
 
 		save() {
@@ -206,6 +249,11 @@ export default defineComponent({
 				remoteDriveCapacityMb: parseInt(this.remoteDriveCapacityMb, 10),
 				disableRegistration: !this.enableRegistration,
 				emailRequiredForSignup: this.emailRequiredForSignup,
+				enableServiceWorker: this.enableServiceWorker,
+				swPublicKey: this.swPublicKey,
+				swPrivateKey: this.swPrivateKey,
+				deeplAuthKey: this.deeplAuthKey,
+				deeplIsPro: this.deeplIsPro,
 			}).then(() => {
 				fetchInstance();
 			});

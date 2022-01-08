@@ -172,11 +172,6 @@ export default defineComponent({
 				to: '/admin/security',
 				active: page.value === 'security',
 			}, {
-				icon: 'fas fa-bolt',
-				text: 'ServiceWorker',
-				to: '/admin/service-worker',
-				active: page.value === 'service-worker',
-			}, {
 				icon: 'fas fa-globe',
 				text: i18n.locale.relays,
 				to: '/admin/relays',
@@ -228,7 +223,6 @@ export default defineComponent({
 				case 'email-settings': return defineAsyncComponent(() => import('./email-settings.vue'));
 				case 'object-storage': return defineAsyncComponent(() => import('./object-storage.vue'));
 				case 'security': return defineAsyncComponent(() => import('./security.vue'));
-				case 'service-worker': return defineAsyncComponent(() => import('./service-worker.vue'));
 				case 'relays': return defineAsyncComponent(() => import('./relays.vue'));
 				case 'integrations': return defineAsyncComponent(() => import('./integrations.vue'));
 				case 'instance-block': return defineAsyncComponent(() => import('./instance-block.vue'));

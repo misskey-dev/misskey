@@ -67,8 +67,8 @@
 </MkSpacer>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { ref } from 'vue';
 import { version, instanceName } from '@/config';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
@@ -79,37 +79,21 @@ import * as os from '@/os';
 import number from '@/filters/number';
 import * as symbols from '@/symbols';
 import { host } from '@/config';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		MkKeyValue,
-		FormSection,
-		FormLink,
-		FormSuspense,
-		FormSplit,
+const stats = ref(null);
+
+const initStats = () => os.api('stats', {
+}).then((res) => {
+	stats.value = res;
+});
+
+defineExpose({
+	[symbols.PAGE_INFO]: {
+		title: i18n.locale.instanceInfo,
+		icon: 'fas fa-info-circle',
+		bg: 'var(--bg)',
 	},
-
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: this.$ts.instanceInfo,
-				icon: 'fas fa-info-circle',
-				bg: 'var(--bg)',
-			},
-			host,
-			version,
-			instanceName,
-			stats: null,
-			initStats: () => os.api('stats', {
-			}).then((stats) => {
-				this.stats = stats;
-			})
-		}
-	},
-
-	methods: {
-		number
-	}
 });
 </script>
 

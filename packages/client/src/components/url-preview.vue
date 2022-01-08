@@ -76,7 +76,7 @@ export default defineComponent({
 			tweetExpanded: this.detail,
 			embedId: `embed${Math.random().toString().replace(/\D/,'')}`,
 			tweetHeight: 150,
- 			tweetLeft: 0,
+			tweetLeft: 0,
 			playerEnabled: false,
 			self: self,
 			attr: self ? 'to' : 'href',
