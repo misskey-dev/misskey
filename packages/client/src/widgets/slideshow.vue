@@ -1,5 +1,5 @@
 <template>
-<div class="kvausudm _panel" :style="{ height: widgetProps.height }">
+<div class="kvausudm _panel" :style="{ height: widgetProps.height + 'px' }">
 	<div @click="choose">
 		<p v-if="widgetProps.folderId == null">
 			{{ $ts.folder }}
