@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts" setup>
-import { markRaw, ref, Ref, onUpdated, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
+import { markRaw, ref, onUpdated, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
 import { emojilist } from '@/scripts/emojilist';
 import contains from '@/scripts/contains';
 import { twemojiSvgBase } from '@/scripts/twemoji-base';
@@ -347,7 +347,7 @@ onUpdated(() => {
 
 onMounted(() => {
 	setPosition();
-	
+
 	props.textarea.addEventListener('keydown', onKeydown);
 
 	for (const el of Array.from(document.querySelectorAll('body *'))) {
