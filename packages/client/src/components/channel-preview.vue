@@ -33,31 +33,19 @@
 </MkA>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { computed } from 'vue';
 
-export default defineComponent({
-	props: {
-		channel: {
-			type: Object,
-			required: true
-		},
-	},
+const props = defineProps<{
+	channel: Record<string, any>;
+}>();
 
-	data() {
-		return {
-		};
-	},
-
-	computed: {
-		bannerStyle() {
-			if (this.channel.bannerUrl) {
-				return { backgroundImage: `url(${this.channel.bannerUrl})` };
-			} else {
-				return { backgroundColor: '#4c5e6d' };
-			}
-		}
-	},
+const bannerStyle = computed(() => {
+	if (props.channel.bannerUrl) {
+		return { backgroundImage: `url(${props.channel.bannerUrl})` };
+	} else {
+		return { backgroundColor: '#4c5e6d' };
+	}
 });
 </script>
 
