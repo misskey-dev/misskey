@@ -98,14 +98,6 @@ const modal = ref<InstanceType<typeof MkModal>>();
 const inputValue = ref(props.input?.default || null);
 const selectedValue = ref(props.select?.default || null);
 
-onMounted(() => {
-	document.addEventListener('keydown', onKeydown);
-});
-
-onBeforeUnmount(() => {
-	document.removeEventListener('keydown', onKeydown);
-});
-
 function done(canceled: boolean, result?) {
 	emit('done', { canceled, result });
 	modal.value?.close();
@@ -140,6 +132,14 @@ function onInputKeydown(e: KeyboardEvent) {
 		ok();
 	}
 }
+
+onMounted(() => {
+	document.addEventListener('keydown', onKeydown);
+});
+
+onBeforeUnmount(() => {
+	document.removeEventListener('keydown', onKeydown);
+});
 </script>
 
 <style lang="scss" scoped>
