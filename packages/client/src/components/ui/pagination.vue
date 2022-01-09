@@ -49,6 +49,8 @@ export type Paging<E extends keyof misskey.Endpoints = keyof misskey.Endpoints> 
 	 * items 配列の中身を逆順にする(新しい方が最後)
 	 */
 	reversed?: boolean;
+
+	offsetMode?: boolean;
 };
 
 const props = withDefaults(defineProps<{
@@ -63,9 +65,11 @@ const emit = defineEmits<{
 	(e: 'queue', count: number): void;
 }>();
 
+type Item = { id: string; [another: string]: unknown; };
+
 const rootEl = ref<HTMLElement>();
-const items = ref([]);
-const queue = ref([]);
+const items = ref<Item[]>([]);
+const queue = ref<Item[]>([]);
 const offset = ref(0);
 const fetching = ref(true);
 const moreFetching = ref(false);
@@ -76,7 +80,7 @@ const isBackTop = ref(false);
 const empty = computed(() => items.value.length === 0 && !fetching.value && inited.value);
 const error = computed(() => !fetching.value && !inited.value);
 
-const init = async () => {
+const init = async (): Promise<void> => {
 	queue.value = [];
 	fetching.value = true;
 	const params = props.pagination.params ? isRef(props.pagination.params) ? props.pagination.params.value : props.pagination.params : {};
@@ -109,12 +113,12 @@ const init = async () => {
 	});
 };
 
-const reload = () => {
+const reload = (): void => {
 	items.value = [];
 	init();
 };
 
-const fetchMore = async () => {
+const fetchMore = async (): Promise<void> => {
 	if (!more.value || fetching.value || moreFetching.value || items.value.length === 0) return;
 	moreFetching.value = true;
 	backed.value = true;
@@ -152,7 +156,7 @@ const fetchMore = async () => {
 	});
 };
 
-const fetchMoreAhead = async () => {
+const fetchMoreAhead = async (): Promise<void> => {
 	if (!more.value || fetching.value || moreFetching.value || items.value.length === 0) return;
 	moreFetching.value = true;
 	const params = props.pagination.params ? isRef(props.pagination.params) ? props.pagination.params.value : props.pagination.params : {};
@@ -183,9 +187,13 @@ const fetchMoreAhead = async () => {
 	});
 };
 
-const prepend = (item) => {
+const prepend = (item: Item): void => {
+	if (rootEl.value == null) return;
+
 	if (props.pagination.reversed) {
 		const container = getScrollContainer(rootEl.value);
+		if (container == null) return; // TODO?
+
 		const pos = getScrollPosition(rootEl.value);
 		const viewHeight = container.clientHeight;
 		const height = container.scrollHeight;
@@ -231,11 +239,11 @@ const prepend = (item) => {
 	}
 };
 
-const append = (item) => {
+const append = (item: Item): void => {
 	items.value.push(item);
 };
 
-const updateItem = (id, replacer: (item: any) => any): void => {
+const updateItem = (id: Item['id'], replacer: (old: Item) => Item): void => {
 	const i = items.value.findIndex(item => item.id === id);
 	items.value[i] = replacer(items.value[i]);
 };
