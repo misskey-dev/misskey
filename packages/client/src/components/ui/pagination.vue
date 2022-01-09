@@ -59,6 +59,10 @@ const props = withDefaults(defineProps<{
 	displayLimit: 30,
 });
 
+const emit = defineEmits<{
+	(e: 'queue', count: number): void;
+}>();
+
 const rootEl = ref<HTMLElement>();
 const items = ref([]);
 const queue = ref([]);
@@ -235,7 +239,7 @@ const append = (item) => {
 watch(props.pagination.params, init, { deep: true });
 watch(queue, (a, b) => {
 	if (a.length === 0 && b.length === 0) return;
-	this.$emit('queue', queue.value.length);
+	emit('queue', queue.value.length);
 }, { deep: true });
 
 init();
