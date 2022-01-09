@@ -14,7 +14,7 @@
 		</div>
 		<header v-if="title"><Mfm :text="title"/></header>
 		<div v-if="text" class="body"><Mfm :text="text"/></div>
-		<MkInput v-if="input" v-model="inputValue" autofocus :type="input.type || 'text'" :placeholder="input.placeholder" @keydown="onInputKeydown">
+		<MkInput v-if="input" v-model="inputValue" autofocus :type="input.type || 'text'" :placeholder="input.placeholder || undefined" @keydown="onInputKeydown">
 			<template v-if="input.type === 'password'" #prefix><i class="fas fa-lock"></i></template>
 		</MkInput>
 		<MkSelect v-if="select" v-model="selectedValue" autofocus>
@@ -38,119 +38,108 @@
 </MkModal>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { onBeforeUnmount, onMounted, ref } from 'vue';
 import MkModal from '@/components/ui/modal.vue';
 import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/form/input.vue';
 import MkSelect from '@/components/form/select.vue';
 
-export default defineComponent({
-	components: {
-		MkModal,
-		MkButton,
-		MkInput,
-		MkSelect,
-	},
+type Input = {
+	type: HTMLInputElement['type'];
+	placeholder?: string | null;
+	default: any | null;
+};
 
-	props: {
-		type: {
-			type: String,
-			required: false,
-			default: 'info'
-		},
-		title: {
-			type: String,
-			required: false
-		},
-		text: {
-			type: String,
-			required: false
-		},
-		input: {
-			required: false
-		},
-		select: {
-			required: false
-		},
-		icon: {
-			required: false
-		},
-		actions: {
-			required: false
-		},
-		showOkButton: {
-			type: Boolean,
-			default: true
-		},
-		showCancelButton: {
-			type: Boolean,
-			default: false
-		},
-		cancelableByBgClick: {
-			type: Boolean,
-			default: true
-		},
-	},
+type Select = {
+	items: {
+		value: string;
+		text: string;
+	}[];
+	groupedItems: {
+		label: string;
+		items: {
+			value: string;
+			text: string;
+		}[];
+	}[];
+	default: string | null;
+};
 
-	emits: ['done', 'closed'],
-
-	data() {
-		return {
-			inputValue: this.input && this.input.default ? this.input.default : null,
-			selectedValue: this.select ? this.select.default ? this.select.default : this.select.items ? this.select.items[0].value : this.select.groupedItems[0].items[0].value : null,
-		};
-	},
-
-	mounted() {
-		document.addEventListener('keydown', this.onKeydown);
-	},
-
-	beforeUnmount() {
-		document.removeEventListener('keydown', this.onKeydown);
-	},
-
-	methods: {
-		done(canceled, result?) {
-			this.$emit('done', { canceled, result });
-			this.$refs.modal.close();
-		},
-
-		async ok() {
-			if (!this.showOkButton) return;
-
-			const result =
-				this.input ? this.inputValue :
-				this.select ? this.selectedValue :
-				true;
-			this.done(false, result);
-		},
-
-		cancel() {
-			this.done(true);
-		},
-
-		onBgClick() {
-			if (this.cancelableByBgClick) {
-				this.cancel();
-			}
-		},
-
-		onKeydown(e) {
-			if (e.which === 27) { // ESC
-				this.cancel();
-			}
-		},
-
-		onInputKeydown(e) {
-			if (e.which === 13) { // Enter
-				e.preventDefault();
-				e.stopPropagation();
-				this.ok();
-			}
-		}
-	}
+const props = withDefaults(defineProps<{
+	type?: 'success' | 'error' | 'warning' | 'info' | 'question' | 'waiting';
+	title: string;
+	text?: string;
+	input?: Input;
+	select?: Select;
+	icon?: string;
+	actions?: {
+		text: string;
+		primary?: boolean,
+		callback: (...args: any[]) => void;
+	}[];
+	showOkButton?: boolean;
+	showCancelButton?: boolean;
+	cancelableByBgClick?: boolean;
+}>(), {
+	type: 'info',
+	showOkButton: true,
+	showCancelButton: false,
+	cancelableByBgClick: true,
 });
+
+const emit = defineEmits<{
+	(e: 'done', v: { canceled: boolean; result: any }): void;
+	(e: 'closed'): void;
+}>();
+
+const modal = ref<InstanceType<typeof MkModal>>();
+
+const inputValue = ref(props.input?.default || null);
+const selectedValue = ref(props.select?.default || null);
+
+onMounted(() => {
+	document.addEventListener('keydown', onKeydown);
+});
+
+onBeforeUnmount(() => {
+	document.removeEventListener('keydown', onKeydown);
+});
+
+function done(canceled: boolean, result?) {
+	emit('done', { canceled, result });
+	modal.value?.close();
+}
+
+async function ok() {
+	if (!props.showOkButton) return;
+
+	const result =
+		props.input ? inputValue :
+		props.select ? selectedValue :
+		true;
+	done(false, result);
+}
+
+function cancel() {
+	done(true);
+}
+/*
+function onBgClick() {
+	if (props.cancelableByBgClick) cancel();
+}
+*/
+function onKeydown(e: KeyboardEvent) {
+	if (e.key === 'Escape') cancel();
+}
+
+function onInputKeydown(e: KeyboardEvent) {
+	if (e.key === 'Enter') {
+		e.preventDefault();
+		e.stopPropagation();
+		ok();
+	}
+}
 </script>
 
 <style lang="scss" scoped>
