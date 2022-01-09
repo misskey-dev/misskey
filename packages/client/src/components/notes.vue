@@ -32,8 +32,7 @@ const props = defineProps<{
 const pagingComponent = ref<InstanceType<typeof MkPagination>>();
 
 const updated = (oldValue, newValue) => {
-	const i = pagingComponent.value.items.findIndex(n => n === oldValue);
-	pagingComponent.value.items[i] = newValue;
+	pagingComponent.value?.updateItem(oldValue.id, () => newValue);
 };
 
 defineExpose({

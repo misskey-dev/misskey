@@ -205,7 +205,6 @@ const prepend = (item) => {
 		// TODO
 	} else {
 		const isTop = isBackTop.value || (document.body.contains(rootEl.value) && isTopVisible(rootEl.value));
-		console.log(item, top);
 
 		if (isTop) {
 			// Prepend the item
@@ -236,7 +235,15 @@ const append = (item) => {
 	items.value.push(item);
 };
 
-watch(props.pagination.params, init, { deep: true });
+const updateItem = (id, replacer: (item: any) => any): void => {
+	const i = items.value.findIndex(item => item.id === id);
+	items.value[i] = replacer(items.value[i]);
+};
+
+if (props.pagination.params && isRef(props.pagination.params)) {
+	watch(props.pagination.params, init, { deep: true });
+}
+
 watch(queue, (a, b) => {
 	if (a.length === 0 && b.length === 0) return;
 	emit('queue', queue.value.length);
@@ -253,11 +260,11 @@ onDeactivated(() => {
 });
 
 defineExpose({
-	items,
 	reload,
 	fetchMoreAhead,
 	prepend,
 	append,
+	updateItem,
 });
 </script>
 

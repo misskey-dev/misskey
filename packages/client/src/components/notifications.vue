@@ -9,7 +9,7 @@
 
 	<template #default="{ items: notifications }">
 		<XList v-slot="{ item: notification }" class="elsfgstc" :items="notifications" :no-gap="true">
-			<XNote v-if="['reply', 'quote', 'mention'].includes(notification.type)" :key="notification.id" :note="notification.note" @update:note="noteUpdated(notification.note, $event)"/>
+			<XNote v-if="['reply', 'quote', 'mention'].includes(notification.type)" :key="notification.id" :note="notification.note" @update:note="noteUpdated(notification, $event)"/>
 			<XNotification v-else :key="notification.id" :notification="notification" :with-time="true" :full="true" class="_panel notification"/>
 		</XList>
 	</template>
@@ -62,12 +62,11 @@ const onNotification = (notification) => {
 	}
 };
 
-const noteUpdated = (oldValue, newValue) => {
-	const i = pagingComponent.value.items.findIndex(n => n.note === oldValue);
-	pagingComponent.value.items[i] = {
-		...pagingComponent.value.items[i],
-		note: newValue,
-	};
+const noteUpdated = (item, note) => {
+	pagingComponent.value?.updateItem(item.id, old => ({
+		...old,
+		note: note,
+	}));
 };
 
 onMounted(() => {
