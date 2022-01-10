@@ -56,7 +56,7 @@ const loaded = computed(() => !!window[variable.value]);
 
 const src = computed(() => {
 	switch (props.provider) {
-		case 'hcaptcha': return 'https://hcaptcha.com/1/api.js?render=explicit&recaptchacompat=off';
+		case 'hcaptcha': return 'https://js.hcaptcha.com/1/api.js?render=explicit&recaptchacompat=off';
 		case 'recaptcha': return 'https://www.recaptcha.net/recaptcha/api.js?render=explicit';
 	}
 });
