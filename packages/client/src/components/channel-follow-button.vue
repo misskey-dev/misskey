@@ -6,66 +6,54 @@
 >
 	<template v-if="!wait">
 		<template v-if="isFollowing">
-			<span v-if="full">{{ $ts.unfollow }}</span><i class="fas fa-minus"></i>
+			<span v-if="full">{{ i18n.locale.unfollow }}</span><i class="fas fa-minus"></i>
 		</template>
 		<template v-else>
-			<span v-if="full">{{ $ts.follow }}</span><i class="fas fa-plus"></i>
+			<span v-if="full">{{ i18n.locale.follow }}</span><i class="fas fa-plus"></i>
 		</template>
 	</template>
 	<template v-else>
-		<span v-if="full">{{ $ts.processing }}</span><i class="fas fa-spinner fa-pulse fa-fw"></i>
+		<span v-if="full">{{ i18n.locale.processing }}</span><i class="fas fa-spinner fa-pulse fa-fw"></i>
 	</template>
 </button>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { ref } from 'vue';
 import * as os from '@/os';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	props: {
-		channel: {
-			type: Object,
-			required: true
-		},
-		full: {
-			type: Boolean,
-			required: false,
-			default: false,
-		},
-	},
-
-	data() {
-		return {
-			isFollowing: this.channel.isFollowing,
-			wait: false,
-		};
-	},
-
-	methods: {
-		async onClick() {
-			this.wait = true;
-
-			try {
-				if (this.isFollowing) {
-					await os.api('channels/unfollow', {
-						channelId: this.channel.id
-					});
-					this.isFollowing = false;
-				} else {
-					await os.api('channels/follow', {
-						channelId: this.channel.id
-					});
-					this.isFollowing = true;
-				}
-			} catch (e) {
-				console.error(e);
-			} finally {
-				this.wait = false;
-			}
-		}
-	}
+const props = withDefaults(defineProps<{
+	channel: Record<string, any>;
+	full?: boolean;
+}>(), {
+	full: false,
 });
+
+const isFollowing = ref<boolean>(props.channel.isFollowing);
+const wait = ref(false);
+
+async function onClick() {
+	wait.value = true;
+
+	try {
+		if (isFollowing.value) {
+			await os.api('channels/unfollow', {
+				channelId: props.channel.id
+			});
+			isFollowing.value = false;
+		} else {
+			await os.api('channels/follow', {
+				channelId: props.channel.id
+			});
+			isFollowing.value = true;
+		}
+	} catch (e) {
+		console.error(e);
+	} finally {
+		wait.value = false;
+	}
+}
 </script>
 
 <style lang="scss" scoped>
