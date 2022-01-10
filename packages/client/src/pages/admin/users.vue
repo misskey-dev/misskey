@@ -30,7 +30,7 @@
 				<template #prefix>@</template>
 				<template #label>{{ $ts.username }}</template>
 			</MkInput>
-			<MkInput v-model="searchHost" style="flex: 1;" type="text" spellcheck="false" :disabled="pagination.params().origin === 'local'" @update:modelValue="$refs.users.reload()">
+			<MkInput v-model="searchHost" style="flex: 1;" type="text" spellcheck="false" :disabled="pagination.params.origin === 'local'" @update:modelValue="$refs.users.reload()">
 				<template #prefix>@</template>
 				<template #label>{{ $ts.host }}</template>
 			</MkInput>

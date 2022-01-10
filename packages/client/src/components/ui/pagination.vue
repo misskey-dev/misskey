@@ -268,6 +268,7 @@ onDeactivated(() => {
 });
 
 defineExpose({
+	items,
 	reload,
 	fetchMoreAhead,
 	prepend,
