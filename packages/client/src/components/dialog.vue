@@ -107,8 +107,8 @@ async function ok() {
 	if (!props.showOkButton) return;
 
 	const result =
-		props.input ? inputValue :
-		props.select ? selectedValue :
+		props.input ? inputValue.value :
+		props.select ? selectedValue.value :
 		true;
 	done(false, result);
 }
