@@ -6,7 +6,7 @@
 	@closed="$emit('closed')"
 >
 	<template #header>
-		{{ $ts.drive }}
+		{{ i18n.locale.drive }}
 	</template>
 	<XDrive :initial-folder="initialFolder"/>
 </XWindow>
@@ -17,6 +17,7 @@ import {  } from 'vue';
 import * as Misskey from 'misskey-js';
 import XDrive from './drive.vue';
 import XWindow from '@/components/ui/window.vue';
+import { i18n } from '@/i18n';
 
 defineProps<{
 	initialFolder?: Misskey.entities.DriveFolder;

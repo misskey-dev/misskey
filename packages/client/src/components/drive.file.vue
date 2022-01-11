@@ -10,15 +10,15 @@
 >
 	<div v-if="$i.avatarId == file.id" class="label">
 		<img src="/client-assets/label.svg"/>
-		<p>{{ $ts.avatar }}</p>
+		<p>{{ i18n.locale.avatar }}</p>
 	</div>
 	<div v-if="$i.bannerId == file.id" class="label">
 		<img src="/client-assets/label.svg"/>
-		<p>{{ $ts.banner }}</p>
+		<p>{{ i18n.locale.banner }}</p>
 	</div>
 	<div v-if="file.isSensitive" class="label red">
 		<img src="/client-assets/label-red.svg"/>
-		<p>{{ $ts.nsfw }}</p>
+		<p>{{ i18n.locale.nsfw }}</p>
 	</div>
 
 	<MkDriveFileThumbnail class="thumbnail" :file="file" fit="contain"/>
@@ -31,12 +31,20 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import {  } from 'vue';
+import * as Misskey from 'misskey-js';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import MkDriveFileThumbnail from './drive-file-thumbnail.vue';
 import bytes from '@/filters/bytes';
 import * as os from '@/os';
+import { i18n } from '@/i18n';
 
+const props = withDefaults(defineProps<{
+	file: Misskey.entities.DriveFile;
+	
+}>(), {});
+
+/*
 export default defineComponent({
 	components: {
 		MkDriveFileThumbnail
@@ -80,30 +88,30 @@ export default defineComponent({
 	methods: {
 		getMenu() {
 			return [{
-				text: this.$ts.rename,
+				text: i18n.locale.rename,
 				icon: 'fas fa-i-cursor',
 				action: this.rename
 			}, {
-				text: this.file.isSensitive ? this.$ts.unmarkAsSensitive : this.$ts.markAsSensitive,
+				text: this.file.isSensitive ? i18n.locale.unmarkAsSensitive : i18n.locale.markAsSensitive,
 				icon: this.file.isSensitive ? 'fas fa-eye' : 'fas fa-eye-slash',
 				action: this.toggleSensitive
 			}, {
-				text: this.$ts.describeFile,
+				text: i18n.locale.describeFile,
 				icon: 'fas fa-i-cursor',
 				action: this.describe
 			}, null, {
-				text: this.$ts.copyUrl,
+				text: i18n.locale.copyUrl,
 				icon: 'fas fa-link',
 				action: this.copyUrl
 			}, {
 				type: 'a',
 				href: this.file.url,
 				target: '_blank',
-				text: this.$ts.download,
+				text: i18n.locale.download,
 				icon: 'fas fa-download',
 				download: this.file.name
 			}, null, {
-				text: this.$ts.delete,
+				text: i18n.locale.delete,
 				icon: 'fas fa-trash-alt',
 				danger: true,
 				action: this.deleteFile
@@ -139,8 +147,8 @@ export default defineComponent({
 
 		rename() {
 			os.inputText({
-				title: this.$ts.renameFile,
-				placeholder: this.$ts.inputNewFileName,
+				title: i18n.locale.renameFile,
+				placeholder: i18n.locale.inputNewFileName,
 				default: this.file.name,
 				allowEmpty: false
 			}).then(({ canceled, result: name }) => {
@@ -154,9 +162,9 @@ export default defineComponent({
 
 		describe() {
 			os.popup(import('@/components/media-caption.vue'), {
-				title: this.$ts.describeFile,
+				title: i18n.locale.describeFile,
 				input: {
-					placeholder: this.$ts.inputNewDescription,
+					placeholder: i18n.locale.inputNewDescription,
 					default: this.file.comment !== null ? this.file.comment : '',
 				},
 				image: this.file
@@ -191,7 +199,7 @@ export default defineComponent({
 		async deleteFile() {
 			const { canceled } = await os.confirm({
 				type: 'warning',
-				text: this.$t('driveFileDeleteConfirm', { name: this.file.name }),
+				text: i18n.t('driveFileDeleteConfirm', { name: this.file.name }),
 			});
 			if (canceled) return;
 
@@ -203,6 +211,7 @@ export default defineComponent({
 		bytes
 	}
 });
+*/
 </script>
 
 <style lang="scss" scoped>
