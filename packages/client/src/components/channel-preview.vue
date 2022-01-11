@@ -6,7 +6,7 @@
 		<div class="status">
 			<div>
 				<i class="fas fa-users fa-fw"></i>
-				<I18n :src="$ts._channel.usersCount" tag="span" style="margin-left: 4px;">
+				<I18n :src="i18n.locale._channel.usersCount" tag="span" style="margin-left: 4px;">
 					<template #n>
 						<b>{{ channel.usersCount }}</b>
 					</template>
@@ -14,7 +14,7 @@
 			</div>
 			<div>
 				<i class="fas fa-pencil-alt fa-fw"></i>
-				<I18n :src="$ts._channel.notesCount" tag="span" style="margin-left: 4px;">
+				<I18n :src="i18n.locale._channel.notesCount" tag="span" style="margin-left: 4px;">
 					<template #n>
 						<b>{{ channel.notesCount }}</b>
 					</template>
@@ -27,37 +27,26 @@
 	</article>
 	<footer>
 		<span v-if="channel.lastNotedAt">
-			{{ $ts.updatedAt }}: <MkTime :time="channel.lastNotedAt"/>
+			{{ i18n.locale.updatedAt }}: <MkTime :time="channel.lastNotedAt"/>
 		</span>
 	</footer>
 </MkA>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { computed } from 'vue';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	props: {
-		channel: {
-			type: Object,
-			required: true
-		},
-	},
+const props = defineProps<{
+	channel: Record<string, any>;
+}>();
 
-	data() {
-		return {
-		};
-	},
-
-	computed: {
-		bannerStyle() {
-			if (this.channel.bannerUrl) {
-				return { backgroundImage: `url(${this.channel.bannerUrl})` };
-			} else {
-				return { backgroundColor: '#4c5e6d' };
-			}
-		}
-	},
+const bannerStyle = computed(() => {
+	if (props.channel.bannerUrl) {
+		return { backgroundImage: `url(${props.channel.bannerUrl})` };
+	} else {
+		return { backgroundColor: '#4c5e6d' };
+	}
 });
 </script>
 

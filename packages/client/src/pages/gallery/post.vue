@@ -95,9 +95,9 @@ export default defineComponent({
 			otherPostsPagination: {
 				endpoint: 'users/gallery/posts',
 				limit: 6,
-				params: () => ({
+				params: computed(() => ({
 					userId: this.post.user.id
-				})
+				})),
 			},
 			post: null,
 			error: null,

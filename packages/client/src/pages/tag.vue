@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
 import XNotes from '@/components/notes.vue';
 import * as symbols from '@/symbols';
 
@@ -30,17 +30,11 @@ export default defineComponent({
 			pagination: {
 				endpoint: 'notes/search-by-tag',
 				limit: 10,
-				params: () => ({
+				params: computed(() => ({
 					tag: this.tag,
-				})
+				}))
 			},
 		};
-	},
-
-	watch: {
-		tag() {
-			(this.$refs.notes as any).reload();
-		}
 	},
 });
 </script>

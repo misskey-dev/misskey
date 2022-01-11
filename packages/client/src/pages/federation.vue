@@ -96,7 +96,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
 import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/form/input.vue';
 import MkSelect from '@/components/form/select.vue';
@@ -130,7 +130,7 @@ export default defineComponent({
 				endpoint: 'federation/instances',
 				limit: 10,
 				offsetMode: true,
-				params: () => ({
+				params: computed(() => ({
 					sort: this.sort,
 					host: this.host != '' ? this.host : null,
 					...(
@@ -141,7 +141,7 @@ export default defineComponent({
 						this.state === 'blocked' ? { blocked: true } :
 						this.state === 'notResponding' ? { notResponding: true } :
 						{})
-				})
+				}))
 			},
 		}
 	},
