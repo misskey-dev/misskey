@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
 import MkPagination from '@/components/ui/pagination.vue';
 import MkNote from '@/components/note.vue';
 import MkReactionIcon from '@/components/reaction-icon.vue';
@@ -38,17 +38,11 @@ export default defineComponent({
 			pagination: {
 				endpoint: 'users/reactions',
 				limit: 20,
-				params: {
+				params: computed(() => ({
 					userId: this.user.id,
-				}
+				})),
 			},
 		};
-	},
-
-	watch: {
-		user() {
-			this.$refs.list.reload();
-		}
 	},
 });
 </script>

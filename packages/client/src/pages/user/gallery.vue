@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
 import MkGalleryPostPreview from '@/components/gallery-post-preview.vue';
 import MkPagination from '@/components/ui/pagination.vue';
 
@@ -31,18 +31,12 @@ export default defineComponent({
 			pagination: {
 				endpoint: 'users/gallery/posts',
 				limit: 6,
-				params: () => ({
+				params: computed(() => ({
 					userId: this.user.id
-				})
+				})),
 			},
 		};
 	},
-
-	watch: {
-		user() {
-			this.$refs.list.reload();
-		}
-	}
 });
 </script>
 

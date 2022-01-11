@@ -108,9 +108,9 @@ export default defineComponent({
 			otherPostsPagination: {
 				endpoint: 'users/pages',
 				limit: 6,
-				params: () => ({
+				params: computed(() => ({
 					userId: this.page.user.id
-				})
+				})),
 			},
 		};
 	},
