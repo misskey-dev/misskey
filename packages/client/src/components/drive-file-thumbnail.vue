@@ -14,71 +14,42 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { computed } from 'vue';
+import * as Misskey from 'misskey-js';
 import ImgWithBlurhash from '@/components/img-with-blurhash.vue';
-import { ColdDeviceStorage } from '@/store';
 
-export default defineComponent({
-	components: {
-		ImgWithBlurhash
-	},
-	props: {
-		file: {
-			type: Object,
-			required: true
-		},
-		fit: {
-			type: String,
-			required: false,
-			default: 'cover'
-		},
-	},
-	data() {
-		return {
-			isContextmenuShowing: false,
-			isDragging: false,
+const props = defineProps<{
+	file: Misskey.entities.DriveFile;
+	fit: string;
+}>();
 
-		};
-	},
-	computed: {
-		is(): 'image' | 'video' | 'midi' | 'audio' | 'csv' | 'pdf' | 'textfile' | 'archive' | 'unknown' {
-			if (this.file.type.startsWith('image/')) return 'image';
-			if (this.file.type.startsWith('video/')) return 'video';
-			if (this.file.type === 'audio/midi') return 'midi';
-			if (this.file.type.startsWith('audio/')) return 'audio';
-			if (this.file.type.endsWith('/csv')) return 'csv';
-			if (this.file.type.endsWith('/pdf')) return 'pdf';
-			if (this.file.type.startsWith('text/')) return 'textfile';
-			if ([
-					"application/zip",
-					"application/x-cpio",
-					"application/x-bzip",
-					"application/x-bzip2",
-					"application/java-archive",
-					"application/x-rar-compressed",
-					"application/x-tar",
-					"application/gzip",
-					"application/x-7z-compressed"
-				].some(e => e === this.file.type)) return 'archive';
-			return 'unknown';
-		},
-		isThumbnailAvailable(): boolean {
-			return this.file.thumbnailUrl
-				? (this.is === 'image' || this.is === 'video')
-				: false;
-		},
-	},
-	mounted() {
-		const audioTag = this.$refs.volumectrl as HTMLAudioElement;
-		if (audioTag) audioTag.volume = ColdDeviceStorage.get('mediaVolume');
-	},
-	methods: {
-		volumechange() {
-			const audioTag = this.$refs.volumectrl as HTMLAudioElement;
-			ColdDeviceStorage.set('mediaVolume', audioTag.volume);
-		}
-	}
+const is = computed(() => {
+	if (props.file.type.startsWith('image/')) return 'image';
+	if (props.file.type.startsWith('video/')) return 'video';
+	if (props.file.type === 'audio/midi') return 'midi';
+	if (props.file.type.startsWith('audio/')) return 'audio';
+	if (props.file.type.endsWith('/csv')) return 'csv';
+	if (props.file.type.endsWith('/pdf')) return 'pdf';
+	if (props.file.type.startsWith('text/')) return 'textfile';
+	if ([
+			"application/zip",
+			"application/x-cpio",
+			"application/x-bzip",
+			"application/x-bzip2",
+			"application/java-archive",
+			"application/x-rar-compressed",
+			"application/x-tar",
+			"application/gzip",
+			"application/x-7z-compressed"
+		].some(e => e === props.file.type)) return 'archive';
+	return 'unknown';
+});
+
+const isThumbnailAvailable = computed(() => {
+	return props.file.thumbnailUrl
+		? (is.value === 'image' as const || is.value === 'video')
+		: false;
 });
 </script>
 
