@@ -12,6 +12,7 @@
 ### Changes
 - Room機能が削除されました
   - 後日別リポジトリとして復活予定です
+- Chat UIが削除されました
 
 ### Improvements
 

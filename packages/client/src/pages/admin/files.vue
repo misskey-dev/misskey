@@ -55,7 +55,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
 import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/form/input.vue';
 import MkSelect from '@/components/form/select.vue';
@@ -97,25 +97,13 @@ export default defineComponent({
 			pagination: {
 				endpoint: 'admin/drive/files',
 				limit: 10,
-				params: () => ({
+				params: computed(() => ({
 					type: (this.type && this.type !== '') ? this.type : null,
 					origin: this.origin,
-					hostname: (this.hostname && this.hostname !== '') ? this.hostname : null,
-				}),
+					hostname: (this.searchHost && this.searchHost !== '') ? this.searchHost : null,
+				})),
 			},
 		}
-	},
-
-	watch: {
-		type() {
-			this.$refs.files.reload();
-		},
-		origin() {
-			this.$refs.files.reload();
-		},
-		searchHost() {
-			this.$refs.files.reload();
-		},
 	},
 
 	mounted() {

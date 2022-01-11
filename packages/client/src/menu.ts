@@ -198,13 +198,6 @@ export const menuDef = reactive({
 					localStorage.setItem('ui', 'classic');
 					unisonReload();
 				}
-			}, {
-				text: 'Chat (β)',
-				active: ui === 'chat',
-				action: () => {
-					localStorage.setItem('ui', 'chat');
-					unisonReload();
-				}
 			}, /*{
 				text: i18n.locale.desktop + ' (β)',
 				active: ui === 'desktop',

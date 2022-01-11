@@ -52,9 +52,9 @@ export default defineComponent({
 			pagination: {
 				endpoint: 'clips/notes',
 				limit: 10,
-				params: () => ({
+				params: computed(() => ({
 					clipId: this.clipId,
-				})
+				}))
 			},
 		};
 	},

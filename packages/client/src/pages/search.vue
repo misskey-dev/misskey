@@ -25,18 +25,12 @@ export default defineComponent({
 			pagination: {
 				endpoint: 'notes/search',
 				limit: 10,
-				params: () => ({
+				params: computed(() => ({
 					query: this.$route.query.q,
 					channelId: this.$route.query.channel,
-				})
+				}))
 			},
 		};
-	},
-
-	watch: {
-		$route() {
-			(this.$refs.notes as any).reload();
-		}
 	},
 });
 </script>
