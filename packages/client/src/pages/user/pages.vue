@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
 import MkPagePreview from '@/components/page-preview.vue';
 import MkPagination from '@/components/ui/pagination.vue';
 
@@ -29,18 +29,12 @@ export default defineComponent({
 			pagination: {
 				endpoint: 'users/pages',
 				limit: 20,
-				params: {
+				params: computed(() => ({
 					userId: this.user.id,
-				}
+				})),
 			},
 		};
 	},
-
-	watch: {
-		user() {
-			this.$refs.list.reload();
-		}
-	}
 });
 </script>
 

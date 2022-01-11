@@ -17,54 +17,40 @@
 </XModalWindow>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import XDrive from './drive.vue';
 import XModalWindow from '@/components/ui/modal-window.vue';
 import number from '@/filters/number';
 
-export default defineComponent({
-	components: {
-		XDrive,
-		XModalWindow,
-	},
-
-	props: {
-		type: {
-			type: String,
-			required: false,
-			default: 'file'
-		},
-		multiple: {
-			type: Boolean,
-			default: false
-		}
-	},
-
-	emits: ['done', 'closed'],
-
-	data() {
-		return {
-			selected: []
-		};
-	},
-
-	methods: {
-		ok() {
-			this.$emit('done', this.selected);
-			this.$refs.dialog.close();
-		},
-
-		cancel() {
-			this.$emit('done');
-			this.$refs.dialog.close();
-		},
-
-		onChangeSelection(xs) {
-			this.selected = xs;
-		},
-
-		number
-	}
+withDefaults(defineProps<{
+	type?: 'file' | 'folder';
+	multiple: boolean;
+}>(), {
+	type: 'file',
 });
+
+const emit = defineEmits<{
+	(e: 'done', r?: Misskey.entities.DriveFile[]): void;
+	(e: 'closed'): void;
+}>();
+
+const dialog = ref<InstanceType<typeof XModalWindow>>();
+
+const selected = ref<Misskey.entities.DriveFile[]>([]);
+
+function ok() {
+	emit('done', selected.value);
+	dialog.value?.close();
+}
+
+function cancel() {
+	emit('done');
+	dialog.value?.close();
+}
+
+function onChangeSelection(files: Misskey.entities.DriveFile[]) {
+	selected.value = files;
+}
 </script>

@@ -62,7 +62,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
 
 import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/form/input.vue';
@@ -97,27 +97,13 @@ export default defineComponent({
 			pagination: {
 				endpoint: 'admin/abuse-user-reports',
 				limit: 10,
-				params: () => ({
+				params: computed(() => ({
 					state: this.state,
 					reporterOrigin: this.reporterOrigin,
 					targetUserOrigin: this.targetUserOrigin,
-				}),
+				})),
 			},
 		}
-	},
-
-	watch: {
-		state() {
-			this.$refs.reports.reload();
-		},
-
-		reporterOrigin() {
-			this.$refs.reports.reload();
-		},
-
-		targetUserOrigin() {
-			this.$refs.reports.reload();
-		},
 	},
 
 	mounted() {
