@@ -810,8 +810,10 @@ continueThread: "Afficher la suite du fil"
 deleteAccountConfirm: "Votre compte sera supprimé. Êtes vous certain ?"
 incorrectPassword: "Le mot de passe est incorrect."
 hide: "Masquer"
+leaveGroup: "Quitter le groupe"
 leaveGroupConfirm: "Êtes vous sûr de vouloir quitter \"{name}\" ?"
 welcomeBackWithName: "Heureux de vous revoir, {name}"
+clickToFinishEmailVerification: "Veuillez cliquer sur [{ok}] afin de compléter la vérification par courriel."
 _emailUnavailable:
   used: "Non disponible"
   format: "Le format de cette adresse de courriel est invalide"
@@ -1275,6 +1277,7 @@ _exportOrImport:
   muteList: "Comptes masqués"
   blockingList: "Comptes bloqués"
   userLists: "Listes"
+  excludeInactiveUsers: "Exclure les utilisateur·rice·s inactifs"
 _charts:
   federationInstancesIncDec: "Variation du nombre d'instances fédérées"
   federationInstancesTotal: "Nombre total d'instances fédérées"
