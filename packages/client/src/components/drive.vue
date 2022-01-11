@@ -70,7 +70,7 @@ import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
 
 const props = withDefaults(defineProps<{
-	initialFolder: Misskey.entities.DriveFolder;
+	initialFolder?: Misskey.entities.DriveFolder;
 	type?: string;
 	multiple?: boolean;
 	select?: 'file' | 'folder' | null;
