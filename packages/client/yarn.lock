@@ -4537,9 +4537,9 @@ performance-now@^2.1.0:
   resolved "https://registry.yarnpkg.com/performance-now/-/performance-now-2.1.0.tgz#6309f4e0e5fa913ec1c69307ae364b4b377c9e7b"
   integrity sha1-Ywn04OX6kT7BxpMHrjZLSzd8nns=
 
-"photoswipe@git://github.com/dimsemenov/photoswipe#v5-beta":
+"photoswipe@git+https://github.com/dimsemenov/photoswipe#v5-beta":
   version "5.1.7"
-  resolved "git://github.com/dimsemenov/photoswipe#60040164333bd257409669e715e4327afdb3aec7"
+  resolved "git+https://github.com/dimsemenov/photoswipe#60040164333bd257409669e715e4327afdb3aec7"
 
 picocolors@^1.0.0:
   version "1.0.0"
