@@ -12,33 +12,17 @@
 </XWindow>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import {  } from 'vue';
+import * as Misskey from 'misskey-js';
 import XDrive from './drive.vue';
 import XWindow from '@/components/ui/window.vue';
 
-export default defineComponent({
-	components: {
-		XDrive,
-		XWindow,
-	},
+defineProps<{
+	initialFolder?: Misskey.entities.DriveFolder;
+}>();
 
-	props: {
-		initialFolder: {
-			type: Object,
-			required: false
-		},
-	},
-
-	emits: ['closed'],
-
-	data() {
-		return {
-		};
-	},
-
-	methods: {
-
-	}
-});
+defineEmits<{
+	(e: 'closed'): void;
+}>();
 </script>
