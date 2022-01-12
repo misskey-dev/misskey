@@ -162,16 +162,16 @@ function onStreamDriveFileDeleted(fileId: string) {
 	removeFile(fileId);
 }
 
-function onStreamDriveFolderCreated(folder: Misskey.entities.DriveFolder) {
-	addFolder(folder, true);
+function onStreamDriveFolderCreated(createdFolder: Misskey.entities.DriveFolder) {
+	addFolder(createdFolder, true);
 }
 
-function onStreamDriveFolderUpdated(folder: Misskey.entities.DriveFolder) {
+function onStreamDriveFolderUpdated(updatedFolder: Misskey.entities.DriveFolder) {
 	const current = folder.value ? folder.value.id : null;
-	if (current != folder.parentId) {
-		removeFolder(folder);
+	if (current != updatedFolder.parentId) {
+		removeFolder(updatedFolder);
 	} else {
-		addFolder(folder, true);
+		addFolder(updatedFolder, true);
 	}
 }
 
@@ -238,14 +238,14 @@ function onDrop(e: DragEvent): any {
 	//#region ドライブのフォルダ
 	const driveFolder = e.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FOLDER_);
 	if (driveFolder != null && driveFolder != '') {
-		const folder = JSON.parse(driveFolder);
+		const droppedFolder = JSON.parse(driveFolder);
 
 		// 移動先が自分自身ならreject
-		if (folder.value && folder.id == folder.value.id) return false;
-		if (folders.value.some(f => f.id == folder.id)) return false;
-		removeFolder(folder.id);
+		if (folder.value && droppedFolder.id == folder.value.id) return false;
+		if (folders.value.some(f => f.id == droppedFolder.id)) return false;
+		removeFolder(droppedFolder.id);
 		os.api('drive/folders/update', {
-			folderId: folder.id,
+			folderId: droppedFolder.id,
 			parentId: folder.value ? folder.value.id : null
 		}).then(() => {
 			// noop
@@ -300,35 +300,35 @@ function createFolder() {
 		os.api('drive/folders/create', {
 			name: name,
 			parentId: folder.value ? folder.value.id : undefined
-		}).then(folder => {
-			addFolder(folder, true);
+		}).then(createdFolder => {
+			addFolder(createdFolder, true);
 		});
 	});
 }
 
-function renameFolder(folder) {
+function renameFolder(folderToRename: Misskey.entities.DriveFolder) {
 	os.inputText({
 		title: i18n.locale.renameFolder,
 		placeholder: i18n.locale.inputNewFolderName,
-		default: folder.name
+		default: folderToRename.name
 	}).then(({ canceled, result: name }) => {
 		if (canceled) return;
 		os.api('drive/folders/update', {
-			folderId: folder.id,
+			folderId: folderToRename.id,
 			name: name
-		}).then(folder => {
+		}).then(updatedFolder => {
 			// FIXME: 画面を更新するために自分自身に移動
-			move(folder);
+			move(updatedFolder);
 		});
 	});
 }
 
-function deleteFolder(folder: Misskey.entities.DriveFolder) {
+function deleteFolder(folderToDelete: Misskey.entities.DriveFolder) {
 	os.api('drive/folders/delete', {
-		folderId: folder.id
+		folderId: folderToDelete.id
 	}).then(() => {
 		// 削除時に親フォルダに移動
-		move(folder.parentId);
+		move(folderToDelete.parentId);
 	}).catch(err => {
 		switch(err.id) {
 			case 'b0fc8a17-963c-405d-bfbc-859a487295e1':
@@ -354,8 +354,8 @@ function onChangeFileInput() {
 	}
 }
 
-function upload(file: File, folder?: Misskey.entities.DriveFolder | null) {
-	os.upload(file, (folder && typeof folder == 'object') ? folder.id : null).then(res => {
+function upload(file: File, folderToUpload?: Misskey.entities.DriveFolder | null) {
+	os.upload(file, (folderToUpload && typeof folderToUpload == 'object') ? folderToUpload.id : null).then(res => {
 		addFile(res, true);
 	});
 }
@@ -379,21 +379,21 @@ function chooseFile(file: Misskey.entities.DriveFile) {
 	}
 }
 
-function chooseFolder(folder: Misskey.entities.DriveFolder) {
-	const isAlreadySelected = selectedFolders.value.some(f => f.id == folder.id);
+function chooseFolder(folderToChoose: Misskey.entities.DriveFolder) {
+	const isAlreadySelected = selectedFolders.value.some(f => f.id == folderToChoose.id);
 	if (props.multiple) {
 		if (isAlreadySelected) {
-			selectedFolders.value = selectedFolders.value.filter(f => f.id != folder.id);
+			selectedFolders.value = selectedFolders.value.filter(f => f.id != folderToChoose.id);
 		} else {
-			selectedFolders.value.push(folder);
+			selectedFolders.value.push(folderToChoose);
 		}
 		emit('change-selection', selectedFolders.value);
 	} else {
 		if (isAlreadySelected) {
-			emit('selected', folder);
+			emit('selected', folderToChoose);
 		} else {
-			selectedFolders.value = [folder];
-			emit('change-selection', [folder]);
+			selectedFolders.value = [folderToChoose];
+			emit('change-selection', [folderToChoose]);
 		}
 	}
 }
@@ -461,12 +461,12 @@ function addFile(fileToAdd: Misskey.entities.DriveFile, unshift = false) {
 }
 
 function removeFolder(folderToRemove: Misskey.entities.DriveFolder | string) {
-	const folderIdToRemove = typeof folder === 'object' ? folderToRemove.id : folderToRemove;
+	const folderIdToRemove = typeof folderToRemove === 'object' ? folderToRemove.id : folderToRemove;
 	folders.value = folders.value.filter(f => f.id != folderIdToRemove);
 }
 
 function removeFile(file: Misskey.entities.DriveFile | string) {
-	const fileId = typeof folder === 'object' ? file.id : file;
+	const fileId = typeof file === 'object' ? file.id : file;
 	files.value = files.value.filter(f => f.id != fileId);
 }
 
@@ -474,16 +474,16 @@ function appendFile(file: Misskey.entities.DriveFile) {
 	addFile(file);
 }
 
-function appendFolder(folder: Misskey.entities.DriveFolder) {
-	addFolder(folder);
+function appendFolder(folderToAppend: Misskey.entities.DriveFolder) {
+	addFolder(folderToAppend);
 }
 /*
 function prependFile(file: Misskey.entities.DriveFile) {
 	addFile(file, true);
 }
 
-function prependFolder(folder: Misskey.entities.DriveFolder) {
-	addFolder(folder, true);
+function prependFolder(folderToPrepend: Misskey.entities.DriveFolder) {
+	addFolder(folderToPrepend, true);
 }
 */
 function goRoot() {
