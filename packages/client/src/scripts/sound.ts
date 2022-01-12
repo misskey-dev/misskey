@@ -38,14 +38,6 @@ export const soundConfigStore = markRaw(new Storage('sound', {
 		where: 'account',
 		default: { type: 'syuilo/square-pico', volume: 1 }
 	},
-	sound_reversiPutBlack: {
-		where: 'account',
-		default: { type: 'syuilo/kick', volume: 0.3 }
-	},
-	sound_reversiPutWhite: {
-		where: 'account',
-		default: { type: 'syuilo/snare', volume: 0.3 }
-	},
 }));
 
 await soundConfigStore.ready;
