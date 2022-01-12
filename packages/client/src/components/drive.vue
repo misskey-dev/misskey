@@ -410,18 +410,18 @@ function move(target?: Misskey.entities.DriveFolder) {
 
 	os.api('drive/folders/show', {
 		folderId: target
-	}).then(folder => {
-		folder.value = folder;
+	}).then(folderToMove => {
+		folder.value = folderToMove;
 		hierarchyFolders.value = [];
 
-		const dive = folder => {
-			hierarchyFolders.value.unshift(folder);
-			if (folder.parent) dive(folder.parent);
+		const dive = folderToDive => {
+			hierarchyFolders.value.unshift(folderToDive);
+			if (folderToDive.parent) dive(folderToDive.parent);
 		};
 
-		if (folder.parent) dive(folder.parent);
+		if (folderToMove.parent) dive(folderToMove.parent);
 
-		emit('open-folder', folder);
+		emit('open-folder', folderToMove);
 		fetch();
 	});
 }
