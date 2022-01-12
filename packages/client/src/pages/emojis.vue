@@ -4,55 +4,47 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed } from 'vue';
+<script lang="ts" setup>
+import { ref, computed } from 'vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 import XCategory from './emojis.category.vue';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		XCategory,
-	},
+const tab = ref('category');
 
-	data() {
-		return {
-			[symbols.PAGE_INFO]: computed(() => ({
-				title: this.$ts.customEmojis,
-				icon: 'fas fa-laugh',
-				bg: 'var(--bg)',
-				actions: [{
-					icon: 'fas fa-ellipsis-h',
-					handler: this.menu
-				}],
-			})),
-			tab: 'category',
+function menu(ev) {
+	os.popupMenu([{
+		icon: 'fas fa-download',
+		text: i18n.locale.export,
+		action: async () => {
+			os.api('export-custom-emojis', {
+			})
+			.then(() => {
+				os.alert({
+					type: 'info',
+					text: i18n.locale.exportRequested,
+				});
+			}).catch((e) => {
+				os.alert({
+					type: 'error',
+					text: e.message,
+				});
+			});
 		}
-	},
+	}], ev.currentTarget || ev.target);
+}
 
-	methods: {
-		menu(ev) {
-			os.popupMenu([{
-				icon: 'fas fa-download',
-				text: this.$ts.export,
-				action: async () => {
-					os.api('export-custom-emojis', {
-					})
-					.then(() => {
-						os.alert({
-							type: 'info',
-							text: this.$ts.exportRequested,
-						});
-					}).catch((e) => {
-						os.alert({
-							type: 'error',
-							text: e.message,
-						});
-					});
-				}
-			}], ev.currentTarget || ev.target);
-		}
-	}
+defineExpose({
+	[symbols.PAGE_INFO]: {
+		title: i18n.locale.customEmojis,
+		icon: 'fas fa-laugh',
+		bg: 'var(--bg)',
+		actions: [{
+			icon: 'fas fa-ellipsis-h',
+			handler: menu,
+		}],
+	},
 });
 </script>
 
