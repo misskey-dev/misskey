@@ -87,10 +87,6 @@ export default defineComponent({
 		this.hardWordMutedNotesCount = (await os.api('i/get-word-muted-notes-count', {})).count;
 	},
 
-	mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
-	},
-
 	methods: {
 		async save() {
 			this.$store.set('mutedWords', this.softMutedWords.trim().split('\n').map(x => x.trim().split(' ')));

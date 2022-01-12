@@ -67,10 +67,6 @@ export default defineComponent({
 		};
 	},
 
-	mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
-	},
-
 	methods: {
 		revoke(token) {
 			os.api('i/revoke-token', { tokenId: token.id }).then(() => {

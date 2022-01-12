@@ -96,10 +96,6 @@ export default defineComponent({
 		this.sounds.channel = ColdDeviceStorage.get('sound_channel');
 	},
 
-	mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
-	},
-
 	methods: {
 		async edit(type) {
 			const { canceled, result } = await os.form(this.$t('_sfx.' + type), {

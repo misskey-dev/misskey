@@ -47,10 +47,6 @@ export default defineComponent({
 		reportError: defaultStore.makeGetterSetter('reportError'),
 	},
 
-	mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
-	},
-
 	methods: {
 		changeDebug(v) {
 			console.log(v);

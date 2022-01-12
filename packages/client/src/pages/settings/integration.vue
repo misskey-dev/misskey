@@ -73,8 +73,6 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
-
 		document.cookie = `igi=${this.$i.token}; path=/;` +
 			` max-age=31536000;` +
 			(document.location.protocol.startsWith('https') ? ' secure' : '');
