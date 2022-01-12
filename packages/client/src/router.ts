@@ -73,8 +73,6 @@ const defaultRoutes = [
 	{ path: '/tags/:tag', component: page('tag'), props: route => ({ tag: route.params.tag }) },
 	{ path: '/user-info/:user', component: page('user-info'), props: route => ({ userId: route.params.user }) },
 	{ path: '/instance-info/:host', component: page('instance-info'), props: route => ({ host: route.params.host }) },
-	{ path: '/games/reversi', component: page('reversi/index') },
-	{ path: '/games/reversi/:gameId', component: page('reversi/game'), props: route => ({ gameId: route.params.gameId }) },
 	{ path: '/mfm-cheat-sheet', component: page('mfm-cheat-sheet') },
 	{ path: '/api-console', component: page('api-console') },
 	{ path: '/preview', component: page('preview') },
