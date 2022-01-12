@@ -52,7 +52,7 @@ export async function exportCustomEmojis(job: Bull.Job, done: () => void): Promi
 		});
 	};
 
-	await writeMeta(`{"metaVersion":1,"emojis":[`);
+	await writeMeta(`{"metaVersion":2,"emojis":[`);
 
 	const customEmojis = await Emojis.find({
 		where: {
@@ -64,9 +64,9 @@ export async function exportCustomEmojis(job: Bull.Job, done: () => void): Promi
 	});
 
 	for (const emoji of customEmojis) {
-		const exportId = ulid().toLowerCase();
 		const ext = mime.extension(emoji.type);
-		const emojiPath = path + '/' + exportId + (ext ? '.' + ext : '');
+		const fileName = emoji.name + (ext ? '.' + ext : '');
+		const emojiPath = path + '/' + fileName;
 		fs.writeFileSync(emojiPath, '', 'binary');
 		let downloaded = false;
 
@@ -77,8 +77,12 @@ export async function exportCustomEmojis(job: Bull.Job, done: () => void): Promi
 			logger.error(e);
 		}
 
+		if (!downloaded) {
+			fs.unlinkSync(emojiPath);
+		}
+
 		const content = JSON.stringify({
-			id: exportId,
+			fileName: fileName,
 			downloaded: downloaded,
 			emoji: emoji,
 		});

@@ -12,6 +12,7 @@ import { importUserLists } from './import-user-lists';
 import { deleteAccount } from './delete-account';
 import { importMuting } from './import-muting';
 import { importBlocking } from './import-blocking';
+import { importCustomEmojis } from './import-custom-emojis';
 
 const jobs = {
 	deleteDriveFiles,
@@ -25,6 +26,7 @@ const jobs = {
 	importMuting,
 	importBlocking,
 	importUserLists,
+	importCustomEmojis,
 	deleteAccount,
 } as Record<string, Bull.ProcessCallbackFunction<DbJobData> | Bull.ProcessPromiseFunction<DbJobData>>;
 

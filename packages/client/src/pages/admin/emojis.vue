@@ -182,6 +182,26 @@ const menu = (ev: MouseEvent) => {
 				});
 			});
 		}
+	}, {
+		icon: 'fas fa-upload',
+		text: i18n.locale.import,
+		action: async () => {
+			const file = await selectFile(ev.currentTarget || ev.target);
+			os.api('admin/emoji/import-zip', {
+				fileId: file.id,
+			})
+			.then(() => {
+				os.alert({
+					type: 'info',
+					text: i18n.locale.importRequested,
+				});
+			}).catch((e) => {
+				os.alert({
+					type: 'error',
+					text: e.message,
+				});
+			});
+		}
 	}], ev.currentTarget || ev.target);
 };
 
