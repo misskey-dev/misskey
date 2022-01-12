@@ -2,10 +2,24 @@
 <div class="yfudmmck">
 	<nav>
 		<div class="path" @contextmenu.prevent.stop="() => {}">
-			<XNavFolder :class="{ current: folder == null }"/>
+			<XNavFolder
+				:class="{ current: folder == null }"
+				:parent-folder="folder"
+				@move="move"
+				@upload="upload"
+				@removeFile="removeFile"
+				@removeFolder="removeFolder"
+			/>
 			<template v-for="f in hierarchyFolders">
 				<span class="separator"><i class="fas fa-angle-right"></i></span>
-				<XNavFolder :folder="f"/>
+				<XNavFolder
+					:folder="f"
+					:parent-folder="folder"
+					@move="move"
+					@upload="upload"
+					@removeFile="removeFile"
+					@removeFolder="removeFolder"
+				/>
 			</template>
 			<span v-if="folder != null" class="separator"><i class="fas fa-angle-right"></i></span>
 			<span v-if="folder != null" class="folder current">{{ folder.name }}</span>
@@ -340,7 +354,7 @@ function onChangeFileInput() {
 	}
 }
 
-function upload(file: File, folder: Misskey.entities.DriveFolder | null) {
+function upload(file: File, folder?: Misskey.entities.DriveFolder | null) {
 	os.upload(file, (folder && typeof folder == 'object') ? folder.id : null).then(res => {
 		addFile(res, true);
 	});

@@ -45,7 +45,7 @@ const props = withDefaults(defineProps<{
 const emit = defineEmits<{
 	(e: 'chosen', v: Misskey.entities.DriveFolder): void;
 	(e: 'move', v: Misskey.entities.DriveFolder): void;
-	(e: 'upload', file: File, folder: Misskey.entities.DriveFolder)
+	(e: 'upload', file: File, folder: Misskey.entities.DriveFolder);
 	(e: 'removeFile', v: Misskey.entities.DriveFile['id']): void;
 	(e: 'removeFolder', v: Misskey.entities.DriveFolder['id']): void;
 	(e: 'dragstart'): void;
