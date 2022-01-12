@@ -155,10 +155,6 @@ export default defineComponent({
 		}
 	},
 
-	mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
-	},
-
 	methods: {
 		getStatus(instance) {
 			if (instance.isSuspended) return 'suspended';

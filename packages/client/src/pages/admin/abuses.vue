@@ -106,10 +106,6 @@ export default defineComponent({
 		}
 	},
 
-	mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
-	},
-
 	methods: {
 		acct,
 
