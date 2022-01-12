@@ -8,27 +8,16 @@
 </MkContainer>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import * as os from '@/os';
+<script lang="ts" setup>
+import { } from 'vue';
+import * as misskey from 'misskey-js';
 import MkContainer from '@/components/ui/container.vue';
 import MkChart from '@/components/chart.vue';
 
-export default defineComponent({
-	components: {
-		MkContainer,
-		MkChart,
-	},
-	props: {
-		user: {
-			type: Object,
-			required: true
-		},
-		limit: {
-			type: Number,
-			required: false,
-			default: 40
-		}
-	},
+const props = withDefaults(defineProps<{
+	user: misskey.entities.User;
+	limit?: number;
+}>(), {
+	limit: 40,
 });
 </script>
