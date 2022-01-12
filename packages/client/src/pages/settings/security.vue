@@ -66,7 +66,7 @@ export default defineComponent({
 				bg: 'var(--bg)',
 			},
 			pagination: {
-				endpoint: 'i/signin-history',
+				endpoint: 'i/signin-history' as const,
 				limit: 5,
 			},
 		}

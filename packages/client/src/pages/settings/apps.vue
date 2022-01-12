@@ -58,7 +58,7 @@ export default defineComponent({
 				bg: 'var(--bg)',
 			},
 			pagination: {
-				endpoint: 'i/apps',
+				endpoint: 'i/apps' as const,
 				limit: 100,
 				params: {
 					sort: '+lastUsedAt'

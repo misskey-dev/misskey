@@ -36,7 +36,7 @@ export default defineComponent({
 	data() {
 		return {
 			pagination: {
-				endpoint: 'users/reactions',
+				endpoint: 'users/reactions' as const,
 				limit: 20,
 				params: computed(() => ({
 					userId: this.user.id,

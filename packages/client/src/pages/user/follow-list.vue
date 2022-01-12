@@ -33,14 +33,14 @@ export default defineComponent({
 	data() {
 		return {
 			followingPagination: {
-				endpoint: 'users/following',
+				endpoint: 'users/following' as const,
 				limit: 20,
 				params: computed(() => ({
 					userId: this.user.id,
 				})),
 			},
 			followersPagination: {
-				endpoint: 'users/followers',
+				endpoint: 'users/followers' as const,
 				limit: 20,
 				params: computed(() => ({
 					userId: this.user.id,

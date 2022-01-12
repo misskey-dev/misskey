@@ -95,7 +95,7 @@ export default defineComponent({
 			reporterOrigin: 'combined',
 			targetUserOrigin: 'combined',
 			pagination: {
-				endpoint: 'admin/abuse-user-reports',
+				endpoint: 'admin/abuse-user-reports' as const,
 				limit: 10,
 				params: computed(() => ({
 					state: this.state,

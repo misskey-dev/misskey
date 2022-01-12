@@ -42,7 +42,7 @@ import { i18n } from '@/i18n';
 const paginationComponent = ref<InstanceType<typeof MkPagination>>();
 
 const pagination = {
-	endpoint: 'following/requests/list',
+	endpoint: 'following/requests/list' as const,
 	limit: 10,
 };
 

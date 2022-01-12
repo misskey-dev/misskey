@@ -38,7 +38,7 @@ export default defineComponent({
 				}
 			},
 			pagination: {
-				endpoint: 'clips/list',
+				endpoint: 'clips/list' as const,
 				limit: 10,
 			},
 			draft: null,

@@ -14,7 +14,7 @@ const props = defineProps<{
 }>();
 
 const pagination = {
-	endpoint: 'notes/search-by-tag',
+	endpoint: 'notes/search-by-tag' as const,
 	limit: 10,
 	params: computed(() => ({
 		tag: props.tag,

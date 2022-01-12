@@ -27,7 +27,7 @@ export default defineComponent({
 	data() {
 		return {
 			pagination: {
-				endpoint: 'users/pages',
+				endpoint: 'users/pages' as const,
 				limit: 20,
 				params: computed(() => ({
 					userId: this.user.id,

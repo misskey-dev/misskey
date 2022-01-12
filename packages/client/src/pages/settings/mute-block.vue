@@ -56,11 +56,11 @@ export default defineComponent({
 			},
 			tab: 'mute',
 			mutingPagination: {
-				endpoint: 'mute/list',
+				endpoint: 'mute/list' as const,
 				limit: 10,
 			},
 			blockingPagination: {
-				endpoint: 'blocking/list',
+				endpoint: 'blocking/list' as const,
 				limit: 10,
 			},
 		}

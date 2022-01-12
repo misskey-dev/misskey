@@ -110,7 +110,7 @@ export default defineComponent({
 			searchUsername: '',
 			searchHost: '',
 			pagination: {
-				endpoint: 'admin/show-users',
+				endpoint: 'admin/show-users' as const,
 				limit: 10,
 				params: computed(() => ({
 					sort: this.sort,

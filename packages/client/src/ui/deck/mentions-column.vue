@@ -32,7 +32,7 @@ export default defineComponent({
 	data() {
 		return {
 			pagination: {
-				endpoint: 'notes/mentions',
+				endpoint: 'notes/mentions' as const,
 				limit: 10,
 			},
 		}

@@ -127,7 +127,7 @@ export default defineComponent({
 			state: 'federating',
 			sort: '+pubSub',
 			pagination: {
-				endpoint: 'federation/instances',
+				endpoint: 'federation/instances' as const,
 				limit: 10,
 				offsetMode: true,
 				params: computed(() => ({

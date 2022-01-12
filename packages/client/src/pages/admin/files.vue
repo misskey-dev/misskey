@@ -95,7 +95,7 @@ export default defineComponent({
 			type: null,
 			searchHost: '',
 			pagination: {
-				endpoint: 'admin/drive/files',
+				endpoint: 'admin/drive/files' as const,
 				limit: 10,
 				params: computed(() => ({
 					type: (this.type && this.type !== '') ? this.type : null,

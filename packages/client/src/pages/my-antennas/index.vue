@@ -38,7 +38,7 @@ export default defineComponent({
 				}
 			},
 			pagination: {
-				endpoint: 'antennas/list',
+				endpoint: 'antennas/list' as const,
 				limit: 10,
 			},
 		};

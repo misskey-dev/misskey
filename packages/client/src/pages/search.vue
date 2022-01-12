@@ -18,7 +18,7 @@ const props = defineProps<{
 }>();
 
 const pagination = {
-	endpoint: 'notes/search',
+	endpoint: 'notes/search' as const,
 	limit: 10,
 	params: computed(() => ({
 		query: props.query,
