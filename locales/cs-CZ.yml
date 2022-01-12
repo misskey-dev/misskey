@@ -207,7 +207,6 @@ uploadFromUrl: "Nahrát z URL adresy"
 uploadFromUrlDescription: "URL adresa souboru, který chcete nahrát"
 uploadFromUrlMayTakeTime: "Může trvat nějakou dobu, dokud nebude dokončeno nahrávání."
 explore: "Objevovat"
-games: "Misskey hry"
 messageRead: "Přečtené"
 noMoreHistory: "To je vše"
 startMessaging: "Zahájit chat"
@@ -458,8 +457,6 @@ _mfm:
   quote: "Citovat"
   emoji: "Vlastní emoji"
   search: "Vyhledávání"
-_reversi:
-  total: "Celkem"
 _theme:
   description: "Popis"
   keys:
