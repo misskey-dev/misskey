@@ -90,8 +90,6 @@ export default defineComponent({
 		this.sounds.chatBg = soundConfigStore.reactiveState.sound_chatBg;
 		this.sounds.antenna = soundConfigStore.reactiveState.sound_antenna;
 		this.sounds.channel = soundConfigStore.reactiveState.sound_channel;
-		this.sounds.reversiPutBlack = soundConfigStore.reactiveState.sound_reversiPutBlack;
-		this.sounds.reversiPutWhite = soundConfigStore.reactiveState.sound_reversiPutWhite;
 	},
 
 	mounted() {

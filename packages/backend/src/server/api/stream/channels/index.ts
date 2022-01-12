@@ -13,8 +13,6 @@ import drive from './drive';
 import hashtag from './hashtag';
 import channel from './channel';
 import admin from './admin';
-import gamesReversi from './games/reversi';
-import gamesReversiGame from './games/reversi-game';
 
 export default {
 	main,
@@ -32,6 +30,4 @@ export default {
 	hashtag,
 	channel,
 	admin,
-	gamesReversi,
-	gamesReversiGame,
 };
