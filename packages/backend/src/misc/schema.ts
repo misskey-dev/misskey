@@ -22,8 +22,6 @@ import { packedFederationInstanceSchema } from '@/models/repositories/federation
 import { packedQueueCountSchema } from '@/models/repositories/queue';
 import { packedGalleryPostSchema } from '@/models/repositories/gallery-post';
 import { packedEmojiSchema } from '@/models/repositories/emoji';
-import { packedReversiGameSchema } from '@/models/repositories/games/reversi/game';
-import { packedReversiMatchingSchema } from '@/models/repositories/games/reversi/matching';
 
 export const refs = {
 	User: packedUserSchema,
@@ -49,8 +47,6 @@ export const refs = {
 	FederationInstance: packedFederationInstanceSchema,
 	GalleryPost: packedGalleryPostSchema,
 	Emoji: packedEmojiSchema,
-	ReversiGame: packedReversiGameSchema,
-	ReversiMatching: packedReversiMatchingSchema,
 };
 
 export type Packed<x extends keyof typeof refs> = ObjType<(typeof refs[x])['properties']>;

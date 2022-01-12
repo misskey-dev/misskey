@@ -76,7 +76,7 @@
 		"ms": "2.1.3",
 		"nested-property": "4.0.0",
 		"parse5": "6.0.1",
-		"photoswipe": "git://github.com/dimsemenov/photoswipe#v5-beta",
+		"photoswipe": "git+https://github.com/dimsemenov/photoswipe#v5-beta",
 		"portscanner": "2.2.0",
 		"postcss": "8.4.5",
 		"postcss-loader": "6.2.1",
