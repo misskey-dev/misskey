@@ -223,7 +223,6 @@ uploadFromUrl: "Alŝuti de URL"
 uploadFromUrlDescription: "URL de la dosiero kiun vi volas alŝuti"
 uploadFromUrlRequested: "La alŝutado estis patita"
 explore: "Esplori"
-games: "Miskiaj Ludoj"
 messageRead: "Legita"
 noMoreHistory: "Ne plu de la historio"
 startMessaging: "Komenci babiladon"
@@ -712,8 +711,6 @@ _mfm:
   x4: "Pli grandega"
   font: "Presliteraro"
   rotate: "Orientiĝo"
-_reversi:
-  total: "Entute"
 _instanceTicker:
   none: "Ne montri"
   remote: "Montri al foraj uzantoj"
