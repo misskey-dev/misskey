@@ -33,7 +33,7 @@ const defaultRoutes = [
 	{ path: '/explore/tags/:tag', props: true, component: page('explore') },
 	{ path: '/federation', component: page('federation') },
 	{ path: '/emojis', component: page('emojis') },
-	{ path: '/search', component: page('search') },
+	{ path: '/search', component: page('search'), props: route => ({ query: route.query.q, channel: route.query.channel }) },
 	{ path: '/pages', name: 'pages', component: page('pages') },
 	{ path: '/pages/new', component: page('page-editor/page-editor') },
 	{ path: '/pages/edit/:pageId', component: page('page-editor/page-editor'), props: route => ({ initPageId: route.params.pageId }) },
