@@ -398,8 +398,8 @@ function chooseFolder(folder: Misskey.entities.DriveFolder) {
 	}
 }
 
-function move(target) {
-	if (target == null) {
+function move(target?: Misskey.entities.DriveFolder) {
+	if (!target) {
 		goRoot();
 		return;
 	} else if (typeof target == 'object') {
