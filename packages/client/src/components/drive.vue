@@ -25,7 +25,7 @@
 				<XFolder v-for="(f, i) in folders" :key="f.id" v-anim="i" class="folder" :folder="f" :select-mode="select === 'folder'" :is-selected="selectedFolders.some(x => x.id === f.id)" @chosen="chooseFolder"/>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
 				<div v-for="(n, i) in 16" :key="i" class="padding"></div>
-				<MkButton v-if="moreFolders" ref="moreFolders">{{ $ts.loadMore }}</MkButton>
+				<MkButton v-if="moreFolders" ref="moreFolders">{{ i18n.locale.loadMore }}</MkButton>
 			</div>
 			<div v-show="files.length > 0" ref="filesContainer" class="files">
 				<XFile
@@ -42,12 +42,12 @@
 				/>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
 				<div v-for="(n, i) in 16" :key="i" class="padding"></div>
-				<MkButton v-show="moreFiles" ref="loadMoreFiles" @click="fetchMoreFiles">{{ $ts.loadMore }}</MkButton>
+				<MkButton v-show="moreFiles" ref="loadMoreFiles" @click="fetchMoreFiles">{{ i18n.locale.loadMore }}</MkButton>
 			</div>
 			<div v-if="files.length == 0 && folders.length == 0 && !fetching" class="empty">
-				<p v-if="draghover">{{ $t('empty-draghover') }}</p>
-				<p v-if="!draghover && folder == null"><strong>{{ $ts.emptyDrive }}</strong><br/>{{ $t('empty-drive-description') }}</p>
-				<p v-if="!draghover && folder != null">{{ $ts.emptyFolder }}</p>
+				<p v-if="draghover">{{ i18n.t('empty-draghover') }}</p>
+				<p v-if="!draghover && folder == null"><strong>{{ i18n.locale.emptyDrive }}</strong><br/>{{ i18n.t('empty-drive-description') }}</p>
+				<p v-if="!draghover && folder != null">{{ i18n.locale.emptyFolder }}</p>
 			</div>
 		</div>
 		<MkLoading v-if="fetching"/>

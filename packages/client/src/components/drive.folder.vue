@@ -26,27 +26,22 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import {  } from 'vue';
+import * as Misskey from 'misskey-js';
 import * as os from '@/os';
 
+const props = withDefaults(defineProps<{
+	folder: Misskey.entities.DriveFolder;
+	isSelected?: boolean;
+	selectMode?: boolean;
+}>(), {
+	isSelected: false,
+	selectMode: false,
+});
+
+/*
 export default defineComponent({
-	props: {
-		folder: {
-			type: Object,
-			required: true,
-		},
-		isSelected: {
-			type: Boolean,
-			required: false,
-			default: false,
-		},
-		selectMode: {
-			type: Boolean,
-			required: false,
-			default: false,
-		}
-	},
 
 	emits: ['chosen'],
 
@@ -256,6 +251,7 @@ export default defineComponent({
 		},
 	}
 });
+*/
 </script>
 
 <style lang="scss" scoped>
