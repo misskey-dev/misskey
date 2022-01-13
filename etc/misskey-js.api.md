@@ -113,6 +113,146 @@ type Channel = {
     id: ID;
 };
 
+// Warning: (ae-forgotten-export) The symbol "AnyOf" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+export abstract class ChannelConnection<Channel extends AnyOf<Channels> = any> extends EventEmitter<Channel['events']> {
+    constructor(stream: Stream, channel: string, name?: string);
+    // (undocumented)
+    channel: string;
+    // (undocumented)
+    abstract dispose(): void;
+    // (undocumented)
+    abstract id: string;
+    // (undocumented)
+    inCount: number;
+    // (undocumented)
+    name?: string;
+    // (undocumented)
+    outCount: number;
+    // (undocumented)
+    send<T extends keyof Channel['receives']>(type: T, body: Channel['receives'][T]): void;
+    // (undocumented)
+    protected stream: Stream;
+}
+
+// @public (undocumented)
+export type Channels = {
+    main: {
+        params: null;
+        events: {
+            notification: (payload: Notification_2) => void;
+            mention: (payload: Note) => void;
+            reply: (payload: Note) => void;
+            renote: (payload: Note) => void;
+            follow: (payload: User) => void;
+            followed: (payload: User) => void;
+            unfollow: (payload: User) => void;
+            meUpdated: (payload: MeDetailed) => void;
+            pageEvent: (payload: PageEvent) => void;
+            urlUploadFinished: (payload: {
+                marker: string;
+                file: DriveFile;
+            }) => void;
+            readAllNotifications: () => void;
+            unreadNotification: (payload: Notification_2) => void;
+            unreadMention: (payload: Note['id']) => void;
+            readAllUnreadMentions: () => void;
+            unreadSpecifiedNote: (payload: Note['id']) => void;
+            readAllUnreadSpecifiedNotes: () => void;
+            readAllMessagingMessages: () => void;
+            messagingMessage: (payload: MessagingMessage) => void;
+            unreadMessagingMessage: (payload: MessagingMessage) => void;
+            readAllAntennas: () => void;
+            unreadAntenna: (payload: Antenna) => void;
+            readAllAnnouncements: () => void;
+            readAllChannels: () => void;
+            unreadChannel: (payload: Note['id']) => void;
+            myTokenRegenerated: () => void;
+            reversiNoInvites: () => void;
+            reversiInvited: (payload: FIXME) => void;
+            signin: (payload: FIXME) => void;
+            registryUpdated: (payload: {
+                scope?: string[];
+                key: string;
+                value: any | null;
+            }) => void;
+            driveFileCreated: (payload: DriveFile) => void;
+            readAntenna: (payload: Antenna) => void;
+        };
+        receives: null;
+    };
+    homeTimeline: {
+        params: null;
+        events: {
+            note: (payload: Note) => void;
+        };
+        receives: null;
+    };
+    localTimeline: {
+        params: null;
+        events: {
+            note: (payload: Note) => void;
+        };
+        receives: null;
+    };
+    hybridTimeline: {
+        params: null;
+        events: {
+            note: (payload: Note) => void;
+        };
+        receives: null;
+    };
+    globalTimeline: {
+        params: null;
+        events: {
+            note: (payload: Note) => void;
+        };
+        receives: null;
+    };
+    messaging: {
+        params: {
+            otherparty?: User['id'] | null;
+            group?: UserGroup['id'] | null;
+        };
+        events: {
+            message: (payload: MessagingMessage) => void;
+            deleted: (payload: MessagingMessage['id']) => void;
+            read: (payload: MessagingMessage['id'][]) => void;
+            typers: (payload: User[]) => void;
+        };
+        receives: {
+            read: {
+                id: MessagingMessage['id'];
+            };
+        };
+    };
+    serverStats: {
+        params: null;
+        events: {
+            stats: (payload: FIXME) => void;
+        };
+        receives: {
+            requestLog: {
+                id: string | number;
+                length: number;
+            };
+        };
+    };
+    queueStats: {
+        params: null;
+        events: {
+            stats: (payload: FIXME) => void;
+        };
+        receives: {
+            requestLog: {
+                id: string | number;
+                length: number;
+            };
+        };
+    };
+};
+
 // @public (undocumented)
 type Clip = TODO_2;
 
@@ -2422,11 +2562,8 @@ export class Stream extends EventEmitter<StreamEvents> {
     send(typeOrPayload: any, payload?: any): void;
     // (undocumented)
     state: 'initializing' | 'reconnecting' | 'connected';
-    // Warning: (ae-forgotten-export) The symbol "Channels" needs to be exported by the entry point index.d.ts
-    // Warning: (ae-forgotten-export) The symbol "Connection" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
-    useChannel<C extends keyof Channels>(channel: C, params?: Channels[C]['params'], name?: string): Connection<Channels[C]>;
+    useChannel<C extends keyof Channels>(channel: C, params?: Channels[C]['params'], name?: string): ChannelConnection<Channels[C]>;
 }
 
 // @public (undocumented)
@@ -2519,6 +2656,7 @@ type UserSorting = '+follower' | '-follower' | '+createdAt' | '-createdAt' | '+u
 // src/api.types.ts:16:32 - (ae-forgotten-export) The symbol "TODO" needs to be exported by the entry point index.d.ts
 // src/api.types.ts:18:25 - (ae-forgotten-export) The symbol "NoParams" needs to be exported by the entry point index.d.ts
 // src/api.types.ts:595:18 - (ae-forgotten-export) The symbol "ShowUserReq" needs to be exported by the entry point index.d.ts
+// src/streaming.types.ts:35:4 - (ae-forgotten-export) The symbol "FIXME" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

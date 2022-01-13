@@ -256,7 +256,7 @@ class Pool {
 	}
 }
 
-abstract class Connection<Channel extends AnyOf<Channels> = any> extends EventEmitter<Channel['events']> {
+export abstract class Connection<Channel extends AnyOf<Channels> = any> extends EventEmitter<Channel['events']> {
 	public channel: string;
 	protected stream: Stream;
 	public abstract id: string;

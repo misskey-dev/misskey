@@ -1,3 +1,6 @@
+# 0.0.13
+- expose ChannelConnection and Channels types
+
 # 0.0.12
 - fix a bug that cannot connect to streaming
 
