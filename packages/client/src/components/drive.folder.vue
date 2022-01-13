@@ -19,8 +19,8 @@
 		<template v-if="!hover"><i class="fas fa-folder fa-fw"></i></template>
 		{{ folder.name }}
 	</p>
-	<p v-if="$store.state.uploadFolder == folder.id" class="upload">
-		{{ $ts.uploadFolder }}
+	<p v-if="defaultStore.state.uploadFolder == folder.id" class="upload">
+		{{ i18n.locale.uploadFolder }}
 	</p>
 	<button v-if="selectMode" class="checkbox _button" :class="{ checked: isSelected }" @click.prevent.stop="checkboxClicked"></button>
 </div>
