@@ -270,12 +270,12 @@ function focus() {
 		});
 	}
 }
-/*
+
 function reset() {
 	if (emojis.value) emojis.value.scrollTop = 0;
 	q.value = '';
 }
-*/
+
 function getKey(emoji: string | Misskey.entities.CustomEmoji | UnicodeEmojiDef): string {
 	return typeof emoji === 'string' ? emoji : (emoji.char || `:${emoji.name}:`);
 }
