@@ -57,11 +57,11 @@
 		</div>
 		<div>
 			<header class="_acrylic">{{ $ts.customEmojis }}</header>
-			<XSection v-for="category in customEmojiCategories" :key="'custom:' + category" :initial-shown="false" :emojis="customEmojis.filter(e => e.category === category).map(e => ':' + e.name + ':')">{{ category || $ts.other }}</XSection>
+			<XSection v-for="category in customEmojiCategories" :key="'custom:' + category" :initial-shown="false" :emojis="customEmojis.filter(e => e.category === category).map(e => ':' + e.name + ':')" @chosen="chosen">{{ category || $ts.other }}</XSection>
 		</div>
 		<div>
 			<header class="_acrylic">{{ $ts.emoji }}</header>
-			<XSection v-for="category in categories" :emojis="emojilist.filter(e => e.category === category).map(e => e.char)">{{ category }}</XSection>
+			<XSection v-for="category in categories" :emojis="emojilist.filter(e => e.category === category).map(e => e.char)" @chosen="chosen">{{ category }}</XSection>
 		</div>
 	</div>
 	<div class="tabs">
