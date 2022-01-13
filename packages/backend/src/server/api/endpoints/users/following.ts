@@ -44,7 +44,7 @@ export const meta = {
 		items: {
 			type: 'object' as const,
 			optional: false as const, nullable: false as const,
-			ref: 'Following',
+			ref: 'Following' as const,
 		},
 	},
 

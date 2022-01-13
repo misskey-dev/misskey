@@ -22,9 +22,5 @@ export const packedQueueCountSchema = {
 			type: 'number' as const,
 			optional: false as const, nullable: false as const,
 		},
-		paused: {
-			type: 'number' as const,
-			optional: false as const, nullable: false as const,
-		},
 	},
 };

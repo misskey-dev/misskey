@@ -38,7 +38,7 @@ export const meta = {
 			page: {
 				type: 'object' as const,
 				optional: false as const, nullable: false as const,
-				ref: 'GalleryPost',
+				ref: 'GalleryPost' as const,
 			},
 		},
 	},

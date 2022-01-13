@@ -49,7 +49,7 @@ export const meta = {
 	res: {
 		type: 'object' as const,
 		optional: false as const, nullable: false as const,
-		ref: 'DriveFolder',
+		ref: 'DriveFolder' as const,
 	},
 };
 

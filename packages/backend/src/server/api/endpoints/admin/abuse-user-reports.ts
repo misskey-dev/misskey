@@ -93,17 +93,17 @@ export const meta = {
 				reporter: {
 					type: 'object' as const,
 					nullable: false as const, optional: false as const,
-					ref: 'User',
+					ref: 'User' as const,
 				},
 				targetUser: {
 					type: 'object' as const,
 					nullable: false as const, optional: false as const,
-					ref: 'User',
+					ref: 'User' as const,
 				},
 				assignee: {
 					type: 'object' as const,
 					nullable: true as const, optional: true as const,
-					ref: 'User',
+					ref: 'User' as const,
 				},
 			},
 		},

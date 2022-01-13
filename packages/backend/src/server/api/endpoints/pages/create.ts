@@ -67,7 +67,7 @@ export const meta = {
 	res: {
 		type: 'object' as const,
 		optional: false as const, nullable: false as const,
-		ref: 'Page',
+		ref: 'Page' as const,
 	},
 
 	errors: {
