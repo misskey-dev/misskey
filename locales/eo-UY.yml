@@ -1016,7 +1016,7 @@ _notification:
   youWereInvitedToGroup: "Invitita al grupo"
   _types:
     all: "Ĉio"
-    follow: "Novaj sekvatoj"
+    follow: "Novaj sekvantoj"
     mention: "Mencioj"
     reply: "Respondoj"
     renote: "Plusendoj"
