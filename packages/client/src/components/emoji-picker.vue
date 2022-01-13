@@ -335,7 +335,12 @@ function done(query?: any): boolean | void {
 
 onMounted(() => {
 	focus();
-})
+});
+
+defineExpose({
+	focus,
+	reset,
+});
 </script>
 
 <style lang="scss" scoped>

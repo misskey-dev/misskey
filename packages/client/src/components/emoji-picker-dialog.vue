@@ -26,7 +26,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref} from 'vue';
+import { ref } from 'vue';
 import MkModal from '@/components/ui/modal.vue';
 import MkEmojiPicker from '@/components/emoji-picker.vue';
 import { defaultStore } from '@/store';
