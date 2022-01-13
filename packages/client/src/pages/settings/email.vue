@@ -111,8 +111,6 @@ export default defineComponent({
 		});
 
 		onMounted(() => {
-			context.emit('info', INFO);
-
 			watch(emailAddress, () => {
 				saveEmailAddress();
 			});

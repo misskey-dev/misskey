@@ -37,7 +37,7 @@ export default define(meta, async (ps, me) => {
 
 	await getConnection().queryResultCache!.remove(['meta_emojis']);
 
-	insertModerationLog(me, 'removeEmoji', {
+	insertModerationLog(me, 'deleteEmoji', {
 		emoji: emoji,
 	});
 });

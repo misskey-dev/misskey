@@ -213,6 +213,16 @@ export function createImportUserListsJob(user: ThinUser, fileId: DriveFile['id']
 	});
 }
 
+export function createImportCustomEmojisJob(user: ThinUser, fileId: DriveFile['id']) {
+	return dbQueue.add('importCustomEmojis', {
+		user: user,
+		fileId: fileId,
+	}, {
+		removeOnComplete: true,
+		removeOnFail: true,
+	});
+}
+
 export function createDeleteAccountJob(user: ThinUser, opts: { soft?: boolean; } = {}) {
 	return dbQueue.add('deleteAccount', {
 		user: user,

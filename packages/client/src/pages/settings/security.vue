@@ -66,14 +66,10 @@ export default defineComponent({
 				bg: 'var(--bg)',
 			},
 			pagination: {
-				endpoint: 'i/signin-history',
+				endpoint: 'i/signin-history' as const,
 				limit: 5,
 			},
 		}
-	},
-
-	mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
 	},
 
 	methods: {

@@ -65,26 +65,14 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { computed } from 'vue';
 import MkButton from '@/components/ui/button.vue';
+import { defaultStore } from '@/store';
 
-export default defineComponent({
-	components: {
-		MkButton,
-	},
-
-	data() {
-		return {
-		}
-	},
-
-	computed: {
-		tutorial: {
-			get() { return this.$store.reactiveState.tutorial.value || 0; },
-			set(value) { this.$store.set('tutorial', value); }
-		},
-	},
+const tutorial = computed({
+	get() { return defaultStore.reactiveState.tutorial.value || 0; },
+	set(value) { defaultStore.set('tutorial', value); }
 });
 </script>
 

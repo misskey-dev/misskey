@@ -47,11 +47,6 @@ export default defineComponent({
 		},
 	},
 
-	mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
-	},
-
-
 	async created() {
 		this.instanceMutes = this.$i.mutedInstances.join('\n');
 	},

@@ -19,7 +19,7 @@
 	<div class="main">
 		<MkStickyContainer>
 			<template #header><MkHeader v-if="childInfo && !childInfo.hideHeader" :info="childInfo"/></template>
-			<component :is="component" :key="page" v-bind="pageProps" @info="onInfo"/>
+			<component :is="component" :ref="el => pageChanged(el)" :key="page" v-bind="pageProps"/>
 		</MkStickyContainer>
 	</div>
 </div>
@@ -66,7 +66,9 @@ export default defineComponent({
 		const narrow = ref(false);
 		const view = ref(null);
 		const el = ref(null);
-		const onInfo = (viewInfo) => {
+		const pageChanged = (page) => {
+			if (page == null) return;
+			const viewInfo = page[symbols.PAGE_INFO];
 			if (isRef(viewInfo)) {
 				watch(viewInfo, () => {
 					childInfo.value = viewInfo.value;
@@ -311,7 +313,7 @@ export default defineComponent({
 			narrow,
 			view,
 			el,
-			onInfo,
+			pageChanged,
 			childInfo,
 			pageProps,
 			component,

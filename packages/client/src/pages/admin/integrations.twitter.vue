@@ -58,10 +58,6 @@ export default defineComponent({
 		}
 	},
 
-	async mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
-	},
-
 	methods: {
 		async init() {
 			const meta = await os.api('meta', { detail: true });

@@ -101,10 +101,6 @@ export default defineComponent({
 		this.ffVisibility = this.$i.ffVisibility;
 	},
 
-	mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
-	},
-
 	methods: {
 		save() {
 			os.api('i/update', {

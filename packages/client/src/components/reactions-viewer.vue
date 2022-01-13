@@ -4,31 +4,19 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { computed } from 'vue';
+import * as misskey from 'misskey-js';
+import { $i } from '@/account';
 import XReaction from './reactions-viewer.reaction.vue';
 
-export default defineComponent({
-	components: {
-		XReaction
-	},
-	props: {
-		note: {
-			type: Object,
-			required: true
-		},
-	},
-	data() {
-		return {
-			initialReactions: new Set(Object.keys(this.note.reactions))
-		};
-	},
-	computed: {
-		isMe(): boolean {
-			return this.$i && this.$i.id === this.note.userId;
-		},
-	},
-});
+const props = defineProps<{
+	note: misskey.entities.Note;
+}>();
+
+const initialReactions = new Set(Object.keys(props.note.reactions));
+
+const isMe = computed(() => $i && $i.id === props.note.userId);
 </script>
 
 <style lang="scss" scoped>

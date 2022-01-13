@@ -156,7 +156,7 @@ export default defineComponent({
 				sort: '+createdAt',
 			} },
 			searchPagination: {
-				endpoint: 'users/search',
+				endpoint: 'users/search' as const,
 				limit: 10,
 				params: computed(() => (this.searchQuery && this.searchQuery !== '') ? {
 					query: this.searchQuery,
@@ -178,7 +178,7 @@ export default defineComponent({
 		},
 		tagUsers(): any {
 			return {
-				endpoint: 'hashtags/users',
+				endpoint: 'hashtags/users' as const,
 				limit: 30,
 				params: {
 					tag: this.tag,

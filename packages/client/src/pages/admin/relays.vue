@@ -48,10 +48,6 @@ export default defineComponent({
 		this.refresh();
 	},
 
-	mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
-	},
-
 	methods: {
 		async addRelay() {
 			const { canceled, result: inbox } = await os.inputText({

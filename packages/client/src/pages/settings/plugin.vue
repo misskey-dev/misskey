@@ -64,10 +64,6 @@ export default defineComponent({
 		}
 	},
 
-	mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
-	},
-
 	methods: {
 		uninstall(plugin) {
 			ColdDeviceStorage.set('plugins', this.plugins.filter(x => x.id !== plugin.id));

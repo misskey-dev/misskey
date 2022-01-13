@@ -40,7 +40,7 @@ export default defineComponent({
 				},
 			},
 			pagination: {
-				endpoint: 'users/lists/list',
+				endpoint: 'users/lists/list' as const,
 				limit: 10,
 			},
 		};

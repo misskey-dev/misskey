@@ -82,7 +82,7 @@ export default defineComponent({
 			showNext: false,
 			error: null,
 			prev: {
-				endpoint: 'users/notes',
+				endpoint: 'users/notes' as const,
 				limit: 10,
 				params: init => ({
 					userId: this.note.userId,
@@ -91,7 +91,7 @@ export default defineComponent({
 			},
 			next: {
 				reversed: true,
-				endpoint: 'users/notes',
+				endpoint: 'users/notes' as const,
 				limit: 10,
 				params: init => ({
 					userId: this.note.userId,
