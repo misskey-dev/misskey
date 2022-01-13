@@ -76,7 +76,7 @@
 <script lang="ts" setup>
 import { ref, computed, watch, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
-import { emojilist, UnicodeEmojiDef } from '@/scripts/emojilist';
+import { emojilist, UnicodeEmojiDef, unicodeEmojiCategories as categories } from '@/scripts/emojilist';
 import { getStaticImageUrl } from '@/scripts/get-static-image-url';
 import Ripple from '@/components/ripple.vue';
 import * as os from '@/os';
@@ -120,7 +120,6 @@ const q = ref<string | null>(null);
 const searchResultCustom = ref<Misskey.entities.CustomEmoji[]>([]);
 const searchResultUnicode = ref<UnicodeEmojiDef[]>([]);
 const tab = ref<'index' | 'custom' | 'unicode' | 'tags'>('index');
-const categories = ['face', 'people', 'animals_and_nature', 'food_and_drink', 'activity', 'travel_and_places', 'objects', 'symbols', 'flags'];
 
 watch(q, () => {
 	if (emojis.value) emojis.value.scrollTop = 0;
