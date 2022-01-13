@@ -2,25 +2,15 @@
 <div v-if="meta" class="xfbouadm" :style="{ backgroundImage: `url(${ meta.backgroundImageUrl })` }"></div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import * as os from '@/os';
 
-export default defineComponent({
-	components: {
-	},
+const meta = ref<Misskey.entities.DetailedInstanceMetadata>();
 
-	data() {
-		return {
-			meta: null,
-		};
-	},
-
-	created() {
-		os.api('meta', { detail: true }).then(meta => {
-			this.meta = meta;
-		});
-	},
+os.api('meta', { detail: true }).then(gotMeta => {
+	meta.value = gotMeta;
 });
 </script>
 
