@@ -3,7 +3,7 @@
 	:initial-width="800"
 	:initial-height="500"
 	:can-resize="true"
-	@closed="$emit('closed')"
+	@closed="emit('closed')"
 >
 	<template #header>
 		{{ i18n.locale.drive }}
@@ -23,7 +23,7 @@ defineProps<{
 	initialFolder?: Misskey.entities.DriveFolder;
 }>();
 
-defineEmits<{
+const emit = defineEmits<{
 	(e: 'closed'): void;
 }>();
 </script>

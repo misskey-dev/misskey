@@ -7,7 +7,7 @@
 	@click="cancel()"
 	@close="cancel()"
 	@ok="ok()"
-	@closed="$emit('closed')"
+	@closed="emit('closed')"
 >
 	<template #header>
 		{{ multiple ? ((type === 'file') ? i18n.locale.selectFiles : i18n.locale.selectFolders) : ((type === 'file') ? i18n.locale.selectFile : i18n.locale.selectFolder) }}
