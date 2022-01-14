@@ -16,33 +16,19 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
+import * as misskey from 'misskey-js';
 import XNoteHeader from './note-header.vue';
 import MkNoteSubNoteContent from './sub-note-content.vue';
 import XCwButton from './cw-button.vue';
-import * as os from '@/os';
 
-export default defineComponent({
-	components: {
-		XNoteHeader,
-		MkNoteSubNoteContent,
-		XCwButton,
-	},
+const props = defineProps<{
+	note: misskey.entities.Note;
+	pinned?: boolean;
+}>();
 
-	props: {
-		note: {
-			type: Object,
-			required: true
-		}
-	},
-
-	data() {
-		return {
-			showContent: false
-		};
-	}
-});
+const showContent = $ref(false);
 </script>
 
 <style lang="scss" scoped>
