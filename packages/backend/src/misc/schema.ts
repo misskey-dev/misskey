@@ -156,29 +156,4 @@ export type MinimumSchemaType<p extends MinimumSchema> =
 	p['oneOf'] extends MinimumSchema ? MinimumSchemaType<NonNullable<p['oneOf']>[number]> :
 	any;
 
-export type SchemaType<p extends Schema> =
-	p['type'] extends 'number' ? NullOrUndefined<p, number> :
-	p['type'] extends 'string' ? (
-		p['enum'] extends ReadonlyArray<string> ?
-			NullOrUndefined<p, p['enum'][number]> :
-			NullOrUndefined<p, string>
-	) :
-	p['type'] extends 'boolean' ? NullOrUndefined<p, boolean> :
-	p['type'] extends 'array' ? (
-		p['items'] extends MinimumSchema ? (
-			p['items']['anyOf'] extends ReadonlyArray<MinimumSchema> ? NullOrUndefined<p, MinimumSchemaType<NonNullable<p['items']['anyOf']>[number]>>[] :
-			p['items']['oneOf'] extends ReadonlyArray<MinimumSchema> ? NullOrUndefined<p, MinimumSchemaType<NonNullable<p['items']['oneOf']>[number]>>[] :
-			p['items']['allOf'] extends ReadonlyArray<MinimumSchema> ? NullOrUndefined<p, UnionToIntersection<MinimumSchemaType<NonNullable<p['items']['allOf']>[number]>>>[] :
-			NullOrUndefined<p, MinimumSchemaType<NonNullable<p['items']>>>[]
-		) :
-		NullOrUndefined<p, any[]>
-	) :
-	p['type'] extends 'object' ? (
-		p['ref'] extends keyof typeof refs ? NullOrUndefined<p, Packed<p['ref']>> :
-		p['properties'] extends Obj ? NullOrUndefined<p, ObjType<NonNullable<p['properties']>>> :
-		p['anyOf'] extends ReadonlyArray<MinimumSchema> ? NullOrUndefined<p, MinimumSchemaType<NonNullable<p['anyOf']>[number]> & Partial<UnionToIntersection<MinimumSchemaType<NonNullable<p['anyOf']>[number]>>>> :
-		p['allOf'] extends ReadonlyArray<MinimumSchema> ? NullOrUndefined<p, UnionToIntersection<MinimumSchemaType<NonNullable<p['anyOf']>[number]>>> :
-		any
-	) :
-	p['oneOf'] extends MinimumSchema ? NullOrUndefined<p, MinimumSchemaType<NonNullable<p['oneOf']>[number]>> :
-	NullOrUndefined<p, any>;
+export type SchemaType<p extends Schema> = NullOrUndefined<p, MinimumSchemaType<p>>;
