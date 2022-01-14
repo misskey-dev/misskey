@@ -8,7 +8,7 @@ import { PromoNotes } from '@/models/index';
 export const meta = {
 	tags: ['admin'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 	requireModerator: true,
 
 	params: {
@@ -34,7 +34,7 @@ export const meta = {
 			id: 'ae427aa2-7a41-484f-a18c-2c1104051604',
 		},
 	},
-};
+} as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
