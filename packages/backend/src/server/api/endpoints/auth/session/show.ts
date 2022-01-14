@@ -34,7 +34,7 @@ export const meta = {
 			app: {
 				type: 'object' as const,
 				optional: false as const, nullable: false as const,
-				ref: 'App' as const,
+				ref: 'App',
 			},
 			token: {
 				type: 'string' as const,

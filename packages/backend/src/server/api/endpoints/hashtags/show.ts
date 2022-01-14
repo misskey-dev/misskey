@@ -18,7 +18,7 @@ export const meta = {
 	res: {
 		type: 'object' as const,
 		optional: false as const, nullable: false as const,
-		ref: 'Hashtag' as const,
+		ref: 'Hashtag',
 	},
 
 	errors: {

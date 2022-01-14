@@ -3,7 +3,7 @@ import { dirname } from 'path';
 import { Context } from 'cafy';
 import * as path from 'path';
 import * as glob from 'glob';
-import { Schema } from '@/misc/schema';
+import { SimpleSchema } from '@/misc/simple-schema';
 
 //const _filename = fileURLToPath(import.meta.url);
 const _filename = __filename;
@@ -34,7 +34,7 @@ export interface IEndpointMeta {
 		};
 	};
 
-	res?: Schema;
+	res?: SimpleSchema;
 
 	/**
 	 * このエンドポイントにリクエストするのにユーザー情報が必須か否か

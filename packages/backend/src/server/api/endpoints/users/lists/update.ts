@@ -24,7 +24,7 @@ export const meta = {
 	res: {
 		type: 'object' as const,
 		optional: false as const, nullable: false as const,
-		ref: 'UserList' as const,
+		ref: 'UserList',
 	},
 
 	errors: {

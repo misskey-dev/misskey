@@ -59,7 +59,7 @@ export const meta = {
 		items: {
 			type: 'object' as const,
 			optional: false as const, nullable: false as const,
-			ref: 'FederationInstance' as const,
+			ref: 'FederationInstance',
 		},
 	},
 };

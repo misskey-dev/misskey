@@ -41,7 +41,7 @@ export const meta = {
 				group: {
 					type: 'object' as const,
 					optional: false as const, nullable: false as const,
-					ref: 'UserGroup' as const,
+					ref: 'UserGroup',
 				},
 			},
 		},
