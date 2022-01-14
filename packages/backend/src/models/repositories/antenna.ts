@@ -19,7 +19,7 @@ export class AntennaRepository extends Repository<Antenna> {
 			name: antenna.name,
 			keywords: antenna.keywords,
 			excludeKeywords: antenna.excludeKeywords,
-			src: antenna.src as Packed<'Antenna'>['src'],
+			src: antenna.src,
 			userListId: antenna.userListId,
 			userGroupId: userGroupJoining ? userGroupJoining.userGroupId : null,
 			users: antenna.users,
@@ -28,6 +28,6 @@ export class AntennaRepository extends Repository<Antenna> {
 			withReplies: antenna.withReplies,
 			withFile: antenna.withFile,
 			hasUnreadNote,
-		} as Packed<'Antenna'>;
+		};
 	}
 }
