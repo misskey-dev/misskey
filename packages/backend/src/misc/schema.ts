@@ -72,6 +72,7 @@ export interface Schema {
 	readonly enum?: ReadonlyArray<string>;
 	readonly default?: StringDefToType<this['type']> | null;
 	readonly maxLength?: number;
+	readonly minLength?: number;
 }
 
 type NonUndefinedPropertyNames<T extends Obj> = {
