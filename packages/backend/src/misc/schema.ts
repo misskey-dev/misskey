@@ -50,7 +50,16 @@ export const refs = {
 
 export type Packed<x extends keyof typeof refs> = ObjType<(typeof refs[x])['properties']>;
 
-export type Schema = {
+type TypeDStringef = 'boolean' | 'number' | 'string' | 'array' | 'object' | 'any';
+type StringDefToType<T extends TypeDStringef> =
+	T extends 'boolean' ? boolean :
+	T extends 'number' ? number :
+	T extends 'string' ? string | Date :
+	T extends 'array' ? ReadonlyArray<any> :
+	T extends 'object' ? Record<string, any> :
+	any;
+
+export interface Schema {
 	readonly type: 'boolean' | 'number' | 'string' | 'array' | 'object' | 'any';
 	readonly nullable: boolean;
 	readonly optional: boolean;
@@ -61,7 +70,8 @@ export type Schema = {
 	readonly format?: string;
 	readonly ref?: keyof typeof refs;
 	readonly enum?: ReadonlyArray<string>;
-	readonly default?: boolean | null;
+	readonly default?: StringDefToType<this['type']> | null;
+	readonly maxLength?: number;
 }
 
 type NonUndefinedPropertyNames<T extends Obj> = {
@@ -101,7 +111,7 @@ export type SchemaType<p extends Schema> =
 	p['type'] extends 'string' ?
 		p['enum'] extends ReadonlyArray<string> ?
 			NullOrUndefined<p, p['enum'][number]> :
-			NullOrUndefined<p, string> :
+			NullOrUndefined<p, string | Date> :
 	p['type'] extends 'boolean' ? NullOrUndefined<p, boolean> :
 	p['type'] extends 'array' ? NullOrUndefined<p, MyType<NonNullable<p['items']>>[]> :
 	p['type'] extends 'object' ? (
