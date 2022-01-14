@@ -404,12 +404,9 @@ const packedMeDetailedProps: Obj = {
 function allOptional(props: Obj): Obj {
 	const result: Obj = {};
 	for (const key in props) {
-		result[key] = {
-			...props[key],
-			optional: true,
-		};
+		result[key] = Object.assign(props[key], { optional: true });
 	}
-	return props;
+	return result;
 }
 
 export const packedUserLiteSchema = {
