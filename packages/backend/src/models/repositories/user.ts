@@ -320,14 +320,14 @@ export class UserRepository extends Repository<User> {
 		return await awaitAll(packed);
 	}
 
-	public packMany(
+	public packMany<D extends boolean = false>(
 		users: (User['id'] | User)[],
 		me?: { id: User['id'] } | null | undefined,
 		options?: {
-			detail?: boolean,
+			detail?: D,
 			includeSecrets?: boolean,
 		}
-	) {
+	): Promise<Awaited<D extends true ? Packed<'UserDetailed'> : Packed<'UserLite'>>[]> {
 		return Promise.all(users.map(u => this.pack(u, me, options)));
 	}
 
