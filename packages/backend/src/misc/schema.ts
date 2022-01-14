@@ -70,20 +70,28 @@ type StringDefToType<T extends TypeStringef> =
 	T extends 'object' ? Record<string, any> :
 	any;
 
-export interface Schema {
+// https://swagger.io/specification/?sbsearch=optional#schema-object
+export interface MinimumSchema {
 	readonly type: TypeStringef;
-	readonly nullable: boolean;
-	readonly optional: boolean;
-	readonly items?: Schema;
+	readonly nullable?: boolean;
+	readonly optional?: boolean;
+	readonly items?: MinimumSchema;
 	readonly properties?: Obj;
 	readonly description?: string;
 	readonly example?: any;
 	readonly format?: string;
 	readonly ref?: keyof typeof refs;
 	readonly enum?: ReadonlyArray<string>;
+	readonly anyOf?: ReadonlyArray<MinimumSchema>;
+	readonly oneOf?: ReadonlyArray<MinimumSchema>;
 	readonly default?: StringDefToType<this['type']> | null;
 	readonly maxLength?: number;
 	readonly minLength?: number;
+}
+
+export interface Schema extends MinimumSchema {
+	readonly nullable: boolean;
+	readonly optional: boolean;
 }
 
 type NonUndefinedPropertyNames<T extends Obj> = {
