@@ -9,7 +9,7 @@
 				<XCwButton v-model="showContent" :note="note"/>
 			</p>
 			<div v-show="note.cw == null || showContent" class="content">
-				<XSubNote-content class="text" :note="note"/>
+				<MkNoteSubNoteContent class="text" :note="note"/>
 			</div>
 		</div>
 	</div>
@@ -19,14 +19,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import XNoteHeader from './note-header.vue';
-import XSubNoteContent from './sub-note-content.vue';
+import MkNoteSubNoteContent from './sub-note-content.vue';
 import XCwButton from './cw-button.vue';
 import * as os from '@/os';
 
 export default defineComponent({
 	components: {
 		XNoteHeader,
-		XSubNoteContent,
+		MkNoteSubNoteContent,
 		XCwButton,
 	},
 
