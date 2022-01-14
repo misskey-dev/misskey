@@ -50,7 +50,7 @@ export const refs = {
 
 export type Packed<x extends keyof typeof refs> = ObjType<(typeof refs[x])['properties']>;
 
-type TypeDStringef = 'boolean' | 'number' | 'string' | 'array' | 'object' | 'any';
+type TypeStringef = 'boolean' | 'number' | 'string' | 'array' | 'object' | 'any';
 type StringDefToType<T extends TypeDStringef> =
 	T extends 'boolean' ? boolean :
 	T extends 'number' ? number :
@@ -60,7 +60,7 @@ type StringDefToType<T extends TypeDStringef> =
 	any;
 
 export interface Schema {
-	readonly type: 'boolean' | 'number' | 'string' | 'array' | 'object' | 'any';
+	readonly type: TypeStringef;
 	readonly nullable: boolean;
 	readonly optional: boolean;
 	readonly items?: Schema;
