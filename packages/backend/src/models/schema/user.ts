@@ -2,404 +2,404 @@ import { Obj } from "@/misc/schema";
 
 const packedUserLiteProps: Obj = {
 	id: {
-		type: 'string' as const,
-		nullable: false as const, optional: false as const,
+		type: 'string',
+		nullable: false, optional: false,
 		format: 'id',
 		example: 'xxxxxxxxxx',
 	},
 	name: {
-		type: 'string' as const,
-		nullable: true as const, optional: false as const,
+		type: 'string',
+		nullable: true, optional: false,
 		example: '藍',
 	},
 	username: {
-		type: 'string' as const,
-		nullable: false as const, optional: false as const,
+		type: 'string',
+		nullable: false, optional: false,
 		example: 'ai',
 	},
 	host: {
-		type: 'string' as const,
-		nullable: true as const, optional: false as const,
+		type: 'string',
+		nullable: true, optional: false,
 		example: 'misskey.example.com',
 	},
 	avatarUrl: {
-		type: 'string' as const,
+		type: 'string',
 		format: 'url',
-		nullable: true as const, optional: false as const,
+		nullable: true, optional: false,
 	},
 	avatarBlurhash: {
-		type: 'any' as const,
-		nullable: true as const, optional: false as const,
+		type: 'any',
+		nullable: true, optional: false,
 	},
 	avatarColor: {
-		type: 'any' as const,
-		nullable: true as const, optional: false as const,
+		type: 'any',
+		nullable: true, optional: false,
 		default: null,
 	},
 	isAdmin: {
-		type: 'boolean' as const,
-		nullable: false as const, optional: true as const,
+		type: 'boolean',
+		nullable: false, optional: true,
 		default: false,
 	},
 	isModerator: {
-		type: 'boolean' as const,
-		nullable: false as const, optional: true as const,
+		type: 'boolean',
+		nullable: false, optional: true,
 		default: false,
 	},
 	isBot: {
-		type: 'boolean' as const,
-		nullable: false as const, optional: true as const,
+		type: 'boolean',
+		nullable: false, optional: true,
 	},
 	isCat: {
-		type: 'boolean' as const,
-		nullable: false as const, optional: true as const,
+		type: 'boolean',
+		nullable: false, optional: true,
 	},
 	emojis: {
-		type: 'array' as const,
-		nullable: false as const, optional: false as const,
+		type: 'array',
+		nullable: false, optional: false,
 		items: {
-			type: 'object' as const,
-			nullable: false as const, optional: false as const,
+			type: 'object',
+			nullable: false, optional: false,
 			properties: {
 				name: {
-					type: 'string' as const,
-					nullable: false as const, optional: false as const,
+					type: 'string',
+					nullable: false, optional: false,
 				},
 				url: {
-					type: 'string' as const,
-					nullable: false as const, optional: false as const,
+					type: 'string',
+					nullable: false, optional: false,
 					format: 'url',
 				},
 			},
 		},
 	},
 	onlineStatus: {
-		type: 'string' as const,
+		type: 'string',
 		format: 'url',
-		nullable: true as const, optional: false as const,
+		nullable: true, optional: false,
 		enum: ['unknown', 'online', 'active', 'offline'],
 	},
-};
+} as const;
 
 const packedUserDetailedProps: Obj = {
 	url: {
-		type: 'string' as const,
+		type: 'string',
 		format: 'url',
-		nullable: true as const, optional: false as const,
+		nullable: true, optional: false,
 	},
 	uri: {
-		type: 'string' as const,
+		type: 'string',
 		format: 'uri',
-		nullable: true as const, optional: false as const,
+		nullable: true, optional: false,
 	},
 	createdAt: {
-		type: 'string' as const,
-		nullable: false as const, optional: false as const,
+		type: 'string',
+		nullable: false, optional: false,
 		format: 'date-time',
 	},
 	updatedAt: {
-		type: 'string' as const,
-		nullable: true as const, optional: false as const,
+		type: 'string',
+		nullable: true, optional: false,
 		format: 'date-time',
 	},
 	lastFetchedAt: {
-		type: 'string' as const,
-		nullable: true as const, optional: false as const,
+		type: 'string',
+		nullable: true, optional: false,
 		format: 'date-time',
 	},
 	bannerUrl: {
-		type: 'string' as const,
+		type: 'string',
 		format: 'url',
-		nullable: true as const, optional: false as const,
+		nullable: true, optional: false,
 	},
 	bannerBlurhash: {
-		type: 'any' as const,
-		nullable: true as const, optional: false as const,
+		type: 'any',
+		nullable: true, optional: false,
 	},
 	bannerColor: {
-		type: 'any' as const,
-		nullable: true as const, optional: false as const,
+		type: 'any',
+		nullable: true, optional: false,
 		default: null,
 	},
 	isLocked: {
-		type: 'boolean' as const,
-		nullable: false as const, optional: false as const,
+		type: 'boolean',
+		nullable: false, optional: false,
 	},
 	isSilenced: {
-		type: 'boolean' as const,
-		nullable: false as const, optional: false as const,
+		type: 'boolean',
+		nullable: false, optional: false,
 	},
 	isSuspended: {
-		type: 'boolean' as const,
-		nullable: false as const, optional: false as const,
+		type: 'boolean',
+		nullable: false, optional: false,
 		example: false,
 	},
 	description: {
-		type: 'string' as const,
-		nullable: true as const, optional: false as const,
+		type: 'string',
+		nullable: true, optional: false,
 		example: 'Hi masters, I am Ai!',
 	},
 	location: {
-		type: 'string' as const,
-		nullable: true as const, optional: false as const,
+		type: 'string',
+		nullable: true, optional: false,
 	},
 	birthday: {
-		type: 'string' as const,
-		nullable: true as const, optional: false as const,
+		type: 'string',
+		nullable: true, optional: false,
 		example: '2018-03-12',
 	},
 	lang: {
-		type: 'string' as const,
-		nullable: true as const, optional: false as const,
+		type: 'string',
+		nullable: true, optional: false,
 		example: 'ja-JP',
 	},
 	fields: {
-		type: 'array' as const,
-		nullable: false as const, optional: false as const,
+		type: 'array',
+		nullable: false, optional: false,
 		items: {
-				type: 'object' as const,
-				nullable: false as const, optional: false as const,
+				type: 'object',
+				nullable: false, optional: false,
 				properties: {
 					name: {
-						type: 'string' as const,
-						nullable: false as const, optional: false as const,
+						type: 'string',
+						nullable: false, optional: false,
 					},
 					value: {
-						type: 'string' as const,
-						nullable: false as const, optional: false as const,
+						type: 'string',
+						nullable: false, optional: false,
 					},
 				},
 				maxLength: 4,
 		},
 	},
 	followersCount: {
-		type: 'number' as const,
-		nullable: false as const, optional: false as const,
+		type: 'number',
+		nullable: false, optional: false,
 	},
 	followingCount: {
-		type: 'number' as const,
-		nullable: false as const, optional: false as const,
+		type: 'number',
+		nullable: false, optional: false,
 	},
 	notesCount: {
-		type: 'number' as const,
-		nullable: false as const, optional: false as const,
+		type: 'number',
+		nullable: false, optional: false,
 	},
 	pinnedNoteIds: {
-		type: 'array' as const,
-		nullable: false as const, optional: false as const,
+		type: 'array',
+		nullable: false, optional: false,
 		items: {
-			type: 'string' as const,
-			nullable: false as const, optional: false as const,
+			type: 'string',
+			nullable: false, optional: false,
 			format: 'id',
 		},
 	},
 	pinnedNotes: {
-		type: 'array' as const,
-		nullable: false as const, optional: false as const,
+		type: 'array',
+		nullable: false, optional: false,
 		items: {
-			type: 'object' as const,
-			nullable: false as const, optional: false as const,
-			ref: 'Note' as const,
+			type: 'object',
+			nullable: false, optional: false,
+			ref: 'Note',
 		},
 	},
 	pinnedPageId: {
-		type: 'string' as const,
-		nullable: true as const, optional: false as const,
+		type: 'string',
+		nullable: true, optional: false,
 	},
 	pinnedPage: {
-		type: 'object' as const,
-		nullable: true as const, optional: false as const,
-		ref: 'Page' as const,
+		type: 'object',
+		nullable: true, optional: false,
+		ref: 'Page',
 	},
 	publicReactions: {
-		type: 'boolean' as const,
-		nullable: false as const, optional: false as const,
+		type: 'boolean',
+		nullable: false, optional: false,
 	},
 	twoFactorEnabled: {
-		type: 'boolean' as const,
-		nullable: false as const, optional: false as const,
+		type: 'boolean',
+		nullable: false, optional: false,
 		default: false,
 	},
 	usePasswordLessLogin: {
-		type: 'boolean' as const,
-		nullable: false as const, optional: false as const,
+		type: 'boolean',
+		nullable: false, optional: false,
 		default: false,
 	},
 	securityKeys: {
-		type: 'boolean' as const,
-		nullable: false as const, optional: false as const,
+		type: 'boolean',
+		nullable: false, optional: false,
 		default: false,
 	},
 	//#region relations
 	isFollowing: {
-		type: 'boolean' as const,
-		nullable: false as const, optional: true as const,
+		type: 'boolean',
+		nullable: false, optional: true,
 	},
 	isFollowed: {
-		type: 'boolean' as const,
-		nullable: false as const, optional: true as const,
+		type: 'boolean',
+		nullable: false, optional: true,
 	},
 	hasPendingFollowRequestFromYou: {
-		type: 'boolean' as const,
-		nullable: false as const, optional: true as const,
+		type: 'boolean',
+		nullable: false, optional: true,
 	},
 	hasPendingFollowRequestToYou: {
-		type: 'boolean' as const,
-		nullable: false as const, optional: true as const,
+		type: 'boolean',
+		nullable: false, optional: true,
 	},
 	isBlocking: {
-		type: 'boolean' as const,
-		nullable: false as const, optional: true as const,
+		type: 'boolean',
+		nullable: false, optional: true,
 	},
 	isBlocked: {
-		type: 'boolean' as const,
-		nullable: false as const, optional: true as const,
+		type: 'boolean',
+		nullable: false, optional: true,
 	},
 	isMuted: {
-		type: 'boolean' as const,
-		nullable: false as const, optional: true as const,
+		type: 'boolean',
+		nullable: false, optional: true,
 	},
 	//#endregion
-};
+} as const;
 
 const packedMeDetailedProps: Obj = {
 	avatarId: {
-		type: 'string' as const,
-		nullable: true as const, optional: false as const,
+		type: 'string',
+		nullable: true, optional: false,
 		format: 'id',
 	},
 	bannerId: {
-		type: 'string' as const,
-		nullable: true as const, optional: false as const,
+		type: 'string',
+		nullable: true, optional: false,
 		format: 'id',
 	},
 	injectFeaturedNote: {
-		type: 'boolean' as const,
-		nullable: true as const, optional: false as const,
+		type: 'boolean',
+		nullable: true, optional: false,
 	},
 	receiveAnnouncementEmail: {
-		type: 'boolean' as const,
-		nullable: true as const, optional: false as const,
+		type: 'boolean',
+		nullable: true, optional: false,
 	},
 	alwaysMarkNsfw: {
-		type: 'boolean' as const,
-		nullable: true as const, optional: false as const,
+		type: 'boolean',
+		nullable: true, optional: false,
 	},
 	carefulBot: {
-		type: 'boolean' as const,
-		nullable: true as const, optional: false as const,
+		type: 'boolean',
+		nullable: true, optional: false,
 	},
 	autoAcceptFollowed: {
-		type: 'boolean' as const,
-		nullable: true as const, optional: false as const,
+		type: 'boolean',
+		nullable: true, optional: false,
 	},
 	noCrawle: {
-		type: 'boolean' as const,
-		nullable: true as const, optional: false as const,
+		type: 'boolean',
+		nullable: true, optional: false,
 	},
 	isExplorable: {
-		type: 'boolean' as const,
-		nullable: false as const, optional: false as const,
+		type: 'boolean',
+		nullable: false, optional: false,
 	},
 	isDeleted: {
-		type: 'boolean' as const,
-		nullable: false as const, optional: false as const,
+		type: 'boolean',
+		nullable: false, optional: false,
 	},
 	hideOnlineStatus: {
-		type: 'boolean' as const,
-		nullable: false as const, optional: false as const,
+		type: 'boolean',
+		nullable: false, optional: false,
 	},
 	hasUnreadSpecifiedNotes: {
-		type: 'boolean' as const,
-		nullable: false as const, optional: false as const,
+		type: 'boolean',
+		nullable: false, optional: false,
 	},
 	hasUnreadMentions: {
-		type: 'boolean' as const,
-		nullable: false as const, optional: false as const,
+		type: 'boolean',
+		nullable: false, optional: false,
 	},
 	hasUnreadAnnouncement: {
-		type: 'boolean' as const,
-		nullable: false as const, optional: false as const,
+		type: 'boolean',
+		nullable: false, optional: false,
 	},
 	hasUnreadAntenna: {
-		type: 'boolean' as const,
-		nullable: false as const, optional: false as const,
+		type: 'boolean',
+		nullable: false, optional: false,
 	},
 	hasUnreadChannel: {
-		type: 'boolean' as const,
-		nullable: false as const, optional: false as const,
+		type: 'boolean',
+		nullable: false, optional: false,
 	},
 	hasUnreadMessagingMessage: {
-		type: 'boolean' as const,
-		nullable: false as const, optional: false as const,
+		type: 'boolean',
+		nullable: false, optional: false,
 	},
 	hasUnreadNotification: {
-		type: 'boolean' as const,
-		nullable: false as const, optional: false as const,
+		type: 'boolean',
+		nullable: false, optional: false,
 	},
 	hasPendingReceivedFollowRequest: {
-		type: 'boolean' as const,
-		nullable: false as const, optional: false as const,
+		type: 'boolean',
+		nullable: false, optional: false,
 	},
 	integrations: {
-		type: 'object' as const,
-		nullable: true as const, optional: false as const,
+		type: 'object',
+		nullable: true, optional: false,
 	},
 	mutedWords: {
-		type: 'array' as const,
-		nullable: false as const, optional: false as const,
+		type: 'array',
+		nullable: false, optional: false,
 		items: {
-			type: 'array' as const,
-			nullable: false as const, optional: false as const,
+			type: 'array',
+			nullable: false, optional: false,
 			items: {
-				type: 'string' as const,
-				nullable: false as const, optional: false as const,
+				type: 'string',
+				nullable: false, optional: false,
 			},
 		},
 	},
 	mutedInstances: {
-		type: 'array' as const,
-		nullable: true as const, optional: false as const,
+		type: 'array',
+		nullable: true, optional: false,
 		items: {
-			type: 'string' as const,
-			nullable: false as const, optional: false as const,
+			type: 'string',
+			nullable: false, optional: false,
 		},
 	},
 	mutingNotificationTypes: {
-		type: 'array' as const,
-		nullable: true as const, optional: false as const,
+		type: 'array',
+		nullable: true, optional: false,
 		items: {
-			type: 'string' as const,
-			nullable: false as const, optional: false as const,
+			type: 'string',
+			nullable: false, optional: false,
 		},
 	},
 	emailNotificationTypes: {
-		type: 'array' as const,
-		nullable: true as const, optional: false as const,
+		type: 'array',
+		nullable: true, optional: false,
 		items: {
-			type: 'string' as const,
-			nullable: false as const, optional: false as const,
+			type: 'string',
+			nullable: false, optional: false,
 		},
 	},
 	//#region secrets
 	email: {
-		type: 'string' as const,
-		nullable: true as const, optional: true as const,
+		type: 'string',
+		nullable: true, optional: true,
 	},
 	emailVerified: {
-		type: 'boolean' as const,
-		nullable: true as const, optional: true as const,
+		type: 'boolean',
+		nullable: true, optional: true,
 	},
 	securityKeysList: {
-		type: 'array' as const,
-		nullable: false as const, optional: true as const,
+		type: 'array',
+		nullable: false, optional: true,
 		items: {
-			type: 'object' as const,
-			nullable: false as const, optional: false as const,
+			type: 'object',
+			nullable: false, optional: false,
 		},
 	},
 	//#endregion
-};
+} as const;
 
 function allOptional(props: Obj): Obj {
 	const result: Obj = {};
@@ -413,46 +413,46 @@ function allOptional(props: Obj): Obj {
 }
 
 export const packedUserLiteSchema = {
-	type: 'object' as const,
-	nullable:false as const, optional: false as const,
+	type: 'object',
+	nullable: false, optional: false,
 	properties: packedUserLiteProps,
-};
+} as const;
 
 export const packedUserDetailedNotMeSchema = {
-	type: 'object' as const,
-	nullable:false as const, optional: false as const,
+	type: 'object',
+	nullable: false, optional: false,
 	properties: {
 		...packedUserLiteProps,
 		...packedUserDetailedProps,
 	},
-};
+} as const;
 
 export const packedMeDetailedSchema = {
-	type: 'object' as const,
-	nullable:false as const, optional: false as const,
+	type: 'object',
+	nullable: false, optional: false,
 	properties: {
 		...packedUserLiteProps,
 		...packedUserDetailedProps,
 		...packedMeDetailedProps,
 	},
-};
+} as const;
 
 export const packedUserDetailedSchema = {
-	type: 'object' as const,
-	nullable:false as const, optional: false as const,
+	type: 'object',
+	nullable: false, optional: false,
 	properties: {
 		...packedUserLiteProps,
 		...packedUserDetailedProps,
 		...allOptional(packedMeDetailedProps),
 	},
-};
+} as const;
 
 export const packedUserSchema = {
-	type: 'object' as const,
-	nullable:false as const, optional: false as const,
+	type: 'object',
+	nullable: false, optional: false,
 	properties: {
 		...packedUserLiteProps,
 		...allOptional(packedUserDetailedProps),
 		...allOptional(packedMeDetailedProps),
 	},
-};
+} as const;

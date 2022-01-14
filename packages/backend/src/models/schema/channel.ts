@@ -1,52 +1,52 @@
 export const packedChannelSchema = {
-	type: 'object' as const,
-	optional: false as const, nullable: false as const,
+	type: 'object',
+	optional: false, nullable: false,
 	properties: {
 		id: {
-			type: 'string' as const,
-			optional: false as const, nullable: false as const,
+			type: 'string',
+			optional: false, nullable: false,
 			format: 'id',
 			example: 'xxxxxxxxxx',
 		},
 		createdAt: {
-			type: 'string' as const,
-			optional: false as const, nullable: false as const,
+			type: 'string',
+			optional: false, nullable: false,
 			format: 'date-time',
 		},
 		lastNotedAt: {
-			type: 'string' as const,
-			optional: false as const, nullable: true as const,
+			type: 'string',
+			optional: false, nullable: true,
 			format: 'date-time',
 		},
 		name: {
-			type: 'string' as const,
-			optional: false as const, nullable: false as const,
+			type: 'string',
+			optional: false, nullable: false,
 		},
 		description: {
-			type: 'string' as const,
-			nullable: true as const, optional: false as const,
+			type: 'string',
+			nullable: true, optional: false,
 		},
 		bannerUrl: {
-			type: 'string' as const,
+			type: 'string',
 			format: 'url',
-			nullable: true as const, optional: false as const,
+			nullable: true, optional: false,
 		},
 		notesCount: {
-			type: 'number' as const,
-			nullable: false as const, optional: false as const,
+			type: 'number',
+			nullable: false, optional: false,
 		},
 		usersCount: {
-			type: 'number' as const,
-			nullable: false as const, optional: false as const,
+			type: 'number',
+			nullable: false, optional: false,
 		},
 		isFollowing: {
-			type: 'boolean' as const,
-			optional: true as const, nullable: false as const,
+			type: 'boolean',
+			optional: true, nullable: false,
 		},
 		userId: {
-			type: 'string' as const,
-			nullable: true as const, optional: false as const,
+			type: 'string',
+			nullable: true, optional: false,
 			format: 'id',
 		},
 	},
-};
+} as const;

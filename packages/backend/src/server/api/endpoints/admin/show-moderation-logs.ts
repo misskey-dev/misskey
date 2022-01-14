@@ -58,7 +58,7 @@ export const meta = {
 				user: {
 					type: 'object' as const,
 					optional: false as const, nullable: false as const,
-					ref: 'User' as const,
+					ref: 'User',
 				},
 			},
 		},

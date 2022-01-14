@@ -1,40 +1,40 @@
 export const packedDriveFolderSchema = {
-	type: 'object' as const,
-	optional: false as const, nullable: false as const,
+	type: 'object',
+	optional: false, nullable: false,
 	properties: {
 		id: {
-			type: 'string' as const,
-			optional: false as const, nullable: false as const,
+			type: 'string',
+			optional: false, nullable: false,
 			format: 'id',
 			example: 'xxxxxxxxxx',
 		},
 		createdAt: {
-			type: 'string' as const,
-			optional: false as const, nullable: false as const,
+			type: 'string',
+			optional: false, nullable: false,
 			format: 'date-time',
 		},
 		name: {
-			type: 'string' as const,
-			optional: false as const, nullable: false as const,
+			type: 'string',
+			optional: false, nullable: false,
 		},
 		foldersCount: {
-			type: 'number' as const,
-			optional: true as const, nullable: false as const,
+			type: 'number',
+			optional: true, nullable: false,
 		},
 		filesCount: {
-			type: 'number' as const,
-			optional: true as const, nullable: false as const,
+			type: 'number',
+			optional: true, nullable: false,
 		},
 		parentId: {
-			type: 'string' as const,
-			optional: false as const, nullable: true as const,
+			type: 'string',
+			optional: false, nullable: true,
 			format: 'id',
 			example: 'xxxxxxxxxx',
 		},
 		parent: {
-			type: 'object' as const,
-			optional: true as const, nullable: true as const,
-			ref: 'DriveFolder' as const,
+			type: 'object',
+			optional: true, nullable: true,
+			ref: 'DriveFolder',
 		},
 	},
-};
+} as const;

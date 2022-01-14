@@ -1,27 +1,27 @@
 export const packedBlockingSchema = {
-	type: 'object' as const,
-	optional: false as const, nullable: false as const,
+	type: 'object',
+	optional: false, nullable: false,
 	properties: {
 		id: {
-			type: 'string' as const,
-			optional: false as const, nullable: false as const,
+			type: 'string',
+			optional: false, nullable: false,
 			format: 'id',
 			example: 'xxxxxxxxxx',
 		},
 		createdAt: {
-			type: 'string' as const,
-			optional: false as const, nullable: false as const,
+			type: 'string',
+			optional: false, nullable: false,
 			format: 'date-time',
 		},
 		blockeeId: {
-			type: 'string' as const,
-			optional: false as const, nullable: false as const,
+			type: 'string',
+			optional: false, nullable: false,
 			format: 'id',
 		},
 		blockee: {
-			type: 'object' as const,
-			optional: false as const, nullable: false as const,
-			ref: 'User' as const,
+			type: 'object',
+			optional: false, nullable: false,
+			ref: 'User',
 		},
 	},
-};
+} as const;

@@ -62,7 +62,7 @@ export const meta = {
 	res: {
 		type: 'object' as const,
 		optional: false as const, nullable: false as const,
-		ref: 'DriveFile' as const,
+		ref: 'DriveFile',
 	},
 };
 

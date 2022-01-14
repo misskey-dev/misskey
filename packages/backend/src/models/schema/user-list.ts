@@ -1,30 +1,30 @@
 export const packedUserListSchema = {
-	type: 'object' as const,
-	optional: false as const, nullable: false as const,
+	type: 'object',
+	optional: false, nullable: false,
 	properties: {
 		id: {
-			type: 'string' as const,
-			optional: false as const, nullable: false as const,
+			type: 'string',
+			optional: false, nullable: false,
 			format: 'id',
 			example: 'xxxxxxxxxx',
 		},
 		createdAt: {
-			type: 'string' as const,
-			optional: false as const, nullable: false as const,
+			type: 'string',
+			optional: false, nullable: false,
 			format: 'date-time',
 		},
 		name: {
-			type: 'string' as const,
-			optional: false as const, nullable: false as const,
+			type: 'string',
+			optional: false, nullable: false,
 		},
 		userIds: {
-			type: 'array' as const,
-			nullable: false as const, optional: true as const,
+			type: 'array',
+			nullable: false, optional: true,
 			items: {
-				type: 'string' as const,
-				nullable: false as const, optional: false as const,
+				type: 'string',
+				nullable: false, optional: false,
 				format: 'id',
 			},
 		},
 	},
-};
+} as const;

@@ -1,37 +1,37 @@
 export const packedEmojiSchema = {
-	type: 'object' as const,
-	optional: false as const, nullable: false as const,
+	type: 'object',
+	optional: false, nullable: false,
 	properties: {
 		id: {
-			type: 'string' as const,
-			optional: false as const, nullable: false as const,
+			type: 'string',
+			optional: false, nullable: false,
 			format: 'id',
 			example: 'xxxxxxxxxx',
 		},
 		aliases: {
-			type: 'array' as const,
-			optional: false as const, nullable: false as const,
+			type: 'array',
+			optional: false, nullable: false,
 			items: {
-				type: 'string' as const,
-				optional: false as const, nullable: false as const,
+				type: 'string',
+				optional: false, nullable: false,
 				format: 'id',
 			},
 		},
 		name: {
-			type: 'string' as const,
-			optional: false as const, nullable: false as const,
+			type: 'string',
+			optional: false, nullable: false,
 		},
 		category: {
-			type: 'string' as const,
-			optional: false as const, nullable: true as const,
+			type: 'string',
+			optional: false, nullable: true,
 		},
 		host: {
-			type: 'string' as const,
-			optional: false as const, nullable: true as const,
+			type: 'string',
+			optional: false, nullable: true,
 		},
 		url: {
-			type: 'string' as const,
-			optional: false as const, nullable: false as const,
+			type: 'string',
+			optional: false, nullable: false,
 		},
 	},
-};
+} as const;

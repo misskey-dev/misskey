@@ -14,24 +14,16 @@ export const meta = {
 		optional: false as const, nullable: false as const,
 		properties: {
 			deliver: {
-				type: 'object' as const,
-				optional: false as const, nullable: false as const,
-				ref: 'QueueCount' as const,
+				ref: 'QueueCount',
 			},
 			inbox: {
-				type: 'object' as const,
-				optional: false as const, nullable: false as const,
-				ref: 'QueueCount' as const,
+				ref: 'QueueCount',
 			},
 			db: {
-				type: 'object' as const,
-				optional: false as const, nullable: false as const,
-				ref: 'QueueCount' as const,
+				ref: 'QueueCount',
 			},
 			objectStorage: {
-				type: 'object' as const,
-				optional: false as const, nullable: false as const,
-				ref: 'QueueCount' as const,
+				ref: 'QueueCount',
 			},
 		},
 	},

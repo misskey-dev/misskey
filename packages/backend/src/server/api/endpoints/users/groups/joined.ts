@@ -15,7 +15,7 @@ export const meta = {
 		items: {
 			type: 'object' as const,
 			optional: false as const, nullable: false as const,
-			ref: 'UserGroup' as const,
+			ref: 'UserGroup',
 		},
 	},
 };
