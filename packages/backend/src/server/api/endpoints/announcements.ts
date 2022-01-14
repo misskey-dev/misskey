@@ -7,7 +7,7 @@ import { makePaginationQuery } from '../common/make-pagination-query';
 export const meta = {
 	tags: ['meta'],
 
-	requireCredential: false,
+	requireCredential: false as const,
 
 	params: {
 		limit: {
@@ -30,48 +30,48 @@ export const meta = {
 	},
 
 	res: {
-		type: 'array',
-		optional: false, nullable: false,
+		type: 'array' as const,
+		optional: false as const, nullable: false as const,
 		items: {
-			type: 'object',
-			optional: false, nullable: false,
+			type: 'object' as const,
+			optional: false as const, nullable: false as const,
 			properties: {
 				id: {
-					type: 'string',
-					optional: false, nullable: false,
+					type: 'string' as const,
+					optional: false as const, nullable: false as const,
 					format: 'id',
 					example: 'xxxxxxxxxx',
 				},
 				createdAt: {
-					type: 'string',
-					optional: false, nullable: false,
+					type: 'string' as const,
+					optional: false as const, nullable: false as const,
 					format: 'date-time',
 				},
 				updatedAt: {
-					type: 'string',
-					optional: false, nullable: true,
+					type: 'string' as const,
+					optional: false as const, nullable: true as const,
 					format: 'date-time',
 				},
 				text: {
-					type: 'string',
-					optional: false, nullable: false,
+					type: 'string' as const,
+					optional: false as const, nullable: false as const,
 				},
 				title: {
-					type: 'string',
-					optional: false, nullable: false,
+					type: 'string' as const,
+					optional: false as const, nullable: false as const,
 				},
 				imageUrl: {
-					type: 'string',
-					optional: false, nullable: true,
+					type: 'string' as const,
+					optional: false as const, nullable: true as const,
 				},
 				isRead: {
-					type: 'boolean',
-					optional: true, nullable: false,
+					type: 'boolean' as const,
+					optional: false as const, nullable: false as const,
 				},
 			},
 		},
 	},
-} as const;
+};
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {

@@ -18,87 +18,87 @@ export type Param = {
 };
 
 export interface IEndpointMeta {
-	readonly stability?: 'deprecated' | 'experimental' | 'stable';
+	stability?: string; //'deprecated' | 'experimental' | 'stable';
 
-	readonly tags?: ReadonlyArray<string>;
+	tags?: string[];
 
-	readonly params?: {
-		readonly [key: string]: Param;
+	params?: {
+		[key: string]: Param;
 	};
 
-	readonly errors?: {
-		readonly [key: string]: {
-			readonly message: string;
-			readonly code: string;
-			readonly id: string;
+	errors?: {
+		[key: string]: {
+			message: string;
+			code: string;
+			id: string;
 		};
 	};
 
-	readonly res?: Schema;
+	res?: Schema;
 
 	/**
 	 * このエンドポイントにリクエストするのにユーザー情報が必須か否か
 	 * 省略した場合は false として解釈されます。
 	 */
-	readonly requireCredential?: boolean;
+	requireCredential?: boolean;
 
 	/**
 	 * 管理者のみ使えるエンドポイントか否か
 	 */
-	readonly requireAdmin?: boolean;
+	requireAdmin?: boolean;
 
 	/**
 	 * 管理者またはモデレーターのみ使えるエンドポイントか否か
 	 */
-	readonly requireModerator?: boolean;
+	requireModerator?: boolean;
 
 	/**
 	 * エンドポイントのリミテーションに関するやつ
 	 * 省略した場合はリミテーションは無いものとして解釈されます。
 	 * また、withCredential が false の場合はリミテーションを行うことはできません。
 	 */
-	readonly limit?: {
+	limit?: {
 
 		/**
 		 * 複数のエンドポイントでリミットを共有したい場合に指定するキー
 		 */
-		readonly key?: string;
+		key?: string;
 
 		/**
 		 * リミットを適用する期間(ms)
 		 * このプロパティを設定する場合、max プロパティも設定する必要があります。
 		 */
-		readonly duration?: number;
+		duration?: number;
 
 		/**
 		 * durationで指定した期間内にいくつまでリクエストできるのか
 		 * このプロパティを設定する場合、duration プロパティも設定する必要があります。
 		 */
-		readonly max?: number;
+		max?: number;
 
 		/**
 		 * 最低でもどれくらいの間隔を開けてリクエストしなければならないか(ms)
 		 */
-		readonly minInterval?: number;
+		minInterval?: number;
 	};
 
 	/**
 	 * ファイルの添付を必要とするか否か
 	 * 省略した場合は false として解釈されます。
 	 */
-	readonly requireFile?: boolean;
+	requireFile?: boolean;
 
 	/**
 	 * サードパーティアプリからはリクエストすることができないか否か
 	 * 省略した場合は false として解釈されます。
 	 */
-	readonly secure?: boolean;
+	secure?: boolean;
 
 	/**
 	 * エンドポイントの種類
 	 * パーミッションの実現に利用されます。
 	 */
-	readonly kind?: string;
+	kind?: string;
 }
 
 export interface IEndpoint {

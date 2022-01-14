@@ -101,7 +101,7 @@ export type SchemaType<p extends Schema> =
 	p['type'] extends 'string' ?
 		p['enum'] extends ReadonlyArray<string> ?
 			NullOrUndefined<p, p['enum'][number]> :
-			NullOrUndefined<p, string | Date> :
+			NullOrUndefined<p, string> :
 	p['type'] extends 'boolean' ? NullOrUndefined<p, boolean> :
 	p['type'] extends 'array' ? NullOrUndefined<p, MyType<NonNullable<p['items']>>[]> :
 	p['type'] extends 'object' ? (
