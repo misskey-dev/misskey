@@ -424,7 +424,7 @@ export const packedUserDetailedNotMeSchema = {
 	properties: {
 		...packedUserLiteProps,
 		...packedUserDetailedProps,
-	}
+	},
 };
 
 export const packedMeDetailedSchema = {
@@ -434,7 +434,7 @@ export const packedMeDetailedSchema = {
 		...packedUserLiteProps,
 		...packedUserDetailedProps,
 		...packedMeDetailedProps,
-	}
+	},
 };
 
 export const packedUserDetailedSchema = {
@@ -444,7 +444,7 @@ export const packedUserDetailedSchema = {
 		...packedUserLiteProps,
 		...packedUserDetailedProps,
 		...allOptional(packedMeDetailedProps),
-	}
+	},
 };
 
 export const packedUserSchema = {
@@ -454,5 +454,5 @@ export const packedUserSchema = {
 		...packedUserLiteProps,
 		...allOptional(packedUserDetailedProps),
 		...allOptional(packedMeDetailedProps),
-	}
+	},
 };
