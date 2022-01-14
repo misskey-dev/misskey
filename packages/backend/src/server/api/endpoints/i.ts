@@ -11,7 +11,7 @@ export const meta = {
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
-		ref: 'User',
+		ref: 'MeDetailed',
 	},
 } as const;
 
