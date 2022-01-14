@@ -1,4 +1,10 @@
-import { packedUserSchema } from '@/models/schema/user';
+import {
+	packedUserLiteSchema,
+	packedUserDetailedNotMeSchema,
+	packedMeDetailedSchema,
+	packedUserDetailedSchema,
+	packedUserSchema,
+} from '@/models/schema/user';
 import { packedNoteSchema } from '@/models/schema/note';
 import { packedUserListSchema } from '@/models/schema/user-list';
 import { packedAppSchema } from '@/models/schema/app';
@@ -23,7 +29,12 @@ import { packedGalleryPostSchema } from '@/models/schema/gallery-post';
 import { packedEmojiSchema } from '@/models/schema/emoji';
 
 export const refs = {
+	UserLite: packedUserLiteSchema,
+	UserDetailedNotMe: packedUserDetailedNotMeSchema,
+	MeDetailed: packedMeDetailedSchema,
+	UserDetailed: packedUserDetailedSchema,
 	User: packedUserSchema,
+
 	UserList: packedUserListSchema,
 	UserGroup: packedUserGroupSchema,
 	App: packedAppSchema,
@@ -62,6 +73,7 @@ export interface Schema {
 	ref?: keyof typeof refs;
 	enum?: string[];
 	default?: boolean | null;
+	maxLength?: number;
 }
 
 type NonUndefinedPropertyNames<T extends Obj> = {
