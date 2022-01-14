@@ -61,8 +61,17 @@ export const refs = {
 
 export type Packed<x extends keyof typeof refs> = ObjType<(typeof refs[x])['properties']>;
 
-export type Schema = {
-	readonly type: 'boolean' | 'number' | 'string' | 'array' | 'object' | 'any';
+type TypeStringef = 'boolean' | 'number' | 'string' | 'array' | 'object' | 'any';
+type StringDefToType<T extends TypeStringef> =
+	T extends 'boolean' ? boolean :
+	T extends 'number' ? number :
+	T extends 'string' ? string | Date :
+	T extends 'array' ? ReadonlyArray<any> :
+	T extends 'object' ? Record<string, any> :
+	any;
+
+export interface Schema {
+	readonly type: TypeStringef;
 	readonly nullable: boolean;
 	readonly optional: boolean;
 	readonly items?: Schema;
@@ -72,8 +81,9 @@ export type Schema = {
 	readonly format?: string;
 	readonly ref?: keyof typeof refs;
 	readonly enum?: ReadonlyArray<string>;
-	readonly default?: boolean | null;
+	readonly default?: StringDefToType<this['type']> | null;
 	readonly maxLength?: number;
+	readonly minLength?: number;
 }
 
 type NonUndefinedPropertyNames<T extends Obj> = {
