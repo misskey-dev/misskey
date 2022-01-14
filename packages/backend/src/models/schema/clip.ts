@@ -1,39 +1,39 @@
 export const packedClipSchema = {
-	type: 'object' as const,
-	optional: false as const, nullable: false as const,
+	type: 'object',
+	optional: false, nullable: false,
 	properties: {
 		id: {
-			type: 'string' as const,
-			optional: false as const, nullable: false as const,
+			type: 'string',
+			optional: false, nullable: false,
 			format: 'id',
 			example: 'xxxxxxxxxx',
 		},
 		createdAt: {
-			type: 'string' as const,
-			optional: false as const, nullable: false as const,
+			type: 'string',
+			optional: false, nullable: false,
 			format: 'date-time',
 		},
 		userId: {
-			type: 'string' as const,
-			optional: false as const, nullable: false as const,
+			type: 'string',
+			optional: false, nullable: false,
 			format: 'id',
 		},
 		user: {
-			type: 'object' as const,
-			ref: 'User' as const,
-			optional: false as const, nullable: false as const,
+			type: 'object',
+			ref: 'User',
+			optional: false, nullable: false,
 		},
 		name: {
-			type: 'string' as const,
-			optional: false as const, nullable: false as const,
+			type: 'string',
+			optional: false, nullable: false,
 		},
 		description: {
-			type: 'string' as const,
-			optional: false as const, nullable: true as const,
+			type: 'string',
+			optional: false, nullable: true,
 		},
 		isPublic: {
-			type: 'boolean' as const,
-			optional: false as const, nullable: false as const,
+			type: 'boolean',
+			optional: false, nullable: false,
 		},
 	},
-};
+} as const;

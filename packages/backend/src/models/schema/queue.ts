@@ -1,26 +1,26 @@
 export const packedQueueCountSchema = {
-	type: 'object' as const,
-	optional: false as const, nullable: false as const,
+	type: 'object',
+	optional: false, nullable: false,
 	properties: {
 		waiting: {
-			type: 'number' as const,
-			optional: false as const, nullable: false as const,
+			type: 'number',
+			optional: false, nullable: false,
 		},
 		active: {
-			type: 'number' as const,
-			optional: false as const, nullable: false as const,
+			type: 'number',
+			optional: false, nullable: false,
 		},
 		completed: {
-			type: 'number' as const,
-			optional: false as const, nullable: false as const,
+			type: 'number',
+			optional: false, nullable: false,
 		},
 		failed: {
-			type: 'number' as const,
-			optional: false as const, nullable: false as const,
+			type: 'number',
+			optional: false, nullable: false,
 		},
 		delayed: {
-			type: 'number' as const,
-			optional: false as const, nullable: false as const,
+			type: 'number',
+			optional: false, nullable: false,
 		},
 	},
-};
+} as const;
