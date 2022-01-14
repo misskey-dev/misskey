@@ -60,8 +60,14 @@ type StringDefToType<T extends TypeStringef> =
 	any;
 
 // https://swagger.io/specification/?sbsearch=optional#schema-object
-export interface MinimumSchema {
-	readonly type: TypeStringef;
+type OfSchema = {
+	readonly anyOf?: ReadonlyArray<MinimumSchema>;
+	readonly oneOf?: ReadonlyArray<MinimumSchema>;
+	readonly allOf?: ReadonlyArray<MinimumSchema>;
+}
+
+export interface MinimumSchema extends OfSchema {
+	readonly type?: TypeStringef;
 	readonly nullable?: boolean;
 	readonly optional?: boolean;
 	readonly items?: MinimumSchema;
@@ -71,9 +77,7 @@ export interface MinimumSchema {
 	readonly format?: string;
 	readonly ref?: keyof typeof refs;
 	readonly enum?: ReadonlyArray<string>;
-	readonly anyOf?: ReadonlyArray<MinimumSchema>;
-	readonly oneOf?: ReadonlyArray<MinimumSchema>;
-	readonly default?: StringDefToType<this['type']> | null;
+	readonly default?: (this['type'] extends TypeStringef ? StringDefToType<this['type']> : any) | null;
 	readonly maxLength?: number;
 	readonly minLength?: number;
 }
@@ -96,15 +100,11 @@ type OnlyOptional<T extends Obj> = Pick<T, UndefinedPropertyNames<T>>;
 
 export interface Obj { [key: string]: Schema; }
 
-export type ObjType<s extends Obj> =
-	{ [P in keyof OnlyOptional<s>]?: SchemaType<s[P]> } &
-	{ [P in keyof OnlyRequired<s>]: SchemaType<s[P]> };
+type Mutable<T> = { -readonly [P in keyof T ]: T[P] };
 
-// https://qiita.com/hrsh7th@github/items/84e8968c3601009cdcf2
-type MyType<T extends Schema> = {
-	0: any;
-	1: SchemaType<T>;
-}[T extends Schema ? 1 : 0];
+export type ObjType<s extends Obj> =
+	Mutable<{ [P in keyof OnlyOptional<s>]?: SchemaType<s[P]> }> &
+	Mutable<{ [P in keyof OnlyRequired<s>]: SchemaType<s[P]> }>;
 
 type NullOrUndefined<p extends Schema, T> =
 	p['nullable'] extends true
@@ -115,18 +115,34 @@ type NullOrUndefined<p extends Schema, T> =
 			? (T | undefined)
 			: T;
 
-export type SchemaType<p extends Schema> =
-	p['type'] extends 'number' ? NullOrUndefined<p, number> :
-	p['type'] extends 'string' ?
+// 共用体型を交差型にする型 https://stackoverflow.com/questions/54938141/typescript-convert-union-to-intersection
+type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends ((k: infer I) => void) ? I : never;
+
+export type MinimumSchemaType<p extends MinimumSchema> =
+	p['type'] extends 'number' ? number :
+	p['type'] extends 'string' ? (
 		p['enum'] extends ReadonlyArray<string> ?
-			NullOrUndefined<p, p['enum'][number]> :
-			NullOrUndefined<p, string | Date> :
-	p['type'] extends 'boolean' ? NullOrUndefined<p, boolean> :
-	p['type'] extends 'array' ? NullOrUndefined<p, MyType<NonNullable<p['items']>>[]> :
-	p['type'] extends 'object' ? (
-		p['ref'] extends keyof typeof refs
-			? NullOrUndefined<p, Packed<p['ref']>>
-			: NullOrUndefined<p, ObjType<NonNullable<p['properties']>>>
+			p['enum'][number] :
+			string
 	) :
-	p['type'] extends 'any' ? NullOrUndefined<p, any> :
+	p['type'] extends 'boolean' ? boolean :
+	p['type'] extends 'array' ? (
+		p['items'] extends MinimumSchema ? (
+			p['items']['anyOf'] extends ReadonlyArray<MinimumSchema> ? MinimumSchemaType<NonNullable<p['items']['anyOf']>[number]>[] :
+			p['items']['oneOf'] extends ReadonlyArray<MinimumSchema> ? MinimumSchemaType<NonNullable<p['items']['oneOf']>[number]>[] :
+			p['items']['allOf'] extends ReadonlyArray<MinimumSchema> ? UnionToIntersection<MinimumSchemaType<NonNullable<p['items']['allOf']>[number]>>[] :
+			MinimumSchemaType<NonNullable<p['items']>>[]
+		) :
+		any[]
+	) :
+	p['type'] extends 'object' ? (
+		p['ref'] extends keyof typeof refs ? Packed<p['ref']> :
+		p['properties'] extends Obj ? ObjType<NonNullable<p['properties']>> :
+		p['anyOf'] extends ReadonlyArray<MinimumSchema> ? MinimumSchemaType<NonNullable<p['anyOf']>[number]> & Partial<UnionToIntersection<MinimumSchemaType<NonNullable<p['anyOf']>[number]>>> :
+		p['allOf'] extends ReadonlyArray<MinimumSchema> ? UnionToIntersection<MinimumSchemaType<NonNullable<p['anyOf']>[number]>> :
+		any
+	) :
+	p['oneOf'] extends MinimumSchema ? MinimumSchemaType<NonNullable<p['oneOf']>[number]> :
 	any;
+
+export type SchemaType<p extends Schema> = NullOrUndefined<p, MinimumSchemaType<p>>;
