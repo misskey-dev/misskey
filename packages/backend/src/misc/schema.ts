@@ -51,7 +51,7 @@ export const refs = {
 export type Packed<x extends keyof typeof refs> = ObjType<(typeof refs[x])['properties']>;
 
 type TypeStringef = 'boolean' | 'number' | 'string' | 'array' | 'object' | 'any';
-type StringDefToType<T extends TypeDStringef> =
+type StringDefToType<T extends TypeStringef> =
 	T extends 'boolean' ? boolean :
 	T extends 'number' ? number :
 	T extends 'string' ? string | Date :
