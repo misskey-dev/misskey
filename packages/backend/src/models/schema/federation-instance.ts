@@ -2,7 +2,6 @@ import config from "@/config";
 
 export const packedFederationInstanceSchema = {
 	type: 'object',
-	optional: false, nullable: false,
 	properties: {
 		id: {
 			type: 'string',

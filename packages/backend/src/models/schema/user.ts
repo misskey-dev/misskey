@@ -422,24 +422,26 @@ export const packedMeDetailedSchema = {
 } as const;
 
 export const packedUserDetailedSchema = {
-	type: 'object',
 	oneOf: [
 		{
+			type: 'object',
 			ref: 'UserDetailedNotMe',
 		},
 		{
+			type: 'object',
 			ref: 'MeDetailed',
 		}
 	],
 } as const;
 
 export const packedUserSchema = {
-	type: 'object',
 	oneOf: [
 		{
+			type: 'object',
 			ref: 'UserLite',
 		},
 		{
+			type: 'object',
 			ref: 'UserDetailed',
 		}
 	],
