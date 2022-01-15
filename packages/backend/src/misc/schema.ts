@@ -118,10 +118,7 @@ type NullOrUndefined<p extends Schema, T> =
 // 共用体型を交差型にする型 https://stackoverflow.com/questions/54938141/typescript-convert-union-to-intersection
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends ((k: infer I) => void) ? I : never;
 
-export type UnionSchemaType<a extends ReadonlyArray<MinimumSchema>> =
-	a extends readonly [infer R, ...(infer X)] ?
-		MinimumSchemaType<R> | (X extends ReadonlyArray<MinimumSchema> ? UnionSchemaType<X> : never) :
-		never;
+export type UnionSchemaType<a extends ReadonlyArray<MinimumSchema>, X extends MinimumSchema =　a[number]> = X extends any ? UnionSchemaType<X> : never;
 
 export type MinimumSchemaType<p extends MinimumSchema> =
 	p['type'] extends 'number' ? number :
