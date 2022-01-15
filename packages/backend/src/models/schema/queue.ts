@@ -1,6 +1,5 @@
 export const packedQueueCountSchema = {
 	type: 'object',
-	optional: false, nullable: false,
 	properties: {
 		waiting: {
 			type: 'number',

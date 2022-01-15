@@ -2,7 +2,6 @@ import { notificationTypes } from "@/types";
 
 export const packedNotificationSchema = {
 	type: 'object',
-	optional: false, nullable: false,
 	properties: {
 		id: {
 			type: 'string',

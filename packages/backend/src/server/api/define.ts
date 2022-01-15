@@ -31,7 +31,7 @@ export type Response = Record<string, any> | void;
 
 type executor<T extends IEndpointMeta> =
 	(params: Params<T>, user: T['requireCredential'] extends true ? SimpleUserInfo : SimpleUserInfo | null, token: AccessToken | null, file?: any, cleanup?: () => any) =>
-		Promise<T['res'] extends undefined ? Response : SchemaType<NonNullable<T['res']>, true>>;
+		Promise<T['res'] extends undefined ? Response : SchemaType<NonNullable<T['res']>>>;
 
 export default function <T extends IEndpointMeta>(meta: T, cb: executor<T>)
 		: (params: any, user: T['requireCredential'] extends true ? SimpleUserInfo : SimpleUserInfo | null, token: AccessToken | null, file?: any) => Promise<any> {

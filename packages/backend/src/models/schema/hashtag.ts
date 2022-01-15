@@ -1,6 +1,5 @@
 export const packedHashtagSchema = {
 	type: 'object',
-	optional: false, nullable: false,
 	properties: {
 		tag: {
 			type: 'string',

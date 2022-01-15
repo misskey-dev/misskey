@@ -59,8 +59,13 @@ export const refs = {
 	Emoji: packedEmojiSchema,
 };
 
-export type Packed<x extends keyof typeof refs> = SchemaTypeDef<typeof refs[x], false>;
-export type PackedAPI<x extends keyof typeof refs> = SchemaTypeDef<typeof refs[x], true>;
+// Packed = SchemaTypeDef<typeof refs[x]>; とすると展開されてマウスホバー時に型表示が使い物にならなくなる
+// ObjType<r['properties']>を指定すると（なぜか）展開されずにPacked<'Hoge'>と表示される
+type PackedDef<r extends { properties?: Obj; oneOf?: ReadonlyArray<MinimumSchema> }> =
+	r['oneOf'] extends ReadonlyArray<MinimumSchema> ? UnionSchemaType<r['oneOf']> :
+	r['properties'] extends Obj ? ObjType<r['properties']> :
+	never;
+export type Packed<x extends keyof typeof refs> = PackedDef<typeof refs[x]>;
 
 type TypeStringef = 'boolean' | 'number' | 'string' | 'array' | 'object' | 'any';
 type StringDefToType<T extends TypeStringef> =
@@ -109,9 +114,9 @@ type UndefinedPropertyNames<T extends Obj> = {
 
 export interface Obj { [key: string]: Schema; }
 
-export type ObjType<s extends Obj, AllowDate extends boolean = false> =
-	{ -readonly [P in UndefinedPropertyNames<s>]?: SchemaType<s[P], AllowDate> } &
-	{ -readonly [P in NonUndefinedPropertyNames<s>]: SchemaType<s[P], AllowDate> };
+export type ObjType<s extends Obj> =
+	{ -readonly [P in UndefinedPropertyNames<s>]?: SchemaType<s[P]> } &
+	{ -readonly [P in NonUndefinedPropertyNames<s>]: SchemaType<s[P]> };
 
 type NullOrUndefined<p extends MinimumSchema, T> =
 	p['nullable'] extends true
@@ -127,35 +132,36 @@ type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
 
 // https://github.com/misskey-dev/misskey/pull/8144#discussion_r785287552
 // 単純にSchemaTypeDef<X>で判定するだけではダメ
-type UnionSchemaType<a extends readonly any[], AllowDate extends boolean = false, X extends MinimumSchema = a[number]> = X extends any ? SchemaType<X, AllowDate> : never;
+type UnionSchemaType<a extends readonly any[], X extends MinimumSchema = a[number]> = X extends any ? SchemaType<X> : never;
 type ArrayUnion<T> = T extends any ? Array<T> : never; 
 
-export type SchemaTypeDef<p extends MinimumSchema, AllowDate extends boolean = false> =
+export type SchemaTypeDef<p extends MinimumSchema> =
 	p['type'] extends 'number' ? number :
 	p['type'] extends 'string' ? (
 		p['enum'] extends readonly string[] ?
 			p['enum'][number] :
-			AllowDate extends true ? string | Date : string
+			p['format'] extends 'date-time' ? string : // Dateにする？？
+			string
 	) :
 	p['type'] extends 'boolean' ? boolean :
 	p['type'] extends 'object' ? (
-		p['ref'] extends keyof typeof refs ? AllowDate extends true ? PackedAPI<p['ref']> : Packed<p['ref']> :
-		p['properties'] extends NonNullable<Obj> ? ObjType<p['properties'], AllowDate> :
+		p['ref'] extends keyof typeof refs ? Packed<p['ref']> :
+		p['properties'] extends NonNullable<Obj> ? ObjType<p['properties']> :
 		p['anyOf'] extends ReadonlyArray<MinimumSchema> ? any :
-		p['allOf'] extends ReadonlyArray<MinimumSchema> ? UnionToIntersection<UnionSchemaType<p['allOf'], AllowDate>> :
+		p['allOf'] extends ReadonlyArray<MinimumSchema> ? UnionToIntersection<UnionSchemaType<p['allOf']>> :
 		any
 	) :
 	p['type'] extends 'array' ? (
 		p['items'] extends OfSchema ? (
-			p['items']['anyOf'] extends ReadonlyArray<MinimumSchema> ? UnionSchemaType<NonNullable<p['items']['anyOf']>, AllowDate>[] :
-			p['items']['oneOf'] extends ReadonlyArray<MinimumSchema> ? ArrayUnion<UnionSchemaType<NonNullable<p['items']['oneOf']>, AllowDate>> :
-			p['items']['allOf'] extends ReadonlyArray<MinimumSchema> ? UnionToIntersection<UnionSchemaType<NonNullable<p['items']['allOf']>, AllowDate>>[] :
+			p['items']['anyOf'] extends ReadonlyArray<MinimumSchema> ? UnionSchemaType<NonNullable<p['items']['anyOf']>>[] :
+			p['items']['oneOf'] extends ReadonlyArray<MinimumSchema> ? ArrayUnion<UnionSchemaType<NonNullable<p['items']['oneOf']>>> :
+			p['items']['allOf'] extends ReadonlyArray<MinimumSchema> ? UnionToIntersection<UnionSchemaType<NonNullable<p['items']['allOf']>>>[] :
 			never
 		) :
-		p['items'] extends NonNullable<MinimumSchema> ? SchemaTypeDef<p['items'], AllowDate>[] :
+		p['items'] extends NonNullable<MinimumSchema> ? SchemaTypeDef<p['items']>[] :
 		any[]
 	) :
-	p['oneOf'] extends ReadonlyArray<MinimumSchema> ? UnionSchemaType<p['oneOf'], AllowDate> :
+	p['oneOf'] extends ReadonlyArray<MinimumSchema> ? UnionSchemaType<p['oneOf']> :
 	any;
 
-export type SchemaType<p extends MinimumSchema, AllowDate extends boolean = false> = NullOrUndefined<p, SchemaTypeDef<p, AllowDate>>;
+export type SchemaType<p extends MinimumSchema> = NullOrUndefined<p, SchemaTypeDef<p>>;
