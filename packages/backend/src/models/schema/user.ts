@@ -401,16 +401,6 @@ const packedMeDetailedProps = {
 	//#endregion
 } as const;
 
-type OptionalObj<T extends Obj> = { readonly [K in keyof T]: T[K] & { readonly optional: true } };
-
-function allOptional<T extends Obj>(props: T): OptionalObj<T> {
-	const result = {} as any;
-	for (const key in props) {
-		result[key] = Object.assign(props[key], { optional: true } as const);
-	}
-	return result;
-}
-
 export const packedUserLiteSchema = {
 	type: 'object',
 	properties: packedUserLiteProps,
