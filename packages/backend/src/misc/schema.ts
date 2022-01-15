@@ -98,7 +98,7 @@ type UndefinedPropertyNames<T extends Obj> = {
 
 export interface Obj { [key: string]: Schema; }
 
-export type ObjType<s extends Obj, AllowDate extends boolean> =
+export type ObjType<s extends Obj, AllowDate extends boolean = false> =
 	{ -readonly [P in UndefinedPropertyNames<s>]?: SchemaType<s[P], AllowDate> } &
 	{ -readonly [P in NonUndefinedPropertyNames<s>]: SchemaType<s[P], AllowDate> };
 
@@ -116,10 +116,10 @@ type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
 
 // https://github.com/misskey-dev/misskey/pull/8144#discussion_r785287552
 // 単純にSchemaTypeDef<X>で判定するだけではダメ
-type UnionSchemaType<a extends readonly any[], AllowDate extends boolean, X extends MinimumSchema = a[number]> = X extends any ? SchemaType<X, AllowDate> : never;
+type UnionSchemaType<a extends readonly any[], AllowDate extends boolean = false, X extends MinimumSchema = a[number]> = X extends any ? SchemaType<X, AllowDate> : never;
 type ArrayUnion<T> = T extends any ? Array<T> : never; 
 
-export type SchemaTypeDef<p extends MinimumSchema, AllowDate extends boolean> =
+export type SchemaTypeDef<p extends MinimumSchema, AllowDate extends boolean = false> =
 	p['type'] extends 'number' ? number :
 	p['type'] extends 'string' ? (
 		p['enum'] extends readonly string[] ?
@@ -147,4 +147,4 @@ export type SchemaTypeDef<p extends MinimumSchema, AllowDate extends boolean> =
 	p['oneOf'] extends ReadonlyArray<MinimumSchema> ? UnionSchemaType<p['oneOf'], AllowDate> :
 	any;
 
-export type SchemaType<p extends MinimumSchema, AllowDate extends boolean> = NullOrUndefined<p, SchemaTypeDef<p, AllowDate>>;
+export type SchemaType<p extends MinimumSchema, AllowDate extends boolean = false> = NullOrUndefined<p, SchemaTypeDef<p, AllowDate>>;
