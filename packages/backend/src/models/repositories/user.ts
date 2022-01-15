@@ -8,7 +8,6 @@ import { awaitAll, Promiseable } from '@/prelude/await-all';
 import { populateEmojis } from '@/misc/populate-emojis';
 import { getAntennas } from '@/misc/antenna-cache';
 import { USER_ACTIVE_THRESHOLD, USER_ONLINE_THRESHOLD } from '@/const';
-import { IsUserDetailed } from '../schema/user';
 
 type IsUserDetailed<Detailed extends boolean> = Detailed extends true ? Packed<'UserDetailed'> : Packed<'UserLite'>;
 
@@ -318,7 +317,7 @@ export class UserRepository extends Repository<User> {
 				isBlocked: relation.isBlocked,
 				isMuted: relation.isMuted,
 			} : {}),
-		} as Promiseable<IsUserDetailed<D>>;
+		} as Promiseable<Packed<'User'>> as Promiseable<IsUserDetailed<D>>;
 
 		return await awaitAll(packed);
 	}
