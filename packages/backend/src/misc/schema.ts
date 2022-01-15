@@ -98,12 +98,6 @@ export interface Schema extends MinimumSchema {
 	readonly optional: boolean;
 }
 
-// https://qiita.com/hrsh7th@github/items/84e8968c3601009cdcf2
-type MyMinimumType<T extends MinimumSchema> = {
-	0: any;
-	1: SchemaTypeDef<T>;
-}[T extends MinimumSchema ? 1 : 0];
-
 type NonUndefinedPropertyNames<T extends Obj> = {
 	[K in keyof T]: T[K]['optional'] extends true ? never : K
 }[keyof T];
