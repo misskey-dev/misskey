@@ -1,6 +1,5 @@
 export const packedNoteReactionSchema = {
 	type: 'object',
-	optional: false, nullable: false,
 	properties: {
 		id: {
 			type: 'string',

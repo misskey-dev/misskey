@@ -1,6 +1,5 @@
 export const packedUserSchema = {
 	type: 'object',
-	nullable: false, optional: false,
 	properties: {
 		id: {
 			type: 'string',
