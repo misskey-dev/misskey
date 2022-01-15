@@ -31,43 +31,33 @@
 </XModalWindow>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
 import XModalWindow from '@/components/ui/modal-window.vue';
 import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/form/input.vue';
 import * as os from '@/os';
 
-export default defineComponent({
-	components: {
-		XModalWindow,
-		MkButton,
-		MkInput,
-	},
+const emit = defineEmits<{
+	(e: 'done'): void;
+	(e: 'closed'): void;
+}>();
 
-	emits: ['done', 'closed'],
+let dialog: InstanceType<typeof XModalWindow> = $ref();
 
-	data() {
-		return {
-			username: '',
-			email: '',
-			processing: false,
-		};
-	},
+let username = $ref('');
+let email = $ref('');
+let processing = $ref(false);
 
-	methods: {
-		async onSubmit() {
-			this.processing = true;
-			await os.apiWithDialog('request-reset-password', {
-				username: this.username,
-				email: this.email,
-			});
-
-			this.$emit('done');
-			this.$refs.dialog.close();
-		}
-	}
-});
+async function onSubmit() {
+	processing = true;
+	await os.apiWithDialog('request-reset-password', {
+		username,
+		email,
+	});
+	emit('done');
+	dialog.close();
+}
 </script>
 
 <style lang="scss" scoped>
