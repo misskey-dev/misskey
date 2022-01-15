@@ -9,6 +9,8 @@ import { populateEmojis } from '@/misc/populate-emojis';
 import { getAntennas } from '@/misc/antenna-cache';
 import { USER_ACTIVE_THRESHOLD, USER_ONLINE_THRESHOLD } from '@/const';
 
+type IsUserDetailed<Detailed extends boolean> = Detailed extends true ? Packed<'UserDetailed'> : Packed<'UserLite'>;
+
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
 	public async getRelation(me: User['id'], target: User['id']) {
@@ -170,7 +172,7 @@ export class UserRepository extends Repository<User> {
 			detail?: D,
 			includeSecrets?: boolean,
 		}
-	): Promise<D extends true ? Packed<'UserDetailed'> : Packed<'UserLite'>> {
+	): Promise<IsUserDetailed<D>> {
 		const opts = Object.assign({
 			detail: false,
 			includeSecrets: false,
@@ -200,7 +202,7 @@ export class UserRepository extends Repository<User> {
 
 		const falsy = opts.detail ? false : undefined;
 
-		const packed = {
+		const packed: Promiseable<Packed<'User'>> = {
 			id: user.id,
 			name: user.name,
 			username: user.username,
@@ -315,7 +317,7 @@ export class UserRepository extends Repository<User> {
 				isBlocked: relation.isBlocked,
 				isMuted: relation.isMuted,
 			} : {}),
-		} as Promiseable<>;
+		} as Promiseable<IsUserDetailed<D>>;
 
 		return await awaitAll(packed);
 	}
@@ -327,7 +329,7 @@ export class UserRepository extends Repository<User> {
 			detail?: D,
 			includeSecrets?: boolean,
 		}
-	): Promise<Awaited<D extends true ? Packed<'UserDetailed'> : Packed<'UserLite'>>[]> {
+	): Promise<IsUserDetailed<D>[]> {
 		return Promise.all(users.map(u => this.pack(u, me, options)));
 	}
 

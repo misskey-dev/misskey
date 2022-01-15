@@ -1,5 +1,3 @@
-import { Obj } from "@/misc/schema";
-
 const packedUserLiteProps = {
 	id: {
 		type: 'string',
