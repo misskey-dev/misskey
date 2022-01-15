@@ -69,7 +69,7 @@ export const meta = {
 		items: {
 			type: 'object',
 			nullable: false, optional: false,
-			ref: 'User',
+			ref: 'UserDetailed',
 		},
 	},
 } as const;

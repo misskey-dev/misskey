@@ -4,10 +4,11 @@ import { User, ILocalUser, IRemoteUser } from '@/models/entities/user';
 import { Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings, UserProfiles, UserSecurityKeys, UserGroupJoinings, Pages, Announcements, AnnouncementReads, Antennas, AntennaNotes, ChannelFollowings, Instances } from '../index';
 import config from '@/config/index';
 import { Packed } from '@/misc/schema';
-import { awaitAll } from '@/prelude/await-all';
+import { awaitAll, Promiseable } from '@/prelude/await-all';
 import { populateEmojis } from '@/misc/populate-emojis';
 import { getAntennas } from '@/misc/antenna-cache';
 import { USER_ACTIVE_THRESHOLD, USER_ONLINE_THRESHOLD } from '@/const';
+import { IsUserDetailed } from '../schema/user';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
@@ -170,7 +171,7 @@ export class UserRepository extends Repository<User> {
 			detail?: D,
 			includeSecrets?: boolean,
 		}
-	): Promise<D extends true ? Packed<'UserDetailed'> : Packed<'UserLite'>> {
+	): Promise<IsUserDetailed<D>> {
 		const opts = Object.assign({
 			detail: false,
 			includeSecrets: false,
@@ -315,7 +316,7 @@ export class UserRepository extends Repository<User> {
 				isBlocked: relation.isBlocked,
 				isMuted: relation.isMuted,
 			} : {}),
-		};
+		} as Promiseable<Packed<'User'>> as Promiseable<IsUserDetailed<D>>;
 
 		return await awaitAll(packed);
 	}
@@ -327,7 +328,7 @@ export class UserRepository extends Repository<User> {
 			detail?: D,
 			includeSecrets?: boolean,
 		}
-	): Promise<Awaited<D extends true ? Packed<'UserDetailed'> : Packed<'UserLite'>>[]> {
+	): Promise<IsUserDetailed<D>[]> {
 		return Promise.all(users.map(u => this.pack(u, me, options)));
 	}
 

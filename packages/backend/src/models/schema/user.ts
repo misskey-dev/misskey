@@ -1,6 +1,6 @@
 import { Obj } from "@/misc/schema";
 
-const packedUserLiteProps: Obj = {
+const packedUserLiteProps = {
 	id: {
 		type: 'string',
 		nullable: false, optional: false,
@@ -81,7 +81,7 @@ const packedUserLiteProps: Obj = {
 	},
 } as const;
 
-const packedUserDetailedProps: Obj = {
+const packedUserDetailedProps = {
 	url: {
 		type: 'string',
 		format: 'url',
@@ -262,7 +262,7 @@ const packedUserDetailedProps: Obj = {
 	//#endregion
 } as const;
 
-const packedMeDetailedProps: Obj = {
+const packedMeDetailedProps = {
 	avatarId: {
 		type: 'string',
 		nullable: true, optional: false,
@@ -401,23 +401,23 @@ const packedMeDetailedProps: Obj = {
 	//#endregion
 } as const;
 
-function allOptional(props: Obj): Obj {
-	const result: Obj = {};
+type OptionalObj<T extends Obj> = { readonly [K in keyof T]: T[K] & { readonly optional: true } };
+
+function allOptional<T extends Obj>(props: T): OptionalObj<T> {
+	const result = {} as any;
 	for (const key in props) {
-		result[key] = Object.assign(props[key], { optional: true });
+		result[key] = Object.assign(props[key], { optional: true } as const);
 	}
 	return result;
 }
 
 export const packedUserLiteSchema = {
 	type: 'object',
-	nullable: false, optional: false,
 	properties: packedUserLiteProps,
 } as const;
 
 export const packedUserDetailedNotMeSchema = {
 	type: 'object',
-	nullable: false, optional: false,
 	properties: {
 		...packedUserLiteProps,
 		...packedUserDetailedProps,
@@ -426,7 +426,6 @@ export const packedUserDetailedNotMeSchema = {
 
 export const packedMeDetailedSchema = {
 	type: 'object',
-	nullable: false, optional: false,
 	properties: {
 		...packedUserLiteProps,
 		...packedUserDetailedProps,
@@ -436,20 +435,24 @@ export const packedMeDetailedSchema = {
 
 export const packedUserDetailedSchema = {
 	type: 'object',
-	nullable: false, optional: false,
-	properties: {
-		...packedUserLiteProps,
-		...packedUserDetailedProps,
-		...allOptional(packedMeDetailedProps),
-	},
+	oneOf: [
+		{
+			ref: 'UserDetailedNotMe',
+		},
+		{
+			ref: 'MeDetailed',
+		}
+	],
 } as const;
 
 export const packedUserSchema = {
 	type: 'object',
-	nullable: false, optional: false,
-	properties: {
-		...packedUserLiteProps,
-		...allOptional(packedUserDetailedProps),
-		...allOptional(packedMeDetailedProps),
-	},
+	oneOf: [
+		{
+			ref: 'UserLite',
+		},
+		{
+			ref: 'UserDetailed',
+		}
+	],
 } as const;
