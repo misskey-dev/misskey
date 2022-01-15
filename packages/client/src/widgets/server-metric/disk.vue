@@ -10,32 +10,19 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
 import XPie from './pie.vue';
 import bytes from '@/filters/bytes';
 
-export default defineComponent({
-	components: {
-		XPie
-	},
-	props: {
-		meta: {
-			required: true,
-		}
-	},
-	data() {
-		return {
-			usage: this.meta.fs.used / this.meta.fs.total,
-			total: this.meta.fs.total,
-			used: this.meta.fs.used,
-			available: this.meta.fs.total - this.meta.fs.used,
-		};
-	},
-	methods: {
-		bytes
-	}
-});
+const props = defineProps<{
+	meta: any; // TODO
+}>();
+
+const usage = $computed(() => props.meta.fs.used / props.meta.fs.total);
+const total = $computed(() => props.meta.fs.total);
+const used = $computed(() => props.meta.fs.used);
+const available = $computed(() => props.meta.fs.total - props.meta.fs.used);
 </script>
 
 <style lang="scss" scoped>

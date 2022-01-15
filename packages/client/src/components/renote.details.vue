@@ -1,5 +1,5 @@
 <template>
-<MkTooltip ref="tooltip" :source="source" :max-width="250" @closed="$emit('closed')">
+<MkTooltip ref="tooltip" :source="source" :max-width="250" @closed="emit('closed')">
 	<div class="beaffaef">
 		<div v-for="u in users" :key="u.id" class="user">
 			<MkAvatar class="avatar" :user="u"/>
@@ -10,29 +10,19 @@
 </MkTooltip>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
 import MkTooltip from './ui/tooltip.vue';
 
-export default defineComponent({
-	components: {
-		MkTooltip,
-	},
-	props: {
-		users: {
-			type: Array,
-			required: true,
-		},
-		count: {
-			type: Number,
-			required: true,
-		},
-		source: {
-			required: true,
-		}
-	},
-	emits: ['closed'],
-})
+const props = defineProps<{
+	users: any[]; // TODO
+	count: number;
+	source: any; // TODO
+}>();
+
+const emit = defineEmits<{
+	(e: 'closed'): void;
+}>();
 </script>
 
 <style lang="scss" scoped>

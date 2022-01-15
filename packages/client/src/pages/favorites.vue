@@ -10,7 +10,7 @@
 
 		<template #default="{ items }">
 			<XList v-slot="{ item }" :items="items" :direction="'down'" :no-gap="false" :ad="false">
-				<XNote :key="item.id" :note="item.note" :class="$style.note" @update:note="noteUpdated(item, $event)"/>
+				<XNote :key="item.id" :note="item.note" :class="$style.note"/>
 			</XList>
 		</template>
 	</MkPagination>
@@ -31,13 +31,6 @@ const pagination = {
 };
 
 const pagingComponent = ref<InstanceType<typeof MkPagination>>();
-
-const noteUpdated = (item, note) => {
-	pagingComponent.value?.updateItem(item.id, old => ({
-		...old,
-		note: note,
-	}));
-};
 
 defineExpose({
 	[symbols.PAGE_INFO]: {
