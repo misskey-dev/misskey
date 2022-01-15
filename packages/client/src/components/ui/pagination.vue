@@ -90,7 +90,6 @@ const init = async (): Promise<void> => {
 	}).then(res => {
 		for (let i = 0; i < res.length; i++) {
 			const item = res[i];
-			markRaw(item);
 			if (props.pagination.reversed) {
 				if (i === res.length - 2) item._shouldInsertAd_ = true;
 			} else {
@@ -134,7 +133,6 @@ const fetchMore = async (): Promise<void> => {
 	}).then(res => {
 		for (let i = 0; i < res.length; i++) {
 			const item = res[i];
-			markRaw(item);
 			if (props.pagination.reversed) {
 				if (i === res.length - 9) item._shouldInsertAd_ = true;
 			} else {
@@ -169,9 +167,6 @@ const fetchMoreAhead = async (): Promise<void> => {
 			sinceId: props.pagination.reversed ? items.value[0].id : items.value[items.value.length - 1].id,
 		}),
 	}).then(res => {
-		for (const item of res) {
-			markRaw(item);
-		}
 		if (res.length > SECOND_FETCH_LIMIT) {
 			res.pop();
 			items.value = props.pagination.reversed ? [...res].reverse().concat(items.value) : items.value.concat(res);

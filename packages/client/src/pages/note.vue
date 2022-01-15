@@ -84,19 +84,19 @@ export default defineComponent({
 			prev: {
 				endpoint: 'users/notes' as const,
 				limit: 10,
-				params: init => ({
+				params: computed(() => ({
 					userId: this.note.userId,
 					untilId: this.note.id,
-				})
+				})),
 			},
 			next: {
 				reversed: true,
 				endpoint: 'users/notes' as const,
 				limit: 10,
-				params: init => ({
+				params: computed(() => ({
 					userId: this.note.userId,
 					sinceId: this.note.id,
-				})
+				})),
 			},
 		};
 	},
