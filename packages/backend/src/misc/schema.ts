@@ -47,6 +47,7 @@ export const refs = {
 	GalleryPost: packedGalleryPostSchema,
 	Emoji: packedEmojiSchema,
 };
+
 export type Packed<x extends keyof typeof refs> = ObjType<(typeof refs[x])['properties']>;
 
 type TypeStringef = 'boolean' | 'number' | 'string' | 'array' | 'object' | 'any';
@@ -118,7 +119,9 @@ type NullOrUndefined<p extends Schema, T> =
 // 共用体型を交差型にする型 https://stackoverflow.com/questions/54938141/typescript-convert-union-to-intersection
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends ((k: infer I) => void) ? I : never;
 
-export type UnionSchemaType<a extends ReadonlyArray<MinimumSchema>, X extends MinimumSchema =　a[number]> = X extends any ? UnionSchemaType<X> : never;
+// https://github.com/misskey-dev/misskey/pull/8144#discussion_r785287552
+// 単純にMinimumSchemaType<X>で判定するだけではダメ
+export type UnionSchemaType<a extends readonly any[], X extends MinimumSchema = a[number]> = X extends any ? MinimumSchemaType<X> : never;
 
 export type MinimumSchemaType<p extends MinimumSchema> =
 	p['type'] extends 'number' ? number :
@@ -144,7 +147,7 @@ export type MinimumSchemaType<p extends MinimumSchema> =
 		p['allOf'] extends ReadonlyArray<MinimumSchema> ? UnionToIntersection<UnionSchemaType<p['allOf']>> :
 		any
 	) :
-	p['oneOf'] extends readonly MinimumSchema[] ? UnionSchemaType<p['oneOf']> :
+	p['oneOf'] extends ReadonlyArray<MinimumSchema> ? UnionSchemaType<p['oneOf']> :
 	any;
 
 export type SchemaType<p extends Schema> = NullOrUndefined<p, MinimumSchemaType<p>>;
