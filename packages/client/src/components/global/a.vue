@@ -36,7 +36,8 @@ const active = $computed(() => {
 });
 
 function onContextmenu(ev) {
-	if (window.getSelection().toString() !== '') return;
+	const selection = window.getSelection();
+	if (selection && selection.toString() !== '') return;
 	os.contextMenu([{
 		type: 'label',
 		text: props.to,
@@ -73,7 +74,7 @@ function onContextmenu(ev) {
 	}], ev);
 }
 
-function window() {
+function openWindow() {
 	os.pageWindow(props.to);
 }
 
@@ -93,7 +94,7 @@ function nav() {
 
 	if (props.behavior) {
 		if (props.behavior === 'window') {
-			return window();
+			return openWindow();
 		} else if (props.behavior === 'modalWindow') {
 			return modalWindow();
 		}
