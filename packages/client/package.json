@@ -21,7 +21,6 @@
 		"@types/katex": "0.11.1",
 		"@types/matter-js": "0.17.6",
 		"@types/mocha": "8.2.3",
-		"@types/node": "16.11.12",
 		"@types/oauth": "0.9.1",
 		"@types/parse5": "6.0.3",
 		"@types/punycode": "2.1.0",
