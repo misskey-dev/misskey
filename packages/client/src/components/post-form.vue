@@ -384,14 +384,14 @@ function setVisibility() {
 		currentLocalOnly: localOnly,
 		src: visibilityButton,
 	}, {
-		changeVisibility: visibility => {
-			visibility = visibility;
+		changeVisibility: v => {
+			visibility = v;
 			if (defaultStore.state.rememberNoteVisibility) {
 				defaultStore.set('visibility', visibility);
 			}
 		},
-		changeLocalOnly: localOnly => {
-			localOnly = localOnly;
+		changeLocalOnly: v => {
+			localOnly = v;
 			if (defaultStore.state.rememberNoteVisibility) {
 				defaultStore.set('localOnly', localOnly);
 			}
