@@ -1,12 +1,8 @@
-type Await<T> = T extends Promise<infer U> ? U : T;
+export type Promiseable<T extends Record<string, unknown>> = { [K in keyof T]: Promise<T[K]> | T[K] };
 
-type AwaitAll<T> = {
-	[P in keyof T]: Await<T[P]>;
-};
-
-export async function awaitAll<T>(obj: T): Promise<AwaitAll<T>> {
-	const target = {} as any;
-	const keys = Object.keys(obj);
+export async function awaitAll<T extends Record<string, unknown>, U extends Promiseable<T>>(obj: U): Promise<T> {
+	const target = {} as T;
+	const keys = Object.keys(obj) as unknown as (keyof T)[];
 	const values = Object.values(obj);
 
 	const resolvedValues = await Promise.all(values.map(value =>
