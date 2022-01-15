@@ -49,8 +49,12 @@ export const refs = {
 };
 
 export type Packed<x extends keyof typeof refs> = PackedMap[x];
+type SinglePacked<r extends { properties?: Obj; oneOf?: ReadonlyArray<MinimumSchema> }> =
+	r['oneOf'] extends ReadonlyArray<MinimumSchema> ? UnionSchemaType<r['oneOf']> :
+	r['properties'] extends Obj ? ObjType<r['properties']> :
+	never;
 export type PackedMap = {
-	[x in keyof typeof refs]: SchemaTypeDef<typeof refs[x]>
+	[x in keyof typeof refs]: SinglePacked<typeof refs[x]>
 };
 
 type TypeStringef = 'boolean' | 'number' | 'string' | 'array' | 'object' | 'any';
