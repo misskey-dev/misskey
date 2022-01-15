@@ -48,14 +48,13 @@ export const refs = {
 	Emoji: packedEmojiSchema,
 };
 
-export type Packed<x extends keyof typeof refs> = PackedMap[x];
-type SinglePacked<r extends { properties?: Obj; oneOf?: ReadonlyArray<MinimumSchema> }> =
+// Packed = SchemaTypeDef<typeof refs[x]>; とすると展開されてマウスホバー時に型表示が使い物にならなくなる
+// ObjType<r['properties']>を指定すると（なぜか）展開されずにPacked<'Hoge'>と表示される
+type PackedDef<r extends { properties?: Obj; oneOf?: ReadonlyArray<MinimumSchema> }> =
 	r['oneOf'] extends ReadonlyArray<MinimumSchema> ? UnionSchemaType<r['oneOf']> :
 	r['properties'] extends Obj ? ObjType<r['properties']> :
 	never;
-export type PackedMap = {
-	[x in keyof typeof refs]: SinglePacked<typeof refs[x]>
-};
+export type Packed<x extends keyof typeof refs> = PackedDef<typeof refs[x]>;
 
 type TypeStringef = 'boolean' | 'number' | 'string' | 'array' | 'object' | 'any';
 type StringDefToType<T extends TypeStringef> =
