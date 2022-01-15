@@ -202,7 +202,7 @@ export class UserRepository extends Repository<User> {
 
 		const falsy = opts.detail ? false : undefined;
 
-		const packed: Promiseable<Packed<'User'>> = {
+		const packed = {
 			id: user.id,
 			name: user.name,
 			username: user.username,
