@@ -132,7 +132,8 @@ type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
 
 // https://github.com/misskey-dev/misskey/pull/8144#discussion_r785287552
 // 単純にMinimumSchemaType<X>で判定するだけではダメ
-export type UnionSchemaType<a extends readonly any[], X extends MinimumSchema = a[number]> = X extends any ? MinimumSchemaType<X> : never;
+type UnionSchemaType<a extends readonly any[], X extends MinimumSchema = a[number]> = X extends any ? MinimumSchemaType<X> : never;
+type ArrayUnion<T> = T extends any ? Array<T> : never; 
 
 export type MinimumSchemaType<p extends MinimumSchema> =
 	p['type'] extends 'number' ? number :
@@ -145,7 +146,7 @@ export type MinimumSchemaType<p extends MinimumSchema> =
 	p['type'] extends 'array' ? (
 		p['items'] extends MinimumSchema ? (
 			p['items']['anyOf'] extends ReadonlyArray<MinimumSchema> ? UnionSchemaType<NonNullable<p['items']['anyOf']>>[] :
-			p['items']['oneOf'] extends ReadonlyArray<MinimumSchema> ? UnionSchemaType<NonNullable<p['items']['oneOf']>>[] :
+			p['items']['oneOf'] extends ReadonlyArray<MinimumSchema> ? ArrayUnion<UnionSchemaType<NonNullable<p['items']['oneOf']>>> :
 			p['items']['allOf'] extends ReadonlyArray<MinimumSchema> ? UnionToIntersection<UnionSchemaType<NonNullable<p['items']['allOf']>>>[] :
 			MinimumSchemaType<NonNullable<p['items']>>[]
 		) :
