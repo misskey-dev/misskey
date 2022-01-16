@@ -4,37 +4,28 @@
 </div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent } from 'vue';
+<script lang="ts" setup>
+import { computed } from 'vue';
 import XNotes from '@/components/notes.vue';
 import * as symbols from '@/symbols';
 
-export default defineComponent({
-	components: {
-		XNotes
-	},
+const props = defineProps<{
+	tag: string;
+}>();
 
-	props: {
-		tag: {
-			type: String,
-			required: true
-		}
-	},
+const pagination = {
+	endpoint: 'notes/search-by-tag' as const,
+	limit: 10,
+	params: computed(() => ({
+		tag: props.tag,
+	})),
+};
 
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: this.tag,
-				icon: 'fas fa-hashtag'
-			},
-			pagination: {
-				endpoint: 'notes/search-by-tag',
-				limit: 10,
-				params: computed(() => ({
-					tag: this.tag,
-				}))
-			},
-		};
-	},
+defineExpose({
+	[symbols.PAGE_INFO]: computed(() => ({
+		title: props.tag,
+		icon: 'fas fa-hashtag',
+		bg: 'var(--bg)',
+	})),
 });
 </script>

@@ -36,7 +36,7 @@ export default defineComponent({
 				bg: 'var(--bg)',
 			},
 			pagination: {
-				endpoint: 'announcements',
+				endpoint: 'announcements' as const,
 				limit: 10,
 			},
 		};

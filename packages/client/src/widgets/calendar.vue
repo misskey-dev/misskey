@@ -104,9 +104,9 @@ const tick = () => {
 
 tick();
 
-const intervalId = setInterval(tick, 1000);
+const intervalId = window.setInterval(tick, 1000);
 onUnmounted(() => {
-	clearInterval(intervalId);
+	window.clearInterval(intervalId);
 });
 
 defineExpose<WidgetComponentExpose>({

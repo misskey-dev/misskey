@@ -94,10 +94,6 @@
 			<template #key>{{ $ts.driveUsage }}</template>
 			<template #value>{{ bytes(stats.driveUsage) }}</template>
 		</MkKeyValue>
-		<MkKeyValue oneline style="margin: 1em 0;">
-			<template #key>{{ $ts.reversiCount }}</template>
-			<template #value>{{ number(stats.reversiCount) }}</template>
-		</MkKeyValue>
 	</FormSection>
 
 	<FormSection>
@@ -158,8 +154,6 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
-
 		os.api('users/stats', {
 			userId: this.$i.id
 		}).then(stats => {

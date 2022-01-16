@@ -10,7 +10,7 @@ import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
 
 const pagination = {
-	endpoint: 'notes/mentions',
+	endpoint: 'notes/mentions' as const,
 	limit: 10,
 };
 

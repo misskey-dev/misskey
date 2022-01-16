@@ -45,10 +45,6 @@ export default defineComponent({
 		}
 	},
 
-	mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
-	},
-
 	methods: {
 		installPlugin({ id, meta, ast, token }) {
 			ColdDeviceStorage.set('plugins', ColdDeviceStorage.get('plugins').concat({
