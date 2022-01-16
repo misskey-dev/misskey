@@ -10,6 +10,12 @@ import { getAntennas } from '@/misc/antenna-cache';
 import { USER_ACTIVE_THRESHOLD, USER_ONLINE_THRESHOLD } from '@/const';
 
 type IsUserDetailed<Detailed extends boolean> = Detailed extends true ? Packed<'UserDetailed'> : Packed<'UserLite'>;
+type IsMeAndIsUserDetailed<ExpectsMe extends boolean | null, Detailed extends boolean> =
+	Detailed extends true ? 
+		ExpectsMe extends true ? Packed<'MeDetailed'> :
+		ExpectsMe extends false ? Packed<'UserDetailedNotMe'> :
+		Packed<'UserDetailed'> :
+	Packed<'UserLite'>;
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
@@ -165,14 +171,14 @@ export class UserRepository extends Repository<User> {
 		}
 	}
 
-	public async pack<D extends boolean = false>(
+	public async pack<ExpectsMe extends boolean | null = null, D extends boolean = false>(
 		src: User['id'] | User,
 		me?: { id: User['id'] } | null | undefined,
 		options?: {
 			detail?: D,
 			includeSecrets?: boolean,
 		}
-	): Promise<IsUserDetailed<D>> {
+	): Promise<IsMeAndIsUserDetailed<ExpectsMe, D>> {
 		const opts = Object.assign({
 			detail: false,
 			includeSecrets: false,
@@ -317,7 +323,7 @@ export class UserRepository extends Repository<User> {
 				isBlocked: relation.isBlocked,
 				isMuted: relation.isMuted,
 			} : {}),
-		} as Promiseable<IsUserDetailed<D>>;
+		} as Promiseable<Packed<'User'>> as Promiseable<IsMeAndIsUserDetailed<ExpectsMe, D>>;
 
 		return await awaitAll(packed);
 	}
