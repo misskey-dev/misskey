@@ -159,7 +159,7 @@ export class UserRepository extends Repository<User> {
 		if (user.avatarUrl) {
 			return user.avatarUrl;
 		} else {
-			return `${config.url}/random-avatar/${user.id}`;
+			return `${config.url}/identicon/${user.id}`;
 		}
 	}
 

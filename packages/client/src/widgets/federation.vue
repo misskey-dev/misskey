@@ -66,9 +66,9 @@ const fetch = async () => {
 
 onMounted(() => {
 	fetch();
-	const intervalId = setInterval(fetch, 1000 * 60);
+	const intervalId = window.setInterval(fetch, 1000 * 60);
 	onUnmounted(() => {
-		clearInterval(intervalId);
+		window.clearInterval(intervalId);
 	});
 });
 

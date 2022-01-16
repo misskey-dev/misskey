@@ -83,7 +83,7 @@ export function promiseDialog<T extends Promise<any>>(
 			onSuccess(res);
 		} else {
 			success.value = true;
-			setTimeout(() => {
+			window.setTimeout(() => {
 				showing.value = false;
 			}, 1000);
 		}
@@ -139,7 +139,7 @@ export async function popup(component: Component | typeof import('*.vue') | Prom
 	const id = ++popupIdCount;
 	const dispose = () => {
 		// このsetTimeoutが無いと挙動がおかしくなる(autocompleteが閉じなくなる)。Vueのバグ？
-		setTimeout(() => {
+		window.setTimeout(() => {
 			popups.value = popups.value.filter(popup => popup.id !== id);
 		}, 0);
 	};
@@ -329,7 +329,7 @@ export function select(props: {
 export function success() {
 	return new Promise((resolve, reject) => {
 		const showing = ref(true);
-		setTimeout(() => {
+		window.setTimeout(() => {
 			showing.value = false;
 		}, 1000);
 		popup(import('@/components/waiting-dialog.vue'), {

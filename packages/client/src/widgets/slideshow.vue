@@ -59,7 +59,7 @@ const change = () => {
 	slideB.value.style.backgroundImage = img;
 
 	slideB.value.classList.add('anime');
-	setTimeout(() => {
+	window.setTimeout(() => {
 		// 既にこのウィジェットがunmountされていたら要素がない
 		if (slideA.value == null) return;
 
@@ -101,9 +101,9 @@ onMounted(() => {
 		fetch();
 	}
 
-	const intervalId = setInterval(change, 10000);
+	const intervalId = window.setInterval(change, 10000);
 	onUnmounted(() => {
-		clearInterval(intervalId);
+		window.clearInterval(intervalId);
 	});
 });
 

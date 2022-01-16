@@ -1,50 +1,36 @@
 <template>
 <div>
-	{{ $ts.processing }}
+	{{ i18n.locale.processing }}
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { onMounted } from 'vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { login } from '@/account';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
+const props = defineProps<{
+	code: string;
+}>();
 
+onMounted(async () => {
+	await os.alert({
+		type: 'info',
+		text: i18n.t('clickToFinishEmailVerification', { ok: i18n.locale.gotIt }),
+	});
+	const res = await os.apiWithDialog('signup-pending', {
+		code: props.code,
+	});
+	login(res.i, '/');
+});
+
+defineExpose({
+	[symbols.PAGE_INFO]: {
+		title: i18n.locale.signup,
+		icon: 'fas fa-user',
 	},
-
-	props: {
-		code: {
-			type: String,
-			required: true
-		}
-	},
-
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: this.$ts.signup,
-				icon: 'fas fa-user'
-			},
-		}
-	},
-
-	async mounted() {
-		await os.alert({
-			type: 'info',
-			text: this.$t('clickToFinishEmailVerification', { ok: this.$ts.gotIt }),
-		});
-		const res = await os.apiWithDialog('signup-pending', {
-			code: this.code,
-		});
-		login(res.i, '/');
-	},
-
-	methods: {
-
-	}
 });
 </script>
 

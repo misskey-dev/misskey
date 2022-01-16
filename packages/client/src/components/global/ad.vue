@@ -20,7 +20,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { Instance, instance } from '@/instance';
+import { instance } from '@/instance';
 import { host } from '@/config';
 import MkButton from '@/components/ui/button.vue';
 import { defaultStore } from '@/store';
@@ -48,9 +48,9 @@ export default defineComponent({
 			showMenu.value = !showMenu.value;
 		};
 
-		const choseAd = (): Instance['ads'][number] | null => {
+		const choseAd = (): (typeof instance)['ads'][number] | null => {
 			if (props.specify) {
-				return props.specify as Instance['ads'][number];
+				return props.specify as (typeof instance)['ads'][number];
 			}
 
 			const allAds = instance.ads.map(ad => defaultStore.state.mutedAds.includes(ad.id) ? {

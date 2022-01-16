@@ -115,11 +115,11 @@ export const router = createRouter({
 		window._scroll = () => { // さらにHacky
 			if (to.name === 'index') {
 				window.scroll({ top: indexScrollPos, behavior: 'instant' });
-				const i = setInterval(() => {
+				const i = window.setInterval(() => {
 					window.scroll({ top: indexScrollPos, behavior: 'instant' });
 				}, 10);
-				setTimeout(() => {
-					clearInterval(i);
+				window.setTimeout(() => {
+					window.clearInterval(i);
 				}, 500);
 			} else {
 				window.scroll({ top: 0, behavior: 'instant' });
