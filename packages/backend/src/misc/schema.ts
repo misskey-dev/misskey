@@ -147,7 +147,7 @@ export type SchemaTypeDef<p extends MinimumSchema> =
 	p['type'] extends 'object' ? (
 		p['ref'] extends keyof typeof refs ? Packed<p['ref']> :
 		p['properties'] extends NonNullable<Obj> ? ObjType<p['properties']> :
-		p['anyOf'] extends ReadonlyArray<MinimumSchema> ? any :
+		p['anyOf'] extends ReadonlyArray<MinimumSchema> ? UnionSchemaType<p['anyOf']> & Partial<UnionToIntersection<UnionSchemaType<p['anyOf']>>> :
 		p['allOf'] extends ReadonlyArray<MinimumSchema> ? UnionToIntersection<UnionSchemaType<p['allOf']>> :
 		any
 	) :
