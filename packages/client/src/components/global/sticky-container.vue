@@ -45,7 +45,7 @@ export default defineComponent({
 			calc();
 
 			const observer = new MutationObserver(() => {
-				setTimeout(() => {
+				window.setTimeout(() => {
 					calc();
 				}, 100);
 			});
