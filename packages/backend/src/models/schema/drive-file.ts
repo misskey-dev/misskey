@@ -101,7 +101,7 @@ export const packedDriveFileSchema = {
 		user: {
 			type: 'object',
 			optional: true, nullable: true,
-			ref: 'User',
+			ref: 'UserLite',
 		},
 	},
 } as const;

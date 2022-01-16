@@ -19,7 +19,7 @@ export const packedClipSchema = {
 		},
 		user: {
 			type: 'object',
-			ref: 'User',
+			ref: 'UserLite',
 			optional: false, nullable: false,
 		},
 		name: {
