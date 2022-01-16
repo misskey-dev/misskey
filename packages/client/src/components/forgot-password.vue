@@ -25,7 +25,7 @@
 			<MkA to="/about" class="_link">{{ i18n.locale._forgotPassword.ifNoEmail }}</MkA>
 		</div>
 	</form>
-	<div v-else>
+	<div v-else class="bafecedb">
 		{{ i18n.locale._forgotPassword.contactAdmin }}
 	</div>
 </XModalWindow>
@@ -72,5 +72,9 @@ async function onSubmit() {
 		border-top: solid 0.5px var(--divider);
 		padding: 24px;
 	}
+}
+
+.bafecedb {
+	padding: 24px;
 }
 </style>
