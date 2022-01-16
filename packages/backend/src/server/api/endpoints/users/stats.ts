@@ -7,7 +7,7 @@ import { DriveFiles, Followings, NoteFavorites, NoteReactions, Notes, PageLikes,
 export const meta = {
 	tags: ['users'],
 
-	requireCredential: false as const,
+	requireCredential: false,
 
 	params: {
 		userId: {
@@ -22,7 +22,7 @@ export const meta = {
 			id: '9e638e45-3b25-4ef7-8f95-07e8498f1819',
 		},
 	},
-};
+} as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, me) => {

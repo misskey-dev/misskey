@@ -112,6 +112,6 @@ export default define(meta, async (ps, me) => {
 				.getMany();
 		}
 
-		return await Users.packMany(users, me, { detail: ps.detail });
+		return await Users.packMany(users, me, { detail: !!ps.detail });
 	}
 });
