@@ -26,7 +26,7 @@ const showing = ref(true);
 const zIndex = os.claimZIndex('high');
 
 onMounted(() => {
-	setTimeout(() => {
+	window.setTimeout(() => {
 		showing.value = false;
 	}, 4000);
 });
