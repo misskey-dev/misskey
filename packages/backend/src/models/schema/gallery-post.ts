@@ -32,7 +32,7 @@ export const packedGalleryPostSchema = {
 		},
 		user: {
 			type: 'object',
-			ref: 'User',
+			ref: 'UserLite',
 			optional: false, nullable: false,
 		},
 		fileIds: {
