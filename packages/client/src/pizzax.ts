@@ -54,7 +54,7 @@ export class Storage<T extends StateDef> {
 
 		if ($i) {
 			// なぜかsetTimeoutしないとapi関数内でエラーになる(おそらく循環参照してることに原因がありそう)
-			setTimeout(() => {
+			window.setTimeout(() => {
 				api('i/registry/get-all', { scope: ['client', this.key] }).then(kvs => {
 					const cache = {};
 					for (const [k, v] of Object.entries(def)) {

@@ -2,7 +2,7 @@
 <XModalWindow ref="dialog"
 	:width="366"
 	:height="500"
-	@close="$refs.dialog.close()"
+	@close="dialog.close()"
 	@closed="$emit('closed')"
 >
 	<template #header>{{ $ts.signup }}</template>
@@ -15,36 +15,30 @@
 </XModalWindow>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
 import XModalWindow from '@/components/ui/modal-window.vue';
 import XSignup from './signup.vue';
 
-export default defineComponent({
-	components: {
-		XSignup,
-		XModalWindow,
-	},
-
-	props: {
-		autoSet: {
-			type: Boolean,
-			required: false,
-			default: false,
-		}
-	},
-
-	emits: ['done', 'closed'],
-
-	methods: {
-		onSignup(res) {
-			this.$emit('done', res);
-			this.$refs.dialog.close();
-		},
-
-		onSignupEmailPending() {
-			this.$refs.dialog.close();
-		}
-	}
+const props = withDefaults(defineProps<{
+	autoSet?: boolean;
+}>(), {
+	autoSet: false,
 });
+
+const emit = defineEmits<{
+	(e: 'done'): void;
+	(e: 'closed'): void;
+}>();
+
+const dialog = $ref<InstanceType<typeof XModalWindow>>();
+
+function onSignup(res) {
+	emit('done', res);
+	dialog.close();
+}
+
+function onSignupEmailPending() {
+	dialog.close();
+}
 </script>
