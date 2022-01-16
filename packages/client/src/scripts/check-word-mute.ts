@@ -1,4 +1,4 @@
-export async function checkWordMute(note: Record<string, any>, me: Record<string, any> | null | undefined, mutedWords: string[][]): Promise<boolean> {
+export function checkWordMute(note: Record<string, any>, me: Record<string, any> | null | undefined, mutedWords: string[][]): boolean {
 	// 自分自身
 	if (me && (note.userId === me.id)) return false;
 

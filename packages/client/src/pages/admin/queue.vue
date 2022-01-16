@@ -38,8 +38,6 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
-
 		this.$nextTick(() => {
 			this.connection.send('requestLog', {
 				id: Math.random().toString().substr(2, 8),

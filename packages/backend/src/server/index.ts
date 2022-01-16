@@ -23,7 +23,7 @@ import Logger from '@/services/logger';
 import { envOption } from '../env';
 import { UserProfiles, Users } from '@/models/index';
 import { networkChart } from '@/services/chart/index';
-import { genAvatar } from '@/misc/gen-avatar';
+import { genIdenticon } from '@/misc/gen-identicon';
 import { createTemp } from '@/misc/create-temp';
 import { publishMainStream } from '@/services/stream';
 import * as Acct from 'misskey-js/built/acct';
@@ -84,9 +84,9 @@ router.get('/avatar/@:acct', async ctx => {
 	}
 });
 
-router.get('/random-avatar/:x', async ctx => {
+router.get('/identicon/:x', async ctx => {
 	const [temp] = await createTemp();
-	await genAvatar(ctx.params.x, fs.createWriteStream(temp));
+	await genIdenticon(ctx.params.x, fs.createWriteStream(temp));
 	ctx.set('Content-Type', 'image/png');
 	ctx.body = fs.createReadStream(temp);
 });

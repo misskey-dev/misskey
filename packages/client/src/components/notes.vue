@@ -10,7 +10,7 @@
 	<template #default="{ items: notes }">
 		<div class="giivymft" :class="{ noGap }">
 			<XList ref="notes" v-slot="{ item: note }" :items="notes" :direction="pagination.reversed ? 'up' : 'down'" :reversed="pagination.reversed" :no-gap="noGap" :ad="true" class="notes">
-				<XNote :key="note._featuredId_ || note._prId_ || note.id" class="qtqtichx" :note="note" @update:note="updated(note, $event)"/>
+				<XNote :key="note._featuredId_ || note._prId_ || note.id" class="qtqtichx" :note="note"/>
 			</XList>
 		</div>
 	</template>
@@ -30,10 +30,6 @@ const props = defineProps<{
 }>();
 
 const pagingComponent = ref<InstanceType<typeof MkPagination>>();
-
-const updated = (oldValue, newValue) => {
-	pagingComponent.value?.updateItem(oldValue.id, () => newValue);
-};
 
 defineExpose({
 	prepend: (note) => {

@@ -67,10 +67,6 @@ export default defineComponent({
 		},
 	},
 
-	mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
-	},
-
 	methods: {
 		async addItem() {
 			const menu = Object.keys(this.menuDef).filter(k => !this.$store.state.menu.includes(k));

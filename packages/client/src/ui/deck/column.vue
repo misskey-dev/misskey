@@ -224,7 +224,7 @@ export default defineComponent({
 
 			// Chromeのバグで、Dragstartハンドラ内ですぐにDOMを変更する(=リアクティブなプロパティを変更する)とDragが終了してしまう
 			// SEE: https://stackoverflow.com/questions/19639969/html5-dragend-event-firing-immediately
-			setTimeout(() => {
+			window.setTimeout(() => {
 				this.dragging = true;
 			}, 10);
 		},

@@ -30,11 +30,11 @@ export class UserPreview {
 			source: this.el
 		}, {
 			mouseover: () => {
-				clearTimeout(this.hideTimer);
+				window.clearTimeout(this.hideTimer);
 			},
 			mouseleave: () => {
-				clearTimeout(this.showTimer);
-				this.hideTimer = setTimeout(this.close, 500);
+				window.clearTimeout(this.showTimer);
+				this.hideTimer = window.setTimeout(this.close, 500);
 			},
 		}, 'closed');
 
@@ -44,10 +44,10 @@ export class UserPreview {
 			}
 		};
 
-		this.checkTimer = setInterval(() => {
+		this.checkTimer = window.setInterval(() => {
 			if (!document.body.contains(this.el)) {
-				clearTimeout(this.showTimer);
-				clearTimeout(this.hideTimer);
+				window.clearTimeout(this.showTimer);
+				window.clearTimeout(this.hideTimer);
 				this.close();
 			}
 		}, 1000);
@@ -56,7 +56,7 @@ export class UserPreview {
 	@autobind
 	private close() {
 		if (this.promise) {
-			clearInterval(this.checkTimer);
+			window.clearInterval(this.checkTimer);
 			this.promise.cancel();
 			this.promise = null;
 		}
@@ -64,21 +64,21 @@ export class UserPreview {
 
 	@autobind
 	private onMouseover() {
-		clearTimeout(this.showTimer);
-		clearTimeout(this.hideTimer);
-		this.showTimer = setTimeout(this.show, 500);
+		window.clearTimeout(this.showTimer);
+		window.clearTimeout(this.hideTimer);
+		this.showTimer = window.setTimeout(this.show, 500);
 	}
 
 	@autobind
 	private onMouseleave() {
-		clearTimeout(this.showTimer);
-		clearTimeout(this.hideTimer);
-		this.hideTimer = setTimeout(this.close, 500);
+		window.clearTimeout(this.showTimer);
+		window.clearTimeout(this.hideTimer);
+		this.hideTimer = window.setTimeout(this.close, 500);
 	}
 
 	@autobind
 	private onClick() {
-		clearTimeout(this.showTimer);
+		window.clearTimeout(this.showTimer);
 		this.close();
 	}
 
@@ -94,7 +94,7 @@ export class UserPreview {
 		this.el.removeEventListener('mouseover', this.onMouseover);
 		this.el.removeEventListener('mouseleave', this.onMouseleave);
 		this.el.removeEventListener('click', this.onClick);
-		clearInterval(this.checkTimer);
+		window.clearInterval(this.checkTimer);
 	}
 }
 

@@ -60,15 +60,15 @@ export default defineComponent({
 			})),
 			tab: 'featured',
 			featuredPagination: {
-				endpoint: 'channels/featured',
+				endpoint: 'channels/featured' as const,
 				noPaging: true,
 			},
 			followingPagination: {
-				endpoint: 'channels/followed',
+				endpoint: 'channels/followed' as const,
 				limit: 5,
 			},
 			ownedPagination: {
-				endpoint: 'channels/owned',
+				endpoint: 'channels/owned' as const,
 				limit: 5,
 			},
 		};

@@ -67,7 +67,7 @@ export default defineComponent({
 			channel: null,
 			showBanner: true,
 			pagination: {
-				endpoint: 'channels/timeline',
+				endpoint: 'channels/timeline' as const,
 				limit: 10,
 				params: computed(() => ({
 					channelId: this.channelId,

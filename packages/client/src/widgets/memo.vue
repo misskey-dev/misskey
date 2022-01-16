@@ -51,8 +51,8 @@ const saveMemo = () => {
 
 const onChange = () => {
 	changed.value = true;
-	clearTimeout(timeoutId);
-	timeoutId = setTimeout(saveMemo, 1000);
+	window.clearTimeout(timeoutId);
+	timeoutId = window.setTimeout(saveMemo, 1000);
 };
 
 watch(() => defaultStore.reactiveState.memo, newText => {

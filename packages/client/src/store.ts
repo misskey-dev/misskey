@@ -97,7 +97,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	tl: {
 		where: 'deviceAccount',
 		default: {
-			src: 'home',
+			src: 'home' as 'home' | 'local' | 'social' | 'global',
 			arg: null
 		}
 	},
@@ -160,7 +160,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	useReactionPickerForContextMenu: {
 		where: 'device',
-		default: true
+		default: false
 	},
 	showGapBetweenNotesInTimeline: {
 		where: 'device',

@@ -33,7 +33,7 @@ const defaultRoutes = [
 	{ path: '/explore/tags/:tag', props: true, component: page('explore') },
 	{ path: '/federation', component: page('federation') },
 	{ path: '/emojis', component: page('emojis') },
-	{ path: '/search', component: page('search') },
+	{ path: '/search', component: page('search'), props: route => ({ query: route.query.q, channel: route.query.channel }) },
 	{ path: '/pages', name: 'pages', component: page('pages') },
 	{ path: '/pages/new', component: page('page-editor/page-editor') },
 	{ path: '/pages/edit/:pageId', component: page('page-editor/page-editor'), props: route => ({ initPageId: route.params.pageId }) },
@@ -115,11 +115,11 @@ export const router = createRouter({
 		window._scroll = () => { // さらにHacky
 			if (to.name === 'index') {
 				window.scroll({ top: indexScrollPos, behavior: 'instant' });
-				const i = setInterval(() => {
+				const i = window.setInterval(() => {
 					window.scroll({ top: indexScrollPos, behavior: 'instant' });
 				}, 10);
-				setTimeout(() => {
-					clearInterval(i);
+				window.setTimeout(() => {
+					window.clearInterval(i);
 				}, 500);
 			} else {
 				window.scroll({ top: 0, behavior: 'instant' });

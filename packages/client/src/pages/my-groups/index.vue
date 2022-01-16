@@ -87,15 +87,15 @@ export default defineComponent({
 			})),
 			tab: 'owned',
 			ownedPagination: {
-				endpoint: 'users/groups/owned',
+				endpoint: 'users/groups/owned' as const,
 				limit: 10,
 			},
 			joinedPagination: {
-				endpoint: 'users/groups/joined',
+				endpoint: 'users/groups/joined' as const,
 				limit: 10,
 			},
 			invitationPagination: {
-				endpoint: 'i/user-group-invites',
+				endpoint: 'i/user-group-invites' as const,
 				limit: 10,
 			},
 		};

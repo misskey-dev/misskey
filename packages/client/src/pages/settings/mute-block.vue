@@ -27,8 +27,8 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
 import MkPagination from '@/components/ui/pagination.vue';
 import MkTab from '@/components/tab.vue';
 import FormInfo from '@/components/ui/info.vue';
@@ -36,42 +36,25 @@ import FormLink from '@/components/form/link.vue';
 import { userPage } from '@/filters/user';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		MkPagination,
-		MkTab,
-		FormInfo,
-		FormLink,
+let tab = $ref('mute');
+
+const mutingPagination = {
+	endpoint: 'mute/list' as const,
+	limit: 10,
+};
+
+const blockingPagination = {
+	endpoint: 'blocking/list' as const,
+	limit: 10,
+};
+
+defineExpose({
+	[symbols.PAGE_INFO]: {
+		title: i18n.locale.muteAndBlock,
+		icon: 'fas fa-ban',
+		bg: 'var(--bg)',
 	},
-
-	emits: ['info'],
-
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: this.$ts.muteAndBlock,
-				icon: 'fas fa-ban',
-				bg: 'var(--bg)',
-			},
-			tab: 'mute',
-			mutingPagination: {
-				endpoint: 'mute/list',
-				limit: 10,
-			},
-			blockingPagination: {
-				endpoint: 'blocking/list',
-				limit: 10,
-			},
-		}
-	},
-
-	mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
-	},
-
-	methods: {
-		userPage
-	}
 });
 </script>

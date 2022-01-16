@@ -6,36 +6,23 @@
 </div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent } from 'vue';
+<script lang="ts" setup>
+import { computed } from 'vue';
+import * as misskey from 'misskey-js';
 import MkPagePreview from '@/components/page-preview.vue';
 import MkPagination from '@/components/ui/pagination.vue';
 
-export default defineComponent({
-	components: {
-		MkPagination,
-		MkPagePreview,
-	},
+const props = defineProps<{
+	user: misskey.entities.User;
+}>();
 
-	props: {
-		user: {
-			type: Object,
-			required: true
-		},
-	},
-
-	data() {
-		return {
-			pagination: {
-				endpoint: 'users/pages',
-				limit: 20,
-				params: computed(() => ({
-					userId: this.user.id,
-				})),
-			},
-		};
-	},
-});
+const pagination = {
+	endpoint: 'users/pages' as const,
+	limit: 20,
+	params: computed(() => ({
+		userId: props.user.id,
+	})),
+};
 </script>
 
 <style lang="scss" scoped>

@@ -62,15 +62,15 @@ export default defineComponent({
 			})),
 			tab: 'featured',
 			featuredPagesPagination: {
-				endpoint: 'pages/featured',
+				endpoint: 'pages/featured' as const,
 				noPaging: true,
 			},
 			myPagesPagination: {
-				endpoint: 'i/pages',
+				endpoint: 'i/pages' as const,
 				limit: 5,
 			},
 			likedPagesPagination: {
-				endpoint: 'i/page-likes',
+				endpoint: 'i/page-likes' as const,
 				limit: 5,
 			},
 		};
