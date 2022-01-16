@@ -194,10 +194,6 @@ export default defineComponent({
 		},
 	},
 
-	mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
-	},
-
 	methods: {
 		async reloadAsk() {
 			const { canceled } = await os.confirm({

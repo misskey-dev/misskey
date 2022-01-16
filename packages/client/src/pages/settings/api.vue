@@ -32,10 +32,6 @@ export default defineComponent({
 		};
 	},
 
-	mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
-	},
-
 	methods: {
 		generateToken() {
 			os.popup(import('@/components/token-generate-window.vue'), {}, {

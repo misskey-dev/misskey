@@ -3,7 +3,7 @@
 	<div class="qkcjvfiv">
 		<MkButton primary class="add" @click="create"><i class="fas fa-plus"></i> {{ $ts.createList }}</MkButton>
 
-		<MkPagination v-slot="{items}" ref="list" :pagination="pagination" class="lists _content">
+		<MkPagination v-slot="{items}" ref="pagingComponent" :pagination="pagination" class="lists _content">
 			<MkA v-for="list in items" :key="list.id" class="list _panel" :to="`/my/lists/${ list.id }`">
 				<div class="name">{{ list.name }}</div>
 				<MkAvatars :user-ids="list.userIds"/>
@@ -13,50 +13,41 @@
 </MkSpacer>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
 import MkPagination from '@/components/ui/pagination.vue';
 import MkButton from '@/components/ui/button.vue';
 import MkAvatars from '@/components/avatars.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		MkPagination,
-		MkButton,
-		MkAvatars,
-	},
+const pagingComponent = $ref<InstanceType<typeof MkPagination>>();
 
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: this.$ts.manageLists,
-				icon: 'fas fa-list-ul',
-				bg: 'var(--bg)',
-				action: {
-					icon: 'fas fa-plus',
-					handler: this.create
-				},
-			},
-			pagination: {
-				endpoint: 'users/lists/list',
-				limit: 10,
-			},
-		};
-	},
+const pagination = {
+	endpoint: 'users/lists/list' as const,
+	limit: 10,
+};
 
-	methods: {
-		async create() {
-			const { canceled, result: name } = await os.inputText({
-				title: this.$ts.enterListName,
-			});
-			if (canceled) return;
-			await os.api('users/lists/create', { name: name });
-			this.$refs.list.reload();
-			os.success();
+async function create() {
+	const { canceled, result: name } = await os.inputText({
+		title: i18n.locale.enterListName,
+	});
+	if (canceled) return;
+	await os.apiWithDialog('users/lists/create', { name: name });
+	pagingComponent.reload();
+}
+
+defineExpose({
+	[symbols.PAGE_INFO]: {
+		title: i18n.locale.manageLists,
+		icon: 'fas fa-list-ul',
+		bg: 'var(--bg)',
+		action: {
+			icon: 'fas fa-plus',
+			handler: create,
 		},
-	}
+	},
 });
 </script>
 

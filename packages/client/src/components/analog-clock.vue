@@ -90,7 +90,7 @@ onMounted(() => {
 	const update = () => {
 		if (enabled.value) {
 			tick();
-			setTimeout(update, 1000);
+			window.setTimeout(update, 1000);
 		}
 	};
 	update();

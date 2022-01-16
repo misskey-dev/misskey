@@ -125,7 +125,7 @@ export class Storage<T extends StateDef> {
 		return new Promise((resolve, reject) => {
 			if ($i) {
 				// api関数と循環参照なので一応setTimeoutしておく
-				setTimeout(async () => {
+				window.setTimeout(async () => {
 					await defaultStore.ready;
 
 					api('i/registry/get-all', { scope: ['client', this.key] })

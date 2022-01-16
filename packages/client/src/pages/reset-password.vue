@@ -3,61 +3,50 @@
 	<div class="_formRoot">
 		<FormInput v-model="password" type="password" class="_formBlock">
 			<template #prefix><i class="fas fa-lock"></i></template>
-			<template #label>{{ $ts.newPassword }}</template>
+			<template #label>{{ i18n.locale.newPassword }}</template>
 		</FormInput>
 		
-		<FormButton primary class="_formBlock" @click="save">{{ $ts.save }}</FormButton>
+		<FormButton primary class="_formBlock" @click="save">{{ i18n.locale.save }}</FormButton>
 	</div>
 </MkSpacer>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { onMounted } from 'vue';
 import FormInput from '@/components/form/input.vue';
 import FormButton from '@/components/ui/button.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
+import { i18n } from '@/i18n';
+import { router } from '@/router';
 
-export default defineComponent({
-	components: {
-		FormInput,
-		FormButton,
-	},
+const props = defineProps<{
+	token?: string;
+}>();
 
-	props: {
-		token: {
-			type: String,
-			required: false
-		}
-	},
+let password = $ref('');
 
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: this.$ts.resetPassword,
-				icon: 'fas fa-lock',
-				bg: 'var(--bg)',
-			},
-			password: '',
-		}
-	},
+async function save() {
+	await os.apiWithDialog('reset-password', {
+		token: props.token,
+		password: password,
+	});
+	router.push('/');
+}
 
-	mounted() {
-		if (this.token == null) {
-			os.popup(import('@/components/forgot-password.vue'), {}, {}, 'closed');
-			this.$router.push('/');
-		}
-	},
-
-	methods: {
-		async save() {
-			await os.apiWithDialog('reset-password', {
-				token: this.token,
-				password: this.password,
-			});
-			this.$router.push('/');
-		}
+onMounted(() => {
+	if (props.token == null) {
+		os.popup(import('@/components/forgot-password.vue'), {}, {}, 'closed');
+		router.push('/');
 	}
+});
+
+defineExpose({
+	[symbols.PAGE_INFO]: {
+		title: i18n.locale.resetPassword,
+		icon: 'fas fa-lock',
+		bg: 'var(--bg)',
+	},
 });
 </script>
 

@@ -1,5 +1,6 @@
 /**
- * Random avatar generator
+ * Identicon generator
+ * https://en.wikipedia.org/wiki/Identicon
  */
 
 import * as p from 'pureimage';
@@ -34,9 +35,9 @@ const cellSize = actualSize / n;
 const sideN = Math.floor(n / 2);
 
 /**
- * Generate buffer of random avatar by seed
+ * Generate buffer of an identicon by seed
  */
-export function genAvatar(seed: string, stream: WriteStream): Promise<void> {
+export function genIdenticon(seed: string, stream: WriteStream): Promise<void> {
 	const rand = gen.create(seed);
 	const canvas = p.make(size, size);
 	const ctx = canvas.getContext('2d');

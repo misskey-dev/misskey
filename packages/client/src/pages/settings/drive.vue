@@ -99,10 +99,6 @@ export default defineComponent({
 		}
 	},
 
-	mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
-	},
-
 	methods: {
 		chooseUploadFolder() {
 			os.selectDriveFolder(false).then(async folder => {

@@ -67,12 +67,12 @@ const tick = () => {
 tick();
 
 watch(() => widgetProps.showMs, () => {
-	if (intervalId) clearInterval(intervalId);
-	intervalId = setInterval(tick, widgetProps.showMs ? 10 : 1000);
+	if (intervalId) window.clearInterval(intervalId);
+	intervalId = window.setInterval(tick, widgetProps.showMs ? 10 : 1000);
 }, { immediate: true });
 
 onUnmounted(() => {
-	clearInterval(intervalId);
+	window.clearInterval(intervalId);
 });
 
 defineExpose<WidgetComponentExpose>({

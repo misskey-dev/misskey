@@ -95,7 +95,7 @@ export default defineComponent({
 			});
 			if (canceled) return;
 
-			os.api('admin/emoji/remove', {
+			os.api('admin/emoji/delete', {
 				id: this.emoji.id
 			}).then(() => {
 				this.$emit('done', {

@@ -63,10 +63,10 @@ export default defineComponent({
 		this.draw();
 
 		// Vueが何故かWatchを発動させない場合があるので
-		this.clock = setInterval(this.draw, 1000);
+		this.clock = window.setInterval(this.draw, 1000);
 	},
 	beforeUnmount() {
-		clearInterval(this.clock);
+		window.clearInterval(this.clock);
 	},
 	methods: {
 		draw() {

@@ -62,9 +62,9 @@ watch(() => widgetProps.url, tick);
 
 onMounted(() => {
 	tick();
-	const intervalId = setInterval(tick, 60000);
+	const intervalId = window.setInterval(tick, 60000);
 	onUnmounted(() => {
-		clearInterval(intervalId);
+		window.clearInterval(intervalId);
 	});
 });
 

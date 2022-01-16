@@ -154,8 +154,6 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
-
 		os.api('users/stats', {
 			userId: this.$i.id
 		}).then(stats => {

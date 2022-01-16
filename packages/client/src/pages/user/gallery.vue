@@ -29,7 +29,7 @@ export default defineComponent({
 	data() {
 		return {
 			pagination: {
-				endpoint: 'users/gallery/posts',
+				endpoint: 'users/gallery/posts' as const,
 				limit: 6,
 				params: computed(() => ({
 					userId: this.user.id

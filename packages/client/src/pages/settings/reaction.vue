@@ -100,10 +100,6 @@ export default defineComponent({
 		}
 	},
 
-	mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
-	},
-
 	methods: {
 		save() {
 			this.$store.set('reactions', this.reactions);

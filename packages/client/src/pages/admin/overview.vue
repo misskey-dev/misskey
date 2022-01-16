@@ -116,8 +116,6 @@ export default defineComponent({
 	},
 
 	async mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
-
 		os.api('meta', { detail: true }).then(meta => {
 			this.meta = meta;
 		});
