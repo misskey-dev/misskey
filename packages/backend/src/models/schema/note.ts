@@ -27,7 +27,7 @@ export const packedNoteSchema = {
 		},
 		user: {
 			type: 'object',
-			ref: 'User',
+			ref: 'UserLite',
 			optional: false, nullable: false,
 		},
 		replyId: {

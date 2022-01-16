@@ -19,7 +19,7 @@ export const packedMessagingMessageSchema = {
 		},
 		user: {
 			type: 'object',
-			ref: 'User',
+			ref: 'UserLite',
 			optional: true, nullable: false,
 		},
 		text: {
@@ -44,7 +44,7 @@ export const packedMessagingMessageSchema = {
 		recipient: {
 			type: 'object',
 			optional: true, nullable: true,
-			ref: 'User',
+			ref: 'UserLite',
 		},
 		groupId: {
 			type: 'string',

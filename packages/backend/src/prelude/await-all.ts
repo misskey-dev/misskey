@@ -1,6 +1,6 @@
 export type Promiseable<T extends Record<string, unknown>> = { [K in keyof T]: Promise<T[K]> | T[K] };
 
-export async function awaitAll<T extends Record<string, unknown>, U extends Promiseable<T>>(obj: U): Promise<T> {
+export async function awaitAll<T extends Record<string, unknown>, U = Promiseable<T>>(obj: U): Promise<T> {
 	const target = {} as T;
 	const keys = Object.keys(obj) as unknown as (keyof T)[];
 	const values = Object.values(obj);

@@ -20,7 +20,7 @@ export const packedBlockingSchema = {
 		blockee: {
 			type: 'object',
 			optional: false, nullable: false,
-			ref: 'User',
+			ref: 'UserDetailed',
 		},
 	},
 } as const;

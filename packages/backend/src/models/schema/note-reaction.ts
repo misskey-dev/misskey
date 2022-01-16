@@ -15,7 +15,7 @@ export const packedNoteReactionSchema = {
 		user: {
 			type: 'object',
 			optional: false, nullable: false,
-			ref: 'User',
+			ref: 'UserLite',
 		},
 		type: {
 			type: 'string',

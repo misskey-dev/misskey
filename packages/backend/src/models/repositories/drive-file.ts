@@ -3,7 +3,7 @@ import { DriveFile } from '@/models/entities/drive-file';
 import { Users, DriveFolders } from '../index';
 import { User } from '@/models/entities/user';
 import { toPuny } from '@/misc/convert-host';
-import { awaitAll } from '@/prelude/await-all';
+import { awaitAll, Promiseable } from '@/prelude/await-all';
 import { Packed } from '@/misc/schema';
 import config from '@/config/index';
 import { query, appendQuery } from '@/prelude/url';
@@ -126,7 +126,7 @@ export class DriveFileRepository extends Repository<DriveFile> {
 
 		const meta = await fetchMeta();
 
-		return await awaitAll({
+		return await awaitAll<Packed<'DriveFile'>>({
 			id: file.id,
 			createdAt: file.createdAt.toISOString(),
 			name: file.name,

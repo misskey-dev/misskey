@@ -25,7 +25,7 @@ export const packedNotificationSchema = {
 		},
 		user: {
 			type: 'object',
-			ref: 'User',
+			ref: 'UserLite',
 			optional: true, nullable: true,
 		},
 		userId: {

@@ -44,7 +44,7 @@ export const packedPageSchema = {
 		},
 		user: {
 			type: 'object',
-			ref: 'User',
+			ref: 'UserLite',
 			optional: false, nullable: false,
 		},
 	},
