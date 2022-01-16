@@ -35,9 +35,9 @@ const emit = defineEmits<{
 	(e: 'click', ev: MouseEvent): void;
 }>();
 
-const url = defaultStore.state.disableShowingAnimatedImages
+const url = $computed(() => defaultStore.state.disableShowingAnimatedImages
 	? getStaticImageUrl(props.user.avatarUrl)
-	: props.user.avatarUrl;
+	: props.user.avatarUrl);
 
 function onClick(ev: MouseEvent) {
 	emit('click', ev);
