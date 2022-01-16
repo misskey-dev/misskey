@@ -8,7 +8,7 @@ import { NoteThreadMutings } from '@/models';
 export const meta = {
 	tags: ['notes'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	kind: 'write:account',
 
@@ -25,7 +25,7 @@ export const meta = {
 			id: 'bddd57ac-ceb3-b29d-4334-86ea5fae481a',
 		},
 	},
-};
+} as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
