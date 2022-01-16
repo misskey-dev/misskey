@@ -5,67 +5,43 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { onMounted } from 'vue';
 import { decode } from 'blurhash';
 
-export default defineComponent({
-	props: {
-		src: {
-			type: String,
-			required: false,
-			default: null
-		},
-		hash: {
-			type: String,
-			required: true
-		},
-		alt: {
-			type: String,
-			required: false,
-			default: '',
-		},
-		title: {
-			type: String,
-			required: false,
-			default: null,
-		},
-		size: {
-			type: Number,
-			required: false,
-			default: 64
-		},
-		cover: {
-			type: Boolean,
-			required: false,
-			default: true,
-		}
-	},
+const props = withDefaults(defineProps<{
+	src?: string | null;
+	hash: string;
+	alt?: string;
+	title?: string | null;
+	size?: number;
+	cover?: boolean;
+}>(), {
+	src: null,
+	alt: '',
+	title: null,
+	size: 64,
+	cover: true,
+});
 
-	data() {
-		return {
-			loaded: false,
-		};
-	},
+const canvas = $ref<HTMLCanvasElement>();
+let loaded = $ref(false);
 
-	mounted() {
-		this.draw();
-	},
+function draw() {
+	if (props.hash == null) return;
+	const pixels = decode(props.hash, props.size, props.size);
+	const ctx = canvas.getContext('2d');
+	const imageData = ctx!.createImageData(props.size, props.size);
+	imageData.data.set(pixels);
+	ctx!.putImageData(imageData, 0, 0);
+}
 
-	methods: {
-		draw() {
-			if (this.hash == null) return;
-			const pixels = decode(this.hash, this.size, this.size);
-			const ctx = (this.$refs.canvas as HTMLCanvasElement).getContext('2d');
-			const imageData = ctx!.createImageData(this.size, this.size);
-			imageData.data.set(pixels);
-			ctx!.putImageData(imageData, 0, 0);
-		},
+function onLoad() {
+	loaded = true;
+}
 
-		onLoad() {
-			this.loaded = true;
-		}
-	}
+onMounted(() => {
+	draw();
 });
 </script>
 

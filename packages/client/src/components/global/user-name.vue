@@ -2,19 +2,14 @@
 <Mfm :text="user.name || user.username" :plain="true" :nowrap="nowrap" :custom-emojis="user.emojis"/>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
+import * as misskey from 'misskey-js';
 
-export default defineComponent({
-	props: {
-		user: {
-			type: Object,
-			required: true
-		},
-		nowrap: {
-			type: Boolean,
-			default: true
-		},
-	}
+const props = withDefaults(defineProps<{
+	user: misskey.entities.User;
+	nowrap?: boolean;
+}>(), {
+	nowrap: true,
 });
 </script>
