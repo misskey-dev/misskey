@@ -1,5 +1,5 @@
 <template>
-<MkModal ref="modal" :prefer-type="'dialog'" :z-priority="'high'" @click="success ? done() : () => {}" @closed="$emit('closed')">
+<MkModal ref="modal" :prefer-type="'dialog'" :z-priority="'high'" @click="success ? done() : () => {}" @closed="emit('closed')">
 	<div class="iuyakobc" :class="{ iconOnly: (text == null) || success }">
 		<i v-if="success" class="fas fa-check icon success"></i>
 		<i v-else class="fas fa-spinner fa-pulse icon waiting"></i>
@@ -8,49 +8,30 @@
 </MkModal>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { watch, ref } from 'vue';
 import MkModal from '@/components/ui/modal.vue';
 
-export default defineComponent({
-	components: {
-		MkModal,
-	},
+const modal = ref<InstanceType<typeof MkModal>>();
 
-	props: {
-		success: {
-			type: Boolean,
-			required: true,
-		},
-		showing: {
-			type: Boolean,
-			required: true,
-		},
-		text: {
-			type: String,
-			required: false,
-		},
-	},
+const props = defineProps<{
+	success: boolean;
+	showing: boolean;
+	text?: string;
+}>();
 
-	emits: ['done', 'closed'],
+const emit = defineEmits<{
+	(e: 'done');
+	(e: 'closed');
+}>();
 
-	data() {
-		return {
-		};
-	},
+function done() {
+	emit('done');
+	modal.value.close();
+}
 
-	watch: {
-		showing() {
-			if (!this.showing) this.done();
-		}
-	},
-
-	methods: {
-		done() {
-			this.$emit('done');
-			this.$refs.modal.close();
-		},
-	}
+watch(() => props.showing, () => {
+	if (!props.showing) done();
 });
 </script>
 

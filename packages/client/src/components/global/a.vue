@@ -4,130 +4,114 @@
 </a>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { inject } from 'vue';
 import * as os from '@/os';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { router } from '@/router';
 import { url } from '@/config';
-import { popout } from '@/scripts/popout';
-import { ColdDeviceStorage } from '@/store';
+import { popout as popout_ } from '@/scripts/popout';
+import { i18n } from '@/i18n';
+import { defaultStore } from '@/store';
 
-export default defineComponent({
-	inject: {
-		navHook: {
-			default: null
-		},
-		sideViewHook: {
-			default: null
+const props = withDefaults(defineProps<{
+	to: string;
+	activeClass?: null | string;
+	behavior?: null | 'window' | 'browser' | 'modalWindow';
+}>(), {
+	activeClass: null,
+	behavior: null,
+});
+
+const navHook = inject('navHook', null);
+const sideViewHook = inject('sideViewHook', null);
+
+const active = $computed(() => {
+	if (props.activeClass == null) return false;
+	const resolved = router.resolve(props.to);
+	if (resolved.path === router.currentRoute.value.path) return true;
+	if (resolved.name == null) return false;
+	if (router.currentRoute.value.name == null) return false;
+	return resolved.name === router.currentRoute.value.name;
+});
+
+function onContextmenu(ev) {
+	const selection = window.getSelection();
+	if (selection && selection.toString() !== '') return;
+	os.contextMenu([{
+		type: 'label',
+		text: props.to,
+	}, {
+		icon: 'fas fa-window-maximize',
+		text: i18n.locale.openInWindow,
+		action: () => {
+			os.pageWindow(props.to);
 		}
-	},
-
-	props: {
-		to: {
-			type: String,
-			required: true,
-		},
-		activeClass: {
-			type: String,
-			required: false,
-		},
-		behavior: {
-			type: String,
-			required: false,
-		},
-	},
-
-	computed: {
-		active() {
-			if (this.activeClass == null) return false;
-			const resolved = router.resolve(this.to);
-			if (resolved.path == this.$route.path) return true;
-			if (resolved.name == null) return false;
-			if (this.$route.name == null) return false;
-			return resolved.name == this.$route.name;
+	}, sideViewHook ? {
+		icon: 'fas fa-columns',
+		text: i18n.locale.openInSideView,
+		action: () => {
+			sideViewHook(props.to);
 		}
-	},
+	} : undefined, {
+		icon: 'fas fa-expand-alt',
+		text: i18n.locale.showInPage,
+		action: () => {
+			router.push(props.to);
+		}
+	}, null, {
+		icon: 'fas fa-external-link-alt',
+		text: i18n.locale.openInNewTab,
+		action: () => {
+			window.open(props.to, '_blank');
+		}
+	}, {
+		icon: 'fas fa-link',
+		text: i18n.locale.copyLink,
+		action: () => {
+			copyToClipboard(`${url}${props.to}`);
+		}
+	}], ev);
+}
 
-	methods: {
-		onContextmenu(e) {
-			if (window.getSelection().toString() !== '') return;
-			os.contextMenu([{
-				type: 'label',
-				text: this.to,
-			}, {
-				icon: 'fas fa-window-maximize',
-				text: this.$ts.openInWindow,
-				action: () => {
-					os.pageWindow(this.to);
-				}
-			}, this.sideViewHook ? {
-				icon: 'fas fa-columns',
-				text: this.$ts.openInSideView,
-				action: () => {
-					this.sideViewHook(this.to);
-				}
-			} : undefined, {
-				icon: 'fas fa-expand-alt',
-				text: this.$ts.showInPage,
-				action: () => {
-					this.$router.push(this.to);
-				}
-			}, null, {
-				icon: 'fas fa-external-link-alt',
-				text: this.$ts.openInNewTab,
-				action: () => {
-					window.open(this.to, '_blank');
-				}
-			}, {
-				icon: 'fas fa-link',
-				text: this.$ts.copyLink,
-				action: () => {
-					copyToClipboard(`${url}${this.to}`);
-				}
-			}], e);
-		},
+function openWindow() {
+	os.pageWindow(props.to);
+}
 
-		window() {
-			os.pageWindow(this.to);
-		},
+function modalWindow() {
+	os.modalPageWindow(props.to);
+}
 
-		modalWindow() {
-			os.modalPageWindow(this.to);
-		},
+function popout() {
+	popout_(props.to);
+}
 
-		popout() {
-			popout(this.to);
-		},
+function nav() {
+	if (props.behavior === 'browser') {
+		location.href = props.to;
+		return;
+	}
 
-		nav() {
-			if (this.behavior === 'browser') {
-				location.href = this.to;
-				return;
-			}
-
-			if (this.behavior) {
-				if (this.behavior === 'window') {
-					return this.window();
-				} else if (this.behavior === 'modalWindow') {
-					return this.modalWindow();
-				}
-			}
-
-			if (this.navHook) {
-				this.navHook(this.to);
-			} else {
-				if (this.$store.state.defaultSideView && this.sideViewHook && this.to !== '/') {
-					return this.sideViewHook(this.to);
-				}
-
-				if (this.$router.currentRoute.value.path === this.to) {
-					window.scroll({ top: 0, behavior: 'smooth' });
-				} else {
-					this.$router.push(this.to);
-				}
-			}
+	if (props.behavior) {
+		if (props.behavior === 'window') {
+			return openWindow();
+		} else if (props.behavior === 'modalWindow') {
+			return modalWindow();
 		}
 	}
-});
+
+	if (navHook) {
+		navHook(props.to);
+	} else {
+		if (defaultStore.state.defaultSideView && sideViewHook && props.to !== '/') {
+			return sideViewHook(props.to);
+		}
+
+		if (router.currentRoute.value.path === props.to) {
+			window.scroll({ top: 0, behavior: 'smooth' });
+		} else {
+			router.push(props.to);
+		}
+	}
+}
 </script>

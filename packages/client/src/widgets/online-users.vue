@@ -45,9 +45,9 @@ const tick = () => {
 
 onMounted(() => {
 	tick();
-	const intervalId = setInterval(tick, 1000 * 15);
+	const intervalId = window.setInterval(tick, 1000 * 15);
 	onUnmounted(() => {
-		clearInterval(intervalId);
+		window.clearInterval(intervalId);
 	});
 });
 

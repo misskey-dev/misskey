@@ -10,7 +10,7 @@ export default {
 	},
 
 	mounted(src, binding, vn) {
-		setTimeout(() => {
+		window.setTimeout(() => {
 			src.style.opacity = '1';
 			src.style.transform = 'none';
 		}, 1);

@@ -4,27 +4,17 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
 
-export default defineComponent({
-	props: {
-		inline: {
-			type: Boolean,
-			required: false,
-			default: false
-		},
-		colored: {
-			type: Boolean,
-			required: false,
-			default: true
-		},
-		mini: {
-			type: Boolean,
-			required: false,
-			default: false
-		},
-	}
+const props = withDefaults(defineProps<{
+	inline?: boolean;
+	colored?: boolean;
+	mini?: boolean;
+}>(), {
+	inline: false,
+	colored: true,
+	mini: false,
 });
 </script>
 

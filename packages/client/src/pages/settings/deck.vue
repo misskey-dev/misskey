@@ -83,10 +83,6 @@ export default defineComponent({
 		}
 	},
 
-	mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
-	},
-
 	methods: {
 		async setProfile() {
 			const { canceled, result: name } = await os.inputText({

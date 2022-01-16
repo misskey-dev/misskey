@@ -133,10 +133,6 @@ export default defineComponent({
 			os.api('i/import-blocking', { fileId: file.id }).then(onImportSuccess).catch(onError);
 		};
 
-		onMounted(() => {
-			context.emit('info', INFO);
-		});
-
 		return {
 			[symbols.PAGE_INFO]: INFO,
 			excludeMutingUsers,

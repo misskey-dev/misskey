@@ -2,7 +2,7 @@ import $ from 'cafy';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { ID } from '@/misc/cafy-id';
-import { DriveFiles, Followings, NoteFavorites, NoteReactions, Notes, PageLikes, PollVotes, ReversiGames, Users } from '@/models/index';
+import { DriveFiles, Followings, NoteFavorites, NoteReactions, Notes, PageLikes, PollVotes, Users } from '@/models/index';
 
 export const meta = {
 	tags: ['users'],
@@ -50,7 +50,6 @@ export default define(meta, async (ps, me) => {
 		pageLikedCount,
 		driveFilesCount,
 		driveUsage,
-		reversiCount,
 	] = await Promise.all([
 		Notes.createQueryBuilder('note')
 			.where('note.userId = :userId', { userId: user.id })
@@ -113,10 +112,6 @@ export default define(meta, async (ps, me) => {
 			.where('file.userId = :userId', { userId: user.id })
 			.getCount(),
 		DriveFiles.calcDriveUsageOf(user),
-		ReversiGames.createQueryBuilder('game')
-			.where('game.user1Id = :userId', { userId: user.id })
-			.orWhere('game.user2Id = :userId', { userId: user.id })
-			.getCount(),
 	]);
 
 	return {
@@ -140,6 +135,5 @@ export default define(meta, async (ps, me) => {
 		pageLikedCount,
 		driveFilesCount,
 		driveUsage,
-		reversiCount,
 	};
 });

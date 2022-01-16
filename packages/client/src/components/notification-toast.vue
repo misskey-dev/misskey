@@ -29,7 +29,7 @@ export default defineComponent({
 		};
 	},
 	mounted() {
-		setTimeout(() => {
+		window.setTimeout(() => {
 			this.showing = false;
 		}, 6000);
 	}

@@ -8,47 +8,32 @@
 </div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent } from 'vue';
+<script lang="ts" setup>
+import { computed } from 'vue';
+import * as misskey from 'misskey-js';
 import MkUserInfo from '@/components/user-info.vue';
 import MkPagination from '@/components/ui/pagination.vue';
 
-export default defineComponent({
-	components: {
-		MkPagination,
-		MkUserInfo,
-	},
+const props = defineProps<{
+	user: misskey.entities.User;
+	type: 'following' | 'followers';
+}>();
 
-	props: {
-		user: {
-			type: Object,
-			required: true
-		},
-		type: {
-			type: String,
-			required: true
-		},
-	},
+const followingPagination = {
+	endpoint: 'users/following' as const,
+	limit: 20,
+	params: computed(() => ({
+		userId: props.user.id,
+	})),
+};
 
-	data() {
-		return {
-			followingPagination: {
-				endpoint: 'users/following',
-				limit: 20,
-				params: computed(() => ({
-					userId: this.user.id,
-				})),
-			},
-			followersPagination: {
-				endpoint: 'users/followers',
-				limit: 20,
-				params: computed(() => ({
-					userId: this.user.id,
-				})),
-			},
-		};
-	},
-});
+const followersPagination = {
+	endpoint: 'users/followers' as const,
+	limit: 20,
+	params: computed(() => ({
+		userId: props.user.id,
+	})),
+};
 </script>
 
 <style lang="scss" scoped>

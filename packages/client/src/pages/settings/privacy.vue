@@ -47,8 +47,8 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
 import FormSwitch from '@/components/form/switch.vue';
 import FormSelect from '@/components/form/select.vue';
 import FormSection from '@/components/form/section.vue';
@@ -56,67 +56,39 @@ import FormGroup from '@/components/form/group.vue';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
 import * as symbols from '@/symbols';
+import { i18n } from '@/i18n';
+import { $i } from '@/account';
 
-export default defineComponent({
-	components: {
-		FormSelect,
-		FormSection,
-		FormGroup,
-		FormSwitch,
+let isLocked = $ref($i.isLocked);
+let autoAcceptFollowed = $ref($i.autoAcceptFollowed);
+let noCrawle = $ref($i.noCrawle);
+let isExplorable = $ref($i.isExplorable);
+let hideOnlineStatus = $ref($i.hideOnlineStatus);
+let publicReactions = $ref($i.publicReactions);
+let ffVisibility = $ref($i.ffVisibility);
+
+let defaultNoteVisibility = $computed(defaultStore.makeGetterSetter('defaultNoteVisibility'));
+let defaultNoteLocalOnly = $computed(defaultStore.makeGetterSetter('defaultNoteLocalOnly'));
+let rememberNoteVisibility = $computed(defaultStore.makeGetterSetter('rememberNoteVisibility'));
+let keepCw = $computed(defaultStore.makeGetterSetter('keepCw'));
+
+function save() {
+	os.api('i/update', {
+		isLocked: !!isLocked,
+		autoAcceptFollowed: !!autoAcceptFollowed,
+		noCrawle: !!noCrawle,
+		isExplorable: !!isExplorable,
+		hideOnlineStatus: !!hideOnlineStatus,
+		publicReactions: !!publicReactions,
+		ffVisibility: ffVisibility,
+	});
+}
+
+defineExpose({
+	[symbols.PAGE_INFO]: {
+		title: i18n.locale.privacy,
+		icon: 'fas fa-lock-open',
+		bg: 'var(--bg)',
 	},
-
-	emits: ['info'],
-	
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: this.$ts.privacy,
-				icon: 'fas fa-lock-open',
-				bg: 'var(--bg)',
-			},
-			isLocked: false,
-			autoAcceptFollowed: false,
-			noCrawle: false,
-			isExplorable: false,
-			hideOnlineStatus: false,
-			publicReactions: false,
-			ffVisibility: 'public',
-		}
-	},
-
-	computed: {
-		defaultNoteVisibility: defaultStore.makeGetterSetter('defaultNoteVisibility'),
-		defaultNoteLocalOnly: defaultStore.makeGetterSetter('defaultNoteLocalOnly'),
-		rememberNoteVisibility: defaultStore.makeGetterSetter('rememberNoteVisibility'),
-		keepCw: defaultStore.makeGetterSetter('keepCw'),
-	},
-
-	created() {
-		this.isLocked = this.$i.isLocked;
-		this.autoAcceptFollowed = this.$i.autoAcceptFollowed;
-		this.noCrawle = this.$i.noCrawle;
-		this.isExplorable = this.$i.isExplorable;
-		this.hideOnlineStatus = this.$i.hideOnlineStatus;
-		this.publicReactions = this.$i.publicReactions;
-		this.ffVisibility = this.$i.ffVisibility;
-	},
-
-	mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
-	},
-
-	methods: {
-		save() {
-			os.api('i/update', {
-				isLocked: !!this.isLocked,
-				autoAcceptFollowed: !!this.autoAcceptFollowed,
-				noCrawle: !!this.noCrawle,
-				isExplorable: !!this.isExplorable,
-				hideOnlineStatus: !!this.hideOnlineStatus,
-				publicReactions: !!this.publicReactions,
-				ffVisibility: this.ffVisibility,
-			});
-		}
-	}
 });
 </script>
