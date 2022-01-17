@@ -1,12 +1,12 @@
 #!/bin/bash
 
-branch_name=m@ster
+mode=product
 
 while getopts "d" optKey; do
   case "$optKey" in
     d)
       echo "Update as develop."
-      branch_name=m@ster-dev
+      mode=develop
       ;;
     *)
       exit
@@ -14,10 +14,22 @@ while getopts "d" optKey; do
   esac
 done
 
+case "${mode}" in
+	"product")
+		branch_name=m@ster
+		dcyml=docker-compose.yml
+		;;
+	"develop")
+		branch_name=m@ster-dev
+		dcyml=docker-compose.dev.yml
+		;;
+esac
+
 git stash
 git checkout ${branch_name}
 git pull
 git submodule update --init
 git stash pop
-sudo docker-compose pull
-sudo docker-compose stop && sudo docker-compose up -d
+sudo docker-compose -f ${dcyml} pull
+sudo docker-compose -f ${dcyml} stop
+sudo docker-compose -f ${dcyml} up -d
