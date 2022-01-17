@@ -60,5 +60,5 @@ jobs:
           username: ${{ secrets.DEV_SERVER_USERNAME }}
           key: ${{ secrets.DEV_SERVER_KEY }}
           port: ${{ secrets.DEV_SERVER_PORT }}
-          script: cd ${{ secrets.PROD_SERVER_PATH }} && bash update.sh -d
+          script: cd ${{ secrets.DEV_SERVER_PATH }} && bash update.sh -d
 
