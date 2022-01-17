@@ -1,5 +1,7 @@
 import {
 	packedUserLiteSchema,
+	packedUserDetailedNotMeOnlySchema,
+	packedMeDetailedOnlySchema,
 	packedUserDetailedNotMeSchema,
 	packedMeDetailedSchema,
 	packedUserDetailedSchema,
@@ -30,6 +32,8 @@ import { packedEmojiSchema } from '@/models/schema/emoji';
 
 export const refs = {
 	UserLite: packedUserLiteSchema,
+	UserDetailedNotMeOnly: packedUserDetailedNotMeOnlySchema,
+	MeDetailedOnly: packedMeDetailedOnlySchema,
 	UserDetailedNotMe: packedUserDetailedNotMeSchema,
 	MeDetailed: packedMeDetailedSchema,
 	UserDetailed: packedUserDetailedSchema,
@@ -61,7 +65,8 @@ export const refs = {
 
 // Packed = SchemaTypeDef<typeof refs[x]>; とすると展開されてマウスホバー時に型表示が使い物にならなくなる
 // ObjType<r['properties']>を指定すると（なぜか）展開されずにPacked<'Hoge'>と表示される
-type PackedDef<r extends { properties?: Obj; oneOf?: ReadonlyArray<MinimumSchema> }> =
+type PackedDef<r extends { properties?: Obj; oneOf?: ReadonlyArray<MinimumSchema>; allOf?: ReadonlyArray<MinimumSchema> }> =
+	r['allOf'] extends ReadonlyArray<MinimumSchema> ? UnionToIntersection<UnionSchemaType<r['allOf']>> :
 	r['oneOf'] extends ReadonlyArray<MinimumSchema> ? UnionSchemaType<r['oneOf']> :
 	r['properties'] extends Obj ? ObjType<r['properties']> :
 	never;
