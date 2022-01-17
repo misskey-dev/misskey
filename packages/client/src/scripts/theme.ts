@@ -23,6 +23,7 @@ export const builtinThemes = [
 	require('@/themes/l-sushi.json5'),
 
 	require('@/themes/d-dark.json5'),
+	require('@/themes/d-yuko.json5'),
 	require('@/themes/d-persimmon.json5'),
 	require('@/themes/d-astro.json5'),
 	require('@/themes/d-future.json5'),

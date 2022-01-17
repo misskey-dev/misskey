@@ -242,8 +242,8 @@ type Plugin = {
  */
 export class ColdDeviceStorage {
 	public static default = {
-		lightTheme: require('@/themes/l-light.json5') as Theme,
-		darkTheme: require('@/themes/d-dark.json5') as Theme,
+		lightTheme: require('@/themes/d-yuko.json5') as Theme,
+		darkTheme: require('@/themes/d-yuko.json5') as Theme,
 		syncDeviceDarkMode: true,
 		plugins: [] as Plugin[],
 		mediaVolume: 0.5,

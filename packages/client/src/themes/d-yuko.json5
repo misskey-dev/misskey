@@ -1,0 +1,14 @@
+{
+	id: 'c431c44a-c86d-46fc-aa77-f9fdfc9c7978',
+	base: 'dark',
+	name: 'LoveYuko',
+	props: {
+		bg: '#151515',
+		fg: '#e0e0e0',
+		navBg: '@bg',
+		panel: ':lighten<3<@bg',
+		accent: '#d9de45',
+		renote: '#229e82',
+	},
+	author: '@xiupos@mk.xiupos.net',
+}
