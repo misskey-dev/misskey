@@ -14,7 +14,7 @@
 			</div>
 			<FormSection>
 				<div class="_formLinks">
-					<FormLink to="https://github.com/misskey-dev/misskey" external>
+					<FormLink to="https://github.com/xiupos/misskey" external>
 						<template #icon><i class="fas fa-code"></i></template>
 						{{ $ts._aboutMisskey.source }}
 						<template #suffix>GitHub</template>
