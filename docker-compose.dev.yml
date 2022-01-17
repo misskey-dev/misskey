@@ -2,7 +2,8 @@ version: "3"
 
 services:
   web:
-    build: .
+    image: ghcr.io/xiupos/misskey:develop
+    # build: .
     restart: always
     links:
       - db
