@@ -45,3 +45,19 @@ jobs:
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+  deploy:
+    name: Deploy to Server
+    needs: push_to_registry
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install SSH key
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.PROD_SERVER_HOST }}
+          username: ${{ secrets.PROD_SERVER_USERNAME }}
+          key: ${{ secrets.PROD_SERVER_KEY }}
+          port: ${{ secrets.PROD_SERVER_PORT }}
+          script: cd ${{ secrets.PROD_SERVER_PATH }} && bash update.sh
+
