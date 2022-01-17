@@ -707,6 +707,9 @@ usageAmount: "Uso"
 capacity: "Capacidad"
 inUse: "Usado"
 editCode: "Editar código"
+apply: "Aplicar"
+publish: "Publicar"
+inChannelSearch: "Buscar en el canal"
 goBack: "Deseleccionar"
 info: "Información"
 user: "Usuarios"
@@ -752,12 +755,16 @@ makeReactionsPublic: "Hacer el historial de reacciones público"
 makeReactionsPublicDescription: "Todas las reacciones que hayas hecho serán públicamente visibles."
 classic: "Clásico"
 muteThread: "Silenciar hilo"
+ffVisibility: "Visibilidad de seguidores y seguidos"
 hide: "Ocultar"
+_ffVisibility:
+  public: "Publicar"
 _accountDelete:
   accountDelete: "Eliminar Cuenta"
 _ad:
   back: "Deseleccionar"
 _gallery:
+  my: "Mi galería"
   unlike: "Quitar me gusta"
 _email:
   _follow:
@@ -803,6 +810,8 @@ _channel:
   usersCount: "{n} participantes"
   notesCount: "{n} notas"
 _menuDisplay:
+  sideFull: "Horizontal"
+  sideIcon: "Horizontal (ícono)"
   hide: "Ocultar"
 _wordMute:
   muteWords: "Palabras que silenciar"
