@@ -6,6 +6,8 @@
 
 ### m@ster-dev
 
+- リリースノートのURLをPoskyのものに
+
 ### 12.101.1-posky-12.3
 
 - README.md を独自のものに
