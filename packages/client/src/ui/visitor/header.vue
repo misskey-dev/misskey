@@ -17,7 +17,6 @@
 			</div>
 			<div class="right">
 				<button class="_button search" @click="search()"><i class="fas fa-search icon"></i><span>{{ $ts.search }}</span></button>
-				<button class="_buttonPrimary signup" @click="signup()">{{ $ts.signup }}</button>
 				<button class="_button login" @click="signin()">{{ $ts.login }}</button>
 			</div>
 		</div>

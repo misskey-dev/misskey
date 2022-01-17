@@ -11,7 +11,6 @@
 					<div class="desc" v-html="meta.description || $ts.introMisskey"></div>
 				</div>
 				<div class="action">
-					<button class="_buttonPrimary" @click="signup()">{{ $ts.signup }}</button>
 					<button class="_button" @click="signin()">{{ $ts.login }}</button>
 				</div>
 				<div class="announcements panel">
