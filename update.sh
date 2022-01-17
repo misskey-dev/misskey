@@ -1,7 +1,5 @@
 #!/bin/bash
 
-cd `dirname $0`
-
 mode=product
 
 while getopts "d" optKey; do
