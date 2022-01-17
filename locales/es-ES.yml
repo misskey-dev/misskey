@@ -831,6 +831,8 @@ _wordMute:
   hard: "Duro"
   mutedNotes: "Notas silenciadas"
 _instanceMute:
+  instanceMuteDescription: "Silencia todas las notas y reposts de la instancias seleccionadas, incluyendo respuestas a los usuarios de las mismas"
+  instanceMuteDescription2: "Separar por líneas"
   title: "Oculta las notas de las instancias listadas."
   heading: "Instancias a silenciar"
 _theme:
