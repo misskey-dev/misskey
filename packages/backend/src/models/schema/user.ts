@@ -417,7 +417,7 @@ export const packedUserDetailedNotMeSchema = {
 		},
 		{
 			type: 'object',
-			ref: 'UserDetailedOnly',
+			ref: 'UserDetailedNotMeOnly',
 		},
 	],
 } as const;
@@ -431,7 +431,7 @@ export const packedMeDetailedSchema = {
 		},
 		{
 			type: 'object',
-			ref: 'UserDetailedOnly',
+			ref: 'UserDetailedNotMeOnly',
 		},
 		{
 			type: 'object',
