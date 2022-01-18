@@ -87,8 +87,6 @@ jobs:
       run: cp .github/misskey/test.yml .config
     - name: Build
       run: yarn build
-    #- name: Test
-    #  run: yarn e2e
     - name: Cypress run
       uses: cypress-io/github-action@v2
       with:
