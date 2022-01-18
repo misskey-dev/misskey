@@ -3,13 +3,11 @@
 	<transition name="fade" mode="out-in">
 		<div v-if="page" :key="page.id" v-size="{ max: [450] }" class="xcukqgmh">
 			<div class="_block main">
-				<!--
-				<div class="header">
-					<h1>{{ page.title }}</h1>
-				</div>
-				-->
 				<div class="banner">
 					<img v-if="page.eyeCatchingImageId" :src="page.eyeCatchingImage.url"/>
+				</div>
+				<div class="header">
+					<h1>{{ page.title }}</h1>
 				</div>
 				<div class="content">
 					<XPage :page="page"/>
@@ -202,14 +200,7 @@ export default defineComponent({
 
 .xcukqgmh {
 	> .main {
-
-		> .header {
-			padding: 16px;
-
-			> h1 {
-				margin: 0;
-			}
-		}
+			padding: 0 0 16px;
 
 		> .banner {
 			> img {
@@ -221,16 +212,24 @@ export default defineComponent({
 			}
 		}
 
+		> .header {
+			padding: 24px 16px 0;
+
+			> h1 {
+				margin: 0;
+			}
+		}
+
 		> .content {
 			margin-top: 16px;
-			padding: 16px 0 0 0;
+			padding: 16px 16px 0;
 		}
 
 		> .actions {
 			display: flex;
 			align-items: center;
 			margin-top: 16px;
-			padding: 16px 0 0 0;
+			padding: 16px 16px 0;
 			border-top: solid 0.5px var(--divider);
 
 			> .like {
@@ -263,7 +262,7 @@ export default defineComponent({
 
 		> .user {
 			margin-top: 16px;
-			padding: 16px 0 0 0;
+			padding: 16px 16px 0;
 			border-top: solid 0.5px var(--divider);
 			display: flex;
 			align-items: center;
@@ -285,7 +284,7 @@ export default defineComponent({
 
 		> .links {
 			margin-top: 16px;
-			padding: 24px 0 0 0;
+			padding: 16px 16px 0;
 			border-top: solid 0.5px var(--divider);
 
 			> .link {

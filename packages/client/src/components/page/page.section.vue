@@ -36,21 +36,28 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .sdgxphyu {
-	margin: 1.5em 0;
+
+	&:not(:first-child) {
+		margin-top: 2em;
+	}
+
+	&:not(:last-child) {
+		margin-bottom: 2em;
+	}
 
 	> h2 {
 		font-size: 1.35em;
-		margin: 0 0 0.5em 0;
+		margin: 0 0 1em 0;
 	}
 
 	> h3 {
 		font-size: 1em;
-		margin: 0 0 0.5em 0;
+		margin: 0 0 1em 0;
 	}
 
 	> h4 {
 		font-size: 1em;
-		margin: 0 0 0.5em 0;
+		margin: 0 0 1em 0;
 	}
 
 	> .children {
