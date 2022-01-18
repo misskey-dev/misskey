@@ -82,11 +82,19 @@ describe('After user signup', () => {
 			password: 'pass',
 		}).its('body').as('admin');
 
+		cy.get('@admin').then(body => {
+			cy.log('admin', body)
+		});
+
 		// ユーザー作成
 		cy.request('POST', '/api/signup', {
 			username: 'alice',
 			password: 'alice1234',
 		}).its('body').as('alice');
+
+		cy.get('@alice').then(body => {
+			cy.log('admin', body)
+		});
 	});
 
 	afterEach(() => {
