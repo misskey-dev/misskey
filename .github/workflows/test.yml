@@ -105,10 +105,10 @@ jobs:
     - uses: actions/upload-artifact@v2
       if: failure()
       with:
-        name: cypress-screenshots
+        name: ${{ matrix.browser }}-cypress-screenshots
         path: cypress/screenshots
     - uses: actions/upload-artifact@v2
       if: always()
       with:
-        name: cypress-videos
+        name: ${{ matrix.browser }}-cypress-videos
         path: cypress/videos
