@@ -51,12 +51,11 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: cypress/browsers:node12.16.1-chrome80-ff73
+      image: cypress/browsers:latest
       options: --user 1001
 
     strategy:
       matrix:
-        node-version: [16.x]
         browser: [chrome, firefox]
 
     services:
@@ -76,10 +75,6 @@ jobs:
     - uses: actions/checkout@v2
       with:
         submodules: true
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
     - uses: actions/cache@v2
       with:
         path: '**/node_modules'
