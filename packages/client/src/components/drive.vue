@@ -128,7 +128,7 @@ const hierarchyFolders = ref<Misskey.entities.DriveFolder[]>([]);
 const selectedFiles = ref<Misskey.entities.DriveFile[]>([]);
 const selectedFolders = ref<Misskey.entities.DriveFolder[]>([]);
 const uploadings = os.uploads;
-const connection = ref<any>(null);
+const connection = stream.useChannel('drive');
 
 // ドロップされようとしているか
 const draghover = ref(false);
@@ -605,14 +605,12 @@ onMounted(() => {
 		});
 	}
 
-	connection.value = markRaw(stream.useChannel('drive'));
-
-	connection.value.on('fileCreated', onStreamDriveFileCreated);
-	connection.value.on('fileUpdated', onStreamDriveFileUpdated);
-	connection.value.on('fileDeleted', onStreamDriveFileDeleted);
-	connection.value.on('folderCreated', onStreamDriveFolderCreated);
-	connection.value.on('folderUpdated', onStreamDriveFolderUpdated);
-	connection.value.on('folderDeleted', onStreamDriveFolderDeleted);
+	connection.on('fileCreated', onStreamDriveFileCreated);
+	connection.on('fileUpdated', onStreamDriveFileUpdated);
+	connection.on('fileDeleted', onStreamDriveFileDeleted);
+	connection.on('folderCreated', onStreamDriveFolderCreated);
+	connection.on('folderUpdated', onStreamDriveFolderUpdated);
+	connection.on('folderDeleted', onStreamDriveFolderDeleted);
 
 	if (props.initialFolder) {
 		move(props.initialFolder);
