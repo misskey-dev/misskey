@@ -6,6 +6,8 @@
 
 ### m@ster-dev
 
+- SPMを
+
 ### 12.101.1-posky-12.4
 
 - リリースノートのURLをPoskeyのものに

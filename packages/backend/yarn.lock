@@ -390,6 +390,13 @@
     "@types/node" "*"
     "@types/range-parser" "*"
 
+"@types/express-useragent@1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@types/express-useragent/-/express-useragent-1.0.1.tgz#0e2f905b55be334cc497e95d0d59735d9c826ae1"
+  integrity sha512-pu0riWrnDLf5b1A19jKE7vXnvog/43IDK0ITgieleXxxE6zyJhdnX+7ScfPcSp9rRIB/HDqqR7dQj5knpjwLaw==
+  dependencies:
+    "@types/express" "*"
+
 "@types/express@*":
   version "4.17.6"
   resolved "https://registry.yarnpkg.com/@types/express/-/express-4.17.6.tgz#6bce49e49570507b86ea1b07b806f04697fac45e"
@@ -3268,6 +3275,11 @@ expand-tilde@^2.0.0, expand-tilde@^2.0.2:
   integrity sha1-l+gBqgUt8CRU3kawK/YhZCzchQI=
   dependencies:
     homedir-polyfill "^1.0.1"
+
+express-useragent@1.0.15:
+  version "1.0.15"
+  resolved "https://registry.yarnpkg.com/express-useragent/-/express-useragent-1.0.15.tgz#cefda5fa4904345d51d3368b117a8dd4124985d9"
+  integrity sha512-eq5xMiYCYwFPoekffMjvEIk+NWdlQY9Y38OsTyl13IvA728vKT+q/CSERYWzcw93HGBJcIqMIsZC5CZGARPVdg==
 
 ext@^1.1.2:
   version "1.4.0"
