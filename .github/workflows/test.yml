@@ -50,12 +50,6 @@ jobs:
   e2e:
     runs-on: ubuntu-latest
 
-    container:
-      image: cypress/browsers:node16.13.0-chrome95-ff94
-
-    env:
-      HOME: ""
-
     strategy:
       matrix:
         node-version: [16.x]
@@ -78,6 +72,8 @@ jobs:
     - uses: actions/checkout@v2
       with:
         submodules: true
+    - uses: browser-actions/setup-firefox@latest
+      if: ${{ matrix.browser == 'firefox' }}
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
