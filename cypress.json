@@ -1,5 +1,3 @@
 {
-	"baseUrl": "http://localhost:61812",
-	"defaultCommandTimeout": 10000,
-	"slowTestThreshold": 30000
+	"baseUrl": "http://localhost:61812"
 }
