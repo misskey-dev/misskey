@@ -95,7 +95,7 @@ jobs:
       with:
         install: false
         start: npm run start:test
-        wait-on: 'http://misskey.local:61812'
+        wait-on: 'http://localhost:61812'
         browser: chrome
     - uses: actions/upload-artifact@v2
       if: failure()
