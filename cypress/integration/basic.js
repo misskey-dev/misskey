@@ -165,7 +165,7 @@ describe('After user singed in', () => {
   it('successfully loads', () => {
     cy.visit('/');
   });
-
+	/*
 	it('note', () => {
     cy.visit('/');
 
@@ -175,4 +175,5 @@ describe('After user singed in', () => {
 
 		cy.contains('Hello, Misskey!');
   });
+	*/
 });
