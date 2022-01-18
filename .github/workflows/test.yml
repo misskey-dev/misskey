@@ -100,6 +100,7 @@ jobs:
         install: false
         start: npm run start:test
         wait-on: 'http://localhost:61812'
+        headless: false
         browser: ${{ matrix.browser }}
     - uses: actions/upload-artifact@v2
       if: failure()
