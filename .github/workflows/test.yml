@@ -50,14 +50,14 @@ jobs:
   e2e:
     runs-on: ubuntu-latest
 
-    container:
-      image: cypress/browsers:node16.13.0-chrome95-ff94
-      options: --user 1001
+    #container:
+    #  image: cypress/browsers:node16.13.0-chrome95-ff94
+    #  options: --user 1001
 
     strategy:
       matrix:
         node-version: [16.x]
-        browser: [chrome, firefox]
+        #browser: [chrome, firefox]
 
     services:
       postgres:
