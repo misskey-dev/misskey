@@ -73,6 +73,10 @@ jobs:
     - uses: actions/checkout@v2
       with:
         submodules: true
+    # https://github.com/cypress-io/cypress-docker-images/issues/150
+    - name: Install mplayer for FireFox
+      run: sudo apt install mplayer -y
+      if: ${{ matrix.browser == 'firefox' }}
     - uses: browser-actions/setup-firefox@latest
       if: ${{ matrix.browser == 'firefox' }}
     - name: Use Node.js ${{ matrix.node-version }}
