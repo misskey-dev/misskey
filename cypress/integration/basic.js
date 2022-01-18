@@ -33,7 +33,7 @@ describe('Before setup instance', () => {
 describe('After setup instance', () => {
 	beforeEach(() => {
 		cy.request('POST', '/api/reset-db').as('reset');
-		cy.wait('@reset').its('status').should('equal', 204);
+		cy.get('@reset').its('status').should('equal', 204);
 		cy.reload(true);
 
 		// インスタンス初期セットアップ
@@ -42,7 +42,7 @@ describe('After setup instance', () => {
 			password: 'pass',
 		}).its('body').as('admin');
 
-		cy.wait('@admin');
+		cy.get('@admin');
 	});
 
 	afterEach(() => {
@@ -73,7 +73,7 @@ describe('After setup instance', () => {
 describe('After user signup', () => {
 	beforeEach(() => {
 		cy.request('POST', '/api/reset-db').as('reset');
-		cy.wait('@reset').its('status').should('equal', 204);
+		cy.get('@reset').its('status').should('equal', 204);
 		cy.reload(true);
 
 		// インスタンス初期セットアップ
@@ -136,7 +136,7 @@ describe('After user signup', () => {
 describe('After user singed in', () => {
 	beforeEach(() => {
 		cy.request('POST', '/api/reset-db').as('reset');
-		cy.wait('@reset').its('status').should('equal', 204);
+		cy.get('@reset').its('status').should('equal', 204);
 		cy.reload(true);
 
 		// インスタンス初期セットアップ
