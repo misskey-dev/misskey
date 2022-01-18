@@ -5,7 +5,7 @@ import { DriveFiles } from '@/models/index';
 export const meta = {
 	tags: ['drive'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	kind: 'read:drive',
 
@@ -16,10 +16,10 @@ export const meta = {
 	},
 
 	res: {
-		type: 'boolean' as const,
-		optional: false as const, nullable: false as const,
+		type: 'boolean',
+		optional: false, nullable: false,
 	},
-};
+} as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {

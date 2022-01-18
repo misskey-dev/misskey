@@ -15,7 +15,7 @@ export const meta = {
 		max: 60,
 	},
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	kind: 'write:drive',
 
@@ -50,7 +50,7 @@ export const meta = {
 			default: false,
 		},
 	},
-};
+} as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {

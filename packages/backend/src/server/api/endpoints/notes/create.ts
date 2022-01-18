@@ -25,7 +25,7 @@ setInterval(() => {
 export const meta = {
 	tags: ['notes'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	limit: {
 		duration: ms('1hour'),
@@ -113,12 +113,12 @@ export const meta = {
 	},
 
 	res: {
-		type: 'object' as const,
-		optional: false as const, nullable: false as const,
+		type: 'object',
+		optional: false, nullable: false,
 		properties: {
 			createdNote: {
-				type: 'object' as const,
-				optional: false as const, nullable: false as const,
+				type: 'object',
+				optional: false, nullable: false,
 				ref: 'Note',
 			},
 		},
@@ -173,7 +173,7 @@ export const meta = {
 			id: 'b390d7e1-8a5e-46ed-b625-06271cafd3d3',
 		},
 	},
-};
+} as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {

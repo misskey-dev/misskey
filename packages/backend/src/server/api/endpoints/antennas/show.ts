@@ -7,7 +7,7 @@ import { Antennas } from '@/models/index';
 export const meta = {
 	tags: ['antennas', 'account'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	kind: 'read:account',
 
@@ -26,11 +26,11 @@ export const meta = {
 	},
 
 	res: {
-		type: 'object' as const,
-		optional: false as const, nullable: false as const,
+		type: 'object',
+		optional: false, nullable: false,
 		ref: 'Antenna',
 	},
-};
+} as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, me) => {

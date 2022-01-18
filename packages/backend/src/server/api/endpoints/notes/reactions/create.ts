@@ -8,7 +8,7 @@ import { ApiError } from '../../../error';
 export const meta = {
 	tags: ['reactions', 'notes'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	kind: 'write:reactions',
 
@@ -41,7 +41,7 @@ export const meta = {
 			id: '20ef5475-9f38-4e4c-bd33-de6d979498ec',
 		},
 	},
-};
+} as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {

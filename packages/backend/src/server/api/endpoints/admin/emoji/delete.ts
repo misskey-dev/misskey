@@ -9,7 +9,7 @@ import { ApiError } from '../../../error';
 export const meta = {
 	tags: ['admin'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 	requireModerator: true,
 
 	params: {
@@ -25,7 +25,7 @@ export const meta = {
 			id: 'be83669b-773a-44b7-b1f8-e5e5170ac3c2',
 		},
 	},
-};
+} as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, me) => {
