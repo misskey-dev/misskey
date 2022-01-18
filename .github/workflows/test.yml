@@ -15,9 +15,6 @@ jobs:
       matrix:
         node-version: [16.x]
 
-    env:
-      HOME: ""
-
     services:
       postgres:
         image: postgres:13
@@ -55,6 +52,9 @@ jobs:
 
     container:
       image: cypress/browsers:node16.13.0-chrome95-ff94
+
+    env:
+      HOME: ""
 
     strategy:
       matrix:
