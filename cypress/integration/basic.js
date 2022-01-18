@@ -83,12 +83,13 @@ describe('After user signup', () => {
 		}).its('body').as('admin');
 
 		cy.get('@admin').then(() => {
-			// ユーザー作成
-			cy.request('POST', '/api/signup', {
-				username: 'alice',
-				password: 'alice1234',
-			}).its('body').as('alice');
 		});
+	
+		// ユーザー作成
+		cy.request('POST', '/api/signup', {
+			username: 'alice',
+			password: 'alice1234',
+		}).its('body').as('alice');
 
 		cy.get('@alice');
 	});
