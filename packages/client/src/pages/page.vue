@@ -200,6 +200,7 @@ export default defineComponent({
 
 .xcukqgmh {
 	> .main {
+			padding: 0 0 16px;
 
 		> .banner {
 			> img {
@@ -283,7 +284,7 @@ export default defineComponent({
 
 		> .links {
 			margin-top: 16px;
-			padding: 16px;
+			padding: 16px 16px 0;
 			border-top: solid 0.5px var(--divider);
 
 			> .link {
