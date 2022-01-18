@@ -81,7 +81,7 @@ describe('After user signup', () => {
 			username: 'admin',
 			password: 'pass',
 		}).its('body').as('admin');
-	
+
 		cy.get('@admin').then(() => {
 			// ユーザー作成
 			cy.request('POST', '/api/signup', {
