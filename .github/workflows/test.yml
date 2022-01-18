@@ -52,7 +52,8 @@ jobs:
 
     container:
       image: cypress/browsers:node16.13.0-chrome95-ff94
-    #  options: --user 1001
+      # https://github.com/cypress-io/github-action/issues/104#issuecomment-666047965
+      options: --user 1001 --shm-size=2g
 
     strategy:
       matrix:
@@ -101,4 +102,5 @@ jobs:
         install: false
         start: npm run start:test
         wait-on: 'http://localhost:61812'
+        headless: true
         browser: ${{ matrix.browser }}
