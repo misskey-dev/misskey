@@ -223,14 +223,14 @@ export default defineComponent({
 
 		> .content {
 			margin-top: 16px;
-			padding: 16px 0 0 0;
+			padding: 16px 16px 0;
 		}
 
 		> .actions {
 			display: flex;
 			align-items: center;
 			margin-top: 16px;
-			padding: 16px 0 0 0;
+			padding: 16px 16px 0;
 			border-top: solid 0.5px var(--divider);
 
 			> .like {
@@ -263,7 +263,7 @@ export default defineComponent({
 
 		> .user {
 			margin-top: 16px;
-			padding: 16px 0 0 0;
+			padding: 16px 16px 0;
 			border-top: solid 0.5px var(--divider);
 			display: flex;
 			align-items: center;
@@ -285,7 +285,7 @@ export default defineComponent({
 
 		> .links {
 			margin-top: 16px;
-			padding: 24px 0 0 0;
+			padding: 16px;
 			border-top: solid 0.5px var(--divider);
 
 			> .link {
