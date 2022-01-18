@@ -50,14 +50,14 @@ jobs:
   e2e:
     runs-on: ubuntu-latest
 
-    #container:
-    #  image: cypress/browsers:node16.13.0-chrome95-ff94
+    container:
+      image: cypress/browsers:node16.13.0-chrome95-ff94
     #  options: --user 1001
 
     strategy:
       matrix:
         node-version: [16.x]
-        #browser: [chrome, firefox]
+        browser: [chrome, firefox]
 
     services:
       postgres:
@@ -101,4 +101,4 @@ jobs:
         install: false
         start: npm run start:test
         wait-on: 'http://localhost:61812'
-        browser: chrome #${{ matrix.browser }}
+        browser: ${{ matrix.browser }}
