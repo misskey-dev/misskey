@@ -23,9 +23,6 @@ Cypress.on('uncaught:exception', (err, runnable) => {
   if (err.message.includes('ResizeObserver loop limit exceeded')) {
     return false
   }
-});
-
-Cypress.on('uncaught:exception', (err, runnable) => {
   if (err.message.includes('Authentication failed')) {
     return false
   }
