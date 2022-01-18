@@ -15,6 +15,9 @@ jobs:
       matrix:
         node-version: [16.x]
 
+    env:
+      HOME: ""
+
     services:
       postgres:
         image: postgres:13
@@ -50,9 +53,13 @@ jobs:
   e2e:
     runs-on: ubuntu-latest
 
+    container:
+      image: cypress/browsers:node16.13.0-chrome95-ff94
+
     strategy:
       matrix:
         node-version: [16.x]
+        browser: [chrome, firefox]
 
     services:
       postgres:
@@ -96,7 +103,7 @@ jobs:
         install: false
         start: npm run start:test
         wait-on: 'http://localhost:61812'
-        browser: chrome
+        browser: ${{ matrix.browser }}
     - uses: actions/upload-artifact@v2
       if: failure()
       with:
