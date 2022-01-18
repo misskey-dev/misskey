@@ -13,37 +13,14 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x]
-
-    services:
-      postgres:
-        image: postgres:13
-        ports:
-          - 54312:5432
-        env:
-          POSTGRES_DB: test-misskey
-          POSTGRES_HOST_AUTH_METHOD: trust
-      redis:
-        image: redis:6
-        ports:
-          - 56312:6379
+        node_version: [16.x]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: ./.github/workflows/install-and-build@v1
       with:
-        submodules: true
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: Install dependencies
-      run: yarn install
-    - name: Check yarn.lock
-      run: git diff --exit-code yarn.lock
-    - name: Copy Configure
-      run: cp .github/misskey/test.yml .config
-    - name: Build
-      run: yarn build
+        node_version: ${{ matrix.node_version }}
+        postgres_tag: '13'
+        redis_tag: '6'
     - name: Test
       run: yarn mocha
 
@@ -53,48 +30,21 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [16.x]
+        node_version: [16.x]
         browser: [chrome]
 
-    services:
-      postgres:
-        image: postgres:13
-        ports:
-          - 54312:5432
-        env:
-          POSTGRES_DB: test-misskey
-          POSTGRES_HOST_AUTH_METHOD: trust
-      redis:
-        image: redis:6
-        ports:
-          - 56312:6379
-
     steps:
-    - uses: actions/checkout@v2
+    - uses: ./.github/workflows/install-and-build@v1
       with:
-        submodules: true
+        node_version: ${{ matrix.node_version }}
+        postgres_tag: '13'
+        redis_tag: '6'
     # https://github.com/cypress-io/cypress-docker-images/issues/150
     #- name: Install mplayer for FireFox
     #  run: sudo apt install mplayer -y
     #  if: ${{ matrix.browser == 'firefox' }}
     #- uses: browser-actions/setup-firefox@latest
     #  if: ${{ matrix.browser == 'firefox' }}
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - uses: actions/cache@v2
-      with:
-        path: '**/node_modules'
-        key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
-    - name: Install dependencies
-      run: yarn install
-    - name: Check yarn.lock
-      run: git diff --exit-code yarn.lock
-    - name: Copy Configure
-      run: cp .github/misskey/test.yml .config
-    - name: Build
-      run: yarn build
     # https://github.com/cypress-io/cypress/issues/4351#issuecomment-559489091
     - name: ALSA Env
       run: echo -e 'pcm.!default {\n type hw\n card 0\n}\n\nctl.!default {\n type hw\n card 0\n}' > ~/.asoundrc

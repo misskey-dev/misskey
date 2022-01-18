@@ -1,0 +1,62 @@
+name: Install and Build
+
+on:
+  workflow_call:
+    inputs:
+      config:
+        required: false
+        type: string
+        default: .github/misskey/test.yml
+      node_version:
+        required: true
+        type: string
+      postgres_tag:
+        required: true
+        type: string
+      redis_tag:
+        required: true
+        type: string
+
+jobs:
+  install_and_build:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:${{ inputs.postgres_tag }}
+        ports:
+          - 54312:5432
+        env:
+          POSTGRES_DB: test-misskey
+          POSTGRES_HOST_AUTH_METHOD: trust
+      redis:
+        image: redis:${{ inputs.redis_tag }}
+        ports:
+          - 56312:6379
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+    - name: Use Node.js ${{ inputs.node_version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ inputs.node_version }}
+    - uses: actions/cache@v2
+      with:
+        path: '**/node_modules'
+        key: ${{ runner.os }}-${{ inputs.node_version }}-modules-${{ hashFiles('**/yarn.lock') }}
+    - name: Install dependencies
+      run: yarn install
+    - name: Check yarn.lock
+      run: git diff --exit-code yarn.lock
+    - name: Copy Configure
+      run: cp ${{ inputs.config }} .config
+    - uses: actions/cache@v2
+      with:
+        path: 'built'
+        key: ${{ steps.vars.outputs.branch }}-${{ steps.vars.outputs.sha_short }}-${{ runner.os }}-${{ inputs.node_version }}-${{ inputs.config }}
+    - uses: debug
+      run: echo "${{ steps.vars.outputs.branch }}-${{ steps.vars.outputs.sha_short }}-${{ runner.os }}-${{ inputs.node_version }}-${{ inputs.config }}"
+    - name: Build
+      run: yarn build
