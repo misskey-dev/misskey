@@ -16,6 +16,8 @@ const data = localStorage.getItem('account');
 // TODO: 外部からはreadonlyに
 export const $i = data ? reactive(JSON.parse(data) as Account) : null;
 
+export const iAmModerator = $i != null && ($i.isAdmin || $i.isModerator);
+
 export async function signout() {
 	waiting();
 	localStorage.removeItem('account');
@@ -196,11 +198,4 @@ export async function openAccountMenu(ev: MouseEvent) {
 	}]], ev.currentTarget || ev.target, {
 		align: 'left'
 	});
-}
-
-// このファイルに書きたくないけどここに書かないと何故かVeturが認識しない
-declare module '@vue/runtime-core' {
-	interface ComponentCustomProperties {
-		$i: typeof $i;
-	}
 }
