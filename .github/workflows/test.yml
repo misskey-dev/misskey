@@ -16,7 +16,7 @@ jobs:
         node_version: [16.x]
 
     steps:
-    - uses: ./.github/workflows/install-and-build@v1
+    - uses: misskey-dev/misskey/.github/workflows/install-and-build@${{ steps.vars.outputs.sha_short }}
       with:
         node_version: ${{ matrix.node_version }}
         postgres_tag: '13'
@@ -34,7 +34,7 @@ jobs:
         browser: [chrome]
 
     steps:
-    - uses: ./.github/workflows/install-and-build@v1
+    - uses: misskey-dev/misskey/.github/workflows/install-and-build@${{ steps.vars.outputs.sha_short }}
       with:
         node_version: ${{ matrix.node_version }}
         postgres_tag: '13'
