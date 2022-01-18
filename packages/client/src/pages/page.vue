@@ -3,13 +3,11 @@
 	<transition name="fade" mode="out-in">
 		<div v-if="page" :key="page.id" v-size="{ max: [450] }" class="xcukqgmh">
 			<div class="_block main">
-				<!--
-				<div class="header">
-					<h1>{{ page.title }}</h1>
-				</div>
-				-->
 				<div class="banner">
 					<img v-if="page.eyeCatchingImageId" :src="page.eyeCatchingImage.url"/>
+				</div>
+				<div class="header">
+					<h1>{{ page.title }}</h1>
 				</div>
 				<div class="content">
 					<XPage :page="page"/>
@@ -203,14 +201,6 @@ export default defineComponent({
 .xcukqgmh {
 	> .main {
 
-		> .header {
-			padding: 16px;
-
-			> h1 {
-				margin: 0;
-			}
-		}
-
 		> .banner {
 			> img {
 				// TODO: 良い感じのアスペクト比で表示
@@ -218,6 +208,14 @@ export default defineComponent({
 				width: 100%;
 				height: 150px;
 				object-fit: cover;
+			}
+		}
+
+		> .header {
+			padding: 24px 16px 0;
+
+			> h1 {
+				margin: 0;
 			}
 		}
 
