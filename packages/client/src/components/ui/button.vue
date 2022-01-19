@@ -224,6 +224,7 @@ export default defineComponent({
 
 	&.inline {
 		display: inline-block;
+		vertical-align: top;
 		width: auto;
 		min-width: 100px;
 	}

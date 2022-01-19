@@ -89,7 +89,7 @@ export default defineComponent({
 	}
 
 	& + .cpjygsrt {
-		margin-top: 16px;
+		margin: 16px 0 0;
 	}
 
 	> header {
@@ -117,7 +117,7 @@ export default defineComponent({
 			top: 0;
 			right: 0;
 
-			> button {
+			::v-deep(._button) {
 				padding: 0;
 				width: 42px;
 				font-size: 0.9em;
