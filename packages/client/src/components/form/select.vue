@@ -201,6 +201,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .vblkjoeq {
+	margin: 16px 0;
+
 	> .label {
 		font-size: 0.85em;
 		padding: 0 0 8px 0;
