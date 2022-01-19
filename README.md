@@ -6,6 +6,10 @@
 
 ### m@ster-dev
 
+### 12.101.1-posky-12.7.*
+
+- Page 編集画面のレイアウトを調整 [#7](https://github.com/xiupos/misskey/pull/7)
+
 ### 12.101.1-posky-12.6
 
 - Page デザインの修正 [#5](https://github.com/xiupos/misskey/pull/5#issue-1106950406)
