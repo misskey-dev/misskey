@@ -225,7 +225,7 @@ function setAsUploadFolder() {
 	defaultStore.set('uploadFolder', props.folder.id);
 }
 
-function onContextmenu(e) {
+function onContextmenu(ev: MouseEvent) {
 	os.contextMenu([{
 		text: i18n.locale.openInWindow,
 		icon: 'fas fa-window-restore',
@@ -244,7 +244,7 @@ function onContextmenu(e) {
 		icon: 'fas fa-trash-alt',
 		danger: true,
 		action: deleteFolder,
-	}], e);
+	}], ev);
 }
 </script>
 
