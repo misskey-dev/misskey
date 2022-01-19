@@ -18,7 +18,7 @@ And see [Misskey Hub](https://misskey-hub.net/en/docs/install/docker.html).
 ## Changelog
 
 ### m@ster-dev
-### 12.101.1-posky-12.7
+### 12.101.1-posky-12.7.2
 
 - Page 編集画面のレイアウトを調整 [#7](https://github.com/xiupos/misskey/pull/7)
 
