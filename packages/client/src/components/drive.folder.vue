@@ -43,13 +43,13 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(e: 'chosen', v: Misskey.entities.DriveFolder): void;
-	(e: 'move', v: Misskey.entities.DriveFolder): void;
-	(e: 'upload', file: File, folder: Misskey.entities.DriveFolder);
-	(e: 'removeFile', v: Misskey.entities.DriveFile['id']): void;
-	(e: 'removeFolder', v: Misskey.entities.DriveFolder['id']): void;
-	(e: 'dragstart'): void;
-	(e: 'dragend'): void;
+	(ev: 'chosen', v: Misskey.entities.DriveFolder): void;
+	(ev: 'move', v: Misskey.entities.DriveFolder): void;
+	(ev: 'upload', file: File, folder: Misskey.entities.DriveFolder);
+	(ev: 'removeFile', v: Misskey.entities.DriveFile['id']): void;
+	(ev: 'removeFolder', v: Misskey.entities.DriveFolder['id']): void;
+	(ev: 'dragstart'): void;
+	(ev: 'dragend'): void;
 }>();
 
 const hover = ref(false);
@@ -58,7 +58,7 @@ const isDragging = ref(false);
 
 const title = computed(() => props.folder.name);
 
-function checkboxClicked(e) {
+function checkboxClicked() {
 	emit('chosen', props.folder);
 }
 
@@ -74,24 +74,24 @@ function onMouseout() {
 	hover.value = false
 }
 
-function onDragover(e: DragEvent) {
-	if (!e.dataTransfer) return;
+function onDragover(ev: DragEvent) {
+	if (!ev.dataTransfer) return;
 
 	// 自分自身がドラッグされている場合
 	if (isDragging.value) {
 		// 自分自身にはドロップさせない
-		e.dataTransfer.dropEffect = 'none';
+		ev.dataTransfer.dropEffect = 'none';
 		return;
 	}
 
-	const isFile = e.dataTransfer.items[0].kind == 'file';
-	const isDriveFile = e.dataTransfer.types[0] == _DATA_TRANSFER_DRIVE_FILE_;
-	const isDriveFolder = e.dataTransfer.types[0] == _DATA_TRANSFER_DRIVE_FOLDER_;
+	const isFile = ev.dataTransfer.items[0].kind == 'file';
+	const isDriveFile = ev.dataTransfer.types[0] == _DATA_TRANSFER_DRIVE_FILE_;
+	const isDriveFolder = ev.dataTransfer.types[0] == _DATA_TRANSFER_DRIVE_FOLDER_;
 
 	if (isFile || isDriveFile || isDriveFolder) {
-		e.dataTransfer.dropEffect = e.dataTransfer.effectAllowed == 'all' ? 'copy' : 'move';
+		ev.dataTransfer.dropEffect = ev.dataTransfer.effectAllowed == 'all' ? 'copy' : 'move';
 	} else {
-		e.dataTransfer.dropEffect = 'none';
+		ev.dataTransfer.dropEffect = 'none';
 	}
 }
 
@@ -103,21 +103,21 @@ function onDragleave() {
 	draghover.value = false;
 }
 
-function onDrop(e: DragEvent) {
+function onDrop(ev: DragEvent) {
 	draghover.value = false;
 
-	if (!e.dataTransfer) return;
+	if (!ev.dataTransfer) return;
 
 	// ファイルだったら
-	if (e.dataTransfer.files.length > 0) {
-		for (const file of Array.from(e.dataTransfer.files)) {
+	if (ev.dataTransfer.files.length > 0) {
+		for (const file of Array.from(ev.dataTransfer.files)) {
 			emit('upload', file, props.folder);
 		}
 		return;
 	}
 
 	//#region ドライブのファイル
-	const driveFile = e.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FILE_);
+	const driveFile = ev.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FILE_);
 	if (driveFile != null && driveFile != '') {
 		const file = JSON.parse(driveFile);
 		emit('removeFile', file.id);
@@ -129,7 +129,7 @@ function onDrop(e: DragEvent) {
 	//#endregion
 
 	//#region ドライブのフォルダ
-	const driveFolder = e.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FOLDER_);
+	const driveFolder = ev.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FOLDER_);
 	if (driveFolder != null && driveFolder != '') {
 		const folder = JSON.parse(driveFolder);
 
@@ -161,11 +161,11 @@ function onDrop(e: DragEvent) {
 	//#endregion
 }
 
-function onDragstart(e: DragEvent) {
-	if (!e.dataTransfer) return;
+function onDragstart(ev: DragEvent) {
+	if (!ev.dataTransfer) return;
 
-	e.dataTransfer.effectAllowed = 'move';
-	e.dataTransfer.setData(_DATA_TRANSFER_DRIVE_FOLDER_, JSON.stringify(props.folder));
+	ev.dataTransfer.effectAllowed = 'move';
+	ev.dataTransfer.setData(_DATA_TRANSFER_DRIVE_FOLDER_, JSON.stringify(props.folder));
 	isDragging.value = true;
 
 	// 親ブラウザに対して、ドラッグが開始されたフラグを立てる
