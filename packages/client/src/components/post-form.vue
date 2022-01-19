@@ -339,8 +339,8 @@ function focus() {
 }
 
 function chooseFileFrom(ev) {
-	selectFiles(ev.currentTarget || ev.target, i18n.locale.attachFile).then(files => {
-		for (const file of files) {
+	selectFiles(ev.currentTarget || ev.target, i18n.locale.attachFile).then(files_ => {
+		for (const file of files_) {
 			files.push(file);
 		}
 	});
