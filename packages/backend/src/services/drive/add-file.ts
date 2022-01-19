@@ -101,6 +101,7 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 		file.accessKey = key;
 		file.thumbnailAccessKey = thumbnailKey;
 		file.webpublicAccessKey = webpublicKey;
+		file.webpublicType = alts.webpublic?.type ?? null;
 		file.name = name;
 		file.type = type;
 		file.md5 = hash;
@@ -135,6 +136,7 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 		file.accessKey = accessKey;
 		file.thumbnailAccessKey = thumbnailAccessKey;
 		file.webpublicAccessKey = webpublicAccessKey;
+		file.webpublicType = alts.webpublic?.type ?? null;
 		file.name = name;
 		file.type = type;
 		file.md5 = hash;
