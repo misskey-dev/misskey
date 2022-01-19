@@ -38,6 +38,7 @@ export const renderActivity = (x: any): IActivity | null => {
 				'_misskey_reaction': 'misskey:_misskey_reaction',
 				'_misskey_votes': 'misskey:_misskey_votes',
 				'_misskey_talk': 'misskey:_misskey_talk',
+				'clips': 'misskey:clips',
 				'isCat': 'misskey:isCat',
 				// vcard
 				vcard: 'http://www.w3.org/2006/vcard/ns#',

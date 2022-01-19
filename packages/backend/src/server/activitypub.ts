@@ -11,6 +11,8 @@ import Outbox, { packActivity } from './activitypub/outbox';
 import Followers from './activitypub/followers';
 import Following from './activitypub/following';
 import Featured from './activitypub/featured';
+import Clips from './activitypub/clips';
+import Clip from './activitypub/clip';
 import { inbox as processInbox } from '@/queue/index';
 import { isSelfHost } from '@/misc/convert-host';
 import { Notes, Users, Emojis, NoteReactions } from '@/models/index';
@@ -122,6 +124,9 @@ router.get('/users/:user/following', Following);
 // featured
 router.get('/users/:user/collections/featured', Featured);
 
+// clips
+router.get('/users/:user/clips', Clips);
+
 // publickey
 router.get('/users/:user/publickey', async ctx => {
 	const userId = ctx.params.user;
@@ -222,6 +227,12 @@ router.get('/likes/:like', async ctx => {
 	ctx.body = renderActivity(await renderLike(reaction, note));
 	ctx.set('Cache-Control', 'public, max-age=180');
 	setResponseType(ctx);
+});
+
+// clip
+router.get('/clips/:clip', async (ctx, next) => {
+	if (!isActivityPubReq(ctx)) return await next();
+	return await Clip(ctx);
 });
 
 export default router;
