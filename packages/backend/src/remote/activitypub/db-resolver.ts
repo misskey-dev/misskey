@@ -3,10 +3,11 @@ import { Note } from '@/models/entities/note';
 import { User, IRemoteUser } from '@/models/entities/user';
 import { UserPublickey } from '@/models/entities/user-publickey';
 import { MessagingMessage } from '@/models/entities/messaging-message';
-import { Notes, Users, UserPublickeys, MessagingMessages } from '@/models/index';
+import { Notes, Users, UserPublickeys, MessagingMessages, Clips } from '@/models/index';
 import { IObject, getApId } from './type';
 import { resolvePerson } from './models/person';
 import escapeRegexp = require('escape-regexp');
+import { Clip } from '@/models/entities/clip';
 
 export default class DbResolver {
 	constructor() {
@@ -122,6 +123,27 @@ export default class DbResolver {
 				uri,
 			};
 		}
+	}
+
+	/**
+	 * AP OrderedCollection => Misskey Clip in DB
+	 */
+	public async getClipFromApId(value: string | IObject): Promise<Clip | null> {
+		const parsed = this.parseUri(value);
+
+		if (parsed.id) {
+			return (await Clips.findOne({
+				id: parsed.id,
+			})) || null;
+		}
+
+		if (parsed.uri) {
+			return (await Clips.findOne({
+				uri: parsed.uri,
+			})) || null;
+		}
+
+		return null;
 	}
 }
 

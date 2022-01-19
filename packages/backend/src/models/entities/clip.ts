@@ -41,4 +41,11 @@ export class Clip {
 		comment: 'The description of the Clip.',
 	})
 	public description: string | null;
+
+	@Index({ unique: true })
+	@Column('varchar', {
+		length: 512, nullable: true,
+		comment: 'The URI of a clip. it will be null when the clip is local.',
+	})
+	public uri: string | null;
 }

@@ -1,9 +1,10 @@
 import { IRemoteUser } from '@/models/entities/user';
-import { getApType, IUpdate, isActor } from '../../type';
+import { getApType, IUpdate, isActor, isOrderedCollection } from '../../type';
 import { apLogger } from '../../logger';
 import { updateQuestion } from '../../models/question';
 import Resolver from '../../resolver';
 import { updatePerson } from '../../models/person';
+import { updateClip } from '@/remote/activitypub/models/clip';
 
 /**
  * Updateアクティビティを捌きます
@@ -28,6 +29,9 @@ export default async (actor: IRemoteUser, activity: IUpdate): Promise<string> =>
 	} else if (getApType(object) === 'Question') {
 		await updateQuestion(object).catch(e => console.log(e));
 		return `ok: Question updated`;
+	} else if (isOrderedCollection(object) && object.summary?.includes('misskey:clip')) {
+		await updateClip(object.id!, resolver, object, actor);
+		return 'ok: Clip updated';
 	} else {
 		return `skip: Unknown type: ${getApType(object)}`;
 	}

@@ -102,6 +102,7 @@ export default async (ctx: Router.RouterContext) => {
 	} else {
 		// index page
 		const rendered = renderOrderedCollection(partOf, nClips, `${partOf}?page=true`);
+		rendered.attributedTo = `${config.url}/users/${user.id}`;
 		ctx.body = renderActivity(rendered);
 		ctx.set('Cache-Control', 'public, max-age=180');
 		setResponseType(ctx);

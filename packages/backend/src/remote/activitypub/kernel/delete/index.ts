@@ -1,8 +1,10 @@
 import deleteNote from './note';
+import deleteClip from './clip';
 import { IRemoteUser } from '@/models/entities/user';
-import { IDelete, getApId, isTombstone, IObject, validPost, validActor } from '../../type';
+import { IDelete, getApId, isTombstone, IObject, validPost, validActor, isOrderedCollection } from '../../type';
 import { toSingle } from '@/prelude/array';
 import { deleteActor } from './actor';
+import { fetchClip } from '@/remote/activitypub/models/clip';
 
 /**
  * 削除アクティビティを捌きます
@@ -44,6 +46,10 @@ export default async (actor: IRemoteUser, activity: IDelete): Promise<string> =>
 	} else if (validActor.includes(formarType)) {
 		return await deleteActor(actor, uri);
 	} else {
+		const clip = await fetchClip(activity.object);
+		if (clip) {
+			return await deleteClip(actor, uri);
+		}
 		return `Unknown type ${formarType}`;
 	}
 };

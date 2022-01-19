@@ -95,6 +95,10 @@ export default async (ctx: Router.RouterContext) => {
 	} else {
 		// index page
 		const rendered = renderOrderedCollection(partOf, noteCount, `${partOf}?page=true`);
+		rendered.attributedTo = `${config.url}/users/${clip.userId}`;
+		rendered.summary = `misskey:clip`;
+		rendered.name = clip.name;
+		rendered.content = clip.description;
 		ctx.body = renderActivity(rendered);
 		ctx.set('Cache-Control', 'public, max-age=180');
 		setResponseType(ctx);

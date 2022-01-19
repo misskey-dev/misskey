@@ -1,7 +1,8 @@
 import Resolver from '../../resolver';
 import { IRemoteUser } from '@/models/entities/user';
 import createNote from './note';
-import { ICreate, getApId, isPost, getApType } from '../../type';
+import createClip from './clip';
+import { ICreate, getApId, isPost, getApType, isOrderedCollection } from '../../type';
 import { apLogger } from '../../logger';
 import { toArray, concat, unique } from '@/prelude/array';
 
@@ -37,7 +38,9 @@ export default async (actor: IRemoteUser, activity: ICreate): Promise<void> => {
 
 	if (isPost(object)) {
 		createNote(resolver, actor, object, false, activity);
-	} else {
+	} else if (isOrderedCollection(object) && object.summary?.includes('misskey:clip')) {
+		createClip(resolver, actor, object, false, activity);
+	} else{
 		logger.warn(`Unknown type: ${getApType(object)}`);
 	}
 };
