@@ -8,7 +8,7 @@
 
 ### 12.101.1-posky-12.6
 
-- Page デザインの修正 #5
+- Page デザインの修正 [#5](https://github.com/xiupos/misskey/pull/5#issue-1106950406)
 
 ### 12.101.1-posky-12.5
 
