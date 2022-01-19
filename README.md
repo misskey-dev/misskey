@@ -1,8 +1,21 @@
 # ぽすきー
 
-[misskey-dev/misskey](https://github.com/misskey-dev/misskey) の Fork.
+Fork of [misskey-dev/misskey](https://github.com/misskey-dev/misskey).
 
-## 変更点
+## Install
+
+```bash
+git clone -b m@ster git+https://github.com/xiupos/misskey.git
+```
+
+And see [Misskey Hub](https://misskey-hub.net/en/docs/install/docker.html).
+
+## Servers
+
+- `m@ster`: https://mk.xiupos.net
+- `m@ster-dev`: https://dev.xiupos.net (not federated)
+
+## Changelog
 
 ### m@ster-dev
 
