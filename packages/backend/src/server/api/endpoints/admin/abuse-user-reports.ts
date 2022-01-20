@@ -46,6 +46,11 @@ export const meta = {
 			]),
 			default: 'combined',
 		},
+
+		forwarded: {
+			validator: $.optional.bool,
+			default: false,
+		},
 	},
 
 	res: {
