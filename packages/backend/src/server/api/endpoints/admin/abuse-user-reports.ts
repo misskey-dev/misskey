@@ -65,6 +65,11 @@ export const meta = {
 					nullable: true, optional: true,
 					ref: 'User',
 				},
+				forwarded: {
+					type: 'boolean',
+					nullable: false, optional: false,
+					example: false,
+				},
 			},
 		},
 	},
@@ -79,7 +84,6 @@ export const paramDef = {
 		state: { type: 'string', nullable: true, default: null },
 		reporterOrigin: { type: 'string', enum: ['combined', 'local', 'remote'], default: "combined" },
 		targetUserOrigin: { type: 'string', enum: ['combined', 'local', 'remote'], default: "combined" },
-		forwarded: { type: 'boolean', default: false },
 	},
 	required: [],
 } as const;
