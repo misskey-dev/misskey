@@ -11,15 +11,16 @@ import Outbox, { packActivity } from './activitypub/outbox';
 import Followers from './activitypub/followers';
 import Following from './activitypub/following';
 import Featured from './activitypub/featured';
-import Clips from './activitypub/clips';
+import ClipsRoute from './activitypub/clips';
 import Clip from './activitypub/clip';
 import { inbox as processInbox } from '@/queue/index';
 import { isSelfHost } from '@/misc/convert-host';
-import { Notes, Users, Emojis, NoteReactions } from '@/models/index';
+import { Notes, Users, Emojis, NoteReactions, Clips } from '@/models/index';
 import { ILocalUser, User } from '@/models/entities/user';
 import { In } from 'typeorm';
 import { renderLike } from '@/remote/activitypub/renderer/like';
 import { getUserKeypair } from '@/misc/keypair-store';
+import { renderClipCreate } from '@/remote/activitypub/renderer/clip';
 
 // Init router
 const router = new Router();
@@ -125,7 +126,7 @@ router.get('/users/:user/following', Following);
 router.get('/users/:user/collections/featured', Featured);
 
 // clips
-router.get('/users/:user/clips', Clips);
+router.get('/users/:user/clips', ClipsRoute);
 
 // publickey
 router.get('/users/:user/publickey', async ctx => {
@@ -233,6 +234,23 @@ router.get('/likes/:like', async ctx => {
 router.get('/clips/:clip', async (ctx, next) => {
 	if (!isActivityPubReq(ctx)) return await next();
 	return await Clip(ctx);
+});
+
+// clip activity
+router.get('/clips/:clip/activity', async ctx => {
+	const clip = await Clips.findOne({
+		id: ctx.params.clip,
+		isPublic: true,
+	});
+
+	if (clip == null) {
+		ctx.status = 404;
+		return;
+	}
+
+	ctx.body = await renderActivity(renderClipCreate(clip));
+	ctx.set('Cache-Control', 'public, max-age=180');
+	setResponseType(ctx);
 });
 
 export default router;

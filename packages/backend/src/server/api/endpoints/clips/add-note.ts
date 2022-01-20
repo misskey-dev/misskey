@@ -5,6 +5,12 @@ import { ClipNotes, Clips } from '@/models/index';
 import { ApiError } from '../../error';
 import { genId } from '@/misc/gen-id';
 import { getNote } from '../../common/getters';
+import { renderActivity } from '@/remote/activitypub/renderer';
+import renderAdd from '@/remote/activitypub/renderer/add';
+import DeliverManager from '@/remote/activitypub/deliver-manager';
+import { deliverToRelays } from '@/services/relay';
+import config from '@/config';
+import { ILocalUser } from '@/models/entities/user';
 
 export const meta = {
 	tags: ['account', 'notes', 'clips'],
@@ -74,4 +80,17 @@ export default define(meta, async (ps, user) => {
 		noteId: note.id,
 		clipId: clip.id,
 	});
+
+	if (clip.isPublic){
+		(async () => {
+			const clipActivity = await renderActivity(renderAdd(user as ILocalUser, `${config.url}/clips/${clip.id}`, note.uri || `${config.url}/notes/${note.id}`));
+			const dm = new DeliverManager(user, clipActivity);
+
+			dm.addFollowersRecipe();
+
+			deliverToRelays(user, clipActivity);
+
+			dm.execute();
+		})();
+	}
 });

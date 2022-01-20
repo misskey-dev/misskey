@@ -2,6 +2,10 @@ import $ from 'cafy';
 import define from '../../define';
 import { genId } from '@/misc/gen-id';
 import { Clips } from '@/models/index';
+import DeliverManager from '@/remote/activitypub/deliver-manager';
+import { deliverToRelays } from '@/services/relay';
+import { renderActivity } from '@/remote/activitypub/renderer';
+import { renderClipCreate } from '@/remote/activitypub/renderer/clip';
 
 export const meta = {
 	tags: ['clips'],
@@ -41,6 +45,19 @@ export default define(meta, async (ps, user) => {
 		isPublic: ps.isPublic,
 		description: ps.description,
 	}).then(x => Clips.findOneOrFail(x.identifiers[0]));
+
+	if (clip.isPublic){
+		(async () => {
+			const clipActivity = await renderActivity(renderClipCreate(clip));
+			const dm = new DeliverManager(user, clipActivity);
+
+			dm.addFollowersRecipe();
+
+			deliverToRelays(user, clipActivity);
+
+			dm.execute();
+		})();
+	}
 
 	return await Clips.pack(clip);
 });

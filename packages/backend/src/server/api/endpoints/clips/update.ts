@@ -3,6 +3,12 @@ import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { Clips } from '@/models/index';
+import { renderActivity } from '@/remote/activitypub/renderer';
+import { renderClipCreate } from '@/remote/activitypub/renderer/clip';
+import renderUpdate from '@/remote/activitypub/renderer/update';
+import DeliverManager from '@/remote/activitypub/deliver-manager';
+import { deliverToRelays } from '@/services/relay';
+import { IOrderedCollection } from '@/remote/activitypub/type';
 
 export const meta = {
 	tags: ['clips'],
@@ -61,6 +67,26 @@ export default define(meta, async (ps, user) => {
 		description: ps.description,
 		isPublic: ps.isPublic,
 	});
+
+	if (clip.isPublic){
+		(async () => {
+			const clipActivity = await renderActivity(renderUpdate({
+				type: 'OrderedCollection',
+				id: `${config.url}/clips/${clip.id}`,
+				name: ps.name,
+				content: ps.description,
+				summary: 'misskey:clip',
+				attributedTo: `${config.url}/users/${user.id}`,
+			} as IOrderedCollection, user));
+			const dm = new DeliverManager(user, clipActivity);
+
+			dm.addFollowersRecipe();
+
+			deliverToRelays(user, clipActivity);
+
+			dm.execute();
+		})();
+	}
 
 	return await Clips.pack(clip.id);
 });

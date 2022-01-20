@@ -3,6 +3,11 @@ import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { Clips } from '@/models/index';
+import { renderActivity } from '@/remote/activitypub/renderer';
+import renderDelete from '@/remote/activitypub/renderer/delete';
+import DeliverManager from '@/remote/activitypub/deliver-manager';
+import { deliverToRelays } from '@/services/relay';
+import config from '@/config';
 
 export const meta = {
 	tags: ['clips'],
@@ -35,6 +40,19 @@ export default define(meta, async (ps, user) => {
 
 	if (clip == null) {
 		throw new ApiError(meta.errors.noSuchClip);
+	}
+
+	if (clip.isPublic){
+		(async () => {
+			const clipActivity = await renderActivity(renderDelete(`${config.url}/clips/${clip.id}`, user))
+			const dm = new DeliverManager(user, clipActivity);
+
+			dm.addFollowersRecipe();
+
+			deliverToRelays(user, clipActivity);
+
+			dm.execute();
+		})();
 	}
 
 	await Clips.delete(clip.id);
