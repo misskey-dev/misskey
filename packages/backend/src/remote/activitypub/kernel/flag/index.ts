@@ -16,6 +16,8 @@ export default async (actor: CacheableRemoteUser, activity: IFlag): Promise<stri
 	});
 	if (users.length < 1) return `skip`;
 
+	const notes = uris.filter(uri => uri.startsWith(config.url + '/notes/'));
+
 	await AbuseUserReports.insert({
 		id: genId(),
 		createdAt: new Date(),
@@ -23,7 +25,8 @@ export default async (actor: CacheableRemoteUser, activity: IFlag): Promise<stri
 		targetUserHost: users[0].host,
 		reporterId: actor.id,
 		reporterHost: actor.host,
-		comment: `${activity.content}\n${JSON.stringify(uris, null, 2)}`,
+		comment: activity.content,
+		urls: notes,
 	});
 
 	return `ok`;
