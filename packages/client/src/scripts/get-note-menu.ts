@@ -252,7 +252,7 @@ export function getNoteMenu(props: {
 				icon: 'fas fa-exclamation-circle',
 				text: i18n.locale.reportAbuse,
 				action: () => {
-					const u = this.appearNote.url || this.appearNote.uri || `${url}/notes/${this.appearNote.id}`;
+					const u = appearNote.url || appearNote.uri || `${url}/notes/${appearNote.id}`;
 					os.popup(import('@/components/abuse-report-window.vue'), {
 						user: appearNote.user,
 						initialComment: `Note: ${u}\n-----\n`
