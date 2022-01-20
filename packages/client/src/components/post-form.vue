@@ -350,8 +350,8 @@ function detachFile(id) {
 	files = files.filter(x => x.id != id);
 }
 
-function updateFiles(files) {
-	files = files;
+function updateFiles(_files) {
+	files = _files;
 }
 
 function updateFileSensitive(file, sensitive) {
