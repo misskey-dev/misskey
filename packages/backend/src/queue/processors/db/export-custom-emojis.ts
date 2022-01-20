@@ -11,6 +11,7 @@ import * as dateFormat from 'dateformat';
 import { Users, Emojis } from '@/models/index';
 import {  } from '@/queue/types';
 import { downloadUrl } from '@/misc/download-url';
+import config from '@/config/index';
 
 const logger = queueLogger.createSubLogger('export-custom-emojis');
 
@@ -52,7 +53,7 @@ export async function exportCustomEmojis(job: Bull.Job, done: () => void): Promi
 		});
 	};
 
-	await writeMeta(`{"metaVersion":2,"emojis":[`);
+	await writeMeta(`{"metaVersion":2,"host":"${config.host}","exportedAt":"${new Date().toString()}","emojis":[`);
 
 	const customEmojis = await Emojis.find({
 		where: {
