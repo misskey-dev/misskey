@@ -26,9 +26,6 @@ Cypress.on('uncaught:exception', (err, runnable) => {
 
 		// Firefox
 		'ResizeObserver loop completed with undelivered notifications',
-
-		// Both
-		'Authentication failed',
 	].some(msg => err.message.includes(msg))) {
 		return false;
 	}
