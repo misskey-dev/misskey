@@ -10,7 +10,7 @@
 			</div>
 		</template>
 	</XDraggable>
-	<p class="remain">{{ 4 - files.length }}/4</p>
+	<p class="remain">{{ 16 - files.length }}/16</p>
 </div>
 </template>
 
@@ -41,7 +41,6 @@ export default defineComponent({
 	data() {
 		return {
 			menu: null as Promise<null> | null,
-
 		};
 	},
 

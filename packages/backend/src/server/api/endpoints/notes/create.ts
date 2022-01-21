@@ -48,7 +48,7 @@ export const meta = {
 			validator: $.optional.nullable.str.pipe(text =>
 				text.trim() != ''
 					&& length(text.trim()) <= maxNoteTextLength
-					&& Array.from(text.trim()).length <= DB_MAX_NOTE_TEXT_LENGTH	// DB limit
+					&& Array.from(text.trim()).length <= DB_MAX_NOTE_TEXT_LENGTH,	// DB limit
 			),
 			default: null,
 		},
@@ -78,11 +78,11 @@ export const meta = {
 		},
 
 		fileIds: {
-			validator: $.optional.arr($.type(ID)).unique().range(1, 4),
+			validator: $.optional.arr($.type(ID)).unique().range(1, 16),
 		},
 
 		mediaIds: {
-			validator: $.optional.arr($.type(ID)).unique().range(1, 4),
+			validator: $.optional.arr($.type(ID)).unique().range(1, 16),
 			deprecated: true,
 		},
 
