@@ -7,7 +7,7 @@ import { secureRndstr } from '@/misc/secure-rndstr';
 export const meta = {
 	tags: ['auth'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	secure: true,
 
@@ -34,16 +34,16 @@ export const meta = {
 	},
 
 	res: {
-		type: 'object' as const,
-		optional: false as const, nullable: false as const,
+		type: 'object',
+		optional: false, nullable: false,
 		properties: {
 			token: {
-				type: 'string' as const,
-				optional: false as const, nullable: false as const,
+				type: 'string',
+				optional: false, nullable: false,
 			},
 		},
 	},
-};
+} as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {

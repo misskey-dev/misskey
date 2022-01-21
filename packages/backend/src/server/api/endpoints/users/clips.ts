@@ -25,7 +25,7 @@ export const meta = {
 			validator: $.optional.type(ID),
 		},
 	},
-};
+} as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {

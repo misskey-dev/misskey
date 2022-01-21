@@ -10,7 +10,7 @@ import { Users } from '@/models/index';
 export const meta = {
 	tags: ['notes'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	kind: 'write:notes',
 
@@ -39,7 +39,7 @@ export const meta = {
 			id: 'fe8d7103-0ea8-4ec3-814d-f8b401dc69e9',
 		},
 	},
-};
+} as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {

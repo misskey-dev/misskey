@@ -5,10 +5,10 @@ import { Notifications } from '@/models/index';
 export const meta = {
 	tags: ['notifications', 'account'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	kind: 'write:notifications',
-};
+} as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {

@@ -25,10 +25,10 @@ const emit = defineEmits<{
 
 provide('inChannel', computed(() => props.src === 'channel'));
 
-const tlComponent = ref<InstanceType<typeof XNotes>>();
+const tlComponent: InstanceType<typeof XNotes> = $ref();
 
 const prepend = note => {
-	tlComponent.value.prepend(note);
+	tlComponent.pagingComponent?.prepend(note);
 
 	emit('note');
 
@@ -38,16 +38,16 @@ const prepend = note => {
 };
 
 const onUserAdded = () => {
-	tlComponent.value.reload();
+	tlComponent.pagingComponent?.reload();
 };
 
 const onUserRemoved = () => {
-	tlComponent.value.reload();
+	tlComponent.pagingComponent?.reload();
 };
 
 const onChangeFollowing = () => {
-	if (!tlComponent.value.backed) {
-		tlComponent.value.reload();
+	if (!tlComponent.pagingComponent?.backed) {
+		tlComponent.pagingComponent?.reload();
 	}
 };
 

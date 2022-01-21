@@ -19,7 +19,7 @@ import { normalizeForSearch } from '@/misc/normalize-for-search';
 export const meta = {
 	tags: ['account'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	kind: 'write:account',
 
@@ -162,11 +162,11 @@ export const meta = {
 	},
 
 	res: {
-		type: 'object' as const,
-		optional: false as const, nullable: false as const,
-		ref: 'User',
+		type: 'object',
+		optional: false, nullable: false,
+		ref: 'MeDetailed',
 	},
-};
+} as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, _user, token) => {
@@ -279,7 +279,7 @@ export default define(meta, async (ps, _user, token) => {
 	if (Object.keys(updates).length > 0) await Users.update(user.id, updates);
 	if (Object.keys(profileUpdates).length > 0) await UserProfiles.update(user.id, profileUpdates);
 
-	const iObj = await Users.pack(user.id, user, {
+	const iObj = await Users.pack<true, true>(user.id, user, {
 		detail: true,
 		includeSecrets: isSecure,
 	});

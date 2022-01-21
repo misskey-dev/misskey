@@ -3,36 +3,39 @@
 	<MkSpacer :content-max="600" :margin-min="20">
 		<div class="_formRoot znqjceqz">
 			<div id="debug"></div>
-			<div ref="about" v-panel class="_formBlock about" :class="{ playing: easterEggEngine != null }">
+			<div ref="containerEl" v-panel class="_formBlock about" :class="{ playing: easterEggEngine != null }">
 				<img src="/client-assets/about-icon.png" alt="" class="icon" draggable="false" @load="iconLoaded" @click="gravity"/>
 				<div class="misskey">Misskey</div>
 				<div class="version">v{{ version }}</div>
 				<span v-for="emoji in easterEggEmojis" :key="emoji.id" class="emoji" :data-physics-x="emoji.left" :data-physics-y="emoji.top" :class="{ _physics_circle_: !emoji.emoji.startsWith(':') }"><MkEmoji class="emoji" :emoji="emoji.emoji" :custom-emojis="$instance.emojis" :is-reaction="false" :normal="true" :no-style="true"/></span>
 			</div>
 			<div class="_formBlock" style="text-align: center;">
-				{{ $ts._aboutMisskey.about }}<br><a href="https://misskey-hub.net/docs/misskey.html" target="_blank" class="_link">{{ $ts.learnMore }}</a>
+				{{ i18n.locale._aboutMisskey.about }}<br><a href="https://misskey-hub.net/docs/misskey.html" target="_blank" class="_link">{{ i18n.locale.learnMore }}</a>
+			</div>
+			<div class="_formBlock" style="text-align: center;">
+				<MkButton primary rounded inline @click="iLoveMisskey">I <Mfm text="$[jelly ❤]"/> #Misskey</MkButton>
 			</div>
 			<FormSection>
 				<div class="_formLinks">
 					<FormLink to="https://github.com/misskey-dev/misskey" external>
 						<template #icon><i class="fas fa-code"></i></template>
-						{{ $ts._aboutMisskey.source }}
+						{{ i18n.locale._aboutMisskey.source }}
 						<template #suffix>GitHub</template>
 					</FormLink>
 					<FormLink to="https://crowdin.com/project/misskey" external>
 						<template #icon><i class="fas fa-language"></i></template>
-						{{ $ts._aboutMisskey.translation }}
+						{{ i18n.locale._aboutMisskey.translation }}
 						<template #suffix>Crowdin</template>
 					</FormLink>
 					<FormLink to="https://www.patreon.com/syuilo" external>
 						<template #icon><i class="fas fa-hand-holding-medical"></i></template>
-						{{ $ts._aboutMisskey.donate }}
+						{{ i18n.locale._aboutMisskey.donate }}
 						<template #suffix>Patreon</template>
 					</FormLink>
 				</div>
 			</FormSection>
 			<FormSection>
-				<template #label>{{ $ts._aboutMisskey.contributors }}</template>
+				<template #label>{{ i18n.locale._aboutMisskey.contributors }}</template>
 				<div class="_formLinks">
 					<FormLink to="https://github.com/syuilo" external>@syuilo</FormLink>
 					<FormLink to="https://github.com/AyaMorisawa" external>@AyaMorisawa</FormLink>
@@ -44,27 +47,30 @@
 					<FormLink to="https://github.com/u1-liquid" external>@u1-liquid</FormLink>
 					<FormLink to="https://github.com/marihachi" external>@marihachi</FormLink>
 				</div>
-				<template #caption><MkLink url="https://github.com/misskey-dev/misskey/graphs/contributors">{{ $ts._aboutMisskey.allContributors }}</MkLink></template>
+				<template #caption><MkLink url="https://github.com/misskey-dev/misskey/graphs/contributors">{{ i18n.locale._aboutMisskey.allContributors }}</MkLink></template>
 			</FormSection>
 			<FormSection>
-				<template #label><Mfm text="$[jelly ❤]"/> {{ $ts._aboutMisskey.patrons }}</template>
+				<template #label><Mfm text="$[jelly ❤]"/> {{ i18n.locale._aboutMisskey.patrons }}</template>
 				<div v-for="patron in patrons" :key="patron">{{ patron }}</div>
-				<template #caption>{{ $ts._aboutMisskey.morePatrons }}</template>
+				<template #caption>{{ i18n.locale._aboutMisskey.morePatrons }}</template>
 			</FormSection>
 		</div>
 	</MkSpacer>
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { nextTick, onBeforeUnmount } from 'vue';
 import { version } from '@/config';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
-import MkKeyValue from '@/components/key-value.vue';
+import MkButton from '@/components/ui/button.vue';
 import MkLink from '@/components/link.vue';
 import { physics } from '@/scripts/physics';
 import * as symbols from '@/symbols';
+import { i18n } from '@/i18n';
+import { defaultStore } from '@/store';
+import * as os from '@/os';
 
 const patrons = [
 	'まっちゃとーにゅ',
@@ -145,58 +151,52 @@ const patrons = [
 	'蝉暮せせせ',
 ];
 
-export default defineComponent({
-	components: {
-		FormSection,
-		FormLink,
-		MkKeyValue,
-		MkLink,
-	},
+let easterEggReady = false;
+let easterEggEmojis = $ref([]);
+let easterEggEngine = $ref(null);
+const containerEl = $ref<HTMLElement>();
 
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: this.$ts.aboutMisskey,
-				icon: null
-			},
-			version,
-			patrons,
-			easterEggReady: false,
-			easterEggEmojis: [],
-			easterEggEngine: null,
-		}
-	},
-
-	beforeUnmount() {
-		if (this.easterEggEngine) {
-			this.easterEggEngine.stop();
-		}
-	},
-
-	methods: {
-		iconLoaded() {
-			const emojis = this.$store.state.reactions;
-			const containerWidth = this.$refs.about.offsetWidth;
-			for (let i = 0; i < 32; i++) {
-				this.easterEggEmojis.push({
-					id: i.toString(),
-					top: -(128 + (Math.random() * 256)),
-					left: (Math.random() * containerWidth),
-					emoji: emojis[Math.floor(Math.random() * emojis.length)],
-				});
-			}
-
-			this.$nextTick(() => {
-				this.easterEggReady = true;
-			});
-		},
-
-		gravity() {
-			if (!this.easterEggReady) return;
-			this.easterEggReady = false;
-			this.easterEggEngine = physics(this.$refs.about);
-		}
+function iconLoaded() {
+	const emojis = defaultStore.state.reactions;
+	const containerWidth = containerEl.offsetWidth;
+	for (let i = 0; i < 32; i++) {
+		easterEggEmojis.push({
+			id: i.toString(),
+			top: -(128 + (Math.random() * 256)),
+			left: (Math.random() * containerWidth),
+			emoji: emojis[Math.floor(Math.random() * emojis.length)],
+		});
 	}
+
+	nextTick(() => {
+		easterEggReady = true;
+	});
+}
+
+function gravity() {
+	if (!easterEggReady) return;
+	easterEggReady = false;
+	easterEggEngine = physics(containerEl);
+}
+
+function iLoveMisskey() {
+	os.post({
+		initialText: 'I $[jelly ❤] #Misskey',
+	});
+}
+
+onBeforeUnmount(() => {
+	if (easterEggEngine) {
+		easterEggEngine.stop();
+	}
+});
+
+defineExpose({
+	[symbols.PAGE_INFO]: {
+		title: i18n.locale.aboutMisskey,
+		icon: null,
+		bg: 'var(--bg)',
+	},
 });
 </script>
 

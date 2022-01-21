@@ -9,7 +9,7 @@ import { genId } from '@/misc/gen-id';
 export const meta = {
 	tags: ['notes'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	params: {
 		noteId: {
@@ -24,7 +24,7 @@ export const meta = {
 			id: 'd785b897-fcd3-4fe9-8fc3-b85c26e6c932',
 		},
 	},
-};
+} as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {

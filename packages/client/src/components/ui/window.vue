@@ -147,9 +147,9 @@ export default defineComponent({
 			}
 		},
 
-		onContextmenu(e) {
+		onContextmenu(ev: MouseEvent) {
 			if (this.contextmenu) {
-				os.contextMenu(this.contextmenu, e);
+				os.contextMenu(this.contextmenu, ev);
 			}
 		},
 

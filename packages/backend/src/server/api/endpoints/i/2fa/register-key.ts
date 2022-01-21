@@ -10,7 +10,7 @@ import { hash } from '../../../2fa';
 const randomBytes = promisify(crypto.randomBytes);
 
 export const meta = {
-	requireCredential: true as const,
+	requireCredential: true,
 
 	secure: true,
 
@@ -19,7 +19,7 @@ export const meta = {
 			validator: $.str,
 		},
 	},
-};
+} as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {

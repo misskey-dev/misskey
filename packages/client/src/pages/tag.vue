@@ -1,6 +1,6 @@
 <template>
 <div class="_section">
-	<XNotes ref="notes" class="_content" :pagination="pagination"/>
+	<XNotes class="_content" :pagination="pagination"/>
 </div>
 </template>
 

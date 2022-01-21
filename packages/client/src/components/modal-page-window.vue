@@ -153,8 +153,8 @@ export default defineComponent({
 			this.$refs.window.close();
 		},
 
-		onContextmenu(e) {
-			os.contextMenu(this.contextmenu, e);
+		onContextmenu(ev: MouseEvent) {
+			os.contextMenu(this.contextmenu, ev);
 		}
 	},
 });

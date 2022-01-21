@@ -55,12 +55,10 @@ const variable = computed(() => {
 const loaded = computed(() => !!window[variable.value]);
 
 const src = computed(() => {
-	const endpoint = ({
-		hcaptcha: 'https://hcaptcha.com/1',
-		recaptcha: 'https://www.recaptcha.net/recaptcha',
-	} as Record<CaptchaProvider, string>)[props.provider];
-
-	return `${typeof endpoint === 'string' ? endpoint : 'about:invalid'}/api.js?render=explicit`;
+	switch (props.provider) {
+		case 'hcaptcha': return 'https://js.hcaptcha.com/1/api.js?render=explicit&recaptchacompat=off';
+		case 'recaptcha': return 'https://www.recaptcha.net/recaptcha/api.js?render=explicit';
+	}
 });
 
 const captcha = computed<Captcha>(() => window[variable.value] || {} as unknown as Captcha);

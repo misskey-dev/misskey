@@ -1,5 +1,5 @@
 <template>
-<MkModal ref="modal" :prefer-type="'dialog'" :z-priority="'high'" @click="done(true)" @closed="$emit('closed')">
+<MkModal ref="modal" :prefer-type="'dialog'" :z-priority="'high'" @click="done(true)" @closed="emit('closed')">
 	<div class="mk-dialog">
 		<div v-if="icon" class="icon">
 			<i :class="icon"></i>
@@ -28,8 +28,8 @@
 			</template>
 		</MkSelect>
 		<div v-if="(showOkButton || showCancelButton) && !actions" class="buttons">
-			<MkButton v-if="showOkButton" inline primary :autofocus="!input && !select" @click="ok">{{ (showCancelButton || input || select) ? $ts.ok : $ts.gotIt }}</MkButton>
-			<MkButton v-if="showCancelButton || input || select" inline @click="cancel">{{ $ts.cancel }}</MkButton>
+			<MkButton v-if="showOkButton" inline primary :autofocus="!input && !select" @click="ok">{{ (showCancelButton || input || select) ? i18n.locale.ok : i18n.locale.gotIt }}</MkButton>
+			<MkButton v-if="showCancelButton || input || select" inline @click="cancel">{{ i18n.locale.cancel }}</MkButton>
 		</div>
 		<div v-if="actions" class="buttons">
 			<MkButton v-for="action in actions" :key="action.text" inline :primary="action.primary" @click="() => { action.callback(); close(); }">{{ action.text }}</MkButton>
@@ -44,6 +44,7 @@ import MkModal from '@/components/ui/modal.vue';
 import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/form/input.vue';
 import MkSelect from '@/components/form/select.vue';
+import { i18n } from '@/i18n';
 
 type Input = {
 	type: HTMLInputElement['type'];
