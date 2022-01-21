@@ -23,7 +23,7 @@ export const meta = {
 	},
 
 	res: convertLog(networkChart.schema),
-};
+} as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps) => {

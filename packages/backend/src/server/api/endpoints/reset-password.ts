@@ -6,7 +6,7 @@ import { Users, UserProfiles, PasswordResetRequests } from '@/models/index';
 import { ApiError } from '../error';
 
 export const meta = {
-	requireCredential: false as const,
+	requireCredential: false,
 
 	params: {
 		token: {
@@ -21,7 +21,7 @@ export const meta = {
 	errors: {
 
 	},
-};
+} as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {

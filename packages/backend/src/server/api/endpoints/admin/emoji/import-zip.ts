@@ -6,14 +6,14 @@ import { ID } from '@/misc/cafy-id';
 
 export const meta = {
 	secure: true,
-	requireCredential: true as const,
+	requireCredential: true,
 	requireModerator: true,
 	params: {
 		fileId: {
 			validator: $.type(ID),
 		},
 	},
-};
+} as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {

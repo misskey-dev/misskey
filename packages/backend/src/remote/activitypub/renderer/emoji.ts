@@ -9,6 +9,6 @@ export default (emoji: Emoji) => ({
 	icon: {
 		type: 'Image',
 		mediaType: emoji.type || 'image/png',
-		url: emoji.url,
+		url: emoji.publicUrl || emoji.originalUrl, // || emoji.originalUrl してるのは後方互換性のため
 	},
 });

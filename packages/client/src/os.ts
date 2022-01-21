@@ -541,7 +541,7 @@ export const uploads = ref<{
 	img: string;
 }[]>([]);
 
-export function upload(file: File, folder?: any, name?: string) {
+export function upload(file: File, folder?: any, name?: string): Promise<Misskey.entities.DriveFile> {
 	if (folder && typeof folder == 'object') folder = folder.id;
 
 	return new Promise((resolve, reject) => {

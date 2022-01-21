@@ -9,7 +9,7 @@ import { publishUserEvent } from '@/services/stream';
 export const meta = {
 	tags: ['channels'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	kind: 'write:channels',
 
@@ -26,7 +26,7 @@ export const meta = {
 			id: 'c0031718-d573-4e85-928e-10039f1fbb68',
 		},
 	},
-};
+} as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {

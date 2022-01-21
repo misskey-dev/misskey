@@ -73,12 +73,11 @@ const queue = ref<Item[]>([]);
 const offset = ref(0);
 const fetching = ref(true);
 const moreFetching = ref(false);
-const inited = ref(false);
 const more = ref(false);
 const backed = ref(false); // 遡り中か否か
 const isBackTop = ref(false);
-const empty = computed(() => items.value.length === 0 && !fetching.value && inited.value);
-const error = computed(() => !fetching.value && !inited.value);
+const empty = computed(() => items.value.length === 0);
+const error = ref(false);
 
 const init = async (): Promise<void> => {
 	queue.value = [];
@@ -105,9 +104,10 @@ const init = async (): Promise<void> => {
 			more.value = false;
 		}
 		offset.value = res.length;
-		inited.value = true;
+		error.value = false;
 		fetching.value = false;
 	}, e => {
+		error.value = true;
 		fetching.value = false;
 	});
 };
@@ -183,30 +183,36 @@ const fetchMoreAhead = async (): Promise<void> => {
 };
 
 const prepend = (item: Item): void => {
-	if (rootEl.value == null) return;
-
 	if (props.pagination.reversed) {
-		const container = getScrollContainer(rootEl.value);
-		if (container == null) return; // TODO?
+		if (rootEl.value) {
+			const container = getScrollContainer(rootEl.value);
+			if (container == null) return; // TODO?
 
-		const pos = getScrollPosition(rootEl.value);
-		const viewHeight = container.clientHeight;
-		const height = container.scrollHeight;
-		const isBottom = (pos + viewHeight > height - 32);
-		if (isBottom) {
-			// オーバーフローしたら古いアイテムは捨てる
-			if (items.value.length >= props.displayLimit) {
-				// このやり方だとVue 3.2以降アニメーションが動かなくなる
-				//items.value = items.value.slice(-props.displayLimit);
-				while (items.value.length >= props.displayLimit) {
-					items.value.shift();
+			const pos = getScrollPosition(rootEl.value);
+			const viewHeight = container.clientHeight;
+			const height = container.scrollHeight;
+			const isBottom = (pos + viewHeight > height - 32);
+			if (isBottom) {
+				// オーバーフローしたら古いアイテムは捨てる
+				if (items.value.length >= props.displayLimit) {
+					// このやり方だとVue 3.2以降アニメーションが動かなくなる
+					//items.value = items.value.slice(-props.displayLimit);
+					while (items.value.length >= props.displayLimit) {
+						items.value.shift();
+					}
+					more.value = true;
 				}
-				more.value = true;
 			}
 		}
 		items.value.push(item);
 		// TODO
 	} else {
+		// 初回表示時はunshiftだけでOK
+		if (!rootEl.value) {
+			items.value.unshift(item);
+			return;
+		}
+
 		const isTop = isBackTop.value || (document.body.contains(rootEl.value) && isTopVisible(rootEl.value));
 
 		if (isTop) {
@@ -264,6 +270,7 @@ onDeactivated(() => {
 
 defineExpose({
 	items,
+	backed,
 	reload,
 	fetchMoreAhead,
 	prepend,

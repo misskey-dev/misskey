@@ -3,7 +3,7 @@ import * as tmp from 'tmp';
 import * as fs from 'fs';
 
 import { queueLogger } from '../../logger';
-import addFile from '@/services/drive/add-file';
+import { addFile } from '@/services/drive/add-file';
 import * as dateFormat from 'dateformat';
 import { Users, Notes, Polls } from '@/models/index';
 import { MoreThan } from 'typeorm';
