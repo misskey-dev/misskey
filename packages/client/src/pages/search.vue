@@ -6,37 +6,31 @@
 </div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent } from 'vue';
+<script lang="ts" setup>
+import { computed } from 'vue';
 import XNotes from '@/components/notes.vue';
 import * as symbols from '@/symbols';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		XNotes
-	},
+const props = defineProps<{
+	query: string;
+	channel?: string;
+}>();
 
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: computed(() => this.$t('searchWith', { q: this.$route.query.q })),
-				icon: 'fas fa-search',
-			},
-			pagination: {
-				endpoint: 'notes/search',
-				limit: 10,
-				params: () => ({
-					query: this.$route.query.q,
-					channelId: this.$route.query.channel,
-				})
-			},
-		};
-	},
+const pagination = {
+	endpoint: 'notes/search' as const,
+	limit: 10,
+	params: computed(() => ({
+		query: props.query,
+		channelId: props.channel,
+	}))
+};
 
-	watch: {
-		$route() {
-			(this.$refs.notes as any).reload();
-		}
-	},
+defineExpose({
+	[symbols.PAGE_INFO]: computed(() => ({
+		title: i18n.t('searchWith', { q: props.query }),
+		icon: 'fas fa-search',
+		bg: 'var(--bg)',
+	})),
 });
 </script>

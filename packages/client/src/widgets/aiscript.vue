@@ -1,9 +1,9 @@
 <template>
-<MkContainer :show-header="props.showHeader">
+<MkContainer :show-header="widgetProps.showHeader">
 	<template #header><i class="fas fa-terminal"></i>{{ $ts._widgets.aiscript }}</template>
 
 	<div class="uylguesu _monospace">
-		<textarea v-model="props.script" placeholder="(1 + 1)"></textarea>
+		<textarea v-model="widgetProps.script" placeholder="(1 + 1)"></textarea>
 		<button class="_buttonPrimary" @click="run">RUN</button>
 		<div class="logs">
 			<div v-for="log in logs" :key="log.id" class="log" :class="{ print: log.print }">{{ log.text }}</div>
@@ -12,97 +12,109 @@
 </MkContainer>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import MkContainer from '@/components/ui/container.vue';
-import define from './define';
+<script lang="ts" setup>
+import { onMounted, onUnmounted, ref, watch } from 'vue';
+import { GetFormResultType } from '@/scripts/form';
+import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
 import * as os from '@/os';
+import MkContainer from '@/components/ui/container.vue';
 import { AiScript, parse, utils } from '@syuilo/aiscript';
 import { createAiScriptEnv } from '@/scripts/aiscript/api';
+import { $i } from '@/account';
 
-const widget = define({
-	name: 'aiscript',
-	props: () => ({
-		showHeader: {
-			type: 'boolean',
-			default: true,
-		},
-		script: {
-			type: 'string',
-			multiline: true,
-			default: '(1 + 1)',
-			hidden: true,
-		},
-	})
-});
+const name = 'aiscript';
 
-export default defineComponent({
-	components: {
-		MkContainer
+const widgetPropsDef = {
+	showHeader: {
+		type: 'boolean' as const,
+		default: true,
 	},
-	extends: widget,
-
-	data() {
-		return {
-			logs: [],
-		};
+	script: {
+		type: 'string' as const,
+		multiline: true,
+		default: '(1 + 1)',
+		hidden: true,
 	},
+};
 
-	methods: {
-		async run() {
-			this.logs = [];
-			const aiscript = new AiScript(createAiScriptEnv({
-				storageKey: 'widget',
-				token: this.$i?.token,
-			}), {
-				in: (q) => {
-					return new Promise(ok => {
-						os.inputText({
-							title: q,
-						}).then(({ canceled, result: a }) => {
-							ok(a);
-						});
-					});
-				},
-				out: (value) => {
-					this.logs.push({
-						id: Math.random(),
-						text: value.type === 'str' ? value.value : utils.valToString(value),
-						print: true
-					});
-				},
-				log: (type, params) => {
-					switch (type) {
-						case 'end': this.logs.push({
-							id: Math.random(),
-							text: utils.valToString(params.val, true),
-							print: false
-						}); break;
-						default: break;
-					}
-				}
+type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
+
+// 現時点ではvueの制限によりimportしたtypeをジェネリックに渡せない
+//const props = defineProps<WidgetComponentProps<WidgetProps>>();
+//const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
+const props = defineProps<{ widget?: Widget<WidgetProps>; }>();
+const emit = defineEmits<{ (e: 'updateProps', props: WidgetProps); }>();
+
+const { widgetProps, configure } = useWidgetPropsManager(name,
+	widgetPropsDef,
+	props,
+	emit,
+);
+
+const logs = ref<{
+	id: string;
+	text: string;
+	print: boolean;
+}[]>([]);
+
+const run = async () => {
+	logs.value = [];
+	const aiscript = new AiScript(createAiScriptEnv({
+		storageKey: 'widget',
+		token: $i?.token,
+	}), {
+		in: (q) => {
+			return new Promise(ok => {
+				os.inputText({
+					title: q,
+				}).then(({ canceled, result: a }) => {
+					ok(a);
+				});
 			});
-
-			let ast;
-			try {
-				ast = parse(this.props.script);
-			} catch (e) {
-				os.alert({
-					type: 'error',
-					text: 'Syntax error :('
-				});
-				return;
-			}
-			try {
-				await aiscript.exec(ast);
-			} catch (e) {
-				os.alert({
-					type: 'error',
-					text: e
-				});
-			}
 		},
+		out: (value) => {
+			logs.value.push({
+				id: Math.random().toString(),
+				text: value.type === 'str' ? value.value : utils.valToString(value),
+				print: true,
+			});
+		},
+		log: (type, params) => {
+			switch (type) {
+				case 'end': logs.value.push({
+					id: Math.random().toString(),
+					text: utils.valToString(params.val, true),
+					print: false,
+				}); break;
+				default: break;
+			}
+		}
+	});
+
+	let ast;
+	try {
+		ast = parse(widgetProps.script);
+	} catch (e) {
+		os.alert({
+			type: 'error',
+			text: 'Syntax error :(',
+		});
+		return;
 	}
+	try {
+		await aiscript.exec(ast);
+	} catch (e) {
+		os.alert({
+			type: 'error',
+			text: e,
+		});
+	}
+};
+
+defineExpose<WidgetComponentExpose>({
+	name,
+	configure,
+	id: props.widget ? props.widget.id : null,
 });
 </script>
 

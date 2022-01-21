@@ -14,20 +14,12 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
 
-export default defineComponent({
-	components: {
-	},
-
-	props: {
-		text: {
-			type: String,
-			required: true
-		}
-	},
-});
+const props = defineProps<{
+	text: string;
+}>();
 </script>
 
 <style lang="scss" scoped>

@@ -7,7 +7,7 @@ import { ApiError } from '../../../error';
 export const meta = {
 	tags: ['admin'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 	requireModerator: true,
 
 	params: {
@@ -32,7 +32,7 @@ export const meta = {
 			id: 'd3aae5a7-6372-4cb4-b61c-f511ffc2d7cc',
 		},
 	},
-};
+} as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, me) => {

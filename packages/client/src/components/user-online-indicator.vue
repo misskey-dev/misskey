@@ -2,26 +2,21 @@
 <div v-tooltip="text" class="fzgwjkgc" :class="user.onlineStatus"></div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
+import * as misskey from 'misskey-js';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	props: {
-		user: {
-			type: Object,
-			required: true
-		},
-	},
+const props = defineProps<{
+	user: misskey.entities.User;
+}>();
 
-	computed: {
-		text(): string {
-			switch (this.user.onlineStatus) {
-				case 'online': return this.$ts.online;
-				case 'active': return this.$ts.active;
-				case 'offline': return this.$ts.offline;
-				case 'unknown': return this.$ts.unknown;
-			}
-		}
+const text = $computed(() => {
+	switch (props.user.onlineStatus) {
+		case 'online': return i18n.locale.online;
+		case 'active': return i18n.locale.active;
+		case 'offline': return i18n.locale.offline;
+		case 'unknown': return i18n.locale.unknown;
 	}
 });
 </script>

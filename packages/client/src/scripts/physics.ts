@@ -136,7 +136,7 @@ export function physics(container: HTMLElement) {
 	}
 
 	// 奈落に落ちたオブジェクトは消す
-	const intervalId = setInterval(() => {
+	const intervalId = window.setInterval(() => {
 		for (const obj of objs) {
 			if (obj.position.y > (containerHeight + 1024)) Matter.World.remove(world, obj);
 		}
@@ -146,7 +146,7 @@ export function physics(container: HTMLElement) {
 		stop: () => {
 			stop = true;
 			Matter.Runner.stop(runner);
-			clearInterval(intervalId);
+			window.clearInterval(intervalId);
 		}
 	};
 }

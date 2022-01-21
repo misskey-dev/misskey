@@ -4,27 +4,21 @@
 </div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent } from 'vue';
+<script lang="ts" setup>
+import { computed } from 'vue';
 import XDrive from '@/components/drive.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		XDrive
-	},
+let folder = $ref(null);
 
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: computed(() => this.folder ? this.folder.name : this.$ts.drive),
-				icon: 'fas fa-cloud',
-				bg: 'var(--bg)',
-				hideHeader: true,
-			},
-			folder: null,
-		};
-	},
+defineExpose({
+	[symbols.PAGE_INFO]: computed(() => ({
+		title: folder ? folder.name : i18n.locale.drive,
+		icon: 'fas fa-cloud',
+		bg: 'var(--bg)',
+		hideHeader: true,
+	})),
 });
 </script>

@@ -106,11 +106,11 @@ export default defineComponent({
 			page: null,
 			error: null,
 			otherPostsPagination: {
-				endpoint: 'users/pages',
+				endpoint: 'users/pages' as const,
 				limit: 6,
-				params: () => ({
+				params: computed(() => ({
 					userId: this.page.user.id
-				})
+				})),
 			},
 		};
 	},

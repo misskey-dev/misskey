@@ -7,7 +7,7 @@ import { UserLists } from '@/models/index';
 export const meta = {
 	tags: ['lists'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	kind: 'write:account',
 
@@ -24,7 +24,7 @@ export const meta = {
 			id: '78436795-db79-42f5-b1e2-55ea2cf19166',
 		},
 	},
-};
+} as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {

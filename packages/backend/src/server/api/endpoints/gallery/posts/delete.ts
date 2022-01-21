@@ -7,7 +7,7 @@ import { ID } from '@/misc/cafy-id';
 export const meta = {
 	tags: ['gallery'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	kind: 'write:gallery',
 
@@ -24,7 +24,7 @@ export const meta = {
 			id: 'ae52f367-4bd7-4ecd-afc6-5672fff427f5',
 		},
 	},
-};
+} as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {

@@ -172,7 +172,6 @@ const app = createApp(await (
 	!$i                               ? import('@/ui/visitor.vue') :
 	ui === 'deck'                     ? import('@/ui/deck.vue') :
 	ui === 'desktop'                  ? import('@/ui/desktop.vue') :
-	ui === 'chat'                     ? import('@/ui/chat/index.vue') :
 	ui === 'classic'                  ? import('@/ui/classic.vue') :
 	import('@/ui/universal.vue')
 ).then(x => x.default));

@@ -34,27 +34,7 @@
 			-->
 
 			<MkPagination v-slot="{items}" ref="reports" :pagination="pagination" style="margin-top: var(--margin);">
-				<div v-for="report in items" :key="report.id" class="bcekxzvu _card _gap">
-					<div class="_content target">
-						<MkAvatar class="avatar" :user="report.targetUser" :show-indicator="true"/>
-						<div class="info">
-							<MkUserName class="name" :user="report.targetUser"/>
-							<div class="acct">@{{ acct(report.targetUser) }}</div>
-						</div>
-					</div>
-					<div class="_content">
-						<div>
-							<Mfm :text="report.comment"/>
-						</div>
-						<hr>
-						<div>Reporter: <MkAcct :user="report.reporter"/></div>
-						<div><MkTime :time="report.createdAt"/></div>
-					</div>
-					<div class="_footer">
-						<div v-if="report.assignee">Assignee: <MkAcct :user="report.assignee"/></div>
-						<MkButton v-if="!report.resolved" primary @click="resolve(report)">{{ $ts.abuseMarkAsResolved }}</MkButton>
-					</div>
-				</div>
+				<XAbuseReport v-for="report in items" :key="report.id" :report="report" @resolved="resolved"/>
 			</MkPagination>
 		</div>
 	</div>
@@ -62,22 +42,21 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
 
-import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/form/input.vue';
 import MkSelect from '@/components/form/select.vue';
 import MkPagination from '@/components/ui/pagination.vue';
-import { acct } from '@/filters/user';
+import XAbuseReport from '@/components/abuse-report.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 
 export default defineComponent({
 	components: {
-		MkButton,
 		MkInput,
 		MkSelect,
 		MkPagination,
+		XAbuseReport,
 	},
 
 	emits: ['info'],
@@ -95,44 +74,20 @@ export default defineComponent({
 			reporterOrigin: 'combined',
 			targetUserOrigin: 'combined',
 			pagination: {
-				endpoint: 'admin/abuse-user-reports',
+				endpoint: 'admin/abuse-user-reports' as const,
 				limit: 10,
-				params: () => ({
+				params: computed(() => ({
 					state: this.state,
 					reporterOrigin: this.reporterOrigin,
 					targetUserOrigin: this.targetUserOrigin,
-				}),
+				})),
 			},
 		}
 	},
 
-	watch: {
-		state() {
-			this.$refs.reports.reload();
-		},
-
-		reporterOrigin() {
-			this.$refs.reports.reload();
-		},
-
-		targetUserOrigin() {
-			this.$refs.reports.reload();
-		},
-	},
-
-	mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
-	},
-
 	methods: {
-		acct,
-
-		resolve(report) {
-			os.apiWithDialog('admin/resolve-abuse-user-report', {
-				reportId: report.id,
-			}).then(() => {
-				this.$refs.reports.removeItem(item => item.id === report.id);
-			});
+		resolved(reportId) {
+			this.$refs.reports.removeItem(item => item.id === reportId);
 		},
 	}
 });
@@ -141,30 +96,5 @@ export default defineComponent({
 <style lang="scss" scoped>
 .lcixvhis {
 	margin: var(--margin);
-}
-
-.bcekxzvu {
-	> .target {
-		display: flex;
-		width: 100%;
-		box-sizing: border-box;
-		text-align: left;
-		align-items: center;
-					
-		> .avatar {
-			width: 42px;
-			height: 42px;
-		}
-
-		> .info {
-			margin-left: 0.3em;
-			padding: 0 8px;
-			flex: 1;
-
-			> .name {
-				font-weight: bold;
-			}
-		}
-	}
 }
 </style>

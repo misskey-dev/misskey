@@ -41,8 +41,6 @@ describe('After setup instance', () => {
 			username: 'admin',
 			password: 'pass',
 		}).its('body').as('admin');
-
-		cy.get('@admin');
 	});
 
 	afterEach(() => {
@@ -82,15 +80,11 @@ describe('After user signup', () => {
 			password: 'pass',
 		}).its('body').as('admin');
 
-		cy.get('@admin').then(() => {
-			// ユーザー作成
-			cy.request('POST', '/api/signup', {
-				username: 'alice',
-				password: 'alice1234',
-			}).its('body').as('alice');
-		});
-
-		cy.get('@alice');
+		// ユーザー作成
+		cy.request('POST', '/api/signup', {
+			username: 'alice',
+			password: 'alice1234',
+		}).its('body').as('alice');
 	});
 
 	afterEach(() => {
@@ -145,27 +139,21 @@ describe('After user singed in', () => {
 			password: 'pass',
 		}).its('body').as('admin');
 
-		cy.get('@admin').then(() => {
-			// ユーザー作成
-			cy.request('POST', '/api/signup', {
-				username: 'alice',
-				password: 'alice1234',
-			}).its('body').as('alice');
-		});
+		// ユーザー作成
+		cy.request('POST', '/api/signup', {
+			username: 'alice',
+			password: 'alice1234',
+		}).its('body').as('alice');
 
-		cy.get('@alice').then(() => {
-			cy.visit('/');
+		cy.visit('/');
 
-			cy.intercept('POST', '/api/signin').as('signin');
+		cy.intercept('POST', '/api/signin').as('signin');
 
-			cy.get('[data-cy-signin]').click();
-			cy.get('[data-cy-signin-username] input').type('alice');
-			cy.get('[data-cy-signin-password] input').type('alice1234{enter}');
+		cy.get('[data-cy-signin]').click();
+		cy.get('[data-cy-signin-username] input').type('alice');
+		cy.get('[data-cy-signin-password] input').type('alice1234{enter}');
 
-			cy.wait('@signin').as('signedIn');
-		});
-
-		cy.get('@signedIn');
+		cy.wait('@signin').as('signedIn');
 	});
 
 	afterEach(() => {

@@ -6,7 +6,7 @@ import { Users, Pages } from '@/models/index';
 import { ApiError } from '../error';
 
 export const meta = {
-	requireCredential: true as const,
+	requireCredential: true,
 	secure: true,
 
 	params: {
@@ -30,7 +30,7 @@ export const meta = {
 			id: '4a13ad31-6729-46b4-b9af-e86b265c2e74',
 		},
 	},
-};
+} as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {

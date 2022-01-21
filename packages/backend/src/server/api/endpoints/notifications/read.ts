@@ -12,7 +12,7 @@ export const meta = {
 
 	tags: ['notifications', 'account'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	kind: 'write:notifications',
 
@@ -33,7 +33,7 @@ export const meta = {
 			}
 		}
 	},
-};
+} as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {

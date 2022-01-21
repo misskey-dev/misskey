@@ -5,7 +5,7 @@ import { createNotification } from '@/services/create-notification';
 export const meta = {
 	tags: ['notifications'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	kind: 'write:notifications',
 
@@ -25,7 +25,7 @@ export const meta = {
 
 	errors: {
 	},
-};
+} as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user, token) => {

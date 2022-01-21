@@ -1,5 +1,5 @@
 import { performance } from 'perf_hooks';
-import limiter from './limiter';
+import { limiter } from './limiter';
 import { User } from '@/models/entities/user';
 import endpoints from './endpoints';
 import { ApiError } from './error';

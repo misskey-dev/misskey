@@ -20,30 +20,17 @@
 </svg>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
 
-export default defineComponent({
-	props: {
-		value: {
-			type: Number,
-			required: true
-		}
-	},
-	data() {
-		return {
-			r: 0.45
-		};
-	},
-	computed: {
-		color(): string {
-			return `hsl(${180 - (this.value * 180)}, 80%, 70%)`;
-		},
-		strokeDashoffset(): number {
-			return (1 - this.value) * (Math.PI * (this.r * 2));
-		}
-	}
-});
+const props = defineProps<{
+	value: number;
+}>();
+
+const r = 0.45;
+
+const color = $computed(() => `hsl(${180 - (props.value * 180)}, 80%, 70%)`);
+const strokeDashoffset = $computed(() => (1 - props.value) * (Math.PI * (r * 2)));
 </script>
 
 <style lang="scss" scoped>

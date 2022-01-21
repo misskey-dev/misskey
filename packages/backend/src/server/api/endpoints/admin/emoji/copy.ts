@@ -12,7 +12,7 @@ import { publishBroadcastStream } from '@/services/stream';
 export const meta = {
 	tags: ['admin'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 	requireModerator: true,
 
 	params: {
@@ -30,17 +30,17 @@ export const meta = {
 	},
 
 	res: {
-		type: 'object' as const,
-		optional: false as const, nullable: false as const,
+		type: 'object',
+		optional: false, nullable: false,
 		properties: {
 			id: {
-				type: 'string' as const,
-				optional: false as const, nullable: false as const,
+				type: 'string',
+				optional: false, nullable: false,
 				format: 'id',
 			},
 		},
 	},
-};
+} as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, me) => {
@@ -54,7 +54,7 @@ export default define(meta, async (ps, me) => {
 
 	try {
 		// Create file
-		driveFile = await uploadFromUrl(emoji.url, null, null, null, false, true);
+		driveFile = await uploadFromUrl(emoji.originalUrl, null, null, null, false, true);
 	} catch (e) {
 		throw new ApiError();
 	}
@@ -65,9 +65,9 @@ export default define(meta, async (ps, me) => {
 		name: emoji.name,
 		host: null,
 		aliases: [],
-		url: driveFile.url,
-		type: driveFile.type,
-		fileId: driveFile.id,
+		originalUrl: driveFile.url,
+		publicUrl: driveFile.webpublicUrl ?? driveFile.url,
+		type: driveFile.webpublicType ?? driveFile.type,
 	}).then(x => Emojis.findOneOrFail(x.identifiers[0]));
 
 	await getConnection().queryResultCache!.remove(['meta_emojis']);

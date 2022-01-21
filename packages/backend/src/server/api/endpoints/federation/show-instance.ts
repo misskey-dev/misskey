@@ -6,7 +6,7 @@ import { toPuny } from '@/misc/convert-host';
 export const meta = {
 	tags: ['federation'],
 
-	requireCredential: false as const,
+	requireCredential: false,
 
 	params: {
 		host: {
@@ -15,11 +15,11 @@ export const meta = {
 	},
 
 	res: {
-		type: 'object' as const,
-		optional: false as const, nullable: false as const,
+		type: 'object',
+		optional: true, nullable: false,
 		ref: 'FederationInstance',
 	},
-};
+} as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, me) => {

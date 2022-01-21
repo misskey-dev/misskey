@@ -8,7 +8,7 @@ import { Notes } from '@/models/index';
 export const meta = {
 	tags: ['notes'],
 
-	requireCredential: false as const,
+	requireCredential: false,
 
 	params: {
 		noteId: {
@@ -17,8 +17,8 @@ export const meta = {
 	},
 
 	res: {
-		type: 'object' as const,
-		optional: false as const, nullable: false as const,
+		type: 'object',
+		optional: false, nullable: false,
 		ref: 'Note',
 	},
 
@@ -29,7 +29,7 @@ export const meta = {
 			id: '24fcbfc6-2e37-42b6-8388-c29b3861a08d',
 		},
 	},
-};
+} as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
