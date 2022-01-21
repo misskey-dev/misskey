@@ -57,6 +57,11 @@ export class AbuseUserReport {
 	public forwarded: boolean;
 
 	@Column('varchar', {
+		length: 512, array: true, default: '{}',
+	})
+	public urls: string[];
+
+	@Column('varchar', {
 		length: 2048,
 	})
 	public comment: string;

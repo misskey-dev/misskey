@@ -33,7 +33,7 @@ import { i18n } from '@/i18n';
 
 const props = defineProps<{
 	user: Misskey.entities.User;
-	initialComment?: string;
+	urls?: string[];
 }>();
 
 const emit = defineEmits<{
@@ -41,11 +41,12 @@ const emit = defineEmits<{
 }>();
 
 const uiWindow = ref<InstanceType<typeof XWindow>>();
-const comment = ref(props.initialComment || '');
+const comment = ref('');
 
 function send() {
 	os.apiWithDialog('users/report-abuse', {
 		userId: props.user.id,
+		urls: props.urls || [],
 		comment: comment.value,
 	}, undefined).then(res => {
 		os.alert({

@@ -291,9 +291,9 @@ export function getNoteMenu(props: {
 						const u = appearNote.url || appearNote.uri || `${url}/notes/${appearNote.id}`;
 						os.popup(defineAsyncComponent(() => import('@/components/abuse-report-window.vue')), {
 							user: appearNote.user,
-							initialComment: `Note: ${u}\n-----\n`,
+							urls: [u]
 						}, {}, 'closed');
-					},
+					}
 				}]
 			: []
 			),

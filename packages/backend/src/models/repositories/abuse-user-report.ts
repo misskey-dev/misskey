@@ -27,6 +27,7 @@ export const AbuseUserReportRepository = db.getRepository(AbuseUserReport).exten
 				detail: true,
 			}) : null,
 			forwarded: report.forwarded,
+			urls: report.urls,
 		});
 	},
 
