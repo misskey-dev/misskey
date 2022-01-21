@@ -12,6 +12,9 @@
 			<div class="_formBlock" style="text-align: center;">
 				{{ i18n.locale._aboutMisskey.about }}<br><a href="https://misskey-hub.net/docs/misskey.html" target="_blank" class="_link">{{ i18n.locale.learnMore }}</a>
 			</div>
+			<div class="_formBlock" style="text-align: center;">
+				<MkButton primary rounded inline @click="iLoveMisskey">I <Mfm text="$[jelly ❤]"/> #Misskey</MkButton>
+			</div>
 			<FormSection>
 				<div class="_formLinks">
 					<FormLink to="https://github.com/misskey-dev/misskey" external>
@@ -61,12 +64,13 @@ import { nextTick, onBeforeUnmount } from 'vue';
 import { version } from '@/config';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
-import MkKeyValue from '@/components/key-value.vue';
+import MkButton from '@/components/ui/button.vue';
 import MkLink from '@/components/link.vue';
 import { physics } from '@/scripts/physics';
 import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
 import { defaultStore } from '@/store';
+import * as os from '@/os';
 
 const patrons = [
 	'まっちゃとーにゅ',
@@ -173,6 +177,12 @@ function gravity() {
 	if (!easterEggReady) return;
 	easterEggReady = false;
 	easterEggEngine = physics(containerEl);
+}
+
+function iLoveMisskey() {
+	os.post({
+		initialText: 'I $[jelly ❤] #Misskey',
+	});
 }
 
 onBeforeUnmount(() => {
