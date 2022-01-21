@@ -575,6 +575,7 @@ async function post() {
 				localStorage.setItem('hashtags', JSON.stringify(unique(hashtags.concat(history))));
 			}
 			posting = false;
+			postAccount = null;
 		});
 	}).catch(err => {
 		posting = false;
