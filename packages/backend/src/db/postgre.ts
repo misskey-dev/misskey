@@ -220,7 +220,9 @@ export async function resetDb() {
 		WHERE nspname NOT IN ('pg_catalog', 'information_schema')
 			AND C.relkind = 'r'
 			AND nspname !~ '^pg_toast';`);
-		await Promise.all(tables.map(t => t.table).map(x => conn.query(`DELETE FROM "${x}" CASCADE`)));
+		for (const table of tables) {
+			await conn.query(`DELETE FROM "${table.table}" CASCADE`);
+		}
 	};
 
 	for (let i = 1; i <= 3; i++) {

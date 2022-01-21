@@ -5,7 +5,7 @@
 		<option value="replies">{{ $ts.notesAndReplies }}</option>
 		<option value="files">{{ $ts.withFiles }}</option>
 	</MkTab>
-	<XNotes ref="timeline" :no-gap="true" :pagination="pagination"/>
+	<XNotes :no-gap="true" :pagination="pagination"/>
 </div>
 </template>
 

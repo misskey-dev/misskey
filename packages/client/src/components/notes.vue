@@ -32,9 +32,7 @@ const props = defineProps<{
 const pagingComponent = ref<InstanceType<typeof MkPagination>>();
 
 defineExpose({
-	prepend: (note) => {
-		pagingComponent.value?.prepend(note);
-	},
+	pagingComponent,
 });
 </script>
 
