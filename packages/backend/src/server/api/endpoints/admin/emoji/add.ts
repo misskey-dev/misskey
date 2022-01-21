@@ -12,7 +12,7 @@ import { publishBroadcastStream } from '@/services/stream';
 export const meta = {
 	tags: ['admin'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 	requireModerator: true,
 
 	params: {
@@ -28,7 +28,7 @@ export const meta = {
 			id: 'fc46b5a4-6b92-4c33-ac66-b806659bb5cf',
 		},
 	},
-};
+} as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, me) => {
@@ -45,8 +45,9 @@ export default define(meta, async (ps, me) => {
 		category: null,
 		host: null,
 		aliases: [],
-		url: file.url,
-		type: file.type,
+		originalUrl: file.url,
+		publicUrl: file.webpublicUrl ?? file.url,
+		type: file.webpublicType ?? file.type,
 	}).then(x => Emojis.findOneOrFail(x.identifiers[0]));
 
 	await getConnection().queryResultCache!.remove(['meta_emojis']);

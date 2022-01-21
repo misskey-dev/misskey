@@ -1,5 +1,5 @@
 import { URL } from 'url';
-import create from './add-file';
+import { addFile } from './add-file';
 import { User } from '@/models/entities/user';
 import { driveLogger } from './logger';
 import { createTemp } from '@/misc/create-temp';
@@ -41,7 +41,7 @@ export default async (
 	let error;
 
 	try {
-		driveFile = await create(user, path, name, comment, folderId, force, link, url, uri, sensitive);
+		driveFile = await addFile(user, path, name, comment, folderId, force, link, url, uri, sensitive);
 		logger.succ(`Got: ${driveFile.id}`);
 	} catch (e) {
 		error = e;

@@ -2,14 +2,14 @@ import define from '../../define';
 import { getConnection } from 'typeorm';
 
 export const meta = {
-	requireCredential: true as const,
+	requireCredential: true,
 	requireModerator: true,
 
 	tags: ['admin'],
 
 	params: {
 	},
-};
+} as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, async () => {

@@ -5,50 +5,33 @@
 	:can-resize="false"
 	:mini="true"
 	:front="true"
-	@closed="$emit('closed')"
+	@closed="emit('closed')"
 >
 	<MkEmojiPicker :show-pinned="showPinned" :as-reaction-picker="asReactionPicker" @chosen="chosen"/>
 </MkWindow>
 </template>
 
-<script lang="ts">
-import { defineComponent, markRaw } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
 import MkWindow from '@/components/ui/window.vue';
 import MkEmojiPicker from '@/components/emoji-picker.vue';
 
-export default defineComponent({
-	components: {
-		MkWindow,
-		MkEmojiPicker,
-	},
-
-	props: {
-		src: {
-			required: false
-		},
-		showPinned: {
-			required: false,
-			default: true
-		},
-		asReactionPicker: {
-			required: false
-		},
-	},
-
-	emits: ['chosen', 'closed'],
-
-	data() {
-		return {
-
-		};
-	},
-
-	methods: {
-		chosen(emoji: any) {
-			this.$emit('chosen', emoji);
-		},
-	}
+withDefaults(defineProps<{
+	src?: HTMLElement;
+	showPinned?: boolean;
+	asReactionPicker?: boolean;
+}>(), {
+	showPinned: true,
 });
+
+const emit = defineEmits<{
+	(e: 'chosen', v: any): void;
+	(e: 'closed'): void;
+}>();
+
+function chosen(emoji: any) {
+	emit('chosen', emoji);
+}
 </script>
 
 <style lang="scss" scoped>

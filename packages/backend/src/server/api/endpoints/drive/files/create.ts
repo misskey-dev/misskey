@@ -1,7 +1,7 @@
 import ms from 'ms';
 import $ from 'cafy';
 import { ID } from '@/misc/cafy-id';
-import create from '@/services/drive/add-file';
+import { addFile } from '@/services/drive/add-file';
 import define from '../../../define';
 import { apiLogger } from '../../../logger';
 import { ApiError } from '../../../error';
@@ -10,7 +10,7 @@ import { DriveFiles } from '@/models/index';
 export const meta = {
 	tags: ['drive'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	limit: {
 		duration: ms('1hour'),
@@ -46,8 +46,8 @@ export const meta = {
 	},
 
 	res: {
-		type: 'object' as const,
-		optional: false as const, nullable: false as const,
+		type: 'object',
+		optional: false, nullable: false,
 		ref: 'DriveFile',
 	},
 
@@ -58,7 +58,7 @@ export const meta = {
 			id: 'f449b209-0c60-4e51-84d5-29486263bfd4',
 		},
 	},
-};
+} as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user, _, file, cleanup) => {
@@ -79,7 +79,7 @@ export default define(meta, async (ps, user, _, file, cleanup) => {
 
 	try {
 		// Create file
-		const driveFile = await create(user, file.path, name, null, ps.folderId, ps.force, false, null, null, ps.isSensitive);
+		const driveFile = await addFile(user, file.path, name, null, ps.folderId, ps.force, false, null, null, ps.isSensitive);
 		return await DriveFiles.pack(driveFile, { self: true });
 	} catch (e) {
 		apiLogger.error(e);

@@ -3,7 +3,7 @@ import * as tmp from 'tmp';
 import * as fs from 'fs';
 
 import { queueLogger } from '../../logger';
-import addFile from '@/services/drive/add-file';
+import { addFile } from '@/services/drive/add-file';
 import * as dateFormat from 'dateformat';
 import { getFullApAccount } from '@/misc/convert-host';
 import { Users, UserLists, UserListJoinings } from '@/models/index';
