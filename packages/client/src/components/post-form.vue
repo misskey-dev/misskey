@@ -8,6 +8,9 @@
 >
 	<header>
 		<button v-if="!fixed" class="cancel _button" @click="cancel"><i class="fas fa-times"></i></button>
+		<button v-click-anime class="account _button" @click="openAccountMenu">
+			<MkAvatar :user="postAccount ?? $i" class="avatar"/>
+		</button>
 		<div>
 			<span class="text-count" :class="{ over: textLength > maxTextLength }">{{ maxTextLength - textLength }}</span>
 			<span v-if="localOnly" class="local-only"><i class="fas fa-biohazard"></i></span>
@@ -83,7 +86,7 @@ import { throttle } from 'throttle-debounce';
 import MkInfo from '@/components/ui/info.vue';
 import { i18n } from '@/i18n';
 import { instance } from '@/instance';
-import { $i } from '@/account';
+import { $i, getAccounts, openAccountMenu as openAccountMenu_ } from '@/account';
 
 const modal = inject('modal');
 
@@ -553,8 +556,15 @@ async function post() {
 		}
 	}
 
+	let token = undefined;
+
+	if (postAccount) {
+		const storedAccounts = await getAccounts();
+		token = storedAccounts.find(x => x.id === postAccount.id)?.token;
+	}
+
 	posting = true;
-	os.api('notes/create', data).then(() => {
+	os.api('notes/create', data, token).then(() => {
 		clear();
 		nextTick(() => {
 			deleteDraft();
@@ -585,7 +595,7 @@ function insertMention() {
 	});
 }
 
-async function insertEmoji(ev) {
+async function insertEmoji(ev: MouseEvent) {
 	os.openEmojiPicker(ev.currentTarget || ev.target, {}, textareaEl);
 }
 
@@ -600,6 +610,23 @@ function showActions(ev) {
 			});
 		}
 	})), ev.currentTarget || ev.target);
+}
+
+let postAccount = $ref<misskey.entities.UserDetailed | null>(null);
+
+function openAccountMenu(ev: MouseEvent) {
+	openAccountMenu_({
+		withExtraOperation: false,
+		includeCurrentAccount: true,
+		active: postAccount != null ? postAccount.id : $i.id,
+		onChoose: (account) => {
+			if (account.id === $i.id) {
+				postAccount = null;
+			} else {
+				postAccount = account;
+			}
+		},
+	}, ev);
 }
 
 onMounted(() => {
@@ -676,6 +703,19 @@ onMounted(() => {
 			font-size: 20px;
 			width: 64px;
 			line-height: 66px;
+		}
+
+		> .account {
+			height: 100%;
+			aspect-ratio: 1/1;
+			display: inline-flex;
+			vertical-align: bottom;
+
+			> .avatar {
+				width: 28px;
+				height: 28px;
+				margin: auto;
+			}
 		}
 
 		> div {
