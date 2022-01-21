@@ -15,7 +15,8 @@ export class EmojiRepository extends Repository<Emoji> {
 			name: emoji.name,
 			category: emoji.category,
 			host: emoji.host,
-			url: emoji.url,
+			// || emoji.originalUrl してるのは後方互換性のため
+			url: emoji.publicUrl || emoji.originalUrl,
 		};
 	}
 

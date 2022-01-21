@@ -72,7 +72,7 @@ export async function exportCustomEmojis(job: Bull.Job, done: () => void): Promi
 		let downloaded = false;
 
 		try {
-			await downloadUrl(emoji.url, emojiPath);
+			await downloadUrl(emoji.originalUrl, emojiPath);
 			downloaded = true;
 		} catch (e) { // TODO: 何度か再試行
 			logger.error(e);

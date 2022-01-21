@@ -45,8 +45,9 @@ export default define(meta, async (ps, me) => {
 		category: null,
 		host: null,
 		aliases: [],
-		url: file.url,
-		type: file.type,
+		originalUrl: file.url,
+		publicUrl: file.webpublicUrl ?? file.url,
+		type: file.webpublicType ?? file.type,
 	}).then(x => Emojis.findOneOrFail(x.identifiers[0]));
 
 	await getConnection().queryResultCache!.remove(['meta_emojis']);

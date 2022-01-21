@@ -54,7 +54,7 @@ export default define(meta, async (ps, me) => {
 
 	try {
 		// Create file
-		driveFile = await uploadFromUrl(emoji.url, null, null, null, false, true);
+		driveFile = await uploadFromUrl(emoji.originalUrl, null, null, null, false, true);
 	} catch (e) {
 		throw new ApiError();
 	}
@@ -65,9 +65,9 @@ export default define(meta, async (ps, me) => {
 		name: emoji.name,
 		host: null,
 		aliases: [],
-		url: driveFile.url,
-		type: driveFile.type,
-		fileId: driveFile.id,
+		originalUrl: driveFile.url,
+		publicUrl: driveFile.webpublicUrl ?? driveFile.url,
+		type: driveFile.webpublicType ?? driveFile.type,
 	}).then(x => Emojis.findOneOrFail(x.identifiers[0]));
 
 	await getConnection().queryResultCache!.remove(['meta_emojis']);

@@ -320,14 +320,15 @@ export async function extractEmojis(tags: IObject | IObject[], host: string): Pr
 			if ((tag.updated != null && exists.updatedAt == null)
 				|| (tag.id != null && exists.uri == null)
 				|| (tag.updated != null && exists.updatedAt != null && new Date(tag.updated) > exists.updatedAt)
-				|| (tag.icon!.url !== exists.url)
+				|| (tag.icon!.url !== exists.originalUrl)
 			) {
 				await Emojis.update({
 					host,
 					name,
 				}, {
 					uri: tag.id,
-					url: tag.icon!.url,
+					originalUrl: tag.icon!.url,
+					publicUrl: tag.icon!.url,
 					updatedAt: new Date(),
 				});
 
@@ -347,7 +348,8 @@ export async function extractEmojis(tags: IObject | IObject[], host: string): Pr
 			host,
 			name,
 			uri: tag.id,
-			url: tag.icon!.url,
+			originalUrl: tag.icon!.url,
+			publicUrl: tag.icon!.url,
 			updatedAt: new Date(),
 			aliases: [],
 		} as Partial<Emoji>).then(x => Emojis.findOneOrFail(x.identifiers[0]));
