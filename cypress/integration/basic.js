@@ -165,6 +165,7 @@ describe('After user singed in', () => {
   it('successfully loads', () => {
     cy.visit('/');
   });
+
 	it('note', () => {
     cy.visit('/');
 
