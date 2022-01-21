@@ -620,6 +620,7 @@ fillAbuseReportDescription: "Veuillez expliquer les raisons du signalement. S'il
 abuseReported: "Le rapport est envoyé. Merci."
 reporteeOrigin: "Origine du signalement"
 reporterOrigin: "Signalé par"
+forwardReport: "Transférer le signalement à l’instance distante"
 send: "Envoyer"
 abuseMarkAsResolved: "Marquer le signalement comme résolu"
 openInNewTab: "Ouvrir dans un nouvel onglet"
