@@ -14,6 +14,7 @@ import { instanceChart, perUserFollowingChart } from '@/services/chart/index';
 import { genId } from '@/misc/gen-id';
 import { createNotification } from '../create-notification';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error';
+import { Packed } from '@/misc/schema';
 
 const logger = new Logger('following/create');
 
@@ -89,8 +90,8 @@ export async function insertFollowingDoc(followee: { id: User['id']; host: User[
 		Users.pack(followee.id, follower, {
 			detail: true,
 		}).then(packed => {
-			publishUserEvent(follower.id, 'follow', packed);
-			publishMainStream(follower.id, 'follow', packed);
+			publishUserEvent(follower.id, 'follow', packed as Packed<"UserDetailedNotMe">);
+			publishMainStream(follower.id, 'follow', packed as Packed<"UserDetailedNotMe">);
 		});
 	}
 

@@ -101,6 +101,11 @@ export class DriveFile {
 	})
 	public webpublicUrl: string | null;
 
+	@Column('varchar', {
+		length: 128, nullable: true,
+	})
+	public webpublicType: string | null;
+
 	@Index({ unique: true })
 	@Column('varchar', {
 		length: 256, nullable: true,

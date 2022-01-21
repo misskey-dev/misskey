@@ -72,7 +72,7 @@ export default defineComponent({
 			this.props = {};
 		},
 
-		onContextmenu(e) {
+		onContextmenu(ev: MouseEvent) {
 			os.contextMenu([{
 				type: 'label',
 				text: this.path,
@@ -103,7 +103,7 @@ export default defineComponent({
 				action: () => {
 					copyToClipboard(this.url);
 				}
-			}], e);
+			}], ev);
 		}
 	}
 });

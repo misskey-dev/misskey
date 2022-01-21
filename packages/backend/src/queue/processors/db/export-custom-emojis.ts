@@ -6,11 +6,12 @@ import { ulid } from 'ulid';
 const mime = require('mime-types');
 const archiver = require('archiver');
 import { queueLogger } from '../../logger';
-import addFile from '@/services/drive/add-file';
+import { addFile } from '@/services/drive/add-file';
 import * as dateFormat from 'dateformat';
 import { Users, Emojis } from '@/models/index';
 import {  } from '@/queue/types';
 import { downloadUrl } from '@/misc/download-url';
+import config from '@/config/index';
 
 const logger = queueLogger.createSubLogger('export-custom-emojis');
 
@@ -52,7 +53,7 @@ export async function exportCustomEmojis(job: Bull.Job, done: () => void): Promi
 		});
 	};
 
-	await writeMeta(`{"metaVersion":2,"emojis":[`);
+	await writeMeta(`{"metaVersion":2,"host":"${config.host}","exportedAt":"${new Date().toString()}","emojis":[`);
 
 	const customEmojis = await Emojis.find({
 		where: {
@@ -71,7 +72,7 @@ export async function exportCustomEmojis(job: Bull.Job, done: () => void): Promi
 		let downloaded = false;
 
 		try {
-			await downloadUrl(emoji.url, emojiPath);
+			await downloadUrl(emoji.originalUrl, emojiPath);
 			downloaded = true;
 		} catch (e) { // TODO: 何度か再試行
 			logger.error(e);

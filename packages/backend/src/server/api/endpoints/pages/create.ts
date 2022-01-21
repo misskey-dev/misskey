@@ -10,7 +10,7 @@ import { ApiError } from '../../error';
 export const meta = {
 	tags: ['pages'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	kind: 'write:pages',
 
@@ -65,8 +65,8 @@ export const meta = {
 	},
 
 	res: {
-		type: 'object' as const,
-		optional: false as const, nullable: false as const,
+		type: 'object',
+		optional: false, nullable: false,
 		ref: 'Page',
 	},
 
@@ -82,7 +82,7 @@ export const meta = {
 			id: '4650348e-301c-499a-83c9-6aa988c66bc1',
 		},
 	},
-};
+} as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {

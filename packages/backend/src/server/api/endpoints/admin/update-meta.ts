@@ -9,7 +9,7 @@ import { ID } from '@/misc/cafy-id';
 export const meta = {
 	tags: ['admin'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 	requireAdmin: true,
 
 	params: {
@@ -297,7 +297,7 @@ export const meta = {
 			validator: $.optional.bool,
 		},
 	},
-};
+} as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, me) => {

@@ -1,18 +1,18 @@
 <template>
-<div class="omfetrab" :class="['w' + width, 'h' + height, { big, asDrawer }]" :style="{ maxHeight: maxHeight ? maxHeight + 'px' : null }">
-	<input ref="search" v-model.trim="q" class="search" data-prevent-emoji-insert :class="{ filled: q != null && q != '' }" :placeholder="$ts.search" @paste.stop="paste" @keyup.enter="done()">
+<div class="omfetrab" :class="['w' + width, 'h' + height, { big, asDrawer }]" :style="{ maxHeight: maxHeight ? maxHeight + 'px' : undefined }">
+	<input ref="search" v-model.trim="q" class="search" data-prevent-emoji-insert :class="{ filled: q != null && q != '' }" :placeholder="i18n.locale.search" @paste.stop="paste" @keyup.enter="done()">
 	<div ref="emojis" class="emojis">
 		<section class="result">
 			<div v-if="searchResultCustom.length > 0">
 				<button v-for="emoji in searchResultCustom"
-					:key="emoji"
+					:key="emoji.id"
 					class="_button"
 					:title="emoji.name"
 					tabindex="0"
 					@click="chosen(emoji, $event)"
 				>
-					<MkEmoji v-if="emoji.char != null" :emoji="emoji.char"/>
-					<img v-else :src="$store.state.disableShowingAnimatedImages ? getStaticImageUrl(emoji.url) : emoji.url"/>
+					<!--<MkEmoji v-if="emoji.char != null" :emoji="emoji.char"/>-->
+					<img :src="disableShowingAnimatedImages ? getStaticImageUrl(emoji.url) : emoji.url"/>
 				</button>
 			</div>
 			<div v-if="searchResultUnicode.length > 0">
@@ -43,9 +43,9 @@
 			</section>
 
 			<section>
-				<header class="_acrylic"><i class="far fa-clock fa-fw"></i> {{ $ts.recentUsed }}</header>
+				<header class="_acrylic"><i class="far fa-clock fa-fw"></i> {{ i18n.locale.recentUsed }}</header>
 				<div>
-					<button v-for="emoji in $store.state.recentlyUsedEmojis"
+					<button v-for="emoji in recentlyUsedEmojis"
 						:key="emoji"
 						class="_button"
 						@click="chosen(emoji, $event)"
@@ -56,12 +56,12 @@
 			</section>
 		</div>
 		<div>
-			<header class="_acrylic">{{ $ts.customEmojis }}</header>
-			<XSection v-for="category in customEmojiCategories" :key="'custom:' + category" :initial-shown="false" :emojis="customEmojis.filter(e => e.category === category).map(e => ':' + e.name + ':')">{{ category || $ts.other }}</XSection>
+			<header class="_acrylic">{{ i18n.locale.customEmojis }}</header>
+			<XSection v-for="category in customEmojiCategories" :key="'custom:' + category" :initial-shown="false" :emojis="customEmojis.filter(e => e.category === category).map(e => ':' + e.name + ':')" @chosen="chosen">{{ category || i18n.locale.other }}</XSection>
 		</div>
 		<div>
-			<header class="_acrylic">{{ $ts.emoji }}</header>
-			<XSection v-for="category in categories" :emojis="emojilist.filter(e => e.category === category).map(e => e.char)">{{ category }}</XSection>
+			<header class="_acrylic">{{ i18n.locale.emoji }}</header>
+			<XSection v-for="category in categories" :emojis="emojilist.filter(e => e.category === category).map(e => e.char)" @chosen="chosen">{{ category }}</XSection>
 		</div>
 	</div>
 	<div class="tabs">
@@ -73,277 +73,272 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, markRaw } from 'vue';
-import { emojilist } from '@/scripts/emojilist';
+<script lang="ts" setup>
+import { ref, computed, watch, onMounted } from 'vue';
+import * as Misskey from 'misskey-js';
+import { emojilist, UnicodeEmojiDef, unicodeEmojiCategories as categories } from '@/scripts/emojilist';
 import { getStaticImageUrl } from '@/scripts/get-static-image-url';
 import Ripple from '@/components/ripple.vue';
 import * as os from '@/os';
 import { isTouchUsing } from '@/scripts/touch';
 import { isMobile } from '@/scripts/is-mobile';
-import { emojiCategories } from '@/instance';
+import { emojiCategories, instance } from '@/instance';
 import XSection from './emoji-picker.section.vue';
+import { i18n } from '@/i18n';
+import { defaultStore } from '@/store';
 
-export default defineComponent({
-	components: {
-		XSection
-	},
+const props = withDefaults(defineProps<{
+	showPinned?: boolean;
+	asReactionPicker?: boolean;
+	maxHeight?: number;
+	asDrawer?: boolean;
+}>(), {
+	showPinned: true,
+});
 
-	props: {
-		showPinned: {
-			required: false,
-			default: true,
-		},
-		asReactionPicker: {
-			required: false,
-		},
-		maxHeight: {
-			type: Number,
-			required: false,
-		},
-		asDrawer: {
-			type: Boolean,
-			required: false
-		},
-	},
+const emit = defineEmits<{
+	(e: 'chosen', v: string): void;
+}>();
 
-	emits: ['chosen'],
+const search = ref<HTMLInputElement>();
+const emojis = ref<HTMLDivElement>();
 
-	data() {
-		return {
-			emojilist: markRaw(emojilist),
-			getStaticImageUrl,
-			pinned: this.$store.reactiveState.reactions,
-			width: this.asReactionPicker ? this.$store.state.reactionPickerWidth : 3,
-			height: this.asReactionPicker ? this.$store.state.reactionPickerHeight : 2,
-			big: this.asReactionPicker ? isTouchUsing : false,
-			customEmojiCategories: emojiCategories,
-			customEmojis: this.$instance.emojis,
-			q: null,
-			searchResultCustom: [],
-			searchResultUnicode: [],
-			tab: 'index',
-			categories: ['face', 'people', 'animals_and_nature', 'food_and_drink', 'activity', 'travel_and_places', 'objects', 'symbols', 'flags'],
-		};
-	},
+const {
+	reactions: pinned,
+	reactionPickerWidth,
+	reactionPickerHeight,
+	disableShowingAnimatedImages,
+	recentlyUsedEmojis,
+} = defaultStore.reactiveState;
 
-	watch: {
-		q() {
-			this.$refs.emojis.scrollTop = 0;
+const width = computed(() => props.asReactionPicker ? reactionPickerWidth.value : 3);
+const height = computed(() => props.asReactionPicker ? reactionPickerHeight.value : 2);
+const big = props.asReactionPicker ? isTouchUsing : false;
+const customEmojiCategories = emojiCategories;
+const customEmojis = instance.emojis;
+const q = ref<string | null>(null);
+const searchResultCustom = ref<Misskey.entities.CustomEmoji[]>([]);
+const searchResultUnicode = ref<UnicodeEmojiDef[]>([]);
+const tab = ref<'index' | 'custom' | 'unicode' | 'tags'>('index');
 
-			if (this.q == null || this.q === '') {
-				this.searchResultCustom = [];
-				this.searchResultUnicode = [];
-				return;
-			}
+watch(q, () => {
+	if (emojis.value) emojis.value.scrollTop = 0;
 
-			const q = this.q.replace(/:/g, '');
-
-			const searchCustom = () => {
-				const max = 8;
-				const emojis = this.customEmojis;
-				const matches = new Set();
-
-				const exactMatch = emojis.find(e => e.name === q);
-				if (exactMatch) matches.add(exactMatch);
-
-				if (q.includes(' ')) { // AND検索
-					const keywords = q.split(' ');
-
-					// 名前にキーワードが含まれている
-					for (const emoji of emojis) {
-						if (keywords.every(keyword => emoji.name.includes(keyword))) {
-							matches.add(emoji);
-							if (matches.size >= max) break;
-						}
-					}
-					if (matches.size >= max) return matches;
-
-					// 名前またはエイリアスにキーワードが含まれている
-					for (const emoji of emojis) {
-						if (keywords.every(keyword => emoji.name.includes(keyword) || emoji.aliases.some(alias => alias.includes(keyword)))) {
-							matches.add(emoji);
-							if (matches.size >= max) break;
-						}
-					}
-				} else {
-					for (const emoji of emojis) {
-						if (emoji.name.startsWith(q)) {
-							matches.add(emoji);
-							if (matches.size >= max) break;
-						}
-					}
-					if (matches.size >= max) return matches;
-
-					for (const emoji of emojis) {
-						if (emoji.aliases.some(alias => alias.startsWith(q))) {
-							matches.add(emoji);
-							if (matches.size >= max) break;
-						}
-					}
-					if (matches.size >= max) return matches;
-
-					for (const emoji of emojis) {
-						if (emoji.name.includes(q)) {
-							matches.add(emoji);
-							if (matches.size >= max) break;
-						}
-					}
-					if (matches.size >= max) return matches;
-
-					for (const emoji of emojis) {
-						if (emoji.aliases.some(alias => alias.includes(q))) {
-							matches.add(emoji);
-							if (matches.size >= max) break;
-						}
-					}
-				}
-
-				return matches;
-			};
-
-			const searchUnicode = () => {
-				const max = 8;
-				const emojis = this.emojilist;
-				const matches = new Set();
-
-				const exactMatch = emojis.find(e => e.name === q);
-				if (exactMatch) matches.add(exactMatch);
-
-				if (q.includes(' ')) { // AND検索
-					const keywords = q.split(' ');
-
-					// 名前にキーワードが含まれている
-					for (const emoji of emojis) {
-						if (keywords.every(keyword => emoji.name.includes(keyword))) {
-							matches.add(emoji);
-							if (matches.size >= max) break;
-						}
-					}
-					if (matches.size >= max) return matches;
-
-					// 名前またはエイリアスにキーワードが含まれている
-					for (const emoji of emojis) {
-						if (keywords.every(keyword => emoji.name.includes(keyword) || emoji.keywords.some(alias => alias.includes(keyword)))) {
-							matches.add(emoji);
-							if (matches.size >= max) break;
-						}
-					}
-				} else {
-					for (const emoji of emojis) {
-						if (emoji.name.startsWith(q)) {
-							matches.add(emoji);
-							if (matches.size >= max) break;
-						}
-					}
-					if (matches.size >= max) return matches;
-
-					for (const emoji of emojis) {
-						if (emoji.keywords.some(keyword => keyword.startsWith(q))) {
-							matches.add(emoji);
-							if (matches.size >= max) break;
-						}
-					}
-					if (matches.size >= max) return matches;
-
-					for (const emoji of emojis) {
-						if (emoji.name.includes(q)) {
-							matches.add(emoji);
-							if (matches.size >= max) break;
-						}
-					}
-					if (matches.size >= max) return matches;
-
-					for (const emoji of emojis) {
-						if (emoji.keywords.some(keyword => keyword.includes(q))) {
-							matches.add(emoji);
-							if (matches.size >= max) break;
-						}
-					}
-				}
-
-				return matches;
-			};
-
-			this.searchResultCustom = Array.from(searchCustom());
-			this.searchResultUnicode = Array.from(searchUnicode());
-		}
-	},
-
-	mounted() {
-		this.focus();
-	},
-
-	methods: {
-		focus() {
-			if (!isMobile && !isTouchUsing) {
-				this.$refs.search.focus({
-					preventScroll: true
-				});
-			}
-		},
-
-		reset() {
-			this.$refs.emojis.scrollTop = 0;
-			this.q = '';
-		},
-
-		getKey(emoji: any) {
-			return typeof emoji === 'string' ? emoji : (emoji.char || `:${emoji.name}:`);
-		},
-
-		chosen(emoji: any, ev) {
-			if (ev) {
-				const el = ev.currentTarget || ev.target;
-				const rect = el.getBoundingClientRect();
-				const x = rect.left + (el.offsetWidth / 2);
-				const y = rect.top + (el.offsetHeight / 2);
-				os.popup(Ripple, { x, y }, {}, 'end');
-			}
-
-			const key = this.getKey(emoji);
-			this.$emit('chosen', key);
-
-			// 最近使った絵文字更新
-			if (!this.pinned.includes(key)) {
-				let recents = this.$store.state.recentlyUsedEmojis;
-				recents = recents.filter((e: any) => e !== key);
-				recents.unshift(key);
-				this.$store.set('recentlyUsedEmojis', recents.splice(0, 32));
-			}
-		},
-
-		paste(event) {
-			const paste = (event.clipboardData || window.clipboardData).getData('text');
-			if (this.done(paste)) {
-				event.preventDefault();
-			}
-		},
-
-		done(query) {
-			if (query == null) query = this.q;
-			if (query == null) return;
-			const q = query.replace(/:/g, '');
-			const exactMatchCustom = this.customEmojis.find(e => e.name === q);
-			if (exactMatchCustom) {
-				this.chosen(exactMatchCustom);
-				return true;
-			}
-			const exactMatchUnicode = this.emojilist.find(e => e.char === q || e.name === q);
-			if (exactMatchUnicode) {
-				this.chosen(exactMatchUnicode);
-				return true;
-			}
-			if (this.searchResultCustom.length > 0) {
-				this.chosen(this.searchResultCustom[0]);
-				return true;
-			}
-			if (this.searchResultUnicode.length > 0) {
-				this.chosen(this.searchResultUnicode[0]);
-				return true;
-			}
-		},
+	if (q.value == null || q.value === '') {
+		searchResultCustom.value = [];
+		searchResultUnicode.value = [];
+		return;
 	}
+
+	const newQ = q.value.replace(/:/g, '');
+
+	const searchCustom = () => {
+		const max = 8;
+		const emojis = customEmojis;
+		const matches = new Set<Misskey.entities.CustomEmoji>();
+
+		const exactMatch = emojis.find(e => e.name === newQ);
+		if (exactMatch) matches.add(exactMatch);
+
+		if (newQ.includes(' ')) { // AND検索
+			const keywords = newQ.split(' ');
+
+			// 名前にキーワードが含まれている
+			for (const emoji of emojis) {
+				if (keywords.every(keyword => emoji.name.includes(keyword))) {
+					matches.add(emoji);
+					if (matches.size >= max) break;
+				}
+			}
+			if (matches.size >= max) return matches;
+
+			// 名前またはエイリアスにキーワードが含まれている
+			for (const emoji of emojis) {
+				if (keywords.every(keyword => emoji.name.includes(keyword) || emoji.aliases.some(alias => alias.includes(keyword)))) {
+					matches.add(emoji);
+					if (matches.size >= max) break;
+				}
+			}
+		} else {
+			for (const emoji of emojis) {
+				if (emoji.name.startsWith(newQ)) {
+					matches.add(emoji);
+					if (matches.size >= max) break;
+				}
+			}
+			if (matches.size >= max) return matches;
+
+			for (const emoji of emojis) {
+				if (emoji.aliases.some(alias => alias.startsWith(newQ))) {
+					matches.add(emoji);
+					if (matches.size >= max) break;
+				}
+			}
+			if (matches.size >= max) return matches;
+
+			for (const emoji of emojis) {
+				if (emoji.name.includes(newQ)) {
+					matches.add(emoji);
+					if (matches.size >= max) break;
+				}
+			}
+			if (matches.size >= max) return matches;
+
+			for (const emoji of emojis) {
+				if (emoji.aliases.some(alias => alias.includes(newQ))) {
+					matches.add(emoji);
+					if (matches.size >= max) break;
+				}
+			}
+		}
+
+		return matches;
+	};
+
+	const searchUnicode = () => {
+		const max = 8;
+		const emojis = emojilist;
+		const matches = new Set<UnicodeEmojiDef>();
+
+		const exactMatch = emojis.find(e => e.name === newQ);
+		if (exactMatch) matches.add(exactMatch);
+
+		if (newQ.includes(' ')) { // AND検索
+			const keywords = newQ.split(' ');
+
+			// 名前にキーワードが含まれている
+			for (const emoji of emojis) {
+				if (keywords.every(keyword => emoji.name.includes(keyword))) {
+					matches.add(emoji);
+					if (matches.size >= max) break;
+				}
+			}
+			if (matches.size >= max) return matches;
+
+			// 名前またはエイリアスにキーワードが含まれている
+			for (const emoji of emojis) {
+				if (keywords.every(keyword => emoji.name.includes(keyword) || emoji.keywords.some(alias => alias.includes(keyword)))) {
+					matches.add(emoji);
+					if (matches.size >= max) break;
+				}
+			}
+		} else {
+			for (const emoji of emojis) {
+				if (emoji.name.startsWith(newQ)) {
+					matches.add(emoji);
+					if (matches.size >= max) break;
+				}
+			}
+			if (matches.size >= max) return matches;
+
+			for (const emoji of emojis) {
+				if (emoji.keywords.some(keyword => keyword.startsWith(newQ))) {
+					matches.add(emoji);
+					if (matches.size >= max) break;
+				}
+			}
+			if (matches.size >= max) return matches;
+
+			for (const emoji of emojis) {
+				if (emoji.name.includes(newQ)) {
+					matches.add(emoji);
+					if (matches.size >= max) break;
+				}
+			}
+			if (matches.size >= max) return matches;
+
+			for (const emoji of emojis) {
+				if (emoji.keywords.some(keyword => keyword.includes(newQ))) {
+					matches.add(emoji);
+					if (matches.size >= max) break;
+				}
+			}
+		}
+
+		return matches;
+	};
+
+	searchResultCustom.value = Array.from(searchCustom());
+	searchResultUnicode.value = Array.from(searchUnicode());
+});
+
+function focus() {
+	if (!isMobile && !isTouchUsing) {
+		search.value?.focus({
+			preventScroll: true
+		});
+	}
+}
+
+function reset() {
+	if (emojis.value) emojis.value.scrollTop = 0;
+	q.value = '';
+}
+
+function getKey(emoji: string | Misskey.entities.CustomEmoji | UnicodeEmojiDef): string {
+	return typeof emoji === 'string' ? emoji : (emoji.char || `:${emoji.name}:`);
+}
+
+function chosen(emoji: any, ev?: MouseEvent) {
+	const el = ev && (ev.currentTarget || ev.target) as HTMLElement | null | undefined;
+	if (el) {
+		const rect = el.getBoundingClientRect();
+		const x = rect.left + (el.offsetWidth / 2);
+		const y = rect.top + (el.offsetHeight / 2);
+		os.popup(Ripple, { x, y }, {}, 'end');
+	}
+
+	const key = getKey(emoji);
+	emit('chosen', key);
+
+	// 最近使った絵文字更新
+	if (!pinned.value.includes(key)) {
+		let recents = defaultStore.state.recentlyUsedEmojis;
+		recents = recents.filter((e: any) => e !== key);
+		recents.unshift(key);
+		defaultStore.set('recentlyUsedEmojis', recents.splice(0, 32));
+	}
+}
+
+function paste(event: ClipboardEvent) {
+	const paste = (event.clipboardData || window.clipboardData).getData('text');
+	if (done(paste)) {
+		event.preventDefault();
+	}
+}
+
+function done(query?: any): boolean | void {
+	if (query == null) query = q.value;
+	if (query == null || typeof query !== 'string') return;
+
+	const q2 = query.replace(/:/g, '');
+	const exactMatchCustom = customEmojis.find(e => e.name === q2);
+	if (exactMatchCustom) {
+		chosen(exactMatchCustom);
+		return true;
+	}
+	const exactMatchUnicode = emojilist.find(e => e.char === q2 || e.name === q2);
+	if (exactMatchUnicode) {
+		chosen(exactMatchUnicode);
+		return true;
+	}
+	if (searchResultCustom.value.length > 0) {
+		chosen(searchResultCustom.value[0]);
+		return true;
+	}
+	if (searchResultUnicode.value.length > 0) {
+		chosen(searchResultUnicode.value[0]);
+		return true;
+	}
+}
+
+onMounted(() => {
+	focus();
+});
+
+defineExpose({
+	focus,
+	reset,
 });
 </script>
 
