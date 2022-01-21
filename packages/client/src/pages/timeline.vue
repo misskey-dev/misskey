@@ -17,6 +17,12 @@
 </MkSpacer>
 </template>
 
+<script lang="ts">
+export default {
+	name: 'MkTimelinePage',
+}
+</script>
+
 <script lang="ts" setup>
 import { defineAsyncComponent, computed, watch } from 'vue';
 import XTimeline from '@/components/timeline.vue';
