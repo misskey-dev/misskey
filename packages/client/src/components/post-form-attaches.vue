@@ -98,10 +98,12 @@ export default defineComponent({
 			}, {
 				done: result => {
 					if (!result || result.canceled) return;
-					let comment = result.result;
+					let comment = result.result.length == 0 ? null : result.result;
 					os.api('drive/files/update', {
 						fileId: file.id,
-						comment: comment.length == 0 ? null : comment
+						comment: comment,
+					}).then(() => {
+						file.comment = comment;
 					});
 				}
 			}, 'closed');
