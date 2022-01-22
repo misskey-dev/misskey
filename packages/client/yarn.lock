@@ -1428,6 +1428,13 @@ broadcast-channel@4.9.0:
     rimraf "3.0.2"
     unload "2.3.1"
 
+browser-image-resizer@2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/browser-image-resizer/-/browser-image-resizer-2.2.1.tgz#61ba6d71edbdcc2caf2017c5687f5a8cf6301689"
+  integrity sha512-NwtjlgzKzX9zjI8bh77bnVeOrn6ZuOhD1u7NFjNClQbjCEwI4VH0GYqCh5Bcb0WIWZCDEVJFH9PH49Blk53nlw==
+  dependencies:
+    exifreader "^3.1.0"
+
 browser-stdout@1.3.1:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/browser-stdout/-/browser-stdout-1.3.1.tgz#baa559ee14ced73452229bad7326467c61fabd60"
@@ -2747,6 +2754,13 @@ executable@^4.1.1:
   integrity sha512-8iA79xD3uAch729dUG8xaaBBFGaEa0wdD2VkYLFHwlqosEj/jT66AzcreRDSgV7ehnNLBW2WR5jIXwGKjVdTLg==
   dependencies:
     pify "^2.2.0"
+
+exifreader@^3.1.0:
+  version "3.16.0"
+  resolved "https://registry.yarnpkg.com/exifreader/-/exifreader-3.16.0.tgz#3c106eccd134e8f4786f9e8e600f8269c5296b80"
+  integrity sha512-RfdE1LrU3KJm8NFnU3jJG4/1quEancwTz1VgwzItP11fBoVnb3Vp7JL8bQKU8rSgZm+Roa3+BJ7zg4OtoFhTFA==
+  optionalDependencies:
+    xmldom "^0.1.31"
 
 exit-on-epipe@~1.0.1:
   version "1.0.1"
@@ -6416,6 +6430,11 @@ xml-js@^1.6.11:
   integrity sha512-7rVi2KMfwfWFl+GpPg6m80IVMWXLRjO+PxTq7V2CDhoGak0wzYzFgUY2m4XJ47OGdXd8eLE8EmwfAmdjw7lC1g==
   dependencies:
     sax "^1.2.4"
+
+xmldom@^0.1.31:
+  version "0.1.31"
+  resolved "https://registry.yarnpkg.com/xmldom/-/xmldom-0.1.31.tgz#b76c9a1bd9f0a9737e5a72dc37231cf38375e2ff"
+  integrity sha512-yS2uJflVQs6n+CyjHoaBmVSqIDevTAWrzMmjG1Gc7h1qQ7uVozNhEPJAwZXWyGQ/Gafo3fCwrcaokezLPupVyQ==
 
 y18n@^4.0.0:
   version "4.0.1"
