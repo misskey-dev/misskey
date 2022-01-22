@@ -27,6 +27,7 @@ export const renderActivity = (x: any): IActivity | null => {
 				Emoji: 'toot:Emoji',
 				featured: 'toot:featured',
 				discoverable: 'toot:discoverable',
+				blurhash: 'toot:blurhash',
 				// schema
 				schema: 'http://schema.org#',
 				PropertyValue: 'schema:PropertyValue',
