@@ -6,6 +6,7 @@ import define from '../../../define';
 import { apiLogger } from '../../../logger';
 import { ApiError } from '../../../error';
 import { DriveFiles } from '@/models/index';
+import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/misc/hard-limits';
 
 export const meta = {
 	tags: ['drive'],
@@ -29,6 +30,11 @@ export const meta = {
 
 		name: {
 			validator: $.optional.nullable.str,
+			default: null,
+		},
+
+		comment: {
+			validator: $.optional.nullable.str.max(DB_MAX_IMAGE_COMMENT_LENGTH),
 			default: null,
 		},
 
@@ -79,7 +85,7 @@ export default define(meta, async (ps, user, _, file, cleanup) => {
 
 	try {
 		// Create file
-		const driveFile = await addFile({ user, path: file.path, name, folderId: ps.folderId, force: ps.force, sensitive: ps.isSensitive! });
+		const driveFile = await addFile({ user, path: file.path, name, comment: ps.comment, folderId: ps.folderId, force: ps.force, sensitive: ps.isSensitive! });
 		return await DriveFiles.pack(driveFile, { self: true });
 	} catch (e) {
 		apiLogger.error(e);
