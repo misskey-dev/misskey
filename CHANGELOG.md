@@ -22,6 +22,7 @@
 - カスタム絵文字一括編集機能
 - カスタム絵文字一括インポート
 - 投稿フォームで一時的に投稿するアカウントを切り替えられるように
+- Unifying Misskey-specific IRIs in JSON-LD `@context`
 
 ### Bugfixes
 
