@@ -570,7 +570,7 @@ export function upload(file: File, folder?: any, name?: string): Promise<Misskey
 			const xhr = new XMLHttpRequest();
 			xhr.open('POST', apiUrl + '/drive/files/create', true);
 			xhr.onload = (ev) => {
-				if (ev.target == null || ev.target.response == null) {
+				if (xhr.status !== 200 || ev.target == null || ev.target.response == null) {
 					// TODO: 消すのではなくて再送できるようにしたい
 					uploads.value = uploads.value.filter(x => x.id != id);
 

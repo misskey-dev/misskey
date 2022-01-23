@@ -25,6 +25,7 @@
 - Unifying Misskey-specific IRIs in JSON-LD `@context`
 
 ### Bugfixes
+- アップロードエラー時の処理を修正
 
 ## 12.101.1 (2021/12/29)
 
