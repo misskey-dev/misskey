@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import { ID } from '@/misc/cafy-id';
 import ms from 'ms';
-import uploadFromUrl from '@/services/drive/upload-from-url';
+import { uploadFromUrl } from '@/services/drive/upload-from-url';
 import define from '../../../define';
 import { DriveFiles } from '@/models/index';
 import { publishMainStream } from '@/services/stream';
@@ -54,7 +54,7 @@ export const meta = {
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
-	uploadFromUrl(ps.url, user, ps.folderId, null, ps.isSensitive, ps.force, false, ps.comment).then(file => {
+	uploadFromUrl({ url: ps.url, user, folderId: ps.folderId, sensitive: ps.isSensitive, force: ps.force, comment: ps.comment }).then(file => {
 		DriveFiles.pack(file, { self: true }).then(packedFile => {
 			publishMainStream(user.id, 'urlUploadFinished', {
 				marker: ps.marker,

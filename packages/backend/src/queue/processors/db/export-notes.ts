@@ -95,7 +95,7 @@ export async function exportNotes(job: Bull.Job<DbUserJobData>, done: any): Prom
 	logger.succ(`Exported to: ${path}`);
 
 	const fileName = 'notes-' + dateFormat(new Date(), 'yyyy-mm-dd-HH-MM-ss') + '.json';
-	const driveFile = await addFile(user, path, fileName, null, null, true);
+	const driveFile = await addFile({ user, path, name: fileName, force: true });
 
 	logger.succ(`Exported to: ${driveFile.id}`);
 	cleanup();
