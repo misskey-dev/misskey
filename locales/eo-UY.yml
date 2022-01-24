@@ -881,8 +881,6 @@ _charts:
   activeUsers: "La nombro de la uzantoj aktivaj"
   notesTotal: "La totala nombro de notoj"
   filesTotal: "La totala nombro de la dosieroj"
-_instanceCharts:
-  ffTotal: "La tuto de la sekvataj aŭ sekvantaj uzantoj"
 _timelines:
   home: "Hejma"
   local: "Loka"
