@@ -1160,6 +1160,8 @@ _pages:
   specialBlocks: "خاص"
   blocks:
     text: "نص"
+    textarea: "حقل نصي"
+    section: "قسم"
     image: "الصور"
     button: "زرّ"
     _if:
