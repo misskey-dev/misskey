@@ -794,7 +794,7 @@ _permissions:
   "read:favorites": "Vidi vian liston de preferaĵoj"
   "write:favorites": "Redakti vian liston de preferaĵoj"
   "read:following": "Vidi la informojn de la sekvataj de vi"
-  "write:following": "Sekvi / Ĉesi sekvi alian uzanton"
+  "write:following": "Sekvi/ Ĉesi sekvi alian uzanton"
   "read:messaging": "Vidi viajn retbabiladojn"
   "write:messaging": "Administri viajn retbabiladojn"
   "read:mutes": "Vidi vian liston de silentigitoj"
