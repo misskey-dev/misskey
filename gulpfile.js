@@ -49,14 +49,8 @@ gulp.task('build:backend:style', () => {
 		.pipe(gulp.dest('./packages/backend/built/server/web/'));
 });
 
-gulp.task('build:sw', () => {
-	return gulp.src(['./packages/sw/src/sw.js'])
-		.pipe(replace('VERSION', meta.version))
-		.pipe(gulp.dest('./built/_sw_dist_/'));
-});
-
 gulp.task('build', gulp.parallel(
-	'copy:client:locales', 'copy:backend:views', 'build:backend:script', 'build:backend:style', 'copy:client:fonts', 'build:sw'
+	'copy:client:locales', 'copy:backend:views', 'build:backend:script', 'build:backend:style', 'copy:client:fonts',
 ));
 
 gulp.task('default', gulp.task('build'));

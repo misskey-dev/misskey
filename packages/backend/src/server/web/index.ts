@@ -104,11 +104,6 @@ router.get(`/sw.${config.version}.js`, async ctx => {
 		root: swAssets,
 	});
 });
-router.get(`/sw-lib.${config.version}.js`, async ctx => {
-	await send(ctx as any, `/sw-lib.js`, {
-		root: swAssets,
-	});
-});
 
 // Manifest
 router.get('/manifest.json', require('./manifest'));
