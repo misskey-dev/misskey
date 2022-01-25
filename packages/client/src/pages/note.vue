@@ -1,7 +1,7 @@
 <template>
 <MkSpacer :content-max="800">
 	<div class="fcuexfpr">
-		<transition name="fade" mode="out-in">
+		<transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
 			<div v-if="note" class="note">
 				<div v-if="showNext" class="_gap">
 					<XNotes class="_content" :pagination="next" :no-gap="true"/>

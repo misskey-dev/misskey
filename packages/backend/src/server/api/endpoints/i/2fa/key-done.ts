@@ -130,7 +130,7 @@ export default define(meta, async (ps, user) => {
 
 	const credentialIdString = credentialId.toString('hex');
 
-	await UserSecurityKeys.save({
+	await UserSecurityKeys.insert({
 		userId: user.id,
 		id: credentialIdString,
 		lastUsed: new Date(),

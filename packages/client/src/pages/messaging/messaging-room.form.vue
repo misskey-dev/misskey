@@ -7,7 +7,7 @@
 		ref="text"
 		v-model="text"
 		:placeholder="$ts.inputMessageHere"
-		@keypress="onKeypress"
+		@keydown="onKeydown"
 		@compositionupdate="onCompositionUpdate"
 		@paste="onPaste"
 	></textarea>
@@ -141,7 +141,7 @@ export default defineComponent({
 			//#endregion
 		},
 
-		onKeypress(e) {
+		onKeydown(e) {
 			this.typing();
 			if ((e.which == 10 || e.which == 13) && (e.ctrlKey || e.metaKey) && this.canSend) {
 				this.send();
