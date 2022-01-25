@@ -75,7 +75,7 @@ self.addEventListener('push', ev => {
 				break;
 		}
 
-		createEmptyNotification();
+		return createEmptyNotification();
 	}));
 });
 
