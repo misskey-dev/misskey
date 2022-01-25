@@ -43,7 +43,7 @@
 		<textarea ref="textareaEl" v-model="text" class="text" :class="{ withCw: useCw }" :disabled="posting" :placeholder="placeholder" data-cy-post-form-text @keydown="onKeydown" @paste="onPaste" @compositionupdate="onCompositionUpdate" @compositionend="onCompositionEnd"/>
 		<input v-show="withHashtags" ref="hashtagsInputEl" v-model="hashtags" class="hashtags" :placeholder="i18n.locale.hashtags" list="hashtags">
 		<XPostFormAttaches class="attaches" :files="files" @updated="updateFiles" @detach="detachFile" @changeSensitive="updateFileSensitive" @changeName="updateFileName"/>
-		<XPollEditor v-if="poll" :poll="poll" @destroyed="poll = null" @updated="onPollUpdate"/>
+		<XPollEditor v-if="poll" v-model="poll" @destroyed="poll = null"/>
 		<XNotePreview v-if="showPreview" class="preview" :text="text"/>
 		<footer>
 			<button v-tooltip="i18n.locale.attachFile" class="_button" @click="chooseFileFrom"><i class="fas fa-photo-video"></i></button>
@@ -111,9 +111,9 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(e: 'posted'): void;
-	(e: 'cancel'): void;
-	(e: 'esc'): void;
+	(ev: 'posted'): void;
+	(ev: 'cancel'): void;
+	(ev: 'esc'): void;
 }>();
 
 const textareaEl = $ref<HTMLTextAreaElement | null>(null);
@@ -127,8 +127,8 @@ let files = $ref(props.initialFiles ?? []);
 let poll = $ref<{
 	choices: string[];
 	multiple: boolean;
-	expiresAt: string;
-	expiredAfter: string;
+	expiresAt: string | null;
+	expiredAfter: string | null;
 } | null>(null);
 let useCw = $ref(false);
 let showPreview = $ref(false);
@@ -369,11 +369,6 @@ function upload(file: File, name?: string) {
 	os.upload(file, defaultStore.state.uploadFolder, name).then(res => {
 		files.push(res);
 	});
-}
-
-function onPollUpdate(poll) {
-	poll = poll;
-	saveDraft();
 }
 
 function setVisibility() {
