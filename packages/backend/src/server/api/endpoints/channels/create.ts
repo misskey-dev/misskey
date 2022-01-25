@@ -56,14 +56,14 @@ export default define(meta, async (ps, user) => {
 		}
 	}
 
-	const channel = await Channels.save({
+	const channel = await Channels.insert({
 		id: genId(),
 		createdAt: new Date(),
 		userId: user.id,
 		name: ps.name,
 		description: ps.description || null,
 		bannerId: banner ? banner.id : null,
-	} as Channel);
+	} as Channel).then(x => Channels.findOneOrFail(x.identifiers[0]));
 
 	return await Channels.pack(channel, user);
 });
