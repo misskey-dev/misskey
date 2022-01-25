@@ -1,10 +1,10 @@
 <template>
 <div class="zmdxowus">
-	<p v-if="choices.length < 2" class="caution">
+	<p v-if="poll.choices.length < 2" class="caution">
 		<i class="fas fa-exclamation-triangle"></i>{{ $ts._poll.noOnlyOneChoice }}
 	</p>
 	<ul ref="choices">
-		<li v-for="(choice, i) in choices" :key="i">
+		<li v-for="(choice, i) in poll.choices" :key="i">
 			<MkInput class="input" :model-value="choice" :placeholder="$t('_poll.choiceN', { n: i + 1 })" @update:modelValue="onInput(i, $event)">
 			</MkInput>
 			<button class="_button" @click="remove(i)">
@@ -12,9 +12,9 @@
 			</button>
 		</li>
 	</ul>
-	<MkButton v-if="choices.length < 10" class="add" @click="add">{{ $ts.add }}</MkButton>
+	<MkButton v-if="poll.choices.length < 10" class="add" @click="add">{{ $ts.add }}</MkButton>
 	<MkButton v-else class="add" disabled>{{ $ts._poll.noMore }}</MkButton>
-	<MkSwitch v-model="multiple">{{ $ts._poll.canMultipleVote }}</MkSwitch>
+	<MkSwitch v-model="poll.multiple">{{ $ts._poll.canMultipleVote }}</MkSwitch>
 	<section>
 		<div>
 			<MkSelect v-model="expiration">
@@ -47,8 +47,8 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup>
+import { ref, watch } from 'vue';
 import { addTime } from '@/scripts/time';
 import { formatDateTimeString } from '@/scripts/format-time-string';
 import MkInput from './form/input.vue';
@@ -56,126 +56,73 @@ import MkSelect from './form/select.vue';
 import MkSwitch from './form/switch.vue';
 import MkButton from './ui/button.vue';
 
-export default defineComponent({
-	components: {
-		MkInput,
-		MkSelect,
-		MkSwitch,
-		MkButton,
+const { poll } = defineProps({
+	poll: {
+		type: Object,
+		required: true,
 	},
-
-	props: {
-		poll: {
-			type: Object,
-			required: true
-		}
-	},
-
-	emits: ['updated'],
-
-	data() {
-		return {
-			choices: this.poll.choices,
-			multiple: this.poll.multiple,
-			expiration: 'infinite',
-			atDate: formatDateTimeString(addTime(new Date(), 1, 'day'), 'yyyy-MM-dd'),
-			atTime: '00:00',
-			after: 0,
-			unit: 'second',
-		};
-	},
-
-	watch: {
-		choices: {
-			handler() {
-				this.$emit('updated', this.get());
-			},
-			deep: true
-		},
-		multiple: {
-			handler() {
-				this.$emit('updated', this.get());
-			},
-		},
-		expiration: {
-			handler() {
-				this.$emit('updated', this.get());
-			},
-		},
-		atDate: {
-			handler() {
-				this.$emit('updated', this.get());
-			},
-		},
-		after: {
-			handler() {
-				this.$emit('updated', this.get());
-			},
-		},
-		unit: {
-			handler() {
-				this.$emit('updated', this.get());
-			},
-		},
-	},
-
-	created() {
-		const poll = this.poll;
-		if (poll.expiresAt) {
-			this.expiration = 'at';
-			this.atDate = this.atTime = poll.expiresAt;
-		} else if (typeof poll.expiredAfter === 'number') {
-			this.expiration = 'after';
-			this.after = poll.expiredAfter / 1000;
-		} else {
-			this.expiration = 'infinite';
-		}
-	},
-
-	methods: {
-		onInput(i, e) {
-			this.choices[i] = e;
-		},
-
-		add() {
-			this.choices.push('');
-			this.$nextTick(() => {
-				// TODO
-				//(this.$refs.choices as any).childNodes[this.choices.length - 1].childNodes[0].focus();
-			});
-		},
-
-		remove(i) {
-			this.choices = this.choices.filter((_, _i) => _i != i);
-		},
-
-		get() {
-			const at = () => {
-				return new Date(`${this.atDate} ${this.atTime}`).getTime();
-			};
-
-			const after = () => {
-				let base = parseInt(this.after);
-				switch (this.unit) {
-					case 'day': base *= 24;
-					case 'hour': base *= 60;
-					case 'minute': base *= 60;
-					case 'second': return base *= 1000;
-					default: return null;
-				}
-			};
-
-			return {
-				choices: this.choices,
-				multiple: this.multiple,
-				...(
-					this.expiration === 'at' ? { expiresAt: at() } :
-					this.expiration === 'after' ? { expiredAfter: after() } : {}
-				)
-			};
-		},
-	}
 });
+const emit = defineEmits(['updated']);
+
+const expiration = ref('infinite');
+const atDate = ref(formatDateTimeString(addTime(new Date(), 1, 'day'), 'yyyy-MM-dd'));
+const atTime = ref('00:00');
+const after = ref(0);
+const unit = ref('second');
+
+if (poll.expiresAt) {
+	expiration.value = 'at';
+	atDate.value = atTime.value = poll.expiresAt;
+} else if (typeof poll.expiredAfter === 'number') {
+	expiration.value = 'after';
+	after.value = poll.expiredAfter / 1000;
+} else {
+	expiration.value = 'infinite';
+}
+
+function onInput(i, e) {
+	poll.choices[i] = e;
+}
+
+function add() {
+	poll.choices.push('');
+	// TODO
+	// nextTick(() => {
+	//   (this.$refs.choices as any).childNodes[this.choices.length - 1].childNodes[0].focus();
+	// });
+}
+
+function remove(i) {
+	poll.choices = poll.choices.filter((_, _i) => _i != i);
+}
+
+function get() {
+	const at = () => {
+		return new Date(`${atDate} ${atTime}`).getTime();
+	};
+
+	const calcAfter = () => {
+		let base = parseInt(after);
+		switch (unit) {
+			case 'day': base *= 24;
+			case 'hour': base *= 60;
+			case 'minute': base *= 60;
+			case 'second': return base *= 1000;
+			default: return null;
+		}
+	};
+
+	return {
+		choices: poll.choices,
+		multiple: poll.multiple,
+		...(
+			expiration.value === 'at' ? { expiresAt: at() } :
+			expiration.value === 'after' ? { expiredAfter: calcAfter() } : {}
+		)
+	};
+}
+
+watch([poll, expiration, atDate, after, unit], () => emit('updated', get()));
 </script>
 
 <style lang="scss" scoped>
