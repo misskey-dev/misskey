@@ -97,12 +97,12 @@ function remove(i) {
 }
 
 function get() {
-	const at = () => {
-		return new Date(`${atDate} ${atTime}`).getTime();
+	const calcAt = () => {
+		return new Date(`${atDate.value} ${atTime.value}`).getTime();
 	};
 
 	const calcAfter = () => {
-		let base = parseInt(after);
+		let base = parseInt(after.value);
 		switch (unit) {
 			case 'day': base *= 24;
 			case 'hour': base *= 60;
@@ -116,7 +116,7 @@ function get() {
 		choices: poll.choices,
 		multiple: poll.multiple,
 		...(
-			expiration.value === 'at' ? { expiresAt: at() } :
+			expiration.value === 'at' ? { expiresAt: calcAt() } :
 			expiration.value === 'after' ? { expiredAfter: calcAfter() } : {}
 		)
 	};
