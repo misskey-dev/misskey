@@ -1,10 +1,10 @@
 <template>
 <div class="zmdxowus">
-	<p v-if="poll.choices.length < 2" class="caution">
+	<p v-if="choices.length < 2" class="caution">
 		<i class="fas fa-exclamation-triangle"></i>{{ $ts._poll.noOnlyOneChoice }}
 	</p>
-	<ul ref="choices">
-		<li v-for="(choice, i) in poll.choices" :key="i">
+	<ul>
+		<li v-for="(choice, i) in choices" :key="i">
 			<MkInput class="input" :model-value="choice" :placeholder="$t('_poll.choiceN', { n: i + 1 })" @update:modelValue="onInput(i, $event)">
 			</MkInput>
 			<button class="_button" @click="remove(i)">
@@ -12,9 +12,9 @@
 			</button>
 		</li>
 	</ul>
-	<MkButton v-if="poll.choices.length < 10" class="add" @click="add">{{ $ts.add }}</MkButton>
+	<MkButton v-if="choices.length < 10" class="add" @click="add">{{ $ts.add }}</MkButton>
 	<MkButton v-else class="add" disabled>{{ $ts._poll.noMore }}</MkButton>
-	<MkSwitch v-model="poll.multiple">{{ $ts._poll.canMultipleVote }}</MkSwitch>
+	<MkSwitch v-model="multiple">{{ $ts._poll.canMultipleVote }}</MkSwitch>
 	<section>
 		<div>
 			<MkSelect v-model="expiration">
@@ -31,7 +31,7 @@
 					<template #label>{{ $ts._poll.deadlineTime }}</template>
 				</MkInput>
 			</section>
-			<section v-if="expiration === 'after'">
+			<section v-else-if="expiration === 'after'">
 				<MkInput v-model="after" type="number" class="input">
 					<template #label>{{ $ts._poll.duration }}</template>
 				</MkInput>
@@ -47,7 +47,7 @@
 </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref, watch } from 'vue';
 import { addTime } from '@/scripts/time';
 import { formatDateTimeString } from '@/scripts/format-time-string';
@@ -56,36 +56,47 @@ import MkSelect from './form/select.vue';
 import MkSwitch from './form/switch.vue';
 import MkButton from './ui/button.vue';
 
-const { poll } = defineProps({
-	poll: {
-		type: Object,
-		required: true,
-	},
-});
-const emit = defineEmits(['updated']);
+const props = defineProps<{
+	modelValue: {
+		expiresAt: string;
+		expiredAfter: number;
+		choices: string[];
+		multiple: boolean;
+	};
+}>();
+const emit = defineEmits<{
+	(ev: 'update:modelValue', v: {
+		expiresAt: string;
+		expiredAfter: number;
+		choices: string[];
+		multiple: boolean;
+	}): void;
+}>();
 
+const choices = ref(props.modelValue.choices);
+const multiple = ref(props.modelValue.multiple);
 const expiration = ref('infinite');
 const atDate = ref(formatDateTimeString(addTime(new Date(), 1, 'day'), 'yyyy-MM-dd'));
 const atTime = ref('00:00');
 const after = ref(0);
 const unit = ref('second');
 
-if (poll.expiresAt) {
+if (props.modelValue.expiresAt) {
 	expiration.value = 'at';
-	atDate.value = atTime.value = poll.expiresAt;
-} else if (typeof poll.expiredAfter === 'number') {
+	atDate.value = atTime.value = props.modelValue.expiresAt;
+} else if (typeof props.modelValue.expiredAfter === 'number') {
 	expiration.value = 'after';
-	after.value = poll.expiredAfter / 1000;
+	after.value = props.modelValue.expiredAfter / 1000;
 } else {
 	expiration.value = 'infinite';
 }
 
-function onInput(i, e) {
-	poll.choices[i] = e;
+function onInput(i, value) {
+	choices.value[i] = value;
 }
 
 function add() {
-	poll.choices.push('');
+	choices.value.push('');
 	// TODO
 	// nextTick(() => {
 	//   (this.$refs.choices as any).childNodes[this.choices.length - 1].childNodes[0].focus();
@@ -93,7 +104,7 @@ function add() {
 }
 
 function remove(i) {
-	poll.choices = poll.choices.filter((_, _i) => _i != i);
+	choices.value = choices.value.filter((_, _i) => _i != i);
 }
 
 function get() {
@@ -103,7 +114,7 @@ function get() {
 
 	const calcAfter = () => {
 		let base = parseInt(after.value);
-		switch (unit) {
+		switch (unit.value) {
 			case 'day': base *= 24;
 			case 'hour': base *= 60;
 			case 'minute': base *= 60;
@@ -113,8 +124,8 @@ function get() {
 	};
 
 	return {
-		choices: poll.choices,
-		multiple: poll.multiple,
+		choices: choices.value,
+		multiple: multiple.value,
 		...(
 			expiration.value === 'at' ? { expiresAt: calcAt() } :
 			expiration.value === 'after' ? { expiredAfter: calcAfter() } : {}
@@ -122,7 +133,9 @@ function get() {
 	};
 }
 
-watch([poll, expiration, atDate, after, unit], () => emit('updated', get()));
+watch([choices, multiple, expiration, atDate, atTime, after, unit], () => emit('update:modelValue', get()), {
+	deep: true,
+});
 </script>
 
 <style lang="scss" scoped>
