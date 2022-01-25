@@ -18,7 +18,7 @@ const _dirname = dirname(_filename);
 const app = new Koa();
 app.use(cors());
 app.use(async (ctx, next) => {
-	ctx.set('Content-Security-Policy', `default-src 'none'; style-src 'unsafe-inline'`);
+	ctx.set('Content-Security-Policy', `default-src 'none'; style-src 'unsafe-inline'; img-src 'self'; media-src 'self';`);
 	await next();
 });
 
