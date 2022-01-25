@@ -95,6 +95,9 @@ Some of the existing components are implemented in the Options API, but it is an
 
 Just execute `yarn` to fix it.
 
+### INSERTするときにはsaveではなくinsertを使用する
+#6441
+
 ### placeholder
 SQLをクエリビルダで組み立てる際、使用するプレースホルダは重複してはならない
 例えば
