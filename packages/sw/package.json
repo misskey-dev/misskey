@@ -1,17 +1,16 @@
 {
 	"private": true,
 	"scripts": {
-		"watch": "webpack --watch",
-		"build": "webpack",
+		"watch": "node build.js watch",
+		"build": "node build.js",
 		"lint": "eslint --quiet src/**/*.{ts}"
 	},
 	"resolutions": {},
 	"dependencies": {
+		"esbuild": "0.14.13",
 		"idb-keyval": "6.0.3",
 		"misskey-js": "0.0.10",
-		"ts-loader": "9.2.6",
-		"webpack": "5.64.1",
-		"webpack-cli": "4.9.1"
+		"ts-loader": "9.2.6"
 	},
 	"devDependencies": {
 		"eslint": "8.2.0"
