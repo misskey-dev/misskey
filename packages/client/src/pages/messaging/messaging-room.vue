@@ -24,7 +24,7 @@
 				</I18n>
 				<MkEllipsis/>
 			</div>
-			<transition name="fade">
+			<transition :name="$store.state.animation ? 'fade' : ''">
 				<div v-show="showIndicator" class="new-message">
 					<button class="_buttonPrimary" @click="onIndicatorClick"><i class="fas fa-arrow-circle-down"></i>{{ $ts.newMessageExists }}</button>
 				</div>

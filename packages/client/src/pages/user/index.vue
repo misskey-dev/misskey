@@ -1,6 +1,6 @@
 <template>
 <div>
-<transition name="fade" mode="out-in">
+<transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
 	<div v-if="user && narrow === false" class="ftskorzw wide">
 		<MkRemoteCaution v-if="user.host != null" :href="user.url"/>
 
