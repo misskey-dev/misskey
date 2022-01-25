@@ -251,20 +251,22 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 }
 
 export async function createEmptyNotification() {
-	if (!swLang.i18n) swLang.fetchLocale();
-	const i18n = await swLang.i18n as I18n<any>;
-	const { t } = i18n;
+	return new Promise<void>(async res => {
+		if (!swLang.i18n) swLang.fetchLocale();
+		const i18n = await swLang.i18n as I18n<any>;
+		const { t } = i18n;
+	
+		await self.registration.showNotification(
+			t('_notification.emptyPushNotificationMessage'),
+			{
+				silent: true,
+				badge: iconUrl('null'),
+				tag: 'read_notification',
+			}
+		);
 
-	await self.registration.showNotification(
-		t('_notification.emptyPushNotificationMessage'),
-		{
-			silent: true,
-			badge: iconUrl('null'),
-			tag: 'read_notification',
-		}
-	);
+		res();
 
-	return new Promise<void>(res => {
 		setTimeout(async () => {
 			for (const n of
 				[
@@ -274,7 +276,6 @@ export async function createEmptyNotification() {
 			) {
 				n.close();
 			}
-			res();
 		}, 1000);
 	});
 }
