@@ -14,8 +14,8 @@
 	</ul>
 	<MkButton v-if="choices.length < 10" class="add" @click="add">{{ $ts.add }}</MkButton>
 	<MkButton v-else class="add" disabled>{{ $ts._poll.noMore }}</MkButton>
+	<MkSwitch v-model="multiple">{{ $ts._poll.canMultipleVote }}</MkSwitch>
 	<section>
-		<MkSwitch v-model="multiple">{{ $ts._poll.canMultipleVote }}</MkSwitch>
 		<div>
 			<MkSelect v-model="expiration">
 				<template #label>{{ $ts._poll.expiration }}</template>
@@ -216,7 +216,7 @@ export default defineComponent({
 	}
 
 	> .add {
-		margin: 8px 0 0 0;
+		margin: 8px 0;
 		z-index: 1;
 	}
 
@@ -225,21 +225,27 @@ export default defineComponent({
 
 		> div {
 			margin: 0 8px;
+			display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;
+			gap: 12px;
 
 			&:last-child {
 				flex: 1 0 auto;
 
-				> section {
-					align-items: center;
-					display: flex;
-					margin: -32px 0 0;
+				> div {
+					flex-grow: 1;
+				}
 
-					> &:first-child {
-						margin-right: 16px;
-					}
+				> section {
+					// MAGIC: Prevent div above from growing unless wrapped to its own line
+					flex-grow: 9999;
+					align-items: end;
+					display: flex;
+					gap: 4px;
 
 					> .input {
-						flex: 1 0 auto;
+						flex: 1 1 auto;
 					}
 				}
 			}
