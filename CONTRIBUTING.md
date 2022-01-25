@@ -87,8 +87,9 @@ Configuration files are located in [`/.github/workflows`](/.github/workflows).
 
 ## Vue
 Misskey uses Vue(v3) as its front-end framework.
-**When creating a new component, please use the Composition API (with [setup sugar](https://v3.vuejs.org/api/sfc-script-setup.html) and [ref sugar](https://github.com/vuejs/rfcs/discussions/369)) instead of the Options API.**
-Some of the existing components are implemented in the Options API, but it is an old implementation. Refactors that migrate those components to the Composition API are also welcome.
+- Use TypeScript.
+- **When creating a new component, please use the Composition API (with [setup sugar](https://v3.vuejs.org/api/sfc-script-setup.html) and [ref sugar](https://github.com/vuejs/rfcs/discussions/369)) instead of the Options API.**
+	- Some of the existing components are implemented in the Options API, but it is an old implementation. Refactors that migrate those components to the Composition API are also welcome.
 
 ## Notes
 ### How to resolve conflictions occurred at yarn.lock?
