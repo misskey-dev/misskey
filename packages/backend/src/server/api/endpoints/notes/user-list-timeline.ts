@@ -11,7 +11,7 @@ import { Brackets } from 'typeorm';
 export const meta = {
 	tags: ['notes', 'lists'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	params: {
 		listId: {
@@ -60,11 +60,11 @@ export const meta = {
 	},
 
 	res: {
-		type: 'array' as const,
-		optional: false as const, nullable: false as const,
+		type: 'array',
+		optional: false, nullable: false,
 		items: {
-			type: 'object' as const,
-			optional: false as const, nullable: false as const,
+			type: 'object',
+			optional: false, nullable: false,
 			ref: 'Note',
 		},
 	},
@@ -76,8 +76,9 @@ export const meta = {
 			id: '8fb1fbd5-e476-4c37-9fb0-43d55b63a2ff',
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	const list = await UserLists.findOne({
 		id: ps.listId,

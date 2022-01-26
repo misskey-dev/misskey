@@ -16,7 +16,7 @@
 					<template #header><MkHeader v-if="pageInfo && !pageInfo.hideHeader" :info="pageInfo"/></template>
 					<router-view v-slot="{ Component }">
 						<transition :name="$store.state.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
-							<keep-alive :include="['timeline']">
+							<keep-alive :include="['MkTimelinePage']">
 								<component :is="Component" :ref="changePage"/>
 							</keep-alive>
 						</transition>
@@ -30,7 +30,7 @@
 		</div>
 	</div>
 
-	<transition name="tray-back">
+	<transition :name="$store.state.animation ? 'tray-back' : ''">
 		<div v-if="widgetsShowing"
 			class="tray-back _modalBg"
 			@click="widgetsShowing = false"
@@ -38,7 +38,7 @@
 		></div>
 	</transition>
 
-	<transition name="tray">
+	<transition :name="$store.state.animation ? 'tray' : ''">
 		<XWidgets v-if="widgetsShowing" class="tray"/>
 	</transition>
 
@@ -167,15 +167,15 @@ export default defineComponent({
 			if (window._scroll) window._scroll();
 		},
 
-		onContextmenu(e) {
+		onContextmenu(ev: MouseEvent) {
 			const isLink = (el: HTMLElement) => {
 				if (el.tagName === 'A') return true;
 				if (el.parentElement) {
 					return isLink(el.parentElement);
 				}
 			};
-			if (isLink(e.target)) return;
-			if (['INPUT', 'TEXTAREA', 'IMG', 'VIDEO', 'CANVAS'].includes(e.target.tagName) || e.target.attributes['contenteditable']) return;
+			if (isLink(ev.target)) return;
+			if (['INPUT', 'TEXTAREA', 'IMG', 'VIDEO', 'CANVAS'].includes(ev.target.tagName) || ev.target.attributes['contenteditable']) return;
 			if (window.getSelection().toString() !== '') return;
 			const path = this.$route.path;
 			os.contextMenu([{
@@ -193,7 +193,7 @@ export default defineComponent({
 				action: () => {
 					os.pageWindow(path);
 				}
-			}], e);
+			}], ev);
 		},
 
 		onAiClick(ev) {

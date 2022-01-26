@@ -8,7 +8,7 @@ import { NoteFavorites } from '@/models/index';
 export const meta = {
 	tags: ['notes', 'favorites'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	kind: 'write:favorites',
 
@@ -31,8 +31,9 @@ export const meta = {
 			id: 'b625fc69-635e-45e9-86f4-dbefbef35af5',
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	// Get favoritee
 	const note = await getNote(ps.noteId).catch(e => {

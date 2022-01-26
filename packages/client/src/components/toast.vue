@@ -1,6 +1,6 @@
 <template>
 <div class="mk-toast">
-	<transition name="toast" appear @after-leave="$emit('closed')">
+	<transition :name="$store.state.animation ? 'toast' : ''" appear @after-leave="emit('closed')">
 		<div v-if="showing" class="body _acrylic" :style="{ zIndex }">
 			<div class="message">
 				{{ message }}
@@ -10,29 +10,25 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { onMounted, ref } from 'vue';
 import * as os from '@/os';
 
-export default defineComponent({
-	props: {
-		message: {
-			type: String,
-			required: true,
-		},
-	},
-	emits: ['closed'],
-	data() {
-		return {
-			showing: true,
-			zIndex: os.claimZIndex('high'),
-		};
-	},
-	mounted() {
-		setTimeout(() => {
-			this.showing = false;
-		}, 4000);
-	}
+defineProps<{
+	message: string;
+}>();
+
+const emit = defineEmits<{
+	(e: 'closed'): void;
+}>();
+
+const showing = ref(true);
+const zIndex = os.claimZIndex('high');
+
+onMounted(() => {
+	window.setTimeout(() => {
+		showing.value = false;
+	}, 4000);
 });
 </script>
 

@@ -7,7 +7,7 @@ import { makePaginationQuery } from '../../../common/make-pagination-query';
 export const meta = {
 	tags: ['account', 'gallery'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	kind: 'read:gallery',
 
@@ -27,16 +27,17 @@ export const meta = {
 	},
 
 	res: {
-		type: 'array' as const,
-		optional: false as const, nullable: false as const,
+		type: 'array',
+		optional: false, nullable: false,
 		items: {
-			type: 'object' as const,
-			optional: false as const, nullable: false as const,
+			type: 'object',
+			optional: false, nullable: false,
 			ref: 'GalleryPost',
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	const query = makePaginationQuery(GalleryPosts.createQueryBuilder('post'), ps.sinceId, ps.untilId)
 		.andWhere(`post.userId = :meId`, { meId: user.id });

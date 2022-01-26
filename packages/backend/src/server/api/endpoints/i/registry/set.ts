@@ -5,7 +5,7 @@ import { RegistryItems } from '@/models/index';
 import { genId } from '@/misc/gen-id';
 
 export const meta = {
-	requireCredential: true as const,
+	requireCredential: true,
 
 	secure: true,
 
@@ -23,8 +23,9 @@ export const meta = {
 			default: [],
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	const query = RegistryItems.createQueryBuilder('item')
 		.where('item.domain IS NULL')

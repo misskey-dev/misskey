@@ -17,14 +17,14 @@ jobs:
 
     services:
       postgres:
-        image: postgres:12.2-alpine
+        image: postgres:13
         ports:
           - 54312:5432
         env:
           POSTGRES_DB: test-misskey
           POSTGRES_HOST_AUTH_METHOD: trust
       redis:
-        image: redis:4.0-alpine
+        image: redis:6
         ports:
           - 56312:6379
 
@@ -51,19 +51,21 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
+      fail-fast: false
       matrix:
         node-version: [16.x]
+        browser: [chrome]
 
     services:
       postgres:
-        image: postgres:12.2-alpine
+        image: postgres:13
         ports:
           - 54312:5432
         env:
           POSTGRES_DB: test-misskey
           POSTGRES_HOST_AUTH_METHOD: trust
       redis:
-        image: redis:4.0-alpine
+        image: redis:6
         ports:
           - 56312:6379
 
@@ -71,6 +73,12 @@ jobs:
     - uses: actions/checkout@v2
       with:
         submodules: true
+    # https://github.com/cypress-io/cypress-docker-images/issues/150
+    #- name: Install mplayer for FireFox
+    #  run: sudo apt install mplayer -y
+    #  if: ${{ matrix.browser == 'firefox' }}
+    #- uses: browser-actions/setup-firefox@latest
+    #  if: ${{ matrix.browser == 'firefox' }}
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
@@ -87,5 +95,24 @@ jobs:
       run: cp .github/misskey/test.yml .config
     - name: Build
       run: yarn build
-    - name: Test
-      run: yarn e2e
+    # https://github.com/cypress-io/cypress/issues/4351#issuecomment-559489091
+    - name: ALSA Env
+      run: echo -e 'pcm.!default {\n type hw\n card 0\n}\n\nctl.!default {\n type hw\n card 0\n}' > ~/.asoundrc
+    - name: Cypress run
+      uses: cypress-io/github-action@v2
+      with:
+        install: false
+        start: npm run start:test
+        wait-on: 'http://localhost:61812'
+        headless: false
+        browser: ${{ matrix.browser }}
+    - uses: actions/upload-artifact@v2
+      if: failure()
+      with:
+        name: ${{ matrix.browser }}-cypress-screenshots
+        path: cypress/screenshots
+    - uses: actions/upload-artifact@v2
+      if: always()
+      with:
+        name: ${{ matrix.browser }}-cypress-videos
+        path: cypress/videos

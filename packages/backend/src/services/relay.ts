@@ -22,11 +22,11 @@ export async function getRelayActor(): Promise<ILocalUser> {
 }
 
 export async function addRelay(inbox: string) {
-	const relay = await Relays.save({
+	const relay = await Relays.insert({
 		id: genId(),
 		inbox,
 		status: 'requesting',
-	});
+	}).then(x => Relays.findOneOrFail(x.identifiers[0]));
 
 	const relayActor = await getRelayActor();
 	const follow = await renderFollowRelay(relay, relayActor);

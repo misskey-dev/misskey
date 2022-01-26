@@ -32,13 +32,19 @@ export class Emoji {
 	@Column('varchar', {
 		length: 512,
 	})
-	public url: string;
+	public originalUrl: string;
+
+	@Column('varchar', {
+		length: 512,
+	})
+	public publicUrl: string;
 
 	@Column('varchar', {
 		length: 512, nullable: true,
 	})
 	public uri: string | null;
 
+	// publicUrlの方のtypeが入る
 	@Column('varchar', {
 		length: 64, nullable: true,
 	})

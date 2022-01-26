@@ -15,7 +15,8 @@ export class EmojiRepository extends Repository<Emoji> {
 			name: emoji.name,
 			category: emoji.category,
 			host: emoji.host,
-			url: emoji.url,
+			// || emoji.originalUrl してるのは後方互換性のため
+			url: emoji.publicUrl || emoji.originalUrl,
 		};
 	}
 
@@ -25,41 +26,3 @@ export class EmojiRepository extends Repository<Emoji> {
 		return Promise.all(emojis.map(x => this.pack(x)));
 	}
 }
-
-export const packedEmojiSchema = {
-	type: 'object' as const,
-	optional: false as const, nullable: false as const,
-	properties: {
-		id: {
-			type: 'string' as const,
-			optional: false as const, nullable: false as const,
-			format: 'id',
-			example: 'xxxxxxxxxx',
-		},
-		aliases: {
-			type: 'array' as const,
-			optional: false as const, nullable: false as const,
-			items: {
-				type: 'string' as const,
-				optional: false as const, nullable: false as const,
-				format: 'id',
-			},
-		},
-		name: {
-			type: 'string' as const,
-			optional: false as const, nullable: false as const,
-		},
-		category: {
-			type: 'string' as const,
-			optional: false as const, nullable: true as const,
-		},
-		host: {
-			type: 'string' as const,
-			optional: false as const, nullable: true as const,
-		},
-		url: {
-			type: 'string' as const,
-			optional: false as const, nullable: false as const,
-		},
-	},
-};

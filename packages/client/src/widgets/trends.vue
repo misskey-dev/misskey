@@ -1,10 +1,10 @@
 <template>
-<MkContainer :show-header="props.showHeader">
+<MkContainer :show-header="widgetProps.showHeader">
 	<template #header><i class="fas fa-hashtag"></i>{{ $ts._widgets.trends }}</template>
 
 	<div class="wbrkwala">
 		<MkLoading v-if="fetching"/>
-		<transition-group v-else tag="div" name="chart" class="tags">
+		<transition-group v-else tag="div" :name="$store.state.animation ? 'chart' : ''" class="tags">
 			<div v-for="stat in stats" :key="stat.tag">
 				<div class="tag">
 					<MkA class="a" :to="`/tags/${ encodeURIComponent(stat.tag) }`" :title="stat.tag">#{{ stat.tag }}</MkA>
@@ -17,49 +17,59 @@
 </MkContainer>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { onMounted, onUnmounted, ref } from 'vue';
+import { GetFormResultType } from '@/scripts/form';
+import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
 import MkContainer from '@/components/ui/container.vue';
-import define from './define';
 import MkMiniChart from '@/components/mini-chart.vue';
 import * as os from '@/os';
 
-const widget = define({
-	name: 'hashtags',
-	props: () => ({
-		showHeader: {
-			type: 'boolean',
-			default: true,
-		},
-	})
+const name = 'hashtags';
+
+const widgetPropsDef = {
+	showHeader: {
+		type: 'boolean' as const,
+		default: true,
+	},
+};
+
+type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
+
+// 現時点ではvueの制限によりimportしたtypeをジェネリックに渡せない
+//const props = defineProps<WidgetComponentProps<WidgetProps>>();
+//const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
+const props = defineProps<{ widget?: Widget<WidgetProps>; }>();
+const emit = defineEmits<{ (e: 'updateProps', props: WidgetProps); }>();
+
+const { widgetProps, configure } = useWidgetPropsManager(name,
+	widgetPropsDef,
+	props,
+	emit,
+);
+
+const stats = ref([]);
+const fetching = ref(true);
+
+const fetch = () => {
+	os.api('hashtags/trend').then(stats => {
+		stats.value = stats;
+		fetching.value = false;
+	});
+};
+
+onMounted(() => {
+	fetch();
+	const intervalId = window.setInterval(fetch, 1000 * 60);
+	onUnmounted(() => {
+		window.clearInterval(intervalId);
+	});
 });
 
-export default defineComponent({
-	components: {
-		MkContainer, MkMiniChart
-	},
-	extends: widget,
-	data() {
-		return {
-			stats: [],
-			fetching: true,
-		};
-	},
-	mounted() {
-		this.fetch();
-		this.clock = setInterval(this.fetch, 1000 * 60);
-	},
-	beforeUnmount() {
-		clearInterval(this.clock);
-	},
-	methods: {
-		fetch() {
-			os.api('hashtags/trend').then(stats => {
-				this.stats = stats;
-				this.fetching = false;
-			});
-		}
-	}
+defineExpose<WidgetComponentExpose>({
+	name,
+	configure,
+	id: props.widget ? props.widget.id : null,
 });
 </script>
 

@@ -15,7 +15,7 @@ export const meta = {
 		max: 100,
 	},
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	kind: 'write:following',
 
@@ -58,12 +58,13 @@ export const meta = {
 	},
 
 	res: {
-		type: 'object' as const,
-		optional: false as const, nullable: false as const,
-		ref: 'User',
+		type: 'object',
+		optional: false, nullable: false,
+		ref: 'UserLite',
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	const follower = user;
 

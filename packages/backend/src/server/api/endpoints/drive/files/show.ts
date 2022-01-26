@@ -8,7 +8,7 @@ import { DriveFiles } from '@/models/index';
 export const meta = {
 	tags: ['drive'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	kind: 'read:drive',
 
@@ -23,8 +23,8 @@ export const meta = {
 	},
 
 	res: {
-		type: 'object' as const,
-		optional: false as const, nullable: false as const,
+		type: 'object',
+		optional: false, nullable: false,
 		ref: 'DriveFile',
 	},
 
@@ -47,8 +47,9 @@ export const meta = {
 			id: '89674805-722c-440c-8d88-5641830dc3e4',
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	let file: DriveFile | undefined;
 

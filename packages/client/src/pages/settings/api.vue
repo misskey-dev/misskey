@@ -1,25 +1,20 @@
 <template>
-<FormBase>
-	<FormButton primary @click="generateToken">{{ $ts.generateAccessToken }}</FormButton>
-	<FormLink to="/settings/apps">{{ $ts.manageAccessTokens }}</FormLink>
-	<FormLink to="/api-console" :behavior="isDesktop ? 'window' : null">API console</FormLink>
-</FormBase>
+<div class="_formRoot">
+	<FormButton primary class="_formBlock" @click="generateToken">{{ $ts.generateAccessToken }}</FormButton>
+	<FormLink to="/settings/apps" class="_formBlock">{{ $ts.manageAccessTokens }}</FormLink>
+	<FormLink to="/api-console" :behavior="isDesktop ? 'window' : null" class="_formBlock">API console</FormLink>
+</div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import FormSwitch from '@/components/form/switch.vue';
-import FormSelect from '@/components/form/select.vue';
-import FormLink from '@/components/debobigego/link.vue';
-import FormBase from '@/components/debobigego/base.vue';
-import FormGroup from '@/components/debobigego/group.vue';
-import FormButton from '@/components/debobigego/button.vue';
+import FormLink from '@/components/form/link.vue';
+import FormButton from '@/components/ui/button.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 
 export default defineComponent({
 	components: {
-		FormBase,
 		FormButton,
 		FormLink,
 	},
@@ -35,10 +30,6 @@ export default defineComponent({
 			},
 			isDesktop: window.innerWidth >= 1100,
 		};
-	},
-
-	mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
 	},
 
 	methods: {

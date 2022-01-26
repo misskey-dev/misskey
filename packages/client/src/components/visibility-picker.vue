@@ -1,28 +1,28 @@
 <template>
-<MkModal ref="modal" :z-priority="'high'" :src="src" @click="$refs.modal.close()" @closed="$emit('closed')">
+<MkModal ref="modal" :z-priority="'high'" :src="src" @click="modal.close()" @closed="emit('closed')">
 	<div class="gqyayizv _popup">
-		<button key="public" class="_button" :class="{ active: v == 'public' }" data-index="1" @click="choose('public')">
+		<button key="public" class="_button" :class="{ active: v === 'public' }" data-index="1" @click="choose('public')">
 			<div><i class="fas fa-globe"></i></div>
 			<div>
 				<span>{{ $ts._visibility.public }}</span>
 				<span>{{ $ts._visibility.publicDescription }}</span>
 			</div>
 		</button>
-		<button key="home" class="_button" :class="{ active: v == 'home' }" data-index="2" @click="choose('home')">
+		<button key="home" class="_button" :class="{ active: v === 'home' }" data-index="2" @click="choose('home')">
 			<div><i class="fas fa-home"></i></div>
 			<div>
 				<span>{{ $ts._visibility.home }}</span>
 				<span>{{ $ts._visibility.homeDescription }}</span>
 			</div>
 		</button>
-		<button key="followers" class="_button" :class="{ active: v == 'followers' }" data-index="3" @click="choose('followers')">
+		<button key="followers" class="_button" :class="{ active: v === 'followers' }" data-index="3" @click="choose('followers')">
 			<div><i class="fas fa-unlock"></i></div>
 			<div>
 				<span>{{ $ts._visibility.followers }}</span>
 				<span>{{ $ts._visibility.followersDescription }}</span>
 			</div>
 		</button>
-		<button key="specified" :disabled="localOnly" class="_button" :class="{ active: v == 'specified' }" data-index="4" @click="choose('specified')">
+		<button key="specified" :disabled="localOnly" class="_button" :class="{ active: v === 'specified' }" data-index="4" @click="choose('specified')">
 			<div><i class="fas fa-envelope"></i></div>
 			<div>
 				<span>{{ $ts._visibility.specified }}</span>
@@ -42,49 +42,40 @@
 </MkModal>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { nextTick, watch } from 'vue';
+import * as misskey from 'misskey-js';
 import MkModal from '@/components/ui/modal.vue';
 
-export default defineComponent({
-	components: {
-		MkModal,
-	},
-	props: {
-		currentVisibility: {
-			type: String,
-			required: true
-		},
-		currentLocalOnly: {
-			type: Boolean,
-			required: true
-		},
-		src: {
-			required: false
-		},
-	},
-	emits: ['change-visibility', 'change-local-only', 'closed'],
-	data() {
-		return {
-			v: this.currentVisibility,
-			localOnly: this.currentLocalOnly,
-		}
-	},
-	watch: {
-		localOnly() {
-			this.$emit('change-local-only', this.localOnly);
-		}
-	},
-	methods: {
-		choose(visibility) {
-			this.v = visibility;
-			this.$emit('change-visibility', visibility);
-			this.$nextTick(() => {
-				this.$refs.modal.close();
-			});
-		},
-	}
+const modal = $ref<InstanceType<typeof MkModal>>();
+
+const props = withDefaults(defineProps<{
+	currentVisibility: typeof misskey.noteVisibilities[number];
+	currentLocalOnly: boolean;
+	src?: HTMLElement;
+}>(), {
 });
+
+const emit = defineEmits<{
+	(e: 'changeVisibility', v: typeof misskey.noteVisibilities[number]): void;
+	(e: 'changeLocalOnly', v: boolean): void;
+	(e: 'closed'): void;
+}>();
+
+let v = $ref(props.currentVisibility);
+let localOnly = $ref(props.currentLocalOnly);
+
+watch($$(localOnly), () => {
+	emit('changeLocalOnly', localOnly);
+});
+
+function choose(visibility: typeof misskey.noteVisibilities[number]): void {
+	v = visibility;
+	emit('changeVisibility', visibility);
+	nextTick(() => {
+		modal.close();
+	});
+}
 </script>
 
 <style lang="scss" scoped>

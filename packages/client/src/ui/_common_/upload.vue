@@ -17,18 +17,12 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
 import * as os from '@/os';
 
-export default defineComponent({
-	data() {
-		return {
-			uploads: os.uploads,
-			zIndex: os.claimZIndex('high'),
-		};
-	},
-});
+const uploads = os.uploads;
+const zIndex = os.claimZIndex('high');
 </script>
 
 <style lang="scss" scoped>

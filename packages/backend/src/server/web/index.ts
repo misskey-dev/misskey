@@ -390,9 +390,6 @@ router.get('/cli', async ctx => {
 const override = (source: string, target: string, depth: number = 0) =>
 	[, ...target.split('/').filter(x => x), ...source.split('/').filter(x => x).splice(depth)].join('/');
 
-router.get('/othello', async ctx => ctx.redirect(override(ctx.URL.pathname, 'games/reversi', 1)));
-router.get('/reversi', async ctx => ctx.redirect(override(ctx.URL.pathname, 'games')));
-
 router.get('/flush', async ctx => {
 	await ctx.render('flush');
 });

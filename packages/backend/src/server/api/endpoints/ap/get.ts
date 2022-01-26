@@ -7,7 +7,7 @@ import ms from 'ms';
 export const meta = {
 	tags: ['federation'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	limit: {
 		duration: ms('1hour'),
@@ -24,11 +24,12 @@ export const meta = {
 	},
 
 	res: {
-		type: 'object' as const,
-		optional: false as const, nullable: false as const,
+		type: 'object',
+		optional: false, nullable: false,
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps) => {
 	const resolver = new Resolver();
 	const object = await resolver.resolve(ps.uri);

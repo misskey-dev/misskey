@@ -9,7 +9,7 @@ import { secureRndstr } from '@/misc/secure-rndstr';
 export const meta = {
 	tags: ['auth'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	secure: true,
 
@@ -26,8 +26,9 @@ export const meta = {
 			id: '9c72d8de-391a-43c1-9d06-08d29efde8df',
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	// Fetch token
 	const session = await AuthSessions

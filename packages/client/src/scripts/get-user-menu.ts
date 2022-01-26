@@ -5,7 +5,7 @@ import * as Acct from 'misskey-js/built/acct';
 import * as os from '@/os';
 import { userActions } from '@/store';
 import { router } from '@/router';
-import { $i } from '@/account';
+import { $i, iAmModerator } from '@/account';
 
 export function getUserMenu(user) {
 	const meId = $i ? $i.id : null;
@@ -175,7 +175,7 @@ export function getUserMenu(user) {
 			action: reportAbuse
 		}]);
 
-		if ($i && ($i.isAdmin || $i.isModerator)) {
+		if (iAmModerator) {
 			menu = menu.concat([null, {
 				icon: 'fas fa-microphone-slash',
 				text: user.isSilenced ? i18n.locale.unsilence : i18n.locale.silence,

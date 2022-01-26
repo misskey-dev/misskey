@@ -16,12 +16,12 @@ export async function registerOrFetchInstanceDoc(host: string): Promise<Instance
 	const index = await Instances.findOne({ host });
 
 	if (index == null) {
-		const i = await Instances.save({
+		const i = await Instances.insert({
 			id: genId(),
 			host,
 			caughtAt: new Date(),
 			lastCommunicatedAt: new Date(),
-		});
+		}).then(x => Instances.findOneOrFail(x.identifiers[0]));
 
 		federationChart.update(true);
 

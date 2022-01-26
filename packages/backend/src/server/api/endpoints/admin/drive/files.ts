@@ -7,7 +7,7 @@ import { ID } from '@/misc/cafy-id';
 export const meta = {
 	tags: ['admin'],
 
-	requireCredential: false as const,
+	requireCredential: false,
 	requireModerator: true,
 
 	params: {
@@ -44,16 +44,17 @@ export const meta = {
 	},
 
 	res: {
-		type: 'array' as const,
-		optional: false as const, nullable: false as const,
+		type: 'array',
+		optional: false, nullable: false,
 		items: {
-			type: 'object' as const,
-			optional: false as const, nullable: false as const,
+			type: 'object',
+			optional: false, nullable: false,
 			ref: 'DriveFile',
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, me) => {
 	const query = makePaginationQuery(DriveFiles.createQueryBuilder('file'), ps.sinceId, ps.untilId);
 

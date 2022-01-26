@@ -1,6 +1,6 @@
 <template>
 <div class="mk-notification-toast" :style="{ zIndex }">
-	<transition name="notification-toast" appear @after-leave="$emit('closed')">
+	<transition :name="$store.state.animation ? 'notification-toast' : ''" appear @after-leave="$emit('closed')">
 		<XNotification v-if="showing" :notification="notification" class="notification _acrylic"/>
 	</transition>
 </div>
@@ -29,7 +29,7 @@ export default defineComponent({
 		};
 	},
 	mounted() {
-		setTimeout(() => {
+		window.setTimeout(() => {
 			this.showing = false;
 		}, 6000);
 	}

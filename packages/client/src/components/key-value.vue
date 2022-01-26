@@ -1,5 +1,5 @@
 <template>
-<div class="alqyeyti">
+<div class="alqyeyti" :class="{ oneline }">
 	<div class="key">
 		<slot name="key"></slot>
 	</div>
@@ -22,6 +22,11 @@ export default defineComponent({
 			required: false,
 			default: null,
 		},
+		oneline: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
 	},
 
 	setup(props) {
@@ -39,10 +44,30 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .alqyeyti {
+	> .key, > .value {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
 	> .key {
 		font-size: 0.85em;
 		padding: 0 0 0.25em 0;
 		opacity: 0.75;
+	}
+
+	&.oneline {
+		display: flex;
+
+		> .key {
+			width: 30%;
+			font-size: 1em;
+			padding: 0 8px 0 0;
+		}
+
+		> .value {
+			width: 70%;
+		}
 	}
 }
 </style>

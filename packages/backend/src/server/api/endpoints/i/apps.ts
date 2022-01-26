@@ -3,7 +3,7 @@ import define from '../../define';
 import { AccessTokens } from '@/models/index';
 
 export const meta = {
-	requireCredential: true as const,
+	requireCredential: true,
 
 	secure: true,
 
@@ -17,8 +17,9 @@ export const meta = {
 			]),
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	const query = AccessTokens.createQueryBuilder('token')
 		.where('token.userId = :userId', { userId: user.id });

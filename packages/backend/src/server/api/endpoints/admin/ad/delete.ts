@@ -7,7 +7,7 @@ import { ApiError } from '../../../error';
 export const meta = {
 	tags: ['admin'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 	requireModerator: true,
 
 	params: {
@@ -23,8 +23,9 @@ export const meta = {
 			id: 'ccac9863-3a03-416e-b899-8a64041118b1',
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, me) => {
 	const ad = await Ads.findOne(ps.id);
 

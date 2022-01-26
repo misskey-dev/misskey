@@ -4,24 +4,18 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { computed } from 'vue';
 import MkSample from '@/components/sample.vue';
 import * as symbols from '@/symbols';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		MkSample,
-	},
-
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: this.$ts.preview,
-				icon: 'fas fa-eye',
-			},
-		}
-	},
+defineExpose({
+	[symbols.PAGE_INFO]: computed(() => ({
+		title: i18n.locale.preview,
+		icon: 'fas fa-eye',
+		bg: 'var(--bg)',
+	})),
 });
 </script>
 

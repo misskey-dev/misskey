@@ -3,7 +3,7 @@ import define from '../define';
 import endpoints from '../endpoints';
 
 export const meta = {
-	requireCredential: false as const,
+	requireCredential: false,
 
 	tags: ['meta'],
 
@@ -12,8 +12,9 @@ export const meta = {
 			validator: $.str,
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps) => {
 	const ep = endpoints.find(x => x.name === ps.endpoint);
 	if (ep == null) return null;

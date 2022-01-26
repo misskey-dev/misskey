@@ -1,45 +1,39 @@
 <template>
-<FormBase>
-	<div v-if="enableTwitterIntegration" class="_debobigegoItem">
-		<div class="_debobigegoLabel"><i class="fab fa-twitter"></i> Twitter</div>
-		<div class="_debobigegoPanel" style="padding: 16px;">
-			<p v-if="integrations.twitter">{{ $ts.connectedTo }}: <a :href="`https://twitter.com/${integrations.twitter.screenName}`" rel="nofollow noopener" target="_blank">@{{ integrations.twitter.screenName }}</a></p>
-			<MkButton v-if="integrations.twitter" danger @click="disconnectTwitter">{{ $ts.disconnectService }}</MkButton>
-			<MkButton v-else primary @click="connectTwitter">{{ $ts.connectService }}</MkButton>
-		</div>
-	</div>
+<div class="_formRoot">
+	<FormSection v-if="enableTwitterIntegration">
+		<template #label><i class="fab fa-twitter"></i> Twitter</template>
+		<p v-if="integrations.twitter">{{ $ts.connectedTo }}: <a :href="`https://twitter.com/${integrations.twitter.screenName}`" rel="nofollow noopener" target="_blank">@{{ integrations.twitter.screenName }}</a></p>
+		<MkButton v-if="integrations.twitter" danger @click="disconnectTwitter">{{ $ts.disconnectService }}</MkButton>
+		<MkButton v-else primary @click="connectTwitter">{{ $ts.connectService }}</MkButton>
+	</FormSection>
 
-	<div v-if="enableDiscordIntegration" class="_debobigegoItem">
-		<div class="_debobigegoLabel"><i class="fab fa-discord"></i> Discord</div>
-		<div class="_debobigegoPanel" style="padding: 16px;">
-			<p v-if="integrations.discord">{{ $ts.connectedTo }}: <a :href="`https://discord.com/users/${integrations.discord.id}`" rel="nofollow noopener" target="_blank">@{{ integrations.discord.username }}#{{ integrations.discord.discriminator }}</a></p>
-			<MkButton v-if="integrations.discord" danger @click="disconnectDiscord">{{ $ts.disconnectService }}</MkButton>
-			<MkButton v-else primary @click="connectDiscord">{{ $ts.connectService }}</MkButton>
-		</div>
-	</div>
+	<FormSection v-if="enableDiscordIntegration">
+		<template #label><i class="fab fa-discord"></i> Discord</template>
+		<p v-if="integrations.discord">{{ $ts.connectedTo }}: <a :href="`https://discord.com/users/${integrations.discord.id}`" rel="nofollow noopener" target="_blank">@{{ integrations.discord.username }}#{{ integrations.discord.discriminator }}</a></p>
+		<MkButton v-if="integrations.discord" danger @click="disconnectDiscord">{{ $ts.disconnectService }}</MkButton>
+		<MkButton v-else primary @click="connectDiscord">{{ $ts.connectService }}</MkButton>
+	</FormSection>
 
-	<div v-if="enableGithubIntegration" class="_debobigegoItem">
-		<div class="_debobigegoLabel"><i class="fab fa-github"></i> GitHub</div>
-		<div class="_debobigegoPanel" style="padding: 16px;">
-			<p v-if="integrations.github">{{ $ts.connectedTo }}: <a :href="`https://github.com/${integrations.github.login}`" rel="nofollow noopener" target="_blank">@{{ integrations.github.login }}</a></p>
-			<MkButton v-if="integrations.github" danger @click="disconnectGithub">{{ $ts.disconnectService }}</MkButton>
-			<MkButton v-else primary @click="connectGithub">{{ $ts.connectService }}</MkButton>
-		</div>
-	</div>
-</FormBase>
+	<FormSection v-if="enableGithubIntegration">
+		<template #label><i class="fab fa-github"></i> GitHub</template>
+		<p v-if="integrations.github">{{ $ts.connectedTo }}: <a :href="`https://github.com/${integrations.github.login}`" rel="nofollow noopener" target="_blank">@{{ integrations.github.login }}</a></p>
+		<MkButton v-if="integrations.github" danger @click="disconnectGithub">{{ $ts.disconnectService }}</MkButton>
+		<MkButton v-else primary @click="connectGithub">{{ $ts.connectService }}</MkButton>
+	</FormSection>
+</div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { apiUrl } from '@/config';
-import FormBase from '@/components/debobigego/base.vue';
+import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/ui/button.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 
 export default defineComponent({
 	components: {
-		FormBase,
+		FormSection,
 		MkButton
 	},
 
@@ -79,8 +73,6 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
-
 		document.cookie = `igi=${this.$i.token}; path=/;` +
 			` max-age=31536000;` +
 			(document.location.protocol.startsWith('https') ? ' secure' : '');

@@ -1,6 +1,6 @@
 <template>
 <MkSpacer :content-max="700">
-	<transition name="fade" mode="out-in">
+	<transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
 		<div v-if="page" :key="page.id" v-size="{ max: [450] }" class="xcukqgmh">
 			<div class="_block main">
 				<!--
@@ -106,11 +106,11 @@ export default defineComponent({
 			page: null,
 			error: null,
 			otherPostsPagination: {
-				endpoint: 'users/pages',
+				endpoint: 'users/pages' as const,
 				limit: 6,
-				params: () => ({
+				params: computed(() => ({
 					userId: this.page.user.id
-				})
+				})),
 			},
 		};
 	},

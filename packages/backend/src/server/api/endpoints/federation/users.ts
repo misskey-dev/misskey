@@ -7,7 +7,7 @@ import { makePaginationQuery } from '../../common/make-pagination-query';
 export const meta = {
 	tags: ['federation'],
 
-	requireCredential: false as const,
+	requireCredential: false,
 
 	params: {
 		host: {
@@ -29,16 +29,17 @@ export const meta = {
 	},
 
 	res: {
-		type: 'array' as const,
-		optional: false as const, nullable: false as const,
+		type: 'array',
+		optional: false, nullable: false,
 		items: {
-			type: 'object' as const,
-			optional: false as const, nullable: false as const,
-			ref: 'User',
+			type: 'object',
+			optional: false, nullable: false,
+			ref: 'UserDetailedNotMe',
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, me) => {
 	const query = makePaginationQuery(Users.createQueryBuilder('user'), ps.sinceId, ps.untilId)
 		.andWhere(`user.host = :host`, { host: ps.host });

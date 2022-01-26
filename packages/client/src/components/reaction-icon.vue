@@ -1,25 +1,13 @@
 <template>
-<MkEmoji :emoji="reaction" :custom-emojis="customEmojis" :is-reaction="true" :normal="true" :no-style="noStyle"/>
+<MkEmoji :emoji="reaction" :custom-emojis="customEmojis || []" :is-reaction="true" :normal="true" :no-style="noStyle"/>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
 
-export default defineComponent({
-	props: {
-		reaction: {
-			type: String,
-			required: true
-		},
-		customEmojis: {
-			required: false,
-			default: () => []
-		},
-		noStyle: {
-			type: Boolean,
-			required: false,
-			default: false
-		},
-	},
-});
+const props = defineProps<{
+	reaction: string;
+	customEmojis?: any[]; // TODO
+	noStyle?: boolean;
+}>();
 </script>

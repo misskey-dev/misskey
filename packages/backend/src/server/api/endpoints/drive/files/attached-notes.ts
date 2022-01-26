@@ -7,7 +7,7 @@ import { DriveFiles, Notes } from '@/models/index';
 export const meta = {
 	tags: ['drive', 'notes'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	kind: 'read:drive',
 
@@ -18,11 +18,11 @@ export const meta = {
 	},
 
 	res: {
-		type: 'array' as const,
-		optional: false as const, nullable: false as const,
+		type: 'array',
+		optional: false, nullable: false,
 		items: {
-			type: 'object' as const,
-			optional: false as const, nullable: false as const,
+			type: 'object',
+			optional: false, nullable: false,
 			ref: 'Note',
 		},
 	},
@@ -34,8 +34,9 @@ export const meta = {
 			id: 'c118ece3-2e4b-4296-99d1-51756e32d232',
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	// Fetch file
 	const file = await DriveFiles.findOne({

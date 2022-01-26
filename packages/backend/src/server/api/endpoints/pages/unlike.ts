@@ -7,7 +7,7 @@ import { Pages, PageLikes } from '@/models/index';
 export const meta = {
 	tags: ['pages'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	kind: 'write:page-likes',
 
@@ -30,8 +30,9 @@ export const meta = {
 			id: 'f5e586b0-ce93-4050-b0e3-7f31af5259ee',
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	const page = await Pages.findOne(ps.pageId);
 	if (page == null) {

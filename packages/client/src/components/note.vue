@@ -2,20 +2,21 @@
 <div
 	v-if="!muted"
 	v-show="!isDeleted"
+	ref="el"
 	v-hotkey="keymap"
 	v-size="{ max: [500, 450, 350, 300] }"
 	class="tkcbzcuz"
 	:tabindex="!isDeleted ? '-1' : null"
 	:class="{ renote: isRenote }"
 >
-	<XSub v-if="appearNote.reply" :note="appearNote.reply" class="reply-to"/>
-	<div v-if="pinned" class="info"><i class="fas fa-thumbtack"></i> {{ $ts.pinnedNote }}</div>
-	<div v-if="appearNote._prId_" class="info"><i class="fas fa-bullhorn"></i> {{ $ts.promotion }}<button class="_textButton hide" @click="readPromo()">{{ $ts.hideThisNote }} <i class="fas fa-times"></i></button></div>
-	<div v-if="appearNote._featuredId_" class="info"><i class="fas fa-bolt"></i> {{ $ts.featured }}</div>
+	<MkNoteSub v-if="appearNote.reply" :note="appearNote.reply" class="reply-to"/>
+	<div v-if="pinned" class="info"><i class="fas fa-thumbtack"></i> {{ i18n.locale.pinnedNote }}</div>
+	<div v-if="appearNote._prId_" class="info"><i class="fas fa-bullhorn"></i> {{ i18n.locale.promotion }}<button class="_textButton hide" @click="readPromo()">{{ i18n.locale.hideThisNote }} <i class="fas fa-times"></i></button></div>
+	<div v-if="appearNote._featuredId_" class="info"><i class="fas fa-bolt"></i> {{ i18n.locale.featured }}</div>
 	<div v-if="isRenote" class="renote">
 		<MkAvatar class="avatar" :user="note.user"/>
 		<i class="fas fa-retweet"></i>
-		<I18n :src="$ts.renotedBy" tag="span">
+		<I18n :src="i18n.locale.renotedBy" tag="span">
 			<template #user>
 				<MkA v-user-preview="note.userId" class="name" :to="userPage(note.user)">
 					<MkUserName :user="note.user"/>
@@ -47,7 +48,7 @@
 				</p>
 				<div v-show="appearNote.cw == null || showContent" class="content" :class="{ collapsed }">
 					<div class="text">
-						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ $ts.private }})</span>
+						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ i18n.locale.private }})</span>
 						<MkA v-if="appearNote.replyId" class="reply" :to="`/notes/${appearNote.replyId}`"><i class="fas fa-reply"></i></MkA>
 						<Mfm v-if="appearNote.text" :text="appearNote.text" :author="appearNote.user" :i="$i" :custom-emojis="appearNote.emojis"/>
 						<a v-if="appearNote.renote != null" class="rp">RN:</a>
@@ -66,7 +67,7 @@
 					<MkUrlPreview v-for="url in urls" :key="url" :url="url" :compact="true" :detail="false" class="url-preview"/>
 					<div v-if="appearNote.renote" class="renote"><XNoteSimple :note="appearNote.renote"/></div>
 					<button v-if="collapsed" class="fade _button" @click="collapsed = false">
-						<span>{{ $ts.showMore }}</span>
+						<span>{{ i18n.locale.showMore }}</span>
 					</button>
 				</div>
 				<MkA v-if="appearNote.channel && !inChannel" class="channel" :to="`/channels/${appearNote.channel.id}`"><i class="fas fa-satellite-dish"></i> {{ appearNote.channel.name }}</MkA>
@@ -93,7 +94,7 @@
 	</article>
 </div>
 <div v-else class="muted" @click="muted = false">
-	<I18n :src="$ts.userSaysSomething" tag="small">
+	<I18n :src="i18n.locale.userSaysSomething" tag="small">
 		<template #name>
 			<MkA v-user-preview="appearNote.userId" class="name" :to="userPage(appearNote.user)">
 				<MkUserName :user="appearNote.user"/>
@@ -103,11 +104,11 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineAsyncComponent, defineComponent, markRaw } from 'vue';
+<script lang="ts" setup>
+import { computed, inject, onMounted, onUnmounted, reactive, ref } from 'vue';
 import * as mfm from 'mfm-js';
-import { sum } from '@/scripts/array';
-import XSub from './note.sub.vue';
+import * as misskey from 'misskey-js';
+import MkNoteSub from './MkNoteSub.vue';
 import XNoteHeader from './note-header.vue';
 import XNoteSimple from './note-simple.vue';
 import XReactionsViewer from './reactions-viewer.vue';
@@ -115,744 +116,164 @@ import XMediaList from './media-list.vue';
 import XCwButton from './cw-button.vue';
 import XPoll from './poll.vue';
 import XRenoteButton from './renote-button.vue';
+import MkUrlPreview from '@/components/url-preview.vue';
+import MkInstanceTicker from '@/components/instance-ticker.vue';
 import { pleaseLogin } from '@/scripts/please-login';
 import { focusPrev, focusNext } from '@/scripts/focus';
-import { url } from '@/config';
-import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { checkWordMute } from '@/scripts/check-word-mute';
 import { userPage } from '@/filters/user';
 import * as os from '@/os';
-import { noteActions, noteViewInterruptors } from '@/store';
+import { defaultStore, noteViewInterruptors } from '@/store';
 import { reactionPicker } from '@/scripts/reaction-picker';
 import { extractUrlFromMfm } from '@/scripts/extract-url-from-mfm';
-
-export default defineComponent({
-	components: {
-		XSub,
-		XNoteHeader,
-		XNoteSimple,
-		XReactionsViewer,
-		XMediaList,
-		XCwButton,
-		XPoll,
-		XRenoteButton,
-		MkUrlPreview: defineAsyncComponent(() => import('@/components/url-preview.vue')),
-		MkInstanceTicker: defineAsyncComponent(() => import('@/components/instance-ticker.vue')),
-	},
-
-	inject: {
-		inChannel: {
-			default: null
-		},
-	},
-
-	props: {
-		note: {
-			type: Object,
-			required: true
-		},
-		pinned: {
-			type: Boolean,
-			required: false,
-			default: false
-		},
-	},
-
-	emits: ['update:note'],
-
-	data() {
-		return {
-			connection: null,
-			replies: [],
-			showContent: false,
-			collapsed: false,
-			isDeleted: false,
-			muted: false,
-			translation: null,
-			translating: false,
-		};
-	},
-
-	computed: {
-		rs() {
-			return this.$store.state.reactions;
-		},
-		keymap(): any {
-			return {
-				'r': () => this.reply(true),
-				'e|a|plus': () => this.react(true),
-				'q': () => this.$refs.renoteButton.renote(true),
-				'f|b': this.favorite,
-				'delete|ctrl+d': this.del,
-				'ctrl+q': this.renoteDirectly,
-				'up|k|shift+tab': this.focusBefore,
-				'down|j|tab': this.focusAfter,
-				'esc': this.blur,
-				'm|o': () => this.menu(true),
-				's': this.toggleShowContent,
-				'1': () => this.reactDirectly(this.rs[0]),
-				'2': () => this.reactDirectly(this.rs[1]),
-				'3': () => this.reactDirectly(this.rs[2]),
-				'4': () => this.reactDirectly(this.rs[3]),
-				'5': () => this.reactDirectly(this.rs[4]),
-				'6': () => this.reactDirectly(this.rs[5]),
-				'7': () => this.reactDirectly(this.rs[6]),
-				'8': () => this.reactDirectly(this.rs[7]),
-				'9': () => this.reactDirectly(this.rs[8]),
-				'0': () => this.reactDirectly(this.rs[9]),
-			};
-		},
-
-		isRenote(): boolean {
-			return (this.note.renote &&
-				this.note.text == null &&
-				this.note.fileIds.length == 0 &&
-				this.note.poll == null);
-		},
-
-		appearNote(): any {
-			return this.isRenote ? this.note.renote : this.note;
-		},
-
-		isMyNote(): boolean {
-			return this.$i && (this.$i.id === this.appearNote.userId);
-		},
-
-		isMyRenote(): boolean {
-			return this.$i && (this.$i.id === this.note.userId);
-		},
-
-		reactionsCount(): number {
-			return this.appearNote.reactions
-				? sum(Object.values(this.appearNote.reactions))
-				: 0;
-		},
-
-		urls(): string[] {
-			if (this.appearNote.text) {
-				return extractUrlFromMfm(mfm.parse(this.appearNote.text));
-			} else {
-				return null;
-			}
-		},
-
-		showTicker() {
-			if (this.$store.state.instanceTicker === 'always') return true;
-			if (this.$store.state.instanceTicker === 'remote' && this.appearNote.user.instance) return true;
-			return false;
-		}
-	},
-
-	async created() {
-		if (this.$i) {
-			this.connection = os.stream;
-		}
-
-		this.collapsed = this.appearNote.cw == null && this.appearNote.text && (
-			(this.appearNote.text.split('\n').length > 9) ||
-			(this.appearNote.text.length > 500)
-		);
-		this.muted = await checkWordMute(this.appearNote, this.$i, this.$store.state.mutedWords);
-
-		// plugin
-		if (noteViewInterruptors.length > 0) {
-			let result = this.note;
-			for (const interruptor of noteViewInterruptors) {
-				result = await interruptor.handler(JSON.parse(JSON.stringify(result)));
-			}
-			this.$emit('update:note', Object.freeze(result));
-		}
-	},
-
-	mounted() {
-		this.capture(true);
-
-		if (this.$i) {
-			this.connection.on('_connected_', this.onStreamConnected);
-		}
-	},
-
-	beforeUnmount() {
-		this.decapture(true);
-
-		if (this.$i) {
-			this.connection.off('_connected_', this.onStreamConnected);
-		}
-	},
-
-	methods: {
-		updateAppearNote(v) {
-			this.$emit('update:note', Object.freeze(this.isRenote ? {
-				...this.note,
-				renote: {
-					...this.note.renote,
-					...v
-				}
-			} : {
-				...this.note,
-				...v
-			}));
-		},
-
-		readPromo() {
-			os.api('promo/read', {
-				noteId: this.appearNote.id
-			});
-			this.isDeleted = true;
-		},
-
-		capture(withHandler = false) {
-			if (this.$i) {
-				// TODO: このノートがストリーミング経由で流れてきた場合のみ sr する
-				this.connection.send(document.body.contains(this.$el) ? 'sr' : 's', { id: this.appearNote.id });
-				if (withHandler) this.connection.on('noteUpdated', this.onStreamNoteUpdated);
-			}
-		},
-
-		decapture(withHandler = false) {
-			if (this.$i) {
-				this.connection.send('un', {
-					id: this.appearNote.id
-				});
-				if (withHandler) this.connection.off('noteUpdated', this.onStreamNoteUpdated);
-			}
-		},
-
-		onStreamConnected() {
-			this.capture();
-		},
-
-		onStreamNoteUpdated(data) {
-			const { type, id, body } = data;
-
-			if (id !== this.appearNote.id) return;
-
-			switch (type) {
-				case 'reacted': {
-					const reaction = body.reaction;
-
-					// DeepではなくShallowコピーであることに注意。n.reactions[reaction] = hogeとかしないように(親からもらったデータをミューテートすることになるので)
-					let n = {
-						...this.appearNote,
-					};
-
-					if (body.emoji) {
-						const emojis = this.appearNote.emojis || [];
-						if (!emojis.includes(body.emoji)) {
-							n.emojis = [...emojis, body.emoji];
-						}
-					}
-
-					// TODO: reactionsプロパティがない場合ってあったっけ？ なければ || {} は消せる
-					const currentCount = (this.appearNote.reactions || {})[reaction] || 0;
-
-					// Increment the count
-					n.reactions = {
-						...this.appearNote.reactions,
-						[reaction]: currentCount + 1
-					};
-
-					if (body.userId === this.$i.id) {
-						n.myReaction = reaction;
-					}
-
-					this.updateAppearNote(n);
-					break;
-				}
-
-				case 'unreacted': {
-					const reaction = body.reaction;
-
-					// DeepではなくShallowコピーであることに注意。n.reactions[reaction] = hogeとかしないように(親からもらったデータをミューテートすることになるので)
-					let n = {
-						...this.appearNote,
-					};
-
-					// TODO: reactionsプロパティがない場合ってあったっけ？ なければ || {} は消せる
-					const currentCount = (this.appearNote.reactions || {})[reaction] || 0;
-
-					// Decrement the count
-					n.reactions = {
-						...this.appearNote.reactions,
-						[reaction]: Math.max(0, currentCount - 1)
-					};
-
-					if (body.userId === this.$i.id) {
-						n.myReaction = null;
-					}
-
-					this.updateAppearNote(n);
-					break;
-				}
-
-				case 'pollVoted': {
-					const choice = body.choice;
-
-					// DeepではなくShallowコピーであることに注意。n.reactions[reaction] = hogeとかしないように(親からもらったデータをミューテートすることになるので)
-					let n = {
-						...this.appearNote,
-					};
-
-					const choices = [...this.appearNote.poll.choices];
-					choices[choice] = {
-						...choices[choice],
-						votes: choices[choice].votes + 1,
-						...(body.userId === this.$i.id ? {
-							isVoted: true
-						} : {})
-					};
-
-					n.poll = {
-						...this.appearNote.poll,
-						choices: choices
-					};
-
-					this.updateAppearNote(n);
-					break;
-				}
-
-				case 'deleted': {
-					this.isDeleted = true;
-					break;
-				}
-			}
-		},
-
-		reply(viaKeyboard = false) {
-			pleaseLogin();
-			os.post({
-				reply: this.appearNote,
-				animation: !viaKeyboard,
-			}, () => {
-				this.focus();
-			});
-		},
-
-		renoteDirectly() {
-			os.apiWithDialog('notes/create', {
-				renoteId: this.appearNote.id
-			}, undefined, (res: any) => {
-				os.alert({
-					type: 'success',
-					text: this.$ts.renoted,
-				});
-			}, (e: Error) => {
-				if (e.id === 'b5c90186-4ab0-49c8-9bba-a1f76c282ba4') {
-					os.alert({
-						type: 'error',
-						text: this.$ts.cantRenote,
-					});
-				} else if (e.id === 'fd4cc33e-2a37-48dd-99cc-9b806eb2031a') {
-					os.alert({
-						type: 'error',
-						text: this.$ts.cantReRenote,
-					});
-				}
-			});
-		},
-
-		react(viaKeyboard = false) {
-			pleaseLogin();
-			this.blur();
-			reactionPicker.show(this.$refs.reactButton, reaction => {
-				os.api('notes/reactions/create', {
-					noteId: this.appearNote.id,
-					reaction: reaction
-				});
-			}, () => {
-				this.focus();
-			});
-		},
-
-		reactDirectly(reaction) {
-			os.api('notes/reactions/create', {
-				noteId: this.appearNote.id,
-				reaction: reaction
-			});
-		},
-
-		undoReact(note) {
-			const oldReaction = note.myReaction;
-			if (!oldReaction) return;
-			os.api('notes/reactions/delete', {
-				noteId: note.id
-			});
-		},
-
-		favorite() {
-			pleaseLogin();
-			os.apiWithDialog('notes/favorites/create', {
-				noteId: this.appearNote.id
-			}, undefined, (res: any) => {
-				os.alert({
-					type: 'success',
-					text: this.$ts.favorited,
-				});
-			}, (e: Error) => {
-				if (e.id === 'a402c12b-34dd-41d2-97d8-4d2ffd96a1a6') {
-					os.alert({
-						type: 'error',
-						text: this.$ts.alreadyFavorited,
-					});
-				} else if (e.id === '6dd26674-e060-4816-909a-45ba3f4da458') {
-					os.alert({
-						type: 'error',
-						text: this.$ts.cantFavorite,
-					});
-				}
-			});
-		},
-
-		del() {
-			os.confirm({
-				type: 'warning',
-				text: this.$ts.noteDeleteConfirm,
-			}).then(({ canceled }) => {
-				if (canceled) return;
-
-				os.api('notes/delete', {
-					noteId: this.appearNote.id
-				});
-			});
-		},
-
-		delEdit() {
-			os.confirm({
-				type: 'warning',
-				text: this.$ts.deleteAndEditConfirm,
-			}).then(({ canceled }) => {
-				if (canceled) return;
-
-				os.api('notes/delete', {
-					noteId: this.appearNote.id
-				});
-
-				os.post({ initialNote: this.appearNote, renote: this.appearNote.renote, reply: this.appearNote.reply, channel: this.appearNote.channel });
-			});
-		},
-
-		toggleFavorite(favorite: boolean) {
-			os.apiWithDialog(favorite ? 'notes/favorites/create' : 'notes/favorites/delete', {
-				noteId: this.appearNote.id
-			});
-		},
-
-		toggleWatch(watch: boolean) {
-			os.apiWithDialog(watch ? 'notes/watching/create' : 'notes/watching/delete', {
-				noteId: this.appearNote.id
-			});
-		},
-
-		toggleThreadMute(mute: boolean) {
-			os.apiWithDialog(mute ? 'notes/thread-muting/create' : 'notes/thread-muting/delete', {
-				noteId: this.appearNote.id
-			});
-		},
-
-		getMenu() {
-			let menu;
-			if (this.$i) {
-				const statePromise = os.api('notes/state', {
-					noteId: this.appearNote.id
-				});
-
-				menu = [{
-					icon: 'fas fa-copy',
-					text: this.$ts.copyContent,
-					action: this.copyContent
-				}, {
-					icon: 'fas fa-link',
-					text: this.$ts.copyLink,
-					action: this.copyLink
-				}, (this.appearNote.url || this.appearNote.uri) ? {
-					icon: 'fas fa-external-link-square-alt',
-					text: this.$ts.showOnRemote,
-					action: () => {
-						window.open(this.appearNote.url || this.appearNote.uri, '_blank');
-					}
-				} : undefined,
-				{
-					icon: 'fas fa-share-alt',
-					text: this.$ts.share,
-					action: this.share
-				},
-				this.$instance.translatorAvailable ? {
-					icon: 'fas fa-language',
-					text: this.$ts.translate,
-					action: this.translate
-				} : undefined,
-				null,
-				statePromise.then(state => state.isFavorited ? {
-					icon: 'fas fa-star',
-					text: this.$ts.unfavorite,
-					action: () => this.toggleFavorite(false)
-				} : {
-					icon: 'fas fa-star',
-					text: this.$ts.favorite,
-					action: () => this.toggleFavorite(true)
-				}),
-				{
-					icon: 'fas fa-paperclip',
-					text: this.$ts.clip,
-					action: () => this.clip()
-				},
-				(this.appearNote.userId != this.$i.id) ? statePromise.then(state => state.isWatching ? {
-					icon: 'fas fa-eye-slash',
-					text: this.$ts.unwatch,
-					action: () => this.toggleWatch(false)
-				} : {
-					icon: 'fas fa-eye',
-					text: this.$ts.watch,
-					action: () => this.toggleWatch(true)
-				}) : undefined,
-				statePromise.then(state => state.isMutedThread ? {
-					icon: 'fas fa-comment-slash',
-					text: this.$ts.unmuteThread,
-					action: () => this.toggleThreadMute(false)
-				} : {
-					icon: 'fas fa-comment-slash',
-					text: this.$ts.muteThread,
-					action: () => this.toggleThreadMute(true)
-				}),
-				this.appearNote.userId == this.$i.id ? (this.$i.pinnedNoteIds || []).includes(this.appearNote.id) ? {
-					icon: 'fas fa-thumbtack',
-					text: this.$ts.unpin,
-					action: () => this.togglePin(false)
-				} : {
-					icon: 'fas fa-thumbtack',
-					text: this.$ts.pin,
-					action: () => this.togglePin(true)
-				} : undefined,
-				/*
-				...(this.$i.isModerator || this.$i.isAdmin ? [
-					null,
-					{
-						icon: 'fas fa-bullhorn',
-						text: this.$ts.promote,
-						action: this.promote
-					}]
-					: []
-				),*/
-				...(this.appearNote.userId != this.$i.id ? [
-					null,
-					{
-						icon: 'fas fa-exclamation-circle',
-						text: this.$ts.reportAbuse,
-						action: () => {
-							const u = `${url}/notes/${this.appearNote.id}`;
-							os.popup(import('@/components/abuse-report-window.vue'), {
-								user: this.appearNote.user,
-								initialComment: `Note: ${u}\n-----\n`
-							}, {}, 'closed');
-						}
-					}]
-					: []
-				),
-				...(this.appearNote.userId == this.$i.id || this.$i.isModerator || this.$i.isAdmin ? [
-					null,
-					this.appearNote.userId == this.$i.id ? {
-						icon: 'fas fa-edit',
-						text: this.$ts.deleteAndEdit,
-						action: this.delEdit
-					} : undefined,
-					{
-						icon: 'fas fa-trash-alt',
-						text: this.$ts.delete,
-						danger: true,
-						action: this.del
-					}]
-					: []
-				)]
-				.filter(x => x !== undefined);
-			} else {
-				menu = [{
-					icon: 'fas fa-copy',
-					text: this.$ts.copyContent,
-					action: this.copyContent
-				}, {
-					icon: 'fas fa-link',
-					text: this.$ts.copyLink,
-					action: this.copyLink
-				}, (this.appearNote.url || this.appearNote.uri) ? {
-					icon: 'fas fa-external-link-square-alt',
-					text: this.$ts.showOnRemote,
-					action: () => {
-						window.open(this.appearNote.url || this.appearNote.uri, '_blank');
-					}
-				} : undefined]
-				.filter(x => x !== undefined);
-			}
-
-			if (noteActions.length > 0) {
-				menu = menu.concat([null, ...noteActions.map(action => ({
-					icon: 'fas fa-plug',
-					text: action.title,
-					action: () => {
-						action.handler(this.appearNote);
-					}
-				}))]);
-			}
-
-			return menu;
-		},
-
-		onContextmenu(e) {
-			const isLink = (el: HTMLElement) => {
-				if (el.tagName === 'A') return true;
-				if (el.parentElement) {
-					return isLink(el.parentElement);
-				}
-			};
-			if (isLink(e.target)) return;
-			if (window.getSelection().toString() !== '') return;
-
-			if (this.$store.state.useReactionPickerForContextMenu) {
-				e.preventDefault();
-				this.react();
-			} else {
-				os.contextMenu(this.getMenu(), e).then(this.focus);
-			}
-		},
-
-		menu(viaKeyboard = false) {
-			os.popupMenu(this.getMenu(), this.$refs.menuButton, {
-				viaKeyboard
-			}).then(this.focus);
-		},
-
-		showRenoteMenu(viaKeyboard = false) {
-			if (!this.isMyRenote) return;
-			os.popupMenu([{
-				text: this.$ts.unrenote,
-				icon: 'fas fa-trash-alt',
-				danger: true,
-				action: () => {
-					os.api('notes/delete', {
-						noteId: this.note.id
-					});
-					this.isDeleted = true;
-				}
-			}], this.$refs.renoteTime, {
-				viaKeyboard: viaKeyboard
-			});
-		},
-
-		toggleShowContent() {
-			this.showContent = !this.showContent;
-		},
-
-		copyContent() {
-			copyToClipboard(this.appearNote.text);
-			os.success();
-		},
-
-		copyLink() {
-			copyToClipboard(`${url}/notes/${this.appearNote.id}`);
-			os.success();
-		},
-
-		togglePin(pin: boolean) {
-			os.apiWithDialog(pin ? 'i/pin' : 'i/unpin', {
-				noteId: this.appearNote.id
-			}, undefined, null, e => {
-				if (e.id === '72dab508-c64d-498f-8740-a8eec1ba385a') {
-					os.alert({
-						type: 'error',
-						text: this.$ts.pinLimitExceeded
-					});
-				}
-			});
-		},
-
-		async clip() {
-			const clips = await os.api('clips/list');
-			os.popupMenu([{
-				icon: 'fas fa-plus',
-				text: this.$ts.createNew,
-				action: async () => {
-					const { canceled, result } = await os.form(this.$ts.createNewClip, {
-						name: {
-							type: 'string',
-							label: this.$ts.name
-						},
-						description: {
-							type: 'string',
-							required: false,
-							multiline: true,
-							label: this.$ts.description
-						},
-						isPublic: {
-							type: 'boolean',
-							label: this.$ts.public,
-							default: false
-						}
-					});
-					if (canceled) return;
-
-					const clip = await os.apiWithDialog('clips/create', result);
-
-					os.apiWithDialog('clips/add-note', { clipId: clip.id, noteId: this.appearNote.id });
-				}
-			}, null, ...clips.map(clip => ({
-				text: clip.name,
-				action: () => {
-					os.apiWithDialog('clips/add-note', { clipId: clip.id, noteId: this.appearNote.id });
-				}
-			}))], this.$refs.menuButton, {
-			}).then(this.focus);
-		},
-
-		async promote() {
-			const { canceled, result: days } = await os.inputNumber({
-				title: this.$ts.numberOfDays,
-			});
-
-			if (canceled) return;
-
-			os.apiWithDialog('admin/promo/create', {
-				noteId: this.appearNote.id,
-				expiresAt: Date.now() + (86400000 * days)
-			});
-		},
-
-		share() {
-			navigator.share({
-				title: this.$t('noteOf', { user: this.appearNote.user.name }),
-				text: this.appearNote.text,
-				url: `${url}/notes/${this.appearNote.id}`
-			});
-		},
-
-		async translate() {
-			if (this.translation != null) return;
-			this.translating = true;
-			const res = await os.api('notes/translate', {
-				noteId: this.appearNote.id,
-				targetLang: localStorage.getItem('lang') || navigator.language,
-			});
-			this.translating = false;
-			this.translation = res;
-		},
-
-		focus() {
-			this.$el.focus();
-		},
-
-		blur() {
-			this.$el.blur();
-		},
-
-		focusBefore() {
-			focusPrev(this.$el);
-		},
-
-		focusAfter() {
-			focusNext(this.$el);
-		},
-
-		userPage
-	}
+import { $i } from '@/account';
+import { i18n } from '@/i18n';
+import { getNoteMenu } from '@/scripts/get-note-menu';
+import { useNoteCapture } from '@/scripts/use-note-capture';
+
+const props = defineProps<{
+	note: misskey.entities.Note;
+	pinned?: boolean;
+}>();
+
+const inChannel = inject('inChannel', null);
+
+const isRenote = (
+	props.note.renote != null &&
+	props.note.text == null &&
+	props.note.fileIds.length === 0 &&
+	props.note.poll == null
+);
+
+const el = ref<HTMLElement>();
+const menuButton = ref<HTMLElement>();
+const renoteButton = ref<InstanceType<typeof XRenoteButton>>();
+const renoteTime = ref<HTMLElement>();
+const reactButton = ref<HTMLElement>();
+let appearNote = $ref(isRenote ? props.note.renote as misskey.entities.Note : props.note);
+const isMyRenote = $i && ($i.id === props.note.userId);
+const showContent = ref(false);
+const collapsed = ref(appearNote.cw == null && appearNote.text != null && (
+	(appearNote.text.split('\n').length > 9) ||
+	(appearNote.text.length > 500)
+));
+const isDeleted = ref(false);
+const muted = ref(checkWordMute(appearNote, $i, defaultStore.state.mutedWords));
+const translation = ref(null);
+const translating = ref(false);
+const urls = appearNote.text ? extractUrlFromMfm(mfm.parse(appearNote.text)) : null;
+const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.user.instance);
+
+const keymap = {
+	'r': () => reply(true),
+	'e|a|plus': () => react(true),
+	'q': () => renoteButton.value.renote(true),
+	'up|k|shift+tab': focusBefore,
+	'down|j|tab': focusAfter,
+	'esc': blur,
+	'm|o': () => menu(true),
+	's': () => showContent.value != showContent.value,
+};
+
+useNoteCapture({
+	appearNote: $$(appearNote),
+	rootEl: el,
 });
+
+function reply(viaKeyboard = false): void {
+	pleaseLogin();
+	os.post({
+		reply: appearNote,
+		animation: !viaKeyboard,
+	}, () => {
+		focus();
+	});
+}
+
+function react(viaKeyboard = false): void {
+	pleaseLogin();
+	blur();
+	reactionPicker.show(reactButton.value, reaction => {
+		os.api('notes/reactions/create', {
+			noteId: appearNote.id,
+			reaction: reaction
+		});
+	}, () => {
+		focus();
+	});
+}
+
+function undoReact(note): void {
+	const oldReaction = note.myReaction;
+	if (!oldReaction) return;
+	os.api('notes/reactions/delete', {
+		noteId: note.id
+	});
+}
+
+function onContextmenu(ev: MouseEvent): void {
+	const isLink = (el: HTMLElement) => {
+		if (el.tagName === 'A') return true;
+		if (el.parentElement) {
+			return isLink(el.parentElement);
+		}
+	};
+	if (isLink(ev.target)) return;
+	if (window.getSelection().toString() !== '') return;
+
+	if (defaultStore.state.useReactionPickerForContextMenu) {
+		ev.preventDefault();
+		react();
+	} else {
+		os.contextMenu(getNoteMenu({ note: props.note, translating, translation, menuButton }), ev).then(focus);
+	}
+}
+
+function menu(viaKeyboard = false): void {
+	os.popupMenu(getNoteMenu({ note: props.note, translating, translation, menuButton }), menuButton.value, {
+		viaKeyboard
+	}).then(focus);
+}
+
+function showRenoteMenu(viaKeyboard = false): void {
+	if (!isMyRenote) return;
+	os.popupMenu([{
+		text: i18n.locale.unrenote,
+		icon: 'fas fa-trash-alt',
+		danger: true,
+		action: () => {
+			os.api('notes/delete', {
+				noteId: props.note.id
+			});
+			isDeleted.value = true;
+		}
+	}], renoteTime.value, {
+		viaKeyboard: viaKeyboard
+	});
+}
+
+function focus() {
+	el.value.focus();
+}
+
+function blur() {
+	el.value.blur();
+}
+
+function focusBefore() {
+	focusPrev(el.value);
+}
+
+function focusAfter() {
+	focusNext(el.value);
+}
+
+function readPromo() {
+	os.api('promo/read', {
+		noteId: appearNote.id
+	});
+	isDeleted.value = true;
+}
 </script>
 
 <style lang="scss" scoped>

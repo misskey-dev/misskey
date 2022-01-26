@@ -5,7 +5,7 @@ import { UserProfiles, UserSecurityKeys, Users } from '@/models/index';
 import { publishMainStream } from '@/services/stream';
 
 export const meta = {
-	requireCredential: true as const,
+	requireCredential: true,
 
 	secure: true,
 
@@ -17,8 +17,9 @@ export const meta = {
 			validator: $.str,
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	const profile = await UserProfiles.findOneOrFail(user.id);
 

@@ -8,7 +8,7 @@
 			<template v-else><i class="fas fa-angle-down"></i></template>
 		</button>
 	</header>
-	<transition name="folder-toggle"
+	<transition :name="$store.state.animation ? 'folder-toggle' : ''"
 		@enter="enter"
 		@after-enter="afterEnter"
 		@leave="leave"

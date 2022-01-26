@@ -5,7 +5,7 @@ import { Apps } from '@/models/index';
 export const meta = {
 	tags: ['account', 'app'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	params: {
 		limit: {
@@ -20,55 +20,56 @@ export const meta = {
 	},
 
 	res: {
-		type: 'array' as const,
-		optional: false as const, nullable: false as const,
+		type: 'array',
+		optional: false, nullable: false,
 		items: {
-			type: 'object' as const,
-			optional: false as const, nullable: false as const,
+			type: 'object',
+			optional: false, nullable: false,
 			properties: {
 				id: {
-					type: 'string' as const,
-					optional: false as const, nullable: false as const,
+					type: 'string',
+					optional: false, nullable: false,
 				},
 				name: {
-					type: 'string' as const,
-					optional: false as const, nullable: false as const,
+					type: 'string',
+					optional: false, nullable: false,
 				},
 				callbackUrl: {
-					type: 'string' as const,
-					optional: false as const, nullable: false as const,
+					type: 'string',
+					optional: false, nullable: false,
 				},
 				permission: {
-					type: 'array' as const,
-					optional: false as const, nullable: false as const,
+					type: 'array',
+					optional: false, nullable: false,
 					items: {
-						type: 'string' as const,
-						optional: false as const, nullable: false as const,
+						type: 'string',
+						optional: false, nullable: false,
 					},
 				},
 				secret: {
-					type: 'string' as const,
-					optional: true as const, nullable: false as const,
+					type: 'string',
+					optional: true, nullable: false,
 				},
 				isAuthorized: {
-					type: 'object' as const,
-					optional: true as const, nullable: false as const,
+					type: 'object',
+					optional: true, nullable: false,
 					properties: {
 						appId: {
-							type: 'string' as const,
-							optional: false as const, nullable: false as const,
+							type: 'string',
+							optional: false, nullable: false,
 						},
 						userId: {
-							type: 'string' as const,
-							optional: false as const, nullable: false as const,
+							type: 'string',
+							optional: false, nullable: false,
 						},
 					},
 				},
 			},
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	const query = {
 		userId: user.id,

@@ -97,7 +97,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	tl: {
 		where: 'deviceAccount',
 		default: {
-			src: 'home',
+			src: 'home' as 'home' | 'local' | 'social' | 'global',
 			arg: null
 		}
 	},
@@ -160,7 +160,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	useReactionPickerForContextMenu: {
 		where: 'device',
-		default: true
+		default: false
 	},
 	showGapBetweenNotesInTimeline: {
 		where: 'device',
@@ -255,10 +255,6 @@ export class ColdDeviceStorage {
 		sound_chatBg: { type: 'syuilo/waon', volume: 1 },
 		sound_antenna: { type: 'syuilo/triple', volume: 1 },
 		sound_channel: { type: 'syuilo/square-pico', volume: 1 },
-		sound_reversiPutBlack: { type: 'syuilo/kick', volume: 0.3 },
-		sound_reversiPutWhite: { type: 'syuilo/snare', volume: 0.3 },
-		roomGraphicsQuality: 'medium' as 'cheep' | 'low' | 'medium' | 'high' | 'ultra',
-		roomUseOrthographicCamera: true,
 	};
 
 	public static watchers = [];

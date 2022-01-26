@@ -211,7 +211,7 @@ export default defineComponent({
 				contentClicking = true;
 				window.addEventListener('mouseup', e => {
 					// click イベントより先に mouseup イベントが発生するかもしれないのでちょっと待つ
-					setTimeout(() => {
+					window.setTimeout(() => {
 						contentClicking = false;
 					}, 100);
 				}, { passive: true, once: true });

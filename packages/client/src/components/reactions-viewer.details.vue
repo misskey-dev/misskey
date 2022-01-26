@@ -1,5 +1,5 @@
 <template>
-<MkTooltip ref="tooltip" :source="source" :max-width="340" @closed="$emit('closed')">
+<MkTooltip ref="tooltip" :source="source" :max-width="340" @closed="emit('closed')">
 	<div class="bqxuuuey">
 		<div class="reaction">
 			<XReactionIcon :reaction="reaction" :custom-emojis="emojis" class="icon" :no-style="true"/>
@@ -16,39 +16,22 @@
 </MkTooltip>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
 import MkTooltip from './ui/tooltip.vue';
 import XReactionIcon from './reaction-icon.vue';
 
-export default defineComponent({
-	components: {
-		MkTooltip,
-		XReactionIcon
-	},
-	props: {
-		reaction: {
-			type: String,
-			required: true,
-		},
-		users: {
-			type: Array,
-			required: true,
-		},
-		count: {
-			type: Number,
-			required: true,
-		},
-		emojis: {
-			type: Array,
-			required: true,
-		},
-		source: {
-			required: true,
-		}
-	},
-	emits: ['closed'],
-})
+const props = defineProps<{
+	reaction: string;
+	users: any[]; // TODO
+	count: number;
+	emojis: any[]; // TODO
+	source: any; // TODO
+}>();
+
+const emit = defineEmits<{
+	(e: 'closed'): void;
+}>();
 </script>
 
 <style lang="scss" scoped>

@@ -1,15 +1,23 @@
 <template>
-<mfm-core v-bind="$attrs" class="havbbuyv" :class="{ nowrap: $attrs['nowrap'] }"/>
+<MfmCore :text="text" :plain="plain" :nowrap="nowrap" :author="author" :customEmojis="customEmojis" :isNote="isNote" class="havbbuyv" :class="{ nowrap }"/>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
 import MfmCore from '@/components/mfm';
 
-export default defineComponent({
-	components: {
-		MfmCore
-	}
+const props = withDefaults(defineProps<{
+	text: string;
+	plain?: boolean;
+	nowrap?: boolean;
+	author?: any;
+	customEmojis?: any;
+	isNote?: boolean;
+}>(), {
+	plain: false,
+	nowrap: false,
+	author: null,
+	isNote: true,
 });
 </script>
 

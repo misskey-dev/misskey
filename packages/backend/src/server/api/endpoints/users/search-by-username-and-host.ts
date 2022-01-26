@@ -8,7 +8,7 @@ import { User } from '@/models/entities/user';
 export const meta = {
 	tags: ['users'],
 
-	requireCredential: false as const,
+	requireCredential: false,
 
 	params: {
 		username: {
@@ -31,16 +31,17 @@ export const meta = {
 	},
 
 	res: {
-		type: 'array' as const,
-		optional: false as const, nullable: false as const,
+		type: 'array',
+		optional: false, nullable: false,
 		items: {
-			type: 'object' as const,
-			optional: false as const, nullable: false as const,
+			type: 'object',
+			optional: false, nullable: false,
 			ref: 'User',
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, me) => {
 	const activeThreshold = new Date(Date.now() - (1000 * 60 * 60 * 24 * 30)); // 30日
 
@@ -111,6 +112,6 @@ export default define(meta, async (ps, me) => {
 				.getMany();
 		}
 
-		return await Users.packMany(users, me, { detail: ps.detail });
+		return await Users.packMany(users, me, { detail: !!ps.detail });
 	}
 });
