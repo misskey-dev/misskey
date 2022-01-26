@@ -19,6 +19,8 @@ And see [Misskey Hub](https://misskey-hub.net/en/docs/install/docker.html).
 
 ### m@ster-dev
 
+- 設定画面の見出しのデザイン
+
 ### 12.102.0-posky-12.7.2
 
 - Merge [12.102.0](https://github.com/misskey-dev/misskey/releases/tag/12.102.0)

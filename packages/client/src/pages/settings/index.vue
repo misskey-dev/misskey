@@ -281,7 +281,13 @@ export default defineComponent({
 		font-weight: bold;
 
 		> .title {
-			width: 34%;
+			width: auto;
+		}
+
+		.subtitle::before {
+			content: "/";
+			opacity: 0.5;
+			margin: 0 10px;
 		}
 
 		> .subtitle {
