@@ -64,9 +64,29 @@ export: "রপ্তানি"
 files: "ফাইলগুলি"
 download: "ডাউনলোড"
 driveFileDeleteConfirm: "আপনি কি নিশ্চিত যে আপনি \"{name}\" ডিলিট করতে চান? যে সকল নোটের সাথে এই ফাইলটি সংযুক্ত সেগুলোও ডিলিট করা হবে।"
+unfollowConfirm: "{name} কে আনফলোও করার ব্যাপারে নিশ্চিত?"
+exportRequested: "আপনার তথ্যসমূহ রপ্তানির জন্য অনুরোধ করেছেন। এতে কিছু সময় লাগতে পারে। রপ্তানি সম্পন্ন হলে তা আপনার ড্রাইভে সংরক্ষিত হবে।"
+importRequested: "আপনার তথ্যসমূহ আমদানির জন্য অনুরোধ করেছেন। এতে কিছু সময় লাগতে পারে। "
+lists: "লিস্ট"
+noLists: "কোন লিস্ট নেই"
+note: "নোট"
+notes: "নোটগুলি"
+following: "অনুসরণ করা হচ্ছে"
+followers: "অনুসরণকারী"
+followsYou: "আপনাকে অনুসরণ করে"
+createList: "লিস্ট তৈরি করুন"
+manageLists: "লিস্ট ব্যাবস্থাপনা"
+error: "সমস্যা"
+somethingHappened: "একটি ত্রুটি হয়েছে"
+retry: "আবার চেষ্টা করুন"
+pageLoadError: "পেজ লোড করা যায়নি"
+pageLoadErrorDescription: "এটি সাধারনত নেটওয়ার্কের সমস্যার বা ব্রাউজার ক্যাশের কারণে ঘটে থাকে। ব্রাউজার এর ক্যাশ পরিষ্কার করুন এবং একটু পর আবার চেষ্টা করুন। "
+serverIsDead: "এই সার্ভার বর্তমানে সাড়া দিচ্ছে না। একটু পরে আবার চেষ্টা করুন।"
+follow: "অনুসরণ করা হচ্ছে"
 pinned: "পিন করা"
 instances: "ইন্সট্যান্স"
 remove: "মুছুন"
+userList: "লিস্ট"
 smtpUser: "ব্যবহারকারীর নাম"
 smtpPass: "পাসওয়ার্ড"
 user: "ব্যবহারকারীগণ"
@@ -80,20 +100,47 @@ _theme:
   keys:
     mention: "উল্লেখ"
 _sfx:
+  note: "নোটগুলি"
   notification: "বিজ্ঞপ্তি"
 _widgets:
   notifications: "বিজ্ঞপ্তি"
   timeline: "টাইমলাইন"
 _cw:
   show: "আরও দেখুন"
+_visibility:
+  followers: "অনুসরণকারী"
 _profile:
   username: "ব্যবহারকারীর নাম"
+_exportOrImport:
+  followingList: "অনুসরণ করা হচ্ছে"
+  userLists: "লিস্ট"
+_pages:
+  script:
+    categories:
+      list: "লিস্ট"
+    blocks:
+      _join:
+        arg1: "লিস্ট"
+      _randomPick:
+        arg1: "লিস্ট"
+      _dailyRandomPick:
+        arg1: "লিস্ট"
+      _seedRandomPick:
+        arg2: "লিস্ট"
+      _pick:
+        arg1: "লিস্ট"
+      _listLen:
+        arg1: "লিস্ট"
+    types:
+      array: "লিস্ট"
 _notification:
   youWereFollowed: "আপনাকে অনুসরণ করছে"
   _types:
+    follow: "অনুসরণ করা হচ্ছে"
     mention: "উল্লেখ"
 _deck:
   _columns:
     notifications: "বিজ্ঞপ্তি"
     tl: "টাইমলাইন"
+    list: "লিস্ট"
     mentions: "উল্লেখসমূহ"
