@@ -1,8 +1,8 @@
 import * as config from '@/config';
 
 export function popout(path: string, w?: HTMLElement) {
-	let url = path.startsWith('http://') || path.startsWith('https://') ? path : config.url + path;
-	url += '?zen'; // TODO: ちゃんとURLパースしてクエリ付ける
+	let url = path.startsWith('http://') || path.startsWith('https://') ? path : config.url + "/" + path;
+	url += '?zen';
 	if (w) {
 		const position = w.getBoundingClientRect();
 		const width = parseInt(getComputedStyle(w, '').width, 10);
