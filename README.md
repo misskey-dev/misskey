@@ -19,6 +19,8 @@ And see [Misskey Hub](https://misskey-hub.net/en/docs/install/docker.html).
 
 ### m@ster-dev
 
+### 12.102.0-posky-12.8.0
+
 - 設定画面の見出しのデザイン
 
 ### 12.102.0-posky-12.7.2
