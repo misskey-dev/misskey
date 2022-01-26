@@ -17,6 +17,9 @@ block og
 	meta(property='og:description' content= profile.description)
 	meta(property='og:url'         content= url)
 	meta(property='og:image'       content= img)
+	meta(property='twitter:card'   content='summary')
+	meta(property='twitter:title'  content= title)
+	meta(property='twitter:image'  content= img)
 
 block meta
 	if user.host || profile.noCrawle

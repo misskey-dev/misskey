@@ -17,6 +17,9 @@ block og
 	meta(property='og:description' content= clip.description)
 	meta(property='og:url'         content= url)
 	meta(property='og:image'       content= user.avatarUrl)
+	meta(property='twitter:card'   content='summary')
+	meta(property='twitter:title'  content= title)
+	meta(property='twitter:image'  content= user.avatarUrl)
 
 block meta
 	if profile.noCrawle
@@ -25,8 +28,6 @@ block meta
 	meta(name='misskey:user-username' content=user.username)
 	meta(name='misskey:user-id' content=user.id)
 	meta(name='misskey:clip-id' content=clip.id)
-
-	meta(name='twitter:card' content='summary')
 
 	// todo
 	if user.twitter
