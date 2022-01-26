@@ -117,7 +117,7 @@ export default defineComponent({
 
 				// このコンポーネントが作成された時、非表示状態である場合がある
 				// 非表示状態だと要素の幅などは0になってしまうので、定期的に計算する
-				const clock = setInterval(() => {
+				const clock = window.setInterval(() => {
 					if (prefixEl.value) {
 						if (prefixEl.value.offsetWidth) {
 							inputEl.value.style.paddingLeft = prefixEl.value.offsetWidth + 'px';
@@ -131,7 +131,7 @@ export default defineComponent({
 				}, 100);
 
 				onUnmounted(() => {
-					clearInterval(clock);
+					window.clearInterval(clock);
 				});
 			});
 		});

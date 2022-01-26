@@ -25,7 +25,7 @@ setInterval(() => {
 export const meta = {
 	tags: ['notes'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	limit: {
 		duration: ms('1hour'),
@@ -48,7 +48,7 @@ export const meta = {
 			validator: $.optional.nullable.str.pipe(text =>
 				text.trim() != ''
 					&& length(text.trim()) <= maxNoteTextLength
-					&& Array.from(text.trim()).length <= DB_MAX_NOTE_TEXT_LENGTH	// DB limit
+					&& Array.from(text.trim()).length <= DB_MAX_NOTE_TEXT_LENGTH,	// DB limit
 			),
 			default: null,
 		},
@@ -78,11 +78,11 @@ export const meta = {
 		},
 
 		fileIds: {
-			validator: $.optional.arr($.type(ID)).unique().range(1, 4),
+			validator: $.optional.arr($.type(ID)).unique().range(1, 16),
 		},
 
 		mediaIds: {
-			validator: $.optional.arr($.type(ID)).unique().range(1, 4),
+			validator: $.optional.arr($.type(ID)).unique().range(1, 16),
 			deprecated: true,
 		},
 
@@ -113,12 +113,12 @@ export const meta = {
 	},
 
 	res: {
-		type: 'object' as const,
-		optional: false as const, nullable: false as const,
+		type: 'object',
+		optional: false, nullable: false,
 		properties: {
 			createdNote: {
-				type: 'object' as const,
-				optional: false as const, nullable: false as const,
+				type: 'object',
+				optional: false, nullable: false,
 				ref: 'Note',
 			},
 		},
@@ -173,8 +173,9 @@ export const meta = {
 			id: 'b390d7e1-8a5e-46ed-b625-06271cafd3d3',
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	let visibleUsers: User[] = [];
 	if (ps.visibleUserIds) {

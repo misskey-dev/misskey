@@ -9,7 +9,7 @@ import { genId } from '@/misc/gen-id';
 export const meta = {
 	tags: ['notes', 'favorites'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	kind: 'write:favorites',
 
@@ -32,8 +32,9 @@ export const meta = {
 			id: 'a402c12b-34dd-41d2-97d8-4d2ffd96a1a6',
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	// Get favoritee
 	const note = await getNote(ps.noteId).catch(e => {

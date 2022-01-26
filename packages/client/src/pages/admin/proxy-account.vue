@@ -1,42 +1,32 @@
 <template>
-<FormBase>
+<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
 	<FormSuspense :p="init">
-		<FormGroup>
-			<FormKeyValueView>
-				<template #key>{{ $ts.proxyAccount }}</template>
-				<template #value>{{ proxyAccount ? `@${proxyAccount.username}` : $ts.none }}</template>
-			</FormKeyValueView>
-			<template #caption>{{ $ts.proxyAccountDescription }}</template>
-		</FormGroup>
+		<MkInfo class="_formBlock">{{ $ts.proxyAccountDescription }}</MkInfo>
+		<MkKeyValue class="_formBlock">
+			<template #key>{{ $ts.proxyAccount }}</template>
+			<template #value>{{ proxyAccount ? `@${proxyAccount.username}` : $ts.none }}</template>
+		</MkKeyValue>
 
-		<FormButton primary @click="chooseProxyAccount">{{ $ts.selectAccount }}</FormButton>
+		<FormButton primary class="_formBlock" @click="chooseProxyAccount">{{ $ts.selectAccount }}</FormButton>
 	</FormSuspense>
-</FormBase>
+</MkSpacer>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import FormKeyValueView from '@/components/debobigego/key-value-view.vue';
-import FormInput from '@/components/debobigego/input.vue';
-import FormButton from '@/components/debobigego/button.vue';
-import FormBase from '@/components/debobigego/base.vue';
-import FormGroup from '@/components/debobigego/group.vue';
-import FormTextarea from '@/components/debobigego/textarea.vue';
-import FormInfo from '@/components/debobigego/info.vue';
-import FormSuspense from '@/components/debobigego/suspense.vue';
+import MkKeyValue from '@/components/key-value.vue';
+import FormButton from '@/components/ui/button.vue';
+import MkInfo from '@/components/ui/info.vue';
+import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { fetchInstance } from '@/instance';
 
 export default defineComponent({
 	components: {
-		FormKeyValueView,
-		FormInput,
-		FormBase,
-		FormGroup,
+		MkKeyValue,
 		FormButton,
-		FormTextarea,
-		FormInfo,
+		MkInfo,
 		FormSuspense,
 	},
 
@@ -52,10 +42,6 @@ export default defineComponent({
 			proxyAccount: null,
 			proxyAccountId: null,
 		}
-	},
-
-	async mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
 	},
 
 	methods: {

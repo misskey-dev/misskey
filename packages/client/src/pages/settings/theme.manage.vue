@@ -30,9 +30,6 @@ import { defineComponent } from 'vue';
 import * as JSON5 from 'json5';
 import FormTextarea from '@/components/form/textarea.vue';
 import FormSelect from '@/components/form/select.vue';
-import FormRadios from '@/components/form/radios.vue';
-import FormBase from '@/components/debobigego/base.vue';
-import FormGroup from '@/components/debobigego/group.vue';
 import FormInput from '@/components/form/input.vue';
 import FormButton from '@/components/ui/button.vue';
 import { Theme, builtinThemes } from '@/scripts/theme';
@@ -46,9 +43,6 @@ export default defineComponent({
 	components: {
 		FormTextarea,
 		FormSelect,
-		FormRadios,
-		FormBase,
-		FormGroup,
 		FormInput,
 		FormButton,
 	},
@@ -82,10 +76,6 @@ export default defineComponent({
 			if (this.selectedTheme == null) return null;
 			return JSON5.stringify(this.selectedTheme, null, '\t');
 		},
-	},
-
-	mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
 	},
 
 	methods: {

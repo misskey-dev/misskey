@@ -6,7 +6,7 @@
 				<template #prefix><i class="fas fa-search"></i></template>
 				<template #label>{{ $ts.host }}</template>
 			</MkInput>
-			<div class="_inputSplit" style="margin-top: var(--margin);">
+			<FormSplit style="margin-top: var(--margin);">
 				<MkSelect v-model="state">
 					<template #label>{{ $ts.state }}</template>
 					<option value="all">{{ $ts.all }}</option>
@@ -38,7 +38,7 @@
 					<option value="+driveFiles">{{ $ts.driveFilesCount }} ({{ $ts.descendingOrder }})</option>
 					<option value="-driveFiles">{{ $ts.driveFilesCount }} ({{ $ts.ascendingOrder }})</option>
 				</MkSelect>
-			</div>
+			</FormSplit>
 		</div>
 
 		<MkPagination v-slot="{items}" ref="instances" :key="host + state" :pagination="pagination">
@@ -95,75 +95,50 @@
 </MkSpacer>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { computed } from 'vue';
 import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/form/input.vue';
 import MkSelect from '@/components/form/select.vue';
 import MkPagination from '@/components/ui/pagination.vue';
+import FormSplit from '@/components/form/split.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		MkButton,
-		MkInput,
-		MkSelect,
-		MkPagination,
+let host = $ref('');
+let state = $ref('federating');
+let sort = $ref('+pubSub');
+const pagination = {
+	endpoint: 'federation/instances' as const,
+	limit: 10,
+	offsetMode: true,
+	params: computed(() => ({
+		sort: sort,
+		host: host != '' ? host : null,
+		...(
+			state === 'federating' ? { federating: true } :
+			state === 'subscribing' ? { subscribing: true } :
+			state === 'publishing' ? { publishing: true } :
+			state === 'suspended' ? { suspended: true } :
+			state === 'blocked' ? { blocked: true } :
+			state === 'notResponding' ? { notResponding: true } :
+			{})
+	}))
+};
+
+function getStatus(instance) {
+	if (instance.isSuspended) return 'suspended';
+	if (instance.isNotResponding) return 'error';
+	return 'alive';
+};
+
+defineExpose({
+	[symbols.PAGE_INFO]: {
+		title: i18n.locale.federation,
+		icon: 'fas fa-globe',
+		bg: 'var(--bg)',
 	},
-
-	emits: ['info'],
-
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: this.$ts.federation,
-				icon: 'fas fa-globe',
-				bg: 'var(--bg)',
-			},
-			host: '',
-			state: 'federating',
-			sort: '+pubSub',
-			pagination: {
-				endpoint: 'federation/instances',
-				limit: 10,
-				offsetMode: true,
-				params: () => ({
-					sort: this.sort,
-					host: this.host != '' ? this.host : null,
-					...(
-						this.state === 'federating' ? { federating: true } :
-						this.state === 'subscribing' ? { subscribing: true } :
-						this.state === 'publishing' ? { publishing: true } :
-						this.state === 'suspended' ? { suspended: true } :
-						this.state === 'blocked' ? { blocked: true } :
-						this.state === 'notResponding' ? { notResponding: true } :
-						{})
-				})
-			},
-		}
-	},
-
-	watch: {
-		host() {
-			this.$refs.instances.reload();
-		},
-		state() {
-			this.$refs.instances.reload();
-		}
-	},
-
-	mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
-	},
-
-	methods: {
-		getStatus(instance) {
-			if (instance.isSuspended) return 'suspended';
-			if (instance.isNotResponding) return 'error';
-			return 'alive';
-		},
-	}
 });
 </script>
 

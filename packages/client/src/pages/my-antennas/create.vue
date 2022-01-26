@@ -4,45 +4,37 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import MkButton from '@/components/ui/button.vue';
+<script lang="ts" setup>
+import { } from 'vue';
 import XAntenna from './editor.vue';
 import * as symbols from '@/symbols';
+import { i18n } from '@/i18n';
+import { router } from '@/router';
 
-export default defineComponent({
-	components: {
-		MkButton,
-		XAntenna,
+let draft = $ref({
+	name: '',
+	src: 'all',
+	userListId: null,
+	userGroupId: null,
+	users: [],
+	keywords: [],
+	excludeKeywords: [],
+	withReplies: false,
+	caseSensitive: false,
+	withFile: false,
+	notify: false
+});
+
+function onAntennaCreated() {
+	router.push('/my/antennas');
+}
+
+defineExpose({
+	[symbols.PAGE_INFO]: {
+		title: i18n.locale.manageAntennas,
+		icon: 'fas fa-satellite',
+		bg: 'var(--bg)',
 	},
-
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: this.$ts.manageAntennas,
-				icon: 'fas fa-satellite',
-			},
-			draft: {
-				name: '',
-				src: 'all',
-				userListId: null,
-				userGroupId: null,
-				users: [],
-				keywords: [],
-				excludeKeywords: [],
-				withReplies: false,
-				caseSensitive: false,
-				withFile: false,
-				notify: false
-			},
-		};
-	},
-
-	methods: {
-		onAntennaCreated() {
-			this.$router.push('/my/antennas');
-		},
-	}
 });
 </script>
 

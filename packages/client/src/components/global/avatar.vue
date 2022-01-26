@@ -1,74 +1,54 @@
 <template>
-<span v-if="disableLink" v-user-preview="disablePreview ? undefined : user.id" class="eiwwqkts _noSelect" :class="{ cat, square: $store.state.squareAvatars }" :title="acct(user)" @click="onClick">
+<span v-if="disableLink" v-user-preview="disablePreview ? undefined : user.id" class="eiwwqkts _noSelect" :class="{ cat: user.isCat, square: $store.state.squareAvatars }" :style="{ color }" :title="acct(user)" @click="onClick">
 	<img class="inner" :src="url" decoding="async"/>
 	<MkUserOnlineIndicator v-if="showIndicator" class="indicator" :user="user"/>
 </span>
-<MkA v-else v-user-preview="disablePreview ? undefined : user.id" class="eiwwqkts _noSelect" :class="{ cat, square: $store.state.squareAvatars }" :to="userPage(user)" :title="acct(user)" :target="target">
+<MkA v-else v-user-preview="disablePreview ? undefined : user.id" class="eiwwqkts _noSelect" :class="{ cat: user.isCat, square: $store.state.squareAvatars }" :style="{ color }" :to="userPage(user)" :title="acct(user)" :target="target">
 	<img class="inner" :src="url" decoding="async"/>
 	<MkUserOnlineIndicator v-if="showIndicator" class="indicator" :user="user"/>
 </MkA>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { onMounted, watch } from 'vue';
+import * as misskey from 'misskey-js';
 import { getStaticImageUrl } from '@/scripts/get-static-image-url';
 import { extractAvgColorFromBlurhash } from '@/scripts/extract-avg-color-from-blurhash';
 import { acct, userPage } from '@/filters/user';
 import MkUserOnlineIndicator from '@/components/user-online-indicator.vue';
+import { defaultStore } from '@/store';
 
-export default defineComponent({
-	components: {
-		MkUserOnlineIndicator
-	},
-	props: {
-		user: {
-			type: Object,
-			required: true
-		},
-		target: {
-			required: false,
-			default: null
-		},
-		disableLink: {
-			required: false,
-			default: false
-		},
-		disablePreview: {
-			required: false,
-			default: false
-		},
-		showIndicator: {
-			required: false,
-			default: false
-		}
-	},
-	emits: ['click'],
-	computed: {
-		cat(): boolean {
-			return this.user.isCat;
-		},
-		url(): string {
-			return this.$store.state.disableShowingAnimatedImages
-				? getStaticImageUrl(this.user.avatarUrl)
-				: this.user.avatarUrl;
-		},
-	},
-	watch: {
-		'user.avatarBlurhash'() {
-			if (this.$el == null) return;
-			this.$el.style.color = extractAvgColorFromBlurhash(this.user.avatarBlurhash);
-		}
-	},
-	mounted() {
-		this.$el.style.color = extractAvgColorFromBlurhash(this.user.avatarBlurhash);
-	},
-	methods: {
-		onClick(e) {
-			this.$emit('click', e);
-		},
-		acct,
-		userPage
-	}
+const props = withDefaults(defineProps<{
+	user: misskey.entities.User;
+	target?: string | null;
+	disableLink?: boolean;
+	disablePreview?: boolean;
+	showIndicator?: boolean;
+}>(), {
+	target: null,
+	disableLink: false,
+	disablePreview: false,
+	showIndicator: false,
+});
+
+const emit = defineEmits<{
+	(e: 'click', ev: MouseEvent): void;
+}>();
+
+const url = $computed(() => defaultStore.state.disableShowingAnimatedImages
+	? getStaticImageUrl(props.user.avatarUrl)
+	: props.user.avatarUrl);
+
+function onClick(ev: MouseEvent) {
+	emit('click', ev);
+}
+
+let color = $ref();
+
+watch(() => props.user.avatarBlurhash, () => {
+	color = extractAvgColorFromBlurhash(props.user.avatarBlurhash);
+}, {
+	immediate: true,
 });
 </script>
 

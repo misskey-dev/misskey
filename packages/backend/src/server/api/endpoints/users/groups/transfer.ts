@@ -8,7 +8,7 @@ import { UserGroups, UserGroupJoinings } from '@/models/index';
 export const meta = {
 	tags: ['groups', 'users'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	kind: 'write:user-groups',
 
@@ -23,8 +23,8 @@ export const meta = {
 	},
 
 	res: {
-		type: 'object' as const,
-		optional: false as const, nullable: false as const,
+		type: 'object',
+		optional: false, nullable: false,
 		ref: 'UserGroup',
 	},
 
@@ -47,8 +47,9 @@ export const meta = {
 			id: 'd31bebee-196d-42c2-9a3e-9474d4be6cc4',
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, me) => {
 	// Fetch the group
 	const userGroup = await UserGroups.findOne({

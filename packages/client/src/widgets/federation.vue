@@ -1,10 +1,10 @@
 <template>
-<MkContainer :show-header="props.showHeader" :foldable="foldable" :scrollable="scrollable">
+<MkContainer :show-header="widgetProps.showHeader" :foldable="foldable" :scrollable="scrollable">
 	<template #header><i class="fas fa-globe"></i>{{ $ts._widgets.federation }}</template>
 
 	<div class="wbrkwalb">
 		<MkLoading v-if="fetching"/>
-		<transition-group v-else tag="div" name="chart" class="instances">
+		<transition-group v-else tag="div" :name="$store.state.animation ? 'chart' : ''" class="instances">
 			<div v-for="(instance, i) in instances" :key="instance.id" class="instance">
 				<img v-if="instance.iconUrl" :src="instance.iconUrl" alt=""/>
 				<div class="body">
@@ -18,66 +18,64 @@
 </MkContainer>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { onMounted, onUnmounted, ref } from 'vue';
+import { GetFormResultType } from '@/scripts/form';
+import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
 import MkContainer from '@/components/ui/container.vue';
-import define from './define';
 import MkMiniChart from '@/components/mini-chart.vue';
 import * as os from '@/os';
 
-const widget = define({
-	name: 'federation',
-	props: () => ({
-		showHeader: {
-			type: 'boolean',
-			default: true,
-		},
-	})
+const name = 'federation';
+
+const widgetPropsDef = {
+	showHeader: {
+		type: 'boolean' as const,
+		default: true,
+	},
+};
+
+type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
+
+// 現時点ではvueの制限によりimportしたtypeをジェネリックに渡せない
+//const props = defineProps<WidgetComponentProps<WidgetProps> & { foldable?: boolean; scrollable?: boolean; }>();
+//const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
+const props = defineProps<{ widget?: Widget<WidgetProps>; foldable?: boolean; scrollable?: boolean; }>();
+const emit = defineEmits<{ (e: 'updateProps', props: WidgetProps); }>();
+
+const { widgetProps, configure } = useWidgetPropsManager(name,
+	widgetPropsDef,
+	props,
+	emit,
+);
+
+const instances = ref([]);
+const charts = ref([]);
+const fetching = ref(true);
+
+const fetch = async () => {
+	const instances = await os.api('federation/instances', {
+		sort: '+lastCommunicatedAt',
+		limit: 5
+	});
+	const charts = await Promise.all(instances.map(i => os.api('charts/instance', { host: i.host, limit: 16, span: 'hour' })));
+	instances.value = instances;
+	charts.value = charts;
+	fetching.value = false;
+};
+
+onMounted(() => {
+	fetch();
+	const intervalId = window.setInterval(fetch, 1000 * 60);
+	onUnmounted(() => {
+		window.clearInterval(intervalId);
+	});
 });
 
-export default defineComponent({
-	components: {
-		MkContainer, MkMiniChart
-	},
-	extends: widget,
-	props: {
-		foldable: {
-			type: Boolean,
-			required: false,
-			default: false
-		},
-		scrollable: {
-			type: Boolean,
-			required: false,
-			default: false
-		},
-	},
-	data() {
-		return {
-			instances: [],
-			charts: [],
-			fetching: true,
-		};
-	},
-	mounted() {
-		this.fetch();
-		this.clock = setInterval(this.fetch, 1000 * 60);
-	},
-	beforeUnmount() {
-		clearInterval(this.clock);
-	},
-	methods: {
-		async fetch() {
-			const instances = await os.api('federation/instances', {
-				sort: '+lastCommunicatedAt',
-				limit: 5
-			});
-			const charts = await Promise.all(instances.map(i => os.api('charts/instance', { host: i.host, limit: 16, span: 'hour' })));
-			this.instances = instances;
-			this.charts = charts;
-			this.fetching = false;
-		}
-	}
+defineExpose<WidgetComponentExpose>({
+	name,
+	configure,
+	id: props.widget ? props.widget.id : null,
 });
 </script>
 

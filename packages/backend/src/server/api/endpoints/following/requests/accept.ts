@@ -8,7 +8,7 @@ import { getUser } from '../../../common/getters';
 export const meta = {
 	tags: ['following', 'account'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	kind: 'write:following',
 
@@ -30,8 +30,9 @@ export const meta = {
 			id: 'bcde4f8b-0913-4614-8881-614e522fb041',
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	// Fetch follower
 	const follower = await getUser(ps.userId).catch(e => {

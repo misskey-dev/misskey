@@ -6,7 +6,7 @@ import { Users } from '@/models/index';
 export const meta = {
 	tags: ['users'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	params: {
 		userId: {
@@ -15,93 +15,93 @@ export const meta = {
 	},
 
 	res: {
+		optional: false, nullable: false,
 		oneOf: [
 			{
-				type: 'object' as const,
-				optional: false as const, nullable: false as const,
+				type: 'object',
 				properties: {
 					id: {
-						type: 'string' as const,
-						optional: false as const, nullable: false as const,
+						type: 'string',
+						optional: false, nullable: false,
 						format: 'id',
 					},
 					isFollowing: {
-						type: 'boolean' as const,
-						optional: false as const, nullable: false as const,
+						type: 'boolean',
+						optional: false, nullable: false,
 					},
 					hasPendingFollowRequestFromYou: {
-						type: 'boolean' as const,
-						optional: false as const, nullable: false as const,
+						type: 'boolean',
+						optional: false, nullable: false,
 					},
 					hasPendingFollowRequestToYou: {
-						type: 'boolean' as const,
-						optional: false as const, nullable: false as const,
+						type: 'boolean',
+						optional: false, nullable: false,
 					},
 					isFollowed: {
-						type: 'boolean' as const,
-						optional: false as const, nullable: false as const,
+						type: 'boolean',
+						optional: false, nullable: false,
 					},
 					isBlocking: {
-						type: 'boolean' as const,
-						optional: false as const, nullable: false as const,
+						type: 'boolean',
+						optional: false, nullable: false,
 					},
 					isBlocked: {
-						type: 'boolean' as const,
-						optional: false as const, nullable: false as const,
+						type: 'boolean',
+						optional: false, nullable: false,
 					},
 					isMuted: {
-						type: 'boolean' as const,
-						optional: false as const, nullable: false as const,
+						type: 'boolean',
+						optional: false, nullable: false,
 					},
 				},
 			},
 			{
-				type: 'array' as const,
-				optional: false as const, nullable: false as const,
+				type: 'array',
 				items: {
-					type: 'object' as const,
-					optional: false as const, nullable: false as const,
+					type: 'object',
+					optional: false, nullable: false,
 					properties: {
 						id: {
-							type: 'string' as const,
-							optional: false as const, nullable: false as const,
+							type: 'string',
+							optional: false, nullable: false,
 							format: 'id',
 						},
 						isFollowing: {
-							type: 'boolean' as const,
-							optional: false as const, nullable: false as const,
+							type: 'boolean',
+							optional: false, nullable: false,
 						},
 						hasPendingFollowRequestFromYou: {
-							type: 'boolean' as const,
-							optional: false as const, nullable: false as const,
+							type: 'boolean',
+							optional: false, nullable: false,
 						},
 						hasPendingFollowRequestToYou: {
-							type: 'boolean' as const,
-							optional: false as const, nullable: false as const,
+							type: 'boolean',
+							optional: false, nullable: false,
 						},
 						isFollowed: {
-							type: 'boolean' as const,
-							optional: false as const, nullable: false as const,
+							type: 'boolean',
+							optional: false, nullable: false,
 						},
 						isBlocking: {
-							type: 'boolean' as const,
-							optional: false as const, nullable: false as const,
+							type: 'boolean',
+							optional: false, nullable: false,
 						},
 						isBlocked: {
-							type: 'boolean' as const,
-							optional: false as const, nullable: false as const,
+							type: 'boolean',
+							optional: false, nullable: false,
 						},
 						isMuted: {
-							type: 'boolean' as const,
-							optional: false as const, nullable: false as const,
+							type: 'boolean',
+							optional: false, nullable: false,
 						},
 					},
 				},
 			},
 		],
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, me) => {
 	const ids = Array.isArray(ps.userId) ? ps.userId : [ps.userId];
 

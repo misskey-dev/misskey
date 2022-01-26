@@ -9,7 +9,7 @@ import { UserGroupJoining } from '@/models/entities/user-group-joining';
 export const meta = {
 	tags: ['groups', 'users'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	kind: 'write:user-groups',
 
@@ -26,8 +26,9 @@ export const meta = {
 			id: '98c11eca-c890-4f42-9806-c8c8303ebb5e',
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	// Fetch the invitation
 	const invitation = await UserGroupInvitations.findOne({

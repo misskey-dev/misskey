@@ -10,7 +10,7 @@
 			<MkButton inline @click="$emit('exit')">{{ $ts.close }}</MkButton>
 		</header>
 		<XDraggable
-			v-model="_widgets"
+			v-model="widgets_"
 			item-key="id"
 			animation="150"
 		>
@@ -18,7 +18,7 @@
 				<div class="customize-container">
 					<button class="config _button" @click.prevent.stop="configWidget(element.id)"><i class="fas fa-cog"></i></button>
 					<button class="remove _button" @click.prevent.stop="removeWidget(element)"><i class="fas fa-times"></i></button>
-					<component :is="`mkw-${element.name}`" :widget="element" :setting-callback="setting => settings[element.id] = setting" @updateProps="updateWidget(element.id, $event)"/>
+					<component :ref="el => widgetRefs[element.id] = el" :is="`mkw-${element.name}`" :widget="element" @updateProps="updateWidget(element.id, $event)"/>
 				</div>
 			</template>
 		</XDraggable>
@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, defineAsyncComponent } from 'vue';
+import { defineComponent, defineAsyncComponent, reactive, ref, computed } from 'vue';
 import { v4 as uuid } from 'uuid';
 import MkSelect from '@/components/form/select.vue';
 import MkButton from '@/components/ui/button.vue';
@@ -54,50 +54,47 @@ export default defineComponent({
 
 	emits: ['updateWidgets', 'addWidget', 'removeWidget', 'updateWidget', 'exit'],
 
-	data() {
-		return {
-			widgetAdderSelected: null,
-			widgetDefs,
-			settings: {},
+	setup(props, context) {
+		const widgetRefs = reactive({});
+		const configWidget = (id: string) => {
+			widgetRefs[id].configure();
 		};
-	},
+		const widgetAdderSelected = ref(null);
+		const addWidget = () => {
+			if (widgetAdderSelected.value == null) return;
 
-	computed: {
-		_widgets: {
-			get() {
-				return this.widgets;
-			},
-			set(value) {
-				this.$emit('updateWidgets', value);
-			}
-		}
-	},
-
-	methods: {
-		configWidget(id) {
-			this.settings[id]();
-		},
-
-		addWidget() {
-			if (this.widgetAdderSelected == null) return;
-
-			this.$emit('addWidget', {
-				name: this.widgetAdderSelected,
+			context.emit('addWidget', {
+				name: widgetAdderSelected.value,
 				id: uuid(),
-				data: {}
+				data: {},
 			});
 
-			this.widgetAdderSelected = null;
-		},
+			widgetAdderSelected.value = null;
+		};
+		const removeWidget = (widget) => {
+			context.emit('removeWidget', widget);
+		};
+		const updateWidget = (id, data) => {
+			context.emit('updateWidget', { id, data });
+		};
+		const widgets_ = computed({
+			get: () => props.widgets,
+			set: (value) => {
+				context.emit('updateWidgets', value);
+			},
+		});
 
-		removeWidget(widget) {
-			this.$emit('removeWidget', widget);
-		},
-
-		updateWidget(id, data) {
-			this.$emit('updateWidget', { id, data });
-		},
-	}
+		return {
+			widgetRefs,
+			configWidget,
+			widgetAdderSelected,
+			widgetDefs,
+			addWidget,
+			removeWidget,
+			updateWidget,
+			widgets_,
+		};
+	},
 });
 </script>
 

@@ -11,7 +11,7 @@ import { ApiError } from '../../error';
 import { validateEmailForAccount } from '@/services/validate-email-for-account';
 
 export const meta = {
-	requireCredential: true as const,
+	requireCredential: true,
 
 	secure: true,
 
@@ -43,8 +43,9 @@ export const meta = {
 			id: 'a2defefb-f220-8849-0af6-17f816099323',
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	const profile = await UserProfiles.findOneOrFail(user.id);
 

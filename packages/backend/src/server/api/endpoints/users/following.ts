@@ -9,7 +9,7 @@ import { toPunyNullable } from '@/misc/convert-host';
 export const meta = {
 	tags: ['users'],
 
-	requireCredential: false as const,
+	requireCredential: false,
 
 	params: {
 		userId: {
@@ -39,11 +39,11 @@ export const meta = {
 	},
 
 	res: {
-		type: 'array' as const,
-		optional: false as const, nullable: false as const,
+		type: 'array',
+		optional: false, nullable: false,
 		items: {
-			type: 'object' as const,
-			optional: false as const, nullable: false as const,
+			type: 'object',
+			optional: false, nullable: false,
 			ref: 'Following',
 		},
 	},
@@ -61,8 +61,9 @@ export const meta = {
 			id: 'f6cdb0df-c19f-ec5c-7dbb-0ba84a1f92ba',
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, me) => {
 	const user = await Users.findOne(ps.userId != null
 		? { id: ps.userId }

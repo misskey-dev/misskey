@@ -51,6 +51,11 @@ export class AbuseUserReport {
 	})
 	public resolved: boolean;
 
+	@Column('boolean', {
+		default: false
+	})
+	public forwarded: boolean;
+
 	@Column('varchar', {
 		length: 2048,
 	})

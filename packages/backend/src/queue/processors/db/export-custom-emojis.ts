@@ -6,11 +6,12 @@ import { ulid } from 'ulid';
 const mime = require('mime-types');
 const archiver = require('archiver');
 import { queueLogger } from '../../logger';
-import addFile from '@/services/drive/add-file';
+import { addFile } from '@/services/drive/add-file';
 import * as dateFormat from 'dateformat';
 import { Users, Emojis } from '@/models/index';
 import {  } from '@/queue/types';
 import { downloadUrl } from '@/misc/download-url';
+import config from '@/config/index';
 
 const logger = queueLogger.createSubLogger('export-custom-emojis');
 
@@ -52,7 +53,7 @@ export async function exportCustomEmojis(job: Bull.Job, done: () => void): Promi
 		});
 	};
 
-	await writeMeta(`{"metaVersion":1,"emojis":[`);
+	await writeMeta(`{"metaVersion":2,"host":"${config.host}","exportedAt":"${new Date().toString()}","emojis":[`);
 
 	const customEmojis = await Emojis.find({
 		where: {
@@ -64,21 +65,25 @@ export async function exportCustomEmojis(job: Bull.Job, done: () => void): Promi
 	});
 
 	for (const emoji of customEmojis) {
-		const exportId = ulid().toLowerCase();
 		const ext = mime.extension(emoji.type);
-		const emojiPath = path + '/' + exportId + (ext ? '.' + ext : '');
+		const fileName = emoji.name + (ext ? '.' + ext : '');
+		const emojiPath = path + '/' + fileName;
 		fs.writeFileSync(emojiPath, '', 'binary');
 		let downloaded = false;
 
 		try {
-			await downloadUrl(emoji.url, emojiPath);
+			await downloadUrl(emoji.originalUrl, emojiPath);
 			downloaded = true;
 		} catch (e) { // TODO: 何度か再試行
 			logger.error(e);
 		}
 
+		if (!downloaded) {
+			fs.unlinkSync(emojiPath);
+		}
+
 		const content = JSON.stringify({
-			id: exportId,
+			fileName: fileName,
 			downloaded: downloaded,
 			emoji: emoji,
 		});
@@ -106,7 +111,7 @@ export async function exportCustomEmojis(job: Bull.Job, done: () => void): Promi
 		logger.succ(`Exported to: ${archivePath}`);
 
 		const fileName = 'custom-emojis-' + dateFormat(new Date(), 'yyyy-mm-dd-HH-MM-ss') + '.zip';
-		const driveFile = await addFile(user, archivePath, fileName, null, null, true);
+		const driveFile = await addFile({ user, path: archivePath, name: fileName, force: true });
 
 		logger.succ(`Exported to: ${driveFile.id}`);
 		cleanup();

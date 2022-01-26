@@ -9,7 +9,7 @@ import { getNote } from '../../common/getters';
 export const meta = {
 	tags: ['account', 'notes', 'clips'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	kind: 'write:account',
 
@@ -42,8 +42,9 @@ export const meta = {
 			id: '734806c4-542c-463a-9311-15c512803965',
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	const clip = await Clips.findOne({
 		id: ps.clipId,

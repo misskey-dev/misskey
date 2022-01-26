@@ -7,7 +7,7 @@ import { makePaginationQuery } from '../../common/make-pagination-query';
 export const meta = {
 	tags: ['admin'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 	requireModerator: true,
 
 	params: {
@@ -46,70 +46,76 @@ export const meta = {
 			]),
 			default: 'combined',
 		},
+
+		forwarded: {
+			validator: $.optional.bool,
+			default: false,
+		},
 	},
 
 	res: {
-		type: 'array' as const,
-		optional: false as const, nullable: false as const,
+		type: 'array',
+		optional: false, nullable: false,
 		items: {
-			type: 'object' as const,
-			optional: false as const, nullable: false as const,
+			type: 'object',
+			optional: false, nullable: false,
 			properties: {
 				id: {
-					type: 'string' as const,
-					nullable: false as const, optional: false as const,
+					type: 'string',
+					nullable: false, optional: false,
 					format: 'id',
 					example: 'xxxxxxxxxx',
 				},
 				createdAt: {
-					type: 'string' as const,
-					nullable: false as const, optional: false as const,
+					type: 'string',
+					nullable: false, optional: false,
 					format: 'date-time',
 				},
 				comment: {
-					type: 'string' as const,
-					nullable: false as const, optional: false as const,
+					type: 'string',
+					nullable: false, optional: false,
 				},
 				resolved: {
-					type: 'boolean' as const,
-					nullable: false as const, optional: false as const,
+					type: 'boolean',
+					nullable: false, optional: false,
 					example: false,
 				},
 				reporterId: {
-					type: 'string' as const,
-					nullable: false as const, optional: false as const,
+					type: 'string',
+					nullable: false, optional: false,
 					format: 'id',
 				},
 				targetUserId: {
-					type: 'string' as const,
-					nullable: false as const, optional: false as const,
+					type: 'string',
+					nullable: false, optional: false,
 					format: 'id',
 				},
 				assigneeId: {
-					type: 'string' as const,
-					nullable: true as const, optional: false as const,
+					type: 'string',
+					nullable: true, optional: false,
 					format: 'id',
 				},
 				reporter: {
-					type: 'object' as const,
-					nullable: false as const, optional: false as const,
+					type: 'object',
+					nullable: false, optional: false,
 					ref: 'User',
 				},
 				targetUser: {
-					type: 'object' as const,
-					nullable: false as const, optional: false as const,
+					type: 'object',
+					nullable: false, optional: false,
 					ref: 'User',
 				},
 				assignee: {
-					type: 'object' as const,
-					nullable: true as const, optional: true as const,
+					type: 'object',
+					nullable: true, optional: true,
 					ref: 'User',
 				},
 			},
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps) => {
 	const query = makePaginationQuery(AbuseUserReports.createQueryBuilder('report'), ps.sinceId, ps.untilId);
 

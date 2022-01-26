@@ -19,7 +19,7 @@
 					<option value="local">{{ $ts.local }}</option>
 					<option value="remote">{{ $ts.remote }}</option>
 				</MkSelect>
-				<MkInput v-model="searchHost" :debounce="true" type="search" style="margin: 0; flex: 1;" :disabled="pagination.params().origin === 'local'">
+				<MkInput v-model="searchHost" :debounce="true" type="search" style="margin: 0; flex: 1;" :disabled="pagination.params.origin === 'local'">
 					<template #label>{{ $ts.host }}</template>
 				</MkInput>
 			</div>
@@ -55,7 +55,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
 import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/form/input.vue';
 import MkSelect from '@/components/form/select.vue';
@@ -95,31 +95,15 @@ export default defineComponent({
 			type: null,
 			searchHost: '',
 			pagination: {
-				endpoint: 'admin/drive/files',
+				endpoint: 'admin/drive/files' as const,
 				limit: 10,
-				params: () => ({
+				params: computed(() => ({
 					type: (this.type && this.type !== '') ? this.type : null,
 					origin: this.origin,
-					hostname: (this.hostname && this.hostname !== '') ? this.hostname : null,
-				}),
+					hostname: (this.searchHost && this.searchHost !== '') ? this.searchHost : null,
+				})),
 			},
 		}
-	},
-
-	watch: {
-		type() {
-			this.$refs.files.reload();
-		},
-		origin() {
-			this.$refs.files.reload();
-		},
-		searchHost() {
-			this.$refs.files.reload();
-		},
-	},
-
-	mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
 	},
 
 	methods: {

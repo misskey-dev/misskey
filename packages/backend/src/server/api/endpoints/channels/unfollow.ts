@@ -8,7 +8,7 @@ import { publishUserEvent } from '@/services/stream';
 export const meta = {
 	tags: ['channels'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	kind: 'write:channels',
 
@@ -25,8 +25,9 @@ export const meta = {
 			id: '19959ee9-0153-4c51-bbd9-a98c49dc59d6',
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	const channel = await Channels.findOne({
 		id: ps.channelId,

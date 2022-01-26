@@ -7,7 +7,7 @@ import { GalleryPosts, GalleryLikes } from '@/models/index';
 export const meta = {
 	tags: ['gallery'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	kind: 'write:gallery-likes',
 
@@ -30,8 +30,9 @@ export const meta = {
 			id: 'e3e8e06e-be37-41f7-a5b4-87a8250288f0',
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	const post = await GalleryPosts.findOne(ps.postId);
 	if (post == null) {

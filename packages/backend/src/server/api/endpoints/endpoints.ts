@@ -2,7 +2,7 @@ import define from '../define';
 import endpoints from '../endpoints';
 
 export const meta = {
-	requireCredential: false as const,
+	requireCredential: false,
 
 	tags: ['meta'],
 
@@ -10,11 +10,11 @@ export const meta = {
 	},
 
 	res: {
-		type: 'array' as const,
-		optional: false as const, nullable: false as const,
+		type: 'array',
+		optional: false, nullable: false,
 		items: {
-			type: 'string' as const,
-			optional: false as const, nullable: false as const,
+			type: 'string',
+			optional: false, nullable: false,
 		},
 		example: [
 			'admin/abuse-user-reports',
@@ -23,8 +23,9 @@ export const meta = {
 			'...',
 		],
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async () => {
 	return endpoints.map(x => x.name);
 });

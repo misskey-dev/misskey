@@ -23,14 +23,14 @@
 				<MkRadio v-model="ad.priority" value="low">{{ $ts.low }}</MkRadio>
 			</div>
 			-->
-			<div class="_inputSplit">
+			<FormSplit>
 				<MkInput v-model="ad.ratio" type="number">
 					<template #label>{{ $ts.ratio }}</template>
 				</MkInput>
 				<MkInput v-model="ad.expiresAt" type="date">
 					<template #label>{{ $ts.expiration }}</template>
 				</MkInput>
-			</div>
+			</FormSplit>
 			<MkTextarea v-model="ad.memo" class="_formBlock">
 				<template #label>{{ $ts.memo }}</template>
 			</MkTextarea>
@@ -49,6 +49,7 @@ import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/form/input.vue';
 import MkTextarea from '@/components/form/textarea.vue';
 import FormRadios from '@/components/form/radios.vue';
+import FormSplit from '@/components/form/split.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 
@@ -58,6 +59,7 @@ export default defineComponent({
 		MkInput,
 		MkTextarea,
 		FormRadios,
+		FormSplit,
 	},
 
 	emits: ['info'],
@@ -83,10 +85,6 @@ export default defineComponent({
 		os.api('admin/ad/list').then(ads => {
 			this.ads = ads;
 		});
-	},
-
-	mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
 	},
 
 	methods: {

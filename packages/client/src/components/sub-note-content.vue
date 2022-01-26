@@ -21,35 +21,21 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
 import XPoll from './poll.vue';
 import XMediaList from './media-list.vue';
-import * as os from '@/os';
+import * as misskey from 'misskey-js';
 
-export default defineComponent({
-	components: {
-		XPoll,
-		XMediaList,
-	},
-	props: {
-		note: {
-			type: Object,
-			required: true
-		}
-	},
-	data() {
-		return {
-			collapsed: false,
-		};
-	},
-	created() {
-		this.collapsed = this.note.cw == null && this.note.text && (
-			(this.note.text.split('\n').length > 9) ||
-			(this.note.text.length > 500)
-		);
-	}
-});
+const props = defineProps<{
+	note: misskey.entities.Note;
+}>();
+
+const collapsed = $ref(
+	props.note.cw == null && props.note.text != null && (
+		(props.note.text.split('\n').length > 9) ||
+		(props.note.text.length > 500)
+	));
 </script>
 
 <style lang="scss" scoped>

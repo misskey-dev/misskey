@@ -11,7 +11,7 @@ import { createMessage } from '@/services/messages/create';
 export const meta = {
 	tags: ['messaging'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	kind: 'write:messaging',
 
@@ -34,8 +34,8 @@ export const meta = {
 	},
 
 	res: {
-		type: 'object' as const,
-		optional: false as const, nullable: false as const,
+		type: 'object',
+		optional: false, nullable: false,
 		ref: 'MessagingMessage',
 	},
 
@@ -82,8 +82,9 @@ export const meta = {
 			id: 'c15a5199-7422-4968-941a-2a462c478f7d',
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	let recipientUser: User | undefined;
 	let recipientGroup: UserGroup | undefined;

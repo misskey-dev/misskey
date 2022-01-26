@@ -117,14 +117,14 @@ export default defineComponent({
 
 			const scale = calcCircleScale(e.target.clientWidth, e.target.clientHeight, circleCenterX, circleCenterY);
 
-			setTimeout(() => {
+			window.setTimeout(() => {
 				ripple.style.transform = 'scale(' + (scale / 2) + ')';
 			}, 1);
-			setTimeout(() => {
+			window.setTimeout(() => {
 				ripple.style.transition = 'all 1s ease';
 				ripple.style.opacity = '0';
 			}, 1000);
-			setTimeout(() => {
+			window.setTimeout(() => {
 				if (this.$refs.ripples) this.$refs.ripples.removeChild(ripple);
 			}, 2000);
 		}

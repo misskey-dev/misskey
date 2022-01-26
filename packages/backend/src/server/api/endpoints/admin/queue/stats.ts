@@ -4,31 +4,36 @@ import define from '../../../define';
 export const meta = {
 	tags: ['admin'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 	requireModerator: true,
 
 	params: {},
 
 	res: {
-		type: 'object' as const,
-		optional: false as const, nullable: false as const,
+		type: 'object',
+		optional: false, nullable: false,
 		properties: {
 			deliver: {
+				optional: false, nullable: false,
 				ref: 'QueueCount',
 			},
 			inbox: {
+				optional: false, nullable: false,
 				ref: 'QueueCount',
 			},
 			db: {
+				optional: false, nullable: false,
 				ref: 'QueueCount',
 			},
 			objectStorage: {
+				optional: false, nullable: false,
 				ref: 'QueueCount',
 			},
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps) => {
 	const deliverJobCounts = await deliverQueue.getJobCounts();
 	const inboxJobCounts = await inboxQueue.getJobCounts();

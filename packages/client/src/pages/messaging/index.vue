@@ -44,6 +44,7 @@ import * as Acct from 'misskey-js/built/acct';
 import MkButton from '@/components/ui/button.vue';
 import { acct } from '@/filters/user';
 import * as os from '@/os';
+import { stream } from '@/stream';
 import * as symbols from '@/symbols';
 
 export default defineComponent({
@@ -66,7 +67,7 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.connection = markRaw(os.stream.useChannel('messagingIndex'));
+		this.connection = markRaw(stream.useChannel('messagingIndex'));
 
 		this.connection.on('message', this.onMessage);
 		this.connection.on('read', this.onRead);

@@ -9,40 +9,26 @@
 				<XCwButton v-model="showContent" :note="note"/>
 			</p>
 			<div v-show="note.cw == null || showContent" class="content">
-				<XSubNote-content class="text" :note="note"/>
+				<MkNoteSubNoteContent class="text" :note="note"/>
 			</div>
 		</div>
 	</div>
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
+import * as misskey from 'misskey-js';
 import XNoteHeader from './note-header.vue';
-import XSubNoteContent from './sub-note-content.vue';
+import MkNoteSubNoteContent from './sub-note-content.vue';
 import XCwButton from './cw-button.vue';
-import * as os from '@/os';
 
-export default defineComponent({
-	components: {
-		XNoteHeader,
-		XSubNoteContent,
-		XCwButton,
-	},
+const props = defineProps<{
+	note: misskey.entities.Note;
+	pinned?: boolean;
+}>();
 
-	props: {
-		note: {
-			type: Object,
-			required: true
-		}
-	},
-
-	data() {
-		return {
-			showContent: false
-		};
-	}
-});
+const showContent = $ref(false);
 </script>
 
 <style lang="scss" scoped>

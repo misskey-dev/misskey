@@ -40,6 +40,7 @@ services:
 #    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.4.2
 #    environment:
 #      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+#      - "TAKE_FILE_OWNERSHIP=111"
 #    networks:
 #      - internal_network
 #    volumes:

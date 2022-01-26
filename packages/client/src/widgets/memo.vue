@@ -1,5 +1,5 @@
 <template>
-<MkContainer :show-header="props.showHeader">
+<MkContainer :show-header="widgetProps.showHeader">
 	<template #header><i class="fas fa-sticky-note"></i>{{ $ts._widgets.memo }}</template>
 
 	<div class="otgbylcu">
@@ -9,56 +9,60 @@
 </MkContainer>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import MkContainer from '@/components/ui/container.vue';
-import define from './define';
+<script lang="ts" setup>
+import { onMounted, onUnmounted, reactive, ref, watch } from 'vue';
+import { GetFormResultType } from '@/scripts/form';
+import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
 import * as os from '@/os';
+import MkContainer from '@/components/ui/container.vue';
+import { defaultStore } from '@/store';
 
-const widget = define({
-	name: 'memo',
-	props: () => ({
-		showHeader: {
-			type: 'boolean',
-			default: true,
-		},
-	})
+const name = 'memo';
+
+const widgetPropsDef = {
+	showHeader: {
+		type: 'boolean' as const,
+		default: true,
+	},
+};
+
+type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
+
+// 現時点ではvueの制限によりimportしたtypeをジェネリックに渡せない
+//const props = defineProps<WidgetComponentProps<WidgetProps>>();
+//const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
+const props = defineProps<{ widget?: Widget<WidgetProps>; }>();
+const emit = defineEmits<{ (e: 'updateProps', props: WidgetProps); }>();
+
+const { widgetProps, configure } = useWidgetPropsManager(name,
+	widgetPropsDef,
+	props,
+	emit,
+);
+
+const text = ref<string | null>(defaultStore.state.memo);
+const changed = ref(false);
+let timeoutId;
+
+const saveMemo = () => {
+	defaultStore.set('memo', text.value);
+	changed.value = false;
+};
+
+const onChange = () => {
+	changed.value = true;
+	window.clearTimeout(timeoutId);
+	timeoutId = window.setTimeout(saveMemo, 1000);
+};
+
+watch(() => defaultStore.reactiveState.memo, newText => {
+	text.value = newText.value;
 });
 
-export default defineComponent({
-	components: {
-		MkContainer
-	},
-	extends: widget,
-
-	data() {
-		return {
-			text: null,
-			changed: false,
-			timeoutId: null,
-		};
-	},
-
-	created() {
-		this.text = this.$store.state.memo;
-
-		this.$watch(() => this.$store.reactiveState.memo, text => {
-			this.text = text;
-		});
-	},
-
-	methods: {
-		onChange() {
-			this.changed = true;
-			clearTimeout(this.timeoutId);
-			this.timeoutId = setTimeout(this.saveMemo, 1000);
-		},
-
-		saveMemo() {
-			this.$store.set('memo', this.text);
-			this.changed = false;
-		}
-	}
+defineExpose<WidgetComponentExpose>({
+	name,
+	configure,
+	id: props.widget ? props.widget.id : null,
 });
 </script>
 

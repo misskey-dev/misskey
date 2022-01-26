@@ -8,7 +8,7 @@ import { secureRndstr } from '@/misc/secure-rndstr';
 export const meta = {
 	tags: ['app'],
 
-	requireCredential: false as const,
+	requireCredential: false,
 
 	params: {
 		name: {
@@ -31,12 +31,13 @@ export const meta = {
 	},
 
 	res: {
-		type: 'object' as const,
-		optional: false as const, nullable: false as const,
+		type: 'object',
+		optional: false, nullable: false,
 		ref: 'App',
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	// Generate secret
 	const secret = secureRndstr(32, true);
@@ -45,7 +46,7 @@ export default define(meta, async (ps, user) => {
 	const permission = unique(ps.permission.map(v => v.replace(/^(.+)(\/|-)(read|write)$/, '$3:$1')));
 
 	// Create account
-	const app = await Apps.save({
+	const app = await Apps.insert({
 		id: genId(),
 		createdAt: new Date(),
 		userId: user ? user.id : null,
@@ -54,7 +55,7 @@ export default define(meta, async (ps, user) => {
 		permission,
 		callbackUrl: ps.callbackUrl,
 		secret: secret,
-	});
+	}).then(x => Apps.findOneOrFail(x.identifiers[0]));
 
 	return await Apps.pack(app, null, {
 		detail: true,

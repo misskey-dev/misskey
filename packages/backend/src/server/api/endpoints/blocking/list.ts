@@ -7,7 +7,7 @@ import { makePaginationQuery } from '../../common/make-pagination-query';
 export const meta = {
 	tags: ['account'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	kind: 'read:blocks',
 
@@ -27,16 +27,17 @@ export const meta = {
 	},
 
 	res: {
-		type: 'array' as const,
-		optional: false as const, nullable: false as const,
+		type: 'array',
+		optional: false, nullable: false,
 		items: {
-			type: 'object' as const,
-			optional: false as const, nullable: false as const,
+			type: 'object',
+			optional: false, nullable: false,
 			ref: 'Blocking',
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, me) => {
 	const query = makePaginationQuery(Blockings.createQueryBuilder('blocking'), ps.sinceId, ps.untilId)
 		.andWhere(`blocking.blockerId = :meId`, { meId: me.id });

@@ -8,7 +8,7 @@ import { UserGroupJoining } from '@/models/entities/user-group-joining';
 export const meta = {
 	tags: ['groups'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	kind: 'write:user-groups',
 
@@ -19,12 +19,13 @@ export const meta = {
 	},
 
 	res: {
-		type: 'object' as const,
-		optional: false as const, nullable: false as const,
+		type: 'object',
+		optional: false, nullable: false,
 		ref: 'UserGroup',
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	const userGroup = await UserGroups.insert({
 		id: genId(),

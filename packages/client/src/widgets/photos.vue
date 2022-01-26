@@ -1,5 +1,5 @@
 <template>
-<MkContainer :show-header="props.showHeader" :naked="props.transparent" :class="$style.root" :data-transparent="props.transparent ? true : null">
+<MkContainer :show-header="widgetProps.showHeader" :naked="widgetProps.transparent" :class="$style.root" :data-transparent="widgetProps.transparent ? true : null">
 	<template #header><i class="fas fa-camera"></i>{{ $ts._widgets.photos }}</template>
 
 	<div class="">
@@ -14,69 +14,77 @@
 </MkContainer>
 </template>
 
-<script lang="ts">
-import { defineComponent, markRaw } from 'vue';
-import MkContainer from '@/components/ui/container.vue';
-import define from './define';
+<script lang="ts" setup>
+import { onMounted, onUnmounted, reactive, ref } from 'vue';
+import { GetFormResultType } from '@/scripts/form';
+import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
+import { stream } from '@/stream';
 import { getStaticImageUrl } from '@/scripts/get-static-image-url';
 import * as os from '@/os';
+import MkContainer from '@/components/ui/container.vue';
+import { defaultStore } from '@/store';
 
-const widget = define({
-	name: 'photos',
-	props: () => ({
-		showHeader: {
-			type: 'boolean',
-			default: true,
-		},
-		transparent: {
-			type: 'boolean',
-			default: false,
-		},
-	})
+const name = 'photos';
+
+const widgetPropsDef = {
+	showHeader: {
+		type: 'boolean' as const,
+		default: true,
+	},
+	transparent: {
+		type: 'boolean' as const,
+		default: false,
+	},
+};
+
+type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
+
+// 現時点ではvueの制限によりimportしたtypeをジェネリックに渡せない
+//const props = defineProps<WidgetComponentProps<WidgetProps>>();
+//const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
+const props = defineProps<{ widget?: Widget<WidgetProps>; }>();
+const emit = defineEmits<{ (e: 'updateProps', props: WidgetProps); }>();
+
+const { widgetProps, configure } = useWidgetPropsManager(name,
+	widgetPropsDef,
+	props,
+	emit,
+);
+
+const connection = stream.useChannel('main');
+const images = ref([]);
+const fetching = ref(true);
+
+const onDriveFileCreated = (file) => {
+	if (/^image\/.+$/.test(file.type)) {
+		images.value.unshift(file);
+		if (images.value.length > 9) images.value.pop();
+	}
+};
+
+const thumbnail = (image: any): string => {
+	return defaultStore.state.disableShowingAnimatedImages
+		? getStaticImageUrl(image.thumbnailUrl)
+		: image.thumbnailUrl;
+};
+
+os.api('drive/stream', {
+	type: 'image/*',
+	limit: 9
+}).then(res => {
+	images.value = res;
+	fetching.value = false;
 });
 
-export default defineComponent({
-	components: {
-		MkContainer,
-	},
-	extends: widget,
-	data() {
-		return {
-			images: [],
-			fetching: true,
-			connection: null,
-		};
-	},
-	mounted() {
-		this.connection = markRaw(os.stream.useChannel('main'));
+connection.on('driveFileCreated', onDriveFileCreated);
+onUnmounted(() => {
+	connection.dispose();
+});
 
-		this.connection.on('driveFileCreated', this.onDriveFileCreated);
-
-		os.api('drive/stream', {
-			type: 'image/*',
-			limit: 9
-		}).then(images => {
-			this.images = images;
-			this.fetching = false;
-		});
-	},
-	beforeUnmount() {
-		this.connection.dispose();
-	},
-	methods: {
-		onDriveFileCreated(file) {
-			if (/^image\/.+$/.test(file.type)) {
-				this.images.unshift(file);
-				if (this.images.length > 9) this.images.pop();
-			}
-		},
-
-		thumbnail(image: any): string {
-			return this.$store.state.disableShowingAnimatedImages
-				? getStaticImageUrl(image.thumbnailUrl)
-				: image.thumbnailUrl;
-		},
-	}
+defineExpose<WidgetComponentExpose>({
+	name,
+	configure,
+	id: props.widget ? props.widget.id : null,
 });
 </script>
 

@@ -7,7 +7,7 @@ import { makePaginationQuery } from '../common/make-pagination-query';
 export const meta = {
 	tags: ['meta'],
 
-	requireCredential: false as const,
+	requireCredential: false,
 
 	params: {
 		limit: {
@@ -30,49 +30,50 @@ export const meta = {
 	},
 
 	res: {
-		type: 'array' as const,
-		optional: false as const, nullable: false as const,
+		type: 'array',
+		optional: false, nullable: false,
 		items: {
-			type: 'object' as const,
-			optional: false as const, nullable: false as const,
+			type: 'object',
+			optional: false, nullable: false,
 			properties: {
 				id: {
-					type: 'string' as const,
-					optional: false as const, nullable: false as const,
+					type: 'string',
+					optional: false, nullable: false,
 					format: 'id',
 					example: 'xxxxxxxxxx',
 				},
 				createdAt: {
-					type: 'string' as const,
-					optional: false as const, nullable: false as const,
+					type: 'string',
+					optional: false, nullable: false,
 					format: 'date-time',
 				},
 				updatedAt: {
-					type: 'string' as const,
-					optional: false as const, nullable: true as const,
+					type: 'string',
+					optional: false, nullable: true,
 					format: 'date-time',
 				},
 				text: {
-					type: 'string' as const,
-					optional: false as const, nullable: false as const,
+					type: 'string',
+					optional: false, nullable: false,
 				},
 				title: {
-					type: 'string' as const,
-					optional: false as const, nullable: false as const,
+					type: 'string',
+					optional: false, nullable: false,
 				},
 				imageUrl: {
-					type: 'string' as const,
-					optional: false as const, nullable: true as const,
+					type: 'string',
+					optional: false, nullable: true,
 				},
 				isRead: {
-					type: 'boolean' as const,
-					optional: false as const, nullable: false as const,
+					type: 'boolean',
+					optional: true, nullable: false,
 				},
 			},
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	const query = makePaginationQuery(Announcements.createQueryBuilder('announcement'), ps.sinceId, ps.untilId);
 

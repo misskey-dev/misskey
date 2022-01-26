@@ -8,7 +8,7 @@ import { readUserMessagingMessage, readGroupMessagingMessage } from '../../../co
 export const meta = {
 	tags: ['messaging'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	kind: 'write:messaging',
 
@@ -25,8 +25,9 @@ export const meta = {
 			id: '86d56a2f-a9c3-4afb-b13c-3e9bfef9aa14',
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	const message = await MessagingMessages.findOne(ps.messageId);
 

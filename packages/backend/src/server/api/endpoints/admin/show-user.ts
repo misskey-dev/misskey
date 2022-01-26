@@ -6,7 +6,7 @@ import { Users } from '@/models/index';
 export const meta = {
 	tags: ['admin'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 	requireModerator: true,
 
 	params: {
@@ -16,149 +16,150 @@ export const meta = {
 	},
 
 	res: {
-		type: 'object' as const,
-		nullable: false as const, optional: false as const,
+		type: 'object',
+		nullable: false, optional: false,
 		properties: {
 			id: {
-				type: 'string' as const,
-				nullable: false as const, optional: false as const,
+				type: 'string',
+				nullable: false, optional: false,
 				format: 'id',
 			},
 			createdAt: {
-				type: 'string' as const,
-				nullable: false as const, optional: false as const,
+				type: 'string',
+				nullable: false, optional: false,
 				format: 'date-time',
 			},
 			updatedAt: {
-				type: 'string' as const,
-				nullable: true as const, optional: false as const,
+				type: 'string',
+				nullable: true, optional: false,
 				format: 'date-time',
 			},
 			lastFetchedAt: {
-				type: 'string' as const,
-				nullable: true as const, optional: false as const,
+				type: 'string',
+				nullable: true, optional: false,
 			},
 			username: {
-				type: 'string' as const,
-				nullable: false as const, optional: false as const,
+				type: 'string',
+				nullable: false, optional: false,
 			},
 			name: {
-				type: 'string' as const,
-				nullable: false as const, optional: false as const,
+				type: 'string',
+				nullable: true, optional: false,
 			},
 			folowersCount: {
-				type: 'number' as const,
-				nullable: false as const, optional: false as const,
+				type: 'number',
+				nullable: false, optional: true,
 			},
 			followingCount: {
-				type: 'number' as const,
-				nullable: false as const, optional: false as const,
+				type: 'number',
+				nullable: false, optional: false,
 			},
 			notesCount: {
-				type: 'number' as const,
-				nullable: false as const, optional: false as const,
+				type: 'number',
+				nullable: false, optional: false,
 			},
 			avatarId: {
-				type: 'string' as const,
-				nullable: true as const, optional: false as const,
+				type: 'string',
+				nullable: true, optional: false,
 			},
 			bannerId: {
-				type: 'string' as const,
-				nullable: true as const, optional: false as const,
+				type: 'string',
+				nullable: true, optional: false,
 			},
 			tags: {
-				type: 'array' as const,
-				nullable: false as const, optional: false as const,
+				type: 'array',
+				nullable: false, optional: false,
 				items: {
-					type: 'string' as const,
-					nullable: false as const, optional: false as const,
+					type: 'string',
+					nullable: false, optional: false,
 				},
 			},
 			avatarUrl: {
-				type: 'string' as const,
-				nullable: true as const, optional: false as const,
+				type: 'string',
+				nullable: true, optional: false,
 				format: 'url',
 			},
 			bannerUrl: {
-				type: 'string' as const,
-				nullable: true as const, optional: false as const,
+				type: 'string',
+				nullable: true, optional: false,
 				format: 'url',
 			},
 			avatarBlurhash: {
-				type: 'any' as const,
-				nullable: true as const, optional: false as const,
+				type: 'any',
+				nullable: true, optional: false,
 				default: null,
 			},
 			bannerBlurhash: {
-				type: 'any' as const,
-				nullable: true as const, optional: false as const,
+				type: 'any',
+				nullable: true, optional: false,
 				default: null,
 			},
 			isSuspended: {
-				type: 'boolean' as const,
-				nullable: false as const, optional: false as const,
+				type: 'boolean',
+				nullable: false, optional: false,
 			},
 			isSilenced: {
-				type: 'boolean' as const,
-				nullable: false as const, optional: false as const,
+				type: 'boolean',
+				nullable: false, optional: false,
 			},
 			isLocked: {
-				type: 'boolean' as const,
-				nullable: false as const, optional: false as const,
+				type: 'boolean',
+				nullable: false, optional: false,
 			},
 			isBot: {
-				type: 'boolean' as const,
-				nullable: false as const, optional: false as const,
+				type: 'boolean',
+				nullable: false, optional: false,
 			},
 			isCat: {
-				type: 'boolean' as const,
-				nullable: false as const, optional: false as const,
+				type: 'boolean',
+				nullable: false, optional: false,
 			},
 			isAdmin: {
-				type: 'boolean' as const,
-				nullable: false as const, optional: false as const,
+				type: 'boolean',
+				nullable: false, optional: false,
 			},
 			isModerator: {
-				type: 'boolean' as const,
-				nullable: false as const, optional: false as const,
+				type: 'boolean',
+				nullable: false, optional: false,
 			},
 			emojis: {
-				type: 'array' as const,
-				nullable: false as const, optional: false as const,
+				type: 'array',
+				nullable: false, optional: false,
 				items: {
-					type: 'string' as const,
-					nullable: false as const, optional: false as const,
+					type: 'string',
+					nullable: false, optional: false,
 				},
 			},
 			host: {
-				type: 'string' as const,
-				nullable: true as const, optional: false as const,
+				type: 'string',
+				nullable: true, optional: false,
 			},
 			inbox: {
-				type: 'string' as const,
-				nullable: true as const, optional: false as const,
+				type: 'string',
+				nullable: true, optional: false,
 			},
 			sharedInbox: {
-				type: 'string' as const,
-				nullable: true as const, optional: false as const,
+				type: 'string',
+				nullable: true, optional: false,
 			},
 			featured: {
-				type: 'string' as const,
-				nullable: true as const, optional: false as const,
+				type: 'string',
+				nullable: true, optional: false,
 			},
 			uri: {
-				type: 'string' as const,
-				nullable: true as const, optional: false as const,
+				type: 'string',
+				nullable: true, optional: false,
 			},
 			token: {
-				type: 'string' as const,
-				nullable: false as const, optional: false as const,
+				type: 'string',
+				nullable: true, optional: false,
 				default: '<MASKED>',
 			},
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, me) => {
 	const user = await Users.findOne(ps.userId as string);
 

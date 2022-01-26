@@ -3,7 +3,7 @@ import define from '../../define';
 import { AccessTokens, Apps } from '@/models/index';
 
 export const meta = {
-	requireCredential: true as const,
+	requireCredential: true,
 
 	secure: true,
 
@@ -23,8 +23,9 @@ export const meta = {
 			default: 'desc',
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	// Get tokens
 	const tokens = await AccessTokens.find({

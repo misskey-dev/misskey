@@ -23,8 +23,9 @@ export const meta = {
 	},
 
 	res: convertLog(driveChart.schema),
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps) => {
 	return await driveChart.getChart(ps.span as any, ps.limit!, ps.offset ? new Date(ps.offset) : null);
 });

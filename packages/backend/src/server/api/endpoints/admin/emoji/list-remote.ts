@@ -8,7 +8,7 @@ import { ID } from '@/misc/cafy-id';
 export const meta = {
 	tags: ['admin'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 	requireModerator: true,
 
 	params: {
@@ -37,46 +37,47 @@ export const meta = {
 	},
 
 	res: {
-		type: 'array' as const,
-		optional: false as const, nullable: false as const,
+		type: 'array',
+		optional: false, nullable: false,
 		items: {
-			type: 'object' as const,
-			optional: false as const, nullable: false as const,
+			type: 'object',
+			optional: false, nullable: false,
 			properties: {
 				id: {
-					type: 'string' as const,
-					optional: false as const, nullable: false as const,
+					type: 'string',
+					optional: false, nullable: false,
 					format: 'id',
 				},
 				aliases: {
-					type: 'array' as const,
-					optional: false as const, nullable: false as const,
+					type: 'array',
+					optional: false, nullable: false,
 					items: {
-						type: 'string' as const,
-						optional: false as const, nullable: false as const,
+						type: 'string',
+						optional: false, nullable: false,
 					},
 				},
 				name: {
-					type: 'string' as const,
-					optional: false as const, nullable: false as const,
+					type: 'string',
+					optional: false, nullable: false,
 				},
 				category: {
-					type: 'string' as const,
-					optional: false as const, nullable: true as const,
+					type: 'string',
+					optional: false, nullable: true,
 				},
 				host: {
-					type: 'string' as const,
-					optional: false as const, nullable: true as const,
+					type: 'string',
+					optional: false, nullable: true,
 				},
 				url: {
-					type: 'string' as const,
-					optional: false as const, nullable: false as const,
+					type: 'string',
+					optional: false, nullable: false,
 				},
 			},
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps) => {
 	const q = makePaginationQuery(Emojis.createQueryBuilder('emoji'), ps.sinceId, ps.untilId);
 

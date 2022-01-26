@@ -1,45 +1,37 @@
 <template>
 <button class="nrvgflfu _button" @click="toggle">
-	<b>{{ modelValue ? $ts._cw.hide : $ts._cw.show }}</b>
+	<b>{{ modelValue ? i18n.locale._cw.hide : i18n.locale._cw.show }}</b>
 	<span v-if="!modelValue">{{ label }}</span>
 </button>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { computed } from 'vue';
 import { length } from 'stringz';
+import * as misskey from 'misskey-js';
 import { concat } from '@/scripts/array';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	props: {
-		modelValue: {
-			type: Boolean,
-			required: true
-		},
-		note: {
-			type: Object,
-			required: true
-		}
-	},
+const props = defineProps<{
+	modelValue: boolean;
+	note: misskey.entities.Note;
+}>();
 
-	computed: {
-		label(): string {
-			return concat([
-				this.note.text ? [this.$t('_cw.chars', { count: length(this.note.text) })] : [],
-				this.note.files && this.note.files.length !== 0 ? [this.$t('_cw.files', { count: this.note.files.length }) ] : [],
-				this.note.poll != null ? [this.$ts.poll] : []
-			] as string[][]).join(' / ');
-		}
-	},
+const emit = defineEmits<{
+	(e: 'update:modelValue', v: boolean): void;
+}>();
 
-	methods: {
-		length,
-
-		toggle() {
-			this.$emit('update:modelValue', !this.modelValue);
-		}
-	}
+const label = computed(() => {
+	return concat([
+		props.note.text ? [i18n.t('_cw.chars', { count: length(props.note.text) })] : [],
+		props.note.files && props.note.files.length !== 0 ? [i18n.t('_cw.files', { count: props.note.files.length }) ] : [],
+		props.note.poll != null ? [i18n.locale.poll] : []
+	] as string[][]).join(' / ');
 });
+
+const toggle = () => {
+	emit('update:modelValue', !props.modelValue);
+};
 </script>
 
 <style lang="scss" scoped>

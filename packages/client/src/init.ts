@@ -13,10 +13,8 @@ if (localStorage.getItem('accounts') != null) {
 }
 //#endregion
 
-import * as Sentry from '@sentry/browser';
-import { Integrations } from '@sentry/tracing';
 import { computed, createApp, watch, markRaw, version as vueVersion } from 'vue';
-import compareVersions from 'compare-versions';
+import * as compareVersions from 'compare-versions';
 
 import widgets from '@/widgets';
 import directives from '@/directives';
@@ -26,7 +24,8 @@ import { router } from '@/router';
 import { applyTheme } from '@/scripts/theme';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
 import { i18n } from '@/i18n';
-import { stream, confirm, alert, post, popup, toast } from '@/os';
+import { confirm, alert, post, popup, toast } from '@/os';
+import { stream } from '@/stream';
 import * as sound from '@/scripts/sound';
 import { $i, refreshAccount, login, updateAccount, signout } from '@/account';
 import { defaultStore, ColdDeviceStorage } from '@/store';
@@ -71,18 +70,6 @@ if (_DEV_) {
 		});
 		*/
 	});
-}
-
-if (defaultStore.state.reportError && !_DEV_) {
-	Sentry.init({
-		dsn: 'https://fd273254a07a4b61857607a9ea05d629@o501808.ingest.sentry.io/5583438',
-		tracesSampleRate: 1.0,
-	});
-
-	Sentry.setTag('misskey_version', version);
-	Sentry.setTag('ui', ui);
-	Sentry.setTag('lang', lang);
-	Sentry.setTag('host', host);
 }
 
 // タッチデバイスでCSSの:hoverを機能させる
@@ -185,7 +172,6 @@ const app = createApp(await (
 	!$i                               ? import('@/ui/visitor.vue') :
 	ui === 'deck'                     ? import('@/ui/deck.vue') :
 	ui === 'desktop'                  ? import('@/ui/desktop.vue') :
-	ui === 'chat'                     ? import('@/ui/chat/index.vue') :
 	ui === 'classic'                  ? import('@/ui/classic.vue') :
 	import('@/ui/universal.vue')
 ).then(x => x.default));

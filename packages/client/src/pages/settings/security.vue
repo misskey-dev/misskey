@@ -12,7 +12,7 @@
 	
 	<FormSection>
 		<template #label>{{ $ts.signinHistory }}</template>
-		<FormPagination :pagination="pagination">
+		<MkPagination :pagination="pagination">
 			<template v-slot="{items}">
 				<div>
 					<div v-for="item in items" :key="item.id" v-panel class="timnmucd">
@@ -25,7 +25,7 @@
 					</div>
 				</div>
 			</template>
-		</FormPagination>
+		</MkPagination>
 	</FormSection>
 
 	<FormSection>
@@ -40,10 +40,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import FormSection from '@/components/form/section.vue';
-import FormLink from '@/components/debobigego/link.vue';
 import FormSlot from '@/components/form/slot.vue';
 import FormButton from '@/components/ui/button.vue';
-import FormPagination from '@/components/form/pagination.vue';
+import MkPagination from '@/components/ui/pagination.vue';
 import X2fa from './2fa.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
@@ -51,9 +50,8 @@ import * as symbols from '@/symbols';
 export default defineComponent({
 	components: {
 		FormSection,
-		FormLink,
 		FormButton,
-		FormPagination,
+		MkPagination,
 		FormSlot,
 		X2fa,
 	},
@@ -68,14 +66,10 @@ export default defineComponent({
 				bg: 'var(--bg)',
 			},
 			pagination: {
-				endpoint: 'i/signin-history',
+				endpoint: 'i/signin-history' as const,
 				limit: 5,
 			},
 		}
-	},
-
-	mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
 	},
 
 	methods: {
