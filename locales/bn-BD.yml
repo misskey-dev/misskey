@@ -82,7 +82,18 @@ retry: "আবার চেষ্টা করুন"
 pageLoadError: "পেজ লোড করা যায়নি"
 pageLoadErrorDescription: "এটি সাধারনত নেটওয়ার্কের সমস্যার বা ব্রাউজার ক্যাশের কারণে ঘটে থাকে। ব্রাউজার এর ক্যাশ পরিষ্কার করুন এবং একটু পর আবার চেষ্টা করুন। "
 serverIsDead: "এই সার্ভার বর্তমানে সাড়া দিচ্ছে না। একটু পরে আবার চেষ্টা করুন।"
-follow: "অনুসরণ করা হচ্ছে"
+youShouldUpgradeClient: "এই পেজ দেখার জন্য আপনার ব্রাউজার রিফ্রেশ করে ক্লায়েন্ট আপডেট করুন। "
+enterListName: "লিস্টের নাম লিখুন"
+privacy: "গোপনীয়তা"
+makeFollowManuallyApprove: "অনুসরণ করার অনুরোধগুলি গৃহীত হওয়ার জন্য আপনার অনুমতি লাগবে"
+defaultNoteVisibility: "ডিফল্ট দৃশ্যমান্যতা"
+follow: "অনুসরণ"
+followRequest: "অনুসরণ করার অনুরোধ"
+followRequests: "অনুসরণ করার অনুরোধসমূহ"
+unfollow: "অনুসরণ বাতিল"
+followRequestPending: "অনুসরণ করার অনুরোধ বিচারাধীন"
+enterEmoji: "ইমোজি প্রবেশ করান"
+renote: "রিনোট"
 pinned: "পিন করা"
 instances: "ইন্সট্যান্স"
 remove: "মুছুন"
@@ -99,6 +110,7 @@ _mfm:
 _theme:
   keys:
     mention: "উল্লেখ"
+    renote: "রিনোট"
 _sfx:
   note: "নোটগুলি"
   notification: "বিজ্ঞপ্তি"
@@ -138,6 +150,7 @@ _notification:
   _types:
     follow: "অনুসরণ করা হচ্ছে"
     mention: "উল্লেখ"
+    renote: "রিনোট"
 _deck:
   _columns:
     notifications: "বিজ্ঞপ্তি"
