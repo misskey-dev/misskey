@@ -38,7 +38,7 @@
 	</FormSlot>
 
 	<FormSwitch v-model="profile.isCat" class="_formBlock">{{ i18n.locale.flagAsCat }}<template #caption>{{ i18n.locale.flagAsCatDescription }}</template></FormSwitch>
-
+	<FormSwitch v-model="profile.showTimelineReplies" class="_formBlock">{{ i18n.locale.flagShowTimelineReplies }}<template #caption>{{ i18n.locale.flagShowTimelineRepliesDescription }}</template></FormSwitch>
 	<FormSwitch v-model="profile.isBot" class="_formBlock">{{ i18n.locale.flagAsBot }}<template #caption>{{ i18n.locale.flagAsBotDescription }}</template></FormSwitch>
 
 	<FormSwitch v-model="profile.alwaysMarkNsfw" class="_formBlock">{{ i18n.locale.alwaysMarkSensitive }}</FormSwitch>
@@ -68,6 +68,7 @@ const profile = reactive({
 	lang: $i.lang,
 	isBot: $i.isBot,
 	isCat: $i.isCat,
+	showTimelineReplies: $i.showTimelineReplies,
 	alwaysMarkNsfw: $i.alwaysMarkNsfw,
 });
 
@@ -97,6 +98,7 @@ function save() {
 		lang: profile.lang || null,
 		isBot: !!profile.isBot,
 		isCat: !!profile.isCat,
+		showTimelineReplies: !!profile.showTimelineReplies,
 		alwaysMarkNsfw: !!profile.alwaysMarkNsfw,
 	});
 }

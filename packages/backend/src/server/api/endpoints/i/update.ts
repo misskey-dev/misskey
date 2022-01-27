@@ -96,6 +96,10 @@ export const meta = {
 			validator: $.optional.bool,
 		},
 
+		showTimelineReplies: {
+			validator: $.optional.bool,
+		},
+
 		injectFeaturedNote: {
 			validator: $.optional.bool,
 		},
