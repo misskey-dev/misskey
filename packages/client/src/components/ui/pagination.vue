@@ -214,15 +214,15 @@ const fetchMoreAhead = async (): Promise<void> => {
 		...(props.pagination.offsetMode ? {
 			offset: offset.value,
 		} : {
-			sinceId: /*props.pagination.reversed ? items.value[0].id : */items.value[items.value.length - 1].id,
+			sinceId: items.value[items.value.length - 1].id,
 		}),
 	}).then(res => {
 		if (res.length > SECOND_FETCH_LIMIT) {
 			res.pop();
-			items.value = /*props.pagination.reversed ? [...res].reverse().concat(items.value) : */items.value.concat(res);
+			items.value = items.value.concat(res);
 			more.value = true;
 		} else {
-			items.value = /*props.pagination.reversed ? [...res].reverse().concat(items.value) : */items.value.concat(res) ;
+			items.value = items.value.concat(res) ;
 			more.value = false;
 		}
 		offset.value += res.length;
@@ -307,7 +307,7 @@ onMounted(() => {
 				// more = trueを遅らせる
 				setTimeout(() => {
 					moreFetching.value = false;
-				}, 3000);
+				}, 2000);
 			});
 		}
 	});

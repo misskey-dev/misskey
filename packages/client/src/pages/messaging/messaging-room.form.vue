@@ -144,8 +144,8 @@ function onCompositionUpdate() {
 }
 
 function chooseFile(e: MouseEvent) {
-	selectFile(e.currentTarget || e.target, i18n.locale.selectFile).then(file => {
-		file = file;
+	selectFile(e.currentTarget || e.target, i18n.locale.selectFile).then(selectedFile => {
+		file = selectedFile;
 	});
 }
 
