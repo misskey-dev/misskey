@@ -1,5 +1,5 @@
 <template>
-<div class="vswabwbm" :style="{ zIndex, top: `${y - 64}px`, left: `${x - 64}px` }">
+<div class="vswabwbm" :style="{ zIndex, top: `${y - 64}px`, left: `${x - 64}px` }" :class="{ active }">
 	<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
 		<circle fill="none" cx="64" cy="64">
 			<animate attributeName="r"

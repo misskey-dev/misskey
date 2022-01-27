@@ -422,7 +422,7 @@ type AwaitType<T> =
 	T;
 let openingEmojiPicker: AwaitType<ReturnType<typeof popup>> | null = null;
 let activeTextarea: HTMLTextAreaElement | HTMLInputElement | null = null;
-export async function openEmojiPicker(src?: HTMLElement | EventTarget | null, opts, initialTextarea: typeof activeTextarea) {
+export async function openEmojiPicker(src?: HTMLElement, opts, initialTextarea: typeof activeTextarea) {
 	if (openingEmojiPicker) return;
 
 	activeTextarea = initialTextarea;
