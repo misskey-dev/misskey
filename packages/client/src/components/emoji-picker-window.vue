@@ -17,7 +17,7 @@ import MkWindow from '@/components/ui/window.vue';
 import MkEmojiPicker from '@/components/emoji-picker.vue';
 
 withDefaults(defineProps<{
-	src?: HTMLElement;
+	src?: HTMLElement | EventTarget;
 	showPinned?: boolean;
 	asReactionPicker?: boolean;
 }>(), {

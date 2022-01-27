@@ -63,7 +63,7 @@ const props = defineProps<{
 	groupId?: string;
 }>();
 
-let rootEl = $ref<Element>();
+let rootEl = $ref<HTMLDivElement>();
 let formEl = $ref<InstanceType<typeof XForm>>();
 let pagingComponent = $ref<InstanceType<typeof MkPagination>>();
 
@@ -88,16 +88,18 @@ async function fetch() {
 	fetching = true;
 
 	if (props.userAcct) {
-		user = await os.api('users/show', Acct.parse(props.userAcct));
+		const acct = Acct.parse(props.userAcct);
+		user = await os.api('users/show', { username: acct.username, host: acct.host || undefined });
 		group = null;
 		
 		pagination = {
 			endpoint: 'messaging/messages',
+			limit: 20,
 			params: {
 				userId: user.id,
 			},
 			reversed: true,
-			pageEl: $$(rootEl),
+			pageEl: $$(rootEl).value,
 		};
 		connection = stream.useChannel('messaging', {
 			otherparty: user.id,
@@ -108,14 +110,15 @@ async function fetch() {
 
 		pagination = {
 			endpoint: 'messaging/messages',
+			limit: 20,
 			params: {
-				groupId: group.id,
+				groupId: group?.id,
 			},
 			reversed: true,
-			pageEl: $$(rootEl),
+			pageEl: $$(rootEl).value,
 		};
 		connection = stream.useChannel('messaging', {
-			group: group.id,
+			group: group?.id,
 		});
 	}
 
@@ -124,7 +127,7 @@ async function fetch() {
 	connection.on('read', onRead);
 	connection.on('deleted', onDeleted);
 	connection.on('typers', typers => {
-		typers = typers.filter(u => u.id !== $i.id);
+		typers = typers.filter(u => u.id !== $i?.id);
 	});
 
 	document.addEventListener('visibilitychange', onVisibilitychange);
@@ -182,7 +185,7 @@ function onMessage(message) {
 	const _isBottom = isBottom(rootEl, 64);
 
 	pagingComponent.prepend(message);
-	if (message.userId != $i.id && !document.hidden) {
+	if (message.userId != $i?.id && !document.hidden) {
 		connection?.send('read', {
 			id: message.id
 		});
@@ -193,7 +196,7 @@ function onMessage(message) {
 		nextTick(() => {
 			scrollToBottom();
 		});
-	} else if (message.userId != $i.id) {
+	} else if (message.userId != $i?.id) {
 		// Notify
 		notifyNewMessage();
 	}
@@ -251,7 +254,7 @@ function notifyNewMessage() {
 function onVisibilitychange() {
 	if (document.hidden) return;
 	for (const message of pagingComponent.items) {
-		if (message.userId !== $i.id && !message.isRead) {
+		if (message.userId !== $i?.id && !message.isRead) {
 			connection?.send('read', {
 				id: message.id
 			});
