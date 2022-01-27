@@ -95,9 +95,17 @@ followRequestPending: "অনুসরণ করার অনুরোধ বি
 enterEmoji: "ইমোজি প্রবেশ করান"
 renote: "রিনোট"
 unrenote: "রিনোট সরান "
+renoted: "রিনোট করা হয়েছে"
+cantRenote: "এই নোটটি রিনোট করা যাবে না।"
+cantReRenote: "রিনোটকে রিনোট করা যাবে না।"
+quote: "উদ্ধৃতি"
+pinnedNote: "পিন করা নোট"
 pinned: "পিন করা"
+you: "আপনি"
+clickToShow: "দেখার জন্য ক্লিক করুন"
 instances: "ইন্সট্যান্স"
 remove: "মুছুন"
+pinnedNotes: "পিন করা নোট"
 userList: "লিস্ট"
 smtpUser: "ব্যবহারকারীর নাম"
 smtpPass: "পাসওয়ার্ড"
@@ -107,6 +115,7 @@ _email:
     title: "আপনাকে অনুসরণ করছে"
 _mfm:
   mention: "উল্লেখ"
+  quote: "উদ্ধৃতি"
   search: "খুঁজুন"
 _theme:
   keys:
@@ -152,6 +161,7 @@ _notification:
     follow: "অনুসরণ করা হচ্ছে"
     mention: "উল্লেখ"
     renote: "রিনোট"
+    quote: "উদ্ধৃতি"
 _deck:
   _columns:
     notifications: "বিজ্ঞপ্তি"
