@@ -320,14 +320,15 @@ export async function extractEmojis(tags: IObject | IObject[], host: string): Pr
 			if ((tag.updated != null && exists.updatedAt == null)
 				|| (tag.id != null && exists.uri == null)
 				|| (tag.updated != null && exists.updatedAt != null && new Date(tag.updated) > exists.updatedAt)
-				|| (tag.icon!.url !== exists.url)
+				|| (tag.icon!.url !== exists.originalUrl)
 			) {
 				await Emojis.update({
 					host,
 					name,
 				}, {
 					uri: tag.id,
-					url: tag.icon!.url,
+					originalUrl: tag.icon!.url,
+					publicUrl: tag.icon!.url,
 					updatedAt: new Date(),
 				});
 
@@ -342,14 +343,15 @@ export async function extractEmojis(tags: IObject | IObject[], host: string): Pr
 
 		logger.info(`register emoji host=${host}, name=${name}`);
 
-		return await Emojis.save({
+		return await Emojis.insert({
 			id: genId(),
 			host,
 			name,
 			uri: tag.id,
-			url: tag.icon!.url,
+			originalUrl: tag.icon!.url,
+			publicUrl: tag.icon!.url,
 			updatedAt: new Date(),
 			aliases: [],
-		} as Partial<Emoji>);
+		} as Partial<Emoji>).then(x => Emojis.findOneOrFail(x.identifiers[0]));
 	}));
 }

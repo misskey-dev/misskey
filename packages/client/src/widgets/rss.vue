@@ -1,7 +1,7 @@
 <template>
-<MkContainer :show-header="props.showHeader">
+<MkContainer :show-header="widgetProps.showHeader">
 	<template #header><i class="fas fa-rss-square"></i>RSS</template>
-	<template #func><button class="_button" @click="setting"><i class="fas fa-cog"></i></button></template>
+	<template #func><button class="_button" @click="configure"><i class="fas fa-cog"></i></button></template>
 
 	<div class="ekmkgxbj">
 		<MkLoading v-if="fetching"/>
@@ -12,57 +12,66 @@
 </MkContainer>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import MkContainer from '@/components/ui/container.vue';
-import define from './define';
+<script lang="ts" setup>
+import { onMounted, onUnmounted, ref, watch } from 'vue';
+import { GetFormResultType } from '@/scripts/form';
+import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
 import * as os from '@/os';
+import MkContainer from '@/components/ui/container.vue';
 
-const widget = define({
-	name: 'rss',
-	props: () => ({
-		showHeader: {
-			type: 'boolean',
-			default: true,
-		},
-		url: {
-			type: 'string',
-			default: 'http://feeds.afpbb.com/rss/afpbb/afpbbnews',
-		},
-	})
+const name = 'rss';
+
+const widgetPropsDef = {
+	showHeader: {
+		type: 'boolean' as const,
+		default: true,
+	},
+	url: {
+		type: 'string' as const,
+		default: 'http://feeds.afpbb.com/rss/afpbb/afpbbnews',
+	},
+};
+
+type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
+
+// 現時点ではvueの制限によりimportしたtypeをジェネリックに渡せない
+//const props = defineProps<WidgetComponentProps<WidgetProps>>();
+//const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
+const props = defineProps<{ widget?: Widget<WidgetProps>; }>();
+const emit = defineEmits<{ (e: 'updateProps', props: WidgetProps); }>();
+
+const { widgetProps, configure } = useWidgetPropsManager(name,
+	widgetPropsDef,
+	props,
+	emit,
+);
+
+const items = ref([]);
+const fetching = ref(true);
+
+const tick = () => {
+	fetch(`https://api.rss2json.com/v1/api.json?rss_url=${widgetProps.url}`, {}).then(res => {
+		res.json().then(feed => {
+			items.value = feed.items;
+			fetching.value = false;
+		});
+	});
+};
+
+watch(() => widgetProps.url, tick);
+
+onMounted(() => {
+	tick();
+	const intervalId = window.setInterval(tick, 60000);
+	onUnmounted(() => {
+		window.clearInterval(intervalId);
+	});
 });
 
-export default defineComponent({
-	components: {
-		MkContainer
-	},
-	extends: widget,
-	data() {
-		return {
-			items: [],
-			fetching: true,
-			clock: null,
-		};
-	},
-	mounted() {
-		this.fetch();
-		this.clock = setInterval(this.fetch, 60000);
-		this.$watch(() => this.props.url, this.fetch);
-	},
-	beforeUnmount() {
-		clearInterval(this.clock);
-	},
-	methods: {
-		fetch() {
-			fetch(`https://api.rss2json.com/v1/api.json?rss_url=${this.props.url}`, {
-			}).then(res => {
-				res.json().then(feed => {
-					this.items = feed.items;
-					this.fetching = false;
-				});
-			});
-		},
-	}
+defineExpose<WidgetComponentExpose>({
+	name,
+	configure,
+	id: props.widget ? props.widget.id : null,
 });
 </script>
 

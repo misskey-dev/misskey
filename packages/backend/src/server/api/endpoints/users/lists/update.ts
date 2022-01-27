@@ -7,7 +7,7 @@ import { UserLists } from '@/models/index';
 export const meta = {
 	tags: ['lists'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	kind: 'write:account',
 
@@ -22,8 +22,8 @@ export const meta = {
 	},
 
 	res: {
-		type: 'object' as const,
-		optional: false as const, nullable: false as const,
+		type: 'object',
+		optional: false, nullable: false,
 		ref: 'UserList',
 	},
 
@@ -34,8 +34,9 @@ export const meta = {
 			id: '796666fe-3dff-4d39-becb-8a5932c1d5b7',
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	// Fetch the list
 	const userList = await UserLists.findOne({

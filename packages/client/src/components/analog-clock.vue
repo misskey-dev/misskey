@@ -40,106 +40,64 @@
 </svg>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import * as tinycolor from 'tinycolor2';
 
-export default defineComponent({
-	props: {
-		thickness: {
-			type: Number,
-			default: 0.1
-		}
-	},
+withDefaults(defineProps<{
+	thickness: number;
+}>(), {
+	thickness: 0.1,
+});
 
-	data() {
-		return {
-			now: new Date(),
-			enabled: true,
+const now = ref(new Date());
+const enabled = ref(true);
+const graduationsPadding = ref(0.5);
+const handsPadding = ref(1);
+const handsTailLength = ref(0.7);
+const hHandLengthRatio = ref(0.75);
+const mHandLengthRatio = ref(1);
+const sHandLengthRatio = ref(1);
+const computedStyle = getComputedStyle(document.documentElement);
 
-			graduationsPadding: 0.5,
-			handsPadding: 1,
-			handsTailLength: 0.7,
-			hHandLengthRatio: 0.75,
-			mHandLengthRatio: 1,
-			sHandLengthRatio: 1,
-
-			computedStyle: getComputedStyle(document.documentElement)
-		};
-	},
-
-	computed: {
-		dark(): boolean {
-			return tinycolor(this.computedStyle.getPropertyValue('--bg')).isDark();
-		},
-
-		majorGraduationColor(): string {
-			return this.dark ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.3)';
-		},
-		minorGraduationColor(): string {
-			return this.dark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
-		},
-
-		sHandColor(): string {
-			return this.dark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.3)';
-		},
-		mHandColor(): string {
-			return tinycolor(this.computedStyle.getPropertyValue('--fg')).toHexString();
-		},
-		hHandColor(): string {
-			return tinycolor(this.computedStyle.getPropertyValue('--accent')).toHexString();
-		},
-
-		s(): number {
-			return this.now.getSeconds();
-		},
-		m(): number {
-			return this.now.getMinutes();
-		},
-		h(): number {
-			return this.now.getHours();
-		},
-
-		hAngle(): number {
-			return Math.PI * (this.h % 12 + (this.m + this.s / 60) / 60) / 6;
-		},
-		mAngle(): number {
-			return Math.PI * (this.m + this.s / 60) / 30;
-		},
-		sAngle(): number {
-			return Math.PI * this.s / 30;
-		},
-
-		graduations(): any {
-			const angles = [];
-			for (let i = 0; i < 60; i++) {
-				const angle = Math.PI * i / 30;
-				angles.push(angle);
-			}
-
-			return angles;
-		}
-	},
-
-	mounted() {
-		const update = () => {
-			if (this.enabled) {
-				this.tick();
-				setTimeout(update, 1000);
-			}
-		};
-		update();
-	},
-
-	beforeUnmount() {
-		this.enabled = false;
-	},
-
-	methods: {
-		tick() {
-			this.now = new Date();
-		}
+const dark = computed(() => tinycolor(computedStyle.getPropertyValue('--bg')).isDark());
+const majorGraduationColor = computed(() => dark.value ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.3)');
+const minorGraduationColor = computed(() => dark.value ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)');
+const sHandColor = computed(() => dark.value ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.3)');
+const mHandColor = computed(() => tinycolor(computedStyle.getPropertyValue('--fg')).toHexString());
+const hHandColor = computed(() => tinycolor(computedStyle.getPropertyValue('--accent')).toHexString());
+const s = computed(() => now.value.getSeconds());
+const m = computed(() => now.value.getMinutes());
+const h = computed(() => now.value.getHours());
+const hAngle = computed(() => Math.PI * (h.value % 12 + (m.value + s.value / 60) / 60) / 6);
+const mAngle = computed(() => Math.PI * (m.value + s.value / 60) / 30);
+const sAngle = computed(() => Math.PI * s.value / 30);
+const graduations = computed(() => {
+	const angles: number[] = [];
+	for (let i = 0; i < 60; i++) {
+		const angle = Math.PI * i / 30;
+		angles.push(angle);
 	}
+
+	return angles;
+});
+
+function tick() {
+	now.value = new Date();
+}
+
+onMounted(() => {
+	const update = () => {
+		if (enabled.value) {
+			tick();
+			window.setTimeout(update, 1000);
+		}
+	};
+	update();
+});
+
+onBeforeUnmount(() => {
+	enabled.value = false;
 });
 </script>
 

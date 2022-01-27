@@ -14,6 +14,10 @@ if (isTouchSupported) {
 	}, { passive: true });
 	
 	window.addEventListener('touchend', () => {
+		// 子要素のtouchstartイベントでstopPropagation()が呼ばれると親要素に伝搬されずタッチされたと判定されないため、
+		// touchendイベントでもtouchstartイベントと同様にtrueにする
+		isTouchUsing = true;
+
 		isScreenTouching = false;
 	}, { passive: true });
 }

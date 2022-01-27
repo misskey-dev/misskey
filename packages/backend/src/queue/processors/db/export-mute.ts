@@ -3,7 +3,7 @@ import * as tmp from 'tmp';
 import * as fs from 'fs';
 
 import { queueLogger } from '../../logger';
-import addFile from '@/services/drive/add-file';
+import { addFile } from '@/services/drive/add-file';
 import * as dateFormat from 'dateformat';
 import { getFullApAccount } from '@/misc/convert-host';
 import { Users, Mutings } from '@/models/index';
@@ -86,7 +86,7 @@ export async function exportMute(job: Bull.Job<DbUserJobData>, done: any): Promi
 	logger.succ(`Exported to: ${path}`);
 
 	const fileName = 'mute-' + dateFormat(new Date(), 'yyyy-mm-dd-HH-MM-ss') + '.csv';
-	const driveFile = await addFile(user, path, fileName, null, null, true);
+	const driveFile = await addFile({ user, path, name: fileName, force: true });
 
 	logger.succ(`Exported to: ${driveFile.id}`);
 	cleanup();

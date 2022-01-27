@@ -1,126 +1,116 @@
 <template>
-<div class="kvausudm _panel">
+<div class="kvausudm _panel" :style="{ height: widgetProps.height + 'px' }">
 	<div @click="choose">
-		<p v-if="props.folderId == null">
-			<template v-if="isCustomizeMode">{{ $t('folder-customize-mode') }}</template>
-			<template v-else>{{ $ts.folder }}</template>
+		<p v-if="widgetProps.folderId == null">
+			{{ $ts.folder }}
 		</p>
-		<p v-if="props.folderId != null && images.length === 0 && !fetching">{{ $t('no-image') }}</p>
+		<p v-if="widgetProps.folderId != null && images.length === 0 && !fetching">{{ $t('no-image') }}</p>
 		<div ref="slideA" class="slide a"></div>
 		<div ref="slideB" class="slide b"></div>
 	</div>
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import define from './define';
+<script lang="ts" setup>
+import { nextTick, onMounted, onUnmounted, reactive, ref } from 'vue';
+import { GetFormResultType } from '@/scripts/form';
+import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
 import * as os from '@/os';
 
-const widget = define({
-	name: 'slideshow',
-	props: () => ({
-		height: {
-			type: 'number',
-			default: 300,
-		},
-		folderId: {
-			type: 'string',
-			default: null,
-			hidden: true,
-		},
-	})
+const name = 'slideshow';
+
+const widgetPropsDef = {
+	height: {
+		type: 'number' as const,
+		default: 300,
+	},
+	folderId: {
+		type: 'string' as const,
+		default: null,
+		hidden: true,
+	},
+};
+
+type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
+
+// 現時点ではvueの制限によりimportしたtypeをジェネリックに渡せない
+//const props = defineProps<WidgetComponentProps<WidgetProps>>();
+//const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
+const props = defineProps<{ widget?: Widget<WidgetProps>; }>();
+const emit = defineEmits<{ (e: 'updateProps', props: WidgetProps); }>();
+
+const { widgetProps, configure, save } = useWidgetPropsManager(name,
+	widgetPropsDef,
+	props,
+	emit,
+);
+
+const images = ref([]);
+const fetching = ref(true);
+const slideA = ref<HTMLElement>();
+const slideB = ref<HTMLElement>();
+
+const change = () => {
+	if (images.value.length == 0) return;
+
+	const index = Math.floor(Math.random() * images.value.length);
+	const img = `url(${ images.value[index].url })`;
+
+	slideB.value.style.backgroundImage = img;
+
+	slideB.value.classList.add('anime');
+	window.setTimeout(() => {
+		// 既にこのウィジェットがunmountされていたら要素がない
+		if (slideA.value == null) return;
+
+		slideA.value.style.backgroundImage = img;
+
+		slideB.value.classList.remove('anime');
+	}, 1000);
+};
+
+const fetch = () => {
+	fetching.value = true;
+
+	os.api('drive/files', {
+		folderId: widgetProps.folderId,
+		type: 'image/*',
+		limit: 100
+	}).then(res => {
+		images.value = res;
+		fetching.value = false;
+		slideA.value.style.backgroundImage = '';
+		slideB.value.style.backgroundImage = '';
+		change();
+	});
+};
+
+const choose = () => {
+	os.selectDriveFolder(false).then(folder => {
+		if (folder == null) {
+			return;
+		}
+		widgetProps.folderId = folder.id;
+		save();
+		fetch();
+	});
+};
+
+onMounted(() => {
+	if (widgetProps.folderId != null) {
+		fetch();
+	}
+
+	const intervalId = window.setInterval(change, 10000);
+	onUnmounted(() => {
+		window.clearInterval(intervalId);
+	});
 });
 
-export default defineComponent({
-	extends: widget,
-	data() {
-		return {
-			images: [],
-			fetching: true,
-			clock: null
-		};
-	},
-	mounted() {
-		this.$nextTick(() => {
-			this.applySize();
-		});
-
-		if (this.props.folderId != null) {
-			this.fetch();
-		}
-
-		this.clock = setInterval(this.change, 10000);
-	},
-	beforeUnmount() {
-		clearInterval(this.clock);
-	},
-	methods: {
-		applySize() {
-			let h;
-
-			if (this.props.size == 1) {
-				h = 250;
-			} else {
-				h = 170;
-			}
-
-			this.$el.style.height = `${h}px`;
-		},
-		resize() {
-			if (this.props.size == 1) {
-				this.props.size = 0;
-			} else {
-				this.props.size++;
-			}
-			this.save();
-
-			this.applySize();
-		},
-		change() {
-			if (this.images.length == 0) return;
-
-			const index = Math.floor(Math.random() * this.images.length);
-			const img = `url(${ this.images[index].url })`;
-
-			(this.$refs.slideB as any).style.backgroundImage = img;
-
-			this.$refs.slideB.classList.add('anime');
-			setTimeout(() => {
-				// 既にこのウィジェットがunmountされていたら要素がない
-				if ((this.$refs.slideA as any) == null) return;
-
-				(this.$refs.slideA as any).style.backgroundImage = img;
-
-				this.$refs.slideB.classList.remove('anime');
-			}, 1000);
-		},
-		fetch() {
-			this.fetching = true;
-
-			os.api('drive/files', {
-				folderId: this.props.folderId,
-				type: 'image/*',
-				limit: 100
-			}).then(images => {
-				this.images = images;
-				this.fetching = false;
-				(this.$refs.slideA as any).style.backgroundImage = '';
-				(this.$refs.slideB as any).style.backgroundImage = '';
-				this.change();
-			});
-		},
-		choose() {
-			os.selectDriveFolder(false).then(folder => {
-				if (folder == null) {
-					return;
-				}
-				this.props.folderId = folder.id;
-				this.save();
-				this.fetch();
-			});
-		}
-	}
+defineExpose<WidgetComponentExpose>({
+	name,
+	configure,
+	id: props.widget ? props.widget.id : null,
 });
 </script>
 

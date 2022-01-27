@@ -12,7 +12,7 @@ import { Brackets } from 'typeorm';
 export const meta = {
 	tags: ['account', 'notifications'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	kind: 'read:notifications',
 
@@ -55,16 +55,17 @@ export const meta = {
 	},
 
 	res: {
-		type: 'array' as const,
-		optional: false as const, nullable: false as const,
+		type: 'array',
+		optional: false, nullable: false,
 		items: {
-			type: 'object' as const,
-			optional: false as const, nullable: false as const,
+			type: 'object',
+			optional: false, nullable: false,
 			ref: 'Notification',
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	// includeTypes が空の場合はクエリしない
 	if (ps.includeTypes && ps.includeTypes.length === 0) {

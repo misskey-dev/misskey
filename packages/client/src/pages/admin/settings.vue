@@ -1,72 +1,146 @@
 <template>
-<FormBase>
+<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
 	<FormSuspense :p="init">
-		<FormInput v-model="name">
-			<span>{{ $ts.instanceName }}</span>
-		</FormInput>
+		<div class="_formRoot">
+			<FormInput v-model="name" class="_formBlock">
+				<template #label>{{ $ts.instanceName }}</template>
+			</FormInput>
 
-		<FormTextarea v-model="description">
-			<span>{{ $ts.instanceDescription }}</span>
-		</FormTextarea>
+			<FormTextarea v-model="description" class="_formBlock">
+				<template #label>{{ $ts.instanceDescription }}</template>
+			</FormTextarea>
 
-		<FormInput v-model="iconUrl">
-			<template #prefix><i class="fas fa-link"></i></template>
-			<span>{{ $ts.iconUrl }}</span>
-		</FormInput>
+			<FormInput v-model="iconUrl" class="_formBlock">
+				<template #prefix><i class="fas fa-link"></i></template>
+				<template #label>{{ $ts.iconUrl }}</template>
+			</FormInput>
 
-		<FormInput v-model="bannerUrl">
-			<template #prefix><i class="fas fa-link"></i></template>
-			<span>{{ $ts.bannerUrl }}</span>
-		</FormInput>
+			<FormInput v-model="bannerUrl" class="_formBlock">
+				<template #prefix><i class="fas fa-link"></i></template>
+				<template #label>{{ $ts.bannerUrl }}</template>
+			</FormInput>
 
-		<FormInput v-model="backgroundImageUrl">
-			<template #prefix><i class="fas fa-link"></i></template>
-			<span>{{ $ts.backgroundImageUrl }}</span>
-		</FormInput>
+			<FormInput v-model="backgroundImageUrl" class="_formBlock">
+				<template #prefix><i class="fas fa-link"></i></template>
+				<template #label>{{ $ts.backgroundImageUrl }}</template>
+			</FormInput>
 
-		<FormInput v-model="tosUrl">
-			<template #prefix><i class="fas fa-link"></i></template>
-			<span>{{ $ts.tosUrl }}</span>
-		</FormInput>
+			<FormInput v-model="tosUrl" class="_formBlock">
+				<template #prefix><i class="fas fa-link"></i></template>
+				<template #label>{{ $ts.tosUrl }}</template>
+			</FormInput>
 
-		<FormInput v-model="maintainerName">
-			<span>{{ $ts.maintainerName }}</span>
-		</FormInput>
+			<FormSplit :min-width="300">
+				<FormInput v-model="maintainerName" class="_formBlock">
+					<template #label>{{ $ts.maintainerName }}</template>
+				</FormInput>
 
-		<FormInput v-model="maintainerEmail" type="email">
-			<template #prefix><i class="fas fa-envelope"></i></template>
-			<span>{{ $ts.maintainerEmail }}</span>
-		</FormInput>
+				<FormInput v-model="maintainerEmail" type="email" class="_formBlock">
+					<template #prefix><i class="fas fa-envelope"></i></template>
+					<template #label>{{ $ts.maintainerEmail }}</template>
+				</FormInput>
+			</FormSplit>
 
-		<FormTextarea v-model="pinnedUsers">
-			<span>{{ $ts.pinnedUsers }}</span>
-			<template #desc>{{ $ts.pinnedUsersDescription }}</template>
-		</FormTextarea>
+			<FormTextarea v-model="pinnedUsers" class="_formBlock">
+				<template #label>{{ $ts.pinnedUsers }}</template>
+				<template #caption>{{ $ts.pinnedUsersDescription }}</template>
+			</FormTextarea>
 
-		<FormInput v-model="maxNoteTextLength" type="number">
-			<template #prefix><i class="fas fa-pencil-alt"></i></template>
-			<span>{{ $ts.maxNoteTextLength }}</span>
-		</FormInput>
+			<FormInput v-model="maxNoteTextLength" type="number" class="_formBlock">
+				<template #prefix><i class="fas fa-pencil-alt"></i></template>
+				<template #label>{{ $ts.maxNoteTextLength }}</template>
+			</FormInput>
 
-		<FormSwitch v-model="enableLocalTimeline">{{ $ts.enableLocalTimeline }}</FormSwitch>
-		<FormSwitch v-model="enableGlobalTimeline">{{ $ts.enableGlobalTimeline }}</FormSwitch>
-		<FormInfo>{{ $ts.disablingTimelinesInfo }}</FormInfo>
+			<FormSection>
+				<FormSwitch v-model="enableRegistration" class="_formBlock">
+					<template #label>{{ $ts.enableRegistration }}</template>
+				</FormSwitch>
 
-		<FormButton primary @click="save"><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
+				<FormSwitch v-model="emailRequiredForSignup" class="_formBlock">
+					<template #label>{{ $ts.emailRequiredForSignup }}</template>
+				</FormSwitch>
+			</FormSection>
+
+			<FormSection>
+				<FormSwitch v-model="enableLocalTimeline" class="_formBlock">{{ $ts.enableLocalTimeline }}</FormSwitch>
+				<FormSwitch v-model="enableGlobalTimeline" class="_formBlock">{{ $ts.enableGlobalTimeline }}</FormSwitch>
+				<FormInfo class="_formBlock">{{ $ts.disablingTimelinesInfo }}</FormInfo>
+			</FormSection>
+
+			<FormSection>
+				<template #label>{{ $ts.files }}</template>
+
+				<FormSwitch v-model="cacheRemoteFiles" class="_formBlock">
+					<template #label>{{ $ts.cacheRemoteFiles }}</template>
+					<template #caption>{{ $ts.cacheRemoteFilesDescription }}</template>
+				</FormSwitch>
+
+				<FormSwitch v-model="proxyRemoteFiles" class="_formBlock">
+					<template #label>{{ $ts.proxyRemoteFiles }}</template>
+					<template #caption>{{ $ts.proxyRemoteFilesDescription }}</template>
+				</FormSwitch>
+
+				<FormSplit :min-width="280">
+					<FormInput v-model="localDriveCapacityMb" type="number" class="_formBlock">
+						<template #label>{{ $ts.driveCapacityPerLocalAccount }}</template>
+						<template #suffix>MB</template>
+						<template #caption>{{ $ts.inMb }}</template>
+					</FormInput>
+
+					<FormInput v-model="remoteDriveCapacityMb" type="number" :disabled="!cacheRemoteFiles" class="_formBlock">
+						<template #label>{{ $ts.driveCapacityPerRemoteAccount }}</template>
+						<template #suffix>MB</template>
+						<template #caption>{{ $ts.inMb }}</template>
+					</FormInput>
+				</FormSplit>
+			</FormSection>
+
+			<FormSection>
+				<template #label>ServiceWorker</template>
+
+				<FormSwitch v-model="enableServiceWorker" class="_formBlock">
+					<template #label>{{ $ts.enableServiceworker }}</template>
+					<template #caption>{{ $ts.serviceworkerInfo }}</template>
+				</FormSwitch>
+
+				<template v-if="enableServiceWorker">
+					<FormInput v-model="swPublicKey" class="_formBlock">
+						<template #prefix><i class="fas fa-key"></i></template>
+						<template #label>Public key</template>
+					</FormInput>
+
+					<FormInput v-model="swPrivateKey" class="_formBlock">
+						<template #prefix><i class="fas fa-key"></i></template>
+						<template #label>Private key</template>
+					</FormInput>
+				</template>
+			</FormSection>
+
+			<FormSection>
+				<template #label>DeepL Translation</template>
+
+				<FormInput v-model="deeplAuthKey" class="_formBlock">
+					<template #prefix><i class="fas fa-key"></i></template>
+					<template #label>DeepL Auth Key</template>
+				</FormInput>
+				<FormSwitch v-model="deeplIsPro" class="_formBlock">
+					<template #label>Pro account</template>
+				</FormSwitch>
+			</FormSection>
+		</div>
 	</FormSuspense>
-</FormBase>
+</MkSpacer>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import FormSwitch from '@/components/debobigego/switch.vue';
-import FormInput from '@/components/debobigego/input.vue';
-import FormButton from '@/components/debobigego/button.vue';
-import FormBase from '@/components/debobigego/base.vue';
-import FormGroup from '@/components/debobigego/group.vue';
-import FormTextarea from '@/components/debobigego/textarea.vue';
-import FormInfo from '@/components/debobigego/info.vue';
-import FormSuspense from '@/components/debobigego/suspense.vue';
+import FormSwitch from '@/components/form/switch.vue';
+import FormInput from '@/components/form/input.vue';
+import FormTextarea from '@/components/form/textarea.vue';
+import FormInfo from '@/components/ui/info.vue';
+import FormSection from '@/components/form/section.vue';
+import FormSplit from '@/components/form/split.vue';
+import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { fetchInstance } from '@/instance';
@@ -75,12 +149,11 @@ export default defineComponent({
 	components: {
 		FormSwitch,
 		FormInput,
-		FormBase,
-		FormGroup,
-		FormButton,
+		FormSuspense,
 		FormTextarea,
 		FormInfo,
-		FormSuspense,
+		FormSection,
+		FormSplit,
 	},
 
 	emits: ['info'],
@@ -91,6 +164,12 @@ export default defineComponent({
 				title: this.$ts.general,
 				icon: 'fas fa-cog',
 				bg: 'var(--bg)',
+				actions: [{
+					asFullButton: true,
+					icon: 'fas fa-check',
+					text: this.$ts.save,
+					handler: this.save,
+				}],
 			},
 			name: null,
 			description: null,
@@ -104,11 +183,18 @@ export default defineComponent({
 			enableLocalTimeline: false,
 			enableGlobalTimeline: false,
 			pinnedUsers: '',
+			cacheRemoteFiles: false,
+			proxyRemoteFiles: false,
+			localDriveCapacityMb: 0,
+			remoteDriveCapacityMb: 0,
+			enableRegistration: false,
+			emailRequiredForSignup: false,
+			enableServiceWorker: false,
+			swPublicKey: null,
+			swPrivateKey: null,
+			deeplAuthKey: '',
+			deeplIsPro: false,
 		}
-	},
-
-	async mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
 	},
 
 	methods: {
@@ -126,6 +212,17 @@ export default defineComponent({
 			this.enableLocalTimeline = !meta.disableLocalTimeline;
 			this.enableGlobalTimeline = !meta.disableGlobalTimeline;
 			this.pinnedUsers = meta.pinnedUsers.join('\n');
+			this.cacheRemoteFiles = meta.cacheRemoteFiles;
+			this.proxyRemoteFiles = meta.proxyRemoteFiles;
+			this.localDriveCapacityMb = meta.driveCapacityPerLocalUserMb;
+			this.remoteDriveCapacityMb = meta.driveCapacityPerRemoteUserMb;
+			this.enableRegistration = !meta.disableRegistration;
+			this.emailRequiredForSignup = meta.emailRequiredForSignup;
+			this.enableServiceWorker = meta.enableServiceWorker;
+			this.swPublicKey = meta.swPublickey;
+			this.swPrivateKey = meta.swPrivateKey;
+			this.deeplAuthKey = meta.deeplAuthKey;
+			this.deeplIsPro = meta.deeplIsPro;
 		},
 
 		save() {
@@ -142,6 +239,17 @@ export default defineComponent({
 				disableLocalTimeline: !this.enableLocalTimeline,
 				disableGlobalTimeline: !this.enableGlobalTimeline,
 				pinnedUsers: this.pinnedUsers.split('\n'),
+				cacheRemoteFiles: this.cacheRemoteFiles,
+				proxyRemoteFiles: this.proxyRemoteFiles,
+				localDriveCapacityMb: parseInt(this.localDriveCapacityMb, 10),
+				remoteDriveCapacityMb: parseInt(this.remoteDriveCapacityMb, 10),
+				disableRegistration: !this.enableRegistration,
+				emailRequiredForSignup: this.emailRequiredForSignup,
+				enableServiceWorker: this.enableServiceWorker,
+				swPublicKey: this.swPublicKey,
+				swPrivateKey: this.swPrivateKey,
+				deeplAuthKey: this.deeplAuthKey,
+				deeplIsPro: this.deeplIsPro,
 			}).then(() => {
 				fetchInstance();
 			});

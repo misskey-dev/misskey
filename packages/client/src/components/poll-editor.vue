@@ -3,7 +3,7 @@
 	<p v-if="choices.length < 2" class="caution">
 		<i class="fas fa-exclamation-triangle"></i>{{ $ts._poll.noOnlyOneChoice }}
 	</p>
-	<ul ref="choices">
+	<ul>
 		<li v-for="(choice, i) in choices" :key="i">
 			<MkInput class="input" :model-value="choice" :placeholder="$t('_poll.choiceN', { n: i + 1 })" @update:modelValue="onInput(i, $event)">
 			</MkInput>
@@ -14,8 +14,8 @@
 	</ul>
 	<MkButton v-if="choices.length < 10" class="add" @click="add">{{ $ts.add }}</MkButton>
 	<MkButton v-else class="add" disabled>{{ $ts._poll.noMore }}</MkButton>
+	<MkSwitch v-model="multiple">{{ $ts._poll.canMultipleVote }}</MkSwitch>
 	<section>
-		<MkSwitch v-model="multiple">{{ $ts._poll.canMultipleVote }}</MkSwitch>
 		<div>
 			<MkSelect v-model="expiration">
 				<template #label>{{ $ts._poll.expiration }}</template>
@@ -31,7 +31,7 @@
 					<template #label>{{ $ts._poll.deadlineTime }}</template>
 				</MkInput>
 			</section>
-			<section v-if="expiration === 'after'">
+			<section v-else-if="expiration === 'after'">
 				<MkInput v-model="after" type="number" class="input">
 					<template #label>{{ $ts._poll.duration }}</template>
 				</MkInput>
@@ -47,8 +47,8 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { ref, watch } from 'vue';
 import { addTime } from '@/scripts/time';
 import { formatDateTimeString } from '@/scripts/format-time-string';
 import MkInput from './form/input.vue';
@@ -56,131 +56,91 @@ import MkSelect from './form/select.vue';
 import MkSwitch from './form/switch.vue';
 import MkButton from './ui/button.vue';
 
-export default defineComponent({
-	components: {
-		MkInput,
-		MkSelect,
-		MkSwitch,
-		MkButton,
-	},
+const props = defineProps<{
+	modelValue: {
+		expiresAt: string;
+		expiredAfter: number;
+		choices: string[];
+		multiple: boolean;
+	};
+}>();
+const emit = defineEmits<{
+	(ev: 'update:modelValue', v: {
+		expiresAt: string;
+		expiredAfter: number;
+		choices: string[];
+		multiple: boolean;
+	}): void;
+}>();
 
-	props: {
-		poll: {
-			type: Object,
-			required: true
+const choices = ref(props.modelValue.choices);
+const multiple = ref(props.modelValue.multiple);
+const expiration = ref('infinite');
+const atDate = ref(formatDateTimeString(addTime(new Date(), 1, 'day'), 'yyyy-MM-dd'));
+const atTime = ref('00:00');
+const after = ref(0);
+const unit = ref('second');
+
+if (props.modelValue.expiresAt) {
+	expiration.value = 'at';
+	atDate.value = atTime.value = props.modelValue.expiresAt;
+} else if (typeof props.modelValue.expiredAfter === 'number') {
+	expiration.value = 'after';
+	after.value = props.modelValue.expiredAfter / 1000;
+} else {
+	expiration.value = 'infinite';
+}
+
+function onInput(i, value) {
+	choices.value[i] = value;
+}
+
+function add() {
+	choices.value.push('');
+	// TODO
+	// nextTick(() => {
+	//   (this.$refs.choices as any).childNodes[this.choices.length - 1].childNodes[0].focus();
+	// });
+}
+
+function remove(i) {
+	choices.value = choices.value.filter((_, _i) => _i != i);
+}
+
+function get() {
+	const calcAt = () => {
+		return new Date(`${atDate.value} ${atTime.value}`).getTime();
+	};
+
+	const calcAfter = () => {
+		let base = parseInt(after.value);
+		switch (unit.value) {
+			case 'day': base *= 24;
+			case 'hour': base *= 60;
+			case 'minute': base *= 60;
+			case 'second': return base *= 1000;
+			default: return null;
 		}
-	},
+	};
 
-	emits: ['updated'],
+	return {
+		choices: choices.value,
+		multiple: multiple.value,
+		...(
+			expiration.value === 'at' ? { expiresAt: calcAt() } :
+			expiration.value === 'after' ? { expiredAfter: calcAfter() } : {}
+		)
+	};
+}
 
-	data() {
-		return {
-			choices: this.poll.choices,
-			multiple: this.poll.multiple,
-			expiration: 'infinite',
-			atDate: formatDateTimeString(addTime(new Date(), 1, 'day'), 'yyyy-MM-dd'),
-			atTime: '00:00',
-			after: 0,
-			unit: 'second',
-		};
-	},
-
-	watch: {
-		choices: {
-			handler() {
-				this.$emit('updated', this.get());
-			},
-			deep: true
-		},
-		multiple: {
-			handler() {
-				this.$emit('updated', this.get());
-			},
-		},
-		expiration: {
-			handler() {
-				this.$emit('updated', this.get());
-			},
-		},
-		atDate: {
-			handler() {
-				this.$emit('updated', this.get());
-			},
-		},
-		after: {
-			handler() {
-				this.$emit('updated', this.get());
-			},
-		},
-		unit: {
-			handler() {
-				this.$emit('updated', this.get());
-			},
-		},
-	},
-
-	created() {
-		const poll = this.poll;
-		if (poll.expiresAt) {
-			this.expiration = 'at';
-			this.atDate = this.atTime = poll.expiresAt;
-		} else if (typeof poll.expiredAfter === 'number') {
-			this.expiration = 'after';
-			this.after = poll.expiredAfter / 1000;
-		} else {
-			this.expiration = 'infinite';
-		}
-	},
-
-	methods: {
-		onInput(i, e) {
-			this.choices[i] = e;
-		},
-
-		add() {
-			this.choices.push('');
-			this.$nextTick(() => {
-				// TODO
-				//(this.$refs.choices as any).childNodes[this.choices.length - 1].childNodes[0].focus();
-			});
-		},
-
-		remove(i) {
-			this.choices = this.choices.filter((_, _i) => _i != i);
-		},
-
-		get() {
-			const at = () => {
-				return new Date(`${this.atDate} ${this.atTime}`).getTime();
-			};
-
-			const after = () => {
-				let base = parseInt(this.after);
-				switch (this.unit) {
-					case 'day': base *= 24;
-					case 'hour': base *= 60;
-					case 'minute': base *= 60;
-					case 'second': return base *= 1000;
-					default: return null;
-				}
-			};
-
-			return {
-				choices: this.choices,
-				multiple: this.multiple,
-				...(
-					this.expiration === 'at' ? { expiresAt: at() } :
-					this.expiration === 'after' ? { expiredAfter: after() } : {}
-				)
-			};
-		},
-	}
+watch([choices, multiple, expiration, atDate, atTime, after, unit], () => emit('update:modelValue', get()), {
+	deep: true,
 });
 </script>
 
 <style lang="scss" scoped>
 .zmdxowus {
-	padding: 8px;
+	padding: 8px 16px;
 
 	> .caution {
 		margin: 0 0 8px 0;
@@ -216,7 +176,7 @@ export default defineComponent({
 	}
 
 	> .add {
-		margin: 8px 0 0 0;
+		margin: 8px 0;
 		z-index: 1;
 	}
 
@@ -225,21 +185,27 @@ export default defineComponent({
 
 		> div {
 			margin: 0 8px;
+			display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;
+			gap: 12px;
 
 			&:last-child {
 				flex: 1 0 auto;
 
-				> section {
-					align-items: center;
-					display: flex;
-					margin: -32px 0 0;
+				> div {
+					flex-grow: 1;
+				}
 
-					> &:first-child {
-						margin-right: 16px;
-					}
+				> section {
+					// MAGIC: Prevent div above from growing unless wrapped to its own line
+					flex-grow: 9999;
+					align-items: end;
+					display: flex;
+					gap: 4px;
 
 					> .input {
-						flex: 1 0 auto;
+						flex: 1 1 auto;
 					}
 				}
 			}

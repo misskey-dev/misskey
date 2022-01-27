@@ -7,7 +7,7 @@ import { DriveFiles } from '@/models/index';
 export const meta = {
 	tags: ['admin'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 	requireModerator: true,
 
 	params: {
@@ -29,138 +29,139 @@ export const meta = {
 	},
 
 	res: {
-		type: 'object' as const,
-		optional: false as const, nullable: false as const,
+		type: 'object',
+		optional: false, nullable: false,
 		properties: {
 			id: {
-				type: 'string' as const,
-				optional: false as const, nullable: false as const,
+				type: 'string',
+				optional: false, nullable: false,
 				format: 'id',
 				example: 'xxxxxxxxxx',
 			},
 			createdAt: {
-				type: 'string' as const,
-				optional: false as const, nullable: false as const,
+				type: 'string',
+				optional: false, nullable: false,
 				format: 'date-time',
 			},
 			userId: {
-				type: 'string' as const,
-				optional: false as const, nullable: true as const,
+				type: 'string',
+				optional: false, nullable: true,
 				format: 'id',
 				example: 'xxxxxxxxxx',
 			},
 			userHost: {
-				type: 'string' as const,
-				optional: false as const, nullable: true as const,
+				type: 'string',
+				optional: false, nullable: true,
 			},
 			md5: {
-				type: 'string' as const,
-				optional: false as const, nullable: false as const,
+				type: 'string',
+				optional: false, nullable: false,
 				format: 'md5',
 				example: '15eca7fba0480996e2245f5185bf39f2',
 			},
 			name: {
-				type: 'string' as const,
-				optional: false as const, nullable: false as const,
+				type: 'string',
+				optional: false, nullable: false,
 				example: 'lenna.jpg',
 			},
 			type: {
-				type: 'string' as const,
-				optional: false as const, nullable: false as const,
+				type: 'string',
+				optional: false, nullable: false,
 				example: 'image/jpeg',
 			},
 			size: {
-				type: 'number' as const,
-				optional: false as const, nullable: false as const,
+				type: 'number',
+				optional: false, nullable: false,
 				example: 51469,
 			},
 			comment: {
-				type: 'string' as const,
-				optional: false as const, nullable: true as const,
+				type: 'string',
+				optional: false, nullable: true,
 			},
 			blurhash: {
-				type: 'string' as const,
-				optional: false as const, nullable: true as const,
+				type: 'string',
+				optional: false, nullable: true,
 			},
 			properties: {
-				type: 'object' as const,
-				optional: false as const, nullable: false as const,
+				type: 'object',
+				optional: false, nullable: false,
 				properties: {
 					width: {
-						type: 'number' as const,
-						optional: false as const, nullable: false as const,
+						type: 'number',
+						optional: false, nullable: false,
 						example: 1280,
 					},
 					height: {
-						type: 'number' as const,
-						optional: false as const, nullable: false as const,
+						type: 'number',
+						optional: false, nullable: false,
 						example: 720,
 					},
 					avgColor: {
-						type: 'string' as const,
-						optional: true as const, nullable: false as const,
+						type: 'string',
+						optional: true, nullable: false,
 						example: 'rgb(40,65,87)',
 					},
 				},
 			},
 			storedInternal: {
-				type: 'boolean' as const,
-				optional: false as const, nullable: true as const,
+				type: 'boolean',
+				optional: false, nullable: true,
 				example: true,
 			},
 			url: {
-				type: 'string' as const,
-				optional: false as const, nullable: true as const,
+				type: 'string',
+				optional: false, nullable: true,
 				format: 'url',
 			},
 			thumbnailUrl: {
-				type: 'string' as const,
-				optional: false as const, nullable: true as const,
+				type: 'string',
+				optional: false, nullable: true,
 				format: 'url',
 			},
 			webpublicUrl: {
-				type: 'string' as const,
-				optional: false as const, nullable: true as const,
+				type: 'string',
+				optional: false, nullable: true,
 				format: 'url',
 			},
 			accessKey: {
-				type: 'string' as const,
-				optional: false as const, nullable: false as const,
+				type: 'string',
+				optional: false, nullable: false,
 			},
 			thumbnailAccessKey: {
-				type: 'string' as const,
-				optional: false as const, nullable: false as const,
+				type: 'string',
+				optional: false, nullable: false,
 			},
 			webpublicAccessKey: {
-				type: 'string' as const,
-				optional: false as const, nullable: false as const,
+				type: 'string',
+				optional: false, nullable: false,
 			},
 			uri: {
-				type: 'string' as const,
-				optional: false as const, nullable: true as const,
+				type: 'string',
+				optional: false, nullable: true,
 			},
 			src: {
-				type: 'string' as const,
-				optional: false as const, nullable: true as const,
+				type: 'string',
+				optional: false, nullable: true,
 			},
 			folderId: {
-				type: 'string' as const,
-				optional: false as const, nullable: true as const,
+				type: 'string',
+				optional: false, nullable: true,
 				format: 'id',
 				example: 'xxxxxxxxxx',
 			},
 			isSensitive: {
-				type: 'boolean' as const,
-				optional: false as const, nullable: false as const,
+				type: 'boolean',
+				optional: false, nullable: false,
 			},
 			isLink: {
-				type: 'boolean' as const,
-				optional: false as const, nullable: false as const,
+				type: 'boolean',
+				optional: false, nullable: false,
 			},
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, me) => {
 	const file = ps.fileId ? await DriveFiles.findOne(ps.fileId) : await DriveFiles.findOne({
 		where: [{

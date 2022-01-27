@@ -8,7 +8,7 @@ import { DriveFiles } from '@/models/index';
 
 export const meta = {
 	secure: true,
-	requireCredential: true as const,
+	requireCredential: true,
 
 	limit: {
 		duration: ms('1hour'),
@@ -46,8 +46,9 @@ export const meta = {
 			id: '6f3a4dcc-f060-a707-4950-806fbdbe60d6',
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	const file = await DriveFiles.findOne(ps.fileId);
 

@@ -1,8 +1,8 @@
 <template>
-<MkModal ref="modal" :z-priority="'middle'" @click="$refs.modal.close()" @closed="$emit('closed')">
+<MkModal ref="modal" :z-priority="'middle'" @click="modal.close()" @closed="emit('closed')">
 	<div class="xubzgfga">
 		<header>{{ image.name }}</header>
-		<img :src="image.url" :alt="image.comment" :title="image.comment" @click="$refs.modal.close()"/>
+		<img :src="image.url" :alt="image.comment" :title="image.comment" @click="modal.close()"/>
 		<footer>
 			<span>{{ image.type }}</span>
 			<span>{{ bytes(image.size) }}</span>
@@ -12,31 +12,23 @@
 </MkModal>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
+import * as misskey from 'misskey-js';
 import bytes from '@/filters/bytes';
 import number from '@/filters/number';
 import MkModal from '@/components/ui/modal.vue';
 
-export default defineComponent({
-	components: {
-		MkModal,
-	},
-
-	props: {
-		image: {
-			type: Object,
-			required: true
-		},
-	},
-
-	emits: ['closed'],
-
-	methods: {
-		bytes,
-		number,
-	}
+const props = withDefaults(defineProps<{
+	image: misskey.entities.DriveFile;
+}>(), {
 });
+
+const emit = defineEmits<{
+	(e: 'closed'): void;
+}>();
+
+const modal = $ref<InstanceType<typeof MkModal>>();
 </script>
 
 <style lang="scss" scoped>

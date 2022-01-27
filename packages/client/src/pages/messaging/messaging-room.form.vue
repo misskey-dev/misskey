@@ -7,7 +7,7 @@
 		ref="text"
 		v-model="text"
 		:placeholder="$ts.inputMessageHere"
-		@keypress="onKeypress"
+		@keydown="onKeydown"
 		@compositionupdate="onCompositionUpdate"
 		@paste="onPaste"
 	></textarea>
@@ -28,6 +28,7 @@ import * as autosize from 'autosize';
 import { formatTimeString } from '@/scripts/format-time-string';
 import { selectFile } from '@/scripts/select-file';
 import * as os from '@/os';
+import { stream } from '@/stream';
 import { Autocomplete } from '@/scripts/autocomplete';
 import { throttle } from 'throttle-debounce';
 
@@ -48,7 +49,7 @@ export default defineComponent({
 			file: null,
 			sending: false,
 			typing: throttle(3000, () => {
-				os.stream.send('typingOnMessaging', this.user ? { partner: this.user.id } : { group: this.group.id });
+				stream.send('typingOnMessaging', this.user ? { partner: this.user.id } : { group: this.group.id });
 			}),
 		};
 	},
@@ -140,7 +141,7 @@ export default defineComponent({
 			//#endregion
 		},
 
-		onKeypress(e) {
+		onKeydown(e) {
 			this.typing();
 			if ((e.which == 10 || e.which == 13) && (e.ctrlKey || e.metaKey) && this.canSend) {
 				this.send();

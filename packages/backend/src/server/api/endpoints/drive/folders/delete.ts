@@ -8,7 +8,7 @@ import { DriveFolders, DriveFiles } from '@/models/index';
 export const meta = {
 	tags: ['drive'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	kind: 'write:drive',
 
@@ -31,8 +31,9 @@ export const meta = {
 			id: 'b0fc8a17-963c-405d-bfbc-859a487295e1',
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	// Get folder
 	const folder = await DriveFolders.findOne({

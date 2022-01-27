@@ -10,7 +10,7 @@ export class AuthenticationError extends Error {
 	}
 }
 
-export default async (token: string): Promise<[User | null | undefined, App | null | undefined]> => {
+export default async (token: string | null): Promise<[User | null | undefined, AccessToken | null | undefined]> => {
 	if (token == null) {
 		return [null, null];
 	}

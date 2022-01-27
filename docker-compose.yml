@@ -36,7 +36,18 @@ services:
     env_file:
       - ./.config/docker.env 
     volumes:
-      - ./db:/var/lib/postgresql/data 
+      - ./db:/var/lib/postgresql/data
+
+#  es:
+#    restart: always
+#    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.4.2
+#    environment:
+#      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+#      - "TAKE_FILE_OWNERSHIP=111"
+#    networks:
+#      - internal_network
+#    volumes:
+#      - ./elasticsearch:/usr/share/elasticsearch/data
 
 networks:
   internal_network: 

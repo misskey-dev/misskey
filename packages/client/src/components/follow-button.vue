@@ -6,128 +6,110 @@
 >
 	<template v-if="!wait">
 		<template v-if="hasPendingFollowRequestFromYou && user.isLocked">
-			<span v-if="full">{{ $ts.followRequestPending }}</span><i class="fas fa-hourglass-half"></i>
+			<span v-if="full">{{ i18n.locale.followRequestPending }}</span><i class="fas fa-hourglass-half"></i>
 		</template>
 		<template v-else-if="hasPendingFollowRequestFromYou && !user.isLocked"> <!-- つまりリモートフォローの場合。 -->
-			<span v-if="full">{{ $ts.processing }}</span><i class="fas fa-spinner fa-pulse"></i>
+			<span v-if="full">{{ i18n.locale.processing }}</span><i class="fas fa-spinner fa-pulse"></i>
 		</template>
 		<template v-else-if="isFollowing">
-			<span v-if="full">{{ $ts.unfollow }}</span><i class="fas fa-minus"></i>
+			<span v-if="full">{{ i18n.locale.unfollow }}</span><i class="fas fa-minus"></i>
 		</template>
 		<template v-else-if="!isFollowing && user.isLocked">
-			<span v-if="full">{{ $ts.followRequest }}</span><i class="fas fa-plus"></i>
+			<span v-if="full">{{ i18n.locale.followRequest }}</span><i class="fas fa-plus"></i>
 		</template>
 		<template v-else-if="!isFollowing && !user.isLocked">
-			<span v-if="full">{{ $ts.follow }}</span><i class="fas fa-plus"></i>
+			<span v-if="full">{{ i18n.locale.follow }}</span><i class="fas fa-plus"></i>
 		</template>
 	</template>
 	<template v-else>
-		<span v-if="full">{{ $ts.processing }}</span><i class="fas fa-spinner fa-pulse fa-fw"></i>
+		<span v-if="full">{{ i18n.locale.processing }}</span><i class="fas fa-spinner fa-pulse fa-fw"></i>
 	</template>
 </button>
 </template>
 
-<script lang="ts">
-import { defineComponent, markRaw } from 'vue';
+<script lang="ts" setup>
+import { onBeforeUnmount, onMounted, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import * as os from '@/os';
+import { stream } from '@/stream';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	props: {
-		user: {
-			type: Object,
-			required: true
-		},
-		full: {
-			type: Boolean,
-			required: false,
-			default: false,
-		},
-		large: {
-			type: Boolean,
-			required: false,
-			default: false,
-		},
-	},
+const props = withDefaults(defineProps<{
+	user: Misskey.entities.UserDetailed,
+	full?: boolean,
+	large?: boolean,
+}>(), {
+	full: false,
+	large: false,
+});
 
-	data() {
-		return {
-			isFollowing: this.user.isFollowing,
-			hasPendingFollowRequestFromYou: this.user.hasPendingFollowRequestFromYou,
-			wait: false,
-			connection: null,
-		};
-	},
+const isFollowing = ref(props.user.isFollowing);
+const hasPendingFollowRequestFromYou = ref(props.user.hasPendingFollowRequestFromYou);
+const wait = ref(false);
+const connection = stream.useChannel('main');
 
-	created() {
-		// 渡されたユーザー情報が不完全な場合
-		if (this.user.isFollowing == null) {
-			os.api('users/show', {
-				userId: this.user.id
-			}).then(u => {
-				this.isFollowing = u.isFollowing;
-				this.hasPendingFollowRequestFromYou = u.hasPendingFollowRequestFromYou;
-			});
-		}
-	},
+if (props.user.isFollowing == null) {
+	os.api('users/show', {
+		userId: props.user.id
+	}).then(u => {
+		isFollowing.value = u.isFollowing;
+		hasPendingFollowRequestFromYou.value = u.hasPendingFollowRequestFromYou;
+	});
+}
 
-	mounted() {
-		this.connection = markRaw(os.stream.useChannel('main'));
-
-		this.connection.on('follow', this.onFollowChange);
-		this.connection.on('unfollow', this.onFollowChange);
-	},
-
-	beforeUnmount() {
-		this.connection.dispose();
-	},
-
-	methods: {
-		onFollowChange(user) {
-			if (user.id == this.user.id) {
-				this.isFollowing = user.isFollowing;
-				this.hasPendingFollowRequestFromYou = user.hasPendingFollowRequestFromYou;
-			}
-		},
-
-		async onClick() {
-			this.wait = true;
-
-			try {
-				if (this.isFollowing) {
-					const { canceled } = await os.confirm({
-						type: 'warning',
-						text: this.$t('unfollowConfirm', { name: this.user.name || this.user.username }),
-					});
-
-					if (canceled) return;
-
-					await os.api('following/delete', {
-						userId: this.user.id
-					});
-				} else {
-					if (this.hasPendingFollowRequestFromYou) {
-						await os.api('following/requests/cancel', {
-							userId: this.user.id
-						});
-					} else if (this.user.isLocked) {
-						await os.api('following/create', {
-							userId: this.user.id
-						});
-						this.hasPendingFollowRequestFromYou = true;
-					} else {
-						await os.api('following/create', {
-							userId: this.user.id
-						});
-						this.hasPendingFollowRequestFromYou = true;
-					}
-				}
-			} catch (e) {
-				console.error(e);
-			} finally {
-				this.wait = false;
-			}
-		}
+function onFollowChange(user: Misskey.entities.UserDetailed) {
+	if (user.id == props.user.id) {
+		isFollowing.value = user.isFollowing;
+		hasPendingFollowRequestFromYou.value = user.hasPendingFollowRequestFromYou;
 	}
+}
+
+async function onClick() {
+	wait.value = true;
+
+	try {
+		if (isFollowing.value) {
+			const { canceled } = await os.confirm({
+				type: 'warning',
+				text: i18n.t('unfollowConfirm', { name: props.user.name || props.user.username }),
+			});
+
+			if (canceled) return;
+
+			await os.api('following/delete', {
+				userId: props.user.id
+			});
+		} else {
+			if (hasPendingFollowRequestFromYou.value) {
+				await os.api('following/requests/cancel', {
+					userId: props.user.id
+				});
+			} else if (props.user.isLocked) {
+				await os.api('following/create', {
+					userId: props.user.id
+				});
+				hasPendingFollowRequestFromYou.value = true;
+			} else {
+				await os.api('following/create', {
+					userId: props.user.id
+				});
+				hasPendingFollowRequestFromYou.value = true;
+			}
+		}
+	} catch (e) {
+		console.error(e);
+	} finally {
+		wait.value = false;
+	}
+}
+
+onMounted(() => {
+	connection.on('follow', onFollowChange);
+	connection.on('unfollow', onFollowChange);
+});
+
+onBeforeUnmount(() => {
+	connection.dispose();
 });
 </script>
 

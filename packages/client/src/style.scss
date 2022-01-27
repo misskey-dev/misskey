@@ -26,6 +26,7 @@ html {
 	background-size: cover;
 	background-position: center;
 	color: var(--fg);
+	accent-color: var(--accent);
 	overflow: auto;
 	overflow-wrap: break-word;
 	font-family: "BIZ UDGothic", Roboto, HelveticaNeue, Arial, sans-serif;
@@ -384,16 +385,6 @@ hr {
 	background: var(--acrylicPanel);
 	-webkit-backdrop-filter: var(--blur, blur(15px));
 	backdrop-filter: var(--blur, blur(15px));
-}
-
-._inputSplit {
-	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-	grid-gap: 12px;
-
-	> * {
-		margin: 0 !important;
-	}
 }
 
 ._formBlock {

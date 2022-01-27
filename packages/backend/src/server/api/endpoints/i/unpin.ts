@@ -8,7 +8,7 @@ import { Users } from '@/models/index';
 export const meta = {
 	tags: ['account', 'notes'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	kind: 'write:account',
 
@@ -27,19 +27,20 @@ export const meta = {
 	},
 
 	res: {
-		type: 'object' as const,
-		optional: false as const, nullable: false as const,
-		ref: 'User',
+		type: 'object',
+		optional: false, nullable: false,
+		ref: 'MeDetailed',
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	await removePinned(user, ps.noteId).catch(e => {
 		if (e.id === 'b302d4cf-c050-400a-bbb3-be208681f40c') throw new ApiError(meta.errors.noSuchNote);
 		throw e;
 	});
 
-	return await Users.pack(user.id, user, {
+	return await Users.pack<true, true>(user.id, user, {
 		detail: true,
 	});
 });

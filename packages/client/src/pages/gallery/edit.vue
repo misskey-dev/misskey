@@ -1,16 +1,16 @@
 <template>
-<FormBase>
+<div>
 	<FormSuspense :p="init">
 		<FormInput v-model="title">
-			<span>{{ $ts.title }}</span>
+			<template #label>{{ $ts.title }}</template>
 		</FormInput>
 
 		<FormTextarea v-model="description" :max="500">
-			<span>{{ $ts.description }}</span>
+			<template #label>{{ $ts.description }}</template>
 		</FormTextarea>
 
 		<FormGroup>
-			<div v-for="file in files" :key="file.id" class="_debobigegoItem _debobigegoPanel wqugxsfx" :style="{ backgroundImage: file ? `url(${ file.thumbnailUrl })` : null }">
+			<div v-for="file in files" :key="file.id" class="_formGroup wqugxsfx" :style="{ backgroundImage: file ? `url(${ file.thumbnailUrl })` : null }">
 				<div class="name">{{ file.name }}</div>
 				<button v-tooltip="$ts.remove" class="remove _button" @click="remove(file)"><i class="fas fa-times"></i></button>
 			</div>
@@ -24,19 +24,17 @@
 
 		<FormButton v-if="postId" danger @click="del"><i class="fas fa-trash-alt"></i> {{ $ts.delete }}</FormButton>
 	</FormSuspense>
-</FormBase>
+</div>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
-import FormButton from '@/components/debobigego/button.vue';
-import FormInput from '@/components/debobigego/input.vue';
-import FormTextarea from '@/components/debobigego/textarea.vue';
-import FormSwitch from '@/components/debobigego/switch.vue';
-import FormTuple from '@/components/debobigego/tuple.vue';
-import FormBase from '@/components/debobigego/base.vue';
-import FormGroup from '@/components/debobigego/group.vue';
-import FormSuspense from '@/components/debobigego/suspense.vue';
+import FormButton from '@/components/ui/button.vue';
+import FormInput from '@/components/form/input.vue';
+import FormTextarea from '@/components/form/textarea.vue';
+import FormSwitch from '@/components/form/switch.vue';
+import FormGroup from '@/components/form/group.vue';
+import FormSuspense from '@/components/form/suspense.vue';
 import { selectFiles } from '@/scripts/select-file';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
@@ -47,7 +45,6 @@ export default defineComponent({
 		FormInput,
 		FormTextarea,
 		FormSwitch,
-		FormBase,
 		FormGroup,
 		FormSuspense,
 	},

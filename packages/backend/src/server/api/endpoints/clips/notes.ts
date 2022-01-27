@@ -11,7 +11,7 @@ import { generateBlockedUserQuery } from '../../common/generate-block-query';
 export const meta = {
 	tags: ['account', 'notes', 'clips'],
 
-	requireCredential: false as const,
+	requireCredential: false,
 
 	kind: 'read:account',
 
@@ -43,16 +43,17 @@ export const meta = {
 	},
 
 	res: {
-		type: 'array' as const,
-		optional: false as const, nullable: false as const,
+		type: 'array',
+		optional: false, nullable: false,
 		items: {
-			type: 'object' as const,
-			optional: false as const, nullable: false as const,
+			type: 'object',
+			optional: false, nullable: false,
 			ref: 'Note',
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	const clip = await Clips.findOne({
 		id: ps.clipId,

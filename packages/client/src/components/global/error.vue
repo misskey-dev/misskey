@@ -8,19 +8,8 @@
 </transition>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
 import MkButton from '@/components/ui/button.vue';
-
-export default defineComponent({
-	components: {
-		MkButton,
-	},
-	data() {
-		return {
-		};
-	},
-});
 </script>
 
 <style lang="scss" scoped>

@@ -1,7 +1,7 @@
 <template>
 <MkSpacer :content-max="800">
 	<div class="fcuexfpr">
-		<transition name="fade" mode="out-in">
+		<transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
 			<div v-if="note" class="note">
 				<div v-if="showNext" class="_gap">
 					<XNotes class="_content" :pagination="next" :no-gap="true"/>
@@ -82,21 +82,21 @@ export default defineComponent({
 			showNext: false,
 			error: null,
 			prev: {
-				endpoint: 'users/notes',
+				endpoint: 'users/notes' as const,
 				limit: 10,
-				params: init => ({
+				params: computed(() => ({
 					userId: this.note.userId,
 					untilId: this.note.id,
-				})
+				})),
 			},
 			next: {
 				reversed: true,
-				endpoint: 'users/notes',
+				endpoint: 'users/notes' as const,
 				limit: 10,
-				params: init => ({
+				params: computed(() => ({
 					userId: this.note.userId,
 					sinceId: this.note.id,
-				})
+				})),
 			},
 		};
 	},

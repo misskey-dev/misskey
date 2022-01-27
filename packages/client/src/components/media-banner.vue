@@ -6,7 +6,7 @@
 		<span>{{ $ts.clickToShow }}</span>
 	</div>
 	<div v-else-if="media.type.startsWith('audio') && media.type !== 'audio/midi'" class="audio">
-		<audio ref="audio"
+		<audio ref="audioEl"
 			class="audio"
 			:src="media.url"
 			:title="media.name"
@@ -25,34 +25,26 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import * as os from '@/os';
+<script lang="ts" setup>
+import { onMounted } from 'vue';
+import * as misskey from 'misskey-js';
 import { ColdDeviceStorage } from '@/store';
 
-export default defineComponent({
-	props: {
-		media: {
-			type: Object,
-			required: true
-		}
-	},
-	data() {
-		return {
-			hide: true,
-		};
-	},
-	mounted() {
-		const audioTag = this.$refs.audio as HTMLAudioElement;
-		if (audioTag) audioTag.volume = ColdDeviceStorage.get('mediaVolume');
-	},
-	methods: {
-		volumechange() {
-			const audioTag = this.$refs.audio as HTMLAudioElement;
-			ColdDeviceStorage.set('mediaVolume', audioTag.volume);
-		},
-	},
-})
+const props = withDefaults(defineProps<{
+	media: misskey.entities.DriveFile;
+}>(), {
+});
+
+const audioEl = $ref<HTMLAudioElement | null>();
+let hide = $ref(true);
+
+function volumechange() {
+	if (audioEl) ColdDeviceStorage.set('mediaVolume', audioEl.volume);
+}
+
+onMounted(() => {
+	if (audioEl) audioEl.volume = ColdDeviceStorage.get('mediaVolume');
+});
 </script>
 
 <style lang="scss" scoped>

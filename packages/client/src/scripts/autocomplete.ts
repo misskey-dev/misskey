@@ -1,4 +1,4 @@
-import { Ref, ref } from 'vue';
+import { nextTick, Ref, ref } from 'vue';
 import * as getCaretCoordinates from 'textarea-caret';
 import { toASCII } from 'punycode/';
 import { popup } from '@/os';
@@ -10,26 +10,23 @@ export class Autocomplete {
 		q: Ref<string | null>;
 		close: Function;
 	} | null;
-	private textarea: any;
-	private vm: any;
+	private textarea: HTMLInputElement | HTMLTextAreaElement;
 	private currentType: string;
-	private opts: {
-		model: string;
-	};
+	private textRef: Ref<string>;
 	private opening: boolean;
 
 	private get text(): string {
-		return this.vm[this.opts.model];
+		return this.textRef.value;
 	}
 
 	private set text(text: string) {
-		this.vm[this.opts.model] = text;
+		this.textRef.value = text;
 	}
 
 	/**
 	 * 対象のテキストエリアを与えてインスタンスを初期化します。
 	 */
-	constructor(textarea, vm, opts) {
+	constructor(textarea: HTMLInputElement | HTMLTextAreaElement, textRef: Ref<string>) {
 		//#region BIND
 		this.onInput = this.onInput.bind(this);
 		this.complete = this.complete.bind(this);
@@ -38,8 +35,7 @@ export class Autocomplete {
 
 		this.suggestion = null;
 		this.textarea = textarea;
-		this.vm = vm;
-		this.opts = opts;
+		this.textRef = textRef;
 		this.opening = false;
 
 		this.attach();
@@ -218,7 +214,7 @@ export class Autocomplete {
 			this.text = `${trimmedBefore}@${acct} ${after}`;
 
 			// キャレットを戻す
-			this.vm.$nextTick(() => {
+			nextTick(() => {
 				this.textarea.focus();
 				const pos = trimmedBefore.length + (acct.length + 2);
 				this.textarea.setSelectionRange(pos, pos);
@@ -234,7 +230,7 @@ export class Autocomplete {
 			this.text = `${trimmedBefore}#${value} ${after}`;
 
 			// キャレットを戻す
-			this.vm.$nextTick(() => {
+			nextTick(() => {
 				this.textarea.focus();
 				const pos = trimmedBefore.length + (value.length + 2);
 				this.textarea.setSelectionRange(pos, pos);
@@ -250,7 +246,7 @@ export class Autocomplete {
 			this.text = trimmedBefore + value + after;
 
 			// キャレットを戻す
-			this.vm.$nextTick(() => {
+			nextTick(() => {
 				this.textarea.focus();
 				const pos = trimmedBefore.length + value.length;
 				this.textarea.setSelectionRange(pos, pos);
@@ -266,7 +262,7 @@ export class Autocomplete {
 			this.text = `${trimmedBefore}$[${value} ]${after}`;
 
 			// キャレットを戻す
-			this.vm.$nextTick(() => {
+			nextTick(() => {
 				this.textarea.focus();
 				const pos = trimmedBefore.length + (value.length + 3);
 				this.textarea.setSelectionRange(pos, pos);

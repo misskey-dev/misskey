@@ -20,7 +20,13 @@ import './commands'
 // require('./commands')
 
 Cypress.on('uncaught:exception', (err, runnable) => {
-  if (err.message.includes('ResizeObserver loop limit exceeded')) {
-    return false
-  }
+	if ([
+		// Chrome
+		'ResizeObserver loop limit exceeded',
+
+		// Firefox
+		'ResizeObserver loop completed with undelivered notifications',
+	].some(msg => err.message.includes(msg))) {
+		return false;
+	}
 });

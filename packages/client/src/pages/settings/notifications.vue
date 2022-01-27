@@ -13,7 +13,6 @@
 import { defineComponent } from 'vue';
 import FormButton from '@/components/ui/button.vue';
 import FormLink from '@/components/form/link.vue';
-import FormBase from '@/components/debobigego/base.vue';
 import FormSection from '@/components/form/section.vue';
 import { notificationTypes } from 'misskey-js';
 import * as os from '@/os';
@@ -21,7 +20,6 @@ import * as symbols from '@/symbols';
 
 export default defineComponent({
 	components: {
-		FormBase,
 		FormLink,
 		FormButton,
 		FormSection,
@@ -37,10 +35,6 @@ export default defineComponent({
 				bg: 'var(--bg)',
 			},
 		}
-	},
-
-	mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
 	},
 
 	methods: {

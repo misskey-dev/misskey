@@ -1,6 +1,6 @@
 <template>
 <div class="_root">
-	<transition name="fade" mode="out-in">
+	<transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
 		<div v-if="post" class="rkxwuolj">
 			<div class="files">
 				<div v-for="file in post.files" :key="file.id" class="file">
@@ -93,11 +93,11 @@ export default defineComponent({
 				}]
 			} : null),
 			otherPostsPagination: {
-				endpoint: 'users/gallery/posts',
+				endpoint: 'users/gallery/posts' as const,
 				limit: 6,
-				params: () => ({
+				params: computed(() => ({
 					userId: this.post.user.id
-				})
+				})),
 			},
 			post: null,
 			error: null,

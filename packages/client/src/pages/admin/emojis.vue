@@ -6,11 +6,22 @@
 				<template #prefix><i class="fas fa-search"></i></template>
 				<template #label>{{ $ts.search }}</template>
 			</MkInput>
-			<MkPagination ref="emojis" :pagination="pagination">
+			<MkSwitch v-model="selectMode" style="margin: 8px 0;">
+				<template #label>Select mode</template>
+			</MkSwitch>
+			<div v-if="selectMode" style="display: flex; gap: var(--margin); flex-wrap: wrap;">
+				<MkButton inline @click="selectAll">Select all</MkButton>
+				<MkButton inline @click="setCategoryBulk">Set category</MkButton>
+				<MkButton inline @click="addTagBulk">Add tag</MkButton>
+				<MkButton inline @click="removeTagBulk">Remove tag</MkButton>
+				<MkButton inline @click="setTagBulk">Set tag</MkButton>
+				<MkButton inline danger @click="delBulk">Delete</MkButton>
+			</div>
+			<MkPagination ref="emojisPaginationComponent" :pagination="pagination">
 				<template #empty><span>{{ $ts.noCustomEmojis }}</span></template>
 				<template v-slot="{items}">
 					<div class="ldhfsamy">
-						<button v-for="emoji in items" :key="emoji.id" class="emoji _panel _button" @click="edit(emoji)">
+						<button v-for="emoji in items" :key="emoji.id" class="emoji _panel _button" :class="{ selected: selectedEmojis.includes(emoji.id) }" @click="selectMode ? toggleSelect(emoji) : edit(emoji)">
 							<img :src="emoji.url" class="img" :alt="emoji.name"/>
 							<div class="body">
 								<div class="name _monospace">{{ emoji.name }}</div>
@@ -23,7 +34,7 @@
 		</div>
 
 		<div v-else-if="tab === 'remote'" class="remote">
-			<div class="_inputSplit">
+			<FormSplit>
 				<MkInput v-model="queryRemote" :debounce="true" type="search">
 					<template #prefix><i class="fas fa-search"></i></template>
 					<template #label>{{ $ts.search }}</template>
@@ -31,8 +42,8 @@
 				<MkInput v-model="host" :debounce="true">
 					<template #label>{{ $ts.host }}</template>
 				</MkInput>
-			</div>
-			<MkPagination ref="remoteEmojis" :pagination="remotePagination">
+			</FormSplit>
+			<MkPagination :pagination="remotePagination">
 				<template #empty><span>{{ $ts.noCustomEmojis }}</span></template>
 				<template v-slot="{items}">
 					<div class="ldhfsamy">
@@ -51,146 +62,233 @@
 </MkSpacer>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, toRef } from 'vue';
+<script lang="ts" setup>
+import { computed, defineComponent, ref, toRef } from 'vue';
 import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/form/input.vue';
 import MkPagination from '@/components/ui/pagination.vue';
 import MkTab from '@/components/tab.vue';
-import { selectFiles } from '@/scripts/select-file';
+import MkSwitch from '@/components/form/switch.vue';
+import FormSplit from '@/components/form/split.vue';
+import { selectFile, selectFiles } from '@/scripts/select-file';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		MkTab,
-		MkButton,
-		MkInput,
-		MkPagination,
-	},
+const emojisPaginationComponent = ref<InstanceType<typeof MkPagination>>();
 
-	emits: ['info'],
+const tab = ref('local');
+const query = ref(null);
+const queryRemote = ref(null);
+const host = ref(null);
+const selectMode = ref(false);
+const selectedEmojis = ref<string[]>([]);
 
-	data() {
-		return {
-			[symbols.PAGE_INFO]: computed(() => ({
-				title: this.$ts.customEmojis,
-				icon: 'fas fa-laugh',
-				bg: 'var(--bg)',
-				actions: [{
-					asFullButton: true,
-					icon: 'fas fa-plus',
-					text: this.$ts.addEmoji,
-					handler: this.add,
-				}, {
-					icon: 'fas fa-ellipsis-h',
-					handler: this.menu,
-				}],
-				tabs: [{
-					active: this.tab === 'local',
-					title: this.$ts.local,
-					onClick: () => { this.tab = 'local'; },
-				}, {
-					active: this.tab === 'remote',
-					title: this.$ts.remote,
-					onClick: () => { this.tab = 'remote'; },
-				},]
-			})),
-			tab: 'local',
-			query: null,
-			queryRemote: null,
-			host: '',
-			pagination: {
-				endpoint: 'admin/emoji/list',
-				limit: 30,
-				params: computed(() => ({
-					query: (this.query && this.query !== '') ? this.query : null
-				}))
-			},
-			remotePagination: {
-				endpoint: 'admin/emoji/list-remote',
-				limit: 30,
-				params: computed(() => ({
-					query: (this.queryRemote && this.queryRemote !== '') ? this.queryRemote : null,
-					host: (this.host && this.host !== '') ? this.host : null
-				}))
-			},
-		}
-	},
+const pagination = {
+	endpoint: 'admin/emoji/list' as const,
+	limit: 30,
+	params: computed(() => ({
+		query: (query.value && query.value !== '') ? query.value : null,
+	})),
+};
 
-	async mounted() {
-		this.$emit('info', toRef(this, symbols.PAGE_INFO));
-	},
+const remotePagination = {
+	endpoint: 'admin/emoji/list-remote' as const,
+	limit: 30,
+	params: computed(() => ({
+		query: (queryRemote.value && queryRemote.value !== '') ? queryRemote.value : null,
+		host: (host.value && host.value !== '') ? host.value : null,
+	})),
+};
 
-	methods: {
-		async add(e) {
-			const files = await selectFiles(e.currentTarget || e.target, null);
-
-			const promise = Promise.all(files.map(file => os.api('admin/emoji/add', {
-				fileId: file.id,
-			})));
-			promise.then(() => {
-				this.$refs.emojis.reload();
-			});
-			os.promiseDialog(promise);
-		},
-
-		edit(emoji) {
-			os.popup(import('./emoji-edit-dialog.vue'), {
-				emoji: emoji
-			}, {
-				done: result => {
-					if (result.updated) {
-						this.$refs.emojis.replaceItem(item => item.id === emoji.id, {
-							...emoji,
-							...result.updated
-						});
-					} else if (result.deleted) {
-						this.$refs.emojis.removeItem(item => item.id === emoji.id);
-					}
-				},
-			}, 'closed');
-		},
-
-		im(emoji) {
-			os.apiWithDialog('admin/emoji/copy', {
-				emojiId: emoji.id,
-			});
-		},
-
-		remoteMenu(emoji, ev) {
-			os.popupMenu([{
-				type: 'label',
-				text: ':' + emoji.name + ':',
-			}, {
-				text: this.$ts.import,
-				icon: 'fas fa-plus',
-				action: () => { this.im(emoji) }
-			}], ev.currentTarget || ev.target);
-		},
-
-		menu(ev) {
-			os.popupMenu([{
-				icon: 'fas fa-download',
-				text: this.$ts.export,
-				action: async () => {
-					os.api('export-custom-emojis', {
-					})
-					.then(() => {
-						os.alert({
-							type: 'info',
-							text: this.$ts.exportRequested,
-						});
-					}).catch((e) => {
-						os.alert({
-							type: 'error',
-							text: e.message,
-						});
-					});
-				}
-			}], ev.currentTarget || ev.target);
-		}
+const selectAll = () => {
+	if (selectedEmojis.value.length > 0) {
+		selectedEmojis.value = [];
+	} else {
+		selectedEmojis.value = emojisPaginationComponent.value.items.map(item => item.id);
 	}
+};
+
+const toggleSelect = (emoji) => {
+	if (selectedEmojis.value.includes(emoji.id)) {
+		selectedEmojis.value = selectedEmojis.value.filter(x => x !== emoji.id);
+	} else {
+		selectedEmojis.value.push(emoji.id);
+	}
+};
+
+const add = async (ev: MouseEvent) => {
+	const files = await selectFiles(ev.currentTarget || ev.target, null);
+
+	const promise = Promise.all(files.map(file => os.api('admin/emoji/add', {
+		fileId: file.id,
+	})));
+	promise.then(() => {
+		emojisPaginationComponent.value.reload();
+	});
+	os.promiseDialog(promise);
+};
+
+const edit = (emoji) => {
+	os.popup(import('./emoji-edit-dialog.vue'), {
+		emoji: emoji
+	}, {
+		done: result => {
+			if (result.updated) {
+				emojisPaginationComponent.value.replaceItem(item => item.id === emoji.id, {
+					...emoji,
+					...result.updated
+				});
+			} else if (result.deleted) {
+				emojisPaginationComponent.value.removeItem(item => item.id === emoji.id);
+			}
+		},
+	}, 'closed');
+};
+
+const im = (emoji) => {
+	os.apiWithDialog('admin/emoji/copy', {
+		emojiId: emoji.id,
+	});
+};
+
+const remoteMenu = (emoji, ev: MouseEvent) => {
+	os.popupMenu([{
+		type: 'label',
+		text: ':' + emoji.name + ':',
+	}, {
+		text: i18n.locale.import,
+		icon: 'fas fa-plus',
+		action: () => { im(emoji) }
+	}], ev.currentTarget || ev.target);
+};
+
+const menu = (ev: MouseEvent) => {
+	os.popupMenu([{
+		icon: 'fas fa-download',
+		text: i18n.locale.export,
+		action: async () => {
+			os.api('export-custom-emojis', {
+			})
+			.then(() => {
+				os.alert({
+					type: 'info',
+					text: i18n.locale.exportRequested,
+				});
+			}).catch((e) => {
+				os.alert({
+					type: 'error',
+					text: e.message,
+				});
+			});
+		}
+	}, {
+		icon: 'fas fa-upload',
+		text: i18n.locale.import,
+		action: async () => {
+			const file = await selectFile(ev.currentTarget || ev.target);
+			os.api('admin/emoji/import-zip', {
+				fileId: file.id,
+			})
+			.then(() => {
+				os.alert({
+					type: 'info',
+					text: i18n.locale.importRequested,
+				});
+			}).catch((e) => {
+				os.alert({
+					type: 'error',
+					text: e.message,
+				});
+			});
+		}
+	}], ev.currentTarget || ev.target);
+};
+
+const setCategoryBulk = async () => {
+	const { canceled, result } = await os.inputText({
+		title: 'Category',
+	});
+	if (canceled) return;
+	await os.apiWithDialog('admin/emoji/set-category-bulk', {
+		ids: selectedEmojis.value,
+		category: result,
+	});
+	emojisPaginationComponent.value.reload();
+};
+
+const addTagBulk = async () => {
+	const { canceled, result } = await os.inputText({
+		title: 'Tag',
+	});
+	if (canceled) return;
+	await os.apiWithDialog('admin/emoji/add-aliases-bulk', {
+		ids: selectedEmojis.value,
+		aliases: result.split(' '),
+	});
+	emojisPaginationComponent.value.reload();
+};
+
+const removeTagBulk = async () => {
+	const { canceled, result } = await os.inputText({
+		title: 'Tag',
+	});
+	if (canceled) return;
+	await os.apiWithDialog('admin/emoji/remove-aliases-bulk', {
+		ids: selectedEmojis.value,
+		aliases: result.split(' '),
+	});
+	emojisPaginationComponent.value.reload();
+};
+
+const setTagBulk = async () => {
+	const { canceled, result } = await os.inputText({
+		title: 'Tag',
+	});
+	if (canceled) return;
+	await os.apiWithDialog('admin/emoji/set-aliases-bulk', {
+		ids: selectedEmojis.value,
+		aliases: result.split(' '),
+	});
+	emojisPaginationComponent.value.reload();
+};
+
+const delBulk = async () => {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.locale.deleteConfirm,
+	});
+	if (canceled) return;
+	await os.apiWithDialog('admin/emoji/delete-bulk', {
+		ids: selectedEmojis.value,
+	});
+	emojisPaginationComponent.value.reload();
+};
+
+defineExpose({
+	[symbols.PAGE_INFO]: computed(() => ({
+		title: i18n.locale.customEmojis,
+		icon: 'fas fa-laugh',
+		bg: 'var(--bg)',
+		actions: [{
+			asFullButton: true,
+			icon: 'fas fa-plus',
+			text: i18n.locale.addEmoji,
+			handler: add,
+		}, {
+			icon: 'fas fa-ellipsis-h',
+			handler: menu,
+		}],
+		tabs: [{
+			active: tab.value === 'local',
+			title: i18n.locale.local,
+			onClick: () => { tab.value = 'local'; },
+		}, {
+			active: tab.value === 'remote',
+			title: i18n.locale.remote,
+			onClick: () => { tab.value = 'remote'; },
+		},]
+	})),
 });
 </script>
 
@@ -210,11 +308,16 @@ export default defineComponent({
 			> .emoji {
 				display: flex;
 				align-items: center;
-				padding: 12px;
+				padding: 11px;
 				text-align: left;
+				border: solid 1px var(--panel);
 
 				&:hover {
-					color: var(--accent);
+					border-color: var(--inputBorderHover);
+				}
+
+				&.selected {
+					border-color: var(--accent);
 				}
 
 				> .img {

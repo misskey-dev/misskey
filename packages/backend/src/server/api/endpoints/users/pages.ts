@@ -25,8 +25,9 @@ export const meta = {
 			validator: $.optional.type(ID),
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	const query = makePaginationQuery(Pages.createQueryBuilder('page'), ps.sinceId, ps.untilId)
 		.andWhere(`page.userId = :userId`, { userId: ps.userId })

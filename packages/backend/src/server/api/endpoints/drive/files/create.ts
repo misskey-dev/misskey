@@ -1,16 +1,17 @@
 import ms from 'ms';
 import $ from 'cafy';
 import { ID } from '@/misc/cafy-id';
-import create from '@/services/drive/add-file';
+import { addFile } from '@/services/drive/add-file';
 import define from '../../../define';
 import { apiLogger } from '../../../logger';
 import { ApiError } from '../../../error';
 import { DriveFiles } from '@/models/index';
+import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/misc/hard-limits';
 
 export const meta = {
 	tags: ['drive'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	limit: {
 		duration: ms('1hour'),
@@ -32,6 +33,11 @@ export const meta = {
 			default: null,
 		},
 
+		comment: {
+			validator: $.optional.nullable.str.max(DB_MAX_IMAGE_COMMENT_LENGTH),
+			default: null,
+		},
+
 		isSensitive: {
 			validator: $.optional.either($.bool, $.str),
 			default: false,
@@ -46,8 +52,8 @@ export const meta = {
 	},
 
 	res: {
-		type: 'object' as const,
-		optional: false as const, nullable: false as const,
+		type: 'object',
+		optional: false, nullable: false,
 		ref: 'DriveFile',
 	},
 
@@ -58,8 +64,9 @@ export const meta = {
 			id: 'f449b209-0c60-4e51-84d5-29486263bfd4',
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user, _, file, cleanup) => {
 	// Get 'name' parameter
 	let name = ps.name || file.originalname;
@@ -78,7 +85,7 @@ export default define(meta, async (ps, user, _, file, cleanup) => {
 
 	try {
 		// Create file
-		const driveFile = await create(user, file.path, name, null, ps.folderId, ps.force, false, null, null, ps.isSensitive);
+		const driveFile = await addFile({ user, path: file.path, name, comment: ps.comment, folderId: ps.folderId, force: ps.force, sensitive: ps.isSensitive });
 		return await DriveFiles.pack(driveFile, { self: true });
 	} catch (e) {
 		apiLogger.error(e);

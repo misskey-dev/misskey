@@ -12,11 +12,12 @@ import { User } from '@/models/entities/user';
 import { fetchMeta } from '@/misc/fetch-meta';
 import { isActor, isPost, getApId } from '@/remote/activitypub/type';
 import ms from 'ms';
+import { SchemaType } from '@/misc/schema';
 
 export const meta = {
 	tags: ['federation'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	limit: {
 		duration: ms('1hour'),
@@ -38,22 +39,43 @@ export const meta = {
 	},
 
 	res: {
-		type: 'object' as const,
-		optional: false as const, nullable: false as const,
-		properties: {
-			type: {
-				type: 'string' as const,
-				optional: false as const, nullable: false as const,
-				enum: ['User', 'Note'],
+		optional: false, nullable: false,
+		oneOf: [
+			{
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						optional: false, nullable: false,
+						enum: ['User'],
+					},
+					object: {
+						type: 'object',
+						optional: false, nullable: false,
+						ref: 'UserDetailedNotMe',
+					}
+				}
 			},
-			object: {
-				type: 'object' as const,
-				optional: false as const, nullable: false as const,
-			},
-		},
+			{
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						optional: false, nullable: false,
+						enum: ['Note'],
+					},
+					object: {
+						type: 'object',
+						optional: false, nullable: false,
+						ref: 'Note',
+					}
+				}
+			}
+		],
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps) => {
 	const object = await fetchAny(ps.uri);
 	if (object) {
@@ -66,7 +88,7 @@ export default define(meta, async (ps) => {
 /***
  * URIからUserかNoteを解決する
  */
-async function fetchAny(uri: string) {
+async function fetchAny(uri: string): Promise<SchemaType<typeof meta['res']> | null> {
 	// URIがこのサーバーを指しているなら、ローカルユーザーIDとしてDBからフェッチ
 	if (uri.startsWith(config.url + '/')) {
 		const parts = uri.split('/');
@@ -95,8 +117,8 @@ async function fetchAny(uri: string) {
 	}
 
 	// ブロックしてたら中断
-	const meta = await fetchMeta();
-	if (meta.blockedHosts.includes(extractDbHost(uri))) return null;
+	const fetchedMeta = await fetchMeta();
+	if (fetchedMeta.blockedHosts.includes(extractDbHost(uri))) return null;
 
 	// URI(AP Object id)としてDB検索
 	{
@@ -171,7 +193,7 @@ async function fetchAny(uri: string) {
 	return null;
 }
 
-async function mergePack(user: User | null | undefined, note: Note | null | undefined) {
+async function mergePack(user: User | null | undefined, note: Note | null | undefined): Promise<SchemaType<typeof meta.res> | null> {
 	if (user != null) {
 		return {
 			type: 'User',

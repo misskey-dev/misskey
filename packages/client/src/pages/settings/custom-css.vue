@@ -1,25 +1,18 @@
 <template>
-<FormBase>
-	<FormInfo warn>{{ $ts.customCssWarn }}</FormInfo>
+<div class="_formRoot">
+	<FormInfo warn class="_formBlock">{{ $ts.customCssWarn }}</FormInfo>
 
-	<FormTextarea v-model="localCustomCss" manual-save tall class="_monospace" style="tab-size: 2;">
-		<span>{{ $ts.local }}</span>
+	<FormTextarea v-model="localCustomCss" manual-save tall class="_monospace _formBlock" style="tab-size: 2;">
+		<template #label>CSS</template>
 	</FormTextarea>
-</FormBase>
+</div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import FormTextarea from '@/components/form/textarea.vue';
-import FormSelect from '@/components/form/select.vue';
-import FormRadios from '@/components/form/radios.vue';
-import FormBase from '@/components/debobigego/base.vue';
-import FormGroup from '@/components/debobigego/group.vue';
-import FormLink from '@/components/debobigego/link.vue';
-import FormButton from '@/components/debobigego/button.vue';
-import FormInfo from '@/components/debobigego/info.vue';
+import FormInfo from '@/components/ui/info.vue';
 import * as os from '@/os';
-import { ColdDeviceStorage } from '@/store';
 import { unisonReload } from '@/scripts/unison-reload';
 import * as symbols from '@/symbols';
 import { defaultStore } from '@/store';
@@ -27,12 +20,6 @@ import { defaultStore } from '@/store';
 export default defineComponent({
 	components: {
 		FormTextarea,
-		FormSelect,
-		FormRadios,
-		FormBase,
-		FormGroup,
-		FormLink,
-		FormButton,
 		FormInfo,
 	},
 
@@ -50,8 +37,6 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
-
 		this.$watch('localCustomCss', this.apply);
 	},
 

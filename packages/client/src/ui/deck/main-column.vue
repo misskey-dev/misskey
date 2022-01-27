@@ -11,7 +11,7 @@
 		<template #header><MkHeader v-if="pageInfo && !pageInfo.hideHeader" :info="pageInfo"/></template>
 		<router-view v-slot="{ Component }">
 			<transition>
-				<keep-alive :include="['timeline']">
+				<keep-alive :include="['MkTimelinePage']">
 					<component :is="Component" :ref="changePage" @contextmenu.stop="onContextmenu"/>
 				</keep-alive>
 			</transition>
@@ -64,15 +64,15 @@ export default defineComponent({
 			history.back();
 		},
 
-		onContextmenu(e) {
+		onContextmenu(ev: MouseEvent) {
 			const isLink = (el: HTMLElement) => {
 				if (el.tagName === 'A') return true;
 				if (el.parentElement) {
 					return isLink(el.parentElement);
 				}
 			};
-			if (isLink(e.target)) return;
-			if (['INPUT', 'TEXTAREA', 'IMG', 'VIDEO', 'CANVAS'].includes(e.target.tagName) || e.target.attributes['contenteditable']) return;
+			if (isLink(ev.target)) return;
+			if (['INPUT', 'TEXTAREA', 'IMG', 'VIDEO', 'CANVAS'].includes(ev.target.tagName) || ev.target.attributes['contenteditable']) return;
 			if (window.getSelection().toString() !== '') return;
 			const path = this.$route.path;
 			os.contextMenu([{
@@ -84,7 +84,7 @@ export default defineComponent({
 				action: () => {
 					os.pageWindow(path);
 				}
-			}], e);
+			}], ev);
 		},
 	}
 });

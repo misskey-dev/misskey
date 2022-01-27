@@ -1,91 +1,39 @@
 <template>
-<MkError v-if="error" @retry="init()"/>
+<MkPagination ref="pagingComponent" :pagination="pagination">
+	<template #empty>
+		<div class="_fullinfo">
+			<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
+			<div>{{ $ts.noUsers }}</div>
+		</div>
+	</template>
 
-<div v-else class="efvhhmdq _isolated">
-	<div v-if="empty" class="no-users">
-		<p>{{ $ts.noUsers }}</p>
-	</div>
-	<div class="users">
-		<MkUserInfo v-for="user in users" :key="user.id" class="user" :user="user"/>
-	</div>
-	<button v-show="more" v-appear="$store.state.enableInfiniteScroll ? fetchMore : null" class="more" :class="{ fetching: moreFetching }" :disabled="moreFetching" @click="fetchMore">
-		<template v-if="moreFetching"><i class="fas fa-spinner fa-pulse fa-fw"></i></template>{{ moreFetching ? $ts.loading : $ts.loadMore }}
-	</button>
-</div>
+	<template #default="{ items: users }">
+		<div class="efvhhmdq">
+			<MkUserInfo v-for="user in users" :key="user.id" class="user" :user="user"/>
+		</div>
+	</template>
+</MkPagination>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import paging from '@/scripts/paging';
-import MkUserInfo from './user-info.vue';
+<script lang="ts" setup>
+import { ref } from 'vue';
+import MkUserInfo from '@/components/user-info.vue';
+import MkPagination from '@/components/ui/pagination.vue';
+import { Paging } from '@/components/ui/pagination.vue';
 import { userPage } from '@/filters/user';
 
-export default defineComponent({
-	components: {
-		MkUserInfo,
-	},
+const props = defineProps<{
+	pagination: Paging;
+	noGap?: boolean;
+}>();
 
-	mixins: [
-		paging({}),
-	],
-
-	props: {
-		pagination: {
-			required: true
-		},
-		extract: {
-			required: false
-		},
-		expanded: {
-			type: Boolean,
-			default: true
-		},
-	},
-
-	computed: {
-		users() {
-			return this.extract ? this.extract(this.items) : this.items;
-		}
-	},
-
-	methods: {
-		userPage
-	}
-});
+const pagingComponent = ref<InstanceType<typeof MkPagination>>();
 </script>
 
 <style lang="scss" scoped>
 .efvhhmdq {
-	> .no-users {
-		text-align: center;
-	}
-
-	> .users {
-		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-		grid-gap: var(--margin);
-	}
-
-	> .more {
-		display: block;
-		width: 100%;
-		padding: 16px;
-
-		&:hover {
-			background: rgba(#000, 0.025);
-		}
-
-		&:active {
-			background: rgba(#000, 0.05);
-		}
-
-		&.fetching {
-			cursor: wait;
-		}
-
-		> i {
-			margin-right: 4px;
-		}
-	}
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+	grid-gap: var(--margin);
 }
 </style>

@@ -1,46 +1,48 @@
 <template>
-<FormBase>
+<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
 	<FormSuspense :p="init">
-		<FormLink to="/admin/integrations/twitter">
-			<i class="fab fa-twitter"></i> Twitter
+		<FormFolder class="_formBlock">
+			<template #icon><i class="fab fa-twitter"></i></template>
+			<template #label>Twitter</template>
 			<template #suffix>{{ enableTwitterIntegration ? $ts.enabled : $ts.disabled }}</template>
-		</FormLink>
-		<FormLink to="/admin/integrations/github">
-			<i class="fab fa-github"></i> GitHub
+			<XTwitter/>
+		</FormFolder>
+		<FormFolder to="/admin/integrations/github" class="_formBlock">
+			<template #icon><i class="fab fa-github"></i></template>
+			<template #label>GitHub</template>
 			<template #suffix>{{ enableGithubIntegration ? $ts.enabled : $ts.disabled }}</template>
-		</FormLink>
-		<FormLink to="/admin/integrations/discord">
-			<i class="fab fa-discord"></i> Discord
+			<XGithub/>
+		</FormFolder>
+		<FormFolder to="/admin/integrations/discord" class="_formBlock">
+			<template #icon><i class="fab fa-discord"></i></template>
+			<template #label>Discord</template>
 			<template #suffix>{{ enableDiscordIntegration ? $ts.enabled : $ts.disabled }}</template>
-		</FormLink>
+			<XDiscord/>
+		</FormFolder>
 	</FormSuspense>
-</FormBase>
+</MkSpacer>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import FormLink from '@/components/debobigego/link.vue';
-import FormInput from '@/components/debobigego/input.vue';
-import FormButton from '@/components/debobigego/button.vue';
-import FormBase from '@/components/debobigego/base.vue';
-import FormGroup from '@/components/debobigego/group.vue';
-import FormTextarea from '@/components/debobigego/textarea.vue';
-import FormInfo from '@/components/debobigego/info.vue';
-import FormSuspense from '@/components/debobigego/suspense.vue';
+import FormFolder from '@/components/form/folder.vue';
+import FormSecion from '@/components/form/section.vue';
+import FormSuspense from '@/components/form/suspense.vue';
+import XTwitter from './integrations.twitter.vue';
+import XGithub from './integrations.github.vue';
+import XDiscord from './integrations.discord.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { fetchInstance } from '@/instance';
 
 export default defineComponent({
 	components: {
-		FormLink,
-		FormInput,
-		FormBase,
-		FormGroup,
-		FormButton,
-		FormTextarea,
-		FormInfo,
+		FormFolder,
+		FormSecion,
 		FormSuspense,
+		XTwitter,
+		XGithub,
+		XDiscord,
 	},
 
 	emits: ['info'],
@@ -56,10 +58,6 @@ export default defineComponent({
 			enableGithubIntegration: false,
 			enableDiscordIntegration: false,
 		}
-	},
-
-	async mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
 	},
 
 	methods: {

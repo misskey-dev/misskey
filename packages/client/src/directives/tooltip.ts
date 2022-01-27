@@ -21,7 +21,7 @@ export default {
 
 		self.close = () => {
 			if (self._close) {
-				clearInterval(self.checkTimer);
+				window.clearInterval(self.checkTimer);
 				self._close();
 				self._close = null;
 			}
@@ -61,19 +61,19 @@ export default {
 		});
 
 		el.addEventListener(start, () => {
-			clearTimeout(self.showTimer);
-			clearTimeout(self.hideTimer);
-			self.showTimer = setTimeout(self.show, delay);
+			window.clearTimeout(self.showTimer);
+			window.clearTimeout(self.hideTimer);
+			self.showTimer = window.setTimeout(self.show, delay);
 		}, { passive: true });
 
 		el.addEventListener(end, () => {
-			clearTimeout(self.showTimer);
-			clearTimeout(self.hideTimer);
-			self.hideTimer = setTimeout(self.close, delay);
+			window.clearTimeout(self.showTimer);
+			window.clearTimeout(self.hideTimer);
+			self.hideTimer = window.setTimeout(self.close, delay);
 		}, { passive: true });
 
 		el.addEventListener('click', () => {
-			clearTimeout(self.showTimer);
+			window.clearTimeout(self.showTimer);
 			self.close();
 		});
 	},
@@ -85,6 +85,6 @@ export default {
 
 	unmounted(el, binding, vn) {
 		const self = el._tooltipDirective_;
-		clearInterval(self.checkTimer);
+		window.clearInterval(self.checkTimer);
 	},
 } as Directive;

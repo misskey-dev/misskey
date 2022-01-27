@@ -29,14 +29,14 @@ export default function(ctx: Koa.Context, user: ILocalUser, redirect = false) {
 
 	(async () => {
 		// Append signin history
-		const record = await Signins.save({
+		const record = await Signins.insert({
 			id: genId(),
 			createdAt: new Date(),
 			userId: user.id,
 			ip: ctx.ip,
 			headers: ctx.headers,
 			success: true,
-		});
+		}).then(x => Signins.findOneOrFail(x.identifiers[0]));
 
 		// Publish signin event
 		publishMainStream(user.id, 'signin', await Signins.pack(record));

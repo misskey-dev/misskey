@@ -1,5 +1,5 @@
 <template>
-<FormBase>
+<div class="_formRoot">
 	<FormPagination ref="list" :pagination="pagination">
 		<template #empty>
 			<div class="_fullinfo">
@@ -8,7 +8,7 @@
 			</div>
 		</template>
 		<template v-slot="{items}">
-			<div v-for="token in items" :key="token.id" class="_debobigegoPanel bfomjevm">
+			<div v-for="token in items" :key="token.id" class="_panel bfomjevm">
 				<img v-if="token.iconUrl" class="icon" :src="token.iconUrl" alt=""/>
 				<div class="body">
 					<div class="name">{{ token.name }}</div>
@@ -34,23 +34,17 @@
 			</div>
 		</template>
 	</FormPagination>
-</FormBase>
+</div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import FormPagination from '@/components/debobigego/pagination.vue';
-import FormSelect from '@/components/form/select.vue';
-import FormLink from '@/components/debobigego/link.vue';
-import FormBase from '@/components/debobigego/base.vue';
-import FormGroup from '@/components/debobigego/group.vue';
-import FormButton from '@/components/debobigego/button.vue';
+import FormPagination from '@/components/ui/pagination.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 
 export default defineComponent({
 	components: {
-		FormBase,
 		FormPagination,
 	},
 
@@ -64,17 +58,13 @@ export default defineComponent({
 				bg: 'var(--bg)',
 			},
 			pagination: {
-				endpoint: 'i/apps',
+				endpoint: 'i/apps' as const,
 				limit: 100,
 				params: {
 					sort: '+lastUsedAt'
 				}
 			},
 		};
-	},
-
-	mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
 	},
 
 	methods: {

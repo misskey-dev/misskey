@@ -6,7 +6,7 @@ import { toPuny } from '@/misc/convert-host';
 export const meta = {
 	tags: ['admin'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 	requireModerator: true,
 
 	params: {
@@ -18,8 +18,9 @@ export const meta = {
 			validator: $.bool,
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, me) => {
 	const instance = await Instances.findOne({ host: toPuny(ps.host) });
 

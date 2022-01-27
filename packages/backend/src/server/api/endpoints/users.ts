@@ -7,7 +7,7 @@ import { generateBlockQueryForUsers } from '../common/generate-block-query';
 export const meta = {
 	tags: ['users'],
 
-	requireCredential: false as const,
+	requireCredential: false,
 
 	params: {
 		limit: {
@@ -53,16 +53,17 @@ export const meta = {
 	},
 
 	res: {
-		type: 'array' as const,
-		optional: false as const, nullable: false as const,
+		type: 'array',
+		optional: false, nullable: false,
 		items: {
-			type: 'object' as const,
-			optional: false as const, nullable: false as const,
-			ref: 'User',
+			type: 'object',
+			optional: false, nullable: false,
+			ref: 'UserDetailed',
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, me) => {
 	const query = Users.createQueryBuilder('user');
 	query.where('user.isExplorable = TRUE');

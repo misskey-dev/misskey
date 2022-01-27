@@ -5,28 +5,17 @@
 </span>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import * as misskey from 'misskey-js';
 import { toUnicode } from 'punycode/';
-import { host } from '@/config';
+import { host as hostRaw } from '@/config';
 
-export default defineComponent({
-	props: {
-		user: {
-			type: Object,
-			required: true
-		},
-		detail: {
-			type: Boolean,
-			default: false
-		},
-	},
-	data() {
-		return {
-			host: toUnicode(host),
-		};
-	}
-});
+defineProps<{
+	user: misskey.entities.UserDetailed;
+	detail?: boolean;
+}>();
+
+const host = toUnicode(hostRaw);
 </script>
 
 <style lang="scss" scoped>

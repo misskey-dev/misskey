@@ -10,7 +10,7 @@ import { DriveFile } from '@/models/entities/drive-file';
 export const meta = {
 	tags: ['gallery'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	kind: 'write:gallery',
 
@@ -43,16 +43,17 @@ export const meta = {
 	},
 
 	res: {
-		type: 'object' as const,
-		optional: false as const, nullable: false as const,
+		type: 'object',
+		optional: false, nullable: false,
 		ref: 'GalleryPost',
 	},
 
 	errors: {
 
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	const files = (await Promise.all(ps.fileIds.map(fileId =>
 		DriveFiles.findOne({

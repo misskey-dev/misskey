@@ -5,7 +5,7 @@ import { validateEmailForAccount } from '@/services/validate-email-for-account';
 export const meta = {
 	tags: ['users'],
 
-	requireCredential: false as const,
+	requireCredential: false,
 
 	params: {
 		emailAddress: {
@@ -14,21 +14,22 @@ export const meta = {
 	},
 
 	res: {
-		type: 'object' as const,
-		optional: false as const, nullable: false as const,
+		type: 'object',
+		optional: false, nullable: false,
 		properties: {
 			available: {
-				type: 'boolean' as const,
-				optional: false as const, nullable: false as const,
+				type: 'boolean',
+				optional: false, nullable: false,
 			},
 			reason: {
-				type: 'string' as const,
-				optional: false as const, nullable: true as const,
+				type: 'string',
+				optional: false, nullable: true,
 			},
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps) => {
 	return await validateEmailForAccount(ps.emailAddress);
 });

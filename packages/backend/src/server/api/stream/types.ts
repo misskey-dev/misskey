@@ -11,7 +11,6 @@ import { Emoji } from '@/models/entities/emoji';
 import { UserList } from '@/models/entities/user-list';
 import { MessagingMessage } from '@/models/entities/messaging-message';
 import { UserGroup } from '@/models/entities/user-group';
-import { ReversiGame } from '@/models/entities/games/reversi/game';
 import { AbuseUserReport } from '@/models/entities/abuse-user-report';
 import { Signin } from '@/models/entities/signin';
 import { Page } from '@/models/entities/page';
@@ -37,7 +36,7 @@ export interface UserStreamTypes {
 	updateUserProfile: UserProfile;
 	mute: User;
 	unmute: User;
-	follow: Packed<'User'>;
+	follow: Packed<'UserDetailedNotMe'>;
 	unfollow: Packed<'User'>;
 	userAdded: Packed<'User'>;
 }
@@ -47,7 +46,7 @@ export interface MainStreamTypes {
 	mention: Packed<'Note'>;
 	reply: Packed<'Note'>;
 	renote: Packed<'Note'>;
-	follow: Packed<'User'>;
+	follow: Packed<'UserDetailedNotMe'>;
 	followed: Packed<'User'>;
 	unfollow: Packed<'User'>;
 	meUpdated: Packed<'User'>;
@@ -77,8 +76,6 @@ export interface MainStreamTypes {
 	readAllChannels: undefined;
 	unreadChannel: Note['id'];
 	myTokenRegenerated: undefined;
-	reversiNoInvites: undefined;
-	reversiInvited: Packed<'ReversiMatching'>;
 	signin: Signin;
 	registryUpdated: {
 		scope?: string[];
@@ -158,47 +155,6 @@ export interface MessagingIndexStreamTypes {
 	message: Packed<'MessagingMessage'>;
 }
 
-export interface ReversiStreamTypes {
-	matched: Packed<'ReversiGame'>;
-	invited: Packed<'ReversiMatching'>;
-}
-
-export interface ReversiGameStreamTypes {
-	started: Packed<'ReversiGame'>;
-	ended: {
-		winnerId?: User['id'] | null,
-		game: Packed<'ReversiGame'>;
-	};
-	updateSettings: {
-		key: string;
-		value: FIXME;
-	};
-	initForm: {
-		userId: User['id'];
-		form: FIXME;
-	};
-	updateForm: {
-		userId: User['id'];
-		id: string;
-		value: FIXME;
-	};
-	message: {
-		userId: User['id'];
-		message: FIXME;
-	};
-	changeAccepts: {
-		user1: boolean;
-		user2: boolean;
-	};
-	set: {
-		at: Date;
-		color: boolean;
-		pos: number;
-		next: boolean;
-	};
-	watching: User['id'];
-}
-
 export interface AdminStreamTypes {
 	newAbuseUserReport: {
 		id: AbuseUserReport['id'];
@@ -267,14 +223,6 @@ export type StreamMessages = {
 	messagingIndex: {
 		name: `messagingIndexStream:${User['id']}`;
 		payload: EventUnionFromDictionary<MessagingIndexStreamTypes>;
-	};
-	reversi: {
-		name: `reversiStream:${User['id']}`;
-		payload: EventUnionFromDictionary<ReversiStreamTypes>;
-	};
-	reversiGame: {
-		name: `reversiGameStream:${ReversiGame['id']}`;
-		payload: EventUnionFromDictionary<ReversiGameStreamTypes>;
 	};
 	admin: {
 		name: `adminStream:${User['id']}`;

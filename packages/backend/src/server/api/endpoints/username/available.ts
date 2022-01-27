@@ -5,7 +5,7 @@ import { Users, UsedUsernames } from '@/models/index';
 export const meta = {
 	tags: ['users'],
 
-	requireCredential: false as const,
+	requireCredential: false,
 
 	params: {
 		username: {
@@ -14,17 +14,18 @@ export const meta = {
 	},
 
 	res: {
-		type: 'object' as const,
-		optional: false as const, nullable: false as const,
+		type: 'object',
+		optional: false, nullable: false,
 		properties: {
 			available: {
-				type: 'boolean' as const,
-				optional: false as const, nullable: false as const,
+				type: 'boolean',
+				optional: false, nullable: false,
 			},
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps) => {
 	// Get exist
 	const exist = await Users.count({

@@ -8,38 +8,28 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import * as os from '@/os';
+<script lang="ts" setup>
+import { onUnmounted } from 'vue';
+import { stream } from '@/stream';
 
-export default defineComponent({
-	data() {
-		return {
-			hasDisconnected: false,
-		}
-	},
-	computed: {
-		stream() {
-			return os.stream;
-		},
-	},
-	created() {
-		os.stream.on('_disconnected_', this.onDisconnected);
-	},
-	beforeUnmount() {
-		os.stream.off('_disconnected_', this.onDisconnected);
-	},
-	methods: {
-		onDisconnected() {
-			this.hasDisconnected = true;
-		},
-		resetDisconnected() {
-			this.hasDisconnected = false;
-		},
-		reload() {
-			location.reload();
-		},
-	}
+let hasDisconnected = $ref(false);
+
+function onDisconnected() {
+	hasDisconnected = true;
+}
+
+function resetDisconnected() {
+	hasDisconnected = false;
+}
+
+function reload() {
+	location.reload();
+}
+
+stream.on('_disconnected_', onDisconnected);
+
+onUnmounted(() => {
+	stream.off('_disconnected_', onDisconnected);
 });
 </script>
 

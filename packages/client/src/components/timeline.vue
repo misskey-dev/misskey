@@ -1,183 +1,143 @@
 <template>
-<XNotes ref="tl" :no-gap="!$store.state.showGapBetweenNotesInTimeline" :pagination="pagination" @before="$emit('before')" @after="e => $emit('after', e)" @queue="$emit('queue', $event)"/>
+<XNotes ref="tlComponent" :no-gap="!$store.state.showGapBetweenNotesInTimeline" :pagination="pagination" @queue="emit('queue', $event)"/>
 </template>
 
-<script lang="ts">
-import { defineComponent, markRaw } from 'vue';
+<script lang="ts" setup>
+import { ref, computed, provide, onUnmounted } from 'vue';
 import XNotes from './notes.vue';
 import * as os from '@/os';
+import { stream } from '@/stream';
 import * as sound from '@/scripts/sound';
+import { $i } from '@/account';
 
-export default defineComponent({
-	components: {
-		XNotes
-	},
+const props = defineProps<{
+	src: string;
+	list?: string;
+	antenna?: string;
+	channel?: string;
+	sound?: boolean;
+}>();
 
-	provide() {
-		return {
-			inChannel: this.src === 'channel'
-		};
-	},
+const emit = defineEmits<{
+	(e: 'note'): void;
+	(e: 'queue', count: number): void;
+}>();
 
-	props: {
-		src: {
-			type: String,
-			required: true
-		},
-		list: {
-			type: String,
-			required: false
-		},
-		antenna: {
-			type: String,
-			required: false
-		},
-		channel: {
-			type: String,
-			required: false
-		},
-		sound: {
-			type: Boolean,
-			required: false,
-			default: false,
-		}
-	},
+provide('inChannel', computed(() => props.src === 'channel'));
 
-	emits: ['note', 'queue', 'before', 'after'],
+const tlComponent: InstanceType<typeof XNotes> = $ref();
 
-	data() {
-		return {
-			connection: null,
-			connection2: null,
-			pagination: null,
-			baseQuery: {
-				includeMyRenotes: this.$store.state.showMyRenotes,
-				includeRenotedMyNotes: this.$store.state.showRenotedMyNotes,
-				includeLocalRenotes: this.$store.state.showLocalRenotes
-			},
-			query: {},
-			date: null
-		};
-	},
+const prepend = note => {
+	tlComponent.pagingComponent?.prepend(note);
 
-	created() {
-		const prepend = note => {
-			(this.$refs.tl as any).prepend(note);
+	emit('note');
 
-			this.$emit('note');
-
-			if (this.sound) {
-				sound.play(note.userId === this.$i.id ? 'noteMy' : 'note');
-			}
-		};
-
-		const onUserAdded = () => {
-			(this.$refs.tl as any).reload();
-		};
-
-		const onUserRemoved = () => {
-			(this.$refs.tl as any).reload();
-		};
-
-		const onChangeFollowing = () => {
-			if (!this.$refs.tl.backed) {
-				this.$refs.tl.reload();
-			}
-		};
-
-		let endpoint;
-
-		if (this.src == 'antenna') {
-			endpoint = 'antennas/notes';
-			this.query = {
-				antennaId: this.antenna
-			};
-			this.connection = markRaw(os.stream.useChannel('antenna', {
-				antennaId: this.antenna
-			}));
-			this.connection.on('note', prepend);
-		} else if (this.src == 'home') {
-			endpoint = 'notes/timeline';
-			this.connection = markRaw(os.stream.useChannel('homeTimeline'));
-			this.connection.on('note', prepend);
-
-			this.connection2 = markRaw(os.stream.useChannel('main'));
-			this.connection2.on('follow', onChangeFollowing);
-			this.connection2.on('unfollow', onChangeFollowing);
-		} else if (this.src == 'local') {
-			endpoint = 'notes/local-timeline';
-			this.connection = markRaw(os.stream.useChannel('localTimeline'));
-			this.connection.on('note', prepend);
-		} else if (this.src == 'social') {
-			endpoint = 'notes/hybrid-timeline';
-			this.connection = markRaw(os.stream.useChannel('hybridTimeline'));
-			this.connection.on('note', prepend);
-		} else if (this.src == 'global') {
-			endpoint = 'notes/global-timeline';
-			this.connection = markRaw(os.stream.useChannel('globalTimeline'));
-			this.connection.on('note', prepend);
-		} else if (this.src == 'mentions') {
-			endpoint = 'notes/mentions';
-			this.connection = markRaw(os.stream.useChannel('main'));
-			this.connection.on('mention', prepend);
-		} else if (this.src == 'directs') {
-			endpoint = 'notes/mentions';
-			this.query = {
-				visibility: 'specified'
-			};
-			const onNote = note => {
-				if (note.visibility == 'specified') {
-					prepend(note);
-				}
-			};
-			this.connection = markRaw(os.stream.useChannel('main'));
-			this.connection.on('mention', onNote);
-		} else if (this.src == 'list') {
-			endpoint = 'notes/user-list-timeline';
-			this.query = {
-				listId: this.list
-			};
-			this.connection = markRaw(os.stream.useChannel('userList', {
-				listId: this.list
-			}));
-			this.connection.on('note', prepend);
-			this.connection.on('userAdded', onUserAdded);
-			this.connection.on('userRemoved', onUserRemoved);
-		} else if (this.src == 'channel') {
-			endpoint = 'channels/timeline';
-			this.query = {
-				channelId: this.channel
-			};
-			this.connection = markRaw(os.stream.useChannel('channel', {
-				channelId: this.channel
-			}));
-			this.connection.on('note', prepend);
-		}
-
-		this.pagination = {
-			endpoint: endpoint,
-			limit: 10,
-			params: init => ({
-				untilDate: this.date?.getTime(),
-				...this.baseQuery, ...this.query
-			})
-		};
-	},
-
-	beforeUnmount() {
-		this.connection.dispose();
-		if (this.connection2) this.connection2.dispose();
-	},
-
-	methods: {
-		focus() {
-			this.$refs.tl.focus();
-		},
-
-		timetravel(date?: Date) {
-			this.date = date;
-			this.$refs.tl.reload();
-		}
+	if (props.sound) {
+		sound.play($i && (note.userId === $i.id) ? 'noteMy' : 'note');
 	}
+};
+
+const onUserAdded = () => {
+	tlComponent.pagingComponent?.reload();
+};
+
+const onUserRemoved = () => {
+	tlComponent.pagingComponent?.reload();
+};
+
+const onChangeFollowing = () => {
+	if (!tlComponent.pagingComponent?.backed) {
+		tlComponent.pagingComponent?.reload();
+	}
+};
+
+let endpoint;
+let query;
+let connection;
+let connection2;
+
+if (props.src === 'antenna') {
+	endpoint = 'antennas/notes';
+	query = {
+		antennaId: props.antenna
+	};
+	connection = stream.useChannel('antenna', {
+		antennaId: props.antenna
+	});
+	connection.on('note', prepend);
+} else if (props.src === 'home') {
+	endpoint = 'notes/timeline';
+	connection = stream.useChannel('homeTimeline');
+	connection.on('note', prepend);
+
+	connection2 = stream.useChannel('main');
+	connection2.on('follow', onChangeFollowing);
+	connection2.on('unfollow', onChangeFollowing);
+} else if (props.src === 'local') {
+	endpoint = 'notes/local-timeline';
+	connection = stream.useChannel('localTimeline');
+	connection.on('note', prepend);
+} else if (props.src === 'social') {
+	endpoint = 'notes/hybrid-timeline';
+	connection = stream.useChannel('hybridTimeline');
+	connection.on('note', prepend);
+} else if (props.src === 'global') {
+	endpoint = 'notes/global-timeline';
+	connection = stream.useChannel('globalTimeline');
+	connection.on('note', prepend);
+} else if (props.src === 'mentions') {
+	endpoint = 'notes/mentions';
+	connection = stream.useChannel('main');
+	connection.on('mention', prepend);
+} else if (props.src === 'directs') {
+	endpoint = 'notes/mentions';
+	query = {
+		visibility: 'specified'
+	};
+	const onNote = note => {
+		if (note.visibility == 'specified') {
+			prepend(note);
+		}
+	};
+	connection = stream.useChannel('main');
+	connection.on('mention', onNote);
+} else if (props.src === 'list') {
+	endpoint = 'notes/user-list-timeline';
+	query = {
+		listId: props.list
+	};
+	connection = stream.useChannel('userList', {
+		listId: props.list
+	});
+	connection.on('note', prepend);
+	connection.on('userAdded', onUserAdded);
+	connection.on('userRemoved', onUserRemoved);
+} else if (props.src === 'channel') {
+	endpoint = 'channels/timeline';
+	query = {
+		channelId: props.channel
+	};
+	connection = stream.useChannel('channel', {
+		channelId: props.channel
+	});
+	connection.on('note', prepend);
+}
+
+const pagination = {
+	endpoint: endpoint,
+	limit: 10,
+	params: query,
+};
+
+onUnmounted(() => {
+	connection.dispose();
+	if (connection2) connection2.dispose();
 });
+
+/* TODO
+const timetravel = (date?: Date) => {
+	this.date = date;
+	this.$refs.tl.reload();
+};
+*/
 </script>
