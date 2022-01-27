@@ -47,7 +47,6 @@ import MkPagination from '@/components/ui/pagination.vue';
 import { Paging } from '@/components/ui/pagination.vue';
 import XMessage from './messaging-room.message.vue';
 import XForm from './messaging-room.form.vue';
-import * as Acct from 'misskey-js/built/acct';
 import { isBottom, onScrollBottom, scroll } from '@/scripts/scroll';
 import * as os from '@/os';
 import { stream } from '@/stream';
@@ -108,6 +107,7 @@ async function fetch() {
 	});
 
 	connection?.on('message', onMessage);
+	connection?.on('read', onRead);
 	connection?.on('deleted', onDeleted);
 	connection?.on('typers', typers => {
 		typers = typers.filter(u => u.id !== $i.id);
@@ -192,10 +192,35 @@ function onMessage(message) {
 	}
 }
 
+function onRead(x) {
+	if (user) {
+		if (!Array.isArray(x)) x = [x];
+		for (const id of x) {
+			if (pagingComponent.items.some(x => x.id == id)) {
+				const exist = pagingComponent.items.map(x => x.id).indexOf(id);
+				pagingComponent.items[exist] = {
+					...pagingComponent.items[exist],
+					isRead: true,
+				};
+			}
+		}
+	} else if (group) {
+		for (const id of x.ids) {
+			if (pagingComponent.items.some(x => x.id == id)) {
+				const exist = pagingComponent.items.map(x => x.id).indexOf(id);
+				pagingComponent.items[exist] = {
+					...pagingComponent.items[exist],
+					reads: [...pagingComponent.items[exist].reads, x.userId]
+				};
+			}
+		}
+	}
+}
+
 function onDeleted(id) {
-	const msg = messages.find(m => m.id === id);
+	const msg = pagingComponent.items.find(m => m.id === id);
 	if (msg) {
-		messages = messages.filter(m => m.id !== msg.id);
+		pagingComponent.prepend(msg);
 	}
 }
 
@@ -204,7 +229,6 @@ function scrollToBottom() {
 }
 
 function onIndicatorClick() {
-	showIndicator = false;
 	scrollToBottom();
 }
 
@@ -223,7 +247,7 @@ function notifyNewMessage() {
 
 function onVisibilitychange() {
 	if (document.hidden) return;
-	for (const message of messages) {
+	for (const message of pagingComponent.items) {
 		if (message.userId !== $i.id && !message.isRead) {
 			connection?.send('read', {
 				id: message.id

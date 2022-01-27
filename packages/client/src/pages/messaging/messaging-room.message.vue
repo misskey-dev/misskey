@@ -47,21 +47,11 @@ import { $i } from '@/account';
 const props = defineProps<{
 	message: Misskey.entities.MessagingMessage;
 	isGroup?: boolean;
-	connection?: Misskey.ChannelConnection<Misskey.Channels['messaging']>;
 }>();
 
 const isMe = $computed(() => props.message.userId === $i?.id);
 const urls = $computed(() => props.message.text ? extractUrlFromMfm(mfm.parse(props.message.text)) : []);
 
-if (props.connection) {
-	props.connection?.on('read', (x) => {
-		if (!props.isGroup) {
-			props.message.isRead = true;
-		} else {
-			props.message.reads = [...props.message.reads, x.userId];
-		}
-	});
-}
 
 function del() {
 	os.api('messaging/messages/delete', {
