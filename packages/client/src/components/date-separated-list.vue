@@ -92,6 +92,7 @@ export default defineComponent({
 
 		function onBeforeLeave(el: HTMLElement) {
 			el.style.top = `${el.offsetTop}px`;
+			el.style.left = `${el.offsetLeft}px`;
 		}
 		function onLeaveCanceled(el: HTMLElement) {
 			el.style.top = '';

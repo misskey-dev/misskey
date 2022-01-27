@@ -66,7 +66,6 @@ function del() {
 	position: relative;
 	background-color: transparent;
 	display: flex;
-	width: 100%;
 
 	> .avatar {
 		position: sticky;
