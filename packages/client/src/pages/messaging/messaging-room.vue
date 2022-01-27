@@ -6,15 +6,18 @@
 >
 	<div class="_content mk-messaging-room">
 		<div class="body">
+			<MkPagination v-if="pagination" ref="pagingComponent" :pagination="pagination">
+				<template #empty>
+					<i class="fas fa-info-circle"></i>{{ $ts.noMessagesYet }}</p>
+				</template>
+
+				<template #defalut="{ items: messages }">
+					<XList v-slot="{ item: message }" class="messages" :items="messages" direction="up" reversed>
+						<XMessage :key="message.id" :message="message" :is-group="group != null"/>
+					</XList>
+				</template>
+			</MkPagination>
 			<MkLoading v-if="fetching"/>
-			<p v-if="!fetching && messages.length == 0" class="empty"><i class="fas fa-info-circle"></i>{{ $ts.noMessagesYet }}</p>
-			<p v-if="!fetching && messages.length > 0 && !existMoreMessages" class="no-history"><i class="fas fa-flag"></i>{{ $ts.noMoreHistory }}</p>
-			<button v-show="existMoreMessages" ref="loadMore" class="more _button" :class="{ fetching: fetchingMoreMessages }" :disabled="fetchingMoreMessages" @click="fetchMoreMessages">
-				<template v-if="fetchingMoreMessages"><i class="fas fa-spinner fa-pulse fa-fw"></i></template>{{ fetchingMoreMessages ? $ts.loading : $ts.loadMore }}
-			</button>
-			<XList v-slot="{ item: message }" class="messages" :items="messages" direction="up" reversed>
-				<XMessage :key="message.id" :message="message" :is-group="group != null"/>
-			</XList>
 		</div>
 		<footer>
 			<div v-if="typers.length > 0" class="typers">
@@ -39,7 +42,9 @@
 <script lang="ts" setup>
 import { computed, watch, onMounted, nextTick, onBeforeUnmount } from 'vue';
 import * as Misskey from 'misskey-js';
+import XList from '@/components/date-separated-list.vue';
 import MkPagination from '@/components/ui/pagination.vue';
+import { Paging } from '@/components/ui/pagination.vue';
 import XMessage from './messaging-room.message.vue';
 import XForm from './messaging-room.form.vue';
 import * as Acct from 'misskey-js/built/acct';
@@ -52,33 +57,42 @@ import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
 import { defaultStore } from '@/store';
 import { $i } from '@/account';
-import { router } from '@/router';
 
 const props = defineProps<{
 	userAcct?: string;
 	groupId?: string;
 }>();
 
-let fetching = $ref(true);
-let user: Misskey.entities.UserDetailed | null = $ref(null);
-let group: Misskey.entities.UserGroup | null = $ref(null);
-let fetchingMoreMessages = $ref(false);
-let messages = $ref<Misskey.entities.MessagingMessage[]>([]);
-let existMoreMessages = $ref(false);
-let connection: Misskey.ChannelConnection<Misskey.Channels['messaging']> | null = $ref(null);
-let showIndicator = $ref(false);
-let timer: number | null = $ref(null);
-const ilObserver = new IntersectionObserver(
-	(entries) => entries.some((entry) => entry.isIntersecting)
-		&& !fetching
-		&& !fetchingMoreMessages
-		&& existMoreMessages
-		&& fetchMoreMessages()
-);
-
 let rootEl = $ref<Element>();
 let form = $ref<InstanceType<typeof XForm>>();
 let loadMore = $ref<HTMLDivElement>();
+let pagingComponent = $ref<InstanceType<typeof MkPagination>>();
+
+let fetching = $ref(true);
+let user: Misskey.entities.UserDetailed | null = $ref(null);
+let group: Misskey.entities.UserGroup | null = $ref(null);
+let connection: Misskey.ChannelConnection<Misskey.Channels['messaging']> | null = $ref(null);
+let showIndicator = $ref(false);
+let timer: number | null = $ref(null);
+
+let pagination: Paging = $computed(() => {
+	return {
+		endpoint: 'messaging/messages',
+		limit: pagingComponent?.more ? 20 : 10,
+		params: {
+			userId: user ? user.id : undefined,
+			groupId: group ? group.id : undefined,
+		},
+		reversed: true,
+	};
+});
+
+const ilObserver = new IntersectionObserver(
+	(entries) => entries.some((entry) => entry.isIntersecting)
+		&& !fetching
+		&& pagingComponent?.more
+		&& fetchMoreMessages()
+);
 
 watch([() => props.userAcct, () => props.groupId], () => {
 	if (connection) connection.dispose();
@@ -94,7 +108,6 @@ async function fetch() {
 	});
 
 	connection?.on('message', onMessage);
-	connection?.on('read', onRead);
 	connection?.on('deleted', onDeleted);
 	connection?.on('typers', typers => {
 		typers = typers.filter(u => u.id !== $i.id);
@@ -102,7 +115,7 @@ async function fetch() {
 
 	document.addEventListener('visibilitychange', onVisibilitychange);
 
-	fetchMessages().then(() => {
+	pagingComponent.fetchMoreAhead().then(() => {
 		scrollToBottom();
 
 		// もっと見るの交差検知を発火させないためにfetchは
@@ -149,33 +162,10 @@ function onDrop(e: DragEvent): void {
 	//#endregion
 }
 
-function fetchMessages() {
-	return new Promise<void>((resolve, reject) => {
-		const max = existMoreMessages ? 20 : 10;
-
-		os.api('messaging/messages', {
-			userId: user ? user.id : undefined,
-			groupId: group ? group.id : undefined,
-			limit: max + 1,
-			untilId: existMoreMessages ? messages[0].id : undefined
-		}).then(messages => {
-			if (messages.length == max + 1) {
-				existMoreMessages = true;
-				messages.pop();
-			} else {
-				existMoreMessages = false;
-			}
-
-			messages.unshift.apply(messages, messages.reverse());
-			resolve();
-		});
-	});
-}
-
 function fetchMoreMessages() {
-	fetchingMoreMessages = true;
-	fetchMessages().then(() => {
-		fetchingMoreMessages = false;
+	fetching = true;
+	pagingComponent.fetchMoreAhead().then(() => {
+		fetching = false;
 	});
 }
 
@@ -184,7 +174,7 @@ function onMessage(message) {
 
 	const _isBottom = isBottom(rootEl, 64);
 
-	messages.push(message);
+	pagingComponent.append(message);
 	if (message.userId != $i.id && !document.hidden) {
 		connection?.send('read', {
 			id: message.id
@@ -199,31 +189,6 @@ function onMessage(message) {
 	} else if (message.userId != $i.id) {
 		// Notify
 		notifyNewMessage();
-	}
-}
-
-function onRead(x) {
-	if (user) {
-		if (!Array.isArray(x)) x = [x];
-		for (const id of x) {
-			if (messages.some(x => x.id == id)) {
-				const exist = messages.map(x => x.id).indexOf(id);
-				messages[exist] = {
-					...messages[exist],
-					isRead: true,
-				};
-			}
-		}
-	} else if (group) {
-		for (const id of x.ids) {
-			if (messages.some(x => x.id == id)) {
-				const exist = messages.map(x => x.id).indexOf(id);
-				messages[exist] = {
-					...messages[exist],
-					reads: [...messages[exist].reads, x.userId]
-				};
-			}
-		}
 	}
 }
 
