@@ -34,15 +34,16 @@ export function onScrollTop(el: HTMLElement, cb) {
 }
 
 export function onScrollBottom(el: HTMLElement, cb) {
-	const container = getScrollContainer(el) || window;
+	const container = getScrollContainer(el);
+	const containerOrWindow = container || window;
 	const onScroll = ev => {
 		if (!document.body.contains(el)) return;
-		if (isBottom(el)) {
+		if (isScrollBottom(container)) {
 			cb();
-			container.removeEventListener('scroll', onScroll);
+			containerOrWindow.removeEventListener('scroll', onScroll);
 		}
 	};
-	container.addEventListener('scroll', onScroll, { passive: true });
+	containerOrWindow.addEventListener('scroll', onScroll, { passive: true });
 }
 
 export function scroll(el: HTMLElement, options: {
@@ -79,10 +80,19 @@ export function scrollToBottom(el: HTMLElement, options: { behavior?: ScrollBeha
 // https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollHeight#determine_if_an_element_has_been_totally_scrolled
 export function isBottom(el: HTMLElement, asobi = 1) {
 	const container = getScrollContainer(el);
-	if (container) return container.scrollHeight - Math.abs(container.scrollTop) <= container.clientHeight - asobi;
+	return isScrollBottom(container, asobi);
+}
+
+// https://ja.javascript.info/size-and-scroll-window#ref-932
+export function getBodyScrollHeight() {
 	return Math.max(
 		document.body.scrollHeight, document.documentElement.scrollHeight,
 		document.body.offsetHeight, document.documentElement.offsetHeight,
 		document.body.clientHeight, document.documentElement.clientHeight
-	) - window.scrollY <= window.innerHeight - asobi;
+	);
+}
+
+export function isScrollBottom(container?: HTMLElement | null, asobi = 1) {
+	if (container) return container.scrollHeight - Math.abs(container.scrollTop) <= container.clientHeight + asobi;
+	return getBodyScrollHeight() - window.scrollY <= window.innerHeight + asobi;
 }

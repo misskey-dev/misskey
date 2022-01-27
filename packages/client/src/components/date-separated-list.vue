@@ -93,13 +93,19 @@ export default defineComponent({
 		return () => h(
 			defaultStore.state.animation ? TransitionGroup : 'div',
 			defaultStore.state.animation ? {
-					class: 'sqadhkmv' + (props.noGap ? ' noGap' : ''),
+					class: {
+						'sqadhkmv': true,
+						'noGap': props.noGap
+					},
 					name: 'list',
 					tag: 'div',
 					'data-direction': props.direction,
 					'data-reversed': props.reversed ? 'true' : 'false',
 				} : {
-					class: 'sqadhkmv' + (props.noGap ? ' noGap' : ''),
+					class: {
+						'sqadhkmv': true,
+						'noGap': props.noGap
+					},
 				},
 			{ default: renderChildren });
 	}
@@ -117,24 +123,30 @@ export default defineComponent({
 	> *:not(:last-child) {
 		margin-bottom: var(--margin);
 	}
-
-	> .list-move {
+	
+	&:not(.deny-move-transition) > * {
 		transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1);
 	}
 
+	> .list-leave-active,
 	> .list-enter-active {
 		transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1);
 	}
+	> .list-leave-active {
+		position: absolute;
+	}
 
 	&[data-direction="up"] {
-		> .list-enter-from {
+		> .list-enter-from,
+		> .list-leave-to {
 			opacity: 0;
 			transform: translateY(64px);
 		}
 	}
 
 	&[data-direction="down"] {
-		> .list-enter-from {
+		> .list-enter-from,
+		> .list-leave-to {
 			opacity: 0;
 			transform: translateY(-64px);
 		}

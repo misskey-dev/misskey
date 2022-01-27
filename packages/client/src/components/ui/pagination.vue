@@ -15,14 +15,14 @@
 
 	<div v-else ref="rootEl">
 		<div v-if="pagination.reversed" v-show="more" key="_more_" class="cxiknjgy _gap">
-			<MkButton v-if="!moreFetching" v-appear="($store.state.enableInfiniteScroll && !props.disableAutoLoad) ? fetchMore : null" class="button" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary @click="fetchMore">
+			<MkButton v-if="!moreFetching" v-appear="(enableInfiniteScroll && !props.disableAutoLoad) ? fetchMore : null" class="button" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary @click="fetchMore">
 				{{ $ts.loadMore }}
 			</MkButton>
 			<MkLoading v-else class="loading"/>
 		</div>
-		<slot :items="items"></slot>
+		<slot :items="items" :fetching="fetching || moreFetching"></slot>
 		<div v-if="!pagination.reversed" v-show="more" key="_more_" class="cxiknjgy _gap">
-			<MkButton v-if="!moreFetching" v-appear="($store.state.enableInfiniteScroll && !props.disableAutoLoad) ? fetchMore : null" class="button" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary @click="fetchMore">
+			<MkButton v-if="!moreFetching" v-appear="(enableInfiniteScroll && !props.disableAutoLoad) ? fetchMore : null" class="button" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary @click="fetchMore">
 				{{ $ts.loadMore }}
 			</MkButton>
 			<MkLoading v-else class="loading"/>
@@ -31,12 +31,13 @@
 </transition>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
 import { computed, ComputedRef, isRef, markRaw, nextTick, onActivated, onDeactivated, onMounted, Ref, ref, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import * as os from '@/os';
-import { onScrollTop, isTopVisible, getScrollPosition, getScrollContainer, onScrollBottom, scrollToBottom, scroll, isBottom } from '@/scripts/scroll';
+import { onScrollTop, isTopVisible, getBodyScrollHeight, getScrollContainer, onScrollBottom, scrollToBottom, scroll, isBottom } from '@/scripts/scroll';
 import MkButton from '@/components/ui/button.vue';
+import { defaultStore } from '@/store';
 
 const SECOND_FETCH_LIMIT = 30;
 
@@ -58,9 +59,10 @@ export type Paging<E extends keyof misskey.Endpoints = keyof misskey.Endpoints> 
 
 	offsetMode?: boolean;
 
-	pageEl?: Element;
+	pageEl?: HTMLElement;
 };
-
+</script>
+<script lang="ts" setup>
 const props = withDefaults(defineProps<{
 	pagination: Paging;
 	disableAutoLoad?: boolean;
@@ -86,8 +88,19 @@ const backed = ref(false); // 遡り中か否か
 const isBackTop = ref(false);
 const empty = computed(() => items.value.length === 0);
 const error = ref(false);
+const {
+	enableInfiniteScroll
+} = defaultStore.reactiveState;
 
 const contentEl = $computed(() => props.pagination.pageEl || rootEl);
+const scrollableElement = $computed(() => {
+	if (contentEl) {
+		const container = getScrollContainer(contentEl);
+		return container || contentEl;
+	}
+	return null;
+});
+
 
 const init = async (): Promise<void> => {
 	queue.value = [];
@@ -99,19 +112,15 @@ const init = async (): Promise<void> => {
 	}).then(res => {
 		for (let i = 0; i < res.length; i++) {
 			const item = res[i];
-			/*if (props.pagination.reversed) {
-				if (i === res.length - 2) item._shouldInsertAd_ = true;
-			} else {*/
-				if (i === 3) item._shouldInsertAd_ = true;
-			/*}*/
+			if (i === 3) item._shouldInsertAd_ = true;
 		}
 		if (!props.pagination.noPaging && (res.length > (props.pagination.limit || 10))) {
 			res.pop();
 			if (props.pagination.reversed) moreFetching.value = true;
-			items.value = /*props.pagination.reversed ? [...res].reverse() : */res;
+			items.value = res;
 			more.value = true;
 		} else {
-			items.value = /*props.pagination.reversed ? [...res].reverse() : */res;
+			items.value = res;
 			more.value = false;
 		}
 		offset.value = res.length;
@@ -139,28 +148,57 @@ const fetchMore = async (): Promise<void> => {
 		...(props.pagination.offsetMode ? {
 			offset: offset.value,
 		} : {
-			untilId: /*props.pagination.reversed ? items.value[0].id : */items.value[items.value.length - 1].id,
+			untilId: items.value[items.value.length - 1].id,
 		}),
 	}).then(res => {
 		for (let i = 0; i < res.length; i++) {
 			const item = res[i];
-			/*if (props.pagination.reversed) {
-				if (i === res.length - 9) item._shouldInsertAd_ = true;
-			} else {*/
-				if (i === 10) item._shouldInsertAd_ = true;
-			//}
+			if (i === 10) item._shouldInsertAd_ = true;
 		}
-		const 
+
+		const reverseConcat = _res => {
+			const oldHeight = scrollableElement ? scrollableElement.scrollHeight : getBodyScrollHeight();
+			const oldScroll = scrollableElement ? scrollableElement.scrollTop : window.scrollY;
+
+			items.value = items.value.concat(_res);
+
+			return nextTick(() => {
+				if (scrollableElement) {
+					scroll(scrollableElement, { top: oldScroll + (scrollableElement.scrollHeight - oldHeight), behavior: 'instant' });
+				} else {
+					window.scrollY = oldScroll + (getBodyScrollHeight() - oldHeight);
+				}
+
+				return nextTick();
+			});
+		};
+
 		if (res.length > SECOND_FETCH_LIMIT) {
 			res.pop();
-			items.value = items.value.concat(res);
-			more.value = true;
+
+			if (props.pagination.reversed) {
+				reverseConcat(res).then(() => {
+					more.value = true;
+					moreFetching.value = false;
+				});
+			} else {
+				items.value = items.value.concat(res);
+				more.value = true;
+				moreFetching.value = false;
+			}
 		} else {
-			items.value = items.value.concat(res);
-			more.value = false;
+			if (props.pagination.reversed) {
+				reverseConcat(res).then(() => {
+					more.value = false;
+					moreFetching.value = false;
+				});
+			} else {
+				items.value = items.value.concat(res);
+				more.value = false;
+				moreFetching.value = false;
+			}
 		}
 		offset.value += res.length;
-		moreFetching.value = false;
 	}, e => {
 		moreFetching.value = false;
 	});
@@ -195,16 +233,13 @@ const fetchMoreAhead = async (): Promise<void> => {
 };
 
 const prepend = (item: Item, force = false): void => {
-	console.log('prepend', item)
 	// 初回表示時はunshiftだけでOK
 	if (!rootEl) {
 		items.value.unshift(item);
 		return;
 	}
 
-	const el = props.pagination.pageEl || rootEl;
-	const isTop = isBackTop.value || (props.pagination.reversed ? isBottom : isTopVisible)(el);
-	console.log(isTop || force)
+	const isTop = isBackTop.value || (props.pagination.reversed ? isBottom : isTopVisible)(contentEl);
 
 	if (isTop || force) {
 		// Prepend the item
@@ -221,7 +256,7 @@ const prepend = (item: Item, force = false): void => {
 		}
 	} else {
 		queue.value.push(item);
-		(props.pagination.reversed ? onScrollBottom : onScrollTop)(el, () => {
+		(props.pagination.reversed ? onScrollBottom : onScrollTop)(contentEl, () => {
 			for (const item of queue.value) {
 				prepend(item, true);
 			}
@@ -258,16 +293,7 @@ onDeactivated(() => {
 	isBackTop.value = props.pagination.reversed ? window.scrollY >= (rootEl ? rootEl?.scrollHeight - window.innerHeight : 0) : window.scrollY === 0;
 });
 
-function getScrollableElement() {
-	if (el) {
-		const container = getScrollContainer(contentEl);
-		return container || el;
-	}
-	return null;
-}
-
 function toBottom() {
-	const scrollableElement = getScrollableElement();
 	if (scrollableElement) scrollToBottom(scrollableElement);
 }
 

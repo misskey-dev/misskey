@@ -14,8 +14,8 @@
 					</div>
 				</template>
 
-				<template #default="{ items: messages }">
-					<XList v-if="messages.length > 0" v-slot="{ item: message }" class="messages" :items="messages" direction="up" reversed>
+				<template #default="{ items: messages, fetching }">
+					<XList v-if="messages.length > 0" v-slot="{ item: message }" :class="{ messages: true, 'deny-move-transition': fetching }" :items="messages" direction="up" reversed>
 						<XMessage :key="message.id" :message="message" :is-group="group != null"/>
 					</XList>
 				</template>
@@ -30,12 +30,12 @@
 				</I18n>
 				<MkEllipsis/>
 			</div>
-			<transition :name="$store.state.animation ? 'fade' : ''">
-				<div v-show="showIndicator" class="new-message">
-					<button class="_buttonPrimary" @click="onIndicatorClick"><i class="fas fa-arrow-circle-down"></i>{{ i18n.locale.newMessageExists }}</button>
+			<transition :name="animation ? 'fade' : ''">
+				<div class="new-message" v-if="showIndicator">
+					<button class="_buttonPrimary" @click="onIndicatorClick"><i class="fas fa-fw fa-arrow-circle-down"></i>{{ i18n.locale.newMessageExists }}</button>
 				</div>
 			</transition>
-			<XForm v-if="!fetching" ref="form" :user="user" :group="group" class="form"/>
+			<XForm v-if="!fetching" ref="formEl" :user="user" :group="group" class="form"/>
 		</footer>
 	</div>
 </div>
@@ -46,8 +46,7 @@ import { computed, watch, onMounted, nextTick, onBeforeUnmount } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as Acct from 'misskey-js/built/acct';
 import XList from '@/components/date-separated-list.vue';
-import MkPagination from '@/components/ui/pagination.vue';
-import { Paging } from '@/components/ui/pagination.vue';
+import MkPagination, { Paging } from '@/components/ui/pagination.vue';
 import XMessage from './messaging-room.message.vue';
 import XForm from './messaging-room.form.vue';
 import { isBottom, onScrollBottom, scroll } from '@/scripts/scroll';
@@ -57,6 +56,7 @@ import * as sound from '@/scripts/sound';
 import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
 import { $i } from '@/account';
+import { defaultStore } from '@/store';
 
 const props = defineProps<{
 	userAcct?: string;
@@ -64,7 +64,7 @@ const props = defineProps<{
 }>();
 
 let rootEl = $ref<Element>();
-let form = $ref<InstanceType<typeof XForm>>();
+let formEl = $ref<InstanceType<typeof XForm>>();
 let pagingComponent = $ref<InstanceType<typeof MkPagination>>();
 
 let fetching = $ref(true);
@@ -73,7 +73,9 @@ let group: Misskey.entities.UserGroup | null = $ref(null);
 let typers: Misskey.entities.User[] = $ref([]);
 let connection: Misskey.ChannelConnection<Misskey.Channels['messaging']> | null = $ref(null);
 let showIndicator = $ref(false);
-let timer: number | null = $ref(null);
+const {
+	animation
+} = defaultStore.reactiveState;
 
 let pagination: Paging | null = $ref(null);
 
@@ -155,7 +157,7 @@ function onDrop(e: DragEvent): void {
 
 	// ファイルだったら
 	if (e.dataTransfer.files.length == 1) {
-		form.upload(e.dataTransfer.files[0]);
+		formEl.upload(e.dataTransfer.files[0]);
 		return;
 	} else if (e.dataTransfer.files.length > 1) {
 		os.alert({
@@ -169,7 +171,7 @@ function onDrop(e: DragEvent): void {
 	const driveFile = e.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FILE_);
 	if (driveFile != null && driveFile != '') {
 		const file = JSON.parse(driveFile);
-		form.file = file;
+		formEl.file = file;
 	}
 	//#endregion
 }
@@ -234,6 +236,7 @@ function scrollToBottom() {
 }
 
 function onIndicatorClick() {
+	showIndicator = false;
 	scrollToBottom();
 }
 
@@ -243,11 +246,6 @@ function notifyNewMessage() {
 	onScrollBottom(rootEl, () => {
 		showIndicator = false;
 	});
-
-	if (timer) window.clearTimeout(timer);
-	timer = window.setTimeout(() => {
-		showIndicator = false;
-	}, 4000);
 }
 
 function onVisibilitychange() {
@@ -323,10 +321,15 @@ defineExpose({
 
 	> footer {
 		width: 100%;
+		position: sticky;
+		z-index: 2;
+		bottom: 8px;
+
+		@media (max-width: 500px) {
+			bottom: 100px;
+		}
 
 		> .new-message {
-			position: absolute;
-			top: -48px;
 			width: 100%;
 			padding: 8px 0;
 			text-align: center;
@@ -334,17 +337,14 @@ defineExpose({
 			> button {
 				display: inline-block;
 				margin: 0;
-				padding: 0 12px 0 30px;
+				padding: 0 12px;
 				line-height: 32px;
 				font-size: 12px;
 				border-radius: 16px;
 
 				> i {
-					position: absolute;
-					top: 0;
-					left: 10px;
-					line-height: 32px;
-					font-size: 16px;
+					display: inline-block;
+					margin-right: 8px;
 				}
 			}
 		}

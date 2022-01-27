@@ -247,8 +247,8 @@ export default defineComponent({
 
 	> .file {
 		padding: 8px;
-		color: #444;
-		background: #eee;
+		color: var(--fg);
+		background: transparent;
 		cursor: pointer;
 	}
 
