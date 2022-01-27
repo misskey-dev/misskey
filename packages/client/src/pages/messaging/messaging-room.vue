@@ -31,7 +31,7 @@
 				<MkEllipsis/>
 			</div>
 			<transition :name="animation ? 'fade' : ''">
-				<div class="new-message" v-if="showIndicator">
+				<div class="new-message" v-show="showIndicator">
 					<button class="_buttonPrimary" @click="onIndicatorClick"><i class="fas fa-fw fa-arrow-circle-down"></i>{{ i18n.locale.newMessageExists }}</button>
 				</div>
 			</transition>
@@ -324,14 +324,15 @@ defineExpose({
 		position: sticky;
 		z-index: 2;
 		bottom: 8px;
+		padding-top: 8px;
 
 		@media (max-width: 500px) {
-			bottom: 100px;
+			bottom: 92px;
 		}
 
 		> .new-message {
 			width: 100%;
-			padding: 8px 0;
+			padding-bottom: 8px;
 			text-align: center;
 
 			> button {

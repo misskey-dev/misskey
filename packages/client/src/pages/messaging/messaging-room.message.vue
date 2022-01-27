@@ -66,6 +66,7 @@ function del() {
 	position: relative;
 	background-color: transparent;
 	display: flex;
+	width: 100%;
 
 	> .avatar {
 		position: sticky;
@@ -249,6 +250,7 @@ function del() {
 	&.isMe {
 		flex-direction: row-reverse;
 		padding-right: var(--margin);
+		right: var(--margin); // 削除時にposition: absoluteになったときに使う
 
 		> .content {
 			padding-right: 16px;

@@ -1,7 +1,7 @@
 type ScrollBehavior = 'auto' | 'smooth' | 'instant';
 
 export function getScrollContainer(el: HTMLElement | null): HTMLElement | null {
-	if (el == null) return null;
+	if (el == null || el.tagName === 'HTML') return null;
 	if (el.scrollHeight > el.clientHeight) {
 		return el;
 	} else {
@@ -77,7 +77,6 @@ export function scrollToBottom(el: HTMLElement, options: { behavior?: ScrollBeha
 	scroll(el, { top: el.scrollHeight, ...options }); // TODO: ちゃんと計算する
 }
 
-// https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollHeight#determine_if_an_element_has_been_totally_scrolled
 export function isBottom(el: HTMLElement, asobi = 1) {
 	const container = getScrollContainer(el);
 	return isScrollBottom(container, asobi);
@@ -92,6 +91,7 @@ export function getBodyScrollHeight() {
 	);
 }
 
+// https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollHeight#determine_if_an_element_has_been_totally_scrolled
 export function isScrollBottom(container?: HTMLElement | null, asobi = 1) {
 	if (container) return container.scrollHeight - Math.abs(container.scrollTop) <= container.clientHeight + asobi;
 	return getBodyScrollHeight() - window.scrollY <= window.innerHeight + asobi;

@@ -90,6 +90,13 @@ export default defineComponent({
 			}
 		});
 
+		function onBeforeLeave(el: HTMLElement) {
+			el.style.top = `${el.offsetTop}px`;
+		}
+		function onLeaveCanceled(el: HTMLElement) {
+			el.style.top = '';
+		}
+
 		return () => h(
 			defaultStore.state.animation ? TransitionGroup : 'div',
 			defaultStore.state.animation ? {
@@ -101,6 +108,8 @@ export default defineComponent({
 					tag: 'div',
 					'data-direction': props.direction,
 					'data-reversed': props.reversed ? 'true' : 'false',
+					onBeforeLeave,
+					onLeaveCanceled,
 				} : {
 					class: {
 						'sqadhkmv': true,
@@ -123,17 +132,25 @@ export default defineComponent({
 	> *:not(:last-child) {
 		margin-bottom: var(--margin);
 	}
-	
-	&:not(.deny-move-transition) > * {
+
+	> .list-move {
 		transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+	}
+
+	&.deny-move-transition > .list-move {
+		transition: none !important;
 	}
 
 	> .list-leave-active,
 	> .list-enter-active {
 		transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1);
 	}
+
+	> .list-leave-from,
+	> .list-leave-to,
 	> .list-leave-active {
-		position: absolute;
+		transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+		position: absolute !important;
 	}
 
 	&[data-direction="up"] {
