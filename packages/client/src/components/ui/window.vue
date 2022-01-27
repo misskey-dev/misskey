@@ -62,10 +62,6 @@ function dragClear(fn) {
 }
 
 export default defineComponent({
-	provide: {
-		inWindow: true
-	},
-
 	props: {
 		padding: {
 			type: Boolean,

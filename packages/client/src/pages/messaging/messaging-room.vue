@@ -2,6 +2,7 @@
 <div class="_section"
 	@dragover.prevent.stop="onDragover"
 	@drop.prevent.stop="onDrop"
+	ref="rootEl"
 >
 	<div class="_content mk-messaging-room">
 		<div class="body">
@@ -35,9 +36,10 @@
 </div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, markRaw } from 'vue';
-import XList from '@/components/date-separated-list.vue';
+<script lang="ts" setup>
+import { computed, watch, onMounted, nextTick, onBeforeUnmount } from 'vue';
+import * as Misskey from 'misskey-js';
+import MkPagination from '@/components/ui/pagination.vue';
 import XMessage from './messaging-room.message.vue';
 import XForm from './messaging-room.form.vue';
 import * as Acct from 'misskey-js/built/acct';
@@ -47,300 +49,246 @@ import { stream } from '@/stream';
 import { popout } from '@/scripts/popout';
 import * as sound from '@/scripts/sound';
 import * as symbols from '@/symbols';
+import { i18n } from '@/i18n';
+import { defaultStore } from '@/store';
+import { $i } from '@/account';
+import { router } from '@/router';
 
-const Component = defineComponent({
-	components: {
-		XMessage,
-		XForm,
-		XList,
-	},
+const props = defineProps<{
+	userAcct?: string;
+	groupId?: string;
+}>();
 
-	inject: ['inWindow'],
+let fetching = $ref(true);
+let user: Misskey.entities.UserDetailed | null = $ref(null);
+let group: Misskey.entities.UserGroup | null = $ref(null);
+let fetchingMoreMessages = $ref(false);
+let messages = $ref<Misskey.entities.MessagingMessage[]>([]);
+let existMoreMessages = $ref(false);
+let connection: Misskey.ChannelConnection<Misskey.Channels['messaging']> | null = $ref(null);
+let showIndicator = $ref(false);
+let timer: number | null = $ref(null);
+const ilObserver = new IntersectionObserver(
+	(entries) => entries.some((entry) => entry.isIntersecting)
+		&& !fetching
+		&& !fetchingMoreMessages
+		&& existMoreMessages
+		&& fetchMoreMessages()
+);
 
-	props: {
-		userAcct: {
-			type: String,
-			required: false,
-		},
-		groupId: {
-			type: String,
-			required: false,
-		},
-	},
+let rootEl = $ref<Element>();
+let form = $ref<InstanceType<typeof XForm>>();
+let loadMore = $ref<HTMLDivElement>();
 
-	data() {
-		return {
-			[symbols.PAGE_INFO]: computed(() => !this.fetching ? this.user ? {
-				userName: this.user,
-				avatar: this.user,
-				action: {
-					icon: 'fas fa-ellipsis-h',
-					handler: this.menu,
-				},
-			} : {
-				title: this.group.name,
-				icon: 'fas fa-users',
-				action: {
-					icon: 'fas fa-ellipsis-h',
-					handler: this.menu,
-				},
-			} : null),
-			fetching: true,
-			user: null,
-			group: null,
-			fetchingMoreMessages: false,
-			messages: [],
-			existMoreMessages: false,
-			connection: null,
-			showIndicator: false,
-			timer: null,
-			typers: [],
-			ilObserver: new IntersectionObserver(
-				(entries) => entries.some((entry) => entry.isIntersecting)
-					&& !this.fetching
-					&& !this.fetchingMoreMessages
-					&& this.existMoreMessages
-					&& this.fetchMoreMessages()
-			),
-		};
-	},
+watch([() => props.userAcct, () => props.groupId], () => {
+	if (connection) connection.dispose();
+	fetch();
+});
 
-	computed: {
-		form(): any {
-			return this.$refs.form;
-		}
-	},
+async function fetch() {
+	fetching = true;
 
-	watch: {
-		userAcct: 'fetch',
-		groupId: 'fetch',
-	},
+	connection = stream.useChannel('messaging', {
+		otherparty: user ? user.id : undefined,
+		group: group ? group.id : undefined,
+	});
 
-	mounted() {
-		this.fetch();
-		if (this.$store.state.enableInfiniteScroll) {
-			this.$nextTick(() => this.ilObserver.observe(this.$refs.loadMore as Element));
-		}
-	},
+	connection?.on('message', onMessage);
+	connection?.on('read', onRead);
+	connection?.on('deleted', onDeleted);
+	connection?.on('typers', typers => {
+		typers = typers.filter(u => u.id !== $i.id);
+	});
 
-	beforeUnmount() {
-		this.connection.dispose();
+	document.addEventListener('visibilitychange', onVisibilitychange);
 
-		document.removeEventListener('visibilitychange', this.onVisibilitychange);
+	fetchMessages().then(() => {
+		scrollToBottom();
 
-		this.ilObserver.disconnect();
-	},
+		// もっと見るの交差検知を発火させないためにfetchは
+		// スクロールが終わるまでfalseにしておく
+		// scrollendのようなイベントはないのでsetTimeoutで
+		window.setTimeout(() => fetching = false, 300);
+	});
+}
 
-	methods: {
-		async fetch() {
-			this.fetching = true;
-			if (this.userAcct) {
-				const user = await os.api('users/show', Acct.parse(this.userAcct));
-				this.user = user;
+function onDragover(e: DragEvent) {
+	if (!e.dataTransfer) return;
+
+	const isFile = e.dataTransfer.items[0].kind == 'file';
+	const isDriveFile = e.dataTransfer.types[0] == _DATA_TRANSFER_DRIVE_FILE_;
+
+	if (isFile || isDriveFile) {
+		e.dataTransfer.dropEffect = e.dataTransfer.effectAllowed == 'all' ? 'copy' : 'move';
+	} else {
+		e.dataTransfer.dropEffect = 'none';
+	}
+}
+
+function onDrop(e: DragEvent): void {
+	if (!e.dataTransfer) return;
+
+	// ファイルだったら
+	if (e.dataTransfer.files.length == 1) {
+		form.upload(e.dataTransfer.files[0]);
+		return;
+	} else if (e.dataTransfer.files.length > 1) {
+		os.alert({
+			type: 'error',
+			text: i18n.locale.onlyOneFileCanBeAttached
+		});
+		return;
+	}
+
+	//#region ドライブのファイル
+	const driveFile = e.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FILE_);
+	if (driveFile != null && driveFile != '') {
+		const file = JSON.parse(driveFile);
+		form.file = file;
+	}
+	//#endregion
+}
+
+function fetchMessages() {
+	return new Promise<void>((resolve, reject) => {
+		const max = existMoreMessages ? 20 : 10;
+
+		os.api('messaging/messages', {
+			userId: user ? user.id : undefined,
+			groupId: group ? group.id : undefined,
+			limit: max + 1,
+			untilId: existMoreMessages ? messages[0].id : undefined
+		}).then(messages => {
+			if (messages.length == max + 1) {
+				existMoreMessages = true;
+				messages.pop();
 			} else {
-				const group = await os.api('users/groups/show', { groupId: this.groupId });
-				this.group = group;
+				existMoreMessages = false;
 			}
 
-			this.connection = markRaw(stream.useChannel('messaging', {
-				otherparty: this.user ? this.user.id : undefined,
-				group: this.group ? this.group.id : undefined,
-			}));
+			messages.unshift.apply(messages, messages.reverse());
+			resolve();
+		});
+	});
+}
 
-			this.connection.on('message', this.onMessage);
-			this.connection.on('read', this.onRead);
-			this.connection.on('deleted', this.onDeleted);
-			this.connection.on('typers', typers => {
-				this.typers = typers.filter(u => u.id !== this.$i.id);
-			});
+function fetchMoreMessages() {
+	fetchingMoreMessages = true;
+	fetchMessages().then(() => {
+		fetchingMoreMessages = false;
+	});
+}
 
-			document.addEventListener('visibilitychange', this.onVisibilitychange);
+function onMessage(message) {
+	sound.play('chat');
 
-			this.fetchMessages().then(() => {
-				this.scrollToBottom();
+	const _isBottom = isBottom(rootEl, 64);
 
-				// もっと見るの交差検知を発火させないためにfetchは
-				// スクロールが終わるまでfalseにしておく
-				// scrollendのようなイベントはないのでsetTimeoutで
-				window.setTimeout(() => this.fetching = false, 300);
-			});
-		},
+	messages.push(message);
+	if (message.userId != $i.id && !document.hidden) {
+		connection?.send('read', {
+			id: message.id
+		});
+	}
 
-		onDragover(e) {
-			const isFile = e.dataTransfer.items[0].kind == 'file';
-			const isDriveFile = e.dataTransfer.types[0] == _DATA_TRANSFER_DRIVE_FILE_;
+	if (_isBottom) {
+		// Scroll to bottom
+		nextTick(() => {
+			scrollToBottom();
+		});
+	} else if (message.userId != $i.id) {
+		// Notify
+		notifyNewMessage();
+	}
+}
 
-			if (isFile || isDriveFile) {
-				e.dataTransfer.dropEffect = e.dataTransfer.effectAllowed == 'all' ? 'copy' : 'move';
-			} else {
-				e.dataTransfer.dropEffect = 'none';
+function onRead(x) {
+	if (user) {
+		if (!Array.isArray(x)) x = [x];
+		for (const id of x) {
+			if (messages.some(x => x.id == id)) {
+				const exist = messages.map(x => x.id).indexOf(id);
+				messages[exist] = {
+					...messages[exist],
+					isRead: true,
+				};
 			}
-		},
-
-		onDrop(e): void {
-			// ファイルだったら
-			if (e.dataTransfer.files.length == 1) {
-				this.form.upload(e.dataTransfer.files[0]);
-				return;
-			} else if (e.dataTransfer.files.length > 1) {
-				os.alert({
-					type: 'error',
-					text: this.$ts.onlyOneFileCanBeAttached
-				});
-				return;
-			}
-
-			//#region ドライブのファイル
-			const driveFile = e.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FILE_);
-			if (driveFile != null && driveFile != '') {
-				const file = JSON.parse(driveFile);
-				this.form.file = file;
-			}
-			//#endregion
-		},
-
-		fetchMessages() {
-			return new Promise((resolve, reject) => {
-				const max = this.existMoreMessages ? 20 : 10;
-
-				os.api('messaging/messages', {
-					userId: this.user ? this.user.id : undefined,
-					groupId: this.group ? this.group.id : undefined,
-					limit: max + 1,
-					untilId: this.existMoreMessages ? this.messages[0].id : undefined
-				}).then(messages => {
-					if (messages.length == max + 1) {
-						this.existMoreMessages = true;
-						messages.pop();
-					} else {
-						this.existMoreMessages = false;
-					}
-
-					this.messages.unshift.apply(this.messages, messages.reverse());
-					resolve();
-				});
-			});
-		},
-
-		fetchMoreMessages() {
-			this.fetchingMoreMessages = true;
-			this.fetchMessages().then(() => {
-				this.fetchingMoreMessages = false;
-			});
-		},
-
-		onMessage(message) {
-			sound.play('chat');
-
-			const _isBottom = isBottom(this.$el, 64);
-
-			this.messages.push(message);
-			if (message.userId != this.$i.id && !document.hidden) {
-				this.connection.send('read', {
-					id: message.id
-				});
-			}
-
-			if (_isBottom) {
-				// Scroll to bottom
-				this.$nextTick(() => {
-					this.scrollToBottom();
-				});
-			} else if (message.userId != this.$i.id) {
-				// Notify
-				this.notifyNewMessage();
-			}
-		},
-
-		onRead(x) {
-			if (this.user) {
-				if (!Array.isArray(x)) x = [x];
-				for (const id of x) {
-					if (this.messages.some(x => x.id == id)) {
-						const exist = this.messages.map(x => x.id).indexOf(id);
-						this.messages[exist] = {
-							...this.messages[exist],
-							isRead: true,
-						};
-					}
-				}
-			} else if (this.group) {
-				for (const id of x.ids) {
-					if (this.messages.some(x => x.id == id)) {
-						const exist = this.messages.map(x => x.id).indexOf(id);
-						this.messages[exist] = {
-							...this.messages[exist],
-							reads: [...this.messages[exist].reads, x.userId]
-						};
-					}
-				}
-			}
-		},
-
-		onDeleted(id) {
-			const msg = this.messages.find(m => m.id === id);
-			if (msg) {
-				this.messages = this.messages.filter(m => m.id !== msg.id);
-			}
-		},
-
-		scrollToBottom() {
-			scroll(this.$el, { top: this.$el.offsetHeight });
-		},
-
-		onIndicatorClick() {
-			this.showIndicator = false;
-			this.scrollToBottom();
-		},
-
-		notifyNewMessage() {
-			this.showIndicator = true;
-
-			onScrollBottom(this.$el, () => {
-				this.showIndicator = false;
-			});
-
-			if (this.timer) window.clearTimeout(this.timer);
-
-			this.timer = window.setTimeout(() => {
-				this.showIndicator = false;
-			}, 4000);
-		},
-
-		onVisibilitychange() {
-			if (document.hidden) return;
-			for (const message of this.messages) {
-				if (message.userId !== this.$i.id && !message.isRead) {
-					this.connection.send('read', {
-						id: message.id
-					});
-				}
-			}
-		},
-
-		menu(ev) {
-			const path = this.groupId ? `/my/messaging/group/${this.groupId}` : `/my/messaging/${this.userAcct}`;
-
-			os.popupMenu([this.inWindow ? undefined : {
-				text: this.$ts.openInWindow,
-				icon: 'fas fa-window-maximize',
-				action: () => {
-					os.pageWindow(path);
-					this.$router.back();
-				},
-			}, this.inWindow ? undefined : {
-				text: this.$ts.popout,
-				icon: 'fas fa-external-link-alt',
-				action: () => {
-					popout(path);
-					this.$router.back();
-				},
-			}], ev.currentTarget || ev.target);
 		}
+	} else if (group) {
+		for (const id of x.ids) {
+			if (messages.some(x => x.id == id)) {
+				const exist = messages.map(x => x.id).indexOf(id);
+				messages[exist] = {
+					...messages[exist],
+					reads: [...messages[exist].reads, x.userId]
+				};
+			}
+		}
+	}
+}
+
+function onDeleted(id) {
+	const msg = messages.find(m => m.id === id);
+	if (msg) {
+		messages = messages.filter(m => m.id !== msg.id);
+	}
+}
+
+function scrollToBottom() {
+	scroll(rootEl, { top: rootEl.offsetHeight });
+}
+
+function onIndicatorClick() {
+	showIndicator = false;
+	scrollToBottom();
+}
+
+function notifyNewMessage() {
+	showIndicator = true;
+
+	onScrollBottom(rootEl, () => {
+		showIndicator = false;
+	});
+
+	if (timer) window.clearTimeout(timer);
+	timer = window.setTimeout(() => {
+		showIndicator = false;
+	}, 4000);
+}
+
+function onVisibilitychange() {
+	if (document.hidden) return;
+	for (const message of messages) {
+		if (message.userId !== $i.id && !message.isRead) {
+			connection?.send('read', {
+				id: message.id
+			});
+		}
+	}
+}
+
+onMounted(() => {
+	fetch();
+	if (defaultStore.state.enableInfiniteScroll) {
+		nextTick(() => ilObserver.observe(loadMore));
 	}
 });
 
-export default Component;
+onBeforeUnmount(() => {
+	connection?.dispose();
+	document.removeEventListener('visibilitychange', onVisibilitychange);
+	ilObserver.disconnect();
+});
+
+defineExpose({
+	[symbols.PAGE_INFO]: computed(() => !fetching ? user ? {
+			userName: user,
+			avatar: user,
+		} : {
+			title: group?.name,
+			icon: 'fas fa-users',
+		} : null),
+});
 </script>
 
 <style lang="scss" scoped>
