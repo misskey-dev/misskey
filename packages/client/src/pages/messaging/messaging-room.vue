@@ -6,12 +6,15 @@
 >
 	<div class="_content mk-messaging-room">
 		<div class="body">
-			<MkPagination v-if="pagination" ref="pagingComponent" :pagination="pagination">
+			<MkPagination ref="pagingComponent" :key="userAcct || groupId" v-if="pagination" :pagination="pagination">
 				<template #empty>
-					<i class="fas fa-info-circle"></i>{{ $ts.noMessagesYet }}</p>
+					<div class="_fullinfo">
+						<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
+						<div>{{ i18n.locale.noMessagesYet }}</div>
+					</div>
 				</template>
 
-				<template #defalut="{ items: messages }">
+				<template #default="{ items: messages }">
 					<XList v-if="messages.length > 0" v-slot="{ item: message }" class="messages" :items="messages" direction="up" reversed>
 						<XMessage :key="message.id" :message="message" :is-group="group != null"/>
 					</XList>
@@ -20,7 +23,7 @@
 		</div>
 		<footer>
 			<div v-if="typers.length > 0" class="typers">
-				<I18n :src="$ts.typingUsers" text-tag="span" class="users">
+				<I18n :src="i18n.locale.typingUsers" text-tag="span" class="users">
 					<template #users>
 						<b v-for="user in typers" :key="user.id" class="user">{{ user.username }}</b>
 					</template>
@@ -29,7 +32,7 @@
 			</div>
 			<transition :name="$store.state.animation ? 'fade' : ''">
 				<div v-show="showIndicator" class="new-message">
-					<button class="_buttonPrimary" @click="onIndicatorClick"><i class="fas fa-arrow-circle-down"></i>{{ $ts.newMessageExists }}</button>
+					<button class="_buttonPrimary" @click="onIndicatorClick"><i class="fas fa-arrow-circle-down"></i>{{ i18n.locale.newMessageExists }}</button>
 				</div>
 			</transition>
 			<XForm v-if="!fetching" ref="form" :user="user" :group="group" class="form"/>
@@ -41,6 +44,7 @@
 <script lang="ts" setup>
 import { computed, watch, onMounted, nextTick, onBeforeUnmount } from 'vue';
 import * as Misskey from 'misskey-js';
+import * as Acct from 'misskey-js/built/acct';
 import XList from '@/components/date-separated-list.vue';
 import MkPagination from '@/components/ui/pagination.vue';
 import { Paging } from '@/components/ui/pagination.vue';
@@ -49,11 +53,9 @@ import XForm from './messaging-room.form.vue';
 import { isBottom, onScrollBottom, scroll } from '@/scripts/scroll';
 import * as os from '@/os';
 import { stream } from '@/stream';
-import { popout } from '@/scripts/popout';
 import * as sound from '@/scripts/sound';
 import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
-import { defaultStore } from '@/store';
 import { $i } from '@/account';
 
 const props = defineProps<{
@@ -63,34 +65,17 @@ const props = defineProps<{
 
 let rootEl = $ref<Element>();
 let form = $ref<InstanceType<typeof XForm>>();
-let loadMore = $ref<HTMLDivElement>();
 let pagingComponent = $ref<InstanceType<typeof MkPagination>>();
 
 let fetching = $ref(true);
 let user: Misskey.entities.UserDetailed | null = $ref(null);
 let group: Misskey.entities.UserGroup | null = $ref(null);
+let typers: Misskey.entities.User[] = $ref([]);
 let connection: Misskey.ChannelConnection<Misskey.Channels['messaging']> | null = $ref(null);
 let showIndicator = $ref(false);
 let timer: number | null = $ref(null);
 
-let pagination: Paging = $computed(() => {
-	return {
-		endpoint: 'messaging/messages',
-		limit: pagingComponent?.more ? 20 : 10,
-		params: {
-			userId: user ? user.id : undefined,
-			groupId: group ? group.id : undefined,
-		},
-		reversed: true,
-	};
-});
-
-const ilObserver = new IntersectionObserver(
-	(entries) => entries.some((entry) => entry.isIntersecting)
-		&& !fetching
-		&& pagingComponent?.more
-		&& fetchMoreMessages()
-);
+let pagination: Paging | null = $ref(null);
 
 watch([() => props.userAcct, () => props.groupId], () => {
 	if (connection) connection.dispose();
@@ -100,27 +85,55 @@ watch([() => props.userAcct, () => props.groupId], () => {
 async function fetch() {
 	fetching = true;
 
-	connection = stream.useChannel('messaging', {
-		otherparty: user ? user.id : undefined,
-		group: group ? group.id : undefined,
-	});
+	if (props.userAcct) {
+		user = await os.api('users/show', Acct.parse(props.userAcct));
+		group = null;
+		
+		pagination = {
+			endpoint: 'messaging/messages',
+			params: {
+				userId: user.id,
+			},
+			reversed: true,
+			pageEl: $$(rootEl),
+		};
+		connection = stream.useChannel('messaging', {
+			otherparty: user.id,
+		});
+	} else {
+		user = null;
+		group = await os.api('users/groups/show', { groupId: props.groupId });
 
-	connection?.on('message', onMessage);
-	connection?.on('read', onRead);
-	connection?.on('deleted', onDeleted);
-	connection?.on('typers', typers => {
+		pagination = {
+			endpoint: 'messaging/messages',
+			params: {
+				groupId: group.id,
+			},
+			reversed: true,
+			pageEl: $$(rootEl),
+		};
+		connection = stream.useChannel('messaging', {
+			group: group.id,
+		});
+	}
+
+
+	connection.on('message', onMessage);
+	connection.on('read', onRead);
+	connection.on('deleted', onDeleted);
+	connection.on('typers', typers => {
 		typers = typers.filter(u => u.id !== $i.id);
 	});
 
 	document.addEventListener('visibilitychange', onVisibilitychange);
 
-	pagingComponent.fetchMoreAhead().then(() => {
-		scrollToBottom();
-
-		// もっと見るの交差検知を発火させないためにfetchは
-		// スクロールが終わるまでfalseにしておく
-		// scrollendのようなイベントはないのでsetTimeoutで
-		window.setTimeout(() => fetching = false, 300);
+	nextTick(() => {
+		pagingComponent.inited.then(() => {
+			scrollToBottom();
+		});
+		window.setTimeout(() => {
+			fetching = false
+		}, 300);
 	});
 }
 
@@ -161,19 +174,12 @@ function onDrop(e: DragEvent): void {
 	//#endregion
 }
 
-function fetchMoreMessages() {
-	fetching = true;
-	pagingComponent.fetchMoreAhead().then(() => {
-		fetching = false;
-	});
-}
-
 function onMessage(message) {
 	sound.play('chat');
 
 	const _isBottom = isBottom(rootEl, 64);
 
-	pagingComponent.append(message);
+	pagingComponent.prepend(message);
 	if (message.userId != $i.id && !document.hidden) {
 		connection?.send('read', {
 			id: message.id
@@ -219,12 +225,12 @@ function onRead(x) {
 function onDeleted(id) {
 	const msg = pagingComponent.items.find(m => m.id === id);
 	if (msg) {
-		pagingComponent.prepend(msg);
+		pagingComponent.items = pagingComponent.items.filter(m => m.id !== msg.id);
 	}
 }
 
 function scrollToBottom() {
-	scroll(rootEl, { top: rootEl.offsetHeight });
+	scroll(rootEl, { top: rootEl.scrollHeight || 999999, behavior: "smooth" });
 }
 
 function onIndicatorClick() {
@@ -257,15 +263,11 @@ function onVisibilitychange() {
 
 onMounted(() => {
 	fetch();
-	if (defaultStore.state.enableInfiniteScroll) {
-		nextTick(() => ilObserver.observe(loadMore));
-	}
 });
 
 onBeforeUnmount(() => {
 	connection?.dispose();
 	document.removeEventListener('visibilitychange', onVisibilitychange);
-	ilObserver.disconnect();
 });
 
 defineExpose({
@@ -281,35 +283,10 @@ defineExpose({
 
 <style lang="scss" scoped>
 .mk-messaging-room {
+	position: relative;
+
 	> .body {
-		> .empty {
-			width: 100%;
-			margin: 0;
-			padding: 16px 8px 8px 8px;
-			text-align: center;
-			font-size: 0.8em;
-			opacity: 0.5;
-
-			i {
-				margin-right: 4px;
-			}
-		}
-
-		> .no-history {
-			display: block;
-			margin: 0;
-			padding: 16px;
-			text-align: center;
-			font-size: 0.8em;
-			color: var(--messagingRoomInfo);
-			opacity: 0.5;
-
-			i {
-				margin-right: 4px;
-			}
-		}
-
-		> .more {
+		.more {
 			display: block;
 			margin: 16px auto;
 			padding: 0 12px;
@@ -335,7 +312,9 @@ defineExpose({
 			}
 		}
 
-		> .messages {
+		.messages {
+			padding-top: 8px;
+
 			> ::v-deep(*) {
 				margin-bottom: 16px;
 			}
@@ -344,7 +323,6 @@ defineExpose({
 
 	> footer {
 		width: 100%;
-		position: relative;
 
 		> .new-message {
 			position: absolute;

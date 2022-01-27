@@ -1,28 +1,27 @@
 type ScrollBehavior = 'auto' | 'smooth' | 'instant';
 
-export function getScrollContainer(el: Element | null): Element | null {
-	if (el == null || el.tagName === 'BODY') return null;
-	const overflow = window.getComputedStyle(el).getPropertyValue('overflow');
-	if (overflow.endsWith('auto')) { // xとyを個別に指定している場合、hidden auto みたいな値になる
+export function getScrollContainer(el: HTMLElement | null): HTMLElement | null {
+	if (el == null) return null;
+	if (el.scrollHeight > el.clientHeight) {
 		return el;
 	} else {
 		return getScrollContainer(el.parentElement);
 	}
 }
 
-export function getScrollPosition(el: Element | null): number {
+export function getScrollPosition(el: HTMLElement | null): number {
 	const container = getScrollContainer(el);
 	return container == null ? window.scrollY : container.scrollTop;
 }
 
-export function isTopVisible(el: Element | null): boolean {
+export function isTopVisible(el: HTMLElement | null): boolean {
 	const scrollTop = getScrollPosition(el);
 	const topPosition = el.offsetTop; // TODO: container内でのelの相対位置を取得できればより正確になる
 
 	return scrollTop <= topPosition;
 }
 
-export function onScrollTop(el: Element, cb) {
+export function onScrollTop(el: HTMLElement, cb) {
 	const container = getScrollContainer(el) || window;
 	const onScroll = ev => {
 		if (!document.body.contains(el)) return;
@@ -34,12 +33,11 @@ export function onScrollTop(el: Element, cb) {
 	container.addEventListener('scroll', onScroll, { passive: true });
 }
 
-export function onScrollBottom(el: Element, cb) {
+export function onScrollBottom(el: HTMLElement, cb) {
 	const container = getScrollContainer(el) || window;
 	const onScroll = ev => {
 		if (!document.body.contains(el)) return;
-		const pos = getScrollPosition(el);
-		if (pos + el.clientHeight > el.scrollHeight - 1) {
+		if (isBottom(el)) {
 			cb();
 			container.removeEventListener('scroll', onScroll);
 		}
@@ -47,7 +45,7 @@ export function onScrollBottom(el: Element, cb) {
 	container.addEventListener('scroll', onScroll, { passive: true });
 }
 
-export function scroll(el: Element, options: {
+export function scroll(el: HTMLElement, options: {
 	top?: number;
 	left?: number;
 	behavior?: ScrollBehavior;
@@ -60,21 +58,31 @@ export function scroll(el: Element, options: {
 	}
 }
 
-export function scrollToTop(el: Element, options: { behavior?: ScrollBehavior; } = {}) {
+/**
+ * Scroll to Top
+ * @param el Scroll container element
+ * @param options Scroll options
+ */
+export function scrollToTop(el: HTMLElement, options: { behavior?: ScrollBehavior; } = {}) {
 	scroll(el, { top: 0, ...options });
 }
 
-export function scrollToBottom(el: Element, options: { behavior?: ScrollBehavior; } = {}) {
-	scroll(el, { top: 99999, ...options }); // TODO: ちゃんと計算する
+/**
+ * Scroll to Bottom
+ * @param el Scroll container element
+ * @param options Scroll options
+ */
+export function scrollToBottom(el: HTMLElement, options: { behavior?: ScrollBehavior; } = {}) {
+	scroll(el, { top: el.scrollHeight, ...options }); // TODO: ちゃんと計算する
 }
 
-export function isBottom(el: Element, asobi = 0) {
+// https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollHeight#determine_if_an_element_has_been_totally_scrolled
+export function isBottom(el: HTMLElement, asobi = 1) {
 	const container = getScrollContainer(el);
-	const current = container
-		? el.scrollTop + el.offsetHeight
-		: window.scrollY + window.innerHeight;
-	const max = container
-		? el.scrollHeight
-		: document.body.offsetHeight;
-	return current >= (max - asobi);
+	if (container) return container.scrollHeight - Math.abs(container.scrollTop) <= container.clientHeight - asobi;
+	return Math.max(
+		document.body.scrollHeight, document.documentElement.scrollHeight,
+		document.body.offsetHeight, document.documentElement.offsetHeight,
+		document.body.clientHeight, document.documentElement.clientHeight
+	) - window.scrollY <= window.innerHeight - asobi;
 }

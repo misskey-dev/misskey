@@ -71,7 +71,7 @@ export class Storage<T extends StateDef> {
 					}
 					localStorage.setItem(this.keyForLocalStorage + '::cache::' + $i.id, JSON.stringify(cache));
 				});
-			}, 1);
+			}, 10);
 			// streamingのuser storage updateイベントを監視して更新
 			connection?.on('registryUpdated', ({ scope, key, value }: { scope: string[], key: keyof T, value: T[typeof key]['default'] }) => {
 				if (scope.length !== 2 || scope[0] !== 'client' || scope[1] !== this.key || this.state[key] === value) return;

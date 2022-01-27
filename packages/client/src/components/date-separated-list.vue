@@ -108,6 +108,8 @@ export default defineComponent({
 
 <style lang="scss">
 .sqadhkmv {
+	display: flex;
+
 	> *:empty {
 		display: none;
 	}
@@ -136,6 +138,14 @@ export default defineComponent({
 			opacity: 0;
 			transform: translateY(-64px);
 		}
+	}
+
+	&[data-reversed="true"] {
+		flex-direction: column-reverse;
+	}
+
+	&[data-reversed="false"] {
+		flex-direction: column;
 	}
 
 	> .separator {
