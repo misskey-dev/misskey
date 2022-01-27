@@ -163,21 +163,10 @@ export const menuDef = reactive({
 		icon: 'fas fa-laugh',
 		to: '/emojis',
 	},
-	games: {
-		title: 'games',
-		icon: 'fas fa-gamepad',
-		to: '/games/reversi',
-	},
 	scratchpad: {
 		title: 'scratchpad',
 		icon: 'fas fa-terminal',
 		to: '/scratchpad',
-	},
-	rooms: {
-		title: 'rooms',
-		icon: 'fas fa-door-closed',
-		show: computed(() => $i != null),
-		to: computed(() => `/@${$i.username}/room`),
 	},
 	ui: {
 		title: 'switchUi',
@@ -202,13 +191,6 @@ export const menuDef = reactive({
 				active: ui === 'classic',
 				action: () => {
 					localStorage.setItem('ui', 'classic');
-					unisonReload();
-				}
-			}, {
-				text: 'Chat (β)',
-				active: ui === 'chat',
-				action: () => {
-					localStorage.setItem('ui', 'chat');
 					unisonReload();
 				}
 			}, /*{

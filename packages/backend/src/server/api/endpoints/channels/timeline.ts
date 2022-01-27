@@ -9,7 +9,7 @@ import { activeUsersChart } from '@/services/chart/index';
 export const meta = {
 	tags: ['notes', 'channels'],
 
-	requireCredential: false as const,
+	requireCredential: false,
 
 	params: {
 		channelId: {
@@ -39,11 +39,11 @@ export const meta = {
 	},
 
 	res: {
-		type: 'array' as const,
-		optional: false as const, nullable: false as const,
+		type: 'array',
+		optional: false, nullable: false,
 		items: {
-			type: 'object' as const,
-			optional: false as const, nullable: false as const,
+			type: 'object',
+			optional: false, nullable: false,
 			ref: 'Note',
 		},
 	},
@@ -55,8 +55,9 @@ export const meta = {
 			id: '4d0eeeba-a02c-4c3c-9966-ef60d38d2e7f',
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	const channel = await Channels.findOne({
 		id: ps.channelId,

@@ -5,7 +5,7 @@ import { Hashtags } from '@/models/index';
 export const meta = {
 	tags: ['hashtags'],
 
-	requireCredential: false as const,
+	requireCredential: false,
 
 	params: {
 		limit: {
@@ -24,15 +24,16 @@ export const meta = {
 	},
 
 	res: {
-		type: 'array' as const,
-		optional: false as const, nullable: false as const,
+		type: 'array',
+		optional: false, nullable: false,
 		items: {
-			type: 'string' as const,
-			optional: false as const, nullable: false as const,
+			type: 'string',
+			optional: false, nullable: false,
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps) => {
 	const hashtags = await Hashtags.createQueryBuilder('tag')
 		.where('tag.name like :q', { q: ps.query.toLowerCase() + '%' })

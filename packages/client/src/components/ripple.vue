@@ -94,7 +94,7 @@ export default defineComponent({
 		}
 
 		onMounted(() => {
-			setTimeout(() => {
+			window.setTimeout(() => {
 				context.emit('end');
 			}, 1100);
 		});

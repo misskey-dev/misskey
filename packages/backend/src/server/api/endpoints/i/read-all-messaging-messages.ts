@@ -5,14 +5,15 @@ import { MessagingMessages, UserGroupJoinings } from '@/models/index';
 export const meta = {
 	tags: ['account', 'messaging'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	kind: 'write:account',
 
 	params: {
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	// Update documents
 	await MessagingMessages.update({

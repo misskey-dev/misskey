@@ -1,6 +1,6 @@
 <template>
 <MkSpacer :content-max="800">
-	<div v-hotkey.global="keymap" class="cmuxhskf">
+	<div ref="rootEl" v-hotkey.global="keymap" class="cmuxhskf">
 		<XTutorial v-if="$store.reactiveState.tutorial.value != -1" class="tutorial _block"/>
 		<XPostForm v-if="$store.reactiveState.showFixedPostForm.value" class="post-form _block" fixed/>
 
@@ -18,162 +18,144 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, defineAsyncComponent, computed } from 'vue';
+export default {
+	name: 'MkTimelinePage',
+}
+</script>
+
+<script lang="ts" setup>
+import { defineAsyncComponent, computed, watch } from 'vue';
 import XTimeline from '@/components/timeline.vue';
 import XPostForm from '@/components/post-form.vue';
 import { scroll } from '@/scripts/scroll';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
+import { defaultStore } from '@/store';
+import { i18n } from '@/i18n';
+import { instance } from '@/instance';
+import { $i } from '@/account';
 
-export default defineComponent({
-	name: 'timeline',
+const XTutorial = defineAsyncComponent(() => import('./timeline.tutorial.vue'));
 
-	components: {
-		XTimeline,
-		XTutorial: defineAsyncComponent(() => import('./timeline.tutorial.vue')),
-		XPostForm,
-	},
+const isLocalTimelineAvailable = !instance.disableLocalTimeline || ($i != null && ($i.isModerator || $i.isAdmin));
+const isGlobalTimelineAvailable = !instance.disableGlobalTimeline || ($i != null && ($i.isModerator || $i.isAdmin));
+const keymap = {
+	't': focus,
+};
 
-	data() {
-		return {
-			src: 'home',
-			queue: 0,
-			[symbols.PAGE_INFO]: computed(() => ({
-				title: this.$ts.timeline,
-				icon: this.src === 'local' ? 'fas fa-comments' : this.src === 'social' ? 'fas fa-share-alt' : this.src === 'global' ? 'fas fa-globe' : 'fas fa-home',
-				bg: 'var(--bg)',
-				actions: [{
-					icon: 'fas fa-list-ul',
-					text: this.$ts.lists,
-					handler: this.chooseList
-				}, {
-					icon: 'fas fa-satellite',
-					text: this.$ts.antennas,
-					handler: this.chooseAntenna
-				}, {
-					icon: 'fas fa-satellite-dish',
-					text: this.$ts.channel,
-					handler: this.chooseChannel
-				}, {
-					icon: 'fas fa-calendar-alt',
-					text: this.$ts.jumpToSpecifiedDate,
-					handler: this.timetravel
-				}],
-				tabs: [{
-					active: this.src === 'home',
-					title: this.$ts._timelines.home,
-					icon: 'fas fa-home',
-					iconOnly: true,
-					onClick: () => { this.src = 'home'; this.saveSrc(); },
-				}, ...(this.isLocalTimelineAvailable ? [{
-					active: this.src === 'local',
-					title: this.$ts._timelines.local,
-					icon: 'fas fa-comments',
-					iconOnly: true,
-					onClick: () => { this.src = 'local'; this.saveSrc(); },
-				}, {
-					active: this.src === 'social',
-					title: this.$ts._timelines.social,
-					icon: 'fas fa-share-alt',
-					iconOnly: true,
-					onClick: () => { this.src = 'social'; this.saveSrc(); },
-				}] : []), ...(this.isGlobalTimelineAvailable ? [{
-					active: this.src === 'global',
-					title: this.$ts._timelines.global,
-					icon: 'fas fa-globe',
-					iconOnly: true,
-					onClick: () => { this.src = 'global'; this.saveSrc(); },
-				}] : [])],
-			})),
-		};
-	},
+const tlComponent = $ref<InstanceType<typeof XTimeline>>();
+const rootEl = $ref<HTMLElement>();
 
-	computed: {
-		keymap(): any {
-			return {
-				't': this.focus
-			};
-		},
+let src = $ref<'home' | 'local' | 'social' | 'global'>(defaultStore.state.tl.src);
+let queue = $ref(0);
 
-		isLocalTimelineAvailable(): boolean {
-			return !this.$instance.disableLocalTimeline || this.$i.isModerator || this.$i.isAdmin;
-		},
+function queueUpdated(q: number): void {
+	queue = q;
+}
 
-		isGlobalTimelineAvailable(): boolean {
-			return !this.$instance.disableGlobalTimeline || this.$i.isModerator || this.$i.isAdmin;
-		},
-	},
+function top(): void {
+	scroll(rootEl, { top: 0 });
+}
 
-	watch: {
-		src() {
-			this.showNav = false;
-		},
-	},
+async function chooseList(ev: MouseEvent): Promise<void> {
+	const lists = await os.api('users/lists/list');
+	const items = lists.map(list => ({
+		type: 'link',
+		text: list.name,
+		to: `/timeline/list/${list.id}`,
+	}));
+	os.popupMenu(items, ev.currentTarget || ev.target);
+}
 
-	created() {
-		this.src = this.$store.state.tl.src;
-	},
+async function chooseAntenna(ev: MouseEvent): Promise<void> {
+	const antennas = await os.api('antennas/list');
+	const items = antennas.map(antenna => ({
+		type: 'link',
+		text: antenna.name,
+		indicate: antenna.hasUnreadNote,
+		to: `/timeline/antenna/${antenna.id}`,
+	}));
+	os.popupMenu(items, ev.currentTarget || ev.target);
+}
 
-	methods: {
-		queueUpdated(q) {
-			this.queue = q;
-		},
+async function chooseChannel(ev: MouseEvent): Promise<void> {
+	const channels = await os.api('channels/followed');
+	const items = channels.map(channel => ({
+		type: 'link',
+		text: channel.name,
+		indicate: channel.hasUnreadNote,
+		to: `/channels/${channel.id}`,
+	}));
+	os.popupMenu(items, ev.currentTarget || ev.target);
+}
 
-		top() {
-			scroll(this.$el, { top: 0 });
-		},
+function saveSrc(): void {
+	defaultStore.set('tl', {
+		src: src,
+	});
+}
 
-		async chooseList(ev) {
-			const lists = await os.api('users/lists/list');
-			const items = lists.map(list => ({
-				type: 'link',
-				text: list.name,
-				to: `/timeline/list/${list.id}`
-			}));
-			os.popupMenu(items, ev.currentTarget || ev.target);
-		},
+async function timetravel(): Promise<void> {
+	const { canceled, result: date } = await os.inputDate({
+		title: i18n.locale.date,
+	});
+	if (canceled) return;
 
-		async chooseAntenna(ev) {
-			const antennas = await os.api('antennas/list');
-			const items = antennas.map(antenna => ({
-				type: 'link',
-				text: antenna.name,
-				indicate: antenna.hasUnreadNote,
-				to: `/timeline/antenna/${antenna.id}`
-			}));
-			os.popupMenu(items, ev.currentTarget || ev.target);
-		},
+	tlComponent.timetravel(date);
+}
 
-		async chooseChannel(ev) {
-			const channels = await os.api('channels/followed');
-			const items = channels.map(channel => ({
-				type: 'link',
-				text: channel.name,
-				indicate: channel.hasUnreadNote,
-				to: `/channels/${channel.id}`
-			}));
-			os.popupMenu(items, ev.currentTarget || ev.target);
-		},
+function focus(): void {
+	tlComponent.focus();
+}
 
-		saveSrc() {
-			this.$store.set('tl', {
-				src: this.src,
-			});
-		},
-
-		async timetravel() {
-			const { canceled, result: date } = await os.inputDate({
-				title: this.$ts.date,
-			});
-			if (canceled) return;
-
-			this.$refs.tl.timetravel(date);
-		},
-
-		focus() {
-			(this.$refs.tl as any).focus();
-		}
-	}
+defineExpose({
+	[symbols.PAGE_INFO]: computed(() => ({
+		title: i18n.locale.timeline,
+		icon: src === 'local' ? 'fas fa-comments' : src === 'social' ? 'fas fa-share-alt' : src === 'global' ? 'fas fa-globe' : 'fas fa-home',
+		bg: 'var(--bg)',
+		actions: [{
+			icon: 'fas fa-list-ul',
+			text: i18n.locale.lists,
+			handler: chooseList,
+		}, {
+			icon: 'fas fa-satellite',
+			text: i18n.locale.antennas,
+			handler: chooseAntenna,
+		}, {
+			icon: 'fas fa-satellite-dish',
+			text: i18n.locale.channel,
+			handler: chooseChannel,
+		}, {
+			icon: 'fas fa-calendar-alt',
+			text: i18n.locale.jumpToSpecifiedDate,
+			handler: timetravel,
+		}],
+		tabs: [{
+			active: src === 'home',
+			title: i18n.locale._timelines.home,
+			icon: 'fas fa-home',
+			iconOnly: true,
+			onClick: () => { src = 'home'; saveSrc(); },
+		}, ...(isLocalTimelineAvailable ? [{
+			active: src === 'local',
+			title: i18n.locale._timelines.local,
+			icon: 'fas fa-comments',
+			iconOnly: true,
+			onClick: () => { src = 'local'; saveSrc(); },
+		}, {
+			active: src === 'social',
+			title: i18n.locale._timelines.social,
+			icon: 'fas fa-share-alt',
+			iconOnly: true,
+			onClick: () => { src = 'social'; saveSrc(); },
+		}] : []), ...(isGlobalTimelineAvailable ? [{
+			active: src === 'global',
+			title: i18n.locale._timelines.global,
+			icon: 'fas fa-globe',
+			iconOnly: true,
+			onClick: () => { src = 'global'; saveSrc(); },
+		}] : [])],
+	})),
 });
 </script>
 

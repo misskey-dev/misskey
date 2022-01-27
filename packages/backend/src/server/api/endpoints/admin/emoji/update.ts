@@ -8,7 +8,7 @@ import { ApiError } from '../../../error';
 export const meta = {
 	tags: ['admin'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 	requireModerator: true,
 
 	params: {
@@ -36,8 +36,9 @@ export const meta = {
 			id: '684dec9d-a8c2-4364-9aa8-456c49cb1dc8',
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps) => {
 	const emoji = await Emojis.findOne(ps.id);
 

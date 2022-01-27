@@ -1,6 +1,6 @@
 <template>
 <div>
-	<MkPagination ref="list" :pagination="pagination" class="mk-follow-requests">
+	<MkPagination ref="paginationComponent" :pagination="pagination">
 		<template #empty>
 			<div class="_fullinfo">
 				<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
@@ -8,19 +8,21 @@
 			</div>
 		</template>
 		<template v-slot="{items}">
-			<div v-for="req in items" :key="req.id" class="user _panel">
-				<MkAvatar class="avatar" :user="req.follower" :show-indicator="true"/>
-				<div class="body">
-					<div class="name">
-						<MkA v-user-preview="req.follower.id" class="name" :to="userPage(req.follower)"><MkUserName :user="req.follower"/></MkA>
-						<p class="acct">@{{ acct(req.follower) }}</p>
-					</div>
-					<div v-if="req.follower.description" class="description" :title="req.follower.description">
-						<Mfm :text="req.follower.description" :is-note="false" :author="req.follower" :i="$i" :custom-emojis="req.follower.emojis" :plain="true" :nowrap="true"/>
-					</div>
-					<div class="actions">
-						<button class="_button" @click="accept(req.follower)"><i class="fas fa-check"></i></button>
-						<button class="_button" @click="reject(req.follower)"><i class="fas fa-times"></i></button>
+			<div class="mk-follow-requests">
+				<div v-for="req in items" :key="req.id" class="user _panel">
+					<MkAvatar class="avatar" :user="req.follower" :show-indicator="true"/>
+					<div class="body">
+						<div class="name">
+							<MkA v-user-preview="req.follower.id" class="name" :to="userPage(req.follower)"><MkUserName :user="req.follower"/></MkA>
+							<p class="acct">@{{ acct(req.follower) }}</p>
+						</div>
+						<div v-if="req.follower.description" class="description" :title="req.follower.description">
+							<Mfm :text="req.follower.description" :is-note="false" :author="req.follower" :i="$i" :custom-emojis="req.follower.emojis" :plain="true" :nowrap="true"/>
+						</div>
+						<div class="actions">
+							<button class="_button" @click="accept(req.follower)"><i class="fas fa-check"></i></button>
+							<button class="_button" @click="reject(req.follower)"><i class="fas fa-times"></i></button>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -29,45 +31,39 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { ref, computed } from 'vue';
 import MkPagination from '@/components/ui/pagination.vue';
 import { userPage, acct } from '@/filters/user';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		MkPagination
-	},
+const paginationComponent = ref<InstanceType<typeof MkPagination>>();
 
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: this.$ts.followRequests,
-				icon: 'fas fa-user-clock',
-			},
-			pagination: {
-				endpoint: 'following/requests/list',
-				limit: 10,
-			},
-		};
-	},
+const pagination = {
+	endpoint: 'following/requests/list' as const,
+	limit: 10,
+};
 
-	methods: {
-		accept(user) {
-			os.api('following/requests/accept', { userId: user.id }).then(() => {
-				this.$refs.list.reload();
-			});
-		},
-		reject(user) {
-			os.api('following/requests/reject', { userId: user.id }).then(() => {
-				this.$refs.list.reload();
-			});
-		},
-		userPage,
-		acct
-	}
+function accept(user) {
+	os.api('following/requests/accept', { userId: user.id }).then(() => {
+		paginationComponent.value.reload();
+	});
+}
+
+function reject(user) {
+	os.api('following/requests/reject', { userId: user.id }).then(() => {
+		paginationComponent.value.reload();
+	});
+}
+
+defineExpose({
+	[symbols.PAGE_INFO]: computed(() => ({
+		title: i18n.locale.followRequests,
+		icon: 'fas fa-user-clock',
+		bg: 'var(--bg)',
+	})),
 });
 </script>
 

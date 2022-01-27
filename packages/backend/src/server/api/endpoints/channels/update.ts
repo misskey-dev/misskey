@@ -7,7 +7,7 @@ import { Channels, DriveFiles } from '@/models/index';
 export const meta = {
 	tags: ['channels'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	kind: 'write:channels',
 
@@ -30,8 +30,8 @@ export const meta = {
 	},
 
 	res: {
-		type: 'object' as const,
-		optional: false as const, nullable: false as const,
+		type: 'object',
+		optional: false, nullable: false,
 		ref: 'Channel',
 	},
 
@@ -54,8 +54,9 @@ export const meta = {
 			id: 'e86c14a4-0da2-4032-8df3-e737a04c7f3b',
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, me) => {
 	const channel = await Channels.findOne({
 		id: ps.channelId,

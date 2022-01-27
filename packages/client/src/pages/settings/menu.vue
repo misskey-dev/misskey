@@ -21,7 +21,6 @@
 import { defineComponent } from 'vue';
 import FormTextarea from '@/components/form/textarea.vue';
 import FormRadios from '@/components/form/radios.vue';
-import FormBase from '@/components/debobigego/base.vue';
 import FormButton from '@/components/ui/button.vue';
 import * as os from '@/os';
 import { menuDef } from '@/menu';
@@ -31,7 +30,6 @@ import { unisonReload } from '@/scripts/unison-reload';
 
 export default defineComponent({
 	components: {
-		FormBase,
 		FormButton,
 		FormTextarea,
 		FormRadios,
@@ -67,10 +65,6 @@ export default defineComponent({
 		items() {
 			this.save();
 		},
-	},
-
-	mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
 	},
 
 	methods: {

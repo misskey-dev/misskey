@@ -13,7 +13,7 @@ import { fetchMeta } from '@/misc/fetch-meta';
 export const meta = {
 	tags: ['users'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	params: {
 		userId: {
@@ -44,7 +44,7 @@ export const meta = {
 			id: '35e166f5-05fb-4f87-a2d5-adb42676d48f',
 		},
 	},
-};
+} as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, me) => {
@@ -62,7 +62,7 @@ export default define(meta, async (ps, me) => {
 		throw new ApiError(meta.errors.cannotReportAdmin);
 	}
 
-	const report = await AbuseUserReports.save({
+	const report = await AbuseUserReports.insert({
 		id: genId(),
 		createdAt: new Date(),
 		targetUserId: user.id,
@@ -70,7 +70,7 @@ export default define(meta, async (ps, me) => {
 		reporterId: me.id,
 		reporterHost: null,
 		comment: ps.comment,
-	});
+	}).then(x => AbuseUserReports.findOneOrFail(x.identifiers[0]));
 
 	// Publish event to moderators
 	setTimeout(async () => {

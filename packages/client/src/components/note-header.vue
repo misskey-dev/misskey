@@ -19,30 +19,16 @@
 </header>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
+import * as misskey from 'misskey-js';
 import { notePage } from '@/filters/note';
 import { userPage } from '@/filters/user';
-import * as os from '@/os';
 
-export default defineComponent({
-	props: {
-		note: {
-			type: Object,
-			required: true
-		},
-	},
-
-	data() {
-		return {
-		};
-	},
-
-	methods: {
-		notePage,
-		userPage
-	}
-});
+defineProps<{
+	note: misskey.entities.Note;
+	pinned?: boolean;
+}>();
 </script>
 
 <style lang="scss" scoped>

@@ -169,7 +169,7 @@ export default defineComponent({
 			window.close();
 
 			// 閉じなければ100ms後タイムラインに
-			setTimeout(() => {
+			window.setTimeout(() => {
 				this.$router.push('/');
 			}, 100);
 		}

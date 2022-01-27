@@ -163,10 +163,6 @@ export default defineComponent({
 			location.reload();
 		});
 
-		onMounted(() => {
-			emit('info', INFO);
-		});
-
 		onActivated(() => {
 			fetchThemes().then(() => {
 				installedThemes.value = getThemes();

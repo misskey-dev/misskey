@@ -5,7 +5,7 @@ import { sendEmail } from '@/services/send-email';
 export const meta = {
 	tags: ['admin'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 	requireModerator: true,
 
 	params: {
@@ -19,8 +19,9 @@ export const meta = {
 			validator: $.str,
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps) => {
 	await sendEmail(ps.to, ps.subject, ps.text, ps.text);
 });

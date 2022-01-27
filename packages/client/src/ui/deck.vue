@@ -29,7 +29,7 @@
 		<button class="button post _button" @click="post()"><i class="fas fa-pencil-alt"></i></button>
 	</div>
 
-	<transition name="menu-back">
+	<transition :name="$store.state.animation ? 'menu-back' : ''">
 		<div v-if="drawerMenuShowing"
 			class="menu-back _modalBg"
 			@click="drawerMenuShowing = false"
@@ -37,7 +37,7 @@
 		></div>
 	</transition>
 
-	<transition name="menu">
+	<transition :name="$store.state.animation ? 'menu' : ''">
 		<XDrawerMenu v-if="drawerMenuShowing" class="menu"/>
 	</transition>
 

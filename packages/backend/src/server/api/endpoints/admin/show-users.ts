@@ -5,7 +5,7 @@ import { Users } from '@/models/index';
 export const meta = {
 	tags: ['admin'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 	requireModerator: true,
 
 	params: {
@@ -64,16 +64,17 @@ export const meta = {
 	},
 
 	res: {
-		type: 'array' as const,
-		nullable: false as const, optional: false as const,
+		type: 'array',
+		nullable: false, optional: false,
 		items: {
-			type: 'object' as const,
-			nullable: false as const, optional: false as const,
-			ref: 'User',
+			type: 'object',
+			nullable: false, optional: false,
+			ref: 'UserDetailed',
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, me) => {
 	const query = Users.createQueryBuilder('user');
 

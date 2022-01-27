@@ -14,6 +14,10 @@ module.exports = {
 		"plugin:vue/vue3-recommended"
 	],
 	rules: {
+		// window の禁止理由: グローバルスコープと衝突し、予期せぬ結果を招くため
+		// data の禁止理由: 抽象的すぎるため
+		// e の禁止理由: error や event など、複数のキーワードの頭文字であり分かりにくいため
+		"id-denylist": ["error", "window", "data", "e"],
 		"vue/attributes-order": ["error", {
 			"alphabetical": false
 		}],
@@ -43,6 +47,7 @@ module.exports = {
 		"vue/no-unused-components": "warn",
 		"vue/valid-v-for": "warn",
 		"vue/return-in-computed-property": "warn",
+		"vue/no-setup-props-destructure": "warn",
 		"vue/max-attributes-per-line": "off",
 		"vue/html-self-closing": "off",
 		"vue/singleline-html-element-content-newline": "off",

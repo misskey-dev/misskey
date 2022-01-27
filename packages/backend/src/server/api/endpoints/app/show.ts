@@ -13,12 +13,6 @@ export const meta = {
 		},
 	},
 
-	res: {
-		type: 'object' as const,
-		optional: false as const, nullable: false as const,
-		ref: 'App',
-	},
-
 	errors: {
 		noSuchApp: {
 			message: 'No such app.',
@@ -28,12 +22,13 @@ export const meta = {
 	},
 
 	res: {
-		type: 'object' as const,
-		optional: false as const, nullable: false as const,
+		type: 'object',
+		optional: false, nullable: false,
 		ref: 'App',
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user, token) => {
 	const isSecure = user != null && token == null;
 

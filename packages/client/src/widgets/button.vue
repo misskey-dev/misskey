@@ -1,90 +1,99 @@
 <template>
 <div class="mkw-button">
-	<MkButton :primary="props.colored" full @click="run">
-		{{ props.label }}
+	<MkButton :primary="widgetProps.colored" full @click="run">
+		{{ widgetProps.label }}
 	</MkButton>
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import define from './define';
-import MkButton from '@/components/ui/button.vue';
+<script lang="ts" setup>
+import { onMounted, onUnmounted, ref, watch } from 'vue';
+import { GetFormResultType } from '@/scripts/form';
+import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
 import * as os from '@/os';
 import { AiScript, parse, utils } from '@syuilo/aiscript';
 import { createAiScriptEnv } from '@/scripts/aiscript/api';
+import { $i } from '@/account';
+import MkButton from '@/components/ui/button.vue';
 
-const widget = define({
-	name: 'button',
-	props: () => ({
-		label: {
-			type: 'string',
-			default: 'BUTTON',
-		},
-		colored: {
-			type: 'boolean',
-			default: true,
-		},
-		script: {
-			type: 'string',
-			multiline: true,
-			default: 'Mk:dialog("hello" "world")',
-		},
-	})
-});
+const name = 'button';
 
-export default defineComponent({
-	components: {
-		MkButton
+const widgetPropsDef = {
+	label: {
+		type: 'string' as const,
+		default: 'BUTTON',
 	},
-	extends: widget,
-	data() {
-		return {
-		};
+	colored: {
+		type: 'boolean' as const,
+		default: true,
 	},
-	methods: {
-		async run() {
-			const aiscript = new AiScript(createAiScriptEnv({
-				storageKey: 'widget',
-				token: this.$i?.token,
-			}), {
-				in: (q) => {
-					return new Promise(ok => {
-						os.inputText({
-							title: q,
-						}).then(({ canceled, result: a }) => {
-							ok(a);
-						});
-					});
-				},
-				out: (value) => {
-					// nop
-				},
-				log: (type, params) => {
-					// nop
-				}
+	script: {
+		type: 'string' as const,
+		multiline: true,
+		default: 'Mk:dialog("hello" "world")',
+	},
+};
+
+type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
+
+// 現時点ではvueの制限によりimportしたtypeをジェネリックに渡せない
+//const props = defineProps<WidgetComponentProps<WidgetProps>>();
+//const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
+const props = defineProps<{ widget?: Widget<WidgetProps>; }>();
+const emit = defineEmits<{ (e: 'updateProps', props: WidgetProps); }>();
+
+const { widgetProps, configure } = useWidgetPropsManager(name,
+	widgetPropsDef,
+	props,
+	emit,
+);
+
+const run = async () => {
+	const aiscript = new AiScript(createAiScriptEnv({
+		storageKey: 'widget',
+		token: $i?.token,
+	}), {
+		in: (q) => {
+			return new Promise(ok => {
+				os.inputText({
+					title: q,
+				}).then(({ canceled, result: a }) => {
+					ok(a);
+				});
 			});
-
-			let ast;
-			try {
-				ast = parse(this.props.script);
-			} catch (e) {
-				os.alert({
-					type: 'error',
-					text: 'Syntax error :('
-				});
-				return;
-			}
-			try {
-				await aiscript.exec(ast);
-			} catch (e) {
-				os.alert({
-					type: 'error',
-					text: e
-				});
-			}
 		},
+		out: (value) => {
+			// nop
+		},
+		log: (type, params) => {
+			// nop
+		}
+	});
+
+	let ast;
+	try {
+		ast = parse(widgetProps.script);
+	} catch (e) {
+		os.alert({
+			type: 'error',
+			text: 'Syntax error :(',
+		});
+		return;
 	}
+	try {
+		await aiscript.exec(ast);
+	} catch (e) {
+		os.alert({
+			type: 'error',
+			text: e,
+		});
+	}
+};
+
+defineExpose<WidgetComponentExpose>({
+	name,
+	configure,
+	id: props.widget ? props.widget.id : null,
 });
 </script>
 

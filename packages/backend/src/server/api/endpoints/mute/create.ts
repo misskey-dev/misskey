@@ -11,7 +11,7 @@ import { publishUserEvent } from '@/services/stream';
 export const meta = {
 	tags: ['account'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	kind: 'write:mutes',
 
@@ -40,8 +40,9 @@ export const meta = {
 			id: '7e7359cb-160c-4956-b08f-4d1c653cd007',
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	const muter = user;
 

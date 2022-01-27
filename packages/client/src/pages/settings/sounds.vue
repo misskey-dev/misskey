@@ -94,12 +94,6 @@ export default defineComponent({
 		this.sounds.chatBg = ColdDeviceStorage.get('sound_chatBg');
 		this.sounds.antenna = ColdDeviceStorage.get('sound_antenna');
 		this.sounds.channel = ColdDeviceStorage.get('sound_channel');
-		this.sounds.reversiPutBlack = ColdDeviceStorage.get('sound_reversiPutBlack');
-		this.sounds.reversiPutWhite = ColdDeviceStorage.get('sound_reversiPutWhite');
-	},
-
-	mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
 	},
 
 	methods: {

@@ -81,19 +81,19 @@ export default defineComponent({
 			},
 			tab: 'explore',
 			recentPostsPagination: {
-				endpoint: 'gallery/posts',
+				endpoint: 'gallery/posts' as const,
 				limit: 6,
 			},
 			popularPostsPagination: {
-				endpoint: 'gallery/featured',
+				endpoint: 'gallery/featured' as const,
 				limit: 5,
 			},
 			myPostsPagination: {
-				endpoint: 'i/gallery/posts',
+				endpoint: 'i/gallery/posts' as const,
 				limit: 5,
 			},
 			likedPostsPagination: {
-				endpoint: 'i/gallery/likes',
+				endpoint: 'i/gallery/likes' as const,
 				limit: 5,
 			},
 			tags: [],
@@ -106,7 +106,7 @@ export default defineComponent({
 		},
 		tagUsers(): any {
 			return {
-				endpoint: 'hashtags/users',
+				endpoint: 'hashtags/users' as const,
 				limit: 30,
 				params: {
 					tag: this.tag,

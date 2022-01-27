@@ -7,8 +7,8 @@ import { ApiError } from '../../../error';
 export const meta = {
 	tags: ['admin'],
 
-	requireCredential: true as const,
-	requireModerator: true as const,
+	requireCredential: true,
+	requireModerator: true,
 
 	params: {
 		inbox: {
@@ -25,22 +25,22 @@ export const meta = {
 	},
 
 	res: {
-		type: 'object' as const,
-		optional: false as const, nullable: false as const,
+		type: 'object',
+		optional: false, nullable: false,
 		properties: {
 			id: {
-				type: 'string' as const,
-				optional: false as const, nullable: false as const,
+				type: 'string',
+				optional: false, nullable: false,
 				format: 'id',
 			},
 			inbox: {
-				type: 'string' as const,
-				optional: false as const, nullable: false as const,
+				type: 'string',
+				optional: false, nullable: false,
 				format: 'url',
 			},
 			status: {
-				type: 'string' as const,
-				optional: false as const, nullable: false as const,
+				type: 'string',
+				optional: false, nullable: false,
 				default: 'requesting',
 				enum: [
 					'requesting',
@@ -50,8 +50,9 @@ export const meta = {
 			},
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	try {
 		if (new URL(ps.inbox).protocol !== 'https:') throw 'https only';

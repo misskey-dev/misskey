@@ -61,7 +61,11 @@ export default defineComponent({
 			otherMenuItemIndicated,
 			post: os.post,
 			search,
-			openAccountMenu,
+			openAccountMenu:(ev) => {
+				openAccountMenu({
+					withExtraOperation: true,
+				}, ev);
+			},
 			more: () => {
 				os.popup(import('@/components/launch-pad.vue'), {}, {
 				}, 'closed');

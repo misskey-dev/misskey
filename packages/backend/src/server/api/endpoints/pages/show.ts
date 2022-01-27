@@ -8,7 +8,7 @@ import { Page } from '@/models/entities/page';
 export const meta = {
 	tags: ['pages'],
 
-	requireCredential: false as const,
+	requireCredential: false,
 
 	params: {
 		pageId: {
@@ -25,8 +25,8 @@ export const meta = {
 	},
 
 	res: {
-		type: 'object' as const,
-		optional: false as const, nullable: false as const,
+		type: 'object',
+		optional: false, nullable: false,
 		ref: 'Page',
 	},
 
@@ -37,8 +37,9 @@ export const meta = {
 			id: '222120c0-3ead-4528-811b-b96f233388d7',
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	let page: Page | undefined;
 

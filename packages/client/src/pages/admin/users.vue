@@ -30,7 +30,7 @@
 				<template #prefix>@</template>
 				<template #label>{{ $ts.username }}</template>
 			</MkInput>
-			<MkInput v-model="searchHost" style="flex: 1;" type="text" spellcheck="false" :disabled="pagination.params().origin === 'local'" @update:modelValue="$refs.users.reload()">
+			<MkInput v-model="searchHost" style="flex: 1;" type="text" spellcheck="false" :disabled="pagination.params.origin === 'local'" @update:modelValue="$refs.users.reload()">
 				<template #prefix>@</template>
 				<template #label>{{ $ts.host }}</template>
 			</MkInput>
@@ -62,7 +62,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
 import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/form/input.vue';
 import MkSelect from '@/components/form/select.vue';
@@ -110,34 +110,18 @@ export default defineComponent({
 			searchUsername: '',
 			searchHost: '',
 			pagination: {
-				endpoint: 'admin/show-users',
+				endpoint: 'admin/show-users' as const,
 				limit: 10,
-				params: () => ({
+				params: computed(() => ({
 					sort: this.sort,
 					state: this.state,
 					origin: this.origin,
 					username: this.searchUsername,
 					hostname: this.searchHost,
-				}),
+				})),
 				offsetMode: true
 			},
 		}
-	},
-
-	watch: {
-		sort() {
-			this.$refs.users.reload();
-		},
-		state() {
-			this.$refs.users.reload();
-		},
-		origin() {
-			this.$refs.users.reload();
-		},
-	},
-
-	async mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
 	},
 
 	methods: {

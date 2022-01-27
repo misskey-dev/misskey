@@ -1,5 +1,5 @@
 <template>
-<div class="mkw-calendar" :class="{ _panel: !props.transparent }">
+<div class="mkw-calendar" :class="{ _panel: !widgetProps.transparent }">
 	<div class="calendar" :class="{ isHoliday }">
 		<p class="month-and-year">
 			<span class="year">{{ $t('yearX', { year }) }}</span>
@@ -32,77 +32,87 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import define from './define';
+<script lang="ts" setup>
+import { onUnmounted, ref } from 'vue';
+import { GetFormResultType } from '@/scripts/form';
+import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
+import { i18n } from '@/i18n';
 
-const widget = define({
-	name: 'calendar',
-	props: () => ({
-		transparent: {
-			type: 'boolean',
-			default: false,
-		},
-	})
+const name = 'calendar';
+
+const widgetPropsDef = {
+	transparent: {
+		type: 'boolean' as const,
+		default: false,
+	},
+};
+
+type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
+
+// 現時点ではvueの制限によりimportしたtypeをジェネリックに渡せない
+//const props = defineProps<WidgetComponentProps<WidgetProps>>();
+//const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
+const props = defineProps<{ widget?: Widget<WidgetProps>; }>();
+const emit = defineEmits<{ (e: 'updateProps', props: WidgetProps); }>();
+
+const { widgetProps, configure } = useWidgetPropsManager(name,
+	widgetPropsDef,
+	props,
+	emit,
+);
+
+const year = ref(0);
+const month = ref(0);
+const day = ref(0);
+const weekDay = ref('');
+const yearP = ref(0);
+const monthP = ref(0);
+const dayP = ref(0);
+const isHoliday = ref(false);
+const tick = () => {
+	const now = new Date();
+	const nd = now.getDate();
+	const nm = now.getMonth();
+	const ny = now.getFullYear();
+
+	year.value = ny;
+	month.value = nm + 1;
+	day.value = nd;
+	weekDay.value = [
+		i18n.locale._weekday.sunday,
+		i18n.locale._weekday.monday,
+		i18n.locale._weekday.tuesday,
+		i18n.locale._weekday.wednesday,
+		i18n.locale._weekday.thursday,
+		i18n.locale._weekday.friday,
+		i18n.locale._weekday.saturday
+	][now.getDay()];
+
+	const dayNumer   = now.getTime() - new Date(ny, nm, nd).getTime();
+	const dayDenom   = 1000/*ms*/ * 60/*s*/ * 60/*m*/ * 24/*h*/;
+	const monthNumer = now.getTime() - new Date(ny, nm, 1).getTime();
+	const monthDenom = new Date(ny, nm + 1, 1).getTime() - new Date(ny, nm, 1).getTime();
+	const yearNumer  = now.getTime() - new Date(ny, 0, 1).getTime();
+	const yearDenom  = new Date(ny + 1, 0, 1).getTime() - new Date(ny, 0, 1).getTime();
+
+	dayP.value   = dayNumer   / dayDenom   * 100;
+	monthP.value = monthNumer / monthDenom * 100;
+	yearP.value  = yearNumer  / yearDenom  * 100;
+
+	isHoliday.value = now.getDay() === 0 || now.getDay() === 6;
+};
+
+tick();
+
+const intervalId = window.setInterval(tick, 1000);
+onUnmounted(() => {
+	window.clearInterval(intervalId);
 });
 
-export default defineComponent({
-	extends: widget,
-	data() {
-		return {
-			now: new Date(),
-			year: null,
-			month: null,
-			day: null,
-			weekDay: null,
-			yearP: null,
-			dayP: null,
-			monthP: null,
-			isHoliday: null,
-			clock: null
-		};
-	},
-	created() {
-		this.tick();
-		this.clock = setInterval(this.tick, 1000);
-	},
-	beforeUnmount() {
-		clearInterval(this.clock);
-	},
-	methods: {
-		tick() {
-			const now = new Date();
-			const nd = now.getDate();
-			const nm = now.getMonth();
-			const ny = now.getFullYear();
-
-			this.year = ny;
-			this.month = nm + 1;
-			this.day = nd;
-			this.weekDay = [
-				this.$ts._weekday.sunday,
-				this.$ts._weekday.monday,
-				this.$ts._weekday.tuesday,
-				this.$ts._weekday.wednesday,
-				this.$ts._weekday.thursday,
-				this.$ts._weekday.friday,
-				this.$ts._weekday.saturday
-			][now.getDay()];
-
-			const dayNumer   = now.getTime() - new Date(ny, nm, nd).getTime();
-			const dayDenom   = 1000/*ms*/ * 60/*s*/ * 60/*m*/ * 24/*h*/;
-			const monthNumer = now.getTime() - new Date(ny, nm, 1).getTime();
-			const monthDenom = new Date(ny, nm + 1, 1).getTime() - new Date(ny, nm, 1).getTime();
-			const yearNumer  = now.getTime() - new Date(ny, 0, 1).getTime();
-			const yearDenom  = new Date(ny + 1, 0, 1).getTime() - new Date(ny, 0, 1).getTime();
-
-			this.dayP   = dayNumer   / dayDenom   * 100;
-			this.monthP = monthNumer / monthDenom * 100;
-			this.yearP  = yearNumer  / yearDenom  * 100;
-
-			this.isHoliday = now.getDay() === 0 || now.getDay() === 6;
-		}
-	}
+defineExpose<WidgetComponentExpose>({
+	name,
+	configure,
+	id: props.widget ? props.widget.id : null,
 });
 </script>
 

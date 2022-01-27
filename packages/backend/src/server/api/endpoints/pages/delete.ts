@@ -7,7 +7,7 @@ import { ID } from '@/misc/cafy-id';
 export const meta = {
 	tags: ['pages'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	kind: 'write:pages',
 
@@ -30,8 +30,9 @@ export const meta = {
 			id: '8b741b3e-2c22-44b3-a15f-29949aa1601e',
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	const page = await Pages.findOne(ps.pageId);
 	if (page == null) {

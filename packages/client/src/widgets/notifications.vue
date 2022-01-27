@@ -1,65 +1,68 @@
 <template>
-<MkContainer :style="`height: ${props.height}px;`" :show-header="props.showHeader" :scrollable="true">
+<MkContainer :style="`height: ${widgetProps.height}px;`" :show-header="widgetProps.showHeader" :scrollable="true">
 	<template #header><i class="fas fa-bell"></i>{{ $ts.notifications }}</template>
-	<template #func><button class="_button" @click="configure()"><i class="fas fa-cog"></i></button></template>
+	<template #func><button class="_button" @click="configureNotification()"><i class="fas fa-cog"></i></button></template>
 
 	<div>
-		<XNotifications :include-types="props.includingTypes"/>
+		<XNotifications :include-types="widgetProps.includingTypes"/>
 	</div>
 </MkContainer>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { GetFormResultType } from '@/scripts/form';
+import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
 import MkContainer from '@/components/ui/container.vue';
 import XNotifications from '@/components/notifications.vue';
-import define from './define';
 import * as os from '@/os';
 
-const widget = define({
-	name: 'notifications',
-	props: () => ({
-		showHeader: {
-			type: 'boolean',
-			default: true,
-		},
-		height: {
-			type: 'number',
-			default: 300,
-		},
-		includingTypes: {
-			type: 'array',
-			hidden: true,
-			default: null,
-		},
-	})
-});
+const name = 'notifications';
 
-export default defineComponent({
-
-	components: {
-		MkContainer,
-		XNotifications,
+const widgetPropsDef = {
+	showHeader: {
+		type: 'boolean' as const,
+		default: true,
 	},
-	extends: widget,
-
-	data() {
-		return {
-		};
+	height: {
+		type: 'number' as const,
+		default: 300,
 	},
+	includingTypes: {
+		type: 'array' as const,
+		hidden: true,
+		default: null,
+	},
+};
 
-	methods: {
-		configure() {
-			os.popup(import('@/components/notification-setting-window.vue'), {
-				includingTypes: this.props.includingTypes,
-			}, {
-				done: async (res) => {
-					const { includingTypes } = res;
-					this.props.includingTypes = includingTypes;
-					this.save();
-				}
-			}, 'closed');
+type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
+
+// 現時点ではvueの制限によりimportしたtypeをジェネリックに渡せない
+//const props = defineProps<WidgetComponentProps<WidgetProps>>();
+//const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
+const props = defineProps<{ widget?: Widget<WidgetProps>; }>();
+const emit = defineEmits<{ (e: 'updateProps', props: WidgetProps); }>();
+
+const { widgetProps, configure, save } = useWidgetPropsManager(name,
+	widgetPropsDef,
+	props,
+	emit,
+);
+
+const configureNotification = () => {
+	os.popup(import('@/components/notification-setting-window.vue'), {
+		includingTypes: widgetProps.includingTypes,
+	}, {
+		done: async (res) => {
+			const { includingTypes } = res;
+			widgetProps.includingTypes = includingTypes;
+			save();
 		}
-	}
+	}, 'closed');
+};
+
+defineExpose<WidgetComponentExpose>({
+	name,
+	configure,
+	id: props.widget ? props.widget.id : null,
 });
 </script>

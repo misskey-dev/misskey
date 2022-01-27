@@ -1,6 +1,7 @@
 import { onUnmounted, Ref, ref, watch } from 'vue';
 import { $i } from './account';
 import { api } from './os';
+import { stream } from './stream';
 
 type StateDef = Record<string, {
 	where: 'account' | 'device' | 'deviceAccount';
@@ -8,6 +9,8 @@ type StateDef = Record<string, {
 }>;
 
 type ArrayElement<A> = A extends readonly (infer T)[] ? T : never;
+
+const connection = $i && stream.useChannel('main');
 
 export class Storage<T extends StateDef> {
 	public readonly key: string;
@@ -51,7 +54,7 @@ export class Storage<T extends StateDef> {
 
 		if ($i) {
 			// なぜかsetTimeoutしないとapi関数内でエラーになる(おそらく循環参照してることに原因がありそう)
-			setTimeout(() => {
+			window.setTimeout(() => {
 				api('i/registry/get-all', { scope: ['client', this.key] }).then(kvs => {
 					const cache = {};
 					for (const [k, v] of Object.entries(def)) {
@@ -69,8 +72,19 @@ export class Storage<T extends StateDef> {
 					localStorage.setItem(this.keyForLocalStorage + '::cache::' + $i.id, JSON.stringify(cache));
 				});
 			}, 1);
+			// streamingのuser storage updateイベントを監視して更新
+			connection?.on('registryUpdated', ({ scope, key, value }: { scope: string[], key: keyof T, value: T[typeof key]['default'] }) => {
+				if (scope.length !== 2 || scope[0] !== 'client' || scope[1] !== this.key || this.state[key] === value) return;
 
-			// TODO: streamingのuser storage updateイベントを監視して更新
+				this.state[key] = value;
+				this.reactiveState[key].value = value;
+
+				const cache = JSON.parse(localStorage.getItem(this.keyForLocalStorage + '::cache::' + $i.id) || '{}');
+				if (cache[key] !== value) {
+					cache[key] = value;
+					localStorage.setItem(this.keyForLocalStorage + '::cache::' + $i.id, JSON.stringify(cache));
+				}
+			});
 		}
 	}
 

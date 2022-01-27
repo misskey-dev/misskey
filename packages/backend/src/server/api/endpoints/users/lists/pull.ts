@@ -9,7 +9,7 @@ import { UserLists, UserListJoinings, Users } from '@/models/index';
 export const meta = {
 	tags: ['lists', 'users'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	kind: 'write:account',
 
@@ -36,8 +36,9 @@ export const meta = {
 			id: '588e7f72-c744-4a61-b180-d354e912bda2',
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, me) => {
 	// Fetch the list
 	const userList = await UserLists.findOne({

@@ -27,6 +27,7 @@ export class AbuseUserReportRepository extends Repository<AbuseUserReport> {
 			assignee: report.assigneeId ? Users.pack(report.assignee || report.assigneeId, null, {
 				detail: true,
 			}) : null,
+			forwarded: report.forwarded,
 		});
 	}
 

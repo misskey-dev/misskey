@@ -9,7 +9,7 @@ import { ID } from '@/misc/cafy-id';
 export const meta = {
 	tags: ['admin'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 	requireModerator: true,
 
 	params: {
@@ -17,8 +17,9 @@ export const meta = {
 			validator: $.type(ID),
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, me) => {
 	const user = await Users.findOne(ps.userId);
 

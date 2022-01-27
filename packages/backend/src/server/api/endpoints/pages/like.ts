@@ -8,7 +8,7 @@ import { genId } from '@/misc/gen-id';
 export const meta = {
 	tags: ['pages'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	kind: 'write:page-likes',
 
@@ -37,8 +37,9 @@ export const meta = {
 			id: 'cc98a8a2-0dc3-4123-b198-62c71df18ed3',
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	const page = await Pages.findOne(ps.pageId);
 	if (page == null) {

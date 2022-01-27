@@ -1,28 +1,25 @@
 <template>
-<FormBase>
+<MkSpacer :content-max="800">
 	<XQueue :connection="connection" domain="inbox">
 		<template #title>In</template>
 	</XQueue>
 	<XQueue :connection="connection" domain="deliver">
 		<template #title>Out</template>
 	</XQueue>
-	<FormButton danger @click="clear()"><i class="fas fa-trash-alt"></i> {{ $ts.clearQueue }}</FormButton>
-</FormBase>
+	<MkButton danger @click="clear()"><i class="fas fa-trash-alt"></i> {{ $ts.clearQueue }}</MkButton>
+</MkSpacer>
 </template>
 
 <script lang="ts">
 import { defineComponent, markRaw } from 'vue';
 import MkButton from '@/components/ui/button.vue';
 import XQueue from './queue.chart.vue';
-import FormBase from '@/components/debobigego/base.vue';
-import FormButton from '@/components/debobigego/button.vue';
 import * as os from '@/os';
+import { stream } from '@/stream';
 import * as symbols from '@/symbols';
 
 export default defineComponent({
 	components: {
-		FormBase,
-		FormButton,
 		MkButton,
 		XQueue,
 	},
@@ -36,13 +33,11 @@ export default defineComponent({
 				icon: 'fas fa-clipboard-list',
 				bg: 'var(--bg)',
 			},
-			connection: markRaw(os.stream.useChannel('queueStats')),
+			connection: markRaw(stream.useChannel('queueStats')),
 		}
 	},
 
 	mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
-
 		this.$nextTick(() => {
 			this.connection.send('requestLog', {
 				id: Math.random().toString().substr(2, 8),

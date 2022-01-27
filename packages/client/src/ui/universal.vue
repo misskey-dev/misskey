@@ -9,7 +9,7 @@
 					<template #header><MkHeader v-if="pageInfo && !pageInfo.hideHeader" :info="pageInfo"/></template>
 					<router-view v-slot="{ Component }">
 						<transition :name="$store.state.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
-							<keep-alive :include="['timeline']">
+							<keep-alive :include="['MkTimelinePage']">
 								<component :is="Component" :ref="changePage"/>
 							</keep-alive>
 						</transition>
@@ -36,7 +36,7 @@
 		<button class="button post _button" @click="post()"><i class="fas fa-pencil-alt"></i></button>
 	</div>
 
-	<transition name="menuDrawer-back">
+	<transition :name="$store.state.animation ? 'menuDrawer-back' : ''">
 		<div v-if="drawerMenuShowing"
 			class="menuDrawer-back _modalBg"
 			@click="drawerMenuShowing = false"
@@ -44,11 +44,11 @@
 		></div>
 	</transition>
 
-	<transition name="menuDrawer">
+	<transition :name="$store.state.animation ? 'menuDrawer' : ''">
 		<XDrawerMenu v-if="drawerMenuShowing" class="menuDrawer"/>
 	</transition>
 
-	<transition name="widgetsDrawer-back">
+	<transition :name="$store.state.animation ? 'widgetsDrawer-back' : ''">
 		<div v-if="widgetsShowing"
 			class="widgetsDrawer-back _modalBg"
 			@click="widgetsShowing = false"
@@ -56,7 +56,7 @@
 		></div>
 	</transition>
 
-	<transition name="widgetsDrawer">
+	<transition :name="$store.state.animation ? 'widgetsDrawer' : ''">
 		<XWidgets v-if="widgetsShowing" class="widgetsDrawer"/>
 	</transition>
 

@@ -9,7 +9,7 @@ import { genId } from '@/misc/gen-id';
 export const meta = {
 	tags: ['auth'],
 
-	requireCredential: false as const,
+	requireCredential: false,
 
 	params: {
 		appSecret: {
@@ -18,16 +18,16 @@ export const meta = {
 	},
 
 	res: {
-		type: 'object' as const,
-		optional: false as const, nullable: false as const,
+		type: 'object',
+		optional: false, nullable: false,
 		properties: {
 			token: {
-				type: 'string' as const,
-				optional: false as const, nullable: false as const,
+				type: 'string',
+				optional: false, nullable: false,
 			},
 			url: {
-				type: 'string' as const,
-				optional: false as const, nullable: false as const,
+				type: 'string',
+				optional: false, nullable: false,
 				format: 'url',
 			},
 		},
@@ -40,8 +40,9 @@ export const meta = {
 			id: '92f93e63-428e-4f2f-a5a4-39e1407fe998',
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps) => {
 	// Lookup app
 	const app = await Apps.findOne({
@@ -56,12 +57,12 @@ export default define(meta, async (ps) => {
 	const token = uuid();
 
 	// Create session token document
-	const doc = await AuthSessions.save({
+	const doc = await AuthSessions.insert({
 		id: genId(),
 		createdAt: new Date(),
 		appId: app.id,
 		token: token,
-	});
+	}).then(x => AuthSessions.findOneOrFail(x.identifiers[0]));
 
 	return {
 		token: doc.token,

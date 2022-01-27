@@ -1,50 +1,55 @@
 <template>
-<FormBase>
+<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
 	<FormSuspense :p="init">
-		<FormSwitch v-model="enableEmail">{{ $ts.enableEmail }}<template #desc>{{ $ts.emailConfigInfo }}</template></FormSwitch>
+		<div class="_formRoot">
+			<FormSwitch v-model="enableEmail" class="_formBlock">
+				<template #label>{{ $ts.enableEmail }}</template>
+				<template #caption>{{ $ts.emailConfigInfo }}</template>
+			</FormSwitch>
 
-		<template v-if="enableEmail">
-			<FormInput v-model="email" type="email">
-				<span>{{ $ts.emailAddress }}</span>
-			</FormInput>
+			<template v-if="enableEmail">
+				<FormInput v-model="email" type="email" class="_formBlock">
+					<template #label>{{ $ts.emailAddress }}</template>
+				</FormInput>
 
-			<div v-sticky-container class="_debobigegoItem _debobigegoNoConcat">
-				<div class="_debobigegoLabel">{{ $ts.smtpConfig }}</div>
-				<div class="main">
-					<FormInput v-model="smtpHost">
-						<span>{{ $ts.smtpHost }}</span>
-					</FormInput>
-					<FormInput v-model="smtpPort" type="number">
-						<span>{{ $ts.smtpPort }}</span>
-					</FormInput>
-					<FormInput v-model="smtpUser">
-						<span>{{ $ts.smtpUser }}</span>
-					</FormInput>
-					<FormInput v-model="smtpPass" type="password">
-						<span>{{ $ts.smtpPass }}</span>
-					</FormInput>
-					<FormInfo>{{ $ts.emptyToDisableSmtpAuth }}</FormInfo>
-					<FormSwitch v-model="smtpSecure">{{ $ts.smtpSecure }}<template #desc>{{ $ts.smtpSecureInfo }}</template></FormSwitch>
-				</div>
-			</div>
-
-			<FormButton @click="testEmail">{{ $ts.testEmail }}</FormButton>
-		</template>
-
-		<FormButton primary @click="save"><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
+				<FormSection>
+					<template #label>{{ $ts.smtpConfig }}</template>
+					<FormSplit :min-width="280">
+						<FormInput v-model="smtpHost" class="_formBlock">
+							<template #label>{{ $ts.smtpHost }}</template>
+						</FormInput>
+						<FormInput v-model="smtpPort" type="number" class="_formBlock">
+							<template #label>{{ $ts.smtpPort }}</template>
+						</FormInput>
+					</FormSplit>
+					<FormSplit :min-width="280">
+						<FormInput v-model="smtpUser" class="_formBlock">
+							<template #label>{{ $ts.smtpUser }}</template>
+						</FormInput>
+						<FormInput v-model="smtpPass" type="password" class="_formBlock">
+							<template #label>{{ $ts.smtpPass }}</template>
+						</FormInput>
+					</FormSplit>
+					<FormInfo class="_formBlock">{{ $ts.emptyToDisableSmtpAuth }}</FormInfo>
+					<FormSwitch v-model="smtpSecure" class="_formBlock">
+						<template #label>{{ $ts.smtpSecure }}</template>
+						<template #caption>{{ $ts.smtpSecureInfo }}</template>
+					</FormSwitch>
+				</FormSection>
+			</template>
+		</div>
 	</FormSuspense>
-</FormBase>
+</MkSpacer>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import FormSwitch from '@/components/debobigego/switch.vue';
-import FormInput from '@/components/debobigego/input.vue';
-import FormButton from '@/components/debobigego/button.vue';
-import FormBase from '@/components/debobigego/base.vue';
-import FormGroup from '@/components/debobigego/group.vue';
-import FormInfo from '@/components/debobigego/info.vue';
-import FormSuspense from '@/components/debobigego/suspense.vue';
+import FormSwitch from '@/components/form/switch.vue';
+import FormInput from '@/components/form/input.vue';
+import FormInfo from '@/components/ui/info.vue';
+import FormSuspense from '@/components/form/suspense.vue';
+import FormSplit from '@/components/form/split.vue';
+import FormSection from '@/components/form/section.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { fetchInstance } from '@/instance';
@@ -53,9 +58,8 @@ export default defineComponent({
 	components: {
 		FormSwitch,
 		FormInput,
-		FormBase,
-		FormGroup,
-		FormButton,
+		FormSplit,
+		FormSection,
 		FormInfo,
 		FormSuspense,
 	},
@@ -68,6 +72,16 @@ export default defineComponent({
 				title: this.$ts.emailServer,
 				icon: 'fas fa-envelope',
 				bg: 'var(--bg)',
+				actions: [{
+					asFullButton: true,
+					text: this.$ts.testEmail,
+					handler: this.testEmail,
+				}, {
+					asFullButton: true,
+					icon: 'fas fa-check',
+					text: this.$ts.save,
+					handler: this.save,
+				}],
 			},
 			enableEmail: false,
 			email: null,
@@ -77,10 +91,6 @@ export default defineComponent({
 			smtpUser: '',
 			smtpPass: '',
 		}
-	},
-
-	async mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
 	},
 
 	methods: {

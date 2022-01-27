@@ -2,7 +2,6 @@ import { redisClient } from '../db/redis';
 import { User } from '@/models/entities/user';
 import { Note } from '@/models/entities/note';
 import { UserList } from '@/models/entities/user-list';
-import { ReversiGame } from '@/models/entities/games/reversi/game';
 import { UserGroup } from '@/models/entities/user-group';
 import config from '@/config/index';
 import { Antenna } from '@/models/entities/antenna';
@@ -20,8 +19,6 @@ import {
 	MessagingIndexStreamTypes,
 	MessagingStreamTypes,
 	NoteStreamTypes,
-	ReversiGameStreamTypes,
-	ReversiStreamTypes,
 	UserListStreamTypes,
 	UserStreamTypes,
 } from '@/server/api/stream/types';
@@ -90,14 +87,6 @@ class Publisher {
 		this.publish(`messagingIndexStream:${userId}`, type, typeof value === 'undefined' ? null : value);
 	};
 
-	public publishReversiStream = <K extends keyof ReversiStreamTypes>(userId: User['id'], type: K, value?: ReversiStreamTypes[K]): void => {
-		this.publish(`reversiStream:${userId}`, type, typeof value === 'undefined' ? null : value);
-	};
-
-	public publishReversiGameStream = <K extends keyof ReversiGameStreamTypes>(gameId: ReversiGame['id'], type: K, value?: ReversiGameStreamTypes[K]): void => {
-		this.publish(`reversiGameStream:${gameId}`, type, typeof value === 'undefined' ? null : value);
-	};
-
 	public publishNotesStream = (note: Packed<'Note'>): void => {
 		this.publish('notesStream', null, note);
 	};
@@ -124,6 +113,4 @@ export const publishAntennaStream = publisher.publishAntennaStream;
 export const publishMessagingStream = publisher.publishMessagingStream;
 export const publishGroupMessagingStream = publisher.publishGroupMessagingStream;
 export const publishMessagingIndexStream = publisher.publishMessagingIndexStream;
-export const publishReversiStream = publisher.publishReversiStream;
-export const publishReversiGameStream = publisher.publishReversiGameStream;
 export const publishAdminStream = publisher.publishAdminStream;

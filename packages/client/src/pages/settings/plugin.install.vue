@@ -1,15 +1,15 @@
 <template>
-<FormBase>
-	<FormInfo warn>{{ $ts._plugin.installWarn }}</FormInfo>
+<div class="_formRoot">
+	<FormInfo warn class="_formBlock">{{ $ts._plugin.installWarn }}</FormInfo>
 
-	<FormGroup>
-		<FormTextarea v-model="code" tall>
-			<span>{{ $ts.code }}</span>
-		</FormTextarea>
-	</FormGroup>
+	<FormTextarea v-model="code" tall class="_formBlock">
+		<template #label>{{ $ts.code }}</template>
+	</FormTextarea>
 
-	<FormButton :disabled="code == null" primary inline @click="install"><i class="fas fa-check"></i> {{ $ts.install }}</FormButton>
-</FormBase>
+	<div class="_formBlock">
+		<FormButton :disabled="code == null" primary inline @click="install"><i class="fas fa-check"></i> {{ $ts.install }}</FormButton>
+	</div>
+</div>
 </template>
 
 <script lang="ts">
@@ -18,13 +18,8 @@ import { AiScript, parse } from '@syuilo/aiscript';
 import { serialize } from '@syuilo/aiscript/built/serializer';
 import { v4 as uuid } from 'uuid';
 import FormTextarea from '@/components/form/textarea.vue';
-import FormSelect from '@/components/form/select.vue';
-import FormRadios from '@/components/form/radios.vue';
-import FormBase from '@/components/debobigego/base.vue';
-import FormGroup from '@/components/debobigego/group.vue';
-import FormLink from '@/components/debobigego/link.vue';
-import FormButton from '@/components/debobigego/button.vue';
-import FormInfo from '@/components/debobigego/info.vue';
+import FormButton from '@/components/ui/button.vue';
+import FormInfo from '@/components/ui/info.vue';
 import * as os from '@/os';
 import { ColdDeviceStorage } from '@/store';
 import { unisonReload } from '@/scripts/unison-reload';
@@ -33,11 +28,6 @@ import * as symbols from '@/symbols';
 export default defineComponent({
 	components: {
 		FormTextarea,
-		FormSelect,
-		FormRadios,
-		FormBase,
-		FormGroup,
-		FormLink,
 		FormButton,
 		FormInfo,
 	},
@@ -53,10 +43,6 @@ export default defineComponent({
 			},
 			code: null,
 		}
-	},
-
-	mounted() {
-		this.$emit('info', this[symbols.PAGE_INFO]);
 	},
 
 	methods: {

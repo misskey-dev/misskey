@@ -7,50 +7,30 @@
 				<MkReactionIcon class="reaction" :reaction="item.type" :custom-emojis="item.note.emojis" :no-style="true"/>
 				<MkTime :time="item.createdAt" class="createdAt"/>
 			</div>
-			<MkNote :key="item.id" :note="item.note" @update:note="updated(note, $event)"/>
+			<MkNote :key="item.id" :note="item.note"/>
 		</div>
 	</MkPagination>
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { computed } from 'vue';
+import * as misskey from 'misskey-js';
 import MkPagination from '@/components/ui/pagination.vue';
 import MkNote from '@/components/note.vue';
 import MkReactionIcon from '@/components/reaction-icon.vue';
 
-export default defineComponent({
-	components: {
-		MkPagination,
-		MkNote,
-		MkReactionIcon,
-	},
+const props = defineProps<{
+	user: misskey.entities.User;
+}>();
 
-	props: {
-		user: {
-			type: Object,
-			required: true
-		},
-	},
-
-	data() {
-		return {
-			pagination: {
-				endpoint: 'users/reactions',
-				limit: 20,
-				params: {
-					userId: this.user.id,
-				}
-			},
-		};
-	},
-
-	watch: {
-		user() {
-			this.$refs.list.reload();
-		}
-	},
-});
+const pagination = {
+	endpoint: 'users/reactions' as const,
+	limit: 20,
+	params: computed(() => ({
+		userId: props.user.id,
+	})),
+};
 </script>
 
 <style lang="scss" scoped>

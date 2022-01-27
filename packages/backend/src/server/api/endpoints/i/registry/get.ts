@@ -4,7 +4,7 @@ import { RegistryItems } from '@/models/index';
 import { ApiError } from '../../../error';
 
 export const meta = {
-	requireCredential: true as const,
+	requireCredential: true,
 
 	secure: true,
 
@@ -26,8 +26,9 @@ export const meta = {
 			id: 'ac3ed68a-62f0-422b-a7bc-d5e09e8f6a6a',
 		},
 	},
-};
+} as const;
 
+// eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {
 	const query = RegistryItems.createQueryBuilder('item')
 		.where('item.domain IS NULL')

@@ -1,12 +1,14 @@
 <template>
 <div>
-	<span v-if="!available">{{ $ts.waiting }}<MkEllipsis/></span>
-	<div ref="captcha"></div>
+	<span v-if="!available">{{ i18n.locale.waiting }}<MkEllipsis/></span>
+	<div ref="captchaEl"></div>
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType } from 'vue';
+<script lang="ts" setup>
+import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue';
+import { defaultStore } from '@/store';
+import { i18n } from '@/i18n';
 
 type Captcha = {
 	render(container: string | Node, options: {
@@ -14,7 +16,7 @@ type Captcha = {
 	}): string;
 	remove(id: string): void;
 	execute(id: string): void;
-	reset(id: string): void;
+	reset(id?: string): void;
 	getResponse(id: string): string;
 };
 
@@ -29,95 +31,85 @@ declare global {
 	}
 }
 
-export default defineComponent({
-	props: {
-		provider: {
-			type: String as PropType<CaptchaProvider>,
-			required: true,
-		},
-		sitekey: {
-			type: String,
-			required: true,
-		},
-		modelValue: {
-			type: String,
-		},
-	},
+const props = defineProps<{
+	provider: CaptchaProvider;
+	sitekey: string;
+	modelValue?: string | null;
+}>();
 
-	data() {
-		return {
-			available: false,
-		};
-	},
+const emit = defineEmits<{
+	(ev: 'update:modelValue', v: string | null): void;
+}>();
 
-	computed: {
-		variable(): string {
-			switch (this.provider) {
-				case 'hcaptcha': return 'hcaptcha';
-				case 'recaptcha': return 'grecaptcha';
-			}
-		},
-		loaded(): boolean {
-			return !!window[this.variable];
-		},
-		src(): string {
-			const endpoint = ({
-				hcaptcha: 'https://hcaptcha.com/1',
-				recaptcha: 'https://www.recaptcha.net/recaptcha',
-			} as Record<CaptchaProvider, string>)[this.provider];
+const available = ref(false);
 
-			return `${typeof endpoint === 'string' ? endpoint : 'about:invalid'}/api.js?render=explicit`;
-		},
-		captcha(): Captcha {
-			return window[this.variable] || {} as unknown as Captcha;
-		},
-	},
+const captchaEl = ref<HTMLDivElement | undefined>();
 
-	created() {
-		if (this.loaded) {
-			this.available = true;
-		} else {
-			(document.getElementById(this.provider) || document.head.appendChild(Object.assign(document.createElement('script'), {
-				async: true,
-				id: this.provider,
-				src: this.src,
-			})))
-				.addEventListener('load', () => this.available = true);
-		}
-	},
-
-	mounted() {
-		if (this.available) {
-			this.requestRender();
-		} else {
-			this.$watch('available', this.requestRender);
-		}
-	},
-
-	beforeUnmount() {
-		this.reset();
-	},
-
-	methods: {
-		reset() {
-			if (this.captcha?.reset) this.captcha.reset();
-		},
-		requestRender() {
-			if (this.captcha.render && this.$refs.captcha instanceof Element) {
-				this.captcha.render(this.$refs.captcha, {
-					sitekey: this.sitekey,
-					theme: this.$store.state.darkMode ? 'dark' : 'light',
-					callback: this.callback,
-					'expired-callback': this.callback,
-					'error-callback': this.callback,
-				});
-			} else {
-				setTimeout(this.requestRender.bind(this), 1);
-			}
-		},
-		callback(response?: string) {
-			this.$emit('update:modelValue', typeof response == 'string' ? response : null);
-		},
-	},
+const variable = computed(() => {
+	switch (props.provider) {
+		case 'hcaptcha': return 'hcaptcha';
+		case 'recaptcha': return 'grecaptcha';
+	}
 });
+
+const loaded = computed(() => !!window[variable.value]);
+
+const src = computed(() => {
+	switch (props.provider) {
+		case 'hcaptcha': return 'https://js.hcaptcha.com/1/api.js?render=explicit&recaptchacompat=off';
+		case 'recaptcha': return 'https://www.recaptcha.net/recaptcha/api.js?render=explicit';
+	}
+});
+
+const captcha = computed<Captcha>(() => window[variable.value] || {} as unknown as Captcha);
+
+if (loaded.value) {
+	available.value = true;
+} else {
+	(document.getElementById(props.provider) || document.head.appendChild(Object.assign(document.createElement('script'), {
+		async: true,
+		id: props.provider,
+		src: src.value,
+	})))
+		.addEventListener('load', () => available.value = true);
+}
+
+function reset() {
+	if (captcha.value?.reset) captcha.value.reset();
+}
+
+function requestRender() {
+	if (captcha.value.render && captchaEl.value instanceof Element) {
+		captcha.value.render(captchaEl.value, {
+			sitekey: props.sitekey,
+			theme: defaultStore.state.darkMode ? 'dark' : 'light',
+			callback: callback,
+			'expired-callback': callback,
+			'error-callback': callback,
+		});
+	} else {
+		window.setTimeout(requestRender, 1);
+	}
+}
+
+function callback(response?: string) {
+	emit('update:modelValue', typeof response == 'string' ? response : null);
+}
+
+onMounted(() => {
+	if (available.value) {
+		requestRender();
+	} else {
+		watch(available, requestRender);
+	}
+});
+
+onBeforeUnmount(() => {
+	reset();
+});
+
+defineExpose({
+	reset,
+});
+
 </script>

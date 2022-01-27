@@ -20,7 +20,6 @@ const defaultRoutes = [
 	{ path: '/@:acct/:page?', name: 'user', component: page('user/index'), props: route => ({ acct: route.params.acct, page: route.params.page || 'index' }) },
 	{ path: '/@:user/pages/:page', component: page('page'), props: route => ({ pageName: route.params.page, username: route.params.user }) },
 	{ path: '/@:user/pages/:pageName/view-source', component: page('page-editor/page-editor'), props: route => ({ initUser: route.params.user, initPageName: route.params.pageName }) },
-	{ path: '/@:acct/room', props: true, component: page('room/room') },
 	{ path: '/settings/:page(.*)?', name: 'settings', component: page('settings/index'), props: route => ({ initialPage: route.params.page || null }) },
 	{ path: '/reset-password/:token?', component: page('reset-password'), props: route => ({ token: route.params.token }) },
 	{ path: '/signup-complete/:code', component: page('signup-complete'), props: route => ({ code: route.params.code }) },
@@ -34,7 +33,7 @@ const defaultRoutes = [
 	{ path: '/explore/tags/:tag', props: true, component: page('explore') },
 	{ path: '/federation', component: page('federation') },
 	{ path: '/emojis', component: page('emojis') },
-	{ path: '/search', component: page('search') },
+	{ path: '/search', component: page('search'), props: route => ({ query: route.query.q, channel: route.query.channel }) },
 	{ path: '/pages', name: 'pages', component: page('pages') },
 	{ path: '/pages/new', component: page('page-editor/page-editor') },
 	{ path: '/pages/edit/:pageId', component: page('page-editor/page-editor'), props: route => ({ initPageId: route.params.pageId }) },
@@ -73,10 +72,7 @@ const defaultRoutes = [
 	{ path: '/notes/:note', name: 'note', component: page('note'), props: route => ({ noteId: route.params.note }) },
 	{ path: '/tags/:tag', component: page('tag'), props: route => ({ tag: route.params.tag }) },
 	{ path: '/user-info/:user', component: page('user-info'), props: route => ({ userId: route.params.user }) },
-	{ path: '/user-ap-info/:user', component: page('user-ap-info'), props: route => ({ userId: route.params.user }) },
 	{ path: '/instance-info/:host', component: page('instance-info'), props: route => ({ host: route.params.host }) },
-	{ path: '/games/reversi', component: page('reversi/index') },
-	{ path: '/games/reversi/:gameId', component: page('reversi/game'), props: route => ({ gameId: route.params.gameId }) },
 	{ path: '/mfm-cheat-sheet', component: page('mfm-cheat-sheet') },
 	{ path: '/api-console', component: page('api-console') },
 	{ path: '/preview', component: page('preview') },
@@ -119,11 +115,11 @@ export const router = createRouter({
 		window._scroll = () => { // さらにHacky
 			if (to.name === 'index') {
 				window.scroll({ top: indexScrollPos, behavior: 'instant' });
-				const i = setInterval(() => {
+				const i = window.setInterval(() => {
 					window.scroll({ top: indexScrollPos, behavior: 'instant' });
 				}, 10);
-				setTimeout(() => {
-					clearInterval(i);
+				window.setTimeout(() => {
+					window.clearInterval(i);
 				}, 500);
 			} else {
 				window.scroll({ top: 0, behavior: 'instant' });
