@@ -12,12 +12,11 @@
 				</template>
 
 				<template #defalut="{ items: messages }">
-					<XList v-slot="{ item: message }" class="messages" :items="messages" direction="up" reversed>
+					<XList v-if="messages.length > 0" v-slot="{ item: message }" class="messages" :items="messages" direction="up" reversed>
 						<XMessage :key="message.id" :message="message" :is-group="group != null"/>
 					</XList>
 				</template>
 			</MkPagination>
-			<MkLoading v-if="fetching"/>
 		</div>
 		<footer>
 			<div v-if="typers.length > 0" class="typers">

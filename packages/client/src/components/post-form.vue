@@ -102,7 +102,7 @@ const props = withDefaults(defineProps<{
 	initialLocalOnly?: boolean;
 	initialVisibleUsers?: misskey.entities.User[];
 	initialNote?: misskey.entities.Note;
-	share?: boolean;
+	instant?: boolean;
 	fixed?: boolean;
 	autofocus?: boolean;
 }>(), {
@@ -641,7 +641,7 @@ onMounted(() => {
 
 	nextTick(() => {
 		// 書きかけの投稿を復元
-		if (!props.share && !props.mention && !props.specified) {
+		if (!props.instant && !props.mention && !props.specified) {
 			const draft = JSON.parse(localStorage.getItem('drafts') || '{}')[draftKey];
 			if (draft) {
 				text = draft.data.text;
