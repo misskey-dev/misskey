@@ -326,7 +326,7 @@ defineExpose({
 		width: 100%;
 		position: sticky;
 		z-index: 2;
-		bottom: 8px;
+		bottom: 0;
 		padding-top: 8px;
 
 		@media (max-width: 500px) {
@@ -373,6 +373,8 @@ defineExpose({
 		}
 
 		> .form {
+			max-height: 12em;
+			overflow-y: scroll;
 			border-top: solid 0.5px var(--divider);
 		}
 	}

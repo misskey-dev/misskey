@@ -11,12 +11,16 @@
 		@compositionupdate="onCompositionUpdate"
 		@paste="onPaste"
 	></textarea>
-	<div v-if="file" class="file" @click="file = null">{{ file.name }}</div>
-	<button class="send _button" :disabled="!canSend || sending" :title="i18n.locale.send" @click="send">
-		<template v-if="!sending"><i class="fas fa-paper-plane"></i></template><template v-if="sending"><i class="fas fa-spinner fa-pulse fa-fw"></i></template>
-	</button>
-	<button class="_button" @click="chooseFile"><i class="fas fa-photo-video"></i></button>
-	<button class="_button" @click="insertEmoji"><i class="fas fa-laugh-squint"></i></button>
+	<footer>
+		<div v-if="file" class="file" @click="file = null">{{ file.name }}</div>
+		<div class="buttons">
+			<button class="_button" @click="chooseFile"><i class="fas fa-photo-video"></i></button>
+			<button class="_button" @click="insertEmoji"><i class="fas fa-laugh-squint"></i></button>
+			<button class="send _button" :disabled="!canSend || sending" :title="i18n.locale.send" @click="send">
+				<template v-if="!sending"><i class="fas fa-paper-plane"></i></template><template v-if="sending"><i class="fas fa-spinner fa-pulse fa-fw"></i></template>
+			</button>
+		</div>
+	</footer>
 	<input ref="fileEl" type="file" @change="onChangeFile"/>
 </div>
 </template>
@@ -54,21 +58,6 @@ let draftKey = $computed(() => props.user ? 'user:' + props.user.id : 'group:' +
 let canSend = $computed(() => (text != null && text != '') || file != null);
 
 watch([$$(text), $$(file)], saveDraft);
-
-onMounted(() => {
-	autosize(textEl);
-
-	// TODO: detach when unmount
-	// TODO
-	//new Autocomplete(textEl, this, { model: 'text' });
-
-	// 書きかけの投稿を復元
-	const draft = JSON.parse(localStorage.getItem('message_drafts') || '{}')[draftKey];
-	if (draft) {
-		text = draft.data.text;
-		file = draft.data.file;
-	}
-});
 
 async function onPaste(e: ClipboardEvent) {
 	if (!e.clipboardData) return;
@@ -207,6 +196,21 @@ async function insertEmoji(ev: MouseEvent) {
 	os.openEmojiPicker(ev.currentTarget || ev.target, {}, textEl);
 }
 
+onMounted(() => {
+	autosize(textEl);
+
+	// TODO: detach when unmount
+	// TODO
+	//new Autocomplete(textEl, this, { model: 'text' });
+
+	// 書きかけの投稿を復元
+	const draft = JSON.parse(localStorage.getItem('message_drafts') || '{}')[draftKey];
+	if (draft) {
+		text = draft.data.text;
+		file = draft.data.file;
+	}
+});
+
 defineExpose({
 	file,
 	upload,
@@ -223,7 +227,7 @@ defineExpose({
 		width: 100%;
 		min-width: 100%;
 		max-width: 100%;
-		height: 80px;
+		min-height: 80px;
 		margin: 0;
 		padding: 16px 16px 0 16px;
 		resize: none;
@@ -238,26 +242,16 @@ defineExpose({
 		color: var(--fg);
 	}
 
-	> .file {
-		padding: 8px;
-		color: var(--fg);
-		background: transparent;
-		cursor: pointer;
-	}
-
-	> .send {
-		position: absolute;
+	footer {
+		position: sticky;
 		bottom: 0;
-		right: 0;
-		margin: 0;
-		padding: 16px;
-		font-size: 1em;
-		transition: color 0.1s ease;
-		color: var(--accent);
+		background: var(--panel);
 
-		&:active {
-			color: var(--accentDarken);
-			transition: color 0s ease;
+		> .file {
+			padding: 8px;
+			color: var(--fg);
+			background: transparent;
+			cursor: pointer;
 		}
 	}
 
@@ -309,21 +303,39 @@ defineExpose({
 		}
 	}
 
-	._button {
-		margin: 0;
-		padding: 16px;
-		font-size: 1em;
-		font-weight: normal;
-		text-decoration: none;
-		transition: color 0.1s ease;
+	.buttons {
+		display: flex;
 
-		&:hover {
-			color: var(--accent);
+		._button {
+			margin: 0;
+			padding: 16px;
+			font-size: 1em;
+			font-weight: normal;
+			text-decoration: none;
+			transition: color 0.1s ease;
+
+			&:hover {
+				color: var(--accent);
+			}
+
+			&:active {
+				color: var(--accentDarken);
+				transition: color 0s ease;
+			}
 		}
 
-		&:active {
-			color: var(--accentDarken);
-			transition: color 0s ease;
+		> .send {
+			margin-left: auto;
+			color: var(--accent);
+
+			&:hover {
+				color: var(--accentLighten);
+			}
+
+			&:active {
+				color: var(--accentDarken);
+				transition: color 0s ease;
+			}
 		}
 	}
 
