@@ -28,7 +28,7 @@ function getFixedContainer(el: Element | null): Element | null {
 type ModalTypes = 'popup' | 'dialog' | 'dialog:top' | 'drawer';
 
 const props = withDefaults(defineProps<{
-	manualShowing?: boolean;
+	manualShowing?: boolean | null;
 	srcCenter?: boolean;
 	src?: HTMLElement;
 	preferType?: ModalTypes | 'auto';

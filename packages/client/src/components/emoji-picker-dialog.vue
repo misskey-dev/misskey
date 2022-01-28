@@ -32,12 +32,12 @@ import MkEmojiPicker from '@/components/emoji-picker.vue';
 import { defaultStore } from '@/store';
 
 withDefaults(defineProps<{
-	manualShowing?: boolean;
+	manualShowing?: boolean | null;
 	src?: HTMLElement;
 	showPinned?: boolean;
 	asReactionPicker?: boolean;
 }>(), {
-	manualShowing: false,
+	manualShowing: null,
 	showPinned: true,
 	asReactionPicker: false,
 });
