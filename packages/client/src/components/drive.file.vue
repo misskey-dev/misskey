@@ -8,17 +8,17 @@
 	@dragstart="onDragstart"
 	@dragend="onDragend"
 >
-	<div v-if="$i.avatarId == file.id" class="label">
+	<div v-if="$i?.avatarId == file.id" class="label">
 		<img src="/client-assets/label.svg"/>
-		<p>{{ $ts.avatar }}</p>
+		<p>{{ i18n.ts.avatar }}</p>
 	</div>
-	<div v-if="$i.bannerId == file.id" class="label">
+	<div v-if="$i?.bannerId == file.id" class="label">
 		<img src="/client-assets/label.svg"/>
-		<p>{{ $ts.banner }}</p>
+		<p>{{ i18n.ts.banner }}</p>
 	</div>
 	<div v-if="file.isSensitive" class="label red">
 		<img src="/client-assets/label-red.svg"/>
-		<p>{{ $ts.nsfw }}</p>
+		<p>{{ i18n.ts.nsfw }}</p>
 	</div>
 
 	<MkDriveFileThumbnail class="thumbnail" :file="file" fit="contain"/>
@@ -30,179 +30,155 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { computed, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import MkDriveFileThumbnail from './drive-file-thumbnail.vue';
 import bytes from '@/filters/bytes';
 import * as os from '@/os';
+import { i18n } from '@/i18n';
+import { $i } from '@/account';
 
-export default defineComponent({
-	components: {
-		MkDriveFileThumbnail
-	},
-
-	props: {
-		file: {
-			type: Object,
-			required: true,
-		},
-		isSelected: {
-			type: Boolean,
-			required: false,
-			default: false,
-		},
-		selectMode: {
-			type: Boolean,
-			required: false,
-			default: false,
-		}
-	},
-
-	emits: ['chosen'],
-
-	data() {
-		return {
-			isDragging: false
-		};
-	},
-
-	computed: {
-		// TODO: parentへの参照を無くす
-		browser(): any {
-			return this.$parent;
-		},
-		title(): string {
-			return `${this.file.name}\n${this.file.type} ${bytes(this.file.size)}`;
-		}
-	},
-
-	methods: {
-		getMenu() {
-			return [{
-				text: this.$ts.rename,
-				icon: 'fas fa-i-cursor',
-				action: this.rename
-			}, {
-				text: this.file.isSensitive ? this.$ts.unmarkAsSensitive : this.$ts.markAsSensitive,
-				icon: this.file.isSensitive ? 'fas fa-eye' : 'fas fa-eye-slash',
-				action: this.toggleSensitive
-			}, {
-				text: this.$ts.describeFile,
-				icon: 'fas fa-i-cursor',
-				action: this.describe
-			}, null, {
-				text: this.$ts.copyUrl,
-				icon: 'fas fa-link',
-				action: this.copyUrl
-			}, {
-				type: 'a',
-				href: this.file.url,
-				target: '_blank',
-				text: this.$ts.download,
-				icon: 'fas fa-download',
-				download: this.file.name
-			}, null, {
-				text: this.$ts.delete,
-				icon: 'fas fa-trash-alt',
-				danger: true,
-				action: this.deleteFile
-			}];
-		},
-
-		onClick(ev) {
-			if (this.selectMode) {
-				this.$emit('chosen', this.file);
-			} else {
-				os.popupMenu(this.getMenu(), ev.currentTarget || ev.target);
-			}
-		},
-
-		onContextmenu(e) {
-			os.contextMenu(this.getMenu(), e);
-		},
-
-		onDragstart(e) {
-			e.dataTransfer.effectAllowed = 'move';
-			e.dataTransfer.setData(_DATA_TRANSFER_DRIVE_FILE_, JSON.stringify(this.file));
-			this.isDragging = true;
-
-			// 親ブラウザに対して、ドラッグが開始されたフラグを立てる
-			// (=あなたの子供が、ドラッグを開始しましたよ)
-			this.browser.isDragSource = true;
-		},
-
-		onDragend(e) {
-			this.isDragging = false;
-			this.browser.isDragSource = false;
-		},
-
-		rename() {
-			os.inputText({
-				title: this.$ts.renameFile,
-				placeholder: this.$ts.inputNewFileName,
-				default: this.file.name,
-				allowEmpty: false
-			}).then(({ canceled, result: name }) => {
-				if (canceled) return;
-				os.api('drive/files/update', {
-					fileId: this.file.id,
-					name: name
-				});
-			});
-		},
-
-		describe() {
-			os.popup(import('@/components/media-caption.vue'), {
-				title: this.$ts.describeFile,
-				input: {
-					placeholder: this.$ts.inputNewDescription,
-					default: this.file.comment !== null ? this.file.comment : '',
-				},
-				image: this.file
-			}, {
-				done: result => {
-					if (!result || result.canceled) return;
-					let comment = result.result;
-					os.api('drive/files/update', {
-						fileId: this.file.id,
-						comment: comment.length == 0 ? null : comment
-					});
-				}
-			}, 'closed');
-		},
-
-		toggleSensitive() {
-			os.api('drive/files/update', {
-				fileId: this.file.id,
-				isSensitive: !this.file.isSensitive
-			});
-		},
-
-		copyUrl() {
-			copyToClipboard(this.file.url);
-			os.success();
-		},
-
-		addApp() {
-			alert('not implemented yet');
-		},
-
-		async deleteFile() {
-			const { canceled } = await os.confirm({
-				type: 'warning',
-				text: this.$t('driveFileDeleteConfirm', { name: this.file.name }),
-			});
-			if (canceled) return;
-
-			os.api('drive/files/delete', {
-				fileId: this.file.id
-			});
-		},
-
-		bytes
-	}
+const props = withDefaults(defineProps<{
+	file: Misskey.entities.DriveFile;
+	isSelected?: boolean;
+	selectMode?: boolean;
+}>(), {
+	isSelected: false,
+	selectMode: false,
 });
+
+const emit = defineEmits<{
+	(e: 'chosen', r: Misskey.entities.DriveFile): void;
+	(e: 'dragstart'): void;
+	(e: 'dragend'): void;
+}>();
+
+const isDragging = ref(false);
+
+const title = computed(() => `${props.file.name}\n${props.file.type} ${bytes(props.file.size)}`);
+
+function getMenu() {
+	return [{
+		text: i18n.ts.rename,
+		icon: 'fas fa-i-cursor',
+		action: rename
+	}, {
+		text: props.file.isSensitive ? i18n.ts.unmarkAsSensitive : i18n.ts.markAsSensitive,
+		icon: props.file.isSensitive ? 'fas fa-eye' : 'fas fa-eye-slash',
+		action: toggleSensitive
+	}, {
+		text: i18n.ts.describeFile,
+		icon: 'fas fa-i-cursor',
+		action: describe
+	}, null, {
+		text: i18n.ts.copyUrl,
+		icon: 'fas fa-link',
+		action: copyUrl
+	}, {
+		type: 'a',
+		href: props.file.url,
+		target: '_blank',
+		text: i18n.ts.download,
+		icon: 'fas fa-download',
+		download: props.file.name
+	}, null, {
+		text: i18n.ts.delete,
+		icon: 'fas fa-trash-alt',
+		danger: true,
+		action: deleteFile
+	}];
+}
+
+function onClick(ev: MouseEvent) {
+	if (props.selectMode) {
+		emit('chosen', props.file);
+	} else {
+		os.popupMenu(getMenu(), (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
+	}
+}
+
+function onContextmenu(e: MouseEvent) {
+	os.contextMenu(getMenu(), e);
+}
+
+function onDragstart(e: DragEvent) {
+	if (e.dataTransfer) {
+		e.dataTransfer.effectAllowed = 'move';
+		e.dataTransfer.setData(_DATA_TRANSFER_DRIVE_FILE_, JSON.stringify(props.file));
+	}
+	isDragging.value = true;
+
+	emit('dragstart');
+}
+
+function onDragend() {
+	isDragging.value = false;
+	emit('dragend');
+}
+
+function rename() {
+	os.inputText({
+		title: i18n.ts.renameFile,
+		placeholder: i18n.ts.inputNewFileName,
+		default: props.file.name,
+	}).then(({ canceled, result: name }) => {
+		if (canceled) return;
+		os.api('drive/files/update', {
+			fileId: props.file.id,
+			name: name
+		});
+	});
+}
+
+function describe() {
+	os.popup(import('@/components/media-caption.vue'), {
+		title: i18n.ts.describeFile,
+		input: {
+			placeholder: i18n.ts.inputNewDescription,
+			default: props.file.comment !== null ? props.file.comment : '',
+		},
+		image: props.file
+	}, {
+		done: result => {
+			if (!result || result.canceled) return;
+			let comment = result.result;
+			os.api('drive/files/update', {
+				fileId: props.file.id,
+				comment: comment.length == 0 ? null : comment
+			});
+		}
+	}, 'closed');
+}
+
+function toggleSensitive() {
+	os.api('drive/files/update', {
+		fileId: props.file.id,
+		isSensitive: !props.file.isSensitive
+	});
+}
+
+function copyUrl() {
+	copyToClipboard(props.file.url);
+	os.success();
+}
+/*
+function addApp() {
+	alert('not implemented yet');
+}
+*/
+async function deleteFile() {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.t('driveFileDeleteConfirm', { name: props.file.name }),
+	});
+
+	if (canceled) return;
+	os.api('drive/files/delete', {
+		fileId: props.file.id
+	});
+}
 </script>
 
 <style lang="scss" scoped>

@@ -1,5 +1,5 @@
 import { URL } from 'url';
-import create from './add-file';
+import { addFile } from './add-file';
 import { User } from '@/models/entities/user';
 import { driveLogger } from './logger';
 import { createTemp } from '@/misc/create-temp';
@@ -10,16 +10,27 @@ import { DriveFiles } from '@/models/index';
 
 const logger = driveLogger.createSubLogger('downloader');
 
-export default async (
-	url: string,
-	user: { id: User['id']; host: User['host'] } | null,
-	folderId: DriveFolder['id'] | null = null,
-	uri: string | null = null,
+type Args = {
+	url: string;
+	user: { id: User['id']; host: User['host'] } | null;
+	folderId?: DriveFolder['id'] | null;
+	uri?: string | null;
+	sensitive?: boolean;
+	force?: boolean;
+	isLink?: boolean;
+	comment?: string | null;
+};
+
+export async function uploadFromUrl({
+	url,
+	user,
+	folderId = null,
+	uri = null,
 	sensitive = false,
 	force = false,
-	link = false,
+	isLink = false,
 	comment = null
-): Promise<DriveFile> => {
+}: Args): Promise<DriveFile> {
 	let name = new URL(url).pathname.split('/').pop() || null;
 	if (name == null || !DriveFiles.validateFileName(name)) {
 		name = null;
@@ -41,7 +52,7 @@ export default async (
 	let error;
 
 	try {
-		driveFile = await create(user, path, name, comment, folderId, force, link, url, uri, sensitive);
+		driveFile = await addFile({ user, path, name, comment, folderId, force, isLink, url, uri, sensitive });
 		logger.succ(`Got: ${driveFile.id}`);
 	} catch (e) {
 		error = e;
@@ -59,4 +70,4 @@ export default async (
 	} else {
 		return driveFile!;
 	}
-};
+}

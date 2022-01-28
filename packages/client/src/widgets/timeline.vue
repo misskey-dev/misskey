@@ -101,22 +101,22 @@ const choose = async (ev) => {
 		}
 	}));
 	os.popupMenu([{
-		text: i18n.locale._timelines.home,
+		text: i18n.ts._timelines.home,
 		icon: 'fas fa-home',
 		action: () => { setSrc('home') }
 	}, {
-		text: i18n.locale._timelines.local,
+		text: i18n.ts._timelines.local,
 		icon: 'fas fa-comments',
 		action: () => { setSrc('local') }
 	}, {
-		text: i18n.locale._timelines.social,
+		text: i18n.ts._timelines.social,
 		icon: 'fas fa-share-alt',
 		action: () => { setSrc('social') }
 	}, {
-		text: i18n.locale._timelines.global,
+		text: i18n.ts._timelines.global,
 		icon: 'fas fa-globe',
 		action: () => { setSrc('global') }
-	}, antennaItems.length > 0 ? null : undefined, ...antennaItems, listItems.length > 0 ? null : undefined, ...listItems], ev.currentTarget || ev.target).then(() => {
+	}, antennaItems.length > 0 ? null : undefined, ...antennaItems, listItems.length > 0 ? null : undefined, ...listItems], ev.currentTarget ?? ev.target).then(() => {
 		menuOpened.value = false;
 	});
 };

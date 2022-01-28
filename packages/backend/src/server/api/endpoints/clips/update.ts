@@ -7,7 +7,7 @@ import { Clips } from '@/models/index';
 export const meta = {
 	tags: ['clips'],
 
-	requireCredential: true as const,
+	requireCredential: true,
 
 	kind: 'write:account',
 
@@ -38,11 +38,11 @@ export const meta = {
 	},
 
 	res: {
-		type: 'object' as const,
-		optional: false as const, nullable: false as const,
+		type: 'object',
+		optional: false, nullable: false,
 		ref: 'Clip',
 	},
-};
+} as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {

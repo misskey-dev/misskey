@@ -2,13 +2,13 @@ import define from '../../../define';
 import { RegistryItems } from '@/models/index';
 
 export const meta = {
-	requireCredential: true as const,
+	requireCredential: true,
 
 	secure: true,
 
 	params: {
 	},
-};
+} as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {

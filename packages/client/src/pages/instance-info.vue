@@ -28,7 +28,7 @@
 		<FormSection v-if="iAmModerator">
 			<template #label>Moderation</template>
 			<FormSwitch v-model="suspended" class="_formBlock" @update:modelValue="toggleSuspend">{{ $ts.stopActivityDelivery }}</FormSwitch>
-			<FormSwitch :model-value="isBlocked" class="switch" @update:modelValue="changeBlock">{{ $ts.blockThisInstance }}</FormSwitch>
+			<FormSwitch v-model="isBlocked" class="_formBlock" @update:modelValue="toggleBlock">{{ $ts.blockThisInstance }}</FormSwitch>
 		</FormSection>
 
 		<FormSection>
@@ -104,15 +104,14 @@
 </MkSpacer>
 </template>
 
-<script lang="ts">
-import { defineAsyncComponent, defineComponent } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
+import * as misskey from 'misskey-js';
 import MkChart from '@/components/chart.vue';
 import MkObjectView from '@/components/object-view.vue';
-import FormTextarea from '@/components/form/textarea.vue';
 import FormLink from '@/components/form/link.vue';
 import MkLink from '@/components/link.vue';
 import FormSection from '@/components/form/section.vue';
-import FormButton from '@/components/ui/button.vue';
 import MkKeyValue from '@/components/key-value.vue';
 import MkSelect from '@/components/form/select.vue';
 import FormSwitch from '@/components/form/switch.vue';
@@ -120,87 +119,57 @@ import * as os from '@/os';
 import number from '@/filters/number';
 import bytes from '@/filters/bytes';
 import * as symbols from '@/symbols';
+import { iAmModerator } from '@/account';
 
-export default defineComponent({
-	components: {
-		FormTextarea,
-		MkObjectView,
-		FormButton,
-		FormLink,
-		FormSection,
-		FormSwitch,
-		MkKeyValue,
-		MkSelect,
-		MkChart,
-		MkLink,
+const props = defineProps<{
+	host: string;
+}>();
+
+let meta = $ref<misskey.entities.DetailedInstanceMetadata | null>(null);
+let instance = $ref<misskey.entities.Instance | null>(null);
+let suspended = $ref(false);
+let isBlocked = $ref(false);
+let chartSrc = $ref('instance-requests');
+let chartSpan = $ref('hour');
+
+async function fetch() {
+	meta = await os.api('meta', { detail: true });
+	instance = await os.api('federation/show-instance', {
+		host: props.host,
+	});
+	suspended = instance.isSuspended;
+	isBlocked = meta.blockedHosts.includes(instance.host);
+}
+
+async function toggleBlock(ev) {
+	if (meta == null) return;
+	await os.api('admin/update-meta', {
+		blockedHosts: isBlocked ? meta.blockedHosts.concat([instance.host]) : meta.blockedHosts.filter(x => x !== instance.host)
+	});
+}
+
+async function toggleSuspend(v) {
+	await os.api('admin/federation/update-instance', {
+		host: instance.host,
+		isSuspended: suspended,
+	});
+}
+
+fetch();
+
+defineExpose({
+	[symbols.PAGE_INFO]: {
+		title: props.host,
+		icon: 'fas fa-info-circle',
+		bg: 'var(--bg)',
+		actions: [{
+			text: `https://${props.host}`,
+			icon: 'fas fa-external-link-alt',
+			handler: () => {
+				window.open(`https://${props.host}`, '_blank');
+			}
+		}],
 	},
-
-	props: {
-		host: {
-			type: String,
-			required: true
-		}
-	},
-
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: this.host,
-				icon: 'fas fa-info-circle',
-				bg: 'var(--bg)',
-				actions: [{
-					text: `https://${this.host}`,
-					icon: 'fas fa-external-link-alt',
-					handler: () => {
-						window.open(`https://${this.host}`, '_blank');
-					}
-				}],
-			},
-			instance: null,
-			suspended: false,
-			chartSrc: 'instance-requests',
-			chartSpan: 'hour',
-		}
-	},
-
-	computed: {
-		iAmModerator(): boolean {
-			return this.$i && (this.$i.isAdmin || this.$i.isModerator);
-		},
-
-		isBlocked() {
-			return this.instance && this.$instance && this.$instance.blockedHosts && this.$instance.blockedHosts.includes(this.instance.host);
-		}
-	},
-
-	mounted() {
-		this.fetch();
-	},
-
-	methods: {
-		number,
-		bytes,
-
-		async fetch() {
-			this.instance = await os.api('federation/show-instance', {
-				host: this.host
-			});
-			this.suspended = this.instance.isSuspended;
-		},
-
-		changeBlock(e) {
-			os.api('admin/update-meta', {
-				blockedHosts: this.isBlocked ? this.meta.blockedHosts.concat([this.instance.host]) : this.meta.blockedHosts.filter(x => x !== this.instance.host)
-			});
-		},
-
-		async toggleSuspend(v) {
-			await os.api('admin/federation/update-instance', {
-				host: this.instance.host,
-				isSuspended: this.suspended
-			});
-		},
-	}
 });
 </script>
 

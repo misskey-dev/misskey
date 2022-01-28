@@ -4,6 +4,7 @@
 	v-show="!isDeleted"
 	v-hotkey="keymap"
 	v-size="{ max: [500, 450, 350, 300] }"
+	ref="el"
 	class="lxwezrsl _block"
 	:tabindex="!isDeleted ? '-1' : null"
 	:class="{ renote: isRenote }"
@@ -222,21 +223,21 @@ function undoReact(note): void {
 	});
 }
 
-function onContextmenu(e): void {
+function onContextmenu(ev: MouseEvent): void {
 	const isLink = (el: HTMLElement) => {
 		if (el.tagName === 'A') return true;
 		if (el.parentElement) {
 			return isLink(el.parentElement);
 		}
 	};
-	if (isLink(e.target)) return;
+	if (isLink(ev.target)) return;
 	if (window.getSelection().toString() !== '') return;
 
 	if (defaultStore.state.useReactionPickerForContextMenu) {
-		e.preventDefault();
+		ev.preventDefault();
 		react();
 	} else {
-		os.contextMenu(getNoteMenu({ note: props.note, translating, translation, menuButton }), e).then(focus);
+		os.contextMenu(getNoteMenu({ note: props.note, translating, translation, menuButton }), ev).then(focus);
 	}
 }
 
@@ -249,7 +250,7 @@ function menu(viaKeyboard = false): void {
 function showRenoteMenu(viaKeyboard = false): void {
 	if (!isMyRenote) return;
 	os.popupMenu([{
-		text: i18n.locale.unrenote,
+		text: i18n.ts.unrenote,
 		icon: 'fas fa-trash-alt',
 		danger: true,
 		action: () => {

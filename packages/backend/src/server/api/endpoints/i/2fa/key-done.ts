@@ -16,7 +16,7 @@ import { publishMainStream } from '@/services/stream';
 const cborDecodeFirst = promisify(cbor.decodeFirst) as any;
 
 export const meta = {
-	requireCredential: true as const,
+	requireCredential: true,
 
 	secure: true,
 
@@ -37,7 +37,7 @@ export const meta = {
 			validator: $.str,
 		},
 	},
-};
+} as const;
 
 const rpIdHashReal = hash(Buffer.from(config.hostname, 'utf-8'));
 
@@ -130,7 +130,7 @@ export default define(meta, async (ps, user) => {
 
 	const credentialIdString = credentialId.toString('hex');
 
-	await UserSecurityKeys.save({
+	await UserSecurityKeys.insert({
 		userId: user.id,
 		id: credentialIdString,
 		lastUsed: new Date(),

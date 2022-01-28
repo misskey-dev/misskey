@@ -5,7 +5,7 @@ import { ID } from '@/misc/cafy-id';
 import { publishUserEvent } from '@/services/stream';
 
 export const meta = {
-	requireCredential: true as const,
+	requireCredential: true,
 
 	secure: true,
 
@@ -14,7 +14,7 @@ export const meta = {
 			validator: $.type(ID),
 		},
 	},
-};
+} as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {

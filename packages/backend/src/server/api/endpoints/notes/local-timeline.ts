@@ -54,11 +54,11 @@ export const meta = {
 	},
 
 	res: {
-		type: 'array' as const,
-		optional: false as const, nullable: false as const,
+		type: 'array',
+		optional: false, nullable: false,
 		items: {
-			type: 'object' as const,
-			optional: false as const, nullable: false as const,
+			type: 'object',
+			optional: false, nullable: false,
 			ref: 'Note',
 		},
 	},
@@ -70,7 +70,7 @@ export const meta = {
 			id: '45a6eb02-7695-4393-b023-dd3be9aaaefd',
 		},
 	},
-};
+} as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps, user) => {

@@ -10,7 +10,7 @@
 			</div>
 		</template>
 	</XDraggable>
-	<p class="remain">{{ 4 - files.length }}/4</p>
+	<p class="remain">{{ 16 - files.length }}/16</p>
 </div>
 </template>
 
@@ -41,7 +41,6 @@ export default defineComponent({
 	data() {
 		return {
 			menu: null as Promise<null> | null,
-
 		};
 	},
 
@@ -99,10 +98,12 @@ export default defineComponent({
 			}, {
 				done: result => {
 					if (!result || result.canceled) return;
-					let comment = result.result;
+					let comment = result.result.length == 0 ? null : result.result;
 					os.api('drive/files/update', {
 						fileId: file.id,
-						comment: comment.length == 0 ? null : comment
+						comment: comment,
+					}).then(() => {
+						file.comment = comment;
 					});
 				}
 			}, 'closed');
@@ -126,7 +127,7 @@ export default defineComponent({
 				text: this.$ts.attachCancel,
 				icon: 'fas fa-times-circle',
 				action: () => { this.detachMedia(file.id) }
-			}], ev.currentTarget || ev.target).then(() => this.menu = null);
+			}], ev.currentTarget ?? ev.target).then(() => this.menu = null);
 		}
 	}
 });

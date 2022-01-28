@@ -101,13 +101,14 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 		file.accessKey = key;
 		file.thumbnailAccessKey = thumbnailKey;
 		file.webpublicAccessKey = webpublicKey;
+		file.webpublicType = alts.webpublic?.type ?? null;
 		file.name = name;
 		file.type = type;
 		file.md5 = hash;
 		file.size = size;
 		file.storedInternal = false;
 
-		return await DriveFiles.save(file);
+		return await DriveFiles.insert(file).then(x => DriveFiles.findOneOrFail(x.identifiers[0]));
 	} else { // use internal storage
 		const accessKey = uuid();
 		const thumbnailAccessKey = 'thumbnail-' + uuid();
@@ -135,12 +136,13 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 		file.accessKey = accessKey;
 		file.thumbnailAccessKey = thumbnailAccessKey;
 		file.webpublicAccessKey = webpublicAccessKey;
+		file.webpublicType = alts.webpublic?.type ?? null;
 		file.name = name;
 		file.type = type;
 		file.md5 = hash;
 		file.size = size;
 
-		return await DriveFiles.save(file);
+		return await DriveFiles.insert(file).then(x => DriveFiles.findOneOrFail(x.identifiers[0]));
 	}
 }
 
@@ -295,33 +297,45 @@ async function deleteOldFile(user: IRemoteUser) {
 	}
 }
 
+type AddFileArgs = {
+	/** User who wish to add file */
+	user: { id: User['id']; host: User['host'] } | null;
+	/** File path */
+	path: string;
+	/** Name */
+	name?: string | null;
+	/** Comment */
+	comment?: string | null;
+	/** Folder ID */
+	folderId?: any;
+	/** If set to true, forcibly upload the file even if there is a file with the same hash. */
+	force?: boolean;
+	/** Do not save file to local */
+	isLink?: boolean;
+	/** URL of source (URLからアップロードされた場合(ローカル/リモート)の元URL) */
+	url?: string | null;
+	/** URL of source (リモートインスタンスのURLからアップロードされた場合の元URL) */
+	uri?: string | null;
+	/** Mark file as sensitive */
+	sensitive?: boolean | null;
+};
+
 /**
  * Add file to drive
  *
- * @param user User who wish to add file
- * @param path File path
- * @param name Name
- * @param comment Comment
- * @param folderId Folder ID
- * @param force If set to true, forcibly upload the file even if there is a file with the same hash.
- * @param isLink Do not save file to local
- * @param url URL of source (URLからアップロードされた場合(ローカル/リモート)の元URL)
- * @param uri URL of source (リモートインスタンスのURLからアップロードされた場合の元URL)
- * @param sensitive Mark file as sensitive
- * @return Created drive file
  */
-export default async function(
-	user: { id: User['id']; host: User['host'] } | null,
-	path: string,
-	name: string | null = null,
-	comment: string | null = null,
-	folderId: any = null,
-	force: boolean = false,
-	isLink: boolean = false,
-	url: string | null = null,
-	uri: string | null = null,
-	sensitive: boolean | null = null
-): Promise<DriveFile> {
+export async function addFile({
+	user,
+	path,
+	name = null,
+	comment = null,
+	folderId = null,
+	force = false,
+	isLink = false,
+	url = null,
+	uri = null,
+	sensitive = null
+}: AddFileArgs): Promise<DriveFile> {
 	const info = await getFileInfo(path);
 	logger.info(`${JSON.stringify(info)}`);
 
@@ -436,7 +450,7 @@ export default async function(
 			file.type = info.type.mime;
 			file.storedInternal = false;
 
-			file = await DriveFiles.save(file);
+			file = await DriveFiles.insert(file).then(x => DriveFiles.findOneOrFail(x.identifiers[0]));
 		} catch (e) {
 			// duplicate key error (when already registered)
 			if (isDuplicateKeyValueError(e)) {

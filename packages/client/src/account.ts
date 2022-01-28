@@ -16,6 +16,8 @@ const data = localStorage.getItem('account');
 // TODO: 外部からはreadonlyに
 export const $i = data ? reactive(JSON.parse(data) as Account) : null;
 
+export const iAmModerator = $i != null && ($i.isAdmin || $i.isModerator);
+
 export async function signout() {
 	waiting();
 	localStorage.removeItem('account');
@@ -127,7 +129,12 @@ export async function login(token: Account['token'], redirect?: string) {
 	unisonReload();
 }
 
-export async function openAccountMenu(ev: MouseEvent) {
+export async function openAccountMenu(opts: {
+	includeCurrentAccount?: boolean;
+	withExtraOperation: boolean;
+	active?: misskey.entities.UserDetailed['id'];
+	onChoose?: (account: misskey.entities.UserDetailed) => void;
+}, ev: MouseEvent) {
 	function showSigninDialog() {
 		popup(import('@/components/signin-dialog.vue'), {}, {
 			done: res => {
@@ -146,7 +153,7 @@ export async function openAccountMenu(ev: MouseEvent) {
 		}, 'closed');
 	}
 
-	async function switchAccount(account: any) {
+	async function switchAccount(account: misskey.entities.UserDetailed) {
 		const storedAccounts = await getAccounts();
 		const token = storedAccounts.find(x => x.id === account.id).token;
 		switchAccountWithToken(token);
@@ -159,48 +166,58 @@ export async function openAccountMenu(ev: MouseEvent) {
 	const storedAccounts = await getAccounts().then(accounts => accounts.filter(x => x.id !== $i.id));
 	const accountsPromise = api('users/show', { userIds: storedAccounts.map(x => x.id) });
 
+	function createItem(account: misskey.entities.UserDetailed) {
+		return {
+			type: 'user',
+			user: account,
+			active: opts.active != null ? opts.active === account.id : false,
+			action: () => {
+				if (opts.onChoose) {
+					opts.onChoose(account);
+				} else {
+					switchAccount(account);
+				}
+			},
+		};
+	}
+
 	const accountItemPromises = storedAccounts.map(a => new Promise(res => {
 		accountsPromise.then(accounts => {
 			const account = accounts.find(x => x.id === a.id);
 			if (account == null) return res(null);
-			res({
-				type: 'user',
-				user: account,
-				action: () => { switchAccount(account); }
-			});
+			res(createItem(account));
 		});
 	}));
 
-	popupMenu([...[{
-		type: 'link',
-		text: i18n.locale.profile,
-		to: `/@${ $i.username }`,
-		avatar: $i,
-	}, null, ...accountItemPromises, {
-		icon: 'fas fa-plus',
-		text: i18n.locale.addAccount,
-		action: () => {
-			popupMenu([{
-				text: i18n.locale.existingAccount,
-				action: () => { showSigninDialog(); },
-			}, {
-				text: i18n.locale.createAccount,
-				action: () => { createAccount(); },
-			}], ev.currentTarget || ev.target);
-		},
-	}, {
-		type: 'link',
-		icon: 'fas fa-users',
-		text: i18n.locale.manageAccounts,
-		to: `/settings/accounts`,
-	}]], ev.currentTarget || ev.target, {
-		align: 'left'
-	});
-}
-
-// このファイルに書きたくないけどここに書かないと何故かVeturが認識しない
-declare module '@vue/runtime-core' {
-	interface ComponentCustomProperties {
-		$i: typeof $i;
+	if (opts.withExtraOperation) {
+		popupMenu([...[{
+			type: 'link',
+			text: i18n.ts.profile,
+			to: `/@${ $i.username }`,
+			avatar: $i,
+		}, null, ...(opts.includeCurrentAccount ? [createItem($i)] : []), ...accountItemPromises, {
+			icon: 'fas fa-plus',
+			text: i18n.ts.addAccount,
+			action: () => {
+				popupMenu([{
+					text: i18n.ts.existingAccount,
+					action: () => { showSigninDialog(); },
+				}, {
+					text: i18n.ts.createAccount,
+					action: () => { createAccount(); },
+				}], ev.currentTarget ?? ev.target);
+			},
+		}, {
+			type: 'link',
+			icon: 'fas fa-users',
+			text: i18n.ts.manageAccounts,
+			to: `/settings/accounts`,
+		}]], ev.currentTarget ?? ev.target, {
+			align: 'left'
+		});
+	} else {
+		popupMenu([...(opts.includeCurrentAccount ? [createItem($i)] : []), ...accountItemPromises], ev.currentTarget ?? ev.target, {
+			align: 'left'
+		});
 	}
 }

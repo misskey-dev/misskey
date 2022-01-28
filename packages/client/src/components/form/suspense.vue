@@ -1,5 +1,5 @@
 <template>
-<transition name="fade" mode="out-in">
+<transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
 	<div v-if="pending">
 		<MkLoading/>
 	</div>

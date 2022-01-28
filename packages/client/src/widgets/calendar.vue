@@ -79,13 +79,13 @@ const tick = () => {
 	month.value = nm + 1;
 	day.value = nd;
 	weekDay.value = [
-		i18n.locale._weekday.sunday,
-		i18n.locale._weekday.monday,
-		i18n.locale._weekday.tuesday,
-		i18n.locale._weekday.wednesday,
-		i18n.locale._weekday.thursday,
-		i18n.locale._weekday.friday,
-		i18n.locale._weekday.saturday
+		i18n.ts._weekday.sunday,
+		i18n.ts._weekday.monday,
+		i18n.ts._weekday.tuesday,
+		i18n.ts._weekday.wednesday,
+		i18n.ts._weekday.thursday,
+		i18n.ts._weekday.friday,
+		i18n.ts._weekday.saturday
 	][now.getDay()];
 
 	const dayNumer   = now.getTime() - new Date(ny, nm, nd).getTime();

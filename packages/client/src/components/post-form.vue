@@ -8,25 +8,28 @@
 >
 	<header>
 		<button v-if="!fixed" class="cancel _button" @click="cancel"><i class="fas fa-times"></i></button>
+		<button v-click-anime v-tooltip="i18n.ts.switchAccount" class="account _button" @click="openAccountMenu">
+			<MkAvatar :user="postAccount ?? $i" class="avatar"/>
+		</button>
 		<div>
 			<span class="text-count" :class="{ over: textLength > maxTextLength }">{{ maxTextLength - textLength }}</span>
 			<span v-if="localOnly" class="local-only"><i class="fas fa-biohazard"></i></span>
-			<button ref="visibilityButton" v-tooltip="$ts.visibility" class="_button visibility" :disabled="channel != null" @click="setVisibility">
+			<button ref="visibilityButton" v-tooltip="i18n.ts.visibility" class="_button visibility" :disabled="channel != null" @click="setVisibility">
 				<span v-if="visibility === 'public'"><i class="fas fa-globe"></i></span>
 				<span v-if="visibility === 'home'"><i class="fas fa-home"></i></span>
 				<span v-if="visibility === 'followers'"><i class="fas fa-unlock"></i></span>
 				<span v-if="visibility === 'specified'"><i class="fas fa-envelope"></i></span>
 			</button>
-			<button v-tooltip="$ts.previewNoteText" class="_button preview" :class="{ active: showPreview }" @click="showPreview = !showPreview"><i class="fas fa-file-code"></i></button>
+			<button v-tooltip="i18n.ts.previewNoteText" class="_button preview" :class="{ active: showPreview }" @click="showPreview = !showPreview"><i class="fas fa-file-code"></i></button>
 			<button class="submit _buttonGradate" :disabled="!canPost" data-cy-open-post-form-submit @click="post">{{ submitText }}<i :class="reply ? 'fas fa-reply' : renote ? 'fas fa-quote-right' : 'fas fa-paper-plane'"></i></button>
 		</div>
 	</header>
 	<div class="form" :class="{ fixed }">
 		<XNoteSimple v-if="reply" class="preview" :note="reply"/>
 		<XNoteSimple v-if="renote" class="preview" :note="renote"/>
-		<div v-if="quoteId" class="with-quote"><i class="fas fa-quote-left"></i> {{ $ts.quoteAttached }}<button @click="quoteId = null"><i class="fas fa-times"></i></button></div>
+		<div v-if="quoteId" class="with-quote"><i class="fas fa-quote-left"></i> {{ i18n.ts.quoteAttached }}<button @click="quoteId = null"><i class="fas fa-times"></i></button></div>
 		<div v-if="visibility === 'specified'" class="to-specified">
-			<span style="margin-right: 8px;">{{ $ts.recipient }}</span>
+			<span style="margin-right: 8px;">{{ i18n.ts.recipient }}</span>
 			<div class="visibleUsers">
 				<span v-for="u in visibleUsers" :key="u.id">
 					<MkAcct :user="u"/>
@@ -35,21 +38,21 @@
 				<button class="_buttonPrimary" @click="addVisibleUser"><i class="fas fa-plus fa-fw"></i></button>
 			</div>
 		</div>
-		<MkInfo v-if="hasNotSpecifiedMentions" warn class="hasNotSpecifiedMentions">{{ $ts.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ $ts.add }}</button></MkInfo>
-		<input v-show="useCw" ref="cwInputEl" v-model="cw" class="cw" :placeholder="$ts.annotation" @keydown="onKeydown">
+		<MkInfo v-if="hasNotSpecifiedMentions" warn class="hasNotSpecifiedMentions">{{ i18n.ts.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ i18n.ts.add }}</button></MkInfo>
+		<input v-show="useCw" ref="cwInputEl" v-model="cw" class="cw" :placeholder="i18n.ts.annotation" @keydown="onKeydown">
 		<textarea ref="textareaEl" v-model="text" class="text" :class="{ withCw: useCw }" :disabled="posting" :placeholder="placeholder" data-cy-post-form-text @keydown="onKeydown" @paste="onPaste" @compositionupdate="onCompositionUpdate" @compositionend="onCompositionEnd"/>
-		<input v-show="withHashtags" ref="hashtagsInputEl" v-model="hashtags" class="hashtags" :placeholder="$ts.hashtags" list="hashtags">
+		<input v-show="withHashtags" ref="hashtagsInputEl" v-model="hashtags" class="hashtags" :placeholder="i18n.ts.hashtags" list="hashtags">
 		<XPostFormAttaches class="attaches" :files="files" @updated="updateFiles" @detach="detachFile" @changeSensitive="updateFileSensitive" @changeName="updateFileName"/>
-		<XPollEditor v-if="poll" :poll="poll" @destroyed="poll = null" @updated="onPollUpdate"/>
+		<XPollEditor v-if="poll" v-model="poll" @destroyed="poll = null"/>
 		<XNotePreview v-if="showPreview" class="preview" :text="text"/>
 		<footer>
-			<button v-tooltip="$ts.attachFile" class="_button" @click="chooseFileFrom"><i class="fas fa-photo-video"></i></button>
-			<button v-tooltip="$ts.poll" class="_button" :class="{ active: poll }" @click="togglePoll"><i class="fas fa-poll-h"></i></button>
-			<button v-tooltip="$ts.useCw" class="_button" :class="{ active: useCw }" @click="useCw = !useCw"><i class="fas fa-eye-slash"></i></button>
-			<button v-tooltip="$ts.mention" class="_button" @click="insertMention"><i class="fas fa-at"></i></button>
-			<button v-tooltip="$ts.hashtags" class="_button" :class="{ active: withHashtags }" @click="withHashtags = !withHashtags"><i class="fas fa-hashtag"></i></button>
-			<button v-tooltip="$ts.emoji" class="_button" @click="insertEmoji"><i class="fas fa-laugh-squint"></i></button>
-			<button v-if="postFormActions.length > 0" v-tooltip="$ts.plugin" class="_button" @click="showActions"><i class="fas fa-plug"></i></button>
+			<button v-tooltip="i18n.ts.attachFile" class="_button" @click="chooseFileFrom"><i class="fas fa-photo-video"></i></button>
+			<button v-tooltip="i18n.ts.poll" class="_button" :class="{ active: poll }" @click="togglePoll"><i class="fas fa-poll-h"></i></button>
+			<button v-tooltip="i18n.ts.useCw" class="_button" :class="{ active: useCw }" @click="useCw = !useCw"><i class="fas fa-eye-slash"></i></button>
+			<button v-tooltip="i18n.ts.mention" class="_button" @click="insertMention"><i class="fas fa-at"></i></button>
+			<button v-tooltip="i18n.ts.hashtags" class="_button" :class="{ active: withHashtags }" @click="withHashtags = !withHashtags"><i class="fas fa-hashtag"></i></button>
+			<button v-tooltip="i18n.ts.emoji" class="_button" @click="insertEmoji"><i class="fas fa-laugh-squint"></i></button>
+			<button v-if="postFormActions.length > 0" v-tooltip="i18n.ts.plugin" class="_button" @click="showActions"><i class="fas fa-plug"></i></button>
 		</footer>
 		<datalist id="hashtags">
 			<option v-for="hashtag in recentHashtags" :key="hashtag" :value="hashtag"/>
@@ -83,7 +86,7 @@ import { throttle } from 'throttle-debounce';
 import MkInfo from '@/components/ui/info.vue';
 import { i18n } from '@/i18n';
 import { instance } from '@/instance';
-import { $i } from '@/account';
+import { $i, getAccounts, openAccountMenu as openAccountMenu_ } from '@/account';
 
 const modal = inject('modal');
 
@@ -99,7 +102,7 @@ const props = withDefaults(defineProps<{
 	initialLocalOnly?: boolean;
 	initialVisibleUsers?: misskey.entities.User[];
 	initialNote?: misskey.entities.Note;
-	share?: boolean;
+	instant?: boolean;
 	fixed?: boolean;
 	autofocus?: boolean;
 }>(), {
@@ -108,9 +111,9 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(e: 'posted'): void;
-	(e: 'cancel'): void;
-	(e: 'esc'): void;
+	(ev: 'posted'): void;
+	(ev: 'cancel'): void;
+	(ev: 'esc'): void;
 }>();
 
 const textareaEl = $ref<HTMLTextAreaElement | null>(null);
@@ -124,8 +127,8 @@ let files = $ref(props.initialFiles ?? []);
 let poll = $ref<{
 	choices: string[];
 	multiple: boolean;
-	expiresAt: string;
-	expiredAfter: string;
+	expiresAt: string | null;
+	expiredAfter: string | null;
 } | null>(null);
 let useCw = $ref(false);
 let showPreview = $ref(false);
@@ -162,19 +165,19 @@ const draftKey = $computed((): string => {
 
 const placeholder = $computed((): string => {
 	if (props.renote) {
-		return i18n.locale._postForm.quotePlaceholder;
+		return i18n.ts._postForm.quotePlaceholder;
 	} else if (props.reply) {
-		return i18n.locale._postForm.replyPlaceholder;
+		return i18n.ts._postForm.replyPlaceholder;
 	} else if (props.channel) {
-		return i18n.locale._postForm.channelPlaceholder;
+		return i18n.ts._postForm.channelPlaceholder;
 	} else {
 		const xs = [
-			i18n.locale._postForm._placeholders.a,
-			i18n.locale._postForm._placeholders.b,
-			i18n.locale._postForm._placeholders.c,
-			i18n.locale._postForm._placeholders.d,
-			i18n.locale._postForm._placeholders.e,
-			i18n.locale._postForm._placeholders.f
+			i18n.ts._postForm._placeholders.a,
+			i18n.ts._postForm._placeholders.b,
+			i18n.ts._postForm._placeholders.c,
+			i18n.ts._postForm._placeholders.d,
+			i18n.ts._postForm._placeholders.e,
+			i18n.ts._postForm._placeholders.f
 		];
 		return xs[Math.floor(Math.random() * xs.length)];
 	}
@@ -182,10 +185,10 @@ const placeholder = $computed((): string => {
 
 const submitText = $computed((): string => {
 	return props.renote
-		? i18n.locale.quote
+		? i18n.ts.quote
 		: props.reply
-			? i18n.locale.reply
-			: i18n.locale.note;
+			? i18n.ts.reply
+			: i18n.ts.note;
 });
 
 const textLength = $computed((): number => {
@@ -339,8 +342,8 @@ function focus() {
 }
 
 function chooseFileFrom(ev) {
-	selectFiles(ev.currentTarget || ev.target, i18n.locale.attachFile).then(files => {
-		for (const file of files) {
+	selectFiles(ev.currentTarget ?? ev.target, i18n.ts.attachFile).then(files_ => {
+		for (const file of files_) {
 			files.push(file);
 		}
 	});
@@ -350,8 +353,8 @@ function detachFile(id) {
 	files = files.filter(x => x.id != id);
 }
 
-function updateFiles(files) {
-	files = files;
+function updateFiles(_files) {
+	files = _files;
 }
 
 function updateFileSensitive(file, sensitive) {
@@ -366,11 +369,6 @@ function upload(file: File, name?: string) {
 	os.upload(file, defaultStore.state.uploadFolder, name).then(res => {
 		files.push(res);
 	});
-}
-
-function onPollUpdate(poll) {
-	poll = poll;
-	saveDraft();
 }
 
 function setVisibility() {
@@ -449,7 +447,7 @@ async function onPaste(e: ClipboardEvent) {
 
 		os.confirm({
 			type: 'info',
-			text: i18n.locale.quoteQuestion,
+			text: i18n.ts.quoteQuestion,
 		}).then(({ canceled }) => {
 			if (canceled) {
 				insertTextAtCursor(textareaEl, paste);
@@ -553,8 +551,15 @@ async function post() {
 		}
 	}
 
+	let token = undefined;
+
+	if (postAccount) {
+		const storedAccounts = await getAccounts();
+		token = storedAccounts.find(x => x.id === postAccount.id)?.token;
+	}
+
 	posting = true;
-	os.api('notes/create', data).then(() => {
+	os.api('notes/create', data, token).then(() => {
 		clear();
 		nextTick(() => {
 			deleteDraft();
@@ -565,6 +570,7 @@ async function post() {
 				localStorage.setItem('hashtags', JSON.stringify(unique(hashtags.concat(history))));
 			}
 			posting = false;
+			postAccount = null;
 		});
 	}).catch(err => {
 		posting = false;
@@ -585,8 +591,8 @@ function insertMention() {
 	});
 }
 
-async function insertEmoji(ev) {
-	os.openEmojiPicker(ev.currentTarget || ev.target, {}, textareaEl);
+async function insertEmoji(ev: MouseEvent) {
+	os.openEmojiPicker(ev.currentTarget ?? ev.target, {}, textareaEl);
 }
 
 function showActions(ev) {
@@ -599,7 +605,24 @@ function showActions(ev) {
 				if (key === 'text') { text = value; }
 			});
 		}
-	})), ev.currentTarget || ev.target);
+	})), ev.currentTarget ?? ev.target);
+}
+
+let postAccount = $ref<misskey.entities.UserDetailed | null>(null);
+
+function openAccountMenu(ev: MouseEvent) {
+	openAccountMenu_({
+		withExtraOperation: false,
+		includeCurrentAccount: true,
+		active: postAccount != null ? postAccount.id : $i.id,
+		onChoose: (account) => {
+			if (account.id === $i.id) {
+				postAccount = null;
+			} else {
+				postAccount = account;
+			}
+		},
+	}, ev);
 }
 
 onMounted(() => {
@@ -618,7 +641,7 @@ onMounted(() => {
 
 	nextTick(() => {
 		// 書きかけの投稿を復元
-		if (!props.share && !props.mention && !props.specified) {
+		if (!props.instant && !props.mention && !props.specified) {
 			const draft = JSON.parse(localStorage.getItem('drafts') || '{}')[draftKey];
 			if (draft) {
 				text = draft.data.text;
@@ -676,6 +699,19 @@ onMounted(() => {
 			font-size: 20px;
 			width: 64px;
 			line-height: 66px;
+		}
+
+		> .account {
+			height: 100%;
+			aspect-ratio: 1/1;
+			display: inline-flex;
+			vertical-align: bottom;
+
+			> .avatar {
+				width: 28px;
+				height: 28px;
+				margin: auto;
+			}
 		}
 
 		> div {

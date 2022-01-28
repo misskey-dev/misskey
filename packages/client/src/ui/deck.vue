@@ -29,7 +29,7 @@
 		<button class="button post _button" @click="post()"><i class="fas fa-pencil-alt"></i></button>
 	</div>
 
-	<transition name="menu-back">
+	<transition :name="$store.state.animation ? 'menu-back' : ''">
 		<div v-if="drawerMenuShowing"
 			class="menu-back _modalBg"
 			@click="drawerMenuShowing = false"
@@ -37,7 +37,7 @@
 		></div>
 	</transition>
 
-	<transition name="menu">
+	<transition :name="$store.state.animation ? 'menu' : ''">
 		<XDrawerMenu v-if="drawerMenuShowing" class="menu"/>
 	</transition>
 
@@ -104,7 +104,7 @@ export default defineComponent({
 			];
 
 			const { canceled, result: column } = await os.select({
-				title: i18n.locale._deck.addColumn,
+				title: i18n.ts._deck.addColumn,
 				items: columns.map(column => ({
 					value: column, text: i18n.t('_deck._columns.' + column)
 				}))
@@ -121,7 +121,7 @@ export default defineComponent({
 
 		const onContextmenu = (ev) => {
 			os.contextMenu([{
-				text: i18n.locale._deck.addColumn,
+				text: i18n.ts._deck.addColumn,
 				icon: null,
 				action: addColumn
 			}], ev);

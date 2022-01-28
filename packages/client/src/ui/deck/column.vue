@@ -207,8 +207,8 @@ export default defineComponent({
 			return items;
 		},
 
-		onContextmenu(e) {
-			os.contextMenu(this.getMenu(), e);
+		onContextmenu(ev: MouseEvent) {
+			os.contextMenu(this.getMenu(), ev);
 		},
 
 		goTop() {
