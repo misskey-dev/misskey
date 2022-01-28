@@ -11,12 +11,12 @@ export function getUserMenu(user) {
 	const meId = $i ? $i.id : null;
 
 	async function pushList() {
-		const t = i18n.locale.selectList; // なぜか後で参照すると null になるので最初にメモリに確保しておく
+		const t = i18n.ts.selectList; // なぜか後で参照すると null になるので最初にメモリに確保しておく
 		const lists = await os.api('users/lists/list');
 		if (lists.length === 0) {
 			os.alert({
 				type: 'error',
-				text: i18n.locale.youHaveNoLists
+				text: i18n.ts.youHaveNoLists
 			});
 			return;
 		}
@@ -38,12 +38,12 @@ export function getUserMenu(user) {
 		if (groups.length === 0) {
 			os.alert({
 				type: 'error',
-				text: i18n.locale.youHaveNoGroups
+				text: i18n.ts.youHaveNoGroups
 			});
 			return;
 		}
 		const { canceled, result: groupId } = await os.select({
-			title: i18n.locale.group,
+			title: i18n.ts.group,
 			items: groups.map(group => ({
 				value: group.id, text: group.name
 			}))
@@ -64,7 +64,7 @@ export function getUserMenu(user) {
 	}
 
 	async function toggleBlock() {
-		if (!await getConfirmed(user.isBlocking ? i18n.locale.unblockConfirm : i18n.locale.blockConfirm)) return;
+		if (!await getConfirmed(user.isBlocking ? i18n.ts.unblockConfirm : i18n.ts.blockConfirm)) return;
 
 		os.apiWithDialog(user.isBlocking ? 'blocking/delete' : 'blocking/create', {
 			userId: user.id
@@ -119,70 +119,70 @@ export function getUserMenu(user) {
 
 	let menu = [{
 		icon: 'fas fa-at',
-		text: i18n.locale.copyUsername,
+		text: i18n.ts.copyUsername,
 		action: () => {
 			copyToClipboard(`@${user.username}@${user.host || host}`);
 		}
 	}, {
 		icon: 'fas fa-info-circle',
-		text: i18n.locale.info,
+		text: i18n.ts.info,
 		action: () => {
 			os.pageWindow(`/user-info/${user.id}`);
 		}
 	}, {
 		icon: 'fas fa-envelope',
-		text: i18n.locale.sendMessage,
+		text: i18n.ts.sendMessage,
 		action: () => {
 			os.post({ specified: user });
 		}
 	}, meId != user.id ? {
 		type: 'link',
 		icon: 'fas fa-comments',
-		text: i18n.locale.startMessaging,
+		text: i18n.ts.startMessaging,
 		to: '/my/messaging/' + Acct.toString(user),
 	} : undefined, null, {
 		icon: 'fas fa-list-ul',
-		text: i18n.locale.addToList,
+		text: i18n.ts.addToList,
 		action: pushList
 	}, meId != user.id ? {
 		icon: 'fas fa-users',
-		text: i18n.locale.inviteToGroup,
+		text: i18n.ts.inviteToGroup,
 		action: inviteGroup
 	} : undefined] as any;
 
 	if ($i && meId != user.id) {
 		menu = menu.concat([null, {
 			icon: user.isMuted ? 'fas fa-eye' : 'fas fa-eye-slash',
-			text: user.isMuted ? i18n.locale.unmute : i18n.locale.mute,
+			text: user.isMuted ? i18n.ts.unmute : i18n.ts.mute,
 			action: toggleMute
 		}, {
 			icon: 'fas fa-ban',
-			text: user.isBlocking ? i18n.locale.unblock : i18n.locale.block,
+			text: user.isBlocking ? i18n.ts.unblock : i18n.ts.block,
 			action: toggleBlock
 		}]);
 
 		if (user.isFollowed) {
 			menu = menu.concat([{
 				icon: 'fas fa-unlink',
-				text: i18n.locale.breakFollow,
+				text: i18n.ts.breakFollow,
 				action: invalidateFollow
 			}]);
 		}
 
 		menu = menu.concat([null, {
 			icon: 'fas fa-exclamation-circle',
-			text: i18n.locale.reportAbuse,
+			text: i18n.ts.reportAbuse,
 			action: reportAbuse
 		}]);
 
 		if (iAmModerator) {
 			menu = menu.concat([null, {
 				icon: 'fas fa-microphone-slash',
-				text: user.isSilenced ? i18n.locale.unsilence : i18n.locale.silence,
+				text: user.isSilenced ? i18n.ts.unsilence : i18n.ts.silence,
 				action: toggleSilence
 			}, {
 				icon: 'fas fa-snowflake',
-				text: user.isSuspended ? i18n.locale.unsuspend : i18n.locale.suspend,
+				text: user.isSuspended ? i18n.ts.unsuspend : i18n.ts.suspend,
 				action: toggleSuspend
 			}]);
 		}
@@ -191,7 +191,7 @@ export function getUserMenu(user) {
 	if ($i && meId === user.id) {
 		menu = menu.concat([null, {
 			icon: 'fas fa-pencil-alt',
-			text: i18n.locale.editProfile,
+			text: i18n.ts.editProfile,
 			action: () => {
 				router.push('/settings/profile');
 			}

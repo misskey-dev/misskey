@@ -52,7 +52,7 @@ const blockingPagination = {
 
 defineExpose({
 	[symbols.PAGE_INFO]: {
-		title: i18n.locale.muteAndBlock,
+		title: i18n.ts.muteAndBlock,
 		icon: 'fas fa-ban',
 		bg: 'var(--bg)',
 	},

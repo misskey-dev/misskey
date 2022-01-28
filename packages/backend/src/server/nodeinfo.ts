@@ -1,9 +1,8 @@
 import * as Router from '@koa/router';
 import config from '@/config/index';
 import { fetchMeta } from '@/misc/fetch-meta';
-import { Users } from '@/models/index';
-// import User from '../models/user';
-// import Note from '../models/note';
+import { Users, Notes } from '@/models/index';
+import { Not, IsNull, MoreThan } from 'typeorm';
 
 const router = new Router();
 
@@ -19,20 +18,21 @@ export const links = [/* (awaiting release) {
 }];
 
 const nodeinfo2 = async () => {
+	const now = Date.now();
 	const [
 		meta,
-		// total,
-		// activeHalfyear,
-		// activeMonth,
-		// localPosts,
-		// localComments
+		total,
+		activeHalfyear,
+		activeMonth,
+		localPosts,
+		localComments,
 	] = await Promise.all([
 		fetchMeta(true),
-		// User.count({ host: null }),
-		// User.count({ host: null, updatedAt: { $gt: new Date(Date.now() - 15552000000) } }),
-		// User.count({ host: null, updatedAt: { $gt: new Date(Date.now() - 2592000000) } }),
-		// Note.count({ '_user.host': null, replyId: null }),
-		// Note.count({ '_user.host': null, replyId: { $ne: null } })
+		Users.count({ where: { host: null } }),
+		Users.count({ where: { host: null, updatedAt: MoreThan(new Date(now - 15552000000)) } }),
+		Users.count({ where: { host: null, updatedAt: MoreThan(new Date(now - 2592000000)) } }),
+		Notes.count({ where: { userHost: null, replyId: null } }),
+		Notes.count({ where: { userHost: null, replyId: Not(IsNull()) } }),
 	]);
 
 	const proxyAccount = meta.proxyAccountId ? await Users.pack(meta.proxyAccountId).catch(() => null) : null;
@@ -50,9 +50,9 @@ const nodeinfo2 = async () => {
 		},
 		openRegistrations: !meta.disableRegistration,
 		usage: {
-			users: {}, // { total, activeHalfyear, activeMonth },
-			// localPosts,
-			// localComments
+			users: { total, activeHalfyear, activeMonth },
+			localPosts,
+			localComments,
 		},
 		metadata: {
 			nodeName: meta.name,

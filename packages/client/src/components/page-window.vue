@@ -160,7 +160,7 @@ export default defineComponent({
 				action: () => {
 					copyToClipboard(this.url);
 				}
-			}], ev.currentTarget || ev.target);
+			}], ev.currentTarget ?? ev.target);
 		},
 
 		back() {

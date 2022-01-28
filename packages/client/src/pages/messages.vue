@@ -12,14 +12,14 @@ import { i18n } from '@/i18n';
 const pagination = {
 	endpoint: 'notes/mentions' as const,
 	limit: 10,
-	params: () => ({
+	params: {
 		visibility: 'specified'
-	}),
+	},
 };
 
 defineExpose({
 	[symbols.PAGE_INFO]: {
-		title: i18n.locale.directNotes,
+		title: i18n.ts.directNotes,
 		icon: 'fas fa-envelope',
 		bg: 'var(--bg)',
 	},

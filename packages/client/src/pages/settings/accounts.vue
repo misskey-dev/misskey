@@ -64,7 +64,7 @@ export default defineComponent({
 				icon: 'fas fa-trash-alt',
 				danger: true,
 				action: () => this.removeAccount(account),
-			}], ev.currentTarget || ev.target);
+			}], ev.currentTarget ?? ev.target);
 		},
 
 		addAccount(ev) {
@@ -74,7 +74,7 @@ export default defineComponent({
 			}, {
 				text: this.$ts.createAccount,
 				action: () => { this.createAccount(); },
-			}], ev.currentTarget || ev.target);
+			}], ev.currentTarget ?? ev.target);
 		},
 
 		addExistingAccount() {

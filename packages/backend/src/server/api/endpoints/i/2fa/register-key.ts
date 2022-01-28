@@ -45,7 +45,7 @@ export default define(meta, async (ps, user) => {
 
 	const challengeId = genId();
 
-	await AttestationChallenges.save({
+	await AttestationChallenges.insert({
 		userId: user.id,
 		id: challengeId,
 		challenge: hash(Buffer.from(challenge, 'utf-8')).toString('hex'),

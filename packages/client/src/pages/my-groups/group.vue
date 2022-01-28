@@ -1,6 +1,6 @@
 <template>
 <div class="mk-group-page">
-	<transition name="zoom" mode="out-in">
+	<transition :name="$store.state.animation ? 'zoom' : ''" mode="out-in">
 		<div v-if="group" class="_section">
 			<div class="_content" style="display: flex; gap: var(--margin); flex-wrap: wrap;">
 				<MkButton inline @click="invite()">{{ $ts.invite }}</MkButton>
@@ -11,7 +11,7 @@
 		</div>
 	</transition>
 
-	<transition name="zoom" mode="out-in">
+	<transition :name="$store.state.animation ? 'zoom' : ''" mode="out-in">
 		<div v-if="group" class="_section members _gap">
 			<div class="_title">{{ $ts.members }}</div>
 			<div class="_content">

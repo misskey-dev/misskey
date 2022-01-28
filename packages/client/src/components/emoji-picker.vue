@@ -1,6 +1,6 @@
 <template>
 <div class="omfetrab" :class="['w' + width, 'h' + height, { big, asDrawer }]" :style="{ maxHeight: maxHeight ? maxHeight + 'px' : undefined }">
-	<input ref="search" v-model.trim="q" class="search" data-prevent-emoji-insert :class="{ filled: q != null && q != '' }" :placeholder="i18n.locale.search" @paste.stop="paste" @keyup.enter="done()">
+	<input ref="search" v-model.trim="q" class="search" data-prevent-emoji-insert :class="{ filled: q != null && q != '' }" :placeholder="i18n.ts.search" @paste.stop="paste" @keyup.enter="done()">
 	<div ref="emojis" class="emojis">
 		<section class="result">
 			<div v-if="searchResultCustom.length > 0">
@@ -43,7 +43,7 @@
 			</section>
 
 			<section>
-				<header class="_acrylic"><i class="far fa-clock fa-fw"></i> {{ i18n.locale.recentUsed }}</header>
+				<header class="_acrylic"><i class="far fa-clock fa-fw"></i> {{ i18n.ts.recentUsed }}</header>
 				<div>
 					<button v-for="emoji in recentlyUsedEmojis"
 						:key="emoji"
@@ -56,11 +56,11 @@
 			</section>
 		</div>
 		<div>
-			<header class="_acrylic">{{ i18n.locale.customEmojis }}</header>
-			<XSection v-for="category in customEmojiCategories" :key="'custom:' + category" :initial-shown="false" :emojis="customEmojis.filter(e => e.category === category).map(e => ':' + e.name + ':')" @chosen="chosen">{{ category || i18n.locale.other }}</XSection>
+			<header class="_acrylic">{{ i18n.ts.customEmojis }}</header>
+			<XSection v-for="category in customEmojiCategories" :key="'custom:' + category" :initial-shown="false" :emojis="customEmojis.filter(e => e.category === category).map(e => ':' + e.name + ':')" @chosen="chosen">{{ category || i18n.ts.other }}</XSection>
 		</div>
 		<div>
-			<header class="_acrylic">{{ i18n.locale.emoji }}</header>
+			<header class="_acrylic">{{ i18n.ts.emoji }}</header>
 			<XSection v-for="category in categories" :emojis="emojilist.filter(e => e.category === category).map(e => e.char)" @chosen="chosen">{{ category }}</XSection>
 		</div>
 	</div>
@@ -280,7 +280,7 @@ function getKey(emoji: string | Misskey.entities.CustomEmoji | UnicodeEmojiDef):
 }
 
 function chosen(emoji: any, ev?: MouseEvent) {
-	const el = ev && (ev.currentTarget || ev.target) as HTMLElement | null | undefined;
+	const el = ev && (ev.currentTarget ?? ev.target) as HTMLElement | null | undefined;
 	if (el) {
 		const rect = el.getBoundingClientRect();
 		const x = rect.left + (el.offsetWidth / 2);
