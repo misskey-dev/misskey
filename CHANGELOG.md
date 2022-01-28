@@ -17,6 +17,8 @@
 - トレンドウィジェットが動作しないのを修正
 - リアクション設定で絵文字ピッカーが開かないのを修正
 - DMページでメンションが含まれる問題を修正
+- Add `img-src` and `media-src` directives to `Content-Security-Policy` for
+  files and media proxy
 
 ## 12.102.1 (2022/01/27)
 ### Bugfixes
@@ -47,8 +49,6 @@
 
 ### Bugfixes
 - アップロードエラー時の処理を修正
-- Add `img-src` and `media-src` directives to `Content-Security-Policy` for
-  files and media proxy
 
 ## 12.101.1 (2021/12/29)
 
