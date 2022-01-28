@@ -540,8 +540,8 @@ async function post() {
 	};
 
 	if (withHashtags && hashtags && hashtags.trim() !== '') {
-		const hashtags = hashtags.trim().split(' ').map(x => x.startsWith('#') ? x : '#' + x).join(' ');
-		data.text = data.text ? `${data.text} ${hashtags}` : hashtags;
+		const hashtags_ = hashtags.trim().split(' ').map(x => x.startsWith('#') ? x : '#' + x).join(' ');
+		data.text = data.text ? `${data.text} ${hashtags_}` : hashtags_;
 	}
 
 	// plugin
@@ -565,9 +565,9 @@ async function post() {
 			deleteDraft();
 			emit('posted');
 			if (data.text && data.text != '') {
-				const hashtags = mfm.parse(data.text).filter(x => x.type === 'hashtag').map(x => x.props.hashtag);
+				const hashtags_ = mfm.parse(data.text).filter(x => x.type === 'hashtag').map(x => x.props.hashtag);
 				const history = JSON.parse(localStorage.getItem('hashtags') || '[]') as string[];
-				localStorage.setItem('hashtags', JSON.stringify(unique(hashtags.concat(history))));
+				localStorage.setItem('hashtags', JSON.stringify(unique(hashtags_.concat(history))));
 			}
 			posting = false;
 			postAccount = null;
