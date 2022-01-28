@@ -90,7 +90,7 @@ const initStats = () => os.api('stats', {
 
 defineExpose({
 	[symbols.PAGE_INFO]: {
-		title: i18n.locale.instanceInfo,
+		title: i18n.ts.instanceInfo,
 		icon: 'fas fa-info-circle',
 		bg: 'var(--bg)',
 	},

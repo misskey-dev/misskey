@@ -1,5 +1,5 @@
 <template>
-<transition name="popup" appear @after-leave="$emit('closed')">
+<transition :name="$store.state.animation ? 'popup' : ''" appear @after-leave="$emit('closed')">
 	<div v-if="showing" class="fxxzrfni _popup _shadow" :style="{ zIndex, top: top + 'px', left: left + 'px' }" @mouseover="() => { $emit('mouseover'); }" @mouseleave="() => { $emit('mouseleave'); }">
 		<div v-if="fetched" class="info">
 			<div class="banner" :style="user.bannerUrl ? `background-image: url(${user.bannerUrl})` : ''"></div>

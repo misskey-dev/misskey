@@ -135,7 +135,7 @@ export default defineComponent({
 				action: () => {
 					window.open(`https://misskey-hub.net/help.md`, '_blank');
 				}
-			}], ev.currentTarget || ev.target);
+			}], ev.currentTarget ?? ev.target);
 		},
 
 		number

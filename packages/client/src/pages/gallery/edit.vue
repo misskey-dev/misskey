@@ -92,7 +92,7 @@ export default defineComponent({
 
 	methods: {
 		selectFile(e) {
-			selectFiles(e.currentTarget || e.target, null).then(files => {
+			selectFiles(e.currentTarget ?? e.target, null).then(files => {
 				this.files = this.files.concat(files);
 			});
 		},

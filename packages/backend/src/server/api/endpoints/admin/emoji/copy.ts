@@ -6,7 +6,7 @@ import { getConnection } from 'typeorm';
 import { ApiError } from '../../../error';
 import { DriveFile } from '@/models/entities/drive-file';
 import { ID } from '@/misc/cafy-id';
-import uploadFromUrl from '@/services/drive/upload-from-url';
+import { uploadFromUrl } from '@/services/drive/upload-from-url';
 import { publishBroadcastStream } from '@/services/stream';
 
 export const meta = {
@@ -54,7 +54,7 @@ export default define(meta, async (ps, me) => {
 
 	try {
 		// Create file
-		driveFile = await uploadFromUrl(emoji.originalUrl, null, null, null, false, true);
+		driveFile = await uploadFromUrl({ url: emoji.originalUrl, user: null, force: true });
 	} catch (e) {
 		throw new ApiError();
 	}

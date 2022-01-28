@@ -11,7 +11,7 @@
 		<template #header><MkHeader v-if="pageInfo && !pageInfo.hideHeader" :info="pageInfo"/></template>
 		<router-view v-slot="{ Component }">
 			<transition>
-				<keep-alive :include="['timeline']">
+				<keep-alive :include="['MkTimelinePage']">
 					<component :is="Component" :ref="changePage" @contextmenu.stop="onContextmenu"/>
 				</keep-alive>
 			</transition>

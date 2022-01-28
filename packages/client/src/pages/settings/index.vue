@@ -49,7 +49,7 @@ export default defineComponent({
 
 	setup(props, context) {
 		const indexInfo = {
-			title: i18n.locale.settings,
+			title: i18n.ts.settings,
 			icon: 'fas fa-cog',
 			bg: 'var(--bg)',
 			hideHeader: true,
@@ -61,96 +61,96 @@ export default defineComponent({
 		const el = ref(null);
 		const childInfo = ref(null);
 		const menuDef = computed(() => [{
-			title: i18n.locale.basicSettings,
+			title: i18n.ts.basicSettings,
 			items: [{
 				icon: 'fas fa-user',
-				text: i18n.locale.profile,
+				text: i18n.ts.profile,
 				to: '/settings/profile',
 				active: page.value === 'profile',
 			}, {
 				icon: 'fas fa-lock-open',
-				text: i18n.locale.privacy,
+				text: i18n.ts.privacy,
 				to: '/settings/privacy',
 				active: page.value === 'privacy',
 			}, {
 				icon: 'fas fa-laugh',
-				text: i18n.locale.reaction,
+				text: i18n.ts.reaction,
 				to: '/settings/reaction',
 				active: page.value === 'reaction',
 			}, {
 				icon: 'fas fa-cloud',
-				text: i18n.locale.drive,
+				text: i18n.ts.drive,
 				to: '/settings/drive',
 				active: page.value === 'drive',
 			}, {
 				icon: 'fas fa-bell',
-				text: i18n.locale.notifications,
+				text: i18n.ts.notifications,
 				to: '/settings/notifications',
 				active: page.value === 'notifications',
 			}, {
 				icon: 'fas fa-envelope',
-				text: i18n.locale.email,
+				text: i18n.ts.email,
 				to: '/settings/email',
 				active: page.value === 'email',
 			}, {
 				icon: 'fas fa-share-alt',
-				text: i18n.locale.integration,
+				text: i18n.ts.integration,
 				to: '/settings/integration',
 				active: page.value === 'integration',
 			}, {
 				icon: 'fas fa-lock',
-				text: i18n.locale.security,
+				text: i18n.ts.security,
 				to: '/settings/security',
 				active: page.value === 'security',
 			}],
 		}, {
-			title: i18n.locale.clientSettings,
+			title: i18n.ts.clientSettings,
 			items: [{
 				icon: 'fas fa-cogs',
-				text: i18n.locale.general,
+				text: i18n.ts.general,
 				to: '/settings/general',
 				active: page.value === 'general',
 			}, {
 				icon: 'fas fa-palette',
-				text: i18n.locale.theme,
+				text: i18n.ts.theme,
 				to: '/settings/theme',
 				active: page.value === 'theme',
 			}, {
 				icon: 'fas fa-list-ul',
-				text: i18n.locale.menu,
+				text: i18n.ts.menu,
 				to: '/settings/menu',
 				active: page.value === 'menu',
 			}, {
 				icon: 'fas fa-music',
-				text: i18n.locale.sounds,
+				text: i18n.ts.sounds,
 				to: '/settings/sounds',
 				active: page.value === 'sounds',
 			}, {
 				icon: 'fas fa-plug',
-				text: i18n.locale.plugins,
+				text: i18n.ts.plugins,
 				to: '/settings/plugin',
 				active: page.value === 'plugin',
 			}],
 		}, {
-			title: i18n.locale.otherSettings,
+			title: i18n.ts.otherSettings,
 			items: [{
 				icon: 'fas fa-boxes',
-				text: i18n.locale.importAndExport,
+				text: i18n.ts.importAndExport,
 				to: '/settings/import-export',
 				active: page.value === 'import-export',
 			}, {
 				icon: 'fas fa-volume-mute',
-				text: i18n.locale.instanceMute,
+				text: i18n.ts.instanceMute,
 				to: '/settings/instance-mute',
 				active: page.value === 'instance-mute',
 			}, {
 				icon: 'fas fa-ban',
-				text: i18n.locale.muteAndBlock,
+				text: i18n.ts.muteAndBlock,
 				to: '/settings/mute-block',
 				active: page.value === 'mute-block',
 			}, {
 				icon: 'fas fa-comment-slash',
-				text: i18n.locale.wordMute,
+				text: i18n.ts.wordMute,
 				to: '/settings/word-mute',
 				active: page.value === 'word-mute',
 			}, {
@@ -160,7 +160,7 @@ export default defineComponent({
 				active: page.value === 'api',
 			}, {
 				icon: 'fas fa-ellipsis-h',
-				text: i18n.locale.other,
+				text: i18n.ts.other,
 				to: '/settings/other',
 				active: page.value === 'other',
 			}],
@@ -168,7 +168,7 @@ export default defineComponent({
 			items: [{
 				type: 'button',
 				icon: 'fas fa-trash',
-				text: i18n.locale.clearCache,
+				text: i18n.ts.clearCache,
 				action: () => {
 					localStorage.removeItem('locale');
 					localStorage.removeItem('theme');
@@ -177,7 +177,7 @@ export default defineComponent({
 			}, {
 				type: 'button',
 				icon: 'fas fa-sign-in-alt fa-flip-horizontal',
-				text: i18n.locale.logout,
+				text: i18n.ts.logout,
 				action: () => {
 					signout();
 				},

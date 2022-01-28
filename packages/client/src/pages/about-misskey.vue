@@ -10,7 +10,7 @@
 				<span v-for="emoji in easterEggEmojis" :key="emoji.id" class="emoji" :data-physics-x="emoji.left" :data-physics-y="emoji.top" :class="{ _physics_circle_: !emoji.emoji.startsWith(':') }"><MkEmoji class="emoji" :emoji="emoji.emoji" :custom-emojis="$instance.emojis" :is-reaction="false" :normal="true" :no-style="true"/></span>
 			</div>
 			<div class="_formBlock" style="text-align: center;">
-				{{ i18n.locale._aboutMisskey.about }}<br><a href="https://misskey-hub.net/docs/misskey.html" target="_blank" class="_link">{{ i18n.locale.learnMore }}</a>
+				{{ i18n.ts._aboutMisskey.about }}<br><a href="https://misskey-hub.net/docs/misskey.html" target="_blank" class="_link">{{ i18n.ts.learnMore }}</a>
 			</div>
 			<div class="_formBlock" style="text-align: center;">
 				<MkButton primary rounded inline @click="iLoveMisskey">I <Mfm text="$[jelly ❤]"/> #Misskey</MkButton>
@@ -19,23 +19,23 @@
 				<div class="_formLinks">
 					<FormLink to="https://github.com/misskey-dev/misskey" external>
 						<template #icon><i class="fas fa-code"></i></template>
-						{{ i18n.locale._aboutMisskey.source }}
+						{{ i18n.ts._aboutMisskey.source }}
 						<template #suffix>GitHub</template>
 					</FormLink>
 					<FormLink to="https://crowdin.com/project/misskey" external>
 						<template #icon><i class="fas fa-language"></i></template>
-						{{ i18n.locale._aboutMisskey.translation }}
+						{{ i18n.ts._aboutMisskey.translation }}
 						<template #suffix>Crowdin</template>
 					</FormLink>
 					<FormLink to="https://www.patreon.com/syuilo" external>
 						<template #icon><i class="fas fa-hand-holding-medical"></i></template>
-						{{ i18n.locale._aboutMisskey.donate }}
+						{{ i18n.ts._aboutMisskey.donate }}
 						<template #suffix>Patreon</template>
 					</FormLink>
 				</div>
 			</FormSection>
 			<FormSection>
-				<template #label>{{ i18n.locale._aboutMisskey.contributors }}</template>
+				<template #label>{{ i18n.ts._aboutMisskey.contributors }}</template>
 				<div class="_formLinks">
 					<FormLink to="https://github.com/syuilo" external>@syuilo</FormLink>
 					<FormLink to="https://github.com/AyaMorisawa" external>@AyaMorisawa</FormLink>
@@ -47,12 +47,12 @@
 					<FormLink to="https://github.com/u1-liquid" external>@u1-liquid</FormLink>
 					<FormLink to="https://github.com/marihachi" external>@marihachi</FormLink>
 				</div>
-				<template #caption><MkLink url="https://github.com/misskey-dev/misskey/graphs/contributors">{{ i18n.locale._aboutMisskey.allContributors }}</MkLink></template>
+				<template #caption><MkLink url="https://github.com/misskey-dev/misskey/graphs/contributors">{{ i18n.ts._aboutMisskey.allContributors }}</MkLink></template>
 			</FormSection>
 			<FormSection>
-				<template #label><Mfm text="$[jelly ❤]"/> {{ i18n.locale._aboutMisskey.patrons }}</template>
+				<template #label><Mfm text="$[jelly ❤]"/> {{ i18n.ts._aboutMisskey.patrons }}</template>
 				<div v-for="patron in patrons" :key="patron">{{ patron }}</div>
-				<template #caption>{{ i18n.locale._aboutMisskey.morePatrons }}</template>
+				<template #caption>{{ i18n.ts._aboutMisskey.morePatrons }}</template>
 			</FormSection>
 		</div>
 	</MkSpacer>
@@ -182,6 +182,7 @@ function gravity() {
 function iLoveMisskey() {
 	os.post({
 		initialText: 'I $[jelly ❤] #Misskey',
+		instant: true,
 	});
 }
 
@@ -193,7 +194,7 @@ onBeforeUnmount(() => {
 
 defineExpose({
 	[symbols.PAGE_INFO]: {
-		title: i18n.locale.aboutMisskey,
+		title: i18n.ts.aboutMisskey,
 		icon: null,
 		bg: 'var(--bg)',
 	},

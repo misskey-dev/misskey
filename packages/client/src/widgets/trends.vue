@@ -4,7 +4,7 @@
 
 	<div class="wbrkwala">
 		<MkLoading v-if="fetching"/>
-		<transition-group v-else tag="div" name="chart" class="tags">
+		<transition-group v-else tag="div" :name="$store.state.animation ? 'chart' : ''" class="tags">
 			<div v-for="stat in stats" :key="stat.tag">
 				<div class="tag">
 					<MkA class="a" :to="`/tags/${ encodeURIComponent(stat.tag) }`" :title="stat.tag">#{{ stat.tag }}</MkA>
@@ -52,8 +52,8 @@ const stats = ref([]);
 const fetching = ref(true);
 
 const fetch = () => {
-	os.api('hashtags/trend').then(stats => {
-		stats.value = stats;
+	os.api('hashtags/trend').then(res => {
+		stats.value = res;
 		fetching.value = false;
 	});
 };

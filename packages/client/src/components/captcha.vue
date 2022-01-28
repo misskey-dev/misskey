@@ -1,6 +1,6 @@
 <template>
 <div>
-	<span v-if="!available">{{ i18n.locale.waiting }}<MkEllipsis/></span>
+	<span v-if="!available">{{ i18n.ts.waiting }}<MkEllipsis/></span>
 	<div ref="captchaEl"></div>
 </div>
 </template>
@@ -38,7 +38,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(e: 'update:modelValue', v: string | null): void;
+	(ev: 'update:modelValue', v: string | null): void;
 }>();
 
 const available = ref(false);

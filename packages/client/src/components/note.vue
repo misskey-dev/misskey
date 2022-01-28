@@ -10,13 +10,13 @@
 	:class="{ renote: isRenote }"
 >
 	<MkNoteSub v-if="appearNote.reply" :note="appearNote.reply" class="reply-to"/>
-	<div v-if="pinned" class="info"><i class="fas fa-thumbtack"></i> {{ i18n.locale.pinnedNote }}</div>
-	<div v-if="appearNote._prId_" class="info"><i class="fas fa-bullhorn"></i> {{ i18n.locale.promotion }}<button class="_textButton hide" @click="readPromo()">{{ i18n.locale.hideThisNote }} <i class="fas fa-times"></i></button></div>
-	<div v-if="appearNote._featuredId_" class="info"><i class="fas fa-bolt"></i> {{ i18n.locale.featured }}</div>
+	<div v-if="pinned" class="info"><i class="fas fa-thumbtack"></i> {{ i18n.ts.pinnedNote }}</div>
+	<div v-if="appearNote._prId_" class="info"><i class="fas fa-bullhorn"></i> {{ i18n.ts.promotion }}<button class="_textButton hide" @click="readPromo()">{{ i18n.ts.hideThisNote }} <i class="fas fa-times"></i></button></div>
+	<div v-if="appearNote._featuredId_" class="info"><i class="fas fa-bolt"></i> {{ i18n.ts.featured }}</div>
 	<div v-if="isRenote" class="renote">
 		<MkAvatar class="avatar" :user="note.user"/>
 		<i class="fas fa-retweet"></i>
-		<I18n :src="i18n.locale.renotedBy" tag="span">
+		<I18n :src="i18n.ts.renotedBy" tag="span">
 			<template #user>
 				<MkA v-user-preview="note.userId" class="name" :to="userPage(note.user)">
 					<MkUserName :user="note.user"/>
@@ -48,7 +48,7 @@
 				</p>
 				<div v-show="appearNote.cw == null || showContent" class="content" :class="{ collapsed }">
 					<div class="text">
-						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ i18n.locale.private }})</span>
+						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ i18n.ts.private }})</span>
 						<MkA v-if="appearNote.replyId" class="reply" :to="`/notes/${appearNote.replyId}`"><i class="fas fa-reply"></i></MkA>
 						<Mfm v-if="appearNote.text" :text="appearNote.text" :author="appearNote.user" :i="$i" :custom-emojis="appearNote.emojis"/>
 						<a v-if="appearNote.renote != null" class="rp">RN:</a>
@@ -67,7 +67,7 @@
 					<MkUrlPreview v-for="url in urls" :key="url" :url="url" :compact="true" :detail="false" class="url-preview"/>
 					<div v-if="appearNote.renote" class="renote"><XNoteSimple :note="appearNote.renote"/></div>
 					<button v-if="collapsed" class="fade _button" @click="collapsed = false">
-						<span>{{ i18n.locale.showMore }}</span>
+						<span>{{ i18n.ts.showMore }}</span>
 					</button>
 				</div>
 				<MkA v-if="appearNote.channel && !inChannel" class="channel" :to="`/channels/${appearNote.channel.id}`"><i class="fas fa-satellite-dish"></i> {{ appearNote.channel.name }}</MkA>
@@ -94,7 +94,7 @@
 	</article>
 </div>
 <div v-else class="muted" @click="muted = false">
-	<I18n :src="i18n.locale.userSaysSomething" tag="small">
+	<I18n :src="i18n.ts.userSaysSomething" tag="small">
 		<template #name>
 			<MkA v-user-preview="appearNote.userId" class="name" :to="userPage(appearNote.user)">
 				<MkUserName :user="appearNote.user"/>
@@ -238,7 +238,7 @@ function menu(viaKeyboard = false): void {
 function showRenoteMenu(viaKeyboard = false): void {
 	if (!isMyRenote) return;
 	os.popupMenu([{
-		text: i18n.locale.unrenote,
+		text: i18n.ts.unrenote,
 		icon: 'fas fa-trash-alt',
 		danger: true,
 		action: () => {

@@ -127,7 +127,7 @@ export default defineComponent({
 						clipId: this.clip.id,
 					});
 				}
-			} : undefined], ev.currentTarget || ev.target);
+			} : undefined], ev.currentTarget ?? ev.target);
 		}
 	}
 });
