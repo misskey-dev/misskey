@@ -591,7 +591,7 @@ function getMenu() {
 }
 
 function showMenu(ev: MouseEvent) {
-	os.popupMenu(getMenu(), (ev.currentTarget ?? ev.target || undefined) as HTMLElement | undefined);
+	os.popupMenu(getMenu(), (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
 }
 
 function onContextmenu(ev: MouseEvent) {

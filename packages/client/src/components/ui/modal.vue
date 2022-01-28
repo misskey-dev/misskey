@@ -25,11 +25,13 @@ function getFixedContainer(el: Element | null): Element | null {
 	}
 }
 
+type ModalTypes = 'popup' | 'dialog' | 'drawer';
+
 const props = withDefaults(defineProps<{
 	manualShowing?: boolean;
 	srcCenter?: boolean;
 	src?: HTMLElement;
-	preferType?: string;
+	preferType?: ModalTypes | 'auto';
 	zPriority?: 'low' | 'middle' | 'high';
 	noOverlap?: boolean;
 	transparentBg?: boolean;
@@ -66,7 +68,7 @@ const type = computed(() => {
 			return props.src != null ? 'popup' : 'dialog';
 		}
 	} else {
-		return props.preferType;
+		return props.preferType!;
 	}
 });
 

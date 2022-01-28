@@ -43,9 +43,9 @@ withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(e: 'done', v: any): void;
-	(e: 'close'): void;
-	(e: 'closed'): void;
+	(ev: 'done', v: any): void;
+	(ev: 'close'): void;
+	(ev: 'closed'): void;
 }>();
 
 const modal = ref<InstanceType<typeof MkModal>>();

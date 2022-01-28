@@ -95,7 +95,7 @@ function onClick(ev: MouseEvent) {
 	if (props.selectMode) {
 		emit('chosen', props.file);
 	} else {
-		os.popupMenu(getMenu(), (ev.currentTarget ?? ev.target || undefined) as HTMLElement | undefined);
+		os.popupMenu(getMenu(), (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
 	}
 }
 
