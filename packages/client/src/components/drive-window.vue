@@ -6,7 +6,7 @@
 	@closed="emit('closed')"
 >
 	<template #header>
-		{{ i18n.locale.drive }}
+		{{ i18n.ts.drive }}
 	</template>
 	<XDrive :initial-folder="initialFolder"/>
 </XWindow>

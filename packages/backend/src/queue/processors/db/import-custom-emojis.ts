@@ -59,7 +59,7 @@ export async function importCustomEmojis(job: Bull.Job<DbUserImportJobData>, don
 			await Emojis.delete({
 				name: emojiInfo.name,
 			});
-			const driveFile = await addFile(null, emojiPath, record.fileName, null, null, true);
+			const driveFile = await addFile({ user: null, path: emojiPath, name: record.fileName, force: true });
 			const emoji = await Emojis.insert({
 				id: genId(),
 				updatedAt: new Date(),

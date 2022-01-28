@@ -212,7 +212,6 @@ uploadFromUrlDescription: "URL van het bestand dat je wil uploaden"
 uploadFromUrlRequested: "Uploadverzoek"
 uploadFromUrlMayTakeTime: "Het kan even duren voordat het uploaden voltooid is."
 explore: "Verkennen"
-games: "Misskey spellen"
 messageRead: "Lezen"
 noMoreHistory: "Er is geen verdere geschiedenis"
 startMessaging: "Start een gesprek"
@@ -294,11 +293,6 @@ _exportOrImport:
   excludeInactiveUsers: "Negeer inactieve gebruikers"
 _timelines:
   home: "Startpagina"
-_rooms:
-  _roomType:
-    default: "Standaard"
-  _furnitures:
-    monitor: "Monitor"
 _pages:
   blocks:
     image: "Afbeeldingen"

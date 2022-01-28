@@ -128,7 +128,7 @@ export default defineComponent({
 				text: this.$ts.messagingWithGroup,
 				icon: 'fas fa-users',
 				action: () => { this.startGroup() }
-			}], ev.currentTarget || ev.target);
+			}], ev.currentTarget ?? ev.target);
 		},
 
 		async startUser() {

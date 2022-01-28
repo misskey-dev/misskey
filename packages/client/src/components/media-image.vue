@@ -20,52 +20,32 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { watch } from 'vue';
+import * as misskey from 'misskey-js';
 import { getStaticImageUrl } from '@/scripts/get-static-image-url';
 import ImgWithBlurhash from '@/components/img-with-blurhash.vue';
-import * as os from '@/os';
+import { defaultStore } from '@/store';
 
-export default defineComponent({
-	components: {
-		ImgWithBlurhash
-	},
-	props: {
-		image: {
-			type: Object,
-			required: true
-		},
-		raw: {
-			default: false
-		}
-	},
-	data() {
-		return {
-			hide: true,
-		};
-	},
-	computed: {
-		url(): any {
-			let url = this.$store.state.disableShowingAnimatedImages
-				? getStaticImageUrl(this.image.thumbnailUrl)
-				: this.image.thumbnailUrl;
+const props = defineProps<{
+	image: misskey.entities.DriveFile;
+	raw?: boolean;
+}>();
 
-			if (this.raw || this.$store.state.loadRawImages) {
-				url = this.image.url;
-			}
+let hide = $ref(true);
 
-			return url;
-		}
-	},
-	created() {
-		// Plugin:register_note_view_interruptor を使って書き換えられる可能性があるためwatchする
-		this.$watch('image', () => {
-			this.hide = (this.$store.state.nsfw === 'force') ? true : this.image.isSensitive && (this.$store.state.nsfw !== 'ignore');
-		}, {
-			deep: true,
-			immediate: true,
-		});
-	},
+const url = (props.raw || defaultStore.state.loadRawImages)
+	? props.image.url
+	: defaultStore.state.disableShowingAnimatedImages
+			? getStaticImageUrl(props.image.thumbnailUrl)
+			: props.image.thumbnailUrl;
+
+// Plugin:register_note_view_interruptor を使って書き換えられる可能性があるためwatchする
+watch(() => props.image, () => {
+	hide = (defaultStore.state.nsfw === 'force') ? true : props.image.isSensitive && (defaultStore.state.nsfw !== 'ignore');
+}, {
+	deep: true,
+	immediate: true,
 });
 </script>
 

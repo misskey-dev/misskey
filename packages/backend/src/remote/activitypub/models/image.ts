@@ -1,4 +1,4 @@
-import uploadFromUrl from '@/services/drive/upload-from-url';
+import { uploadFromUrl } from '@/services/drive/upload-from-url';
 import { IRemoteUser } from '@/models/entities/user';
 import Resolver from '../resolver';
 import { fetchMeta } from '@/misc/fetch-meta';
@@ -28,9 +28,15 @@ export async function createImage(actor: IRemoteUser, value: any): Promise<Drive
 	logger.info(`Creating the Image: ${image.url}`);
 
 	const instance = await fetchMeta();
-	const cache = instance.cacheRemoteFiles;
 
-	let file = await uploadFromUrl(image.url, actor, null, image.url, image.sensitive, false, !cache, truncate(image.name, DB_MAX_IMAGE_COMMENT_LENGTH));
+	let file = await uploadFromUrl({
+		url: image.url,
+		user: actor,
+		uri: image.url,
+		sensitive: image.sensitive,
+		isLink: !instance.cacheRemoteFiles,
+		comment: truncate(image.name, DB_MAX_IMAGE_COMMENT_LENGTH)
+	});
 
 	if (file.isLink) {
 		// URLが異なっている場合、同じ画像が以前に異なるURLで登録されていたということなので、

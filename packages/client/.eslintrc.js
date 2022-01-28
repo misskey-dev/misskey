@@ -47,6 +47,7 @@ module.exports = {
 		"vue/no-unused-components": "warn",
 		"vue/valid-v-for": "warn",
 		"vue/return-in-computed-property": "warn",
+		"vue/no-setup-props-destructure": "warn",
 		"vue/max-attributes-per-line": "off",
 		"vue/html-self-closing": "off",
 		"vue/singleline-html-element-content-newline": "off",

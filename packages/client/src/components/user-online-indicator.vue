@@ -13,10 +13,10 @@ const props = defineProps<{
 
 const text = $computed(() => {
 	switch (props.user.onlineStatus) {
-		case 'online': return i18n.locale.online;
-		case 'active': return i18n.locale.active;
-		case 'offline': return i18n.locale.offline;
-		case 'unknown': return i18n.locale.unknown;
+		case 'online': return i18n.ts.online;
+		case 'active': return i18n.ts.active;
+		case 'offline': return i18n.ts.offline;
+		case 'unknown': return i18n.ts.unknown;
 	}
 });
 </script>

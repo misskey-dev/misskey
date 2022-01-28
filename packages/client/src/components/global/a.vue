@@ -43,31 +43,31 @@ function onContextmenu(ev) {
 		text: props.to,
 	}, {
 		icon: 'fas fa-window-maximize',
-		text: i18n.locale.openInWindow,
+		text: i18n.ts.openInWindow,
 		action: () => {
 			os.pageWindow(props.to);
 		}
 	}, sideViewHook ? {
 		icon: 'fas fa-columns',
-		text: i18n.locale.openInSideView,
+		text: i18n.ts.openInSideView,
 		action: () => {
 			sideViewHook(props.to);
 		}
 	} : undefined, {
 		icon: 'fas fa-expand-alt',
-		text: i18n.locale.showInPage,
+		text: i18n.ts.showInPage,
 		action: () => {
 			router.push(props.to);
 		}
 	}, null, {
 		icon: 'fas fa-external-link-alt',
-		text: i18n.locale.openInNewTab,
+		text: i18n.ts.openInNewTab,
 		action: () => {
 			window.open(props.to, '_blank');
 		}
 	}, {
 		icon: 'fas fa-link',
-		text: i18n.locale.copyLink,
+		text: i18n.ts.copyLink,
 		action: () => {
 			copyToClipboard(`${url}${props.to}`);
 		}
