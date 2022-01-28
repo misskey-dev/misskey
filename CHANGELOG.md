@@ -7,6 +7,24 @@
 
 -->
 
+## 12.x.x (unreleased)
+
+### Improvements
+
+### Bugfixes
+- 投稿のNSFW画像を表示したあとにリアクションが更新されると画像が非表示になる問題を修正
+- 「クリップ」ページが開かない問題を修正
+- トレンドウィジェットが動作しないのを修正
+- リアクション設定で絵文字ピッカーが開かないのを修正
+- DMページでメンションが含まれる問題を修正
+- 投稿フォームのハッシュタグ保持フィールドが動作しない問題を修正
+- Add `img-src` and `media-src` directives to `Content-Security-Policy` for
+  files and media proxy
+
+## 12.102.1 (2022/01/27)
+### Bugfixes
+- チャットが表示できない問題を修正
+
 ## 12.102.0 (2022/01/27)
 
 ### NOTE

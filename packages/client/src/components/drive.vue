@@ -54,7 +54,7 @@
 				/>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
 				<div v-for="(n, i) in 16" :key="i" class="padding"></div>
-				<MkButton v-if="moreFolders" ref="moreFolders">{{ i18n.locale.loadMore }}</MkButton>
+				<MkButton v-if="moreFolders" ref="moreFolders">{{ i18n.ts.loadMore }}</MkButton>
 			</div>
 			<div v-show="files.length > 0" ref="filesContainer" class="files">
 				<XFile
@@ -71,12 +71,12 @@
 				/>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
 				<div v-for="(n, i) in 16" :key="i" class="padding"></div>
-				<MkButton v-show="moreFiles" ref="loadMoreFiles" @click="fetchMoreFiles">{{ i18n.locale.loadMore }}</MkButton>
+				<MkButton v-show="moreFiles" ref="loadMoreFiles" @click="fetchMoreFiles">{{ i18n.ts.loadMore }}</MkButton>
 			</div>
 			<div v-if="files.length == 0 && folders.length == 0 && !fetching" class="empty">
 				<p v-if="draghover">{{ i18n.t('empty-draghover') }}</p>
-				<p v-if="!draghover && folder == null"><strong>{{ i18n.locale.emptyDrive }}</strong><br/>{{ i18n.t('empty-drive-description') }}</p>
-				<p v-if="!draghover && folder != null">{{ i18n.locale.emptyFolder }}</p>
+				<p v-if="!draghover && folder == null"><strong>{{ i18n.ts.emptyDrive }}</strong><br/>{{ i18n.t('empty-drive-description') }}</p>
+				<p v-if="!draghover && folder != null">{{ i18n.ts.emptyFolder }}</p>
 			</div>
 		</div>
 		<MkLoading v-if="fetching"/>
@@ -253,14 +253,14 @@ function onDrop(e: DragEvent): any {
 			switch (err) {
 				case 'detected-circular-definition':
 					os.alert({
-						title: i18n.locale.unableToProcess,
-						text: i18n.locale.circularReferenceFolder
+						title: i18n.ts.unableToProcess,
+						text: i18n.ts.circularReferenceFolder
 					});
 					break;
 				default:
 					os.alert({
 						type: 'error',
-						text: i18n.locale.somethingHappened
+						text: i18n.ts.somethingHappened
 					});
 			}
 		});
@@ -274,9 +274,9 @@ function selectLocalFile() {
 
 function urlUpload() {
 	os.inputText({
-		title: i18n.locale.uploadFromUrl,
+		title: i18n.ts.uploadFromUrl,
 		type: 'url',
-		placeholder: i18n.locale.uploadFromUrlDescription
+		placeholder: i18n.ts.uploadFromUrlDescription
 	}).then(({ canceled, result: url }) => {
 		if (canceled || !url) return;
 		os.api('drive/files/upload-from-url', {
@@ -285,16 +285,16 @@ function urlUpload() {
 		});
 
 		os.alert({
-			title: i18n.locale.uploadFromUrlRequested,
-			text: i18n.locale.uploadFromUrlMayTakeTime
+			title: i18n.ts.uploadFromUrlRequested,
+			text: i18n.ts.uploadFromUrlMayTakeTime
 		});
 	});
 }
 
 function createFolder() {
 	os.inputText({
-		title: i18n.locale.createFolder,
-		placeholder: i18n.locale.folderName
+		title: i18n.ts.createFolder,
+		placeholder: i18n.ts.folderName
 	}).then(({ canceled, result: name }) => {
 		if (canceled) return;
 		os.api('drive/folders/create', {
@@ -308,8 +308,8 @@ function createFolder() {
 
 function renameFolder(folderToRename: Misskey.entities.DriveFolder) {
 	os.inputText({
-		title: i18n.locale.renameFolder,
-		placeholder: i18n.locale.inputNewFolderName,
+		title: i18n.ts.renameFolder,
+		placeholder: i18n.ts.inputNewFolderName,
 		default: folderToRename.name
 	}).then(({ canceled, result: name }) => {
 		if (canceled) return;
@@ -334,14 +334,14 @@ function deleteFolder(folderToDelete: Misskey.entities.DriveFolder) {
 			case 'b0fc8a17-963c-405d-bfbc-859a487295e1':
 				os.alert({
 					type: 'error',
-					title: i18n.locale.unableToDelete,
-					text: i18n.locale.hasChildFilesOrFolders
+					title: i18n.ts.unableToDelete,
+					text: i18n.ts.hasChildFilesOrFolders
 				});
 				break;
 			default:
 				os.alert({
 					type: 'error',
-					text: i18n.locale.unableToDelete
+					text: i18n.ts.unableToDelete
 				});
 			}
 	});
@@ -562,36 +562,36 @@ function fetchMoreFiles() {
 
 function getMenu() {
 	return [{
-		text: i18n.locale.addFile,
+		text: i18n.ts.addFile,
 		type: 'label'
 	}, {
-		text: i18n.locale.upload,
+		text: i18n.ts.upload,
 		icon: 'fas fa-upload',
 		action: () => { selectLocalFile(); }
 	}, {
-		text: i18n.locale.fromUrl,
+		text: i18n.ts.fromUrl,
 		icon: 'fas fa-link',
 		action: () => { urlUpload(); }
 	}, null, {
-		text: folder.value ? folder.value.name : i18n.locale.drive,
+		text: folder.value ? folder.value.name : i18n.ts.drive,
 		type: 'label'
 	}, folder.value ? {
-		text: i18n.locale.renameFolder,
+		text: i18n.ts.renameFolder,
 		icon: 'fas fa-i-cursor',
 		action: () => { renameFolder(folder.value); }
 	} : undefined, folder.value ? {
-		text: i18n.locale.deleteFolder,
+		text: i18n.ts.deleteFolder,
 		icon: 'fas fa-trash-alt',
 		action: () => { deleteFolder(folder.value as Misskey.entities.DriveFolder); }
 	} : undefined, {
-		text: i18n.locale.createFolder,
+		text: i18n.ts.createFolder,
 		icon: 'fas fa-folder-plus',
 		action: () => { createFolder(); }
 	}];
 }
 
 function showMenu(ev: MouseEvent) {
-	os.popupMenu(getMenu(), (ev.currentTarget || ev.target || undefined) as HTMLElement | undefined);
+	os.popupMenu(getMenu(), (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
 }
 
 function onContextmenu(ev: MouseEvent) {

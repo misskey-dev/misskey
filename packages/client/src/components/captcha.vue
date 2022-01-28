@@ -1,6 +1,6 @@
 <template>
 <div>
-	<span v-if="!available">{{ i18n.locale.waiting }}<MkEllipsis/></span>
+	<span v-if="!available">{{ i18n.ts.waiting }}<MkEllipsis/></span>
 	<div ref="captchaEl"></div>
 </div>
 </template>

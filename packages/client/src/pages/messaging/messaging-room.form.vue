@@ -24,7 +24,7 @@
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
 import insertTextAtCursor from 'insert-text-at-cursor';
-import * as autosize from 'autosize';
+import autosize from 'autosize';
 import { formatTimeString } from '@/scripts/format-time-string';
 import { selectFile } from '@/scripts/select-file';
 import * as os from '@/os';
@@ -76,7 +76,8 @@ export default defineComponent({
 		autosize(this.$refs.text);
 
 		// TODO: detach when unmount
-		new Autocomplete(this.$refs.text, this, { model: 'text' });
+		// TODO
+		//new Autocomplete(this.$refs.text, this, { model: 'text' });
 
 		// 書きかけの投稿を復元
 		const draft = JSON.parse(localStorage.getItem('message_drafts') || '{}')[this.draftKey];
@@ -153,7 +154,7 @@ export default defineComponent({
 		},
 
 		chooseFile(e) {
-			selectFile(e.currentTarget || e.target, this.$ts.selectFile).then(file => {
+			selectFile(e.currentTarget ?? e.target, this.$ts.selectFile).then(file => {
 				this.file = file;
 			});
 		},
@@ -213,7 +214,7 @@ export default defineComponent({
 		},
 
 		async insertEmoji(ev) {
-			os.openEmojiPicker(ev.currentTarget || ev.target, {}, this.$refs.text);
+			os.openEmojiPicker(ev.currentTarget ?? ev.target, {}, this.$refs.text);
 		}
 	}
 });

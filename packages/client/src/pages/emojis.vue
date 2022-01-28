@@ -16,14 +16,14 @@ const tab = ref('category');
 function menu(ev) {
 	os.popupMenu([{
 		icon: 'fas fa-download',
-		text: i18n.locale.export,
+		text: i18n.ts.export,
 		action: async () => {
 			os.api('export-custom-emojis', {
 			})
 			.then(() => {
 				os.alert({
 					type: 'info',
-					text: i18n.locale.exportRequested,
+					text: i18n.ts.exportRequested,
 				});
 			}).catch((e) => {
 				os.alert({
@@ -32,12 +32,12 @@ function menu(ev) {
 				});
 			});
 		}
-	}], ev.currentTarget || ev.target);
+	}], ev.currentTarget ?? ev.target);
 }
 
 defineExpose({
 	[symbols.PAGE_INFO]: {
-		title: i18n.locale.customEmojis,
+		title: i18n.ts.customEmojis,
 		icon: 'fas fa-laugh',
 		bg: 'var(--bg)',
 		actions: [{

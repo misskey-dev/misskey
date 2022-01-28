@@ -64,7 +64,7 @@ async function chooseList(ev: MouseEvent): Promise<void> {
 		text: list.name,
 		to: `/timeline/list/${list.id}`,
 	}));
-	os.popupMenu(items, ev.currentTarget || ev.target);
+	os.popupMenu(items, ev.currentTarget ?? ev.target);
 }
 
 async function chooseAntenna(ev: MouseEvent): Promise<void> {
@@ -75,7 +75,7 @@ async function chooseAntenna(ev: MouseEvent): Promise<void> {
 		indicate: antenna.hasUnreadNote,
 		to: `/timeline/antenna/${antenna.id}`,
 	}));
-	os.popupMenu(items, ev.currentTarget || ev.target);
+	os.popupMenu(items, ev.currentTarget ?? ev.target);
 }
 
 async function chooseChannel(ev: MouseEvent): Promise<void> {
@@ -86,7 +86,7 @@ async function chooseChannel(ev: MouseEvent): Promise<void> {
 		indicate: channel.hasUnreadNote,
 		to: `/channels/${channel.id}`,
 	}));
-	os.popupMenu(items, ev.currentTarget || ev.target);
+	os.popupMenu(items, ev.currentTarget ?? ev.target);
 }
 
 function saveSrc(): void {
@@ -97,7 +97,7 @@ function saveSrc(): void {
 
 async function timetravel(): Promise<void> {
 	const { canceled, result: date } = await os.inputDate({
-		title: i18n.locale.date,
+		title: i18n.ts.date,
 	});
 	if (canceled) return;
 
@@ -110,47 +110,47 @@ function focus(): void {
 
 defineExpose({
 	[symbols.PAGE_INFO]: computed(() => ({
-		title: i18n.locale.timeline,
+		title: i18n.ts.timeline,
 		icon: src === 'local' ? 'fas fa-comments' : src === 'social' ? 'fas fa-share-alt' : src === 'global' ? 'fas fa-globe' : 'fas fa-home',
 		bg: 'var(--bg)',
 		actions: [{
 			icon: 'fas fa-list-ul',
-			text: i18n.locale.lists,
+			text: i18n.ts.lists,
 			handler: chooseList,
 		}, {
 			icon: 'fas fa-satellite',
-			text: i18n.locale.antennas,
+			text: i18n.ts.antennas,
 			handler: chooseAntenna,
 		}, {
 			icon: 'fas fa-satellite-dish',
-			text: i18n.locale.channel,
+			text: i18n.ts.channel,
 			handler: chooseChannel,
 		}, {
 			icon: 'fas fa-calendar-alt',
-			text: i18n.locale.jumpToSpecifiedDate,
+			text: i18n.ts.jumpToSpecifiedDate,
 			handler: timetravel,
 		}],
 		tabs: [{
 			active: src === 'home',
-			title: i18n.locale._timelines.home,
+			title: i18n.ts._timelines.home,
 			icon: 'fas fa-home',
 			iconOnly: true,
 			onClick: () => { src = 'home'; saveSrc(); },
 		}, ...(isLocalTimelineAvailable ? [{
 			active: src === 'local',
-			title: i18n.locale._timelines.local,
+			title: i18n.ts._timelines.local,
 			icon: 'fas fa-comments',
 			iconOnly: true,
 			onClick: () => { src = 'local'; saveSrc(); },
 		}, {
 			active: src === 'social',
-			title: i18n.locale._timelines.social,
+			title: i18n.ts._timelines.social,
 			icon: 'fas fa-share-alt',
 			iconOnly: true,
 			onClick: () => { src = 'social'; saveSrc(); },
 		}] : []), ...(isGlobalTimelineAvailable ? [{
 			active: src === 'global',
-			title: i18n.locale._timelines.global,
+			title: i18n.ts._timelines.global,
 			icon: 'fas fa-globe',
 			iconOnly: true,
 			onClick: () => { src = 'global'; saveSrc(); },
