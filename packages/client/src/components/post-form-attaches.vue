@@ -127,7 +127,7 @@ export default defineComponent({
 				text: this.$ts.attachCancel,
 				icon: 'fas fa-times-circle',
 				action: () => { this.detachMedia(file.id) }
-			}], ev.currentTarget || ev.target).then(() => this.menu = null);
+			}], ev.currentTarget ?? ev.target).then(() => this.menu = null);
 		}
 	}
 });

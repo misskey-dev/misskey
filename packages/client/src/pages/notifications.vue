@@ -27,26 +27,26 @@ function setFilter(ev) {
 	}));
 	const items = includeTypes != null ? [{
 		icon: 'fas fa-times',
-		text: i18n.locale.clear,
+		text: i18n.ts.clear,
 		action: () => {
 			includeTypes = null;
 		}
 	}, null, ...typeItems] : typeItems;
-	os.popupMenu(items, ev.currentTarget || ev.target);
+	os.popupMenu(items, ev.currentTarget ?? ev.target);
 }
 
 defineExpose({
 	[symbols.PAGE_INFO]: computed(() => ({
-		title: i18n.locale.notifications,
+		title: i18n.ts.notifications,
 		icon: 'fas fa-bell',
 		bg: 'var(--bg)',
 		actions: [{
-			text: i18n.locale.filter,
+			text: i18n.ts.filter,
 			icon: 'fas fa-filter',
 			highlighted: includeTypes != null,
 			handler: setFilter,
 		}, {
-			text: i18n.locale.markAllAsRead,
+			text: i18n.ts.markAllAsRead,
 			icon: 'fas fa-check',
 			handler: () => {
 				os.apiWithDialog('notifications/mark-all-as-read');
@@ -54,11 +54,11 @@ defineExpose({
 		}],
 		tabs: [{
 			active: tab === 'all',
-			title: i18n.locale.all,
+			title: i18n.ts.all,
 			onClick: () => { tab = 'all'; },
 		}, {
 			active: tab === 'unread',
-			title: i18n.locale.unread,
+			title: i18n.ts.unread,
 			onClick: () => { tab = 'unread'; },
 		},]
 	})),

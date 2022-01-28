@@ -31,7 +31,7 @@ const pagination = {
 
 async function create() {
 	const { canceled, result: name } = await os.inputText({
-		title: i18n.locale.enterListName,
+		title: i18n.ts.enterListName,
 	});
 	if (canceled) return;
 	await os.apiWithDialog('users/lists/create', { name: name });
@@ -40,7 +40,7 @@ async function create() {
 
 defineExpose({
 	[symbols.PAGE_INFO]: {
-		title: i18n.locale.manageLists,
+		title: i18n.ts.manageLists,
 		icon: 'fas fa-list-ul',
 		bg: 'var(--bg)',
 		action: {

@@ -60,7 +60,7 @@ export default defineComponent({
 
 	setup(props, context) {
 		const INFO = {
-			title: i18n.locale.importAndExport,
+			title: i18n.ts.importAndExport,
 			icon: 'fas fa-boxes',
 			bg: 'var(--bg)',
 		};
@@ -71,14 +71,14 @@ export default defineComponent({
 		const onExportSuccess = () => {
 			os.alert({
 				type: 'info',
-				text: i18n.locale.exportRequested,
+				text: i18n.ts.exportRequested,
 			});
 		};
 
 		const onImportSuccess = () => {
 			os.alert({
 				type: 'info',
-				text: i18n.locale.importRequested,
+				text: i18n.ts.importRequested,
 			});
 		};
 
@@ -114,22 +114,22 @@ export default defineComponent({
 		};
 
 		const importFollowing = async (ev) => {
-			const file = await selectFile(ev.currentTarget || ev.target);
+			const file = await selectFile(ev.currentTarget ?? ev.target);
 			os.api('i/import-following', { fileId: file.id }).then(onImportSuccess).catch(onError);
 		};
 
 		const importUserLists = async (ev) => {
-			const file = await selectFile(ev.currentTarget || ev.target);
+			const file = await selectFile(ev.currentTarget ?? ev.target);
 			os.api('i/import-user-lists', { fileId: file.id }).then(onImportSuccess).catch(onError);
 		};
 
 		const importMuting = async (ev) => {
-			const file = await selectFile(ev.currentTarget || ev.target);
+			const file = await selectFile(ev.currentTarget ?? ev.target);
 			os.api('i/import-muting', { fileId: file.id }).then(onImportSuccess).catch(onError);
 		};
 
 		const importBlocking = async (ev) => {
-			const file = await selectFile(ev.currentTarget || ev.target);
+			const file = await selectFile(ev.currentTarget ?? ev.target);
 			os.api('i/import-blocking', { fileId: file.id }).then(onImportSuccess).catch(onError);
 		};
 

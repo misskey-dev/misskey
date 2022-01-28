@@ -192,31 +192,31 @@ export async function openAccountMenu(opts: {
 	if (opts.withExtraOperation) {
 		popupMenu([...[{
 			type: 'link',
-			text: i18n.locale.profile,
+			text: i18n.ts.profile,
 			to: `/@${ $i.username }`,
 			avatar: $i,
 		}, null, ...(opts.includeCurrentAccount ? [createItem($i)] : []), ...accountItemPromises, {
 			icon: 'fas fa-plus',
-			text: i18n.locale.addAccount,
+			text: i18n.ts.addAccount,
 			action: () => {
 				popupMenu([{
-					text: i18n.locale.existingAccount,
+					text: i18n.ts.existingAccount,
 					action: () => { showSigninDialog(); },
 				}, {
-					text: i18n.locale.createAccount,
+					text: i18n.ts.createAccount,
 					action: () => { createAccount(); },
-				}], ev.currentTarget || ev.target);
+				}], ev.currentTarget ?? ev.target);
 			},
 		}, {
 			type: 'link',
 			icon: 'fas fa-users',
-			text: i18n.locale.manageAccounts,
+			text: i18n.ts.manageAccounts,
 			to: `/settings/accounts`,
-		}]], ev.currentTarget || ev.target, {
+		}]], ev.currentTarget ?? ev.target, {
 			align: 'left'
 		});
 	} else {
-		popupMenu([...(opts.includeCurrentAccount ? [createItem($i)] : []), ...accountItemPromises], ev.currentTarget || ev.target, {
+		popupMenu([...(opts.includeCurrentAccount ? [createItem($i)] : []), ...accountItemPromises], ev.currentTarget ?? ev.target, {
 			align: 'left'
 		});
 	}

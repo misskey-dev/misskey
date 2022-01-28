@@ -250,7 +250,7 @@ function menu(viaKeyboard = false): void {
 function showRenoteMenu(viaKeyboard = false): void {
 	if (!isMyRenote) return;
 	os.popupMenu([{
-		text: i18n.locale.unrenote,
+		text: i18n.ts.unrenote,
 		icon: 'fas fa-trash-alt',
 		danger: true,
 		action: () => {

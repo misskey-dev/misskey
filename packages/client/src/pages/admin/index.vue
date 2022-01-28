@@ -55,7 +55,7 @@ export default defineComponent({
 
 	setup(props, context) {
 		const indexInfo = {
-			title: i18n.locale.controlPanel,
+			title: i18n.ts.controlPanel,
 			icon: 'fas fa-cog',
 			bg: 'var(--bg)',
 			hideHeader: true,
@@ -91,119 +91,119 @@ export default defineComponent({
 		});
 
 		const menuDef = computed(() => [{
-			title: i18n.locale.quickAction,
+			title: i18n.ts.quickAction,
 			items: [{
 				type: 'button',
 				icon: 'fas fa-search',
-				text: i18n.locale.lookup,
+				text: i18n.ts.lookup,
 				action: lookup,
 			}, ...(instance.disableRegistration ? [{
 				type: 'button',
 				icon: 'fas fa-user',
-				text: i18n.locale.invite,
+				text: i18n.ts.invite,
 				action: invite,
 			}] : [])],
 		}, {
-			title: i18n.locale.administration,
+			title: i18n.ts.administration,
 			items: [{
 				icon: 'fas fa-tachometer-alt',
-				text: i18n.locale.dashboard,
+				text: i18n.ts.dashboard,
 				to: '/admin/overview',
 				active: page.value === 'overview',
 			}, {
 				icon: 'fas fa-users',
-				text: i18n.locale.users,
+				text: i18n.ts.users,
 				to: '/admin/users',
 				active: page.value === 'users',
 			}, {
 				icon: 'fas fa-laugh',
-				text: i18n.locale.customEmojis,
+				text: i18n.ts.customEmojis,
 				to: '/admin/emojis',
 				active: page.value === 'emojis',
 			}, {
 				icon: 'fas fa-globe',
-				text: i18n.locale.federation,
+				text: i18n.ts.federation,
 				to: '/admin/federation',
 				active: page.value === 'federation',
 			}, {
 				icon: 'fas fa-clipboard-list',
-				text: i18n.locale.jobQueue,
+				text: i18n.ts.jobQueue,
 				to: '/admin/queue',
 				active: page.value === 'queue',
 			}, {
 				icon: 'fas fa-cloud',
-				text: i18n.locale.files,
+				text: i18n.ts.files,
 				to: '/admin/files',
 				active: page.value === 'files',
 			}, {
 				icon: 'fas fa-broadcast-tower',
-				text: i18n.locale.announcements,
+				text: i18n.ts.announcements,
 				to: '/admin/announcements',
 				active: page.value === 'announcements',
 			}, {
 				icon: 'fas fa-audio-description',
-				text: i18n.locale.ads,
+				text: i18n.ts.ads,
 				to: '/admin/ads',
 				active: page.value === 'ads',
 			}, {
 				icon: 'fas fa-exclamation-circle',
-				text: i18n.locale.abuseReports,
+				text: i18n.ts.abuseReports,
 				to: '/admin/abuses',
 				active: page.value === 'abuses',
 			}],
 		}, {
-			title: i18n.locale.settings,
+			title: i18n.ts.settings,
 			items: [{
 				icon: 'fas fa-cog',
-				text: i18n.locale.general,
+				text: i18n.ts.general,
 				to: '/admin/settings',
 				active: page.value === 'settings',
 			}, {
 				icon: 'fas fa-envelope',
-				text: i18n.locale.emailServer,
+				text: i18n.ts.emailServer,
 				to: '/admin/email-settings',
 				active: page.value === 'email-settings',
 			}, {
 				icon: 'fas fa-cloud',
-				text: i18n.locale.objectStorage,
+				text: i18n.ts.objectStorage,
 				to: '/admin/object-storage',
 				active: page.value === 'object-storage',
 			}, {
 				icon: 'fas fa-lock',
-				text: i18n.locale.security,
+				text: i18n.ts.security,
 				to: '/admin/security',
 				active: page.value === 'security',
 			}, {
 				icon: 'fas fa-globe',
-				text: i18n.locale.relays,
+				text: i18n.ts.relays,
 				to: '/admin/relays',
 				active: page.value === 'relays',
 			}, {
 				icon: 'fas fa-share-alt',
-				text: i18n.locale.integration,
+				text: i18n.ts.integration,
 				to: '/admin/integrations',
 				active: page.value === 'integrations',
 			}, {
 				icon: 'fas fa-ban',
-				text: i18n.locale.instanceBlocking,
+				text: i18n.ts.instanceBlocking,
 				to: '/admin/instance-block',
 				active: page.value === 'instance-block',
 			}, {
 				icon: 'fas fa-ghost',
-				text: i18n.locale.proxyAccount,
+				text: i18n.ts.proxyAccount,
 				to: '/admin/proxy-account',
 				active: page.value === 'proxy-account',
 			}, {
 				icon: 'fas fa-cogs',
-				text: i18n.locale.other,
+				text: i18n.ts.other,
 				to: '/admin/other-settings',
 				active: page.value === 'other-settings',
 			}],
 		}, {
-			title: i18n.locale.info,
+			title: i18n.ts.info,
 			items: [{
 				icon: 'fas fa-database',
-				text: i18n.locale.database,
+				text: i18n.ts.database,
 				to: '/admin/database',
 				active: page.value === 'database',
 			}],
@@ -275,37 +275,37 @@ export default defineComponent({
 
 		const lookup = (ev) => {
 			os.popupMenu([{
-				text: i18n.locale.user,
+				text: i18n.ts.user,
 				icon: 'fas fa-user',
 				action: () => {
 					lookupUser();
 				}
 			}, {
-				text: i18n.locale.note,
+				text: i18n.ts.note,
 				icon: 'fas fa-pencil-alt',
 				action: () => {
 					alert('TODO');
 				}
 			}, {
-				text: i18n.locale.file,
+				text: i18n.ts.file,
 				icon: 'fas fa-cloud',
 				action: () => {
 					alert('TODO');
 				}
 			}, {
-				text: i18n.locale.instance,
+				text: i18n.ts.instance,
 				icon: 'fas fa-globe',
 				action: () => {
 					alert('TODO');
 				}
-			}], ev.currentTarget || ev.target);
+			}], ev.currentTarget ?? ev.target);
 		};
 
 		return {
 			[symbols.PAGE_INFO]: INFO,
 			menuDef,
 			header: {
-				title: i18n.locale.controlPanel,
+				title: i18n.ts.controlPanel,
 			},
 			noMaintainerInformation,
 			noBotProtection,

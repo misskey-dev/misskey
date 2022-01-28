@@ -133,7 +133,7 @@ function onCompositionUpdate() {
 }
 
 function chooseFile(e: MouseEvent) {
-	selectFile(e.currentTarget || e.target, i18n.locale.selectFile).then(selectedFile => {
+	selectFile(e.currentTarget ?? e.target, i18n.locale.selectFile).then(selectedFile => {
 		file = selectedFile;
 	});
 }
@@ -193,7 +193,7 @@ function deleteDraft() {
 }
 
 async function insertEmoji(ev: MouseEvent) {
-	os.openEmojiPicker(ev.currentTarget || ev.target, {}, textEl);
+	os.openEmojiPicker(ev.currentTarget ?? ev.target, {}, textEl);
 }
 
 onMounted(() => {
