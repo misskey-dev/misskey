@@ -32,20 +32,20 @@ import MkEmojiPicker from '@/components/emoji-picker.vue';
 import { defaultStore } from '@/store';
 
 withDefaults(defineProps<{
-	manualShowing?: boolean;
+	manualShowing?: boolean | null;
 	src?: HTMLElement;
 	showPinned?: boolean;
 	asReactionPicker?: boolean;
 }>(), {
-	manualShowing: false,
+	manualShowing: null,
 	showPinned: true,
 	asReactionPicker: false,
 });
 
 const emit = defineEmits<{
-	(e: 'done', v: any): void;
-	(e: 'close'): void;
-	(e: 'closed'): void;
+	(ev: 'done', v: any): void;
+	(ev: 'close'): void;
+	(ev: 'closed'): void;
 }>();
 
 const modal = ref<InstanceType<typeof MkModal>>();

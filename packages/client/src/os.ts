@@ -403,7 +403,7 @@ export async function selectDriveFolder(multiple: boolean) {
 	});
 }
 
-export async function pickEmoji(src?: HTMLElement, opts) {
+export async function pickEmoji(src: HTMLElement | null, opts) {
 	return new Promise((resolve, reject) => {
 		popup(import('@/components/emoji-picker-dialog.vue'), {
 			src,

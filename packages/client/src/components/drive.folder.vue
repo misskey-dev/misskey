@@ -20,7 +20,7 @@
 		{{ folder.name }}
 	</p>
 	<p v-if="defaultStore.state.uploadFolder == folder.id" class="upload">
-		{{ i18n.locale.uploadFolder }}
+		{{ i18n.ts.uploadFolder }}
 	</p>
 	<button v-if="selectMode" class="checkbox _button" :class="{ checked: isSelected }" @click.prevent.stop="checkboxClicked"></button>
 </div>
@@ -146,14 +146,14 @@ function onDrop(ev: DragEvent) {
 			switch (err) {
 				case 'detected-circular-definition':
 					os.alert({
-						title: i18n.locale.unableToProcess,
-						text: i18n.locale.circularReferenceFolder
+						title: i18n.ts.unableToProcess,
+						text: i18n.ts.circularReferenceFolder
 					});
 					break;
 				default:
 					os.alert({
 						type: 'error',
-						text: i18n.locale.somethingHappened
+						text: i18n.ts.somethingHappened
 					});
 			}
 		});
@@ -184,8 +184,8 @@ function go() {
 
 function rename() {
 	os.inputText({
-		title: i18n.locale.renameFolder,
-		placeholder: i18n.locale.inputNewFolderName,
+		title: i18n.ts.renameFolder,
+		placeholder: i18n.ts.inputNewFolderName,
 		default: props.folder.name
 	}).then(({ canceled, result: name }) => {
 		if (canceled) return;
@@ -208,14 +208,14 @@ function deleteFolder() {
 			case 'b0fc8a17-963c-405d-bfbc-859a487295e1':
 				os.alert({
 					type: 'error',
-					title: i18n.locale.unableToDelete,
-					text: i18n.locale.hasChildFilesOrFolders
+					title: i18n.ts.unableToDelete,
+					text: i18n.ts.hasChildFilesOrFolders
 				});
 				break;
 			default:
 				os.alert({
 					type: 'error',
-					text: i18n.locale.unableToDelete
+					text: i18n.ts.unableToDelete
 				});
 		}
 	});
@@ -227,7 +227,7 @@ function setAsUploadFolder() {
 
 function onContextmenu(ev: MouseEvent) {
 	os.contextMenu([{
-		text: i18n.locale.openInWindow,
+		text: i18n.ts.openInWindow,
 		icon: 'fas fa-window-restore',
 		action: () => {
 			os.popup(import('./drive-window.vue'), {
@@ -236,11 +236,11 @@ function onContextmenu(ev: MouseEvent) {
 			}, 'closed');
 		}
 	}, null, {
-		text: i18n.locale.rename,
+		text: i18n.ts.rename,
 		icon: 'fas fa-i-cursor',
 		action: rename,
 	}, null, {
-		text: i18n.locale.delete,
+		text: i18n.ts.delete,
 		icon: 'fas fa-trash-alt',
 		danger: true,
 		action: deleteFolder,

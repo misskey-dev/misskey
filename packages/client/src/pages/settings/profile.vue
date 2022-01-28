@@ -3,45 +3,45 @@
 	<div class="llvierxe" :style="{ backgroundImage: $i.bannerUrl ? `url(${ $i.bannerUrl })` : null }">
 		<div class="avatar _acrylic">
 			<MkAvatar class="avatar" :user="$i" :disable-link="true" @click="changeAvatar"/>
-			<MkButton primary class="avatarEdit" @click="changeAvatar">{{ i18n.locale._profile.changeAvatar }}</MkButton>
+			<MkButton primary class="avatarEdit" @click="changeAvatar">{{ i18n.ts._profile.changeAvatar }}</MkButton>
 		</div>
-		<MkButton primary class="bannerEdit" @click="changeBanner">{{ i18n.locale._profile.changeBanner }}</MkButton>
+		<MkButton primary class="bannerEdit" @click="changeBanner">{{ i18n.ts._profile.changeBanner }}</MkButton>
 	</div>
 
 	<FormInput v-model="profile.name" :max="30" manual-save class="_formBlock">
-		<template #label>{{ i18n.locale._profile.name }}</template>
+		<template #label>{{ i18n.ts._profile.name }}</template>
 	</FormInput>
 
 	<FormTextarea v-model="profile.description" :max="500" tall manual-save class="_formBlock">
-		<template #label>{{ i18n.locale._profile.description }}</template>
-		<template #caption>{{ i18n.locale._profile.youCanIncludeHashtags }}</template>
+		<template #label>{{ i18n.ts._profile.description }}</template>
+		<template #caption>{{ i18n.ts._profile.youCanIncludeHashtags }}</template>
 	</FormTextarea>
 
 	<FormInput v-model="profile.location" manual-save class="_formBlock">
-		<template #label>{{ i18n.locale.location }}</template>
+		<template #label>{{ i18n.ts.location }}</template>
 		<template #prefix><i class="fas fa-map-marker-alt"></i></template>
 	</FormInput>
 
 	<FormInput v-model="profile.birthday" type="date" manual-save class="_formBlock">
-		<template #label>{{ i18n.locale.birthday }}</template>
+		<template #label>{{ i18n.ts.birthday }}</template>
 		<template #prefix><i class="fas fa-birthday-cake"></i></template>
 	</FormInput>
 
 	<FormSelect v-model="profile.lang" class="_formBlock">
-		<template #label>{{ i18n.locale.language }}</template>
+		<template #label>{{ i18n.ts.language }}</template>
 		<option v-for="x in langs" :key="x[0]" :value="x[0]">{{ x[1] }}</option>
 	</FormSelect>
 
 	<FormSlot>
-		<MkButton @click="editMetadata">{{ i18n.locale._profile.metadataEdit }}</MkButton>
-		<template #caption>{{ i18n.locale._profile.metadataDescription }}</template>
+		<MkButton @click="editMetadata">{{ i18n.ts._profile.metadataEdit }}</MkButton>
+		<template #caption>{{ i18n.ts._profile.metadataDescription }}</template>
 	</FormSlot>
 
-	<FormSwitch v-model="profile.isCat" class="_formBlock">{{ i18n.locale.flagAsCat }}<template #caption>{{ i18n.locale.flagAsCatDescription }}</template></FormSwitch>
+	<FormSwitch v-model="profile.isCat" class="_formBlock">{{ i18n.ts.flagAsCat }}<template #caption>{{ i18n.ts.flagAsCatDescription }}</template></FormSwitch>
 
-	<FormSwitch v-model="profile.isBot" class="_formBlock">{{ i18n.locale.flagAsBot }}<template #caption>{{ i18n.locale.flagAsBotDescription }}</template></FormSwitch>
+	<FormSwitch v-model="profile.isBot" class="_formBlock">{{ i18n.ts.flagAsBot }}<template #caption>{{ i18n.ts.flagAsBotDescription }}</template></FormSwitch>
 
-	<FormSwitch v-model="profile.alwaysMarkNsfw" class="_formBlock">{{ i18n.locale.alwaysMarkSensitive }}</FormSwitch>
+	<FormSwitch v-model="profile.alwaysMarkNsfw" class="_formBlock">{{ i18n.ts.alwaysMarkSensitive }}</FormSwitch>
 </div>
 </template>
 
@@ -102,7 +102,7 @@ function save() {
 }
 
 function changeAvatar(ev) {
-	selectFile(ev.currentTarget || ev.target, i18n.locale.avatar).then(async (file) => {
+	selectFile(ev.currentTarget ?? ev.target, i18n.ts.avatar).then(async (file) => {
 		const i = await os.apiWithDialog('i/update', {
 			avatarId: file.id,
 		});
@@ -112,7 +112,7 @@ function changeAvatar(ev) {
 }
 
 function changeBanner(ev) {
-	selectFile(ev.currentTarget || ev.target, i18n.locale.banner).then(async (file) => {
+	selectFile(ev.currentTarget ?? ev.target, i18n.ts.banner).then(async (file) => {
 		const i = await os.apiWithDialog('i/update', {
 			bannerId: file.id,
 		});
@@ -122,45 +122,45 @@ function changeBanner(ev) {
 }
 
 async function editMetadata() {
-	const { canceled, result } = await os.form(i18n.locale._profile.metadata, {
+	const { canceled, result } = await os.form(i18n.ts._profile.metadata, {
 		fieldName0: {
 			type: 'string',
-			label: i18n.locale._profile.metadataLabel + ' 1',
+			label: i18n.ts._profile.metadataLabel + ' 1',
 			default: additionalFields.fieldName0,
 		},
 		fieldValue0: {
 			type: 'string',
-			label: i18n.locale._profile.metadataContent + ' 1',
+			label: i18n.ts._profile.metadataContent + ' 1',
 			default: additionalFields.fieldValue0,
 		},
 		fieldName1: {
 			type: 'string',
-			label: i18n.locale._profile.metadataLabel + ' 2',
+			label: i18n.ts._profile.metadataLabel + ' 2',
 			default: additionalFields.fieldName1,
 		},
 		fieldValue1: {
 			type: 'string',
-			label: i18n.locale._profile.metadataContent + ' 2',
+			label: i18n.ts._profile.metadataContent + ' 2',
 			default: additionalFields.fieldValue1,
 		},
 		fieldName2: {
 			type: 'string',
-			label: i18n.locale._profile.metadataLabel + ' 3',
+			label: i18n.ts._profile.metadataLabel + ' 3',
 			default: additionalFields.fieldName2,
 		},
 		fieldValue2: {
 			type: 'string',
-			label: i18n.locale._profile.metadataContent + ' 3',
+			label: i18n.ts._profile.metadataContent + ' 3',
 			default: additionalFields.fieldValue2,
 		},
 		fieldName3: {
 			type: 'string',
-			label: i18n.locale._profile.metadataLabel + ' 4',
+			label: i18n.ts._profile.metadataLabel + ' 4',
 			default: additionalFields.fieldName3,
 		},
 		fieldValue3: {
 			type: 'string',
-			label: i18n.locale._profile.metadataContent + ' 4',
+			label: i18n.ts._profile.metadataContent + ' 4',
 			default: additionalFields.fieldValue3,
 		},
 	});
@@ -196,7 +196,7 @@ async function editMetadata() {
 
 defineExpose({
 	[symbols.PAGE_INFO]: {
-		title: i18n.locale.profile,
+		title: i18n.ts.profile,
 		icon: 'fas fa-user',
 		bg: 'var(--bg)',
 	},

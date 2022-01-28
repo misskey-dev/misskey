@@ -10,7 +10,7 @@
 				<template #empty>
 					<div class="_fullinfo">
 						<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
-						<div>{{ i18n.locale.noMessagesYet }}</div>
+						<div>{{ i18n.ts.noMessagesYet }}</div>
 					</div>
 				</template>
 
@@ -23,7 +23,7 @@
 		</div>
 		<footer>
 			<div v-if="typers.length > 0" class="typers">
-				<I18n :src="i18n.locale.typingUsers" text-tag="span" class="users">
+				<I18n :src="i18n.ts.typingUsers" text-tag="span" class="users">
 					<template #users>
 						<b v-for="user in typers" :key="user.id" class="user">{{ user.username }}</b>
 					</template>
@@ -32,7 +32,7 @@
 			</div>
 			<transition :name="animation ? 'fade' : ''">
 				<div class="new-message" v-show="showIndicator">
-					<button class="_buttonPrimary" @click="onIndicatorClick"><i class="fas fa-fw fa-arrow-circle-down"></i>{{ i18n.locale.newMessageExists }}</button>
+					<button class="_buttonPrimary" @click="onIndicatorClick"><i class="fas fa-fw fa-arrow-circle-down"></i>{{ i18n.ts.newMessageExists }}</button>
 				</div>
 			</transition>
 			<XForm v-if="!fetching" ref="formEl" :user="user" :group="group" class="form"/>
@@ -165,7 +165,7 @@ function onDrop(e: DragEvent): void {
 	} else if (e.dataTransfer.files.length > 1) {
 		os.alert({
 			type: 'error',
-			text: i18n.locale.onlyOneFileCanBeAttached
+			text: i18n.ts.onlyOneFileCanBeAttached
 		});
 		return;
 	}

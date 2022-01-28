@@ -171,13 +171,13 @@ export default defineComponent({
 				text: path,
 			}, {
 				icon: 'fas fa-columns',
-				text: i18n.locale.openInSideView,
+				text: i18n.ts.openInSideView,
 				action: () => {
 					this.$refs.side.navigate(path);
 				}
 			}, {
 				icon: 'fas fa-window-maximize',
-				text: i18n.locale.openInWindow,
+				text: i18n.ts.openInWindow,
 				action: () => {
 					os.pageWindow(path);
 				}
