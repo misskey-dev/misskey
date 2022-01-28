@@ -93,14 +93,7 @@ const {
 } = defaultStore.reactiveState;
 
 const contentEl = $computed(() => props.pagination.pageEl || rootEl);
-const scrollableElement = $computed(() => {
-	if (contentEl) {
-		const container = getScrollContainer(contentEl);
-		return container || contentEl;
-	}
-	return null;
-});
-
+const scrollableElement = $computed(() => getScrollContainer(contentEl));
 
 const init = async (): Promise<void> => {
 	queue.value = [];

@@ -2,7 +2,13 @@ type ScrollBehavior = 'auto' | 'smooth' | 'instant';
 
 export function getScrollContainer(el: HTMLElement | null): HTMLElement | null {
 	if (el == null || el.tagName === 'HTML') return null;
-	if (el.scrollHeight > el.clientHeight) {
+	const overflow = window.getComputedStyle(el).getPropertyValue('overflow');
+	if (
+		// xとyを個別に指定している場合、`hidden scroll`みたいな値になる
+		overflow.endsWith('scroll') ||
+		overflow.endsWith('auto') ||
+		el.scrollHeight > el.clientHeight
+	) {
 		return el;
 	} else {
 		return getScrollContainer(el.parentElement);
