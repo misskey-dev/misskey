@@ -17,7 +17,6 @@ block og
 	meta(property='og:description' content= page.summary)
 	meta(property='og:url'         content= url)
 	meta(property='og:image'       content= page.eyeCatchingImage ? page.eyeCatchingImage.thumbnailUrl : user.avatarUrl)
-	
 block meta
 	if profile.noCrawle
 		meta(name='robots' content='noindex')
