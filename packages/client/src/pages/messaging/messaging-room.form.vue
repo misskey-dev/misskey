@@ -6,7 +6,7 @@
 	<textarea
 		ref="textEl"
 		v-model="text"
-		:placeholder="i18n.locale.inputMessageHere"
+		:placeholder="i18n.ts.inputMessageHere"
 		@keydown="onKeydown"
 		@compositionupdate="onCompositionUpdate"
 		@paste="onPaste"
@@ -16,7 +16,7 @@
 		<div class="buttons">
 			<button class="_button" @click="chooseFile"><i class="fas fa-photo-video"></i></button>
 			<button class="_button" @click="insertEmoji"><i class="fas fa-laugh-squint"></i></button>
-			<button class="send _button" :disabled="!canSend || sending" :title="i18n.locale.send" @click="send">
+			<button class="send _button" :disabled="!canSend || sending" :title="i18n.ts.send" @click="send">
 				<template v-if="!sending"><i class="fas fa-paper-plane"></i></template><template v-if="sending"><i class="fas fa-spinner fa-pulse fa-fw"></i></template>
 			</button>
 		</div>
@@ -78,7 +78,7 @@ async function onPaste(e: ClipboardEvent) {
 		if (items[0].kind == 'file') {
 			os.alert({
 				type: 'error',
-				text: i18n.locale.onlyOneFileCanBeAttached
+				text: i18n.ts.onlyOneFileCanBeAttached
 			});
 		}
 	}
@@ -107,7 +107,7 @@ function onDrop(e: DragEvent): void {
 		e.preventDefault();
 		os.alert({
 			type: 'error',
-			text: i18n.locale.onlyOneFileCanBeAttached
+			text: i18n.ts.onlyOneFileCanBeAttached
 		});
 		return;
 	}
@@ -133,7 +133,7 @@ function onCompositionUpdate() {
 }
 
 function chooseFile(e: MouseEvent) {
-	selectFile(e.currentTarget ?? e.target, i18n.locale.selectFile).then(selectedFile => {
+	selectFile(e.currentTarget ?? e.target, i18n.ts.selectFile).then(selectedFile => {
 		file = selectedFile;
 	});
 }
