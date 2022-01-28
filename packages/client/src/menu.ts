@@ -73,12 +73,12 @@ export const menuDef = reactive({
 				})), null, {
 					type: 'link',
 					to: '/my/lists',
-					text: i18n.locale.manageLists,
+					text: i18n.ts.manageLists,
 					icon: 'fas fa-cog',
 				}];
 				items.value = _items;
 			});
-			os.popupMenu(items, ev.currentTarget || ev.target);
+			os.popupMenu(items, ev.currentTarget ?? ev.target);
 		},
 	},
 	groups: {
@@ -104,12 +104,12 @@ export const menuDef = reactive({
 				})), null, {
 					type: 'link',
 					to: '/my/antennas',
-					text: i18n.locale.manageAntennas,
+					text: i18n.ts.manageAntennas,
 					icon: 'fas fa-cog',
 				}];
 				items.value = _items;
 			});
-			os.popupMenu(items, ev.currentTarget || ev.target);
+			os.popupMenu(items, ev.currentTarget ?? ev.target);
 		},
 	},
 	mentions: {
@@ -173,34 +173,34 @@ export const menuDef = reactive({
 		icon: 'fas fa-columns',
 		action: (ev) => {
 			os.popupMenu([{
-				text: i18n.locale.default,
+				text: i18n.ts.default,
 				active: ui === 'default' || ui === null,
 				action: () => {
 					localStorage.setItem('ui', 'default');
 					unisonReload();
 				}
 			}, {
-				text: i18n.locale.deck,
+				text: i18n.ts.deck,
 				active: ui === 'deck',
 				action: () => {
 					localStorage.setItem('ui', 'deck');
 					unisonReload();
 				}
 			}, {
-				text: i18n.locale.classic,
+				text: i18n.ts.classic,
 				active: ui === 'classic',
 				action: () => {
 					localStorage.setItem('ui', 'classic');
 					unisonReload();
 				}
 			}, /*{
-				text: i18n.locale.desktop + ' (β)',
+				text: i18n.ts.desktop + ' (β)',
 				active: ui === 'desktop',
 				action: () => {
 					localStorage.setItem('ui', 'desktop');
 					unisonReload();
 				}
-			}*/], ev.currentTarget || ev.target);
+			}*/], ev.currentTarget ?? ev.target);
 		},
 	},
 });

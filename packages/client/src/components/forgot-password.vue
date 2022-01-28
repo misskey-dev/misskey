@@ -5,28 +5,28 @@
 	@close="dialog.close()"
 	@closed="emit('closed')"
 >
-	<template #header>{{ i18n.locale.forgotPassword }}</template>
+	<template #header>{{ i18n.ts.forgotPassword }}</template>
 
 	<form v-if="instance.enableEmail" class="bafeceda" @submit.prevent="onSubmit">
 		<div class="main _formRoot">
 			<MkInput v-model="username" class="_formBlock" type="text" pattern="^[a-zA-Z0-9_]+$" spellcheck="false" autofocus required>
-				<template #label>{{ i18n.locale.username }}</template>
+				<template #label>{{ i18n.ts.username }}</template>
 				<template #prefix>@</template>
 			</MkInput>
 
 			<MkInput v-model="email" class="_formBlock" type="email" spellcheck="false" required>
-				<template #label>{{ i18n.locale.emailAddress }}</template>
-				<template #caption>{{ i18n.locale._forgotPassword.enterEmail }}</template>
+				<template #label>{{ i18n.ts.emailAddress }}</template>
+				<template #caption>{{ i18n.ts._forgotPassword.enterEmail }}</template>
 			</MkInput>
 
-			<MkButton class="_formBlock" type="submit" :disabled="processing" primary style="margin: 0 auto;">{{ i18n.locale.send }}</MkButton>
+			<MkButton class="_formBlock" type="submit" :disabled="processing" primary style="margin: 0 auto;">{{ i18n.ts.send }}</MkButton>
 		</div>
 		<div class="sub">
-			<MkA to="/about" class="_link">{{ i18n.locale._forgotPassword.ifNoEmail }}</MkA>
+			<MkA to="/about" class="_link">{{ i18n.ts._forgotPassword.ifNoEmail }}</MkA>
 		</div>
 	</form>
 	<div v-else class="bafecedb">
-		{{ i18n.locale._forgotPassword.contactAdmin }}
+		{{ i18n.ts._forgotPassword.contactAdmin }}
 	</div>
 </XModalWindow>
 </template>

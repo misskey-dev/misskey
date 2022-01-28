@@ -1,5 +1,5 @@
 <template>
-<transition name="tooltip" appear @after-leave="$emit('closed')">
+<transition :name="$store.state.animation ? 'tooltip' : ''" appear @after-leave="$emit('closed')">
 	<div v-show="showing" ref="el" class="buebdbiu _acrylic _shadow" :style="{ zIndex, maxWidth: maxWidth + 'px' }">
 		<slot>{{ text }}</slot>
 	</div>

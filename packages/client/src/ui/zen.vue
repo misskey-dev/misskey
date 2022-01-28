@@ -8,7 +8,7 @@
 			<div class="content">
 				<router-view v-slot="{ Component }">
 					<transition :name="$store.state.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
-						<keep-alive :include="['timeline']">
+						<keep-alive :include="['MkTimelinePage']">
 							<component :is="Component" :ref="changePage"/>
 						</keep-alive>
 					</transition>

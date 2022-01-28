@@ -7,11 +7,11 @@ import { i18n } from '@/i18n';
  */
 export const getNoteSummary = (note: misskey.entities.Note): string => {
 	if (note.deletedAt) {
-		return `(${i18n.locale.deletedNote})`;
+		return `(${i18n.ts.deletedNote})`;
 	}
 
 	if (note.isHidden) {
-		return `(${i18n.locale.invisibleNote})`;
+		return `(${i18n.ts.invisibleNote})`;
 	}
 
 	let summary = '';
@@ -30,7 +30,7 @@ export const getNoteSummary = (note: misskey.entities.Note): string => {
 
 	// 投票が添付されているとき
 	if (note.poll) {
-		summary += ` (${i18n.locale.poll})`;
+		summary += ` (${i18n.ts.poll})`;
 	}
 
 	// 返信のとき

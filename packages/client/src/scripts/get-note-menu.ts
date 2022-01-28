@@ -27,7 +27,7 @@ export function getNoteMenu(props: {
 	function del(): void {
 		os.confirm({
 			type: 'warning',
-			text: i18n.locale.noteDeleteConfirm,
+			text: i18n.ts.noteDeleteConfirm,
 		}).then(({ canceled }) => {
 			if (canceled) return;
 
@@ -40,7 +40,7 @@ export function getNoteMenu(props: {
 	function delEdit(): void {
 		os.confirm({
 			type: 'warning',
-			text: i18n.locale.deleteAndEditConfirm,
+			text: i18n.ts.deleteAndEditConfirm,
 		}).then(({ canceled }) => {
 			if (canceled) return;
 
@@ -87,7 +87,7 @@ export function getNoteMenu(props: {
 			if (e.id === '72dab508-c64d-498f-8740-a8eec1ba385a') {
 				os.alert({
 					type: 'error',
-					text: i18n.locale.pinLimitExceeded
+					text: i18n.ts.pinLimitExceeded
 				});
 			}
 		});
@@ -97,22 +97,22 @@ export function getNoteMenu(props: {
 		const clips = await os.api('clips/list');
 		os.popupMenu([{
 			icon: 'fas fa-plus',
-			text: i18n.locale.createNew,
+			text: i18n.ts.createNew,
 			action: async () => {
-				const { canceled, result } = await os.form(i18n.locale.createNewClip, {
+				const { canceled, result } = await os.form(i18n.ts.createNewClip, {
 					name: {
 						type: 'string',
-						label: i18n.locale.name
+						label: i18n.ts.name
 					},
 					description: {
 						type: 'string',
 						required: false,
 						multiline: true,
-						label: i18n.locale.description
+						label: i18n.ts.description
 					},
 					isPublic: {
 						type: 'boolean',
-						label: i18n.locale.public,
+						label: i18n.ts.public,
 						default: false
 					}
 				});
@@ -133,7 +133,7 @@ export function getNoteMenu(props: {
 
 	async function promote(): Promise<void> {
 		const { canceled, result: days } = await os.inputNumber({
-			title: i18n.locale.numberOfDays,
+			title: i18n.ts.numberOfDays,
 		});
 
 		if (canceled) return;
@@ -171,69 +171,69 @@ export function getNoteMenu(props: {
 
 		menu = [{
 			icon: 'fas fa-copy',
-			text: i18n.locale.copyContent,
+			text: i18n.ts.copyContent,
 			action: copyContent
 		}, {
 			icon: 'fas fa-link',
-			text: i18n.locale.copyLink,
+			text: i18n.ts.copyLink,
 			action: copyLink
 		}, (appearNote.url || appearNote.uri) ? {
 			icon: 'fas fa-external-link-square-alt',
-			text: i18n.locale.showOnRemote,
+			text: i18n.ts.showOnRemote,
 			action: () => {
 				window.open(appearNote.url || appearNote.uri, '_blank');
 			}
 		} : undefined,
 		{
 			icon: 'fas fa-share-alt',
-			text: i18n.locale.share,
+			text: i18n.ts.share,
 			action: share
 		},
 		instance.translatorAvailable ? {
 			icon: 'fas fa-language',
-			text: i18n.locale.translate,
+			text: i18n.ts.translate,
 			action: translate
 		} : undefined,
 		null,
 		statePromise.then(state => state.isFavorited ? {
 			icon: 'fas fa-star',
-			text: i18n.locale.unfavorite,
+			text: i18n.ts.unfavorite,
 			action: () => toggleFavorite(false)
 		} : {
 			icon: 'fas fa-star',
-			text: i18n.locale.favorite,
+			text: i18n.ts.favorite,
 			action: () => toggleFavorite(true)
 		}),
 		{
 			icon: 'fas fa-paperclip',
-			text: i18n.locale.clip,
+			text: i18n.ts.clip,
 			action: () => clip()
 		},
 		(appearNote.userId != $i.id) ? statePromise.then(state => state.isWatching ? {
 			icon: 'fas fa-eye-slash',
-			text: i18n.locale.unwatch,
+			text: i18n.ts.unwatch,
 			action: () => toggleWatch(false)
 		} : {
 			icon: 'fas fa-eye',
-			text: i18n.locale.watch,
+			text: i18n.ts.watch,
 			action: () => toggleWatch(true)
 		}) : undefined,
 		statePromise.then(state => state.isMutedThread ? {
 			icon: 'fas fa-comment-slash',
-			text: i18n.locale.unmuteThread,
+			text: i18n.ts.unmuteThread,
 			action: () => toggleThreadMute(false)
 		} : {
 			icon: 'fas fa-comment-slash',
-			text: i18n.locale.muteThread,
+			text: i18n.ts.muteThread,
 			action: () => toggleThreadMute(true)
 		}),
 		appearNote.userId == $i.id ? ($i.pinnedNoteIds || []).includes(appearNote.id) ? {
 			icon: 'fas fa-thumbtack',
-			text: i18n.locale.unpin,
+			text: i18n.ts.unpin,
 			action: () => togglePin(false)
 		} : {
 			icon: 'fas fa-thumbtack',
-			text: i18n.locale.pin,
+			text: i18n.ts.pin,
 			action: () => togglePin(true)
 		} : undefined,
 		/*
@@ -241,7 +241,7 @@ export function getNoteMenu(props: {
 			null,
 			{
 				icon: 'fas fa-bullhorn',
-				text: i18n.locale.promote,
+				text: i18n.ts.promote,
 				action: promote
 			}]
 			: []
@@ -250,7 +250,7 @@ export function getNoteMenu(props: {
 			null,
 			{
 				icon: 'fas fa-exclamation-circle',
-				text: i18n.locale.reportAbuse,
+				text: i18n.ts.reportAbuse,
 				action: () => {
 					const u = appearNote.url || appearNote.uri || `${url}/notes/${appearNote.id}`;
 					os.popup(import('@/components/abuse-report-window.vue'), {
@@ -265,12 +265,12 @@ export function getNoteMenu(props: {
 			null,
 			appearNote.userId == $i.id ? {
 				icon: 'fas fa-edit',
-				text: i18n.locale.deleteAndEdit,
+				text: i18n.ts.deleteAndEdit,
 				action: delEdit
 			} : undefined,
 			{
 				icon: 'fas fa-trash-alt',
-				text: i18n.locale.delete,
+				text: i18n.ts.delete,
 				danger: true,
 				action: del
 			}]
@@ -280,15 +280,15 @@ export function getNoteMenu(props: {
 	} else {
 		menu = [{
 			icon: 'fas fa-copy',
-			text: i18n.locale.copyContent,
+			text: i18n.ts.copyContent,
 			action: copyContent
 		}, {
 			icon: 'fas fa-link',
-			text: i18n.locale.copyLink,
+			text: i18n.ts.copyLink,
 			action: copyLink
 		}, (appearNote.url || appearNote.uri) ? {
 			icon: 'fas fa-external-link-square-alt',
-			text: i18n.locale.showOnRemote,
+			text: i18n.ts.showOnRemote,
 			action: () => {
 				window.open(appearNote.url || appearNote.uri, '_blank');
 			}

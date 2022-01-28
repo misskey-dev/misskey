@@ -3,10 +3,10 @@
 	<div class="_formRoot">
 		<FormInput v-model="password" type="password" class="_formBlock">
 			<template #prefix><i class="fas fa-lock"></i></template>
-			<template #label>{{ i18n.locale.newPassword }}</template>
+			<template #label>{{ i18n.ts.newPassword }}</template>
 		</FormInput>
 		
-		<FormButton primary class="_formBlock" @click="save">{{ i18n.locale.save }}</FormButton>
+		<FormButton primary class="_formBlock" @click="save">{{ i18n.ts.save }}</FormButton>
 	</div>
 </MkSpacer>
 </template>
@@ -43,7 +43,7 @@ onMounted(() => {
 
 defineExpose({
 	[symbols.PAGE_INFO]: {
-		title: i18n.locale.resetPassword,
+		title: i18n.ts.resetPassword,
 		icon: 'fas fa-lock',
 		bg: 'var(--bg)',
 	},

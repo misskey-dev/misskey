@@ -8,7 +8,7 @@
 			</span>
 			<span class="username">@{{ acct(user) }}</span>
 		</li>
-		<li tabindex="-1" class="choose" @click="chooseUser()" @keydown="onKeydown">{{ i18n.locale.selectUser }}</li>
+		<li tabindex="-1" class="choose" @click="chooseUser()" @keydown="onKeydown">{{ i18n.ts.selectUser }}</li>
 	</ol>
 	<ol v-else-if="hashtags.length > 0" ref="suggests" class="hashtags">
 		<li v-for="hashtag in hashtags" tabindex="-1" @click="complete(type, hashtag)" @keydown="onKeydown">

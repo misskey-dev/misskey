@@ -4,7 +4,7 @@
 
 	<div class="wbrkwalb">
 		<MkLoading v-if="fetching"/>
-		<transition-group v-else tag="div" name="chart" class="instances">
+		<transition-group v-else tag="div" :name="$store.state.animation ? 'chart' : ''" class="instances">
 			<div v-for="(instance, i) in instances" :key="instance.id" class="instance">
 				<img v-if="instance.iconUrl" :src="instance.iconUrl" alt=""/>
 				<div class="body">

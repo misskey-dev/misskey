@@ -5,7 +5,7 @@
 			<XPostForm
 				v-if="state === 'writing'"
 				fixed
-				:share="true"
+				:instant="true"
 				:initial-text="initialText"
 				:initial-visibility="visibility"
 				:initial-files="files"

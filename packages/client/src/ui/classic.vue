@@ -16,7 +16,7 @@
 					<template #header><MkHeader v-if="pageInfo && !pageInfo.hideHeader" :info="pageInfo"/></template>
 					<router-view v-slot="{ Component }">
 						<transition :name="$store.state.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
-							<keep-alive :include="['timeline']">
+							<keep-alive :include="['MkTimelinePage']">
 								<component :is="Component" :ref="changePage"/>
 							</keep-alive>
 						</transition>
@@ -30,7 +30,7 @@
 		</div>
 	</div>
 
-	<transition name="tray-back">
+	<transition :name="$store.state.animation ? 'tray-back' : ''">
 		<div v-if="widgetsShowing"
 			class="tray-back _modalBg"
 			@click="widgetsShowing = false"
@@ -38,7 +38,7 @@
 		></div>
 	</transition>
 
-	<transition name="tray">
+	<transition :name="$store.state.animation ? 'tray' : ''">
 		<XWidgets v-if="widgetsShowing" class="tray"/>
 	</transition>
 
