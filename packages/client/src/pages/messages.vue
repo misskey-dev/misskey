@@ -12,9 +12,9 @@ import { i18n } from '@/i18n';
 const pagination = {
 	endpoint: 'notes/mentions' as const,
 	limit: 10,
-	params: () => ({
+	params: {
 		visibility: 'specified'
-	}),
+	},
 };
 
 defineExpose({
