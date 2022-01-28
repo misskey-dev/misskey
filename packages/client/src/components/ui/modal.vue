@@ -25,7 +25,7 @@ function getFixedContainer(el: Element | null): Element | null {
 	}
 }
 
-type ModalTypes = 'popup' | 'dialog' | 'drawer';
+type ModalTypes = 'popup' | 'dialog' | 'dialog:top' | 'drawer';
 
 const props = withDefaults(defineProps<{
 	manualShowing?: boolean;
