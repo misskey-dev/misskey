@@ -78,7 +78,7 @@ export const menuDef = reactive({
 				}];
 				items.value = _items;
 			});
-			os.popupMenu(items, ev.currentTarget || ev.target);
+			os.popupMenu(items, ev.currentTarget ?? ev.target);
 		},
 	},
 	groups: {
@@ -109,7 +109,7 @@ export const menuDef = reactive({
 				}];
 				items.value = _items;
 			});
-			os.popupMenu(items, ev.currentTarget || ev.target);
+			os.popupMenu(items, ev.currentTarget ?? ev.target);
 		},
 	},
 	mentions: {
@@ -200,7 +200,7 @@ export const menuDef = reactive({
 					localStorage.setItem('ui', 'desktop');
 					unisonReload();
 				}
-			}*/], ev.currentTarget || ev.target);
+			}*/], ev.currentTarget ?? ev.target);
 		},
 	},
 });

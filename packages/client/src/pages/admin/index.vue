@@ -298,7 +298,7 @@ export default defineComponent({
 				action: () => {
 					alert('TODO');
 				}
-			}], ev.currentTarget || ev.target);
+			}], ev.currentTarget ?? ev.target);
 		};
 
 		return {

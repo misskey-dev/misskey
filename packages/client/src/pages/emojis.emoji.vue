@@ -29,7 +29,7 @@ function menu(ev) {
 			copyToClipboard(`:${props.emoji.name}:`);
 			os.success();
 		}
-	}], ev.currentTarget || ev.target);
+	}], ev.currentTarget ?? ev.target);
 }
 </script>
 

@@ -114,22 +114,22 @@ export default defineComponent({
 		};
 
 		const importFollowing = async (ev) => {
-			const file = await selectFile(ev.currentTarget || ev.target);
+			const file = await selectFile(ev.currentTarget ?? ev.target);
 			os.api('i/import-following', { fileId: file.id }).then(onImportSuccess).catch(onError);
 		};
 
 		const importUserLists = async (ev) => {
-			const file = await selectFile(ev.currentTarget || ev.target);
+			const file = await selectFile(ev.currentTarget ?? ev.target);
 			os.api('i/import-user-lists', { fileId: file.id }).then(onImportSuccess).catch(onError);
 		};
 
 		const importMuting = async (ev) => {
-			const file = await selectFile(ev.currentTarget || ev.target);
+			const file = await selectFile(ev.currentTarget ?? ev.target);
 			os.api('i/import-muting', { fileId: file.id }).then(onImportSuccess).catch(onError);
 		};
 
 		const importBlocking = async (ev) => {
-			const file = await selectFile(ev.currentTarget || ev.target);
+			const file = await selectFile(ev.currentTarget ?? ev.target);
 			os.api('i/import-blocking', { fileId: file.id }).then(onImportSuccess).catch(onError);
 		};
 

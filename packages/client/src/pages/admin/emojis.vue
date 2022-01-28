@@ -118,7 +118,7 @@ const toggleSelect = (emoji) => {
 };
 
 const add = async (ev: MouseEvent) => {
-	const files = await selectFiles(ev.currentTarget || ev.target, null);
+	const files = await selectFiles(ev.currentTarget ?? ev.target, null);
 
 	const promise = Promise.all(files.map(file => os.api('admin/emoji/add', {
 		fileId: file.id,
@@ -160,7 +160,7 @@ const remoteMenu = (emoji, ev: MouseEvent) => {
 		text: i18n.ts.import,
 		icon: 'fas fa-plus',
 		action: () => { im(emoji) }
-	}], ev.currentTarget || ev.target);
+	}], ev.currentTarget ?? ev.target);
 };
 
 const menu = (ev: MouseEvent) => {
@@ -186,7 +186,7 @@ const menu = (ev: MouseEvent) => {
 		icon: 'fas fa-upload',
 		text: i18n.ts.import,
 		action: async () => {
-			const file = await selectFile(ev.currentTarget || ev.target);
+			const file = await selectFile(ev.currentTarget ?? ev.target);
 			os.api('admin/emoji/import-zip', {
 				fileId: file.id,
 			})
@@ -202,7 +202,7 @@ const menu = (ev: MouseEvent) => {
 				});
 			});
 		}
-	}], ev.currentTarget || ev.target);
+	}], ev.currentTarget ?? ev.target);
 };
 
 const setCategoryBulk = async () => {

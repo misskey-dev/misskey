@@ -342,7 +342,7 @@ function focus() {
 }
 
 function chooseFileFrom(ev) {
-	selectFiles(ev.currentTarget || ev.target, i18n.ts.attachFile).then(files_ => {
+	selectFiles(ev.currentTarget ?? ev.target, i18n.ts.attachFile).then(files_ => {
 		for (const file of files_) {
 			files.push(file);
 		}
@@ -592,7 +592,7 @@ function insertMention() {
 }
 
 async function insertEmoji(ev: MouseEvent) {
-	os.openEmojiPicker(ev.currentTarget || ev.target, {}, textareaEl);
+	os.openEmojiPicker(ev.currentTarget ?? ev.target, {}, textareaEl);
 }
 
 function showActions(ev) {
@@ -605,7 +605,7 @@ function showActions(ev) {
 				if (key === 'text') { text = value; }
 			});
 		}
-	})), ev.currentTarget || ev.target);
+	})), ev.currentTarget ?? ev.target);
 }
 
 let postAccount = $ref<misskey.entities.UserDetailed | null>(null);

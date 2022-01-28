@@ -280,7 +280,7 @@ function getKey(emoji: string | Misskey.entities.CustomEmoji | UnicodeEmojiDef):
 }
 
 function chosen(emoji: any, ev?: MouseEvent) {
-	const el = ev && (ev.currentTarget || ev.target) as HTMLElement | null | undefined;
+	const el = ev && (ev.currentTarget ?? ev.target) as HTMLElement | null | undefined;
 	if (el) {
 		const rect = el.getBoundingClientRect();
 		const x = rect.left + (el.offsetWidth / 2);

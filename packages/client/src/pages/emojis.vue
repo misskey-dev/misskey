@@ -32,7 +32,7 @@ function menu(ev) {
 				});
 			});
 		}
-	}], ev.currentTarget || ev.target);
+	}], ev.currentTarget ?? ev.target);
 }
 
 defineExpose({

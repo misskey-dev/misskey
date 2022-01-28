@@ -32,7 +32,7 @@ function setFilter(ev) {
 			includeTypes = null;
 		}
 	}, null, ...typeItems] : typeItems;
-	os.popupMenu(items, ev.currentTarget || ev.target);
+	os.popupMenu(items, ev.currentTarget ?? ev.target);
 }
 
 defineExpose({

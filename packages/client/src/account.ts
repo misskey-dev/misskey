@@ -205,18 +205,18 @@ export async function openAccountMenu(opts: {
 				}, {
 					text: i18n.ts.createAccount,
 					action: () => { createAccount(); },
-				}], ev.currentTarget || ev.target);
+				}], ev.currentTarget ?? ev.target);
 			},
 		}, {
 			type: 'link',
 			icon: 'fas fa-users',
 			text: i18n.ts.manageAccounts,
 			to: `/settings/accounts`,
-		}]], ev.currentTarget || ev.target, {
+		}]], ev.currentTarget ?? ev.target, {
 			align: 'left'
 		});
 	} else {
-		popupMenu([...(opts.includeCurrentAccount ? [createItem($i)] : []), ...accountItemPromises], ev.currentTarget || ev.target, {
+		popupMenu([...(opts.includeCurrentAccount ? [createItem($i)] : []), ...accountItemPromises], ev.currentTarget ?? ev.target, {
 			align: 'left'
 		});
 	}

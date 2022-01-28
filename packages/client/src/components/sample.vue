@@ -109,7 +109,7 @@ export default defineComponent({
 				text: 'Delete some bananas',
 				danger: true,
 				action: () => {},
-			}], ev.currentTarget || ev.target);
+			}], ev.currentTarget ?? ev.target);
 		},
 	}
 });

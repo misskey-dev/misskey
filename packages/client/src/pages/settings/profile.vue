@@ -102,7 +102,7 @@ function save() {
 }
 
 function changeAvatar(ev) {
-	selectFile(ev.currentTarget || ev.target, i18n.ts.avatar).then(async (file) => {
+	selectFile(ev.currentTarget ?? ev.target, i18n.ts.avatar).then(async (file) => {
 		const i = await os.apiWithDialog('i/update', {
 			avatarId: file.id,
 		});
@@ -112,7 +112,7 @@ function changeAvatar(ev) {
 }
 
 function changeBanner(ev) {
-	selectFile(ev.currentTarget || ev.target, i18n.ts.banner).then(async (file) => {
+	selectFile(ev.currentTarget ?? ev.target, i18n.ts.banner).then(async (file) => {
 		const i = await os.apiWithDialog('i/update', {
 			bannerId: file.id,
 		});
