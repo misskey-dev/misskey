@@ -31,7 +31,7 @@ function onAntennaCreated() {
 
 defineExpose({
 	[symbols.PAGE_INFO]: {
-		title: i18n.locale.manageAntennas,
+		title: i18n.ts.manageAntennas,
 		icon: 'fas fa-satellite',
 		bg: 'var(--bg)',
 	},

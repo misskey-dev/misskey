@@ -23,7 +23,7 @@ function menu(ev) {
 		type: 'label',
 		text: ':' + props.emoji.name + ':',
 	}, {
-		text: i18n.locale.copy,
+		text: i18n.ts.copy,
 		icon: 'fas fa-copy',
 		action: () => {
 			copyToClipboard(`:${props.emoji.name}:`);

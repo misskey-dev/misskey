@@ -1,6 +1,6 @@
 <template>
 <div>
-	{{ i18n.locale.processing }}
+	{{ i18n.ts.processing }}
 </div>
 </template>
 
@@ -18,7 +18,7 @@ const props = defineProps<{
 onMounted(async () => {
 	await os.alert({
 		type: 'info',
-		text: i18n.t('clickToFinishEmailVerification', { ok: i18n.locale.gotIt }),
+		text: i18n.t('clickToFinishEmailVerification', { ok: i18n.ts.gotIt }),
 	});
 	const res = await os.apiWithDialog('signup-pending', {
 		code: props.code,
@@ -28,7 +28,7 @@ onMounted(async () => {
 
 defineExpose({
 	[symbols.PAGE_INFO]: {
-		title: i18n.locale.signup,
+		title: i18n.ts.signup,
 		icon: 'fas fa-user',
 	},
 });

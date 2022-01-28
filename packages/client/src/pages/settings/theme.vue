@@ -116,7 +116,7 @@ export default defineComponent({
 
 	setup(props, { emit }) {
 		const INFO = {
-			title: i18n.locale.theme,
+			title: i18n.ts.theme,
 			icon: 'fas fa-palette',
 				bg: 'var(--bg)',
 		};

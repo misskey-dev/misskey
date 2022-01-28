@@ -104,7 +104,7 @@ export default defineComponent({
 			if (props.info.share) {
 				if (menu.length > 0) menu.push(null);
 				menu.push({
-					text: i18n.locale.share,
+					text: i18n.ts.share,
 					icon: 'fas fa-share-alt',
 					action: share
 				});

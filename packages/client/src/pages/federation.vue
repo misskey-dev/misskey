@@ -135,7 +135,7 @@ function getStatus(instance) {
 
 defineExpose({
 	[symbols.PAGE_INFO]: {
-		title: i18n.locale.federation,
+		title: i18n.ts.federation,
 		icon: 'fas fa-globe',
 		bg: 'var(--bg)',
 	},

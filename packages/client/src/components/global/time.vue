@@ -31,9 +31,9 @@ const relative = $computed(() => {
 		ago >= 3600     ? i18n.t('_ago.hoursAgo',   { n: (~~(ago / 3600)).toString() }) :
 		ago >= 60       ? i18n.t('_ago.minutesAgo', { n: (~~(ago / 60)).toString() }) :
 		ago >= 10       ? i18n.t('_ago.secondsAgo', { n: (~~(ago % 60)).toString() }) :
-		ago >= -1       ? i18n.locale._ago.justNow :
-		ago <  -1       ? i18n.locale._ago.future :
-		i18n.locale._ago.unknown);
+		ago >= -1       ? i18n.ts._ago.justNow :
+		ago <  -1       ? i18n.ts._ago.future :
+		i18n.ts._ago.unknown);
 });
 
 function tick() {

@@ -17,7 +17,7 @@ const pagination = {
 
 defineExpose({
 	[symbols.PAGE_INFO]: {
-		title: i18n.locale.featured,
+		title: i18n.ts.featured,
 		icon: 'fas fa-fire-alt',
 		bg: 'var(--bg)',
 	},

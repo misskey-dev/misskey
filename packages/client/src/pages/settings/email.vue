@@ -62,7 +62,7 @@ export default defineComponent({
 		const emailAddress = ref($i.email);
 
 		const INFO = {
-			title: i18n.locale.email,
+			title: i18n.ts.email,
 			icon: 'fas fa-envelope',
 			bg: 'var(--bg)',
 		};
@@ -75,7 +75,7 @@ export default defineComponent({
 
 		const saveEmailAddress = () => {
 			os.inputText({
-				title: i18n.locale.password,
+				title: i18n.ts.password,
 				type: 'password'
 			}).then(({ canceled, result: password }) => {
 				if (canceled) return;
