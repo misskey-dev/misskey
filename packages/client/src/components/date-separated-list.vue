@@ -96,6 +96,7 @@ export default defineComponent({
 		}
 		function onLeaveCanceled(el: HTMLElement) {
 			el.style.top = '';
+			el.style.left = '';
 		}
 
 		return () => h(
