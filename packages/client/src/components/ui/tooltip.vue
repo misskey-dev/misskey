@@ -1,99 +1,82 @@
 <template>
-<transition :name="$store.state.animation ? 'tooltip' : ''" appear @after-leave="$emit('closed')">
+<transition :name="$store.state.animation ? 'tooltip' : ''" appear @after-leave="emit('closed')">
 	<div v-show="showing" ref="el" class="buebdbiu _acrylic _shadow" :style="{ zIndex, maxWidth: maxWidth + 'px' }">
 		<slot>{{ text }}</slot>
 	</div>
 </transition>
 </template>
 
-<script lang="ts">
-import { defineComponent, nextTick, onMounted, onUnmounted, ref } from 'vue';
+<script lang="ts" setup>
+import { nextTick, onMounted, onUnmounted, ref } from 'vue';
 import * as os from '@/os';
 
-export default defineComponent({
-	props: {
-		showing: {
-			type: Boolean,
-			required: true,
-		},
-		source: {
-			required: true,
-		},
-		text: {
-			type: String,
-			required: false
-		},
-		maxWidth: {
-			type: Number,
-			required: false,
-			default: 250,
-		},
-	},
+const props = withDefaults(defineProps<{
+	showing: boolean;
+	source: HTMLElement;
+	text?: string;
+	maxWidth?; number;
+}>(), {
+	maxWidth: 250,
+});
 
-	emits: ['closed'],
+const emit = defineEmits<{
+	(ev: 'closed'): void;
+}>();
 
-	setup(props, context) {
-		const el = ref<HTMLElement>();
-		const zIndex = os.claimZIndex('high');
+const el = ref<HTMLElement>();
+const zIndex = os.claimZIndex('high');
 
-		const setPosition = () => {
-			if (el.value == null) return;
+const setPosition = () => {
+	if (el.value == null) return;
 
-			const rect = props.source.getBoundingClientRect();
+	const rect = props.source.getBoundingClientRect();
 
-			const contentWidth = el.value.offsetWidth;
-			const contentHeight = el.value.offsetHeight;
+	const contentWidth = el.value.offsetWidth;
+	const contentHeight = el.value.offsetHeight;
 
-			let left = rect.left + window.pageXOffset + (props.source.offsetWidth / 2);
-			let top = rect.top + window.pageYOffset - contentHeight;
+	let left = rect.left + window.pageXOffset + (props.source.offsetWidth / 2);
+	let top = rect.top + window.pageYOffset - contentHeight;
 
-			left -= (el.value.offsetWidth / 2);
+	left -= (el.value.offsetWidth / 2);
 
-			if (left + contentWidth - window.pageXOffset > window.innerWidth) {
-				left = window.innerWidth - contentWidth + window.pageXOffset - 1;
-			}
+	if (left + contentWidth - window.pageXOffset > window.innerWidth) {
+		left = window.innerWidth - contentWidth + window.pageXOffset - 1;
+	}
 
-			if (top - window.pageYOffset < 0) {
-				top = rect.top + window.pageYOffset + props.source.offsetHeight;
-				el.value.style.transformOrigin = 'center top';
-			}
+	if (top - window.pageYOffset < 0) {
+		top = rect.top + window.pageYOffset + props.source.offsetHeight;
+		el.value.style.transformOrigin = 'center top';
+	}
 
-			el.value.style.left = left + 'px';
-			el.value.style.top = top + 'px';
-		};
+	el.value.style.left = left + 'px';
+	el.value.style.top = top + 'px';
+};
 
-		onMounted(() => {
-			nextTick(() => {
-				if (props.source == null) {
-					context.emit('closed');
-					return;
-				}
+onMounted(() => {
+	nextTick(() => {
+		if (props.source == null) {
+			emit('closed');
+			return;
+		}
 
+		setPosition();
+
+		let loopHandler;
+
+		const loop = () => {
+			loopHandler = window.requestAnimationFrame(() => {
 				setPosition();
-
-				let loopHandler;
-
-				const loop = () => {
-					loopHandler = window.requestAnimationFrame(() => {
-						setPosition();
-						loop();
-					});
-				};
-
 				loop();
-
-				onUnmounted(() => {
-					window.cancelAnimationFrame(loopHandler);
-				});
 			});
-		});
-
-		return {
-			el,
-			zIndex,
 		};
-	},
-})
+
+		loop();
+
+		onUnmounted(() => {
+			window.cancelAnimationFrame(loopHandler);
+		});
+	});
+});
 </script>
 
 <style lang="scss" scoped>
