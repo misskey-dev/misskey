@@ -194,6 +194,7 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 		}
 
 		satisfyWebpublic = !!(
+			type !== 'image/svg+xml' &&
 			!(metadata.exif || metadata.iptc || metadata.xmp || metadata.tifftagPhotoshop) &&
 			metadata.width && metadata.width <= 2048 &&
 			metadata.height && metadata.height <= 2048

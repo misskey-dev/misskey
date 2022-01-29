@@ -11,7 +11,7 @@ import { DriveFiles } from '@/models/index';
 import { InternalStorage } from '@/services/drive/internal-storage';
 import { downloadUrl } from '@/misc/download-url';
 import { detectType } from '@/misc/get-file-info';
-import { convertToJpeg, convertToPng } from '@/services/drive/image-processor';
+import { convertToWebp, convertToPng } from '@/services/drive/image-processor';
 import { GenerateVideoThumbnail } from '@/services/drive/generate-video-thumbnail';
 import { StatusError } from '@/misc/fetch';
 import { FILE_TYPE_BROWSERSAFE } from '@/const';
@@ -65,10 +65,8 @@ export default async function(ctx: Koa.Context) {
 
 				const convertFile = async () => {
 					if (isThumbnail) {
-						if (['image/jpeg', 'image/webp'].includes(mime)) {
-							return await convertToJpeg(path, 498, 280);
-						} else if (['image/png', 'image/svg+xml'].includes(mime)) {
-							return await convertToPng(path, 498, 280);
+						if (['image/jpeg', 'image/webp', 'image/png', 'image/svg+xml'].includes(mime)) {
+							return await convertToWebp(path, 498, 280);
 						} else if (mime.startsWith('video/')) {
 							return await GenerateVideoThumbnail(path);
 						}

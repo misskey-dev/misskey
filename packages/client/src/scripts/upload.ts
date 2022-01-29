@@ -16,10 +16,10 @@ export const uploads = ref<Uploading[]>([]);
 
 const compressTypeMap = new Map([
 	// [圧縮前の形式, 圧縮後の形式],
-	['image/jpeg', 'image/jpeg'],
-	['image/webp', 'image/jpeg'],
-	['image/png', 'image/png'],
-	['image/svg', 'image/png'],
+	['image/jpeg', 'image/webp'],
+	['image/webp', 'image/webp'],
+	['image/png', 'image/webp'],
+	['image/svg', 'image/webp'],
 ]);
 
 export function uploadFile(file: File, folder?: any, name?: string, keepOriginal: boolean = defaultStore.state.keepOriginalUploading): Promise<Misskey.entities.DriveFile> {
