@@ -1,5 +1,5 @@
 <template>
-<transition :name="$store.state.animation ? (type === 'drawer') ? 'modal-drawer' : (type === 'popup') ? 'modal-popup' : 'modal' : ''" :duration="$store.state.animation ? 200 : 0" appear @after-leave="$emit('closed')" @enter="$emit('opening')" @after-enter="childRendered">
+<transition :name="$store.state.animation ? (type === 'drawer') ? 'modal-drawer' : (type === 'popup') ? 'modal-popup' : 'modal' : ''" :duration="$store.state.animation ? 200 : 0" appear @after-leave="emit('closed')" @enter="emit('opening')" @after-enter="childRendered">
 	<div v-show="manualShowing != null ? manualShowing : showing" v-hotkey.global="keymap" class="qzhlnise" :class="{ drawer: type === 'drawer', dialog: type === 'dialog' || type === 'dialog:top', popup: type === 'popup' }" :style="{ zIndex, pointerEvents: (manualShowing != null ? manualShowing : showing) ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
 		<div class="bg _modalBg" :class="{ transparent: transparentBg && (type === 'popup') }" :style="{ zIndex }" @click="onBgClick" @contextmenu.prevent.stop="() => {}"></div>
 		<div ref="content" class="content" :class="{ fixed, top: type === 'dialog:top' }" :style="{ zIndex }" @click.self="onBgClick">
@@ -9,8 +9,8 @@
 </transition>
 </template>
 
-<script lang="ts">
-import { defineComponent, nextTick, onMounted, computed, PropType, ref, watch } from 'vue';
+<script lang="ts" setup>
+import { nextTick, onMounted, computed, ref, watch, provide } from 'vue';
 import * as os from '@/os';
 import { isTouchUsing } from '@/scripts/touch';
 import { defaultStore } from '@/store';
@@ -25,234 +25,206 @@ function getFixedContainer(el: Element | null): Element | null {
 	}
 }
 
-export default defineComponent({
-	provide: {
-		modal: true
-	},
+type ModalTypes = 'popup' | 'dialog' | 'dialog:top' | 'drawer';
 
-	props: {
-		manualShowing: {
-			type: Boolean,
-			required: false,
-			default: null,
-		},
-		srcCenter: {
-			type: Boolean,
-			required: false
-		},
-		src: {
-			type: Object as PropType<HTMLElement>,
-			required: false,
-			default: null,
-		},
-		preferType: {
-			required: false,
-			type: String,
-			default: 'auto',
-		},
-		zPriority: {
-			type: String as PropType<'low' | 'middle' | 'high'>,
-			required: false,
-			default: 'low',
-		},
-		noOverlap: {
-			type: Boolean,
-			required: false,
-			default: true,
-		},
-		transparentBg: {
-			type: Boolean,
-			required: false,
-			default: false,
-		},
-	},
+const props = withDefaults(defineProps<{
+	manualShowing?: boolean | null;
+	srcCenter?: boolean;
+	src?: HTMLElement;
+	preferType?: ModalTypes | 'auto';
+	zPriority?: 'low' | 'middle' | 'high';
+	noOverlap?: boolean;
+	transparentBg?: boolean;
+}>(), {
+	manualShowing: null,
+	src: null,
+	preferType: 'auto',
+	zPriority: 'low',
+	noOverlap: true,
+	transparentBg: false,
+});
 
-	emits: ['opening', 'click', 'esc', 'close', 'closed'],
+const emit = defineEmits<{
+	(ev: 'opening'): void;
+	(ev: 'click'): void;
+	(ev: 'esc'): void;
+	(ev: 'close'): void;
+	(ev: 'closed'): void;
+}>();
 
-	setup(props, context) {
-		const maxHeight = ref<number>();
-		const fixed = ref(false);
-		const transformOrigin = ref('center');
-		const showing = ref(true);
-		const content = ref<HTMLElement>();
-		const zIndex = os.claimZIndex(props.zPriority);
-		const type = computed(() => {
-			if (props.preferType === 'auto') {
-				if (!defaultStore.state.disableDrawer && isTouchUsing && window.innerWidth < 500 && window.innerHeight < 1000) {
-					return 'drawer';
-				} else {
-					return props.src != null ? 'popup' : 'dialog';
-				}
-			} else {
-				return props.preferType;
-			}
-		});
-		
-		let contentClicking = false;
+provide('modal', true);
 
-		const close = () => {
-			// eslint-disable-next-line vue/no-mutating-props
-			if (props.src) props.src.style.pointerEvents = 'auto';
-			showing.value = false;
-			context.emit('close');
-		};
+const maxHeight = ref<number>();
+const fixed = ref(false);
+const transformOrigin = ref('center');
+const showing = ref(true);
+const content = ref<HTMLElement>();
+const zIndex = os.claimZIndex(props.zPriority);
+const type = computed(() => {
+	if (props.preferType === 'auto') {
+		if (!defaultStore.state.disableDrawer && isTouchUsing && window.innerWidth < 500 && window.innerHeight < 1000) {
+			return 'drawer';
+		} else {
+			return props.src != null ? 'popup' : 'dialog';
+		}
+	} else {
+		return props.preferType!;
+	}
+});
 
-		const onBgClick = () => {
-			if (contentClicking) return;
-			context.emit('click');
-		};
+let contentClicking = false;
 
-		if (type.value === 'drawer') {
-			maxHeight.value = window.innerHeight / 2;
+const close = () => {
+	// eslint-disable-next-line vue/no-mutating-props
+	if (props.src) props.src.style.pointerEvents = 'auto';
+	showing.value = false;
+	emit('close');
+};
+
+const onBgClick = () => {
+	if (contentClicking) return;
+	emit('click');
+};
+
+if (type.value === 'drawer') {
+	maxHeight.value = window.innerHeight / 2;
+}
+
+const keymap = {
+	'esc': () => emit('esc'),
+};
+
+const MARGIN = 16;
+
+const align = () => {
+	if (props.src == null) return;
+	if (type.value === 'drawer') return;
+
+	const popover = content.value!;
+
+	if (popover == null) return;
+
+	const rect = props.src.getBoundingClientRect();
+	
+	const width = popover.offsetWidth;
+	const height = popover.offsetHeight;
+
+	let left;
+	let top;
+
+	if (props.srcCenter) {
+		const x = rect.left + (fixed.value ? 0 : window.pageXOffset) + (props.src.offsetWidth / 2);
+		const y = rect.top + (fixed.value ? 0 : window.pageYOffset) + (props.src.offsetHeight / 2);
+		left = (x - (width / 2));
+		top = (y - (height / 2));
+	} else {
+		const x = rect.left + (fixed.value ? 0 : window.pageXOffset) + (props.src.offsetWidth / 2);
+		const y = rect.top + (fixed.value ? 0 : window.pageYOffset) + props.src.offsetHeight;
+		left = (x - (width / 2));
+		top = y;
+	}
+
+	if (fixed.value) {
+		// 画面から横にはみ出る場合
+		if (left + width > window.innerWidth) {
+			left = window.innerWidth - width;
 		}
 
-		const keymap = {
-			'esc': () => context.emit('esc'),
-		};
-
-		const MARGIN = 16;
-
-		const align = () => {
-			if (props.src == null) return;
-			if (type.value === 'drawer') return;
-
-			const popover = content.value!;
-
-			if (popover == null) return;
-
-			const rect = props.src.getBoundingClientRect();
-			
-			const width = popover.offsetWidth;
-			const height = popover.offsetHeight;
-
-			let left;
-			let top;
-
-			if (props.srcCenter) {
-				const x = rect.left + (fixed.value ? 0 : window.pageXOffset) + (props.src.offsetWidth / 2);
-				const y = rect.top + (fixed.value ? 0 : window.pageYOffset) + (props.src.offsetHeight / 2);
-				left = (x - (width / 2));
-				top = (y - (height / 2));
-			} else {
-				const x = rect.left + (fixed.value ? 0 : window.pageXOffset) + (props.src.offsetWidth / 2);
-				const y = rect.top + (fixed.value ? 0 : window.pageYOffset) + props.src.offsetHeight;
-				left = (x - (width / 2));
-				top = y;
-			}
-
-			if (fixed.value) {
-				// 画面から横にはみ出る場合
-				if (left + width > window.innerWidth) {
-					left = window.innerWidth - width;
-				}
-
-				// 画面から縦にはみ出る場合
-				if (top + height > (window.innerHeight - MARGIN)) {
-					if (props.noOverlap) {
-						const underSpace = (window.innerHeight - MARGIN) - top;
-						const upperSpace = (rect.top - MARGIN);
-						if (underSpace >= (upperSpace / 3)) {
-							maxHeight.value =  underSpace;
-						} else {
-							maxHeight.value =  upperSpace;
-							top = (upperSpace + MARGIN) - height;
-						}
-					} else {
-						top = (window.innerHeight - MARGIN) - height;
-					}
+		// 画面から縦にはみ出る場合
+		if (top + height > (window.innerHeight - MARGIN)) {
+			if (props.noOverlap) {
+				const underSpace = (window.innerHeight - MARGIN) - top;
+				const upperSpace = (rect.top - MARGIN);
+				if (underSpace >= (upperSpace / 3)) {
+					maxHeight.value =  underSpace;
+				} else {
+					maxHeight.value =  upperSpace;
+					top = (upperSpace + MARGIN) - height;
 				}
 			} else {
-				// 画面から横にはみ出る場合
-				if (left + width - window.pageXOffset > window.innerWidth) {
-					left = window.innerWidth - width + window.pageXOffset - 1;
+				top = (window.innerHeight - MARGIN) - height;
+			}
+		}
+	} else {
+		// 画面から横にはみ出る場合
+		if (left + width - window.pageXOffset > window.innerWidth) {
+			left = window.innerWidth - width + window.pageXOffset - 1;
+		}
+
+		// 画面から縦にはみ出る場合
+		if (top + height - window.pageYOffset > (window.innerHeight - MARGIN)) {
+			if (props.noOverlap) {
+				const underSpace = (window.innerHeight - MARGIN) - (top - window.pageYOffset);
+				const upperSpace = (rect.top - MARGIN);
+				if (underSpace >= (upperSpace / 3)) {
+					maxHeight.value =  underSpace;
+				} else {
+					maxHeight.value =  upperSpace;
+					top = window.pageYOffset + ((upperSpace + MARGIN) - height);
 				}
-
-				// 画面から縦にはみ出る場合
-				if (top + height - window.pageYOffset > (window.innerHeight - MARGIN)) {
-					if (props.noOverlap) {
-						const underSpace = (window.innerHeight - MARGIN) - (top - window.pageYOffset);
-						const upperSpace = (rect.top - MARGIN);
-						if (underSpace >= (upperSpace / 3)) {
-							maxHeight.value =  underSpace;
-						} else {
-							maxHeight.value =  upperSpace;
-							top = window.pageYOffset + ((upperSpace + MARGIN) - height);
-						}
-					} else {
-						top = (window.innerHeight - MARGIN) - height + window.pageYOffset - 1;
-					}
-				}
-			}
-
-			if (top < 0) {
-				top = MARGIN;
-			}
-
-			if (left < 0) {
-				left = 0;
-			}
-
-			if (top > rect.top + (fixed.value ? 0 : window.pageYOffset)) {
-				transformOrigin.value = 'center top';
-			} else if ((top + height) <= rect.top + (fixed.value ? 0 : window.pageYOffset)) {
-				transformOrigin.value = 'center bottom';
 			} else {
-				transformOrigin.value = 'center';
+				top = (window.innerHeight - MARGIN) - height + window.pageYOffset - 1;
 			}
+		}
+	}
 
-			popover.style.left = left + 'px';
-			popover.style.top = top + 'px';
-		};
+	if (top < 0) {
+		top = MARGIN;
+	}
 
-		const childRendered = () => {
-			// モーダルコンテンツにマウスボタンが押され、コンテンツ外でマウスボタンが離されたときにモーダルバックグラウンドクリックと判定させないためにマウスイベントを監視しフラグ管理する
-			const el = content.value!.children[0];
-			el.addEventListener('mousedown', e => {
-				contentClicking = true;
-				window.addEventListener('mouseup', e => {
-					// click イベントより先に mouseup イベントが発生するかもしれないのでちょっと待つ
-					window.setTimeout(() => {
-						contentClicking = false;
-					}, 100);
-				}, { passive: true, once: true });
-			}, { passive: true });
-		};
+	if (left < 0) {
+		left = 0;
+	}
 
-		onMounted(() => {
-			watch(() => props.src, async () => {
-				if (props.src) {
-					// eslint-disable-next-line vue/no-mutating-props
-					props.src.style.pointerEvents = 'none';
-				}
-				fixed.value = (type.value === 'drawer') || (getFixedContainer(props.src) != null);
+	if (top > rect.top + (fixed.value ? 0 : window.pageYOffset)) {
+		transformOrigin.value = 'center top';
+	} else if ((top + height) <= rect.top + (fixed.value ? 0 : window.pageYOffset)) {
+		transformOrigin.value = 'center bottom';
+	} else {
+		transformOrigin.value = 'center';
+	}
 
-				await nextTick()
-				
-				align();
-			}, { immediate: true, });
+	popover.style.left = left + 'px';
+	popover.style.top = top + 'px';
+};
 
-			nextTick(() => {
-				const popover = content.value;
-				new ResizeObserver((entries, observer) => {
-					align();
-				}).observe(popover!);
-			});
-		});
+const childRendered = () => {
+	// モーダルコンテンツにマウスボタンが押され、コンテンツ外でマウスボタンが離されたときにモーダルバックグラウンドクリックと判定させないためにマウスイベントを監視しフラグ管理する
+	const el = content.value!.children[0];
+	el.addEventListener('mousedown', ev => {
+		contentClicking = true;
+		window.addEventListener('mouseup', ev => {
+			// click イベントより先に mouseup イベントが発生するかもしれないのでちょっと待つ
+			window.setTimeout(() => {
+				contentClicking = false;
+			}, 100);
+		}, { passive: true, once: true });
+	}, { passive: true });
+};
 
-		return {
-			showing,
-			type,
-			fixed,
-			content,
-			transformOrigin,
-			maxHeight,
-			close,
-			zIndex,
-			keymap,
-			onBgClick,
-			childRendered,
-		};
-	},
+onMounted(() => {
+	watch(() => props.src, async () => {
+		if (props.src) {
+			// eslint-disable-next-line vue/no-mutating-props
+			props.src.style.pointerEvents = 'none';
+		}
+		fixed.value = (type.value === 'drawer') || (getFixedContainer(props.src) != null);
+
+		await nextTick()
+		
+		align();
+	}, { immediate: true, });
+
+	nextTick(() => {
+		const popover = content.value;
+		new ResizeObserver((entries, observer) => {
+			align();
+		}).observe(popover!);
+	});
+});
+
+defineExpose({
+	close,
 });
 </script>
 

@@ -12,7 +12,7 @@ export function useLeaveGuard(enabled: Ref<boolean>) {
 
 			const { canceled } = await os.confirm({
 				type: 'warning',
-				text: i18n.locale.leaveConfirm,
+				text: i18n.ts.leaveConfirm,
 			});
 
 			return canceled;
@@ -23,7 +23,7 @@ export function useLeaveGuard(enabled: Ref<boolean>) {
 
 			const { canceled } = await os.confirm({
 				type: 'warning',
-				text: i18n.locale.leaveConfirm,
+				text: i18n.ts.leaveConfirm,
 			});
 
 			return !canceled;

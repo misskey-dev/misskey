@@ -77,12 +77,12 @@ export const loadDeck = async () => {
 			deckStore.set('columns', [{
 				id: 'a',
 				type: 'main',
-				name: i18n.locale._deck._columns.main,
+				name: i18n.ts._deck._columns.main,
 				width: 350,
 			}, {
 				id: 'b',
 				type: 'notifications',
-				name: i18n.locale._deck._columns.notifications,
+				name: i18n.ts._deck._columns.notifications,
 				width: 330,
 			}]);
 			deckStore.set('layout', [['a'], ['b']]);

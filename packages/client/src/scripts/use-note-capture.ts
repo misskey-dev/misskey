@@ -19,50 +19,40 @@ export function useNoteCapture(props: {
 			case 'reacted': {
 				const reaction = body.reaction;
 
-				const updated = JSON.parse(JSON.stringify(appearNote.value));
-
 				if (body.emoji) {
 					const emojis = appearNote.value.emojis || [];
 					if (!emojis.includes(body.emoji)) {
-						updated.emojis = [...emojis, body.emoji];
+						appearNote.value.emojis = [...emojis, body.emoji];
 					}
 				}
 
 				// TODO: reactionsプロパティがない場合ってあったっけ？ なければ || {} は消せる
 				const currentCount = (appearNote.value.reactions || {})[reaction] || 0;
 
-				updated.reactions[reaction] = currentCount + 1;
+				appearNote.value.reactions[reaction] = currentCount + 1;
 
 				if ($i && (body.userId === $i.id)) {
-					updated.myReaction = reaction;
+					appearNote.value.myReaction = reaction;
 				}
-
-				appearNote.value = updated;
 				break;
 			}
 
 			case 'unreacted': {
 				const reaction = body.reaction;
 
-				const updated = JSON.parse(JSON.stringify(appearNote.value));
-
 				// TODO: reactionsプロパティがない場合ってあったっけ？ なければ || {} は消せる
 				const currentCount = (appearNote.value.reactions || {})[reaction] || 0;
 
-				updated.reactions[reaction] = Math.max(0, currentCount - 1);
+				appearNote.value.reactions[reaction] = Math.max(0, currentCount - 1);
 
 				if ($i && (body.userId === $i.id)) {
-					updated.myReaction = null;
+					appearNote.value.myReaction = null;
 				}
-
-				appearNote.value = updated;
 				break;
 			}
 
 			case 'pollVoted': {
 				const choice = body.choice;
-
-				const updated = JSON.parse(JSON.stringify(appearNote.value));
 
 				const choices = [...appearNote.value.poll.choices];
 				choices[choice] = {
@@ -73,16 +63,12 @@ export function useNoteCapture(props: {
 					} : {})
 				};
 
-				updated.poll.choices = choices;
-
-				appearNote.value = updated;
+				appearNote.value.poll.choices = choices;
 				break;
 			}
 
 			case 'deleted': {
-				const updated = JSON.parse(JSON.stringify(appearNote.value));
-				updated.value = true;
-				appearNote.value = updated;
+				appearNote.value.deletedAt = new Date();
 				break;
 			}
 		}

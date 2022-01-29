@@ -41,9 +41,9 @@ function select(src: any, label: string | null, multiple: boolean): Promise<Driv
 
 		const chooseFileFromUrl = () => {
 			os.inputText({
-				title: i18n.locale.uploadFromUrl,
+				title: i18n.ts.uploadFromUrl,
 				type: 'url',
-				placeholder: i18n.locale.uploadFromUrlDescription
+				placeholder: i18n.ts.uploadFromUrlDescription
 			}).then(({ canceled, result: url }) => {
 				if (canceled) return;
 
@@ -64,8 +64,8 @@ function select(src: any, label: string | null, multiple: boolean): Promise<Driv
 				});
 
 				os.alert({
-					title: i18n.locale.uploadFromUrlRequested,
-					text: i18n.locale.uploadFromUrlMayTakeTime
+					title: i18n.ts.uploadFromUrlRequested,
+					text: i18n.ts.uploadFromUrlMayTakeTime
 				});
 			});
 		};
@@ -74,15 +74,15 @@ function select(src: any, label: string | null, multiple: boolean): Promise<Driv
 			text: label,
 			type: 'label'
 		} : undefined, {
-			text: i18n.locale.upload,
+			text: i18n.ts.upload,
 			icon: 'fas fa-upload',
 			action: chooseFileFromPc
 		}, {
-			text: i18n.locale.fromDrive,
+			text: i18n.ts.fromDrive,
 			icon: 'fas fa-cloud',
 			action: chooseFileFromDrive
 		}, {
-			text: i18n.locale.fromUrl,
+			text: i18n.ts.fromUrl,
 			icon: 'fas fa-link',
 			action: chooseFileFromUrl
 		}], src);

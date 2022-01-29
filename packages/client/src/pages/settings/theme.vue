@@ -116,7 +116,7 @@ export default defineComponent({
 
 	setup(props, { emit }) {
 		const INFO = {
-			title: i18n.locale.theme,
+			title: i18n.ts.theme,
 			icon: 'fas fa-palette',
 				bg: 'var(--bg)',
 		};
@@ -184,7 +184,7 @@ export default defineComponent({
 			themesCount,
 			wallpaper,
 			setWallpaper(e) {
-				selectFile(e.currentTarget || e.target, null).then(file => {
+				selectFile(e.currentTarget ?? e.target, null).then(file => {
 					wallpaper.value = file.url;
 				});
 			},
