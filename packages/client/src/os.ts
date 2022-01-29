@@ -7,6 +7,7 @@ import * as Misskey from 'misskey-js';
 import { apiUrl, url } from '@/config';
 import MkPostFormDialog from '@/components/post-form-dialog.vue';
 import MkWaitingDialog from '@/components/waiting-dialog.vue';
+import { MenuItem } from '@/components/ui/menu.vue';
 import { resolve } from '@/router';
 import { $i } from '@/account';
 
@@ -470,7 +471,7 @@ export async function openEmojiPicker(src?: HTMLElement, opts, initialTextarea: 
 	});
 }
 
-export function popupMenu(items: any[] | Ref<any[]>, src?: HTMLElement, options?: {
+export function popupMenu(items: MenuItem[] | Ref<MenuItem[]>, src?: HTMLElement, options?: {
 	align?: string;
 	width?: number;
 	viaKeyboard?: boolean;
@@ -494,7 +495,7 @@ export function popupMenu(items: any[] | Ref<any[]>, src?: HTMLElement, options?
 	});
 }
 
-export function contextMenu(items: any[], ev: MouseEvent) {
+export function contextMenu(items: MenuItem[] | Ref<MenuItem[]>, ev: MouseEvent) {
 	ev.preventDefault();
 	return new Promise((resolve, reject) => {
 		let dispose;
@@ -541,7 +542,7 @@ export const uploads = ref<{
 	img: string;
 }[]>([]);
 
-export function upload(file: File, folder?: any, name?: string): Promise<Misskey.entities.DriveFile> {
+export function upload(file: File, folder?: any, name?: string, keepOriginal?: boolean): Promise<Misskey.entities.DriveFile> {
 	if (folder && typeof folder == 'object') folder = folder.id;
 
 	return new Promise((resolve, reject) => {
@@ -558,6 +559,8 @@ export function upload(file: File, folder?: any, name?: string): Promise<Misskey
 			});
 
 			uploads.value.push(ctx);
+
+			console.log(keepOriginal);
 
 			const data = new FormData();
 			data.append('i', $i.token);

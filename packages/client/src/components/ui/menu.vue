@@ -1,8 +1,8 @@
 <template>
-<div ref="items" v-hotkey="keymap"
+<div ref="itemsEl" v-hotkey="keymap"
 	class="rrevdjwt"
 	:class="{ center: align === 'center', asDrawer }"
-	:style="{ width: (width && !asDrawer) ? width + 'px' : null, maxHeight: maxHeight ? maxHeight + 'px' : null }"
+	:style="{ width: (width && !asDrawer) ? width + 'px' : '', maxHeight: maxHeight ? maxHeight + 'px' : '' }"
 	@contextmenu.self="e => e.preventDefault()"
 >
 	<template v-for="(item, i) in items2">
@@ -28,6 +28,9 @@
 			<MkAvatar :user="item.user" class="avatar"/><MkUserName :user="item.user"/>
 			<span v-if="item.indicate" class="indicator"><i class="fas fa-circle"></i></span>
 		</button>
+		<span v-else-if="item.type === 'switch'" :tabindex="i" class="item">
+			<FormSwitch v-model="item.ref" class="form-switch">{{ item.text }}</FormSwitch>
+		</span>
 		<button v-else :tabindex="i" class="_button item" :class="{ danger: item.danger, active: item.active }" :disabled="item.active" @click="clicked(item.action, $event)">
 			<i v-if="item.icon" class="fa-fw" :class="item.icon"></i>
 			<MkAvatar v-if="item.avatar" :user="item.avatar" class="avatar"/>
@@ -42,113 +45,97 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, unref } from 'vue';
+import * as Misskey from 'misskey-js';
+import { Ref } from 'vue';
+
+export type MenuAction = (ev: MouseEvent) => void;
+
+export type MenuDivider = null;
+export type MenuNull = undefined;
+export type MenuLabel = { type: 'label', text: string };
+export type MenuLink = { type: 'link', to: string, text: string, icon?: string, indicate?: boolean, avatar: Misskey.entities.User };
+export type MenuA = { type: 'a', href: string, target?: string, download?: string, text: string, icon?: string, indicate?: boolean };
+export type MenuUser = { type: 'user', user: Misskey.entities.User, active?: boolean, indicate?: boolean, action: MenuAction };
+export type MenuSwitch = { type: 'switch', ref: Ref<boolean>, text: string };
+export type MenuButton = { type?: 'button', text: string, icon?: string, indicate?: boolean, danger?: boolean, active?: boolean, avatar: Misskey.entities.User; action: MenuAction };
+
+export type MenuPending = { type: 'pending' };
+
+type OuterMenuItem = MenuDivider | MenuNull | MenuLabel | MenuLink | MenuA | MenuUser | MenuSwitch | MenuButton;
+export type MenuItem = OuterMenuItem | Promise<OuterMenuItem>;
+export type InnerMenuItem = MenuDivider | MenuPending | MenuLabel | MenuLink | MenuA | MenuUser | MenuSwitch | MenuButton;
+</script>
+<script lang="ts" setup>
+import { nextTick, onMounted, watch } from 'vue';
 import { focusPrev, focusNext } from '@/scripts/focus';
-import contains from '@/scripts/contains';
+import FormSwitch from '@/components/form/switch.vue';
 
-export default defineComponent({
-	props: {
-		items: {
-			type: Array,
-			required: true
-		},
-		viaKeyboard: {
-			type: Boolean,
-			required: false
-		},
-		asDrawer: {
-			type: Boolean,
-			required: false
-		},
-		align: {
-			type: String,
-			requried: false
-		},
-		width: {
-			type: Number,
-			required: false
-		},
-		maxHeight: {
-			type: Number,
-			required: false
-		},
-	},
-	emits: ['close'],
-	data() {
-		return {
-			items2: [],
-		};
-	},
-	computed: {
-		keymap(): any {
-			return {
-				'up|k|shift+tab': this.focusUp,
-				'down|j|tab': this.focusDown,
-				'esc': this.close,
-			};
-		},
-	},
-	watch: {
-		items: {
-			handler() {
-				const items = ref(unref(this.items).filter(item => item !== undefined));
+const props = defineProps<{
+	items: MenuItem[];
+	viaKeyboard?: boolean;
+	asDrawer?: boolean;
+	align?: 'center' | string;
+	width?: number;
+	maxHeight?: number;
+}>();
 
-				for (let i = 0; i < items.value.length; i++) {
-					const item = items.value[i];
-					
-					if (item && item.then) { // if item is Promise
-						items.value[i] = { type: 'pending' };
-						item.then(actualItem => {
-							items.value[i] = actualItem;
-						});
-					}
-				}
+const emit = defineEmits<{
+	(e: 'close'): void;
+}>();
 
-				this.items2 = items;
-			},
-			immediate: true
-		}
-	},
-	mounted() {
-		if (this.viaKeyboard) {
-			this.$nextTick(() => {
-				focusNext(this.$refs.items.children[0], true, false);
+let itemsEl = $ref<HTMLDivElement>();
+
+let items2: InnerMenuItem[] = $ref([]);
+
+let keymap = $computed(() => ({
+	'up|k|shift+tab': focusUp,
+	'down|j|tab': focusDown,
+	'esc': close,
+}));
+
+watch(() => props.items, () => {
+	const items: (MenuItem | MenuPending)[] = [...props.items].filter(item => item !== undefined);
+
+	for (let i = 0; i < items.length; i++) {
+		const item = items[i];
+
+		if (item && 'then' in item) { // if item is Promise
+			items[i] = { type: 'pending' };
+			item.then(actualItem => {
+				items[i] = actualItem;
 			});
 		}
+	}
 
-		if (this.contextmenuEvent) {
-			this.$el.style.top = this.contextmenuEvent.pageY + 'px';
-			this.$el.style.left = this.contextmenuEvent.pageX + 'px';
+	items2 = items as InnerMenuItem[];
+}, {
+	immediate: true,
+});
 
-			for (const el of Array.from(document.querySelectorAll('body *'))) {
-				el.addEventListener('mousedown', this.onMousedown);
-			}
-		}
-	},
-	beforeUnmount() {
-		for (const el of Array.from(document.querySelectorAll('body *'))) {
-			el.removeEventListener('mousedown', this.onMousedown);
-		}
-	},
-	methods: {
-		clicked(fn, ev) {
-			fn(ev);
-			this.close();
-		},
-		close() {
-			this.$emit('close');
-		},
-		focusUp() {
-			focusPrev(document.activeElement);
-		},
-		focusDown() {
-			focusNext(document.activeElement);
-		},
-		onMousedown(e) {
-			if (!contains(this.$el, e.target) && (this.$el != e.target)) this.close();
-		},
+onMounted(() => {
+	if (props.viaKeyboard) {
+		nextTick(() => {
+			focusNext(itemsEl.children[0], true, false);
+		});
 	}
 });
+
+function clicked(fn: MenuAction, ev: MouseEvent) {
+	fn(ev);
+	close();
+}
+
+function close() {
+	emit('close');
+}
+
+function focusUp() {
+	focusPrev(document.activeElement);
+}
+
+function focusDown() {
+	focusNext(document.activeElement);
+}
 </script>
 
 <style lang="scss" scoped>
