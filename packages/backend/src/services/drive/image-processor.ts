@@ -38,8 +38,8 @@ export async function convertSharpToJpeg(sharp: sharp.Sharp, width: number, heig
  * Convert to WebP
  *   with resize, remove metadata, resolve orientation, stop animation
  */
-export async function convertToWebp(path: string, width: number, height: number): Promise<IImage> {
-	return convertSharpToWebp(await sharp(path), width, height);
+export async function convertToWebp(path: string, width: number, height: number, quality: number = 85): Promise<IImage> {
+	return convertSharpToWebp(await sharp(path), width, height, quality);
 }
 
 export async function convertSharpToWebp(sharp: sharp.Sharp, width: number, height: number, quality: number = 85): Promise<IImage> {
