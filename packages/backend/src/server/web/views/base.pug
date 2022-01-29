@@ -23,6 +23,7 @@ html
 		meta(name='theme-color-orig' content='#86b300')
 		meta(property='twitter:card' content='summary')
 		meta(property='og:site_name' content= instanceName || 'Misskey')
+		meta(property='twitter:title' content= instanceName || 'Misskey')
 		meta(name='viewport' content='width=device-width, initial-scale=1')
 		link(rel='icon' href= icon || '/favicon.ico')
 		link(rel='apple-touch-icon' href= icon || '/apple-touch-icon.png')
@@ -39,11 +40,13 @@ html
 
 		block desc
 			meta(name='description' content= desc || '✨🌎✨ A interplanetary communication platform ✨🚀✨')
+			meta(property='twitter:description' content= desc || '✨🌎✨ A interplanetary communication platform ✨🚀✨')
 
 		block meta
 
 		block og
 			meta(property='og:image' content=img)
+			meta(property='twitter:image' content=img)
 
 		style
 			include ../style.css
