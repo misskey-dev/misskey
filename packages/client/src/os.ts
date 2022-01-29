@@ -10,6 +10,7 @@ import MkWaitingDialog from '@/components/waiting-dialog.vue';
 import { MenuItem } from '@/types/menu';
 import { resolve } from '@/router';
 import { $i } from '@/account';
+import { defaultStore } from '@/store';
 
 export const pendingApiRequestsCount = ref(0);
 
@@ -542,7 +543,7 @@ export const uploads = ref<{
 	img: string;
 }[]>([]);
 
-export function upload(file: File, folder?: any, name?: string, keepOriginal?: boolean): Promise<Misskey.entities.DriveFile> {
+export function upload(file: File, folder?: any, name?: string, keepOriginal: boolean = defaultStore.state.keepOriginalUploading): Promise<Misskey.entities.DriveFile> {
 	if (folder && typeof folder == 'object') folder = folder.id;
 
 	return new Promise((resolve, reject) => {
