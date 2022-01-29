@@ -14,13 +14,16 @@ type Uploading = {
 };
 export const uploads = ref<Uploading[]>([]);
 
-const compressTypeMap = new Map([
-	// [圧縮前の形式, 圧縮後の形式],
-	['image/jpeg', 'image/webp'],
-	['image/webp', 'image/webp'],
-	['image/png', 'image/webp'],
-	['image/svg', 'image/webp'],
-]);
+const compressTypeMap = {
+	'image/jpeg': { quality: 0.85, mimeType: 'image/webp'},
+	'image/webp': { quality: 0.85, mimeType: 'image/webp'},
+	'image/png': { quality: 1, mimeType: 'image/webp'},
+	'image/svg+xml': { quality: 1, mimeType: 'image/webp'},
+} as const;
+
+const mimeTypeMap = {
+	'image/webp': 'webp',
+} as const;
 
 export function uploadFile(file: File, folder?: any, name?: string, keepOriginal: boolean = defaultStore.state.keepOriginalUploading): Promise<Misskey.entities.DriveFile> {
 	if (folder && typeof folder == 'object') folder = folder.id;
@@ -38,28 +41,27 @@ export function uploadFile(file: File, folder?: any, name?: string, keepOriginal
 				img: window.URL.createObjectURL(file)
 			});
 
+			uploads.value.push(ctx);
+
 			let resizedImage: any;
-			if (!keepOriginal && compressTypeMap.has(file.type)) {
+			if (!keepOriginal && file.type in compressTypeMap) {
 				const config = {
-					quality: 0.85,
 					maxWidth: 2048,
 					maxHeight: 2048,
 					autoRotate: true,
-					mimeType: compressTypeMap.get(file.type),
 					debug: true,
+					...compressTypeMap[file.type],
 				};
 				resizedImage = await readAndCompressImage(file, config);
+				ctx.name = `${ctx.name}.${mimeTypeMap[compressTypeMap[file.type].mimeType]}`;
 			}
-
-			uploads.value.push(ctx);
 
 			const data = new FormData();
 			data.append('i', $i.token);
 			data.append('force', 'true');
 			data.append('file', resizedImage || file);
-
+			data.append('name', ctx.name);
 			if (folder) data.append('folderId', folder);
-			if (name) data.append('name', name);
 
 			const xhr = new XMLHttpRequest();
 			xhr.open('POST', apiUrl + '/drive/files/create', true);
@@ -78,7 +80,7 @@ export function uploadFile(file: File, folder?: any, name?: string, keepOriginal
 				}
 
 				const driveFile = JSON.parse(ev.target.response);
-				console.log(driveFile)
+
 				resolve(driveFile);
 
 				uploads.value = uploads.value.filter(x => x.id != id);

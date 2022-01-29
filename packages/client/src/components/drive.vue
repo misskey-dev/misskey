@@ -130,7 +130,7 @@ const selectedFiles = ref<Misskey.entities.DriveFile[]>([]);
 const selectedFolders = ref<Misskey.entities.DriveFolder[]>([]);
 const uploadings = uploads;
 const connection = stream.useChannel('drive');
-let keepOriginal = $ref<boolean>(defaultStore.state.keepOriginalUploading);
+const keepOriginal = ref<boolean>(defaultStore.state.keepOriginalUploading);
 
 // ドロップされようとしているか
 const draghover = ref(false);
@@ -357,7 +357,7 @@ function onChangeFileInput() {
 }
 
 function upload(file: File, folderToUpload?: Misskey.entities.DriveFolder | null) {
-	uploadFile(file, (folderToUpload && typeof folderToUpload == 'object') ? folderToUpload.id : null, undefined, keepOriginal).then(res => {
+	uploadFile(file, (folderToUpload && typeof folderToUpload == 'object') ? folderToUpload.id : null, undefined, keepOriginal.value).then(res => {
 		addFile(res, true);
 	});
 }
