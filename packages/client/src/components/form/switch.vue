@@ -47,12 +47,6 @@ const toggle = () => {
 		os.popup(Ripple, { x, y, particle: false }, {}, 'end');
 	}
 };
-
-defineExpose({
-	button,
-	checked,
-	toggle,
-});
 </script>
 
 <style lang="scss" scoped>
