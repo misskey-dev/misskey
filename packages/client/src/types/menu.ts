@@ -15,5 +15,6 @@ export type MenuButton = { type?: 'button', text: string, icon?: string, indicat
 export type MenuPending = { type: 'pending' };
 
 type OuterMenuItem = MenuDivider | MenuNull | MenuLabel | MenuLink | MenuA | MenuUser | MenuSwitch | MenuButton;
-export type MenuItem = OuterMenuItem | Promise<OuterMenuItem>;
+type OuterPromiseMenuItem = Promise<MenuLabel | MenuLink | MenuA | MenuUser | MenuSwitch | MenuButton>;
+export type MenuItem = OuterMenuItem | OuterPromiseMenuItem;
 export type InnerMenuItem = MenuDivider | MenuPending | MenuLabel | MenuLink | MenuA | MenuUser | MenuSwitch | MenuButton;

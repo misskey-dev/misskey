@@ -82,7 +82,7 @@ watch(() => props.items, () => {
 		if (item && 'then' in item) { // if item is Promise
 			items[i] = { type: 'pending' };
 			item.then(actualItem => {
-				items[i] = actualItem;
+				items2[i] = actualItem;
 			});
 		}
 	}
