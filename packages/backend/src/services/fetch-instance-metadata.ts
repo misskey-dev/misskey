@@ -156,7 +156,7 @@ async function fetchFaviconUrl(instance: Instance, doc: DOMWindow['document'] | 
 	const url = 'https://' + instance.host;
 
 	if (doc) {
-		const href = doc.querySelector('link[rel="icon"]')?.getAttribute('href');
+		const href = Array.from(doc.getElementsByTagName('link')).reverse().find(link => link.relList.contains('icon'))?.href;
 
 		if (href) {
 			return (new URL(href, url)).href;
