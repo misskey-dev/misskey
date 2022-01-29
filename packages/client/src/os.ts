@@ -567,7 +567,7 @@ export function upload(file: File, folder?: any, name?: string): Promise<Misskey
 					autoRotate: true,
 					debug: true
 				};
-				resizedImage = await readAndCompressImage(file, config)
+				resizedImage = await readAndCompressImage(file, config);
 			}
 
 			uploads.value.push(ctx);
