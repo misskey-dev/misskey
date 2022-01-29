@@ -1,6 +1,5 @@
 import { reactive, ref } from 'vue';
 import { defaultStore } from '@/store';
-import { readAndCompressImage } from 'browser-image-resizer';
 import { apiUrl } from '@/config';
 import * as Misskey from 'misskey-js';
 import { $i } from '@/account';
@@ -52,6 +51,8 @@ export function uploadFile(file: File, folder?: any, name?: string, keepOriginal
 					debug: true,
 					...compressTypeMap[file.type],
 				};
+
+				const { readAndCompressImage } = await import('browser-image-resizer');
 				resizedImage = await readAndCompressImage(file, config);
 				ctx.name = `${ctx.name}.${mimeTypeMap[compressTypeMap[file.type].mimeType]}`;
 			}
