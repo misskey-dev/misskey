@@ -16,7 +16,6 @@ defineProps<{
 	width?: number;
 	viaKeyboard?: boolean;
 	src?: any;
-	ev: MouseEvent;
 }>();
 
 const emit = defineEmits<{
