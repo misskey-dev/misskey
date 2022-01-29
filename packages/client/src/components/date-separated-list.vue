@@ -101,23 +101,20 @@ export default defineComponent({
 
 		return () => h(
 			defaultStore.state.animation ? TransitionGroup : 'div',
-			defaultStore.state.animation ? {
+			{
 					class: {
 						'sqadhkmv': true,
 						'noGap': props.noGap
 					},
-					name: 'list',
-					tag: 'div',
 					'data-direction': props.direction,
 					'data-reversed': props.reversed ? 'true' : 'false',
-					onBeforeLeave,
-					onLeaveCanceled,
-				} : {
-					class: {
-						'sqadhkmv': true,
-						'noGap': props.noGap
-					},
-				},
+					...(defaultStore.state.animation ? {
+						name: 'list',
+						tag: 'div',
+						onBeforeLeave,
+						onLeaveCanceled,
+					} : {}),
+			},
 			{ default: renderChildren });
 	}
 });
