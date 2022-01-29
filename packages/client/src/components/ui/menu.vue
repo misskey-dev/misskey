@@ -44,31 +44,11 @@
 </div>
 </template>
 
-<script lang="ts">
-import * as Misskey from 'misskey-js';
-import { Ref } from 'vue';
-
-export type MenuAction = (ev: MouseEvent) => void;
-
-export type MenuDivider = null;
-export type MenuNull = undefined;
-export type MenuLabel = { type: 'label', text: string };
-export type MenuLink = { type: 'link', to: string, text: string, icon?: string, indicate?: boolean, avatar: Misskey.entities.User };
-export type MenuA = { type: 'a', href: string, target?: string, download?: string, text: string, icon?: string, indicate?: boolean };
-export type MenuUser = { type: 'user', user: Misskey.entities.User, active?: boolean, indicate?: boolean, action: MenuAction };
-export type MenuSwitch = { type: 'switch', ref: Ref<boolean>, text: string };
-export type MenuButton = { type?: 'button', text: string, icon?: string, indicate?: boolean, danger?: boolean, active?: boolean, avatar: Misskey.entities.User; action: MenuAction };
-
-export type MenuPending = { type: 'pending' };
-
-type OuterMenuItem = MenuDivider | MenuNull | MenuLabel | MenuLink | MenuA | MenuUser | MenuSwitch | MenuButton;
-export type MenuItem = OuterMenuItem | Promise<OuterMenuItem>;
-export type InnerMenuItem = MenuDivider | MenuPending | MenuLabel | MenuLink | MenuA | MenuUser | MenuSwitch | MenuButton;
-</script>
 <script lang="ts" setup>
 import { nextTick, onMounted, watch } from 'vue';
 import { focusPrev, focusNext } from '@/scripts/focus';
 import FormSwitch from '@/components/form/switch.vue';
+import { MenuItem, InnerMenuItem, MenuPending, MenuAction } from '@/types/menu';
 
 const props = defineProps<{
 	items: MenuItem[];

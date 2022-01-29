@@ -7,7 +7,7 @@ import * as Misskey from 'misskey-js';
 import { apiUrl, url } from '@/config';
 import MkPostFormDialog from '@/components/post-form-dialog.vue';
 import MkWaitingDialog from '@/components/waiting-dialog.vue';
-import { MenuItem } from '@/components/ui/menu.vue';
+import { MenuItem } from '@/types/menu';
 import { resolve } from '@/router';
 import { $i } from '@/account';
 
