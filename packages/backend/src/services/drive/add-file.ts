@@ -7,7 +7,7 @@ import { deleteFile } from './delete-file';
 import { fetchMeta } from '@/misc/fetch-meta';
 import { GenerateVideoThumbnail } from './generate-video-thumbnail';
 import { driveLogger } from './logger';
-import { IImage, convertSharpToJpeg, convertSharpToWebp, convertSharpToPng, convertSharpToPngOrJpeg } from './image-processor';
+import { IImage, convertSharpToJpeg, convertSharpToWebp, convertSharpToPng } from './image-processor';
 import { contentDisposition } from '@/misc/content-disposition';
 import { getFileInfo } from '@/misc/get-file-info';
 import { DriveFiles, DriveFolders, Users, Instances, UserProfiles } from '@/models/index';
@@ -178,7 +178,7 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 	}
 
 	let img: sharp.Sharp | null = null;
-	let webpublicNeeded: boolean;
+	let satisfyWebpublic: boolean;
 
 	try {
 		img = sharp(path);
@@ -193,8 +193,11 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 			};
 		}
 
-		webpublicNeeded = !!metadata.exif || !!metadata.icc || !!metadata.iptc || !!metadata.xmp || !!metadata.tifftagPhotoshop
-			|| !metadata.width || metadata.width > 2048 || !metadata.height || metadata.height > 2048;
+		satisfyWebpublic = !!(
+			!(metadata.exif || metadata.iptc || metadata.xmp || metadata.tifftagPhotoshop) &&
+			metadata.width && metadata.width <= 2048 &&
+			metadata.height && metadata.height <= 2048
+		);
 	} catch (e) {
 		logger.warn(`sharp failed: ${e}`);
 		return {
@@ -206,18 +209,14 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 	// #region webpublic
 	let webpublic: IImage | null = null;
 
-	if (generateWeb) {
+	if (generateWeb && !satisfyWebpublic) {
 		logger.info(`creating web image`);
 
 		try {
-			if (['image/jpeg'].includes(type) && webpublicNeeded) {
-				webpublic = await convertSharpToJpeg(img, 2048, 2048);
-			} else if (['image/webp'].includes(type) && webpublicNeeded) {
+			if (['image/webp', 'image/jpeg'].includes(type)) {
 				webpublic = await convertSharpToWebp(img, 2048, 2048);
-			} else if (['image/png'].includes(type) && webpublicNeeded) {
-				webpublic = await convertSharpToPng(img, 2048, 2048);
-			} else if (['image/svg+xml'].includes(type)) {
-				webpublic = await convertSharpToPng(img, 2048, 2048);
+			} else if (['image/png', 'image/svg+xml'].includes(type)) {
+				webpublic = await convertSharpToWebp(img, 2048, 2048, 100);
 			} else {
 				logger.debug(`web image not created (not an required image)`);
 			}
@@ -225,7 +224,8 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 			logger.warn(`web image not created (an error occured)`, e);
 		}
 	} else {
-		logger.info(`web image not created (from remote)`);
+		if (satisfyWebpublic) logger.info(`web image not created (original satisfies webpublic)`);
+		else logger.info(`web image not created (from remote)`);
 	}
 	// #endregion webpublic
 
@@ -233,10 +233,8 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 	let thumbnail: IImage | null = null;
 
 	try {
-		if (['image/jpeg', 'image/webp'].includes(type)) {
-			thumbnail = await convertSharpToJpeg(img, 498, 280);
-		} else if (['image/png', 'image/svg+xml'].includes(type)) {
-			thumbnail = await convertSharpToPngOrJpeg(img, 498, 280);
+		if (['image/jpeg', 'image/webp', 'image/png', 'image/svg+xml'].includes(type)) {
+			thumbnail = await convertSharpToWebp(img, 498, 280);
 		} else {
 			logger.debug(`thumbnail not created (not an required file)`);
 		}
