@@ -11,6 +11,7 @@ import { MenuItem } from '@/types/menu';
 import { resolve } from '@/router';
 import { $i } from '@/account';
 import { defaultStore } from '@/store';
+import { readAndCompressImage } from 'browser-image-resizer';
 
 export const pendingApiRequestsCount = ref(0);
 
@@ -550,7 +551,7 @@ export function upload(file: File, folder?: any, name?: string, keepOriginal: bo
 		const id = Math.random().toString();
 
 		const reader = new FileReader();
-		reader.onload = (e) => {
+		reader.onload = async (e) => {
 			const ctx = reactive({
 				id: id,
 				name: name || file.name || 'untitled',
@@ -559,6 +560,18 @@ export function upload(file: File, folder?: any, name?: string, keepOriginal: bo
 				img: window.URL.createObjectURL(file)
 			});
 
+			let resizedImage: any;
+			if (file.type === 'image/jpeg') {
+				const config = {
+					quality: 0.85,
+					maxWidth: 2048,
+					maxHeight: 2048,
+					autoRotate: true,
+					debug: true
+				};
+				resizedImage = await readAndCompressImage(file, config);
+			}
+
 			uploads.value.push(ctx);
 
 			console.log(keepOriginal);
@@ -566,7 +579,7 @@ export function upload(file: File, folder?: any, name?: string, keepOriginal: bo
 			const data = new FormData();
 			data.append('i', $i.token);
 			data.append('force', 'true');
-			data.append('file', file);
+			data.append('file', resizedImage || file);
 
 			if (folder) data.append('folderId', folder);
 			if (name) data.append('name', name);

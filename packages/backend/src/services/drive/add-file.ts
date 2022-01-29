@@ -178,6 +178,7 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 	}
 
 	let img: sharp.Sharp | null = null;
+	let webpublicNeeded: boolean;
 
 	try {
 		img = sharp(path);
@@ -191,6 +192,9 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 				thumbnail: null,
 			};
 		}
+
+		webpublicNeeded = !!metadata.exif || !!metadata.icc || !!metadata.iptc || !!metadata.xmp || !!metadata.tifftagPhotoshop
+			|| !metadata.width || metadata.width > 2048 || !metadata.height || metadata.height > 2048;
 	} catch (e) {
 		logger.warn(`sharp failed: ${e}`);
 		return {
@@ -206,11 +210,13 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 		logger.info(`creating web image`);
 
 		try {
-			if (['image/jpeg'].includes(type)) {
+			if (['image/jpeg'].includes(type) && webpublicNeeded) {
 				webpublic = await convertSharpToJpeg(img, 2048, 2048);
-			} else if (['image/webp'].includes(type)) {
+			} else if (['image/webp'].includes(type) && webpublicNeeded) {
 				webpublic = await convertSharpToWebp(img, 2048, 2048);
-			} else if (['image/png', 'image/svg+xml'].includes(type)) {
+			} else if (['image/png'].includes(type) && webpublicNeeded) {
+				webpublic = await convertSharpToPng(img, 2048, 2048);
+			} else if (['image/svg+xml'].includes(type)) {
 				webpublic = await convertSharpToPng(img, 2048, 2048);
 			} else {
 				logger.debug(`web image not created (not an required image)`);
