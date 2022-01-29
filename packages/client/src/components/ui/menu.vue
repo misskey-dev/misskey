@@ -29,7 +29,7 @@
 			<span v-if="item.indicate" class="indicator"><i class="fas fa-circle"></i></span>
 		</button>
 		<span v-else-if="item.type === 'switch'" :tabindex="i" class="item">
-			<FormSwitch v-model="item.ref" class="form-switch">{{ item.text }}</FormSwitch>
+			<FormSwitch v-model="item.ref" :disabled="item.disabled" class="form-switch">{{ item.text }}</FormSwitch>
 		</span>
 		<button v-else :tabindex="i" class="_button item" :class="{ danger: item.danger, active: item.active }" :disabled="item.active" @click="clicked(item.action, $event)">
 			<i v-if="item.icon" class="fa-fw" :class="item.icon"></i>
