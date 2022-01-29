@@ -15,7 +15,8 @@
 
 <script lang="ts">
 import { defineAsyncComponent, defineComponent } from 'vue';
-import { popup, popups, uploads, pendingApiRequestsCount } from '@/os';
+import { popup, popups, pendingApiRequestsCount } from '@/os';
+import { uploads } from '@/scripts/upload';
 import * as sound from '@/scripts/sound';
 import { $i } from '@/account';
 import { stream } from '@/stream';
