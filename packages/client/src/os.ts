@@ -10,6 +10,7 @@ import MkWaitingDialog from '@/components/waiting-dialog.vue';
 import { MenuItem } from '@/types/menu';
 import { resolve } from '@/router';
 import { $i } from '@/account';
+import { defaultStore } from '@/store';
 
 export const pendingApiRequestsCount = ref(0);
 
