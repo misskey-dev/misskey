@@ -1,3 +1,6 @@
+# 0.0.14
+- remove needless Object.freeze()
+
 # 0.0.13
 - expose ChannelConnection and Channels types
 
