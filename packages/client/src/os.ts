@@ -1,6 +1,6 @@
 // TODO: なんでもかんでもos.tsに突っ込むのやめたいのでよしなに分割する
 
-import { Component, defineAsyncComponent, markRaw, reactive, Ref, ref } from 'vue';
+import { Component, markRaw, Ref, ref } from 'vue';
 import { EventEmitter } from 'eventemitter3';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import * as Misskey from 'misskey-js';
@@ -10,7 +10,6 @@ import MkWaitingDialog from '@/components/waiting-dialog.vue';
 import { MenuItem } from '@/types/menu';
 import { resolve } from '@/router';
 import { $i } from '@/account';
-import { defaultStore } from '@/store';
 
 export const pendingApiRequestsCount = ref(0);
 
