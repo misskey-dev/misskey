@@ -156,11 +156,11 @@ export default class Stream extends EventEmitter<StreamEvents> {
 			}
 
 			for (const c of connections) {
-				c.emit(body.type, Object.freeze(body.body));
+				c.emit(body.type, body.body);
 				c.inCount++;
 			}
 		} else {
-			this.emit(type, Object.freeze(body));
+			this.emit(type, body);
 		}
 	}
 
