@@ -13,7 +13,7 @@ const accessDenied = {
 	id: '56f35758-7dd5-468b-8439-5d6fb8ec9b8e',
 };
 
-export default async (endpoint: string, user: User | null | undefined, token: AccessToken | null | undefined, data: any, ctx: Koa.Context) => {
+export default async (endpoint: string, user: User | null | undefined, token: AccessToken | null | undefined, data: any, ctx?: Koa.Context) => {
 	const isSecure = user != null && token == null;
 
 	const ep = endpoints.find(e => e.name === endpoint);
@@ -79,7 +79,7 @@ export default async (endpoint: string, user: User | null | undefined, token: Ac
 
 	// Cast non JSON input
 	if (ep.meta.requireFile && ep.meta.params) {
-		const body = (ctx.request as any).body;
+		const body = (ctx!.request as any).body;
 		for (const k of Object.keys(ep.meta.params)) {
 			const param = ep.meta.params[k];
 			if (['Boolean', 'Number'].includes(param.validator.name) && typeof body[k] === 'string') {
@@ -90,7 +90,7 @@ export default async (endpoint: string, user: User | null | undefined, token: Ac
 
 	// API invoking
 	const before = performance.now();
-	return await ep.exec(data, user, token, ctx.file).catch((e: Error) => {
+	return await ep.exec(data, user, token, ctx!.file).catch((e: Error) => {
 		if (e instanceof ApiError) {
 			throw e;
 		} else {
