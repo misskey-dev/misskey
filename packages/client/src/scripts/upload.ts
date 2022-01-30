@@ -14,17 +14,22 @@ type Uploading = {
 export const uploads = ref<Uploading[]>([]);
 
 const compressTypeMap = {
-	'image/jpeg': { quality: 0.85, mimeType: 'image/webp'},
-	'image/webp': { quality: 0.85, mimeType: 'image/webp'},
-	'image/png': { quality: 1, mimeType: 'image/webp'},
-	'image/svg+xml': { quality: 1, mimeType: 'image/webp'},
+	'image/jpeg': { quality: 0.85, mimeType: 'image/jpeg'},
+	'image/webp': { quality: 0.85, mimeType: 'image/jpeg'},
+	'image/png': { quality: 1, mimeType: 'image/png'},
+	'image/svg+xml': { quality: 1, mimeType: 'image/png'},
 } as const;
 
 const mimeTypeMap = {
 	'image/webp': 'webp',
 } as const;
 
-export function uploadFile(file: File, folder?: any, name?: string, keepOriginal: boolean = defaultStore.state.keepOriginalUploading): Promise<Misskey.entities.DriveFile> {
+export function uploadFile(
+	file: File,
+	folder?: any,
+	name?: string,
+	keepOriginal: boolean = defaultStore.state.keepOriginalUploading
+): Promise<Misskey.entities.DriveFile> {
 	if (folder && typeof folder == 'object') folder = folder.id;
 
 	return new Promise((resolve, reject) => {
