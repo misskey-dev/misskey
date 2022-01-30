@@ -186,11 +186,10 @@ async function fetchIconUrl(instance: Instance, doc: DOMWindow['document'] | nul
 	if (doc) {
 		const url = 'https://' + instance.host;
 
-		const hrefAppleTouchIconPrecomposed = doc.querySelector('link[rel="apple-touch-icon-precomposed"]')?.getAttribute('href');
-		const hrefAppleTouchIcon = doc.querySelector('link[rel="apple-touch-icon"]')?.getAttribute('href');
-		const hrefIcon = doc.querySelector('link[rel="icon"]')?.getAttribute('href');
-
-		const href = hrefAppleTouchIconPrecomposed || hrefAppleTouchIcon || hrefIcon;
+		const href = Array.from(doc.getElementsByTagName('link'))
+			.reverse()
+			.find(link => link.relList.contains('apple-touch-icon-precomposed') || link.relList.contains('apple-touch-icon') || link.relList.contains('icon'))
+			?.href;
 
 		if (href) {
 			return (new URL(href, url)).href;
