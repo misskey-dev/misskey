@@ -22,6 +22,8 @@ const compressTypeMap = {
 
 const mimeTypeMap = {
 	'image/webp': 'webp',
+	'image/jpeg': 'jpg',
+	'image/png': 'png',
 } as const;
 
 export function uploadFile(
