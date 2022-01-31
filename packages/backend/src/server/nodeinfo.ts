@@ -29,8 +29,8 @@ const nodeinfo2 = async () => {
 	] = await Promise.all([
 		fetchMeta(true),
 		Users.count({ where: { host: null } }),
-		Users.count({ where: { host: null, updatedAt: MoreThan(new Date(now - 15552000000)) } }),
-		Users.count({ where: { host: null, updatedAt: MoreThan(new Date(now - 2592000000)) } }),
+		Users.count({ where: { host: null, lastActiveDate: MoreThan(new Date(now - 15552000000)) } }),
+		Users.count({ where: { host: null, lastActiveDate: MoreThan(new Date(now - 2592000000)) } }),
 		Notes.count({ where: { userHost: null, replyId: null } }),
 		Notes.count({ where: { userHost: null, replyId: Not(IsNull()) } }),
 	]);
