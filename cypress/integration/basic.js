@@ -9,6 +9,8 @@ describe('Before setup instance', () => {
 		// テスト終了直前にページ遷移するようなテストケース(例えばアカウント作成)だと、たぶんCypressのバグでブラウザの内容が次のテストケースに引き継がれてしまう(例えばアカウントが作成し終わった段階からテストが始まる)。
 		// waitを入れることでそれを防止できる
 		cy.wait(1000);
+		cy.window().then(window => window._signout());
+		cy.wait(1000);
 	});
 
   it('successfully loads', () => {
@@ -48,6 +50,7 @@ describe('After setup instance', () => {
 		// waitを入れることでそれを防止できる
 		cy.wait(1000);
 		cy.window().then(window => window._signout());
+		cy.wait(1000);
 	});
 
   it('successfully loads', () => {
