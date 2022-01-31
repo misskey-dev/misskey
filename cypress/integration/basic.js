@@ -176,7 +176,7 @@ describe('After user singed in', () => {
 		cy.contains('Hello, Misskey!');
   });
 
-	it('signout (function call)', () => {
+	it('signout (function invoke)', () => {
     cy.visit('/');
 
 		cy.window().invoke('_signout');
