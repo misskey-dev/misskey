@@ -37,7 +37,7 @@ module.exports = {
 			]
 		}],
 		*/
-		'eqeqeq': ['error', { 'null': 'ignore' }],
+		'eqeqeq': ['error', 'always', { 'null': 'ignore' }],
 		'no-multi-spaces': ['error'],
 		'no-var': ['error'],
 		'prefer-arrow-callback': ['error'],
