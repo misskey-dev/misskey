@@ -117,8 +117,8 @@ describe('After user signup', () => {
 
 		cy.wait(1000);
 
-		cy.window().then(window => window._signout).should(_function => {
-			if (typeof _signout !== 'function') throw new Error('window._signout is not a function');
+		cy.window().then(window => window._signout).should(_signout => {
+			if (typeof _signout !== 'function') throw new Error('window._signout is not a function', _signout);
 		});
 		cy.window().then(window => window._signout());
 
