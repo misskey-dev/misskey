@@ -153,7 +153,7 @@ export default defineComponent({
 				showing,
 				reaction: props.notification.reaction ? props.notification.reaction.replace(/^:(\w+):$/, ':$1@.:') : props.notification.reaction,
 				emojis: props.notification.note.emojis,
-				source: reactionRef.value.$el,
+				targetElement: reactionRef.value.$el,
 			}, {}, 'closed');
 		});
 
