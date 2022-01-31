@@ -31,9 +31,9 @@
 	<div v-if="isMobile" class="buttons">
 		<button class="button nav _button" @click="drawerMenuShowing = true"><i class="fas fa-bars"></i><span v-if="menuIndicated" class="indicator"><i class="fas fa-circle"></i></span></button>
 		<button class="button home _button" @click="$route.name === 'index' ? top() : $router.push('/')"><i class="fas fa-home"></i></button>
-		<button class="button notifications _button" @click="$router.push('/my/notifications')"><i class="fas fa-bell"></i><span v-if="$i.hasUnreadNotification" class="indicator"><i class="fas fa-circle"></i></span></button>
+		<button class="button notifications _button" @click="$router.push('/my/notifications')"><i class="fas fa-bell"></i><span v-if="$i?.hasUnreadNotification" class="indicator"><i class="fas fa-circle"></i></span></button>
 		<button class="button widget _button" @click="widgetsShowing = true"><i class="fas fa-layer-group"></i></button>
-		<button class="button post _button" @click="post()"><i class="fas fa-pencil-alt"></i></button>
+		<button class="button post _button" @click="os.post()"><i class="fas fa-pencil-alt"></i></button>
 	</div>
 
 	<transition :name="$store.state.animation ? 'menuDrawer-back' : ''">
@@ -78,6 +78,7 @@ import * as EventEmitter from 'eventemitter3';
 import { menuDef } from '@/menu';
 import { useRoute } from 'vue-router';
 import { i18n } from '@/i18n';
+import { $i } from '@/account';
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
 const XSidebar = defineAsyncComponent(() => import('@/ui/_common_/sidebar.vue'));
 
@@ -91,7 +92,7 @@ window.addEventListener('resize', () => {
 });
 
 const pageInfo = ref();
-const widgetsEl = ref<HTMLElement>();
+const widgetsEl = $ref<HTMLElement>();
 const widgetsShowing = ref(false);
 
 const sideViewController = new EventEmitter();
@@ -177,12 +178,21 @@ const onContextmenu = (ev) => {
 };
 
 const attachSticky = (el) => {
-	const sticky = new StickySidebar(widgetsEl.value);
+	const sticky = new StickySidebar(widgetsEl);
 	window.addEventListener('scroll', () => {
 		sticky.calc(window.scrollY);
 	}, { passive: true });
 };
 
+function top() {
+	window.scroll({ top: 0, behavior: 'smooth' });
+}
+
+function onTransition() {
+	if (window._scroll) window._scroll();
+}
+
+const wallpaper = localStorage.getItem('wallpaper') != null;
 </script>
 
 <style lang="scss" scoped>
