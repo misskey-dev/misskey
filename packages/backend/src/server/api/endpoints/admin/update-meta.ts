@@ -296,6 +296,10 @@ export const meta = {
 		objectStorageS3ForcePathStyle: {
 			validator: $.optional.bool,
 		},
+
+		additionalFieldLimit: {
+			validator: $.optional.number,
+		}
 	},
 } as const;
 
@@ -589,6 +593,10 @@ export default define(meta, async (ps, me) => {
 
 	if (ps.deeplIsPro !== undefined) {
 		set.deeplIsPro = ps.deeplIsPro;
+	}
+
+	if (ps.additionalFieldLimit !== undefined && ps.additionalFieldLimit > 0) {
+		set.additionalFieldLimit = ps.additionalFieldLimit;
 	}
 
 	await getConnection().transaction(async transactionalEntityManager => {

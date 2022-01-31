@@ -73,14 +73,7 @@ const profile = reactive({
 });
 
 const additionalFields = reactive({
-	fieldName0: $i.fields[0] ? $i.fields[0].name : null,
-	fieldValue0: $i.fields[0] ? $i.fields[0].value : null,
-	fieldName1: $i.fields[1] ? $i.fields[1].name : null,
-	fieldValue1: $i.fields[1] ? $i.fields[1].value : null,
-	fieldName2: $i.fields[2] ? $i.fields[2].name : null,
-	fieldValue2: $i.fields[2] ? $i.fields[2].value : null,
-	fieldName3: $i.fields[3] ? $i.fields[3].name : null,
-	fieldValue3: $i.fields[3] ? $i.fields[3].value : null,
+	fields: $i.fields,
 });
 
 watch(() => profile, () => {
@@ -124,68 +117,32 @@ function changeBanner(ev) {
 }
 
 async function editMetadata() {
-	const { canceled, result } = await os.form(i18n.ts._profile.metadata, {
-		fieldName0: {
+	const meta = await os.api('meta');
+	let formData = {};
+	for (let i = 0; i < meta.additionalFieldLimit; i++) {
+		formData[`fieldName${i}`] = {
 			type: 'string',
-			label: i18n.ts._profile.metadataLabel + ' 1',
-			default: additionalFields.fieldName0,
-		},
-		fieldValue0: {
+			label: i18n.ts._profile.metadataLabel + ` ${i+1}`,
+			default: additionalFields.fields[i] ?? '',
+		};
+		formData[`fieldValue${i}`] = {
 			type: 'string',
-			label: i18n.ts._profile.metadataContent + ' 1',
-			default: additionalFields.fieldValue0,
-		},
-		fieldName1: {
-			type: 'string',
-			label: i18n.ts._profile.metadataLabel + ' 2',
-			default: additionalFields.fieldName1,
-		},
-		fieldValue1: {
-			type: 'string',
-			label: i18n.ts._profile.metadataContent + ' 2',
-			default: additionalFields.fieldValue1,
-		},
-		fieldName2: {
-			type: 'string',
-			label: i18n.ts._profile.metadataLabel + ' 3',
-			default: additionalFields.fieldName2,
-		},
-		fieldValue2: {
-			type: 'string',
-			label: i18n.ts._profile.metadataContent + ' 3',
-			default: additionalFields.fieldValue2,
-		},
-		fieldName3: {
-			type: 'string',
-			label: i18n.ts._profile.metadataLabel + ' 4',
-			default: additionalFields.fieldName3,
-		},
-		fieldValue3: {
-			type: 'string',
-			label: i18n.ts._profile.metadataContent + ' 4',
-			default: additionalFields.fieldValue3,
-		},
-	});
+			label: i18n.ts._profile.metadataContent + ` ${i+1}`,
+			default: additionalFields.fields[i] ?? '',
+		};
+	}
+	const { canceled, result } = await os.form(i18n.ts._profile.metadata, formData);
 	if (canceled) return;
 
-	additionalFields.fieldName0 = result.fieldName0;
-	additionalFields.fieldValue0 = result.fieldValue0;
-	additionalFields.fieldName1 = result.fieldName1;
-	additionalFields.fieldValue1 = result.fieldValue1;
-	additionalFields.fieldName2 = result.fieldName2;
-	additionalFields.fieldValue2 = result.fieldValue2;
-	additionalFields.fieldName3 = result.fieldName3;
-	additionalFields.fieldValue3 = result.fieldValue3;
-
-	const fields = [
-		{ name: additionalFields.fieldName0, value: additionalFields.fieldValue0 },
-		{ name: additionalFields.fieldName1, value: additionalFields.fieldValue1 },
-		{ name: additionalFields.fieldName2, value: additionalFields.fieldValue2 },
-		{ name: additionalFields.fieldName3, value: additionalFields.fieldValue3 },
-	];
+	for (let i = 0; i < meta.additionalFieldLimit; i++) {
+		additionalFields.fields[i] = {
+			name: result[`fieldName${i}`],
+			value: result[`fieldValue${i}`],
+		};
+	}
 
 	os.api('i/update', {
-		fields,
+		additionalFields.fields,
 	}).then(i => {
 		os.success();
 	}).catch(err => {

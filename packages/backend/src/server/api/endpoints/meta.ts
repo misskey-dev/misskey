@@ -444,6 +444,10 @@ export const meta = {
 				type: 'boolean',
 				optional: true, nullable: false,
 			},
+			additionalFieldLimit: {
+				type: 'number',
+				optional: true, nullable: false,
+			}
 		},
 	},
 } as const;
@@ -506,6 +510,7 @@ export default define(meta, async (ps, me) => {
 		backgroundImageUrl: instance.backgroundImageUrl,
 		logoImageUrl: instance.logoImageUrl,
 		maxNoteTextLength: Math.min(instance.maxNoteTextLength, DB_MAX_NOTE_TEXT_LENGTH),
+		additionalFieldLimit: instance.additionalFieldLimit,
 		emojis: await Emojis.packMany(emojis),
 		ads: ads.map(ad => ({
 			id: ad.id,

@@ -15,6 +15,7 @@ import { User } from '@/models/entities/user';
 import { UserProfile } from '@/models/entities/user-profile';
 import { notificationTypes } from '@/types';
 import { normalizeForSearch } from '@/misc/normalize-for-search';
+import { fetchMeta } from '@/misc/fetch-meta';
 
 export const meta = {
 	tags: ['account'],
@@ -53,7 +54,7 @@ export const meta = {
 		},
 
 		fields: {
-			validator: $.optional.arr($.object()).range(1, 4),
+			validator: $.optional.arr($.object()),
 		},
 
 		isLocked: {
@@ -163,6 +164,12 @@ export const meta = {
 			code: 'NO_SUCH_PAGE',
 			id: '8e01b590-7eb9-431b-a239-860e086c408e',
 		},
+
+		tooManyFields: {
+			message: 'Too many additional fields.',
+			code: 'TOO_MANY_FIELDS',
+			id: '647a035e-a9c0-40eb-a323-e784986300b9',
+		}
 	},
 
 	res: {
@@ -248,6 +255,10 @@ export default define(meta, async (ps, _user, token) => {
 	}
 
 	if (ps.fields) {
+		const instancemeta = await fetchMeta();
+		if (ps.fields.length > instancemeta.additionalFieldLimit) {
+			throw new ApiError(meta.errors.tooManyFields);
+		}
 		profileUpdates.fields = ps.fields
 			.filter(x => typeof x.name === 'string' && x.name !== '' && typeof x.value === 'string' && x.value !== '')
 			.map(x => {

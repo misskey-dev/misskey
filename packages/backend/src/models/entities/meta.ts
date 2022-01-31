@@ -420,4 +420,9 @@ export class Meta {
 		default: true,
 	})
 	public objectStorageS3ForcePathStyle: boolean;
+
+	@Column('smallint', {
+		default: 4,
+	})
+	public additionalFieldLimit: number;
 }
