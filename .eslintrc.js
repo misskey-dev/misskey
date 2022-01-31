@@ -36,7 +36,7 @@ module.exports = {
 		'space-before-blocks': ['error', 'always'],
 		'object-curly-spacing': ['error', 'always'],
 		'nonblock-statement-body-position': ['error', 'beside'],
-		'eqeqeq': ['error', { 'null': 'ignore' }],
+		'eqeqeq': ['error', 'always', { 'null': 'ignore' }],
 		'no-multiple-empty-lines': ['error', { 'max': 1 }],
 		'no-multi-spaces': ['error'],
 		'no-var': ['error'],
