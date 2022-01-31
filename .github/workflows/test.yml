@@ -111,8 +111,3 @@ jobs:
       with:
         name: ${{ matrix.browser }}-cypress-screenshots
         path: cypress/screenshots
-    - uses: actions/upload-artifact@v2
-      if: always()
-      with:
-        name: ${{ matrix.browser }}-cypress-videos
-        path: cypress/videos
