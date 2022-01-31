@@ -401,7 +401,7 @@ function setVisibility() {
 }
 
 function pushVisibleUser(user) {
-	if (!visibleUsers.some(u => u.username == user.username && u.host == user.host)) {
+	if (!visibleUsers.some(u => u.username === user.username && u.host === user.host)) {
 		visibleUsers.push(user);
 	}
 }
