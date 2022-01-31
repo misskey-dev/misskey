@@ -97,7 +97,7 @@ describe('After user signup', () => {
     cy.visit('/');
   });
 
-	it('signin and signout', () => {
+	it('signin', () => {
 		cy.visit('/');
 
 		cy.intercept('POST', '/api/signin').as('signin');
@@ -178,8 +178,9 @@ describe('After user singed in', () => {
 
 	it('signout (function invoke)', () => {
     cy.visit('/');
-
+		cy.wait(100);
 		cy.window().invoke('_signout');
+		cy.wait(100);
 		cy.window().then(window => window.localStorage.getItem('account')).should('eq', null)
 	});
 });
