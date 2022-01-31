@@ -64,7 +64,7 @@
 </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { defineComponent, defineAsyncComponent, provide, onMounted, computed, ref, watch } from 'vue';
 import { instanceName } from '@/config';
 import { StickySidebar } from '@/scripts/sticky-sidebar';
@@ -83,137 +83,105 @@ import { i18n } from '@/i18n';
 const DESKTOP_THRESHOLD = 1100;
 const MOBILE_THRESHOLD = 500;
 
-export default defineComponent({
-	components: {
-		XCommon,
-		XSidebar,
-		XDrawerMenu,
-		XWidgets: defineAsyncComponent(() => import('./universal.widgets.vue')),
-		XSideView, // NOTE: dynamic importするとAsyncComponentWrapperが間に入るせいでref取得できなくて面倒になる
-	},
-
-	setup() {
-		const isDesktop = ref(window.innerWidth >= DESKTOP_THRESHOLD);
-		const isMobile = ref(window.innerWidth <= MOBILE_THRESHOLD);
-		window.addEventListener('resize', () => {
-			isMobile.value = window.innerWidth <= MOBILE_THRESHOLD;
-		});
-
-		const pageInfo = ref();
-		const widgetsEl = ref<HTMLElement>();
-		const widgetsShowing = ref(false);
-
-		const sideViewController = new EventEmitter();
-		let sideEl = $ref<InstanceType<typeof XSideView>>();
-
-		provide('sideViewHook', isDesktop.value ? (url) => {
-			sideViewController.emit('navigate', url);
-		} : null);
-
-		const menuIndicated = computed(() => {
-			for (const def in menuDef) {
-				if (def === 'notifications') continue; // 通知は下にボタンとして表示されてるから
-				if (menuDef[def].indicated) return true;
-			}
-			return false;
-		});
-
-		const drawerMenuShowing = ref(false);
-
-		const route = useRoute();
-		watch(route, () => {
-			drawerMenuShowing.value = false;
-		});
-
-		document.documentElement.style.overflowY = 'scroll';
-
-		if (defaultStore.state.widgets.length === 0) {
-			defaultStore.set('widgets', [{
-				name: 'calendar',
-				id: 'a', place: 'right', data: {}
-			}, {
-				name: 'notifications',
-				id: 'b', place: 'right', data: {}
-			}, {
-				name: 'trends',
-				id: 'c', place: 'right', data: {}
-			}]);
-		}
-
-		onMounted(() => {
-			if (!isDesktop.value) {
-				window.addEventListener('resize', () => {
-					if (window.innerWidth >= DESKTOP_THRESHOLD) isDesktop.value = true;
-				}, { passive: true });
-			}
-		});
-
-		const changePage = (page) => {
-			if (page == null) return;
-			if (page[symbols.PAGE_INFO]) {
-				pageInfo.value = page[symbols.PAGE_INFO];
-				document.title = `${pageInfo.value.title} | ${instanceName}`;
-			}
-		};
-
-		const onContextmenu = (ev) => {
-			const isLink = (el: HTMLElement) => {
-				if (el.tagName === 'A') return true;
-				if (el.parentElement) {
-					return isLink(el.parentElement);
-				}
-			};
-			if (isLink(ev.target)) return;
-			if (['INPUT', 'TEXTAREA', 'IMG', 'VIDEO', 'CANVAS'].includes(ev.target.tagName) || ev.target.attributes['contenteditable']) return;
-			if (window.getSelection()?.toString() !== '') return;
-			const path = route.path;
-			os.contextMenu([{
-				type: 'label',
-				text: path,
-			}, {
-				icon: 'fas fa-columns',
-				text: i18n.ts.openInSideView,
-				action: () => {
-					sideEl.navigate(path);
-				}
-			}, {
-				icon: 'fas fa-window-maximize',
-				text: i18n.ts.openInWindow,
-				action: () => {
-					os.pageWindow(path);
-				}
-			}], ev);
-		};
-
-		const attachSticky = (el) => {
-			const sticky = new StickySidebar(widgetsEl.value);
-			window.addEventListener('scroll', () => {
-				sticky.calc(window.scrollY);
-			}, { passive: true });
-		};
-
-		return {
-			pageInfo,
-			isDesktop,
-			isMobile,
-			widgetsEl,
-			widgetsShowing,
-			drawerMenuShowing,
-			menuIndicated,
-			wallpaper: localStorage.getItem('wallpaper') != null,
-			changePage,
-			top: () => {
-				window.scroll({ top: 0, behavior: 'smooth' });
-			},
-			onTransition: () => {
-				if (window._scroll) window._scroll();
-			},
-			post: os.post,
-			onContextmenu,
-			attachSticky,
-		};
-	},
+const isDesktop = ref(window.innerWidth >= DESKTOP_THRESHOLD);
+const isMobile = ref(window.innerWidth <= MOBILE_THRESHOLD);
+window.addEventListener('resize', () => {
+	isMobile.value = window.innerWidth <= MOBILE_THRESHOLD;
 });
+
+const pageInfo = ref();
+const widgetsEl = ref<HTMLElement>();
+const widgetsShowing = ref(false);
+
+const sideViewController = new EventEmitter();
+let sideEl = $ref<InstanceType<typeof XSideView>>();
+
+provide('sideViewHook', isDesktop.value ? (url) => {
+	sideViewController.emit('navigate', url);
+} : null);
+
+const menuIndicated = computed(() => {
+	for (const def in menuDef) {
+		if (def === 'notifications') continue; // 通知は下にボタンとして表示されてるから
+		if (menuDef[def].indicated) return true;
+	}
+	return false;
+});
+
+const drawerMenuShowing = ref(false);
+
+const route = useRoute();
+watch(route, () => {
+	drawerMenuShowing.value = false;
+});
+
+document.documentElement.style.overflowY = 'scroll';
+
+if (defaultStore.state.widgets.length === 0) {
+	defaultStore.set('widgets', [{
+		name: 'calendar',
+		id: 'a', place: 'right', data: {}
+	}, {
+		name: 'notifications',
+		id: 'b', place: 'right', data: {}
+	}, {
+		name: 'trends',
+		id: 'c', place: 'right', data: {}
+	}]);
+}
+
+onMounted(() => {
+	if (!isDesktop.value) {
+		window.addEventListener('resize', () => {
+			if (window.innerWidth >= DESKTOP_THRESHOLD) isDesktop.value = true;
+		}, { passive: true });
+	}
+});
+
+const changePage = (page) => {
+	if (page == null) return;
+	if (page[symbols.PAGE_INFO]) {
+		pageInfo.value = page[symbols.PAGE_INFO];
+		document.title = `${pageInfo.value.title} | ${instanceName}`;
+	}
+};
+
+const onContextmenu = (ev) => {
+	const isLink = (el: HTMLElement) => {
+		if (el.tagName === 'A') return true;
+		if (el.parentElement) {
+			return isLink(el.parentElement);
+		}
+	};
+	if (isLink(ev.target)) return;
+	if (['INPUT', 'TEXTAREA', 'IMG', 'VIDEO', 'CANVAS'].includes(ev.target.tagName) || ev.target.attributes['contenteditable']) return;
+	if (window.getSelection()?.toString() !== '') return;
+	const path = route.path;
+	os.contextMenu([{
+		type: 'label',
+		text: path,
+	}, {
+		icon: 'fas fa-columns',
+		text: i18n.ts.openInSideView,
+		action: () => {
+			sideEl.navigate(path);
+		}
+	}, {
+		icon: 'fas fa-window-maximize',
+		text: i18n.ts.openInWindow,
+		action: () => {
+			os.pageWindow(path);
+		}
+	}], ev);
+};
+
+const attachSticky = (el) => {
+	const sticky = new StickySidebar(widgetsEl.value);
+	window.addEventListener('scroll', () => {
+		sticky.calc(window.scrollY);
+	}, { passive: true });
+};
+
 </script>
 
 <style lang="scss" scoped>
