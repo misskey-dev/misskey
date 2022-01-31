@@ -1,12 +1,12 @@
 <template>
 <div
 	v-if="!muted"
-	v-show="!isDeleted"
+	v-show="!appearNote.deletedAt"
 	ref="el"
 	v-hotkey="keymap"
 	v-size="{ max: [500, 450, 350, 300] }"
 	class="tkcbzcuz"
-	:tabindex="!isDeleted ? '-1' : null"
+	:tabindex="!appearNote.deletedAt ? '-1' : null"
 	:class="{ renote: isRenote }"
 >
 	<MkNoteSub v-if="appearNote.reply" :note="appearNote.reply" class="reply-to"/>
@@ -157,7 +157,6 @@ const collapsed = ref(appearNote.cw == null && appearNote.text != null && (
 	(appearNote.text.split('\n').length > 9) ||
 	(appearNote.text.length > 500)
 ));
-const isDeleted = ref(false);
 const muted = ref(checkWordMute(appearNote, $i, defaultStore.state.mutedWords));
 const translation = ref(null);
 const translating = ref(false);
@@ -245,7 +244,7 @@ function showRenoteMenu(viaKeyboard = false): void {
 			os.api('notes/delete', {
 				noteId: props.note.id
 			});
-			isDeleted.value = true;
+			appearNote.deletedAt = new Date();
 		}
 	}], renoteTime.value, {
 		viaKeyboard: viaKeyboard
@@ -272,7 +271,7 @@ function readPromo() {
 	os.api('promo/read', {
 		noteId: appearNote.id
 	});
-	isDeleted.value = true;
+	appearNote.deletedAt = new Date();
 }
 </script>
 

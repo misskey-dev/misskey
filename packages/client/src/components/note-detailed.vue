@@ -1,12 +1,12 @@
 <template>
 <div
 	v-if="!muted"
-	v-show="!isDeleted"
+	v-show="!appearNote.deletedAt"
 	v-hotkey="keymap"
 	v-size="{ max: [500, 450, 350, 300] }"
 	ref="el"
 	class="lxwezrsl _block"
-	:tabindex="!isDeleted ? '-1' : null"
+	:tabindex="!appearNote.deletedAt ? '-1' : null"
 	:class="{ renote: isRenote }"
 >
 	<MkNoteSub v-for="note in conversation" :key="note.id" class="reply-to-more" :note="note"/>
@@ -169,7 +169,6 @@ const reactButton = ref<HTMLElement>();
 let appearNote = $ref(isRenote ? props.note.renote as misskey.entities.Note : props.note);
 const isMyRenote = $i && ($i.id === props.note.userId);
 const showContent = ref(false);
-const isDeleted = ref(false);
 const muted = ref(checkWordMute(appearNote, $i, defaultStore.state.mutedWords));
 const translation = ref(null);
 const translating = ref(false);
@@ -257,7 +256,7 @@ function showRenoteMenu(viaKeyboard = false): void {
 			os.api('notes/delete', {
 				noteId: props.note.id
 			});
-			isDeleted.value = true;
+			appearNote.deletedAt = new Date();
 		}
 	}], renoteTime.value, {
 		viaKeyboard: viaKeyboard
