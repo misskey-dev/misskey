@@ -108,19 +108,6 @@ describe('After user signup', () => {
 		cy.get('[data-cy-signin-password] input').type('alice1234{enter}');
 
 		cy.wait('@signin');
-
-		cy.log('Signin OK');
-
-		cy.wait(1000);
-
-		cy.window().then(window => window._signout).then(_signout => {
-			expect(_signout).to.be.a('function');
-		});
-
-		cy.window().invoke('_signout');
-		cy.window().then(window => window.localStorage.getItem('account')).should('eq', null)
-
-		cy.log('Signout OK');
   });
 
 	it('suspend', function() {
@@ -188,6 +175,13 @@ describe('After user singed in', () => {
 
 		cy.contains('Hello, Misskey!');
   });
+
+	it('signout (function call)', () => {
+    cy.visit('/');
+
+		cy.window().invoke('_signout');
+		cy.window().then(window => window.localStorage.getItem('account')).should('eq', null)
+	});
 });
 
 // TODO: 投稿フォームの公開範囲指定のテスト
