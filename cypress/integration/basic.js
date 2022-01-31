@@ -94,8 +94,6 @@ describe('After user signup', () => {
 
 	afterEach(() => {
 		cy.wait(1000);
-		cy.window().invoke('_signout');
-		cy.wait(1000);
 	});
 
   it('successfully loads', () => {
