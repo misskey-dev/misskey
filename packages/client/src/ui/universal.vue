@@ -74,7 +74,6 @@ import XSideView from './classic.side.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { defaultStore } from '@/store';
-import * as EventEmitter from 'eventemitter3';
 import { menuDef } from '@/menu';
 import { useRoute } from 'vue-router';
 import { i18n } from '@/i18n';
@@ -95,11 +94,10 @@ const pageInfo = ref();
 const widgetsEl = $ref<HTMLElement>();
 const widgetsShowing = ref(false);
 
-const sideViewController = new EventEmitter();
 let sideEl = $ref<InstanceType<typeof XSideView>>();
 
 provide('sideViewHook', isDesktop.value ? (url) => {
-	sideViewController.emit('navigate', url);
+	sideEl.navigate(url);
 } : null);
 
 const menuIndicated = computed(() => {
