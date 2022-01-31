@@ -1,5 +1,5 @@
 <template>
-<MkTooltip ref="tooltip" :source="source" :max-width="250" @closed="emit('closed')">
+<MkTooltip ref="tooltip" :target-element="targetElement" :max-width="250" @closed="emit('closed')">
 	<div class="beaffaef">
 		<div v-for="u in users" :key="u.id" class="user">
 			<MkAvatar class="avatar" :user="u"/>
@@ -17,11 +17,11 @@ import MkTooltip from './ui/tooltip.vue';
 const props = defineProps<{
 	users: any[]; // TODO
 	count: number;
-	source: any; // TODO
+	targetElement: HTMLElement;
 }>();
 
 const emit = defineEmits<{
-	(e: 'closed'): void;
+	(ev: 'closed'): void;
 }>();
 </script>
 
