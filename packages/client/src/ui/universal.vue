@@ -20,7 +20,7 @@
 		</main>
 	</div>
 
-	<XSideView v-if="isDesktop" ref="side" class="side"/>
+	<XSideView v-if="isDesktop" ref="sideEl" class="side"/>
 
 	<div v-if="isDesktop" ref="widgetsEl" class="widgets">
 		<XWidgets @mounted="attachSticky"/>
@@ -104,6 +104,7 @@ export default defineComponent({
 		const widgetsShowing = ref(false);
 
 		const sideViewController = new EventEmitter();
+		let sideEl = $ref<InstanceType<typeof XSideView>>();
 
 		provide('sideViewHook', isDesktop.value ? (url) => {
 			sideViewController.emit('navigate', url);
@@ -164,7 +165,7 @@ export default defineComponent({
 			};
 			if (isLink(ev.target)) return;
 			if (['INPUT', 'TEXTAREA', 'IMG', 'VIDEO', 'CANVAS'].includes(ev.target.tagName) || ev.target.attributes['contenteditable']) return;
-			if (window.getSelection().toString() !== '') return;
+			if (window.getSelection()?.toString() !== '') return;
 			const path = route.path;
 			os.contextMenu([{
 				type: 'label',
@@ -173,7 +174,7 @@ export default defineComponent({
 				icon: 'fas fa-columns',
 				text: i18n.ts.openInSideView,
 				action: () => {
-					this.$refs.side.navigate(path);
+					sideEl.navigate(path);
 				}
 			}, {
 				icon: 'fas fa-window-maximize',
