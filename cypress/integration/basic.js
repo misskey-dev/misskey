@@ -47,6 +47,7 @@ describe('After setup instance', () => {
 		// テスト終了直前にページ遷移するようなテストケース(例えばアカウント作成)だと、たぶんCypressのバグでブラウザの内容が次のテストケースに引き継がれてしまう(例えばアカウントが作成し終わった段階からテストが始まる)。
 		// waitを入れることでそれを防止できる
 		cy.wait(1000);
+		cy.window().then(window => window._signout());
 	});
 
   it('successfully loads', () => {
@@ -97,7 +98,7 @@ describe('After user signup', () => {
     cy.visit('/');
   });
 
-	it('signin', () => {
+	it('signin and signout', () => {
 		cy.visit('/');
 
 		cy.intercept('POST', '/api/signin').as('signin');
@@ -108,6 +109,16 @@ describe('After user signup', () => {
 		cy.get('[data-cy-signin-password] input').type('alice1234{enter}');
 
 		cy.wait('@signin');
+
+		cy.log('Signin OK');
+
+		cy.wait(1000);
+
+		cy.window().then(window => window._signout());
+
+		cy.window().then(window => window.localStorage.get('account')).should('eq', null)
+
+		cy.log('Signout OK');
   });
 
 	it('suspend', function() {
@@ -160,6 +171,7 @@ describe('After user singed in', () => {
 		// テスト終了直前にページ遷移するようなテストケース(例えばアカウント作成)だと、たぶんCypressのバグでブラウザの内容が次のテストケースに引き継がれてしまう(例えばアカウントが作成し終わった段階からテストが始まる)。
 		// waitを入れることでそれを防止できる
 		cy.wait(1000);
+		cy.window().then(window => window._signout());
 	});
 
   it('successfully loads', () => {

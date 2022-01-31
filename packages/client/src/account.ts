@@ -19,6 +19,8 @@ export const $i = data ? reactive(JSON.parse(data) as Account) : null;
 export const iAmModerator = $i != null && ($i.isAdmin || $i.isModerator);
 
 export async function signout() {
+	if (!$i) return;
+
 	waiting();
 	localStorage.removeItem('account');
 
@@ -60,6 +62,8 @@ export async function signout() {
 	if (accounts.length > 0) login(accounts[0].token);
 	else unisonReload('/');
 }
+
+if (_DEV_) window._signout = signout;
 
 export async function getAccounts(): Promise<{ id: Account['id'], token: Account['token'] }[]> {
 	return (await get('accounts')) || [];
