@@ -1,3 +1,4 @@
 {
-	"baseUrl": "http://localhost:61812"
+	"baseUrl": "http://localhost:61812",
+	"video": false,
 }
