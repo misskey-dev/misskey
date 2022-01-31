@@ -51,6 +51,11 @@
 				<template #label>{{ $ts.maxNoteTextLength }}</template>
 			</FormInput>
 
+			<FormInput v-model="additionalFieldLimit" type="number" class="_formBlock">
+				<template #prefix><i class="fas fa-info-circle"></i></template>
+				<template #label>{{ $ts.additionalFieldLimit }}</template>
+			</FormInput>
+
 			<FormSection>
 				<FormSwitch v-model="enableRegistration" class="_formBlock">
 					<template #label>{{ $ts.enableRegistration }}</template>
@@ -194,6 +199,7 @@ export default defineComponent({
 			swPrivateKey: null,
 			deeplAuthKey: '',
 			deeplIsPro: false,
+			additionalFieldLimit: 4,
 		}
 	},
 
@@ -223,6 +229,7 @@ export default defineComponent({
 			this.swPrivateKey = meta.swPrivateKey;
 			this.deeplAuthKey = meta.deeplAuthKey;
 			this.deeplIsPro = meta.deeplIsPro;
+			this.additionalFieldLimit = meta.additionalFieldLimit;
 		},
 
 		save() {
@@ -250,6 +257,7 @@ export default defineComponent({
 				swPrivateKey: this.swPrivateKey,
 				deeplAuthKey: this.deeplAuthKey,
 				deeplIsPro: this.deeplIsPro,
+				additionalFieldLimit: this.additionalFieldLimit,
 			}).then(() => {
 				fetchInstance();
 			});

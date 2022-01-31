@@ -59,6 +59,7 @@ import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
 import { $i } from '@/account';
+import { instance } from '@/instance';
 
 const profile = reactive({
 	name: $i.name,
@@ -117,24 +118,23 @@ function changeBanner(ev) {
 }
 
 async function editMetadata() {
-	const meta = await os.api('meta');
 	let formData = {};
-	for (let i = 0; i < meta.additionalFieldLimit; i++) {
+	for (let i = 0; i < instance.additionalFieldLimit; i++) {
 		formData[`fieldName${i}`] = {
 			type: 'string',
 			label: i18n.ts._profile.metadataLabel + ` ${i+1}`,
-			default: additionalFields.fields[i] ?? '',
+			default: additionalFields.fields[i]?.name ?? '',
 		};
 		formData[`fieldValue${i}`] = {
 			type: 'string',
 			label: i18n.ts._profile.metadataContent + ` ${i+1}`,
-			default: additionalFields.fields[i] ?? '',
+			default: additionalFields.fields[i]?.value ?? '',
 		};
 	}
 	const { canceled, result } = await os.form(i18n.ts._profile.metadata, formData);
 	if (canceled) return;
 
-	for (let i = 0; i < meta.additionalFieldLimit; i++) {
+	for (let i = 0; i < instance.additionalFieldLimit; i++) {
 		additionalFields.fields[i] = {
 			name: result[`fieldName${i}`],
 			value: result[`fieldValue${i}`],
@@ -142,7 +142,7 @@ async function editMetadata() {
 	}
 
 	os.api('i/update', {
-		additionalFields.fields,
+		fields: additionalFields.fields
 	}).then(i => {
 		os.success();
 	}).catch(err => {
