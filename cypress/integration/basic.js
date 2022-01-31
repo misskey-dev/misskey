@@ -9,6 +9,8 @@ describe('Before setup instance', () => {
 		// テスト終了直前にページ遷移するようなテストケース(例えばアカウント作成)だと、たぶんCypressのバグでブラウザの内容が次のテストケースに引き継がれてしまう(例えばアカウントが作成し終わった段階からテストが始まる)。
 		// waitを入れることでそれを防止できる
 		cy.wait(1000);
+		cy.window().invoke('_signout');
+		cy.wait(1000);
 	});
 
   it('successfully loads', () => {
@@ -46,6 +48,8 @@ describe('After setup instance', () => {
 	afterEach(() => {
 		// テスト終了直前にページ遷移するようなテストケース(例えばアカウント作成)だと、たぶんCypressのバグでブラウザの内容が次のテストケースに引き継がれてしまう(例えばアカウントが作成し終わった段階からテストが始まる)。
 		// waitを入れることでそれを防止できる
+		cy.wait(1000);
+		cy.window().invoke('_signout');
 		cy.wait(1000);
 	});
 
@@ -91,13 +95,15 @@ describe('After user signup', () => {
 		// テスト終了直前にページ遷移するようなテストケース(例えばアカウント作成)だと、たぶんCypressのバグでブラウザの内容が次のテストケースに引き継がれてしまう(例えばアカウントが作成し終わった段階からテストが始まる)。
 		// waitを入れることでそれを防止できる
 		cy.wait(1000);
+		cy.window().invoke('_signout');
+		cy.wait(1000);
 	});
 
   it('successfully loads', () => {
     cy.visit('/');
   });
 
-	it('signin', () => {
+	it('signin and signout', () => {
 		cy.visit('/');
 
 		cy.intercept('POST', '/api/signin').as('signin');
@@ -108,6 +114,14 @@ describe('After user signup', () => {
 		cy.get('[data-cy-signin-password] input').type('alice1234{enter}');
 
 		cy.wait('@signin');
+
+		cy.log('Signin OK');
+
+		cy.wait(1000);
+
+		cy.window().invoke('_signout');
+		cy.wait(100);
+		cy.window().then(window => window.localStorage.getItem('account')).should('eq', null)
   });
 
 	it('suspend', function() {
@@ -160,6 +174,8 @@ describe('After user singed in', () => {
 		// テスト終了直前にページ遷移するようなテストケース(例えばアカウント作成)だと、たぶんCypressのバグでブラウザの内容が次のテストケースに引き継がれてしまう(例えばアカウントが作成し終わった段階からテストが始まる)。
 		// waitを入れることでそれを防止できる
 		cy.wait(1000);
+		cy.window().invoke('_signout');
+		cy.wait(1000);
 	});
 
   it('successfully loads', () => {
@@ -175,14 +191,6 @@ describe('After user singed in', () => {
 
 		cy.contains('Hello, Misskey!');
   });
-
-	it('signout (function invoke)', () => {
-    cy.visit('/');
-		cy.wait(100);
-		cy.window().invoke('_signout');
-		cy.wait(100);
-		cy.window().then(window => window.localStorage.getItem('account')).should('eq', null)
-	});
 });
 
 // TODO: 投稿フォームの公開範囲指定のテスト
