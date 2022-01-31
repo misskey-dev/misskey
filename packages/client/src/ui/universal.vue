@@ -65,10 +65,9 @@
 </template>
 
 <script lang="ts" setup>
-import { defineComponent, defineAsyncComponent, provide, onMounted, computed, ref, watch } from 'vue';
+import { defineAsyncComponent, provide, onMounted, computed, ref, watch } from 'vue';
 import { instanceName } from '@/config';
 import { StickySidebar } from '@/scripts/sticky-sidebar';
-import XSidebar from '@/ui/_common_/sidebar.vue';
 import XDrawerMenu from '@/ui/_common_/sidebar-for-mobile.vue';
 import XCommon from './_common_/common.vue';
 import XSideView from './classic.side.vue';
@@ -79,6 +78,8 @@ import * as EventEmitter from 'eventemitter3';
 import { menuDef } from '@/menu';
 import { useRoute } from 'vue-router';
 import { i18n } from '@/i18n';
+const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
+const XSidebar = defineAsyncComponent(() => import('@/ui/_common_/sidebar.vue'));
 
 const DESKTOP_THRESHOLD = 1100;
 const MOBILE_THRESHOLD = 500;
