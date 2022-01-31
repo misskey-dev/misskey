@@ -29,9 +29,10 @@ describe('Before setup instance', () => {
 		cy.get('[data-cy-admin-password] input').type('admin1234');
 		cy.get('[data-cy-admin-ok]').click();
 
-		// なぜか動かない
-		//cy.wait('@signup').should('have.property', 'response.statusCode');
-		cy.wait('@signup');
+		cy.wait('@signup').should(post => {
+			expect(post).to.have.property('response');
+			expect(post.response).to.have.property('statusCode');
+		});
   });
 });
 
