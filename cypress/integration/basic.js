@@ -119,7 +119,7 @@ describe('After user signup', () => {
 
 		cy.window().then(window => window._signout());
 
-		cy.window().then(window => window.localStorage.get('account')).should('eq', null)
+		cy.window().then(window => window.localStorage.getItem('account')).should('eq', null)
 
 		cy.log('Signout OK');
   });
