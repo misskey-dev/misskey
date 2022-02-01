@@ -4967,10 +4967,10 @@ minizlib@^2.0.0, minizlib@^2.1.1:
     minipass "^3.0.0"
     yallist "^4.0.0"
 
-misskey-js@0.0.13:
-  version "0.0.13"
-  resolved "https://registry.yarnpkg.com/misskey-js/-/misskey-js-0.0.13.tgz#03a4e469186e28752d599dc4093519eb64647970"
-  integrity sha512-kBdJdfe281gtykzzsrN3IAxWUQIimzPiJGyKWf863ggWJlWYVPmP9hTFlX2z8oPOaypgVBPEPHyw/jNUdc2DbQ==
+misskey-js@0.0.14:
+  version "0.0.14"
+  resolved "https://registry.yarnpkg.com/misskey-js/-/misskey-js-0.0.14.tgz#1a616bdfbe81c6ee6900219eaf425bb5c714dd4d"
+  integrity sha512-bvLx6U3OwQwqHfp/WKwIVwdvNYAAPk0+YblXyxmSG3dwlzCgBRRLcB8o6bNruUDyJgh3t73pLDcOz3myxcUmww==
   dependencies:
     autobind-decorator "^2.4.0"
     eventemitter3 "^4.0.7"

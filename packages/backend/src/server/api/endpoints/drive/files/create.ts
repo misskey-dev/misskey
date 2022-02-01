@@ -39,15 +39,13 @@ export const meta = {
 		},
 
 		isSensitive: {
-			validator: $.optional.either($.bool, $.str),
+			validator: $.optional.bool,
 			default: false,
-			transform: (v: any): boolean => v === true || v === 'true',
 		},
 
 		force: {
-			validator: $.optional.either($.bool, $.str),
+			validator: $.optional.bool,
 			default: false,
-			transform: (v: any): boolean => v === true || v === 'true',
 		},
 	},
 

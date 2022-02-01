@@ -54,13 +54,13 @@ const charts = ref([]);
 const fetching = ref(true);
 
 const fetch = async () => {
-	const instances = await os.api('federation/instances', {
+	const fetchedInstances = await os.api('federation/instances', {
 		sort: '+lastCommunicatedAt',
 		limit: 5
 	});
-	const charts = await Promise.all(instances.map(i => os.api('charts/instance', { host: i.host, limit: 16, span: 'hour' })));
-	instances.value = instances;
-	charts.value = charts;
+	const fetchedCharts = await Promise.all(fetchedInstances.map(i => os.api('charts/instance', { host: i.host, limit: 16, span: 'hour' })));
+	instances.value = fetchedInstances;
+	charts.value = fetchedCharts;
 	fetching.value = false;
 };
 
