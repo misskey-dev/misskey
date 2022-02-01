@@ -191,9 +191,8 @@ async function fetchIconUrl(instance: Instance, doc: DOMWindow['document'] | nul
 		const links = Array.from(doc.getElementsByTagName('link')).reverse();
 		const href = 
 			['apple-touch-icon-precomposed', 'apple-touch-icon', 'icon'] // 優先順位
-			.map(rel => links.find(link => link.relList.contains(rel)))
-			.find(link => link !== undefined)
-			?.href;
+			.map(rel => links.find(link => link.relList.contains(rel))?.href)
+			.find(link => link);
 
 		if (href) {
 			return (new URL(href, url)).href;
