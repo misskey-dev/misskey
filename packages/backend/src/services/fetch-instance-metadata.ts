@@ -156,6 +156,7 @@ async function fetchFaviconUrl(instance: Instance, doc: DOMWindow['document'] | 
 	const url = 'https://' + instance.host;
 
 	if (doc) {
+		// https://github.com/misskey-dev/misskey/pull/8220#issuecomment-1025104043
 		const href = Array.from(doc.getElementsByTagName('link')).reverse().find(link => link.relList.contains('icon'))?.href;
 
 		if (href) {
@@ -186,6 +187,7 @@ async function fetchIconUrl(instance: Instance, doc: DOMWindow['document'] | nul
 	if (doc) {
 		const url = 'https://' + instance.host;
 
+		// https://github.com/misskey-dev/misskey/pull/8220#issuecomment-1025104043
 		const href = 
 			Array.from(doc.getElementsByTagName('link'))
 			.reverse()
