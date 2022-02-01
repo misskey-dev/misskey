@@ -4,7 +4,7 @@
 		<header class="header" @contextmenu.prevent.stop="onContextmenu">
 			<button v-if="history.length > 0" class="_button" @click="back()"><i class="fas fa-chevron-left"></i></button>
 			<button v-else class="_button" style="pointer-events: none;"><!-- マージンのバランスを取るためのダミー --></button>
-			<span class="title">{{ pageInfo.title }}</span>
+			<span class="title" v-text="pageInfo?.title" />
 			<button class="_button" @click="close()"><i class="fas fa-times"></i></button>
 		</header>
 		<MkHeader class="pageHeader" :info="pageInfo"/>
@@ -13,99 +13,89 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { provide } from 'vue';
 import * as os from '@/os';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
-import { resolve } from '@/router';
-import { url } from '@/config';
+import { resolve, router } from '@/router';
+import { url as root } from '@/config';
 import * as symbols from '@/symbols';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	provide() {
-		return {
-			navHook: (path) => {
-				this.navigate(path);
-			}
-		};
-	},
+provide('navHook', navigate);
 
-	data() {
-		return {
-			path: null,
-			component: null,
-			props: {},
-			pageInfo: null,
-			history: [],
-		};
-	},
+let path: string | null = $ref(null);
+let component: ReturnType<typeof resolve>['component'] | null = $ref(null);
+let props: any | null = $ref(null);
+let pageInfo: any | null = $ref(null);
+let history: string[] = $ref([]);
 
-	computed: {
-		url(): string {
-			return url + this.path;
-		}
-	},
+let url = $computed(() => `${root}${path}`);
 
-	methods: {
-		changePage(page) {
-			if (page == null) return;
-			if (page[symbols.PAGE_INFO]) {
-				this.pageInfo = page[symbols.PAGE_INFO];
-			}
-		},
-
-		navigate(path, record = true) {
-			if (record && this.path) this.history.push(this.path);
-			this.path = path;
-			const { component, props } = resolve(path);
-			this.component = component;
-			this.props = props;
-		},
-
-		back() {
-			this.navigate(this.history.pop(), false);
-		},
-
-		close() {
-			this.path = null;
-			this.component = null;
-			this.props = {};
-		},
-
-		onContextmenu(ev: MouseEvent) {
-			os.contextMenu([{
-				type: 'label',
-				text: this.path,
-			}, {
-				icon: 'fas fa-expand-alt',
-				text: this.$ts.showInPage,
-				action: () => {
-					this.$router.push(this.path);
-					this.close();
-				}
-			}, {
-				icon: 'fas fa-window-maximize',
-				text: this.$ts.openInWindow,
-				action: () => {
-					os.pageWindow(this.path);
-					this.close();
-				}
-			}, null, {
-				icon: 'fas fa-external-link-alt',
-				text: this.$ts.openInNewTab,
-				action: () => {
-					window.open(this.url, '_blank');
-					this.close();
-				}
-			}, {
-				icon: 'fas fa-link',
-				text: this.$ts.copyLink,
-				action: () => {
-					copyToClipboard(this.url);
-				}
-			}], ev);
-		}
+function changePage(page) {
+	if (page == null) return;
+	if (page[symbols.PAGE_INFO]) {
+		pageInfo = page[symbols.PAGE_INFO];
 	}
+}
+
+function navigate(_path: string, record = true) {
+	if (record && path) history.push($$(path).value);
+	path = _path;
+	const resolved = resolve(path);
+	component = resolved.component;
+	props = resolved.props;
+}
+
+function back() {
+	const prev = history.pop();
+	if (prev) navigate(prev, false);
+}
+
+function close() {
+	path = null;
+	component = null;
+	props = {};
+}
+
+function onContextmenu(ev: MouseEvent) {
+	os.contextMenu([{
+		type: 'label',
+		text: path || '',
+	}, {
+		icon: 'fas fa-expand-alt',
+		text: i18n.ts.showInPage,
+		action: () => {
+			if (path) router.push(path);
+			close();
+		}
+	}, {
+		icon: 'fas fa-window-maximize',
+		text: i18n.ts.openInWindow,
+		action: () => {
+			if (path) os.pageWindow(path);
+			close();
+		}
+	}, null, {
+		icon: 'fas fa-external-link-alt',
+		text: i18n.ts.openInNewTab,
+		action: () => {
+			window.open(url, '_blank');
+			close();
+		}
+	}, {
+		icon: 'fas fa-link',
+		text: i18n.ts.copyLink,
+		action: () => {
+			copyToClipboard(url);
+		}
+	}], ev);
+}
+
+defineExpose({
+	navigate,
+	back,
+	close,
 });
 </script>
 

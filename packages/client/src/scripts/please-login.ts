@@ -6,7 +6,7 @@ export function pleaseLogin() {
 	if ($i) return;
 
 	alert({
-		title: i18n.locale.signinRequired,
+		title: i18n.ts.signinRequired,
 		text: null
 	});
 

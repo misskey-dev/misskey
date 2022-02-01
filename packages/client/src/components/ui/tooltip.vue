@@ -1,99 +1,96 @@
 <template>
-<transition :name="$store.state.animation ? 'tooltip' : ''" appear @after-leave="$emit('closed')">
+<transition :name="$store.state.animation ? 'tooltip' : ''" appear @after-leave="emit('closed')">
 	<div v-show="showing" ref="el" class="buebdbiu _acrylic _shadow" :style="{ zIndex, maxWidth: maxWidth + 'px' }">
 		<slot>{{ text }}</slot>
 	</div>
 </transition>
 </template>
 
-<script lang="ts">
-import { defineComponent, nextTick, onMounted, onUnmounted, ref } from 'vue';
+<script lang="ts" setup>
+import { nextTick, onMounted, onUnmounted, ref } from 'vue';
 import * as os from '@/os';
 
-export default defineComponent({
-	props: {
-		showing: {
-			type: Boolean,
-			required: true,
-		},
-		source: {
-			required: true,
-		},
-		text: {
-			type: String,
-			required: false
-		},
-		maxWidth: {
-			type: Number,
-			required: false,
-			default: 250,
-		},
-	},
+const props = withDefaults(defineProps<{
+	showing: boolean;
+	targetElement?: HTMLElement;
+	x?: number;
+	y?: number;
+	text?: string;
+	maxWidth?: number;
+}>(), {
+	maxWidth: 250,
+});
 
-	emits: ['closed'],
+const emit = defineEmits<{
+	(ev: 'closed'): void;
+}>();
 
-	setup(props, context) {
-		const el = ref<HTMLElement>();
-		const zIndex = os.claimZIndex('high');
+const el = ref<HTMLElement>();
+const zIndex = os.claimZIndex('high');
 
-		const setPosition = () => {
-			if (el.value == null) return;
+const setPosition = () => {
+	if (el.value == null) return;
 
-			const rect = props.source.getBoundingClientRect();
+	const contentWidth = el.value.offsetWidth;
+	const contentHeight = el.value.offsetHeight;
 
-			const contentWidth = el.value.offsetWidth;
-			const contentHeight = el.value.offsetHeight;
+	let left: number;
+	let top: number;
 
-			let left = rect.left + window.pageXOffset + (props.source.offsetWidth / 2);
-			let top = rect.top + window.pageYOffset - contentHeight;
+	let rect: DOMRect;
 
-			left -= (el.value.offsetWidth / 2);
+	if (props.targetElement) {
+		rect = props.targetElement.getBoundingClientRect();
 
-			if (left + contentWidth - window.pageXOffset > window.innerWidth) {
-				left = window.innerWidth - contentWidth + window.pageXOffset - 1;
-			}
+		left = rect.left + window.pageXOffset + (props.targetElement.offsetWidth / 2);
+		top = rect.top + window.pageYOffset - contentHeight;
 
-			if (top - window.pageYOffset < 0) {
-				top = rect.top + window.pageYOffset + props.source.offsetHeight;
-				el.value.style.transformOrigin = 'center top';
-			}
+		el.value.style.transformOrigin = 'center bottom';
+	} else {
+		left = props.x;
+		top = props.y - contentHeight;
+	}
 
-			el.value.style.left = left + 'px';
-			el.value.style.top = top + 'px';
-		};
+	left -= (el.value.offsetWidth / 2);
 
-		onMounted(() => {
-			nextTick(() => {
-				if (props.source == null) {
-					context.emit('closed');
-					return;
-				}
+	if (left + contentWidth - window.pageXOffset > window.innerWidth) {
+		left = window.innerWidth - contentWidth + window.pageXOffset - 1;
+	}
 
+	// ツールチップを上に向かって表示するスペースがなければ下に向かって出す
+	if (top - window.pageYOffset < 0) {
+		if (props.targetElement) {
+			top = rect.top + window.pageYOffset + props.targetElement.offsetHeight;
+			el.value.style.transformOrigin = 'center top';
+		} else {
+			top = props.y;
+		}
+	}
+
+	el.value.style.left = left + 'px';
+	el.value.style.top = top + 'px';
+};
+
+onMounted(() => {
+	nextTick(() => {
+		setPosition();
+
+		let loopHandler;
+
+		const loop = () => {
+			loopHandler = window.requestAnimationFrame(() => {
 				setPosition();
-
-				let loopHandler;
-
-				const loop = () => {
-					loopHandler = window.requestAnimationFrame(() => {
-						setPosition();
-						loop();
-					});
-				};
-
 				loop();
-
-				onUnmounted(() => {
-					window.cancelAnimationFrame(loopHandler);
-				});
 			});
-		});
-
-		return {
-			el,
-			zIndex,
 		};
-	},
-})
+
+		loop();
+
+		onUnmounted(() => {
+			window.cancelAnimationFrame(loopHandler);
+		});
+	});
+});
 </script>
 
 <style lang="scss" scoped>
@@ -118,6 +115,6 @@ export default defineComponent({
 	border-radius: 4px;
 	border: solid 0.5px var(--divider);
 	pointer-events: none;
-	transform-origin: center bottom;
+	transform-origin: center center;
 }
 </style>

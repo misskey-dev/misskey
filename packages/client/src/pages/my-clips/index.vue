@@ -19,7 +19,7 @@ import MkPagination from '@/components/ui/pagination.vue';
 import MkButton from '@/components/ui/button.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
-import i18n from '@/components/global/i18n';
+import { i18n } from '@/i18n';
 
 const pagination = {
 	endpoint: 'clips/list' as const,
@@ -29,20 +29,20 @@ const pagination = {
 const pagingComponent = $ref<InstanceType<typeof MkPagination>>();
 
 async function create() {
-	const { canceled, result } = await os.form(i18n.locale.createNewClip, {
+	const { canceled, result } = await os.form(i18n.ts.createNewClip, {
 		name: {
 			type: 'string',
-			label: i18n.locale.name,
+			label: i18n.ts.name,
 		},
 		description: {
 			type: 'string',
 			required: false,
 			multiline: true,
-			label: i18n.locale.description,
+			label: i18n.ts.description,
 		},
 		isPublic: {
 			type: 'boolean',
-			label: i18n.locale.public,
+			label: i18n.ts.public,
 			default: false,
 		},
 	});
@@ -63,7 +63,7 @@ function onClipDeleted() {
 
 defineExpose({
 	[symbols.PAGE_INFO]: {
-		title: i18n.locale.clip,
+		title: i18n.ts.clip,
 		icon: 'fas fa-paperclip',
 		bg: 'var(--bg)',
 		action: {

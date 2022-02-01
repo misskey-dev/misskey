@@ -4,7 +4,7 @@ import * as os from '@/os';
 
 export async function lookupUser() {
 	const { canceled, result } = await os.inputText({
-		title: i18n.locale.usernameOrUserId,
+		title: i18n.ts.usernameOrUserId,
 	});
 	if (canceled) return;
 
@@ -19,7 +19,7 @@ export async function lookupUser() {
 		if (_notFound) {
 			os.alert({
 				type: 'error',
-				text: i18n.locale.noSuchUser
+				text: i18n.ts.noSuchUser
 			});
 		} else {
 			_notFound = true;

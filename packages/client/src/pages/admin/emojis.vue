@@ -118,7 +118,7 @@ const toggleSelect = (emoji) => {
 };
 
 const add = async (ev: MouseEvent) => {
-	const files = await selectFiles(ev.currentTarget || ev.target, null);
+	const files = await selectFiles(ev.currentTarget ?? ev.target, null);
 
 	const promise = Promise.all(files.map(file => os.api('admin/emoji/add', {
 		fileId: file.id,
@@ -157,23 +157,23 @@ const remoteMenu = (emoji, ev: MouseEvent) => {
 		type: 'label',
 		text: ':' + emoji.name + ':',
 	}, {
-		text: i18n.locale.import,
+		text: i18n.ts.import,
 		icon: 'fas fa-plus',
 		action: () => { im(emoji) }
-	}], ev.currentTarget || ev.target);
+	}], ev.currentTarget ?? ev.target);
 };
 
 const menu = (ev: MouseEvent) => {
 	os.popupMenu([{
 		icon: 'fas fa-download',
-		text: i18n.locale.export,
+		text: i18n.ts.export,
 		action: async () => {
 			os.api('export-custom-emojis', {
 			})
 			.then(() => {
 				os.alert({
 					type: 'info',
-					text: i18n.locale.exportRequested,
+					text: i18n.ts.exportRequested,
 				});
 			}).catch((e) => {
 				os.alert({
@@ -184,16 +184,16 @@ const menu = (ev: MouseEvent) => {
 		}
 	}, {
 		icon: 'fas fa-upload',
-		text: i18n.locale.import,
+		text: i18n.ts.import,
 		action: async () => {
-			const file = await selectFile(ev.currentTarget || ev.target);
+			const file = await selectFile(ev.currentTarget ?? ev.target);
 			os.api('admin/emoji/import-zip', {
 				fileId: file.id,
 			})
 			.then(() => {
 				os.alert({
 					type: 'info',
-					text: i18n.locale.importRequested,
+					text: i18n.ts.importRequested,
 				});
 			}).catch((e) => {
 				os.alert({
@@ -202,7 +202,7 @@ const menu = (ev: MouseEvent) => {
 				});
 			});
 		}
-	}], ev.currentTarget || ev.target);
+	}], ev.currentTarget ?? ev.target);
 };
 
 const setCategoryBulk = async () => {
@@ -256,7 +256,7 @@ const setTagBulk = async () => {
 const delBulk = async () => {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.locale.deleteConfirm,
+		text: i18n.ts.deleteConfirm,
 	});
 	if (canceled) return;
 	await os.apiWithDialog('admin/emoji/delete-bulk', {
@@ -267,13 +267,13 @@ const delBulk = async () => {
 
 defineExpose({
 	[symbols.PAGE_INFO]: computed(() => ({
-		title: i18n.locale.customEmojis,
+		title: i18n.ts.customEmojis,
 		icon: 'fas fa-laugh',
 		bg: 'var(--bg)',
 		actions: [{
 			asFullButton: true,
 			icon: 'fas fa-plus',
-			text: i18n.locale.addEmoji,
+			text: i18n.ts.addEmoji,
 			handler: add,
 		}, {
 			icon: 'fas fa-ellipsis-h',
@@ -281,11 +281,11 @@ defineExpose({
 		}],
 		tabs: [{
 			active: tab.value === 'local',
-			title: i18n.locale.local,
+			title: i18n.ts.local,
 			onClick: () => { tab.value = 'local'; },
 		}, {
 			active: tab.value === 'remote',
-			title: i18n.locale.remote,
+			title: i18n.ts.remote,
 			onClick: () => { tab.value = 'remote'; },
 		},]
 	})),
