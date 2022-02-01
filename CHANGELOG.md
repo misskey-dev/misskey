@@ -22,6 +22,7 @@
 - 投稿フォームのハッシュタグ保持フィールドが動作しない問題を修正
 - Add `img-src` and `media-src` directives to `Content-Security-Policy` for
   files and media proxy
+- サイドビューが動かないのを修正
 - ensure that specified users does not get duplicates
 
 ## 12.102.1 (2022/01/27)
