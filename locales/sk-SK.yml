@@ -435,11 +435,51 @@ _ffVisibility:
 _signup:
   almostThere: "Skoro na konci"
   emailAddressInfo: "Prosím zadajte svoju emailovú adresu!"
+  emailSent: "Na vašu emailovú adresu ({email}) sme odoslali email. Vytvorenie účtu dokončíte kliknutím na odkaz v emaili."
+_accountDelete:
+  accountDelete: "Odstrániť účet"
+  mayTakeTime: "Keďže odstránenie účtu je náročný proces, môže to nejaký čas trvať. Záleží koľko obsahu ste vytvorili a koľko súborov ste nahrali."
+  sendEmail: "Po odstránení účtu vám pošleme email na emailovú adresu zadanú pri registrácii tohoto účtu."
+  requestAccountDelete: "Požiadať o zmazanie účtu"
+  started: "Odstraňovanie začalo."
+  inProgress: "Odstraňovanie prebieha"
 _ad:
   back: "Späť"
+  reduceFrequencyOfThisAd: "Túto reklamu zobrazovať menej"
+_forgotPassword:
+  enterEmail: "Zadajte emailovú adresu, ktorú ste použili pri registrácii. Pošleme vám na ňu odkaz, cez ktorý si môžete obnoviť heslo."
+  ifNoEmail: "Ak ste pri registrácii nepoužili email, prosím kontaktujte administrátora."
+  contactAdmin: "Tento server nepodporuje používanie emailových adries, prosím kontaktuje administrátor, ktorý vám resetuje heslo."
+_gallery:
+  my: "Moja galéria"
+  liked: "Obľúbené príspevky"
+  like: "Páči sa mi"
+  unlike: "Nepáči sa mi"
+_email:
+  _follow:
+    title: "Máte nového sledujúceho"
+  _receiveFollowRequest:
+    title: "Dostali ste žiadosť o sledovanie"
+_plugin:
+  install: "Inštalova pluginy"
+  installWarn: "Prosím neinštalujte nedôveryhodné pluginy."
+  manage: "Spravovanie pluginov"
+_registry:
+  scope: "Oblasť"
+  key: "Kľúč"
+  keys: "Kľúče"
+  domain: "Doména"
+  createKey: "Vytvoriť kľúč"
+_aboutMisskey:
+  about: "Misskey je open-source softvér, ktorý vyvíja syuilo od 2014."
+  contributors: "Hlavní prispievatelia"
+  allContributors: "Všetci prispievatelia"
+  source: "Zdrojový kód"
 _mfm:
   emoji: "Vlastné emoji"
   search: "Hľadať"
+  spin: "Animácia (rotácia)"
+  spinDescription: "Obsahu pridá otáčajúcu animáciu."
 _theme:
   description: "Popis"
   keys:
