@@ -117,8 +117,6 @@ const {
 	enableInfiniteScroll
 } = defaultStore.reactiveState;
 
-let mounted = $ref(false);
-
 const contentEl = $computed(() => props.pagination.pageEl || rootEl);
 const scrollableElement = $computed(() => getScrollContainer(contentEl));
 
@@ -136,7 +134,6 @@ watch(items, observeLatestElement, { deep: true });
 function observeLatestElement() {
 	observer.disconnect();
 	nextTick(() => {
-		if (!mounted) return;
 		const latestEl = (itemsContainer || rootEl)?.children.item(0);
 		if (latestEl) observer.observe(latestEl);
 	});
@@ -348,8 +345,6 @@ function toBottom() {
 }
 
 onMounted(() => {
-	mounted = true;
-
 	inited.then(() => {
 		if (props.pagination.reversed) {
 			nextTick(() => {
