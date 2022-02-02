@@ -130,7 +130,7 @@ const observer = new IntersectionObserver(entries => {
 	}
 });
 
-watch([items, $$(itemsContainer)], observeLatestElement);
+watch([items, $$(itemsContainer), $$(rootEl)], observeLatestElement);
 
 function observeLatestElement() {
 	observer.disconnect();
