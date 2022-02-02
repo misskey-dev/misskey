@@ -48,7 +48,7 @@ export default {
 			popup(import('@/components/ui/tooltip.vue'), {
 				showing,
 				text: self.text,
-				source: el
+				targetElement: el,
 			}, {}, 'closed');
 
 			self._close = () => {
@@ -56,8 +56,8 @@ export default {
 			};
 		};
 
-		el.addEventListener('selectstart', e => {
-			e.preventDefault();
+		el.addEventListener('selectstart', ev => {
+			ev.preventDefault();
 		});
 
 		el.addEventListener(start, () => {

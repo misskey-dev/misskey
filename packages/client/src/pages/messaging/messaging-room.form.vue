@@ -154,7 +154,7 @@ export default defineComponent({
 		},
 
 		chooseFile(e) {
-			selectFile(e.currentTarget || e.target, this.$ts.selectFile).then(file => {
+			selectFile(e.currentTarget ?? e.target, this.$ts.selectFile).then(file => {
 				this.file = file;
 			});
 		},
@@ -214,7 +214,7 @@ export default defineComponent({
 		},
 
 		async insertEmoji(ev) {
-			os.openEmojiPicker(ev.currentTarget || ev.target, {}, this.$refs.text);
+			os.openEmojiPicker(ev.currentTarget ?? ev.target, {}, this.$refs.text);
 		}
 	}
 });

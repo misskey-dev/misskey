@@ -29,6 +29,7 @@
 			<template #label>Moderation</template>
 			<FormSwitch v-model="suspended" class="_formBlock" @update:modelValue="toggleSuspend">{{ $ts.stopActivityDelivery }}</FormSwitch>
 			<FormSwitch v-model="isBlocked" class="_formBlock" @update:modelValue="toggleBlock">{{ $ts.blockThisInstance }}</FormSwitch>
+			<MkButton @click="refreshMetadata">Refresh metadata</MkButton>
 		</FormSection>
 
 		<FormSection>
@@ -111,6 +112,7 @@ import MkChart from '@/components/chart.vue';
 import MkObjectView from '@/components/object-view.vue';
 import FormLink from '@/components/form/link.vue';
 import MkLink from '@/components/link.vue';
+import MkButton from '@/components/ui/button.vue';
 import FormSection from '@/components/form/section.vue';
 import MkKeyValue from '@/components/key-value.vue';
 import MkSelect from '@/components/form/select.vue';
@@ -152,6 +154,15 @@ async function toggleSuspend(v) {
 	await os.api('admin/federation/update-instance', {
 		host: instance.host,
 		isSuspended: suspended,
+	});
+}
+
+function refreshMetadata() {
+	os.api('admin/federation/refresh-remote-instance-metadata', {
+		host: instance.host,
+	});
+	os.alert({
+		text: 'Refresh requested',
 	});
 }
 

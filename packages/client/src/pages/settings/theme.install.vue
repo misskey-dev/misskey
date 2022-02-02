@@ -1,12 +1,12 @@
 <template>
 <div class="_formRoot">
 	<FormTextarea v-model="installThemeCode" class="_formBlock">
-		<template #label>{{ i18n.locale._theme.code }}</template>
+		<template #label>{{ i18n.ts._theme.code }}</template>
 	</FormTextarea>
 
 	<div class="_formBlock" style="display: flex; gap: var(--margin); flex-wrap: wrap;">
-		<FormButton :disabled="installThemeCode == null" inline @click="() => preview(installThemeCode)"><i class="fas fa-eye"></i> {{ i18n.locale.preview }}</FormButton>
-		<FormButton :disabled="installThemeCode == null" primary inline @click="() => install(installThemeCode)"><i class="fas fa-check"></i> {{ i18n.locale.install }}</FormButton>
+		<FormButton :disabled="installThemeCode == null" inline @click="() => preview(installThemeCode)"><i class="fas fa-eye"></i> {{ i18n.ts.preview }}</FormButton>
+		<FormButton :disabled="installThemeCode == null" primary inline @click="() => install(installThemeCode)"><i class="fas fa-check"></i> {{ i18n.ts.install }}</FormButton>
 	</div>
 </div>
 </template>
@@ -32,21 +32,21 @@ function parseThemeCode(code: string) {
 	} catch (e) {
 		os.alert({
 			type: 'error',
-			text: i18n.locale._theme.invalid
+			text: i18n.ts._theme.invalid
 		});
 		return false;
 	}
 	if (!validateTheme(theme)) {
 		os.alert({
 			type: 'error',
-			text: i18n.locale._theme.invalid
+			text: i18n.ts._theme.invalid
 		});
 		return false;
 	}
 	if (getThemes().some(t => t.id === theme.id)) {
 		os.alert({
 			type: 'info',
-			text: i18n.locale._theme.alreadyInstalled
+			text: i18n.ts._theme.alreadyInstalled
 		});
 		return false;
 	}
@@ -71,7 +71,7 @@ async function install(code: string): Promise<void> {
 
 defineExpose({
 	[symbols.PAGE_INFO]: {
-		title: i18n.locale._theme.install,
+		title: i18n.ts._theme.install,
 		icon: 'fas fa-download',
 		bg: 'var(--bg)',
 	},

@@ -43,6 +43,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'account',
 		default: 'yyyy-MM-dd HH-mm-ss [{{number}}]'
 	},
+	keepOriginalUploading: {
+		where: 'account',
+		default: false
+	},
 	memo: {
 		where: 'account',
 		default: null

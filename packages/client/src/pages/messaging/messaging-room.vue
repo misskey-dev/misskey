@@ -335,7 +335,7 @@ const Component = defineComponent({
 					popout(path);
 					this.$router.back();
 				},
-			}], ev.currentTarget || ev.target);
+			}], ev.currentTarget ?? ev.target);
 		}
 	}
 });

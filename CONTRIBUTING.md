@@ -3,7 +3,7 @@ We're glad you're interested in contributing Misskey! In this document you will 
 
 **ℹ️ Important:** This project uses Japanese as its major language, **but you do not need to translate and write the Issues/PRs in Japanese.**
 Also, you might receive comments on your Issue/PR in Japanese, but you do not need to reply to them in Japanese as well.\
-The accuracy of translation into Japanese is not high, so it will be easier for us to understand if you write it in the original language.
+The accuracy of machine translation into Japanese is not high, so it will be easier for us to understand if you write it in the original language.
 It will also allow the reader to use the translation tool of their preference if necessary.
 
 ## Issues

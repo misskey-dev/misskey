@@ -115,7 +115,7 @@ const pagination = {
 	offsetMode: true,
 	params: computed(() => ({
 		sort: sort,
-		host: host != '' ? host : null,
+		host: host !== '' ? host : null,
 		...(
 			state === 'federating' ? { federating: true } :
 			state === 'subscribing' ? { subscribing: true } :
@@ -135,7 +135,7 @@ function getStatus(instance) {
 
 defineExpose({
 	[symbols.PAGE_INFO]: {
-		title: i18n.locale.federation,
+		title: i18n.ts.federation,
 		icon: 'fas fa-globe',
 		bg: 'var(--bg)',
 	},
@@ -157,11 +157,10 @@ defineExpose({
 
 	> .instance {
 		padding: 16px;
-		border: solid 1px var(--divider);
-		border-radius: 6px;
+		background: var(--panel);
+		border-radius: 8px;
 
 		&:hover {
-			border: solid 1px var(--accent);
 			text-decoration: none;
 		}
 

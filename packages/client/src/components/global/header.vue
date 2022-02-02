@@ -104,7 +104,7 @@ export default defineComponent({
 			if (props.info.share) {
 				if (menu.length > 0) menu.push(null);
 				menu.push({
-					text: i18n.locale.share,
+					text: i18n.ts.share,
 					icon: 'fas fa-share-alt',
 					action: share
 				});
@@ -113,7 +113,7 @@ export default defineComponent({
 				if (menu.length > 0) menu.push(null);
 				menu = menu.concat(props.menu);
 			}
-			popupMenu(menu, ev.currentTarget || ev.target);
+			popupMenu(menu, ev.currentTarget ?? ev.target);
 		};
 
 		const showTabsPopup = (ev: MouseEvent) => {
@@ -126,7 +126,7 @@ export default defineComponent({
 				icon: tab.icon,
 				action: tab.onClick,
 			}));
-			popupMenu(menu, ev.currentTarget || ev.target);
+			popupMenu(menu, ev.currentTarget ?? ev.target);
 		};
 
 		const preventDrag = (ev: TouchEvent) => {
