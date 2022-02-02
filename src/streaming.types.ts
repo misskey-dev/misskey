@@ -124,6 +124,13 @@ export type NoteUpdatedEvent = {
 	};
 } | {
 	id: Note['id'];
+	type: 'unreacted';
+	body: {
+		reaction: string;
+		userId: User['id'];
+	};
+} | {
+	id: Note['id'];
 	type: 'deleted';
 	body: {
 		deletedAt: string;
