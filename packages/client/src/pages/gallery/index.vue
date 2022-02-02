@@ -9,32 +9,32 @@
 	<div v-if="tab === 'explore'">
 		<MkFolder class="_gap">
 			<template #header><i class="fas fa-clock"></i>{{ $ts.recentPosts }}</template>
-			<MkPagination v-slot="{items}" :pagination="recentPostsPagination" :disable-auto-load="true">
-				<div class="vfpdbgtk">
+			<MkPagination v-slot="{items, itemsContainer}" :pagination="recentPostsPagination" :disable-auto-load="true">
+				<div class="vfpdbgtk" ref="itemsContainer">
 					<MkGalleryPostPreview v-for="post in items" :key="post.id" :post="post" class="post"/>
 				</div>
 			</MkPagination>
 		</MkFolder>
 		<MkFolder class="_gap">
 			<template #header><i class="fas fa-fire-alt"></i>{{ $ts.popularPosts }}</template>
-			<MkPagination v-slot="{items}" :pagination="popularPostsPagination" :disable-auto-load="true">
-				<div class="vfpdbgtk">
+			<MkPagination v-slot="{items, itemsContainer}" :pagination="popularPostsPagination" :disable-auto-load="true">
+				<div class="vfpdbgtk" ref="itemsContainer">
 					<MkGalleryPostPreview v-for="post in items" :key="post.id" :post="post" class="post"/>
 				</div>
 			</MkPagination>
 		</MkFolder>
 	</div>
 	<div v-else-if="tab === 'liked'">
-		<MkPagination v-slot="{items}" :pagination="likedPostsPagination">
-			<div class="vfpdbgtk">
+		<MkPagination v-slot="{items, itemsContainer}" :pagination="likedPostsPagination">
+			<div class="vfpdbgtk" ref="itemsContainer">
 				<MkGalleryPostPreview v-for="like in items" :key="like.id" :post="like.post" class="post"/>
 			</div>
 		</MkPagination>
 	</div>
 	<div v-else-if="tab === 'my'">
 		<MkA to="/gallery/new" class="_link" style="margin: 16px;"><i class="fas fa-plus"></i> {{ $ts.postToGallery }}</MkA>
-		<MkPagination v-slot="{items}" :pagination="myPostsPagination">
-			<div class="vfpdbgtk">
+		<MkPagination v-slot="{items, itemsContainer}" :pagination="myPostsPagination">
+			<div class="vfpdbgtk" ref="itemsContainer">
 				<MkGalleryPostPreview v-for="post in items" :key="post.id" :post="post" class="post"/>
 			</div>
 		</MkPagination>

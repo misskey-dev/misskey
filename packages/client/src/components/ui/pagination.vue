@@ -20,7 +20,7 @@
 			</MkButton>
 			<MkLoading v-else class="loading"/>
 		</div>
-		<slot :items="items" :fetching="fetching || moreFetching"></slot>
+		<slot :items="items" :fetching="fetching || moreFetching" :itemsContainer="itemsContainer" :itemsContainerWrapped="itemsContainerWrapped"></slot>
 		<div v-if="!pagination.reversed" v-show="more" key="_more_" class="cxiknjgy _gap">
 			<MkButton v-if="!moreFetching" v-appear="(enableInfiniteScroll && !props.disableAutoLoad) ? fetchMore : null" class="button" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary @click="fetchMore">
 				{{ $ts.loadMore }}
@@ -32,12 +32,13 @@
 </template>
 
 <script lang="ts">
-import { computed, ComputedRef, isRef, nextTick, onActivated, onDeactivated, onMounted, ref, watch } from 'vue';
+import { computed, ComputedRef, isRef, nextTick, onActivated, onBeforeUnmount, onDeactivated, onMounted, ref, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import * as os from '@/os';
-import { onScrollTop, isTopVisible, getScrollContainer, onScrollBottom, scrollToBottom, scroll, isBottom } from '@/scripts/scroll';
+import { onScrollTop, isTopVisible, getBodyScrollHeight, getScrollContainer, onScrollBottom, scrollToBottom, scroll, isBottom } from '@/scripts/scroll';
 import MkButton from '@/components/ui/button.vue';
 import { defaultStore } from '@/store';
+import { MisskeyEntity } from '@/types/date-separated-list';
 
 const SECOND_FETCH_LIMIT = 30;
 
@@ -75,16 +76,40 @@ const emit = defineEmits<{
 	(e: 'queue', count: number): void;
 }>();
 
-type Item = { id: string; [another: string]: unknown; };
+let rootEl = $ref<HTMLElement>();
 
-const rootEl = $ref<HTMLElement>();
-const items = ref<Item[]>([]);
-const queue = ref<Item[]>([]);
+/*
+ * itemsContainer: itemsの実体DOMsの親コンテナ(=v-forの直上)のHTMLElement
+ *
+ * IntersectionObserverを使用してスクロールのパフォーマンスを向上させるため必要
+ * この中の最初の要素を評価するので、順番を反転したり変えたりしてはいけない
+ * 
+ * これがundefinedのままの場合はrootElにフォールバックする
+ * つまりrootElがitemsの実体DOMsの親であるとする
+ * 
+ * 自動ロードやストリーミングでの追加がなければあまり関係ない
+ */
+let itemsContainer = $ref<HTMLElement | null>();
+/*
+ * date-separated-listとやり取りするために入れ子にしたオブジェクトを用意する
+ * slotの中身から変数を直接書き込むことができないため
+ */
+const itemsContainerWrapped = { v: $$(itemsContainer) };
+
+/*
+ * 遡り中かどうか
+ * ＝ (itemsContainer || rootEl).children.item(0) が画面内に入ったかどうか
+ */
+let backed = $ref(false);
+
+let scrollRemove: (() => void) | null = $ref(null);
+
+const items = ref<MisskeyEntity[]>([]);
+const queue = ref<MisskeyEntity[]>([]);
 const offset = ref(0);
 const fetching = ref(true);
 const moreFetching = ref(false);
 const more = ref(false);
-const backed = ref(false); // 遡り中か否か
 const isBackTop = ref(false);
 const empty = computed(() => items.value.length === 0);
 const error = ref(false);
@@ -92,10 +117,57 @@ const {
 	enableInfiniteScroll
 } = defaultStore.reactiveState;
 
+let mounted = $ref(false);
+
 const contentEl = $computed(() => props.pagination.pageEl || rootEl);
 const scrollableElement = $computed(() => getScrollContainer(contentEl));
 
-const init = async (): Promise<void> => {
+const observer = new IntersectionObserver(entries => {
+	if (entries.some(entry => entry.isIntersecting)) {
+		backed = false;
+	} else {
+		backed = true;
+	}
+});
+
+watch([items, $$(itemsContainer)], observeLatestElement);
+
+function observeLatestElement() {
+	observer.disconnect();
+	nextTick(() => {
+		if (!mounted) return;
+		const latestEl = (itemsContainer || rootEl)?.children.item(0);
+		if (latestEl) observer.observe(latestEl);
+	});
+}
+
+watch($$(backed), () => {
+	if (!backed) {
+		if (!contentEl) return;
+
+		scrollRemove = (props.pagination.reversed ? onScrollBottom : onScrollTop)(contentEl, () => {
+			if (queue.value.length === 0) return;
+			for (const item of queue.value) {
+				prepend(item, true);
+			}
+			queue.value = [];
+		});
+	} else {
+		if (scrollRemove) scrollRemove();
+		scrollRemove = null;
+	}
+});
+
+if (props.pagination.params && isRef(props.pagination.params)) {
+	watch(props.pagination.params, init, { deep: true });
+}
+
+watch(queue, (a, b) => {
+	if (a.length === 0 && b.length === 0) return;
+	emit('queue', queue.value.length);
+}, { deep: true });
+
+async function init(): Promise<void> {
 	queue.value = [];
 	fetching.value = true;
 	const params = props.pagination.params ? isRef(props.pagination.params) ? props.pagination.params.value : props.pagination.params : {};
@@ -133,7 +205,6 @@ const reload = (): Promise<void> => {
 const fetchMore = async (): Promise<void> => {
 	if (!more.value || fetching.value || moreFetching.value || items.value.length === 0) return;
 	moreFetching.value = true;
-	backed.value = true;
 	const params = props.pagination.params ? isRef(props.pagination.params) ? props.pagination.params.value : props.pagination.params : {};
 	await os.api(props.pagination.endpoint, {
 		...params,
@@ -150,16 +221,16 @@ const fetchMore = async (): Promise<void> => {
 		}
 
 		const reverseConcat = _res => {
-			const oldHeight = contentEl.scrollHeight;
+			const oldHeight = scrollableElement ? scrollableElement.scrollHeight : getBodyScrollHeight();
 			const oldScroll = scrollableElement ? scrollableElement.scrollTop : window.scrollY;
 
 			items.value = items.value.concat(_res);
 
 			return nextTick(() => {
 				if (scrollableElement) {
-					scroll(scrollableElement, { top: oldScroll + (contentEl.scrollHeight - oldHeight), behavior: 'instant' });
+					scroll(scrollableElement, { top: oldScroll + (scrollableElement.scrollHeight - oldHeight), behavior: 'instant' });
 				} else {
-					window.scrollY = oldScroll + (contentEl.scrollHeight - oldHeight);
+					window.scroll({ top: oldScroll + (getBodyScrollHeight() - oldHeight), behavior: 'instant' });
 				}
 
 				return nextTick();
@@ -225,7 +296,7 @@ const fetchMoreAhead = async (): Promise<void> => {
 	});
 };
 
-const prepend = (item: Item, force = false): void => {
+const prepend = (item: MisskeyEntity, force = false): void => {
 	// 初回表示時はunshiftだけでOK
 	if (!rootEl) {
 		items.value.unshift(item);
@@ -249,32 +320,17 @@ const prepend = (item: Item, force = false): void => {
 		}
 	} else {
 		queue.value.push(item);
-		(props.pagination.reversed ? onScrollBottom : onScrollTop)(contentEl, () => {
-			for (const item of queue.value) {
-				prepend(item, true);
-			}
-			queue.value = [];
-		});
 	}
 };
 
-const append = (item: Item): void => {
+const append = (item: MisskeyEntity): void => {
 	items.value.push(item);
 };
 
-const updateItem = (id: Item['id'], replacer: (old: Item) => Item): void => {
+const updateItem = (id: MisskeyEntity['id'], replacer: (old: MisskeyEntity) => MisskeyEntity): void => {
 	const i = items.value.findIndex(item => item.id === id);
 	items.value[i] = replacer(items.value[i]);
 };
-
-if (props.pagination.params && isRef(props.pagination.params)) {
-	watch(props.pagination.params, init, { deep: true });
-}
-
-watch(queue, (a, b) => {
-	if (a.length === 0 && b.length === 0) return;
-	emit('queue', queue.value.length);
-}, { deep: true });
 
 const inited = init();
 
@@ -291,6 +347,8 @@ function toBottom() {
 }
 
 onMounted(() => {
+	mounted = true;
+
 	inited.then(() => {
 		if (props.pagination.reversed) {
 			nextTick(() => {
@@ -304,7 +362,11 @@ onMounted(() => {
 			});
 		}
 	});
-})
+});
+
+onBeforeUnmount(() => {
+	observer.disconnect();
+});
 
 defineExpose({
 	items,

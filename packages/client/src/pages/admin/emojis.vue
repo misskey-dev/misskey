@@ -19,8 +19,8 @@
 			</div>
 			<MkPagination ref="emojisPaginationComponent" :pagination="pagination">
 				<template #empty><span>{{ $ts.noCustomEmojis }}</span></template>
-				<template v-slot="{items}">
-					<div class="ldhfsamy">
+				<template v-slot="{items, itemsContainer}">
+					<div class="ldhfsamy" ref="itemsContainer">
 						<button v-for="emoji in items" :key="emoji.id" class="emoji _panel _button" :class="{ selected: selectedEmojis.includes(emoji.id) }" @click="selectMode ? toggleSelect(emoji) : edit(emoji)">
 							<img :src="emoji.url" class="img" :alt="emoji.name"/>
 							<div class="body">
@@ -45,8 +45,8 @@
 			</FormSplit>
 			<MkPagination :pagination="remotePagination">
 				<template #empty><span>{{ $ts.noCustomEmojis }}</span></template>
-				<template v-slot="{items}">
-					<div class="ldhfsamy">
+				<template v-slot="{items, itemsContainer}">
+					<div class="ldhfsamy" ref="itemsContainer">
 						<div v-for="emoji in items" :key="emoji.id" class="emoji _panel _button" @click="remoteMenu(emoji, $event)">
 							<img :src="emoji.url" class="img" :alt="emoji.name"/>
 							<div class="body">

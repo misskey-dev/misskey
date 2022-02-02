@@ -14,8 +14,16 @@
 					</div>
 				</template>
 
-				<template #default="{ items: messages, fetching }">
-					<XList v-if="messages.length > 0" v-slot="{ item: message }" :class="{ messages: true, 'deny-move-transition': fetching }" :items="messages" direction="up" reversed>
+				<template #default="{ items: messages, fetching, itemsContainerWrapped }">
+					<XList
+						v-if="messages.length > 0"
+						v-slot="{ item: message }"
+						:class="{ messages: true, 'deny-move-transition': fetching }"
+						:items="messages"
+						v-model:itemsContainer="itemsContainerWrapped.v.value"
+						direction="up"
+						reversed
+					>
 						<XMessage :key="message.id" :message="message" :is-group="group != null"/>
 					</XList>
 				</template>

@@ -44,7 +44,6 @@ import { defineComponent, defineAsyncComponent } from 'vue';
 import { host, instanceName } from '@/config';
 import { search } from '@/scripts/search';
 import * as os from '@/os';
-import MkPagination from '@/components/ui/pagination.vue';
 import MkButton from '@/components/ui/button.vue';
 import XHeader from './header.vue';
 import { ColdDeviceStorage } from '@/store';
@@ -55,7 +54,6 @@ const DESKTOP_THRESHOLD = 1100;
 export default defineComponent({
 	components: {
 		XHeader,
-		MkPagination,
 		MkButton,
 	},
 

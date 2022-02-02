@@ -1,71 +1,63 @@
 <template>
 <div ref="rootEl">
 	<slot name="header"></slot>
-	<div ref="bodyEl">
+	<div ref="bodyEl" :data-sticky-container-header-height="headerHeight">
 		<slot></slot>
 	</div>
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, onMounted, onUnmounted, ref } from 'vue';
+<script lang="ts" setup>
+import { onMounted, onUnmounted } from 'vue';
 
-export default defineComponent({
-	props: {
-		autoSticky: {
-			type: Boolean,
-			required: false,
-			default: false,
-		},
-	},
+const props = withDefaults(defineProps<{
+	autoSticky?: boolean;
+}>(), {
+	autoSticky: false,
+})
 
-	setup(props, context) {
-		const rootEl = ref<HTMLElement>(null);
-		const bodyEl = ref<HTMLElement>(null);
+const rootEl = $ref<HTMLElement>();
+const bodyEl = $ref<HTMLElement>();
 
-		const calc = () => {
-			const currentStickyTop = getComputedStyle(rootEl.value).getPropertyValue('--stickyTop') || '0px';
+let headerHeight: string | undefined = $ref();
 
-			const header = rootEl.value.children[0];
-			if (header === bodyEl.value) {
-				bodyEl.value.style.setProperty('--stickyTop', currentStickyTop);
-			} else {
-				bodyEl.value.style.setProperty('--stickyTop', `calc(${currentStickyTop} + ${header.offsetHeight}px)`);
+const calc = () => {
+	const currentStickyTop = getComputedStyle(rootEl).getPropertyValue('--stickyTop') || '0px';
 
-				if (props.autoSticky) {
-					header.style.setProperty('--stickyTop', currentStickyTop);
-					header.style.position = 'sticky';
-					header.style.top = 'var(--stickyTop)';
-					header.style.zIndex = '1';
-				}
-			}
-		};
+	const header = rootEl.children[0] as HTMLElement;
+	if (header === bodyEl) {
+		bodyEl.style.setProperty('--stickyTop', currentStickyTop);
+	} else {
+		bodyEl.style.setProperty('--stickyTop', `calc(${currentStickyTop} + ${header.offsetHeight}px)`);
+		headerHeight = header.offsetHeight.toString();
 
-		onMounted(() => {
-			calc();
+		if (props.autoSticky) {
+			header.style.setProperty('--stickyTop', currentStickyTop);
+			header.style.position = 'sticky';
+			header.style.top = 'var(--stickyTop)';
+			header.style.zIndex = '1';
+		}
+	}
+};
 
-			const observer = new MutationObserver(() => {
-				window.setTimeout(() => {
-					calc();
-				}, 100);
-			});
+const observer = new MutationObserver(() => {
+	window.setTimeout(() => {
+		calc();
+	}, 100);
+});
 
-			observer.observe(rootEl.value, {
-				attributes: false,
-				childList: true,
-				subtree: false,
-			});
+onMounted(() => {
+	calc();
 
-			onUnmounted(() => {
-				observer.disconnect();
-			});
-		});
+	observer.observe(rootEl, {
+		attributes: false,
+		childList: true,
+		subtree: false,
+	});
+});
 
-		return {
-			rootEl,
-			bodyEl,
-		};
-	},
+onUnmounted(() => {
+	observer.disconnect();
 });
 </script>
 

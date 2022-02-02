@@ -1,13 +1,14 @@
 <script lang="ts">
-import { defineComponent, h, PropType, TransitionGroup } from 'vue';
+import { defineComponent, getCurrentInstance, h, markRaw, onMounted, PropType, TransitionGroup } from 'vue';
 import MkAd from '@/components/global/ad.vue';
 import { i18n } from '@/i18n';
 import { defaultStore } from '@/store';
+import { MisskeyEntity } from '@/types/date-separated-list';
 
 export default defineComponent({
 	props: {
 		items: {
-			type: Array as PropType<{ id: string; createdAt: string; _shouldInsertAd_: boolean; }[]>,
+			type: Array as PropType<MisskeyEntity[]>,
 			required: true,
 		},
 		direction: {
@@ -30,9 +31,15 @@ export default defineComponent({
 			required: false,
 			default: false
 		},
+		itemsContainer: {
+			type: Object as PropType<HTMLElement | null>,
+			required: false,
+			nullable: true,
+			default: null,
+		},
 	},
 
-	setup(props, { slots, expose }) {
+	setup(props, { slots, expose, emit }) {
 		function getDateText(time: string) {
 			const date = new Date(time).getDate();
 			const month = new Date(time).getMonth() + 1;
@@ -88,6 +95,11 @@ export default defineComponent({
 					return el;
 				}
 			}
+		});
+
+		onMounted(() => {
+			const el = getCurrentInstance()?.vnode.el;
+			emit('update:itemsContainer', el ? markRaw(el) : null);
 		});
 
 		function onBeforeLeave(el: HTMLElement) {

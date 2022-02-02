@@ -8,8 +8,8 @@
 			</div>
 		</template>
 
-		<template #default="{ items }">
-			<XList v-slot="{ item }" :items="items" :direction="'down'" :no-gap="false" :ad="false">
+		<template #default="{ items, itemsContainerWrapped }">
+			<XList v-slot="{ item }" :items="items" :direction="'down'" :no-gap="false" :ad="false" v-model:itemsContainer="itemsContainerWrapped.v.value">
 				<XNote :key="item.id" :note="item.note" :class="$style.note"/>
 			</XList>
 		</template>
