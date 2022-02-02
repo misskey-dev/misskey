@@ -1,44 +1,28 @@
 <template>
-<MkModal ref="modal" v-slot="{ type, maxHeight }" :z-priority="'high'" :src="src" :transparent-bg="true" @click="$refs.modal.close()" @closed="$emit('closed')">
-	<MkMenu :items="items" :align="align" :width="width" :max-height="maxHeight" :as-drawer="type === 'drawer'" class="sfhdhdhq _popup _shadow" :class="{ drawer: type === 'drawer' }" @close="$refs.modal.close()"/>
+<MkModal ref="modal" v-slot="{ type, maxHeight }" :z-priority="'high'" :src="src" :transparent-bg="true" @click="modal.close()" @closed="emit('closed')">
+	<MkMenu :items="items" :align="align" :width="width" :max-height="maxHeight" :as-drawer="type === 'drawer'" class="sfhdhdhq _popup _shadow" :class="{ drawer: type === 'drawer' }" @close="modal.close()"/>
 </MkModal>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
 import MkModal from './modal.vue';
 import MkMenu from './menu.vue';
+import { MenuItem } from '@/types/menu';
 
-export default defineComponent({
-	components: {
-		MkModal,
-		MkMenu,
-	},
+defineProps<{
+	items: MenuItem[];
+	align?: 'center' | string;
+	width?: number;
+	viaKeyboard?: boolean;
+	src?: any;
+}>();
 
-	props: {
-		items: {
-			type: Array,
-			required: true
-		},
-		align: {
-			type: String,
-			required: false
-		},
-		width: {
-			type: Number,
-			required: false
-		},
-		viaKeyboard: {
-			type: Boolean,
-			required: false
-		},
-		src: {
-			required: false
-		},
-	},
+const emit = defineEmits<{
+	(e: 'closed'): void;
+}>();
 
-	emits: ['close', 'closed'],
-});
+let modal = $ref<InstanceType<typeof MkModal>>();
 </script>
 
 <style lang="scss" scoped>

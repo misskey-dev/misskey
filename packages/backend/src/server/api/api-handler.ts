@@ -32,7 +32,7 @@ export default (endpoint: IEndpoint, ctx: Koa.Context) => new Promise((res) => {
 	// Authentication
 	authenticate(body['i']).then(([user, app]) => {
 		// API invoking
-		call(endpoint.name, user, app, body, (ctx as any).file).then((res: any) => {
+		call(endpoint.name, user, app, body, ctx).then((res: any) => {
 			reply(res);
 		}).catch((e: ApiError) => {
 			reply(e.httpStatusCode ? e.httpStatusCode : e.kind === 'client' ? 400 : 500, e);

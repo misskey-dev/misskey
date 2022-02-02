@@ -176,3 +176,7 @@ describe('After user singed in', () => {
 		cy.contains('Hello, Misskey!');
   });
 });
+
+// TODO: 投稿フォームの公開範囲指定のテスト
+// TODO: 投稿フォームのファイル添付のテスト
+// TODO: 投稿フォームのハッシュタグ保持フィールドのテスト

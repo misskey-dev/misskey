@@ -59,7 +59,7 @@ class NotificationManager {
 
 		if (exist) {
 			// 「メンションされているかつ返信されている」場合は、メンションとしての通知ではなく返信としての通知にする
-			if (reason != 'mention') {
+			if (reason !== 'mention') {
 				exist.reason = reason;
 			}
 		} else {
@@ -201,7 +201,7 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 		mentionedUsers.push(await Users.findOneOrFail(data.reply.userId));
 	}
 
-	if (data.visibility == 'specified') {
+	if (data.visibility === 'specified') {
 		if (data.visibleUsers == null) throw new Error('invalid param');
 
 		for (const u of data.visibleUsers) {
@@ -301,7 +301,7 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 		if (Users.isRemoteUser(user)) activeUsersChart.update(user);
 
 		// 未読通知を作成
-		if (data.visibility == 'specified') {
+		if (data.visibility === 'specified') {
 			if (data.visibleUsers == null) throw new Error('invalid param');
 
 			for (const u of data.visibleUsers) {
@@ -439,7 +439,7 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 async function renderNoteOrRenoteActivity(data: Option, note: Note) {
 	if (data.localOnly) return null;
 
-	const content = data.renote && data.text == null && data.poll == null && (data.files == null || data.files.length == 0)
+	const content = data.renote && data.text == null && data.poll == null && (data.files == null || data.files.length === 0)
 		? renderAnnounce(data.renote.uri ? data.renote.uri : `${config.url}/notes/${data.renote.id}`, note)
 		: renderCreate(await renderNote(note, false), note);
 
@@ -478,7 +478,7 @@ async function insertNote(user: { id: User['id']; host: User['host']; }, data: O
 		userId: user.id,
 		localOnly: data.localOnly!,
 		visibility: data.visibility as any,
-		visibleUserIds: data.visibility == 'specified'
+		visibleUserIds: data.visibility === 'specified'
 			? data.visibleUsers
 				? data.visibleUsers.map(u => u.id)
 				: []
@@ -502,7 +502,7 @@ async function insertNote(user: { id: User['id']; host: User['host']; }, data: O
 		insert.mentions = mentionedUsers.map(u => u.id);
 		const profiles = await UserProfiles.find({ userId: In(insert.mentions) });
 		insert.mentionedRemoteUsers = JSON.stringify(mentionedUsers.filter(u => Users.isRemoteUser(u)).map(u => {
-			const profile = profiles.find(p => p.userId == u.id);
+			const profile = profiles.find(p => p.userId === u.id);
 			const url = profile != null ? profile.url : null;
 			return {
 				uri: u.uri,
