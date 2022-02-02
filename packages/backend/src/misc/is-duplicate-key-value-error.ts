@@ -1,3 +1,3 @@
-export function isDuplicateKeyValueError(e: Error): boolean {
-	return e.message.startsWith('duplicate key value');
+export function isDuplicateKeyValueError(e: unknown | Error): boolean {
+	return (e as any).message && (e as Error).message.startsWith('duplicate key value');
 }
