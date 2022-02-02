@@ -13,7 +13,7 @@ import { i18n } from '@/i18n';
 
 defineExpose({
 	[symbols.PAGE_INFO]: {
-		title: i18n.locale.notFound,
+		title: i18n.ts.notFound,
 		icon: 'fas fa-exclamation-triangle',
 		bg: 'var(--bg)',
 	},

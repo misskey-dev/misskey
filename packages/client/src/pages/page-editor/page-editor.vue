@@ -448,7 +448,7 @@ export default defineComponent({
 		},
 
 		setEyeCatchingImage(e) {
-			selectFile(e.currentTarget || e.target, null).then(file => {
+			selectFile(e.currentTarget ?? e.target, null).then(file => {
 				this.eyeCatchingImageId = file.id;
 			});
 		},

@@ -52,14 +52,14 @@ export default defineComponent({
 				showing,
 				users,
 				count: props.count,
-				source: buttonRef.value
+				targetElement: buttonRef.value
 			}, {}, 'closed');
 		});
 
 		const renote = (viaKeyboard = false) => {
 			pleaseLogin();
 			os.popupMenu([{
-				text: i18n.locale.renote,
+				text: i18n.ts.renote,
 				icon: 'fas fa-retweet',
 				action: () => {
 					os.api('notes/create', {
@@ -67,7 +67,7 @@ export default defineComponent({
 					});
 				}
 			}, {
-				text: i18n.locale.quote,
+				text: i18n.ts.quote,
 				icon: 'fas fa-quote-right',
 				action: () => {
 					os.post({
