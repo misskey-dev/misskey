@@ -51,7 +51,7 @@ export function onScrollBottom(el: HTMLElement, cb: Function) {
 	const container = getScrollContainer(el);
 
 	// とりあえず評価してみる
-	if (isBottom(el, 1, container)) {
+	if (isBottomVisible(el, 1, container)) {
 		cb();
 		return null;
 	}
@@ -59,7 +59,7 @@ export function onScrollBottom(el: HTMLElement, cb: Function) {
 	const containerOrWindow = container || window;
 	const onScroll = ev => {
 		if (!document.body.contains(el)) return;
-		if (isBottom(el, 1, container)) {
+		if (isBottomVisible(el, 1, container)) {
 			cb();
 			removeListener();
 		}
@@ -109,7 +109,7 @@ export function isTopVisible(el: HTMLElement, asobi: number = 1): boolean {
 	return scrollTop <= asobi;
 }
 
-export function isBottom(el: HTMLElement, asobi = 1, container = getScrollContainer(el)) {
+export function isBottomVisible(el: HTMLElement, asobi = 1, container = getScrollContainer(el)) {
 	if (container) return el.scrollHeight <= container.clientHeight + Math.abs(container.scrollTop) + asobi;
 	return el.scrollHeight <= window.innerHeight + window.scrollY + asobi;
 }
