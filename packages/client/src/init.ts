@@ -14,7 +14,7 @@ if (localStorage.getItem('accounts') != null) {
 //#endregion
 
 import { computed, createApp, watch, markRaw, version as vueVersion } from 'vue';
-import * as compareVersions from 'compare-versions';
+import compareVersions from 'compare-versions';
 
 import widgets from '@/widgets';
 import directives from '@/directives';
