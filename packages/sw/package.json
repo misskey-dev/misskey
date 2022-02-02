@@ -7,12 +7,12 @@
 	},
 	"resolutions": {},
 	"dependencies": {
-		"esbuild": "0.14.13",
-		"idb-keyval": "6.0.3",
-		"misskey-js": "0.0.10",
-		"ts-loader": "9.2.6"
+		"esbuild": "^0.14.13",
+		"idb-keyval": "^6.0.3",
+		"misskey-js": "0.0.14",
+		"ts-loader": "^9.2.6"
 	},
 	"devDependencies": {
-		"eslint": "8.2.0"
+		"eslint": "^8.2.0"
 	}
 }
