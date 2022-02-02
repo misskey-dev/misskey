@@ -57,7 +57,7 @@ import XList from '@/components/date-separated-list.vue';
 import MkPagination, { Paging } from '@/components/ui/pagination.vue';
 import XMessage from './messaging-room.message.vue';
 import XForm from './messaging-room.form.vue';
-import { isBottom, onScrollBottom, scrollToBottom } from '@/scripts/scroll';
+import { isBottomVisible, onScrollBottom, scrollToBottom } from '@/scripts/scroll';
 import * as os from '@/os';
 import { stream } from '@/stream';
 import * as sound from '@/scripts/sound';
@@ -190,7 +190,7 @@ function onDrop(e: DragEvent): void {
 function onMessage(message) {
 	sound.play('chat');
 
-	const _isBottom = isBottom(rootEl, 64);
+	const _isBottom = isBottomVisible(rootEl, 64);
 
 	pagingComponent.prepend(message);
 	if (message.userId != $i?.id && !document.hidden) {
