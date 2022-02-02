@@ -287,7 +287,7 @@ onDeactivated(() => {
 });
 
 function toBottom() {
-	if (scrollableElement) scrollToBottom(scrollableElement);
+	scrollToBottom(contentEl);
 }
 
 onMounted(() => {
