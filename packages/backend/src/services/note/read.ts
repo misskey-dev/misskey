@@ -52,7 +52,7 @@ export default async function(
 
 		if (note.user != null) { // たぶんnullになることは無いはずだけど一応
 			for (const antenna of myAntennas) {
-				if (await checkHitAntenna(antenna, note, note.user as any, undefined, Array.from(following))) {
+				if (await checkHitAntenna(antenna, note, note.user, undefined, Array.from(following))) {
 					readAntennaNotes.push(note);
 				}
 			}
