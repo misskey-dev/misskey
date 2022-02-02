@@ -250,7 +250,15 @@ export default defineComponent({
 					},
 					interaction: {
 						intersect: false,
+						mode: 'index',
 					},
+					elements: {
+						point: {
+							hoverRadius: 5,
+							hoverBorderWidth: 2,
+						},
+					},
+					animation: false,
 					plugins: {
 						legend: {
 							display: props.detailed,

@@ -39,7 +39,7 @@ export default async function(user: User, note: Note, quiet = false) {
 			let renote: Note | undefined;
 
 			// if deletd note is renote
-			if (note.renoteId && note.text == null && !note.hasPoll && (note.fileIds == null || note.fileIds.length == 0)) {
+			if (note.renoteId && note.text == null && !note.hasPoll && (note.fileIds == null || note.fileIds.length === 0)) {
 				renote = await Notes.findOne({
 					id: note.renoteId,
 				});
