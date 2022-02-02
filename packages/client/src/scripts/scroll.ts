@@ -90,17 +90,26 @@ export function scrollToTop(el: HTMLElement, options: { behavior?: ScrollBehavio
 
 /**
  * Scroll to Bottom
+ * 通常のページで ウィジェット高さ > コンテンツ高さ の場合にうまく動くように
+ * 若干処理が複雑になっている
  * @param el Content element
  * @param options Scroll options
  * @param container Scroll container element
- * @param addSticky To add sticky-top or not
+ * @param sticky To add sticky-top
+ * @param mobileButtons To add mobile buttons
  */
-export function scrollToBottom(el: HTMLElement, options: ScrollToOptions = {}, container = getScrollContainer(el), addSticky: boolean = true) {
-	const addStickyTop = addSticky ? getStickyTop(el, container) : 0;
+export function scrollToBottom(
+	el: HTMLElement,
+	options: ScrollToOptions = {},
+	container = getScrollContainer(el),
+) {
 	if (container) {
-		container.scroll({ top: el.scrollHeight - container.clientHeight + addStickyTop || 0, ...options });
+		container.scroll({ top: el.scrollHeight - container.clientHeight + getStickyTop(el, container) || 0, ...options });
 	} else {
-		window.scroll({ top: el.scrollHeight - window.innerHeight + addStickyTop || 0, ...options });
+		window.scroll({
+			top: (el.scrollHeight - window.innerHeight + getStickyTop(el, container) + (window.innerWidth <= 500 ? 96 : 0)) || 0,
+			...options
+		});
 	}
 }
 
