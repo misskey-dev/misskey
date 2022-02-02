@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import { computed, ComputedRef, isRef, nextTick, onActivated, onBeforeUnmount, onDeactivated, onMounted, ref, watch } from 'vue';
+import { computed, ComputedRef, isRef, nextTick, onActivated, onBeforeUnmount, onDeactivated, onMounted, ref, watch, watchEffect } from 'vue';
 import * as misskey from 'misskey-js';
 import * as os from '@/os';
 import { onScrollTop, isTopVisible, getBodyScrollHeight, getScrollContainer, onScrollBottom, scrollToBottom, scroll, isBottomVisible } from '@/scripts/scroll';
@@ -130,7 +130,8 @@ const observer = new IntersectionObserver(entries => {
 	}
 });
 
-watch([items, $$(itemsContainer), $$(rootEl)], observeLatestElement);
+watch([$$(itemsContainer), $$(rootEl)], observeLatestElement);
+watch(items, observeLatestElement, { deep: true });
 
 function observeLatestElement() {
 	observer.disconnect();
@@ -141,7 +142,7 @@ function observeLatestElement() {
 	});
 }
 
-watch($$(backed), () => {
+watch([$$(backed), $$(contentEl)], () => {
 	if (!backed) {
 		if (!contentEl) return;
 
@@ -151,7 +152,7 @@ watch($$(backed), () => {
 				prepend(item, true);
 			}
 			queue.value = [];
-		});
+		}, 16);
 	} else {
 		if (scrollRemove) scrollRemove();
 		scrollRemove = null;

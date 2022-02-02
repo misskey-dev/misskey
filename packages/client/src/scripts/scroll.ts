@@ -25,7 +25,7 @@ export function getScrollPosition(el: HTMLElement | null): number {
 	return container == null ? window.scrollY : container.scrollTop;
 }
 
-export function onScrollTop(el: HTMLElement, cb: Function) {
+export function onScrollTop(el: HTMLElement, cb: Function, asobi: number = 1) {
 	// とりあえず評価してみる
 	if (isTopVisible(el)) {
 		cb();
@@ -36,7 +36,7 @@ export function onScrollTop(el: HTMLElement, cb: Function) {
 
 	const onScroll = ev => {
 		if (!document.body.contains(el)) return;
-		if (isTopVisible(el)) {
+		if (isTopVisible(el, asobi)) {
 			cb();
 			removeListener();
 		}
@@ -47,11 +47,11 @@ export function onScrollTop(el: HTMLElement, cb: Function) {
 	return removeListener;
 }
 
-export function onScrollBottom(el: HTMLElement, cb: Function) {
+export function onScrollBottom(el: HTMLElement, cb: Function, asobi: number = 1) {
 	const container = getScrollContainer(el);
 
 	// とりあえず評価してみる
-	if (isBottomVisible(el, 1, container)) {
+	if (isBottomVisible(el, asobi, container)) {
 		cb();
 		return null;
 	}
