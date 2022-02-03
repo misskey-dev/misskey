@@ -52,6 +52,37 @@ searchUser: "Hľadať používateľov"
 reply: "Odpovedať"
 loadMore: "Zobraziť viac"
 showMore: "Zobraziť viac"
+youGotNewFollower: "Máte nového sledujúceho"
+receiveFollowRequest: "Žiadosť o sledovanie prijatá"
+followRequestAccepted: "Žiadosť o sledovanie akceptovaná"
+mention: "Zmienka"
+mentions: "Zmienky"
+directNotes: "Priame poznámky"
+importAndExport: "Import a export"
+import: "Importovať"
+export: "Exportovať"
+files: "Súbor/y"
+download: "Stiahnuť"
+driveFileDeleteConfirm: "Naozaj chcete odstrániť súbor \"{name}\"? Poznámky s týmto súborom sa odstránia tiež."
+unfollowConfirm: "Naozaj už nechcete sledovať {name}?"
+exportRequested: "Vyžiadali ste export. Môže to chvíľu trvať. Po skončení pribudne na vašom disku."
+importRequested: "Požiadali ste o export. Môže to chvíľu trvať."
+lists: "Zoznamy"
+noLists: "Nemáte žiadne zoznamy"
+note: "Poznámka"
+notes: "Poznámky"
+following: "Sledujete"
+followers: "Sledujúci"
+followsYou: "Sledujú vás"
+createList: "Vytvoriť zoznam"
+manageLists: "Spravovať zoznamy"
+error: "Chyba"
+somethingHappened: "Ups. Niečo sa nepodarilo."
+retry: "Opakovať"
+pageLoadError: "Nepodarilo sa načítať stránku"
+pageLoadErrorDescription: "Toto môže byť spôsobené problémami so sieťou alebo cachou prehliadača. Skúste vyčistiť cache a potom skúsiť znova po chvíli."
+serverIsDead: "Tento server nereaguje. Prosím chvíľu počkajte a skúste znova."
+follow: "Sledujete"
 pinned: "Pripnúť"
 sensitive: "NSFW"
 add: "Pridať"
@@ -205,6 +236,7 @@ antennaKeywords: "Počúvané kľúčové slová"
 antennaExcludeKeywords: "Vylúčené kľúčové slová"
 antennaKeywordsDescription: "Oddeľte medzerami pre podmienku AND alebo novými riadkami pre podmienku OR."
 notifyAntenna: "Upozorniť na nové poznámky"
+userList: "Zoznamy"
 ownedGroups: "Vlastnené skupiny"
 joinedGroups: "Členstvo v skupinách"
 invites: "Pozvať"
@@ -482,6 +514,7 @@ _aboutMisskey:
   allContributors: "Všetci prispievatelia"
   source: "Zdrojový kód"
 _mfm:
+  mention: "Zmienka"
   center: "Vystrediť prvky"
   emoji: "Vlastné emoji"
   search: "Hľadať"
@@ -545,6 +578,7 @@ _theme:
   description: "Popis"
   defaultValue: "Predvolená hodnota"
   keys:
+    mention: "Zmienka"
     divider: "Oddeľovač"
     infoFg: "Informačný text"
     infoWarnBg: "Pozadie varovania"
@@ -665,13 +699,16 @@ _poll:
   vote: "Hlasovať"
 _visibility:
   home: "Domov"
+  followers: "Sledujúci"
 _profile:
   name: "Názov"
   username: "Meno používateľa"
 _exportOrImport:
   allNotes: "Všetky poznámky"
+  followingList: "Sledujete"
   muteList: "Vypnúť zvuk"
   blockingList: "Zablokovať"
+  userLists: "Zoznamy"
 _instanceCharts:
   requests: "Žiadosti"
   users: "Rozdiel v počte používateľov"
@@ -803,6 +840,7 @@ _pages:
     categories:
       flow: "Riadenie behu"
       logical: "Logická operácia"
+      list: "Zoznamy"
     blocks:
       text: "Text"
       _strLen:
@@ -813,6 +851,8 @@ _pages:
         arg1: "Text"
       _strReverse:
         arg1: "Text"
+      _join:
+        arg1: "Zoznamy"
       _gt:
         arg1: "A"
         arg2: "B"
@@ -889,9 +929,13 @@ _pages:
       aiScriptVar: "AiScript premenná"
     types:
       string: "Text"
+      array: "Zoznamy"
 _notification:
+  youWereFollowed: "Máte nového sledujúceho"
   youWereInvitedToGroup: "Pozvať do skupiny"
   _types:
+    follow: "Sledujete"
+    mention: "Zmienka"
     reaction: "Reakcie"
 _deck:
   swapDown: "Vymeniť s nasledujúcim"
