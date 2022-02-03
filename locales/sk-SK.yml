@@ -1003,6 +1003,8 @@ _tutorial:
   step5_2: "{featured} zobrazí populárne poznámku na tomto serveri. {explore} môžete objavovať populárnych používateľov. Skúste tam nájsť ľudí, ktorých by ste radi sledovali!"
   step5_3: "Ak chcete sledovať ďalších používateľov, kliknite na ich ikonu a stlačte tlačidlo \"Sledovať\" na ich profile."
   step5_4: "Ak má niektorý používateľ ikonu zámku vedľa svojho mena, znamená to, že môže trvať určitý čas, kým daný používateľ schváli vašu žiadosť o sledovanie."
+  step6_1: "Teraz by ste mali vidieť poznámky ďalších používateľov na svojej časovej osi."
+  step6_2: "Môžete dať \"reakcie\" na poznámky ďalších ľudí ako rýchlu odpoveď."
 _auth:
   shareAccess: "Prajete si povoliť \"{name}\", aby mal prístup k tomuto účtu?"
   shareAccessAsk: "Naozaj chcete povoliť tejto aplikácii prístup k tomuto účtu?"
