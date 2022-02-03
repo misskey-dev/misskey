@@ -143,13 +143,7 @@ watch([$$(backed), $$(contentEl)], () => {
 	if (!backed) {
 		if (!contentEl) return;
 
-		scrollRemove = (props.pagination.reversed ? onScrollBottom : onScrollTop)(contentEl, () => {
-			if (queue.value.length === 0) return;
-			for (const item of queue.value) {
-				prepend(item, true);
-			}
-			queue.value = [];
-		}, 16);
+		scrollRemove = (props.pagination.reversed ? onScrollBottom : onScrollTop)(contentEl, executeQueue, 16);
 	} else {
 		if (scrollRemove) scrollRemove();
 		scrollRemove = null;
@@ -294,7 +288,7 @@ const fetchMoreAhead = async (): Promise<void> => {
 	});
 };
 
-const prepend = (item: MisskeyEntity, force = false): void => {
+const prepend = (item: MisskeyEntity): void => {
 	// 初回表示時はunshiftだけでOK
 	if (!rootEl) {
 		items.value.unshift(item);
@@ -303,25 +297,31 @@ const prepend = (item: MisskeyEntity, force = false): void => {
 
 	const isTop = isBackTop.value || (props.pagination.reversed ? isBottomVisible : isTopVisible)(contentEl);
 
-	if (isTop || force) {
-		// Prepend the item
-		items.value.unshift(item);
-
-		// オーバーフローしたら古いアイテムは捨てる
-		if (items.value.length >= props.displayLimit) {
-			// このやり方だとVue 3.2以降アニメーションが動かなくなる
-			//this.items = items.value.slice(0, props.displayLimit);
-			while (items.value.length >= props.displayLimit) {
-				items.value.pop();
-			}
-			more.value = true;
-		}
-	} else {
-		queue.value.push(item);
-	}
+	if (isTop) unshiftItems([item]);
+	else prependQueue(item);
 };
 
-const append = (item: MisskeyEntity): void => {
+function unshiftItems(newItems: MisskeyEntity[]) {
+	const length = newItems.length + items.value.length;
+	items.value = [ ...newItems, ...items.value ].slice(0, props.displayLimit);
+
+	if (length >= props.displayLimit) more.value = true;
+}
+
+function executeQueue() {
+	if (queue.value.length === 0) return;
+	unshiftItems(queue.value);
+	queue.value = [];
+}
+
+function prependQueue(newItem: MisskeyEntity) {
+	queue.value.unshift(newItem);
+	if (queue.value.length >= props.displayLimit) {
+		queue.value.pop();
+	}
+}
+
+const appendItem = (item: MisskeyEntity): void => {
 	items.value.push(item);
 };
 
@@ -372,7 +372,7 @@ defineExpose({
 	reload,
 	fetchMoreAhead,
 	prepend,
-	append,
+	append: appendItem,
 	updateItem,
 });
 </script>
