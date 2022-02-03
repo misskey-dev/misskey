@@ -251,11 +251,14 @@ function onIndicatorClick() {
 	thisScrollToBottom();
 }
 
+let scrollRemove: (() => void) | null = $ref(null);
+
 function notifyNewMessage() {
 	showIndicator = true;
 
-	onScrollBottom(rootEl, () => {
+	scrollRemove = onScrollBottom(rootEl, () => {
 		showIndicator = false;
+		scrollRemove = null;
 	});
 }
 
@@ -277,6 +280,7 @@ onMounted(() => {
 onBeforeUnmount(() => {
 	connection?.dispose();
 	document.removeEventListener('visibilitychange', onVisibilitychange);
+	if (scrollRemove) scrollRemove();
 });
 
 defineExpose({
