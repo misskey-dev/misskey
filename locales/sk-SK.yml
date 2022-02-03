@@ -832,11 +832,61 @@ _pages:
       not: "Opak"
       _not:
         arg1: "Opak"
+      random: "Náhodné"
+      _random:
+        arg1: "Pravdepodobnosť"
+      rannum: "Náhodné číslo"
+      _rannum:
+        arg1: "Minimálna hodnota"
+        arg2: "Maximálna hodnota"
+      randomPick: "Náhodný výber zo zoznamu"
+      _randomPick:
+        arg1: "Zoznam"
+      dailyRandom: "Náhodne (zmení sa raz denne pre každého používateľa)"
+      _dailyRandom:
+        arg1: "Pravdepodobnosť"
+      dailyRannum: "Náhodné číslo (Mení sa denne pre každého používateľa)"
+      _dailyRannum:
+        arg1: "Minimálna hodnota"
+        arg2: "Maximálna hodnota"
+      dailyRandomPick: "Náhodný výber zo zoznamu (Mení sa denne pre každého používateľa)"
+      _dailyRandomPick:
+        arg1: "Zoznam"
+      seedRandom: "Náhodne (so seedom)"
+      _seedRandom:
+        arg1: "Seed"
+        arg2: "Pravdepodobnosť"
+      seedRannum: "Náhodné číslo (so seedom)"
+      _seedRannum:
+        arg1: "Seed"
+        arg2: "Minimálna hodnota"
+        arg3: "Maximálna hodnota"
+      seedRandomPick: "Náhodný výber zo zoznamu (so seedom)"
+      _seedRandomPick:
+        arg1: "Seed"
+        arg2: "Zoznam"
+      DRPWPM: "Náhodný výber z váženého zoznamu (Mení sa denne pre každého používateľa)"
+      _DRPWPM:
+        arg1: "Zoznam textov"
+      pick: "Vybrať zo zoznamu"
+      _pick:
+        arg1: "Zoznam"
+        arg2: "Pozícia"
+      listLen: "Získať dĺžku zoznamu"
+      _listLen:
+        arg1: "Zoznam"
+      number: "Číslo"
+      stringToNumber: "Text na číslo"
       _stringToNumber:
         arg1: "Text"
+      numberToString: "Číslo na text"
+      _numberToString:
+        arg1: "Číslo"
+      splitStrByLine: "Rozdelí text po riadkoch"
       _splitStrByLine:
         arg1: "Text"
       ref: "Premenné"
+      aiScriptVar: "AiScript premenná"
     types:
       string: "Text"
 _notification:
@@ -844,7 +894,16 @@ _notification:
   _types:
     reaction: "Reakcie"
 _deck:
+  swapDown: "Vymeniť s nasledujúcim"
+  stackLeft: "Priložiť do ľavého stĺpca"
+  popRight: "Vybrať napravo"
+  profile: "Profil"
   _columns:
+    main: "Hlavný"
+    widgets: "Widgety"
     notifications: "Oznámenia"
     tl: "Časová os"
     antenna: "Antény"
+    list: "Zoznam"
+    mentions: "Zmienky"
+    direct: "Priame poznámky"
