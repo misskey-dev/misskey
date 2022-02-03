@@ -67,8 +67,6 @@
 		"@types/tmp": "0.2.3",
 		"@types/uuid": "8.3.4",
 		"@types/web-push": "3.3.2",
-		"@types/webpack": "5.28.0",
-		"@types/webpack-stream": "3.2.12",
 		"@types/websocket": "1.0.4",
 		"@types/ws": "8.2.2",
 		"@typescript-eslint/eslint-plugin": "5.10.0",
