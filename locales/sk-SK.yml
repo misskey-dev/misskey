@@ -588,6 +588,17 @@ smtpPort: "Port"
 smtpUser: "Meno používateľa"
 smtpPass: "Heslo"
 emptyToDisableSmtpAuth: "Vynechaním mena hesla vypnete SMTP verifikáciu"
+smtpSecure: "Použiť implicitné SSL/TLS pre SMTP spojenia"
+smtpSecureInfo: "Toto vypnite keď používate STARTTLS"
+testEmail: "Doručenie testovacieho emailu"
+wordMute: "Stíšenie slova"
+instanceMute: "Stíšené servery"
+userSaysSomething: "{name} niečo povedal/a"
+makeActive: "Aktivovať"
+display: "Zobraziť"
+copy: "Kopírovať"
+metrics: "Metriky"
+overview: "Prehľad"
 other: "Ostatní"
 regenerateLoginToken: "Pregenerovať prihlasovací token"
 regenerateLoginTokenDescription: "Pregeneruje token interne používaný počas prihlásenia. Normálne toto netreba robiť. Ak sa pregeneruje, všetky zariadenia sa odhlásia."
@@ -671,6 +682,7 @@ sendErrorReports: "Poslať nahlásenie chyby"
 backgroundColor: "Pozadie"
 accentColor: "Akcent"
 textColor: "Text"
+value: "Hodnoty"
 currentVersion: "Aktuálna verzia"
 latestVersion: "Najnovšia verzia"
 youAreRunningUpToDateClient: "Používate najnovšiu verziu vášho klienta."
@@ -1111,6 +1123,15 @@ _charts:
   federationInstancesTotal: "Celkový počet federovaných serverov"
   usersIncDec: "Rozdiel v počte používateľov"
   usersTotal: "Celkový počet používateľov"
+  activeUsers: "Aktívni používatelia"
+  notesIncDec: "Rozdiel v počte poznámok"
+  localNotesIncDec: "Rozdiel v počte lokálnych poznámok"
+  remoteNotesIncDec: "Rozdiel v počte vzdialených poznámok"
+  notesTotal: "Celkový počet poznámok"
+  filesIncDec: "Rozdiel v počte súborov"
+  filesTotal: "Celkový počet súborov"
+  storageUsageIncDec: "Rozdiel využitého úložiska"
+  storageUsageTotal: "Celkové využité úložisko"
 _instanceCharts:
   requests: "Žiadosti"
   users: "Rozdiel v počte používateľov"
@@ -1165,6 +1186,9 @@ _pages:
   selectType: "Vyberte typ"
   enterVariableName: "Zadajte meno premennej"
   variableNameIsAlreadyUsed: "Meno premennej s už používa"
+  contentBlocks: "Obsah"
+  inputBlocks: "Vstup"
+  specialBlocks: "Špeciálne"
   blocks:
     text: "Text"
     textarea: "Textové pole"
@@ -1242,19 +1266,60 @@ _pages:
     categories:
       flow: "Riadenie behu"
       logical: "Logická operácia"
+      operation: "Výpočet"
+      comparison: "Porovnanie"
+      random: "Náhodné"
+      value: "Hodnoty"
+      fn: "Funkcie"
+      text: "Textové operácie"
+      convert: "Transformácie"
       list: "Zoznamy"
     blocks:
       text: "Text"
+      multiLineText: "Text (viacriadkový)"
+      textList: "Zoznam textov"
+      _textList:
+        info: "Oddeľte každú položku novým riadkom"
+      strLen: "Dĺžka textu"
       _strLen:
         arg1: "Text"
+      strPick: "Vybrať znak"
       _strPick:
         arg1: "Text"
+        arg2: "Pozícia znaku"
+      strReplace: "Náhradný text"
       _strReplace:
         arg1: "Text"
+        arg2: "Nahradený text"
+        arg3: "Nahradiť s"
+      strReverse: "Otočiť text"
       _strReverse:
         arg1: "Text"
+      join: "Spojiť texty"
       _join:
         arg1: "Zoznamy"
+        arg2: "Oddeľovač"
+      add: "Pridať"
+      _add:
+        arg1: "A"
+      _subtract:
+        arg1: "A"
+      _multiply:
+        arg1: "A"
+      _divide:
+        arg1: "A"
+      _mod:
+        arg1: "A"
+      _eq:
+        arg1: "A"
+      _notEq:
+        arg1: "A"
+      _and:
+        arg1: "A"
+      _or:
+        arg1: "A"
+      _lt:
+        arg1: "A"
       _gt:
         arg1: "A"
         arg2: "B"
@@ -1329,9 +1394,11 @@ _pages:
         arg1: "Text"
       ref: "Premenné"
       aiScriptVar: "AiScript premenná"
+      fn: "Funkcie"
     types:
       string: "Text"
       array: "Zoznamy"
+      stringArray: "Zoznam textov"
 _notification:
   youWereFollowed: "Máte nového sledujúceho"
   youWereInvitedToGroup: "Pozvať do skupiny"
@@ -1341,7 +1408,20 @@ _notification:
     renote: "Preposlať"
     quote: "Citovať"
     reaction: "Reakcie"
+    pollVote: "Hlasy v hlasovaniach"
+    receiveFollowRequest: "Doručené žiadosti o sledovanie"
+    followRequestAccepted: "Schválené žiadosti o sledovanie"
+    groupInvited: "Pozvánky do skupín"
+    app: "Oznámenia z prepojených aplikácií"
 _deck:
+  alwaysShowMainColumn: "Vždy zobraziť v hlavnom stĺpci"
+  columnAlign: "Zarovnať stĺpce"
+  columnMargin: "Rozostup medzi stĺpcami"
+  columnHeaderHeight: "Výška hlavičky stĺpca"
+  addColumn: "Pridať stĺpec"
+  swapLeft: "Vymeniť vľavo"
+  swapRight: "Vymeniť vpravo"
+  swapUp: "Vymeniť hore"
   swapDown: "Vymeniť s nasledujúcim"
   stackLeft: "Priložiť do ľavého stĺpca"
   popRight: "Vybrať napravo"
