@@ -258,6 +258,7 @@ disableAnimatedMfm: "Vypnúť MFM s animáciou"
 doing: "Pracujem..."
 category: "Kategórie"
 local: "Lokálne"
+none: "Žiadne"
 details: "Detaily"
 chooseEmoji: "Vybrať emoji"
 unableToProcess: "Operáciu sa nepodarilo dokončiť."
@@ -784,11 +785,24 @@ _pages:
           content: "Obsah"
         resetRandom: "Resetovať zdroj náhodnosti"
         pushEvent: "Poslať udalosť"
+        _pushEvent:
+          event: "Názov udalosti"
+          message: "Zobrazená správa po aktivácii"
+          variable: "Odoslaná premenná"
+          no-variable: "Žiadne"
+        callAiScript: "Spustiť AiScript"
+        _callAiScript:
+          functionName: "Názov funkcie"
+    radioButton: "Možnosť"
     _radioButton:
       name: "Meno premennej"
       title: "Nadpis"
+      values: "Zoznam možností oddelené novými riadkami"
       default: "Predvolená hodnota"
   script:
+    categories:
+      flow: "Riadenie behu"
+      logical: "Logická operácia"
     blocks:
       text: "Text"
       _strLen:
@@ -799,8 +813,25 @@ _pages:
         arg1: "Text"
       _strReverse:
         arg1: "Text"
+      _gt:
+        arg1: "A"
+        arg2: "B"
+      ltEq: "<= A je menšie alebo rovné B"
+      _ltEq:
+        arg1: "A"
+        arg2: "B"
+      gtEq: ">= A je väčšie alebo rovné B"
+      _gtEq:
+        arg1: "A"
+        arg2: "B"
+      if: "Vetva"
       _if:
         arg1: "Ak"
+        arg2: "Potom"
+        arg3: "Inak"
+      not: "Opak"
+      _not:
+        arg1: "Opak"
       _stringToNumber:
         arg1: "Text"
       _splitStrByLine:
