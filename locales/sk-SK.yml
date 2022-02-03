@@ -308,6 +308,8 @@ description: "Popis"
 describeFile: "Pridať nadpis"
 enterFileDescription: "Zadajte nadpis"
 author: "Autor"
+width: "Šírka"
+height: "Výška"
 smtpUser: "Meno používateľa"
 smtpPass: "Heslo"
 other: "Ostatní"
@@ -479,6 +481,7 @@ _aboutMisskey:
   allContributors: "Všetci prispievatelia"
   source: "Zdrojový kód"
 _mfm:
+  center: "Vystrediť prvky"
   emoji: "Vlastné emoji"
   search: "Hľadať"
   spin: "Animácia (rotácia)"
@@ -539,6 +542,7 @@ _instanceMute:
 _theme:
   explore: "Objavovať témy"
   description: "Popis"
+  defaultValue: "Predvolená hodnota"
   keys:
     divider: "Oddeľovač"
     infoFg: "Informačný text"
@@ -699,8 +703,98 @@ _pages:
   viewSource: "Ukázať zdroj"
   viewPage: "Ukázať vaše stránky"
   like: "Páči sa mi"
+  unlike: "Nepáči sa mi"
+  my: "Moje stránky"
+  liked: "Obľúbené stránky"
+  featured: "Význačné"
+  inspector: "Inšpektor"
+  contents: "Obsah"
+  content: "Blok stránky"
+  variables: "Premenné"
+  title: "Nadpis"
+  url: "URL stránky"
+  summary: "Zhrnutie stránky"
+  alignCenter: "Vystrediť prvky"
+  hideTitleWhenPinned: "Skryť nadpis stránky keď je pripnutá na profil"
+  font: "Písmo"
+  fontSerif: "Pätkové"
+  fontSansSerif: "Bezpätkové"
+  eyeCatchingImageSet: "Nastaviť miniatúru"
+  eyeCatchingImageRemove: "Odstrániť miniatúru"
+  chooseBlock: "Pridať blok"
+  selectType: "Vyberte typ"
+  enterVariableName: "Zadajte meno premennej"
+  variableNameIsAlreadyUsed: "Meno premennej s už používa"
   blocks:
+    text: "Text"
+    textarea: "Textové pole"
+    section: "Sekcia"
     image: "Obrázky"
+    button: "Tlačidlo"
+    if: "Ak"
+    _if:
+      variable: "Premenné"
+    post: "Napísať poznámku"
+    _post:
+      text: "Obsah"
+      attachCanvasImage: "Príspevok s obrázkom na plátne"
+      canvasId: "ID plátna"
+    textInput: "Textový vstup"
+    _textInput:
+      name: "Meno premennej"
+      text: "Nadpis"
+      default: "Predvolená hodnota"
+    textareaInput: "Viacriadkový textový vstup"
+    _textareaInput:
+      name: "Meno premennej"
+      text: "Nadpis"
+      default: "Predvolená hodnota"
+    numberInput: "Číselný vstup"
+    _numberInput:
+      name: "Meno premennej"
+      text: "Nadpis"
+      default: "Predvolená hodnota"
+    canvas: "Plátno"
+    _canvas:
+      id: "ID plátna"
+      width: "Šírka"
+      height: "Výška"
+    note: "Vložená poznámka"
+    _note:
+      id: "ID poznámky"
+    _switch:
+      name: "Meno premennej"
+      text: "Nadpis"
+      default: "Predvolená hodnota"
+    _counter:
+      name: "Meno premennej"
+      text: "Nadpis"
+    _button:
+      text: "Nadpis"
+    _radioButton:
+      name: "Meno premennej"
+      title: "Nadpis"
+      default: "Predvolená hodnota"
+  script:
+    blocks:
+      text: "Text"
+      _strLen:
+        arg1: "Text"
+      _strPick:
+        arg1: "Text"
+      _strReplace:
+        arg1: "Text"
+      _strReverse:
+        arg1: "Text"
+      _if:
+        arg1: "Ak"
+      _stringToNumber:
+        arg1: "Text"
+      _splitStrByLine:
+        arg1: "Text"
+      ref: "Premenné"
+    types:
+      string: "Text"
 _notification:
   youWereInvitedToGroup: "Pozvať do skupiny"
   _types:
