@@ -762,15 +762,28 @@ _pages:
     note: "Vložená poznámka"
     _note:
       id: "ID poznámky"
+      idDescription: "Alebo môžete vložiť URL poznámky sem"
+      detailed: "Podrobný pohľad"
+    switch: "Prepnúť"
     _switch:
       name: "Meno premennej"
       text: "Nadpis"
       default: "Predvolená hodnota"
+    counter: "Počítadlo"
     _counter:
       name: "Meno premennej"
       text: "Nadpis"
+      inc: "Pripočítať"
     _button:
       text: "Nadpis"
+      colored: "Farebné"
+      action: "Operácia po stlačení tlačidla"
+      _action:
+        dialog: "Zobraziť dialóg"
+        _dialog:
+          content: "Obsah"
+        resetRandom: "Resetovať zdroj náhodnosti"
+        pushEvent: "Poslať udalosť"
     _radioButton:
       name: "Meno premennej"
       title: "Nadpis"
