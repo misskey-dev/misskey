@@ -87,7 +87,7 @@
 		"cli-highlight": "2.1.11",
 		"content-disposition": "0.5.4",
 		"crc-32": "1.2.1",
-		"dateformat": "5.0.2",
+		"dateformat": "4.5.1",
 		"deep-email-validator": "0.1.21",
 		"escape-regexp": "0.0.1",
 		"eslint": "8.8.0",
