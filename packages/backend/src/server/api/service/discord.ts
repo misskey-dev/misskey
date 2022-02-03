@@ -11,18 +11,18 @@ import { fetchMeta } from '@/misc/fetch-meta';
 import { Users, UserProfiles } from '@/models/index';
 import { ILocalUser } from '@/models/entities/user';
 
-function getUserToken(ctx: Koa.Context) {
+function getUserToken(ctx: Koa.BaseContext): string | null {
 	return ((ctx.headers['cookie'] || '').match(/igi=(\w+)/) || [null, null])[1];
 }
 
-function compareOrigin(ctx: Koa.Context) {
-	function normalizeUrl(url: string) {
+function compareOrigin(ctx: Koa.BaseContext): boolean {
+	function normalizeUrl(url?: string): string {
 		return url ? url.endsWith('/') ? url.substr(0, url.length - 1) : url : '';
 	}
 
 	const referer = ctx.headers['referer'];
 
-	return (normalizeUrl(referer) == normalizeUrl(config.url));
+	return (normalizeUrl(referer) === normalizeUrl(config.url));
 }
 
 // Init router
