@@ -584,6 +584,37 @@ _time:
 _tutorial:
   title: "Ako používať Misskey"
   step1_1: "Vitajte!"
+  step1_2: "Táto stránka sa volá \"časová os\". Zobrazuje chronologicky zoradené \"poznámky\" od ľudí, ktorých sledujete."
+  step1_3: "Vaša časová os je teraz prázdna pretože ste nepridali žiadne poznámky ani nikoho zatiaľ nesledujete."
+  step2_1: "Podˇme dokončiť nastavenia vášho profilu pred napísaním poznámky alebo sledovaním niekoho."
+  step2_2: "Poskytnutím informácií o vás uľahčíte ostatným, či chcú vidieť alebo sledovať vaše poznámky."
+  step3_1: "Dokončili ste nastavovanie svojho profilu?"
+  step3_2: "Poďme vyskúšať napísať poznámku. Môžete to spraviť stlačením ikony ceruzky na vrchu obrazovky."
+  step3_3: "Vyplňte polia a stlačte tlačítko vpravo hore."
+  step3_4: "Nemáte čo povedať? Skúste \"len si nastavujem môj msky\"!"
+  step4_1: "Napísali ste svoju prvú poznámku?"
+  step4_2: "Hurá! Teraz by vaša prvá poznámka mala byť na vašej časovej osi."
+_auth:
+  shareAccess: "Prajete si povoliť \"{name}\", aby mal prístup k tomuto účtu?"
+  shareAccessAsk: "Naozaj chcete povoliť tejto aplikácii prístup k tomuto účtu?"
+  permissionAsk: "Táto aplikácia vyžaduje nasledujúce nastavenia"
+  pleaseGoBack: "Prosím prejdite späť na aplikáciu"
+  callback: "Vraciam sa späť na aplikáciu"
+  denied: "Prístup zamietnutý"
+_antennaSources:
+  all: "Všetky poznámky"
+  homeTimeline: "Poznámky od sledovaného používateľa"
+  users: "Poznámky od konkrétneho používateľa"
+  userList: "Poznámky od používateľov v zozname"
+  userGroup: "Poznámky od používateľov z konkrétnej skupiny."
+_weekday:
+  sunday: "Nedeľa"
+  monday: "Pondelok"
+  tuesday: "Utorok"
+  wednesday: "Streda"
+  thursday: "Štvrtok"
+  friday: "Piatok"
+  saturday: "Sobota"
 _widgets:
   notifications: "Oznámenia"
   timeline: "Časová os"
@@ -598,6 +629,7 @@ _profile:
   name: "Názov"
   username: "Meno používateľa"
 _exportOrImport:
+  allNotes: "Všetky poznámky"
   muteList: "Vypnúť zvuk"
   blockingList: "Zablokovať"
 _timelines:
