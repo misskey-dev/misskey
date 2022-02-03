@@ -1178,7 +1178,13 @@ _visibility:
   localOnlyDescription: "Vzdialený používatelia nebudú vidieť"
 _postForm:
   replyPlaceholder: "Odpoveď na túto poznámku..."
+  quotePlaceholder: "Citovanie tejto poznámky..."
+  channelPlaceholder: "Poslať do kanála..."
   _placeholders:
+    a: "Čo máte v pláne?"
+    b: "Čo sa deje?"
+    c: "O čom rozmýšľaš?"
+    d: "Čo chcete povedať?"
     e: "Začnite písať..."
     f: "Čaká sa na písanie..."
 _profile:
@@ -1385,24 +1391,47 @@ _pages:
       add: "Pridať"
       _add:
         arg1: "A"
+        arg2: "B"
+      subtract: "Odčítať"
       _subtract:
         arg1: "A"
+        arg2: "B"
+      multiply: "Násobiť"
       _multiply:
         arg1: "A"
+        arg2: "B"
+      divide: "Deliť"
       _divide:
         arg1: "A"
+        arg2: "B"
+      mod: "Zvyšok po delení"
       _mod:
         arg1: "A"
+        arg2: "B"
+      round: "Zaokrúhliť"
+      _round:
+        arg1: "Číslo"
+      eq: "A a B sa rovnajú"
       _eq:
         arg1: "A"
+        arg2: "B"
+      notEq: "A a B sa nerovnajú"
       _notEq:
         arg1: "A"
+        arg2: "B"
+      and: "A a zároveň B"
       _and:
         arg1: "A"
+        arg2: "B"
+      or: "A alebo B"
       _or:
         arg1: "A"
+        arg2: "B"
+      lt: "< A je menšie ako B"
       _lt:
         arg1: "A"
+        arg2: "B"
+      gt: "> A je väčšie ako B"
       _gt:
         arg1: "A"
         arg2: "B"
@@ -1478,16 +1507,44 @@ _pages:
       ref: "Premenné"
       aiScriptVar: "AiScript premenná"
       fn: "Funkcie"
+      _fn:
+        slots: "Sloty"
+        slots-info: "Oddeľte každý slot novým riadkom"
+        arg1: "Výstup"
+      for: "For cyklus"
+      _for:
+        arg1: "Počet opakovaní"
+        arg2: "Akcia"
+    typeError: "Slot {slot} akceptuje hodnoty typu \"{expect}\", ale dodaná hodnota je typu \"{actual}\"!"
+    thereIsEmptySlot: "Slot {slot} je prázdny!"
     types:
       string: "Text"
+      number: "Číslo"
+      boolean: "Boolean"
       array: "Zoznamy"
       stringArray: "Zoznam textov"
+    emptySlot: "Prázdny slot"
+    enviromentVariables: "Premenné prostredia"
+    pageVariables: "Premenné stránky"
+    argVariables: "Vstupné sloty"
+_relayStatus:
+  requesting: "Čaká sa"
+  accepted: "Akceptované"
+  rejected: "Odmietnuté"
 _notification:
+  fileUploaded: "Súbor sa úspešne nahral"
+  youGotMention: "{name} vás spomenul/a"
+  youGotReply: "{name} vám odpovedal/a"
+  youGotQuote: "{name} vás citoval/a"
+  youRenoted: "{name} preposlal/a vašu poznámku"
+  youGotPoll: "{name} hlasoval/a"
+  youGotMessagingMessageFromUser: "{name} vám poslal/a správu"
   youWereFollowed: "Máte nového sledujúceho"
   youWereInvitedToGroup: "Pozvať do skupiny"
   _types:
     follow: "Sledujete"
     mention: "Zmienka"
+    reply: "Odpovede"
     renote: "Preposlať"
     quote: "Citovať"
     reaction: "Reakcie"
