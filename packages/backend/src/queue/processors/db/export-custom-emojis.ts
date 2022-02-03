@@ -7,7 +7,7 @@ const mime = require('mime-types');
 const archiver = require('archiver');
 import { queueLogger } from '../../logger';
 import { addFile } from '@/services/drive/add-file';
-import * as dateFormat from 'dateformat';
+import dateFormat from 'dateformat';
 import { Users, Emojis } from '@/models/index';
 import {  } from '@/queue/types';
 import { downloadUrl } from '@/misc/download-url';
