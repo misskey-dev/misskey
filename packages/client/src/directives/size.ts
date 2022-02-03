@@ -1,68 +1,84 @@
 import { Directive } from 'vue';
 
+type Value = { max?: number[]; min?: number[]; };
+
+const addClass = (el: Element, cls: string) => {
+	el.classList.add(cls);
+};
+
+const removeClass = (el: Element, cls: string) => {
+	el.classList.remove(cls);
+};
+
 //const observers = new Map<Element, ResizeObserver>();
+const mountings = new Map<Element, {
+	value: Value;
+	resize: ResizeObserver;
+	intersection: IntersectionObserver;
+	previousWidth: number;
+}>();
+
+function calc(el: Element) {
+	const info = mountings.get(el);
+	const width = el.clientWidth;
+
+	if (!info || !width || info.previousWidth === width) return;
+
+	mountings.set(el, Object.assign(info, { previousWidth: width }));
+
+	if (info.value.max) {
+		for (const v of info.value.max) {
+			if (width <= v) {
+				addClass(el, 'max-width_' + v + 'px');
+			} else {
+				removeClass(el, 'max-width_' + v + 'px');
+			}
+		}
+	}
+	if (info.value.min) {
+		for (const v of info.value.min) {
+			if (width >= v) {
+				addClass(el, 'min-width_' + v + 'px');
+			} else {
+				removeClass(el, 'min-width_' + v + 'px');
+			}
+		}
+	}
+}
 
 export default {
 	mounted(src, binding, vn) {
-		const query = binding.value;
+		const resize = new ResizeObserver((entries, observer) => {
+			calc(src);
+		});
 
-		const addClass = (el: Element, cls: string) => {
-			el.classList.add(cls);
-		};
+		// アクティベート前などでsrcが描画されていない場合があるので、
+		// IntersectionObserverで表示検出する
+		const intersection = new IntersectionObserver(entries => {
+			if (entries.some(entry => entry.isIntersecting)) calc(src);
+		});
 
-		const removeClass = (el: Element, cls: string) => {
-			el.classList.remove(cls);
-		};
+		mountings.set(src, {
+			value: binding.value,
+			resize,
+			intersection,
+			previousWidth: 0,
+		});
 
-		const calc = () => {
-			const width = src.clientWidth;
+		calc(src);
+		resize.observe(src);
+		intersection.observe(src);
+	},
 
-			// 要素が(一時的に)DOMに存在しないときは計算スキップ
-			if (width === 0) return;
-
-			if (query.max) {
-				for (const v of query.max) {
-					if (width <= v) {
-						addClass(src, 'max-width_' + v + 'px');
-					} else {
-						removeClass(src, 'max-width_' + v + 'px');
-					}
-				}
-			}
-			if (query.min) {
-				for (const v of query.min) {
-					if (width >= v) {
-						addClass(src, 'min-width_' + v + 'px');
-					} else {
-						removeClass(src, 'min-width_' + v + 'px');
-					}
-				}
-			}
-		};
-
-		calc();
-
-		window.addEventListener('resize', calc);
-
-		// Vue3では使えなくなった
-		// 無くても大丈夫か...？
-		// TODO: ↑大丈夫じゃなかったので解決策を探す
-		//vn.context.$on('hook:activated', calc);
-
-		//const ro = new ResizeObserver((entries, observer) => {
-		//	calc();
-		//});
-
-		//ro.observe(el);
-
-		// TODO: 新たにプロパティを作るのをやめMapを使う
-		// ただメモリ的には↓の方が省メモリかもしれないので検討中
-		//el._ro_ = ro;
-		src._calc_ = calc;
+	updated(src, binding, vn) {
+		mountings.set(src, Object.assign({}, mountings.get(src), { value: binding.value }));
 	},
 
 	unmounted(src, binding, vn) {
-		//el._ro_.unobserve(el);
-		window.removeEventListener('resize', src._calc_);
+		const info = mountings.get(src);
+		if (!info) return;
+		info.resize.observe(src);
+		info.intersection.observe(src);
+		mountings.delete(src);
 	}
-} as Directive;
+} as Directive<Element, Value>;
