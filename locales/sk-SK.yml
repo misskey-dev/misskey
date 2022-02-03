@@ -1005,6 +1005,8 @@ _tutorial:
   step5_4: "Ak má niektorý používateľ ikonu zámku vedľa svojho mena, znamená to, že môže trvať určitý čas, kým daný používateľ schváli vašu žiadosť o sledovanie."
   step6_1: "Teraz by ste mali vidieť poznámky ďalších používateľov na svojej časovej osi."
   step6_2: "Môžete dať \"reakcie\" na poznámky ďalších ľudí ako rýchlu odpoveď."
+  step6_3: "Reakciu pridáte kliknutím na \"+\" niekoho poznámke a vybratím emoji, ktorou chcete reagovať."
+  step7_1: "Gralujeme! Dokončili ste základného sprievodcu Misskey."
 _auth:
   shareAccess: "Prajete si povoliť \"{name}\", aby mal prístup k tomuto účtu?"
   shareAccessAsk: "Naozaj chcete povoliť tejto aplikácii prístup k tomuto účtu?"
