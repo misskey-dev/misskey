@@ -72,6 +72,7 @@ export default {
 
 	updated(src, binding, vn) {
 		mountings.set(src, Object.assign({}, mountings.get(src), { value: binding.value }));
+		calc(src);
 	},
 
 	unmounted(src, binding, vn) {
