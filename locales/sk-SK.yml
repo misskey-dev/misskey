@@ -1007,6 +1007,17 @@ _tutorial:
   step6_2: "Môžete dať \"reakcie\" na poznámky ďalších ľudí ako rýchlu odpoveď."
   step6_3: "Reakciu pridáte kliknutím na \"+\" niekoho poznámke a vybratím emoji, ktorou chcete reagovať."
   step7_1: "Gralujeme! Dokončili ste základného sprievodcu Misskey."
+  step7_2: "Ak sa chcete naučiť viac o Misskey, skúste sekciu {help}."
+  step7_3: "A teraz, veľa šťastia, bavte sa s Misskey! 🚀"
+_2fa:
+  alreadyRegistered: "Už ste zaregistrovali 2-faktorové autentifikačné zariadenie."
+  registerDevice: "Registrovať nové zariadenie"
+  registerKey: "Registrovať bezpečnostný kľúč"
+  step1: "Najprv si nainštalujte autentifikačnú aplikáciu (napríklad {a} alebo {b}) na svoje zariadenie."
+  step2: "Potom, naskenujte QR kód zobrazený na obrazovke."
+  step3: "Nastavenie dokončíte zadaním tokenu z vašej aplikácie."
+  step4: "Od teraz, všetky ďalšie prihlásenia budú vyžadovať prihlasovací token."
+  securityKeyInfo: "Okrem odtlačku prsta alebo PIN autentifikácie si môžete nastaviť autentifikáciu cez hardvérový bezpečnostný kľúč podporujúci FIDO2 a tak ešte viac zabezpečiť svoj účet."
 _auth:
   shareAccess: "Prajete si povoliť \"{name}\", aby mal prístup k tomuto účtu?"
   shareAccessAsk: "Naozaj chcete povoliť tejto aplikácii prístup k tomuto účtu?"
@@ -1071,15 +1082,35 @@ _poll:
 _visibility:
   home: "Domov"
   followers: "Sledujúci"
+_postForm:
+  _placeholders:
+    e: "Začnite písať..."
+    f: "Čaká sa na písanie..."
 _profile:
   name: "Názov"
   username: "Meno používateľa"
+  description: "Bio"
+  youCanIncludeHashtags: "Vo svojom bio môžete mať aj hashtagy."
+  metadata: "Dodatočné informácie"
+  metadataEdit: "Upraviť dodatočné informácie"
+  metadataDescription: "Vo svojom profile môžete uviesť až štyri dodatočné informačné polia."
+  metadataLabel: "Popisok"
+  metadataContent: "Obsah"
+  changeAvatar: "Zmeniť avatara"
+  changeBanner: "Zmeniť banner"
 _exportOrImport:
   allNotes: "Všetky poznámky"
   followingList: "Sledujete"
   muteList: "Vypnúť zvuk"
   blockingList: "Zablokovať"
   userLists: "Zoznamy"
+  excludeMutingUsers: "Vylúčiť stíšených používateľov"
+  excludeInactiveUsers: "Vylúčiť neaktívnych používateľov"
+_charts:
+  federationInstancesIncDec: "Rozdiel v počte federovaných serverov"
+  federationInstancesTotal: "Celkový počet federovaných serverov"
+  usersIncDec: "Rozdiel v počte používateľov"
+  usersTotal: "Celkový počet používateľov"
 _instanceCharts:
   requests: "Žiadosti"
   users: "Rozdiel v počte používateľov"
