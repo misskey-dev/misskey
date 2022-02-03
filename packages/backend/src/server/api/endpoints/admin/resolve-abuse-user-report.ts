@@ -36,9 +36,9 @@ export default define(meta, async (ps, me) => {
 
 	if (ps.forward && report.targetUserHost != null) {
 		const actor = await getInstanceActor();
-		const targetUser = await Users.findOne(report.targetUserId);
+		const targetUser = await Users.findOneOrFail(report.targetUserId);
 
-		deliver(actor, renderActivity(renderFlag(actor, [targetUser.uri], report.comment)), targetUser.inbox);
+		deliver(actor, renderActivity(renderFlag(actor, [targetUser.uri!], report.comment)), targetUser.inbox);
 	}
 
 	await AbuseUserReports.update(report.id, {
