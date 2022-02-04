@@ -19,28 +19,6 @@ export default class InstanceChart extends Chart<InstanceLog> {
 	}
 
 	@autobind
-	protected genNewLog(latest: InstanceLog): DeepPartial<InstanceLog> {
-		return {
-			notes: {
-				total: latest.notes.total,
-			},
-			users: {
-				total: latest.users.total,
-			},
-			following: {
-				total: latest.following.total,
-			},
-			followers: {
-				total: latest.followers.total,
-			},
-			drive: {
-				totalFiles: latest.drive.totalFiles,
-				totalUsage: latest.drive.totalUsage,
-			},
-		};
-	}
-
-	@autobind
 	protected aggregate(logs: InstanceLog[]): InstanceLog {
 		return {
 			requests: {

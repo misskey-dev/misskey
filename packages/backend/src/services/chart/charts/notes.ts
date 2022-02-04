@@ -18,18 +18,6 @@ export default class NotesChart extends Chart<NotesLog> {
 	}
 
 	@autobind
-	protected genNewLog(latest: NotesLog): DeepPartial<NotesLog> {
-		return {
-			local: {
-				total: latest.local.total,
-			},
-			remote: {
-				total: latest.remote.total,
-			},
-		};
-	}
-
-	@autobind
 	protected aggregate(logs: NotesLog[]): NotesLog {
 		return {
 			local: {

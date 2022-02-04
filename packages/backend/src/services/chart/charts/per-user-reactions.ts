@@ -18,11 +18,6 @@ export default class PerUserReactionsChart extends Chart<PerUserReactionsLog> {
 	}
 
 	@autobind
-	protected genNewLog(latest: PerUserReactionsLog): DeepPartial<PerUserReactionsLog> {
-		return {};
-	}
-
-	@autobind
 	protected aggregate(logs: PerUserReactionsLog[]): PerUserReactionsLog {
 		return {
 			local: {

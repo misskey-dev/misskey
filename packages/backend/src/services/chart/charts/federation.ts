@@ -16,15 +16,6 @@ export default class FederationChart extends Chart<FederationLog> {
 	}
 
 	@autobind
-	protected genNewLog(latest: FederationLog): DeepPartial<FederationLog> {
-		return {
-			instance: {
-				total: latest.instance.total,
-			},
-		};
-	}
-
-	@autobind
 	protected aggregate(logs: FederationLog[]): FederationLog {
 		return {
 			instance: {

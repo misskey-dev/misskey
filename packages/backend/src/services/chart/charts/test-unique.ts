@@ -15,11 +15,6 @@ export default class TestUniqueChart extends Chart<TestUniqueLog> {
 	}
 
 	@autobind
-	protected genNewLog(latest: TestUniqueLog): DeepPartial<TestUniqueLog> {
-		return {};
-	}
-
-	@autobind
 	protected aggregate(logs: TestUniqueLog[]): TestUniqueLog {
 		return {
 			foo: logs.reduce((a, b) => a.concat(b.foo), [] as TestUniqueLog['foo']),

@@ -18,28 +18,6 @@ export default class PerUserFollowingChart extends Chart<PerUserFollowingLog> {
 	}
 
 	@autobind
-	protected genNewLog(latest: PerUserFollowingLog): DeepPartial<PerUserFollowingLog> {
-		return {
-			local: {
-				followings: {
-					total: latest.local.followings.total,
-				},
-				followers: {
-					total: latest.local.followers.total,
-				},
-			},
-			remote: {
-				followings: {
-					total: latest.remote.followings.total,
-				},
-				followers: {
-					total: latest.remote.followers.total,
-				},
-			},
-		};
-	}
-
-	@autobind
 	protected aggregate(logs: PerUserFollowingLog[]): PerUserFollowingLog {
 		return {
 			local: {

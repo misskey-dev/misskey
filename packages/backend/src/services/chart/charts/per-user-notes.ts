@@ -18,13 +18,6 @@ export default class PerUserNotesChart extends Chart<PerUserNotesLog> {
 	}
 
 	@autobind
-	protected genNewLog(latest: PerUserNotesLog): DeepPartial<PerUserNotesLog> {
-		return {
-			total: latest.total,
-		};
-	}
-
-	@autobind
 	protected aggregate(logs: PerUserNotesLog[]): PerUserNotesLog {
 		return {
 			total: logs[0].total,

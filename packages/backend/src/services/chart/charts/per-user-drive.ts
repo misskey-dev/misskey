@@ -17,14 +17,6 @@ export default class PerUserDriveChart extends Chart<PerUserDriveLog> {
 	}
 
 	@autobind
-	protected genNewLog(latest: PerUserDriveLog): DeepPartial<PerUserDriveLog> {
-		return {
-			totalCount: latest.totalCount,
-			totalSize: latest.totalSize,
-		};
-	}
-
-	@autobind
 	protected aggregate(logs: PerUserDriveLog[]): PerUserDriveLog {
 		return {
 			totalCount: logs[0].totalCount,

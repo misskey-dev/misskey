@@ -17,15 +17,6 @@ export default class TestChart extends Chart<TestLog> {
 	}
 
 	@autobind
-	protected genNewLog(latest: TestLog): DeepPartial<TestLog> {
-		return {
-			foo: {
-				total: latest.foo.total,
-			},
-		};
-	}
-
-	@autobind
 	protected aggregate(logs: TestLog[]): TestLog {
 		return {
 			foo: {

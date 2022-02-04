@@ -18,18 +18,6 @@ export default class UsersChart extends Chart<UsersLog> {
 	}
 
 	@autobind
-	protected genNewLog(latest: UsersLog): DeepPartial<UsersLog> {
-		return {
-			local: {
-				total: latest.local.total,
-			},
-			remote: {
-				total: latest.remote.total,
-			},
-		};
-	}
-
-	@autobind
 	protected aggregate(logs: UsersLog[]): UsersLog {
 		return {
 			local: {

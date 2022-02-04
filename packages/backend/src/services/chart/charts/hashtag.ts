@@ -17,11 +17,6 @@ export default class HashtagChart extends Chart<HashtagLog> {
 	}
 
 	@autobind
-	protected genNewLog(latest: HashtagLog): DeepPartial<HashtagLog> {
-		return {};
-	}
-
-	@autobind
 	protected aggregate(logs: HashtagLog[]): HashtagLog {
 		return {
 			local: {

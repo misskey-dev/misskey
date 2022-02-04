@@ -15,11 +15,6 @@ export default class NetworkChart extends Chart<NetworkLog> {
 	}
 
 	@autobind
-	protected genNewLog(latest: NetworkLog): DeepPartial<NetworkLog> {
-		return {};
-	}
-
-	@autobind
 	protected aggregate(logs: NetworkLog[]): NetworkLog {
 		return {
 			incomingRequests: logs.reduce((a, b) => a + b.incomingRequests, 0),

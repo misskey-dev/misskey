@@ -17,11 +17,6 @@ export default class ActiveUsersChart extends Chart<ActiveUsersLog> {
 	}
 
 	@autobind
-	protected genNewLog(latest: ActiveUsersLog): DeepPartial<ActiveUsersLog> {
-		return {};
-	}
-
-	@autobind
 	protected aggregate(logs: ActiveUsersLog[]): ActiveUsersLog {
 		return {
 			local: {
