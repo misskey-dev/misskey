@@ -1,40 +1,21 @@
 import autobind from 'autobind-decorator';
-import Chart, { Obj, DeepPartial } from '../core';
-import { SchemaType } from '@/misc/schema';
+import Chart, { KVs } from '../core';
 import { Users } from '@/models/index';
 import { Not, IsNull } from 'typeorm';
 import { User } from '@/models/entities/user';
 import { name, schema } from './entities/users';
 
-type UsersLog = SchemaType<typeof schema>;
-
 /**
  * ユーザー数に関するチャート
  */
 // eslint-disable-next-line import/no-default-export
-export default class UsersChart extends Chart<UsersLog> {
+export default class UsersChart extends Chart<typeof schema> {
 	constructor() {
 		super(name, schema);
 	}
 
 	@autobind
-	protected aggregate(logs: UsersLog[]): UsersLog {
-		return {
-			local: {
-				total: logs[0].local.total,
-				inc: logs.reduce((a, b) => a + b.local.inc, 0),
-				dec: logs.reduce((a, b) => a + b.local.dec, 0),
-			},
-			remote: {
-				total: logs[0].remote.total,
-				inc: logs.reduce((a, b) => a + b.remote.inc, 0),
-				dec: logs.reduce((a, b) => a + b.remote.dec, 0),
-			},
-		};
-	}
-
-	@autobind
-	protected async fetchActual(): Promise<DeepPartial<UsersLog>> {
+	protected async queryCurrentState(): Promise<Partial<KVs<typeof schema>>> {
 		const [localCount, remoteCount] = await Promise.all([
 			Users.count({ host: null }),
 			Users.count({ host: Not(IsNull()) }),

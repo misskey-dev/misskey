@@ -1,5 +1,5 @@
 import autobind from 'autobind-decorator';
-import Chart, { DeepPartial, KVs } from '../core';
+import Chart, { KVs } from '../core';
 import { User } from '@/models/entities/user';
 import { Users } from '@/models/index';
 import { name, schema } from './entities/active-users';
@@ -14,19 +14,7 @@ export default class ActiveUsersChart extends Chart<typeof schema> {
 	}
 
 	@autobind
-	protected aggregate(logs: ActiveUsersLog[]): ActiveUsersLog {
-		return {
-			local: {
-				users: logs.reduce((a, b) => a.concat(b.local.users), [] as ActiveUsersLog['local']['users']),
-			},
-			remote: {
-				users: logs.reduce((a, b) => a.concat(b.remote.users), [] as ActiveUsersLog['remote']['users']),
-			},
-		};
-	}
-
-	@autobind
-	protected async fetchActual(): Promise<DeepPartial<KVs<typeof schema>>> {
+	protected async queryCurrentState(): Promise<Partial<KVs<typeof schema>>> {
 		return {};
 	}
 

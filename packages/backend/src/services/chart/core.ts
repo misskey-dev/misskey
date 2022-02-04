@@ -17,15 +17,9 @@ const columnPrefix = '___' as const;
 const uniqueTempColumnPrefix = 'unique_temp___' as const;
 const columnDot = '_' as const;
 
-export type Obj = { [key: string]: any };
-
-export type DeepPartial<T> = {
-	[P in keyof T]?: DeepPartial<T[P]>;
-};
-
 type KeyToColumnName<T extends string> = T extends `${infer R1}.${infer R2}` ? `${R1}${typeof columnDot}${KeyToColumnName<R2>}` : T;
 
-type Log<S extends Schema> = {
+type RawRecord<S extends Schema> = {
 	id: number;
 
 	/**
@@ -82,15 +76,10 @@ export default abstract class Chart<T extends Schema> {
 		diff: Commit<T>;
 		group: string | null;
 	}[] = [];
-	protected repositoryForHour: Repository<Log<T>>;
-	protected repositoryForDay: Repository<Log<T>>;
+	protected repositoryForHour: Repository<RawRecord<T>>;
+	protected repositoryForDay: Repository<RawRecord<T>>;
 
-	/**
-	 * @param logs 日時が新しい方が先頭
-	 */
-	protected abstract aggregate(logs: T[]): T;
-
-	protected abstract fetchActual(group: string | null): Promise<DeepPartial<KVs<T>>>;
+	protected abstract queryCurrentState(group: string | null): Promise<Partial<KVs<T>>>;
 
 	@autobind
 	private static convertSchemaToColumnDefinitions(schema: Schema): Record<string, { type: string; array?: boolean; default?: any; }> {
@@ -198,12 +187,12 @@ export default abstract class Chart<T extends Schema> {
 		this.schema = schema;
 
 		const { hour, day } = Chart.schemaToEntity(name, schema, grouped);
-		this.repositoryForHour = getRepository<Log<T>>(hour);
-		this.repositoryForDay = getRepository<Log<T>>(day);
+		this.repositoryForHour = getRepository<RawRecord<T>>(hour);
+		this.repositoryForDay = getRepository<RawRecord<T>>(day);
 	}
 
 	@autobind
-	private convertRawRecord(x: Log<T>): KVs<T> {
+	private convertRawRecord(x: RawRecord<T>): KVs<T> {
 		const kvs = {} as KVs<T>;
 		for (const k of Object.keys(x).filter(k => k.startsWith(columnPrefix))) {
 			kvs[k.substr(columnPrefix.length).split(columnDot).join('.')] = x[k];
@@ -225,7 +214,7 @@ export default abstract class Chart<T extends Schema> {
 	}
 
 	@autobind
-	private getLatestLog(group: string | null, span: 'hour' | 'day'): Promise<Log<T> | null> {
+	private getLatestLog(group: string | null, span: 'hour' | 'day'): Promise<RawRecord<T> | null> {
 		const repository =
 			span === 'hour' ? this.repositoryForHour :
 			span === 'day' ? this.repositoryForDay :
@@ -244,7 +233,7 @@ export default abstract class Chart<T extends Schema> {
 	 * 現在(=今のHour or Day)のログをデータベースから探して、あればそれを返し、なければ作成して返します。
 	 */
 	@autobind
-	private async claimCurrentLog(group: string | null, span: 'hour' | 'day'): Promise<Log> {
+	private async claimCurrentLog(group: string | null, span: 'hour' | 'day'): Promise<RawRecord<T>> {
 		const [y, m, d, h] = Chart.getCurrentDate();
 
 		const current = dateUTC(
@@ -268,7 +257,7 @@ export default abstract class Chart<T extends Schema> {
 			return currentLog;
 		}
 
-		let log: Log<T>;
+		let log: RawRecord<T>;
 		let data: KVs<T>;
 
 		// 集計期間が変わってから、初めてのチャート更新なら
@@ -349,7 +338,7 @@ export default abstract class Chart<T extends Schema> {
 		// そのログは本来は 01:00~ のログとしてDBに保存されて欲しいのに、02:00~ のログ扱いになってしまう。
 		// これを回避するための実装は複雑になりそうなため、一旦保留。
 
-		const update = async (logHour: Log<T>, logDay: Log<T>): Promise<void> => {
+		const update = async (logHour: RawRecord<T>, logDay: RawRecord<T>): Promise<void> => {
 			const finalDiffs = {} as Record<string, number | unknown[]>;
 
 			for (const diff of this.buffer.filter(q => q.group == null || (q.group === logHour.group)).map(q => q.diff)) {
@@ -428,7 +417,7 @@ export default abstract class Chart<T extends Schema> {
 
 	@autobind
 	public async resync(group: string | null = null): Promise<void> {
-		const data = await this.fetchActual(group);
+		const data = await this.queryCurrentState(group);
 
 		const columns = {} as Record<string, number>;
 		for (const [k, v] of Object.entries(data)) {
@@ -436,7 +425,7 @@ export default abstract class Chart<T extends Schema> {
 			columns[columnPrefix + name] = v;
 		}
 
-		const update = async (logHour: Log<T>, logDay: Log<T>): Promise<void> => {
+		const update = async (logHour: RawRecord<T>, logDay: RawRecord<T>): Promise<void> => {
 			await Promise.all([
 				this.repositoryForHour.createQueryBuilder()
 					.update()
@@ -559,5 +548,14 @@ export default abstract class Chart<T extends Schema> {
 		}
 
 		return res;
+	}
+
+	public async getChartAndFormat(span: 'hour' | 'day', amount: number, cursor: Date | null, group: string | null = null): Promise<Record<string, unknown>> {
+		const result = this.getChart(span, amount, cursor, group);
+		const object = {};
+		for (const [k, v] of Object.entries(result)) {
+			nestedProperty.set(object, k, v);
+		}
+		return object;
 	}
 }

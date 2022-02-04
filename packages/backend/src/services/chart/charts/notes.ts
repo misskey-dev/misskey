@@ -1,50 +1,21 @@
 import autobind from 'autobind-decorator';
-import Chart, { Obj, DeepPartial } from '../core';
-import { SchemaType } from '@/misc/schema';
+import Chart, { KVs } from '../core';
 import { Notes } from '@/models/index';
 import { Not, IsNull } from 'typeorm';
 import { Note } from '@/models/entities/note';
 import { name, schema } from './entities/notes';
 
-type NotesLog = SchemaType<typeof schema>;
-
 /**
  * ノートに関するチャート
  */
 // eslint-disable-next-line import/no-default-export
-export default class NotesChart extends Chart<NotesLog> {
+export default class NotesChart extends Chart<typeof schema> {
 	constructor() {
 		super(name, schema);
 	}
 
 	@autobind
-	protected aggregate(logs: NotesLog[]): NotesLog {
-		return {
-			local: {
-				total: logs[0].local.total,
-				inc: logs.reduce((a, b) => a + b.local.inc, 0),
-				dec: logs.reduce((a, b) => a + b.local.dec, 0),
-				diffs: {
-					reply: logs.reduce((a, b) => a + b.local.diffs.reply, 0),
-					renote: logs.reduce((a, b) => a + b.local.diffs.renote, 0),
-					normal: logs.reduce((a, b) => a + b.local.diffs.normal, 0),
-				},
-			},
-			remote: {
-				total: logs[0].remote.total,
-				inc: logs.reduce((a, b) => a + b.remote.inc, 0),
-				dec: logs.reduce((a, b) => a + b.remote.dec, 0),
-				diffs: {
-					reply: logs.reduce((a, b) => a + b.remote.diffs.reply, 0),
-					renote: logs.reduce((a, b) => a + b.remote.diffs.renote, 0),
-					normal: logs.reduce((a, b) => a + b.remote.diffs.normal, 0),
-				},
-			},
-		};
-	}
-
-	@autobind
-	protected async fetchActual(): Promise<DeepPartial<NotesLog>> {
+	protected async queryCurrentState(): Promise<Partial<KVs<typeof schema>>> {
 		const [localCount, remoteCount] = await Promise.all([
 			Notes.count({ userHost: null }),
 			Notes.count({ userHost: Not(IsNull()) }),

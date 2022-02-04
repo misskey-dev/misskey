@@ -1,5 +1,5 @@
 import autobind from 'autobind-decorator';
-import Chart, { DeepPartial, KVs } from '../core';
+import Chart, { KVs } from '../core';
 import { User } from '@/models/entities/user';
 import { Users } from '@/models/index';
 import { name, schema } from './entities/hashtag';
@@ -14,19 +14,7 @@ export default class HashtagChart extends Chart<typeof schema> {
 	}
 
 	@autobind
-	protected aggregate(logs: HashtagLog[]): HashtagLog {
-		return {
-			local: {
-				users: logs.reduce((a, b) => a.concat(b.local.users), [] as HashtagLog['local']['users']),
-			},
-			remote: {
-				users: logs.reduce((a, b) => a.concat(b.remote.users), [] as HashtagLog['remote']['users']),
-			},
-		};
-	}
-
-	@autobind
-	protected async fetchActual(): Promise<DeepPartial<KVs<typeof schema>>> {
+	protected async queryCurrentState(): Promise<Partial<KVs<typeof schema>>> {
 		return {};
 	}
 

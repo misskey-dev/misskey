@@ -1,35 +1,20 @@
 import autobind from 'autobind-decorator';
-import Chart, { Obj, DeepPartial } from '../core';
-import { SchemaType } from '@/misc/schema';
+import Chart, { KVs } from '../core';
 import { DriveFiles } from '@/models/index';
 import { DriveFile } from '@/models/entities/drive-file';
 import { name, schema } from './entities/per-user-drive';
-
-type PerUserDriveLog = SchemaType<typeof schema>;
 
 /**
  * ユーザーごとのドライブに関するチャート
  */
 // eslint-disable-next-line import/no-default-export
-export default class PerUserDriveChart extends Chart<PerUserDriveLog> {
+export default class PerUserDriveChart extends Chart<typeof schema> {
 	constructor() {
 		super(name, schema, true);
 	}
 
 	@autobind
-	protected aggregate(logs: PerUserDriveLog[]): PerUserDriveLog {
-		return {
-			totalCount: logs[0].totalCount,
-			totalSize: logs[0].totalSize,
-			incCount: logs.reduce((a, b) => a + b.incCount, 0),
-			incSize: logs.reduce((a, b) => a + b.incSize, 0),
-			decCount: logs.reduce((a, b) => a + b.decCount, 0),
-			decSize: logs.reduce((a, b) => a + b.decSize, 0),
-		};
-	}
-
-	@autobind
-	protected async fetchActual(group: string): Promise<DeepPartial<PerUserDriveLog>> {
+	protected async queryCurrentState(group: string): Promise<Partial<KVs<typeof schema>>> {
 		const [count, size] = await Promise.all([
 			DriveFiles.count({ userId: group }),
 			DriveFiles.calcDriveUsageOf(group),

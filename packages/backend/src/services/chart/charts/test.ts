@@ -1,15 +1,12 @@
 import autobind from 'autobind-decorator';
-import Chart, { Obj, DeepPartial } from '../core';
-import { SchemaType } from '@/misc/schema';
+import Chart, { KVs } from '../core';
 import { name, schema } from './entities/test';
-
-type TestLog = SchemaType<typeof schema>;
 
 /**
  * For testing
  */
 // eslint-disable-next-line import/no-default-export
-export default class TestChart extends Chart<TestLog> {
+export default class TestChart extends Chart<typeof schema> {
 	public total = 0; // publicにするのはテストのため
 
 	constructor() {
@@ -17,18 +14,7 @@ export default class TestChart extends Chart<TestLog> {
 	}
 
 	@autobind
-	protected aggregate(logs: TestLog[]): TestLog {
-		return {
-			foo: {
-				total: logs[0].foo.total,
-				inc: logs.reduce((a, b) => a + b.foo.inc, 0),
-				dec: logs.reduce((a, b) => a + b.foo.dec, 0),
-			},
-		};
-	}
-
-	@autobind
-	protected async fetchActual(): Promise<DeepPartial<TestLog>> {
+	protected async queryCurrentState(): Promise<Partial<KVs<typeof schema>>> {
 		return {
 			foo: {
 				total: this.total,

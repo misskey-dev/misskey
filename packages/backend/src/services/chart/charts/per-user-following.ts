@@ -1,54 +1,21 @@
 import autobind from 'autobind-decorator';
-import Chart, { Obj, DeepPartial } from '../core';
-import { SchemaType } from '@/misc/schema';
+import Chart, { KVs } from '../core';
 import { Followings, Users } from '@/models/index';
 import { Not, IsNull } from 'typeorm';
 import { User } from '@/models/entities/user';
 import { name, schema } from './entities/per-user-following';
 
-type PerUserFollowingLog = SchemaType<typeof schema>;
-
 /**
  * ユーザーごとのフォローに関するチャート
  */
 // eslint-disable-next-line import/no-default-export
-export default class PerUserFollowingChart extends Chart<PerUserFollowingLog> {
+export default class PerUserFollowingChart extends Chart<typeof schema> {
 	constructor() {
 		super(name, schema, true);
 	}
 
 	@autobind
-	protected aggregate(logs: PerUserFollowingLog[]): PerUserFollowingLog {
-		return {
-			local: {
-				followings: {
-					total: logs[0].local.followings.total,
-					inc: logs.reduce((a, b) => a + b.local.followings.inc, 0),
-					dec: logs.reduce((a, b) => a + b.local.followings.dec, 0),
-				},
-				followers: {
-					total: logs[0].local.followers.total,
-					inc: logs.reduce((a, b) => a + b.local.followers.inc, 0),
-					dec: logs.reduce((a, b) => a + b.local.followers.dec, 0),
-				},
-			},
-			remote: {
-				followings: {
-					total: logs[0].remote.followings.total,
-					inc: logs.reduce((a, b) => a + b.remote.followings.inc, 0),
-					dec: logs.reduce((a, b) => a + b.remote.followings.dec, 0),
-				},
-				followers: {
-					total: logs[0].remote.followers.total,
-					inc: logs.reduce((a, b) => a + b.remote.followers.inc, 0),
-					dec: logs.reduce((a, b) => a + b.remote.followers.dec, 0),
-				},
-			},
-		};
-	}
-
-	@autobind
-	protected async fetchActual(group: string): Promise<DeepPartial<PerUserFollowingLog>> {
+	protected async queryCurrentState(group: string): Promise<Partial<KVs<typeof schema>>> {
 		const [
 			localFollowingsCount,
 			localFollowersCount,

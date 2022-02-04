@@ -1,36 +1,21 @@
 import autobind from 'autobind-decorator';
-import Chart, { DeepPartial } from '../core';
+import Chart, { KVs } from '../core';
 import { User } from '@/models/entities/user';
 import { Note } from '@/models/entities/note';
-import { SchemaType } from '@/misc/schema';
 import { Users } from '@/models/index';
 import { name, schema } from './entities/per-user-reactions';
-
-type PerUserReactionsLog = SchemaType<typeof schema>;
 
 /**
  * ユーザーごとのリアクションに関するチャート
  */
 // eslint-disable-next-line import/no-default-export
-export default class PerUserReactionsChart extends Chart<PerUserReactionsLog> {
+export default class PerUserReactionsChart extends Chart<typeof schema> {
 	constructor() {
 		super(name, schema, true);
 	}
 
 	@autobind
-	protected aggregate(logs: PerUserReactionsLog[]): PerUserReactionsLog {
-		return {
-			local: {
-				count: logs.reduce((a, b) => a + b.local.count, 0),
-			},
-			remote: {
-				count: logs.reduce((a, b) => a + b.remote.count, 0),
-			},
-		};
-	}
-
-	@autobind
-	protected async fetchActual(group: string): Promise<DeepPartial<PerUserReactionsLog>> {
+	protected async queryCurrentState(group: string): Promise<Partial<KVs<typeof schema>>> {
 		return {};
 	}
 

@@ -27,5 +27,5 @@ export const meta = {
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps) => {
-	return await networkChart.getChart(ps.span as any, ps.limit!, ps.offset ? new Date(ps.offset) : null);
+	return await networkChart.getChartAndFormat(ps.span as any, ps.limit!, ps.offset ? new Date(ps.offset) : null);
 });

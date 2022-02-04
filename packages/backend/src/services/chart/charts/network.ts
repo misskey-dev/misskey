@@ -1,32 +1,18 @@
 import autobind from 'autobind-decorator';
-import Chart, { DeepPartial } from '../core';
-import { SchemaType } from '@/misc/schema';
+import Chart, { KVs } from '../core';
 import { name, schema } from './entities/network';
-
-type NetworkLog = SchemaType<typeof schema>;
 
 /**
  * ネットワークに関するチャート
  */
 // eslint-disable-next-line import/no-default-export
-export default class NetworkChart extends Chart<NetworkLog> {
+export default class NetworkChart extends Chart<typeof schema> {
 	constructor() {
 		super(name, schema);
 	}
 
 	@autobind
-	protected aggregate(logs: NetworkLog[]): NetworkLog {
-		return {
-			incomingRequests: logs.reduce((a, b) => a + b.incomingRequests, 0),
-			outgoingRequests: logs.reduce((a, b) => a + b.outgoingRequests, 0),
-			totalTime: logs.reduce((a, b) => a + b.totalTime, 0),
-			incomingBytes: logs.reduce((a, b) => a + b.incomingBytes, 0),
-			outgoingBytes: logs.reduce((a, b) => a + b.outgoingBytes, 0),
-		};
-	}
-
-	@autobind
-	protected async fetchActual(): Promise<DeepPartial<NetworkLog>> {
+	protected async queryCurrentState(): Promise<Partial<KVs<typeof schema>>> {
 		return {};
 	}
 
