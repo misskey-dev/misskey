@@ -16,9 +16,7 @@ export default class TestGroupedChart extends Chart<typeof schema> {
 	@autobind
 	protected async queryCurrentState(group: string): Promise<Partial<KVs<typeof schema>>> {
 		return {
-			foo: {
-				total: this.total[group],
-			},
+			'foo.total': this.total[group],
 		};
 	}
 
@@ -26,14 +24,11 @@ export default class TestGroupedChart extends Chart<typeof schema> {
 	public async increment(group: string): Promise<void> {
 		if (this.total[group] == null) this.total[group] = 0;
 
-		const update: Obj = {};
-
-		update.total = 1;
-		update.inc = 1;
 		this.total[group]++;
 
-		await this.inc({
-			foo: update,
+		await this.commit({
+			'foo.total': 1,
+			'foo.inc': 1,
 		}, group);
 	}
 }

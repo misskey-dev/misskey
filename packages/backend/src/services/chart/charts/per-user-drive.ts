@@ -21,25 +21,20 @@ export default class PerUserDriveChart extends Chart<typeof schema> {
 		]);
 
 		return {
-			totalCount: count,
-			totalSize: size,
+			'totalCount': count,
+			'totalSize': size,
 		};
 	}
 
 	@autobind
 	public async update(file: DriveFile, isAdditional: boolean): Promise<void> {
-		const update: Obj = {};
-
-		update.totalCount = isAdditional ? 1 : -1;
-		update.totalSize = isAdditional ? file.size : -file.size;
-		if (isAdditional) {
-			update.incCount = 1;
-			update.incSize = file.size;
-		} else {
-			update.decCount = 1;
-			update.decSize = file.size;
-		}
-
-		await this.inc(update, file.userId);
+		await this.commit({
+			'totalCount': isAdditional ? 1 : -1,
+			'totalSize': isAdditional ? file.size : -file.size,
+			'incCount': isAdditional ? 1 : 0,
+			'incSize': isAdditional ? file.size : 0,
+			'decCount': isAdditional ? 0 : 1,
+			'decSize': isAdditional ? 0 : file.size,
+		}, file.userId);
 	}
 }

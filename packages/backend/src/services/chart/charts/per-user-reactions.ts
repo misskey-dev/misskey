@@ -21,8 +21,9 @@ export default class PerUserReactionsChart extends Chart<typeof schema> {
 
 	@autobind
 	public async update(user: { id: User['id'], host: User['host'] }, note: Note): Promise<void> {
-		this.inc({
-			[Users.isLocalUser(user) ? 'local' : 'remote']: { count: 1 },
+		const prefix = Users.isLocalUser(user) ? 'local' : 'remote';
+		this.commit({
+			[`${prefix}.count`]: 1,
 		}, note.userId);
 	}
 }

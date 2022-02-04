@@ -16,35 +16,27 @@ export default class TestChart extends Chart<typeof schema> {
 	@autobind
 	protected async queryCurrentState(): Promise<Partial<KVs<typeof schema>>> {
 		return {
-			foo: {
-				total: this.total,
-			},
+			'foo.total': this.total,
 		};
 	}
 
 	@autobind
 	public async increment(): Promise<void> {
-		const update: Obj = {};
-
-		update.total = 1;
-		update.inc = 1;
 		this.total++;
 
-		await this.inc({
-			foo: update,
+		await this.commit({
+			'foo.total': 1,
+			'foo.inc': 1,
 		});
 	}
 
 	@autobind
 	public async decrement(): Promise<void> {
-		const update: Obj = {};
-
-		update.total = -1;
-		update.dec = 1;
 		this.total--;
 
-		await this.inc({
-			foo: update,
+		await this.commit({
+			'foo.total': -1,
+			'foo.dec': 1,
 		});
 	}
 }

@@ -18,7 +18,7 @@ export default class TestUniqueChart extends Chart<typeof schema> {
 
 	@autobind
 	public async uniqueIncrement(key: string): Promise<void> {
-		await this.inc({
+		await this.commit({
 			foo: [key],
 		});
 	}

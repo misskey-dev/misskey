@@ -22,28 +22,19 @@ export default class UsersChart extends Chart<typeof schema> {
 		]);
 
 		return {
-			local: {
-				total: localCount,
-			},
-			remote: {
-				total: remoteCount,
-			},
+			'local.total': localCount,
+			'remote.total': remoteCount,
 		};
 	}
 
 	@autobind
 	public async update(user: { id: User['id'], host: User['host'] }, isAdditional: boolean): Promise<void> {
-		const update: Obj = {};
+		const prefix = Users.isLocalUser(user) ? 'local' : 'remote';
 
-		update.total = isAdditional ? 1 : -1;
-		if (isAdditional) {
-			update.inc = 1;
-		} else {
-			update.dec = 1;
-		}
-
-		await this.inc({
-			[Users.isLocalUser(user) ? 'local' : 'remote']: update,
+		await this.commit({
+			[`${prefix}.total`]: isAdditional ? 1 : -1,
+			[`${prefix}.inc`]: isAdditional ? 1 : 0,
+			[`${prefix}.dec`]: isAdditional ? 0 : 1,
 		});
 	}
 }

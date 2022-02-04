@@ -29,42 +29,27 @@ export default class PerUserFollowingChart extends Chart<typeof schema> {
 		]);
 
 		return {
-			local: {
-				followings: {
-					total: localFollowingsCount,
-				},
-				followers: {
-					total: localFollowersCount,
-				},
-			},
-			remote: {
-				followings: {
-					total: remoteFollowingsCount,
-				},
-				followers: {
-					total: remoteFollowersCount,
-				},
-			},
+			'local.followings.total': localFollowingsCount,
+			'local.followers.total': localFollowersCount,
+			'remote.followings.total': remoteFollowingsCount,
+			'remote.followers.total': remoteFollowersCount,
 		};
 	}
 
 	@autobind
 	public async update(follower: { id: User['id']; host: User['host']; }, followee: { id: User['id']; host: User['host']; }, isFollow: boolean): Promise<void> {
-		const update: Obj = {};
+		const prefixFollower = Users.isLocalUser(follower) ? 'local' : 'remote';
+		const prefixFollowee = Users.isLocalUser(followee) ? 'local' : 'remote';
 
-		update.total = isFollow ? 1 : -1;
-
-		if (isFollow) {
-			update.inc = 1;
-		} else {
-			update.dec = 1;
-		}
-
-		this.inc({
-			[Users.isLocalUser(follower) ? 'local' : 'remote']: { followings: update },
+		this.commit({
+			[`${prefixFollower}.followings.total`]: isFollow ? 1 : -1,
+			[`${prefixFollower}.followings.inc`]: isFollow ? 1 : 0,
+			[`${prefixFollower}.followings.dec`]: isFollow ? 0 : 1,
 		}, follower.id);
-		this.inc({
-			[Users.isLocalUser(followee) ? 'local' : 'remote']: { followers: update },
+		this.commit({
+			[`${prefixFollowee}.followers.total`]: isFollow ? 1 : -1,
+			[`${prefixFollowee}.followers.inc`]: isFollow ? 1 : 0,
+			[`${prefixFollowee}.followers.dec`]: isFollow ? 0 : 1,
 		}, followee.id);
 	}
 }
