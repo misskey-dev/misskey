@@ -6,7 +6,7 @@ type Value = { max?: number[]; min?: number[]; };
 const mountings = new Map<Element, {
 	value: Value;
 	resize: ResizeObserver;
-	intersection: IntersectionObserver;
+	intersection?: IntersectionObserver;
 	previousWidth: number;
 }>();
 
@@ -46,7 +46,23 @@ function calc(el: Element) {
 	const info = mountings.get(el);
 	const width = el.clientWidth;
 
-	if (!info || !width || info.previousWidth === width) return;
+	if (!info || info.previousWidth === width) return;
+
+	if (!width) {
+		// アクティベート前などでsrcが描画されていない場合があるので、
+		// IntersectionObserverで表示検出する
+		if (!info.intersection) {
+			info.intersection = new IntersectionObserver(entries => {
+				if (entries.some(entry => entry.isIntersecting)) calc(el);
+			});
+		}
+		info.intersection.observe(el);
+		return;
+	}
+	if (info.intersection) {
+		info.intersection.disconnect()
+		delete info.intersection;
+	};
 
 	mountings.set(el, Object.assign(info, { previousWidth: width }));
 
@@ -66,22 +82,14 @@ export default {
 			calc(src);
 		});
 
-		// アクティベート前などでsrcが描画されていない場合があるので、
-		// IntersectionObserverで表示検出する
-		const intersection = new IntersectionObserver(entries => {
-			if (entries.some(entry => entry.isIntersecting)) calc(src);
-		});
-
 		mountings.set(src, {
 			value: binding.value,
 			resize,
-			intersection,
 			previousWidth: 0,
 		});
 
 		calc(src);
 		resize.observe(src);
-		intersection.observe(src);
 	},
 
 	updated(src, binding, vn) {
@@ -93,7 +101,7 @@ export default {
 		const info = mountings.get(src);
 		if (!info) return;
 		info.resize.disconnect();
-		info.intersection.disconnect();
+		if (info.intersection) info.intersection.disconnect();
 		mountings.delete(src);
 	}
 } as Directive<Element, Value>;

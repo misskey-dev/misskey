@@ -2,36 +2,46 @@ import { Directive } from 'vue';
 
 const mountings = new Map<Element, {
 	resize: ResizeObserver;
-	intersection: IntersectionObserver;
+	intersection?: IntersectionObserver;
+	fn: (w: number, h: number) => void;
 }>();
+
+function calc(src: Element) {
+	const info = mountings.get(src);
+	const height = src.clientHeight;
+	const width = src.clientWidth;
+
+	if (!info) return;
+
+	if (!height) {
+		// アクティベート前などでsrcが描画されていない場合があるので、
+		// IntersectionObserverで表示検出する
+		if (!info.intersection) {
+			info.intersection = new IntersectionObserver(entries => {
+				if (entries.some(entry => entry.isIntersecting)) calc(src);
+			});
+		}
+		info.intersection.observe(src);
+		return;
+	}
+	if (info.intersection) {
+		info.intersection.disconnect()
+		delete info.intersection;
+	};
+
+	info.fn(width, height);
+};
 
 export default {
 	mounted(src, binding, vn) {
-		const calc = () => {
-			const height = src.clientHeight;
-			const width = src.clientWidth;
-
-			// 要素が(一時的に)DOMに存在しないときは計算スキップ
-			if (height === 0) return;
-
-			binding.value(width, height);
-		};
-
-		calc();
 
 		const resize = new ResizeObserver((entries, observer) => {
-			calc();
+			calc(src);
 		});
 		resize.observe(src);
 
-		// アクティベート前などでsrcが描画されていない場合があるので、
-		// IntersectionObserverで表示検出する
-		const intersection = new IntersectionObserver(entries => {
-			if (entries.some(entry => entry.isIntersecting)) calc();
-		});
-		intersection.observe(src);
-
-		mountings.set(src, { resize, intersection, });
+		mountings.set(src, { resize, fn: binding.value, });
+		calc(src);
 	},
 
 	unmounted(src, binding, vn) {
@@ -39,7 +49,7 @@ export default {
 		const info = mountings.get(src);
 		if (!info) return;
 		info.resize.disconnect();
-		info.intersection.disconnect();
+		if (info.intersection) info.intersection.disconnect();
 		mountings.delete(src);
 	}
 } as Directive<Element, (w: number, h: number) => void>;
