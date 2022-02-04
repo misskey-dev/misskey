@@ -5,9 +5,7 @@ import { URL } from 'url';
 const urlRegex     = /^https?:\/\/[\w\/:%#@$&?!()\[\]~.,=+\-]+/;
 const urlRegexFull = /^https?:\/\/[\w\/:%#@$&?!()\[\]~.,=+\-]+$/;
 
-export function fromHtml(html: string, hashtagNames?: string[]): string | null {
-	if (html == null) return null;
-
+export function fromHtml(html: string, hashtagNames?: string[]): string {
 	const dom = parse5.parseFragment(html);
 
 	let text = '';

@@ -41,7 +41,9 @@ export async function importCustomEmojis(job: Bull.Job<DbUserImportJobData>, don
 		fs.writeFileSync(destPath, '', 'binary');
 		await downloadUrl(file.url, destPath);
 	} catch (e) { // TODO: 何度か再試行
-		logger.error(e);
+		if (e instanceof Error || typeof e === 'string') {
+			logger.error(e);
+		}
 		throw e;
 	}
 
