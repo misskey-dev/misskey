@@ -1,6 +1,6 @@
 import * as cluster from 'cluster';
 import * as chalk from 'chalk';
-import * as dateformat from 'dateformat';
+import { format as dateFormat } from 'date-fns';
 import { envOption } from '../env';
 import config from '@/config/index';
 
@@ -57,7 +57,7 @@ export default class Logger {
 			return;
 		}
 
-		const time = dateformat(new Date(), 'HH:MM:ss');
+		const time = dateFormat(new Date(), 'HH:mm:ss');
 		const worker = cluster.isPrimary ? '*' : cluster.worker.id;
 		const l =
 			level === 'error' ? important ? chalk.bgRed.white('ERR ') : chalk.red('ERR ') :
@@ -116,7 +116,7 @@ export default class Logger {
 	}
 
 	public debug(message: string, data?: Record<string, any> | null, important = false): void { // デバッグ用に使う(開発者に必要だが利用者に不要な情報)
-		if (process.env.NODE_ENV != 'production' || envOption.verbose) {
+		if (process.env.NODE_ENV !== 'production' || envOption.verbose) {
 			this.log('debug', message, data, important);
 		}
 	}
