@@ -14,9 +14,9 @@ type Uploading = {
 export const uploads = ref<Uploading[]>([]);
 
 const compressTypeMap = {
-	'image/jpeg': { quality: 0.85, mimeType: 'image/jpeg'},
+	'image/jpeg': { quality: 0.85 },
 	'image/webp': { quality: 0.85, mimeType: 'image/jpeg'},
-	'image/png': { quality: 1, mimeType: 'image/png'},
+	'image/png': { quality: 1 },
 	'image/svg+xml': { quality: 1, mimeType: 'image/png'},
 } as const;
 
@@ -51,17 +51,21 @@ export function uploadFile(
 
 			let resizedImage: any;
 			if (!keepOriginal && file.type in compressTypeMap) {
+				const imgConfig = compressTypeMap[file.type];
+				const changeType = 'mimeType' in imgConfig;
+
 				const config = {
 					maxWidth: 2048,
 					maxHeight: 2048,
 					autoRotate: true,
 					debug: true,
-					...compressTypeMap[file.type],
+					...imgConfig,
+					...(changeType ? {} : { mimeType: file.type }),
 				};
 
 				const { readAndCompressImage } = await import('browser-image-resizer');
 				resizedImage = await readAndCompressImage(file, config);
-				ctx.name = `${ctx.name}.${mimeTypeMap[compressTypeMap[file.type].mimeType]}`;
+				ctx.name = changeType ? `${ctx.name}.${mimeTypeMap[compressTypeMap[file.type].mimeType]}` : ctx.name;
 			}
 
 			const data = new FormData();
