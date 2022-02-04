@@ -29,7 +29,7 @@ export function onScrollTop(el: HTMLElement, cb: Function, asobi: number = 1, on
 	// とりあえず評価してみる
 	if (isTopVisible(el)) {
 		cb();
-		return null;
+		if (once) return null;
 	}
 
 	const container = getScrollContainer(el) || window;
@@ -53,7 +53,7 @@ export function onScrollBottom(el: HTMLElement, cb: Function, asobi: number = 1,
 	// とりあえず評価してみる
 	if (isBottomVisible(el, asobi, container)) {
 		cb();
-		return null;
+		if (once) return null;
 	}
 
 	const containerOrWindow = container || window;
