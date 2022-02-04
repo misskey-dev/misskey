@@ -41,6 +41,7 @@ import { defaultStore } from '@/store';
 import { MisskeyEntity } from '@/types/date-separated-list';
 
 const SECOND_FETCH_LIMIT = 30;
+const ASOBI = 16;
 
 export type Paging<E extends keyof misskey.Endpoints = keyof misskey.Endpoints> = {
 	endpoint: E;
@@ -143,7 +144,7 @@ watch([$$(backed), $$(contentEl)], () => {
 	if (!backed) {
 		if (!contentEl) return;
 
-		scrollRemove = (props.pagination.reversed ? onScrollBottom : onScrollTop)(contentEl, executeQueue, 16);
+		scrollRemove = (props.pagination.reversed ? onScrollBottom : onScrollTop)(contentEl, executeQueue, ASOBI);
 	} else {
 		if (scrollRemove) scrollRemove();
 		scrollRemove = null;
@@ -295,7 +296,7 @@ const prepend = (item: MisskeyEntity): void => {
 		return;
 	}
 
-	const isTop = isBackTop.value || (props.pagination.reversed ? isBottomVisible : isTopVisible)(contentEl);
+	const isTop = isBackTop.value || (props.pagination.reversed ? isBottomVisible : isTopVisible)(contentEl, ASOBI);
 
 	if (isTop) unshiftItems([item]);
 	else prependQueue(item);
