@@ -32,7 +32,7 @@ export default async (ctx: Router.RouterContext) => {
 
 	const rendered = renderOrderedCollection(
 		`${config.url}/users/${userId}/collections/featured`,
-		renderedNotes.length, undefined, undefined, renderedNotes
+		renderedNotes.length, undefined, undefined, renderedNotes,
 	);
 
 	ctx.body = renderActivity(rendered);

@@ -6,6 +6,7 @@ import define from '../../define';
 import { ApiError } from '../../error';
 import { getUser } from '../../common/getters';
 import { Followings, Users } from '@/models/index';
+import { IdentifiableError } from '@/misc/identifiable-error';
 
 export const meta = {
 	tags: ['following', 'users'],
@@ -92,8 +93,10 @@ export default define(meta, async (ps, user) => {
 	try {
 		await create(follower, followee);
 	} catch (e) {
-		if (e.id === '710e8fb0-b8c3-4922-be49-d5d93d8e6a6e') throw new ApiError(meta.errors.blocking);
-		if (e.id === '3338392a-f764-498d-8855-db939dcf8c48') throw new ApiError(meta.errors.blocked);
+		if (e instanceof IdentifiableError) {
+			if (e.id === '710e8fb0-b8c3-4922-be49-d5d93d8e6a6e') throw new ApiError(meta.errors.blocking);
+			if (e.id === '3338392a-f764-498d-8855-db939dcf8c48') throw new ApiError(meta.errors.blocked);
+		}
 		throw e;
 	}
 

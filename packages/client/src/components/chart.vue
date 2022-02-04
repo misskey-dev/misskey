@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, watch, PropType } from 'vue';
+import { defineComponent, onMounted, ref, watch, PropType, onUnmounted, shallowRef } from 'vue';
 import {
 	Chart,
 	ArcElement,
@@ -31,6 +31,7 @@ import { enUS } from 'date-fns/locale';
 import zoomPlugin from 'chartjs-plugin-zoom';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
+import MkChartTooltip from '@/components/chart-tooltip.vue';
 
 Chart.register(
 	ArcElement,
@@ -94,6 +95,11 @@ export default defineComponent({
 			required: false,
 			default: false
 		},
+		bar: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
 		aspectRatio: {
 			type: Number,
 			required: false,
@@ -137,6 +143,43 @@ export default defineComponent({
 			}));
 		};
 
+		const tooltipShowing = ref(false);
+		const tooltipX = ref(0);
+		const tooltipY = ref(0);
+		const tooltipTitle = ref(null);
+		const tooltipSeries = ref(null);
+		let disposeTooltipComponent;
+
+		os.popup(MkChartTooltip, {
+			showing: tooltipShowing,
+			x: tooltipX,
+			y: tooltipY,
+			title: tooltipTitle,
+			series: tooltipSeries,
+		}, {}).then(({ dispose }) => {
+			disposeTooltipComponent = dispose;
+		});
+
+		function externalTooltipHandler(context) {
+			if (context.tooltip.opacity === 0) {
+				tooltipShowing.value = false;
+				return;
+			}
+
+			tooltipTitle.value = context.tooltip.title[0];
+			tooltipSeries.value = context.tooltip.body.map((b, i) => ({
+				backgroundColor: context.tooltip.labelColors[i].backgroundColor,
+				borderColor: context.tooltip.labelColors[i].borderColor,
+				text: b.lines[0],
+			}));
+
+			const rect = context.chart.canvas.getBoundingClientRect();
+
+			tooltipShowing.value = true;
+			tooltipX.value = rect.left + window.pageXOffset + context.tooltip.caretX;
+			tooltipY.value = rect.top + window.pageYOffset + context.tooltip.caretY;
+		}
+
 		const render = () => {
 			if (chartInstance) {
 				chartInstance.destroy();
@@ -149,7 +192,7 @@ export default defineComponent({
 			Chart.defaults.color = getComputedStyle(document.documentElement).getPropertyValue('--fg');
 
 			chartInstance = new Chart(chartEl.value, {
-				type: 'line',
+				type: props.bar ? 'bar' : 'line',
 				data: {
 					labels: new Array(props.limit).fill(0).map((_, i) => getDate(i).toLocaleString()).slice().reverse(),
 					datasets: data.series.map((x, i) => ({
@@ -157,12 +200,13 @@ export default defineComponent({
 						label: x.name,
 						data: x.data.slice().reverse(),
 						pointRadius: 0,
-						tension: 0,
 						borderWidth: 2,
 						borderColor: x.color ? x.color : getColor(i),
 						borderDash: x.borderDash || [],
 						borderJoinStyle: 'round',
 						backgroundColor: alpha(x.color ? x.color : getColor(i), 0.1),
+						barPercentage: 0.9,
+						categoryPercentage: 0.9,
 						fill: x.type === 'area',
 						hidden: !!x.hidden,
 					})),
@@ -180,6 +224,7 @@ export default defineComponent({
 					scales: {
 						x: {
 							type: 'time',
+							stacked: props.stacked,
 							time: {
 								stepSize: 1,
 								unit: props.span === 'day' ? 'month' : 'day',
@@ -212,7 +257,15 @@ export default defineComponent({
 					},
 					interaction: {
 						intersect: false,
+						mode: 'index',
 					},
+					elements: {
+						point: {
+							hoverRadius: 5,
+							hoverBorderWidth: 2,
+						},
+					},
+					animation: false,
 					plugins: {
 						legend: {
 							display: props.detailed,
@@ -222,10 +275,12 @@ export default defineComponent({
 							},
 						},
 						tooltip: {
+							enabled: false,
 							mode: 'index',
 							animation: {
 								duration: 0,
 							},
+							external: externalTooltipHandler,
 						},
 						zoom: {
 							pan: {
@@ -640,6 +695,21 @@ export default defineComponent({
 			};
 		};
 
+		const fetchPerUserDriveChart = async (): Promise<typeof data> => {
+			const raw = await os.api('charts/user/drive', { userId: props.args.user.id, limit: props.limit, span: props.span });
+			return {
+				series: [{
+					name: 'Inc',
+					type: 'area',
+					data: format(raw.incSize),
+				}, {
+					name: 'Dec',
+					type: 'area',
+					data: format(raw.decSize),
+				}],
+			};
+		};
+
 		const fetchAndRender = async () => {
 			const fetchData = () => {
 				switch (props.src) {
@@ -670,6 +740,7 @@ export default defineComponent({
 					case 'instance-drive-files-total': return fetchInstanceDriveFilesChart(true);
 
 					case 'per-user-notes': return fetchPerUserNotesChart();
+					case 'per-user-drive': return fetchPerUserDriveChart();
 				}
 			};
 			fetching.value = true;
@@ -682,6 +753,10 @@ export default defineComponent({
 
 		onMounted(() => {
 			fetchAndRender();
+		});
+
+		onUnmounted(() => {
+			if (disposeTooltipComponent) disposeTooltipComponent();
 		});
 
 		return {

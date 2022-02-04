@@ -136,7 +136,10 @@ let showPreview = $ref(false);
 let cw = $ref<string | null>(null);
 let localOnly = $ref<boolean>(props.initialLocalOnly ?? defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly);
 let visibility = $ref(props.initialVisibility ?? (defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility) as typeof misskey.noteVisibilities[number]);
-let visibleUsers = $ref(props.initialVisibleUsers ?? []);
+let visibleUsers = $ref([]);
+if (props.initialVisibleUsers) {
+	props.initialVisibleUsers.forEach(pushVisibleUser);
+}
 let autocomplete = $ref(null);
 let draghover = $ref(false);
 let quoteId = $ref(null);
@@ -263,12 +266,12 @@ if (props.reply && ['home', 'followers', 'specified'].includes(props.reply.visib
 		os.api('users/show', {
 			userIds: props.reply.visibleUserIds.filter(uid => uid !== $i.id && uid !== props.reply.userId)
 		}).then(users => {
-			visibleUsers.push(...users);
+			users.forEach(pushVisibleUser);
 		});
 
 		if (props.reply.userId !== $i.id) {
 			os.api('users/show', { userId: props.reply.userId }).then(user => {
-				visibleUsers.push(user);
+				pushVisibleUser(user);
 			});
 		}
 	}
@@ -276,7 +279,7 @@ if (props.reply && ['home', 'followers', 'specified'].includes(props.reply.visib
 
 if (props.specified) {
 	visibility = 'specified';
-	visibleUsers.push(props.specified);
+	pushVisibleUser(props.specified);
 }
 
 // keep cw when reply
@@ -398,9 +401,15 @@ function setVisibility() {
 	}, 'closed');
 }
 
+function pushVisibleUser(user) {
+	if (!visibleUsers.some(u => u.username === user.username && u.host === user.host)) {
+		visibleUsers.push(user);
+	}
+}
+
 function addVisibleUser() {
 	os.selectUser().then(user => {
-		visibleUsers.push(user);
+		pushVisibleUser(user);
 	});
 }
 

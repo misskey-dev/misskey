@@ -12,7 +12,6 @@
 	"dependencies": {
 		"@discordapp/twemoji": "13.1.0",
 		"@syuilo/aiscript": "0.11.1",
-		"@types/dateformat": "3.0.1",
 		"@types/escape-regexp": "0.0.1",
 		"@types/glob": "7.2.0",
 		"@types/gulp": "4.0.9",

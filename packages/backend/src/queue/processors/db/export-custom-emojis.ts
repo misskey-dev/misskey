@@ -7,7 +7,7 @@ const mime = require('mime-types');
 const archiver = require('archiver');
 import { queueLogger } from '../../logger';
 import { addFile } from '@/services/drive/add-file';
-import * as dateFormat from 'dateformat';
+import { format as dateFormat } from 'date-fns';
 import { Users, Emojis } from '@/models/index';
 import {  } from '@/queue/types';
 import { downloadUrl } from '@/misc/download-url';
@@ -110,7 +110,7 @@ export async function exportCustomEmojis(job: Bull.Job, done: () => void): Promi
 	archiveStream.on('close', async () => {
 		logger.succ(`Exported to: ${archivePath}`);
 
-		const fileName = 'custom-emojis-' + dateFormat(new Date(), 'yyyy-mm-dd-HH-MM-ss') + '.zip';
+		const fileName = 'custom-emojis-' + dateFormat(new Date(), 'yyyy-MM-dd-HH-mm-ss') + '.zip';
 		const driveFile = await addFile({ user, path: archivePath, name: fileName, force: true });
 
 		logger.succ(`Exported to: ${driveFile.id}`);

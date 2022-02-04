@@ -39,7 +39,7 @@ const sideN = Math.floor(n / 2);
  */
 export function genIdenticon(seed: string, stream: WriteStream): Promise<void> {
 	const rand = gen.create(seed);
-	const canvas = p.make(size, size);
+	const canvas = p.make(size, size, undefined);
 	const ctx = canvas.getContext('2d');
 
 	ctx.fillStyle = bg;
