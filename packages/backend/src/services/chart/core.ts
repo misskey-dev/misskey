@@ -66,10 +66,6 @@ export type KVs<S extends Schema> = {
 	[K in keyof S]: number;
 };
 
-type KVsWithoutUniqueCountField<S extends Schema> = {
-	[K in keyof S]: S[K]['uniqueIncrement'] extends true ? never : number;
-};
-
 type ChartResult<T extends Schema> = {
 	[P in keyof T]: number[];
 };
@@ -121,24 +117,6 @@ export default abstract class Chart<T extends Schema> {
 			}
 		}
 		return columns;
-	}
-
-	@autobind
-	private static countUniqueFields(x: Record<string, unknown>) {
-		const exec = (x: Obj) => {
-			const res = {} as Record<string, unknown>;
-			for (const [k, v] of Object.entries(x)) {
-				if (typeof v === 'object' && !Array.isArray(v)) {
-					res[k] = exec(v);
-				} else if (Array.isArray(v)) {
-					res[k] = Array.from(new Set(v)).length;
-				} else {
-					res[k] = v;
-				}
-			}
-			return res;
-		};
-		return exec(x);
 	}
 
 	@autobind
