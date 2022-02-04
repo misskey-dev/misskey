@@ -8,6 +8,6 @@ export const schema = {
 	'totalTime': {},
 	'incomingBytes': {},
 	'outgoingBytes': {},
-};
+} as const;
 
 export const entity = Chart.schemaToEntity(name, schema);

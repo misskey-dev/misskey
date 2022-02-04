@@ -27,7 +27,7 @@ export const meta = {
 		},
 	},
 
-	res: convertLog(perUserReactionsChart.schema),
+	// TODO: response definition
 } as const;
 
 // eslint-disable-next-line import/no-default-export

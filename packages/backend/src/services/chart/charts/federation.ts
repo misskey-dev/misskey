@@ -1,16 +1,13 @@
 import autobind from 'autobind-decorator';
-import Chart, { Obj, DeepPartial } from '../core';
-import { SchemaType } from '@/misc/schema';
+import Chart, { DeepPartial, KVs } from '../core';
 import { Instances } from '@/models/index';
 import { name, schema } from './entities/federation';
-
-type FederationLog = SchemaType<typeof schema>;
 
 /**
  * フェデレーションに関するチャート
  */
 // eslint-disable-next-line import/no-default-export
-export default class FederationChart extends Chart<FederationLog> {
+export default class FederationChart extends Chart<typeof schema> {
 	constructor() {
 		super(name, schema);
 	}
@@ -27,31 +24,22 @@ export default class FederationChart extends Chart<FederationLog> {
 	}
 
 	@autobind
-	protected async fetchActual(): Promise<DeepPartial<FederationLog>> {
+	protected async fetchActual(): Promise<DeepPartial<KVs<typeof schema>>> {
 		const [total] = await Promise.all([
 			Instances.count({}),
 		]);
 
 		return {
-			instance: {
-				total: total,
-			},
+			'instance.total': total,
 		};
 	}
 
 	@autobind
 	public async update(isAdditional: boolean): Promise<void> {
-		const update: Obj = {};
-
-		update.total = isAdditional ? 1 : -1;
-		if (isAdditional) {
-			update.inc = 1;
-		} else {
-			update.dec = 1;
-		}
-
-		await this.inc({
-			instance: update,
+		await this.commit({
+			'instance.total': isAdditional ? 1 : -1,
+			'instance.inc': isAdditional ? 1 : 0,
+			'instance.dec': isAdditional ? 0 : 1,
 		});
 	}
 }

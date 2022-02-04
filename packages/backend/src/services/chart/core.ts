@@ -52,15 +52,17 @@ const removeDuplicates = (array: any[]) => Array.from(new Set(array));
 type Schema = Record<string, {
 	uniqueIncrement?: boolean;
 
+	bigint?: boolean;
+
 	// previousな値を引き継ぐかどうか
 	accumulate?: boolean;
 }>;
 
 type Commit<S extends Schema> = {
-	[K in keyof S]: S[K]['uniqueIncrement'] extends true ? string[] : number;
+	[K in keyof S]?: S[K]['uniqueIncrement'] extends true ? string[] : number;
 };
 
-type KVs<S extends Schema> = {
+export type KVs<S extends Schema> = {
 	[K in keyof S]: number;
 };
 
@@ -95,8 +97,8 @@ export default abstract class Chart<T extends Schema> {
 	protected abstract fetchActual(group: string | null): Promise<DeepPartial<KVs<T>>>;
 
 	@autobind
-	private static convertSchemaToColumnDefinitions(schema: Schema): Record<string, { type: string; array?: boolean; }> {
-		const columns = {} as Record<string, { type: string; array?: boolean; }>;
+	private static convertSchemaToColumnDefinitions(schema: Schema): Record<string, { type: string; array?: boolean; default?: any; }> {
+		const columns = {} as Record<string, { type: string; array?: boolean; default?: any; }>;
 		for (const [k, v] of Object.entries(schema)) {
 			const name = k.replaceAll('.', columnDot);
 			if (v.uniqueIncrement) {
@@ -106,11 +108,15 @@ export default abstract class Chart<T extends Schema> {
 					default: '{}',
 				};
 				columns[columnPrefix + name] = {
+					//type: v.bigint ? 'bigint' : 'integer',
 					type: 'bigint',
+					default: 0,
 				};
 			} else {
 				columns[columnPrefix + name] = {
+					//type: v.bigint ? 'bigint' : 'integer',
 					type: 'bigint',
+					default: 0,
 				};
 			}
 		}
@@ -133,25 +139,6 @@ export default abstract class Chart<T extends Schema> {
 			return res;
 		};
 		return exec(x);
-	}
-
-	@autobind
-	private static convertQuery(diff: Record<string, number | unknown[]>) {
-		const query: Record<string, () => string> = {};
-
-		for (const [k, v] of Object.entries(diff)) {
-			if (typeof v === 'number') {
-				if (v > 0) query[k] = () => `"${k}" + ${v}`;
-				if (v < 0) query[k] = () => `"${k}" - ${Math.abs(v)}`;
-			} else if (Array.isArray(v)) {
-				// TODO: item が文字列以外の場合も対応
-				// TODO: item をSQLエスケープ
-				const items = v.map(item => `"${item}"`).join(',');
-				query[k] = () => `array_cat("${k}", '{${items}}'::varchar[])`;
-			}
-		}
-
-		return query;
 	}
 
 	@autobind
@@ -389,31 +376,57 @@ export default abstract class Chart<T extends Schema> {
 
 			for (const diff of this.buffer.filter(q => q.group == null || (q.group === logHour.group)).map(q => q.diff)) {
 				for (const [k, v] of Object.entries(diff)) {
-					const name = k.replaceAll('.', columnDot);
-					if (finalDiffs[name] == null) {
-						finalDiffs[name] = v;
+					if (finalDiffs[k] == null) {
+						finalDiffs[k] = v;
 					} else {
-						if (typeof finalDiffs[name] === 'number') {
-							(finalDiffs[name] as number) += v as number;
+						if (typeof finalDiffs[k] === 'number') {
+							(finalDiffs[k] as number) += v as number;
 						} else {
-							(finalDiffs[name] as unknown[]) = (finalDiffs[name] as unknown[]).concat(v);
+							(finalDiffs[k] as unknown[]) = (finalDiffs[k] as unknown[]).concat(v);
 						}
 					}
 				}
 			}
 
-			const query = Chart.convertQuery(finalDiffs);
+			const queryForHour: Record<string, number | (() => string)> = {};
+			const queryForDay: Record<string, number | (() => string)> = {};
+			for (const [k, v] of Object.entries(finalDiffs)) {
+				if (typeof v === 'number') {
+					const name = columnPrefix + k.replaceAll('.', columnDot);
+					if (v > 0) queryForHour[name] = () => `"${name}" + ${v}`;
+					if (v < 0) queryForHour[name] = () => `"${name}" - ${Math.abs(v)}`;
+					if (v > 0) queryForDay[name] = () => `"${name}" + ${v}`;
+					if (v < 0) queryForDay[name] = () => `"${name}" - ${Math.abs(v)}`;
+				} else if (Array.isArray(v) && v.length > 0) { // ユニークインクリメント
+					const name = uniqueTempColumnPrefix + k.replaceAll('.', columnDot);
+					// TODO: item が文字列以外の場合も対応
+					// TODO: item をSQLエスケープ
+					// TODO: 値が重複しないようにしたい
+					const items = v.map(item => `"${item}"`).join(',');
+					queryForHour[name] = () => `array_cat("${name}", '{${items}}'::varchar[])`;
+					queryForDay[name] = () => `array_cat("${name}", '{${items}}'::varchar[])`;
+				}
+			}
+
+			for (const [k, v] of Object.entries(this.schema)) {
+				const name = columnPrefix + k.replaceAll('.', columnDot);
+				if (v.uniqueIncrement) {
+					const tempColumnName = uniqueTempColumnPrefix + k.replaceAll('.', columnDot);
+					queryForHour[name] = new Set([...finalDiffs[k], ...logHour[tempColumnName]]).size;
+					queryForDay[name] = new Set([...finalDiffs[k], ...logDay[tempColumnName]]).size;
+				}
+			}
 
 			// ログ更新
 			await Promise.all([
 				this.repositoryForHour.createQueryBuilder()
 					.update()
-					.set(query)
+					.set(queryForHour)
 					.where('id = :id', { id: logHour.id })
 					.execute(),
 				this.repositoryForDay.createQueryBuilder()
 					.update()
-					.set(query)
+					.set(queryForDay)
 					.where('id = :id', { id: logDay.id })
 					.execute(),
 			]);
@@ -465,11 +478,6 @@ export default abstract class Chart<T extends Schema> {
 			this.claimCurrentLog(group, 'day'),
 		]).then(([logHour, logDay]) =>
 			update(logHour, logDay));
-	}
-
-	@autobind
-	protected async inc(inc: KVsWithoutUniqueCountField<T>, group: string | null = null): Promise<void> {
-		await this.commit(inc, group);
 	}
 
 	@autobind

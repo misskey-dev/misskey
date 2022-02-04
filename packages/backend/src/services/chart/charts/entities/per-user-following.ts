@@ -15,6 +15,6 @@ export const schema = {
 	'remote.followers.total': { accumulate: true },
 	'remote.followers.inc': {},
 	'remote.followers.dec': {},
-};
+} as const;
 
 export const entity = Chart.schemaToEntity(name, schema, true);

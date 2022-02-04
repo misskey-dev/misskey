@@ -1,17 +1,14 @@
 import autobind from 'autobind-decorator';
-import Chart, { Obj, DeepPartial } from '../core';
+import Chart, { DeepPartial, KVs } from '../core';
 import { User } from '@/models/entities/user';
-import { SchemaType } from '@/misc/schema';
 import { Users } from '@/models/index';
 import { name, schema } from './entities/active-users';
-
-type ActiveUsersLog = SchemaType<typeof schema>;
 
 /**
  * アクティブユーザーに関するチャート
  */
 // eslint-disable-next-line import/no-default-export
-export default class ActiveUsersChart extends Chart<ActiveUsersLog> {
+export default class ActiveUsersChart extends Chart<typeof schema> {
 	constructor() {
 		super(name, schema);
 	}
@@ -29,18 +26,15 @@ export default class ActiveUsersChart extends Chart<ActiveUsersLog> {
 	}
 
 	@autobind
-	protected async fetchActual(): Promise<DeepPartial<ActiveUsersLog>> {
+	protected async fetchActual(): Promise<DeepPartial<KVs<typeof schema>>> {
 		return {};
 	}
 
 	@autobind
 	public async update(user: { id: User['id'], host: User['host'] }): Promise<void> {
-		const update: Obj = {
-			users: [user.id],
-		};
-
-		await this.inc({
-			[Users.isLocalUser(user) ? 'local' : 'remote']: update,
+		await this.commit({
+			'local.users': Users.isLocalUser(user) ? [user.id] : [],
+			'remote.users': Users.isLocalUser(user) ? [] : [user.id],
 		});
 	}
 }

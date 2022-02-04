@@ -26,7 +26,7 @@ export const meta = {
 		},
 	},
 
-	res: convertLog(hashtagChart.schema),
+	// TODO: response definition
 } as const;
 
 // eslint-disable-next-line import/no-default-export

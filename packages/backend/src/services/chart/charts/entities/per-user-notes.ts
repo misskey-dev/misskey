@@ -9,6 +9,6 @@ export const schema = {
 	'diffs.normal': {},
 	'diffs.reply': {},
 	'diffs.renote': {},
-};
+} as const;
 
 export const entity = Chart.schemaToEntity(name, schema, true);

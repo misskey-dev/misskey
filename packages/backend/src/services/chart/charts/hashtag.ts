@@ -1,17 +1,14 @@
 import autobind from 'autobind-decorator';
-import Chart, { Obj, DeepPartial } from '../core';
+import Chart, { DeepPartial, KVs } from '../core';
 import { User } from '@/models/entities/user';
-import { SchemaType } from '@/misc/schema';
 import { Users } from '@/models/index';
 import { name, schema } from './entities/hashtag';
-
-type HashtagLog = SchemaType<typeof schema>;
 
 /**
  * ハッシュタグに関するチャート
  */
 // eslint-disable-next-line import/no-default-export
-export default class HashtagChart extends Chart<HashtagLog> {
+export default class HashtagChart extends Chart<typeof schema> {
 	constructor() {
 		super(name, schema, true);
 	}
@@ -29,18 +26,15 @@ export default class HashtagChart extends Chart<HashtagLog> {
 	}
 
 	@autobind
-	protected async fetchActual(): Promise<DeepPartial<HashtagLog>> {
+	protected async fetchActual(): Promise<DeepPartial<KVs<typeof schema>>> {
 		return {};
 	}
 
 	@autobind
 	public async update(hashtag: string, user: { id: User['id'], host: User['host'] }): Promise<void> {
-		const update: Obj = {
-			users: [user.id],
-		};
-
-		await this.inc({
-			[Users.isLocalUser(user) ? 'local' : 'remote']: update,
+		await this.commit({
+			'local.users': Users.isLocalUser(user) ? [user.id] : [],
+			'remote.users': Users.isLocalUser(user) ? [] : [user.id],
 		}, hashtag);
 	}
 }

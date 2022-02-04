@@ -15,6 +15,6 @@ export const schema = {
 	'remote.diffs.normal': {},
 	'remote.diffs.reply': {},
 	'remote.diffs.renote': {},
-};
+} as const;
 
 export const entity = Chart.schemaToEntity(name, schema);

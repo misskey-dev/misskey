@@ -9,6 +9,6 @@ export const schema = {
 	'remote.total': { accumulate: true },
 	'remote.inc': {},
 	'remote.dec': {},
-};
+} as const;
 
 export const entity = Chart.schemaToEntity(name, schema);

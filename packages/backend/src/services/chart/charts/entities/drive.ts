@@ -11,6 +11,6 @@ export const schema = {
 	'remote.incSize': {},
 	'remote.decCount': {},
 	'remote.decSize': {},
-};
+} as const;
 
 export const entity = Chart.schemaToEntity(name, schema);

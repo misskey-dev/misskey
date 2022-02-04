@@ -1,18 +1,15 @@
 import autobind from 'autobind-decorator';
-import Chart, { Obj, DeepPartial } from '../core';
-import { SchemaType } from '@/misc/schema';
+import Chart, { DeepPartial, KVs } from '../core';
 import { DriveFiles } from '@/models/index';
 import { Not, IsNull } from 'typeorm';
 import { DriveFile } from '@/models/entities/drive-file';
 import { name, schema } from './entities/drive';
 
-type DriveLog = SchemaType<typeof schema>;
-
 /**
  * ドライブに関するチャート
  */
 // eslint-disable-next-line import/no-default-export
-export default class DriveChart extends Chart<DriveLog> {
+export default class DriveChart extends Chart<typeof schema> {
 	constructor() {
 		super(name, schema);
 	}
@@ -40,42 +37,22 @@ export default class DriveChart extends Chart<DriveLog> {
 	}
 
 	@autobind
-	protected async fetchActual(): Promise<DeepPartial<DriveLog>> {
-		const [localCount, remoteCount, localSize, remoteSize] = await Promise.all([
-			DriveFiles.count({ userHost: null }),
-			DriveFiles.count({ userHost: Not(IsNull()) }),
-			DriveFiles.calcDriveUsageOfLocal(),
-			DriveFiles.calcDriveUsageOfRemote(),
-		]);
-
-		return {
-			local: {
-				totalCount: localCount,
-				totalSize: localSize,
-			},
-			remote: {
-				totalCount: remoteCount,
-				totalSize: remoteSize,
-			},
-		};
+	protected async fetchActual(): Promise<DeepPartial<KVs<typeof schema>>> {
+		return {};
 	}
 
 	@autobind
 	public async update(file: DriveFile, isAdditional: boolean): Promise<void> {
-		const update: Obj = {};
-
-		update.totalCount = isAdditional ? 1 : -1;
-		update.totalSize = isAdditional ? file.size : -file.size;
-		if (isAdditional) {
-			update.incCount = 1;
-			update.incSize = file.size;
-		} else {
-			update.decCount = 1;
-			update.decSize = file.size;
-		}
-
-		await this.inc({
-			[file.userHost === null ? 'local' : 'remote']: update,
+		await this.commit(file.userHost === null ? {
+			'local.incCount': isAdditional ? 1 : 0,
+			'local.incSize': isAdditional ? file.size : 0,
+			'local.decCount': isAdditional ? 0 : 1,
+			'local.decSize': isAdditional ? 0 : file.size,
+		} : {
+			'remote.incCount': isAdditional ? 1 : 0,
+			'remote.incSize': isAdditional ? file.size : 0,
+			'remote.decCount': isAdditional ? 0 : 1,
+			'remote.decSize': isAdditional ? 0 : file.size,
 		});
 	}
 }

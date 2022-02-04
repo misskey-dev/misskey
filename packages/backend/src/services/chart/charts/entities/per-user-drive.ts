@@ -9,6 +9,6 @@ export const schema = {
 	'incSize': {},
 	'decCount': {},
 	'decSize': {},
-};
+} as const;
 
 export const entity = Chart.schemaToEntity(name, schema, true);

@@ -26,6 +26,6 @@ export const schema = {
 	'drive.decFiles': {},
 	'drive.incUsage': {},
 	'drive.decUsage': {},
-};
+} as const;
 
 export const entity = Chart.schemaToEntity(name, schema, true);
