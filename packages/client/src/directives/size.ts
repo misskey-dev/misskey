@@ -18,14 +18,17 @@ type ClassOrder = {
 const cache = new Map<string, ClassOrder>();
 
 function getClassOrder(width: number, queue: Value): ClassOrder {
+	const getMaxClass = (v: number) => `max-width_${v}px`;
+	const getMinClass = (v: number) => `min-width_${v}px`;
+
 	return {
 		add: [
-			...(queue.max ? queue.max.filter(v => width <= v).map(v => `max-width_${v}px`) : []),
-			...(queue.min ? queue.min.filter(v => width >= v).map(v => `min-width_${v}px`) : []),
+			...(queue.max ? queue.max.filter(v => width <= v).map(getMaxClass) : []),
+			...(queue.min ? queue.min.filter(v => width >= v).map(getMinClass) : []),
 		],
 		remove: [
-			...(queue.max ? queue.max.filter(v => width  > v).map(v => `max-width_${v}px`) : []),
-			...(queue.min ? queue.min.filter(v => width  < v).map(v => `min-width_${v}px`) : []),
+			...(queue.max ? queue.max.filter(v => width  > v).map(getMaxClass) : []),
+			...(queue.min ? queue.min.filter(v => width  < v).map(getMinClass) : []),
 		]
 	};
 }
@@ -49,10 +52,8 @@ function calc(el: Element) {
 
 	const cached = cache.get(getOrderName(width, info.value));
 	if (cached) {
-		console.log('cache found', cached);
 		applyClassOrder(el, cached);
 	} else {
-		console.log('cache not found', width, info.value);
 		const order = getClassOrder(width, info.value);
 		cache.set(getOrderName(width, info.value), order);
 		applyClassOrder(el, order);
