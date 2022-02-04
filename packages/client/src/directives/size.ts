@@ -48,8 +48,8 @@ function calc(el: Element) {
 
 	if (!info || info.previousWidth === width) return;
 
+	// アクティベート前などでsrcが描画されていない場合
 	if (!width) {
-		// アクティベート前などでsrcが描画されていない場合があるので、
 		// IntersectionObserverで表示検出する
 		if (!info.intersection) {
 			info.intersection = new IntersectionObserver(entries => {
