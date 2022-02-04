@@ -811,6 +811,7 @@ ffVisibilityDescription: "Permet de configurer qui peut voir les personnes que t
 continueThread: "Afficher la suite du fil"
 deleteAccountConfirm: "Votre compte sera supprimé. Êtes vous certain ?"
 incorrectPassword: "Le mot de passe est incorrect."
+voteConfirm: "Confirmez-vous votre vote pour « {choice} » ?"
 hide: "Masquer"
 leaveGroup: "Quitter le groupe"
 leaveGroupConfirm: "Êtes vous sûr de vouloir quitter \"{name}\" ?"
@@ -972,6 +973,8 @@ _wordMute:
   hard: "Strict"
   mutedNotes: "Notes filtrées"
 _instanceMute:
+  instanceMuteDescription2: "Séparer avec de nouvelles lignes"
+  title: "Masque les notes venant des instances listées."
   heading: "Instances à mettre en sourdine"
 _theme:
   explore: "Explorer les thèmes"
