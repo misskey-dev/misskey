@@ -18,13 +18,11 @@ export default class NetworkChart extends Chart<typeof schema> {
 
 	@autobind
 	public async update(incomingRequests: number, time: number, incomingBytes: number, outgoingBytes: number): Promise<void> {
-		const inc: DeepPartial<NetworkLog> = {
-			incomingRequests: incomingRequests,
-			totalTime: time,
-			incomingBytes: incomingBytes,
-			outgoingBytes: outgoingBytes,
-		};
-
-		await this.inc(inc);
+		await this.commit({
+			'incomingRequests': incomingRequests,
+			'totalTime': time,
+			'incomingBytes': incomingBytes,
+			'outgoingBytes': outgoingBytes,
+		});
 	}
 }

@@ -318,6 +318,9 @@ export default abstract class Chart<T extends Schema> {
 
 	@autobind
 	protected commit(diff: Commit<T>, group: string | null = null): void {
+		for (const [k, v] of Object.entries(diff)) {
+			if (v == null || v === 0 || (Array.isArray(v) && v.length === 0)) delete diff[k];
+		}
 		this.buffer.push({
 			diff, group,
 		});
@@ -329,8 +332,6 @@ export default abstract class Chart<T extends Schema> {
 			logger.info(`${this.name}: Write skipped`);
 			return;
 		}
-
-		// TODO: bake unique
 
 		// TODO: 前の時間のログがbufferにあった場合のハンドリング
 		// 例えば、save が20分ごとに行われるとして、前回行われたのは 01:50 だったとする。

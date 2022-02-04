@@ -22,39 +22,22 @@ export default class NotesChart extends Chart<typeof schema> {
 		]);
 
 		return {
-			local: {
-				total: localCount,
-			},
-			remote: {
-				total: remoteCount,
-			},
+			'local.total': localCount,
+			'remote.total': remoteCount,
 		};
 	}
 
 	@autobind
 	public async update(note: Note, isAdditional: boolean): Promise<void> {
-		const update: Obj = {
-			diffs: {},
-		};
+		const prefix = note.userHost === null ? 'local' : 'remote';
 
-		update.total = isAdditional ? 1 : -1;
-
-		if (isAdditional) {
-			update.inc = 1;
-		} else {
-			update.dec = 1;
-		}
-
-		if (note.replyId != null) {
-			update.diffs.reply = isAdditional ? 1 : -1;
-		} else if (note.renoteId != null) {
-			update.diffs.renote = isAdditional ? 1 : -1;
-		} else {
-			update.diffs.normal = isAdditional ? 1 : -1;
-		}
-
-		await this.inc({
-			[note.userHost === null ? 'local' : 'remote']: update,
+		await this.commit({
+			[`${prefix}.total`]: isAdditional ? 1 : -1,
+			[`${prefix}.inc`]: isAdditional ? 1 : 0,
+			[`${prefix}.dec`]: isAdditional ? 0 : 1,
+			[`${prefix}.diffs.normal`]: note.replyId == null && note.renoteId == null ? (isAdditional ? 1 : -1) : 0,
+			[`${prefix}.diffs.renote`]: note.renoteId != null ? (isAdditional ? 1 : -1) : 0,
+			[`${prefix}.diffs.reply`]: note.replyId != null ? (isAdditional ? 1 : -1) : 0,
 		});
 	}
 }
