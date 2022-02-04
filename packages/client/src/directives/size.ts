@@ -92,8 +92,8 @@ export default {
 	unmounted(src, binding, vn) {
 		const info = mountings.get(src);
 		if (!info) return;
-		info.resize.observe(src);
-		info.intersection.observe(src);
+		info.resize.disconnect();
+		info.intersection.disconnect();
 		mountings.delete(src);
 	}
 } as Directive<Element, Value>;

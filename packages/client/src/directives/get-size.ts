@@ -1,5 +1,10 @@
 import { Directive } from 'vue';
 
+const mountings = new Map<Element, {
+	resize: ResizeObserver;
+	intersection: IntersectionObserver;
+}>();
+
 export default {
 	mounted(src, binding, vn) {
 		const calc = () => {
@@ -14,21 +19,27 @@ export default {
 
 		calc();
 
-		// Vue3では使えなくなった
-		// 無くても大丈夫か...？
-		// TODO: ↑大丈夫じゃなかったので解決策を探す
-		//vn.context.$on('hook:activated', calc);
-
-		const ro = new ResizeObserver((entries, observer) => {
+		const resize = new ResizeObserver((entries, observer) => {
 			calc();
 		});
-		ro.observe(src);
+		resize.observe(src);
 
-		src._get_size_ro_ = ro;
+		// アクティベート前などでsrcが描画されていない場合があるので、
+		// IntersectionObserverで表示検出する
+		const intersection = new IntersectionObserver(entries => {
+			if (entries.some(entry => entry.isIntersecting)) calc();
+		});
+		intersection.observe(src);
+
+		mountings.set(src, { resize, intersection, });
 	},
 
 	unmounted(src, binding, vn) {
 		binding.value(0, 0);
-		src._get_size_ro_.unobserve(src);
+		const info = mountings.get(src);
+		if (!info) return;
+		info.resize.disconnect();
+		info.intersection.disconnect();
+		mountings.delete(src);
 	}
-} as Directive;
+} as Directive<Element, (w: number, h: number) => void>;
