@@ -1,3 +1,4 @@
+const RE2 = require('re2');
 const { MigrationInterface, QueryRunner } = require("typeorm");
 
 module.exports = class convertHardMutes1644010796173 {
@@ -11,7 +12,7 @@ module.exports = class convertHardMutes1644010796173 {
                                 if (regexp) {
                                         // convert regexp's
                                         try {
-                                                new RegExp(regexp[1], regexp[2]);
+                                                new RE2(regexp[1], regexp[2]);
                                                 return `/${regexp[1]}/${regexp[2]}`;
                                         } catch (err) {
                                                 // invalid regex, ignore it
