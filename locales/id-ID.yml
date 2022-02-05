@@ -1235,8 +1235,8 @@ _exportOrImport:
   blockingList: "Blokir"
   userLists: "Daftar"
 _charts:
-  federationInstancesIncDec: "Perbedaan jumlah # instansi yang memfederasi"
-  federationInstancesTotal: "Jumlah # instansi yang memfederasi"
+  federation: "Federasi"
+  apRequest: "Permintaan"
   usersIncDec: "Perbedaan dalam # pengguna"
   usersTotal: "Jumlah # pengguna"
   activeUsers: "Pengguna aktif"
