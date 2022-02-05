@@ -4,11 +4,11 @@ export const name = 'users';
 
 export const schema = {
 	'local.total': { accumulate: true },
-	'local.inc': {},
-	'local.dec': {},
+	'local.inc': { range: 'small' },
+	'local.dec': { range: 'small' },
 	'remote.total': { accumulate: true },
-	'remote.inc': {},
-	'remote.dec': {},
+	'remote.inc': { range: 'small' },
+	'remote.dec': { range: 'small' },
 } as const;
 
 export const entity = Chart.schemaToEntity(name, schema);

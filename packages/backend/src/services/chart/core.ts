@@ -46,7 +46,7 @@ const removeDuplicates = (array: any[]) => Array.from(new Set(array));
 type Schema = Record<string, {
 	uniqueIncrement?: boolean;
 
-	bigint?: boolean;
+	range?: 'big' | 'small' | 'medium';
 
 	// previousな値を引き継ぐかどうか
 	accumulate?: boolean;
@@ -86,6 +86,7 @@ export default abstract class Chart<T extends Schema> {
 		const columns = {} as Record<string, { type: string; array?: boolean; default?: any; }>;
 		for (const [k, v] of Object.entries(schema)) {
 			const name = k.replaceAll('.', columnDot);
+			const type = v.range === 'big' ? 'bigint' : v.range === 'small' ? 'smallint' : 'integer';
 			if (v.uniqueIncrement) {
 				columns[uniqueTempColumnPrefix + name] = {
 					type: 'varchar',
@@ -93,14 +94,12 @@ export default abstract class Chart<T extends Schema> {
 					default: '{}',
 				};
 				columns[columnPrefix + name] = {
-					//type: v.bigint ? 'bigint' : 'integer',
-					type: 'bigint',
+					type,
 					default: 0,
 				};
 			} else {
 				columns[columnPrefix + name] = {
-					//type: v.bigint ? 'bigint' : 'integer',
-					type: 'bigint',
+					type,
 					default: 0,
 				};
 			}

@@ -5,9 +5,9 @@ export const name = 'perUserDrive';
 export const schema = {
 	'totalCount': { accumulate: true },
 	'totalSize': { accumulate: true },
-	'incCount': {},
+	'incCount': { range: 'small' },
 	'incSize': {},
-	'decCount': {},
+	'decCount': { range: 'small' },
 	'decSize': {},
 } as const;
 
