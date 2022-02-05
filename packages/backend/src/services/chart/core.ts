@@ -452,8 +452,8 @@ export default abstract class Chart<T extends Schema> {
 		const current = dateUTC(Chart.getCurrentDate());
 
 		// 一日以上前かつ三日以内
-		const gt = Chart.dateToTimestamp(current) - (1000 * 60 * 60 * 24 * 3);
-		const lt = Chart.dateToTimestamp(current) - (1000 * 60 * 60 * 24);
+		const gt = Chart.dateToTimestamp(current) - (60 * 60 * 24 * 3);
+		const lt = Chart.dateToTimestamp(current) - (60 * 60 * 24);
 
 		const columns = {} as Record<string, number>;
 		for (const [k, v] of Object.entries(this.schema)) {
