@@ -903,6 +903,8 @@ _pages:
         arg1: "লিস্ট"
       _randomPick:
         arg1: "লিস্ট"
+      _dailyRandom:
+        arg1: "সম্ভাব্যতা"
       _dailyRandomPick:
         arg1: "লিস্ট"
       _seedRandomPick:
