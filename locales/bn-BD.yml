@@ -820,6 +820,7 @@ hide: "লুকান"
 leaveGroup: "গ্রুপ ছেড়ে চলে যান"
 leaveGroupConfirm: "\"{name}\" গ্রুপ ছেড়ে চলে যেতে চান?"
 useDrawerReactionPickerForMobile: "মোবাইলে রিঅ্যাকশন পিকারকে ড্রয়ারে প্রদর্শন করুন"
+welcomeBackWithName: "আবার স্বাগতম, {name}"
 _ffVisibility:
   public: "প্রকাশ"
 _ad:
