@@ -11,6 +11,7 @@ import PerUserReactionsChart from './charts/per-user-reactions';
 import HashtagChart from './charts/hashtag';
 import PerUserFollowingChart from './charts/per-user-following';
 import PerUserDriveChart from './charts/per-user-drive';
+import ApRequestChart from './charts/ap-request';
 
 export const federationChart = new FederationChart();
 export const notesChart = new NotesChart();
@@ -23,6 +24,7 @@ export const perUserReactionsChart = new PerUserReactionsChart();
 export const hashtagChart = new HashtagChart();
 export const perUserFollowingChart = new PerUserFollowingChart();
 export const perUserDriveChart = new PerUserDriveChart();
+export const apRequestChart = new ApRequestChart();
 
 const charts = [
 	federationChart,
@@ -36,6 +38,7 @@ const charts = [
 	hashtagChart,
 	perUserFollowingChart,
 	perUserDriveChart,
+	apRequestChart,
 ];
 
 // 20分おきにメモリ情報をDBに書き込み

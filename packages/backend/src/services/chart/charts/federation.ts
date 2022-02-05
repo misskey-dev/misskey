@@ -31,4 +31,18 @@ export default class FederationChart extends Chart<typeof schema> {
 			'instance.dec': isAdditional ? 0 : 1,
 		});
 	}
+
+	@autobind
+	public async deliverd(host: string): Promise<void> {
+		await this.commit({
+			'deliveredInstances': [host],
+		});
+	}
+
+	@autobind
+	public async inbox(host: string): Promise<void> {
+		await this.commit({
+			'inboxInstances': [host],
+		});
+	}
 }

@@ -9,6 +9,7 @@ import { entity as PerUserReactionsChart } from './charts/entities/per-user-reac
 import { entity as HashtagChart } from './charts/entities/hashtag';
 import { entity as PerUserFollowingChart } from './charts/entities/per-user-following';
 import { entity as PerUserDriveChart } from './charts/entities/per-user-drive';
+import { entity as ApRequestChart } from './charts/entities/ap-request';
 
 export const entities = [
 	FederationChart.hour, FederationChart.day,
@@ -22,4 +23,5 @@ export const entities = [
 	HashtagChart.hour, HashtagChart.day,
 	PerUserFollowingChart.hour, PerUserFollowingChart.day,
 	PerUserDriveChart.hour, PerUserDriveChart.day,
+	ApRequestChart.hour, ApRequestChart.day,
 ];
