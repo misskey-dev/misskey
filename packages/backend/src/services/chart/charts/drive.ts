@@ -21,16 +21,17 @@ export default class DriveChart extends Chart<typeof schema> {
 
 	@autobind
 	public async update(file: DriveFile, isAdditional: boolean): Promise<void> {
+		const fileSizeKb = file.size / 1000;
 		await this.commit(file.userHost === null ? {
 			'local.incCount': isAdditional ? 1 : 0,
-			'local.incSize': isAdditional ? file.size : 0,
+			'local.incSize': isAdditional ? fileSizeKb : 0,
 			'local.decCount': isAdditional ? 0 : 1,
-			'local.decSize': isAdditional ? 0 : file.size,
+			'local.decSize': isAdditional ? 0 : fileSizeKb,
 		} : {
 			'remote.incCount': isAdditional ? 1 : 0,
-			'remote.incSize': isAdditional ? file.size : 0,
+			'remote.incSize': isAdditional ? fileSizeKb : 0,
 			'remote.decCount': isAdditional ? 0 : 1,
-			'remote.decSize': isAdditional ? 0 : file.size,
+			'remote.decSize': isAdditional ? 0 : fileSizeKb,
 		});
 	}
 }

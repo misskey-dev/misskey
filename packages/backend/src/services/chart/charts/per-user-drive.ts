@@ -28,13 +28,14 @@ export default class PerUserDriveChart extends Chart<typeof schema> {
 
 	@autobind
 	public async update(file: DriveFile, isAdditional: boolean): Promise<void> {
+		const fileSizeKb = file.size / 1000;
 		await this.commit({
 			'totalCount': isAdditional ? 1 : -1,
-			'totalSize': isAdditional ? file.size : -file.size,
+			'totalSize': isAdditional ? fileSizeKb : -fileSizeKb,
 			'incCount': isAdditional ? 1 : 0,
-			'incSize': isAdditional ? file.size : 0,
+			'incSize': isAdditional ? fileSizeKb : 0,
 			'decCount': isAdditional ? 0 : 1,
-			'decSize': isAdditional ? 0 : file.size,
+			'decSize': isAdditional ? 0 : fileSizeKb,
 		}, file.userId);
 	}
 }

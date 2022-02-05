@@ -107,12 +107,13 @@ export default class InstanceChart extends Chart<typeof schema> {
 
 	@autobind
 	public async updateDrive(file: DriveFile, isAdditional: boolean): Promise<void> {
+		const fileSizeKb = file.size / 1000;
 		await this.commit({
 			'drive.totalFiles': isAdditional ? 1 : -1,
 			'drive.incFiles': isAdditional ? 1 : 0,
-			'drive.incUsage': isAdditional ? file.size : 0,
+			'drive.incUsage': isAdditional ? fileSizeKb : 0,
 			'drive.decFiles': isAdditional ? 1 : 0,
-			'drive.decUsage': isAdditional ? file.size : 0,
+			'drive.decUsage': isAdditional ? fileSizeKb : 0,
 		}, file.userHost);
 	}
 }

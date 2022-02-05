@@ -24,8 +24,8 @@ export const schema = {
 	'drive.totalFiles': { accumulate: true },
 	'drive.incFiles': {},
 	'drive.decFiles': {},
-	'drive.incUsage': {},
-	'drive.decUsage': {},
+	'drive.incUsage': {}, // in kilobyte
+	'drive.decUsage': {}, // in kilobyte
 } as const;
 
 export const entity = Chart.schemaToEntity(name, schema, true);
