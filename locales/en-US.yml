@@ -1258,8 +1258,8 @@ _exportOrImport:
   excludeMutingUsers: "Exclude muted users"
   excludeInactiveUsers: "Exclude inactive users"
 _charts:
-  federationInstancesIncDec: "Difference in # of federating instances"
-  federationInstancesTotal: "Total # of federating instances"
+  federation: "Federation"
+  apRequest: "Requests"
   usersIncDec: "Difference in # of users"
   usersTotal: "Total # of users"
   activeUsers: "Active users"
