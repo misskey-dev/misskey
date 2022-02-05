@@ -789,6 +789,7 @@ misskeyUpdated: "Misskey আপডেট করা হয়েছে！"
 whatIsNew: "পরিবর্তনগুলি দেখান"
 translate: "অনুবাদ"
 translatedFrom: "{x} হতে অনুবাদ করা"
+accountDeletionInProgress: "অ্যাকাউন্ট মুছে ফেলা হচ্ছে"
 controlPanel: "নিয়ন্ত্রন কেন্দ্র"
 _ffVisibility:
   public: "প্রকাশ"
@@ -905,6 +906,10 @@ _pages:
         arg1: "লিস্ট"
       _dailyRandom:
         arg1: "সম্ভাব্যতা"
+      dailyRannum: "র‍্যান্ডম সংখ্যা (প্রতিটি ব্যবহারকারীর জন্য প্রতিদিন পরিবর্তীত হয়)"
+      _dailyRannum:
+        arg1: "ন্যূনতম মান"
+        arg2: "সর্বোচ্চ মান"
       _dailyRandomPick:
         arg1: "লিস্ট"
       _seedRandomPick:
@@ -913,8 +918,27 @@ _pages:
         arg1: "লিস্ট"
       _listLen:
         arg1: "লিস্ট"
+      aiScriptVar: "AiScript চলক"
+      fn: "ফাংশন"
+      _fn:
+        slots: "স্লটগুলি"
+        slots-info: "প্রতিটি স্লটকে আলাদা লাইনে লিখুন"
+        arg1: "আউটপুট"
+      for: "for-লুপ"
+      _for:
+        arg1: "কতবার চলবে"
+        arg2: "অ্যাকশন"
+    typeError: "স্লট {slot}, {expect} ধরনের মান গ্রহণ করে, কিন্তু {actual} ধরনের মান দেওয়া হয়েছে!"
+    thereIsEmptySlot: "স্লট {slot} খালি！"
     types:
+      string: "লেখা"
+      number: "সংখ্যা"
+      boolean: "ফ্ল্যাগ"
       array: "লিস্ট"
+      stringArray: "লেখার লিস্ট"
+    emptySlot: "খালি স্লট"
+    enviromentVariables: "এনভাইরনমেন্ট ভ্যারিয়েবল"
+    pageVariables: "পেজের চলক"
     argVariables: "ইনপুটের জায়গা"
 _relayStatus:
   requesting: "অপেক্ষমান"
