@@ -1250,8 +1250,8 @@ _exportOrImport:
   excludeMutingUsers: "Exclure les utilisateur·rice·s mis en sourdine"
   excludeInactiveUsers: "Exclure les utilisateur·rice·s inactifs"
 _charts:
-  federationInstancesIncDec: "Variation du nombre d'instances fédérées"
-  federationInstancesTotal: "Nombre total d'instances fédérées"
+  federation: "Fédération"
+  apRequest: "Requêtes"
   usersIncDec: "Variation du nombre d'utilisateur·rice·s"
   usersTotal: "Nombre des utilisateur·rice·s au total"
   activeUsers: "Nombre d'utilisateurices actif·ve·s"
