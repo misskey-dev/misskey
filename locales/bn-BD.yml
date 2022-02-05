@@ -740,6 +740,8 @@ _exportOrImport:
   muteList: "মিউট"
   blockingList: "ব্লক"
   userLists: "লিস্ট"
+_charts:
+  federation: "ফেডিভার্স"
 _timelines:
   home: "মূল পাতা"
 _pages:
