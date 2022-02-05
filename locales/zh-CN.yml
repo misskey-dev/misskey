@@ -1258,8 +1258,8 @@ _exportOrImport:
   excludeMutingUsers: "排除屏蔽用户"
   excludeInactiveUsers: "排除不活跃用户"
 _charts:
-  federationInstancesIncDec: "联合：增加/减少"
-  federationInstancesTotal: "联合总数"
+  federation: "联合"
+  apRequest: "请求"
   usersIncDec: "用户数量：增加/减少"
   usersTotal: "用户总数"
   activeUsers: "活跃用户数"
