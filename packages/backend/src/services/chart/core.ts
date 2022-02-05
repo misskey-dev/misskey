@@ -365,22 +365,22 @@ export default abstract class Chart<T extends Schema> {
 					if (v > 0) queryForDay[name] = () => `"${name}" + ${v}`;
 					if (v < 0) queryForDay[name] = () => `"${name}" - ${Math.abs(v)}`;
 				} else if (Array.isArray(v) && v.length > 0) { // ユニークインクリメント
-					const name = uniqueTempColumnPrefix + k.replaceAll('.', columnDot);
-					// TODO: item が文字列以外の場合も対応
+					const tempColumnName = uniqueTempColumnPrefix + k.replaceAll('.', columnDot);
 					// TODO: item をSQLエスケープ
-					// TODO: 値が重複しないようにしたい
-					const items = v.map(item => `"${item}"`).join(',');
-					queryForHour[name] = () => `array_cat("${name}", '{${items}}'::varchar[])`;
-					queryForDay[name] = () => `array_cat("${name}", '{${items}}'::varchar[])`;
+					const itemsForHour = v.filter(item => !logHour[tempColumnName].includes(item)).map(item => `"${item}"`);
+					const itemsForDay = v.filter(item => !logDay[tempColumnName].includes(item)).map(item => `"${item}"`);
+					if (itemsForHour.length > 0) queryForHour[tempColumnName] = () => `array_cat("${tempColumnName}", '{${itemsForHour.join(',')}}'::varchar[])`;
+					if (itemsForDay.length > 0) queryForDay[tempColumnName] = () => `array_cat("${tempColumnName}", '{${itemsForDay.join(',')}}'::varchar[])`;
 				}
 			}
 
-			for (const [k, v] of Object.entries(this.schema)) {
-				const name = columnPrefix + k.replaceAll('.', columnDot);
-				if (v.uniqueIncrement) {
+			// bake unique count
+			for (const [k, v] of Object.entries(finalDiffs)) {
+				if (this.schema[k].uniqueIncrement) {
+					const name = columnPrefix + k.replaceAll('.', columnDot);
 					const tempColumnName = uniqueTempColumnPrefix + k.replaceAll('.', columnDot);
-					queryForHour[name] = new Set([...finalDiffs[k], ...logHour[tempColumnName]]).size;
-					queryForDay[name] = new Set([...finalDiffs[k], ...logDay[tempColumnName]]).size;
+					queryForHour[name] = new Set([...v, ...logHour[tempColumnName]]).size;
+					queryForDay[name] = new Set([...v, ...logDay[tempColumnName]]).size;
 				}
 			}
 
