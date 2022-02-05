@@ -117,16 +117,23 @@ export default defineComponent({
 								title: this.$ts.regexpError,
 								text: this.$t('regexpErrorDescription', { tab, line: i + 1 }) + "\n" + err.toString()
 							});
-							return;
+							// re-throw error so these invalid settings are not saved
+							throw err;
 						}
 					} else {
-						softMutes[i] = line.split(' ');
+						lines[i] = line.split(' ');
 					}
 				}
 			};
 
-			let softMutes = parseMutes(this.softMutedWords, this.$ts._wordMute.soft);
-			let hardMutes = parseMutes(this.hardMutedWords, this.$ts._wordMute.hard);
+			let softMutes, hardMutes;
+			try {
+				softMutes = parseMutes(this.softMutedWords, this.$ts._wordMute.soft);
+				hardMutes = parseMutes(this.hardMutedWords, this.$ts._wordMute.hard);
+			} catch (err) {
+				// already displayed error message in parseMutes
+				return;
+			}
 
 			this.$store.set('mutedWords', softMutes);
 			await os.api('i/update', {

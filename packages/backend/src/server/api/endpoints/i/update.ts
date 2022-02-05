@@ -114,7 +114,7 @@ export const meta = {
 		},
 
 		mutedWords: {
-			validator: $.optional.arr($.arr($.str.min(1)).min(1).or($.str)),
+			validator: $.optional.arr($.either($.arr($.str.min(1)).min(1), $.str)),
 		},
 
 		mutedInstances: {
