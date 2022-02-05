@@ -889,6 +889,8 @@ _exportOrImport:
   blockingList: "ブロック"
   userLists: "リスト"
 _charts:
+  federation: "連合"
+  apRequest: "リクエスト"
   usersTotal: "ユーザーの合計"
   activeUsers: "アクティブユーザー数"
   notesIncDec: "ノートの増減"
