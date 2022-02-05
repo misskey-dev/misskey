@@ -449,7 +449,7 @@ export default abstract class Chart<T extends Schema> {
 	}
 
 	@autobind
-	public async getChart(span: 'hour' | 'day', amount: number, cursor: Date | null, group: string | null = null): Promise<ChartResult<T>> {
+	public async getChartRaw(span: 'hour' | 'day', amount: number, cursor: Date | null, group: string | null = null): Promise<ChartResult<T>> {
 		const [y, m, d, h, _m, _s, _ms] = cursor ? Chart.parseDate(subtractTime(addTime(cursor, 1, span), 1)) : Chart.getCurrentDate();
 		const [y2, m2, d2, h2] = cursor ? Chart.parseDate(addTime(cursor, 1, span)) : [] as never;
 
@@ -551,8 +551,8 @@ export default abstract class Chart<T extends Schema> {
 		return res;
 	}
 
-	public async getChartAndFormat(span: 'hour' | 'day', amount: number, cursor: Date | null, group: string | null = null): Promise<Record<string, unknown>> {
-		const result = this.getChart(span, amount, cursor, group);
+	public async getChart(span: 'hour' | 'day', amount: number, cursor: Date | null, group: string | null = null): Promise<Record<string, unknown>> {
+		const result = this.getChartRaw(span, amount, cursor, group);
 		const object = {};
 		for (const [k, v] of Object.entries(result)) {
 			nestedProperty.set(object, k, v);
