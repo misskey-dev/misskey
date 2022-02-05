@@ -449,6 +449,38 @@ export default abstract class Chart<T extends Schema> {
 	}
 
 	@autobind
+	public async clean(): Promise<void> {
+		const current = dateUTC(Chart.getCurrentDate());
+
+		// 一日以上前かつ三日以内
+		const gt = Chart.dateToTimestamp(current) - (1000 * 60 * 60 * 24 * 3);
+		const lt = Chart.dateToTimestamp(current) - (1000 * 60 * 60 * 24);
+
+		const columns = {} as Record<string, number>;
+		for (const [k, v] of Object.entries(this.schema)) {
+			if (v.uniqueIncrement) {
+				const name = k.replaceAll('.', columnDot);
+				columns[uniqueTempColumnPrefix + name] = [];
+			}
+		}
+
+		await Promise.all([
+			this.repositoryForHour.createQueryBuilder()
+				.update()
+				.set(columns as any)
+				.where('date > :gt', { gt })
+				.andWhere('date < :lt', { lt })
+				.execute(),
+			this.repositoryForDay.createQueryBuilder()
+				.update()
+				.set(columns as any)
+				.where('date > :gt', { gt })
+				.andWhere('date < :lt', { lt })
+				.execute(),
+		]);
+	}
+
+	@autobind
 	public async getChartRaw(span: 'hour' | 'day', amount: number, cursor: Date | null, group: string | null = null): Promise<ChartResult<T>> {
 		const [y, m, d, h, _m, _s, _ms] = cursor ? Chart.parseDate(subtractTime(addTime(cursor, 1, span), 1)) : Chart.getCurrentDate();
 		const [y2, m2, d2, h2] = cursor ? Chart.parseDate(addTime(cursor, 1, span)) : [] as never;
@@ -551,6 +583,7 @@ export default abstract class Chart<T extends Schema> {
 		return res;
 	}
 
+	@autobind
 	public async getChart(span: 'hour' | 'day', amount: number, cursor: Date | null, group: string | null = null): Promise<Record<string, unknown>> {
 		const result = await this.getChartRaw(span, amount, cursor, group);
 		const object = {};
