@@ -739,13 +739,6 @@
   resolved "https://registry.yarnpkg.com/@types/rename/-/rename-1.0.4.tgz#30c6f0306042591a560361ea02639e89647dd173"
   integrity sha512-eV81+6bVv2mdCBahkMefjEUwAjKDAP3AuyhqWCWRxcRaeVdUeHUBaoq2zSz+5HNHF2jzTajMcfLvJsy4K3cbwA==
 
-"@types/request-stats@3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@types/request-stats/-/request-stats-3.0.0.tgz#d3909a9f778b8ae0b42fb8c1ed20cb936ed95f99"
-  integrity sha512-POsDF7nETH8up49iBNvbZuO0pEk9F+TG0rXCkvjxCClcOS99xfF+mKmJteYlwKYpuRKkixzysKlL8rwN1hU2lw==
-  dependencies:
-    "@types/node" "*"
-
 "@types/responselike@*", "@types/responselike@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@types/responselike/-/responselike-1.0.0.tgz#251f4fe7d154d2bad125abe1b429b23afd262e29"
@@ -3417,13 +3410,6 @@ http-errors@~1.6.2:
     setprototypeof "1.1.0"
     statuses ">= 1.4.0 < 2"
 
-http-headers@^3.0.1:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/http-headers/-/http-headers-3.0.2.tgz#5147771292f0b39d6778d930a3a59a76fc7ef44d"
-  integrity sha512-87E1I+2Wg4dxxz4rcxElo3dxO/w1ZtgL1yA0Sb6vH3qU16vRKq1NjWQv9SCY3ly2OQROcoxHZOUpmelS+k6wOw==
-  dependencies:
-    next-line "^1.1.0"
-
 http-proxy-agent@^4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/http-proxy-agent/-/http-proxy-agent-4.0.1.tgz#8a8c8ef7f5932ccf953c296ca8291b95aa74aa3a"
@@ -4865,11 +4851,6 @@ netmask@^2.0.2:
   resolved "https://registry.yarnpkg.com/netmask/-/netmask-2.0.2.tgz#8b01a07644065d536383835823bc52004ebac5e7"
   integrity sha512-dBpDMdxv9Irdq66304OLfEmQ9tbNRFnFTuZiLo+bD+r332bBmMJ8GBLXklIXXgxd3+v9+KUnZaUR5PJMa75Gsg==
 
-next-line@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/next-line/-/next-line-1.1.0.tgz#fcae57853052b6a9bae8208e40dd7d3c2d304603"
-  integrity sha1-/K5XhTBStqm66CCOQN19PC0wRgM=
-
 next-tick@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/next-tick/-/next-tick-1.0.0.tgz#ca86d1fe8828169b0120208e3dc8424b9db8342c"
@@ -5906,14 +5887,6 @@ rename@1.0.4:
   integrity sha1-oPJQePpBleZQ9zBQx8Esz2ifQws=
   dependencies:
     debug "^2.5.2"
-
-request-stats@3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/request-stats/-/request-stats-3.0.0.tgz#769155dc8974d78d4a1cb87bbf14eaab985afe25"
-  integrity sha1-dpFV3Il0141KHLh7vxTqq5ha/iU=
-  dependencies:
-    http-headers "^3.0.1"
-    once "^1.4.0"
 
 require-all@3.0.0:
   version "3.0.0"

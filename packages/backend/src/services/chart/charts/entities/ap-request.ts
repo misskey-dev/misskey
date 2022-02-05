@@ -1,10 +1,11 @@
 import Chart from '../../core';
 
-export const name = 'activeUsers';
+export const name = 'apRequest';
 
 export const schema = {
-	'local.users': { uniqueIncrement: true },
-	'remote.users': { uniqueIncrement: true },
+	'deliverFailed': { },
+	'deliverSucceeded': { },
+	'inboxReceived': { },
 } as const;
 
 export const entity = Chart.schemaToEntity(name, schema);

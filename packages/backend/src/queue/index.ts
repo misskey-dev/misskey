@@ -261,6 +261,11 @@ export default function() {
 	}, {
 		repeat: { cron: '0 0 * * *' },
 	});
+
+	systemQueue.add('cleanCharts', {
+	}, {
+		repeat: { cron: '0 0 * * *' },
+	});
 }
 
 export function destroy() {
