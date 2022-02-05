@@ -3,7 +3,6 @@ import { beforeShutdown } from '@/misc/before-shutdown';
 import FederationChart from './charts/federation';
 import NotesChart from './charts/notes';
 import UsersChart from './charts/users';
-import NetworkChart from './charts/network';
 import ActiveUsersChart from './charts/active-users';
 import InstanceChart from './charts/instance';
 import PerUserNotesChart from './charts/per-user-notes';
@@ -16,7 +15,6 @@ import PerUserDriveChart from './charts/per-user-drive';
 export const federationChart = new FederationChart();
 export const notesChart = new NotesChart();
 export const usersChart = new UsersChart();
-export const networkChart = new NetworkChart();
 export const activeUsersChart = new ActiveUsersChart();
 export const instanceChart = new InstanceChart();
 export const perUserNotesChart = new PerUserNotesChart();
@@ -30,7 +28,6 @@ const charts = [
 	federationChart,
 	notesChart,
 	usersChart,
-	networkChart,
 	activeUsersChart,
 	instanceChart,
 	perUserNotesChart,
