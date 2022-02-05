@@ -1249,8 +1249,8 @@ _exportOrImport:
   excludeMutingUsers: "За исключением заглушенных пользователей"
   excludeInactiveUsers: "Без неактивных учётных записей"
 _charts:
-  federationInstancesIncDec: "Изменение внешних связей"
-  federationInstancesTotal: "Количество внешних связей"
+  federation: "Федерация"
+  apRequest: "Запросы"
   usersIncDec: "Изменение числа пользователей"
   usersTotal: "Количество пользователей"
   activeUsers: "Активные пользователи"
