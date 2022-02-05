@@ -61,7 +61,7 @@ const alpha = (hex, a) => {
 	return `rgba(${r}, ${g}, ${b}, ${a})`;
 };
 
-const colors = ['#008FFB', '#00E396', '#FEB019', '#FF4560'];
+const colors = ['#008FFB', '#00E396', '#FEB019', '#FF4560', '#e300db'];
 const getColor = (i) => {
 	return colors[i % colors.length];
 };
@@ -471,17 +471,37 @@ export default defineComponent({
 			const raw = await os.api('charts/active-users', { limit: props.limit, span: props.span });
 			return {
 				series: [{
-					name: 'Combined',
-					type: 'line',
-					data: format(sum(raw.local.users, raw.remote.users)),
-				}, {
-					name: 'Local',
+					name: 'Users',
 					type: 'area',
-					data: format(raw.local.users),
+					data: format(raw.users),
 				}, {
-					name: 'Remote',
+					name: 'Noted',
 					type: 'area',
-					data: format(raw.remote.users),
+					data: format(raw.notedUsers),
+				}, {
+					name: '< Week',
+					type: 'area',
+					data: format(raw.registeredWithinWeek),
+				}, {
+					name: '< Month',
+					type: 'area',
+					data: format(raw.registeredWithinMonth),
+				}, {
+					name: '< Year',
+					type: 'area',
+					data: format(raw.registeredWithinYear),
+				}, {
+					name: '> Week',
+					type: 'area',
+					data: format(raw.registeredOutsideWeek),
+				}, {
+					name: '> Month',
+					type: 'area',
+					data: format(raw.registeredOutsideMonth),
+				}, {
+					name: '> Year',
+					type: 'area',
+					data: format(raw.registeredOutsideYear),
 				}],
 			};
 		};

@@ -4,6 +4,10 @@ import { User } from '@/models/entities/user';
 import { Users } from '@/models/index';
 import { name, schema } from './entities/active-users';
 
+const week = 1000 * 60 * 60 * 24 * 7;
+const month = 1000 * 60 * 60 * 24 * 30;
+const year = 1000 * 60 * 60 * 24 * 365;
+
 /**
  * アクティブユーザーに関するチャート
  */
@@ -19,10 +23,22 @@ export default class ActiveUsersChart extends Chart<typeof schema> {
 	}
 
 	@autobind
-	public async update(user: { id: User['id'], host: User['host'] }): Promise<void> {
+	public async update(user: { id: User['id'], host: null, createdAt: User['createdAt'] }): Promise<void> {
 		await this.commit({
-			'local.users': Users.isLocalUser(user) ? [user.id] : [],
-			'remote.users': Users.isLocalUser(user) ? [] : [user.id],
+			'users': [user.id],
+			'registeredWithinWeek': (Date.now() - user.createdAt.getTime() < week) ? [user.id] : [],
+			'registeredWithinMonth': (Date.now() - user.createdAt.getTime() < month) ? [user.id] : [],
+			'registeredWithinYear': (Date.now() - user.createdAt.getTime() < year) ? [user.id] : [],
+			'registeredOutsideWeek': (Date.now() - user.createdAt.getTime() > week) ? [user.id] : [],
+			'registeredOutsideMonth': (Date.now() - user.createdAt.getTime() > month) ? [user.id] : [],
+			'registeredOutsideYear': (Date.now() - user.createdAt.getTime() > year) ? [user.id] : [],
+		});
+	}
+
+	@autobind
+	public async noted(user: { id: User['id'], host: null, createdAt: User['createdAt'] }): Promise<void> {
+		await this.commit({
+			'notedUsers': [user.id],
 		});
 	}
 }
