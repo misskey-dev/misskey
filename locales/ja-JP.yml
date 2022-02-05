@@ -1296,8 +1296,8 @@ _exportOrImport:
   excludeInactiveUsers: "使われていないアカウントを除外"
 
 _charts:
-  federationInstancesIncDec: "連合の増減"
-  federationInstancesTotal: "連合の合計"
+  federation: "連合"
+  apRequest: "リクエスト"
   usersIncDec: "ユーザーの増減"
   usersTotal: "ユーザーの合計"
   activeUsers: "アクティブユーザー数"

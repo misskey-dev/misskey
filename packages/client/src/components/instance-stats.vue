@@ -3,8 +3,8 @@
 	<div class="selects" style="display: flex;">
 		<MkSelect v-model="chartSrc" style="margin: 0; flex: 1;">
 			<optgroup :label="$ts.federation">
-				<option value="federation-instances">{{ $ts._charts.federationInstancesIncDec }}</option>
-				<option value="federation-instances-total">{{ $ts._charts.federationInstancesTotal }}</option>
+				<option value="federation">{{ $ts._charts.federation }}</option>
+				<option value="ap-request">{{ $ts._charts.apRequest }}</option>
 			</optgroup>
 			<optgroup :label="$ts.users">
 				<option value="users">{{ $ts._charts.usersIncDec }}</option>
@@ -19,9 +19,7 @@
 			</optgroup>
 			<optgroup :label="$ts.drive">
 				<option value="drive-files">{{ $ts._charts.filesIncDec }}</option>
-				<option value="drive-files-total">{{ $ts._charts.filesTotal }}</option>
 				<option value="drive">{{ $ts._charts.storageUsageIncDec }}</option>
-				<option value="drive-total">{{ $ts._charts.storageUsageTotal }}</option>
 			</optgroup>
 		</MkSelect>
 		<MkSelect v-model="chartSpan" style="margin: 0 0 0 10px;">

@@ -339,17 +339,48 @@ export default defineComponent({
 			// TODO
 		};
 
-		const fetchFederationInstancesChart = async (total: boolean): Promise<typeof data> => {
+		const fetchFederationChart = async (): Promise<typeof data> => {
 			const raw = await os.api('charts/federation', { limit: props.limit, span: props.span });
 			return {
 				series: [{
-					name: 'Instances',
+					name: 'Instances total',
 					type: 'area',
-					data: format(total
-						? raw.instance.total
-						: sum(raw.instance.inc, negate(raw.instance.dec))
-					),
+					data: format(raw.instance.total),
+				}, {
+					name: 'Instances inc/dec',
+					type: 'area',
+					data: format(sum(raw.instance.inc, negate(raw.instance.dec))),
+				}, {
+					name: 'Delivered instances',
+					type: 'area',
+					data: format(raw.deliveredInstances),
+				}, {
+					name: 'Inbox instances',
+					type: 'area',
+					data: format(raw.inboxInstances),
 				}],
+			};
+		};
+
+		const fetchApRequestChart = async (): Promise<typeof data> => {
+			const raw = await os.api('charts/ap-request', { limit: props.limit, span: props.span });
+			return {
+				series: [{
+					name: 'In',
+					type: 'area',
+					color: '#008FFB',
+					data: format(raw.inboxReceived)
+				}, {
+					name: 'Out (succ)',
+					type: 'area',
+					color: '#00E396',
+					data: format(raw.deliverSucceeded)
+				}, {
+					name: 'Out (fail)',
+					type: 'area',
+					color: '#FEB019',
+					data: format(raw.deliverFailed)
+				}]
 			};
 		};
 
@@ -491,26 +522,6 @@ export default defineComponent({
 			};
 		};
 
-		const fetchDriveTotalChart = async (): Promise<typeof data> => {
-			const raw = await os.api('charts/drive', { limit: props.limit, span: props.span });
-			return {
-				bytes: true,
-				series: [{
-					name: 'Combined',
-					type: 'line',
-					data: format(sum(raw.local.totalSize, raw.remote.totalSize)),
-				}, {
-					name: 'Local',
-					type: 'area',
-					data: format(raw.local.totalSize),
-				}, {
-					name: 'Remote',
-					type: 'area',
-					data: format(raw.remote.totalSize),
-				}],
-			};
-		};
-
 		const fetchDriveFilesChart = async (): Promise<typeof data> => {
 			const raw = await os.api('charts/drive', { limit: props.limit, span: props.span });
 			return {
@@ -542,25 +553,6 @@ export default defineComponent({
 					name: 'Remote -',
 					type: 'area',
 					data: format(negate(raw.remote.decCount)),
-				}],
-			};
-		};
-
-		const fetchDriveFilesTotalChart = async (): Promise<typeof data> => {
-			const raw = await os.api('charts/drive', { limit: props.limit, span: props.span });
-			return {
-				series: [{
-					name: 'Combined',
-					type: 'line',
-					data: format(sum(raw.local.totalCount, raw.remote.totalCount)),
-				}, {
-					name: 'Local',
-					type: 'area',
-					data: format(raw.local.totalCount),
-				}, {
-					name: 'Remote',
-					type: 'area',
-					data: format(raw.remote.totalCount),
 				}],
 			};
 		};
@@ -713,8 +705,8 @@ export default defineComponent({
 		const fetchAndRender = async () => {
 			const fetchData = () => {
 				switch (props.src) {
-					case 'federation-instances': return fetchFederationInstancesChart(false);
-					case 'federation-instances-total': return fetchFederationInstancesChart(true);
+					case 'federation': return fetchFederationChart();
+					case 'ap-request': return fetchApRequestChart();
 					case 'users': return fetchUsersChart(false);
 					case 'users-total': return fetchUsersChart(true);
 					case 'active-users': return fetchActiveUsersChart();
@@ -723,9 +715,7 @@ export default defineComponent({
 					case 'remote-notes': return fetchNotesChart('remote');
 					case 'notes-total': return fetchNotesTotalChart();
 					case 'drive': return fetchDriveChart();
-					case 'drive-total': return fetchDriveTotalChart();
 					case 'drive-files': return fetchDriveFilesChart();
-					case 'drive-files-total': return fetchDriveFilesTotalChart();
 					
 					case 'instance-requests': return fetchInstanceRequestsChart();
 					case 'instance-users': return fetchInstanceUsersChart(false);
