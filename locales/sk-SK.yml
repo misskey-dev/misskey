@@ -1257,8 +1257,8 @@ _exportOrImport:
   excludeMutingUsers: "Vylúčiť stíšených používateľov"
   excludeInactiveUsers: "Vylúčiť neaktívnych používateľov"
 _charts:
-  federationInstancesIncDec: "Rozdiel v počte federovaných serverov"
-  federationInstancesTotal: "Celkový počet federovaných serverov"
+  federation: "Federácia"
+  apRequest: "Žiadosti"
   usersIncDec: "Rozdiel v počte používateľov"
   usersTotal: "Celkový počet používateľov"
   activeUsers: "Aktívni používatelia"
