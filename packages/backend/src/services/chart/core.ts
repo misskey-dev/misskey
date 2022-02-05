@@ -552,7 +552,7 @@ export default abstract class Chart<T extends Schema> {
 	}
 
 	public async getChart(span: 'hour' | 'day', amount: number, cursor: Date | null, group: string | null = null): Promise<Record<string, unknown>> {
-		const result = this.getChartRaw(span, amount, cursor, group);
+		const result = await this.getChartRaw(span, amount, cursor, group);
 		const object = {};
 		for (const [k, v] of Object.entries(result)) {
 			nestedProperty.set(object, k, v);
