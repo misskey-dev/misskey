@@ -1258,8 +1258,8 @@ _exportOrImport:
   excludeMutingUsers: "Stummgeschaltete Benutzer aussortieren"
   excludeInactiveUsers: "Inaktive Benutzer aussortieren"
 _charts:
-  federationInstancesIncDec: "Unterschied in der Anzahl von förderierenden Instanzen"
-  federationInstancesTotal: "Anzahl aller föderierenden Instanzen"
+  federation: "Föderation"
+  apRequest: "Anfragen"
   usersIncDec: "Unterschied in der Anzahl von Benutzern"
   usersTotal: "Anzahl aller Benutzer"
   activeUsers: "Aktive Benutzer"
