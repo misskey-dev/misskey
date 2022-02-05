@@ -291,6 +291,8 @@ _exportOrImport:
   userLists: "Lijsten"
   excludeMutingUsers: "Negeer gedempte gebruikers"
   excludeInactiveUsers: "Negeer inactieve gebruikers"
+_charts:
+  federation: "Federatie"
 _timelines:
   home: "Startpagina"
 _pages:
