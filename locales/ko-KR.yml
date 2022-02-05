@@ -1258,8 +1258,8 @@ _exportOrImport:
   excludeMutingUsers: "뮤트한 유저 제외하기"
   excludeInactiveUsers: "휴면 중인 계정 제외하기"
 _charts:
-  federationInstancesIncDec: "연합 인스턴스 수 증감"
-  federationInstancesTotal: "연합 인스턴스 수 합계"
+  federation: "연합"
+  apRequest: "요청"
   usersIncDec: "유저 수 증감"
   usersTotal: "유저 수 합계"
   activeUsers: "활성 유저 수"
