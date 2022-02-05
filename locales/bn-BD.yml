@@ -821,8 +821,17 @@ leaveGroup: "গ্রুপ ছেড়ে চলে যান"
 leaveGroupConfirm: "\"{name}\" গ্রুপ ছেড়ে চলে যেতে চান?"
 useDrawerReactionPickerForMobile: "মোবাইলে রিঅ্যাকশন পিকারকে ড্রয়ারে প্রদর্শন করুন"
 welcomeBackWithName: "আবার স্বাগতম, {name}"
+clickToFinishEmailVerification: " [{ok}] ক্লিক করার মাধ্যমে আপনার ইমেল ঠিকানা নিশ্চিত করুন।"
+_emailUnavailable:
+  used: "এই ইমেইল ঠিকানাটি ইতোমধ্যে ব্যবহৃত হয়েছে"
+  format: "এই ইমেল ঠিকানাটি সঠিকভাবে লিখা হয়নি"
+  disposable: "অস্থায়ী ইমেইল ঠিকানা ব্যাবহার করা যাবে না"
+  mx: "ইমেইল ​​সার্ভারটি ঠিক নাই"
+  smtp: "ইমেইল সার্ভারটি সাড়া দিচ্ছে না"
 _ffVisibility:
   public: "প্রকাশ"
+  followers: "শুধুমাত্র অনুসরণকারীদের কাছে দৃশ্যমান"
+  private: "ব্যাক্তিগত"
 _ad:
   back: "পিছনে"
 _forgotPassword:
