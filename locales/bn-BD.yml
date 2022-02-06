@@ -942,6 +942,17 @@ _mfm:
   font: "ফন্ট"
   fontDescription: "বিষয়বস্তুকে কোন ফন্টে দেখানো হবে তা নির্ধারণ করে।"
   rainbow: "রেইনবো"
+  rainbowDescription: "বিষয়বস্তুকে রংধনুর রং গুলিতে প্রদর্শন করে।"
+  sparkle: "চিক চিক"
+  sparkleDescription: "বিষয়বস্তুকে একটি চিকচিকে কণা প্রভাব দেয়।"
+  rotate: "ঘুরান"
+  rotateDescription: "বিষয়বস্তুকে একটি নির্দিষ্ট কোনে ঘুরায়।"
+_instanceTicker:
+  none: "দেখাবেন না"
+  remote: "রিমোট ব্যাবহারকারীদের জন্য দেখান"
+  always: "সর্বদা দেখান"
+_serverDisconnectedBehavior:
+  reload: "স্বয়ংক্রিয়ভাবে রিলোড"
 _theme:
   description: "বর্ণনা"
   keys:
