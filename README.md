@@ -4,21 +4,18 @@
 
 **🌎 A forever evolving, interplanetary microblogging platform. 🚀**
 
-**Misskey** is a distributed microblogging platform with advanced features such as Reactions and a highly customizable UI.
-
-[Learn more](https://misskey-hub.net/)
+[**Misskey**](https://misskey-hub.net/en) is a distributed microblogging platform
+with advanced features such as reactions and a highly customizable UI.
 
 ---
 
-[✨ Find an instance](https://misskey-hub.net/instances.html)
+[✨ Find an instance](https://join.misskey.page)
 •
-[📦 Create your own instance](https://misskey-hub.net/docs/install.html)
+[📦 Create your own instance](https://misskey-hub.net/en/docs/install.html)
 •
 [🛠️ Contribute](./CONTRIBUTING.md)
 •
 [🚀 Join the community](https://discord.gg/Wp8gVStHW3)
-
----
 
 <a href="https://www.patreon.com/syuilo"><img src="https://c5.patreon.com/external/logo/become_a_patron_button@2x.png" alt="Become a Patron!" width="160" /></a>
 
@@ -28,19 +25,18 @@
 
 <a href="https://xn--931a.moe/"><img src="https://github.com/misskey-dev/misskey/blob/develop/assets/ai.png?raw=true" align="right" height="320px"/></a>
 
-## ✨ Features
+## ✨ Highlights
 - **ActivityPub support**\
-	It is possible to interact with other software.
+	Federates well with Mastodon, Pleroma and more.
 - **Reactions**\
-	You can add "reactions" to each post, making it easy for you to express your feelings.
+	Choose from a palette of reactions to express your feelings.
 - **Drive**\
 	An interface to manage uploaded files such as images, videos, sounds, etc.
 	You can also organize your favorite content into folders, making it easy to share again.
 - **Rich Web UI**\
 	Misskey has a rich WebUI by default.
-	It is highly customizable by flexibly changing the layout and installing various widgets and themes.
-	Furthermore, plug-ins can be created using AiScript, a original programming language.
-- and more...
+	It is highly customizable with different layouts, widgets and themes.
+	Furthermore, plug-ins can be created using AiScript, an original programming language.
 
 </div>
 
