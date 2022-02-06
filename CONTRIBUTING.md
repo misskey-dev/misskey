@@ -16,7 +16,7 @@ Before creating an issue, please check the following:
 ## Before implementation
 When you want to add a feature or fix a bug, **first have the design and policy reviewed in an Issue** (if it is not there, please make one). Without this step, there is a high possibility that the PR will not be merged even if it is implemented.
 
-At this point, you also need to clarify the goals of the PR you are creating, and make sure that the other members of the team are aware of them.
+At this point, you also need to clarify the goals of the PR you will create, and make sure that the other members of the team are aware of them.
 PRs that do not have a clear set of do's and don'ts tend to be bloated and difficult to review.
 
 Also, when you start implementation, assign yourself to the Issue (if you cannot do it yourself, ask another member to assign you). By expressing your intention to work the Issue, you can prevent conflicts in the work.
