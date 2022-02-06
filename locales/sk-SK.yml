@@ -142,6 +142,7 @@ flagAsBotDescription: "Ak je tento účet ovládaný programom, zaškrtnite tút
 flagAsCat: "Tento účet je mačka"
 flagAsCatDescription: "Zvoľte túto voľbu, aby bol tento účet označený ako mačka."
 flagShowTimelineReplies: "Zobraziť odpovede na poznámky v časovej osi"
+flagShowTimelineRepliesDescription: "Keď je zapnuté, na časovej osi sa zobrazia odpovede k poznámkam používateľov okrem samotných poznámok."
 autoAcceptFollowed: "Automaticky prijať sledovanie od účtov, ktoré sledujete"
 addAccount: "Pridať účet"
 loginFailed: "Prihlásenie sa nepodarilo."
