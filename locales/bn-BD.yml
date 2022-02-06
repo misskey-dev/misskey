@@ -917,6 +917,20 @@ _mfm:
   searchDescription: "পূর্ব-টাইপ করা পাঠ্য সহ একটি অনুসন্ধান বাক্স প্রদর্শন করে।"
   flip: "উল্টান"
   flipDescription: "বিষয়বস্তু উপরে/নীচে বা বাম/ডানে উল্টান।"
+  jelly: "অ্যানিমেশন (জেলি)"
+  jellyDescription: "জেলির মত অ্যানিমেশন দেখায়।"
+  tada: "অ্যানিমেশন (টাডা)"
+  tadaDescription: "\"টাডা!\" এর মত অ্যানিমেশন দেখায়।"
+  jump: "অ্যানিমেশন (লাফ)"
+  jumpDescription: "বিষয়বস্তুতে লাফ মারার মত অ্যানিমেশন দেখায়।"
+  bounce: "অ্যানিমেশন (তিড়িং বিড়িং)"
+  bounceDescription: "তিড়িং বিড়িং করার মত অ্যানিমেশন দেখায়।"
+  shake: "অ্যানিমেশন (ঝাঁকি)"
+  shakeDescription: "ঝাঁকির মত অ্যানিমেশন দেখায়।"
+  twitch: "অ্যানিমেশন (মোচড়ানো)"
+  twitchDescription: "মোচড়ানোর মত অ্যানিমেশন দেখায়।"
+  spin: "অ্যানিমেশন (ঘুরা)"
+  spinDescription: "ঘুরার মত অ্যানিমেশন দেখায়।"
 _theme:
   description: "বর্ণনা"
   keys:
@@ -975,6 +989,12 @@ _pages:
         arg1: "লিস্ট"
       _listLen:
         arg1: "লিস্ট"
+      _numberToString:
+        arg1: "সংখ্যা"
+      splitStrByLine: "পাঠ্যকে লাইনে বিভক্ত করুন"
+      _splitStrByLine:
+        arg1: "লেখা"
+      ref: "চলক"
       aiScriptVar: "AiScript চলক"
       fn: "ফাংশন"
       _fn:
