@@ -979,8 +979,20 @@ _wordMute:
   soft: "নমনীয়"
   hard: "কঠোর"
   mutedNotes: "মিউট করা নোটগুলি"
+_instanceMute:
+  instanceMuteDescription: "কনফিগার করা ইন্সট্যান্সের সব নোট এবং রিনোট মিউট করুন, মিউট করা ইন্সট্যান্সের ব্যবহারকারীদের উত্তর সহ।"
+  instanceMuteDescription2: "প্রতিটিকে আলাদা লাইনে লিখুন"
+  title: "কনফিগার করা ইন্সট্যান্সের নোটগুলিকে লুকিয়ে রাখে।"
+  heading: "মিউট করা ইন্সত্যান্সের তালিকা"
 _theme:
+  explore: "থিমগুলি ঘুরে দেখুন"
+  install: "থিম ইনস্টল করুন"
+  manage: "থিম ব্যাবস্থাপনা"
+  code: "থিম কোড"
   description: "বর্ণনা"
+  installed: "{name} ইন্সটল করা হয়েছে"
+  installedThemes: "ইন্সটল করা থিমসমূহ"
+  builtinThemes: "বিল্ট-ইন থিমসমূহ"
   keys:
     mention: "উল্লেখ"
     renote: "রিনোট"
