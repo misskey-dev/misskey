@@ -142,6 +142,7 @@ flagAsBotDescription: "もしこのアカウントがプログラムによって
 flagAsCat: "Catやで"
 flagAsCatDescription: "ワレ、猫ちゃんならこのフラグをつけてみ？"
 flagShowTimelineReplies: "It will display the reply to the note in the timeline. "
+flagShowTimelineRepliesDescription: "It will display the reply to notes other than the user notes in the timeline when you turn it on. "
 autoAcceptFollowed: "フォローしとるユーザーからのフォローリクエストを勝手に許可しとく"
 addAccount: "アカウントを追加"
 loginFailed: "ログインに失敗してしもうた…"
