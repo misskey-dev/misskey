@@ -62,9 +62,13 @@ export function uploadFile(
 					...(changeType ? {} : { mimeType: file.type }),
 				};
 
-				const { readAndCompressImage } = await import('browser-image-resizer');
-				resizedImage = await readAndCompressImage(file, config);
-				ctx.name = changeType ? `${ctx.name}.${mimeTypeMap[compressTypeMap[file.type].mimeType]}` : ctx.name;
+				try {
+					const { readAndCompressImage } = await import('browser-image-resizer');
+					resizedImage = await readAndCompressImage(file, config);
+					ctx.name = changeType ? `${ctx.name}.${mimeTypeMap[compressTypeMap[file.type].mimeType]}` : ctx.name;
+				} catch (e) {
+					console.error('Failed to resize image', e);
+				}
 			}
 
 			const data = new FormData();
