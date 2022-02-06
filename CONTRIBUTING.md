@@ -42,6 +42,21 @@ Thank you for your PR! Before creating a PR, please check the following:
 
 Thanks for your cooperation 🤗
 
+## Reviewers guide
+### Review perspective
+- Scope
+  - Are the goals of the PR clear?
+  - Is the granularity of the PR appropriate?
+- Security
+	- Does merging this PR create a vulnerability?
+- Performance
+	- Will merging this PR cause unexpected performance degradation?
+	- Is there a more efficient way?
+- Testing
+	- Does the test ensure the expected behavior?
+	- Are there any omissions or gaps?
+	- Does it check for anomalies?
+
 ## Localization (l10n)
 Misskey uses [Crowdin](https://crowdin.com/project/misskey) for localization management.
 You can improve our translations with your Crowdin account.
