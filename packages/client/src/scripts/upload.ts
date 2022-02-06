@@ -16,7 +16,6 @@ export const uploads = ref<Uploading[]>([]);
 const compressTypeMap = {
 	'image/jpeg': { quality: 0.85 },
 	'image/webp': { quality: 0.85, mimeType: 'image/jpeg'},
-	'image/png': { quality: 1 },
 	'image/svg+xml': { quality: 1, mimeType: 'image/png'},
 } as const;
 

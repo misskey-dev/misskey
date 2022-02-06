@@ -194,7 +194,7 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 		}
 
 		satisfyWebpublic = !!(
-			type !== 'image/svg+xml' &&
+			type !== 'image/svg+xml' && type !== 'image/webp' &&
 			!(metadata.exif || metadata.iptc || metadata.xmp || metadata.tifftagPhotoshop) &&
 			metadata.width && metadata.width <= 2048 &&
 			metadata.height && metadata.height <= 2048
@@ -214,10 +214,12 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 		logger.info(`creating web image`);
 
 		try {
-			if (['image/webp', 'image/jpeg'].includes(type)) {
-				webpublic = await convertSharpToWebp(img, 2048, 2048);
-			} else if (['image/png', 'image/svg+xml'].includes(type)) {
-				webpublic = await convertSharpToWebp(img, 2048, 2048, 100);
+			if (['image/jpeg', 'image/webp'].includes(type)) {
+				webpublic = await convertSharpToJpeg(img, 2048, 2048);
+			} else if (['image/png'].includes(type)) {
+				webpublic = await convertSharpToPng(img, 2048, 2048);
+			} else if (['image/svg+xml'].includes(type)) {
+				webpublic = await convertSharpToPng(img, 2048, 2048);
 			} else {
 				logger.debug(`web image not created (not an required image)`);
 			}

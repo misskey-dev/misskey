@@ -11,7 +11,7 @@ import { DriveFiles } from '@/models/index';
 import { InternalStorage } from '@/services/drive/internal-storage';
 import { downloadUrl } from '@/misc/download-url';
 import { detectType } from '@/misc/get-file-info';
-import { convertToWebp } from '@/services/drive/image-processor';
+import { convertToWebp, convertToJpeg, convertToPng } from '@/services/drive/image-processor';
 import { GenerateVideoThumbnail } from '@/services/drive/generate-video-thumbnail';
 import { StatusError } from '@/misc/fetch';
 import { FILE_TYPE_BROWSERSAFE } from '@/const';
@@ -74,7 +74,7 @@ export default async function(ctx: Koa.Context) {
 
 					if (isWebpublic) {
 						if (['image/svg+xml'].includes(mime)) {
-							return await convertToWebp(path, 2048, 2048, 100);
+							return await convertToPng(path, 2048, 2048);
 						}
 					}
 
