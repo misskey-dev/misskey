@@ -43,6 +43,8 @@ Thank you for your PR! Before creating a PR, please check the following:
 Thanks for your cooperation 🤗
 
 ## Reviewers guide
+Be willing to comment on the good points and not just the things you want fixed 💯
+
 ### Review perspective
 - Scope
   - Are the goals of the PR clear?
