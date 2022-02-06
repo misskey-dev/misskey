@@ -993,6 +993,7 @@ _theme:
   installed: "{name} ইন্সটল করা হয়েছে"
   installedThemes: "ইন্সটল করা থিমসমূহ"
   builtinThemes: "বিল্ট-ইন থিমসমূহ"
+  alreadyInstalled: "এই থিমটি ইতিমধ্যে ইন্সটল করা হয়েছে"
   keys:
     mention: "উল্লেখ"
     renote: "রিনোট"
