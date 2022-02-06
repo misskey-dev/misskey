@@ -953,6 +953,30 @@ _instanceTicker:
   always: "সর্বদা দেখান"
 _serverDisconnectedBehavior:
   reload: "স্বয়ংক্রিয়ভাবে রিলোড"
+  dialog: "সতর্কতা ডায়ালগ দেখান"
+  quiet: "অগচরী সতর্কতা দেখান"
+_channel:
+  create: "চ্যানেল বানান"
+  edit: "চ্যানেল সম্পাদনা করুন"
+  setBanner: "ব্যানার সেট করুন"
+  removeBanner: "ব্যানার সরান"
+  featured: "বর্তমানে জনপ্রিয়"
+  owned: "নিজের"
+  following: "অনুসরণ করা হচ্ছে"
+  usersCount: "{n} জন অংশগ্রহণকারী"
+  notesCount: "{n} টি নোট"
+_menuDisplay:
+  sideFull: "পাশে"
+  sideIcon: "পাশে (আইকন)"
+  top: "শীর্ষে"
+  hide: "লুকান"
+_wordMute:
+  muteWords: "নিঃশব্দ করা শব্দগুলি"
+  muteWordsDescription: "স্পেস দিয়ে আলাদা করলে AND শর্ত তৈরি হবে এবং আলাদা লাইনে লিখলে OR শর্ত তৈরি হবে।"
+  muteWordsDescription2: "রেগুলার এক্সপ্রেশন ব্যবহার করতে স্ল্যাশ দিয়ে কীওয়ার্ডকে ঘিরে রাখুন।"
+  softDescription: "টাইমলাইন থেকে নির্দিষ্ট শর্তানুযায়ী নোট লুকিয়ে রাখে।"
+  hardDescription: "নির্দিষ্ট শর্তানুযায়ী নোটগুলিকে টাইমলাইন থেকে বাদ দেয়। আপনি শর্ত পরিবর্তন করলেও যে নোটগুলি যোগ করা হয়নি সেগুলি বাদ দেওয়া হবে।"
+  soft: "নমনীয়"
 _theme:
   description: "বর্ণনা"
   keys:
