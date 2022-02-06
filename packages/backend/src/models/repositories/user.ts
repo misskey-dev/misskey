@@ -220,6 +220,7 @@ export class UserRepository extends Repository<User> {
 			isModerator: user.isModerator || falsy,
 			isBot: user.isBot || falsy,
 			isCat: user.isCat || falsy,
+			showTimelineReplies: user.showTimelineReplies || falsy,
 			instance: user.host ? Instances.findOne({ host: user.host }).then(instance => instance ? {
 				name: instance.name,
 				softwareName: instance.softwareName,
