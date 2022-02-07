@@ -1048,6 +1048,10 @@ _theme:
     cwFg: "CW বাটনের পাঠ্য"
     cwHoverBg: "CW বাটনের পটভূমি (হভার)"
     toastBg: "বিজ্ঞপ্তির পটভূমি"
+    toastFg: "বিজ্ঞপ্তির পাঠ্য"
+    buttonBg: "বাটনের পটভূমি"
+    buttonHoverBg: "বাটনের পটভূমি (হভার)"
+    inputBorder: "ইনপুট ফিল্ডের বর্ডার"
 _sfx:
   note: "নোটগুলি"
   notification: "বিজ্ঞপ্তি"
