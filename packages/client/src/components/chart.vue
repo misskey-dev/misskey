@@ -235,6 +235,7 @@ export default defineComponent({
 							},
 							ticks: {
 								display: props.detailed,
+								maxRotation: 0,
 							},
 							adapters: {
 								date: {
