@@ -12,6 +12,7 @@ export const schema = {
 	'notes.diffs.normal': {},
 	'notes.diffs.reply': {},
 	'notes.diffs.renote': {},
+	'notes.diffs.withFile': {},
 	'users.total': { accumulate: true },
 	'users.inc': { range: 'small' },
 	'users.dec': { range: 'small' },

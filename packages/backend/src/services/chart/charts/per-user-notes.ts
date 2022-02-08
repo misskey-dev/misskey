@@ -34,6 +34,7 @@ export default class PerUserNotesChart extends Chart<typeof schema> {
 			'diffs.normal': note.replyId == null && note.renoteId == null ? (isAdditional ? 1 : -1) : 0,
 			'diffs.renote': note.renoteId != null ? (isAdditional ? 1 : -1) : 0,
 			'diffs.reply': note.replyId != null ? (isAdditional ? 1 : -1) : 0,
+			'diffs.withFile': note.fileIds.length > 0 ? (isAdditional ? 1 : -1) : 0,
 		}, user.id);
 	}
 }

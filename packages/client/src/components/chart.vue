@@ -63,9 +63,16 @@ const alpha = (hex, a) => {
 	return `rgba(${r}, ${g}, ${b}, ${a})`;
 };
 
-const colors = ['#008FFB', '#00E396', '#FEB019', '#FF4560', '#e300db'];
+const colors = {
+	blue: '#008FFB',
+	green: '#00E396',
+	yellow: '#FEB019',
+	red: '#FF4560',
+	purple: '#e300db',
+};
+const colorSets = [colors.blue, colors.green, colors.yellow, colors.red, colors.purple];
 const getColor = (i) => {
-	return colors[i % colors.length];
+	return colorSets[i % colorSets.length];
 };
 
 export default defineComponent({
@@ -251,6 +258,7 @@ export default defineComponent({
 							ticks: {
 								display: props.detailed,
 								maxRotation: 0,
+								autoSkipPadding: 16,
 							},
 							adapters: {
 								date: {
@@ -268,6 +276,7 @@ export default defineComponent({
 							},
 							ticks: {
 								display: props.detailed,
+								//mirror: true,
 							},
 						},
 					},
@@ -412,6 +421,7 @@ export default defineComponent({
 						? sum(raw.local.inc, negate(raw.local.dec), raw.remote.inc, negate(raw.remote.dec))
 						: sum(raw[type].inc, negate(raw[type].dec))
 					),
+					color: '#888888',
 				}, {
 					name: 'Renotes',
 					type: 'area',
@@ -419,6 +429,7 @@ export default defineComponent({
 						? sum(raw.local.diffs.renote, raw.remote.diffs.renote)
 						: raw[type].diffs.renote
 					),
+					color: colors.green,
 				}, {
 					name: 'Replies',
 					type: 'area',
@@ -426,6 +437,7 @@ export default defineComponent({
 						? sum(raw.local.diffs.reply, raw.remote.diffs.reply)
 						: raw[type].diffs.reply
 					),
+					color: colors.yellow,
 				}, {
 					name: 'Normal',
 					type: 'area',
@@ -433,6 +445,15 @@ export default defineComponent({
 						? sum(raw.local.diffs.normal, raw.remote.diffs.normal)
 						: raw[type].diffs.normal
 					),
+					color: colors.blue,
+				}, {
+					name: 'With file',
+					type: 'area',
+					data: format(type == 'combined'
+						? sum(raw.local.diffs.withFile, raw.remote.diffs.withFile)
+						: raw[type].diffs.withFile
+					),
+					color: colors.purple,
 				}],
 			};
 		};

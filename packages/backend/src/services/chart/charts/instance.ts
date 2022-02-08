@@ -74,6 +74,7 @@ export default class InstanceChart extends Chart<typeof schema> {
 			'notes.diffs.normal': note.replyId == null && note.renoteId == null ? (isAdditional ? 1 : -1) : 0,
 			'notes.diffs.renote': note.renoteId != null ? (isAdditional ? 1 : -1) : 0,
 			'notes.diffs.reply': note.replyId != null ? (isAdditional ? 1 : -1) : 0,
+			'notes.diffs.withFile': note.fileIds.length > 0 ? (isAdditional ? 1 : -1) : 0,
 		}, toPuny(host));
 	}
 

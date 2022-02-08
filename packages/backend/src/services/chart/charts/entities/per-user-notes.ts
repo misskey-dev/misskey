@@ -9,6 +9,7 @@ export const schema = {
 	'diffs.normal': { range: 'small' },
 	'diffs.reply': { range: 'small' },
 	'diffs.renote': { range: 'small' },
+	'diffs.withFile': { range: 'small' },
 } as const;
 
 export const entity = Chart.schemaToEntity(name, schema, true);
