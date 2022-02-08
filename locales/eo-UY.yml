@@ -651,8 +651,12 @@ hashtags: "Kradvorto"
 troubleshooting: "Problemsolvi"
 learnMore: "Lernu pli"
 misskeyUpdated: "Misskey ĝisdatiĝis!"
+whatIsNew: "Montri novaĵojn"
 translate: "Traduki"
 translatedFrom: "Tradukita el {x}"
+accountDeletionInProgress: "La konto estas forviŝanta."
+resolved: "Solvita"
+unresolved: "Nesolvita"
 breakFollow: "Ĉesigi la sekvadon al vi"
 itsOn: "Ŝaltita"
 emailRequiredForSignup: "Registri konton devas konformi retpoŝtadreson"
@@ -683,11 +687,14 @@ _signup:
   emailAddressInfo: "Entajpu vian retpoŝton"
 _accountDelete:
   accountDelete: "Forigi konton"
+  requestAccountDelete: "Peti forviŝi konton"
+  started: "Forviŝado komenciĝis."
 _ad:
   back: "Nuligi"
 _forgotPassword:
   enterEmail: "Entajpu la retpoŝton kiun vi registrigis al via konto. Ligilo por restarigi pasvorton estos sendita al la retadreso."
 _gallery:
+  my: "Mia afiŝo"
   liked: "Ŝatitaj notoj"
   like: "Ŝati"
 _email:
@@ -709,6 +716,7 @@ _aboutMisskey:
   allContributors: "Ĉiuj kontribuantoj"
   source: "Fontkodo"
   translation: "Traduki Misskey"
+  donate: "Mondonaci al Misskey"
   patrons: "Mecenatoj"
 _mfm:
   dummy: "Misskey evoluigas la mondon de Fediverso"
@@ -760,6 +768,9 @@ _theme:
   manage: "Bonteni kolorarojn"
   code: "Kolorara kodo"
   description: "Priskribo"
+  installedThemes: "Instalita koloraro"
+  make: "Krei koloraron"
+  constant: "Konstanto"
   defaultValue: "Implicitaĵa valoro"
   color: "Koloro"
   func: "Funkcio"
