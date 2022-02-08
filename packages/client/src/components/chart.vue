@@ -29,6 +29,7 @@ import {
 import 'chartjs-adapter-date-fns';
 import { enUS } from 'date-fns/locale';
 import zoomPlugin from 'chartjs-plugin-zoom';
+import gradient from 'chartjs-plugin-gradient';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
 import MkChartTooltip from '@/components/chart-tooltip.vue';
@@ -49,6 +50,7 @@ Chart.register(
 	SubTitle,
 	Filler,
 	zoomPlugin,
+	gradient,
 );
 
 const sum = (...arr) => arr.reduce((r, a) => r.map((b, i) => a[i] + b));
@@ -191,6 +193,8 @@ export default defineComponent({
 			// フォントカラー
 			Chart.defaults.color = getComputedStyle(document.documentElement).getPropertyValue('--fg');
 
+			const maxes = data.series.map((x, i) => Math.max(...x.data.map(d => d.y)));
+
 			chartInstance = new Chart(chartEl.value, {
 				type: props.bar ? 'bar' : 'line',
 				data: {
@@ -206,6 +210,15 @@ export default defineComponent({
 						borderDash: x.borderDash || [],
 						borderJoinStyle: 'round',
 						backgroundColor: alpha(x.color ? x.color : getColor(i), 0.1),
+						gradient: {
+							backgroundColor: {
+								axis: 'y',
+								colors: {
+									0: alpha(x.color ? x.color : getColor(i), 0),
+									[maxes[i]]: alpha(x.color ? x.color : getColor(i), 0.1),
+								},
+							},
+						},
 						barPercentage: 0.9,
 						categoryPercentage: 0.9,
 						fill: x.type === 'area',
@@ -312,6 +325,7 @@ export default defineComponent({
 								},
 							}
 						},
+						gradient,
 					},
 				},
 				plugins: [{
