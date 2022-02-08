@@ -24,6 +24,7 @@ You should also include the user name that made the change.
 	- apRequestチャートを追加
 	- networkチャート廃止
 - クライアント: 自インスタンス情報ページでチャートを見れるように @syuilo
+- クライアント: デバイスの種類を手動指定できるように @syuilo
 
 ### Bugfixes
 
