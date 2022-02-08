@@ -69,6 +69,7 @@ const colors = {
 	yellow: '#FEB019',
 	red: '#FF4560',
 	purple: '#e300db',
+	orange: '#fe6919',
 };
 const colorSets = [colors.blue, colors.green, colors.yellow, colors.red, colors.purple];
 const getColor = (i) => {
@@ -518,15 +519,20 @@ export default defineComponent({
 			const raw = await os.api('charts/active-users', { limit: props.limit, span: props.span });
 			return {
 				series: [{
-					name: 'Active',
+					name: 'Read & Write',
 					type: 'area',
-					data: format(raw.users),
-					color: '#888888',
+					data: format(raw.readWrite),
+					color: colors.orange,
 				}, {
-					name: 'Noted',
+					name: 'Write',
 					type: 'area',
-					data: format(raw.notedUsers),
+					data: format(raw.write),
 					color: colors.blue,
+				}, {
+					name: 'Read',
+					type: 'area',
+					data: format(raw.read),
+					color: '#888888',
 				}, {
 					name: '< Week',
 					type: 'area',

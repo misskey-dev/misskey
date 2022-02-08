@@ -23,9 +23,9 @@ export default class ActiveUsersChart extends Chart<typeof schema> {
 	}
 
 	@autobind
-	public async update(user: { id: User['id'], host: null, createdAt: User['createdAt'] }): Promise<void> {
+	public async read(user: { id: User['id'], host: null, createdAt: User['createdAt'] }): Promise<void> {
 		await this.commit({
-			'users': [user.id],
+			'read': [user.id],
 			'registeredWithinWeek': (Date.now() - user.createdAt.getTime() < week) ? [user.id] : [],
 			'registeredWithinMonth': (Date.now() - user.createdAt.getTime() < month) ? [user.id] : [],
 			'registeredWithinYear': (Date.now() - user.createdAt.getTime() < year) ? [user.id] : [],
@@ -36,9 +36,9 @@ export default class ActiveUsersChart extends Chart<typeof schema> {
 	}
 
 	@autobind
-	public async noted(user: { id: User['id'], host: null, createdAt: User['createdAt'] }): Promise<void> {
+	public async write(user: { id: User['id'], host: null, createdAt: User['createdAt'] }): Promise<void> {
 		await this.commit({
-			'notedUsers': [user.id],
+			'write': [user.id],
 		});
 	}
 }

@@ -46,6 +46,8 @@ const removeDuplicates = (array: any[]) => Array.from(new Set(array));
 type Schema = Record<string, {
 	uniqueIncrement?: boolean;
 
+	intersection?: string[] | ReadonlyArray<string>;
+
 	range?: 'big' | 'small' | 'medium';
 
 	// previousな値を引き継ぐかどうか
@@ -381,6 +383,33 @@ export default abstract class Chart<T extends Schema> {
 					const tempColumnName = uniqueTempColumnPrefix + k.replaceAll('.', columnDot);
 					queryForHour[name] = new Set([...v, ...logHour[tempColumnName]]).size;
 					queryForDay[name] = new Set([...v, ...logDay[tempColumnName]]).size;
+				}
+			}
+
+			// compute intersection
+			// TODO: intersectionに指定されたカラムがintersectionだった場合の対応
+			for (const [k, v] of Object.entries(this.schema)) {
+				const intersection = v.intersection;
+				if (intersection) {
+					const name = columnPrefix + k.replaceAll('.', columnDot);
+					const firstKey = intersection[0];
+					const firstTempColumnName = uniqueTempColumnPrefix + firstKey.replaceAll('.', columnDot);
+					const currentValuesForHour = new Set([...(finalDiffs[firstKey] ?? []), ...logHour[firstTempColumnName]]);
+					const currentValuesForDay = new Set([...(finalDiffs[firstKey] ?? []), ...logDay[firstTempColumnName]]);
+					for (let i = 1; i < intersection.length; i++) {
+						const targetKey = intersection[i];
+						const targetTempColumnName = uniqueTempColumnPrefix + targetKey.replaceAll('.', columnDot);
+						const targetValuesForHour = new Set([...(finalDiffs[targetKey] ?? []), ...logHour[targetTempColumnName]]);
+						const targetValuesForDay = new Set([...(finalDiffs[targetKey] ?? []), ...logDay[targetTempColumnName]]);
+						currentValuesForHour.forEach(v => {
+							if (!targetValuesForHour.has(v)) currentValuesForHour.delete(v);
+						});
+						currentValuesForDay.forEach(v => {
+							if (!targetValuesForDay.has(v)) currentValuesForDay.delete(v);
+						});
+					}
+					queryForHour[name] = currentValuesForHour.size;
+					queryForDay[name] = currentValuesForDay.size;
 				}
 			}
 

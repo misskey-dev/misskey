@@ -3,8 +3,9 @@ import Chart from '../../core';
 export const name = 'activeUsers';
 
 export const schema = {
-	'users': { uniqueIncrement: true },
-	'notedUsers': { uniqueIncrement: true, range: 'small' },
+	'readWrite': { intersection: ['read', 'write'], range: 'small' },
+	'read': { uniqueIncrement: true, range: 'small' },
+	'write': { uniqueIncrement: true, range: 'small' },
 	'registeredWithinWeek': { uniqueIncrement: true, range: 'small' },
 	'registeredWithinMonth': { uniqueIncrement: true, range: 'small' },
 	'registeredWithinYear': { uniqueIncrement: true, range: 'small' },

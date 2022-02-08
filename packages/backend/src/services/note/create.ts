@@ -297,7 +297,7 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 	}
 
 	if (!silent) {
-		if (Users.isLocalUser(user)) activeUsersChart.noted(user);
+		if (Users.isLocalUser(user)) activeUsersChart.write(user);
 
 		// 未読通知を作成
 		if (data.visibility === 'specified') {
