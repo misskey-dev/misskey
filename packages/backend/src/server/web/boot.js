@@ -113,18 +113,26 @@
 	// eslint-disable-next-line no-inner-declarations
 	function renderError(code, details) {
 		document.documentElement.innerHTML = `
-			<h1>⚠エラーが発生しました</h1>
-			<p>問題が解決しない場合は管理者までお問い合わせください。以下のオプションを試すこともできます:</p>
-			<ul>
-				<li><a href="/cli">簡易クライアント</a>を起動</li>
-				<li><a href="/bios">BIOS</a>で修復を試みる</li>
-				<li><a href="/flush">キャッシュをクリア</a>する</li>
-			</ul>
-			<hr>
-			<code>ERROR CODE: ${code}</code>
-			<details>
-				${details}
-			</details>
+			<style>body { background-color: #010080; }</style>
+			<div style="color: #FFF; padding: 128px;">
+				<h1 style="font-family: system-ui; font-size: 100px; margin: 0;">:(</h1>
+				<h1>エラーが発生しました</h1>
+				<p>問題が解決しない場合は管理者までお問い合わせください。以下のオプションを試すこともできます:</p>
+				<div style="display: flex; flex-direction: row;">
+				    <img style="width: 192px; image-rendering: pixelated;" src="data:image/gif;base64,R0lGODlhIwAjAIAAAP///wEAgCH5BAAAAAAALAAAAAAjACMAAAK1hI+py+0Pozyh2mAquBtdq2DeplGjaCYYuIpr97avSsZZ1sJ1R7O3XItpUKkiLGfkeT625vEjkRFJ0Z6LKsRNTaDgrIvd3nC/kBZSGpdYnLQZOPSVRzSdN73Oh67I3VtMFUbh1mZHx0d2dQIo6KfFBNSAJKXjoqgydMSlGSEUR2TJxlhnQ2a6AHnW5QNWZ/TleLk4E8QD2ceVOfi4p5RL+/OVakYXa1u7lZqHqDbh/AwdLZ1QAAA7">
+					<div style="display: flex; flex-direction: column; justify-content: space-between; padding-block: 16px;">
+						<ul style="margin: 0;">
+							<li><a style="color: red;" href="/cli">簡易クライアント</a>を起動</li>
+							<li><a style="color: red;" href="/bios">BIOS</a>で修復を試みる</li>
+							<li><a style="color: red;" href="/flush">キャッシュをクリア</a>する</li>
+						</ul>
+						<div style="padding-left: 40px;">
+				    		<p style="margin: 0;"><code>停止コード: ${code}</code></p>
+							<p style="margin: 0;"><code>失敗した内容: ${details}</code></p>
+						</div>
+					</div>
+				</div>
+			</div>
 		`;
 	}
 
