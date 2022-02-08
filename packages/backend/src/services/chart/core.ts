@@ -496,6 +496,10 @@ export default abstract class Chart<T extends Schema> {
 			}
 		}
 
+		if (Object.keys(columns).length === 0) {
+			return;
+		}
+
 		await Promise.all([
 			this.repositoryForHour.createQueryBuilder()
 				.update()
