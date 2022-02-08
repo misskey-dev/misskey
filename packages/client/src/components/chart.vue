@@ -512,34 +512,42 @@ export default defineComponent({
 					name: 'Users',
 					type: 'area',
 					data: format(raw.users),
+					color: '#888888',
 				}, {
 					name: 'Noted',
 					type: 'area',
 					data: format(raw.notedUsers),
+					color: colors.blue,
 				}, {
 					name: '< Week',
 					type: 'area',
 					data: format(raw.registeredWithinWeek),
+					color: colors.green,
 				}, {
 					name: '< Month',
 					type: 'area',
 					data: format(raw.registeredWithinMonth),
+					color: colors.yellow,
 				}, {
 					name: '< Year',
 					type: 'area',
 					data: format(raw.registeredWithinYear),
+					color: colors.red,
 				}, {
 					name: '> Week',
 					type: 'area',
 					data: format(raw.registeredOutsideWeek),
+					color: colors.yellow,
 				}, {
 					name: '> Month',
 					type: 'area',
 					data: format(raw.registeredOutsideMonth),
+					color: colors.red,
 				}, {
 					name: '> Year',
 					type: 'area',
 					data: format(raw.registeredOutsideYear),
+					color: colors.purple,
 				}],
 			};
 		};
