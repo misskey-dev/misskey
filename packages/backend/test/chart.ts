@@ -439,8 +439,8 @@ describe('Chart', () => {
 				await testIntersectionChart.addB('carol');
 				await testIntersectionChart.save();
 	
-				const chartHours = await testUniqueChart.getChart('hour', 3, null);
-				const chartDays = await testUniqueChart.getChart('day', 3, null);
+				const chartHours = await testIntersectionChart.getChart('hour', 3, null);
+				const chartDays = await testIntersectionChart.getChart('day', 3, null);
 	
 				assert.deepStrictEqual(chartHours, {
 					aAndB: [0, 0, 0],
@@ -458,8 +458,8 @@ describe('Chart', () => {
 				await testIntersectionChart.addB('alice');
 				await testIntersectionChart.save();
 	
-				const chartHours = await testUniqueChart.getChart('hour', 3, null);
-				const chartDays = await testUniqueChart.getChart('day', 3, null);
+				const chartHours = await testIntersectionChart.getChart('hour', 3, null);
+				const chartDays = await testIntersectionChart.getChart('day', 3, null);
 	
 				assert.deepStrictEqual(chartHours, {
 					aAndB: [1, 0, 0],
