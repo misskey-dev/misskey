@@ -509,7 +509,7 @@ export default defineComponent({
 			const raw = await os.api('charts/active-users', { limit: props.limit, span: props.span });
 			return {
 				series: [{
-					name: 'Users',
+					name: 'Active',
 					type: 'area',
 					data: format(raw.users),
 					color: '#888888',
