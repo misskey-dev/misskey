@@ -33,6 +33,7 @@ You should also include the user name that made the change.
 - Client: UIのサイズがおかしくなる問題の修正 @tamaina
 - Client: Setting instance information of notes to always show breaks the timeline @Johann150
 - API: Fix API cast @mei23
+- チャートの定期resyncが動作していない問題を修正
 
 ## 12.103.1 (2022/02/02)
 
