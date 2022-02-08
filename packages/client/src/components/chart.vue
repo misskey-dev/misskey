@@ -372,18 +372,27 @@ export default defineComponent({
 					name: 'Instances total',
 					type: 'area',
 					data: format(raw.instance.total),
+					color: '#888888',
 				}, {
 					name: 'Instances inc/dec',
 					type: 'area',
 					data: format(sum(raw.instance.inc, negate(raw.instance.dec))),
-				}, {
-					name: 'Delivered instances',
-					type: 'area',
-					data: format(raw.deliveredInstances),
+					color: colors.purple,
 				}, {
 					name: 'Inbox instances',
 					type: 'area',
 					data: format(raw.inboxInstances),
+					color: colors.blue,
+				}, {
+					name: 'Delivered instances',
+					type: 'area',
+					data: format(raw.deliveredInstances),
+					color: colors.green,
+				}, {
+					name: 'Stalled instances',
+					type: 'area',
+					data: format(raw.stalled),
+					color: colors.red,
 				}],
 			};
 		};

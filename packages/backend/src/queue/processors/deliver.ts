@@ -62,7 +62,7 @@ export default async (job: Bull.Job<DeliverJobData>) => {
 
 			instanceChart.requestSent(i.host, true);
 			apRequestChart.deliverSucc();
-			federationChart.deliverd(i.host);
+			federationChart.deliverd(i.host, true);
 		});
 
 		return 'Success';
@@ -77,6 +77,7 @@ export default async (job: Bull.Job<DeliverJobData>) => {
 
 			instanceChart.requestSent(i.host, false);
 			apRequestChart.deliverFail();
+			federationChart.deliverd(i.host, false);
 		});
 
 		if (res instanceof StatusError) {
