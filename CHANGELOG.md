@@ -10,6 +10,13 @@
 You should also include the user name that made the change.
 -->
 
+## 12.x.x (unreleased)
+
+### Improvements
+- クライアント: 自インスタンス情報ページでチャートを見れるように @syuilo
+
+### Bugfixes
+
 ## 12.103.1 (2022/02/02)
 
 ### Bugfixes
