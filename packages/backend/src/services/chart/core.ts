@@ -454,6 +454,10 @@ export default abstract class Chart<T extends Schema> {
 			columns[columnPrefix + name] = v;
 		}
 
+		if (Object.keys(columns).length === 0) {
+			return;
+		}
+
 		const update = async (logHour: RawRecord<T>, logDay: RawRecord<T>): Promise<void> => {
 			await Promise.all([
 				this.repositoryForHour.createQueryBuilder()
