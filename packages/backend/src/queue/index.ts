@@ -6,7 +6,7 @@ import { envOption } from '../env';
 import processDeliver from './processors/deliver';
 import processInbox from './processors/inbox';
 import processDb from './processors/db/index';
-import procesObjectStorage from './processors/object-storage/index';
+import processObjectStorage from './processors/object-storage/index';
 import processSystemQueue from './processors/system/index';
 import { queueLogger } from './logger';
 import { DriveFile } from '@/models/entities/drive-file';
@@ -256,7 +256,7 @@ export default function() {
 	deliverQueue.process(config.deliverJobConcurrency || 128, processDeliver);
 	inboxQueue.process(config.inboxJobConcurrency || 16, processInbox);
 	processDb(dbQueue);
-	procesObjectStorage(objectStorageQueue);
+	processObjectStorage(objectStorageQueue);
 
 	systemQueue.add('resyncCharts', {
 	}, {
