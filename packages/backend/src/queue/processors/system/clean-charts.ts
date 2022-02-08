@@ -6,7 +6,7 @@ import { activeUsersChart, driveChart, federationChart, hashtagChart, instanceCh
 const logger = queueLogger.createSubLogger('clean-charts');
 
 export async function cleanCharts(job: Bull.Job<Record<string, unknown>>, done: any): Promise<void> {
-	logger.info(`Resync charts...`);
+	logger.info(`Clean charts...`);
 
 	await Promise.all([
 		federationChart.clean(),
