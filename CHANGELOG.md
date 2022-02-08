@@ -32,8 +32,9 @@ You should also include the user name that made the change.
 - Client: タイムライン種別を切り替えると「新しいノートがあります」の表示が残留してしまうのを修正 @tamaina
 - Client: UIのサイズがおかしくなる問題の修正 @tamaina
 - Client: Setting instance information of notes to always show breaks the timeline @Johann150
+- Client: 環境に依っては返信する際のカーソル位置が正しくない問題を修正 @syuilo
 - API: Fix API cast @mei23
-- チャートの定期resyncが動作していない問題を修正
+- チャートの定期resyncが動作していない問題を修正 @syuilo
 
 ## 12.103.1 (2022/02/02)
 
