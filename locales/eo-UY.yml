@@ -637,6 +637,7 @@ configure: "Agordi"
 recentPosts: "Novaj afiŝoj"
 shareWithNote: "Kundividi en noto"
 ads: "Reklamaĵo"
+expiration: "Limtempo"
 memo: "Memorigilo"
 high: "Alta"
 middle: "Meza"
@@ -770,6 +771,7 @@ _theme:
   description: "Priskribo"
   installedThemes: "Instalita koloraro"
   make: "Krei koloraron"
+  addConstant: "Aldoni konstanton"
   constant: "Konstanto"
   defaultValue: "Implicitaĵa valoro"
   color: "Koloro"
@@ -778,12 +780,14 @@ _theme:
   lighten: "Brileco"
   keys:
     bg: "Fono"
+    shadow: "Ombro"
     navBg: "Fono de flanka stango"
     link: "Ligilo"
     hashtag: "Kradvorto"
     mention: "Mencioj"
     mentionMe: "Mencio al vi"
     renote: "Plusendita"
+    infoBg: "Fono de informo"
     buttonBg: "Fono de butono"
     driveFolderBg: "Fono de dosierujo de la disko"
     messageBg: "Fono de la retbabilejo"
@@ -856,6 +860,7 @@ _widgets:
   timeline: "Templinio"
   clock: "Horloĝo"
   activity: "Aktiveco"
+  photos: "Fotoj"
   federation: "Federaĵo"
   slideshow: "Bildoprezento"
   button: "Butono"
@@ -863,10 +868,12 @@ _widgets:
   aichan: "Ai"
 _cw:
   show: "Vidi pli"
+  chars: "{count} literoj"
   files: "{count} dosiero(j)"
 _poll:
   choiceN: "Balotilo {n}"
   noMore: "Oni ne povas aldoni pli."
+  expiration: "Limtempo"
   infinite: "Neniam"
   deadlineTime: "hor"
   votesCount: "{n} balotiloj"
@@ -998,6 +1005,45 @@ _pages:
       _join:
         arg1: "Listoj"
         arg2: "apartigilo"
+      _add:
+        arg1: "A"
+        arg2: "B"
+      _subtract:
+        arg1: "A"
+        arg2: "B"
+      _multiply:
+        arg1: "A"
+        arg2: "B"
+      _divide:
+        arg1: "A"
+        arg2: "B"
+      _mod:
+        arg1: "A"
+        arg2: "B"
+      _eq:
+        arg1: "A"
+        arg2: "B"
+      _notEq:
+        arg1: "A"
+        arg2: "B"
+      _and:
+        arg1: "A"
+        arg2: "B"
+      _or:
+        arg1: "A"
+        arg2: "B"
+      _lt:
+        arg1: "A"
+        arg2: "B"
+      _gt:
+        arg1: "A"
+        arg2: "B"
+      _ltEq:
+        arg1: "A"
+        arg2: "B"
+      _gtEq:
+        arg1: "A"
+        arg2: "B"
       random: "Hazardo"
       _randomPick:
         arg1: "Listoj"
