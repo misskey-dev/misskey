@@ -25,8 +25,13 @@ You should also include the user name that made the change.
 	- networkチャート廃止
 - クライアント: 自インスタンス情報ページでチャートを見れるように @syuilo
 - クライアント: デバイスの種類を手動指定できるように @syuilo
+- NodeInfo のユーザー数と投稿数の内容を見直す @xianonn
 
 ### Bugfixes
+- Client: タイムライン種別を切り替えると「新しいノートがあります」の表示が残留してしまうのを修正 @tamaina
+- Client: UIのサイズがおかしくなる問題の修正 @tamaina
+- Client: Setting instance information of notes to always show breaks the timeline @Johann150
+- API: Fix API cast @mei23
 
 ## 12.103.1 (2022/02/02)
 
