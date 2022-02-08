@@ -199,6 +199,7 @@ export default defineComponent({
 						parsing: false,
 						label: x.name,
 						data: x.data.slice().reverse(),
+						tension: 0.3,
 						pointRadius: 0,
 						borderWidth: 2,
 						borderColor: x.color ? x.color : getColor(i),
@@ -208,6 +209,7 @@ export default defineComponent({
 						barPercentage: 0.9,
 						categoryPercentage: 0.9,
 						fill: x.type === 'area',
+						clip: 8,
 						hidden: !!x.hidden,
 					})),
 				},
@@ -216,7 +218,7 @@ export default defineComponent({
 					layout: {
 						padding: {
 							left: 0,
-							right: 0,
+							right: 8,
 							top: 0,
 							bottom: 0,
 						},
