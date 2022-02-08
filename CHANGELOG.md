@@ -12,7 +12,17 @@ You should also include the user name that made the change.
 
 ## 12.x.x (unreleased)
 
+### Note
+このリリースはマイグレーションの規模が大きいため、インスタンスによってはマイグレーションに時間がかかる可能性があります。
+マイグレーションが終わらない場合は、チャートの情報はリセットされてしまいますが`___chart___`で始まるテーブルの**レコード**を全て削除(テーブル自体は消さないでください)してから再度試す方法もあります。
+
 ### Improvements
+- チャートエンジンの強化 @syuilo
+	- テーブルサイズの削減
+	- activeUsersチャートに新しい項目を追加
+	- federationチャートに新しい項目を追加
+	- apRequestチャートを追加
+	- networkチャート廃止
 - クライアント: 自インスタンス情報ページでチャートを見れるように @syuilo
 
 ### Bugfixes
