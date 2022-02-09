@@ -370,27 +370,27 @@ export default defineComponent({
 			const raw = await os.api('charts/federation', { limit: props.limit, span: props.span });
 			return {
 				series: [{
-					name: 'Instances total',
+					name: 'Total',
 					type: 'area',
 					data: format(raw.instance.total),
 					color: '#888888',
 				}, {
-					name: 'Instances inc/dec',
+					name: 'Inc/Dec',
 					type: 'area',
 					data: format(sum(raw.instance.inc, negate(raw.instance.dec))),
 					color: colors.purple,
 				}, {
-					name: 'Inbox instances',
+					name: 'Received',
 					type: 'area',
 					data: format(raw.inboxInstances),
 					color: colors.blue,
 				}, {
-					name: 'Delivered instances',
+					name: 'Delivered',
 					type: 'area',
 					data: format(raw.deliveredInstances),
 					color: colors.green,
 				}, {
-					name: 'Stalled instances',
+					name: 'Stalled',
 					type: 'area',
 					data: format(raw.stalled),
 					color: colors.red,
