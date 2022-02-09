@@ -92,6 +92,16 @@ redis:
 #  user: 
 #  pass: 
 
+
+#   ┌─────────────────────┐
+#───┘ Sonic configuration └─────────────────────────────
+
+#sonic:
+#  host: localhost
+#  port: 1491
+#  pass: example-pass
+
+
 #   ┌───────────────┐
 #───┘ ID generation └───────────────────────────────────────────
 
