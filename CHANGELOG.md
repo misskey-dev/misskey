@@ -35,6 +35,7 @@ You should also include the user name that made the change.
 - Client: UIのサイズがおかしくなる問題の修正 @tamaina
 - Client: Setting instance information of notes to always show breaks the timeline @Johann150
 - Client: 環境に依っては返信する際のカーソル位置が正しくない問題を修正 @syuilo
+- Client: コントロールパネルのユーザー、ファイルにて、インスタンスの表示範囲切り替えが機能しない問題を修正 @syuilo
 - Client: Follows/Followers Visibility changes won't be saved unless clicking on an other checkbox @Johann150
 - API: Fix API cast @mei23
 - チャートの定期resyncが動作していない問題を修正 @syuilo
