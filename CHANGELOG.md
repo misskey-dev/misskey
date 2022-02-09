@@ -10,6 +10,15 @@
 You should also include the user name that made the change.
 -->
 
+## 12.x.x (unreleased)
+
+### Improvements
+- インスタンスのテーマカラーを設定できるように @syuilo
+
+### Bugfixes
+- 
+
+
 ## 12.104.0 (2022/02/09)
 
 ### Note

@@ -91,6 +91,12 @@ export class Meta {
 	@Column('varchar', {
 		length: 512,
 		nullable: true,
+	})
+	public themeColor: string | null;
+
+	@Column('varchar', {
+		length: 512,
+		nullable: true,
 		default: '/assets/ai.png',
 	})
 	public mascotImageUrl: string | null;
