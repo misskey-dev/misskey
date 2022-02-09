@@ -76,7 +76,7 @@ export default async (user: { id: User['id']; host: User['host']; }, note: Note,
 	// カスタム絵文字リアクションだったら絵文字情報も送る
 	const decodedReaction = decodeReaction(reaction);
 
-	let emoji = await Emojis.findOne({
+	const emoji = await Emojis.findOne({
 		where: {
 			name: decodedReaction.name,
 			host: decodedReaction.host,

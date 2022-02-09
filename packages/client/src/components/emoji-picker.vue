@@ -81,7 +81,7 @@ import { getStaticImageUrl } from '@/scripts/get-static-image-url';
 import Ripple from '@/components/ripple.vue';
 import * as os from '@/os';
 import { isTouchUsing } from '@/scripts/touch';
-import { isMobile } from '@/scripts/is-mobile';
+import { deviceKind } from '@/scripts/device-kind';
 import { emojiCategories, instance } from '@/instance';
 import XSection from './emoji-picker.section.vue';
 import { i18n } from '@/i18n';
@@ -263,7 +263,7 @@ watch(q, () => {
 });
 
 function focus() {
-	if (!isMobile && !isTouchUsing) {
+	if (!['smartphone', 'tablet'].includes(deviceKind) && !isTouchUsing) {
 		search.value?.focus({
 			preventScroll: true
 		});

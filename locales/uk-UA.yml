@@ -1038,7 +1038,8 @@ _exportOrImport:
   blockingList: "Заблокувати"
   userLists: "Списки"
 _charts:
-  federationInstancesTotal: "Загальна кількість федеративних інстансів"
+  federation: "Федіверс"
+  apRequest: "Запити"
   usersTotal: "Загальна кількість користувачів"
   activeUsers: "Активні користувачі"
   notesTotal: "Загальна кількість нотаток"

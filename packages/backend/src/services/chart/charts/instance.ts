@@ -1,221 +1,110 @@
 import autobind from 'autobind-decorator';
-import Chart, { Obj, DeepPartial } from '../core';
-import { SchemaType } from '@/misc/schema';
+import Chart, { KVs } from '../core';
 import { DriveFiles, Followings, Users, Notes } from '@/models/index';
 import { DriveFile } from '@/models/entities/drive-file';
 import { Note } from '@/models/entities/note';
 import { toPuny } from '@/misc/convert-host';
 import { name, schema } from './entities/instance';
 
-type InstanceLog = SchemaType<typeof schema>;
-
 /**
  * インスタンスごとのチャート
  */
 // eslint-disable-next-line import/no-default-export
-export default class InstanceChart extends Chart<InstanceLog> {
+export default class InstanceChart extends Chart<typeof schema> {
 	constructor() {
 		super(name, schema, true);
 	}
 
 	@autobind
-	protected genNewLog(latest: InstanceLog): DeepPartial<InstanceLog> {
-		return {
-			notes: {
-				total: latest.notes.total,
-			},
-			users: {
-				total: latest.users.total,
-			},
-			following: {
-				total: latest.following.total,
-			},
-			followers: {
-				total: latest.followers.total,
-			},
-			drive: {
-				totalFiles: latest.drive.totalFiles,
-				totalUsage: latest.drive.totalUsage,
-			},
-		};
-	}
-
-	@autobind
-	protected aggregate(logs: InstanceLog[]): InstanceLog {
-		return {
-			requests: {
-				failed: logs.reduce((a, b) => a + b.requests.failed, 0),
-				succeeded: logs.reduce((a, b) => a + b.requests.succeeded, 0),
-				received: logs.reduce((a, b) => a + b.requests.received, 0),
-			},
-			notes: {
-				total: logs[0].notes.total,
-				inc: logs.reduce((a, b) => a + b.notes.inc, 0),
-				dec: logs.reduce((a, b) => a + b.notes.dec, 0),
-				diffs: {
-					reply: logs.reduce((a, b) => a + b.notes.diffs.reply, 0),
-					renote: logs.reduce((a, b) => a + b.notes.diffs.renote, 0),
-					normal: logs.reduce((a, b) => a + b.notes.diffs.normal, 0),
-				},
-			},
-			users: {
-				total: logs[0].users.total,
-				inc: logs.reduce((a, b) => a + b.users.inc, 0),
-				dec: logs.reduce((a, b) => a + b.users.dec, 0),
-			},
-			following: {
-				total: logs[0].following.total,
-				inc: logs.reduce((a, b) => a + b.following.inc, 0),
-				dec: logs.reduce((a, b) => a + b.following.dec, 0),
-			},
-			followers: {
-				total: logs[0].followers.total,
-				inc: logs.reduce((a, b) => a + b.followers.inc, 0),
-				dec: logs.reduce((a, b) => a + b.followers.dec, 0),
-			},
-			drive: {
-				totalFiles: logs[0].drive.totalFiles,
-				totalUsage: logs[0].drive.totalUsage,
-				incFiles: logs.reduce((a, b) => a + b.drive.incFiles, 0),
-				incUsage: logs.reduce((a, b) => a + b.drive.incUsage, 0),
-				decFiles: logs.reduce((a, b) => a + b.drive.decFiles, 0),
-				decUsage: logs.reduce((a, b) => a + b.drive.decUsage, 0),
-			},
-		};
-	}
-
-	@autobind
-	protected async fetchActual(group: string): Promise<DeepPartial<InstanceLog>> {
+	protected async queryCurrentState(group: string): Promise<Partial<KVs<typeof schema>>> {
 		const [
 			notesCount,
 			usersCount,
 			followingCount,
 			followersCount,
 			driveFiles,
-			driveUsage,
+			//driveUsage,
 		] = await Promise.all([
 			Notes.count({ userHost: group }),
 			Users.count({ host: group }),
 			Followings.count({ followerHost: group }),
 			Followings.count({ followeeHost: group }),
 			DriveFiles.count({ userHost: group }),
-			DriveFiles.calcDriveUsageOfHost(group),
+			//DriveFiles.calcDriveUsageOfHost(group),
 		]);
 
 		return {
-			notes: {
-				total: notesCount,
-			},
-			users: {
-				total: usersCount,
-			},
-			following: {
-				total: followingCount,
-			},
-			followers: {
-				total: followersCount,
-			},
-			drive: {
-				totalFiles: driveFiles,
-				totalUsage: driveUsage,
-			},
+			'notes.total': notesCount,
+			'users.total': usersCount,
+			'following.total': followingCount,
+			'followers.total': followersCount,
+			'drive.totalFiles': driveFiles,
 		};
 	}
 
 	@autobind
 	public async requestReceived(host: string): Promise<void> {
-		await this.inc({
-			requests: {
-				received: 1,
-			},
+		await this.commit({
+			'requests.received': 1,
 		}, toPuny(host));
 	}
 
 	@autobind
 	public async requestSent(host: string, isSucceeded: boolean): Promise<void> {
-		const update: Obj = {};
-
-		if (isSucceeded) {
-			update.succeeded = 1;
-		} else {
-			update.failed = 1;
-		}
-
-		await this.inc({
-			requests: update,
+		await this.commit({
+			'requests.succeeded': isSucceeded ? 1 : 0,
+			'requests.failed': isSucceeded ? 0 : 1,
 		}, toPuny(host));
 	}
 
 	@autobind
 	public async newUser(host: string): Promise<void> {
-		await this.inc({
-			users: {
-				total: 1,
-				inc: 1,
-			},
+		await this.commit({
+			'users.total': 1,
+			'users.inc': 1,
 		}, toPuny(host));
 	}
 
 	@autobind
 	public async updateNote(host: string, note: Note, isAdditional: boolean): Promise<void> {
-		const diffs = {} as Record<string, unknown>;
-
-		if (note.replyId != null) {
-			diffs.reply = isAdditional ? 1 : -1;
-		} else if (note.renoteId != null) {
-			diffs.renote = isAdditional ? 1 : -1;
-		} else {
-			diffs.normal = isAdditional ? 1 : -1;
-		}
-
-		await this.inc({
-			notes: {
-				total: isAdditional ? 1 : -1,
-				inc: isAdditional ? 1 : 0,
-				dec: isAdditional ? 0 : 1,
-				diffs: diffs,
-			},
+		await this.commit({
+			'notes.total': isAdditional ? 1 : -1,
+			'notes.inc': isAdditional ? 1 : 0,
+			'notes.dec': isAdditional ? 0 : 1,
+			'notes.diffs.normal': note.replyId == null && note.renoteId == null ? (isAdditional ? 1 : -1) : 0,
+			'notes.diffs.renote': note.renoteId != null ? (isAdditional ? 1 : -1) : 0,
+			'notes.diffs.reply': note.replyId != null ? (isAdditional ? 1 : -1) : 0,
+			'notes.diffs.withFile': note.fileIds.length > 0 ? (isAdditional ? 1 : -1) : 0,
 		}, toPuny(host));
 	}
 
 	@autobind
 	public async updateFollowing(host: string, isAdditional: boolean): Promise<void> {
-		await this.inc({
-			following: {
-				total: isAdditional ? 1 : -1,
-				inc: isAdditional ? 1 : 0,
-				dec: isAdditional ? 0 : 1,
-			},
+		await this.commit({
+			'following.total': isAdditional ? 1 : -1,
+			'following.inc': isAdditional ? 1 : 0,
+			'following.dec': isAdditional ? 0 : 1,
 		}, toPuny(host));
 	}
 
 	@autobind
 	public async updateFollowers(host: string, isAdditional: boolean): Promise<void> {
-		await this.inc({
-			followers: {
-				total: isAdditional ? 1 : -1,
-				inc: isAdditional ? 1 : 0,
-				dec: isAdditional ? 0 : 1,
-			},
+		await this.commit({
+			'followers.total': isAdditional ? 1 : -1,
+			'followers.inc': isAdditional ? 1 : 0,
+			'followers.dec': isAdditional ? 0 : 1,
 		}, toPuny(host));
 	}
 
 	@autobind
 	public async updateDrive(file: DriveFile, isAdditional: boolean): Promise<void> {
-		const update: Obj = {};
-
-		update.totalFiles = isAdditional ? 1 : -1;
-		update.totalUsage = isAdditional ? file.size : -file.size;
-		if (isAdditional) {
-			update.incFiles = 1;
-			update.incUsage = file.size;
-		} else {
-			update.decFiles = 1;
-			update.decUsage = file.size;
-		}
-
-		await this.inc({
-			drive: update,
+		const fileSizeKb = file.size / 1000;
+		await this.commit({
+			'drive.totalFiles': isAdditional ? 1 : -1,
+			'drive.incFiles': isAdditional ? 1 : 0,
+			'drive.incUsage': isAdditional ? fileSizeKb : 0,
+			'drive.decFiles': isAdditional ? 1 : 0,
+			'drive.decUsage': isAdditional ? fileSizeKb : 0,
 		}, file.userHost);
 	}
 }

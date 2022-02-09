@@ -9,6 +9,7 @@ type NonOptional<T> = T extends undefined ? never : T;
 
 type SimpleUserInfo = {
 	id: ILocalUser['id'];
+	createdAt: ILocalUser['createdAt'];
 	host: ILocalUser['host'];
 	username: ILocalUser['username'];
 	uri: ILocalUser['uri'];

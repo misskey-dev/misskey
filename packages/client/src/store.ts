@@ -106,6 +106,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		}
 	},
 
+	overridedDeviceKind: {
+		where: 'device',
+		default: null as null | 'smartphone' | 'tablet' | 'desktop',
+	},
 	serverDisconnectedBehavior: {
 		where: 'device',
 		default: 'quiet' as 'quiet' | 'reload' | 'dialog'

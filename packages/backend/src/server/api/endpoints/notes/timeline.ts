@@ -145,7 +145,7 @@ export default define(meta, async (ps, user) => {
 
 	process.nextTick(() => {
 		if (user) {
-			activeUsersChart.update(user);
+			activeUsersChart.read(user);
 		}
 	});
 

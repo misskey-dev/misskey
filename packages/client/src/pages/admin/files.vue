@@ -28,7 +28,7 @@
 					<template #label>MIME type</template>
 				</MkInput>
 			</div>
-			<MkPagination v-slot="{items}" ref="files" :pagination="pagination" class="urempief">
+			<MkPagination v-slot="{items}" :pagination="pagination" class="urempief">
 				<button v-for="file in items" :key="file.id" class="file _panel _button _gap" @click="show(file, $event)">
 					<MkDriveFileThumbnail class="thumbnail" :file="file" fit="contain"/>
 					<div class="body">
@@ -54,8 +54,8 @@
 </div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent } from 'vue';
+<script lang="ts" setup>
+import { computed } from 'vue';
 import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/form/input.vue';
 import MkSelect from '@/components/form/select.vue';
@@ -65,80 +65,63 @@ import MkDriveFileThumbnail from '@/components/drive-file-thumbnail.vue';
 import bytes from '@/filters/bytes';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		MkButton,
-		MkInput,
-		MkSelect,
-		MkPagination,
-		MkContainer,
-		MkDriveFileThumbnail,
-	},
+let q = $ref(null);
+let origin = $ref('local');
+let type = $ref(null);
+let searchHost = $ref('');
+const pagination = {
+	endpoint: 'admin/drive/files' as const,
+	limit: 10,
+	params: computed(() => ({
+		type: (type && type !== '') ? type : null,
+		origin: origin,
+		hostname: (searchHost && searchHost !== '') ? searchHost : null,
+	})),
+};
 
-	emits: ['info'],
+function clear() {
+	os.confirm({
+		type: 'warning',
+		text: i18n.ts.clearCachedFilesConfirm,
+	}).then(({ canceled }) => {
+		if (canceled) return;
 
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: this.$ts.files,
-				icon: 'fas fa-cloud',
-				bg: 'var(--bg)',
-				actions: [{
-					text: this.$ts.clearCachedFiles,
-					icon: 'fas fa-trash-alt',
-					handler: this.clear
-				}]
-			},
-			q: null,
-			origin: 'local',
-			type: null,
-			searchHost: '',
-			pagination: {
-				endpoint: 'admin/drive/files' as const,
-				limit: 10,
-				params: computed(() => ({
-					type: (this.type && this.type !== '') ? this.type : null,
-					origin: this.origin,
-					hostname: (this.searchHost && this.searchHost !== '') ? this.searchHost : null,
-				})),
-			},
+		os.apiWithDialog('admin/drive/clean-remote-files', {});
+	});
+}
+
+function show(file) {
+	os.popup(import('./file-dialog.vue'), {
+		fileId: file.id
+	}, {}, 'closed');
+}
+
+function find() {
+	os.api('admin/drive/show-file', q.startsWith('http://') || q.startsWith('https://') ? { url: q.trim() } : { fileId: q.trim() }).then(file => {
+		show(file);
+	}).catch(err => {
+		if (err.code === 'NO_SUCH_FILE') {
+			os.alert({
+				type: 'error',
+				text: i18n.ts.notFound
+			});
 		}
-	},
+	});
+}
 
-	methods: {
-		clear() {
-			os.confirm({
-				type: 'warning',
-				text: this.$ts.clearCachedFilesConfirm,
-			}).then(({ canceled }) => {
-				if (canceled) return;
-
-				os.apiWithDialog('admin/drive/clean-remote-files', {});
-			});
-		},
-
-		show(file, ev) {
-			os.popup(import('./file-dialog.vue'), {
-				fileId: file.id
-			}, {}, 'closed');
-		},
-
-		find() {
-			os.api('admin/drive/show-file', this.q.startsWith('http://') || this.q.startsWith('https://') ? { url: this.q.trim() } : { fileId: this.q.trim() }).then(file => {
-				this.show(file);
-			}).catch(e => {
-				if (e.code === 'NO_SUCH_FILE') {
-					os.alert({
-						type: 'error',
-						text: this.$ts.notFound
-					});
-				}
-			});
-		},
-
-		bytes
-	}
+defineExpose({
+	[symbols.PAGE_INFO]: computed(() => ({
+		title: i18n.ts.files,
+		icon: 'fas fa-cloud',
+		bg: 'var(--bg)',
+		actions: [{
+			text: i18n.ts.clearCachedFiles,
+			icon: 'fas fa-trash-alt',
+			handler: clear,
+		}],
+	})),
 });
 </script>
 

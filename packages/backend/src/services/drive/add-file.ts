@@ -160,8 +160,8 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 				webpublic: null,
 				thumbnail,
 			};
-		} catch (e) {
-			logger.warn(`GenerateVideoThumbnail failed: ${e}`);
+		} catch (err) {
+			logger.warn(`GenerateVideoThumbnail failed: ${err}`);
 			return {
 				webpublic: null,
 				thumbnail: null,
@@ -191,8 +191,8 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 				thumbnail: null,
 			};
 		}
-	} catch (e) {
-		logger.warn(`sharp failed: ${e}`);
+	} catch (err) {
+		logger.warn(`sharp failed: ${err}`);
 		return {
 			webpublic: null,
 			thumbnail: null,
@@ -215,8 +215,8 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 			} else {
 				logger.debug(`web image not created (not an required image)`);
 			}
-		} catch (e) {
-			logger.warn(`web image not created (an error occured)`, e);
+		} catch (err) {
+			logger.warn(`web image not created (an error occured)`, err as Error);
 		}
 	} else {
 		logger.info(`web image not created (from remote)`);
@@ -234,8 +234,8 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 		} else {
 			logger.debug(`thumbnail not created (not an required file)`);
 		}
-	} catch (e) {
-		logger.warn(`thumbnail not created (an error occured)`, e);
+	} catch (err) {
+		logger.warn(`thumbnail not created (an error occured)`, err as Error);
 	}
 	// #endregion thumbnail
 
@@ -451,9 +451,9 @@ export async function addFile({
 			file.storedInternal = false;
 
 			file = await DriveFiles.insert(file).then(x => DriveFiles.findOneOrFail(x.identifiers[0]));
-		} catch (e) {
+		} catch (err) {
 			// duplicate key error (when already registered)
-			if (isDuplicateKeyValueError(e)) {
+			if (isDuplicateKeyValueError(err)) {
 				logger.info(`already registered ${file.uri}`);
 
 				file = await DriveFiles.findOne({
@@ -461,8 +461,8 @@ export async function addFile({
 					userId: user ? user.id : null,
 				}) as DriveFile;
 			} else {
-				logger.error(e);
-				throw e;
+				logger.error(err as Error);
+				throw err;
 			}
 		}
 	} else {

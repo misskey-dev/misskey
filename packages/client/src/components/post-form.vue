@@ -342,6 +342,7 @@ function addTag(tag: string) {
 
 function focus() {
 	textareaEl.focus();
+	textareaEl.setSelectionRange(textareaEl.value.length, textareaEl.value.length);
 }
 
 function chooseFileFrom(ev) {

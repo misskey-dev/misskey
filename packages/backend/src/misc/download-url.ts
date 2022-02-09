@@ -38,7 +38,9 @@ export async function downloadUrl(url: string, path: string): Promise<void> {
 			https: httpsAgent,
 		},
 		http2: false,	// default
-		retry: 0,
+		retry: {
+			limit: 0,
+		},
 	}).on('response', (res: Got.Response) => {
 		if ((process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test') && !config.proxy && res.ip) {
 			if (isPrivateIp(res.ip)) {
@@ -75,7 +77,7 @@ export async function downloadUrl(url: string, path: string): Promise<void> {
 	logger.succ(`Download finished: ${chalk.cyan(url)}`);
 }
 
-function isPrivateIp(ip: string) {
+function isPrivateIp(ip: string): boolean {
 	for (const net of config.allowedPrivateNetworks || []) {
 		const cidr = new IPCIDR(net);
 		if (cidr.contains(ip)) {

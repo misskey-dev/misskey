@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import define from '../../define';
 import { convertLog } from '@/services/chart/core';
-import { networkChart } from '@/services/chart/index';
+import { apRequestChart } from '@/services/chart/index';
 
 export const meta = {
 	tags: ['charts'],
@@ -22,10 +22,10 @@ export const meta = {
 		},
 	},
 
-	res: convertLog(networkChart.schema),
+	// TODO: response definition
 } as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, async (ps) => {
-	return await networkChart.getChart(ps.span as any, ps.limit!, ps.offset ? new Date(ps.offset) : null);
+	return await apRequestChart.getChart(ps.span as any, ps.limit!, ps.offset ? new Date(ps.offset) : null);
 });
