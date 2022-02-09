@@ -38,6 +38,7 @@ You should also include the user name that made the change.
 - Client: コントロールパネルのユーザー、ファイルにて、インスタンスの表示範囲切り替えが機能しない問題を修正 @syuilo
 - Client: Follows/Followers Visibility changes won't be saved unless clicking on an other checkbox @Johann150
 - API: Fix API cast @mei23
+- add instance favicon where it's missing @solfisher
 - チャートの定期resyncが動作していない問題を修正 @syuilo
 
 ## 12.103.1 (2022/02/02)
