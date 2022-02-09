@@ -16,8 +16,7 @@ You should also include the user name that made the change.
 - インスタンスのテーマカラーを設定できるように @syuilo
 
 ### Bugfixes
-- 
-
+- 一部環境でマイグレーションが失敗する問題を修正 @syuilo
 
 ## 12.104.0 (2022/02/09)
 
