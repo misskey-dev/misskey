@@ -276,6 +276,7 @@ router.get('/@:user/pages/:page', async (ctx, next) => {
 			page: _page,
 			profile,
 			instanceName: meta.name || 'Misskey',
+			icon: meta.iconUrl,
 		});
 
 		if (['public'].includes(page.visibility)) {
@@ -305,6 +306,7 @@ router.get('/clips/:clip', async (ctx, next) => {
 			clip: _clip,
 			profile,
 			instanceName: meta.name || 'Misskey',
+			icon: meta.iconUrl,
 		});
 
 		ctx.set('Cache-Control', 'public, max-age=180');
@@ -350,6 +352,7 @@ router.get('/channels/:channel', async (ctx, next) => {
 		await ctx.render('channel', {
 			channel: _channel,
 			instanceName: meta.name || 'Misskey',
+			icon: meta.iconUrl,
 		});
 
 		ctx.set('Cache-Control', 'public, max-age=180');
