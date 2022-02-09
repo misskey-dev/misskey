@@ -26,6 +26,8 @@ You should also include the user name that made the change.
 	- networkチャート廃止
 - クライアント: 自インスタンス情報ページでチャートを見れるように @syuilo
 - クライアント: デバイスの種類を手動指定できるように @syuilo
+- クライアント: UIのアイコンを更新 @syuilo
+- クライアント: UIのアイコンをセルフホスティングするように @syuilo
 - NodeInfo のユーザー数と投稿数の内容を見直す @xianonn
 
 ### Bugfixes

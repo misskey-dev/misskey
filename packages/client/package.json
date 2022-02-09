@@ -11,6 +11,7 @@
 	},
 	"dependencies": {
 		"@discordapp/twemoji": "13.1.0",
+		"@fortawesome/fontawesome-free": "6.0.0-beta3",
 		"@syuilo/aiscript": "0.11.1",
 		"@types/escape-regexp": "0.0.1",
 		"@types/glob": "7.2.0",

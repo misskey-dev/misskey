@@ -130,6 +130,11 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
+"@fortawesome/fontawesome-free@6.0.0-beta3":
+  version "6.0.0-beta3"
+  resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-free/-/fontawesome-free-6.0.0-beta3.tgz#120e4a158a0de983924ce151bc35f27de46398b7"
+  integrity sha512-4SqOuhC8tSLeQvbW1nDmq6T7+8vdSgHy/w7PRwCFzMQCbKuYFIir/3UuWsV1QblX1lt7SGlSgwbaCv9XhRt8HA==
+
 "@hapi/hoek@^9.0.0":
   version "9.2.0"
   resolved "https://registry.yarnpkg.com/@hapi/hoek/-/hoek-9.2.0.tgz#f3933a44e365864f4dad5db94158106d511e8131"
