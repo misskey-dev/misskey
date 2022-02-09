@@ -1177,8 +1177,8 @@ _exportOrImport:
   blockingList: "Account bloccati"
   userLists: "Liste"
 _charts:
-  federationInstancesIncDec: "Variazione del numero di istanze federate"
-  federationInstancesTotal: "Numero totale di istanze federate"
+  federation: "Federazione"
+  apRequest: "Richieste"
   usersIncDec: "Variazione del numero di utenti"
   usersTotal: "Numero totale di utenti"
   activeUsers: "Numero di utenti attivi"
