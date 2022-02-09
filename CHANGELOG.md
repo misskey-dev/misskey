@@ -10,7 +10,7 @@
 You should also include the user name that made the change.
 -->
 
-## 12.x.x (unreleased)
+## 12.104.0 (2022/02/09)
 
 ### Note
 このリリースはマイグレーションの規模が大きいため、インスタンスによってはマイグレーションに時間がかかる可能性があります。
@@ -36,6 +36,7 @@ You should also include the user name that made the change.
 - Client: Setting instance information of notes to always show breaks the timeline @Johann150
 - Client: 環境に依っては返信する際のカーソル位置が正しくない問題を修正 @syuilo
 - Client: コントロールパネルのユーザー、ファイルにて、インスタンスの表示範囲切り替えが機能しない問題を修正 @syuilo
+- Client: アップデートお知らせダイアログが出ないのを修正 @syuilo
 - Client: Follows/Followers Visibility changes won't be saved unless clicking on an other checkbox @Johann150
 - API: Fix API cast @mei23
 - add instance favicon where it's missing @solfisher
