@@ -22,6 +22,11 @@
 
 	<FormSwitch v-model="showFixedPostForm" class="_formBlock">{{ $ts.showFixedPostForm }}</FormSwitch>
 
+	<FormInput v-model="webSearchEngine" manual-save :datalist="searchEngines">
+		<template #label>{{ $ts.webSearchEngine }}</template>
+		<template #caption>{{ $ts.webSearchEngineDesc }}</template>
+	</FormInput>
+
 	<FormSection>
 		<template #label>{{ $ts.behavior }}</template>
 		<FormSwitch v-model="imageNewTab" class="_formBlock">{{ $ts.openImageInNewTab }}</FormSwitch>
@@ -93,6 +98,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import FormInput from '@/components/form/input.vue';
 import FormSwitch from '@/components/form/switch.vue';
 import FormSelect from '@/components/form/select.vue';
 import FormRadios from '@/components/form/radios.vue';
@@ -110,6 +116,7 @@ import * as symbols from '@/symbols';
 export default defineComponent({
 	components: {
 		MkLink,
+		FormInput,
 		FormSwitch,
 		FormSelect,
 		FormRadios,
@@ -131,6 +138,11 @@ export default defineComponent({
 			lang: localStorage.getItem('lang'),
 			fontSize: localStorage.getItem('fontSize'),
 			useSystemFont: localStorage.getItem('useSystemFont') != null,
+			searchEngines: [
+				'https://www.google.com/search?q=${query.value}',
+				'https://duckduckgo.com/?q={{query}}',
+				'https://lite.qwant.com/?q={{query}}',
+			],
 		}
 	},
 
@@ -156,6 +168,7 @@ export default defineComponent({
 		useReactionPickerForContextMenu: defaultStore.makeGetterSetter('useReactionPickerForContextMenu'),
 		squareAvatars: defaultStore.makeGetterSetter('squareAvatars'),
 		aiChanMode: defaultStore.makeGetterSetter('aiChanMode'),
+		webSearchEngine: defaultStore.makeGetterSetter('webSearchEngine'),
 	},
 
 	watch: {
