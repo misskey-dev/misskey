@@ -200,6 +200,7 @@ router.get(['/@:user', '/@:user/:sub'], async (ctx, next) => {
 			sub: ctx.params.sub,
 			instanceName: meta.name || 'Misskey',
 			icon: meta.iconUrl,
+			themeColor: meta.themeColor,
 		});
 		ctx.set('Cache-Control', 'public, max-age=30');
 	} else {
@@ -239,6 +240,7 @@ router.get('/notes/:note', async (ctx, next) => {
 			summary: getNoteSummary(_note),
 			instanceName: meta.name || 'Misskey',
 			icon: meta.iconUrl,
+			themeColor: meta.themeColor,
 		});
 
 		if (['public', 'home'].includes(note.visibility)) {
@@ -277,6 +279,7 @@ router.get('/@:user/pages/:page', async (ctx, next) => {
 			profile,
 			instanceName: meta.name || 'Misskey',
 			icon: meta.iconUrl,
+			themeColor: meta.themeColor,
 		});
 
 		if (['public'].includes(page.visibility)) {
@@ -307,6 +310,7 @@ router.get('/clips/:clip', async (ctx, next) => {
 			profile,
 			instanceName: meta.name || 'Misskey',
 			icon: meta.iconUrl,
+			themeColor: meta.themeColor,
 		});
 
 		ctx.set('Cache-Control', 'public, max-age=180');
@@ -330,6 +334,7 @@ router.get('/gallery/:post', async (ctx, next) => {
 			profile,
 			instanceName: meta.name || 'Misskey',
 			icon: meta.iconUrl,
+			themeColor: meta.themeColor,
 		});
 
 		ctx.set('Cache-Control', 'public, max-age=180');
@@ -353,6 +358,7 @@ router.get('/channels/:channel', async (ctx, next) => {
 			channel: _channel,
 			instanceName: meta.name || 'Misskey',
 			icon: meta.iconUrl,
+			themeColor: meta.themeColor,
 		});
 
 		ctx.set('Cache-Control', 'public, max-age=180');
@@ -412,6 +418,7 @@ router.get('(.*)', async ctx => {
 		instanceName: meta.name || 'Misskey',
 		desc: meta.description,
 		icon: meta.iconUrl,
+		themeColor: meta.themeColor,
 	});
 	ctx.set('Cache-Control', 'public, max-age=300');
 });
