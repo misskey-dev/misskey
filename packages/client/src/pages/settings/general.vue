@@ -139,9 +139,15 @@ export default defineComponent({
 			fontSize: localStorage.getItem('fontSize'),
 			useSystemFont: localStorage.getItem('useSystemFont') != null,
 			searchEngines: [
-				'https://www.google.com/search?q=${query.value}',
+				'https://bing.com/search?q={{query}}',
 				'https://duckduckgo.com/?q={{query}}',
+				'https://ecosia.org/search?q={{query}}',
+				'https://google.com/search?q={{query}}',
 				'https://lite.qwant.com/?q={{query}}',
+				'https://metager.org/meta/meta.ger3?eingabe=misskey',
+				'https://mojeek.com/search?q={{query}}',
+				'https://search.yahoo.co.jp/search?p={{query}}',
+				'https://startpage.com/search?q={{query}}',
 			],
 		}
 	},
