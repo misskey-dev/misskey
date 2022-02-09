@@ -1,6 +1,6 @@
 {
 	"name": "misskey",
-	"version": "12.103.1",
+	"version": "12.104.0",
 	"codename": "indigo",
 	"repository": {
 		"type": "git",
@@ -46,7 +46,7 @@
 		"@types/fluent-ffmpeg": "2.1.20",
 		"@typescript-eslint/parser": "5.10.0",
 		"cross-env": "7.0.3",
-		"cypress": "9.3.1",
+		"cypress": "9.4.1",
 		"start-server-and-test": "1.14.0",
 		"typescript": "4.5.5"
 	}

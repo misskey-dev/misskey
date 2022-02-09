@@ -56,8 +56,6 @@ export default define(meta, async () => {
 		reactionsCount,
 		//originalReactionsCount,
 		instances,
-		driveUsageLocal,
-		driveUsageRemote,
 	] = await Promise.all([
 		Notes.count({ cache: 3600000 }), // 1 hour
 		Notes.count({ where: { userHost: null }, cache: 3600000 }),
@@ -66,8 +64,6 @@ export default define(meta, async () => {
 		NoteReactions.count({ cache: 3600000 }), // 1 hour
 		//NoteReactions.count({ where: { userHost: null }, cache: 3600000 }),
 		federationChart.getChart('hour', 1, null).then(chart => chart.instance.total[0]),
-		driveChart.getChart('hour', 1, null).then(chart => chart.local.totalSize[0]),
-		driveChart.getChart('hour', 1, null).then(chart => chart.remote.totalSize[0]),
 	]);
 
 	return {
@@ -78,7 +74,7 @@ export default define(meta, async () => {
 		reactionsCount,
 		//originalReactionsCount,
 		instances,
-		driveUsageLocal,
-		driveUsageRemote,
+		driveUsageLocal: 0,
+		driveUsageRemote: 0,
 	};
 });

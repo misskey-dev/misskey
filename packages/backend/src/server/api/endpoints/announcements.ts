@@ -89,5 +89,9 @@ export default define(meta, async (ps, user) => {
 		}
 	}
 
-	return ps.withUnreads ? announcements.filter((a: any) => !a.isRead) : announcements;
+	return (ps.withUnreads ? announcements.filter((a: any) => !a.isRead) : announcements).map((a) => ({
+		...a,
+		createdAt: a.createdAt.toISOString(),
+		updatedAt: a.updatedAt?.toISOString() ?? null,
+	}));
 });

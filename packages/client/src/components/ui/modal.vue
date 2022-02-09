@@ -14,6 +14,7 @@ import { nextTick, onMounted, computed, ref, watch, provide } from 'vue';
 import * as os from '@/os';
 import { isTouchUsing } from '@/scripts/touch';
 import { defaultStore } from '@/store';
+import { deviceKind } from '@/scripts/device-kind';
 
 function getFixedContainer(el: Element | null): Element | null {
 	if (el == null || el.tagName === 'BODY') return null;
@@ -62,7 +63,7 @@ const content = ref<HTMLElement>();
 const zIndex = os.claimZIndex(props.zPriority);
 const type = computed(() => {
 	if (props.preferType === 'auto') {
-		if (!defaultStore.state.disableDrawer && isTouchUsing && window.innerWidth < 500 && window.innerHeight < 1000) {
+		if (!defaultStore.state.disableDrawer && isTouchUsing && deviceKind === 'smartphone') {
 			return 'drawer';
 		} else {
 			return props.src != null ? 'popup' : 'dialog';

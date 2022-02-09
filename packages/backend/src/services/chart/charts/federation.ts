@@ -1,66 +1,50 @@
 import autobind from 'autobind-decorator';
-import Chart, { Obj, DeepPartial } from '../core';
-import { SchemaType } from '@/misc/schema';
+import Chart, { KVs } from '../core';
 import { Instances } from '@/models/index';
 import { name, schema } from './entities/federation';
-
-type FederationLog = SchemaType<typeof schema>;
 
 /**
  * フェデレーションに関するチャート
  */
 // eslint-disable-next-line import/no-default-export
-export default class FederationChart extends Chart<FederationLog> {
+export default class FederationChart extends Chart<typeof schema> {
 	constructor() {
 		super(name, schema);
 	}
 
 	@autobind
-	protected genNewLog(latest: FederationLog): DeepPartial<FederationLog> {
-		return {
-			instance: {
-				total: latest.instance.total,
-			},
-		};
-	}
-
-	@autobind
-	protected aggregate(logs: FederationLog[]): FederationLog {
-		return {
-			instance: {
-				total: logs[0].instance.total,
-				inc: logs.reduce((a, b) => a + b.instance.inc, 0),
-				dec: logs.reduce((a, b) => a + b.instance.dec, 0),
-			},
-		};
-	}
-
-	@autobind
-	protected async fetchActual(): Promise<DeepPartial<FederationLog>> {
+	protected async queryCurrentState(): Promise<Partial<KVs<typeof schema>>> {
 		const [total] = await Promise.all([
 			Instances.count({}),
 		]);
 
 		return {
-			instance: {
-				total: total,
-			},
+			'instance.total': total,
 		};
 	}
 
 	@autobind
 	public async update(isAdditional: boolean): Promise<void> {
-		const update: Obj = {};
+		await this.commit({
+			'instance.total': isAdditional ? 1 : -1,
+			'instance.inc': isAdditional ? 1 : 0,
+			'instance.dec': isAdditional ? 0 : 1,
+		});
+	}
 
-		update.total = isAdditional ? 1 : -1;
-		if (isAdditional) {
-			update.inc = 1;
-		} else {
-			update.dec = 1;
-		}
+	@autobind
+	public async deliverd(host: string, succeeded: boolean): Promise<void> {
+		await this.commit(succeeded ? {
+			'deliveredInstances': [host],
+		} : {
+			'stalled': [host],
+		});
+	}
 
-		await this.inc({
-			instance: update,
+	@autobind
+	public async inbox(host: string): Promise<void> {
+		await this.commit({
+			'inboxInstances': [host],
 		});
 	}
 }

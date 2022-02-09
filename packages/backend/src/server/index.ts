@@ -10,7 +10,6 @@ import * as Koa from 'koa';
 import * as Router from '@koa/router';
 import * as mount from 'koa-mount';
 import * as koaLogger from 'koa-logger';
-import * as requestStats from 'request-stats';
 import * as slow from 'koa-slow';
 
 import activityPub from './activitypub';
@@ -18,11 +17,9 @@ import nodeinfo from './nodeinfo';
 import wellKnown from './well-known';
 import config from '@/config/index';
 import apiServer from './api/index';
-import { sum } from '@/prelude/array';
 import Logger from '@/services/logger';
 import { envOption } from '../env';
 import { UserProfiles, Users } from '@/models/index';
-import { networkChart } from '@/services/chart/index';
 import { genIdenticon } from '@/misc/gen-identicon';
 import { createTemp } from '@/misc/create-temp';
 import { publishMainStream } from '@/services/stream';
@@ -153,27 +150,4 @@ export default () => new Promise(resolve => {
 
 	// Listen
 	server.listen(config.port, resolve);
-
-	//#region Network stats
-	let queue: any[] = [];
-
-	requestStats(server, (stats: any) => {
-		if (stats.ok) {
-			queue.push(stats);
-		}
-	});
-
-	// Bulk write
-	setInterval(() => {
-		if (queue.length === 0) return;
-
-		const requests = queue.length;
-		const time = sum(queue.map(x => x.time));
-		const incomingBytes = sum(queue.map(x => x.req.byets));
-		const outgoingBytes = sum(queue.map(x => x.res.byets));
-		queue = [];
-
-		networkChart.update(requests, time, incomingBytes, outgoingBytes);
-	}, 5000);
-	//#endregion
 });

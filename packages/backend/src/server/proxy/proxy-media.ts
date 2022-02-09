@@ -11,6 +11,11 @@ import { FILE_TYPE_BROWSERSAFE } from '@/const';
 export async function proxyMedia(ctx: Koa.Context) {
 	const url = 'url' in ctx.query ? ctx.query.url : 'https://' + ctx.params.url;
 
+	if (typeof url !== 'string') {
+		ctx.status = 400;
+		return;
+	}
+
 	// Create temp file
 	const [path, cleanup] = await createTemp();
 

@@ -130,6 +130,11 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
+"@fortawesome/fontawesome-free@6.0.0-beta3":
+  version "6.0.0-beta3"
+  resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-free/-/fontawesome-free-6.0.0-beta3.tgz#120e4a158a0de983924ce151bc35f27de46398b7"
+  integrity sha512-4SqOuhC8tSLeQvbW1nDmq6T7+8vdSgHy/w7PRwCFzMQCbKuYFIir/3UuWsV1QblX1lt7SGlSgwbaCv9XhRt8HA==
+
 "@hapi/hoek@^9.0.0":
   version "9.2.0"
   resolved "https://registry.yarnpkg.com/@hapi/hoek/-/hoek-9.2.0.tgz#f3933a44e365864f4dad5db94158106d511e8131"
@@ -265,11 +270,6 @@
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@types/color-name/-/color-name-1.1.1.tgz#1c1261bbeaa10a8055bbc5d8ab84b7b2afc846a0"
   integrity sha512-rr+OQyAjxze7GgWrSaJwydHStIhHq2lvY3BOC2Mj7KnzI7XK0Uw1TOOdI9lDoajEbSWLiYgoo4f1R51erQfhPQ==
-
-"@types/dateformat@3.0.1":
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/@types/dateformat/-/dateformat-3.0.1.tgz#98d747a2e5e9a56070c6bf14e27bff56204e34cc"
-  integrity sha512-KlPPdikagvL6ELjWsljbyDIPzNCeliYkqRpI+zea99vBBbCIA5JNshZAwQKTON139c87y9qvTFVgkFd14rtS4g==
 
 "@types/escape-regexp@0.0.1":
   version "0.0.1"
@@ -459,13 +459,6 @@
   version "0.3.3"
   resolved "https://registry.yarnpkg.com/@types/random-seed/-/random-seed-0.3.3.tgz#7741f7b0a4513198a9396ce4ad25832f799a6727"
   integrity sha512-kHsCbIRHNXJo6EN5W8EA5b4i1hdT6jaZke5crBPLUcLqaLdZ0QBq8QVMbafHzhjFF83Cl9qlee2dChD18d/kPg==
-
-"@types/request-stats@3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@types/request-stats/-/request-stats-3.0.0.tgz#d3909a9f778b8ae0b42fb8c1ed20cb936ed95f99"
-  integrity sha512-POsDF7nETH8up49iBNvbZuO0pEk9F+TG0rXCkvjxCClcOS99xfF+mKmJteYlwKYpuRKkixzysKlL8rwN1hU2lw==
-  dependencies:
-    "@types/node" "*"
 
 "@types/seedrandom@2.4.28":
   version "2.4.28"
@@ -1590,6 +1583,11 @@ chartjs-adapter-date-fns@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/chartjs-adapter-date-fns/-/chartjs-adapter-date-fns-2.0.0.tgz#5e53b2f660b993698f936f509c86dddf9ed44c6b"
   integrity sha512-rmZINGLe+9IiiEB0kb57vH3UugAtYw33anRiw5kS2Tu87agpetDDoouquycWc9pRsKtQo5j+vLsYHyr8etAvFw==
+
+chartjs-plugin-gradient@0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/chartjs-plugin-gradient/-/chartjs-plugin-gradient-0.2.1.tgz#9d6d4f1a04a8d2ffca769adb068df4d0678b8f8f"
+  integrity sha512-hcNQ+B0LuiK9QXhbEc0tUtW3s0a8lOBUJViOCw2xHbnNCIp3Pul/tQHR1aIjMo3HiHu4nOb7NKqFd4NTUEsi4Q==
 
 chartjs-plugin-zoom@1.2.0:
   version "1.2.0"
@@ -3224,13 +3222,6 @@ homedir-polyfill@^1.0.1:
   dependencies:
     parse-passwd "^1.0.0"
 
-http-headers@^3.0.1:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/http-headers/-/http-headers-3.0.2.tgz#5147771292f0b39d6778d930a3a59a76fc7ef44d"
-  integrity sha512-87E1I+2Wg4dxxz4rcxElo3dxO/w1ZtgL1yA0Sb6vH3qU16vRKq1NjWQv9SCY3ly2OQROcoxHZOUpmelS+k6wOw==
-  dependencies:
-    next-line "^1.1.0"
-
 http-signature@~1.3.6:
   version "1.3.6"
   resolved "https://registry.yarnpkg.com/http-signature/-/http-signature-1.3.6.tgz#cb6fbfdf86d1c974f343be94e87f7fc128662cf9"
@@ -4248,11 +4239,6 @@ netmask@^2.0.2:
   resolved "https://registry.yarnpkg.com/netmask/-/netmask-2.0.2.tgz#8b01a07644065d536383835823bc52004ebac5e7"
   integrity sha512-dBpDMdxv9Irdq66304OLfEmQ9tbNRFnFTuZiLo+bD+r332bBmMJ8GBLXklIXXgxd3+v9+KUnZaUR5PJMa75Gsg==
 
-next-line@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/next-line/-/next-line-1.1.0.tgz#fcae57853052b6a9bae8208e40dd7d3c2d304603"
-  integrity sha1-/K5XhTBStqm66CCOQN19PC0wRgM=
-
 next-tick@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/next-tick/-/next-tick-1.0.0.tgz#ca86d1fe8828169b0120208e3dc8424b9db8342c"
@@ -5176,14 +5162,6 @@ request-progress@^3.0.0:
   integrity sha1-TKdUCBx/7GP1BeT6qCWqBs1mnb4=
   dependencies:
     throttleit "^1.0.0"
-
-request-stats@3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/request-stats/-/request-stats-3.0.0.tgz#769155dc8974d78d4a1cb87bbf14eaab985afe25"
-  integrity sha1-dpFV3Il0141KHLh7vxTqq5ha/iU=
-  dependencies:
-    http-headers "^3.0.1"
-    once "^1.4.0"
 
 require-directory@^2.1.1:
   version "2.1.1"

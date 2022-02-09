@@ -25,8 +25,10 @@ export async function performActivity(actor: IRemoteUser, activity: IObject) {
 			const act = await resolver.resolve(item);
 			try {
 				await performOneActivity(actor, act);
-			} catch (e) {
-				apLogger.error(e);
+			} catch (err) {
+				if (err instanceof Error || typeof err === 'string') {
+					apLogger.error(err);
+				}
 			}
 		}
 	} else {

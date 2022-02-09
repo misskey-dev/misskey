@@ -105,7 +105,10 @@ export interface NoteStreamTypes {
 	};
 	reacted: {
 		reaction: string;
-		emoji?: Emoji;
+		emoji?: {
+			name: string;
+			url: string;
+		} | null;
 		userId: User['id'];
 	};
 	unreacted: {

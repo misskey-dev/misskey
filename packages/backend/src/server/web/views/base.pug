@@ -21,6 +21,7 @@ html
 		meta(name='referrer' content='origin')
 		meta(name='theme-color' content='#86b300')
 		meta(name='theme-color-orig' content='#86b300')
+		meta(property='twitter:card' content='summary')
 		meta(property='og:site_name' content= instanceName || 'Misskey')
 		meta(name='viewport' content='width=device-width, initial-scale=1')
 		link(rel='icon' href= icon || '/favicon.ico')
@@ -29,8 +30,8 @@ html
 		link(rel='prefetch' href='https://xn--931a.moe/assets/info.jpg')
 		link(rel='prefetch' href='https://xn--931a.moe/assets/not-found.jpg')
 		link(rel='prefetch' href='https://xn--931a.moe/assets/error.jpg')
-		link(rel='preload' href='https://use.fontawesome.com/releases/v5.15.3/css/all.css' as='style')
-		link(rel='stylesheet' href='https://use.fontawesome.com/releases/v5.15.3/css/all.css')
+		link(rel='preload' href='/assets/fontawesome/css/all.css' as='style')
+		link(rel='stylesheet' href='/assets/fontawesome/css/all.css')
 
 		title
 			block title
@@ -42,7 +43,9 @@ html
 		block meta
 
 		block og
-			meta(property='og:image' content=img)
+			meta(property='og:title'       content= title || 'Misskey') 
+			meta(property='og:description' content= desc || '✨🌎✨ A interplanetary communication platform ✨🚀✨') 
+			meta(property='og:image'       content= img)
 
 		style
 			include ../style.css

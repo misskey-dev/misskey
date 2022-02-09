@@ -29,6 +29,7 @@ import {
 import 'chartjs-adapter-date-fns';
 import { enUS } from 'date-fns/locale';
 import zoomPlugin from 'chartjs-plugin-zoom';
+import gradient from 'chartjs-plugin-gradient';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
 import MkChartTooltip from '@/components/chart-tooltip.vue';
@@ -49,6 +50,7 @@ Chart.register(
 	SubTitle,
 	Filler,
 	zoomPlugin,
+	gradient,
 );
 
 const sum = (...arr) => arr.reduce((r, a) => r.map((b, i) => a[i] + b));
@@ -61,9 +63,17 @@ const alpha = (hex, a) => {
 	return `rgba(${r}, ${g}, ${b}, ${a})`;
 };
 
-const colors = ['#008FFB', '#00E396', '#FEB019', '#FF4560'];
+const colors = {
+	blue: '#008FFB',
+	green: '#00E396',
+	yellow: '#FEB019',
+	red: '#FF4560',
+	purple: '#e300db',
+	orange: '#fe6919',
+};
+const colorSets = [colors.blue, colors.green, colors.yellow, colors.red, colors.purple];
 const getColor = (i) => {
-	return colors[i % colors.length];
+	return colorSets[i % colorSets.length];
 };
 
 export default defineComponent({
@@ -91,6 +101,11 @@ export default defineComponent({
 			default: false
 		},
 		stacked: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
+		bar: {
 			type: Boolean,
 			required: false,
 			default: false
@@ -186,22 +201,36 @@ export default defineComponent({
 			// フォントカラー
 			Chart.defaults.color = getComputedStyle(document.documentElement).getPropertyValue('--fg');
 
+			const maxes = data.series.map((x, i) => Math.max(...x.data.map(d => d.y)));
+
 			chartInstance = new Chart(chartEl.value, {
-				type: 'line',
+				type: props.bar ? 'bar' : 'line',
 				data: {
 					labels: new Array(props.limit).fill(0).map((_, i) => getDate(i).toLocaleString()).slice().reverse(),
 					datasets: data.series.map((x, i) => ({
 						parsing: false,
 						label: x.name,
 						data: x.data.slice().reverse(),
+						tension: 0.3,
 						pointRadius: 0,
-						tension: 0,
 						borderWidth: 2,
 						borderColor: x.color ? x.color : getColor(i),
 						borderDash: x.borderDash || [],
 						borderJoinStyle: 'round',
 						backgroundColor: alpha(x.color ? x.color : getColor(i), 0.1),
+						gradient: {
+							backgroundColor: {
+								axis: 'y',
+								colors: {
+									0: alpha(x.color ? x.color : getColor(i), 0),
+									[maxes[i]]: alpha(x.color ? x.color : getColor(i), 0.1),
+								},
+							},
+						},
+						barPercentage: 0.9,
+						categoryPercentage: 0.9,
 						fill: x.type === 'area',
+						clip: 8,
 						hidden: !!x.hidden,
 					})),
 				},
@@ -210,7 +239,7 @@ export default defineComponent({
 					layout: {
 						padding: {
 							left: 0,
-							right: 0,
+							right: 8,
 							top: 0,
 							bottom: 0,
 						},
@@ -218,6 +247,7 @@ export default defineComponent({
 					scales: {
 						x: {
 							type: 'time',
+							stacked: props.stacked,
 							time: {
 								stepSize: 1,
 								unit: props.span === 'day' ? 'month' : 'day',
@@ -228,6 +258,8 @@ export default defineComponent({
 							},
 							ticks: {
 								display: props.detailed,
+								maxRotation: 0,
+								autoSkipPadding: 16,
 							},
 							adapters: {
 								date: {
@@ -245,12 +277,21 @@ export default defineComponent({
 							},
 							ticks: {
 								display: props.detailed,
+								//mirror: true,
 							},
 						},
 					},
 					interaction: {
 						intersect: false,
+						mode: 'index',
 					},
+					elements: {
+						point: {
+							hoverRadius: 5,
+							hoverBorderWidth: 2,
+						},
+					},
+					animation: false,
 					plugins: {
 						legend: {
 							display: props.detailed,
@@ -294,6 +335,7 @@ export default defineComponent({
 								},
 							}
 						},
+						gradient,
 					},
 				},
 				plugins: [{
@@ -324,17 +366,57 @@ export default defineComponent({
 			// TODO
 		};
 
-		const fetchFederationInstancesChart = async (total: boolean): Promise<typeof data> => {
+		const fetchFederationChart = async (): Promise<typeof data> => {
 			const raw = await os.api('charts/federation', { limit: props.limit, span: props.span });
 			return {
 				series: [{
-					name: 'Instances',
+					name: 'Total',
 					type: 'area',
-					data: format(total
-						? raw.instance.total
-						: sum(raw.instance.inc, negate(raw.instance.dec))
-					),
+					data: format(raw.instance.total),
+					color: '#888888',
+				}, {
+					name: 'Inc/Dec',
+					type: 'area',
+					data: format(sum(raw.instance.inc, negate(raw.instance.dec))),
+					color: colors.purple,
+				}, {
+					name: 'Received',
+					type: 'area',
+					data: format(raw.inboxInstances),
+					color: colors.blue,
+				}, {
+					name: 'Delivered',
+					type: 'area',
+					data: format(raw.deliveredInstances),
+					color: colors.green,
+				}, {
+					name: 'Stalled',
+					type: 'area',
+					data: format(raw.stalled),
+					color: colors.red,
 				}],
+			};
+		};
+
+		const fetchApRequestChart = async (): Promise<typeof data> => {
+			const raw = await os.api('charts/ap-request', { limit: props.limit, span: props.span });
+			return {
+				series: [{
+					name: 'In',
+					type: 'area',
+					color: '#008FFB',
+					data: format(raw.inboxReceived)
+				}, {
+					name: 'Out (succ)',
+					type: 'area',
+					color: '#00E396',
+					data: format(raw.deliverSucceeded)
+				}, {
+					name: 'Out (fail)',
+					type: 'area',
+					color: '#FEB019',
+					data: format(raw.deliverFailed)
+				}]
 			};
 		};
 
@@ -349,6 +431,7 @@ export default defineComponent({
 						? sum(raw.local.inc, negate(raw.local.dec), raw.remote.inc, negate(raw.remote.dec))
 						: sum(raw[type].inc, negate(raw[type].dec))
 					),
+					color: '#888888',
 				}, {
 					name: 'Renotes',
 					type: 'area',
@@ -356,6 +439,7 @@ export default defineComponent({
 						? sum(raw.local.diffs.renote, raw.remote.diffs.renote)
 						: raw[type].diffs.renote
 					),
+					color: colors.green,
 				}, {
 					name: 'Replies',
 					type: 'area',
@@ -363,6 +447,7 @@ export default defineComponent({
 						? sum(raw.local.diffs.reply, raw.remote.diffs.reply)
 						: raw[type].diffs.reply
 					),
+					color: colors.yellow,
 				}, {
 					name: 'Normal',
 					type: 'area',
@@ -370,6 +455,15 @@ export default defineComponent({
 						? sum(raw.local.diffs.normal, raw.remote.diffs.normal)
 						: raw[type].diffs.normal
 					),
+					color: colors.blue,
+				}, {
+					name: 'With file',
+					type: 'area',
+					data: format(type == 'combined'
+						? sum(raw.local.diffs.withFile, raw.remote.diffs.withFile)
+						: raw[type].diffs.withFile
+					),
+					color: colors.purple,
 				}],
 			};
 		};
@@ -425,17 +519,50 @@ export default defineComponent({
 			const raw = await os.api('charts/active-users', { limit: props.limit, span: props.span });
 			return {
 				series: [{
-					name: 'Combined',
-					type: 'line',
-					data: format(sum(raw.local.users, raw.remote.users)),
-				}, {
-					name: 'Local',
+					name: 'Read & Write',
 					type: 'area',
-					data: format(raw.local.users),
+					data: format(raw.readWrite),
+					color: colors.orange,
 				}, {
-					name: 'Remote',
+					name: 'Write',
 					type: 'area',
-					data: format(raw.remote.users),
+					data: format(raw.write),
+					color: colors.blue,
+				}, {
+					name: 'Read',
+					type: 'area',
+					data: format(raw.read),
+					color: '#888888',
+				}, {
+					name: '< Week',
+					type: 'area',
+					data: format(raw.registeredWithinWeek),
+					color: colors.green,
+				}, {
+					name: '< Month',
+					type: 'area',
+					data: format(raw.registeredWithinMonth),
+					color: colors.yellow,
+				}, {
+					name: '< Year',
+					type: 'area',
+					data: format(raw.registeredWithinYear),
+					color: colors.red,
+				}, {
+					name: '> Week',
+					type: 'area',
+					data: format(raw.registeredOutsideWeek),
+					color: colors.yellow,
+				}, {
+					name: '> Month',
+					type: 'area',
+					data: format(raw.registeredOutsideMonth),
+					color: colors.red,
+				}, {
+					name: '> Year',
+					type: 'area',
+					data: format(raw.registeredOutsideYear),
+					color: colors.purple,
 				}],
 			};
 		};
@@ -476,26 +603,6 @@ export default defineComponent({
 			};
 		};
 
-		const fetchDriveTotalChart = async (): Promise<typeof data> => {
-			const raw = await os.api('charts/drive', { limit: props.limit, span: props.span });
-			return {
-				bytes: true,
-				series: [{
-					name: 'Combined',
-					type: 'line',
-					data: format(sum(raw.local.totalSize, raw.remote.totalSize)),
-				}, {
-					name: 'Local',
-					type: 'area',
-					data: format(raw.local.totalSize),
-				}, {
-					name: 'Remote',
-					type: 'area',
-					data: format(raw.remote.totalSize),
-				}],
-			};
-		};
-
 		const fetchDriveFilesChart = async (): Promise<typeof data> => {
 			const raw = await os.api('charts/drive', { limit: props.limit, span: props.span });
 			return {
@@ -527,25 +634,6 @@ export default defineComponent({
 					name: 'Remote -',
 					type: 'area',
 					data: format(negate(raw.remote.decCount)),
-				}],
-			};
-		};
-
-		const fetchDriveFilesTotalChart = async (): Promise<typeof data> => {
-			const raw = await os.api('charts/drive', { limit: props.limit, span: props.span });
-			return {
-				series: [{
-					name: 'Combined',
-					type: 'line',
-					data: format(sum(raw.local.totalCount, raw.remote.totalCount)),
-				}, {
-					name: 'Local',
-					type: 'area',
-					data: format(raw.local.totalCount),
-				}, {
-					name: 'Remote',
-					type: 'area',
-					data: format(raw.remote.totalCount),
 				}],
 			};
 		};
@@ -680,11 +768,26 @@ export default defineComponent({
 			};
 		};
 
+		const fetchPerUserDriveChart = async (): Promise<typeof data> => {
+			const raw = await os.api('charts/user/drive', { userId: props.args.user.id, limit: props.limit, span: props.span });
+			return {
+				series: [{
+					name: 'Inc',
+					type: 'area',
+					data: format(raw.incSize),
+				}, {
+					name: 'Dec',
+					type: 'area',
+					data: format(raw.decSize),
+				}],
+			};
+		};
+
 		const fetchAndRender = async () => {
 			const fetchData = () => {
 				switch (props.src) {
-					case 'federation-instances': return fetchFederationInstancesChart(false);
-					case 'federation-instances-total': return fetchFederationInstancesChart(true);
+					case 'federation': return fetchFederationChart();
+					case 'ap-request': return fetchApRequestChart();
 					case 'users': return fetchUsersChart(false);
 					case 'users-total': return fetchUsersChart(true);
 					case 'active-users': return fetchActiveUsersChart();
@@ -693,9 +796,7 @@ export default defineComponent({
 					case 'remote-notes': return fetchNotesChart('remote');
 					case 'notes-total': return fetchNotesTotalChart();
 					case 'drive': return fetchDriveChart();
-					case 'drive-total': return fetchDriveTotalChart();
 					case 'drive-files': return fetchDriveFilesChart();
-					case 'drive-files-total': return fetchDriveFilesTotalChart();
 					
 					case 'instance-requests': return fetchInstanceRequestsChart();
 					case 'instance-users': return fetchInstanceUsersChart(false);
@@ -710,6 +811,7 @@ export default defineComponent({
 					case 'instance-drive-files-total': return fetchInstanceDriveFilesChart(true);
 
 					case 'per-user-notes': return fetchPerUserNotesChart();
+					case 'per-user-drive': return fetchPerUserDriveChart();
 				}
 			};
 			fetching.value = true;
