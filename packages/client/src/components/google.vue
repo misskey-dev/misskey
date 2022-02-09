@@ -15,7 +15,10 @@ const props = defineProps<{
 const query = ref(props.q);
 
 const search = () => {
-	window.open(`https://www.google.com/search?q=${query.value}`, '_blank');
+	const engine = $store.state.webSearchEngine ||
+		'https://duckduckgo.com/?q={{query}}';
+	const url = engine.replace('{{query}}', query.value)
+	window.open(url, '_blank');
 };
 </script>
 
