@@ -1122,7 +1122,16 @@ _2fa:
   step2: "এরপরে, অ্যাপের সাহায্যে প্রদর্শিত QR কোডটি স্ক্যান করুন।"
   step3: "অ্যাপে প্রদর্শিত টোকেনটি লিখুন এবং আপনার কাজ শেষ।"
   step4: "আপনাকে এখন থেকে লগ ইন করার সময়, এইভাবে টোকেন লিখতে হবে।"
+  securityKeyInfo: "আপনি একটি হার্ডওয়্যার সিকিউরিটি কী ব্যবহার করে লগ ইন করতে পারেন যা FIDO2 বা ডিভাইসের ফিঙ্গারপ্রিন্ট সেন্সর বা পিন সমর্থন করে৷"
 _permissions:
+  "read:account": "অ্যাকাউন্টের তথ্য দেখুন"
+  "write:account": "অ্যাকাউন্টের তথ্য সম্পাদন করুন"
+  "read:blocks": "ব্লক করা ব্যাবহারকারীদের তালিকা দেখুন"
+  "write:blocks": "ব্লক করা ব্যাবহারকারীদের তালিকা সম্পাদনা করুন"
+  "read:drive": "ড্রাইভের ফাইল এবং ফোল্ডারসমূহ পড়া"
+  "write:drive": "ড্রাইভের ফাইল এবং ফোল্ডারসমূহ সম্পাদনা করা"
+  "read:favorites": "পছন্দের তালিকা পড়া"
+  "write:favorites": "পছন্দের তালিকা সম্পাদনা করা"
   "read:pages": "আপনার পেজগুলি দেখুন"
   "write:pages": "পেজগুলি সম্পাদনা বা ডিলিট করুন"
 _auth:
@@ -1194,20 +1203,51 @@ _visibility:
 _profile:
   name: "নাম"
   username: "ব্যবহারকারীর নাম"
+  metadataContent: "বিষয়বস্তু"
+  changeAvatar: "অ্যাভাটার পরিবর্তন করুন"
+  changeBanner: "ব্যানার পরিবর্তন করুন"
 _exportOrImport:
   allNotes: "সকল নোট"
   followingList: "অনুসরণ করা হচ্ছে"
   muteList: "মিউট"
   blockingList: "ব্লক"
   userLists: "লিস্ট"
+  excludeMutingUsers: "মিউটকৃত ব্যবহারকারীদের বাদ দিন"
+  excludeInactiveUsers: "অব্যাবহৃত অ্যাকাউন্ট বাদ দিন"
 _charts:
   federation: "ফেডিভার্স"
+  apRequest: "অনুরোধসমূহ"
+  usersIncDec: "ব্যবহারকারীদের সংখ্যার পরিবর্তন"
+  usersTotal: "ব্যবহারকারীদের সংখ্যা"
+  activeUsers: "সক্রিয় ব্যাবহারকারী"
+  notesIncDec: "নোটের সংখ্যার পরিবর্তন"
+  localNotesIncDec: "লোকাল নোটের সংখ্যার পরিবর্তন"
+  remoteNotesIncDec: "রিমোট নোটের সংখ্যার পরিবর্তন"
+  notesTotal: "নোটের সংখ্যা"
+  filesIncDec: "ফাইলের সংখ্যার পরিবর্তন"
+  filesTotal: "ফাইলের সংখ্যা"
+  storageUsageIncDec: "স্টোরেজের ব্যাবহারের পরিবর্তন"
+  storageUsageTotal: "মোট স্টোরেজের ব্যাবহার"
+_instanceCharts:
+  requests: "অনুরোধসমূহ"
+  users: "ব্যবহারকারীদের সংখ্যার পরিবর্তন"
+  usersTotal: "ক্রমবর্ধমান ব্যবহারকারীদের সংখ্যা"
+  notes: "নোটের সংখ্যার পরিবর্তন"
+  notesTotal: "ক্রমবর্ধমান নোটের সংখ্যা"
+  ff: "অনুসরণকারী / অনুসরণ করা ব্যাবহারকারীদের সংখ্যার পরিবর্তন"
+  ffTotal: "অনুসরণকারী / অনুসরণ করা ব্যাবহারকারীদের ক্রমবর্ধমান সংখ্যা"
 _timelines:
   home: "মূল পাতা"
 _pages:
   viewPage: "আপনার পেজগুলি দেখুন"
   blocks:
     image: "ছবি"
+    _post:
+      text: "বিষয়বস্তু"
+    _button:
+      _action:
+        _dialog:
+          content: "বিষয়বস্তু"
   script:
     categories:
       list: "লিস্ট"
