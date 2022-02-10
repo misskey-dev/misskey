@@ -4,7 +4,6 @@ import * as assert from 'assert';
 import * as childProcess from 'child_process';
 import { async, signup, request, post, startServer, shutdownServer, initTestDb } from '../utils';
 import * as sinon from 'sinon';
-import config from '@/config/index';
 
 describe('Creating a block activity', () => {
 	let p: childProcess.ChildProcess;
@@ -44,14 +43,13 @@ describe('Creating a block activity', () => {
 		assert(spy.calledTwice);
 	}));
 
-	it('Should not federate blocks if activityPub.federateBlocks is false', async () => {
-		const createBlock = (await import('../../src/services/blocking/create'))  .default;
+	it('Should not federate blocks if federateBlocks is false', async () => {
+		const createBlock = (await import('../../src/services/blocking/create')).default;
 		const deleteBlock = (await import('../../src/services/blocking/delete')).default;
 
+		alice.federateBlocks = true;
+
 		const queues = await import('../../src/queue/index');
-		config.activityPub = {
-			federateBlocks: false
-		};
 		const spy = sinon.spy(queues, 'deliver');
 		await createBlock(alice, carol);
 		await deleteBlock(alice, carol);
