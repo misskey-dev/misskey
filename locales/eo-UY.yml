@@ -889,7 +889,7 @@ _poll:
   deadlineTime: "hor"
   votesCount: "{n} balotiloj"
   vote: "Baloti"
-  closed: "Oni jam balotis ĝin"
+  closed: "Finita"
 _visibility:
   public: "Publika"
   publicDescription: "Publikigi al ĉiuj en la Fediverso"
