@@ -15,7 +15,7 @@ export default class UsersChart extends Chart<typeof schema> {
 	}
 
 	@autobind
-	protected async queryCurrentState(): Promise<Partial<KVs<typeof schema>>> {
+	protected async tickMajor(): Promise<Partial<KVs<typeof schema>>> {
 		const [localCount, remoteCount] = await Promise.all([
 			Users.count({ host: null }),
 			Users.count({ host: Not(IsNull()) }),
@@ -25,6 +25,11 @@ export default class UsersChart extends Chart<typeof schema> {
 			'local.total': localCount,
 			'remote.total': remoteCount,
 		};
+	}
+
+	@autobind
+	protected async tickMinor(): Promise<Partial<KVs<typeof schema>>> {
+		return {};
 	}
 
 	@autobind

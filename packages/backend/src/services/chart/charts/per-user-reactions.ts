@@ -15,7 +15,12 @@ export default class PerUserReactionsChart extends Chart<typeof schema> {
 	}
 
 	@autobind
-	protected async queryCurrentState(group: string): Promise<Partial<KVs<typeof schema>>> {
+	protected async tickMajor(group: string): Promise<Partial<KVs<typeof schema>>> {
+		return {};
+	}
+
+	@autobind
+	protected async tickMinor(): Promise<Partial<KVs<typeof schema>>> {
 		return {};
 	}
 
