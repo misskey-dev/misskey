@@ -1114,6 +1114,7 @@ _notification:
     renote: "Plusendoj"
     quote: "Citi"
     reaction: "Reagoj"
+    pollVote: "Voĉdonoj en balotoj"
     receiveFollowRequest: "Ricevi peton de sekvado"
     followRequestAccepted: "Akceptita peto de sekvado"
     groupInvited: "Invitita al grupo"
