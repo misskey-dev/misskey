@@ -1398,19 +1398,44 @@ _pages:
         pushEvent: "ইভেন্ট পাঠান"
         _pushEvent:
           event: "ইভেন্টের নাম"
+          message: "চালু হলে প্রদর্শনের জন্য বার্তা"
+          variable: "পাঠানো চলক"
+          no-variable: "কিছুই না"
+        callAiScript: "AiScript চালান"
+        _callAiScript:
+          functionName: "ফাংশনের নাম"
+    radioButton: "বহুনির্বাচনী"
     _radioButton:
       name: "চলকের নাম"
       title: "শিরোনাম"
+      values: "বিকল্পগুলিকে আলাদা লাইনে লিখুন"
       default: "ডিফল্ট মান"
   script:
     categories:
+      flow: "নিয়ন্ত্রণ"
+      logical: "লজিক্যাল অপারেশন"
+      operation: "হিসাব-নিকাশ"
+      comparison: "তুলনা"
+      random: "র‍্যান্ডম"
+      value: "মান"
+      fn: "ফাংশন"
+      text: "টেক্সট ম্যানিপুলেশন"
+      convert: "রুপান্তর"
       list: "লিস্ট"
     blocks:
       text: "লেখা"
+      multiLineText: "লেখা (একাধিক লাইন)"
+      textList: "লেখার লিস্ট"
+      _textList:
+        info: "প্রতিটি এন্ট্রিকে আলাদা লাইনে লিখুন"
+      strLen: "লেখার দৈর্ঘ্য"
       _strLen:
         arg1: "লেখা"
+      strPick: "অক্ষর বের করে আনুন"
       _strPick:
         arg1: "লেখা"
+        arg2: "অক্ষরের অবস্থান"
+      strReplace: "লেখা প্রতিস্থাপন"
       _strReplace:
         arg1: "লেখা"
       _strReverse:
@@ -1458,6 +1483,16 @@ _pages:
         arg2: "B"
       _if:
         arg1: "যদি"
+      not: "না"
+      _not:
+        arg1: "না"
+      random: "র‍্যান্ডম"
+      _random:
+        arg1: "সম্ভাব্যতা"
+      rannum: "র‍্যানডম সংখ্যা"
+      _rannum:
+        arg1: "ন্যূনতম মান"
+        arg2: "সর্বোচ্চ মান"
       _randomPick:
         arg1: "লিস্ট"
       _dailyRandom:
@@ -1468,8 +1503,15 @@ _pages:
         arg2: "সর্বোচ্চ মান"
       _dailyRandomPick:
         arg1: "লিস্ট"
+      _seedRandom:
+        arg2: "সম্ভাব্যতা"
+      _seedRannum:
+        arg2: "ন্যূনতম মান"
+        arg3: "সর্বোচ্চ মান"
       _seedRandomPick:
         arg2: "লিস্ট"
+      _DRPWPM:
+        arg1: "লেখার লিস্ট"
       _pick:
         arg1: "লিস্ট"
         arg2: "অবস্থান"
