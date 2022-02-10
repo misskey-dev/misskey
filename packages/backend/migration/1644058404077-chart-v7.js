@@ -158,18 +158,8 @@ module.exports = class chartV71644058404077 {
 		await queryRunner.query(`UPDATE "__chart_day__per_user_following" SET "___remote_followers_total"=2147483647 WHERE "___remote_followers_total" > 2147483647`);
 		await queryRunner.query(`UPDATE "__chart_day__per_user_following" SET "___remote_followers_inc"=32767 WHERE "___remote_followers_inc" > 32767`);
 		await queryRunner.query(`UPDATE "__chart_day__per_user_following" SET "___remote_followers_dec"=32767 WHERE "___remote_followers_dec" > 32767`);
-		await queryRunner.query(`UPDATE "__chart__per_user_drive" SET "___totalCount"=2147483647 WHERE "___totalCount" > 2147483647`);
-		await queryRunner.query(`UPDATE "__chart__per_user_drive" SET "___totalSize"=2147483647 WHERE "___totalSize" > 2147483647`);
-		await queryRunner.query(`UPDATE "__chart__per_user_drive" SET "___incCount"=32767 WHERE "___incCount" > 32767`);
-		await queryRunner.query(`UPDATE "__chart__per_user_drive" SET "___incSize"=2147483647 WHERE "___incSize" > 2147483647`);
-		await queryRunner.query(`UPDATE "__chart__per_user_drive" SET "___decCount"=32767 WHERE "___decCount" > 32767`);
-		await queryRunner.query(`UPDATE "__chart__per_user_drive" SET "___decSize"=2147483647 WHERE "___decSize" > 2147483647`);
-		await queryRunner.query(`UPDATE "__chart_day__per_user_drive" SET "___totalCount"=2147483647 WHERE "___totalCount" > 2147483647`);
-		await queryRunner.query(`UPDATE "__chart_day__per_user_drive" SET "___totalSize"=2147483647 WHERE "___totalSize" > 2147483647`);
-		await queryRunner.query(`UPDATE "__chart_day__per_user_drive" SET "___incCount"=32767 WHERE "___incCount" > 32767`);
-		await queryRunner.query(`UPDATE "__chart_day__per_user_drive" SET "___incSize"=2147483647 WHERE "___incSize" > 2147483647`);
-		await queryRunner.query(`UPDATE "__chart_day__per_user_drive" SET "___decCount"=32767 WHERE "___decCount" > 32767`);
-		await queryRunner.query(`UPDATE "__chart_day__per_user_drive" SET "___decSize"=2147483647 WHERE "___decSize" > 2147483647`);
+		await queryRunner.query(`TRUNCATE TABLE "__chart__per_user_drive"`);
+		await queryRunner.query(`TRUNCATE TABLE "__chart_day__per_user_drive"`);
 
 		await queryRunner.query(`ALTER TABLE "__chart__federation" ALTER COLUMN "___instance_total" TYPE integer USING "___instance_total"::integer`);
 		await queryRunner.query(`ALTER TABLE "__chart__federation" ALTER COLUMN "___instance_inc" TYPE smallint USING "___instance_inc"::smallint`);

@@ -41,6 +41,10 @@ export const meta = {
 			validator: $.optional.nullable.arr($.str),
 		},
 
+		themeColor: {
+			validator: $.optional.nullable.str,
+		},
+
 		mascotImageUrl: {
 			validator: $.optional.nullable.str,
 		},
@@ -329,6 +333,10 @@ export default define(meta, async (ps, me) => {
 
 	if (Array.isArray(ps.blockedHosts)) {
 		set.blockedHosts = ps.blockedHosts.filter(Boolean);
+	}
+
+	if (ps.themeColor !== undefined) {
+		set.themeColor = ps.themeColor;
 	}
 
 	if (ps.mascotImageUrl !== undefined) {
