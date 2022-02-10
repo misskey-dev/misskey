@@ -81,18 +81,65 @@ export default defineComponent({
 	},
 
 	async created() {
-		this.softMutedWords = this.$store.state.mutedWords.map(x => x.join(' ')).join('\n');
-		this.hardMutedWords = this.$i.mutedWords.map(x => x.join(' ')).join('\n');
+		const render = (mutedWords) => mutedWords.map(x => {
+			if (Array.isArray(x)) {
+				return x.join(' ');
+			} else {
+				return x;
+			}
+		}).join('\n');
+
+		this.softMutedWords = render(this.$store.state.mutedWords);
+		this.hardMutedWords = render(this.$i.mutedWords);
 
 		this.hardWordMutedNotesCount = (await os.api('i/get-word-muted-notes-count', {})).count;
 	},
 
 	methods: {
 		async save() {
-			this.$store.set('mutedWords', this.softMutedWords.trim().split('\n').map(x => x.trim().split(' ')));
+			const parseMutes = (mutes, tab) => {
+				// split into lines, remove empty lines and unnecessary whitespace
+				let lines = mutes.trim().split('\n').map(line => line.trim()).filter(line => line != '');
+
+				// check each line if it is a RegExp or not
+				for(let i = 0; i < lines.length; i++) {
+					const line = lines[i]
+					const regexp = line.match(/^\/(.+)\/(.*)$/);
+					if (regexp) {
+						// check that the RegExp is valid
+						try {
+							new RegExp(regexp[1], regexp[2]);
+							// note that regex lines will not be split by spaces!
+						} catch (err) {
+							// invalid syntax: do not save, do not reset changed flag
+							os.alert({
+								type: 'error',
+								title: this.$ts.regexpError,
+								text: this.$t('regexpErrorDescription', { tab, line: i + 1 }) + "\n" + err.toString()
+							});
+							// re-throw error so these invalid settings are not saved
+							throw err;
+						}
+					} else {
+						lines[i] = line.split(' ');
+					}
+				}
+			};
+
+			let softMutes, hardMutes;
+			try {
+				softMutes = parseMutes(this.softMutedWords, this.$ts._wordMute.soft);
+				hardMutes = parseMutes(this.hardMutedWords, this.$ts._wordMute.hard);
+			} catch (err) {
+				// already displayed error message in parseMutes
+				return;
+			}
+
+			this.$store.set('mutedWords', softMutes);
 			await os.api('i/update', {
-				mutedWords: this.hardMutedWords.trim().split('\n').map(x => x.trim().split(' ')),
+				mutedWords: hardMutes,
 			});
+
 			this.changed = false;
 		},
 
