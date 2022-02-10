@@ -213,17 +213,17 @@ export default defineComponent({
 						data: x.data.slice().reverse(),
 						tension: 0.3,
 						pointRadius: 0,
-						borderWidth: 2,
+						borderWidth: props.bar ? 0 : 2,
 						borderColor: x.color ? x.color : getColor(i),
 						borderDash: x.borderDash || [],
 						borderJoinStyle: 'round',
-						backgroundColor: alpha(x.color ? x.color : getColor(i), 0.1),
-						gradient: {
+						backgroundColor: props.bar ? (x.color ? x.color : getColor(i)) : alpha(x.color ? x.color : getColor(i), 0.1),
+						gradient: props.bar ? undefined : {
 							backgroundColor: {
 								axis: 'y',
 								colors: {
 									0: alpha(x.color ? x.color : getColor(i), 0),
-									[maxes[i]]: alpha(x.color ? x.color : getColor(i), 0.1),
+									[maxes[i]]: alpha(x.color ? x.color : getColor(i), 0.15),
 								},
 							},
 						},
@@ -752,18 +752,27 @@ export default defineComponent({
 					type: 'line',
 					borderDash: [5, 5],
 					data: format(sum(raw.inc, negate(raw.dec))),
+					color: '#888888',
 				}]), {
+					name: 'With file',
+					type: 'area',
+					data: format(raw.diffs.withFile),
+					color: colors.purple,
+				}, {
 					name: 'Renotes',
 					type: 'area',
 					data: format(raw.diffs.renote),
+					color: colors.green,
 				}, {
 					name: 'Replies',
 					type: 'area',
 					data: format(raw.diffs.reply),
+					color: colors.yellow,
 				}, {
 					name: 'Normal',
 					type: 'area',
 					data: format(raw.diffs.normal),
+					color: colors.blue,
 				}],
 			};
 		};
