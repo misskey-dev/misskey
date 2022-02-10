@@ -1350,23 +1350,58 @@ _pages:
     _post:
       text: "বিষয়বস্তু"
       attachCanvasImage: "ক্যানভাস ছবিসহ পোস্ট করুন"
+      canvasId: "ক্যানভাস ID"
+    textInput: "টেক্সট ইনপুট"
     _textInput:
+      name: "চলকের নাম"
       text: "শিরোনাম"
+      default: "ডিফল্ট মান"
+    textareaInput: "একাধিক লাইনের টেক্সট ইনপুট"
     _textareaInput:
+      name: "চলকের নাম"
       text: "শিরোনাম"
+      default: "ডিফল্ট মান"
+    numberInput: "সংখ্যা ইনপুট"
     _numberInput:
+      name: "চলকের নাম"
       text: "শিরোনাম"
+      default: "ডিফল্ট মান"
+    canvas: "ক্যানভাস"
+    _canvas:
+      id: "ক্যানভাস ID"
+      width: "প্রস্থ"
+      height: "উচ্চতা"
+    note: "এম্বেড নোট"
+    _note:
+      id: "নোট ID"
+      idDescription: "আপনি এর বদলে নোটের URL পেস্ট করতে পারেন."
+      detailed: "বিস্তারিত দেখুন"
+    switch: "সুইচ"
     _switch:
+      name: "চলকের নাম"
       text: "শিরোনাম"
+      default: "ডিফল্ট মান"
+    counter: "কাউন্টার"
     _counter:
+      name: "চলকের নাম"
       text: "শিরোনাম"
+      inc: "এভাবে মান বাড়ান"
     _button:
       text: "শিরোনাম"
+      colored: "রঙ্গিন"
+      action: "বাটনে ক্লিক করলে যা হবে"
       _action:
+        dialog: "ডায়ালগ দেখান "
         _dialog:
           content: "বিষয়বস্তু"
+        resetRandom: "র‍্যানডম সিড রিসেট করুন"
+        pushEvent: "ইভেন্ট পাঠান"
+        _pushEvent:
+          event: "ইভেন্টের নাম"
     _radioButton:
+      name: "চলকের নাম"
       title: "শিরোনাম"
+      default: "ডিফল্ট মান"
   script:
     categories:
       list: "লিস্ট"
@@ -1437,10 +1472,15 @@ _pages:
         arg2: "লিস্ট"
       _pick:
         arg1: "লিস্ট"
+        arg2: "অবস্থান"
+      listLen: "লিস্টের দৈর্ঘ্য পান"
       _listLen:
         arg1: "লিস্ট"
+      number: "সংখ্যা"
+      stringToNumber: "পাঠ্য থেকে সংখ্যা"
       _stringToNumber:
         arg1: "লেখা"
+      numberToString: "সংখ্যা থেকে পাঠ্য"
       _numberToString:
         arg1: "সংখ্যা"
       splitStrByLine: "পাঠ্যকে লাইনে বিভক্ত করুন"
