@@ -827,6 +827,7 @@ overridedDeviceKind: "Typ zariadenia"
 smartphone: "Smartfón"
 tablet: "Tablet"
 auto: "Automaticky"
+themeColor: "Farba témy"
 _emailUnavailable:
   used: "Táto emailová adresa sa už používa"
   format: "Formát emailovej adresy je nesprávny"
