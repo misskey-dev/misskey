@@ -1239,9 +1239,22 @@ _postForm:
   replyPlaceholder: "নোটটির জবাব দিন..."
   quotePlaceholder: "নোটটিকে উদ্ধৃত করুন..."
   channelPlaceholder: "চ্যানেলে পোস্ট করুন..."
+  _placeholders:
+    a: "আপনি এখন কি করছেন?"
+    b: "আপনার আশে পাশে কি হচ্ছে?"
+    c: "আপনি কি ভাবছেন?"
+    d: "আপনি কি বলতে চান?"
+    e: "লেখা শুরু করুন..."
+    f: "আপনার লেখার জন্য অপেক্ষা করছি..."
 _profile:
   name: "নাম"
   username: "ব্যবহারকারীর নাম"
+  description: "আপনার সম্পর্কে"
+  youCanIncludeHashtags: "হ্যাশট্যাগ অন্তর্ভুক্ত করা যেতে পারে।"
+  metadata: "অতিরিক্ত তথ্য"
+  metadataEdit: "অতিরিক্ত তথ্য সম্পাদনা করুন"
+  metadataDescription: "আপনি আপনার প্রোফাইলে একটি টেবিল হিসাবে চারটি অতিরিক্ত তথ্য দেখাতে পারেন।"
+  metadataLabel: "লেবেল"
   metadataContent: "বিষয়বস্তু"
   changeAvatar: "অ্যাভাটার পরিবর্তন করুন"
   changeBanner: "ব্যানার পরিবর্তন করুন"
@@ -1305,20 +1318,111 @@ _pages:
   featured: "জনপ্রিয়"
   inspector: "ইনিস্পেক্টর"
   contents: "বিষয়বস্তু"
+  content: "পৃষ্ঠার ব্লক"
+  variables: "চলকগুলি"
+  title: "শিরোনাম"
+  url: "পৃষ্ঠার URL"
+  summary: "পৃষ্ঠার বর্ণনা"
+  alignCenter: "সেন্টার"
+  hideTitleWhenPinned: "পিন করা হলে টাইটেল লুকান"
+  font: "ফন্ট"
+  fontSerif: "সেরিফ"
+  fontSansSerif: "স্যান্স সেরিফ"
+  eyeCatchingImageSet: "থাম্বনেইল সেট করুন"
+  eyeCatchingImageRemove: "থাম্বনেইল সরান"
+  chooseBlock: "ব্লক যোগ করুন"
+  selectType: "ধরন নির্বাচন করুন"
+  enterVariableName: "চলকের নাম লিখুন"
+  variableNameIsAlreadyUsed: "চলকের নামটি ইতিপূর্বে ব্যাবহৃত হয়েছে"
+  contentBlocks: "বিষয়বস্তু"
+  inputBlocks: "ইনপুট"
+  specialBlocks: "বিশেষ"
   blocks:
+    text: "লেখা"
+    textarea: "টেক্সট এরিয়া"
+    section: "বিভাগ"
     image: "ছবি"
+    button: "বাটন"
+    if: "যদি"
+    _if:
+      variable: "চলকগুলি"
+    post: "নোট লিখুন"
     _post:
       text: "বিষয়বস্তু"
+      attachCanvasImage: "ক্যানভাস ছবিসহ পোস্ট করুন"
+    _textInput:
+      text: "শিরোনাম"
+    _textareaInput:
+      text: "শিরোনাম"
+    _numberInput:
+      text: "শিরোনাম"
+    _switch:
+      text: "শিরোনাম"
+    _counter:
+      text: "শিরোনাম"
     _button:
+      text: "শিরোনাম"
       _action:
         _dialog:
           content: "বিষয়বস্তু"
+    _radioButton:
+      title: "শিরোনাম"
   script:
     categories:
       list: "লিস্ট"
     blocks:
+      text: "লেখা"
+      _strLen:
+        arg1: "লেখা"
+      _strPick:
+        arg1: "লেখা"
+      _strReplace:
+        arg1: "লেখা"
+      _strReverse:
+        arg1: "লেখা"
       _join:
         arg1: "লিস্ট"
+      _add:
+        arg1: "A"
+        arg2: "B"
+      _subtract:
+        arg1: "A"
+        arg2: "B"
+      _multiply:
+        arg1: "A"
+        arg2: "B"
+      _divide:
+        arg1: "A"
+        arg2: "B"
+      _mod:
+        arg1: "A"
+        arg2: "B"
+      _eq:
+        arg1: "A"
+        arg2: "B"
+      _notEq:
+        arg1: "A"
+        arg2: "B"
+      _and:
+        arg1: "A"
+        arg2: "B"
+      _or:
+        arg1: "A"
+        arg2: "B"
+      _lt:
+        arg1: "A"
+        arg2: "B"
+      _gt:
+        arg1: "A"
+        arg2: "B"
+      _ltEq:
+        arg1: "A"
+        arg2: "B"
+      _gtEq:
+        arg1: "A"
+        arg2: "B"
+      _if:
+        arg1: "যদি"
       _randomPick:
         arg1: "লিস্ট"
       _dailyRandom:
@@ -1335,6 +1439,8 @@ _pages:
         arg1: "লিস্ট"
       _listLen:
         arg1: "লিস্ট"
+      _stringToNumber:
+        arg1: "লেখা"
       _numberToString:
         arg1: "সংখ্যা"
       splitStrByLine: "পাঠ্যকে লাইনে বিভক্ত করুন"
