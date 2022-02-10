@@ -426,7 +426,6 @@ export default defineComponent({
 				series: [{
 					name: 'All',
 					type: 'line',
-					borderDash: [5, 5],
 					data: format(type == 'combined'
 						? sum(raw.local.inc, negate(raw.local.dec), raw.remote.inc, negate(raw.remote.dec))
 						: sum(raw[type].inc, negate(raw[type].dec))
@@ -750,7 +749,6 @@ export default defineComponent({
 				series: [...(props.args.withoutAll ? [] : [{
 					name: 'All',
 					type: 'line',
-					borderDash: [5, 5],
 					data: format(sum(raw.inc, negate(raw.dec))),
 					color: '#888888',
 				}]), {
