@@ -885,10 +885,12 @@ _poll:
   choiceN: "Balotilo {n}"
   noMore: "Oni ne povas aldoni pli."
   expiration: "Limtempo"
-  infinite: "Neniam"
   deadlineTime: "hor"
+  duration: "Daŭro"
   votesCount: "{n} balotiloj"
   vote: "Baloti"
+  showResult: "Vidi la rezultojn"
+  voted: "Balotita"
   closed: "Finita"
 _visibility:
   public: "Publika"
