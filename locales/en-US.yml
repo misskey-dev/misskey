@@ -828,6 +828,7 @@ overridedDeviceKind: "Device type"
 smartphone: "Smartphone"
 tablet: "Tablet"
 auto: "Auto"
+themeColor: "Theme Color"
 _emailUnavailable:
   used: "This email address is already being used"
   format: "The format of this email address is invalid"

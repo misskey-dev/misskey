@@ -9,6 +9,7 @@ module.exports = class convertHardMutes1644010796173 {
         for(let i = 0; i < entries.length; i++) {
             let words = entries[i].mutedWords
                 .map(line => {
+										if (typeof line === 'string') return [];
                     const regexp = line.join(" ").match(/^\/(.+)\/(.*)$/);
                     if (regexp) {
                         // convert regexp's
