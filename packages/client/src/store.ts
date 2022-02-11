@@ -182,6 +182,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: 'remote' as 'none' | 'remote' | 'always'
 	},
+	reactionPickerSize: {
+		where: 'device',
+		default: 1
+	},
 	reactionPickerWidth: {
 		where: 'device',
 		default: 1

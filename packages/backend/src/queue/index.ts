@@ -258,6 +258,11 @@ export default function() {
 	processDb(dbQueue);
 	processObjectStorage(objectStorageQueue);
 
+	systemQueue.add('tickCharts', {
+	}, {
+		repeat: { cron: '55 * * * *' },
+	});
+
 	systemQueue.add('resyncCharts', {
 	}, {
 		repeat: { cron: '0 0 * * *' },

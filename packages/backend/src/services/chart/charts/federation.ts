@@ -1,6 +1,6 @@
 import autobind from 'autobind-decorator';
 import Chart, { KVs } from '../core';
-import { Instances } from '@/models/index';
+import { Followings } from '@/models/index';
 import { name, schema } from './entities/federation';
 
 /**
@@ -13,23 +13,30 @@ export default class FederationChart extends Chart<typeof schema> {
 	}
 
 	@autobind
-	protected async queryCurrentState(): Promise<Partial<KVs<typeof schema>>> {
-		const [total] = await Promise.all([
-			Instances.count({}),
-		]);
-
+	protected async tickMajor(): Promise<Partial<KVs<typeof schema>>> {
 		return {
-			'instance.total': total,
 		};
 	}
 
 	@autobind
-	public async update(isAdditional: boolean): Promise<void> {
-		await this.commit({
-			'instance.total': isAdditional ? 1 : -1,
-			'instance.inc': isAdditional ? 1 : 0,
-			'instance.dec': isAdditional ? 0 : 1,
-		});
+	protected async tickMinor(): Promise<Partial<KVs<typeof schema>>> {
+		const [sub, pub] = await Promise.all([
+			Followings.createQueryBuilder('following')
+				.select('COUNT(DISTINCT following.followeeHost)')
+				.where('following.followeeHost IS NOT NULL')
+				.getRawOne()
+				.then(x => parseInt(x.count, 10)),
+			Followings.createQueryBuilder('following')
+				.select('COUNT(DISTINCT following.followerHost)')
+				.where('following.followerHost IS NOT NULL')
+				.getRawOne()
+				.then(x => parseInt(x.count, 10)),
+		]);
+
+		return {
+			'sub': sub,
+			'pub': pub,
+		};
 	}
 
 	@autobind
