@@ -1470,32 +1470,43 @@ _pages:
       round: "দশমিক রাউন্ড করুন"
       _round:
         arg1: "সংখ্যা"
+      eq: "A ও B সমান"
       _eq:
         arg1: "A"
         arg2: "B"
+      notEq: "A ও B সমান না"
       _notEq:
         arg1: "A"
         arg2: "B"
+      and: "A এবং B"
       _and:
         arg1: "A"
         arg2: "B"
+      or: "A অথবা B"
       _or:
         arg1: "A"
         arg2: "B"
+      lt: "< A , B হতে কম"
       _lt:
         arg1: "A"
         arg2: "B"
+      gt: "> A , B হতে বেশী"
       _gt:
         arg1: "A"
         arg2: "B"
+      ltEq: "<= A , B হতে কম বা সমান"
       _ltEq:
         arg1: "A"
         arg2: "B"
+      gtEq: ">= A , B হতে বেশী বা সমান"
       _gtEq:
         arg1: "A"
         arg2: "B"
+      if: "যদি"
       _if:
         arg1: "যদি"
+        arg2: "তাহলে"
+        arg3: "তাছাড়া"
       not: "না"
       _not:
         arg1: "না"
@@ -1506,14 +1517,17 @@ _pages:
       _rannum:
         arg1: "ন্যূনতম মান"
         arg2: "সর্বোচ্চ মান"
+      randomPick: "তালিকা থেকে দৈবচয়ন করুন"
       _randomPick:
         arg1: "লিস্ট"
+      dailyRandom: "র‍্যান্ডম সংখ্যা (প্রতিটি ব্যবহারকারীর জন্য প্রতিদিন পরিবর্তীত হয়)"
       _dailyRandom:
         arg1: "সম্ভাব্যতা"
       dailyRannum: "র‍্যান্ডম সংখ্যা (প্রতিটি ব্যবহারকারীর জন্য প্রতিদিন পরিবর্তীত হয়)"
       _dailyRannum:
         arg1: "ন্যূনতম মান"
         arg2: "সর্বোচ্চ মান"
+      dailyRandomPick: "তালিকা থেকে এলোমেলোভাবে নির্বাচন করুন (প্রতিটি ব্যবহারকারীর জন্য প্রতিদিন পরিবর্তীত হয়)"
       _dailyRandomPick:
         arg1: "লিস্ট"
       seedRandom: "র‍্যানডম (সীড দ্বারা)"
