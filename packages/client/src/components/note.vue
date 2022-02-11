@@ -138,11 +138,13 @@ const props = defineProps<{
 
 const inChannel = inject('inChannel', null);
 
+const note = $ref(JSON.parse(JSON.stringify(props.note)));
+
 const isRenote = (
-	props.note.renote != null &&
-	props.note.text == null &&
-	props.note.fileIds.length === 0 &&
-	props.note.poll == null
+	note.renote != null &&
+	note.text == null &&
+	note.fileIds.length === 0 &&
+	note.poll == null
 );
 
 const el = ref<HTMLElement>();
@@ -150,8 +152,8 @@ const menuButton = ref<HTMLElement>();
 const renoteButton = ref<InstanceType<typeof XRenoteButton>>();
 const renoteTime = ref<HTMLElement>();
 const reactButton = ref<HTMLElement>();
-let appearNote = $ref(isRenote ? props.note.renote as misskey.entities.Note : props.note);
-const isMyRenote = $i && ($i.id === props.note.userId);
+let appearNote = $ref(isRenote ? note.renote as misskey.entities.Note : note);
+const isMyRenote = $i && ($i.id === note.userId);
 const showContent = ref(false);
 const collapsed = ref(appearNote.cw == null && appearNote.text != null && (
 	(appearNote.text.split('\n').length > 9) ||
@@ -176,8 +178,9 @@ const keymap = {
 };
 
 useNoteCapture({
-	appearNote: $$(appearNote),
 	rootEl: el,
+	note: $$(appearNote),
+	isDeletedRef: $$(isDeleted),
 });
 
 function reply(viaKeyboard = false): void {
@@ -225,12 +228,12 @@ function onContextmenu(ev: MouseEvent): void {
 		ev.preventDefault();
 		react();
 	} else {
-		os.contextMenu(getNoteMenu({ note: props.note, translating, translation, menuButton }), ev).then(focus);
+		os.contextMenu(getNoteMenu({ note: note, translating, translation, menuButton }), ev).then(focus);
 	}
 }
 
 function menu(viaKeyboard = false): void {
-	os.popupMenu(getNoteMenu({ note: props.note, translating, translation, menuButton }), menuButton.value, {
+	os.popupMenu(getNoteMenu({ note: note, translating, translation, menuButton }), menuButton.value, {
 		viaKeyboard
 	}).then(focus);
 }
@@ -243,7 +246,7 @@ function showRenoteMenu(viaKeyboard = false): void {
 		danger: true,
 		action: () => {
 			os.api('notes/delete', {
-				noteId: props.note.id
+				noteId: note.id
 			});
 			isDeleted.value = true;
 		}

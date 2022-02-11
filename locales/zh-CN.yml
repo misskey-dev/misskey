@@ -831,6 +831,8 @@ smartphone: "智能手机"
 tablet: "平板"
 auto: "自动"
 themeColor: "主题颜色"
+size: "大小"
+numberOfColumn: "列数"
 _emailUnavailable:
   used: "已经被使用过"
   format: "无效的格式"
@@ -958,7 +960,7 @@ _mfm:
   rotateDescription: "旋转指定的角度。"
 _instanceTicker:
   none: "不显示"
-  remote: "显示给远程用户"
+  remote: "仅显示远程用户的"
   always: "始终显示"
 _serverDisconnectedBehavior:
   reload: "自动重载"
