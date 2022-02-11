@@ -10,10 +10,7 @@
 You should also include the user name that made the change.
 -->
 
-## 12.x.x (unreleased)
-
-### Improvements
-- 
+## 12.106.1 (2022/02/11)
 
 ### Bugfixes
 - クライアント: ワードミュートが保存できない問題を修正 @syuilo
