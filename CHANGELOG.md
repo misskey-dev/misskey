@@ -18,6 +18,7 @@ You should also include the user name that made the change.
 ### Bugfixes
 - クライアント: 削除したノートがタイムラインから自動で消えない問題を修正 @syuilo
 - クライアント: リアクション数が正しくないことがある問題を修正 @syuilo
+- 一部環境でマイグレーションが動作しない問題を修正 @syuilo
 
 ## 12.106.1 (2022/02/11)
 
