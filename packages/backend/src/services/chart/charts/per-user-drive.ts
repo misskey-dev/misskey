@@ -14,7 +14,7 @@ export default class PerUserDriveChart extends Chart<typeof schema> {
 	}
 
 	@autobind
-	protected async queryCurrentState(group: string): Promise<Partial<KVs<typeof schema>>> {
+	protected async tickMajor(group: string): Promise<Partial<KVs<typeof schema>>> {
 		const [count, size] = await Promise.all([
 			DriveFiles.count({ userId: group }),
 			DriveFiles.calcDriveUsageOf(group),
@@ -24,6 +24,11 @@ export default class PerUserDriveChart extends Chart<typeof schema> {
 			'totalCount': count,
 			'totalSize': size,
 		};
+	}
+
+	@autobind
+	protected async tickMinor(): Promise<Partial<KVs<typeof schema>>> {
+		return {};
 	}
 
 	@autobind

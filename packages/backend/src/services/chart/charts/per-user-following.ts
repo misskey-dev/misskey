@@ -15,7 +15,7 @@ export default class PerUserFollowingChart extends Chart<typeof schema> {
 	}
 
 	@autobind
-	protected async queryCurrentState(group: string): Promise<Partial<KVs<typeof schema>>> {
+	protected async tickMajor(group: string): Promise<Partial<KVs<typeof schema>>> {
 		const [
 			localFollowingsCount,
 			localFollowersCount,
@@ -34,6 +34,11 @@ export default class PerUserFollowingChart extends Chart<typeof schema> {
 			'remote.followings.total': remoteFollowingsCount,
 			'remote.followers.total': remoteFollowersCount,
 		};
+	}
+
+	@autobind
+	protected async tickMinor(): Promise<Partial<KVs<typeof schema>>> {
+		return {};
 	}
 
 	@autobind
