@@ -14,6 +14,7 @@ You should also include the user name that made the change.
 
 ### Improvements
 - クライアント: リアクションピッカーのサイズを設定できるように @syuilo
+- クライアント: リアクションピッカーの幅、高さ制限を緩和 @syuilo
 
 ### Bugfixes
 - 

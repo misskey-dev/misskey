@@ -28,12 +28,15 @@
 		<option :value="1">5</option>
 		<option :value="2">6</option>
 		<option :value="3">7</option>
+		<option :value="4">8</option>
+		<option :value="5">9</option>
 	</FormRadios>
 	<FormRadios v-model="reactionPickerHeight" class="_formBlock">
 		<template #label>{{ $ts.height }}</template>
 		<option :value="1">{{ $ts.small }}</option>
 		<option :value="2">{{ $ts.medium }}</option>
 		<option :value="3">{{ $ts.large }}</option>
+		<option :value="4">{{ $ts.large }}+</option>
 	</FormRadios>
 
 	<FormSwitch v-model="reactionPickerUseDrawerForMobile" class="_formBlock">

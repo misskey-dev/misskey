@@ -377,6 +377,16 @@ defineExpose({
 		--columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
 	}
 
+	&.w4 {
+		width: calc((var(--eachSize) * 8) + (#{$pad} * 2));
+		--columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+	}
+
+	&.w5 {
+		width: calc((var(--eachSize) * 9) + (#{$pad} * 2));
+		--columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+	}
+
 	&.h1 {
 		height: calc((var(--eachSize) * 4) + (#{$pad} * 2));
 	}
@@ -387,6 +397,10 @@ defineExpose({
 
 	&.h3 {
 		height: calc((var(--eachSize) * 8) + (#{$pad} * 2));
+	}
+
+	&.h4 {
+		height: calc((var(--eachSize) * 10) + (#{$pad} * 2));
 	}
 
 	&.asDrawer {
