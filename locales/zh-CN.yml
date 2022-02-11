@@ -960,7 +960,7 @@ _mfm:
   rotateDescription: "旋转指定的角度。"
 _instanceTicker:
   none: "不显示"
-  remote: "显示给远程用户"
+  remote: "仅显示远程用户的"
   always: "始终显示"
 _serverDisconnectedBehavior:
   reload: "自动重载"
