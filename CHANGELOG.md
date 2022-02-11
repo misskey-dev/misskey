@@ -13,7 +13,7 @@ You should also include the user name that made the change.
 ## 12.x.x (unreleased)
 
 ### Improvements
-- 
+- クライアント: スマートフォンでの余白を調整 @syuilo
 
 ### Bugfixes
 - クライアント: ノートの詳細が表示されない問題を修正 @syuilo
