@@ -5,7 +5,7 @@ import perform from '@/remote/activitypub/perform';
 import Logger from '@/services/logger';
 import { registerOrFetchInstanceDoc } from '@/services/register-or-fetch-instance-doc';
 import { Instances } from '@/models/index';
-import { instanceChart } from '@/services/chart/index';
+import { apRequestChart, federationChart, instanceChart } from '@/services/chart/index';
 import { fetchMeta } from '@/misc/fetch-meta';
 import { toPuny, extractDbHost } from '@/misc/convert-host';
 import { getApId } from '@/remote/activitypub/type';
@@ -54,10 +54,12 @@ export default async (job: Bull.Job<InboxJobData>): Promise<string> => {
 			authUser = await dbResolver.getAuthUserFromApId(getApId(activity.actor));
 		} catch (e) {
 			// 対象が4xxならスキップ
-			if (e instanceof StatusError && e.isClientError) {
-				return `skip: Ignored deleted actors on both ends ${activity.actor} - ${e.statusCode}`;
+			if (e instanceof StatusError) {
+				if (e.isClientError) {
+					return `skip: Ignored deleted actors on both ends ${activity.actor} - ${e.statusCode}`;
+				}
+				throw `Error in actor ${activity.actor} - ${e.statusCode || e}`;
 			}
-			throw `Error in actor ${activity.actor} - ${e.statusCode || e}`;
 		}
 	}
 
@@ -141,6 +143,8 @@ export default async (job: Bull.Job<InboxJobData>): Promise<string> => {
 		fetchInstanceMetadata(i);
 
 		instanceChart.requestReceived(i.host);
+		apRequestChart.inbox();
+		federationChart.inbox(i.host);
 	});
 
 	// アクティビティを処理

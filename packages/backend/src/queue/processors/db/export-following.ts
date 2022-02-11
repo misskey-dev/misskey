@@ -4,7 +4,7 @@ import * as fs from 'fs';
 
 import { queueLogger } from '../../logger';
 import { addFile } from '@/services/drive/add-file';
-import * as dateFormat from 'dateformat';
+import { format as dateFormat } from 'date-fns';
 import { getFullApAccount } from '@/misc/convert-host';
 import { Users, Followings, Mutings } from '@/models/index';
 import { In, MoreThan, Not } from 'typeorm';
@@ -86,7 +86,7 @@ export async function exportFollowing(job: Bull.Job<DbUserJobData>, done: () => 
 	stream.end();
 	logger.succ(`Exported to: ${path}`);
 
-	const fileName = 'following-' + dateFormat(new Date(), 'yyyy-mm-dd-HH-MM-ss') + '.csv';
+	const fileName = 'following-' + dateFormat(new Date(), 'yyyy-MM-dd-HH-mm-ss') + '.csv';
 	const driveFile = await addFile({ user, path, name: fileName, force: true });
 
 	logger.succ(`Exported to: ${driveFile.id}`);

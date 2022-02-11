@@ -4,7 +4,7 @@ import * as fs from 'fs';
 
 import { queueLogger } from '../../logger';
 import { addFile } from '@/services/drive/add-file';
-import * as dateFormat from 'dateformat';
+import { format as dateFormat } from 'date-fns';
 import { Users, Notes, Polls } from '@/models/index';
 import { MoreThan } from 'typeorm';
 import { Note } from '@/models/entities/note';
@@ -94,7 +94,7 @@ export async function exportNotes(job: Bull.Job<DbUserJobData>, done: any): Prom
 	stream.end();
 	logger.succ(`Exported to: ${path}`);
 
-	const fileName = 'notes-' + dateFormat(new Date(), 'yyyy-mm-dd-HH-MM-ss') + '.json';
+	const fileName = 'notes-' + dateFormat(new Date(), 'yyyy-MM-dd-HH-mm-ss') + '.json';
 	const driveFile = await addFile({ user, path, name: fileName, force: true });
 
 	logger.succ(`Exported to: ${driveFile.id}`);

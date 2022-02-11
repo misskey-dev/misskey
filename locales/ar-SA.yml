@@ -1110,6 +1110,8 @@ _exportOrImport:
   blockingList: "المستخدمون المحجوبون"
   userLists: "القوائم"
 _charts:
+  federation: "الفديرالية"
+  apRequest: "الطلبات"
   usersIncDec: "اختلاف عدد المستخدمين"
   usersTotal: "مجموع عدد المستخدمين والمستخدمات"
   activeUsers: "المستخدمون النشطون"
