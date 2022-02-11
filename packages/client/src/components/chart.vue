@@ -271,6 +271,7 @@ export default defineComponent({
 						y: {
 							position: 'left',
 							stacked: props.stacked,
+							suggestedMax: 100,
 							grid: {
 								color: gridColor,
 								borderColor: 'rgb(0, 0, 0, 0)',
