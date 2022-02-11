@@ -217,6 +217,7 @@ export default defineComponent({
 						borderColor: x.color ? x.color : getColor(i),
 						borderDash: x.borderDash || [],
 						borderJoinStyle: 'round',
+						borderRadius: props.bar ? 3 : undefined,
 						backgroundColor: props.bar ? (x.color ? x.color : getColor(i)) : alpha(x.color ? x.color : getColor(i), 0.1),
 						gradient: props.bar ? undefined : {
 							backgroundColor: {
@@ -248,6 +249,7 @@ export default defineComponent({
 						x: {
 							type: 'time',
 							stacked: props.stacked,
+							offset: false,
 							time: {
 								stepSize: 1,
 								unit: props.span === 'day' ? 'month' : 'day',
@@ -309,7 +311,7 @@ export default defineComponent({
 							},
 							external: externalTooltipHandler,
 						},
-						zoom: {
+						zoom: props.detailed ? {
 							pan: {
 								enabled: true,
 							},
@@ -335,7 +337,7 @@ export default defineComponent({
 									max: 'original',
 								},
 							}
-						},
+						} : undefined,
 						gradient,
 					},
 				},
