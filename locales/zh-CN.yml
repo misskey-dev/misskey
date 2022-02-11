@@ -831,6 +831,8 @@ smartphone: "智能手机"
 tablet: "平板"
 auto: "自动"
 themeColor: "主题颜色"
+size: "大小"
+numberOfColumn: "列数"
 _emailUnavailable:
   used: "已经被使用过"
   format: "无效的格式"
