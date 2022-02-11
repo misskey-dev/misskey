@@ -1438,25 +1438,38 @@ _pages:
       strReplace: "লেখা প্রতিস্থাপন"
       _strReplace:
         arg1: "লেখা"
+        arg2: "যে লেখা প্রতিস্থাপন করা হবে"
+        arg3: "যা দ্বারা প্রতিস্থাপন করা হবে"
+      strReverse: "লেখা উল্টান"
       _strReverse:
         arg1: "লেখা"
+      join: "লেখা যুক্ত করুন"
       _join:
         arg1: "লিস্ট"
+        arg2: "বিভাজক"
+      add: "যোগ"
       _add:
         arg1: "A"
         arg2: "B"
+      subtract: "বিয়োগ"
       _subtract:
         arg1: "A"
         arg2: "B"
+      multiply: "গুন"
       _multiply:
         arg1: "A"
         arg2: "B"
+      divide: "ভাগ"
       _divide:
         arg1: "A"
         arg2: "B"
+      mod: "ভাগশেষ"
       _mod:
         arg1: "A"
         arg2: "B"
+      round: "দশমিক রাউন্ড করুন"
+      _round:
+        arg1: "সংখ্যা"
       _eq:
         arg1: "A"
         arg2: "B"
@@ -1503,15 +1516,23 @@ _pages:
         arg2: "সর্বোচ্চ মান"
       _dailyRandomPick:
         arg1: "লিস্ট"
+      seedRandom: "র‍্যানডম (সীড দ্বারা)"
       _seedRandom:
+        arg1: "সীড"
         arg2: "সম্ভাব্যতা"
+      seedRannum: "র‍্যানডম সংখ্যা (সীড দ্বারা)"
       _seedRannum:
+        arg1: "সীড"
         arg2: "ন্যূনতম মান"
         arg3: "সর্বোচ্চ মান"
+      seedRandomPick: "তালিকা থেকে দৈবচয়ন করুন (সীড দ্বারা)"
       _seedRandomPick:
+        arg1: "সীড"
         arg2: "লিস্ট"
+      DRPWPM: "সম্ভাব্যতা সহ একটি তালিকা থেকে এলোমেলোভাবে নির্বাচন করুন (প্রতিটি ব্যবহারকারীর জন্য প্রতিদিন)"
       _DRPWPM:
         arg1: "লেখার লিস্ট"
+      pick: "তালিকা থেকে নির্বাচন করুন"
       _pick:
         arg1: "লিস্ট"
         arg2: "অবস্থান"
