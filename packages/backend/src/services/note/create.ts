@@ -1,5 +1,5 @@
 import * as mfm from 'mfm-js';
-import es from '../../db/elasticsearch';
+import searchClient from "../../db/searchClient";
 import { publishMainStream, publishNotesStream } from '@/services/stream';
 import DeliverManager from '@/remote/activitypub/deliver-manager';
 import renderNote from '@/remote/activitypub/renderer/note';
@@ -552,17 +552,9 @@ async function insertNote(user: { id: User['id']; host: User['host']; }, data: O
 }
 
 function index(note: Note) {
-	if (note.text == null || config.elasticsearch == null) return;
+	if (note.text == null || searchClient == null) return;
 
-	es!.index({
-		index: config.elasticsearch.index || 'misskey_note',
-		id: note.id.toString(),
-		body: {
-			text: normalizeForSearch(note.text),
-			userId: note.userId,
-			userHost: note.userHost,
-		},
-	});
+	return searchClient.push(note);
 }
 
 async function notifyToWatchersOfRenotee(renote: Note, user: { id: User['id']; }, nm: NotificationManager, type: NotificationType) {

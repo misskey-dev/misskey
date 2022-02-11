@@ -1,7 +1,9 @@
 import * as elasticsearch from '@elastic/elasticsearch';
-import config from '@/config/index';
+import config from '../config';
+import { SearchClientBase } from './SearchClientBase';
+import { Note } from '../models/entities/note';
 
-const index = {
+const indexData = {
 	settings: {
 		analysis: {
 			analyzer: {
@@ -30,27 +32,107 @@ const index = {
 	},
 };
 
-// Init ElasticSearch connection
-const client = config.elasticsearch ? new elasticsearch.Client({
-	node: `${config.elasticsearch.ssl ? 'https://' : 'http://'}${config.elasticsearch.host}:${config.elasticsearch.port}`,
-	auth: (config.elasticsearch.user && config.elasticsearch.pass) ? {
-		username: config.elasticsearch.user,
-		password: config.elasticsearch.pass,
-	} : undefined,
-	pingTimeout: 30000,
-}) : null;
+class ElasticSearch extends SearchClientBase {
+	public index = 'misskey_note';
+	constructor(address: string, index?: string) {
+		super();
+		this.index = index || 'misskey_note';
+		// Init ElasticSearch connection
+		this._client = new elasticsearch.Client({
+			node: address,
+			pingTimeout: 30000,
+		});
 
-if (client) {
-	client.indices.exists({
-		index: config.elasticsearch.index || 'misskey_note',
-	}).then(exist => {
-		if (!exist.body) {
-			client.indices.create({
-				index: config.elasticsearch.index || 'misskey_note',
-				body: index,
+		this._client.indices
+			.exists({
+				index: this.index,
+			})
+			.then(exist => {
+				if (!exist.body) {
+					this._client.indices.create({
+						index: this.index,
+						body: indexData,
+					});
+				}
 			});
+	}
+
+	private _client: elasticsearch.Client;
+
+	public available = true;
+
+	public search(
+		content: string,
+		qualifiers: {userId?: string | null; userHost?: string | null} = {},
+		limit?: number,
+		offset?: number,
+	) {
+		const queries: any[] = [
+			{
+				simple_query_string: {
+					fields: ['text'],
+					query: content.toLowerCase(),
+					default_operator: 'and',
+				},
+			},
+		];
+
+		if (qualifiers.userId) {
+			queries.push({
+				term: { userId: qualifiers.userId },
+			});
+		} else if (qualifiers.userHost !== undefined) {
+			if (qualifiers.userHost === null) {
+				queries.push({
+					bool: {
+						must_not: {
+							exists: {
+								field: 'userHost',
+							},
+						},
+					},
+				});
+			} else {
+				queries.push({
+					term: {
+						userHost: qualifiers.userHost,
+					},
+				});
+			}
 		}
-	});
+
+		return this._client
+			.search({
+				index: this.index,
+				body: {
+					size: limit,
+					from: offset,
+					query: {
+						bool: {
+							must: queries,
+						},
+					},
+				},
+			})
+			.then(result => result.body.hits.hits.map((hit: any) => hit._id));
+	}
+
+	public push(note: Note) {
+		return this._client.index({
+			index: this.index,
+			id: note.id.toString(),
+			body: {
+				text: String(note.text).toLowerCase(),
+				userId: note.userId,
+				userHost: note.userHost,
+			},
+		});
+	}
 }
 
-export default client;
+export default (config.elasticsearch
+	? new ElasticSearch(
+		`${config.elasticsearch.ssl ? 'https://' : 'http://'}${config.elasticsearch.host}:${config.elasticsearch.port}`,
+		config.elasticsearch.index,
+	)
+	: null);
