@@ -10,6 +10,14 @@
 You should also include the user name that made the change.
 -->
 
+## 12.x.x (unreleased)
+
+### Improvements
+- 
+
+### Bugfixes
+- クライアント: ノートの詳細が表示されない問題を修正 @syuilo
+
 ## 12.106.2 (2022/02/11)
 
 ### Bugfixes
