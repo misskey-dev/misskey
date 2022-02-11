@@ -10,6 +10,14 @@
 You should also include the user name that made the change.
 -->
 
+## 12.x.x (unreleased)
+
+### Improvements
+- クライアント: リアクションピッカーのサイズを設定できるように @syuilo
+
+### Bugfixes
+- 
+
 ## 12.105.0 (2022/02/09)
 
 ### Improvements
