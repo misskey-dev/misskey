@@ -10,7 +10,7 @@
 You should also include the user name that made the change.
 -->
 
-## 12.x.x (unreleased)
+## 12.106.3 (2022/02/11)
 
 ### Improvements
 - クライアント: スマートフォンでの余白を調整 @syuilo
