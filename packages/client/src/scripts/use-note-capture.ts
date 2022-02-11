@@ -5,34 +5,35 @@ import { $i } from '@/account';
 
 export function useNoteCapture(props: {
 	rootEl: Ref<HTMLElement>;
-	appearNote: Ref<misskey.entities.Note>;
+	note: Ref<misskey.entities.Note>;
+	isDeletedRef: Ref<boolean>;
 }) {
-	const appearNote = props.appearNote;
+	const note = props.note;
 	const connection = $i ? stream : null;
 
 	function onStreamNoteUpdated(data): void {
 		const { type, id, body } = data;
 
-		if (id !== appearNote.value.id) return;
+		if (id !== note.value.id) return;
 
 		switch (type) {
 			case 'reacted': {
 				const reaction = body.reaction;
 
 				if (body.emoji) {
-					const emojis = appearNote.value.emojis || [];
+					const emojis = note.value.emojis || [];
 					if (!emojis.includes(body.emoji)) {
-						appearNote.value.emojis = [...emojis, body.emoji];
+						note.value.emojis = [...emojis, body.emoji];
 					}
 				}
 
 				// TODO: reactionsプロパティがない場合ってあったっけ？ なければ || {} は消せる
-				const currentCount = (appearNote.value.reactions || {})[reaction] || 0;
+				const currentCount = (note.value.reactions || {})[reaction] || 0;
 
-				appearNote.value.reactions[reaction] = currentCount + 1;
+				note.value.reactions[reaction] = currentCount + 1;
 
 				if ($i && (body.userId === $i.id)) {
-					appearNote.value.myReaction = reaction;
+					note.value.myReaction = reaction;
 				}
 				break;
 			}
@@ -41,12 +42,12 @@ export function useNoteCapture(props: {
 				const reaction = body.reaction;
 
 				// TODO: reactionsプロパティがない場合ってあったっけ？ なければ || {} は消せる
-				const currentCount = (appearNote.value.reactions || {})[reaction] || 0;
+				const currentCount = (note.value.reactions || {})[reaction] || 0;
 
-				appearNote.value.reactions[reaction] = Math.max(0, currentCount - 1);
+				note.value.reactions[reaction] = Math.max(0, currentCount - 1);
 
 				if ($i && (body.userId === $i.id)) {
-					appearNote.value.myReaction = null;
+					note.value.myReaction = null;
 				}
 				break;
 			}
@@ -54,7 +55,7 @@ export function useNoteCapture(props: {
 			case 'pollVoted': {
 				const choice = body.choice;
 
-				const choices = [...appearNote.value.poll.choices];
+				const choices = [...note.value.poll.choices];
 				choices[choice] = {
 					...choices[choice],
 					votes: choices[choice].votes + 1,
@@ -63,12 +64,12 @@ export function useNoteCapture(props: {
 					} : {})
 				};
 
-				appearNote.value.poll.choices = choices;
+				note.value.poll.choices = choices;
 				break;
 			}
 
 			case 'deleted': {
-				appearNote.value.deletedAt = new Date();
+				props.isDeletedRef.value = true;
 				break;
 			}
 		}
@@ -77,7 +78,7 @@ export function useNoteCapture(props: {
 	function capture(withHandler = false): void {
 		if (connection) {
 			// TODO: このノートがストリーミング経由で流れてきた場合のみ sr する
-			connection.send(document.body.contains(props.rootEl.value) ? 'sr' : 's', { id: appearNote.value.id });
+			connection.send(document.body.contains(props.rootEl.value) ? 'sr' : 's', { id: note.value.id });
 			if (withHandler) connection.on('noteUpdated', onStreamNoteUpdated);
 		}
 	}
@@ -85,7 +86,7 @@ export function useNoteCapture(props: {
 	function decapture(withHandler = false): void {
 		if (connection) {
 			connection.send('un', {
-				id: appearNote.value.id,
+				id: note.value.id,
 			});
 			if (withHandler) connection.off('noteUpdated', onStreamNoteUpdated);
 		}
