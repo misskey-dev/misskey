@@ -180,7 +180,7 @@ const keymap = {
 useNoteCapture({
 	rootEl: el,
 	note: $$(appearNote),
-	isDeletedRef: $$(isDeleted),
+	isDeletedRef: isDeleted,
 });
 
 function reply(viaKeyboard = false): void {

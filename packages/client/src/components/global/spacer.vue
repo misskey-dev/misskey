@@ -7,6 +7,7 @@
 </template>
 
 <script lang="ts">
+import { deviceKind } from '@/scripts/device-kind';
 import { defineComponent, inject, onMounted, onUnmounted, ref } from 'vue';
 
 export default defineComponent({
@@ -35,7 +36,7 @@ export default defineComponent({
 		const margin = ref(0);
 		const shouldSpacerMin = inject('shouldSpacerMin', false);
 		const adjust = (rect: { width: number; height: number; }) => {
-			if (shouldSpacerMin) {
+			if (shouldSpacerMin || deviceKind === 'smartphone') {
 				margin.value = props.marginMin;
 				return;
 			}
