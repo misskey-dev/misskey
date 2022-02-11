@@ -1,23 +1,28 @@
-export function checkWordMute(note: Record<string, any>, me: Record<string, any> | null | undefined, mutedWords: string[][]): boolean {
+export function checkWordMute(note: Record<string, any>, me: Record<string, any> | null | undefined, mutedWords: Array<string | string[]>): boolean {
 	// 自分自身
 	if (me && (note.userId === me.id)) return false;
 
-	const words = mutedWords
-		// Clean up
-		.map(xs => xs.filter(x => x !== ''))
-		.filter(xs => xs.length > 0);
-
-	if (words.length > 0) {
+	if (mutedWords.length > 0) {
 		if (note.text == null) return false;
 
-		const matched = words.some(and =>
-			and.every(keyword => {
-				const regexp = keyword.match(/^\/(.+)\/(.*)$/);
-				if (regexp) {
+		const matched = mutedWords.some(filter => {
+			if (Array.isArray(filter)) {
+				return filter.every(keyword => note.text!.includes(keyword));
+			} else {
+				// represents RegExp
+				const regexp = filter.match(/^\/(.+)\/(.*)$/);
+
+				// This should never happen due to input sanitisation.
+				if (!regexp) return false;
+
+				try {
 					return new RegExp(regexp[1], regexp[2]).test(note.text!);
+				} catch (err) {
+					// This should never happen due to input sanitisation.
+					return false;
 				}
-				return note.text!.includes(keyword);
-			}));
+			}
+		});
 
 		if (matched) return true;
 	}

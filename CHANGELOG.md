@@ -10,6 +10,18 @@
 You should also include the user name that made the change.
 -->
 
+## 12.106.0 (2022/02/11)
+
+### Improvements
+- Improve federation chart @syuilo
+- クライアント: リアクションピッカーのサイズを設定できるように @syuilo
+- クライアント: リアクションピッカーの幅、高さ制限を緩和 @syuilo
+- Docker: Update to Node v16.13.2 @mei23
+- Update dependencies
+
+### Bugfixes
+- validate regular expressions in word mutes @Johann150
+
 ## 12.105.0 (2022/02/09)
 
 ### Improvements

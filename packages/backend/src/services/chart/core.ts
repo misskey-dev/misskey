@@ -81,7 +81,15 @@ export default abstract class Chart<T extends Schema> {
 	protected repositoryForHour: Repository<RawRecord<T>>;
 	protected repositoryForDay: Repository<RawRecord<T>>;
 
-	protected abstract queryCurrentState(group: string | null): Promise<Partial<KVs<T>>>;
+	/**
+	 * 1日に一回程度実行されれば良いような計算処理を入れる(主にCASCADE削除などアプリケーション側で感知できない変動によるズレの修正用)
+	 */
+	protected abstract tickMajor(group: string | null): Promise<Partial<KVs<T>>>;
+
+	/**
+	 * 少なくとも最小スパン内に1回は実行されて欲しい計算処理を入れる
+	 */
+	protected abstract tickMinor(group: string | null): Promise<Partial<KVs<T>>>;
 
 	@autobind
 	private static convertSchemaToColumnDefinitions(schema: Schema): Record<string, { type: string; array?: boolean; default?: any; }> {
@@ -445,8 +453,8 @@ export default abstract class Chart<T extends Schema> {
 	}
 
 	@autobind
-	public async resync(group: string | null = null): Promise<void> {
-		const data = await this.queryCurrentState(group);
+	public async tick(major: boolean, group: string | null = null): Promise<void> {
+		const data = major ? await this.tickMajor(group) : await this.tickMinor(group);
 
 		const columns = {} as Record<string, number>;
 		for (const [k, v] of Object.entries(data)) {
@@ -478,6 +486,11 @@ export default abstract class Chart<T extends Schema> {
 			this.claimCurrentLog(group, 'day'),
 		]).then(([logHour, logDay]) =>
 			update(logHour, logDay));
+	}
+
+	@autobind
+	public resync(group: string | null = null): Promise<void> {
+		return this.tick(true, group);
 	}
 
 	@autobind

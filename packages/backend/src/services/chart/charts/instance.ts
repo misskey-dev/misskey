@@ -16,7 +16,7 @@ export default class InstanceChart extends Chart<typeof schema> {
 	}
 
 	@autobind
-	protected async queryCurrentState(group: string): Promise<Partial<KVs<typeof schema>>> {
+	protected async tickMajor(group: string): Promise<Partial<KVs<typeof schema>>> {
 		const [
 			notesCount,
 			usersCount,
@@ -40,6 +40,11 @@ export default class InstanceChart extends Chart<typeof schema> {
 			'followers.total': followersCount,
 			'drive.totalFiles': driveFiles,
 		};
+	}
+
+	@autobind
+	protected async tickMinor(): Promise<Partial<KVs<typeof schema>>> {
+		return {};
 	}
 
 	@autobind

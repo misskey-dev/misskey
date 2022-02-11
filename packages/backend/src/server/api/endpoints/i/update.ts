@@ -1,3 +1,4 @@
+const RE2 = require('re2');
 import $ from 'cafy';
 import * as mfm from 'mfm-js';
 import { ID } from '@/misc/cafy-id';
@@ -117,7 +118,7 @@ export const meta = {
 		},
 
 		mutedWords: {
-			validator: $.optional.arr($.arr($.str)),
+			validator: $.optional.arr($.either($.arr($.str.min(1)).min(1), $.str)),
 		},
 
 		mutedInstances: {
@@ -163,6 +164,12 @@ export const meta = {
 			code: 'NO_SUCH_PAGE',
 			id: '8e01b590-7eb9-431b-a239-860e086c408e',
 		},
+
+		invalidRegexp: {
+			message: 'Invalid Regular Expression.',
+			code: 'INVALID_REGEXP',
+			id: '0d786918-10df-41cd-8f33-8dec7d9a89a5',
+		}
 	},
 
 	res: {
@@ -191,6 +198,18 @@ export default define(meta, async (ps, _user, token) => {
 	if (ps.avatarId !== undefined) updates.avatarId = ps.avatarId;
 	if (ps.bannerId !== undefined) updates.bannerId = ps.bannerId;
 	if (ps.mutedWords !== undefined) {
+		// validate regular expression syntax
+		ps.mutedWords.filter(x => !Array.isArray(x)).forEach(x => {
+			const regexp = x.match(/^\/(.+)\/(.*)$/);
+			if (!regexp) throw new ApiError(meta.errors.invalidRegexp);
+
+			try {
+				new RE2(regexp[1], regexp[2]);
+			} catch (err) {
+				throw new ApiError(meta.errors.invalidRegexp);
+			}
+		});
+
 		profileUpdates.mutedWords = ps.mutedWords;
 		profileUpdates.enableWordMute = ps.mutedWords.length > 0;
 	}

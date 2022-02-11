@@ -59,7 +59,7 @@ export default defineComponent({
 
 	setup() {
 		const chartSpan = ref<'hour' | 'day'>('hour');
-		const chartSrc = ref('notes');
+		const chartSrc = ref('active-users');
 
 		return {
 			chartSrc,

@@ -12,7 +12,12 @@ export default class TestUniqueChart extends Chart<typeof schema> {
 	}
 
 	@autobind
-	protected async queryCurrentState(): Promise<Partial<KVs<typeof schema>>> {
+	protected async tickMajor(): Promise<Partial<KVs<typeof schema>>> {
+		return {};
+	}
+
+	@autobind
+	protected async tickMinor(): Promise<Partial<KVs<typeof schema>>> {
 		return {};
 	}
 

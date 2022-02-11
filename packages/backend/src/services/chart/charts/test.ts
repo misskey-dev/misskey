@@ -14,10 +14,15 @@ export default class TestChart extends Chart<typeof schema> {
 	}
 
 	@autobind
-	protected async queryCurrentState(): Promise<Partial<KVs<typeof schema>>> {
+	protected async tickMajor(): Promise<Partial<KVs<typeof schema>>> {
 		return {
 			'foo.total': this.total,
 		};
+	}
+
+	@autobind
+	protected async tickMinor(): Promise<Partial<KVs<typeof schema>>> {
+		return {};
 	}
 
 	@autobind
