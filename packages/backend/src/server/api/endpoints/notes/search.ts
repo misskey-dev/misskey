@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import searchClient from '../../../../db/searchClient';
+import searchClient from '@/db/searchClient';
 import define from '../../define';
 import { Notes } from '@/models/index';
 import { In } from 'typeorm';
