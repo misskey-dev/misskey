@@ -393,7 +393,7 @@ const wallpaper = localStorage.getItem('wallpaper') != null;
 			}
 
 			> * {
-				font-size: 22px;
+				font-size: 20px;
 			}
 
 			&:disabled {
