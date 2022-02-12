@@ -830,6 +830,8 @@ smartphone: "Smartfón"
 tablet: "Tablet"
 auto: "Automaticky"
 themeColor: "Farba témy"
+size: "Veľkosť"
+numberOfColumn: "Počet stĺpcov"
 _emailUnavailable:
   used: "Táto emailová adresa sa už používa"
   format: "Formát emailovej adresy je nesprávny"

@@ -831,6 +831,8 @@ smartphone: "Smartphone"
 tablet: "Tablet"
 auto: "Automatisch"
 themeColor: "Instanzfarbe"
+size: "Größe"
+numberOfColumn: "Spaltenanzahl"
 _emailUnavailable:
   used: "Diese Email-Adresse wird bereits verwendet"
   format: "Das Format dieser Email-Adresse ist ungültig"
