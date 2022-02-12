@@ -1,6 +1,6 @@
 import define from '../define';
-import { NoteReactions, Notes, Users } from '@/models/index';
-import { federationChart, driveChart } from '@/services/chart/index';
+import { Instances, NoteReactions, Notes, Users } from '@/models/index';
+import { } from '@/services/chart/index';
 
 export const meta = {
 	requireCredential: false,
@@ -63,7 +63,7 @@ export default define(meta, async () => {
 		Users.count({ where: { host: null }, cache: 3600000 }),
 		NoteReactions.count({ cache: 3600000 }), // 1 hour
 		//NoteReactions.count({ where: { userHost: null }, cache: 3600000 }),
-		federationChart.getChart('hour', 1, null).then(chart => chart.instance.total[0]),
+		Instances.count({ cache: 3600000 }),
 	]);
 
 	return {

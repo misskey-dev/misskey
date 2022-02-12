@@ -10,6 +10,49 @@
 You should also include the user name that made the change.
 -->
 
+## 12.107.0 (2022/02/12)
+
+### Improvements
+- クライアント: テーマを追加 @syuilo
+
+### Bugfixes
+- API: stats APIで内部エラーが発生する問題を修正 @syuilo
+- クライアント: ソフトミュートですべてがマッチしてしまう場合があるのを修正 @tamaina
+- クライアント: デバイスのスクリーンのセーフエリアを考慮するように @syuilo
+- クライアント: 一部環境でサイドバーの投稿ボタンが表示されない問題を修正 @syuilo
+
+## 12.106.3 (2022/02/11)
+
+### Improvements
+- クライアント: スマートフォンでの余白を調整 @syuilo
+
+### Bugfixes
+- クライアント: ノートの詳細が表示されない問題を修正 @syuilo
+
+## 12.106.2 (2022/02/11)
+
+### Bugfixes
+- クライアント: 削除したノートがタイムラインから自動で消えない問題を修正 @syuilo
+- クライアント: リアクション数が正しくないことがある問題を修正 @syuilo
+- 一部環境でマイグレーションが動作しない問題を修正 @syuilo
+
+## 12.106.1 (2022/02/11)
+
+### Bugfixes
+- クライアント: ワードミュートが保存できない問題を修正 @syuilo
+
+## 12.106.0 (2022/02/11)
+
+### Improvements
+- Improve federation chart @syuilo
+- クライアント: リアクションピッカーのサイズを設定できるように @syuilo
+- クライアント: リアクションピッカーの幅、高さ制限を緩和 @syuilo
+- Docker: Update to Node v16.13.2 @mei23
+- Update dependencies
+
+### Bugfixes
+- validate regular expressions in word mutes @Johann150
+
 ## 12.105.0 (2022/02/09)
 
 ### Improvements

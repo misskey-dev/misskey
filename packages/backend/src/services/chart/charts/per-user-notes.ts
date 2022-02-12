@@ -15,7 +15,7 @@ export default class PerUserNotesChart extends Chart<typeof schema> {
 	}
 
 	@autobind
-	protected async queryCurrentState(group: string): Promise<Partial<KVs<typeof schema>>> {
+	protected async tickMajor(group: string): Promise<Partial<KVs<typeof schema>>> {
 		const [count] = await Promise.all([
 			Notes.count({ userId: group }),
 		]);
@@ -23,6 +23,11 @@ export default class PerUserNotesChart extends Chart<typeof schema> {
 		return {
 			total: count,
 		};
+	}
+
+	@autobind
+	protected async tickMinor(): Promise<Partial<KVs<typeof schema>>> {
+		return {};
 	}
 
 	@autobind

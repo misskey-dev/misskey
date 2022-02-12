@@ -95,8 +95,7 @@ window.addEventListener('resize', () => {
 if (['smartphone', 'tablet'].includes(deviceKind)) {
 	const viewport = document.getElementsByName('viewport').item(0);
 	viewport.setAttribute('content',
-		`${viewport.getAttribute('content')},minimum-scale=1,maximum-scale=1,user-scalable=no`);
-	document.head.appendChild(viewport);
+		`${viewport.getAttribute('content')}, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover`);
 }
 
 //#region Set lang attr

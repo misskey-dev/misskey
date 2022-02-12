@@ -213,17 +213,18 @@ export default defineComponent({
 						data: x.data.slice().reverse(),
 						tension: 0.3,
 						pointRadius: 0,
-						borderWidth: 2,
+						borderWidth: props.bar ? 0 : 2,
 						borderColor: x.color ? x.color : getColor(i),
 						borderDash: x.borderDash || [],
 						borderJoinStyle: 'round',
-						backgroundColor: alpha(x.color ? x.color : getColor(i), 0.1),
-						gradient: {
+						borderRadius: props.bar ? 3 : undefined,
+						backgroundColor: props.bar ? (x.color ? x.color : getColor(i)) : alpha(x.color ? x.color : getColor(i), 0.1),
+						gradient: props.bar ? undefined : {
 							backgroundColor: {
 								axis: 'y',
 								colors: {
 									0: alpha(x.color ? x.color : getColor(i), 0),
-									[maxes[i]]: alpha(x.color ? x.color : getColor(i), 0.1),
+									[maxes[i]]: alpha(x.color ? x.color : getColor(i), 0.15),
 								},
 							},
 						},
@@ -248,6 +249,7 @@ export default defineComponent({
 						x: {
 							type: 'time',
 							stacked: props.stacked,
+							offset: false,
 							time: {
 								stepSize: 1,
 								unit: props.span === 'day' ? 'month' : 'day',
@@ -271,6 +273,7 @@ export default defineComponent({
 						y: {
 							position: 'left',
 							stacked: props.stacked,
+							suggestedMax: 100,
 							grid: {
 								color: gridColor,
 								borderColor: 'rgb(0, 0, 0, 0)',
@@ -308,7 +311,7 @@ export default defineComponent({
 							},
 							external: externalTooltipHandler,
 						},
-						zoom: {
+						zoom: props.detailed ? {
 							pan: {
 								enabled: true,
 							},
@@ -334,7 +337,7 @@ export default defineComponent({
 									max: 'original',
 								},
 							}
-						},
+						} : undefined,
 						gradient,
 					},
 				},
@@ -370,14 +373,14 @@ export default defineComponent({
 			const raw = await os.api('charts/federation', { limit: props.limit, span: props.span });
 			return {
 				series: [{
-					name: 'Total',
+					name: 'Sub',
 					type: 'area',
-					data: format(raw.instance.total),
-					color: '#888888',
+					data: format(raw.sub),
+					color: colors.orange,
 				}, {
-					name: 'Inc/Dec',
+					name: 'Pub',
 					type: 'area',
-					data: format(sum(raw.instance.inc, negate(raw.instance.dec))),
+					data: format(raw.pub),
 					color: colors.purple,
 				}, {
 					name: 'Received',
@@ -426,7 +429,6 @@ export default defineComponent({
 				series: [{
 					name: 'All',
 					type: 'line',
-					borderDash: [5, 5],
 					data: format(type == 'combined'
 						? sum(raw.local.inc, negate(raw.local.dec), raw.remote.inc, negate(raw.remote.dec))
 						: sum(raw[type].inc, negate(raw[type].dec))
@@ -750,20 +752,28 @@ export default defineComponent({
 				series: [...(props.args.withoutAll ? [] : [{
 					name: 'All',
 					type: 'line',
-					borderDash: [5, 5],
 					data: format(sum(raw.inc, negate(raw.dec))),
+					color: '#888888',
 				}]), {
+					name: 'With file',
+					type: 'area',
+					data: format(raw.diffs.withFile),
+					color: colors.purple,
+				}, {
 					name: 'Renotes',
 					type: 'area',
 					data: format(raw.diffs.renote),
+					color: colors.green,
 				}, {
 					name: 'Replies',
 					type: 'area',
 					data: format(raw.diffs.reply),
+					color: colors.yellow,
 				}, {
 					name: 'Normal',
 					type: 'area',
 					data: format(raw.diffs.normal),
+					color: colors.blue,
 				}],
 			};
 		};
