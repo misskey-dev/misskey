@@ -10,6 +10,15 @@
 You should also include the user name that made the change.
 -->
 
+## 12.x.x (unreleased)
+
+### Improvements
+- クライアント: テーマを追加 @syuilo
+
+### Bugfixes
+- クライアント: デバイスのスクリーンのセーフエリアを考慮するように @syuilo
+- クライアント: ソフトミュートですべてがマッチしてしまう場合があるのを修正 @tamaina
+
 ## 12.106.3 (2022/02/11)
 
 ### Improvements
