@@ -16,8 +16,9 @@ You should also include the user name that made the change.
 - クライアント: テーマを追加 @syuilo
 
 ### Bugfixes
-- クライアント: デバイスのスクリーンのセーフエリアを考慮するように @syuilo
 - クライアント: ソフトミュートですべてがマッチしてしまう場合があるのを修正 @tamaina
+- クライアント: デバイスのスクリーンのセーフエリアを考慮するように @syuilo
+- クライアント: 一部環境でサイドバーの投稿ボタンが表示されない問題を修正 @syuilo
 
 ## 12.106.3 (2022/02/11)
 
