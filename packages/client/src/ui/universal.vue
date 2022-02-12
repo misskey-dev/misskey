@@ -340,7 +340,7 @@ const wallpaper = localStorage.getItem('wallpaper') != null;
 		z-index: 1000;
 		bottom: 0;
 		left: 0;
-		padding: 16px;
+		padding: 16px 16px calc(env(safe-area-inset-bottom, 0px) + 16px) 16px;
 		display: flex;
 		width: 100%;
 		box-sizing: border-box;
