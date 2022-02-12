@@ -1,0 +1,20 @@
+{
+	id: '679b3b87-a4e9-4789-8696-b56c15cc33b0',
+
+	name: 'Mi Cherry Dark',
+	author: 'syuilo',
+
+	base: 'dark',
+
+	props: {
+		accent: 'rgb(255, 89, 117)',
+		bg: 'rgb(28, 28, 37)',
+		fg: 'rgb(236, 239, 244)',
+		panel: 'rgb(35, 35, 47)',
+		renote: '@accent',
+		link: '@accent',
+		mention: '@accent',
+		hashtag: '@accent',
+		divider: 'rgb(63, 63, 80)',
+	},
+}

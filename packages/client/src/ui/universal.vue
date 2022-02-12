@@ -347,6 +347,7 @@ const wallpaper = localStorage.getItem('wallpaper') != null;
 		-webkit-backdrop-filter: var(--blur, blur(32px));
 		backdrop-filter: var(--blur, blur(32px));
 		background-color: var(--header);
+		border-top: solid 0.5px var(--divider);
 
 		> .button {
 			position: relative;
