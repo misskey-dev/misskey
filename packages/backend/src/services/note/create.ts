@@ -1,5 +1,5 @@
 import * as mfm from 'mfm-js';
-import searchClient from "../../db/searchClient";
+import searchClient from '@/db/searchClient';
 import { publishMainStream, publishNotesStream } from '@/services/stream';
 import DeliverManager from '@/remote/activitypub/deliver-manager';
 import renderNote from '@/remote/activitypub/renderer/note';
