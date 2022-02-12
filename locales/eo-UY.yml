@@ -770,9 +770,9 @@ _channel:
   usersCount: "{n} partoprenantoj"
   notesCount: "{n} notoj"
 _menuDisplay:
-  sideFull: "Flanko"
-  sideIcon: "Flanko (bildsimbolo)"
-  top: "Supro"
+  sideFull: "Sur la flanko"
+  sideIcon: "Sur la flanko (bildsimbolo)"
+  top: "Sur la supro"
   hide: "Kaŝi"
 _wordMute:
   muteWords: "Silentigitaj vortoj"
