@@ -61,7 +61,8 @@ export const meta = {
 		},
 	},
 
-	errors: {},
+	errors: {
+	},
 } as const;
 
 // eslint-disable-next-line import/no-default-export
