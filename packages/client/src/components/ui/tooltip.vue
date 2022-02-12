@@ -180,11 +180,11 @@ const setPosition = () => {
 	el.value.style.top = top + 'px';
 };
 
+let loopHandler;
+
 onMounted(() => {
 	nextTick(() => {
 		setPosition();
-
-		let loopHandler;
 
 		const loop = () => {
 			loopHandler = window.requestAnimationFrame(() => {
@@ -194,11 +194,11 @@ onMounted(() => {
 		};
 
 		loop();
-
-		onUnmounted(() => {
-			window.cancelAnimationFrame(loopHandler);
-		});
 	});
+});
+
+onUnmounted(() => {
+	window.cancelAnimationFrame(loopHandler);
 });
 </script>
 

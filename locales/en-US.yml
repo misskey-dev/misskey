@@ -829,6 +829,8 @@ smartphone: "Smartphone"
 tablet: "Tablet"
 auto: "Auto"
 themeColor: "Theme Color"
+size: "Size"
+numberOfColumn: "Number of columns"
 _emailUnavailable:
   used: "This email address is already being used"
   format: "The format of this email address is invalid"
