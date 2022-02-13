@@ -831,6 +831,8 @@ smartphone: "স্মার্টফোন"
 tablet: "ট্যাবলেট"
 auto: "স্বয়ংক্রিয়"
 themeColor: "থিমের রং"
+size: "আকার"
+numberOfColumn: "কলামের সংখ্যা"
 _emailUnavailable:
   used: "এই ইমেইল ঠিকানাটি ইতোমধ্যে ব্যবহৃত হয়েছে"
   format: "এই ইমেল ঠিকানাটি সঠিকভাবে লিখা হয়নি"
