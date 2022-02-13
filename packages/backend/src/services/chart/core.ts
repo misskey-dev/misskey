@@ -266,7 +266,7 @@ export default abstract class Chart<T extends Schema> {
 		const currentLog = await repository.findOne({
 			date: Chart.dateToTimestamp(current),
 			...(group ? { group: group } : {}),
-		}) as RawRecord<T>;
+		}) as RawRecord<T> | undefined;
 
 		// ログがあればそれを返して終了
 		if (currentLog != null) {
@@ -306,7 +306,7 @@ export default abstract class Chart<T extends Schema> {
 			const currentLog = await repository.findOne({
 				date: date,
 				...(group ? { group: group } : {}),
-			}) as RawRecord<T>;
+			}) as RawRecord<T> | undefined;
 
 			// ログがあればそれを返して終了
 			if (currentLog != null) return currentLog;
@@ -576,7 +576,7 @@ export default abstract class Chart<T extends Schema> {
 				order: {
 					date: -1,
 				},
-			}) as RawRecord<T>;
+			}) as RawRecord<T> | undefined;
 
 			if (recentLog) {
 				logs = [recentLog];
@@ -593,7 +593,7 @@ export default abstract class Chart<T extends Schema> {
 				order: {
 					date: -1,
 				},
-			}) as RawRecord<T>;
+			}) as RawRecord<T> | undefined;
 
 			if (outdatedLog) {
 				logs.push(outdatedLog);
