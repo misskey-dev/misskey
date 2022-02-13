@@ -102,7 +102,6 @@ const align = () => {
 	if (type.value === 'drawer') return;
 
 	const popover = content.value!;
-
 	if (popover == null) return;
 
 	const rect = props.src.getBoundingClientRect();
@@ -131,20 +130,23 @@ const align = () => {
 			left = window.innerWidth - width;
 		}
 
+		const underSpace = (window.innerHeight - MARGIN) - top;
+		const upperSpace = (rect.top - MARGIN);
+
 		// 画面から縦にはみ出る場合
 		if (top + height > (window.innerHeight - MARGIN)) {
 			if (props.noOverlap) {
-				const underSpace = (window.innerHeight - MARGIN) - top;
-				const upperSpace = (rect.top - MARGIN);
 				if (underSpace >= (upperSpace / 3)) {
-					maxHeight.value =  underSpace;
+					maxHeight.value = underSpace;
 				} else {
-					maxHeight.value =  upperSpace;
+					maxHeight.value = upperSpace;
 					top = (upperSpace + MARGIN) - height;
 				}
 			} else {
 				top = (window.innerHeight - MARGIN) - height;
 			}
+		} else {
+			maxHeight.value = underSpace;
 		}
 	} else {
 		// 画面から横にはみ出る場合
@@ -152,20 +154,23 @@ const align = () => {
 			left = window.innerWidth - width + window.pageXOffset - 1;
 		}
 
+		const underSpace = (window.innerHeight - MARGIN) - (top - window.pageYOffset);
+		const upperSpace = (rect.top - MARGIN);
+
 		// 画面から縦にはみ出る場合
 		if (top + height - window.pageYOffset > (window.innerHeight - MARGIN)) {
 			if (props.noOverlap) {
-				const underSpace = (window.innerHeight - MARGIN) - (top - window.pageYOffset);
-				const upperSpace = (rect.top - MARGIN);
 				if (underSpace >= (upperSpace / 3)) {
-					maxHeight.value =  underSpace;
+					maxHeight.value = underSpace;
 				} else {
-					maxHeight.value =  upperSpace;
+					maxHeight.value = upperSpace;
 					top = window.pageYOffset + ((upperSpace + MARGIN) - height);
 				}
 			} else {
 				top = (window.innerHeight - MARGIN) - height + window.pageYOffset - 1;
 			}
+		} else {
+			maxHeight.value = underSpace;
 		}
 	}
 
