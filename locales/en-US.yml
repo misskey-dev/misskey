@@ -190,7 +190,7 @@ clearQueueConfirmText: "Any undelivered notes remaining in the queue will not be
 clearCachedFiles: "Clear cache"
 clearCachedFilesConfirm: "Are you sure that you want to delete all cached remote files?"
 blockedInstances: "Blocked Instances"
-blockedInstancesDescription: "List the hosts of the instances to be blocked separated by line breaks. Blocked instances will no longer be able to communicate with this instance."
+blockedInstancesDescription: "List the hostnames of the instances that need to be blocked. Listed instances will no longer be able to communicate with this instance."
 muteAndBlock: "Mutes and Blocks"
 mutedUsers: "Muted users"
 blockedUsers: "Blocked users"
