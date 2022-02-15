@@ -1279,7 +1279,7 @@ _charts:
   remoteNotesIncDec: "Unterschied in der Anzahl der Notizen von fremden Instanzen"
   notesTotal: "Anzahl aller Notizen"
   filesIncDec: "Unterschied in der Anzahl von Dateien"
-  filesTotal: "Summe der Dateien"
+  filesTotal: "Anzahl aller Dateien"
   storageUsageIncDec: "Unterschied in der Höhe der Speichernutzung"
   storageUsageTotal: "Gesamte Speichernutzung"
 _instanceCharts:
