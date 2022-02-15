@@ -18,6 +18,7 @@ type SimpleUserInfo = {
 	isAdmin: ILocalUser['isAdmin'];
 	isModerator: ILocalUser['isModerator'];
 	isSilenced: ILocalUser['isSilenced'];
+	showTimelineReplies: ILocalUser['showTimelineReplies'];
 };
 
 type Params<T extends IEndpointMeta> = {
