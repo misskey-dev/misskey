@@ -10,6 +10,17 @@
 You should also include the user name that made the change.
 -->
 
+## 12.107.0 (2022/02/12)
+
+### Improvements
+- クライアント: テーマを追加 @syuilo
+
+### Bugfixes
+- API: stats APIで内部エラーが発生する問題を修正 @syuilo
+- クライアント: ソフトミュートですべてがマッチしてしまう場合があるのを修正 @tamaina
+- クライアント: デバイスのスクリーンのセーフエリアを考慮するように @syuilo
+- クライアント: 一部環境でサイドバーの投稿ボタンが表示されない問題を修正 @syuilo
+
 ## 12.106.3 (2022/02/11)
 
 ### Improvements
