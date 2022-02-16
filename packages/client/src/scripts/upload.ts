@@ -3,6 +3,7 @@ import { defaultStore } from '@/store';
 import { apiUrl } from '@/config';
 import * as Misskey from 'misskey-js';
 import { $i } from '@/account';
+import { readAndCompressImage } from 'browser-image-resizer';
 
 type Uploading = {
 	id: string;
@@ -14,9 +15,9 @@ type Uploading = {
 export const uploads = ref<Uploading[]>([]);
 
 const compressTypeMap = {
-	'image/jpeg': { quality: 0.85 },
-	'image/webp': { quality: 0.85, mimeType: 'image/jpeg'},
-	'image/svg+xml': { quality: 1, mimeType: 'image/png'},
+	'image/jpeg': { quality: 0.85, mimeType: 'image/jpeg' },
+	'image/webp': { quality: 0.85, mimeType: 'image/jpeg' },
+	'image/svg+xml': { quality: 1, mimeType: 'image/png' },
 } as const;
 
 const mimeTypeMap = {
@@ -51,21 +52,17 @@ export function uploadFile(
 			let resizedImage: any;
 			if (!keepOriginal && file.type in compressTypeMap) {
 				const imgConfig = compressTypeMap[file.type];
-				const changeType = 'mimeType' in imgConfig;
 
 				const config = {
 					maxWidth: 2048,
 					maxHeight: 2048,
-					autoRotate: true,
 					debug: true,
 					...imgConfig,
-					...(changeType ? {} : { mimeType: file.type }),
 				};
 
 				try {
-					const { readAndCompressImage } = await import('browser-image-resizer');
 					resizedImage = await readAndCompressImage(file, config);
-					ctx.name = changeType ? `${ctx.name}.${mimeTypeMap[compressTypeMap[file.type].mimeType]}` : ctx.name;
+					ctx.name = file.type !== imgConfig.mimeType ? `${ctx.name}.${mimeTypeMap[compressTypeMap[file.type].mimeType]}` : ctx.name;
 				} catch (e) {
 					console.error('Failed to resize image', e);
 				}
