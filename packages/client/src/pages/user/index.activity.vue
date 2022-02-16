@@ -18,6 +18,6 @@ const props = withDefaults(defineProps<{
 	user: misskey.entities.User;
 	limit?: number;
 }>(), {
-	limit: 40,
+	limit: 50,
 });
 </script>

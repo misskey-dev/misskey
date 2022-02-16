@@ -831,6 +831,8 @@ smartphone: "スマートフォン"
 tablet: "タブレット"
 auto: "自動"
 themeColor: "テーマカラー"
+size: "サイズ"
+numberOfColumn: "列の数"
 
 _emailUnavailable:
   used: "既に使用されています"
