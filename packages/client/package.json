@@ -44,7 +44,7 @@
 		"autwh": "0.1.0",
 		"blurhash": "1.1.4",
 		"broadcast-channel": "4.9.0",
-		"browser-image-resizer": "git+https://github.com/misskey-dev/browser-image-resizer#v2.2.1-misskey-beta.1",
+		"browser-image-resizer": "git+https://github.com/misskey-dev/browser-image-resizer#v2.2.1-misskey-beta.2",
 		"chart.js": "3.7.0",
 		"chartjs-adapter-date-fns": "2.0.0",
 		"chartjs-plugin-gradient": "0.2.1",
