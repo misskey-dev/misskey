@@ -9,6 +9,7 @@ type NonOptional<T> = T extends undefined ? never : T;
 
 type SimpleUserInfo = {
 	id: ILocalUser['id'];
+	createdAt: ILocalUser['createdAt'];
 	host: ILocalUser['host'];
 	username: ILocalUser['username'];
 	uri: ILocalUser['uri'];
@@ -17,6 +18,7 @@ type SimpleUserInfo = {
 	isAdmin: ILocalUser['isAdmin'];
 	isModerator: ILocalUser['isModerator'];
 	isSilenced: ILocalUser['isSilenced'];
+	showTimelineReplies: ILocalUser['showTimelineReplies'];
 };
 
 type Params<T extends IEndpointMeta> = {

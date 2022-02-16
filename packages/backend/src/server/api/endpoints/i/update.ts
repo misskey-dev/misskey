@@ -1,3 +1,4 @@
+const RE2 = require('re2');
 import $ from 'cafy';
 import * as mfm from 'mfm-js';
 import { ID } from '@/misc/cafy-id';
@@ -96,6 +97,10 @@ export const meta = {
 			validator: $.optional.bool,
 		},
 
+		showTimelineReplies: {
+			validator: $.optional.bool,
+		},
+
 		injectFeaturedNote: {
 			validator: $.optional.bool,
 		},
@@ -113,7 +118,7 @@ export const meta = {
 		},
 
 		mutedWords: {
-			validator: $.optional.arr($.arr($.str)),
+			validator: $.optional.arr($.either($.arr($.str.min(1)).min(1), $.str)),
 		},
 
 		mutedInstances: {
@@ -159,6 +164,12 @@ export const meta = {
 			code: 'NO_SUCH_PAGE',
 			id: '8e01b590-7eb9-431b-a239-860e086c408e',
 		},
+
+		invalidRegexp: {
+			message: 'Invalid Regular Expression.',
+			code: 'INVALID_REGEXP',
+			id: '0d786918-10df-41cd-8f33-8dec7d9a89a5',
+		}
 	},
 
 	res: {
@@ -187,6 +198,18 @@ export default define(meta, async (ps, _user, token) => {
 	if (ps.avatarId !== undefined) updates.avatarId = ps.avatarId;
 	if (ps.bannerId !== undefined) updates.bannerId = ps.bannerId;
 	if (ps.mutedWords !== undefined) {
+		// validate regular expression syntax
+		ps.mutedWords.filter(x => !Array.isArray(x)).forEach(x => {
+			const regexp = x.match(/^\/(.+)\/(.*)$/);
+			if (!regexp) throw new ApiError(meta.errors.invalidRegexp);
+
+			try {
+				new RE2(regexp[1], regexp[2]);
+			} catch (err) {
+				throw new ApiError(meta.errors.invalidRegexp);
+			}
+		});
+
 		profileUpdates.mutedWords = ps.mutedWords;
 		profileUpdates.enableWordMute = ps.mutedWords.length > 0;
 	}
@@ -197,6 +220,7 @@ export default define(meta, async (ps, _user, token) => {
 	if (typeof ps.hideOnlineStatus === 'boolean') updates.hideOnlineStatus = ps.hideOnlineStatus;
 	if (typeof ps.publicReactions === 'boolean') profileUpdates.publicReactions = ps.publicReactions;
 	if (typeof ps.isBot === 'boolean') updates.isBot = ps.isBot;
+	if (typeof ps.showTimelineReplies === 'boolean') updates.showTimelineReplies = ps.showTimelineReplies;
 	if (typeof ps.carefulBot === 'boolean') profileUpdates.carefulBot = ps.carefulBot;
 	if (typeof ps.autoAcceptFollowed === 'boolean') profileUpdates.autoAcceptFollowed = ps.autoAcceptFollowed;
 	if (typeof ps.noCrawle === 'boolean') profileUpdates.noCrawle = ps.noCrawle;

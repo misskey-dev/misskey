@@ -5,7 +5,7 @@ import perform from '@/remote/activitypub/perform';
 import Logger from '@/services/logger';
 import { registerOrFetchInstanceDoc } from '@/services/register-or-fetch-instance-doc';
 import { Instances } from '@/models/index';
-import { instanceChart } from '@/services/chart/index';
+import { apRequestChart, federationChart, instanceChart } from '@/services/chart/index';
 import { fetchMeta } from '@/misc/fetch-meta';
 import { toPuny, extractDbHost } from '@/misc/convert-host';
 import { getApId } from '@/remote/activitypub/type';
@@ -143,6 +143,8 @@ export default async (job: Bull.Job<InboxJobData>): Promise<string> => {
 		fetchInstanceMetadata(i);
 
 		instanceChart.requestReceived(i.host);
+		apRequestChart.inbox();
+		federationChart.inbox(i.host);
 	});
 
 	// アクティビティを処理
