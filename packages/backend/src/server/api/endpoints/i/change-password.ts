@@ -9,13 +9,12 @@ export const meta = {
 	secure: true,
 
 	params: {
-		currentPassword: {
-			validator: $.str,
+		type: 'object',
+		properties: {
+			currentPassword: { type: 'string', },
+			newPassword: { type: 'string', },
 		},
-
-		newPassword: {
-			validator: $.str,
-		},
+		required: ['currentPassword', 'newPassword'],
 	},
 } as const;
 

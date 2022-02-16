@@ -12,22 +12,14 @@ export const meta = {
 	kind: 'read:drive',
 
 	params: {
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
+		type: 'object',
+		properties: {
+			limit: { type: 'integer', maximum: 100, default: 10, },
+			sinceId: { type: 'string', format: 'misskey:id', },
+			untilId: { type: 'string', format: 'misskey:id', },
+			type: { type: 'string', pattern: /^[a-zA-Z\/\-*]+$/, },
 		},
-
-		sinceId: {
-			validator: $.optional.type(ID),
-		},
-
-		untilId: {
-			validator: $.optional.type(ID),
-		},
-
-		type: {
-			validator: $.optional.str.match(/^[a-zA-Z\/\-*]+$/),
-		},
+		required: [],
 	},
 
 	res: {

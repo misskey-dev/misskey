@@ -13,9 +13,11 @@ export const meta = {
 	kind: 'write:account',
 
 	params: {
-		antennaId: {
-			validator: $.type(ID),
+		type: 'object',
+		properties: {
+			antennaId: { type: 'string', format: 'misskey:id', },
 		},
+		required: ['antennaId'],
 	},
 
 	errors: {

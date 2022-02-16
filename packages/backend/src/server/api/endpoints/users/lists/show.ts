@@ -12,9 +12,11 @@ export const meta = {
 	kind: 'read:account',
 
 	params: {
-		listId: {
-			validator: $.type(ID),
+		type: 'object',
+		properties: {
+			listId: { type: 'string', format: 'misskey:id', },
 		},
+		required: ['listId'],
 	},
 
 	res: {

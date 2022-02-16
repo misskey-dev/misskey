@@ -8,22 +8,14 @@ export const meta = {
 	tags: ['users', 'gallery'],
 
 	params: {
-		userId: {
-			validator: $.type(ID),
+		type: 'object',
+		properties: {
+			userId: { type: 'string', format: 'misskey:id', },
+			limit: { type: 'integer', maximum: 100, default: 10, },
+			sinceId: { type: 'string', format: 'misskey:id', },
+			untilId: { type: 'string', format: 'misskey:id', },
 		},
-
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
-		},
-
-		sinceId: {
-			validator: $.optional.type(ID),
-		},
-
-		untilId: {
-			validator: $.optional.type(ID),
-		},
+		required: ['userId'],
 	},
 } as const;
 

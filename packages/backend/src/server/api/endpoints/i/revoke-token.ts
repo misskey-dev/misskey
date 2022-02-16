@@ -10,9 +10,11 @@ export const meta = {
 	secure: true,
 
 	params: {
-		tokenId: {
-			validator: $.type(ID),
+		type: 'object',
+		properties: {
+			tokenId: { type: 'string', format: 'misskey:id', },
 		},
+		required: ['tokenId'],
 	},
 } as const;
 

@@ -10,12 +10,12 @@ export const meta = {
 	requireModerator: true,
 
 	params: {
-		full: {
-			validator: $.bool,
+		type: 'object',
+		properties: {
+			full: { type: 'boolean', },
+			analyze: { type: 'boolean', },
 		},
-		analyze: {
-			validator: $.bool,
-		},
+		required: ['full', 'analyze'],
 	},
 } as const;
 

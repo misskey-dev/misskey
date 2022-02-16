@@ -8,9 +8,11 @@ export const meta = {
 	requireCredential: true,
 
 	params: {
-		endpoint: {
-			validator: $.str,
+		type: 'object',
+		properties: {
+			endpoint: { type: 'string', },
 		},
+		required: ['endpoint'],
 	},
 } as const;
 

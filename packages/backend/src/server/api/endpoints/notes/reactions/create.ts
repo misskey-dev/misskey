@@ -13,13 +13,12 @@ export const meta = {
 	kind: 'write:reactions',
 
 	params: {
-		noteId: {
-			validator: $.type(ID),
+		type: 'object',
+		properties: {
+			noteId: { type: 'string', format: 'misskey:id', },
+			reaction: { type: 'string', },
 		},
-
-		reaction: {
-			validator: $.str,
-		},
+		required: ['noteId', 'reaction'],
 	},
 
 	errors: {

@@ -12,9 +12,11 @@ export const meta = {
 	kind: 'write:account',
 
 	params: {
-		clipId: {
-			validator: $.type(ID),
+		type: 'object',
+		properties: {
+			clipId: { type: 'string', format: 'misskey:id', },
 		},
+		required: ['clipId'],
 	},
 
 	errors: {

@@ -16,27 +16,15 @@ export const meta = {
 	requireCredential: true,
 
 	params: {
-		following: {
-			validator: $.optional.bool,
-			default: false,
+		type: 'object',
+		properties: {
+			following: { type: 'boolean', default: false, },
+			limit: { type: 'integer', maximum: 100, default: 10, },
+			sinceId: { type: 'string', format: 'misskey:id', },
+			untilId: { type: 'string', format: 'misskey:id', },
+			visibility: { type: 'string', },
 		},
-
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
-		},
-
-		sinceId: {
-			validator: $.optional.type(ID),
-		},
-
-		untilId: {
-			validator: $.optional.type(ID),
-		},
-
-		visibility: {
-			validator: $.optional.str,
-		},
+		required: [],
 	},
 
 	res: {

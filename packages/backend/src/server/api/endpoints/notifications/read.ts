@@ -14,9 +14,11 @@ export const meta = {
 	kind: 'write:notifications',
 
 	params: {
-		notificationId: {
-			validator: $.type(ID),
+		type: 'object',
+		properties: {
+			notificationId: { type: 'string', format: 'misskey:id', },
 		},
+		required: ['notificationId'],
 	},
 
 	errors: {

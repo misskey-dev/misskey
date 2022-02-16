@@ -12,21 +12,14 @@ export const meta = {
 	kind: 'write:account',
 
 	params: {
-		clipId: {
-			validator: $.type(ID),
+		type: 'object',
+		properties: {
+			clipId: { type: 'string', format: 'misskey:id', },
+			name: { type: 'string', minLength: 1, maxLength: 100, },
+			isPublic: { type: 'boolean', },
+			description: { type: 'string', nullable: true, minLength: 1, maxLength: 2048, },
 		},
-
-		name: {
-			validator: $.str.range(1, 100),
-		},
-
-		isPublic: {
-			validator: $.optional.bool,
-		},
-
-		description: {
-			validator: $.optional.nullable.str.range(1, 2048),
-		},
+		required: ['clipId', 'name'],
 	},
 
 	errors: {

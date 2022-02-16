@@ -13,17 +13,13 @@ export const meta = {
 	kind: 'write:drive',
 
 	params: {
-		folderId: {
-			validator: $.type(ID),
+		type: 'object',
+		properties: {
+			folderId: { type: 'string', format: 'misskey:id', },
+			name: { type: 'string', },
+			parentId: { type: 'string', format: 'misskey:id', nullable: true, },
 		},
-
-		name: {
-			validator: $.optional.str.pipe(DriveFolders.validateFolderName),
-		},
-
-		parentId: {
-			validator: $.optional.nullable.type(ID),
-		},
+		required: ['folderId'],
 	},
 
 	errors: {

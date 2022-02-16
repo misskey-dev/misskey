@@ -10,15 +10,13 @@ export const meta = {
 	requireModerator: true,
 
 	params: {
-		title: {
-			validator: $.str.min(1),
+		type: 'object',
+		properties: {
+			title: { type: 'string', minLength: 1, },
+			text: { type: 'string', minLength: 1, },
+			imageUrl: { type: 'string', nullable: true, minLength: 1, },
 		},
-		text: {
-			validator: $.str.min(1),
-		},
-		imageUrl: {
-			validator: $.nullable.str.min(1),
-		},
+		required: ['title', 'text', 'imageUrl'],
 	},
 
 	res: {

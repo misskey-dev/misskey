@@ -16,31 +16,16 @@ export const meta = {
 	kind: 'read:messaging',
 
 	params: {
-		userId: {
-			validator: $.optional.type(ID),
+		type: 'object',
+		properties: {
+			userId: { type: 'string', format: 'misskey:id', },
+			groupId: { type: 'string', format: 'misskey:id', },
+			limit: { type: 'integer', maximum: 100, default: 10, },
+			sinceId: { type: 'string', format: 'misskey:id', },
+			untilId: { type: 'string', format: 'misskey:id', },
+			markAsRead: { type: 'boolean', default: true, },
 		},
-
-		groupId: {
-			validator: $.optional.type(ID),
-		},
-
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
-		},
-
-		sinceId: {
-			validator: $.optional.type(ID),
-		},
-
-		untilId: {
-			validator: $.optional.type(ID),
-		},
-
-		markAsRead: {
-			validator: $.optional.bool,
-			default: true,
-		},
+		required: [],
 	},
 
 	res: {

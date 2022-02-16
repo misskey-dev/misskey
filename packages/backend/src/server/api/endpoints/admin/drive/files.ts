@@ -11,36 +11,16 @@ export const meta = {
 	requireModerator: true,
 
 	params: {
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
+		type: 'object',
+		properties: {
+			limit: { type: 'integer', maximum: 100, default: 10, },
+			sinceId: { type: 'string', format: 'misskey:id', },
+			untilId: { type: 'string', format: 'misskey:id', },
+			type: { type: 'string', nullable: true, pattern: /^[a-zA-Z0-9\/\-*]+$/, },
+			origin: { type: 'string', enum: ['combined', 'local', 'remote'], default: "local", },
+			hostname: { type: 'string', nullable: true, },
 		},
-
-		sinceId: {
-			validator: $.optional.type(ID),
-		},
-
-		untilId: {
-			validator: $.optional.type(ID),
-		},
-
-		type: {
-			validator: $.optional.nullable.str.match(/^[a-zA-Z0-9\/\-*]+$/),
-		},
-
-		origin: {
-			validator: $.optional.str.or([
-				'combined',
-				'local',
-				'remote',
-			]),
-			default: 'local',
-		},
-
-		hostname: {
-			validator: $.optional.nullable.str,
-			default: null,
-		},
+		required: [],
 	},
 
 	res: {

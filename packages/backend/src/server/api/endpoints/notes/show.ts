@@ -11,9 +11,11 @@ export const meta = {
 	requireCredential: false,
 
 	params: {
-		noteId: {
-			validator: $.type(ID),
+		type: 'object',
+		properties: {
+			noteId: { type: 'string', format: 'misskey:id', },
 		},
+		required: ['noteId'],
 	},
 
 	res: {

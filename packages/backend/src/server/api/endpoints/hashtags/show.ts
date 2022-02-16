@@ -10,9 +10,11 @@ export const meta = {
 	requireCredential: false,
 
 	params: {
-		tag: {
-			validator: $.str,
+		type: 'object',
+		properties: {
+			tag: { type: 'string', },
 		},
+		required: ['tag'],
 	},
 
 	res: {

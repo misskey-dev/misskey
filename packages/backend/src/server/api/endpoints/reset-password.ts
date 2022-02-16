@@ -9,13 +9,12 @@ export const meta = {
 	requireCredential: false,
 
 	params: {
-		token: {
-			validator: $.str,
+		type: 'object',
+		properties: {
+			token: { type: 'string', },
+			password: { type: 'string', },
 		},
-
-		password: {
-			validator: $.str,
-		},
+		required: ['token', 'password'],
 	},
 
 	errors: {

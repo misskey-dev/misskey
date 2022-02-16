@@ -11,18 +11,14 @@ export const meta = {
 	requireModerator: true,
 
 	params: {
-		id: {
-			validator: $.type(ID),
+		type: 'object',
+		properties: {
+			id: { type: 'string', format: 'misskey:id', },
+			title: { type: 'string', minLength: 1, },
+			text: { type: 'string', minLength: 1, },
+			imageUrl: { type: 'string', nullable: true, minLength: 1, },
 		},
-		title: {
-			validator: $.str.min(1),
-		},
-		text: {
-			validator: $.str.min(1),
-		},
-		imageUrl: {
-			validator: $.nullable.str.min(1),
-		},
+		required: ['id', 'title', 'text', 'imageUrl'],
 	},
 
 	errors: {

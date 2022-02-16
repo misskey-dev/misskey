@@ -11,14 +11,12 @@ export const meta = {
 		max: 1,
 	},
 	params: {
-		excludeMuting: {
-			validator: $.optional.bool,
-			default: false,
+		type: 'object',
+		properties: {
+			excludeMuting: { type: 'boolean', default: false, },
+			excludeInactive: { type: 'boolean', default: false, },
 		},
-		excludeInactive: {
-			validator: $.optional.bool,
-			default: false,
-		},
+		required: [],
 	},
 } as const;
 

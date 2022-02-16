@@ -14,9 +14,11 @@ export const meta = {
 	kind: 'write:channels',
 
 	params: {
-		channelId: {
-			validator: $.type(ID),
+		type: 'object',
+		properties: {
+			channelId: { type: 'string', format: 'misskey:id', },
 		},
+		required: ['channelId'],
 	},
 
 	errors: {

@@ -9,9 +9,11 @@ export const meta = {
 	requireCredential: false,
 
 	params: {
-		host: {
-			validator: $.str,
+		type: 'object',
+		properties: {
+			host: { type: 'string', },
 		},
+		required: ['host'],
 	},
 
 	res: {

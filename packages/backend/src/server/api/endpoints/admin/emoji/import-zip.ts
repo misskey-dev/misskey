@@ -9,9 +9,11 @@ export const meta = {
 	requireCredential: true,
 	requireModerator: true,
 	params: {
-		fileId: {
-			validator: $.type(ID),
+		type: 'object',
+		properties: {
+			fileId: { type: 'string', format: 'misskey:id', },
 		},
+		required: ['fileId'],
 	},
 } as const;
 

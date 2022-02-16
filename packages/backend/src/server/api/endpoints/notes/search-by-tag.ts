@@ -14,45 +14,22 @@ export const meta = {
 	tags: ['notes', 'hashtags'],
 
 	params: {
-		tag: {
-			validator: $.optional.str,
+		type: 'object',
+		properties: {
+			tag: { type: 'string', },
+			query: { type: 'array', items: {
+				type: '~~~'
+			},
+},
+			reply: { type: 'boolean', nullable: true, default: null, },
+			renote: { type: 'boolean', nullable: true, default: null, },
+			withFiles: { type: 'boolean', },
+			poll: { type: 'boolean', nullable: true, default: null, },
+			sinceId: { type: 'string', format: 'misskey:id', },
+			untilId: { type: 'string', format: 'misskey:id', },
+			limit: { type: 'integer', maximum: 100, default: 10, },
 		},
-
-		query: {
-			validator: $.optional.arr($.arr($.str)),
-		},
-
-		reply: {
-			validator: $.optional.nullable.bool,
-			default: null,
-		},
-
-		renote: {
-			validator: $.optional.nullable.bool,
-			default: null,
-		},
-
-		withFiles: {
-			validator: $.optional.bool,
-		},
-
-		poll: {
-			validator: $.optional.nullable.bool,
-			default: null,
-		},
-
-		sinceId: {
-			validator: $.optional.type(ID),
-		},
-
-		untilId: {
-			validator: $.optional.type(ID),
-		},
-
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
-		},
+		required: [],
 	},
 
 	res: {

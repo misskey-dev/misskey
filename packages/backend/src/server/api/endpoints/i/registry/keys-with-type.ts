@@ -8,10 +8,14 @@ export const meta = {
 	secure: true,
 
 	params: {
-		scope: {
-			validator: $.optional.arr($.str.match(/^[a-zA-Z0-9_]+$/)),
-			default: [],
+		type: 'object',
+		properties: {
+			scope: { type: 'array', default: [], items: {
+				type: '~~~'
+			},
+},
 		},
+		required: [],
 	},
 } as const;
 

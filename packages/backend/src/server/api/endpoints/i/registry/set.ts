@@ -10,18 +10,15 @@ export const meta = {
 	secure: true,
 
 	params: {
-		key: {
-			validator: $.str.min(1),
+		type: 'object',
+		properties: {
+			key: { type: 'string', minLength: 1, },
+			scope: { type: 'array', default: [], items: {
+				type: '~~~'
+			},
+},
 		},
-
-		value: {
-			validator: $.nullable.any,
-		},
-
-		scope: {
-			validator: $.optional.arr($.str.match(/^[a-zA-Z0-9_]+$/)),
-			default: [],
-		},
+		required: ['key', 'value'],
 	},
 } as const;
 

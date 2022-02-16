@@ -9,14 +9,15 @@ export const meta = {
 	secure: true,
 
 	params: {
-		key: {
-			validator: $.str,
+		type: 'object',
+		properties: {
+			key: { type: 'string', },
+			scope: { type: 'array', default: [], items: {
+				type: '~~~'
+			},
+},
 		},
-
-		scope: {
-			validator: $.optional.arr($.str.match(/^[a-zA-Z0-9_]+$/)),
-			default: [],
-		},
+		required: ['key'],
 	},
 
 	errors: {

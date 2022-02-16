@@ -15,9 +15,11 @@ export const meta = {
 	},
 
 	params: {
-		uri: {
-			validator: $.str,
+		type: 'object',
+		properties: {
+			uri: { type: 'string', },
 		},
+		required: ['uri'],
 	},
 
 	errors: {

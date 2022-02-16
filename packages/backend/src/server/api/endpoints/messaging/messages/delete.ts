@@ -20,9 +20,11 @@ export const meta = {
 	},
 
 	params: {
-		messageId: {
-			validator: $.type(ID),
+		type: 'object',
+		properties: {
+			messageId: { type: 'string', format: 'misskey:id', },
 		},
+		required: ['messageId'],
 	},
 
 	errors: {

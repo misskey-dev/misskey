@@ -12,18 +12,13 @@ export const meta = {
 	kind: 'read:pages',
 
 	params: {
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
+		type: 'object',
+		properties: {
+			limit: { type: 'integer', maximum: 100, default: 10, },
+			sinceId: { type: 'string', format: 'misskey:id', },
+			untilId: { type: 'string', format: 'misskey:id', },
 		},
-
-		sinceId: {
-			validator: $.optional.type(ID),
-		},
-
-		untilId: {
-			validator: $.optional.type(ID),
-		},
+		required: [],
 	},
 
 	res: {

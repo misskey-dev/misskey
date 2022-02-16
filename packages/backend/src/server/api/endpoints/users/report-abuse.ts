@@ -16,13 +16,12 @@ export const meta = {
 	requireCredential: true,
 
 	params: {
-		userId: {
-			validator: $.type(ID),
+		type: 'object',
+		properties: {
+			userId: { type: 'string', format: 'misskey:id', },
+			comment: { type: 'string', minLength: 1, maxLength: 2048, },
 		},
-
-		comment: {
-			validator: $.str.range(1, 2048),
-		},
+		required: ['userId', 'comment'],
 	},
 
 	errors: {

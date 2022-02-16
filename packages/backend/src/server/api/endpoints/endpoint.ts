@@ -8,9 +8,11 @@ export const meta = {
 	tags: ['meta'],
 
 	params: {
-		endpoint: {
-			validator: $.str,
+		type: 'object',
+		properties: {
+			endpoint: { type: 'string', },
 		},
+		required: ['endpoint'],
 	},
 } as const;
 

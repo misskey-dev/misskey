@@ -13,9 +13,11 @@ export const meta = {
 	kind: 'write:gallery-likes',
 
 	params: {
-		postId: {
-			validator: $.type(ID),
+		type: 'object',
+		properties: {
+			postId: { type: 'string', format: 'misskey:id', },
 		},
+		required: ['postId'],
 	},
 
 	errors: {

@@ -8,14 +8,11 @@ export const meta = {
 	secure: true,
 
 	params: {
-		sort: {
-			validator: $.optional.str.or([
-				'+createdAt',
-				'-createdAt',
-				'+lastUsedAt',
-				'-lastUsedAt',
-			]),
+		type: 'object',
+		properties: {
+			sort: { type: 'string', enum: ['+createdAt', '-createdAt', '+lastUsedAt', '-lastUsedAt'], },
 		},
+		required: [],
 	},
 } as const;
 

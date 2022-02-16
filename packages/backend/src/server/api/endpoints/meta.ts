@@ -12,10 +12,11 @@ export const meta = {
 	requireCredential: false,
 
 	params: {
-		detail: {
-			validator: $.optional.bool,
-			default: true,
+		type: 'object',
+		properties: {
+			detail: { type: 'boolean', default: true, },
 		},
+		required: [],
 	},
 
 	res: {

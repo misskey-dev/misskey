@@ -6,13 +6,12 @@ export const meta = {
 	tags: ['admin'],
 
 	params: {
-		username: {
-			validator: Users.validateLocalUsername,
+		type: 'object',
+		properties: {
+			username: { type: 'string', pattern: /^\w{1,20}$/, },
+			password: { type: 'string', minLength: 1, },
 		},
-
-		password: {
-			validator: Users.validatePassword,
-		},
+		required: ['username', 'password'],
 	},
 
 	res: {

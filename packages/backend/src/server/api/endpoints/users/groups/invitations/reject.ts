@@ -12,9 +12,11 @@ export const meta = {
 	kind: 'write:user-groups',
 
 	params: {
-		invitationId: {
-			validator: $.type(ID),
+		type: 'object',
+		properties: {
+			invitationId: { type: 'string', format: 'misskey:id', },
 		},
+		required: ['invitationId'],
 	},
 
 	errors: {

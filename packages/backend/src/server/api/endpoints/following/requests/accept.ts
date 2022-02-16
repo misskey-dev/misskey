@@ -13,9 +13,11 @@ export const meta = {
 	kind: 'write:following',
 
 	params: {
-		userId: {
-			validator: $.type(ID),
+		type: 'object',
+		properties: {
+			userId: { type: 'string', format: 'misskey:id', },
 		},
+		required: ['userId'],
 	},
 
 	errors: {

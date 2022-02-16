@@ -15,9 +15,11 @@ export const meta = {
 	requireModerator: true,
 
 	params: {
-		userId: {
-			validator: $.type(ID),
+		type: 'object',
+		properties: {
+			userId: { type: 'string', format: 'misskey:id', },
 		},
+		required: ['userId'],
 	},
 } as const;
 

@@ -11,30 +11,18 @@ export const meta = {
 	requireModerator: true,
 
 	params: {
-		id: {
-			validator: $.type(ID),
+		type: 'object',
+		properties: {
+			id: { type: 'string', format: 'misskey:id', },
+			memo: { type: 'string', },
+			url: { type: 'string', minLength: 1, },
+			imageUrl: { type: 'string', minLength: 1, },
+			place: { type: 'string', },
+			priority: { type: 'string', },
+			ratio: { type: 'integer', },
+			expiresAt: { type: 'integer', },
 		},
-		memo: {
-			validator: $.str,
-		},
-		url: {
-			validator: $.str.min(1),
-		},
-		imageUrl: {
-			validator: $.str.min(1),
-		},
-		place: {
-			validator: $.str,
-		},
-		priority: {
-			validator: $.str,
-		},
-		ratio: {
-			validator: $.num.int().min(0),
-		},
-		expiresAt: {
-			validator: $.num.int(),
-		},
+		required: ['id', 'memo', 'url', 'imageUrl', 'place', 'priority', 'ratio', 'expiresAt'],
 	},
 
 	errors: {

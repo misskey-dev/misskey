@@ -14,15 +14,12 @@ export const meta = {
 	requireModerator: true,
 
 	params: {
-		reportId: {
-			validator: $.type(ID),
+		type: 'object',
+		properties: {
+			reportId: { type: 'string', format: 'misskey:id', },
+			forward: { type: 'boolean', default: false, },
 		},
-
-		forward: {
-			validator: $.optional.boolean,
-			required: false,
-			default: false,
-		},
+		required: ['reportId'],
 	},
 } as const;
 

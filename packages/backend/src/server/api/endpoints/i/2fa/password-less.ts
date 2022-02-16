@@ -8,9 +8,11 @@ export const meta = {
 	secure: true,
 
 	params: {
-		value: {
-			validator: $.boolean,
+		type: 'object',
+		properties: {
+			value: { type: 'boolean', },
 		},
+		required: ['value'],
 	},
 } as const;
 

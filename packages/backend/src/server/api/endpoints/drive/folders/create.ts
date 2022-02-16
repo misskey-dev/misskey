@@ -14,14 +14,12 @@ export const meta = {
 	kind: 'write:drive',
 
 	params: {
-		name: {
-			validator: $.optional.str.pipe(DriveFolders.validateFolderName),
-			default: 'Untitled',
+		type: 'object',
+		properties: {
+			name: { type: 'string', default: "Untitled", },
+			parentId: { type: 'string', format: 'misskey:id', nullable: true, },
 		},
-
-		parentId: {
-			validator: $.optional.nullable.type(ID),
-		},
+		required: [],
 	},
 
 	errors: {

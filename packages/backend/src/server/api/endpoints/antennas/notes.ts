@@ -17,30 +17,16 @@ export const meta = {
 	kind: 'read:account',
 
 	params: {
-		antennaId: {
-			validator: $.type(ID),
+		type: 'object',
+		properties: {
+			antennaId: { type: 'string', format: 'misskey:id', },
+			limit: { type: 'integer', maximum: 100, default: 10, },
+			sinceId: { type: 'string', format: 'misskey:id', },
+			untilId: { type: 'string', format: 'misskey:id', },
+			sinceDate: { type: 'integer', },
+			untilDate: { type: 'integer', },
 		},
-
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
-		},
-
-		sinceId: {
-			validator: $.optional.type(ID),
-		},
-
-		untilId: {
-			validator: $.optional.type(ID),
-		},
-
-		sinceDate: {
-			validator: $.optional.num,
-		},
-
-		untilDate: {
-			validator: $.optional.num,
-		},
+		required: ['antennaId'],
 	},
 
 	errors: {

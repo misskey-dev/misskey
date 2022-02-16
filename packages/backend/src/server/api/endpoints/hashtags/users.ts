@@ -9,42 +9,15 @@ export const meta = {
 	tags: ['hashtags', 'users'],
 
 	params: {
-		tag: {
-			validator: $.str,
+		type: 'object',
+		properties: {
+			tag: { type: 'string', },
+			limit: { type: 'integer', maximum: 100, default: 10, },
+			sort: { type: 'string', enum: ['+follower', '-follower', '+createdAt', '-createdAt', '+updatedAt', '-updatedAt'], },
+			state: { type: 'string', enum: ['all', 'alive'], default: "all", },
+			origin: { type: 'string', enum: ['combined', 'local', 'remote'], default: "local", },
 		},
-
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
-		},
-
-		sort: {
-			validator: $.str.or([
-				'+follower',
-				'-follower',
-				'+createdAt',
-				'-createdAt',
-				'+updatedAt',
-				'-updatedAt',
-			]),
-		},
-
-		state: {
-			validator: $.optional.str.or([
-				'all',
-				'alive',
-			]),
-			default: 'all',
-		},
-
-		origin: {
-			validator: $.optional.str.or([
-				'combined',
-				'local',
-				'remote',
-			]),
-			default: 'local',
-		},
+		required: ['tag', 'sort'],
 	},
 
 	res: {

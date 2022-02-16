@@ -16,21 +16,14 @@ export const meta = {
 	kind: 'write:messaging',
 
 	params: {
-		userId: {
-			validator: $.optional.type(ID),
+		type: 'object',
+		properties: {
+			userId: { type: 'string', format: 'misskey:id', },
+			groupId: { type: 'string', format: 'misskey:id', },
+			text: { type: 'string', },
+			fileId: { type: 'string', format: 'misskey:id', },
 		},
-
-		groupId: {
-			validator: $.optional.type(ID),
-		},
-
-		text: {
-			validator: $.optional.str.pipe(MessagingMessages.validateText),
-		},
-
-		fileId: {
-			validator: $.optional.type(ID),
-		},
+		required: [],
 	},
 
 	res: {

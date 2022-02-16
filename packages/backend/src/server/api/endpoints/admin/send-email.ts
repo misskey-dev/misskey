@@ -9,15 +9,13 @@ export const meta = {
 	requireModerator: true,
 
 	params: {
-		to: {
-			validator: $.str,
+		type: 'object',
+		properties: {
+			to: { type: 'string', },
+			subject: { type: 'string', },
+			text: { type: 'string', },
 		},
-		subject: {
-			validator: $.str,
-		},
-		text: {
-			validator: $.str,
-		},
+		required: ['to', 'subject', 'text'],
 	},
 } as const;
 

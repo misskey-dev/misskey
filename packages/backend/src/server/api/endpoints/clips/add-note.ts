@@ -14,13 +14,12 @@ export const meta = {
 	kind: 'write:account',
 
 	params: {
-		clipId: {
-			validator: $.type(ID),
+		type: 'object',
+		properties: {
+			clipId: { type: 'string', format: 'misskey:id', },
+			noteId: { type: 'string', format: 'misskey:id', },
 		},
-
-		noteId: {
-			validator: $.type(ID),
-		},
+		required: ['clipId', 'noteId'],
 	},
 
 	errors: {

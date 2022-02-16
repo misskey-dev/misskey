@@ -12,13 +12,12 @@ export const meta = {
 	requireModerator: true,
 
 	params: {
-		noteId: {
-			validator: $.type(ID),
+		type: 'object',
+		properties: {
+			noteId: { type: 'string', format: 'misskey:id', },
+			expiresAt: { type: 'integer', },
 		},
-
-		expiresAt: {
-			validator: $.num.int(),
-		},
+		required: ['noteId', 'expiresAt'],
 	},
 
 	errors: {

@@ -10,46 +10,15 @@ export const meta = {
 	requireCredential: false,
 
 	params: {
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
+		type: 'object',
+		properties: {
+			limit: { type: 'integer', maximum: 100, default: 10, },
+			offset: { type: 'integer', },
+			sort: { type: 'string', enum: ['+follower', '-follower', '+createdAt', '-createdAt', '+updatedAt', '-updatedAt'], },
+			state: { type: 'string', enum: ['all', 'admin', 'moderator', 'adminOrModerator', 'alive'], default: "all", },
+			origin: { type: 'string', enum: ['combined', 'local', 'remote'], default: "local", },
 		},
-
-		offset: {
-			validator: $.optional.num.min(0),
-			default: 0,
-		},
-
-		sort: {
-			validator: $.optional.str.or([
-				'+follower',
-				'-follower',
-				'+createdAt',
-				'-createdAt',
-				'+updatedAt',
-				'-updatedAt',
-			]),
-		},
-
-		state: {
-			validator: $.optional.str.or([
-				'all',
-				'admin',
-				'moderator',
-				'adminOrModerator',
-				'alive',
-			]),
-			default: 'all',
-		},
-
-		origin: {
-			validator: $.optional.str.or([
-				'combined',
-				'local',
-				'remote',
-			]),
-			default: 'local',
-		},
+		required: [],
 	},
 
 	res: {

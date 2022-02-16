@@ -11,46 +11,17 @@ export const meta = {
 	requireModerator: true,
 
 	params: {
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
+		type: 'object',
+		properties: {
+			limit: { type: 'integer', maximum: 100, default: 10, },
+			sinceId: { type: 'string', format: 'misskey:id', },
+			untilId: { type: 'string', format: 'misskey:id', },
+			state: { type: 'string', nullable: true, },
+			reporterOrigin: { type: 'string', enum: ['combined', 'local', 'remote'], default: "combined", },
+			targetUserOrigin: { type: 'string', enum: ['combined', 'local', 'remote'], default: "combined", },
+			forwarded: { type: 'boolean', default: false, },
 		},
-
-		sinceId: {
-			validator: $.optional.type(ID),
-		},
-
-		untilId: {
-			validator: $.optional.type(ID),
-		},
-
-		state: {
-			validator: $.optional.nullable.str,
-			default: null,
-		},
-
-		reporterOrigin: {
-			validator: $.optional.str.or([
-				'combined',
-				'local',
-				'remote',
-			]),
-			default: 'combined',
-		},
-
-		targetUserOrigin: {
-			validator: $.optional.str.or([
-				'combined',
-				'local',
-				'remote',
-			]),
-			default: 'combined',
-		},
-
-		forwarded: {
-			validator: $.optional.bool,
-			default: false,
-		},
+		required: [],
 	},
 
 	res: {

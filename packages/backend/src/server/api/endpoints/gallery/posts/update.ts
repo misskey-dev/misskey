@@ -20,26 +20,18 @@ export const meta = {
 	},
 
 	params: {
-		postId: {
-			validator: $.type(ID),
+		type: 'object',
+		properties: {
+			postId: { type: 'string', format: 'misskey:id', },
+			title: { type: 'string', minLength: 1, },
+			description: { type: 'string', nullable: true, },
+			fileIds: { type: 'array', uniqueItems: true, minItems: 1, maxItems: 32, items: {
+				type: '~~~'
+			},
+},
+			isSensitive: { type: 'boolean', default: false, },
 		},
-
-		title: {
-			validator: $.str.min(1),
-		},
-
-		description: {
-			validator: $.optional.nullable.str,
-		},
-
-		fileIds: {
-			validator: $.arr($.type(ID)).unique().range(1, 32),
-		},
-
-		isSensitive: {
-			validator: $.optional.bool,
-			default: false,
-		},
+		required: ['postId', 'title', 'fileIds'],
 	},
 
 	res: {

@@ -14,21 +14,17 @@ export const meta = {
 	requireCredential: false,
 
 	params: {
-		userId: {
-			validator: $.optional.type(ID),
+		type: 'object',
+		properties: {
+			userId: { type: 'string', format: 'misskey:id', },
+			userIds: { type: 'array', uniqueItems: true, items: {
+				type: '~~~'
+			},
+},
+			username: { type: 'string', },
+			host: { type: 'string', nullable: true, },
 		},
-
-		userIds: {
-			validator: $.optional.arr($.type(ID)).unique(),
-		},
-
-		username: {
-			validator: $.optional.str,
-		},
-
-		host: {
-			validator: $.optional.nullable.str,
-		},
+		required: [],
 	},
 
 	res: {

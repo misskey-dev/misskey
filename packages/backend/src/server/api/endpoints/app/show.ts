@@ -8,9 +8,11 @@ export const meta = {
 	tags: ['app'],
 
 	params: {
-		appId: {
-			validator: $.type(ID),
+		type: 'object',
+		properties: {
+			appId: { type: 'string', format: 'misskey:id', },
 		},
+		required: ['appId'],
 	},
 
 	errors: {

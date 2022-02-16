@@ -10,17 +10,12 @@ export const meta = {
 	secure: true,
 
 	params: {
-		pageId: {
-			validator: $.type(ID),
+		type: 'object',
+		properties: {
+			pageId: { type: 'string', format: 'misskey:id', },
+			event: { type: 'string', },
 		},
-
-		event: {
-			validator: $.str,
-		},
-
-		var: {
-			validator: $.optional.nullable.any,
-		},
+		required: ['pageId', 'event'],
 	},
 
 	errors: {

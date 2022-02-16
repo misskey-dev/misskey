@@ -12,18 +12,13 @@ export const meta = {
 	kind: 'read:channels',
 
 	params: {
-		sinceId: {
-			validator: $.optional.type(ID),
+		type: 'object',
+		properties: {
+			sinceId: { type: 'string', format: 'misskey:id', },
+			untilId: { type: 'string', format: 'misskey:id', },
+			limit: { type: 'integer', maximum: 100, default: 5, },
 		},
-
-		untilId: {
-			validator: $.optional.type(ID),
-		},
-
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 5,
-		},
+		required: [],
 	},
 
 	res: {

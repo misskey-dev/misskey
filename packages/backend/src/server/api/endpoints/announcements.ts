@@ -10,23 +10,14 @@ export const meta = {
 	requireCredential: false,
 
 	params: {
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
+		type: 'object',
+		properties: {
+			limit: { type: 'integer', maximum: 100, default: 10, },
+			withUnreads: { type: 'boolean', default: false, },
+			sinceId: { type: 'string', format: 'misskey:id', },
+			untilId: { type: 'string', format: 'misskey:id', },
 		},
-
-		withUnreads: {
-			validator: $.optional.boolean,
-			default: false,
-		},
-
-		sinceId: {
-			validator: $.optional.type(ID),
-		},
-
-		untilId: {
-			validator: $.optional.type(ID),
-		},
+		required: [],
 	},
 
 	res: {

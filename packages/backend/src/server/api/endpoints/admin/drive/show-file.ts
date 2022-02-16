@@ -11,13 +11,12 @@ export const meta = {
 	requireModerator: true,
 
 	params: {
-		fileId: {
-			validator: $.optional.type(ID),
+		type: 'object',
+		properties: {
+			fileId: { type: 'string', format: 'misskey:id', },
+			url: { type: 'string', },
 		},
-
-		url: {
-			validator: $.optional.str,
-		},
+		required: [],
 	},
 
 	errors: {

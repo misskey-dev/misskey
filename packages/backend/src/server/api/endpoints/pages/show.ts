@@ -11,17 +11,13 @@ export const meta = {
 	requireCredential: false,
 
 	params: {
-		pageId: {
-			validator: $.optional.type(ID),
+		type: 'object',
+		properties: {
+			pageId: { type: 'string', format: 'misskey:id', },
+			name: { type: 'string', },
+			username: { type: 'string', },
 		},
-
-		name: {
-			validator: $.optional.str,
-		},
-
-		username: {
-			validator: $.optional.str,
-		},
+		required: [],
 	},
 
 	res: {

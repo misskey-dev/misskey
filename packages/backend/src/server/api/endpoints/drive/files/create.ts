@@ -23,30 +23,15 @@ export const meta = {
 	kind: 'write:drive',
 
 	params: {
-		folderId: {
-			validator: $.optional.nullable.type(ID),
-			default: null,
+		type: 'object',
+		properties: {
+			folderId: { type: 'string', format: 'misskey:id', nullable: true, },
+			name: { type: 'string', nullable: true, },
+			comment: { type: 'string', nullable: true, maxLength: 512, },
+			isSensitive: { type: 'boolean', default: false, },
+			force: { type: 'boolean', default: false, },
 		},
-
-		name: {
-			validator: $.optional.nullable.str,
-			default: null,
-		},
-
-		comment: {
-			validator: $.optional.nullable.str.max(DB_MAX_IMAGE_COMMENT_LENGTH),
-			default: null,
-		},
-
-		isSensitive: {
-			validator: $.optional.bool,
-			default: false,
-		},
-
-		force: {
-			validator: $.optional.bool,
-			default: false,
-		},
+		required: [],
 	},
 
 	res: {

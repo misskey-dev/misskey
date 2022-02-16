@@ -16,9 +16,11 @@ export const meta = {
 	requireModerator: true,
 
 	params: {
-		emojiId: {
-			validator: $.type(ID),
+		type: 'object',
+		properties: {
+			emojiId: { type: 'string', format: 'misskey:id', },
 		},
+		required: ['emojiId'],
 	},
 
 	errors: {

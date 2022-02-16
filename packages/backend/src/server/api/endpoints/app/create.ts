@@ -11,23 +11,17 @@ export const meta = {
 	requireCredential: false,
 
 	params: {
-		name: {
-			validator: $.str,
+		type: 'object',
+		properties: {
+			name: { type: 'string', },
+			description: { type: 'string', },
+			permission: { type: 'array', uniqueItems: true, items: {
+				type: '~~~'
+			},
+},
+			callbackUrl: { type: 'string', nullable: true, },
 		},
-
-		description: {
-			validator: $.str,
-		},
-
-		permission: {
-			validator: $.arr($.str).unique(),
-		},
-
-		// TODO: Check it is valid url
-		callbackUrl: {
-			validator: $.optional.nullable.str,
-			default: null,
-		},
+		required: ['name', 'description', 'permission'],
 	},
 
 	res: {

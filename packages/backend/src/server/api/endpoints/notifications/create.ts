@@ -10,17 +10,13 @@ export const meta = {
 	kind: 'write:notifications',
 
 	params: {
-		body: {
-			validator: $.str,
+		type: 'object',
+		properties: {
+			body: { type: 'string', },
+			header: { type: 'string', nullable: true, },
+			icon: { type: 'string', nullable: true, },
 		},
-
-		header: {
-			validator: $.optional.nullable.str,
-		},
-
-		icon: {
-			validator: $.optional.nullable.str,
-		},
+		required: ['body'],
 	},
 
 	errors: {

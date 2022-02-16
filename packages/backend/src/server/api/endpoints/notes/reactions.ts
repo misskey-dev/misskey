@@ -13,31 +13,16 @@ export const meta = {
 	requireCredential: false,
 
 	params: {
-		noteId: {
-			validator: $.type(ID),
+		type: 'object',
+		properties: {
+			noteId: { type: 'string', format: 'misskey:id', },
+			type: { type: 'string', nullable: true, },
+			limit: { type: 'integer', maximum: 100, default: 10, },
+			offset: { type: 'integer', },
+			sinceId: { type: 'string', format: 'misskey:id', },
+			untilId: { type: 'string', format: 'misskey:id', },
 		},
-
-		type: {
-			validator: $.optional.nullable.str,
-		},
-
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
-		},
-
-		offset: {
-			validator: $.optional.num,
-			default: 0,
-		},
-
-		sinceId: {
-			validator: $.optional.type(ID),
-		},
-
-		untilId: {
-			validator: $.optional.type(ID),
-		},
+		required: ['noteId'],
 	},
 
 	res: {

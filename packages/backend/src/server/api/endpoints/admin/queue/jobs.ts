@@ -9,18 +9,13 @@ export const meta = {
 	requireModerator: true,
 
 	params: {
-		domain: {
-			validator: $.str.or(['deliver', 'inbox', 'db', 'objectStorage']),
+		type: 'object',
+		properties: {
+			domain: { type: 'string', enum: ['deliver', 'inbox', 'db', 'objectStorage'], },
+			state: { type: 'string', enum: ['active', 'waiting', 'delayed'], },
+			limit: { type: 'integer', default: 50, },
 		},
-
-		state: {
-			validator: $.str.or(['active', 'waiting', 'delayed']),
-		},
-
-		limit: {
-			validator: $.optional.num,
-			default: 50,
-		},
+		required: ['domain', 'state'],
 	},
 
 	res: {

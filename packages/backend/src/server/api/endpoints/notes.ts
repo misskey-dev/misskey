@@ -8,38 +8,18 @@ export const meta = {
 	tags: ['notes'],
 
 	params: {
-		local: {
-			validator: $.optional.bool,
+		type: 'object',
+		properties: {
+			local: { type: 'boolean', },
+			reply: { type: 'boolean', },
+			renote: { type: 'boolean', },
+			withFiles: { type: 'boolean', },
+			poll: { type: 'boolean', },
+			limit: { type: 'integer', maximum: 100, default: 10, },
+			sinceId: { type: 'string', format: 'misskey:id', },
+			untilId: { type: 'string', format: 'misskey:id', },
 		},
-
-		reply: {
-			validator: $.optional.bool,
-		},
-
-		renote: {
-			validator: $.optional.bool,
-		},
-
-		withFiles: {
-			validator: $.optional.bool,
-		},
-
-		poll: {
-			validator: $.optional.bool,
-		},
-
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
-		},
-
-		sinceId: {
-			validator: $.optional.type(ID),
-		},
-
-		untilId: {
-			validator: $.optional.type(ID),
-		},
+		required: [],
 	},
 
 	res: {

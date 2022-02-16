@@ -16,30 +16,16 @@ export const meta = {
 	tags: ['notes'],
 
 	params: {
-		withFiles: {
-			validator: $.optional.bool,
+		type: 'object',
+		properties: {
+			withFiles: { type: 'boolean', },
+			limit: { type: 'integer', maximum: 100, default: 10, },
+			sinceId: { type: 'string', format: 'misskey:id', },
+			untilId: { type: 'string', format: 'misskey:id', },
+			sinceDate: { type: 'integer', },
+			untilDate: { type: 'integer', },
 		},
-
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
-		},
-
-		sinceId: {
-			validator: $.optional.type(ID),
-		},
-
-		untilId: {
-			validator: $.optional.type(ID),
-		},
-
-		sinceDate: {
-			validator: $.optional.num,
-		},
-
-		untilDate: {
-			validator: $.optional.num,
-		},
+		required: [],
 	},
 
 	res: {

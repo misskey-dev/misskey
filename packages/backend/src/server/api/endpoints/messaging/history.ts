@@ -12,15 +12,12 @@ export const meta = {
 	kind: 'read:messaging',
 
 	params: {
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
+		type: 'object',
+		properties: {
+			limit: { type: 'integer', maximum: 100, default: 10, },
+			group: { type: 'boolean', default: false, },
 		},
-
-		group: {
-			validator: $.optional.bool,
-			default: false,
-		},
+		required: [],
 	},
 
 	res: {

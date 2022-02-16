@@ -11,23 +11,14 @@ export const meta = {
 	requireCredential: false,
 
 	params: {
-		username: {
-			validator: $.optional.nullable.str,
+		type: 'object',
+		properties: {
+			username: { type: 'string', nullable: true, },
+			host: { type: 'string', nullable: true, },
+			limit: { type: 'integer', maximum: 100, default: 10, },
+			detail: { type: 'boolean', default: true, },
 		},
-
-		host: {
-			validator: $.optional.nullable.str,
-		},
-
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
-		},
-
-		detail: {
-			validator: $.optional.bool,
-			default: true,
-		},
+		required: [],
 	},
 
 	res: {

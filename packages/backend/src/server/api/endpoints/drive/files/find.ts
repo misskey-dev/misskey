@@ -11,14 +11,12 @@ export const meta = {
 	kind: 'read:drive',
 
 	params: {
-		name: {
-			validator: $.str,
+		type: 'object',
+		properties: {
+			name: { type: 'string', },
+			folderId: { type: 'string', format: 'misskey:id', nullable: true, },
 		},
-
-		folderId: {
-			validator: $.optional.nullable.type(ID),
-			default: null,
-		},
+		required: ['name'],
 	},
 
 	res: {

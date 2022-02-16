@@ -12,21 +12,16 @@ export const meta = {
 	requireModerator: true,
 
 	params: {
-		id: {
-			validator: $.type(ID),
+		type: 'object',
+		properties: {
+			id: { type: 'string', format: 'misskey:id', },
+			name: { type: 'string', },
+			category: { type: 'string', nullable: true, },
+			aliases: { type: 'array', items: {
+				type: 'string',
+			}, },
 		},
-
-		name: {
-			validator: $.str,
-		},
-
-		category: {
-			validator: $.optional.nullable.str,
-		},
-
-		aliases: {
-			validator: $.arr($.str),
-		},
+		required: ['id', 'name', 'aliases'],
 	},
 
 	errors: {

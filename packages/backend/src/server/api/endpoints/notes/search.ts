@@ -16,37 +16,17 @@ export const meta = {
 	requireCredential: false,
 
 	params: {
-		query: {
-			validator: $.str,
+		type: 'object',
+		properties: {
+			query: { type: 'string', },
+			sinceId: { type: 'string', format: 'misskey:id', },
+			untilId: { type: 'string', format: 'misskey:id', },
+			limit: { type: 'integer', maximum: 100, default: 10, },
+			host: { type: 'string', nullable: true, },
+			userId: { type: 'string', format: 'misskey:id', nullable: true, },
+			channelId: { type: 'string', format: 'misskey:id', nullable: true, },
 		},
-
-		sinceId: {
-			validator: $.optional.type(ID),
-		},
-
-		untilId: {
-			validator: $.optional.type(ID),
-		},
-
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
-		},
-
-		host: {
-			validator: $.optional.nullable.str,
-			default: undefined,
-		},
-
-		userId: {
-			validator: $.optional.nullable.type(ID),
-			default: null,
-		},
-
-		channelId: {
-			validator: $.optional.nullable.type(ID),
-			default: null,
-		},
+		required: ['query'],
 	},
 
 	res: {

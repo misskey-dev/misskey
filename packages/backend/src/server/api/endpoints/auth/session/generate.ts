@@ -12,9 +12,11 @@ export const meta = {
 	requireCredential: false,
 
 	params: {
-		appSecret: {
-			validator: $.str,
+		type: 'object',
+		properties: {
+			appSecret: { type: 'string', },
 		},
+		required: ['appSecret'],
 	},
 
 	res: {

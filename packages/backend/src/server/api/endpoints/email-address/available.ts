@@ -8,9 +8,11 @@ export const meta = {
 	requireCredential: false,
 
 	params: {
-		emailAddress: {
-			validator: $.str,
+		type: 'object',
+		properties: {
+			emailAddress: { type: 'string', },
 		},
+		required: ['emailAddress'],
 	},
 
 	res: {

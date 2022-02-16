@@ -21,22 +21,17 @@ export const meta = {
 	},
 
 	params: {
-		title: {
-			validator: $.str.min(1),
+		type: 'object',
+		properties: {
+			title: { type: 'string', minLength: 1, },
+			description: { type: 'string', nullable: true, },
+			fileIds: { type: 'array', uniqueItems: true, minItems: 1, maxItems: 32, items: {
+				type: '~~~'
+			},
+},
+			isSensitive: { type: 'boolean', default: false, },
 		},
-
-		description: {
-			validator: $.optional.nullable.str,
-		},
-
-		fileIds: {
-			validator: $.arr($.type(ID)).unique().range(1, 32),
-		},
-
-		isSensitive: {
-			validator: $.optional.bool,
-			default: false,
-		},
+		required: ['title', 'fileIds'],
 	},
 
 	res: {

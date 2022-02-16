@@ -19,13 +19,12 @@ export const meta = {
 	},
 
 	params: {
-		username: {
-			validator: $.str,
+		type: 'object',
+		properties: {
+			username: { type: 'string', },
+			email: { type: 'string', },
 		},
-
-		email: {
-			validator: $.str,
-		},
+		required: ['username', 'email'],
 	},
 
 	errors: {

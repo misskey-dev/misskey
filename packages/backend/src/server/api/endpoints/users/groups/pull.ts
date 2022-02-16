@@ -13,13 +13,12 @@ export const meta = {
 	kind: 'write:user-groups',
 
 	params: {
-		groupId: {
-			validator: $.type(ID),
+		type: 'object',
+		properties: {
+			groupId: { type: 'string', format: 'misskey:id', },
+			userId: { type: 'string', format: 'misskey:id', },
 		},
-
-		userId: {
-			validator: $.type(ID),
-		},
+		required: ['groupId', 'userId'],
 	},
 
 	errors: {

@@ -12,13 +12,12 @@ export const meta = {
 	kind: 'write:account',
 
 	params: {
-		listId: {
-			validator: $.type(ID),
+		type: 'object',
+		properties: {
+			listId: { type: 'string', format: 'misskey:id', },
+			name: { type: 'string', minLength: 1, maxLength: 100, },
 		},
-
-		name: {
-			validator: $.str.range(1, 100),
-		},
+		required: ['listId', 'name'],
 	},
 
 	res: {

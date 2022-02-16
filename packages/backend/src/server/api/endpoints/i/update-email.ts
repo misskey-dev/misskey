@@ -21,13 +21,12 @@ export const meta = {
 	},
 
 	params: {
-		password: {
-			validator: $.str,
+		type: 'object',
+		properties: {
+			password: { type: 'string', },
+			email: { type: 'string', nullable: true, },
 		},
-
-		email: {
-			validator: $.optional.nullable.str,
-		},
+		required: ['password'],
 	},
 
 	errors: {

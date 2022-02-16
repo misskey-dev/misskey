@@ -14,49 +14,31 @@ export const meta = {
 	kind: 'write:account',
 
 	params: {
-		name: {
-			validator: $.str.range(1, 100),
+		type: 'object',
+		properties: {
+			name: { type: 'string', minLength: 1, maxLength: 100, },
+			src: { type: 'string', enum: ['home', 'all', 'users', 'list', 'group'], },
+			userListId: { type: 'string', format: 'misskey:id', nullable: true, },
+			userGroupId: { type: 'string', format: 'misskey:id', nullable: true, },
+			keywords: { type: 'array', items: {
+				type: 'array', items: {
+					type: 'string',
+				},
+			}, },
+			excludeKeywords: { type: 'array', items: {
+				type: 'array', items: {
+					type: 'string',
+				},
+			}, },
+			users: { type: 'array', items: {
+				type: 'string',
+			}, },
+			caseSensitive: { type: 'boolean', },
+			withReplies: { type: 'boolean', },
+			withFile: { type: 'boolean', },
+			notify: { type: 'boolean', },
 		},
-
-		src: {
-			validator: $.str.or(['home', 'all', 'users', 'list', 'group']),
-		},
-
-		userListId: {
-			validator: $.nullable.optional.type(ID),
-		},
-
-		userGroupId: {
-			validator: $.nullable.optional.type(ID),
-		},
-
-		keywords: {
-			validator: $.arr($.arr($.str)),
-		},
-
-		excludeKeywords: {
-			validator: $.arr($.arr($.str)),
-		},
-
-		users: {
-			validator: $.arr($.str),
-		},
-
-		caseSensitive: {
-			validator: $.bool,
-		},
-
-		withReplies: {
-			validator: $.bool,
-		},
-
-		withFile: {
-			validator: $.bool,
-		},
-
-		notify: {
-			validator: $.bool,
-		},
+		required: ['name', 'src', 'keywords', 'excludeKeywords', 'users', 'caseSensitive', 'withReplies', 'withFile', 'notify'],
 	},
 
 	errors: {

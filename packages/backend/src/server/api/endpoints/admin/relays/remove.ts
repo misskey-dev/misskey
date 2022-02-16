@@ -9,9 +9,11 @@ export const meta = {
 	requireModerator: true,
 
 	params: {
-		inbox: {
-			validator: $.str,
+		type: 'object',
+		properties: {
+			inbox: { type: 'string', },
 		},
+		required: ['inbox'],
 	},
 } as const;
 

@@ -8,42 +8,15 @@ export const meta = {
 	requireCredential: false,
 
 	params: {
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
+		type: 'object',
+		properties: {
+			limit: { type: 'integer', maximum: 100, default: 10, },
+			attachedToUserOnly: { type: 'boolean', default: false, },
+			attachedToLocalUserOnly: { type: 'boolean', default: false, },
+			attachedToRemoteUserOnly: { type: 'boolean', default: false, },
+			sort: { type: 'string', enum: ['+mentionedUsers', '-mentionedUsers', '+mentionedLocalUsers', '-mentionedLocalUsers', '+mentionedRemoteUsers', '-mentionedRemoteUsers', '+attachedUsers', '-attachedUsers', '+attachedLocalUsers', '-attachedLocalUsers', '+attachedRemoteUsers', '-attachedRemoteUsers'], },
 		},
-
-		attachedToUserOnly: {
-			validator: $.optional.bool,
-			default: false,
-		},
-
-		attachedToLocalUserOnly: {
-			validator: $.optional.bool,
-			default: false,
-		},
-
-		attachedToRemoteUserOnly: {
-			validator: $.optional.bool,
-			default: false,
-		},
-
-		sort: {
-			validator: $.str.or([
-				'+mentionedUsers',
-				'-mentionedUsers',
-				'+mentionedLocalUsers',
-				'-mentionedLocalUsers',
-				'+mentionedRemoteUsers',
-				'-mentionedRemoteUsers',
-				'+attachedUsers',
-				'-attachedUsers',
-				'+attachedLocalUsers',
-				'-attachedLocalUsers',
-				'+attachedRemoteUsers',
-				'-attachedRemoteUsers',
-			]),
-		},
+		required: ['sort'],
 	},
 
 	res: {

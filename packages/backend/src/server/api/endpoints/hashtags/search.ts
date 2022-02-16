@@ -8,19 +8,13 @@ export const meta = {
 	requireCredential: false,
 
 	params: {
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
+		type: 'object',
+		properties: {
+			limit: { type: 'integer', maximum: 100, default: 10, },
+			query: { type: 'string', },
+			offset: { type: 'integer', },
 		},
-
-		query: {
-			validator: $.str,
-		},
-
-		offset: {
-			validator: $.optional.num.min(0),
-			default: 0,
-		},
+		required: ['query'],
 	},
 
 	res: {

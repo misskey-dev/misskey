@@ -10,22 +10,14 @@ export const meta = {
 	requireCredential: false,
 
 	params: {
-		host: {
-			validator: $.str,
+		type: 'object',
+		properties: {
+			host: { type: 'string', },
+			sinceId: { type: 'string', format: 'misskey:id', },
+			untilId: { type: 'string', format: 'misskey:id', },
+			limit: { type: 'integer', maximum: 100, default: 10, },
 		},
-
-		sinceId: {
-			validator: $.optional.type(ID),
-		},
-
-		untilId: {
-			validator: $.optional.type(ID),
-		},
-
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
-		},
+		required: ['host'],
 	},
 
 	res: {

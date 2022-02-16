@@ -10,29 +10,15 @@ export const meta = {
 	requireCredential: false,
 
 	params: {
-		query: {
-			validator: $.str,
+		type: 'object',
+		properties: {
+			query: { type: 'string', },
+			offset: { type: 'integer', },
+			limit: { type: 'integer', maximum: 100, default: 10, },
+			origin: { type: 'string', enum: ['local', 'remote', 'combined'], default: "combined", },
+			detail: { type: 'boolean', default: true, },
 		},
-
-		offset: {
-			validator: $.optional.num.min(0),
-			default: 0,
-		},
-
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
-		},
-
-		origin: {
-			validator: $.optional.str.or(['local', 'remote', 'combined']),
-			default: 'combined',
-		},
-
-		detail: {
-			validator: $.optional.bool,
-			default: true,
-		},
+		required: ['query'],
 	},
 
 	res: {

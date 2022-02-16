@@ -7,19 +7,13 @@ export const meta = {
 	tags: ['charts', 'notes'],
 
 	params: {
-		span: {
-			validator: $.str.or(['day', 'hour']),
+		type: 'object',
+		properties: {
+			span: { type: 'string', enum: ['day', 'hour'], },
+			limit: { type: 'integer', maximum: 500, default: 30, },
+			offset: { type: 'integer', nullable: true, },
 		},
-
-		limit: {
-			validator: $.optional.num.range(1, 500),
-			default: 30,
-		},
-
-		offset: {
-			validator: $.optional.nullable.num,
-			default: null,
-		},
+		required: ['span'],
 	},
 
 	// TODO: response definition

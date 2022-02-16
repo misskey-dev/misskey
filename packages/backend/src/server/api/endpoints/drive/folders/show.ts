@@ -12,9 +12,11 @@ export const meta = {
 	kind: 'read:drive',
 
 	params: {
-		folderId: {
-			validator: $.type(ID),
+		type: 'object',
+		properties: {
+			folderId: { type: 'string', format: 'misskey:id', },
 		},
+		required: ['folderId'],
 	},
 
 	res: {

@@ -12,30 +12,16 @@ export const meta = {
 	requireCredential: false,
 
 	params: {
-		userId: {
-			validator: $.optional.type(ID),
+		type: 'object',
+		properties: {
+			userId: { type: 'string', format: 'misskey:id', },
+			username: { type: 'string', },
+			host: { type: 'string', nullable: true, },
+			sinceId: { type: 'string', format: 'misskey:id', },
+			untilId: { type: 'string', format: 'misskey:id', },
+			limit: { type: 'integer', maximum: 100, default: 10, },
 		},
-
-		username: {
-			validator: $.optional.str,
-		},
-
-		host: {
-			validator: $.optional.nullable.str,
-		},
-
-		sinceId: {
-			validator: $.optional.type(ID),
-		},
-
-		untilId: {
-			validator: $.optional.type(ID),
-		},
-
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
-		},
+		required: [],
 	},
 
 	res: {

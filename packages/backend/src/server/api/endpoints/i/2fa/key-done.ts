@@ -21,21 +21,15 @@ export const meta = {
 	secure: true,
 
 	params: {
-		clientDataJSON: {
-			validator: $.str,
+		type: 'object',
+		properties: {
+			clientDataJSON: { type: 'string', },
+			attestationObject: { type: 'string', },
+			password: { type: 'string', },
+			challengeId: { type: 'string', },
+			name: { type: 'string', },
 		},
-		attestationObject: {
-			validator: $.str,
-		},
-		password: {
-			validator: $.str,
-		},
-		challengeId: {
-			validator: $.str,
-		},
-		name: {
-			validator: $.str,
-		},
+		required: ['clientDataJSON', 'attestationObject', 'password', 'challengeId', 'name'],
 	},
 } as const;
 

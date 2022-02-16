@@ -15,54 +15,24 @@ export const meta = {
 	tags: ['users', 'notes'],
 
 	params: {
-		userId: {
-			validator: $.type(ID),
+		type: 'object',
+		properties: {
+			userId: { type: 'string', format: 'misskey:id', },
+			includeReplies: { type: 'boolean', default: true, },
+			limit: { type: 'integer', maximum: 100, default: 10, },
+			sinceId: { type: 'string', format: 'misskey:id', },
+			untilId: { type: 'string', format: 'misskey:id', },
+			sinceDate: { type: 'integer', },
+			untilDate: { type: 'integer', },
+			includeMyRenotes: { type: 'boolean', default: true, },
+			withFiles: { type: 'boolean', default: false, },
+			fileType: { type: 'array', items: {
+				type: '~~~'
+			},
+},
+			excludeNsfw: { type: 'boolean', default: false, },
 		},
-
-		includeReplies: {
-			validator: $.optional.bool,
-			default: true,
-		},
-
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
-		},
-
-		sinceId: {
-			validator: $.optional.type(ID),
-		},
-
-		untilId: {
-			validator: $.optional.type(ID),
-		},
-
-		sinceDate: {
-			validator: $.optional.num,
-		},
-
-		untilDate: {
-			validator: $.optional.num,
-		},
-
-		includeMyRenotes: {
-			validator: $.optional.bool,
-			default: true,
-		},
-
-		withFiles: {
-			validator: $.optional.bool,
-			default: false,
-		},
-
-		fileType: {
-			validator: $.optional.arr($.str),
-		},
-
-		excludeNsfw: {
-			validator: $.optional.bool,
-			default: false,
-		},
+		required: ['userId'],
 	},
 
 	res: {

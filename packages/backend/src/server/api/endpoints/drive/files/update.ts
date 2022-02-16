@@ -14,29 +14,15 @@ export const meta = {
 	kind: 'write:drive',
 
 	params: {
-		fileId: {
-			validator: $.type(ID),
+		type: 'object',
+		properties: {
+			fileId: { type: 'string', format: 'misskey:id', },
+			folderId: { type: 'string', format: 'misskey:id', nullable: true, },
+			name: { type: 'string', },
+			isSensitive: { type: 'boolean', },
+			comment: { type: 'string', nullable: true, maxLength: 512, },
 		},
-
-		folderId: {
-			validator: $.optional.nullable.type(ID),
-			default: undefined as any,
-		},
-
-		name: {
-			validator: $.optional.str.pipe(DriveFiles.validateFileName),
-			default: undefined as any,
-		},
-
-		isSensitive: {
-			validator: $.optional.bool,
-			default: undefined as any,
-		},
-
-		comment: {
-			validator: $.optional.nullable.str.max(DB_MAX_IMAGE_COMMENT_LENGTH),
-			default: undefined as any,
-		},
+		required: ['fileId'],
 	},
 
 	errors: {

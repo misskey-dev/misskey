@@ -10,9 +10,11 @@ export const meta = {
 	requireCredential: false,
 
 	params: {
-		channelId: {
-			validator: $.type(ID),
+		type: 'object',
+		properties: {
+			channelId: { type: 'string', format: 'misskey:id', },
 		},
+		required: ['channelId'],
 	},
 
 	res: {

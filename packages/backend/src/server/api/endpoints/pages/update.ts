@@ -19,49 +19,27 @@ export const meta = {
 	},
 
 	params: {
-		pageId: {
-			validator: $.type(ID),
+		type: 'object',
+		properties: {
+			pageId: { type: 'string', format: 'misskey:id', },
+			title: { type: 'string', },
+			name: { type: 'string', minLength: 1, },
+			summary: { type: 'string', nullable: true, },
+			content: { type: 'array', items: {
+				type: '~~~'
+			},
+},
+			variables: { type: 'array', items: {
+				type: '~~~'
+			},
+},
+			script: { type: 'string', },
+			eyeCatchingImageId: { type: 'string', format: 'misskey:id', nullable: true, },
+			font: { type: 'string', enum: ['serif', 'sans-serif'], },
+			alignCenter: { type: 'boolean', },
+			hideTitleWhenPinned: { type: 'boolean', },
 		},
-
-		title: {
-			validator: $.str,
-		},
-
-		name: {
-			validator: $.str.min(1),
-		},
-
-		summary: {
-			validator: $.optional.nullable.str,
-		},
-
-		content: {
-			validator: $.arr($.obj()),
-		},
-
-		variables: {
-			validator: $.arr($.obj()),
-		},
-
-		script: {
-			validator: $.str,
-		},
-
-		eyeCatchingImageId: {
-			validator: $.optional.nullable.type(ID),
-		},
-
-		font: {
-			validator: $.optional.str.or(['serif', 'sans-serif']),
-		},
-
-		alignCenter: {
-			validator: $.optional.bool,
-		},
-
-		hideTitleWhenPinned: {
-			validator: $.optional.bool,
-		},
+		required: ['pageId', 'title', 'name', 'content', 'variables', 'script'],
 	},
 
 	errors: {

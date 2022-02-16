@@ -10,9 +10,11 @@ export const meta = {
 	kind: 'read:drive',
 
 	params: {
-		md5: {
-			validator: $.str,
+		type: 'object',
+		properties: {
+			md5: { type: 'string', },
 		},
+		required: ['md5'],
 	},
 
 	res: {

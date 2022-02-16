@@ -12,9 +12,11 @@ export const meta = {
 	kind: 'read:user-groups',
 
 	params: {
-		groupId: {
-			validator: $.type(ID),
+		type: 'object',
+		properties: {
+			groupId: { type: 'string', format: 'misskey:id', },
 		},
+		required: ['groupId'],
 	},
 
 	res: {

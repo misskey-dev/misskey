@@ -14,9 +14,11 @@ export const meta = {
 	kind: 'write:favorites',
 
 	params: {
-		noteId: {
-			validator: $.type(ID),
+		type: 'object',
+		properties: {
+			noteId: { type: 'string', format: 'misskey:id', },
 		},
+		required: ['noteId'],
 	},
 
 	errors: {

@@ -10,9 +10,11 @@ export const meta = {
 	requireCredential: false,
 
 	params: {
-		postId: {
-			validator: $.type(ID),
+		type: 'object',
+		properties: {
+			postId: { type: 'string', format: 'misskey:id', },
 		},
+		required: ['postId'],
 	},
 
 	errors: {

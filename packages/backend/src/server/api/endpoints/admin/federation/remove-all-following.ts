@@ -10,9 +10,11 @@ export const meta = {
 	requireModerator: true,
 
 	params: {
-		host: {
-			validator: $.str,
+		type: 'object',
+		properties: {
+			host: { type: 'string', },
 		},
+		required: ['host'],
 	},
 } as const;
 

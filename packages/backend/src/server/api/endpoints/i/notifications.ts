@@ -17,41 +17,22 @@ export const meta = {
 	kind: 'read:notifications',
 
 	params: {
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
+		type: 'object',
+		properties: {
+			limit: { type: 'integer', maximum: 100, default: 10, },
+			sinceId: { type: 'string', format: 'misskey:id', },
+			untilId: { type: 'string', format: 'misskey:id', },
+			following: { type: 'boolean', default: false, },
+			unreadOnly: { type: 'boolean', default: false, },
+			markAsRead: { type: 'boolean', default: true, },
+			includeTypes: { type: 'array', items: {
+				type: 'string', enum: notificationTypes,
+			}, },
+			excludeTypes: { type: 'array', items: {
+				type: 'string', enum: notificationTypes,
+			}, },
 		},
-
-		sinceId: {
-			validator: $.optional.type(ID),
-		},
-
-		untilId: {
-			validator: $.optional.type(ID),
-		},
-
-		following: {
-			validator: $.optional.bool,
-			default: false,
-		},
-
-		unreadOnly: {
-			validator: $.optional.bool,
-			default: false,
-		},
-
-		markAsRead: {
-			validator: $.optional.bool,
-			default: true,
-		},
-
-		includeTypes: {
-			validator: $.optional.arr($.str.or(notificationTypes as unknown as string[])),
-		},
-
-		excludeTypes: {
-			validator: $.optional.arr($.str.or(notificationTypes as unknown as string[])),
-		},
+		required: [],
 	},
 
 	res: {

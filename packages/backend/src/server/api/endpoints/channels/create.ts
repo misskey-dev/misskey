@@ -14,17 +14,13 @@ export const meta = {
 	kind: 'write:channels',
 
 	params: {
-		name: {
-			validator: $.str.range(1, 128),
+		type: 'object',
+		properties: {
+			name: { type: 'string', minLength: 1, maxLength: 128, },
+			description: { type: 'string', nullable: true, minLength: 1, maxLength: 2048, },
+			bannerId: { type: 'string', format: 'misskey:id', nullable: true, },
 		},
-
-		description: {
-			validator: $.nullable.optional.str.range(1, 2048),
-		},
-
-		bannerId: {
-			validator: $.nullable.optional.type(ID),
-		},
+		required: ['name'],
 	},
 
 	res: {

@@ -20,35 +20,16 @@ export const meta = {
 	kind: 'write:drive',
 
 	params: {
-		url: {
-			// TODO: Validate this url
-			validator: $.str,
+		type: 'object',
+		properties: {
+			url: { type: 'string', },
+			folderId: { type: 'string', format: 'misskey:id', nullable: true, },
+			isSensitive: { type: 'boolean', default: false, },
+			comment: { type: 'string', nullable: true, maxLength: 512, },
+			marker: { type: 'string', nullable: true, },
+			force: { type: 'boolean', default: false, },
 		},
-
-		folderId: {
-			validator: $.optional.nullable.type(ID),
-			default: null,
-		},
-
-		isSensitive: {
-			validator: $.optional.bool,
-			default: false,
-		},
-
-		comment: {
-			validator: $.optional.nullable.str.max(DB_MAX_IMAGE_COMMENT_LENGTH),
-			default: null,
-		},
-
-		marker: {
-			validator: $.optional.nullable.str,
-			default: null,
-		},
-
-		force: {
-			validator: $.optional.bool,
-			default: false,
-		},
+		required: ['url'],
 	},
 } as const;
 

@@ -12,25 +12,18 @@ export const meta = {
 	secure: true,
 
 	params: {
-		session: {
-			validator: $.nullable.str,
+		type: 'object',
+		properties: {
+			session: { type: 'string', nullable: true, },
+			name: { type: 'string', nullable: true, },
+			description: { type: 'string', nullable: true, },
+			iconUrl: { type: 'string', nullable: true, },
+			permission: { type: 'array', uniqueItems: true, items: {
+				type: '~~~'
+			},
+},
 		},
-
-		name: {
-			validator: $.nullable.optional.str,
-		},
-
-		description: {
-			validator: $.nullable.optional.str,
-		},
-
-		iconUrl: {
-			validator: $.nullable.optional.str,
-		},
-
-		permission: {
-			validator: $.arr($.str).unique(),
-		},
+		required: ['session', 'permission'],
 	},
 
 	res: {

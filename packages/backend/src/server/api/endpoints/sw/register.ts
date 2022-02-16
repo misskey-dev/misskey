@@ -10,17 +10,13 @@ export const meta = {
 	requireCredential: true,
 
 	params: {
-		endpoint: {
-			validator: $.str,
+		type: 'object',
+		properties: {
+			endpoint: { type: 'string', },
+			auth: { type: 'string', },
+			publickey: { type: 'string', },
 		},
-
-		auth: {
-			validator: $.str,
-		},
-
-		publickey: {
-			validator: $.str,
-		},
+		required: ['endpoint', 'auth', 'publickey'],
 	},
 
 	res: {

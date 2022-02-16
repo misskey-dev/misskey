@@ -10,27 +10,17 @@ export const meta = {
 	requireModerator: true,
 
 	params: {
-		url: {
-			validator: $.str.min(1),
+		type: 'object',
+		properties: {
+			url: { type: 'string', minLength: 1, },
+			memo: { type: 'string', },
+			place: { type: 'string', },
+			priority: { type: 'string', },
+			ratio: { type: 'integer', },
+			expiresAt: { type: 'integer', },
+			imageUrl: { type: 'string', minLength: 1, },
 		},
-		memo: {
-			validator: $.str,
-		},
-		place: {
-			validator: $.str,
-		},
-		priority: {
-			validator: $.str,
-		},
-		ratio: {
-			validator: $.num.int().min(0),
-		},
-		expiresAt: {
-			validator: $.num.int(),
-		},
-		imageUrl: {
-			validator: $.str.min(1),
-		},
+		required: ['url', 'memo', 'place', 'priority', 'ratio', 'expiresAt', 'imageUrl'],
 	},
 } as const;
 

@@ -35,81 +35,44 @@ export const meta = {
 	kind: 'write:notes',
 
 	params: {
-		visibility: {
-			validator: $.optional.str.or(noteVisibilities as unknown as string[]),
-			default: 'public',
+		type: 'object',
+		properties: {
+			visibility: { type: 'string', enum: ['public', 'home', 'followers', 'specified'], default: "public", },
+			visibleUserIds: { type: 'array', uniqueItems: true, items: {
+				type: 'string', format: 'misskey:id',
+			}, },
+			text: { type: 'string', nullable: true, maxLength: 3000, },
+			cw: { type: 'string', nullable: true, maxLength: 100, },
+			localOnly: { type: 'boolean', default: false, },
+			noExtractMentions: { type: 'boolean', default: false, },
+			noExtractHashtags: { type: 'boolean', default: false, },
+			noExtractEmojis: { type: 'boolean', default: false, },
+			fileIds: { type: 'array', uniqueItems: true, minItems: 1, maxItems: 16, items: {
+				type: 'string', format: 'misskey:id',
+			}, },
+			mediaIds: { type: 'array', uniqueItems: true, minItems: 1, maxItems: 16, items: {
+				type: 'string', format: 'misskey:id',
+			}, },
+			replyId: { type: 'string', format: 'misskey:id', nullable: true, },
+			renoteId: { type: 'string', format: 'misskey:id', nullable: true, },
+			channelId: { type: 'string', format: 'misskey:id', nullable: true, },
+			poll: {
+				type: 'object', nullable: true,
+				properties: {
+					choices: {
+						type: 'array', uniqueItems: true, minItems: 2, maxItems: 10, 
+						items: {
+							type: 'string', minLength: 1, maxLength: 50,
+						},
+					},
+					multiple: { type: 'boolean', default: false, },
+					expiresAt: { type: 'integer', nullable: true, },
+					expiredAfter: { type: 'integer', nullable: true, minimum: 1, },
+				},
+				required: ['choices'],
+			},
 		},
-
-		visibleUserIds: {
-			validator: $.optional.arr($.type(ID)).unique().min(0),
-		},
-
-		text: {
-			validator: $.optional.nullable.str.pipe(text =>
-				text.trim() != ''
-					&& length(text.trim()) <= maxNoteTextLength
-					&& Array.from(text.trim()).length <= DB_MAX_NOTE_TEXT_LENGTH,	// DB limit
-			),
-			default: null,
-		},
-
-		cw: {
-			validator: $.optional.nullable.str.pipe(Notes.validateCw),
-		},
-
-		localOnly: {
-			validator: $.optional.bool,
-			default: false,
-		},
-
-		noExtractMentions: {
-			validator: $.optional.bool,
-			default: false,
-		},
-
-		noExtractHashtags: {
-			validator: $.optional.bool,
-			default: false,
-		},
-
-		noExtractEmojis: {
-			validator: $.optional.bool,
-			default: false,
-		},
-
-		fileIds: {
-			validator: $.optional.arr($.type(ID)).unique().range(1, 16),
-		},
-
-		mediaIds: {
-			validator: $.optional.arr($.type(ID)).unique().range(1, 16),
-			deprecated: true,
-		},
-
-		replyId: {
-			validator: $.optional.nullable.type(ID),
-		},
-
-		renoteId: {
-			validator: $.optional.nullable.type(ID),
-		},
-
-		channelId: {
-			validator: $.optional.nullable.type(ID),
-		},
-
-		poll: {
-			validator: $.optional.nullable.obj({
-				choices: $.arr($.str)
-					.unique()
-					.range(2, 10)
-					.each(c => c.length > 0 && c.length < 50),
-				multiple: $.optional.bool,
-				expiresAt: $.optional.nullable.num.int(),
-				expiredAfter: $.optional.nullable.num.int().min(1),
-			}).strict(),
-			ref: 'poll',
-		},
+		required: [],
 	},
 
 	res: {

@@ -13,9 +13,11 @@ export const meta = {
 	kind: 'write:user-groups',
 
 	params: {
-		name: {
-			validator: $.str.range(1, 100),
+		type: 'object',
+		properties: {
+			name: { type: 'string', minLength: 1, maxLength: 100, },
 		},
+		required: ['name'],
 	},
 
 	res: {

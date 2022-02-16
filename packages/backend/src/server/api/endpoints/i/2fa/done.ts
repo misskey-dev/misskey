@@ -9,9 +9,11 @@ export const meta = {
 	secure: true,
 
 	params: {
-		token: {
-			validator: $.str,
+		type: 'object',
+		properties: {
+			token: { type: 'string', },
 		},
+		required: ['token'],
 	},
 } as const;
 

@@ -14,49 +14,20 @@ export const meta = {
 	requireCredential: true,
 
 	params: {
-		listId: {
-			validator: $.type(ID),
+		type: 'object',
+		properties: {
+			listId: { type: 'string', format: 'misskey:id', },
+			limit: { type: 'integer', maximum: 100, default: 10, },
+			sinceId: { type: 'string', format: 'misskey:id', },
+			untilId: { type: 'string', format: 'misskey:id', },
+			sinceDate: { type: 'integer', },
+			untilDate: { type: 'integer', },
+			includeMyRenotes: { type: 'boolean', default: true, },
+			includeRenotedMyNotes: { type: 'boolean', default: true, },
+			includeLocalRenotes: { type: 'boolean', default: true, },
+			withFiles: { type: 'boolean', },
 		},
-
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
-		},
-
-		sinceId: {
-			validator: $.optional.type(ID),
-		},
-
-		untilId: {
-			validator: $.optional.type(ID),
-		},
-
-		sinceDate: {
-			validator: $.optional.num,
-		},
-
-		untilDate: {
-			validator: $.optional.num,
-		},
-
-		includeMyRenotes: {
-			validator: $.optional.bool,
-			default: true,
-		},
-
-		includeRenotedMyNotes: {
-			validator: $.optional.bool,
-			default: true,
-		},
-
-		includeLocalRenotes: {
-			validator: $.optional.bool,
-			default: true,
-		},
-
-		withFiles: {
-			validator: $.optional.bool,
-		},
+		required: ['listId'],
 	},
 
 	res: {

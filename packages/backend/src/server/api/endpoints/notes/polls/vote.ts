@@ -22,13 +22,12 @@ export const meta = {
 	kind: 'write:votes',
 
 	params: {
-		noteId: {
-			validator: $.type(ID),
+		type: 'object',
+		properties: {
+			noteId: { type: 'string', format: 'misskey:id', },
+			choice: { type: 'integer', },
 		},
-
-		choice: {
-			validator: $.num,
-		},
+		required: ['noteId', 'choice'],
 	},
 
 	errors: {

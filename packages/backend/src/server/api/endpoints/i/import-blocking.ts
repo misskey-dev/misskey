@@ -16,9 +16,11 @@ export const meta = {
 	},
 
 	params: {
-		fileId: {
-			validator: $.type(ID),
+		type: 'object',
+		properties: {
+			fileId: { type: 'string', format: 'misskey:id', },
 		},
+		required: ['fileId'],
 	},
 
 	errors: {

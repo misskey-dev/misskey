@@ -14,9 +14,11 @@ export const meta = {
 	kind: 'write:account',
 
 	params: {
-		announcementId: {
-			validator: $.type(ID),
+		type: 'object',
+		properties: {
+			announcementId: { type: 'string', format: 'misskey:id', },
 		},
+		required: ['announcementId'],
 	},
 
 	errors: {

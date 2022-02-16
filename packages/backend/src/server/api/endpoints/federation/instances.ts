@@ -10,47 +10,20 @@ export const meta = {
 	requireCredential: false,
 
 	params: {
-		host: {
-			validator: $.optional.nullable.str,
+		type: 'object',
+		properties: {
+			host: { type: 'string', nullable: true, },
+			blocked: { type: 'boolean', nullable: true, },
+			notResponding: { type: 'boolean', nullable: true, },
+			suspended: { type: 'boolean', nullable: true, },
+			federating: { type: 'boolean', nullable: true, },
+			subscribing: { type: 'boolean', nullable: true, },
+			publishing: { type: 'boolean', nullable: true, },
+			limit: { type: 'integer', maximum: 100, default: 30, },
+			offset: { type: 'integer', },
+			sort: { type: 'string', },
 		},
-
-		blocked: {
-			validator: $.optional.nullable.bool,
-		},
-
-		notResponding: {
-			validator: $.optional.nullable.bool,
-		},
-
-		suspended: {
-			validator: $.optional.nullable.bool,
-		},
-
-		federating: {
-			validator: $.optional.nullable.bool,
-		},
-
-		subscribing: {
-			validator: $.optional.nullable.bool,
-		},
-
-		publishing: {
-			validator: $.optional.nullable.bool,
-		},
-
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 30,
-		},
-
-		offset: {
-			validator: $.optional.num.min(0),
-			default: 0,
-		},
-
-		sort: {
-			validator: $.optional.str,
-		},
+		required: [],
 	},
 
 	res: {

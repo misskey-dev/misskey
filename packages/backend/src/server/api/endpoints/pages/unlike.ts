@@ -12,9 +12,11 @@ export const meta = {
 	kind: 'write:page-likes',
 
 	params: {
-		pageId: {
-			validator: $.type(ID),
+		type: 'object',
+		properties: {
+			pageId: { type: 'string', format: 'misskey:id', },
 		},
+		required: ['pageId'],
 	},
 
 	errors: {
