@@ -10,8 +10,7 @@ export const meta = {
 
 	tags: ['admin', 'meta'],
 
-	params: {
-	},
+	params: {},
 
 	res: {
 		type: 'object',

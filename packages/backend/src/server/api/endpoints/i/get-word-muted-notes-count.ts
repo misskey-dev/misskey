@@ -8,8 +8,7 @@ export const meta = {
 
 	kind: 'read:account',
 
-	params: {
-	},
+	params: {},
 
 	res: {
 		type: 'object',

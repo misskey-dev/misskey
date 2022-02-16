@@ -6,8 +6,7 @@ export const meta = {
 
 	tags: ['meta'],
 
-	params: {
-	},
+	params: {},
 
 	res: {
 		type: 'array',

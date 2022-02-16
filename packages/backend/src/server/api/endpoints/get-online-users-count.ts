@@ -8,8 +8,7 @@ export const meta = {
 
 	requireCredential: false,
 
-	params: {
-	},
+	params: {},
 } as const;
 
 // eslint-disable-next-line import/no-default-export

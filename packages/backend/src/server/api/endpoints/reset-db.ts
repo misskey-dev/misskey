@@ -6,8 +6,7 @@ import { resetDb } from '@/db/postgre';
 export const meta = {
 	requireCredential: false,
 
-	params: {
-	},
+	params: {},
 
 	errors: {
 

@@ -10,8 +10,7 @@ export const meta = {
 
 	tags: ['meta'],
 
-	params: {
-	},
+	params: {},
 } as const;
 
 // eslint-disable-next-line import/no-default-export

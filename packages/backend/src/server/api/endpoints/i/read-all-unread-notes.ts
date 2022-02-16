@@ -9,8 +9,7 @@ export const meta = {
 
 	kind: 'write:account',
 
-	params: {
-	},
+	params: {},
 } as const;
 
 // eslint-disable-next-line import/no-default-export

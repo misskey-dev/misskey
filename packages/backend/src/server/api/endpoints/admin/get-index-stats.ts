@@ -7,8 +7,7 @@ export const meta = {
 
 	tags: ['admin'],
 
-	params: {
-	},
+	params: {},
 } as const;
 
 // eslint-disable-next-line import/no-default-export

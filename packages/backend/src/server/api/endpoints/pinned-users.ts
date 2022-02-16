@@ -9,8 +9,7 @@ export const meta = {
 
 	requireCredential: false,
 
-	params: {
-	},
+	params: {},
 
 	res: {
 		type: 'array',

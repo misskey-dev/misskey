@@ -6,8 +6,7 @@ export const meta = {
 
 	secure: true,
 
-	params: {
-	},
+	params: {},
 } as const;
 
 // eslint-disable-next-line import/no-default-export

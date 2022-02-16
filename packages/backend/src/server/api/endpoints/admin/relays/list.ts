@@ -7,8 +7,7 @@ export const meta = {
 	requireCredential: true,
 	requireModerator: true,
 
-	params: {
-	},
+	params: {},
 
 	res: {
 		type: 'array',

@@ -7,8 +7,7 @@ export const meta = {
 
 	tags: ['admin'],
 
-	params: {
-	},
+	params: {},
 
 	res: {
 		type: 'object',
