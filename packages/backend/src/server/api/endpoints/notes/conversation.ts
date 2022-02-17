@@ -16,7 +16,7 @@ export const meta = {
 		properties: {
 			noteId: { type: 'string', format: 'misskey:id', },
 			limit: { type: 'integer', maximum: 100, default: 10, },
-			offset: { type: 'integer', },
+			offset: { type: 'integer', default: 0, },
 		},
 		required: ['noteId'],
 	},
