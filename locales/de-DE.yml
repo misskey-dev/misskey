@@ -1433,10 +1433,10 @@ _pages:
       strLen: "Textlänge"
       _strLen:
         arg1: "Text"
-      strPick: "Zeichen extrahieren"
+      strPick: "Text extrahieren"
       _strPick:
         arg1: "Text"
-        arg2: "Zeichenposition"
+        arg2: "Textposition"
       strReplace: "Textersetzung"
       _strReplace:
         arg1: "Text"
@@ -1447,7 +1447,7 @@ _pages:
         arg1: "Text"
       join: "Text zusammenfügen"
       _join:
-        arg1: "Listen"
+        arg1: "Liste"
         arg2: "Trennzeichen"
       add: "Addieren"
       _add:
@@ -1576,7 +1576,7 @@ _pages:
       _for:
         arg1: "Anzahl der Schleifendurchläufe"
         arg2: "Aktion"
-    typeError: "Slot {slot} akzeptiert Werte vom Typ \"{expect}\", aber es wurde ein \"{actual}\" Wert angegeben!"
+    typeError: "Slot {slot} akzeptiert Werte vom Typ „{expect}“, aber es wurde ein „{actual}“ Wert angegeben!"
     thereIsEmptySlot: "Slot {slot} ist leer!"
     types:
       string: "Text"
@@ -1587,7 +1587,7 @@ _pages:
     emptySlot: "Leerer Slot"
     enviromentVariables: "Umgebungsvariable"
     pageVariables: "Seitenelemente"
-    argVariables: "Eingabe-Slots"
+    argVariables: "Eingabeslots"
 _relayStatus:
   requesting: "Ausstehend"
   accepted: "Akzeptiert"
@@ -1624,10 +1624,10 @@ _deck:
   columnMargin: "Spaltenabstand"
   columnHeaderHeight: "Spaltenkopfhöhe"
   addColumn: "Spalte hinzufügen"
-  swapLeft: "Nach links verschieben"
-  swapRight: "Nach rechts verschieben"
-  swapUp: "Nach oben verschieben"
-  swapDown: "Nach unten verschieben"
+  swapLeft: "Mit linker Spalte tauschen"
+  swapRight: "Mit rechter Spalte tauschen"
+  swapUp: "Mit oberer Spalte tauschen"
+  swapDown: "Mit unterer Spalte tauschen"
   stackLeft: "Auf linke Spalte stapeln"
   popRight: "Nach rechts vom Stapel nehmen"
   profile: "Profil"
