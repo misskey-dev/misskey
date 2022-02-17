@@ -7,9 +7,11 @@ export const meta = {
 	requireCredential: false,
 
 	params: {
-		username: {
-			validator: $.use(Users.validateLocalUsername),
+		type: 'object',
+		properties: {
+			username: Users.localUsernameSchame,
 		},
+		required: ['username'],
 	},
 
 	res: {
