@@ -26,13 +26,11 @@ export const meta = {
 			name: { type: 'string', minLength: 1, },
 			summary: { type: 'string', nullable: true, },
 			content: { type: 'array', items: {
-				type: '~~~'
-			},
-},
+				type: 'object',
+			}, },
 			variables: { type: 'array', items: {
-				type: '~~~'
-			},
-},
+				type: 'object',
+			}, },
 			script: { type: 'string', },
 			eyeCatchingImageId: { type: 'string', format: 'misskey:id', nullable: true, },
 			font: { type: 'string', enum: ['serif', 'sans-serif'], },
