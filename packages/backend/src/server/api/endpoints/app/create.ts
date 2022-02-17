@@ -16,9 +16,8 @@ export const meta = {
 			name: { type: 'string', },
 			description: { type: 'string', },
 			permission: { type: 'array', uniqueItems: true, items: {
-				type: '~~~'
-			},
-},
+				type: 'string',
+			}, },
 			callbackUrl: { type: 'string', nullable: true, },
 		},
 		required: ['name', 'description', 'permission'],

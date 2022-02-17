@@ -14,6 +14,7 @@ export const meta = {
 		properties: {
 			pageId: { type: 'string', format: 'misskey:id', },
 			event: { type: 'string', },
+			var: { type: ['string', 'number', 'boolean', 'object', 'array', 'null'], nullable: true, },
 		},
 		required: ['pageId', 'event'],
 	},
