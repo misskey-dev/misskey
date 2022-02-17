@@ -18,9 +18,8 @@ export const meta = {
 		properties: {
 			userId: { type: 'string', format: 'misskey:id', },
 			userIds: { type: 'array', uniqueItems: true, items: {
-				type: '~~~'
-			},
-},
+				type: 'string', format: 'misskey:id',
+			}, },
 			username: { type: 'string', },
 			host: { type: 'string', nullable: true, },
 		},

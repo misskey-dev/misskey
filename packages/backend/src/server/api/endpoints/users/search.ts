@@ -13,7 +13,7 @@ export const meta = {
 		type: 'object',
 		properties: {
 			query: { type: 'string', },
-			offset: { type: 'integer', },
+			offset: { type: 'integer', default: 0, },
 			limit: { type: 'integer', maximum: 100, default: 10, },
 			origin: { type: 'string', enum: ['local', 'remote', 'combined'], default: "combined", },
 			detail: { type: 'boolean', default: true, },
