@@ -26,6 +26,12 @@ export const meta = {
 	},
 
 	errors: {
+		invalidFileName: {
+			message: 'Invalid file name.',
+			code: 'INVALID_FILE_NAME',
+			id: '395e7156-f9f0-475e-af89-53c3c23080c2',
+		},
+
 		noSuchFile: {
 			message: 'No such file.',
 			code: 'NO_SUCH_FILE',
@@ -65,6 +71,9 @@ export default define(meta, async (ps, user) => {
 	}
 
 	if (ps.name) file.name = ps.name;
+	if (!DriveFiles.validateFileName(file.name)) {
+		throw new ApiError(meta.errors.invalidFileName);
+	}
 
 	if (ps.comment !== undefined) file.comment = ps.comment;
 

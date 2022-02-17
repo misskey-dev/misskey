@@ -16,7 +16,7 @@ export const meta = {
 		type: 'object',
 		properties: {
 			folderId: { type: 'string', format: 'misskey:id', },
-			name: { type: 'string', },
+			name: { type: 'string', maxLength: 200, },
 			parentId: { type: 'string', format: 'misskey:id', nullable: true, },
 		},
 		required: ['folderId'],

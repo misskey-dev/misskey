@@ -20,7 +20,7 @@ export const meta = {
 			subscribing: { type: 'boolean', nullable: true, },
 			publishing: { type: 'boolean', nullable: true, },
 			limit: { type: 'integer', maximum: 100, default: 30, },
-			offset: { type: 'integer', },
+			offset: { type: 'integer', default: 0, },
 			sort: { type: 'string', },
 		},
 		required: [],

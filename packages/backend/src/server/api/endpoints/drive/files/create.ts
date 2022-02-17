@@ -25,9 +25,9 @@ export const meta = {
 	params: {
 		type: 'object',
 		properties: {
-			folderId: { type: 'string', format: 'misskey:id', nullable: true, },
-			name: { type: 'string', nullable: true, },
-			comment: { type: 'string', nullable: true, maxLength: 512, },
+			folderId: { type: 'string', format: 'misskey:id', nullable: true, default: null, },
+			name: { type: 'string', nullable: true, default: null, },
+			comment: { type: 'string', nullable: true, maxLength: 512, default: null, },
 			isSensitive: { type: 'boolean', default: false, },
 			force: { type: 'boolean', default: false, },
 		},

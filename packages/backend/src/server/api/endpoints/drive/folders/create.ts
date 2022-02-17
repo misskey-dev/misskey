@@ -16,7 +16,7 @@ export const meta = {
 	params: {
 		type: 'object',
 		properties: {
-			name: { type: 'string', default: "Untitled", },
+			name: { type: 'string', default: "Untitled", maxLength: 200, },
 			parentId: { type: 'string', format: 'misskey:id', nullable: true, },
 		},
 		required: [],

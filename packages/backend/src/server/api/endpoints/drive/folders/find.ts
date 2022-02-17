@@ -14,7 +14,7 @@ export const meta = {
 		type: 'object',
 		properties: {
 			name: { type: 'string', },
-			parentId: { type: 'string', format: 'misskey:id', nullable: true, },
+			parentId: { type: 'string', format: 'misskey:id', nullable: true, default: null, },
 		},
 		required: ['name'],
 	},

@@ -23,10 +23,10 @@ export const meta = {
 		type: 'object',
 		properties: {
 			url: { type: 'string', },
-			folderId: { type: 'string', format: 'misskey:id', nullable: true, },
+			folderId: { type: 'string', format: 'misskey:id', nullable: true, default: null, },
 			isSensitive: { type: 'boolean', default: false, },
-			comment: { type: 'string', nullable: true, maxLength: 512, },
-			marker: { type: 'string', nullable: true, },
+			comment: { type: 'string', nullable: true, maxLength: 512, default: null, },
+			marker: { type: 'string', nullable: true, default: null, },
 			force: { type: 'boolean', default: false, },
 		},
 		required: ['url'],
