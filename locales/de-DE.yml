@@ -1284,15 +1284,15 @@ _charts:
   storageUsageTotal: "Gesamte Speichernutzung"
 _instanceCharts:
   requests: "Anfragen"
-  users: "Unterschied in der Anzahl von Benutzern"
+  users: "Unterschied in der Anzahl an Benutzern"
   usersTotal: "Gesamtanzahl an Benutzern"
-  notes: "Unterschied in der Anzahl von Notizen"
+  notes: "Unterschied in der Anzahl an Notizen"
   notesTotal: "Gesamtanzahl an Notizen"
-  ff: "Unterschied in der Anzahl von gefolgten Benutzern und Followern"
+  ff: "Unterschied in der Anzahl an gefolgten Benutzern und Followern"
   ffTotal: "Gesamtanzahl an gefolgten Benutzern und Followern"
   cacheSize: "Unterschied in der Größe des Caches"
   cacheSizeTotal: "Gesamtgröße des Caches"
-  files: "Unterschied in der Anzahl der Dateien"
+  files: "Unterschied in der Anzahl an Dateien"
   filesTotal: "Gesamtanzahl an Dateien"
 _timelines:
   home: "Startseite"
@@ -1302,7 +1302,7 @@ _timelines:
 _pages:
   newPage: "Seite erstellen"
   editPage: "Seite bearbeiten"
-  readPage: "Quelltext-Ansicht"
+  readPage: "Quelltextansicht"
   created: "Seite erfolgreich erstellt"
   updated: "Seite erfolgreich aktualisiert"
   deleted: "Seite erfolgreich gelöscht"
@@ -1326,7 +1326,7 @@ _pages:
   url: "Seiten-URL"
   summary: "Zusammenfassung"
   alignCenter: "Zentrieren"
-  hideTitleWhenPinned: "Seitentitel ausblenden, wenn angeheftet"
+  hideTitleWhenPinned: "Seitentitel wenn angeheftet ausblenden"
   font: "Schriftart"
   fontSerif: "Serif"
   fontSansSerif: "Sans Serif"
@@ -1363,7 +1363,7 @@ _pages:
       name: "Variablenname"
       text: "Titel"
       default: "Standardwert"
-    numberInput: "Nummereingabe"
+    numberInput: "Zahleneingabe"
     _numberInput:
       name: "Variablenname"
       text: "Titel"
@@ -1387,7 +1387,7 @@ _pages:
     _counter:
       name: "Variablenname"
       text: "Titel"
-      inc: "Erhöhen um"
+      inc: "Schrittgröße"
     _button:
       text: "Titel"
       colored: "Farbig"
