@@ -1,5 +1,5 @@
-import $ from 'cafy';
 import { EntityRepository, Repository, In, Not } from 'typeorm';
+import Ajv from 'ajv';
 import { User, ILocalUser, IRemoteUser } from '@/models/entities/user';
 import { Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings, UserProfiles, UserSecurityKeys, UserGroupJoinings, Pages, Announcements, AnnouncementReads, Antennas, AntennaNotes, ChannelFollowings, Instances } from '../index';
 import config from '@/config/index';
@@ -17,8 +17,26 @@ type IsMeAndIsUserDetailed<ExpectsMe extends boolean | null, Detailed extends bo
 		Packed<'UserDetailed'> :
 	Packed<'UserLite'>;
 
+const ajv = new Ajv();
+
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
+	public localUsernameSchame = { type: 'string', pattern: /^\w{1,20}$/ } as const;
+	public passwordSchame = { type: 'string', minLength: 1 } as const;
+	public nameSchame = { type: 'string', minLength: 1, maxLength: 50, } as const;
+	public descriptionSchame = { type: 'string', minLength: 1, maxLength: 500, } as const;
+	public locationSchame = { type: 'string', minLength: 1, maxLength: 50, } as const;
+	public birthdaySchame = { type: 'string', pattern: /^([0-9]{4})-([0-9]{2})-([0-9]{2})$/, } as const;
+
+	//#region Validators
+	public validateLocalUsername = ajv.compile(this.localUsernameSchame);
+	public validatePassword = ajv.compile(this.passwordSchame);
+	public validateName = ajv.compile(this.nameSchame);
+	public validateDescription = ajv.compile(this.descriptionSchame);
+	public validateLocation = ajv.compile(this.locationSchame);
+	public validateBirthday = ajv.compile(this.birthdaySchame);
+	//#endregion
+
 	public async getRelation(me: User['id'], target: User['id']) {
 		const [following1, following2, followReq1, followReq2, toBlocking, fromBlocked, mute] = await Promise.all([
 			Followings.findOne({
@@ -351,13 +369,4 @@ export class UserRepository extends Repository<User> {
 	public isRemoteUser(user: User | { host: User['host'] }): boolean {
 		return !this.isLocalUser(user);
 	}
-
-	//#region Validators
-	public validateLocalUsername = $.str.match(/^\w{1,20}$/);
-	public validatePassword = $.str.min(1);
-	public validateName = $.str.min(1).max(50);
-	public validateDescription = $.str.min(1).max(500);
-	public validateLocation = $.str.min(1).max(50);
-	public validateBirthday = $.str.match(/^([0-9]{4})-([0-9]{2})-([0-9]{2})$/);
-	//#endregion
 }

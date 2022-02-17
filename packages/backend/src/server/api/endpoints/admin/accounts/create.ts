@@ -8,8 +8,8 @@ export const meta = {
 	params: {
 		type: 'object',
 		properties: {
-			username: { type: 'string', pattern: /^\w{1,20}$/, },
-			password: { type: 'string', minLength: 1, },
+			username: Users.localUsernameSchame,
+			password: Users.passwordSchame,
 		},
 		required: ['username', 'password'],
 	},
