@@ -11,7 +11,7 @@ export const meta = {
 		properties: {
 			span: { type: 'string', enum: ['day', 'hour'], },
 			limit: { type: 'integer', maximum: 500, default: 30, },
-			offset: { type: 'integer', nullable: true, },
+			offset: { type: 'integer', nullable: true, default: null, },
 			host: { type: 'string', },
 		},
 		required: ['span', 'host'],

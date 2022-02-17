@@ -12,7 +12,7 @@ export const meta = {
 		properties: {
 			span: { type: 'string', enum: ['day', 'hour'], },
 			limit: { type: 'integer', maximum: 500, default: 30, },
-			offset: { type: 'integer', nullable: true, },
+			offset: { type: 'integer', nullable: true, default: null, },
 			userId: { type: 'string', format: 'misskey:id', },
 		},
 		required: ['span', 'userId'],
