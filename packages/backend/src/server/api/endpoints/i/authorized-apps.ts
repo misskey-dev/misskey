@@ -11,7 +11,7 @@ export const meta = {
 		type: 'object',
 		properties: {
 			limit: { type: 'integer', maximum: 100, default: 10, },
-			offset: { type: 'integer', },
+			offset: { type: 'integer', default: 0, },
 			sort: { type: 'string', enum: ['desc', 'asc'], default: "desc", },
 		},
 		required: [],

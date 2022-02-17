@@ -19,9 +19,8 @@ export const meta = {
 			description: { type: 'string', nullable: true, },
 			iconUrl: { type: 'string', nullable: true, },
 			permission: { type: 'array', uniqueItems: true, items: {
-				type: '~~~'
-			},
-},
+				type: 'string',
+			}, },
 		},
 		required: ['session', 'permission'],
 	},
