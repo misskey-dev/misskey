@@ -27,9 +27,8 @@ export const meta = {
 			includeMyRenotes: { type: 'boolean', default: true, },
 			withFiles: { type: 'boolean', default: false, },
 			fileType: { type: 'array', items: {
-				type: '~~~'
-			},
-},
+				type: 'string',
+			}, },
 			excludeNsfw: { type: 'boolean', default: false, },
 		},
 		required: ['userId'],
