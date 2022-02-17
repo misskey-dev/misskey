@@ -7,9 +7,19 @@ export const meta = {
 	requireCredential: true,
 
 	params: {
-		userId: {
-			validator: $.either($.type(ID), $.arr($.type(ID)).unique()),
+		type: 'object',
+		properties: {
+			userId: {
+				anyOf: [
+					{ type: 'string', format: 'misskey:id', },
+					{
+						type: 'array',
+						items: { type: 'string', format: 'misskey:id', },
+					},
+				],
+			},
 		},
+		required: ['userId'],
 	},
 
 	res: {
