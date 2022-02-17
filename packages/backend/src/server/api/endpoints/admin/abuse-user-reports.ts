@@ -16,7 +16,7 @@ export const meta = {
 			limit: { type: 'integer', maximum: 100, default: 10, },
 			sinceId: { type: 'string', format: 'misskey:id', },
 			untilId: { type: 'string', format: 'misskey:id', },
-			state: { type: 'string', nullable: true, },
+			state: { type: 'string', nullable: true, default: null, },
 			reporterOrigin: { type: 'string', enum: ['combined', 'local', 'remote'], default: "combined", },
 			targetUserOrigin: { type: 'string', enum: ['combined', 'local', 'remote'], default: "combined", },
 			forwarded: { type: 'boolean', default: false, },
