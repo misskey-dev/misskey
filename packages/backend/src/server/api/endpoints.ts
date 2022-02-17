@@ -1,6 +1,4 @@
-import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import { Context } from 'cafy';
 import * as path from 'path';
 import * as glob from 'glob';
 import { Schema } from '@/misc/schema';
@@ -9,22 +7,12 @@ import { Schema } from '@/misc/schema';
 const _filename = __filename;
 const _dirname = dirname(_filename);
 
-export type Param = {
-	validator: Context<any>;
-	transform?: any;
-	default?: any;
-	deprecated?: boolean;
-	ref?: string;
-};
-
 export interface IEndpointMeta {
 	readonly stability?: 'deprecated' | 'experimental' | 'stable';
 
 	readonly tags?: ReadonlyArray<string>;
 
-	readonly params?: {
-		readonly [key: string]: Param;
-	};
+	readonly params?: Schema;
 
 	readonly errors?: {
 		readonly [key: string]: {

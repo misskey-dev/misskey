@@ -1,11 +1,10 @@
 import * as fs from 'fs';
+import Ajv from 'ajv';
 import { ILocalUser } from '@/models/entities/user';
 import { IEndpointMeta } from './endpoints';
 import { ApiError } from './error';
 import { SchemaType } from '@/misc/schema';
 import { AccessToken } from '@/models/entities/access-token';
-
-type NonOptional<T> = T extends undefined ? never : T;
 
 type SimpleUserInfo = {
 	id: ILocalUser['id'];
@@ -21,22 +20,22 @@ type SimpleUserInfo = {
 	showTimelineReplies: ILocalUser['showTimelineReplies'];
 };
 
-type Params<T extends IEndpointMeta> = {
-	[P in keyof T['params']]: NonNullable<T['params']>[P]['transform'] extends () => any
-		? ReturnType<NonNullable<T['params']>[P]['transform']>
-		: NonNullable<T['params']>[P]['default'] extends null | number | string
-			? NonOptional<ReturnType<NonNullable<T['params']>[P]['validator']['get']>[0]>
-			: ReturnType<NonNullable<T['params']>[P]['validator']['get']>[0];
-};
-
 export type Response = Record<string, any> | void;
 
+// TODO: paramsの型をT['params']のスキーマ定義から推論する
 type executor<T extends IEndpointMeta> =
-	(params: Params<T>, user: T['requireCredential'] extends true ? SimpleUserInfo : SimpleUserInfo | null, token: AccessToken | null, file?: any, cleanup?: () => any) =>
+	(params: any, user: T['requireCredential'] extends true ? SimpleUserInfo : SimpleUserInfo | null, token: AccessToken | null, file?: any, cleanup?: () => any) =>
 		Promise<T['res'] extends undefined ? Response : SchemaType<NonNullable<T['res']>>>;
+
+const ajv = new Ajv({
+	useDefaults: true,
+});
 
 export default function <T extends IEndpointMeta>(meta: T, cb: executor<T>)
 		: (params: any, user: T['requireCredential'] extends true ? SimpleUserInfo : SimpleUserInfo | null, token: AccessToken | null, file?: any) => Promise<any> {
+
+	const validate = meta.params ? ajv.compile(meta.params) : null;
+
 	return (params: any, user: T['requireCredential'] extends true ? SimpleUserInfo : SimpleUserInfo | null, token: AccessToken | null, file?: any) => {
 		function cleanup() {
 			fs.unlink(file.path, () => {});
@@ -48,42 +47,23 @@ export default function <T extends IEndpointMeta>(meta: T, cb: executor<T>)
 			id: '4267801e-70d1-416a-b011-4ee502885d8b',
 		}));
 
-		const [ps, pserr] = getParams(meta, params);
-		if (pserr) {
-			if (file) cleanup();
-			return Promise.reject(pserr);
-		}
+		if (validate) {
+			const valid = validate(params);
+			if (!valid) {
+				if (file) cleanup();
 
-		return cb(ps, user, token, file, cleanup);
-	};
-}
-
-function getParams<T extends IEndpointMeta>(defs: T, params: any): [Params<T>, ApiError | null] {
-	if (defs.params == null) return [params, null];
-
-	const x: any = {};
-	let err: ApiError | null = null;
-	Object.entries(defs.params).some(([k, def]) => {
-		const [v, e] = def.validator.get(params[k]);
-		if (e) {
-			err = new ApiError({
-				message: 'Invalid param.',
-				code: 'INVALID_PARAM',
-				id: '3d81ceae-475f-4600-b2a8-2bc116157532',
-			}, {
-				param: k,
-				reason: e.message,
-			});
-			return true;
-		} else {
-			if (v === undefined && Object.prototype.hasOwnProperty.call(def, 'default')) {
-				x[k] = def.default;
-			} else {
-				x[k] = v;
+				const err = new ApiError({
+					message: 'Invalid param.',
+					code: 'INVALID_PARAM',
+					id: '3d81ceae-475f-4600-b2a8-2bc116157532',
+				}, /* TODO {
+					param: k,
+					reason: e.message,
+				}*/);
+				return Promise.reject(err);
 			}
-			if (def.transform) x[k] = def.transform(x[k]);
-			return false;
 		}
-	});
-	return [x, err];
+
+		return cb(params, user, token, file, cleanup);
+	};
 }
