@@ -18,7 +18,7 @@ export const meta = {
 			untilId: { type: 'string', format: 'misskey:id', },
 			type: { type: 'string', nullable: true, pattern: /^[a-zA-Z0-9\/\-*]+$/, },
 			origin: { type: 'string', enum: ['combined', 'local', 'remote'], default: "local", },
-			hostname: { type: 'string', nullable: true, },
+			hostname: { type: 'string', nullable: true, default: null, },
 		},
 		required: [],
 	},
