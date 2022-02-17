@@ -12,7 +12,7 @@ export const meta = {
 		properties: {
 			limit: { type: 'integer', maximum: 100, default: 10, },
 			query: { type: 'string', },
-			offset: { type: 'integer', },
+			offset: { type: 'integer', default: 0, },
 		},
 		required: ['query'],
 	},
