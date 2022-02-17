@@ -41,7 +41,7 @@ export const meta = {
 			visibleUserIds: { type: 'array', uniqueItems: true, items: {
 				type: 'string', format: 'misskey:id',
 			}, },
-			text: { type: 'string', nullable: true, maxLength: 3000, },
+			text: { type: 'string', nullable: true, maxLength: 3000, default: null, },
 			cw: { type: 'string', nullable: true, maxLength: 100, },
 			localOnly: { type: 'boolean', default: false, },
 			noExtractMentions: { type: 'boolean', default: false, },

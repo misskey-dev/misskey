@@ -20,7 +20,7 @@ export const meta = {
 		properties: {
 			userId: { type: 'string', format: 'misskey:id', },
 			groupId: { type: 'string', format: 'misskey:id', },
-			text: { type: 'string', },
+			text: { type: 'string', nullable: true, maxLength: 3000, },
 			fileId: { type: 'string', format: 'misskey:id', },
 		},
 		required: [],
