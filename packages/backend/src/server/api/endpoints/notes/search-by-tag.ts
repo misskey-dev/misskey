@@ -18,9 +18,10 @@ export const meta = {
 		properties: {
 			tag: { type: 'string', },
 			query: { type: 'array', items: {
-				type: '~~~'
-			},
-},
+				type: 'array', items: {
+					type: 'string',
+				},
+			}, },
 			reply: { type: 'boolean', nullable: true, default: null, },
 			renote: { type: 'boolean', nullable: true, default: null, },
 			withFiles: { type: 'boolean', },

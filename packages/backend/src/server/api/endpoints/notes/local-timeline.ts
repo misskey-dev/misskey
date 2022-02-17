@@ -22,9 +22,8 @@ export const meta = {
 		properties: {
 			withFiles: { type: 'boolean', },
 			fileType: { type: 'array', items: {
-				type: '~~~'
-			},
-},
+				type: 'string',
+			}, },
 			excludeNsfw: { type: 'boolean', default: false, },
 			limit: { type: 'integer', maximum: 100, default: 10, },
 			sinceId: { type: 'string', format: 'misskey:id', },

@@ -13,10 +13,10 @@ export const meta = {
 		type: 'object',
 		properties: {
 			key: { type: 'string', minLength: 1, },
+			value: { type: ['string', 'number', 'boolean', 'object', 'array', 'null'], nullable: true, },
 			scope: { type: 'array', default: [], items: {
-				type: '~~~'
-			},
-},
+				type: 'string', pattern: /^[a-zA-Z0-9_]+$/,
+			}, },
 		},
 		required: ['key', 'value'],
 	},

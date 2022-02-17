@@ -13,9 +13,8 @@ export const meta = {
 		properties: {
 			key: { type: 'string', },
 			scope: { type: 'array', default: [], items: {
-				type: '~~~'
-			},
-},
+				type: 'string', pattern: /^[a-zA-Z0-9_]+$/,
+			}, },
 		},
 		required: ['key'],
 	},

@@ -26,10 +26,10 @@ export const meta = {
 			name: { type: 'string', minLength: 1, },
 			summary: { type: 'string', nullable: true, },
 			content: { type: 'array', items: {
-				type: 'object',
+				type: 'object', additionalProperties: true,
 			}, },
 			variables: { type: 'array', items: {
-				type: 'object',
+				type: 'object', additionalProperties: true,
 			}, },
 			script: { type: 'string', },
 			eyeCatchingImageId: { type: 'string', format: 'misskey:id', nullable: true, },
