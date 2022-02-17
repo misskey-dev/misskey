@@ -1,5 +1,3 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { createImportBlockingJob } from '@/queue/index';
 import ms from 'ms';

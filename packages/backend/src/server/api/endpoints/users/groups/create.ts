@@ -1,4 +1,3 @@
-import $ from 'cafy';
 import define from '../../../define';
 import { UserGroups, UserGroupJoinings } from '@/models/index';
 import { genId } from '@/misc/gen-id';

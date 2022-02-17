@@ -1,5 +1,3 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
 import { publishNoteStream } from '@/services/stream';
 import { createNotification } from '@/services/create-notification';
 import define from '../../../define';

@@ -1,5 +1,3 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
 import { rejectFollowRequest } from '@/services/following/reject';
 import define from '../../../define';
 import { ApiError } from '../../../error';

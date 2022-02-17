@@ -1,7 +1,5 @@
-import $ from 'cafy';
 import ms from 'ms';
 import define from '../../define';
-import { ID } from '@/misc/cafy-id';
 import { Pages, DriveFiles } from '@/models/index';
 import { genId } from '@/misc/gen-id';
 import { Page } from '@/models/entities/page';

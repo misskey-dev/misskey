@@ -1,4 +1,3 @@
-import $ from 'cafy';
 import * as bcrypt from 'bcryptjs';
 import * as speakeasy from 'speakeasy';
 import * as QRCode from 'qrcode';

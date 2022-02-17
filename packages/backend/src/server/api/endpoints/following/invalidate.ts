@@ -1,5 +1,3 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
 import * as ms from 'ms';
 import deleteFollowing from '@/services/following/delete';
 import define from '../../define';

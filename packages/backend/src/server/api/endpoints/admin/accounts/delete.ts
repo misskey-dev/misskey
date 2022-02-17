@@ -1,10 +1,8 @@
-import $ from 'cafy';
 import define from '../../../define';
 import { Users } from '@/models/index';
 import { doPostSuspend } from '@/services/suspend-user';
 import { publishUserEvent } from '@/services/stream';
 import { createDeleteAccountJob } from '@/queue';
-import { ID } from '@/misc/cafy-id';
 
 export const meta = {
 	tags: ['admin'],

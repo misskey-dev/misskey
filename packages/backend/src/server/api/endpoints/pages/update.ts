@@ -1,9 +1,7 @@
-import $ from 'cafy';
 import ms from 'ms';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { Pages, DriveFiles } from '@/models/index';
-import { ID } from '@/misc/cafy-id';
 import { Not } from 'typeorm';
 
 export const meta = {

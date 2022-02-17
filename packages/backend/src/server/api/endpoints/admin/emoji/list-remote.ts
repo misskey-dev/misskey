@@ -1,9 +1,7 @@
-import $ from 'cafy';
 import define from '../../../define';
 import { Emojis } from '@/models/index';
 import { toPuny } from '@/misc/convert-host';
 import { makePaginationQuery } from '../../../common/make-pagination-query';
-import { ID } from '@/misc/cafy-id';
 
 export const meta = {
 	tags: ['admin'],

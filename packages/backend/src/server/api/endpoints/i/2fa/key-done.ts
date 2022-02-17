@@ -1,4 +1,3 @@
-import $ from 'cafy';
 import * as bcrypt from 'bcryptjs';
 import { promisify } from 'util';
 import * as cbor from 'cbor';

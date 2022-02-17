@@ -1,4 +1,3 @@
-import $ from 'cafy';
 import define from '../../define';
 import { genId } from '@/misc/gen-id';
 import { Clips } from '@/models/index';

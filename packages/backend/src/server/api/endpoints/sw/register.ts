@@ -1,4 +1,3 @@
-import $ from 'cafy';
 import define from '../../define';
 import { fetchMeta } from '@/misc/fetch-meta';
 import { genId } from '@/misc/gen-id';

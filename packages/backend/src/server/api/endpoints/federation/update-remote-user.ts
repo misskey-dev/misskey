@@ -1,5 +1,3 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { getRemoteUser } from '../../common/getters';
 import { updatePerson } from '@/remote/activitypub/models/person';

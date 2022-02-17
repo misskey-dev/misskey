@@ -1,6 +1,4 @@
-import $ from 'cafy';
 import * as sanitizeHtml from 'sanitize-html';
-import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { publishAdminStream } from '@/services/stream';
 import { ApiError } from '../../error';

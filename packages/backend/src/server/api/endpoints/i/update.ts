@@ -1,7 +1,5 @@
 const RE2 = require('re2');
-import $ from 'cafy';
 import * as mfm from 'mfm-js';
-import { ID } from '@/misc/cafy-id';
 import { publishMainStream, publishUserEvent } from '@/services/stream';
 import acceptAllFollowRequests from '@/services/following/requests/accept-all';
 import { publishToFollowers } from '@/services/i/update';

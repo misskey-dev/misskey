@@ -1,4 +1,3 @@
-import $ from 'cafy';
 import * as bcrypt from 'bcryptjs';
 import { publishMainStream, publishUserEvent } from '@/services/stream';
 import generateUserToken from '../../common/generate-native-user-token';

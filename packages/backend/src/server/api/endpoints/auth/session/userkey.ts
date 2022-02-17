@@ -1,4 +1,3 @@
-import $ from 'cafy';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { Apps, AuthSessions, AccessTokens, Users } from '@/models/index';

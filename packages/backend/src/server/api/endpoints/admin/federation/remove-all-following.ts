@@ -1,4 +1,3 @@
-import $ from 'cafy';
 import define from '../../../define';
 import deleteFollowing from '@/services/following/delete';
 import { Followings, Users } from '@/models/index';

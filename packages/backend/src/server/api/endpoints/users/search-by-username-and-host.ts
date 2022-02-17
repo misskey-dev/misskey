@@ -1,4 +1,3 @@
-import $ from 'cafy';
 import define from '../../define';
 import { Followings, Users } from '@/models/index';
 import { Brackets } from 'typeorm';

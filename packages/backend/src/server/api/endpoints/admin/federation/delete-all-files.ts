@@ -1,4 +1,3 @@
-import $ from 'cafy';
 import define from '../../../define';
 import { deleteFile } from '@/services/drive/delete-file';
 import { DriveFiles } from '@/models/index';

@@ -1,5 +1,3 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import readNote from '@/services/note/read';
 import { Antennas, Notes, AntennaNotes } from '@/models/index';

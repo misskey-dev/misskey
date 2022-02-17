@@ -1,4 +1,3 @@
-import $ from 'cafy';
 import define from '../../define';
 import config from '@/config/index';
 import { createPerson } from '@/remote/activitypub/models/person';

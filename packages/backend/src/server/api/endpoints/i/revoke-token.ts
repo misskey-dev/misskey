@@ -1,7 +1,5 @@
-import $ from 'cafy';
 import define from '../../define';
 import { AccessTokens } from '@/models/index';
-import { ID } from '@/misc/cafy-id';
 import { publishUserEvent } from '@/services/stream';
 
 export const meta = {

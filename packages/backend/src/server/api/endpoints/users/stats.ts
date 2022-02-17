@@ -1,7 +1,5 @@
-import $ from 'cafy';
 import define from '../../define';
 import { ApiError } from '../../error';
-import { ID } from '@/misc/cafy-id';
 import { DriveFiles, Followings, NoteFavorites, NoteReactions, Notes, PageLikes, PollVotes, Users } from '@/models/index';
 
 export const meta = {

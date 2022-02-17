@@ -1,8 +1,6 @@
-import $ from 'cafy';
 import define from '../../../define';
 import { Emojis } from '@/models/index';
 import { makePaginationQuery } from '../../../common/make-pagination-query';
-import { ID } from '@/misc/cafy-id';
 import { Emoji } from '@/models/entities/emoji';
 
 export const meta = {

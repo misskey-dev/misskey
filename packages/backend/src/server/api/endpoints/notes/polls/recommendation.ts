@@ -1,4 +1,3 @@
-import $ from 'cafy';
 import define from '../../../define';
 import { Polls, Mutings, Notes, PollVotes } from '@/models/index';
 import { Brackets, In } from 'typeorm';

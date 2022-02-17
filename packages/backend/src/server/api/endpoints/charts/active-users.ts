@@ -1,4 +1,3 @@
-import $ from 'cafy';
 import define from '../../define';
 import { convertLog } from '@/services/chart/core';
 import { activeUsersChart } from '@/services/chart/index';

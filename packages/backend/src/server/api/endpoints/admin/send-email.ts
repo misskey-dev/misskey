@@ -1,4 +1,3 @@
-import $ from 'cafy';
 import define from '../../define';
 import { sendEmail } from '@/services/send-email';
 

@@ -1,5 +1,4 @@
 import { v4 as uuid } from 'uuid';
-import $ from 'cafy';
 import config from '@/config/index';
 import define from '../../../define';
 import { ApiError } from '../../../error';

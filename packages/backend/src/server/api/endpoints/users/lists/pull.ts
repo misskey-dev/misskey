@@ -1,5 +1,3 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
 import { publishUserListStream } from '@/services/stream';
 import define from '../../../define';
 import { ApiError } from '../../../error';

@@ -1,5 +1,3 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { ClipNotes, Clips } from '@/models/index';
 import { ApiError } from '../../error';

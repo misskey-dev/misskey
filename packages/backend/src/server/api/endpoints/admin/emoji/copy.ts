@@ -1,11 +1,9 @@
-import $ from 'cafy';
 import define from '../../../define';
 import { Emojis } from '@/models/index';
 import { genId } from '@/misc/gen-id';
 import { getConnection } from 'typeorm';
 import { ApiError } from '../../../error';
 import { DriveFile } from '@/models/entities/drive-file';
-import { ID } from '@/misc/cafy-id';
 import { uploadFromUrl } from '@/services/drive/upload-from-url';
 import { publishBroadcastStream } from '@/services/stream';
 

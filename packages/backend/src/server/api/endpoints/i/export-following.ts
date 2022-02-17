@@ -1,4 +1,3 @@
-import $ from 'cafy';
 import define from '../../define';
 import { createExportFollowingJob } from '@/queue/index';
 import ms from 'ms';

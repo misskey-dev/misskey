@@ -1,4 +1,3 @@
-import $ from 'cafy';
 import * as speakeasy from 'speakeasy';
 import define from '../../../define';
 import { UserProfiles } from '@/models/index';

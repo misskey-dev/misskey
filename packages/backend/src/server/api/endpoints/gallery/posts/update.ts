@@ -1,4 +1,3 @@
-import $ from 'cafy';
 import ms from 'ms';
 import define from '../../../define';
 import { ID } from '../../../../../misc/cafy-id';

@@ -1,5 +1,3 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { Channels, ChannelFollowings } from '@/models/index';
 import { makePaginationQuery } from '../../common/make-pagination-query';

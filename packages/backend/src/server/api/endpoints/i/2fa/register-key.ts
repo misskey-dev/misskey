@@ -1,4 +1,3 @@
-import $ from 'cafy';
 import * as bcrypt from 'bcryptjs';
 import define from '../../../define';
 import { UserProfiles, AttestationChallenges } from '@/models/index';

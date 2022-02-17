@@ -1,5 +1,3 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { fetchMeta } from '@/misc/fetch-meta';
 import { ApiError } from '../../error';

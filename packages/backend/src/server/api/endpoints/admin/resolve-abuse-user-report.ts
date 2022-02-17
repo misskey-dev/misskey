@@ -1,5 +1,3 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { AbuseUserReports, Users } from '@/models/index';
 import { getInstanceActor } from '@/services/instance-actor';

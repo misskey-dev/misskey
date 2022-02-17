@@ -1,4 +1,3 @@
-import $ from 'cafy';
 import define from '../../define';
 import { Users, UsedUsernames } from '@/models/index';
 

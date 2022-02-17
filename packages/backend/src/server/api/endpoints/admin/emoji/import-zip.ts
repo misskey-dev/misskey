@@ -1,8 +1,6 @@
-import $ from 'cafy';
 import define from '../../../define';
 import { createImportCustomEmojisJob } from '@/queue/index';
 import ms from 'ms';
-import { ID } from '@/misc/cafy-id';
 
 export const meta = {
 	secure: true,

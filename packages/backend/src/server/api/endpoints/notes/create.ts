@@ -1,11 +1,9 @@
-import $ from 'cafy';
 import ms from 'ms';
 import { length } from 'stringz';
 import create from '@/services/note/create';
 import define from '../../define';
 import { fetchMeta } from '@/misc/fetch-meta';
 import { ApiError } from '../../error';
-import { ID } from '@/misc/cafy-id';
 import { User } from '@/models/entities/user';
 import { Users, DriveFiles, Notes, Channels, Blockings } from '@/models/index';
 import { DriveFile } from '@/models/entities/drive-file';

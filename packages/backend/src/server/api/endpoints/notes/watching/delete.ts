@@ -1,5 +1,3 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
 import define from '../../../define';
 import unwatch from '@/services/note/unwatch';
 import { getNote } from '../../../common/getters';

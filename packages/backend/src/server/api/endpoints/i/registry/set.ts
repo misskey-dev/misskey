@@ -1,4 +1,3 @@
-import $ from 'cafy';
 import { publishMainStream } from '@/services/stream';
 import define from '../../../define';
 import { RegistryItems } from '@/models/index';

@@ -1,5 +1,4 @@
 import * as crypto from 'crypto';
-import $ from 'cafy';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { AuthSessions, AccessTokens, Apps } from '@/models/index';

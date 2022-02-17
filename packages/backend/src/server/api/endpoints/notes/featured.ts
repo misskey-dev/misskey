@@ -1,4 +1,3 @@
-import $ from 'cafy';
 import define from '../../define';
 import { generateMutedUserQuery } from '../../common/generate-muted-user-query';
 import { Notes } from '@/models/index';
