@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import Ajv from 'ajv';
+import * as Ajv from 'ajv';
 import { ILocalUser } from '@/models/entities/user';
 import { IEndpointMeta } from './endpoints';
 import { ApiError } from './error';

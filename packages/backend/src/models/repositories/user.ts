@@ -1,5 +1,5 @@
 import { EntityRepository, Repository, In, Not } from 'typeorm';
-import Ajv from 'ajv';
+import * as Ajv from 'ajv';
 import { User, ILocalUser, IRemoteUser } from '@/models/entities/user';
 import { Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings, UserProfiles, UserSecurityKeys, UserGroupJoinings, Pages, Announcements, AnnouncementReads, Antennas, AntennaNotes, ChannelFollowings, Instances } from '../index';
 import config from '@/config/index';
