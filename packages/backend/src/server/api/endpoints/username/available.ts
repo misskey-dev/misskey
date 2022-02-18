@@ -9,7 +9,7 @@ export const meta = {
 	params: {
 		type: 'object',
 		properties: {
-			username: Users.localUsernameSchame,
+			username: Users.localUsernameSchema,
 		},
 		required: ['username'],
 	},

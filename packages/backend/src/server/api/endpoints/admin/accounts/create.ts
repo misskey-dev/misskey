@@ -8,8 +8,8 @@ export const meta = {
 	params: {
 		type: 'object',
 		properties: {
-			username: Users.localUsernameSchame,
-			password: Users.passwordSchame,
+			username: Users.localUsernameSchema,
+			password: Users.passwordSchema,
 		},
 		required: ['username', 'password'],
 	},

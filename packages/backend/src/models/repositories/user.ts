@@ -21,20 +21,20 @@ const ajv = new Ajv();
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
-	public localUsernameSchame = { type: 'string', pattern: /^\w{1,20}$/.toString() } as const;
-	public passwordSchame = { type: 'string', minLength: 1 } as const;
-	public nameSchame = { type: 'string', minLength: 1, maxLength: 50, } as const;
-	public descriptionSchame = { type: 'string', minLength: 1, maxLength: 500, } as const;
-	public locationSchame = { type: 'string', minLength: 1, maxLength: 50, } as const;
-	public birthdaySchame = { type: 'string', pattern: /^([0-9]{4})-([0-9]{2})-([0-9]{2})$/.toString(), } as const;
+	public localUsernameSchema = { type: 'string', pattern: /^\w{1,20}$/.toString() } as const;
+	public passwordSchema = { type: 'string', minLength: 1 } as const;
+	public nameSchema = { type: 'string', minLength: 1, maxLength: 50, } as const;
+	public descriptionSchema = { type: 'string', minLength: 1, maxLength: 500, } as const;
+	public locationSchema = { type: 'string', minLength: 1, maxLength: 50, } as const;
+	public birthdaySchema = { type: 'string', pattern: /^([0-9]{4})-([0-9]{2})-([0-9]{2})$/.toString(), } as const;
 
 	//#region Validators
-	public validateLocalUsername = ajv.compile(this.localUsernameSchame);
-	public validatePassword = ajv.compile(this.passwordSchame);
-	public validateName = ajv.compile(this.nameSchame);
-	public validateDescription = ajv.compile(this.descriptionSchame);
-	public validateLocation = ajv.compile(this.locationSchame);
-	public validateBirthday = ajv.compile(this.birthdaySchame);
+	public validateLocalUsername = ajv.compile(this.localUsernameSchema);
+	public validatePassword = ajv.compile(this.passwordSchema);
+	public validateName = ajv.compile(this.nameSchema);
+	public validateDescription = ajv.compile(this.descriptionSchema);
+	public validateLocation = ajv.compile(this.locationSchema);
+	public validateBirthday = ajv.compile(this.birthdaySchema);
 	//#endregion
 
 	public async getRelation(me: User['id'], target: User['id']) {

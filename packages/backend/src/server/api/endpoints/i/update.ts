@@ -25,10 +25,10 @@ export const meta = {
 	params: {
 		type: 'object',
 		properties: {
-			name: { ...Users.nameSchame, nullable: true, },
-			description: { ...Users.descriptionSchame, nullable: true, },
-			location: { ...Users.locationSchame, nullable: true, },
-			birthday: { ...Users.birthdaySchame, nullable: true, },
+			name: { ...Users.nameSchema, nullable: true, },
+			description: { ...Users.descriptionSchema, nullable: true, },
+			location: { ...Users.locationSchema, nullable: true, },
+			birthday: { ...Users.birthdaySchema, nullable: true, },
 			lang: { type: 'string', enum: Object.keys(langmap), nullable: true, },
 			avatarId: { type: 'string', format: 'misskey:id', nullable: true, },
 			bannerId: { type: 'string', format: 'misskey:id', nullable: true, },
