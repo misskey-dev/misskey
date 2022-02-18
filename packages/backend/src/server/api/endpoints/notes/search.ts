@@ -34,6 +34,7 @@ const paramDef = {
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
 		limit: { type: 'integer', maximum: 100, default: 10 },
+		offset: { type: 'integer', default: 0 },
 		host: { type: 'string', nullable: true },
 		userId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
 		channelId: { type: 'string', format: 'misskey:id', nullable: true, default: null },

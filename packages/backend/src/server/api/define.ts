@@ -1,10 +1,9 @@
 import * as fs from 'fs';
 import Ajv from 'ajv';
-import { FromSchema, JSONSchema } from 'json-schema-to-ts';
 import { ILocalUser } from '@/models/entities/user';
 import { IEndpointMeta } from './endpoints';
 import { ApiError } from './error';
-import { SchemaType } from '@/misc/schema';
+import { Schema, SchemaType } from '@/misc/schema';
 import { AccessToken } from '@/models/entities/access-token';
 
 type SimpleUserInfo = {
@@ -24,8 +23,8 @@ type SimpleUserInfo = {
 export type Response = Record<string, any> | void;
 
 // TODO: paramsの型をT['params']のスキーマ定義から推論する
-type executor<T extends IEndpointMeta, Ps extends JSONSchema> =
-	(params: FromSchema<Ps>, user: T['requireCredential'] extends true ? SimpleUserInfo : SimpleUserInfo | null, token: AccessToken | null, file?: any, cleanup?: () => any) =>
+type executor<T extends IEndpointMeta, Ps extends Schema> =
+	(params: SchemaType<Ps>, user: T['requireCredential'] extends true ? SimpleUserInfo : SimpleUserInfo | null, token: AccessToken | null, file?: any, cleanup?: () => any) =>
 		Promise<T['res'] extends undefined ? Response : SchemaType<NonNullable<T['res']>>>;
 
 const ajv = new Ajv({
@@ -34,7 +33,7 @@ const ajv = new Ajv({
 
 ajv.addFormat('misskey:id', /^[a-z0-9]+$/);
 
-export default function <T extends IEndpointMeta, Ps extends JSONSchema>(meta: T, paramDef: Ps, cb: executor<T, Ps>)
+export default function <T extends IEndpointMeta, Ps extends Schema>(meta: T, paramDef: Ps, cb: executor<T, Ps>)
 		: (params: any, user: T['requireCredential'] extends true ? SimpleUserInfo : SimpleUserInfo | null, token: AccessToken | null, file?: any) => Promise<any> {
 
 	const validate = ajv.compile(paramDef);
