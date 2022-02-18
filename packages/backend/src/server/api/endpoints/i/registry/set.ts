@@ -13,7 +13,7 @@ const paramDef = {
 	type: 'object',
 	properties: {
 		key: { type: 'string', minLength: 1 },
-		value: { type: ['string', 'number', 'boolean', 'object', 'array', 'null'], nullable: true },
+		value: {},
 		scope: { type: 'array', default: [], items: {
 			type: 'string', pattern: /^[a-zA-Z0-9_]+$/.toString(),
 		} },

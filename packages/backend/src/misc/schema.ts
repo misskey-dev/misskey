@@ -72,8 +72,9 @@ type PackedDef<r extends { properties?: Obj; oneOf?: ReadonlyArray<Schema>; allO
 	never;
 export type Packed<x extends keyof typeof refs> = PackedDef<typeof refs[x]>;
 
-type TypeStringef = 'boolean' | 'integer' | 'number' | 'string' | 'array' | 'object' | 'any';
+type TypeStringef = 'null' | 'boolean' | 'integer' | 'number' | 'string' | 'array' | 'object' | 'any';
 type StringDefToType<T extends TypeStringef> =
+	T extends 'null' ? null :
 	T extends 'boolean' ? boolean :
 	T extends 'integer' ? number :
 	T extends 'number' ? number :
@@ -145,6 +146,7 @@ type UnionSchemaType<a extends readonly any[], X extends Schema = a[number]> = X
 type ArrayUnion<T> = T extends any ? Array<T> : never; 
 
 export type SchemaTypeDef<p extends Schema> =
+	p['type'] extends 'null' ? null :
 	p['type'] extends 'integer' ? number :
 	p['type'] extends 'number' ? number :
 	p['type'] extends 'string' ? (
