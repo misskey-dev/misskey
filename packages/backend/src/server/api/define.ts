@@ -54,13 +54,14 @@ export default function <T extends IEndpointMeta>(meta: T, cb: executor<T>)
 			if (!valid) {
 				if (file) cleanup();
 
+				const errors = validate.errors!;
 				const err = new ApiError({
 					message: 'Invalid param.',
 					code: 'INVALID_PARAM',
 					id: '3d81ceae-475f-4600-b2a8-2bc116157532',
 				}, {
-					param: validate.errors[0].propertyName,
-					reason: validate.errors[0].message,
+					param: errors[0].propertyName,
+					reason: errors[0].message,
 				});
 				return Promise.reject(err);
 			}
