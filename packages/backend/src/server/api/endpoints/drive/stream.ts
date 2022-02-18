@@ -15,7 +15,7 @@ export const meta = {
 			limit: { type: 'integer', maximum: 100, default: 10, },
 			sinceId: { type: 'string', format: 'misskey:id', },
 			untilId: { type: 'string', format: 'misskey:id', },
-			type: { type: 'string', pattern: /^[a-zA-Z\/\-*]+$/, },
+			type: { type: 'string', pattern: /^[a-zA-Z\/\-*]+$/.toString(), },
 		},
 		required: [],
 	},

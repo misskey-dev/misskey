@@ -21,12 +21,12 @@ const ajv = new Ajv();
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
-	public localUsernameSchame = { type: 'string', pattern: /^\w{1,20}$/ } as const;
+	public localUsernameSchame = { type: 'string', pattern: /^\w{1,20}$/.toString() } as const;
 	public passwordSchame = { type: 'string', minLength: 1 } as const;
 	public nameSchame = { type: 'string', minLength: 1, maxLength: 50, } as const;
 	public descriptionSchame = { type: 'string', minLength: 1, maxLength: 500, } as const;
 	public locationSchame = { type: 'string', minLength: 1, maxLength: 50, } as const;
-	public birthdaySchame = { type: 'string', pattern: /^([0-9]{4})-([0-9]{2})-([0-9]{2})$/, } as const;
+	public birthdaySchame = { type: 'string', pattern: /^([0-9]{4})-([0-9]{2})-([0-9]{2})$/.toString(), } as const;
 
 	//#region Validators
 	public validateLocalUsername = ajv.compile(this.localUsernameSchame);

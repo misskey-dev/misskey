@@ -14,7 +14,7 @@ export const meta = {
 			limit: { type: 'integer', maximum: 100, default: 10, },
 			sinceId: { type: 'string', format: 'misskey:id', },
 			untilId: { type: 'string', format: 'misskey:id', },
-			type: { type: 'string', nullable: true, pattern: /^[a-zA-Z0-9\/\-*]+$/, },
+			type: { type: 'string', nullable: true, pattern: /^[a-zA-Z0-9\/\-*]+$/.toString(), },
 			origin: { type: 'string', enum: ['combined', 'local', 'remote'], default: "local", },
 			hostname: { type: 'string', nullable: true, default: null, },
 		},

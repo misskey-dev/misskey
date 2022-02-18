@@ -12,7 +12,7 @@ export const meta = {
 		properties: {
 			key: { type: 'string', },
 			scope: { type: 'array', default: [], items: {
-				type: 'string', pattern: /^[a-zA-Z0-9_]+$/,
+				type: 'string', pattern: /^[a-zA-Z0-9_]+$/.toString(),
 			}, },
 		},
 		required: ['key'],

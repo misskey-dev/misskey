@@ -31,6 +31,8 @@ const ajv = new Ajv({
 	useDefaults: true,
 });
 
+ajv.addFormat('misskey:id', /^[a-z0-9]+$/);
+
 export default function <T extends IEndpointMeta>(meta: T, cb: executor<T>)
 		: (params: any, user: T['requireCredential'] extends true ? SimpleUserInfo : SimpleUserInfo | null, token: AccessToken | null, file?: any) => Promise<any> {
 

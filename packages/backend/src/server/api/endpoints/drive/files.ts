@@ -16,7 +16,7 @@ export const meta = {
 			sinceId: { type: 'string', format: 'misskey:id', },
 			untilId: { type: 'string', format: 'misskey:id', },
 			folderId: { type: 'string', format: 'misskey:id', nullable: true, default: null, },
-			type: { type: 'string', nullable: true, pattern: /^[a-zA-Z\/\-*]+$/, },
+			type: { type: 'string', nullable: true, pattern: /^[a-zA-Z\/\-*]+$/.toString(), },
 		},
 		required: [],
 	},

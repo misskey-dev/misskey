@@ -10,7 +10,7 @@ export const meta = {
 		type: 'object',
 		properties: {
 			scope: { type: 'array', default: [], items: {
-				type: 'string', pattern: /^[a-zA-Z0-9_]+$/,
+				type: 'string', pattern: /^[a-zA-Z0-9_]+$/.toString(),
 			}, },
 		},
 		required: [],
