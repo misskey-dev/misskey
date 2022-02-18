@@ -27,7 +27,7 @@ const paramDef = {
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
 		folderId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
-		type: { type: 'string', nullable: true, pattern: /^[a-zA-Z\/\-*]+$/.toString() },
+		type: { type: 'string', nullable: true, pattern: /^[a-zA-Z\/\-*]+$/.toString().slice(1, -1) },
 	},
 	required: [],
 } as const;

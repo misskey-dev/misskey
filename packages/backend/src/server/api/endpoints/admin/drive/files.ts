@@ -25,7 +25,7 @@ const paramDef = {
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
-		type: { type: 'string', nullable: true, pattern: /^[a-zA-Z0-9\/\-*]+$/.toString() },
+		type: { type: 'string', nullable: true, pattern: /^[a-zA-Z0-9\/\-*]+$/.toString().slice(1, -1) },
 		origin: { type: 'string', enum: ['combined', 'local', 'remote'], default: "local" },
 		hostname: { type: 'string', nullable: true, default: null },
 	},

@@ -21,7 +21,7 @@ const ajv = new Ajv();
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
-	public localUsernameSchema = { type: 'string', pattern: /^\w{1,20}$/.toString() } as const;
+	public localUsernameSchema = { type: 'string', pattern: /^\w{1,20}$/.toString().slice(1, -1) } as const;
 	public passwordSchema = { type: 'string', minLength: 1 } as const;
 	public nameSchema = { type: 'string', minLength: 1, maxLength: 50 } as const;
 	public descriptionSchema = { type: 'string', minLength: 1, maxLength: 500 } as const;
