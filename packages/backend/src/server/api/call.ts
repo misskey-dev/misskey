@@ -78,10 +78,10 @@ export default async (endpoint: string, user: User | null | undefined, token: Ac
 	}
 
 	// Cast non JSON input
-	if (ep.meta.requireFile && ep.meta.params) {
-		for (const k of Object.keys(ep.meta.params)) {
-			const param = ep.meta.params[k];
-			if (['Boolean', 'Number'].includes(param.validator.name) && typeof data[k] === 'string') {
+	if (ep.meta.requireFile) {
+		for (const k of Object.keys(ep.params)) {
+			const param = ep.params.properties![k];
+			if (['boolean', 'number', 'integer'].includes(param.type ?? '') && typeof data[k] === 'string') {
 				try {
 					data[k] = JSON.parse(data[k]);
 				} catch (e) {
@@ -91,8 +91,8 @@ export default async (endpoint: string, user: User | null | undefined, token: Ac
 						id: '0b5f1631-7c1a-41a6-b399-cce335f34d85',
 					}, {
 						param: k,
-						reason: `cannot cast to ${param.validator.name}`,
-					})
+						reason: `cannot cast to ${param.type}`,
+					});
 				}
 			}
 		}
