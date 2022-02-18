@@ -20,5 +20,5 @@ const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps) => {
-	return await apRequestChart.getChart(ps.span as any, ps.limit, ps.offset ? new Date(ps.offset) : null);
+	return await apRequestChart.getChart(ps.span, ps.limit, ps.offset ? new Date(ps.offset) : null);
 });

@@ -20,5 +20,5 @@ const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps) => {
-	return await driveChart.getChart(ps.span as any, ps.limit, ps.offset ? new Date(ps.offset) : null);
+	return await driveChart.getChart(ps.span, ps.limit, ps.offset ? new Date(ps.offset) : null);
 });
