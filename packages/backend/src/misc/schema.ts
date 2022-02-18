@@ -107,8 +107,12 @@ export interface Schema extends OfSchema {
 	readonly minLength?: number;
 }
 
-type UndefinedPropertyNames<T extends Obj> = {
+type OptionalPropertyNames<T extends Obj> = {
 	[K in keyof T]: T[K]['optional'] extends true ? K : never
+}[keyof T];
+
+type NonOptionalPropertyNames<T extends Obj> = {
+	[K in keyof T]: T[K]['optional'] extends false ? K : never
 }[keyof T];
 
 type DefaultPropertyNames<T extends Obj> = {
@@ -124,8 +128,9 @@ export interface Obj { [key: string]: Schema; }
 
 export type ObjType<s extends Obj, RequiredProps extends ReadonlyArray<keyof s>> =
 	{ -readonly [P in keyof s]?: SchemaType<s[P]> } &
-	{ -readonly [P in UndefinedPropertyNames<s>]?: SchemaType<s[P]> } &
 	{ -readonly [P in RequiredProps[number]]: SchemaType<s[P]> } &
+	{ -readonly [P in OptionalPropertyNames<s>]?: SchemaType<s[P]> } &
+	{ -readonly [P in NonOptionalPropertyNames<s>]: SchemaType<s[P]> } &
 	{ -readonly [P in DefaultPropertyNames<s>]: SchemaType<s[P]> };
 
 type NullOrUndefined<p extends Schema, T> =

@@ -21,7 +21,9 @@ export const meta = {
 } as const;
 
 const paramDef = {
-
+	type: 'object',
+	properties: {},
+	required: [],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
