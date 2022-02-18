@@ -118,5 +118,5 @@ export default define(meta, paramDef, async (ps, me) => {
 
 	const instances = await query.take(ps.limit).skip(ps.offset).getMany();
 
-	return instances;
+	return await Instances.packMany(instances);
 });

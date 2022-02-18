@@ -8,9 +8,12 @@ export const meta = {
 	requireCredential: false,
 
 	res: {
-		type: 'object',
-		optional: true, nullable: false,
-		ref: 'FederationInstance',
+		oneOf: [{
+			type: 'object',
+			ref: 'FederationInstance',
+		}, {
+			type: 'null',
+		}],
 	},
 } as const;
 
@@ -27,5 +30,5 @@ export default define(meta, paramDef, async (ps, me) => {
 	const instance = await Instances
 		.findOne({ host: toPuny(ps.host) });
 
-	return instance;
+	return instance ? await Instances.pack(instance) : null;
 });
