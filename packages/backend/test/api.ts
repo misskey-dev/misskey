@@ -68,5 +68,14 @@ describe('API', () => {
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.body.nullableDefault, null);
 		}));
+
+		it('cannot set undefined if it has default value', async(async () => {
+			const res = await request('/test', {
+				reqired: true,
+				nullableDefault: undefined,
+			});
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(res.body.nullableDefault, 'hello');
+		}));
 	});
 });

@@ -85,12 +85,15 @@ export interface IEndpointMeta {
 	 * パーミッションの実現に利用されます。
 	 */
 	readonly kind?: string;
+
+	readonly description?: string;
 }
 
 export interface IEndpoint {
 	name: string;
 	exec: any;
 	meta: IEndpointMeta;
+	params: Schema;
 }
 
 const files = glob.sync('**/*.js', {
@@ -104,6 +107,7 @@ const endpoints: IEndpoint[] = files.map(f => {
 		name: f.replace('.js', ''),
 		exec: ep.default,
 		meta: ep.meta || {},
+		params: ep.paramDef,
 	};
 });
 
