@@ -80,7 +80,7 @@ export default define(meta, async (ps, user) => {
 			.setParameter('meId', user.id)
 			.setParameter('recipientId', recipient.id);
 
-		const messages = await query.take(ps.limit!).getMany();
+		const messages = await query.take(ps.limit).getMany();
 
 		// Mark all as read
 		if (ps.markAsRead) {
@@ -116,7 +116,7 @@ export default define(meta, async (ps, user) => {
 		const query = makePaginationQuery(MessagingMessages.createQueryBuilder('message'), ps.sinceId, ps.untilId)
 			.andWhere(`message.groupId = :groupId`, { groupId: recipientGroup.id });
 
-		const messages = await query.take(ps.limit!).getMany();
+		const messages = await query.take(ps.limit).getMany();
 
 		// Mark all as read
 		if (ps.markAsRead) {

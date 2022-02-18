@@ -76,7 +76,7 @@ export default define(meta, async (ps, user) => {
 	generateBlockedUserQuery(query, user);
 
 	const notes = await query
-		.take(ps.limit!)
+		.take(ps.limit)
 		.getMany();
 
 	if (notes.length > 0) {

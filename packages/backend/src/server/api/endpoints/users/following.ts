@@ -82,7 +82,7 @@ export default define(meta, async (ps, me) => {
 		.innerJoinAndSelect('following.followee', 'followee');
 
 	const followings = await query
-		.take(ps.limit!)
+		.take(ps.limit)
 		.getMany();
 
 	return await Followings.packMany(followings, me, { populateFollowee: true });

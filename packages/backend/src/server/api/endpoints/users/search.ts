@@ -56,7 +56,7 @@ export default define(meta, async (ps, me) => {
 
 		users = await usernameQuery
 			.orderBy('user.updatedAt', 'DESC', 'NULLS LAST')
-			.take(ps.limit!)
+			.take(ps.limit)
 			.skip(ps.offset)
 			.getMany();
 	} else {
@@ -76,11 +76,11 @@ export default define(meta, async (ps, me) => {
 
 		users = await nameQuery
 			.orderBy('user.updatedAt', 'DESC', 'NULLS LAST')
-			.take(ps.limit!)
+			.take(ps.limit)
 			.skip(ps.offset)
 			.getMany();
 
-		if (users.length < ps.limit!) {
+		if (users.length < ps.limit) {
 			const profQuery = UserProfiles.createQueryBuilder('prof')
 				.select('prof.userId')
 				.where('prof.description ILIKE :query', { query: '%' + ps.query + '%' });
@@ -102,7 +102,7 @@ export default define(meta, async (ps, me) => {
 
 			users = users.concat(await query
 				.orderBy('user.updatedAt', 'DESC', 'NULLS LAST')
-				.take(ps.limit!)
+				.take(ps.limit)
 				.skip(ps.offset)
 				.getMany()
 			);

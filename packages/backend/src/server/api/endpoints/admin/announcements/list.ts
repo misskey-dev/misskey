@@ -66,7 +66,7 @@ export const meta = {
 export default define(meta, async (ps) => {
 	const query = makePaginationQuery(Announcements.createQueryBuilder('announcement'), ps.sinceId, ps.untilId);
 
-	const announcements = await query.take(ps.limit!).getMany();
+	const announcements = await query.take(ps.limit).getMany();
 
 	for (const announcement of announcements) {
 		(announcement as any).reads = await AnnouncementReads.count({

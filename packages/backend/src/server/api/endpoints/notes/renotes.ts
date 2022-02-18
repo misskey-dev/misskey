@@ -61,7 +61,7 @@ export default define(meta, async (ps, user) => {
 	if (user) generateMutedUserQuery(query, user);
 	if (user) generateBlockedUserQuery(query, user);
 
-	const renotes = await query.take(ps.limit!).getMany();
+	const renotes = await query.take(ps.limit).getMany();
 
 	return await Notes.packMany(renotes, user);
 });

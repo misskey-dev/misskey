@@ -35,7 +35,7 @@ export default define(meta, async (ps, me) => {
 		.andWhere(`user.host = :host`, { host: ps.host });
 
 	const users = await query
-		.take(ps.limit!)
+		.take(ps.limit)
 		.getMany();
 
 	return await Users.packMany(users, me, { detail: true });

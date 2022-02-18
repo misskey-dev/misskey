@@ -105,7 +105,7 @@ export default define(meta, async (ps, me) => {
 	}
 
 	// Search notes
-	const notes = await query.take(ps.limit!).getMany();
+	const notes = await query.take(ps.limit).getMany();
 
 	return await Notes.packMany(notes, me);
 });

@@ -64,7 +64,7 @@ export default define(meta, async (ps, me) => {
 		if (me) generateMutedUserQuery(query, me);
 		if (me) generateBlockedUserQuery(query, me);
 
-		const notes = await query.take(ps.limit!).getMany();
+		const notes = await query.take(ps.limit).getMany();
 
 		return await Notes.packMany(notes, me);
 	} else {
@@ -93,7 +93,7 @@ export default define(meta, async (ps, me) => {
 		const result = await es.search({
 			index: config.elasticsearch.index || 'misskey_note',
 			body: {
-				size: ps.limit!,
+				size: ps.limit,
 				from: ps.offset,
 				query: {
 					bool: {

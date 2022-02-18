@@ -59,7 +59,7 @@ export default define(meta, async (ps, user) => {
 	if (user) generateBlockedUserQuery(query, user);
 	if (user) generateMutedInstanceQuery(query, user);
 
-	const notes = await query.take(ps.limit!).getMany();
+	const notes = await query.take(ps.limit).getMany();
 
 	return await Notes.packMany(notes, user);
 });

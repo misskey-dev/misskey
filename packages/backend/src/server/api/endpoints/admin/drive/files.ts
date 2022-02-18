@@ -54,7 +54,7 @@ export default define(meta, async (ps, me) => {
 		}
 	}
 
-	const files = await query.take(ps.limit!).getMany();
+	const files = await query.take(ps.limit).getMany();
 
 	return await DriveFiles.packMany(files, { detail: true, withUser: true, self: true });
 });

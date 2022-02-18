@@ -78,7 +78,7 @@ export default define(meta, async (ps) => {
 
 	const emojis = await q
 		.orderBy('emoji.id', 'DESC')
-		.take(ps.limit!)
+		.take(ps.limit)
 		.getMany();
 
 	return Emojis.packMany(emojis);

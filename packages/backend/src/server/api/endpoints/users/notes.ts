@@ -108,7 +108,7 @@ export default define(meta, async (ps, me) => {
 
 	//#endregion
 
-	const timeline = await query.take(ps.limit!).getMany();
+	const timeline = await query.take(ps.limit).getMany();
 
 	return await Notes.packMany(timeline, me);
 });

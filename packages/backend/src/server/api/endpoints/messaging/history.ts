@@ -46,7 +46,7 @@ export default define(meta, async (ps, user) => {
 
 	const history: MessagingMessage[] = [];
 
-	for (let i = 0; i < ps.limit!; i++) {
+	for (let i = 0; i < ps.limit; i++) {
 		const found = ps.group
 			? history.map(m => m.groupId!)
 			: history.map(m => (m.userId === user.id) ? m.recipientId! : m.userId!);

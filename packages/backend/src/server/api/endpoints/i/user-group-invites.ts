@@ -48,7 +48,7 @@ export default define(meta, async (ps, user) => {
 		.leftJoinAndSelect('invitation.userGroup', 'user_group');
 
 	const invitations = await query
-		.take(ps.limit!)
+		.take(ps.limit)
 		.getMany();
 
 	return await UserGroupInvitations.packMany(invitations);

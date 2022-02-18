@@ -44,7 +44,7 @@ export default define(meta, async (ps, user) => {
 		.leftJoinAndSelect('like.page', 'page');
 
 	const likes = await query
-		.take(ps.limit!)
+		.take(ps.limit)
 		.getMany();
 
 	return await PageLikes.packMany(likes, user);

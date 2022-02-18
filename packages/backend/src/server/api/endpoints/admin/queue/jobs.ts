@@ -59,7 +59,7 @@ export default define(meta, async (ps) => {
 		ps.domain === 'objectStorage' ? objectStorageQueue :
 		null as never;
 
-	const jobs = await queue.getJobs([ps.state], 0, ps.limit!);
+	const jobs = await queue.getJobs([ps.state], 0, ps.limit);
 
 	return jobs.map(job => {
 		const data = job.data;

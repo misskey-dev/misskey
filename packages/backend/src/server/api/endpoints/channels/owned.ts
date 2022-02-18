@@ -36,7 +36,7 @@ export default define(meta, async (ps, me) => {
 		.andWhere({ userId: me.id });
 
 	const channels = await query
-		.take(ps.limit!)
+		.take(ps.limit)
 		.getMany();
 
 	return await Promise.all(channels.map(x => Channels.pack(x, me)));

@@ -69,7 +69,7 @@ export default define(meta, async (ps, me) => {
 		default: query.orderBy('user.id', 'ASC'); break;
 	}
 
-	query.take(ps.limit!);
+	query.take(ps.limit);
 	query.skip(ps.offset);
 
 	const users = await query.getMany();

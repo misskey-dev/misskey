@@ -23,7 +23,7 @@ export default define(meta, async (ps, user) => {
 		.andWhere(`post.userId = :userId`, { userId: ps.userId });
 
 	const posts = await query
-		.take(ps.limit!)
+		.take(ps.limit)
 		.getMany();
 
 	return await GalleryPosts.packMany(posts, user);

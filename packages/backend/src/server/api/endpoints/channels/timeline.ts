@@ -62,7 +62,7 @@ export default define(meta, async (ps, user) => {
 		.leftJoinAndSelect('note.channel', 'channel');
 	//#endregion
 
-	const timeline = await query.take(ps.limit!).getMany();
+	const timeline = await query.take(ps.limit).getMany();
 
 	if (user) activeUsersChart.read(user);
 

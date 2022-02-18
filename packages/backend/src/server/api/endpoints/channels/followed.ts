@@ -36,7 +36,7 @@ export default define(meta, async (ps, me) => {
 		.andWhere({ followerId: me.id });
 
 	const followings = await query
-		.take(ps.limit!)
+		.take(ps.limit)
 		.getMany();
 
 	return await Promise.all(followings.map(x => Channels.pack(x.followeeId, me)));

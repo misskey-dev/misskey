@@ -36,7 +36,7 @@ export default define(meta, async (ps, user) => {
 		.andWhere(`page.userId = :meId`, { meId: user.id });
 
 	const pages = await query
-		.take(ps.limit!)
+		.take(ps.limit)
 		.getMany();
 
 	return await Pages.packMany(pages);

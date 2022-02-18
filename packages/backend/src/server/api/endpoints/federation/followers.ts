@@ -35,7 +35,7 @@ export default define(meta, async (ps, me) => {
 		.andWhere(`following.followeeHost = :host`, { host: ps.host });
 
 	const followings = await query
-		.take(ps.limit!)
+		.take(ps.limit)
 		.getMany();
 
 	return await Followings.packMany(followings, me, { populateFollowee: true });

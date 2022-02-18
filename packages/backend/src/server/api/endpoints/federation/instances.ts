@@ -116,7 +116,7 @@ export default define(meta, async (ps, me) => {
 		query.andWhere('instance.host like :host', { host: '%' + ps.host.toLowerCase() + '%' });
 	}
 
-	const instances = await query.take(ps.limit!).skip(ps.offset).getMany();
+	const instances = await query.take(ps.limit).skip(ps.offset).getMany();
 
 	return instances;
 });

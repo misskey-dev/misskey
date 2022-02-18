@@ -56,7 +56,7 @@ export default define(meta, async (ps, me) => {
 		case '-updatedAt': query.orderBy('user.updatedAt', 'ASC'); break;
 	}
 
-	const users = await query.take(ps.limit!).getMany();
+	const users = await query.take(ps.limit).getMany();
 
 	return await Users.packMany(users, me, { detail: true });
 });

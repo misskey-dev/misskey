@@ -70,7 +70,7 @@ export default define(meta, async (ps) => {
 
 	if (ps.query) {
 		//q.andWhere('emoji.name ILIKE :q', { q: `%${ps.query}%` });
-		//const emojis = await q.take(ps.limit!).getMany();
+		//const emojis = await q.take(ps.limit).getMany();
 
 		emojis = await q.getMany();
 
@@ -79,9 +79,9 @@ export default define(meta, async (ps) => {
 			emoji.aliases.some(a => a.includes(ps.query!)) ||
 			emoji.category?.includes(ps.query!));
 
-		emojis.splice(ps.limit! + 1);
+		emojis.splice(ps.limit + 1);
 	} else {
-		emojis = await q.take(ps.limit!).getMany();
+		emojis = await q.take(ps.limit).getMany();
 	}
 
 	return Emojis.packMany(emojis);

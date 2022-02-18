@@ -24,7 +24,7 @@ export default define(meta, async (ps, user) => {
 		.andWhere('clip.isPublic = true');
 
 	const clips = await query
-		.take(ps.limit!)
+		.take(ps.limit)
 		.getMany();
 
 	return await Clips.packMany(clips);

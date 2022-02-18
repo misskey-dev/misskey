@@ -77,7 +77,7 @@ export default define(meta, async (ps, user) => {
 	}
 
 	const notes = await query
-		.take(ps.limit!)
+		.take(ps.limit)
 		.getMany();
 
 	return await Notes.packMany(notes, user);

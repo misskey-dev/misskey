@@ -57,7 +57,7 @@ export default define(meta, async (ps, me) => {
 	generateVisibilityQuery(query, me);
 
 	const reactions = await query
-		.take(ps.limit!)
+		.take(ps.limit)
 		.getMany();
 
 	return await Promise.all(reactions.map(reaction => NoteReactions.pack(reaction, me, { withNote: true })));
