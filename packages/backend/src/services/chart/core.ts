@@ -70,6 +70,18 @@ type ChartResult<T extends Schema> = {
 	[P in keyof T]: number[];
 };
 
+type UnionToIntersection<T> = (T extends any ? (x: T) => any : never) extends (x: infer R) => any ? R : never;
+
+type UnflattenSingleton<K extends string, V> = K extends `${infer A}.${infer B}`
+	? { [_ in A]: UnflattenSingleton<B, V>; }
+	: { [_ in K]: V; };
+
+type Unflatten<T extends Record<string, any>> = UnionToIntersection<
+	{
+		[K in Extract<keyof T, string>]: UnflattenSingleton<K, T[K]>;
+	}[Extract<keyof T, string>]
+>;
+
 /**
  * 様々なチャートの管理を司るクラス
  */
@@ -642,12 +654,12 @@ export default abstract class Chart<T extends Schema> {
 	}
 
 	@autobind
-	public async getChart(span: 'hour' | 'day', amount: number, cursor: Date | null, group: string | null = null): Promise<Record<string, unknown>> {
+	public async getChart(span: 'hour' | 'day', amount: number, cursor: Date | null, group: string | null = null): Promise<Unflatten<ChartResult<T>>> {
 		const result = await this.getChartRaw(span, amount, cursor, group);
 		const object = {};
 		for (const [k, v] of Object.entries(result)) {
 			nestedProperty.set(object, k, v);
 		}
-		return object;
+		return object as Unflatten<ChartResult<T>>;
 	}
 }
