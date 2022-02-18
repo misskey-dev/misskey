@@ -25,7 +25,7 @@ const paramDef = {
 	properties: {
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
-		limit: { type: 'integer', maximum: 100, default: 5 },
+		limit: { type: 'integer', minimum: 1, maximum: 100, default: 5 },
 	},
 	required: [],
 } as const;

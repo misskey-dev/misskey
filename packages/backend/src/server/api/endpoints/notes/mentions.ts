@@ -28,7 +28,7 @@ const paramDef = {
 	type: 'object',
 	properties: {
 		following: { type: 'boolean', default: false },
-		limit: { type: 'integer', maximum: 100, default: 10 },
+		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
 		visibility: { type: 'string' },

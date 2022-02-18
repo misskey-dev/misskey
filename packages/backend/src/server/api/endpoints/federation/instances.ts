@@ -29,7 +29,7 @@ const paramDef = {
 		federating: { type: 'boolean', nullable: true },
 		subscribing: { type: 'boolean', nullable: true },
 		publishing: { type: 'boolean', nullable: true },
-		limit: { type: 'integer', maximum: 100, default: 30 },
+		limit: { type: 'integer', minimum: 1, maximum: 100, default: 30 },
 		offset: { type: 'integer', default: 0 },
 		sort: { type: 'string' },
 	},

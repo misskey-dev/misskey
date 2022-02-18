@@ -25,7 +25,7 @@ const paramDef = {
 	properties: {
 		username: { type: 'string', nullable: true },
 		host: { type: 'string', nullable: true },
-		limit: { type: 'integer', maximum: 100, default: 10 },
+		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		detail: { type: 'boolean', default: true },
 	},
 	required: [],

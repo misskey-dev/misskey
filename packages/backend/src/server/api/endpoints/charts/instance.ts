@@ -12,7 +12,7 @@ const paramDef = {
 	type: 'object',
 	properties: {
 		span: { type: 'string', enum: ['day', 'hour'] },
-		limit: { type: 'integer', maximum: 500, default: 30 },
+		limit: { type: 'integer', minimum: 1, maximum: 500, default: 30 },
 		offset: { type: 'integer', nullable: true, default: null },
 		host: { type: 'string' },
 	},
