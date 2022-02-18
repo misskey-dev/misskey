@@ -82,6 +82,38 @@ type Unflatten<T extends Record<string, any>> = UnionToIntersection<
 	}[Extract<keyof T, string>]
 >;
 
+type ToJsonSchema<S> = {
+	type: 'object';
+	properties: {
+		[K in keyof S]: S[K] extends number[] ? { type: 'array'; items: { type: 'number'; }; } : ToJsonSchema<S[K]>;
+	},
+	required: (keyof S)[];
+};
+
+export function getJsonSchema<S extends Schema>(schema: S): ToJsonSchema<Unflatten<ChartResult<S>>> {
+	const object = {};
+	for (const [k, v] of Object.entries(schema)) {
+		nestedProperty.set(object, k, null);
+	}
+
+	function f(obj: Record<string, null | Record<string, unknown>>) {
+		const jsonSchema = {
+			type: 'object',
+			properties: {} as Record<string, unknown>,
+			required: [],
+		};
+		for (const [k, v] of Object.entries(obj)) {
+			jsonSchema.properties[k] = v === null ? {
+				type: 'array',
+				items: { type: 'number' },
+			} : f(v as Record<string, null | Record<string, unknown>>);
+		}
+		return jsonSchema;
+	}
+
+	return f(object) as ToJsonSchema<Unflatten<ChartResult<S>>>;
+}
+
 /**
  * 様々なチャートの管理を司るクラス
  */

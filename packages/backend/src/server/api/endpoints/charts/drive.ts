@@ -1,11 +1,11 @@
 import define from '../../define';
-import { convertLog } from '@/services/chart/core';
+import { getJsonSchema } from '@/services/chart/core';
 import { driveChart } from '@/services/chart/index';
 
 export const meta = {
 	tags: ['charts', 'drive'],
 
-	// TODO: response definition
+	res: getJsonSchema(driveChart.schema),
 } as const;
 
 const paramDef = {

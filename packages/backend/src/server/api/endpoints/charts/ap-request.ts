@@ -1,11 +1,11 @@
 import define from '../../define';
-import { convertLog } from '@/services/chart/core';
+import { getJsonSchema } from '@/services/chart/core';
 import { apRequestChart } from '@/services/chart/index';
 
 export const meta = {
 	tags: ['charts'],
 
-	// TODO: response definition
+	res: getJsonSchema(apRequestChart.schema),
 } as const;
 
 const paramDef = {
