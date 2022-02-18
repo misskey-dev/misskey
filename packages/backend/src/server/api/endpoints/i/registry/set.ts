@@ -15,7 +15,7 @@ const paramDef = {
 		key: { type: 'string', minLength: 1 },
 		value: {},
 		scope: { type: 'array', default: [], items: {
-			type: 'string', pattern: /^[a-zA-Z0-9_]+$/.toString(),
+			type: 'string', pattern: /^[a-zA-Z0-9_]+$/.toString().slice(1, -1),
 		} },
 	},
 	required: ['key', 'value'],

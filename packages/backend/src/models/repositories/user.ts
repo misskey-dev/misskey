@@ -23,10 +23,10 @@ const ajv = new Ajv();
 export class UserRepository extends Repository<User> {
 	public localUsernameSchema = { type: 'string', pattern: /^\w{1,20}$/.toString() } as const;
 	public passwordSchema = { type: 'string', minLength: 1 } as const;
-	public nameSchema = { type: 'string', minLength: 1, maxLength: 50, } as const;
-	public descriptionSchema = { type: 'string', minLength: 1, maxLength: 500, } as const;
-	public locationSchema = { type: 'string', minLength: 1, maxLength: 50, } as const;
-	public birthdaySchema = { type: 'string', pattern: /^([0-9]{4})-([0-9]{2})-([0-9]{2})$/.toString(), } as const;
+	public nameSchema = { type: 'string', minLength: 1, maxLength: 50 } as const;
+	public descriptionSchema = { type: 'string', minLength: 1, maxLength: 500 } as const;
+	public locationSchema = { type: 'string', minLength: 1, maxLength: 50 } as const;
+	public birthdaySchema = { type: 'string', pattern: /^([0-9]{4})-([0-9]{2})-([0-9]{2})$/.toString().slice(1, -1) } as const;
 
 	//#region Validators
 	public validateLocalUsername = ajv.compile(this.localUsernameSchema);

@@ -59,7 +59,7 @@ export default function <T extends IEndpointMeta, Ps extends Schema>(meta: T, pa
 				code: 'INVALID_PARAM',
 				id: '3d81ceae-475f-4600-b2a8-2bc116157532',
 			}, {
-				param: errors[0].propertyName,
+				param: errors[0].schemaPath,
 				reason: errors[0].message,
 			});
 			return Promise.reject(err);

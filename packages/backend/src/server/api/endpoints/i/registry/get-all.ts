@@ -11,7 +11,7 @@ const paramDef = {
 	type: 'object',
 	properties: {
 		scope: { type: 'array', default: [], items: {
-			type: 'string', pattern: /^[a-zA-Z0-9_]+$/.toString(),
+			type: 'string', pattern: /^[a-zA-Z0-9_]+$/.toString().slice(1, -1),
 		} },
 	},
 	required: [],
