@@ -18,22 +18,6 @@ export const meta = {
 
 	requireCredential: true,
 
-	params: {
-		type: 'object',
-		properties: {
-			limit: { type: 'integer', maximum: 100, default: 10, },
-			sinceId: { type: 'string', format: 'misskey:id', },
-			untilId: { type: 'string', format: 'misskey:id', },
-			sinceDate: { type: 'integer', },
-			untilDate: { type: 'integer', },
-			includeMyRenotes: { type: 'boolean', default: true, },
-			includeRenotedMyNotes: { type: 'boolean', default: true, },
-			includeLocalRenotes: { type: 'boolean', default: true, },
-			withFiles: { type: 'boolean', },
-		},
-		required: [],
-	},
-
 	res: {
 		type: 'array',
 		optional: false, nullable: false,
@@ -53,8 +37,24 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		limit: { type: 'integer', maximum: 100, default: 10 },
+		sinceId: { type: 'string', format: 'misskey:id' },
+		untilId: { type: 'string', format: 'misskey:id' },
+		sinceDate: { type: 'integer' },
+		untilDate: { type: 'integer' },
+		includeMyRenotes: { type: 'boolean', default: true },
+		includeRenotedMyNotes: { type: 'boolean', default: true },
+		includeLocalRenotes: { type: 'boolean', default: true },
+		withFiles: { type: 'boolean' },
+	},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const m = await fetchMeta();
 	if (m.disableLocalTimeline && !user.isAdmin && !user.isModerator) {
 		throw new ApiError(meta.errors.stlDisabled);

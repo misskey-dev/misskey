@@ -13,14 +13,6 @@ export const meta = {
 		max: 30,
 	},
 
-	params: {
-		type: 'object',
-		properties: {
-			uri: { type: 'string', },
-		},
-		required: ['uri'],
-	},
-
 	errors: {
 	},
 
@@ -30,8 +22,16 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		uri: { type: 'string' },
+	},
+	required: ['uri'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps) => {
+export default define(meta, paramDef, async (ps) => {
 	const resolver = new Resolver();
 	const object = await resolver.resolve(ps.uri);
 	return object;

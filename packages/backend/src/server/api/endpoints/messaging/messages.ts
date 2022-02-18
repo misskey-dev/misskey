@@ -13,19 +13,6 @@ export const meta = {
 
 	kind: 'read:messaging',
 
-	params: {
-		type: 'object',
-		properties: {
-			userId: { type: 'string', format: 'misskey:id', },
-			groupId: { type: 'string', format: 'misskey:id', },
-			limit: { type: 'integer', maximum: 100, default: 10, },
-			sinceId: { type: 'string', format: 'misskey:id', },
-			untilId: { type: 'string', format: 'misskey:id', },
-			markAsRead: { type: 'boolean', default: true, },
-		},
-		required: [],
-	},
-
 	res: {
 		type: 'array',
 		optional: false, nullable: false,
@@ -57,8 +44,21 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		userId: { type: 'string', format: 'misskey:id' },
+		groupId: { type: 'string', format: 'misskey:id' },
+		limit: { type: 'integer', maximum: 100, default: 10 },
+		sinceId: { type: 'string', format: 'misskey:id' },
+		untilId: { type: 'string', format: 'misskey:id' },
+		markAsRead: { type: 'boolean', default: true },
+	},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	if (ps.userId != null) {
 		// Fetch recipient (user)
 		const recipient = await getUser(ps.userId).catch(e => {

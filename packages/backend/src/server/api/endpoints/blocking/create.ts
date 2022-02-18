@@ -17,14 +17,6 @@ export const meta = {
 
 	kind: 'write:blocks',
 
-	params: {
-		type: 'object',
-		properties: {
-			userId: { type: 'string', format: 'misskey:id', },
-		},
-		required: ['userId'],
-	},
-
 	errors: {
 		noSuchUser: {
 			message: 'No such user.',
@@ -52,8 +44,16 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		userId: { type: 'string', format: 'misskey:id' },
+	},
+	required: ['userId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const blocker = await Users.findOneOrFail(user.id);
 
 	// 自分自身

@@ -12,8 +12,6 @@ export interface IEndpointMeta {
 
 	readonly tags?: ReadonlyArray<string>;
 
-	readonly params?: Schema;
-
 	readonly errors?: {
 		readonly [key: string]: {
 			readonly message: string;

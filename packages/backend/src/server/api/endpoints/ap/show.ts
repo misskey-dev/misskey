@@ -23,14 +23,6 @@ export const meta = {
 		max: 30,
 	},
 
-	params: {
-		type: 'object',
-		properties: {
-			uri: { type: 'string', },
-		},
-		required: ['uri'],
-	},
-
 	errors: {
 		noSuchObject: {
 			message: 'No such object.',
@@ -76,8 +68,16 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		uri: { type: 'string' },
+	},
+	required: ['uri'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps) => {
+export default define(meta, paramDef, async (ps) => {
 	const object = await fetchAny(ps.uri);
 	if (object) {
 		return object;

@@ -9,19 +9,6 @@ export const meta = {
 
 	requireCredential: false,
 
-	params: {
-		type: 'object',
-		properties: {
-			name: { type: 'string', },
-			description: { type: 'string', },
-			permission: { type: 'array', uniqueItems: true, items: {
-				type: 'string',
-			}, },
-			callbackUrl: { type: 'string', nullable: true, },
-		},
-		required: ['name', 'description', 'permission'],
-	},
-
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
@@ -29,8 +16,21 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		name: { type: 'string' },
+		description: { type: 'string' },
+		permission: { type: 'array', uniqueItems: true, items: {
+			type: 'string',
+		} },
+		callbackUrl: { type: 'string', nullable: true },
+	},
+	required: ['name', 'description', 'permission'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	// Generate secret
 	const secret = secureRndstr(32, true);
 

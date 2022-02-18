@@ -9,15 +9,6 @@ export const meta = {
 
 	kind: 'write:account',
 
-	params: {
-		type: 'object',
-		properties: {
-			listId: { type: 'string', format: 'misskey:id', },
-			name: { type: 'string', minLength: 1, maxLength: 100, },
-		},
-		required: ['listId', 'name'],
-	},
-
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
@@ -33,8 +24,17 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		listId: { type: 'string', format: 'misskey:id' },
+		name: { type: 'string', minLength: 1, maxLength: 100 },
+	},
+	required: ['listId', 'name'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	// Fetch the list
 	const userList = await UserLists.findOne({
 		id: ps.listId,

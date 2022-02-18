@@ -9,16 +9,6 @@ export const meta = {
 
 	kind: 'read:channels',
 
-	params: {
-		type: 'object',
-		properties: {
-			sinceId: { type: 'string', format: 'misskey:id', },
-			untilId: { type: 'string', format: 'misskey:id', },
-			limit: { type: 'integer', maximum: 100, default: 5, },
-		},
-		required: [],
-	},
-
 	res: {
 		type: 'array',
 		optional: false, nullable: false,
@@ -30,8 +20,18 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		sinceId: { type: 'string', format: 'misskey:id' },
+		untilId: { type: 'string', format: 'misskey:id' },
+		limit: { type: 'integer', maximum: 100, default: 5 },
+	},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	const query = makePaginationQuery(ChannelFollowings.createQueryBuilder(), ps.sinceId, ps.untilId)
 		.andWhere({ followerId: me.id });
 

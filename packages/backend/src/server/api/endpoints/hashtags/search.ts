@@ -6,16 +6,6 @@ export const meta = {
 
 	requireCredential: false,
 
-	params: {
-		type: 'object',
-		properties: {
-			limit: { type: 'integer', maximum: 100, default: 10, },
-			query: { type: 'string', },
-			offset: { type: 'integer', default: 0, },
-		},
-		required: ['query'],
-	},
-
 	res: {
 		type: 'array',
 		optional: false, nullable: false,
@@ -26,8 +16,18 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		limit: { type: 'integer', maximum: 100, default: 10 },
+		query: { type: 'string' },
+		offset: { type: 'integer', default: 0 },
+	},
+	required: ['query'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps) => {
+export default define(meta, paramDef, async (ps) => {
 	const hashtags = await Hashtags.createQueryBuilder('tag')
 		.where('tag.name like :q', { q: ps.query.toLowerCase() + '%' })
 		.orderBy('tag.count', 'DESC')

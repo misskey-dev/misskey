@@ -6,12 +6,14 @@ export const meta = {
 	requireModerator: true,
 
 	tags: ['admin'],
+} as const;
 
-	params: {},
+const paramDef = {
+
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async () => {
+export default define(meta, paramDef, async () => {
 	const stats = await
 		getConnection().query(`SELECT * FROM pg_indexes;`)
 		.then(recs => {

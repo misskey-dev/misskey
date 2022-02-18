@@ -11,14 +11,6 @@ export const meta = {
 
 	kind: 'write:user-groups',
 
-	params: {
-		type: 'object',
-		properties: {
-			name: { type: 'string', minLength: 1, maxLength: 100, },
-		},
-		required: ['name'],
-	},
-
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
@@ -26,8 +18,16 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		name: { type: 'string', minLength: 1, maxLength: 100 },
+	},
+	required: ['name'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const userGroup = await UserGroups.insert({
 		id: genId(),
 		createdAt: new Date(),

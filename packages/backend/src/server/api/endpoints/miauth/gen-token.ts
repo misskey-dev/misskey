@@ -10,20 +10,6 @@ export const meta = {
 
 	secure: true,
 
-	params: {
-		type: 'object',
-		properties: {
-			session: { type: 'string', nullable: true, },
-			name: { type: 'string', nullable: true, },
-			description: { type: 'string', nullable: true, },
-			iconUrl: { type: 'string', nullable: true, },
-			permission: { type: 'array', uniqueItems: true, items: {
-				type: 'string',
-			}, },
-		},
-		required: ['session', 'permission'],
-	},
-
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
@@ -36,8 +22,22 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		session: { type: 'string', nullable: true },
+		name: { type: 'string', nullable: true },
+		description: { type: 'string', nullable: true },
+		iconUrl: { type: 'string', nullable: true },
+		permission: { type: 'array', uniqueItems: true, items: {
+			type: 'string',
+		} },
+	},
+	required: ['session', 'permission'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	// Generate access token
 	const accessToken = secureRndstr(32, true);
 

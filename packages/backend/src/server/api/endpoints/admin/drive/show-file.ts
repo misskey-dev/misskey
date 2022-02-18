@@ -8,15 +8,6 @@ export const meta = {
 	requireCredential: true,
 	requireModerator: true,
 
-	params: {
-		type: 'object',
-		properties: {
-			fileId: { type: 'string', format: 'misskey:id', },
-			url: { type: 'string', },
-		},
-		required: [],
-	},
-
 	errors: {
 		noSuchFile: {
 			message: 'No such file.',
@@ -158,8 +149,17 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		fileId: { type: 'string', format: 'misskey:id' },
+		url: { type: 'string' },
+	},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	const file = ps.fileId ? await DriveFiles.findOne(ps.fileId) : await DriveFiles.findOne({
 		where: [{
 			url: ps.url,

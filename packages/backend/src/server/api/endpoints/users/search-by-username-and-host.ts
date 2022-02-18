@@ -9,17 +9,6 @@ export const meta = {
 
 	requireCredential: false,
 
-	params: {
-		type: 'object',
-		properties: {
-			username: { type: 'string', nullable: true, },
-			host: { type: 'string', nullable: true, },
-			limit: { type: 'integer', maximum: 100, default: 10, },
-			detail: { type: 'boolean', default: true, },
-		},
-		required: [],
-	},
-
 	res: {
 		type: 'array',
 		optional: false, nullable: false,
@@ -31,8 +20,19 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		username: { type: 'string', nullable: true },
+		host: { type: 'string', nullable: true },
+		limit: { type: 'integer', maximum: 100, default: 10 },
+		detail: { type: 'boolean', default: true },
+	},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	const activeThreshold = new Date(Date.now() - (1000 * 60 * 60 * 24 * 30)); // 30日
 
 	if (ps.host) {

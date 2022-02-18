@@ -6,16 +6,17 @@ export const meta = {
 	secure: true,
 	requireCredential: true,
 	requireModerator: true,
-	params: {
-		type: 'object',
-		properties: {
-			fileId: { type: 'string', format: 'misskey:id', },
-		},
-		required: ['fileId'],
+} as const;
+
+const paramDef = {
+	type: 'object',
+	properties: {
+		fileId: { type: 'string', format: 'misskey:id' },
 	},
+	required: ['fileId'],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	createImportCustomEmojisJob(user, ps.fileId);
 });

@@ -9,17 +9,6 @@ export const meta = {
 
 	kind: 'write:channels',
 
-	params: {
-		type: 'object',
-		properties: {
-			channelId: { type: 'string', format: 'misskey:id', },
-			name: { type: 'string', minLength: 1, maxLength: 128, },
-			description: { type: 'string', nullable: true, minLength: 1, maxLength: 2048, },
-			bannerId: { type: 'string', format: 'misskey:id', nullable: true, },
-		},
-		required: ['channelId'],
-	},
-
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
@@ -47,8 +36,19 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		channelId: { type: 'string', format: 'misskey:id' },
+		name: { type: 'string', minLength: 1, maxLength: 128 },
+		description: { type: 'string', nullable: true, minLength: 1, maxLength: 2048 },
+		bannerId: { type: 'string', format: 'misskey:id', nullable: true },
+	},
+	required: ['channelId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	const channel = await Channels.findOne({
 		id: ps.channelId,
 	});

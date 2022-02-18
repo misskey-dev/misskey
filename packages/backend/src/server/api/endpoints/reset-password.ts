@@ -7,22 +7,22 @@ import { ApiError } from '../error';
 export const meta = {
 	requireCredential: false,
 
-	params: {
-		type: 'object',
-		properties: {
-			token: { type: 'string', },
-			password: { type: 'string', },
-		},
-		required: ['token', 'password'],
-	},
-
 	errors: {
 
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		token: { type: 'string' },
+		password: { type: 'string' },
+	},
+	required: ['token', 'password'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const req = await PasswordResetRequests.findOneOrFail({
 		token: ps.token,
 	});

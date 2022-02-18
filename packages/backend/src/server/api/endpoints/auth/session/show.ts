@@ -7,14 +7,6 @@ export const meta = {
 
 	requireCredential: false,
 
-	params: {
-		type: 'object',
-		properties: {
-			token: { type: 'string', },
-		},
-		required: ['token'],
-	},
-
 	errors: {
 		noSuchSession: {
 			message: 'No such session.',
@@ -45,8 +37,16 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		token: { type: 'string' },
+	},
+	required: ['token'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	// Lookup session
 	const session = await AuthSessions.findOne({
 		token: ps.token,

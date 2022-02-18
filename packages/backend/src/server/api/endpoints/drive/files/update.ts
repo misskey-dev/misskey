@@ -11,18 +11,6 @@ export const meta = {
 
 	kind: 'write:drive',
 
-	params: {
-		type: 'object',
-		properties: {
-			fileId: { type: 'string', format: 'misskey:id', },
-			folderId: { type: 'string', format: 'misskey:id', nullable: true, },
-			name: { type: 'string', },
-			isSensitive: { type: 'boolean', },
-			comment: { type: 'string', nullable: true, maxLength: 512, },
-		},
-		required: ['fileId'],
-	},
-
 	errors: {
 		invalidFileName: {
 			message: 'Invalid file name.',
@@ -56,8 +44,20 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		fileId: { type: 'string', format: 'misskey:id' },
+		folderId: { type: 'string', format: 'misskey:id', nullable: true },
+		name: { type: 'string' },
+		isSensitive: { type: 'boolean' },
+		comment: { type: 'string', nullable: true, maxLength: 512 },
+	},
+	required: ['fileId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const file = await DriveFiles.findOne(ps.fileId);
 
 	if (file == null) {

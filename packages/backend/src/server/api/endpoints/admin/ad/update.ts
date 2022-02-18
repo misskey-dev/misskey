@@ -8,21 +8,6 @@ export const meta = {
 	requireCredential: true,
 	requireModerator: true,
 
-	params: {
-		type: 'object',
-		properties: {
-			id: { type: 'string', format: 'misskey:id', },
-			memo: { type: 'string', },
-			url: { type: 'string', minLength: 1, },
-			imageUrl: { type: 'string', minLength: 1, },
-			place: { type: 'string', },
-			priority: { type: 'string', },
-			ratio: { type: 'integer', },
-			expiresAt: { type: 'integer', },
-		},
-		required: ['id', 'memo', 'url', 'imageUrl', 'place', 'priority', 'ratio', 'expiresAt'],
-	},
-
 	errors: {
 		noSuchAd: {
 			message: 'No such ad.',
@@ -32,8 +17,23 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		id: { type: 'string', format: 'misskey:id' },
+		memo: { type: 'string' },
+		url: { type: 'string', minLength: 1 },
+		imageUrl: { type: 'string', minLength: 1 },
+		place: { type: 'string' },
+		priority: { type: 'string' },
+		ratio: { type: 'integer' },
+		expiresAt: { type: 'integer' },
+	},
+	required: ['id', 'memo', 'url', 'imageUrl', 'place', 'priority', 'ratio', 'expiresAt'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	const ad = await Ads.findOne(ps.id);
 
 	if (ad == null) throw new ApiError(meta.errors.noSuchAd);

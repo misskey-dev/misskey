@@ -8,16 +8,6 @@ export const meta = {
 	requireCredential: true,
 	requireModerator: true,
 
-	params: {
-		type: 'object',
-		properties: {
-			title: { type: 'string', minLength: 1, },
-			text: { type: 'string', minLength: 1, },
-			imageUrl: { type: 'string', nullable: true, minLength: 1, },
-		},
-		required: ['title', 'text', 'imageUrl'],
-	},
-
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
@@ -54,8 +44,18 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		title: { type: 'string', minLength: 1 },
+		text: { type: 'string', minLength: 1 },
+		imageUrl: { type: 'string', nullable: true, minLength: 1 },
+	},
+	required: ['title', 'text', 'imageUrl'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps) => {
+export default define(meta, paramDef, async (ps) => {
 	const announcement = await Announcements.insert({
 		id: genId(),
 		createdAt: new Date(),

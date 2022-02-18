@@ -10,14 +10,6 @@ export const meta = {
 
 	kind: 'write:following',
 
-	params: {
-		type: 'object',
-		properties: {
-			userId: { type: 'string', format: 'misskey:id', },
-		},
-		required: ['userId'],
-	},
-
 	errors: {
 		noSuchUser: {
 			message: 'No such user.',
@@ -32,8 +24,16 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		userId: { type: 'string', format: 'misskey:id' },
+	},
+	required: ['userId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	// Fetch follower
 	const follower = await getUser(ps.userId).catch(e => {
 		if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);

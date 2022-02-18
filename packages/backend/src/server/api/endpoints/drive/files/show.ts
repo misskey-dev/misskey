@@ -10,15 +10,6 @@ export const meta = {
 
 	kind: 'read:drive',
 
-	params: {
-		type: 'object',
-		properties: {
-			fileId: { type: 'string', format: 'misskey:id', },
-			url: { type: 'string', },
-		},
-		required: [],
-	},
-
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
@@ -46,8 +37,17 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		fileId: { type: 'string', format: 'misskey:id' },
+		url: { type: 'string' },
+	},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	let file: DriveFile | undefined;
 
 	if (ps.fileId) {

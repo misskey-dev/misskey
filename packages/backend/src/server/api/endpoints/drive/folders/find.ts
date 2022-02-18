@@ -8,15 +8,6 @@ export const meta = {
 
 	kind: 'read:drive',
 
-	params: {
-		type: 'object',
-		properties: {
-			name: { type: 'string', },
-			parentId: { type: 'string', format: 'misskey:id', nullable: true, default: null, },
-		},
-		required: ['name'],
-	},
-
 	res: {
 		type: 'array',
 		optional: false, nullable: false,
@@ -28,8 +19,17 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		name: { type: 'string' },
+		parentId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
+	},
+	required: ['name'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const folders = await DriveFolders.find({
 		name: ps.name,
 		userId: user.id,

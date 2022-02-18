@@ -7,14 +7,6 @@ export const meta = {
 
 	requireCredential: false,
 
-	params: {
-		type: 'object',
-		properties: {
-			host: { type: 'string', },
-		},
-		required: ['host'],
-	},
-
 	res: {
 		type: 'object',
 		optional: true, nullable: false,
@@ -22,8 +14,16 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		host: { type: 'string' },
+	},
+	required: ['host'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	const instance = await Instances
 		.findOne({ host: toPuny(ps.host) });
 

@@ -12,17 +12,6 @@ export const meta = {
 
 	requireCredential: false,
 
-	params: {
-		type: 'object',
-		properties: {
-			noteId: { type: 'string', format: 'misskey:id', },
-			limit: { type: 'integer', maximum: 100, default: 10, },
-			sinceId: { type: 'string', format: 'misskey:id', },
-			untilId: { type: 'string', format: 'misskey:id', },
-		},
-		required: ['noteId'],
-	},
-
 	res: {
 		type: 'array',
 		optional: false, nullable: false,
@@ -34,8 +23,19 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		noteId: { type: 'string', format: 'misskey:id' },
+		limit: { type: 'integer', maximum: 100, default: 10 },
+		sinceId: { type: 'string', format: 'misskey:id' },
+		untilId: { type: 'string', format: 'misskey:id' },
+	},
+	required: ['noteId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 		.andWhere(new Brackets(qb => { qb
 			.where(`note.replyId = :noteId`, { noteId: ps.noteId })

@@ -7,15 +7,6 @@ export const meta = {
 
 	requireCredential: false,
 
-	params: {
-		type: 'object',
-		properties: {
-			appSecret: { type: 'string', },
-			token: { type: 'string', },
-		},
-		required: ['appSecret', 'token'],
-	},
-
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
@@ -54,8 +45,17 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		appSecret: { type: 'string' },
+		token: { type: 'string' },
+	},
+	required: ['appSecret', 'token'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps) => {
+export default define(meta, paramDef, async (ps) => {
 	// Lookup app
 	const app = await Apps.findOne({
 		secret: ps.appSecret,

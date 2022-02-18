@@ -10,15 +10,6 @@ export const meta = {
 
 	kind: 'write:user-groups',
 
-	params: {
-		type: 'object',
-		properties: {
-			groupId: { type: 'string', format: 'misskey:id', },
-			userId: { type: 'string', format: 'misskey:id', },
-		},
-		required: ['groupId', 'userId'],
-	},
-
 	errors: {
 		noSuchGroup: {
 			message: 'No such group.',
@@ -40,8 +31,17 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		groupId: { type: 'string', format: 'misskey:id' },
+		userId: { type: 'string', format: 'misskey:id' },
+	},
+	required: ['groupId', 'userId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	// Fetch the group
 	const userGroup = await UserGroups.findOne({
 		id: ps.groupId,

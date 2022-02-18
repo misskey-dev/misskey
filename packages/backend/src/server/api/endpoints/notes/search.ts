@@ -13,20 +13,6 @@ export const meta = {
 
 	requireCredential: false,
 
-	params: {
-		type: 'object',
-		properties: {
-			query: { type: 'string', },
-			sinceId: { type: 'string', format: 'misskey:id', },
-			untilId: { type: 'string', format: 'misskey:id', },
-			limit: { type: 'integer', maximum: 100, default: 10, },
-			host: { type: 'string', nullable: true, },
-			userId: { type: 'string', format: 'misskey:id', nullable: true, default: null, },
-			channelId: { type: 'string', format: 'misskey:id', nullable: true, default: null, },
-		},
-		required: ['query'],
-	},
-
 	res: {
 		type: 'array',
 		optional: false, nullable: false,
@@ -41,8 +27,22 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		query: { type: 'string' },
+		sinceId: { type: 'string', format: 'misskey:id' },
+		untilId: { type: 'string', format: 'misskey:id' },
+		limit: { type: 'integer', maximum: 100, default: 10 },
+		host: { type: 'string', nullable: true },
+		userId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
+		channelId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
+	},
+	required: ['query'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	if (es == null) {
 		const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId);
 

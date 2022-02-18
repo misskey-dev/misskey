@@ -9,14 +9,6 @@ export const meta = {
 
 	kind: 'read:account',
 
-	params: {
-		type: 'object',
-		properties: {
-			clipId: { type: 'string', format: 'misskey:id', },
-		},
-		required: ['clipId'],
-	},
-
 	errors: {
 		noSuchClip: {
 			message: 'No such clip.',
@@ -32,8 +24,16 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		clipId: { type: 'string', format: 'misskey:id' },
+	},
+	required: ['clipId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	// Fetch the clip
 	const clip = await Clips.findOne({
 		id: ps.clipId,

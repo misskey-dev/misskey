@@ -10,14 +10,6 @@ export const meta = {
 
 	kind: 'write:gallery-likes',
 
-	params: {
-		type: 'object',
-		properties: {
-			postId: { type: 'string', format: 'misskey:id', },
-		},
-		required: ['postId'],
-	},
-
 	errors: {
 		noSuchPost: {
 			message: 'No such post.',
@@ -39,8 +31,16 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		postId: { type: 'string', format: 'misskey:id' },
+	},
+	required: ['postId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const post = await GalleryPosts.findOne(ps.postId);
 	if (post == null) {
 		throw new ApiError(meta.errors.noSuchPost);

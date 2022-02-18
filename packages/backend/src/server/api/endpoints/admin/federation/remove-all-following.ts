@@ -7,18 +7,18 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
+} as const;
 
-	params: {
-		type: 'object',
-		properties: {
-			host: { type: 'string', },
-		},
-		required: ['host'],
+const paramDef = {
+	type: 'object',
+	properties: {
+		host: { type: 'string' },
 	},
+	required: ['host'],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	const followings = await Followings.find({
 		followerHost: ps.host,
 	});

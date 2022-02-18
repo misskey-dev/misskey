@@ -10,8 +10,6 @@ export const meta = {
 
 	tags: ['admin', 'meta'],
 
-	params: {},
-
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
@@ -89,8 +87,12 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async () => {
+export default define(meta, paramDef, async () => {
 	const memStats = await si.mem();
 	const fsStats = await si.fsSize();
 	const netInterface = await si.networkInterfaceDefault();

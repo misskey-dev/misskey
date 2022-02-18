@@ -6,18 +6,6 @@ export const meta = {
 
 	requireCredential: false,
 
-	params: {
-		type: 'object',
-		properties: {
-			limit: { type: 'integer', maximum: 100, default: 10, },
-			attachedToUserOnly: { type: 'boolean', default: false, },
-			attachedToLocalUserOnly: { type: 'boolean', default: false, },
-			attachedToRemoteUserOnly: { type: 'boolean', default: false, },
-			sort: { type: 'string', enum: ['+mentionedUsers', '-mentionedUsers', '+mentionedLocalUsers', '-mentionedLocalUsers', '+mentionedRemoteUsers', '-mentionedRemoteUsers', '+attachedUsers', '-attachedUsers', '+attachedLocalUsers', '-attachedLocalUsers', '+attachedRemoteUsers', '-attachedRemoteUsers'], },
-		},
-		required: ['sort'],
-	},
-
 	res: {
 		type: 'array',
 		optional: false, nullable: false,
@@ -29,8 +17,20 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		limit: { type: 'integer', maximum: 100, default: 10 },
+		attachedToUserOnly: { type: 'boolean', default: false },
+		attachedToLocalUserOnly: { type: 'boolean', default: false },
+		attachedToRemoteUserOnly: { type: 'boolean', default: false },
+		sort: { type: 'string', enum: ['+mentionedUsers', '-mentionedUsers', '+mentionedLocalUsers', '-mentionedLocalUsers', '+mentionedRemoteUsers', '-mentionedRemoteUsers', '+attachedUsers', '-attachedUsers', '+attachedLocalUsers', '-attachedLocalUsers', '+attachedRemoteUsers', '-attachedRemoteUsers'] },
+	},
+	required: ['sort'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	const query = Hashtags.createQueryBuilder('tag');
 
 	if (ps.attachedToUserOnly) query.andWhere('tag.attachedUsersCount != 0');

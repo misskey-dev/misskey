@@ -7,12 +7,14 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
+} as const;
 
-	params: {},
+const paramDef = {
+
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	destroy();
 
 	insertModerationLog(me, 'clearQueue');

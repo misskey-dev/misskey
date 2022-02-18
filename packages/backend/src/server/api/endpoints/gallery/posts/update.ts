@@ -17,20 +17,6 @@ export const meta = {
 		max: 300,
 	},
 
-	params: {
-		type: 'object',
-		properties: {
-			postId: { type: 'string', format: 'misskey:id', },
-			title: { type: 'string', minLength: 1, },
-			description: { type: 'string', nullable: true, },
-			fileIds: { type: 'array', uniqueItems: true, minItems: 1, maxItems: 32, items: {
-				type: 'string', format: 'misskey:id',
-			}, },
-			isSensitive: { type: 'boolean', default: false, },
-		},
-		required: ['postId', 'title', 'fileIds'],
-	},
-
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
@@ -42,8 +28,22 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		postId: { type: 'string', format: 'misskey:id' },
+		title: { type: 'string', minLength: 1 },
+		description: { type: 'string', nullable: true },
+		fileIds: { type: 'array', uniqueItems: true, minItems: 1, maxItems: 32, items: {
+			type: 'string', format: 'misskey:id',
+		} },
+		isSensitive: { type: 'boolean', default: false },
+	},
+	required: ['postId', 'title', 'fileIds'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const files = (await Promise.all(ps.fileIds.map(fileId =>
 		DriveFiles.findOne({
 			id: fileId,

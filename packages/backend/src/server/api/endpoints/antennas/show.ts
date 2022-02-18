@@ -9,14 +9,6 @@ export const meta = {
 
 	kind: 'read:account',
 
-	params: {
-		type: 'object',
-		properties: {
-			antennaId: { type: 'string', format: 'misskey:id', },
-		},
-		required: ['antennaId'],
-	},
-
 	errors: {
 		noSuchAntenna: {
 			message: 'No such antenna.',
@@ -32,8 +24,16 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		antennaId: { type: 'string', format: 'misskey:id' },
+	},
+	required: ['antennaId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	// Fetch the antenna
 	const antenna = await Antennas.findOne({
 		id: ps.antennaId,

@@ -5,21 +5,6 @@ import { Notes } from '@/models/index';
 export const meta = {
 	tags: ['notes'],
 
-	params: {
-		type: 'object',
-		properties: {
-			local: { type: 'boolean', },
-			reply: { type: 'boolean', },
-			renote: { type: 'boolean', },
-			withFiles: { type: 'boolean', },
-			poll: { type: 'boolean', },
-			limit: { type: 'integer', maximum: 100, default: 10, },
-			sinceId: { type: 'string', format: 'misskey:id', },
-			untilId: { type: 'string', format: 'misskey:id', },
-		},
-		required: [],
-	},
-
 	res: {
 		type: 'array',
 		optional: false, nullable: false,
@@ -31,8 +16,23 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		local: { type: 'boolean' },
+		reply: { type: 'boolean' },
+		renote: { type: 'boolean' },
+		withFiles: { type: 'boolean' },
+		poll: { type: 'boolean' },
+		limit: { type: 'integer', maximum: 100, default: 10 },
+		sinceId: { type: 'string', format: 'misskey:id' },
+		untilId: { type: 'string', format: 'misskey:id' },
+	},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps) => {
+export default define(meta, paramDef, async (ps) => {
 	const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 		.andWhere(`note.visibility = 'public'`)
 		.andWhere(`note.localOnly = FALSE`)

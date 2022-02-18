@@ -5,16 +5,15 @@ import define from '../define';
 export const meta = {
 	requireCredential: false,
 
-	desc: {
-	},
-
 	tags: ['meta'],
+} as const;
 
-	params: {},
+const paramDef = {
+
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async () => {
+export default define(meta, paramDef, async () => {
 	const memStats = await si.mem();
 	const fsStats = await si.fsSize();
 

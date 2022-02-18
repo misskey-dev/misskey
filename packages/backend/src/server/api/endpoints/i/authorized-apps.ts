@@ -5,20 +5,20 @@ export const meta = {
 	requireCredential: true,
 
 	secure: true,
+} as const;
 
-	params: {
-		type: 'object',
-		properties: {
-			limit: { type: 'integer', maximum: 100, default: 10, },
-			offset: { type: 'integer', default: 0, },
-			sort: { type: 'string', enum: ['desc', 'asc'], default: "desc", },
-		},
-		required: [],
+const paramDef = {
+	type: 'object',
+	properties: {
+		limit: { type: 'integer', maximum: 100, default: 10 },
+		offset: { type: 'integer', default: 0 },
+		sort: { type: 'string', enum: ['desc', 'asc'], default: "desc" },
 	},
+	required: [],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	// Get tokens
 	const tokens = await AccessTokens.find({
 		where: {

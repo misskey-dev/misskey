@@ -9,17 +9,6 @@ export const meta = {
 
 	kind: 'write:account',
 
-	params: {
-		type: 'object',
-		properties: {
-			clipId: { type: 'string', format: 'misskey:id', },
-			name: { type: 'string', minLength: 1, maxLength: 100, },
-			isPublic: { type: 'boolean', },
-			description: { type: 'string', nullable: true, minLength: 1, maxLength: 2048, },
-		},
-		required: ['clipId', 'name'],
-	},
-
 	errors: {
 		noSuchClip: {
 			message: 'No such clip.',
@@ -35,8 +24,19 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		clipId: { type: 'string', format: 'misskey:id' },
+		name: { type: 'string', minLength: 1, maxLength: 100 },
+		isPublic: { type: 'boolean' },
+		description: { type: 'string', nullable: true, minLength: 1, maxLength: 2048 },
+	},
+	required: ['clipId', 'name'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	// Fetch the clip
 	const clip = await Clips.findOne({
 		id: ps.clipId,

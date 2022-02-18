@@ -9,19 +9,6 @@ export const meta = {
 
 	requireCredential: false,
 
-	params: {
-		type: 'object',
-		properties: {
-			userId: { type: 'string', format: 'misskey:id', },
-			limit: { type: 'integer', maximum: 100, default: 10, },
-			sinceId: { type: 'string', format: 'misskey:id', },
-			untilId: { type: 'string', format: 'misskey:id', },
-			sinceDate: { type: 'integer', },
-			untilDate: { type: 'integer', },
-		},
-		required: ['userId'],
-	},
-
 	res: {
 		type: 'array',
 		optional: false, nullable: false,
@@ -41,8 +28,21 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		userId: { type: 'string', format: 'misskey:id' },
+		limit: { type: 'integer', maximum: 100, default: 10 },
+		sinceId: { type: 'string', format: 'misskey:id' },
+		untilId: { type: 'string', format: 'misskey:id' },
+		sinceDate: { type: 'integer' },
+		untilDate: { type: 'integer' },
+	},
+	required: ['userId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	const profile = await UserProfiles.findOneOrFail(ps.userId);
 
 	if (me == null || (me.id !== ps.userId && !profile.publicReactions)) {

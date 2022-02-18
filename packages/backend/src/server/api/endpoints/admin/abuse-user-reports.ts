@@ -8,20 +8,6 @@ export const meta = {
 	requireCredential: true,
 	requireModerator: true,
 
-	params: {
-		type: 'object',
-		properties: {
-			limit: { type: 'integer', maximum: 100, default: 10, },
-			sinceId: { type: 'string', format: 'misskey:id', },
-			untilId: { type: 'string', format: 'misskey:id', },
-			state: { type: 'string', nullable: true, default: null, },
-			reporterOrigin: { type: 'string', enum: ['combined', 'local', 'remote'], default: "combined", },
-			targetUserOrigin: { type: 'string', enum: ['combined', 'local', 'remote'], default: "combined", },
-			forwarded: { type: 'boolean', default: false, },
-		},
-		required: [],
-	},
-
 	res: {
 		type: 'array',
 		optional: false, nullable: false,
@@ -84,8 +70,22 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		limit: { type: 'integer', maximum: 100, default: 10 },
+		sinceId: { type: 'string', format: 'misskey:id' },
+		untilId: { type: 'string', format: 'misskey:id' },
+		state: { type: 'string', nullable: true, default: null },
+		reporterOrigin: { type: 'string', enum: ['combined', 'local', 'remote'], default: "combined" },
+		targetUserOrigin: { type: 'string', enum: ['combined', 'local', 'remote'], default: "combined" },
+		forwarded: { type: 'boolean', default: false },
+	},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps) => {
+export default define(meta, paramDef, async (ps) => {
 	const query = makePaginationQuery(AbuseUserReports.createQueryBuilder('report'), ps.sinceId, ps.untilId);
 
 	switch (ps.state) {

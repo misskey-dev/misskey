@@ -7,16 +7,6 @@ export const meta = {
 	requireCredential: true,
 	secure: true,
 
-	params: {
-		type: 'object',
-		properties: {
-			pageId: { type: 'string', format: 'misskey:id', },
-			event: { type: 'string', },
-			var: { type: ['string', 'number', 'boolean', 'object', 'array', 'null'], nullable: true, },
-		},
-		required: ['pageId', 'event'],
-	},
-
 	errors: {
 		noSuchPage: {
 			message: 'No such page.',
@@ -26,8 +16,18 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		pageId: { type: 'string', format: 'misskey:id' },
+		event: { type: 'string' },
+		var: { type: ['string', 'number', 'boolean', 'object', 'array', 'null'], nullable: true },
+	},
+	required: ['pageId', 'event'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const page = await Pages.findOne(ps.pageId);
 	if (page == null) {
 		throw new ApiError(meta.errors.noSuchPage);

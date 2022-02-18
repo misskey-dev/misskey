@@ -9,17 +9,18 @@ export const meta = {
 		duration: ms('1hour'),
 		max: 1,
 	},
-	params: {
-		type: 'object',
-		properties: {
-			excludeMuting: { type: 'boolean', default: false, },
-			excludeInactive: { type: 'boolean', default: false, },
-		},
-		required: [],
+} as const;
+
+const paramDef = {
+	type: 'object',
+	properties: {
+		excludeMuting: { type: 'boolean', default: false },
+		excludeInactive: { type: 'boolean', default: false },
 	},
+	required: [],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	createExportFollowingJob(user, ps.excludeMuting, ps.excludeInactive);
 });

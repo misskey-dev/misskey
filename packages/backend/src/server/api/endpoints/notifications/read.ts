@@ -11,14 +11,6 @@ export const meta = {
 
 	kind: 'write:notifications',
 
-	params: {
-		type: 'object',
-		properties: {
-			notificationId: { type: 'string', format: 'misskey:id', },
-		},
-		required: ['notificationId'],
-	},
-
 	errors: {
 		noSuchNotification: {
 			message: 'No such notification.',
@@ -28,8 +20,16 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		notificationId: { type: 'string', format: 'misskey:id' },
+	},
+	required: ['notificationId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const notification = await Notifications.findOne({
 		notifieeId: user.id,
 		id: ps.notificationId,

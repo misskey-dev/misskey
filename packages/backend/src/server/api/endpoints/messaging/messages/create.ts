@@ -13,17 +13,6 @@ export const meta = {
 
 	kind: 'write:messaging',
 
-	params: {
-		type: 'object',
-		properties: {
-			userId: { type: 'string', format: 'misskey:id', },
-			groupId: { type: 'string', format: 'misskey:id', },
-			text: { type: 'string', nullable: true, maxLength: 3000, },
-			fileId: { type: 'string', format: 'misskey:id', },
-		},
-		required: [],
-	},
-
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
@@ -75,8 +64,19 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		userId: { type: 'string', format: 'misskey:id' },
+		groupId: { type: 'string', format: 'misskey:id' },
+		text: { type: 'string', nullable: true, maxLength: 3000 },
+		fileId: { type: 'string', format: 'misskey:id' },
+	},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	let recipientUser: User | undefined;
 	let recipientGroup: UserGroup | undefined;
 

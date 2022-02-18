@@ -8,16 +8,6 @@ export const meta = {
 
 	requireCredential: false,
 
-	params: {
-		type: 'object',
-		properties: {
-			pageId: { type: 'string', format: 'misskey:id', },
-			name: { type: 'string', },
-			username: { type: 'string', },
-		},
-		required: [],
-	},
-
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
@@ -33,8 +23,18 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		pageId: { type: 'string', format: 'misskey:id' },
+		name: { type: 'string' },
+		username: { type: 'string' },
+	},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	let page: Page | undefined;
 
 	if (ps.pageId) {

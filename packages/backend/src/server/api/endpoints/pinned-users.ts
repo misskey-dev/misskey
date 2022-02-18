@@ -9,8 +9,6 @@ export const meta = {
 
 	requireCredential: false,
 
-	params: {},
-
 	res: {
 		type: 'array',
 		optional: false, nullable: false,
@@ -22,8 +20,12 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	const meta = await fetchMeta();
 
 	const users = await Promise.all(meta.pinnedUsers.map(acct => Users.findOne(Acct.parse(acct))));

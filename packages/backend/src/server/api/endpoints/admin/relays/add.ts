@@ -9,14 +9,6 @@ export const meta = {
 	requireCredential: true,
 	requireModerator: true,
 
-	params: {
-		type: 'object',
-		properties: {
-			inbox: { type: 'string', },
-		},
-		required: ['inbox'],
-	},
-
 	errors: {
 		invalidUrl: {
 			message: 'Invalid URL',
@@ -53,8 +45,16 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		inbox: { type: 'string' },
+	},
+	required: ['inbox'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	try {
 		if (new URL(ps.inbox).protocol !== 'https:') throw 'https only';
 	} catch {

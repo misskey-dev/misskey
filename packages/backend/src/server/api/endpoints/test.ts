@@ -2,21 +2,21 @@ import define from '../define';
 
 export const meta = {
 	requireCredential: false,
+} as const;
 
-	params: {
-		type: 'object',
-		properties: {
-			required: { type: 'boolean', },
-			string: { type: 'string', },
-			default: { type: 'string', default: 'hello', },
-			nullableDefault: { type: 'string', nullable: true, default: 'hello', },
-			id: { type: 'string', format: 'misskey:id', },
-		},
-		required: ['required'],
+const paramDef = {
+	type: 'object',
+	properties: {
+		required: { type: 'boolean' },
+		string: { type: 'string' },
+		default: { type: 'string', default: 'hello' },
+		nullableDefault: { type: 'string', nullable: true, default: 'hello' },
+		id: { type: 'string', format: 'misskey:id' },
 	},
+	required: ['required'],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	return ps;
 });

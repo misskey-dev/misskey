@@ -14,25 +14,6 @@ export const meta = {
 
 	kind: 'read:notifications',
 
-	params: {
-		type: 'object',
-		properties: {
-			limit: { type: 'integer', maximum: 100, default: 10, },
-			sinceId: { type: 'string', format: 'misskey:id', },
-			untilId: { type: 'string', format: 'misskey:id', },
-			following: { type: 'boolean', default: false, },
-			unreadOnly: { type: 'boolean', default: false, },
-			markAsRead: { type: 'boolean', default: true, },
-			includeTypes: { type: 'array', items: {
-				type: 'string', enum: notificationTypes,
-			}, },
-			excludeTypes: { type: 'array', items: {
-				type: 'string', enum: notificationTypes,
-			}, },
-		},
-		required: [],
-	},
-
 	res: {
 		type: 'array',
 		optional: false, nullable: false,
@@ -44,8 +25,27 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		limit: { type: 'integer', maximum: 100, default: 10 },
+		sinceId: { type: 'string', format: 'misskey:id' },
+		untilId: { type: 'string', format: 'misskey:id' },
+		following: { type: 'boolean', default: false },
+		unreadOnly: { type: 'boolean', default: false },
+		markAsRead: { type: 'boolean', default: true },
+		includeTypes: { type: 'array', items: {
+			type: 'string', enum: notificationTypes,
+		} },
+		excludeTypes: { type: 'array', items: {
+			type: 'string', enum: notificationTypes,
+		} },
+	},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	// includeTypes が空の場合はクエリしない
 	if (ps.includeTypes && ps.includeTypes.length === 0) {
 		return [];

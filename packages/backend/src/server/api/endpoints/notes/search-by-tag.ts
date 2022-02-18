@@ -11,26 +11,6 @@ import { generateBlockedUserQuery } from '../../common/generate-block-query';
 export const meta = {
 	tags: ['notes', 'hashtags'],
 
-	params: {
-		type: 'object',
-		properties: {
-			tag: { type: 'string', },
-			query: { type: 'array', items: {
-				type: 'array', items: {
-					type: 'string',
-				},
-			}, },
-			reply: { type: 'boolean', nullable: true, default: null, },
-			renote: { type: 'boolean', nullable: true, default: null, },
-			withFiles: { type: 'boolean', },
-			poll: { type: 'boolean', nullable: true, default: null, },
-			sinceId: { type: 'string', format: 'misskey:id', },
-			untilId: { type: 'string', format: 'misskey:id', },
-			limit: { type: 'integer', maximum: 100, default: 10, },
-		},
-		required: [],
-	},
-
 	res: {
 		type: 'array',
 		optional: false, nullable: false,
@@ -42,8 +22,28 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		tag: { type: 'string' },
+		query: { type: 'array', items: {
+			type: 'array', items: {
+				type: 'string',
+			},
+		} },
+		reply: { type: 'boolean', nullable: true, default: null },
+		renote: { type: 'boolean', nullable: true, default: null },
+		withFiles: { type: 'boolean' },
+		poll: { type: 'boolean', nullable: true, default: null },
+		sinceId: { type: 'string', format: 'misskey:id' },
+		untilId: { type: 'string', format: 'misskey:id' },
+		limit: { type: 'integer', maximum: 100, default: 10 },
+	},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 		.innerJoinAndSelect('note.user', 'user')
 		.leftJoinAndSelect('note.reply', 'reply')

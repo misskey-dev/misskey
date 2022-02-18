@@ -7,20 +7,6 @@ export const meta = {
 	requireCredential: true,
 	requireModerator: true,
 
-	params: {
-		type: 'object',
-		properties: {
-			limit: { type: 'integer', maximum: 100, default: 10, },
-			offset: { type: 'integer', default: 0, },
-			sort: { type: 'string', enum: ['+follower', '-follower', '+createdAt', '-createdAt', '+updatedAt', '-updatedAt'], },
-			state: { type: 'string', enum: ['all', 'available', 'admin', 'moderator', 'adminOrModerator', 'silenced', 'suspended'], default: "all", },
-			origin: { type: 'string', enum: ['combined', 'local', 'remote'], default: "local", },
-			username: { type: 'string', default: null, },
-			hostname: { type: 'string', default: null, },
-		},
-		required: [],
-	},
-
 	res: {
 		type: 'array',
 		nullable: false, optional: false,
@@ -32,8 +18,22 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		limit: { type: 'integer', maximum: 100, default: 10 },
+		offset: { type: 'integer', default: 0 },
+		sort: { type: 'string', enum: ['+follower', '-follower', '+createdAt', '-createdAt', '+updatedAt', '-updatedAt'] },
+		state: { type: 'string', enum: ['all', 'available', 'admin', 'moderator', 'adminOrModerator', 'silenced', 'suspended'], default: "all" },
+		origin: { type: 'string', enum: ['combined', 'local', 'remote'], default: "local" },
+		username: { type: 'string', default: null },
+		hostname: { type: 'string', default: null },
+	},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	const query = Users.createQueryBuilder('user');
 
 	switch (ps.state) {

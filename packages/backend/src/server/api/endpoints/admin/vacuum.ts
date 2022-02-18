@@ -7,19 +7,19 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
+} as const;
 
-	params: {
-		type: 'object',
-		properties: {
-			full: { type: 'boolean', },
-			analyze: { type: 'boolean', },
-		},
-		required: ['full', 'analyze'],
+const paramDef = {
+	type: 'object',
+	properties: {
+		full: { type: 'boolean' },
+		analyze: { type: 'boolean' },
 	},
+	required: ['full', 'analyze'],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	const params: string[] = [];
 
 	if (ps.full) {

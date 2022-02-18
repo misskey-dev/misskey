@@ -8,23 +8,6 @@ export const meta = {
 
 	requireCredential: false,
 
-	params: {
-		type: 'object',
-		properties: {
-			host: { type: 'string', nullable: true, },
-			blocked: { type: 'boolean', nullable: true, },
-			notResponding: { type: 'boolean', nullable: true, },
-			suspended: { type: 'boolean', nullable: true, },
-			federating: { type: 'boolean', nullable: true, },
-			subscribing: { type: 'boolean', nullable: true, },
-			publishing: { type: 'boolean', nullable: true, },
-			limit: { type: 'integer', maximum: 100, default: 30, },
-			offset: { type: 'integer', default: 0, },
-			sort: { type: 'string', },
-		},
-		required: [],
-	},
-
 	res: {
 		type: 'array',
 		optional: false, nullable: false,
@@ -36,8 +19,25 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		host: { type: 'string', nullable: true },
+		blocked: { type: 'boolean', nullable: true },
+		notResponding: { type: 'boolean', nullable: true },
+		suspended: { type: 'boolean', nullable: true },
+		federating: { type: 'boolean', nullable: true },
+		subscribing: { type: 'boolean', nullable: true },
+		publishing: { type: 'boolean', nullable: true },
+		limit: { type: 'integer', maximum: 100, default: 30 },
+		offset: { type: 'integer', default: 0 },
+		sort: { type: 'string' },
+	},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	const query = Instances.createQueryBuilder('instance');
 
 	switch (ps.sort) {

@@ -17,8 +17,12 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	const query = Pages.createQueryBuilder('page')
 		.where('page.visibility = \'public\'')
 		.andWhere('page.likedCount > 0')

@@ -10,14 +10,6 @@ export const meta = {
 	requireCredential: true,
 	requireModerator: true,
 
-	params: {
-		type: 'object',
-		properties: {
-			id: { type: 'string', format: 'misskey:id', },
-		},
-		required: ['id'],
-	},
-
 	errors: {
 		noSuchEmoji: {
 			message: 'No such emoji.',
@@ -27,8 +19,16 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		id: { type: 'string', format: 'misskey:id' },
+	},
+	required: ['id'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	const emoji = await Emojis.findOne(ps.id);
 
 	if (emoji == null) throw new ApiError(meta.errors.noSuchEmoji);

@@ -6,18 +6,18 @@ export const meta = {
 	requireCredential: true,
 
 	secure: true,
+} as const;
 
-	params: {
-		type: 'object',
-		properties: {
-			password: { type: 'string', },
-		},
-		required: ['password'],
+const paramDef = {
+	type: 'object',
+	properties: {
+		password: { type: 'string' },
 	},
+	required: ['password'],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const profile = await UserProfiles.findOneOrFail(user.id);
 
 	// Compare password

@@ -11,15 +11,6 @@ export const meta = {
 
 	kind: 'write:drive',
 
-	params: {
-		type: 'object',
-		properties: {
-			name: { type: 'string', default: "Untitled", maxLength: 200, },
-			parentId: { type: 'string', format: 'misskey:id', nullable: true, },
-		},
-		required: [],
-	},
-
 	errors: {
 		noSuchFolder: {
 			message: 'No such folder.',
@@ -35,8 +26,17 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		name: { type: 'string', default: "Untitled", maxLength: 200 },
+		parentId: { type: 'string', format: 'misskey:id', nullable: true },
+	},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	// If the parent folder is specified
 	let parent = null;
 	if (ps.parentId) {

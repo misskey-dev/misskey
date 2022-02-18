@@ -11,19 +11,6 @@ export const meta = {
 
 	requireCredential: false,
 
-	params: {
-		type: 'object',
-		properties: {
-			userId: { type: 'string', format: 'misskey:id', },
-			userIds: { type: 'array', uniqueItems: true, items: {
-				type: 'string', format: 'misskey:id',
-			}, },
-			username: { type: 'string', },
-			host: { type: 'string', nullable: true, },
-		},
-		required: [],
-	},
-
 	res: {
 		optional: false, nullable: false,
 		oneOf: [
@@ -57,8 +44,21 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		userId: { type: 'string', format: 'misskey:id' },
+		userIds: { type: 'array', uniqueItems: true, items: {
+			type: 'string', format: 'misskey:id',
+		} },
+		username: { type: 'string' },
+		host: { type: 'string', nullable: true },
+	},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	let user;
 
 	const isAdminOrModerator = me && (me.isAdmin || me.isModerator);

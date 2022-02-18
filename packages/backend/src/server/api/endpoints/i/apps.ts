@@ -5,18 +5,18 @@ export const meta = {
 	requireCredential: true,
 
 	secure: true,
+} as const;
 
-	params: {
-		type: 'object',
-		properties: {
-			sort: { type: 'string', enum: ['+createdAt', '-createdAt', '+lastUsedAt', '-lastUsedAt'], },
-		},
-		required: [],
+const paramDef = {
+	type: 'object',
+	properties: {
+		sort: { type: 'string', enum: ['+createdAt', '-createdAt', '+lastUsedAt', '-lastUsedAt'] },
 	},
+	required: [],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const query = AccessTokens.createQueryBuilder('token')
 		.where('token.userId = :userId', { userId: user.id });
 

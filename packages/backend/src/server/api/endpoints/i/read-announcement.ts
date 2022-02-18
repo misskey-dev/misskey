@@ -11,14 +11,6 @@ export const meta = {
 
 	kind: 'write:account',
 
-	params: {
-		type: 'object',
-		properties: {
-			announcementId: { type: 'string', format: 'misskey:id', },
-		},
-		required: ['announcementId'],
-	},
-
 	errors: {
 		noSuchAnnouncement: {
 			message: 'No such announcement.',
@@ -28,8 +20,16 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		announcementId: { type: 'string', format: 'misskey:id' },
+	},
+	required: ['announcementId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	// Check if announcement exists
 	const announcement = await Announcements.findOne(ps.announcementId);
 

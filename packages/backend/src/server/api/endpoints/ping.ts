@@ -5,8 +5,6 @@ export const meta = {
 
 	tags: ['meta'],
 
-	params: {},
-
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
@@ -19,8 +17,12 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async () => {
+export default define(meta, paramDef, async () => {
 	return {
 		pong: Date.now(),
 	};

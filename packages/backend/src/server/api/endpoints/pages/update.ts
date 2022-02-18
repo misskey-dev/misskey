@@ -16,28 +16,6 @@ export const meta = {
 		max: 300,
 	},
 
-	params: {
-		type: 'object',
-		properties: {
-			pageId: { type: 'string', format: 'misskey:id', },
-			title: { type: 'string', },
-			name: { type: 'string', minLength: 1, },
-			summary: { type: 'string', nullable: true, },
-			content: { type: 'array', items: {
-				type: 'object', additionalProperties: true,
-			}, },
-			variables: { type: 'array', items: {
-				type: 'object', additionalProperties: true,
-			}, },
-			script: { type: 'string', },
-			eyeCatchingImageId: { type: 'string', format: 'misskey:id', nullable: true, },
-			font: { type: 'string', enum: ['serif', 'sans-serif'], },
-			alignCenter: { type: 'boolean', },
-			hideTitleWhenPinned: { type: 'boolean', },
-		},
-		required: ['pageId', 'title', 'name', 'content', 'variables', 'script'],
-	},
-
 	errors: {
 		noSuchPage: {
 			message: 'No such page.',
@@ -64,8 +42,30 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		pageId: { type: 'string', format: 'misskey:id' },
+		title: { type: 'string' },
+		name: { type: 'string', minLength: 1 },
+		summary: { type: 'string', nullable: true },
+		content: { type: 'array', items: {
+			type: 'object', additionalProperties: true,
+		} },
+		variables: { type: 'array', items: {
+			type: 'object', additionalProperties: true,
+		} },
+		script: { type: 'string' },
+		eyeCatchingImageId: { type: 'string', format: 'misskey:id', nullable: true },
+		font: { type: 'string', enum: ['serif', 'sans-serif'] },
+		alignCenter: { type: 'boolean' },
+		hideTitleWhenPinned: { type: 'boolean' },
+	},
+	required: ['pageId', 'title', 'name', 'content', 'variables', 'script'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const page = await Pages.findOne(ps.pageId);
 	if (page == null) {
 		throw new ApiError(meta.errors.noSuchPage);

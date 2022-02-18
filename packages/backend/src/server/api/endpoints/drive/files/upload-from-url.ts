@@ -16,23 +16,23 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'write:drive',
+} as const;
 
-	params: {
-		type: 'object',
-		properties: {
-			url: { type: 'string', },
-			folderId: { type: 'string', format: 'misskey:id', nullable: true, default: null, },
-			isSensitive: { type: 'boolean', default: false, },
-			comment: { type: 'string', nullable: true, maxLength: 512, default: null, },
-			marker: { type: 'string', nullable: true, default: null, },
-			force: { type: 'boolean', default: false, },
-		},
-		required: ['url'],
+const paramDef = {
+	type: 'object',
+	properties: {
+		url: { type: 'string' },
+		folderId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
+		isSensitive: { type: 'boolean', default: false },
+		comment: { type: 'string', nullable: true, maxLength: 512, default: null },
+		marker: { type: 'string', nullable: true, default: null },
+		force: { type: 'boolean', default: false },
 	},
+	required: ['url'],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	uploadFromUrl({ url: ps.url, user, folderId: ps.folderId, sensitive: ps.isSensitive, force: ps.force, comment: ps.comment }).then(file => {
 		DriveFiles.pack(file, { self: true }).then(packedFile => {
 			publishMainStream(user.id, 'urlUploadFinished', {

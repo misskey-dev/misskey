@@ -11,14 +11,6 @@ export const meta = {
 
 	kind: 'write:channels',
 
-	params: {
-		type: 'object',
-		properties: {
-			channelId: { type: 'string', format: 'misskey:id', },
-		},
-		required: ['channelId'],
-	},
-
 	errors: {
 		noSuchChannel: {
 			message: 'No such channel.',
@@ -28,8 +20,16 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		channelId: { type: 'string', format: 'misskey:id' },
+	},
+	required: ['channelId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const channel = await Channels.findOne({
 		id: ps.channelId,
 	});

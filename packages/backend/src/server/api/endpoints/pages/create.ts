@@ -17,27 +17,6 @@ export const meta = {
 		max: 300,
 	},
 
-	params: {
-		type: 'object',
-		properties: {
-			title: { type: 'string', },
-			name: { type: 'string', minLength: 1, },
-			summary: { type: 'string', nullable: true, },
-			content: { type: 'array', items: {
-				type: 'object', additionalProperties: true,
-			}, },
-			variables: { type: 'array', items: {
-				type: 'object', additionalProperties: true,
-			}, },
-			script: { type: 'string', },
-			eyeCatchingImageId: { type: 'string', format: 'misskey:id', nullable: true, },
-			font: { type: 'string', enum: ['serif', 'sans-serif'], default: "sans-serif", },
-			alignCenter: { type: 'boolean', default: false, },
-			hideTitleWhenPinned: { type: 'boolean', default: false, },
-		},
-		required: ['title', 'name', 'content', 'variables', 'script'],
-	},
-
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
@@ -58,8 +37,29 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		title: { type: 'string' },
+		name: { type: 'string', minLength: 1 },
+		summary: { type: 'string', nullable: true },
+		content: { type: 'array', items: {
+			type: 'object', additionalProperties: true,
+		} },
+		variables: { type: 'array', items: {
+			type: 'object', additionalProperties: true,
+		} },
+		script: { type: 'string' },
+		eyeCatchingImageId: { type: 'string', format: 'misskey:id', nullable: true },
+		font: { type: 'string', enum: ['serif', 'sans-serif'], default: "sans-serif" },
+		alignCenter: { type: 'boolean', default: false },
+		hideTitleWhenPinned: { type: 'boolean', default: false },
+	},
+	required: ['title', 'name', 'content', 'variables', 'script'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	let eyeCatchingImage = null;
 	if (ps.eyeCatchingImageId != null) {
 		eyeCatchingImage = await DriveFiles.findOne({

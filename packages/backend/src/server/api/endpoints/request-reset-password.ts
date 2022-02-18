@@ -17,22 +17,22 @@ export const meta = {
 		max: 3,
 	},
 
-	params: {
-		type: 'object',
-		properties: {
-			username: { type: 'string', },
-			email: { type: 'string', },
-		},
-		required: ['username', 'email'],
-	},
-
 	errors: {
 
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		username: { type: 'string' },
+		email: { type: 'string' },
+	},
+	required: ['username', 'email'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps) => {
+export default define(meta, paramDef, async (ps) => {
 	const user = await Users.findOne({
 		usernameLower: ps.username.toLowerCase(),
 		host: IsNull(),

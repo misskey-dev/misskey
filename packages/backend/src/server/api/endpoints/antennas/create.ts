@@ -11,34 +11,6 @@ export const meta = {
 
 	kind: 'write:account',
 
-	params: {
-		type: 'object',
-		properties: {
-			name: { type: 'string', minLength: 1, maxLength: 100, },
-			src: { type: 'string', enum: ['home', 'all', 'users', 'list', 'group'], },
-			userListId: { type: 'string', format: 'misskey:id', nullable: true, },
-			userGroupId: { type: 'string', format: 'misskey:id', nullable: true, },
-			keywords: { type: 'array', items: {
-				type: 'array', items: {
-					type: 'string',
-				},
-			}, },
-			excludeKeywords: { type: 'array', items: {
-				type: 'array', items: {
-					type: 'string',
-				},
-			}, },
-			users: { type: 'array', items: {
-				type: 'string',
-			}, },
-			caseSensitive: { type: 'boolean', },
-			withReplies: { type: 'boolean', },
-			withFile: { type: 'boolean', },
-			notify: { type: 'boolean', },
-		},
-		required: ['name', 'src', 'keywords', 'excludeKeywords', 'users', 'caseSensitive', 'withReplies', 'withFile', 'notify'],
-	},
-
 	errors: {
 		noSuchUserList: {
 			message: 'No such user list.',
@@ -60,8 +32,36 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		name: { type: 'string', minLength: 1, maxLength: 100 },
+		src: { type: 'string', enum: ['home', 'all', 'users', 'list', 'group'] },
+		userListId: { type: 'string', format: 'misskey:id', nullable: true },
+		userGroupId: { type: 'string', format: 'misskey:id', nullable: true },
+		keywords: { type: 'array', items: {
+			type: 'array', items: {
+				type: 'string',
+			},
+		} },
+		excludeKeywords: { type: 'array', items: {
+			type: 'array', items: {
+				type: 'string',
+			},
+		} },
+		users: { type: 'array', items: {
+			type: 'string',
+		} },
+		caseSensitive: { type: 'boolean' },
+		withReplies: { type: 'boolean' },
+		withFile: { type: 'boolean' },
+		notify: { type: 'boolean' },
+	},
+	required: ['name', 'src', 'keywords', 'excludeKeywords', 'users', 'caseSensitive', 'withReplies', 'withFile', 'notify'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	let userList;
 	let userGroupJoining;
 

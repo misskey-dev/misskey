@@ -11,15 +11,6 @@ export const meta = {
 
 	kind: 'write:account',
 
-	params: {
-		type: 'object',
-		properties: {
-			listId: { type: 'string', format: 'misskey:id', },
-			userId: { type: 'string', format: 'misskey:id', },
-		},
-		required: ['listId', 'userId'],
-	},
-
 	errors: {
 		noSuchList: {
 			message: 'No such list.',
@@ -47,8 +38,17 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		listId: { type: 'string', format: 'misskey:id' },
+		userId: { type: 'string', format: 'misskey:id' },
+	},
+	required: ['listId', 'userId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	// Fetch the list
 	const userList = await UserLists.findOne({
 		id: ps.listId,

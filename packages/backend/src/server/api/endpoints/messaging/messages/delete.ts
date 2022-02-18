@@ -17,14 +17,6 @@ export const meta = {
 		minInterval: ms('1sec'),
 	},
 
-	params: {
-		type: 'object',
-		properties: {
-			messageId: { type: 'string', format: 'misskey:id', },
-		},
-		required: ['messageId'],
-	},
-
 	errors: {
 		noSuchMessage: {
 			message: 'No such message.',
@@ -34,8 +26,16 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		messageId: { type: 'string', format: 'misskey:id' },
+	},
+	required: ['messageId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const message = await MessagingMessages.findOne({
 		id: ps.messageId,
 		userId: user.id,

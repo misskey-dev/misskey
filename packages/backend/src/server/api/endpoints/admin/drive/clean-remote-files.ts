@@ -8,7 +8,11 @@ export const meta = {
 	requireModerator: true,
 } as const;
 
+const paramDef = {
+
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	createCleanRemoteFilesJob();
 });

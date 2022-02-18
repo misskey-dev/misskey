@@ -22,58 +22,6 @@ export const meta = {
 
 	kind: 'write:account',
 
-	params: {
-		type: 'object',
-		properties: {
-			name: { ...Users.nameSchema, nullable: true, },
-			description: { ...Users.descriptionSchema, nullable: true, },
-			location: { ...Users.locationSchema, nullable: true, },
-			birthday: { ...Users.birthdaySchema, nullable: true, },
-			lang: { type: 'string', enum: Object.keys(langmap), nullable: true, },
-			avatarId: { type: 'string', format: 'misskey:id', nullable: true, },
-			bannerId: { type: 'string', format: 'misskey:id', nullable: true, },
-			fields: { type: 'array',
-				minItems: 0,
-				maxItems: 8,
-				items: {
-					type: 'object',
-					properties: {
-						name: { type: 'string', },
-						value: { type: 'string', },
-					},
-					required: ['name', 'value'],
-				},
-			},
-			isLocked: { type: 'boolean', },
-			isExplorable: { type: 'boolean', },
-			hideOnlineStatus: { type: 'boolean', },
-			publicReactions: { type: 'boolean', },
-			carefulBot: { type: 'boolean', },
-			autoAcceptFollowed: { type: 'boolean', },
-			noCrawle: { type: 'boolean', },
-			isBot: { type: 'boolean', },
-			isCat: { type: 'boolean', },
-			showTimelineReplies: { type: 'boolean', },
-			injectFeaturedNote: { type: 'boolean', },
-			receiveAnnouncementEmail: { type: 'boolean', },
-			alwaysMarkNsfw: { type: 'boolean', },
-			ffVisibility: { type: 'string', },
-			pinnedPageId: { type: 'array', items: {
-				type: 'string', format: 'misskey:id',
-			}, },
-			mutedWords: { type: 'array', },
-			mutedInstances: { type: 'array', items: {
-				type: 'string',
-			}, },
-			mutingNotificationTypes: { type: 'array', items: {
-				type: 'string', enum: notificationTypes,
-			}, },
-			emailNotificationTypes: { type: 'array', items: {
-				type: 'string',
-			}, },
-		},
-	},
-
 	errors: {
 		noSuchAvatar: {
 			message: 'No such avatar file.',
@@ -119,8 +67,60 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		name: { ...Users.nameSchema, nullable: true },
+		description: { ...Users.descriptionSchema, nullable: true },
+		location: { ...Users.locationSchema, nullable: true },
+		birthday: { ...Users.birthdaySchema, nullable: true },
+		lang: { type: 'string', enum: Object.keys(langmap), nullable: true },
+		avatarId: { type: 'string', format: 'misskey:id', nullable: true },
+		bannerId: { type: 'string', format: 'misskey:id', nullable: true },
+		fields: { type: 'array',
+			minItems: 0,
+			maxItems: 8,
+			items: {
+				type: 'object',
+				properties: {
+					name: { type: 'string' },
+					value: { type: 'string' },
+				},
+				required: ['name', 'value'],
+			},
+		},
+		isLocked: { type: 'boolean' },
+		isExplorable: { type: 'boolean' },
+		hideOnlineStatus: { type: 'boolean' },
+		publicReactions: { type: 'boolean' },
+		carefulBot: { type: 'boolean' },
+		autoAcceptFollowed: { type: 'boolean' },
+		noCrawle: { type: 'boolean' },
+		isBot: { type: 'boolean' },
+		isCat: { type: 'boolean' },
+		showTimelineReplies: { type: 'boolean' },
+		injectFeaturedNote: { type: 'boolean' },
+		receiveAnnouncementEmail: { type: 'boolean' },
+		alwaysMarkNsfw: { type: 'boolean' },
+		ffVisibility: { type: 'string' },
+		pinnedPageId: { type: 'array', items: {
+			type: 'string', format: 'misskey:id',
+		} },
+		mutedWords: { type: 'array' },
+		mutedInstances: { type: 'array', items: {
+			type: 'string',
+		} },
+		mutingNotificationTypes: { type: 'array', items: {
+			type: 'string', enum: notificationTypes,
+		} },
+		emailNotificationTypes: { type: 'array', items: {
+			type: 'string',
+		} },
+	},
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, _user, token) => {
+export default define(meta, paramDef, async (ps, _user, token) => {
 	const user = await Users.findOneOrFail(_user.id);
 	const isSecure = token == null;
 

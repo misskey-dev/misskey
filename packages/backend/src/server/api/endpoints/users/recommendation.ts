@@ -11,15 +11,6 @@ export const meta = {
 
 	kind: 'read:account',
 
-	params: {
-		type: 'object',
-		properties: {
-			limit: { type: 'integer', maximum: 100, default: 10, },
-			offset: { type: 'integer', default: 0, },
-		},
-		required: [],
-	},
-
 	res: {
 		type: 'array',
 		optional: false, nullable: false,
@@ -31,8 +22,17 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		limit: { type: 'integer', maximum: 100, default: 10 },
+		offset: { type: 'integer', default: 0 },
+	},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	const query = Users.createQueryBuilder('user')
 		.where('user.isLocked = FALSE')
 		.andWhere('user.isExplorable = TRUE')

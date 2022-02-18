@@ -7,16 +7,6 @@ export const meta = {
 	requireCredential: true,
 	requireModerator: true,
 
-	params: {
-		type: 'object',
-		properties: {
-			domain: { type: 'string', enum: ['deliver', 'inbox', 'db', 'objectStorage'], },
-			state: { type: 'string', enum: ['active', 'waiting', 'delayed'], },
-			limit: { type: 'integer', default: 50, },
-		},
-		required: ['domain', 'state'],
-	},
-
 	res: {
 		type: 'array',
 		optional: false, nullable: false,
@@ -50,8 +40,18 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		domain: { type: 'string', enum: ['deliver', 'inbox', 'db', 'objectStorage'] },
+		state: { type: 'string', enum: ['active', 'waiting', 'delayed'] },
+		limit: { type: 'integer', default: 50 },
+	},
+	required: ['domain', 'state'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps) => {
+export default define(meta, paramDef, async (ps) => {
 	const queue =
 		ps.domain === 'deliver' ? deliverQueue :
 		ps.domain === 'inbox' ? inboxQueue :

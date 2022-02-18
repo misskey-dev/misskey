@@ -11,14 +11,6 @@ export const meta = {
 
 	kind: 'write:user-groups',
 
-	params: {
-		type: 'object',
-		properties: {
-			invitationId: { type: 'string', format: 'misskey:id', },
-		},
-		required: ['invitationId'],
-	},
-
 	errors: {
 		noSuchInvitation: {
 			message: 'No such invitation.',
@@ -28,8 +20,16 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		invitationId: { type: 'string', format: 'misskey:id' },
+	},
+	required: ['invitationId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	// Fetch the invitation
 	const invitation = await UserGroupInvitations.findOne({
 		id: ps.invitationId,

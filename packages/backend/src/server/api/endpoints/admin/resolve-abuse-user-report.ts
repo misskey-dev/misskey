@@ -10,19 +10,19 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
+} as const;
 
-	params: {
-		type: 'object',
-		properties: {
-			reportId: { type: 'string', format: 'misskey:id', },
-			forward: { type: 'boolean', default: false, },
-		},
-		required: ['reportId'],
+const paramDef = {
+	type: 'object',
+	properties: {
+		reportId: { type: 'string', format: 'misskey:id' },
+		forward: { type: 'boolean', default: false },
 	},
+	required: ['reportId'],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	const report = await AbuseUserReports.findOne(ps.reportId);
 
 	if (report == null) {

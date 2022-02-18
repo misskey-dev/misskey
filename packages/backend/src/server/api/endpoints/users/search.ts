@@ -8,18 +8,6 @@ export const meta = {
 
 	requireCredential: false,
 
-	params: {
-		type: 'object',
-		properties: {
-			query: { type: 'string', },
-			offset: { type: 'integer', default: 0, },
-			limit: { type: 'integer', maximum: 100, default: 10, },
-			origin: { type: 'string', enum: ['local', 'remote', 'combined'], default: "combined", },
-			detail: { type: 'boolean', default: true, },
-		},
-		required: ['query'],
-	},
-
 	res: {
 		type: 'array',
 		optional: false, nullable: false,
@@ -31,8 +19,20 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		query: { type: 'string' },
+		offset: { type: 'integer', default: 0 },
+		limit: { type: 'integer', maximum: 100, default: 10 },
+		origin: { type: 'string', enum: ['local', 'remote', 'combined'], default: "combined" },
+		detail: { type: 'boolean', default: true },
+	},
+	required: ['query'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	const activeThreshold = new Date(Date.now() - (1000 * 60 * 60 * 24 * 30)); // 30日
 
 	const isUsername = ps.query.startsWith('@');

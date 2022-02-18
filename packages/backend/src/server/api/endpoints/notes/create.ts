@@ -32,47 +32,6 @@ export const meta = {
 
 	kind: 'write:notes',
 
-	params: {
-		type: 'object',
-		properties: {
-			visibility: { type: 'string', enum: ['public', 'home', 'followers', 'specified'], default: "public", },
-			visibleUserIds: { type: 'array', uniqueItems: true, items: {
-				type: 'string', format: 'misskey:id',
-			}, },
-			text: { type: 'string', nullable: true, maxLength: 3000, default: null, },
-			cw: { type: 'string', nullable: true, maxLength: 100, },
-			localOnly: { type: 'boolean', default: false, },
-			noExtractMentions: { type: 'boolean', default: false, },
-			noExtractHashtags: { type: 'boolean', default: false, },
-			noExtractEmojis: { type: 'boolean', default: false, },
-			fileIds: { type: 'array', uniqueItems: true, minItems: 1, maxItems: 16, items: {
-				type: 'string', format: 'misskey:id',
-			}, },
-			mediaIds: { type: 'array', uniqueItems: true, minItems: 1, maxItems: 16, items: {
-				type: 'string', format: 'misskey:id',
-			}, },
-			replyId: { type: 'string', format: 'misskey:id', nullable: true, },
-			renoteId: { type: 'string', format: 'misskey:id', nullable: true, },
-			channelId: { type: 'string', format: 'misskey:id', nullable: true, },
-			poll: {
-				type: 'object', nullable: true,
-				properties: {
-					choices: {
-						type: 'array', uniqueItems: true, minItems: 2, maxItems: 10, 
-						items: {
-							type: 'string', minLength: 1, maxLength: 50,
-						},
-					},
-					multiple: { type: 'boolean', default: false, },
-					expiresAt: { type: 'integer', nullable: true, },
-					expiredAfter: { type: 'integer', nullable: true, minimum: 1, },
-				},
-				required: ['choices'],
-			},
-		},
-		required: [],
-	},
-
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
@@ -136,8 +95,49 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		visibility: { type: 'string', enum: ['public', 'home', 'followers', 'specified'], default: "public" },
+		visibleUserIds: { type: 'array', uniqueItems: true, items: {
+			type: 'string', format: 'misskey:id',
+		} },
+		text: { type: 'string', nullable: true, maxLength: 3000, default: null },
+		cw: { type: 'string', nullable: true, maxLength: 100 },
+		localOnly: { type: 'boolean', default: false },
+		noExtractMentions: { type: 'boolean', default: false },
+		noExtractHashtags: { type: 'boolean', default: false },
+		noExtractEmojis: { type: 'boolean', default: false },
+		fileIds: { type: 'array', uniqueItems: true, minItems: 1, maxItems: 16, items: {
+			type: 'string', format: 'misskey:id',
+		} },
+		mediaIds: { type: 'array', uniqueItems: true, minItems: 1, maxItems: 16, items: {
+			type: 'string', format: 'misskey:id',
+		} },
+		replyId: { type: 'string', format: 'misskey:id', nullable: true },
+		renoteId: { type: 'string', format: 'misskey:id', nullable: true },
+		channelId: { type: 'string', format: 'misskey:id', nullable: true },
+		poll: {
+			type: 'object', nullable: true,
+			properties: {
+				choices: {
+					type: 'array', uniqueItems: true, minItems: 2, maxItems: 10, 
+					items: {
+						type: 'string', minLength: 1, maxLength: 50,
+					},
+				},
+				multiple: { type: 'boolean', default: false },
+				expiresAt: { type: 'integer', nullable: true },
+				expiredAfter: { type: 'integer', nullable: true, minimum: 1 },
+			},
+			required: ['choices'],
+		},
+	},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	let visibleUsers: User[] = [];
 	if (ps.visibleUserIds) {
 		visibleUsers = (await Promise.all(ps.visibleUserIds.map(id => Users.findOne(id))))

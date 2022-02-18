@@ -20,18 +20,6 @@ export const meta = {
 
 	kind: 'write:drive',
 
-	params: {
-		type: 'object',
-		properties: {
-			folderId: { type: 'string', format: 'misskey:id', nullable: true, default: null, },
-			name: { type: 'string', nullable: true, default: null, },
-			comment: { type: 'string', nullable: true, maxLength: 512, default: null, },
-			isSensitive: { type: 'boolean', default: false, },
-			force: { type: 'boolean', default: false, },
-		},
-		required: [],
-	},
-
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
@@ -47,8 +35,20 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		folderId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
+		name: { type: 'string', nullable: true, default: null },
+		comment: { type: 'string', nullable: true, maxLength: 512, default: null },
+		isSensitive: { type: 'boolean', default: false },
+		force: { type: 'boolean', default: false },
+	},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user, _, file, cleanup) => {
+export default define(meta, paramDef, async (ps, user, _, file, cleanup) => {
 	// Get 'name' parameter
 	let name = ps.name || file.originalname;
 	if (name !== undefined && name !== null) {

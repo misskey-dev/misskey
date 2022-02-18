@@ -15,23 +15,6 @@ import { generateBlockedUserQuery } from '../../common/generate-block-query';
 export const meta = {
 	tags: ['notes'],
 
-	params: {
-		type: 'object',
-		properties: {
-			withFiles: { type: 'boolean', },
-			fileType: { type: 'array', items: {
-				type: 'string',
-			}, },
-			excludeNsfw: { type: 'boolean', default: false, },
-			limit: { type: 'integer', maximum: 100, default: 10, },
-			sinceId: { type: 'string', format: 'misskey:id', },
-			untilId: { type: 'string', format: 'misskey:id', },
-			sinceDate: { type: 'integer', },
-			untilDate: { type: 'integer', },
-		},
-		required: [],
-	},
-
 	res: {
 		type: 'array',
 		optional: false, nullable: false,
@@ -51,8 +34,25 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		withFiles: { type: 'boolean' },
+		fileType: { type: 'array', items: {
+			type: 'string',
+		} },
+		excludeNsfw: { type: 'boolean', default: false },
+		limit: { type: 'integer', maximum: 100, default: 10 },
+		sinceId: { type: 'string', format: 'misskey:id' },
+		untilId: { type: 'string', format: 'misskey:id' },
+		sinceDate: { type: 'integer' },
+		untilDate: { type: 'integer' },
+	},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const m = await fetchMeta();
 	if (m.disableLocalTimeline) {
 		if (user == null || (!user.isAdmin && !user.isModerator)) {

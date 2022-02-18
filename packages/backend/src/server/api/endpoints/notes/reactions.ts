@@ -10,19 +10,6 @@ export const meta = {
 
 	requireCredential: false,
 
-	params: {
-		type: 'object',
-		properties: {
-			noteId: { type: 'string', format: 'misskey:id', },
-			type: { type: 'string', nullable: true, },
-			limit: { type: 'integer', maximum: 100, default: 10, },
-			offset: { type: 'integer', default: 0, },
-			sinceId: { type: 'string', format: 'misskey:id', },
-			untilId: { type: 'string', format: 'misskey:id', },
-		},
-		required: ['noteId'],
-	},
-
 	res: {
 		type: 'array',
 		optional: false, nullable: false,
@@ -42,8 +29,21 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		noteId: { type: 'string', format: 'misskey:id' },
+		type: { type: 'string', nullable: true },
+		limit: { type: 'integer', maximum: 100, default: 10 },
+		offset: { type: 'integer', default: 0 },
+		sinceId: { type: 'string', format: 'misskey:id' },
+		untilId: { type: 'string', format: 'misskey:id' },
+	},
+	required: ['noteId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const note = await getNote(ps.noteId).catch(e => {
 		if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
 		throw e;

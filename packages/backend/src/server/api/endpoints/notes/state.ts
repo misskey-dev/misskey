@@ -6,14 +6,6 @@ export const meta = {
 
 	requireCredential: true,
 
-	params: {
-		type: 'object',
-		properties: {
-			noteId: { type: 'string', format: 'misskey:id', },
-		},
-		required: ['noteId'],
-	},
-
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
@@ -34,8 +26,16 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		noteId: { type: 'string', format: 'misskey:id' },
+	},
+	required: ['noteId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const note = await Notes.findOneOrFail(ps.noteId);
 
 	const [favorite, watching, threadMuting] = await Promise.all([

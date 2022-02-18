@@ -7,17 +7,6 @@ export const meta = {
 
 	secure: true,
 
-	params: {
-		type: 'object',
-		properties: {
-			key: { type: 'string', },
-			scope: { type: 'array', default: [], items: {
-				type: 'string', pattern: /^[a-zA-Z0-9_]+$/.toString(),
-			}, },
-		},
-		required: ['key'],
-	},
-
 	errors: {
 		noSuchKey: {
 			message: 'No such key.',
@@ -27,8 +16,19 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		key: { type: 'string' },
+		scope: { type: 'array', default: [], items: {
+			type: 'string', pattern: /^[a-zA-Z0-9_]+$/.toString(),
+		} },
+	},
+	required: ['key'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const query = RegistryItems.createQueryBuilder('item')
 		.where('item.domain IS NULL')
 		.andWhere('item.userId = :userId', { userId: user.id })

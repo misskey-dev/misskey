@@ -9,20 +9,20 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
+} as const;
 
-	params: {
-		type: 'object',
-		properties: {
-			ids: { type: 'array', items: {
-				type: 'string', format: 'misskey:id',
-			}, },
-		},
-		required: ['ids'],
+const paramDef = {
+	type: 'object',
+	properties: {
+		ids: { type: 'array', items: {
+			type: 'string', format: 'misskey:id',
+		} },
 	},
+	required: ['ids'],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	const emojis = await Emojis.find({
 		id: In(ps.ids),
 	});

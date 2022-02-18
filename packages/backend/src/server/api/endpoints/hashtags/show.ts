@@ -8,14 +8,6 @@ export const meta = {
 
 	requireCredential: false,
 
-	params: {
-		type: 'object',
-		properties: {
-			tag: { type: 'string', },
-		},
-		required: ['tag'],
-	},
-
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
@@ -31,8 +23,16 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		tag: { type: 'string' },
+	},
+	required: ['tag'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const hashtag = await Hashtags.findOne({ name: normalizeForSearch(ps.tag) });
 	if (hashtag == null) {
 		throw new ApiError(meta.errors.noSuchHashtag);

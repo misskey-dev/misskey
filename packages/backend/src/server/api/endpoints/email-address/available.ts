@@ -6,14 +6,6 @@ export const meta = {
 
 	requireCredential: false,
 
-	params: {
-		type: 'object',
-		properties: {
-			emailAddress: { type: 'string', },
-		},
-		required: ['emailAddress'],
-	},
-
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
@@ -30,7 +22,15 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		emailAddress: { type: 'string' },
+	},
+	required: ['emailAddress'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps) => {
+export default define(meta, paramDef, async (ps) => {
 	return await validateEmailForAccount(ps.emailAddress);
 });

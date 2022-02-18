@@ -19,15 +19,6 @@ export const meta = {
 
 	kind: 'write:votes',
 
-	params: {
-		type: 'object',
-		properties: {
-			noteId: { type: 'string', format: 'misskey:id', },
-			choice: { type: 'integer', },
-		},
-		required: ['noteId', 'choice'],
-	},
-
 	errors: {
 		noSuchNote: {
 			message: 'No such note.',
@@ -67,8 +58,17 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		noteId: { type: 'string', format: 'misskey:id' },
+		choice: { type: 'integer' },
+	},
+	required: ['noteId', 'choice'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const createdAt = new Date();
 
 	// Get votee

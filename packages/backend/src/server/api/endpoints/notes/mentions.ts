@@ -13,18 +13,6 @@ export const meta = {
 
 	requireCredential: true,
 
-	params: {
-		type: 'object',
-		properties: {
-			following: { type: 'boolean', default: false, },
-			limit: { type: 'integer', maximum: 100, default: 10, },
-			sinceId: { type: 'string', format: 'misskey:id', },
-			untilId: { type: 'string', format: 'misskey:id', },
-			visibility: { type: 'string', },
-		},
-		required: [],
-	},
-
 	res: {
 		type: 'array',
 		optional: false, nullable: false,
@@ -36,8 +24,20 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		following: { type: 'boolean', default: false },
+		limit: { type: 'integer', maximum: 100, default: 10 },
+		sinceId: { type: 'string', format: 'misskey:id' },
+		untilId: { type: 'string', format: 'misskey:id' },
+		visibility: { type: 'string' },
+	},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const followingQuery = Followings.createQueryBuilder('following')
 		.select('following.followeeId')
 		.where('following.followerId = :followerId', { followerId: user.id });

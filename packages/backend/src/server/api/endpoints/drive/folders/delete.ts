@@ -10,14 +10,6 @@ export const meta = {
 
 	kind: 'write:drive',
 
-	params: {
-		type: 'object',
-		properties: {
-			folderId: { type: 'string', format: 'misskey:id', },
-		},
-		required: ['folderId'],
-	},
-
 	errors: {
 		noSuchFolder: {
 			message: 'No such folder.',
@@ -33,8 +25,16 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		folderId: { type: 'string', format: 'misskey:id' },
+	},
+	required: ['folderId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	// Get folder
 	const folder = await DriveFolders.findOne({
 		id: ps.folderId,

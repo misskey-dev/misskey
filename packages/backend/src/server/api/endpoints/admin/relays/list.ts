@@ -7,8 +7,6 @@ export const meta = {
 	requireCredential: true,
 	requireModerator: true,
 
-	params: {},
-
 	res: {
 		type: 'array',
 		optional: false, nullable: false,
@@ -41,7 +39,11 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	return await listRelay();
 });

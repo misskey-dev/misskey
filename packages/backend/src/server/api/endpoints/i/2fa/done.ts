@@ -6,18 +6,18 @@ export const meta = {
 	requireCredential: true,
 
 	secure: true,
+} as const;
 
-	params: {
-		type: 'object',
-		properties: {
-			token: { type: 'string', },
-		},
-		required: ['token'],
+const paramDef = {
+	type: 'object',
+	properties: {
+		token: { type: 'string' },
 	},
+	required: ['token'],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const token = ps.token.replace(/\s/g, '');
 
 	const profile = await UserProfiles.findOneOrFail(user.id);

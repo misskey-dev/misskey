@@ -8,23 +8,23 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
+} as const;
 
-	params: {
-		type: 'object',
-		properties: {
-			ids: { type: 'array', items: {
-				type: 'string', format: 'misskey:id',
-			}, },
-			aliases: { type: 'array', items: {
-				type: 'string',
-			}, },
-		},
-		required: ['ids', 'aliases'],
+const paramDef = {
+	type: 'object',
+	properties: {
+		ids: { type: 'array', items: {
+			type: 'string', format: 'misskey:id',
+		} },
+		aliases: { type: 'array', items: {
+			type: 'string',
+		} },
 	},
+	required: ['ids', 'aliases'],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps) => {
+export default define(meta, paramDef, async (ps) => {
 	const emojis = await Emojis.find({
 		id: In(ps.ids),
 	});

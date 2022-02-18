@@ -8,16 +8,6 @@ export const meta = {
 
 	requireCredential: true,
 
-	params: {
-		type: 'object',
-		properties: {
-			endpoint: { type: 'string', },
-			auth: { type: 'string', },
-			publickey: { type: 'string', },
-		},
-		required: ['endpoint', 'auth', 'publickey'],
-	},
-
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
@@ -35,8 +25,18 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		endpoint: { type: 'string' },
+		auth: { type: 'string' },
+		publickey: { type: 'string' },
+	},
+	required: ['endpoint', 'auth', 'publickey'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	// if already subscribed
 	const exist = await SwSubscriptions.findOne({
 		userId: user.id,

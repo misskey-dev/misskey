@@ -7,22 +7,22 @@ export const meta = {
 	requireCredential: true,
 
 	secure: true,
+} as const;
 
-	params: {
-		type: 'object',
-		properties: {
-			key: { type: 'string', minLength: 1, },
-			value: { type: ['string', 'number', 'boolean', 'object', 'array', 'null'], nullable: true, },
-			scope: { type: 'array', default: [], items: {
-				type: 'string', pattern: /^[a-zA-Z0-9_]+$/.toString(),
-			}, },
-		},
-		required: ['key', 'value'],
+const paramDef = {
+	type: 'object',
+	properties: {
+		key: { type: 'string', minLength: 1 },
+		value: { type: ['string', 'number', 'boolean', 'object', 'array', 'null'], nullable: true },
+		scope: { type: 'array', default: [], items: {
+			type: 'string', pattern: /^[a-zA-Z0-9_]+$/.toString(),
+		} },
 	},
+	required: ['key', 'value'],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const query = RegistryItems.createQueryBuilder('item')
 		.where('item.domain IS NULL')
 		.andWhere('item.userId = :userId', { userId: user.id })

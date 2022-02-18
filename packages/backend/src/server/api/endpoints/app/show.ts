@@ -5,14 +5,6 @@ import { Apps } from '@/models/index';
 export const meta = {
 	tags: ['app'],
 
-	params: {
-		type: 'object',
-		properties: {
-			appId: { type: 'string', format: 'misskey:id', },
-		},
-		required: ['appId'],
-	},
-
 	errors: {
 		noSuchApp: {
 			message: 'No such app.',
@@ -28,8 +20,16 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		appId: { type: 'string', format: 'misskey:id' },
+	},
+	required: ['appId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user, token) => {
+export default define(meta, paramDef, async (ps, user, token) => {
 	const isSecure = user != null && token == null;
 
 	// Lookup app

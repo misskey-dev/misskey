@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import Ajv from 'ajv';
+import { FromSchema, JSONSchema } from 'json-schema-to-ts';
 import { ILocalUser } from '@/models/entities/user';
 import { IEndpointMeta } from './endpoints';
 import { ApiError } from './error';
@@ -23,8 +24,8 @@ type SimpleUserInfo = {
 export type Response = Record<string, any> | void;
 
 // TODO: paramsの型をT['params']のスキーマ定義から推論する
-type executor<T extends IEndpointMeta> =
-	(params: any, user: T['requireCredential'] extends true ? SimpleUserInfo : SimpleUserInfo | null, token: AccessToken | null, file?: any, cleanup?: () => any) =>
+type executor<T extends IEndpointMeta, Ps extends JSONSchema> =
+	(params: FromSchema<Ps>, user: T['requireCredential'] extends true ? SimpleUserInfo : SimpleUserInfo | null, token: AccessToken | null, file?: any, cleanup?: () => any) =>
 		Promise<T['res'] extends undefined ? Response : SchemaType<NonNullable<T['res']>>>;
 
 const ajv = new Ajv({
@@ -33,10 +34,10 @@ const ajv = new Ajv({
 
 ajv.addFormat('misskey:id', /^[a-z0-9]+$/);
 
-export default function <T extends IEndpointMeta>(meta: T, cb: executor<T>)
+export default function <T extends IEndpointMeta, Ps extends JSONSchema>(meta: T, paramDef: Ps, cb: executor<T, Ps>)
 		: (params: any, user: T['requireCredential'] extends true ? SimpleUserInfo : SimpleUserInfo | null, token: AccessToken | null, file?: any) => Promise<any> {
 
-	const validate = meta.params ? ajv.compile(meta.params) : null;
+	const validate = ajv.compile(paramDef);
 
 	return (params: any, user: T['requireCredential'] extends true ? SimpleUserInfo : SimpleUserInfo | null, token: AccessToken | null, file?: any) => {
 		function cleanup() {
@@ -49,22 +50,20 @@ export default function <T extends IEndpointMeta>(meta: T, cb: executor<T>)
 			id: '4267801e-70d1-416a-b011-4ee502885d8b',
 		}));
 
-		if (validate) {
-			const valid = validate(params);
-			if (!valid) {
-				if (file) cleanup();
+		const valid = validate(params);
+		if (!valid) {
+			if (file) cleanup();
 
-				const errors = validate.errors!;
-				const err = new ApiError({
-					message: 'Invalid param.',
-					code: 'INVALID_PARAM',
-					id: '3d81ceae-475f-4600-b2a8-2bc116157532',
-				}, {
-					param: errors[0].propertyName,
-					reason: errors[0].message,
-				});
-				return Promise.reject(err);
-			}
+			const errors = validate.errors!;
+			const err = new ApiError({
+				message: 'Invalid param.',
+				code: 'INVALID_PARAM',
+				id: '3d81ceae-475f-4600-b2a8-2bc116157532',
+			}, {
+				param: errors[0].propertyName,
+				reason: errors[0].message,
+			});
+			return Promise.reject(err);
 		}
 
 		return cb(params, user, token, file, cleanup);
