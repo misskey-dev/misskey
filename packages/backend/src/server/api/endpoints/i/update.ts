@@ -102,7 +102,7 @@ const paramDef = {
 		injectFeaturedNote: { type: 'boolean' },
 		receiveAnnouncementEmail: { type: 'boolean' },
 		alwaysMarkNsfw: { type: 'boolean' },
-		ffVisibility: { type: 'string' },
+		ffVisibility: { type: 'string', enum: ['public', 'followers', 'private'] },
 		pinnedPageId: { type: 'array', items: {
 			type: 'string', format: 'misskey:id',
 		} },
