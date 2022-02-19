@@ -1,5 +1,5 @@
-import $ from 'cafy';
 import { EntityRepository, Repository, In, Not } from 'typeorm';
+import * as Ajv from 'ajv';
 import { User, ILocalUser, IRemoteUser } from '@/models/entities/user';
 import { Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings, UserProfiles, UserSecurityKeys, UserGroupJoinings, Pages, Announcements, AnnouncementReads, Antennas, AntennaNotes, ChannelFollowings, Instances } from '../index';
 import config from '@/config/index';
@@ -17,8 +17,26 @@ type IsMeAndIsUserDetailed<ExpectsMe extends boolean | null, Detailed extends bo
 		Packed<'UserDetailed'> :
 	Packed<'UserLite'>;
 
+const ajv = new Ajv();
+
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
+	public localUsernameSchema = { type: 'string', pattern: /^\w{1,20}$/.toString().slice(1, -1) } as const;
+	public passwordSchema = { type: 'string', minLength: 1 } as const;
+	public nameSchema = { type: 'string', minLength: 1, maxLength: 50 } as const;
+	public descriptionSchema = { type: 'string', minLength: 1, maxLength: 500 } as const;
+	public locationSchema = { type: 'string', minLength: 1, maxLength: 50 } as const;
+	public birthdaySchema = { type: 'string', pattern: /^([0-9]{4})-([0-9]{2})-([0-9]{2})$/.toString().slice(1, -1) } as const;
+
+	//#region Validators
+	public validateLocalUsername = ajv.compile(this.localUsernameSchema);
+	public validatePassword = ajv.compile(this.passwordSchema);
+	public validateName = ajv.compile(this.nameSchema);
+	public validateDescription = ajv.compile(this.descriptionSchema);
+	public validateLocation = ajv.compile(this.locationSchema);
+	public validateBirthday = ajv.compile(this.birthdaySchema);
+	//#endregion
+
 	public async getRelation(me: User['id'], target: User['id']) {
 		const [following1, following2, followReq1, followReq2, toBlocking, fromBlocked, mute] = await Promise.all([
 			Followings.findOne({
@@ -220,6 +238,7 @@ export class UserRepository extends Repository<User> {
 			isModerator: user.isModerator || falsy,
 			isBot: user.isBot || falsy,
 			isCat: user.isCat || falsy,
+			showTimelineReplies: user.showTimelineReplies || falsy,
 			instance: user.host ? Instances.findOne({ host: user.host }).then(instance => instance ? {
 				name: instance.name,
 				softwareName: instance.softwareName,
@@ -350,13 +369,4 @@ export class UserRepository extends Repository<User> {
 	public isRemoteUser(user: User | { host: User['host'] }): boolean {
 		return !this.isLocalUser(user);
 	}
-
-	//#region Validators
-	public validateLocalUsername = $.str.match(/^\w{1,20}$/);
-	public validatePassword = $.str.min(1);
-	public validateName = $.str.min(1).max(50);
-	public validateDescription = $.str.min(1).max(500);
-	public validateLocation = $.str.min(1).max(50);
-	public validateBirthday = $.str.match(/^([0-9]{4})-([0-9]{2})-([0-9]{2})$/);
-	//#endregion
 }

@@ -9,8 +9,6 @@ export const meta = {
 	requireCredential: true,
 	requireModerator: true,
 
-	params: {},
-
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
@@ -26,8 +24,14 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async () => {
+export default define(meta, paramDef, async () => {
 	const code = rndstr({
 		length: 8,
 		chars: '2-9A-HJ-NP-Z', // [0-9A-Z] w/o [01IO] (32 patterns)

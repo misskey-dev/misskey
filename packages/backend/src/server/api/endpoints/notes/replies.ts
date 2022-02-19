@@ -1,5 +1,3 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { Notes } from '@/models/index';
 import { makePaginationQuery } from '../../common/make-pagination-query';
@@ -12,25 +10,6 @@ export const meta = {
 
 	requireCredential: false,
 
-	params: {
-		noteId: {
-			validator: $.type(ID),
-		},
-
-		sinceId: {
-			validator: $.optional.type(ID),
-		},
-
-		untilId: {
-			validator: $.optional.type(ID),
-		},
-
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
-		},
-	},
-
 	res: {
 		type: 'array',
 		optional: false, nullable: false,
@@ -42,8 +21,19 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		noteId: { type: 'string', format: 'misskey:id' },
+		sinceId: { type: 'string', format: 'misskey:id' },
+		untilId: { type: 'string', format: 'misskey:id' },
+		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+	},
+	required: ['noteId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 		.andWhere('note.replyId = :replyId', { replyId: ps.noteId })
 		.innerJoinAndSelect('note.user', 'user')
@@ -56,7 +46,7 @@ export default define(meta, async (ps, user) => {
 	if (user) generateMutedUserQuery(query, user);
 	if (user) generateBlockedUserQuery(query, user);
 
-	const timeline = await query.take(ps.limit!).getMany();
+	const timeline = await query.take(ps.limit).getMany();
 
 	return await Notes.packMany(timeline, user);
 });

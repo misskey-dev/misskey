@@ -34,14 +34,6 @@ export const packedFederationInstanceSchema = {
 			type: 'number',
 			optional: false, nullable: false,
 		},
-		driveUsage: {
-			type: 'number',
-			optional: false, nullable: false,
-		},
-		driveFiles: {
-			type: 'number',
-			optional: false, nullable: false,
-		},
 		latestRequestSentAt: {
 			type: 'string',
 			optional: false, nullable: true,

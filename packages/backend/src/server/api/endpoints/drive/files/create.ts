@@ -1,6 +1,4 @@
 import ms from 'ms';
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
 import { addFile } from '@/services/drive/add-file';
 import define from '../../../define';
 import { apiLogger } from '../../../logger';
@@ -22,35 +20,6 @@ export const meta = {
 
 	kind: 'write:drive',
 
-	params: {
-		folderId: {
-			validator: $.optional.nullable.type(ID),
-			default: null,
-		},
-
-		name: {
-			validator: $.optional.nullable.str,
-			default: null,
-		},
-
-		comment: {
-			validator: $.optional.nullable.str.max(DB_MAX_IMAGE_COMMENT_LENGTH),
-			default: null,
-		},
-
-		isSensitive: {
-			validator: $.optional.either($.bool, $.str),
-			default: false,
-			transform: (v: any): boolean => v === true || v === 'true',
-		},
-
-		force: {
-			validator: $.optional.either($.bool, $.str),
-			default: false,
-			transform: (v: any): boolean => v === true || v === 'true',
-		},
-	},
-
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
@@ -66,8 +35,20 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		folderId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
+		name: { type: 'string', nullable: true, default: null },
+		comment: { type: 'string', nullable: true, maxLength: DB_MAX_IMAGE_COMMENT_LENGTH, default: null },
+		isSensitive: { type: 'boolean', default: false },
+		force: { type: 'boolean', default: false },
+	},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user, _, file, cleanup) => {
+export default define(meta, paramDef, async (ps, user, _, file, cleanup) => {
 	// Get 'name' parameter
 	let name = ps.name || file.originalname;
 	if (name !== undefined && name !== null) {
@@ -88,7 +69,9 @@ export default define(meta, async (ps, user, _, file, cleanup) => {
 		const driveFile = await addFile({ user, path: file.path, name, comment: ps.comment, folderId: ps.folderId, force: ps.force, sensitive: ps.isSensitive });
 		return await DriveFiles.pack(driveFile, { self: true });
 	} catch (e) {
-		apiLogger.error(e);
+		if (e instanceof Error || typeof e === 'string') {
+			apiLogger.error(e);
+		}
 		throw new ApiError();
 	} finally {
 		cleanup!();

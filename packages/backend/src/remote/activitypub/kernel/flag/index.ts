@@ -10,7 +10,7 @@ export default async (actor: IRemoteUser, activity: IFlag): Promise<string> => {
 	// 対象ユーザーは一番最初のユーザー として あとはコメントとして格納する
 	const uris = getApIds(activity.object);
 
-	const userIds = uris.filter(uri => uri.startsWith(config.url + '/users/')).map(uri => uri.split('/').pop());
+	const userIds = uris.filter(uri => uri.startsWith(config.url + '/users/')).map(uri => uri.split('/').pop()!);
 	const users = await Users.find({
 		id: In(userIds),
 	});

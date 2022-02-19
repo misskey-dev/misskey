@@ -17,8 +17,14 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	const query = GalleryPosts.createQueryBuilder('post')
 		.andWhere('post.likedCount > 0')
 		.orderBy('post.likedCount', 'DESC');

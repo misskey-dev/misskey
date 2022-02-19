@@ -41,6 +41,7 @@ export class Following {
 	public follower: User | null;
 
 	//#region Denormalized fields
+	@Index()
 	@Column('varchar', {
 		length: 128, nullable: true,
 		comment: '[Denormalized]',
@@ -59,6 +60,7 @@ export class Following {
 	})
 	public followerSharedInbox: string | null;
 
+	@Index()
 	@Column('varchar', {
 		length: 128, nullable: true,
 		comment: '[Denormalized]',

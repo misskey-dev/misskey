@@ -25,8 +25,14 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const instance = await fetchMeta(true);
 
 	// Calculate drive usage
