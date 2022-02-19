@@ -105,10 +105,8 @@ export interface Schema extends OfSchema {
 	readonly minLength?: number;
 }
 
-type RequiredPropertyNames<s extends Obj, RequiredProps extends ReadonlyArray<keyof s>> = {
+type RequiredPropertyNames<s extends Obj> = {
 	[K in keyof s]:
-		// K is listed in RequiredProps
-		K extends RequiredProps[number] ? K :
 		// K is not optional
 		s[K]['optional'] extends false ? K :
 		// K has default value
@@ -117,9 +115,10 @@ type RequiredPropertyNames<s extends Obj, RequiredProps extends ReadonlyArray<ke
 
 export interface Obj { [key: string]: Schema; }
 
-export type ObjType<s extends Obj, RequiredProps extends ReadonlyArray<keyof s>> =
+export type ObjType<s extends Obj, RequiredProps extends keyof s> =
 	{ -readonly [P in keyof s]?: SchemaType<s[P]> } &
-	{ -readonly [P in RequiredPropertyNames<s, RequiredProps>]: SchemaType<s[P]> };
+	{ -readonly [P in RequiredProps]: SchemaType<s[P]> } &
+	{ -readonly [P in RequiredPropertyNames<s>]: SchemaType<s[P]> };
 
 type NullOrUndefined<p extends Schema, T> =
 	p['nullable'] extends true
@@ -152,7 +151,7 @@ export type SchemaTypeDef<p extends Schema> =
 	p['type'] extends 'boolean' ? boolean :
 	p['type'] extends 'object' ? (
 		p['ref'] extends keyof typeof refs ? Packed<p['ref']> :
-		p['properties'] extends NonNullable<Obj> ? ObjType<p['properties'], NonNullable<p['required']>> :
+		p['properties'] extends NonNullable<Obj> ? ObjType<p['properties'], NonNullable<p['required']>[number]> :
 		p['anyOf'] extends ReadonlyArray<Schema> ? UnionSchemaType<p['anyOf']> & Partial<UnionToIntersection<UnionSchemaType<p['anyOf']>>> :
 		p['allOf'] extends ReadonlyArray<Schema> ? UnionToIntersection<UnionSchemaType<p['allOf']>> :
 		any
