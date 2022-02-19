@@ -2,6 +2,7 @@ import { EntityRepository, Repository } from 'typeorm';
 import { PageLike } from '@/models/entities/page-like';
 import { Pages } from '../index';
 import { User } from '@/models/entities/user';
+import { awaitAll } from '@/prelude/await-all';
 
 @EntityRepository(PageLike)
 export class PageLikeRepository extends Repository<PageLike> {

@@ -28,13 +28,13 @@ export class AppRepository extends Repository<App> {
 			name: app.name,
 			callbackUrl: app.callbackUrl,
 			permission: app.permission,
-			...(opts.includeSecret ? { secret: app.secret } : {}),
+			...(opts.includeSecret ? { secret: app.secret } : { secret: undefined }),
 			...(me ? {
 				isAuthorized: await AccessTokens.count({
 					appId: app.id,
-					userId: me,
+					userId: me.id,
 				}).then(count => count > 0),
-			} : {}),
+			} : { isAuthorized: undefined }),
 		};
 	}
 }
