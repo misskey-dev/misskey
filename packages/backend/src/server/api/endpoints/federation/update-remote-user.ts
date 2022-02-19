@@ -8,7 +8,7 @@ export const meta = {
 	requireCredential: true,
 } as const;
 
-const paramDef = {
+export const paramDef = {
 	type: 'object',
 	properties: {
 		userId: { type: 'string', format: 'misskey:id' },
