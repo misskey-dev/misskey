@@ -4,6 +4,7 @@ import { apiUrl } from '@/config';
 import * as Misskey from 'misskey-js';
 import { $i } from '@/account';
 import { readAndCompressImage } from 'browser-image-resizer';
+import { alert } from '@/os';
 
 type Uploading = {
 	id: string;
@@ -84,7 +85,8 @@ export function uploadFile(
 
 					alert({
 						type: 'error',
-						text: 'upload failed'
+						title: 'Failed to upload',
+						text: `${JSON.stringify(ev.target?.response)}, ${JSON.stringify(xhr.response)}`
 					});
 
 					reject();
