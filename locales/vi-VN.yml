@@ -23,6 +23,8 @@ renotedCount: "Lượt chia sẻ"
 translatedFrom: "Dịch từ {x}"
 _mfm:
   search: "Tìm kiếm"
+_theme:
+  installed: "{name} đã được cài đặt"
 _sfx:
   notification: "Thông báo"
 _ago:
