@@ -63,12 +63,7 @@ export const refs = {
 	Emoji: packedEmojiSchema,
 };
 
-type PackedDef<r extends { properties?: Obj; oneOf?: ReadonlyArray<Schema>; allOf?: ReadonlyArray<Schema> }> =
-	r['allOf'] extends ReadonlyArray<Schema> ? UnionToIntersection<UnionSchemaType<r['allOf']>> :
-	r['oneOf'] extends ReadonlyArray<Schema> ? UnionSchemaType<r['oneOf']> :
-	r['properties'] extends Obj ? ObjType<r['properties'], any> :
-	never;
-export type Packed<x extends keyof typeof refs> = PackedDef<typeof refs[x]>;
+export type Packed<x extends keyof typeof refs> = SchemaType<typeof refs[x]>;
 
 type TypeStringef = 'null' | 'boolean' | 'integer' | 'number' | 'string' | 'array' | 'object' | 'any';
 type StringDefToType<T extends TypeStringef> =
