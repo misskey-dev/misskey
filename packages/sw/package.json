@@ -9,8 +9,7 @@
 	"dependencies": {
 		"esbuild": "^0.14.13",
 		"idb-keyval": "^6.0.3",
-		"misskey-js": "0.0.14",
-		"ts-loader": "^9.2.6"
+		"misskey-js": "0.0.14"
 	},
 	"devDependencies": {
 		"eslint": "^8.2.0"

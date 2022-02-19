@@ -1114,6 +1114,8 @@ _exportOrImport:
   blockingList: "封鎖"
   userLists: "清單"
 _charts:
+  federation: "站台聯邦"
+  apRequest: "請求"
   usersIncDec: "使用者増減"
   usersTotal: "使用者合共"
   activeUsers: "活躍使用者"

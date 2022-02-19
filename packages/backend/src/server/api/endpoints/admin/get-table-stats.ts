@@ -7,9 +7,6 @@ export const meta = {
 
 	tags: ['admin'],
 
-	params: {
-	},
-
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
@@ -22,8 +19,14 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async () => {
+export default define(meta, paramDef, async () => {
 	const sizes = await
 		getConnection().query(`
 			SELECT relname AS "table", reltuples as "count", pg_total_relation_size(C.oid) AS "size"

@@ -1,8 +1,5 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { readNotification } from '../../common/read-notification';
-import { ApiError } from '../../error';
 
 export const meta = {
 	desc: {
@@ -16,31 +13,36 @@ export const meta = {
 
 	kind: 'write:notifications',
 
-	params: {
-		notificationId: {
-			validator: $.optional.type(ID),
-			desc: {
-				'ja-JP': '対象の通知のID',
-				'en-US': 'Target notification ID.'
-			}
+	errors: {
+		noSuchNotification: {
+			message: 'No such notification.',
+			code: 'NO_SUCH_NOTIFICATION',
+			id: 'efa929d5-05b5-47d1-beec-e6a4dbed011e',
 		},
-
-		notificationIds: {
-			validator: $.optional.arr($.type(ID)),
-			desc: {
-				'ja-JP': '対象の通知のIDの配列',
-				'en-US': 'Target notification IDs.'
-			}
-		}
 	},
 } as const;
 
+const paramDef = {
+	oneOf: [
+		{
+			type: 'object',
+			properties: {
+				notificationId: { type: 'string', format: 'misskey:id' },
+			},
+			required: ['notificationId'],
+		},
+		{
+			type: 'object',
+			properties: {
+				notificationIds: { type: 'array', items: { type: 'string', format: 'misskey:id' } },
+			},
+			required: ['notificationIds'],
+		},
+	],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
-	let notificationIds = [] as string[];
-
-	if (ps.notificationId) notificationIds.push(ps.notificationId);
-	if (ps.notificationIds) notificationIds = notificationIds.concat(ps.notificationIds);
-
-	return readNotification(user.id, notificationIds);
+export default define(meta, paramDef, async (ps, user) => {
+	if ('notificationId' in ps) return readNotification(user.id, [ps.notificationId]);
+	return readNotification(user.id, ps.notificationIds);
 });

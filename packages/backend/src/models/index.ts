@@ -61,6 +61,7 @@ import { RegistryItem } from './entities/registry-item';
 import { Ad } from './entities/ad';
 import { PasswordResetRequest } from './entities/password-reset-request';
 import { UserPending } from './entities/user-pending';
+import { InstanceRepository } from './repositories/instance';
 
 export const Announcements = getRepository(Announcement);
 export const AnnouncementReads = getRepository(AnnouncementRead);
@@ -89,7 +90,7 @@ export const UserNotePinings = getRepository(UserNotePining);
 export const UsedUsernames = getRepository(UsedUsername);
 export const Followings = getCustomRepository(FollowingRepository);
 export const FollowRequests = getCustomRepository(FollowRequestRepository);
-export const Instances = getRepository(Instance);
+export const Instances = getCustomRepository(InstanceRepository);
 export const Emojis = getCustomRepository(EmojiRepository);
 export const DriveFiles = getCustomRepository(DriveFileRepository);
 export const DriveFolders = getCustomRepository(DriveFolderRepository);

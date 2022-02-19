@@ -106,6 +106,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		}
 	},
 
+	overridedDeviceKind: {
+		where: 'device',
+		default: null as null | 'smartphone' | 'tablet' | 'desktop',
+	},
 	serverDisconnectedBehavior: {
 		where: 'device',
 		default: 'quiet' as 'quiet' | 'reload' | 'dialog'
@@ -177,6 +181,10 @@ export const defaultStore = markRaw(new Storage('base', {
 	instanceTicker: {
 		where: 'device',
 		default: 'remote' as 'none' | 'remote' | 'always'
+	},
+	reactionPickerSize: {
+		where: 'device',
+		default: 1
 	},
 	reactionPickerWidth: {
 		where: 'device',

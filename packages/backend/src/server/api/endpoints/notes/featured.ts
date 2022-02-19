@@ -1,4 +1,3 @@
-import $ from 'cafy';
 import define from '../../define';
 import { generateMutedUserQuery } from '../../common/generate-muted-user-query';
 import { Notes } from '@/models/index';
@@ -8,18 +7,6 @@ export const meta = {
 	tags: ['notes'],
 
 	requireCredential: false,
-
-	params: {
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
-		},
-
-		offset: {
-			validator: $.optional.num.min(0),
-			default: 0,
-		},
-	},
 
 	res: {
 		type: 'array',
@@ -32,8 +19,17 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+		offset: { type: 'integer', default: 0 },
+	},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const max = 30;
 	const day = 1000 * 60 * 60 * 24 * 3; // 3日前まで
 

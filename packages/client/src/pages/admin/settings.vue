@@ -25,6 +25,12 @@
 				<template #label>{{ $ts.backgroundImageUrl }}</template>
 			</FormInput>
 
+			<FormInput v-model="themeColor" class="_formBlock">
+				<template #prefix><i class="fas fa-palette"></i></template>
+				<template #label>{{ $ts.themeColor }}</template>
+				<template #caption>#RRGGBB</template>
+			</FormInput>
+
 			<FormInput v-model="tosUrl" class="_formBlock">
 				<template #prefix><i class="fas fa-link"></i></template>
 				<template #label>{{ $ts.tosUrl }}</template>
@@ -179,6 +185,7 @@ export default defineComponent({
 			iconUrl: null,
 			bannerUrl: null,
 			backgroundImageUrl: null,
+			themeColor: null,
 			maxNoteTextLength: 0,
 			enableLocalTimeline: false,
 			enableGlobalTimeline: false,
@@ -206,6 +213,7 @@ export default defineComponent({
 			this.iconUrl = meta.iconUrl;
 			this.bannerUrl = meta.bannerUrl;
 			this.backgroundImageUrl = meta.backgroundImageUrl;
+			this.themeColor = meta.themeColor;
 			this.maintainerName = meta.maintainerName;
 			this.maintainerEmail = meta.maintainerEmail;
 			this.maxNoteTextLength = meta.maxNoteTextLength;
@@ -233,6 +241,7 @@ export default defineComponent({
 				iconUrl: this.iconUrl,
 				bannerUrl: this.bannerUrl,
 				backgroundImageUrl: this.backgroundImageUrl,
+				themeColor: this.themeColor === '' ? null : this.themeColor,
 				maintainerName: this.maintainerName,
 				maintainerEmail: this.maintainerEmail,
 				maxNoteTextLength: this.maxNoteTextLength,

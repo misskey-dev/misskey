@@ -1,5 +1,3 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { getUser } from '../../common/getters';
@@ -13,57 +11,6 @@ import { generateMutedInstanceQuery } from '../../common/generate-muted-instance
 
 export const meta = {
 	tags: ['users', 'notes'],
-
-	params: {
-		userId: {
-			validator: $.type(ID),
-		},
-
-		includeReplies: {
-			validator: $.optional.bool,
-			default: true,
-		},
-
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
-		},
-
-		sinceId: {
-			validator: $.optional.type(ID),
-		},
-
-		untilId: {
-			validator: $.optional.type(ID),
-		},
-
-		sinceDate: {
-			validator: $.optional.num,
-		},
-
-		untilDate: {
-			validator: $.optional.num,
-		},
-
-		includeMyRenotes: {
-			validator: $.optional.bool,
-			default: true,
-		},
-
-		withFiles: {
-			validator: $.optional.bool,
-			default: false,
-		},
-
-		fileType: {
-			validator: $.optional.arr($.str),
-		},
-
-		excludeNsfw: {
-			validator: $.optional.bool,
-			default: false,
-		},
-	},
 
 	res: {
 		type: 'array',
@@ -84,8 +31,28 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		userId: { type: 'string', format: 'misskey:id' },
+		includeReplies: { type: 'boolean', default: true },
+		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+		sinceId: { type: 'string', format: 'misskey:id' },
+		untilId: { type: 'string', format: 'misskey:id' },
+		sinceDate: { type: 'integer' },
+		untilDate: { type: 'integer' },
+		includeMyRenotes: { type: 'boolean', default: true },
+		withFiles: { type: 'boolean', default: false },
+		fileType: { type: 'array', items: {
+			type: 'string',
+		} },
+		excludeNsfw: { type: 'boolean', default: false },
+	},
+	required: ['userId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	// Lookup user
 	const user = await getUser(ps.userId).catch(e => {
 		if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
@@ -141,7 +108,7 @@ export default define(meta, async (ps, me) => {
 
 	//#endregion
 
-	const timeline = await query.take(ps.limit!).getMany();
+	const timeline = await query.take(ps.limit).getMany();
 
 	return await Notes.packMany(timeline, me);
 });

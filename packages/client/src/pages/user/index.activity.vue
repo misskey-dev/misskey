@@ -3,7 +3,7 @@
 	<template #header><i class="fas fa-chart-bar" style="margin-right: 0.5em;"></i>{{ $ts.activity }}</template>
 
 	<div style="padding: 8px;">
-		<MkChart src="per-user-notes" :args="{ user, withoutAll: true }" span="day" :limit="limit" :stacked="true" :detailed="false" :aspect-ratio="6"/>
+		<MkChart src="per-user-notes" :args="{ user, withoutAll: true }" span="day" :limit="limit" :bar="true" :stacked="true" :detailed="false" :aspect-ratio="5"/>
 	</div>
 </MkContainer>
 </template>
@@ -18,6 +18,6 @@ const props = withDefaults(defineProps<{
 	user: misskey.entities.User;
 	limit?: number;
 }>(), {
-	limit: 40,
+	limit: 50,
 });
 </script>

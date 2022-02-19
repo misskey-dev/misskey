@@ -1,5 +1,3 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { Antennas } from '@/models/index';
@@ -12,12 +10,6 @@ export const meta = {
 
 	kind: 'write:account',
 
-	params: {
-		antennaId: {
-			validator: $.type(ID),
-		},
-	},
-
 	errors: {
 		noSuchAntenna: {
 			message: 'No such antenna.',
@@ -27,8 +19,16 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		antennaId: { type: 'string', format: 'misskey:id' },
+	},
+	required: ['antennaId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const antenna = await Antennas.findOne({
 		id: ps.antennaId,
 		userId: user.id,

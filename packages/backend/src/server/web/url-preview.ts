@@ -9,22 +9,34 @@ import { getJson } from '@/misc/fetch';
 const logger = new Logger('url-preview');
 
 module.exports = async (ctx: Koa.Context) => {
+	const url = ctx.query.url;
+	if (typeof url !== 'string') {
+		ctx.status = 400;
+		return;
+	}
+
+	const lang = ctx.query.lang;
+	if (Array.isArray(lang)) {
+		ctx.status = 400;
+		return;
+	}
+
 	const meta = await fetchMeta();
 
 	logger.info(meta.summalyProxy
-		? `(Proxy) Getting preview of ${ctx.query.url}@${ctx.query.lang} ...`
-		: `Getting preview of ${ctx.query.url}@${ctx.query.lang} ...`);
+		? `(Proxy) Getting preview of ${url}@${lang} ...`
+		: `Getting preview of ${url}@${lang} ...`);
 
 	try {
 		const summary = meta.summalyProxy ? await getJson(`${meta.summalyProxy}?${query({
-			url: ctx.query.url,
-			lang: ctx.query.lang || 'ja-JP',
-		})}`) : await summaly(ctx.query.url, {
+			url: url,
+			lang: lang ?? 'ja-JP',
+		})}`) : await summaly(url, {
 			followRedirects: false,
-			lang: ctx.query.lang || 'ja-JP',
+			lang: lang ?? 'ja-JP',
 		});
 
-		logger.succ(`Got preview of ${ctx.query.url}: ${summary.title}`);
+		logger.succ(`Got preview of ${url}: ${summary.title}`);
 
 		summary.icon = wrap(summary.icon);
 		summary.thumbnail = wrap(summary.thumbnail);
@@ -33,8 +45,8 @@ module.exports = async (ctx: Koa.Context) => {
 		ctx.set('Cache-Control', 'max-age=604800, immutable');
 
 		ctx.body = summary;
-	} catch (e) {
-		logger.warn(`Failed to get preview of ${ctx.query.url}: ${e}`);
+	} catch (err) {
+		logger.warn(`Failed to get preview of ${url}: ${err}`);
 		ctx.status = 200;
 		ctx.set('Cache-Control', 'max-age=86400, immutable');
 		ctx.body = '{}';

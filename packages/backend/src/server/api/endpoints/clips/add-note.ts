@@ -1,5 +1,3 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { ClipNotes, Clips } from '@/models/index';
 import { ApiError } from '../../error';
@@ -12,16 +10,6 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'write:account',
-
-	params: {
-		clipId: {
-			validator: $.type(ID),
-		},
-
-		noteId: {
-			validator: $.type(ID),
-		},
-	},
 
 	errors: {
 		noSuchClip: {
@@ -44,8 +32,17 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		clipId: { type: 'string', format: 'misskey:id' },
+		noteId: { type: 'string', format: 'misskey:id' },
+	},
+	required: ['clipId', 'noteId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const clip = await Clips.findOne({
 		id: ps.clipId,
 		userId: user.id,

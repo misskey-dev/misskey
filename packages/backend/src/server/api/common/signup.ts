@@ -21,13 +21,13 @@ export async function signup(opts: {
 	let hash = passwordHash;
 
 	// Validate username
-	if (!Users.validateLocalUsername.ok(username)) {
+	if (!Users.validateLocalUsername(username)) {
 		throw new Error('INVALID_USERNAME');
 	}
 
 	if (password != null && passwordHash == null) {
 		// Validate password
-		if (!Users.validatePassword.ok(password)) {
+		if (!Users.validatePassword(password)) {
 			throw new Error('INVALID_PASSWORD');
 		}
 
