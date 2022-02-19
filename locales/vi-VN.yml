@@ -23,6 +23,7 @@ _ago:
   daysAgo: "{n} ngày trước"
   weeksAgo: "{n} tuần trước"
   monthsAgo: "{n} tháng trước"
+  yearsAgo: "{n} năm trước"
 _widgets:
   notifications: "Thông báo"
 _profile:
