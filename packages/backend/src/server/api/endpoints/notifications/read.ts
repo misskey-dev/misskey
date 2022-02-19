@@ -43,10 +43,6 @@ const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, user) => {
-	let notificationIds = [] as string[];
-
-	if (ps.notificationId) notificationIds.push(ps.notificationId);
-	if (ps.notificationIds) notificationIds = notificationIds.concat(ps.notificationIds);
-
-	return readNotification(user.id, notificationIds);
+	if ('notificationId' in ps) return readNotification(user.id, [ps.notificationId]);
+	return readNotification(user.id, ps.notificationIds);
 });
