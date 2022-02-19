@@ -38,7 +38,7 @@ export default async (ctx: Koa.Context) => {
 	const emailAddress = body['emailAddress'];
 
 	if (instance.emailRequiredForSignup) {
-		if (emailAddress == null || typeof emailAddress != 'string') {
+		if (emailAddress == null || typeof emailAddress !== 'string') {
 			ctx.status = 400;
 			return;
 		}
@@ -51,7 +51,7 @@ export default async (ctx: Koa.Context) => {
 	}
 
 	if (instance.disableRegistration) {
-		if (invitationCode == null || typeof invitationCode != 'string') {
+		if (invitationCode == null || typeof invitationCode !== 'string') {
 			ctx.status = 400;
 			return;
 		}

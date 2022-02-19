@@ -62,7 +62,7 @@ export async function exportNotes(job: Bull.Job<DbUserJobData>, done: any): Prom
 			order: {
 				id: 1,
 			},
-		});
+		}) as Note[];
 
 		if (notes.length === 0) {
 			job.progress(100);

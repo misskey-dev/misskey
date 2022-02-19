@@ -1,4 +1,3 @@
-import $ from 'cafy';
 import define from '../../define';
 import config from '@/config/index';
 import { createPerson } from '@/remote/activitypub/models/person';
@@ -22,12 +21,6 @@ export const meta = {
 	limit: {
 		duration: ms('1hour'),
 		max: 30,
-	},
-
-	params: {
-		uri: {
-			validator: $.str,
-		},
 	},
 
 	errors: {
@@ -75,8 +68,16 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		uri: { type: 'string' },
+	},
+	required: ['uri'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps) => {
+export default define(meta, paramDef, async (ps) => {
 	const object = await fetchAny(ps.uri);
 	if (object) {
 		return object;

@@ -36,8 +36,8 @@ export default function() {
 				tx: round(Math.max(0, netStats.tx_sec)),
 			},
 			fs: {
-				r: round(Math.max(0, fsStats.rIO_sec)),
-				w: round(Math.max(0, fsStats.wIO_sec)),
+				r: round(Math.max(0, fsStats.rIO_sec ?? 0)),
+				w: round(Math.max(0, fsStats.wIO_sec ?? 0)),
 			},
 		};
 		ev.emit('serverStats', stats);
@@ -51,9 +51,9 @@ export default function() {
 }
 
 // CPU STAT
-function cpuUsage() {
+function cpuUsage(): Promise<number> {
 	return new Promise((res, rej) => {
-		osUtils.cpuUsage((cpuUsage: number) => {
+		osUtils.cpuUsage((cpuUsage) => {
 			res(cpuUsage);
 		});
 	});

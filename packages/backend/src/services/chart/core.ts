@@ -70,6 +70,50 @@ type ChartResult<T extends Schema> = {
 	[P in keyof T]: number[];
 };
 
+type UnionToIntersection<T> = (T extends any ? (x: T) => any : never) extends (x: infer R) => any ? R : never;
+
+type UnflattenSingleton<K extends string, V> = K extends `${infer A}.${infer B}`
+	? { [_ in A]: UnflattenSingleton<B, V>; }
+	: { [_ in K]: V; };
+
+type Unflatten<T extends Record<string, any>> = UnionToIntersection<
+	{
+		[K in Extract<keyof T, string>]: UnflattenSingleton<K, T[K]>;
+	}[Extract<keyof T, string>]
+>;
+
+type ToJsonSchema<S> = {
+	type: 'object';
+	properties: {
+		[K in keyof S]: S[K] extends number[] ? { type: 'array'; items: { type: 'number'; }; } : ToJsonSchema<S[K]>;
+	},
+	required: (keyof S)[];
+};
+
+export function getJsonSchema<S extends Schema>(schema: S): ToJsonSchema<Unflatten<ChartResult<S>>> {
+	const object = {};
+	for (const [k, v] of Object.entries(schema)) {
+		nestedProperty.set(object, k, null);
+	}
+
+	function f(obj: Record<string, null | Record<string, unknown>>) {
+		const jsonSchema = {
+			type: 'object',
+			properties: {} as Record<string, unknown>,
+			required: [],
+		};
+		for (const [k, v] of Object.entries(obj)) {
+			jsonSchema.properties[k] = v === null ? {
+				type: 'array',
+				items: { type: 'number' },
+			} : f(v as Record<string, null | Record<string, unknown>>);
+		}
+		return jsonSchema;
+	}
+
+	return f(object) as ToJsonSchema<Unflatten<ChartResult<S>>>;
+}
+
 /**
  * 様々なチャートの管理を司るクラス
  */
@@ -642,12 +686,12 @@ export default abstract class Chart<T extends Schema> {
 	}
 
 	@autobind
-	public async getChart(span: 'hour' | 'day', amount: number, cursor: Date | null, group: string | null = null): Promise<Record<string, unknown>> {
+	public async getChart(span: 'hour' | 'day', amount: number, cursor: Date | null, group: string | null = null): Promise<Unflatten<ChartResult<T>>> {
 		const result = await this.getChartRaw(span, amount, cursor, group);
 		const object = {};
 		for (const [k, v] of Object.entries(result)) {
 			nestedProperty.set(object, k, v);
 		}
-		return object;
+		return object as Unflatten<ChartResult<T>>;
 	}
 }

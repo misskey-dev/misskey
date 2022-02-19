@@ -1,5 +1,3 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { UserLists } from '@/models/index';
@@ -11,12 +9,6 @@ export const meta = {
 
 	kind: 'write:account',
 
-	params: {
-		listId: {
-			validator: $.type(ID),
-		},
-	},
-
 	errors: {
 		noSuchList: {
 			message: 'No such list.',
@@ -26,8 +18,16 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		listId: { type: 'string', format: 'misskey:id' },
+	},
+	required: ['listId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const userList = await UserLists.findOne({
 		id: ps.listId,
 		userId: user.id,

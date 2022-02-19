@@ -1,4 +1,3 @@
-import $ from 'cafy';
 import config from '@/config/index';
 import define from '../define';
 import { fetchMeta } from '@/misc/fetch-meta';
@@ -10,13 +9,6 @@ export const meta = {
 	tags: ['meta'],
 
 	requireCredential: false,
-
-	params: {
-		detail: {
-			validator: $.optional.bool,
-			default: true,
-		},
-	},
 
 	res: {
 		type: 'object',
@@ -448,8 +440,16 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		detail: { type: 'boolean', default: true },
+	},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	const instance = await fetchMeta(true);
 
 	const emojis = await Emojis.find({

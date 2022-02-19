@@ -1,5 +1,3 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
 import define from '../../../define';
 import { publishDriveStream } from '@/services/stream';
 import { ApiError } from '../../../error';
@@ -11,12 +9,6 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'write:drive',
-
-	params: {
-		folderId: {
-			validator: $.type(ID),
-		},
-	},
 
 	errors: {
 		noSuchFolder: {
@@ -33,8 +25,16 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		folderId: { type: 'string', format: 'misskey:id' },
+	},
+	required: ['folderId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	// Get folder
 	const folder = await DriveFolders.findOne({
 		id: ps.folderId,

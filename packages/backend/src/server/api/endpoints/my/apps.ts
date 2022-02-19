@@ -1,4 +1,3 @@
-import $ from 'cafy';
 import define from '../../define';
 import { Apps } from '@/models/index';
 
@@ -6,18 +5,6 @@ export const meta = {
 	tags: ['account', 'app'],
 
 	requireCredential: true,
-
-	params: {
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
-		},
-
-		offset: {
-			validator: $.optional.num.min(0),
-			default: 0,
-		},
-	},
 
 	res: {
 		type: 'array',
@@ -69,15 +56,24 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+		offset: { type: 'integer', default: 0 },
+	},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const query = {
 		userId: user.id,
 	};
 
 	const apps = await Apps.find({
 		where: query,
-		take: ps.limit!,
+		take: ps.limit,
 		skip: ps.offset,
 	});
 

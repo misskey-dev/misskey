@@ -1,5 +1,3 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { AbuseUserReports, Users } from '@/models/index';
 import { getInstanceActor } from '@/services/instance-actor';
@@ -12,22 +10,19 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
+} as const;
 
-	params: {
-		reportId: {
-			validator: $.type(ID),
-		},
-
-		forward: {
-			validator: $.optional.boolean,
-			required: false,
-			default: false,
-		},
+const paramDef = {
+	type: 'object',
+	properties: {
+		reportId: { type: 'string', format: 'misskey:id' },
+		forward: { type: 'boolean', default: false },
 	},
+	required: ['reportId'],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	const report = await AbuseUserReports.findOne(ps.reportId);
 
 	if (report == null) {

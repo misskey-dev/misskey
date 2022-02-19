@@ -199,7 +199,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 				throw new Error('already registered');
 			}
 		} else {
-			logger.error(e);
+			logger.error(e instanceof Error ? e : new Error(e as string));
 			throw e;
 		}
 	}
