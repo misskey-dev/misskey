@@ -1,5 +1,5 @@
 deploy:
-  - bash -c 'ls'
+  - bash -c 'ls .config'
   - bash -c 'cp .config/example.yml .config/default.yml'
   - bash -c 'cp .config/docker_example.env .config/docker.env'
   - okteto build -t okteto.dev/misskey:latest
