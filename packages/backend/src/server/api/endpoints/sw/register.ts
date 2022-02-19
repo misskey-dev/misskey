@@ -14,12 +14,12 @@ export const meta = {
 		properties: {
 			state: {
 				type: 'string',
-				optional: false, nullable: false,
+				optional: true, nullable: false,
 				enum: ['already-subscribed', 'subscribed'],
 			},
 			key: {
 				type: 'string',
-				optional: false, nullable: false,
+				optional: false, nullable: true,
 			},
 		},
 	},
@@ -49,7 +49,7 @@ export default define(meta, paramDef, async (ps, user) => {
 
 	if (exist != null) {
 		return {
-			state: 'already-subscribed',
+			state: 'already-subscribed' as const,
 			key: instance.swPublicKey,
 		};
 	}
@@ -64,7 +64,7 @@ export default define(meta, paramDef, async (ps, user) => {
 	});
 
 	return {
-		state: 'subscribed',
+		state: 'subscribed' as const,
 		key: instance.swPublicKey,
 	};
 });
