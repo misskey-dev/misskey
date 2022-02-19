@@ -42,11 +42,14 @@ export default async function(resolver: Resolver, actor: IRemoteUser, activity: 
 			renote = await resolveNote(targetUri);
 		} catch (e) {
 			// 対象が4xxならスキップ
-			if (e instanceof StatusError && e.isClientError) {
-				logger.warn(`Ignored announce target ${targetUri} - ${e.statusCode}`);
-				return;
+			if (e instanceof StatusError) {
+				if (e.isClientError) {
+					logger.warn(`Ignored announce target ${targetUri} - ${e.statusCode}`);
+					return;
+				}
+
+				logger.warn(`Error in announce target ${targetUri} - ${e.statusCode || e}`);
 			}
-			logger.warn(`Error in announce target ${targetUri} - ${e.statusCode || e}`);
 			throw e;
 		}
 

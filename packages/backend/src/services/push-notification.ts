@@ -5,8 +5,15 @@ import { fetchMeta } from '@/misc/fetch-meta';
 import { Packed } from '@/misc/schema';
 import { getNoteSummary } from '@/misc/get-note-summary';
 
-type notificationType = 'notification' | 'unreadMessagingMessage';
-type notificationBody = Packed<'Notification'> | Packed<'MessagingMessage'>;
+// Defined also packages/sw/types.ts#L14-L21
+type pushNotificationsTypes = {
+	'notification': Packed<'Notification'>;
+	'unreadMessagingMessage': Packed<'MessagingMessage'>;
+	'readNotifications': { notificationIds: string[] };
+	'readAllNotifications': undefined;
+	'readAllMessagingMessages': undefined;
+	'readAllMessagingMessagesOfARoom': { userId: string } | { groupId: string };
+};
 
 // プッシュメッセージサーバーには文字数制限があるため、内容を削減します
 function truncateNotification(notification: Packed<'Notification'>): any {
@@ -30,7 +37,7 @@ function truncateNotification(notification: Packed<'Notification'>): any {
 	return notification;
 }
 
-export default async function(userId: string, type: notificationType, body: notificationBody) {
+export async function pushNotification<T extends keyof pushNotificationsTypes>(userId: string, type: T, body: pushNotificationsTypes[T]) {
 	const meta = await fetchMeta();
 
 	if (!meta.enableServiceWorker || meta.swPublicKey == null || meta.swPrivateKey == null) return;

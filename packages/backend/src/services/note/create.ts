@@ -59,7 +59,7 @@ class NotificationManager {
 
 		if (exist) {
 			// 「メンションされているかつ返信されている」場合は、メンションとしての通知ではなく返信としての通知にする
-			if (reason != 'mention') {
+			if (reason !== 'mention') {
 				exist.reason = reason;
 			}
 		} else {
@@ -111,7 +111,7 @@ type Option = {
 	app?: App | null;
 };
 
-export default async (user: { id: User['id']; username: User['username']; host: User['host']; isSilenced: User['isSilenced']; }, data: Option, silent = false) => new Promise<Note>(async (res, rej) => {
+export default async (user: { id: User['id']; username: User['username']; host: User['host']; isSilenced: User['isSilenced']; createdAt: User['createdAt']; }, data: Option, silent = false) => new Promise<Note>(async (res, rej) => {
 	// チャンネル外にリプライしたら対象のスコープに合わせる
 	// (クライアントサイドでやっても良い処理だと思うけどとりあえずサーバーサイドで)
 	if (data.reply && data.channel && data.reply.channelId !== data.channel.id) {
@@ -201,7 +201,7 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 		mentionedUsers.push(await Users.findOneOrFail(data.reply.userId));
 	}
 
-	if (data.visibility == 'specified') {
+	if (data.visibility === 'specified') {
 		if (data.visibleUsers == null) throw new Error('invalid param');
 
 		for (const u of data.visibleUsers) {
@@ -297,11 +297,10 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 	}
 
 	if (!silent) {
-		// ローカルユーザーのチャートはタイムライン取得時に更新しているのでリモートユーザーの場合だけでよい
-		if (Users.isRemoteUser(user)) activeUsersChart.update(user);
+		if (Users.isLocalUser(user)) activeUsersChart.write(user);
 
 		// 未読通知を作成
-		if (data.visibility == 'specified') {
+		if (data.visibility === 'specified') {
 			if (data.visibleUsers == null) throw new Error('invalid param');
 
 			for (const u of data.visibleUsers) {
@@ -439,7 +438,7 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 async function renderNoteOrRenoteActivity(data: Option, note: Note) {
 	if (data.localOnly) return null;
 
-	const content = data.renote && data.text == null && data.poll == null && (data.files == null || data.files.length == 0)
+	const content = data.renote && data.text == null && data.poll == null && (data.files == null || data.files.length === 0)
 		? renderAnnounce(data.renote.uri ? data.renote.uri : `${config.url}/notes/${data.renote.id}`, note)
 		: renderCreate(await renderNote(note, false), note);
 
@@ -478,7 +477,7 @@ async function insertNote(user: { id: User['id']; host: User['host']; }, data: O
 		userId: user.id,
 		localOnly: data.localOnly!,
 		visibility: data.visibility as any,
-		visibleUserIds: data.visibility == 'specified'
+		visibleUserIds: data.visibility === 'specified'
 			? data.visibleUsers
 				? data.visibleUsers.map(u => u.id)
 				: []
@@ -502,7 +501,7 @@ async function insertNote(user: { id: User['id']; host: User['host']; }, data: O
 		insert.mentions = mentionedUsers.map(u => u.id);
 		const profiles = await UserProfiles.find({ userId: In(insert.mentions) });
 		insert.mentionedRemoteUsers = JSON.stringify(mentionedUsers.filter(u => Users.isRemoteUser(u)).map(u => {
-			const profile = profiles.find(p => p.userId == u.id);
+			const profile = profiles.find(p => p.userId === u.id);
 			const url = profile != null ? profile.url : null;
 			return {
 				uri: u.uri,

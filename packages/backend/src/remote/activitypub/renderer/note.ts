@@ -11,7 +11,7 @@ import { In } from 'typeorm';
 import { Emoji } from '@/models/entities/emoji';
 import { Poll } from '@/models/entities/poll';
 
-export default async function renderNote(note: Note, dive = true, isTalk = false): Promise<any> {
+export default async function renderNote(note: Note, dive = true, isTalk = false): Promise<Record<string, unknown>> {
 	const getPromisedFiles = async (ids: string[]) => {
 		if (!ids || ids.length === 0) return [];
 		const items = await DriveFiles.find({ id: In(ids) });

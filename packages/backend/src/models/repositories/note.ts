@@ -12,10 +12,6 @@ import { aggregateNoteEmojis, populateEmojis, prefetchEmojis } from '@/misc/popu
 
 @EntityRepository(Note)
 export class NoteRepository extends Repository<Note> {
-	public validateCw(x: string) {
-		return x.trim().length <= 100;
-	}
-
 	public async isVisibleForMe(note: Note, meId: User['id'] | null): Promise<boolean> {
 		// visibility が specified かつ自分が指定されていなかったら非表示
 		if (note.visibility === 'specified') {

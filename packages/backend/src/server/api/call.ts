@@ -1,7 +1,8 @@
+import * as Koa from 'koa';
 import { performance } from 'perf_hooks';
 import { limiter } from './limiter';
 import { User } from '@/models/entities/user';
-import endpoints from './endpoints';
+import endpoints, { IEndpoint } from './endpoints';
 import { ApiError } from './error';
 import { apiLogger } from './logger';
 import { AccessToken } from '@/models/entities/access-token';
@@ -12,7 +13,7 @@ const accessDenied = {
 	id: '56f35758-7dd5-468b-8439-5d6fb8ec9b8e',
 };
 
-export default async (endpoint: string, user: User | null | undefined, token: AccessToken | null | undefined, data: any, file?: any) => {
+export default async (endpoint: string, user: User | null | undefined, token: AccessToken | null | undefined, data: any, ctx?: Koa.Context) => {
 	const isSecure = user != null && token == null;
 
 	const ep = endpoints.find(e => e.name === endpoint);
@@ -66,7 +67,7 @@ export default async (endpoint: string, user: User | null | undefined, token: Ac
 
 	if (ep.meta.requireCredential && ep.meta.limit && !user!.isAdmin && !user!.isModerator) {
 		// Rate limit
-		await limiter(ep, user!).catch(e => {
+		await limiter(ep as IEndpoint & { meta: { limit: NonNullable<IEndpoint['meta']['limit']> } }, user!).catch(e => {
 			throw new ApiError({
 				message: 'Rate limit exceeded. Please try again later.',
 				code: 'RATE_LIMIT_EXCEEDED',
@@ -76,9 +77,30 @@ export default async (endpoint: string, user: User | null | undefined, token: Ac
 		});
 	}
 
+	// Cast non JSON input
+	if (ep.meta.requireFile) {
+		for (const k of Object.keys(ep.params)) {
+			const param = ep.params.properties![k];
+			if (['boolean', 'number', 'integer'].includes(param.type ?? '') && typeof data[k] === 'string') {
+				try {
+					data[k] = JSON.parse(data[k]);
+				} catch (e) {
+					throw	new ApiError({
+						message: 'Invalid param.',
+						code: 'INVALID_PARAM',
+						id: '0b5f1631-7c1a-41a6-b399-cce335f34d85',
+					}, {
+						param: k,
+						reason: `cannot cast to ${param.type}`,
+					});
+				}
+			}
+		}
+	}
+
 	// API invoking
 	const before = performance.now();
-	return await ep.exec(data, user, token, file).catch((e: Error) => {
+	return await ep.exec(data, user, token, ctx?.file).catch((e: Error) => {
 		if (e instanceof ApiError) {
 			throw e;
 		} else {

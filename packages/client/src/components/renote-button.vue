@@ -52,7 +52,7 @@ export default defineComponent({
 				showing,
 				users,
 				count: props.count,
-				source: buttonRef.value
+				targetElement: buttonRef.value
 			}, {}, 'closed');
 		});
 

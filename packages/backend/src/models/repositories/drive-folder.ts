@@ -6,13 +6,6 @@ import { Packed } from '@/misc/schema';
 
 @EntityRepository(DriveFolder)
 export class DriveFolderRepository extends Repository<DriveFolder> {
-	public validateFolderName(name: string): boolean {
-		return (
-			(name.trim().length > 0) &&
-			(name.length <= 200)
-		);
-	}
-
 	public async pack(
 		src: DriveFolder['id'] | DriveFolder,
 		options?: {

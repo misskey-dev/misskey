@@ -2,7 +2,7 @@ import { Entity, Index, JoinColumn, Column, PrimaryColumn, ManyToOne } from 'typ
 import { User } from './user';
 import { DriveFile } from './drive-file';
 import { id } from '../id';
-import { noteVisibilities } from '../../types';
+import { noteVisibilities } from '@/types';
 import { Channel } from './channel';
 
 @Entity()

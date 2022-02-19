@@ -5,7 +5,7 @@ import { MessagingMessages, UserGroupJoinings, Mutings, Users } from '@/models/i
 import { genId } from '@/misc/gen-id';
 import { MessagingMessage } from '@/models/entities/messaging-message';
 import { publishMessagingStream, publishMessagingIndexStream, publishMainStream, publishGroupMessagingStream } from '@/services/stream';
-import pushNotification from '../push-notification';
+import { pushNotification } from '@/services/push-notification';
 import { Not } from 'typeorm';
 import { Note } from '@/models/entities/note';
 import renderNote from '@/remote/activitypub/renderer/note';
@@ -13,7 +13,7 @@ import renderCreate from '@/remote/activitypub/renderer/create';
 import { renderActivity } from '@/remote/activitypub/renderer/index';
 import { deliver } from '@/queue/index';
 
-export async function createMessage(user: { id: User['id']; host: User['host']; }, recipientUser: User | undefined, recipientGroup: UserGroup | undefined, text: string | undefined, file: DriveFile | null, uri?: string) {
+export async function createMessage(user: { id: User['id']; host: User['host']; }, recipientUser: User | undefined, recipientGroup: UserGroup | undefined, text: string | null | undefined, file: DriveFile | null, uri?: string) {
 	const message = {
 		id: genId(),
 		createdAt: new Date(),

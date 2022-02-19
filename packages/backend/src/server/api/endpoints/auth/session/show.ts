@@ -1,4 +1,3 @@
-import $ from 'cafy';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { AuthSessions } from '@/models/index';
@@ -7,12 +6,6 @@ export const meta = {
 	tags: ['auth'],
 
 	requireCredential: false,
-
-	params: {
-		token: {
-			validator: $.str,
-		},
-	},
 
 	errors: {
 		noSuchSession: {
@@ -44,8 +37,16 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		token: { type: 'string' },
+	},
+	required: ['token'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	// Lookup session
 	const session = await AuthSessions.findOne({
 		token: ps.token,

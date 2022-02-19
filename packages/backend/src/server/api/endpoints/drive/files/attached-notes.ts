@@ -1,5 +1,3 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { DriveFiles, Notes } from '@/models/index';
@@ -10,12 +8,6 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'read:drive',
-
-	params: {
-		fileId: {
-			validator: $.type(ID),
-		},
-	},
 
 	res: {
 		type: 'array',
@@ -36,8 +28,16 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		fileId: { type: 'string', format: 'misskey:id' },
+	},
+	required: ['fileId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	// Fetch file
 	const file = await DriveFiles.findOne({
 		id: ps.fileId,

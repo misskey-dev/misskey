@@ -1,4 +1,3 @@
-import $ from 'cafy';
 import define from '../../define';
 import { Followings, Users } from '@/models/index';
 import { Brackets } from 'typeorm';
@@ -9,26 +8,6 @@ export const meta = {
 	tags: ['users'],
 
 	requireCredential: false,
-
-	params: {
-		username: {
-			validator: $.optional.nullable.str,
-		},
-
-		host: {
-			validator: $.optional.nullable.str,
-		},
-
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
-		},
-
-		detail: {
-			validator: $.optional.bool,
-			default: true,
-		},
-	},
 
 	res: {
 		type: 'array',
@@ -41,8 +20,19 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		username: { type: 'string', nullable: true },
+		host: { type: 'string', nullable: true },
+		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+		detail: { type: 'boolean', default: true },
+	},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	const activeThreshold = new Date(Date.now() - (1000 * 60 * 60 * 24 * 30)); // 30日
 
 	if (ps.host) {
@@ -57,7 +47,7 @@ export default define(meta, async (ps, me) => {
 		q.andWhere('user.updatedAt IS NOT NULL');
 		q.orderBy('user.updatedAt', 'DESC');
 
-		const users = await q.take(ps.limit!).getMany();
+		const users = await q.take(ps.limit).getMany();
 
 		return await Users.packMany(users, me, { detail: ps.detail });
 	} else if (ps.username) {
@@ -82,10 +72,10 @@ export default define(meta, async (ps, me) => {
 
 			users = await query
 				.orderBy('user.usernameLower', 'ASC')
-				.take(ps.limit!)
+				.take(ps.limit)
 				.getMany();
 
-			if (users.length < ps.limit!) {
+			if (users.length < ps.limit) {
 				const otherQuery = await Users.createQueryBuilder('user')
 					.where(`user.id NOT IN (${ followingQuery.getQuery() })`)
 					.andWhere(`user.id != :meId`, { meId: me.id })
@@ -97,7 +87,7 @@ export default define(meta, async (ps, me) => {
 
 				const otherUsers = await otherQuery
 					.orderBy('user.updatedAt', 'DESC')
-					.take(ps.limit! - users.length)
+					.take(ps.limit - users.length)
 					.getMany();
 
 				users = users.concat(otherUsers);
@@ -108,10 +98,12 @@ export default define(meta, async (ps, me) => {
 				.andWhere('user.usernameLower LIKE :username', { username: ps.username.toLowerCase() + '%' })
 				.andWhere('user.updatedAt IS NOT NULL')
 				.orderBy('user.updatedAt', 'DESC')
-				.take(ps.limit! - users.length)
+				.take(ps.limit - users.length)
 				.getMany();
 		}
 
 		return await Users.packMany(users, me, { detail: !!ps.detail });
 	}
+
+	return [];
 });

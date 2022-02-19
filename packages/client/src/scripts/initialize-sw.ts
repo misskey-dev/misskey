@@ -1,20 +1,21 @@
 import { instance } from '@/instance';
 import { $i } from '@/account';
 import { api } from '@/os';
-import { lang } from '@/config';
+import { lang, version } from '@/config';
 
 export async function initializeSw() {
 	if (instance.swPublickey &&
 		('serviceWorker' in navigator) &&
 		('PushManager' in window) &&
 		$i && $i.token) {
-		navigator.serviceWorker.register(`/sw.js`);
+		navigator.serviceWorker.register(`/sw.${version}.js`, { scope: '/', type: 'classic' });
 
 		navigator.serviceWorker.ready.then(registration => {
 			registration.active?.postMessage({
 				msg: 'initialize',
 				lang,
 			});
+
 			// SEE: https://developer.mozilla.org/en-US/docs/Web/API/PushManager/subscribe#Parameters
 			registration.pushManager.subscribe({
 				userVisibleOnly: true,

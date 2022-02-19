@@ -64,7 +64,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, onUnmounted } from 'vue';
+import { defineComponent, ref, onMounted, onUnmounted, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import { getNoteSummary } from '@/scripts/get-note-summary';
 import XReactionIcon from './reaction-icon.vue';
@@ -118,6 +118,10 @@ export default defineComponent({
 				const connection = stream.useChannel('main');
 				connection.on('readAllNotifications', () => readObserver.disconnect());
 
+				watch(props.notification.isRead, () => {
+					readObserver.disconnect();
+				});
+
 				onUnmounted(() => {
 					readObserver.disconnect();
 					connection.dispose();
@@ -153,7 +157,7 @@ export default defineComponent({
 				showing,
 				reaction: props.notification.reaction ? props.notification.reaction.replace(/^:(\w+):$/, ':$1@.:') : props.notification.reaction,
 				emojis: props.notification.note.emojis,
-				source: reactionRef.value.$el,
+				targetElement: reactionRef.value.$el,
 			}, {}, 'closed');
 		});
 

@@ -18,6 +18,7 @@ import { defineAsyncComponent, defineComponent } from 'vue';
 import { popup, popups, uploads, pendingApiRequestsCount } from '@/os';
 import * as sound from '@/scripts/sound';
 import { $i } from '@/account';
+import { swInject } from './sw-inject';
 import { stream } from '@/stream';
 
 export default defineComponent({
@@ -46,6 +47,11 @@ export default defineComponent({
 		if ($i) {
 			const connection = stream.useChannel('main', null, 'UI');
 			connection.on('notification', onNotification);
+
+			//#region Listen message from SW
+			if ('serviceWorker' in navigator) {
+				swInject();
+			}
 		}
 
 		return {

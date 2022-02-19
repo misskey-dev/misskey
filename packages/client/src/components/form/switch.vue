@@ -20,45 +20,33 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, toRefs } from 'vue';
+<script lang="ts" setup>
+import { toRefs, Ref } from 'vue';
 import * as os from '@/os';
 import Ripple from '@/components/ripple.vue';
 
-export default defineComponent({
-	props: {
-		modelValue: {
-			type: Boolean,
-			default: false
-		},
-		disabled: {
-			type: Boolean,
-			default: false
-		}
-	},
+const props = defineProps<{
+	modelValue: boolean | Ref<boolean>;
+	disabled?: boolean;
+}>();
 
-	setup(props, context) {
-		const button = ref<HTMLElement>();
-		const checked = toRefs(props).modelValue;
-		const toggle = () => {
-			if (props.disabled) return;
-			context.emit('update:modelValue', !checked.value);
+const emit = defineEmits<{
+	(e: 'update:modelValue', v: boolean): void;
+}>();
 
-			if (!checked.value) {
-				const rect = button.value.getBoundingClientRect();
-				const x = rect.left + (button.value.offsetWidth / 2);
-				const y = rect.top + (button.value.offsetHeight / 2);
-				os.popup(Ripple, { x, y, particle: false }, {}, 'end');
-			}
-		};
+let button = $ref<HTMLElement>();
+const checked = toRefs(props).modelValue;
+const toggle = () => {
+	if (props.disabled) return;
+	emit('update:modelValue', !checked.value);
 
-		return {
-			button,
-			checked,
-			toggle,
-		};
-	},
-});
+	if (!checked.value) {
+		const rect = button.getBoundingClientRect();
+		const x = rect.left + (button.offsetWidth / 2);
+		const y = rect.top + (button.offsetHeight / 2);
+		os.popup(Ripple, { x, y, particle: false }, {}, 'end');
+	}
+};
 </script>
 
 <style lang="scss" scoped>

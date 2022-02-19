@@ -2,7 +2,7 @@ import { Entity, Index, JoinColumn, Column, ManyToOne, PrimaryColumn } from 'typ
 import { Note } from './note';
 import { User } from './user';
 import { id } from '../id';
-import { mutedNoteReasons } from '../../types';
+import { mutedNoteReasons } from '@/types';
 
 @Entity()
 @Index(['noteId', 'userId'], { unique: true })

@@ -17,6 +17,7 @@ import config from '@/config/index';
 import { Users, Notes, UserProfiles, Pages, Channels, Clips, GalleryPosts } from '@/models/index';
 import * as Acct from 'misskey-js/built/acct';
 import { getNoteSummary } from '@/misc/get-note-summary';
+import * as sharp from 'sharp';
 
 //const _filename = fileURLToPath(import.meta.url);
 const _filename = __filename;
@@ -25,6 +26,7 @@ const _dirname = dirname(_filename);
 const staticAssets = `${_dirname}/../../../assets/`;
 const clientAssets = `${_dirname}/../../../../client/assets/`;
 const assets = `${_dirname}/../../../../../built/_client_dist_/`;
+const swAssets = `${_dirname}/../../../../../built/_sw_dist_/`;
 
 // Init app
 const app = new Koa();
@@ -97,10 +99,51 @@ router.get('/twemoji/(.*)', async ctx => {
 	});
 });
 
+router.get('/twemoji-badge/(.*)', async ctx => {
+	const path = ctx.path.replace('/twemoji-badge/', '');
+
+	if (!path.match(/^[0-9a-f-]+\.png$/)) {
+		ctx.status = 404;
+		return;
+	}
+
+	const mask = await sharp(
+			`${_dirname}/../../../node_modules/@discordapp/twemoji/dist/svg/${path.replace('.png', '')}.svg`,
+			{ density: 1000 }
+		)
+		.resize(488, 488)
+		.clone()
+		.flatten({ background: '#000' })
+		.extend({
+			top: 12,
+			bottom: 12,
+			left: 12,
+			right: 12,
+			background: '#000'
+		})
+		.threshold(100)
+		.toColourspace('b-w')
+		.png()
+		.toBuffer();
+
+	const buffer = await sharp(
+			{ create: { width: 512, height: 512, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } }
+		)
+		.boolean(mask, 'eor')
+		.resize(96, 96)
+		.png()
+		.toBuffer();
+
+	ctx.set('Content-Security-Policy', `default-src 'none'; style-src 'unsafe-inline'`);
+	ctx.set('Cache-Control', 'max-age=2592000');
+	ctx.set('Content-Type', 'image/png');
+	ctx.body = buffer;
+});
+
 // ServiceWorker
-router.get('/sw.js', async ctx => {
-	await send(ctx as any, `/sw.${config.version}.js`, {
-		root: assets,
+router.get(`/sw.${config.version}.js`, async ctx => {
+	await send(ctx as any, `/sw.js`, {
+		root: swAssets,
 	});
 });
 
@@ -200,6 +243,7 @@ router.get(['/@:user', '/@:user/:sub'], async (ctx, next) => {
 			sub: ctx.params.sub,
 			instanceName: meta.name || 'Misskey',
 			icon: meta.iconUrl,
+			themeColor: meta.themeColor,
 		});
 		ctx.set('Cache-Control', 'public, max-age=30');
 	} else {
@@ -239,6 +283,7 @@ router.get('/notes/:note', async (ctx, next) => {
 			summary: getNoteSummary(_note),
 			instanceName: meta.name || 'Misskey',
 			icon: meta.iconUrl,
+			themeColor: meta.themeColor,
 		});
 
 		if (['public', 'home'].includes(note.visibility)) {
@@ -276,6 +321,8 @@ router.get('/@:user/pages/:page', async (ctx, next) => {
 			page: _page,
 			profile,
 			instanceName: meta.name || 'Misskey',
+			icon: meta.iconUrl,
+			themeColor: meta.themeColor,
 		});
 
 		if (['public'].includes(page.visibility)) {
@@ -305,6 +352,8 @@ router.get('/clips/:clip', async (ctx, next) => {
 			clip: _clip,
 			profile,
 			instanceName: meta.name || 'Misskey',
+			icon: meta.iconUrl,
+			themeColor: meta.themeColor,
 		});
 
 		ctx.set('Cache-Control', 'public, max-age=180');
@@ -328,6 +377,7 @@ router.get('/gallery/:post', async (ctx, next) => {
 			profile,
 			instanceName: meta.name || 'Misskey',
 			icon: meta.iconUrl,
+			themeColor: meta.themeColor,
 		});
 
 		ctx.set('Cache-Control', 'public, max-age=180');
@@ -350,6 +400,8 @@ router.get('/channels/:channel', async (ctx, next) => {
 		await ctx.render('channel', {
 			channel: _channel,
 			instanceName: meta.name || 'Misskey',
+			icon: meta.iconUrl,
+			themeColor: meta.themeColor,
 		});
 
 		ctx.set('Cache-Control', 'public, max-age=180');
@@ -409,6 +461,7 @@ router.get('(.*)', async ctx => {
 		instanceName: meta.name || 'Misskey',
 		desc: meta.description,
 		icon: meta.iconUrl,
+		themeColor: meta.themeColor,
 	});
 	ctx.set('Cache-Control', 'public, max-age=300');
 });

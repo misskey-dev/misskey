@@ -23,8 +23,9 @@ const props = withDefaults(defineProps<{
 	behavior: null,
 });
 
-const navHook = inject('navHook', null);
-const sideViewHook = inject('sideViewHook', null);
+type Navigate = (path: string, record?: boolean) => void;
+const navHook = inject<null | Navigate>('navHook', null);
+const sideViewHook = inject<null | Navigate>('sideViewHook', null);
 
 const active = $computed(() => {
 	if (props.activeClass == null) return false;

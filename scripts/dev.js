@@ -1,6 +1,12 @@
 const execa = require('execa');
 
 (async () => {
+	await execa('npm', ['run', 'clean'], {
+		cwd: __dirname + '/../',
+		stdout: process.stdout,
+		stderr: process.stderr,
+	});
+
 	execa('npx', ['gulp', 'watch'], {
 		cwd: __dirname + '/../',
 		stdout: process.stdout,
@@ -15,6 +21,12 @@ const execa = require('execa');
 
 	execa('npm', ['run', 'watch'], {
 		cwd: __dirname + '/../packages/client',
+		stdout: process.stdout,
+		stderr: process.stderr,
+	});
+
+	execa('npm', ['run', 'watch'], {
+		cwd: __dirname + '/../packages/sw',
 		stdout: process.stdout,
 		stderr: process.stderr,
 	});
