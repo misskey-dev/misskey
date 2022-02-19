@@ -1,5 +1,5 @@
 deploy:
   - cp .config/example.yml .config/default.yml
   - cp .config/docker_example.env .config/docker.env
-  - okteto build -t okteto.dev/misskey:${OKTETO_GIT_COMMIT}
+  - okteto build -t okteto.dev/misskey:latest
   - kubectl apply -f k8s
