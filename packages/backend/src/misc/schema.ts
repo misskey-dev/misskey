@@ -63,8 +63,6 @@ export const refs = {
 	Emoji: packedEmojiSchema,
 };
 
-// Packed = SchemaTypeDef<typeof refs[x]>; とすると展開されてマウスホバー時に型表示が使い物にならなくなる
-// ObjType<r['properties']>を指定すると（なぜか）展開されずにPacked<'Hoge'>と表示される
 type PackedDef<r extends { properties?: Obj; oneOf?: ReadonlyArray<Schema>; allOf?: ReadonlyArray<Schema> }> =
 	r['allOf'] extends ReadonlyArray<Schema> ? UnionToIntersection<UnionSchemaType<r['allOf']>> :
 	r['oneOf'] extends ReadonlyArray<Schema> ? UnionSchemaType<r['oneOf']> :
@@ -107,31 +105,23 @@ export interface Schema extends OfSchema {
 	readonly minLength?: number;
 }
 
-type OptionalPropertyNames<T extends Obj> = {
-	[K in keyof T]: T[K]['optional'] extends true ? K : never
-}[keyof T];
+type RequiredPropertyNames<s extends Obj, RequiredProps extends ReadonlyArray<keyof s>> = {
+	[K in keyof s]:
+		// K is listed in RequiredProps
+		K extends RequiredProps[number] ? K :
+		// K is not optional
+		s[K]['optional'] extends false ? K :
+		// K has default value
+		s[K]['default'] extends null | string | number | boolean | Record<string, unknown> ? K :
 
-type NonOptionalPropertyNames<T extends Obj> = {
-	[K in keyof T]: T[K]['optional'] extends false ? K : never
-}[keyof T];
-
-type DefaultPropertyNames<T extends Obj> = {
-	[K in keyof T]: T[K]['default'] extends null ? K :
-		T[K]['default'] extends string ? K :
-		T[K]['default'] extends number ? K :
-		T[K]['default'] extends boolean ? K :
-		T[K]['default'] extends Record<string, unknown> ? K :
 		never
-}[keyof T];
+}[keyof s];
 
 export interface Obj { [key: string]: Schema; }
 
 export type ObjType<s extends Obj, RequiredProps extends ReadonlyArray<keyof s>> =
 	{ -readonly [P in keyof s]?: SchemaType<s[P]> } &
-	{ -readonly [P in RequiredProps[number]]: SchemaType<s[P]> } &
-	{ -readonly [P in OptionalPropertyNames<s>]?: SchemaType<s[P]> } &
-	{ -readonly [P in NonOptionalPropertyNames<s>]: SchemaType<s[P]> } &
-	{ -readonly [P in DefaultPropertyNames<s>]: SchemaType<s[P]> };
+	{ -readonly [P in RequiredPropertyNames<s, RequiredProps>]: SchemaType<s[P]> };
 
 type NullOrUndefined<p extends Schema, T> =
 	p['nullable'] extends true
@@ -142,11 +132,12 @@ type NullOrUndefined<p extends Schema, T> =
 			? (T | undefined)
 			: T;
 
-// 共用体型を交差型にする型 https://stackoverflow.com/questions/54938141/typescript-convert-union-to-intersection
+// https://stackoverflow.com/questions/54938141/typescript-convert-union-to-intersection
+// Get intersection from union 
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends ((k: infer I) => void) ? I : never;
 
 // https://github.com/misskey-dev/misskey/pull/8144#discussion_r785287552
-// 単純にSchemaTypeDef<X>で判定するだけではダメ
+// To get union, we use `Foo extends any ? Hoge<Foo> : never`
 type UnionSchemaType<a extends readonly any[], X extends Schema = a[number]> = X extends any ? SchemaType<X> : never;
 type ArrayUnion<T> = T extends any ? Array<T> : never; 
 
