@@ -1,3 +1,4 @@
 deploy:
   - cp .config/example.yml .config/default.yml
   - cp .config/docker_example.env .config/docker.env
+  - okteto build -t okteto.dev:${OKTETO_GIT_COMMIT}
