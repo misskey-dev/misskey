@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: misskey
-        image: okteto.dev/misskey:latest
+        image: okteto.dev/misskey:${OKTETO_GIT_COMMIT}
         ports:
         - containerPort: 8080
