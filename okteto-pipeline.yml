@@ -1,0 +1,3 @@
+deploy:
+  - cp .config/example.yml .config/default.yml
+  - cp .config/docker_example.env .config/docker.env
