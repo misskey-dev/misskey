@@ -1,4 +1,3 @@
-import $ from 'cafy';
 import { publishMainStream } from '@/services/stream';
 import define from '../../define';
 import rndstr from 'rndstr';
@@ -20,16 +19,6 @@ export const meta = {
 		max: 3,
 	},
 
-	params: {
-		password: {
-			validator: $.str,
-		},
-
-		email: {
-			validator: $.optional.nullable.str,
-		},
-	},
-
 	errors: {
 		incorrectPassword: {
 			message: 'Incorrect password.',
@@ -45,8 +34,17 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		password: { type: 'string' },
+		email: { type: 'string', nullable: true },
+	},
+	required: ['password'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const profile = await UserProfiles.findOneOrFail(user.id);
 
 	// Compare password

@@ -1,5 +1,3 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { getUser } from '../../../common/getters';
@@ -11,16 +9,6 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'write:user-groups',
-
-	params: {
-		groupId: {
-			validator: $.type(ID),
-		},
-
-		userId: {
-			validator: $.type(ID),
-		},
-	},
 
 	res: {
 		type: 'object',
@@ -49,8 +37,17 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		groupId: { type: 'string', format: 'misskey:id' },
+		userId: { type: 'string', format: 'misskey:id' },
+	},
+	required: ['groupId', 'userId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	// Fetch the group
 	const userGroup = await UserGroups.findOne({
 		id: ps.groupId,

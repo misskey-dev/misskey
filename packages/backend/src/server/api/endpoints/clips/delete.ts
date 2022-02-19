@@ -1,5 +1,3 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { Clips } from '@/models/index';
@@ -11,12 +9,6 @@ export const meta = {
 
 	kind: 'write:account',
 
-	params: {
-		clipId: {
-			validator: $.type(ID),
-		},
-	},
-
 	errors: {
 		noSuchClip: {
 			message: 'No such clip.',
@@ -26,8 +18,16 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		clipId: { type: 'string', format: 'misskey:id' },
+	},
+	required: ['clipId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const clip = await Clips.findOne({
 		id: ps.clipId,
 		userId: user.id,

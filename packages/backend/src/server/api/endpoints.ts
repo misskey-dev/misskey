@@ -1,6 +1,4 @@
-import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import { Context } from 'cafy';
 import * as path from 'path';
 import * as glob from 'glob';
 import { Schema } from '@/misc/schema';
@@ -9,22 +7,10 @@ import { Schema } from '@/misc/schema';
 const _filename = __filename;
 const _dirname = dirname(_filename);
 
-export type Param = {
-	validator: Context<any>;
-	transform?: any;
-	default?: any;
-	deprecated?: boolean;
-	ref?: string;
-};
-
 export interface IEndpointMeta {
 	readonly stability?: 'deprecated' | 'experimental' | 'stable';
 
 	readonly tags?: ReadonlyArray<string>;
-
-	readonly params?: {
-		readonly [key: string]: Param;
-	};
 
 	readonly errors?: {
 		readonly [key: string]: {
@@ -99,12 +85,15 @@ export interface IEndpointMeta {
 	 * パーミッションの実現に利用されます。
 	 */
 	readonly kind?: string;
+
+	readonly description?: string;
 }
 
 export interface IEndpoint {
 	name: string;
 	exec: any;
 	meta: IEndpointMeta;
+	params: Schema;
 }
 
 const files = glob.sync('**/*.js', {
@@ -118,6 +107,7 @@ const endpoints: IEndpoint[] = files.map(f => {
 		name: f.replace('.js', ''),
 		exec: ep.default,
 		meta: ep.meta || {},
+		params: ep.paramDef,
 	};
 });
 

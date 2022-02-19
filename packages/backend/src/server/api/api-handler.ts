@@ -5,7 +5,7 @@ import authenticate, { AuthenticationError } from './authenticate';
 import call from './call';
 import { ApiError } from './error';
 
-export default (endpoint: IEndpoint, ctx: Koa.Context) => new Promise((res) => {
+export default (endpoint: IEndpoint, ctx: Koa.Context) => new Promise<void>((res) => {
 	const body = ctx.request.body;
 
 	const reply = (x?: any, y?: ApiError) => {
