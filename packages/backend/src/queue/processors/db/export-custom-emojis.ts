@@ -75,7 +75,7 @@ export async function exportCustomEmojis(job: Bull.Job, done: () => void): Promi
 			await downloadUrl(emoji.originalUrl, emojiPath);
 			downloaded = true;
 		} catch (e) { // TODO: 何度か再試行
-			logger.error(e);
+			logger.error(e instanceof Error ? e : new Error(e as string));
 		}
 
 		if (!downloaded) {

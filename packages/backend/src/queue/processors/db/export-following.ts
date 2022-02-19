@@ -51,7 +51,7 @@ export async function exportFollowing(job: Bull.Job<DbUserJobData>, done: () => 
 			order: {
 				id: 1,
 			},
-		});
+		}) as Following[];
 
 		if (followings.length === 0) {
 			break;

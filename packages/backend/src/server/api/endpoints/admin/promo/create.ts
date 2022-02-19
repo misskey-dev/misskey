@@ -48,7 +48,6 @@ export default define(meta, paramDef, async (ps, user) => {
 
 	await PromoNotes.insert({
 		noteId: note.id,
-		createdAt: new Date(),
 		expiresAt: new Date(ps.expiresAt),
 		userId: note.userId,
 	});
