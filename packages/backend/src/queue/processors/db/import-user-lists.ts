@@ -51,7 +51,6 @@ export async function importUserLists(job: Bull.Job<DbUserImportJobData>, done: 
 					createdAt: new Date(),
 					userId: user.id,
 					name: listName,
-					userIds: [],
 				}).then(x => UserLists.findOneOrFail(x.identifiers[0]));
 			}
 
@@ -67,9 +66,9 @@ export async function importUserLists(job: Bull.Job<DbUserImportJobData>, done: 
 				target = await resolveUser(username, host);
 			}
 
-			if (await UserListJoinings.findOne({ userListId: list.id, userId: target.id }) != null) continue;
+			if (await UserListJoinings.findOne({ userListId: list!.id, userId: target.id }) != null) continue;
 
-			pushUserToUserList(target, list);
+			pushUserToUserList(target, list!);
 		} catch (e) {
 			logger.warn(`Error in line:${linenum} ${e}`);
 		}

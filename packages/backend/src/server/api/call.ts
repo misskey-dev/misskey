@@ -2,7 +2,7 @@ import * as Koa from 'koa';
 import { performance } from 'perf_hooks';
 import { limiter } from './limiter';
 import { User } from '@/models/entities/user';
-import endpoints from './endpoints';
+import endpoints, { IEndpoint } from './endpoints';
 import { ApiError } from './error';
 import { apiLogger } from './logger';
 import { AccessToken } from '@/models/entities/access-token';
@@ -67,7 +67,7 @@ export default async (endpoint: string, user: User | null | undefined, token: Ac
 
 	if (ep.meta.requireCredential && ep.meta.limit && !user!.isAdmin && !user!.isModerator) {
 		// Rate limit
-		await limiter(ep, user!).catch(e => {
+		await limiter(ep as IEndpoint & { meta: { limit: NonNullable<IEndpoint['meta']['limit']> } }, user!).catch(e => {
 			throw new ApiError({
 				message: 'Rate limit exceeded. Please try again later.',
 				code: 'RATE_LIMIT_EXCEEDED',
@@ -78,12 +78,22 @@ export default async (endpoint: string, user: User | null | undefined, token: Ac
 	}
 
 	// Cast non JSON input
-	if (ep.meta.requireFile && ep.meta.params) {
-		const body = (ctx!.request as any).body;
-		for (const k of Object.keys(ep.meta.params)) {
-			const param = ep.meta.params[k];
-			if (['Boolean', 'Number'].includes(param.validator.name) && typeof body[k] === 'string') {
-				body[k] = JSON.parse(body[k]);
+	if (ep.meta.requireFile) {
+		for (const k of Object.keys(ep.params)) {
+			const param = ep.params.properties![k];
+			if (['boolean', 'number', 'integer'].includes(param.type ?? '') && typeof data[k] === 'string') {
+				try {
+					data[k] = JSON.parse(data[k]);
+				} catch (e) {
+					throw	new ApiError({
+						message: 'Invalid param.',
+						code: 'INVALID_PARAM',
+						id: '0b5f1631-7c1a-41a6-b399-cce335f34d85',
+					}, {
+						param: k,
+						reason: `cannot cast to ${param.type}`,
+					});
+				}
 			}
 		}
 	}

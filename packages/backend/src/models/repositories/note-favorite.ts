@@ -13,7 +13,7 @@ export class NoteFavoriteRepository extends Repository<NoteFavorite> {
 
 		return {
 			id: favorite.id,
-			createdAt: favorite.createdAt,
+			createdAt: favorite.createdAt.toISOString(),
 			noteId: favorite.noteId,
 			note: await Notes.pack(favorite.note || favorite.noteId, me),
 		};

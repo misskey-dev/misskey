@@ -1,5 +1,5 @@
 <template>
-<MkTooltip ref="tooltip" :showing="showing" :x="x" :y="y" :max-width="340" @closed="emit('closed')">
+<MkTooltip ref="tooltip" :showing="showing" :x="x" :y="y" :max-width="340" :direction="'left'" :inner-margin="16" @closed="emit('closed')">
 	<div v-if="title" class="qpcyisrl">
 		<div class="title">{{ title }}</div>
 		<div v-for="x in series" class="series">

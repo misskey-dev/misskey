@@ -109,7 +109,8 @@ export default class Connection {
 	 * クライアントからメッセージ受信時
 	 */
 	@autobind
-	private async onWsConnectionMessage(data: websocket.IMessage) {
+	private async onWsConnectionMessage(data: websocket.Message) {
+		if (data.type !== 'utf8') return;
 		if (data.utf8Data == null) return;
 
 		let obj: Record<string, any>;

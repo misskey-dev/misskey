@@ -1,4 +1,3 @@
-import $ from 'cafy';
 import define from '../../define';
 import { fetchMeta } from '@/misc/fetch-meta';
 import { genId } from '@/misc/gen-id';
@@ -8,20 +7,6 @@ export const meta = {
 	tags: ['account'],
 
 	requireCredential: true,
-
-	params: {
-		endpoint: {
-			validator: $.str,
-		},
-
-		auth: {
-			validator: $.str,
-		},
-
-		publickey: {
-			validator: $.str,
-		},
-	},
 
 	res: {
 		type: 'object',
@@ -40,8 +25,18 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {
+		endpoint: { type: 'string' },
+		auth: { type: 'string' },
+		publickey: { type: 'string' },
+	},
+	required: ['endpoint', 'auth', 'publickey'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	// if already subscribed
 	const exist = await SwSubscriptions.findOne({
 		userId: user.id,

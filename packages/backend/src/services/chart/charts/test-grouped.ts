@@ -1,15 +1,12 @@
 import autobind from 'autobind-decorator';
-import Chart, { Obj, DeepPartial } from '../core';
-import { SchemaType } from '@/misc/schema';
+import Chart, { KVs } from '../core';
 import { name, schema } from './entities/test-grouped';
-
-type TestGroupedLog = SchemaType<typeof schema>;
 
 /**
  * For testing
  */
 // eslint-disable-next-line import/no-default-export
-export default class TestGroupedChart extends Chart<TestGroupedLog> {
+export default class TestGroupedChart extends Chart<typeof schema> {
 	private total = {} as Record<string, number>;
 
 	constructor() {
@@ -17,46 +14,26 @@ export default class TestGroupedChart extends Chart<TestGroupedLog> {
 	}
 
 	@autobind
-	protected genNewLog(latest: TestGroupedLog): DeepPartial<TestGroupedLog> {
+	protected async tickMajor(group: string): Promise<Partial<KVs<typeof schema>>> {
 		return {
-			foo: {
-				total: latest.foo.total,
-			},
+			'foo.total': this.total[group],
 		};
 	}
 
 	@autobind
-	protected aggregate(logs: TestGroupedLog[]): TestGroupedLog {
-		return {
-			foo: {
-				total: logs[0].foo.total,
-				inc: logs.reduce((a, b) => a + b.foo.inc, 0),
-				dec: logs.reduce((a, b) => a + b.foo.dec, 0),
-			},
-		};
-	}
-
-	@autobind
-	protected async fetchActual(group: string): Promise<DeepPartial<TestGroupedLog>> {
-		return {
-			foo: {
-				total: this.total[group],
-			},
-		};
+	protected async tickMinor(): Promise<Partial<KVs<typeof schema>>> {
+		return {};
 	}
 
 	@autobind
 	public async increment(group: string): Promise<void> {
 		if (this.total[group] == null) this.total[group] = 0;
 
-		const update: Obj = {};
-
-		update.total = 1;
-		update.inc = 1;
 		this.total[group]++;
 
-		await this.inc({
-			foo: update,
+		await this.commit({
+			'foo.total': 1,
+			'foo.inc': 1,
 		}, group);
 	}
 }

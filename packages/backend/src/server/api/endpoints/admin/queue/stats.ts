@@ -7,8 +7,6 @@ export const meta = {
 	requireCredential: true,
 	requireModerator: true,
 
-	params: {},
-
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
@@ -33,8 +31,14 @@ export const meta = {
 	},
 } as const;
 
+const paramDef = {
+	type: 'object',
+	properties: {},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps) => {
+export default define(meta, paramDef, async (ps) => {
 	const deliverJobCounts = await deliverQueue.getJobCounts();
 	const inboxJobCounts = await inboxQueue.getJobCounts();
 	const dbJobCounts = await dbQueue.getJobCounts();

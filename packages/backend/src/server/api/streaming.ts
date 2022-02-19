@@ -59,7 +59,7 @@ module.exports = (server: http.Server) => {
 		});
 
 		connection.on('message', async (data) => {
-			if (data.utf8Data === 'ping') {
+			if (data.type === 'utf8' && data.utf8Data === 'ping') {
 				connection.send('pong');
 			}
 		});

@@ -2,7 +2,7 @@ import * as Router from '@koa/router';
 import config from '@/config/index';
 import { fetchMeta } from '@/misc/fetch-meta';
 import { Users, Notes } from '@/models/index';
-import { Not, IsNull, MoreThan } from 'typeorm';
+import { MoreThan } from 'typeorm';
 
 const router = new Router();
 
@@ -25,14 +25,12 @@ const nodeinfo2 = async () => {
 		activeHalfyear,
 		activeMonth,
 		localPosts,
-		localComments,
 	] = await Promise.all([
 		fetchMeta(true),
 		Users.count({ where: { host: null } }),
-		Users.count({ where: { host: null, updatedAt: MoreThan(new Date(now - 15552000000)) } }),
-		Users.count({ where: { host: null, updatedAt: MoreThan(new Date(now - 2592000000)) } }),
-		Notes.count({ where: { userHost: null, replyId: null } }),
-		Notes.count({ where: { userHost: null, replyId: Not(IsNull()) } }),
+		Users.count({ where: { host: null, lastActiveDate: MoreThan(new Date(now - 15552000000)) } }),
+		Users.count({ where: { host: null, lastActiveDate: MoreThan(new Date(now - 2592000000)) } }),
+		Notes.count({ where: { userHost: null } }),
 	]);
 
 	const proxyAccount = meta.proxyAccountId ? await Users.pack(meta.proxyAccountId).catch(() => null) : null;
@@ -52,7 +50,7 @@ const nodeinfo2 = async () => {
 		usage: {
 			users: { total, activeHalfyear, activeMonth },
 			localPosts,
-			localComments,
+			localComments: 0,
 		},
 		metadata: {
 			nodeName: meta.name,

@@ -19,8 +19,8 @@ html
 		meta(charset='utf-8')
 		meta(name='application-name' content='Misskey')
 		meta(name='referrer' content='origin')
-		meta(name='theme-color' content='#86b300')
-		meta(name='theme-color-orig' content='#86b300')
+		meta(name='theme-color' content= themeColor || '#86b300')
+		meta(name='theme-color-orig' content= themeColor || '#86b300')
 		meta(property='twitter:card' content='summary')
 		meta(property='og:site_name' content= instanceName || 'Misskey')
 		meta(name='viewport' content='width=device-width, initial-scale=1')
@@ -30,8 +30,8 @@ html
 		link(rel='prefetch' href='https://xn--931a.moe/assets/info.jpg')
 		link(rel='prefetch' href='https://xn--931a.moe/assets/not-found.jpg')
 		link(rel='prefetch' href='https://xn--931a.moe/assets/error.jpg')
-		link(rel='preload' href='https://use.fontawesome.com/releases/v5.15.3/css/all.css' as='style')
-		link(rel='stylesheet' href='https://use.fontawesome.com/releases/v5.15.3/css/all.css')
+		link(rel='preload' href='/assets/fontawesome/css/all.css' as='style')
+		link(rel='stylesheet' href='/assets/fontawesome/css/all.css')
 
 		title
 			block title

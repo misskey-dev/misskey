@@ -4,7 +4,7 @@ import request from '@/remote/activitypub/request';
 import { registerOrFetchInstanceDoc } from '@/services/register-or-fetch-instance-doc';
 import Logger from '@/services/logger';
 import { Instances } from '@/models/index';
-import { instanceChart } from '@/services/chart/index';
+import { apRequestChart, federationChart, instanceChart } from '@/services/chart/index';
 import { fetchInstanceMetadata } from '@/services/fetch-instance-metadata';
 import { fetchMeta } from '@/misc/fetch-meta';
 import { toPuny } from '@/misc/convert-host';
@@ -61,6 +61,8 @@ export default async (job: Bull.Job<DeliverJobData>) => {
 			fetchInstanceMetadata(i);
 
 			instanceChart.requestSent(i.host, true);
+			apRequestChart.deliverSucc();
+			federationChart.deliverd(i.host, true);
 		});
 
 		return 'Success';
@@ -74,6 +76,8 @@ export default async (job: Bull.Job<DeliverJobData>) => {
 			});
 
 			instanceChart.requestSent(i.host, false);
+			apRequestChart.deliverFail();
+			federationChart.deliverd(i.host, false);
 		});
 
 		if (res instanceof StatusError) {
