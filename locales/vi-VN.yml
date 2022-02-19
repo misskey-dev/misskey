@@ -1,3 +1,32 @@
 ---
 _lang_: "Tiếng Việt"
 headlineMisskey: "Mạng xã hội liên hợp"
+monthAndDay: "{day} tháng {month}"
+search: "Tìm kiếm"
+notifications: "Thông báo"
+username: "Tên người dùng"
+password: "Mật khẩu"
+forgotPassword: "Quên mật khẩu"
+smtpUser: "Tên người dùng"
+smtpPass: "Mật khẩu"
+_mfm:
+  search: "Tìm kiếm"
+_sfx:
+  notification: "Thông báo"
+_ago:
+  unknown: "Không rõ"
+  future: "Tương lai"
+  justNow: "Vừa xong"
+  secondsAgo: "{n}s trước"
+  minutesAgo: "{n} phút trước"
+  hoursAgo: "{n} giờ trước"
+  daysAgo: "{n} ngày trước"
+  weeksAgo: "{n} tuần trước"
+  monthsAgo: "{n} tháng trước"
+_widgets:
+  notifications: "Thông báo"
+_profile:
+  username: "Tên người dùng"
+_deck:
+  _columns:
+    notifications: "Thông báo"
