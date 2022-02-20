@@ -20,6 +20,7 @@ You should also include the user name that made the change.
 
 ### Bugfixes
 - Client: リアクションピッカーの高さが低くなったまま戻らないことがあるのを修正 @syuilo
+- Client: タッチ操作だとウィジェットの編集がしにくいのを修正 @xianonn
 
 ## 12.107.0 (2022/02/12)
 
