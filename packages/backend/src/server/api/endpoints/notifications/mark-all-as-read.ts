@@ -11,7 +11,7 @@ export const meta = {
 	kind: 'write:notifications',
 } as const;
 
-const paramDef = {
+export const paramDef = {
 	type: 'object',
 	properties: {},
 	required: [],
