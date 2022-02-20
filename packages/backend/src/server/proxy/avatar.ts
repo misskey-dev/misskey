@@ -60,11 +60,15 @@ export async function proxyAvatar(ctx: Koa.Context) {
 		return ctx.redirect('/static-assets/user-unknown.png');
 	}
 	if (!user.avatarUrl) return ctx.redirect(Users.getIdenticonUrl(user));
-	if (ctx.query.url !== user.avatarUrl) {
+	if (ctx.query.acct || ctx.query.url !== user.avatarUrl) {
 		// 最新の、キャッシュすべきURLへリダイレクト
 		logger.info(`redirect`);
 		const url = new URL(ctx.URL);
 		url.searchParams.set('url', user.avatarUrl);
+		if (ctx.query.acct) {
+			url.searchParams.delete('acct');
+			url.searchParams.set('userId', user.id);
+		}
 		return ctx.redirect(url.toString());
 	}
 
