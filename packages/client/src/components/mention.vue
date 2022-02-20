@@ -1,6 +1,6 @@
 <template>
 <MkA v-if="url.startsWith('/')" v-user-preview="canonical" class="ldlomzub" :class="{ isMe }" :to="url" :style="{ background: bg }">
-	<img class="icon" :src="`/avatar/@${username}@${host}`" alt="">
+	<img class="icon" :src="`/avatar.webp?acct=${username}%40${host}`" alt="">
 	<span class="main">
 		<span class="username">@{{ username }}</span>
 		<span v-if="(host != localHost) || $store.state.showFullAcct" class="host">@{{ toUnicode(host) }}</span>
