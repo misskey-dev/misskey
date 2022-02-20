@@ -5,9 +5,6 @@ import { IEndpointMeta } from './endpoints';
 import { ApiError } from './error';
 import { Schema, SchemaType } from '@/misc/schema';
 import { AccessToken } from '@/models/entities/access-token';
-import { ValidateFunction } from 'ajv';
-import { JTDDataType } from 'ajv/dist/core';
-import { apiLogger } from './logger';
 
 type SimpleUserInfo = {
 	id: ILocalUser['id'];
