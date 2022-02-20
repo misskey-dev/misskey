@@ -185,8 +185,12 @@ export class UserRepository extends Repository<User> {
 		if (user.avatarUrl) {
 			return user.avatarUrl;
 		} else {
-			return `${config.url}/identicon/${user.id}`;
+			return this.getIdenticonUrl(user);
 		}
+	}
+
+	public getIdenticonUrl(user: User): string {
+		return `${config.url}/identicon/${user.id}`;
 	}
 
 	public async pack<ExpectsMe extends boolean | null = null, D extends boolean = false>(

@@ -1,7 +1,7 @@
 <template>
 <form class="eppvobhk _monolithic_" :class="{ signing, totpLogin }" @submit.prevent="onSubmit">
 	<div class="auth _section _formRoot">
-		<div v-show="withAvatar" class="avatar" :style="{ backgroundImage: user ? `url('${ user.avatarUrl }')` : null }"></div>
+		<div v-show="withAvatar" class="avatar" :style="{ backgroundImage: user ? `url('${ getAvatarUrl(user) }')` : null }"></div>
 		<div v-if="!totpLogin" class="normal-signin">
 			<MkInput v-model="username" class="_formBlock" :placeholder="$ts.username" type="text" pattern="^[a-zA-Z0-9_]+$" spellcheck="false" autofocus required data-cy-signin-username @update:modelValue="onUsernameChange">
 				<template #prefix>@</template>
@@ -55,6 +55,7 @@ import { byteify, hexify } from '@/scripts/2fa';
 import * as os from '@/os';
 import { login } from '@/account';
 import { showSuspendedDialog } from '../scripts/show-suspended-dialog';
+import { getAvatarUrl } from '@/scripts/get-avatar-url';
 
 export default defineComponent({
 	components: {
@@ -90,6 +91,8 @@ export default defineComponent({
 			credential: null,
 			challengeData: null,
 			queryingKey: false,
+
+			getAvatarUrl,
 		};
 	},
 

@@ -7,29 +7,21 @@
 		</header>
 		<p v-if="page.summary" :title="page.summary">{{ page.summary.length > 85 ? page.summary.slice(0, 85) + '…' : page.summary }}</p>
 		<footer>
-			<img class="icon" :src="page.user.avatarUrl"/>
+			<img class="icon" :src="getAvatarUrl(page.user)"/>
 			<p>{{ userName(page.user) }}</p>
 		</footer>
 	</article>
 </MkA>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import * as Misskey from 'misskey-js';
 import { userName } from '@/filters/user';
-import * as os from '@/os';
+import { getAvatarUrl } from '@/scripts/get-avatar-url';
 
-export default defineComponent({
-	props: {
-		page: {
-			type: Object,
-			required: true
-		},
-	},
-	methods: {
-		userName
-	}
-});
+defineProps<{
+	page: Misskey.entities.Page;
+}>();
 </script>
 
 <style lang="scss" scoped>

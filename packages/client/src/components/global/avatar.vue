@@ -12,11 +12,10 @@
 <script lang="ts" setup>
 import { onMounted, watch } from 'vue';
 import * as misskey from 'misskey-js';
-import { getStaticImageUrl } from '@/scripts/get-static-image-url';
 import { extractAvgColorFromBlurhash } from '@/scripts/extract-avg-color-from-blurhash';
 import { acct, userPage } from '@/filters/user';
 import MkUserOnlineIndicator from '@/components/user-online-indicator.vue';
-import { defaultStore } from '@/store';
+import { getAvatarUrl } from '@/scripts/get-avatar-url';
 
 const props = withDefaults(defineProps<{
 	user: misskey.entities.User;
@@ -35,9 +34,7 @@ const emit = defineEmits<{
 	(e: 'click', ev: MouseEvent): void;
 }>();
 
-const url = $computed(() => defaultStore.state.disableShowingAnimatedImages
-	? getStaticImageUrl(props.user.avatarUrl)
-	: props.user.avatarUrl);
+const url = $computed(() => getAvatarUrl(props.user));
 
 function onClick(ev: MouseEvent) {
 	emit('click', ev);

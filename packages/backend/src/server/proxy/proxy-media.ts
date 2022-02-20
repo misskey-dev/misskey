@@ -7,8 +7,28 @@ import { downloadUrl } from '@/misc/download-url';
 import { detectType } from '@/misc/get-file-info';
 import { StatusError } from '@/misc/fetch';
 import { FILE_TYPE_BROWSERSAFE } from '@/const';
+import * as cors from '@koa/cors';
+import * as Router from '@koa/router';
 
-export async function proxyMedia(ctx: Koa.Context) {
+// Init app
+const app = new Koa();
+app.use(cors());
+app.use(async (ctx, next) => {
+	ctx.set('Content-Security-Policy', `default-src 'none'; img-src 'self'; media-src 'self'; style-src 'unsafe-inline'`);
+	await next();
+});
+
+// Init router
+const router = new Router();
+
+router.get('/:url*', proxyMedia);
+
+// Register router
+app.use(router.routes());
+
+module.exports = app;
+
+async function proxyMedia(ctx: Koa.Context) {
 	const url = 'url' in ctx.query ? ctx.query.url : 'https://' + ctx.params.url;
 
 	if (typeof url !== 'string') {

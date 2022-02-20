@@ -2,7 +2,7 @@
 <div ref="rootEl" class="swhvrteh _popup _shadow" :style="{ zIndex }" @contextmenu.prevent="() => {}">
 	<ol v-if="type === 'user'" ref="suggests" class="users">
 		<li v-for="user in users" tabindex="-1" class="user" @click="complete(type, user)" @keydown="onKeydown">
-			<img class="avatar" :src="user.avatarUrl"/>
+			<img class="avatar" :src="getAvatarUrl(user)"/>
 			<span class="name">
 				<MkUserName :key="user.id" :user="user"/>
 			</span>
@@ -44,6 +44,7 @@ import { emojilist } from '@/scripts/emojilist';
 import { instance } from '@/instance';
 import { twemojiSvgBase } from '@/scripts/twemoji-base';
 import { i18n } from '@/i18n';
+import { getAvatarUrl } from '@/scripts/get-avatar-url';
 
 type EmojiDef = {
 	emoji: string;
