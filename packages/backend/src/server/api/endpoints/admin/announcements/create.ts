@@ -44,7 +44,7 @@ export const meta = {
 	},
 } as const;
 
-const paramDef = {
+export const paramDef = {
 	type: 'object',
 	properties: {
 		title: { type: 'string', minLength: 1 },
@@ -65,5 +65,5 @@ export default define(meta, paramDef, async (ps) => {
 		imageUrl: ps.imageUrl,
 	}).then(x => Announcements.findOneOrFail(x.identifiers[0]));
 
-	return announcement;
+	return Object.assign({}, announcement, { createdAt: announcement.createdAt.toISOString(), updatedAt: null });
 });

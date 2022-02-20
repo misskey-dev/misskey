@@ -17,7 +17,7 @@ export const meta = {
 	},
 } as const;
 
-const paramDef = {
+export const paramDef = {
 	type: 'object',
 	properties: {
 		id: { type: 'string', format: 'misskey:id' },

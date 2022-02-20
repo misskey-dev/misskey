@@ -31,7 +31,7 @@ export const meta = {
 	},
 } as const;
 
-const paramDef = {
+export const paramDef = {
 	type: 'object',
 	properties: {
 		groupId: { type: 'string', format: 'misskey:id' },

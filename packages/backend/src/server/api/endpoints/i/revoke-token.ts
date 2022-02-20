@@ -8,7 +8,7 @@ export const meta = {
 	secure: true,
 } as const;
 
-const paramDef = {
+export const paramDef = {
 	type: 'object',
 	properties: {
 		tokenId: { type: 'string', format: 'misskey:id' },

@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import * as Ajv from 'ajv';
+import Ajv from 'ajv';
 import { ILocalUser } from '@/models/entities/user';
 import { IEndpointMeta } from './endpoints';
 import { ApiError } from './error';
@@ -65,6 +65,6 @@ export default function <T extends IEndpointMeta, Ps extends Schema>(meta: T, pa
 			return Promise.reject(err);
 		}
 
-		return cb(params, user, token, file, cleanup);
+		return cb(params as SchemaType<Ps>, user, token, file, cleanup);
 	};
 }

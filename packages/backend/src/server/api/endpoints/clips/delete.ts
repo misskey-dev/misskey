@@ -18,7 +18,7 @@ export const meta = {
 	},
 } as const;
 
-const paramDef = {
+export const paramDef = {
 	type: 'object',
 	properties: {
 		clipId: { type: 'string', format: 'misskey:id' },

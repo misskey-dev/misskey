@@ -11,7 +11,7 @@ export const meta = {
 	requireAdmin: true,
 } as const;
 
-const paramDef = {
+export const paramDef = {
 	type: 'object',
 	properties: {
 		disableRegistration: { type: 'boolean', nullable: true },
@@ -36,7 +36,6 @@ const paramDef = {
 		logoImageUrl: { type: 'string', nullable: true },
 		name: { type: 'string', nullable: true },
 		description: { type: 'string', nullable: true },
-		maxNoteTextLength: { type: 'integer', maximum: 8192 },
 		localDriveCapacityMb: { type: 'integer' },
 		remoteDriveCapacityMb: { type: 'integer' },
 		cacheRemoteFiles: { type: 'boolean' },
@@ -162,10 +161,6 @@ export default define(meta, paramDef, async (ps, me) => {
 
 	if (ps.description !== undefined) {
 		set.description = ps.description;
-	}
-
-	if (ps.maxNoteTextLength) {
-		set.maxNoteTextLength = ps.maxNoteTextLength;
 	}
 
 	if (ps.localDriveCapacityMb !== undefined) {

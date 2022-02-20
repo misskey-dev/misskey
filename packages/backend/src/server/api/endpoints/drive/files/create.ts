@@ -35,7 +35,7 @@ export const meta = {
 	},
 } as const;
 
-const paramDef = {
+export const paramDef = {
 	type: 'object',
 	properties: {
 		folderId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
@@ -48,6 +48,7 @@ const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
+// @ts-ignore
 export default define(meta, paramDef, async (ps, user, _, file, cleanup) => {
 	// Get 'name' parameter
 	let name = ps.name || file.originalname;
