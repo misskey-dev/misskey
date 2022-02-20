@@ -16,7 +16,7 @@ You should also include the user name that made the change.
 - ノートの最大文字数を設定できる機能が廃止され、デフォルトで一律3000文字になりました
 
 ### Improvements
-- 
+- プロフィールの追加情報を最大16まで保存できるように
 
 ### Bugfixes
 - Client: リアクションピッカーの高さが低くなったまま戻らないことがあるのを修正 @syuilo
