@@ -12,51 +12,12 @@ export const meta = {
 		items: {
 			type: 'object',
 			optional: false, nullable: false,
-			properties: {
-				id: {
-					type: 'string',
-					optional: false, nullable: false,
-				},
-				name: {
-					type: 'string',
-					optional: false, nullable: false,
-				},
-				callbackUrl: {
-					type: 'string',
-					optional: false, nullable: false,
-				},
-				permission: {
-					type: 'array',
-					optional: false, nullable: false,
-					items: {
-						type: 'string',
-						optional: false, nullable: false,
-					},
-				},
-				secret: {
-					type: 'string',
-					optional: true, nullable: false,
-				},
-				isAuthorized: {
-					type: 'object',
-					optional: true, nullable: false,
-					properties: {
-						appId: {
-							type: 'string',
-							optional: false, nullable: false,
-						},
-						userId: {
-							type: 'string',
-							optional: false, nullable: false,
-						},
-					},
-				},
-			},
+			ref: 'App',
 		},
 	},
 } as const;
 
-const paramDef = {
+export const paramDef = {
 	type: 'object',
 	properties: {
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },

@@ -32,7 +32,7 @@ export class AppRepository extends Repository<App> {
 			...(me ? {
 				isAuthorized: await AccessTokens.count({
 					appId: app.id,
-					userId: me,
+					userId: me.id,
 				}).then(count => count > 0),
 			} : {}),
 		};

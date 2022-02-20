@@ -1,24 +1,14 @@
 import ms from 'ms';
-import { length } from 'stringz';
 import create from '@/services/note/create';
 import define from '../../define';
-import { fetchMeta } from '@/misc/fetch-meta';
 import { ApiError } from '../../error';
 import { User } from '@/models/entities/user';
 import { Users, DriveFiles, Notes, Channels, Blockings } from '@/models/index';
 import { DriveFile } from '@/models/entities/drive-file';
 import { Note } from '@/models/entities/note';
-import { DB_MAX_NOTE_TEXT_LENGTH } from '@/misc/hard-limits';
-import { noteVisibilities } from '@/types';
+import { noteVisibilities } from '../../../../types';
 import { Channel } from '@/models/entities/channel';
-
-let maxNoteTextLength = 500;
-
-setInterval(() => {
-	fetchMeta().then(m => {
-		maxNoteTextLength = m.maxNoteTextLength;
-	});
-}, 3000);
+import { MAX_NOTE_TEXT_LENGTH } from '@/const';
 
 export const meta = {
 	tags: ['notes'],
@@ -95,14 +85,14 @@ export const meta = {
 	},
 } as const;
 
-const paramDef = {
+export const paramDef = {
 	type: 'object',
 	properties: {
 		visibility: { type: 'string', enum: ['public', 'home', 'followers', 'specified'], default: "public" },
 		visibleUserIds: { type: 'array', uniqueItems: true, items: {
 			type: 'string', format: 'misskey:id',
 		} },
-		text: { type: 'string', nullable: true, maxLength: 3000, default: null },
+		text: { type: 'string', nullable: true, maxLength: MAX_NOTE_TEXT_LENGTH, default: null },
 		cw: { type: 'string', nullable: true, maxLength: 100 },
 		localOnly: { type: 'boolean', default: false },
 		noExtractMentions: { type: 'boolean', default: false },

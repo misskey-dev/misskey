@@ -10,24 +10,28 @@ export const meta = {
 	kind: 'read:gallery-likes',
 
 	res: {
-		type: 'object',
+		type: 'array',
 		optional: false, nullable: false,
-		properties: {
-			id: {
-				type: 'string',
-				optional: false, nullable: false,
-				format: 'id',
+		items: {
+			type: 'object',
+			optional: false, nullable: false,
+			properties: {
+				id: {
+					type: 'string',
+					optional: false, nullable: false,
+					format: 'id',
+				},
+				post: {
+					type: 'object',
+					optional: false, nullable: false,
+					ref: 'GalleryPost',
+				},
 			},
-			page: {
-				type: 'object',
-				optional: false, nullable: false,
-				ref: 'GalleryPost',
-			},
-		},
+		}
 	},
 } as const;
 
-const paramDef = {
+export const paramDef = {
 	type: 'object',
 	properties: {
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
