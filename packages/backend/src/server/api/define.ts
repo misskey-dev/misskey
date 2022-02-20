@@ -39,13 +39,7 @@ ajv.addFormat('misskey:id', /^[a-z0-9]+$/);
 export default function <T extends IEndpointMeta, Ps extends Schema>(meta: T, paramDef: Ps, cb: executor<T, Ps>)
 		: (params: any, user: T['requireCredential'] extends true ? SimpleUserInfo : SimpleUserInfo | null, token: AccessToken | null, file?: any) => Promise<any> {
 
-	let validate: ValidateFunction<JTDDataType<Ps>>;
-
-	try {
-		validate = ajv.compile(paramDef);
-	} catch (error) {
-		apiLogger.error('FAILED TO COMPILE SCHEMA ' + JSON.stringify({ param: paramDef, error }));
-	}
+	const validate = ajv.compile(paramDef);
 
 	return (params: any, user: T['requireCredential'] extends true ? SimpleUserInfo : SimpleUserInfo | null, token: AccessToken | null, file?: any) => {
 		function cleanup() {
