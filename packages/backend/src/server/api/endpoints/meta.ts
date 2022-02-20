@@ -138,11 +138,6 @@ export const meta = {
 				type: 'string',
 				optional: false, nullable: true,
 			},
-			maxNoteTextLength: {
-				type: 'number',
-				optional: false, nullable: false,
-				default: 500,
-			},
 			emojis: {
 				type: 'array',
 				optional: false, nullable: false,
@@ -506,7 +501,6 @@ export default define(meta, paramDef, async (ps, me) => {
 		iconUrl: instance.iconUrl,
 		backgroundImageUrl: instance.backgroundImageUrl,
 		logoImageUrl: instance.logoImageUrl,
-		maxNoteTextLength: Math.min(instance.maxNoteTextLength, DB_MAX_NOTE_TEXT_LENGTH),
 		emojis: await Emojis.packMany(emojis),
 		ads: ads.map(ad => ({
 			id: ad.id,

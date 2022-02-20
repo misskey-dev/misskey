@@ -52,11 +52,6 @@
 				<template #caption>{{ $ts.pinnedUsersDescription }}</template>
 			</FormTextarea>
 
-			<FormInput v-model="maxNoteTextLength" type="number" class="_formBlock">
-				<template #prefix><i class="fas fa-pencil-alt"></i></template>
-				<template #label>{{ $ts.maxNoteTextLength }}</template>
-			</FormInput>
-
 			<FormSection>
 				<FormSwitch v-model="enableRegistration" class="_formBlock">
 					<template #label>{{ $ts.enableRegistration }}</template>
@@ -186,7 +181,6 @@ export default defineComponent({
 			bannerUrl: null,
 			backgroundImageUrl: null,
 			themeColor: null,
-			maxNoteTextLength: 0,
 			enableLocalTimeline: false,
 			enableGlobalTimeline: false,
 			pinnedUsers: '',
@@ -216,7 +210,6 @@ export default defineComponent({
 			this.themeColor = meta.themeColor;
 			this.maintainerName = meta.maintainerName;
 			this.maintainerEmail = meta.maintainerEmail;
-			this.maxNoteTextLength = meta.maxNoteTextLength;
 			this.enableLocalTimeline = !meta.disableLocalTimeline;
 			this.enableGlobalTimeline = !meta.disableGlobalTimeline;
 			this.pinnedUsers = meta.pinnedUsers.join('\n');
@@ -244,7 +237,6 @@ export default defineComponent({
 				themeColor: this.themeColor === '' ? null : this.themeColor,
 				maintainerName: this.maintainerName,
 				maintainerEmail: this.maintainerEmail,
-				maxNoteTextLength: this.maxNoteTextLength,
 				disableLocalTimeline: !this.enableLocalTimeline,
 				disableGlobalTimeline: !this.enableGlobalTimeline,
 				pinnedUsers: this.pinnedUsers.split('\n'),
