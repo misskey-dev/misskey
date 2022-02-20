@@ -12,13 +12,14 @@
 		<XDraggable
 			v-model="widgets_"
 			item-key="id"
+			handle=".handle"
 			animation="150"
 		>
 			<template #item="{element}">
 				<div class="customize-container">
 					<button class="config _button" @click.prevent.stop="configWidget(element.id)"><i class="fas fa-cog"></i></button>
 					<button class="remove _button" @click.prevent.stop="removeWidget(element)"><i class="fas fa-times"></i></button>
-					<component :ref="el => widgetRefs[element.id] = el" :is="`mkw-${element.name}`" :widget="element" @updateProps="updateWidget(element.id, $event)"/>
+					<component class="handle" :ref="el => widgetRefs[element.id] = el" :is="`mkw-${element.name}`" :widget="element" @updateProps="updateWidget(element.id, $event)"/>
 				</div>
 			</template>
 		</XDraggable>
@@ -120,10 +121,6 @@ export default defineComponent({
 	.customize-container {
 		position: relative;
 		cursor: move;
-
-		> *:not(.remove):not(.config) {
-			pointer-events: none;
-		}
 
 		> .config,
 		> .remove {

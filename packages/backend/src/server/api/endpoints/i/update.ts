@@ -67,7 +67,7 @@ export const meta = {
 	},
 } as const;
 
-const paramDef = {
+export const paramDef = {
 	type: 'object',
 	properties: {
 		name: { ...Users.nameSchema, nullable: true },
@@ -79,7 +79,7 @@ const paramDef = {
 		bannerId: { type: 'string', format: 'misskey:id', nullable: true },
 		fields: { type: 'array',
 			minItems: 0,
-			maxItems: 8,
+			maxItems: 16,
 			items: {
 				type: 'object',
 				properties: {

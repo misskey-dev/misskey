@@ -8,7 +8,7 @@ export const meta = {
 	tags: ['meta'],
 } as const;
 
-const paramDef = {
+export const paramDef = {
 	type: 'object',
 	properties: {},
 	required: [],

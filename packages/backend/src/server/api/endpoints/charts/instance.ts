@@ -8,7 +8,7 @@ export const meta = {
 	res: getJsonSchema(instanceChart.schema),
 } as const;
 
-const paramDef = {
+export const paramDef = {
 	type: 'object',
 	properties: {
 		span: { type: 'string', enum: ['day', 'hour'] },

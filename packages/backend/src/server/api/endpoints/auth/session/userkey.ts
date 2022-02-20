@@ -45,7 +45,7 @@ export const meta = {
 	},
 } as const;
 
-const paramDef = {
+export const paramDef = {
 	type: 'object',
 	properties: {
 		appSecret: { type: 'string' },

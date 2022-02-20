@@ -33,7 +33,7 @@ export const meta = {
 	},
 } as const;
 
-const paramDef = {
+export const paramDef = {
 	type: 'object',
 	properties: {
 		noteId: { type: 'string', format: 'misskey:id' },

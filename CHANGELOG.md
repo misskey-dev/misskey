@@ -12,11 +12,15 @@ You should also include the user name that made the change.
 
 ## 12.x.x (unreleased)
 
+### Changes
+- ノートの最大文字数を設定できる機能が廃止され、デフォルトで一律3000文字になりました
+
 ### Improvements
-- 
+- プロフィールの追加情報を最大16まで保存できるように
 
 ### Bugfixes
 - Client: リアクションピッカーの高さが低くなったまま戻らないことがあるのを修正 @syuilo
+- Client: タッチ操作だとウィジェットの編集がしにくいのを修正 @xianonn
 
 ## 12.107.0 (2022/02/12)
 
