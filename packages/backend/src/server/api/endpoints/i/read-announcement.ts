@@ -1,5 +1,3 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { genId } from '@/misc/gen-id';
@@ -13,12 +11,6 @@ export const meta = {
 
 	kind: 'write:account',
 
-	params: {
-		announcementId: {
-			validator: $.type(ID),
-		},
-	},
-
 	errors: {
 		noSuchAnnouncement: {
 			message: 'No such announcement.',
@@ -28,8 +20,16 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		announcementId: { type: 'string', format: 'misskey:id' },
+	},
+	required: ['announcementId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	// Check if announcement exists
 	const announcement = await Announcements.findOne(ps.announcementId);
 

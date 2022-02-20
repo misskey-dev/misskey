@@ -1,6 +1,4 @@
-import $ from 'cafy';
 import define from '../../../define';
-import { ID } from '@/misc/cafy-id';
 import { Announcements } from '@/models/index';
 import { ApiError } from '../../../error';
 
@@ -9,21 +7,6 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
-
-	params: {
-		id: {
-			validator: $.type(ID),
-		},
-		title: {
-			validator: $.str.min(1),
-		},
-		text: {
-			validator: $.str.min(1),
-		},
-		imageUrl: {
-			validator: $.nullable.str.min(1),
-		},
-	},
 
 	errors: {
 		noSuchAnnouncement: {
@@ -34,8 +17,19 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		id: { type: 'string', format: 'misskey:id' },
+		title: { type: 'string', minLength: 1 },
+		text: { type: 'string', minLength: 1 },
+		imageUrl: { type: 'string', nullable: true, minLength: 1 },
+	},
+	required: ['id', 'title', 'text', 'imageUrl'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	const announcement = await Announcements.findOne(ps.id);
 
 	if (announcement == null) throw new ApiError(meta.errors.noSuchAnnouncement);

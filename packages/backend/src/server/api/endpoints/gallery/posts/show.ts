@@ -1,5 +1,3 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { GalleryPosts } from '@/models/index';
@@ -8,12 +6,6 @@ export const meta = {
 	tags: ['gallery'],
 
 	requireCredential: false,
-
-	params: {
-		postId: {
-			validator: $.type(ID),
-		},
-	},
 
 	errors: {
 		noSuchPost: {
@@ -30,8 +22,16 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		postId: { type: 'string', format: 'misskey:id' },
+	},
+	required: ['postId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	const post = await GalleryPosts.findOne({
 		id: ps.postId,
 	});

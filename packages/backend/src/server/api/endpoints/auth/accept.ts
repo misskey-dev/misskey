@@ -1,5 +1,4 @@
 import * as crypto from 'crypto';
-import $ from 'cafy';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { AuthSessions, AccessTokens, Apps } from '@/models/index';
@@ -13,12 +12,6 @@ export const meta = {
 
 	secure: true,
 
-	params: {
-		token: {
-			validator: $.str,
-		},
-	},
-
 	errors: {
 		noSuchSession: {
 			message: 'No such session.',
@@ -28,8 +21,16 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		token: { type: 'string' },
+	},
+	required: ['token'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	// Fetch token
 	const session = await AuthSessions
 		.findOne({ token: ps.token });

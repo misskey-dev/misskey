@@ -1,7 +1,5 @@
 const RE2 = require('re2');
-import $ from 'cafy';
 import * as mfm from 'mfm-js';
-import { ID } from '@/misc/cafy-id';
 import { publishMainStream, publishUserEvent } from '@/services/stream';
 import acceptAllFollowRequests from '@/services/following/requests/accept-all';
 import { publishToFollowers } from '@/services/i/update';
@@ -23,116 +21,6 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'write:account',
-
-	params: {
-		name: {
-			validator: $.optional.nullable.use(Users.validateName),
-		},
-
-		description: {
-			validator: $.optional.nullable.use(Users.validateDescription),
-		},
-
-		lang: {
-			validator: $.optional.nullable.str.or(Object.keys(langmap)),
-		},
-
-		location: {
-			validator: $.optional.nullable.use(Users.validateLocation),
-		},
-
-		birthday: {
-			validator: $.optional.nullable.use(Users.validateBirthday),
-		},
-
-		avatarId: {
-			validator: $.optional.nullable.type(ID),
-		},
-
-		bannerId: {
-			validator: $.optional.nullable.type(ID),
-		},
-
-		fields: {
-			validator: $.optional.arr($.object()).range(1, 4),
-		},
-
-		isLocked: {
-			validator: $.optional.bool,
-		},
-
-		isExplorable: {
-			validator: $.optional.bool,
-		},
-
-		hideOnlineStatus: {
-			validator: $.optional.bool,
-		},
-
-		publicReactions: {
-			validator: $.optional.bool,
-		},
-
-		ffVisibility: {
-			validator: $.optional.str,
-		},
-
-		carefulBot: {
-			validator: $.optional.bool,
-		},
-
-		autoAcceptFollowed: {
-			validator: $.optional.bool,
-		},
-
-		noCrawle: {
-			validator: $.optional.bool,
-		},
-
-		isBot: {
-			validator: $.optional.bool,
-		},
-
-		isCat: {
-			validator: $.optional.bool,
-		},
-
-		showTimelineReplies: {
-			validator: $.optional.bool,
-		},
-
-		injectFeaturedNote: {
-			validator: $.optional.bool,
-		},
-
-		receiveAnnouncementEmail: {
-			validator: $.optional.bool,
-		},
-
-		alwaysMarkNsfw: {
-			validator: $.optional.bool,
-		},
-
-		pinnedPageId: {
-			validator: $.optional.nullable.type(ID),
-		},
-
-		mutedWords: {
-			validator: $.optional.arr($.either($.arr($.str.min(1)).min(1), $.str)),
-		},
-
-		mutedInstances: {
-			validator: $.optional.arr($.str),
-		},
-
-		mutingNotificationTypes: {
-			validator: $.optional.arr($.str.or(notificationTypes as unknown as string[])),
-		},
-
-		emailNotificationTypes: {
-			validator: $.optional.arr($.str),
-		},
-	},
 
 	errors: {
 		noSuchAvatar: {
@@ -179,8 +67,60 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		name: { ...Users.nameSchema, nullable: true },
+		description: { ...Users.descriptionSchema, nullable: true },
+		location: { ...Users.locationSchema, nullable: true },
+		birthday: { ...Users.birthdaySchema, nullable: true },
+		lang: { type: 'string', enum: Object.keys(langmap), nullable: true },
+		avatarId: { type: 'string', format: 'misskey:id', nullable: true },
+		bannerId: { type: 'string', format: 'misskey:id', nullable: true },
+		fields: { type: 'array',
+			minItems: 0,
+			maxItems: 16,
+			items: {
+				type: 'object',
+				properties: {
+					name: { type: 'string' },
+					value: { type: 'string' },
+				},
+				required: ['name', 'value'],
+			},
+		},
+		isLocked: { type: 'boolean' },
+		isExplorable: { type: 'boolean' },
+		hideOnlineStatus: { type: 'boolean' },
+		publicReactions: { type: 'boolean' },
+		carefulBot: { type: 'boolean' },
+		autoAcceptFollowed: { type: 'boolean' },
+		noCrawle: { type: 'boolean' },
+		isBot: { type: 'boolean' },
+		isCat: { type: 'boolean' },
+		showTimelineReplies: { type: 'boolean' },
+		injectFeaturedNote: { type: 'boolean' },
+		receiveAnnouncementEmail: { type: 'boolean' },
+		alwaysMarkNsfw: { type: 'boolean' },
+		ffVisibility: { type: 'string', enum: ['public', 'followers', 'private'] },
+		pinnedPageId: { type: 'array', items: {
+			type: 'string', format: 'misskey:id',
+		} },
+		mutedWords: { type: 'array' },
+		mutedInstances: { type: 'array', items: {
+			type: 'string',
+		} },
+		mutingNotificationTypes: { type: 'array', items: {
+			type: 'string', enum: notificationTypes,
+		} },
+		emailNotificationTypes: { type: 'array', items: {
+			type: 'string',
+		} },
+	},
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, _user, token) => {
+export default define(meta, paramDef, async (ps, _user, token) => {
 	const user = await Users.findOneOrFail(_user.id);
 	const isSecure = token == null;
 

@@ -7,9 +7,6 @@ export const meta = {
 
 	tags: ['meta'],
 
-	params: {
-	},
-
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
@@ -46,8 +43,14 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async () => {
+export default define(meta, paramDef, async () => {
 	const [
 		notesCount,
 		originalNotesCount,

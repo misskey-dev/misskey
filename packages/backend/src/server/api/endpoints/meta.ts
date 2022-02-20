@@ -1,4 +1,3 @@
-import $ from 'cafy';
 import config from '@/config/index';
 import define from '../define';
 import { fetchMeta } from '@/misc/fetch-meta';
@@ -10,13 +9,6 @@ export const meta = {
 	tags: ['meta'],
 
 	requireCredential: false,
-
-	params: {
-		detail: {
-			validator: $.optional.bool,
-			default: true,
-		},
-	},
 
 	res: {
 		type: 'object',
@@ -145,11 +137,6 @@ export const meta = {
 			iconUrl: {
 				type: 'string',
 				optional: false, nullable: true,
-			},
-			maxNoteTextLength: {
-				type: 'number',
-				optional: false, nullable: false,
-				default: 500,
 			},
 			emojis: {
 				type: 'array',
@@ -448,8 +435,16 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		detail: { type: 'boolean', default: true },
+	},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	const instance = await fetchMeta(true);
 
 	const emojis = await Emojis.find({
@@ -506,7 +501,6 @@ export default define(meta, async (ps, me) => {
 		iconUrl: instance.iconUrl,
 		backgroundImageUrl: instance.backgroundImageUrl,
 		logoImageUrl: instance.logoImageUrl,
-		maxNoteTextLength: Math.min(instance.maxNoteTextLength, DB_MAX_NOTE_TEXT_LENGTH),
 		emojis: await Emojis.packMany(emojis),
 		ads: ads.map(ad => ({
 			id: ad.id,

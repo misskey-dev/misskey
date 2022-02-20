@@ -53,8 +53,14 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async () => {
+export default define(meta, paramDef, async () => {
 	const instance = await fetchMeta(true);
 	const hiddenTags = instance.hiddenTags.map(t => normalizeForSearch(t));
 

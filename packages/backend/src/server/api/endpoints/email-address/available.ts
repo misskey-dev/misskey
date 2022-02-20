@@ -1,4 +1,3 @@
-import $ from 'cafy';
 import define from '../../define';
 import { validateEmailForAccount } from '@/services/validate-email-for-account';
 
@@ -6,12 +5,6 @@ export const meta = {
 	tags: ['users'],
 
 	requireCredential: false,
-
-	params: {
-		emailAddress: {
-			validator: $.str,
-		},
-	},
 
 	res: {
 		type: 'object',
@@ -29,7 +22,15 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		emailAddress: { type: 'string' },
+	},
+	required: ['emailAddress'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps) => {
+export default define(meta, paramDef, async (ps) => {
 	return await validateEmailForAccount(ps.emailAddress);
 });

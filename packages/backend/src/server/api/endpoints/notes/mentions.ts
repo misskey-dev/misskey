@@ -1,5 +1,3 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import read from '@/services/note/read';
 import { Notes, Followings } from '@/models/index';
@@ -15,30 +13,6 @@ export const meta = {
 
 	requireCredential: true,
 
-	params: {
-		following: {
-			validator: $.optional.bool,
-			default: false,
-		},
-
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
-		},
-
-		sinceId: {
-			validator: $.optional.type(ID),
-		},
-
-		untilId: {
-			validator: $.optional.type(ID),
-		},
-
-		visibility: {
-			validator: $.optional.str,
-		},
-	},
-
 	res: {
 		type: 'array',
 		optional: false, nullable: false,
@@ -50,8 +24,20 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		following: { type: 'boolean', default: false },
+		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+		sinceId: { type: 'string', format: 'misskey:id' },
+		untilId: { type: 'string', format: 'misskey:id' },
+		visibility: { type: 'string' },
+	},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const followingQuery = Followings.createQueryBuilder('following')
 		.select('following.followeeId')
 		.where('following.followerId = :followerId', { followerId: user.id });
@@ -81,7 +67,7 @@ export default define(meta, async (ps, user) => {
 		query.setParameters(followingQuery.getParameters());
 	}
 
-	const mentions = await query.take(ps.limit!).getMany();
+	const mentions = await query.take(ps.limit).getMany();
 
 	read(user.id, mentions);
 

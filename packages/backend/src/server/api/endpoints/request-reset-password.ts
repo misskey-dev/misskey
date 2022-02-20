@@ -1,4 +1,3 @@
-import $ from 'cafy';
 import { publishMainStream } from '@/services/stream';
 import define from '../define';
 import rndstr from 'rndstr';
@@ -18,23 +17,22 @@ export const meta = {
 		max: 3,
 	},
 
-	params: {
-		username: {
-			validator: $.str,
-		},
-
-		email: {
-			validator: $.str,
-		},
-	},
-
 	errors: {
 
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		username: { type: 'string' },
+		email: { type: 'string' },
+	},
+	required: ['username', 'email'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps) => {
+export default define(meta, paramDef, async (ps) => {
 	const user = await Users.findOne({
 		usernameLower: ps.username.toLowerCase(),
 		host: IsNull(),

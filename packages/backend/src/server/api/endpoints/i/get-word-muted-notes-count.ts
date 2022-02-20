@@ -8,9 +8,6 @@ export const meta = {
 
 	kind: 'read:account',
 
-	params: {
-	},
-
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
@@ -23,8 +20,14 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	return {
 		count: await MutedNotes.count({
 			userId: user.id,

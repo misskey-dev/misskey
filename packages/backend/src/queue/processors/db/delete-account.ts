@@ -31,7 +31,7 @@ export async function deleteAccount(job: Bull.Job<DbUserDeleteJobData>): Promise
 				order: {
 					id: 1,
 				},
-			});
+			}) as Note[];
 
 			if (notes.length === 0) {
 				break;
@@ -58,7 +58,7 @@ export async function deleteAccount(job: Bull.Job<DbUserDeleteJobData>): Promise
 				order: {
 					id: 1,
 				},
-			});
+			}) as DriveFile[];
 
 			if (files.length === 0) {
 				break;

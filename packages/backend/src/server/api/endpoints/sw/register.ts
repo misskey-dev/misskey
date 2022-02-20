@@ -1,4 +1,3 @@
-import $ from 'cafy';
 import define from '../../define';
 import { fetchMeta } from '@/misc/fetch-meta';
 import { genId } from '@/misc/gen-id';
@@ -9,39 +8,35 @@ export const meta = {
 
 	requireCredential: true,
 
-	params: {
-		endpoint: {
-			validator: $.str,
-		},
-
-		auth: {
-			validator: $.str,
-		},
-
-		publickey: {
-			validator: $.str,
-		},
-	},
-
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
 		properties: {
 			state: {
 				type: 'string',
-				optional: false, nullable: false,
+				optional: true, nullable: false,
 				enum: ['already-subscribed', 'subscribed'],
 			},
 			key: {
 				type: 'string',
-				optional: false, nullable: false,
+				optional: false, nullable: true,
 			},
 		},
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		endpoint: { type: 'string' },
+		auth: { type: 'string' },
+		publickey: { type: 'string' },
+	},
+	required: ['endpoint', 'auth', 'publickey'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	// if already subscribed
 	const exist = await SwSubscriptions.findOne({
 		userId: user.id,
@@ -54,7 +49,7 @@ export default define(meta, async (ps, user) => {
 
 	if (exist != null) {
 		return {
-			state: 'already-subscribed',
+			state: 'already-subscribed' as const,
 			key: instance.swPublicKey,
 		};
 	}
@@ -69,7 +64,7 @@ export default define(meta, async (ps, user) => {
 	});
 
 	return {
-		state: 'subscribed',
+		state: 'subscribed' as const,
 		key: instance.swPublicKey,
 	};
 });

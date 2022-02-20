@@ -1,5 +1,3 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import readNote from '@/services/note/read';
 import { Antennas, Notes, AntennaNotes } from '@/models/index';
@@ -15,33 +13,6 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'read:account',
-
-	params: {
-		antennaId: {
-			validator: $.type(ID),
-		},
-
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
-		},
-
-		sinceId: {
-			validator: $.optional.type(ID),
-		},
-
-		untilId: {
-			validator: $.optional.type(ID),
-		},
-
-		sinceDate: {
-			validator: $.optional.num,
-		},
-
-		untilDate: {
-			validator: $.optional.num,
-		},
-	},
 
 	errors: {
 		noSuchAntenna: {
@@ -62,8 +33,21 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		antennaId: { type: 'string', format: 'misskey:id' },
+		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+		sinceId: { type: 'string', format: 'misskey:id' },
+		untilId: { type: 'string', format: 'misskey:id' },
+		sinceDate: { type: 'integer' },
+		untilDate: { type: 'integer' },
+	},
+	required: ['antennaId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const antenna = await Antennas.findOne({
 		id: ps.antennaId,
 		userId: user.id,
@@ -92,7 +76,7 @@ export default define(meta, async (ps, user) => {
 	generateBlockedUserQuery(query, user);
 
 	const notes = await query
-		.take(ps.limit!)
+		.take(ps.limit)
 		.getMany();
 
 	if (notes.length > 0) {

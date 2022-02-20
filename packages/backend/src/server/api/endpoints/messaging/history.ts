@@ -1,4 +1,3 @@
-import $ from 'cafy';
 import define from '../../define';
 import { MessagingMessage } from '@/models/entities/messaging-message';
 import { MessagingMessages, Mutings, UserGroupJoinings } from '@/models/index';
@@ -11,18 +10,6 @@ export const meta = {
 
 	kind: 'read:messaging',
 
-	params: {
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
-		},
-
-		group: {
-			validator: $.optional.bool,
-			default: false,
-		},
-	},
-
 	res: {
 		type: 'array',
 		optional: false, nullable: false,
@@ -34,8 +21,17 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+		group: { type: 'boolean', default: false },
+	},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const mute = await Mutings.find({
 		muterId: user.id,
 	});
@@ -50,7 +46,7 @@ export default define(meta, async (ps, user) => {
 
 	const history: MessagingMessage[] = [];
 
-	for (let i = 0; i < ps.limit!; i++) {
+	for (let i = 0; i < ps.limit; i++) {
 		const found = ps.group
 			? history.map(m => m.groupId!)
 			: history.map(m => (m.userId === user.id) ? m.recipientId! : m.userId!);

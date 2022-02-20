@@ -1,5 +1,3 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
 import { readNotification } from '../../common/read-notification';
 import define from '../../define';
 import { makePaginationQuery } from '../../common/make-pagination-query';
@@ -16,44 +14,6 @@ export const meta = {
 
 	kind: 'read:notifications',
 
-	params: {
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
-		},
-
-		sinceId: {
-			validator: $.optional.type(ID),
-		},
-
-		untilId: {
-			validator: $.optional.type(ID),
-		},
-
-		following: {
-			validator: $.optional.bool,
-			default: false,
-		},
-
-		unreadOnly: {
-			validator: $.optional.bool,
-			default: false,
-		},
-
-		markAsRead: {
-			validator: $.optional.bool,
-			default: true,
-		},
-
-		includeTypes: {
-			validator: $.optional.arr($.str.or(notificationTypes as unknown as string[])),
-		},
-
-		excludeTypes: {
-			validator: $.optional.arr($.str.or(notificationTypes as unknown as string[])),
-		},
-	},
-
 	res: {
 		type: 'array',
 		optional: false, nullable: false,
@@ -65,8 +25,27 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+		sinceId: { type: 'string', format: 'misskey:id' },
+		untilId: { type: 'string', format: 'misskey:id' },
+		following: { type: 'boolean', default: false },
+		unreadOnly: { type: 'boolean', default: false },
+		markAsRead: { type: 'boolean', default: true },
+		includeTypes: { type: 'array', items: {
+			type: 'string', enum: notificationTypes,
+		} },
+		excludeTypes: { type: 'array', items: {
+			type: 'string', enum: notificationTypes,
+		} },
+	},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	// includeTypes が空の場合はクエリしない
 	if (ps.includeTypes && ps.includeTypes.length === 0) {
 		return [];
@@ -125,7 +104,7 @@ export default define(meta, async (ps, user) => {
 		query.andWhere(`notification.isRead = false`);
 	}
 
-	const notifications = await query.take(ps.limit!).getMany();
+	const notifications = await query.take(ps.limit).getMany();
 
 	// Mark all as read
 	if (notifications.length > 0 && ps.markAsRead) {

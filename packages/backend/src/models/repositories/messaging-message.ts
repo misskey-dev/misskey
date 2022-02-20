@@ -6,10 +6,6 @@ import { User } from '@/models/entities/user';
 
 @EntityRepository(MessagingMessage)
 export class MessagingMessageRepository extends Repository<MessagingMessage> {
-	public validateText(text: string): boolean {
-		return text.trim().length <= 1000 && text.trim() != '';
-	}
-
 	public async pack(
 		src: MessagingMessage['id'] | MessagingMessage,
 		me?: { id: User['id'] } | null | undefined,

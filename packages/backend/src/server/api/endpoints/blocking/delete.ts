@@ -1,5 +1,3 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
 import ms from 'ms';
 import deleteBlocking from '@/services/blocking/delete';
 import define from '../../define';
@@ -18,12 +16,6 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'write:blocks',
-
-	params: {
-		userId: {
-			validator: $.type(ID),
-		},
-	},
 
 	errors: {
 		noSuchUser: {
@@ -52,8 +44,16 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		userId: { type: 'string', format: 'misskey:id' },
+	},
+	required: ['userId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const blocker = await Users.findOneOrFail(user.id);
 
 	// Check if the blockee is yourself

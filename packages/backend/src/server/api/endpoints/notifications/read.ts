@@ -1,5 +1,3 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
 import { publishMainStream } from '@/services/stream';
 import define from '../../define';
 import { Notifications } from '@/models/index';
@@ -13,12 +11,6 @@ export const meta = {
 
 	kind: 'write:notifications',
 
-	params: {
-		notificationId: {
-			validator: $.type(ID),
-		},
-	},
-
 	errors: {
 		noSuchNotification: {
 			message: 'No such notification.',
@@ -28,8 +20,16 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		notificationId: { type: 'string', format: 'misskey:id' },
+	},
+	required: ['notificationId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const notification = await Notifications.findOne({
 		notifieeId: user.id,
 		id: ps.notificationId,
