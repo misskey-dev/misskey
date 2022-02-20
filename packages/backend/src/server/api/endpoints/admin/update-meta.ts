@@ -11,7 +11,7 @@ export const meta = {
 	requireAdmin: true,
 } as const;
 
-const paramDef = {
+export const paramDef = {
 	type: 'object',
 	properties: {
 		disableRegistration: { type: 'boolean', nullable: true },

@@ -20,7 +20,7 @@ export const meta = {
 	},
 } as const;
 
-const paramDef = {
+export const paramDef = {
 	type: 'object',
 	properties: {
 		sinceId: { type: 'string', format: 'misskey:id' },
