@@ -61,8 +61,8 @@ export async function proxyAvatar(ctx: Koa.Context) {
 	}
 	if (!user.avatarUrl) return ctx.redirect(Users.getIdenticonUrl(user));
 	if (ctx.query.url !== user.avatarUrl) {
-		logger.info(`redirect`);
 		// 最新の、キャッシュすべきURLへリダイレクト
+		logger.info(`redirect`);
 		const url = new URL(ctx.URL);
 		url.searchParams.set('url', user.avatarUrl);
 		return ctx.redirect(url.toString());
@@ -80,6 +80,20 @@ export async function proxyAvatar(ctx: Koa.Context) {
 			cleanup();
 			return ctx.redirect(Users.getIdenticonUrl(user));
 		}
+
+		//#region If image is not animated, redirect to non static url
+		const metadata = await sharp(path).metadata();
+		const isAnimated = metadata.pages && metadata.pages > 1;
+		if (ctx.query.static && !isAnimated) {
+			logger.info(`redirect to non static url`);
+			cleanup();
+			const url = new URL(ctx.URL);
+			url.searchParams.delete('static');
+			ctx.status = 301;
+			ctx.redirect(url.toString());
+			return;
+		}
+		//#endregion
 
 		ctx.set('Content-Type', 'image/webp');
 		ctx.set('Cache-Control', 'max-age=31536000, immutable');
