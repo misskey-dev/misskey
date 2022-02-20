@@ -9,7 +9,7 @@ export const meta = {
 	requireModerator: true,
 } as const;
 
-const paramDef = {
+export const paramDef = {
 	type: 'object',
 	properties: {
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },

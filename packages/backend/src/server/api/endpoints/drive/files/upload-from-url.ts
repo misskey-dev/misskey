@@ -18,7 +18,7 @@ export const meta = {
 	kind: 'write:drive',
 } as const;
 
-const paramDef = {
+export const paramDef = {
 	type: 'object',
 	properties: {
 		url: { type: 'string' },

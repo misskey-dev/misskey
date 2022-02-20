@@ -36,7 +36,7 @@ export const meta = {
 	},
 } as const;
 
-const paramDef = {
+export const paramDef = {
 	type: 'object',
 	properties: {
 		channelId: { type: 'string', format: 'misskey:id' },

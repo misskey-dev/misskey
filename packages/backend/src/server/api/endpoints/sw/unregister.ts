@@ -7,7 +7,7 @@ export const meta = {
 	requireCredential: true,
 } as const;
 
-const paramDef = {
+export const paramDef = {
 	type: 'object',
 	properties: {
 		endpoint: { type: 'string' },

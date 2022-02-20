@@ -50,7 +50,7 @@ export const meta = {
 	},
 } as const;
 
-const paramDef = {
+export const paramDef = {
 	type: 'object',
 	properties: {
 		query: { type: 'string', nullable: true, default: null },

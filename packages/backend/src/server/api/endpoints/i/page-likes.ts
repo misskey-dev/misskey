@@ -10,24 +10,27 @@ export const meta = {
 	kind: 'read:page-likes',
 
 	res: {
-		type: 'object',
+		type: 'array',
 		optional: false, nullable: false,
-		properties: {
-			id: {
-				type: 'string',
-				optional: false, nullable: false,
-				format: 'id',
+		items: {
+			type: 'object',
+			properties: {
+				id: {
+					type: 'string',
+					optional: false, nullable: false,
+					format: 'id',
+				},
+				page: {
+					type: 'object',
+					optional: false, nullable: false,
+					ref: 'Page',
+				},
 			},
-			page: {
-				type: 'object',
-				optional: false, nullable: false,
-				ref: 'Page',
-			},
-		},
+		}
 	},
 } as const;
 
-const paramDef = {
+export const paramDef = {
 	type: 'object',
 	properties: {
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
@@ -47,5 +50,5 @@ export default define(meta, paramDef, async (ps, user) => {
 		.take(ps.limit)
 		.getMany();
 
-	return await PageLikes.packMany(likes, user);
+	return PageLikes.packMany(likes, user);
 });

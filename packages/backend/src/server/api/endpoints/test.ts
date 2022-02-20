@@ -4,7 +4,7 @@ export const meta = {
 	requireCredential: false,
 } as const;
 
-const paramDef = {
+export const paramDef = {
 	type: 'object',
 	properties: {
 		required: { type: 'boolean' },
