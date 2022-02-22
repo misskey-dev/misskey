@@ -4,6 +4,7 @@ import { fetchMeta } from '@/misc/fetch-meta';
 import { Ads, Emojis, Users } from '@/models/index';
 import { DB_MAX_NOTE_TEXT_LENGTH } from '@/misc/hard-limits';
 import { MoreThan } from 'typeorm';
+import { MAX_NOTE_TEXT_LENGTH } from '@/const';
 
 export const meta = {
 	tags: ['meta'],
@@ -137,6 +138,10 @@ export const meta = {
 			iconUrl: {
 				type: 'string',
 				optional: false, nullable: true,
+			},
+			maxNoteTextLength: {
+				type: 'number',
+				optional: false, nullable: false,
 			},
 			emojis: {
 				type: 'array',
@@ -501,6 +506,7 @@ export default define(meta, paramDef, async (ps, me) => {
 		iconUrl: instance.iconUrl,
 		backgroundImageUrl: instance.backgroundImageUrl,
 		logoImageUrl: instance.logoImageUrl,
+		maxNoteTextLength: MAX_NOTE_TEXT_LENGTH, // 後方互換性のため
 		emojis: await Emojis.packMany(emojis),
 		ads: ads.map(ad => ({
 			id: ad.id,
