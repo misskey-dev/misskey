@@ -182,11 +182,15 @@ export class UserRepository extends Repository<User> {
 	}
 
 	public getAvatarUrl(user: User): string {
-		if (user.avatarUrl) {
-			return user.avatarUrl;
+		if (user.avatar) {
+			return DriveFiles.getPublicUrl(user.avatar, true) || this.getIdenticonUrl(user.id);
 		} else {
-			return `${config.url}/identicon/${user.id}`;
+			return this.getIdenticonUrl(user.id);
 		}
+	}
+
+	public getIdenticonUrl(userId: User['id']): string {
+		return `${config.url}/identicon/${userId}`;
 	}
 
 	public async pack<ExpectsMe extends boolean | null = null, D extends boolean = false>(
