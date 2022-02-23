@@ -156,7 +156,8 @@ async function fetchFaviconUrl(instance: Instance, doc: DOMWindow['document'] | 
 	const url = 'https://' + instance.host;
 
 	if (doc) {
-		const href = doc.querySelector('link[rel="icon"]')?.getAttribute('href');
+		// https://github.com/misskey-dev/misskey/pull/8220#issuecomment-1025104043
+		const href = Array.from(doc.getElementsByTagName('link')).reverse().find(link => link.relList.contains('icon'))?.href;
 
 		if (href) {
 			return (new URL(href, url)).href;
@@ -186,11 +187,16 @@ async function fetchIconUrl(instance: Instance, doc: DOMWindow['document'] | nul
 	if (doc) {
 		const url = 'https://' + instance.host;
 
-		const hrefAppleTouchIconPrecomposed = doc.querySelector('link[rel="apple-touch-icon-precomposed"]')?.getAttribute('href');
-		const hrefAppleTouchIcon = doc.querySelector('link[rel="apple-touch-icon"]')?.getAttribute('href');
-		const hrefIcon = doc.querySelector('link[rel="icon"]')?.getAttribute('href');
-
-		const href = hrefAppleTouchIconPrecomposed || hrefAppleTouchIcon || hrefIcon;
+		// https://github.com/misskey-dev/misskey/pull/8220#issuecomment-1025104043
+		const links = Array.from(doc.getElementsByTagName('link')).reverse();
+		// https://github.com/misskey-dev/misskey/pull/8220/files/0ec4eba22a914e31b86874f12448f88b3e58dd5a#r796487559
+		const href = 
+			[
+				links.find(link => link.relList.contains('apple-touch-icon-precomposed'))?.href,
+				links.find(link => link.relList.contains('apple-touch-icon'))?.href,
+				links.find(link => link.relList.contains('icon'))?.href,
+			]
+			.find(href => href);
 
 		if (href) {
 			return (new URL(href, url)).href;
