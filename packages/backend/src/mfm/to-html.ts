@@ -140,10 +140,9 @@ export function toHtml(nodes: mfm.MfmNode[] | null, mentionedRemoteUsers: IMenti
 		},
 
 		search(node) {
-			const a = doc.createElement('a');
-			a.href = `https://www.google.com/search?q=${node.props.query}`;
-			a.textContent = node.props.content;
-			return a;
+			const el = doc.createElement('span');
+			el.innerText = `${node.props.content} [\ud83d\udd0d]';
+			return el;
 		},
 	};
 

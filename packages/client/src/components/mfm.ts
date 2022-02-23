@@ -7,7 +7,7 @@ import MkEmoji from '@/components/global/emoji.vue';
 import { concat } from '@/scripts/array';
 import MkFormula from '@/components/formula.vue';
 import MkCode from '@/components/code.vue';
-import MkGoogle from '@/components/google.vue';
+import MkSearch from '@/components/search.vue';
 import MkSparkle from '@/components/sparkle.vue';
 import MkA from '@/components/global/a.vue';
 import { host } from '@/config';
@@ -299,7 +299,7 @@ export default defineComponent({
 				}
 
 				case 'search': {
-					return [h(MkGoogle, {
+					return [h(MkSearch, {
 						key: Math.random(),
 						q: token.props.query
 					})];
