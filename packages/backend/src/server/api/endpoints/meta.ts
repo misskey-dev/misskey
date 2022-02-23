@@ -93,10 +93,6 @@ export const meta = {
 				type: 'boolean',
 				optional: false, nullable: false,
 			},
-			proxyRemoteFiles: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
 			emailRequiredForSignup: {
 				type: 'boolean',
 				optional: false, nullable: false,
@@ -529,7 +525,6 @@ export default define(meta, paramDef, async (ps, me) => {
 			pinnedPages: instance.pinnedPages,
 			pinnedClipId: instance.pinnedClipId,
 			cacheRemoteFiles: instance.cacheRemoteFiles,
-			proxyRemoteFiles: instance.proxyRemoteFiles,
 			requireSetup: (await Users.count({
 				host: null,
 			})) === 0,

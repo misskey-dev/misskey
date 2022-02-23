@@ -76,11 +76,6 @@
 					<template #caption>{{ $ts.cacheRemoteFilesDescription }}</template>
 				</FormSwitch>
 
-				<FormSwitch v-model="proxyRemoteFiles" class="_formBlock">
-					<template #label>{{ $ts.proxyRemoteFiles }}</template>
-					<template #caption>{{ $ts.proxyRemoteFilesDescription }}</template>
-				</FormSwitch>
-
 				<FormSplit :min-width="280">
 					<FormInput v-model="localDriveCapacityMb" type="number" class="_formBlock">
 						<template #label>{{ $ts.driveCapacityPerLocalAccount }}</template>
@@ -185,7 +180,6 @@ export default defineComponent({
 			enableGlobalTimeline: false,
 			pinnedUsers: '',
 			cacheRemoteFiles: false,
-			proxyRemoteFiles: false,
 			localDriveCapacityMb: 0,
 			remoteDriveCapacityMb: 0,
 			enableRegistration: false,
@@ -214,7 +208,6 @@ export default defineComponent({
 			this.enableGlobalTimeline = !meta.disableGlobalTimeline;
 			this.pinnedUsers = meta.pinnedUsers.join('\n');
 			this.cacheRemoteFiles = meta.cacheRemoteFiles;
-			this.proxyRemoteFiles = meta.proxyRemoteFiles;
 			this.localDriveCapacityMb = meta.driveCapacityPerLocalUserMb;
 			this.remoteDriveCapacityMb = meta.driveCapacityPerRemoteUserMb;
 			this.enableRegistration = !meta.disableRegistration;
@@ -241,7 +234,6 @@ export default defineComponent({
 				disableGlobalTimeline: !this.enableGlobalTimeline,
 				pinnedUsers: this.pinnedUsers.split('\n'),
 				cacheRemoteFiles: this.cacheRemoteFiles,
-				proxyRemoteFiles: this.proxyRemoteFiles,
 				localDriveCapacityMb: parseInt(this.localDriveCapacityMb, 10),
 				remoteDriveCapacityMb: parseInt(this.remoteDriveCapacityMb, 10),
 				disableRegistration: !this.enableRegistration,
