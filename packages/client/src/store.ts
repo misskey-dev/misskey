@@ -17,7 +17,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	keepCw: {
 		where: 'account',
-		default: false
+		default: true
 	},
 	showFullAcct: {
 		where: 'account',
