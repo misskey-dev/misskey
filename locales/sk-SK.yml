@@ -831,6 +831,7 @@ auto: "Automaticky"
 themeColor: "Farba témy"
 size: "Veľkosť"
 numberOfColumn: "Počet stĺpcov"
+searchByGoogle: "Hľadať cez Google"
 _emailUnavailable:
   used: "Táto emailová adresa sa už používa"
   format: "Formát emailovej adresy je nesprávny"
