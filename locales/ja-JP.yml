@@ -832,6 +832,7 @@ auto: "自動"
 themeColor: "テーマカラー"
 size: "サイズ"
 numberOfColumn: "列の数"
+searchByGoogle: "ググる"
 
 _emailUnavailable:
   used: "既に使用されています"
