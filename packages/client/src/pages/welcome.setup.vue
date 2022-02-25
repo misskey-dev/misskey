@@ -13,7 +13,7 @@
 			<template #prefix><i class="fas fa-lock"></i></template>
 		</MkInput>
 		<div class="bottom _formBlock">
-			<MkButton primary type="submit" :disabled="submitting" data-cy-admin-ok>
+			<MkButton gradate type="submit" :disabled="submitting" data-cy-admin-ok>
 				{{ submitting ? $ts.processing : $ts.done }}<MkEllipsis v-if="submitting"/>
 			</MkButton>
 		</div>
