@@ -1,12 +1,12 @@
-import { publishMainStream } from '@/services/stream';
-import define from '../define';
+import { publishMainStream } from '@/services/stream.js';
+import define from '../define.js';
 import rndstr from 'rndstr';
-import config from '@/config/index';
+import config from '@/config/index.js';
 import ms from 'ms';
-import { Users, UserProfiles, PasswordResetRequests } from '@/models/index';
-import { sendEmail } from '@/services/send-email';
-import { ApiError } from '../error';
-import { genId } from '@/misc/gen-id';
+import { Users, UserProfiles, PasswordResetRequests } from '@/models/index.js';
+import { sendEmail } from '@/services/send-email.js';
+import { ApiError } from '../error.js';
+import { genId } from '@/misc/gen-id.js';
 import { IsNull } from 'typeorm';
 
 export const meta = {

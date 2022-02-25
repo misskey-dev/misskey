@@ -2,7 +2,7 @@ process.env.NODE_ENV = 'test';
 
 import rndstr from 'rndstr';
 import * as assert from 'assert';
-import { initTestDb } from './utils';
+import { initTestDb } from './utils.js';
 
 describe('ActivityPub', () => {
 	before(async () => {

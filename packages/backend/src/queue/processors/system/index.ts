@@ -1,7 +1,7 @@
-import * as Bull from 'bull';
-import { tickCharts } from './tick-charts';
-import { resyncCharts } from './resync-charts';
-import { cleanCharts } from './clean-charts';
+import Bull from 'bull';
+import { tickCharts } from './tick-charts.js';
+import { resyncCharts } from './resync-charts.js';
+import { cleanCharts } from './clean-charts.js';
 
 const jobs = {
 	tickCharts,

@@ -1,6 +1,6 @@
-import define from '../../define';
-import { getJsonSchema } from '@/services/chart/core';
-import { driveChart } from '@/services/chart/index';
+import define from '../../define.js';
+import { getJsonSchema } from '@/services/chart/core.js';
+import { driveChart } from '@/services/chart/index.js';
 
 export const meta = {
 	tags: ['charts', 'drive'],

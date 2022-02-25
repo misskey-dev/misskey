@@ -1,10 +1,10 @@
-import * as fs from 'fs';
+import * as fs from 'node:fs';
 import Ajv from 'ajv';
-import { ILocalUser } from '@/models/entities/user';
-import { IEndpointMeta } from './endpoints';
-import { ApiError } from './error';
-import { Schema, SchemaType } from '@/misc/schema';
-import { AccessToken } from '@/models/entities/access-token';
+import { ILocalUser } from '@/models/entities/user.js';
+import { IEndpointMeta } from './endpoints.js';
+import { ApiError } from './error.js';
+import { Schema, SchemaType } from '@/misc/schema.js';
+import { AccessToken } from '@/models/entities/access-token.js';
 
 type SimpleUserInfo = {
 	id: ILocalUser['id'];

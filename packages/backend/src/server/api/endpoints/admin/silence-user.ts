@@ -1,6 +1,6 @@
-import define from '../../define';
-import { Users } from '@/models/index';
-import { insertModerationLog } from '@/services/insert-moderation-log';
+import define from '../../define.js';
+import { Users } from '@/models/index.js';
+import { insertModerationLog } from '@/services/insert-moderation-log.js';
 
 export const meta = {
 	tags: ['admin'],

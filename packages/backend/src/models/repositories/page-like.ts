@@ -1,7 +1,7 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { PageLike } from '@/models/entities/page-like';
-import { Pages } from '../index';
-import { User } from '@/models/entities/user';
+import { PageLike } from '@/models/entities/page-like.js';
+import { Pages } from '../index.js';
+import { User } from '@/models/entities/user.js';
 
 @EntityRepository(PageLike)
 export class PageLikeRepository extends Repository<PageLike> {

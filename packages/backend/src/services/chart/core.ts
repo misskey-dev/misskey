@@ -5,11 +5,10 @@
  */
 
 import * as nestedProperty from 'nested-property';
-import autobind from 'autobind-decorator';
-import Logger from '../logger';
+import Logger from '../logger.js';
 import { EntitySchema, getRepository, Repository, LessThan, Between } from 'typeorm';
-import { dateUTC, isTimeSame, isTimeBefore, subtractTime, addTime } from '@/prelude/time';
-import { getChartInsertLock } from '@/misc/app-lock';
+import { dateUTC, isTimeSame, isTimeBefore, subtractTime, addTime } from '@/prelude/time.js';
+import { getChartInsertLock } from '@/misc/app-lock.js';
 
 const logger = new Logger('chart', 'white', process.env.NODE_ENV !== 'test');
 
@@ -142,7 +141,6 @@ export default abstract class Chart<T extends Schema> {
 	 */
 	protected abstract tickMinor(group: string | null): Promise<Partial<KVs<T>>>;
 
-	@autobind
 	private static convertSchemaToColumnDefinitions(schema: Schema): Record<string, { type: string; array?: boolean; default?: any; }> {
 		const columns = {} as Record<string, { type: string; array?: boolean; default?: any; }>;
 		for (const [k, v] of Object.entries(schema)) {
@@ -168,12 +166,10 @@ export default abstract class Chart<T extends Schema> {
 		return columns;
 	}
 
-	@autobind
 	private static dateToTimestamp(x: Date): number {
 		return Math.floor(x.getTime() / 1000);
 	}
 
-	@autobind
 	private static parseDate(date: Date): [number, number, number, number, number, number, number] {
 		const y = date.getUTCFullYear();
 		const m = date.getUTCMonth();
@@ -186,12 +182,10 @@ export default abstract class Chart<T extends Schema> {
 		return [y, m, d, h, _m, _s, _ms];
 	}
 
-	@autobind
 	private static getCurrentDate() {
 		return Chart.parseDate(new Date());
 	}
 
-	@autobind
 	public static schemaToEntity(name: string, schema: Schema, grouped = false): {
 		hour: EntitySchema,
 		day: EntitySchema,
@@ -251,7 +245,6 @@ export default abstract class Chart<T extends Schema> {
 		this.repositoryForDay = getRepository<{ id: number; group?: string | null; date: number; }>(day);
 	}
 
-	@autobind
 	private convertRawRecord(x: RawRecord<T>): KVs<T> {
 		const kvs = {} as Record<string, number>;
 		for (const k of Object.keys(x).filter((k) => k.startsWith(columnPrefix)) as (keyof Columns<T>)[]) {
@@ -260,7 +253,6 @@ export default abstract class Chart<T extends Schema> {
 		return kvs as KVs<T>;
 	}
 
-	@autobind
 	private getNewLog(latest: KVs<T> | null): KVs<T> {
 		const log = {} as Record<keyof T, number>;
 		for (const [k, v] of Object.entries(this.schema) as ([keyof typeof this['schema'], this['schema'][string]])[]) {
@@ -273,7 +265,6 @@ export default abstract class Chart<T extends Schema> {
 		return log as KVs<T>;
 	}
 
-	@autobind
 	private getLatestLog(group: string | null, span: 'hour' | 'day'): Promise<RawRecord<T> | null> {
 		const repository =
 			span === 'hour' ? this.repositoryForHour :
@@ -292,7 +283,6 @@ export default abstract class Chart<T extends Schema> {
 	/**
 	 * 現在(=今のHour or Day)のログをデータベースから探して、あればそれを返し、なければ作成して返します。
 	 */
-	@autobind
 	private async claimCurrentLog(group: string | null, span: 'hour' | 'day'): Promise<RawRecord<T>> {
 		const [y, m, d, h] = Chart.getCurrentDate();
 
@@ -376,7 +366,6 @@ export default abstract class Chart<T extends Schema> {
 		}
 	}
 
-	@autobind
 	protected commit(diff: Commit<T>, group: string | null = null): void {
 		for (const [k, v] of Object.entries(diff)) {
 			if (v == null || v === 0 || (Array.isArray(v) && v.length === 0)) delete diff[k];
@@ -386,7 +375,6 @@ export default abstract class Chart<T extends Schema> {
 		});
 	}
 
-	@autobind
 	public async save(): Promise<void> {
 		if (this.buffer.length === 0) {
 			logger.info(`${this.name}: Write skipped`);
@@ -505,7 +493,6 @@ export default abstract class Chart<T extends Schema> {
 					update(logHour, logDay))));
 	}
 
-	@autobind
 	public async tick(major: boolean, group: string | null = null): Promise<void> {
 		const data = major ? await this.tickMajor(group) : await this.tickMinor(group);
 
@@ -541,12 +528,10 @@ export default abstract class Chart<T extends Schema> {
 			update(logHour, logDay));
 	}
 
-	@autobind
 	public resync(group: string | null = null): Promise<void> {
 		return this.tick(true, group);
 	}
 
-	@autobind
 	public async clean(): Promise<void> {
 		const current = dateUTC(Chart.getCurrentDate());
 
@@ -582,7 +567,6 @@ export default abstract class Chart<T extends Schema> {
 		]);
 	}
 
-	@autobind
 	public async getChartRaw(span: 'hour' | 'day', amount: number, cursor: Date | null, group: string | null = null): Promise<ChartResult<T>> {
 		const [y, m, d, h, _m, _s, _ms] = cursor ? Chart.parseDate(subtractTime(addTime(cursor, 1, span), 1)) : Chart.getCurrentDate();
 		const [y2, m2, d2, h2] = cursor ? Chart.parseDate(addTime(cursor, 1, span)) : [] as never;
@@ -685,7 +669,6 @@ export default abstract class Chart<T extends Schema> {
 		return res;
 	}
 
-	@autobind
 	public async getChart(span: 'hour' | 'day', amount: number, cursor: Date | null, group: string | null = null): Promise<Unflatten<ChartResult<T>>> {
 		const result = await this.getChartRaw(span, amount, cursor, group);
 		const object = {};

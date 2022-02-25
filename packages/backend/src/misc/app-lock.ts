@@ -1,6 +1,6 @@
-import { redisClient } from '../db/redis';
+import { redisClient } from '../db/redis.js';
 import { promisify } from 'util';
-import * as redisLock from 'redis-lock';
+import redisLock from 'redis-lock';
 
 /**
  * Retry delay (ms) for lock acquisition

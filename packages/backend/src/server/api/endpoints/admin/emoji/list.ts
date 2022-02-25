@@ -1,7 +1,7 @@
-import define from '../../../define';
-import { Emojis } from '@/models/index';
-import { makePaginationQuery } from '../../../common/make-pagination-query';
-import { Emoji } from '@/models/entities/emoji';
+import define from '../../../define.js';
+import { Emojis } from '@/models/index.js';
+import { makePaginationQuery } from '../../../common/make-pagination-query.js';
+import { Emoji } from '@/models/entities/emoji.js';
 
 export const meta = {
 	tags: ['admin'],

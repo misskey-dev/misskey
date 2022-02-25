@@ -5,7 +5,7 @@
 
 import * as p from 'pureimage';
 import * as gen from 'random-seed';
-import { WriteStream } from 'fs';
+import { WriteStream } from 'node:fs';
 
 const size = 256; // px
 const n = 5; // resolution

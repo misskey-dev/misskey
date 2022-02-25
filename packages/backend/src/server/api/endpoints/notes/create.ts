@@ -1,14 +1,14 @@
 import ms from 'ms';
-import create from '@/services/note/create';
-import define from '../../define';
-import { ApiError } from '../../error';
-import { User } from '@/models/entities/user';
-import { Users, DriveFiles, Notes, Channels, Blockings } from '@/models/index';
-import { DriveFile } from '@/models/entities/drive-file';
-import { Note } from '@/models/entities/note';
-import { noteVisibilities } from '../../../../types';
-import { Channel } from '@/models/entities/channel';
-import { MAX_NOTE_TEXT_LENGTH } from '@/const';
+import create from '@/services/note/create.js';
+import define from '../../define.js';
+import { ApiError } from '../../error.js';
+import { User } from '@/models/entities/user.js';
+import { Users, DriveFiles, Notes, Channels, Blockings } from '@/models/index.js';
+import { DriveFile } from '@/models/entities/drive-file.js';
+import { Note } from '@/models/entities/note.js';
+import { noteVisibilities } from '../../../../types.js';
+import { Channel } from '@/models/entities/channel.js';
+import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 
 export const meta = {
 	tags: ['notes'],

@@ -1,7 +1,6 @@
-import autobind from 'autobind-decorator';
-import Chart, { KVs } from '../core';
-import { Followings } from '@/models/index';
-import { name, schema } from './entities/federation';
+import Chart, { KVs } from '../core.js';
+import { Followings } from '@/models/index.js';
+import { name, schema } from './entities/federation.js';
 
 /**
  * フェデレーションに関するチャート
@@ -12,13 +11,11 @@ export default class FederationChart extends Chart<typeof schema> {
 		super(name, schema);
 	}
 
-	@autobind
 	protected async tickMajor(): Promise<Partial<KVs<typeof schema>>> {
 		return {
 		};
 	}
 
-	@autobind
 	protected async tickMinor(): Promise<Partial<KVs<typeof schema>>> {
 		const pubsubSubQuery = Followings.createQueryBuilder('f')
 			.select('f.followerHost')
@@ -51,7 +48,6 @@ export default class FederationChart extends Chart<typeof schema> {
 		};
 	}
 
-	@autobind
 	public async deliverd(host: string, succeeded: boolean): Promise<void> {
 		await this.commit(succeeded ? {
 			'deliveredInstances': [host],
@@ -60,7 +56,6 @@ export default class FederationChart extends Chart<typeof schema> {
 		});
 	}
 
-	@autobind
 	public async inbox(host: string): Promise<void> {
 		await this.commit({
 			'inboxInstances': [host],

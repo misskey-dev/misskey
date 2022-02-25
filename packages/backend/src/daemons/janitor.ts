@@ -1,7 +1,7 @@
 // TODO: 消したい
 
 const interval = 30 * 60 * 1000;
-import { AttestationChallenges } from '@/models/index';
+import { AttestationChallenges } from '@/models/index.js';
 import { LessThan } from 'typeorm';
 
 /**

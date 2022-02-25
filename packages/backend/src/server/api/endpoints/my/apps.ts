@@ -1,5 +1,5 @@
-import define from '../../define';
-import { Apps } from '@/models/index';
+import define from '../../define.js';
+import { Apps } from '@/models/index.js';
 
 export const meta = {
 	tags: ['account', 'app'],

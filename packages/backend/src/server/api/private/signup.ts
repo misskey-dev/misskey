@@ -1,14 +1,14 @@
-import * as Koa from 'koa';
+import Koa from 'koa';
 import rndstr from 'rndstr';
 import * as bcrypt from 'bcryptjs';
-import { fetchMeta } from '@/misc/fetch-meta';
-import { verifyHcaptcha, verifyRecaptcha } from '@/misc/captcha';
-import { Users, RegistrationTickets, UserPendings } from '@/models/index';
-import { signup } from '../common/signup';
-import config from '@/config';
-import { sendEmail } from '@/services/send-email';
-import { genId } from '@/misc/gen-id';
-import { validateEmailForAccount } from '@/services/validate-email-for-account';
+import { fetchMeta } from '@/misc/fetch-meta.js';
+import { verifyHcaptcha, verifyRecaptcha } from '@/misc/captcha.js';
+import { Users, RegistrationTickets, UserPendings } from '@/models/index.js';
+import { signup } from '../common/signup.js';
+import config from '@/config/index.js';
+import { sendEmail } from '@/services/send-email.js';
+import { genId } from '@/misc/gen-id.js';
+import { validateEmailForAccount } from '@/services/validate-email-for-account.js';
 
 export default async (ctx: Koa.Context) => {
 	const body = ctx.request.body;

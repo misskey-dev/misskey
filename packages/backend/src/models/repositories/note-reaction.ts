@@ -1,9 +1,9 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { NoteReaction } from '@/models/entities/note-reaction';
-import { Notes, Users } from '../index';
-import { Packed } from '@/misc/schema';
-import { convertLegacyReaction } from '@/misc/reaction-lib';
-import { User } from '@/models/entities/user';
+import { NoteReaction } from '@/models/entities/note-reaction.js';
+import { Notes, Users } from '../index.js';
+import { Packed } from '@/misc/schema.js';
+import { convertLegacyReaction } from '@/misc/reaction-lib.js';
+import { User } from '@/models/entities/user.js';
 
 @EntityRepository(NoteReaction)
 export class NoteReactionRepository extends Repository<NoteReaction> {
