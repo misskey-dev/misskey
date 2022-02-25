@@ -832,6 +832,7 @@ auto: "Automatisch"
 themeColor: "Instanzfarbe"
 size: "Größe"
 numberOfColumn: "Spaltenanzahl"
+searchByGoogle: "Google"
 _emailUnavailable:
   used: "Diese Email-Adresse wird bereits verwendet"
   format: "Das Format dieser Email-Adresse ist ungültig"
