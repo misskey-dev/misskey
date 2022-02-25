@@ -38,16 +38,14 @@
 			<template #label>{{ i18n.ts._profile.metadataEdit }}</template>
 
 			<div class="_formRoot">
-				<div v-for="record in fields" class="_formBlock">
-					<FormSplit :min-width="250">
-						<FormInput v-model="record.name" class="_formBlock">
-							<template #label>{{ i18n.ts._profile.metadataLabel }}</template>
-						</FormInput>
-						<FormInput v-model="record.value" class="_formBlock">
-							<template #label>{{ i18n.ts._profile.metadataContent }}</template>
-						</FormInput>
-					</FormSplit>
-				</div>
+				<FormSplit v-for="(record, i) in fields" :min-width="250" class="_formBlock">
+					<FormInput v-model="record.name">
+						<template #label>{{ i18n.ts._profile.metadataLabel }} #{{ i + 1 }}</template>
+					</FormInput>
+					<FormInput v-model="record.value">
+						<template #label>{{ i18n.ts._profile.metadataContent }} #{{ i + 1 }}</template>
+					</FormInput>
+				</FormSplit>
 				<MkButton :disabled="fields.length >= 16" inline style="margin-right: 8px;" @click="addField"><i class="fas fa-plus"></i> {{ i18n.ts.add }}</MkButton>
 				<MkButton inline primary @click="saveFields"><i class="fas fa-check"></i> {{ i18n.ts.save }}</MkButton>
 			</div>
