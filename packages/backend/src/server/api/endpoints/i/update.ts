@@ -6,7 +6,6 @@ import { publishToFollowers } from '@/services/i/update';
 import define from '../../define';
 import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm';
 import { extractHashtags } from '@/misc/extract-hashtags';
-import * as langmap from 'langmap';
 import { updateUsertags } from '@/services/update-hashtag';
 import { ApiError } from '../../error';
 import { Users, DriveFiles, UserProfiles, Pages } from '@/models/index';
@@ -14,6 +13,7 @@ import { User } from '@/models/entities/user';
 import { UserProfile } from '@/models/entities/user-profile';
 import { notificationTypes } from '@/types';
 import { normalizeForSearch } from '@/misc/normalize-for-search';
+import { langmap } from '@/misc/langmap';
 
 export const meta = {
 	tags: ['account'],
@@ -74,7 +74,7 @@ export const paramDef = {
 		description: { ...Users.descriptionSchema, nullable: true },
 		location: { ...Users.locationSchema, nullable: true },
 		birthday: { ...Users.birthdaySchema, nullable: true },
-		lang: { type: 'string', enum: Object.keys(langmap), nullable: true },
+		lang: { type: 'string', enum: [null, ...Object.keys(langmap)], nullable: true },
 		avatarId: { type: 'string', format: 'misskey:id', nullable: true },
 		bannerId: { type: 'string', format: 'misskey:id', nullable: true },
 		fields: { type: 'array',

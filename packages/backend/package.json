@@ -115,7 +115,6 @@
 		"koa-send": "5.0.1",
 		"koa-slow": "2.1.0",
 		"koa-views": "7.0.2",
-		"langmap": "0.0.16",
 		"mfm-js": "0.21.0",
 		"mime-types": "2.1.34",
 		"misskey-js": "0.0.14",
