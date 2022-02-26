@@ -832,6 +832,7 @@ auto: "自动"
 themeColor: "主题颜色"
 size: "大小"
 numberOfColumn: "列数"
+searchByGoogle: "Google"
 _emailUnavailable:
   used: "已经被使用过"
   format: "无效的格式"
