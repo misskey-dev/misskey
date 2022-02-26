@@ -1,5 +1,5 @@
-import * as bcrypt from 'bcryptjs';
-import { promisify } from 'util';
+import bcrypt from 'bcryptjs';
+import { promisify } from 'node:util';
 import * as cbor from 'cbor';
 import define from '../../../define.js';
 import {

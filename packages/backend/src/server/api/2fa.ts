@@ -1,4 +1,4 @@
-import * as crypto from 'crypto';
+import * as crypto from 'node:crypto';
 import config from '@/config/index.js';
 import * as jsrsasign from 'jsrsasign';
 

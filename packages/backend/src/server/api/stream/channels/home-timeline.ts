@@ -11,6 +11,11 @@ export default class extends Channel {
 	public static shouldShare = true;
 	public static requireCredential = true;
 
+	constructor(id: string, connection: Channel['connection']) {
+		super(id, connection);
+		this.onNote = this.onNote.bind(this);
+	}
+
 	public async init(params: any) {
 		// Subscribe events
 		this.subscriber.on('notesStream', this.onNote);

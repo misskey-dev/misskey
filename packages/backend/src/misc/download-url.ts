@@ -1,6 +1,6 @@
 import * as fs from 'node:fs';
-import * as stream from 'stream';
-import * as util from 'util';
+import * as stream from 'node:stream';
+import * as util from 'node:util';
 import got, * as Got from 'got';
 import { httpAgent, httpsAgent, StatusError } from './fetch.js';
 import config from '@/config/index.js';

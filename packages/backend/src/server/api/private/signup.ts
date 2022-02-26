@@ -1,6 +1,6 @@
 import Koa from 'koa';
 import rndstr from 'rndstr';
-import * as bcrypt from 'bcryptjs';
+import bcrypt from 'bcryptjs';
 import { fetchMeta } from '@/misc/fetch-meta.js';
 import { verifyHcaptcha, verifyRecaptcha } from '@/misc/captcha.js';
 import { Users, RegistrationTickets, UserPendings } from '@/models/index.js';

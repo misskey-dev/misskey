@@ -1,4 +1,4 @@
-import * as bcrypt from 'bcryptjs';
+import bcrypt from 'bcryptjs';
 import define from '../../define.js';
 import { UserProfiles } from '@/models/index.js';
 

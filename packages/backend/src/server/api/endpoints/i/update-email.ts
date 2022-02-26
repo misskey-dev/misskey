@@ -3,7 +3,7 @@ import define from '../../define.js';
 import rndstr from 'rndstr';
 import config from '@/config/index.js';
 import ms from 'ms';
-import * as bcrypt from 'bcryptjs';
+import bcrypt from 'bcryptjs';
 import { Users, UserProfiles } from '@/models/index.js';
 import { sendEmail } from '@/services/send-email.js';
 import { ApiError } from '../../error.js';

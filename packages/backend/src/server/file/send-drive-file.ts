@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
 import Koa from 'koa';
 import * as send from 'koa-send';
-import * as rename from 'rename';
+import rename from 'rename';
 import * as tmp from 'tmp';
 import { serverLogger } from '../index.js';
 import { contentDisposition } from '@/misc/content-disposition.js';

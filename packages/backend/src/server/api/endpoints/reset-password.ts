@@ -1,4 +1,4 @@
-import * as bcrypt from 'bcryptjs';
+import bcrypt from 'bcryptjs';
 import { publishMainStream } from '@/services/stream.js';
 import define from '../define.js';
 import { Users, UserProfiles, PasswordResetRequests } from '@/models/index.js';

@@ -10,6 +10,11 @@ export default class extends Channel {
 	public static requireCredential = false;
 	private antennaId: string;
 
+	constructor(id: string, connection: Channel['connection']) {
+		super(id, connection);
+		this.onEvent = this.onEvent.bind(this);
+	}
+
 	public async init(params: any) {
 		this.antennaId = params.antennaId as string;
 

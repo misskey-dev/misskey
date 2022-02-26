@@ -1,4 +1,4 @@
-import * as crypto from 'crypto';
+import * as crypto from 'node:crypto';
 import * as jsonld from 'jsonld';
 import { CONTEXTS } from './contexts.js';
 import fetch from 'node-fetch';

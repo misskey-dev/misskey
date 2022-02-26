@@ -13,6 +13,12 @@ export default class extends Channel {
 	public listUsers: User['id'][] = [];
 	private listUsersClock: NodeJS.Timer;
 
+	constructor(id: string, connection: Channel['connection']) {
+		super(id, connection);
+		this.updateListUsers = this.updateListUsers.bind(this);
+		this.onNote = this.onNote.bind(this);
+	}
+
 	public async init(params: any) {
 		this.listId = params.listId as string;
 

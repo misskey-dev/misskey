@@ -1,4 +1,4 @@
-import * as bcrypt from 'bcryptjs';
+import bcrypt from 'bcryptjs';
 import { publishMainStream, publishUserEvent } from '@/services/stream.js';
 import generateUserToken from '../../common/generate-native-user-token.js';
 import define from '../../define.js';

@@ -1,4 +1,4 @@
-import * as crypto from 'crypto';
+import * as crypto from 'node:crypto';
 import define from '../../define.js';
 import { ApiError } from '../../error.js';
 import { AuthSessions, AccessTokens, Apps } from '@/models/index.js';

@@ -14,6 +14,11 @@ export default class extends Channel {
 	private typers: Record<User['id'], Date> = {};
 	private emitTypersIntervalId: ReturnType<typeof setInterval>;
 
+	constructor(id: string, connection: Channel['connection']) {
+		super(id, connection);
+		this.onNote = this.onNote.bind(this);
+	}
+
 	public async init(params: any) {
 		this.channelId = params.channelId as string;
 

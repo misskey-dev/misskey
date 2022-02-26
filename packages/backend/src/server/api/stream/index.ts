@@ -37,12 +37,17 @@ export default class Connection {
 		wsConnection: websocket.connection,
 		subscriber: EventEmitter,
 		user: User | null | undefined,
-		token: AccessToken | null | undefined
+		token: AccessToken | null | undefined,
 	) {
 		this.wsConnection = wsConnection;
 		this.subscriber = subscriber;
 		if (user) this.user = user;
 		if (token) this.token = token;
+
+		this.onWsConnectionMessage = this.onWsConnectionMessage.bind(this);
+		this.onUserEvent = this.onUserEvent.bind(this);
+		this.onNoteStreamMessage = this.onNoteStreamMessage.bind(this);
+		this.onBroadcastMessage = this.onBroadcastMessage.bind(this);
 
 		this.wsConnection.on('message', this.onWsConnectionMessage);
 

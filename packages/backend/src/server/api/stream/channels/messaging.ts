@@ -17,6 +17,13 @@ export default class extends Channel {
 	private typers: Record<User['id'], Date> = {};
 	private emitTypersIntervalId: ReturnType<typeof setInterval>;
 
+	constructor(id: string, connection: Channel['connection']) {
+		super(id, connection);
+		this.onEvent = this.onEvent.bind(this);
+		this.onMessage = this.onMessage.bind(this);
+		this.emitTypers = this.emitTypers.bind(this);
+	}
+
 	public async init(params: any) {
 		this.otherpartyId = params.otherparty;
 		this.otherparty = this.otherpartyId ? await Users.findOneOrFail({ id: this.otherpartyId }) : null;

@@ -11,6 +11,11 @@ export default class extends Channel {
 	public static requireCredential = false;
 	private q: string[][];
 
+	constructor(id: string, connection: Channel['connection']) {
+		super(id, connection);
+		this.onNote = this.onNote.bind(this);
+	}
+
 	public async init(params: any) {
 		this.q = params.q;
 

@@ -1,5 +1,5 @@
 import { redisClient } from '../db/redis.js';
-import { promisify } from 'util';
+import { promisify } from 'node:util';
 import redisLock from 'redis-lock';
 
 /**

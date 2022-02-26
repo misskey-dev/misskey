@@ -11,6 +11,11 @@ export default class extends Channel {
 	public static shouldShare = true;
 	public static requireCredential = false;
 
+	constructor(id: string, connection: Channel['connection']) {
+		super(id, connection);
+		this.onNote = this.onNote.bind(this);
+	}
+
 	public async init(params: any) {
 		const meta = await fetchMeta();
 		if (meta.disableLocalTimeline) {

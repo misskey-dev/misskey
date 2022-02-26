@@ -1,4 +1,4 @@
-import * as bcrypt from 'bcryptjs';
+import bcrypt from 'bcryptjs';
 import define from '../../define.js';
 import { UserProfiles, Users } from '@/models/index.js';
 import { doPostSuspend } from '@/services/suspend-user.js';

@@ -19,7 +19,7 @@ import { genId } from '@/misc/gen-id.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
 import * as S3 from 'aws-sdk/clients/s3.js';
 import { getS3 } from './s3.js';
-import * as sharp from 'sharp';
+import sharp from 'sharp';
 import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
 
 const logger = driveLogger.createSubLogger('register', 'yellow');

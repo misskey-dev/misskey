@@ -1,5 +1,5 @@
 import define from '../../define.js';
-import * as bcrypt from 'bcryptjs';
+import bcrypt from 'bcryptjs';
 import rndstr from 'rndstr';
 import { Users, UserProfiles } from '@/models/index.js';
 

@@ -1,4 +1,4 @@
-import * as bcrypt from 'bcryptjs';
+import bcrypt from 'bcryptjs';
 import { v4 as uuid } from 'uuid';
 import generateNativeUserToken from '../server/api/common/generate-native-user-token.js';
 import { genRsaKeyPair } from '@/misc/gen-key-pair.js';
