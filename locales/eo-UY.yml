@@ -686,6 +686,7 @@ clickToFinishEmailVerification: "Volu klaki [{ok}] por fini la konfirmon de vian
 smartphone: "Saĝtelefono"
 tablet: "Platkomputilo"
 auto: "Aŭtomate"
+searchByGoogle: "Serĉi en Guglo-Serĉilo"
 _emailUnavailable:
   used: "La retpoŝto jam estas uzita."
   format: "Nevalida formato."
