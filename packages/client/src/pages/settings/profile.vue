@@ -29,7 +29,7 @@
 
 	<FormSelect v-model="profile.lang" class="_formBlock">
 		<template #label>{{ i18n.ts.language }}</template>
-		<option v-for="x in langs" :key="x[0]" :value="x[0]">{{ x[1] }}</option>
+		<option v-for="x in Object.keys(langmap)" :key="x" :value="x">{{ langmap[x].nativeName }}</option>
 	</FormSelect>
 
 	<FormSlot class="_formBlock">
@@ -71,12 +71,13 @@ import FormSelect from '@/components/form/select.vue';
 import FormSplit from '@/components/form/split.vue';
 import FormFolder from '@/components/form/folder.vue';
 import FormSlot from '@/components/form/slot.vue';
-import { host, langs } from '@/config';
+import { host } from '@/config';
 import { selectFile } from '@/scripts/select-file';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
 import { $i } from '@/account';
+import { langmap } from '@/scripts/langmap';
 
 const profile = reactive({
 	name: $i.name,
