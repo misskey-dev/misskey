@@ -21,6 +21,7 @@ smtpPass: "Mật khẩu"
 reportAbuseOf: "Báo cáo {name}"
 renotedCount: "Lượt chia sẻ"
 translatedFrom: "Dịch từ {x}"
+searchByGoogle: "Google"
 _mfm:
   search: "Tìm kiếm"
 _theme:
