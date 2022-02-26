@@ -1,5 +1,5 @@
 import * as os from 'node:os';
-import * as si from 'systeminformation';
+import si from 'systeminformation';
 import { getConnection } from 'typeorm';
 import define from '../../define.js';
 import { redisClient } from '../../../../db/redis.js';

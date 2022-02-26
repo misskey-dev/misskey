@@ -1,5 +1,5 @@
 import * as os from 'node:os';
-import * as sysUtils from 'systeminformation';
+import sysUtils from 'systeminformation';
 import Logger from '@/services/logger.js';
 
 export async function showMachineInfo(parentLogger: Logger) {

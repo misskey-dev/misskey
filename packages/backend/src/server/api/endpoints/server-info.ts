@@ -1,5 +1,5 @@
 import * as os from 'node:os';
-import * as si from 'systeminformation';
+import si from 'systeminformation';
 import define from '../define.js';
 
 export const meta = {

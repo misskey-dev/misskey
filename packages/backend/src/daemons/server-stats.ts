@@ -1,4 +1,4 @@
-import * as si from 'systeminformation';
+import si from 'systeminformation';
 import { default as Xev } from 'xev';
 import * as osUtils from 'os-utils';
 
