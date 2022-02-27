@@ -182,6 +182,7 @@ export class UserRepository extends Repository<User> {
 	}
 
 	public getAvatarUrl(user: User): string {
+		// TODO: avatarIdがあるがavatarがない(JOINされてない)場合のハンドリング
 		if (user.avatar) {
 			return DriveFiles.getPublicUrl(user.avatar, true) || this.getIdenticonUrl(user.id);
 		} else {
