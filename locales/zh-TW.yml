@@ -318,8 +318,6 @@ disablingTimelinesInfo: "即使您關閉了時間線功能，管理員和協調�
 registration: "註冊"
 enableRegistration: "開啟新使用者註冊"
 invite: "邀請"
-proxyRemoteFiles: "遠端代理檔案"
-proxyRemoteFilesDescription: "啟用此設置後，由於超出存儲容量而未保存或刪除的遠程文件將被本地代理，並且將生成預覽圖。這不影響伺服器的存儲。"
 driveCapacityPerLocalAccount: "每個本地用戶的雲端空間大小"
 driveCapacityPerRemoteAccount: "每個非本地用戶的雲端容量"
 inMb: "以Mbps為單位"
