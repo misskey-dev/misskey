@@ -223,10 +223,17 @@ describe('API: Endpoints', () => {
 			const alice = await signup({ username: 'alice' });
 			const res = await request('/notes/reactions/create', {
 				noteId: bobPost.id,
-				reaction: '👍',
+				reaction: '🚀',
 			}, alice);
 
 			assert.strictEqual(res.status, 204);
+
+			const resNote = await request('/notes/show', {
+				noteId: bobPost.id,
+			}, alice);
+
+			assert.strictEqual(resNote.status, 200);
+			assert.strictEqual(resNote.body.reactions['🚀'], [alice.id]);
 		}));
 
 		it('自分の投稿にもリアクションできる', async(async () => {
@@ -234,7 +241,7 @@ describe('API: Endpoints', () => {
 
 			const res = await request('/notes/reactions/create', {
 				noteId: myPost.id,
-				reaction: '👍',
+				reaction: '🚀',
 			}, alice);
 
 			assert.strictEqual(res.status, 204);
@@ -247,7 +254,7 @@ describe('API: Endpoints', () => {
 
 			const res = await request('/notes/reactions/create', {
 				noteId: bobPost.id,
-				reaction: '👍',
+				reaction: '🚀',
 			}, alice);
 
 			assert.strictEqual(res.status, 400);
@@ -256,7 +263,7 @@ describe('API: Endpoints', () => {
 		it('存在しない投稿にはリアクションできない', async(async () => {
 			const res = await request('/notes/reactions/create', {
 				noteId: '000000000000000000000000',
-				reaction: '👍',
+				reaction: '🚀',
 			}, alice);
 
 			assert.strictEqual(res.status, 400);
@@ -271,7 +278,7 @@ describe('API: Endpoints', () => {
 		it('間違ったIDで怒られる', async(async () => {
 			const res = await request('/notes/reactions/create', {
 				noteId: 'kyoppie',
-				reaction: '👍',
+				reaction: '🚀',
 			}, alice);
 
 			assert.strictEqual(res.status, 400);
