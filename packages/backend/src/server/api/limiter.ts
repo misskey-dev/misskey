@@ -1,4 +1,4 @@
-import * as Limiter from 'ratelimiter';
+import Limiter from 'ratelimiter';
 import { redisClient } from '../../db/redis.js';
 import { IEndpoint } from './endpoints.js';
 import * as Acct from '@/misc/acct.js';
