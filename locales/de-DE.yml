@@ -325,8 +325,6 @@ disablingTimelinesInfo: "Administratoren und Moderatoren haben immer Zugriff auf
 registration: "Registrieren"
 enableRegistration: "Registration neuer Benutzer erlauben"
 invite: "Einladen"
-proxyRemoteFiles: "Dateien fremder Instanzen durch Proxy leiten"
-proxyRemoteFilesDescription: "Wenn diese Einstellung aktiviert ist, werden Dateien von fremdem Instanzen, welche entweder nicht lokal gespeichert sind oder durch überschreiten des Speicherlimits gelöscht wurden, durch einen Proxy geleitet. Hierbei wird auch ein Vorschaubild generiert. \n Dies hat keinen Effekt auf den Speicherplatz dieses Servers."
 driveCapacityPerLocalAccount: "Drive-Kapazität pro lokalem Benutzerkonto"
 driveCapacityPerRemoteAccount: "Drive-Kapazität pro Benutzer fremder Instanzen"
 inMb: "In Megabytes"
