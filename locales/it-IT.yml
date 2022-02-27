@@ -321,8 +321,6 @@ disablingTimelinesInfo: "Anche se disabiliti queste timeline, gli amministratori
 registration: "Iscriviti"
 enableRegistration: "Permettere nuove registrazioni"
 invite: "Invita"
-proxyRemoteFiles: "Usare file remoti come proxy"
-proxyRemoteFilesDescription: "Attivando questa opzione i file remoti non salvati o cancellati perché eccedenti il limite di archiviazione verranno inoltrati tramite proxy, inclusa la generazione di anteprime. Non ha effetto sullo spazio di archiviazione del server."
 driveCapacityPerLocalAccount: "Volume del Drive per utente locale"
 driveCapacityPerRemoteAccount: "Volume del Drive per utente remoto"
 inMb: "in Megabytes"
