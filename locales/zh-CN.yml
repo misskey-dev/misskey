@@ -325,8 +325,6 @@ disablingTimelinesInfo: "即使时间线功能被禁用，出于便利性的原�
 registration: "注册"
 enableRegistration: "允许新用户注册"
 invite: "邀请"
-proxyRemoteFiles: "代理远程文件"
-proxyRemoteFilesDescription: "启用此设置后，由于超出存储容量而导致未保存被删除的远程文件将被本地代理，并且会生成缩略图。不会影响服务器的存储。"
 driveCapacityPerLocalAccount: "每个用户的网盘空间"
 driveCapacityPerRemoteAccount: "每个远程用户的网盘容量"
 inMb: "以兆字节(MegaByte)为单位"
