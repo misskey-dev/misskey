@@ -321,8 +321,6 @@ disablingTimelinesInfo: "Aunque se desactiven estas lineas de tiempo, por conven
 registration: "Registro"
 enableRegistration: "Permitir nuevos registros"
 invite: "Invitar"
-proxyRemoteFiles: "Hacer proxy de archivos remotos"
-proxyRemoteFilesDescription: "Si activa esta configuración, los archivos remotos no almacenados o borrados por exceso de capacidad serán mostrados via proxy local y generarán una miniatura. Eso no afectará el almacenamiento del servidor."
 driveCapacityPerLocalAccount: "Capacidad del drive por usuario local"
 driveCapacityPerRemoteAccount: "Capacidad del drive por usuario remoto"
 inMb: "En megabytes"
