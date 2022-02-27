@@ -228,26 +228,14 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 
 	const avatarId = avatar ? avatar.id : null;
 	const bannerId = banner ? banner.id : null;
-	const avatarUrl = avatar ? DriveFiles.getPublicUrl(avatar, true) : null;
-	const bannerUrl = banner ? DriveFiles.getPublicUrl(banner) : null;
-	const avatarBlurhash = avatar ? avatar.blurhash : null;
-	const bannerBlurhash = banner ? banner.blurhash : null;
 
 	await Users.update(user!.id, {
 		avatarId,
 		bannerId,
-		avatarUrl,
-		bannerUrl,
-		avatarBlurhash,
-		bannerBlurhash,
 	});
 
 	user!.avatarId = avatarId;
 	user!.bannerId = bannerId;
-	user!.avatarUrl = avatarUrl;
-	user!.bannerUrl = bannerUrl;
-	user!.avatarBlurhash = avatarBlurhash;
-	user!.bannerBlurhash = bannerBlurhash;
 	//#endregion
 
 	//#region カスタム絵文字取得
@@ -340,14 +328,10 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 
 	if (avatar) {
 		updates.avatarId = avatar.id;
-		updates.avatarUrl = DriveFiles.getPublicUrl(avatar, true);
-		updates.avatarBlurhash = avatar.blurhash;
 	}
 
 	if (banner) {
 		updates.bannerId = banner.id;
-		updates.bannerUrl = DriveFiles.getPublicUrl(banner);
-		updates.bannerBlurhash = banner.blurhash;
 	}
 
 	// Update user

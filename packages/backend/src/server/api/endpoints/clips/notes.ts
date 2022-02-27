@@ -64,10 +64,16 @@ export default define(meta, paramDef, async (ps, user) => {
 	const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 		.andWhere(`note.id IN (${ clipQuery.getQuery() })`)
 		.innerJoinAndSelect('note.user', 'user')
+		.leftJoinAndSelect('user.avatar', 'avatar')
+		.leftJoinAndSelect('user.banner', 'banner')
 		.leftJoinAndSelect('note.reply', 'reply')
 		.leftJoinAndSelect('note.renote', 'renote')
 		.leftJoinAndSelect('reply.user', 'replyUser')
+		.leftJoinAndSelect('replyUser.avatar', 'replyUserAvatar')
+		.leftJoinAndSelect('replyUser.banner', 'replyUserBanner')
 		.leftJoinAndSelect('renote.user', 'renoteUser')
+		.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
+		.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner')
 		.setParameters(clipQuery.getParameters());
 
 	if (user) {
