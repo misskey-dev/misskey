@@ -210,11 +210,11 @@ export class UserRepository extends Repository<User> {
 
 		if (typeof src === 'object') {
 			user = src;
-			if (src.avatar === undefined && src.avatarId) src.avatar = await DriveFiles.findOne(src.avatarId) || null;
-			if (src.banner === undefined && src.bannerId) src.banner = await DriveFiles.findOne(src.bannerId) || null;
+			if (src.avatar === undefined && src.avatarId) src.avatar = await DriveFiles.findOne(src.avatarId) ?? null;
+			if (src.banner === undefined && src.bannerId) src.banner = await DriveFiles.findOne(src.bannerId) ?? null;
 		} else {
 			user = await this.findOneOrFail(src, {
-				relations: ['avatar', 'banner']
+				relations: ['avatar', 'banner'],
 			});
 		}
 
