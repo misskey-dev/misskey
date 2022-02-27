@@ -31,6 +31,8 @@ export const paramDef = {
 	required: [],
 } as const;
 
+// TODO: avatar,bannerをJOINしたいけどエラーになる
+
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, me) => {
 	const activeThreshold = new Date(Date.now() - (1000 * 60 * 60 * 24 * 30)); // 30日
