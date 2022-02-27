@@ -325,8 +325,6 @@ disablingTimelinesInfo: "Adminstrators and Moderators will always have access to
 registration: "Register"
 enableRegistration: "Enable new user registration"
 invite: "Invite"
-proxyRemoteFiles: "Proxy remote files"
-proxyRemoteFilesDescription: "If enabled, remote files that are either not stored locally or were deleted due to exceeding the storage limit will be proxied, including generation of thumbnails. This does not affect the server's storage."
 driveCapacityPerLocalAccount: "Drive capacity per local user"
 driveCapacityPerRemoteAccount: "Drive capacity per remote user"
 inMb: "In megabytes"
