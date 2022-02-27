@@ -68,6 +68,7 @@ export default define(meta, paramDef, async (ps, user) => {
 		order: {
 			id: -1,
 		},
+		relations: ['user', 'user.avatar', 'user.banner', 'note'],
 	});
 
 	return await Promise.all(reactions.map(reaction => NoteReactions.pack(reaction, user)));

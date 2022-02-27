@@ -23,10 +23,10 @@ export class NoteReactionRepository extends Repository<NoteReaction> {
 		return {
 			id: reaction.id,
 			createdAt: reaction.createdAt.toISOString(),
-			user: await Users.pack(reaction.userId, me),
+			user: await Users.pack(reaction.user ?? reaction.userId, me),
 			type: convertLegacyReaction(reaction.reaction),
 			...(opts.withNote ? {
-				note: await Notes.pack(reaction.noteId, me),
+				note: await Notes.pack(reaction.note ?? reaction.noteId, me),
 			} : {}),
 		};
 	}
