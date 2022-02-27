@@ -323,8 +323,6 @@ disablingTimelinesInfo: "ここらへんのタイムラインを使えんよう�
 registration: "登録"
 enableRegistration: "一見さんでも誰でもいらっしゃ～い"
 invite: "来てや"
-proxyRemoteFiles: "リモートのファイルをプロキシする"
-proxyRemoteFilesDescription: "この設定を有効にしたら、保存してなかったり容量が足らんくて消されたリモートファイルをローカルでプロキシして、サムネイルを作るようになるで。サーバーの容量には関係ないで。"
 driveCapacityPerLocalAccount: "ローカルユーザーひとりあたりのドライブ容量"
 driveCapacityPerRemoteAccount: "リモートユーザーひとりあたりのドライブ容量"
 inMb: "メガバイト単位"
