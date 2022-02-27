@@ -1,7 +1,7 @@
-import { IRemoteUser } from '@/models/entities/user';
-import { ILike, getApId } from '../../type';
-import deleteReaction from '@/services/note/reaction/delete';
-import { fetchNote } from '../../models/note';
+import { IRemoteUser } from '@/models/entities/user.js';
+import { ILike, getApId } from '../../type.js';
+import deleteReaction from '@/services/note/reaction/delete.js';
+import { fetchNote } from '../../models/note.js';
 
 /**
  * Process Undo.Like activity

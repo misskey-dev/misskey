@@ -1,5 +1,5 @@
-import define from '../../../define';
-import { DriveFolders } from '@/models/index';
+import define from '../../../define.js';
+import { DriveFolders } from '@/models/index.js';
 
 export const meta = {
 	tags: ['drive'],

@@ -10,7 +10,7 @@
 		"declaration": false,
 		"sourceMap": true,
 		"target": "es2017",
-		"module": "commonjs",
+		"module": "es2020",
 		"moduleResolution": "node",
 		"allowSyntheticDefaultImports": true,
 		"removeComments": false,

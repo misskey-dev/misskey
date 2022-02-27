@@ -1,19 +1,22 @@
-import autobind from 'autobind-decorator';
-import { isMutedUserRelated } from '@/misc/is-muted-user-related';
-import Channel from '../channel';
-import { fetchMeta } from '@/misc/fetch-meta';
-import { Notes } from '@/models/index';
-import { checkWordMute } from '@/misc/check-word-mute';
-import { isBlockerUserRelated } from '@/misc/is-blocker-user-related';
-import { isInstanceMuted } from '@/misc/is-instance-muted';
-import { Packed } from '@/misc/schema';
+import { isMutedUserRelated } from '@/misc/is-muted-user-related.js';
+import Channel from '../channel.js';
+import { fetchMeta } from '@/misc/fetch-meta.js';
+import { Notes } from '@/models/index.js';
+import { checkWordMute } from '@/misc/check-word-mute.js';
+import { isBlockerUserRelated } from '@/misc/is-blocker-user-related.js';
+import { isInstanceMuted } from '@/misc/is-instance-muted.js';
+import { Packed } from '@/misc/schema.js';
 
 export default class extends Channel {
 	public readonly chName = 'hybridTimeline';
 	public static shouldShare = true;
 	public static requireCredential = true;
 
-	@autobind
+	constructor(id: string, connection: Channel['connection']) {
+		super(id, connection);
+		this.onNote = this.onNote.bind(this);
+	}
+
 	public async init(params: any) {
 		const meta = await fetchMeta();
 		if (meta.disableLocalTimeline && !this.user!.isAdmin && !this.user!.isModerator) return;
@@ -22,7 +25,6 @@ export default class extends Channel {
 		this.subscriber.on('notesStream', this.onNote);
 	}
 
-	@autobind
 	private async onNote(note: Packed<'Note'>) {
 		// チャンネルの投稿ではなく、自分自身の投稿 または
 		// チャンネルの投稿ではなく、その投稿のユーザーをフォローしている または
@@ -85,7 +87,6 @@ export default class extends Channel {
 		this.send('note', note);
 	}
 
-	@autobind
 	public dispose() {
 		// Unsubscribe events
 		this.subscriber.off('notesStream', this.onNote);

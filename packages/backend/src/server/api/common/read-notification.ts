@@ -1,7 +1,7 @@
-import { publishMainStream } from '@/services/stream';
-import { User } from '@/models/entities/user';
-import { Notification } from '@/models/entities/notification';
-import { Notifications, Users } from '@/models/index';
+import { publishMainStream } from '@/services/stream.js';
+import { User } from '@/models/entities/user.js';
+import { Notification } from '@/models/entities/notification.js';
+import { Notifications, Users } from '@/models/index.js';
 import { In } from 'typeorm';
 
 export async function readNotification(

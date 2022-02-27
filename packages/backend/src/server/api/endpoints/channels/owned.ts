@@ -1,6 +1,6 @@
-import define from '../../define';
-import { Channels } from '@/models/index';
-import { makePaginationQuery } from '../../common/make-pagination-query';
+import define from '../../define.js';
+import { Channels } from '@/models/index.js';
+import { makePaginationQuery } from '../../common/make-pagination-query.js';
 
 export const meta = {
 	tags: ['channels', 'account'],

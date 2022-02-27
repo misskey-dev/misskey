@@ -1,6 +1,6 @@
-import define from '../../define';
+import define from '../../define.js';
 import { getConnection } from 'typeorm';
-import { insertModerationLog } from '@/services/insert-moderation-log';
+import { insertModerationLog } from '@/services/insert-moderation-log.js';
 
 export const meta = {
 	tags: ['admin'],

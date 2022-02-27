@@ -1,8 +1,8 @@
-import define from '../../define';
-import { ApiError } from '../../error';
-import { Users, Followings, UserProfiles } from '@/models/index';
-import { makePaginationQuery } from '../../common/make-pagination-query';
-import { toPunyNullable } from '@/misc/convert-host';
+import define from '../../define.js';
+import { ApiError } from '../../error.js';
+import { Users, Followings, UserProfiles } from '@/models/index.js';
+import { makePaginationQuery } from '../../common/make-pagination-query.js';
+import { toPunyNullable } from '@/misc/convert-host.js';
 
 export const meta = {
 	tags: ['users'],

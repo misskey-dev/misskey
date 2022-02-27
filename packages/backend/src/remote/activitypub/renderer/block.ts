@@ -1,5 +1,5 @@
-import config from '@/config/index';
-import { ILocalUser, IRemoteUser } from '@/models/entities/user';
+import config from '@/config/index.js';
+import { ILocalUser, IRemoteUser } from '@/models/entities/user.js';
 
 export default (blocker: ILocalUser, blockee: IRemoteUser) => ({
 	type: 'Block',

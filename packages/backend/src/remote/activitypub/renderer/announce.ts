@@ -1,5 +1,5 @@
-import config from '@/config/index';
-import { Note } from '@/models/entities/note';
+import config from '@/config/index.js';
+import { Note } from '@/models/entities/note.js';
 
 export default (object: any, note: Note) => {
 	const attributedTo = `${config.url}/users/${note.userId}`;

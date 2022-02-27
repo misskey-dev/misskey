@@ -1,5 +1,5 @@
-import define from '../../define';
-import { sendEmail } from '@/services/send-email';
+import define from '../../define.js';
+import { sendEmail } from '@/services/send-email.js';
 
 export const meta = {
 	tags: ['admin'],

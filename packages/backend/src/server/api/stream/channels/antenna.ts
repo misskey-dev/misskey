@@ -1,9 +1,8 @@
-import autobind from 'autobind-decorator';
-import Channel from '../channel';
-import { Notes } from '@/models/index';
-import { isMutedUserRelated } from '@/misc/is-muted-user-related';
-import { isBlockerUserRelated } from '@/misc/is-blocker-user-related';
-import { StreamMessages } from '../types';
+import Channel from '../channel.js';
+import { Notes } from '@/models/index.js';
+import { isMutedUserRelated } from '@/misc/is-muted-user-related.js';
+import { isBlockerUserRelated } from '@/misc/is-blocker-user-related.js';
+import { StreamMessages } from '../types.js';
 
 export default class extends Channel {
 	public readonly chName = 'antenna';
@@ -11,7 +10,11 @@ export default class extends Channel {
 	public static requireCredential = false;
 	private antennaId: string;
 
-	@autobind
+	constructor(id: string, connection: Channel['connection']) {
+		super(id, connection);
+		this.onEvent = this.onEvent.bind(this);
+	}
+
 	public async init(params: any) {
 		this.antennaId = params.antennaId as string;
 
@@ -19,7 +22,6 @@ export default class extends Channel {
 		this.subscriber.on(`antennaStream:${this.antennaId}`, this.onEvent);
 	}
 
-	@autobind
 	private async onEvent(data: StreamMessages['antenna']['payload']) {
 		if (data.type === 'note') {
 			const note = await Notes.pack(data.body.id, this.user, { detail: true });
@@ -37,7 +39,6 @@ export default class extends Channel {
 		}
 	}
 
-	@autobind
 	public dispose() {
 		// Unsubscribe events
 		this.subscriber.off(`antennaStream:${this.antennaId}`, this.onEvent);

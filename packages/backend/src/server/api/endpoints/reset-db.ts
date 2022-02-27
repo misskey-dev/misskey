@@ -1,6 +1,6 @@
-import define from '../define';
-import { ApiError } from '../error';
-import { resetDb } from '@/db/postgre';
+import define from '../define.js';
+import { ApiError } from '../error.js';
+import { resetDb } from '@/db/postgre.js';
 
 export const meta = {
 	requireCredential: false,

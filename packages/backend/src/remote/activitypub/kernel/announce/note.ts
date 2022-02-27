@@ -1,14 +1,14 @@
-import Resolver from '../../resolver';
-import post from '@/services/note/create';
-import { IRemoteUser } from '@/models/entities/user';
-import { IAnnounce, getApId } from '../../type';
-import { fetchNote, resolveNote } from '../../models/note';
-import { apLogger } from '../../logger';
-import { extractDbHost } from '@/misc/convert-host';
-import { fetchMeta } from '@/misc/fetch-meta';
-import { getApLock } from '@/misc/app-lock';
-import { parseAudience } from '../../audience';
-import { StatusError } from '@/misc/fetch';
+import Resolver from '../../resolver.js';
+import post from '@/services/note/create.js';
+import { IRemoteUser } from '@/models/entities/user.js';
+import { IAnnounce, getApId } from '../../type.js';
+import { fetchNote, resolveNote } from '../../models/note.js';
+import { apLogger } from '../../logger.js';
+import { extractDbHost } from '@/misc/convert-host.js';
+import { fetchMeta } from '@/misc/fetch-meta.js';
+import { getApLock } from '@/misc/app-lock.js';
+import { parseAudience } from '../../audience.js';
+import { StatusError } from '@/misc/fetch.js';
 
 const logger = apLogger;
 

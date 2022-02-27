@@ -1,7 +1,7 @@
-import * as bcrypt from 'bcryptjs';
-import define from '../../../define';
-import { UserProfiles, UserSecurityKeys, Users } from '@/models/index';
-import { publishMainStream } from '@/services/stream';
+import bcrypt from 'bcryptjs';
+import define from '../../../define.js';
+import { UserProfiles, UserSecurityKeys, Users } from '@/models/index.js';
+import { publishMainStream } from '@/services/stream.js';
 
 export const meta = {
 	requireCredential: true,

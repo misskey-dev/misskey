@@ -1,15 +1,15 @@
-import config from '@/config/index';
-import renderAdd from '@/remote/activitypub/renderer/add';
-import renderRemove from '@/remote/activitypub/renderer/remove';
-import { renderActivity } from '@/remote/activitypub/renderer/index';
-import { IdentifiableError } from '@/misc/identifiable-error';
-import { User } from '@/models/entities/user';
-import { Note } from '@/models/entities/note';
-import { Notes, UserNotePinings, Users } from '@/models/index';
-import { UserNotePining } from '@/models/entities/user-note-pining';
-import { genId } from '@/misc/gen-id';
-import { deliverToFollowers } from '@/remote/activitypub/deliver-manager';
-import { deliverToRelays } from '../relay';
+import config from '@/config/index.js';
+import renderAdd from '@/remote/activitypub/renderer/add.js';
+import renderRemove from '@/remote/activitypub/renderer/remove.js';
+import { renderActivity } from '@/remote/activitypub/renderer/index.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
+import { User } from '@/models/entities/user.js';
+import { Note } from '@/models/entities/note.js';
+import { Notes, UserNotePinings, Users } from '@/models/index.js';
+import { UserNotePining } from '@/models/entities/user-note-pining.js';
+import { genId } from '@/misc/gen-id.js';
+import { deliverToFollowers } from '@/remote/activitypub/deliver-manager.js';
+import { deliverToRelays } from '../relay.js';
 
 /**
  * 指定した投稿をピン留めします

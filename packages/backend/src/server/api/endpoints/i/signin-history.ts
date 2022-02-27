@@ -1,6 +1,6 @@
-import define from '../../define';
-import { Signins } from '@/models/index';
-import { makePaginationQuery } from '../../common/make-pagination-query';
+import define from '../../define.js';
+import { Signins } from '@/models/index.js';
+import { makePaginationQuery } from '../../common/make-pagination-query.js';
 
 export const meta = {
 	requireCredential: true,

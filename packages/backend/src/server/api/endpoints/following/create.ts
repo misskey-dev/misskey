@@ -1,10 +1,10 @@
 import ms from 'ms';
-import create from '@/services/following/create';
-import define from '../../define';
-import { ApiError } from '../../error';
-import { getUser } from '../../common/getters';
-import { Followings, Users } from '@/models/index';
-import { IdentifiableError } from '@/misc/identifiable-error';
+import create from '@/services/following/create.js';
+import define from '../../define.js';
+import { ApiError } from '../../error.js';
+import { getUser } from '../../common/getters.js';
+import { Followings, Users } from '@/models/index.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
 
 export const meta = {
 	tags: ['following', 'users'],

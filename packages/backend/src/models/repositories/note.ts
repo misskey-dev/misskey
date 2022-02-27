@@ -1,14 +1,14 @@
 import { EntityRepository, Repository, In } from 'typeorm';
 import * as mfm from 'mfm-js';
-import { Note } from '@/models/entities/note';
-import { User } from '@/models/entities/user';
-import { Users, PollVotes, DriveFiles, NoteReactions, Followings, Polls, Channels } from '../index';
-import { Packed } from '@/misc/schema';
-import { nyaize } from '@/misc/nyaize';
-import { awaitAll } from '@/prelude/await-all';
-import { convertLegacyReaction, convertLegacyReactions, decodeReaction } from '@/misc/reaction-lib';
-import { NoteReaction } from '@/models/entities/note-reaction';
-import { aggregateNoteEmojis, populateEmojis, prefetchEmojis } from '@/misc/populate-emojis';
+import { Note } from '@/models/entities/note.js';
+import { User } from '@/models/entities/user.js';
+import { Users, PollVotes, DriveFiles, NoteReactions, Followings, Polls, Channels } from '../index.js';
+import { Packed } from '@/misc/schema.js';
+import { nyaize } from '@/misc/nyaize.js';
+import { awaitAll } from '@/prelude/await-all.js';
+import { convertLegacyReaction, convertLegacyReactions, decodeReaction } from '@/misc/reaction-lib.js';
+import { NoteReaction } from '@/models/entities/note-reaction.js';
+import { aggregateNoteEmojis, populateEmojis, prefetchEmojis } from '@/misc/populate-emojis.js';
 
 @EntityRepository(Note)
 export class NoteRepository extends Repository<Note> {

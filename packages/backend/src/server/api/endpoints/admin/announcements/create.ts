@@ -1,6 +1,6 @@
-import define from '../../../define';
-import { Announcements } from '@/models/index';
-import { genId } from '@/misc/gen-id';
+import define from '../../../define.js';
+import { Announcements } from '@/models/index.js';
+import { genId } from '@/misc/gen-id.js';
 
 export const meta = {
 	tags: ['admin'],

@@ -1,10 +1,10 @@
-import { Antenna } from '@/models/entities/antenna';
-import { Note } from '@/models/entities/note';
-import { User } from '@/models/entities/user';
-import { UserListJoinings, UserGroupJoinings } from '@/models/index';
-import { getFullApAccount } from './convert-host';
-import * as Acct from 'misskey-js/built/acct';
-import { Packed } from './schema';
+import { Antenna } from '@/models/entities/antenna.js';
+import { Note } from '@/models/entities/note.js';
+import { User } from '@/models/entities/user.js';
+import { UserListJoinings, UserGroupJoinings } from '@/models/index.js';
+import { getFullApAccount } from './convert-host.js';
+import * as Acct from '@/misc/acct.js';
+import { Packed } from './schema.js';
 
 /**
  * noteUserFollowers / antennaUserFollowing はどちらか一方が指定されていればよい

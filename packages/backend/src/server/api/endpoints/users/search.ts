@@ -1,6 +1,6 @@
-import define from '../../define';
-import { UserProfiles, Users } from '@/models/index';
-import { User } from '@/models/entities/user';
+import define from '../../define.js';
+import { UserProfiles, Users } from '@/models/index.js';
+import { User } from '@/models/entities/user.js';
 import { Brackets } from 'typeorm';
 
 export const meta = {
