@@ -1,8 +1,8 @@
-import { publishMainStream } from '@/services/stream';
-import define from '../../define';
-import { Notifications } from '@/models/index';
-import { readNotification } from '../../common/read-notification';
-import { ApiError } from '../../error';
+import { publishMainStream } from '@/services/stream.js';
+import define from '../../define.js';
+import { Notifications } from '@/models/index.js';
+import { readNotification } from '../../common/read-notification.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['notifications', 'account'],

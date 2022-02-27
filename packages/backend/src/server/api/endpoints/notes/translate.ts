@@ -1,12 +1,12 @@
-import define from '../../define';
-import { getNote } from '../../common/getters';
-import { ApiError } from '../../error';
+import define from '../../define.js';
+import { getNote } from '../../common/getters.js';
+import { ApiError } from '../../error.js';
 import fetch from 'node-fetch';
-import config from '@/config/index';
-import { getAgentByUrl } from '@/misc/fetch';
-import { URLSearchParams } from 'url';
-import { fetchMeta } from '@/misc/fetch-meta';
-import { Notes } from '@/models';
+import config from '@/config/index.js';
+import { getAgentByUrl } from '@/misc/fetch.js';
+import { URLSearchParams } from 'node:url';
+import { fetchMeta } from '@/misc/fetch-meta.js';
+import { Notes } from '@/models/index.js';
 
 export const meta = {
 	tags: ['notes'],

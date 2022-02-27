@@ -1,19 +1,19 @@
-const RE2 = require('re2');
+import RE2 from 're2';
 import * as mfm from 'mfm-js';
-import { publishMainStream, publishUserEvent } from '@/services/stream';
-import acceptAllFollowRequests from '@/services/following/requests/accept-all';
-import { publishToFollowers } from '@/services/i/update';
-import define from '../../define';
-import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm';
-import { extractHashtags } from '@/misc/extract-hashtags';
-import * as langmap from 'langmap';
-import { updateUsertags } from '@/services/update-hashtag';
-import { ApiError } from '../../error';
-import { Users, DriveFiles, UserProfiles, Pages } from '@/models/index';
-import { User } from '@/models/entities/user';
-import { UserProfile } from '@/models/entities/user-profile';
-import { notificationTypes } from '@/types';
-import { normalizeForSearch } from '@/misc/normalize-for-search';
+import { publishMainStream, publishUserEvent } from '@/services/stream.js';
+import acceptAllFollowRequests from '@/services/following/requests/accept-all.js';
+import { publishToFollowers } from '@/services/i/update.js';
+import define from '../../define.js';
+import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm.js';
+import { extractHashtags } from '@/misc/extract-hashtags.js';
+import { updateUsertags } from '@/services/update-hashtag.js';
+import { ApiError } from '../../error.js';
+import { Users, DriveFiles, UserProfiles, Pages } from '@/models/index.js';
+import { User } from '@/models/entities/user.js';
+import { UserProfile } from '@/models/entities/user-profile.js';
+import { notificationTypes } from '@/types.js';
+import { normalizeForSearch } from '@/misc/normalize-for-search.js';
+import { langmap } from '@/misc/langmap.js';
 
 export const meta = {
 	tags: ['account'],
@@ -74,7 +74,7 @@ export const paramDef = {
 		description: { ...Users.descriptionSchema, nullable: true },
 		location: { ...Users.locationSchema, nullable: true },
 		birthday: { ...Users.birthdaySchema, nullable: true },
-		lang: { type: 'string', enum: Object.keys(langmap), nullable: true },
+		lang: { type: 'string', enum: [null, ...Object.keys(langmap)], nullable: true },
 		avatarId: { type: 'string', format: 'misskey:id', nullable: true },
 		bannerId: { type: 'string', format: 'misskey:id', nullable: true },
 		fields: { type: 'array',

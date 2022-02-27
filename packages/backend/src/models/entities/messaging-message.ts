@@ -1,8 +1,8 @@
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
-import { User } from './user';
-import { DriveFile } from './drive-file';
-import { id } from '../id';
-import { UserGroup } from './user-group';
+import { User } from './user.js';
+import { DriveFile } from './drive-file.js';
+import { id } from '../id.js';
+import { UserGroup } from './user-group.js';
 
 @Entity()
 export class MessagingMessage {

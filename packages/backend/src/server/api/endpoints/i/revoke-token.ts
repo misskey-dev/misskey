@@ -1,6 +1,6 @@
-import define from '../../define';
-import { AccessTokens } from '@/models/index';
-import { publishUserEvent } from '@/services/stream';
+import define from '../../define.js';
+import { AccessTokens } from '@/models/index.js';
+import { publishUserEvent } from '@/services/stream.js';
 
 export const meta = {
 	requireCredential: true,

@@ -1,6 +1,6 @@
-import accept from './accept';
-import { User } from '@/models/entities/user';
-import { FollowRequests, Users } from '@/models/index';
+import accept from './accept.js';
+import { User } from '@/models/entities/user.js';
+import { FollowRequests, Users } from '@/models/index.js';
 
 /**
  * 指定したユーザー宛てのフォローリクエストをすべて承認

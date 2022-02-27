@@ -17,6 +17,7 @@ You should also include the user name that made the change.
 
 ### Improvements
 - プロフィールの追加情報を最大16まで保存できるように
+- 連合チャートにPub&Subを追加
 
 ### Bugfixes
 - Client: リアクションピッカーの高さが低くなったまま戻らないことがあるのを修正 @syuilo

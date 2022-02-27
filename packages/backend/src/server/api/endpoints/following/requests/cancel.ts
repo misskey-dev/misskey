@@ -1,9 +1,9 @@
-import cancelFollowRequest from '@/services/following/requests/cancel';
-import define from '../../../define';
-import { ApiError } from '../../../error';
-import { getUser } from '../../../common/getters';
-import { Users } from '@/models/index';
-import { IdentifiableError } from '@/misc/identifiable-error';
+import cancelFollowRequest from '@/services/following/requests/cancel.js';
+import define from '../../../define.js';
+import { ApiError } from '../../../error.js';
+import { getUser } from '../../../common/getters.js';
+import { Users } from '@/models/index.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
 
 export const meta = {
 	tags: ['following', 'account'],

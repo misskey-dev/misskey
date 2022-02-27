@@ -1,13 +1,13 @@
-import define from '../../define';
-import { ApiError } from '../../error';
-import { getUser } from '../../common/getters';
-import { makePaginationQuery } from '../../common/make-pagination-query';
-import { generateVisibilityQuery } from '../../common/generate-visibility-query';
-import { Notes } from '@/models/index';
-import { generateMutedUserQuery } from '../../common/generate-muted-user-query';
+import define from '../../define.js';
+import { ApiError } from '../../error.js';
+import { getUser } from '../../common/getters.js';
+import { makePaginationQuery } from '../../common/make-pagination-query.js';
+import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
+import { Notes } from '@/models/index.js';
+import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
 import { Brackets } from 'typeorm';
-import { generateBlockedUserQuery } from '../../common/generate-block-query';
-import { generateMutedInstanceQuery } from '../../common/generate-muted-instance-query';
+import { generateBlockedUserQuery } from '../../common/generate-block-query.js';
+import { generateMutedInstanceQuery } from '../../common/generate-muted-instance-query.js';
 
 export const meta = {
 	tags: ['users', 'notes'],

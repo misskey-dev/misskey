@@ -1,4 +1,4 @@
-import * as Bull from 'bull';
+import Bull from 'bull';
 
 export function getJobInfo(job: Bull.Job, increment = false) {
 	const age = Date.now() - job.timestamp;

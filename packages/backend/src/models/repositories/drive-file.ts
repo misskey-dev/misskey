@@ -1,14 +1,14 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { DriveFile } from '@/models/entities/drive-file';
-import { Users, DriveFolders } from '../index';
-import { User } from '@/models/entities/user';
-import { toPuny } from '@/misc/convert-host';
-import { awaitAll, Promiseable } from '@/prelude/await-all';
-import { Packed } from '@/misc/schema';
-import config from '@/config/index';
-import { query, appendQuery } from '@/prelude/url';
-import { Meta } from '@/models/entities/meta';
-import { fetchMeta } from '@/misc/fetch-meta';
+import { DriveFile } from '@/models/entities/drive-file.js';
+import { Users, DriveFolders } from '../index.js';
+import { User } from '@/models/entities/user.js';
+import { toPuny } from '@/misc/convert-host.js';
+import { awaitAll, Promiseable } from '@/prelude/await-all.js';
+import { Packed } from '@/misc/schema.js';
+import config from '@/config/index.js';
+import { query, appendQuery } from '@/prelude/url.js';
+import { Meta } from '@/models/entities/meta.js';
+import { fetchMeta } from '@/misc/fetch-meta.js';
 
 type PackOptions = {
 	detail?: boolean,

@@ -1,10 +1,10 @@
-import { readNotification } from '../../common/read-notification';
-import define from '../../define';
-import { makePaginationQuery } from '../../common/make-pagination-query';
-import { generateMutedInstanceNotificationQuery } from '../../common/generate-muted-instance-query';
-import { Notifications, Followings, Mutings, Users } from '@/models/index';
-import { notificationTypes } from '@/types';
-import read from '@/services/note/read';
+import { readNotification } from '../../common/read-notification.js';
+import define from '../../define.js';
+import { makePaginationQuery } from '../../common/make-pagination-query.js';
+import { generateMutedInstanceNotificationQuery } from '../../common/generate-muted-instance-query.js';
+import { Notifications, Followings, Mutings, Users } from '@/models/index.js';
+import { notificationTypes } from '@/types.js';
+import read from '@/services/note/read.js';
 import { Brackets } from 'typeorm';
 
 export const meta = {

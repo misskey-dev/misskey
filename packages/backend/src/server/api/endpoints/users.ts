@@ -1,7 +1,7 @@
-import define from '../define';
-import { Users } from '@/models/index';
-import { generateMutedUserQueryForUsers } from '../common/generate-muted-user-query';
-import { generateBlockQueryForUsers } from '../common/generate-block-query';
+import define from '../define.js';
+import { Users } from '@/models/index.js';
+import { generateMutedUserQueryForUsers } from '../common/generate-muted-user-query.js';
+import { generateBlockQueryForUsers } from '../common/generate-block-query.js';
 
 export const meta = {
 	tags: ['users'],

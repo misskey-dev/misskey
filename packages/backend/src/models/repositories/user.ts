@@ -1,13 +1,13 @@
 import { EntityRepository, Repository, In, Not } from 'typeorm';
-import * as Ajv from 'ajv';
-import { User, ILocalUser, IRemoteUser } from '@/models/entities/user';
-import { Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings, UserProfiles, UserSecurityKeys, UserGroupJoinings, Pages, Announcements, AnnouncementReads, Antennas, AntennaNotes, ChannelFollowings, Instances, DriveFiles } from '../index';
-import config from '@/config/index';
-import { Packed } from '@/misc/schema';
-import { awaitAll, Promiseable } from '@/prelude/await-all';
-import { populateEmojis } from '@/misc/populate-emojis';
-import { getAntennas } from '@/misc/antenna-cache';
-import { USER_ACTIVE_THRESHOLD, USER_ONLINE_THRESHOLD } from '@/const';
+import Ajv from 'ajv';
+import { User, ILocalUser, IRemoteUser } from '@/models/entities/user.js';
+import { Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings, UserProfiles, UserSecurityKeys, UserGroupJoinings, Pages, Announcements, AnnouncementReads, Antennas, AntennaNotes, ChannelFollowings, Instances, DriveFiles } from '../index.js';
+import config from '@/config/index.js';
+import { Packed } from '@/misc/schema.js';
+import { awaitAll, Promiseable } from '@/prelude/await-all.js';
+import { populateEmojis } from '@/misc/populate-emojis.js';
+import { getAntennas } from '@/misc/antenna-cache.js';
+import { USER_ACTIVE_THRESHOLD, USER_ONLINE_THRESHOLD } from '@/const.js';
 
 type IsUserDetailed<Detailed extends boolean> = Detailed extends true ? Packed<'UserDetailed'> : Packed<'UserLite'>;
 type IsMeAndIsUserDetailed<ExpectsMe extends boolean | null, Detailed extends boolean> =
