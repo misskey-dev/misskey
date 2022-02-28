@@ -20,13 +20,13 @@ export default async (ctx: Router.RouterContext) => {
 	const userId = ctx.params.user;
 
 	// Get 'sinceId' parameter
-	const [sinceId, sinceIdErr] = $.optional.type(ID).get(ctx.request.query.since_id);
+	const [sinceId, sinceIdErr] = $.default.optional.type(ID).get(ctx.request.query.since_id);
 
 	// Get 'untilId' parameter
-	const [untilId, untilIdErr] = $.optional.type(ID).get(ctx.request.query.until_id);
+	const [untilId, untilIdErr] = $.default.optional.type(ID).get(ctx.request.query.until_id);
 
 	// Get 'page' parameter
-	const pageErr = !$.optional.str.or(['true', 'false']).ok(ctx.request.query.page);
+	const pageErr = !$.default.optional.str.or(['true', 'false']).ok(ctx.request.query.page);
 	const page: boolean = ctx.request.query.page === 'true';
 
 	// Validate parameters

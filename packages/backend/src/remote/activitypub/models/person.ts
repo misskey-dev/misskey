@@ -57,15 +57,15 @@ function validateActor(x: IObject, uri: string): IActor {
 		if (e) throw new Error(`invalid Actor: ${name} ${e.message}`);
 	};
 
-	validate('id', x.id, $.str.min(1));
-	validate('inbox', x.inbox, $.str.min(1));
-	validate('preferredUsername', x.preferredUsername, $.str.min(1).max(128).match(/^\w([\w-.]*\w)?$/));
+	validate('id', x.id, $.default.str.min(1));
+	validate('inbox', x.inbox, $.default.str.min(1));
+	validate('preferredUsername', x.preferredUsername, $.default.str.min(1).max(128).match(/^\w([\w-.]*\w)?$/));
 
 	// These fields are only informational, and some AP software allows these
 	// fields to be very long. If they are too long, we cut them off. This way
 	// we can at least see these users and their activities.
-	validate('name', truncate(x.name, nameLength), $.optional.nullable.str);
-	validate('summary', truncate(x.summary, summaryLength), $.optional.nullable.str);
+	validate('name', truncate(x.name, nameLength), $.default.optional.nullable.str);
+	validate('summary', truncate(x.summary, summaryLength), $.default.optional.nullable.str);
 
 	const idHost = toPuny(new URL(x.id!).hostname);
 	if (idHost !== expectHost) {
