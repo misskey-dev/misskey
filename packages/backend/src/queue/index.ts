@@ -1,4 +1,4 @@
-import * as httpSignature from 'http-signature';
+import httpSignature from 'http-signature';
 
 import config from '@/config/index.js';
 import { envOption } from '../env.js';
