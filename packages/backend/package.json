@@ -164,7 +164,7 @@
 		"tsc-alias": "1.4.1",
 		"tsconfig-paths": "3.12.0",
 		"twemoji-parser": "13.1.0",
-		"typeorm": "0.2.43",
+		"typeorm": "0.2.44",
 		"typescript": "4.5.5",
 		"ulid": "2.3.0",
 		"unzipper": "0.10.11",

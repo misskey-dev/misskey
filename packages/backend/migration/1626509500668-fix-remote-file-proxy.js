@@ -1,6 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class fixRemoteFileProxy1626509500668 {
+
+
+export class fixRemoteFileProxy1626509500668 {
     constructor() {
         this.name = 'fixRemoteFileProxy1626509500668';
     }
@@ -20,4 +20,3 @@ class fixRemoteFileProxy1626509500668 {
     }
 }
 
-exports.fixRemoteFileProxy1626509500668 = fixRemoteFileProxy1626509500668;

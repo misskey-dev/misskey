@@ -1,6 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class addSensitiveIndex1597385880794 {
+
+
+export class addSensitiveIndex1597385880794 {
     constructor() {
         this.name = 'addSensitiveIndex1597385880794';
     }
@@ -11,4 +11,3 @@ class addSensitiveIndex1597385880794 {
         await queryRunner.query(`DROP INDEX "IDX_a7eba67f8b3fa27271e85d2e26"`);
     }
 }
-exports.addSensitiveIndex1597385880794 = addSensitiveIndex1597385880794;

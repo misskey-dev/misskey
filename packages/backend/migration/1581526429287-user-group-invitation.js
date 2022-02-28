@@ -1,6 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class userGroupInvitation1581526429287 {
+
+
+export class userGroupInvitation1581526429287 {
     constructor() {
         this.name = 'userGroupInvitation1581526429287';
     }
@@ -35,4 +35,3 @@ class userGroupInvitation1581526429287 {
         await queryRunner.query(`DROP TABLE "user_group_invitation"`, undefined);
     }
 }
-exports.userGroupInvitation1581526429287 = userGroupInvitation1581526429287;

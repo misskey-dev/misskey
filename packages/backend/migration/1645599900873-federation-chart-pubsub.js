@@ -1,6 +1,6 @@
-const { MigrationInterface, QueryRunner } = require("typeorm");
 
-module.exports = class federationChartPubsub1645599900873 {
+
+export class federationChartPubsub1645599900873 {
     name = 'federationChartPubsub1645599900873'
 
     async up(queryRunner) {

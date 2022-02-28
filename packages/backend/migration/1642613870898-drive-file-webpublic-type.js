@@ -1,6 +1,6 @@
-const { MigrationInterface, QueryRunner } = require("typeorm");
 
-module.exports = class driveFileWebpublicType1642613870898 {
+
+export class driveFileWebpublicType1642613870898 {
     name = 'driveFileWebpublicType1642613870898'
 
     async up(queryRunner) {
