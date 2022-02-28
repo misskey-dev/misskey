@@ -12,6 +12,9 @@ You should also include the user name that made the change.
 
 ## 12.x.x (unreleased)
 
+### NOTE
+このバージョンからNode v16.14.0以降が必要です
+
 ### Changes
 - ノートの最大文字数を設定できる機能が廃止され、デフォルトで一律3000文字になりました
 
