@@ -1,4 +1,4 @@
-import * as promiseLimit from 'promise-limit';
+import promiseLimit from 'promise-limit';
 
 import config from '@/config/index.js';
 import Resolver from '../resolver.js';

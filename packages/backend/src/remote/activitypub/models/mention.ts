@@ -1,7 +1,7 @@
 import { toArray, unique } from '@/prelude/array.js';
 import { IObject, isMention, IApMention } from '../type.js';
 import { resolvePerson } from './person.js';
-import * as promiseLimit from 'promise-limit';
+import promiseLimit from 'promise-limit';
 import Resolver from '../resolver.js';
 import { User } from '@/models/entities/user.js';
 

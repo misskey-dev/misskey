@@ -1,5 +1,5 @@
 import { URL } from 'node:url';
-import * as promiseLimit from 'promise-limit';
+import promiseLimit from 'promise-limit';
 
 import $, { Context } from 'cafy';
 import config from '@/config/index.js';

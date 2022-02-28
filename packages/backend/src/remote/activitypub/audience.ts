@@ -2,7 +2,7 @@ import { ApObject, getApIds } from './type.js';
 import Resolver from './resolver.js';
 import { resolvePerson } from './models/person.js';
 import { unique, concat } from '@/prelude/array.js';
-import * as promiseLimit from 'promise-limit';
+import promiseLimit from 'promise-limit';
 import { User, IRemoteUser } from '@/models/entities/user.js';
 
 type Visibility = 'public' | 'home' | 'followers' | 'specified';
