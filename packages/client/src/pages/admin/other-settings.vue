@@ -14,7 +14,7 @@ import FormSection from '@/components/form/section.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
-import { fetchInstance } from '@/instance';
+import { refetchInstanceMeta } from '@/instance';
 
 export default defineComponent({
 	components: {
@@ -49,7 +49,7 @@ export default defineComponent({
 		save() {
 			os.apiWithDialog('admin/update-meta', {
 			}).then(() => {
-				fetchInstance();
+				refetchInstanceMeta();
 			});
 		}
 	}

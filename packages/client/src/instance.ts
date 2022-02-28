@@ -8,11 +8,11 @@ const data = localStorage.getItem('instance');
 
 // TODO: instanceをリアクティブにするかは再考の余地あり
 
-export const instance: Misskey.entities.InstanceMetadata = reactive(data ? JSON.parse(data) : {
+export const instance: Misskey.entities.InstanceMetadata = reactive(data != null ? JSON.parse(data) : {
 	// TODO: set default values
 });
 
-export async function fetchInstance() {
+async function fetchInstance() {
 	const meta = await api('meta', {
 		detail: false
 	});
@@ -23,6 +23,11 @@ export async function fetchInstance() {
 
 	localStorage.setItem('instance', JSON.stringify(instance));
 }
+
+const initialFetchPromise = fetchInstance();
+export const instanceMetaReady = data != null ? Promise.resolve() : initialFetchPromise;
+
+export const refetchInstanceMeta = fetchInstance;
 
 export const emojiCategories = computed(() => {
 	if (instance.emojis == null) return [];

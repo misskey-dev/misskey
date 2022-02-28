@@ -75,7 +75,7 @@ import FormSplit from '@/components/form/split.vue';
 import FormSection from '@/components/form/section.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
-import { fetchInstance } from '@/instance';
+import { refetchInstanceMeta } from '@/instance';
 
 export default defineComponent({
 	components: {
@@ -151,7 +151,7 @@ export default defineComponent({
 				objectStorageSetPublicRead: this.objectStorageSetPublicRead,
 				objectStorageS3ForcePathStyle: this.objectStorageS3ForcePathStyle,
 			}).then(() => {
-				fetchInstance();
+				refetchInstanceMeta();
 			});
 		}
 	}

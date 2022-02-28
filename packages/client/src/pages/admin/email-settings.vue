@@ -52,7 +52,7 @@ import FormSplit from '@/components/form/split.vue';
 import FormSection from '@/components/form/section.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
-import { fetchInstance } from '@/instance';
+import { refetchInstanceMeta } from '@/instance';
 
 export default defineComponent({
 	components: {
@@ -129,7 +129,7 @@ export default defineComponent({
 				smtpUser: this.smtpUser,
 				smtpPass: this.smtpPass,
 			}).then(() => {
-				fetchInstance();
+				refetchInstanceMeta();
 			});
 		}
 	}

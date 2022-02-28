@@ -29,7 +29,7 @@ import { stream } from '@/stream';
 import * as sound from '@/scripts/sound';
 import { $i, refreshAccount, login, updateAccount, signout } from '@/account';
 import { defaultStore, ColdDeviceStorage } from '@/store';
-import { fetchInstance, instance } from '@/instance';
+import { instance, instanceMetaReady } from '@/instance';
 import { makeHotkey } from '@/scripts/hotkey';
 import { search } from '@/scripts/search';
 import { deviceKind } from '@/scripts/device-kind';
@@ -159,7 +159,7 @@ if ($i && $i.token) {
 }
 //#endregion
 
-fetchInstance().then(() => {
+instanceMetaReady.then(() => {
 	localStorage.setItem('v', instance.version);
 
 	// Init service worker

@@ -18,7 +18,7 @@ import FormTextarea from '@/components/form/textarea.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
-import { fetchInstance } from '@/instance';
+import { refetchInstanceMeta } from '@/instance';
 
 export default defineComponent({
 	components: {
@@ -50,7 +50,7 @@ export default defineComponent({
 			os.apiWithDialog('admin/update-meta', {
 				blockedHosts: this.blockedHosts.split('\n') || [],
 			}).then(() => {
-				fetchInstance();
+				refetchInstanceMeta();
 			});
 		}
 	}

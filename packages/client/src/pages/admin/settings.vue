@@ -139,7 +139,7 @@ import FormSplit from '@/components/form/split.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
-import { fetchInstance } from '@/instance';
+import { refetchInstanceMeta } from '@/instance';
 
 export default defineComponent({
 	components: {
@@ -244,7 +244,7 @@ export default defineComponent({
 				deeplAuthKey: this.deeplAuthKey,
 				deeplIsPro: this.deeplIsPro,
 			}).then(() => {
-				fetchInstance();
+				refetchInstanceMeta();
 			});
 		}
 	}
