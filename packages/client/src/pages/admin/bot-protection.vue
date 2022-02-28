@@ -52,7 +52,7 @@ import FormSuspense from '@/components/form/suspense.vue';
 import FormSlot from '@/components/form/slot.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
-import { refetchInstanceMeta } from '@/instance';
+import { fetchInstance } from '@/instance';
 
 export default defineComponent({
 	components: {
@@ -109,7 +109,7 @@ export default defineComponent({
 				recaptchaSiteKey: this.recaptchaSiteKey,
 				recaptchaSecretKey: this.recaptchaSecretKey,
 			}).then(() => {
-				refetchInstanceMeta();
+				fetchInstance();
 			});
 		}
 	}

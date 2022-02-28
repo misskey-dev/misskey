@@ -41,7 +41,7 @@ import FormButton from '@/components/ui/button.vue';
 import XBotProtection from './bot-protection.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
-import { refetchInstanceMeta } from '@/instance';
+import { fetchInstance } from '@/instance';
 
 export default defineComponent({
 	components: {
@@ -82,7 +82,7 @@ export default defineComponent({
 			os.apiWithDialog('admin/update-meta', {
 				summalyProxy: this.summalyProxy,
 			}).then(() => {
-				refetchInstanceMeta();
+				fetchInstance();
 			});
 		}
 	}

@@ -33,7 +33,7 @@ import FormInfo from '@/components/ui/info.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
-import { refetchInstanceMeta } from '@/instance';
+import { fetchInstance } from '@/instance';
 
 export default defineComponent({
 	components: {
@@ -72,7 +72,7 @@ export default defineComponent({
 				discordClientId: this.discordClientId,
 				discordClientSecret: this.discordClientSecret,
 			}).then(() => {
-				refetchInstanceMeta();
+				fetchInstance();
 			});
 		}
 	}

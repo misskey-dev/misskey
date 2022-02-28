@@ -33,7 +33,7 @@ import XGithub from './integrations.github.vue';
 import XDiscord from './integrations.discord.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
-import { refetchInstanceMeta } from '@/instance';
+import { fetchInstance } from '@/instance';
 
 export default defineComponent({
 	components: {
