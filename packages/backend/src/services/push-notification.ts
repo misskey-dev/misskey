@@ -1,4 +1,4 @@
-import * as push from 'web-push';
+import push from 'web-push';
 import config from '@/config/index.js';
 import { SwSubscriptions } from '@/models/index.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';

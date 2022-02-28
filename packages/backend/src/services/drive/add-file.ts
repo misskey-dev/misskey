@@ -17,7 +17,7 @@ import { IRemoteUser, User } from '@/models/entities/user.js';
 import { driveChart, perUserDriveChart, instanceChart } from '@/services/chart/index.js';
 import { genId } from '@/misc/gen-id.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
-import * as S3 from 'aws-sdk/clients/s3.js';
+import S3 from 'aws-sdk/clients/s3.js';
 import { getS3 } from './s3.js';
 import sharp from 'sharp';
 import { FILE_TYPE_BROWSERSAFE } from '@/const.js';

@@ -1,5 +1,5 @@
 import { URL } from 'node:url';
-import * as S3 from 'aws-sdk/clients/s3.js';
+import S3 from 'aws-sdk/clients/s3.js';
 import { Meta } from '@/models/entities/meta.js';
 import { getAgentByUrl } from '@/misc/fetch.js';
 
