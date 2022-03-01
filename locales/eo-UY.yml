@@ -922,7 +922,6 @@ _postForm:
     c: "Kio estas sur via penso?"
     d: "Kion vi volas diri?"
     e: "Komencu skribi tie"
-    f: "Atendanta de vi skribon…"
 _profile:
   name: "Nomo"
   username: "Uzantnomo"
