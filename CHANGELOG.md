@@ -16,11 +16,12 @@ You should also include the user name that made the change.
 このバージョンからNode v16.14.0以降が必要です
 
 ### Changes
-- ノートの最大文字数を設定できる機能が廃止され、デフォルトで一律3000文字になりました
+- ノートの最大文字数を設定できる機能が廃止され、デフォルトで一律3000文字になりました @syuilo
 
 ### Improvements
-- プロフィールの追加情報を最大16まで保存できるように
-- 連合チャートにPub&Subを追加
+- インスタンスデフォルトテーマを設定できるように @syuilo
+- プロフィールの追加情報を最大16まで保存できるように @syuilo
+- 連合チャートにPub&Subを追加 @syuilo
 
 ### Bugfixes
 - Client: リアクションピッカーの高さが低くなったまま戻らないことがあるのを修正 @syuilo

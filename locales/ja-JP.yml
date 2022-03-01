@@ -831,6 +831,9 @@ themeColor: "テーマカラー"
 size: "サイズ"
 numberOfColumn: "列の数"
 searchByGoogle: "ググる"
+instanceDefaultLightTheme: "インスタンスデフォルトのライトテーマ"
+instanceDefaultDarkTheme: "インスタンスデフォルトのダークテーマ"
+instanceDefaultThemeDescription: "オブジェクト形式のテーマコードを記入します。"
 
 _emailUnavailable:
   used: "既に使用されています"

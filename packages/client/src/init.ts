@@ -15,6 +15,7 @@ if (localStorage.getItem('accounts') != null) {
 
 import { computed, createApp, watch, markRaw, version as vueVersion } from 'vue';
 import compareVersions from 'compare-versions';
+import * as JSON5 from 'json5';
 
 import widgets from '@/widgets';
 import directives from '@/directives';
@@ -159,7 +160,9 @@ if ($i && $i.token) {
 }
 //#endregion
 
-fetchInstance().then(() => {
+const fetchInstanceMetaPromise = fetchInstance();
+
+fetchInstanceMetaPromise.then(() => {
 	localStorage.setItem('v', instance.version);
 
 	// Init service worker
@@ -266,6 +269,14 @@ window.matchMedia('(prefers-color-scheme: dark)').addListener(mql => {
 	}
 });
 //#endregion
+
+fetchInstanceMetaPromise.then(() => {
+	if (defaultStore.state.themeInitial) {
+		if (instance.defaultLightTheme != null) ColdDeviceStorage.set('lightTheme', JSON5.parse(instance.defaultLightTheme));
+		if (instance.defaultDarkTheme != null) ColdDeviceStorage.set('darkTheme', JSON5.parse(instance.defaultDarkTheme));
+		defaultStore.set('themeInitial', false);
+	}
+});
 
 // shortcut
 document.addEventListener('keydown', makeHotkey({

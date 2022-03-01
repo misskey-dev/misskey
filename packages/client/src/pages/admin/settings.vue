@@ -31,6 +31,16 @@
 				<template #caption>#RRGGBB</template>
 			</FormInput>
 
+			<FormTextarea v-model="defaultLightTheme" class="_formBlock">
+				<template #label>{{ $ts.instanceDefaultLightTheme }}</template>
+				<template #caption>{{ $ts.instanceDefaultThemeDescription }}</template>
+			</FormTextarea>
+
+			<FormTextarea v-model="defaultDarkTheme" class="_formBlock">
+				<template #label>{{ $ts.instanceDefaultDarkTheme }}</template>
+				<template #caption>{{ $ts.instanceDefaultThemeDescription }}</template>
+			</FormTextarea>
+
 			<FormInput v-model="tosUrl" class="_formBlock">
 				<template #prefix><i class="fas fa-link"></i></template>
 				<template #label>{{ $ts.tosUrl }}</template>
@@ -176,6 +186,8 @@ export default defineComponent({
 			bannerUrl: null,
 			backgroundImageUrl: null,
 			themeColor: null,
+			defaultLightTheme: null,
+			defaultDarkTheme: null,
 			enableLocalTimeline: false,
 			enableGlobalTimeline: false,
 			pinnedUsers: '',
@@ -202,6 +214,8 @@ export default defineComponent({
 			this.bannerUrl = meta.bannerUrl;
 			this.backgroundImageUrl = meta.backgroundImageUrl;
 			this.themeColor = meta.themeColor;
+			this.defaultLightTheme = meta.defaultLightTheme;
+			this.defaultDarkTheme = meta.defaultDarkTheme;
 			this.maintainerName = meta.maintainerName;
 			this.maintainerEmail = meta.maintainerEmail;
 			this.enableLocalTimeline = !meta.disableLocalTimeline;
@@ -228,6 +242,8 @@ export default defineComponent({
 				bannerUrl: this.bannerUrl,
 				backgroundImageUrl: this.backgroundImageUrl,
 				themeColor: this.themeColor === '' ? null : this.themeColor,
+				defaultLightTheme: this.defaultLightTheme === '' ? null : this.defaultLightTheme,
+				defaultDarkTheme: this.defaultDarkTheme === '' ? null : this.defaultDarkTheme,
 				maintainerName: this.maintainerName,
 				maintainerEmail: this.maintainerEmail,
 				disableLocalTimeline: !this.enableLocalTimeline,

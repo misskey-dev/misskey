@@ -36,6 +36,8 @@ export const paramDef = {
 		logoImageUrl: { type: 'string', nullable: true },
 		name: { type: 'string', nullable: true },
 		description: { type: 'string', nullable: true },
+		defaultLightTheme: { type: 'string', nullable: true },
+		defaultDarkTheme: { type: 'string', nullable: true },
 		localDriveCapacityMb: { type: 'integer' },
 		remoteDriveCapacityMb: { type: 'integer' },
 		cacheRemoteFiles: { type: 'boolean' },
@@ -160,6 +162,14 @@ export default define(meta, paramDef, async (ps, me) => {
 
 	if (ps.description !== undefined) {
 		set.description = ps.description;
+	}
+
+	if (ps.defaultLightTheme !== undefined) {
+		set.defaultLightTheme = ps.defaultLightTheme;
+	}
+
+	if (ps.defaultDarkTheme !== undefined) {
+		set.defaultDarkTheme = ps.defaultDarkTheme;
 	}
 
 	if (ps.localDriveCapacityMb !== undefined) {

@@ -344,6 +344,20 @@ export class Meta {
 	})
 	public feedbackUrl: string | null;
 
+	@Column('varchar', {
+		length: 8192,
+		default: null,
+		nullable: true,
+	})
+	public defaultLightTheme: string | null;
+
+	@Column('varchar', {
+		length: 8192,
+		default: null,
+		nullable: true,
+	})
+	public defaultDarkTheme: string | null;
+
 	@Column('boolean', {
 		default: false,
 	})

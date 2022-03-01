@@ -69,6 +69,14 @@ export const meta = {
 				optional: false, nullable: false,
 				default: false,
 			},
+			defaultDarkTheme: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
+			defaultLightTheme: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
 			disableRegistration: {
 				type: 'boolean',
 				optional: false, nullable: false,
@@ -504,6 +512,8 @@ export default define(meta, paramDef, async (ps, me) => {
 		logoImageUrl: instance.logoImageUrl,
 		maxNoteTextLength: MAX_NOTE_TEXT_LENGTH, // 後方互換性のため
 		emojis: await Emojis.packMany(emojis),
+		defaultLightTheme: instance.defaultLightTheme,
+		defaultDarkTheme: instance.defaultDarkTheme,
 		ads: ads.map(ad => ({
 			id: ad.id,
 			url: ad.url,
