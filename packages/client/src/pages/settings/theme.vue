@@ -123,8 +123,8 @@ export default defineComponent({
 
 		const installedThemes = ref(getThemes());
 		const themes = computed(() => builtinThemes.concat(installedThemes.value));
-		const darkThemes = computed(() => themes.value.filter(t => t.base == 'dark' || t.kind == 'dark'));
-		const lightThemes = computed(() => themes.value.filter(t => t.base == 'light' || t.kind == 'light'));
+		const darkThemes = computed(() => themes.value.filter(t => t.base === 'dark' || t.kind === 'dark'));
+		const lightThemes = computed(() => themes.value.filter(t => t.base === 'light' || t.kind === 'light'));
 		const darkTheme = ColdDeviceStorage.ref('darkTheme');
 		const darkThemeId = computed({
 			get() {
