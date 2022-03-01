@@ -29,6 +29,7 @@ export const builtinThemes = [
 	require('@/themes/d-future.json5'),
 	require('@/themes/d-botanical.json5'),
 	require('@/themes/d-cherry.json5'),
+	require('@/themes/d-ice.json5'),
 	require('@/themes/d-pumpkin.json5'),
 	require('@/themes/d-black.json5'),
 ] as Theme[];
