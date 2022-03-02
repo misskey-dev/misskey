@@ -192,8 +192,7 @@ function exec() {
 		const cache = sessionStorage.getItem(cacheKey);
 
 		if (cache) {
-			const users = JSON.parse(cache);
-			users.value = users;
+			users.value = JSON.parse(cache);
 			fetching.value = false;
 		} else {
 			os.api('users/search-by-username-and-host', {
@@ -233,7 +232,7 @@ function exec() {
 	} else if (props.type === 'emoji') {
 		if (!props.q || props.q === '') {
 			// 最近使った絵文字をサジェスト
-			emojis.value = defaultStore.state.recentlyUsedEmojis.map(emoji => emojiDb.find(e => e.emoji == emoji)).filter(x => x) as EmojiDef[];
+			emojis.value = defaultStore.state.recentlyUsedEmojis.map(emoji => emojiDb.find(e => e.emoji === emoji)).filter(x => x) as EmojiDef[];
 			return;
 		}
 
