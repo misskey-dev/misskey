@@ -1,5 +1,5 @@
 import Koa from 'koa';
-import * as manifest from './manifest.json' assert { type: 'json' };
+import manifest from './manifest.json' assert { type: 'json' };
 import { fetchMeta } from '@/misc/fetch-meta.js';
 
 export const manifestHandler = async (ctx: Koa.Context) => {
