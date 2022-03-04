@@ -815,6 +815,7 @@ leaveGroup: "Quitter le groupe"
 leaveGroupConfirm: "Êtes vous sûr de vouloir quitter \"{name}\" ?"
 welcomeBackWithName: "Heureux de vous revoir, {name}"
 clickToFinishEmailVerification: "Veuillez cliquer sur [{ok}] afin de compléter la vérification par courriel."
+indefinitely: "Illimité"
 _emailUnavailable:
   used: "Non disponible"
   format: "Le format de cette adresse de courriel est invalide"
