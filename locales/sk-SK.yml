@@ -833,6 +833,7 @@ searchByGoogle: "Hľadať cez Google"
 instanceDefaultLightTheme: "Predvolená svetlá téma"
 instanceDefaultDarkTheme: "Predvolená tmavá téma"
 instanceDefaultThemeDescription: "Vložte kód témy v objektovom formáte"
+indefinitely: "Nikdy"
 _emailUnavailable:
   used: "Táto emailová adresa sa už používa"
   format: "Formát emailovej adresy je nesprávny"
