@@ -758,6 +758,7 @@ received: "Otrzymane"
 hashtags: "Hashtag"
 pubSub: "Konta Pub/Sub"
 hide: "Ukryj"
+indefinitely: "Nigdy"
 _ffVisibility:
   public: "Publikuj"
 _ad:
