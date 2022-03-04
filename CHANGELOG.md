@@ -31,6 +31,7 @@ You should also include the user name that made the change.
 - Client: ユーザー名オートコンプリートが正しく動作しない問題を修正 @syuilo
 - Client: タッチ操作だとウィジェットの編集がしにくいのを修正 @xianonn
 - Client: register_note_view_interruptor()が動かないのを修正 @syuilo
+- Client: iPhone X以降(?)でページの内容が全て表示しきれないのを修正 @tamaina
 
 ## 12.107.0 (2022/02/12)
 
