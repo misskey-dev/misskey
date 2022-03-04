@@ -1,6 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class blurhash1595075960584 {
+
+
+export class blurhash1595075960584 {
     constructor() {
         this.name = 'blurhash1595075960584';
     }
@@ -11,4 +11,3 @@ class blurhash1595075960584 {
         await queryRunner.query(`ALTER TABLE "drive_file" DROP COLUMN "blurhash"`);
     }
 }
-exports.blurhash1595075960584 = blurhash1595075960584;

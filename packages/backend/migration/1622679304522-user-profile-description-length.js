@@ -1,6 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class userProfileDescriptionLength1622679304522 {
+
+
+export class userProfileDescriptionLength1622679304522 {
     constructor() {
         this.name = 'userProfileDescriptionLength1622679304522';
     }
@@ -11,4 +11,3 @@ class userProfileDescriptionLength1622679304522 {
         await queryRunner.query(`ALTER TABLE "user_profile" ALTER COLUMN "description" TYPE character varying(1024)`, undefined);
     }
 }
-exports.userProfileDescriptionLength1622679304522 = userProfileDescriptionLength1622679304522;

@@ -1,6 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class pubRelay1589023282116 {
+
+
+export class pubRelay1589023282116 {
     constructor() {
         this.name = 'pubRelay1589023282116';
     }
@@ -15,4 +15,3 @@ class pubRelay1589023282116 {
         await queryRunner.query(`DROP TYPE "relay_status_enum"`, undefined);
     }
 }
-exports.pubRelay1589023282116 = pubRelay1589023282116;

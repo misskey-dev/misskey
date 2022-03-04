@@ -1,5 +1,5 @@
-import define from '../../define';
-import { Hashtags } from '@/models/index';
+import define from '../../define.js';
+import { Hashtags } from '@/models/index.js';
 
 export const meta = {
 	tags: ['hashtags'],

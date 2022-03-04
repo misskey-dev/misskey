@@ -1,4 +1,4 @@
-import Chart from '../../core';
+import Chart from '../../core.js';
 
 export const name = 'perUserNotes';
 

@@ -1,7 +1,7 @@
-import { IdentifiableError } from '@/misc/identifiable-error';
-import { User } from '@/models/entities/user';
-import { Note } from '@/models/entities/note';
-import { Notes, Users } from '@/models/index';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
+import { User } from '@/models/entities/user.js';
+import { Note } from '@/models/entities/note.js';
+import { Notes, Users } from '@/models/index.js';
 
 /**
  * Get note for API processing

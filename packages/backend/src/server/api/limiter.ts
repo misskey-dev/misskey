@@ -1,9 +1,9 @@
-import * as Limiter from 'ratelimiter';
-import { redisClient } from '../../db/redis';
-import { IEndpoint } from './endpoints';
-import * as Acct from 'misskey-js/built/acct';
-import { User } from '@/models/entities/user';
-import Logger from '@/services/logger';
+import Limiter from 'ratelimiter';
+import { redisClient } from '../../db/redis.js';
+import { IEndpoint } from './endpoints.js';
+import * as Acct from '@/misc/acct.js';
+import { User } from '@/models/entities/user.js';
+import Logger from '@/services/logger.js';
 
 const logger = new Logger('limiter');
 

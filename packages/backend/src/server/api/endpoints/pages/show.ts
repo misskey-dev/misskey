@@ -1,7 +1,7 @@
-import define from '../../define';
-import { ApiError } from '../../error';
-import { Pages, Users } from '@/models/index';
-import { Page } from '@/models/entities/page';
+import define from '../../define.js';
+import { ApiError } from '../../error.js';
+import { Pages, Users } from '@/models/index.js';
+import { Page } from '@/models/entities/page.js';
 
 export const meta = {
 	tags: ['pages'],

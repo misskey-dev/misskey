@@ -1,6 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class registry31610283021566 {
+
+
+export class registry31610283021566 {
     constructor() {
         this.name = 'registry31610283021566';
     }
@@ -11,4 +11,3 @@ class registry31610283021566 {
         await queryRunner.query(`ALTER TABLE "registry_item" ALTER COLUMN "value" SET NOT NULL`);
     }
 }
-exports.registry31610283021566 = registry31610283021566;

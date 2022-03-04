@@ -1,6 +1,6 @@
-import define from '../../../define';
-import { ApiError } from '../../../error';
-import { DriveFiles } from '@/models/index';
+import define from '../../../define.js';
+import { ApiError } from '../../../error.js';
+import { DriveFiles } from '@/models/index.js';
 
 export const meta = {
 	tags: ['admin'],

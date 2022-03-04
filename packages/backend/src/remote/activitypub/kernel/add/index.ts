@@ -1,7 +1,7 @@
-import { IRemoteUser } from '@/models/entities/user';
-import { IAdd } from '../../type';
-import { resolveNote } from '../../models/note';
-import { addPinned } from '@/services/i/pin';
+import { IRemoteUser } from '@/models/entities/user.js';
+import { IAdd } from '../../type.js';
+import { resolveNote } from '../../models/note.js';
+import { addPinned } from '@/services/i/pin.js';
 
 export default async (actor: IRemoteUser, activity: IAdd): Promise<void> => {
 	if ('actor' in activity && actor.uri !== activity.actor) {

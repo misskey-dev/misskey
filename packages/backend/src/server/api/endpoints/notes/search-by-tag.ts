@@ -1,12 +1,12 @@
-import define from '../../define';
-import { makePaginationQuery } from '../../common/make-pagination-query';
-import { Notes } from '@/models/index';
-import { generateMutedUserQuery } from '../../common/generate-muted-user-query';
-import { generateVisibilityQuery } from '../../common/generate-visibility-query';
+import define from '../../define.js';
+import { makePaginationQuery } from '../../common/make-pagination-query.js';
+import { Notes } from '@/models/index.js';
+import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
+import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
 import { Brackets } from 'typeorm';
-import { safeForSql } from '@/misc/safe-for-sql';
-import { normalizeForSearch } from '@/misc/normalize-for-search';
-import { generateBlockedUserQuery } from '../../common/generate-block-query';
+import { safeForSql } from '@/misc/safe-for-sql.js';
+import { normalizeForSearch } from '@/misc/normalize-for-search.js';
+import { generateBlockedUserQuery } from '../../common/generate-block-query.js';
 
 export const meta = {
 	tags: ['notes', 'hashtags'],
@@ -46,10 +46,16 @@ export const paramDef = {
 export default define(meta, paramDef, async (ps, me) => {
 	const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 		.innerJoinAndSelect('note.user', 'user')
+		.leftJoinAndSelect('user.avatar', 'avatar')
+		.leftJoinAndSelect('user.banner', 'banner')
 		.leftJoinAndSelect('note.reply', 'reply')
 		.leftJoinAndSelect('note.renote', 'renote')
 		.leftJoinAndSelect('reply.user', 'replyUser')
-		.leftJoinAndSelect('renote.user', 'renoteUser');
+		.leftJoinAndSelect('replyUser.avatar', 'replyUserAvatar')
+		.leftJoinAndSelect('replyUser.banner', 'replyUserBanner')
+		.leftJoinAndSelect('renote.user', 'renoteUser')
+		.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
+		.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner');
 
 	generateVisibilityQuery(query, me);
 	if (me) generateMutedUserQuery(query, me);

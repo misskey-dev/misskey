@@ -1,8 +1,8 @@
-import { deleteFile } from '@/services/drive/delete-file';
-import { publishDriveStream } from '@/services/stream';
-import define from '../../../define';
-import { ApiError } from '../../../error';
-import { DriveFiles } from '@/models/index';
+import { deleteFile } from '@/services/drive/delete-file.js';
+import { publishDriveStream } from '@/services/stream.js';
+import define from '../../../define.js';
+import { ApiError } from '../../../error.js';
+import { DriveFiles } from '@/models/index.js';
 
 export const meta = {
 	tags: ['drive'],

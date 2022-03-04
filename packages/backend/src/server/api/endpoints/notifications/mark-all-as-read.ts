@@ -1,7 +1,7 @@
-import { publishMainStream } from '@/services/stream';
-import { pushNotification } from '@/services/push-notification';
-import define from '../../define';
-import { Notifications } from '@/models/index';
+import { publishMainStream } from '@/services/stream.js';
+import { pushNotification } from '@/services/push-notification.js';
+import define from '../../define.js';
+import { Notifications } from '@/models/index.js';
 
 export const meta = {
 	tags: ['notifications', 'account'],

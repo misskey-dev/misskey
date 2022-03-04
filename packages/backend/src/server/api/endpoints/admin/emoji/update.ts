@@ -1,7 +1,7 @@
-import define from '../../../define';
-import { Emojis } from '@/models/index';
+import define from '../../../define.js';
+import { Emojis } from '@/models/index.js';
 import { getConnection } from 'typeorm';
-import { ApiError } from '../../../error';
+import { ApiError } from '../../../error.js';
 
 export const meta = {
 	tags: ['admin'],

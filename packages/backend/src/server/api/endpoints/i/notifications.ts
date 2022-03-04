@@ -1,10 +1,10 @@
-import { readNotification } from '../../common/read-notification';
-import define from '../../define';
-import { makePaginationQuery } from '../../common/make-pagination-query';
-import { generateMutedInstanceNotificationQuery } from '../../common/generate-muted-instance-query';
-import { Notifications, Followings, Mutings, Users } from '@/models/index';
-import { notificationTypes } from '@/types';
-import read from '@/services/note/read';
+import { readNotification } from '../../common/read-notification.js';
+import define from '../../define.js';
+import { makePaginationQuery } from '../../common/make-pagination-query.js';
+import { generateMutedInstanceNotificationQuery } from '../../common/generate-muted-instance-query.js';
+import { Notifications, Followings, Mutings, Users } from '@/models/index.js';
+import { notificationTypes } from '@/types.js';
+import read from '@/services/note/read.js';
 import { Brackets } from 'typeorm';
 
 export const meta = {
@@ -71,10 +71,16 @@ export default define(meta, paramDef, async (ps, user) => {
 		.leftJoinAndSelect('notification.notifier', 'notifier')
 		.leftJoinAndSelect('notification.note', 'note')
 		.leftJoinAndSelect('note.user', 'user')
+		.leftJoinAndSelect('user.avatar', 'avatar')
+		.leftJoinAndSelect('user.banner', 'banner')
 		.leftJoinAndSelect('note.reply', 'reply')
 		.leftJoinAndSelect('note.renote', 'renote')
 		.leftJoinAndSelect('reply.user', 'replyUser')
-		.leftJoinAndSelect('renote.user', 'renoteUser');
+		.leftJoinAndSelect('replyUser.avatar', 'replyUserAvatar')
+		.leftJoinAndSelect('replyUser.banner', 'replyUserBanner')
+		.leftJoinAndSelect('renote.user', 'renoteUser')
+		.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
+		.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner');
 
 	query.andWhere(new Brackets(qb => { qb
 		.where(`notification.notifierId NOT IN (${ mutingQuery.getQuery() })`)

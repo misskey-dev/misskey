@@ -1,8 +1,8 @@
-import config from '@/config/index';
-import { Note } from '@/models/entities/note';
-import { IRemoteUser, User } from '@/models/entities/user';
-import { PollVote } from '@/models/entities/poll-vote';
-import { Poll } from '@/models/entities/poll';
+import config from '@/config/index.js';
+import { Note } from '@/models/entities/note.js';
+import { IRemoteUser, User } from '@/models/entities/user.js';
+import { PollVote } from '@/models/entities/poll-vote.js';
+import { Poll } from '@/models/entities/poll.js';
 
 export default async function renderVote(user: { id: User['id'] }, vote: PollVote, note: Note, poll: Poll, pollOwner: IRemoteUser): Promise<any> {
 	return {

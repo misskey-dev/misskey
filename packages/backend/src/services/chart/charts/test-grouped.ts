@@ -1,6 +1,5 @@
-import autobind from 'autobind-decorator';
-import Chart, { KVs } from '../core';
-import { name, schema } from './entities/test-grouped';
+import Chart, { KVs } from '../core.js';
+import { name, schema } from './entities/test-grouped.js';
 
 /**
  * For testing
@@ -13,19 +12,16 @@ export default class TestGroupedChart extends Chart<typeof schema> {
 		super(name, schema, true);
 	}
 
-	@autobind
 	protected async tickMajor(group: string): Promise<Partial<KVs<typeof schema>>> {
 		return {
 			'foo.total': this.total[group],
 		};
 	}
 
-	@autobind
 	protected async tickMinor(): Promise<Partial<KVs<typeof schema>>> {
 		return {};
 	}
 
-	@autobind
 	public async increment(group: string): Promise<void> {
 		if (this.total[group] == null) this.total[group] = 0;
 

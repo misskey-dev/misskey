@@ -2,15 +2,15 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import * as lolex from '@sinonjs/fake-timers';
-import { async, initTestDb } from './utils';
-import TestChart from '../src/services/chart/charts/test';
-import TestGroupedChart from '../src/services/chart/charts/test-grouped';
-import TestUniqueChart from '../src/services/chart/charts/test-unique';
-import TestIntersectionChart from '../src/services/chart/charts/test-intersection';
-import * as _TestChart from '../src/services/chart/charts/entities/test';
-import * as _TestGroupedChart from '../src/services/chart/charts/entities/test-grouped';
-import * as _TestUniqueChart from '../src/services/chart/charts/entities/test-unique';
-import * as _TestIntersectionChart from '../src/services/chart/charts/entities/test-intersection';
+import { async, initTestDb } from './utils.js';
+import TestChart from '../src/services/chart/charts/test.js';
+import TestGroupedChart from '../src/services/chart/charts/test-grouped.js';
+import TestUniqueChart from '../src/services/chart/charts/test-unique.js';
+import TestIntersectionChart from '../src/services/chart/charts/test-intersection.js';
+import * as _TestChart from '../src/services/chart/charts/entities/test.js';
+import * as _TestGroupedChart from '../src/services/chart/charts/entities/test-grouped.js';
+import * as _TestUniqueChart from '../src/services/chart/charts/entities/test-unique.js';
+import * as _TestIntersectionChart from '../src/services/chart/charts/entities/test-intersection.js';
 
 describe('Chart', () => {
 	let testChart: TestChart;

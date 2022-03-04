@@ -1,9 +1,9 @@
 import ms from 'ms';
-import create from '@/services/blocking/create';
-import define from '../../define';
-import { ApiError } from '../../error';
-import { getUser } from '../../common/getters';
-import { Blockings, NoteWatchings, Users } from '@/models/index';
+import create from '@/services/blocking/create.js';
+import define from '../../define.js';
+import { ApiError } from '../../error.js';
+import { getUser } from '../../common/getters.js';
+import { Blockings, NoteWatchings, Users } from '@/models/index.js';
 
 export const meta = {
 	tags: ['account'],

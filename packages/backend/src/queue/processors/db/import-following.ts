@@ -1,13 +1,13 @@
-import * as Bull from 'bull';
+import Bull from 'bull';
 
-import { queueLogger } from '../../logger';
-import follow from '@/services/following/create';
-import * as Acct from 'misskey-js/built/acct';
-import { resolveUser } from '@/remote/resolve-user';
-import { downloadTextFile } from '@/misc/download-text-file';
-import { isSelfHost, toPuny } from '@/misc/convert-host';
-import { Users, DriveFiles } from '@/models/index';
-import { DbUserImportJobData } from '@/queue/types';
+import { queueLogger } from '../../logger.js';
+import follow from '@/services/following/create.js';
+import * as Acct from '@/misc/acct.js';
+import { resolveUser } from '@/remote/resolve-user.js';
+import { downloadTextFile } from '@/misc/download-text-file.js';
+import { isSelfHost, toPuny } from '@/misc/convert-host.js';
+import { Users, DriveFiles } from '@/models/index.js';
+import { DbUserImportJobData } from '@/queue/types.js';
 
 const logger = queueLogger.createSubLogger('import-following');
 

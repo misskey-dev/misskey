@@ -1,5 +1,5 @@
-import config from '@/config/index';
-import { ILocalUser, User } from '@/models/entities/user';
+import config from '@/config/index.js';
+import { ILocalUser, User } from '@/models/entities/user.js';
 
 export default (object: any, user: { id: User['id'] }) => {
 	if (object == null) return null;

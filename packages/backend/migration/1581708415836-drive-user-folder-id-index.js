@@ -1,6 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class driveUserFolderIdIndex1581708415836 {
+
+
+export class driveUserFolderIdIndex1581708415836 {
     constructor() {
         this.name = 'driveUserFolderIdIndex1581708415836';
     }
@@ -11,4 +11,3 @@ class driveUserFolderIdIndex1581708415836 {
         await queryRunner.query(`DROP INDEX "IDX_55720b33a61a7c806a8215b825"`, undefined);
     }
 }
-exports.driveUserFolderIdIndex1581708415836 = driveUserFolderIdIndex1581708415836;
