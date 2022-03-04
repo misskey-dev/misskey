@@ -35,7 +35,7 @@ export default class FederationChart extends Chart<typeof schema> {
 			Followings.createQueryBuilder('following')
 				.select('COUNT(DISTINCT following.followeeHost)')
 				.where('following.followeeHost IS NOT NULL')
-				.andWhere(`following.followerHost IN (${ pubsubSubQuery.getQuery() })`)
+				.andWhere(`following.followeeHost IN (${ pubsubSubQuery.getQuery() })`)
 				.setParameters(pubsubSubQuery.getParameters())
 				.getRawOne()
 				.then(x => parseInt(x.count, 10)),
