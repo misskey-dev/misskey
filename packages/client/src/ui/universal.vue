@@ -239,8 +239,6 @@ const wallpaper = localStorage.getItem('wallpaper') != null;
 }
 
 .dkgtipfy {
-	--buttons-height: calc(env(safe-area-inset-bottom, 0px) + 96px);
-
 	$ui-font-size: 1em; // TODO: どこかに集約したい
 	$widgets-hide-threshold: 1090px;
 
@@ -267,7 +265,7 @@ const wallpaper = localStorage.getItem('wallpaper') != null;
 			min-width: 0;
 
 			> .spacer {
-				height: var(--buttons-height);
+				height: calc(env(safe-area-inset-bottom, 0px) + 96px);
 
 				@media (min-width: ($widgets-hide-threshold + 1px)) {
 					display: none;
