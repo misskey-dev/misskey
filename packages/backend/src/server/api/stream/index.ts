@@ -1,21 +1,20 @@
-import autobind from 'autobind-decorator';
 import * as websocket from 'websocket';
-import { readNotification } from '../common/read-notification';
-import call from '../call';
-import readNote from '@/services/note/read';
-import Channel from './channel';
-import channels from './channels/index';
+import { readNotification } from '../common/read-notification.js';
+import call from '../call.js';
+import readNote from '@/services/note/read.js';
+import Channel from './channel.js';
+import channels from './channels/index.js';
 import { EventEmitter } from 'events';
-import { User } from '@/models/entities/user';
-import { Channel as ChannelModel } from '@/models/entities/channel';
-import { Users, Followings, Mutings, UserProfiles, ChannelFollowings, Blockings } from '@/models/index';
-import { ApiError } from '../error';
-import { AccessToken } from '@/models/entities/access-token';
-import { UserProfile } from '@/models/entities/user-profile';
-import { publishChannelStream, publishGroupMessagingStream, publishMessagingStream } from '@/services/stream';
-import { UserGroup } from '@/models/entities/user-group';
-import { StreamEventEmitter, StreamMessages } from './types';
-import { Packed } from '@/misc/schema';
+import { User } from '@/models/entities/user.js';
+import { Channel as ChannelModel } from '@/models/entities/channel.js';
+import { Users, Followings, Mutings, UserProfiles, ChannelFollowings, Blockings } from '@/models/index.js';
+import { ApiError } from '../error.js';
+import { AccessToken } from '@/models/entities/access-token.js';
+import { UserProfile } from '@/models/entities/user-profile.js';
+import { publishChannelStream, publishGroupMessagingStream, publishMessagingStream } from '@/services/stream.js';
+import { UserGroup } from '@/models/entities/user-group.js';
+import { StreamEventEmitter, StreamMessages } from './types.js';
+import { Packed } from '@/misc/schema.js';
 
 /**
  * Main stream connection
@@ -38,12 +37,17 @@ export default class Connection {
 		wsConnection: websocket.connection,
 		subscriber: EventEmitter,
 		user: User | null | undefined,
-		token: AccessToken | null | undefined
+		token: AccessToken | null | undefined,
 	) {
 		this.wsConnection = wsConnection;
 		this.subscriber = subscriber;
 		if (user) this.user = user;
 		if (token) this.token = token;
+
+		this.onWsConnectionMessage = this.onWsConnectionMessage.bind(this);
+		this.onUserEvent = this.onUserEvent.bind(this);
+		this.onNoteStreamMessage = this.onNoteStreamMessage.bind(this);
+		this.onBroadcastMessage = this.onBroadcastMessage.bind(this);
 
 		this.wsConnection.on('message', this.onWsConnectionMessage);
 
@@ -62,7 +66,6 @@ export default class Connection {
 		}
 	}
 
-	@autobind
 	private onUserEvent(data: StreamMessages['user']['payload']) { // { type, body }と展開するとそれぞれ型が分離してしまう
 		switch (data.type) {
 			case 'follow':
@@ -108,8 +111,8 @@ export default class Connection {
 	/**
 	 * クライアントからメッセージ受信時
 	 */
-	@autobind
-	private async onWsConnectionMessage(data: websocket.IMessage) {
+	private async onWsConnectionMessage(data: websocket.Message) {
+		if (data.type !== 'utf8') return;
 		if (data.utf8Data == null) return;
 
 		let obj: Record<string, any>;
@@ -143,12 +146,10 @@ export default class Connection {
 		}
 	}
 
-	@autobind
 	private onBroadcastMessage(data: StreamMessages['broadcast']['payload']) {
 		this.sendMessageToWs(data.type, data.body);
 	}
 
-	@autobind
 	public cacheNote(note: Packed<'Note'>) {
 		const add = (note: Packed<'Note'>) => {
 			const existIndex = this.cachedNotes.findIndex(n => n.id === note.id);
@@ -168,7 +169,6 @@ export default class Connection {
 		if (note.renote) add(note.renote);
 	}
 
-	@autobind
 	private readNote(body: any) {
 		const id = body.id;
 
@@ -186,7 +186,6 @@ export default class Connection {
 	/**
 	 * APIリクエスト要求時
 	 */
-	@autobind
 	private async onApiRequest(payload: any) {
 		// 新鮮なデータを利用するためにユーザーをフェッチ
 		const user = this.user ? await Users.findOne(this.user.id) : null;
@@ -209,7 +208,6 @@ export default class Connection {
 		});
 	}
 
-	@autobind
 	private onReadNotification(payload: any) {
 		if (!payload.id) return;
 		readNotification(this.user!.id, [payload.id]);
@@ -218,7 +216,6 @@ export default class Connection {
 	/**
 	 * 投稿購読要求時
 	 */
-	@autobind
 	private onSubscribeNote(payload: any) {
 		if (!payload.id) return;
 
@@ -236,7 +233,6 @@ export default class Connection {
 	/**
 	 * 投稿購読解除要求時
 	 */
-	@autobind
 	private onUnsubscribeNote(payload: any) {
 		if (!payload.id) return;
 
@@ -247,7 +243,6 @@ export default class Connection {
 		}
 	}
 
-	@autobind
 	private async onNoteStreamMessage(data: StreamMessages['note']['payload']) {
 		this.sendMessageToWs('noteUpdated', {
 			id: data.body.id,
@@ -259,7 +254,6 @@ export default class Connection {
 	/**
 	 * チャンネル接続要求時
 	 */
-	@autobind
 	private onChannelConnectRequested(payload: any) {
 		const { channel, id, params, pong } = payload;
 		this.connectChannel(id, params, channel, pong);
@@ -268,7 +262,6 @@ export default class Connection {
 	/**
 	 * チャンネル切断要求時
 	 */
-	@autobind
 	private onChannelDisconnectRequested(payload: any) {
 		const { id } = payload;
 		this.disconnectChannel(id);
@@ -277,7 +270,6 @@ export default class Connection {
 	/**
 	 * クライアントにメッセージ送信
 	 */
-	@autobind
 	public sendMessageToWs(type: string, payload: any) {
 		this.wsConnection.send(JSON.stringify({
 			type: type,
@@ -288,7 +280,6 @@ export default class Connection {
 	/**
 	 * チャンネルに接続
 	 */
-	@autobind
 	public connectChannel(id: string, params: any, channel: string, pong = false) {
 		if ((channels as any)[channel].requireCredential && this.user == null) {
 			return;
@@ -314,7 +305,6 @@ export default class Connection {
 	 * チャンネルから切断
 	 * @param id チャンネルコネクションID
 	 */
-	@autobind
 	public disconnectChannel(id: string) {
 		const channel = this.channels.find(c => c.id === id);
 
@@ -328,7 +318,6 @@ export default class Connection {
 	 * チャンネルへメッセージ送信要求時
 	 * @param data メッセージ
 	 */
-	@autobind
 	private onChannelMessageRequested(data: any) {
 		const channel = this.channels.find(c => c.id === data.id);
 		if (channel != null && channel.onMessage != null) {
@@ -336,14 +325,12 @@ export default class Connection {
 		}
 	}
 
-	@autobind
 	private typingOnChannel(channel: ChannelModel['id']) {
 		if (this.user) {
 			publishChannelStream(channel, 'typing', this.user.id);
 		}
 	}
 
-	@autobind
 	private typingOnMessaging(param: { partner?: User['id']; group?: UserGroup['id']; }) {
 		if (this.user) {
 			if (param.partner) {
@@ -354,7 +341,6 @@ export default class Connection {
 		}
 	}
 
-	@autobind
 	private async updateFollowing() {
 		const followings = await Followings.find({
 			where: {
@@ -366,7 +352,6 @@ export default class Connection {
 		this.following = new Set<string>(followings.map(x => x.followeeId));
 	}
 
-	@autobind
 	private async updateMuting() {
 		const mutings = await Mutings.find({
 			where: {
@@ -378,7 +363,6 @@ export default class Connection {
 		this.muting = new Set<string>(mutings.map(x => x.muteeId));
 	}
 
-	@autobind
 	private async updateBlocking() { // ここでいうBlockingは被Blockingの意
 		const blockings = await Blockings.find({
 			where: {
@@ -390,7 +374,6 @@ export default class Connection {
 		this.blocking = new Set<string>(blockings.map(x => x.blockerId));
 	}
 
-	@autobind
 	private async updateFollowingChannels() {
 		const followings = await ChannelFollowings.find({
 			where: {
@@ -402,7 +385,6 @@ export default class Connection {
 		this.followingChannels = new Set<string>(followings.map(x => x.followeeId));
 	}
 
-	@autobind
 	private async updateUserProfile() {
 		this.userProfile = await UserProfiles.findOne({
 			userId: this.user!.id,
@@ -412,7 +394,6 @@ export default class Connection {
 	/**
 	 * ストリームが切れたとき
 	 */
-	@autobind
 	public dispose() {
 		for (const c of this.channels.filter(c => c.dispose)) {
 			if (c.dispose) c.dispose();

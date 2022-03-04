@@ -1,5 +1,5 @@
 import validateEmail from 'deep-email-validator';
-import { UserProfiles } from '@/models';
+import { UserProfiles } from '@/models/index.js';
 
 export async function validateEmailForAccount(emailAddress: string): Promise<{
 	available: boolean;

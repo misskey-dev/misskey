@@ -1,28 +1,17 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
-import define from '../../define';
-import { getNote } from '../../common/getters';
-import { ApiError } from '../../error';
+import define from '../../define.js';
+import { getNote } from '../../common/getters.js';
+import { ApiError } from '../../error.js';
 import fetch from 'node-fetch';
-import config from '@/config/index';
-import { getAgentByUrl } from '@/misc/fetch';
-import { URLSearchParams } from 'url';
-import { fetchMeta } from '@/misc/fetch-meta';
-import { Notes } from '@/models';
+import config from '@/config/index.js';
+import { getAgentByUrl } from '@/misc/fetch.js';
+import { URLSearchParams } from 'node:url';
+import { fetchMeta } from '@/misc/fetch-meta.js';
+import { Notes } from '@/models/index.js';
 
 export const meta = {
 	tags: ['notes'],
 
 	requireCredential: false,
-
-	params: {
-		noteId: {
-			validator: $.type(ID),
-		},
-		targetLang: {
-			validator: $.str,
-		},
-	},
 
 	res: {
 		type: 'object',
@@ -38,8 +27,17 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		noteId: { type: 'string', format: 'misskey:id' },
+		targetLang: { type: 'string' },
+	},
+	required: ['noteId', 'targetLang'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const note = await getNote(ps.noteId).catch(e => {
 		if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
 		throw e;

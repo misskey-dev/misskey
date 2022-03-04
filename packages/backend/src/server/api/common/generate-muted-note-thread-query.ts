@@ -1,5 +1,5 @@
-import { User } from '@/models/entities/user';
-import { NoteThreadMutings } from '@/models/index';
+import { User } from '@/models/entities/user.js';
+import { NoteThreadMutings } from '@/models/index.js';
 import { Brackets, SelectQueryBuilder } from 'typeorm';
 
 export function generateMutedNoteThreadQuery(q: SelectQueryBuilder<any>, me: { id: User['id'] }) {

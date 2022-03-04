@@ -1,5 +1,5 @@
-import { User } from '@/models/entities/user';
-import { Blockings } from '@/models/index';
+import { User } from '@/models/entities/user.js';
+import { Blockings } from '@/models/index.js';
 import { Brackets, SelectQueryBuilder } from 'typeorm';
 
 // ここでいうBlockedは被Blockedの意

@@ -1,45 +1,19 @@
-import autobind from 'autobind-decorator';
-import Chart, { Obj, DeepPartial } from '../core';
-import { User } from '@/models/entities/user';
-import { SchemaType } from '@/misc/schema';
-import { Notes } from '@/models/index';
-import { Note } from '@/models/entities/note';
-import { name, schema } from './entities/per-user-notes';
-
-type PerUserNotesLog = SchemaType<typeof schema>;
+import Chart, { KVs } from '../core.js';
+import { User } from '@/models/entities/user.js';
+import { Notes } from '@/models/index.js';
+import { Note } from '@/models/entities/note.js';
+import { name, schema } from './entities/per-user-notes.js';
 
 /**
  * ユーザーごとのノートに関するチャート
  */
 // eslint-disable-next-line import/no-default-export
-export default class PerUserNotesChart extends Chart<PerUserNotesLog> {
+export default class PerUserNotesChart extends Chart<typeof schema> {
 	constructor() {
 		super(name, schema, true);
 	}
 
-	@autobind
-	protected genNewLog(latest: PerUserNotesLog): DeepPartial<PerUserNotesLog> {
-		return {
-			total: latest.total,
-		};
-	}
-
-	@autobind
-	protected aggregate(logs: PerUserNotesLog[]): PerUserNotesLog {
-		return {
-			total: logs[0].total,
-			inc: logs.reduce((a, b) => a + b.inc, 0),
-			dec: logs.reduce((a, b) => a + b.dec, 0),
-			diffs: {
-				reply: logs.reduce((a, b) => a + b.diffs.reply, 0),
-				renote: logs.reduce((a, b) => a + b.diffs.renote, 0),
-				normal: logs.reduce((a, b) => a + b.diffs.normal, 0),
-			},
-		};
-	}
-
-	@autobind
-	protected async fetchActual(group: string): Promise<DeepPartial<PerUserNotesLog>> {
+	protected async tickMajor(group: string): Promise<Partial<KVs<typeof schema>>> {
 		const [count] = await Promise.all([
 			Notes.count({ userId: group }),
 		]);
@@ -49,28 +23,19 @@ export default class PerUserNotesChart extends Chart<PerUserNotesLog> {
 		};
 	}
 
-	@autobind
+	protected async tickMinor(): Promise<Partial<KVs<typeof schema>>> {
+		return {};
+	}
+
 	public async update(user: { id: User['id'] }, note: Note, isAdditional: boolean): Promise<void> {
-		const update: Obj = {
-			diffs: {},
-		};
-
-		update.total = isAdditional ? 1 : -1;
-
-		if (isAdditional) {
-			update.inc = 1;
-		} else {
-			update.dec = 1;
-		}
-
-		if (note.replyId != null) {
-			update.diffs.reply = isAdditional ? 1 : -1;
-		} else if (note.renoteId != null) {
-			update.diffs.renote = isAdditional ? 1 : -1;
-		} else {
-			update.diffs.normal = isAdditional ? 1 : -1;
-		}
-
-		await this.inc(update, user.id);
+		await this.commit({
+			'total': isAdditional ? 1 : -1,
+			'inc': isAdditional ? 1 : 0,
+			'dec': isAdditional ? 0 : 1,
+			'diffs.normal': note.replyId == null && note.renoteId == null ? (isAdditional ? 1 : -1) : 0,
+			'diffs.renote': note.renoteId != null ? (isAdditional ? 1 : -1) : 0,
+			'diffs.reply': note.replyId != null ? (isAdditional ? 1 : -1) : 0,
+			'diffs.withFile': note.fileIds.length > 0 ? (isAdditional ? 1 : -1) : 0,
+		}, user.id);
 	}
 }

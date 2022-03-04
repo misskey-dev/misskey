@@ -1,21 +1,13 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
-import define from '../../define';
-import * as bcrypt from 'bcryptjs';
+import define from '../../define.js';
+import bcrypt from 'bcryptjs';
 import rndstr from 'rndstr';
-import { Users, UserProfiles } from '@/models/index';
+import { Users, UserProfiles } from '@/models/index.js';
 
 export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
 	requireModerator: true,
-
-	params: {
-		userId: {
-			validator: $.type(ID),
-		},
-	},
 
 	res: {
 		type: 'object',
@@ -31,8 +23,16 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		userId: { type: 'string', format: 'misskey:id' },
+	},
+	required: ['userId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps) => {
+export default define(meta, paramDef, async (ps) => {
 	const user = await Users.findOne(ps.userId as string);
 
 	if (user == null) {

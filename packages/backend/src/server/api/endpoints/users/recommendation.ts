@@ -1,9 +1,8 @@
 import ms from 'ms';
-import $ from 'cafy';
-import define from '../../define';
-import { Users, Followings } from '@/models/index';
-import { generateMutedUserQueryForUsers } from '../../common/generate-muted-user-query';
-import { generateBlockedUserQuery, generateBlockQueryForUsers } from '../../common/generate-block-query';
+import define from '../../define.js';
+import { Users, Followings } from '@/models/index.js';
+import { generateMutedUserQueryForUsers } from '../../common/generate-muted-user-query.js';
+import { generateBlockedUserQuery, generateBlockQueryForUsers } from '../../common/generate-block-query.js';
 
 export const meta = {
 	tags: ['users'],
@@ -11,18 +10,6 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'read:account',
-
-	params: {
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
-		},
-
-		offset: {
-			validator: $.optional.num.min(0),
-			default: 0,
-		},
-	},
 
 	res: {
 		type: 'array',
@@ -35,8 +22,17 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+		offset: { type: 'integer', default: 0 },
+	},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	const query = Users.createQueryBuilder('user')
 		.where('user.isLocked = FALSE')
 		.andWhere('user.isExplorable = TRUE')
@@ -58,7 +54,7 @@ export default define(meta, async (ps, me) => {
 
 	query.setParameters(followingQuery.getParameters());
 
-	const users = await query.take(ps.limit!).skip(ps.offset).getMany();
+	const users = await query.take(ps.limit).skip(ps.offset).getMany();
 
 	return await Users.packMany(users, me, { detail: true });
 });

@@ -1,4 +1,4 @@
-import define from '../../define';
+import define from '../../define.js';
 import { getConnection } from 'typeorm';
 
 export const meta = {
@@ -6,9 +6,6 @@ export const meta = {
 	requireModerator: true,
 
 	tags: ['admin'],
-
-	params: {
-	},
 
 	res: {
 		type: 'object',
@@ -22,8 +19,14 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async () => {
+export default define(meta, paramDef, async () => {
 	const sizes = await
 		getConnection().query(`
 			SELECT relname AS "table", reltuples as "count", pg_total_relation_size(C.oid) AS "size"

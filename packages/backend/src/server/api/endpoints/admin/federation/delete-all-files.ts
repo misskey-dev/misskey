@@ -1,23 +1,24 @@
-import $ from 'cafy';
-import define from '../../../define';
-import { deleteFile } from '@/services/drive/delete-file';
-import { DriveFiles } from '@/models/index';
+import define from '../../../define.js';
+import { deleteFile } from '@/services/drive/delete-file.js';
+import { DriveFiles } from '@/models/index.js';
 
 export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
 	requireModerator: true,
+} as const;
 
-	params: {
-		host: {
-			validator: $.str,
-		},
+export const paramDef = {
+	type: 'object',
+	properties: {
+		host: { type: 'string' },
 	},
+	required: ['host'],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	const files = await DriveFiles.find({
 		userHost: ps.host,
 	});

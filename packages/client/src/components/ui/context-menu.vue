@@ -1,88 +1,71 @@
 <template>
 <transition :name="$store.state.animation ? 'fade' : ''" appear>
-	<div class="nvlagfpb" :style="{ zIndex }" @contextmenu.prevent.stop="() => {}">
+	<div ref="rootEl" class="nvlagfpb" :style="{ zIndex }" @contextmenu.prevent.stop="() => {}">
 		<MkMenu :items="items" class="_popup _shadow" :align="'left'" @close="$emit('closed')"/>
 	</div>
 </transition>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { onMounted, onBeforeUnmount } from 'vue';
 import contains from '@/scripts/contains';
 import MkMenu from './menu.vue';
+import { MenuItem } from './types/menu.vue';
 import * as os from '@/os';
 
-export default defineComponent({
-	components: {
-		MkMenu,
-	},
-	props: {
-		items: {
-			type: Array,
-			required: true
-		},
-		ev: {
-			required: true
-		},
-		viaKeyboard: {
-			type: Boolean,
-			required: false
-		},
-	},
-	emits: ['closed'],
-	data() {
-		return {
-			zIndex: os.claimZIndex('high'),
-		};
-	},
-	computed: {
-		keymap(): any {
-			return {
-				'esc': () => this.$emit('closed'),
-			};
-		},
-	},
-	mounted() {
-		let left = this.ev.pageX + 1; // 間違って右ダブルクリックした場合に意図せずアイテムがクリックされるのを防ぐため + 1
-		let top = this.ev.pageY + 1; // 間違って右ダブルクリックした場合に意図せずアイテムがクリックされるのを防ぐため + 1
+const props = defineProps<{
+	items: MenuItem[];
+	ev: MouseEvent;
+}>();
 
-		const width = this.$el.offsetWidth;
-		const height = this.$el.offsetHeight;
+const emit = defineEmits<{
+	(e: 'closed'): void;
+}>();
 
-		if (left + width - window.pageXOffset > window.innerWidth) {
-			left = window.innerWidth - width + window.pageXOffset;
-		}
+let rootEl = $ref<HTMLDivElement>();
 
-		if (top + height - window.pageYOffset > window.innerHeight) {
-			top = window.innerHeight - height + window.pageYOffset;
-		}
+let zIndex = $ref<number>(os.claimZIndex('high'));
 
-		if (top < 0) {
-			top = 0;
-		}
+onMounted(() => {
+	let left = props.ev.pageX + 1; // 間違って右ダブルクリックした場合に意図せずアイテムがクリックされるのを防ぐため + 1
+	let top = props.ev.pageY + 1; // 間違って右ダブルクリックした場合に意図せずアイテムがクリックされるのを防ぐため + 1
 
-		if (left < 0) {
-			left = 0;
-		}
+	const width = rootEl.offsetWidth;
+	const height = rootEl.offsetHeight;
 
-		this.$el.style.top = top + 'px';
-		this.$el.style.left = left + 'px';
+	if (left + width - window.pageXOffset > window.innerWidth) {
+		left = window.innerWidth - width + window.pageXOffset;
+	}
 
-		for (const el of Array.from(document.querySelectorAll('body *'))) {
-			el.addEventListener('mousedown', this.onMousedown);
-		}
-	},
-	beforeUnmount() {
-		for (const el of Array.from(document.querySelectorAll('body *'))) {
-			el.removeEventListener('mousedown', this.onMousedown);
-		}
-	},
-	methods: {
-		onMousedown(e) {
-			if (!contains(this.$el, e.target) && (this.$el != e.target)) this.$emit('closed');
-		},
+	if (top + height - window.pageYOffset > window.innerHeight) {
+		top = window.innerHeight - height + window.pageYOffset;
+	}
+
+	if (top < 0) {
+		top = 0;
+	}
+
+	if (left < 0) {
+		left = 0;
+	}
+
+	rootEl.style.top = `${top}px`;
+	rootEl.style.left = `${left}px`;
+
+	for (const el of Array.from(document.querySelectorAll('body *'))) {
+		el.addEventListener('mousedown', onMousedown);
 	}
 });
+
+onBeforeUnmount(() => {
+	for (const el of Array.from(document.querySelectorAll('body *'))) {
+		el.removeEventListener('mousedown', onMousedown);
+	}
+});
+
+function onMousedown(e: Event) {
+	if (!contains(rootEl, e.target) && (rootEl != e.target)) emit('closed');
+}
 </script>
 
 <style lang="scss" scoped>

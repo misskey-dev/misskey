@@ -1,11 +1,9 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
 import ms from 'ms';
-import create from '@/services/blocking/create';
-import define from '../../define';
-import { ApiError } from '../../error';
-import { getUser } from '../../common/getters';
-import { Blockings, NoteWatchings, Users } from '@/models/index';
+import create from '@/services/blocking/create.js';
+import define from '../../define.js';
+import { ApiError } from '../../error.js';
+import { getUser } from '../../common/getters.js';
+import { Blockings, NoteWatchings, Users } from '@/models/index.js';
 
 export const meta = {
 	tags: ['account'],
@@ -18,12 +16,6 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'write:blocks',
-
-	params: {
-		userId: {
-			validator: $.type(ID),
-		},
-	},
 
 	errors: {
 		noSuchUser: {
@@ -52,8 +44,16 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		userId: { type: 'string', format: 'misskey:id' },
+	},
+	required: ['userId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const blocker = await Users.findOneOrFail(user.id);
 
 	// 自分自身

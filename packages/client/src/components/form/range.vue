@@ -117,7 +117,7 @@ export default defineComponent({
 				text: computed(() => {
 					return props.textConverter(finalValue.value);
 				}),
-				source: thumbEl,
+				targetElement: thumbEl,
 			}, {}, 'closed');
 
 			const style = document.createElement('style');

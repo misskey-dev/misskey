@@ -1,13 +1,13 @@
-import * as fs from 'fs';
-import * as stream from 'stream';
-import * as util from 'util';
+import * as fs from 'node:fs';
+import * as stream from 'node:stream';
+import * as util from 'node:util';
 import got, * as Got from 'got';
-import { httpAgent, httpsAgent, StatusError } from './fetch';
-import config from '@/config/index';
-import * as chalk from 'chalk';
-import Logger from '@/services/logger';
+import { httpAgent, httpsAgent, StatusError } from './fetch.js';
+import config from '@/config/index.js';
+import chalk from 'chalk';
+import Logger from '@/services/logger.js';
 import * as IPCIDR from 'ip-cidr';
-const PrivateIp = require('private-ip');
+import PrivateIp from 'private-ip';
 
 const pipeline = util.promisify(stream.pipeline);
 
@@ -38,7 +38,9 @@ export async function downloadUrl(url: string, path: string): Promise<void> {
 			https: httpsAgent,
 		},
 		http2: false,	// default
-		retry: 0,
+		retry: {
+			limit: 0,
+		},
 	}).on('response', (res: Got.Response) => {
 		if ((process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test') && !config.proxy && res.ip) {
 			if (isPrivateIp(res.ip)) {
@@ -75,7 +77,7 @@ export async function downloadUrl(url: string, path: string): Promise<void> {
 	logger.succ(`Download finished: ${chalk.cyan(url)}`);
 }
 
-function isPrivateIp(ip: string) {
+function isPrivateIp(ip: string): boolean {
 	for (const net of config.allowedPrivateNetworks || []) {
 		const cidr = new IPCIDR(net);
 		if (cidr.contains(ip)) {

@@ -1,7 +1,7 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { NoteFavorite } from '@/models/entities/note-favorite';
-import { Notes } from '../index';
-import { User } from '@/models/entities/user';
+import { NoteFavorite } from '@/models/entities/note-favorite.js';
+import { Notes } from '../index.js';
+import { User } from '@/models/entities/user.js';
 
 @EntityRepository(NoteFavorite)
 export class NoteFavoriteRepository extends Repository<NoteFavorite> {
@@ -13,7 +13,7 @@ export class NoteFavoriteRepository extends Repository<NoteFavorite> {
 
 		return {
 			id: favorite.id,
-			createdAt: favorite.createdAt,
+			createdAt: favorite.createdAt.toISOString(),
 			noteId: favorite.noteId,
 			note: await Notes.pack(favorite.note || favorite.noteId, me),
 		};

@@ -1,76 +1,19 @@
-import autobind from 'autobind-decorator';
-import Chart, { Obj, DeepPartial } from '../core';
-import { SchemaType } from '@/misc/schema';
-import { Followings, Users } from '@/models/index';
+import Chart, { KVs } from '../core.js';
+import { Followings, Users } from '@/models/index.js';
 import { Not, IsNull } from 'typeorm';
-import { User } from '@/models/entities/user';
-import { name, schema } from './entities/per-user-following';
-
-type PerUserFollowingLog = SchemaType<typeof schema>;
+import { User } from '@/models/entities/user.js';
+import { name, schema } from './entities/per-user-following.js';
 
 /**
  * ユーザーごとのフォローに関するチャート
  */
 // eslint-disable-next-line import/no-default-export
-export default class PerUserFollowingChart extends Chart<PerUserFollowingLog> {
+export default class PerUserFollowingChart extends Chart<typeof schema> {
 	constructor() {
 		super(name, schema, true);
 	}
 
-	@autobind
-	protected genNewLog(latest: PerUserFollowingLog): DeepPartial<PerUserFollowingLog> {
-		return {
-			local: {
-				followings: {
-					total: latest.local.followings.total,
-				},
-				followers: {
-					total: latest.local.followers.total,
-				},
-			},
-			remote: {
-				followings: {
-					total: latest.remote.followings.total,
-				},
-				followers: {
-					total: latest.remote.followers.total,
-				},
-			},
-		};
-	}
-
-	@autobind
-	protected aggregate(logs: PerUserFollowingLog[]): PerUserFollowingLog {
-		return {
-			local: {
-				followings: {
-					total: logs[0].local.followings.total,
-					inc: logs.reduce((a, b) => a + b.local.followings.inc, 0),
-					dec: logs.reduce((a, b) => a + b.local.followings.dec, 0),
-				},
-				followers: {
-					total: logs[0].local.followers.total,
-					inc: logs.reduce((a, b) => a + b.local.followers.inc, 0),
-					dec: logs.reduce((a, b) => a + b.local.followers.dec, 0),
-				},
-			},
-			remote: {
-				followings: {
-					total: logs[0].remote.followings.total,
-					inc: logs.reduce((a, b) => a + b.remote.followings.inc, 0),
-					dec: logs.reduce((a, b) => a + b.remote.followings.dec, 0),
-				},
-				followers: {
-					total: logs[0].remote.followers.total,
-					inc: logs.reduce((a, b) => a + b.remote.followers.inc, 0),
-					dec: logs.reduce((a, b) => a + b.remote.followers.dec, 0),
-				},
-			},
-		};
-	}
-
-	@autobind
-	protected async fetchActual(group: string): Promise<DeepPartial<PerUserFollowingLog>> {
+	protected async tickMajor(group: string): Promise<Partial<KVs<typeof schema>>> {
 		const [
 			localFollowingsCount,
 			localFollowersCount,
@@ -84,42 +27,30 @@ export default class PerUserFollowingChart extends Chart<PerUserFollowingLog> {
 		]);
 
 		return {
-			local: {
-				followings: {
-					total: localFollowingsCount,
-				},
-				followers: {
-					total: localFollowersCount,
-				},
-			},
-			remote: {
-				followings: {
-					total: remoteFollowingsCount,
-				},
-				followers: {
-					total: remoteFollowersCount,
-				},
-			},
+			'local.followings.total': localFollowingsCount,
+			'local.followers.total': localFollowersCount,
+			'remote.followings.total': remoteFollowingsCount,
+			'remote.followers.total': remoteFollowersCount,
 		};
 	}
 
-	@autobind
+	protected async tickMinor(): Promise<Partial<KVs<typeof schema>>> {
+		return {};
+	}
+
 	public async update(follower: { id: User['id']; host: User['host']; }, followee: { id: User['id']; host: User['host']; }, isFollow: boolean): Promise<void> {
-		const update: Obj = {};
+		const prefixFollower = Users.isLocalUser(follower) ? 'local' : 'remote';
+		const prefixFollowee = Users.isLocalUser(followee) ? 'local' : 'remote';
 
-		update.total = isFollow ? 1 : -1;
-
-		if (isFollow) {
-			update.inc = 1;
-		} else {
-			update.dec = 1;
-		}
-
-		this.inc({
-			[Users.isLocalUser(follower) ? 'local' : 'remote']: { followings: update },
+		this.commit({
+			[`${prefixFollower}.followings.total`]: isFollow ? 1 : -1,
+			[`${prefixFollower}.followings.inc`]: isFollow ? 1 : 0,
+			[`${prefixFollower}.followings.dec`]: isFollow ? 0 : 1,
 		}, follower.id);
-		this.inc({
-			[Users.isLocalUser(followee) ? 'local' : 'remote']: { followers: update },
+		this.commit({
+			[`${prefixFollowee}.followers.total`]: isFollow ? 1 : -1,
+			[`${prefixFollowee}.followers.inc`]: isFollow ? 1 : 0,
+			[`${prefixFollowee}.followers.dec`]: isFollow ? 0 : 1,
 		}, followee.id);
 	}
 }

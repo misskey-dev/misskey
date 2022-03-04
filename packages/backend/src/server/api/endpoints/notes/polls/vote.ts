@@ -1,18 +1,16 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
-import { publishNoteStream } from '@/services/stream';
-import { createNotification } from '@/services/create-notification';
-import define from '../../../define';
-import { ApiError } from '../../../error';
-import { getNote } from '../../../common/getters';
-import { deliver } from '@/queue/index';
-import { renderActivity } from '@/remote/activitypub/renderer/index';
-import renderVote from '@/remote/activitypub/renderer/vote';
-import { deliverQuestionUpdate } from '@/services/note/polls/update';
-import { PollVotes, NoteWatchings, Users, Polls, Blockings } from '@/models/index';
+import { publishNoteStream } from '@/services/stream.js';
+import { createNotification } from '@/services/create-notification.js';
+import define from '../../../define.js';
+import { ApiError } from '../../../error.js';
+import { getNote } from '../../../common/getters.js';
+import { deliver } from '@/queue/index.js';
+import { renderActivity } from '@/remote/activitypub/renderer/index.js';
+import renderVote from '@/remote/activitypub/renderer/vote.js';
+import { deliverQuestionUpdate } from '@/services/note/polls/update.js';
+import { PollVotes, NoteWatchings, Users, Polls, Blockings } from '@/models/index.js';
 import { Not } from 'typeorm';
-import { IRemoteUser } from '@/models/entities/user';
-import { genId } from '@/misc/gen-id';
+import { IRemoteUser } from '@/models/entities/user.js';
+import { genId } from '@/misc/gen-id.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -20,16 +18,6 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'write:votes',
-
-	params: {
-		noteId: {
-			validator: $.type(ID),
-		},
-
-		choice: {
-			validator: $.num,
-		},
-	},
 
 	errors: {
 		noSuchNote: {
@@ -70,8 +58,17 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		noteId: { type: 'string', format: 'misskey:id' },
+		choice: { type: 'integer' },
+	},
+	required: ['noteId', 'choice'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const createdAt = new Date();
 
 	// Get votee

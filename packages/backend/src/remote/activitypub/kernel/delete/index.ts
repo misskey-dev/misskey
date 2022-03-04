@@ -1,8 +1,8 @@
-import deleteNote from './note';
-import { IRemoteUser } from '@/models/entities/user';
-import { IDelete, getApId, isTombstone, IObject, validPost, validActor } from '../../type';
-import { toSingle } from '@/prelude/array';
-import { deleteActor } from './actor';
+import deleteNote from './note.js';
+import { IRemoteUser } from '@/models/entities/user.js';
+import { IDelete, getApId, isTombstone, IObject, validPost, validActor } from '../../type.js';
+import { toSingle } from '@/prelude/array.js';
+import { deleteActor } from './actor.js';
 
 /**
  * 削除アクティビティを捌きます

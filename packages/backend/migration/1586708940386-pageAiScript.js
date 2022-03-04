@@ -1,6 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class pageAiScript1586708940386 {
+
+
+export class pageAiScript1586708940386 {
     constructor() {
         this.name = 'pageAiScript1586708940386';
     }
@@ -11,4 +11,3 @@ class pageAiScript1586708940386 {
         await queryRunner.query(`ALTER TABLE "page" DROP COLUMN "script"`, undefined);
     }
 }
-exports.pageAiScript1586708940386 = pageAiScript1586708940386;

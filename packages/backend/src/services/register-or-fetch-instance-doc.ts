@@ -1,9 +1,8 @@
-import { Instance } from '@/models/entities/instance';
-import { Instances } from '@/models/index';
-import { federationChart } from '@/services/chart/index';
-import { genId } from '@/misc/gen-id';
-import { toPuny } from '@/misc/convert-host';
-import { Cache } from '@/misc/cache';
+import { Instance } from '@/models/entities/instance.js';
+import { Instances } from '@/models/index.js';
+import { genId } from '@/misc/gen-id.js';
+import { toPuny } from '@/misc/convert-host.js';
+import { Cache } from '@/misc/cache.js';
 
 const cache = new Cache<Instance>(1000 * 60 * 60);
 
@@ -22,8 +21,6 @@ export async function registerOrFetchInstanceDoc(host: string): Promise<Instance
 			caughtAt: new Date(),
 			lastCommunicatedAt: new Date(),
 		}).then(x => Instances.findOneOrFail(x.identifiers[0]));
-
-		federationChart.update(true);
 
 		cache.set(host, i);
 		return i;

@@ -1,12 +1,10 @@
-import $ from 'cafy';
 import ms from 'ms';
-import define from '../../../define';
-import { ID } from '../../../../../misc/cafy-id';
-import { DriveFiles, GalleryPosts } from '@/models/index';
-import { genId } from '../../../../../misc/gen-id';
-import { GalleryPost } from '@/models/entities/gallery-post';
-import { ApiError } from '../../../error';
-import { DriveFile } from '@/models/entities/drive-file';
+import define from '../../../define.js';
+import { DriveFiles, GalleryPosts } from '@/models/index.js';
+import { genId } from '../../../../../misc/gen-id.js';
+import { GalleryPost } from '@/models/entities/gallery-post.js';
+import { ApiError } from '../../../error.js';
+import { DriveFile } from '@/models/entities/drive-file.js';
 
 export const meta = {
 	tags: ['gallery'],
@@ -20,25 +18,6 @@ export const meta = {
 		max: 300,
 	},
 
-	params: {
-		title: {
-			validator: $.str.min(1),
-		},
-
-		description: {
-			validator: $.optional.nullable.str,
-		},
-
-		fileIds: {
-			validator: $.arr($.type(ID)).unique().range(1, 32),
-		},
-
-		isSensitive: {
-			validator: $.optional.bool,
-			default: false,
-		},
-	},
-
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
@@ -50,8 +29,21 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		title: { type: 'string', minLength: 1 },
+		description: { type: 'string', nullable: true },
+		fileIds: { type: 'array', uniqueItems: true, minItems: 1, maxItems: 32, items: {
+			type: 'string', format: 'misskey:id',
+		} },
+		isSensitive: { type: 'boolean', default: false },
+	},
+	required: ['title', 'fileIds'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const files = (await Promise.all(ps.fileIds.map(fileId =>
 		DriveFiles.findOne({
 			id: fileId,

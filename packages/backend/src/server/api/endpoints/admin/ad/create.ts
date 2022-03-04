@@ -1,41 +1,30 @@
-import $ from 'cafy';
-import define from '../../../define';
-import { Ads } from '@/models/index';
-import { genId } from '@/misc/gen-id';
+import define from '../../../define.js';
+import { Ads } from '@/models/index.js';
+import { genId } from '@/misc/gen-id.js';
 
 export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
 	requireModerator: true,
+} as const;
 
-	params: {
-		url: {
-			validator: $.str.min(1),
-		},
-		memo: {
-			validator: $.str,
-		},
-		place: {
-			validator: $.str,
-		},
-		priority: {
-			validator: $.str,
-		},
-		ratio: {
-			validator: $.num.int().min(0),
-		},
-		expiresAt: {
-			validator: $.num.int(),
-		},
-		imageUrl: {
-			validator: $.str.min(1),
-		},
+export const paramDef = {
+	type: 'object',
+	properties: {
+		url: { type: 'string', minLength: 1 },
+		memo: { type: 'string' },
+		place: { type: 'string' },
+		priority: { type: 'string' },
+		ratio: { type: 'integer' },
+		expiresAt: { type: 'integer' },
+		imageUrl: { type: 'string', minLength: 1 },
 	},
+	required: ['url', 'memo', 'place', 'priority', 'ratio', 'expiresAt', 'imageUrl'],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps) => {
+export default define(meta, paramDef, async (ps) => {
 	await Ads.insert({
 		id: genId(),
 		createdAt: new Date(),

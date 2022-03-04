@@ -1,24 +1,12 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
-import define from '../../../define';
-import { ApiError } from '../../../error';
-import { DriveFiles } from '@/models/index';
+import define from '../../../define.js';
+import { ApiError } from '../../../error.js';
+import { DriveFiles } from '@/models/index.js';
 
 export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
 	requireModerator: true,
-
-	params: {
-		fileId: {
-			validator: $.optional.type(ID),
-		},
-
-		url: {
-			validator: $.optional.str,
-		},
-	},
 
 	errors: {
 		noSuchFile: {
@@ -161,8 +149,17 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		fileId: { type: 'string', format: 'misskey:id' },
+		url: { type: 'string' },
+	},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	const file = ps.fileId ? await DriveFiles.findOne(ps.fileId) : await DriveFiles.findOne({
 		where: [{
 			url: ps.url,

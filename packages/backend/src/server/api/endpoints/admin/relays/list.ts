@@ -1,14 +1,11 @@
-import define from '../../../define';
-import { listRelay } from '@/services/relay';
+import define from '../../../define.js';
+import { listRelay } from '@/services/relay.js';
 
 export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
 	requireModerator: true,
-
-	params: {
-	},
 
 	res: {
 		type: 'array',
@@ -42,7 +39,13 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	return await listRelay();
 });

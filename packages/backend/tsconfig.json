@@ -10,7 +10,7 @@
 		"declaration": false,
 		"sourceMap": false,
 		"target": "es2017",
-		"module": "commonjs",
+		"module": "es2020",
 		"moduleResolution": "node",
 		"allowSyntheticDefaultImports": true,
 		"removeComments": false,
@@ -30,7 +30,7 @@
 		"outDir": "./built",
 		"typeRoots": [
 			"./node_modules/@types",
-			"./@types"
+			"./src/@types"
 		],
 		"lib": [
 			"esnext"

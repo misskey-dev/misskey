@@ -1,17 +1,17 @@
-import * as Bull from 'bull';
+import Bull from 'bull';
 import * as tmp from 'tmp';
-import * as fs from 'fs';
+import * as fs from 'node:fs';
 
 import { ulid } from 'ulid';
-const mime = require('mime-types');
-const archiver = require('archiver');
-import { queueLogger } from '../../logger';
-import { addFile } from '@/services/drive/add-file';
-import * as dateFormat from 'dateformat';
-import { Users, Emojis } from '@/models/index';
-import {  } from '@/queue/types';
-import { downloadUrl } from '@/misc/download-url';
-import config from '@/config/index';
+import mime from 'mime-types';
+import archiver from 'archiver';
+import { queueLogger } from '../../logger.js';
+import { addFile } from '@/services/drive/add-file.js';
+import { format as dateFormat } from 'date-fns';
+import { Users, Emojis } from '@/models/index.js';
+import {  } from '@/queue/types.js';
+import { downloadUrl } from '@/misc/download-url.js';
+import config from '@/config/index.js';
 
 const logger = queueLogger.createSubLogger('export-custom-emojis');
 
@@ -75,7 +75,7 @@ export async function exportCustomEmojis(job: Bull.Job, done: () => void): Promi
 			await downloadUrl(emoji.originalUrl, emojiPath);
 			downloaded = true;
 		} catch (e) { // TODO: 何度か再試行
-			logger.error(e);
+			logger.error(e instanceof Error ? e : new Error(e as string));
 		}
 
 		if (!downloaded) {
@@ -110,7 +110,7 @@ export async function exportCustomEmojis(job: Bull.Job, done: () => void): Promi
 	archiveStream.on('close', async () => {
 		logger.succ(`Exported to: ${archivePath}`);
 
-		const fileName = 'custom-emojis-' + dateFormat(new Date(), 'yyyy-mm-dd-HH-MM-ss') + '.zip';
+		const fileName = 'custom-emojis-' + dateFormat(new Date(), 'yyyy-MM-dd-HH-mm-ss') + '.zip';
 		const driveFile = await addFile({ user, path: archivePath, name: fileName, force: true });
 
 		logger.succ(`Exported to: ${driveFile.id}`);

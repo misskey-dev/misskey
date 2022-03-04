@@ -1,10 +1,8 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
-import define from '../../define';
-import { ApiError } from '../../error';
-import { Channels, ChannelFollowings } from '@/models/index';
-import { genId } from '@/misc/gen-id';
-import { publishUserEvent } from '@/services/stream';
+import define from '../../define.js';
+import { ApiError } from '../../error.js';
+import { Channels, ChannelFollowings } from '@/models/index.js';
+import { genId } from '@/misc/gen-id.js';
+import { publishUserEvent } from '@/services/stream.js';
 
 export const meta = {
 	tags: ['channels'],
@@ -12,12 +10,6 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'write:channels',
-
-	params: {
-		channelId: {
-			validator: $.type(ID),
-		},
-	},
 
 	errors: {
 		noSuchChannel: {
@@ -28,8 +20,16 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		channelId: { type: 'string', format: 'misskey:id' },
+	},
+	required: ['channelId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const channel = await Channels.findOne({
 		id: ps.channelId,
 	});

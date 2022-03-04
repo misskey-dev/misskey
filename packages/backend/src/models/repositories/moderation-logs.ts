@@ -1,7 +1,7 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { Users } from '../index';
-import { ModerationLog } from '@/models/entities/moderation-log';
-import { awaitAll } from '@/prelude/await-all';
+import { Users } from '../index.js';
+import { ModerationLog } from '@/models/entities/moderation-log.js';
+import { awaitAll } from '@/prelude/await-all.js';
 
 @EntityRepository(ModerationLog)
 export class ModerationLogRepository extends Repository<ModerationLog> {
@@ -12,7 +12,7 @@ export class ModerationLogRepository extends Repository<ModerationLog> {
 
 		return await awaitAll({
 			id: log.id,
-			createdAt: log.createdAt,
+			createdAt: log.createdAt.toISOString(),
 			type: log.type,
 			info: log.info,
 			userId: log.userId,

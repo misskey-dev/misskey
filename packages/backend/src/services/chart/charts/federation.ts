@@ -1,66 +1,64 @@
-import autobind from 'autobind-decorator';
-import Chart, { Obj, DeepPartial } from '../core';
-import { SchemaType } from '@/misc/schema';
-import { Instances } from '@/models/index';
-import { name, schema } from './entities/federation';
-
-type FederationLog = SchemaType<typeof schema>;
+import Chart, { KVs } from '../core.js';
+import { Followings } from '@/models/index.js';
+import { name, schema } from './entities/federation.js';
 
 /**
  * フェデレーションに関するチャート
  */
 // eslint-disable-next-line import/no-default-export
-export default class FederationChart extends Chart<FederationLog> {
+export default class FederationChart extends Chart<typeof schema> {
 	constructor() {
 		super(name, schema);
 	}
 
-	@autobind
-	protected genNewLog(latest: FederationLog): DeepPartial<FederationLog> {
+	protected async tickMajor(): Promise<Partial<KVs<typeof schema>>> {
 		return {
-			instance: {
-				total: latest.instance.total,
-			},
 		};
 	}
 
-	@autobind
-	protected aggregate(logs: FederationLog[]): FederationLog {
-		return {
-			instance: {
-				total: logs[0].instance.total,
-				inc: logs.reduce((a, b) => a + b.instance.inc, 0),
-				dec: logs.reduce((a, b) => a + b.instance.dec, 0),
-			},
-		};
-	}
+	protected async tickMinor(): Promise<Partial<KVs<typeof schema>>> {
+		const pubsubSubQuery = Followings.createQueryBuilder('f')
+			.select('f.followerHost')
+			.where('f.followerHost IS NOT NULL');
 
-	@autobind
-	protected async fetchActual(): Promise<DeepPartial<FederationLog>> {
-		const [total] = await Promise.all([
-			Instances.count({}),
+		const [sub, pub, pubsub] = await Promise.all([
+			Followings.createQueryBuilder('following')
+				.select('COUNT(DISTINCT following.followeeHost)')
+				.where('following.followeeHost IS NOT NULL')
+				.getRawOne()
+				.then(x => parseInt(x.count, 10)),
+			Followings.createQueryBuilder('following')
+				.select('COUNT(DISTINCT following.followerHost)')
+				.where('following.followerHost IS NOT NULL')
+				.getRawOne()
+				.then(x => parseInt(x.count, 10)),
+			Followings.createQueryBuilder('following')
+				.select('COUNT(DISTINCT following.followeeHost)')
+				.where('following.followeeHost IS NOT NULL')
+				.andWhere(`following.followeeHost IN (${ pubsubSubQuery.getQuery() })`)
+				.setParameters(pubsubSubQuery.getParameters())
+				.getRawOne()
+				.then(x => parseInt(x.count, 10)),
 		]);
 
 		return {
-			instance: {
-				total: total,
-			},
+			'sub': sub,
+			'pub': pub,
+			'pubsub': pubsub,
 		};
 	}
 
-	@autobind
-	public async update(isAdditional: boolean): Promise<void> {
-		const update: Obj = {};
+	public async deliverd(host: string, succeeded: boolean): Promise<void> {
+		await this.commit(succeeded ? {
+			'deliveredInstances': [host],
+		} : {
+			'stalled': [host],
+		});
+	}
 
-		update.total = isAdditional ? 1 : -1;
-		if (isAdditional) {
-			update.inc = 1;
-		} else {
-			update.dec = 1;
-		}
-
-		await this.inc({
-			instance: update,
+	public async inbox(host: string): Promise<void> {
+		await this.commit({
+			'inboxInstances': [host],
 		});
 	}
 }

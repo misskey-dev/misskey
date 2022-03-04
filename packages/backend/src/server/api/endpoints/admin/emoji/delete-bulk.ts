@@ -1,26 +1,28 @@
-import $ from 'cafy';
-import define from '../../../define';
-import { ID } from '@/misc/cafy-id';
-import { Emojis } from '@/models/index';
+import define from '../../../define.js';
+import { Emojis } from '@/models/index.js';
 import { getConnection, In } from 'typeorm';
-import { insertModerationLog } from '@/services/insert-moderation-log';
-import { ApiError } from '../../../error';
+import { insertModerationLog } from '@/services/insert-moderation-log.js';
+import { ApiError } from '../../../error.js';
 
 export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
 	requireModerator: true,
+} as const;
 
-	params: {
-		ids: {
-			validator: $.arr($.type(ID)),
-		},
+export const paramDef = {
+	type: 'object',
+	properties: {
+		ids: { type: 'array', items: {
+			type: 'string', format: 'misskey:id',
+		} },
 	},
+	required: ['ids'],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	const emojis = await Emojis.find({
 		id: In(ps.ids),
 	});

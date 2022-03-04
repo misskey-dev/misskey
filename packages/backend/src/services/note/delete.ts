@@ -1,18 +1,18 @@
-import { publishNoteStream } from '@/services/stream';
-import renderDelete from '@/remote/activitypub/renderer/delete';
-import renderAnnounce from '@/remote/activitypub/renderer/announce';
-import renderUndo from '@/remote/activitypub/renderer/undo';
-import { renderActivity } from '@/remote/activitypub/renderer/index';
-import renderTombstone from '@/remote/activitypub/renderer/tombstone';
-import config from '@/config/index';
-import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
-import { User, ILocalUser, IRemoteUser } from '@/models/entities/user';
-import { Note, IMentionedRemoteUsers } from '@/models/entities/note';
-import { Notes, Users, Instances } from '@/models/index';
-import { notesChart, perUserNotesChart, instanceChart } from '@/services/chart/index';
-import { deliverToFollowers, deliverToUser } from '@/remote/activitypub/deliver-manager';
-import { countSameRenotes } from '@/misc/count-same-renotes';
-import { deliverToRelays } from '../relay';
+import { publishNoteStream } from '@/services/stream.js';
+import renderDelete from '@/remote/activitypub/renderer/delete.js';
+import renderAnnounce from '@/remote/activitypub/renderer/announce.js';
+import renderUndo from '@/remote/activitypub/renderer/undo.js';
+import { renderActivity } from '@/remote/activitypub/renderer/index.js';
+import renderTombstone from '@/remote/activitypub/renderer/tombstone.js';
+import config from '@/config/index.js';
+import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc.js';
+import { User, ILocalUser, IRemoteUser } from '@/models/entities/user.js';
+import { Note, IMentionedRemoteUsers } from '@/models/entities/note.js';
+import { Notes, Users, Instances } from '@/models/index.js';
+import { notesChart, perUserNotesChart, instanceChart } from '@/services/chart/index.js';
+import { deliverToFollowers, deliverToUser } from '@/remote/activitypub/deliver-manager.js';
+import { countSameRenotes } from '@/misc/count-same-renotes.js';
+import { deliverToRelays } from '../relay.js';
 import { Brackets, In } from 'typeorm';
 
 /**
@@ -39,7 +39,7 @@ export default async function(user: User, note: Note, quiet = false) {
 			let renote: Note | undefined;
 
 			// if deletd note is renote
-			if (note.renoteId && note.text == null && !note.hasPoll && (note.fileIds == null || note.fileIds.length == 0)) {
+			if (note.renoteId && note.text == null && !note.hasPoll && (note.fileIds == null || note.fileIds.length === 0)) {
 				renote = await Notes.findOne({
 					id: note.renoteId,
 				});

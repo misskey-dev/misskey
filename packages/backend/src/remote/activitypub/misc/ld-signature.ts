@@ -1,8 +1,8 @@
-import * as crypto from 'crypto';
+import * as crypto from 'node:crypto';
 import * as jsonld from 'jsonld';
-import { CONTEXTS } from './contexts';
+import { CONTEXTS } from './contexts.js';
 import fetch from 'node-fetch';
-import { httpAgent, httpsAgent } from '@/misc/fetch';
+import { httpAgent, httpsAgent } from '@/misc/fetch.js';
 
 // RsaSignature2017 based from https://github.com/transmute-industries/RsaSignature2017
 
@@ -24,7 +24,7 @@ export class LdSignature {
 		} as {
 			type: string;
 			creator: string;
-			domain: string;
+			domain?: string;
 			nonce: string;
 			created: string;
 		};
@@ -114,7 +114,7 @@ export class LdSignature {
 				Accept: 'application/ld+json, application/json',
 			},
 			timeout: this.loderTimeout,
-			agent: u => u.protocol == 'http:' ? httpAgent : httpsAgent,
+			agent: u => u.protocol === 'http:' ? httpAgent : httpsAgent,
 		}).then(res => {
 			if (!res.ok) {
 				throw `${res.status} ${res.statusText}`;

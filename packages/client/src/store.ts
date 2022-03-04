@@ -17,7 +17,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	keepCw: {
 		where: 'account',
-		default: false
+		default: true
 	},
 	showFullAcct: {
 		where: 'account',
@@ -42,6 +42,10 @@ export const defaultStore = markRaw(new Storage('base', {
 	pastedFileName: {
 		where: 'account',
 		default: 'yyyy-MM-dd HH-mm-ss [{{number}}]'
+	},
+	keepOriginalUploading: {
+		where: 'account',
+		default: false
 	},
 	memo: {
 		where: 'account',
@@ -102,6 +106,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		}
 	},
 
+	overridedDeviceKind: {
+		where: 'device',
+		default: null as null | 'smartphone' | 'tablet' | 'desktop',
+	},
 	serverDisconnectedBehavior: {
 		where: 'device',
 		default: 'quiet' as 'quiet' | 'reload' | 'dialog'
@@ -174,6 +182,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: 'remote' as 'none' | 'remote' | 'always'
 	},
+	reactionPickerSize: {
+		where: 'device',
+		default: 1
+	},
 	reactionPickerWidth: {
 		where: 'device',
 		default: 1
@@ -217,6 +229,10 @@ export const defaultStore = markRaw(new Storage('base', {
 	postFormHashtags: {
 		where: 'device',
 		default: ''
+	},
+	themeInitial: {
+		where: 'device',
+		default: true,
 	},
 	aiChanMode: {
 		where: 'device',

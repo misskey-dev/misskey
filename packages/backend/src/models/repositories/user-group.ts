@@ -1,7 +1,7 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { UserGroup } from '@/models/entities/user-group';
-import { UserGroupJoinings } from '../index';
-import { Packed } from '@/misc/schema';
+import { UserGroup } from '@/models/entities/user-group.js';
+import { UserGroupJoinings } from '../index.js';
+import { Packed } from '@/misc/schema.js';
 
 @EntityRepository(UserGroup)
 export class UserGroupRepository extends Repository<UserGroup> {

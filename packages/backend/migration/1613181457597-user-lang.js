@@ -1,6 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class userLang1613181457597 {
+
+
+export class userLang1613181457597 {
     constructor() {
         this.name = 'userLang1613181457597';
     }
@@ -11,4 +11,3 @@ class userLang1613181457597 {
         await queryRunner.query(`ALTER TABLE "user_profile" DROP COLUMN "lang"`);
     }
 }
-exports.userLang1613181457597 = userLang1613181457597;

@@ -1,26 +1,9 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
-import define from '../../define';
-import { makePaginationQuery } from '../../common/make-pagination-query';
-import { GalleryPosts } from '@/models/index';
+import define from '../../define.js';
+import { makePaginationQuery } from '../../common/make-pagination-query.js';
+import { GalleryPosts } from '@/models/index.js';
 
 export const meta = {
 	tags: ['gallery'],
-
-	params: {
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
-		},
-
-		sinceId: {
-			validator: $.optional.type(ID),
-		},
-
-		untilId: {
-			validator: $.optional.type(ID),
-		},
-	},
 
 	res: {
 		type: 'array',
@@ -33,12 +16,22 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+		sinceId: { type: 'string', format: 'misskey:id' },
+		untilId: { type: 'string', format: 'misskey:id' },
+	},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	const query = makePaginationQuery(GalleryPosts.createQueryBuilder('post'), ps.sinceId, ps.untilId)
 		.innerJoinAndSelect('post.user', 'user');
 
-	const posts = await query.take(ps.limit!).getMany();
+	const posts = await query.take(ps.limit).getMany();
 
 	return await GalleryPosts.packMany(posts, me);
 });

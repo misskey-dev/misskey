@@ -1,25 +1,17 @@
-import $ from 'cafy';
-import define from '../../../define';
-import { Emojis, DriveFiles } from '@/models/index';
-import { genId } from '@/misc/gen-id';
+import define from '../../../define.js';
+import { Emojis, DriveFiles } from '@/models/index.js';
+import { genId } from '@/misc/gen-id.js';
 import { getConnection } from 'typeorm';
-import { insertModerationLog } from '@/services/insert-moderation-log';
-import { ApiError } from '../../../error';
-import { ID } from '@/misc/cafy-id';
+import { insertModerationLog } from '@/services/insert-moderation-log.js';
+import { ApiError } from '../../../error.js';
 import rndstr from 'rndstr';
-import { publishBroadcastStream } from '@/services/stream';
+import { publishBroadcastStream } from '@/services/stream.js';
 
 export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
 	requireModerator: true,
-
-	params: {
-		fileId: {
-			validator: $.type(ID),
-		},
-	},
 
 	errors: {
 		noSuchFile: {
@@ -30,8 +22,16 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		fileId: { type: 'string', format: 'misskey:id' },
+	},
+	required: ['fileId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	const file = await DriveFiles.findOne(ps.fileId);
 
 	if (file == null) throw new ApiError(meta.errors.noSuchFile);

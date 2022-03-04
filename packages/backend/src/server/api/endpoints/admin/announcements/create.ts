@@ -1,25 +1,12 @@
-import $ from 'cafy';
-import define from '../../../define';
-import { Announcements } from '@/models/index';
-import { genId } from '@/misc/gen-id';
+import define from '../../../define.js';
+import { Announcements } from '@/models/index.js';
+import { genId } from '@/misc/gen-id.js';
 
 export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
 	requireModerator: true,
-
-	params: {
-		title: {
-			validator: $.str.min(1),
-		},
-		text: {
-			validator: $.str.min(1),
-		},
-		imageUrl: {
-			validator: $.nullable.str.min(1),
-		},
-	},
 
 	res: {
 		type: 'object',
@@ -57,8 +44,18 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		title: { type: 'string', minLength: 1 },
+		text: { type: 'string', minLength: 1 },
+		imageUrl: { type: 'string', nullable: true, minLength: 1 },
+	},
+	required: ['title', 'text', 'imageUrl'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps) => {
+export default define(meta, paramDef, async (ps) => {
 	const announcement = await Announcements.insert({
 		id: genId(),
 		createdAt: new Date(),
@@ -68,5 +65,5 @@ export default define(meta, async (ps) => {
 		imageUrl: ps.imageUrl,
 	}).then(x => Announcements.findOneOrFail(x.identifiers[0]));
 
-	return announcement;
+	return Object.assign({}, announcement, { createdAt: announcement.createdAt.toISOString(), updatedAt: null });
 });

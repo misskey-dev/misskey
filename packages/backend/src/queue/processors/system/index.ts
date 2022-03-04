@@ -1,8 +1,12 @@
-import * as Bull from 'bull';
-import { resyncCharts } from './resync-charts';
+import Bull from 'bull';
+import { tickCharts } from './tick-charts.js';
+import { resyncCharts } from './resync-charts.js';
+import { cleanCharts } from './clean-charts.js';
 
 const jobs = {
+	tickCharts,
 	resyncCharts,
+	cleanCharts,
 } as Record<string, Bull.ProcessCallbackFunction<Record<string, unknown>> | Bull.ProcessPromiseFunction<Record<string, unknown>>>;
 
 export default function(dbQueue: Bull.Queue<Record<string, unknown>>) {

@@ -1,32 +1,11 @@
-import Chart from '../../core';
+import Chart from '../../core.js';
 
 export const name = 'test';
 
 export const schema = {
-	type: 'object' as const,
-	optional: false as const, nullable: false as const,
-	properties: {
-		foo: {
-			type: 'object' as const,
-			optional: false as const, nullable: false as const,
-			properties: {
-				total: {
-					type: 'number' as const,
-					optional: false as const, nullable: false as const,
-				},
-
-				inc: {
-					type: 'number' as const,
-					optional: false as const, nullable: false as const,
-				},
-
-				dec: {
-					type: 'number' as const,
-					optional: false as const, nullable: false as const,
-				},
-			},
-		},
-	},
-};
+	'foo.total': { accumulate: true },
+	'foo.inc': {},
+	'foo.dec': {},
+} as const;
 
 export const entity = Chart.schemaToEntity(name, schema);

@@ -1,6 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class TalkFederationId1576269851876 {
+
+
+export class TalkFederationId1576269851876 {
     constructor() {
         this.name = 'TalkFederationId1576269851876';
     }
@@ -11,4 +11,3 @@ class TalkFederationId1576269851876 {
         await queryRunner.query(`ALTER TABLE "messaging_message" DROP COLUMN "uri"`, undefined);
     }
 }
-exports.TalkFederationId1576269851876 = TalkFederationId1576269851876;

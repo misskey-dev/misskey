@@ -1,6 +1,6 @@
-import { Antennas } from '@/models/index';
-import { Antenna } from '@/models/entities/antenna';
-import { subsdcriber } from '../db/redis';
+import { Antennas } from '@/models/index.js';
+import { Antenna } from '@/models/entities/antenna.js';
+import { subsdcriber } from '../db/redis.js';
 
 let antennasFetched = false;
 let antennas: Antenna[] = [];

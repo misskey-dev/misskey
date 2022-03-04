@@ -1,39 +1,39 @@
 import * as mfm from 'mfm-js';
-import es from '../../db/elasticsearch';
-import { publishMainStream, publishNotesStream } from '@/services/stream';
-import DeliverManager from '@/remote/activitypub/deliver-manager';
-import renderNote from '@/remote/activitypub/renderer/note';
-import renderCreate from '@/remote/activitypub/renderer/create';
-import renderAnnounce from '@/remote/activitypub/renderer/announce';
-import { renderActivity } from '@/remote/activitypub/renderer/index';
-import { resolveUser } from '@/remote/resolve-user';
-import config from '@/config/index';
-import { updateHashtags } from '../update-hashtag';
-import { concat } from '@/prelude/array';
-import { insertNoteUnread } from '@/services/note/unread';
-import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
-import { extractMentions } from '@/misc/extract-mentions';
-import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm';
-import { extractHashtags } from '@/misc/extract-hashtags';
-import { Note, IMentionedRemoteUsers } from '@/models/entities/note';
-import { Mutings, Users, NoteWatchings, Notes, Instances, UserProfiles, Antennas, Followings, MutedNotes, Channels, ChannelFollowings, Blockings, NoteThreadMutings } from '@/models/index';
-import { DriveFile } from '@/models/entities/drive-file';
-import { App } from '@/models/entities/app';
+import es from '../../db/elasticsearch.js';
+import { publishMainStream, publishNotesStream } from '@/services/stream.js';
+import DeliverManager from '@/remote/activitypub/deliver-manager.js';
+import renderNote from '@/remote/activitypub/renderer/note.js';
+import renderCreate from '@/remote/activitypub/renderer/create.js';
+import renderAnnounce from '@/remote/activitypub/renderer/announce.js';
+import { renderActivity } from '@/remote/activitypub/renderer/index.js';
+import { resolveUser } from '@/remote/resolve-user.js';
+import config from '@/config/index.js';
+import { updateHashtags } from '../update-hashtag.js';
+import { concat } from '@/prelude/array.js';
+import { insertNoteUnread } from '@/services/note/unread.js';
+import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc.js';
+import { extractMentions } from '@/misc/extract-mentions.js';
+import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm.js';
+import { extractHashtags } from '@/misc/extract-hashtags.js';
+import { Note, IMentionedRemoteUsers } from '@/models/entities/note.js';
+import { Mutings, Users, NoteWatchings, Notes, Instances, UserProfiles, Antennas, Followings, MutedNotes, Channels, ChannelFollowings, Blockings, NoteThreadMutings } from '@/models/index.js';
+import { DriveFile } from '@/models/entities/drive-file.js';
+import { App } from '@/models/entities/app.js';
 import { Not, getConnection, In } from 'typeorm';
-import { User, ILocalUser, IRemoteUser } from '@/models/entities/user';
-import { genId } from '@/misc/gen-id';
-import { notesChart, perUserNotesChart, activeUsersChart, instanceChart } from '@/services/chart/index';
-import { Poll, IPoll } from '@/models/entities/poll';
-import { createNotification } from '../create-notification';
-import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error';
-import { checkHitAntenna } from '@/misc/check-hit-antenna';
-import { checkWordMute } from '@/misc/check-word-mute';
-import { addNoteToAntenna } from '../add-note-to-antenna';
-import { countSameRenotes } from '@/misc/count-same-renotes';
-import { deliverToRelays } from '../relay';
-import { Channel } from '@/models/entities/channel';
-import { normalizeForSearch } from '@/misc/normalize-for-search';
-import { getAntennas } from '@/misc/antenna-cache';
+import { User, ILocalUser, IRemoteUser } from '@/models/entities/user.js';
+import { genId } from '@/misc/gen-id.js';
+import { notesChart, perUserNotesChart, activeUsersChart, instanceChart } from '@/services/chart/index.js';
+import { Poll, IPoll } from '@/models/entities/poll.js';
+import { createNotification } from '../create-notification.js';
+import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
+import { checkHitAntenna } from '@/misc/check-hit-antenna.js';
+import { checkWordMute } from '@/misc/check-word-mute.js';
+import { addNoteToAntenna } from '../add-note-to-antenna.js';
+import { countSameRenotes } from '@/misc/count-same-renotes.js';
+import { deliverToRelays } from '../relay.js';
+import { Channel } from '@/models/entities/channel.js';
+import { normalizeForSearch } from '@/misc/normalize-for-search.js';
+import { getAntennas } from '@/misc/antenna-cache.js';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -59,7 +59,7 @@ class NotificationManager {
 
 		if (exist) {
 			// 「メンションされているかつ返信されている」場合は、メンションとしての通知ではなく返信としての通知にする
-			if (reason != 'mention') {
+			if (reason !== 'mention') {
 				exist.reason = reason;
 			}
 		} else {
@@ -111,7 +111,7 @@ type Option = {
 	app?: App | null;
 };
 
-export default async (user: { id: User['id']; username: User['username']; host: User['host']; isSilenced: User['isSilenced']; }, data: Option, silent = false) => new Promise<Note>(async (res, rej) => {
+export default async (user: { id: User['id']; username: User['username']; host: User['host']; isSilenced: User['isSilenced']; createdAt: User['createdAt']; }, data: Option, silent = false) => new Promise<Note>(async (res, rej) => {
 	// チャンネル外にリプライしたら対象のスコープに合わせる
 	// (クライアントサイドでやっても良い処理だと思うけどとりあえずサーバーサイドで)
 	if (data.reply && data.channel && data.reply.channelId !== data.channel.id) {
@@ -201,7 +201,7 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 		mentionedUsers.push(await Users.findOneOrFail(data.reply.userId));
 	}
 
-	if (data.visibility == 'specified') {
+	if (data.visibility === 'specified') {
 		if (data.visibleUsers == null) throw new Error('invalid param');
 
 		for (const u of data.visibleUsers) {
@@ -297,11 +297,10 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 	}
 
 	if (!silent) {
-		// ローカルユーザーのチャートはタイムライン取得時に更新しているのでリモートユーザーの場合だけでよい
-		if (Users.isRemoteUser(user)) activeUsersChart.update(user);
+		if (Users.isLocalUser(user)) activeUsersChart.write(user);
 
 		// 未読通知を作成
-		if (data.visibility == 'specified') {
+		if (data.visibility === 'specified') {
 			if (data.visibleUsers == null) throw new Error('invalid param');
 
 			for (const u of data.visibleUsers) {
@@ -439,7 +438,7 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 async function renderNoteOrRenoteActivity(data: Option, note: Note) {
 	if (data.localOnly) return null;
 
-	const content = data.renote && data.text == null && data.poll == null && (data.files == null || data.files.length == 0)
+	const content = data.renote && data.text == null && data.poll == null && (data.files == null || data.files.length === 0)
 		? renderAnnounce(data.renote.uri ? data.renote.uri : `${config.url}/notes/${data.renote.id}`, note)
 		: renderCreate(await renderNote(note, false), note);
 
@@ -478,7 +477,7 @@ async function insertNote(user: { id: User['id']; host: User['host']; }, data: O
 		userId: user.id,
 		localOnly: data.localOnly!,
 		visibility: data.visibility as any,
-		visibleUserIds: data.visibility == 'specified'
+		visibleUserIds: data.visibility === 'specified'
 			? data.visibleUsers
 				? data.visibleUsers.map(u => u.id)
 				: []
@@ -502,7 +501,7 @@ async function insertNote(user: { id: User['id']; host: User['host']; }, data: O
 		insert.mentions = mentionedUsers.map(u => u.id);
 		const profiles = await UserProfiles.find({ userId: In(insert.mentions) });
 		insert.mentionedRemoteUsers = JSON.stringify(mentionedUsers.filter(u => Users.isRemoteUser(u)).map(u => {
-			const profile = profiles.find(p => p.userId == u.id);
+			const profile = profiles.find(p => p.userId === u.id);
 			const url = profile != null ? profile.url : null;
 			return {
 				uri: u.uri,

@@ -1,12 +1,10 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
-import define from '../../define';
-import { ApiError } from '../../error';
-import { getUser } from '../../common/getters';
-import { genId } from '@/misc/gen-id';
-import { Mutings, NoteWatchings } from '@/models/index';
-import { Muting } from '@/models/entities/muting';
-import { publishUserEvent } from '@/services/stream';
+import define from '../../define.js';
+import { ApiError } from '../../error.js';
+import { getUser } from '../../common/getters.js';
+import { genId } from '@/misc/gen-id.js';
+import { Mutings, NoteWatchings } from '@/models/index.js';
+import { Muting } from '@/models/entities/muting.js';
+import { publishUserEvent } from '@/services/stream.js';
 
 export const meta = {
 	tags: ['account'],
@@ -14,12 +12,6 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'write:mutes',
-
-	params: {
-		userId: {
-			validator: $.type(ID),
-		},
-	},
 
 	errors: {
 		noSuchUser: {
@@ -42,8 +34,16 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		userId: { type: 'string', format: 'misskey:id' },
+	},
+	required: ['userId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const muter = user;
 
 	// 自分自身

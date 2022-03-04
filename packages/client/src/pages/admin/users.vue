@@ -36,7 +36,7 @@
 			</MkInput>
 		</div>
 
-		<MkPagination v-slot="{items}" ref="users" :pagination="pagination" class="users">
+		<MkPagination v-slot="{items}" ref="paginationComponent" :pagination="pagination" class="users">
 			<button v-for="user in items" :key="user.id" class="user _panel _button _gap" @click="show(user)">
 				<MkAvatar class="avatar" :user="user" :disable-link="true" :show-indicator="true"/>
 				<div class="body">
@@ -61,9 +61,8 @@
 </div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent } from 'vue';
-import MkButton from '@/components/ui/button.vue';
+<script lang="ts" setup>
+import { computed } from 'vue';
 import MkInput from '@/components/form/input.vue';
 import MkSelect from '@/components/form/select.vue';
 import MkPagination from '@/components/ui/pagination.vue';
@@ -71,94 +70,79 @@ import { acct } from '@/filters/user';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { lookupUser } from '@/scripts/lookup-user';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		MkButton,
-		MkInput,
-		MkSelect,
-		MkPagination,
-	},
+let paginationComponent = $ref<InstanceType<typeof MkPagination>>();
 
-	emits: ['info'],
+let sort = $ref('+createdAt');
+let state = $ref('all');
+let origin = $ref('local');
+let searchUsername = $ref('');
+let searchHost = $ref('');
+const pagination = {
+	endpoint: 'admin/show-users' as const,
+	limit: 10,
+	params: computed(() => ({
+		sort: sort,
+		state: state,
+		origin: origin,
+		username: searchUsername,
+		hostname: searchHost,
+	})),
+	offsetMode: true
+};
 
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: this.$ts.users,
-				icon: 'fas fa-users',
-				bg: 'var(--bg)',
-				actions: [{
-					icon: 'fas fa-search',
-					text: this.$ts.search,
-					handler: this.searchUser
-				}, {
-					asFullButton: true,
-					icon: 'fas fa-plus',
-					text: this.$ts.addUser,
-					handler: this.addUser
-				}, {
-					asFullButton: true,
-					icon: 'fas fa-search',
-					text: this.$ts.lookup,
-					handler: this.lookupUser
-				}],
-			},
-			sort: '+createdAt',
-			state: 'all',
-			origin: 'local',
-			searchUsername: '',
-			searchHost: '',
-			pagination: {
-				endpoint: 'admin/show-users' as const,
-				limit: 10,
-				params: computed(() => ({
-					sort: this.sort,
-					state: this.state,
-					origin: this.origin,
-					username: this.searchUsername,
-					hostname: this.searchHost,
-				})),
-				offsetMode: true
-			},
-		}
-	},
+function searchUser() {
+	os.selectUser().then(user => {
+		show(user);
+	});
+}
 
-	methods: {
-		lookupUser,
+async function addUser() {
+	const { canceled: canceled1, result: username } = await os.inputText({
+		title: i18n.ts.username,
+	});
+	if (canceled1) return;
 
-		searchUser() {
-			os.selectUser().then(user => {
-				this.show(user);
-			});
-		},
+	const { canceled: canceled2, result: password } = await os.inputText({
+		title: i18n.ts.password,
+		type: 'password'
+	});
+	if (canceled2) return;
 
-		async addUser() {
-			const { canceled: canceled1, result: username } = await os.inputText({
-				title: this.$ts.username,
-			});
-			if (canceled1) return;
+	os.apiWithDialog('admin/accounts/create', {
+		username: username,
+		password: password,
+	}).then(res => {
+		paginationComponent.reload();
+	});
+}
 
-			const { canceled: canceled2, result: password } = await os.inputText({
-				title: this.$ts.password,
-				type: 'password'
-			});
-			if (canceled2) return;
+function show(user) {
+	os.pageWindow(`/user-info/${user.id}`);
+}
 
-			os.apiWithDialog('admin/accounts/create', {
-				username: username,
-				password: password,
-			}).then(res => {
-				this.$refs.users.reload();
-			});
-		},
-
-		show(user) {
-			os.pageWindow(`/user-info/${user.id}`);
-		},
-
-		acct
-	}
+defineExpose({
+	[symbols.PAGE_INFO]: computed(() => ({
+		title: i18n.ts.users,
+		icon: 'fas fa-users',
+		bg: 'var(--bg)',
+		actions: [{
+			icon: 'fas fa-search',
+			text: i18n.ts.search,
+			handler: searchUser
+		}, {
+			asFullButton: true,
+			icon: 'fas fa-plus',
+			text: i18n.ts.addUser,
+			handler: addUser
+		}, {
+			asFullButton: true,
+			icon: 'fas fa-search',
+			text: i18n.ts.lookup,
+			handler: lookupUser
+		}],
+	})),
 });
 </script>
 

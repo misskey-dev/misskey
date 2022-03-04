@@ -1,6 +1,6 @@
-import config from '@/config/index';
-import { Relay } from '@/models/entities/relay';
-import { ILocalUser } from '@/models/entities/user';
+import config from '@/config/index.js';
+import { Relay } from '@/models/entities/relay.js';
+import { ILocalUser } from '@/models/entities/user.js';
 
 export function renderFollowRelay(relay: Relay, relayActor: ILocalUser) {
 	const follow = {
