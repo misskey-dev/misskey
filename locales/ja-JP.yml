@@ -834,6 +834,12 @@ searchByGoogle: "ググる"
 instanceDefaultLightTheme: "インスタンスデフォルトのライトテーマ"
 instanceDefaultDarkTheme: "インスタンスデフォルトのダークテーマ"
 instanceDefaultThemeDescription: "オブジェクト形式のテーマコードを記入します。"
+mutePeriod: "ミュートする期限"
+indefinitely: "無期限"
+tenMinutes: "10分"
+oneHour: "1時間"
+oneDay: "1日"
+oneWeek: "1週間"
 
 _emailUnavailable:
   used: "既に使用されています"

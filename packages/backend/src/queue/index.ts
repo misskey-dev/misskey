@@ -273,6 +273,11 @@ export default function() {
 		repeat: { cron: '0 0 * * *' },
 	});
 
+	systemQueue.add('checkExpiredMutings', {
+	}, {
+		repeat: { cron: '*/5 * * * *' },
+	});
+
 	processSystemQueue(systemQueue);
 }
 

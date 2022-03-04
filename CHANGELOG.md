@@ -20,6 +20,7 @@ You should also include the user name that made the change.
 
 ### Improvements
 - インスタンスデフォルトテーマを設定できるように @syuilo
+- ミュートに期限を設定できるように @syuilo
 - プロフィールの追加情報を最大16まで保存できるように @syuilo
 - 連合チャートにPub&Subを追加 @syuilo
 - デフォルトで10秒以上時間がかかるデータベースへのクエリは中断されるように @syuilo
