@@ -88,7 +88,7 @@ const onBgClick = () => {
 };
 
 if (type.value === 'drawer') {
-	maxHeight.value = window.innerHeight / 2;
+	maxHeight.value = window.innerHeight / 1.5;
 }
 
 const keymap = {
@@ -100,6 +100,7 @@ const MARGIN = 16;
 const align = () => {
 	if (props.src == null) return;
 	if (type.value === 'drawer') return;
+	if (type.value === 'dialog') return;
 
 	const popover = content.value!;
 	if (popover == null) return;

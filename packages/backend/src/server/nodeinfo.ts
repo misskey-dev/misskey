@@ -1,9 +1,9 @@
-import * as Router from '@koa/router';
-import config from '@/config/index';
-import { fetchMeta } from '@/misc/fetch-meta';
-import { Users, Notes } from '@/models/index';
+import Router from '@koa/router';
+import config from '@/config/index.js';
+import { fetchMeta } from '@/misc/fetch-meta.js';
+import { Users, Notes } from '@/models/index.js';
 import { MoreThan } from 'typeorm';
-import { MAX_NOTE_TEXT_LENGTH } from '@/const';
+import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 
 const router = new Router();
 

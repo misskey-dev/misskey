@@ -1,10 +1,10 @@
 import ms from 'ms';
-import { addFile } from '@/services/drive/add-file';
-import define from '../../../define';
-import { apiLogger } from '../../../logger';
-import { ApiError } from '../../../error';
-import { DriveFiles } from '@/models/index';
-import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/misc/hard-limits';
+import { addFile } from '@/services/drive/add-file.js';
+import define from '../../../define.js';
+import { apiLogger } from '../../../logger.js';
+import { ApiError } from '../../../error.js';
+import { DriveFiles } from '@/models/index.js';
+import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/misc/hard-limits.js';
 
 export const meta = {
 	tags: ['drive'],

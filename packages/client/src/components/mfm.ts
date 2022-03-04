@@ -45,7 +45,7 @@ export default defineComponent({
 	},
 
 	render() {
-		if (this.text == null || this.text == '') return;
+		if (this.text == null || this.text === '') return;
 
 		const ast = (this.plain ? mfm.parsePlain : mfm.parse)(this.text, { fnNameList: MFM_TAGS });
 

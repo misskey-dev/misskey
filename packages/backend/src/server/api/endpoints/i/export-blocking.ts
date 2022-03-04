@@ -1,5 +1,5 @@
-import define from '../../define';
-import { createExportBlockingJob } from '@/queue/index';
+import define from '../../define.js';
+import { createExportBlockingJob } from '@/queue/index.js';
 import ms from 'ms';
 
 export const meta = {

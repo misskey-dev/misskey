@@ -1,12 +1,12 @@
-import config from '@/config/index';
-import { Note } from '@/models/entities/note';
-import { User, IRemoteUser } from '@/models/entities/user';
-import { UserPublickey } from '@/models/entities/user-publickey';
-import { MessagingMessage } from '@/models/entities/messaging-message';
-import { Notes, Users, UserPublickeys, MessagingMessages } from '@/models/index';
-import { IObject, getApId } from './type';
-import { resolvePerson } from './models/person';
-import escapeRegexp = require('escape-regexp');
+import config from '@/config/index.js';
+import { Note } from '@/models/entities/note.js';
+import { User, IRemoteUser } from '@/models/entities/user.js';
+import { UserPublickey } from '@/models/entities/user-publickey.js';
+import { MessagingMessage } from '@/models/entities/messaging-message.js';
+import { Notes, Users, UserPublickeys, MessagingMessages } from '@/models/index.js';
+import { IObject, getApId } from './type.js';
+import { resolvePerson } from './models/person.js';
+import escapeRegexp from 'escape-regexp';
 
 export default class DbResolver {
 	constructor() {

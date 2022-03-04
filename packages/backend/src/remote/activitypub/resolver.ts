@@ -1,11 +1,11 @@
-import config from '@/config/index';
-import { getJson } from '@/misc/fetch';
-import { ILocalUser } from '@/models/entities/user';
-import { getInstanceActor } from '@/services/instance-actor';
-import { signedGet } from './request';
-import { IObject, isCollectionOrOrderedCollection, ICollection, IOrderedCollection } from './type';
-import { fetchMeta } from '@/misc/fetch-meta';
-import { extractDbHost } from '@/misc/convert-host';
+import config from '@/config/index.js';
+import { getJson } from '@/misc/fetch.js';
+import { ILocalUser } from '@/models/entities/user.js';
+import { getInstanceActor } from '@/services/instance-actor.js';
+import { signedGet } from './request.js';
+import { IObject, isCollectionOrOrderedCollection, ICollection, IOrderedCollection } from './type.js';
+import { fetchMeta } from '@/misc/fetch-meta.js';
+import { extractDbHost } from '@/misc/convert-host.js';
 
 export default class Resolver {
 	private history: Set<string>;

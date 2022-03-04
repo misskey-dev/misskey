@@ -1,23 +1,23 @@
-import * as Router from '@koa/router';
-import * as json from 'koa-json-body';
-import * as httpSignature from 'http-signature';
+import Router from '@koa/router';
+import json from 'koa-json-body';
+import httpSignature from 'http-signature';
 
-import { renderActivity } from '@/remote/activitypub/renderer/index';
-import renderNote from '@/remote/activitypub/renderer/note';
-import renderKey from '@/remote/activitypub/renderer/key';
-import { renderPerson } from '@/remote/activitypub/renderer/person';
-import renderEmoji from '@/remote/activitypub/renderer/emoji';
-import Outbox, { packActivity } from './activitypub/outbox';
-import Followers from './activitypub/followers';
-import Following from './activitypub/following';
-import Featured from './activitypub/featured';
-import { inbox as processInbox } from '@/queue/index';
-import { isSelfHost } from '@/misc/convert-host';
-import { Notes, Users, Emojis, NoteReactions } from '@/models/index';
-import { ILocalUser, User } from '@/models/entities/user';
+import { renderActivity } from '@/remote/activitypub/renderer/index.js';
+import renderNote from '@/remote/activitypub/renderer/note.js';
+import renderKey from '@/remote/activitypub/renderer/key.js';
+import { renderPerson } from '@/remote/activitypub/renderer/person.js';
+import renderEmoji from '@/remote/activitypub/renderer/emoji.js';
+import Outbox, { packActivity } from './activitypub/outbox.js';
+import Followers from './activitypub/followers.js';
+import Following from './activitypub/following.js';
+import Featured from './activitypub/featured.js';
+import { inbox as processInbox } from '@/queue/index.js';
+import { isSelfHost } from '@/misc/convert-host.js';
+import { Notes, Users, Emojis, NoteReactions } from '@/models/index.js';
+import { ILocalUser, User } from '@/models/entities/user.js';
 import { In } from 'typeorm';
-import { renderLike } from '@/remote/activitypub/renderer/like';
-import { getUserKeypair } from '@/misc/keypair-store';
+import { renderLike } from '@/remote/activitypub/renderer/like.js';
+import { getUserKeypair } from '@/misc/keypair-store.js';
 
 // Init router
 const router = new Router();

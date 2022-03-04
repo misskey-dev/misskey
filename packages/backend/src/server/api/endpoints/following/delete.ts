@@ -1,9 +1,9 @@
 import ms from 'ms';
-import deleteFollowing from '@/services/following/delete';
-import define from '../../define';
-import { ApiError } from '../../error';
-import { getUser } from '../../common/getters';
-import { Followings, Users } from '@/models/index';
+import deleteFollowing from '@/services/following/delete.js';
+import define from '../../define.js';
+import { ApiError } from '../../error.js';
+import { getUser } from '../../common/getters.js';
+import { Followings, Users } from '@/models/index.js';
 
 export const meta = {
 	tags: ['following', 'users'],

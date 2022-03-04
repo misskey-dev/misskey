@@ -1,7 +1,7 @@
-import { IBlock } from '../../type';
-import block from '@/services/blocking/create';
-import { IRemoteUser } from '@/models/entities/user';
-import DbResolver from '../../db-resolver';
+import { IBlock } from '../../type.js';
+import block from '@/services/blocking/create.js';
+import { IRemoteUser } from '@/models/entities/user.js';
+import DbResolver from '../../db-resolver.js';
 
 export default async (actor: IRemoteUser, activity: IBlock): Promise<string> => {
 	// ※ activity.objectにブロック対象があり、それは存在するローカルユーザーのはず

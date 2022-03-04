@@ -1,7 +1,7 @@
-import define from '../../define';
-import * as bcrypt from 'bcryptjs';
+import define from '../../define.js';
+import bcrypt from 'bcryptjs';
 import rndstr from 'rndstr';
-import { Users, UserProfiles } from '@/models/index';
+import { Users, UserProfiles } from '@/models/index.js';
 
 export const meta = {
 	tags: ['admin'],

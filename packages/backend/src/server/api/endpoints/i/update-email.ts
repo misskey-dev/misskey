@@ -1,13 +1,13 @@
-import { publishMainStream } from '@/services/stream';
-import define from '../../define';
+import { publishMainStream } from '@/services/stream.js';
+import define from '../../define.js';
 import rndstr from 'rndstr';
-import config from '@/config/index';
+import config from '@/config/index.js';
 import ms from 'ms';
-import * as bcrypt from 'bcryptjs';
-import { Users, UserProfiles } from '@/models/index';
-import { sendEmail } from '@/services/send-email';
-import { ApiError } from '../../error';
-import { validateEmailForAccount } from '@/services/validate-email-for-account';
+import bcrypt from 'bcryptjs';
+import { Users, UserProfiles } from '@/models/index.js';
+import { sendEmail } from '@/services/send-email.js';
+import { ApiError } from '../../error.js';
+import { validateEmailForAccount } from '@/services/validate-email-for-account.js';
 
 export const meta = {
 	requireCredential: true,

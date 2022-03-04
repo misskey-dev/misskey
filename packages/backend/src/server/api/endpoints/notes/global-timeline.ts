@@ -1,14 +1,14 @@
-import define from '../../define';
-import { fetchMeta } from '@/misc/fetch-meta';
-import { ApiError } from '../../error';
-import { makePaginationQuery } from '../../common/make-pagination-query';
-import { Notes } from '@/models/index';
-import { generateMutedUserQuery } from '../../common/generate-muted-user-query';
-import { generateMutedInstanceQuery } from '../../common/generate-muted-instance-query';
-import { activeUsersChart } from '@/services/chart/index';
-import { generateRepliesQuery } from '../../common/generate-replies-query';
-import { generateMutedNoteQuery } from '../../common/generate-muted-note-query';
-import { generateBlockedUserQuery } from '../../common/generate-block-query';
+import define from '../../define.js';
+import { fetchMeta } from '@/misc/fetch-meta.js';
+import { ApiError } from '../../error.js';
+import { makePaginationQuery } from '../../common/make-pagination-query.js';
+import { Notes } from '@/models/index.js';
+import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
+import { generateMutedInstanceQuery } from '../../common/generate-muted-instance-query.js';
+import { activeUsersChart } from '@/services/chart/index.js';
+import { generateRepliesQuery } from '../../common/generate-replies-query.js';
+import { generateMutedNoteQuery } from '../../common/generate-muted-note-query.js';
+import { generateBlockedUserQuery } from '../../common/generate-block-query.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -60,10 +60,16 @@ export default define(meta, paramDef, async (ps, user) => {
 		.andWhere('note.visibility = \'public\'')
 		.andWhere('note.channelId IS NULL')
 		.innerJoinAndSelect('note.user', 'user')
+		.leftJoinAndSelect('user.avatar', 'avatar')
+		.leftJoinAndSelect('user.banner', 'banner')
 		.leftJoinAndSelect('note.reply', 'reply')
 		.leftJoinAndSelect('note.renote', 'renote')
 		.leftJoinAndSelect('reply.user', 'replyUser')
-		.leftJoinAndSelect('renote.user', 'renoteUser');
+		.leftJoinAndSelect('replyUser.avatar', 'replyUserAvatar')
+		.leftJoinAndSelect('replyUser.banner', 'replyUserBanner')
+		.leftJoinAndSelect('renote.user', 'renoteUser')
+		.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
+		.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner');
 
 	generateRepliesQuery(query, user);
 	if (user) generateMutedUserQuery(query, user);

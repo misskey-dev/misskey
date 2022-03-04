@@ -53,8 +53,8 @@ export default defineComponent({
 			if (el.key == null && item.id) el.key = item.id;
 
 			if (
-				i != props.items.length - 1 &&
-				new Date(item.createdAt).getDate() != new Date(props.items[i + 1].createdAt).getDate()
+				i !== props.items.length - 1 &&
+				new Date(item.createdAt).getDate() !== new Date(props.items[i + 1].createdAt).getDate()
 			) {
 				const separator = h('div', {
 					class: 'separator',

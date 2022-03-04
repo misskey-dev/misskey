@@ -1,9 +1,9 @@
-import * as bcrypt from 'bcryptjs';
+import bcrypt from 'bcryptjs';
 import * as speakeasy from 'speakeasy';
 import * as QRCode from 'qrcode';
-import config from '@/config/index';
-import define from '../../../define';
-import { UserProfiles } from '@/models/index';
+import config from '@/config/index.js';
+import define from '../../../define.js';
+import { UserProfiles } from '@/models/index.js';
 
 export const meta = {
 	requireCredential: true,

@@ -1,18 +1,18 @@
-import * as cluster from 'cluster';
-import * as chalk from 'chalk';
-import Xev from 'xev';
+import cluster from 'node:cluster';
+import chalk from 'chalk';
+import { default as Xev } from 'xev';
 
-import Logger from '@/services/logger';
-import { envOption } from '../env';
+import Logger from '@/services/logger.js';
+import { envOption } from '../env.js';
 
 // for typeorm
 import 'reflect-metadata';
-import { masterMain } from './master';
-import { workerMain } from './worker';
+import { masterMain } from './master.js';
+import { workerMain } from './worker.js';
 
 const logger = new Logger('core', 'cyan');
 const clusterLogger = logger.createSubLogger('cluster', 'orange', false);
-const ev = new Xev();
+const ev = new Xev.default();
 
 /**
  * Init process

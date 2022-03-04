@@ -1,8 +1,8 @@
-import Resolver from '../../resolver';
-import { IRemoteUser } from '@/models/entities/user';
-import rejectFollow from './follow';
-import { IReject, isFollow, getApType } from '../../type';
-import { apLogger } from '../../logger';
+import Resolver from '../../resolver.js';
+import { IRemoteUser } from '@/models/entities/user.js';
+import rejectFollow from './follow.js';
+import { IReject, isFollow, getApType } from '../../type.js';
+import { apLogger } from '../../logger.js';
 
 const logger = apLogger;
 

@@ -1,6 +1,6 @@
-const { MigrationInterface, QueryRunner } = require("typeorm");
 
-module.exports = class instanceThemeColor1644395759931 {
+
+export class instanceThemeColor1644395759931 {
     name = 'instanceThemeColor1644395759931'
 
     async up(queryRunner) {

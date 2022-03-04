@@ -1,8 +1,8 @@
-import define from '../../define';
-import { createImportUserListsJob } from '@/queue/index';
+import define from '../../define.js';
+import { createImportUserListsJob } from '@/queue/index.js';
 import ms from 'ms';
-import { ApiError } from '../../error';
-import { DriveFiles } from '@/models/index';
+import { ApiError } from '../../error.js';
+import { DriveFiles } from '@/models/index.js';
 
 export const meta = {
 	secure: true,

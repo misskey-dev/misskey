@@ -1,7 +1,7 @@
-import * as Bull from 'bull';
+import Bull from 'bull';
 
-import { queueLogger } from '../../logger';
-import { activeUsersChart, driveChart, federationChart, hashtagChart, instanceChart, notesChart, perUserDriveChart, perUserFollowingChart, perUserNotesChart, perUserReactionsChart, usersChart, apRequestChart } from '@/services/chart/index';
+import { queueLogger } from '../../logger.js';
+import { activeUsersChart, driveChart, federationChart, hashtagChart, instanceChart, notesChart, perUserDriveChart, perUserFollowingChart, perUserNotesChart, perUserReactionsChart, usersChart, apRequestChart } from '@/services/chart/index.js';
 
 const logger = queueLogger.createSubLogger('clean-charts');
 

@@ -1,6 +1,6 @@
-const { MigrationInterface, QueryRunner } = require("typeorm");
 
-module.exports = class emojiUrl1642611822809 {
+
+export class emojiUrl1642611822809 {
 		name = 'emojiUrl1642611822809'
 
 		async up(queryRunner) {

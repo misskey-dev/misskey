@@ -1,6 +1,6 @@
-import define from '../../define';
-import { Pages } from '@/models/index';
-import { makePaginationQuery } from '../../common/make-pagination-query';
+import define from '../../define.js';
+import { Pages } from '@/models/index.js';
+import { makePaginationQuery } from '../../common/make-pagination-query.js';
 
 export const meta = {
 	tags: ['users', 'pages'],

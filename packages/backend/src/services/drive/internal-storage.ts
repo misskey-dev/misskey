@@ -1,11 +1,10 @@
-import * as fs from 'fs';
-import * as Path from 'path';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-import config from '@/config/index';
+import * as fs from 'node:fs';
+import * as Path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { dirname } from 'node:path';
+import config from '@/config/index.js';
 
-//const _filename = fileURLToPath(import.meta.url);
-const _filename = __filename;
+const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
 
 export class InternalStorage {

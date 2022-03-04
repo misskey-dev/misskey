@@ -1,10 +1,10 @@
-import * as Koa from 'koa';
+import Koa from 'koa';
 
-import config from '@/config/index';
-import { ILocalUser } from '@/models/entities/user';
-import { Signins } from '@/models/index';
-import { genId } from '@/misc/gen-id';
-import { publishMainStream } from '@/services/stream';
+import config from '@/config/index.js';
+import { ILocalUser } from '@/models/entities/user.js';
+import { Signins } from '@/models/index.js';
+import { genId } from '@/misc/gen-id.js';
+import { publishMainStream } from '@/services/stream.js';
 
 export default function(ctx: Koa.Context, user: ILocalUser, redirect = false) {
 	if (redirect) {

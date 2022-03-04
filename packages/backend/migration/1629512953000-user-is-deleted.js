@@ -1,6 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class isUserDeleted1629512953000 {
+
+
+export class isUserDeleted1629512953000 {
     constructor() {
         this.name = 'isUserDeleted1629512953000';
     }
@@ -12,4 +12,3 @@ class isUserDeleted1629512953000 {
         await queryRunner.query(`ALTER TABLE "user" DROP COLUMN "isDeleted"`);
     }
 }
-exports.isUserDeleted1629512953000 = isUserDeleted1629512953000;
