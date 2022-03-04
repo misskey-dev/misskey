@@ -834,6 +834,7 @@ searchByGoogle: "Google"
 instanceDefaultLightTheme: "实例默认浅色主题"
 instanceDefaultDarkTheme: "实例默认深色主题"
 instanceDefaultThemeDescription: "以对象格式键入主题代码"
+indefinitely: "不限时间"
 _emailUnavailable:
   used: "已经被使用过"
   format: "无效的格式"
