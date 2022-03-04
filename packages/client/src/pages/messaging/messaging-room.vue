@@ -342,7 +342,7 @@ defineExpose({
 		padding-top: 8px;
 
 		@media (max-width: 500px) {
-			bottom: 92px;
+			bottom: calc(env(safe-area-inset-bottom, 0px) + 96px);
 		}
 
 		> .new-message {
