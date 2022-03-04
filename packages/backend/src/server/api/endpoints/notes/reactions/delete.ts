@@ -1,8 +1,8 @@
-import define from '../../../define';
+import define from '../../../define.js';
 import ms from 'ms';
-import deleteReaction from '@/services/note/reaction/delete';
-import { getNote } from '../../../common/getters';
-import { ApiError } from '../../../error';
+import deleteReaction from '@/services/note/reaction/delete.js';
+import { getNote } from '../../../common/getters.js';
+import { ApiError } from '../../../error.js';
 
 export const meta = {
 	tags: ['reactions', 'notes'],

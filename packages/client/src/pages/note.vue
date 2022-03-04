@@ -10,7 +10,7 @@
 				<div class="main _gap">
 					<MkButton v-if="!showNext && hasNext" class="load next" @click="showNext = true"><i class="fas fa-chevron-up"></i></MkButton>
 					<div class="note _gap">
-						<MkRemoteCaution v-if="note.user.host != null" :href="note.url || note.uri" class="_isolated"/>
+						<MkRemoteCaution v-if="note.user.host != null" :href="note.url ?? note.uri" class="_isolated"/>
 						<XNoteDetailed :key="note.id" v-model:note="note" class="_isolated note"/>
 					</div>
 					<div v-if="clips && clips.length > 0" class="_content clips _gap">

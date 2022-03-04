@@ -1,5 +1,5 @@
 import { PrimaryColumn, Entity, Index, Column } from 'typeorm';
-import { id } from '../id';
+import { id } from '../id.js';
 
 @Entity()
 export class UserPending {

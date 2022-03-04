@@ -1,7 +1,7 @@
-import * as Koa from 'koa';
-import { Users, UserPendings, UserProfiles } from '@/models/index';
-import { signup } from '../common/signup';
-import signin from '../common/signin';
+import Koa from 'koa';
+import { Users, UserPendings, UserProfiles } from '@/models/index.js';
+import { signup } from '../common/signup.js';
+import signin from '../common/signin.js';
 
 export default async (ctx: Koa.Context) => {
 	const body = ctx.request.body;

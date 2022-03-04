@@ -2,7 +2,7 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import * as childProcess from 'child_process';
-import { async, signup, request, post, react, connectStream, startServer, shutdownServer, simpleGet } from './utils';
+import { async, signup, request, post, react, connectStream, startServer, shutdownServer, simpleGet } from './utils.js';
 
 describe('FF visibility', () => {
 	let p: childProcess.ChildProcess;

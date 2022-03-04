@@ -1,8 +1,8 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { MessagingMessage } from '@/models/entities/messaging-message';
-import { Users, DriveFiles, UserGroups } from '../index';
-import { Packed } from '@/misc/schema';
-import { User } from '@/models/entities/user';
+import { MessagingMessage } from '@/models/entities/messaging-message.js';
+import { Users, DriveFiles, UserGroups } from '../index.js';
+import { Packed } from '@/misc/schema.js';
+import { User } from '@/models/entities/user.js';
 
 @EntityRepository(MessagingMessage)
 export class MessagingMessageRepository extends Repository<MessagingMessage> {

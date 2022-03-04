@@ -1,4 +1,4 @@
-import { refs, Schema } from '@/misc/schema';
+import { refs, Schema } from '@/misc/schema.js';
 
 export function convertSchemaToOpenApiSchema(schema: Schema) {
 	const res: any = schema;

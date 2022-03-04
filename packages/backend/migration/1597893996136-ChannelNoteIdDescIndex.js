@@ -1,6 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class ChannelNoteIdDescIndex1597893996136 {
+
+
+export class ChannelNoteIdDescIndex1597893996136 {
     constructor() {
         this.name = 'ChannelNoteIdDescIndex1597893996136';
     }
@@ -13,4 +13,3 @@ class ChannelNoteIdDescIndex1597893996136 {
         await queryRunner.query(`CREATE INDEX "IDX_f22169eb10657bded6d875ac8f" ON "note" ("channelId") `);
     }
 }
-exports.ChannelNoteIdDescIndex1597893996136 = ChannelNoteIdDescIndex1597893996136;

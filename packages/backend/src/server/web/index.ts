@@ -2,25 +2,27 @@
  * Web Client Server
  */
 
-import { dirname } from 'path';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import ms from 'ms';
-import * as Koa from 'koa';
-import * as Router from '@koa/router';
-import * as send from 'koa-send';
-import * as favicon from 'koa-favicon';
-import * as views from 'koa-views';
+import Koa from 'koa';
+import Router from '@koa/router';
+import send from 'koa-send';
+import favicon from 'koa-favicon';
+import views from 'koa-views';
+import sharp from 'sharp';
 
-import packFeed from './feed';
-import { fetchMeta } from '@/misc/fetch-meta';
-import { genOpenapiSpec } from '../api/openapi/gen-spec';
-import config from '@/config/index';
-import { Users, Notes, UserProfiles, Pages, Channels, Clips, GalleryPosts } from '@/models/index';
-import * as Acct from 'misskey-js/built/acct';
-import { getNoteSummary } from '@/misc/get-note-summary';
-import * as sharp from 'sharp';
+import packFeed from './feed.js';
+import { fetchMeta } from '@/misc/fetch-meta.js';
+import { genOpenapiSpec } from '../api/openapi/gen-spec.js';
+import config from '@/config/index.js';
+import { Users, Notes, UserProfiles, Pages, Channels, Clips, GalleryPosts } from '@/models/index.js';
+import * as Acct from '@/misc/acct.js';
+import { getNoteSummary } from '@/misc/get-note-summary.js';
+import { urlPreviewHandler } from './url-preview.js';
+import { manifestHandler } from './manifest.js';
 
-//const _filename = fileURLToPath(import.meta.url);
-const _filename = __filename;
+const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
 
 const staticAssets = `${_dirname}/../../../assets/`;
@@ -148,7 +150,7 @@ router.get(`/sw.${config.version}.js`, async ctx => {
 });
 
 // Manifest
-router.get('/manifest.json', require('./manifest'));
+router.get('/manifest.json', manifestHandler);
 
 router.get('/robots.txt', async ctx => {
 	await send(ctx as any, '/robots.txt', {
@@ -166,7 +168,7 @@ router.get('/api-doc', async ctx => {
 });
 
 // URL preview endpoint
-router.get('/url', require('./url-preview'));
+router.get('/url', urlPreviewHandler);
 
 router.get('/api.json', async ctx => {
 	ctx.body = genOpenapiSpec();
@@ -469,4 +471,4 @@ router.get('(.*)', async ctx => {
 // Register router
 app.use(router.routes());
 
-module.exports = app;
+export default app;

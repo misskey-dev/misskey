@@ -1,6 +1,6 @@
-const { MigrationInterface, QueryRunner } = require("typeorm");
 
-module.exports = class removeMaxNoteTextLength1645340161439 {
+
+export class removeMaxNoteTextLength1645340161439 {
     name = 'removeMaxNoteTextLength1645340161439'
 
     async up(queryRunner) {

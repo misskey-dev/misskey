@@ -1,6 +1,9 @@
 {
 	"extension": ["ts","js","cjs","mjs"],
-	"require": ["ts-node/register", "tsconfig-paths/register"],
+	"node-option": [
+		"experimental-specifier-resolution=node",
+		"loader=./test/loader.js"
+	],
 	"slow": 1000,
 	"timeout": 35000,
 	"exit": true

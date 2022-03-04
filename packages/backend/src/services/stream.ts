@@ -1,11 +1,11 @@
-import { redisClient } from '../db/redis';
-import { User } from '@/models/entities/user';
-import { Note } from '@/models/entities/note';
-import { UserList } from '@/models/entities/user-list';
-import { UserGroup } from '@/models/entities/user-group';
-import config from '@/config/index';
-import { Antenna } from '@/models/entities/antenna';
-import { Channel } from '@/models/entities/channel';
+import { redisClient } from '../db/redis.js';
+import { User } from '@/models/entities/user.js';
+import { Note } from '@/models/entities/note.js';
+import { UserList } from '@/models/entities/user-list.js';
+import { UserGroup } from '@/models/entities/user-group.js';
+import config from '@/config/index.js';
+import { Antenna } from '@/models/entities/antenna.js';
+import { Channel } from '@/models/entities/channel.js';
 import {
 	StreamChannels,
 	AdminStreamTypes,
@@ -21,8 +21,8 @@ import {
 	NoteStreamTypes,
 	UserListStreamTypes,
 	UserStreamTypes,
-} from '@/server/api/stream/types';
-import { Packed } from '@/misc/schema';
+} from '@/server/api/stream/types.js';
+import { Packed } from '@/misc/schema.js';
 
 class Publisher {
 	private publish = (channel: StreamChannels, type: string | null, value?: any): void => {

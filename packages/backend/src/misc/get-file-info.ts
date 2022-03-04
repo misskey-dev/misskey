@@ -1,11 +1,11 @@
-import * as fs from 'fs';
-import * as crypto from 'crypto';
-import * as stream from 'stream';
-import * as util from 'util';
-import * as fileType from 'file-type';
+import * as fs from 'node:fs';
+import * as crypto from 'node:crypto';
+import * as stream from 'node:stream';
+import * as util from 'node:util';
+import fileType from 'file-type';
 import isSvg from 'is-svg';
-import * as probeImageSize from 'probe-image-size';
-import * as sharp from 'sharp';
+import probeImageSize from 'probe-image-size';
+import sharp from 'sharp';
 import { encode } from 'blurhash';
 
 const pipeline = util.promisify(stream.pipeline);

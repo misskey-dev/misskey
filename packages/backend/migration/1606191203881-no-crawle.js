@@ -1,6 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class noCrawle1606191203881 {
+
+
+export class noCrawle1606191203881 {
     constructor() {
         this.name = 'noCrawle1606191203881';
     }
@@ -13,4 +13,3 @@ class noCrawle1606191203881 {
         await queryRunner.query(`ALTER TABLE "user_profile" DROP COLUMN "noCrawle"`);
     }
 }
-exports.noCrawle1606191203881 = noCrawle1606191203881;

@@ -1,4 +1,4 @@
-import { initDb } from '../db/postgre';
+import { initDb } from '../db/postgre.js';
 
 async function main(username: string) {
 	if (!username) throw `username required`;
