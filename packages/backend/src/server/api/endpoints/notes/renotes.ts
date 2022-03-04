@@ -1,11 +1,11 @@
-import define from '../../define';
-import { getNote } from '../../common/getters';
-import { ApiError } from '../../error';
-import { generateVisibilityQuery } from '../../common/generate-visibility-query';
-import { generateMutedUserQuery } from '../../common/generate-muted-user-query';
-import { makePaginationQuery } from '../../common/make-pagination-query';
-import { Notes } from '@/models/index';
-import { generateBlockedUserQuery } from '../../common/generate-block-query';
+import define from '../../define.js';
+import { getNote } from '../../common/getters.js';
+import { ApiError } from '../../error.js';
+import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
+import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
+import { makePaginationQuery } from '../../common/make-pagination-query.js';
+import { Notes } from '@/models/index.js';
+import { generateBlockedUserQuery } from '../../common/generate-block-query.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -52,10 +52,16 @@ export default define(meta, paramDef, async (ps, user) => {
 	const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 		.andWhere(`note.renoteId = :renoteId`, { renoteId: note.id })
 		.innerJoinAndSelect('note.user', 'user')
+		.leftJoinAndSelect('user.avatar', 'avatar')
+		.leftJoinAndSelect('user.banner', 'banner')
 		.leftJoinAndSelect('note.reply', 'reply')
 		.leftJoinAndSelect('note.renote', 'renote')
 		.leftJoinAndSelect('reply.user', 'replyUser')
-		.leftJoinAndSelect('renote.user', 'renoteUser');
+		.leftJoinAndSelect('replyUser.avatar', 'replyUserAvatar')
+		.leftJoinAndSelect('replyUser.banner', 'replyUserBanner')
+		.leftJoinAndSelect('renote.user', 'renoteUser')
+		.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
+		.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner');
 
 	generateVisibilityQuery(query, user);
 	if (user) generateMutedUserQuery(query, user);

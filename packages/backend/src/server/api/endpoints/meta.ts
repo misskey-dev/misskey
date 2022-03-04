@@ -1,9 +1,10 @@
-import config from '@/config/index';
-import define from '../define';
-import { fetchMeta } from '@/misc/fetch-meta';
-import { Ads, Emojis, Users } from '@/models/index';
-import { DB_MAX_NOTE_TEXT_LENGTH } from '@/misc/hard-limits';
+import config from '@/config/index.js';
+import define from '../define.js';
+import { fetchMeta } from '@/misc/fetch-meta.js';
+import { Ads, Emojis, Users } from '@/models/index.js';
+import { DB_MAX_NOTE_TEXT_LENGTH } from '@/misc/hard-limits.js';
 import { MoreThan } from 'typeorm';
+import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 
 export const meta = {
 	tags: ['meta'],
@@ -68,6 +69,14 @@ export const meta = {
 				optional: false, nullable: false,
 				default: false,
 			},
+			defaultDarkTheme: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
+			defaultLightTheme: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
 			disableRegistration: {
 				type: 'boolean',
 				optional: false, nullable: false,
@@ -89,10 +98,6 @@ export const meta = {
 				optional: false, nullable: false,
 			},
 			cacheRemoteFiles: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
-			proxyRemoteFiles: {
 				type: 'boolean',
 				optional: false, nullable: false,
 			},
@@ -137,6 +142,10 @@ export const meta = {
 			iconUrl: {
 				type: 'string',
 				optional: false, nullable: true,
+			},
+			maxNoteTextLength: {
+				type: 'number',
+				optional: false, nullable: false,
 			},
 			emojis: {
 				type: 'array',
@@ -501,7 +510,10 @@ export default define(meta, paramDef, async (ps, me) => {
 		iconUrl: instance.iconUrl,
 		backgroundImageUrl: instance.backgroundImageUrl,
 		logoImageUrl: instance.logoImageUrl,
+		maxNoteTextLength: MAX_NOTE_TEXT_LENGTH, // 後方互換性のため
 		emojis: await Emojis.packMany(emojis),
+		defaultLightTheme: instance.defaultLightTheme,
+		defaultDarkTheme: instance.defaultDarkTheme,
 		ads: ads.map(ad => ({
 			id: ad.id,
 			url: ad.url,
@@ -523,7 +535,6 @@ export default define(meta, paramDef, async (ps, me) => {
 			pinnedPages: instance.pinnedPages,
 			pinnedClipId: instance.pinnedClipId,
 			cacheRemoteFiles: instance.cacheRemoteFiles,
-			proxyRemoteFiles: instance.proxyRemoteFiles,
 			requireSetup: (await Users.count({
 				host: null,
 			})) === 0,

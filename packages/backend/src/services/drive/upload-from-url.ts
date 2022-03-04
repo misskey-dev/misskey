@@ -1,12 +1,12 @@
-import { URL } from 'url';
-import { addFile } from './add-file';
-import { User } from '@/models/entities/user';
-import { driveLogger } from './logger';
-import { createTemp } from '@/misc/create-temp';
-import { downloadUrl } from '@/misc/download-url';
-import { DriveFolder } from '@/models/entities/drive-folder';
-import { DriveFile } from '@/models/entities/drive-file';
-import { DriveFiles } from '@/models/index';
+import { URL } from 'node:url';
+import { addFile } from './add-file.js';
+import { User } from '@/models/entities/user.js';
+import { driveLogger } from './logger.js';
+import { createTemp } from '@/misc/create-temp.js';
+import { downloadUrl } from '@/misc/download-url.js';
+import { DriveFolder } from '@/models/entities/drive-folder.js';
+import { DriveFile } from '@/models/entities/drive-file.js';
+import { DriveFiles } from '@/models/index.js';
 
 const logger = driveLogger.createSubLogger('downloader');
 

@@ -1,11 +1,11 @@
-import { publishMainStream } from '@/services/stream';
-import { renderActivity } from '@/remote/activitypub/renderer/index';
-import renderFollow from '@/remote/activitypub/renderer/follow';
-import { deliver } from '@/queue/index';
-import { User } from '@/models/entities/user';
-import { Blockings, FollowRequests, Users } from '@/models/index';
-import { genId } from '@/misc/gen-id';
-import { createNotification } from '../../create-notification';
+import { publishMainStream } from '@/services/stream.js';
+import { renderActivity } from '@/remote/activitypub/renderer/index.js';
+import renderFollow from '@/remote/activitypub/renderer/follow.js';
+import { deliver } from '@/queue/index.js';
+import { User } from '@/models/entities/user.js';
+import { Blockings, FollowRequests, Users } from '@/models/index.js';
+import { genId } from '@/misc/gen-id.js';
+import { createNotification } from '../../create-notification.js';
 
 export default async function(follower: { id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox']; }, followee: { id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox']; }, requestId?: string) {
 	if (follower.id === followee.id) return;

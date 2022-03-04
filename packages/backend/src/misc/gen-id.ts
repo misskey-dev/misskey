@@ -1,9 +1,9 @@
 import { ulid } from 'ulid';
-import { genAid } from './id/aid';
-import { genMeid } from './id/meid';
-import { genMeidg } from './id/meidg';
-import { genObjectId } from './id/object-id';
-import config from '@/config/index';
+import { genAid } from './id/aid.js';
+import { genMeid } from './id/meid.js';
+import { genMeidg } from './id/meidg.js';
+import { genObjectId } from './id/object-id.js';
+import config from '@/config/index.js';
 
 const metohd = config.id.toLowerCase();
 

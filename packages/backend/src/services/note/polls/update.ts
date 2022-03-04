@@ -1,10 +1,10 @@
-import renderUpdate from '@/remote/activitypub/renderer/update';
-import { renderActivity } from '@/remote/activitypub/renderer/index';
-import renderNote from '@/remote/activitypub/renderer/note';
-import { Users, Notes } from '@/models/index';
-import { Note } from '@/models/entities/note';
-import { deliverToFollowers } from '@/remote/activitypub/deliver-manager';
-import { deliverToRelays } from '../../relay';
+import renderUpdate from '@/remote/activitypub/renderer/update.js';
+import { renderActivity } from '@/remote/activitypub/renderer/index.js';
+import renderNote from '@/remote/activitypub/renderer/note.js';
+import { Users, Notes } from '@/models/index.js';
+import { Note } from '@/models/entities/note.js';
+import { deliverToFollowers } from '@/remote/activitypub/deliver-manager.js';
+import { deliverToRelays } from '../../relay.js';
 
 export async function deliverQuestionUpdate(noteId: Note['id']) {
 	const note = await Notes.findOne(noteId);

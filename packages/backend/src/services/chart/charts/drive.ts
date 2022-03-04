@@ -1,9 +1,8 @@
-import autobind from 'autobind-decorator';
-import Chart, { KVs } from '../core';
-import { DriveFiles } from '@/models/index';
+import Chart, { KVs } from '../core.js';
+import { DriveFiles } from '@/models/index.js';
 import { Not, IsNull } from 'typeorm';
-import { DriveFile } from '@/models/entities/drive-file';
-import { name, schema } from './entities/drive';
+import { DriveFile } from '@/models/entities/drive-file.js';
+import { name, schema } from './entities/drive.js';
 
 /**
  * ドライブに関するチャート
@@ -14,17 +13,14 @@ export default class DriveChart extends Chart<typeof schema> {
 		super(name, schema);
 	}
 
-	@autobind
 	protected async tickMajor(): Promise<Partial<KVs<typeof schema>>> {
 		return {};
 	}
 
-	@autobind
 	protected async tickMinor(): Promise<Partial<KVs<typeof schema>>> {
 		return {};
 	}
 
-	@autobind
 	public async update(file: DriveFile, isAdditional: boolean): Promise<void> {
 		const fileSizeKb = file.size / 1000;
 		await this.commit(file.userHost === null ? {

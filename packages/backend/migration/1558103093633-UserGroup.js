@@ -1,6 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class UserGroup1558103093633 {
+
+
+export class UserGroup1558103093633 {
     async up(queryRunner) {
         await queryRunner.query(`CREATE TABLE "user_group" ("id" character varying(32) NOT NULL, "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL, "name" character varying(256) NOT NULL, "userId" character varying(32) NOT NULL, "isPrivate" boolean NOT NULL DEFAULT false, CONSTRAINT "PK_3c29fba6fe013ec8724378ce7c9" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE INDEX "IDX_20e30aa35180e317e133d75316" ON "user_group" ("createdAt") `);
@@ -36,4 +36,3 @@ class UserGroup1558103093633 {
         await queryRunner.query(`DROP TABLE "user_group"`);
     }
 }
-exports.UserGroup1558103093633 = UserGroup1558103093633;

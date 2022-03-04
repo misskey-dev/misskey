@@ -1,9 +1,9 @@
-import { toArray, unique } from '@/prelude/array';
-import { IObject, isMention, IApMention } from '../type';
-import { resolvePerson } from './person';
-import * as promiseLimit from 'promise-limit';
-import Resolver from '../resolver';
-import { User } from '@/models/entities/user';
+import { toArray, unique } from '@/prelude/array.js';
+import { IObject, isMention, IApMention } from '../type.js';
+import { resolvePerson } from './person.js';
+import promiseLimit from 'promise-limit';
+import Resolver from '../resolver.js';
+import { User } from '@/models/entities/user.js';
 
 export async function extractApMentions(tags: IObject | IObject[] | null | undefined) {
 	const hrefs = unique(extractApMentionObjects(tags).map(x => x.href as string));

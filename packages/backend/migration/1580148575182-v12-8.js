@@ -1,6 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class v1281580148575182 {
+
+
+export class v1281580148575182 {
     constructor() {
         this.name = 'v1281580148575182';
     }
@@ -13,4 +13,3 @@ class v1281580148575182 {
         await queryRunner.query(`ALTER TABLE "note" ADD CONSTRAINT "FK_ec5c201576192ba8904c345c5cc" FOREIGN KEY ("appId") REFERENCES "app"("id") ON DELETE SET NULL ON UPDATE NO ACTION`, undefined);
     }
 }
-exports.v1281580148575182 = v1281580148575182;

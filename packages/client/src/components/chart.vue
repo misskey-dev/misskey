@@ -70,6 +70,7 @@ const colors = {
 	red: '#FF4560',
 	purple: '#e300db',
 	orange: '#fe6919',
+	lime: '#c7f400',
 };
 const colorSets = [colors.blue, colors.green, colors.yellow, colors.red, colors.purple];
 const getColor = (i) => {
@@ -224,7 +225,7 @@ export default defineComponent({
 								axis: 'y',
 								colors: {
 									0: alpha(x.color ? x.color : getColor(i), 0),
-									[maxes[i]]: alpha(x.color ? x.color : getColor(i), 0.15),
+									[maxes[i]]: alpha(x.color ? x.color : getColor(i), 0.175),
 								},
 							},
 						},
@@ -373,16 +374,6 @@ export default defineComponent({
 			const raw = await os.api('charts/federation', { limit: props.limit, span: props.span });
 			return {
 				series: [{
-					name: 'Sub',
-					type: 'area',
-					data: format(raw.sub),
-					color: colors.orange,
-				}, {
-					name: 'Pub',
-					type: 'area',
-					data: format(raw.pub),
-					color: colors.purple,
-				}, {
 					name: 'Received',
 					type: 'area',
 					data: format(raw.inboxInstances),
@@ -397,6 +388,21 @@ export default defineComponent({
 					type: 'area',
 					data: format(raw.stalled),
 					color: colors.red,
+				}, {
+					name: 'Pub & Sub',
+					type: 'area',
+					data: format(raw.pubsub),
+					color: colors.lime,
+				}, {
+					name: 'Pub',
+					type: 'area',
+					data: format(raw.pub),
+					color: colors.purple,
+				}, {
+					name: 'Sub',
+					type: 'area',
+					data: format(raw.sub),
+					color: colors.orange,
 				}],
 			};
 		};
@@ -529,12 +535,12 @@ export default defineComponent({
 					name: 'Write',
 					type: 'area',
 					data: format(raw.write),
-					color: colors.blue,
+					color: colors.lime,
 				}, {
 					name: 'Read',
 					type: 'area',
 					data: format(raw.read),
-					color: '#888888',
+					color: colors.blue,
 				}, {
 					name: '< Week',
 					type: 'area',

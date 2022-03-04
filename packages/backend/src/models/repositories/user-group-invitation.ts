@@ -1,6 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { UserGroupInvitation } from '@/models/entities/user-group-invitation';
-import { UserGroups } from '../index';
+import { UserGroupInvitation } from '@/models/entities/user-group-invitation.js';
+import { UserGroups } from '../index.js';
 
 @EntityRepository(UserGroupInvitation)
 export class UserGroupInvitationRepository extends Repository<UserGroupInvitation> {

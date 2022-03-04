@@ -1,9 +1,9 @@
 import ms from 'ms';
-import { uploadFromUrl } from '@/services/drive/upload-from-url';
-import define from '../../../define';
-import { DriveFiles } from '@/models/index';
-import { publishMainStream } from '@/services/stream';
-import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/misc/hard-limits';
+import { uploadFromUrl } from '@/services/drive/upload-from-url.js';
+import define from '../../../define.js';
+import { DriveFiles } from '@/models/index.js';
+import { publishMainStream } from '@/services/stream.js';
+import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/misc/hard-limits.js';
 
 export const meta = {
 	tags: ['drive'],

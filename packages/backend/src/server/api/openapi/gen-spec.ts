@@ -1,7 +1,7 @@
-import endpoints from '../endpoints';
-import config from '@/config/index';
-import { errors as basicErrors } from './errors';
-import { schemas, convertSchemaToOpenApiSchema } from './schemas';
+import endpoints from '../endpoints.js';
+import config from '@/config/index.js';
+import { errors as basicErrors } from './errors.js';
+import { schemas, convertSchemaToOpenApiSchema } from './schemas.js';
 
 export function genOpenapiSpec(lang = 'ja-JP') {
 	const spec = {

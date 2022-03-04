@@ -1,9 +1,9 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { Users } from '../index';
-import { Blocking } from '@/models/entities/blocking';
-import { awaitAll } from '@/prelude/await-all';
-import { Packed } from '@/misc/schema';
-import { User } from '@/models/entities/user';
+import { Users } from '../index.js';
+import { Blocking } from '@/models/entities/blocking.js';
+import { awaitAll } from '@/prelude/await-all.js';
+import { Packed } from '@/misc/schema.js';
+import { User } from '@/models/entities/user.js';
 
 @EntityRepository(Blocking)
 export class BlockingRepository extends Repository<Blocking> {

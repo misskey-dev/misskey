@@ -1,3 +1,3 @@
-import load from './load';
+import load from './load.js';
 
 export default load();

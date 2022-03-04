@@ -1,9 +1,9 @@
-import define from '../../define';
-import { getNote } from '../../common/getters';
-import { ApiError } from '../../error';
-import { NoteReactions } from '@/models/index';
+import define from '../../define.js';
+import { getNote } from '../../common/getters.js';
+import { ApiError } from '../../error.js';
+import { NoteReactions } from '@/models/index.js';
 import { DeepPartial } from 'typeorm';
-import { NoteReaction } from '@/models/entities/note-reaction';
+import { NoteReaction } from '@/models/entities/note-reaction.js';
 
 export const meta = {
 	tags: ['notes', 'reactions'],
@@ -68,6 +68,7 @@ export default define(meta, paramDef, async (ps, user) => {
 		order: {
 			id: -1,
 		},
+		relations: ['user', 'user.avatar', 'user.banner', 'note'],
 	});
 
 	return await Promise.all(reactions.map(reaction => NoteReactions.pack(reaction, user)));

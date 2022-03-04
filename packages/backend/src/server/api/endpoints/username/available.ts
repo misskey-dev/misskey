@@ -1,5 +1,5 @@
-import define from '../../define';
-import { Users, UsedUsernames } from '@/models/index';
+import define from '../../define.js';
+import { Users, UsedUsernames } from '@/models/index.js';
 
 export const meta = {
 	tags: ['users'],

@@ -1,6 +1,6 @@
-import define from '../../define';
-import { UserGroupInvitations } from '@/models/index';
-import { makePaginationQuery } from '../../common/make-pagination-query';
+import define from '../../define.js';
+import { UserGroupInvitations } from '@/models/index.js';
+import { makePaginationQuery } from '../../common/make-pagination-query.js';
 
 export const meta = {
 	tags: ['account', 'groups'],

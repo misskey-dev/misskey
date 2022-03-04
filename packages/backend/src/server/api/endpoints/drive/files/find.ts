@@ -1,5 +1,5 @@
-import define from '../../../define';
-import { DriveFiles } from '@/models/index';
+import define from '../../../define.js';
+import { DriveFiles } from '@/models/index.js';
 
 export const meta = {
 	requireCredential: true,

@@ -2,8 +2,8 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import * as childProcess from 'child_process';
-import { connectStream, signup, request, post, startServer, shutdownServer, initTestDb } from './utils';
-import { Following } from '../src/models/entities/following';
+import { connectStream, signup, request, post, startServer, shutdownServer, initTestDb } from './utils.js';
+import { Following } from '../src/models/entities/following.js';
 
 describe('Streaming', () => {
 	let p: childProcess.ChildProcess;

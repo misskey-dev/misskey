@@ -1,6 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class PinnedPage1562444565093 {
+
+
+export class PinnedPage1562444565093 {
     async up(queryRunner) {
         await queryRunner.query(`ALTER TABLE "user_profile" ADD "pinnedPageId" character varying(32)`);
         await queryRunner.query(`ALTER TABLE "user_profile" ADD CONSTRAINT "UQ_6dc44f1ceb65b1e72bacef2ca27" UNIQUE ("pinnedPageId")`);
@@ -12,4 +12,3 @@ class PinnedPage1562444565093 {
         await queryRunner.query(`ALTER TABLE "user_profile" DROP COLUMN "pinnedPageId"`);
     }
 }
-exports.PinnedPage1562444565093 = PinnedPage1562444565093;

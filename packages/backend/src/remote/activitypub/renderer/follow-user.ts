@@ -1,6 +1,6 @@
-import config from '@/config/index';
-import { Users } from '@/models/index';
-import { User } from '@/models/entities/user';
+import config from '@/config/index.js';
+import { Users } from '@/models/index.js';
+import { User } from '@/models/entities/user.js';
 
 /**
  * Convert (local|remote)(Follower|Followee)ID to URL

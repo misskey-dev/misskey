@@ -1,7 +1,7 @@
-import define from '../../../define';
-import { publishDriveStream } from '@/services/stream';
-import { ApiError } from '../../../error';
-import { DriveFolders, DriveFiles } from '@/models/index';
+import define from '../../../define.js';
+import { publishDriveStream } from '@/services/stream.js';
+import { ApiError } from '../../../error.js';
+import { DriveFolders, DriveFiles } from '@/models/index.js';
 
 export const meta = {
 	tags: ['drive'],

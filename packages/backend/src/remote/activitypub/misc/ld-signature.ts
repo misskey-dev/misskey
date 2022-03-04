@@ -1,8 +1,8 @@
-import * as crypto from 'crypto';
+import * as crypto from 'node:crypto';
 import * as jsonld from 'jsonld';
-import { CONTEXTS } from './contexts';
+import { CONTEXTS } from './contexts.js';
 import fetch from 'node-fetch';
-import { httpAgent, httpsAgent } from '@/misc/fetch';
+import { httpAgent, httpsAgent } from '@/misc/fetch.js';
 
 // RsaSignature2017 based from https://github.com/transmute-industries/RsaSignature2017
 

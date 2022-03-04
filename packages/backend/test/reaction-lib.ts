@@ -1,7 +1,7 @@
 /*
 import * as assert from 'assert';
 
-import { toDbReaction } from '../src/misc/reaction-lib';
+import { toDbReaction } from '../src/misc/reaction-lib.js';
 
 describe('toDbReaction', async () => {
 	it('既存の文字列リアクションはそのまま', async () => {

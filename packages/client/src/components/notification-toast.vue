@@ -6,33 +6,26 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { onMounted } from 'vue';
 import XNotification from './notification.vue';
 import * as os from '@/os';
 
-export default defineComponent({
-	components: {
-		XNotification
-	},
-	props: {
-		notification: {
-			type: Object,
-			required: true
-		}
-	},
-	emits: ['closed'],
-	data() {
-		return {
-			showing: true,
-			zIndex: os.claimZIndex('high'),
-		};
-	},
-	mounted() {
-		window.setTimeout(() => {
-			this.showing = false;
-		}, 6000);
-	}
+defineProps<{
+	notification: any; // TODO
+}>();
+
+const emit = defineEmits<{
+	(ev: 'closed'): void;
+}>();
+
+const zIndex = os.claimZIndex('high');
+let showing = $ref(true);
+
+onMounted(() => {
+	window.setTimeout(() => {
+		showing = false;
+	}, 6000);
 });
 </script>
 

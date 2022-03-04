@@ -1,12 +1,12 @@
-import { uploadFromUrl } from '@/services/drive/upload-from-url';
-import { IRemoteUser } from '@/models/entities/user';
-import Resolver from '../resolver';
-import { fetchMeta } from '@/misc/fetch-meta';
-import { apLogger } from '../logger';
-import { DriveFile } from '@/models/entities/drive-file';
-import { DriveFiles } from '@/models/index';
-import { truncate } from '@/misc/truncate';
-import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/misc/hard-limits';
+import { uploadFromUrl } from '@/services/drive/upload-from-url.js';
+import { IRemoteUser } from '@/models/entities/user.js';
+import Resolver from '../resolver.js';
+import { fetchMeta } from '@/misc/fetch-meta.js';
+import { apLogger } from '../logger.js';
+import { DriveFile } from '@/models/entities/drive-file.js';
+import { DriveFiles } from '@/models/index.js';
+import { truncate } from '@/misc/truncate.js';
+import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/misc/hard-limits.js';
 
 const logger = apLogger;
 

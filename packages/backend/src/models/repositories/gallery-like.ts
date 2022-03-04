@@ -1,6 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { GalleryLike } from '@/models/entities/gallery-like';
-import { GalleryPosts } from '../index';
+import { GalleryLike } from '@/models/entities/gallery-like.js';
+import { GalleryPosts } from '../index.js';
 
 @EntityRepository(GalleryLike)
 export class GalleryLikeRepository extends Repository<GalleryLike> {
