@@ -1,4 +1,4 @@
-import define from '../../define';
+import define from '../../define.js';
 import { readNotification } from '../../common/read-notification.js';
 
 export const meta = {
