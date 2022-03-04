@@ -834,6 +834,7 @@ searchByGoogle: "Google"
 instanceDefaultLightTheme: "Instance-wide default light theme"
 instanceDefaultDarkTheme: "Instance-wide default dark theme"
 instanceDefaultThemeDescription: "Enter the theme code in object format."
+indefinitely: "Never"
 _emailUnavailable:
   used: "This email address is already being used"
   format: "The format of this email address is invalid"
