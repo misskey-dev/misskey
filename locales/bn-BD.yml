@@ -831,6 +831,7 @@ themeColor: "থিমের রং"
 size: "আকার"
 numberOfColumn: "কলামের সংখ্যা"
 searchByGoogle: "গুগল"
+indefinitely: "অনির্দিষ্ট"
 _emailUnavailable:
   used: "এই ইমেইল ঠিকানাটি ইতোমধ্যে ব্যবহৃত হয়েছে"
   format: "এই ইমেল ঠিকানাটি সঠিকভাবে লিখা হয়নি"
