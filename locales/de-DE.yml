@@ -834,6 +834,7 @@ searchByGoogle: "Googlen"
 instanceDefaultLightTheme: "Instanzweites Standardfarbschema (Hell)"
 instanceDefaultDarkTheme: "Instanzweites Standardfarbschema (Dunkel)"
 instanceDefaultThemeDescription: "Gib den Farbschemencode im Objektformat ein."
+indefinitely: "Nie"
 _emailUnavailable:
   used: "Diese Email-Adresse wird bereits verwendet"
   format: "Das Format dieser Email-Adresse ist ungültig"
