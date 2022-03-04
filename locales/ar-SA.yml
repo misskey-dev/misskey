@@ -757,6 +757,7 @@ incorrectPassword: "كلمة السر خاطئة."
 hide: "إخفاء"
 leaveGroup: "مغادرة الفريق"
 welcomeBackWithName: "مرحبًا بك مجددًا {name}"
+indefinitely: "أبدًا"
 _emailUnavailable:
   used: "هذا البريد الإلكتروني مستخدم"
   format: "صيغة البريد الإلكتروني غير صالحة"
