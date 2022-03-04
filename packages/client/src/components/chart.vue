@@ -274,7 +274,7 @@ export default defineComponent({
 						y: {
 							position: 'left',
 							stacked: props.stacked,
-							suggestedMax: 100,
+							suggestedMax: 50,
 							grid: {
 								color: gridColor,
 								borderColor: 'rgb(0, 0, 0, 0)',
@@ -390,17 +390,17 @@ export default defineComponent({
 					color: colors.red,
 				}, {
 					name: 'Pub & Sub',
-					type: 'area',
+					type: 'line',
 					data: format(raw.pubsub),
 					color: colors.lime,
 				}, {
 					name: 'Pub',
-					type: 'area',
+					type: 'line',
 					data: format(raw.pub),
 					color: colors.purple,
 				}, {
 					name: 'Sub',
-					type: 'area',
+					type: 'line',
 					data: format(raw.sub),
 					color: colors.orange,
 				}],
