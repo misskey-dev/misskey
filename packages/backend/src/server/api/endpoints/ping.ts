@@ -1,12 +1,9 @@
-import define from '../define';
+import define from '../define.js';
 
 export const meta = {
 	requireCredential: false,
 
 	tags: ['meta'],
-
-	params: {
-	},
 
 	res: {
 		type: 'object',
@@ -20,8 +17,14 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async () => {
+export default define(meta, paramDef, async () => {
 	return {
 		pong: Date.now(),
 	};

@@ -19,7 +19,7 @@
 
 	<FormSection>
 		<template #label>{{ $ts.statistics }}</template>
-		<div ref="chart"></div>
+		<MkChart src="per-user-drive" :args="{ user: $i }" span="day" :limit="7 * 5" :bar="true" :stacked="true" :detailed="false" :aspect-ratio="6"/>
 	</FormSection>
 
 	<FormSection>
@@ -45,8 +45,7 @@ import * as os from '@/os';
 import bytes from '@/filters/bytes';
 import * as symbols from '@/symbols';
 import { defaultStore } from '@/store';
-
-// TODO: render chart
+import MkChart from '@/components/chart.vue';
 
 export default defineComponent({
 	components: {
@@ -55,6 +54,7 @@ export default defineComponent({
 		FormSection,
 		MkKeyValue,
 		FormSplit,
+		MkChart,
 	},
 
 	emits: ['info'],

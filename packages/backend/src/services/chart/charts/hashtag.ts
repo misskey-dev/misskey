@@ -1,51 +1,29 @@
-import autobind from 'autobind-decorator';
-import Chart, { Obj, DeepPartial } from '../core';
-import { User } from '@/models/entities/user';
-import { SchemaType } from '@/misc/schema';
-import { Users } from '@/models/index';
-import { name, schema } from './entities/hashtag';
-
-type HashtagLog = SchemaType<typeof schema>;
+import Chart, { KVs } from '../core.js';
+import { User } from '@/models/entities/user.js';
+import { Users } from '@/models/index.js';
+import { name, schema } from './entities/hashtag.js';
 
 /**
  * ハッシュタグに関するチャート
  */
 // eslint-disable-next-line import/no-default-export
-export default class HashtagChart extends Chart<HashtagLog> {
+export default class HashtagChart extends Chart<typeof schema> {
 	constructor() {
 		super(name, schema, true);
 	}
 
-	@autobind
-	protected genNewLog(latest: HashtagLog): DeepPartial<HashtagLog> {
+	protected async tickMajor(): Promise<Partial<KVs<typeof schema>>> {
 		return {};
 	}
 
-	@autobind
-	protected aggregate(logs: HashtagLog[]): HashtagLog {
-		return {
-			local: {
-				users: logs.reduce((a, b) => a.concat(b.local.users), [] as HashtagLog['local']['users']),
-			},
-			remote: {
-				users: logs.reduce((a, b) => a.concat(b.remote.users), [] as HashtagLog['remote']['users']),
-			},
-		};
-	}
-
-	@autobind
-	protected async fetchActual(): Promise<DeepPartial<HashtagLog>> {
+	protected async tickMinor(): Promise<Partial<KVs<typeof schema>>> {
 		return {};
 	}
 
-	@autobind
 	public async update(hashtag: string, user: { id: User['id'], host: User['host'] }): Promise<void> {
-		const update: Obj = {
-			users: [user.id],
-		};
-
-		await this.inc({
-			[Users.isLocalUser(user) ? 'local' : 'remote']: update,
+		await this.commit({
+			'local.users': Users.isLocalUser(user) ? [user.id] : [],
+			'remote.users': Users.isLocalUser(user) ? [] : [user.id],
 		}, hashtag);
 	}
 }

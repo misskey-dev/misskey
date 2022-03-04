@@ -1,12 +1,12 @@
-import * as fs from 'fs';
-import * as Koa from 'koa';
-import { serverLogger } from '../index';
-import { IImage, convertToPng, convertToJpeg } from '@/services/drive/image-processor';
-import { createTemp } from '@/misc/create-temp';
-import { downloadUrl } from '@/misc/download-url';
-import { detectType } from '@/misc/get-file-info';
-import { StatusError } from '@/misc/fetch';
-import { FILE_TYPE_BROWSERSAFE } from '@/const';
+import * as fs from 'node:fs';
+import Koa from 'koa';
+import { serverLogger } from '../index.js';
+import { IImage, convertToPng, convertToJpeg } from '@/services/drive/image-processor.js';
+import { createTemp } from '@/misc/create-temp.js';
+import { downloadUrl } from '@/misc/download-url.js';
+import { detectType } from '@/misc/get-file-info.js';
+import { StatusError } from '@/misc/fetch.js';
+import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
 
 export async function proxyMedia(ctx: Koa.Context) {
 	const url = 'url' in ctx.query ? ctx.query.url : 'https://' + ctx.params.url;

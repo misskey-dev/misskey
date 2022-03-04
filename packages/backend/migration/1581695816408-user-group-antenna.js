@@ -1,6 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class userGroupAntenna1581695816408 {
+
+
+export class userGroupAntenna1581695816408 {
     constructor() {
         this.name = 'userGroupAntenna1581695816408';
     }
@@ -25,4 +25,3 @@ class userGroupAntenna1581695816408 {
         await queryRunner.query(`ALTER TABLE "antenna" DROP COLUMN "userGroupJoiningId"`, undefined);
     }
 }
-exports.userGroupAntenna1581695816408 = userGroupAntenna1581695816408;

@@ -1,13 +1,13 @@
-import * as bcrypt from 'bcryptjs';
+import bcrypt from 'bcryptjs';
 import { v4 as uuid } from 'uuid';
-import generateNativeUserToken from '../server/api/common/generate-native-user-token';
-import { genRsaKeyPair } from '@/misc/gen-key-pair';
-import { User } from '@/models/entities/user';
-import { UserProfile } from '@/models/entities/user-profile';
-import { getConnection } from 'typeorm';
-import { genId } from '@/misc/gen-id';
-import { UserKeypair } from '@/models/entities/user-keypair';
-import { UsedUsername } from '@/models/entities/used-username';
+import generateNativeUserToken from '../server/api/common/generate-native-user-token.js';
+import { genRsaKeyPair } from '@/misc/gen-key-pair.js';
+import { User } from '@/models/entities/user.js';
+import { UserProfile } from '@/models/entities/user-profile.js';
+import { getConnection, ObjectLiteral } from 'typeorm';
+import { genId } from '@/misc/gen-id.js';
+import { UserKeypair } from '@/models/entities/user-keypair.js';
+import { UsedUsername } from '@/models/entities/used-username.js';
 
 export async function createSystemUser(username: string) {
 	const password = uuid();
@@ -21,7 +21,7 @@ export async function createSystemUser(username: string) {
 
 	const keyPair = await genRsaKeyPair(4096);
 
-	let account!: User;
+	let account!: User | ObjectLiteral;
 
 	// Start transaction
 	await getConnection().transaction(async transactionalEntityManager => {

@@ -1,13 +1,13 @@
-import * as Bull from 'bull';
+import Bull from 'bull';
 
-import { queueLogger } from '../../logger';
-import * as Acct from 'misskey-js/built/acct';
-import { resolveUser } from '@/remote/resolve-user';
-import { downloadTextFile } from '@/misc/download-text-file';
-import { isSelfHost, toPuny } from '@/misc/convert-host';
-import { Users, DriveFiles, Blockings } from '@/models/index';
-import { DbUserImportJobData } from '@/queue/types';
-import block from '@/services/blocking/create';
+import { queueLogger } from '../../logger.js';
+import * as Acct from '@/misc/acct.js';
+import { resolveUser } from '@/remote/resolve-user.js';
+import { downloadTextFile } from '@/misc/download-text-file.js';
+import { isSelfHost, toPuny } from '@/misc/convert-host.js';
+import { Users, DriveFiles, Blockings } from '@/models/index.js';
+import { DbUserImportJobData } from '@/queue/types.js';
+import block from '@/services/blocking/create.js';
 
 const logger = queueLogger.createSubLogger('import-blocking');
 

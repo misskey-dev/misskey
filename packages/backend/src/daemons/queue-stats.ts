@@ -1,7 +1,7 @@
-import Xev from 'xev';
-import { deliverQueue, inboxQueue } from '../queue/queues';
+import { default as Xev } from 'xev';
+import { deliverQueue, inboxQueue } from '../queue/queues.js';
 
-const ev = new Xev();
+const ev = new Xev.default();
 
 const interval = 10000;
 

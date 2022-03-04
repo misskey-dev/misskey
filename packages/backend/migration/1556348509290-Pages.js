@@ -1,6 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class Pages1556348509290 {
+
+
+export class Pages1556348509290 {
     async up(queryRunner) {
         await queryRunner.query(`CREATE TYPE "page_visibility_enum" AS ENUM('public', 'followers', 'specified')`);
         await queryRunner.query(`CREATE TABLE "page" ("id" character varying(32) NOT NULL, "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL, "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL, "title" character varying(256) NOT NULL, "name" character varying(256) NOT NULL, "summary" character varying(256), "alignCenter" boolean NOT NULL, "font" character varying(32) NOT NULL, "userId" character varying(32) NOT NULL, "eyeCatchingImageId" character varying(32), "content" jsonb NOT NULL DEFAULT '[]', "variables" jsonb NOT NULL DEFAULT '[]', "visibility" "page_visibility_enum" NOT NULL, "visibleUserIds" character varying(32) array NOT NULL DEFAULT '{}'::varchar[], CONSTRAINT "PK_742f4117e065c5b6ad21b37ba1f" PRIMARY KEY ("id"))`);
@@ -26,4 +26,3 @@ class Pages1556348509290 {
         await queryRunner.query(`DROP TYPE "page_visibility_enum"`);
     }
 }
-exports.Pages1556348509290 = Pages1556348509290;

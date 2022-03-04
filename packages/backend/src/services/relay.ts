@@ -1,11 +1,11 @@
-import { createSystemUser } from './create-system-user';
-import { renderFollowRelay } from '@/remote/activitypub/renderer/follow-relay';
-import { renderActivity, attachLdSignature } from '@/remote/activitypub/renderer/index';
-import renderUndo from '@/remote/activitypub/renderer/undo';
-import { deliver } from '@/queue/index';
-import { ILocalUser, User } from '@/models/entities/user';
-import { Users, Relays } from '@/models/index';
-import { genId } from '@/misc/gen-id';
+import { createSystemUser } from './create-system-user.js';
+import { renderFollowRelay } from '@/remote/activitypub/renderer/follow-relay.js';
+import { renderActivity, attachLdSignature } from '@/remote/activitypub/renderer/index.js';
+import renderUndo from '@/remote/activitypub/renderer/undo.js';
+import { deliver } from '@/queue/index.js';
+import { ILocalUser, User } from '@/models/entities/user.js';
+import { Users, Relays } from '@/models/index.js';
+import { genId } from '@/misc/gen-id.js';
 
 const ACTOR_USERNAME = 'relay.actor' as const;
 

@@ -1,23 +1,11 @@
-import $ from 'cafy';
-import define from '../../../define';
-import { RegistryItems } from '@/models/index';
-import { ApiError } from '../../../error';
+import define from '../../../define.js';
+import { RegistryItems } from '@/models/index.js';
+import { ApiError } from '../../../error.js';
 
 export const meta = {
 	requireCredential: true,
 
 	secure: true,
-
-	params: {
-		key: {
-			validator: $.str,
-		},
-
-		scope: {
-			validator: $.optional.arr($.str.match(/^[a-zA-Z0-9_]+$/)),
-			default: [],
-		},
-	},
 
 	errors: {
 		noSuchKey: {
@@ -28,8 +16,19 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		key: { type: 'string' },
+		scope: { type: 'array', default: [], items: {
+			type: 'string', pattern: /^[a-zA-Z0-9_]+$/.toString().slice(1, -1),
+		} },
+	},
+	required: ['key'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const query = RegistryItems.createQueryBuilder('item')
 		.where('item.domain IS NULL')
 		.andWhere('item.userId = :userId', { userId: user.id })

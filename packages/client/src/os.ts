@@ -544,7 +544,7 @@ export const uploads = ref<{
 }[]>([]);
 
 export function upload(file: File, folder?: any, name?: string, keepOriginal: boolean = defaultStore.state.keepOriginalUploading): Promise<Misskey.entities.DriveFile> {
-	if (folder && typeof folder == 'object') folder = folder.id;
+	if (folder && typeof folder === 'object') folder = folder.id;
 
 	return new Promise((resolve, reject) => {
 		const id = Math.random().toString();

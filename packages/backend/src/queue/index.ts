@@ -1,18 +1,19 @@
-import * as httpSignature from 'http-signature';
+import httpSignature from 'http-signature';
 
-import config from '@/config/index';
-import { envOption } from '../env';
+import config from '@/config/index.js';
+import { envOption } from '../env.js';
 
-import processDeliver from './processors/deliver';
-import processInbox from './processors/inbox';
-import processDb from './processors/db/index';
-import procesObjectStorage from './processors/object-storage/index';
-import { queueLogger } from './logger';
-import { DriveFile } from '@/models/entities/drive-file';
-import { getJobInfo } from './get-job-info';
-import { systemQueue, dbQueue, deliverQueue, inboxQueue, objectStorageQueue } from './queues';
-import { ThinUser } from './types';
-import { IActivity } from '@/remote/activitypub/type';
+import processDeliver from './processors/deliver.js';
+import processInbox from './processors/inbox.js';
+import processDb from './processors/db/index.js';
+import processObjectStorage from './processors/object-storage/index.js';
+import processSystemQueue from './processors/system/index.js';
+import { queueLogger } from './logger.js';
+import { DriveFile } from '@/models/entities/drive-file.js';
+import { getJobInfo } from './get-job-info.js';
+import { systemQueue, dbQueue, deliverQueue, inboxQueue, objectStorageQueue } from './queues.js';
+import { ThinUser } from './types.js';
+import { IActivity } from '@/remote/activitypub/type.js';
 
 function renderError(e: Error): any {
 	return {
@@ -255,12 +256,29 @@ export default function() {
 	deliverQueue.process(config.deliverJobConcurrency || 128, processDeliver);
 	inboxQueue.process(config.inboxJobConcurrency || 16, processInbox);
 	processDb(dbQueue);
-	procesObjectStorage(objectStorageQueue);
+	processObjectStorage(objectStorageQueue);
+
+	systemQueue.add('tickCharts', {
+	}, {
+		repeat: { cron: '55 * * * *' },
+	});
 
 	systemQueue.add('resyncCharts', {
 	}, {
 		repeat: { cron: '0 0 * * *' },
 	});
+
+	systemQueue.add('cleanCharts', {
+	}, {
+		repeat: { cron: '0 0 * * *' },
+	});
+
+	systemQueue.add('checkExpiredMutings', {
+	}, {
+		repeat: { cron: '*/5 * * * *' },
+	});
+
+	processSystemQueue(systemQueue);
 }
 
 export function destroy() {

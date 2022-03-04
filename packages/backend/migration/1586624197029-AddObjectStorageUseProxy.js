@@ -1,6 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class AddObjectStorageUseProxy1586624197029 {
+
+
+export class AddObjectStorageUseProxy1586624197029 {
     constructor() {
         this.name = 'AddObjectStorageUseProxy1586624197029';
     }
@@ -11,4 +11,3 @@ class AddObjectStorageUseProxy1586624197029 {
         await queryRunner.query(`ALTER TABLE "meta" DROP COLUMN "objectStorageUseProxy"`, undefined);
     }
 }
-exports.AddObjectStorageUseProxy1586624197029 = AddObjectStorageUseProxy1586624197029;

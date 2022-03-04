@@ -1,26 +1,14 @@
-import $ from 'cafy';
 import ms from 'ms';
-import { length } from 'stringz';
-import create from '@/services/note/create';
-import define from '../../define';
-import { fetchMeta } from '@/misc/fetch-meta';
-import { ApiError } from '../../error';
-import { ID } from '@/misc/cafy-id';
-import { User } from '@/models/entities/user';
-import { Users, DriveFiles, Notes, Channels, Blockings } from '@/models/index';
-import { DriveFile } from '@/models/entities/drive-file';
-import { Note } from '@/models/entities/note';
-import { DB_MAX_NOTE_TEXT_LENGTH } from '@/misc/hard-limits';
-import { noteVisibilities } from '../../../../types';
-import { Channel } from '@/models/entities/channel';
-
-let maxNoteTextLength = 500;
-
-setInterval(() => {
-	fetchMeta().then(m => {
-		maxNoteTextLength = m.maxNoteTextLength;
-	});
-}, 3000);
+import create from '@/services/note/create.js';
+import define from '../../define.js';
+import { ApiError } from '../../error.js';
+import { User } from '@/models/entities/user.js';
+import { Users, DriveFiles, Notes, Channels, Blockings } from '@/models/index.js';
+import { DriveFile } from '@/models/entities/drive-file.js';
+import { Note } from '@/models/entities/note.js';
+import { noteVisibilities } from '../../../../types.js';
+import { Channel } from '@/models/entities/channel.js';
+import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -33,84 +21,6 @@ export const meta = {
 	},
 
 	kind: 'write:notes',
-
-	params: {
-		visibility: {
-			validator: $.optional.str.or(noteVisibilities as unknown as string[]),
-			default: 'public',
-		},
-
-		visibleUserIds: {
-			validator: $.optional.arr($.type(ID)).unique().min(0),
-		},
-
-		text: {
-			validator: $.optional.nullable.str.pipe(text =>
-				text.trim() != ''
-					&& length(text.trim()) <= maxNoteTextLength
-					&& Array.from(text.trim()).length <= DB_MAX_NOTE_TEXT_LENGTH,	// DB limit
-			),
-			default: null,
-		},
-
-		cw: {
-			validator: $.optional.nullable.str.pipe(Notes.validateCw),
-		},
-
-		localOnly: {
-			validator: $.optional.bool,
-			default: false,
-		},
-
-		noExtractMentions: {
-			validator: $.optional.bool,
-			default: false,
-		},
-
-		noExtractHashtags: {
-			validator: $.optional.bool,
-			default: false,
-		},
-
-		noExtractEmojis: {
-			validator: $.optional.bool,
-			default: false,
-		},
-
-		fileIds: {
-			validator: $.optional.arr($.type(ID)).unique().range(1, 16),
-		},
-
-		mediaIds: {
-			validator: $.optional.arr($.type(ID)).unique().range(1, 16),
-			deprecated: true,
-		},
-
-		replyId: {
-			validator: $.optional.nullable.type(ID),
-		},
-
-		renoteId: {
-			validator: $.optional.nullable.type(ID),
-		},
-
-		channelId: {
-			validator: $.optional.nullable.type(ID),
-		},
-
-		poll: {
-			validator: $.optional.nullable.obj({
-				choices: $.arr($.str)
-					.unique()
-					.range(2, 10)
-					.each(c => c.length > 0 && c.length < 50),
-				multiple: $.optional.bool,
-				expiresAt: $.optional.nullable.num.int(),
-				expiredAfter: $.optional.nullable.num.int().min(1),
-			}).strict(),
-			ref: 'poll',
-		},
-	},
 
 	res: {
 		type: 'object',
@@ -175,8 +85,49 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		visibility: { type: 'string', enum: ['public', 'home', 'followers', 'specified'], default: "public" },
+		visibleUserIds: { type: 'array', uniqueItems: true, items: {
+			type: 'string', format: 'misskey:id',
+		} },
+		text: { type: 'string', nullable: true, maxLength: MAX_NOTE_TEXT_LENGTH, default: null },
+		cw: { type: 'string', nullable: true, maxLength: 100 },
+		localOnly: { type: 'boolean', default: false },
+		noExtractMentions: { type: 'boolean', default: false },
+		noExtractHashtags: { type: 'boolean', default: false },
+		noExtractEmojis: { type: 'boolean', default: false },
+		fileIds: { type: 'array', uniqueItems: true, minItems: 1, maxItems: 16, items: {
+			type: 'string', format: 'misskey:id',
+		} },
+		mediaIds: { type: 'array', uniqueItems: true, minItems: 1, maxItems: 16, items: {
+			type: 'string', format: 'misskey:id',
+		} },
+		replyId: { type: 'string', format: 'misskey:id', nullable: true },
+		renoteId: { type: 'string', format: 'misskey:id', nullable: true },
+		channelId: { type: 'string', format: 'misskey:id', nullable: true },
+		poll: {
+			type: 'object', nullable: true,
+			properties: {
+				choices: {
+					type: 'array', uniqueItems: true, minItems: 2, maxItems: 10, 
+					items: {
+						type: 'string', minLength: 1, maxLength: 50,
+					},
+				},
+				multiple: { type: 'boolean', default: false },
+				expiresAt: { type: 'integer', nullable: true },
+				expiredAfter: { type: 'integer', nullable: true, minimum: 1 },
+			},
+			required: ['choices'],
+		},
+	},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	let visibleUsers: User[] = [];
 	if (ps.visibleUserIds) {
 		visibleUsers = (await Promise.all(ps.visibleUserIds.map(id => Users.findOne(id))))

@@ -1,51 +1,11 @@
-import $ from 'cafy';
-import define from '../../define';
-import { Users } from '@/models/index';
-import { normalizeForSearch } from '@/misc/normalize-for-search';
+import define from '../../define.js';
+import { Users } from '@/models/index.js';
+import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 
 export const meta = {
 	requireCredential: false,
 
 	tags: ['hashtags', 'users'],
-
-	params: {
-		tag: {
-			validator: $.str,
-		},
-
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
-		},
-
-		sort: {
-			validator: $.str.or([
-				'+follower',
-				'-follower',
-				'+createdAt',
-				'-createdAt',
-				'+updatedAt',
-				'-updatedAt',
-			]),
-		},
-
-		state: {
-			validator: $.optional.str.or([
-				'all',
-				'alive',
-			]),
-			default: 'all',
-		},
-
-		origin: {
-			validator: $.optional.str.or([
-				'combined',
-				'local',
-				'remote',
-			]),
-			default: 'local',
-		},
-	},
 
 	res: {
 		type: 'array',
@@ -58,8 +18,20 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		tag: { type: 'string' },
+		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+		sort: { type: 'string', enum: ['+follower', '-follower', '+createdAt', '-createdAt', '+updatedAt', '-updatedAt'] },
+		state: { type: 'string', enum: ['all', 'alive'], default: "all" },
+		origin: { type: 'string', enum: ['combined', 'local', 'remote'], default: "local" },
+	},
+	required: ['tag', 'sort'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	const query = Users.createQueryBuilder('user')
 		.where(':tag = ANY(user.tags)', { tag: normalizeForSearch(ps.tag) });
 
@@ -84,7 +56,7 @@ export default define(meta, async (ps, me) => {
 		case '-updatedAt': query.orderBy('user.updatedAt', 'ASC'); break;
 	}
 
-	const users = await query.take(ps.limit!).getMany();
+	const users = await query.take(ps.limit).getMany();
 
 	return await Users.packMany(users, me, { detail: true });
 });

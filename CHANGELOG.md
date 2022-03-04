@@ -2,10 +2,119 @@
 ## 12.x.x (unreleased)
 
 ### Improvements
+- 
 
 ### Bugfixes
+- 
 
+You should also include the user name that made the change.
 -->
+
+## 12.x.x (unreleased)
+
+### NOTE
+このバージョンからNode v16.14.0以降が必要です
+
+### Changes
+- ノートの最大文字数を設定できる機能が廃止され、デフォルトで一律3000文字になりました @syuilo
+
+### Improvements
+- インスタンスデフォルトテーマを設定できるように @syuilo
+- ミュートに期限を設定できるように @syuilo
+- プロフィールの追加情報を最大16まで保存できるように @syuilo
+- 連合チャートにPub&Subを追加 @syuilo
+- デフォルトで10秒以上時間がかかるデータベースへのクエリは中断されるように @syuilo
+	- 設定ファイルの`db.extra`に`statement_timeout`を設定することでタイムアウト時間を変更できます
+
+### Bugfixes
+- Client: リアクションピッカーの高さが低くなったまま戻らないことがあるのを修正 @syuilo
+- Client: ユーザー名オートコンプリートが正しく動作しない問題を修正 @syuilo
+- Client: タッチ操作だとウィジェットの編集がしにくいのを修正 @xianonn
+
+## 12.107.0 (2022/02/12)
+
+### Improvements
+- クライアント: テーマを追加 @syuilo
+
+### Bugfixes
+- API: stats APIで内部エラーが発生する問題を修正 @syuilo
+- クライアント: ソフトミュートですべてがマッチしてしまう場合があるのを修正 @tamaina
+- クライアント: デバイスのスクリーンのセーフエリアを考慮するように @syuilo
+- クライアント: 一部環境でサイドバーの投稿ボタンが表示されない問題を修正 @syuilo
+
+## 12.106.3 (2022/02/11)
+
+### Improvements
+- クライアント: スマートフォンでの余白を調整 @syuilo
+
+### Bugfixes
+- クライアント: ノートの詳細が表示されない問題を修正 @syuilo
+
+## 12.106.2 (2022/02/11)
+
+### Bugfixes
+- クライアント: 削除したノートがタイムラインから自動で消えない問題を修正 @syuilo
+- クライアント: リアクション数が正しくないことがある問題を修正 @syuilo
+- 一部環境でマイグレーションが動作しない問題を修正 @syuilo
+
+## 12.106.1 (2022/02/11)
+
+### Bugfixes
+- クライアント: ワードミュートが保存できない問題を修正 @syuilo
+
+## 12.106.0 (2022/02/11)
+
+### Improvements
+- Improve federation chart @syuilo
+- クライアント: リアクションピッカーのサイズを設定できるように @syuilo
+- クライアント: リアクションピッカーの幅、高さ制限を緩和 @syuilo
+- Docker: Update to Node v16.13.2 @mei23
+- Update dependencies
+
+### Bugfixes
+- validate regular expressions in word mutes @Johann150
+
+## 12.105.0 (2022/02/09)
+
+### Improvements
+- インスタンスのテーマカラーを設定できるように @syuilo
+
+### Bugfixes
+- 一部環境でマイグレーションが失敗する問題を修正 @syuilo
+
+## 12.104.0 (2022/02/09)
+
+### Note
+ビルドする前に`npm run clean`を実行してください。
+
+このリリースはマイグレーションの規模が大きいため、インスタンスによってはマイグレーションに時間がかかる可能性があります。
+マイグレーションが終わらない場合は、チャートの情報はリセットされてしまいますが`__chart__`で始まるテーブルの**レコード**を全て削除(テーブル自体は消さないでください)してから再度試す方法もあります。
+
+### Improvements
+- チャートエンジンの強化 @syuilo
+	- テーブルサイズの削減
+	- notes/instance/perUserNotesチャートに添付ファイル付きノートの数を追加
+	- activeUsersチャートに新しい項目を追加
+	- federationチャートに新しい項目を追加
+	- apRequestチャートを追加
+	- networkチャート廃止
+- クライアント: 自インスタンス情報ページでチャートを見れるように @syuilo
+- クライアント: デバイスの種類を手動指定できるように @syuilo
+- クライアント: UIのアイコンを更新 @syuilo
+- クライアント: UIのアイコンをセルフホスティングするように @syuilo
+- NodeInfo のユーザー数と投稿数の内容を見直す @xianonn
+
+### Bugfixes
+- Client: タイムライン種別を切り替えると「新しいノートがあります」の表示が残留してしまうのを修正 @tamaina
+- Client: UIのサイズがおかしくなる問題の修正 @tamaina
+- Client: Setting instance information of notes to always show breaks the timeline @Johann150
+- Client: 環境に依っては返信する際のカーソル位置が正しくない問題を修正 @syuilo
+- Client: コントロールパネルのユーザー、ファイルにて、インスタンスの表示範囲切り替えが機能しない問題を修正 @syuilo
+- Client: アップデートお知らせダイアログが出ないのを修正 @syuilo
+- Client: Follows/Followers Visibility changes won't be saved unless clicking on an other checkbox @Johann150
+- API: Fix API cast @mei23
+- add instance favicon where it's missing @solfisher
+- チャートの定期resyncが動作していない問題を修正 @syuilo
 
 ## 12.103.1 (2022/02/02)
 

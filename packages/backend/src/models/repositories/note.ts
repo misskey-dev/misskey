@@ -1,21 +1,17 @@
 import { EntityRepository, Repository, In } from 'typeorm';
 import * as mfm from 'mfm-js';
-import { Note } from '@/models/entities/note';
-import { User } from '@/models/entities/user';
-import { Users, PollVotes, DriveFiles, NoteReactions, Followings, Polls, Channels } from '../index';
-import { Packed } from '@/misc/schema';
-import { nyaize } from '@/misc/nyaize';
-import { awaitAll } from '@/prelude/await-all';
-import { convertLegacyReaction, convertLegacyReactions, decodeReaction } from '@/misc/reaction-lib';
-import { NoteReaction } from '@/models/entities/note-reaction';
-import { aggregateNoteEmojis, populateEmojis, prefetchEmojis } from '@/misc/populate-emojis';
+import { Note } from '@/models/entities/note.js';
+import { User } from '@/models/entities/user.js';
+import { Users, PollVotes, DriveFiles, NoteReactions, Followings, Polls, Channels } from '../index.js';
+import { Packed } from '@/misc/schema.js';
+import { nyaize } from '@/misc/nyaize.js';
+import { awaitAll } from '@/prelude/await-all.js';
+import { convertLegacyReaction, convertLegacyReactions, decodeReaction } from '@/misc/reaction-lib.js';
+import { NoteReaction } from '@/models/entities/note-reaction.js';
+import { aggregateNoteEmojis, populateEmojis, prefetchEmojis } from '@/misc/populate-emojis.js';
 
 @EntityRepository(Note)
 export class NoteRepository extends Repository<Note> {
-	public validateCw(x: string) {
-		return x.trim().length <= 100;
-	}
-
 	public async isVisibleForMe(note: Note, meId: User['id'] | null): Promise<boolean> {
 		// visibility が specified かつ自分が指定されていなかったら非表示
 		if (note.visibility === 'specified') {
@@ -206,8 +202,8 @@ export class NoteRepository extends Repository<Note> {
 
 		let text = note.text;
 
-		if (note.name && (note.url || note.uri)) {
-			text = `【${note.name}】\n${(note.text || '').trim()}\n\n${note.url || note.uri}`;
+		if (note.name && (note.url ?? note.uri)) {
+			text = `【${note.name}】\n${(note.text || '').trim()}\n\n${note.url ?? note.uri}`;
 		}
 
 		const channel = note.channelId
@@ -222,7 +218,7 @@ export class NoteRepository extends Repository<Note> {
 			id: note.id,
 			createdAt: note.createdAt.toISOString(),
 			userId: note.userId,
-			user: Users.pack(note.user || note.userId, me, {
+			user: Users.pack(note.user ?? note.userId, me, {
 				detail: false,
 			}),
 			text: text,

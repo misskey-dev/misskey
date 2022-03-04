@@ -1,5 +1,5 @@
-import { initDb } from '@/db/postgre';
-import * as Acct from 'misskey-js/built/acct';
+import { initDb } from '@/db/postgre.js';
+import * as Acct from '@/misc/acct.js';
 
 async function main(acct: string): Promise<any> {
 	await initDb();

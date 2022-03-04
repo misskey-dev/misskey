@@ -1,19 +1,22 @@
-import { USER_ONLINE_THRESHOLD } from '@/const';
-import { Users } from '@/models/index';
+import { USER_ONLINE_THRESHOLD } from '@/const.js';
+import { Users } from '@/models/index.js';
 import { MoreThan } from 'typeorm';
-import define from '../define';
+import define from '../define.js';
 
 export const meta = {
 	tags: ['meta'],
 
 	requireCredential: false,
+} as const;
 
-	params: {
-	},
+export const paramDef = {
+	type: 'object',
+	properties: {},
+	required: [],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async () => {
+export default define(meta, paramDef, async () => {
 	const count = await Users.count({
 		lastActiveDate: MoreThan(new Date(Date.now() - USER_ONLINE_THRESHOLD)),
 	});

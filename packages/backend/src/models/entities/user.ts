@@ -1,6 +1,6 @@
 import { Entity, Column, Index, OneToOne, JoinColumn, PrimaryColumn } from 'typeorm';
-import { DriveFile } from './drive-file';
-import { id } from '../id';
+import { DriveFile } from './drive-file.js';
+import { id } from '../id.js';
 
 @Entity()
 @Index(['usernameLower', 'host'], { unique: true })
@@ -106,26 +106,6 @@ export class User {
 	})
 	public tags: string[];
 
-	@Column('varchar', {
-		length: 512, nullable: true,
-	})
-	public avatarUrl: string | null;
-
-	@Column('varchar', {
-		length: 512, nullable: true,
-	})
-	public bannerUrl: string | null;
-
-	@Column('varchar', {
-		length: 128, nullable: true,
-	})
-	public avatarBlurhash: string | null;
-
-	@Column('varchar', {
-		length: 128, nullable: true,
-	})
-	public bannerBlurhash: string | null;
-
 	@Column('boolean', {
 		default: false,
 		comment: 'Whether the User is suspended.',
@@ -224,6 +204,12 @@ export class User {
 		comment: 'The URI of the user Follower Collection. It will be null if the origin of the user is local.',
 	})
 	public followersUri: string | null;
+
+	@Column('boolean', {
+		default: false,
+		comment: 'Whether to show users replying to other users in the timeline'
+	})
+	public showTimelineReplies: boolean;
 
 	@Index({ unique: true })
 	@Column('char', {

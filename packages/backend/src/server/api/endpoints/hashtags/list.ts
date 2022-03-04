@@ -1,50 +1,10 @@
-import $ from 'cafy';
-import define from '../../define';
-import { Hashtags } from '@/models/index';
+import define from '../../define.js';
+import { Hashtags } from '@/models/index.js';
 
 export const meta = {
 	tags: ['hashtags'],
 
 	requireCredential: false,
-
-	params: {
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
-		},
-
-		attachedToUserOnly: {
-			validator: $.optional.bool,
-			default: false,
-		},
-
-		attachedToLocalUserOnly: {
-			validator: $.optional.bool,
-			default: false,
-		},
-
-		attachedToRemoteUserOnly: {
-			validator: $.optional.bool,
-			default: false,
-		},
-
-		sort: {
-			validator: $.str.or([
-				'+mentionedUsers',
-				'-mentionedUsers',
-				'+mentionedLocalUsers',
-				'-mentionedLocalUsers',
-				'+mentionedRemoteUsers',
-				'-mentionedRemoteUsers',
-				'+attachedUsers',
-				'-attachedUsers',
-				'+attachedLocalUsers',
-				'-attachedLocalUsers',
-				'+attachedRemoteUsers',
-				'-attachedRemoteUsers',
-			]),
-		},
-	},
 
 	res: {
 		type: 'array',
@@ -57,8 +17,20 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+		attachedToUserOnly: { type: 'boolean', default: false },
+		attachedToLocalUserOnly: { type: 'boolean', default: false },
+		attachedToRemoteUserOnly: { type: 'boolean', default: false },
+		sort: { type: 'string', enum: ['+mentionedUsers', '-mentionedUsers', '+mentionedLocalUsers', '-mentionedLocalUsers', '+mentionedRemoteUsers', '-mentionedRemoteUsers', '+attachedUsers', '-attachedUsers', '+attachedLocalUsers', '-attachedLocalUsers', '+attachedRemoteUsers', '-attachedRemoteUsers'] },
+	},
+	required: ['sort'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	const query = Hashtags.createQueryBuilder('tag');
 
 	if (ps.attachedToUserOnly) query.andWhere('tag.attachedUsersCount != 0');
@@ -90,7 +62,7 @@ export default define(meta, async (ps, me) => {
 		'tag.attachedRemoteUsersCount',
 	]);
 
-	const tags = await query.take(ps.limit!).getMany();
+	const tags = await query.take(ps.limit).getMany();
 
 	return Hashtags.packMany(tags);
 });

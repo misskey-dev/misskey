@@ -1,8 +1,7 @@
-import endpoints from '../endpoints';
-import { Context } from 'cafy';
-import config from '@/config/index';
-import { errors as basicErrors } from './errors';
-import { schemas, convertSchemaToOpenApiSchema } from './schemas';
+import endpoints from '../endpoints.js';
+import config from '@/config/index.js';
+import { errors as basicErrors } from './errors.js';
+import { schemas, convertSchemaToOpenApiSchema } from './schemas.js';
 
 export function genOpenapiSpec(lang = 'ja-JP') {
 	const spec = {
@@ -38,47 +37,7 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 		},
 	};
 
-	function genProps(props: { [key: string]: Context; }) {
-		const properties = {} as any;
-
-		for (const [k, v] of Object.entries(props)) {
-			properties[k] = genProp(v);
-		}
-
-		return properties;
-	}
-
-	function genProp(param: Context): any {
-		const required = param.name === 'Object' ? (param as any).props ? Object.entries((param as any).props).filter(([k, v]: any) => !v.isOptional).map(([k, v]) => k) : [] : [];
-		return {
-			description: (param.data || {}).desc,
-			default: (param.data || {}).default,
-			deprecated: (param.data || {}).deprecated,
-			...((param.data || {}).default ? { default: (param.data || {}).default } : {}),
-			type: param.name === 'ID' ? 'string' : param.name.toLowerCase(),
-			...(param.name === 'ID' ? { example: 'xxxxxxxxxx', format: 'id' } : {}),
-			nullable: param.isNullable,
-			...(param.name === 'String' ? {
-				...((param as any).enum ? { enum: (param as any).enum } : {}),
-				...((param as any).minLength ? { minLength: (param as any).minLength } : {}),
-				...((param as any).maxLength ? { maxLength: (param as any).maxLength } : {}),
-			} : {}),
-			...(param.name === 'Number' ? {
-				...((param as any).minimum ? { minimum: (param as any).minimum } : {}),
-				...((param as any).maximum ? { maximum: (param as any).maximum } : {}),
-			} : {}),
-			...(param.name === 'Object' ? {
-				...(required.length > 0 ? { required } : {}),
-				properties: (param as any).props ? genProps((param as any).props) : {},
-			} : {}),
-			...(param.name === 'Array' ? {
-				items: (param as any).ctx ? genProp((param as any).ctx) : {},
-			} : {}),
-		};
-	}
-
 	for (const endpoint of endpoints.filter(ep => !ep.meta.secure)) {
-		const porops = {} as any;
 		const errors = {} as any;
 
 		if (endpoint.meta.errors) {
@@ -91,21 +50,9 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 			}
 		}
 
-		if (endpoint.meta.params) {
-			for (const [k, v] of Object.entries(endpoint.meta.params)) {
-				if (v.validator.data == null) v.validator.data = {};
-				if (v.desc) v.validator.data.desc = v.desc[lang];
-				if (v.deprecated) v.validator.data.deprecated = v.deprecated;
-				if (v.default) v.validator.data.default = v.default;
-				porops[k] = v.validator;
-			}
-		}
-
-		const required = endpoint.meta.params ? Object.entries(endpoint.meta.params).filter(([k, v]) => !v.validator.isOptional).map(([k, v]) => k) : [];
-
 		const resSchema = endpoint.meta.res ? convertSchemaToOpenApiSchema(endpoint.meta.res) : {};
 
-		let desc = (endpoint.meta.desc ? endpoint.meta.desc[lang] : 'No description provided.') + '\n\n';
+		let desc = (endpoint.meta.description ? endpoint.meta.description : 'No description provided.') + '\n\n';
 		desc += `**Credential required**: *${endpoint.meta.requireCredential ? 'Yes' : 'No'}*`;
 		if (endpoint.meta.kind) {
 			const kind = endpoint.meta.kind;
@@ -132,11 +79,7 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 				required: true,
 				content: {
 					'application/json': {
-						schema: {
-							type: 'object',
-							...(required.length > 0 ? { required } : {}),
-							properties: endpoint.meta.params ? genProps(porops) : {},
-						},
+						schema: endpoint.params,
 					},
 				},
 			},

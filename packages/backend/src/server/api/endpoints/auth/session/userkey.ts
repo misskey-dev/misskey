@@ -1,22 +1,11 @@
-import $ from 'cafy';
-import define from '../../../define';
-import { ApiError } from '../../../error';
-import { Apps, AuthSessions, AccessTokens, Users } from '@/models/index';
+import define from '../../../define.js';
+import { ApiError } from '../../../error.js';
+import { Apps, AuthSessions, AccessTokens, Users } from '@/models/index.js';
 
 export const meta = {
 	tags: ['auth'],
 
 	requireCredential: false,
-
-	params: {
-		appSecret: {
-			validator: $.str,
-		},
-
-		token: {
-			validator: $.str,
-		},
-	},
 
 	res: {
 		type: 'object',
@@ -56,8 +45,17 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		appSecret: { type: 'string' },
+		token: { type: 'string' },
+	},
+	required: ['appSecret', 'token'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps) => {
+export default define(meta, paramDef, async (ps) => {
 	// Lookup app
 	const app = await Apps.findOne({
 		secret: ps.appSecret,

@@ -1,5 +1,5 @@
 <template>
-<div class="omfetrab" :class="['w' + width, 'h' + height, { big, asDrawer }]" :style="{ maxHeight: maxHeight ? maxHeight + 'px' : undefined }">
+<div class="omfetrab" :class="['s' + size, 'w' + width, 'h' + height, { asDrawer }]" :style="{ maxHeight: maxHeight ? maxHeight + 'px' : undefined }">
 	<input ref="search" v-model.trim="q" class="search" data-prevent-emoji-insert :class="{ filled: q != null && q != '' }" :placeholder="i18n.ts.search" @paste.stop="paste" @keyup.enter="done()">
 	<div ref="emojis" class="emojis">
 		<section class="result">
@@ -81,7 +81,7 @@ import { getStaticImageUrl } from '@/scripts/get-static-image-url';
 import Ripple from '@/components/ripple.vue';
 import * as os from '@/os';
 import { isTouchUsing } from '@/scripts/touch';
-import { isMobile } from '@/scripts/is-mobile';
+import { deviceKind } from '@/scripts/device-kind';
 import { emojiCategories, instance } from '@/instance';
 import XSection from './emoji-picker.section.vue';
 import { i18n } from '@/i18n';
@@ -105,15 +105,16 @@ const emojis = ref<HTMLDivElement>();
 
 const {
 	reactions: pinned,
+	reactionPickerSize,
 	reactionPickerWidth,
 	reactionPickerHeight,
 	disableShowingAnimatedImages,
 	recentlyUsedEmojis,
 } = defaultStore.reactiveState;
 
+const size = computed(() => props.asReactionPicker ? reactionPickerSize.value : 1);
 const width = computed(() => props.asReactionPicker ? reactionPickerWidth.value : 3);
 const height = computed(() => props.asReactionPicker ? reactionPickerHeight.value : 2);
-const big = props.asReactionPicker ? isTouchUsing : false;
 const customEmojiCategories = emojiCategories;
 const customEmojis = instance.emojis;
 const q = ref<string | null>(null);
@@ -263,7 +264,7 @@ watch(q, () => {
 });
 
 function focus() {
-	if (!isMobile && !isTouchUsing) {
+	if (!['smartphone', 'tablet'].includes(deviceKind) && !isTouchUsing) {
 		search.value?.focus({
 			preventScroll: true
 		});
@@ -345,13 +346,20 @@ defineExpose({
 <style lang="scss" scoped>
 .omfetrab {
 	$pad: 8px;
-	--eachSize: 40px;
 
 	display: flex;
 	flex-direction: column;
 
-	&.big {
-		--eachSize: 44px;
+	&.s1 {
+		--eachSize: 40px;
+	}
+
+	&.s2 {
+		--eachSize: 45px;
+	}
+
+	&.s3 {
+		--eachSize: 50px;
 	}
 
 	&.w1 {
@@ -369,6 +377,16 @@ defineExpose({
 		--columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
 	}
 
+	&.w4 {
+		width: calc((var(--eachSize) * 8) + (#{$pad} * 2));
+		--columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+	}
+
+	&.w5 {
+		width: calc((var(--eachSize) * 9) + (#{$pad} * 2));
+		--columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+	}
+
 	&.h1 {
 		height: calc((var(--eachSize) * 4) + (#{$pad} * 2));
 	}
@@ -379,6 +397,10 @@ defineExpose({
 
 	&.h3 {
 		height: calc((var(--eachSize) * 8) + (#{$pad} * 2));
+	}
+
+	&.h4 {
+		height: calc((var(--eachSize) * 10) + (#{$pad} * 2));
 	}
 
 	&.asDrawer {

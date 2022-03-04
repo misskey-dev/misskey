@@ -15,6 +15,7 @@ if (localStorage.getItem('accounts') != null) {
 
 import { computed, createApp, watch, markRaw, version as vueVersion } from 'vue';
 import compareVersions from 'compare-versions';
+import * as JSON5 from 'json5';
 
 import widgets from '@/widgets';
 import directives from '@/directives';
@@ -32,7 +33,7 @@ import { defaultStore, ColdDeviceStorage } from '@/store';
 import { fetchInstance, instance } from '@/instance';
 import { makeHotkey } from '@/scripts/hotkey';
 import { search } from '@/scripts/search';
-import { isMobile } from '@/scripts/is-mobile';
+import { deviceKind } from '@/scripts/device-kind';
 import { initializeSw } from '@/scripts/initialize-sw';
 import { reloadChannel } from '@/scripts/unison-reload';
 import { reactionPicker } from '@/scripts/reaction-picker';
@@ -92,11 +93,10 @@ window.addEventListener('resize', () => {
 //#endregion
 
 // If mobile, insert the viewport meta tag
-if (isMobile || window.innerWidth <= 1024) {
+if (['smartphone', 'tablet'].includes(deviceKind)) {
 	const viewport = document.getElementsByName('viewport').item(0);
 	viewport.setAttribute('content',
-		`${viewport.getAttribute('content')},minimum-scale=1,maximum-scale=1,user-scalable=no`);
-	document.head.appendChild(viewport);
+		`${viewport.getAttribute('content')}, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover`);
 }
 
 //#region Set lang attr
@@ -160,7 +160,9 @@ if ($i && $i.token) {
 }
 //#endregion
 
-fetchInstance().then(() => {
+const fetchInstanceMetaPromise = fetchInstance();
+
+fetchInstanceMetaPromise.then(() => {
 	localStorage.setItem('v', instance.version);
 
 	// Init service worker
@@ -267,6 +269,14 @@ window.matchMedia('(prefers-color-scheme: dark)').addListener(mql => {
 	}
 });
 //#endregion
+
+fetchInstanceMetaPromise.then(() => {
+	if (defaultStore.state.themeInitial) {
+		if (instance.defaultLightTheme != null) ColdDeviceStorage.set('lightTheme', JSON5.parse(instance.defaultLightTheme));
+		if (instance.defaultDarkTheme != null) ColdDeviceStorage.set('darkTheme', JSON5.parse(instance.defaultDarkTheme));
+		defaultStore.set('themeInitial', false);
+	}
+});
 
 // shortcut
 document.addEventListener('keydown', makeHotkey({

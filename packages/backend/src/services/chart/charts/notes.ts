@@ -1,101 +1,45 @@
-import autobind from 'autobind-decorator';
-import Chart, { Obj, DeepPartial } from '../core';
-import { SchemaType } from '@/misc/schema';
-import { Notes } from '@/models/index';
+import Chart, { KVs } from '../core.js';
+import { Notes } from '@/models/index.js';
 import { Not, IsNull } from 'typeorm';
-import { Note } from '@/models/entities/note';
-import { name, schema } from './entities/notes';
-
-type NotesLog = SchemaType<typeof schema>;
+import { Note } from '@/models/entities/note.js';
+import { name, schema } from './entities/notes.js';
 
 /**
  * ノートに関するチャート
  */
 // eslint-disable-next-line import/no-default-export
-export default class NotesChart extends Chart<NotesLog> {
+export default class NotesChart extends Chart<typeof schema> {
 	constructor() {
 		super(name, schema);
 	}
 
-	@autobind
-	protected genNewLog(latest: NotesLog): DeepPartial<NotesLog> {
-		return {
-			local: {
-				total: latest.local.total,
-			},
-			remote: {
-				total: latest.remote.total,
-			},
-		};
-	}
-
-	@autobind
-	protected aggregate(logs: NotesLog[]): NotesLog {
-		return {
-			local: {
-				total: logs[0].local.total,
-				inc: logs.reduce((a, b) => a + b.local.inc, 0),
-				dec: logs.reduce((a, b) => a + b.local.dec, 0),
-				diffs: {
-					reply: logs.reduce((a, b) => a + b.local.diffs.reply, 0),
-					renote: logs.reduce((a, b) => a + b.local.diffs.renote, 0),
-					normal: logs.reduce((a, b) => a + b.local.diffs.normal, 0),
-				},
-			},
-			remote: {
-				total: logs[0].remote.total,
-				inc: logs.reduce((a, b) => a + b.remote.inc, 0),
-				dec: logs.reduce((a, b) => a + b.remote.dec, 0),
-				diffs: {
-					reply: logs.reduce((a, b) => a + b.remote.diffs.reply, 0),
-					renote: logs.reduce((a, b) => a + b.remote.diffs.renote, 0),
-					normal: logs.reduce((a, b) => a + b.remote.diffs.normal, 0),
-				},
-			},
-		};
-	}
-
-	@autobind
-	protected async fetchActual(): Promise<DeepPartial<NotesLog>> {
+	protected async tickMajor(): Promise<Partial<KVs<typeof schema>>> {
 		const [localCount, remoteCount] = await Promise.all([
 			Notes.count({ userHost: null }),
 			Notes.count({ userHost: Not(IsNull()) }),
 		]);
 
 		return {
-			local: {
-				total: localCount,
-			},
-			remote: {
-				total: remoteCount,
-			},
+			'local.total': localCount,
+			'remote.total': remoteCount,
 		};
 	}
 
-	@autobind
+	protected async tickMinor(): Promise<Partial<KVs<typeof schema>>> {
+		return {};
+	}
+
 	public async update(note: Note, isAdditional: boolean): Promise<void> {
-		const update: Obj = {
-			diffs: {},
-		};
+		const prefix = note.userHost === null ? 'local' : 'remote';
 
-		update.total = isAdditional ? 1 : -1;
-
-		if (isAdditional) {
-			update.inc = 1;
-		} else {
-			update.dec = 1;
-		}
-
-		if (note.replyId != null) {
-			update.diffs.reply = isAdditional ? 1 : -1;
-		} else if (note.renoteId != null) {
-			update.diffs.renote = isAdditional ? 1 : -1;
-		} else {
-			update.diffs.normal = isAdditional ? 1 : -1;
-		}
-
-		await this.inc({
-			[note.userHost === null ? 'local' : 'remote']: update,
+		await this.commit({
+			[`${prefix}.total`]: isAdditional ? 1 : -1,
+			[`${prefix}.inc`]: isAdditional ? 1 : 0,
+			[`${prefix}.dec`]: isAdditional ? 0 : 1,
+			[`${prefix}.diffs.normal`]: note.replyId == null && note.renoteId == null ? (isAdditional ? 1 : -1) : 0,
+			[`${prefix}.diffs.renote`]: note.renoteId != null ? (isAdditional ? 1 : -1) : 0,
+			[`${prefix}.diffs.reply`]: note.replyId != null ? (isAdditional ? 1 : -1) : 0,
+			[`${prefix}.diffs.withFile`]: note.fileIds.length > 0 ? (isAdditional ? 1 : -1) : 0,
 		});
 	}
 }

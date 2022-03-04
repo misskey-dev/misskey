@@ -1084,7 +1084,8 @@ _exportOrImport:
   blockingList: "Zablokuj"
   userLists: "Listy"
 _charts:
-  federationInstancesTotal: "Łącznie sfederowanych instancji"
+  federation: "Federacja"
+  apRequest: "Żądania"
   usersTotal: "Łącznie # użytkowników"
   activeUsers: "Aktywni użytkownicy"
 _instanceCharts:

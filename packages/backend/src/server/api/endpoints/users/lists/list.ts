@@ -1,5 +1,5 @@
-import define from '../../../define';
-import { UserLists } from '@/models/index';
+import define from '../../../define.js';
+import { UserLists } from '@/models/index.js';
 
 export const meta = {
 	tags: ['lists', 'account'],
@@ -19,8 +19,14 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	const userLists = await UserLists.find({
 		userId: me.id,
 	});

@@ -1,19 +1,9 @@
-import define from '../../../define';
-import { Users } from '@/models/index';
-import { signup } from '../../../common/signup';
+import define from '../../../define.js';
+import { Users } from '@/models/index.js';
+import { signup } from '../../../common/signup.js';
 
 export const meta = {
 	tags: ['admin'],
-
-	params: {
-		username: {
-			validator: Users.validateLocalUsername,
-		},
-
-		password: {
-			validator: Users.validatePassword,
-		},
-	},
 
 	res: {
 		type: 'object',
@@ -28,8 +18,17 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		username: Users.localUsernameSchema,
+		password: Users.passwordSchema,
+	},
+	required: ['username', 'password'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, _me) => {
+export default define(meta, paramDef, async (ps, _me) => {
 	const me = _me ? await Users.findOneOrFail(_me.id) : null;
 	const noUsers = (await Users.count({
 		host: null,

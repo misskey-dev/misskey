@@ -1,27 +1,10 @@
-import $ from 'cafy';
-import define from '../../define';
-import { Hashtags } from '@/models/index';
+import define from '../../define.js';
+import { Hashtags } from '@/models/index.js';
 
 export const meta = {
 	tags: ['hashtags'],
 
 	requireCredential: false,
-
-	params: {
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
-		},
-
-		query: {
-			validator: $.str,
-		},
-
-		offset: {
-			validator: $.optional.num.min(0),
-			default: 0,
-		},
-	},
 
 	res: {
 		type: 'array',
@@ -33,13 +16,23 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+		query: { type: 'string' },
+		offset: { type: 'integer', default: 0 },
+	},
+	required: ['query'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps) => {
+export default define(meta, paramDef, async (ps) => {
 	const hashtags = await Hashtags.createQueryBuilder('tag')
 		.where('tag.name like :q', { q: ps.query.toLowerCase() + '%' })
 		.orderBy('tag.count', 'DESC')
 		.groupBy('tag.id')
-		.take(ps.limit!)
+		.take(ps.limit)
 		.skip(ps.offset)
 		.getMany();
 

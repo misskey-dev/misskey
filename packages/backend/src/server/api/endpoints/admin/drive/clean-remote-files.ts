@@ -1,5 +1,5 @@
-import define from '../../../define';
-import { createCleanRemoteFilesJob } from '@/queue/index';
+import define from '../../../define.js';
+import { createCleanRemoteFilesJob } from '@/queue/index.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -8,7 +8,13 @@ export const meta = {
 	requireModerator: true,
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	createCleanRemoteFilesJob();
 });

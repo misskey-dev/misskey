@@ -1,5 +1,5 @@
-import config from '@/config/index';
-import { Emoji } from '@/models/entities/emoji';
+import config from '@/config/index.js';
+import { Emoji } from '@/models/entities/emoji.js';
 
 export default (emoji: Emoji) => ({
 	id: `${config.url}/emojis/${emoji.name}`,

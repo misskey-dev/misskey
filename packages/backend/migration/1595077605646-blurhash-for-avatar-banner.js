@@ -1,6 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class blurhashForAvatarBanner1595077605646 {
+
+
+export class blurhashForAvatarBanner1595077605646 {
     constructor() {
         this.name = 'blurhashForAvatarBanner1595077605646';
     }
@@ -17,4 +17,3 @@ class blurhashForAvatarBanner1595077605646 {
         await queryRunner.query(`ALTER TABLE "user" ADD "avatarColor" character varying(32)`);
     }
 }
-exports.blurhashForAvatarBanner1595077605646 = blurhashForAvatarBanner1595077605646;

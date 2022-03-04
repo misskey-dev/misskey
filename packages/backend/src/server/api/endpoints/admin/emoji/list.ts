@@ -1,35 +1,13 @@
-import $ from 'cafy';
-import define from '../../../define';
-import { Emojis } from '@/models/index';
-import { makePaginationQuery } from '../../../common/make-pagination-query';
-import { ID } from '@/misc/cafy-id';
-import { Emoji } from '@/models/entities/emoji';
+import define from '../../../define.js';
+import { Emojis } from '@/models/index.js';
+import { makePaginationQuery } from '../../../common/make-pagination-query.js';
+import { Emoji } from '@/models/entities/emoji.js';
 
 export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
 	requireModerator: true,
-
-	params: {
-		query: {
-			validator: $.optional.nullable.str,
-			default: null,
-		},
-
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
-		},
-
-		sinceId: {
-			validator: $.optional.type(ID),
-		},
-
-		untilId: {
-			validator: $.optional.type(ID),
-		},
-	},
 
 	res: {
 		type: 'array',
@@ -72,8 +50,19 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		query: { type: 'string', nullable: true, default: null },
+		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+		sinceId: { type: 'string', format: 'misskey:id' },
+		untilId: { type: 'string', format: 'misskey:id' },
+	},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps) => {
+export default define(meta, paramDef, async (ps) => {
 	const q = makePaginationQuery(Emojis.createQueryBuilder('emoji'), ps.sinceId, ps.untilId)
 		.andWhere(`emoji.host IS NULL`);
 
@@ -81,7 +70,7 @@ export default define(meta, async (ps) => {
 
 	if (ps.query) {
 		//q.andWhere('emoji.name ILIKE :q', { q: `%${ps.query}%` });
-		//const emojis = await q.take(ps.limit!).getMany();
+		//const emojis = await q.take(ps.limit).getMany();
 
 		emojis = await q.getMany();
 
@@ -90,9 +79,9 @@ export default define(meta, async (ps) => {
 			emoji.aliases.some(a => a.includes(ps.query!)) ||
 			emoji.category?.includes(ps.query!));
 
-		emojis.splice(ps.limit! + 1);
+		emojis.splice(ps.limit + 1);
 	} else {
-		emojis = await q.take(ps.limit!).getMany();
+		emojis = await q.take(ps.limit).getMany();
 	}
 
 	return Emojis.packMany(emojis);

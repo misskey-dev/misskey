@@ -1,60 +1,22 @@
-import Chart from '../../core';
+import Chart from '../../core.js';
 
 export const name = 'notes';
 
-const logSchema = {
-	total: {
-		type: 'number' as const,
-		optional: false as const, nullable: false as const,
-	},
-
-	inc: {
-		type: 'number' as const,
-		optional: false as const, nullable: false as const,
-	},
-
-	dec: {
-		type: 'number' as const,
-		optional: false as const, nullable: false as const,
-	},
-
-	diffs: {
-		type: 'object' as const,
-		optional: false as const, nullable: false as const,
-		properties: {
-			normal: {
-				type: 'number' as const,
-				optional: false as const, nullable: false as const,
-			},
-
-			reply: {
-				type: 'number' as const,
-				optional: false as const, nullable: false as const,
-			},
-
-			renote: {
-				type: 'number' as const,
-				optional: false as const, nullable: false as const,
-			},
-		},
-	},
-};
-
 export const schema = {
-	type: 'object' as const,
-	optional: false as const, nullable: false as const,
-	properties: {
-		local: {
-			type: 'object' as const,
-			optional: false as const, nullable: false as const,
-			properties: logSchema,
-		},
-		remote: {
-			type: 'object' as const,
-			optional: false as const, nullable: false as const,
-			properties: logSchema,
-		},
-	},
-};
+	'local.total': { accumulate: true },
+	'local.inc': {},
+	'local.dec': {},
+	'local.diffs.normal': {},
+	'local.diffs.reply': {},
+	'local.diffs.renote': {},
+	'local.diffs.withFile': {},
+	'remote.total': { accumulate: true },
+	'remote.inc': {},
+	'remote.dec': {},
+	'remote.diffs.normal': {},
+	'remote.diffs.reply': {},
+	'remote.diffs.renote': {},
+	'remote.diffs.withFile': {},
+} as const;
 
 export const entity = Chart.schemaToEntity(name, schema);

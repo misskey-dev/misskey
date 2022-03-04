@@ -17,17 +17,26 @@
 		<template #caption>{{ $ts.reactionSettingDescription2 }} <button class="_textButton" @click="preview">{{ $ts.preview }}</button></template>
 	</FromSlot>
 
-	<FormRadios v-model="reactionPickerWidth" class="_formBlock">
-		<template #label>{{ $ts.width }}</template>
+	<FormRadios v-model="reactionPickerSize" class="_formBlock">
+		<template #label>{{ $ts.size }}</template>
 		<option :value="1">{{ $ts.small }}</option>
 		<option :value="2">{{ $ts.medium }}</option>
 		<option :value="3">{{ $ts.large }}</option>
+	</FormRadios>
+	<FormRadios v-model="reactionPickerWidth" class="_formBlock">
+		<template #label>{{ $ts.numberOfColumn }}</template>
+		<option :value="1">5</option>
+		<option :value="2">6</option>
+		<option :value="3">7</option>
+		<option :value="4">8</option>
+		<option :value="5">9</option>
 	</FormRadios>
 	<FormRadios v-model="reactionPickerHeight" class="_formBlock">
 		<template #label>{{ $ts.height }}</template>
 		<option :value="1">{{ $ts.small }}</option>
 		<option :value="2">{{ $ts.medium }}</option>
 		<option :value="3">{{ $ts.large }}</option>
+		<option :value="4">{{ $ts.large }}+</option>
 	</FormRadios>
 
 	<FormSwitch v-model="reactionPickerUseDrawerForMobile" class="_formBlock">
@@ -60,6 +69,7 @@ import { i18n } from '@/i18n';
 
 let reactions = $ref(JSON.parse(JSON.stringify(defaultStore.state.reactions)));
 
+const reactionPickerSize = $computed(defaultStore.makeGetterSetter('reactionPickerSize'));
 const reactionPickerWidth = $computed(defaultStore.makeGetterSetter('reactionPickerWidth'));
 const reactionPickerHeight = $computed(defaultStore.makeGetterSetter('reactionPickerHeight'));
 const reactionPickerUseDrawerForMobile = $computed(defaultStore.makeGetterSetter('reactionPickerUseDrawerForMobile'));

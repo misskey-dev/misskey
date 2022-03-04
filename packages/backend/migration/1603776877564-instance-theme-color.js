@@ -1,6 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class instanceThemeColor1603776877564 {
+
+
+export class instanceThemeColor1603776877564 {
     constructor() {
         this.name = 'instanceThemeColor1603776877564';
     }
@@ -11,4 +11,3 @@ class instanceThemeColor1603776877564 {
         await queryRunner.query(`ALTER TABLE "instance" DROP COLUMN "themeColor"`);
     }
 }
-exports.instanceThemeColor1603776877564 = instanceThemeColor1603776877564;

@@ -1,30 +1,14 @@
-import Chart from '../../core';
+import Chart from '../../core.js';
 
 export const name = 'federation';
 
 export const schema = {
-	type: 'object' as const,
-	optional: false as const, nullable: false as const,
-	properties: {
-		instance: {
-			type: 'object' as const,
-			optional: false as const, nullable: false as const,
-			properties: {
-				total: {
-					type: 'number' as const,
-					optional: false as const, nullable: false as const,
-				},
-				inc: {
-					type: 'number' as const,
-					optional: false as const, nullable: false as const,
-				},
-				dec: {
-					type: 'number' as const,
-					optional: false as const, nullable: false as const,
-				},
-			},
-		},
-	},
-};
+	'deliveredInstances': { uniqueIncrement: true, range: 'small' },
+	'inboxInstances': { uniqueIncrement: true, range: 'small' },
+	'stalled': { uniqueIncrement: true, range: 'small' },
+	'sub': { accumulate: true, range: 'small' },
+	'pub': { accumulate: true, range: 'small' },
+	'pubsub': { accumulate: true, range: 'small' },
+} as const;
 
 export const entity = Chart.schemaToEntity(name, schema);
