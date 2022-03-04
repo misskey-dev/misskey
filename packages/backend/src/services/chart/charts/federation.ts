@@ -1,6 +1,7 @@
 import Chart, { KVs } from '../core.js';
-import { Followings } from '@/models/index.js';
+import { Followings, Instances } from '@/models/index.js';
 import { name, schema } from './entities/federation.js';
+import { fetchMeta } from '@/misc/fetch-meta.js';
 
 /**
  * フェデレーションに関するチャート
@@ -17,6 +18,12 @@ export default class FederationChart extends Chart<typeof schema> {
 	}
 
 	protected async tickMinor(): Promise<Partial<KVs<typeof schema>>> {
+		const meta = await fetchMeta();
+
+		const suspendedInstancesQuery = Instances.createQueryBuilder('instance')
+			.select('instance.host')
+			.where('instance.isSuspended = true');
+
 		const pubsubSubQuery = Followings.createQueryBuilder('f')
 			.select('f.followerHost')
 			.where('f.followerHost IS NOT NULL');
@@ -25,16 +32,22 @@ export default class FederationChart extends Chart<typeof schema> {
 			Followings.createQueryBuilder('following')
 				.select('COUNT(DISTINCT following.followeeHost)')
 				.where('following.followeeHost IS NOT NULL')
+				.andWhere(`following.followeeHost NOT IN (:...blocked)`, { blocked: meta.blockedHosts })
+				.andWhere(`following.followeeHost NOT IN (${ suspendedInstancesQuery.getQuery() })`)
 				.getRawOne()
 				.then(x => parseInt(x.count, 10)),
 			Followings.createQueryBuilder('following')
 				.select('COUNT(DISTINCT following.followerHost)')
 				.where('following.followerHost IS NOT NULL')
+				.andWhere(`following.followerHost NOT IN (:...blocked)`, { blocked: meta.blockedHosts })
+				.andWhere(`following.followerHost NOT IN (${ suspendedInstancesQuery.getQuery() })`)
 				.getRawOne()
 				.then(x => parseInt(x.count, 10)),
 			Followings.createQueryBuilder('following')
 				.select('COUNT(DISTINCT following.followeeHost)')
 				.where('following.followeeHost IS NOT NULL')
+				.andWhere(`following.followeeHost NOT IN (:...blocked)`, { blocked: meta.blockedHosts })
+				.andWhere(`following.followeeHost NOT IN (${ suspendedInstancesQuery.getQuery() })`)
 				.andWhere(`following.followeeHost IN (${ pubsubSubQuery.getQuery() })`)
 				.setParameters(pubsubSubQuery.getParameters())
 				.getRawOne()
