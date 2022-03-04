@@ -1,6 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class v1221579270193251 {
+
+
+export class v1221579270193251 {
     constructor() {
         this.name = 'v1221579270193251';
     }
@@ -11,4 +11,3 @@ class v1221579270193251 {
         await queryRunner.query(`ALTER TABLE "announcement_read" DROP COLUMN "createdAt"`, undefined);
     }
 }
-exports.v1221579270193251 = v1221579270193251;

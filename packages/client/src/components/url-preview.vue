@@ -67,7 +67,7 @@ let tweetHeight = $ref(150);
 
 const requestUrl = new URL(props.url);
 
-if (requestUrl.hostname == 'twitter.com') {
+if (requestUrl.hostname === 'twitter.com') {
 	const m = requestUrl.pathname.match(/^\/.+\/status(?:es)?\/(\d+)/);
 	if (m) tweetId = m[1];
 }

@@ -1,9 +1,9 @@
-import unfollow from '@/services/following/delete';
-import cancelRequest from '@/services/following/requests/cancel';
-import {IAccept} from '../../type';
-import { IRemoteUser } from '@/models/entities/user';
-import { Followings } from '@/models/index';
-import DbResolver from '../../db-resolver';
+import unfollow from '@/services/following/delete.js';
+import cancelRequest from '@/services/following/requests/cancel.js';
+import {IAccept} from '../../type.js';
+import { IRemoteUser } from '@/models/entities/user.js';
+import { Followings } from '@/models/index.js';
+import DbResolver from '../../db-resolver.js';
 
 export default async (actor: IRemoteUser, activity: IAccept): Promise<string> => {
 	const dbResolver = new DbResolver();

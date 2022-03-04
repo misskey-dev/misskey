@@ -6,29 +6,29 @@ import {
 	packedMeDetailedSchema,
 	packedUserDetailedSchema,
 	packedUserSchema,
-} from '@/models/schema/user';
-import { packedNoteSchema } from '@/models/schema/note';
-import { packedUserListSchema } from '@/models/schema/user-list';
-import { packedAppSchema } from '@/models/schema/app';
-import { packedMessagingMessageSchema } from '@/models/schema/messaging-message';
-import { packedNotificationSchema } from '@/models/schema/notification';
-import { packedDriveFileSchema } from '@/models/schema/drive-file';
-import { packedDriveFolderSchema } from '@/models/schema/drive-folder';
-import { packedFollowingSchema } from '@/models/schema/following';
-import { packedMutingSchema } from '@/models/schema/muting';
-import { packedBlockingSchema } from '@/models/schema/blocking';
-import { packedNoteReactionSchema } from '@/models/schema/note-reaction';
-import { packedHashtagSchema } from '@/models/schema/hashtag';
-import { packedPageSchema } from '@/models/schema/page';
-import { packedUserGroupSchema } from '@/models/schema/user-group';
-import { packedNoteFavoriteSchema } from '@/models/schema/note-favorite';
-import { packedChannelSchema } from '@/models/schema/channel';
-import { packedAntennaSchema } from '@/models/schema/antenna';
-import { packedClipSchema } from '@/models/schema/clip';
-import { packedFederationInstanceSchema } from '@/models/schema/federation-instance';
-import { packedQueueCountSchema } from '@/models/schema/queue';
-import { packedGalleryPostSchema } from '@/models/schema/gallery-post';
-import { packedEmojiSchema } from '@/models/schema/emoji';
+} from '@/models/schema/user.js';
+import { packedNoteSchema } from '@/models/schema/note.js';
+import { packedUserListSchema } from '@/models/schema/user-list.js';
+import { packedAppSchema } from '@/models/schema/app.js';
+import { packedMessagingMessageSchema } from '@/models/schema/messaging-message.js';
+import { packedNotificationSchema } from '@/models/schema/notification.js';
+import { packedDriveFileSchema } from '@/models/schema/drive-file.js';
+import { packedDriveFolderSchema } from '@/models/schema/drive-folder.js';
+import { packedFollowingSchema } from '@/models/schema/following.js';
+import { packedMutingSchema } from '@/models/schema/muting.js';
+import { packedBlockingSchema } from '@/models/schema/blocking.js';
+import { packedNoteReactionSchema } from '@/models/schema/note-reaction.js';
+import { packedHashtagSchema } from '@/models/schema/hashtag.js';
+import { packedPageSchema } from '@/models/schema/page.js';
+import { packedUserGroupSchema } from '@/models/schema/user-group.js';
+import { packedNoteFavoriteSchema } from '@/models/schema/note-favorite.js';
+import { packedChannelSchema } from '@/models/schema/channel.js';
+import { packedAntennaSchema } from '@/models/schema/antenna.js';
+import { packedClipSchema } from '@/models/schema/clip.js';
+import { packedFederationInstanceSchema } from '@/models/schema/federation-instance.js';
+import { packedQueueCountSchema } from '@/models/schema/queue.js';
+import { packedGalleryPostSchema } from '@/models/schema/gallery-post.js';
+import { packedEmojiSchema } from '@/models/schema/emoji.js';
 
 export const refs = {
 	UserLite: packedUserLiteSchema,

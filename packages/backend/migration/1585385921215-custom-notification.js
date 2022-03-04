@@ -1,6 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class customNotification1585385921215 {
+
+
+export class customNotification1585385921215 {
     constructor() {
         this.name = 'customNotification1585385921215';
     }
@@ -45,4 +45,3 @@ class customNotification1585385921215 {
         await queryRunner.query(`ALTER TABLE "notification" DROP COLUMN "customBody"`, undefined);
     }
 }
-exports.customNotification1585385921215 = customNotification1585385921215;

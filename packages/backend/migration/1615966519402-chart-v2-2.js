@@ -1,6 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class chartV221615966519402 {
+
+
+export class chartV221615966519402 {
     constructor() {
         this.name = 'chartV221615966519402';
     }
@@ -19,4 +19,3 @@ class chartV221615966519402 {
         await queryRunner.query(`ALTER TABLE "__chart__active_users" DROP COLUMN "___local_users"`);
     }
 }
-exports.chartV221615966519402 = chartV221615966519402;

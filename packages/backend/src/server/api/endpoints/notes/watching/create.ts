@@ -1,7 +1,7 @@
-import define from '../../../define';
-import watch from '@/services/note/watch';
-import { getNote } from '../../../common/getters';
-import { ApiError } from '../../../error';
+import define from '../../../define.js';
+import watch from '@/services/note/watch.js';
+import { getNote } from '../../../common/getters.js';
+import { ApiError } from '../../../error.js';
 
 export const meta = {
 	tags: ['notes'],

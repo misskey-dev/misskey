@@ -1,7 +1,7 @@
-import { rejectFollowRequest } from '@/services/following/reject';
-import define from '../../../define';
-import { ApiError } from '../../../error';
-import { getUser } from '../../../common/getters';
+import { rejectFollowRequest } from '@/services/following/reject.js';
+import define from '../../../define.js';
+import { ApiError } from '../../../error.js';
+import { getUser } from '../../../common/getters.js';
 
 export const meta = {
 	tags: ['following', 'account'],

@@ -1,6 +1,6 @@
-const { MigrationInterface, QueryRunner } = require("typeorm");
 
-module.exports = class removeViaMobile1636697408073 {
+
+export class removeViaMobile1636697408073 {
     name = 'removeViaMobile1636697408073'
 
     async up(queryRunner) {

@@ -1,7 +1,7 @@
-import { IRemoteUser } from '@/models/entities/user';
-import { ILike, getApId } from '../type';
-import create from '@/services/note/reaction/create';
-import { fetchNote, extractEmojis } from '../models/note';
+import { IRemoteUser } from '@/models/entities/user.js';
+import { ILike, getApId } from '../type.js';
+import create from '@/services/note/reaction/create.js';
+import { fetchNote, extractEmojis } from '../models/note.js';
 
 export default async (actor: IRemoteUser, activity: ILike) => {
 	const targetUri = getApId(activity.object);

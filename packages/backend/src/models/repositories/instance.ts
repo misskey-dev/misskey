@@ -1,6 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { Instance } from '@/models/entities/instance';
-import { Packed } from '@/misc/schema';
+import { Instance } from '@/models/entities/instance.js';
+import { Packed } from '@/misc/schema.js';
 
 @EntityRepository(Instance)
 export class InstanceRepository extends Repository<Instance> {

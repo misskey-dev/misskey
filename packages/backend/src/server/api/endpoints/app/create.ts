@@ -1,8 +1,8 @@
-import define from '../../define';
-import { Apps } from '@/models/index';
-import { genId } from '@/misc/gen-id';
-import { unique } from '@/prelude/array';
-import { secureRndstr } from '@/misc/secure-rndstr';
+import define from '../../define.js';
+import { Apps } from '@/models/index.js';
+import { genId } from '@/misc/gen-id.js';
+import { unique } from '@/prelude/array.js';
+import { secureRndstr } from '@/misc/secure-rndstr.js';
 
 export const meta = {
 	tags: ['app'],

@@ -1,9 +1,9 @@
-import define from '../../define';
-import { ApiError } from '../../error';
-import { UserLists, UserListJoinings, Notes } from '@/models/index';
-import { makePaginationQuery } from '../../common/make-pagination-query';
-import { generateVisibilityQuery } from '../../common/generate-visibility-query';
-import { activeUsersChart } from '@/services/chart/index';
+import define from '../../define.js';
+import { ApiError } from '../../error.js';
+import { UserLists, UserListJoinings, Notes } from '@/models/index.js';
+import { makePaginationQuery } from '../../common/make-pagination-query.js';
+import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
+import { activeUsersChart } from '@/services/chart/index.js';
 import { Brackets } from 'typeorm';
 
 export const meta = {
@@ -66,10 +66,16 @@ export default define(meta, paramDef, async (ps, user) => {
 	const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 		.andWhere(`note.userId IN (${ listQuery.getQuery() })`)
 		.innerJoinAndSelect('note.user', 'user')
+		.leftJoinAndSelect('user.avatar', 'avatar')
+		.leftJoinAndSelect('user.banner', 'banner')
 		.leftJoinAndSelect('note.reply', 'reply')
 		.leftJoinAndSelect('note.renote', 'renote')
 		.leftJoinAndSelect('reply.user', 'replyUser')
+		.leftJoinAndSelect('replyUser.avatar', 'replyUserAvatar')
+		.leftJoinAndSelect('replyUser.banner', 'replyUserBanner')
 		.leftJoinAndSelect('renote.user', 'renoteUser')
+		.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
+		.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner')
 		.setParameters(listQuery.getParameters());
 
 	generateVisibilityQuery(query, user);

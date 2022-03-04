@@ -1,15 +1,15 @@
-import * as Bull from 'bull';
+import Bull from 'bull';
 import * as tmp from 'tmp';
-import * as fs from 'fs';
-const unzipper = require('unzipper');
+import * as fs from 'node:fs';
+import unzipper from 'unzipper';
 import { getConnection } from 'typeorm';
 
-import { queueLogger } from '../../logger';
-import { downloadUrl } from '@/misc/download-url';
-import { DriveFiles, Emojis } from '@/models/index';
-import { DbUserImportJobData } from '@/queue/types';
-import { addFile } from '@/services/drive/add-file';
-import { genId } from '@/misc/gen-id';
+import { queueLogger } from '../../logger.js';
+import { downloadUrl } from '@/misc/download-url.js';
+import { DriveFiles, Emojis } from '@/models/index.js';
+import { DbUserImportJobData } from '@/queue/types.js';
+import { addFile } from '@/services/drive/add-file.js';
+import { genId } from '@/misc/gen-id.js';
 
 const logger = queueLogger.createSubLogger('import-custom-emojis');
 

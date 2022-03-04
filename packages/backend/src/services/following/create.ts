@@ -1,20 +1,20 @@
-import { publishMainStream, publishUserEvent } from '@/services/stream';
-import { renderActivity } from '@/remote/activitypub/renderer/index';
-import renderFollow from '@/remote/activitypub/renderer/follow';
-import renderAccept from '@/remote/activitypub/renderer/accept';
-import renderReject from '@/remote/activitypub/renderer/reject';
-import { deliver } from '@/queue/index';
-import createFollowRequest from './requests/create';
-import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
-import Logger from '../logger';
-import { IdentifiableError } from '@/misc/identifiable-error';
-import { User } from '@/models/entities/user';
-import { Followings, Users, FollowRequests, Blockings, Instances, UserProfiles } from '@/models/index';
-import { instanceChart, perUserFollowingChart } from '@/services/chart/index';
-import { genId } from '@/misc/gen-id';
-import { createNotification } from '../create-notification';
-import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error';
-import { Packed } from '@/misc/schema';
+import { publishMainStream, publishUserEvent } from '@/services/stream.js';
+import { renderActivity } from '@/remote/activitypub/renderer/index.js';
+import renderFollow from '@/remote/activitypub/renderer/follow.js';
+import renderAccept from '@/remote/activitypub/renderer/accept.js';
+import renderReject from '@/remote/activitypub/renderer/reject.js';
+import { deliver } from '@/queue/index.js';
+import createFollowRequest from './requests/create.js';
+import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc.js';
+import Logger from '../logger.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
+import { User } from '@/models/entities/user.js';
+import { Followings, Users, FollowRequests, Blockings, Instances, UserProfiles } from '@/models/index.js';
+import { instanceChart, perUserFollowingChart } from '@/services/chart/index.js';
+import { genId } from '@/misc/gen-id.js';
+import { createNotification } from '../create-notification.js';
+import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
+import { Packed } from '@/misc/schema.js';
 
 const logger = new Logger('following/create');
 

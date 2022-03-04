@@ -1,6 +1,6 @@
-import define from '../../define';
-import { ApiError } from '../../error';
-import { Clips } from '@/models/index';
+import define from '../../define.js';
+import { ApiError } from '../../error.js';
+import { Clips } from '@/models/index.js';
 
 export const meta = {
 	tags: ['clips'],

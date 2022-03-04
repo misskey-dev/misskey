@@ -1,8 +1,8 @@
-import define from '../../define';
-import { ApiError } from '../../error';
-import { getNote } from '../../common/getters';
-import { Note } from '@/models/entities/note';
-import { Notes } from '@/models/index';
+import define from '../../define.js';
+import { ApiError } from '../../error.js';
+import { getNote } from '../../common/getters.js';
+import { Note } from '@/models/entities/note.js';
+import { Notes } from '@/models/index.js';
 
 export const meta = {
 	tags: ['notes'],

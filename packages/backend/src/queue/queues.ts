@@ -1,6 +1,6 @@
-import config from '@/config/index';
-import { initialize as initializeQueue } from './initialize';
-import { DeliverJobData, InboxJobData, DbJobData, ObjectStorageJobData } from './types';
+import config from '@/config/index.js';
+import { initialize as initializeQueue } from './initialize.js';
+import { DeliverJobData, InboxJobData, DbJobData, ObjectStorageJobData } from './types.js';
 
 export const systemQueue = initializeQueue<Record<string, unknown>>('system');
 export const deliverQueue = initializeQueue<DeliverJobData>('deliver', config.deliverJobPerSec || 128);

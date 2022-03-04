@@ -1,8 +1,8 @@
-import define from '../../define';
-import { NoteReactions, UserProfiles } from '@/models/index';
-import { makePaginationQuery } from '../../common/make-pagination-query';
-import { generateVisibilityQuery } from '../../common/generate-visibility-query';
-import { ApiError } from '../../error';
+import define from '../../define.js';
+import { NoteReactions, UserProfiles } from '@/models/index.js';
+import { makePaginationQuery } from '../../common/make-pagination-query.js';
+import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['users', 'reactions'],

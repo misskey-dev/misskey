@@ -101,11 +101,13 @@ export default defineComponent({
 		},
 
 		more(ev) {
-			os.popup(import('@/components/launch-pad.vue'), {}, {
+			os.popup(import('@/components/launch-pad.vue'), {
+				src: ev.currentTarget ?? ev.target,
+			}, {
 			}, 'closed');
 		},
 
-		openAccountMenu:(ev) => {
+		openAccountMenu: (ev) => {
 			openAccountMenu({
 				withExtraOperation: true,
 			}, ev);

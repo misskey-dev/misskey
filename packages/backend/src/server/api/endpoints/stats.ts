@@ -1,6 +1,6 @@
-import define from '../define';
-import { Instances, NoteReactions, Notes, Users } from '@/models/index';
-import { } from '@/services/chart/index';
+import define from '../define.js';
+import { Instances, NoteReactions, Notes, Users } from '@/models/index.js';
+import { } from '@/services/chart/index.js';
 
 export const meta = {
 	requireCredential: false,

@@ -1,7 +1,7 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { UserList } from '@/models/entities/user-list';
-import { UserListJoinings } from '../index';
-import { Packed } from '@/misc/schema';
+import { UserList } from '@/models/entities/user-list.js';
+import { UserListJoinings } from '../index.js';
+import { Packed } from '@/misc/schema.js';
 
 @EntityRepository(UserList)
 export class UserListRepository extends Repository<UserList> {

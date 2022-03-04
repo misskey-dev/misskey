@@ -2,10 +2,12 @@
  * Misskey Entry Point!
  */
 
+import { EventEmitter } from 'node:events';
+import boot from './boot/index.js';
+
 Error.stackTraceLimit = Infinity;
+EventEmitter.defaultMaxListeners = 128;
 
-require('events').EventEmitter.defaultMaxListeners = 128;
-
-import boot from './boot/index';
-
-boot();
+boot().catch(err => {
+	console.error(err);
+});

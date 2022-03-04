@@ -1,10 +1,10 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { Page } from '@/models/entities/page';
-import { Packed } from '@/misc/schema';
-import { Users, DriveFiles, PageLikes } from '../index';
-import { awaitAll } from '@/prelude/await-all';
-import { DriveFile } from '@/models/entities/drive-file';
-import { User } from '@/models/entities/user';
+import { Page } from '@/models/entities/page.js';
+import { Packed } from '@/misc/schema.js';
+import { Users, DriveFiles, PageLikes } from '../index.js';
+import { awaitAll } from '@/prelude/await-all.js';
+import { DriveFile } from '@/models/entities/drive-file.js';
+import { User } from '@/models/entities/user.js';
 
 @EntityRepository(Page)
 export class PageRepository extends Repository<Page> {

@@ -1,9 +1,9 @@
-import define from '../../../define';
-import { getNote } from '../../../common/getters';
-import { ApiError } from '../../../error';
-import { Notes, NoteThreadMutings } from '@/models';
-import { genId } from '@/misc/gen-id';
-import readNote from '@/services/note/read';
+import define from '../../../define.js';
+import { getNote } from '../../../common/getters.js';
+import { ApiError } from '../../../error.js';
+import { Notes, NoteThreadMutings } from '@/models/index.js';
+import { genId } from '@/misc/gen-id.js';
+import readNote from '@/services/note/read.js';
 
 export const meta = {
 	tags: ['notes'],

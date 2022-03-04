@@ -1,11 +1,11 @@
-import define from '../../../define';
-import { Emojis, DriveFiles } from '@/models/index';
-import { genId } from '@/misc/gen-id';
+import define from '../../../define.js';
+import { Emojis, DriveFiles } from '@/models/index.js';
+import { genId } from '@/misc/gen-id.js';
 import { getConnection } from 'typeorm';
-import { insertModerationLog } from '@/services/insert-moderation-log';
-import { ApiError } from '../../../error';
+import { insertModerationLog } from '@/services/insert-moderation-log.js';
+import { ApiError } from '../../../error.js';
 import rndstr from 'rndstr';
-import { publishBroadcastStream } from '@/services/stream';
+import { publishBroadcastStream } from '@/services/stream.js';
 
 export const meta = {
 	tags: ['admin'],
