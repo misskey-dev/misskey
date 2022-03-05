@@ -806,7 +806,7 @@ _registry:
   createKey: "أنشئ مفتاحًا"
 _aboutMisskey:
   about: "ميسكي هو برمجية مفتوحة المصدر يطورها syuilo منذ 2014."
-  contributors: "المساهم الرئيسي"
+  contributors: "المساهمون الرئيسيون"
   allContributors: "كل المساهمين"
   source: "الشفرة المصدرية"
   translation: "ترجم ميسكي"
