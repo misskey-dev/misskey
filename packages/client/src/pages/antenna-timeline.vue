@@ -15,6 +15,7 @@
 
 <script lang="ts" setup>
 import { computed, watch } from 'vue';
+import * as Misskey from 'misskey-js';
 import XTimeline from '@/components/timeline.vue';
 import { scroll } from '@/scripts/scroll';
 import * as os from '@/os';
@@ -22,11 +23,11 @@ import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
 import { router } from '@/router';
 
-defineProps<{
+const props = defineProps<{
 	antennaId: string;
 }>();
 
-let antenna: null | string = $ref(null);
+let antenna: Misskey.entities.Antenna | null = $ref(null);
 let queue = $ref(0);
 let tlComponent = $ref<InstanceType<typeof XTimeline>>();
 let rootEl = $ref<HTMLElement>();
@@ -46,7 +47,8 @@ function queueUpdated(q) {
 }
 
 function top() {
-	tlComponent.tlComponent.value.pagingComponent?.executeQueue();
+	// @ts-ignore
+	tlComponent.tlComponent.pagingComponent?.executeQueue();
 	scroll(rootEl, { top: 0 });
 }
 
