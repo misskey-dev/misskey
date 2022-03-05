@@ -33,7 +33,7 @@ export default defineComponent({
 		},
 	},
 
-	setup(props, { slots, expose, emit }) {
+	setup(props, { slots, expose }) {
 		function getDateText(time: string) {
 			const date = new Date(time).getDate();
 			const month = new Date(time).getMonth() + 1;

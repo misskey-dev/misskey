@@ -90,13 +90,9 @@ export function scrollToTop(el: HTMLElement, options: { behavior?: ScrollBehavio
 
 /**
  * Scroll to Bottom
- * 通常のページで ウィジェット高さ > コンテンツ高さ の場合にうまく動くように
- * 若干処理が複雑になっている
  * @param el Content element
  * @param options Scroll options
  * @param container Scroll container element
- * @param sticky To add sticky-top
- * @param mobileButtons To add mobile buttons
  */
 export function scrollToBottom(
 	el: HTMLElement,
