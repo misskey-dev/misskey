@@ -56,6 +56,7 @@ function queueUpdated(q: number): void {
 }
 
 function top(): void {
+	tlComponent.tlComponent.pagingComponent?.executeQueue();
 	scroll(rootEl, { top: 0 });
 }
 

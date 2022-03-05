@@ -1,8 +1,8 @@
 <template>
-<div v-hotkey.global="keymap" v-size="{ min: [800] }" class="tqmomfks">
+<div ref="rootEl" v-hotkey.global="keymap" v-size="{ min: [800] }" class="tqmomfks">
 	<div v-if="queue > 0" class="new"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
 	<div class="tl _block">
-		<XTimeline ref="tl" :key="antennaId"
+		<XTimeline ref="tlComponent" :key="antennaId"
 			class="tl"
 			src="antenna"
 			:antenna="antennaId"
@@ -13,92 +13,76 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, defineAsyncComponent, computed } from 'vue';
+<script lang="ts" setup>
+import { computed, watch } from 'vue';
 import XTimeline from '@/components/timeline.vue';
 import { scroll } from '@/scripts/scroll';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
+import { i18n } from '@/i18n';
+import { router } from '@/router';
 
-export default defineComponent({
-	components: {
-		XTimeline,
-	},
+defineProps<{
+	antennaId: string;
+}>();
 
-	props: {
-		antennaId: {
-			type: String,
-			required: true
-		}
-	},
+let antenna: null | string = $ref(null);
+let queue = $ref(0);
+let tlComponent = $ref<InstanceType<typeof XTimeline>>();
+let rootEl = $ref<HTMLElement>();
 
-	data() {
-		return {
-			antenna: null,
-			queue: 0,
-			[symbols.PAGE_INFO]: computed(() => this.antenna ? {
-				title: this.antenna.name,
-				icon: 'fas fa-satellite',
-				bg: 'var(--bg)',
-				actions: [{
-					icon: 'fas fa-calendar-alt',
-					text: this.$ts.jumpToSpecifiedDate,
-					handler: this.timetravel
-				}, {
-					icon: 'fas fa-cog',
-					text: this.$ts.settings,
-					handler: this.settings
-				}],
-			} : null),
-		};
-	},
+watch(() => props.antennaId, async () => {
+	antenna = await os.api('antennas/show', {
+		antennaId: props.antennaId
+	});
+}, { immediate: true, });
 
-	computed: {
-		keymap(): any {
-			return {
-				't': this.focus
-			};
-		},
-	},
+const keymap = $computed(() => ({
+	't': focus,
+}));
 
-	watch: {
-		antennaId: {
-			async handler() {
-				this.antenna = await os.api('antennas/show', {
-					antennaId: this.antennaId
-				});
-			},
-			immediate: true
-		}
-	},
+function queueUpdated(q) {
+	queue = q;
+},
 
-	methods: {
-		queueUpdated(q) {
-			this.queue = q;
-		},
+function top() {
+	tlComponent.tlComponent.pagingComponent?.executeQueue();
+	scroll(rootEl, { top: 0 });
+}
 
-		top() {
-			scroll(this.$el, { top: 0 });
-		},
+async function timetravel() {
+	const { canceled, result: date } = await os.inputDate({
+		title: i18n.ts.date,
+	});
+	if (canceled) return;
+	tlComponent.timetravel(date);
+}
 
-		async timetravel() {
-			const { canceled, result: date } = await os.inputDate({
-				title: this.$ts.date,
-			});
-			if (canceled) return;
+function settings() {
+	router.push(`/my/antennas/${props.antennaId}`);
+}
 
-			this.$refs.tl.timetravel(date);
-		},
+function focus() {
+	tlComponent?.focus();
+}
 
-		settings() {
-			this.$router.push(`/my/antennas/${this.antennaId}`);
-		},
-
-		focus() {
-			(this.$refs.tl as any).focus();
-		}
-	}
+defineExpose({
+	[symbols.PAGE_INFO]: computed(() => antenna ? {
+		title: antenna.name,
+		icon: 'fas fa-satellite',
+		bg: 'var(--bg)',
+		actions: [{
+			icon: 'fas fa-calendar-alt',
+			text: i18n.ts.jumpToSpecifiedDate,
+			handler: timetravel
+		}, {
+			icon: 'fas fa-cog',
+			text: i18n.ts.settings,
+			handler: settings
+		}],
+	} : null),
 });
+
 </script>
 
 <style lang="scss" scoped>

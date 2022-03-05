@@ -1,8 +1,8 @@
 <template>
-<div v-hotkey.global="keymap" v-size="{ min: [800] }" class="eqqrhokj">
+<div ref="rootEl" v-hotkey.global="keymap" v-size="{ min: [800] }" class="eqqrhokj">
 	<div v-if="queue > 0" class="new"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
 	<div class="tl _block">
-		<XTimeline ref="tl" :key="listId"
+		<XTimeline ref="tlComponent" :key="listId"
 			class="tl"
 			src="list"
 			:list="listId"
@@ -13,91 +13,72 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, defineAsyncComponent, computed } from 'vue';
+<script lang="ts" setup>
+import { computed, watch } from 'vue';
 import XTimeline from '@/components/timeline.vue';
 import { scroll } from '@/scripts/scroll';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 
-export default defineComponent({
-	components: {
-		XTimeline,
-	},
+defineProps<{
+	listId: string;
+}>();
 
-	props: {
-		listId: {
-			type: String,
-			required: true
-		}
-	},
+let list: null = $ref(null);
+let queue: number = $ref(0);
+let tlComponent = $ref<InstanceType<typeof XTimeline>>();
+let rootEl = $ref<HTMLElement>();
 
-	data() {
-		return {
-			list: null,
-			queue: 0,
-			[symbols.PAGE_INFO]: computed(() => this.list ? {
-				title: this.list.name,
-				icon: 'fas fa-list-ul',
-				bg: 'var(--bg)',
-				actions: [{
-					icon: 'fas fa-calendar-alt',
-					text: this.$ts.jumpToSpecifiedDate,
-					handler: this.timetravel
-				}, {
-					icon: 'fas fa-cog',
-					text: this.$ts.settings,
-					handler: this.settings
-				}],
-			} : null),
-		};
-	},
+const keymap = $computed(() => ({
+	't': focus,
+}));
 
-	computed: {
-		keymap(): any {
-			return {
-				't': this.focus
-			};
-		},
-	},
+watch(() => props.listId, async () => {
+	list = await os.api('antennas/show', {
+		listId: props.listId
+	});
+}, { immediate: true, });
 
-	watch: {
-		listId: {
-			async handler() {
-				this.list = await os.api('users/lists/show', {
-					listId: this.listId
-				});
-			},
-			immediate: true
-		}
-	},
+function queueUpdated(q) {
+	queue = q;
+},
 
-	methods: {
-		queueUpdated(q) {
-			this.queue = q;
-		},
+function top() {
+	tlComponent.tlComponent.pagingComponent?.executeQueue();
+	scroll(rootEl, { top: 0 });
+}
 
-		top() {
-			scroll(this.$el, { top: 0 });
-		},
+async function timetravel() {
+	const { canceled, result: date } = await os.inputDate({
+		title: i18n.ts.date,
+	});
+	if (canceled) return;
+	tlComponent.timetravel(date);
+}
 
-		settings() {
-			this.$router.push(`/my/lists/${this.listId}`);
-		},
+function settings() {
+	router.push(`/my/lists/${props.listId}`);
+}
 
-		async timetravel() {
-			const { canceled, result: date } = await os.inputDate({
-				title: this.$ts.date,
-			});
-			if (canceled) return;
+function focus() {
+	tlComponent?.focus();
+}
 
-			this.$refs.tl.timetravel(date);
-		},
-
-		focus() {
-			(this.$refs.tl as any).focus();
-		}
-	}
+defineExpose({
+	[symbols.PAGE_INFO]: computed(() => list ? {
+		title: list.name,
+		icon: 'fas fa-list-ul',
+		bg: 'var(--bg)',
+		actions: [{
+			icon: 'fas fa-calendar-alt',
+			text: i18n.ts.jumpToSpecifiedDate,
+			handler: timetravel
+		}, {
+			icon: 'fas fa-cog',
+			text: i18n.ts.settings,
+			handler: settings
+		}],
+	} : null),
 });
 </script>
 
