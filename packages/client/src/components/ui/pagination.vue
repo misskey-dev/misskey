@@ -102,18 +102,20 @@ const {
 const contentEl = $computed(() => props.pagination.pageEl || rootEl);
 const scrollableElement = $computed(() => getScrollContainer(contentEl));
 
-const observer = $computed(() => new IntersectionObserver(entries => {
-	backed = props.pagination.reversed ? !entries[0].isIntersecting : entries[0].isIntersecting;
+// 先頭が表示されているかどうかを検出
+// https://qiita.com/mkataigi/items/0154aefd2223ce23398e
+const scrollObserver = $computed(() => new IntersectionObserver(entries => {
+	backed = entries[0].isIntersecting;
 }, {
 	root: scrollableElement,
 	rootMargin: props.pagination.reversed ? "-100% 0px 100% 0px" : "100% 0px -100% 0px",
 	threshold: 0.01,
 }));
 
-watch($$(contentEl), () => {
-	observer.disconnect();
+watch($$(rootEl), () => {
+	scrollObserver.disconnect();
 	nextTick(() => {
-		if (contentEl) observer.observe(contentEl);
+		if (rootEl) scrollObserver.observe(rootEl);
 	});
 });
 
@@ -339,7 +341,7 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-	observer.disconnect();
+	scrollObserver.disconnect();
 });
 
 defineExpose({
