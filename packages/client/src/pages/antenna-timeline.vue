@@ -43,10 +43,10 @@ const keymap = $computed(() => ({
 
 function queueUpdated(q) {
 	queue = q;
-},
+}
 
 function top() {
-	tlComponent.tlComponent.pagingComponent?.executeQueue();
+	tlComponent.tlComponent.value.pagingComponent?.executeQueue();
 	scroll(rootEl, { top: 0 });
 }
 
