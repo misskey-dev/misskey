@@ -31,12 +31,6 @@ export default defineComponent({
 			required: false,
 			default: false
 		},
-		itemsContainer: {
-			type: Object as PropType<HTMLElement | null>,
-			required: false,
-			nullable: true,
-			default: null,
-		},
 	},
 
 	setup(props, { slots, expose, emit }) {
@@ -95,11 +89,6 @@ export default defineComponent({
 					return el;
 				}
 			}
-		});
-
-		onMounted(() => {
-			const el = getCurrentInstance()?.vnode.el;
-			emit('update:itemsContainer', el ? markRaw(el) : null);
 		});
 
 		function onBeforeLeave(el: HTMLElement) {

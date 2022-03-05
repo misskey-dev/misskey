@@ -7,8 +7,8 @@
 		</div>
 	</template>
 
-	<template #default="{ items: users, itemsContainer }">
-		<div class="efvhhmdq" ref="itemsContainer">
+	<template #default="{ items: users }">
+		<div class="efvhhmdq">
 			<MkUserInfo v-for="user in users" :key="user.id" class="user" :user="user"/>
 		</div>
 	</template>

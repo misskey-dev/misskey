@@ -20,7 +20,7 @@
 			</MkButton>
 			<MkLoading v-else class="loading"/>
 		</div>
-		<slot :items="items" :fetching="fetching || moreFetching" :itemsContainer="itemsContainer" :itemsContainerWrapped="itemsContainerWrapped"></slot>
+		<slot :items="items" :fetching="fetching || moreFetching"></slot>
 		<div v-if="!pagination.reversed" v-show="more" key="_more_" class="cxiknjgy _gap">
 			<MkButton v-if="!moreFetching" v-appear="(enableInfiniteScroll && !props.disableAutoLoad) ? fetchMore : null" class="button" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary @click="fetchMore">
 				{{ $ts.loadMore }}
@@ -80,26 +80,7 @@ const emit = defineEmits<{
 let rootEl = $ref<HTMLElement>();
 
 /*
- * itemsContainer: itemsの実体DOMsの親コンテナ(=v-forの直上)のHTMLElement
- *
- * IntersectionObserverを使用してスクロールのパフォーマンスを向上させるため必要
- * この中の最初の要素を評価するので、順番を反転したり変えたりしてはいけない
- * 
- * これがundefinedのままの場合はrootElにフォールバックする
- * つまりrootElがitemsの実体DOMsの親であるとする
- * 
- * 自動ロードやストリーミングでの追加がなければあまり関係ない
- */
-let itemsContainer = $ref<HTMLElement | null>();
-/*
- * date-separated-listとやり取りするために入れ子にしたオブジェクトを用意する
- * slotの中身から変数を直接書き込むことができないため
- */
-const itemsContainerWrapped = { v: $$(itemsContainer) };
-
-/*
  * 遡り中かどうか
- * ＝ (itemsContainer || rootEl).children.item(0) が画面内に入ったかどうか
  */
 let backed = $ref(false);
 
@@ -121,24 +102,20 @@ const {
 const contentEl = $computed(() => props.pagination.pageEl || rootEl);
 const scrollableElement = $computed(() => getScrollContainer(contentEl));
 
-const observer = new IntersectionObserver(entries => {
-	if (entries.some(entry => entry.isIntersecting)) {
-		backed = false;
-	} else {
-		backed = true;
-	}
-});
+const observer = $computed(() => new IntersectionObserver(entries => {
+	backed = props.pagination.reversed ? !entries[0].isIntersecting : entries[0].isIntersecting;
+}, {
+	root: scrollableElement,
+	rootMargin: props.pagination.reversed ? "-100% 0px 100% 0px" : "100% 0px -100% 0px",
+	threshold: 0.01,
+}));
 
-watch([$$(itemsContainer), $$(rootEl)], observeLatestElement);
-watch(items, observeLatestElement, { deep: true });
-
-function observeLatestElement() {
+watch($$(contentEl), () => {
 	observer.disconnect();
 	nextTick(() => {
-		const latestEl = (itemsContainer || rootEl)?.children.item(0);
-		if (latestEl) observer.observe(latestEl);
+		if (contentEl) observer.observe(contentEl);
 	});
-}
+});
 
 watch([$$(backed), $$(contentEl)], () => {
 	if (!backed) {

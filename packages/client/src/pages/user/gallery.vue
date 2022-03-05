@@ -1,7 +1,7 @@
 <template>
 <div>
-	<MkPagination v-slot="{items, itemsContainer}" :pagination="pagination">
-		<div class="jrnovfpt" ref="itemsContainer">
+	<MkPagination v-slot="{items}" :pagination="pagination">
+		<div class="jrnovfpt">
 			<MkGalleryPostPreview v-for="post in items" :key="post.id" :post="post" class="post"/>
 		</div>
 	</MkPagination>

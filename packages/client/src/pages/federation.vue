@@ -41,8 +41,8 @@
 			</FormSplit>
 		</div>
 
-		<MkPagination v-slot="{items, itemsContainer}" ref="instances" :key="host + state" :pagination="pagination">
-			<div class="dqokceoi" ref="itemsContainer">
+		<MkPagination v-slot="{items}" ref="instances" :key="host + state" :pagination="pagination">
+			<div class="dqokceoi">
 				<MkA v-for="instance in items" :key="instance.id" class="instance" :to="`/instance-info/${instance.host}`">
 					<div class="host"><img :src="instance.faviconUrl">{{ instance.host }}</div>
 					<div class="table">

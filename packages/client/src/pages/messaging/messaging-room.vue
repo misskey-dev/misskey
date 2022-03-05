@@ -14,13 +14,12 @@
 					</div>
 				</template>
 
-				<template #default="{ items: messages, fetching, itemsContainerWrapped }">
+				<template #default="{ items: messages, fetching }">
 					<XList
 						v-if="messages.length > 0"
 						v-slot="{ item: message }"
 						:class="{ messages: true, 'deny-move-transition': fetching }"
 						:items="messages"
-						v-model:itemsContainer="itemsContainerWrapped.v.value"
 						direction="up"
 						reversed
 					>
