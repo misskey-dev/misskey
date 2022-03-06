@@ -34,6 +34,7 @@ import { deliverToRelays } from '../relay.js';
 import { Channel } from '@/models/entities/channel.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { getAntennas } from '@/misc/antenna-cache.js';
+import { endedPollNotificationQueue } from '@/queue/queues.js';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -294,6 +295,15 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 	// この投稿を除く指定したユーザーによる指定したノートのリノートが存在しないとき
 	if (data.renote && (await countSameRenotes(user.id, data.renote.id, note.id) === 0)) {
 		incRenoteCount(data.renote);
+	}
+
+	if (data.poll && data.poll.expiresAt) {
+		const delay = data.poll.expiresAt.getTime() - Date.now();
+		endedPollNotificationQueue.add({
+			noteId: note.id,
+		}, {
+			delay
+		});
 	}
 
 	if (!silent) {
