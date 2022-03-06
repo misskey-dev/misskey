@@ -2,7 +2,7 @@
 <XModalWindow ref="dialog"
 	:width="370"
 	:height="400"
-	@close="dialog.close()"
+	@close="onClose"
 	@closed="emit('closed')"
 >
 	<template #header>{{ $ts.login }}</template>
@@ -24,6 +24,7 @@ const props = withDefaults(defineProps<{
 
 const emit = defineEmits<{
 	(e: 'done'): void;
+	(e: 'close'): void;
 	(e: 'closed'): void;
 }>();
 
@@ -31,6 +32,11 @@ const dialog = $ref<InstanceType<typeof XModalWindow>>();
 
 function onLogin(res) {
 	emit('done', res);
+	dialog.close();
+}
+
+function onClose() {
+	emit('close');
 	dialog.close();
 }
 </script>
