@@ -13,6 +13,22 @@ ok: "OK"
 gotIt: "Am înțeles!"
 cancel: "Anulează"
 enterUsername: "Introdu numele de utilizator"
+renotedBy: "Renotat de {user}"
+noNotes: "Nicio notă"
+noNotifications: "Nicio notificare"
+instance: "Instanță"
+settings: "Setări"
+basicSettings: "Setări generale"
+otherSettings: "Alte Setări"
+openInWindow: "Deschide într-o fereastră"
+profile: "Profil"
+timeline: "Cronologie"
+noAccountDescription: "Acest utilizator încă nu a scris un bio."
+login: "Autentifică-te"
+loggingIn: "Se autentifică"
+logout: "Deconectează-te"
+signup: "Înregistrare"
+instances: "Instanță"
 smtpUser: "Nume de utilizator"
 smtpPass: "Parolă"
 _mfm:
@@ -21,8 +37,10 @@ _sfx:
   notification: "Notificări"
 _widgets:
   notifications: "Notificări"
+  timeline: "Cronologie"
 _profile:
   username: "Nume de utilizator"
 _deck:
   _columns:
     notifications: "Notificări"
+    tl: "Cronologie"
