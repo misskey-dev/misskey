@@ -1612,6 +1612,7 @@ _notification:
   youReceivedFollowRequest: "Du hast eine Follow-Anfrage erhalten"
   yourFollowRequestAccepted: "Deine Follow-Anfrage wurde akzeptiert"
   youWereInvitedToGroup: "Du wurdest in eine Gruppe eingeladen"
+  pollEnded: "Umfrageergebnisse sind verfügbar"
   _types:
     all: "Alle"
     follow: "Neue Follower"
@@ -1621,6 +1622,7 @@ _notification:
     quote: "Zitationen"
     reaction: "Reaktionen"
     pollVote: "Antworten auf Umfragen"
+    pollEnded: "Ende von Umfragen"
     receiveFollowRequest: "Erhaltene Follow-Anfragen"
     followRequestAccepted: "Akzeptierte Follow-Anfragen"
     groupInvited: "Erhaltene Gruppeneinladungen"
