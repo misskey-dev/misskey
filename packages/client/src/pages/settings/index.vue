@@ -33,7 +33,7 @@ import { unisonReload } from '@/scripts/unison-reload';
 import * as symbols from '@/symbols';
 import { instance } from '@/instance';
 import { $i } from '@/account';
-import { popup } from '@/os';
+import { promptLoginOrRedirect } from '@/scripts/prompt-login';
 
 const props = defineProps<{
   initialPage?: string
@@ -213,16 +213,7 @@ const component = computed(() => {
 	return null;
 });
 
-if (!$i) {
-	popup(import('@/components/signin-dialog.vue'), {}, {
-		done: () => {
-			unisonReload();
-		},
-		close: () => {
-			window.location.href = '/';
-		},
-	}, 'closed');
-}
+promptLoginOrRedirect();
 
 watch(component, () => {
 	pageProps.value = {};
