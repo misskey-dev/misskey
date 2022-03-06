@@ -10,37 +10,6 @@
 				<template #label>{{ $ts.instanceDescription }}</template>
 			</FormTextarea>
 
-			<FormInput v-model="iconUrl" class="_formBlock">
-				<template #prefix><i class="fas fa-link"></i></template>
-				<template #label>{{ $ts.iconUrl }}</template>
-			</FormInput>
-
-			<FormInput v-model="bannerUrl" class="_formBlock">
-				<template #prefix><i class="fas fa-link"></i></template>
-				<template #label>{{ $ts.bannerUrl }}</template>
-			</FormInput>
-
-			<FormInput v-model="backgroundImageUrl" class="_formBlock">
-				<template #prefix><i class="fas fa-link"></i></template>
-				<template #label>{{ $ts.backgroundImageUrl }}</template>
-			</FormInput>
-
-			<FormInput v-model="themeColor" class="_formBlock">
-				<template #prefix><i class="fas fa-palette"></i></template>
-				<template #label>{{ $ts.themeColor }}</template>
-				<template #caption>#RRGGBB</template>
-			</FormInput>
-
-			<FormTextarea v-model="defaultLightTheme" class="_formBlock">
-				<template #label>{{ $ts.instanceDefaultLightTheme }}</template>
-				<template #caption>{{ $ts.instanceDefaultThemeDescription }}</template>
-			</FormTextarea>
-
-			<FormTextarea v-model="defaultDarkTheme" class="_formBlock">
-				<template #label>{{ $ts.instanceDefaultDarkTheme }}</template>
-				<template #caption>{{ $ts.instanceDefaultThemeDescription }}</template>
-			</FormTextarea>
-
 			<FormInput v-model="tosUrl" class="_formBlock">
 				<template #prefix><i class="fas fa-link"></i></template>
 				<template #label>{{ $ts.tosUrl }}</template>
@@ -76,6 +45,41 @@
 				<FormSwitch v-model="enableLocalTimeline" class="_formBlock">{{ $ts.enableLocalTimeline }}</FormSwitch>
 				<FormSwitch v-model="enableGlobalTimeline" class="_formBlock">{{ $ts.enableGlobalTimeline }}</FormSwitch>
 				<FormInfo class="_formBlock">{{ $ts.disablingTimelinesInfo }}</FormInfo>
+			</FormSection>
+
+			<FormSection>
+				<template #label>{{ $ts.theme }}</template>
+
+				<FormInput v-model="iconUrl" class="_formBlock">
+					<template #prefix><i class="fas fa-link"></i></template>
+					<template #label>{{ $ts.iconUrl }}</template>
+				</FormInput>
+
+				<FormInput v-model="bannerUrl" class="_formBlock">
+					<template #prefix><i class="fas fa-link"></i></template>
+					<template #label>{{ $ts.bannerUrl }}</template>
+				</FormInput>
+
+				<FormInput v-model="backgroundImageUrl" class="_formBlock">
+					<template #prefix><i class="fas fa-link"></i></template>
+					<template #label>{{ $ts.backgroundImageUrl }}</template>
+				</FormInput>
+
+				<FormInput v-model="themeColor" class="_formBlock">
+					<template #prefix><i class="fas fa-palette"></i></template>
+					<template #label>{{ $ts.themeColor }}</template>
+					<template #caption>#RRGGBB</template>
+				</FormInput>
+
+				<FormTextarea v-model="defaultLightTheme" class="_formBlock">
+					<template #label>{{ $ts.instanceDefaultLightTheme }}</template>
+					<template #caption>{{ $ts.instanceDefaultThemeDescription }}</template>
+				</FormTextarea>
+
+				<FormTextarea v-model="defaultDarkTheme" class="_formBlock">
+					<template #label>{{ $ts.instanceDefaultDarkTheme }}</template>
+					<template #caption>{{ $ts.instanceDefaultThemeDescription }}</template>
+				</FormTextarea>
 			</FormSection>
 
 			<FormSection>
