@@ -1446,6 +1446,7 @@ _notification:
   youReceivedFollowRequest: "تلقيتَ طلب متابعة"
   yourFollowRequestAccepted: "قُبل طلب المتابعة"
   youWereInvitedToGroup: "دُعيت إلى فريقٍ"
+  pollEnded: "ظهرت نتائج الاستطلاع"
   _types:
     all: "الكل"
     follow: "متابِعون جدد"
@@ -1454,6 +1455,7 @@ _notification:
     renote: "أعد النشر"
     quote: "الاقتباسات"
     reaction: "التفاعلات"
+    pollVote: "مصوِت شارك في الاستطلاع"
     receiveFollowRequest: "طلبات المتابعة المتلقاة"
     followRequestAccepted: "طلبات المتابعة المقبولة"
     app: "إشعارات التطبيقات المرتبطة"
