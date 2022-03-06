@@ -1,3 +1,28 @@
 ---
 _lang_: "Romanian"
 headlineMisskey: "O rețea conectată prin note"
+introMisskey: "Bine ai venit! Misskey este un serviciu de microblogging open source și decentralizat.\nCrează \"note\" cu care să îți poți împărți gândurile cu oricine din jurul tău. 📡\nCu \"reacții\" îți poți expirma rapid părerea despre notele oricui. 👍\nHai să explorăm o lume nouă! 🚀"
+monthAndDay: "{day}/{month}"
+search: "Caută"
+notifications: "Notificări"
+username: "Nume de utilizator"
+password: "Parolă"
+forgotPassword: "Am uitat parola"
+fetchingAsApObject: "Se aduce din Fediverse..."
+ok: "OK"
+gotIt: "Am înțeles!"
+cancel: "Anulează"
+enterUsername: "Introdu numele de utilizator"
+smtpUser: "Nume de utilizator"
+smtpPass: "Parolă"
+_mfm:
+  search: "Caută"
+_sfx:
+  notification: "Notificări"
+_widgets:
+  notifications: "Notificări"
+_profile:
+  username: "Nume de utilizator"
+_deck:
+  _columns:
+    notifications: "Notificări"
