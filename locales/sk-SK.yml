@@ -1611,6 +1611,7 @@ _notification:
   youReceivedFollowRequest: "Dostali ste žiadosť o sledovanie"
   yourFollowRequestAccepted: "Vaša žiadosť o sledovanie bola prijatá"
   youWereInvitedToGroup: "Pozvať do skupiny"
+  pollEnded: "Výsledky hlasovania sú k dispozícii."
   _types:
     all: "Všetky"
     follow: "Sledujete"
@@ -1620,6 +1621,7 @@ _notification:
     quote: "Citovať"
     reaction: "Reakcie"
     pollVote: "Hlasy v hlasovaniach"
+    pollEnded: "Hlasovanie skončilo"
     receiveFollowRequest: "Doručené žiadosti o sledovanie"
     followRequestAccepted: "Schválené žiadosti o sledovanie"
     groupInvited: "Pozvánky do skupín"
