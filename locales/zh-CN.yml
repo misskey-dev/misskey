@@ -1612,6 +1612,7 @@ _notification:
   youReceivedFollowRequest: "您有新的关注请求"
   yourFollowRequestAccepted: "您的关注请求已通过"
   youWereInvitedToGroup: "您有新的群组邀请"
+  pollEnded: "问卷调查结果已生成。"
   _types:
     all: "全部"
     follow: "关注中"
@@ -1621,6 +1622,7 @@ _notification:
     quote: "引用"
     reaction: "回应"
     pollVote: "问卷调查被投票"
+    pollEnded: "问卷调查结束"
     receiveFollowRequest: "收到关注请求"
     followRequestAccepted: "关注请求已通过"
     groupInvited: "加入群组邀请"
