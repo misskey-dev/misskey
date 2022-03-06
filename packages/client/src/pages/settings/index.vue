@@ -48,7 +48,7 @@ const INFO = ref(indexInfo);
 const page = ref(props.initialPage);
 const narrow = ref(false);
 const view = ref(null);
-const el = ref(null);
+const el = ref<HTMLElement | null>(null);
 const childInfo = ref(null);
 const menuDef = computed(() => [{
 	title: i18n.ts.basicSettings,
@@ -247,16 +247,6 @@ const pageChanged = (page) => {
 
 defineExpose({
 	[symbols.PAGE_INFO]: INFO,
-	page,
-	menuDef,
-	narrow,
-	view,
-	el,
-	pageProps,
-	component,
-	emailNotConfigured,
-	pageChanged,
-	childInfo,
 });
 </script>
 
