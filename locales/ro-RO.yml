@@ -1,7 +1,7 @@
 ---
 _lang_: "Română"
 headlineMisskey: "O rețea conectată prin note"
-introMisskey: "Bine ai venit! Misskey este un serviciu de microblogging open source și decentralizat.\nCrează \"note\" cu care să îți poți împărți gândurile cu oricine din jurul tău. 📡\nCu \"reacții\" îți poți expirma rapid părerea despre notele oricui. 👍\nHai să explorăm o lume nouă! 🚀"
+introMisskey: "Bine ai venit! Misskey este un serviciu de microblogging open source și decentralizat.\nCreează \"note\" cu care să îți poți împărți gândurile cu oricine din jurul tău. 📡\nCu \"reacții\" îți poți expirma rapid părerea despre notele oricui. 👍\nHai să explorăm o lume nouă! 🚀"
 monthAndDay: "{day}/{month}"
 search: "Caută"
 notifications: "Notificări"
@@ -70,9 +70,40 @@ importRequested: "Ai cerut un import. S-ar putea să ia un pic."
 lists: "Liste"
 noLists: "Nu ai nici o listă"
 note: "Notă"
+notes: "Note"
+following: "Urmărești"
+followers: "Urmăritori"
+followsYou: "Te urmărește"
+createList: "Creează listă"
+manageLists: "Gestionează listele"
+error: "Eroare"
+somethingHappened: "A survenit o eroare"
+retry: "Reîncearcă"
+pageLoadError: "A apărut o eroare la încărcarea paginii."
+pageLoadErrorDescription: "De obicei asta este cauzat de o eroare de rețea sau cache-ul browser-ului. Încearcă să cureți cache-ul și apoi să încerci din nou puțin mai târziu."
+serverIsDead: "Serverul nu răspunde. Te rugăm să aștepți o perioadă și să încerci din nou."
+youShouldUpgradeClient: "Pentru a vedea această pagină, te rugăm să îți actualizezi clientul."
+enterListName: "Introdu un nume pentru listă"
+privacy: "Confidenţialitate"
+makeFollowManuallyApprove: "Fă cererile de urmărire să necesite aprobare"
+defaultNoteVisibility: "Vizibilitate implicită"
+follow: "Urmărești"
+followRequest: "Trimite cerere de urmărire"
+followRequests: "Cereri de urmărire"
+unfollow: "Nu mai urmări"
+followRequestPending: "Cerere de urmărire în așteptare"
+enterEmoji: "Introdu un emoji"
+renote: "Re-notează"
+unrenote: "Ia înapoi re-nota"
+renoted: "Re-notat."
+cantRenote: "Această postare nu poate fi re-notată."
+cantReRenote: "O re-notă nu poate fi re-notată."
+quote: "Citează"
+pinnedNote: "Notă fixată"
 pinned: "Fixează pe profil"
 instances: "Instanță"
 remove: "Şterge"
+pinnedNotes: "Notă fixată"
 userList: "Liste"
 smtpUser: "Nume de utilizator"
 smtpPass: "Parolă"
@@ -82,20 +113,26 @@ _email:
     title: "te-a urmărit"
 _mfm:
   mention: "Mențiune"
+  quote: "Citează"
   search: "Caută"
 _theme:
   keys:
     mention: "Mențiune"
+    renote: "Re-notează"
 _sfx:
+  note: "Note"
   notification: "Notificări"
 _widgets:
   notifications: "Notificări"
   timeline: "Cronologie"
 _cw:
   show: "Incarcă mai mult"
+_visibility:
+  followers: "Urmăritori"
 _profile:
   username: "Nume de utilizator"
 _exportOrImport:
+  followingList: "Urmărești"
   userLists: "Liste"
 _pages:
   script:
@@ -119,7 +156,10 @@ _pages:
 _notification:
   youWereFollowed: "te-a urmărit"
   _types:
+    follow: "Urmărești"
     mention: "Mențiune"
+    renote: "Re-notează"
+    quote: "Citează"
 _deck:
   _columns:
     notifications: "Notificări"
