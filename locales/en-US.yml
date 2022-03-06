@@ -1612,6 +1612,7 @@ _notification:
   youReceivedFollowRequest: "You've received a follow request"
   yourFollowRequestAccepted: "Your follow request was accepted"
   youWereInvitedToGroup: "You've been invited to a group"
+  pollEnded: "Poll results have become available"
   _types:
     all: "All"
     follow: "New followers"
@@ -1621,6 +1622,7 @@ _notification:
     quote: "Quotes"
     reaction: "Reactions"
     pollVote: "Votes on polls"
+    pollEnded: "Polls ending"
     receiveFollowRequest: "Received follow requests"
     followRequestAccepted: "Accepted follow requests"
     groupInvited: "Group invitations"
