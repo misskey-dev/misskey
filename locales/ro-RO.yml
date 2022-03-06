@@ -1,5 +1,5 @@
 ---
-_lang_: "Romanian"
+_lang_: "Română"
 headlineMisskey: "O rețea conectată prin note"
 introMisskey: "Bine ai venit! Misskey este un serviciu de microblogging open source și decentralizat.\nCrează \"note\" cu care să îți poți împărți gândurile cu oricine din jurul tău. 📡\nCu \"reacții\" îți poți expirma rapid părerea despre notele oricui. 👍\nHai să explorăm o lume nouă! 🚀"
 monthAndDay: "{day}/{month}"
@@ -49,22 +49,80 @@ addToList: "Adaugă în listă"
 sendMessage: "Trimite un mesaj"
 copyUsername: "Copiază numele de utilizator"
 searchUser: "Caută un utilizator"
+reply: "Răspunde"
+loadMore: "Incarcă mai mult"
+showMore: "Arată mai mult"
+youGotNewFollower: "te-a urmărit"
+receiveFollowRequest: "Cerere de urmărire primită"
+followRequestAccepted: "Cerere de urmărire acceptată"
+mention: "Mențiune"
+mentions: "Mențiuni"
+directNotes: "Note directe"
+importAndExport: "Importă / Exportă"
+import: "Importă"
+export: "Exportă"
+files: "Fișiere"
+download: "Descarcă"
+driveFileDeleteConfirm: "Ești sigur ca vrei să ștergi fișierul \"{name}\"? Notele atașate fișierului vor fi șterse și ele."
+unfollowConfirm: "Ești sigur ca vrei să nu mai urmărești pe {name}?"
+exportRequested: "Ai cerut un export. S-ar putea să ia un pic. Va fi adăugat in Drive-ul tău odată completat."
+importRequested: "Ai cerut un import. S-ar putea să ia un pic."
+lists: "Liste"
+noLists: "Nu ai nici o listă"
+note: "Notă"
 pinned: "Fixează pe profil"
 instances: "Instanță"
 remove: "Şterge"
+userList: "Liste"
 smtpUser: "Nume de utilizator"
 smtpPass: "Parolă"
 user: "Utilizatori"
+_email:
+  _follow:
+    title: "te-a urmărit"
 _mfm:
+  mention: "Mențiune"
   search: "Caută"
+_theme:
+  keys:
+    mention: "Mențiune"
 _sfx:
   notification: "Notificări"
 _widgets:
   notifications: "Notificări"
   timeline: "Cronologie"
+_cw:
+  show: "Incarcă mai mult"
 _profile:
   username: "Nume de utilizator"
+_exportOrImport:
+  userLists: "Liste"
+_pages:
+  script:
+    categories:
+      list: "Liste"
+    blocks:
+      _join:
+        arg1: "Liste"
+      _randomPick:
+        arg1: "Liste"
+      _dailyRandomPick:
+        arg1: "Liste"
+      _seedRandomPick:
+        arg2: "Liste"
+      _pick:
+        arg1: "Liste"
+      _listLen:
+        arg1: "Liste"
+    types:
+      array: "Liste"
+_notification:
+  youWereFollowed: "te-a urmărit"
+  _types:
+    mention: "Mențiune"
 _deck:
   _columns:
     notifications: "Notificări"
     tl: "Cronologie"
+    list: "Liste"
+    mentions: "Mențiuni"
