@@ -24,6 +24,7 @@ You should also include the user name that made the change.
 - アンケートが終了したときに通知が作成されるように @syuilo
 - プロフィールの追加情報を最大16まで保存できるように @syuilo
 - 連合チャートにPub&Subを追加 @syuilo
+- 連合チャートにActiveを追加 @syuilo
 - デフォルトで10秒以上時間がかかるデータベースへのクエリは中断されるように @syuilo
 	- 設定ファイルの`db.extra`に`statement_timeout`を設定することでタイムアウト時間を変更できます
 
