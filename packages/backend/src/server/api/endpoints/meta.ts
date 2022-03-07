@@ -64,11 +64,6 @@ export const meta = {
 				optional: false, nullable: false,
 				default: 'https://github.com/misskey-dev/misskey/issues/new',
 			},
-			secure: {
-				type: 'boolean',
-				optional: false, nullable: false,
-				default: false,
-			},
 			defaultDarkTheme: {
 				type: 'string',
 				optional: false, nullable: true,
@@ -489,9 +484,6 @@ export default define(meta, paramDef, async (ps, me) => {
 		tosUrl: instance.ToSUrl,
 		repositoryUrl: instance.repositoryUrl,
 		feedbackUrl: instance.feedbackUrl,
-
-		secure: config.https != null,
-
 		disableRegistration: instance.disableRegistration,
 		disableLocalTimeline: instance.disableLocalTimeline,
 		disableGlobalTimeline: instance.disableGlobalTimeline,
