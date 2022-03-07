@@ -104,6 +104,31 @@ pinned: "Fixat pe profil"
 you: "Tu"
 clickToShow: "Click pentru a afișa"
 sensitive: "NSFW"
+add: "Adaugă"
+reaction: "Reacție"
+reactionSetting: "Reacții care să apară in selectorul de reacții"
+reactionSettingDescription2: "Trage pentru a rearanja, apasă pe \"+\" pentru a adăuga."
+rememberNoteVisibility: "Amintește setarea de vizibilitate a notelor"
+attachCancel: "Înlătură atașament"
+markAsSensitive: "Marchează ca NSFW"
+unmarkAsSensitive: "Demarchează ca NSFW"
+enterFileName: "Introduceţi numele fişierului"
+mute: "Amuțește"
+unmute: "Înlătură amuțirea"
+block: "Blochează"
+unblock: "Deblochează"
+suspend: "Suspendă"
+unsuspend: "Anulează suspendare"
+blockConfirm: "Ești sigur că vrei să blochezi acest cont?"
+unblockConfirm: "Ești sigur ca vrei să deblochezi acest cont?"
+suspendConfirm: "Ești sigur ca vrei să suspendezi acest cont?"
+unsuspendConfirm: "Ești sigur ca vrei să nu mai suspendezi acest cont?"
+selectList: "Selectează o listă"
+selectAntenna: "Selectează o antenă"
+selectWidget: "Selectați un widget"
+editWidgets: "Editează widget-urile"
+editWidgetsExit: "Terminat"
+customEmojis: "Emoji personalizat"
 instances: "Instanță"
 remove: "Şterge"
 nsfw: "NSFW"
@@ -118,6 +143,7 @@ _email:
 _mfm:
   mention: "Mențiune"
   quote: "Citează"
+  emoji: "Emoji personalizat"
   search: "Caută"
 _theme:
   keys:
@@ -137,6 +163,8 @@ _profile:
   username: "Nume de utilizator"
 _exportOrImport:
   followingList: "Urmărești"
+  muteList: "Amuțește"
+  blockingList: "Blochează"
   userLists: "Liste"
 _pages:
   script:
@@ -164,6 +192,7 @@ _notification:
     mention: "Mențiune"
     renote: "Re-notează"
     quote: "Citează"
+    reaction: "Reacție"
 _deck:
   _columns:
     notifications: "Notificări"
