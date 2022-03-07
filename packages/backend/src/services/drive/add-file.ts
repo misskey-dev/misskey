@@ -484,8 +484,6 @@ export async function addFile({
 	perUserDriveChart.update(file, true);
 	if (file.userHost !== null) {
 		instanceChart.updateDrive(file, true);
-		Instances.increment({ host: file.userHost }, 'driveUsage', file.size);
-		Instances.increment({ host: file.userHost }, 'driveFiles', 1);
 	}
 
 	return file;

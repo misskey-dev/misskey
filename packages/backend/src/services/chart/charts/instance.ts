@@ -21,14 +21,12 @@ export default class InstanceChart extends Chart<typeof schema> {
 			followingCount,
 			followersCount,
 			driveFiles,
-			//driveUsage,
 		] = await Promise.all([
 			Notes.count({ userHost: group }),
 			Users.count({ host: group }),
 			Followings.count({ followerHost: group }),
 			Followings.count({ followeeHost: group }),
 			DriveFiles.count({ userHost: group }),
-			//DriveFiles.calcDriveUsageOfHost(group),
 		]);
 
 		return {
