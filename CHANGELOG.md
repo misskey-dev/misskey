@@ -18,9 +18,9 @@ You should also include the user name that made the change.
 ### Changes
 - ノートの最大文字数を設定できる機能が廃止され、デフォルトで一律3000文字になりました @syuilo
 - Misskey can no longer terminate HTTPS connections. @Johann150
-  If you did not use a reverse proxy (e.g. nginx) before, you will probably need to adjust
-  your configuration file and set up a reverse proxy. The `https` configuration key is no
-  longer recognized!
+  - If you did not use a reverse proxy (e.g. nginx) before, you will probably need to adjust
+    your configuration file and set up a reverse proxy. The `https` configuration key is no
+    longer recognized!
 
 ### Improvements
 - インスタンスデフォルトテーマを設定できるように @syuilo
