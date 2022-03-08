@@ -254,6 +254,25 @@ agreeTo: "Sunt de acord cu {0}"
 tos: "Termenii de utilizare"
 start: "Să începem"
 home: "Acasă"
+remoteUserCaution: "Deoarece acest utilizator este dintr-o instanță externă, informația afișată poate fi incompletă."
+activity: "Activitate"
+images: "Imagini"
+birthday: "Zi de naștere"
+yearsOld: "{age} ani"
+registeredDate: "Data înregistrării"
+location: "Locație"
+theme: "Teme"
+themeForLightMode: "Temă folosită pentru Modul Luminat"
+themeForDarkMode: "Temă folosită pentru Modul Întunecat"
+light: "Luminos"
+dark: "Întunecat"
+lightThemes: "Teme luminoase"
+darkThemes: "Teme întunecate"
+syncDeviceDarkMode: "Sincronizează Modul Întunecat cu setările dispozitivului"
+drive: "Drive"
+fileName: "Nume fișier"
+selectFile: "Alege un fisier"
+selectFiles: "Alege un fisier"
 nsfw: "NSFW"
 pinnedNotes: "Notă fixată"
 userList: "Liste"
@@ -281,6 +300,7 @@ _sfx:
 _widgets:
   notifications: "Notificări"
   timeline: "Cronologie"
+  activity: "Activitate"
   federation: "Federație"
   jobQueue: "coada de job-uri"
 _cw:
@@ -300,6 +320,8 @@ _charts:
 _timelines:
   home: "Acasă"
 _pages:
+  blocks:
+    image: "Imagini"
   script:
     categories:
       list: "Liste"
