@@ -2,7 +2,6 @@ import Chart, { KVs } from '../core.js';
 import { Followings, Instances } from '@/models/index.js';
 import { name, schema } from './entities/federation.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
-import { In, MoreThan, Not } from 'typeorm';
 
 /**
  * フェデレーションに関するチャート
@@ -29,7 +28,15 @@ export default class FederationChart extends Chart<typeof schema> {
 			.select('f.followerHost')
 			.where('f.followerHost IS NOT NULL');
 
-		const [sub, pub, pubsub, active] = await Promise.all([
+		const subInstancesQuery = Followings.createQueryBuilder('f')
+			.select('f.followeeHost')
+			.where('f.followeeHost IS NOT NULL');
+
+		const pubInstancesQuery = Followings.createQueryBuilder('f')
+			.select('f.followerHost')
+			.where('f.followerHost IS NOT NULL');
+
+		const [sub, pub, pubsub, subActive, pubActive] = await Promise.all([
 			Followings.createQueryBuilder('following')
 				.select('COUNT(DISTINCT following.followeeHost)')
 				.where('following.followeeHost IS NOT NULL')
@@ -53,18 +60,30 @@ export default class FederationChart extends Chart<typeof schema> {
 				.setParameters(pubsubSubQuery.getParameters())
 				.getRawOne()
 				.then(x => parseInt(x.count, 10)),
-			Instances.count({
-				host: Not(In(meta.blockedHosts)),
-				isSuspended: false,
-				lastCommunicatedAt: MoreThan(new Date(Date.now() - (1000 * 60 * 60 * 24 * 30))),
-			}),
+			Instances.createQueryBuilder('instance')
+				.select('COUNT(instance.id)')
+				.where(`instance.host IN (${ subInstancesQuery.getQuery() })`)
+				.andWhere(meta.blockedHosts.length === 0 ? '1=1' : `instance.host NOT IN (:...blocked)`, { blocked: meta.blockedHosts })
+				.andWhere(`instance.isSuspended = false`)
+				.andWhere(`instance.lastCommunicatedAt > :gt`, { gt: new Date(Date.now() - (1000 * 60 * 60 * 24 * 30)) })
+				.getRawOne()
+				.then(x => parseInt(x.count, 10)),
+			Instances.createQueryBuilder('instance')
+				.select('COUNT(instance.id)')
+				.where(`instance.host IN (${ pubInstancesQuery.getQuery() })`)
+				.andWhere(meta.blockedHosts.length === 0 ? '1=1' : `instance.host NOT IN (:...blocked)`, { blocked: meta.blockedHosts })
+				.andWhere(`instance.isSuspended = false`)
+				.andWhere(`instance.lastCommunicatedAt > :gt`, { gt: new Date(Date.now() - (1000 * 60 * 60 * 24 * 30)) })
+				.getRawOne()
+				.then(x => parseInt(x.count, 10)),
 		]);
 
 		return {
 			'sub': sub,
 			'pub': pub,
 			'pubsub': pubsub,
-			'active': active,
+			'subActive': subActive,
+			'pubActive': pubActive,
 		};
 	}
 

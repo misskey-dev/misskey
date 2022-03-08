@@ -70,7 +70,7 @@ const colors = {
 	red: '#FF4560',
 	purple: '#e300db',
 	orange: '#fe6919',
-	lime: '#c7f400',
+	lime: '#bde800',
 	cyan: '#00efef',
 };
 const colorSets = [colors.blue, colors.green, colors.yellow, colors.red, colors.purple];
@@ -390,10 +390,15 @@ export default defineComponent({
 					data: format(raw.stalled),
 					color: colors.red,
 				}, {
-					name: 'Active',
+					name: 'Pub Active',
 					type: 'line',
-					data: format(raw.active),
-					color: colors.lime,
+					data: format(raw.pubActive),
+					color: colors.purple,
+				}, {
+					name: 'Sub Active',
+					type: 'line',
+					data: format(raw.subActive),
+					color: colors.orange,
 				}, {
 					name: 'Pub & Sub',
 					type: 'line',
