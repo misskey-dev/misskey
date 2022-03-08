@@ -2,12 +2,20 @@ import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { User } from '@/models/entities/user.js';
 import { Note } from '@/models/entities/note.js';
 import { Notes, Users } from '@/models/index.js';
+import { generateVisibilityQuery } from './generate-visibility-query.js';
 
 /**
- * Get note for API processing
+ * Get note for API processing, taking into account visibility.
  */
-export async function getNote(noteId: Note['id']) {
-	const note = await Notes.findOneBy({ id: noteId });
+export async function getNote(noteId: Note['id'], me: { id: User['id'] } | null) {
+	const query = Notes.createQueryBuilder('note')
+		.where("note.id = :id", {
+			id: noteId,
+		});
+
+	generateVisibilityQuery(query, me);
+
+	const note = await query.getOne();
 
 	if (note == null) {
 		throw new IdentifiableError('9725d0ce-ba28-4dde-95a7-2cbb2c15de24', 'No such note.');

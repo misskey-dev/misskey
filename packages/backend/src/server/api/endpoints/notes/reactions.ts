@@ -43,6 +43,12 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, user) => {
+	// check note visibility
+	const note = await getNote(ps.noteId, user).catch(e => {
+		if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
+		throw e;
+	});
+
 	const query = {
 		noteId: ps.noteId,
 	} as FindOptionsWhere<NoteReaction>;
