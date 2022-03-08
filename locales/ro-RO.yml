@@ -248,6 +248,12 @@ uploadFromUrlMayTakeTime: "S-ar putea să ia puțin până se finalizează înc�
 explore: "Explorează"
 messageRead: "Citit"
 noMoreHistory: "Nu există mai mult istoric"
+startMessaging: "Începe un chat nou"
+nUsersRead: "citit de {n}"
+agreeTo: "Sunt de acord cu {0}"
+tos: "Termenii de utilizare"
+start: "Să începem"
+home: "Acasă"
 nsfw: "NSFW"
 pinnedNotes: "Notă fixată"
 userList: "Liste"
@@ -280,6 +286,7 @@ _widgets:
 _cw:
   show: "Incarcă mai mult"
 _visibility:
+  home: "Acasă"
   followers: "Urmăritori"
 _profile:
   username: "Nume de utilizator"
@@ -290,6 +297,8 @@ _exportOrImport:
   userLists: "Liste"
 _charts:
   federation: "Federație"
+_timelines:
+  home: "Acasă"
 _pages:
   script:
     categories:
