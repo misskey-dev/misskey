@@ -24,7 +24,7 @@ const props = withDefaults(defineProps<{
 
 const emit = defineEmits<{
 	(e: 'done'): void;
-	(e: 'close'): void;
+	(e: 'cancelled'): void;
 	(e: 'closed'): void;
 }>();
 
@@ -36,7 +36,7 @@ function onLogin(res) {
 }
 
 function onClose() {
-	emit('close');
+	emit('cancelled');
 	dialog.close();
 }
 </script>

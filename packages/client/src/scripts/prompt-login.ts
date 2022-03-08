@@ -6,7 +6,7 @@ export function promptLoginOrRedirect(path: string = '/') {
         popup(import('@/components/signin-dialog.vue'), {
             autoSet: true
         }, {
-            close: () => {
+            cancelled: () => {
                 window.location.href = path;
             },
         }, 'closed');
