@@ -1,4 +1,5 @@
 import { NoteFavorites, Notes, NoteThreadMutings, NoteWatchings } from '@/models/index.js';
+import { getNote } from '../../common/getters.js';
 import define from '../../define.js';
 
 export const meta = {
@@ -36,7 +37,7 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, user) => {
-	const note = await Notes.findOneByOrFail({ id: ps.noteId });
+	const note = await getNote(ps.noteId, user);
 
 	const [favorite, watching, threadMuting] = await Promise.all([
 		NoteFavorites.count({

@@ -7,9 +7,9 @@ import { DriveFile } from '@/models/entities/drive-file.js';
 import { Note } from '@/models/entities/note.js';
 import { Channel } from '@/models/entities/channel.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
-import { noteVisibilities } from '../../../../types.js';
 import { ApiError } from '../../error.js';
 import define from '../../define.js';
+import { getNote } from '../../common/getters.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -185,11 +185,12 @@ export default define(meta, paramDef, async (ps, user) => {
 	let renote: Note | null = null;
 	if (ps.renoteId != null) {
 		// Fetch renote to note
-		renote = await Notes.findOneBy({ id: ps.renoteId });
+		renote = await getNote(ps.renoteId, user).catch(e => {
+			if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchRenoteTarget);
+			throw e;
+		});
 
-		if (renote == null) {
-			throw new ApiError(meta.errors.noSuchRenoteTarget);
-		} else if (renote.renoteId && !renote.text && !renote.fileIds && !renote.hasPoll) {
+		if (renote.renoteId && !renote.text && !renote.fileIds && !renote.hasPoll) {
 			throw new ApiError(meta.errors.cannotReRenote);
 		}
 
@@ -208,11 +209,12 @@ export default define(meta, paramDef, async (ps, user) => {
 	let reply: Note | null = null;
 	if (ps.replyId != null) {
 		// Fetch reply
-		reply = await Notes.findOneBy({ id: ps.replyId });
+		reply = await getNote(ps.replyId, user).catch(e => {
+			if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchReplyTarget);
+			throw e;
+		});
 
-		if (reply == null) {
-			throw new ApiError(meta.errors.noSuchReplyTarget);
-		} else if (reply.renoteId && !reply.text && !reply.fileIds && !reply.hasPoll) {
+		if (reply.renoteId && !reply.text && !reply.fileIds && !reply.hasPoll) {
 			throw new ApiError(meta.errors.cannotReplyToPureRenote);
 		}
 
