@@ -1,6 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class instanceImages1605965516823 {
+
+
+export class instanceImages1605965516823 {
     constructor() {
         this.name = 'instanceImages1605965516823';
     }
@@ -13,4 +13,3 @@ class instanceImages1605965516823 {
         await queryRunner.query(`ALTER TABLE "meta" DROP COLUMN "backgroundImageUrl"`);
     }
 }
-exports.instanceImages1605965516823 = instanceImages1605965516823;

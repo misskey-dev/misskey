@@ -1,7 +1,7 @@
-const config = require('./built/config').default;
-const entities = require('./built/db/postgre').entities;
+import config from './built/config/index.js';
+import { entities } from './built/db/postgre.js';
 
-module.exports = {
+export default {
 	type: 'postgres',
 	host: config.db.host,
 	port: config.db.port,

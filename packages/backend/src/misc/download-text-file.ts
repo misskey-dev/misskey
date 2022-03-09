@@ -1,8 +1,8 @@
-import * as fs from 'fs';
-import * as util from 'util';
-import Logger from '@/services/logger';
-import { createTemp } from './create-temp';
-import { downloadUrl } from './download-url';
+import * as fs from 'node:fs';
+import * as util from 'node:util';
+import Logger from '@/services/logger.js';
+import { createTemp } from './create-temp.js';
+import { downloadUrl } from './download-url.js';
 
 const logger = new Logger('download-text-file');
 

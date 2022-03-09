@@ -10,27 +10,6 @@
 				<template #label>{{ $ts.instanceDescription }}</template>
 			</FormTextarea>
 
-			<FormInput v-model="iconUrl" class="_formBlock">
-				<template #prefix><i class="fas fa-link"></i></template>
-				<template #label>{{ $ts.iconUrl }}</template>
-			</FormInput>
-
-			<FormInput v-model="bannerUrl" class="_formBlock">
-				<template #prefix><i class="fas fa-link"></i></template>
-				<template #label>{{ $ts.bannerUrl }}</template>
-			</FormInput>
-
-			<FormInput v-model="backgroundImageUrl" class="_formBlock">
-				<template #prefix><i class="fas fa-link"></i></template>
-				<template #label>{{ $ts.backgroundImageUrl }}</template>
-			</FormInput>
-
-			<FormInput v-model="themeColor" class="_formBlock">
-				<template #prefix><i class="fas fa-palette"></i></template>
-				<template #label>{{ $ts.themeColor }}</template>
-				<template #caption>#RRGGBB</template>
-			</FormInput>
-
 			<FormInput v-model="tosUrl" class="_formBlock">
 				<template #prefix><i class="fas fa-link"></i></template>
 				<template #label>{{ $ts.tosUrl }}</template>
@@ -52,11 +31,6 @@
 				<template #caption>{{ $ts.pinnedUsersDescription }}</template>
 			</FormTextarea>
 
-			<FormInput v-model="maxNoteTextLength" type="number" class="_formBlock">
-				<template #prefix><i class="fas fa-pencil-alt"></i></template>
-				<template #label>{{ $ts.maxNoteTextLength }}</template>
-			</FormInput>
-
 			<FormSection>
 				<FormSwitch v-model="enableRegistration" class="_formBlock">
 					<template #label>{{ $ts.enableRegistration }}</template>
@@ -74,16 +48,46 @@
 			</FormSection>
 
 			<FormSection>
+				<template #label>{{ $ts.theme }}</template>
+
+				<FormInput v-model="iconUrl" class="_formBlock">
+					<template #prefix><i class="fas fa-link"></i></template>
+					<template #label>{{ $ts.iconUrl }}</template>
+				</FormInput>
+
+				<FormInput v-model="bannerUrl" class="_formBlock">
+					<template #prefix><i class="fas fa-link"></i></template>
+					<template #label>{{ $ts.bannerUrl }}</template>
+				</FormInput>
+
+				<FormInput v-model="backgroundImageUrl" class="_formBlock">
+					<template #prefix><i class="fas fa-link"></i></template>
+					<template #label>{{ $ts.backgroundImageUrl }}</template>
+				</FormInput>
+
+				<FormInput v-model="themeColor" class="_formBlock">
+					<template #prefix><i class="fas fa-palette"></i></template>
+					<template #label>{{ $ts.themeColor }}</template>
+					<template #caption>#RRGGBB</template>
+				</FormInput>
+
+				<FormTextarea v-model="defaultLightTheme" class="_formBlock">
+					<template #label>{{ $ts.instanceDefaultLightTheme }}</template>
+					<template #caption>{{ $ts.instanceDefaultThemeDescription }}</template>
+				</FormTextarea>
+
+				<FormTextarea v-model="defaultDarkTheme" class="_formBlock">
+					<template #label>{{ $ts.instanceDefaultDarkTheme }}</template>
+					<template #caption>{{ $ts.instanceDefaultThemeDescription }}</template>
+				</FormTextarea>
+			</FormSection>
+
+			<FormSection>
 				<template #label>{{ $ts.files }}</template>
 
 				<FormSwitch v-model="cacheRemoteFiles" class="_formBlock">
 					<template #label>{{ $ts.cacheRemoteFiles }}</template>
 					<template #caption>{{ $ts.cacheRemoteFilesDescription }}</template>
-				</FormSwitch>
-
-				<FormSwitch v-model="proxyRemoteFiles" class="_formBlock">
-					<template #label>{{ $ts.proxyRemoteFiles }}</template>
-					<template #caption>{{ $ts.proxyRemoteFilesDescription }}</template>
 				</FormSwitch>
 
 				<FormSplit :min-width="280">
@@ -186,12 +190,12 @@ export default defineComponent({
 			bannerUrl: null,
 			backgroundImageUrl: null,
 			themeColor: null,
-			maxNoteTextLength: 0,
+			defaultLightTheme: null,
+			defaultDarkTheme: null,
 			enableLocalTimeline: false,
 			enableGlobalTimeline: false,
 			pinnedUsers: '',
 			cacheRemoteFiles: false,
-			proxyRemoteFiles: false,
 			localDriveCapacityMb: 0,
 			remoteDriveCapacityMb: 0,
 			enableRegistration: false,
@@ -214,14 +218,14 @@ export default defineComponent({
 			this.bannerUrl = meta.bannerUrl;
 			this.backgroundImageUrl = meta.backgroundImageUrl;
 			this.themeColor = meta.themeColor;
+			this.defaultLightTheme = meta.defaultLightTheme;
+			this.defaultDarkTheme = meta.defaultDarkTheme;
 			this.maintainerName = meta.maintainerName;
 			this.maintainerEmail = meta.maintainerEmail;
-			this.maxNoteTextLength = meta.maxNoteTextLength;
 			this.enableLocalTimeline = !meta.disableLocalTimeline;
 			this.enableGlobalTimeline = !meta.disableGlobalTimeline;
 			this.pinnedUsers = meta.pinnedUsers.join('\n');
 			this.cacheRemoteFiles = meta.cacheRemoteFiles;
-			this.proxyRemoteFiles = meta.proxyRemoteFiles;
 			this.localDriveCapacityMb = meta.driveCapacityPerLocalUserMb;
 			this.remoteDriveCapacityMb = meta.driveCapacityPerRemoteUserMb;
 			this.enableRegistration = !meta.disableRegistration;
@@ -242,14 +246,14 @@ export default defineComponent({
 				bannerUrl: this.bannerUrl,
 				backgroundImageUrl: this.backgroundImageUrl,
 				themeColor: this.themeColor === '' ? null : this.themeColor,
+				defaultLightTheme: this.defaultLightTheme === '' ? null : this.defaultLightTheme,
+				defaultDarkTheme: this.defaultDarkTheme === '' ? null : this.defaultDarkTheme,
 				maintainerName: this.maintainerName,
 				maintainerEmail: this.maintainerEmail,
-				maxNoteTextLength: this.maxNoteTextLength,
 				disableLocalTimeline: !this.enableLocalTimeline,
 				disableGlobalTimeline: !this.enableGlobalTimeline,
 				pinnedUsers: this.pinnedUsers.split('\n'),
 				cacheRemoteFiles: this.cacheRemoteFiles,
-				proxyRemoteFiles: this.proxyRemoteFiles,
 				localDriveCapacityMb: parseInt(this.localDriveCapacityMb, 10),
 				remoteDriveCapacityMb: parseInt(this.remoteDriveCapacityMb, 10),
 				disableRegistration: !this.enableRegistration,

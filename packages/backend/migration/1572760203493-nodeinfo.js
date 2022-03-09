@@ -1,6 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class nodeinfo1572760203493 {
+
+
+export class nodeinfo1572760203493 {
     async up(queryRunner) {
         await queryRunner.query(`ALTER TABLE "instance" DROP COLUMN "system"`, undefined);
         await queryRunner.query(`ALTER TABLE "instance" ADD "softwareName" character varying(64) DEFAULT null`, undefined);
@@ -24,4 +24,3 @@ class nodeinfo1572760203493 {
         await queryRunner.query(`ALTER TABLE "instance" ADD "system" character varying(64)`, undefined);
     }
 }
-exports.nodeinfo1572760203493 = nodeinfo1572760203493;

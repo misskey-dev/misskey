@@ -6,7 +6,6 @@ export type Source = {
 	feedback_url?: string;
 	url: string;
 	port: number;
-	https?: { [x: string]: string };
 	disableHsts?: boolean;
 	db: {
 		host: string;
@@ -62,6 +61,7 @@ export type Source = {
 	};
 
 	mediaProxy?: string;
+	proxyRemoteFiles?: boolean;
 
 	signToActivityPubGet?: boolean;
 };

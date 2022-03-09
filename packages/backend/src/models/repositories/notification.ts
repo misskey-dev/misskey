@@ -1,13 +1,13 @@
 import { EntityRepository, In, Repository } from 'typeorm';
-import { Users, Notes, UserGroupInvitations, AccessTokens, NoteReactions } from '../index';
-import { Notification } from '@/models/entities/notification';
-import { awaitAll } from '@/prelude/await-all';
-import { Packed } from '@/misc/schema';
-import { Note } from '@/models/entities/note';
-import { NoteReaction } from '@/models/entities/note-reaction';
-import { User } from '@/models/entities/user';
-import { aggregateNoteEmojis, prefetchEmojis } from '@/misc/populate-emojis';
-import { notificationTypes } from '@/types';
+import { Users, Notes, UserGroupInvitations, AccessTokens, NoteReactions } from '../index.js';
+import { Notification } from '@/models/entities/notification.js';
+import { awaitAll } from '@/prelude/await-all.js';
+import { Packed } from '@/misc/schema.js';
+import { Note } from '@/models/entities/note.js';
+import { NoteReaction } from '@/models/entities/note-reaction.js';
+import { User } from '@/models/entities/user.js';
+import { aggregateNoteEmojis, prefetchEmojis } from '@/misc/populate-emojis.js';
+import { notificationTypes } from '@/types.js';
 
 @EntityRepository(Notification)
 export class NotificationRepository extends Repository<Notification> {
@@ -66,6 +66,12 @@ export class NotificationRepository extends Repository<Notification> {
 					_hint_: options._hintForEachNotes_,
 				}),
 				choice: notification.choice,
+			} : {}),
+			...(notification.type === 'pollEnded' ? {
+				note: Notes.pack(notification.note || notification.noteId!, { id: notification.notifieeId }, {
+					detail: true,
+					_hint_: options._hintForEachNotes_,
+				}),
 			} : {}),
 			...(notification.type === 'groupInvited' ? {
 				invitation: UserGroupInvitations.pack(notification.userGroupInvitationId!),

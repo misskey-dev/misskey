@@ -1,30 +1,34 @@
-import $ from 'cafy';
-import define from '../../define';
-import { Instances } from '@/models/index';
-import { toPuny } from '@/misc/convert-host';
+import define from '../../define.js';
+import { Instances } from '@/models/index.js';
+import { toPuny } from '@/misc/convert-host.js';
 
 export const meta = {
 	tags: ['federation'],
 
 	requireCredential: false,
 
-	params: {
-		host: {
-			validator: $.str,
-		},
-	},
-
 	res: {
-		type: 'object',
-		optional: true, nullable: false,
-		ref: 'FederationInstance',
+		oneOf: [{
+			type: 'object',
+			ref: 'FederationInstance',
+		}, {
+			type: 'null',
+		}],
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		host: { type: 'string' },
+	},
+	required: ['host'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	const instance = await Instances
 		.findOne({ host: toPuny(ps.host) });
 
-	return instance;
+	return instance ? await Instances.pack(instance) : null;
 });

@@ -1,9 +1,9 @@
 import rndstr from 'rndstr';
-import { Note } from '@/models/entities/note';
-import { User } from '@/models/entities/user';
-import { Notes, UserProfiles, NoteReactions } from '@/models/index';
-import { generateMutedUserQuery } from './generate-muted-user-query';
-import { generateBlockedUserQuery } from './generate-block-query';
+import { Note } from '@/models/entities/note.js';
+import { User } from '@/models/entities/user.js';
+import { Notes, UserProfiles, NoteReactions } from '@/models/index.js';
+import { generateMutedUserQuery } from './generate-muted-user-query.js';
+import { generateBlockedUserQuery } from './generate-block-query.js';
 
 // TODO: リアクション、Renote、返信などをしたノートは除外する
 

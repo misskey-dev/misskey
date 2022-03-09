@@ -1,11 +1,11 @@
-import * as Koa from 'koa';
+import Koa from 'koa';
 import { performance } from 'perf_hooks';
-import { limiter } from './limiter';
-import { User } from '@/models/entities/user';
-import endpoints from './endpoints';
-import { ApiError } from './error';
-import { apiLogger } from './logger';
-import { AccessToken } from '@/models/entities/access-token';
+import { limiter } from './limiter.js';
+import { User } from '@/models/entities/user.js';
+import endpoints, { IEndpoint } from './endpoints.js';
+import { ApiError } from './error.js';
+import { apiLogger } from './logger.js';
+import { AccessToken } from '@/models/entities/access-token.js';
 
 const accessDenied = {
 	message: 'Access denied.',
@@ -67,7 +67,7 @@ export default async (endpoint: string, user: User | null | undefined, token: Ac
 
 	if (ep.meta.requireCredential && ep.meta.limit && !user!.isAdmin && !user!.isModerator) {
 		// Rate limit
-		await limiter(ep, user!).catch(e => {
+		await limiter(ep as IEndpoint & { meta: { limit: NonNullable<IEndpoint['meta']['limit']> } }, user!).catch(e => {
 			throw new ApiError({
 				message: 'Rate limit exceeded. Please try again later.',
 				code: 'RATE_LIMIT_EXCEEDED',
@@ -78,10 +78,10 @@ export default async (endpoint: string, user: User | null | undefined, token: Ac
 	}
 
 	// Cast non JSON input
-	if (ep.meta.requireFile && ep.meta.params) {
-		for (const k of Object.keys(ep.meta.params)) {
-			const param = ep.meta.params[k];
-			if (['Boolean', 'Number'].includes(param.validator.name) && typeof data[k] === 'string') {
+	if (ep.meta.requireFile && ep.params.properties) {
+		for (const k of Object.keys(ep.params.properties)) {
+			const param = ep.params.properties![k];
+			if (['boolean', 'number', 'integer'].includes(param.type ?? '') && typeof data[k] === 'string') {
 				try {
 					data[k] = JSON.parse(data[k]);
 				} catch (e) {
@@ -91,8 +91,8 @@ export default async (endpoint: string, user: User | null | undefined, token: Ac
 						id: '0b5f1631-7c1a-41a6-b399-cce335f34d85',
 					}, {
 						param: k,
-						reason: `cannot cast to ${param.validator.name}`,
-					})
+						reason: `cannot cast to ${param.type}`,
+					});
 				}
 			}
 		}

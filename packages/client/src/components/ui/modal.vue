@@ -30,7 +30,7 @@ type ModalTypes = 'popup' | 'dialog' | 'dialog:top' | 'drawer';
 
 const props = withDefaults(defineProps<{
 	manualShowing?: boolean | null;
-	srcCenter?: boolean;
+	anchor?: { x: string; y: string; };
 	src?: HTMLElement;
 	preferType?: ModalTypes | 'auto';
 	zPriority?: 'low' | 'middle' | 'high';
@@ -39,6 +39,7 @@ const props = withDefaults(defineProps<{
 }>(), {
 	manualShowing: null,
 	src: null,
+	anchor: { x: 'center', y: 'bottom' },
 	preferType: 'auto',
 	zPriority: 'low',
 	noOverlap: true,
@@ -88,7 +89,7 @@ const onBgClick = () => {
 };
 
 if (type.value === 'drawer') {
-	maxHeight.value = window.innerHeight / 2;
+	maxHeight.value = window.innerHeight / 1.5;
 }
 
 const keymap = {
@@ -100,9 +101,9 @@ const MARGIN = 16;
 const align = () => {
 	if (props.src == null) return;
 	if (type.value === 'drawer') return;
+	if (type.value === 'dialog') return;
 
 	const popover = content.value!;
-
 	if (popover == null) return;
 
 	const rect = props.src.getBoundingClientRect();
@@ -113,16 +114,23 @@ const align = () => {
 	let left;
 	let top;
 
-	if (props.srcCenter) {
-		const x = rect.left + (fixed.value ? 0 : window.pageXOffset) + (props.src.offsetWidth / 2);
-		const y = rect.top + (fixed.value ? 0 : window.pageYOffset) + (props.src.offsetHeight / 2);
-		left = (x - (width / 2));
+	const x = rect.left + (fixed.value ? 0 : window.pageXOffset);
+	const y = rect.top + (fixed.value ? 0 : window.pageYOffset);
+
+	if (props.anchor.x === 'center') {
+		left = x + (props.src.offsetWidth / 2) - (width / 2);
+	} else if (props.anchor.x === 'left') {
+		// TODO
+	} else if (props.anchor.x === 'right') {
+		left = x + props.src.offsetWidth;
+	}
+
+	if (props.anchor.y === 'center') {
 		top = (y - (height / 2));
-	} else {
-		const x = rect.left + (fixed.value ? 0 : window.pageXOffset) + (props.src.offsetWidth / 2);
-		const y = rect.top + (fixed.value ? 0 : window.pageYOffset) + props.src.offsetHeight;
-		left = (x - (width / 2));
-		top = y;
+	} else if (props.anchor.y === 'top') {
+		// TODO
+	} else if (props.anchor.y === 'bottom') {
+		top = y + props.src.offsetHeight;
 	}
 
 	if (fixed.value) {
@@ -131,20 +139,23 @@ const align = () => {
 			left = window.innerWidth - width;
 		}
 
+		const underSpace = (window.innerHeight - MARGIN) - top;
+		const upperSpace = (rect.top - MARGIN);
+
 		// 画面から縦にはみ出る場合
 		if (top + height > (window.innerHeight - MARGIN)) {
-			if (props.noOverlap) {
-				const underSpace = (window.innerHeight - MARGIN) - top;
-				const upperSpace = (rect.top - MARGIN);
+			if (props.noOverlap && props.anchor.x === 'center') {
 				if (underSpace >= (upperSpace / 3)) {
-					maxHeight.value =  underSpace;
+					maxHeight.value = underSpace;
 				} else {
-					maxHeight.value =  upperSpace;
+					maxHeight.value = upperSpace;
 					top = (upperSpace + MARGIN) - height;
 				}
 			} else {
 				top = (window.innerHeight - MARGIN) - height;
 			}
+		} else {
+			maxHeight.value = underSpace;
 		}
 	} else {
 		// 画面から横にはみ出る場合
@@ -152,20 +163,23 @@ const align = () => {
 			left = window.innerWidth - width + window.pageXOffset - 1;
 		}
 
+		const underSpace = (window.innerHeight - MARGIN) - (top - window.pageYOffset);
+		const upperSpace = (rect.top - MARGIN);
+
 		// 画面から縦にはみ出る場合
 		if (top + height - window.pageYOffset > (window.innerHeight - MARGIN)) {
-			if (props.noOverlap) {
-				const underSpace = (window.innerHeight - MARGIN) - (top - window.pageYOffset);
-				const upperSpace = (rect.top - MARGIN);
+			if (props.noOverlap && props.anchor.x === 'center') {
 				if (underSpace >= (upperSpace / 3)) {
-					maxHeight.value =  underSpace;
+					maxHeight.value = underSpace;
 				} else {
-					maxHeight.value =  upperSpace;
+					maxHeight.value = upperSpace;
 					top = window.pageYOffset + ((upperSpace + MARGIN) - height);
 				}
 			} else {
 				top = (window.innerHeight - MARGIN) - height + window.pageYOffset - 1;
 			}
+		} else {
+			maxHeight.value = underSpace;
 		}
 	}
 
@@ -177,13 +191,22 @@ const align = () => {
 		left = 0;
 	}
 
+	let transformOriginX = 'center';
+	let transformOriginY = 'center';
+
 	if (top > rect.top + (fixed.value ? 0 : window.pageYOffset)) {
-		transformOrigin.value = 'center top';
+		transformOriginY = 'top';
 	} else if ((top + height) <= rect.top + (fixed.value ? 0 : window.pageYOffset)) {
-		transformOrigin.value = 'center bottom';
-	} else {
-		transformOrigin.value = 'center';
+		transformOriginY = 'bottom';
 	}
+
+	if (left > rect.left + (fixed.value ? 0 : window.pageXOffset)) {
+		transformOriginY = 'left';
+	} else if ((left + width) <= rect.left + (fixed.value ? 0 : window.pageXOffset)) {
+		transformOriginY = 'right';
+	}
+
+	transformOrigin.value = `${transformOriginX} ${transformOriginY}`;
 
 	popover.style.left = left + 'px';
 	popover.style.top = top + 'px';

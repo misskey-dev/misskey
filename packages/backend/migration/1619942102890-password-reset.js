@@ -1,6 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class passwordReset1619942102890 {
+
+
+export class passwordReset1619942102890 {
     constructor() {
         this.name = 'passwordReset1619942102890';
     }
@@ -17,4 +17,3 @@ class passwordReset1619942102890 {
         await queryRunner.query(`DROP TABLE "password_reset_request"`);
     }
 }
-exports.passwordReset1619942102890 = passwordReset1619942102890;

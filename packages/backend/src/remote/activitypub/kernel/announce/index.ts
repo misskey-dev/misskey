@@ -1,8 +1,8 @@
-import Resolver from '../../resolver';
-import { IRemoteUser } from '@/models/entities/user';
-import announceNote from './note';
-import { IAnnounce, getApId } from '../../type';
-import { apLogger } from '../../logger';
+import Resolver from '../../resolver.js';
+import { IRemoteUser } from '@/models/entities/user.js';
+import announceNote from './note.js';
+import { IAnnounce, getApId } from '../../type.js';
+import { apLogger } from '../../logger.js';
 
 const logger = apLogger;
 

@@ -1,11 +1,10 @@
-import autobind from 'autobind-decorator';
-import Channel from '../channel';
-import { Notes, Users } from '@/models/index';
-import { isMutedUserRelated } from '@/misc/is-muted-user-related';
-import { isBlockerUserRelated } from '@/misc/is-blocker-user-related';
-import { User } from '@/models/entities/user';
-import { StreamMessages } from '../types';
-import { Packed } from '@/misc/schema';
+import Channel from '../channel.js';
+import { Notes, Users } from '@/models/index.js';
+import { isMutedUserRelated } from '@/misc/is-muted-user-related.js';
+import { isBlockerUserRelated } from '@/misc/is-blocker-user-related.js';
+import { User } from '@/models/entities/user.js';
+import { StreamMessages } from '../types.js';
+import { Packed } from '@/misc/schema.js';
 
 export default class extends Channel {
 	public readonly chName = 'channel';
@@ -15,7 +14,11 @@ export default class extends Channel {
 	private typers: Record<User['id'], Date> = {};
 	private emitTypersIntervalId: ReturnType<typeof setInterval>;
 
-	@autobind
+	constructor(id: string, connection: Channel['connection']) {
+		super(id, connection);
+		this.onNote = this.onNote.bind(this);
+	}
+
 	public async init(params: any) {
 		this.channelId = params.channelId as string;
 
@@ -25,7 +28,6 @@ export default class extends Channel {
 		this.emitTypersIntervalId = setInterval(this.emitTypers, 5000);
 	}
 
-	@autobind
 	private async onNote(note: Packed<'Note'>) {
 		if (note.channelId !== this.channelId) return;
 
@@ -52,7 +54,6 @@ export default class extends Channel {
 		this.send('note', note);
 	}
 
-	@autobind
 	private onEvent(data: StreamMessages['channel']['payload']) {
 		if (data.type === 'typing') {
 			const id = data.body;
@@ -64,7 +65,6 @@ export default class extends Channel {
 		}
 	}
 
-	@autobind
 	private async emitTypers() {
 		const now = new Date();
 
@@ -81,7 +81,6 @@ export default class extends Channel {
 		});
 	}
 
-	@autobind
 	public dispose() {
 		// Unsubscribe events
 		this.subscriber.off('notesStream', this.onNote);

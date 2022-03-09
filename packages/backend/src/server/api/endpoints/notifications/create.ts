@@ -1,6 +1,5 @@
-import $ from 'cafy';
-import define from '../../define';
-import { createNotification } from '@/services/create-notification';
+import define from '../../define.js';
+import { createNotification } from '@/services/create-notification.js';
 
 export const meta = {
 	tags: ['notifications'],
@@ -9,26 +8,22 @@ export const meta = {
 
 	kind: 'write:notifications',
 
-	params: {
-		body: {
-			validator: $.str,
-		},
-
-		header: {
-			validator: $.optional.nullable.str,
-		},
-
-		icon: {
-			validator: $.optional.nullable.str,
-		},
-	},
-
 	errors: {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		body: { type: 'string' },
+		header: { type: 'string', nullable: true },
+		icon: { type: 'string', nullable: true },
+	},
+	required: ['body'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user, token) => {
+export default define(meta, paramDef, async (ps, user, token) => {
 	createNotification(user.id, 'app', {
 		appAccessTokenId: token ? token.id : null,
 		customBody: ps.body,

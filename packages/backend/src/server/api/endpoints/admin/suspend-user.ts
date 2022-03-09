@@ -1,28 +1,28 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
-import define from '../../define';
-import deleteFollowing from '@/services/following/delete';
-import { Users, Followings, Notifications } from '@/models/index';
-import { User } from '@/models/entities/user';
-import { insertModerationLog } from '@/services/insert-moderation-log';
-import { doPostSuspend } from '@/services/suspend-user';
-import { publishUserEvent } from '@/services/stream';
+import define from '../../define.js';
+import deleteFollowing from '@/services/following/delete.js';
+import { Users, Followings, Notifications } from '@/models/index.js';
+import { User } from '@/models/entities/user.js';
+import { insertModerationLog } from '@/services/insert-moderation-log.js';
+import { doPostSuspend } from '@/services/suspend-user.js';
+import { publishUserEvent } from '@/services/stream.js';
 
 export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
 	requireModerator: true,
+} as const;
 
-	params: {
-		userId: {
-			validator: $.type(ID),
-		},
+export const paramDef = {
+	type: 'object',
+	properties: {
+		userId: { type: 'string', format: 'misskey:id' },
 	},
+	required: ['userId'],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	const user = await Users.findOne(ps.userId as string);
 
 	if (user == null) {

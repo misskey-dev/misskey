@@ -1,42 +1,13 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
-import define from '../../define';
-import { NoteReactions, UserProfiles } from '@/models/index';
-import { makePaginationQuery } from '../../common/make-pagination-query';
-import { generateVisibilityQuery } from '../../common/generate-visibility-query';
-import { ApiError } from '../../error';
+import define from '../../define.js';
+import { NoteReactions, UserProfiles } from '@/models/index.js';
+import { makePaginationQuery } from '../../common/make-pagination-query.js';
+import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['users', 'reactions'],
 
 	requireCredential: false,
-
-	params: {
-		userId: {
-			validator: $.type(ID),
-		},
-
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
-		},
-
-		sinceId: {
-			validator: $.optional.type(ID),
-		},
-
-		untilId: {
-			validator: $.optional.type(ID),
-		},
-
-		sinceDate: {
-			validator: $.optional.num,
-		},
-
-		untilDate: {
-			validator: $.optional.num,
-		},
-	},
 
 	res: {
 		type: 'array',
@@ -57,8 +28,21 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		userId: { type: 'string', format: 'misskey:id' },
+		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+		sinceId: { type: 'string', format: 'misskey:id' },
+		untilId: { type: 'string', format: 'misskey:id' },
+		sinceDate: { type: 'integer' },
+		untilDate: { type: 'integer' },
+	},
+	required: ['userId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	const profile = await UserProfiles.findOneOrFail(ps.userId);
 
 	if (me == null || (me.id !== ps.userId && !profile.publicReactions)) {
@@ -73,7 +57,7 @@ export default define(meta, async (ps, me) => {
 	generateVisibilityQuery(query, me);
 
 	const reactions = await query
-		.take(ps.limit!)
+		.take(ps.limit)
 		.getMany();
 
 	return await Promise.all(reactions.map(reaction => NoteReactions.pack(reaction, me, { withNote: true })));

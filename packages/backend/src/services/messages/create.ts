@@ -1,19 +1,19 @@
-import { User } from '@/models/entities/user';
-import { UserGroup } from '@/models/entities/user-group';
-import { DriveFile } from '@/models/entities/drive-file';
-import { MessagingMessages, UserGroupJoinings, Mutings, Users } from '@/models/index';
-import { genId } from '@/misc/gen-id';
-import { MessagingMessage } from '@/models/entities/messaging-message';
-import { publishMessagingStream, publishMessagingIndexStream, publishMainStream, publishGroupMessagingStream } from '@/services/stream';
-import pushNotification from '../push-notification';
+import { User } from '@/models/entities/user.js';
+import { UserGroup } from '@/models/entities/user-group.js';
+import { DriveFile } from '@/models/entities/drive-file.js';
+import { MessagingMessages, UserGroupJoinings, Mutings, Users } from '@/models/index.js';
+import { genId } from '@/misc/gen-id.js';
+import { MessagingMessage } from '@/models/entities/messaging-message.js';
+import { publishMessagingStream, publishMessagingIndexStream, publishMainStream, publishGroupMessagingStream } from '@/services/stream.js';
+import pushNotification from '../push-notification.js';
 import { Not } from 'typeorm';
-import { Note } from '@/models/entities/note';
-import renderNote from '@/remote/activitypub/renderer/note';
-import renderCreate from '@/remote/activitypub/renderer/create';
-import { renderActivity } from '@/remote/activitypub/renderer/index';
-import { deliver } from '@/queue/index';
+import { Note } from '@/models/entities/note.js';
+import renderNote from '@/remote/activitypub/renderer/note.js';
+import renderCreate from '@/remote/activitypub/renderer/create.js';
+import { renderActivity } from '@/remote/activitypub/renderer/index.js';
+import { deliver } from '@/queue/index.js';
 
-export async function createMessage(user: { id: User['id']; host: User['host']; }, recipientUser: User | undefined, recipientGroup: UserGroup | undefined, text: string | undefined, file: DriveFile | null, uri?: string) {
+export async function createMessage(user: { id: User['id']; host: User['host']; }, recipientUser: User | undefined, recipientGroup: UserGroup | undefined, text: string | null | undefined, file: DriveFile | null, uri?: string) {
 	const message = {
 		id: genId(),
 		createdAt: new Date(),

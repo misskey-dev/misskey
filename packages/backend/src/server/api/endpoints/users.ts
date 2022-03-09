@@ -1,56 +1,12 @@
-import $ from 'cafy';
-import define from '../define';
-import { Users } from '@/models/index';
-import { generateMutedUserQueryForUsers } from '../common/generate-muted-user-query';
-import { generateBlockQueryForUsers } from '../common/generate-block-query';
+import define from '../define.js';
+import { Users } from '@/models/index.js';
+import { generateMutedUserQueryForUsers } from '../common/generate-muted-user-query.js';
+import { generateBlockQueryForUsers } from '../common/generate-block-query.js';
 
 export const meta = {
 	tags: ['users'],
 
 	requireCredential: false,
-
-	params: {
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
-		},
-
-		offset: {
-			validator: $.optional.num.min(0),
-			default: 0,
-		},
-
-		sort: {
-			validator: $.optional.str.or([
-				'+follower',
-				'-follower',
-				'+createdAt',
-				'-createdAt',
-				'+updatedAt',
-				'-updatedAt',
-			]),
-		},
-
-		state: {
-			validator: $.optional.str.or([
-				'all',
-				'admin',
-				'moderator',
-				'adminOrModerator',
-				'alive',
-			]),
-			default: 'all',
-		},
-
-		origin: {
-			validator: $.optional.str.or([
-				'combined',
-				'local',
-				'remote',
-			]),
-			default: 'local',
-		},
-	},
 
 	res: {
 		type: 'array',
@@ -63,8 +19,20 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+		offset: { type: 'integer', default: 0 },
+		sort: { type: 'string', enum: ['+follower', '-follower', '+createdAt', '-createdAt', '+updatedAt', '-updatedAt'] },
+		state: { type: 'string', enum: ['all', 'admin', 'moderator', 'adminOrModerator', 'alive'], default: "all" },
+		origin: { type: 'string', enum: ['combined', 'local', 'remote'], default: "local" },
+	},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	const query = Users.createQueryBuilder('user');
 	query.where('user.isExplorable = TRUE');
 
@@ -93,7 +61,7 @@ export default define(meta, async (ps, me) => {
 	if (me) generateMutedUserQueryForUsers(query, me);
 	if (me) generateBlockQueryForUsers(query, me);
 
-	query.take(ps.limit!);
+	query.take(ps.limit);
 	query.skip(ps.offset);
 
 	const users = await query.getMany();

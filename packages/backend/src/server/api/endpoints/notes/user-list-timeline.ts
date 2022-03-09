@@ -1,63 +1,15 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
-import define from '../../define';
-import { ApiError } from '../../error';
-import { UserLists, UserListJoinings, Notes } from '@/models/index';
-import { makePaginationQuery } from '../../common/make-pagination-query';
-import { generateVisibilityQuery } from '../../common/generate-visibility-query';
-import { activeUsersChart } from '@/services/chart/index';
+import define from '../../define.js';
+import { ApiError } from '../../error.js';
+import { UserLists, UserListJoinings, Notes } from '@/models/index.js';
+import { makePaginationQuery } from '../../common/make-pagination-query.js';
+import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
+import { activeUsersChart } from '@/services/chart/index.js';
 import { Brackets } from 'typeorm';
 
 export const meta = {
 	tags: ['notes', 'lists'],
 
 	requireCredential: true,
-
-	params: {
-		listId: {
-			validator: $.type(ID),
-		},
-
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
-		},
-
-		sinceId: {
-			validator: $.optional.type(ID),
-		},
-
-		untilId: {
-			validator: $.optional.type(ID),
-		},
-
-		sinceDate: {
-			validator: $.optional.num,
-		},
-
-		untilDate: {
-			validator: $.optional.num,
-		},
-
-		includeMyRenotes: {
-			validator: $.optional.bool,
-			default: true,
-		},
-
-		includeRenotedMyNotes: {
-			validator: $.optional.bool,
-			default: true,
-		},
-
-		includeLocalRenotes: {
-			validator: $.optional.bool,
-			default: true,
-		},
-
-		withFiles: {
-			validator: $.optional.bool,
-		},
-	},
 
 	res: {
 		type: 'array',
@@ -78,8 +30,25 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		listId: { type: 'string', format: 'misskey:id' },
+		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+		sinceId: { type: 'string', format: 'misskey:id' },
+		untilId: { type: 'string', format: 'misskey:id' },
+		sinceDate: { type: 'integer' },
+		untilDate: { type: 'integer' },
+		includeMyRenotes: { type: 'boolean', default: true },
+		includeRenotedMyNotes: { type: 'boolean', default: true },
+		includeLocalRenotes: { type: 'boolean', default: true },
+		withFiles: { type: 'boolean' },
+	},
+	required: ['listId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const list = await UserLists.findOne({
 		id: ps.listId,
 		userId: user.id,
@@ -97,10 +66,16 @@ export default define(meta, async (ps, user) => {
 	const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 		.andWhere(`note.userId IN (${ listQuery.getQuery() })`)
 		.innerJoinAndSelect('note.user', 'user')
+		.leftJoinAndSelect('user.avatar', 'avatar')
+		.leftJoinAndSelect('user.banner', 'banner')
 		.leftJoinAndSelect('note.reply', 'reply')
 		.leftJoinAndSelect('note.renote', 'renote')
 		.leftJoinAndSelect('reply.user', 'replyUser')
+		.leftJoinAndSelect('replyUser.avatar', 'replyUserAvatar')
+		.leftJoinAndSelect('replyUser.banner', 'replyUserBanner')
 		.leftJoinAndSelect('renote.user', 'renoteUser')
+		.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
+		.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner')
 		.setParameters(listQuery.getParameters());
 
 	generateVisibilityQuery(query, user);
@@ -140,7 +115,7 @@ export default define(meta, async (ps, user) => {
 	}
 	//#endregion
 
-	const timeline = await query.take(ps.limit!).getMany();
+	const timeline = await query.take(ps.limit).getMany();
 
 	activeUsersChart.read(user);
 

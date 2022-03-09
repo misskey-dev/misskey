@@ -1,15 +1,15 @@
-import { publishMainStream, publishUserEvent } from '@/services/stream';
-import { renderActivity } from '@/remote/activitypub/renderer/index';
-import renderFollow from '@/remote/activitypub/renderer/follow';
-import renderUndo from '@/remote/activitypub/renderer/undo';
-import renderBlock from '@/remote/activitypub/renderer/block';
-import { deliver } from '@/queue/index';
-import renderReject from '@/remote/activitypub/renderer/reject';
-import { User } from '@/models/entities/user';
-import { Blockings, Users, FollowRequests, Followings, UserListJoinings, UserLists } from '@/models/index';
-import { perUserFollowingChart } from '@/services/chart/index';
-import { genId } from '@/misc/gen-id';
-import { IdentifiableError } from '@/misc/identifiable-error';
+import { publishMainStream, publishUserEvent } from '@/services/stream.js';
+import { renderActivity } from '@/remote/activitypub/renderer/index.js';
+import renderFollow from '@/remote/activitypub/renderer/follow.js';
+import renderUndo from '@/remote/activitypub/renderer/undo.js';
+import renderBlock from '@/remote/activitypub/renderer/block.js';
+import { deliver } from '@/queue/index.js';
+import renderReject from '@/remote/activitypub/renderer/reject.js';
+import { User } from '@/models/entities/user.js';
+import { Blockings, Users, FollowRequests, Followings, UserListJoinings, UserLists } from '@/models/index.js';
+import { perUserFollowingChart } from '@/services/chart/index.js';
+import { genId } from '@/misc/gen-id.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
 
 export default async function(blocker: User, blockee: User) {
 	await Promise.all([

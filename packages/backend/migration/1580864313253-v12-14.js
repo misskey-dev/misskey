@@ -1,6 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class v12141580864313253 {
+
+
+export class v12141580864313253 {
     constructor() {
         this.name = 'v12141580864313253';
     }
@@ -17,4 +17,3 @@ class v12141580864313253 {
         await queryRunner.query(`ALTER TABLE "meta" RENAME COLUMN "proxyAccountId" TO "proxyAccount"`, undefined);
     }
 }
-exports.v12141580864313253 = v12141580864313253;

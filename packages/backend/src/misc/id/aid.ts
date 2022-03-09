@@ -1,7 +1,7 @@
 // AID
 // 長さ8の[2000年1月1日からの経過ミリ秒をbase36でエンコードしたもの] + 長さ2の[ノイズ文字列]
 
-import * as crypto from 'crypto';
+import * as crypto from 'node:crypto';
 
 const TIME2000 = 946684800000;
 let counter = crypto.randomBytes(2).readUInt16LE(0);

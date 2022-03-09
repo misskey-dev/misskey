@@ -1,19 +1,11 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
-import define from '../../define';
-import { ApiError } from '../../error';
-import { Channels } from '@/models/index';
+import define from '../../define.js';
+import { ApiError } from '../../error.js';
+import { Channels } from '@/models/index.js';
 
 export const meta = {
 	tags: ['channels'],
 
 	requireCredential: false,
-
-	params: {
-		channelId: {
-			validator: $.type(ID),
-		},
-	},
 
 	res: {
 		type: 'object',
@@ -30,8 +22,16 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		channelId: { type: 'string', format: 'misskey:id' },
+	},
+	required: ['channelId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	const channel = await Channels.findOne({
 		id: ps.channelId,
 	});

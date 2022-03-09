@@ -1,18 +1,18 @@
-import * as Bull from 'bull';
-import { DbJobData } from '@/queue/types';
-import { deleteDriveFiles } from './delete-drive-files';
-import { exportCustomEmojis } from './export-custom-emojis';
-import { exportNotes } from './export-notes';
-import { exportFollowing } from './export-following';
-import { exportMute } from './export-mute';
-import { exportBlocking } from './export-blocking';
-import { exportUserLists } from './export-user-lists';
-import { importFollowing } from './import-following';
-import { importUserLists } from './import-user-lists';
-import { deleteAccount } from './delete-account';
-import { importMuting } from './import-muting';
-import { importBlocking } from './import-blocking';
-import { importCustomEmojis } from './import-custom-emojis';
+import Bull from 'bull';
+import { DbJobData } from '@/queue/types.js';
+import { deleteDriveFiles } from './delete-drive-files.js';
+import { exportCustomEmojis } from './export-custom-emojis.js';
+import { exportNotes } from './export-notes.js';
+import { exportFollowing } from './export-following.js';
+import { exportMute } from './export-mute.js';
+import { exportBlocking } from './export-blocking.js';
+import { exportUserLists } from './export-user-lists.js';
+import { importFollowing } from './import-following.js';
+import { importUserLists } from './import-user-lists.js';
+import { deleteAccount } from './delete-account.js';
+import { importMuting } from './import-muting.js';
+import { importBlocking } from './import-blocking.js';
+import { importCustomEmojis } from './import-custom-emojis.js';
 
 const jobs = {
 	deleteDriveFiles,

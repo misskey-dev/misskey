@@ -1,18 +1,10 @@
-import $ from 'cafy';
-import define from '../../define';
-import { ID } from '@/misc/cafy-id';
-import { Users } from '@/models/index';
+import define from '../../define.js';
+import { Users } from '@/models/index.js';
 
 export const meta = {
 	tags: ['users'],
 
 	requireCredential: true,
-
-	params: {
-		userId: {
-			validator: $.either($.type(ID), $.arr($.type(ID)).unique()),
-		},
-	},
 
 	res: {
 		optional: false, nullable: false,
@@ -101,8 +93,24 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		userId: {
+			anyOf: [
+				{ type: 'string', format: 'misskey:id' },
+				{
+					type: 'array',
+					items: { type: 'string', format: 'misskey:id' },
+				},
+			],
+		},
+	},
+	required: ['userId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	const ids = Array.isArray(ps.userId) ? ps.userId : [ps.userId];
 
 	const relations = await Promise.all(ids.map(id => Users.getRelation(me.id, id)));

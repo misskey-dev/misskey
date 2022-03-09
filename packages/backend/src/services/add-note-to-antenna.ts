@@ -1,10 +1,10 @@
-import { Antenna } from '@/models/entities/antenna';
-import { Note } from '@/models/entities/note';
-import { AntennaNotes, Mutings, Notes } from '@/models/index';
-import { genId } from '@/misc/gen-id';
-import { isMutedUserRelated } from '@/misc/is-muted-user-related';
-import { publishAntennaStream, publishMainStream } from '@/services/stream';
-import { User } from '@/models/entities/user';
+import { Antenna } from '@/models/entities/antenna.js';
+import { Note } from '@/models/entities/note.js';
+import { AntennaNotes, Mutings, Notes } from '@/models/index.js';
+import { genId } from '@/misc/gen-id.js';
+import { isMutedUserRelated } from '@/misc/is-muted-user-related.js';
+import { publishAntennaStream, publishMainStream } from '@/services/stream.js';
+import { User } from '@/models/entities/user.js';
 
 export async function addNoteToAntenna(antenna: Antenna, note: Note, noteUser: { id: User['id']; }) {
 	// 通知しない設定になっているか、自分自身の投稿なら既読にする

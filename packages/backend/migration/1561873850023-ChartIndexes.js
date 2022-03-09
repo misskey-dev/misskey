@@ -1,6 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class ChartIndexes1561873850023 {
+
+
+export class ChartIndexes1561873850023 {
     async up(queryRunner) {
         await queryRunner.query(`CREATE INDEX "IDX_0ad37b7ef50f4ddc84363d7ccc" ON "__chart__active_users" ("date") `);
         await queryRunner.query(`CREATE INDEX "IDX_15e91a03aeeac9dbccdf43fc06" ON "__chart__active_users" ("span") `);
@@ -196,4 +196,3 @@ class ChartIndexes1561873850023 {
         await queryRunner.query(`DROP INDEX "IDX_8cb40cfc8f3c28261e6f887b03"`);
     }
 }
-exports.ChartIndexes1561873850023 = ChartIndexes1561873850023;

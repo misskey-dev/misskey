@@ -1,12 +1,12 @@
-import * as Bull from 'bull';
-import { queueLogger } from '../../logger';
-import { DriveFiles, Notes, UserProfiles, Users } from '@/models/index';
-import { DbUserDeleteJobData } from '@/queue/types';
-import { Note } from '@/models/entities/note';
-import { DriveFile } from '@/models/entities/drive-file';
+import Bull from 'bull';
+import { queueLogger } from '../../logger.js';
+import { DriveFiles, Notes, UserProfiles, Users } from '@/models/index.js';
+import { DbUserDeleteJobData } from '@/queue/types.js';
+import { Note } from '@/models/entities/note.js';
+import { DriveFile } from '@/models/entities/drive-file.js';
 import { MoreThan } from 'typeorm';
-import { deleteFileSync } from '@/services/drive/delete-file';
-import { sendEmail } from '@/services/send-email';
+import { deleteFileSync } from '@/services/drive/delete-file.js';
+import { sendEmail } from '@/services/send-email.js';
 
 const logger = queueLogger.createSubLogger('delete-account');
 
@@ -31,7 +31,7 @@ export async function deleteAccount(job: Bull.Job<DbUserDeleteJobData>): Promise
 				order: {
 					id: 1,
 				},
-			});
+			}) as Note[];
 
 			if (notes.length === 0) {
 				break;
@@ -58,7 +58,7 @@ export async function deleteAccount(job: Bull.Job<DbUserDeleteJobData>): Promise
 				order: {
 					id: 1,
 				},
-			});
+			}) as DriveFile[];
 
 			if (files.length === 0) {
 				break;

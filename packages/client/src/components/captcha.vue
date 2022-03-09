@@ -93,7 +93,7 @@ function requestRender() {
 }
 
 function callback(response?: string) {
-	emit('update:modelValue', typeof response == 'string' ? response : null);
+	emit('update:modelValue', typeof response === 'string' ? response : null);
 }
 
 onMounted(() => {

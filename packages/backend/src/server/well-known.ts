@@ -1,11 +1,11 @@
-import * as Router from '@koa/router';
+import Router from '@koa/router';
 
-import config from '@/config/index';
-import * as Acct from 'misskey-js/built/acct';
-import { links } from './nodeinfo';
-import { escapeAttribute, escapeValue } from '@/prelude/xml';
-import { Users } from '@/models/index';
-import { User } from '@/models/entities/user';
+import config from '@/config/index.js';
+import * as Acct from '@/misc/acct.js';
+import { links } from './nodeinfo.js';
+import { escapeAttribute, escapeValue } from '@/prelude/xml.js';
+import { Users } from '@/models/index.js';
+import { User } from '@/models/entities/user.js';
 
 // Init router
 const router = new Router();

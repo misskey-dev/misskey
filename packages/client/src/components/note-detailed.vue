@@ -154,7 +154,18 @@ const props = defineProps<{
 
 const inChannel = inject('inChannel', null);
 
-const note = $ref(JSON.parse(JSON.stringify(props.note)));
+let note = $ref(JSON.parse(JSON.stringify(props.note)));
+
+// plugin
+if (noteViewInterruptors.length > 0) {
+	onMounted(async () => {
+		let result = JSON.parse(JSON.stringify(note));
+		for (const interruptor of noteViewInterruptors) {
+			result = await interruptor.handler(result);
+		}
+		note = result;
+	});
+}
 
 const isRenote = (
 	note.renote != null &&
@@ -168,7 +179,7 @@ const menuButton = ref<HTMLElement>();
 const renoteButton = ref<InstanceType<typeof XRenoteButton>>();
 const renoteTime = ref<HTMLElement>();
 const reactButton = ref<HTMLElement>();
-let appearNote = $ref(isRenote ? note.renote as misskey.entities.Note : note);
+let appearNote = $computed(() => isRenote ? note.renote as misskey.entities.Note : note);
 const isMyRenote = $i && ($i.id === note.userId);
 const showContent = ref(false);
 const isDeleted = ref(false);

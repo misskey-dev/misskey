@@ -1,8 +1,8 @@
-import { Instance } from '@/models/entities/instance';
-import { Instances } from '@/models/index';
-import { genId } from '@/misc/gen-id';
-import { toPuny } from '@/misc/convert-host';
-import { Cache } from '@/misc/cache';
+import { Instance } from '@/models/entities/instance.js';
+import { Instances } from '@/models/index.js';
+import { genId } from '@/misc/gen-id.js';
+import { toPuny } from '@/misc/convert-host.js';
+import { Cache } from '@/misc/cache.js';
 
 const cache = new Cache<Instance>(1000 * 60 * 60);
 

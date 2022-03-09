@@ -1,6 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class Init1000000000000 {
+
+
+export class Init1000000000000 {
     async up(queryRunner) {
         await queryRunner.query(`CREATE TYPE "log_level_enum" AS ENUM('error', 'warning', 'info', 'success', 'debug')`);
         await queryRunner.query(`CREATE TABLE "log" ("id" character varying(32) NOT NULL, "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL, "domain" character varying(64) array NOT NULL DEFAULT '{}'::varchar[], "level" "log_level_enum" NOT NULL, "worker" character varying(8) NOT NULL, "machine" character varying(128) NOT NULL, "message" character varying(1024) NOT NULL, "data" jsonb NOT NULL DEFAULT '{}', CONSTRAINT "PK_350604cbdf991d5930d9e618fbd" PRIMARY KEY ("id"))`);
@@ -480,4 +480,3 @@ class Init1000000000000 {
         await queryRunner.query(`DROP TYPE "log_level_enum"`);
     }
 }
-exports.Init1000000000000 = Init1000000000000;

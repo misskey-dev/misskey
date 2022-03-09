@@ -1,6 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class v1241579544426412 {
+
+
+export class v1241579544426412 {
     constructor() {
         this.name = 'v1241579544426412';
     }
@@ -13,4 +13,3 @@ class v1241579544426412 {
         await queryRunner.query(`ALTER TABLE "notification" DROP COLUMN "followRequestId"`, undefined);
     }
 }
-exports.v1241579544426412 = v1241579544426412;

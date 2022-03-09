@@ -2,7 +2,7 @@ process.env.NODE_ENV = 'test';
 
 import rndstr from 'rndstr';
 import * as assert from 'assert';
-import { initTestDb } from './utils';
+import { initTestDb } from './utils.js';
 
 describe('ActivityPub', () => {
 	before(async () => {
@@ -33,8 +33,8 @@ describe('ActivityPub', () => {
 		};
 
 		it('Minimum Actor', async () => {
-			const { MockResolver } = await import('./misc/mock-resolver');
-			const { createPerson } = await import('../src/remote/activitypub/models/person');
+			const { MockResolver } = await import('./misc/mock-resolver.js');
+			const { createPerson } = await import('../src/remote/activitypub/models/person.js');
 
 			const resolver = new MockResolver();
 			resolver._register(actor.id, actor);
@@ -47,8 +47,8 @@ describe('ActivityPub', () => {
 		});
 
 		it('Minimum Note', async () => {
-			const { MockResolver } = await import('./misc/mock-resolver');
-			const { createNote } = await import('../src/remote/activitypub/models/note');
+			const { MockResolver } = await import('./misc/mock-resolver.js');
+			const { createNote } = await import('../src/remote/activitypub/models/note.js');
 
 			const resolver = new MockResolver();
 			resolver._register(actor.id, actor);
@@ -80,8 +80,8 @@ describe('ActivityPub', () => {
 		};
 
 		it('Actor', async () => {
-			const { MockResolver } = await import('./misc/mock-resolver');
-			const { createPerson } = await import('../src/remote/activitypub/models/person');
+			const { MockResolver } = await import('./misc/mock-resolver.js');
+			const { createPerson } = await import('../src/remote/activitypub/models/person.js');
 
 			const resolver = new MockResolver();
 			resolver._register(actor.id, actor);

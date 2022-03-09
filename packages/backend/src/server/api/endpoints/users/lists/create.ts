@@ -1,8 +1,7 @@
-import $ from 'cafy';
-import define from '../../../define';
-import { UserLists } from '@/models/index';
-import { genId } from '@/misc/gen-id';
-import { UserList } from '@/models/entities/user-list';
+import define from '../../../define.js';
+import { UserLists } from '@/models/index.js';
+import { genId } from '@/misc/gen-id.js';
+import { UserList } from '@/models/entities/user-list.js';
 
 export const meta = {
 	tags: ['lists'],
@@ -11,12 +10,6 @@ export const meta = {
 
 	kind: 'write:account',
 
-	params: {
-		name: {
-			validator: $.str.range(1, 100),
-		},
-	},
-
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
@@ -24,8 +17,16 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		name: { type: 'string', minLength: 1, maxLength: 100 },
+	},
+	required: ['name'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const userList = await UserLists.insert({
 		id: genId(),
 		createdAt: new Date(),

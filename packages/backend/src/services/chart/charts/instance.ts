@@ -1,10 +1,9 @@
-import autobind from 'autobind-decorator';
-import Chart, { KVs } from '../core';
-import { DriveFiles, Followings, Users, Notes } from '@/models/index';
-import { DriveFile } from '@/models/entities/drive-file';
-import { Note } from '@/models/entities/note';
-import { toPuny } from '@/misc/convert-host';
-import { name, schema } from './entities/instance';
+import Chart, { KVs } from '../core.js';
+import { DriveFiles, Followings, Users, Notes } from '@/models/index.js';
+import { DriveFile } from '@/models/entities/drive-file.js';
+import { Note } from '@/models/entities/note.js';
+import { toPuny } from '@/misc/convert-host.js';
+import { name, schema } from './entities/instance.js';
 
 /**
  * インスタンスごとのチャート
@@ -15,7 +14,6 @@ export default class InstanceChart extends Chart<typeof schema> {
 		super(name, schema, true);
 	}
 
-	@autobind
 	protected async tickMajor(group: string): Promise<Partial<KVs<typeof schema>>> {
 		const [
 			notesCount,
@@ -23,14 +21,12 @@ export default class InstanceChart extends Chart<typeof schema> {
 			followingCount,
 			followersCount,
 			driveFiles,
-			//driveUsage,
 		] = await Promise.all([
 			Notes.count({ userHost: group }),
 			Users.count({ host: group }),
 			Followings.count({ followerHost: group }),
 			Followings.count({ followeeHost: group }),
 			DriveFiles.count({ userHost: group }),
-			//DriveFiles.calcDriveUsageOfHost(group),
 		]);
 
 		return {
@@ -42,19 +38,16 @@ export default class InstanceChart extends Chart<typeof schema> {
 		};
 	}
 
-	@autobind
 	protected async tickMinor(): Promise<Partial<KVs<typeof schema>>> {
 		return {};
 	}
 
-	@autobind
 	public async requestReceived(host: string): Promise<void> {
 		await this.commit({
 			'requests.received': 1,
 		}, toPuny(host));
 	}
 
-	@autobind
 	public async requestSent(host: string, isSucceeded: boolean): Promise<void> {
 		await this.commit({
 			'requests.succeeded': isSucceeded ? 1 : 0,
@@ -62,7 +55,6 @@ export default class InstanceChart extends Chart<typeof schema> {
 		}, toPuny(host));
 	}
 
-	@autobind
 	public async newUser(host: string): Promise<void> {
 		await this.commit({
 			'users.total': 1,
@@ -70,7 +62,6 @@ export default class InstanceChart extends Chart<typeof schema> {
 		}, toPuny(host));
 	}
 
-	@autobind
 	public async updateNote(host: string, note: Note, isAdditional: boolean): Promise<void> {
 		await this.commit({
 			'notes.total': isAdditional ? 1 : -1,
@@ -83,7 +74,6 @@ export default class InstanceChart extends Chart<typeof schema> {
 		}, toPuny(host));
 	}
 
-	@autobind
 	public async updateFollowing(host: string, isAdditional: boolean): Promise<void> {
 		await this.commit({
 			'following.total': isAdditional ? 1 : -1,
@@ -92,7 +82,6 @@ export default class InstanceChart extends Chart<typeof schema> {
 		}, toPuny(host));
 	}
 
-	@autobind
 	public async updateFollowers(host: string, isAdditional: boolean): Promise<void> {
 		await this.commit({
 			'followers.total': isAdditional ? 1 : -1,
@@ -101,7 +90,6 @@ export default class InstanceChart extends Chart<typeof schema> {
 		}, toPuny(host));
 	}
 
-	@autobind
 	public async updateDrive(file: DriveFile, isAdditional: boolean): Promise<void> {
 		const fileSizeKb = file.size / 1000;
 		await this.commit({

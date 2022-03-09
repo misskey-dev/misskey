@@ -1,10 +1,10 @@
-import { publishNoteStream } from '@/services/stream';
-import { User } from '@/models/entities/user';
-import { Note } from '@/models/entities/note';
-import { PollVotes, NoteWatchings, Polls, Blockings } from '@/models/index';
+import { publishNoteStream } from '@/services/stream.js';
+import { User } from '@/models/entities/user.js';
+import { Note } from '@/models/entities/note.js';
+import { PollVotes, NoteWatchings, Polls, Blockings } from '@/models/index.js';
 import { Not } from 'typeorm';
-import { genId } from '@/misc/gen-id';
-import { createNotification } from '../../create-notification';
+import { genId } from '@/misc/gen-id.js';
+import { createNotification } from '../../create-notification.js';
 
 export default async function(user: User, note: Note, choice: number) {
 	const poll = await Polls.findOne(note.id);

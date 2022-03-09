@@ -2,22 +2,22 @@
  * API Server
  */
 
-import * as Koa from 'koa';
-import * as Router from '@koa/router';
-import * as multer from '@koa/multer';
-import * as bodyParser from 'koa-bodyparser';
-import * as cors from '@koa/cors';
+import Koa from 'koa';
+import Router from '@koa/router';
+import multer from '@koa/multer';
+import bodyParser from 'koa-bodyparser';
+import cors from '@koa/cors';
 
-import endpoints from './endpoints';
-import handler from './api-handler';
-import signup from './private/signup';
-import signin from './private/signin';
-import signupPending from './private/signup-pending';
-import discord from './service/discord';
-import github from './service/github';
-import twitter from './service/twitter';
-import { Instances, AccessTokens, Users } from '@/models/index';
-import config from '@/config';
+import endpoints from './endpoints.js';
+import handler from './api-handler.js';
+import signup from './private/signup.js';
+import signin from './private/signin.js';
+import signupPending from './private/signup-pending.js';
+import discord from './service/discord.js';
+import github from './service/github.js';
+import twitter from './service/twitter.js';
+import { Instances, AccessTokens, Users } from '@/models/index.js';
+import config from '@/config/index.js';
 
 // Init app
 const app = new Koa();

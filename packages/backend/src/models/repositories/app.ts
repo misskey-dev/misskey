@@ -1,8 +1,8 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { App } from '@/models/entities/app';
-import { AccessTokens } from '../index';
-import { Packed } from '@/misc/schema';
-import { User } from '../entities/user';
+import { App } from '@/models/entities/app.js';
+import { AccessTokens } from '../index.js';
+import { Packed } from '@/misc/schema.js';
+import { User } from '../entities/user.js';
 
 @EntityRepository(App)
 export class AppRepository extends Repository<App> {
@@ -32,7 +32,7 @@ export class AppRepository extends Repository<App> {
 			...(me ? {
 				isAuthorized: await AccessTokens.count({
 					appId: app.id,
-					userId: me,
+					userId: me.id,
 				}).then(count => count > 0),
 			} : {}),
 		};

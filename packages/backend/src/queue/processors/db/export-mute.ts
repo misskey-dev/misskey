@@ -1,14 +1,14 @@
-import * as Bull from 'bull';
+import Bull from 'bull';
 import * as tmp from 'tmp';
-import * as fs from 'fs';
+import * as fs from 'node:fs';
 
-import { queueLogger } from '../../logger';
-import { addFile } from '@/services/drive/add-file';
+import { queueLogger } from '../../logger.js';
+import { addFile } from '@/services/drive/add-file.js';
 import { format as dateFormat } from 'date-fns';
-import { getFullApAccount } from '@/misc/convert-host';
-import { Users, Mutings } from '@/models/index';
-import { MoreThan } from 'typeorm';
-import { DbUserJobData } from '@/queue/types';
+import { getFullApAccount } from '@/misc/convert-host.js';
+import { Users, Mutings } from '@/models/index.js';
+import { IsNull, MoreThan } from 'typeorm';
+import { DbUserJobData } from '@/queue/types.js';
 
 const logger = queueLogger.createSubLogger('export-mute');
 
@@ -40,6 +40,7 @@ export async function exportMute(job: Bull.Job<DbUserJobData>, done: any): Promi
 		const mutes = await Mutings.find({
 			where: {
 				muterId: user.id,
+				expiresAt: IsNull(),
 				...(cursor ? { id: MoreThan(cursor) } : {}),
 			},
 			take: 100,
