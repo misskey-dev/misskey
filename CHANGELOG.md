@@ -38,6 +38,7 @@ You should also include the user name that made the change.
 - Client: タッチ操作だとウィジェットの編集がしにくいのを修正 @xianonn
 - Client: register_note_view_interruptor()が動かないのを修正 @syuilo
 - Client: iPhone X以降(?)でページの内容が全て表示しきれないのを修正 @tamaina
+- Client: fix image caption on mobile @nullobsi
 
 ## 12.107.0 (2022/02/12)
 
