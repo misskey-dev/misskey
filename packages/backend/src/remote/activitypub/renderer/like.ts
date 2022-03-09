@@ -1,8 +1,8 @@
-import config from '@/config/index';
-import { NoteReaction } from '@/models/entities/note-reaction';
-import { Note } from '@/models/entities/note';
-import { Emojis } from '@/models/index';
-import renderEmoji from './emoji';
+import config from '@/config/index.js';
+import { NoteReaction } from '@/models/entities/note-reaction.js';
+import { Note } from '@/models/entities/note.js';
+import { Emojis } from '@/models/index.js';
+import renderEmoji from './emoji.js';
 
 export const renderLike = async (noteReaction: NoteReaction, note: Note) => {
 	const reaction = noteReaction.reaction;

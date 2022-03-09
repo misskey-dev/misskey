@@ -1,14 +1,11 @@
-import define from '../define';
-import { Instances, NoteReactions, Notes, Users } from '@/models/index';
-import { } from '@/services/chart/index';
+import define from '../define.js';
+import { Instances, NoteReactions, Notes, Users } from '@/models/index.js';
+import { } from '@/services/chart/index.js';
 
 export const meta = {
 	requireCredential: false,
 
 	tags: ['meta'],
-
-	params: {
-	},
 
 	res: {
 		type: 'object',
@@ -46,8 +43,14 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async () => {
+export default define(meta, paramDef, async () => {
 	const [
 		notesCount,
 		originalNotesCount,

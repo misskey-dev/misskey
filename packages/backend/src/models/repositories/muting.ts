@@ -1,9 +1,9 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { Users } from '../index';
-import { Muting } from '@/models/entities/muting';
-import { awaitAll } from '@/prelude/await-all';
-import { Packed } from '@/misc/schema';
-import { User } from '@/models/entities/user';
+import { Users } from '../index.js';
+import { Muting } from '@/models/entities/muting.js';
+import { awaitAll } from '@/prelude/await-all.js';
+import { Packed } from '@/misc/schema.js';
+import { User } from '@/models/entities/user.js';
 
 @EntityRepository(Muting)
 export class MutingRepository extends Repository<Muting> {
@@ -16,6 +16,7 @@ export class MutingRepository extends Repository<Muting> {
 		return await awaitAll({
 			id: muting.id,
 			createdAt: muting.createdAt.toISOString(),
+			expiresAt: muting.expiresAt ? muting.expiresAt.toISOString() : null,
 			muteeId: muting.muteeId,
 			mutee: Users.pack(muting.muteeId, me, {
 				detail: true,

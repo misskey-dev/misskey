@@ -1,11 +1,9 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
 import ms from 'ms';
-import { uploadFromUrl } from '@/services/drive/upload-from-url';
-import define from '../../../define';
-import { DriveFiles } from '@/models/index';
-import { publishMainStream } from '@/services/stream';
-import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/misc/hard-limits';
+import { uploadFromUrl } from '@/services/drive/upload-from-url.js';
+import define from '../../../define.js';
+import { DriveFiles } from '@/models/index.js';
+import { publishMainStream } from '@/services/stream.js';
+import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/misc/hard-limits.js';
 
 export const meta = {
 	tags: ['drive'],
@@ -18,42 +16,23 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'write:drive',
+} as const;
 
-	params: {
-		url: {
-			// TODO: Validate this url
-			validator: $.str,
-		},
-
-		folderId: {
-			validator: $.optional.nullable.type(ID),
-			default: null,
-		},
-
-		isSensitive: {
-			validator: $.optional.bool,
-			default: false,
-		},
-
-		comment: {
-			validator: $.optional.nullable.str.max(DB_MAX_IMAGE_COMMENT_LENGTH),
-			default: null,
-		},
-
-		marker: {
-			validator: $.optional.nullable.str,
-			default: null,
-		},
-
-		force: {
-			validator: $.optional.bool,
-			default: false,
-		},
+export const paramDef = {
+	type: 'object',
+	properties: {
+		url: { type: 'string' },
+		folderId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
+		isSensitive: { type: 'boolean', default: false },
+		comment: { type: 'string', nullable: true, maxLength: 512, default: null },
+		marker: { type: 'string', nullable: true, default: null },
+		force: { type: 'boolean', default: false },
 	},
+	required: ['url'],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	uploadFromUrl({ url: ps.url, user, folderId: ps.folderId, sensitive: ps.isSensitive, force: ps.force, comment: ps.comment }).then(file => {
 		DriveFiles.pack(file, { self: true }).then(packedFile => {
 			publishMainStream(user.id, 'urlUploadFinished', {

@@ -1,35 +1,25 @@
-import $ from 'cafy';
-import define from '../../define';
-import { convertLog } from '@/services/chart/core';
-import { hashtagChart } from '@/services/chart/index';
+import define from '../../define.js';
+import { getJsonSchema } from '@/services/chart/core.js';
+import { hashtagChart } from '@/services/chart/index.js';
 
 export const meta = {
 	tags: ['charts', 'hashtags'],
 
-	params: {
-		span: {
-			validator: $.str.or(['day', 'hour']),
-		},
+	res: getJsonSchema(hashtagChart.schema),
+} as const;
 
-		limit: {
-			validator: $.optional.num.range(1, 500),
-			default: 30,
-		},
-
-		offset: {
-			validator: $.optional.nullable.num,
-			default: null,
-		},
-
-		tag: {
-			validator: $.str,
-		},
+export const paramDef = {
+	type: 'object',
+	properties: {
+		span: { type: 'string', enum: ['day', 'hour'] },
+		limit: { type: 'integer', minimum: 1, maximum: 500, default: 30 },
+		offset: { type: 'integer', nullable: true, default: null },
+		tag: { type: 'string' },
 	},
-
-	// TODO: response definition
+	required: ['span', 'tag'],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps) => {
-	return await hashtagChart.getChart(ps.span as any, ps.limit!, ps.offset ? new Date(ps.offset) : null, ps.tag);
+export default define(meta, paramDef, async (ps) => {
+	return await hashtagChart.getChart(ps.span, ps.limit, ps.offset ? new Date(ps.offset) : null, ps.tag);
 });

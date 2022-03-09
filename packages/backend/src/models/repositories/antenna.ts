@@ -1,7 +1,7 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { Antenna } from '@/models/entities/antenna';
-import { Packed } from '@/misc/schema';
-import { AntennaNotes, UserGroupJoinings } from '../index';
+import { Antenna } from '@/models/entities/antenna.js';
+import { Packed } from '@/misc/schema.js';
+import { AntennaNotes, UserGroupJoinings } from '../index.js';
 
 @EntityRepository(Antenna)
 export class AntennaRepository extends Repository<Antenna> {

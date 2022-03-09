@@ -1,18 +1,17 @@
-import $ from 'cafy';
-import define from '../../define';
-import config from '@/config/index';
-import { createPerson } from '@/remote/activitypub/models/person';
-import { createNote } from '@/remote/activitypub/models/note';
-import Resolver from '@/remote/activitypub/resolver';
-import { ApiError } from '../../error';
-import { extractDbHost } from '@/misc/convert-host';
-import { Users, Notes } from '@/models/index';
-import { Note } from '@/models/entities/note';
-import { User } from '@/models/entities/user';
-import { fetchMeta } from '@/misc/fetch-meta';
-import { isActor, isPost, getApId } from '@/remote/activitypub/type';
+import define from '../../define.js';
+import config from '@/config/index.js';
+import { createPerson } from '@/remote/activitypub/models/person.js';
+import { createNote } from '@/remote/activitypub/models/note.js';
+import Resolver from '@/remote/activitypub/resolver.js';
+import { ApiError } from '../../error.js';
+import { extractDbHost } from '@/misc/convert-host.js';
+import { Users, Notes } from '@/models/index.js';
+import { Note } from '@/models/entities/note.js';
+import { User } from '@/models/entities/user.js';
+import { fetchMeta } from '@/misc/fetch-meta.js';
+import { isActor, isPost, getApId } from '@/remote/activitypub/type.js';
 import ms from 'ms';
-import { SchemaType } from '@/misc/schema';
+import { SchemaType } from '@/misc/schema.js';
 
 export const meta = {
 	tags: ['federation'],
@@ -22,12 +21,6 @@ export const meta = {
 	limit: {
 		duration: ms('1hour'),
 		max: 30,
-	},
-
-	params: {
-		uri: {
-			validator: $.str,
-		},
 	},
 
 	errors: {
@@ -75,8 +68,16 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		uri: { type: 'string' },
+	},
+	required: ['uri'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps) => {
+export default define(meta, paramDef, async (ps) => {
 	const object = await fetchAny(ps.uri);
 	if (object) {
 		return object;

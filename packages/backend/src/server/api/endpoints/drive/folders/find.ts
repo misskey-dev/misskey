@@ -1,7 +1,5 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
-import define from '../../../define';
-import { DriveFolders } from '@/models/index';
+import define from '../../../define.js';
+import { DriveFolders } from '@/models/index.js';
 
 export const meta = {
 	tags: ['drive'],
@@ -9,17 +7,6 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'read:drive',
-
-	params: {
-		name: {
-			validator: $.str,
-		},
-
-		parentId: {
-			validator: $.optional.nullable.type(ID),
-			default: null,
-		},
-	},
 
 	res: {
 		type: 'array',
@@ -32,8 +19,17 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		name: { type: 'string' },
+		parentId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
+	},
+	required: ['name'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const folders = await DriveFolders.find({
 		name: ps.name,
 		userId: user.id,

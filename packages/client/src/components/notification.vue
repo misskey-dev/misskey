@@ -1,7 +1,8 @@
 <template>
 <div ref="elRef" v-size="{ max: [500, 600] }" class="qglefbjs" :class="notification.type">
 	<div class="head">
-		<MkAvatar v-if="notification.user" class="icon" :user="notification.user"/>
+		<MkAvatar v-if="notification.type === 'pollEnded'" class="icon" :user="notification.note.user"/>
+		<MkAvatar v-else-if="notification.user" class="icon" :user="notification.user"/>
 		<img v-else-if="notification.icon" class="icon" :src="notification.icon" alt=""/>
 		<div class="sub-icon" :class="notification.type">
 			<i v-if="notification.type === 'follow'" class="fas fa-plus"></i>
@@ -13,6 +14,7 @@
 			<i v-else-if="notification.type === 'mention'" class="fas fa-at"></i>
 			<i v-else-if="notification.type === 'quote'" class="fas fa-quote-left"></i>
 			<i v-else-if="notification.type === 'pollVote'" class="fas fa-poll-h"></i>
+			<i v-else-if="notification.type === 'pollEnded'" class="fas fa-poll-h"></i>
 			<!-- notification.reaction が null になることはまずないが、ここでoptional chaining使うと一部ブラウザで刺さるので念の為 -->
 			<XReactionIcon v-else-if="notification.type === 'reaction'"
 				ref="reactionRef"
@@ -24,7 +26,8 @@
 	</div>
 	<div class="tail">
 		<header>
-			<MkA v-if="notification.user" v-user-preview="notification.user.id" class="name" :to="userPage(notification.user)"><MkUserName :user="notification.user"/></MkA>
+			<span v-if="notification.type === 'pollEnded'">{{ i18n.ts._notification.pollEnded }}</span>
+			<MkA v-else-if="notification.user" v-user-preview="notification.user.id" class="name" :to="userPage(notification.user)"><MkUserName :user="notification.user"/></MkA>
 			<span v-else>{{ notification.header }}</span>
 			<MkTime v-if="withTime" :time="notification.createdAt" class="time"/>
 		</header>
@@ -48,6 +51,11 @@
 			<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full" :custom-emojis="notification.note.emojis"/>
 		</MkA>
 		<MkA v-if="notification.type === 'pollVote'" class="text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
+			<i class="fas fa-quote-left"></i>
+			<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full" :custom-emojis="notification.note.emojis"/>
+			<i class="fas fa-quote-right"></i>
+		</MkA>
+		<MkA v-if="notification.type === 'pollEnded'" class="text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
 			<i class="fas fa-quote-left"></i>
 			<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full" :custom-emojis="notification.note.emojis"/>
 			<i class="fas fa-quote-right"></i>
@@ -169,6 +177,7 @@ export default defineComponent({
 			rejectGroupInvitation,
 			elRef,
 			reactionRef,
+			i18n,
 		};
 	},
 });
@@ -270,6 +279,12 @@ export default defineComponent({
 			}
 
 			&.pollVote {
+				padding: 3px;
+				background: #88a6b7;
+				pointer-events: none;
+			}
+
+			&.pollEnded {
 				padding: 3px;
 				background: #88a6b7;
 				pointer-events: none;

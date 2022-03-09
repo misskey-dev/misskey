@@ -1,10 +1,8 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
-import { publishUserListStream } from '@/services/stream';
-import define from '../../../define';
-import { ApiError } from '../../../error';
-import { getUser } from '../../../common/getters';
-import { UserLists, UserListJoinings, Users } from '@/models/index';
+import { publishUserListStream } from '@/services/stream.js';
+import define from '../../../define.js';
+import { ApiError } from '../../../error.js';
+import { getUser } from '../../../common/getters.js';
+import { UserLists, UserListJoinings, Users } from '@/models/index.js';
 
 export const meta = {
 	tags: ['lists', 'users'],
@@ -12,16 +10,6 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'write:account',
-
-	params: {
-		listId: {
-			validator: $.type(ID),
-		},
-
-		userId: {
-			validator: $.type(ID),
-		},
-	},
 
 	errors: {
 		noSuchList: {
@@ -38,8 +26,17 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		listId: { type: 'string', format: 'misskey:id' },
+		userId: { type: 'string', format: 'misskey:id' },
+	},
+	required: ['listId', 'userId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	// Fetch the list
 	const userList = await UserLists.findOne({
 		id: ps.listId,

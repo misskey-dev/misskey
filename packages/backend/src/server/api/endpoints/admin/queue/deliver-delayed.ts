@@ -1,15 +1,12 @@
-import { deliverQueue } from '@/queue/queues';
-import { URL } from 'url';
-import define from '../../../define';
+import { deliverQueue } from '@/queue/queues.js';
+import { URL } from 'node:url';
+import define from '../../../define.js';
 
 export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
 	requireModerator: true,
-
-	params: {
-	},
 
 	res: {
 		type: 'array',
@@ -35,8 +32,14 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps) => {
+export default define(meta, paramDef, async (ps) => {
 	const jobs = await deliverQueue.getJobs(['delayed']);
 
 	const res = [] as [string, number][];

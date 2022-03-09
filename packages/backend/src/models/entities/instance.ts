@@ -1,5 +1,5 @@
 import { Entity, PrimaryColumn, Index, Column } from 'typeorm';
-import { id } from '../id';
+import { id } from '../id.js';
 
 @Entity()
 export class Instance {
@@ -58,22 +58,6 @@ export class Instance {
 		default: 0,
 	})
 	public followersCount: number;
-
-	/**
-	 * ドライブ使用量
-	 */
-	@Column('bigint', {
-		default: 0,
-	})
-	public driveUsage: number;
-
-	/**
-	 * ドライブのファイル数
-	 */
-	@Column('integer', {
-		default: 0,
-	})
-	public driveFiles: number;
 
 	/**
 	 * 直近のリクエスト送信日時

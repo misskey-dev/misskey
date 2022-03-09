@@ -1,26 +1,22 @@
-import $ from 'cafy';
-import define from '../../define';
-import { AccessTokens } from '@/models/index';
+import define from '../../define.js';
+import { AccessTokens } from '@/models/index.js';
 
 export const meta = {
 	requireCredential: true,
 
 	secure: true,
+} as const;
 
-	params: {
-		sort: {
-			validator: $.optional.str.or([
-				'+createdAt',
-				'-createdAt',
-				'+lastUsedAt',
-				'-lastUsedAt',
-			]),
-		},
+export const paramDef = {
+	type: 'object',
+	properties: {
+		sort: { type: 'string', enum: ['+createdAt', '-createdAt', '+lastUsedAt', '-lastUsedAt'] },
 	},
+	required: [],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const query = AccessTokens.createQueryBuilder('token')
 		.where('token.userId = :userId', { userId: user.id });
 

@@ -1,0 +1,13 @@
+{
+	id: '66e7e5a9-cd43-42cd-837d-12f47841fa34',
+
+	name: 'Mi Ice Dark',
+	author: 'syuilo',
+
+	base: 'dark',
+
+	props: {
+		accent: '#47BFE8',
+		bg: '#212526',
+	},
+}

@@ -1,25 +1,17 @@
-import $ from 'cafy';
-import define from '../../../define';
-import { Emojis } from '@/models/index';
-import { genId } from '@/misc/gen-id';
+import define from '../../../define.js';
+import { Emojis } from '@/models/index.js';
+import { genId } from '@/misc/gen-id.js';
 import { getConnection } from 'typeorm';
-import { ApiError } from '../../../error';
-import { DriveFile } from '@/models/entities/drive-file';
-import { ID } from '@/misc/cafy-id';
-import { uploadFromUrl } from '@/services/drive/upload-from-url';
-import { publishBroadcastStream } from '@/services/stream';
+import { ApiError } from '../../../error.js';
+import { DriveFile } from '@/models/entities/drive-file.js';
+import { uploadFromUrl } from '@/services/drive/upload-from-url.js';
+import { publishBroadcastStream } from '@/services/stream.js';
 
 export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
 	requireModerator: true,
-
-	params: {
-		emojiId: {
-			validator: $.type(ID),
-		},
-	},
 
 	errors: {
 		noSuchEmoji: {
@@ -42,8 +34,16 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		emojiId: { type: 'string', format: 'misskey:id' },
+	},
+	required: ['emojiId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	const emoji = await Emojis.findOne(ps.emojiId);
 
 	if (emoji == null) {

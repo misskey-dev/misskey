@@ -1,8 +1,6 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
-import define from '../../define';
-import { ApiError } from '../../error';
-import { Clips } from '@/models/index';
+import define from '../../define.js';
+import { ApiError } from '../../error.js';
+import { Clips } from '@/models/index.js';
 
 export const meta = {
 	tags: ['clips'],
@@ -10,24 +8,6 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'write:account',
-
-	params: {
-		clipId: {
-			validator: $.type(ID),
-		},
-
-		name: {
-			validator: $.str.range(1, 100),
-		},
-
-		isPublic: {
-			validator: $.optional.bool,
-		},
-
-		description: {
-			validator: $.optional.nullable.str.range(1, 2048),
-		},
-	},
 
 	errors: {
 		noSuchClip: {
@@ -44,8 +24,19 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		clipId: { type: 'string', format: 'misskey:id' },
+		name: { type: 'string', minLength: 1, maxLength: 100 },
+		isPublic: { type: 'boolean' },
+		description: { type: 'string', nullable: true, minLength: 1, maxLength: 2048 },
+	},
+	required: ['clipId', 'name'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	// Fetch the clip
 	const clip = await Clips.findOne({
 		id: ps.clipId,

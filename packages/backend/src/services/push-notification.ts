@@ -1,9 +1,9 @@
-import * as push from 'web-push';
-import config from '@/config/index';
-import { SwSubscriptions } from '@/models/index';
-import { fetchMeta } from '@/misc/fetch-meta';
-import { Packed } from '@/misc/schema';
-import { getNoteSummary } from '@/misc/get-note-summary';
+import push from 'web-push';
+import config from '@/config/index.js';
+import { SwSubscriptions } from '@/models/index.js';
+import { fetchMeta } from '@/misc/fetch-meta.js';
+import { Packed } from '@/misc/schema.js';
+import { getNoteSummary } from '@/misc/get-note-summary.js';
 
 type notificationType = 'notification' | 'unreadMessagingMessage';
 type notificationBody = Packed<'Notification'> | Packed<'MessagingMessage'>;

@@ -1,15 +1,15 @@
-import * as Bull from 'bull';
+import Bull from 'bull';
 import * as tmp from 'tmp';
-import * as fs from 'fs';
+import * as fs from 'node:fs';
 
-import { queueLogger } from '../../logger';
-import { addFile } from '@/services/drive/add-file';
+import { queueLogger } from '../../logger.js';
+import { addFile } from '@/services/drive/add-file.js';
 import { format as dateFormat } from 'date-fns';
-import { Users, Notes, Polls } from '@/models/index';
+import { Users, Notes, Polls } from '@/models/index.js';
 import { MoreThan } from 'typeorm';
-import { Note } from '@/models/entities/note';
-import { Poll } from '@/models/entities/poll';
-import { DbUserJobData } from '@/queue/types';
+import { Note } from '@/models/entities/note.js';
+import { Poll } from '@/models/entities/poll.js';
+import { DbUserJobData } from '@/queue/types.js';
 
 const logger = queueLogger.createSubLogger('export-notes');
 
@@ -62,7 +62,7 @@ export async function exportNotes(job: Bull.Job<DbUserJobData>, done: any): Prom
 			order: {
 				id: 1,
 			},
-		});
+		}) as Note[];
 
 		if (notes.length === 0) {
 			job.progress(100);

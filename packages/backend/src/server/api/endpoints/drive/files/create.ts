@@ -1,12 +1,10 @@
 import ms from 'ms';
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
-import { addFile } from '@/services/drive/add-file';
-import define from '../../../define';
-import { apiLogger } from '../../../logger';
-import { ApiError } from '../../../error';
-import { DriveFiles } from '@/models/index';
-import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/misc/hard-limits';
+import { addFile } from '@/services/drive/add-file.js';
+import define from '../../../define.js';
+import { apiLogger } from '../../../logger.js';
+import { ApiError } from '../../../error.js';
+import { DriveFiles } from '@/models/index.js';
+import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/misc/hard-limits.js';
 
 export const meta = {
 	tags: ['drive'],
@@ -21,33 +19,6 @@ export const meta = {
 	requireFile: true,
 
 	kind: 'write:drive',
-
-	params: {
-		folderId: {
-			validator: $.optional.nullable.type(ID),
-			default: null,
-		},
-
-		name: {
-			validator: $.optional.nullable.str,
-			default: null,
-		},
-
-		comment: {
-			validator: $.optional.nullable.str.max(DB_MAX_IMAGE_COMMENT_LENGTH),
-			default: null,
-		},
-
-		isSensitive: {
-			validator: $.optional.bool,
-			default: false,
-		},
-
-		force: {
-			validator: $.optional.bool,
-			default: false,
-		},
-	},
 
 	res: {
 		type: 'object',
@@ -64,8 +35,21 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		folderId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
+		name: { type: 'string', nullable: true, default: null },
+		comment: { type: 'string', nullable: true, maxLength: DB_MAX_IMAGE_COMMENT_LENGTH, default: null },
+		isSensitive: { type: 'boolean', default: false },
+		force: { type: 'boolean', default: false },
+	},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user, _, file, cleanup) => {
+// @ts-ignore
+export default define(meta, paramDef, async (ps, user, _, file, cleanup) => {
 	// Get 'name' parameter
 	let name = ps.name || file.originalname;
 	if (name !== undefined && name !== null) {

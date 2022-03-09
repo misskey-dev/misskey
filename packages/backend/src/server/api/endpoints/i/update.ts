@@ -1,21 +1,19 @@
-const RE2 = require('re2');
-import $ from 'cafy';
+import RE2 from 're2';
 import * as mfm from 'mfm-js';
-import { ID } from '@/misc/cafy-id';
-import { publishMainStream, publishUserEvent } from '@/services/stream';
-import acceptAllFollowRequests from '@/services/following/requests/accept-all';
-import { publishToFollowers } from '@/services/i/update';
-import define from '../../define';
-import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm';
-import { extractHashtags } from '@/misc/extract-hashtags';
-import * as langmap from 'langmap';
-import { updateUsertags } from '@/services/update-hashtag';
-import { ApiError } from '../../error';
-import { Users, DriveFiles, UserProfiles, Pages } from '@/models/index';
-import { User } from '@/models/entities/user';
-import { UserProfile } from '@/models/entities/user-profile';
-import { notificationTypes } from '@/types';
-import { normalizeForSearch } from '@/misc/normalize-for-search';
+import { publishMainStream, publishUserEvent } from '@/services/stream.js';
+import acceptAllFollowRequests from '@/services/following/requests/accept-all.js';
+import { publishToFollowers } from '@/services/i/update.js';
+import define from '../../define.js';
+import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm.js';
+import { extractHashtags } from '@/misc/extract-hashtags.js';
+import { updateUsertags } from '@/services/update-hashtag.js';
+import { ApiError } from '../../error.js';
+import { Users, DriveFiles, UserProfiles, Pages } from '@/models/index.js';
+import { User } from '@/models/entities/user.js';
+import { UserProfile } from '@/models/entities/user-profile.js';
+import { notificationTypes } from '@/types.js';
+import { normalizeForSearch } from '@/misc/normalize-for-search.js';
+import { langmap } from '@/misc/langmap.js';
 
 export const meta = {
 	tags: ['account'],
@@ -23,116 +21,6 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'write:account',
-
-	params: {
-		name: {
-			validator: $.optional.nullable.use(Users.validateName),
-		},
-
-		description: {
-			validator: $.optional.nullable.use(Users.validateDescription),
-		},
-
-		lang: {
-			validator: $.optional.nullable.str.or(Object.keys(langmap)),
-		},
-
-		location: {
-			validator: $.optional.nullable.use(Users.validateLocation),
-		},
-
-		birthday: {
-			validator: $.optional.nullable.use(Users.validateBirthday),
-		},
-
-		avatarId: {
-			validator: $.optional.nullable.type(ID),
-		},
-
-		bannerId: {
-			validator: $.optional.nullable.type(ID),
-		},
-
-		fields: {
-			validator: $.optional.arr($.object()).range(1, 4),
-		},
-
-		isLocked: {
-			validator: $.optional.bool,
-		},
-
-		isExplorable: {
-			validator: $.optional.bool,
-		},
-
-		hideOnlineStatus: {
-			validator: $.optional.bool,
-		},
-
-		publicReactions: {
-			validator: $.optional.bool,
-		},
-
-		ffVisibility: {
-			validator: $.optional.str,
-		},
-
-		carefulBot: {
-			validator: $.optional.bool,
-		},
-
-		autoAcceptFollowed: {
-			validator: $.optional.bool,
-		},
-
-		noCrawle: {
-			validator: $.optional.bool,
-		},
-
-		isBot: {
-			validator: $.optional.bool,
-		},
-
-		isCat: {
-			validator: $.optional.bool,
-		},
-
-		showTimelineReplies: {
-			validator: $.optional.bool,
-		},
-
-		injectFeaturedNote: {
-			validator: $.optional.bool,
-		},
-
-		receiveAnnouncementEmail: {
-			validator: $.optional.bool,
-		},
-
-		alwaysMarkNsfw: {
-			validator: $.optional.bool,
-		},
-
-		pinnedPageId: {
-			validator: $.optional.nullable.type(ID),
-		},
-
-		mutedWords: {
-			validator: $.optional.arr($.either($.arr($.str.min(1)).min(1), $.str)),
-		},
-
-		mutedInstances: {
-			validator: $.optional.arr($.str),
-		},
-
-		mutingNotificationTypes: {
-			validator: $.optional.arr($.str.or(notificationTypes as unknown as string[])),
-		},
-
-		emailNotificationTypes: {
-			validator: $.optional.arr($.str),
-		},
-	},
 
 	errors: {
 		noSuchAvatar: {
@@ -179,8 +67,60 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		name: { ...Users.nameSchema, nullable: true },
+		description: { ...Users.descriptionSchema, nullable: true },
+		location: { ...Users.locationSchema, nullable: true },
+		birthday: { ...Users.birthdaySchema, nullable: true },
+		lang: { type: 'string', enum: [null, ...Object.keys(langmap)], nullable: true },
+		avatarId: { type: 'string', format: 'misskey:id', nullable: true },
+		bannerId: { type: 'string', format: 'misskey:id', nullable: true },
+		fields: { type: 'array',
+			minItems: 0,
+			maxItems: 16,
+			items: {
+				type: 'object',
+				properties: {
+					name: { type: 'string' },
+					value: { type: 'string' },
+				},
+				required: ['name', 'value'],
+			},
+		},
+		isLocked: { type: 'boolean' },
+		isExplorable: { type: 'boolean' },
+		hideOnlineStatus: { type: 'boolean' },
+		publicReactions: { type: 'boolean' },
+		carefulBot: { type: 'boolean' },
+		autoAcceptFollowed: { type: 'boolean' },
+		noCrawle: { type: 'boolean' },
+		isBot: { type: 'boolean' },
+		isCat: { type: 'boolean' },
+		showTimelineReplies: { type: 'boolean' },
+		injectFeaturedNote: { type: 'boolean' },
+		receiveAnnouncementEmail: { type: 'boolean' },
+		alwaysMarkNsfw: { type: 'boolean' },
+		ffVisibility: { type: 'string', enum: ['public', 'followers', 'private'] },
+		pinnedPageId: { type: 'array', items: {
+			type: 'string', format: 'misskey:id',
+		} },
+		mutedWords: { type: 'array' },
+		mutedInstances: { type: 'array', items: {
+			type: 'string',
+		} },
+		mutingNotificationTypes: { type: 'array', items: {
+			type: 'string', enum: notificationTypes,
+		} },
+		emailNotificationTypes: { type: 'array', items: {
+			type: 'string',
+		} },
+	},
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, _user, token) => {
+export default define(meta, paramDef, async (ps, _user, token) => {
 	const user = await Users.findOneOrFail(_user.id);
 	const isSecure = token == null;
 
@@ -235,12 +175,6 @@ export default define(meta, async (ps, _user, token) => {
 
 		if (avatar == null || avatar.userId !== user.id) throw new ApiError(meta.errors.noSuchAvatar);
 		if (!avatar.type.startsWith('image/')) throw new ApiError(meta.errors.avatarNotAnImage);
-
-		updates.avatarUrl = DriveFiles.getPublicUrl(avatar, true);
-
-		if (avatar.blurhash) {
-			updates.avatarBlurhash = avatar.blurhash;
-		}
 	}
 
 	if (ps.bannerId) {
@@ -248,12 +182,6 @@ export default define(meta, async (ps, _user, token) => {
 
 		if (banner == null || banner.userId !== user.id) throw new ApiError(meta.errors.noSuchBanner);
 		if (!banner.type.startsWith('image/')) throw new ApiError(meta.errors.bannerNotAnImage);
-
-		updates.bannerUrl = DriveFiles.getPublicUrl(banner, false);
-
-		if (banner.blurhash) {
-			updates.bannerBlurhash = banner.blurhash;
-		}
 	}
 
 	if (ps.pinnedPageId) {

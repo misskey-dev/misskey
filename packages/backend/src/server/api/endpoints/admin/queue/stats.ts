@@ -1,13 +1,11 @@
-import { deliverQueue, inboxQueue, dbQueue, objectStorageQueue } from '@/queue/queues';
-import define from '../../../define';
+import { deliverQueue, inboxQueue, dbQueue, objectStorageQueue } from '@/queue/queues.js';
+import define from '../../../define.js';
 
 export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
 	requireModerator: true,
-
-	params: {},
 
 	res: {
 		type: 'object',
@@ -33,8 +31,14 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps) => {
+export default define(meta, paramDef, async (ps) => {
 	const deliverJobCounts = await deliverQueue.getJobCounts();
 	const inboxJobCounts = await inboxQueue.getJobCounts();
 	const dbJobCounts = await dbQueue.getJobCounts();

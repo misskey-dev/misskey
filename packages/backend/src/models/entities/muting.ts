@@ -1,6 +1,6 @@
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
-import { User } from './user';
-import { id } from '../id';
+import { User } from './user.js';
+import { id } from '../id.js';
 
 @Entity()
 @Index(['muterId', 'muteeId'], { unique: true })
@@ -13,6 +13,13 @@ export class Muting {
 		comment: 'The created date of the Muting.',
 	})
 	public createdAt: Date;
+
+	@Index()
+	@Column('timestamp with time zone', {
+		nullable: true,
+		default: null,
+	})
+	public expiresAt: Date | null;
 
 	@Index()
 	@Column({

@@ -1,6 +1,6 @@
-import { refs, MinimumSchema } from '@/misc/schema';
+import { refs, Schema } from '@/misc/schema.js';
 
-export function convertSchemaToOpenApiSchema(schema: MinimumSchema) {
+export function convertSchemaToOpenApiSchema(schema: Schema) {
 	const res: any = schema;
 
 	if (schema.type === 'object' && schema.properties) {

@@ -1,57 +1,12 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
-import define from '../../define';
-import { AbuseUserReports } from '@/models/index';
-import { makePaginationQuery } from '../../common/make-pagination-query';
+import define from '../../define.js';
+import { AbuseUserReports } from '@/models/index.js';
+import { makePaginationQuery } from '../../common/make-pagination-query.js';
 
 export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
 	requireModerator: true,
-
-	params: {
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
-		},
-
-		sinceId: {
-			validator: $.optional.type(ID),
-		},
-
-		untilId: {
-			validator: $.optional.type(ID),
-		},
-
-		state: {
-			validator: $.optional.nullable.str,
-			default: null,
-		},
-
-		reporterOrigin: {
-			validator: $.optional.str.or([
-				'combined',
-				'local',
-				'remote',
-			]),
-			default: 'combined',
-		},
-
-		targetUserOrigin: {
-			validator: $.optional.str.or([
-				'combined',
-				'local',
-				'remote',
-			]),
-			default: 'combined',
-		},
-
-		forwarded: {
-			validator: $.optional.bool,
-			default: false,
-		},
-	},
 
 	res: {
 		type: 'array',
@@ -115,8 +70,22 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+		sinceId: { type: 'string', format: 'misskey:id' },
+		untilId: { type: 'string', format: 'misskey:id' },
+		state: { type: 'string', nullable: true, default: null },
+		reporterOrigin: { type: 'string', enum: ['combined', 'local', 'remote'], default: "combined" },
+		targetUserOrigin: { type: 'string', enum: ['combined', 'local', 'remote'], default: "combined" },
+		forwarded: { type: 'boolean', default: false },
+	},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps) => {
+export default define(meta, paramDef, async (ps) => {
 	const query = makePaginationQuery(AbuseUserReports.createQueryBuilder('report'), ps.sinceId, ps.untilId);
 
 	switch (ps.state) {
@@ -134,7 +103,7 @@ export default define(meta, async (ps) => {
 		case 'remote': query.andWhere('report.targetUserHost IS NOT NULL'); break;
 	}
 
-	const reports = await query.take(ps.limit!).getMany();
+	const reports = await query.take(ps.limit).getMany();
 
 	return await AbuseUserReports.packMany(reports);
 });

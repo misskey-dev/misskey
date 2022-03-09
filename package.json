@@ -1,6 +1,6 @@
 {
 	"name": "misskey",
-	"version": "12.107.0",
+	"version": "12.108.0",
 	"codename": "indigo",
 	"repository": {
 		"type": "git",
@@ -42,12 +42,10 @@
 		"js-yaml": "4.1.0"
 	},
 	"devDependencies": {
-		"@redocly/openapi-core": "1.0.0-beta.79",
-		"@types/fluent-ffmpeg": "2.1.20",
-		"@typescript-eslint/parser": "5.10.0",
+		"@typescript-eslint/parser": "5.14.0",
 		"cross-env": "7.0.3",
-		"cypress": "9.4.1",
+		"cypress": "9.5.0",
 		"start-server-and-test": "1.14.0",
-		"typescript": "4.5.5"
+		"typescript": "4.6.2"
 	}
 }

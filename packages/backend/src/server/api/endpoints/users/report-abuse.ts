@@ -1,29 +1,17 @@
-import $ from 'cafy';
 import * as sanitizeHtml from 'sanitize-html';
-import { ID } from '@/misc/cafy-id';
-import define from '../../define';
-import { publishAdminStream } from '@/services/stream';
-import { ApiError } from '../../error';
-import { getUser } from '../../common/getters';
-import { AbuseUserReports, Users } from '@/models/index';
-import { genId } from '@/misc/gen-id';
-import { sendEmail } from '@/services/send-email';
-import { fetchMeta } from '@/misc/fetch-meta';
+import define from '../../define.js';
+import { publishAdminStream } from '@/services/stream.js';
+import { ApiError } from '../../error.js';
+import { getUser } from '../../common/getters.js';
+import { AbuseUserReports, Users } from '@/models/index.js';
+import { genId } from '@/misc/gen-id.js';
+import { sendEmail } from '@/services/send-email.js';
+import { fetchMeta } from '@/misc/fetch-meta.js';
 
 export const meta = {
 	tags: ['users'],
 
 	requireCredential: true,
-
-	params: {
-		userId: {
-			validator: $.type(ID),
-		},
-
-		comment: {
-			validator: $.str.range(1, 2048),
-		},
-	},
 
 	errors: {
 		noSuchUser: {
@@ -46,8 +34,17 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		userId: { type: 'string', format: 'misskey:id' },
+		comment: { type: 'string', minLength: 1, maxLength: 2048 },
+	},
+	required: ['userId', 'comment'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	// Lookup user
 	const user = await getUser(ps.userId).catch(e => {
 		if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);

@@ -1,10 +1,8 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
-import { publishDriveStream } from '@/services/stream';
-import define from '../../../define';
-import { ApiError } from '../../../error';
-import { DriveFiles, DriveFolders } from '@/models/index';
-import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/misc/hard-limits';
+import { publishDriveStream } from '@/services/stream.js';
+import define from '../../../define.js';
+import { ApiError } from '../../../error.js';
+import { DriveFiles, DriveFolders } from '@/models/index.js';
+import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/misc/hard-limits.js';
 
 export const meta = {
 	tags: ['drive'],
@@ -13,33 +11,13 @@ export const meta = {
 
 	kind: 'write:drive',
 
-	params: {
-		fileId: {
-			validator: $.type(ID),
-		},
-
-		folderId: {
-			validator: $.optional.nullable.type(ID),
-			default: undefined as any,
-		},
-
-		name: {
-			validator: $.optional.str.pipe(DriveFiles.validateFileName),
-			default: undefined as any,
-		},
-
-		isSensitive: {
-			validator: $.optional.bool,
-			default: undefined as any,
-		},
-
-		comment: {
-			validator: $.optional.nullable.str.max(DB_MAX_IMAGE_COMMENT_LENGTH),
-			default: undefined as any,
-		},
-	},
-
 	errors: {
+		invalidFileName: {
+			message: 'Invalid file name.',
+			code: 'INVALID_FILE_NAME',
+			id: '395e7156-f9f0-475e-af89-53c3c23080c2',
+		},
+
 		noSuchFile: {
 			message: 'No such file.',
 			code: 'NO_SUCH_FILE',
@@ -66,8 +44,20 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		fileId: { type: 'string', format: 'misskey:id' },
+		folderId: { type: 'string', format: 'misskey:id', nullable: true },
+		name: { type: 'string' },
+		isSensitive: { type: 'boolean' },
+		comment: { type: 'string', nullable: true, maxLength: 512 },
+	},
+	required: ['fileId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const file = await DriveFiles.findOne(ps.fileId);
 
 	if (file == null) {
@@ -79,6 +69,9 @@ export default define(meta, async (ps, user) => {
 	}
 
 	if (ps.name) file.name = ps.name;
+	if (!DriveFiles.validateFileName(file.name)) {
+		throw new ApiError(meta.errors.invalidFileName);
+	}
 
 	if (ps.comment !== undefined) file.comment = ps.comment;
 

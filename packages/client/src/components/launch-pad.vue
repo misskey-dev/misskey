@@ -1,6 +1,6 @@
 <template>
-<MkModal ref="modal" :prefer-type="'dialog'" @click="$refs.modal.close()" @closed="$emit('closed')">
-	<div class="szkkfdyq _popup">
+<MkModal ref="modal" v-slot="{ type, maxHeight }" :prefer-type="preferedModalType" :anchor="{ x: 'right', y: 'center' }" :transparent-bg="true" :src="src" @click="modal.close()" @closed="emit('closed')">
+	<div class="szkkfdyq _popup _shadow" :class="{ asDrawer: type === 'drawer' }" :style="{ maxHeight: maxHeight ? maxHeight + 'px' : '' }">
 		<div class="main">
 			<template v-for="item in items">
 				<button v-if="item.action" v-click-anime class="_button" @click="$event => { item.action($event); close(); }">
@@ -33,97 +33,94 @@
 </MkModal>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import {  } from 'vue';
 import MkModal from '@/components/ui/modal.vue';
 import { menuDef } from '@/menu';
 import { instanceName } from '@/config';
+import { defaultStore } from '@/store';
+import { i18n } from '@/i18n';
+import { deviceKind } from '@/scripts/device-kind';
 
-export default defineComponent({
-	components: {
-		MkModal,
-	},
-
-	emits: ['closed'],
-
-	data() {
-		return {
-			menuDef: menuDef,
-			items: [],
-			instanceName,
-		};
-	},
-
-	computed: {
-		menu(): string[] {
-			return this.$store.state.menu;
-		},
-	},
-
-	created() {
-		this.items = Object.keys(this.menuDef).filter(k => !this.menu.includes(k)).map(k => this.menuDef[k]).filter(def => def.show == null ? true : def.show).map(def => ({
-			type: def.to ? 'link' : 'button',
-			text: this.$ts[def.title],
-			icon: def.icon,
-			to: def.to,
-			action: def.action,
-			indicate: def.indicated,
-		}));
-	},
-
-	methods: {
-		close() {
-			this.$refs.modal.close();
-		}
-	}
+const props = withDefaults(defineProps<{
+	src?: HTMLElement;
+}>(), {
 });
+
+const emit = defineEmits<{
+	(ev: 'closed'): void;
+}>();
+
+const preferedModalType = (deviceKind === 'desktop' && props.src != null) ? 'popup' :
+	deviceKind === 'smartphone' ? 'drawer' :
+	'dialog';
+
+const modal = $ref<InstanceType<typeof MkModal>>();
+
+const menu = defaultStore.state.menu;
+
+const items = Object.keys(menuDef).filter(k => !menu.includes(k)).map(k => menuDef[k]).filter(def => def.show == null ? true : def.show).map(def => ({
+	type: def.to ? 'link' : 'button',
+	text: i18n.ts[def.title],
+	icon: def.icon,
+	to: def.to,
+	action: def.action,
+	indicate: def.indicated,
+}));
+
+function close() {
+	modal.close();
+}
 </script>
 
 <style lang="scss" scoped>
 .szkkfdyq {
-	width: 100%;
 	max-height: 100%;
-	max-width: 800px;
-	padding: 32px;
+	width: min(460px, 100vw);
+	padding: 24px;
 	box-sizing: border-box;
 	overflow: auto;
-	text-align: center;
+	overscroll-behavior: contain;
+	text-align: left;
 	border-radius: 16px;
 
-	@media (max-width: 500px) {
-		padding: 16px;
+	&.asDrawer {
+		width: 100%;
+		padding: 16px 16px calc(env(safe-area-inset-bottom, 0px) + 16px) 16px;
+		border-radius: 24px;
+		border-bottom-right-radius: 0;
+		border-bottom-left-radius: 0;
+		text-align: center;
 	}
-	
+
 	> .main, > .sub {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+
 		> * {
 			position: relative;
-			display: inline-flex;
+			display: flex;
 			flex-direction: column;
 			align-items: center;
 			justify-content: center;
 			vertical-align: bottom;
-			width: 128px;
-			height: 128px;
-			border-radius: var(--radius);
-
-			@media (max-width: 500px) {
-				width: 100px;
-				height: 100px;
-			}
+			height: 100px;
+			border-radius: 10px;
 
 			&:hover {
-				background: rgba(0, 0, 0, 0.05);
+				color: var(--accent);
+				background: var(--accentedBg);
 				text-decoration: none;
 			}
 
 			> .icon {
-				font-size: 26px;
-				height: 32px;
+				font-size: 24px;
+				height: 24px;
 			}
 
 			> .text {
-				margin-top: 8px;
-				font-size: 0.9em;
+				margin-top: 12px;
+				font-size: 0.8em;
 				line-height: 1.5em;
 			}
 

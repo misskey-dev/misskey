@@ -1,10 +1,8 @@
-import $ from 'cafy';
-import define from '../../define';
-import { genId } from '@/misc/gen-id';
-import { Antennas, UserLists, UserGroupJoinings } from '@/models/index';
-import { ID } from '@/misc/cafy-id';
-import { ApiError } from '../../error';
-import { publishInternalEvent } from '@/services/stream';
+import define from '../../define.js';
+import { genId } from '@/misc/gen-id.js';
+import { Antennas, UserLists, UserGroupJoinings } from '@/models/index.js';
+import { ApiError } from '../../error.js';
+import { publishInternalEvent } from '@/services/stream.js';
 
 export const meta = {
 	tags: ['antennas'],
@@ -12,52 +10,6 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'write:account',
-
-	params: {
-		name: {
-			validator: $.str.range(1, 100),
-		},
-
-		src: {
-			validator: $.str.or(['home', 'all', 'users', 'list', 'group']),
-		},
-
-		userListId: {
-			validator: $.nullable.optional.type(ID),
-		},
-
-		userGroupId: {
-			validator: $.nullable.optional.type(ID),
-		},
-
-		keywords: {
-			validator: $.arr($.arr($.str)),
-		},
-
-		excludeKeywords: {
-			validator: $.arr($.arr($.str)),
-		},
-
-		users: {
-			validator: $.arr($.str),
-		},
-
-		caseSensitive: {
-			validator: $.bool,
-		},
-
-		withReplies: {
-			validator: $.bool,
-		},
-
-		withFile: {
-			validator: $.bool,
-		},
-
-		notify: {
-			validator: $.bool,
-		},
-	},
 
 	errors: {
 		noSuchUserList: {
@@ -80,8 +32,36 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		name: { type: 'string', minLength: 1, maxLength: 100 },
+		src: { type: 'string', enum: ['home', 'all', 'users', 'list', 'group'] },
+		userListId: { type: 'string', format: 'misskey:id', nullable: true },
+		userGroupId: { type: 'string', format: 'misskey:id', nullable: true },
+		keywords: { type: 'array', items: {
+			type: 'array', items: {
+				type: 'string',
+			},
+		} },
+		excludeKeywords: { type: 'array', items: {
+			type: 'array', items: {
+				type: 'string',
+			},
+		} },
+		users: { type: 'array', items: {
+			type: 'string',
+		} },
+		caseSensitive: { type: 'boolean' },
+		withReplies: { type: 'boolean' },
+		withFile: { type: 'boolean' },
+		notify: { type: 'boolean' },
+	},
+	required: ['name', 'src', 'keywords', 'excludeKeywords', 'users', 'caseSensitive', 'withReplies', 'withFile', 'notify'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	let userList;
 	let userGroupJoining;
 
