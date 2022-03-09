@@ -6,6 +6,7 @@ import cluster from 'node:cluster';
 import chalk from 'chalk';
 import chalkTemplate from 'chalk-template';
 import * as portscanner from 'portscanner';
+import semver from 'semver';
 import { getConnection } from 'typeorm';
 
 import Logger from '@/services/logger.js';
@@ -88,10 +89,6 @@ export async function masterMain() {
 	}
 }
 
-const runningNodejsVersion = process.version.slice(1).split('.').map(x => parseInt(x, 10));
-const requiredNodejsVersion = [11, 7, 0];
-const satisfyNodejsVersion = !lessThan(runningNodejsVersion, requiredNodejsVersion);
-
 function showEnvironment(): void {
 	const env = process.env.NODE_ENV;
 	const logger = bootLogger.createSubLogger('env');
@@ -108,10 +105,11 @@ function showEnvironment(): void {
 function showNodejsVersion(): void {
 	const nodejsLogger = bootLogger.createSubLogger('nodejs');
 
-	nodejsLogger.info(`Version ${runningNodejsVersion.join('.')}`);
+	nodejsLogger.info(`Version ${process.version} detected.`);
 
-	if (!satisfyNodejsVersion) {
-		nodejsLogger.error(`Node.js version is less than ${requiredNodejsVersion.join('.')}. Please upgrade it.`, null, true);
+	const minVersion = fs.readFileSync(`${_dirname}/../../../../.node-version`, 'utf-8').trim();
+	if (semver.lt(process.version, minVersion)) {
+		nodejsLogger.error(`At least Node.js ${minVersion} required!`);
 		process.exit(1);
 	}
 }
