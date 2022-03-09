@@ -31,6 +31,7 @@ You should also include the user name that made the change.
 - 連合チャートにActiveを追加 @syuilo
 - デフォルトで10秒以上時間がかかるデータベースへのクエリは中断されるように @syuilo
 	- 設定ファイルの`db.extra`に`statement_timeout`を設定することでタイムアウト時間を変更できます
+- Client: スプラッシュスクリーンにインスタンスのアイコンを表示するように @syuilo
 
 ### Bugfixes
 - Client: リアクションピッカーの高さが低くなったまま戻らないことがあるのを修正 @syuilo
