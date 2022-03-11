@@ -242,7 +242,6 @@ function onDeleted(id) {
 }
 
 function thisScrollToBottom() {
-	pagingComponent?.executeQueue();
 	scrollToBottom($$(rootEl).value, { behavior: "smooth" });
 }
 
