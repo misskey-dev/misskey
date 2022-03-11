@@ -1,0 +1,48 @@
+---
+_lang_: "Tiếng Việt"
+headlineMisskey: "Mạng xã hội liên hợp"
+monthAndDay: "{day} tháng {month}"
+search: "Tìm kiếm"
+notifications: "Thông báo"
+username: "Tên người dùng"
+password: "Mật khẩu"
+forgotPassword: "Quên mật khẩu"
+ok: "Đồng ý"
+renotedBy: "Chia sẻ bởi {user}"
+flagAsBot: "Đánh dấu đây là tài khoản bot"
+searchWith: "Tìm kiếm: {q}"
+followConfirm: "Bạn có chắc muốn theo dõi {name}？"
+cpuAndMemory: "CPU và Dung lượng"
+dayX: "{day}"
+yearX: "{year}"
+aboutMisskey: "Về Misskey"
+smtpUser: "Tên người dùng"
+smtpPass: "Mật khẩu"
+reportAbuseOf: "Báo cáo {name}"
+renotedCount: "Lượt chia sẻ"
+translatedFrom: "Dịch từ {x}"
+searchByGoogle: "Google"
+_mfm:
+  search: "Tìm kiếm"
+_theme:
+  installed: "{name} đã được cài đặt"
+_sfx:
+  notification: "Thông báo"
+_ago:
+  unknown: "Không rõ"
+  future: "Tương lai"
+  justNow: "Vừa xong"
+  secondsAgo: "{n}s trước"
+  minutesAgo: "{n} phút trước"
+  hoursAgo: "{n} giờ trước"
+  daysAgo: "{n} ngày trước"
+  weeksAgo: "{n} tuần trước"
+  monthsAgo: "{n} tháng trước"
+  yearsAgo: "{n} năm trước"
+_widgets:
+  notifications: "Thông báo"
+_profile:
+  username: "Tên người dùng"
+_deck:
+  _columns:
+    notifications: "Thông báo"

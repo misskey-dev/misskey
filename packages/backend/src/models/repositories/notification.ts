@@ -67,6 +67,12 @@ export class NotificationRepository extends Repository<Notification> {
 				}),
 				choice: notification.choice,
 			} : {}),
+			...(notification.type === 'pollEnded' ? {
+				note: Notes.pack(notification.note || notification.noteId!, { id: notification.notifieeId }, {
+					detail: true,
+					_hint_: options._hintForEachNotes_,
+				}),
+			} : {}),
 			...(notification.type === 'groupInvited' ? {
 				invitation: UserGroupInvitations.pack(notification.userGroupInvitationId!),
 			} : {}),

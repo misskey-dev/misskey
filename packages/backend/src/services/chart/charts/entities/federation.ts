@@ -9,6 +9,8 @@ export const schema = {
 	'sub': { accumulate: true, range: 'small' },
 	'pub': { accumulate: true, range: 'small' },
 	'pubsub': { accumulate: true, range: 'small' },
+	'subActive': { accumulate: true, range: 'small' },
+	'pubActive': { accumulate: true, range: 'small' },
 } as const;
 
 export const entity = Chart.schemaToEntity(name, schema);
