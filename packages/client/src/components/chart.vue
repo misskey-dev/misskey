@@ -795,6 +795,36 @@ export default defineComponent({
 			};
 		};
 
+		const fetchPerUserFollowingChart = async (): Promise<typeof data> => {
+			const raw = await os.api('charts/user/following', { userId: props.args.user.id, limit: props.limit, span: props.span });
+			return {
+				series: [{
+					name: 'Local',
+					type: 'area',
+					data: format(raw.local.followings.total),
+				}, {
+					name: 'Remote',
+					type: 'area',
+					data: format(raw.remote.followings.total),
+				}],
+			};
+		};
+
+		const fetchPerUserFollowersChart = async (): Promise<typeof data> => {
+			const raw = await os.api('charts/user/following', { userId: props.args.user.id, limit: props.limit, span: props.span });
+			return {
+				series: [{
+					name: 'Local',
+					type: 'area',
+					data: format(raw.local.followers.total),
+				}, {
+					name: 'Remote',
+					type: 'area',
+					data: format(raw.remote.followers.total),
+				}],
+			};
+		};
+
 		const fetchPerUserDriveChart = async (): Promise<typeof data> => {
 			const raw = await os.api('charts/user/drive', { userId: props.args.user.id, limit: props.limit, span: props.span });
 			return {
@@ -838,6 +868,8 @@ export default defineComponent({
 					case 'instance-drive-files-total': return fetchInstanceDriveFilesChart(true);
 
 					case 'per-user-notes': return fetchPerUserNotesChart();
+					case 'per-user-following': return fetchPerUserFollowingChart();
+					case 'per-user-followers': return fetchPerUserFollowersChart();
 					case 'per-user-drive': return fetchPerUserDriveChart();
 				}
 			};
