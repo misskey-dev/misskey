@@ -59,7 +59,8 @@ export class Notification {
 	 * renote - (自分または自分がWatchしている)投稿がRenoteされた
 	 * quote - (自分または自分がWatchしている)投稿が引用Renoteされた
 	 * reaction - (自分または自分がWatchしている)投稿にリアクションされた
-	 * pollVote - (自分または自分がWatchしている)投稿の投票に投票された
+	 * pollVote - (自分または自分がWatchしている)投稿のアンケートに投票された
+	 * pollEnded - 自分のアンケートもしくは自分が投票したアンケートが終了した
 	 * receiveFollowRequest - フォローリクエストされた
 	 * followRequestAccepted - 自分の送ったフォローリクエストが承認された
 	 * groupInvited - グループに招待された

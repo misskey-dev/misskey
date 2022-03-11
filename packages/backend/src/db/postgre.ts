@@ -184,7 +184,7 @@ export function initDb(justBorrow = false, sync = false, forceRecreate = false) 
 		} catch (e) {}
 	}
 
-	const log = process.env.NODE_ENV != 'production';
+	const log = process.env.NODE_ENV !== 'production';
 
 	return createConnection({
 		type: 'postgres',
@@ -193,7 +193,10 @@ export function initDb(justBorrow = false, sync = false, forceRecreate = false) 
 		username: config.db.user,
 		password: config.db.pass,
 		database: config.db.db,
-		extra: config.db.extra,
+		extra: {
+			statement_timeout: 1000 * 10,
+			...config.db.extra,
+		},
 		synchronize: process.env.NODE_ENV === 'test' || sync,
 		dropSchema: process.env.NODE_ENV === 'test' && !justBorrow,
 		cache: !config.db.disableCache ? {
