@@ -16,6 +16,7 @@ export class MutingRepository extends Repository<Muting> {
 		return await awaitAll({
 			id: muting.id,
 			createdAt: muting.createdAt.toISOString(),
+			expiresAt: muting.expiresAt ? muting.expiresAt.toISOString() : null,
 			muteeId: muting.muteeId,
 			mutee: Users.pack(muting.muteeId, me, {
 				detail: true,

@@ -141,6 +141,10 @@ export default defineComponent({
 	width: 100%;
 	height: 100%;
 	flex-direction: row;
+	overflow: scroll;
+	position: fixed;
+	left: 0;
+	top: 0;
 }
 @media (max-width: 850px) {
 	.container {

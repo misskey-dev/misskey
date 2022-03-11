@@ -48,7 +48,7 @@
 
 ## Sponsors
 <div align="center">
-	<a class="rss3" title="RSS3" href="https://rss3.io/" target="_blank" style="display: inline-block;"><img src="https://rss3.io/assets/images/Logo.svg" alt="RSS3" style="display: inline-block; height: 60px;"></a>
+	<a class="rss3" title="RSS3" href="https://rss3.io/" target="_blank"><img src="https://rss3.mypinata.cloud/ipfs/QmUG6H3Z7D5P511shn7sB4CPmpjH5uZWu4m5mWX7U3Gqbu" alt="RSS3" height="60"></a>
 </div>
 
 ## Backers

@@ -68,11 +68,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'deviceAccount',
 		default: [
 			'notifications',
-			'messaging',
+			'favorites',
 			'drive',
 			'followRequests',
 			'-',
-			'gallery',
 			'featured',
 			'explore',
 			'announcements',
@@ -192,7 +191,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	reactionPickerHeight: {
 		where: 'device',
-		default: 1
+		default: 2
 	},
 	reactionPickerUseDrawerForMobile: {
 		where: 'device',

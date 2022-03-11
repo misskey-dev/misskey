@@ -4,8 +4,6 @@
 
 import * as fs from 'node:fs';
 import * as http from 'http';
-import * as http2 from 'http2';
-import * as https from 'https';
 import Koa from 'koa';
 import Router from '@koa/router';
 import mount from 'koa-mount';
@@ -123,16 +121,7 @@ app.use(router.routes());
 app.use(mount(webServer));
 
 function createServer() {
-	if (config.https) {
-		const certs: any = {};
-		for (const k of Object.keys(config.https)) {
-			certs[k] = fs.readFileSync(config.https[k]);
-		}
-		certs['allowHTTP1'] = true;
-		return http2.createSecureServer(certs, app.callback()) as https.Server;
-	} else {
-		return http.createServer(app.callback());
-	}
+	return http.createServer(app.callback());
 }
 
 // For testing
