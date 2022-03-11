@@ -25,7 +25,7 @@ const emit = defineEmits<{
 
 provide('inChannel', computed(() => props.src === 'channel'));
 
-let tlComponent: InstanceType<typeof XNotes> = $ref();
+const tlComponent: InstanceType<typeof XNotes> = $ref();
 
 const prepend = note => {
 	tlComponent.pagingComponent?.prepend(note);
