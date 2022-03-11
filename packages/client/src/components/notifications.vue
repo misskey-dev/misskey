@@ -35,19 +35,18 @@ const props = defineProps<{
 
 const pagingComponent = ref<InstanceType<typeof MkPagination>>();
 
-const allIncludeTypes = computed(() => props.includeTypes ?? notificationTypes.filter(x => !$i.mutingNotificationTypes.includes(x)));
-
 const pagination: Paging = {
 	endpoint: 'i/notifications' as const,
 	limit: 10,
 	params: computed(() => ({
-		includeTypes: allIncludeTypes.value || undefined,
+		includeTypes: props.includeTypes ?? undefined,
+		excludeTypes: props.includeTypes ? undefined : $i.mutingNotificationTypes,
 		unreadOnly: props.unreadOnly,
 	})),
 };
 
 const onNotification = (notification) => {
-	const isMuted = !allIncludeTypes.value.includes(notification.type);
+	const isMuted = props.includeTypes ? !props.includeTypes.includes(notification.type) : $i.mutingNotificationTypes.includes(notification.type);
 	if (isMuted || document.visibilityState === 'visible') {
 		stream.send('readNotification', {
 			id: notification.id

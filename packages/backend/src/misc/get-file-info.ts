@@ -2,7 +2,7 @@ import * as fs from 'node:fs';
 import * as crypto from 'node:crypto';
 import * as stream from 'node:stream';
 import * as util from 'node:util';
-import fileType from 'file-type';
+import { fileTypeFromFile } from 'file-type';
 import isSvg from 'is-svg';
 import probeImageSize from 'probe-image-size';
 import sharp from 'sharp';
@@ -109,7 +109,7 @@ export async function detectType(path: string): Promise<{
 		return TYPE_OCTET_STREAM;
 	}
 
-	const type = await fileType.fromFile(path);
+	const type = await fileTypeFromFile(path);
 
 	if (type) {
 		// XMLはSVGかもしれない

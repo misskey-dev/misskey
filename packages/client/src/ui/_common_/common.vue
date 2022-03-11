@@ -107,6 +107,7 @@ export default defineComponent({
 	padding: 4px 5px;
 	font-size: 14px;
 	pointer-events: none;
+	user-select: none;
 
 	> span {
 		animation: dev-ticker-blink 2s infinite;
