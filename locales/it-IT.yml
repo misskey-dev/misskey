@@ -802,6 +802,7 @@ leaveGroupConfirm: "Uscire da「{name}」?"
 useDrawerReactionPickerForMobile: "Mostra sul drawer da dispositivo mobile"
 welcomeBackWithName: "Bentornato/a, {name}"
 clickToFinishEmailVerification: "Fai click su [{ok}] per completare la verifica dell'indirizzo email."
+searchByGoogle: "Cerca"
 indefinitely: "Non scade"
 _emailUnavailable:
   used: "Email già in uso"
