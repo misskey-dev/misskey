@@ -55,10 +55,6 @@ export default define(meta, paramDef, async (ps, me) => {
 		case '-caughtAt': query.orderBy('instance.caughtAt', 'ASC'); break;
 		case '+lastCommunicatedAt': query.orderBy('instance.lastCommunicatedAt', 'DESC'); break;
 		case '-lastCommunicatedAt': query.orderBy('instance.lastCommunicatedAt', 'ASC'); break;
-		case '+driveUsage': query.orderBy('instance.driveUsage', 'DESC'); break;
-		case '-driveUsage': query.orderBy('instance.driveUsage', 'ASC'); break;
-		case '+driveFiles': query.orderBy('instance.driveFiles', 'DESC'); break;
-		case '-driveFiles': query.orderBy('instance.driveFiles', 'ASC'); break;
 
 		default: query.orderBy('instance.id', 'DESC'); break;
 	}

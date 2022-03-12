@@ -86,8 +86,6 @@ async function postProcess(file: DriveFile, isExpired = false) {
 	perUserDriveChart.update(file, false);
 	if (file.userHost !== null) {
 		instanceChart.updateDrive(file, false);
-		Instances.decrement({ host: file.userHost }, 'driveUsage', file.size);
-		Instances.decrement({ host: file.userHost }, 'driveFiles', 1);
 	}
 }
 

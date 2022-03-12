@@ -3,7 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import MkLoading from '@/pages/_loading_.vue';
 import MkError from '@/pages/_error_.vue';
 import MkTimeline from '@/pages/timeline.vue';
-import { $i } from './account';
+import { $i, iAmModerator } from './account';
 import { ui } from '@/config';
 
 const page = (path: string, ui?: string) => defineAsyncComponent({
@@ -67,8 +67,8 @@ const defaultRoutes = [
 	{ path: '/my/antennas/:antennaId', component: page('my-antennas/edit'), props: true },
 	{ path: '/my/clips', component: page('my-clips/index') },
 	{ path: '/scratchpad', component: page('scratchpad') },
-	{ path: '/admin/:page(.*)?', component: page('admin/index'), props: route => ({ initialPage: route.params.page || null }) },
-	{ path: '/admin', component: page('admin/index') },
+	{ path: '/admin/:page(.*)?', component: iAmModerator ? page('admin/index') : page('not-found'), props: route => ({ initialPage: route.params.page || null }) },
+	{ path: '/admin', component: iAmModerator ? page('admin/index') : page('not-found') },
 	{ path: '/notes/:note', name: 'note', component: page('note'), props: route => ({ noteId: route.params.note }) },
 	{ path: '/tags/:tag', component: page('tag'), props: route => ({ tag: route.params.tag }) },
 	{ path: '/user-info/:user', component: page('user-info'), props: route => ({ userId: route.params.user }) },
