@@ -1,310 +1,107 @@
-import $ from 'cafy';
-import define from '../../define';
+import define from '../../define.js';
 import { getConnection } from 'typeorm';
-import { Meta } from '@/models/entities/meta';
-import { insertModerationLog } from '@/services/insert-moderation-log';
-import { DB_MAX_NOTE_TEXT_LENGTH } from '@/misc/hard-limits';
-import { ID } from '@/misc/cafy-id';
+import { Meta } from '@/models/entities/meta.js';
+import { insertModerationLog } from '@/services/insert-moderation-log.js';
+import { DB_MAX_NOTE_TEXT_LENGTH } from '@/misc/hard-limits.js';
 
 export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
 	requireAdmin: true,
-
-	params: {
-		disableRegistration: {
-			validator: $.optional.nullable.bool,
-		},
-
-		disableLocalTimeline: {
-			validator: $.optional.nullable.bool,
-		},
-
-		disableGlobalTimeline: {
-			validator: $.optional.nullable.bool,
-		},
-
-		useStarForReactionFallback: {
-			validator: $.optional.nullable.bool,
-		},
-
-		pinnedUsers: {
-			validator: $.optional.nullable.arr($.str),
-		},
-
-		hiddenTags: {
-			validator: $.optional.nullable.arr($.str),
-		},
-
-		blockedHosts: {
-			validator: $.optional.nullable.arr($.str),
-		},
-
-		themeColor: {
-			validator: $.optional.nullable.str,
-		},
-
-		mascotImageUrl: {
-			validator: $.optional.nullable.str,
-		},
-
-		bannerUrl: {
-			validator: $.optional.nullable.str,
-		},
-
-		errorImageUrl: {
-			validator: $.optional.nullable.str,
-		},
-
-		iconUrl: {
-			validator: $.optional.nullable.str,
-		},
-
-		backgroundImageUrl: {
-			validator: $.optional.nullable.str,
-		},
-
-		logoImageUrl: {
-			validator: $.optional.nullable.str,
-		},
-
-		name: {
-			validator: $.optional.nullable.str,
-		},
-
-		description: {
-			validator: $.optional.nullable.str,
-		},
-
-		maxNoteTextLength: {
-			validator: $.optional.num.min(0).max(DB_MAX_NOTE_TEXT_LENGTH),
-		},
-
-		localDriveCapacityMb: {
-			validator: $.optional.num.min(0),
-		},
-
-		remoteDriveCapacityMb: {
-			validator: $.optional.num.min(0),
-		},
-
-		cacheRemoteFiles: {
-			validator: $.optional.bool,
-		},
-
-		proxyRemoteFiles: {
-			validator: $.optional.bool,
-		},
-
-		emailRequiredForSignup: {
-			validator: $.optional.bool,
-		},
-
-		enableHcaptcha: {
-			validator: $.optional.bool,
-		},
-
-		hcaptchaSiteKey: {
-			validator: $.optional.nullable.str,
-		},
-
-		hcaptchaSecretKey: {
-			validator: $.optional.nullable.str,
-		},
-
-		enableRecaptcha: {
-			validator: $.optional.bool,
-		},
-
-		recaptchaSiteKey: {
-			validator: $.optional.nullable.str,
-		},
-
-		recaptchaSecretKey: {
-			validator: $.optional.nullable.str,
-		},
-
-		proxyAccountId: {
-			validator: $.optional.nullable.type(ID),
-		},
-
-		maintainerName: {
-			validator: $.optional.nullable.str,
-		},
-
-		maintainerEmail: {
-			validator: $.optional.nullable.str,
-		},
-
-		pinnedPages: {
-			validator: $.optional.arr($.str),
-		},
-
-		pinnedClipId: {
-			validator: $.optional.nullable.type(ID),
-		},
-
-		langs: {
-			validator: $.optional.arr($.str),
-		},
-
-		summalyProxy: {
-			validator: $.optional.nullable.str,
-		},
-
-		deeplAuthKey: {
-			validator: $.optional.nullable.str,
-		},
-
-		deeplIsPro: {
-			validator: $.optional.bool,
-		},
-
-		enableTwitterIntegration: {
-			validator: $.optional.bool,
-		},
-
-		twitterConsumerKey: {
-			validator: $.optional.nullable.str,
-		},
-
-		twitterConsumerSecret: {
-			validator: $.optional.nullable.str,
-		},
-
-		enableGithubIntegration: {
-			validator: $.optional.bool,
-		},
-
-		githubClientId: {
-			validator: $.optional.nullable.str,
-		},
-
-		githubClientSecret: {
-			validator: $.optional.nullable.str,
-		},
-
-		enableDiscordIntegration: {
-			validator: $.optional.bool,
-		},
-
-		discordClientId: {
-			validator: $.optional.nullable.str,
-		},
-
-		discordClientSecret: {
-			validator: $.optional.nullable.str,
-		},
-
-		enableEmail: {
-			validator: $.optional.bool,
-		},
-
-		email: {
-			validator: $.optional.nullable.str,
-		},
-
-		smtpSecure: {
-			validator: $.optional.bool,
-		},
-
-		smtpHost: {
-			validator: $.optional.nullable.str,
-		},
-
-		smtpPort: {
-			validator: $.optional.nullable.num,
-		},
-
-		smtpUser: {
-			validator: $.optional.nullable.str,
-		},
-
-		smtpPass: {
-			validator: $.optional.nullable.str,
-		},
-
-		enableServiceWorker: {
-			validator: $.optional.bool,
-		},
-
-		swPublicKey: {
-			validator: $.optional.nullable.str,
-		},
-
-		swPrivateKey: {
-			validator: $.optional.nullable.str,
-		},
-
-		tosUrl: {
-			validator: $.optional.nullable.str,
-		},
-
-		repositoryUrl: {
-			validator: $.optional.str,
-		},
-
-		feedbackUrl: {
-			validator: $.optional.str,
-		},
-
-		useObjectStorage: {
-			validator: $.optional.bool,
-		},
-
-		objectStorageBaseUrl: {
-			validator: $.optional.nullable.str,
-		},
-
-		objectStorageBucket: {
-			validator: $.optional.nullable.str,
-		},
-
-		objectStoragePrefix: {
-			validator: $.optional.nullable.str,
-		},
-
-		objectStorageEndpoint: {
-			validator: $.optional.nullable.str,
-		},
-
-		objectStorageRegion: {
-			validator: $.optional.nullable.str,
-		},
-
-		objectStoragePort: {
-			validator: $.optional.nullable.num,
-		},
-
-		objectStorageAccessKey: {
-			validator: $.optional.nullable.str,
-		},
-
-		objectStorageSecretKey: {
-			validator: $.optional.nullable.str,
-		},
-
-		objectStorageUseSSL: {
-			validator: $.optional.bool,
-		},
-
-		objectStorageUseProxy: {
-			validator: $.optional.bool,
-		},
-
-		objectStorageSetPublicRead: {
-			validator: $.optional.bool,
-		},
-
-		objectStorageS3ForcePathStyle: {
-			validator: $.optional.bool,
-		},
+} as const;
+
+export const paramDef = {
+	type: 'object',
+	properties: {
+		disableRegistration: { type: 'boolean', nullable: true },
+		disableLocalTimeline: { type: 'boolean', nullable: true },
+		disableGlobalTimeline: { type: 'boolean', nullable: true },
+		useStarForReactionFallback: { type: 'boolean', nullable: true },
+		pinnedUsers: { type: 'array', nullable: true, items: {
+			type: 'string',
+		} },
+		hiddenTags: { type: 'array', nullable: true, items: {
+			type: 'string',
+		} },
+		blockedHosts: { type: 'array', nullable: true, items: {
+			type: 'string',
+		} },
+		themeColor: { type: 'string', nullable: true },
+		mascotImageUrl: { type: 'string', nullable: true },
+		bannerUrl: { type: 'string', nullable: true },
+		errorImageUrl: { type: 'string', nullable: true },
+		iconUrl: { type: 'string', nullable: true },
+		backgroundImageUrl: { type: 'string', nullable: true },
+		logoImageUrl: { type: 'string', nullable: true },
+		name: { type: 'string', nullable: true },
+		description: { type: 'string', nullable: true },
+		defaultLightTheme: { type: 'string', nullable: true },
+		defaultDarkTheme: { type: 'string', nullable: true },
+		localDriveCapacityMb: { type: 'integer' },
+		remoteDriveCapacityMb: { type: 'integer' },
+		cacheRemoteFiles: { type: 'boolean' },
+		emailRequiredForSignup: { type: 'boolean' },
+		enableHcaptcha: { type: 'boolean' },
+		hcaptchaSiteKey: { type: 'string', nullable: true },
+		hcaptchaSecretKey: { type: 'string', nullable: true },
+		enableRecaptcha: { type: 'boolean' },
+		recaptchaSiteKey: { type: 'string', nullable: true },
+		recaptchaSecretKey: { type: 'string', nullable: true },
+		proxyAccountId: { type: 'string', format: 'misskey:id', nullable: true },
+		maintainerName: { type: 'string', nullable: true },
+		maintainerEmail: { type: 'string', nullable: true },
+		pinnedPages: { type: 'array', items: {
+			type: 'string',
+		} },
+		pinnedClipId: { type: 'string', format: 'misskey:id', nullable: true },
+		langs: { type: 'array', items: {
+			type: 'string',
+		} },
+		summalyProxy: { type: 'string', nullable: true },
+		deeplAuthKey: { type: 'string', nullable: true },
+		deeplIsPro: { type: 'boolean' },
+		enableTwitterIntegration: { type: 'boolean' },
+		twitterConsumerKey: { type: 'string', nullable: true },
+		twitterConsumerSecret: { type: 'string', nullable: true },
+		enableGithubIntegration: { type: 'boolean' },
+		githubClientId: { type: 'string', nullable: true },
+		githubClientSecret: { type: 'string', nullable: true },
+		enableDiscordIntegration: { type: 'boolean' },
+		discordClientId: { type: 'string', nullable: true },
+		discordClientSecret: { type: 'string', nullable: true },
+		enableEmail: { type: 'boolean' },
+		email: { type: 'string', nullable: true },
+		smtpSecure: { type: 'boolean' },
+		smtpHost: { type: 'string', nullable: true },
+		smtpPort: { type: 'integer', nullable: true },
+		smtpUser: { type: 'string', nullable: true },
+		smtpPass: { type: 'string', nullable: true },
+		enableServiceWorker: { type: 'boolean' },
+		swPublicKey: { type: 'string', nullable: true },
+		swPrivateKey: { type: 'string', nullable: true },
+		tosUrl: { type: 'string', nullable: true },
+		repositoryUrl: { type: 'string' },
+		feedbackUrl: { type: 'string' },
+		useObjectStorage: { type: 'boolean' },
+		objectStorageBaseUrl: { type: 'string', nullable: true },
+		objectStorageBucket: { type: 'string', nullable: true },
+		objectStoragePrefix: { type: 'string', nullable: true },
+		objectStorageEndpoint: { type: 'string', nullable: true },
+		objectStorageRegion: { type: 'string', nullable: true },
+		objectStoragePort: { type: 'integer', nullable: true },
+		objectStorageAccessKey: { type: 'string', nullable: true },
+		objectStorageSecretKey: { type: 'string', nullable: true },
+		objectStorageUseSSL: { type: 'boolean' },
+		objectStorageUseProxy: { type: 'boolean' },
+		objectStorageSetPublicRead: { type: 'boolean' },
+		objectStorageS3ForcePathStyle: { type: 'boolean' },
 	},
+	required: [],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	const set = {} as Partial<Meta>;
 
 	if (typeof ps.disableRegistration === 'boolean') {
@@ -367,8 +164,12 @@ export default define(meta, async (ps, me) => {
 		set.description = ps.description;
 	}
 
-	if (ps.maxNoteTextLength) {
-		set.maxNoteTextLength = ps.maxNoteTextLength;
+	if (ps.defaultLightTheme !== undefined) {
+		set.defaultLightTheme = ps.defaultLightTheme;
+	}
+
+	if (ps.defaultDarkTheme !== undefined) {
+		set.defaultDarkTheme = ps.defaultDarkTheme;
 	}
 
 	if (ps.localDriveCapacityMb !== undefined) {
@@ -381,10 +182,6 @@ export default define(meta, async (ps, me) => {
 
 	if (ps.cacheRemoteFiles !== undefined) {
 		set.cacheRemoteFiles = ps.cacheRemoteFiles;
-	}
-
-	if (ps.proxyRemoteFiles !== undefined) {
-		set.proxyRemoteFiles = ps.proxyRemoteFiles;
 	}
 
 	if (ps.emailRequiredForSignup !== undefined) {

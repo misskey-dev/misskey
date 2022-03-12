@@ -1,13 +1,11 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
-import define from '../../define';
-import readNote from '@/services/note/read';
-import { Antennas, Notes, AntennaNotes } from '@/models/index';
-import { makePaginationQuery } from '../../common/make-pagination-query';
-import { generateVisibilityQuery } from '../../common/generate-visibility-query';
-import { generateMutedUserQuery } from '../../common/generate-muted-user-query';
-import { ApiError } from '../../error';
-import { generateBlockedUserQuery } from '../../common/generate-block-query';
+import define from '../../define.js';
+import readNote from '@/services/note/read.js';
+import { Antennas, Notes, AntennaNotes } from '@/models/index.js';
+import { makePaginationQuery } from '../../common/make-pagination-query.js';
+import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
+import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
+import { ApiError } from '../../error.js';
+import { generateBlockedUserQuery } from '../../common/generate-block-query.js';
 
 export const meta = {
 	tags: ['antennas', 'account', 'notes'],
@@ -15,33 +13,6 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'read:account',
-
-	params: {
-		antennaId: {
-			validator: $.type(ID),
-		},
-
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
-		},
-
-		sinceId: {
-			validator: $.optional.type(ID),
-		},
-
-		untilId: {
-			validator: $.optional.type(ID),
-		},
-
-		sinceDate: {
-			validator: $.optional.num,
-		},
-
-		untilDate: {
-			validator: $.optional.num,
-		},
-	},
 
 	errors: {
 		noSuchAntenna: {
@@ -62,8 +33,21 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		antennaId: { type: 'string', format: 'misskey:id' },
+		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+		sinceId: { type: 'string', format: 'misskey:id' },
+		untilId: { type: 'string', format: 'misskey:id' },
+		sinceDate: { type: 'integer' },
+		untilDate: { type: 'integer' },
+	},
+	required: ['antennaId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const antenna = await Antennas.findOne({
 		id: ps.antennaId,
 		userId: user.id,
@@ -81,10 +65,16 @@ export default define(meta, async (ps, user) => {
 			ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
 		.andWhere(`note.id IN (${ antennaQuery.getQuery() })`)
 		.innerJoinAndSelect('note.user', 'user')
+		.leftJoinAndSelect('user.avatar', 'avatar')
+		.leftJoinAndSelect('user.banner', 'banner')
 		.leftJoinAndSelect('note.reply', 'reply')
 		.leftJoinAndSelect('note.renote', 'renote')
 		.leftJoinAndSelect('reply.user', 'replyUser')
+		.leftJoinAndSelect('replyUser.avatar', 'replyUserAvatar')
+		.leftJoinAndSelect('replyUser.banner', 'replyUserBanner')
 		.leftJoinAndSelect('renote.user', 'renoteUser')
+		.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
+		.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner')
 		.setParameters(antennaQuery.getParameters());
 
 	generateVisibilityQuery(query, user);
@@ -92,7 +82,7 @@ export default define(meta, async (ps, user) => {
 	generateBlockedUserQuery(query, user);
 
 	const notes = await query
-		.take(ps.limit!)
+		.take(ps.limit)
 		.getMany();
 
 	if (notes.length > 0) {

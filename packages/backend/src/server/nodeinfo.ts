@@ -1,8 +1,9 @@
-import * as Router from '@koa/router';
-import config from '@/config/index';
-import { fetchMeta } from '@/misc/fetch-meta';
-import { Users, Notes } from '@/models/index';
+import Router from '@koa/router';
+import config from '@/config/index.js';
+import { fetchMeta } from '@/misc/fetch-meta.js';
+import { Users, Notes } from '@/models/index.js';
 import { MoreThan } from 'typeorm';
+import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 
 const router = new Router();
 
@@ -69,7 +70,7 @@ const nodeinfo2 = async () => {
 			emailRequiredForSignup: meta.emailRequiredForSignup,
 			enableHcaptcha: meta.enableHcaptcha,
 			enableRecaptcha: meta.enableRecaptcha,
-			maxNoteTextLength: meta.maxNoteTextLength,
+			maxNoteTextLength: MAX_NOTE_TEXT_LENGTH,
 			enableTwitterIntegration: meta.enableTwitterIntegration,
 			enableGithubIntegration: meta.enableGithubIntegration,
 			enableDiscordIntegration: meta.enableDiscordIntegration,

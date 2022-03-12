@@ -1,39 +1,40 @@
 import * as mfm from 'mfm-js';
-import es from '../../db/elasticsearch';
-import { publishMainStream, publishNotesStream } from '@/services/stream';
-import DeliverManager from '@/remote/activitypub/deliver-manager';
-import renderNote from '@/remote/activitypub/renderer/note';
-import renderCreate from '@/remote/activitypub/renderer/create';
-import renderAnnounce from '@/remote/activitypub/renderer/announce';
-import { renderActivity } from '@/remote/activitypub/renderer/index';
-import { resolveUser } from '@/remote/resolve-user';
-import config from '@/config/index';
-import { updateHashtags } from '../update-hashtag';
-import { concat } from '@/prelude/array';
-import { insertNoteUnread } from '@/services/note/unread';
-import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
-import { extractMentions } from '@/misc/extract-mentions';
-import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm';
-import { extractHashtags } from '@/misc/extract-hashtags';
-import { Note, IMentionedRemoteUsers } from '@/models/entities/note';
-import { Mutings, Users, NoteWatchings, Notes, Instances, UserProfiles, Antennas, Followings, MutedNotes, Channels, ChannelFollowings, Blockings, NoteThreadMutings } from '@/models/index';
-import { DriveFile } from '@/models/entities/drive-file';
-import { App } from '@/models/entities/app';
+import es from '../../db/elasticsearch.js';
+import { publishMainStream, publishNotesStream } from '@/services/stream.js';
+import DeliverManager from '@/remote/activitypub/deliver-manager.js';
+import renderNote from '@/remote/activitypub/renderer/note.js';
+import renderCreate from '@/remote/activitypub/renderer/create.js';
+import renderAnnounce from '@/remote/activitypub/renderer/announce.js';
+import { renderActivity } from '@/remote/activitypub/renderer/index.js';
+import { resolveUser } from '@/remote/resolve-user.js';
+import config from '@/config/index.js';
+import { updateHashtags } from '../update-hashtag.js';
+import { concat } from '@/prelude/array.js';
+import { insertNoteUnread } from '@/services/note/unread.js';
+import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc.js';
+import { extractMentions } from '@/misc/extract-mentions.js';
+import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm.js';
+import { extractHashtags } from '@/misc/extract-hashtags.js';
+import { Note, IMentionedRemoteUsers } from '@/models/entities/note.js';
+import { Mutings, Users, NoteWatchings, Notes, Instances, UserProfiles, Antennas, Followings, MutedNotes, Channels, ChannelFollowings, Blockings, NoteThreadMutings } from '@/models/index.js';
+import { DriveFile } from '@/models/entities/drive-file.js';
+import { App } from '@/models/entities/app.js';
 import { Not, getConnection, In } from 'typeorm';
-import { User, ILocalUser, IRemoteUser } from '@/models/entities/user';
-import { genId } from '@/misc/gen-id';
-import { notesChart, perUserNotesChart, activeUsersChart, instanceChart } from '@/services/chart/index';
-import { Poll, IPoll } from '@/models/entities/poll';
-import { createNotification } from '../create-notification';
-import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error';
-import { checkHitAntenna } from '@/misc/check-hit-antenna';
-import { checkWordMute } from '@/misc/check-word-mute';
-import { addNoteToAntenna } from '../add-note-to-antenna';
-import { countSameRenotes } from '@/misc/count-same-renotes';
-import { deliverToRelays } from '../relay';
-import { Channel } from '@/models/entities/channel';
-import { normalizeForSearch } from '@/misc/normalize-for-search';
-import { getAntennas } from '@/misc/antenna-cache';
+import { User, ILocalUser, IRemoteUser } from '@/models/entities/user.js';
+import { genId } from '@/misc/gen-id.js';
+import { notesChart, perUserNotesChart, activeUsersChart, instanceChart } from '@/services/chart/index.js';
+import { Poll, IPoll } from '@/models/entities/poll.js';
+import { createNotification } from '../create-notification.js';
+import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
+import { checkHitAntenna } from '@/misc/check-hit-antenna.js';
+import { checkWordMute } from '@/misc/check-word-mute.js';
+import { addNoteToAntenna } from '../add-note-to-antenna.js';
+import { countSameRenotes } from '@/misc/count-same-renotes.js';
+import { deliverToRelays } from '../relay.js';
+import { Channel } from '@/models/entities/channel.js';
+import { normalizeForSearch } from '@/misc/normalize-for-search.js';
+import { getAntennas } from '@/misc/antenna-cache.js';
+import { endedPollNotificationQueue } from '@/queue/queues.js';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -294,6 +295,15 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 	// この投稿を除く指定したユーザーによる指定したノートのリノートが存在しないとき
 	if (data.renote && (await countSameRenotes(user.id, data.renote.id, note.id) === 0)) {
 		incRenoteCount(data.renote);
+	}
+
+	if (data.poll && data.poll.expiresAt) {
+		const delay = data.poll.expiresAt.getTime() - Date.now();
+		endedPollNotificationQueue.add({
+			noteId: note.id,
+		}, {
+			delay
+		});
 	}
 
 	if (!silent) {

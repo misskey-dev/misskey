@@ -1,26 +1,26 @@
-import * as fs from 'fs';
+import * as fs from 'node:fs';
 
 import { v4 as uuid } from 'uuid';
 
-import { publishMainStream, publishDriveStream } from '@/services/stream';
-import { deleteFile } from './delete-file';
-import { fetchMeta } from '@/misc/fetch-meta';
-import { GenerateVideoThumbnail } from './generate-video-thumbnail';
-import { driveLogger } from './logger';
-import { IImage, convertSharpToJpeg, convertSharpToWebp, convertSharpToPng, convertSharpToPngOrJpeg } from './image-processor';
-import { contentDisposition } from '@/misc/content-disposition';
-import { getFileInfo } from '@/misc/get-file-info';
-import { DriveFiles, DriveFolders, Users, Instances, UserProfiles } from '@/models/index';
-import { InternalStorage } from './internal-storage';
-import { DriveFile } from '@/models/entities/drive-file';
-import { IRemoteUser, User } from '@/models/entities/user';
-import { driveChart, perUserDriveChart, instanceChart } from '@/services/chart/index';
-import { genId } from '@/misc/gen-id';
-import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error';
-import * as S3 from 'aws-sdk/clients/s3';
-import { getS3 } from './s3';
-import * as sharp from 'sharp';
-import { FILE_TYPE_BROWSERSAFE } from '@/const';
+import { publishMainStream, publishDriveStream } from '@/services/stream.js';
+import { deleteFile } from './delete-file.js';
+import { fetchMeta } from '@/misc/fetch-meta.js';
+import { GenerateVideoThumbnail } from './generate-video-thumbnail.js';
+import { driveLogger } from './logger.js';
+import { IImage, convertSharpToJpeg, convertSharpToWebp, convertSharpToPng, convertSharpToPngOrJpeg } from './image-processor.js';
+import { contentDisposition } from '@/misc/content-disposition.js';
+import { getFileInfo } from '@/misc/get-file-info.js';
+import { DriveFiles, DriveFolders, Users, Instances, UserProfiles } from '@/models/index.js';
+import { InternalStorage } from './internal-storage.js';
+import { DriveFile } from '@/models/entities/drive-file.js';
+import { IRemoteUser, User } from '@/models/entities/user.js';
+import { driveChart, perUserDriveChart, instanceChart } from '@/services/chart/index.js';
+import { genId } from '@/misc/gen-id.js';
+import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
+import S3 from 'aws-sdk/clients/s3.js';
+import { getS3 } from './s3.js';
+import sharp from 'sharp';
+import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
 
 const logger = driveLogger.createSubLogger('register', 'yellow');
 
@@ -484,8 +484,6 @@ export async function addFile({
 	perUserDriveChart.update(file, true);
 	if (file.userHost !== null) {
 		instanceChart.updateDrive(file, true);
-		Instances.increment({ host: file.userHost }, 'driveUsage', file.size);
-		Instances.increment({ host: file.userHost }, 'driveFiles', 1);
 	}
 
 	return file;

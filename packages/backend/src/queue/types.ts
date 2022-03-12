@@ -1,7 +1,8 @@
-import { DriveFile } from '@/models/entities/drive-file';
-import { User } from '@/models/entities/user';
-import { IActivity } from '@/remote/activitypub/type';
-import * as httpSignature from 'http-signature';
+import { DriveFile } from '@/models/entities/drive-file.js';
+import { Note } from '@/models/entities/note';
+import { User } from '@/models/entities/user.js';
+import { IActivity } from '@/remote/activitypub/type.js';
+import httpSignature from 'http-signature';
 
 export type DeliverJobData = {
 	/** Actor */
@@ -39,6 +40,10 @@ export type ObjectStorageJobData = ObjectStorageFileJobData | Record<string, unk
 
 export type ObjectStorageFileJobData = {
 	key: string;
+};
+
+export type EndedPollNotificationJobData = {
+	noteId: Note['id'];
 };
 
 export type ThinUser = {

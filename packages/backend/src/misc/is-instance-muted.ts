@@ -1,4 +1,4 @@
-import { Packed } from "./schema";
+import { Packed } from './schema.js';
 
 export function isInstanceMuted(note: Packed<'Note'>, mutedInstances: Set<string>): boolean {
 	if (mutedInstances.has(note?.user?.host ?? '')) return true;

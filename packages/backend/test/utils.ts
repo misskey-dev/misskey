@@ -1,14 +1,14 @@
-import * as fs from 'fs';
+import * as fs from 'node:fs';
 import * as WebSocket from 'ws';
 import * as misskey from 'misskey-js';
 import fetch from 'node-fetch';
-const FormData = require('form-data');
+import FormData from 'form-data';
 import * as childProcess from 'child_process';
 import * as http from 'http';
-import loadConfig from '../src/config/load';
+import loadConfig from '../src/config/load.js';
 import { SIGKILL } from 'constants';
 import { createConnection, getConnection } from 'typeorm';
-import { entities } from '../src/db/postgre';
+import { entities } from '../src/db/postgre.js';
 
 const config = loadConfig();
 export const port = config.port;

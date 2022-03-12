@@ -1,6 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { Hashtag } from '@/models/entities/hashtag';
-import { Packed } from '@/misc/schema';
+import { Hashtag } from '@/models/entities/hashtag.js';
+import { Packed } from '@/misc/schema.js';
 
 @EntityRepository(Hashtag)
 export class HashtagRepository extends Repository<Hashtag> {

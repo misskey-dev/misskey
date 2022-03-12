@@ -1,6 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class userPublicReactions1634486652000 {
+
+
+export class userPublicReactions1634486652000 {
     constructor() {
         this.name = 'userPublicReactions1634486652000';
     }
@@ -11,4 +11,3 @@ class userPublicReactions1634486652000 {
         await queryRunner.query(`ALTER TABLE "user_profile" DROP COLUMN "publicReactions"`);
     }
 }
-exports.userPublicReactions1634486652000 = userPublicReactions1634486652000;

@@ -1,6 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class hCaptcha1588044505511 {
+
+
+export class hCaptcha1588044505511 {
     constructor() {
         this.name = 'hCaptcha1588044505511';
     }
@@ -15,4 +15,3 @@ class hCaptcha1588044505511 {
         await queryRunner.query(`ALTER TABLE "meta" DROP COLUMN "enableHcaptcha"`, undefined);
     }
 }
-exports.hCaptcha1588044505511 = hCaptcha1588044505511;

@@ -17,6 +17,7 @@ export const themeProps = Object.keys(lightTheme.props).filter(key => !key.start
 
 export const builtinThemes = [
 	require('@/themes/l-light.json5'),
+	require('@/themes/l-coffee.json5'),
 	require('@/themes/l-apricot.json5'),
 	require('@/themes/l-rainy.json5'),
 	require('@/themes/l-vivid.json5'),
@@ -29,6 +30,7 @@ export const builtinThemes = [
 	require('@/themes/d-future.json5'),
 	require('@/themes/d-botanical.json5'),
 	require('@/themes/d-cherry.json5'),
+	require('@/themes/d-ice.json5'),
 	require('@/themes/d-pumpkin.json5'),
 	require('@/themes/d-black.json5'),
 ] as Theme[];

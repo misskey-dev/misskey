@@ -56,11 +56,44 @@ export function getUserMenu(user) {
 	}
 
 	async function toggleMute() {
-		os.apiWithDialog(user.isMuted ? 'mute/delete' : 'mute/create', {
-			userId: user.id
-		}).then(() => {
-			user.isMuted = !user.isMuted;
-		});
+		if (user.isMuted) {
+			os.apiWithDialog('mute/delete', {
+				userId: user.id,
+			}).then(() => {
+				user.isMuted = false;
+			});
+		} else {
+			const { canceled, result: period } = await os.select({
+				title: i18n.ts.mutePeriod,
+				items: [{
+					value: 'indefinitely', text: i18n.ts.indefinitely,
+				}, {
+					value: 'tenMinutes', text: i18n.ts.tenMinutes,
+				}, {
+					value: 'oneHour', text: i18n.ts.oneHour,
+				}, {
+					value: 'oneDay', text: i18n.ts.oneDay,
+				}, {
+					value: 'oneWeek', text: i18n.ts.oneWeek,
+				}],
+				default: 'indefinitely',
+			});
+			if (canceled) return;
+
+			const expiresAt = period === 'indefinitely' ? null
+				: period === 'tenMinutes' ? Date.now() + (1000 * 60 * 10)
+				: period === 'oneHour' ? Date.now() + (1000 * 60 * 60)
+				: period === 'oneDay' ? Date.now() + (1000 * 60 * 60 * 24)
+				: period === 'oneWeek' ? Date.now() + (1000 * 60 * 60 * 24 * 7)
+				: null;
+
+			os.apiWithDialog('mute/create', {
+				userId: user.id,
+				expiresAt,
+			}).then(() => {
+				user.isMuted = true;
+			});
+		}
 	}
 
 	async function toggleBlock() {

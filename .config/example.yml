@@ -15,10 +15,7 @@ url: https://example.tld/
 #───┘ Port and TLS settings └───────────────────────────────────
 
 #
-# Misskey supports two deployment options for public.
-#
-
-# Option 1: With Reverse Proxy
+# Misskey requires a reverse proxy to support HTTPS connections.
 #
 #                 +----- https://example.tld/ ------------+
 #   +------+      |+-------------+      +----------------+|
@@ -26,30 +23,12 @@ url: https://example.tld/
 #   +------+      |+-------------+      +----------------+|
 #                 +---------------------------------------+
 #
-#   You need to setup reverse proxy. (eg. nginx)
-#   You do not define 'https' section.
+#   You need to set up a reverse proxy. (e.g. nginx)
+#   An encrypted connection with HTTPS is highly recommended
+#   because tokens may be transferred in GET requests.
 
-# Option 2: Standalone
-#
-#                 +- https://example.tld/ -+
-#   +------+      |   +---------------+    |
-#   | User | ---> |   | Misskey (443) |    |
-#   +------+      |   +---------------+    |
-#                 +------------------------+
-#
-#   You need to run Misskey as root.
-#   You need to set Certificate in 'https' section.
-
-# To use option 1, uncomment below line.
-#port: 3000    # A port that your Misskey server should listen.
-
-# To use option 2, uncomment below lines.
-#port: 443
-
-#https:
-#  # path for certification
-#  key: /etc/letsencrypt/live/example.tld/privkey.pem
-#  cert: /etc/letsencrypt/live/example.tld/fullchain.pem
+# The port that your Misskey server should listen on.
+port: 3000
 
 #   ┌──────────────────────────┐
 #───┘ PostgreSQL configuration └────────────────────────────────
@@ -154,6 +133,9 @@ id: 'aid'
 
 # Media Proxy
 #mediaProxy: https://example.com/proxy
+
+# Proxy remote files (default: false)
+#proxyRemoteFiles: true
 
 # Sign to ActivityPub GET request (default: false)
 #signToActivityPubGet: true

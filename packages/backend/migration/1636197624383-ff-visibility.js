@@ -1,6 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class ffVisibility1636197624383 {
+
+
+export class ffVisibility1636197624383 {
     constructor() {
         this.name = 'ffVisibility1636197624383';
     }
@@ -13,4 +13,3 @@ class ffVisibility1636197624383 {
         await queryRunner.query(`DROP TYPE "public"."user_profile_ffvisibility_enum"`);
     }
 }
-exports.ffVisibility1636197624383 = ffVisibility1636197624383;

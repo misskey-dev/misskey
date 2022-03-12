@@ -1,26 +1,25 @@
-import $ from 'cafy';
-import * as bcrypt from 'bcryptjs';
-import define from '../../../define';
-import { UserProfiles, UserSecurityKeys, Users } from '@/models/index';
-import { publishMainStream } from '@/services/stream';
+import bcrypt from 'bcryptjs';
+import define from '../../../define.js';
+import { UserProfiles, UserSecurityKeys, Users } from '@/models/index.js';
+import { publishMainStream } from '@/services/stream.js';
 
 export const meta = {
 	requireCredential: true,
 
 	secure: true,
+} as const;
 
-	params: {
-		password: {
-			validator: $.str,
-		},
-		credentialId: {
-			validator: $.str,
-		},
+export const paramDef = {
+	type: 'object',
+	properties: {
+		password: { type: 'string' },
+		credentialId: { type: 'string' },
 	},
+	required: ['password', 'credentialId'],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const profile = await UserProfiles.findOneOrFail(user.id);
 
 	// Compare password

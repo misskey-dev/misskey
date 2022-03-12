@@ -1,67 +1,11 @@
-import $ from 'cafy';
-import define from '../../define';
-import { Users } from '@/models/index';
+import define from '../../define.js';
+import { Users } from '@/models/index.js';
 
 export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
 	requireModerator: true,
-
-	params: {
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
-		},
-
-		offset: {
-			validator: $.optional.num.min(0),
-			default: 0,
-		},
-
-		sort: {
-			validator: $.optional.str.or([
-				'+follower',
-				'-follower',
-				'+createdAt',
-				'-createdAt',
-				'+updatedAt',
-				'-updatedAt',
-			]),
-		},
-
-		state: {
-			validator: $.optional.str.or([
-				'all',
-				'available',
-				'admin',
-				'moderator',
-				'adminOrModerator',
-				'silenced',
-				'suspended',
-			]),
-			default: 'all',
-		},
-
-		origin: {
-			validator: $.optional.str.or([
-				'combined',
-				'local',
-				'remote',
-			]),
-			default: 'local',
-		},
-
-		username: {
-			validator: $.optional.str,
-			default: null,
-		},
-
-		hostname: {
-			validator: $.optional.str,
-			default: null,
-		},
-	},
 
 	res: {
 		type: 'array',
@@ -74,8 +18,22 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+		offset: { type: 'integer', default: 0 },
+		sort: { type: 'string', enum: ['+follower', '-follower', '+createdAt', '-createdAt', '+updatedAt', '-updatedAt'] },
+		state: { type: 'string', enum: ['all', 'available', 'admin', 'moderator', 'adminOrModerator', 'silenced', 'suspended'], default: "all" },
+		origin: { type: 'string', enum: ['combined', 'local', 'remote'], default: "local" },
+		username: { type: 'string', default: null },
+		hostname: { type: 'string', default: null },
+	},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, me) => {
+export default define(meta, paramDef, async (ps, me) => {
 	const query = Users.createQueryBuilder('user');
 
 	switch (ps.state) {
@@ -111,7 +69,7 @@ export default define(meta, async (ps, me) => {
 		default: query.orderBy('user.id', 'ASC'); break;
 	}
 
-	query.take(ps.limit!);
+	query.take(ps.limit);
 	query.skip(ps.offset);
 
 	const users = await query.getMany();

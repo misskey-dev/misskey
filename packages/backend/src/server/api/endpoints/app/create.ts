@@ -1,34 +1,13 @@
-import $ from 'cafy';
-import define from '../../define';
-import { Apps } from '@/models/index';
-import { genId } from '@/misc/gen-id';
-import { unique } from '@/prelude/array';
-import { secureRndstr } from '@/misc/secure-rndstr';
+import define from '../../define.js';
+import { Apps } from '@/models/index.js';
+import { genId } from '@/misc/gen-id.js';
+import { unique } from '@/prelude/array.js';
+import { secureRndstr } from '@/misc/secure-rndstr.js';
 
 export const meta = {
 	tags: ['app'],
 
 	requireCredential: false,
-
-	params: {
-		name: {
-			validator: $.str,
-		},
-
-		description: {
-			validator: $.str,
-		},
-
-		permission: {
-			validator: $.arr($.str).unique(),
-		},
-
-		// TODO: Check it is valid url
-		callbackUrl: {
-			validator: $.optional.nullable.str,
-			default: null,
-		},
-	},
 
 	res: {
 		type: 'object',
@@ -37,8 +16,21 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		name: { type: 'string' },
+		description: { type: 'string' },
+		permission: { type: 'array', uniqueItems: true, items: {
+			type: 'string',
+		} },
+		callbackUrl: { type: 'string', nullable: true },
+	},
+	required: ['name', 'description', 'permission'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	// Generate secret
 	const secret = secureRndstr(32, true);
 

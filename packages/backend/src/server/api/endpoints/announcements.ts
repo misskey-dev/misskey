@@ -1,33 +1,11 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
-import define from '../define';
-import { Announcements, AnnouncementReads } from '@/models/index';
-import { makePaginationQuery } from '../common/make-pagination-query';
+import define from '../define.js';
+import { Announcements, AnnouncementReads } from '@/models/index.js';
+import { makePaginationQuery } from '../common/make-pagination-query.js';
 
 export const meta = {
 	tags: ['meta'],
 
 	requireCredential: false,
-
-	params: {
-		limit: {
-			validator: $.optional.num.range(1, 100),
-			default: 10,
-		},
-
-		withUnreads: {
-			validator: $.optional.boolean,
-			default: false,
-		},
-
-		sinceId: {
-			validator: $.optional.type(ID),
-		},
-
-		untilId: {
-			validator: $.optional.type(ID),
-		},
-	},
 
 	res: {
 		type: 'array',
@@ -73,11 +51,22 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+		withUnreads: { type: 'boolean', default: false },
+		sinceId: { type: 'string', format: 'misskey:id' },
+		untilId: { type: 'string', format: 'misskey:id' },
+	},
+	required: [],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const query = makePaginationQuery(Announcements.createQueryBuilder('announcement'), ps.sinceId, ps.untilId);
 
-	const announcements = await query.take(ps.limit!).getMany();
+	const announcements = await query.take(ps.limit).getMany();
 
 	if (user) {
 		const reads = (await AnnouncementReads.find({

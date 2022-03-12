@@ -1,6 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class logMessageLength1622681548499 {
+
+
+export class logMessageLength1622681548499 {
     constructor() {
         this.name = 'logMessageLength1622681548499';
     }
@@ -11,4 +11,3 @@ class logMessageLength1622681548499 {
         await queryRunner.query(`ALTER TABLE "log" ALTER COLUMN "message" TYPE character varying(1024)`, undefined);
     }
 }
-exports.logMessageLength1622681548499 = logMessageLength1622681548499;

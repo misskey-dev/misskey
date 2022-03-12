@@ -1,7 +1,7 @@
-import { apLogger } from '../../logger';
-import { createDeleteAccountJob } from '@/queue';
-import { IRemoteUser } from '@/models/entities/user';
-import { Users } from '@/models/index';
+import { apLogger } from '../../logger.js';
+import { createDeleteAccountJob } from '@/queue/index.js';
+import { IRemoteUser } from '@/models/entities/user.js';
+import { Users } from '@/models/index.js';
 
 const logger = apLogger;
 

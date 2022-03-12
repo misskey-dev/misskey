@@ -1,17 +1,17 @@
-import { publishMainStream, publishGroupMessagingStream } from '@/services/stream';
-import { publishMessagingStream } from '@/services/stream';
-import { publishMessagingIndexStream } from '@/services/stream';
-import { User, IRemoteUser } from '@/models/entities/user';
-import { MessagingMessage } from '@/models/entities/messaging-message';
-import { MessagingMessages, UserGroupJoinings, Users } from '@/models/index';
+import { publishMainStream, publishGroupMessagingStream } from '@/services/stream.js';
+import { publishMessagingStream } from '@/services/stream.js';
+import { publishMessagingIndexStream } from '@/services/stream.js';
+import { User, IRemoteUser } from '@/models/entities/user.js';
+import { MessagingMessage } from '@/models/entities/messaging-message.js';
+import { MessagingMessages, UserGroupJoinings, Users } from '@/models/index.js';
 import { In } from 'typeorm';
-import { IdentifiableError } from '@/misc/identifiable-error';
-import { UserGroup } from '@/models/entities/user-group';
-import { toArray } from '@/prelude/array';
-import { renderReadActivity } from '@/remote/activitypub/renderer/read';
-import { renderActivity } from '@/remote/activitypub/renderer/index';
-import { deliver } from '@/queue/index';
-import orderedCollection from '@/remote/activitypub/renderer/ordered-collection';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
+import { UserGroup } from '@/models/entities/user-group.js';
+import { toArray } from '@/prelude/array.js';
+import { renderReadActivity } from '@/remote/activitypub/renderer/read.js';
+import { renderActivity } from '@/remote/activitypub/renderer/index.js';
+import { deliver } from '@/queue/index.js';
+import orderedCollection from '@/remote/activitypub/renderer/ordered-collection.js';
 
 /**
  * Mark messages as read

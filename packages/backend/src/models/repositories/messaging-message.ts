@@ -1,15 +1,11 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { MessagingMessage } from '@/models/entities/messaging-message';
-import { Users, DriveFiles, UserGroups } from '../index';
-import { Packed } from '@/misc/schema';
-import { User } from '@/models/entities/user';
+import { MessagingMessage } from '@/models/entities/messaging-message.js';
+import { Users, DriveFiles, UserGroups } from '../index.js';
+import { Packed } from '@/misc/schema.js';
+import { User } from '@/models/entities/user.js';
 
 @EntityRepository(MessagingMessage)
 export class MessagingMessageRepository extends Repository<MessagingMessage> {
-	public validateText(text: string): boolean {
-		return text.trim().length <= 1000 && text.trim() != '';
-	}
-
 	public async pack(
 		src: MessagingMessage['id'] | MessagingMessage,
 		me?: { id: User['id'] } | null | undefined,

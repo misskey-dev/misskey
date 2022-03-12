@@ -1,11 +1,11 @@
-import * as Koa from 'koa';
+import Koa from 'koa';
 
-import { IEndpoint } from './endpoints';
-import authenticate, { AuthenticationError } from './authenticate';
-import call from './call';
-import { ApiError } from './error';
+import { IEndpoint } from './endpoints.js';
+import authenticate, { AuthenticationError } from './authenticate.js';
+import call from './call.js';
+import { ApiError } from './error.js';
 
-export default (endpoint: IEndpoint, ctx: Koa.Context) => new Promise((res) => {
+export default (endpoint: IEndpoint, ctx: Koa.Context) => new Promise<void>((res) => {
 	const body = ctx.request.body;
 
 	const reply = (x?: any, y?: ApiError) => {

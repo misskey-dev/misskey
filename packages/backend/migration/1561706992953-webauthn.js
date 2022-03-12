@@ -1,6 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class webauthn1561706992953 {
+
+
+export class webauthn1561706992953 {
     async up(queryRunner) {
         await queryRunner.query(`CREATE TABLE "attestation_challenge" ("id" character varying(32) NOT NULL, "userId" character varying(32) NOT NULL, "challenge" character varying(64) NOT NULL, "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL, "registrationChallenge" boolean NOT NULL DEFAULT false, CONSTRAINT "PK_d0ba6786e093f1bcb497572a6b5" PRIMARY KEY ("id", "userId"))`);
         await queryRunner.query(`CREATE INDEX "IDX_f1a461a618fa1755692d0e0d59" ON "attestation_challenge" ("userId") `);
@@ -24,4 +24,3 @@ class webauthn1561706992953 {
         await queryRunner.query(`DROP TABLE "attestation_challenge"`);
     }
 }
-exports.webauthn1561706992953 = webauthn1561706992953;

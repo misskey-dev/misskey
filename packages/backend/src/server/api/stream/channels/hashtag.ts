@@ -1,10 +1,9 @@
-import autobind from 'autobind-decorator';
-import { isMutedUserRelated } from '@/misc/is-muted-user-related';
-import Channel from '../channel';
-import { Notes } from '@/models/index';
-import { normalizeForSearch } from '@/misc/normalize-for-search';
-import { isBlockerUserRelated } from '@/misc/is-blocker-user-related';
-import { Packed } from '@/misc/schema';
+import { isMutedUserRelated } from '@/misc/is-muted-user-related.js';
+import Channel from '../channel.js';
+import { Notes } from '@/models/index.js';
+import { normalizeForSearch } from '@/misc/normalize-for-search.js';
+import { isBlockerUserRelated } from '@/misc/is-blocker-user-related.js';
+import { Packed } from '@/misc/schema.js';
 
 export default class extends Channel {
 	public readonly chName = 'hashtag';
@@ -12,7 +11,11 @@ export default class extends Channel {
 	public static requireCredential = false;
 	private q: string[][];
 
-	@autobind
+	constructor(id: string, connection: Channel['connection']) {
+		super(id, connection);
+		this.onNote = this.onNote.bind(this);
+	}
+
 	public async init(params: any) {
 		this.q = params.q;
 
@@ -22,7 +25,6 @@ export default class extends Channel {
 		this.subscriber.on('notesStream', this.onNote);
 	}
 
-	@autobind
 	private async onNote(note: Packed<'Note'>) {
 		const noteTags = note.tags ? note.tags.map((t: string) => t.toLowerCase()) : [];
 		const matched = this.q.some(tags => tags.every(tag => noteTags.includes(normalizeForSearch(tag))));
@@ -45,7 +47,6 @@ export default class extends Channel {
 		this.send('note', note);
 	}
 
-	@autobind
 	public dispose() {
 		// Unsubscribe events
 		this.subscriber.off('notesStream', this.onNote);

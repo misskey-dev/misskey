@@ -1,20 +1,20 @@
 import { EventEmitter } from 'events';
 import Emitter from 'strict-event-emitter-types';
-import { Channel } from '@/models/entities/channel';
-import { User } from '@/models/entities/user';
-import { UserProfile } from '@/models/entities/user-profile';
-import { Note } from '@/models/entities/note';
-import { Antenna } from '@/models/entities/antenna';
-import { DriveFile } from '@/models/entities/drive-file';
-import { DriveFolder } from '@/models/entities/drive-folder';
-import { Emoji } from '@/models/entities/emoji';
-import { UserList } from '@/models/entities/user-list';
-import { MessagingMessage } from '@/models/entities/messaging-message';
-import { UserGroup } from '@/models/entities/user-group';
-import { AbuseUserReport } from '@/models/entities/abuse-user-report';
-import { Signin } from '@/models/entities/signin';
-import { Page } from '@/models/entities/page';
-import { Packed } from '@/misc/schema';
+import { Channel } from '@/models/entities/channel.js';
+import { User } from '@/models/entities/user.js';
+import { UserProfile } from '@/models/entities/user-profile.js';
+import { Note } from '@/models/entities/note.js';
+import { Antenna } from '@/models/entities/antenna.js';
+import { DriveFile } from '@/models/entities/drive-file.js';
+import { DriveFolder } from '@/models/entities/drive-folder.js';
+import { Emoji } from '@/models/entities/emoji.js';
+import { UserList } from '@/models/entities/user-list.js';
+import { MessagingMessage } from '@/models/entities/messaging-message.js';
+import { UserGroup } from '@/models/entities/user-group.js';
+import { AbuseUserReport } from '@/models/entities/abuse-user-report.js';
+import { Signin } from '@/models/entities/signin.js';
+import { Page } from '@/models/entities/page.js';
+import { Packed } from '@/misc/schema.js';
 
 //#region Stream type-body definitions
 export interface InternalStreamTypes {
@@ -84,6 +84,7 @@ export interface MainStreamTypes {
 	};
 	driveFileCreated: Packed<'DriveFile'>;
 	readAntenna: Antenna;
+	receiveFollowRequest: Packed<'User'>;
 }
 
 export interface DriveStreamTypes {

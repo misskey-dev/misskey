@@ -1,8 +1,7 @@
-import autobind from 'autobind-decorator';
-import Chart, { KVs } from '../core';
-import { User } from '@/models/entities/user';
-import { Users } from '@/models/index';
-import { name, schema } from './entities/hashtag';
+import Chart, { KVs } from '../core.js';
+import { User } from '@/models/entities/user.js';
+import { Users } from '@/models/index.js';
+import { name, schema } from './entities/hashtag.js';
 
 /**
  * ハッシュタグに関するチャート
@@ -13,17 +12,14 @@ export default class HashtagChart extends Chart<typeof schema> {
 		super(name, schema, true);
 	}
 
-	@autobind
 	protected async tickMajor(): Promise<Partial<KVs<typeof schema>>> {
 		return {};
 	}
 
-	@autobind
 	protected async tickMinor(): Promise<Partial<KVs<typeof schema>>> {
 		return {};
 	}
 
-	@autobind
 	public async update(hashtag: string, user: { id: User['id'], host: User['host'] }): Promise<void> {
 		await this.commit({
 			'local.users': Users.isLocalUser(user) ? [user.id] : [],

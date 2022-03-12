@@ -1,8 +1,6 @@
-import $ from 'cafy';
-import { ID } from '@/misc/cafy-id';
-import define from '../../../define';
-import { ApiError } from '../../../error';
-import { UserLists } from '@/models/index';
+import define from '../../../define.js';
+import { ApiError } from '../../../error.js';
+import { UserLists } from '@/models/index.js';
 
 export const meta = {
 	tags: ['lists'],
@@ -10,12 +8,6 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'write:account',
-
-	params: {
-		listId: {
-			validator: $.type(ID),
-		},
-	},
 
 	errors: {
 		noSuchList: {
@@ -26,8 +18,16 @@ export const meta = {
 	},
 } as const;
 
+export const paramDef = {
+	type: 'object',
+	properties: {
+		listId: { type: 'string', format: 'misskey:id' },
+	},
+	required: ['listId'],
+} as const;
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, async (ps, user) => {
+export default define(meta, paramDef, async (ps, user) => {
 	const userList = await UserLists.findOne({
 		id: ps.listId,
 		userId: user.id,
