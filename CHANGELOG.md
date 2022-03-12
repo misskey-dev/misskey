@@ -18,6 +18,7 @@ You should also include the user name that made the change.
 ### Bugfixes
 - リレーが動作しない問題を修正 @xianonn
 - ulidを使用していると動作しない問題を修正 @syuilo
+- 外部からOGPが正しく取得できない問題を修正 @syuilo
 
 ## 12.108.0 (2022/03/09)
 
