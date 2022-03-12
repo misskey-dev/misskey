@@ -655,6 +655,7 @@ global: "グローバル"
 sent: "送信"
 hashtags: "ハッシュタグ"
 hide: "隠す"
+searchByGoogle: "探す"
 indefinitely: "無期限"
 _ad:
   back: "戻る"

@@ -825,6 +825,7 @@ overridedDeviceKind: "Tipe perangkat"
 smartphone: "Ponsel"
 tablet: "Tablet"
 auto: "Otomatis"
+searchByGoogle: "Penelusuran"
 indefinitely: "Selamanya"
 _emailUnavailable:
   used: "Alamat surel ini telah digunakan"
