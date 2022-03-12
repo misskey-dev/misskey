@@ -10,6 +10,14 @@
 You should also include the user name that made the change.
 -->
 
+## 12.108.1 (2022/03/12)
+
+### Bugfixes
+- リレーが動作しない問題を修正 @xianonn
+- ulidを使用していると動作しない問題を修正 @syuilo
+- 外部からOGPが正しく取得できない問題を修正 @syuilo
+- instance can not get the files from other instance when there are items in allowedPrivateNetworks in .config/default.yml @ybw2016v
+
 ## 12.108.0 (2022/03/09)
 
 ### NOTE

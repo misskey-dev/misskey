@@ -449,6 +449,7 @@ clearCache: "Vyprázdnit mezipaměť"
 info: "Informace"
 user: "Uživatelé"
 administration: "Administrace"
+searchByGoogle: "Vyhledávání"
 _email:
   _follow:
     title: "Máte nového následovníka"
