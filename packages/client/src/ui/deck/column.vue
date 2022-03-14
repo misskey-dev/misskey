@@ -31,27 +31,16 @@
 </template>
 
 <script lang="ts">
-export type DeckColumn = {
-	id: string;
-	type: 'main' | string;
-	active: false | any;
-	name: string;
-	width: number;
-	flexible: boolean;
-	antennaId?: string;
-	listId?: string;
-};
-
 export type DeckFunc = {
 	title: string;
-	handler: Function;
+	handler: (payload: MouseEvent) => void;
 	icon?: string;
 };
 </script>
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted, provide, watch } from 'vue';
 import * as os from '@/os';
-import { updateColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownColumn, stackLeftColumn, popRightColumn, removeColumn, swapColumn } from './deck-store';
+import { updateColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownColumn, stackLeftColumn, popRightColumn, removeColumn, swapColumn, Column } from './deck-store';
 import { deckStore } from './deck-store';
 import { i18n } from '@/i18n';
 
@@ -59,7 +48,7 @@ provide('shouldHeaderThin', true);
 provide('shouldOmitHeaderTitle', true);
 
 const props = withDefaults(defineProps<{
-	column: DeckColumn;
+	column: Column;
 	isStacked?: boolean;
 	func?: DeckFunc | null;
 	naked?: boolean;
@@ -79,7 +68,7 @@ const emit = defineEmits<{
 let body = $ref<HTMLDivElement>();
 
 let dragging = $ref(false);
-watch(dragging, () => os.deckGlobalEvents.emit(v ? 'column.dragStart' : 'column.dragEnd'));
+watch(dragging, v => os.deckGlobalEvents.emit(v ? 'column.dragStart' : 'column.dragEnd'));
 
 let draghover = $ref(false);
 let dropready = $ref(false);

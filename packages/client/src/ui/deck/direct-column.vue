@@ -8,11 +8,12 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import XColumn, { DeckColumn } from './column.vue';
+import XColumn from './column.vue';
 import XNotes from '@/components/notes.vue';
+import { Column } from './deck-store';
 
 defineProps<{
-	column: DeckColumn;
+	column: Column;
 	isStacked: boolean;
 }>();
 

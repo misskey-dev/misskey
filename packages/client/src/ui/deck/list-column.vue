@@ -10,14 +10,14 @@
 
 <script lang="ts" setup>
 import {  } from 'vue';
-import XColumn, { DeckColumn } from './column.vue';
+import XColumn from './column.vue';
 import XTimeline from '@/components/timeline.vue';
 import * as os from '@/os';
-import { updateColumn } from './deck-store';
+import { updateColumn, Column } from './deck-store';
 import { i18n } from '@/i18n';
 
 const props = defineProps<{
-	column: DeckColumn;
+	column: Column;
 	isStacked: boolean;
 }>();
 
@@ -47,11 +47,11 @@ async function setList() {
 	});
 }
 
+/*
 function focus() {
 	timeline.focus();
 }
 
-/*
 export default defineComponent({
 	watch: {
 		mediaOnly() {
