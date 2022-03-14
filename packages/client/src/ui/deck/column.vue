@@ -39,6 +39,7 @@ export type DeckColumn = {
 	width: number;
 	flexible: boolean;
 	antennaId?: string;
+	listId?: string;
 };
 
 export type DeckFunc = {
