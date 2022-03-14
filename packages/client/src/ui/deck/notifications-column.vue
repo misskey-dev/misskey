@@ -1,5 +1,5 @@
 <template>
-<XColumn :column="column" :is-stacked="isStacked" :func="{ handler: func, title: $ts.notificationSetting }">
+<XColumn :column="column" :is-stacked="isStacked" :func="{ handler: func, title: $ts.notificationSetting }" @parent-focus="$event => emit('parent-focus', $event)">
 	<template #header><i class="fas fa-bell" style="margin-right: 8px;"></i>{{ column.name }}</template>
 
 	<XNotifications :include-types="column.includingTypes"/>
@@ -17,6 +17,10 @@ import { Column } from './deck-store';
 const props = defineProps<{
 	column: Column;
 	isStacked: boolean;
+}>();
+
+const emit = defineEmits<{
+	(e: 'parent-focus', direction: 'up' | 'down' | 'left' | 'right'): void;
 }>();
 
 function func() {
