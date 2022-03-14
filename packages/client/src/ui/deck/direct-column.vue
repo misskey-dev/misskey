@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { } from 'vue';
 import XColumn from './column.vue';
 import XNotes from '@/components/notes.vue';
 import { Column } from './deck-store';
@@ -22,10 +22,10 @@ const emit = defineEmits<{
 }>();
 
 const pagination = {
-	point: 'notes/mentions' as const,
+	endpoint: 'notes/mentions' as const,
 	limit: 10,
-	params: computed(() => ({
-		visibility: 'specified' as const,
-	})),
+	params: {
+		visibility: 'specified'
+	},
 };
 </script>

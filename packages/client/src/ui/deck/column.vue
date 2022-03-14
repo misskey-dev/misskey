@@ -52,7 +52,7 @@ const props = withDefaults(defineProps<{
 	isStacked?: boolean;
 	func?: DeckFunc | null;
 	naked?: boolean;
-	indicated: boolean;
+	indicated?: boolean;
 }>(), {
 	isStacked: false,
 	func: null,
@@ -68,14 +68,14 @@ const emit = defineEmits<{
 let body = $ref<HTMLDivElement>();
 
 let dragging = $ref(false);
-watch(dragging, v => os.deckGlobalEvents.emit(v ? 'column.dragStart' : 'column.dragEnd'));
+watch($$(dragging), v => os.deckGlobalEvents.emit(v ? 'column.dragStart' : 'column.dragEnd'));
 
 let draghover = $ref(false);
 let dropready = $ref(false);
 
 const isMainColumn = $computed(() => props.column.type === 'main');
 const active = $computed(() => props.column.active !== false);
-watch(active, v => emit('change-active-state', v));
+watch($$(active), v => emit('change-active-state', v));
 
 const keymap = $computed(() => ({
 	'shift+up': () => emit('parent-focus', 'up'),
