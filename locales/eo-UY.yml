@@ -835,7 +835,6 @@ _ago:
 _time:
   second: "sek"
   minute: "min"
-  hour: "hor"
   day: "Tago"
 _tutorial:
   title: "Uzado de Misskey"
@@ -894,16 +893,14 @@ _cw:
   chars: "{count} literoj"
   files: "{count} dosiero(j)"
 _poll:
-  choiceN: "Ebla voĉdono {n}"
+  choiceN: "Balotilo {n}"
   noMore: "Oni ne povas aldoni pli"
   canMultipleVote: "Permesi plurelekton"
   expiration: "Limtempo"
-  deadlineTime: "hor"
-  duration: "Daŭro"
   votesCount: "{n} voĉoj"
   totalVotes: "Sume {n} voĉoj"
   vote: "Voĉdoni"
-  showResult: "Vidi la rezultojn"
+  showResult: "Vidi rezultojn"
   voted: "Voĉdonita"
   closed: "Finita"
 _visibility:
