@@ -24,12 +24,11 @@ function truncateNotification(notification: Packed<'Notification'>): any {
 				...notification.note,
 				// textをgetNoteSummaryしたものに置き換える
 				text: getNoteSummary(notification.type === 'renote' ? notification.note.renote as Packed<'Note'> : notification.note),
-				...{
-					cw: undefined,
-					reply: undefined,
-					renote: undefined,
-					user: undefined as any, // 通知を受け取ったユーザーである場合が多いのでこれも捨てる
-				}
+
+				cw: undefined,
+				reply: undefined,
+				renote: undefined,
+				user: undefined as any, // 通知を受け取ったユーザーである場合が多いのでこれも捨てる
 			}
 		};
 	}
