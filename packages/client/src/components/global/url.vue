@@ -49,14 +49,22 @@ export default defineComponent({
 			}, {}, 'closed');
 		});
 
+		function safeURIDecode(str: string) {
+			try {
+				return decodeURIComponent(str);
+			} catch {
+				return str;
+			}
+		}
+
 		return {
 			local,
 			schema: url.protocol,
 			hostname: decodePunycode(url.hostname),
 			port: url.port,
-			pathname: decodeURIComponent(url.pathname),
-			query: decodeURIComponent(url.search),
-			hash: decodeURIComponent(url.hash),
+			pathname: safeURIDecode(url.pathname),
+			query: safeURIDecode(url.search),
+			hash: safeURIDecode(url.hash),
 			self: self,
 			attr: self ? 'to' : 'href',
 			target: self ? null : '_blank',
