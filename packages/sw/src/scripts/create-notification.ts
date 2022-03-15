@@ -178,6 +178,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 				case 'pollEnded':
 					return [t('_notification.pollEnded'), {
 						body: data.body.note.text || '',
+						badge: iconUrl('clipboard-check-solid'),
 						data,
 					}];
 
