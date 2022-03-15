@@ -131,6 +131,12 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 						data,
 					}];
 
+				case 'pollEnded':
+					return [t('_notification.pollEnded'), {
+						body: data.body.note.text || '',
+						data,
+					}];
+
 				case 'receiveFollowRequest':
 					return [t('_notification.youReceivedFollowRequest'), {
 						body: getUserName(data.body.user),
