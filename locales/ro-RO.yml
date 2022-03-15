@@ -477,6 +477,7 @@ smtpPass: "Parolă"
 clearCache: "Golește cache-ul"
 info: "Despre"
 user: "Utilizatori"
+searchByGoogle: "Caută"
 _email:
   _follow:
     title: "te-a urmărit"

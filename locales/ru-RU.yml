@@ -815,6 +815,7 @@ leaveGroupConfirm: "Покинуть группу «{name}»?"
 useDrawerReactionPickerForMobile: "Выдвижная палитра на мобильном устройстве"
 welcomeBackWithName: "С возвращением, {name}!"
 clickToFinishEmailVerification: "Пожалуйста, нажмите [{ok}], чтобы завершить подтверждение адреса электронной почты."
+searchByGoogle: "Поиск"
 indefinitely: "вечно"
 _emailUnavailable:
   used: "Уже используется"

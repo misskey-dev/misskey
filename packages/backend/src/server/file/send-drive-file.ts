@@ -2,7 +2,7 @@ import * as fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
 import Koa from 'koa';
-import * as send from 'koa-send';
+import send from 'koa-send';
 import rename from 'rename';
 import * as tmp from 'tmp';
 import { serverLogger } from '../index.js';
