@@ -747,6 +747,7 @@ global: "公開"
 sent: "發送"
 hashtags: "#tag"
 hide: "隱藏"
+searchByGoogle: "搜尋"
 indefinitely: "無期限"
 _ffVisibility:
   public: "發佈"
