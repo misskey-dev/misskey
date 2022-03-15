@@ -47,6 +47,7 @@ remove: "Sil"
 smtpUser: "Kullanıcı Adı"
 smtpPass: "Şifre"
 user: "Kullanıcı"
+searchByGoogle: "Arama"
 _mfm:
   search: "Arama"
 _sfx:
