@@ -19,7 +19,7 @@
 		"@elastic/elasticsearch": "7.11.0",
 		"@koa/cors": "3.1.0",
 		"@koa/multer": "3.0.0",
-		"@koa/router": "10.1.1",
+		"@koa/router": "9.0.1",
 		"@sinonjs/fake-timers": "9.1.1",
 		"@syuilo/aiscript": "0.11.1",
 		"@types/bcryptjs": "2.4.2",
