@@ -1238,7 +1238,7 @@ _visibility:
   publicDescription: "您的帖子将出现在全局时间线上"
   home: "首页"
   homeDescription: "仅发送至首页的时间线"
-  followers: "关注者"
+  followers: "仅关注者"
   followersDescription: "仅发送至关注者"
   specified: "指定用户"
   specifiedDescription: "仅发送至指定用户"
