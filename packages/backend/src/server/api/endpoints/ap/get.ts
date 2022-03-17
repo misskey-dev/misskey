@@ -1,6 +1,6 @@
-import define from '../../define';
-import Resolver from '@/remote/activitypub/resolver';
-import { ApiError } from '../../error';
+import define from '../../define.js';
+import Resolver from '@/remote/activitypub/resolver.js';
+import { ApiError } from '../../error.js';
 import ms from 'ms';
 
 export const meta = {

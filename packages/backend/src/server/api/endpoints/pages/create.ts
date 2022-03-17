@@ -1,9 +1,9 @@
 import ms from 'ms';
-import define from '../../define';
-import { Pages, DriveFiles } from '@/models/index';
-import { genId } from '@/misc/gen-id';
-import { Page } from '@/models/entities/page';
-import { ApiError } from '../../error';
+import define from '../../define.js';
+import { Pages, DriveFiles } from '@/models/index.js';
+import { genId } from '@/misc/gen-id.js';
+import { Page } from '@/models/entities/page.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['pages'],

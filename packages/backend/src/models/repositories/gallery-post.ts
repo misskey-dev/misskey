@@ -1,9 +1,9 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { GalleryPost } from '@/models/entities/gallery-post';
-import { Packed } from '@/misc/schema';
-import { Users, DriveFiles, GalleryLikes } from '../index';
-import { awaitAll } from '@/prelude/await-all';
-import { User } from '@/models/entities/user';
+import { GalleryPost } from '@/models/entities/gallery-post.js';
+import { Packed } from '@/misc/schema.js';
+import { Users, DriveFiles, GalleryLikes } from '../index.js';
+import { awaitAll } from '@/prelude/await-all.js';
+import { User } from '@/models/entities/user.js';
 
 @EntityRepository(GalleryPost)
 export class GalleryPostRepository extends Repository<GalleryPost> {

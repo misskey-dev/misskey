@@ -1,13 +1,13 @@
 import { EntityRepository, Repository, In, Not } from 'typeorm';
-import * as Ajv from 'ajv';
-import { User, ILocalUser, IRemoteUser } from '@/models/entities/user';
-import { Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings, UserProfiles, UserSecurityKeys, UserGroupJoinings, Pages, Announcements, AnnouncementReads, Antennas, AntennaNotes, ChannelFollowings, Instances } from '../index';
-import config from '@/config/index';
-import { Packed } from '@/misc/schema';
-import { awaitAll, Promiseable } from '@/prelude/await-all';
-import { populateEmojis } from '@/misc/populate-emojis';
-import { getAntennas } from '@/misc/antenna-cache';
-import { USER_ACTIVE_THRESHOLD, USER_ONLINE_THRESHOLD } from '@/const';
+import Ajv from 'ajv';
+import { User, ILocalUser, IRemoteUser } from '@/models/entities/user.js';
+import { Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings, UserProfiles, UserSecurityKeys, UserGroupJoinings, Pages, Announcements, AnnouncementReads, Antennas, AntennaNotes, ChannelFollowings, Instances, DriveFiles } from '../index.js';
+import config from '@/config/index.js';
+import { Packed } from '@/misc/schema.js';
+import { awaitAll, Promiseable } from '@/prelude/await-all.js';
+import { populateEmojis } from '@/misc/populate-emojis.js';
+import { getAntennas } from '@/misc/antenna-cache.js';
+import { USER_ACTIVE_THRESHOLD, USER_ONLINE_THRESHOLD } from '@/const.js';
 
 type IsUserDetailed<Detailed extends boolean> = Detailed extends true ? Packed<'UserDetailed'> : Packed<'UserLite'>;
 type IsMeAndIsUserDetailed<ExpectsMe extends boolean | null, Detailed extends boolean> =
@@ -182,11 +182,16 @@ export class UserRepository extends Repository<User> {
 	}
 
 	public getAvatarUrl(user: User): string {
-		if (user.avatarUrl) {
-			return user.avatarUrl;
+		// TODO: avatarIdがあるがavatarがない(JOINされてない)場合のハンドリング
+		if (user.avatar) {
+			return DriveFiles.getPublicUrl(user.avatar, true) || this.getIdenticonUrl(user.id);
 		} else {
-			return `${config.url}/identicon/${user.id}`;
+			return this.getIdenticonUrl(user.id);
 		}
+	}
+
+	public getIdenticonUrl(userId: User['id']): string {
+		return `${config.url}/identicon/${userId}`;
 	}
 
 	public async pack<ExpectsMe extends boolean | null = null, D extends boolean = false>(
@@ -202,7 +207,18 @@ export class UserRepository extends Repository<User> {
 			includeSecrets: false,
 		}, options);
 
-		const user = typeof src === 'object' ? src : await this.findOneOrFail(src);
+		let user: User;
+
+		if (typeof src === 'object') {
+			user = src;
+			if (src.avatar === undefined && src.avatarId) src.avatar = await DriveFiles.findOne(src.avatarId) ?? null;
+			if (src.banner === undefined && src.bannerId) src.banner = await DriveFiles.findOne(src.bannerId) ?? null;
+		} else {
+			user = await this.findOneOrFail(src, {
+				relations: ['avatar', 'banner'],
+			});
+		}
+
 		const meId = me ? me.id : null;
 		const isMe = meId === user.id;
 
@@ -232,7 +248,7 @@ export class UserRepository extends Repository<User> {
 			username: user.username,
 			host: user.host,
 			avatarUrl: this.getAvatarUrl(user),
-			avatarBlurhash: user.avatarBlurhash,
+			avatarBlurhash: user.avatar?.blurhash || null,
 			avatarColor: null, // 後方互換性のため
 			isAdmin: user.isAdmin || falsy,
 			isModerator: user.isModerator || falsy,
@@ -256,8 +272,8 @@ export class UserRepository extends Repository<User> {
 				createdAt: user.createdAt.toISOString(),
 				updatedAt: user.updatedAt ? user.updatedAt.toISOString() : null,
 				lastFetchedAt: user.lastFetchedAt ? user.lastFetchedAt.toISOString() : null,
-				bannerUrl: user.bannerUrl,
-				bannerBlurhash: user.bannerBlurhash,
+				bannerUrl: user.banner ? DriveFiles.getPublicUrl(user.banner, false) : null,
+				bannerBlurhash: user.banner?.blurhash || null,
 				bannerColor: null, // 後方互換性のため
 				isLocked: user.isLocked,
 				isSilenced: user.isSilenced || falsy,

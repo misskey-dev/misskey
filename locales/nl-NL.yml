@@ -256,6 +256,7 @@ user: "Gebruikers"
 muteThread: "Discussies dempen "
 unmuteThread: "Dempen van discussie ongedaan maken"
 hide: "Verbergen"
+searchByGoogle: "Zoeken"
 _email:
   _follow:
     title: "volgde jou"

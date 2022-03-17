@@ -1,13 +1,13 @@
-import { publishNoteStream } from '@/services/stream';
-import { renderLike } from '@/remote/activitypub/renderer/like';
-import renderUndo from '@/remote/activitypub/renderer/undo';
-import { renderActivity } from '@/remote/activitypub/renderer/index';
-import DeliverManager from '@/remote/activitypub/deliver-manager';
-import { IdentifiableError } from '@/misc/identifiable-error';
-import { User, IRemoteUser } from '@/models/entities/user';
-import { Note } from '@/models/entities/note';
-import { NoteReactions, Users, Notes } from '@/models/index';
-import { decodeReaction } from '@/misc/reaction-lib';
+import { publishNoteStream } from '@/services/stream.js';
+import { renderLike } from '@/remote/activitypub/renderer/like.js';
+import renderUndo from '@/remote/activitypub/renderer/undo.js';
+import { renderActivity } from '@/remote/activitypub/renderer/index.js';
+import DeliverManager from '@/remote/activitypub/deliver-manager.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
+import { User, IRemoteUser } from '@/models/entities/user.js';
+import { Note } from '@/models/entities/note.js';
+import { NoteReactions, Users, Notes } from '@/models/index.js';
+import { decodeReaction } from '@/misc/reaction-lib.js';
 
 export default async (user: { id: User['id']; host: User['host']; }, note: Note) => {
 	// if already unreacted

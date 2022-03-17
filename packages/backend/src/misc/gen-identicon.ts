@@ -3,9 +3,9 @@
  * https://en.wikipedia.org/wiki/Identicon
  */
 
+import { WriteStream } from 'node:fs';
 import * as p from 'pureimage';
-import * as gen from 'random-seed';
-import { WriteStream } from 'fs';
+import gen from 'random-seed';
 
 const size = 256; // px
 const n = 5; // resolution

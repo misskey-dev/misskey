@@ -1,5 +1,5 @@
-import define from '../../../define';
-import { FollowRequests } from '@/models/index';
+import define from '../../../define.js';
+import { FollowRequests } from '@/models/index.js';
 
 export const meta = {
 	tags: ['following', 'account'],

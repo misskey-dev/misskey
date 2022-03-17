@@ -1,6 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class v12121580508795118 {
+
+
+export class v12121580508795118 {
     constructor() {
         this.name = 'v12121580508795118';
     }
@@ -43,4 +43,3 @@ class v12121580508795118 {
         await queryRunner.query(`ALTER TABLE "user_profile" ADD "twitter" boolean NOT NULL DEFAULT false`, undefined);
     }
 }
-exports.v12121580508795118 = v12121580508795118;

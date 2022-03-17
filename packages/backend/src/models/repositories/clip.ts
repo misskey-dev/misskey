@@ -1,8 +1,8 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { Clip } from '@/models/entities/clip';
-import { Packed } from '@/misc/schema';
-import { Users } from '../index';
-import { awaitAll } from '@/prelude/await-all';
+import { Clip } from '@/models/entities/clip.js';
+import { Packed } from '@/misc/schema.js';
+import { Users } from '../index.js';
+import { awaitAll } from '@/prelude/await-all.js';
 
 @EntityRepository(Clip)
 export class ClipRepository extends Repository<Clip> {

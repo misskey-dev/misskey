@@ -1,7 +1,7 @@
-import config from '@/config/index';
-import define from '../../define';
-import { Instances } from '@/models/index';
-import { fetchMeta } from '@/misc/fetch-meta';
+import config from '@/config/index.js';
+import define from '../../define.js';
+import { Instances } from '@/models/index.js';
+import { fetchMeta } from '@/misc/fetch-meta.js';
 
 export const meta = {
 	tags: ['federation'],
@@ -55,10 +55,6 @@ export default define(meta, paramDef, async (ps, me) => {
 		case '-caughtAt': query.orderBy('instance.caughtAt', 'ASC'); break;
 		case '+lastCommunicatedAt': query.orderBy('instance.lastCommunicatedAt', 'DESC'); break;
 		case '-lastCommunicatedAt': query.orderBy('instance.lastCommunicatedAt', 'ASC'); break;
-		case '+driveUsage': query.orderBy('instance.driveUsage', 'DESC'); break;
-		case '-driveUsage': query.orderBy('instance.driveUsage', 'ASC'); break;
-		case '+driveFiles': query.orderBy('instance.driveFiles', 'DESC'); break;
-		case '-driveFiles': query.orderBy('instance.driveFiles', 'ASC'); break;
 
 		default: query.orderBy('instance.id', 'DESC'); break;
 	}

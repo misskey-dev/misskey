@@ -1,6 +1,6 @@
-const { MigrationInterface, QueryRunner } = require("typeorm");
 
-module.exports = class followingIndexes1644551208096 {
+
+export class followingIndexes1644551208096 {
     name = 'followingIndexes1644551208096'
 
     async up(queryRunner) {

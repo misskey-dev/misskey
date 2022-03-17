@@ -1,6 +1,6 @@
-import define from '../../../define';
-import { Ads } from '@/models/index';
-import { ApiError } from '../../../error';
+import define from '../../../define.js';
+import { Ads } from '@/models/index.js';
+import { ApiError } from '../../../error.js';
 
 export const meta = {
 	tags: ['admin'],

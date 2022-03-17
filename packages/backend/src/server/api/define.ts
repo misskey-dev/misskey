@@ -1,10 +1,10 @@
-import * as fs from 'fs';
+import * as fs from 'node:fs';
 import Ajv from 'ajv';
-import { ILocalUser } from '@/models/entities/user';
-import { IEndpointMeta } from './endpoints';
-import { ApiError } from './error';
-import { Schema, SchemaType } from '@/misc/schema';
-import { AccessToken } from '@/models/entities/access-token';
+import { ILocalUser } from '@/models/entities/user.js';
+import { IEndpointMeta } from './endpoints.js';
+import { ApiError } from './error.js';
+import { Schema, SchemaType } from '@/misc/schema.js';
+import { AccessToken } from '@/models/entities/access-token.js';
 
 type SimpleUserInfo = {
 	id: ILocalUser['id'];
@@ -31,7 +31,7 @@ const ajv = new Ajv({
 	useDefaults: true,
 });
 
-ajv.addFormat('misskey:id', /^[a-z0-9]+$/);
+ajv.addFormat('misskey:id', /^[a-zA-Z0-9]+$/);
 
 export default function <T extends IEndpointMeta, Ps extends Schema>(meta: T, paramDef: Ps, cb: executor<T, Ps>)
 		: (params: any, user: T['requireCredential'] extends true ? SimpleUserInfo : SimpleUserInfo | null, token: AccessToken | null, file?: any) => Promise<any> {

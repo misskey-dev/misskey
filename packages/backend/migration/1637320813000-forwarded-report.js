@@ -1,6 +1,6 @@
-const { QueryRunner } = require('typeorm');
 
-module.exports = class forwardedReport1637320813000 {
+
+export class forwardedReport1637320813000 {
 	name = 'forwardedReport1637320813000';
 
 	async up(queryRunner) {

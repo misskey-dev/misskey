@@ -2,7 +2,7 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import * as childProcess from 'child_process';
-import { async, startServer, signup, post, request, simpleGet, port, shutdownServer } from './utils';
+import { async, startServer, signup, post, request, simpleGet, port, shutdownServer } from './utils.js';
 import * as openapi from '@redocly/openapi-core';
 
 // Request Accept

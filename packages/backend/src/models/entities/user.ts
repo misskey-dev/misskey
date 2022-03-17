@@ -1,6 +1,6 @@
 import { Entity, Column, Index, OneToOne, JoinColumn, PrimaryColumn } from 'typeorm';
-import { DriveFile } from './drive-file';
-import { id } from '../id';
+import { DriveFile } from './drive-file.js';
+import { id } from '../id.js';
 
 @Entity()
 @Index(['usernameLower', 'host'], { unique: true })
@@ -105,26 +105,6 @@ export class User {
 		length: 128, array: true, default: '{}',
 	})
 	public tags: string[];
-
-	@Column('varchar', {
-		length: 512, nullable: true,
-	})
-	public avatarUrl: string | null;
-
-	@Column('varchar', {
-		length: 512, nullable: true,
-	})
-	public bannerUrl: string | null;
-
-	@Column('varchar', {
-		length: 128, nullable: true,
-	})
-	public avatarBlurhash: string | null;
-
-	@Column('varchar', {
-		length: 128, nullable: true,
-	})
-	public bannerBlurhash: string | null;
 
 	@Column('boolean', {
 		default: false,

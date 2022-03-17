@@ -1,8 +1,8 @@
-import * as si from 'systeminformation';
-import Xev from 'xev';
+import si from 'systeminformation';
+import { default as Xev } from 'xev';
 import * as osUtils from 'os-utils';
 
-const ev = new Xev();
+const ev = new Xev.default();
 
 const interval = 2000;
 

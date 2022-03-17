@@ -1,8 +1,8 @@
 import ms from 'ms';
-import define from '../../define';
-import { Users, Followings } from '@/models/index';
-import { generateMutedUserQueryForUsers } from '../../common/generate-muted-user-query';
-import { generateBlockedUserQuery, generateBlockQueryForUsers } from '../../common/generate-block-query';
+import define from '../../define.js';
+import { Users, Followings } from '@/models/index.js';
+import { generateMutedUserQueryForUsers } from '../../common/generate-muted-user-query.js';
+import { generateBlockedUserQuery, generateBlockQueryForUsers } from '../../common/generate-block-query.js';
 
 export const meta = {
 	tags: ['users'],

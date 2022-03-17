@@ -29,7 +29,7 @@
 
 	<FormSelect v-model="profile.lang" class="_formBlock">
 		<template #label>{{ i18n.ts.language }}</template>
-		<option v-for="x in langs" :key="x[0]" :value="x[0]">{{ x[1] }}</option>
+		<option v-for="x in Object.keys(langmap)" :key="x" :value="x">{{ langmap[x].nativeName }}</option>
 	</FormSelect>
 
 	<FormSlot class="_formBlock">
@@ -38,16 +38,14 @@
 			<template #label>{{ i18n.ts._profile.metadataEdit }}</template>
 
 			<div class="_formRoot">
-				<div v-for="record in fields" class="_formBlock">
-					<FormSplit :min-width="250">
-						<FormInput v-model="record.name" class="_formBlock">
-							<template #label>{{ i18n.ts._profile.metadataLabel }}</template>
-						</FormInput>
-						<FormInput v-model="record.value" class="_formBlock">
-							<template #label>{{ i18n.ts._profile.metadataContent }}</template>
-						</FormInput>
-					</FormSplit>
-				</div>
+				<FormSplit v-for="(record, i) in fields" :min-width="250" class="_formBlock">
+					<FormInput v-model="record.name">
+						<template #label>{{ i18n.ts._profile.metadataLabel }} #{{ i + 1 }}</template>
+					</FormInput>
+					<FormInput v-model="record.value">
+						<template #label>{{ i18n.ts._profile.metadataContent }} #{{ i + 1 }}</template>
+					</FormInput>
+				</FormSplit>
 				<MkButton :disabled="fields.length >= 16" inline style="margin-right: 8px;" @click="addField"><i class="fas fa-plus"></i> {{ i18n.ts.add }}</MkButton>
 				<MkButton inline primary @click="saveFields"><i class="fas fa-check"></i> {{ i18n.ts.save }}</MkButton>
 			</div>
@@ -73,12 +71,13 @@ import FormSelect from '@/components/form/select.vue';
 import FormSplit from '@/components/form/split.vue';
 import FormFolder from '@/components/form/folder.vue';
 import FormSlot from '@/components/form/slot.vue';
-import { host, langs } from '@/config';
+import { host } from '@/config';
 import { selectFile } from '@/scripts/select-file';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
 import { $i } from '@/account';
+import { langmap } from '@/scripts/langmap';
 
 const profile = reactive({
 	name: $i.name,

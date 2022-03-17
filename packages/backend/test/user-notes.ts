@@ -2,7 +2,7 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import * as childProcess from 'child_process';
-import { async, signup, request, post, uploadFile, startServer, shutdownServer } from './utils';
+import { async, signup, request, post, uploadFile, startServer, shutdownServer } from './utils.js';
 
 describe('users/notes', () => {
 	let p: childProcess.ChildProcess;

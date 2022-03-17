@@ -1,7 +1,7 @@
 import ms from 'ms';
-import define from '../../define';
-import { ApiError } from '../../error';
-import { Pages, DriveFiles } from '@/models/index';
+import define from '../../define.js';
+import { ApiError } from '../../error.js';
+import { Pages, DriveFiles } from '@/models/index.js';
 import { Not } from 'typeorm';
 
 export const meta = {

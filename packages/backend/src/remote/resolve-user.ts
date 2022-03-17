@@ -1,12 +1,12 @@
-import { URL } from 'url';
-import webFinger from './webfinger';
-import config from '@/config/index';
-import { createPerson, updatePerson } from './activitypub/models/person';
-import { remoteLogger } from './logger';
-import * as chalk from 'chalk';
-import { User, IRemoteUser } from '@/models/entities/user';
-import { Users } from '@/models/index';
-import { toPuny } from '@/misc/convert-host';
+import { URL } from 'node:url';
+import webFinger from './webfinger.js';
+import config from '@/config/index.js';
+import { createPerson, updatePerson } from './activitypub/models/person.js';
+import { remoteLogger } from './logger.js';
+import chalk from 'chalk';
+import { User, IRemoteUser } from '@/models/entities/user.js';
+import { Users } from '@/models/index.js';
+import { toPuny } from '@/misc/convert-host.js';
 
 const logger = remoteLogger.createSubLogger('resolve-user');
 
@@ -26,7 +26,7 @@ export async function resolveUser(username: string, host: string | null, option?
 
 	host = toPuny(host);
 
-	if (config.host == host) {
+	if (config.host === host) {
 		logger.info(`return local user: ${usernameLower}`);
 		return await Users.findOne({ usernameLower, host: null }).then(u => {
 			if (u == null) {

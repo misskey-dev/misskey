@@ -1,10 +1,10 @@
-import { DriveFile } from '@/models/entities/drive-file';
-import { InternalStorage } from './internal-storage';
-import { DriveFiles, Instances } from '@/models/index';
-import { driveChart, perUserDriveChart, instanceChart } from '@/services/chart/index';
-import { createDeleteObjectStorageFileJob } from '@/queue/index';
-import { fetchMeta } from '@/misc/fetch-meta';
-import { getS3 } from './s3';
+import { DriveFile } from '@/models/entities/drive-file.js';
+import { InternalStorage } from './internal-storage.js';
+import { DriveFiles, Instances } from '@/models/index.js';
+import { driveChart, perUserDriveChart, instanceChart } from '@/services/chart/index.js';
+import { createDeleteObjectStorageFileJob } from '@/queue/index.js';
+import { fetchMeta } from '@/misc/fetch-meta.js';
+import { getS3 } from './s3.js';
 import { v4 as uuid } from 'uuid';
 
 export async function deleteFile(file: DriveFile, isExpired = false) {
@@ -86,8 +86,6 @@ async function postProcess(file: DriveFile, isExpired = false) {
 	perUserDriveChart.update(file, false);
 	if (file.userHost !== null) {
 		instanceChart.updateDrive(file, false);
-		Instances.decrement({ host: file.userHost }, 'driveUsage', file.size);
-		Instances.decrement({ host: file.userHost }, 'driveFiles', 1);
 	}
 }
 

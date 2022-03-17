@@ -1,6 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class refineAbuseUserReport1603094348345 {
+
+
+export class refineAbuseUserReport1603094348345 {
     constructor() {
         this.name = 'refineAbuseUserReport1603094348345';
     }
@@ -29,4 +29,3 @@ class refineAbuseUserReport1603094348345 {
         await queryRunner.query(`ALTER TABLE "abuse_user_report" ADD CONSTRAINT "FK_d049123c413e68ca52abe734203" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
     }
 }
-exports.refineAbuseUserReport1603094348345 = refineAbuseUserReport1603094348345;

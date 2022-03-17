@@ -1,6 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class PageLike1558072954435 {
+
+
+export class PageLike1558072954435 {
     async up(queryRunner) {
         await queryRunner.query(`CREATE TABLE "page_like" ("id" character varying(32) NOT NULL, "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL, "userId" character varying(32) NOT NULL, "pageId" character varying(32) NOT NULL, CONSTRAINT "PK_813f034843af992d3ae0f43c64c" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE INDEX "IDX_0e61efab7f88dbb79c9166dbb4" ON "page_like" ("userId") `);
@@ -18,4 +18,3 @@ class PageLike1558072954435 {
         await queryRunner.query(`DROP TABLE "page_like"`);
     }
 }
-exports.PageLike1558072954435 = PageLike1558072954435;

@@ -1,6 +1,6 @@
-import define from '../define';
-import { makePaginationQuery } from '../common/make-pagination-query';
-import { Notes } from '@/models/index';
+import define from '../define.js';
+import { makePaginationQuery } from '../common/make-pagination-query.js';
+import { Notes } from '@/models/index.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -37,10 +37,16 @@ export default define(meta, paramDef, async (ps) => {
 		.andWhere(`note.visibility = 'public'`)
 		.andWhere(`note.localOnly = FALSE`)
 		.innerJoinAndSelect('note.user', 'user')
+		.leftJoinAndSelect('user.avatar', 'avatar')
+		.leftJoinAndSelect('user.banner', 'banner')
 		.leftJoinAndSelect('note.reply', 'reply')
 		.leftJoinAndSelect('note.renote', 'renote')
 		.leftJoinAndSelect('reply.user', 'replyUser')
-		.leftJoinAndSelect('renote.user', 'renoteUser');
+		.leftJoinAndSelect('replyUser.avatar', 'replyUserAvatar')
+		.leftJoinAndSelect('replyUser.banner', 'replyUserBanner')
+		.leftJoinAndSelect('renote.user', 'renoteUser')
+		.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
+		.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner');
 
 	if (ps.local) {
 		query.andWhere('note.userHost IS NULL');
