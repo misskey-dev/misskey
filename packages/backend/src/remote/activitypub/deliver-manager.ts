@@ -79,7 +79,13 @@ export default class DeliverManager {
 
 		const inboxes = new Set<string>();
 
-		// build inbox list
+		/*
+		build inbox list
+
+		Always prefer shared inbox over individual inbox to avoid duplication.
+		For example if a direct recipe is combined with a followers recipe,
+		or multiple directs from the same instance are present.
+		*/
 		for (const recipe of this.recipes) {
 			if (isFollowers(recipe)) {
 				// followers deliver
@@ -105,7 +111,7 @@ export default class DeliverManager {
 				}
 			} else if (isDirect(recipe)) {
 				// direct deliver
-				const inbox = recipe.to.inbox;
+				const inbox = recipe.to.sharedInbox || recipe.to.inbox;
 				if (inbox) inboxes.add(inbox);
 			}
 		}
