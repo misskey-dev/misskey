@@ -10,6 +10,14 @@
 You should also include the user name that made the change.
 -->
 
+## 12.x.x (unreleased)
+
+### Improvements
+- Bull Dashboardを組み込み、ジョブキューの確認や操作を行えるように @syuilo
+
+### Bugfixes
+- 
+
 ## 12.108.1 (2022/03/12)
 
 ### Bugfixes

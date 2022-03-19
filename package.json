@@ -31,6 +31,7 @@
 		"cleanall": "npm run clean-all"
 	},
 	"dependencies": {
+		"@bull-board/koa": "3.10.0",
 		"@types/gulp": "4.0.9",
 		"@types/gulp-rename": "2.0.1",
 		"execa": "5.1.1",
