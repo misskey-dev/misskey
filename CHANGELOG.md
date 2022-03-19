@@ -16,7 +16,7 @@ You should also include the user name that made the change.
 - Bull Dashboardを組み込み、ジョブキューの確認や操作を行えるように @syuilo
 
 ### Bugfixes
-- 
+- API: fix endpoint endpoint @Johann150
 
 ## 12.108.1 (2022/03/12)
 
