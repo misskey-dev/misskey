@@ -146,6 +146,7 @@
 		"rndstr": "1.0.0",
 		"s-age": "1.1.2",
 		"sanitize-html": "2.7.0",
+		"semver": "7.3.5",
 		"sharp": "0.30.3",
 		"speakeasy": "2.0.0",
 		"strict-event-emitter-types": "2.0.0",
