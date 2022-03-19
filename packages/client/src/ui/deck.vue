@@ -6,12 +6,21 @@
 
 	<template v-for="ids in layout">
 		<!-- sectionを利用しているのは、deck.vue側でcolumnに対してfirst-of-typeを効かせるため -->
-		<section
+		<section v-if="ids.length > 1"
 			class="folder column"
 			:style="columns.filter(c => ids.includes(c.id)).some(c => c.flexible) ? { flex: 1, minWidth: '350px' } : { width: Math.max(...columns.filter(c => ids.includes(c.id)).map(c => c.width)) + 'px' }"
 		>
 			<DeckColumnCore v-for="id in ids" :ref="id" :key="id" :column="columns.find(c => c.id === id)" :is-stacked="true" @parent-focus="moveFocus(id, $event)"/>
 		</section>
+		<DeckColumnCore v-else
+			:ref="ids[0]"
+			:key="ids[0]"
+			class="column"
+			:column="columns.find(c => c.id === ids[0])"
+			 :is-stacked="false"
+			:style="columns.find(c => c.id === ids[0])!.flexible ? { flex: 1, minWidth: '350px' } : { width: columns.find(c => c.id === ids[0])!.width + 'px' }"
+			@parent-focus="moveFocus(ids[0], $event)"
+		/>
 	</template>
 
 	<div v-if="isMobile" class="buttons">
