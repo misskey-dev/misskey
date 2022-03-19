@@ -8,3 +8,12 @@ export const deliverQueue = initializeQueue<DeliverJobData>('deliver', config.de
 export const inboxQueue = initializeQueue<InboxJobData>('inbox', config.inboxJobPerSec || 16);
 export const dbQueue = initializeQueue<DbJobData>('db');
 export const objectStorageQueue = initializeQueue<ObjectStorageJobData>('objectStorage');
+
+export const queues = [
+	systemQueue,
+	endedPollNotificationQueue,
+	deliverQueue,
+	inboxQueue,
+	dbQueue,
+	objectStorageQueue,
+];
