@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineComponent, PropType, markRaw, onUnmounted, onMounted, computed, ref } from 'vue';
+import { defineComponent, markRaw, onUnmounted, onMounted, computed, ref } from 'vue';
 import { notificationTypes } from 'misskey-js';
 import MkPagination from '@/components/ui/pagination.vue';
 import { Paging } from '@/components/ui/pagination.vue';
@@ -29,7 +29,7 @@ import { stream } from '@/stream';
 import { $i } from '@/account';
 
 const props = defineProps<{
-	includeTypes?: PropType<typeof notificationTypes[number][]>;
+	includeTypes?: typeof notificationTypes[number][];
 	unreadOnly?: boolean;
 }>();
 
