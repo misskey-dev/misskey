@@ -67,6 +67,7 @@ router.get('/notes/:note', async (ctx, next) => {
 	if (!isActivityPubReq(ctx)) return await next();
 
 	// TODO: typeorm 3.0にしたら .then(x => x || null) は消せる
+	// nginxとかでキャッシュしてくれそうだからそもそもnode側でのキャッシュ不要かも？
 	const note = await noteCache.fetch(ctx.params.note, () => Notes.findOne({
 		id: ctx.params.note,
 		visibility: In(['public' as const, 'home' as const]),
@@ -167,6 +168,7 @@ router.get('/users/:user', async (ctx, next) => {
 	const userId = ctx.params.user;
 
 	// TODO: typeorm 3.0にしたら .then(x => x || null) は消せる
+	// nginxとかでキャッシュしてくれそうだからそもそもnode側でのキャッシュ不要かも？
 	const user = await userCache.fetch(userId, () => Users.findOne({
 		id: userId,
 		host: null,
