@@ -8,6 +8,10 @@ import { awaitAll, Promiseable } from '@/prelude/await-all.js';
 import { populateEmojis } from '@/misc/populate-emojis.js';
 import { getAntennas } from '@/misc/antenna-cache.js';
 import { USER_ACTIVE_THRESHOLD, USER_ONLINE_THRESHOLD } from '@/const.js';
+import { Cache } from '@/misc/cache.js';
+import { Instance } from '../entities/instance.js';
+
+const userInstanceCache = new Cache<Instance | null>(1000 * 60 * 60 * 3);
 
 type IsUserDetailed<Detailed extends boolean> = Detailed extends true ? Packed<'UserDetailed'> : Packed<'UserLite'>;
 type IsMeAndIsUserDetailed<ExpectsMe extends boolean | null, Detailed extends boolean> =
@@ -254,8 +258,11 @@ export class UserRepository extends Repository<User> {
 			isModerator: user.isModerator || falsy,
 			isBot: user.isBot || falsy,
 			isCat: user.isCat || falsy,
-			showTimelineReplies: user.showTimelineReplies || falsy,
-			instance: user.host ? Instances.findOne({ host: user.host }).then(instance => instance ? {
+			// TODO: typeorm 3.0にしたら .then(x => x || null) は消せる
+			instance: user.host ? userInstanceCache.fetch(user.host,
+				() => Instances.findOne({ host: user.host }).then(x => x || null),
+				v => v != null
+			).then(instance => instance ? {
 				name: instance.name,
 				softwareName: instance.softwareName,
 				softwareVersion: instance.softwareVersion,
@@ -334,6 +341,7 @@ export class UserRepository extends Repository<User> {
 				mutedInstances: profile!.mutedInstances,
 				mutingNotificationTypes: profile!.mutingNotificationTypes,
 				emailNotificationTypes: profile!.emailNotificationTypes,
+				showTimelineReplies: user.showTimelineReplies || falsy,
 			} : {}),
 
 			...(opts.includeSecrets ? {
