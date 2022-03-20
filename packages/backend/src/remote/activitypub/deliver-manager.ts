@@ -109,7 +109,7 @@ export default class DeliverManager {
 			}
 		}
 
-		this.recipes.filter(recipe => {
+		this.recipes.filter((recipe): recipe is IDirectRecipe => {
 			// followers recipes have already been processed
 			isDirect(recipe)
 			// check that shared inbox has not been added yet
