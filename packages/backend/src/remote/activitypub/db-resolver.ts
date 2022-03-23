@@ -78,14 +78,14 @@ export default class DbResolver {
 	public async getAuthUserFromKeyId(keyId: string): Promise<AuthUser | null> {
 		const key = await UserPublickeys.findOne({
 			keyId,
+		}, {
+			relations: ['user'],
 		});
 
 		if (key == null) return null;
 
-		const user = await Users.findOne(key.userId) as IRemoteUser;
-
 		return {
-			user,
+			user: key.user as IRemoteUser,
 			key,
 		};
 	}

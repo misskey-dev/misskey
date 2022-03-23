@@ -11,6 +11,7 @@ import { setResponseType } from '../activitypub.js';
 import { Users, Followings, UserProfiles } from '@/models/index.js';
 import { LessThan, FindConditions } from 'typeorm';
 import { Following } from '@/models/entities/following.js';
+import { userCache } from './cache.js';
 
 export default async (ctx: Router.RouterContext) => {
 	const userId = ctx.params.user;
@@ -28,11 +29,11 @@ export default async (ctx: Router.RouterContext) => {
 		return;
 	}
 
-	// Verify user
-	const user = await Users.findOne({
+	// TODO: typeorm 3.0にしたら .then(x => x || null) は消せる
+	const user = await userCache.fetch(userId, () => Users.findOne({
 		id: userId,
 		host: null,
-	});
+	}).then(x => x || null));
 
 	if (user == null) {
 		ctx.status = 404;

@@ -10,6 +10,9 @@ import Router from '@koa/router';
 import send from 'koa-send';
 import favicon from 'koa-favicon';
 import views from 'koa-views';
+import { createBullBoard } from '@bull-board/api';
+import { BullAdapter  } from '@bull-board/api/bullAdapter.js';
+import { KoaAdapter } from '@bull-board/koa';
 
 import packFeed from './feed.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
@@ -20,6 +23,7 @@ import * as Acct from '@/misc/acct.js';
 import { getNoteSummary } from '@/misc/get-note-summary.js';
 import { urlPreviewHandler } from './url-preview.js';
 import { manifestHandler } from './manifest.js';
+import { queues } from '@/queue/queues.js';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -31,6 +35,37 @@ const swAssets = `${_dirname}/../../../../../built/_sw_dist_/`;
 
 // Init app
 const app = new Koa();
+
+//#region Bull Dashboard
+const bullBoardPath = '/queue';
+
+// Authenticate
+app.use(async (ctx, next) => {
+	if (ctx.path === bullBoardPath || ctx.path.startsWith(bullBoardPath + '/')) {
+		const token = ctx.cookies.get('token');
+		if (token == null) {
+			ctx.status = 401;
+			return;
+		}
+		const user = await Users.findOne({ token });
+		if (user == null || !(user.isAdmin || user.isModerator)) {
+			ctx.status = 403;
+			return;
+		}
+	}
+	await next();
+});
+
+const serverAdapter = new KoaAdapter();
+
+createBullBoard({
+	queues: queues.map(q => new BullAdapter(q)),
+	serverAdapter,
+});
+
+serverAdapter.setBasePath(bullBoardPath);
+app.use(serverAdapter.registerPlugin());
+//#endregion
 
 // Init renderer
 app.use(views(_dirname + '/views', {

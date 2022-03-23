@@ -4,6 +4,7 @@ import { fetchMeta } from '@/misc/fetch-meta.js';
 import { Users, Notes } from '@/models/index.js';
 import { MoreThan } from 'typeorm';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
+import { Cache } from '@/misc/cache.js';
 
 const router = new Router();
 
@@ -81,15 +82,17 @@ const nodeinfo2 = async () => {
 	};
 };
 
+const cache = new Cache<Awaited<ReturnType<typeof nodeinfo2>>>(1000 * 60 * 10);
+
 router.get(nodeinfo2_1path, async ctx => {
-	const base = await nodeinfo2();
+	const base = await cache.fetch(null, () => nodeinfo2());
 
 	ctx.body = { version: '2.1', ...base };
 	ctx.set('Cache-Control', 'public, max-age=600');
 });
 
 router.get(nodeinfo2_0path, async ctx => {
-	const base = await nodeinfo2();
+	const base = await cache.fetch(null, () => nodeinfo2());
 
 	delete base.software.repository;
 
