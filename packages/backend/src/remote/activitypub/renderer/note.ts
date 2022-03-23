@@ -53,9 +53,7 @@ export default async function renderNote(note: Note, dive = true, isTalk = false
 		}
 	}
 
-	const user = await Users.findOneOrFail(note.userId);
-
-	const attributedTo = `${config.url}/users/${user.id}`;
+	const attributedTo = `${config.url}/users/${note.userId}`;
 
 	const mentions = (JSON.parse(note.mentionedRemoteUsers) as IMentionedRemoteUsers).map(x => x.uri);
 

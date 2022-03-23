@@ -1,75 +1,62 @@
 <template>
-<XColumn :func="{ handler: setAntenna, title: $ts.selectAntenna }" :column="column" :is-stacked="isStacked">
+<XColumn :func="{ handler: setAntenna, title: $ts.selectAntenna }" :column="column" :is-stacked="isStacked" @parent-focus="$event => emit('parent-focus', $event)">
 	<template #header>
 		<i class="fas fa-satellite"></i><span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
 
-	<XTimeline v-if="column.antennaId" ref="timeline" src="antenna" :antenna="column.antennaId" @after="() => $emit('loaded')"/>
+	<XTimeline v-if="column.antennaId" ref="timeline" src="antenna" :antenna="column.antennaId" @after="() => emit('loaded')"/>
 </XColumn>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { onMounted } from 'vue';
 import XColumn from './column.vue';
 import XTimeline from '@/components/timeline.vue';
 import * as os from '@/os';
-import { updateColumn } from './deck-store';
+import { updateColumn, Column } from './deck-store';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		XColumn,
-		XTimeline,
-	},
+const props = defineProps<{
+	column: Column;
+	isStacked: boolean;
+}>();
 
-	props: {
-		column: {
-			type: Object,
-			required: true
-		},
-		isStacked: {
-			type: Boolean,
-			required: true
-		}
-	},
+const emit = defineEmits<{
+	(e: 'loaded'): void;
+	(e: 'parent-focus', direction: 'up' | 'down' | 'left' | 'right'): void;
+}>();
 
-	data() {
-		return {
-		};
-	},
+let timeline = $ref<InstanceType<typeof XTimeline>>();
 
-	watch: {
-		mediaOnly() {
-			(this.$refs.timeline as any).reload();
-		}
-	},
-
-	mounted() {
-		if (this.column.antennaId == null) {
-			this.setAntenna();
-		}
-	},
-
-	methods: {
-		async setAntenna() {
-			const antennas = await os.api('antennas/list');
-			const { canceled, result: antenna } = await os.select({
-				title: this.$ts.selectAntenna,
-				items: antennas.map(x => ({
-					value: x, text: x.name
-				})),
-				default: this.column.antennaId
-			});
-			if (canceled) return;
-			updateColumn(this.column.id, {
-				antennaId: antenna.id
-			});
-		},
-
-		focus() {
-			(this.$refs.timeline as any).focus();
-		}
+onMounted(() => {
+	if (props.column.antennaId == null) {
+		setAntenna();
 	}
 });
+
+async function setAntenna() {
+	const antennas = await os.api('antennas/list');
+	const { canceled, result: antenna } = await os.select({
+		title: i18n.ts.selectAntenna,
+		items: antennas.map(x => ({
+			value: x, text: x.name
+		})),
+		default: props.column.antennaId
+	});
+	if (canceled) return;
+	updateColumn(props.column.id, {
+		antennaId: antenna.id
+	});
+}
+/*
+function focus() {
+	timeline.focus();
+}
+
+defineExpose({
+	focus,
+});
+*/
 </script>
 
 <style lang="scss" scoped>

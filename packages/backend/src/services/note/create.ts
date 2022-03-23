@@ -35,6 +35,12 @@ import { Channel } from '@/models/entities/channel.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { getAntennas } from '@/misc/antenna-cache.js';
 import { endedPollNotificationQueue } from '@/queue/queues.js';
+import { Cache } from '@/misc/cache.js';
+import { UserProfile } from '@/models/entities/user-profile.js';
+
+const usersCache = new Cache<MinimumUser>(Infinity);
+
+const mutedWordsCache = new Cache<{ userId: UserProfile['userId']; mutedWords: UserProfile['mutedWords']; }[]>(1000 * 60 * 5);
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -91,6 +97,13 @@ class NotificationManager {
 	}
 }
 
+type MinimumUser = {
+	id: User['id'];
+	host: User['host'];
+	username: User['username'];
+	uri: User['uri'];
+};
+
 type Option = {
 	createdAt?: Date | null;
 	name?: string | null;
@@ -102,9 +115,9 @@ type Option = {
 	localOnly?: boolean | null;
 	cw?: string | null;
 	visibility?: string;
-	visibleUsers?: User[] | null;
+	visibleUsers?: MinimumUser[] | null;
 	channel?: Channel | null;
-	apMentions?: User[] | null;
+	apMentions?: MinimumUser[] | null;
 	apHashtags?: string[] | null;
 	apEmojis?: string[] | null;
 	uri?: string | null;
@@ -199,7 +212,7 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 	tags = tags.filter(tag => Array.from(tag || '').length <= 128).splice(0, 32);
 
 	if (data.reply && (user.id !== data.reply.userId) && !mentionedUsers.some(u => u.id === data.reply!.userId)) {
-		mentionedUsers.push(await Users.findOneOrFail(data.reply.userId));
+		mentionedUsers.push(await usersCache.fetch(data.reply.userId, () => Users.findOneOrFail(data.reply!.userId)));
 	}
 
 	if (data.visibility === 'specified') {
@@ -212,7 +225,7 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 		}
 
 		if (data.reply && !data.visibleUsers.some(x => x.id === data.reply!.userId)) {
-			data.visibleUsers.push(await Users.findOneOrFail(data.reply.userId));
+			data.visibleUsers.push(await usersCache.fetch(data.reply.userId, () => Users.findOneOrFail(data.reply!.userId)));
 		}
 	}
 
@@ -241,10 +254,12 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 	incNotesCountOfUser(user);
 
 	// Word mute
-	// TODO: cache
-	UserProfiles.find({
-		enableWordMute: true,
-	}).then(us => {
+	mutedWordsCache.fetch(null, () => UserProfiles.find({
+		where: {
+			enableWordMute: true,
+		},
+		select: ['userId', 'mutedWords'],
+	})).then(us => {
 		for (const u of us) {
 			checkWordMute(note, { id: u.userId }, u.mutedWords).then(shouldMute => {
 				if (shouldMute) {
@@ -260,21 +275,13 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 	});
 
 	// Antenna
-	Followings.createQueryBuilder('following')
-		.andWhere(`following.followeeId = :userId`, { userId: note.userId })
-		.getMany()
-		.then(async followings => {
-			const blockings = await Blockings.find({ blockerId: user.id }); // TODO: キャッシュしたい
-			const followers = followings.map(f => f.followerId);
-			for (const antenna of (await getAntennas())) {
-				if (blockings.some(blocking => blocking.blockeeId === antenna.userId)) continue; // この処理は checkHitAntenna 内でやるようにしてもいいかも
-				checkHitAntenna(antenna, note, user, followers).then(hit => {
-					if (hit) {
-						addNoteToAntenna(antenna, note, user);
-					}
-				});
+	for (const antenna of (await getAntennas())) {
+		checkHitAntenna(antenna, note, user).then(hit => {
+			if (hit) {
+				addNoteToAntenna(antenna, note, user);
 			}
 		});
+	}
 
 	// Channel
 	if (note.channelId) {
@@ -465,7 +472,7 @@ function incRenoteCount(renote: Note) {
 		.execute();
 }
 
-async function insertNote(user: { id: User['id']; host: User['host']; }, data: Option, tags: string[], emojis: string[], mentionedUsers: User[]) {
+async function insertNote(user: { id: User['id']; host: User['host']; }, data: Option, tags: string[], emojis: string[], mentionedUsers: MinimumUser[]) {
 	const insert = new Note({
 		id: genId(data.createdAt!),
 		createdAt: data.createdAt!,
@@ -597,7 +604,7 @@ async function notifyToWatchersOfReplyee(reply: Note, user: { id: User['id']; },
 	}
 }
 
-async function createMentionedEvents(mentionedUsers: User[], note: Note, nm: NotificationManager) {
+async function createMentionedEvents(mentionedUsers: MinimumUser[], note: Note, nm: NotificationManager) {
 	for (const u of mentionedUsers.filter(u => Users.isLocalUser(u))) {
 		const threadMuted = await NoteThreadMutings.findOne({
 			userId: u.id,

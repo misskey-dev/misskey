@@ -263,6 +263,7 @@ export default function() {
 	systemQueue.add('tickCharts', {
 	}, {
 		repeat: { cron: '55 * * * *' },
+		removeOnComplete: true,
 	});
 
 	systemQueue.add('resyncCharts', {
@@ -278,6 +279,7 @@ export default function() {
 	systemQueue.add('checkExpiredMutings', {
 	}, {
 		repeat: { cron: '*/5 * * * *' },
+		removeOnComplete: true,
 	});
 
 	processSystemQueue(systemQueue);
