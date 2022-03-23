@@ -28,11 +28,22 @@ export class Cache<T> {
 		this.cache.delete(key);
 	}
 
-	public async fetch(key: string | null, fetcher: () => Promise<T>): Promise<T> {
+	/**
+	 * キャッシュがあればそれを返し、無ければfetcherを呼び出して結果をキャッシュ&返します
+	 * optional: キャッシュが存在してもvalidatorでfalseを返すとキャッシュ無効扱いにします
+	 */
+	public async fetch(key: string | null, fetcher: () => Promise<T>, validator?: (cachedValue: T) => boolean): Promise<T> {
 		const cachedValue = this.get(key);
 		if (cachedValue !== undefined) {
-			// Cache HIT
-			return cachedValue;
+			if (validator) {
+				if (validator(cachedValue)) {
+					// Cache HIT
+					return cachedValue;
+				}
+			} else {
+				// Cache HIT
+				return cachedValue;
+			}
 		}
 
 		// Cache MISS
