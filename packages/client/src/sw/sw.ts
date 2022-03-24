@@ -10,6 +10,7 @@ import { I18n } from '@/scripts/i18n';
 //#region Variables
 const version = _VERSION_;
 const cacheName = `mk-cache-${version}`;
+const offlineFallbackPage='/static-assets/offline.html';
 
 let lang: string;
 let i18n: I18n<any>;
@@ -32,6 +33,12 @@ self.addEventListener('install', ev => {
 
 //#region Lifecycle: Activate
 self.addEventListener('activate', ev => {
+	ev.waitUntil(caches.open(cacheName).then((function(e) {
+   //cache offlinepage         
+            e.add(offlineFallbackPage);
+        }
+        )));
+	
 	ev.waitUntil(
 		caches.keys()
 			.then(cacheNames => Promise.all(
@@ -45,8 +52,26 @@ self.addEventListener('activate', ev => {
 //#endregion
 
 //#region When: Fetching
-self.addEventListener('fetch', ev => {
-	// Nothing to do
+self.addEventListener('fetch', event => {
+	
+	//Serve an offline page when top-level navigation occurs while being offline
+	if (event.request.method !== "GET") return;
+
+  event.respondWith(
+    fetch(event.request).catch(function (error) {
+      // The following validates that the request was for a navigation to a new document
+      if (
+        event.request.destination !== "document" ||
+        event.request.mode !== "navigate"
+      ) {
+        return;
+      }
+
+      return caches.open(cacheName).then(function (cache) {
+        return cache.match(offlineFallbackPage);
+      });
+    })
+  );
 });
 //#endregion
 
