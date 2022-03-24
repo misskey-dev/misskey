@@ -89,7 +89,11 @@ function fetchAccount(token): Promise<Account> {
 						signout();
 					});
 				} else {
-					signout();
+					alert({
+						type: 'error',
+						title: i18n.ts.failedToFetchAccountInformation,
+						text: JSON.stringify(res.error),
+					});
 				}
 			} else {
 				res.token = token;
