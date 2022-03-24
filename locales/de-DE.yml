@@ -841,6 +841,7 @@ oneHour: "Eine Stunde"
 oneDay: "Einen Tag"
 oneWeek: "Eine Woche"
 reflectMayTakeTime: "Es kann etwas dauern, bis sich dies widerspiegelt."
+failedToFetchAccountInformation: "Benutzerkontoinformationen konnten nicht abgefragt werden"
 _emailUnavailable:
   used: "Diese Email-Adresse wird bereits verwendet"
   format: "Das Format dieser Email-Adresse ist ungültig"
