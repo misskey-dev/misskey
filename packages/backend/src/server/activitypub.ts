@@ -18,7 +18,6 @@ import { ILocalUser, User } from '@/models/entities/user.js';
 import { In } from 'typeorm';
 import { renderLike } from '@/remote/activitypub/renderer/like.js';
 import { getUserKeypair } from '@/misc/keypair-store.js';
-import { noteCache, userCache } from './activitypub/cache.js';
 
 // Init router
 const router = new Router();
@@ -66,13 +65,11 @@ router.post('/users/:user/inbox', json(), inbox);
 router.get('/notes/:note', async (ctx, next) => {
 	if (!isActivityPubReq(ctx)) return await next();
 
-	// TODO: typeorm 3.0にしたら .then(x => x || null) は消せる
-	// nginxとかでキャッシュしてくれそうだからそもそもnode側でのキャッシュ不要かも？
-	const note = await noteCache.fetch(ctx.params.note, () => Notes.findOne({
+	const note = await Notes.findOne({
 		id: ctx.params.note,
 		visibility: In(['public' as const, 'home' as const]),
 		localOnly: false,
-	}).then(x => x || null));
+	});
 
 	if (note == null) {
 		ctx.status = 404;
@@ -167,13 +164,11 @@ router.get('/users/:user', async (ctx, next) => {
 
 	const userId = ctx.params.user;
 
-	// TODO: typeorm 3.0にしたら .then(x => x || null) は消せる
-	// nginxとかでキャッシュしてくれそうだからそもそもnode側でのキャッシュ不要かも？
-	const user = await userCache.fetch(userId, () => Users.findOne({
+	const user = await Users.findOne({
 		id: userId,
 		host: null,
 		isSuspended: false,
-	}).then(x => x || null));
+	});
 
 	await userInfo(ctx, user);
 });
