@@ -23,7 +23,7 @@ export async function initializeSw() {
 				function encode(buffer: ArrayBuffer | null) {
 					return btoa(String.fromCharCode.apply(null, new Uint8Array(buffer)));
 				}
-		
+
 				// Register
 				api('sw/register', {
 					endpoint: subscription.endpoint,
@@ -37,7 +37,7 @@ export async function initializeSw() {
 				if (err.name === 'NotAllowedError') {
 					return;
 				}
-		
+
 				// 違うapplicationServerKey (または gcm_sender_id)のサブスクリプションが
 				// 既に存在していることが原因でエラーになった可能性があるので、
 				// そのサブスクリプションを解除しておく
