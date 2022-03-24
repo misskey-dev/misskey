@@ -800,6 +800,7 @@ tenMinutes: "10 دقائق"
 oneHour: "ساعة"
 oneDay: "يوم"
 oneWeek: "أسبوع"
+failedToFetchAccountInformation: "تعذر جلب معلومات الحساب"
 _emailUnavailable:
   used: "هذا البريد الإلكتروني مستخدم"
   format: "صيغة البريد الإلكتروني غير صالحة"
