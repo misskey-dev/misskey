@@ -2,7 +2,7 @@ import { del, get, set } from '@/scripts/idb-proxy';
 import { reactive } from 'vue';
 import * as misskey from 'misskey-js';
 import { apiUrl } from '@/config';
-import { waiting, api, popup, popupMenu, success } from '@/os';
+import { waiting, api, popup, popupMenu, success, alert } from '@/os';
 import { unisonReload, reloadChannel } from '@/scripts/unison-reload';
 import { showSuspendedDialog } from './scripts/show-suspended-dialog';
 import { i18n } from './i18n';
