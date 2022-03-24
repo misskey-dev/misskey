@@ -1,89 +1,18 @@
 import config from '@/config/index.js';
-import define from '../define.js';
+import define from '../../define.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
-import { Ads, Emojis, Users } from '@/models/index.js';
-import { DB_MAX_NOTE_TEXT_LENGTH } from '@/misc/hard-limits.js';
-import { MoreThan } from 'typeorm';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 
 export const meta = {
 	tags: ['meta'],
 
-	requireCredential: false,
+	requireCredential: true,
+	requireAdmin: true,
 
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
 		properties: {
-			maintainerName: {
-				type: 'string',
-				optional: false, nullable: true,
-			},
-			maintainerEmail: {
-				type: 'string',
-				optional: false, nullable: true,
-			},
-			version: {
-				type: 'string',
-				optional: false, nullable: false,
-				example: config.version,
-			},
-			name: {
-				type: 'string',
-				optional: false, nullable: false,
-			},
-			uri: {
-				type: 'string',
-				optional: false, nullable: false,
-				format: 'url',
-				example: 'https://misskey.example.com',
-			},
-			description: {
-				type: 'string',
-				optional: false, nullable: true,
-			},
-			langs: {
-				type: 'array',
-				optional: false, nullable: false,
-				items: {
-					type: 'string',
-					optional: false, nullable: false,
-				},
-			},
-			tosUrl: {
-				type: 'string',
-				optional: false, nullable: true,
-			},
-			repositoryUrl: {
-				type: 'string',
-				optional: false, nullable: false,
-				default: 'https://github.com/misskey-dev/misskey',
-			},
-			feedbackUrl: {
-				type: 'string',
-				optional: false, nullable: false,
-				default: 'https://github.com/misskey-dev/misskey/issues/new',
-			},
-			defaultDarkTheme: {
-				type: 'string',
-				optional: false, nullable: true,
-			},
-			defaultLightTheme: {
-				type: 'string',
-				optional: false, nullable: true,
-			},
-			disableRegistration: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
-			disableLocalTimeline: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
-			disableGlobalTimeline: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
 			driveCapacityPerLocalUserMb: {
 				type: 'number',
 				optional: false, nullable: false,
@@ -202,11 +131,6 @@ export const meta = {
 					},
 				},
 			},
-			requireSetup: {
-				type: 'boolean',
-				optional: false, nullable: false,
-				example: false,
-			},
 			enableEmail: {
 				type: 'boolean',
 				optional: false, nullable: false,
@@ -235,60 +159,150 @@ export const meta = {
 				type: 'string',
 				optional: false, nullable: true,
 			},
-			features: {
-				type: 'object',
+			userStarForReactionFallback: {
+				type: 'boolean',
 				optional: true, nullable: false,
-				properties: {
-					registration: {
-						type: 'boolean',
-						optional: false, nullable: false,
-					},
-					localTimeLine: {
-						type: 'boolean',
-						optional: false, nullable: false,
-					},
-					globalTimeLine: {
-						type: 'boolean',
-						optional: false, nullable: false,
-					},
-					elasticsearch: {
-						type: 'boolean',
-						optional: false, nullable: false,
-					},
-					hcaptcha: {
-						type: 'boolean',
-						optional: false, nullable: false,
-					},
-					recaptcha: {
-						type: 'boolean',
-						optional: false, nullable: false,
-					},
-					objectStorage: {
-						type: 'boolean',
-						optional: false, nullable: false,
-					},
-					twitter: {
-						type: 'boolean',
-						optional: false, nullable: false,
-					},
-					github: {
-						type: 'boolean',
-						optional: false, nullable: false,
-					},
-					discord: {
-						type: 'boolean',
-						optional: false, nullable: false,
-					},
-					serviceWorker: {
-						type: 'boolean',
-						optional: false, nullable: false,
-					},
-					miauth: {
-						type: 'boolean',
-						optional: true, nullable: false,
-						default: true,
-					},
+			},
+			pinnedUsers: {
+				type: 'array',
+				optional: true, nullable: false,
+				items: {
+					type: 'string',
+					optional: false, nullable: false,
 				},
+			},
+			hiddenTags: {
+				type: 'array',
+				optional: true, nullable: false,
+				items: {
+					type: 'string',
+					optional: false, nullable: false,
+				},
+			},
+			blockedHosts: {
+				type: 'array',
+				optional: true, nullable: false,
+				items: {
+					type: 'string',
+					optional: false, nullable: false,
+				},
+			},
+			hcaptchaSecretKey: {
+				type: 'string',
+				optional: true, nullable: true,
+			},
+			recaptchaSecretKey: {
+				type: 'string',
+				optional: true, nullable: true,
+			},
+			proxyAccountId: {
+				type: 'string',
+				optional: true, nullable: true,
+				format: 'id',
+			},
+			twitterConsumerKey: {
+				type: 'string',
+				optional: true, nullable: true,
+			},
+			twitterConsumerSecret: {
+				type: 'string',
+				optional: true, nullable: true,
+			},
+			githubClientId: {
+				type: 'string',
+				optional: true, nullable: true,
+			},
+			githubClientSecret: {
+				type: 'string',
+				optional: true, nullable: true,
+			},
+			discordClientId: {
+				type: 'string',
+				optional: true, nullable: true,
+			},
+			discordClientSecret: {
+				type: 'string',
+				optional: true, nullable: true,
+			},
+			summaryProxy: {
+				type: 'string',
+				optional: true, nullable: true,
+			},
+			email: {
+				type: 'string',
+				optional: true, nullable: true,
+			},
+			smtpSecure: {
+				type: 'boolean',
+				optional: true, nullable: false,
+			},
+			smtpHost: {
+				type: 'string',
+				optional: true, nullable: true,
+			},
+			smtpPort: {
+				type: 'string',
+				optional: true, nullable: true,
+			},
+			smtpUser: {
+				type: 'string',
+				optional: true, nullable: true,
+			},
+			smtpPass: {
+				type: 'string',
+				optional: true, nullable: true,
+			},
+			swPrivateKey: {
+				type: 'string',
+				optional: true, nullable: true,
+			},
+			useObjectStorage: {
+				type: 'boolean',
+				optional: true, nullable: false,
+			},
+			objectStorageBaseUrl: {
+				type: 'string',
+				optional: true, nullable: true,
+			},
+			objectStorageBucket: {
+				type: 'string',
+				optional: true, nullable: true,
+			},
+			objectStoragePrefix: {
+				type: 'string',
+				optional: true, nullable: true,
+			},
+			objectStorageEndpoint: {
+				type: 'string',
+				optional: true, nullable: true,
+			},
+			objectStorageRegion: {
+				type: 'string',
+				optional: true, nullable: true,
+			},
+			objectStoragePort: {
+				type: 'number',
+				optional: true, nullable: true,
+			},
+			objectStorageAccessKey: {
+				type: 'string',
+				optional: true, nullable: true,
+			},
+			objectStorageSecretKey: {
+				type: 'string',
+				optional: true, nullable: true,
+			},
+			objectStorageUseSSL: {
+				type: 'boolean',
+				optional: true, nullable: false,
+			},
+			objectStorageUseProxy: {
+				type: 'boolean',
+				optional: true, nullable: false,
+			},
+			objectStorageSetPublicRead: {
+				type: 'boolean',
+				optional: true, nullable: false,
 			},
 		},
 	},
@@ -297,7 +311,6 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
-		detail: { type: 'boolean', default: true },
 	},
 	required: [],
 } as const;
@@ -306,32 +319,10 @@ export const paramDef = {
 export default define(meta, paramDef, async (ps, me) => {
 	const instance = await fetchMeta(true);
 
-	const emojis = await Emojis.find({
-		where: {
-			host: null,
-		},
-		order: {
-			category: 'ASC',
-			name: 'ASC',
-		},
-		cache: {
-			id: 'meta_emojis',
-			milliseconds: 3600000,	// 1 hour
-		},
-	});
-
-	const ads = await Ads.find({
-		where: {
-			expiresAt: MoreThan(new Date()),
-		},
-	});
-
-	const response: any = {
+	return {
 		maintainerName: instance.maintainerName,
 		maintainerEmail: instance.maintainerEmail,
-
 		version: config.version,
-
 		name: instance.name,
 		uri: config.url,
 		description: instance.description,
@@ -358,56 +349,53 @@ export default define(meta, paramDef, async (ps, me) => {
 		backgroundImageUrl: instance.backgroundImageUrl,
 		logoImageUrl: instance.logoImageUrl,
 		maxNoteTextLength: MAX_NOTE_TEXT_LENGTH, // 後方互換性のため
-		emojis: await Emojis.packMany(emojis),
 		defaultLightTheme: instance.defaultLightTheme,
 		defaultDarkTheme: instance.defaultDarkTheme,
-		ads: ads.map(ad => ({
-			id: ad.id,
-			url: ad.url,
-			place: ad.place,
-			ratio: ad.ratio,
-			imageUrl: ad.imageUrl,
-		})),
 		enableEmail: instance.enableEmail,
-
 		enableTwitterIntegration: instance.enableTwitterIntegration,
 		enableGithubIntegration: instance.enableGithubIntegration,
 		enableDiscordIntegration: instance.enableDiscordIntegration,
-
 		enableServiceWorker: instance.enableServiceWorker,
-
 		translatorAvailable: instance.deeplAuthKey != null,
+		pinnedPages: instance.pinnedPages,
+		pinnedClipId: instance.pinnedClipId,
+		cacheRemoteFiles: instance.cacheRemoteFiles,
 
-		...(ps.detail ? {
-			pinnedPages: instance.pinnedPages,
-			pinnedClipId: instance.pinnedClipId,
-			cacheRemoteFiles: instance.cacheRemoteFiles,
-			requireSetup: (await Users.count({
-				host: null,
-			})) === 0,
-		} : {}),
+		useStarForReactionFallback: instance.useStarForReactionFallback,
+		pinnedUsers: instance.pinnedUsers,
+		hiddenTags: instance.hiddenTags,
+		blockedHosts: instance.blockedHosts,
+		hcaptchaSecretKey: instance.hcaptchaSecretKey,
+		recaptchaSecretKey: instance.recaptchaSecretKey,
+		proxyAccountId: instance.proxyAccountId,
+		twitterConsumerKey: instance.twitterConsumerKey,
+		twitterConsumerSecret: instance.twitterConsumerSecret,
+		githubClientId: instance.githubClientId,
+		githubClientSecret: instance.githubClientSecret,
+		discordClientId: instance.discordClientId,
+		discordClientSecret: instance.discordClientSecret,
+		summalyProxy: instance.summalyProxy,
+		email: instance.email,
+		smtpSecure: instance.smtpSecure,
+		smtpHost: instance.smtpHost,
+		smtpPort: instance.smtpPort,
+		smtpUser: instance.smtpUser,
+		smtpPass: instance.smtpPass,
+		swPrivateKey: instance.swPrivateKey,
+		useObjectStorage: instance.useObjectStorage,
+		objectStorageBaseUrl: instance.objectStorageBaseUrl,
+		objectStorageBucket: instance.objectStorageBucket,
+		objectStoragePrefix: instance.objectStoragePrefix,
+		objectStorageEndpoint: instance.objectStorageEndpoint,
+		objectStorageRegion: instance.objectStorageRegion,
+		objectStoragePort: instance.objectStoragePort,
+		objectStorageAccessKey: instance.objectStorageAccessKey,
+		objectStorageSecretKey: instance.objectStorageSecretKey,
+		objectStorageUseSSL: instance.objectStorageUseSSL,
+		objectStorageUseProxy: instance.objectStorageUseProxy,
+		objectStorageSetPublicRead: instance.objectStorageSetPublicRead,
+		objectStorageS3ForcePathStyle: instance.objectStorageS3ForcePathStyle,
+		deeplAuthKey: instance.deeplAuthKey,
+		deeplIsPro: instance.deeplIsPro,
 	};
-
-	if (ps.detail) {
-		const proxyAccount = instance.proxyAccountId ? await Users.pack(instance.proxyAccountId).catch(() => null) : null;
-
-		response.proxyAccountName = proxyAccount ? proxyAccount.username : null;
-		response.features = {
-			registration: !instance.disableRegistration,
-			localTimeLine: !instance.disableLocalTimeline,
-			globalTimeLine: !instance.disableGlobalTimeline,
-			emailRequiredForSignup: instance.emailRequiredForSignup,
-			elasticsearch: config.elasticsearch ? true : false,
-			hcaptcha: instance.enableHcaptcha,
-			recaptcha: instance.enableRecaptcha,
-			objectStorage: instance.useObjectStorage,
-			twitter: instance.enableTwitterIntegration,
-			github: instance.enableGithubIntegration,
-			discord: instance.enableDiscordIntegration,
-			serviceWorker: instance.enableServiceWorker,
-			miauth: true,
-		};
-	}
-
-	return response;
 });
