@@ -4,12 +4,13 @@ import generateUserToken from './generate-native-user-token.js';
 import { User } from '@/models/entities/user.js';
 import { Users, UsedUsernames } from '@/models/index.js';
 import { UserProfile } from '@/models/entities/user-profile.js';
-import { getConnection, IsNull } from 'typeorm';
+import { IsNull } from 'typeorm';
 import { genId } from '@/misc/gen-id.js';
 import { toPunyNullable } from '@/misc/convert-host.js';
 import { UserKeypair } from '@/models/entities/user-keypair.js';
 import { usersChart } from '@/services/chart/index.js';
 import { UsedUsername } from '@/models/entities/used-username.js';
+import { dataSource } from '@/db/postgre.js';
 
 export async function signup(opts: {
 	username: User['username'];
@@ -69,7 +70,7 @@ export async function signup(opts: {
 	let account!: User;
 
 	// Start transaction
-	await getConnection().transaction(async transactionalEntityManager => {
+	await dataSource.transaction(async transactionalEntityManager => {
 		const exist = await transactionalEntityManager.findOneBy(User, {
 			usernameLower: username.toLowerCase(),
 			host: IsNull(),

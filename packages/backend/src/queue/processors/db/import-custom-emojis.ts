@@ -2,7 +2,6 @@ import Bull from 'bull';
 import * as tmp from 'tmp';
 import * as fs from 'node:fs';
 import unzipper from 'unzipper';
-import { getConnection } from 'typeorm';
 
 import { queueLogger } from '../../logger.js';
 import { downloadUrl } from '@/misc/download-url.js';
@@ -10,6 +9,7 @@ import { DriveFiles, Emojis } from '@/models/index.js';
 import { DbUserImportJobData } from '@/queue/types.js';
 import { addFile } from '@/services/drive/add-file.js';
 import { genId } from '@/misc/gen-id.js';
+import { dataSource } from '@/db/postgre.js';
 
 const logger = queueLogger.createSubLogger('import-custom-emojis');
 
@@ -75,7 +75,7 @@ export async function importCustomEmojis(job: Bull.Job<DbUserImportJobData>, don
 			}).then(x => Emojis.findOneByOrFail(x.identifiers[0]));
 		}
 
-		await getConnection().queryResultCache!.remove(['meta_emojis']);
+		await dataSource.queryResultCache!.remove(['meta_emojis']);
 
 		cleanup();
 	

@@ -1,11 +1,11 @@
 import define from '../../../define.js';
 import { Emojis, DriveFiles } from '@/models/index.js';
 import { genId } from '@/misc/gen-id.js';
-import { getConnection } from 'typeorm';
 import { insertModerationLog } from '@/services/insert-moderation-log.js';
 import { ApiError } from '../../../error.js';
 import rndstr from 'rndstr';
 import { publishBroadcastStream } from '@/services/stream.js';
+import { dataSource } from '@/db/postgre.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -50,7 +50,7 @@ export default define(meta, paramDef, async (ps, me) => {
 		type: file.webpublicType ?? file.type,
 	}).then(x => Emojis.findOneByOrFail(x.identifiers[0]));
 
-	await getConnection().queryResultCache!.remove(['meta_emojis']);
+	await dataSource.queryResultCache!.remove(['meta_emojis']);
 
 	publishBroadcastStream('emojiAdded', {
 		emoji: await Emojis.pack(emoji.id),

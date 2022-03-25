@@ -1,4 +1,4 @@
-import { EntityRepository, In, Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Users, Notes, UserGroupInvitations, AccessTokens, NoteReactions } from '../index.js';
 import { Notification } from '@/models/entities/notification.js';
 import { awaitAll } from '@/prelude/await-all.js';
@@ -8,6 +8,7 @@ import { NoteReaction } from '@/models/entities/note-reaction.js';
 import { User } from '@/models/entities/user.js';
 import { aggregateNoteEmojis, prefetchEmojis } from '@/misc/populate-emojis.js';
 import { notificationTypes } from '@/types.js';
+import { dataSource } from '@/db/postgre.js';
 
 export const NotificationRepository = dataSource.getRepository(Notification).extend({
 	async pack(

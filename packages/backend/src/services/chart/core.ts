@@ -6,9 +6,10 @@
 
 import * as nestedProperty from 'nested-property';
 import Logger from '../logger.js';
-import { EntitySchema, getRepository, Repository, LessThan, Between } from 'typeorm';
+import { EntitySchema, Repository, LessThan, Between } from 'typeorm';
 import { dateUTC, isTimeSame, isTimeBefore, subtractTime, addTime } from '@/prelude/time.js';
 import { getChartInsertLock } from '@/misc/app-lock.js';
+import { dataSource } from '@/db/postgre.js';
 
 const logger = new Logger('chart', 'white', process.env.NODE_ENV !== 'test');
 
@@ -241,8 +242,8 @@ export default abstract class Chart<T extends Schema> {
 		this.schema = schema;
 
 		const { hour, day } = Chart.schemaToEntity(name, schema, grouped);
-		this.repositoryForHour = getRepository<{ id: number; group?: string | null; date: number; }>(hour);
-		this.repositoryForDay = getRepository<{ id: number; group?: string | null; date: number; }>(day);
+		this.repositoryForHour = dataSource.getRepository<{ id: number; group?: string | null; date: number; }>(hour);
+		this.repositoryForDay = dataSource.getRepository<{ id: number; group?: string | null; date: number; }>(day);
 	}
 
 	private convertRawRecord(x: RawRecord<T>): KVs<T> {

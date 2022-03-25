@@ -4,10 +4,11 @@ import generateNativeUserToken from '../server/api/common/generate-native-user-t
 import { genRsaKeyPair } from '@/misc/gen-key-pair.js';
 import { User } from '@/models/entities/user.js';
 import { UserProfile } from '@/models/entities/user-profile.js';
-import { getConnection, IsNull, ObjectLiteral } from 'typeorm';
+import { IsNull } from 'typeorm';
 import { genId } from '@/misc/gen-id.js';
 import { UserKeypair } from '@/models/entities/user-keypair.js';
 import { UsedUsername } from '@/models/entities/used-username.js';
+import { dataSource } from '@/db/postgre.js';
 
 export async function createSystemUser(username: string) {
 	const password = uuid();
@@ -21,10 +22,10 @@ export async function createSystemUser(username: string) {
 
 	const keyPair = await genRsaKeyPair(4096);
 
-	let account!: User | ObjectLiteral;
+	let account!: User;
 
 	// Start transaction
-	await getConnection().transaction(async transactionalEntityManager => {
+	await dataSource.transaction(async transactionalEntityManager => {
 		const exist = await transactionalEntityManager.findOneBy(User, {
 			usernameLower: username.toLowerCase(),
 			host: IsNull(),

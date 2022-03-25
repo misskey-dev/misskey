@@ -19,7 +19,7 @@ import { Note, IMentionedRemoteUsers } from '@/models/entities/note.js';
 import { Mutings, Users, NoteWatchings, Notes, Instances, UserProfiles, Antennas, Followings, MutedNotes, Channels, ChannelFollowings, Blockings, NoteThreadMutings } from '@/models/index.js';
 import { DriveFile } from '@/models/entities/drive-file.js';
 import { App } from '@/models/entities/app.js';
-import { Not, getConnection, In } from 'typeorm';
+import { Not, In } from 'typeorm';
 import { User, ILocalUser, IRemoteUser } from '@/models/entities/user.js';
 import { genId } from '@/misc/gen-id.js';
 import { notesChart, perUserNotesChart, activeUsersChart, instanceChart } from '@/services/chart/index.js';
@@ -37,6 +37,7 @@ import { getAntennas } from '@/misc/antenna-cache.js';
 import { endedPollNotificationQueue } from '@/queue/queues.js';
 import { Cache } from '@/misc/cache.js';
 import { UserProfile } from '@/models/entities/user-profile.js';
+import { dataSource } from '@/db/postgre.js';
 
 const mutedWordsCache = new Cache<{ userId: UserProfile['userId']; mutedWords: UserProfile['mutedWords']; }[]>(1000 * 60 * 5);
 
@@ -531,7 +532,7 @@ async function insertNote(user: { id: User['id']; host: User['host']; }, data: O
 	try {
 		if (insert.hasPoll) {
 			// Start transaction
-			await getConnection().transaction(async transactionalEntityManager => {
+			await dataSource.transaction(async transactionalEntityManager => {
 				await transactionalEntityManager.insert(Note, insert);
 
 				const poll = new Poll({

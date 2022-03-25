@@ -24,7 +24,6 @@ import { UserPublickey } from '@/models/entities/user-publickey.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
 import { toPuny } from '@/misc/convert-host.js';
 import { UserProfile } from '@/models/entities/user-profile.js';
-import { getConnection } from 'typeorm';
 import { toArray } from '@/prelude/array.js';
 import { fetchInstanceMetadata } from '@/services/fetch-instance-metadata.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
@@ -32,6 +31,7 @@ import { truncate } from '@/misc/truncate.js';
 import { StatusError } from '@/misc/fetch.js';
 import { uriPersonCache } from '@/services/user-cache.js';
 import { publishInternalEvent } from '@/services/stream.js';
+import { dataSource } from '@/db/postgre.js';
 
 const logger = apLogger;
 
@@ -151,7 +151,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 	let user: IRemoteUser;
 	try {
 		// Start transaction
-		await getConnection().transaction(async transactionalEntityManager => {
+		await dataSource.transaction(async transactionalEntityManager => {
 			user = await transactionalEntityManager.save(new User({
 				id: genId(),
 				avatarId: null,
@@ -474,7 +474,7 @@ export async function updateFeatured(userId: User['id']) {
 		.slice(0, 5)
 		.map(item => limit(() => resolveNote(item, resolver))));
 
-	await getConnection().transaction(async transactionalEntityManager => {
+	await dataSource.transaction(async transactionalEntityManager => {
 		await transactionalEntityManager.delete(UserNotePining, { userId: user.id });
 
 		// とりあえずidを別の時間で生成して順番を維持
