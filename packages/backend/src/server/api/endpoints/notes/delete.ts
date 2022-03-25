@@ -48,7 +48,7 @@ export default define(meta, paramDef, async (ps, user) => {
 		throw e;
 	});
 
-	if (!user.isAdmin && !user.isModerator && (note.userId !== user.id)) {
+	if ((!user.isAdmin && !user.isModerator) && (note.userId !== user.id)) {
 		throw new ApiError(meta.errors.accessDenied);
 	}
 

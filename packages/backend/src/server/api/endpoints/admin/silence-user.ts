@@ -1,6 +1,7 @@
 import define from '../../define.js';
 import { Users } from '@/models/index.js';
 import { insertModerationLog } from '@/services/insert-moderation-log.js';
+import { publishInternalEvent } from '@/services/stream.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -32,6 +33,8 @@ export default define(meta, paramDef, async (ps, me) => {
 	await Users.update(user.id, {
 		isSilenced: true,
 	});
+
+	publishInternalEvent('userChangeSilencedState', { id: user.id, isSilenced: true });
 
 	insertModerationLog(me, 'silence', {
 		targetId: user.id,

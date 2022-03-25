@@ -7,8 +7,17 @@ import { User, ILocalUser, IRemoteUser } from '@/models/entities/user.js';
 import { Users, FollowRequests, Followings } from '@/models/index.js';
 import { decrementFollowing } from './delete.js';
 
-type Local = ILocalUser | { id: User['id']; host: User['host']; uri: User['host'] };
-type Remote = IRemoteUser;
+type Local = ILocalUser | {
+	id: ILocalUser['id'];
+	host: ILocalUser['host'];
+	uri: ILocalUser['uri']
+};
+type Remote = IRemoteUser | {
+	id: IRemoteUser['id'];
+	host: IRemoteUser['host'];
+	uri: IRemoteUser['uri'];
+	inbox: IRemoteUser['inbox'];
+};
 type Both = Local | Remote;
 
 /**

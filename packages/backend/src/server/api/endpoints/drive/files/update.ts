@@ -1,7 +1,7 @@
 import { publishDriveStream } from '@/services/stream.js';
 import define from '../../../define.js';
 import { ApiError } from '../../../error.js';
-import { DriveFiles, DriveFolders } from '@/models/index.js';
+import { DriveFiles, DriveFolders, Users } from '@/models/index.js';
 import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/misc/hard-limits.js';
 
 export const meta = {
@@ -64,7 +64,7 @@ export default define(meta, paramDef, async (ps, user) => {
 		throw new ApiError(meta.errors.noSuchFile);
 	}
 
-	if (!user.isAdmin && !user.isModerator && (file.userId !== user.id)) {
+	if ((!user.isAdmin && !user.isModerator) && (file.userId !== user.id)) {
 		throw new ApiError(meta.errors.accessDenied);
 	}
 

@@ -112,7 +112,7 @@ export default class DeliverManager {
  * @param activity Activity
  * @param from Followee
  */
-export async function deliverToFollowers(actor: ILocalUser, activity: any) {
+export async function deliverToFollowers(actor: { id: ILocalUser['id']; host: null; }, activity: any) {
 	const manager = new DeliverManager(actor, activity);
 	manager.addFollowersRecipe();
 	await manager.execute();
@@ -123,7 +123,7 @@ export async function deliverToFollowers(actor: ILocalUser, activity: any) {
  * @param activity Activity
  * @param to Target user
  */
-export async function deliverToUser(actor: ILocalUser, activity: any, to: IRemoteUser) {
+export async function deliverToUser(actor: { id: ILocalUser['id']; host: null; }, activity: any, to: IRemoteUser) {
 	const manager = new DeliverManager(actor, activity);
 	manager.addDirectRecipe(to);
 	await manager.execute();

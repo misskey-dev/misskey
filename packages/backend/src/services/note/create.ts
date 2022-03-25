@@ -38,8 +38,6 @@ import { endedPollNotificationQueue } from '@/queue/queues.js';
 import { Cache } from '@/misc/cache.js';
 import { UserProfile } from '@/models/entities/user-profile.js';
 
-const usersCache = new Cache<MinimumUser>(Infinity);
-
 const mutedWordsCache = new Cache<{ userId: UserProfile['userId']; mutedWords: UserProfile['mutedWords']; }[]>(1000 * 60 * 5);
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
@@ -212,7 +210,7 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 	tags = tags.filter(tag => Array.from(tag || '').length <= 128).splice(0, 32);
 
 	if (data.reply && (user.id !== data.reply.userId) && !mentionedUsers.some(u => u.id === data.reply!.userId)) {
-		mentionedUsers.push(await usersCache.fetch(data.reply.userId, () => Users.findOneOrFail(data.reply!.userId)));
+		mentionedUsers.push(await Users.findOneOrFail(data.reply!.userId));
 	}
 
 	if (data.visibility === 'specified') {
@@ -225,7 +223,7 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 		}
 
 		if (data.reply && !data.visibleUsers.some(x => x.id === data.reply!.userId)) {
-			data.visibleUsers.push(await usersCache.fetch(data.reply.userId, () => Users.findOneOrFail(data.reply!.userId)));
+			data.visibleUsers.push(await Users.findOneOrFail(data.reply!.userId));
 		}
 	}
 

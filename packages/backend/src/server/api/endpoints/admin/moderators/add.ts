@@ -1,5 +1,6 @@
 import define from '../../../define.js';
 import { Users } from '@/models/index.js';
+import { publishInternalEvent } from '@/services/stream.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -31,4 +32,6 @@ export default define(meta, paramDef, async (ps) => {
 	await Users.update(user.id, {
 		isModerator: true,
 	});
+
+	publishInternalEvent('userChangeModeratorState', { id: user.id, isModerator: true });
 });

@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import { publishMainStream, publishUserEvent } from '@/services/stream.js';
+import { publishInternalEvent, publishMainStream, publishUserEvent } from '@/services/stream.js';
 import generateUserToken from '../../common/generate-native-user-token.js';
 import define from '../../define.js';
 import { Users, UserProfiles } from '@/models/index.js';
@@ -20,6 +20,9 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, user) => {
+	const freshUser = await Users.findOneOrFail(user.id);
+	const oldToken = freshUser.token;
+
 	const profile = await UserProfiles.findOneOrFail(user.id);
 
 	// Compare password
@@ -29,14 +32,14 @@ export default define(meta, paramDef, async (ps, user) => {
 		throw new Error('incorrect password');
 	}
 
-	// Generate secret
-	const secret = generateUserToken();
+	const newToken = generateUserToken();
 
 	await Users.update(user.id, {
-		token: secret,
+		token: newToken,
 	});
 
 	// Publish event
+	publishInternalEvent('userTokenRegenerated', { id: user.id, oldToken, newToken });
 	publishMainStream(user.id, 'myTokenRegenerated');
 
 	// Terminate streaming

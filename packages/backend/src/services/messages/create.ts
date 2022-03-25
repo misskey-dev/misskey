@@ -1,4 +1,4 @@
-import { User } from '@/models/entities/user.js';
+import { CacheableUser, User } from '@/models/entities/user.js';
 import { UserGroup } from '@/models/entities/user-group.js';
 import { DriveFile } from '@/models/entities/drive-file.js';
 import { MessagingMessages, UserGroupJoinings, Mutings, Users } from '@/models/index.js';
@@ -13,7 +13,7 @@ import renderCreate from '@/remote/activitypub/renderer/create.js';
 import { renderActivity } from '@/remote/activitypub/renderer/index.js';
 import { deliver } from '@/queue/index.js';
 
-export async function createMessage(user: { id: User['id']; host: User['host']; }, recipientUser: User | undefined, recipientGroup: UserGroup | undefined, text: string | null | undefined, file: DriveFile | null, uri?: string) {
+export async function createMessage(user: { id: User['id']; host: User['host']; }, recipientUser: CacheableUser | undefined, recipientGroup: UserGroup | undefined, text: string | null | undefined, file: DriveFile | null, uri?: string) {
 	const message = {
 		id: genId(),
 		createdAt: new Date(),

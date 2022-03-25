@@ -6,8 +6,12 @@ import { deliver } from '@/queue/index.js';
 import { ILocalUser, User } from '@/models/entities/user.js';
 import { Users, Relays } from '@/models/index.js';
 import { genId } from '@/misc/gen-id.js';
+import { Cache } from '@/misc/cache.js';
+import { Relay } from '@/models/entities/relay.js';
 
 const ACTOR_USERNAME = 'relay.actor' as const;
+
+const relaysCache = new Cache<Relay[]>(1000 * 60 * 10);
 
 export async function getRelayActor(): Promise<ILocalUser> {
 	const user = await Users.findOne({
@@ -78,9 +82,9 @@ export async function relayRejected(id: string) {
 export async function deliverToRelays(user: { id: User['id']; host: null; }, activity: any) {
 	if (activity == null) return;
 
-	const relays = await Relays.find({
+	const relays = await relaysCache.fetch(null, () => Relays.find({
 		status: 'accepted',
-	});
+	}));
 	if (relays.length === 0) return;
 
 	const copy = JSON.parse(JSON.stringify(activity));

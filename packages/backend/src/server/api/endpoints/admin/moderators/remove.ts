@@ -27,4 +27,6 @@ export default define(meta, paramDef, async (ps) => {
 	await Users.update(user.id, {
 		isModerator: false,
 	});
+
+	publishInternalEvent('userChangeModeratorState', { id: user.id, isModerator: false });
 });

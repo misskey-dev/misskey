@@ -1,5 +1,5 @@
 export class Cache<T> {
-	private cache: Map<string | null, { date: number; value: T; }>;
+	public cache: Map<string | null, { date: number; value: T; }>;
 	private lifetime: number;
 
 	constructor(lifetime: Cache<never>['lifetime']) {

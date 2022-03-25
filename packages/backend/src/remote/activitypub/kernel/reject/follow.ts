@@ -1,11 +1,11 @@
-import { IRemoteUser } from '@/models/entities/user.js';
+import { CacheableRemoteUser } from '@/models/entities/user.js';
 import { remoteReject } from '@/services/following/reject.js';
 import { IFollow } from '../../type.js';
 import DbResolver from '../../db-resolver.js';
 import { relayRejected } from '@/services/relay.js';
 import { Users } from '@/models/index.js';
 
-export default async (actor: IRemoteUser, activity: IFollow): Promise<string> => {
+export default async (actor: CacheableRemoteUser, activity: IFollow): Promise<string> => {
 	// ※ activityはこっちから投げたフォローリクエストなので、activity.actorは存在するローカルユーザーである必要がある
 
 	const dbResolver = new DbResolver();
