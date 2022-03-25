@@ -9,7 +9,7 @@ import { FollowRequests, Users } from '@/models/index.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 
 export default async function(followee: { id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox']; }, follower: User) {
-	const request = await FollowRequests.findOne({
+	const request = await FollowRequests.findOneBy({
 		followeeId: followee.id,
 		followerId: follower.id,
 	});

@@ -23,7 +23,7 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, me) => {
-	const emojis = await Emojis.find({
+	const emojis = await Emojis.findBy({
 		id: In(ps.ids),
 	});
 

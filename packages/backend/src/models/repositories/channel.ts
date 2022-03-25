@@ -13,11 +13,11 @@ export class ChannelRepository extends Repository<Channel> {
 		const channel = typeof src === 'object' ? src : await this.findOneByOrFail({ id: src });
 		const meId = me ? me.id : null;
 
-		const banner = channel.bannerId ? await DriveFiles.findOne(channel.bannerId) : null;
+		const banner = channel.bannerId ? await DriveFiles.findOneBy({ id: channel.bannerId }) : null;
 
-		const hasUnreadNote = meId ? (await NoteUnreads.findOne({ noteChannelId: channel.id, userId: meId })) != null : undefined;
+		const hasUnreadNote = meId ? (await NoteUnreads.findOneBy({ noteChannelId: channel.id, userId: meId })) != null : undefined;
 
-		const following = meId ? await ChannelFollowings.findOne({
+		const following = meId ? await ChannelFollowings.findOneBy({
 			followerId: meId,
 			followeeId: channel.id,
 		}) : null;

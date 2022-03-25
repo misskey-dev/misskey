@@ -30,7 +30,7 @@ export class AppRepository extends Repository<App> {
 			permission: app.permission,
 			...(opts.includeSecret ? { secret: app.secret } : {}),
 			...(me ? {
-				isAuthorized: await AccessTokens.count({
+				isAuthorized: await AccessTokens.countBy({
 					appId: app.id,
 					userId: me.id,
 				}).then(count => count > 0),

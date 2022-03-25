@@ -66,7 +66,7 @@ export default define(meta, paramDef, async (ps, user) => {
 	let userGroupJoining;
 
 	if (ps.src === 'list' && ps.userListId) {
-		userList = await UserLists.findOne({
+		userList = await UserLists.findOneBy({
 			id: ps.userListId,
 			userId: user.id,
 		});
@@ -75,7 +75,7 @@ export default define(meta, paramDef, async (ps, user) => {
 			throw new ApiError(meta.errors.noSuchUserList);
 		}
 	} else if (ps.src === 'group' && ps.userGroupId) {
-		userGroupJoining = await UserGroupJoinings.findOne({
+		userGroupJoining = await UserGroupJoinings.findOneBy({
 			userGroupId: ps.userGroupId,
 			userId: user.id,
 		});

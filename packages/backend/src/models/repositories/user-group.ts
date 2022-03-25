@@ -10,7 +10,7 @@ export class UserGroupRepository extends Repository<UserGroup> {
 	): Promise<Packed<'UserGroup'>> {
 		const userGroup = typeof src === 'object' ? src : await this.findOneByOrFail({ id: src });
 
-		const users = await UserGroupJoinings.find({
+		const users = await UserGroupJoinings.findBy({
 			userGroupId: userGroup.id,
 		});
 

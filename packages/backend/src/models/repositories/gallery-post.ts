@@ -27,7 +27,7 @@ export class GalleryPostRepository extends Repository<GalleryPost> {
 			tags: post.tags.length > 0 ? post.tags : undefined,
 			isSensitive: post.isSensitive,
 			likedCount: post.likedCount,
-			isLiked: meId ? await GalleryLikes.findOne({ postId: post.id, userId: meId }).then(x => x != null) : undefined,
+			isLiked: meId ? await GalleryLikes.findOneBy({ postId: post.id, userId: meId }).then(x => x != null) : undefined,
 		});
 	}
 

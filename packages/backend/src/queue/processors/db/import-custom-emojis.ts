@@ -17,7 +17,7 @@ const logger = queueLogger.createSubLogger('import-custom-emojis');
 export async function importCustomEmojis(job: Bull.Job<DbUserImportJobData>, done: any): Promise<void> {
 	logger.info(`Importing custom emojis ...`);
 
-	const file = await DriveFiles.findOne({
+	const file = await DriveFiles.findOneBy({
 		id: job.data.fileId,
 	});
 	if (file == null) {

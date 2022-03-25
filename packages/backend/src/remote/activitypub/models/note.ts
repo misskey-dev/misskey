@@ -306,7 +306,7 @@ export async function extractEmojis(tags: IObject | IObject[], host: string): Pr
 		const name = tag.name!.replace(/^:/, '').replace(/:$/, '');
 		tag.icon = toSingle(tag.icon);
 
-		const exists = await Emojis.findOne({
+		const exists = await Emojis.findOneBy({
 			host,
 			name,
 		});
@@ -327,7 +327,7 @@ export async function extractEmojis(tags: IObject | IObject[], host: string): Pr
 					updatedAt: new Date(),
 				});
 
-				return await Emojis.findOne({
+				return await Emojis.findOneBy({
 					host,
 					name,
 				}) as Emoji;

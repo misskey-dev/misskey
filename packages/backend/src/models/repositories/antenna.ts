@@ -10,8 +10,8 @@ export class AntennaRepository extends Repository<Antenna> {
 	): Promise<Packed<'Antenna'>> {
 		const antenna = typeof src === 'object' ? src : await this.findOneByOrFail({ id: src });
 
-		const hasUnreadNote = (await AntennaNotes.findOne({ antennaId: antenna.id, read: false })) != null;
-		const userGroupJoining = antenna.userGroupJoiningId ? await UserGroupJoinings.findOne(antenna.userGroupJoiningId) : null;
+		const hasUnreadNote = (await AntennaNotes.findOneBy({ antennaId: antenna.id, read: false })) != null;
+		const userGroupJoining = antenna.userGroupJoiningId ? await UserGroupJoinings.findOneBy({ id: antenna.userGroupJoiningId }) : null;
 
 		return {
 			id: antenna.id,

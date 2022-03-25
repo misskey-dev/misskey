@@ -19,7 +19,7 @@ export class PageRepository extends Repository<Page> {
 		const collectFile = (xs: any[]) => {
 			for (const x of xs) {
 				if (x.type === 'image') {
-					attachedFiles.push(DriveFiles.findOne({
+					attachedFiles.push(DriveFiles.findOneBy({
 						id: x.fileId,
 						userId: page.userId,
 					}));
@@ -76,7 +76,7 @@ export class PageRepository extends Repository<Page> {
 			eyeCatchingImage: page.eyeCatchingImageId ? await DriveFiles.pack(page.eyeCatchingImageId) : null,
 			attachedFiles: DriveFiles.packMany(await Promise.all(attachedFiles)),
 			likedCount: page.likedCount,
-			isLiked: meId ? await PageLikes.findOne({ pageId: page.id, userId: meId }).then(x => x != null) : undefined,
+			isLiked: meId ? await PageLikes.findOneBy({ pageId: page.id, userId: meId }).then(x => x != null) : undefined,
 		});
 	}
 

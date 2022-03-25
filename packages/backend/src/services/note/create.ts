@@ -78,7 +78,7 @@ class NotificationManager {
 	public async deliver() {
 		for (const x of this.queue) {
 			// ミュート情報を取得
-			const mentioneeMutes = await Mutings.find({
+			const mentioneeMutes = await Mutings.findBy({
 				muterId: x.target,
 			});
 
@@ -128,7 +128,7 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 	// (クライアントサイドでやっても良い処理だと思うけどとりあえずサーバーサイドで)
 	if (data.reply && data.channel && data.reply.channelId !== data.channel.id) {
 		if (data.reply.channelId) {
-			data.channel = await Channels.findOne(data.reply.channelId);
+			data.channel = await Channels.findOneBy({ id: data.reply.channelId });
 		} else {
 			data.channel = null;
 		}
@@ -137,7 +137,7 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 	// チャンネル内にリプライしたら対象のスコープに合わせる
 	// (クライアントサイドでやっても良い処理だと思うけどとりあえずサーバーサイドで)
 	if (data.reply && (data.channel == null) && data.reply.channelId) {
-		data.channel = await Channels.findOne(data.reply.channelId);
+		data.channel = await Channels.findOneBy({ id: data.reply.channelId });
 	}
 
 	if (data.createdAt == null) data.createdAt = new Date();
@@ -210,7 +210,7 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 	tags = tags.filter(tag => Array.from(tag || '').length <= 128).splice(0, 32);
 
 	if (data.reply && (user.id !== data.reply.userId) && !mentionedUsers.some(u => u.id === data.reply!.userId)) {
-		mentionedUsers.push(await Users.findOneOrFail(data.reply!.userId));
+		mentionedUsers.push(await Users.findOneByOrFail({ id: data.reply!.userId }));
 	}
 
 	if (data.visibility === 'specified') {
@@ -223,7 +223,7 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 		}
 
 		if (data.reply && !data.visibleUsers.some(x => x.id === data.reply!.userId)) {
-			data.visibleUsers.push(await Users.findOneOrFail(data.reply!.userId));
+			data.visibleUsers.push(await Users.findOneByOrFail({ id: data.reply!.userId }));
 		}
 	}
 
@@ -283,7 +283,7 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 
 	// Channel
 	if (note.channelId) {
-		ChannelFollowings.find({ followeeId: note.channelId }).then(followings => {
+		ChannelFollowings.findBy({ followeeId: note.channelId }).then(followings => {
 			for (const following of followings) {
 				insertNoteUnread(following.followerId, note, {
 					isSpecified: false,
@@ -356,7 +356,7 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 
 			// 通知
 			if (data.reply.userHost === null) {
-				const threadMuted = await NoteThreadMutings.findOne({
+				const threadMuted = await NoteThreadMutings.findOneBy({
 					userId: data.reply.userId,
 					threadId: data.reply.threadId || data.reply.id,
 				});
@@ -403,13 +403,13 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 
 				// 投稿がリプライかつ投稿者がローカルユーザーかつリプライ先の投稿の投稿者がリモートユーザーなら配送
 				if (data.reply && data.reply.userHost !== null) {
-					const u = await Users.findOne(data.reply.userId);
+					const u = await Users.findOneBy({ id: data.reply.userId });
 					if (u && Users.isRemoteUser(u)) dm.addDirectRecipe(u);
 				}
 
 				// 投稿がRenoteかつ投稿者がローカルユーザーかつRenote元の投稿の投稿者がリモートユーザーなら配送
 				if (data.renote && data.renote.userHost !== null) {
-					const u = await Users.findOne(data.renote.userId);
+					const u = await Users.findOneBy({ id: data.renote.userId });
 					if (u && Users.isRemoteUser(u)) dm.addDirectRecipe(u);
 				}
 
@@ -434,7 +434,7 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 			lastNotedAt: new Date(),
 		});
 
-		Notes.count({
+		Notes.countBy({
 			userId: user.id,
 			channelId: data.channel.id,
 		}).then(count => {
@@ -514,7 +514,7 @@ async function insertNote(user: { id: User['id']; host: User['host']; }, data: O
 	// Append mentions data
 	if (mentionedUsers.length > 0) {
 		insert.mentions = mentionedUsers.map(u => u.id);
-		const profiles = await UserProfiles.find({ userId: In(insert.mentions) });
+		const profiles = await UserProfiles.findBy({ userId: In(insert.mentions) });
 		insert.mentionedRemoteUsers = JSON.stringify(mentionedUsers.filter(u => Users.isRemoteUser(u)).map(u => {
 			const profile = profiles.find(p => p.userId === u.id);
 			const url = profile != null ? profile.url : null;
@@ -581,7 +581,7 @@ function index(note: Note) {
 }
 
 async function notifyToWatchersOfRenotee(renote: Note, user: { id: User['id']; }, nm: NotificationManager, type: NotificationType) {
-	const watchers = await NoteWatchings.find({
+	const watchers = await NoteWatchings.findBy({
 		noteId: renote.id,
 		userId: Not(user.id),
 	});
@@ -592,7 +592,7 @@ async function notifyToWatchersOfRenotee(renote: Note, user: { id: User['id']; }
 }
 
 async function notifyToWatchersOfReplyee(reply: Note, user: { id: User['id']; }, nm: NotificationManager) {
-	const watchers = await NoteWatchings.find({
+	const watchers = await NoteWatchings.findBy({
 		noteId: reply.id,
 		userId: Not(user.id),
 	});
@@ -604,7 +604,7 @@ async function notifyToWatchersOfReplyee(reply: Note, user: { id: User['id']; },
 
 async function createMentionedEvents(mentionedUsers: MinimumUser[], note: Note, nm: NotificationManager) {
 	for (const u of mentionedUsers.filter(u => Users.isLocalUser(u))) {
-		const threadMuted = await NoteThreadMutings.findOne({
+		const threadMuted = await NoteThreadMutings.findOneBy({
 			userId: u.id,
 			threadId: note.threadId || note.id,
 		});

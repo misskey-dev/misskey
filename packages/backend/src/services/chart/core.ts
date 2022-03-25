@@ -271,9 +271,10 @@ export default abstract class Chart<T extends Schema> {
 			span === 'day' ? this.repositoryForDay :
 			new Error('not happen') as never;
 
-		return repository.findOne(group ? {
-			group: group,
-		} : {}, {
+		return repository.findOne({
+			where: group ? {
+				group: group,
+			} : {},
 			order: {
 				date: -1,
 			},
@@ -297,7 +298,7 @@ export default abstract class Chart<T extends Schema> {
 			new Error('not happen') as never;
 
 		// 現在(=今のHour or Day)のログ
-		const currentLog = await repository.findOne({
+		const currentLog = await repository.findOneBy({
 			date: Chart.dateToTimestamp(current),
 			...(group ? { group: group } : {}),
 		}) as RawRecord<T> | undefined;
@@ -337,7 +338,7 @@ export default abstract class Chart<T extends Schema> {
 		const unlock = await getChartInsertLock(lockKey);
 		try {
 			// ロック内でもう1回チェックする
-			const currentLog = await repository.findOne({
+			const currentLog = await repository.findOneBy({
 				date: date,
 				...(group ? { group: group } : {}),
 			}) as RawRecord<T> | undefined;
@@ -598,9 +599,10 @@ export default abstract class Chart<T extends Schema> {
 		if (logs.length === 0) {
 			// もっとも新しいログを持ってくる
 			// (すくなくともひとつログが無いと隙間埋めできないため)
-			const recentLog = await repository.findOne(group ? {
-				group: group,
-			} : {}, {
+			const recentLog = await repository.findOne({
+				where: group ? {
+					group: group,
+				} : {},
 				order: {
 					date: -1,
 				},
@@ -615,9 +617,10 @@ export default abstract class Chart<T extends Schema> {
 			// 要求された範囲の最も古い箇所時点での最も新しいログを持ってきて末尾に追加する
 			// (隙間埋めできないため)
 			const outdatedLog = await repository.findOne({
-				date: LessThan(Chart.dateToTimestamp(gt)),
-				...(group ? { group: group } : {}),
-			}, {
+				where: {
+					date: LessThan(Chart.dateToTimestamp(gt)),
+					...(group ? { group: group } : {}),
+				},
 				order: {
 					date: -1,
 				},

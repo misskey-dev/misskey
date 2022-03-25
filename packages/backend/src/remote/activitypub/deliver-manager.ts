@@ -82,7 +82,7 @@ export default class DeliverManager {
 		for (const recipe of this.recipes) {
 			if (isFollowers(recipe)) {
 				// followers deliver
-				const followers = await Followings.find({
+				const followers = await Followings.findBy({
 					followeeId: this.actor.id,
 				});
 

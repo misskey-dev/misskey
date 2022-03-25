@@ -40,7 +40,7 @@ export const paramDef = {
 export default define(meta, paramDef, async (ps, user) => {
 	let banner = null;
 	if (ps.bannerId != null) {
-		banner = await DriveFiles.findOne({
+		banner = await DriveFiles.findOneBy({
 			id: ps.bannerId,
 			userId: user.id,
 		});

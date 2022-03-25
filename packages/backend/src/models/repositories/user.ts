@@ -43,31 +43,31 @@ export class UserRepository extends Repository<User> {
 
 	public async getRelation(me: User['id'], target: User['id']) {
 		const [following1, following2, followReq1, followReq2, toBlocking, fromBlocked, mute] = await Promise.all([
-			Followings.findOne({
+			Followings.findOneBy({
 				followerId: me,
 				followeeId: target,
 			}),
-			Followings.findOne({
+			Followings.findOneBy({
 				followerId: target,
 				followeeId: me,
 			}),
-			FollowRequests.findOne({
+			FollowRequests.findOneBy({
 				followerId: me,
 				followeeId: target,
 			}),
-			FollowRequests.findOne({
+			FollowRequests.findOneBy({
 				followerId: target,
 				followeeId: me,
 			}),
-			Blockings.findOne({
+			Blockings.findOneBy({
 				blockerId: me,
 				blockeeId: target,
 			}),
-			Blockings.findOne({
+			Blockings.findOneBy({
 				blockerId: target,
 				blockeeId: me,
 			}),
-			Mutings.findOne({
+			Mutings.findOneBy({
 				muterId: me,
 				muteeId: target,
 			}),
@@ -86,11 +86,11 @@ export class UserRepository extends Repository<User> {
 	}
 
 	public async getHasUnreadMessagingMessage(userId: User['id']): Promise<boolean> {
-		const mute = await Mutings.find({
+		const mute = await Mutings.findBy({
 			muterId: userId,
 		});
 
-		const joinings = await UserGroupJoinings.find({ userId: userId });
+		const joinings = await UserGroupJoinings.findBy({ userId: userId });
 
 		const groupQs = Promise.all(joinings.map(j => MessagingMessages.createQueryBuilder('message')
 			.where(`message.groupId = :groupId`, { groupId: j.userGroupId })
@@ -115,11 +115,11 @@ export class UserRepository extends Repository<User> {
 	}
 
 	public async getHasUnreadAnnouncement(userId: User['id']): Promise<boolean> {
-		const reads = await AnnouncementReads.find({
+		const reads = await AnnouncementReads.findBy({
 			userId: userId,
 		});
 
-		const count = await Announcements.count(reads.length > 0 ? {
+		const count = await Announcements.countBy(reads.length > 0 ? {
 			id: Not(In(reads.map(read => read.announcementId))),
 		} : {});
 
@@ -129,7 +129,7 @@ export class UserRepository extends Repository<User> {
 	public async getHasUnreadAntenna(userId: User['id']): Promise<boolean> {
 		const myAntennas = (await getAntennas()).filter(a => a.userId === userId);
 
-		const unread = myAntennas.length > 0 ? await AntennaNotes.findOne({
+		const unread = myAntennas.length > 0 ? await AntennaNotes.findOneBy({
 			antennaId: In(myAntennas.map(x => x.id)),
 			read: false,
 		}) : null;
@@ -138,9 +138,9 @@ export class UserRepository extends Repository<User> {
 	}
 
 	public async getHasUnreadChannel(userId: User['id']): Promise<boolean> {
-		const channels = await ChannelFollowings.find({ followerId: userId });
+		const channels = await ChannelFollowings.findBy({ followerId: userId });
 
-		const unread = channels.length > 0 ? await NoteUnreads.findOne({
+		const unread = channels.length > 0 ? await NoteUnreads.findOneBy({
 			userId: userId,
 			noteChannelId: In(channels.map(x => x.followeeId)),
 		}) : null;
@@ -149,7 +149,7 @@ export class UserRepository extends Repository<User> {
 	}
 
 	public async getHasUnreadNotification(userId: User['id']): Promise<boolean> {
-		const mute = await Mutings.find({
+		const mute = await Mutings.findBy({
 			muterId: userId,
 		});
 		const mutedUserIds = mute.map(m => m.muteeId);
@@ -167,7 +167,7 @@ export class UserRepository extends Repository<User> {
 	}
 
 	public async getHasPendingReceivedFollowRequest(userId: User['id']): Promise<boolean> {
-		const count = await FollowRequests.count({
+		const count = await FollowRequests.countBy({
 			followeeId: userId,
 		});
 
@@ -215,11 +215,15 @@ export class UserRepository extends Repository<User> {
 
 		if (typeof src === 'object') {
 			user = src;
-			if (src.avatar === undefined && src.avatarId) src.avatar = await DriveFiles.findOne(src.avatarId) ?? null;
-			if (src.banner === undefined && src.bannerId) src.banner = await DriveFiles.findOne(src.bannerId) ?? null;
+			if (src.avatar === undefined && src.avatarId) src.avatar = await DriveFiles.findOneBy({ id: src.avatarId }) ?? null;
+			if (src.banner === undefined && src.bannerId) src.banner = await DriveFiles.findOneBy({ id: src.bannerId }) ?? null;
 		} else {
-			user = await this.findOneOrFail(src, {
-				relations: ['avatar', 'banner'],
+			user = await this.findOneOrFail({
+				where: { id: src },
+				relations: {
+					avatar: true,
+					banner: true,
+				},
 			});
 		}
 
@@ -232,7 +236,7 @@ export class UserRepository extends Repository<User> {
 			.innerJoinAndSelect('pin.note', 'note')
 			.orderBy('pin.id', 'DESC')
 			.getMany() : [];
-		const profile = opts.detail ? await UserProfiles.findOneOrFail(user.id) : null;
+		const profile = opts.detail ? await UserProfiles.findOneByOrFail({ userId: user.id }) : null;
 
 		const followingCount = profile == null ? null :
 			(profile.ffVisibility === 'public') || isMe ? user.followingCount :
@@ -258,9 +262,8 @@ export class UserRepository extends Repository<User> {
 			isModerator: user.isModerator || falsy,
 			isBot: user.isBot || falsy,
 			isCat: user.isCat || falsy,
-			// TODO: typeorm 3.0にしたら .then(x => x || null) は消せる
 			instance: user.host ? userInstanceCache.fetch(user.host,
-				() => Instances.findOne({ host: user.host }).then(x => x || null),
+				() => Instances.findOneBy({ host: user.host! }),
 				v => v != null
 			).then(instance => instance ? {
 				name: instance.name,
@@ -304,7 +307,7 @@ export class UserRepository extends Repository<User> {
 				twoFactorEnabled: profile!.twoFactorEnabled,
 				usePasswordLessLogin: profile!.usePasswordLessLogin,
 				securityKeys: profile!.twoFactorEnabled
-					? UserSecurityKeys.count({
+					? UserSecurityKeys.countBy({
 						userId: user.id,
 					}).then(result => result >= 1)
 					: false,
@@ -352,7 +355,11 @@ export class UserRepository extends Repository<User> {
 						where: {
 							userId: user.id,
 						},
-						select: ['id', 'name', 'lastUsed'],
+						select: {
+							id: true,
+							name: true,
+							lastUsed: true,
+						},
 					})
 					: [],
 			} : {}),

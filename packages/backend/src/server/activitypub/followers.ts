@@ -9,7 +9,7 @@ import renderOrderedCollectionPage from '@/remote/activitypub/renderer/ordered-c
 import renderFollowUser from '@/remote/activitypub/renderer/follow-user.js';
 import { setResponseType } from '../activitypub.js';
 import { Users, Followings, UserProfiles } from '@/models/index.js';
-import { LessThan } from 'typeorm';
+import { IsNull, LessThan } from 'typeorm';
 
 export default async (ctx: Router.RouterContext) => {
 	const userId = ctx.params.user;
@@ -27,9 +27,9 @@ export default async (ctx: Router.RouterContext) => {
 		return;
 	}
 
-	const user = await Users.findOne({
+	const user = await Users.findOneBy({
 		id: userId,
-		host: null,
+		host: IsNull(),
 	});
 
 	if (user == null) {

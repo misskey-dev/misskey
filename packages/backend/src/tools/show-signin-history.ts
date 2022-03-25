@@ -1,4 +1,5 @@
 import { initDb } from '@/db/postgre.js';
+import { IsNull } from 'typeorm';
 
 // node built/tools/show-signin-history username
 //  => {Success} {Date} {IPAddrsss}
@@ -13,14 +14,14 @@ async function main(username: string, headers?: string[]) {
 	await initDb();
 	const { Users, Signins } = await import('@/models/index');
 
-	const user = await Users.findOne({
-		host: null,
+	const user = await Users.findOneBy({
+		host: IsNull(),
 		usernameLower: username.toLowerCase(),
 	});
 
 	if (user == null) throw new Error('User not found');
 
-	const history = await Signins.find({
+	const history = await Signins.findBy({
 		userId: user.id,
 	});
 

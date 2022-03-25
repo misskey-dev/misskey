@@ -45,7 +45,7 @@ export class NoteRepository extends Repository<Note> {
 				return true;
 			} else {
 				// フォロワーかどうか
-				const following = await Followings.findOne({
+				const following = await Followings.findOneBy({
 					followeeId: note.userId,
 					followerId: meId,
 				});
@@ -97,7 +97,7 @@ export class NoteRepository extends Repository<Note> {
 				hide = false;
 			} else {
 				// フォロワーかどうか
-				const following = await Followings.findOne({
+				const following = await Followings.findOneBy({
 					followeeId: packedNote.userId,
 					followerId: meId,
 				});
@@ -150,7 +150,7 @@ export class NoteRepository extends Repository<Note> {
 			}));
 
 			if (poll.multiple) {
-				const votes = await PollVotes.find({
+				const votes = await PollVotes.findBy({
 					userId: meId!,
 					noteId: note.id,
 				});
@@ -160,7 +160,7 @@ export class NoteRepository extends Repository<Note> {
 					choices[myChoice].isVoted = true;
 				}
 			} else {
-				const vote = await PollVotes.findOne({
+				const vote = await PollVotes.findOneBy({
 					userId: meId!,
 					noteId: note.id,
 				});
@@ -188,7 +188,7 @@ export class NoteRepository extends Repository<Note> {
 				// 実装上抜けがあるだけかもしれないので、「ヒントに含まれてなかったら(=undefinedなら)return」のようにはしない
 			}
 
-			const reaction = await NoteReactions.findOne({
+			const reaction = await NoteReactions.findOneBy({
 				userId: meId!,
 				noteId: note.id,
 			});
@@ -209,7 +209,7 @@ export class NoteRepository extends Repository<Note> {
 		const channel = note.channelId
 			? note.channel
 				? note.channel
-				: await Channels.findOne(note.channelId)
+				: await Channels.findOneBy({ id: note.channelId })
 			: null;
 
 		const reactionEmojiNames = Object.keys(note.reactions).filter(x => x?.startsWith(':')).map(x => decodeReaction(x).reaction).map(x => x.replace(/:/g, ''));
@@ -296,7 +296,7 @@ export class NoteRepository extends Repository<Note> {
 		if (meId) {
 			const renoteIds = notes.filter(n => n.renoteId != null).map(n => n.renoteId!);
 			const targets = [...notes.map(n => n.id), ...renoteIds];
-			const myReactions = await NoteReactions.find({
+			const myReactions = await NoteReactions.findBy({
 				userId: meId,
 				noteId: In(targets),
 			});

@@ -32,7 +32,7 @@ subsdcriber.on('message', async (_, data) => {
 				break;
 			}
 			case 'userTokenRegenerated': {
-				const user = await Users.findOneOrFail(body.id) as ILocalUser;
+				const user = await Users.findOneByOrFail({ id: body.id }) as ILocalUser;
 				localUserByNativeTokenCache.delete(body.oldToken);
 				localUserByNativeTokenCache.set(body.newToken, user);
 				break;

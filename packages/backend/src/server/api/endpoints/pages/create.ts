@@ -62,7 +62,7 @@ export const paramDef = {
 export default define(meta, paramDef, async (ps, user) => {
 	let eyeCatchingImage = null;
 	if (ps.eyeCatchingImageId != null) {
-		eyeCatchingImage = await DriveFiles.findOne({
+		eyeCatchingImage = await DriveFiles.findOneBy({
 			id: ps.eyeCatchingImageId,
 			userId: user.id,
 		});
@@ -72,7 +72,7 @@ export default define(meta, paramDef, async (ps, user) => {
 		}
 	}
 
-	await Pages.find({
+	await Pages.findBy({
 		userId: user.id,
 		name: ps.name,
 	}).then(result => {

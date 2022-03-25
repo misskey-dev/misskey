@@ -41,7 +41,7 @@ export default async function(userId: string, type: notificationType, body: noti
 		meta.swPrivateKey);
 
 	// Fetch
-	const subscriptions = await SwSubscriptions.find({
+	const subscriptions = await SwSubscriptions.findBy({
 		userId: userId,
 	});
 

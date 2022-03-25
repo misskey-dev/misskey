@@ -20,7 +20,7 @@ export class NotificationRepository extends Repository<Notification> {
 		}
 	): Promise<Packed<'Notification'>> {
 		const notification = typeof src === 'object' ? src : await this.findOneByOrFail({ id: src });
-		const token = notification.appAccessTokenId ? await AccessTokens.findOneOrFail(notification.appAccessTokenId) : null;
+		const token = notification.appAccessTokenId ? await AccessTokens.findOneByOrFail({ id: notification.appAccessTokenId }) : null;
 
 		return await awaitAll({
 			id: notification.id,
@@ -95,7 +95,7 @@ export class NotificationRepository extends Repository<Notification> {
 		const myReactionsMap = new Map<Note['id'], NoteReaction | null>();
 		const renoteIds = notes.filter(n => n.renoteId != null).map(n => n.renoteId!);
 		const targets = [...noteIds, ...renoteIds];
-		const myReactions = await NoteReactions.find({
+		const myReactions = await NoteReactions.findBy({
 			userId: meId,
 			noteId: In(targets),
 		});

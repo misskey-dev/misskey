@@ -12,11 +12,11 @@ export default async function(follower: { id: User['id']; host: User['host']; ur
 
 	// check blocking
 	const [blocking, blocked] = await Promise.all([
-		Blockings.findOne({
+		Blockings.findOneBy({
 			blockerId: follower.id,
 			blockeeId: followee.id,
 		}),
-		Blockings.findOne({
+		Blockings.findOneBy({
 			blockerId: followee.id,
 			blockeeId: follower.id,
 		}),

@@ -6,7 +6,7 @@ import deleteNote from '@/services/note/delete.js';
 export const undoAnnounce = async (actor: CacheableRemoteUser, activity: IAnnounce): Promise<string> => {
 	const uri = getApId(activity);
 
-	const note = await Notes.findOne({
+	const note = await Notes.findOneBy({
 		uri,
 	});
 

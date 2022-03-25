@@ -96,7 +96,7 @@ export default define(meta, paramDef, async (ps, user) => {
 	});
 	if (!verificationData.valid) throw new Error('signature invalid');
 
-	const attestationChallenge = await AttestationChallenges.findOne({
+	const attestationChallenge = await AttestationChallenges.findOneBy({
 		userId: user.id,
 		id: ps.challengeId,
 		registrationChallenge: true,

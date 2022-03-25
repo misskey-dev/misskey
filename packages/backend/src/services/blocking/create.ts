@@ -34,7 +34,7 @@ export default async function(blocker: User, blockee: User) {
 }
 
 async function cancelRequest(follower: User, followee: User) {
-	const request = await FollowRequests.findOne({
+	const request = await FollowRequests.findOneBy({
 		followeeId: followee.id,
 		followerId: follower.id,
 	});
@@ -77,7 +77,7 @@ async function cancelRequest(follower: User, followee: User) {
 }
 
 async function unFollow(follower: User, followee: User) {
-	const following = await Followings.findOne({
+	const following = await Followings.findOneBy({
 		followerId: follower.id,
 		followeeId: followee.id,
 	});
@@ -116,7 +116,7 @@ async function unFollow(follower: User, followee: User) {
 }
 
 async function removeFromList(listOwner: User, user: User) {
-	const userLists = await UserLists.find({
+	const userLists = await UserLists.findBy({
 		userId: listOwner.id,
 	});
 

@@ -102,13 +102,13 @@ export async function fetchPerson(uri: string, resolver?: Resolver): Promise<Cac
 	// URIがこのサーバーを指しているならデータベースからフェッチ
 	if (uri.startsWith(config.url + '/')) {
 		const id = uri.split('/').pop();
-		const u = await Users.findOneBy({ id }).then(x => x || null); // TODO: typeorm 3.0 にしたら .then(x => x || null) を消す
+		const u = await Users.findOneBy({ id });
 		if (u) uriPersonCache.set(uri, u);
 		return u;
 	}
 
 	//#region このサーバーに既に登録されていたらそれを返す
-	const exist = await Users.findOne({ uri });
+	const exist = await Users.findOneBy({ uri });
 
 	if (exist) {
 		uriPersonCache.set(uri, exist);
@@ -197,7 +197,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 		// duplicate key error
 		if (isDuplicateKeyValueError(e)) {
 			// /users/@a => /users/:id のように入力がaliasなときにエラーになることがあるのを対応
-			const u = await Users.findOne({
+			const u = await Users.findOneBy({
 				uri: person.id,
 			});
 
@@ -280,7 +280,7 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 	}
 
 	//#region このサーバーに既に登録されているか
-	const exist = await Users.findOne({ uri }) as IRemoteUser;
+	const exist = await Users.findOneBy({ uri }) as IRemoteUser;
 
 	if (exist == null) {
 		return;
@@ -451,7 +451,7 @@ export function analyzeAttachments(attachments: IObject | IObject[] | undefined)
 }
 
 export async function updateFeatured(userId: User['id']) {
-	const user = await Users.findOneOrFail(userId);
+	const user = await Users.findOneByOrFail({ id: userId });
 	if (!Users.isRemoteUser(user)) return;
 	if (!user.featured) return;
 

@@ -25,10 +25,10 @@ export class DriveFolderRepository extends Repository<DriveFolder> {
 			parentId: folder.parentId,
 
 			...(opts.detail ? {
-				foldersCount: DriveFolders.count({
+				foldersCount: DriveFolders.countBy({
 					parentId: folder.id,
 				}),
-				filesCount: DriveFiles.count({
+				filesCount: DriveFiles.countBy({
 					folderId: folder.id,
 				}),
 

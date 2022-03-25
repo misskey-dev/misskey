@@ -12,7 +12,7 @@ export async function registerOrFetchInstanceDoc(host: string): Promise<Instance
 	const cached = cache.get(host);
 	if (cached) return cached;
 
-	const index = await Instances.findOne({ host });
+	const index = await Instances.findOneBy({ host });
 
 	if (index == null) {
 		const i = await Instances.insert({

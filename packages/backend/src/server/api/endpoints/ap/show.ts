@@ -124,8 +124,8 @@ async function fetchAny(uri: string): Promise<SchemaType<typeof meta['res']> | n
 	// URI(AP Object id)としてDB検索
 	{
 		const [user, note] = await Promise.all([
-			Users.findOne({ uri: uri }),
-			Notes.findOne({ uri: uri }),
+			Users.findOneBy({ uri: uri }),
+			Notes.findOneBy({ uri: uri }),
 		]);
 
 		const packed = await mergePack(user, note);
@@ -166,8 +166,8 @@ async function fetchAny(uri: string): Promise<SchemaType<typeof meta['res']> | n
 		}
 
 		const [user, note] = await Promise.all([
-			Users.findOne({ uri: object.id }),
-			Notes.findOne({ uri: object.id }),
+			Users.findOneBy({ uri: object.id }),
+			Notes.findOneBy({ uri: object.id }),
 		]);
 
 		const packed = await mergePack(user, note);

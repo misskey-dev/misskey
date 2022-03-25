@@ -9,7 +9,7 @@ export default async (ctx: Koa.Context) => {
 	const code = body['code'];
 
 	try {
-		const pendingUser = await UserPendings.findOneOrFail({ code });
+		const pendingUser = await UserPendings.findOneByOrFail({ code });
 
 		const { account, secret } = await signup({
 			username: pendingUser.username,

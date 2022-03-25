@@ -45,7 +45,7 @@ export async function insertFollowingDoc(followee: { id: User['id']; host: User[
 		}
 	});
 
-	const req = await FollowRequests.findOne({
+	const req = await FollowRequests.findOneBy({
 		followeeId: followee.id,
 		followerId: follower.id,
 	});
@@ -108,17 +108,17 @@ export async function insertFollowingDoc(followee: { id: User['id']; host: User[
 
 export default async function(_follower: { id: User['id'] }, _followee: { id: User['id'] }, requestId?: string) {
 	const [follower, followee] = await Promise.all([
-		Users.findOneOrFail(_follower.id),
-		Users.findOneOrFail(_followee.id),
+		Users.findOneByOrFail({ id: _follower.id }),
+		Users.findOneByOrFail({ id: _followee.id }),
 	]);
 
 	// check blocking
 	const [blocking, blocked] = await Promise.all([
-		Blockings.findOne({
+		Blockings.findOneBy({
 			blockerId: follower.id,
 			blockeeId: followee.id,
 		}),
-		Blockings.findOne({
+		Blockings.findOneBy({
 			blockerId: followee.id,
 			blockeeId: follower.id,
 		}),
@@ -148,7 +148,7 @@ export default async function(_follower: { id: User['id'] }, _followee: { id: Us
 		let autoAccept = false;
 
 		// 鍵アカウントであっても、既にフォローされていた場合はスルー
-		const following = await Followings.findOne({
+		const following = await Followings.findOneBy({
 			followerId: follower.id,
 			followeeId: followee.id,
 		});
@@ -158,7 +158,7 @@ export default async function(_follower: { id: User['id'] }, _followee: { id: Us
 
 		// フォローしているユーザーは自動承認オプション
 		if (!autoAccept && (Users.isLocalUser(followee) && followeeProfile.autoAcceptFollowed)) {
-			const followed = await Followings.findOne({
+			const followed = await Followings.findOneBy({
 				followerId: followee.id,
 				followeeId: follower.id,
 			});

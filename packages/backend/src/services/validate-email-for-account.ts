@@ -5,7 +5,7 @@ export async function validateEmailForAccount(emailAddress: string): Promise<{
 	available: boolean;
 	reason: null | 'used' | 'format' | 'disposable' | 'mx' | 'smtp';
 }> {
-	const exist = await UserProfiles.count({
+	const exist = await UserProfiles.countBy({
 		emailVerified: true,
 		email: emailAddress,
 	});

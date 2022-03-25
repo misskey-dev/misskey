@@ -4,7 +4,7 @@ import generateUserToken from './generate-native-user-token.js';
 import { User } from '@/models/entities/user.js';
 import { Users, UsedUsernames } from '@/models/index.js';
 import { UserProfile } from '@/models/entities/user-profile.js';
-import { getConnection } from 'typeorm';
+import { getConnection, IsNull } from 'typeorm';
 import { genId } from '@/misc/gen-id.js';
 import { toPunyNullable } from '@/misc/convert-host.js';
 import { UserKeypair } from '@/models/entities/user-keypair.js';
@@ -40,12 +40,12 @@ export async function signup(opts: {
 	const secret = generateUserToken();
 
 	// Check username duplication
-	if (await Users.findOne({ usernameLower: username.toLowerCase(), host: null })) {
+	if (await Users.findOneBy({ usernameLower: username.toLowerCase(), host: IsNull() })) {
 		throw new Error('DUPLICATED_USERNAME');
 	}
 
 	// Check deleted username duplication
-	if (await UsedUsernames.findOne({ username: username.toLowerCase() })) {
+	if (await UsedUsernames.findOneBy({ username: username.toLowerCase() })) {
 		throw new Error('USED_USERNAME');
 	}
 
@@ -70,9 +70,9 @@ export async function signup(opts: {
 
 	// Start transaction
 	await getConnection().transaction(async transactionalEntityManager => {
-		const exist = await transactionalEntityManager.findOne(User, {
+		const exist = await transactionalEntityManager.findOneBy(User, {
 			usernameLower: username.toLowerCase(),
-			host: null,
+			host: IsNull(),
 		});
 
 		if (exist) throw new Error(' the username is already used');
@@ -84,8 +84,8 @@ export async function signup(opts: {
 			usernameLower: username.toLowerCase(),
 			host: toPunyNullable(host),
 			token: secret,
-			isAdmin: (await Users.count({
-				host: null,
+			isAdmin: (await Users.countBy({
+				host: IsNull(),
 			})) === 0,
 		}));
 

@@ -41,7 +41,7 @@ export default define(meta, paramDef, async (ps, user) => {
 	let parent = null;
 	if (ps.parentId) {
 		// Fetch parent folder
-		parent = await DriveFolders.findOne({
+		parent = await DriveFolders.findOneBy({
 			id: ps.parentId,
 			userId: user.id,
 		});

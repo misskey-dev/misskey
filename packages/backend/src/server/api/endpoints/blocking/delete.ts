@@ -68,7 +68,7 @@ export default define(meta, paramDef, async (ps, user) => {
 	});
 
 	// Check not blocking
-	const exist = await Blockings.findOne({
+	const exist = await Blockings.findOneBy({
 		blockerId: blocker.id,
 		blockeeId: blockee.id,
 	});

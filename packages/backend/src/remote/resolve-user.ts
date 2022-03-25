@@ -7,6 +7,7 @@ import chalk from 'chalk';
 import { User, IRemoteUser } from '@/models/entities/user.js';
 import { Users } from '@/models/index.js';
 import { toPuny } from '@/misc/convert-host.js';
+import { IsNull } from 'typeorm';
 
 const logger = remoteLogger.createSubLogger('resolve-user');
 
@@ -15,7 +16,7 @@ export async function resolveUser(username: string, host: string | null, option?
 
 	if (host == null) {
 		logger.info(`return local user: ${usernameLower}`);
-		return await Users.findOne({ usernameLower, host: null }).then(u => {
+		return await Users.findOneBy({ usernameLower, host: IsNull() }).then(u => {
 			if (u == null) {
 				throw new Error('user not found');
 			} else {
@@ -28,7 +29,7 @@ export async function resolveUser(username: string, host: string | null, option?
 
 	if (config.host === host) {
 		logger.info(`return local user: ${usernameLower}`);
-		return await Users.findOne({ usernameLower, host: null }).then(u => {
+		return await Users.findOneBy({ usernameLower, host: IsNull() }).then(u => {
 			if (u == null) {
 				throw new Error('user not found');
 			} else {
@@ -82,7 +83,7 @@ export async function resolveUser(username: string, host: string | null, option?
 		await updatePerson(self.href);
 
 		logger.info(`return resynced remote user: ${acctLower}`);
-		return await Users.findOne({ uri: self.href }).then(u => {
+		return await Users.findOneBy({ uri: self.href }).then(u => {
 			if (u == null) {
 				throw new Error('user not found');
 			} else {

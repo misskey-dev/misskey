@@ -23,7 +23,7 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, me) => {
-	const user = await Users.findOne(ps.userId as string);
+	const user = await Users.findOneBy({ id: ps.userId });
 
 	if (user == null) {
 		throw new Error('user not found');
@@ -58,12 +58,12 @@ export default define(meta, paramDef, async (ps, me) => {
 });
 
 async function unFollowAll(follower: User) {
-	const followings = await Followings.find({
+	const followings = await Followings.findBy({
 		followerId: follower.id,
 	});
 
 	for (const following of followings) {
-		const followee = await Users.findOne({
+		const followee = await Users.findOneBy({
 			id: following.followeeId,
 		});
 

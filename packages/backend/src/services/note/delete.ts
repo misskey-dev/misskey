@@ -40,11 +40,11 @@ export default async function(user: { id: User['id']; uri: User['uri']; host: Us
 
 		//#region ローカルの投稿なら削除アクティビティを配送
 		if (Users.isLocalUser(user) && !note.localOnly) {
-			let renote: Note | undefined;
+			let renote: Note | null;
 
 			// if deletd note is renote
 			if (note.renoteId && note.text == null && !note.hasPoll && (note.fileIds == null || note.fileIds.length === 0)) {
-				renote = await Notes.findOne({
+				renote = await Notes.findOneBy({
 					id: note.renoteId,
 				});
 			}

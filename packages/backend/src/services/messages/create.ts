@@ -50,7 +50,7 @@ export async function createMessage(user: { id: User['id']; host: User['host']; 
 		publishGroupMessagingStream(recipientGroup.id, 'message', messageObj);
 
 		// メンバーのストリーム
-		const joinings = await UserGroupJoinings.find({ userGroupId: recipientGroup.id });
+		const joinings = await UserGroupJoinings.findBy({ userGroupId: recipientGroup.id });
 		for (const joining of joinings) {
 			publishMessagingIndexStream(joining.userId, 'message', messageObj);
 			publishMainStream(joining.userId, 'messagingMessage', messageObj);
@@ -59,14 +59,14 @@ export async function createMessage(user: { id: User['id']; host: User['host']; 
 
 	// 2秒経っても(今回作成した)メッセージが既読にならなかったら「未読のメッセージがありますよ」イベントを発行する
 	setTimeout(async () => {
-		const freshMessage = await MessagingMessages.findOne(message.id);
+		const freshMessage = await MessagingMessages.findOneBy({ id: message.id });
 		if (freshMessage == null) return; // メッセージが削除されている場合もある
 
 		if (recipientUser && Users.isLocalUser(recipientUser)) {
 			if (freshMessage.isRead) return; // 既読
 
 			//#region ただしミュートされているなら発行しない
-			const mute = await Mutings.find({
+			const mute = await Mutings.findBy({
 				muterId: recipientUser.id,
 			});
 			if (mute.map(m => m.muteeId).includes(user.id)) return;
@@ -75,7 +75,7 @@ export async function createMessage(user: { id: User['id']; host: User['host']; 
 			publishMainStream(recipientUser.id, 'unreadMessagingMessage', messageObj);
 			pushNotification(recipientUser.id, 'unreadMessagingMessage', messageObj);
 		} else if (recipientGroup) {
-			const joinings = await UserGroupJoinings.find({ userGroupId: recipientGroup.id, userId: Not(user.id) });
+			const joinings = await UserGroupJoinings.findBy({ userGroupId: recipientGroup.id, userId: Not(user.id) });
 			for (const joining of joinings) {
 				if (freshMessage.reads.includes(joining.userId)) return; // 既読
 				publishMainStream(joining.userId, 'unreadMessagingMessage', messageObj);

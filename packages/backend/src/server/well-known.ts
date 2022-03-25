@@ -99,7 +99,7 @@ router.get(webFingerPath, async ctx => {
 		return;
 	}
 
-	const user = await Users.findOne(query);
+	const user = await Users.findOneBy(query);
 
 	if (user == null) {
 		ctx.status = 404;

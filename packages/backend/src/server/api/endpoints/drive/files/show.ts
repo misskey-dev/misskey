@@ -51,7 +51,7 @@ export default define(meta, paramDef, async (ps, user) => {
 	let file: DriveFile | undefined;
 
 	if (ps.fileId) {
-		file = await DriveFiles.findOne(ps.fileId);
+		file = await DriveFiles.findOneBy({ id: ps.fileId });
 	} else if (ps.url) {
 		file = await DriveFiles.findOne({
 			where: [{

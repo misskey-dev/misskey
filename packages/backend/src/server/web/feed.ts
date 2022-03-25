@@ -2,7 +2,7 @@ import { Feed } from 'feed';
 import config from '@/config/index.js';
 import { User } from '@/models/entities/user.js';
 import { Notes, DriveFiles, UserProfiles } from '@/models/index.js';
-import { In } from 'typeorm';
+import { In, IsNull } from 'typeorm';
 
 export default async function(user: User) {
 	const author = {
@@ -15,7 +15,7 @@ export default async function(user: User) {
 	const notes = await Notes.find({
 		where: {
 			userId: user.id,
-			renoteId: null,
+			renoteId: IsNull(),
 			visibility: In(['public', 'home']),
 		},
 		order: { createdAt: -1 },
@@ -39,7 +39,7 @@ export default async function(user: User) {
 	});
 
 	for (const note of notes) {
-		const files = note.fileIds.length > 0 ? await DriveFiles.find({
+		const files = note.fileIds.length > 0 ? await DriveFiles.findBy({
 			id: In(note.fileIds),
 		}) : [];
 		const file = files.find(file => file.type.startsWith('image/'));
