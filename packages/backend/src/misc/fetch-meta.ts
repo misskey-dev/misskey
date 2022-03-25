@@ -1,4 +1,4 @@
-import { dataSource } from '@/db/postgre.js';
+import { db } from '@/db/postgre.js';
 import { Meta } from '@/models/entities/meta.js';
 
 let cache: Meta;
@@ -6,7 +6,7 @@ let cache: Meta;
 export async function fetchMeta(noCache = false): Promise<Meta> {
 	if (!noCache && cache) return cache;
 
-	return await dataSource.transaction(async transactionalEntityManager => {
+	return await db.transaction(async transactionalEntityManager => {
 		// 過去のバグでレコードが複数出来てしまっている可能性があるので新しいIDを優先する
 		const meta = await transactionalEntityManager.findOne(Meta, {
 			order: {

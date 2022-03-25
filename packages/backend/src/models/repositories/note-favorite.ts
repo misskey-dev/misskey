@@ -1,9 +1,9 @@
-import { dataSource } from '@/db/postgre.js';
+import { db } from '@/db/postgre.js';
 import { NoteFavorite } from '@/models/entities/note-favorite.js';
 import { Notes } from '../index.js';
 import { User } from '@/models/entities/user.js';
 
-export const NoteFavoriteRepository = dataSource.getRepository(NoteFavorite).extend({
+export const NoteFavoriteRepository = db.getRepository(NoteFavorite).extend({
 	async pack(
 		src: NoteFavorite['id'] | NoteFavorite,
 		me?: { id: User['id'] } | null | undefined

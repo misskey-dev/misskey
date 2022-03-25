@@ -1,10 +1,10 @@
-import { dataSource } from '@/db/postgre.js';
+import { db } from '@/db/postgre.js';
 import { Clip } from '@/models/entities/clip.js';
 import { Packed } from '@/misc/schema.js';
 import { Users } from '../index.js';
 import { awaitAll } from '@/prelude/await-all.js';
 
-export const ClipRepository = dataSource.getRepository(Clip).extend({
+export const ClipRepository = db.getRepository(Clip).extend({
 	async pack(
 		src: Clip['id'] | Clip,
 	): Promise<Packed<'Clip'>> {

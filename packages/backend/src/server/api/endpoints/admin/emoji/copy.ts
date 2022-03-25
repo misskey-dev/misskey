@@ -5,7 +5,7 @@ import { ApiError } from '../../../error.js';
 import { DriveFile } from '@/models/entities/drive-file.js';
 import { uploadFromUrl } from '@/services/drive/upload-from-url.js';
 import { publishBroadcastStream } from '@/services/stream.js';
-import { dataSource } from '@/db/postgre.js';
+import { db } from '@/db/postgre.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -70,7 +70,7 @@ export default define(meta, paramDef, async (ps, me) => {
 		type: driveFile.webpublicType ?? driveFile.type,
 	}).then(x => Emojis.findOneByOrFail(x.identifiers[0]));
 
-	await dataSource.queryResultCache!.remove(['meta_emojis']);
+	await db.queryResultCache!.remove(['meta_emojis']);
 
 	publishBroadcastStream('emojiAdded', {
 		emoji: await Emojis.pack(copied.id),

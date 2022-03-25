@@ -1,11 +1,11 @@
-import { dataSource } from '@/db/postgre.js';
+import { db } from '@/db/postgre.js';
 import { NoteReaction } from '@/models/entities/note-reaction.js';
 import { Notes, Users } from '../index.js';
 import { Packed } from '@/misc/schema.js';
 import { convertLegacyReaction } from '@/misc/reaction-lib.js';
 import { User } from '@/models/entities/user.js';
 
-export const NoteReactionRepository = dataSource.getRepository(NoteReaction).extend({
+export const NoteReactionRepository = db.getRepository(NoteReaction).extend({
 	async pack(
 		src: NoteReaction['id'] | NoteReaction,
 		me?: { id: User['id'] } | null | undefined,

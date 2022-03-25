@@ -1,9 +1,9 @@
-import { dataSource } from '@/db/postgre.js';
+import { db } from '@/db/postgre.js';
 import { UserGroup } from '@/models/entities/user-group.js';
 import { UserGroupJoinings } from '../index.js';
 import { Packed } from '@/misc/schema.js';
 
-export const UserGroupRepository = dataSource.getRepository(UserGroup).extend({
+export const UserGroupRepository = db.getRepository(UserGroup).extend({
 	async pack(
 		src: UserGroup['id'] | UserGroup,
 	): Promise<Packed<'UserGroup'>> {

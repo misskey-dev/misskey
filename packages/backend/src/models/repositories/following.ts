@@ -1,4 +1,4 @@
-import { dataSource } from '@/db/postgre.js';
+import { db } from '@/db/postgre.js';
 import { Users } from '../index.js';
 import { Following } from '@/models/entities/following.js';
 import { awaitAll } from '@/prelude/await-all.js';
@@ -29,7 +29,7 @@ type RemoteFolloweeFollowing = Following & {
 	followeeSharedInbox: string;
 };
 
-export const FollowingRepository = dataSource.getRepository(Following).extend({
+export const FollowingRepository = db.getRepository(Following).extend({
 	isLocalFollower(following: Following): following is LocalFollowerFollowing {
 		return following.followerHost == null;
 	},

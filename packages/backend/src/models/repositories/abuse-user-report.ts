@@ -1,9 +1,9 @@
-import { dataSource } from '@/db/postgre.js';
+import { db } from '@/db/postgre.js';
 import { Users } from '../index.js';
 import { AbuseUserReport } from '@/models/entities/abuse-user-report.js';
 import { awaitAll } from '@/prelude/await-all.js';
 
-export const AbuseUserReportRepository = dataSource.getRepository(AbuseUserReport).extend({
+export const AbuseUserReportRepository = db.getRepository(AbuseUserReport).extend({
 	async pack(
 		src: AbuseUserReport['id'] | AbuseUserReport,
 	) {

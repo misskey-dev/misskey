@@ -1,9 +1,9 @@
-import { dataSource } from '@/db/postgre.js';
+import { db } from '@/db/postgre.js';
 import { Users } from '../index.js';
 import { ModerationLog } from '@/models/entities/moderation-log.js';
 import { awaitAll } from '@/prelude/await-all.js';
 
-export const ModerationLogRepository = dataSource.getRepository(ModerationLog).extend({
+export const ModerationLogRepository = db.getRepository(ModerationLog).extend({
 	async pack(
 		src: ModerationLog['id'] | ModerationLog,
 	) {

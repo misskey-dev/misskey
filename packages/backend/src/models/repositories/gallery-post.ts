@@ -1,11 +1,11 @@
-import { dataSource } from '@/db/postgre.js';
+import { db } from '@/db/postgre.js';
 import { GalleryPost } from '@/models/entities/gallery-post.js';
 import { Packed } from '@/misc/schema.js';
 import { Users, DriveFiles, GalleryLikes } from '../index.js';
 import { awaitAll } from '@/prelude/await-all.js';
 import { User } from '@/models/entities/user.js';
 
-export const GalleryPostRepository = dataSource.getRepository(GalleryPost).extend({
+export const GalleryPostRepository = db.getRepository(GalleryPost).extend({
 	async pack(
 		src: GalleryPost['id'] | GalleryPost,
 		me?: { id: User['id'] } | null | undefined,

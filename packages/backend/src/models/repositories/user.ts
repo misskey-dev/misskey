@@ -10,7 +10,7 @@ import { getAntennas } from '@/misc/antenna-cache.js';
 import { USER_ACTIVE_THRESHOLD, USER_ONLINE_THRESHOLD } from '@/const.js';
 import { Cache } from '@/misc/cache.js';
 import { Instance } from '../entities/instance.js';
-import { dataSource } from '@/db/postgre.js';
+import { db } from '@/db/postgre.js';
 
 const userInstanceCache = new Cache<Instance | null>(1000 * 60 * 60 * 3);
 
@@ -43,7 +43,7 @@ function isRemoteUser(user: User | { host: User['host'] }): boolean {
 	return !isLocalUser(user);
 }
 
-export const UserRepository = dataSource.getRepository(User).extend({
+export const UserRepository = db.getRepository(User).extend({
 	localUsernameSchema,
 	passwordSchema,
 	nameSchema,

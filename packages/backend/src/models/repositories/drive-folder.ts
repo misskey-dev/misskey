@@ -1,10 +1,10 @@
-import { dataSource } from '@/db/postgre.js';
+import { db } from '@/db/postgre.js';
 import { DriveFolders, DriveFiles } from '../index.js';
 import { DriveFolder } from '@/models/entities/drive-folder.js';
 import { awaitAll } from '@/prelude/await-all.js';
 import { Packed } from '@/misc/schema.js';
 
-export const DriveFolderRepository = dataSource.getRepository(DriveFolder).extend({
+export const DriveFolderRepository = db.getRepository(DriveFolder).extend({
 	async pack(
 		src: DriveFolder['id'] | DriveFolder,
 		options?: {

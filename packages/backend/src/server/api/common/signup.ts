@@ -10,7 +10,7 @@ import { toPunyNullable } from '@/misc/convert-host.js';
 import { UserKeypair } from '@/models/entities/user-keypair.js';
 import { usersChart } from '@/services/chart/index.js';
 import { UsedUsername } from '@/models/entities/used-username.js';
-import { dataSource } from '@/db/postgre.js';
+import { db } from '@/db/postgre.js';
 
 export async function signup(opts: {
 	username: User['username'];
@@ -70,7 +70,7 @@ export async function signup(opts: {
 	let account!: User;
 
 	// Start transaction
-	await dataSource.transaction(async transactionalEntityManager => {
+	await db.transaction(async transactionalEntityManager => {
 		const exist = await transactionalEntityManager.findOneBy(User, {
 			usernameLower: username.toLowerCase(),
 			host: IsNull(),

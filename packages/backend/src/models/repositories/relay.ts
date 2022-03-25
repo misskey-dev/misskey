@@ -1,5 +1,5 @@
-import { dataSource } from '@/db/postgre.js';
+import { db } from '@/db/postgre.js';
 import { Relay } from '@/models/entities/relay.js';
 
-export const RelayRepository = dataSource.getRepository(Relay).extend({
+export const RelayRepository = db.getRepository(Relay).extend({
 });

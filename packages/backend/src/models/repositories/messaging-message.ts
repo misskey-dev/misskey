@@ -1,10 +1,10 @@
-import { dataSource } from '@/db/postgre.js';
+import { db } from '@/db/postgre.js';
 import { MessagingMessage } from '@/models/entities/messaging-message.js';
 import { Users, DriveFiles, UserGroups } from '../index.js';
 import { Packed } from '@/misc/schema.js';
 import { User } from '@/models/entities/user.js';
 
-export const MessagingMessageRepository = dataSource.getRepository(MessagingMessage).extend({
+export const MessagingMessageRepository = db.getRepository(MessagingMessage).extend({
 	async pack(
 		src: MessagingMessage['id'] | MessagingMessage,
 		me?: { id: User['id'] } | null | undefined,

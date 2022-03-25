@@ -37,7 +37,7 @@ import { getAntennas } from '@/misc/antenna-cache.js';
 import { endedPollNotificationQueue } from '@/queue/queues.js';
 import { Cache } from '@/misc/cache.js';
 import { UserProfile } from '@/models/entities/user-profile.js';
-import { dataSource } from '@/db/postgre.js';
+import { db } from '@/db/postgre.js';
 
 const mutedWordsCache = new Cache<{ userId: UserProfile['userId']; mutedWords: UserProfile['mutedWords']; }[]>(1000 * 60 * 5);
 
@@ -532,7 +532,7 @@ async function insertNote(user: { id: User['id']; host: User['host']; }, data: O
 	try {
 		if (insert.hasPoll) {
 			// Start transaction
-			await dataSource.transaction(async transactionalEntityManager => {
+			await db.transaction(async transactionalEntityManager => {
 				await transactionalEntityManager.insert(Note, insert);
 
 				const poll = new Poll({

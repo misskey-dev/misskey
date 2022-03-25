@@ -1,8 +1,8 @@
-import { dataSource } from '@/db/postgre.js';
+import { db } from '@/db/postgre.js';
 import { Instance } from '@/models/entities/instance.js';
 import { Packed } from '@/misc/schema.js';
 
-export const InstanceRepository = dataSource.getRepository(Instance).extend({
+export const InstanceRepository = db.getRepository(Instance).extend({
 	async pack(
 		instance: Instance,
 	): Promise<Packed<'FederationInstance'>> {

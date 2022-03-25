@@ -8,7 +8,7 @@ import { IsNull } from 'typeorm';
 import { genId } from '@/misc/gen-id.js';
 import { UserKeypair } from '@/models/entities/user-keypair.js';
 import { UsedUsername } from '@/models/entities/used-username.js';
-import { dataSource } from '@/db/postgre.js';
+import { db } from '@/db/postgre.js';
 
 export async function createSystemUser(username: string) {
 	const password = uuid();
@@ -25,7 +25,7 @@ export async function createSystemUser(username: string) {
 	let account!: User;
 
 	// Start transaction
-	await dataSource.transaction(async transactionalEntityManager => {
+	await db.transaction(async transactionalEntityManager => {
 		const exist = await transactionalEntityManager.findOneBy(User, {
 			usernameLower: username.toLowerCase(),
 			host: IsNull(),

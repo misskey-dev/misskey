@@ -14,7 +14,7 @@ import { Config } from '@/config/types.js';
 import { lessThan } from '@/prelude/array.js';
 import { envOption } from '../env.js';
 import { showMachineInfo } from '@/misc/show-machine-info.js';
-import { dataSource, initDb } from '../db/postgre.js';
+import { db, initDb } from '../db/postgre.js';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -143,7 +143,7 @@ async function connectDb(): Promise<void> {
 	try {
 		dbLogger.info('Connecting...');
 		await initDb();
-		const v = await dataSource.query('SHOW server_version').then(x => x[0].server_version);
+		const v = await db.query('SHOW server_version').then(x => x[0].server_version);
 		dbLogger.succ(`Connected: v${v}`);
 	} catch (e) {
 		dbLogger.error('Cannot connect', null, true);

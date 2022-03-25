@@ -1,10 +1,10 @@
-import { dataSource } from '@/db/postgre.js';
+import { db } from '@/db/postgre.js';
 import { Channel } from '@/models/entities/channel.js';
 import { Packed } from '@/misc/schema.js';
 import { DriveFiles, ChannelFollowings, NoteUnreads } from '../index.js';
 import { User } from '@/models/entities/user.js';
 
-export const ChannelRepository = dataSource.getRepository(Channel).extend({
+export const ChannelRepository = db.getRepository(Channel).extend({
 	async pack(
 		src: Channel['id'] | Channel,
 		me?: { id: User['id'] } | null | undefined,

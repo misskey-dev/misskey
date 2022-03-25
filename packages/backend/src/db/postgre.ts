@@ -5,6 +5,7 @@ pg.types.setTypeParser(20, Number);
 import { Logger, DataSource } from 'typeorm';
 import * as highlight from 'cli-highlight';
 import config from '@/config/index.js';
+import { envOption } from '../env.js';
 
 import { dbLogger } from './logger.js';
 
@@ -61,7 +62,6 @@ import { Antenna } from '@/models/entities/antenna.js';
 import { AntennaNote } from '@/models/entities/antenna-note.js';
 import { PromoNote } from '@/models/entities/promo-note.js';
 import { PromoRead } from '@/models/entities/promo-read.js';
-import { envOption } from '../env.js';
 import { Relay } from '@/models/entities/relay.js';
 import { MutedNote } from '@/models/entities/muted-note.js';
 import { Channel } from '@/models/entities/channel.js';
@@ -74,7 +74,7 @@ import { UserPending } from '@/models/entities/user-pending.js';
 
 import { entities as charts } from '@/services/chart/entities.js';
 
-const sqlLogger = dbLogger.createSubLogger('sql', 'white', false);
+const sqlLogger = dbLogger.createSubLogger('sql', 'gray', false);
 
 class MyCustomLogger implements Logger {
 	private highlight(sql: string) {
@@ -84,9 +84,7 @@ class MyCustomLogger implements Logger {
 	}
 
 	public logQuery(query: string, parameters?: any[]) {
-		if (envOption.verbose) {
-			sqlLogger.info(this.highlight(query).substring(0, 100));
-		}
+		sqlLogger.info(this.highlight(query).substring(0, 100));
 	}
 
 	public logQueryError(error: string, query: string, parameters?: any[]) {
@@ -178,7 +176,7 @@ export const entities = [
 
 const log = process.env.NODE_ENV !== 'production';
 
-export const dataSource = new DataSource({
+export const db = new DataSource({
 	type: 'postgres',
 	host: config.db.host,
 	port: config.db.port,
@@ -204,21 +202,22 @@ export const dataSource = new DataSource({
 	logging: log,
 	logger: log ? new MyCustomLogger() : undefined,
 	entities: entities,
+	migrations: ['../../migration/*.js'],
 });
 
 export async function initDb() {
-	await dataSource.connect();
+	await db.connect();
 }
 
 export async function resetDb() {
 	const reset = async () => {
-		const tables = await dataSource.query(`SELECT relname AS "table"
+		const tables = await db.query(`SELECT relname AS "table"
 		FROM pg_class C LEFT JOIN pg_namespace N ON (N.oid = C.relnamespace)
 		WHERE nspname NOT IN ('pg_catalog', 'information_schema')
 			AND C.relkind = 'r'
 			AND nspname !~ '^pg_toast';`);
 		for (const table of tables) {
-			await dataSource.query(`DELETE FROM "${table.table}" CASCADE`);
+			await db.query(`DELETE FROM "${table.table}" CASCADE`);
 		}
 	};
 

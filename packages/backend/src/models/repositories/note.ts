@@ -9,7 +9,7 @@ import { awaitAll } from '@/prelude/await-all.js';
 import { convertLegacyReaction, convertLegacyReactions, decodeReaction } from '@/misc/reaction-lib.js';
 import { NoteReaction } from '@/models/entities/note-reaction.js';
 import { aggregateNoteEmojis, populateEmojis, prefetchEmojis } from '@/misc/populate-emojis.js';
-import { dataSource } from '@/db/postgre.js';
+import { db } from '@/db/postgre.js';
 
 async function hideNote(packedNote: Packed<'Note'>, meId: User['id'] | null) {
 	// TODO: isVisibleForMe を使うようにしても良さそう(型違うけど)
@@ -71,7 +71,7 @@ async function hideNote(packedNote: Packed<'Note'>, meId: User['id'] | null) {
 	}
 }
 
-export const NoteRepository = dataSource.getRepository(Note).extend({
+export const NoteRepository = db.getRepository(Note).extend({
 	async isVisibleForMe(note: Note, meId: User['id'] | null): Promise<boolean> {
 		// visibility が specified かつ自分が指定されていなかったら非表示
 		if (note.visibility === 'specified') {

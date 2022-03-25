@@ -8,9 +8,9 @@ import { NoteReaction } from '@/models/entities/note-reaction.js';
 import { User } from '@/models/entities/user.js';
 import { aggregateNoteEmojis, prefetchEmojis } from '@/misc/populate-emojis.js';
 import { notificationTypes } from '@/types.js';
-import { dataSource } from '@/db/postgre.js';
+import { db } from '@/db/postgre.js';
 
-export const NotificationRepository = dataSource.getRepository(Notification).extend({
+export const NotificationRepository = db.getRepository(Notification).extend({
 	async pack(
 		src: Notification['id'] | Notification,
 		options: {

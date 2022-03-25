@@ -1,11 +1,11 @@
-import { dataSource } from '@/db/postgre.js';
+import { db } from '@/db/postgre.js';
 import { Users } from '../index.js';
 import { Muting } from '@/models/entities/muting.js';
 import { awaitAll } from '@/prelude/await-all.js';
 import { Packed } from '@/misc/schema.js';
 import { User } from '@/models/entities/user.js';
 
-export const MutingRepository = dataSource.getRepository(Muting).extend({
+export const MutingRepository = db.getRepository(Muting).extend({
 	async pack(
 		src: Muting['id'] | Muting,
 		me?: { id: User['id'] } | null | undefined

@@ -1,8 +1,8 @@
-import { dataSource } from '@/db/postgre.js';
+import { db } from '@/db/postgre.js';
 import { GalleryLike } from '@/models/entities/gallery-like.js';
 import { GalleryPosts } from '../index.js';
 
-export const GalleryLikeRepository = dataSource.getRepository(GalleryLike).extend({
+export const GalleryLikeRepository = db.getRepository(GalleryLike).extend({
 	async pack(
 		src: GalleryLike['id'] | GalleryLike,
 		me?: any

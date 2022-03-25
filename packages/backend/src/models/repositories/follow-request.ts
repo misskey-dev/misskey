@@ -1,9 +1,9 @@
-import { dataSource } from '@/db/postgre.js';
+import { db } from '@/db/postgre.js';
 import { FollowRequest } from '@/models/entities/follow-request.js';
 import { Users } from '../index.js';
 import { User } from '@/models/entities/user.js';
 
-export const FollowRequestRepository = dataSource.getRepository(FollowRequest).extend({
+export const FollowRequestRepository = db.getRepository(FollowRequest).extend({
 	async pack(
 		src: FollowRequest['id'] | FollowRequest,
 		me?: { id: User['id'] } | null | undefined

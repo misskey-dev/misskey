@@ -1,4 +1,4 @@
-import { dataSource } from '@/db/postgre.js';
+import { db } from '@/db/postgre.js';
 import { Page } from '@/models/entities/page.js';
 import { Packed } from '@/misc/schema.js';
 import { Users, DriveFiles, PageLikes } from '../index.js';
@@ -6,7 +6,7 @@ import { awaitAll } from '@/prelude/await-all.js';
 import { DriveFile } from '@/models/entities/drive-file.js';
 import { User } from '@/models/entities/user.js';
 
-export const PageRepository = dataSource.getRepository(Page).extend({
+export const PageRepository = db.getRepository(Page).extend({
 	async pack(
 		src: Page['id'] | Page,
 		me?: { id: User['id'] } | null | undefined,

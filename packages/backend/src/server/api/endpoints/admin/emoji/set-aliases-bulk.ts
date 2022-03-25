@@ -2,7 +2,7 @@ import define from '../../../define.js';
 import { Emojis } from '@/models/index.js';
 import { In } from 'typeorm';
 import { ApiError } from '../../../error.js';
-import { dataSource } from '@/db/postgre.js';
+import { db } from '@/db/postgre.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -33,5 +33,5 @@ export default define(meta, paramDef, async (ps) => {
 		aliases: ps.aliases,
 	});
 
-	await dataSource.queryResultCache!.remove(['meta_emojis']);
+	await db.queryResultCache!.remove(['meta_emojis']);
 });

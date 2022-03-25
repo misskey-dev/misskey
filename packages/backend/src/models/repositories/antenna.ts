@@ -1,9 +1,9 @@
-import { dataSource } from '@/db/postgre.js';
+import { db } from '@/db/postgre.js';
 import { Antenna } from '@/models/entities/antenna.js';
 import { Packed } from '@/misc/schema.js';
 import { AntennaNotes, UserGroupJoinings } from '../index.js';
 
-export const AntennaRepository = dataSource.getRepository(Antenna).extend({
+export const AntennaRepository = db.getRepository(Antenna).extend({
 	async pack(
 		src: Antenna['id'] | Antenna,
 	): Promise<Packed<'Antenna'>> {

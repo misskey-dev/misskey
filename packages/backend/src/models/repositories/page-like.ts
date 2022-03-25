@@ -1,9 +1,9 @@
-import { dataSource } from '@/db/postgre.js';
+import { db } from '@/db/postgre.js';
 import { PageLike } from '@/models/entities/page-like.js';
 import { Pages } from '../index.js';
 import { User } from '@/models/entities/user.js';
 
-export const PageLikeRepository = dataSource.getRepository(PageLike).extend({
+export const PageLikeRepository = db.getRepository(PageLike).extend({
 	async pack(
 		src: PageLike['id'] | PageLike,
 		me?: { id: User['id'] } | null | undefined

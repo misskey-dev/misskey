@@ -1,4 +1,4 @@
-import { dataSource } from '@/db/postgre.js';
+import { db } from '@/db/postgre.js';
 import { DriveFile } from '@/models/entities/drive-file.js';
 import { Users, DriveFolders } from '../index.js';
 import { User } from '@/models/entities/user.js';
@@ -16,7 +16,7 @@ type PackOptions = {
 	withUser?: boolean,
 };
 
-export const DriveFileRepository = dataSource.getRepository(DriveFile).extend({
+export const DriveFileRepository = db.getRepository(DriveFile).extend({
 	validateFileName(name: string): boolean {
 		return (
 			(name.trim().length > 0) &&

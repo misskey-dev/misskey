@@ -5,7 +5,7 @@ import { insertModerationLog } from '@/services/insert-moderation-log.js';
 import { ApiError } from '../../../error.js';
 import rndstr from 'rndstr';
 import { publishBroadcastStream } from '@/services/stream.js';
-import { dataSource } from '@/db/postgre.js';
+import { db } from '@/db/postgre.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -50,7 +50,7 @@ export default define(meta, paramDef, async (ps, me) => {
 		type: file.webpublicType ?? file.type,
 	}).then(x => Emojis.findOneByOrFail(x.identifiers[0]));
 
-	await dataSource.queryResultCache!.remove(['meta_emojis']);
+	await db.queryResultCache!.remove(['meta_emojis']);
 
 	publishBroadcastStream('emojiAdded', {
 		emoji: await Emojis.pack(emoji.id),

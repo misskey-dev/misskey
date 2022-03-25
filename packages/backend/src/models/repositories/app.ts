@@ -1,10 +1,10 @@
-import { dataSource } from '@/db/postgre.js';
+import { db } from '@/db/postgre.js';
 import { App } from '@/models/entities/app.js';
 import { AccessTokens } from '../index.js';
 import { Packed } from '@/misc/schema.js';
 import { User } from '../entities/user.js';
 
-export const AppRepository = dataSource.getRepository(App).extend({
+export const AppRepository = db.getRepository(App).extend({
 	async pack(
 		src: App['id'] | App,
 		me?: { id: User['id'] } | null | undefined,
