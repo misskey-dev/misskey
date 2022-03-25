@@ -9,7 +9,7 @@ export class NoteFavoriteRepository extends Repository<NoteFavorite> {
 		src: NoteFavorite['id'] | NoteFavorite,
 		me?: { id: User['id'] } | null | undefined
 	) {
-		const favorite = typeof src === 'object' ? src : await this.findOneOrFail(src);
+		const favorite = typeof src === 'object' ? src : await this.findOneByOrFail({ id: src });
 
 		return {
 			id: favorite.id,

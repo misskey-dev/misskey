@@ -9,7 +9,7 @@ export class ClipRepository extends Repository<Clip> {
 	public async pack(
 		src: Clip['id'] | Clip,
 	): Promise<Packed<'Clip'>> {
-		const clip = typeof src === 'object' ? src : await this.findOneOrFail(src);
+		const clip = typeof src === 'object' ? src : await this.findOneByOrFail({ id: src });
 
 		return await awaitAll({
 			id: clip.id,

@@ -7,7 +7,7 @@ export class UserGroupInvitationRepository extends Repository<UserGroupInvitatio
 	public async pack(
 		src: UserGroupInvitation['id'] | UserGroupInvitation,
 	) {
-		const invitation = typeof src === 'object' ? src : await this.findOneOrFail(src);
+		const invitation = typeof src === 'object' ? src : await this.findOneByOrFail({ id: src });
 
 		return {
 			id: invitation.id,

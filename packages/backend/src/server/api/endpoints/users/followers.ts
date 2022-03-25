@@ -57,7 +57,7 @@ export default define(meta, paramDef, async (ps, me) => {
 		throw new ApiError(meta.errors.noSuchUser);
 	}
 
-	const profile = await UserProfiles.findOneOrFail(user.id);
+	const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
 
 	if (profile.ffVisibility === 'private') {
 		if (me == null || (me.id !== user.id)) {

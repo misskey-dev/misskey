@@ -10,7 +10,7 @@ export class AuthSessionRepository extends Repository<AuthSession> {
 		src: AuthSession['id'] | AuthSession,
 		me?: { id: User['id'] } | null | undefined
 	) {
-		const session = typeof src === 'object' ? src : await this.findOneOrFail(src);
+		const session = typeof src === 'object' ? src : await this.findOneByOrFail({ id: src });
 
 		return await awaitAll({
 			id: session.id,

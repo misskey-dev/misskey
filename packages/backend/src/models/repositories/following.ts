@@ -55,7 +55,7 @@ export class FollowingRepository extends Repository<Following> {
 			populateFollower?: boolean;
 		}
 	): Promise<Packed<'Following'>> {
-		const following = typeof src === 'object' ? src : await this.findOneOrFail(src);
+		const following = typeof src === 'object' ? src : await this.findOneByOrFail({ id: src });
 
 		if (opts == null) opts = {};
 

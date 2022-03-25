@@ -10,7 +10,7 @@ export class ChannelRepository extends Repository<Channel> {
 		src: Channel['id'] | Channel,
 		me?: { id: User['id'] } | null | undefined,
 	): Promise<Packed<'Channel'>> {
-		const channel = typeof src === 'object' ? src : await this.findOneOrFail(src);
+		const channel = typeof src === 'object' ? src : await this.findOneByOrFail({ id: src });
 		const meId = me ? me.id : null;
 
 		const banner = channel.bannerId ? await DriveFiles.findOne(channel.bannerId) : null;

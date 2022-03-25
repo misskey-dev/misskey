@@ -18,7 +18,7 @@ export class NoteReactionRepository extends Repository<NoteReaction> {
 			withNote: false,
 		}, options);
 
-		const reaction = typeof src === 'object' ? src : await this.findOneOrFail(src);
+		const reaction = typeof src === 'object' ? src : await this.findOneByOrFail({ id: src });
 
 		return {
 			id: reaction.id,

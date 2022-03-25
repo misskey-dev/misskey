@@ -102,7 +102,7 @@ export async function fetchPerson(uri: string, resolver?: Resolver): Promise<Cac
 	// URIがこのサーバーを指しているならデータベースからフェッチ
 	if (uri.startsWith(config.url + '/')) {
 		const id = uri.split('/').pop();
-		const u = await Users.findOne(id).then(x => x || null); // TODO: typeorm 3.0 にしたら .then(x => x || null) を消す
+		const u = await Users.findOneBy({ id }).then(x => x || null); // TODO: typeorm 3.0 にしたら .then(x => x || null) を消す
 		if (u) uriPersonCache.set(uri, u);
 		return u;
 	}

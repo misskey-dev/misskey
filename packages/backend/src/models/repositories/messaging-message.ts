@@ -19,7 +19,7 @@ export class MessagingMessageRepository extends Repository<MessagingMessage> {
 			populateGroup: true,
 		};
 
-		const message = typeof src === 'object' ? src : await this.findOneOrFail(src);
+		const message = typeof src === 'object' ? src : await this.findOneByOrFail({ id: src });
 
 		return {
 			id: message.id,

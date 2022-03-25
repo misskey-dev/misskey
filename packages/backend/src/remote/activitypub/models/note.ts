@@ -141,7 +141,7 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 			const uri = getApId(note.inReplyTo);
 			if (uri.startsWith(config.url + '/')) {
 				const id = uri.split('/').pop();
-				const talk = await MessagingMessages.findOne(id);
+				const talk = await MessagingMessages.findOneBy({ id });
 				if (talk) {
 					isTalk = true;
 					return null;
@@ -201,7 +201,7 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 
 	// vote
 	if (reply && reply.hasPoll) {
-		const poll = await Polls.findOneOrFail(reply.id);
+		const poll = await Polls.findOneByOrFail({ noteId: reply.id });
 
 		const tryCreateVote = async (name: string, index: number): Promise<null> => {
 			if (poll.expiresAt && Date.now() > new Date(poll.expiresAt).getTime()) {

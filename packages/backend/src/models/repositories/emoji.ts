@@ -7,7 +7,7 @@ export class EmojiRepository extends Repository<Emoji> {
 	public async pack(
 		src: Emoji['id'] | Emoji,
 	): Promise<Packed<'Emoji'>> {
-		const emoji = typeof src === 'object' ? src : await this.findOneOrFail(src);
+		const emoji = typeof src === 'object' ? src : await this.findOneByOrFail({ id: src });
 
 		return {
 			id: emoji.id,

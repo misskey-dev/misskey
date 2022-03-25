@@ -130,7 +130,7 @@ export const paramDef = {
 export default define(meta, paramDef, async (ps, user) => {
 	let visibleUsers: User[] = [];
 	if (ps.visibleUserIds) {
-		visibleUsers = (await Promise.all(ps.visibleUserIds.map(id => Users.findOne(id))))
+		visibleUsers = (await Promise.all(ps.visibleUserIds.map(id => Users.findOneBy({ id }))))
 			.filter(x => x != null) as User[];
 	}
 

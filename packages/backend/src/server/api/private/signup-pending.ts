@@ -20,7 +20,7 @@ export default async (ctx: Koa.Context) => {
 			id: pendingUser.id,
 		});
 
-		const profile = await UserProfiles.findOneOrFail(account.id);
+		const profile = await UserProfiles.findOneByOrFail({ userId: account.id });
 
 		await UserProfiles.update({ userId: profile.userId }, {
 			email: pendingUser.email,

@@ -11,7 +11,7 @@ export class MutingRepository extends Repository<Muting> {
 		src: Muting['id'] | Muting,
 		me?: { id: User['id'] } | null | undefined
 	): Promise<Packed<'Muting'>> {
-		const muting = typeof src === 'object' ? src : await this.findOneOrFail(src);
+		const muting = typeof src === 'object' ? src : await this.findOneByOrFail({ id: src });
 
 		return await awaitAll({
 			id: muting.id,

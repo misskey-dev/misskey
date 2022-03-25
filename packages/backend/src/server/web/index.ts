@@ -224,7 +224,7 @@ router.get(['/@:user', '/@:user/:sub'], async (ctx, next) => {
 	});
 
 	if (user != null) {
-		const profile = await UserProfiles.findOneOrFail(user.id);
+		const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
 		const meta = await fetchMeta();
 		const me = profile.fields
 			? profile.fields

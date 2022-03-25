@@ -19,7 +19,7 @@ export class NotificationRepository extends Repository<Notification> {
 			};
 		}
 	): Promise<Packed<'Notification'>> {
-		const notification = typeof src === 'object' ? src : await this.findOneOrFail(src);
+		const notification = typeof src === 'object' ? src : await this.findOneByOrFail({ id: src });
 		const token = notification.appAccessTokenId ? await AccessTokens.findOneOrFail(notification.appAccessTokenId) : null;
 
 		return await awaitAll({

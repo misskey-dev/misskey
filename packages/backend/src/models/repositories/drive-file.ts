@@ -121,7 +121,7 @@ export class DriveFileRepository extends Repository<DriveFile> {
 			self: false,
 		}, options);
 
-		const file = typeof src === 'object' ? src : await this.findOne(src);
+		const file = typeof src === 'object' ? src : await this.findOneBy({ id: src });
 		if (file == null) return null;
 
 		const meta = await fetchMeta();

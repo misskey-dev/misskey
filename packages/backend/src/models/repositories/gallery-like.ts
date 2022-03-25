@@ -8,7 +8,7 @@ export class GalleryLikeRepository extends Repository<GalleryLike> {
 		src: GalleryLike['id'] | GalleryLike,
 		me?: any
 	) {
-		const like = typeof src === 'object' ? src : await this.findOneOrFail(src);
+		const like = typeof src === 'object' ? src : await this.findOneByOrFail({ id: src });
 
 		return {
 			id: like.id,

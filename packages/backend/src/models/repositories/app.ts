@@ -21,7 +21,7 @@ export class AppRepository extends Repository<App> {
 			includeProfileImageIds: false,
 		}, options);
 
-		const app = typeof src === 'object' ? src : await this.findOneOrFail(src);
+		const app = typeof src === 'object' ? src : await this.findOneByOrFail({ id: src });
 
 		return {
 			id: app.id,

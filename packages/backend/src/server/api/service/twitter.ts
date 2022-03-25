@@ -44,7 +44,7 @@ router.get('/disconnect/twitter', async ctx => {
 		token: userToken,
 	});
 
-	const profile = await UserProfiles.findOneOrFail(user.id);
+	const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
 
 	delete profile.integrations.twitter;
 
@@ -167,7 +167,7 @@ router.get('/tw/cb', async ctx => {
 			token: userToken,
 		});
 
-		const profile = await UserProfiles.findOneOrFail(user.id);
+		const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
 
 		await UserProfiles.update(user.id, {
 			integrations: {

@@ -138,11 +138,11 @@ export class NoteRepository extends Repository<Note> {
 		}, options);
 
 		const meId = me ? me.id : null;
-		const note = typeof src === 'object' ? src : await this.findOneOrFail(src);
+		const note = typeof src === 'object' ? src : await this.findOneByOrFail({ id: src });
 		const host = note.userHost;
 
 		async function populatePoll() {
-			const poll = await Polls.findOneOrFail(note.id);
+			const poll = await Polls.findOneByOrFail({ noteId: note.id });
 			const choices = poll.choices.map(c => ({
 				text: c,
 				votes: poll.votes[poll.choices.indexOf(c)],

@@ -8,7 +8,7 @@ export class ModerationLogRepository extends Repository<ModerationLog> {
 	public async pack(
 		src: ModerationLog['id'] | ModerationLog,
 	) {
-		const log = typeof src === 'object' ? src : await this.findOneOrFail(src);
+		const log = typeof src === 'object' ? src : await this.findOneByOrFail({ id: src });
 
 		return await awaitAll({
 			id: log.id,

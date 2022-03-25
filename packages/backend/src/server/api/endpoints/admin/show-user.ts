@@ -29,7 +29,7 @@ export default define(meta, paramDef, async (ps, me) => {
 		throw new Error('user not found');
 	}
 
-	const _me = await Users.findOneOrFail(me.id);
+	const _me = await Users.findOneByOrFail({ id: me.id });
 	if ((_me.isModerator && !_me.isAdmin) && user.isAdmin) {
 		throw new Error('cannot show info of admin');
 	}

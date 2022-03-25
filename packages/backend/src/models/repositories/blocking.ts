@@ -11,7 +11,7 @@ export class BlockingRepository extends Repository<Blocking> {
 		src: Blocking['id'] | Blocking,
 		me?: { id: User['id'] } | null | undefined
 	): Promise<Packed<'Blocking'>> {
-		const blocking = typeof src === 'object' ? src : await this.findOneOrFail(src);
+		const blocking = typeof src === 'object' ? src : await this.findOneByOrFail({ id: src });
 
 		return await awaitAll({
 			id: blocking.id,

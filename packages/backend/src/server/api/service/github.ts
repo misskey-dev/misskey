@@ -45,7 +45,7 @@ router.get('/disconnect/github', async ctx => {
 		token: userToken,
 	});
 
-	const profile = await UserProfiles.findOneOrFail(user.id);
+	const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
 
 	delete profile.integrations.github;
 
@@ -232,7 +232,7 @@ router.get('/gh/cb', async ctx => {
 			token: userToken,
 		});
 
-		const profile = await UserProfiles.findOneOrFail(user.id);
+		const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
 
 		await UserProfiles.update(user.id, {
 			integrations: {

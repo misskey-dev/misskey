@@ -12,7 +12,7 @@ export class GalleryPostRepository extends Repository<GalleryPost> {
 		me?: { id: User['id'] } | null | undefined,
 	): Promise<Packed<'GalleryPost'>> {
 		const meId = me ? me.id : null;
-		const post = typeof src === 'object' ? src : await this.findOneOrFail(src);
+		const post = typeof src === 'object' ? src : await this.findOneByOrFail({ id: src });
 
 		return await awaitAll({
 			id: post.id,

@@ -16,7 +16,7 @@ export class DriveFolderRepository extends Repository<DriveFolder> {
 			detail: false,
 		}, options);
 
-		const folder = typeof src === 'object' ? src : await this.findOneOrFail(src);
+		const folder = typeof src === 'object' ? src : await this.findOneByOrFail({ id: src });
 
 		return await awaitAll({
 			id: folder.id,

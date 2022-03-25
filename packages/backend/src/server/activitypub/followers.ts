@@ -38,7 +38,7 @@ export default async (ctx: Router.RouterContext) => {
 	}
 
 	//#region Check ff visibility
-	const profile = await UserProfiles.findOneOrFail(user.id);
+	const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
 
 	if (profile.ffVisibility === 'private') {
 		ctx.status = 403;

@@ -45,7 +45,7 @@ router.get('/disconnect/discord', async ctx => {
 		token: userToken,
 	});
 
-	const profile = await UserProfiles.findOneOrFail(user.id);
+	const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
 
 	delete profile.integrations.discord;
 
@@ -257,7 +257,7 @@ router.get('/dc/cb', async ctx => {
 			token: userToken,
 		});
 
-		const profile = await UserProfiles.findOneOrFail(user.id);
+		const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
 
 		await UserProfiles.update(user.id, {
 			integrations: {

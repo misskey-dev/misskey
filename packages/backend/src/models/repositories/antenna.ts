@@ -8,7 +8,7 @@ export class AntennaRepository extends Repository<Antenna> {
 	public async pack(
 		src: Antenna['id'] | Antenna,
 	): Promise<Packed<'Antenna'>> {
-		const antenna = typeof src === 'object' ? src : await this.findOneOrFail(src);
+		const antenna = typeof src === 'object' ? src : await this.findOneByOrFail({ id: src });
 
 		const hasUnreadNote = (await AntennaNotes.findOne({ antennaId: antenna.id, read: false })) != null;
 		const userGroupJoining = antenna.userGroupJoiningId ? await UserGroupJoinings.findOne(antenna.userGroupJoiningId) : null;

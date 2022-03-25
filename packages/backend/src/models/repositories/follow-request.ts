@@ -9,7 +9,7 @@ export class FollowRequestRepository extends Repository<FollowRequest> {
 		src: FollowRequest['id'] | FollowRequest,
 		me?: { id: User['id'] } | null | undefined
 	) {
-		const request = typeof src === 'object' ? src : await this.findOneOrFail(src);
+		const request = typeof src === 'object' ? src : await this.findOneByOrFail({ id: src });
 
 		return {
 			id: request.id,

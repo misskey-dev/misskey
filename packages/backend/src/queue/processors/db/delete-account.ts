@@ -75,7 +75,7 @@ export async function deleteAccount(job: Bull.Job<DbUserDeleteJobData>): Promise
 	}
 
 	{ // Send email notification
-		const profile = await UserProfiles.findOneOrFail(user.id);
+		const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
 		if (profile.email && profile.emailVerified) {
 			sendEmail(profile.email, 'Account deleted',
 				`Your account has been deleted.`,

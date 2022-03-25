@@ -58,7 +58,7 @@ export default async (ctx: Koa.Context) => {
 		return;
 	}
 
-	const profile = await UserProfiles.findOneOrFail(user.id);
+	const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
 
 	// Compare password
 	const same = await bcrypt.compare(password, profile.password!);

@@ -8,7 +8,7 @@ export class AbuseUserReportRepository extends Repository<AbuseUserReport> {
 	public async pack(
 		src: AbuseUserReport['id'] | AbuseUserReport,
 	) {
-		const report = typeof src === 'object' ? src : await this.findOneOrFail(src);
+		const report = typeof src === 'object' ? src : await this.findOneByOrFail({ id: src });
 
 		return await awaitAll({
 			id: report.id,

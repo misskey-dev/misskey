@@ -10,7 +10,7 @@ export default async function(user: User) {
 		name: user.name || user.username,
 	};
 
-	const profile = await UserProfiles.findOneOrFail(user.id);
+	const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
 
 	const notes = await Notes.find({
 		where: {

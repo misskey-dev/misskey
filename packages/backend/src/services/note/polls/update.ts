@@ -7,7 +7,7 @@ import { deliverToFollowers } from '@/remote/activitypub/deliver-manager.js';
 import { deliverToRelays } from '../../relay.js';
 
 export async function deliverQuestionUpdate(noteId: Note['id']) {
-	const note = await Notes.findOne(noteId);
+	const note = await Notes.findOneBy({ id: noteId });
 	if (note == null) throw new Error('note not found');
 
 	const user = await Users.findOne(note.userId);

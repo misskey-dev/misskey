@@ -97,7 +97,7 @@ async function fetchAny(uri: string): Promise<SchemaType<typeof meta['res']> | n
 		const type = parts.pop();
 
 		if (type === 'notes') {
-			const note = await Notes.findOne(id);
+			const note = await Notes.findOneBy({ id });
 
 			if (note) {
 				return {
@@ -106,7 +106,7 @@ async function fetchAny(uri: string): Promise<SchemaType<typeof meta['res']> | n
 				};
 			}
 		} else if (type === 'users') {
-			const user = await Users.findOne(id);
+			const user = await Users.findOneBy({ id });
 
 			if (user) {
 				return {
@@ -145,7 +145,7 @@ async function fetchAny(uri: string): Promise<SchemaType<typeof meta['res']> | n
 			const type = parts.pop();
 
 			if (type === 'notes') {
-				const note = await Notes.findOne(id);
+				const note = await Notes.findOneBy({ id });
 
 				if (note) {
 					return {
@@ -154,7 +154,7 @@ async function fetchAny(uri: string): Promise<SchemaType<typeof meta['res']> | n
 					};
 				}
 			} else if (type === 'users') {
-				const user = await Users.findOne(id);
+				const user = await Users.findOneBy({ id });
 
 				if (user) {
 					return {
