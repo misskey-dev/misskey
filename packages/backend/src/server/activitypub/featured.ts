@@ -5,16 +5,14 @@ import renderOrderedCollection from '@/remote/activitypub/renderer/ordered-colle
 import { setResponseType } from '../activitypub.js';
 import renderNote from '@/remote/activitypub/renderer/note.js';
 import { Users, Notes, UserNotePinings } from '@/models/index.js';
-import { userCache } from './cache.js';
 
 export default async (ctx: Router.RouterContext) => {
 	const userId = ctx.params.user;
 
-	// TODO: typeorm 3.0にしたら .then(x => x || null) は消せる
-	const user = await userCache.fetch(userId, () => Users.findOne({
+	const user = await Users.findOne({
 		id: userId,
 		host: null,
-	}).then(x => x || null));
+	});
 
 	if (user == null) {
 		ctx.status = 404;

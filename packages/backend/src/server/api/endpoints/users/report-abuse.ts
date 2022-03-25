@@ -70,7 +70,7 @@ export default define(meta, paramDef, async (ps, me) => {
 	}).then(x => AbuseUserReports.findOneOrFail(x.identifiers[0]));
 
 	// Publish event to moderators
-	setTimeout(async () => {
+	setImmediate(async () => {
 		const moderators = await Users.find({
 			where: [{
 				isAdmin: true,
@@ -94,5 +94,5 @@ export default define(meta, paramDef, async (ps, me) => {
 				sanitizeHtml(ps.comment),
 				sanitizeHtml(ps.comment));
 		}
-	}, 1);
+	});
 });
