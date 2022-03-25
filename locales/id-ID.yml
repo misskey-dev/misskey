@@ -1612,6 +1612,7 @@ _notification:
   youReceivedFollowRequest: "Kamu menerima permintaan mengikuti"
   yourFollowRequestAccepted: "Permintaan mengikuti kamu telah diterima"
   youWereInvitedToGroup: "Telah diundang ke grup"
+  pollEnded: "Hasil Kuesioner telah keluar"
   _types:
     all: "Semua"
     follow: "Ikuti"
@@ -1621,6 +1622,7 @@ _notification:
     quote: "Kutip"
     reaction: "Reaksi"
     pollVote: "Memilih di angket"
+    pollEnded: "Jajak pendapat berakhir"
     receiveFollowRequest: "Permintaan mengikuti diterima"
     followRequestAccepted: "Permintaan mengikuti disetujui"
     groupInvited: "Diundang ke grup"
