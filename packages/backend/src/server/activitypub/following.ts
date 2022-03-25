@@ -9,7 +9,7 @@ import renderOrderedCollectionPage from '@/remote/activitypub/renderer/ordered-c
 import renderFollowUser from '@/remote/activitypub/renderer/follow-user.js';
 import { setResponseType } from '../activitypub.js';
 import { Users, Followings, UserProfiles } from '@/models/index.js';
-import { LessThan, FindConditions, IsNull } from 'typeorm';
+import { LessThan, IsNull, FindOptionsWhere } from 'typeorm';
 import { Following } from '@/models/entities/following.js';
 
 export default async (ctx: Router.RouterContext) => {
@@ -58,7 +58,7 @@ export default async (ctx: Router.RouterContext) => {
 	if (page) {
 		const query = {
 			followerId: user.id,
-		} as FindConditions<Following>;
+		} as FindOptionsWhere<Following>;
 
 		// カーソルが指定されている場合
 		if (cursor) {
