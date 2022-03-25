@@ -9,9 +9,8 @@ import { User } from '@/models/entities/user.js';
 import { aggregateNoteEmojis, prefetchEmojis } from '@/misc/populate-emojis.js';
 import { notificationTypes } from '@/types.js';
 
-@EntityRepository(Notification)
-export class NotificationRepository extends Repository<Notification> {
-	public async pack(
+export const NotificationRepository = dataSource.getRepository(Notification).extend({
+	async pack(
 		src: Notification['id'] | Notification,
 		options: {
 			_hintForEachNotes_?: {
@@ -82,9 +81,9 @@ export class NotificationRepository extends Repository<Notification> {
 				icon: notification.customIcon || token?.iconUrl,
 			} : {}),
 		});
-	}
+	},
 
-	public async packMany(
+	async packMany(
 		notifications: Notification[],
 		meId: User['id']
 	) {
@@ -111,5 +110,5 @@ export class NotificationRepository extends Repository<Notification> {
 				myReactions: myReactionsMap,
 			},
 		})));
-	}
-}
+	},
+});

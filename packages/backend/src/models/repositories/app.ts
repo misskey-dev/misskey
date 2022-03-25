@@ -1,12 +1,11 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { dataSource } from '@/db/postgre.js';
 import { App } from '@/models/entities/app.js';
 import { AccessTokens } from '../index.js';
 import { Packed } from '@/misc/schema.js';
 import { User } from '../entities/user.js';
 
-@EntityRepository(App)
-export class AppRepository extends Repository<App> {
-	public async pack(
+export const AppRepository = dataSource.getRepository(App).extend({
+	async pack(
 		src: App['id'] | App,
 		me?: { id: User['id'] } | null | undefined,
 		options?: {
@@ -36,5 +35,5 @@ export class AppRepository extends Repository<App> {
 				}).then(count => count > 0),
 			} : {}),
 		};
-	}
-}
+	},
+});

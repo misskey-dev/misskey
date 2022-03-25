@@ -1,4 +1,4 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { dataSource } from '@/db/postgre.js';
 import { Page } from '@/models/entities/page.js';
 import { Packed } from '@/misc/schema.js';
 import { Users, DriveFiles, PageLikes } from '../index.js';
@@ -6,9 +6,8 @@ import { awaitAll } from '@/prelude/await-all.js';
 import { DriveFile } from '@/models/entities/drive-file.js';
 import { User } from '@/models/entities/user.js';
 
-@EntityRepository(Page)
-export class PageRepository extends Repository<Page> {
-	public async pack(
+export const PageRepository = dataSource.getRepository(Page).extend({
+	async pack(
 		src: Page['id'] | Page,
 		me?: { id: User['id'] } | null | undefined,
 	): Promise<Packed<'Page'>> {
@@ -78,12 +77,12 @@ export class PageRepository extends Repository<Page> {
 			likedCount: page.likedCount,
 			isLiked: meId ? await PageLikes.findOneBy({ pageId: page.id, userId: meId }).then(x => x != null) : undefined,
 		});
-	}
+	},
 
-	public packMany(
+	packMany(
 		pages: Page[],
 		me?: { id: User['id'] } | null | undefined,
 	) {
 		return Promise.all(pages.map(x => this.pack(x, me)));
-	}
-}
+	},
+});

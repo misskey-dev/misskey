@@ -1,11 +1,10 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { dataSource } from '@/db/postgre.js';
 import { NoteFavorite } from '@/models/entities/note-favorite.js';
 import { Notes } from '../index.js';
 import { User } from '@/models/entities/user.js';
 
-@EntityRepository(NoteFavorite)
-export class NoteFavoriteRepository extends Repository<NoteFavorite> {
-	public async pack(
+export const NoteFavoriteRepository = dataSource.getRepository(NoteFavorite).extend({
+	async pack(
 		src: NoteFavorite['id'] | NoteFavorite,
 		me?: { id: User['id'] } | null | undefined
 	) {
@@ -17,12 +16,12 @@ export class NoteFavoriteRepository extends Repository<NoteFavorite> {
 			noteId: favorite.noteId,
 			note: await Notes.pack(favorite.note || favorite.noteId, me),
 		};
-	}
+	},
 
-	public packMany(
+	packMany(
 		favorites: any[],
 		me: { id: User['id'] }
 	) {
 		return Promise.all(favorites.map(x => this.pack(x, me)));
-	}
-}
+	},
+});

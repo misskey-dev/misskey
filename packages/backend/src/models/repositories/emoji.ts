@@ -1,10 +1,9 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { dataSource } from '@/db/postgre.js';
 import { Emoji } from '@/models/entities/emoji.js';
 import { Packed } from '@/misc/schema.js';
 
-@EntityRepository(Emoji)
-export class EmojiRepository extends Repository<Emoji> {
-	public async pack(
+export const EmojiRepository = dataSource.getRepository(Emoji).extend({
+	async pack(
 		src: Emoji['id'] | Emoji,
 	): Promise<Packed<'Emoji'>> {
 		const emoji = typeof src === 'object' ? src : await this.findOneByOrFail({ id: src });
@@ -18,11 +17,11 @@ export class EmojiRepository extends Repository<Emoji> {
 			// || emoji.originalUrl してるのは後方互換性のため
 			url: emoji.publicUrl || emoji.originalUrl,
 		};
-	}
+	},
 
-	public packMany(
+	packMany(
 		emojis: any[],
 	) {
 		return Promise.all(emojis.map(x => this.pack(x)));
-	}
-}
+	},
+});

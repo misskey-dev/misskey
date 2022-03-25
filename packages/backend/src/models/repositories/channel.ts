@@ -1,12 +1,11 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { dataSource } from '@/db/postgre.js';
 import { Channel } from '@/models/entities/channel.js';
 import { Packed } from '@/misc/schema.js';
 import { DriveFiles, ChannelFollowings, NoteUnreads } from '../index.js';
 import { User } from '@/models/entities/user.js';
 
-@EntityRepository(Channel)
-export class ChannelRepository extends Repository<Channel> {
-	public async pack(
+export const ChannelRepository = dataSource.getRepository(Channel).extend({
+	async pack(
 		src: Channel['id'] | Channel,
 		me?: { id: User['id'] } | null | undefined,
 	): Promise<Packed<'Channel'>> {
@@ -38,5 +37,5 @@ export class ChannelRepository extends Repository<Channel> {
 				hasUnreadNote,
 			} : {}),
 		};
-	}
-}
+	},
+});

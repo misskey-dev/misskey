@@ -1,11 +1,10 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { dataSource } from '@/db/postgre.js';
 import { PageLike } from '@/models/entities/page-like.js';
 import { Pages } from '../index.js';
 import { User } from '@/models/entities/user.js';
 
-@EntityRepository(PageLike)
-export class PageLikeRepository extends Repository<PageLike> {
-	public async pack(
+export const PageLikeRepository = dataSource.getRepository(PageLike).extend({
+	async pack(
 		src: PageLike['id'] | PageLike,
 		me?: { id: User['id'] } | null | undefined
 	) {
@@ -15,12 +14,12 @@ export class PageLikeRepository extends Repository<PageLike> {
 			id: like.id,
 			page: await Pages.pack(like.page || like.pageId, me),
 		};
-	}
+	},
 
-	public packMany(
+	packMany(
 		likes: any[],
 		me: { id: User['id'] }
 	) {
 		return Promise.all(likes.map(x => this.pack(x, me)));
-	}
-}
+	},
+});

@@ -1,10 +1,9 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { dataSource } from '@/db/postgre.js';
 import { GalleryLike } from '@/models/entities/gallery-like.js';
 import { GalleryPosts } from '../index.js';
 
-@EntityRepository(GalleryLike)
-export class GalleryLikeRepository extends Repository<GalleryLike> {
-	public async pack(
+export const GalleryLikeRepository = dataSource.getRepository(GalleryLike).extend({
+	async pack(
 		src: GalleryLike['id'] | GalleryLike,
 		me?: any
 	) {
@@ -14,12 +13,12 @@ export class GalleryLikeRepository extends Repository<GalleryLike> {
 			id: like.id,
 			post: await GalleryPosts.pack(like.post || like.postId, me),
 		};
-	}
+	},
 
-	public packMany(
+	packMany(
 		likes: any[],
 		me: any
 	) {
 		return Promise.all(likes.map(x => this.pack(x, me)));
-	}
-}
+	},
+});

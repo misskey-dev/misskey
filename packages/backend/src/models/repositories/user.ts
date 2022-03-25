@@ -10,6 +10,7 @@ import { getAntennas } from '@/misc/antenna-cache.js';
 import { USER_ACTIVE_THRESHOLD, USER_ONLINE_THRESHOLD } from '@/const.js';
 import { Cache } from '@/misc/cache.js';
 import { Instance } from '../entities/instance.js';
+import { dataSource } from '@/db/postgre.js';
 
 const userInstanceCache = new Cache<Instance | null>(1000 * 60 * 60 * 3);
 
@@ -23,25 +24,43 @@ type IsMeAndIsUserDetailed<ExpectsMe extends boolean | null, Detailed extends bo
 
 const ajv = new Ajv();
 
-@EntityRepository(User)
-export class UserRepository extends Repository<User> {
-	public localUsernameSchema = { type: 'string', pattern: /^\w{1,20}$/.toString().slice(1, -1) } as const;
-	public passwordSchema = { type: 'string', minLength: 1 } as const;
-	public nameSchema = { type: 'string', minLength: 1, maxLength: 50 } as const;
-	public descriptionSchema = { type: 'string', minLength: 1, maxLength: 500 } as const;
-	public locationSchema = { type: 'string', minLength: 1, maxLength: 50 } as const;
-	public birthdaySchema = { type: 'string', pattern: /^([0-9]{4})-([0-9]{2})-([0-9]{2})$/.toString().slice(1, -1) } as const;
+const localUsernameSchema = { type: 'string', pattern: /^\w{1,20}$/.toString().slice(1, -1) } as const;
+const passwordSchema = { type: 'string', minLength: 1 } as const;
+const nameSchema = { type: 'string', minLength: 1, maxLength: 50 } as const;
+const descriptionSchema = { type: 'string', minLength: 1, maxLength: 500 } as const;
+const locationSchema = { type: 'string', minLength: 1, maxLength: 50 } as const;
+const birthdaySchema = { type: 'string', pattern: /^([0-9]{4})-([0-9]{2})-([0-9]{2})$/.toString().slice(1, -1) } as const;
+
+function isLocalUser(user: User): user is ILocalUser;
+function isLocalUser<T extends { host: User['host'] }>(user: T): user is T & { host: null; };
+function isLocalUser(user: User | { host: User['host'] }): boolean {
+	return user.host == null;
+}
+
+function isRemoteUser(user: User): user is IRemoteUser;
+function isRemoteUser<T extends { host: User['host'] }>(user: T): user is T & { host: string; };
+function isRemoteUser(user: User | { host: User['host'] }): boolean {
+	return !isLocalUser(user);
+}
+
+export const UserRepository = dataSource.getRepository(User).extend({
+	localUsernameSchema,
+	passwordSchema,
+	nameSchema,
+	descriptionSchema,
+	locationSchema,
+	birthdaySchema,
 
 	//#region Validators
-	public validateLocalUsername = ajv.compile(this.localUsernameSchema);
-	public validatePassword = ajv.compile(this.passwordSchema);
-	public validateName = ajv.compile(this.nameSchema);
-	public validateDescription = ajv.compile(this.descriptionSchema);
-	public validateLocation = ajv.compile(this.locationSchema);
-	public validateBirthday = ajv.compile(this.birthdaySchema);
+	validateLocalUsername: ajv.compile(localUsernameSchema),
+	validatePassword: ajv.compile(passwordSchema),
+	validateName: ajv.compile(nameSchema),
+	validateDescription: ajv.compile(descriptionSchema),
+	validateLocation: ajv.compile(locationSchema),
+	validateBirthday: ajv.compile(birthdaySchema),
 	//#endregion
 
-	public async getRelation(me: User['id'], target: User['id']) {
+	async getRelation(me: User['id'], target: User['id']) {
 		const [following1, following2, followReq1, followReq2, toBlocking, fromBlocked, mute] = await Promise.all([
 			Followings.findOneBy({
 				followerId: me,
@@ -83,9 +102,9 @@ export class UserRepository extends Repository<User> {
 			isBlocked: fromBlocked != null,
 			isMuted: mute != null,
 		};
-	}
+	},
 
-	public async getHasUnreadMessagingMessage(userId: User['id']): Promise<boolean> {
+	async getHasUnreadMessagingMessage(userId: User['id']): Promise<boolean> {
 		const mute = await Mutings.findBy({
 			muterId: userId,
 		});
@@ -112,9 +131,9 @@ export class UserRepository extends Repository<User> {
 		]);
 
 		return withUser || withGroups.some(x => x);
-	}
+	},
 
-	public async getHasUnreadAnnouncement(userId: User['id']): Promise<boolean> {
+	async getHasUnreadAnnouncement(userId: User['id']): Promise<boolean> {
 		const reads = await AnnouncementReads.findBy({
 			userId: userId,
 		});
@@ -124,9 +143,9 @@ export class UserRepository extends Repository<User> {
 		} : {});
 
 		return count > 0;
-	}
+	},
 
-	public async getHasUnreadAntenna(userId: User['id']): Promise<boolean> {
+	async getHasUnreadAntenna(userId: User['id']): Promise<boolean> {
 		const myAntennas = (await getAntennas()).filter(a => a.userId === userId);
 
 		const unread = myAntennas.length > 0 ? await AntennaNotes.findOneBy({
@@ -135,9 +154,9 @@ export class UserRepository extends Repository<User> {
 		}) : null;
 
 		return unread != null;
-	}
+	},
 
-	public async getHasUnreadChannel(userId: User['id']): Promise<boolean> {
+	async getHasUnreadChannel(userId: User['id']): Promise<boolean> {
 		const channels = await ChannelFollowings.findBy({ followerId: userId });
 
 		const unread = channels.length > 0 ? await NoteUnreads.findOneBy({
@@ -146,9 +165,9 @@ export class UserRepository extends Repository<User> {
 		}) : null;
 
 		return unread != null;
-	}
+	},
 
-	public async getHasUnreadNotification(userId: User['id']): Promise<boolean> {
+	async getHasUnreadNotification(userId: User['id']): Promise<boolean> {
 		const mute = await Mutings.findBy({
 			muterId: userId,
 		});
@@ -164,17 +183,17 @@ export class UserRepository extends Repository<User> {
 		});
 
 		return count > 0;
-	}
+	},
 
-	public async getHasPendingReceivedFollowRequest(userId: User['id']): Promise<boolean> {
+	async getHasPendingReceivedFollowRequest(userId: User['id']): Promise<boolean> {
 		const count = await FollowRequests.countBy({
 			followeeId: userId,
 		});
 
 		return count > 0;
-	}
+	},
 
-	public getOnlineStatus(user: User): 'unknown' | 'online' | 'active' | 'offline' {
+	getOnlineStatus(user: User): 'unknown' | 'online' | 'active' | 'offline' {
 		if (user.hideOnlineStatus) return 'unknown';
 		if (user.lastActiveDate == null) return 'unknown';
 		const elapsed = Date.now() - user.lastActiveDate.getTime();
@@ -183,22 +202,22 @@ export class UserRepository extends Repository<User> {
 			elapsed < USER_ACTIVE_THRESHOLD ? 'active' :
 			'offline'
 		);
-	}
+	},
 
-	public getAvatarUrl(user: User): string {
+	getAvatarUrl(user: User): string {
 		// TODO: avatarIdがあるがavatarがない(JOINされてない)場合のハンドリング
 		if (user.avatar) {
 			return DriveFiles.getPublicUrl(user.avatar, true) || this.getIdenticonUrl(user.id);
 		} else {
 			return this.getIdenticonUrl(user.id);
 		}
-	}
+	},
 
-	public getIdenticonUrl(userId: User['id']): string {
+	getIdenticonUrl(userId: User['id']): string {
 		return `${config.url}/identicon/${userId}`;
-	}
+	},
 
-	public async pack<ExpectsMe extends boolean | null = null, D extends boolean = false>(
+	async pack<ExpectsMe extends boolean | null = null, D extends boolean = false>(
 		src: User['id'] | User,
 		me?: { id: User['id'] } | null | undefined,
 		options?: {
@@ -376,9 +395,9 @@ export class UserRepository extends Repository<User> {
 		} as Promiseable<Packed<'User'>> as Promiseable<IsMeAndIsUserDetailed<ExpectsMe, D>>;
 
 		return await awaitAll(packed);
-	}
+	},
 
-	public packMany<D extends boolean = false>(
+	packMany<D extends boolean = false>(
 		users: (User['id'] | User)[],
 		me?: { id: User['id'] } | null | undefined,
 		options?: {
@@ -387,17 +406,8 @@ export class UserRepository extends Repository<User> {
 		}
 	): Promise<IsUserDetailed<D>[]> {
 		return Promise.all(users.map(u => this.pack(u, me, options)));
-	}
+	},
 
-	public isLocalUser(user: User): user is ILocalUser;
-	public isLocalUser<T extends { host: User['host'] }>(user: T): user is T & { host: null; };
-	public isLocalUser(user: User | { host: User['host'] }): boolean {
-		return user.host == null;
-	}
-
-	public isRemoteUser(user: User): user is IRemoteUser;
-	public isRemoteUser<T extends { host: User['host'] }>(user: T): user is T & { host: string; };
-	public isRemoteUser(user: User | { host: User['host'] }): boolean {
-		return !this.isLocalUser(user);
-	}
-}
+	isLocalUser,
+	isRemoteUser,
+});

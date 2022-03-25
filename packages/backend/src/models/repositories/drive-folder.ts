@@ -1,12 +1,11 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { dataSource } from '@/db/postgre.js';
 import { DriveFolders, DriveFiles } from '../index.js';
 import { DriveFolder } from '@/models/entities/drive-folder.js';
 import { awaitAll } from '@/prelude/await-all.js';
 import { Packed } from '@/misc/schema.js';
 
-@EntityRepository(DriveFolder)
-export class DriveFolderRepository extends Repository<DriveFolder> {
-	public async pack(
+export const DriveFolderRepository = dataSource.getRepository(DriveFolder).extend({
+	async pack(
 		src: DriveFolder['id'] | DriveFolder,
 		options?: {
 			detail: boolean
@@ -39,5 +38,5 @@ export class DriveFolderRepository extends Repository<DriveFolder> {
 				} : {}),
 			} : {}),
 		});
-	}
-}
+	},
+});

@@ -1,12 +1,11 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { dataSource } from '@/db/postgre.js';
 import { Apps } from '../index.js';
 import { AuthSession } from '@/models/entities/auth-session.js';
 import { awaitAll } from '@/prelude/await-all.js';
 import { User } from '@/models/entities/user.js';
 
-@EntityRepository(AuthSession)
-export class AuthSessionRepository extends Repository<AuthSession> {
-	public async pack(
+export const AuthSessionRepository = dataSource.getRepository(AuthSession).extend({
+	async pack(
 		src: AuthSession['id'] | AuthSession,
 		me?: { id: User['id'] } | null | undefined
 	) {
@@ -17,5 +16,5 @@ export class AuthSessionRepository extends Repository<AuthSession> {
 			app: Apps.pack(session.appId, me),
 			token: session.token,
 		});
-	}
-}
+	},
+});

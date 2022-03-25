@@ -1,13 +1,12 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { dataSource } from '@/db/postgre.js';
 import { Users } from '../index.js';
 import { Muting } from '@/models/entities/muting.js';
 import { awaitAll } from '@/prelude/await-all.js';
 import { Packed } from '@/misc/schema.js';
 import { User } from '@/models/entities/user.js';
 
-@EntityRepository(Muting)
-export class MutingRepository extends Repository<Muting> {
-	public async pack(
+export const MutingRepository = dataSource.getRepository(Muting).extend({
+	async pack(
 		src: Muting['id'] | Muting,
 		me?: { id: User['id'] } | null | undefined
 	): Promise<Packed<'Muting'>> {
@@ -22,12 +21,12 @@ export class MutingRepository extends Repository<Muting> {
 				detail: true,
 			}),
 		});
-	}
+	},
 
-	public packMany(
+	packMany(
 		mutings: any[],
 		me: { id: User['id'] }
 	) {
 		return Promise.all(mutings.map(x => this.pack(x, me)));
-	}
-}
+	},
+});

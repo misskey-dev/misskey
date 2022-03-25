@@ -1,11 +1,10 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { dataSource } from '@/db/postgre.js';
 import { Antenna } from '@/models/entities/antenna.js';
 import { Packed } from '@/misc/schema.js';
 import { AntennaNotes, UserGroupJoinings } from '../index.js';
 
-@EntityRepository(Antenna)
-export class AntennaRepository extends Repository<Antenna> {
-	public async pack(
+export const AntennaRepository = dataSource.getRepository(Antenna).extend({
+	async pack(
 		src: Antenna['id'] | Antenna,
 	): Promise<Packed<'Antenna'>> {
 		const antenna = typeof src === 'object' ? src : await this.findOneByOrFail({ id: src });
@@ -29,5 +28,5 @@ export class AntennaRepository extends Repository<Antenna> {
 			withFile: antenna.withFile,
 			hasUnreadNote,
 		};
-	}
-}
+	},
+});

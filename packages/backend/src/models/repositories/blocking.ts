@@ -1,13 +1,12 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { dataSource } from '@/db/postgre.js';
 import { Users } from '../index.js';
 import { Blocking } from '@/models/entities/blocking.js';
 import { awaitAll } from '@/prelude/await-all.js';
 import { Packed } from '@/misc/schema.js';
 import { User } from '@/models/entities/user.js';
 
-@EntityRepository(Blocking)
-export class BlockingRepository extends Repository<Blocking> {
-	public async pack(
+export const BlockingRepository = dataSource.getRepository(Blocking).extend({
+	async pack(
 		src: Blocking['id'] | Blocking,
 		me?: { id: User['id'] } | null | undefined
 	): Promise<Packed<'Blocking'>> {
@@ -21,12 +20,12 @@ export class BlockingRepository extends Repository<Blocking> {
 				detail: true,
 			}),
 		});
-	}
+	},
 
-	public packMany(
+	packMany(
 		blockings: any[],
 		me: { id: User['id'] }
 	) {
 		return Promise.all(blockings.map(x => this.pack(x, me)));
-	}
-}
+	},
+});

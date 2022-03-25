@@ -1,13 +1,12 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { dataSource } from '@/db/postgre.js';
 import { GalleryPost } from '@/models/entities/gallery-post.js';
 import { Packed } from '@/misc/schema.js';
 import { Users, DriveFiles, GalleryLikes } from '../index.js';
 import { awaitAll } from '@/prelude/await-all.js';
 import { User } from '@/models/entities/user.js';
 
-@EntityRepository(GalleryPost)
-export class GalleryPostRepository extends Repository<GalleryPost> {
-	public async pack(
+export const GalleryPostRepository = dataSource.getRepository(GalleryPost).extend({
+	async pack(
 		src: GalleryPost['id'] | GalleryPost,
 		me?: { id: User['id'] } | null | undefined,
 	): Promise<Packed<'GalleryPost'>> {
@@ -29,12 +28,12 @@ export class GalleryPostRepository extends Repository<GalleryPost> {
 			likedCount: post.likedCount,
 			isLiked: meId ? await GalleryLikes.findOneBy({ postId: post.id, userId: meId }).then(x => x != null) : undefined,
 		});
-	}
+	},
 
-	public packMany(
+	packMany(
 		posts: GalleryPost[],
 		me?: { id: User['id'] } | null | undefined,
 	) {
 		return Promise.all(posts.map(x => this.pack(x, me)));
-	}
-}
+	},
+});
