@@ -125,7 +125,7 @@ export default define(meta, paramDef, async (ps, user) => {
 		noteId: note.id,
 		userId: user.id,
 		choice: ps.choice,
-	}).then(x => PollVotes.findOneOrFail(x.identifiers[0]));
+	}).then(x => PollVotes.findOneByOrFail(x.identifiers[0]));
 
 	// Increment votes count
 	const index = ps.choice + 1; // In SQL, array index is 1 based

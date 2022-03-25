@@ -57,7 +57,7 @@ export default define(meta, paramDef, async (ps, user) => {
 		name: ps.name,
 		description: ps.description || null,
 		bannerId: banner ? banner.id : null,
-	} as Channel).then(x => Channels.findOneOrFail(x.identifiers[0]));
+	} as Channel).then(x => Channels.findOneByOrFail(x.identifiers[0]));
 
 	return await Channels.pack(channel, user);
 });

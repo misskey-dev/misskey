@@ -356,7 +356,7 @@ export default abstract class Chart<T extends Schema> {
 				date: date,
 				...(group ? { group: group } : {}),
 				...columns,
-			}).then(x => repository.findOneOrFail(x.identifiers[0])) as RawRecord<T>;
+			}).then(x => repository.findOneByOrFail(x.identifiers[0])) as RawRecord<T>;
 
 			logger.info(`${this.name + (group ? `:${group}` : '')}(${span}): New commit created`);
 

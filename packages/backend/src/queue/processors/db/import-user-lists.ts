@@ -51,7 +51,7 @@ export async function importUserLists(job: Bull.Job<DbUserImportJobData>, done: 
 					createdAt: new Date(),
 					userId: user.id,
 					name: listName,
-				}).then(x => UserLists.findOneOrFail(x.identifiers[0]));
+				}).then(x => UserLists.findOneByOrFail(x.identifiers[0]));
 			}
 
 			let target = isSelfHost(host!) ? await Users.findOne({

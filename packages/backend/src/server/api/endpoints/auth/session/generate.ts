@@ -63,7 +63,7 @@ export default define(meta, paramDef, async (ps) => {
 		createdAt: new Date(),
 		appId: app.id,
 		token: token,
-	}).then(x => AuthSessions.findOneOrFail(x.identifiers[0]));
+	}).then(x => AuthSessions.findOneByOrFail(x.identifiers[0]));
 
 	return {
 		token: doc.token,

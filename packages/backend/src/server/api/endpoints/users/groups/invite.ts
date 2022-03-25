@@ -90,7 +90,7 @@ export default define(meta, paramDef, async (ps, me) => {
 		createdAt: new Date(),
 		userId: user.id,
 		userGroupId: userGroup.id,
-	} as UserGroupInvitation).then(x => UserGroupInvitations.findOneOrFail(x.identifiers[0]));
+	} as UserGroupInvitation).then(x => UserGroupInvitations.findOneByOrFail(x.identifiers[0]));
 
 	// 通知を作成
 	createNotification(user.id, 'groupInvited', {

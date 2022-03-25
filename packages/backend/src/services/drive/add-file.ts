@@ -108,7 +108,7 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 		file.size = size;
 		file.storedInternal = false;
 
-		return await DriveFiles.insert(file).then(x => DriveFiles.findOneOrFail(x.identifiers[0]));
+		return await DriveFiles.insert(file).then(x => DriveFiles.findOneByOrFail(x.identifiers[0]));
 	} else { // use internal storage
 		const accessKey = uuid();
 		const thumbnailAccessKey = 'thumbnail-' + uuid();
@@ -142,7 +142,7 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 		file.md5 = hash;
 		file.size = size;
 
-		return await DriveFiles.insert(file).then(x => DriveFiles.findOneOrFail(x.identifiers[0]));
+		return await DriveFiles.insert(file).then(x => DriveFiles.findOneByOrFail(x.identifiers[0]));
 	}
 }
 
@@ -450,7 +450,7 @@ export async function addFile({
 			file.type = info.type.mime;
 			file.storedInternal = false;
 
-			file = await DriveFiles.insert(file).then(x => DriveFiles.findOneOrFail(x.identifiers[0]));
+			file = await DriveFiles.insert(file).then(x => DriveFiles.findOneByOrFail(x.identifiers[0]));
 		} catch (err) {
 			// duplicate key error (when already registered)
 			if (isDuplicateKeyValueError(err)) {

@@ -58,7 +58,7 @@ export default define(meta, paramDef, async (ps, user) => {
 		name: ps.name,
 		parentId: parent !== null ? parent.id : null,
 		userId: user.id,
-	}).then(x => DriveFolders.findOneOrFail(x.identifiers[0]));
+	}).then(x => DriveFolders.findOneByOrFail(x.identifiers[0]));
 
 	const folderObj = await DriveFolders.pack(folder);
 

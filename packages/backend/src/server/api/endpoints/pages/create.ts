@@ -97,7 +97,7 @@ export default define(meta, paramDef, async (ps, user) => {
 		alignCenter: ps.alignCenter,
 		hideTitleWhenPinned: ps.hideTitleWhenPinned,
 		font: ps.font,
-	})).then(x => Pages.findOneOrFail(x.identifiers[0]));
+	})).then(x => Pages.findOneByOrFail(x.identifiers[0]));
 
 	return await Pages.pack(page);
 });

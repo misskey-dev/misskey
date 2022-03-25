@@ -30,7 +30,7 @@ export async function addRelay(inbox: string) {
 		id: genId(),
 		inbox,
 		status: 'requesting',
-	}).then(x => Relays.findOneOrFail(x.identifiers[0]));
+	}).then(x => Relays.findOneByOrFail(x.identifiers[0]));
 
 	const relayActor = await getRelayActor();
 	const follow = await renderFollowRelay(relay, relayActor);

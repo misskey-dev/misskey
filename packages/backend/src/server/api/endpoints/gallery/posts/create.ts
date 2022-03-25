@@ -64,7 +64,7 @@ export default define(meta, paramDef, async (ps, user) => {
 		userId: user.id,
 		isSensitive: ps.isSensitive,
 		fileIds: files.map(file => file.id),
-	})).then(x => GalleryPosts.findOneOrFail(x.identifiers[0]));
+	})).then(x => GalleryPosts.findOneByOrFail(x.identifiers[0]));
 
 	return await GalleryPosts.pack(post, user);
 });

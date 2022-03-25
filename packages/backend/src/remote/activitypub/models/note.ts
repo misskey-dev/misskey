@@ -347,6 +347,6 @@ export async function extractEmojis(tags: IObject | IObject[], host: string): Pr
 			publicUrl: tag.icon!.url,
 			updatedAt: new Date(),
 			aliases: [],
-		} as Partial<Emoji>).then(x => Emojis.findOneOrFail(x.identifiers[0]));
+		} as Partial<Emoji>).then(x => Emojis.findOneByOrFail(x.identifiers[0]));
 	}));
 }

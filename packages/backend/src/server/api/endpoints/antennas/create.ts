@@ -100,7 +100,7 @@ export default define(meta, paramDef, async (ps, user) => {
 		withReplies: ps.withReplies,
 		withFile: ps.withFile,
 		notify: ps.notify,
-	}).then(x => Antennas.findOneOrFail(x.identifiers[0]));
+	}).then(x => Antennas.findOneByOrFail(x.identifiers[0]));
 
 	publishInternalEvent('antennaCreated', antenna);
 

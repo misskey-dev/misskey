@@ -20,7 +20,7 @@ export async function registerOrFetchInstanceDoc(host: string): Promise<Instance
 			host,
 			caughtAt: new Date(),
 			lastCommunicatedAt: new Date(),
-		}).then(x => Instances.findOneOrFail(x.identifiers[0]));
+		}).then(x => Instances.findOneByOrFail(x.identifiers[0]));
 
 		cache.set(host, i);
 		return i;

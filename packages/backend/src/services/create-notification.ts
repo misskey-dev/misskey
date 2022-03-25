@@ -29,7 +29,7 @@ export async function createNotification(
 		isRead: isMuted,
 		...data,
 	} as Partial<Notification>)
-		.then(x => Notifications.findOneOrFail(x.identifiers[0]));
+		.then(x => Notifications.findOneByOrFail(x.identifiers[0]));
 
 	const packed = await Notifications.pack(notification, {});
 

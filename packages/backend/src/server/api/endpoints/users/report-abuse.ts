@@ -67,7 +67,7 @@ export default define(meta, paramDef, async (ps, me) => {
 		reporterId: me.id,
 		reporterHost: null,
 		comment: ps.comment,
-	}).then(x => AbuseUserReports.findOneOrFail(x.identifiers[0]));
+	}).then(x => AbuseUserReports.findOneByOrFail(x.identifiers[0]));
 
 	// Publish event to moderators
 	setImmediate(async () => {
