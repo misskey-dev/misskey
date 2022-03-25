@@ -841,6 +841,7 @@ oneHour: "1小时"
 oneDay: "1天"
 oneWeek: "1周"
 reflectMayTakeTime: "可能需要一些时间才能体现出效果。"
+failedToFetchAccountInformation: "获取账户信息失败"
 _emailUnavailable:
   used: "已经被使用过"
   format: "无效的格式"
