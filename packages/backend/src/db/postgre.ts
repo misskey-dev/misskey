@@ -201,6 +201,7 @@ export const db = new DataSource({
 	} : false,
 	logging: log,
 	logger: log ? new MyCustomLogger() : undefined,
+	maxQueryExecutionTime: 300,
 	entities: entities,
 	migrations: ['../../migration/*.js'],
 });
