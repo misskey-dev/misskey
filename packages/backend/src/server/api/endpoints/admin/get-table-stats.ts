@@ -1,5 +1,5 @@
+import { db } from '@/db/postgre.js';
 import define from '../../define.js';
-import { getConnection } from 'typeorm';
 
 export const meta = {
 	requireCredential: true,
@@ -28,7 +28,7 @@ export const paramDef = {
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async () => {
 	const sizes = await
-		getConnection().query(`
+		db.query(`
 			SELECT relname AS "table", reltuples as "count", pg_total_relation_size(C.oid) AS "size"
 			FROM pg_class C LEFT JOIN pg_namespace N ON (N.oid = C.relnamespace)
 			WHERE nspname NOT IN ('pg_catalog', 'information_schema')

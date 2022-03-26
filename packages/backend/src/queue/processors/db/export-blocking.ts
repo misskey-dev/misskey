@@ -15,7 +15,7 @@ const logger = queueLogger.createSubLogger('export-blocking');
 export async function exportBlocking(job: Bull.Job<DbUserJobData>, done: any): Promise<void> {
 	logger.info(`Exporting blocking of ${job.data.user.id} ...`);
 
-	const user = await Users.findOne(job.data.user.id);
+	const user = await Users.findOneBy({ id: job.data.user.id });
 	if (user == null) {
 		done();
 		return;
@@ -56,7 +56,7 @@ export async function exportBlocking(job: Bull.Job<DbUserJobData>, done: any): P
 		cursor = blockings[blockings.length - 1].id;
 
 		for (const block of blockings) {
-			const u = await Users.findOne({ id: block.blockeeId });
+			const u = await Users.findOneBy({ id: block.blockeeId });
 			if (u == null) {
 				exportedCount++; continue;
 			}
@@ -75,7 +75,7 @@ export async function exportBlocking(job: Bull.Job<DbUserJobData>, done: any): P
 			exportedCount++;
 		}
 
-		const total = await Blockings.count({
+		const total = await Blockings.countBy({
 			blockerId: user.id,
 		});
 

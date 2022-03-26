@@ -141,7 +141,7 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 			const uri = getApId(note.inReplyTo);
 			if (uri.startsWith(config.url + '/')) {
 				const id = uri.split('/').pop();
-				const talk = await MessagingMessages.findOne(id);
+				const talk = await MessagingMessages.findOneBy({ id });
 				if (talk) {
 					isTalk = true;
 					return null;
@@ -201,7 +201,7 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 
 	// vote
 	if (reply && reply.hasPoll) {
-		const poll = await Polls.findOneOrFail(reply.id);
+		const poll = await Polls.findOneByOrFail({ noteId: reply.id });
 
 		const tryCreateVote = async (name: string, index: number): Promise<null> => {
 			if (poll.expiresAt && Date.now() > new Date(poll.expiresAt).getTime()) {
@@ -306,7 +306,7 @@ export async function extractEmojis(tags: IObject | IObject[], host: string): Pr
 		const name = tag.name!.replace(/^:/, '').replace(/:$/, '');
 		tag.icon = toSingle(tag.icon);
 
-		const exists = await Emojis.findOne({
+		const exists = await Emojis.findOneBy({
 			host,
 			name,
 		});
@@ -327,7 +327,7 @@ export async function extractEmojis(tags: IObject | IObject[], host: string): Pr
 					updatedAt: new Date(),
 				});
 
-				return await Emojis.findOne({
+				return await Emojis.findOneBy({
 					host,
 					name,
 				}) as Emoji;
@@ -347,6 +347,6 @@ export async function extractEmojis(tags: IObject | IObject[], host: string): Pr
 			publicUrl: tag.icon!.url,
 			updatedAt: new Date(),
 			aliases: [],
-		} as Partial<Emoji>).then(x => Emojis.findOneOrFail(x.identifiers[0]));
+		} as Partial<Emoji>).then(x => Emojis.findOneByOrFail(x.identifiers[0]));
 	}));
 }

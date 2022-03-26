@@ -11,7 +11,7 @@ export default async (actor: CacheableRemoteUser, activity: IFlag): Promise<stri
 	const uris = getApIds(activity.object);
 
 	const userIds = uris.filter(uri => uri.startsWith(config.url + '/users/')).map(uri => uri.split('/').pop()!);
-	const users = await Users.find({
+	const users = await Users.findBy({
 		id: In(userIds),
 	});
 	if (users.length < 1) return `skip`;

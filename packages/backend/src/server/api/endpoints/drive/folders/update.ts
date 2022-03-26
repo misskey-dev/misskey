@@ -50,7 +50,7 @@ export const paramDef = {
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, user) => {
 	// Fetch folder
-	const folder = await DriveFolders.findOne({
+	const folder = await DriveFolders.findOneBy({
 		id: ps.folderId,
 		userId: user.id,
 	});
@@ -68,7 +68,7 @@ export default define(meta, paramDef, async (ps, user) => {
 			folder.parentId = null;
 		} else {
 			// Get parent folder
-			const parent = await DriveFolders.findOne({
+			const parent = await DriveFolders.findOneBy({
 				id: ps.parentId,
 				userId: user.id,
 			});
@@ -78,9 +78,9 @@ export default define(meta, paramDef, async (ps, user) => {
 			}
 
 			// Check if the circular reference will occur
-			async function checkCircle(folderId: any): Promise<boolean> {
+			async function checkCircle(folderId: string): Promise<boolean> {
 				// Fetch folder
-				const folder2 = await DriveFolders.findOne({
+				const folder2 = await DriveFolders.findOneBy({
 					id: folderId,
 				});
 

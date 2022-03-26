@@ -64,7 +64,7 @@ export default define(meta, paramDef, async (ps, user) => {
 
 	if (polls.length === 0) return [];
 
-	const notes = await Notes.find({
+	const notes = await Notes.findBy({
 		id: In(polls.map(poll => poll.noteId)),
 	});
 

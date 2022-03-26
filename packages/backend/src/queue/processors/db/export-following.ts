@@ -16,7 +16,7 @@ const logger = queueLogger.createSubLogger('export-following');
 export async function exportFollowing(job: Bull.Job<DbUserJobData>, done: () => void): Promise<void> {
 	logger.info(`Exporting following of ${job.data.user.id} ...`);
 
-	const user = await Users.findOne(job.data.user.id);
+	const user = await Users.findOneBy({ id: job.data.user.id });
 	if (user == null) {
 		done();
 		return;
@@ -36,7 +36,7 @@ export async function exportFollowing(job: Bull.Job<DbUserJobData>, done: () => 
 
 	let cursor: Following['id'] | null = null;
 
-	const mutings = job.data.excludeMuting ? await Mutings.find({
+	const mutings = job.data.excludeMuting ? await Mutings.findBy({
 		muterId: user.id,
 	}) : [];
 
@@ -60,7 +60,7 @@ export async function exportFollowing(job: Bull.Job<DbUserJobData>, done: () => 
 		cursor = followings[followings.length - 1].id;
 
 		for (const following of followings) {
-			const u = await Users.findOne({ id: following.followeeId });
+			const u = await Users.findOneBy({ id: following.followeeId });
 			if (u == null) {
 				continue;
 			}

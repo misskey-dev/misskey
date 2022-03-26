@@ -16,6 +16,6 @@ export default async (actor: CacheableRemoteUser, activity: IBlock): Promise<str
 		return `skip: ブロック解除しようとしているユーザーはローカルユーザーではありません`;
 	}
 
-	await unblock(await Users.findOneOrFail(actor.id), blockee);
+	await unblock(await Users.findOneByOrFail({ id: actor.id }), blockee);
 	return `ok`;
 };

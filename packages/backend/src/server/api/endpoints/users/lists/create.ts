@@ -32,7 +32,7 @@ export default define(meta, paramDef, async (ps, user) => {
 		createdAt: new Date(),
 		userId: user.id,
 		name: ps.name,
-	} as UserList).then(x => UserLists.findOneOrFail(x.identifiers[0]));
+	} as UserList).then(x => UserLists.findOneByOrFail(x.identifiers[0]));
 
 	return await UserLists.pack(userList);
 });

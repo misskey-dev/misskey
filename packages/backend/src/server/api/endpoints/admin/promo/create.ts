@@ -40,7 +40,7 @@ export default define(meta, paramDef, async (ps, user) => {
 		throw e;
 	});
 
-	const exist = await PromoNotes.findOne(note.id);
+	const exist = await PromoNotes.findOneBy({ noteId: note.id });
 
 	if (exist != null) {
 		throw new ApiError(meta.errors.alreadyPromoted);

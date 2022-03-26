@@ -69,7 +69,7 @@ export default define(meta, paramDef, async (ps, user) => {
 	const announcements = await query.take(ps.limit).getMany();
 
 	if (user) {
-		const reads = (await AnnouncementReads.find({
+		const reads = (await AnnouncementReads.findBy({
 			userId: user.id,
 		})).map(x => x.announcementId);
 

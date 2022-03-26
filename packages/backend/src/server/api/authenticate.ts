@@ -21,9 +21,8 @@ export default async (token: string | null): Promise<[CacheableLocalUser | null 
 	}
 
 	if (isNativeToken(token)) {
-		// TODO: typeorm 3.0にしたら .then(x => x || null) は消せる
 		const user = await localUserByNativeTokenCache.fetch(token,
-			() => Users.findOne({ token }).then(x => x || null) as Promise<ILocalUser | null>);
+			() => Users.findOneBy({ token }) as Promise<ILocalUser | null>);
 
 		if (user == null) {
 			throw new AuthenticationError('user not found');
@@ -48,13 +47,13 @@ export default async (token: string | null): Promise<[CacheableLocalUser | null 
 		});
 
 		const user = await localUserByIdCache.fetch(accessToken.userId,
-			() => Users.findOne({
-				id: accessToken.userId, // findOne(accessToken.userId) のように書かないのは後方互換性のため
+			() => Users.findOneBy({
+				id: accessToken.userId,
 			}) as Promise<ILocalUser>);
 
 		if (accessToken.appId) {
 			const app = await appCache.fetch(accessToken.appId,
-				() => Apps.findOneOrFail(accessToken.appId!));
+				() => Apps.findOneByOrFail({ id: accessToken.appId! }));
 
 			return [user, {
 				id: accessToken.id,

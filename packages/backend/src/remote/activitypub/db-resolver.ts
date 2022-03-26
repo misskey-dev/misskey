@@ -24,13 +24,13 @@ export default class DbResolver {
 		const parsed = this.parseUri(value);
 
 		if (parsed.id) {
-			return (await Notes.findOne({
+			return (await Notes.findOneBy({
 				id: parsed.id,
 			})) || null;
 		}
 
 		if (parsed.uri) {
-			return (await Notes.findOne({
+			return (await Notes.findOneBy({
 				uri: parsed.uri,
 			})) || null;
 		}
@@ -42,13 +42,13 @@ export default class DbResolver {
 		const parsed = this.parseUri(value);
 
 		if (parsed.id) {
-			return (await MessagingMessages.findOne({
+			return (await MessagingMessages.findOneBy({
 				id: parsed.id,
 			})) || null;
 		}
 
 		if (parsed.uri) {
-			return (await MessagingMessages.findOne({
+			return (await MessagingMessages.findOneBy({
 				uri: parsed.uri,
 			})) || null;
 		}
@@ -63,13 +63,13 @@ export default class DbResolver {
 		const parsed = this.parseUri(value);
 
 		if (parsed.id) {
-			return (await Users.findOne({
+			return (await Users.findOneBy({
 				id: parsed.id,
 			})) || null;
 		}
 
 		if (parsed.uri) {
-			return (await Users.findOne({
+			return (await Users.findOneBy({
 				uri: parsed.uri,
 			})) || null;
 		}
@@ -85,7 +85,7 @@ export default class DbResolver {
 		key: UserPublickey;
 	} | null> {
 		const key = await publicKeyCache.fetch(keyId, async () => {
-			const key = await UserPublickeys.findOne({
+			const key = await UserPublickeys.findOneBy({
 				keyId,
 			});
 	
@@ -97,7 +97,7 @@ export default class DbResolver {
 		if (key == null) return null;
 
 		return {
-			user: await userByIdCache.fetch(key.userId, () => Users.findOneOrFail(key.userId)) as CacheableRemoteUser,
+			user: await userByIdCache.fetch(key.userId, () => Users.findOneByOrFail({ id: key.userId })) as CacheableRemoteUser,
 			key,
 		};
 	}
@@ -113,7 +113,7 @@ export default class DbResolver {
 
 		if (user == null) return null;
 
-		const key = await publicKeyByUserIdCache.fetch(user.id, () => UserPublickeys.findOne(user.id).then(x => x || null), v => v != null); // TODO: typeorm 3.0 にしたら.then(x => x || null)は消せる
+		const key = await publicKeyByUserIdCache.fetch(user.id, () => UserPublickeys.findOneBy({ userId: user.id }), v => v != null); 
 
 		return {
 			user,

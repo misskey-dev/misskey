@@ -17,12 +17,12 @@ export default async (actor: CacheableRemoteUser, activity: IFollow): Promise<st
 		return `skip: フォロー解除しようとしているユーザーはローカルユーザーではありません`;
 	}
 
-	const req = await FollowRequests.findOne({
+	const req = await FollowRequests.findOneBy({
 		followerId: actor.id,
 		followeeId: followee.id,
 	});
 
-	const following = await Followings.findOne({
+	const following = await Followings.findOneBy({
 		followerId: actor.id,
 		followeeId: followee.id,
 	});

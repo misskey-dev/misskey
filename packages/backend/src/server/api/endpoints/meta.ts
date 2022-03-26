@@ -3,7 +3,7 @@ import define from '../define.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
 import { Ads, Emojis, Users } from '@/models/index.js';
 import { DB_MAX_NOTE_TEXT_LENGTH } from '@/misc/hard-limits.js';
-import { MoreThan } from 'typeorm';
+import { IsNull, MoreThan } from 'typeorm';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 
 export const meta = {
@@ -308,7 +308,7 @@ export default define(meta, paramDef, async (ps, me) => {
 
 	const emojis = await Emojis.find({
 		where: {
-			host: null,
+			host: IsNull(),
 		},
 		order: {
 			category: 'ASC',
@@ -382,8 +382,8 @@ export default define(meta, paramDef, async (ps, me) => {
 			pinnedPages: instance.pinnedPages,
 			pinnedClipId: instance.pinnedClipId,
 			cacheRemoteFiles: instance.cacheRemoteFiles,
-			requireSetup: (await Users.count({
-				host: null,
+			requireSetup: (await Users.countBy({
+				host: IsNull(),
 			})) === 0,
 		} : {}),
 	};

@@ -63,7 +63,7 @@ export default define(meta, paramDef, async (ps) => {
 		title: ps.title,
 		text: ps.text,
 		imageUrl: ps.imageUrl,
-	}).then(x => Announcements.findOneOrFail(x.identifiers[0]));
+	}).then(x => Announcements.findOneByOrFail(x.identifiers[0]));
 
 	return Object.assign({}, announcement, { createdAt: announcement.createdAt.toISOString(), updatedAt: null });
 });

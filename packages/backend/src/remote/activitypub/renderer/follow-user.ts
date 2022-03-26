@@ -7,6 +7,6 @@ import { User } from '@/models/entities/user.js';
  * @param id Follower|Followee ID
  */
 export default async function renderFollowUser(id: User['id']): Promise<any> {
-	const user = await Users.findOneOrFail(id);
+	const user = await Users.findOneByOrFail({ id: id });
 	return Users.isLocalUser(user) ? `${config.url}/users/${user.id}` : user.uri;
 }

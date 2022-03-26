@@ -9,7 +9,7 @@ import { Blockings, Users } from '@/models/index.js';
 const logger = new Logger('blocking/delete');
 
 export default async function(blocker: User, blockee: User) {
-	const blocking = await Blockings.findOne({
+	const blocking = await Blockings.findOneBy({
 		blockerId: blocker.id,
 		blockeeId: blockee.id,
 	});

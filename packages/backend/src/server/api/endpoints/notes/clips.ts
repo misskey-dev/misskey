@@ -43,11 +43,11 @@ export default define(meta, paramDef, async (ps, me) => {
 		throw e;
 	});
 
-	const clipNotes = await ClipNotes.find({
+	const clipNotes = await ClipNotes.findBy({
 		noteId: note.id,
 	});
 
-	const clips = await Clips.find({
+	const clips = await Clips.findBy({
 		id: In(clipNotes.map(x => x.clipId)),
 		isPublic: true,
 	});

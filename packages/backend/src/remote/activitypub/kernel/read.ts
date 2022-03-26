@@ -13,7 +13,7 @@ export const performReadActivity = async (actor: CacheableRemoteUser, activity: 
 
 	const messageId = id.split('/').pop();
 
-	const message = await MessagingMessages.findOne(messageId);
+	const message = await MessagingMessages.findOneBy({ id: messageId });
 	if (message == null) {
 		return `skip: message not found`;
 	}

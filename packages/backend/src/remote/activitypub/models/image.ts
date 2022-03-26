@@ -47,7 +47,7 @@ export async function createImage(actor: CacheableRemoteUser, value: any): Promi
 				uri: image.url,
 			});
 
-			file = await DriveFiles.findOneOrFail(file.id);
+			file = await DriveFiles.findOneByOrFail({ id: file.id });
 		}
 	}
 

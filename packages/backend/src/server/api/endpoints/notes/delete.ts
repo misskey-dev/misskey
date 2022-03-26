@@ -53,5 +53,5 @@ export default define(meta, paramDef, async (ps, user) => {
 	}
 
 	// この操作を行うのが投稿者とは限らない(例えばモデレーター)ため
-	await deleteNote(await Users.findOneOrFail(note.userId), note);
+	await deleteNote(await Users.findOneByOrFail({ id: note.userId }), note);
 });
