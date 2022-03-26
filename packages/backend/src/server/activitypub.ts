@@ -148,7 +148,7 @@ router.get('/users/:user/publickey', async ctx => {
 });
 
 // user
-async function userInfo(ctx: Router.RouterContext, user: User | undefined | null) {
+async function userInfo(ctx: Router.RouterContext, user: User | null) {
 	if (user == null) {
 		ctx.status = 404;
 		return;
