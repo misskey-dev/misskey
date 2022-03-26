@@ -18,6 +18,6 @@ export default async (actor: CacheableRemoteUser, activity: IBlock): Promise<str
 		return `skip: ブロックしようとしているユーザーはローカルユーザーではありません`;
 	}
 
-	await block(await Users.findOneByOrFail({ id: actor.id }), blockee);
+	await block(await Users.findOneByOrFail({ id: actor.id }), await Users.findOneByOrFail({ id: blockee.id }));
 	return `ok`;
 };

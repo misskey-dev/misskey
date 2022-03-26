@@ -48,7 +48,32 @@ export class Cache<T> {
 
 		// Cache MISS
 		const value = await fetcher();
-		this.set(key, value);
+		return value;
+	}
+
+	/**
+	 * キャッシュがあればそれを返し、無ければfetcherを呼び出して結果をキャッシュ&返します
+	 * optional: キャッシュが存在してもvalidatorでfalseを返すとキャッシュ無効扱いにします
+	 */
+	public async fetchMaybe(key: string | null, fetcher: () => Promise<T | undefined>, validator?: (cachedValue: T) => boolean): Promise<T | undefined> {
+		const cachedValue = this.get(key);
+		if (cachedValue !== undefined) {
+			if (validator) {
+				if (validator(cachedValue)) {
+					// Cache HIT
+					return cachedValue;
+				}
+			} else {
+				// Cache HIT
+				return cachedValue;
+			}
+		}
+
+		// Cache MISS
+		const value = await fetcher();
+		if (value !== undefined) {
+			this.set(key, value);
+		}
 		return value;
 	}
 }

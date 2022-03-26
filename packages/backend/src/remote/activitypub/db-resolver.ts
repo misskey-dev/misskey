@@ -1,14 +1,14 @@
 import escapeRegexp from 'escape-regexp';
 import config from '@/config/index.js';
 import { Note } from '@/models/entities/note.js';
-import { User, IRemoteUser, CacheableRemoteUser } from '@/models/entities/user.js';
+import { User, IRemoteUser, CacheableRemoteUser, CacheableUser } from '@/models/entities/user.js';
 import { UserPublickey } from '@/models/entities/user-publickey.js';
 import { MessagingMessage } from '@/models/entities/messaging-message.js';
 import { Notes, Users, UserPublickeys, MessagingMessages } from '@/models/index.js';
 import { IObject, getApId } from './type.js';
 import { resolvePerson } from './models/person.js';
 import { Cache } from '@/misc/cache.js';
-import { userByIdCache } from '@/services/user-cache.js';
+import { uriPersonCache, userByIdCache } from '@/services/user-cache.js';
 
 const publicKeyCache = new Cache<UserPublickey | null>(Infinity);
 const publicKeyByUserIdCache = new Cache<UserPublickey | null>(Infinity);
@@ -59,19 +59,19 @@ export default class DbResolver {
 	/**
 	 * AP Person => Misskey User in DB
 	 */
-	public async getUserFromApId(value: string | IObject): Promise<User | null> {
+	public async getUserFromApId(value: string | IObject): Promise<CacheableUser | null> {
 		const parsed = this.parseUri(value);
 
 		if (parsed.id) {
-			return await Users.findOneBy({
+			return await userByIdCache.fetchMaybe(parsed.id, () => Users.findOneBy({
 				id: parsed.id,
-			});
+			}).then(x => x ?? undefined)) ?? null;
 		}
 
 		if (parsed.uri) {
-			return await Users.findOneBy({
+			return await uriPersonCache.fetch(parsed.uri, () => Users.findOneBy({
 				uri: parsed.uri,
-			});
+			}));
 		}
 
 		return null;
