@@ -198,11 +198,13 @@ MongoDBの時とは違い、findOneでレコードを取得する時に対象レ
 MongoDBは`null`で返してきてたので、その感覚で`if (x === null)`とか書くとバグる。代わりに`if (x == null)`と書いてください
 
 ### Migration作成方法
-```
-npx ts-node ./node_modules/typeorm/cli.js migration:generate -n 変更の名前 -o
+packages/backendで:
+```sh
+npm run typeorm migration:generate -- -d ormconfig.js -o
 ```
 
-作成されたスクリプトは不必要な変更を含むため除去してください。
+- 生成後、ファイルをmigration下に移してください
+- 作成されたスクリプトは不必要な変更を含むため除去してください
 
 ### コネクションには`markRaw`せよ
 **Vueのコンポーネントのdataオプションとして**misskey.jsのコネクションを設定するとき、必ず`markRaw`でラップしてください。インスタンスが不必要にリアクティブ化されることで、misskey.js内の処理で不具合が発生するとともに、パフォーマンス上の問題にも繋がる。なお、Composition APIを使う場合はこの限りではない(リアクティブ化はマニュアルなため)。
