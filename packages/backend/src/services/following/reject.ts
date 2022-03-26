@@ -7,8 +7,17 @@ import { User, ILocalUser, IRemoteUser } from '@/models/entities/user.js';
 import { Users, FollowRequests, Followings } from '@/models/index.js';
 import { decrementFollowing } from './delete.js';
 
-type Local = ILocalUser | { id: User['id']; host: User['host']; uri: User['host'] };
-type Remote = IRemoteUser;
+type Local = ILocalUser | {
+	id: ILocalUser['id'];
+	host: ILocalUser['host'];
+	uri: ILocalUser['uri']
+};
+type Remote = IRemoteUser | {
+	id: IRemoteUser['id'];
+	host: IRemoteUser['host'];
+	uri: IRemoteUser['uri'];
+	inbox: IRemoteUser['inbox'];
+};
 type Both = Local | Remote;
 
 /**
@@ -54,7 +63,7 @@ export async function remoteReject(actor: Remote, follower: Local) {
  * Remove follow request record
  */
 async function removeFollowRequest(followee: Both, follower: Both) {
-	const request = await FollowRequests.findOne({
+	const request = await FollowRequests.findOneBy({
 		followeeId: followee.id,
 		followerId: follower.id,
 	});
@@ -68,7 +77,7 @@ async function removeFollowRequest(followee: Both, follower: Both) {
  * Remove follow record
  */
 async function removeFollow(followee: Both, follower: Both) {
-	const following = await Followings.findOne({
+	const following = await Followings.findOneBy({
 		followeeId: followee.id,
 		followerId: follower.id,
 	});
@@ -83,7 +92,7 @@ async function removeFollow(followee: Both, follower: Both) {
  * Deliver Reject to remote
  */
 async function deliverReject(followee: Local, follower: Remote) {
-	const request = await FollowRequests.findOne({
+	const request = await FollowRequests.findOneBy({
 		followeeId: followee.id,
 		followerId: follower.id,
 	});

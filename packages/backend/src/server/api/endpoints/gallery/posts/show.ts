@@ -32,7 +32,7 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, me) => {
-	const post = await GalleryPosts.findOne({
+	const post = await GalleryPosts.findOneBy({
 		id: ps.postId,
 	});
 

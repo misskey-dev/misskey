@@ -77,8 +77,8 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, user) => {
-	let recipientUser: User | undefined;
-	let recipientGroup: UserGroup | undefined;
+	let recipientUser: User | null;
+	let recipientGroup: UserGroup | null;
 
 	if (ps.userId != null) {
 		// Myself
@@ -93,7 +93,7 @@ export default define(meta, paramDef, async (ps, user) => {
 		});
 
 		// Check blocking
-		const block = await Blockings.findOne({
+		const block = await Blockings.findOneBy({
 			blockerId: recipientUser.id,
 			blockeeId: user.id,
 		});
@@ -102,14 +102,14 @@ export default define(meta, paramDef, async (ps, user) => {
 		}
 	} else if (ps.groupId != null) {
 		// Fetch recipient (group)
-		recipientGroup = await UserGroups.findOne(ps.groupId);
+		recipientGroup = await UserGroups.findOneBy({ id: ps.groupId! });
 
 		if (recipientGroup == null) {
 			throw new ApiError(meta.errors.noSuchGroup);
 		}
 
 		// check joined
-		const joining = await UserGroupJoinings.findOne({
+		const joining = await UserGroupJoinings.findOneBy({
 			userId: user.id,
 			userGroupId: recipientGroup.id,
 		});
@@ -121,7 +121,7 @@ export default define(meta, paramDef, async (ps, user) => {
 
 	let file = null;
 	if (ps.fileId != null) {
-		file = await DriveFiles.findOne({
+		file = await DriveFiles.findOneBy({
 			id: ps.fileId,
 			userId: user.id,
 		});

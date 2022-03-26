@@ -18,7 +18,7 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, user) => {
-	const token = await AccessTokens.findOne(ps.tokenId);
+	const token = await AccessTokens.findOneBy({ id: ps.tokenId });
 
 	if (token) {
 		await AccessTokens.delete({

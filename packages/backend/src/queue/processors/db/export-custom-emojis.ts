@@ -12,13 +12,14 @@ import { Users, Emojis } from '@/models/index.js';
 import {  } from '@/queue/types.js';
 import { downloadUrl } from '@/misc/download-url.js';
 import config from '@/config/index.js';
+import { IsNull } from 'typeorm';
 
 const logger = queueLogger.createSubLogger('export-custom-emojis');
 
 export async function exportCustomEmojis(job: Bull.Job, done: () => void): Promise<void> {
 	logger.info(`Exporting custom emojis ...`);
 
-	const user = await Users.findOne(job.data.user.id);
+	const user = await Users.findOneBy({ id: job.data.user.id });
 	if (user == null) {
 		done();
 		return;
@@ -57,7 +58,7 @@ export async function exportCustomEmojis(job: Bull.Job, done: () => void): Promi
 
 	const customEmojis = await Emojis.find({
 		where: {
-			host: null,
+			host: IsNull(),
 		},
 		order: {
 			id: 'ASC',

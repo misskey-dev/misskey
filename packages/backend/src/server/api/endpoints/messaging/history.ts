@@ -32,11 +32,11 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, user) => {
-	const mute = await Mutings.find({
+	const mute = await Mutings.findBy({
 		muterId: user.id,
 	});
 
-	const groups = ps.group ? await UserGroupJoinings.find({
+	const groups = ps.group ? await UserGroupJoinings.findBy({
 		userId: user.id,
 	}).then(xs => xs.map(x => x.userGroupId)) : [];
 

@@ -2,12 +2,12 @@ import Limiter from 'ratelimiter';
 import { redisClient } from '../../db/redis.js';
 import { IEndpoint } from './endpoints.js';
 import * as Acct from '@/misc/acct.js';
-import { User } from '@/models/entities/user.js';
+import { CacheableLocalUser, User } from '@/models/entities/user.js';
 import Logger from '@/services/logger.js';
 
 const logger = new Logger('limiter');
 
-export const limiter = (endpoint: IEndpoint & { meta: { limit: NonNullable<IEndpoint['meta']['limit']> } }, user: User) => new Promise<void>((ok, reject) => {
+export const limiter = (endpoint: IEndpoint & { meta: { limit: NonNullable<IEndpoint['meta']['limit']> } }, user: CacheableLocalUser) => new Promise<void>((ok, reject) => {
 	const limitation = endpoint.meta.limit;
 
 	const key = Object.prototype.hasOwnProperty.call(limitation, 'key')

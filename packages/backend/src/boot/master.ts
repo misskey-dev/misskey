@@ -6,7 +6,7 @@ import cluster from 'node:cluster';
 import chalk from 'chalk';
 import chalkTemplate from 'chalk-template';
 import * as portscanner from 'portscanner';
-import { getConnection } from 'typeorm';
+import semver from 'semver';
 
 import Logger from '@/services/logger.js';
 import loadConfig from '@/config/load.js';
@@ -14,7 +14,7 @@ import { Config } from '@/config/types.js';
 import { lessThan } from '@/prelude/array.js';
 import { envOption } from '../env.js';
 import { showMachineInfo } from '@/misc/show-machine-info.js';
-import { initDb } from '../db/postgre.js';
+import { db, initDb } from '../db/postgre.js';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -88,10 +88,6 @@ export async function masterMain() {
 	}
 }
 
-const runningNodejsVersion = process.version.slice(1).split('.').map(x => parseInt(x, 10));
-const requiredNodejsVersion = [11, 7, 0];
-const satisfyNodejsVersion = !lessThan(runningNodejsVersion, requiredNodejsVersion);
-
 function showEnvironment(): void {
 	const env = process.env.NODE_ENV;
 	const logger = bootLogger.createSubLogger('env');
@@ -108,10 +104,11 @@ function showEnvironment(): void {
 function showNodejsVersion(): void {
 	const nodejsLogger = bootLogger.createSubLogger('nodejs');
 
-	nodejsLogger.info(`Version ${runningNodejsVersion.join('.')}`);
+	nodejsLogger.info(`Version ${process.version} detected.`);
 
-	if (!satisfyNodejsVersion) {
-		nodejsLogger.error(`Node.js version is less than ${requiredNodejsVersion.join('.')}. Please upgrade it.`, null, true);
+	const minVersion = fs.readFileSync(`${_dirname}/../../../../.node-version`, 'utf-8').trim();
+	if (semver.lt(process.version, minVersion)) {
+		nodejsLogger.error(`At least Node.js ${minVersion} required!`);
 		process.exit(1);
 	}
 }
@@ -146,7 +143,7 @@ async function connectDb(): Promise<void> {
 	try {
 		dbLogger.info('Connecting...');
 		await initDb();
-		const v = await getConnection().query('SHOW server_version').then(x => x[0].server_version);
+		const v = await db.query('SHOW server_version').then(x => x[0].server_version);
 		dbLogger.succ(`Connected: v${v}`);
 	} catch (e) {
 		dbLogger.error('Cannot connect', null, true);

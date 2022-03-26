@@ -26,6 +26,7 @@ import { createTemp } from '@/misc/create-temp.js';
 import { publishMainStream } from '@/services/stream.js';
 import * as Acct from '@/misc/acct.js';
 import { initializeStreamingServer } from './api/streaming.js';
+import { IsNull } from 'typeorm';
 
 export const serverLogger = new Logger('server', 'gray', false);
 
@@ -71,10 +72,11 @@ router.use(wellKnown.routes());
 router.get('/avatar/@:acct', async ctx => {
 	const { username, host } = Acct.parse(ctx.params.acct);
 	const user = await Users.findOne({
-		usernameLower: username.toLowerCase(),
-		host: host === config.host ? null : host,
-		isSuspended: false,
-	}, {
+		where: {
+			usernameLower: username.toLowerCase(),
+			host: (host == null) || (host === config.host) ? IsNull() : host,
+			isSuspended: false,
+		},
 		relations: ['avatar'],
 	});
 
@@ -93,7 +95,7 @@ router.get('/identicon/:x', async ctx => {
 });
 
 router.get('/verify-email/:code', async ctx => {
-	const profile = await UserProfiles.findOne({
+	const profile = await UserProfiles.findOneBy({
 		emailVerifyCode: ctx.params.code,
 	});
 

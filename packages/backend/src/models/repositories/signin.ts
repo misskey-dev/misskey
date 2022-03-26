@@ -1,11 +1,10 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { db } from '@/db/postgre.js';
 import { Signin } from '@/models/entities/signin.js';
 
-@EntityRepository(Signin)
-export class SigninRepository extends Repository<Signin> {
-	public async pack(
+export const SigninRepository = db.getRepository(Signin).extend({
+	async pack(
 		src: Signin,
 	) {
 		return src;
-	}
-}
+	},
+});

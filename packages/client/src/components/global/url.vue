@@ -24,6 +24,14 @@ import { url as local } from '@/config';
 import * as os from '@/os';
 import { useTooltip } from '@/scripts/use-tooltip';
 
+function safeURIDecode(str: string) {
+	try {
+		return decodeURIComponent(str);
+	} catch {
+		return str;
+	}
+}
+
 export default defineComponent({
 	props: {
 		url: {
@@ -54,9 +62,9 @@ export default defineComponent({
 			schema: url.protocol,
 			hostname: decodePunycode(url.hostname),
 			port: url.port,
-			pathname: decodeURIComponent(url.pathname),
-			query: decodeURIComponent(url.search),
-			hash: decodeURIComponent(url.hash),
+			pathname: safeURIDecode(url.pathname),
+			query: safeURIDecode(url.search),
+			hash: safeURIDecode(url.hash),
 			self: self,
 			attr: self ? 'to' : 'href',
 			target: self ? null : '_blank',
