@@ -1,6 +1,7 @@
 import { Users, Followings } from '@/models/index.js';
 import { ILocalUser, IRemoteUser, User } from '@/models/entities/user.js';
 import { deliver } from '@/queue/index.js';
+import { IsNull, Not } from 'typeorm';
 
 //#region types
 interface IRecipe {
@@ -82,15 +83,25 @@ export default class DeliverManager {
 		for (const recipe of this.recipes) {
 			if (isFollowers(recipe)) {
 				// followers deliver
-				const followers = await Followings.findBy({
-					followeeId: this.actor.id,
-				});
+				// TODO: SELECT DISTINCT ON ("followerSharedInbox") "followerSharedInbox" みたいな問い合わせにすればよりパフォーマンス向上できそう
+				// ただ、sharedInboxがnullなリモートユーザーも稀におり、その対応ができなさそう？
+				const followers = await Followings.find({
+					where: {
+						followeeId: this.actor.id,
+						followerHost: Not(IsNull()),
+					},
+					select: {
+						followerSharedInbox: true,
+						followerInbox: true,
+					},
+				}) as {
+					followerSharedInbox: string | null;
+					followerInbox: string;
+				}[];
 
 				for (const following of followers) {
-					if (Followings.isRemoteFollower(following)) {
-						const inbox = following.followerSharedInbox || following.followerInbox;
-						inboxes.add(inbox);
-					}
+					const inbox = following.followerSharedInbox || following.followerInbox;
+					inboxes.add(inbox);
 				}
 			} else if (isDirect(recipe)) {
 				// direct deliver
