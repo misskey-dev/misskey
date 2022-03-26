@@ -71,6 +71,69 @@ async function hideNote(packedNote: Packed<'Note'>, meId: User['id'] | null) {
 	}
 }
 
+async function populatePoll(note: Note, meId: User['id'] | null) {
+	const poll = await Polls.findOneByOrFail({ noteId: note.id });
+	const choices = poll.choices.map(c => ({
+		text: c,
+		votes: poll.votes[poll.choices.indexOf(c)],
+		isVoted: false,
+	}));
+
+	if (meId) {
+		if (poll.multiple) {
+			const votes = await PollVotes.findBy({
+				userId: meId,
+				noteId: note.id,
+			});
+
+			const myChoices = votes.map(v => v.choice);
+			for (const myChoice of myChoices) {
+				choices[myChoice].isVoted = true;
+			}
+		} else {
+			const vote = await PollVotes.findOneBy({
+				userId: meId,
+				noteId: note.id,
+			});
+
+			if (vote) {
+				choices[vote.choice].isVoted = true;
+			}
+		}
+	}
+
+	return {
+		multiple: poll.multiple,
+		expiresAt: poll.expiresAt,
+		choices,
+	};
+}
+
+async function populateMyReaction(note: Note, meId: User['id'], _hint_?: {
+	myReactions: Map<Note['id'], NoteReaction | null>;
+}) {
+	if (_hint_?.myReactions) {
+		const reaction = _hint_.myReactions.get(note.id);
+		if (reaction) {
+			return convertLegacyReaction(reaction.reaction);
+		} else if (reaction === null) {
+			return undefined;
+		}
+		// 実装上抜けがあるだけかもしれないので、「ヒントに含まれてなかったら(=undefinedなら)return」のようにはしない
+	}
+
+	const reaction = await NoteReactions.findOneBy({
+		userId: meId,
+		noteId: note.id,
+	});
+
+	if (reaction) {
+		return convertLegacyReaction(reaction.reaction);
+	}
+
+	return undefined;
+}
+
 export const NoteRepository = db.getRepository(Note).extend({
 	async isVisibleForMe(note: Note, meId: User['id'] | null): Promise<boolean> {
 		// visibility が specified かつ自分が指定されていなかったら非表示
@@ -141,65 +204,6 @@ export const NoteRepository = db.getRepository(Note).extend({
 		const note = typeof src === 'object' ? src : await this.findOneByOrFail({ id: src });
 		const host = note.userHost;
 
-		async function populatePoll() {
-			const poll = await Polls.findOneByOrFail({ noteId: note.id });
-			const choices = poll.choices.map(c => ({
-				text: c,
-				votes: poll.votes[poll.choices.indexOf(c)],
-				isVoted: false,
-			}));
-
-			if (poll.multiple) {
-				const votes = await PollVotes.findBy({
-					userId: meId!,
-					noteId: note.id,
-				});
-
-				const myChoices = votes.map(v => v.choice);
-				for (const myChoice of myChoices) {
-					choices[myChoice].isVoted = true;
-				}
-			} else {
-				const vote = await PollVotes.findOneBy({
-					userId: meId!,
-					noteId: note.id,
-				});
-
-				if (vote) {
-					choices[vote.choice].isVoted = true;
-				}
-			}
-
-			return {
-				multiple: poll.multiple,
-				expiresAt: poll.expiresAt,
-				choices,
-			};
-		}
-
-		async function populateMyReaction() {
-			if (options?._hint_?.myReactions) {
-				const reaction = options._hint_.myReactions.get(note.id);
-				if (reaction) {
-					return convertLegacyReaction(reaction.reaction);
-				} else if (reaction === null) {
-					return undefined;
-				}
-				// 実装上抜けがあるだけかもしれないので、「ヒントに含まれてなかったら(=undefinedなら)return」のようにはしない
-			}
-
-			const reaction = await NoteReactions.findOneBy({
-				userId: meId!,
-				noteId: note.id,
-			});
-
-			if (reaction) {
-				return convertLegacyReaction(reaction.reaction);
-			}
-
-			return undefined;
-		}
-
 		let text = note.text;
 
 		if (note.name && (note.url ?? note.uri)) {
@@ -255,10 +259,10 @@ export const NoteRepository = db.getRepository(Note).extend({
 					_hint_: options?._hint_,
 				}) : undefined,
 
-				poll: note.hasPoll ? populatePoll() : undefined,
+				poll: note.hasPoll ? populatePoll(note, meId) : undefined,
 
 				...(meId ? {
-					myReaction: populateMyReaction(),
+					myReaction: populateMyReaction(note, meId, options?._hint_),
 				} : {}),
 			} : {}),
 		});
