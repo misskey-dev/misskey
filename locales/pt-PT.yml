@@ -1,6 +1,7 @@
 ---
 _lang_: "Português"
 headlineMisskey: "Rede conectada por notas"
+introMisskey: "Bem-vindo! Misskey é um serviço de microblogue descentralizado de código aberto.\nCria \"notas\" e partilha o que te ocorre com todos à tua volta. 📡\nCom \"reações\" podes também expressar logo o que sentes às notas de todos. 👍\nExploremos um novo mundo! 🚀"
 monthAndDay: "{day}/{month}"
 search: "Pesquisar"
 notifications: "Notificações"
