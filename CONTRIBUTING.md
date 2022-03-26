@@ -200,7 +200,7 @@ MongoDBは`null`で返してきてたので、その感覚で`if (x === null)`�
 ### Migration作成方法
 packages/backendで:
 ```sh
-npm run typeorm migration:generate -- -d ormconfig.js -o
+npx typeorm migration:generate -d ormconfig.js -o <migration name>
 ```
 
 - 生成後、ファイルをmigration下に移してください
