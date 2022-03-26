@@ -24,15 +24,15 @@ export default class DbResolver {
 		const parsed = this.parseUri(value);
 
 		if (parsed.id) {
-			return (await Notes.findOneBy({
+			return await Notes.findOneBy({
 				id: parsed.id,
-			})) || null;
+			});
 		}
 
 		if (parsed.uri) {
-			return (await Notes.findOneBy({
+			return await Notes.findOneBy({
 				uri: parsed.uri,
-			})) || null;
+			});
 		}
 
 		return null;
@@ -42,15 +42,15 @@ export default class DbResolver {
 		const parsed = this.parseUri(value);
 
 		if (parsed.id) {
-			return (await MessagingMessages.findOneBy({
+			return await MessagingMessages.findOneBy({
 				id: parsed.id,
-			})) || null;
+			});
 		}
 
 		if (parsed.uri) {
-			return (await MessagingMessages.findOneBy({
+			return await MessagingMessages.findOneBy({
 				uri: parsed.uri,
-			})) || null;
+			});
 		}
 
 		return null;
@@ -63,15 +63,15 @@ export default class DbResolver {
 		const parsed = this.parseUri(value);
 
 		if (parsed.id) {
-			return (await Users.findOneBy({
+			return await Users.findOneBy({
 				id: parsed.id,
-			})) || null;
+			});
 		}
 
 		if (parsed.uri) {
-			return (await Users.findOneBy({
+			return await Users.findOneBy({
 				uri: parsed.uri,
-			})) || null;
+			});
 		}
 
 		return null;
