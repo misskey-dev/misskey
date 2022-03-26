@@ -124,7 +124,16 @@ export default async (user: { id: User['id']; host: User['host']; }, note: Note,
 			const reactee = await Users.findOneBy({ id: note.userId });
 			dm.addDirectRecipe(reactee as IRemoteUser);
 		}
-		dm.addFollowersRecipe();
+
+		if (['public', 'home', 'followers'].includes(note.visibility)) {
+			dm.addFollowersRecipe();
+		} else if (note.visibility === 'specified') {
+			const visibleUsers = await Promise.all(note.visibleUserIds.map(id => Users.findOneBy({ id })));
+			for (const u of visibleUsers.filter(u => u && Users.isRemoteUser(u))) {
+				dm.addDirectRecipe(u as IRemoteUser);
+			}
+		}
+
 		dm.execute();
 	}
 	//#endregion
