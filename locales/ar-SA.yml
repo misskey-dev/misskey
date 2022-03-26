@@ -938,6 +938,11 @@ _wordMute:
   soft: "لينة"
   hard: "قاسية"
   mutedNotes: "الملاحظات المكتومة"
+_instanceMute:
+  instanceMuteDescription: "هذه سيحجب كل ملاحظات الخوادم المحجوبة ومشاركاتها والردود على تلك الملاحظات حتى وإن كانت من خادم غير محجوب."
+  instanceMuteDescription2: "مدخلة لكل سطر"
+  title: "يخفي ملاحظات الخوادم المسرودة."
+  heading: "قائمة الخوادم المحجوبة"
 _theme:
   explore: "استكشف قوالب المظهر"
   install: "تنصيب قالب"
