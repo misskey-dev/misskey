@@ -54,7 +54,7 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, user) => {
-	const blocker = await Users.findOneOrFail(user.id);
+	const blocker = await Users.findOneByOrFail({ id: user.id });
 
 	// 自分自身
 	if (user.id === ps.userId) {
@@ -68,7 +68,7 @@ export default define(meta, paramDef, async (ps, user) => {
 	});
 
 	// Check if already blocking
-	const exist = await Blockings.findOne({
+	const exist = await Blockings.findOneBy({
 		blockerId: blocker.id,
 		blockeeId: blockee.id,
 	});

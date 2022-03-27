@@ -333,4 +333,36 @@ describe('Note', () => {
 			assert.strictEqual(res.status, 400);
 		}));
 	});
+
+	describe('notes/delete', () => {
+		it('delete a reply', async(async () => {
+			const mainNoteRes = await request('/notes/create', {
+				text: 'main post',
+			}, alice);
+			const replyOneRes = await request('/notes/create', {
+				text: 'reply one',
+				replyId: mainNoteRes.body.createdNote.id
+			}, alice);
+			const replyTwoRes = await request('/notes/create', {
+				text: 'reply two',
+				replyId: mainNoteRes.body.createdNote.id
+			}, alice);
+
+			const deleteOneRes = await request('/notes/delete', {
+				noteId: replyOneRes.body.createdNote.id,
+			}, alice);
+
+			assert.strictEqual(deleteOneRes.status, 204);
+			let mainNote = await Notes.findOne({id: mainNoteRes.body.createdNote.id});
+			assert.strictEqual(mainNote.repliesCount, 1);
+
+			const deleteTwoRes = await request('/notes/delete', {
+				noteId: replyTwoRes.body.createdNote.id,
+			}, alice);
+
+			assert.strictEqual(deleteTwoRes.status, 204);
+			mainNote = await Notes.findOne({id: mainNoteRes.body.createdNote.id});
+			assert.strictEqual(mainNote.repliesCount, 0);
+		}));
+	});
 });

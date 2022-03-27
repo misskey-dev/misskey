@@ -26,12 +26,12 @@ export default class extends Channel {
 
 	public async init(params: any) {
 		this.otherpartyId = params.otherparty;
-		this.otherparty = this.otherpartyId ? await Users.findOneOrFail({ id: this.otherpartyId }) : null;
+		this.otherparty = this.otherpartyId ? await Users.findOneByOrFail({ id: this.otherpartyId }) : null;
 		this.groupId = params.group;
 
 		// Check joining
 		if (this.groupId) {
-			const joining = await UserGroupJoinings.findOne({
+			const joining = await UserGroupJoinings.findOneBy({
 				userId: this.user!.id,
 				userGroupId: this.groupId,
 			});
@@ -72,7 +72,7 @@ export default class extends Channel {
 
 					// リモートユーザーからのメッセージだったら既読配信
 					if (Users.isLocalUser(this.user!) && Users.isRemoteUser(this.otherparty!)) {
-						MessagingMessages.findOne(body.id).then(message => {
+						MessagingMessages.findOneBy({ id: body.id }).then(message => {
 							if (message) deliverReadActivity(this.user as ILocalUser, this.otherparty as IRemoteUser, message);
 						});
 					}

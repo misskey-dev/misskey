@@ -13,7 +13,7 @@ const logger = queueLogger.createSubLogger('delete-account');
 export async function deleteAccount(job: Bull.Job<DbUserDeleteJobData>): Promise<string | void> {
 	logger.info(`Deleting account of ${job.data.user.id} ...`);
 
-	const user = await Users.findOne(job.data.user.id);
+	const user = await Users.findOneBy({ id: job.data.user.id });
 	if (user == null) {
 		return;
 	}
@@ -75,7 +75,7 @@ export async function deleteAccount(job: Bull.Job<DbUserDeleteJobData>): Promise
 	}
 
 	{ // Send email notification
-		const profile = await UserProfiles.findOneOrFail(user.id);
+		const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
 		if (profile.email && profile.emailVerified) {
 			sendEmail(profile.email, 'Account deleted',
 				`Your account has been deleted.`,

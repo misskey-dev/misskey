@@ -20,10 +20,10 @@ export default class PerUserFollowingChart extends Chart<typeof schema> {
 			remoteFollowingsCount,
 			remoteFollowersCount,
 		] = await Promise.all([
-			Followings.count({ followerId: group, followeeHost: null }),
-			Followings.count({ followeeId: group, followerHost: null }),
-			Followings.count({ followerId: group, followeeHost: Not(IsNull()) }),
-			Followings.count({ followeeId: group, followerHost: Not(IsNull()) }),
+			Followings.countBy({ followerId: group, followeeHost: IsNull() }),
+			Followings.countBy({ followeeId: group, followerHost: IsNull() }),
+			Followings.countBy({ followerId: group, followeeHost: Not(IsNull()) }),
+			Followings.countBy({ followeeId: group, followerHost: Not(IsNull()) }),
 		]);
 
 		return {

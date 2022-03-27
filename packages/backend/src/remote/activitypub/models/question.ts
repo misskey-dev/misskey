@@ -47,10 +47,10 @@ export async function updateQuestion(value: any) {
 	if (uri.startsWith(config.url + '/')) throw new Error('uri points local');
 
 	//#region このサーバーに既に登録されているか
-	const note = await Notes.findOne({ uri });
+	const note = await Notes.findOneBy({ uri });
 	if (note == null) throw new Error('Question is not registed');
 
-	const poll = await Polls.findOne({ noteId: note.id });
+	const poll = await Polls.findOneBy({ noteId: note.id });
 	if (poll == null) throw new Error('Question is not registed');
 	//#endregion
 

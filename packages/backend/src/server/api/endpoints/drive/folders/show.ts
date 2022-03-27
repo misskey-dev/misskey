@@ -35,7 +35,7 @@ export const paramDef = {
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, user) => {
 	// Get folder
-	const folder = await DriveFolders.findOne({
+	const folder = await DriveFolders.findOneBy({
 		id: ps.folderId,
 		userId: user.id,
 	});

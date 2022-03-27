@@ -13,7 +13,7 @@ import { instanceChart, perUserFollowingChart } from '@/services/chart/index.js'
 const logger = new Logger('following/delete');
 
 export default async function(follower: { id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox']; }, followee: { id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox']; }, silent = false) {
-	const following = await Followings.findOne({
+	const following = await Followings.findOneBy({
 		followerId: follower.id,
 		followeeId: followee.id,
 	});

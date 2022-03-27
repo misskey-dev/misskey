@@ -1,8 +1,9 @@
 import { throttle } from 'throttle-debounce';
 import { i18n } from '@/i18n';
 import { api } from '@/os';
-import { markRaw, watch } from 'vue';
+import { markRaw } from 'vue';
 import { Storage } from '../../pizzax';
+import { notificationTypes } from 'misskey-js';
 
 type ColumnWidget = {
 	name: string;
@@ -10,13 +11,18 @@ type ColumnWidget = {
 	data: Record<string, any>;
 };
 
-type Column = {
+export type Column = {
 	id: string;
 	type: string;
 	name: string | null;
 	width: number;
 	widgets?: ColumnWidget[];
 	active?: boolean;
+	flexible?: boolean;
+	antennaId?: string;
+	listId?: string;
+	includingTypes?: typeof notificationTypes[number][];
+	tl?: 'home' | 'local' | 'social' | 'global';
 };
 
 function copy<T>(x: T): T {

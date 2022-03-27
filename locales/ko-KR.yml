@@ -825,6 +825,7 @@ overridedDeviceKind: "장치 유형"
 smartphone: "스마트폰"
 tablet: "태블릿"
 auto: "자동"
+searchByGoogle: "검색"
 indefinitely: "무기한"
 _emailUnavailable:
   used: "이 메일 주소는 사용중입니다"

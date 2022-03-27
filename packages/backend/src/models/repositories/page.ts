@@ -1,4 +1,4 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { db } from '@/db/postgre.js';
 import { Page } from '@/models/entities/page.js';
 import { Packed } from '@/misc/schema.js';
 import { Users, DriveFiles, PageLikes } from '../index.js';
@@ -6,20 +6,19 @@ import { awaitAll } from '@/prelude/await-all.js';
 import { DriveFile } from '@/models/entities/drive-file.js';
 import { User } from '@/models/entities/user.js';
 
-@EntityRepository(Page)
-export class PageRepository extends Repository<Page> {
-	public async pack(
+export const PageRepository = db.getRepository(Page).extend({
+	async pack(
 		src: Page['id'] | Page,
 		me?: { id: User['id'] } | null | undefined,
 	): Promise<Packed<'Page'>> {
 		const meId = me ? me.id : null;
-		const page = typeof src === 'object' ? src : await this.findOneOrFail(src);
+		const page = typeof src === 'object' ? src : await this.findOneByOrFail({ id: src });
 
 		const attachedFiles: Promise<DriveFile | undefined>[] = [];
 		const collectFile = (xs: any[]) => {
 			for (const x of xs) {
 				if (x.type === 'image') {
-					attachedFiles.push(DriveFiles.findOne({
+					attachedFiles.push(DriveFiles.findOneBy({
 						id: x.fileId,
 						userId: page.userId,
 					}));
@@ -76,14 +75,14 @@ export class PageRepository extends Repository<Page> {
 			eyeCatchingImage: page.eyeCatchingImageId ? await DriveFiles.pack(page.eyeCatchingImageId) : null,
 			attachedFiles: DriveFiles.packMany(await Promise.all(attachedFiles)),
 			likedCount: page.likedCount,
-			isLiked: meId ? await PageLikes.findOne({ pageId: page.id, userId: meId }).then(x => x != null) : undefined,
+			isLiked: meId ? await PageLikes.findOneBy({ pageId: page.id, userId: meId }).then(x => x != null) : undefined,
 		});
-	}
+	},
 
-	public packMany(
+	packMany(
 		pages: Page[],
 		me?: { id: User['id'] } | null | undefined,
 	) {
 		return Promise.all(pages.map(x => this.pack(x, me)));
-	}
-}
+	},
+});

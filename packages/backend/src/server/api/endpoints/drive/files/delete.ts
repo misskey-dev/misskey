@@ -2,7 +2,7 @@ import { deleteFile } from '@/services/drive/delete-file.js';
 import { publishDriveStream } from '@/services/stream.js';
 import define from '../../../define.js';
 import { ApiError } from '../../../error.js';
-import { DriveFiles } from '@/models/index.js';
+import { DriveFiles, Users } from '@/models/index.js';
 
 export const meta = {
 	tags: ['drive'],
@@ -36,13 +36,13 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, user) => {
-	const file = await DriveFiles.findOne(ps.fileId);
+	const file = await DriveFiles.findOneBy({ id: ps.fileId });
 
 	if (file == null) {
 		throw new ApiError(meta.errors.noSuchFile);
 	}
 
-	if (!user.isAdmin && !user.isModerator && (file.userId !== user.id)) {
+	if ((!user.isAdmin && !user.isModerator) && (file.userId !== user.id)) {
 		throw new ApiError(meta.errors.accessDenied);
 	}
 

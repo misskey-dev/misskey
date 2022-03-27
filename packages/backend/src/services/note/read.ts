@@ -68,7 +68,7 @@ export default async function(
 
 		// TODO: ↓まとめてクエリしたい
 
-		NoteUnreads.count({
+		NoteUnreads.countBy({
 			userId: userId,
 			isMentioned: true,
 		}).then(mentionsCount => {
@@ -78,7 +78,7 @@ export default async function(
 			}
 		});
 
-		NoteUnreads.count({
+		NoteUnreads.countBy({
 			userId: userId,
 			isSpecified: true,
 		}).then(specifiedCount => {
@@ -88,7 +88,7 @@ export default async function(
 			}
 		});
 
-		NoteUnreads.count({
+		NoteUnreads.countBy({
 			userId: userId,
 			noteChannelId: Not(IsNull()),
 		}).then(channelNoteCount => {
@@ -113,7 +113,7 @@ export default async function(
 
 		// TODO: まとめてクエリしたい
 		for (const antenna of myAntennas) {
-			const count = await AntennaNotes.count({
+			const count = await AntennaNotes.countBy({
 				antennaId: antenna.id,
 				read: false,
 			});

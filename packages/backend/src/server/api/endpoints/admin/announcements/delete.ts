@@ -27,7 +27,7 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, me) => {
-	const announcement = await Announcements.findOne(ps.id);
+	const announcement = await Announcements.findOneBy({ id: ps.id });
 
 	if (announcement == null) throw new ApiError(meta.errors.noSuchAnnouncement);
 
