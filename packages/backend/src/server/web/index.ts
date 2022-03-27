@@ -10,6 +10,9 @@ import Router from '@koa/router';
 import send from 'koa-send';
 import favicon from 'koa-favicon';
 import views from 'koa-views';
+import { createBullBoard } from '@bull-board/api';
+import { BullAdapter  } from '@bull-board/api/bullAdapter.js';
+import { KoaAdapter } from '@bull-board/koa';
 
 import packFeed from './feed.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
@@ -20,6 +23,8 @@ import * as Acct from '@/misc/acct.js';
 import { getNoteSummary } from '@/misc/get-note-summary.js';
 import { urlPreviewHandler } from './url-preview.js';
 import { manifestHandler } from './manifest.js';
+import { queues } from '@/queue/queues.js';
+import { IsNull } from 'typeorm';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -30,6 +35,37 @@ const assets = `${_dirname}/../../../../../built/_client_dist_/`;
 
 // Init app
 const app = new Koa();
+
+//#region Bull Dashboard
+const bullBoardPath = '/queue';
+
+// Authenticate
+app.use(async (ctx, next) => {
+	if (ctx.path === bullBoardPath || ctx.path.startsWith(bullBoardPath + '/')) {
+		const token = ctx.cookies.get('token');
+		if (token == null) {
+			ctx.status = 401;
+			return;
+		}
+		const user = await Users.findOneBy({ token });
+		if (user == null || !(user.isAdmin || user.isModerator)) {
+			ctx.status = 403;
+			return;
+		}
+	}
+	await next();
+});
+
+const serverAdapter = new KoaAdapter();
+
+createBullBoard({
+	queues: queues.map(q => new BullAdapter(q)),
+	serverAdapter,
+});
+
+serverAdapter.setBasePath(bullBoardPath);
+app.use(serverAdapter.registerPlugin());
+//#endregion
 
 // Init renderer
 app.use(views(_dirname + '/views', {
@@ -133,9 +169,9 @@ router.get('/api.json', async ctx => {
 
 const getFeed = async (acct: string) => {
 	const { username, host } = Acct.parse(acct);
-	const user = await Users.findOne({
+	const user = await Users.findOneBy({
 		usernameLower: username.toLowerCase(),
-		host,
+		host: host ?? IsNull(),
 		isSuspended: false,
 	});
 
@@ -182,14 +218,14 @@ router.get('/@:user.json', async ctx => {
 // User
 router.get(['/@:user', '/@:user/:sub'], async (ctx, next) => {
 	const { username, host } = Acct.parse(ctx.params.user);
-	const user = await Users.findOne({
+	const user = await Users.findOneBy({
 		usernameLower: username.toLowerCase(),
-		host,
+		host: host ?? IsNull(),
 		isSuspended: false,
 	});
 
 	if (user != null) {
-		const profile = await UserProfiles.findOneOrFail(user.id);
+		const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
 		const meta = await fetchMeta();
 		const me = profile.fields
 			? profile.fields
@@ -213,9 +249,9 @@ router.get(['/@:user', '/@:user/:sub'], async (ctx, next) => {
 });
 
 router.get('/users/:user', async ctx => {
-	const user = await Users.findOne({
+	const user = await Users.findOneBy({
 		id: ctx.params.user,
-		host: null,
+		host: IsNull(),
 		isSuspended: false,
 	});
 
@@ -229,11 +265,11 @@ router.get('/users/:user', async ctx => {
 
 // Note
 router.get('/notes/:note', async (ctx, next) => {
-	const note = await Notes.findOne(ctx.params.note);
+	const note = await Notes.findOneBy({ id: ctx.params.note });
 
 	if (note) {
 		const _note = await Notes.pack(note);
-		const profile = await UserProfiles.findOneOrFail(note.userId);
+		const profile = await UserProfiles.findOneByOrFail({ userId: note.userId });
 		const meta = await fetchMeta();
 		await ctx.render('note', {
 			note: _note,
@@ -260,21 +296,21 @@ router.get('/notes/:note', async (ctx, next) => {
 // Page
 router.get('/@:user/pages/:page', async (ctx, next) => {
 	const { username, host } = Acct.parse(ctx.params.user);
-	const user = await Users.findOne({
+	const user = await Users.findOneBy({
 		usernameLower: username.toLowerCase(),
-		host,
+		host: host ?? IsNull(),
 	});
 
 	if (user == null) return;
 
-	const page = await Pages.findOne({
+	const page = await Pages.findOneBy({
 		name: ctx.params.page,
 		userId: user.id,
 	});
 
 	if (page) {
 		const _page = await Pages.pack(page);
-		const profile = await UserProfiles.findOneOrFail(page.userId);
+		const profile = await UserProfiles.findOneByOrFail({ userId: page.userId });
 		const meta = await fetchMeta();
 		await ctx.render('page', {
 			page: _page,
@@ -299,13 +335,13 @@ router.get('/@:user/pages/:page', async (ctx, next) => {
 // Clip
 // TODO: 非publicなclipのハンドリング
 router.get('/clips/:clip', async (ctx, next) => {
-	const clip = await Clips.findOne({
+	const clip = await Clips.findOneBy({
 		id: ctx.params.clip,
 	});
 
 	if (clip) {
 		const _clip = await Clips.pack(clip);
-		const profile = await UserProfiles.findOneOrFail(clip.userId);
+		const profile = await UserProfiles.findOneByOrFail({ userId: clip.userId });
 		const meta = await fetchMeta();
 		await ctx.render('clip', {
 			clip: _clip,
@@ -325,11 +361,11 @@ router.get('/clips/:clip', async (ctx, next) => {
 
 // Gallery post
 router.get('/gallery/:post', async (ctx, next) => {
-	const post = await GalleryPosts.findOne(ctx.params.post);
+	const post = await GalleryPosts.findOneBy({ id: ctx.params.post });
 
 	if (post) {
 		const _post = await GalleryPosts.pack(post);
-		const profile = await UserProfiles.findOneOrFail(post.userId);
+		const profile = await UserProfiles.findOneByOrFail({ userId: post.userId });
 		const meta = await fetchMeta();
 		await ctx.render('gallery-post', {
 			post: _post,
@@ -349,7 +385,7 @@ router.get('/gallery/:post', async (ctx, next) => {
 
 // Channel
 router.get('/channels/:channel', async (ctx, next) => {
-	const channel = await Channels.findOne({
+	const channel = await Channels.findOneBy({
 		id: ctx.params.channel,
 	});
 
@@ -381,8 +417,8 @@ router.get('/_info_card_', async ctx => {
 		version: config.version,
 		host: config.host,
 		meta: meta,
-		originalUsersCount: await Users.count({ host: null }),
-		originalNotesCount: await Notes.count({ userHost: null }),
+		originalUsersCount: await Users.countBy({ host: IsNull() }),
+		originalNotesCount: await Notes.countBy({ userHost: IsNull() }),
 	});
 });
 

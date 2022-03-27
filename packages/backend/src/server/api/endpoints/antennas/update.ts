@@ -69,7 +69,7 @@ export const paramDef = {
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, user) => {
 	// Fetch the antenna
-	const antenna = await Antennas.findOne({
+	const antenna = await Antennas.findOneBy({
 		id: ps.antennaId,
 		userId: user.id,
 	});
@@ -82,7 +82,7 @@ export default define(meta, paramDef, async (ps, user) => {
 	let userGroupJoining;
 
 	if (ps.src === 'list' && ps.userListId) {
-		userList = await UserLists.findOne({
+		userList = await UserLists.findOneBy({
 			id: ps.userListId,
 			userId: user.id,
 		});
@@ -91,7 +91,7 @@ export default define(meta, paramDef, async (ps, user) => {
 			throw new ApiError(meta.errors.noSuchUserList);
 		}
 	} else if (ps.src === 'group' && ps.userGroupId) {
-		userGroupJoining = await UserGroupJoinings.findOne({
+		userGroupJoining = await UserGroupJoinings.findOneBy({
 			userGroupId: ps.userGroupId,
 			userId: user.id,
 		});
@@ -115,7 +115,7 @@ export default define(meta, paramDef, async (ps, user) => {
 		notify: ps.notify,
 	});
 
-	publishInternalEvent('antennaUpdated', await Antennas.findOneOrFail(antenna.id));
+	publishInternalEvent('antennaUpdated', await Antennas.findOneByOrFail({ id: antenna.id }));
 
 	return await Antennas.pack(antenna.id);
 });

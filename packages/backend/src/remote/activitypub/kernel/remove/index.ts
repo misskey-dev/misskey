@@ -1,9 +1,9 @@
-import { IRemoteUser } from '@/models/entities/user.js';
+import { CacheableRemoteUser } from '@/models/entities/user.js';
 import { IRemove } from '../../type.js';
 import { resolveNote } from '../../models/note.js';
 import { removePinned } from '@/services/i/pin.js';
 
-export default async (actor: IRemoteUser, activity: IRemove): Promise<void> => {
+export default async (actor: CacheableRemoteUser, activity: IRemove): Promise<void> => {
 	if ('actor' in activity && actor.uri !== activity.actor) {
 		throw new Error('invalid actor');
 	}

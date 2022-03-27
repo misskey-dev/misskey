@@ -71,7 +71,7 @@ const colors = {
 	purple: '#e300db',
 	orange: '#fe6919',
 	lime: '#bde800',
-	cyan: '#00efef',
+	cyan: '#00e0e0',
 };
 const colorSets = [colors.blue, colors.green, colors.yellow, colors.red, colors.purple];
 const getColor = (i) => {
@@ -127,7 +127,7 @@ export default defineComponent({
 				name: string;
 				type: 'line' | 'area';
 				color?: string;
-				borderDash?: number[];
+				dashed?: boolean;
 				hidden?: boolean;
 				data: {
 					x: number;
@@ -217,7 +217,7 @@ export default defineComponent({
 						pointRadius: 0,
 						borderWidth: props.bar ? 0 : 2,
 						borderColor: x.color ? x.color : getColor(i),
-						borderDash: x.borderDash || [],
+						borderDash: x.dashed ? [5, 5] : [],
 						borderJoinStyle: 'round',
 						borderRadius: props.bar ? 3 : undefined,
 						backgroundColor: props.bar ? (x.color ? x.color : getColor(i)) : alpha(x.color ? x.color : getColor(i), 0.1),
@@ -226,7 +226,7 @@ export default defineComponent({
 								axis: 'y',
 								colors: {
 									0: alpha(x.color ? x.color : getColor(i), 0),
-									[maxes[i]]: alpha(x.color ? x.color : getColor(i), 0.175),
+									[maxes[i]]: alpha(x.color ? x.color : getColor(i), 0.2),
 								},
 							},
 						},
@@ -403,16 +403,19 @@ export default defineComponent({
 					name: 'Pub & Sub',
 					type: 'line',
 					data: format(raw.pubsub),
+					dashed: true,
 					color: colors.cyan,
 				}, {
 					name: 'Pub',
 					type: 'line',
 					data: format(raw.pub),
+					dashed: true,
 					color: colors.purple,
 				}, {
 					name: 'Sub',
 					type: 'line',
 					data: format(raw.sub),
+					dashed: true,
 					color: colors.orange,
 				}],
 			};
@@ -593,7 +596,7 @@ export default defineComponent({
 				series: [{
 					name: 'All',
 					type: 'line',
-					borderDash: [5, 5],
+					dashed: true,
 					data: format(
 						sum(
 							raw.local.incSize,
@@ -628,7 +631,7 @@ export default defineComponent({
 				series: [{
 					name: 'All',
 					type: 'line',
-					borderDash: [5, 5],
+					dashed: true,
 					data: format(
 						sum(
 							raw.local.incCount,
@@ -795,6 +798,36 @@ export default defineComponent({
 			};
 		};
 
+		const fetchPerUserFollowingChart = async (): Promise<typeof data> => {
+			const raw = await os.api('charts/user/following', { userId: props.args.user.id, limit: props.limit, span: props.span });
+			return {
+				series: [{
+					name: 'Local',
+					type: 'area',
+					data: format(raw.local.followings.total),
+				}, {
+					name: 'Remote',
+					type: 'area',
+					data: format(raw.remote.followings.total),
+				}],
+			};
+		};
+
+		const fetchPerUserFollowersChart = async (): Promise<typeof data> => {
+			const raw = await os.api('charts/user/following', { userId: props.args.user.id, limit: props.limit, span: props.span });
+			return {
+				series: [{
+					name: 'Local',
+					type: 'area',
+					data: format(raw.local.followers.total),
+				}, {
+					name: 'Remote',
+					type: 'area',
+					data: format(raw.remote.followers.total),
+				}],
+			};
+		};
+
 		const fetchPerUserDriveChart = async (): Promise<typeof data> => {
 			const raw = await os.api('charts/user/drive', { userId: props.args.user.id, limit: props.limit, span: props.span });
 			return {
@@ -838,6 +871,8 @@ export default defineComponent({
 					case 'instance-drive-files-total': return fetchInstanceDriveFilesChart(true);
 
 					case 'per-user-notes': return fetchPerUserNotesChart();
+					case 'per-user-following': return fetchPerUserFollowingChart();
+					case 'per-user-followers': return fetchPerUserFollowersChart();
 					case 'per-user-drive': return fetchPerUserDriveChart();
 				}
 			};

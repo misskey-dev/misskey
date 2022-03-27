@@ -1,16 +1,15 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { db } from '@/db/postgre.js';
 import { UserGroup } from '@/models/entities/user-group.js';
 import { UserGroupJoinings } from '../index.js';
 import { Packed } from '@/misc/schema.js';
 
-@EntityRepository(UserGroup)
-export class UserGroupRepository extends Repository<UserGroup> {
-	public async pack(
+export const UserGroupRepository = db.getRepository(UserGroup).extend({
+	async pack(
 		src: UserGroup['id'] | UserGroup,
 	): Promise<Packed<'UserGroup'>> {
-		const userGroup = typeof src === 'object' ? src : await this.findOneOrFail(src);
+		const userGroup = typeof src === 'object' ? src : await this.findOneByOrFail({ id: src });
 
-		const users = await UserGroupJoinings.find({
+		const users = await UserGroupJoinings.findBy({
 			userGroupId: userGroup.id,
 		});
 
@@ -21,5 +20,5 @@ export class UserGroupRepository extends Repository<UserGroup> {
 			ownerId: userGroup.userId,
 			userIds: users.map(x => x.userId),
 		};
-	}
-}
+	},
+});

@@ -11,14 +11,14 @@ export async function insertNoteUnread(userId: User['id'], note: Note, params: {
 }) {
 	//#region ミュートしているなら無視
 	// TODO: 現在の仕様ではChannelにミュートは適用されないのでよしなにケアする
-	const mute = await Mutings.find({
+	const mute = await Mutings.findBy({
 		muterId: userId,
 	});
 	if (mute.map(m => m.muteeId).includes(note.userId)) return;
 	//#endregion
 
 	// スレッドミュート
-	const threadMute = await NoteThreadMutings.findOne({
+	const threadMute = await NoteThreadMutings.findOneBy({
 		userId: userId,
 		threadId: note.threadId || note.id,
 	});
@@ -38,7 +38,7 @@ export async function insertNoteUnread(userId: User['id'], note: Note, params: {
 
 	// 2秒経っても既読にならなかったら「未読の投稿がありますよ」イベントを発行する
 	setTimeout(async () => {
-		const exist = await NoteUnreads.findOne(unread.id);
+		const exist = await NoteUnreads.findOneBy({ id: unread.id });
 
 		if (exist == null) return;
 

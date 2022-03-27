@@ -1,6 +1,6 @@
 import Resolver from '../../resolver.js';
 import post from '@/services/note/create.js';
-import { IRemoteUser } from '@/models/entities/user.js';
+import { CacheableRemoteUser } from '@/models/entities/user.js';
 import { IAnnounce, getApId } from '../../type.js';
 import { fetchNote, resolveNote } from '../../models/note.js';
 import { apLogger } from '../../logger.js';
@@ -15,10 +15,9 @@ const logger = apLogger;
 /**
  * アナウンスアクティビティを捌きます
  */
-export default async function(resolver: Resolver, actor: IRemoteUser, activity: IAnnounce, targetUri: string): Promise<void> {
+export default async function(resolver: Resolver, actor: CacheableRemoteUser, activity: IAnnounce, targetUri: string): Promise<void> {
 	const uri = getApId(activity);
 
-	// アナウンサーが凍結されていたらスキップ
 	if (actor.isSuspended) {
 		return;
 	}

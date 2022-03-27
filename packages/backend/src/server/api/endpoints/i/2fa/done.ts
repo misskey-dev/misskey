@@ -20,7 +20,7 @@ export const paramDef = {
 export default define(meta, paramDef, async (ps, user) => {
 	const token = ps.token.replace(/\s/g, '');
 
-	const profile = await UserProfiles.findOneOrFail(user.id);
+	const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
 
 	if (profile.twoFactorTempSecret == null) {
 		throw new Error('二段階認証の設定が開始されていません');

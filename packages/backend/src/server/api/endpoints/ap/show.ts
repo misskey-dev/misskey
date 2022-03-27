@@ -97,7 +97,7 @@ async function fetchAny(uri: string): Promise<SchemaType<typeof meta['res']> | n
 		const type = parts.pop();
 
 		if (type === 'notes') {
-			const note = await Notes.findOne(id);
+			const note = await Notes.findOneBy({ id });
 
 			if (note) {
 				return {
@@ -106,7 +106,7 @@ async function fetchAny(uri: string): Promise<SchemaType<typeof meta['res']> | n
 				};
 			}
 		} else if (type === 'users') {
-			const user = await Users.findOne(id);
+			const user = await Users.findOneBy({ id });
 
 			if (user) {
 				return {
@@ -124,8 +124,8 @@ async function fetchAny(uri: string): Promise<SchemaType<typeof meta['res']> | n
 	// URI(AP Object id)としてDB検索
 	{
 		const [user, note] = await Promise.all([
-			Users.findOne({ uri: uri }),
-			Notes.findOne({ uri: uri }),
+			Users.findOneBy({ uri: uri }),
+			Notes.findOneBy({ uri: uri }),
 		]);
 
 		const packed = await mergePack(user, note);
@@ -145,7 +145,7 @@ async function fetchAny(uri: string): Promise<SchemaType<typeof meta['res']> | n
 			const type = parts.pop();
 
 			if (type === 'notes') {
-				const note = await Notes.findOne(id);
+				const note = await Notes.findOneBy({ id });
 
 				if (note) {
 					return {
@@ -154,7 +154,7 @@ async function fetchAny(uri: string): Promise<SchemaType<typeof meta['res']> | n
 					};
 				}
 			} else if (type === 'users') {
-				const user = await Users.findOne(id);
+				const user = await Users.findOneBy({ id });
 
 				if (user) {
 					return {
@@ -166,8 +166,8 @@ async function fetchAny(uri: string): Promise<SchemaType<typeof meta['res']> | n
 		}
 
 		const [user, note] = await Promise.all([
-			Users.findOne({ uri: object.id }),
-			Notes.findOne({ uri: object.id }),
+			Users.findOneBy({ uri: object.id }),
+			Notes.findOneBy({ uri: object.id }),
 		]);
 
 		const packed = await mergePack(user, note);

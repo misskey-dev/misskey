@@ -28,7 +28,7 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, user) => {
-	const userGroup = await UserGroups.findOne({
+	const userGroup = await UserGroups.findOneBy({
 		id: ps.groupId,
 		userId: user.id,
 	});

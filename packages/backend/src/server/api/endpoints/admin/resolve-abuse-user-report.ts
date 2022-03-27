@@ -23,7 +23,7 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, me) => {
-	const report = await AbuseUserReports.findOne(ps.reportId);
+	const report = await AbuseUserReports.findOneByOrFail({ id: ps.reportId });
 
 	if (report == null) {
 		throw new Error('report not found');
@@ -31,7 +31,7 @@ export default define(meta, paramDef, async (ps, me) => {
 
 	if (ps.forward && report.targetUserHost != null) {
 		const actor = await getInstanceActor();
-		const targetUser = await Users.findOneOrFail(report.targetUserId);
+		const targetUser = await Users.findOneByOrFail({ id: report.targetUserId });
 
 		deliver(actor, renderActivity(renderFlag(actor, [targetUser.uri!], report.comment)), targetUser.inbox);
 	}

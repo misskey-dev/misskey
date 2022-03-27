@@ -2,7 +2,7 @@ import define from '../../define.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
 import { ApiError } from '../../error.js';
 import { makePaginationQuery } from '../../common/make-pagination-query.js';
-import { Notes } from '@/models/index.js';
+import { Notes, Users } from '@/models/index.js';
 import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
 import { generateMutedInstanceQuery } from '../../common/generate-muted-instance-query.js';
 import { activeUsersChart } from '@/services/chart/index.js';

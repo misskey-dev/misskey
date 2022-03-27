@@ -40,7 +40,7 @@ export const paramDef = {
 export default define(meta, paramDef, async (ps, user) => {
 	let banner = null;
 	if (ps.bannerId != null) {
-		banner = await DriveFiles.findOne({
+		banner = await DriveFiles.findOneBy({
 			id: ps.bannerId,
 			userId: user.id,
 		});
@@ -57,7 +57,7 @@ export default define(meta, paramDef, async (ps, user) => {
 		name: ps.name,
 		description: ps.description || null,
 		bannerId: banner ? banner.id : null,
-	} as Channel).then(x => Channels.findOneOrFail(x.identifiers[0]));
+	} as Channel).then(x => Channels.findOneByOrFail(x.identifiers[0]));
 
 	return await Channels.pack(channel, user);
 });

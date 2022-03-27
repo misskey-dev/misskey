@@ -15,13 +15,13 @@ const logger = queueLogger.createSubLogger('export-user-lists');
 export async function exportUserLists(job: Bull.Job<DbUserJobData>, done: any): Promise<void> {
 	logger.info(`Exporting user lists of ${job.data.user.id} ...`);
 
-	const user = await Users.findOne(job.data.user.id);
+	const user = await Users.findOneBy({ id: job.data.user.id });
 	if (user == null) {
 		done();
 		return;
 	}
 
-	const lists = await UserLists.find({
+	const lists = await UserLists.findBy({
 		userId: user.id,
 	});
 
@@ -38,8 +38,8 @@ export async function exportUserLists(job: Bull.Job<DbUserJobData>, done: any): 
 	const stream = fs.createWriteStream(path, { flags: 'a' });
 
 	for (const list of lists) {
-		const joinings = await UserListJoinings.find({ userListId: list.id });
-		const users = await Users.find({
+		const joinings = await UserListJoinings.findBy({ userListId: list.id });
+		const users = await Users.findBy({
 			id: In(joinings.map(j => j.userId)),
 		});
 

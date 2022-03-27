@@ -16,7 +16,7 @@ export default async function(followee: { id: User['id']; host: User['host']; ur
 		}
 	}
 
-	const request = await FollowRequests.findOne({
+	const request = await FollowRequests.findOneBy({
 		followeeId: followee.id,
 		followerId: follower.id,
 	});

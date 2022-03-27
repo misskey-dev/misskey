@@ -1,16 +1,15 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { db } from '@/db/postgre.js';
 import { UserList } from '@/models/entities/user-list.js';
 import { UserListJoinings } from '../index.js';
 import { Packed } from '@/misc/schema.js';
 
-@EntityRepository(UserList)
-export class UserListRepository extends Repository<UserList> {
-	public async pack(
+export const UserListRepository = db.getRepository(UserList).extend({
+	async pack(
 		src: UserList['id'] | UserList,
 	): Promise<Packed<'UserList'>> {
-		const userList = typeof src === 'object' ? src : await this.findOneOrFail(src);
+		const userList = typeof src === 'object' ? src : await this.findOneByOrFail({ id: src });
 
-		const users = await UserListJoinings.find({
+		const users = await UserListJoinings.findBy({
 			userListId: userList.id,
 		});
 
@@ -20,5 +19,5 @@ export class UserListRepository extends Repository<UserList> {
 			name: userList.name,
 			userIds: users.map(x => x.userId),
 		};
-	}
-}
+	},
+});
