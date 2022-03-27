@@ -47,7 +47,7 @@ export async function pushNotification<T extends keyof pushNotificationsTypes>(u
 		meta.swPrivateKey);
 
 	// Fetch
-	const subscriptions = await SwSubscriptions.find({
+	const subscriptions = await SwSubscriptions.findBy({
 		userId: userId,
 	});
 

@@ -45,7 +45,7 @@ export const paramDef = {
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, user) => {
 	const files = (await Promise.all(ps.fileIds.map(fileId =>
-		DriveFiles.findOne({
+		DriveFiles.findOneBy({
 			id: fileId,
 			userId: user.id,
 		})
@@ -66,7 +66,7 @@ export default define(meta, paramDef, async (ps, user) => {
 		fileIds: files.map(file => file.id),
 	});
 
-	const post = await GalleryPosts.findOneOrFail(ps.postId);
+	const post = await GalleryPosts.findOneByOrFail({ id: ps.postId });
 
 	return await GalleryPosts.pack(post, user);
 });

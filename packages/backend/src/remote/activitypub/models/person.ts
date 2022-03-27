@@ -15,7 +15,7 @@ import { apLogger } from '../logger.js';
 import { Note } from '@/models/entities/note.js';
 import { updateUsertags } from '@/services/update-hashtag.js';
 import { Users, Instances, DriveFiles, Followings, UserProfiles, UserPublickeys } from '@/models/index.js';
-import { User, IRemoteUser } from '@/models/entities/user.js';
+import { User, IRemoteUser, CacheableUser } from '@/models/entities/user.js';
 import { Emoji } from '@/models/entities/emoji.js';
 import { UserNotePining } from '@/models/entities/user-note-pining.js';
 import { genId } from '@/misc/gen-id.js';
@@ -24,12 +24,14 @@ import { UserPublickey } from '@/models/entities/user-publickey.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
 import { toPuny } from '@/misc/convert-host.js';
 import { UserProfile } from '@/models/entities/user-profile.js';
-import { getConnection } from 'typeorm';
 import { toArray } from '@/prelude/array.js';
 import { fetchInstanceMetadata } from '@/services/fetch-instance-metadata.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { truncate } from '@/misc/truncate.js';
 import { StatusError } from '@/misc/fetch.js';
+import { uriPersonCache } from '@/services/user-cache.js';
+import { publishInternalEvent } from '@/services/stream.js';
+import { db } from '@/db/postgre.js';
 
 const logger = apLogger;
 
@@ -91,19 +93,25 @@ function validateActor(x: IObject, uri: string): IActor {
  *
  * Misskeyに対象のPersonが登録されていればそれを返します。
  */
-export async function fetchPerson(uri: string, resolver?: Resolver): Promise<User | null> {
+export async function fetchPerson(uri: string, resolver?: Resolver): Promise<CacheableUser | null> {
 	if (typeof uri !== 'string') throw new Error('uri is not string');
+
+	const cached = uriPersonCache.get(uri);
+	if (cached) return cached;
 
 	// URIがこのサーバーを指しているならデータベースからフェッチ
 	if (uri.startsWith(config.url + '/')) {
 		const id = uri.split('/').pop();
-		return await Users.findOne(id).then(x => x || null);
+		const u = await Users.findOneBy({ id });
+		if (u) uriPersonCache.set(uri, u);
+		return u;
 	}
 
 	//#region このサーバーに既に登録されていたらそれを返す
-	const exist = await Users.findOne({ uri });
+	const exist = await Users.findOneBy({ uri });
 
 	if (exist) {
+		uriPersonCache.set(uri, exist);
 		return exist;
 	}
 	//#endregion
@@ -143,7 +151,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 	let user: IRemoteUser;
 	try {
 		// Start transaction
-		await getConnection().transaction(async transactionalEntityManager => {
+		await db.transaction(async transactionalEntityManager => {
 			user = await transactionalEntityManager.save(new User({
 				id: genId(),
 				avatarId: null,
@@ -189,7 +197,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 		// duplicate key error
 		if (isDuplicateKeyValueError(e)) {
 			// /users/@a => /users/:id のように入力がaliasなときにエラーになることがあるのを対応
-			const u = await Users.findOne({
+			const u = await Users.findOneBy({
 				uri: person.id,
 			});
 
@@ -272,7 +280,7 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 	}
 
 	//#region このサーバーに既に登録されているか
-	const exist = await Users.findOne({ uri }) as IRemoteUser;
+	const exist = await Users.findOneBy({ uri }) as IRemoteUser;
 
 	if (exist == null) {
 		return;
@@ -352,6 +360,8 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 		location: person['vcard:Address'] || null,
 	});
 
+	publishInternalEvent('remoteUserUpdated', { id: exist.id });
+
 	// ハッシュタグ更新
 	updateUsertags(exist, tags);
 
@@ -371,7 +381,7 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
  * Misskeyに対象のPersonが登録されていればそれを返し、そうでなければ
  * リモートサーバーからフェッチしてMisskeyに登録しそれを返します。
  */
-export async function resolvePerson(uri: string, resolver?: Resolver): Promise<User> {
+export async function resolvePerson(uri: string, resolver?: Resolver): Promise<CacheableUser> {
 	if (typeof uri !== 'string') throw new Error('uri is not string');
 
 	//#region このサーバーに既に登録されていたらそれを返す
@@ -441,7 +451,7 @@ export function analyzeAttachments(attachments: IObject | IObject[] | undefined)
 }
 
 export async function updateFeatured(userId: User['id']) {
-	const user = await Users.findOneOrFail(userId);
+	const user = await Users.findOneByOrFail({ id: userId });
 	if (!Users.isRemoteUser(user)) return;
 	if (!user.featured) return;
 
@@ -464,7 +474,7 @@ export async function updateFeatured(userId: User['id']) {
 		.slice(0, 5)
 		.map(item => limit(() => resolveNote(item, resolver))));
 
-	await getConnection().transaction(async transactionalEntityManager => {
+	await db.transaction(async transactionalEntityManager => {
 		await transactionalEntityManager.delete(UserNotePining, { userId: user.id });
 
 		// とりあえずidを別の時間で生成して順番を維持

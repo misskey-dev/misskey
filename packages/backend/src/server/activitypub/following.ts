@@ -9,9 +9,8 @@ import renderOrderedCollectionPage from '@/remote/activitypub/renderer/ordered-c
 import renderFollowUser from '@/remote/activitypub/renderer/follow-user.js';
 import { setResponseType } from '../activitypub.js';
 import { Users, Followings, UserProfiles } from '@/models/index.js';
-import { LessThan, FindConditions } from 'typeorm';
+import { LessThan, IsNull, FindOptionsWhere } from 'typeorm';
 import { Following } from '@/models/entities/following.js';
-import { userCache } from './cache.js';
 
 export default async (ctx: Router.RouterContext) => {
 	const userId = ctx.params.user;
@@ -29,11 +28,10 @@ export default async (ctx: Router.RouterContext) => {
 		return;
 	}
 
-	// TODO: typeorm 3.0にしたら .then(x => x || null) は消せる
-	const user = await userCache.fetch(userId, () => Users.findOne({
+	const user = await Users.findOneBy({
 		id: userId,
-		host: null,
-	}).then(x => x || null));
+		host: IsNull(),
+	});
 
 	if (user == null) {
 		ctx.status = 404;
@@ -41,7 +39,7 @@ export default async (ctx: Router.RouterContext) => {
 	}
 
 	//#region Check ff visibility
-	const profile = await UserProfiles.findOneOrFail(user.id);
+	const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
 
 	if (profile.ffVisibility === 'private') {
 		ctx.status = 403;
@@ -60,7 +58,7 @@ export default async (ctx: Router.RouterContext) => {
 	if (page) {
 		const query = {
 			followerId: user.id,
-		} as FindConditions<Following>;
+		} as FindOptionsWhere<Following>;
 
 		// カーソルが指定されている場合
 		if (cursor) {

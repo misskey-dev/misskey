@@ -56,7 +56,7 @@ export default define(meta, paramDef, async (ps, user) => {
 	});
 
 	// Check not muting
-	const exist = await Mutings.findOne({
+	const exist = await Mutings.findOneBy({
 		muterId: muter.id,
 		muteeId: mutee.id,
 	});

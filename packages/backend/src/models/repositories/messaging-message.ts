@@ -1,12 +1,11 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { db } from '@/db/postgre.js';
 import { MessagingMessage } from '@/models/entities/messaging-message.js';
 import { Users, DriveFiles, UserGroups } from '../index.js';
 import { Packed } from '@/misc/schema.js';
 import { User } from '@/models/entities/user.js';
 
-@EntityRepository(MessagingMessage)
-export class MessagingMessageRepository extends Repository<MessagingMessage> {
-	public async pack(
+export const MessagingMessageRepository = db.getRepository(MessagingMessage).extend({
+	async pack(
 		src: MessagingMessage['id'] | MessagingMessage,
 		me?: { id: User['id'] } | null | undefined,
 		options?: {
@@ -19,7 +18,7 @@ export class MessagingMessageRepository extends Repository<MessagingMessage> {
 			populateGroup: true,
 		};
 
-		const message = typeof src === 'object' ? src : await this.findOneOrFail(src);
+		const message = typeof src === 'object' ? src : await this.findOneByOrFail({ id: src });
 
 		return {
 			id: message.id,
@@ -36,5 +35,5 @@ export class MessagingMessageRepository extends Repository<MessagingMessage> {
 			isRead: message.isRead,
 			reads: message.reads,
 		};
-	}
-}
+	},
+});

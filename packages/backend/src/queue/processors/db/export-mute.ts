@@ -15,7 +15,7 @@ const logger = queueLogger.createSubLogger('export-mute');
 export async function exportMute(job: Bull.Job<DbUserJobData>, done: any): Promise<void> {
 	logger.info(`Exporting mute of ${job.data.user.id} ...`);
 
-	const user = await Users.findOne(job.data.user.id);
+	const user = await Users.findOneBy({ id: job.data.user.id });
 	if (user == null) {
 		done();
 		return;
@@ -57,7 +57,7 @@ export async function exportMute(job: Bull.Job<DbUserJobData>, done: any): Promi
 		cursor = mutes[mutes.length - 1].id;
 
 		for (const mute of mutes) {
-			const u = await Users.findOne({ id: mute.muteeId });
+			const u = await Users.findOneBy({ id: mute.muteeId });
 			if (u == null) {
 				exportedCount++; continue;
 			}
@@ -76,7 +76,7 @@ export async function exportMute(job: Bull.Job<DbUserJobData>, done: any): Promi
 			exportedCount++;
 		}
 
-		const total = await Mutings.count({
+		const total = await Mutings.countBy({
 			muterId: user.id,
 		});
 

@@ -33,7 +33,7 @@ export default define(meta, paramDef, async (ps, user, token) => {
 	const isSecure = user != null && token == null;
 
 	// Lookup app
-	const ap = await Apps.findOne(ps.appId);
+	const ap = await Apps.findOneBy({ id: ps.appId });
 
 	if (ap == null) {
 		throw new ApiError(meta.errors.noSuchApp);

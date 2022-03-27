@@ -95,7 +95,7 @@ export default defineComponent({
 
 	methods: {
 		async init() {
-			const meta = await os.api('meta', { detail: true });
+			const meta = await os.api('admin/meta');
 			this.enableEmail = meta.enableEmail;
 			this.email = meta.email;
 			this.smtpSecure = meta.smtpSecure;

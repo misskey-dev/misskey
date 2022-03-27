@@ -1,4 +1,4 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { db } from '@/db/postgre.js';
 import { Users } from '../index.js';
 import { Following } from '@/models/entities/following.js';
 import { awaitAll } from '@/prelude/await-all.js';
@@ -29,25 +29,24 @@ type RemoteFolloweeFollowing = Following & {
 	followeeSharedInbox: string;
 };
 
-@EntityRepository(Following)
-export class FollowingRepository extends Repository<Following> {
-	public isLocalFollower(following: Following): following is LocalFollowerFollowing {
+export const FollowingRepository = db.getRepository(Following).extend({
+	isLocalFollower(following: Following): following is LocalFollowerFollowing {
 		return following.followerHost == null;
-	}
+	},
 
-	public isRemoteFollower(following: Following): following is RemoteFollowerFollowing {
+	isRemoteFollower(following: Following): following is RemoteFollowerFollowing {
 		return following.followerHost != null;
-	}
+	},
 
-	public isLocalFollowee(following: Following): following is LocalFolloweeFollowing {
+	isLocalFollowee(following: Following): following is LocalFolloweeFollowing {
 		return following.followeeHost == null;
-	}
+	},
 
-	public isRemoteFollowee(following: Following): following is RemoteFolloweeFollowing {
+	isRemoteFollowee(following: Following): following is RemoteFolloweeFollowing {
 		return following.followeeHost != null;
-	}
+	},
 
-	public async pack(
+	async pack(
 		src: Following['id'] | Following,
 		me?: { id: User['id'] } | null | undefined,
 		opts?: {
@@ -55,7 +54,7 @@ export class FollowingRepository extends Repository<Following> {
 			populateFollower?: boolean;
 		}
 	): Promise<Packed<'Following'>> {
-		const following = typeof src === 'object' ? src : await this.findOneOrFail(src);
+		const following = typeof src === 'object' ? src : await this.findOneByOrFail({ id: src });
 
 		if (opts == null) opts = {};
 
@@ -71,9 +70,9 @@ export class FollowingRepository extends Repository<Following> {
 				detail: true,
 			}) : undefined,
 		});
-	}
+	},
 
-	public packMany(
+	packMany(
 		followings: any[],
 		me?: { id: User['id'] } | null | undefined,
 		opts?: {
@@ -82,5 +81,5 @@ export class FollowingRepository extends Repository<Following> {
 		}
 	) {
 		return Promise.all(followings.map(x => this.pack(x, me, opts)));
-	}
-}
+	},
+});

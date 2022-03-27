@@ -36,7 +36,7 @@ export const paramDef = {
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, user) => {
 	// Get folder
-	const folder = await DriveFolders.findOne({
+	const folder = await DriveFolders.findOneBy({
 		id: ps.folderId,
 		userId: user.id,
 	});
@@ -46,8 +46,8 @@ export default define(meta, paramDef, async (ps, user) => {
 	}
 
 	const [childFoldersCount, childFilesCount] = await Promise.all([
-		DriveFolders.count({ parentId: folder.id }),
-		DriveFiles.count({ folderId: folder.id }),
+		DriveFolders.countBy({ parentId: folder.id }),
+		DriveFiles.countBy({ folderId: folder.id }),
 	]);
 
 	if (childFoldersCount !== 0 || childFilesCount !== 0) {

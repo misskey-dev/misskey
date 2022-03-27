@@ -35,7 +35,7 @@ export default define(meta, paramDef, async (ps, user) => {
 		name: ps.name,
 		isPublic: ps.isPublic,
 		description: ps.description,
-	}).then(x => Clips.findOneOrFail(x.identifiers[0]));
+	}).then(x => Clips.findOneByOrFail(x.identifiers[0]));
 
 	return await Clips.pack(clip);
 });
