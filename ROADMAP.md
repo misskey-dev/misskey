@@ -16,6 +16,7 @@ Also, the later tasks are more indefinite and are subject to change as developme
 
 ## (2) Improve functionality
 - OAuth2 support https://github.com/misskey-dev/misskey/issues/8262
+- GraphQL support?
 
 ## (3) Improve scalability
 - Rewriting in Rust?
