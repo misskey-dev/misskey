@@ -70,6 +70,8 @@ export default define(meta, paramDef, async (ps, user) => {
 		.andWhere(`notification.notifieeId = :meId`, { meId: user.id })
 		.leftJoinAndSelect('notification.notifier', 'notifier')
 		.leftJoinAndSelect('notification.note', 'note')
+		.leftJoinAndSelect('notifier.avatar', 'notifierAvatar')
+		.leftJoinAndSelect('notifier.banner', 'notifierBanner')
 		.leftJoinAndSelect('note.user', 'user')
 		.leftJoinAndSelect('user.avatar', 'avatar')
 		.leftJoinAndSelect('user.banner', 'banner')

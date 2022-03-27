@@ -26,7 +26,7 @@ export default define(meta, paramDef, async (ps, user) => {
 		isRead: true,
 	});
 
-	const joinings = await UserGroupJoinings.find({ userId: user.id });
+	const joinings = await UserGroupJoinings.findBy({ userId: user.id });
 
 	await Promise.all(joinings.map(j => MessagingMessages.createQueryBuilder().update()
 		.set({

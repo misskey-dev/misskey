@@ -120,7 +120,7 @@ export default defineComponent({
 
 	methods: {
 		async init() {
-			const meta = await os.api('meta', { detail: true });
+			const meta = await os.api('admin/meta');
 			this.useObjectStorage = meta.useObjectStorage;
 			this.objectStorageBaseUrl = meta.objectStorageBaseUrl;
 			this.objectStorageBucket = meta.objectStorageBucket;

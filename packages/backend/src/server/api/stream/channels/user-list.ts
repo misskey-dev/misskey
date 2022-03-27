@@ -23,7 +23,7 @@ export default class extends Channel {
 		this.listId = params.listId as string;
 
 		// Check existence and owner
-		const list = await UserLists.findOne({
+		const list = await UserLists.findOneBy({
 			id: this.listId,
 			userId: this.user!.id,
 		});

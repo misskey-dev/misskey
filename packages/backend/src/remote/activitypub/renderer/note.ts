@@ -7,25 +7,25 @@ import toHtml from '../misc/get-note-html.js';
 import { Note, IMentionedRemoteUsers } from '@/models/entities/note.js';
 import { DriveFile } from '@/models/entities/drive-file.js';
 import { DriveFiles, Notes, Users, Emojis, Polls } from '@/models/index.js';
-import { In } from 'typeorm';
+import { In, IsNull } from 'typeorm';
 import { Emoji } from '@/models/entities/emoji.js';
 import { Poll } from '@/models/entities/poll.js';
 
 export default async function renderNote(note: Note, dive = true, isTalk = false): Promise<Record<string, unknown>> {
 	const getPromisedFiles = async (ids: string[]) => {
 		if (!ids || ids.length === 0) return [];
-		const items = await DriveFiles.find({ id: In(ids) });
+		const items = await DriveFiles.findBy({ id: In(ids) });
 		return ids.map(id => items.find(item => item.id === id)).filter(item => item != null) as DriveFile[];
 	};
 
 	let inReplyTo;
-	let inReplyToNote: Note | undefined;
+	let inReplyToNote: Note | null;
 
 	if (note.replyId) {
-		inReplyToNote = await Notes.findOne(note.replyId);
+		inReplyToNote = await Notes.findOneBy({ id: note.replyId });
 
 		if (inReplyToNote != null) {
-			const inReplyToUser = await Users.findOne(inReplyToNote.userId);
+			const inReplyToUser = await Users.findOneBy({ id: inReplyToNote.userId });
 
 			if (inReplyToUser != null) {
 				if (inReplyToNote.uri) {
@@ -46,16 +46,14 @@ export default async function renderNote(note: Note, dive = true, isTalk = false
 	let quote;
 
 	if (note.renoteId) {
-		const renote = await Notes.findOne(note.renoteId);
+		const renote = await Notes.findOneBy({ id: note.renoteId });
 
 		if (renote) {
 			quote = renote.uri ? renote.uri : `${config.url}/notes/${renote.id}`;
 		}
 	}
 
-	const user = await Users.findOneOrFail(note.userId);
-
-	const attributedTo = `${config.url}/users/${user.id}`;
+	const attributedTo = `${config.url}/users/${note.userId}`;
 
 	const mentions = (JSON.parse(note.mentionedRemoteUsers) as IMentionedRemoteUsers).map(x => x.uri);
 
@@ -75,7 +73,7 @@ export default async function renderNote(note: Note, dive = true, isTalk = false
 		to = mentions;
 	}
 
-	const mentionedUsers = note.mentions.length > 0 ? await Users.find({
+	const mentionedUsers = note.mentions.length > 0 ? await Users.findBy({
 		id: In(note.mentions),
 	}) : [];
 
@@ -85,10 +83,10 @@ export default async function renderNote(note: Note, dive = true, isTalk = false
 	const files = await getPromisedFiles(note.fileIds);
 
 	const text = note.text;
-	let poll: Poll | undefined;
+	let poll: Poll | null;
 
 	if (note.hasPoll) {
-		poll = await Polls.findOne({ noteId: note.id });
+		poll = await Polls.findOneBy({ noteId: note.id });
 	}
 
 	let apText = text;
@@ -158,9 +156,9 @@ export async function getEmojis(names: string[]): Promise<Emoji[]> {
 	if (names == null || names.length === 0) return [];
 
 	const emojis = await Promise.all(
-		names.map(name => Emojis.findOne({
+		names.map(name => Emojis.findOneBy({
 			name,
-			host: null,
+			host: IsNull(),
 		}))
 	);
 

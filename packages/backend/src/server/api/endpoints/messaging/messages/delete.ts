@@ -36,7 +36,7 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, user) => {
-	const message = await MessagingMessages.findOne({
+	const message = await MessagingMessages.findOneBy({
 		id: ps.messageId,
 		userId: user.id,
 	});

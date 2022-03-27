@@ -1,5 +1,5 @@
 import { IObject, isCreate, isDelete, isUpdate, isRead, isFollow, isAccept, isReject, isAdd, isRemove, isAnnounce, isLike, isUndo, isBlock, isCollectionOrOrderedCollection, isCollection, isFlag } from '../type.js';
-import { IRemoteUser } from '@/models/entities/user.js';
+import { CacheableRemoteUser } from '@/models/entities/user.js';
 import create from './create/index.js';
 import performDeleteActivity from './delete/index.js';
 import performUpdateActivity from './update/index.js';
@@ -17,8 +17,9 @@ import flag from './flag/index.js';
 import { apLogger } from '../logger.js';
 import Resolver from '../resolver.js';
 import { toArray } from '@/prelude/array.js';
+import { Users } from '@/models/index.js';
 
-export async function performActivity(actor: IRemoteUser, activity: IObject) {
+export async function performActivity(actor: CacheableRemoteUser, activity: IObject) {
 	if (isCollectionOrOrderedCollection(activity)) {
 		const resolver = new Resolver();
 		for (const item of toArray(isCollection(activity) ? activity.items : activity.orderedItems)) {
@@ -36,7 +37,7 @@ export async function performActivity(actor: IRemoteUser, activity: IObject) {
 	}
 }
 
-async function performOneActivity(actor: IRemoteUser, activity: IObject): Promise<void> {
+async function performOneActivity(actor: CacheableRemoteUser, activity: IObject): Promise<void> {
 	if (actor.isSuspended) return;
 
 	if (isCreate(activity)) {

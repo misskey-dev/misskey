@@ -31,14 +31,14 @@ export const paramDef = {
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, user) => {
 	// Check if announcement exists
-	const announcement = await Announcements.findOne(ps.announcementId);
+	const announcement = await Announcements.findOneBy({ id: ps.announcementId });
 
 	if (announcement == null) {
 		throw new ApiError(meta.errors.noSuchAnnouncement);
 	}
 
 	// Check if already read
-	const read = await AnnouncementReads.findOne({
+	const read = await AnnouncementReads.findOneBy({
 		announcementId: ps.announcementId,
 		userId: user.id,
 	});

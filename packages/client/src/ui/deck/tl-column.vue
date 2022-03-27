@@ -1,5 +1,5 @@
 <template>
-<XColumn :func="{ handler: setType, title: $ts.timeline }" :column="column" :is-stacked="isStacked" :indicated="indicated" @change-active-state="onChangeActiveState">
+<XColumn :func="{ handler: setType, title: $ts.timeline }" :column="column" :is-stacked="isStacked" :indicated="indicated" @change-active-state="onChangeActiveState" @parent-focus="$event => emit('parent-focus', $event)">
 	<template #header>
 		<i v-if="column.tl === 'home'" class="fas fa-home"></i>
 		<i v-else-if="column.tl === 'local'" class="fas fa-comments"></i>
@@ -15,108 +15,103 @@
 		</p>
 		<p class="desc">{{ $t('disabled-timeline.description') }}</p>
 	</div>
-	<XTimeline v-else-if="column.tl" ref="timeline" :key="column.tl" :src="column.tl" @after="() => $emit('loaded')" @queue="queueUpdated" @note="onNote"/>
+	<XTimeline v-else-if="column.tl" ref="timeline" :key="column.tl" :src="column.tl" @after="() => emit('loaded')" @queue="queueUpdated" @note="onNote"/>
 </XColumn>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { onMounted } from 'vue';
 import XColumn from './column.vue';
 import XTimeline from '@/components/timeline.vue';
 import * as os from '@/os';
-import { removeColumn, updateColumn } from './deck-store';
+import { removeColumn, updateColumn, Column } from './deck-store';
+import { $i } from '@/account';
+import { instance } from '@/instance';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		XColumn,
-		XTimeline,
-	},
+const props = defineProps<{
+	column: Column;
+	isStacked: boolean;
+}>();
 
-	props: {
-		column: {
-			type: Object,
-			required: true
-		},
-		isStacked: {
-			type: Boolean,
-			required: true
+const emit = defineEmits<{
+	(e: 'loaded'): void;
+	(e: 'parent-focus', direction: 'up' | 'down' | 'left' | 'right'): void;
+}>();
+
+let disabled = $ref(false);
+let indicated = $ref(false);
+let columnActive = $ref(true);
+
+onMounted(() => {
+	if (props.column.tl == null) {
+		setType();
+	} else if ($i) {
+		disabled = !$i.isModerator && !$i.isAdmin && (
+			instance.disableLocalTimeline && ['local', 'social'].includes(props.column.tl) ||
+			instance.disableGlobalTimeline && ['global'].includes(props.column.tl));
+	}
+});
+
+async function setType() {
+	const { canceled, result: src } = await os.select({
+		title: i18n.ts.timeline,
+		items: [{
+			value: 'home' as const, text: i18n.ts._timelines.home
+		}, {
+			value: 'local' as const, text: i18n.ts._timelines.local
+		}, {
+			value: 'social' as const, text: i18n.ts._timelines.social
+		}, {
+			value: 'global' as const, text: i18n.ts._timelines.global
+		}],
+	});
+	if (canceled) {
+		if (props.column.tl == null) {
+			removeColumn(props.column.id);
 		}
-	},
+		return;
+	}
+	updateColumn(props.column.id, {
+		tl: src
+	});
+}
 
-	data() {
-		return {
-			disabled: false,
-			indicated: false,
-			columnActive: true,
-		};
-	},
+function queueUpdated(q) {
+	if (columnActive) {
+		indicated = q !== 0;
+	}
+}
 
+function onNote() {
+	if (!columnActive) {
+		indicated = true;
+	}
+}
+
+function onChangeActiveState(state) {
+	columnActive = state;
+
+	if (columnActive) {
+		indicated = false;
+	}
+}
+
+/*
+export default defineComponent({
 	watch: {
 		mediaOnly() {
 			(this.$refs.timeline as any).reload();
 		}
 	},
 
-	mounted() {
-		if (this.column.tl == null) {
-			this.setType();
-		} else {
-			this.disabled = !this.$i.isModerator && !this.$i.isAdmin && (
-				this.$instance.disableLocalTimeline && ['local', 'social'].includes(this.column.tl) ||
-				this.$instance.disableGlobalTimeline && ['global'].includes(this.column.tl));
-		}
-	},
-
 	methods: {
-		async setType() {
-			const { canceled, result: src } = await os.select({
-				title: this.$ts.timeline,
-				items: [{
-					value: 'home', text: this.$ts._timelines.home
-				}, {
-					value: 'local', text: this.$ts._timelines.local
-				}, {
-					value: 'social', text: this.$ts._timelines.social
-				}, {
-					value: 'global', text: this.$ts._timelines.global
-				}]
-			});
-			if (canceled) {
-				if (this.column.tl == null) {
-					removeColumn(this.column.id);
-				}
-				return;
-			}
-			updateColumn(this.column.id, {
-				tl: src
-			});
-		},
-
-		queueUpdated(q) {
-			if (this.columnActive) {
-				this.indicated = q !== 0;
-			}
-		},
-
-		onNote() {
-			if (!this.columnActive) {
-				this.indicated = true;
-			}
-		},
-
-		onChangeActiveState(state) {
-			this.columnActive = state;
-
-			if (this.columnActive) {
-				this.indicated = false;
-			}
-		},
-
 		focus() {
 			(this.$refs.timeline as any).focus();
 		}
 	}
 });
+*/
 </script>
 
 <style lang="scss" scoped>

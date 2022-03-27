@@ -19,13 +19,13 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, me) => {
-	const followings = await Followings.find({
+	const followings = await Followings.findBy({
 		followerHost: ps.host,
 	});
 
 	const pairs = await Promise.all(followings.map(f => Promise.all([
-		Users.findOneOrFail(f.followerId),
-		Users.findOneOrFail(f.followeeId),
+		Users.findOneByOrFail({ id: f.followerId }),
+		Users.findOneByOrFail({ id: f.followeeId }),
 	])));
 
 	for (const pair of pairs) {

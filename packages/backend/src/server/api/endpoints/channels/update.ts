@@ -49,7 +49,7 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, me) => {
-	const channel = await Channels.findOne({
+	const channel = await Channels.findOneBy({
 		id: ps.channelId,
 	});
 
@@ -64,7 +64,7 @@ export default define(meta, paramDef, async (ps, me) => {
 	// eslint:disable-next-line:no-unnecessary-initializer
 	let banner = undefined;
 	if (ps.bannerId != null) {
-		banner = await DriveFiles.findOne({
+		banner = await DriveFiles.findOneBy({
 			id: ps.bannerId,
 			userId: me.id,
 		});

@@ -1,4 +1,4 @@
-import { In } from 'typeorm';
+import { In, IsNull } from 'typeorm';
 import { Emojis } from '@/models/index.js';
 import { Emoji } from '@/models/entities/emoji.js';
 import { Note } from '@/models/entities/note.js';
@@ -52,9 +52,9 @@ export async function populateEmoji(emojiName: string, noteUserHost: string | nu
 	const { name, host } = parseEmojiStr(emojiName, noteUserHost);
 	if (name == null) return null;
 
-	const queryOrNull = async () => (await Emojis.findOne({
+	const queryOrNull = async () => (await Emojis.findOneBy({
 		name,
-		host,
+		host: host ?? IsNull(),
 	})) || null;
 
 	const emoji = await cache.fetch(`${name} ${host}`, queryOrNull);
@@ -112,7 +112,7 @@ export async function prefetchEmojis(emojis: { name: string; host: string | null
 	for (const host of hosts) {
 		emojisQuery.push({
 			name: In(notCachedEmojis.filter(e => e.host === host).map(e => e.name)),
-			host: host,
+			host: host ?? IsNull(),
 		});
 	}
 	const _emojis = emojisQuery.length > 0 ? await Emojis.find({

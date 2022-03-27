@@ -46,7 +46,7 @@ export const paramDef = {
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps) => {
 	// Lookup app
-	const app = await Apps.findOne({
+	const app = await Apps.findOneBy({
 		secret: ps.appSecret,
 	});
 
@@ -63,7 +63,7 @@ export default define(meta, paramDef, async (ps) => {
 		createdAt: new Date(),
 		appId: app.id,
 		token: token,
-	}).then(x => AuthSessions.findOneOrFail(x.identifiers[0]));
+	}).then(x => AuthSessions.findOneByOrFail(x.identifiers[0]));
 
 	return {
 		token: doc.token,

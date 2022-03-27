@@ -10,6 +10,16 @@
 You should also include the user name that made the change.
 -->
 
+## 12.x.x (unreleased)
+
+### Improvements
+- Bull Dashboardを組み込み、ジョブキューの確認や操作を行えるように @syuilo
+- Check that installed Node.js version fulfills version requirement @ThatOneCalculator
+- Server: performance improvements @syuilo
+
+### Bugfixes
+- API: fix endpoint endpoint @Johann150
+
 ## 12.108.1 (2022/03/12)
 
 ### Bugfixes

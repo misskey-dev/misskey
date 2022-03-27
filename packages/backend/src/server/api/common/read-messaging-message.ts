@@ -23,7 +23,7 @@ export async function readUserMessagingMessage(
 ) {
 	if (messageIds.length === 0) return;
 
-	const messages = await MessagingMessages.find({
+	const messages = await MessagingMessages.findBy({
 		id: In(messageIds),
 	});
 
@@ -64,7 +64,7 @@ export async function readGroupMessagingMessage(
 	if (messageIds.length === 0) return;
 
 	// check joined
-	const joining = await UserGroupJoinings.findOne({
+	const joining = await UserGroupJoinings.findOneBy({
 		userId: userId,
 		userGroupId: groupId,
 	});
@@ -73,7 +73,7 @@ export async function readGroupMessagingMessage(
 		throw new IdentifiableError('930a270c-714a-46b2-b776-ad27276dc569', 'Access denied (group).');
 	}
 
-	const messages = await MessagingMessages.find({
+	const messages = await MessagingMessages.findBy({
 		id: In(messageIds),
 	});
 

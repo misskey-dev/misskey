@@ -37,7 +37,7 @@ export default async function cleanRemoteFiles(job: Bull.Job<Record<string, unkn
 
 		deletedCount += 8;
 
-		const total = await DriveFiles.count({
+		const total = await DriveFiles.countBy({
 			userHost: Not(IsNull()),
 			isLink: false,
 		});
