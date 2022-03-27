@@ -6,6 +6,9 @@ Also, you might receive comments on your Issue/PR in Japanese, but you do not ne
 The accuracy of machine translation into Japanese is not high, so it will be easier for us to understand if you write it in the original language.
 It will also allow the reader to use the translation tool of their preference if necessary.
 
+## Roadmap
+See [ROADMAP.md](./ROADMAP.md)
+
 ## Issues
 Before creating an issue, please check the following:
 - To avoid duplication, please search for similar issues before creating a new issue.
