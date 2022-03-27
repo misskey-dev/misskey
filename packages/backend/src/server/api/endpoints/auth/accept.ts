@@ -33,7 +33,7 @@ export const paramDef = {
 export default define(meta, paramDef, async (ps, user) => {
 	// Fetch token
 	const session = await AuthSessions
-		.findOne({ token: ps.token });
+		.findOneBy({ token: ps.token });
 
 	if (session == null) {
 		throw new ApiError(meta.errors.noSuchSession);
@@ -43,14 +43,14 @@ export default define(meta, paramDef, async (ps, user) => {
 	const accessToken = secureRndstr(32, true);
 
 	// Fetch exist access token
-	const exist = await AccessTokens.findOne({
+	const exist = await AccessTokens.findOneBy({
 		appId: session.appId,
 		userId: user.id,
 	});
 
 	if (exist == null) {
 		// Lookup app
-		const app = await Apps.findOneOrFail(session.appId);
+		const app = await Apps.findOneByOrFail({ id: session.appId });
 
 		// Generate Hash
 		const sha256 = crypto.createHash('sha256');

@@ -2,6 +2,7 @@ import config from '@/config/index.js';
 import { NoteReaction } from '@/models/entities/note-reaction.js';
 import { Note } from '@/models/entities/note.js';
 import { Emojis } from '@/models/index.js';
+import { IsNull } from 'typeorm';
 import renderEmoji from './emoji.js';
 
 export const renderLike = async (noteReaction: NoteReaction, note: Note) => {
@@ -18,9 +19,9 @@ export const renderLike = async (noteReaction: NoteReaction, note: Note) => {
 
 	if (reaction.startsWith(':')) {
 		const name = reaction.replace(/:/g, '');
-		const emoji = await Emojis.findOne({
+		const emoji = await Emojis.findOneBy({
 			name,
-			host: null,
+			host: IsNull(),
 		});
 
 		if (emoji) object.tag = [ renderEmoji(emoji) ];

@@ -72,7 +72,7 @@ export default defineComponent({
 
 	methods: {
 		async init() {
-			const meta = await os.api('meta', { detail: true });
+			const meta = await os.api('admin/meta');
 			this.summalyProxy = meta.summalyProxy;
 			this.enableHcaptcha = meta.enableHcaptcha;
 			this.enableRecaptcha = meta.enableRecaptcha;

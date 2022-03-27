@@ -20,7 +20,7 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, me) => {
-	const instance = await Instances.findOne({ host: toPuny(ps.host) });
+	const instance = await Instances.findOneBy({ host: toPuny(ps.host) });
 
 	if (instance == null) {
 		throw new Error('instance not found');

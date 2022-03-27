@@ -28,11 +28,11 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, me) => {
-	const ownedGroups = await UserGroups.find({
+	const ownedGroups = await UserGroups.findBy({
 		userId: me.id,
 	});
 
-	const joinings = await UserGroupJoinings.find({
+	const joinings = await UserGroupJoinings.findBy({
 		userId: me.id,
 		...(ownedGroups.length > 0 ? {
 			userGroupId: Not(In(ownedGroups.map(x => x.id))),

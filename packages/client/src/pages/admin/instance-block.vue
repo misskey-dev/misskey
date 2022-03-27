@@ -42,7 +42,7 @@ export default defineComponent({
 
 	methods: {
 		async init() {
-			const meta = await os.api('meta', { detail: true });
+			const meta = await os.api('admin/meta');
 			this.blockedHosts = meta.blockedHosts.join('\n');
 		},
 

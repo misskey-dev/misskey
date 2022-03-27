@@ -1,14 +1,13 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { db } from '@/db/postgre.js';
 import { Users } from '../index.js';
 import { ModerationLog } from '@/models/entities/moderation-log.js';
 import { awaitAll } from '@/prelude/await-all.js';
 
-@EntityRepository(ModerationLog)
-export class ModerationLogRepository extends Repository<ModerationLog> {
-	public async pack(
+export const ModerationLogRepository = db.getRepository(ModerationLog).extend({
+	async pack(
 		src: ModerationLog['id'] | ModerationLog,
 	) {
-		const log = typeof src === 'object' ? src : await this.findOneOrFail(src);
+		const log = typeof src === 'object' ? src : await this.findOneByOrFail({ id: src });
 
 		return await awaitAll({
 			id: log.id,
@@ -20,11 +19,11 @@ export class ModerationLogRepository extends Repository<ModerationLog> {
 				detail: true,
 			}),
 		});
-	}
+	},
 
-	public packMany(
+	packMany(
 		reports: any[],
 	) {
 		return Promise.all(reports.map(x => this.pack(x)));
-	}
-}
+	},
+});

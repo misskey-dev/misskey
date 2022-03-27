@@ -1,5 +1,5 @@
-import { IRemoteUser } from '@/models/entities/user.js';
-import {IUndo, isFollow, isBlock, isLike, isAnnounce, getApType, isAccept} from '../../type.js';
+import { CacheableRemoteUser } from '@/models/entities/user.js';
+import { IUndo, isFollow, isBlock, isLike, isAnnounce, getApType, isAccept } from '../../type.js';
 import unfollow from './follow.js';
 import unblock from './block.js';
 import undoLike from './like.js';
@@ -10,7 +10,7 @@ import { apLogger } from '../../logger.js';
 
 const logger = apLogger;
 
-export default async (actor: IRemoteUser, activity: IUndo): Promise<string> => {
+export default async (actor: CacheableRemoteUser, activity: IUndo): Promise<string> => {
 	if ('actor' in activity && actor.uri !== activity.actor) {
 		throw new Error('invalid actor');
 	}

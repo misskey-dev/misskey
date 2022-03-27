@@ -15,8 +15,8 @@ export default class NotesChart extends Chart<typeof schema> {
 
 	protected async tickMajor(): Promise<Partial<KVs<typeof schema>>> {
 		const [localCount, remoteCount] = await Promise.all([
-			Notes.count({ userHost: null }),
-			Notes.count({ userHost: Not(IsNull()) }),
+			Notes.countBy({ userHost: IsNull() }),
+			Notes.countBy({ userHost: Not(IsNull()) }),
 		]);
 
 		return {

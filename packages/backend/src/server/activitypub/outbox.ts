@@ -13,9 +13,8 @@ import { countIf } from '@/prelude/array.js';
 import * as url from '@/prelude/url.js';
 import { Users, Notes } from '@/models/index.js';
 import { makePaginationQuery } from '../api/common/make-pagination-query.js';
-import { Brackets } from 'typeorm';
+import { Brackets, IsNull } from 'typeorm';
 import { Note } from '@/models/entities/note.js';
-import { userCache } from './cache.js';
 
 export default async (ctx: Router.RouterContext) => {
 	const userId = ctx.params.user;
@@ -36,11 +35,10 @@ export default async (ctx: Router.RouterContext) => {
 		return;
 	}
 
-	// TODO: typeorm 3.0にしたら .then(x => x || null) は消せる
-	const user = await userCache.fetch(userId, () => Users.findOne({
+	const user = await Users.findOneBy({
 		id: userId,
-		host: null,
-	}).then(x => x || null));
+		host: IsNull(),
+	});
 
 	if (user == null) {
 		ctx.status = 404;
@@ -101,7 +99,7 @@ export default async (ctx: Router.RouterContext) => {
  */
 export async function packActivity(note: Note): Promise<any> {
 	if (note.renoteId && note.text == null && !note.hasPoll && (note.fileIds == null || note.fileIds.length === 0)) {
-		const renote = await Notes.findOneOrFail(note.renoteId);
+		const renote = await Notes.findOneByOrFail({ id: note.renoteId });
 		return renderAnnounce(renote.uri ? renote.uri : `${config.url}/notes/${renote.id}`, note);
 	}
 
