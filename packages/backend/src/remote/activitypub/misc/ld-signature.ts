@@ -1,5 +1,5 @@
 import * as crypto from 'node:crypto';
-import * as jsonld from 'jsonld';
+import jsonld from 'jsonld';
 import { CONTEXTS } from './contexts.js';
 import fetch from 'node-fetch';
 import { httpAgent, httpsAgent } from '@/misc/fetch.js';

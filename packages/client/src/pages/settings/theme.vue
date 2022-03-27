@@ -101,7 +101,7 @@ import { ColdDeviceStorage } from '@/store';
 import { i18n } from '@/i18n';
 import { defaultStore } from '@/store';
 import { instance } from '@/instance';
-import { concat } from '@/scripts/array';
+import { concat, uniqueBy } from '@/scripts/array';
 import { fetchThemes, getThemes } from '@/theme-store';
 import * as symbols from '@/symbols';
 
@@ -128,7 +128,7 @@ export default defineComponent({
 		const instanceThemes = [];
 		if (instance.defaultLightTheme != null) instanceThemes.push(JSON5.parse(instance.defaultLightTheme));
 		if (instance.defaultDarkTheme != null) instanceThemes.push(JSON5.parse(instance.defaultDarkTheme));
-		const themes = computed(() => instanceThemes.concat(builtinThemes.concat(installedThemes.value)));
+		const themes = computed(() => uniqueBy(instanceThemes.concat(builtinThemes.concat(installedThemes.value)), theme => theme.id));
 		const darkThemes = computed(() => themes.value.filter(t => t.base === 'dark' || t.kind === 'dark'));
 		const lightThemes = computed(() => themes.value.filter(t => t.base === 'light' || t.kind === 'light'));
 		const darkTheme = ColdDeviceStorage.ref('darkTheme');

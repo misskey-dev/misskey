@@ -1,4 +1,4 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { db } from '@/db/postgre.js';
 import { DriveFile } from '@/models/entities/drive-file.js';
 import { Users, DriveFolders } from '../index.js';
 import { User } from '@/models/entities/user.js';
@@ -16,9 +16,8 @@ type PackOptions = {
 	withUser?: boolean,
 };
 
-@EntityRepository(DriveFile)
-export class DriveFileRepository extends Repository<DriveFile> {
-	public validateFileName(name: string): boolean {
+export const DriveFileRepository = db.getRepository(DriveFile).extend({
+	validateFileName(name: string): boolean {
 		return (
 			(name.trim().length > 0) &&
 			(name.length <= 200) &&
@@ -26,9 +25,9 @@ export class DriveFileRepository extends Repository<DriveFile> {
 			(name.indexOf('/') === -1) &&
 			(name.indexOf('..') === -1)
 		);
-	}
+	},
 
-	public getPublicProperties(file: DriveFile): DriveFile['properties'] {
+	getPublicProperties(file: DriveFile): DriveFile['properties'] {
 		if (file.properties.orientation != null) {
 			const properties = JSON.parse(JSON.stringify(file.properties));
 			if (file.properties.orientation >= 5) {
@@ -39,9 +38,9 @@ export class DriveFileRepository extends Repository<DriveFile> {
 		}
 
 		return file.properties;
-	}
+	},
 
-	public getPublicUrl(file: DriveFile, thumbnail = false): string | null {
+	getPublicUrl(file: DriveFile, thumbnail = false): string | null {
 		// リモートかつメディアプロキシ
 		if (file.uri != null && file.userHost != null && config.mediaProxy != null) {
 			return appendQuery(config.mediaProxy, query({
@@ -62,9 +61,9 @@ export class DriveFileRepository extends Repository<DriveFile> {
 		const isImage = file.type && ['image/png', 'image/apng', 'image/gif', 'image/jpeg', 'image/webp', 'image/svg+xml'].includes(file.type);
 
 		return thumbnail ? (file.thumbnailUrl || (isImage ? (file.webpublicUrl || file.url) : null)) : (file.webpublicUrl || file.url);
-	}
+	},
 
-	public async calcDriveUsageOf(user: User['id'] | { id: User['id'] }): Promise<number> {
+	async calcDriveUsageOf(user: User['id'] | { id: User['id'] }): Promise<number> {
 		const id = typeof user === 'object' ? user.id : user;
 
 		const { sum } = await this
@@ -75,9 +74,9 @@ export class DriveFileRepository extends Repository<DriveFile> {
 			.getRawOne();
 
 		return parseInt(sum, 10) || 0;
-	}
+	},
 
-	public async calcDriveUsageOfHost(host: string): Promise<number> {
+	async calcDriveUsageOfHost(host: string): Promise<number> {
 		const { sum } = await this
 			.createQueryBuilder('file')
 			.where('file.userHost = :host', { host: toPuny(host) })
@@ -86,9 +85,9 @@ export class DriveFileRepository extends Repository<DriveFile> {
 			.getRawOne();
 
 		return parseInt(sum, 10) || 0;
-	}
+	},
 
-	public async calcDriveUsageOfLocal(): Promise<number> {
+	async calcDriveUsageOfLocal(): Promise<number> {
 		const { sum } = await this
 			.createQueryBuilder('file')
 			.where('file.userHost IS NULL')
@@ -97,9 +96,9 @@ export class DriveFileRepository extends Repository<DriveFile> {
 			.getRawOne();
 
 		return parseInt(sum, 10) || 0;
-	}
+	},
 
-	public async calcDriveUsageOfRemote(): Promise<number> {
+	async calcDriveUsageOfRemote(): Promise<number> {
 		const { sum } = await this
 			.createQueryBuilder('file')
 			.where('file.userHost IS NOT NULL')
@@ -108,11 +107,9 @@ export class DriveFileRepository extends Repository<DriveFile> {
 			.getRawOne();
 
 		return parseInt(sum, 10) || 0;
-	}
+	},
 
-	public async pack(src: DriveFile['id'], options?: PackOptions): Promise<Packed<'DriveFile'> | null>;
-	public async pack(src: DriveFile, options?: PackOptions): Promise<Packed<'DriveFile'>>;
-	public async pack(
+	async pack(
 		src: DriveFile['id'] | DriveFile,
 		options?: PackOptions
 	): Promise<Packed<'DriveFile'> | null> {
@@ -121,10 +118,8 @@ export class DriveFileRepository extends Repository<DriveFile> {
 			self: false,
 		}, options);
 
-		const file = typeof src === 'object' ? src : await this.findOne(src);
+		const file = typeof src === 'object' ? src : await this.findOneBy({ id: src });
 		if (file == null) return null;
-
-		const meta = await fetchMeta();
 
 		return await awaitAll<Packed<'DriveFile'>>({
 			id: file.id,
@@ -146,13 +141,13 @@ export class DriveFileRepository extends Repository<DriveFile> {
 			userId: opts.withUser ? file.userId : null,
 			user: (opts.withUser && file.userId) ? Users.pack(file.userId) : null,
 		});
-	}
+	},
 
-	public async packMany(
+	async packMany(
 		files: (DriveFile['id'] | DriveFile)[],
 		options?: PackOptions
 	) {
 		const items = await Promise.all(files.map(f => this.pack(f, options)));
 		return items.filter(x => x != null);
-	}
-}
+	},
+});

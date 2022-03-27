@@ -15,6 +15,13 @@ export class Muting {
 	public createdAt: Date;
 
 	@Index()
+	@Column('timestamp with time zone', {
+		nullable: true,
+		default: null,
+	})
+	public expiresAt: Date | null;
+
+	@Index()
 	@Column({
 		...id(),
 		comment: 'The mutee user ID.',

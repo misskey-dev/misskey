@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineComponent, PropType, markRaw, onUnmounted, onMounted, computed, ref } from 'vue';
+import { defineComponent, markRaw, onUnmounted, onMounted, computed, ref } from 'vue';
 import { notificationTypes } from 'misskey-js';
 import MkPagination from '@/components/ui/pagination.vue';
 import { Paging } from '@/components/ui/pagination.vue';
@@ -29,25 +29,24 @@ import { stream } from '@/stream';
 import { $i } from '@/account';
 
 const props = defineProps<{
-	includeTypes?: PropType<typeof notificationTypes[number][]>;
+	includeTypes?: typeof notificationTypes[number][];
 	unreadOnly?: boolean;
 }>();
 
 const pagingComponent = ref<InstanceType<typeof MkPagination>>();
 
-const allIncludeTypes = computed(() => props.includeTypes ?? notificationTypes.filter(x => !$i.mutingNotificationTypes.includes(x)));
-
 const pagination: Paging = {
 	endpoint: 'i/notifications' as const,
 	limit: 10,
 	params: computed(() => ({
-		includeTypes: allIncludeTypes.value || undefined,
+		includeTypes: props.includeTypes ?? undefined,
+		excludeTypes: props.includeTypes ? undefined : $i.mutingNotificationTypes,
 		unreadOnly: props.unreadOnly,
 	})),
 };
 
 const onNotification = (notification) => {
-	const isMuted = !allIncludeTypes.value.includes(notification.type);
+	const isMuted = props.includeTypes ? !props.includeTypes.includes(notification.type) : $i.mutingNotificationTypes.includes(notification.type);
 	if (isMuted || document.visibilityState === 'visible') {
 		stream.send('readNotification', {
 			id: notification.id

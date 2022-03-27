@@ -1,12 +1,17 @@
+import escapeRegexp from 'escape-regexp';
 import config from '@/config/index.js';
 import { Note } from '@/models/entities/note.js';
-import { User, IRemoteUser } from '@/models/entities/user.js';
+import { User, IRemoteUser, CacheableRemoteUser, CacheableUser } from '@/models/entities/user.js';
 import { UserPublickey } from '@/models/entities/user-publickey.js';
 import { MessagingMessage } from '@/models/entities/messaging-message.js';
 import { Notes, Users, UserPublickeys, MessagingMessages } from '@/models/index.js';
 import { IObject, getApId } from './type.js';
 import { resolvePerson } from './models/person.js';
-import escapeRegexp from 'escape-regexp';
+import { Cache } from '@/misc/cache.js';
+import { uriPersonCache, userByIdCache } from '@/services/user-cache.js';
+
+const publicKeyCache = new Cache<UserPublickey | null>(Infinity);
+const publicKeyByUserIdCache = new Cache<UserPublickey | null>(Infinity);
 
 export default class DbResolver {
 	constructor() {
@@ -19,15 +24,15 @@ export default class DbResolver {
 		const parsed = this.parseUri(value);
 
 		if (parsed.id) {
-			return (await Notes.findOne({
+			return await Notes.findOneBy({
 				id: parsed.id,
-			})) || null;
+			});
 		}
 
 		if (parsed.uri) {
-			return (await Notes.findOne({
+			return await Notes.findOneBy({
 				uri: parsed.uri,
-			})) || null;
+			});
 		}
 
 		return null;
@@ -37,15 +42,15 @@ export default class DbResolver {
 		const parsed = this.parseUri(value);
 
 		if (parsed.id) {
-			return (await MessagingMessages.findOne({
+			return await MessagingMessages.findOneBy({
 				id: parsed.id,
-			})) || null;
+			});
 		}
 
 		if (parsed.uri) {
-			return (await MessagingMessages.findOne({
+			return await MessagingMessages.findOneBy({
 				uri: parsed.uri,
-			})) || null;
+			});
 		}
 
 		return null;
@@ -54,19 +59,19 @@ export default class DbResolver {
 	/**
 	 * AP Person => Misskey User in DB
 	 */
-	public async getUserFromApId(value: string | IObject): Promise<User | null> {
+	public async getUserFromApId(value: string | IObject): Promise<CacheableUser | null> {
 		const parsed = this.parseUri(value);
 
 		if (parsed.id) {
-			return (await Users.findOne({
+			return await userByIdCache.fetchMaybe(parsed.id, () => Users.findOneBy({
 				id: parsed.id,
-			})) || null;
+			}).then(x => x ?? undefined)) ?? null;
 		}
 
 		if (parsed.uri) {
-			return (await Users.findOne({
+			return await uriPersonCache.fetch(parsed.uri, () => Users.findOneBy({
 				uri: parsed.uri,
-			})) || null;
+			}));
 		}
 
 		return null;
@@ -75,17 +80,24 @@ export default class DbResolver {
 	/**
 	 * AP KeyId => Misskey User and Key
 	 */
-	public async getAuthUserFromKeyId(keyId: string): Promise<AuthUser | null> {
-		const key = await UserPublickeys.findOne({
-			keyId,
-		});
+	public async getAuthUserFromKeyId(keyId: string): Promise<{
+		user: CacheableRemoteUser;
+		key: UserPublickey;
+	} | null> {
+		const key = await publicKeyCache.fetch(keyId, async () => {
+			const key = await UserPublickeys.findOneBy({
+				keyId,
+			});
+	
+			if (key == null) return null;
+
+			return key;
+		}, key => key != null);
 
 		if (key == null) return null;
 
-		const user = await Users.findOne(key.userId) as IRemoteUser;
-
 		return {
-			user,
+			user: await userByIdCache.fetch(key.userId, () => Users.findOneByOrFail({ id: key.userId })) as CacheableRemoteUser,
 			key,
 		};
 	}
@@ -93,12 +105,15 @@ export default class DbResolver {
 	/**
 	 * AP Actor id => Misskey User and Key
 	 */
-	public async getAuthUserFromApId(uri: string): Promise<AuthUser | null> {
-		const user = await resolvePerson(uri) as IRemoteUser;
+	public async getAuthUserFromApId(uri: string): Promise<{
+		user: CacheableRemoteUser;
+		key: UserPublickey | null;
+	} | null> {
+		const user = await resolvePerson(uri) as CacheableRemoteUser;
 
 		if (user == null) return null;
 
-		const key = await UserPublickeys.findOne(user.id);
+		const key = await publicKeyByUserIdCache.fetch(user.id, () => UserPublickeys.findOneBy({ userId: user.id }), v => v != null); 
 
 		return {
 			user,
@@ -124,11 +139,6 @@ export default class DbResolver {
 		}
 	}
 }
-
-export type AuthUser = {
-	user: IRemoteUser;
-	key?: UserPublickey;
-};
 
 type UriParseResult = {
 	/** id in DB (local object only) */

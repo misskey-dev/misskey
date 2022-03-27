@@ -33,7 +33,7 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps) => {
-	const user = await Users.findOne({
+	const user = await Users.findOneBy({
 		usernameLower: ps.username.toLowerCase(),
 		host: IsNull(),
 	});
@@ -43,7 +43,7 @@ export default define(meta, paramDef, async (ps) => {
 		return;
 	}
 
-	const profile = await UserProfiles.findOneOrFail(user.id);
+	const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
 
 	// 合致するメアドが登録されていなかったら無視
 	if (profile.email !== ps.email) {

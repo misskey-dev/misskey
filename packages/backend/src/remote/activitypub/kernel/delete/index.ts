@@ -1,5 +1,5 @@
 import deleteNote from './note.js';
-import { IRemoteUser } from '@/models/entities/user.js';
+import { CacheableRemoteUser } from '@/models/entities/user.js';
 import { IDelete, getApId, isTombstone, IObject, validPost, validActor } from '../../type.js';
 import { toSingle } from '@/prelude/array.js';
 import { deleteActor } from './actor.js';
@@ -7,7 +7,7 @@ import { deleteActor } from './actor.js';
 /**
  * 削除アクティビティを捌きます
  */
-export default async (actor: IRemoteUser, activity: IDelete): Promise<string> => {
+export default async (actor: CacheableRemoteUser, activity: IDelete): Promise<string> => {
 	if ('actor' in activity && actor.uri !== activity.actor) {
 		throw new Error('invalid actor');
 	}

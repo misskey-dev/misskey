@@ -41,7 +41,7 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, user) => {
-	const page = await Pages.findOne(ps.pageId);
+	const page = await Pages.findOneBy({ id: ps.pageId });
 	if (page == null) {
 		throw new ApiError(meta.errors.noSuchPage);
 	}
@@ -51,7 +51,7 @@ export default define(meta, paramDef, async (ps, user) => {
 	}
 
 	// if already liked
-	const exist = await PageLikes.findOne({
+	const exist = await PageLikes.findOneBy({
 		pageId: page.id,
 		userId: user.id,
 	});

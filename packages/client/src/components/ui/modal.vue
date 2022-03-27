@@ -30,7 +30,7 @@ type ModalTypes = 'popup' | 'dialog' | 'dialog:top' | 'drawer';
 
 const props = withDefaults(defineProps<{
 	manualShowing?: boolean | null;
-	srcCenter?: boolean;
+	anchor?: { x: string; y: string; };
 	src?: HTMLElement;
 	preferType?: ModalTypes | 'auto';
 	zPriority?: 'low' | 'middle' | 'high';
@@ -39,6 +39,7 @@ const props = withDefaults(defineProps<{
 }>(), {
 	manualShowing: null,
 	src: null,
+	anchor: () => ({ x: 'center', y: 'bottom' }),
 	preferType: 'auto',
 	zPriority: 'low',
 	noOverlap: true,
@@ -105,7 +106,7 @@ const align = () => {
 	const popover = content.value!;
 	if (popover == null) return;
 
-	const rect = props.src.getBoundingClientRect();
+	const srcRect = props.src.getBoundingClientRect();
 	
 	const width = popover.offsetWidth;
 	const height = popover.offsetHeight;
@@ -113,16 +114,23 @@ const align = () => {
 	let left;
 	let top;
 
-	if (props.srcCenter) {
-		const x = rect.left + (fixed.value ? 0 : window.pageXOffset) + (props.src.offsetWidth / 2);
-		const y = rect.top + (fixed.value ? 0 : window.pageYOffset) + (props.src.offsetHeight / 2);
-		left = (x - (width / 2));
+	const x = srcRect.left + (fixed.value ? 0 : window.pageXOffset);
+	const y = srcRect.top + (fixed.value ? 0 : window.pageYOffset);
+
+	if (props.anchor.x === 'center') {
+		left = x + (props.src.offsetWidth / 2) - (width / 2);
+	} else if (props.anchor.x === 'left') {
+		// TODO
+	} else if (props.anchor.x === 'right') {
+		left = x + props.src.offsetWidth;
+	}
+
+	if (props.anchor.y === 'center') {
 		top = (y - (height / 2));
-	} else {
-		const x = rect.left + (fixed.value ? 0 : window.pageXOffset) + (props.src.offsetWidth / 2);
-		const y = rect.top + (fixed.value ? 0 : window.pageYOffset) + props.src.offsetHeight;
-		left = (x - (width / 2));
-		top = y;
+	} else if (props.anchor.y === 'top') {
+		// TODO
+	} else if (props.anchor.y === 'bottom') {
+		top = y + props.src.offsetHeight;
 	}
 
 	if (fixed.value) {
@@ -132,11 +140,11 @@ const align = () => {
 		}
 
 		const underSpace = (window.innerHeight - MARGIN) - top;
-		const upperSpace = (rect.top - MARGIN);
+		const upperSpace = (srcRect.top - MARGIN);
 
 		// 画面から縦にはみ出る場合
 		if (top + height > (window.innerHeight - MARGIN)) {
-			if (props.noOverlap) {
+			if (props.noOverlap && props.anchor.x === 'center') {
 				if (underSpace >= (upperSpace / 3)) {
 					maxHeight.value = underSpace;
 				} else {
@@ -156,11 +164,11 @@ const align = () => {
 		}
 
 		const underSpace = (window.innerHeight - MARGIN) - (top - window.pageYOffset);
-		const upperSpace = (rect.top - MARGIN);
+		const upperSpace = (srcRect.top - MARGIN);
 
 		// 画面から縦にはみ出る場合
 		if (top + height - window.pageYOffset > (window.innerHeight - MARGIN)) {
-			if (props.noOverlap) {
+			if (props.noOverlap && props.anchor.x === 'center') {
 				if (underSpace >= (upperSpace / 3)) {
 					maxHeight.value = underSpace;
 				} else {
@@ -183,13 +191,22 @@ const align = () => {
 		left = 0;
 	}
 
-	if (top > rect.top + (fixed.value ? 0 : window.pageYOffset)) {
-		transformOrigin.value = 'center top';
-	} else if ((top + height) <= rect.top + (fixed.value ? 0 : window.pageYOffset)) {
-		transformOrigin.value = 'center bottom';
-	} else {
-		transformOrigin.value = 'center';
+	let transformOriginX = 'center';
+	let transformOriginY = 'center';
+
+	if (top >= srcRect.top + props.src.offsetHeight + (fixed.value ? 0 : window.pageYOffset)) {
+		transformOriginY = 'top';
+	} else if ((top + height) <= srcRect.top + (fixed.value ? 0 : window.pageYOffset)) {
+		transformOriginY = 'bottom';
 	}
+
+	if (left >= srcRect.left + props.src.offsetWidth + (fixed.value ? 0 : window.pageXOffset)) {
+		transformOriginX = 'left';
+	} else if ((left + width) <= srcRect.left + (fixed.value ? 0 : window.pageXOffset)) {
+		transformOriginX = 'right';
+	}
+
+	transformOrigin.value = `${transformOriginX} ${transformOriginY}`;
 
 	popover.style.left = left + 'px';
 	popover.style.top = top + 'px';

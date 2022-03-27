@@ -1,0 +1,26 @@
+---
+_lang_: "Català"
+headlineMisskey: "Una xarxa connectada per notes"
+search: "Cercar"
+notifications: "Notificacions"
+username: "Nom d'usuari"
+password: "Contrasenya"
+forgotPassword: "Contrasenya oblidada"
+fetchingAsApObject: "Cercant en el Fediverse..."
+ok: "OK"
+gotIt: "Ho he entès!"
+cancel: "Cancel·lar"
+smtpUser: "Nom d'usuari"
+smtpPass: "Contrasenya"
+searchByGoogle: "Cercar"
+_mfm:
+  search: "Cercar"
+_sfx:
+  notification: "Notificacions"
+_widgets:
+  notifications: "Notificacions"
+_profile:
+  username: "Nom d'usuari"
+_deck:
+  _columns:
+    notifications: "Notificacions"

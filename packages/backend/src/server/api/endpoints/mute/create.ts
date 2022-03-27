@@ -38,6 +38,7 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		userId: { type: 'string', format: 'misskey:id' },
+		expiresAt: { type: 'integer', nullable: true },
 	},
 	required: ['userId'],
 } as const;
@@ -58,7 +59,7 @@ export default define(meta, paramDef, async (ps, user) => {
 	});
 
 	// Check if already muting
-	const exist = await Mutings.findOne({
+	const exist = await Mutings.findOneBy({
 		muterId: muter.id,
 		muteeId: mutee.id,
 	});
@@ -67,10 +68,15 @@ export default define(meta, paramDef, async (ps, user) => {
 		throw new ApiError(meta.errors.alreadyMuting);
 	}
 
+	if (ps.expiresAt && ps.expiresAt <= Date.now()) {
+		return;
+	}
+
 	// Create mute
 	await Mutings.insert({
 		id: genId(),
 		createdAt: new Date(),
+		expiresAt: ps.expiresAt ? new Date(ps.expiresAt) : null,
 		muterId: muter.id,
 		muteeId: mutee.id,
 	} as Muting);

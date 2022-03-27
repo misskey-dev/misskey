@@ -13,7 +13,7 @@ export async function fetchInstanceMetadata(instance: Instance, force = false): 
 	const unlock = await getFetchInstanceMetadataLock(instance.host);
 
 	if (!force) {
-		const _instance = await Instances.findOne({ host: instance.host });
+		const _instance = await Instances.findOneBy({ host: instance.host });
 		const now = Date.now();
 		if (_instance && _instance.infoUpdatedAt && (now - _instance.infoUpdatedAt.getTime() < 1000 * 60 * 60 * 24)) {
 			unlock();

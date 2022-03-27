@@ -2,8 +2,9 @@ import Router from '@koa/router';
 import config from '@/config/index.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
 import { Users, Notes } from '@/models/index.js';
-import { MoreThan } from 'typeorm';
+import { IsNull, MoreThan } from 'typeorm';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
+import { Cache } from '@/misc/cache.js';
 
 const router = new Router();
 
@@ -28,10 +29,10 @@ const nodeinfo2 = async () => {
 		localPosts,
 	] = await Promise.all([
 		fetchMeta(true),
-		Users.count({ where: { host: null } }),
-		Users.count({ where: { host: null, lastActiveDate: MoreThan(new Date(now - 15552000000)) } }),
-		Users.count({ where: { host: null, lastActiveDate: MoreThan(new Date(now - 2592000000)) } }),
-		Notes.count({ where: { userHost: null } }),
+		Users.count({ where: { host: IsNull() } }),
+		Users.count({ where: { host: IsNull(), lastActiveDate: MoreThan(new Date(now - 15552000000)) } }),
+		Users.count({ where: { host: IsNull(), lastActiveDate: MoreThan(new Date(now - 2592000000)) } }),
+		Notes.count({ where: { userHost: IsNull() } }),
 	]);
 
 	const proxyAccount = meta.proxyAccountId ? await Users.pack(meta.proxyAccountId).catch(() => null) : null;
@@ -81,15 +82,17 @@ const nodeinfo2 = async () => {
 	};
 };
 
+const cache = new Cache<Awaited<ReturnType<typeof nodeinfo2>>>(1000 * 60 * 10);
+
 router.get(nodeinfo2_1path, async ctx => {
-	const base = await nodeinfo2();
+	const base = await cache.fetch(null, () => nodeinfo2());
 
 	ctx.body = { version: '2.1', ...base };
 	ctx.set('Cache-Control', 'public, max-age=600');
 });
 
 router.get(nodeinfo2_0path, async ctx => {
-	const base = await nodeinfo2();
+	const base = await cache.fetch(null, () => nodeinfo2());
 
 	delete base.software.repository;
 

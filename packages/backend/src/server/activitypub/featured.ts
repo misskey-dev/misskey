@@ -5,14 +5,14 @@ import renderOrderedCollection from '@/remote/activitypub/renderer/ordered-colle
 import { setResponseType } from '../activitypub.js';
 import renderNote from '@/remote/activitypub/renderer/note.js';
 import { Users, Notes, UserNotePinings } from '@/models/index.js';
+import { IsNull } from 'typeorm';
 
 export default async (ctx: Router.RouterContext) => {
 	const userId = ctx.params.user;
 
-	// Verify user
-	const user = await Users.findOne({
+	const user = await Users.findOneBy({
 		id: userId,
-		host: null,
+		host: IsNull(),
 	});
 
 	if (user == null) {
@@ -26,7 +26,7 @@ export default async (ctx: Router.RouterContext) => {
 	});
 
 	const pinnedNotes = await Promise.all(pinings.map(pining =>
-		Notes.findOneOrFail(pining.noteId)));
+		Notes.findOneByOrFail({ id: pining.noteId })));
 
 	const renderedNotes = await Promise.all(pinnedNotes.map(note => renderNote(note)));
 

@@ -130,7 +130,7 @@ export const paramDef = {
 export default define(meta, paramDef, async (ps, user) => {
 	let visibleUsers: User[] = [];
 	if (ps.visibleUserIds) {
-		visibleUsers = (await Promise.all(ps.visibleUserIds.map(id => Users.findOne(id))))
+		visibleUsers = (await Promise.all(ps.visibleUserIds.map(id => Users.findOneBy({ id }))))
 			.filter(x => x != null) as User[];
 	}
 
@@ -138,17 +138,17 @@ export default define(meta, paramDef, async (ps, user) => {
 	const fileIds = ps.fileIds != null ? ps.fileIds : ps.mediaIds != null ? ps.mediaIds : null;
 	if (fileIds != null) {
 		files = (await Promise.all(fileIds.map(fileId =>
-			DriveFiles.findOne({
+			DriveFiles.findOneBy({
 				id: fileId,
 				userId: user.id,
 			})
 		))).filter(file => file != null) as DriveFile[];
 	}
 
-	let renote: Note | undefined;
+	let renote: Note | null;
 	if (ps.renoteId != null) {
 		// Fetch renote to note
-		renote = await Notes.findOne(ps.renoteId);
+		renote = await Notes.findOneBy({ id: ps.renoteId });
 
 		if (renote == null) {
 			throw new ApiError(meta.errors.noSuchRenoteTarget);
@@ -158,7 +158,7 @@ export default define(meta, paramDef, async (ps, user) => {
 
 		// Check blocking
 		if (renote.userId !== user.id) {
-			const block = await Blockings.findOne({
+			const block = await Blockings.findOneBy({
 				blockerId: renote.userId,
 				blockeeId: user.id,
 			});
@@ -168,10 +168,10 @@ export default define(meta, paramDef, async (ps, user) => {
 		}
 	}
 
-	let reply: Note | undefined;
+	let reply: Note | null;
 	if (ps.replyId != null) {
 		// Fetch reply
-		reply = await Notes.findOne(ps.replyId);
+		reply = await Notes.findOneBy({ id: ps.replyId });
 
 		if (reply == null) {
 			throw new ApiError(meta.errors.noSuchReplyTarget);
@@ -184,7 +184,7 @@ export default define(meta, paramDef, async (ps, user) => {
 
 		// Check blocking
 		if (reply.userId !== user.id) {
-			const block = await Blockings.findOne({
+			const block = await Blockings.findOneBy({
 				blockerId: reply.userId,
 				blockeeId: user.id,
 			});
@@ -211,7 +211,7 @@ export default define(meta, paramDef, async (ps, user) => {
 
 	let channel: Channel | undefined;
 	if (ps.channelId != null) {
-		channel = await Channels.findOne(ps.channelId);
+		channel = await Channels.findOneBy({ id: ps.channelId });
 
 		if (channel == null) {
 			throw new ApiError(meta.errors.noSuchChannel);

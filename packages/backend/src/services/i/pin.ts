@@ -18,7 +18,7 @@ import { deliverToRelays } from '../relay.js';
  */
 export async function addPinned(user: { id: User['id']; host: User['host']; }, noteId: Note['id']) {
 	// Fetch pinee
-	const note = await Notes.findOne({
+	const note = await Notes.findOneBy({
 		id: noteId,
 		userId: user.id,
 	});
@@ -27,7 +27,7 @@ export async function addPinned(user: { id: User['id']; host: User['host']; }, n
 		throw new IdentifiableError('70c4e51f-5bea-449c-a030-53bee3cce202', 'No such note.');
 	}
 
-	const pinings = await UserNotePinings.find({ userId: user.id });
+	const pinings = await UserNotePinings.findBy({ userId: user.id });
 
 	if (pinings.length >= 5) {
 		throw new IdentifiableError('15a018eb-58e5-4da1-93be-330fcc5e4e1a', 'You can not pin notes any more.');
@@ -57,7 +57,7 @@ export async function addPinned(user: { id: User['id']; host: User['host']; }, n
  */
 export async function removePinned(user: { id: User['id']; host: User['host']; }, noteId: Note['id']) {
 	// Fetch unpinee
-	const note = await Notes.findOne({
+	const note = await Notes.findOneBy({
 		id: noteId,
 		userId: user.id,
 	});
@@ -78,7 +78,7 @@ export async function removePinned(user: { id: User['id']; host: User['host']; }
 }
 
 export async function deliverPinnedChange(userId: User['id'], noteId: Note['id'], isAddition: boolean) {
-	const user = await Users.findOne(userId);
+	const user = await Users.findOneBy({ id: userId });
 	if (user == null) throw new Error('user not found');
 
 	if (!Users.isLocalUser(user)) return;

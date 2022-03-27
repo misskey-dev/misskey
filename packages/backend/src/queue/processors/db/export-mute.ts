@@ -7,7 +7,7 @@ import { addFile } from '@/services/drive/add-file.js';
 import { format as dateFormat } from 'date-fns';
 import { getFullApAccount } from '@/misc/convert-host.js';
 import { Users, Mutings } from '@/models/index.js';
-import { MoreThan } from 'typeorm';
+import { IsNull, MoreThan } from 'typeorm';
 import { DbUserJobData } from '@/queue/types.js';
 
 const logger = queueLogger.createSubLogger('export-mute');
@@ -15,7 +15,7 @@ const logger = queueLogger.createSubLogger('export-mute');
 export async function exportMute(job: Bull.Job<DbUserJobData>, done: any): Promise<void> {
 	logger.info(`Exporting mute of ${job.data.user.id} ...`);
 
-	const user = await Users.findOne(job.data.user.id);
+	const user = await Users.findOneBy({ id: job.data.user.id });
 	if (user == null) {
 		done();
 		return;
@@ -40,6 +40,7 @@ export async function exportMute(job: Bull.Job<DbUserJobData>, done: any): Promi
 		const mutes = await Mutings.find({
 			where: {
 				muterId: user.id,
+				expiresAt: IsNull(),
 				...(cursor ? { id: MoreThan(cursor) } : {}),
 			},
 			take: 100,
@@ -56,7 +57,7 @@ export async function exportMute(job: Bull.Job<DbUserJobData>, done: any): Promi
 		cursor = mutes[mutes.length - 1].id;
 
 		for (const mute of mutes) {
-			const u = await Users.findOne({ id: mute.muteeId });
+			const u = await Users.findOneBy({ id: mute.muteeId });
 			if (u == null) {
 				exportedCount++; continue;
 			}
@@ -75,7 +76,7 @@ export async function exportMute(job: Bull.Job<DbUserJobData>, done: any): Promi
 			exportedCount++;
 		}
 
-		const total = await Mutings.count({
+		const total = await Mutings.countBy({
 			muterId: user.id,
 		});
 

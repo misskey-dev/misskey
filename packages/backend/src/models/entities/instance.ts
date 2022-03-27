@@ -60,22 +60,6 @@ export class Instance {
 	public followersCount: number;
 
 	/**
-	 * ドライブ使用量
-	 */
-	@Column('bigint', {
-		default: 0,
-	})
-	public driveUsage: number;
-
-	/**
-	 * ドライブのファイル数
-	 */
-	@Column('integer', {
-		default: 0,
-	})
-	public driveFiles: number;
-
-	/**
 	 * 直近のリクエスト送信日時
 	 */
 	@Column('timestamp with time zone', {

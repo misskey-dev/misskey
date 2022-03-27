@@ -1,4 +1,5 @@
 import { DriveFile } from '@/models/entities/drive-file.js';
+import { Note } from '@/models/entities/note';
 import { User } from '@/models/entities/user.js';
 import { IActivity } from '@/remote/activitypub/type.js';
 import httpSignature from 'http-signature';
@@ -39,6 +40,10 @@ export type ObjectStorageJobData = ObjectStorageFileJobData | Record<string, unk
 
 export type ObjectStorageFileJobData = {
 	key: string;
+};
+
+export type EndedPollNotificationJobData = {
+	noteId: Note['id'];
 };
 
 export type ThinUser = {

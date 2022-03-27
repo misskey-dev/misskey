@@ -42,12 +42,12 @@ export default define(meta, paramDef, async (ps, user) => {
 		throw e;
 	});
 
-	const renotes = await Notes.find({
+	const renotes = await Notes.findBy({
 		userId: user.id,
 		renoteId: note.id,
 	});
 
 	for (const note of renotes) {
-		deleteNote(await Users.findOneOrFail(user.id), note);
+		deleteNote(await Users.findOneByOrFail({ id: user.id }), note);
 	}
 });
