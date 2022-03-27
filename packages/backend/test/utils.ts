@@ -7,7 +7,6 @@ import * as childProcess from 'child_process';
 import * as http from 'http';
 import loadConfig from '../src/config/load.js';
 import { SIGKILL } from 'constants';
-import { createConnection, getConnection } from 'typeorm';
 import { entities } from '../src/db/postgre.js';
 
 const config = loadConfig();

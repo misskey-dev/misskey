@@ -21,8 +21,8 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, user) => {
-	const profile = await UserProfiles.findOneOrFail(user.id);
-	const userDetailed = await Users.findOneOrFail(user.id);
+	const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
+	const userDetailed = await Users.findOneByOrFail({ id: user.id });
 	if (userDetailed.isDeleted) {
 		return;
 	}

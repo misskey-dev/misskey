@@ -97,14 +97,14 @@ export default define(meta, paramDef, async (ps, user) => {
 		})));
 	} else if (ps.groupId != null) {
 		// Fetch recipient (group)
-		const recipientGroup = await UserGroups.findOne(ps.groupId);
+		const recipientGroup = await UserGroups.findOneBy({ id: ps.groupId });
 
 		if (recipientGroup == null) {
 			throw new ApiError(meta.errors.noSuchGroup);
 		}
 
 		// check joined
-		const joining = await UserGroupJoinings.findOne({
+		const joining = await UserGroupJoinings.findOneBy({
 			userId: user.id,
 			userGroupId: recipientGroup.id,
 		});

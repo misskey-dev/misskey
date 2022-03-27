@@ -1,12 +1,11 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { db } from '@/db/postgre.js';
 import { App } from '@/models/entities/app.js';
 import { AccessTokens } from '../index.js';
 import { Packed } from '@/misc/schema.js';
 import { User } from '../entities/user.js';
 
-@EntityRepository(App)
-export class AppRepository extends Repository<App> {
-	public async pack(
+export const AppRepository = db.getRepository(App).extend({
+	async pack(
 		src: App['id'] | App,
 		me?: { id: User['id'] } | null | undefined,
 		options?: {
@@ -21,7 +20,7 @@ export class AppRepository extends Repository<App> {
 			includeProfileImageIds: false,
 		}, options);
 
-		const app = typeof src === 'object' ? src : await this.findOneOrFail(src);
+		const app = typeof src === 'object' ? src : await this.findOneByOrFail({ id: src });
 
 		return {
 			id: app.id,
@@ -30,11 +29,11 @@ export class AppRepository extends Repository<App> {
 			permission: app.permission,
 			...(opts.includeSecret ? { secret: app.secret } : {}),
 			...(me ? {
-				isAuthorized: await AccessTokens.count({
+				isAuthorized: await AccessTokens.countBy({
 					appId: app.id,
 					userId: me.id,
 				}).then(count => count > 0),
 			} : {}),
 		};
-	}
-}
+	},
+});

@@ -15,7 +15,7 @@ export default class PerUserNotesChart extends Chart<typeof schema> {
 
 	protected async tickMajor(group: string): Promise<Partial<KVs<typeof schema>>> {
 		const [count] = await Promise.all([
-			Notes.count({ userId: group }),
+			Notes.countBy({ userId: group }),
 		]);
 
 		return {

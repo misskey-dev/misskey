@@ -1,12 +1,12 @@
 import { Notes } from '@/models/index.js';
-import { IRemoteUser } from '@/models/entities/user.js';
+import { CacheableRemoteUser } from '@/models/entities/user.js';
 import { IAnnounce, getApId } from '../../type.js';
 import deleteNote from '@/services/note/delete.js';
 
-export const undoAnnounce = async (actor: IRemoteUser, activity: IAnnounce): Promise<string> => {
+export const undoAnnounce = async (actor: CacheableRemoteUser, activity: IAnnounce): Promise<string> => {
 	const uri = getApId(activity);
 
-	const note = await Notes.findOne({
+	const note = await Notes.findOneBy({
 		uri,
 	});
 

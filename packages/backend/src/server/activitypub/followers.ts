@@ -9,8 +9,7 @@ import renderOrderedCollectionPage from '@/remote/activitypub/renderer/ordered-c
 import renderFollowUser from '@/remote/activitypub/renderer/follow-user.js';
 import { setResponseType } from '../activitypub.js';
 import { Users, Followings, UserProfiles } from '@/models/index.js';
-import { LessThan } from 'typeorm';
-import { userCache } from './cache.js';
+import { IsNull, LessThan } from 'typeorm';
 
 export default async (ctx: Router.RouterContext) => {
 	const userId = ctx.params.user;
@@ -28,11 +27,10 @@ export default async (ctx: Router.RouterContext) => {
 		return;
 	}
 
-	// TODO: typeorm 3.0にしたら .then(x => x || null) は消せる
-	const user = await userCache.fetch(userId, () => Users.findOne({
+	const user = await Users.findOneBy({
 		id: userId,
-		host: null,
-	}).then(x => x || null));
+		host: IsNull(),
+	});
 
 	if (user == null) {
 		ctx.status = 404;
@@ -40,7 +38,7 @@ export default async (ctx: Router.RouterContext) => {
 	}
 
 	//#region Check ff visibility
-	const profile = await UserProfiles.findOneOrFail(user.id);
+	const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
 
 	if (profile.ffVisibility === 'private') {
 		ctx.status = 403;

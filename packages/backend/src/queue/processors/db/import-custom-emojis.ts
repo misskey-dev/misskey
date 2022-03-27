@@ -2,7 +2,6 @@ import Bull from 'bull';
 import * as tmp from 'tmp';
 import * as fs from 'node:fs';
 import unzipper from 'unzipper';
-import { getConnection } from 'typeorm';
 
 import { queueLogger } from '../../logger.js';
 import { downloadUrl } from '@/misc/download-url.js';
@@ -10,6 +9,7 @@ import { DriveFiles, Emojis } from '@/models/index.js';
 import { DbUserImportJobData } from '@/queue/types.js';
 import { addFile } from '@/services/drive/add-file.js';
 import { genId } from '@/misc/gen-id.js';
+import { db } from '@/db/postgre.js';
 
 const logger = queueLogger.createSubLogger('import-custom-emojis');
 
@@ -17,7 +17,7 @@ const logger = queueLogger.createSubLogger('import-custom-emojis');
 export async function importCustomEmojis(job: Bull.Job<DbUserImportJobData>, done: any): Promise<void> {
 	logger.info(`Importing custom emojis ...`);
 
-	const file = await DriveFiles.findOne({
+	const file = await DriveFiles.findOneBy({
 		id: job.data.fileId,
 	});
 	if (file == null) {
@@ -72,10 +72,10 @@ export async function importCustomEmojis(job: Bull.Job<DbUserImportJobData>, don
 				originalUrl: driveFile.url,
 				publicUrl: driveFile.webpublicUrl ?? driveFile.url,
 				type: driveFile.webpublicType ?? driveFile.type,
-			}).then(x => Emojis.findOneOrFail(x.identifiers[0]));
+			}).then(x => Emojis.findOneByOrFail(x.identifiers[0]));
 		}
 
-		await getConnection().queryResultCache!.remove(['meta_emojis']);
+		await db.queryResultCache!.remove(['meta_emojis']);
 
 		cleanup();
 	

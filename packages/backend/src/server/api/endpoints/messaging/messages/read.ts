@@ -29,7 +29,7 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, user) => {
-	const message = await MessagingMessages.findOne(ps.messageId);
+	const message = await MessagingMessages.findOneBy({ id: ps.messageId });
 
 	if (message == null) {
 		throw new ApiError(meta.errors.noSuchMessage);

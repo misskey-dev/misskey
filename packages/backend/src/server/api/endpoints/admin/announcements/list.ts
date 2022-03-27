@@ -69,7 +69,7 @@ export default define(meta, paramDef, async (ps) => {
 	const announcements = await query.take(ps.limit).getMany();
 
 	for (const announcement of announcements) {
-		(announcement as any).reads = await AnnouncementReads.count({
+		(announcement as any).reads = await AnnouncementReads.countBy({
 			announcementId: announcement.id,
 		});
 	}

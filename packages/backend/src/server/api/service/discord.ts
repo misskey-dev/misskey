@@ -10,6 +10,7 @@ import signin from '../common/signin.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
 import { Users, UserProfiles } from '@/models/index.js';
 import { ILocalUser } from '@/models/entities/user.js';
+import { IsNull } from 'typeorm';
 
 function getUserToken(ctx: Koa.BaseContext): string | null {
 	return ((ctx.headers['cookie'] || '').match(/igi=(\w+)/) || [null, null])[1];
@@ -40,12 +41,12 @@ router.get('/disconnect/discord', async ctx => {
 		return;
 	}
 
-	const user = await Users.findOneOrFail({
-		host: null,
+	const user = await Users.findOneByOrFail({
+		host: IsNull(),
 		token: userToken,
 	});
 
-	const profile = await UserProfiles.findOneOrFail(user.id);
+	const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
 
 	delete profile.integrations.discord;
 
@@ -206,7 +207,7 @@ router.get('/dc/cb', async ctx => {
 			},
 		});
 
-		signin(ctx, await Users.findOne(profile.userId) as ILocalUser, true);
+		signin(ctx, await Users.findOneBy({ id: profile.userId }) as ILocalUser, true);
 	} else {
 		const code = ctx.query.code;
 
@@ -252,12 +253,12 @@ router.get('/dc/cb', async ctx => {
 			return;
 		}
 
-		const user = await Users.findOneOrFail({
-			host: null,
+		const user = await Users.findOneByOrFail({
+			host: IsNull(),
 			token: userToken,
 		});
 
-		const profile = await UserProfiles.findOneOrFail(user.id);
+		const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
 
 		await UserProfiles.update(user.id, {
 			integrations: {

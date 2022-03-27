@@ -1,11 +1,11 @@
 import define from '../../../define.js';
 import { Emojis, DriveFiles } from '@/models/index.js';
 import { genId } from '@/misc/gen-id.js';
-import { getConnection } from 'typeorm';
 import { insertModerationLog } from '@/services/insert-moderation-log.js';
 import { ApiError } from '../../../error.js';
 import rndstr from 'rndstr';
 import { publishBroadcastStream } from '@/services/stream.js';
+import { db } from '@/db/postgre.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -32,7 +32,7 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, me) => {
-	const file = await DriveFiles.findOne(ps.fileId);
+	const file = await DriveFiles.findOneBy({ id: ps.fileId });
 
 	if (file == null) throw new ApiError(meta.errors.noSuchFile);
 
@@ -48,9 +48,9 @@ export default define(meta, paramDef, async (ps, me) => {
 		originalUrl: file.url,
 		publicUrl: file.webpublicUrl ?? file.url,
 		type: file.webpublicType ?? file.type,
-	}).then(x => Emojis.findOneOrFail(x.identifiers[0]));
+	}).then(x => Emojis.findOneByOrFail(x.identifiers[0]));
 
-	await getConnection().queryResultCache!.remove(['meta_emojis']);
+	await db.queryResultCache!.remove(['meta_emojis']);
 
 	publishBroadcastStream('emojiAdded', {
 		emoji: await Emojis.pack(emoji.id),

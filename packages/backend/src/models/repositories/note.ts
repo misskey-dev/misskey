@@ -1,4 +1,4 @@
-import { EntityRepository, Repository, In } from 'typeorm';
+import { In } from 'typeorm';
 import * as mfm from 'mfm-js';
 import { Note } from '@/models/entities/note.js';
 import { User } from '@/models/entities/user.js';
@@ -9,10 +9,133 @@ import { awaitAll } from '@/prelude/await-all.js';
 import { convertLegacyReaction, convertLegacyReactions, decodeReaction } from '@/misc/reaction-lib.js';
 import { NoteReaction } from '@/models/entities/note-reaction.js';
 import { aggregateNoteEmojis, populateEmojis, prefetchEmojis } from '@/misc/populate-emojis.js';
+import { db } from '@/db/postgre.js';
 
-@EntityRepository(Note)
-export class NoteRepository extends Repository<Note> {
-	public async isVisibleForMe(note: Note, meId: User['id'] | null): Promise<boolean> {
+async function hideNote(packedNote: Packed<'Note'>, meId: User['id'] | null) {
+	// TODO: isVisibleForMe を使うようにしても良さそう(型違うけど)
+	let hide = false;
+
+	// visibility が specified かつ自分が指定されていなかったら非表示
+	if (packedNote.visibility === 'specified') {
+		if (meId == null) {
+			hide = true;
+		} else if (meId === packedNote.userId) {
+			hide = false;
+		} else {
+			// 指定されているかどうか
+			const specified = packedNote.visibleUserIds!.some((id: any) => meId === id);
+
+			if (specified) {
+				hide = false;
+			} else {
+				hide = true;
+			}
+		}
+	}
+
+	// visibility が followers かつ自分が投稿者のフォロワーでなかったら非表示
+	if (packedNote.visibility === 'followers') {
+		if (meId == null) {
+			hide = true;
+		} else if (meId === packedNote.userId) {
+			hide = false;
+		} else if (packedNote.reply && (meId === packedNote.reply.userId)) {
+			// 自分の投稿に対するリプライ
+			hide = false;
+		} else if (packedNote.mentions && packedNote.mentions.some(id => meId === id)) {
+			// 自分へのメンション
+			hide = false;
+		} else {
+			// フォロワーかどうか
+			const following = await Followings.findOneBy({
+				followeeId: packedNote.userId,
+				followerId: meId,
+			});
+
+			if (following == null) {
+				hide = true;
+			} else {
+				hide = false;
+			}
+		}
+	}
+
+	if (hide) {
+		packedNote.visibleUserIds = undefined;
+		packedNote.fileIds = [];
+		packedNote.files = [];
+		packedNote.text = null;
+		packedNote.poll = undefined;
+		packedNote.cw = null;
+		packedNote.isHidden = true;
+	}
+}
+
+async function populatePoll(note: Note, meId: User['id'] | null) {
+	const poll = await Polls.findOneByOrFail({ noteId: note.id });
+	const choices = poll.choices.map(c => ({
+		text: c,
+		votes: poll.votes[poll.choices.indexOf(c)],
+		isVoted: false,
+	}));
+
+	if (meId) {
+		if (poll.multiple) {
+			const votes = await PollVotes.findBy({
+				userId: meId,
+				noteId: note.id,
+			});
+
+			const myChoices = votes.map(v => v.choice);
+			for (const myChoice of myChoices) {
+				choices[myChoice].isVoted = true;
+			}
+		} else {
+			const vote = await PollVotes.findOneBy({
+				userId: meId,
+				noteId: note.id,
+			});
+
+			if (vote) {
+				choices[vote.choice].isVoted = true;
+			}
+		}
+	}
+
+	return {
+		multiple: poll.multiple,
+		expiresAt: poll.expiresAt,
+		choices,
+	};
+}
+
+async function populateMyReaction(note: Note, meId: User['id'], _hint_?: {
+	myReactions: Map<Note['id'], NoteReaction | null>;
+}) {
+	if (_hint_?.myReactions) {
+		const reaction = _hint_.myReactions.get(note.id);
+		if (reaction) {
+			return convertLegacyReaction(reaction.reaction);
+		} else if (reaction === null) {
+			return undefined;
+		}
+		// 実装上抜けがあるだけかもしれないので、「ヒントに含まれてなかったら(=undefinedなら)return」のようにはしない
+	}
+
+	const reaction = await NoteReactions.findOneBy({
+		userId: meId,
+		noteId: note.id,
+	});
+
+	if (reaction) {
+		return convertLegacyReaction(reaction.reaction);
+	}
+
+	return undefined;
+}
+
+export const NoteRepository = db.getRepository(Note).extend({
+	async isVisibleForMe(note: Note, meId: User['id'] | null): Promise<boolean> {
 		// visibility が specified かつ自分が指定されていなかったら非表示
 		if (note.visibility === 'specified') {
 			if (meId == null) {
@@ -45,7 +168,7 @@ export class NoteRepository extends Repository<Note> {
 				return true;
 			} else {
 				// フォロワーかどうか
-				const following = await Followings.findOne({
+				const following = await Followings.findOneBy({
 					followeeId: note.userId,
 					followerId: meId,
 				});
@@ -59,69 +182,9 @@ export class NoteRepository extends Repository<Note> {
 		}
 
 		return true;
-	}
+	},
 
-	private async hideNote(packedNote: Packed<'Note'>, meId: User['id'] | null) {
-		// TODO: isVisibleForMe を使うようにしても良さそう(型違うけど)
-		let hide = false;
-
-		// visibility が specified かつ自分が指定されていなかったら非表示
-		if (packedNote.visibility === 'specified') {
-			if (meId == null) {
-				hide = true;
-			} else if (meId === packedNote.userId) {
-				hide = false;
-			} else {
-				// 指定されているかどうか
-				const specified = packedNote.visibleUserIds!.some((id: any) => meId === id);
-
-				if (specified) {
-					hide = false;
-				} else {
-					hide = true;
-				}
-			}
-		}
-
-		// visibility が followers かつ自分が投稿者のフォロワーでなかったら非表示
-		if (packedNote.visibility === 'followers') {
-			if (meId == null) {
-				hide = true;
-			} else if (meId === packedNote.userId) {
-				hide = false;
-			} else if (packedNote.reply && (meId === packedNote.reply.userId)) {
-				// 自分の投稿に対するリプライ
-				hide = false;
-			} else if (packedNote.mentions && packedNote.mentions.some(id => meId === id)) {
-				// 自分へのメンション
-				hide = false;
-			} else {
-				// フォロワーかどうか
-				const following = await Followings.findOne({
-					followeeId: packedNote.userId,
-					followerId: meId,
-				});
-
-				if (following == null) {
-					hide = true;
-				} else {
-					hide = false;
-				}
-			}
-		}
-
-		if (hide) {
-			packedNote.visibleUserIds = undefined;
-			packedNote.fileIds = [];
-			packedNote.files = [];
-			packedNote.text = null;
-			packedNote.poll = undefined;
-			packedNote.cw = null;
-			packedNote.isHidden = true;
-		}
-	}
-
-	public async pack(
+	async pack(
 		src: Note['id'] | Note,
 		me?: { id: User['id'] } | null | undefined,
 		options?: {
@@ -138,67 +201,8 @@ export class NoteRepository extends Repository<Note> {
 		}, options);
 
 		const meId = me ? me.id : null;
-		const note = typeof src === 'object' ? src : await this.findOneOrFail(src);
+		const note = typeof src === 'object' ? src : await this.findOneByOrFail({ id: src });
 		const host = note.userHost;
-
-		async function populatePoll() {
-			const poll = await Polls.findOneOrFail(note.id);
-			const choices = poll.choices.map(c => ({
-				text: c,
-				votes: poll.votes[poll.choices.indexOf(c)],
-				isVoted: false,
-			}));
-
-			if (poll.multiple) {
-				const votes = await PollVotes.find({
-					userId: meId!,
-					noteId: note.id,
-				});
-
-				const myChoices = votes.map(v => v.choice);
-				for (const myChoice of myChoices) {
-					choices[myChoice].isVoted = true;
-				}
-			} else {
-				const vote = await PollVotes.findOne({
-					userId: meId!,
-					noteId: note.id,
-				});
-
-				if (vote) {
-					choices[vote.choice].isVoted = true;
-				}
-			}
-
-			return {
-				multiple: poll.multiple,
-				expiresAt: poll.expiresAt,
-				choices,
-			};
-		}
-
-		async function populateMyReaction() {
-			if (options?._hint_?.myReactions) {
-				const reaction = options._hint_.myReactions.get(note.id);
-				if (reaction) {
-					return convertLegacyReaction(reaction.reaction);
-				} else if (reaction === null) {
-					return undefined;
-				}
-				// 実装上抜けがあるだけかもしれないので、「ヒントに含まれてなかったら(=undefinedなら)return」のようにはしない
-			}
-
-			const reaction = await NoteReactions.findOne({
-				userId: meId!,
-				noteId: note.id,
-			});
-
-			if (reaction) {
-				return convertLegacyReaction(reaction.reaction);
-			}
-
-			return undefined;
-		}
 
 		let text = note.text;
 
@@ -209,7 +213,7 @@ export class NoteRepository extends Repository<Note> {
 		const channel = note.channelId
 			? note.channel
 				? note.channel
-				: await Channels.findOne(note.channelId)
+				: await Channels.findOneBy({ id: note.channelId })
 			: null;
 
 		const reactionEmojiNames = Object.keys(note.reactions).filter(x => x?.startsWith(':')).map(x => decodeReaction(x).reaction).map(x => x.replace(/:/g, ''));
@@ -255,10 +259,10 @@ export class NoteRepository extends Repository<Note> {
 					_hint_: options?._hint_,
 				}) : undefined,
 
-				poll: note.hasPoll ? populatePoll() : undefined,
+				poll: note.hasPoll ? populatePoll(note, meId) : undefined,
 
 				...(meId ? {
-					myReaction: populateMyReaction(),
+					myReaction: populateMyReaction(note, meId, options?._hint_),
 				} : {}),
 			} : {}),
 		});
@@ -275,13 +279,13 @@ export class NoteRepository extends Repository<Note> {
 		}
 
 		if (!opts.skipHide) {
-			await this.hideNote(packed, meId);
+			await hideNote(packed, meId);
 		}
 
 		return packed;
-	}
+	},
 
-	public async packMany(
+	async packMany(
 		notes: Note[],
 		me?: { id: User['id'] } | null | undefined,
 		options?: {
@@ -296,7 +300,7 @@ export class NoteRepository extends Repository<Note> {
 		if (meId) {
 			const renoteIds = notes.filter(n => n.renoteId != null).map(n => n.renoteId!);
 			const targets = [...notes.map(n => n.id), ...renoteIds];
-			const myReactions = await NoteReactions.find({
+			const myReactions = await NoteReactions.findBy({
 				userId: meId,
 				noteId: In(targets),
 			});
@@ -314,5 +318,5 @@ export class NoteRepository extends Repository<Note> {
 				myReactions: myReactionsMap,
 			},
 		})));
-	}
-}
+	},
+});

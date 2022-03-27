@@ -11,7 +11,7 @@ export async function injectFeatured(timeline: Note[], user?: User | null) {
 	if (timeline.length < 5) return;
 
 	if (user) {
-		const profile = await UserProfiles.findOneOrFail(user.id);
+		const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
 		if (!profile.injectFeaturedNote) return;
 	}
 

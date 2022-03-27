@@ -36,7 +36,7 @@ export default function(ctx: Koa.Context, user: ILocalUser, redirect = false) {
 			ip: ctx.ip,
 			headers: ctx.headers,
 			success: true,
-		}).then(x => Signins.findOneOrFail(x.identifiers[0]));
+		}).then(x => Signins.findOneByOrFail(x.identifiers[0]));
 
 		// Publish signin event
 		publishMainStream(user.id, 'signin', await Signins.pack(record));

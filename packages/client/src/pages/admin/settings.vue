@@ -210,7 +210,7 @@ export default defineComponent({
 
 	methods: {
 		async init() {
-			const meta = await os.api('meta', { detail: true });
+			const meta = await os.api('admin/meta');
 			this.name = meta.name;
 			this.description = meta.description;
 			this.tosUrl = meta.tosUrl;

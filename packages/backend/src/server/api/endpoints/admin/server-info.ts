@@ -1,8 +1,8 @@
 import * as os from 'node:os';
 import si from 'systeminformation';
-import { getConnection } from 'typeorm';
 import define from '../../define.js';
 import { redisClient } from '../../../../db/redis.js';
+import { db } from '@/db/postgre.js';
 
 export const meta = {
 	requireCredential: true,
@@ -103,7 +103,7 @@ export default define(meta, paramDef, async () => {
 		machine: os.hostname(),
 		os: os.platform(),
 		node: process.version,
-		psql: await getConnection().query('SHOW server_version').then(x => x[0].server_version),
+		psql: await db.query('SHOW server_version').then(x => x[0].server_version),
 		redis: redisClient.server_info.redis_version,
 		cpu: {
 			model: os.cpus()[0].model,
