@@ -60,7 +60,7 @@ export default defineComponent({
 
 	methods: {
 		async init() {
-			const meta = await os.api('meta', { detail: true });
+			const meta = await os.api('admin/meta');
 			this.uri = meta.uri;
 			this.enableTwitterIntegration = meta.enableTwitterIntegration;
 			this.twitterConsumerKey = meta.twitterConsumerKey;

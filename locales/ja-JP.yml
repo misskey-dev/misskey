@@ -840,6 +840,8 @@ tenMinutes: "10分"
 oneHour: "1時間"
 oneDay: "1日"
 oneWeek: "1週間"
+reflectMayTakeTime: "反映されるまで時間がかかる場合があります。"
+failedToFetchAccountInformation: "アカウント情報の取得に失敗しました"
 
 _emailUnavailable:
   used: "既に使用されています"

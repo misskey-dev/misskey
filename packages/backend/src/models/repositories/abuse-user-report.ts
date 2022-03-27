@@ -1,14 +1,13 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { db } from '@/db/postgre.js';
 import { Users } from '../index.js';
 import { AbuseUserReport } from '@/models/entities/abuse-user-report.js';
 import { awaitAll } from '@/prelude/await-all.js';
 
-@EntityRepository(AbuseUserReport)
-export class AbuseUserReportRepository extends Repository<AbuseUserReport> {
-	public async pack(
+export const AbuseUserReportRepository = db.getRepository(AbuseUserReport).extend({
+	async pack(
 		src: AbuseUserReport['id'] | AbuseUserReport,
 	) {
-		const report = typeof src === 'object' ? src : await this.findOneOrFail(src);
+		const report = typeof src === 'object' ? src : await this.findOneByOrFail({ id: src });
 
 		return await awaitAll({
 			id: report.id,
@@ -29,11 +28,11 @@ export class AbuseUserReportRepository extends Repository<AbuseUserReport> {
 			}) : null,
 			forwarded: report.forwarded,
 		});
-	}
+	},
 
-	public packMany(
+	packMany(
 		reports: any[],
 	) {
 		return Promise.all(reports.map(x => this.pack(x)));
-	}
-}
+	},
+});

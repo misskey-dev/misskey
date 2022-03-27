@@ -1,13 +1,13 @@
 import { publishNoteStream } from '@/services/stream.js';
-import { User } from '@/models/entities/user.js';
+import { CacheableUser, User } from '@/models/entities/user.js';
 import { Note } from '@/models/entities/note.js';
 import { PollVotes, NoteWatchings, Polls, Blockings } from '@/models/index.js';
 import { Not } from 'typeorm';
 import { genId } from '@/misc/gen-id.js';
 import { createNotification } from '../../create-notification.js';
 
-export default async function(user: User, note: Note, choice: number) {
-	const poll = await Polls.findOne(note.id);
+export default async function(user: CacheableUser, note: Note, choice: number) {
+	const poll = await Polls.findOneBy({ noteId: note.id });
 
 	if (poll == null) throw new Error('poll not found');
 
@@ -16,7 +16,7 @@ export default async function(user: User, note: Note, choice: number) {
 
 	// Check blocking
 	if (note.userId !== user.id) {
-		const block = await Blockings.findOne({
+		const block = await Blockings.findOneBy({
 			blockerId: note.userId,
 			blockeeId: user.id,
 		});
@@ -26,7 +26,7 @@ export default async function(user: User, note: Note, choice: number) {
 	}
 
 	// if already voted
-	const exist = await PollVotes.find({
+	const exist = await PollVotes.findBy({
 		noteId: note.id,
 		userId: user.id,
 	});
@@ -65,7 +65,7 @@ export default async function(user: User, note: Note, choice: number) {
 	});
 
 	// Fetch watchers
-	NoteWatchings.find({
+	NoteWatchings.findBy({
 		noteId: note.id,
 		userId: Not(user.id),
 	})

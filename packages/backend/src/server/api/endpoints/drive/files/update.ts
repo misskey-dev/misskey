@@ -1,7 +1,7 @@
 import { publishDriveStream } from '@/services/stream.js';
 import define from '../../../define.js';
 import { ApiError } from '../../../error.js';
-import { DriveFiles, DriveFolders } from '@/models/index.js';
+import { DriveFiles, DriveFolders, Users } from '@/models/index.js';
 import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/misc/hard-limits.js';
 
 export const meta = {
@@ -58,13 +58,13 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, user) => {
-	const file = await DriveFiles.findOne(ps.fileId);
+	const file = await DriveFiles.findOneBy({ id: ps.fileId });
 
 	if (file == null) {
 		throw new ApiError(meta.errors.noSuchFile);
 	}
 
-	if (!user.isAdmin && !user.isModerator && (file.userId !== user.id)) {
+	if ((!user.isAdmin && !user.isModerator) && (file.userId !== user.id)) {
 		throw new ApiError(meta.errors.accessDenied);
 	}
 
@@ -81,7 +81,7 @@ export default define(meta, paramDef, async (ps, user) => {
 		if (ps.folderId === null) {
 			file.folderId = null;
 		} else {
-			const folder = await DriveFolders.findOne({
+			const folder = await DriveFolders.findOneBy({
 				id: ps.folderId,
 				userId: user.id,
 			});

@@ -13,7 +13,7 @@
 			</FormTextarea>
 		</div>
 		<div v-show="tab === 'hard'">
-			<MkInfo class="_formBlock">{{ $ts._wordMute.hardDescription }}</MkInfo>
+			<MkInfo class="_formBlock">{{ $ts._wordMute.hardDescription }} {{ $ts.reflectMayTakeTime }}</MkInfo>
 			<FormTextarea v-model="hardMutedWords" class="_formBlock">
 				<span>{{ $ts._wordMute.muteWords }}</span>
 				<template #caption>{{ $ts._wordMute.muteWordsDescription }}<br>{{ $ts._wordMute.muteWordsDescription2 }}</template>

@@ -7,10 +7,10 @@
 		<MkSelect v-model="src" class="_formBlock">
 			<template #label>{{ $ts.antennaSource }}</template>
 			<option value="all">{{ $ts._antennaSources.all }}</option>
-			<option value="home">{{ $ts._antennaSources.homeTimeline }}</option>
+			<!--<option value="home">{{ $ts._antennaSources.homeTimeline }}</option>-->
 			<option value="users">{{ $ts._antennaSources.users }}</option>
-			<option value="list">{{ $ts._antennaSources.userList }}</option>
-			<option value="group">{{ $ts._antennaSources.userGroup }}</option>
+			<!--<option value="list">{{ $ts._antennaSources.userList }}</option>-->
+			<!--<option value="group">{{ $ts._antennaSources.userGroup }}</option>-->
 		</MkSelect>
 		<MkSelect v-if="src === 'list'" v-model="userListId" class="_formBlock">
 			<template #label>{{ $ts.userList }}</template>
