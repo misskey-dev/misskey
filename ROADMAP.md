@@ -2,7 +2,9 @@
 The order of individual tasks is a guide only and is subject to change depending on the situation.
 Also, the later tasks are more indefinite and are subject to change as development progresses.
 
-## (1) Improve maintainability \<current stage\>
+## (1) Improve maintainability \<current phase\>
+This is the phase we are at now. We need to make a high-maintenance environment that can withstand future development.
+
 - Make the number of type errors zero (backend)
   - Probably need to switch some libraries to others that make it difficult to reduce type errors
     - e.g. koa to fastify https://github.com/misskey-dev/misskey/issues/7537
@@ -15,8 +17,12 @@ Also, the later tasks are more indefinite and are subject to change as developme
 - Improve documentation
 
 ## (2) Improve functionality
+Once Phase 1 is complete and an environment conducive to the development of a stable system is in place, the implementation of new functions can begin gradually.
+
 - OAuth2 support https://github.com/misskey-dev/misskey/issues/8262
 - GraphQL support?
 
 ## (3) Improve scalability
+Once the development of the feature has settled down, this may be an opportunity to make larger modifications.
+
 - Rewriting in Rust?
