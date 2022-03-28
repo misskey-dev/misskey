@@ -372,7 +372,7 @@ function onDrop(e) {
 
 	> div {
 		height: calc(100% - var(--deckColumnHeaderHeight));
-		overflow: auto;
+		overflow-y: auto;
 		overflow-x: hidden;
 		overflow-x: clip;
 		-webkit-overflow-scrolling: touch;
