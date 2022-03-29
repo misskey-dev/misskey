@@ -909,6 +909,7 @@ _poll:
   noMore: "Oni ne povas aldoni pli"
   canMultipleVote: "Permesi plurelekton"
   expiration: "Limtempo"
+  infinite: "Por ĉiam"
   votesCount: "{n} voĉoj"
   totalVotes: "Sume {n} voĉoj"
   vote: "Voĉdoni"
