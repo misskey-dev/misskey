@@ -46,6 +46,11 @@ export type EndedPollNotificationJobData = {
 	noteId: Note['id'];
 };
 
+export type WebhookDeliverJobData = {
+	content: unknown;
+	to: string;
+};
+
 export type ThinUser = {
 	id: User['id'];
 };
