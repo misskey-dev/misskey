@@ -20,6 +20,9 @@ You should also include the user name that made the change.
 ### Bugfixes
 - API: fix endpoint endpoint @Johann150
 - API: fix admin/meta endpoint @syuilo
+- API: improved validation and documentation for endpoints that accept different variants of input @Johann150
+- API: `notes/create`: The `mediaIds` property is now deprecated. @Johann150
+  - Use `fileIds` instead, it has the same behaviour.
 
 ## 12.108.1 (2022/03/12)
 
