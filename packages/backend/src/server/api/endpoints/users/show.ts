@@ -46,15 +46,29 @@ export const meta = {
 
 export const paramDef = {
 	type: 'object',
-	properties: {
-		userId: { type: 'string', format: 'misskey:id' },
-		userIds: { type: 'array', uniqueItems: true, items: {
-			type: 'string', format: 'misskey:id',
-		} },
-		username: { type: 'string' },
-		host: { type: 'string', nullable: true },
-	},
-	required: [],
+	anyOf: [
+		{
+			properties: {
+				userId: { type: 'string', format: 'misskey:id' },
+			},
+			required: ['userId'],
+		},
+		{
+			properties: {
+				userIds: { type: 'array', uniqueItems: true, items: {
+					type: 'string', format: 'misskey:id',
+				} },
+			},
+			required: ['userIds'],
+		},
+		{
+			properties: {
+				username: { type: 'string' },
+				host: { type: 'string', nullable: true },
+			},
+			required: ['username', 'host'],
+		},
+	],
 } as const;
 
 // eslint-disable-next-line import/no-default-export

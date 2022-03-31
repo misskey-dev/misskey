@@ -25,12 +25,6 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
-		tag: { type: 'string' },
-		query: { type: 'array', items: {
-			type: 'array', items: {
-				type: 'string',
-			},
-		} },
 		reply: { type: 'boolean', nullable: true, default: null },
 		renote: { type: 'boolean', nullable: true, default: null },
 		withFiles: {
@@ -43,7 +37,32 @@ export const paramDef = {
 		untilId: { type: 'string', format: 'misskey:id' },
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 	},
-	required: [],
+	anyOf: [
+		{
+			properties: {
+				tag: { type: 'string', minLength: 1 },
+			},
+			required: ['tag'],
+		},
+		{
+			properties: {
+				query: {
+					type: 'array',
+					description: 'The outer arrays are chained with OR, the inner arrays are chained with AND.',
+					items: {
+						type: 'array',
+						items: {
+							type: 'string',
+							minLength: 1,
+						},
+						minItems: 1,
+					},
+					minItems: 1,
+				},
+			},
+			required: ['query'],
+		},
+	],
 } as const;
 
 // eslint-disable-next-line import/no-default-export

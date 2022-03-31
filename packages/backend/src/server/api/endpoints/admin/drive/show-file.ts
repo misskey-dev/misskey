@@ -151,11 +151,20 @@ export const meta = {
 
 export const paramDef = {
 	type: 'object',
-	properties: {
-		fileId: { type: 'string', format: 'misskey:id' },
-		url: { type: 'string' },
-	},
-	required: [],
+	anyOf: [
+		{
+			properties: {
+				fileId: { type: 'string', format: 'misskey:id' },
+			},
+			required: ['fileId'],
+		},
+		{
+			properties: {
+				url: { type: 'string' },
+			},
+			required: ['url'],
+		},
+	],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
