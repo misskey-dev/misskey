@@ -64,7 +64,11 @@ export const paramDef = {
 		{
 			properties: {
 				username: { type: 'string' },
-				host: { type: 'string', nullable: true },
+				host: {
+					type: 'string',
+					nullable: true,
+					description: 'The local host is represented with `null`.',
+				},
 			},
 			required: ['username', 'host'],
 		},

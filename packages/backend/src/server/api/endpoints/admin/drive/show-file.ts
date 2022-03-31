@@ -40,6 +40,7 @@ export const meta = {
 			userHost: {
 				type: 'string',
 				optional: false, nullable: true,
+				description: 'The local host is represented with `null`.',
 			},
 			md5: {
 				type: 'string',
