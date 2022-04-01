@@ -19,6 +19,7 @@ You should also include the user name that made the change.
 
 ### Bugfixes
 - API: fix endpoint endpoint @Johann150
+- API: fix admin/meta endpoint @syuilo
 
 ## 12.108.1 (2022/03/12)
 
