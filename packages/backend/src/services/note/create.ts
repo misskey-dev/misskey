@@ -347,6 +347,16 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 
 		publishNotesStream(noteObj);
 
+		getActiveWebhooks().then(webhooks => {
+			webhooks = webhooks.filter(x => x.userId === user.id && x.on.includes('note'));
+			for (const webhook of webhooks) {
+				webhookDeliver(webhook, {
+					type: 'note',
+					note: noteObj,
+				});
+			}
+		});
+
 		const nm = new NotificationManager(user, note);
 		const nmRelatedPromises = [];
 
