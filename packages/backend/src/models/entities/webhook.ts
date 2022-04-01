@@ -54,4 +54,20 @@ export class Webhook {
 		default: true,
 	})
 	public active: boolean;
+
+	/**
+	 * 直近のリクエスト送信日時
+	 */
+	@Column('timestamp with time zone', {
+		nullable: true,
+	})
+	public latestSentAt: Date | null;
+
+	/**
+	 * 直近のリクエスト送信時のHTTPステータスコード
+	 */
+	@Column('integer', {
+		nullable: true,
+	})
+	public latestStatus: number | null;
 }

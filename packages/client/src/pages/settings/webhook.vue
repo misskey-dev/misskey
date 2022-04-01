@@ -10,6 +10,11 @@
 		<MkPagination :pagination="pagination">
 			<template v-slot="{items}">
 				<FormLink v-for="webhook in items" :key="webhook.id" :to="`/settings/webhook/edit?id=${webhook.id}`">
+					<template #icon>
+						<i v-if="webhook.active === false" class="fas fa-circle-pause"></i>
+						<i v-else-if="[200, 201, 204].includes(webhook.latestStatus)" class="fas fa-check" :style="{ color: 'var(--success)' }"></i>
+						<i v-else class="fas fa-triangle-exclamation" :style="{ color: 'var(--error)' }"></i>
+					</template>
 					{{ webhook.name || webhook.url }}
 				</FormLink>
 			</template>

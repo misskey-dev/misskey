@@ -16,6 +16,7 @@ import { getJobInfo } from './get-job-info.js';
 import { systemQueue, dbQueue, deliverQueue, inboxQueue, objectStorageQueue, endedPollNotificationQueue, webhookDeliverQueue } from './queues.js';
 import { ThinUser } from './types.js';
 import { IActivity } from '@/remote/activitypub/type.js';
+import { Webhook } from '@/models/entities/webhook.js';
 
 function renderError(e: Error): any {
 	return {
@@ -261,10 +262,12 @@ export function createCleanRemoteFilesJob() {
 	});
 }
 
-export function webhookDeliver(content: unknown, to: string) {
+export function webhookDeliver(webhook: Webhook, content: unknown) {
 	const data = {
 		content,
-		to,
+		webhookId: webhook.id,
+		to: webhook.url,
+		secret: webhook.secret,
 	};
 
 	return webhookDeliverQueue.add(data, {

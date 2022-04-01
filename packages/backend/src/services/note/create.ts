@@ -370,10 +370,10 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 
 					const webhooks = (await getActiveWebhooks()).filter(x => x.userId === data.reply!.userId && x.on.includes('reply'));
 					for (const webhook of webhooks) {
-						webhookDeliver({
+						webhookDeliver(webhook, {
 							type: 'reply',
 							note: noteObj,
-						}, webhook.url);
+						});
 					}
 				}
 			}
@@ -397,10 +397,10 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 
 				const webhooks = (await getActiveWebhooks()).filter(x => x.userId === data.renote!.userId && x.on.includes('renote'));
 				for (const webhook of webhooks) {
-					webhookDeliver({
+					webhookDeliver(webhook, {
 						type: 'renote',
 						note: noteObj,
-					}, webhook.url);
+					});
 				}
 			}
 		}
@@ -640,10 +640,10 @@ async function createMentionedEvents(mentionedUsers: MinimumUser[], note: Note, 
 
 		const webhooks = (await getActiveWebhooks()).filter(x => x.userId === u.id && x.on.includes('mention'));
 		for (const webhook of webhooks) {
-			webhookDeliver({
+			webhookDeliver(webhook, {
 				type: 'mention',
 				note: detailPackedNote,
-			}, webhook.url);
+			});
 		}
 
 		// Create notification
