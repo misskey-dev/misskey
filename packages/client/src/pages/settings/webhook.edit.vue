@@ -20,6 +20,7 @@
 		<FormSwitch v-model="event_followed" class="_formBlock">Followed</FormSwitch>
 		<FormSwitch v-model="event_note" class="_formBlock">Note</FormSwitch>
 		<FormSwitch v-model="event_reply" class="_formBlock">Reply</FormSwitch>
+		<FormSwitch v-model="event_renote" class="_formBlock">Renote</FormSwitch>
 		<FormSwitch v-model="event_reaction" class="_formBlock">Reaction</FormSwitch>
 		<FormSwitch v-model="event_mention" class="_formBlock">Mention</FormSwitch>
 	</FormSection>
@@ -55,6 +56,7 @@ let event_follow = $ref(webhook.on.includes('follow'));
 let event_followed = $ref(webhook.on.includes('followed'));
 let event_note = $ref(webhook.on.includes('note'));
 let event_reply = $ref(webhook.on.includes('reply'));
+let event_renote = $ref(webhook.on.includes('renote'));
 let event_reaction = $ref(webhook.on.includes('reaction'));
 let event_mention = $ref(webhook.on.includes('mention'));
 
@@ -64,6 +66,7 @@ async function save(): Promise<void> {
 	if (event_followed) events.push('followed');
 	if (event_note) events.push('note');
 	if (event_reply) events.push('reply');
+	if (event_renote) events.push('renote');
 	if (event_reaction) events.push('reaction');
 	if (event_mention) events.push('mention');
 
