@@ -85,7 +85,7 @@ export default class DeliverManager {
 		Process follower recipes first to avoid duplication when processing
 		direct recipes later.
 		*/
-		if (this.recipes.some(r => isFollowers(r)) {
+		if (this.recipes.some(r => isFollowers(r))) {
 			// followers deliver
 			// TODO: SELECT DISTINCT ON ("followerSharedInbox") "followerSharedInbox" みたいな問い合わせにすればよりパフォーマンス向上できそう
 			// ただ、sharedInboxがnullなリモートユーザーも稀におり、その対応ができなさそう？
