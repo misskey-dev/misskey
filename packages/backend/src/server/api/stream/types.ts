@@ -15,6 +15,7 @@ import { AbuseUserReport } from '@/models/entities/abuse-user-report.js';
 import { Signin } from '@/models/entities/signin.js';
 import { Page } from '@/models/entities/page.js';
 import { Packed } from '@/misc/schema.js';
+import { Webhook } from '@/models/entities/webhook';
 
 //#region Stream type-body definitions
 export interface InternalStreamTypes {
@@ -23,6 +24,9 @@ export interface InternalStreamTypes {
 	userChangeModeratorState: { id: User['id']; isModerator: User['isModerator']; };
 	userTokenRegenerated: { id: User['id']; oldToken: User['token']; newToken: User['token']; };
 	remoteUserUpdated: { id: User['id']; };
+	webhookCreated: Webhook;
+	webhookDeleted: Webhook;
+	webhookUpdated: Webhook;
 	antennaCreated: Antenna;
 	antennaDeleted: Antenna;
 	antennaUpdated: Antenna;

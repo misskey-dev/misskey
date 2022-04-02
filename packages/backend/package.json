@@ -5,7 +5,7 @@
 	"scripts": {
 		"build": "tsc -p tsconfig.json || echo done. && tsc-alias -p tsconfig.json",
 		"watch": "node watch.mjs",
-		"lint": "eslint --quiet src/**/*.ts",
+		"lint": "eslint --quiet 'src/**/*.ts'",
 		"mocha": "cross-env TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT=\"./test/tsconfig.json\" mocha",
 		"test": "npm run mocha"
 	},
@@ -65,15 +65,15 @@
 		"@types/web-push": "3.3.2",
 		"@types/websocket": "1.0.5",
 		"@types/ws": "8.5.3",
-		"@typescript-eslint/eslint-plugin": "5.16.0",
-		"@typescript-eslint/parser": "5.16.0",
-		"@bull-board/koa": "3.10.1",
+		"@typescript-eslint/eslint-plugin": "5.17.0",
+		"@typescript-eslint/parser": "5.17.0",
+		"@bull-board/koa": "3.10.2",
 		"abort-controller": "3.0.0",
 		"ajv": "8.11.0",
 		"archiver": "5.3.0",
 		"autobind-decorator": "2.4.0",
 		"autwh": "0.1.0",
-		"aws-sdk": "2.1100.0",
+		"aws-sdk": "2.1105.0",
 		"bcryptjs": "2.4.3",
 		"blurhash": "1.1.5",
 		"broadcast-channel": "4.10.0",
@@ -173,7 +173,7 @@
 		"xev": "2.0.1"
 	},
 	"devDependencies": {
-		"@redocly/openapi-core": "1.0.0-beta.90",
+		"@redocly/openapi-core": "1.0.0-beta.91",
 		"@types/fluent-ffmpeg": "2.1.20",
 		"cross-env": "7.0.3",
 		"execa": "6.1.0"
