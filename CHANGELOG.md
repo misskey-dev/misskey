@@ -15,12 +15,16 @@ You should also include the user name that made the change.
 ### Improvements
 - Webhooks @syuilo
 - Bull Dashboardを組み込み、ジョブキューの確認や操作を行えるように @syuilo
+  - Bull Dashboardを開くには、最初だけ一旦ログアウトしてから再度管理者権限を持つアカウントでログインする必要があります
 - Check that installed Node.js version fulfills version requirement @ThatOneCalculator
 - Server: performance improvements @syuilo
 
 ### Bugfixes
 - API: fix endpoint endpoint @Johann150
 - API: fix admin/meta endpoint @syuilo
+- API: improved validation and documentation for endpoints that accept different variants of input @Johann150
+- API: `notes/create`: The `mediaIds` property is now deprecated. @Johann150
+  - Use `fileIds` instead, it has the same behaviour.
 
 ## 12.108.1 (2022/03/12)
 
