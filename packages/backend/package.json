@@ -5,7 +5,7 @@
 	"scripts": {
 		"build": "tsc -p tsconfig.json || echo done. && tsc-alias -p tsconfig.json",
 		"watch": "node watch.mjs",
-		"lint": "eslint --quiet src/**/*.ts",
+		"lint": "eslint --quiet 'src/**/*.ts'",
 		"mocha": "cross-env TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT=\"./test/tsconfig.json\" mocha",
 		"test": "npm run mocha"
 	},
