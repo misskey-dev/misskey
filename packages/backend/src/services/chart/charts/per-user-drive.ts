@@ -14,7 +14,7 @@ export default class PerUserDriveChart extends Chart<typeof schema> {
 
 	protected async tickMajor(group: string): Promise<Partial<KVs<typeof schema>>> {
 		const [count, size] = await Promise.all([
-			DriveFiles.count({ userId: group }),
+			DriveFiles.countBy({ userId: group }),
 			DriveFiles.calcDriveUsageOf(group),
 		]);
 

@@ -24,7 +24,7 @@ export async function updateUsertags(user: User, tags: string[]) {
 export async function updateHashtag(user: { id: User['id']; host: User['host']; }, tag: string, isUserAttached = false, inc = true) {
 	tag = normalizeForSearch(tag);
 
-	const index = await Hashtags.findOne({ name: tag });
+	const index = await Hashtags.findOneBy({ name: tag });
 
 	if (index == null && !inc) return;
 

@@ -52,7 +52,7 @@ export const paramDef = {
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, me) => {
 	// Fetch the group
-	const userGroup = await UserGroups.findOne({
+	const userGroup = await UserGroups.findOneBy({
 		id: ps.groupId,
 		userId: me.id,
 	});
@@ -67,7 +67,7 @@ export default define(meta, paramDef, async (ps, me) => {
 		throw e;
 	});
 
-	const joining = await UserGroupJoinings.findOne({
+	const joining = await UserGroupJoinings.findOneBy({
 		userGroupId: userGroup.id,
 		userId: user.id,
 	});
@@ -76,7 +76,7 @@ export default define(meta, paramDef, async (ps, me) => {
 		throw new ApiError(meta.errors.alreadyAdded);
 	}
 
-	const existInvitation = await UserGroupInvitations.findOne({
+	const existInvitation = await UserGroupInvitations.findOneBy({
 		userGroupId: userGroup.id,
 		userId: user.id,
 	});
@@ -90,7 +90,7 @@ export default define(meta, paramDef, async (ps, me) => {
 		createdAt: new Date(),
 		userId: user.id,
 		userGroupId: userGroup.id,
-	} as UserGroupInvitation).then(x => UserGroupInvitations.findOneOrFail(x.identifiers[0]));
+	} as UserGroupInvitation).then(x => UserGroupInvitations.findOneByOrFail(x.identifiers[0]));
 
 	// 通知を作成
 	createNotification(user.id, 'groupInvited', {

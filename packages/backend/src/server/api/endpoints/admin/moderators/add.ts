@@ -1,5 +1,6 @@
 import define from '../../../define.js';
 import { Users } from '@/models/index.js';
+import { publishInternalEvent } from '@/services/stream.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -18,7 +19,7 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps) => {
-	const user = await Users.findOne(ps.userId as string);
+	const user = await Users.findOneBy({ id: ps.userId });
 
 	if (user == null) {
 		throw new Error('user not found');
@@ -31,4 +32,6 @@ export default define(meta, paramDef, async (ps) => {
 	await Users.update(user.id, {
 		isModerator: true,
 	});
+
+	publishInternalEvent('userChangeModeratorState', { id: user.id, isModerator: true });
 });

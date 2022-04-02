@@ -1,10 +1,9 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { db } from '@/db/postgre.js';
 import { Hashtag } from '@/models/entities/hashtag.js';
 import { Packed } from '@/misc/schema.js';
 
-@EntityRepository(Hashtag)
-export class HashtagRepository extends Repository<Hashtag> {
-	public async pack(
+export const HashtagRepository = db.getRepository(Hashtag).extend({
+	async pack(
 		src: Hashtag,
 	): Promise<Packed<'Hashtag'>> {
 		return {
@@ -16,11 +15,11 @@ export class HashtagRepository extends Repository<Hashtag> {
 			attachedLocalUsersCount: src.attachedLocalUsersCount,
 			attachedRemoteUsersCount: src.attachedRemoteUsersCount,
 		};
-	}
+	},
 
-	public packMany(
+	packMany(
 		hashtags: Hashtag[],
 	) {
 		return Promise.all(hashtags.map(x => this.pack(x)));
-	}
-}
+	},
+});

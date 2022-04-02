@@ -43,7 +43,7 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, user) => {
-	const clip = await Clips.findOne({
+	const clip = await Clips.findOneBy({
 		id: ps.clipId,
 		userId: user.id,
 	});
@@ -57,7 +57,7 @@ export default define(meta, paramDef, async (ps, user) => {
 		throw e;
 	});
 
-	const exist = await ClipNotes.findOne({
+	const exist = await ClipNotes.findOneBy({
 		noteId: note.id,
 		clipId: clip.id,
 	});

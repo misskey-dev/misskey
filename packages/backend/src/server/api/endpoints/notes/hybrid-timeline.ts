@@ -2,7 +2,7 @@ import define from '../../define.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
 import { ApiError } from '../../error.js';
 import { makePaginationQuery } from '../../common/make-pagination-query.js';
-import { Followings, Notes } from '@/models/index.js';
+import { Followings, Notes, Users } from '@/models/index.js';
 import { Brackets } from 'typeorm';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
 import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
@@ -48,7 +48,11 @@ export const paramDef = {
 		includeMyRenotes: { type: 'boolean', default: true },
 		includeRenotedMyNotes: { type: 'boolean', default: true },
 		includeLocalRenotes: { type: 'boolean', default: true },
-		withFiles: { type: 'boolean' },
+		withFiles: {
+			type: 'boolean',
+			default: false,
+			description: 'Only show notes that have attached files.',
+		},
 	},
 	required: [],
 } as const;
@@ -56,7 +60,7 @@ export const paramDef = {
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, user) => {
 	const m = await fetchMeta();
-	if (m.disableLocalTimeline && !user.isAdmin && !user.isModerator) {
+	if (m.disableLocalTimeline && (!user.isAdmin && !user.isModerator)) {
 		throw new ApiError(meta.errors.stlDisabled);
 	}
 

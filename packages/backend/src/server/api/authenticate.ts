@@ -1,7 +1,12 @@
 import isNativeToken from './common/is-native-token.js';
-import { User } from '@/models/entities/user.js';
+import { CacheableLocalUser, ILocalUser } from '@/models/entities/user.js';
 import { Users, AccessTokens, Apps } from '@/models/index.js';
 import { AccessToken } from '@/models/entities/access-token.js';
+import { Cache } from '@/misc/cache.js';
+import { App } from '@/models/entities/app.js';
+import { localUserByIdCache, localUserByNativeTokenCache } from '@/services/user-cache.js';
+
+const appCache = new Cache<App>(Infinity);
 
 export class AuthenticationError extends Error {
 	constructor(message: string) {
@@ -10,15 +15,14 @@ export class AuthenticationError extends Error {
 	}
 }
 
-export default async (token: string | null): Promise<[User | null | undefined, AccessToken | null | undefined]> => {
+export default async (token: string | null): Promise<[CacheableLocalUser | null | undefined, AccessToken | null | undefined]> => {
 	if (token == null) {
 		return [null, null];
 	}
 
 	if (isNativeToken(token)) {
-		// Fetch user
-		const user = await Users
-			.findOne({ token });
+		const user = await localUserByNativeTokenCache.fetch(token,
+			() => Users.findOneBy({ token }) as Promise<ILocalUser | null>);
 
 		if (user == null) {
 			throw new AuthenticationError('user not found');
@@ -42,14 +46,14 @@ export default async (token: string | null): Promise<[User | null | undefined, A
 			lastUsedAt: new Date(),
 		});
 
-		const user = await Users
-			.findOne({
-				id: accessToken.userId, // findOne(accessToken.userId) のように書かないのは後方互換性のため
-			});
+		const user = await localUserByIdCache.fetch(accessToken.userId,
+			() => Users.findOneBy({
+				id: accessToken.userId,
+			}) as Promise<ILocalUser>);
 
 		if (accessToken.appId) {
-			const app = await Apps
-				.findOneOrFail(accessToken.appId);
+			const app = await appCache.fetch(accessToken.appId,
+				() => Apps.findOneByOrFail({ id: accessToken.appId! }));
 
 			return [user, {
 				id: accessToken.id,

@@ -33,7 +33,7 @@ export default define(meta, paramDef, async (ps, user) => {
 		createdAt: new Date(),
 		userId: user.id,
 		name: ps.name,
-	} as UserGroup).then(x => UserGroups.findOneOrFail(x.identifiers[0]));
+	} as UserGroup).then(x => UserGroups.findOneByOrFail(x.identifiers[0]));
 
 	// Push the owner
 	await UserGroupJoinings.insert({

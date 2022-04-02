@@ -2,7 +2,7 @@ import { del, get, set } from '@/scripts/idb-proxy';
 import { reactive } from 'vue';
 import * as misskey from 'misskey-js';
 import { apiUrl } from '@/config';
-import { waiting, api, popup, popupMenu, success } from '@/os';
+import { waiting, api, popup, popupMenu, success, alert } from '@/os';
 import { unisonReload, reloadChannel } from '@/scripts/unison-reload';
 import { showSuspendedDialog } from './scripts/show-suspended-dialog';
 import { i18n } from './i18n';
@@ -89,7 +89,11 @@ function fetchAccount(token): Promise<Account> {
 						signout();
 					});
 				} else {
-					signout();
+					alert({
+						type: 'error',
+						title: i18n.ts.failedToFetchAccountInformation,
+						text: JSON.stringify(res.error),
+					});
 				}
 			} else {
 				res.token = token;
@@ -116,6 +120,7 @@ export async function login(token: Account['token'], redirect?: string) {
 	if (_DEV_) console.log('logging as token ', token);
 	const me = await fetchAccount(token);
 	localStorage.setItem('account', JSON.stringify(me));
+	document.cookie = `token=${token}; path=/; max-age=31536000`; // bull dashboardの認証とかで使う
 	await addAccount(me.id, token);
 
 	if (redirect) {

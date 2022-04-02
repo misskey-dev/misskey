@@ -1,6 +1,5 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { db } from '@/db/postgre.js';
 import { Relay } from '@/models/entities/relay.js';
 
-@EntityRepository(Relay)
-export class RelayRepository extends Repository<Relay> {
-}
+export const RelayRepository = db.getRepository(Relay).extend({
+});

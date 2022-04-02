@@ -1,30 +1,16 @@
 import * as fs from 'node:fs';
 import Ajv from 'ajv';
-import { ILocalUser } from '@/models/entities/user.js';
+import { CacheableLocalUser, ILocalUser } from '@/models/entities/user.js';
 import { IEndpointMeta } from './endpoints.js';
 import { ApiError } from './error.js';
 import { Schema, SchemaType } from '@/misc/schema.js';
 import { AccessToken } from '@/models/entities/access-token.js';
 
-type SimpleUserInfo = {
-	id: ILocalUser['id'];
-	createdAt: ILocalUser['createdAt'];
-	host: ILocalUser['host'];
-	username: ILocalUser['username'];
-	uri: ILocalUser['uri'];
-	inbox: ILocalUser['inbox'];
-	sharedInbox: ILocalUser['sharedInbox'];
-	isAdmin: ILocalUser['isAdmin'];
-	isModerator: ILocalUser['isModerator'];
-	isSilenced: ILocalUser['isSilenced'];
-	showTimelineReplies: ILocalUser['showTimelineReplies'];
-};
-
 export type Response = Record<string, any> | void;
 
 // TODO: paramsの型をT['params']のスキーマ定義から推論する
 type executor<T extends IEndpointMeta, Ps extends Schema> =
-	(params: SchemaType<Ps>, user: T['requireCredential'] extends true ? SimpleUserInfo : SimpleUserInfo | null, token: AccessToken | null, file?: any, cleanup?: () => any) =>
+	(params: SchemaType<Ps>, user: T['requireCredential'] extends true ? CacheableLocalUser : CacheableLocalUser | null, token: AccessToken | null, file?: any, cleanup?: () => any) =>
 		Promise<T['res'] extends undefined ? Response : SchemaType<NonNullable<T['res']>>>;
 
 const ajv = new Ajv({
@@ -34,11 +20,11 @@ const ajv = new Ajv({
 ajv.addFormat('misskey:id', /^[a-zA-Z0-9]+$/);
 
 export default function <T extends IEndpointMeta, Ps extends Schema>(meta: T, paramDef: Ps, cb: executor<T, Ps>)
-		: (params: any, user: T['requireCredential'] extends true ? SimpleUserInfo : SimpleUserInfo | null, token: AccessToken | null, file?: any) => Promise<any> {
+		: (params: any, user: T['requireCredential'] extends true ? CacheableLocalUser : CacheableLocalUser | null, token: AccessToken | null, file?: any) => Promise<any> {
 
 	const validate = ajv.compile(paramDef);
 
-	return (params: any, user: T['requireCredential'] extends true ? SimpleUserInfo : SimpleUserInfo | null, token: AccessToken | null, file?: any) => {
+	return (params: any, user: T['requireCredential'] extends true ? CacheableLocalUser : CacheableLocalUser | null, token: AccessToken | null, file?: any) => {
 		function cleanup() {
 			fs.unlink(file.path, () => {});
 		}

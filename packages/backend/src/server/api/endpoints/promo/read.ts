@@ -33,7 +33,7 @@ export default define(meta, paramDef, async (ps, user) => {
 		throw e;
 	});
 
-	const exist = await PromoReads.findOne({
+	const exist = await PromoReads.findOneBy({
 		noteId: note.id,
 		userId: user.id,
 	});

@@ -15,6 +15,8 @@ import { genId } from '@/misc/gen-id.js';
 import { createNotification } from '../create-notification.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
 import { Packed } from '@/misc/schema.js';
+import { getActiveWebhooks } from '@/misc/webhook-cache.js';
+import { webhookDeliver } from '@/queue/index.js';
 
 const logger = new Logger('following/create');
 
@@ -45,7 +47,7 @@ export async function insertFollowingDoc(followee: { id: User['id']; host: User[
 		}
 	});
 
-	const req = await FollowRequests.findOne({
+	const req = await FollowRequests.findOneBy({
 		followeeId: followee.id,
 		followerId: follower.id,
 	});
@@ -89,15 +91,33 @@ export async function insertFollowingDoc(followee: { id: User['id']; host: User[
 	if (Users.isLocalUser(follower)) {
 		Users.pack(followee.id, follower, {
 			detail: true,
-		}).then(packed => {
+		}).then(async packed => {
 			publishUserEvent(follower.id, 'follow', packed as Packed<"UserDetailedNotMe">);
 			publishMainStream(follower.id, 'follow', packed as Packed<"UserDetailedNotMe">);
+
+			const webhooks = (await getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('follow'));
+			for (const webhook of webhooks) {
+				webhookDeliver(webhook, {
+					type: 'follow',
+					user: packed,
+				});
+			}
 		});
 	}
 
 	// Publish followed event
 	if (Users.isLocalUser(followee)) {
-		Users.pack(follower.id, followee).then(packed => publishMainStream(followee.id, 'followed', packed));
+		Users.pack(follower.id, followee).then(async packed => {
+			publishMainStream(followee.id, 'followed', packed)
+
+			const webhooks = (await getActiveWebhooks()).filter(x => x.userId === followee.id && x.on.includes('followed'));
+			for (const webhook of webhooks) {
+				webhookDeliver(webhook, {
+					type: 'followed',
+					user: packed,
+				});
+			}
+		});
 
 		// 通知を作成
 		createNotification(followee.id, 'follow', {
@@ -108,17 +128,17 @@ export async function insertFollowingDoc(followee: { id: User['id']; host: User[
 
 export default async function(_follower: { id: User['id'] }, _followee: { id: User['id'] }, requestId?: string) {
 	const [follower, followee] = await Promise.all([
-		Users.findOneOrFail(_follower.id),
-		Users.findOneOrFail(_followee.id),
+		Users.findOneByOrFail({ id: _follower.id }),
+		Users.findOneByOrFail({ id: _followee.id }),
 	]);
 
 	// check blocking
 	const [blocking, blocked] = await Promise.all([
-		Blockings.findOne({
+		Blockings.findOneBy({
 			blockerId: follower.id,
 			blockeeId: followee.id,
 		}),
-		Blockings.findOne({
+		Blockings.findOneBy({
 			blockerId: followee.id,
 			blockeeId: follower.id,
 		}),
@@ -138,7 +158,7 @@ export default async function(_follower: { id: User['id'] }, _followee: { id: Us
 		if (blocked != null) throw new IdentifiableError('3338392a-f764-498d-8855-db939dcf8c48', 'blocked');
 	}
 
-	const followeeProfile = await UserProfiles.findOneOrFail(followee.id);
+	const followeeProfile = await UserProfiles.findOneByOrFail({ userId: followee.id });
 
 	// フォロー対象が鍵アカウントである or
 	// フォロワーがBotであり、フォロー対象がBotからのフォローに慎重である or
@@ -148,7 +168,7 @@ export default async function(_follower: { id: User['id'] }, _followee: { id: Us
 		let autoAccept = false;
 
 		// 鍵アカウントであっても、既にフォローされていた場合はスルー
-		const following = await Followings.findOne({
+		const following = await Followings.findOneBy({
 			followerId: follower.id,
 			followeeId: followee.id,
 		});
@@ -158,7 +178,7 @@ export default async function(_follower: { id: User['id'] }, _followee: { id: Us
 
 		// フォローしているユーザーは自動承認オプション
 		if (!autoAccept && (Users.isLocalUser(followee) && followeeProfile.autoAcceptFollowed)) {
-			const followed = await Followings.findOne({
+			const followed = await Followings.findOneBy({
 				followerId: followee.id,
 				followeeId: follower.id,
 			});

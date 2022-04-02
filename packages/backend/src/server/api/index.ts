@@ -81,7 +81,7 @@ router.get('/v1/instance/peers', async ctx => {
 });
 
 router.post('/miauth/:session/check', async ctx => {
-	const token = await AccessTokens.findOne({
+	const token = await AccessTokens.findOneBy({
 		session: ctx.params.session,
 	});
 

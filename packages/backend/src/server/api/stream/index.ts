@@ -188,7 +188,7 @@ export default class Connection {
 	 */
 	private async onApiRequest(payload: any) {
 		// 新鮮なデータを利用するためにユーザーをフェッチ
-		const user = this.user ? await Users.findOne(this.user.id) : null;
+		const user = this.user ? await Users.findOneBy({ id: this.user.id }) : null;
 
 		const endpoint = payload.endpoint || payload.ep; // alias
 
@@ -386,7 +386,7 @@ export default class Connection {
 	}
 
 	private async updateUserProfile() {
-		this.userProfile = await UserProfiles.findOne({
+		this.userProfile = await UserProfiles.findOneBy({
 			userId: this.user!.id,
 		});
 	}

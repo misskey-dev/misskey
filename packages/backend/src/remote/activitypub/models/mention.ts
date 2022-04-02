@@ -3,17 +3,17 @@ import { IObject, isMention, IApMention } from '../type.js';
 import { resolvePerson } from './person.js';
 import promiseLimit from 'promise-limit';
 import Resolver from '../resolver.js';
-import { User } from '@/models/entities/user.js';
+import { CacheableUser, User } from '@/models/entities/user.js';
 
 export async function extractApMentions(tags: IObject | IObject[] | null | undefined) {
 	const hrefs = unique(extractApMentionObjects(tags).map(x => x.href as string));
 
 	const resolver = new Resolver();
 
-	const limit = promiseLimit<User | null>(2);
+	const limit = promiseLimit<CacheableUser | null>(2);
 	const mentionedUsers = (await Promise.all(
 		hrefs.map(x => limit(() => resolvePerson(x, resolver).catch(() => null)))
-	)).filter((x): x is User => x != null);
+	)).filter((x): x is CacheableUser => x != null);
 
 	return mentionedUsers;
 }

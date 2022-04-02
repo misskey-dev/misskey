@@ -15,9 +15,9 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
 import * as misskey from 'misskey-js';
-import PhotoSwipeLightbox from 'photoswipe/dist/photoswipe-lightbox.esm.js';
-import PhotoSwipe from 'photoswipe/dist/photoswipe.esm.js';
-import 'photoswipe/dist/photoswipe.css';
+import PhotoSwipeLightbox from 'photoswipe/lightbox';
+import PhotoSwipe from 'photoswipe';
+import 'photoswipe/style.css';
 import XBanner from './media-banner.vue';
 import XImage from './media-image.vue';
 import XVideo from './media-video.vue';

@@ -1,7 +1,8 @@
 import define from '../../../define.js';
 import { Emojis } from '@/models/index.js';
-import { getConnection, In } from 'typeorm';
+import { In } from 'typeorm';
 import { ApiError } from '../../../error.js';
+import { db } from '@/db/postgre.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -16,7 +17,11 @@ export const paramDef = {
 		ids: { type: 'array', items: {
 			type: 'string', format: 'misskey:id',
 		} },
-		category: { type: 'string', nullable: true },
+		category: {
+			type: 'string',
+			nullable: true,
+			description: 'Use `null` to reset the category.',
+		},
 	},
 	required: ['ids'],
 } as const;
@@ -30,5 +35,5 @@ export default define(meta, paramDef, async (ps) => {
 		category: ps.category,
 	});
 
-	await getConnection().queryResultCache!.remove(['meta_emojis']);
+	await db.queryResultCache!.remove(['meta_emojis']);
 });

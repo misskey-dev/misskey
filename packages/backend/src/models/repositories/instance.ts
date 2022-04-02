@@ -1,10 +1,9 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { db } from '@/db/postgre.js';
 import { Instance } from '@/models/entities/instance.js';
 import { Packed } from '@/misc/schema.js';
 
-@EntityRepository(Instance)
-export class InstanceRepository extends Repository<Instance> {
-	public async pack(
+export const InstanceRepository = db.getRepository(Instance).extend({
+	async pack(
 		instance: Instance,
 	): Promise<Packed<'FederationInstance'>> {
 		return {
@@ -29,11 +28,11 @@ export class InstanceRepository extends Repository<Instance> {
 			iconUrl: instance.iconUrl,
 			infoUpdatedAt: instance.infoUpdatedAt ? instance.infoUpdatedAt.toISOString() : null,
 		};
-	}
+	},
 
-	public packMany(
+	packMany(
 		instances: Instance[],
 	) {
 		return Promise.all(instances.map(x => this.pack(x)));
-	}
-}
+	},
+});

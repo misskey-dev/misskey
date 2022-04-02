@@ -1,7 +1,7 @@
 import define from '../../define.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
 import { ApiError } from '../../error.js';
-import { Notes } from '@/models/index.js';
+import { Notes, Users } from '@/models/index.js';
 import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
 import { makePaginationQuery } from '../../common/make-pagination-query.js';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
@@ -37,7 +37,11 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
-		withFiles: { type: 'boolean' },
+		withFiles: {
+			type: 'boolean',
+			default: false,
+			description: 'Only show notes that have attached files.',
+		},
 		fileType: { type: 'array', items: {
 			type: 'string',
 		} },
