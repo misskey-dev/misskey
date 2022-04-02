@@ -26,21 +26,12 @@ export const meta = {
 
 export const paramDef = {
 	type: 'object',
-	anyOf: [
-		{
-			properties: {
-				pageId: { type: 'string', format: 'misskey:id' },
-			},
-			required: ['pageId'],
-		},
-		{
-			properties: {
-				name: { type: 'string' },
-				username: { type: 'string' },
-			},
-			required: ['name', 'username'],
-		},
-	],
+	properties: {
+		pageId: { type: 'string', format: 'misskey:id' },
+		name: { type: 'string' },
+		username: { type: 'string' },
+	},
+	required: [],
 } as const;
 
 // eslint-disable-next-line import/no-default-export

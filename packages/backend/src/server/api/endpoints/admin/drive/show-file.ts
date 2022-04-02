@@ -40,7 +40,6 @@ export const meta = {
 			userHost: {
 				type: 'string',
 				optional: false, nullable: true,
-				description: 'The local host is represented with `null`.',
 			},
 			md5: {
 				type: 'string',
@@ -152,20 +151,11 @@ export const meta = {
 
 export const paramDef = {
 	type: 'object',
-	anyOf: [
-		{
-			properties: {
-				fileId: { type: 'string', format: 'misskey:id' },
-			},
-			required: ['fileId'],
-		},
-		{
-			properties: {
-				url: { type: 'string' },
-			},
-			required: ['url'],
-		},
-	],
+	properties: {
+		fileId: { type: 'string', format: 'misskey:id' },
+		url: { type: 'string' },
+	},
+	required: [],
 } as const;
 
 // eslint-disable-next-line import/no-default-export

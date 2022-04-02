@@ -47,25 +47,14 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
+		userId: { type: 'string', format: 'misskey:id' },
+		groupId: { type: 'string', format: 'misskey:id' },
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
 		markAsRead: { type: 'boolean', default: true },
 	},
-	anyOf: [
-		{
-			properties: {
-				userId: { type: 'string', format: 'misskey:id' },
-			},
-			required: ['userId'],
-		},
-		{
-			properties: {
-				groupId: { type: 'string', format: 'misskey:id' },
-			},
-			required: ['groupId'],
-		},
-	],
+	required: [],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
@@ -137,5 +126,7 @@ export default define(meta, paramDef, async (ps, user) => {
 		return await Promise.all(messages.map(message => MessagingMessages.pack(message, user, {
 			populateGroup: false,
 		})));
+	} else {
+		throw new Error();
 	}
 });

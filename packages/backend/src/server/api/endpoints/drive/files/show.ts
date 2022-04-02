@@ -28,25 +28,22 @@ export const meta = {
 			code: 'ACCESS_DENIED',
 			id: '25b73c73-68b1-41d0-bad1-381cfdf6579f',
 		},
+
+		fileIdOrUrlRequired: {
+			message: 'fileId or url required.',
+			code: 'INVALID_PARAM',
+			id: '89674805-722c-440c-8d88-5641830dc3e4',
+		},
 	},
 } as const;
 
 export const paramDef = {
 	type: 'object',
-	anyOf: [
-		{
-			properties: {
-				fileId: { type: 'string', format: 'misskey:id' },
-			},
-			required: ['fileId'],
-		},
-		{
-			properties: {
-				url: { type: 'string' },
-			},
-			required: ['url'],
-		},
-	],
+	properties: {
+		fileId: { type: 'string', format: 'misskey:id' },
+		url: { type: 'string' },
+	},
+	required: [],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
@@ -65,6 +62,8 @@ export default define(meta, paramDef, async (ps, user) => {
 				thumbnailUrl: ps.url,
 			}],
 		});
+	} else {
+		throw new ApiError(meta.errors.fileIdOrUrlRequired);
 	}
 
 	if (file == null) {

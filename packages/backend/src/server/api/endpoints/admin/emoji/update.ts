@@ -23,11 +23,7 @@ export const paramDef = {
 	properties: {
 		id: { type: 'string', format: 'misskey:id' },
 		name: { type: 'string' },
-		category: {
-			type: 'string',
-			nullable: true,
-			description: 'Use `null` to reset the category.',
-		},
+		category: { type: 'string', nullable: true },
 		aliases: { type: 'array', items: {
 			type: 'string',
 		} },

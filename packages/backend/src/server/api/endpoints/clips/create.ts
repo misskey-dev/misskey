@@ -20,7 +20,7 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		name: { type: 'string', minLength: 1, maxLength: 100 },
-		isPublic: { type: 'boolean', default: false },
+		isPublic: { type: 'boolean' },
 		description: { type: 'string', nullable: true, minLength: 1, maxLength: 2048 },
 	},
 	required: ['name'],

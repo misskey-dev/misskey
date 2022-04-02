@@ -17,11 +17,7 @@ export const paramDef = {
 		ids: { type: 'array', items: {
 			type: 'string', format: 'misskey:id',
 		} },
-		category: {
-			type: 'string',
-			nullable: true,
-			description: 'Use `null` to reset the category.',
-		},
+		category: { type: 'string', nullable: true },
 	},
 	required: ['ids'],
 } as const;
