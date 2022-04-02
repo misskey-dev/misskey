@@ -22,7 +22,7 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
-		host: { type: 'string', nullable: true, description: 'Omit or use `null` to not filter by host.' },
+		host: { type: 'string', nullable: true },
 		blocked: { type: 'boolean', nullable: true },
 		notResponding: { type: 'boolean', nullable: true },
 		suspended: { type: 'boolean', nullable: true },

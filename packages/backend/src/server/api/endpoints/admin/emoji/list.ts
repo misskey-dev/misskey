@@ -38,9 +38,8 @@ export const meta = {
 					optional: false, nullable: true,
 				},
 				host: {
-					type: 'null',
-					optional: false,
-					description: 'The local host is represented with `null`. The field exists for compatibility with other API endpoints that return files.',
+					type: 'string',
+					optional: false, nullable: true,
 				},
 				url: {
 					type: 'string',

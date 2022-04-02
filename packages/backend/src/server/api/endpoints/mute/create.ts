@@ -38,11 +38,7 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		userId: { type: 'string', format: 'misskey:id' },
-		expiresAt: {
-			type: 'integer',
-			nullable: true,
-			description: 'A Unix Epoch timestamp that must lie in the future. `null` means an indefinite mute.',
-		},
+		expiresAt: { type: 'integer', nullable: true },
 	},
 	required: ['userId'],
 } as const;

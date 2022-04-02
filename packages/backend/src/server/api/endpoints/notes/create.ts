@@ -59,6 +59,12 @@ export const meta = {
 			id: '3ac74a84-8fd5-4bb0-870f-01804f82ce15',
 		},
 
+		contentRequired: {
+			message: 'Content required. You need to set text, fileIds, renoteId or poll.',
+			code: 'CONTENT_REQUIRED',
+			id: '6f57e42b-c348-439b-bc45-993995cc515a',
+		},
+
 		cannotCreateAlreadyExpiredPoll: {
 			message: 'Poll is already expired.',
 			code: 'CANNOT_CREATE_ALREADY_EXPIRED_POLL',
@@ -86,41 +92,29 @@ export const paramDef = {
 		visibleUserIds: { type: 'array', uniqueItems: true, items: {
 			type: 'string', format: 'misskey:id',
 		} },
-		text: { type: 'string', maxLength: MAX_NOTE_TEXT_LENGTH, nullable: true },
+		text: { type: 'string', nullable: true, maxLength: MAX_NOTE_TEXT_LENGTH, default: null },
 		cw: { type: 'string', nullable: true, maxLength: 100 },
 		localOnly: { type: 'boolean', default: false },
 		noExtractMentions: { type: 'boolean', default: false },
 		noExtractHashtags: { type: 'boolean', default: false },
 		noExtractEmojis: { type: 'boolean', default: false },
-		fileIds: {
-			type: 'array',
-			uniqueItems: true,
-			minItems: 1,
-			maxItems: 16,
-			items: { type: 'string', format: 'misskey:id' },
-		},
-		mediaIds: {
-			deprecated: true,
-			description: 'Use `fileIds` instead. If both are specified, this property is discarded.',
-			type: 'array',
-			uniqueItems: true,
-			minItems: 1,
-			maxItems: 16,
-			items: { type: 'string', format: 'misskey:id' },
-		},
+		fileIds: { type: 'array', uniqueItems: true, minItems: 1, maxItems: 16, items: {
+			type: 'string', format: 'misskey:id',
+		} },
+		mediaIds: { type: 'array', uniqueItems: true, minItems: 1, maxItems: 16, items: {
+			type: 'string', format: 'misskey:id',
+		} },
 		replyId: { type: 'string', format: 'misskey:id', nullable: true },
 		renoteId: { type: 'string', format: 'misskey:id', nullable: true },
 		channelId: { type: 'string', format: 'misskey:id', nullable: true },
 		poll: {
-			type: 'object',
-			nullable: true,
+			type: 'object', nullable: true,
 			properties: {
 				choices: {
-					type: 'array',
-					uniqueItems: true,
-					minItems: 2,
-					maxItems: 10,
-					items: { type: 'string', minLength: 1, maxLength: 50 },
+					type: 'array', uniqueItems: true, minItems: 2, maxItems: 10, 
+					items: {
+						type: 'string', minLength: 1, maxLength: 50,
+					},
 				},
 				multiple: { type: 'boolean', default: false },
 				expiresAt: { type: 'integer', nullable: true },
@@ -129,30 +123,7 @@ export const paramDef = {
 			required: ['choices'],
 		},
 	},
-	anyOf: [
-		{
-			// (re)note with text, files and poll are optional
-			properties: {
-				text: { type: 'string', maxLength: MAX_NOTE_TEXT_LENGTH, nullable: false },
-			},
-			required: ['text'],
-		},
-		{
-			// (re)note with files, text and poll are optional
-			required: ['fileIds'],
-		},
-		{
-			// (re)note with files, text and poll are optional
-			required: ['mediaIds'],
-		},
-		{
-			// (re)note with poll, text and files are optional
-			properties: {
-				poll: { type: 'object', nullable: false, },
-			},
-			required: ['poll'],
-		},
-	],
+	required: [],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
@@ -231,6 +202,11 @@ export default define(meta, paramDef, async (ps, user) => {
 		} else if (typeof ps.poll.expiredAfter === 'number') {
 			ps.poll.expiresAt = Date.now() + ps.poll.expiredAfter;
 		}
+	}
+
+	// テキストが無いかつ添付ファイルが無いかつRenoteも無いかつ投票も無かったらエラー
+	if (!(ps.text || files.length || renote || ps.poll)) {
+		throw new ApiError(meta.errors.contentRequired);
 	}
 
 	let channel: Channel | undefined;
