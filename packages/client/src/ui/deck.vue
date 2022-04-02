@@ -128,8 +128,8 @@ if (deckStore.state.navWindow) {
 document.documentElement.style.overflowY = 'hidden';
 document.documentElement.style.scrollBehavior = 'auto';
 window.addEventListener('wheel', (ev) => {
-	if (getScrollContainer(ev.target as HTMLElement) == null) {
-		document.documentElement.scrollLeft += ev.deltaY > 0 ? 96 : -96;
+	if (getScrollContainer(ev.target as HTMLElement) == null && ev.deltaX === 0) {
+		document.documentElement.scrollLeft += ev.deltaY;
 	}
 });
 loadDeck();
