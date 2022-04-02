@@ -17,14 +17,19 @@ You should also include the user name that made the change.
 - Bull Dashboardを組み込み、ジョブキューの確認や操作を行えるように @syuilo
   - Bull Dashboardを開くには、最初だけ一旦ログアウトしてから再度管理者権限を持つアカウントでログインする必要があります
 - Check that installed Node.js version fulfills version requirement @ThatOneCalculator
-- Server: performance improvements @syuilo
+- Server: overall performance improvements @syuilo
+- Federation: avoid duplicate activity delivery @Johann150
+- Federation: limit federation of reactions on direct notes @Johann150
+- Client: タッチパッド・タッチスクリーンでのデッキの操作性を向上 @tamaina
 
 ### Bugfixes
+- email address validation was not working @ybw2016v
 - API: fix endpoint endpoint @Johann150
 - API: fix admin/meta endpoint @syuilo
 - API: improved validation and documentation for endpoints that accept different variants of input @Johann150
 - API: `notes/create`: The `mediaIds` property is now deprecated. @Johann150
   - Use `fileIds` instead, it has the same behaviour.
+- Client: URIエンコーディングが異常でdecodeURIComponentが失敗するとURLが表示できなくなる問題を修正 @tamaina
 
 ## 12.108.1 (2022/03/12)
 
