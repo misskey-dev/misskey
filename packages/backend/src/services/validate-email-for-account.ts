@@ -1,4 +1,3 @@
-// Why change the line below? ESM disabled default import / export, so without specifying this would be undefined.
 import { validate as validateEmail } from 'deep-email-validator';
 import { UserProfiles } from '@/models/index.js';
 
@@ -6,7 +5,7 @@ export async function validateEmailForAccount(emailAddress: string): Promise<{
 	available: boolean;
 	reason: null | 'used' | 'format' | 'disposable' | 'mx' | 'smtp';
 }> {
-	const exist = await UserProfiles.count({
+	const exist = await UserProfiles.countBy({
 		emailVerified: true,
 		email: emailAddress,
 	});

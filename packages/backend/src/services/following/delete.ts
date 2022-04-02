@@ -3,17 +3,18 @@ import { renderActivity } from '@/remote/activitypub/renderer/index.js';
 import renderFollow from '@/remote/activitypub/renderer/follow.js';
 import renderUndo from '@/remote/activitypub/renderer/undo.js';
 import renderReject from '@/remote/activitypub/renderer/reject.js';
-import { deliver } from '@/queue/index.js';
+import { deliver, webhookDeliver } from '@/queue/index.js';
 import Logger from '../logger.js';
 import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc.js';
 import { User } from '@/models/entities/user.js';
 import { Followings, Users, Instances } from '@/models/index.js';
 import { instanceChart, perUserFollowingChart } from '@/services/chart/index.js';
+import { getActiveWebhooks } from '@/misc/webhook-cache.js';
 
 const logger = new Logger('following/delete');
 
 export default async function(follower: { id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox']; }, followee: { id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox']; }, silent = false) {
-	const following = await Followings.findOne({
+	const following = await Followings.findOneBy({
 		followerId: follower.id,
 		followeeId: followee.id,
 	});
@@ -31,9 +32,17 @@ export default async function(follower: { id: User['id']; host: User['host']; ur
 	if (!silent && Users.isLocalUser(follower)) {
 		Users.pack(followee.id, follower, {
 			detail: true,
-		}).then(packed => {
+		}).then(async packed => {
 			publishUserEvent(follower.id, 'unfollow', packed);
 			publishMainStream(follower.id, 'unfollow', packed);
+
+			const webhooks = (await getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('unfollow'));
+			for (const webhook of webhooks) {
+				webhookDeliver(webhook, {
+					type: 'unfollow',
+					user: packed,
+				});
+			}
 		});
 	}
 

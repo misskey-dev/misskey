@@ -30,7 +30,7 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, user) => {
-	const notification = await Notifications.findOne({
+	const notification = await Notifications.findOneBy({
 		notifieeId: user.id,
 		id: ps.notificationId,
 	});

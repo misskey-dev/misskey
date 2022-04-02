@@ -1,8 +1,8 @@
 import define from '../../../define.js';
 import { Emojis } from '@/models/index.js';
-import { getConnection } from 'typeorm';
 import { insertModerationLog } from '@/services/insert-moderation-log.js';
 import { ApiError } from '../../../error.js';
+import { db } from '@/db/postgre.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -29,13 +29,13 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, me) => {
-	const emoji = await Emojis.findOne(ps.id);
+	const emoji = await Emojis.findOneBy({ id: ps.id });
 
 	if (emoji == null) throw new ApiError(meta.errors.noSuchEmoji);
 
 	await Emojis.delete(emoji.id);
 
-	await getConnection().queryResultCache!.remove(['meta_emojis']);
+	await db.queryResultCache!.remove(['meta_emojis']);
 
 	insertModerationLog(me, 'deleteEmoji', {
 		emoji: emoji,

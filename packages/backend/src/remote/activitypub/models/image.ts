@@ -1,10 +1,10 @@
 import { uploadFromUrl } from '@/services/drive/upload-from-url.js';
-import { IRemoteUser } from '@/models/entities/user.js';
+import { CacheableRemoteUser, IRemoteUser } from '@/models/entities/user.js';
 import Resolver from '../resolver.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
 import { apLogger } from '../logger.js';
 import { DriveFile } from '@/models/entities/drive-file.js';
-import { DriveFiles } from '@/models/index.js';
+import { DriveFiles, Users } from '@/models/index.js';
 import { truncate } from '@/misc/truncate.js';
 import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/misc/hard-limits.js';
 
@@ -13,7 +13,7 @@ const logger = apLogger;
 /**
  * Imageを作成します。
  */
-export async function createImage(actor: IRemoteUser, value: any): Promise<DriveFile> {
+export async function createImage(actor: CacheableRemoteUser, value: any): Promise<DriveFile> {
 	// 投稿者が凍結されていたらスキップ
 	if (actor.isSuspended) {
 		throw new Error('actor has been suspended');
@@ -47,7 +47,7 @@ export async function createImage(actor: IRemoteUser, value: any): Promise<Drive
 				uri: image.url,
 			});
 
-			file = await DriveFiles.findOneOrFail(file.id);
+			file = await DriveFiles.findOneByOrFail({ id: file.id });
 		}
 	}
 
@@ -60,7 +60,7 @@ export async function createImage(actor: IRemoteUser, value: any): Promise<Drive
  * Misskeyに対象のImageが登録されていればそれを返し、そうでなければ
  * リモートサーバーからフェッチしてMisskeyに登録しそれを返します。
  */
-export async function resolveImage(actor: IRemoteUser, value: any): Promise<DriveFile> {
+export async function resolveImage(actor: CacheableRemoteUser, value: any): Promise<DriveFile> {
 	// TODO
 
 	// リモートサーバーからフェッチしてきて登録

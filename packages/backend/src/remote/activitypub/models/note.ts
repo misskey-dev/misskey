@@ -5,7 +5,7 @@ import Resolver from '../resolver.js';
 import post from '@/services/note/create.js';
 import { resolvePerson, updatePerson } from './person.js';
 import { resolveImage } from './image.js';
-import { IRemoteUser } from '@/models/entities/user.js';
+import { CacheableRemoteUser, IRemoteUser } from '@/models/entities/user.js';
 import { htmlToMfm } from '../misc/html-to-mfm.js';
 import { extractApHashtags } from './tag.js';
 import { unique, toArray, toSingle } from '@/prelude/array.js';
@@ -15,7 +15,7 @@ import { apLogger } from '../logger.js';
 import { DriveFile } from '@/models/entities/drive-file.js';
 import { deliverQuestionUpdate } from '@/services/note/polls/update.js';
 import { extractDbHost, toPuny } from '@/misc/convert-host.js';
-import { Emojis, Polls, MessagingMessages } from '@/models/index.js';
+import { Emojis, Polls, MessagingMessages, Users } from '@/models/index.js';
 import { Note } from '@/models/entities/note.js';
 import { IObject, getOneApId, getApId, getOneApHrefNullable, validPost, IPost, isEmoji, getApType } from '../type.js';
 import { Emoji } from '@/models/entities/emoji.js';
@@ -90,7 +90,7 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 	logger.info(`Creating the Note: ${note.id}`);
 
 	// 投稿者をフェッチ
-	const actor = await resolvePerson(getOneApId(note.attributedTo), resolver) as IRemoteUser;
+	const actor = await resolvePerson(getOneApId(note.attributedTo), resolver) as CacheableRemoteUser;
 
 	// 投稿者が凍結されていたらスキップ
 	if (actor.isSuspended) {
@@ -141,7 +141,7 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 			const uri = getApId(note.inReplyTo);
 			if (uri.startsWith(config.url + '/')) {
 				const id = uri.split('/').pop();
-				const talk = await MessagingMessages.findOne(id);
+				const talk = await MessagingMessages.findOneBy({ id });
 				if (talk) {
 					isTalk = true;
 					return null;
@@ -197,11 +197,11 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 	const cw = note.summary === '' ? null : note.summary;
 
 	// テキストのパース
-	const text = note._misskey_content || (note.content ? htmlToMfm(note.content, note.tag) : null);
+	const text = typeof note._misskey_content !== 'undefined' ? note._misskey_content : (note.content ? htmlToMfm(note.content, note.tag) : null);
 
 	// vote
 	if (reply && reply.hasPoll) {
-		const poll = await Polls.findOneOrFail(reply.id);
+		const poll = await Polls.findOneByOrFail({ noteId: reply.id });
 
 		const tryCreateVote = async (name: string, index: number): Promise<null> => {
 			if (poll.expiresAt && Date.now() > new Date(poll.expiresAt).getTime()) {
@@ -229,11 +229,6 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 	const apEmojis = emojis.map(emoji => emoji.name);
 
 	const poll = await extractPollFromQuestion(note, resolver).catch(() => undefined);
-
-	// ユーザーの情報が古かったらついでに更新しておく
-	if (actor.lastFetchedAt == null || Date.now() - actor.lastFetchedAt.getTime() > 1000 * 60 * 60 * 24) {
-		if (actor.uri) updatePerson(actor.uri);
-	}
 
 	if (isTalk) {
 		for (const recipient of visibleUsers) {
@@ -311,7 +306,7 @@ export async function extractEmojis(tags: IObject | IObject[], host: string): Pr
 		const name = tag.name!.replace(/^:/, '').replace(/:$/, '');
 		tag.icon = toSingle(tag.icon);
 
-		const exists = await Emojis.findOne({
+		const exists = await Emojis.findOneBy({
 			host,
 			name,
 		});
@@ -332,7 +327,7 @@ export async function extractEmojis(tags: IObject | IObject[], host: string): Pr
 					updatedAt: new Date(),
 				});
 
-				return await Emojis.findOne({
+				return await Emojis.findOneBy({
 					host,
 					name,
 				}) as Emoji;
@@ -352,6 +347,6 @@ export async function extractEmojis(tags: IObject | IObject[], host: string): Pr
 			publicUrl: tag.icon!.url,
 			updatedAt: new Date(),
 			aliases: [],
-		} as Partial<Emoji>).then(x => Emojis.findOneOrFail(x.identifiers[0]));
+		} as Partial<Emoji>).then(x => Emojis.findOneByOrFail(x.identifiers[0]));
 	}));
 }

@@ -43,7 +43,7 @@ export default define(meta, paramDef, async (ps, user) => {
 	});
 
 	// if already favorited
-	const exist = await NoteFavorites.findOne({
+	const exist = await NoteFavorites.findOneBy({
 		noteId: note.id,
 		userId: user.id,
 	});

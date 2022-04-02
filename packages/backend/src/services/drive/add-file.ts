@@ -21,6 +21,7 @@ import S3 from 'aws-sdk/clients/s3.js';
 import { getS3 } from './s3.js';
 import sharp from 'sharp';
 import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
+import { IsNull } from 'typeorm';
 
 const logger = driveLogger.createSubLogger('register', 'yellow');
 
@@ -108,7 +109,7 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 		file.size = size;
 		file.storedInternal = false;
 
-		return await DriveFiles.insert(file).then(x => DriveFiles.findOneOrFail(x.identifiers[0]));
+		return await DriveFiles.insert(file).then(x => DriveFiles.findOneByOrFail(x.identifiers[0]));
 	} else { // use internal storage
 		const accessKey = uuid();
 		const thumbnailAccessKey = 'thumbnail-' + uuid();
@@ -142,7 +143,7 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 		file.md5 = hash;
 		file.size = size;
 
-		return await DriveFiles.insert(file).then(x => DriveFiles.findOneOrFail(x.identifiers[0]));
+		return await DriveFiles.insert(file).then(x => DriveFiles.findOneByOrFail(x.identifiers[0]));
 	}
 }
 
@@ -344,7 +345,7 @@ export async function addFile({
 
 	if (user && !force) {
 		// Check if there is a file with the same hash
-		const much = await DriveFiles.findOne({
+		const much = await DriveFiles.findOneBy({
 			md5: info.md5,
 			userId: user.id,
 		});
@@ -370,7 +371,7 @@ export async function addFile({
 				throw new Error('no-free-space');
 			} else {
 				// (アバターまたはバナーを含まず)最も古いファイルを削除する
-				deleteOldFile(await Users.findOneOrFail(user.id) as IRemoteUser);
+				deleteOldFile(await Users.findOneByOrFail({ id: user.id }) as IRemoteUser);
 			}
 		}
 	}
@@ -381,9 +382,9 @@ export async function addFile({
 			return null;
 		}
 
-		const driveFolder = await DriveFolders.findOne({
+		const driveFolder = await DriveFolders.findOneBy({
 			id: folderId,
-			userId: user ? user.id : null,
+			userId: user ? user.id : IsNull(),
 		});
 
 		if (driveFolder == null) throw new Error('folder-not-found');
@@ -405,7 +406,7 @@ export async function addFile({
 		properties['orientation'] = info.orientation;
 	}
 
-	const profile = user ? await UserProfiles.findOne(user.id) : null;
+	const profile = user ? await UserProfiles.findOneBy({ userId: user.id }) : null;
 
 	const folder = await fetchFolder();
 
@@ -450,15 +451,15 @@ export async function addFile({
 			file.type = info.type.mime;
 			file.storedInternal = false;
 
-			file = await DriveFiles.insert(file).then(x => DriveFiles.findOneOrFail(x.identifiers[0]));
+			file = await DriveFiles.insert(file).then(x => DriveFiles.findOneByOrFail(x.identifiers[0]));
 		} catch (err) {
 			// duplicate key error (when already registered)
 			if (isDuplicateKeyValueError(err)) {
 				logger.info(`already registered ${file.uri}`);
 
-				file = await DriveFiles.findOne({
-					uri: file.uri,
-					userId: user ? user.id : null,
+				file = await DriveFiles.findOneBy({
+					uri: file.uri!,
+					userId: user ? user.id : IsNull(),
 				}) as DriveFile;
 			} else {
 				logger.error(err as Error);

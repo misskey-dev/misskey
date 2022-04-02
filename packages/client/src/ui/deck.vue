@@ -17,7 +17,8 @@
 			:key="ids[0]"
 			class="column"
 			:column="columns.find(c => c.id === ids[0])"
-			:style="columns.find(c => c.id === ids[0]).flexible ? { flex: 1, minWidth: '350px' } : { width: columns.find(c => c.id === ids[0]).width + 'px' }"
+			 :is-stacked="false"
+			:style="columns.find(c => c.id === ids[0])!.flexible ? { flex: 1, minWidth: '350px' } : { width: columns.find(c => c.id === ids[0])!.width + 'px' }"
 			@parent-focus="moveFocus(ids[0], $event)"
 		/>
 	</template>
@@ -25,8 +26,8 @@
 	<div v-if="isMobile" class="buttons">
 		<button class="button nav _button" @click="drawerMenuShowing = true"><i class="fas fa-bars"></i><span v-if="menuIndicated" class="indicator"><i class="fas fa-circle"></i></span></button>
 		<button class="button home _button" @click="$router.push('/')"><i class="fas fa-home"></i></button>
-		<button class="button notifications _button" @click="$router.push('/my/notifications')"><i class="fas fa-bell"></i><span v-if="$i.hasUnreadNotification" class="indicator"><i class="fas fa-circle"></i></span></button>
-		<button class="button post _button" @click="post()"><i class="fas fa-pencil-alt"></i></button>
+		<button class="button notifications _button" @click="$router.push('/my/notifications')"><i class="fas fa-bell"></i><span v-if="$i?.hasUnreadNotification" class="indicator"><i class="fas fa-circle"></i></span></button>
+		<button class="button post _button" @click="os.post()"><i class="fas fa-pencil-alt"></i></button>
 	</div>
 
 	<transition :name="$store.state.animation ? 'menu-back' : ''">
@@ -45,8 +46,8 @@
 </div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, provide, ref, watch } from 'vue';
+<script lang="ts" setup>
+import { computed, provide, ref, watch } from 'vue';
 import { v4 as uuid } from 'uuid';
 import DeckColumnCore from '@/ui/deck/column-core.vue';
 import XSidebar from '@/ui/_common_/sidebar.vue';
@@ -60,102 +61,82 @@ import { useRoute } from 'vue-router';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		XCommon,
-		XSidebar,
-		XDrawerMenu,
-		DeckColumnCore,
-	},
-
-	setup() {
-		const isMobile = ref(window.innerWidth <= 500);
-		window.addEventListener('resize', () => {
-			isMobile.value = window.innerWidth <= 500;
-		});
-
-		const drawerMenuShowing = ref(false);
-
-		const route = useRoute();
-		watch(route, () => {
-			drawerMenuShowing.value = false;
-		});
-
-		const columns = deckStore.reactiveState.columns;
-		const layout = deckStore.reactiveState.layout;
-		const menuIndicated = computed(() => {
-			if ($i == null) return false;
-			for (const def in menuDef) {
-				if (menuDef[def].indicated) return true;
-			}
-			return false;
-		});
-
-		const addColumn = async (ev) => {
-			const columns = [
-				'main',
-				'widgets',
-				'notifications',
-				'tl',
-				'antenna',
-				'list',
-				'mentions',
-				'direct',
-			];
-
-			const { canceled, result: column } = await os.select({
-				title: i18n.ts._deck.addColumn,
-				items: columns.map(column => ({
-					value: column, text: i18n.t('_deck._columns.' + column)
-				}))
-			});
-			if (canceled) return;
-
-			addColumnToStore({
-				type: column,
-				id: uuid(),
-				name: i18n.t('_deck._columns.' + column),
-				width: 330,
-			});
-		};
-
-		const onContextmenu = (ev) => {
-			os.contextMenu([{
-				text: i18n.ts._deck.addColumn,
-				icon: null,
-				action: addColumn
-			}], ev);
-		};
-
-		provide('shouldSpacerMin', true);
-		if (deckStore.state.navWindow) {
-			provide('navHook', (url) => {
-				os.pageWindow(url);
-			});
-		}
-
-		document.documentElement.style.overflowY = 'hidden';
-		document.documentElement.style.scrollBehavior = 'auto';
-		window.addEventListener('wheel', (ev) => {
-			if (getScrollContainer(ev.target) == null) {
-				document.documentElement.scrollLeft += ev.deltaY > 0 ? 96 : -96;
-			}
-		});
-		loadDeck();
-
-		return {
-			isMobile,
-			deckStore,
-			drawerMenuShowing,
-			columns,
-			layout,
-			menuIndicated,
-			onContextmenu,
-			wallpaper: localStorage.getItem('wallpaper') != null,
-			post: os.post,
-		};
-	},
+const isMobile = ref(window.innerWidth <= 500);
+window.addEventListener('resize', () => {
+	isMobile.value = window.innerWidth <= 500;
 });
+
+const drawerMenuShowing = ref(false);
+
+const route = useRoute();
+watch(route, () => {
+	drawerMenuShowing.value = false;
+});
+
+const columns = deckStore.reactiveState.columns;
+const layout = deckStore.reactiveState.layout;
+const menuIndicated = computed(() => {
+	if ($i == null) return false;
+	for (const def in menuDef) {
+		if (menuDef[def].indicated) return true;
+	}
+	return false;
+});
+
+const addColumn = async (ev) => {
+	const columns = [
+		'main',
+		'widgets',
+		'notifications',
+		'tl',
+		'antenna',
+		'list',
+		'mentions',
+		'direct',
+	];
+
+	const { canceled, result: column } = await os.select({
+		title: i18n.ts._deck.addColumn,
+		items: columns.map(column => ({
+			value: column, text: i18n.t('_deck._columns.' + column)
+		}))
+	});
+	if (canceled) return;
+
+	addColumnToStore({
+		type: column,
+		id: uuid(),
+		name: i18n.t('_deck._columns.' + column),
+		width: 330,
+	});
+};
+
+const onContextmenu = (ev) => {
+	os.contextMenu([{
+		text: i18n.ts._deck.addColumn,
+		action: addColumn,
+	}], ev);
+};
+
+provide('shouldSpacerMin', true);
+if (deckStore.state.navWindow) {
+	provide('navHook', (url) => {
+		os.pageWindow(url);
+	});
+}
+
+document.documentElement.style.overflowY = 'hidden';
+document.documentElement.style.scrollBehavior = 'auto';
+window.addEventListener('wheel', (ev) => {
+	if (getScrollContainer(ev.target as HTMLElement) == null && ev.deltaX === 0) {
+		document.documentElement.scrollLeft += ev.deltaY;
+	}
+});
+loadDeck();
+
+function moveFocus(id: string, direction: 'up' | 'down' | 'left' | 'right') {
+	// TODO??
+}
 </script>
 
 <style lang="scss" scoped>

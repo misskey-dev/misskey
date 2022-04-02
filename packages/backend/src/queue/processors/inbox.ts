@@ -15,6 +15,8 @@ import DbResolver from '@/remote/activitypub/db-resolver.js';
 import { resolvePerson } from '@/remote/activitypub/models/person.js';
 import { LdSignature } from '@/remote/activitypub/misc/ld-signature.js';
 import { StatusError } from '@/misc/fetch.js';
+import { CacheableRemoteUser } from '@/models/entities/user.js';
+import { UserPublickey } from '@/models/entities/user-publickey.js';
 
 const logger = new Logger('inbox');
 
@@ -42,11 +44,13 @@ export default async (job: Bull.Job<InboxJobData>): Promise<string> => {
 		return `Old keyId is no longer supported. ${keyIdLower}`;
 	}
 
-	// TDOO: キャッシュ
 	const dbResolver = new DbResolver();
 
 	// HTTP-Signature keyIdを元にDBから取得
-	let authUser = await dbResolver.getAuthUserFromKeyId(signature.keyId);
+	let authUser: {
+		user: CacheableRemoteUser;
+		key: UserPublickey | null;
+	} | null = await dbResolver.getAuthUserFromKeyId(signature.keyId);
 
 	// keyIdでわからなければ、activity.actorを元にDBから取得 || activity.actorを元にリモートから取得
 	if (authUser == null) {

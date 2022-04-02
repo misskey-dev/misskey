@@ -12,11 +12,11 @@ export default async function(follower: { id: User['id']; host: User['host']; ur
 
 	// check blocking
 	const [blocking, blocked] = await Promise.all([
-		Blockings.findOne({
+		Blockings.findOneBy({
 			blockerId: follower.id,
 			blockeeId: followee.id,
 		}),
-		Blockings.findOne({
+		Blockings.findOneBy({
 			blockerId: followee.id,
 			blockeeId: follower.id,
 		}),
@@ -39,7 +39,7 @@ export default async function(follower: { id: User['id']; host: User['host']; ur
 		followeeHost: followee.host,
 		followeeInbox: Users.isRemoteUser(followee) ? followee.inbox : undefined,
 		followeeSharedInbox: Users.isRemoteUser(followee) ? followee.sharedInbox : undefined,
-	}).then(x => FollowRequests.findOneOrFail(x.identifiers[0]));
+	}).then(x => FollowRequests.findOneByOrFail(x.identifiers[0]));
 
 	// Publish receiveRequest event
 	if (Users.isLocalUser(followee)) {
