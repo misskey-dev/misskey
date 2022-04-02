@@ -10,10 +10,7 @@
 You should also include the user name that made the change.
 -->
 
-## 12.x.x (unreleased)
-
-### Improvements
-- 
+## 12.109.1 (2022/04/02)
 
 ### Bugfixes
 - API: Renoteが行えない問題を修正
