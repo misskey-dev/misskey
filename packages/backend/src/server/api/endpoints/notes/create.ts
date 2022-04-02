@@ -152,6 +152,10 @@ export const paramDef = {
 			},
 			required: ['poll'],
 		},
+		{
+			// pure renote
+			required: ['renoteId'],
+		},
 	],
 } as const;
 
