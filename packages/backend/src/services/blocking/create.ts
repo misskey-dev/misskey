@@ -10,6 +10,8 @@ import { Blockings, Users, FollowRequests, Followings, UserListJoinings, UserLis
 import { perUserFollowingChart } from '@/services/chart/index.js';
 import { genId } from '@/misc/gen-id.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
+import { getActiveWebhooks } from '@/misc/webhook-cache.js';
+import { webhookDeliver } from '@/queue/index.js';
 
 export default async function(blocker: User, blockee: User) {
 	await Promise.all([
@@ -57,9 +59,17 @@ async function cancelRequest(follower: User, followee: User) {
 	if (Users.isLocalUser(follower)) {
 		Users.pack(followee, follower, {
 			detail: true,
-		}).then(packed => {
+		}).then(async packed => {
 			publishUserEvent(follower.id, 'unfollow', packed);
 			publishMainStream(follower.id, 'unfollow', packed);
+
+			const webhooks = (await getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('unfollow'));
+			for (const webhook of webhooks) {
+				webhookDeliver(webhook, {
+					type: 'unfollow',
+					user: packed,
+				});
+			}
 		});
 	}
 
@@ -102,9 +112,17 @@ async function unFollow(follower: User, followee: User) {
 	if (Users.isLocalUser(follower)) {
 		Users.pack(followee, follower, {
 			detail: true,
-		}).then(packed => {
+		}).then(async packed => {
 			publishUserEvent(follower.id, 'unfollow', packed);
 			publishMainStream(follower.id, 'unfollow', packed);
+
+			const webhooks = (await getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('unfollow'));
+			for (const webhook of webhooks) {
+				webhookDeliver(webhook, {
+					type: 'unfollow',
+					user: packed,
+				});
+			}
 		});
 	}
 

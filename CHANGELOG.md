@@ -13,6 +13,7 @@ You should also include the user name that made the change.
 ## 12.x.x (unreleased)
 
 ### Improvements
+- Webhooks @syuilo
 - Bull Dashboardを組み込み、ジョブキューの確認や操作を行えるように @syuilo
   - Bull Dashboardを開くには、最初だけ一旦ログアウトしてから再度管理者権限を持つアカウントでログインする必要があります
 - Check that installed Node.js version fulfills version requirement @ThatOneCalculator

@@ -73,6 +73,7 @@ import { PasswordResetRequest } from '@/models/entities/password-reset-request.j
 import { UserPending } from '@/models/entities/user-pending.js';
 
 import { entities as charts } from '@/services/chart/entities.js';
+import { Webhook } from '@/models/entities/webhook.js';
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'gray', false);
 
@@ -171,6 +172,7 @@ export const entities = [
 	Ad,
 	PasswordResetRequest,
 	UserPending,
+	Webhook,
 	...charts,
 ];
 
