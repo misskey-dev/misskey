@@ -23,6 +23,7 @@ export default async (job: Bull.Job<WebhookDeliverJobData>) => {
 			},
 			body: JSON.stringify({
 				hookId: job.data.webhookId,
+				userId: job.data.userId,
 				eventId: job.data.eventId,
 				createdAt: job.data.createdAt,
 				type: job.data.type,

@@ -268,6 +268,7 @@ export function webhookDeliver(webhook: Webhook, type: typeof webhookEventTypes[
 		type,
 		content,
 		webhookId: webhook.id,
+		userId: webhook.userId,
 		to: webhook.url,
 		secret: webhook.secret,
 		createdAt: Date.now(),

@@ -51,6 +51,7 @@ export type WebhookDeliverJobData = {
 	type: string;
 	content: unknown;
 	webhookId: Webhook['id'];
+	userId: User['id'];
 	to: string;
 	secret: string;
 	createdAt: number;
