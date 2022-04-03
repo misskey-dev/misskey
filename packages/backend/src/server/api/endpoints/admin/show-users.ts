@@ -26,8 +26,13 @@ export const paramDef = {
 		sort: { type: 'string', enum: ['+follower', '-follower', '+createdAt', '-createdAt', '+updatedAt', '-updatedAt'] },
 		state: { type: 'string', enum: ['all', 'available', 'admin', 'moderator', 'adminOrModerator', 'silenced', 'suspended'], default: "all" },
 		origin: { type: 'string', enum: ['combined', 'local', 'remote'], default: "local" },
-		username: { type: 'string', default: null },
-		hostname: { type: 'string', default: null },
+		username: { type: 'string', nullable: true, default: null },
+		hostname: {
+			type: 'string',
+			nullable: true,
+			default: null,
+			description: 'The local host is represented with `null`.',
+		},
 	},
 	required: [],
 } as const;
