@@ -1216,7 +1216,7 @@ _poll:
   votesCount: "{n} votes"
   totalVotes: "{n} votes au total"
   vote: "Voter"
-  showResult: "Voir les résultats"
+  showResult: "Voir résultats"
   voted: "Déjà voté"
   closed: "Terminé"
   remainingDays: "{d} jours, {h} heures restantes"
