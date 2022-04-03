@@ -117,7 +117,7 @@ export default class DeliverManager {
 			// check that they actually have an inbox
 			&& recipe.to.inbox != null,
 		)
-		.forEach(recipe => inboxes.add(recipe.to.inbox));
+		.forEach(recipe => inboxes.add(recipe.to.inbox!));
 
 		// deliver
 		for (const inbox of inboxes) {
