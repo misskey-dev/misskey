@@ -29,7 +29,7 @@ export async function uploadFromUrl({
 	sensitive = false,
 	force = false,
 	isLink = false,
-	comment = null
+	comment = null,
 }: Args): Promise<DriveFile> {
 	let name = new URL(url).pathname.split('/').pop() || null;
 	if (name == null || !DriveFiles.validateFileName(name)) {
@@ -38,7 +38,7 @@ export async function uploadFromUrl({
 
 	// If the comment is same as the name, skip comment
 	// (image.name is passed in when receiving attachment)
-	if (comment !== null && name == comment) {
+	if (comment !== null && name === comment) {
 		comment = null;
 	}
 
