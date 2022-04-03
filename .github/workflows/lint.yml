@@ -19,7 +19,7 @@ jobs:
         node-version: 16.x
         cache: 'yarn'
         cache-dependency-path: |
-          src/packages/backend/yarn.lock
-          src/packages/client/yarn.lock
+          packages/backend/yarn.lock
+          packages/client/yarn.lock
     - run: yarn install
     - run: yarn lint

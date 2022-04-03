@@ -38,8 +38,8 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'yarn'
         cache-dependency-path: |
-          src/packages/backend/yarn.lock
-          src/packages/client/yarn.lock
+          packages/backend/yarn.lock
+          packages/client/yarn.lock
     - name: Install dependencies
       run: yarn install
     - name: Check yarn.lock
@@ -89,8 +89,8 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'yarn'
         cache-dependency-path: |
-          src/packages/backend/yarn.lock
-          src/packages/client/yarn.lock
+          packages/backend/yarn.lock
+          packages/client/yarn.lock
     - name: Install dependencies
       run: yarn install
     - name: Check yarn.lock
