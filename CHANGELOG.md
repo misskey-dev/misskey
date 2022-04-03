@@ -10,10 +10,7 @@
 You should also include the user name that made the change.
 -->
 
-## 12.x.x (unreleased)
-
-### Improvements
-- 
+## 12.109.2 (2022/04/03)
 
 ### Bugfixes
 - API: admin/update-meta was not working @syuilo
