@@ -97,8 +97,7 @@ export async function insertFollowingDoc(followee: { id: User['id']; host: User[
 
 			const webhooks = (await getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('follow'));
 			for (const webhook of webhooks) {
-				webhookDeliver(webhook, {
-					type: 'follow',
+				webhookDeliver(webhook, 'follow', {
 					user: packed,
 				});
 			}
@@ -112,8 +111,7 @@ export async function insertFollowingDoc(followee: { id: User['id']; host: User[
 
 			const webhooks = (await getActiveWebhooks()).filter(x => x.userId === followee.id && x.on.includes('followed'));
 			for (const webhook of webhooks) {
-				webhookDeliver(webhook, {
-					type: 'followed',
+				webhookDeliver(webhook, 'followed', {
 					user: packed,
 				});
 			}
