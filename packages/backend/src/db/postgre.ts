@@ -209,7 +209,11 @@ export const db = new DataSource({
 });
 
 export async function initDb() {
-	await db.connect();
+	if (db.isInitialized) {
+		// nop
+	} else {
+		await db.connect();
+	}
 }
 
 export async function resetDb() {
