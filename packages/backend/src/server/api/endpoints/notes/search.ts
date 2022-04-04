@@ -1,17 +1,12 @@
-import $ from 'cafy';
-import searchClient from '@/db/searchClient';
-import es from '../../../../db/elasticsearch';
-import define from '../../define';
-import { Notes } from '@/models/index';
-import es from '../../../../db/elasticsearch.js';
-import define from '../../define.js';
-import { Notes } from '@/models/index.js';
-import { In } from 'typeorm';
-import config from '@/config/index.js';
-import { makePaginationQuery } from '../../common/make-pagination-query.js';
-import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
-import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
-import { generateBlockedUserQuery } from '../../common/generate-block-query.js';
+import searchClient from "@/db/searchClient";
+import define from "../../define";
+import { Notes } from "@/models/index";
+import { In } from "typeorm";
+import config from "@/config/index.js";
+import { makePaginationQuery } from "../../common/make-pagination-query.js";
+import { generateVisibilityQuery } from "../../common/generate-visibility-query.js";
+import { generateMutedUserQuery } from "../../common/generate-muted-user-query.js";
+import { generateBlockedUserQuery } from "../../common/generate-block-query.js";
 
 export const meta = {
 	tags: ["notes"],
@@ -30,27 +25,36 @@ export const meta = {
 		},
 	},
 
-	errors: {
-	},
+	errors: {},
 } as const;
 
 export const paramDef = {
-	type: 'object',
+	type: "object",
 	properties: {
-		query: { type: 'string' },
-		sinceId: { type: 'string', format: 'misskey:id' },
-		untilId: { type: 'string', format: 'misskey:id' },
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-		offset: { type: 'integer', default: 0 },
+		query: { type: "string" },
+		sinceId: { type: "string", format: "misskey:id" },
+		untilId: { type: "string", format: "misskey:id" },
+		limit: { type: "integer", minimum: 1, maximum: 100, default: 10 },
+		offset: { type: "integer", default: 0 },
 		host: {
-			type: 'string',
+			type: "string",
 			nullable: true,
-			description: 'The local host is represented with `null`.',
+			description: "The local host is represented with `null`.",
 		},
-		userId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
-		channelId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
+		userId: {
+			type: "string",
+			format: "misskey:id",
+			nullable: true,
+			default: null,
+		},
+		channelId: {
+			type: "string",
+			format: "misskey:id",
+			nullable: true,
+			default: null,
+		},
 	},
-	required: ['query'],
+	required: ["query"],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
