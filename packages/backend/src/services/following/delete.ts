@@ -38,8 +38,7 @@ export default async function(follower: { id: User['id']; host: User['host']; ur
 
 			const webhooks = (await getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('unfollow'));
 			for (const webhook of webhooks) {
-				webhookDeliver(webhook, {
-					type: 'unfollow',
+				webhookDeliver(webhook, 'unfollow', {
 					user: packed,
 				});
 			}

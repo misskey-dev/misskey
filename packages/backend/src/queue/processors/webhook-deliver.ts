@@ -8,13 +8,9 @@ import config from '@/config/index.js';
 
 const logger = new Logger('webhook');
 
-let latest: string | null = null;
-
 export default async (job: Bull.Job<WebhookDeliverJobData>) => {
 	try {
-		if (latest !== (latest = JSON.stringify(job.data.content, null, 2))) {
-			logger.debug(`delivering ${latest}`);
-		}
+		logger.debug(`delivering ${job.data.webhookId}`);
 
 		const res = await getResponse({
 			url: job.data.to,
@@ -25,7 +21,14 @@ export default async (job: Bull.Job<WebhookDeliverJobData>) => {
 				'X-Misskey-Hook-Id': job.data.webhookId,
 				'X-Misskey-Hook-Secret': job.data.secret,
 			},
-			body: JSON.stringify(job.data.content),
+			body: JSON.stringify({
+				hookId: job.data.webhookId,
+				userId: job.data.userId,
+				eventId: job.data.eventId,
+				createdAt: job.data.createdAt,
+				type: job.data.type,
+				body: job.data.content,
+			}),
 		});
 
 		Webhooks.update({ id: job.data.webhookId }, {

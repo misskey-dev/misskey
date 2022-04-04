@@ -109,15 +109,15 @@ export default class DeliverManager {
 			}
 		}
 
-		this.recipes.filter((recipe): recipe is IDirectRecipe => {
+		this.recipes.filter((recipe): recipe is IDirectRecipe =>
 			// followers recipes have already been processed
 			isDirect(recipe)
 			// check that shared inbox has not been added yet
 			&& !(recipe.to.sharedInbox && inboxes.has(recipe.to.sharedInbox))
 			// check that they actually have an inbox
-			&& recipe.to.inbox
-		})
-		.forEach(recipe => inboxes.add(recipe.to.inbox));
+			&& recipe.to.inbox != null,
+		)
+		.forEach(recipe => inboxes.add(recipe.to.inbox!));
 
 		// deliver
 		for (const inbox of inboxes) {

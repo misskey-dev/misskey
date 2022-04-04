@@ -51,14 +51,14 @@ export function applyTheme(theme: Theme, persist = true) {
 
 	if (_theme.base) {
 		const base = [lightTheme, darkTheme].find(x => x.id === _theme.base);
-		_theme.props = Object.assign({}, base.props, _theme.props);
+		if (base) _theme.props = Object.assign({}, base.props, _theme.props);
 	}
 
 	const props = compile(_theme);
 
 	for (const tag of document.head.children) {
 		if (tag.tagName === 'META' && tag.getAttribute('name') === 'theme-color') {
-			tag.setAttribute('content', props['html']);
+			tag.setAttribute('content', props['htmlThemeColor']);
 			break;
 		}
 	}

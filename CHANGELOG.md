@@ -10,10 +10,22 @@
 You should also include the user name that made the change.
 -->
 
-## 12.109.1 (2022/04/02)
+## 12.x.x (unreleased)
 
-### Known issues
-- two-factor authentication is not working
+### Improvements
+- Improve webhook @syuilo
+
+### Bugfixes
+- 
+
+
+## 12.109.2 (2022/04/03)
+
+### Bugfixes
+- API: admin/update-meta was not working @syuilo
+- Client: テーマを切り替えたり読み込んだりするとmeta[name="theme-color"]のcontentがundefinedになる問題を修正 @tamaina
+
+## 12.109.1 (2022/04/02)
 
 ### Bugfixes
 - API: Renoteが行えない問題を修正
