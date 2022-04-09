@@ -17,6 +17,7 @@ You should also include the user name that made the change.
 
 ### Bugfixes
 - API: parameter validation of users/show was wrong
+- Federation: リモートインスタンスへのダイレクト投稿が届かない問題を修正 @syuilo
 
 ## 12.109.2 (2022/04/03)
 
