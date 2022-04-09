@@ -908,6 +908,7 @@ _mfm:
   rainbow: "قوس قزح"
   rainbowDescription: "اجعل المحتوى يظهر بألوان الطيف"
   rotate: "تدوير"
+  rotateDescription: "يُدير المحتوى بزاوية معيّنة."
 _instanceTicker:
   none: "لا تظهره بتاتًا"
   remote: "أظهر للمستخدمين البِعاد"
@@ -1236,6 +1237,8 @@ _pages:
   font: "الخط"
   fontSerif: "Serif"
   fontSansSerif: "Sans Serif"
+  eyeCatchingImageSet: "عيّن صورة مصغّرة"
+  eyeCatchingImageRemove: "احذف صورة مصغّرة"
   chooseBlock: "إضافة كتلة"
   selectType: "اختر النوع"
   enterVariableName: "أدخل اسم المتغيّر"
@@ -1496,6 +1499,7 @@ _notification:
     pollVote: "مصوِت شارك في الاستطلاع"
     receiveFollowRequest: "طلبات المتابعة المتلقاة"
     followRequestAccepted: "طلبات المتابعة المقبولة"
+    groupInvited: "دعوات الفريق"
     app: "إشعارات التطبيقات المرتبطة"
 _deck:
   alwaysShowMainColumn: "أظهر العمود الرئيسي دائمًا"
