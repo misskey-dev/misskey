@@ -141,6 +141,7 @@ import number from '@/filters/number';
 import { userPage, acct as getAcct } from '@/filters/user';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
+import { defaultStore } from '@/store';
 
 export default defineComponent({
 	components: {
@@ -195,22 +196,22 @@ export default defineComponent({
 					active: this.page === 'reactions',
 					title: this.$ts.reaction,
 					icon: 'fas fa-laugh',
-					onClick: () => { this.$router.push('/@' + getAcct(this.user) + '/reactions'); },
+					onClick: () => { this.nav('/reactions'); },
 				}] : [], {
 					active: this.page === 'clips',
 					title: this.$ts.clips,
 					icon: 'fas fa-paperclip',
-					onClick: () => { this.$router.push('/@' + getAcct(this.user) + '/clips'); },
+					onClick: () => { this.nav('/clips'); },
 				}, {
 					active: this.page === 'pages',
 					title: this.$ts.pages,
 					icon: 'fas fa-file-alt',
-					onClick: () => { this.$router.push('/@' + getAcct(this.user) + '/pages'); },
+					onClick: () => { this.nav('/pages'); },
 				}, {
 					active: this.page === 'gallery',
 					title: this.$ts.gallery,
 					icon: 'fas fa-icons',
-					onClick: () => { this.$router.push('/@' + getAcct(this.user) + '/gallery'); },
+					onClick: () => { this.nav('/gallery'); },
 				}],
 			} : null),
 			user: null,
@@ -236,6 +237,11 @@ export default defineComponent({
 	watch: {
 		acct: 'fetch'
 	},
+
+	inject: [
+		'navHook',
+		'sideViewHook',
+	],
 
 	created() {
 		this.fetch();
@@ -287,7 +293,18 @@ export default defineComponent({
 
 		number,
 
-		userPage
+		userPage,
+
+		nav(to) {
+			const path = '/@' + getAcct(this.user) + to;
+			if (this.navHook) {
+				this.navHook(path)
+			} else if (defaultStore.state.defaultSideView && this.sideViewHook) {
+				this.sideViewHook(path)
+			} else {
+				this.$router.push(path)
+			}
+		},
 	}
 });
 </script>
