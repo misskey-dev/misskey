@@ -14,6 +14,7 @@ You should also include the user name that made the change.
 
 ### Improvements
 - Improve webhook @syuilo
+- Client: Show loading icon on splash screen @syuilo
 
 ### Bugfixes
 - API: parameter validation of users/show was wrong
