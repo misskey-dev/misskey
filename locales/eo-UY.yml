@@ -23,15 +23,8 @@ reportAbuse: "Raportoj"
 reportAbuseOf: "raporti {name}n"
 reporter: "Informanto"
 reporterOrigin: "Raportanto"
-repliedCount: "La nombro de respondoj ricevitaj"
 pollVotesCount: "Nombro de voĉdonado"
-backgroundColor: "Fono"
-value: "Valoro"
 invalidValue: "Nevalida valoro"
-latestVersion: "La plej nova versio"
-youAreRunningUpToDateClient: "Vi uzas la plej novan version de via kliento."
-newVersionOfClientAvailable: "Nova versio de via kliento estas disponebla."
-inUse: "Uzata"
 editCode: "Redakti kodon"
 receiveAnnouncementFromInstance: "Ricevi informojn sciigintajn de la nodo"
 emailNotification: "Sciigoj per retpoŝto"
@@ -68,7 +61,6 @@ global: "Malloka"
 squareAvatars: "Montri bildsimbolon kiel kvadrata"
 received: "Ricevita"
 searchResult: "Serĉorezultoj"
-hashtags: "Kradvorto"
 troubleshooting: "Problemsolvi"
 learnMore: "Lernu pli"
 misskeyUpdated: "Misskey ĝisdatiĝis!"
@@ -107,16 +99,8 @@ _ad:
   back: "Reiri antaŭ"
 _gallery:
   my: "Miaj afiŝoj"
-_registry:
-  createKey: "Krei ŝlosilon"
 _aboutMisskey:
-  about: "Misskey estas malfermitkoda programo evoluigata de syuilo ekde la 2014."
-  contributors: "Precipaj kontribuantoj"
-  allContributors: "Ĉiuj kontribuantoj"
-  source: "Fontkodo"
-  translation: "Traduki Misskey"
   donate: "Mondonaci al Misskey"
-  patrons: "Mecenatoj"
 _mfm:
   dummy: "Misskey evoluigas la mondon de Fediverso"
   hashtag: "Kradvorto"
@@ -172,74 +156,18 @@ _theme:
   constant: "Konstanto"
   defaultValue: "Implicitaĵa valoro"
   color: "Koloro"
-  func: "Funkcio"
   darken: "Malbrileco"
-  lighten: "Brileco"
   keys:
-    bg: "Fono"
     shadow: "Ombro"
-    navBg: "Fono de flanka stango"
-    link: "Ligilo"
-    hashtag: "Kradvorto"
-    mentionMe: "Mencio al vi"
-    renote: "Plusendita"
     infoBg: "Fono de informo"
-    buttonBg: "Fono de butono"
-    driveFolderBg: "Fono de dosierujo de la disko"
-    messageBg: "Fono de la retbabilejo"
-_sfx:
-  note: "Nova noto"
-  noteMy: "Mia noto"
-  chat: "Retbabili"
-  chatBg: "Retbabili (BG)"
-  antenna: "Ricevo de la anteno"
-  channel: "Sciigoj de kanalo"
-_ago:
-  future: "Futuro"
-  justNow: "Ĵus"
-  secondsAgo: "Antaŭ {n} sekundoj"
-  minutesAgo: "Antaŭ {n} minutoj"
-  hoursAgo: "Antaŭ {n} horo(j)"
-  daysAgo: "Antaŭ {n} tago(j)"
-  weeksAgo: "Antaŭ {n} semajnoj"
-  monthsAgo: "Antaŭ {n} monatoj"
-  yearsAgo: "Antaŭ {n} jaroj"
-_time:
-  second: "sek"
-  minute: "min"
-  day: "Tago"
-_tutorial:
-  title: "Uzado de Misskey"
-  step1_1: "Bonvenon."
-  step7_2: "Se vi volas pli scii pri Misskey, vidu la fakon {help}."
-  step7_3: "Do, bonvolu amuziĝi sur Misskey🚀"
-_2fa:
-  registerKey: "Nove registri ŝlosilon"
 _permissions:
-  "read:account": "Vidi la informojn de via konto"
-  "write:account": "Redatado de la informoj de via konto"
-  "read:blocks": "Vidi vian liston de uzantoj blokitaj"
-  "write:blocks": "Redakti vian liston de blokitoj"
-  "read:drive": "Legi vian diskon"
-  "write:drive": "Ĉia operacio por skribi, forviŝi, aŭ alimaniere ŝanĝi la informon de dosiero en via disko de Misskey"
-  "read:favorites": "Vidi vian liston de preferaĵoj"
-  "write:favorites": "Redakti vian liston de preferaĵoj"
   "read:following": "Vidi la informojn de sekvo"
-  "write:following": "Sekvi/ Ĉesi sekvi alian uzanton"
-  "read:messaging": "Vidi viajn retbabiladojn"
-  "write:messaging": "Administri viajn retbabiladojn"
-  "read:mutes": "Vidi vian liston de silentigitoj"
-  "write:mutes": "Redakti vian liston de silentigitoj"
-  "write:notes": "Krei / Forviŝi noton"
-  "read:notifications": "Vidi sciigojn"
-  "write:notifications": "Manipulado por viaj sciigoj"
   "read:reactions": "Vidi reagojn"
   "write:reactions": "Redakti viajn reagojn"
   "read:page-likes": "Vidi ŝatojn de paĝo"
   "read:user-groups": "Vidi viajn grupojn de uzantoj"
   "read:channels": "Vidi kanalojn"
 _antennaSources:
-  all: "Ĉiuj notoj"
   homeTimeline: "Notoj de la uzantoj kiujn vi sekvas"
 _weekday:
   sunday: "Dimanĉo"
@@ -256,7 +184,6 @@ _widgets:
   slideshow: "Bildoprezento"
   button: "Butono"
   onlineUsers: "Surkonektitaj uzantoj"
-  aichan: "Ai"
 _cw:
   chars: "{count} literoj"
   files: "{count} dosiero(j)"
@@ -296,78 +223,9 @@ _profile:
   metadata: "Kromaj Informoj"
   metadataEdit: "Redakti kromajn informojn"
   changeAvatar: "Ŝanĝi profilbildon"
-  changeBanner: "Ŝanĝi standardon"
-_exportOrImport:
-  allNotes: "Ĉiuj notoj"
-  followingList: "Sekvatoj"
-  muteList: "Silentigoj"
-  blockingList: "Blokitoj"
-_charts:
-  usersTotal: "La totala nombro de la uzantoj"
-  activeUsers: "La nombro de la uzantoj aktivaj"
-  notesTotal: "La totala nombro de notoj"
-  filesTotal: "La totala nombro de la dosieroj"
-_timelines:
-  home: "Hejma"
-  social: "Sociala"
-  global: "Malloka"
 _pages:
-  newPage: "Krei novan paĝon"
-  editPage: "Redakti paĝon"
-  deleted: "Oni forviŝis la paĝon."
-  editThisPage: "Redakti la paĝon"
-  viewPage: "Vidi paĝojn"
-  my: "Miaj paĝoj"
-  featured: "Ravaĵoj"
-  contents: "Enhavo"
-  content: "Bloko de paĝo"
-  url: "URL de la paĝo"
-  alignCenter: "Centrigi"
-  hideTitleWhenPinned: "Kaŝi la titolon de la paĝo kiam alpinglita"
-  chooseBlock: "Aldoni blokon"
-  contentBlocks: "Enhavo"
-  inputBlocks: "Enigo"
-  blocks:
-    textarea: "Areo de teksto"
-    image: "Bildo"
-    button: "Butono"
-    _post:
-      canvasId: "Kanvasa identigilo"
-    textInput: "Enmeto el teksto"
-    _textInput:
-      text: "Titolo"
-      default: "Implicitaĵa valoro"
-    textareaInput: "Enmeto el teksto en multaj linioj"
-    _textareaInput:
-      text: "Titolo"
-      default: "Implicitaĵa valoro"
-    numberInput: "Nombra enmeto"
-    _numberInput:
-      text: "Titolo"
-      default: "Implicitaĵa valoro"
-    _canvas:
-      id: "Kanvasa identigilo"
-    _note:
-      id: "Identigilo de noto"
-    _switch:
-      text: "Titolo"
-      default: "Implicitaĵa valoro"
-    _counter:
-      text: "Titolo"
-    _button:
-      text: "Titolo"
-      _action:
-        _dialog:
-          content: "Enhavo"
-        _pushEvent:
-          event: "Nomo de la evento"
-    _radioButton:
-      title: "Titolo"
-      default: "Implicitaĵa valoro"
   script:
     categories:
-      value: "Valoro"
-      fn: "Funkcio"
       text: "Manipulo de teksto"
     blocks:
       multiLineText: "Teksto (multaj linioj)"
@@ -418,7 +276,6 @@ _pages:
       pick: "Elekti de la listo"
       _splitStrByLine:
         arg1: "Teksto"
-      fn: "Funkcio"
       _fn:
         slots: "Juntoj"
     thereIsEmptySlot: "La junto {slot} estas malplena!"
