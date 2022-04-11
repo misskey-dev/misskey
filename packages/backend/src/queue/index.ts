@@ -1,4 +1,5 @@
 import httpSignature from 'http-signature';
+import { v4 as uuid } from 'uuid';
 
 import config from '@/config/index.js';
 import { envOption } from '../env.js';
@@ -16,7 +17,7 @@ import { getJobInfo } from './get-job-info.js';
 import { systemQueue, dbQueue, deliverQueue, inboxQueue, objectStorageQueue, endedPollNotificationQueue, webhookDeliverQueue } from './queues.js';
 import { ThinUser } from './types.js';
 import { IActivity } from '@/remote/activitypub/type.js';
-import { Webhook } from '@/models/entities/webhook.js';
+import { Webhook, webhookEventTypes } from '@/models/entities/webhook.js';
 
 function renderError(e: Error): any {
 	return {
@@ -262,12 +263,16 @@ export function createCleanRemoteFilesJob() {
 	});
 }
 
-export function webhookDeliver(webhook: Webhook, content: unknown) {
+export function webhookDeliver(webhook: Webhook, type: typeof webhookEventTypes[number], content: unknown) {
 	const data = {
+		type,
 		content,
 		webhookId: webhook.id,
+		userId: webhook.userId,
 		to: webhook.url,
 		secret: webhook.secret,
+		createdAt: Date.now(),
+		eventId: uuid(),
 	};
 
 	return webhookDeliverQueue.add(data, {

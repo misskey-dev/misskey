@@ -23,9 +23,9 @@ export const meta = {
 				items: {
 					type: 'object',
 					ref: 'UserDetailed',
-				}
+				},
 			},
-		]
+		],
 	},
 
 	errors: {
@@ -70,7 +70,7 @@ export const paramDef = {
 					description: 'The local host is represented with `null`.',
 				},
 			},
-			required: ['username', 'host'],
+			required: ['username'],
 		},
 	],
 } as const;

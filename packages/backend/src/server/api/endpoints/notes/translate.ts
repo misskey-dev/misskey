@@ -75,7 +75,8 @@ export default define(meta, paramDef, async (ps, user) => {
 			Accept: 'application/json, */*',
 		},
 		body: params,
-		timeout: 10000,
+		// TODO
+		//timeout: 10000,
 		agent: getAgentByUrl,
 	});
 
