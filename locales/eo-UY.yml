@@ -1,13 +1,13 @@
 ---
-ok: "Okej"
+ok: "Bone"
 exportRequested: "Vi petis elporton. Ĝi povas bezoni longan tempon. Elportaĵo estos aldonita al disko post elportado."
 importRequested: "Vi petis enportadon. Ĝi povas bezoni longan tempon. "
 pageLoadError: "Fuŝiĝis enlegi paĝon."
 pageLoadErrorDescription: "Ordinare tio okazas pro la retkondiĉo aŭ la staplo de retumilo.\nPurigu la staplon, aŭ refaru poste. "
-youShouldUpgradeClient: "Por montri ĉi paĝon, bonvolu enlegi refoje kaj uzi la plej novan versian klienton."
+youShouldUpgradeClient: "Por montri ĉi paĝon, bonvolu enlegi refoje kaj uzi klienton novversian."
 flagAsCatDescription: "Flagu por montri ke la konton havas kato."
-flagShowTimelineReplies: "Montri la respondojn en la templinio"
-intro: "La instalado de Misskey finiĝis! Volu krei administran konton."
+flagShowTimelineReplies: "Montri respondon de notoj en templinio."
+intro: "Instalado de Misskey finiĝis! Kreu administran konton."
 whenServerDisconnected: "Kiam vi malligiĝas de servilo"
 caseSensitive: "Distingi usklecon"
 markAsReadAllUnreadNotes: "Marki ĉiujn afiŝojn kiel legita"
@@ -58,7 +58,7 @@ _accountDelete:
   requestAccountDelete: "Peti forviŝi konton"
   started: "Forviŝado komenciĝis."
 _gallery:
-  my: "Miaj afiŝoj"
+  my: "Mia afiŝo"
 _aboutMisskey:
   donate: "Mondonaci al Misskey"
 _channel:
