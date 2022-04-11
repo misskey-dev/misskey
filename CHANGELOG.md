@@ -19,29 +19,35 @@ You should also include the user name that made the change.
 ### Bugfixes
 - API: parameter validation of users/show was wrong
 - Federation: リモートインスタンスへのダイレクト投稿が届かない問題を修正 @syuilo
+>  Federation: fix direct notes not reaching remote instances @syuilo
 
 ## 12.109.2 (2022/04/03)
 
 ### Bugfixes
 - API: admin/update-meta was not working @syuilo
 - Client: テーマを切り替えたり読み込んだりするとmeta[name="theme-color"]のcontentがundefinedになる問題を修正 @tamaina
+> Client: fix issue where `meta[name="theme-color"]` becomes undefined when switching or loading themes @tamaina
 
 ## 12.109.1 (2022/04/02)
 
 ### Bugfixes
 - API: Renoteが行えない問題を修正
+> API: Fix problem that prevented renotes
 
 ## 12.109.0 (2022/04/02)
 
 ### Improvements
 - Webhooks @syuilo
 - Bull Dashboardを組み込み、ジョブキューの確認や操作を行えるように @syuilo
+> Added Bull Dashboard to monitor and manipulate job queues @syuilo
   - Bull Dashboardを開くには、最初だけ一旦ログアウトしてから再度管理者権限を持つアカウントでログインする必要があります
+  > To view Bull Dashboard, one must log out and log back in again with an admin account.
 - Check that installed Node.js version fulfills version requirement @ThatOneCalculator
 - Server: overall performance improvements @syuilo
 - Federation: avoid duplicate activity delivery @Johann150
 - Federation: limit federation of reactions on direct notes @Johann150
 - Client: タッチパッド・タッチスクリーンでのデッキの操作性を向上 @tamaina
+> Client: Improve usability of the deck UI on touchscreen devices @tamaina
 
 ### Bugfixes
 - email address validation was not working @ybw2016v
@@ -51,22 +57,28 @@ You should also include the user name that made the change.
 - API: `notes/create`: The `mediaIds` property is now deprecated. @Johann150
   - Use `fileIds` instead, it has the same behaviour.
 - Client: URIエンコーディングが異常でdecodeURIComponentが失敗するとURLが表示できなくなる問題を修正 @tamaina
+> Client: Fixed an issue where URLs could not be displayed if `decodeURIComponent` failed due to malformed URI encoding @tamaina
 
 ## 12.108.1 (2022/03/12)
 
 ### Bugfixes
 - リレーが動作しない問題を修正 @xianonn
+> Fixed relay not working @xianonn
 - ulidを使用していると動作しない問題を修正 @syuilo
+> Fixed ulid not working @syuilo
 - 外部からOGPが正しく取得できない問題を修正 @syuilo
-- instance can not get the files from other instance when there are items in allowedPrivateNetworks in .config/default.yml @ybw2016v
+> Fixed OGP not being retrieved remotely @syuilo
+- Instance can not get the files from other instance when there are items in allowedPrivateNetworks in .config/default.yml @ybw2016v
 
 ## 12.108.0 (2022/03/09)
 
 ### NOTE
 このバージョンからNode v16.14.0以降が必要です
+NodeJS ≥16.14.0 is required for 12.108.0 and above
 
 ### Changes
 - ノートの最大文字数を設定できる機能が廃止され、デフォルトで一律3000文字になりました @syuilo
+> The ability to configure the maximum number of characters per note is removed and now has the default value of 3,000 @syuilo
 - Misskey can no longer terminate HTTPS connections. @Johann150
   - If you did not use a reverse proxy (e.g. nginx) before, you will probably need to adjust
     your configuration file and set up a reverse proxy. The `https` configuration key is no
@@ -74,21 +86,35 @@ You should also include the user name that made the change.
 
 ### Improvements
 - インスタンスデフォルトテーマを設定できるように @syuilo
+> Allow admins to set default themes for the instance @syuilo
 - ミュートに期限を設定できるように @syuilo
+> Temporary mutes @syuilo
 - アンケートが終了したときに通知が作成されるように @syuilo
+> Notification when survey closes @syuilo
 - プロフィールの追加情報を最大16まで保存できるように @syuilo
+> Users can have up to 16 profile fields @syuilo
 - 連合チャートにPub&Subを追加 @syuilo
+> Add Pub/Sub to dashboard charts
 - 連合チャートにActiveを追加 @syuilo
+> Add active users to dashboard charts
 - デフォルトで10秒以上時間がかかるデータベースへのクエリは中断されるように @syuilo
+> Database queries over 10 seconds are now aborted @syuilo
 	- 設定ファイルの`db.extra`に`statement_timeout`を設定することでタイムアウト時間を変更できます
+	> The time out period can be changed by editing the `statement_timeout` value in the `db.extra` file.
 - Client: スプラッシュスクリーンにインスタンスのアイコンを表示するように @syuilo
+> Client: display instance icon on the splash screen @syuilo
 
 ### Bugfixes
 - Client: リアクションピッカーの高さが低くなったまま戻らないことがあるのを修正 @syuilo
+> Client: Fixed reaction picker appearing too low @syuilo
 - Client: ユーザー名オートコンプリートが正しく動作しない問題を修正 @syuilo
+> Client: Fixed username completion not working properly @syuilo
 - Client: タッチ操作だとウィジェットの編集がしにくいのを修正 @xianonn
+> Client: Editing widgets on touchscreen devices is easier @xianonn
 - Client: register_note_view_interruptor()が動かないのを修正 @syuilo
+> Client: Fixed `register_note_view_interruptor()` not working @syuilo
 - Client: iPhone X以降(?)でページの内容が全て表示しきれないのを修正 @tamaina
+> Client: Fixed page content not being fully displayed on iPhone models X and later
 - Client: fix image caption on mobile @nullobsi
 
 ## 12.107.0 (2022/02/12)
