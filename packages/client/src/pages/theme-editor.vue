@@ -124,7 +124,7 @@ let changed = $ref(false);
 useLeaveGuard($$(changed));
 
 function showPreview() {
-	os.pageWindow('preview');
+	os.pageWindow('/preview');
 }
 
 function setBgColor(color: typeof bgColors[number]) {
