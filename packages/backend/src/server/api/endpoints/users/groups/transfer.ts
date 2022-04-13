@@ -49,7 +49,7 @@ export const paramDef = {
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, me) => {
 	// Fetch the group
-	const userGroup = await UserGroups.findOne({
+	const userGroup = await UserGroups.findOneBy({
 		id: ps.groupId,
 		userId: me.id,
 	});
@@ -64,7 +64,7 @@ export default define(meta, paramDef, async (ps, me) => {
 		throw e;
 	});
 
-	const joining = await UserGroupJoinings.findOne({
+	const joining = await UserGroupJoinings.findOneBy({
 		userGroupId: userGroup.id,
 		userId: user.id,
 	});

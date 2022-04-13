@@ -17,6 +17,7 @@ import XQueue from './queue.chart.vue';
 import * as os from '@/os';
 import { stream } from '@/stream';
 import * as symbols from '@/symbols';
+import * as config from '@/config';
 
 export default defineComponent({
 	components: {
@@ -32,6 +33,14 @@ export default defineComponent({
 				title: this.$ts.jobQueue,
 				icon: 'fas fa-clipboard-list',
 				bg: 'var(--bg)',
+				actions: [{
+					asFullButton: true,
+					icon: 'fas fa-up-right-from-square',
+					text: this.$ts.dashboard,
+					handler: () => {
+						window.open(config.url + '/queue', '_blank');
+					},
+				}],
 			},
 			connection: markRaw(stream.useChannel('queueStats')),
 		}

@@ -9,19 +9,20 @@ import { isSelfHost, toPuny } from '@/misc/convert-host.js';
 import { DriveFiles, Users, UserLists, UserListJoinings } from '@/models/index.js';
 import { genId } from '@/misc/gen-id.js';
 import { DbUserImportJobData } from '@/queue/types.js';
+import { IsNull } from 'typeorm';
 
 const logger = queueLogger.createSubLogger('import-user-lists');
 
 export async function importUserLists(job: Bull.Job<DbUserImportJobData>, done: any): Promise<void> {
 	logger.info(`Importing user lists of ${job.data.user.id} ...`);
 
-	const user = await Users.findOne(job.data.user.id);
+	const user = await Users.findOneBy({ id: job.data.user.id });
 	if (user == null) {
 		done();
 		return;
 	}
 
-	const file = await DriveFiles.findOne({
+	const file = await DriveFiles.findOneBy({
 		id: job.data.fileId,
 	});
 	if (file == null) {
@@ -40,7 +41,7 @@ export async function importUserLists(job: Bull.Job<DbUserImportJobData>, done: 
 			const listName = line.split(',')[0].trim();
 			const { username, host } = Acct.parse(line.split(',')[1].trim());
 
-			let list = await UserLists.findOne({
+			let list = await UserLists.findOneBy({
 				userId: user.id,
 				name: listName,
 			});
@@ -51,13 +52,13 @@ export async function importUserLists(job: Bull.Job<DbUserImportJobData>, done: 
 					createdAt: new Date(),
 					userId: user.id,
 					name: listName,
-				}).then(x => UserLists.findOneOrFail(x.identifiers[0]));
+				}).then(x => UserLists.findOneByOrFail(x.identifiers[0]));
 			}
 
-			let target = isSelfHost(host!) ? await Users.findOne({
-				host: null,
+			let target = isSelfHost(host!) ? await Users.findOneBy({
+				host: IsNull(),
 				usernameLower: username.toLowerCase(),
-			}) : await Users.findOne({
+			}) : await Users.findOneBy({
 				host: toPuny(host!),
 				usernameLower: username.toLowerCase(),
 			});
@@ -66,7 +67,7 @@ export async function importUserLists(job: Bull.Job<DbUserImportJobData>, done: 
 				target = await resolveUser(username, host);
 			}
 
-			if (await UserListJoinings.findOne({ userListId: list!.id, userId: target.id }) != null) continue;
+			if (await UserListJoinings.findOneBy({ userListId: list!.id, userId: target.id }) != null) continue;
 
 			pushUserToUserList(target, list!);
 		} catch (e) {

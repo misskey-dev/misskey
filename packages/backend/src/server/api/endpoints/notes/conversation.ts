@@ -50,7 +50,7 @@ export default define(meta, paramDef, async (ps, user) => {
 
 	async function get(id: any) {
 		i++;
-		const p = await Notes.findOne(id);
+		const p = await Notes.findOneBy({ id });
 		if (p == null) return;
 
 		if (i > ps.offset!) {

@@ -1,6 +1,6 @@
 {
 	"name": "misskey",
-	"version": "12.108.1",
+	"version": "12.109.2",
 	"codename": "indigo",
 	"repository": {
 		"type": "git",
@@ -13,8 +13,7 @@
 		"start": "cd packages/backend && node --experimental-json-modules ./built/index.js",
 		"start:test": "cd packages/backend && cross-env NODE_ENV=test node --experimental-json-modules ./built/index.js",
 		"init": "npm run migrate",
-		"ormconfig": "node ./packages/backend/ormconfig.js",
-		"migrate": "cd packages/backend && npx typeorm migration:run",
+		"migrate": "cd packages/backend && npx typeorm migration:run -d ormconfig.js",
 		"migrateandstart": "npm run migrate && npm run start",
 		"gulp": "gulp build",
 		"watch": "npm run dev",
@@ -42,10 +41,10 @@
 		"js-yaml": "4.1.0"
 	},
 	"devDependencies": {
-		"@typescript-eslint/parser": "5.14.0",
+		"@typescript-eslint/parser": "5.17.0",
 		"cross-env": "7.0.3",
-		"cypress": "9.5.0",
+		"cypress": "9.5.3",
 		"start-server-and-test": "1.14.0",
-		"typescript": "4.6.2"
+		"typescript": "4.6.3"
 	}
 }

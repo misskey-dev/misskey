@@ -68,7 +68,7 @@ export default define(meta, paramDef, async (ps, user) => {
 	});
 
 	// Check not following
-	const exist = await Followings.findOne({
+	const exist = await Followings.findOneBy({
 		followerId: follower.id,
 		followeeId: followee.id,
 	});

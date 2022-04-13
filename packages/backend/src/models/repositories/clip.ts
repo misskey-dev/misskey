@@ -1,15 +1,14 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { db } from '@/db/postgre.js';
 import { Clip } from '@/models/entities/clip.js';
 import { Packed } from '@/misc/schema.js';
 import { Users } from '../index.js';
 import { awaitAll } from '@/prelude/await-all.js';
 
-@EntityRepository(Clip)
-export class ClipRepository extends Repository<Clip> {
-	public async pack(
+export const ClipRepository = db.getRepository(Clip).extend({
+	async pack(
 		src: Clip['id'] | Clip,
 	): Promise<Packed<'Clip'>> {
-		const clip = typeof src === 'object' ? src : await this.findOneOrFail(src);
+		const clip = typeof src === 'object' ? src : await this.findOneByOrFail({ id: src });
 
 		return await awaitAll({
 			id: clip.id,
@@ -20,12 +19,12 @@ export class ClipRepository extends Repository<Clip> {
 			description: clip.description,
 			isPublic: clip.isPublic,
 		});
-	}
+	},
 
-	public packMany(
+	packMany(
 		clips: Clip[],
 	) {
 		return Promise.all(clips.map(x => this.pack(x)));
-	}
-}
+	},
+});
 

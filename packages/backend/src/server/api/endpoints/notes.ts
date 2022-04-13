@@ -19,7 +19,7 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
-		local: { type: 'boolean' },
+		local: { type: 'boolean', default: false },
 		reply: { type: 'boolean' },
 		renote: { type: 'boolean' },
 		withFiles: { type: 'boolean' },

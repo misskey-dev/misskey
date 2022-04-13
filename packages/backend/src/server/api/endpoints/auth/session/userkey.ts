@@ -57,7 +57,7 @@ export const paramDef = {
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps) => {
 	// Lookup app
-	const app = await Apps.findOne({
+	const app = await Apps.findOneBy({
 		secret: ps.appSecret,
 	});
 
@@ -66,7 +66,7 @@ export default define(meta, paramDef, async (ps) => {
 	}
 
 	// Fetch token
-	const session = await AuthSessions.findOne({
+	const session = await AuthSessions.findOneBy({
 		token: ps.token,
 		appId: app.id,
 	});
@@ -80,7 +80,7 @@ export default define(meta, paramDef, async (ps) => {
 	}
 
 	// Lookup access token
-	const accessToken = await AccessTokens.findOneOrFail({
+	const accessToken = await AccessTokens.findOneByOrFail({
 		appId: app.id,
 		userId: session.userId,
 	});

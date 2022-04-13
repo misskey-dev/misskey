@@ -19,7 +19,7 @@ import { Note, IMentionedRemoteUsers } from '@/models/entities/note.js';
 import { Mutings, Users, NoteWatchings, Notes, Instances, UserProfiles, Antennas, Followings, MutedNotes, Channels, ChannelFollowings, Blockings, NoteThreadMutings } from '@/models/index.js';
 import { DriveFile } from '@/models/entities/drive-file.js';
 import { App } from '@/models/entities/app.js';
-import { Not, getConnection, In } from 'typeorm';
+import { Not, In } from 'typeorm';
 import { User, ILocalUser, IRemoteUser } from '@/models/entities/user.js';
 import { genId } from '@/misc/gen-id.js';
 import { notesChart, perUserNotesChart, activeUsersChart, instanceChart } from '@/services/chart/index.js';
@@ -35,6 +35,13 @@ import { Channel } from '@/models/entities/channel.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { getAntennas } from '@/misc/antenna-cache.js';
 import { endedPollNotificationQueue } from '@/queue/queues.js';
+import { webhookDeliver } from '@/queue/index.js';
+import { Cache } from '@/misc/cache.js';
+import { UserProfile } from '@/models/entities/user-profile.js';
+import { db } from '@/db/postgre.js';
+import { getActiveWebhooks } from '@/misc/webhook-cache.js';
+
+const mutedWordsCache = new Cache<{ userId: UserProfile['userId']; mutedWords: UserProfile['mutedWords']; }[]>(1000 * 60 * 5);
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -74,7 +81,7 @@ class NotificationManager {
 	public async deliver() {
 		for (const x of this.queue) {
 			// ミュート情報を取得
-			const mentioneeMutes = await Mutings.find({
+			const mentioneeMutes = await Mutings.findBy({
 				muterId: x.target,
 			});
 
@@ -91,6 +98,13 @@ class NotificationManager {
 	}
 }
 
+type MinimumUser = {
+	id: User['id'];
+	host: User['host'];
+	username: User['username'];
+	uri: User['uri'];
+};
+
 type Option = {
 	createdAt?: Date | null;
 	name?: string | null;
@@ -102,9 +116,9 @@ type Option = {
 	localOnly?: boolean | null;
 	cw?: string | null;
 	visibility?: string;
-	visibleUsers?: User[] | null;
+	visibleUsers?: MinimumUser[] | null;
 	channel?: Channel | null;
-	apMentions?: User[] | null;
+	apMentions?: MinimumUser[] | null;
 	apHashtags?: string[] | null;
 	apEmojis?: string[] | null;
 	uri?: string | null;
@@ -117,7 +131,7 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 	// (クライアントサイドでやっても良い処理だと思うけどとりあえずサーバーサイドで)
 	if (data.reply && data.channel && data.reply.channelId !== data.channel.id) {
 		if (data.reply.channelId) {
-			data.channel = await Channels.findOne(data.reply.channelId);
+			data.channel = await Channels.findOneBy({ id: data.reply.channelId });
 		} else {
 			data.channel = null;
 		}
@@ -126,7 +140,7 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 	// チャンネル内にリプライしたら対象のスコープに合わせる
 	// (クライアントサイドでやっても良い処理だと思うけどとりあえずサーバーサイドで)
 	if (data.reply && (data.channel == null) && data.reply.channelId) {
-		data.channel = await Channels.findOne(data.reply.channelId);
+		data.channel = await Channels.findOneBy({ id: data.reply.channelId });
 	}
 
 	if (data.createdAt == null) data.createdAt = new Date();
@@ -199,7 +213,7 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 	tags = tags.filter(tag => Array.from(tag || '').length <= 128).splice(0, 32);
 
 	if (data.reply && (user.id !== data.reply.userId) && !mentionedUsers.some(u => u.id === data.reply!.userId)) {
-		mentionedUsers.push(await Users.findOneOrFail(data.reply.userId));
+		mentionedUsers.push(await Users.findOneByOrFail({ id: data.reply!.userId }));
 	}
 
 	if (data.visibility === 'specified') {
@@ -212,7 +226,7 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 		}
 
 		if (data.reply && !data.visibleUsers.some(x => x.id === data.reply!.userId)) {
-			data.visibleUsers.push(await Users.findOneOrFail(data.reply.userId));
+			data.visibleUsers.push(await Users.findOneByOrFail({ id: data.reply!.userId }));
 		}
 	}
 
@@ -241,10 +255,12 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 	incNotesCountOfUser(user);
 
 	// Word mute
-	// TODO: cache
-	UserProfiles.find({
-		enableWordMute: true,
-	}).then(us => {
+	mutedWordsCache.fetch(null, () => UserProfiles.find({
+		where: {
+			enableWordMute: true,
+		},
+		select: ['userId', 'mutedWords'],
+	})).then(us => {
 		for (const u of us) {
 			checkWordMute(note, { id: u.userId }, u.mutedWords).then(shouldMute => {
 				if (shouldMute) {
@@ -260,25 +276,17 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 	});
 
 	// Antenna
-	Followings.createQueryBuilder('following')
-		.andWhere(`following.followeeId = :userId`, { userId: note.userId })
-		.getMany()
-		.then(async followings => {
-			const blockings = await Blockings.find({ blockerId: user.id }); // TODO: キャッシュしたい
-			const followers = followings.map(f => f.followerId);
-			for (const antenna of (await getAntennas())) {
-				if (blockings.some(blocking => blocking.blockeeId === antenna.userId)) continue; // この処理は checkHitAntenna 内でやるようにしてもいいかも
-				checkHitAntenna(antenna, note, user, followers).then(hit => {
-					if (hit) {
-						addNoteToAntenna(antenna, note, user);
-					}
-				});
+	for (const antenna of (await getAntennas())) {
+		checkHitAntenna(antenna, note, user).then(hit => {
+			if (hit) {
+				addNoteToAntenna(antenna, note, user);
 			}
 		});
+	}
 
 	// Channel
 	if (note.channelId) {
-		ChannelFollowings.find({ followeeId: note.channelId }).then(followings => {
+		ChannelFollowings.findBy({ followeeId: note.channelId }).then(followings => {
 			for (const following of followings) {
 				insertNoteUnread(following.followerId, note, {
 					isSpecified: false,
@@ -339,6 +347,16 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 
 		publishNotesStream(noteObj);
 
+		getActiveWebhooks().then(webhooks => {
+			webhooks = webhooks.filter(x => x.userId === user.id && x.on.includes('note'));
+			for (const webhook of webhooks) {
+				webhookDeliver(webhook, {
+					type: 'note',
+					note: noteObj,
+				});
+			}
+		});
+
 		const nm = new NotificationManager(user, note);
 		const nmRelatedPromises = [];
 
@@ -351,7 +369,7 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 
 			// 通知
 			if (data.reply.userHost === null) {
-				const threadMuted = await NoteThreadMutings.findOne({
+				const threadMuted = await NoteThreadMutings.findOneBy({
 					userId: data.reply.userId,
 					threadId: data.reply.threadId || data.reply.id,
 				});
@@ -359,6 +377,14 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 				if (!threadMuted) {
 					nm.push(data.reply.userId, 'reply');
 					publishMainStream(data.reply.userId, 'reply', noteObj);
+
+					const webhooks = (await getActiveWebhooks()).filter(x => x.userId === data.reply!.userId && x.on.includes('reply'));
+					for (const webhook of webhooks) {
+						webhookDeliver(webhook, {
+							type: 'reply',
+							note: noteObj,
+						});
+					}
 				}
 			}
 		}
@@ -378,6 +404,14 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 			// Publish event
 			if ((user.id !== data.renote.userId) && data.renote.userHost === null) {
 				publishMainStream(data.renote.userId, 'renote', noteObj);
+
+				const webhooks = (await getActiveWebhooks()).filter(x => x.userId === data.renote!.userId && x.on.includes('renote'));
+				for (const webhook of webhooks) {
+					webhookDeliver(webhook, {
+						type: 'renote',
+						note: noteObj,
+					});
+				}
 			}
 		}
 
@@ -398,13 +432,13 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 
 				// 投稿がリプライかつ投稿者がローカルユーザーかつリプライ先の投稿の投稿者がリモートユーザーなら配送
 				if (data.reply && data.reply.userHost !== null) {
-					const u = await Users.findOne(data.reply.userId);
+					const u = await Users.findOneBy({ id: data.reply.userId });
 					if (u && Users.isRemoteUser(u)) dm.addDirectRecipe(u);
 				}
 
 				// 投稿がRenoteかつ投稿者がローカルユーザーかつRenote元の投稿の投稿者がリモートユーザーなら配送
 				if (data.renote && data.renote.userHost !== null) {
-					const u = await Users.findOne(data.renote.userId);
+					const u = await Users.findOneBy({ id: data.renote.userId });
 					if (u && Users.isRemoteUser(u)) dm.addDirectRecipe(u);
 				}
 
@@ -429,7 +463,7 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 			lastNotedAt: new Date(),
 		});
 
-		Notes.count({
+		Notes.countBy({
 			userId: user.id,
 			channelId: data.channel.id,
 		}).then(count => {
@@ -465,7 +499,7 @@ function incRenoteCount(renote: Note) {
 		.execute();
 }
 
-async function insertNote(user: { id: User['id']; host: User['host']; }, data: Option, tags: string[], emojis: string[], mentionedUsers: User[]) {
+async function insertNote(user: { id: User['id']; host: User['host']; }, data: Option, tags: string[], emojis: string[], mentionedUsers: MinimumUser[]) {
 	const insert = new Note({
 		id: genId(data.createdAt!),
 		createdAt: data.createdAt!,
@@ -509,7 +543,7 @@ async function insertNote(user: { id: User['id']; host: User['host']; }, data: O
 	// Append mentions data
 	if (mentionedUsers.length > 0) {
 		insert.mentions = mentionedUsers.map(u => u.id);
-		const profiles = await UserProfiles.find({ userId: In(insert.mentions) });
+		const profiles = await UserProfiles.findBy({ userId: In(insert.mentions) });
 		insert.mentionedRemoteUsers = JSON.stringify(mentionedUsers.filter(u => Users.isRemoteUser(u)).map(u => {
 			const profile = profiles.find(p => p.userId === u.id);
 			const url = profile != null ? profile.url : null;
@@ -526,7 +560,7 @@ async function insertNote(user: { id: User['id']; host: User['host']; }, data: O
 	try {
 		if (insert.hasPoll) {
 			// Start transaction
-			await getConnection().transaction(async transactionalEntityManager => {
+			await db.transaction(async transactionalEntityManager => {
 				await transactionalEntityManager.insert(Note, insert);
 
 				const poll = new Poll({
@@ -576,7 +610,7 @@ function index(note: Note) {
 }
 
 async function notifyToWatchersOfRenotee(renote: Note, user: { id: User['id']; }, nm: NotificationManager, type: NotificationType) {
-	const watchers = await NoteWatchings.find({
+	const watchers = await NoteWatchings.findBy({
 		noteId: renote.id,
 		userId: Not(user.id),
 	});
@@ -587,7 +621,7 @@ async function notifyToWatchersOfRenotee(renote: Note, user: { id: User['id']; }
 }
 
 async function notifyToWatchersOfReplyee(reply: Note, user: { id: User['id']; }, nm: NotificationManager) {
-	const watchers = await NoteWatchings.find({
+	const watchers = await NoteWatchings.findBy({
 		noteId: reply.id,
 		userId: Not(user.id),
 	});
@@ -597,9 +631,9 @@ async function notifyToWatchersOfReplyee(reply: Note, user: { id: User['id']; },
 	}
 }
 
-async function createMentionedEvents(mentionedUsers: User[], note: Note, nm: NotificationManager) {
+async function createMentionedEvents(mentionedUsers: MinimumUser[], note: Note, nm: NotificationManager) {
 	for (const u of mentionedUsers.filter(u => Users.isLocalUser(u))) {
-		const threadMuted = await NoteThreadMutings.findOne({
+		const threadMuted = await NoteThreadMutings.findOneBy({
 			userId: u.id,
 			threadId: note.threadId || note.id,
 		});
@@ -613,6 +647,14 @@ async function createMentionedEvents(mentionedUsers: User[], note: Note, nm: Not
 		});
 
 		publishMainStream(u.id, 'mention', detailPackedNote);
+
+		const webhooks = (await getActiveWebhooks()).filter(x => x.userId === u.id && x.on.includes('mention'));
+		for (const webhook of webhooks) {
+			webhookDeliver(webhook, {
+				type: 'mention',
+				note: detailPackedNote,
+			});
+		}
 
 		// Create notification
 		nm.push(u.id, 'mention');

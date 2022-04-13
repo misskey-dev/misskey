@@ -839,6 +839,8 @@ tenMinutes: "10 minút"
 oneHour: "1 hodina"
 oneDay: "1 deň"
 oneWeek: "1 týždeň"
+reflectMayTakeTime: "Zmeny môžu chvíľu trvať kým sa prejavia."
+failedToFetchAccountInformation: "Nepodarilo sa načítať informácie o účte."
 _emailUnavailable:
   used: "Táto emailová adresa sa už používa"
   format: "Formát emailovej adresy je nesprávny"

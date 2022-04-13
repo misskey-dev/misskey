@@ -16,7 +16,7 @@ jobs:
         submodules: true
     - uses: actions/setup-node@v1
       with:
-        node-version: 12.x
+        node-version: 16.x
     - uses: actions/cache@v2
       with:
         path: '**/node_modules'

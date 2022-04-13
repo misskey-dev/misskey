@@ -40,6 +40,7 @@ export const meta = {
 			userHost: {
 				type: 'string',
 				optional: false, nullable: true,
+				description: 'The local host is represented with `null`.',
 			},
 			md5: {
 				type: 'string',
@@ -151,16 +152,25 @@ export const meta = {
 
 export const paramDef = {
 	type: 'object',
-	properties: {
-		fileId: { type: 'string', format: 'misskey:id' },
-		url: { type: 'string' },
-	},
-	required: [],
+	anyOf: [
+		{
+			properties: {
+				fileId: { type: 'string', format: 'misskey:id' },
+			},
+			required: ['fileId'],
+		},
+		{
+			properties: {
+				url: { type: 'string' },
+			},
+			required: ['url'],
+		},
+	],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, me) => {
-	const file = ps.fileId ? await DriveFiles.findOne(ps.fileId) : await DriveFiles.findOne({
+	const file = ps.fileId ? await DriveFiles.findOneBy({ id: ps.fileId }) : await DriveFiles.findOne({
 		where: [{
 			url: ps.url,
 		}, {

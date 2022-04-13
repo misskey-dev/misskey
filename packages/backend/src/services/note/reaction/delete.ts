@@ -11,7 +11,7 @@ import { decodeReaction } from '@/misc/reaction-lib.js';
 
 export default async (user: { id: User['id']; host: User['host']; }, note: Note) => {
 	// if already unreacted
-	const exist = await NoteReactions.findOne({
+	const exist = await NoteReactions.findOneBy({
 		noteId: note.id,
 		userId: user.id,
 	});
@@ -48,7 +48,7 @@ export default async (user: { id: User['id']; host: User['host']; }, note: Note)
 		const content = renderActivity(renderUndo(await renderLike(exist, note), user));
 		const dm = new DeliverManager(user, content);
 		if (note.userHost !== null) {
-			const reactee = await Users.findOne(note.userId);
+			const reactee = await Users.findOneBy({ id: note.userId });
 			dm.addDirectRecipe(reactee as IRemoteUser);
 		}
 		dm.addFollowersRecipe();

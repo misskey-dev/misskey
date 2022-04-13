@@ -3,6 +3,7 @@ import { ApiError } from '../../error.js';
 import { Users, Followings, UserProfiles } from '@/models/index.js';
 import { makePaginationQuery } from '../../common/make-pagination-query.js';
 import { toPunyNullable } from '@/misc/convert-host.js';
+import { IsNull } from 'typeorm';
 
 export const meta = {
 	tags: ['users'],
@@ -37,27 +38,42 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
-		userId: { type: 'string', format: 'misskey:id' },
-		username: { type: 'string' },
-		host: { type: 'string', nullable: true },
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 	},
-	required: [],
+	anyOf: [
+		{
+			properties: {
+				userId: { type: 'string', format: 'misskey:id' },
+			},
+			required: ['userId'],
+		},
+		{
+			properties: {
+				username: { type: 'string' },
+				host: {
+					type: 'string',
+					nullable: true,
+					description: 'The local host is represented with `null`.',
+				},
+			},
+			required: ['username', 'host'],
+		},
+	],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, me) => {
-	const user = await Users.findOne(ps.userId != null
+	const user = await Users.findOneBy(ps.userId != null
 		? { id: ps.userId }
-		: { usernameLower: ps.username!.toLowerCase(), host: toPunyNullable(ps.host) });
+		: { usernameLower: ps.username!.toLowerCase(), host: toPunyNullable(ps.host) ?? IsNull() });
 
 	if (user == null) {
 		throw new ApiError(meta.errors.noSuchUser);
 	}
 
-	const profile = await UserProfiles.findOneOrFail(user.id);
+	const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
 
 	if (profile.ffVisibility === 'private') {
 		if (me == null || (me.id !== user.id)) {
@@ -67,7 +83,7 @@ export default define(meta, paramDef, async (ps, me) => {
 		if (me == null) {
 			throw new ApiError(meta.errors.forbidden);
 		} else if (me.id !== user.id) {
-			const following = await Followings.findOne({
+			const following = await Followings.findOneBy({
 				followeeId: user.id,
 				followerId: me.id,
 			});

@@ -293,23 +293,25 @@ export function inputDate(props: {
 	});
 }
 
-export function select(props: {
+export function select<C extends any = any>(props: {
 	title?: string | null;
 	text?: string | null;
 	default?: string | null;
-	items?: {
-		value: string;
+} & ({
+	items: {
+		value: C;
 		text: string;
 	}[];
-	groupedItems?: {
+} | {
+	groupedItems: {
 		label: string;
 		items: {
-			value: string;
+			value: C;
 			text: string;
 		}[];
 	}[];
-}): Promise<{ canceled: true; result: undefined; } | {
-	canceled: false; result: string;
+})): Promise<{ canceled: true; result: undefined; } | {
+	canceled: false; result: C;
 }> {
 	return new Promise((resolve, reject) => {
 		popup(import('@/components/dialog.vue'), {

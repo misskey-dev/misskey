@@ -6,6 +6,7 @@ import { links } from './nodeinfo.js';
 import { escapeAttribute, escapeValue } from '@/prelude/xml.js';
 import { Users } from '@/models/index.js';
 import { User } from '@/models/entities/user.js';
+import { FindOptionsWhere, IsNull } from 'typeorm';
 
 // Init router
 const router = new Router();
@@ -66,13 +67,13 @@ router.get('/.well-known/change-password', async ctx => {
 */
 
 router.get(webFingerPath, async ctx => {
-	const fromId = (id: User['id']): Record<string, any> => ({
+	const fromId = (id: User['id']): FindOptionsWhere<User> => ({
 		id,
-		host: null,
+		host: IsNull(),
 		isSuspended: false,
 	});
 
-	const generateQuery = (resource: string) =>
+	const generateQuery = (resource: string): FindOptionsWhere<User> | number =>
 		resource.startsWith(`${config.url.toLowerCase()}/users/`) ?
 			fromId(resource.split('/').pop()!) :
 			fromAcct(Acct.parse(
@@ -80,10 +81,10 @@ router.get(webFingerPath, async ctx => {
 				resource.startsWith('acct:') ? resource.slice('acct:'.length) :
 				resource));
 
-	const fromAcct = (acct: Acct.Acct): Record<string, any> | number =>
+	const fromAcct = (acct: Acct.Acct): FindOptionsWhere<User> | number =>
 		!acct.host || acct.host === config.host.toLowerCase() ? {
 			usernameLower: acct.username,
-			host: null,
+			host: IsNull(),
 			isSuspended: false,
 		} : 422;
 
@@ -99,7 +100,7 @@ router.get(webFingerPath, async ctx => {
 		return;
 	}
 
-	const user = await Users.findOne(query);
+	const user = await Users.findOneBy(query);
 
 	if (user == null) {
 		ctx.status = 404;
