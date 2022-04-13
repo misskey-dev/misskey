@@ -50,6 +50,14 @@ sendMessage: "Gửi tin nhắn"
 copyUsername: "Chép tên người dùng"
 searchUser: "Tìm kiếm người dùng"
 reply: "Trả lời"
+loadMore: "Tải thêm"
+showMore: "Xem thêm"
+youGotNewFollower: "đã theo dõi bạn"
+receiveFollowRequest: "Đã yêu cầu theo dõi"
+followRequestAccepted: "Đã chấp nhận yêu cầu theo dõi"
+mention: "Nhắc đến"
+mentions: "Lượt nhắc"
+directNotes: "Nhắn riêng"
 pinned: "Ghim"
 flagAsBot: "Đánh dấu đây là tài khoản bot"
 searchWith: "Tìm kiếm: {q}"
@@ -67,10 +75,16 @@ renotedCount: "Lượt chia sẻ"
 user: "Người dùng"
 translatedFrom: "Dịch từ {x}"
 searchByGoogle: "Google"
+_email:
+  _follow:
+    title: "đã theo dõi bạn"
 _mfm:
+  mention: "Nhắc đến"
   search: "Tìm kiếm"
 _theme:
   installed: "{name} đã được cài đặt"
+  keys:
+    mention: "Nhắc đến"
 _sfx:
   notification: "Thông báo"
 _ago:
@@ -87,9 +101,16 @@ _ago:
 _widgets:
   notifications: "Thông báo"
   timeline: "Bảng tin"
+_cw:
+  show: "Tải thêm"
 _profile:
   username: "Tên người dùng"
+_notification:
+  youWereFollowed: "đã theo dõi bạn"
+  _types:
+    mention: "Nhắc đến"
 _deck:
   _columns:
     notifications: "Thông báo"
     tl: "Bảng tin"
+    mentions: "Lượt nhắc"
