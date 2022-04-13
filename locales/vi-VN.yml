@@ -58,6 +58,29 @@ followRequestAccepted: "Đã chấp nhận yêu cầu theo dõi"
 mention: "Nhắc đến"
 mentions: "Lượt nhắc"
 directNotes: "Nhắn riêng"
+importAndExport: "Nhập và xuất dữ liệu"
+import: "Nhập dữ liệu"
+export: "Xuất dữ liệu"
+files: "Tập tin"
+download: "Tải xuống"
+driveFileDeleteConfirm: "Bạn có chắc muốn xóa tập tin \"{name}\"? Tút liên quan cũng sẽ bị xóa theo."
+unfollowConfirm: "Bạn có chắc muốn ngưng theo dõi {name}?"
+exportRequested: "Đang chuẩn bị xuất tập tin. Quá trình này có thể mất ít phút. Nó sẽ được tự động thêm vào Drive sau khi hoàn thành."
+importRequested: "Bạn vừa yêu cầu nhập dữ liệu. Quá trình này có thể mất ít phút."
+lists: "Danh sách"
+noLists: "Bạn chưa có danh sách nào"
+note: "Tút"
+notes: "Tút"
+following: "Đang theo dõi"
+followers: "Người theo dõi"
+followsYou: "Theo dõi bạn"
+createList: "Tạo danh sách"
+manageLists: "Quản lý danh sách"
+error: "Lỗi"
+somethingHappened: "Xảy ra lỗi"
+retry: "Thử lại"
+pageLoadError: "Xảy ra lỗi khi tải trang."
+follow: "Đang theo dõi"
 pinned: "Ghim"
 flagAsBot: "Đánh dấu đây là tài khoản bot"
 searchWith: "Tìm kiếm: {q}"
@@ -67,6 +90,7 @@ cpuAndMemory: "CPU và Dung lượng"
 remove: "Xóa"
 dayX: "{day}"
 yearX: "{year}"
+userList: "Danh sách"
 aboutMisskey: "Về Misskey"
 smtpUser: "Tên người dùng"
 smtpPass: "Mật khẩu"
@@ -86,6 +110,7 @@ _theme:
   keys:
     mention: "Nhắc đến"
 _sfx:
+  note: "Tút"
   notification: "Thông báo"
 _ago:
   unknown: "Không rõ"
@@ -103,14 +128,40 @@ _widgets:
   timeline: "Bảng tin"
 _cw:
   show: "Tải thêm"
+_visibility:
+  followers: "Người theo dõi"
 _profile:
   username: "Tên người dùng"
+_exportOrImport:
+  followingList: "Đang theo dõi"
+  userLists: "Danh sách"
+_pages:
+  script:
+    categories:
+      list: "Danh sách"
+    blocks:
+      _join:
+        arg1: "Danh sách"
+      _randomPick:
+        arg1: "Danh sách"
+      _dailyRandomPick:
+        arg1: "Danh sách"
+      _seedRandomPick:
+        arg2: "Danh sách"
+      _pick:
+        arg1: "Danh sách"
+      _listLen:
+        arg1: "Danh sách"
+    types:
+      array: "Danh sách"
 _notification:
   youWereFollowed: "đã theo dõi bạn"
   _types:
+    follow: "Đang theo dõi"
     mention: "Nhắc đến"
 _deck:
   _columns:
     notifications: "Thông báo"
     tl: "Bảng tin"
+    list: "Danh sách"
     mentions: "Lượt nhắc"
