@@ -65,8 +65,7 @@ async function cancelRequest(follower: User, followee: User) {
 
 			const webhooks = (await getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('unfollow'));
 			for (const webhook of webhooks) {
-				webhookDeliver(webhook, {
-					type: 'unfollow',
+				webhookDeliver(webhook, 'unfollow', {
 					user: packed,
 				});
 			}
@@ -118,8 +117,7 @@ async function unFollow(follower: User, followee: User) {
 
 			const webhooks = (await getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('unfollow'));
 			for (const webhook of webhooks) {
-				webhookDeliver(webhook, {
-					type: 'unfollow',
+				webhookDeliver(webhook, 'unfollow', {
 					user: packed,
 				});
 			}

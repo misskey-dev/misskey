@@ -9,6 +9,7 @@ import { Note } from '@/models/entities/note.js';
 import { noteVisibilities } from '../../../../types.js';
 import { Channel } from '@/models/entities/channel.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
+import { In } from 'typeorm';
 
 export const meta = {
 	tags: ['notes'],
@@ -163,19 +164,18 @@ export const paramDef = {
 export default define(meta, paramDef, async (ps, user) => {
 	let visibleUsers: User[] = [];
 	if (ps.visibleUserIds) {
-		visibleUsers = (await Promise.all(ps.visibleUserIds.map(id => Users.findOneBy({ id }))))
-			.filter(x => x != null) as User[];
+		visibleUsers = await Users.findBy({
+			id: In(ps.visibleUserIds),
+		});
 	}
 
 	let files: DriveFile[] = [];
 	const fileIds = ps.fileIds != null ? ps.fileIds : ps.mediaIds != null ? ps.mediaIds : null;
 	if (fileIds != null) {
-		files = (await Promise.all(fileIds.map(fileId =>
-			DriveFiles.findOneBy({
-				id: fileId,
-				userId: user.id,
-			})
-		))).filter(file => file != null) as DriveFile[];
+		files = await DriveFiles.findBy({
+			userId: user.id,
+			id: In(fileIds),
+		});
 	}
 
 	let renote: Note | null;

@@ -16,7 +16,7 @@ html {
 	transition: opacity 0.5s ease;
 }
 
-#splash > img {
+#splashIcon {
 	position: absolute;
 	top: 0;
 	right: 0;
@@ -26,4 +26,49 @@ html {
 	width: 64px;
 	height: 64px;
 	pointer-events: none;
+}
+
+#splashSpinner {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	margin: auto;
+	display: inline-block;
+	width: 28px;
+	height: 28px;
+	transform: translateY(70px);
+}
+
+#splashSpinner:before,
+#splashSpinner:after {
+	content: " ";
+	display: block;
+	box-sizing: border-box;
+	width: 28px;
+	height: 28px;
+	border-radius: 50%;
+	border: solid 4px;
+}
+
+#splashSpinner:before {
+	border-color: currentColor;
+	opacity: 0.3;
+}
+
+#splashSpinner:after {
+	position: absolute;
+	top: 0;
+	border-color: currentColor transparent transparent transparent;
+	animation: splashSpinner 0.5s linear infinite;
+}
+
+@keyframes splashSpinner {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
 }
