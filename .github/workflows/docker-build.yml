@@ -9,6 +9,9 @@ jobs:
   build:
     name: Build Docker Image
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dockerfile: [Dockerfile, Dockerfile.cross]
 
     steps:
       - name: Check out the repo
@@ -30,3 +33,4 @@ jobs:
           push: false
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          file: ${{ matrix.dockerfile }}
