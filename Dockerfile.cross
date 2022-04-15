@@ -12,12 +12,12 @@ FROM native_base AS native_cache_builder
 COPY . ./
 
 RUN apk add --no-cache $BUILD_DEPS && \
-    git submodule update --init && \
     yarn install
 
 FROM native_cache_builder as native_builder
 
-RUN yarn build && \
+RUN git submodule update --init && \
+    yarn build && \
     rm -rf .git
 
 # ---
@@ -38,7 +38,7 @@ FROM base as deps_builder
 
 RUN apk add --no-cache $BUILD_DEPS
 COPY --from=native_cache_builder /usr/local/share/.cache/yarn /usr/local/share/.cache/yarn
-RUN yarn install
+RUN SKIP_CLIENT=YES yarn install
 
 FROM base AS runner
 
@@ -52,7 +52,6 @@ ENTRYPOINT ["/sbin/tini", "--"]
 
 COPY --from=deps_builder /misskey/node_modules ./node_modules
 COPY --from=deps_builder /misskey/packages/backend/node_modules ./packages/backend/node_modules
-COPY --from=deps_builder /misskey/packages/client/node_modules ./packages/client/node_modules
 COPY --from=native_builder /misskey/packages/backend/built ./packages/backend/built
 COPY --from=native_builder /misskey/built ./built
 
