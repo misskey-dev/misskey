@@ -1,0 +1,60 @@
+FROM --platform=$BUILDPLATFORM node:16.6.2-alpine3.13 AS native_base
+
+ENV NODE_ENV=production
+
+WORKDIR /misskey
+
+ENV BUILD_DEPS autoconf automake file g++ gcc libc-dev libtool make nasm pkgconfig python3 zlib-dev git
+
+# yarn cache を TARGETPLATFORM のステージ類で早く使いたいので yarn install までで一旦 stage を分ける
+FROM native_base AS native_cache_builder
+
+COPY . ./
+
+RUN apk add --no-cache $BUILD_DEPS && \
+    git submodule update --init && \
+    yarn install
+
+FROM native_cache_builder as native_builder
+
+RUN yarn build && \
+    rm -rf .git
+
+# ---
+
+FROM node:16.6.2-alpine3.13 AS base
+
+ENV NODE_ENV=production
+
+WORKDIR /misskey
+
+ENV BUILD_DEPS autoconf automake file g++ gcc libc-dev libtool make nasm pkgconfig python3 zlib-dev git
+
+COPY . ./
+
+# build dependencies package
+
+FROM base as deps_builder
+
+RUN apk add --no-cache $BUILD_DEPS
+COPY --from=native_cache_builder /usr/local/share/.cache/yarn /usr/local/share/.cache/yarn
+RUN yarn install
+
+FROM base AS runner
+
+RUN apk add --no-cache \
+    ffmpeg \
+    tini
+
+ENTRYPOINT ["/sbin/tini", "--"]
+
+# $(yarn cache dir) on container
+
+COPY --from=deps_builder /misskey/node_modules ./node_modules
+COPY --from=deps_builder /misskey/packages/backend/node_modules ./packages/backend/node_modules
+COPY --from=deps_builder /misskey/packages/client/node_modules ./packages/client/node_modules
+COPY --from=native_builder /misskey/packages/backend/built ./packages/backend/built
+COPY --from=native_builder /misskey/built ./built
+
+CMD ["npm", "run", "migrateandstart"]
+
