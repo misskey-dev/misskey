@@ -272,8 +272,11 @@ onUnmounted(() => {
 const emailNotConfigured = computed(() => instance.enableEmail && ($i.email == null || !$i.emailVerified));
 
 const pageChanged = (page) => {
-	if (page == null) return;
-	childInfo.value = page[symbols.PAGE_INFO];
+	if (page == null) {
+		childInfo.value = null;
+	} else {
+		childInfo.value = page[symbols.PAGE_INFO];
+	}
 };
 
 defineExpose({
