@@ -35,9 +35,9 @@ export default defineComponent({
 		this.$emit('mounted', this.$el);
 	},
 	
-	computed() {
+	computed: {
 		filtered() {
-			if (!this.place) return this.$store.reactiveState.widgets.value;
+			if (this.place == null) return this.$store.reactiveState.widgets.value;
 			if (this.place === 'right') {
 				// place: nullはとりあえず右側に表示しておく
 				return this.$store.reactiveState.widgets.value.filter(w => w.place === this.place || w.place === null);
@@ -66,7 +66,7 @@ export default defineComponent({
 		},
 
 		updateWidgets(widgets) {
-			if (!this.place) {
+			if (this.place == null) {
 				this.$store.set('widgets', widgets);
 				return;
 			}

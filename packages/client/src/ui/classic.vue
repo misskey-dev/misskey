@@ -26,7 +26,7 @@
 		</main>
 
 		<div v-if="isDesktop" ref="widgetsRight" class="widgets right">
-			<XWidgets :place="null" @mounted="attachSticky('widgetsRight')"/>
+			<XWidgets :place="showMenuOnTop ? 'right' : null" @mounted="attachSticky('widgetsRight')"/>
 		</div>
 	</div>
 
