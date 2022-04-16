@@ -54,6 +54,7 @@ type Registry = {
 	coldDeviceStorage: Partial<typeof ColdDeviceStorage.default>;
 	fontSize: string | null;
 	useSystemFont: 't' | null;
+	wallpaper: string | null;
 };
 
 type Registries = {
@@ -99,6 +100,7 @@ async function saveNew() {
 		coldDeviceStorage: ColdDeviceStorage.getAll(),
 		fontSize: localStorage.getItem('fontSize'),
 		useSystemFont: localStorage.getItem('useSystemFont') as 't' | null,
+		wallpaper: localStorage.getItem('wallpaper'),
 	};
 	await os.api('i/registry/set', { scope, key: id, value: registry });
 	registries[id] = registry;
@@ -142,6 +144,13 @@ async function applyRegistry(id: string) {
 		localStorage.removeItem('useSystemFont');
 	}
 
+	// wallpaper
+	if (registry.wallpaper != null) {
+		localStorage.setItem('wallpaper', registry.wallpaper);
+	} else {
+		localStorage.removeItem('wallpaper');
+	}
+
 	const { canceled: cancel2 } = await os.confirm({
 		type: 'info',
 		text: ts.reloadToApplySetting,
@@ -183,6 +192,9 @@ async function save(id: string) {
 		updatedAt: (new Date()).toISOString(),
 		defaultStore: getDefaultStoreValues(),
 		coldDeviceStorage: ColdDeviceStorage.getAll(),
+		fontSize: localStorage.getItem('fontSize'),
+		useSystemFont: localStorage.getItem('useSystemFont') as 't' | null,
+		wallpaper: localStorage.getItem('wallpaper'),
 	};
 	await os.api('i/registry/set', { scope, key: id, value: registry });
 	registries[id] = registry;
