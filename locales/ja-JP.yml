@@ -899,7 +899,7 @@ _plugin:
 _preferencesRegistry:
   list: "一覧"
   saveNew: "新規保存"
-  apply: "適用"
+  apply: "このデバイスに適用"
   delete: "削除"
   save: "上書き保存"
   rename: "名称変更"
