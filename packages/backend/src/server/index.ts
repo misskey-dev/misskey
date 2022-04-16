@@ -3,7 +3,7 @@
  */
 
 import * as fs from 'node:fs';
-import * as http from 'http';
+import * as http from 'node:http';
 import Koa from 'koa';
 import Router from '@koa/router';
 import mount from 'koa-mount';
