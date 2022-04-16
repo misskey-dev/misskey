@@ -1,6 +1,6 @@
 <template>
 <div class="ddiqwdnk">
-	<XWidgets class="widgets" :edit="editMode" :widgets="$store.reactiveState.widgets.value.filter(w => w.place === place)" @add-widget="addWidget" @remove-widget="removeWidget" @update-widget="updateWidget" @update-widgets="updateWidgets" @exit="editMode = false"/>
+	<XWidgets class="widgets" :edit="editMode" :widgets="filtered" @add-widget="addWidget" @remove-widget="removeWidget" @update-widget="updateWidget" @update-widgets="updateWidgets" @exit="editMode = false"/>
 	<MkAd class="a" :prefer="['square']"/>
 
 	<button v-if="editMode" class="_textButton edit" style="font-size: 0.9em;" @click="editMode = false"><i class="fas fa-check"></i> {{ $ts.editWidgetsExit }}</button>
@@ -34,12 +34,23 @@ export default defineComponent({
 	mounted() {
 		this.$emit('mounted', this.$el);
 	},
+	
+	computed() {
+		filtered() {
+			if (!this.place) return this.$store.reactiveState.widgets.value;
+			if (this.place === 'right') {
+				// place: nullはとりあえず右側に表示しておく
+				return this.$store.reactiveState.widgets.value.filter(w => w.place === this.place || w.place === null);
+			}
+			return this.$store.reactiveState.widgets.value.filter(w => w.place === this.place);
+		},
+	}
 
 	methods: {
 		addWidget(widget) {
 			this.$store.set('widgets', [{
 				...widget,
-				place: this.place,
+				place: this.place || null,
 			}, ...this.$store.state.widgets]);
 		},
 
@@ -55,6 +66,17 @@ export default defineComponent({
 		},
 
 		updateWidgets(widgets) {
+			if (!this.place) {
+				this.$store.set('widgets', widgets);
+				return;
+			}
+			if (this.place === 'right') {
+				this.$store.set('widgets', [
+					...this.$store.state.widgets.filter(w => w.place !== this.place && w.place != null),
+					...widgets
+				]);
+				return;
+			}
 			this.$store.set('widgets', [
 				...this.$store.state.widgets.filter(w => w.place !== this.place),
 				...widgets
