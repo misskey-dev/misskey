@@ -132,6 +132,11 @@ const menuDef = computed(() => [{
 		text: i18n.ts.plugins,
 		to: '/settings/plugin',
 		active: props.initialPage === 'plugin',
+	}, {
+		icon: 'fas fa-floppy-disk',
+		text: i18n.ts.preferencesRegistryShort,
+		to: '/settings/preferences-registry',
+		active: props.initialPage === 'preferences-registry',
 	}],
 }, {
 	title: i18n.ts.otherSettings,
@@ -225,6 +230,7 @@ const component = computed(() => {
 		case 'deck': return defineAsyncComponent(() => import('./deck.vue'));
 		case 'plugin': return defineAsyncComponent(() => import('./plugin.vue'));
 		case 'plugin/install': return defineAsyncComponent(() => import('./plugin.install.vue'));
+		case 'preferences-registry': return defineAsyncComponent(() => import('./preferences-registry.vue'));
 		case 'import-export': return defineAsyncComponent(() => import('./import-export.vue'));
 		case 'account-info': return defineAsyncComponent(() => import('./account-info.vue'));
 		case 'delete-account': return defineAsyncComponent(() => import('./delete-account.vue'));
