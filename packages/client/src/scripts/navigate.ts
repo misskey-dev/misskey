@@ -10,8 +10,8 @@ export class MisskeyNavigator {
 
 	// It should be constructed during vue creating in order for inject function to work
 	constructor() {
-		this.navHook = inject<null | Navigate>('navHook', null);
-		this.sideViewHook = inject<null | Navigate>('sideViewHook', null);
+		this.navHook = inject<Navigate | null>('navHook', null);
+		this.sideViewHook = inject<Navigate | null>('sideViewHook', null);
 	}
 
 	// Use this method instead of router.push()
