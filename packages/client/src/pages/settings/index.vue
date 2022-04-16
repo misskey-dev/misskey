@@ -9,15 +9,15 @@
 			<div v-if="childInfo" class="subtitle">{{ childInfo.title }}</div>
 		</div>
 		<div class="body">
-			<div v-if="!narrow || page == null" class="nav">
+			<div v-if="!narrow || initialPage == null" class="nav">
 				<div class="baaadecd">
 					<MkInfo v-if="emailNotConfigured" warn class="info">{{ $ts.emailNotConfiguredWarning }} <MkA to="/settings/email" class="_link">{{ $ts.configure }}</MkA></MkInfo>
-					<MkSuperMenu :def="menuDef" :grid="page == null"></MkSuperMenu>
+					<MkSuperMenu :def="menuDef" :grid="initialPage == null"></MkSuperMenu>
 				</div>
 			</div>
-			<div v-if="!(narrow && page == null)" class="main">
+			<div v-if="!(narrow && initialPage == null)" class="main">
 				<div class="bkzroven">
-					<component :is="component" :ref="el => pageChanged(el)" :key="page" v-bind="pageProps"/>
+					<component :is="component" :ref="el => pageChanged(el)" :key="initialPage" v-bind="pageProps"/>
 				</div>
 			</div>
 		</div>
@@ -36,6 +36,7 @@ import { unisonReload } from '@/scripts/unison-reload';
 import * as symbols from '@/symbols';
 import { instance } from '@/instance';
 import { $i } from '@/account';
+import { MisskeyNavigator } from '@/scripts/navigate';
 
 const props = defineProps<{
   initialPage?: string
@@ -48,10 +49,10 @@ const indexInfo = {
 	hideHeader: true,
 };
 const INFO = ref(indexInfo);
-const page = ref(props.initialPage);
-const view = ref(null);
 const el = ref<HTMLElement | null>(null);
 const childInfo = ref(null);
+
+const nav = new MisskeyNavigator();
 
 const narrow = ref(false);
 const NARROW_THRESHOLD = 600;
@@ -67,42 +68,42 @@ const menuDef = computed(() => [{
 		icon: 'fas fa-user',
 		text: i18n.ts.profile,
 		to: '/settings/profile',
-		active: page.value === 'profile',
+		active: props.initialPage === 'profile',
 	}, {
 		icon: 'fas fa-lock-open',
 		text: i18n.ts.privacy,
 		to: '/settings/privacy',
-		active: page.value === 'privacy',
+		active: props.initialPage === 'privacy',
 	}, {
 		icon: 'fas fa-laugh',
 		text: i18n.ts.reaction,
 		to: '/settings/reaction',
-		active: page.value === 'reaction',
+		active: props.initialPage === 'reaction',
 	}, {
 		icon: 'fas fa-cloud',
 		text: i18n.ts.drive,
 		to: '/settings/drive',
-		active: page.value === 'drive',
+		active: props.initialPage === 'drive',
 	}, {
 		icon: 'fas fa-bell',
 		text: i18n.ts.notifications,
 		to: '/settings/notifications',
-		active: page.value === 'notifications',
+		active: props.initialPage === 'notifications',
 	}, {
 		icon: 'fas fa-envelope',
 		text: i18n.ts.email,
 		to: '/settings/email',
-		active: page.value === 'email',
+		active: props.initialPage === 'email',
 	}, {
 		icon: 'fas fa-share-alt',
 		text: i18n.ts.integration,
 		to: '/settings/integration',
-		active: page.value === 'integration',
+		active: props.initialPage === 'integration',
 	}, {
 		icon: 'fas fa-lock',
 		text: i18n.ts.security,
 		to: '/settings/security',
-		active: page.value === 'security',
+		active: props.initialPage === 'security',
 	}],
 }, {
 	title: i18n.ts.clientSettings,
@@ -110,27 +111,27 @@ const menuDef = computed(() => [{
 		icon: 'fas fa-cogs',
 		text: i18n.ts.general,
 		to: '/settings/general',
-		active: page.value === 'general',
+		active: props.initialPage === 'general',
 	}, {
 		icon: 'fas fa-palette',
 		text: i18n.ts.theme,
 		to: '/settings/theme',
-		active: page.value === 'theme',
+		active: props.initialPage === 'theme',
 	}, {
 		icon: 'fas fa-list-ul',
 		text: i18n.ts.menu,
 		to: '/settings/menu',
-		active: page.value === 'menu',
+		active: props.initialPage === 'menu',
 	}, {
 		icon: 'fas fa-music',
 		text: i18n.ts.sounds,
 		to: '/settings/sounds',
-		active: page.value === 'sounds',
+		active: props.initialPage === 'sounds',
 	}, {
 		icon: 'fas fa-plug',
 		text: i18n.ts.plugins,
 		to: '/settings/plugin',
-		active: page.value === 'plugin',
+		active: props.initialPage === 'plugin',
 	}],
 }, {
 	title: i18n.ts.otherSettings,
@@ -138,37 +139,37 @@ const menuDef = computed(() => [{
 		icon: 'fas fa-boxes',
 		text: i18n.ts.importAndExport,
 		to: '/settings/import-export',
-		active: page.value === 'import-export',
+		active: props.initialPage === 'import-export',
 	}, {
 		icon: 'fas fa-volume-mute',
 		text: i18n.ts.instanceMute,
 		to: '/settings/instance-mute',
-		active: page.value === 'instance-mute',
+		active: props.initialPage === 'instance-mute',
 	}, {
 		icon: 'fas fa-ban',
 		text: i18n.ts.muteAndBlock,
 		to: '/settings/mute-block',
-		active: page.value === 'mute-block',
+		active: props.initialPage === 'mute-block',
 	}, {
 		icon: 'fas fa-comment-slash',
 		text: i18n.ts.wordMute,
 		to: '/settings/word-mute',
-		active: page.value === 'word-mute',
+		active: props.initialPage === 'word-mute',
 	}, {
 		icon: 'fas fa-key',
 		text: 'API',
 		to: '/settings/api',
-		active: page.value === 'api',
+		active: props.initialPage === 'api',
 	}, {
 		icon: 'fas fa-bolt',
 		text: 'Webhook',
 		to: '/settings/webhook',
-		active: page.value === 'webhook',
+		active: props.initialPage === 'webhook',
 	}, {
 		icon: 'fas fa-ellipsis-h',
 		text: i18n.ts.other,
 		to: '/settings/other',
-		active: page.value === 'other',
+		active: props.initialPage === 'other',
 	}],
 }, {
 	items: [{
@@ -193,8 +194,8 @@ const menuDef = computed(() => [{
 
 const pageProps = ref({});
 const component = computed(() => {
-	if (page.value == null) return null;
-	switch (page.value) {
+	if (props.initialPage == null) return null;
+	switch (props.initialPage) {
 		case 'accounts': return defineAsyncComponent(() => import('./accounts.vue'));
 		case 'profile': return defineAsyncComponent(() => import('./profile.vue'));
 		case 'privacy': return defineAsyncComponent(() => import('./privacy.vue'));
@@ -241,12 +242,17 @@ watch(component, () => {
 
 watch(() => props.initialPage, () => {
 	if (props.initialPage == null && !narrow.value) {
-		page.value = 'profile';
+		nav.push('/settings/profile');
 	} else {
-		page.value = props.initialPage;
 		if (props.initialPage == null) {
 			INFO.value = indexInfo;
 		}
+	}
+});
+
+watch(narrow, () => {
+	if (!narrow.value && props.initialPage == null) {
+		nav.push('/settings/profile');
 	}
 });
 
@@ -254,8 +260,8 @@ onMounted(() => {
 	ro.observe(el.value);
 
 	narrow.value = el.value.offsetWidth < NARROW_THRESHOLD;
-	if (!narrow.value) {
-		page.value = props.initialPage || 'profile';
+	if (!narrow.value && props.initialPage == null) {
+		nav.push('/settings/profile');
 	}
 });
 
