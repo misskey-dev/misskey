@@ -2,7 +2,10 @@
 <MkSpacer :content-max="900" :margin-min="20" :margin-max="32">
 	<div ref="el" class="vvcocwet" :class="{ wide: !narrow }">
 		<div class="header">
-			<div class="title">{{ $ts.settings }}</div>
+			<div class="title">
+				<MkA v-if="narrow" to="/settings">{{ $ts.settings }}</MkA>
+				<template v-else>{{ $ts.settings }}</template>
+			</div>
 			<div v-if="childInfo" class="subtitle">{{ childInfo.title }}</div>
 		</div>
 		<div class="body">
@@ -12,7 +15,7 @@
 					<MkSuperMenu :def="menuDef" :grid="page == null"></MkSuperMenu>
 				</div>
 			</div>
-			<div class="main">
+			<div v-if="!(narrow && page == null)" class="main">
 				<div class="bkzroven">
 					<component :is="component" :ref="el => pageChanged(el)" :key="page" v-bind="pageProps"/>
 				</div>
@@ -23,7 +26,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineAsyncComponent, nextTick, onMounted, ref, watch } from 'vue';
+import { computed, defineAsyncComponent, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 import { i18n } from '@/i18n';
 import MkInfo from '@/components/ui/info.vue';
 import MkSuperMenu from '@/components/ui/super-menu.vue';
@@ -46,10 +49,18 @@ const indexInfo = {
 };
 const INFO = ref(indexInfo);
 const page = ref(props.initialPage);
-const narrow = ref(false);
 const view = ref(null);
 const el = ref<HTMLElement | null>(null);
 const childInfo = ref(null);
+
+const narrow = ref(false);
+const NARROW_THRESHOLD = 600;
+
+const ro = new ResizeObserver((entries, observer) => {
+	if (entries.length === 0) return;
+	narrow.value = entries[0].borderBoxSize[0].inlineSize < NARROW_THRESHOLD;
+});
+
 const menuDef = computed(() => [{
 	title: i18n.ts.basicSettings,
 	items: [{
@@ -240,10 +251,16 @@ watch(() => props.initialPage, () => {
 });
 
 onMounted(() => {
-	narrow.value = el.value.offsetWidth < 800;
+	ro.observe(el.value);
+
+	narrow.value = el.value.offsetWidth < NARROW_THRESHOLD;
 	if (!narrow.value) {
-		page.value = 'profile';
+		page.value = props.initialPage || 'profile';
 	}
+});
+
+onUnmounted(() => {
+	ro.disconnect();
 });
 
 const emailNotConfigured = computed(() => instance.enableEmail && ($i.email == null || !$i.emailVerified));
@@ -267,6 +284,7 @@ defineExpose({
 		font-weight: bold;
 
 		> .title {
+			display: block;
 			width: 34%;
 		}
 
