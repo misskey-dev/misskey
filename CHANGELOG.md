@@ -10,6 +10,14 @@
 You should also include the user name that made the change.
 -->
 
+## 12.x.x (unreleased)
+
+### Improvements
+- Client: Preferences Registry
+
+### Bugfixes
+- 
+
 ## 12.110.0 (2022/04/11)
 
 ### Improvements
