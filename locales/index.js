@@ -19,7 +19,6 @@ const languages = [
 	'da-DK',
 	'de-DE',
 	'en-US',
-	'eo-UY',
 	'es-ES',
 	'fr-FR',
 	'id-ID',
