@@ -3,15 +3,7 @@ import promiseLimit from 'promise-limit';
 
 import $, { Context } from 'cafy';
 import config from '@/config/index.js';
-import Resolver from '../resolver.js';
-import { resolveImage } from './image.js';
-import { isCollectionOrOrderedCollection, isCollection, IActor, getApId, getOneApHrefNullable, IObject, isPropertyValue, IApPropertyValue, getApType, isActor } from '../type.js';
-import { fromHtml } from '../../../mfm/from-html.js';
-import { htmlToMfm } from '../misc/html-to-mfm.js';
-import { resolveNote, extractEmojis } from './note.js';
 import { registerOrFetchInstanceDoc } from '@/services/register-or-fetch-instance-doc.js';
-import { extractApHashtags } from './tag.js';
-import { apLogger } from '../logger.js';
 import { Note } from '@/models/entities/note.js';
 import { updateUsertags } from '@/services/update-hashtag.js';
 import { Users, Instances, DriveFiles, Followings, UserProfiles, UserPublickeys } from '@/models/index.js';
@@ -32,6 +24,14 @@ import { StatusError } from '@/misc/fetch.js';
 import { uriPersonCache } from '@/services/user-cache.js';
 import { publishInternalEvent } from '@/services/stream.js';
 import { db } from '@/db/postgre.js';
+import { apLogger } from '../logger.js';
+import { htmlToMfm } from '../misc/html-to-mfm.js';
+import { fromHtml } from '../../../mfm/from-html.js';
+import { isCollectionOrOrderedCollection, isCollection, IActor, getApId, getOneApHrefNullable, IObject, isPropertyValue, IApPropertyValue, getApType, isActor } from '../type.js';
+import Resolver from '../resolver.js';
+import { extractApHashtags } from './tag.js';
+import { resolveNote, extractEmojis } from './note.js';
+import { resolveImage } from './image.js';
 
 const logger = apLogger;
 
@@ -400,10 +400,10 @@ export async function resolvePerson(uri: string, resolver?: Resolver): Promise<C
 const services: {
 		[x: string]: (id: string, username: string) => any
 	} = {
-	'misskey:authentication:twitter': (userId, screenName) => ({ userId, screenName }),
-	'misskey:authentication:github': (id, login) => ({ id, login }),
-	'misskey:authentication:discord': (id, name) => $discord(id, name),
-};
+		'misskey:authentication:twitter': (userId, screenName) => ({ userId, screenName }),
+		'misskey:authentication:github': (id, login) => ({ id, login }),
+		'misskey:authentication:discord': (id, name) => $discord(id, name),
+	};
 
 const $discord = (id: string, name: string) => {
 	if (typeof name !== 'string') {
@@ -461,7 +461,7 @@ export async function updateFeatured(userId: User['id']) {
 
 	// Resolve to (Ordered)Collection Object
 	const collection = await resolver.resolveCollection(user.featured);
-	if (!isCollectionOrOrderedCollection(collection)) throw new Error(`Object is not Collection or OrderedCollection`);
+	if (!isCollectionOrOrderedCollection(collection)) throw new Error('Object is not Collection or OrderedCollection');
 
 	// Resolve to Object(may be Note) arrays
 	const unresolvedItems = isCollection(collection) ? collection.items : collection.orderedItems;
