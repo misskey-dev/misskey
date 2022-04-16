@@ -65,7 +65,6 @@ let registries = $ref<Registries | null>(null);
 os.api('i/registry/get-all', { scope })
 	.then(res => {
 		registries = res || {};
-		console.log(registries);
 	});
 
 function getDefaultStoreValues() {
@@ -120,7 +119,6 @@ async function applyRegistry(id: string) {
 	// defaultStore
 	for (const [key, value] of Object.entries(registry.defaultStore)) {
 		if (key in defaultStore.def && defaultStore.def[key].where !== 'account') {
-			console.log(key);
 			defaultStore.set(key as keyof Registry['defaultStore'], value);
 		}
 	}
