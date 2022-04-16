@@ -15,7 +15,7 @@
 		>
 			<div :class="$style.registryName">{{ registry.name }}</div>
 			<div :class="$style.registryTime">{{ t('_preferencesRegistry.createdAt', { date: (new Date(registry.createdAt)).toLocaleDateString(), time: (new Date(registry.createdAt)).toLocaleTimeString() }) }}</div>
-			<div :class="$style.registryTime" v-if="registry.updatedAt">{{ t('_preferencesRegistry.updatedAt', { date: (new Date(registry.createdAt)).toLocaleDateString(), time: (new Date(registry.createdAt)).toLocaleTimeString() }) }}</div>
+			<div :class="$style.registryTime" v-if="registry.updatedAt">{{ t('_preferencesRegistry.updatedAt', { date: (new Date(registry.updatedAt)).toLocaleDateString(), time: (new Date(registry.updatedAt)).toLocaleTimeString() }) }}</div>
 		</div>
 		<div v-else-if="registries">
 			<MkInfo>{{ ts._preferencesRegistry.noRegistries }}</MkInfo>
