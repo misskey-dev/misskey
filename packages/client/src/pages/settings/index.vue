@@ -251,7 +251,7 @@ watch(() => props.initialPage, () => {
 });
 
 watch(narrow, () => {
-	if (!narrow.value && props.initialPage == null) {
+	if (props.initialPage == null && !narrow.value) {
 		nav.push('/settings/profile');
 	}
 });
@@ -260,7 +260,7 @@ onMounted(() => {
 	ro.observe(el.value);
 
 	narrow.value = el.value.offsetWidth < NARROW_THRESHOLD;
-	if (!narrow.value && props.initialPage == null) {
+	if (props.initialPage == null && !narrow.value) {
 		nav.push('/settings/profile');
 	}
 });
