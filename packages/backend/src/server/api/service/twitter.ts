@@ -2,14 +2,14 @@ import Koa from 'koa';
 import Router from '@koa/router';
 import { v4 as uuid } from 'uuid';
 import autwh from 'autwh';
-import { redisClient } from '../../../db/redis.js';
+import { IsNull } from 'typeorm';
 import { publishMainStream } from '@/services/stream.js';
 import config from '@/config/index.js';
-import signin from '../common/signin.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
 import { Users, UserProfiles } from '@/models/index.js';
 import { ILocalUser } from '@/models/entities/user.js';
-import { IsNull } from 'typeorm';
+import signin from '../common/signin.js';
+import { redisClient } from '../../../db/redis.js';
 
 function getUserToken(ctx: Koa.BaseContext): string | null {
 	return ((ctx.headers['cookie'] || '').match(/igi=(\w+)/) || [null, null])[1];
@@ -53,7 +53,7 @@ router.get('/disconnect/twitter', async ctx => {
 		integrations: profile.integrations,
 	});
 
-	ctx.body = `Twitterの連携を解除しました :v:`;
+	ctx.body = 'Twitterの連携を解除しました :v:';
 
 	// Publish i updated event
 	publishMainStream(user.id, 'meUpdated', await Users.pack(user, user, {
@@ -132,10 +132,16 @@ router.get('/tw/cb', async ctx => {
 
 		const twCtx = await get;
 
-		const result = await twAuth!.done(JSON.parse(twCtx), ctx.query.oauth_verifier);
+		const verifier = ctx.query.oauth_verifier;
+		if (!verifier || typeof verifier !== 'string') {
+			ctx.throw(400, 'invalid session');
+			return;
+		}
+
+		const result = await twAuth!.done(JSON.parse(twCtx), verifier);
 
 		const link = await UserProfiles.createQueryBuilder()
-			.where(`"integrations"->'twitter'->>'userId' = :id`, { id: result.userId })
+			.where('"integrations"->\'twitter\'->>\'userId\' = :id', { id: result.userId })
 			.andWhere('"userHost" IS NULL')
 			.getOne();
 
@@ -148,7 +154,7 @@ router.get('/tw/cb', async ctx => {
 	} else {
 		const verifier = ctx.query.oauth_verifier;
 
-		if (verifier == null) {
+		if (!verifier || typeof verifier !== 'string') {
 			ctx.throw(400, 'invalid session');
 			return;
 		}
