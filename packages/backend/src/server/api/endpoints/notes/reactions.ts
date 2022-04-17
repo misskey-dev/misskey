@@ -1,8 +1,8 @@
+import { DeepPartial, FindOptionsWhere } from 'typeorm';
+import { NoteReactions } from '@/models/index.js';
+import { NoteReaction } from '@/models/entities/note-reaction.js';
 import define from '../../define.js';
 import { ApiError } from '../../error.js';
-import { NoteReactions } from '@/models/index.js';
-import { DeepPartial } from 'typeorm';
-import { NoteReaction } from '@/models/entities/note-reaction.js';
 
 export const meta = {
 	tags: ['notes', 'reactions'],
@@ -45,7 +45,7 @@ export const paramDef = {
 export default define(meta, paramDef, async (ps, user) => {
 	const query = {
 		noteId: ps.noteId,
-	} as DeepPartial<NoteReaction>;
+	} as FindOptionsWhere<NoteReaction>;
 
 	if (ps.type) {
 		// ローカルリアクションはホスト名が . とされているが
