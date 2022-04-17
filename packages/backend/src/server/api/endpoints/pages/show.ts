@@ -1,8 +1,8 @@
-import define from '../../define.js';
-import { ApiError } from '../../error.js';
+import { IsNull } from 'typeorm';
 import { Pages, Users } from '@/models/index.js';
 import { Page } from '@/models/entities/page.js';
-import { IsNull } from 'typeorm';
+import define from '../../define.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['pages'],
@@ -45,7 +45,7 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, user) => {
-	let page: Page | undefined;
+	let page: Page | null = null;
 
 	if (ps.pageId) {
 		page = await Pages.findOneBy({ id: ps.pageId });
