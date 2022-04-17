@@ -1,5 +1,5 @@
-import define from '../../define.js';
 import { Users } from '@/models/index.js';
+import define from '../../define.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -24,8 +24,8 @@ export const paramDef = {
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		offset: { type: 'integer', default: 0 },
 		sort: { type: 'string', enum: ['+follower', '-follower', '+createdAt', '-createdAt', '+updatedAt', '-updatedAt'] },
-		state: { type: 'string', enum: ['all', 'available', 'admin', 'moderator', 'adminOrModerator', 'silenced', 'suspended'], default: "all" },
-		origin: { type: 'string', enum: ['combined', 'local', 'remote'], default: "local" },
+		state: { type: 'string', enum: ['all', 'alive', 'available', 'admin', 'moderator', 'adminOrModerator', 'silenced', 'suspended'], default: 'all' },
+		origin: { type: 'string', enum: ['combined', 'local', 'remote'], default: 'local' },
 		username: { type: 'string', nullable: true, default: null },
 		hostname: {
 			type: 'string',

@@ -19,7 +19,7 @@ import { StreamEventEmitter, StreamMessages } from './types.js';
  */
 export default class Connection {
 	public user?: User;
-	public userProfile?: UserProfile;
+	public userProfile?: UserProfile | null;
 	public following: Set<User['id']> = new Set();
 	public muting: Set<User['id']> = new Set();
 	public blocking: Set<User['id']> = new Set(); // "被"blocking
