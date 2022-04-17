@@ -899,10 +899,12 @@ _plugin:
 _preferencesRegistry:
   list: "一覧"
   saveNew: "新規保存"
+  loadFile: "ファイルを読み込み"
   apply: "このデバイスに適用"
   delete: "削除"
   save: "上書き保存"
   rename: "名称変更"
+  download: "ダウンロード"
   saveNewDescription: "現在のデバイスの状態をサーバーに保存します。"
   inputName: "レジストリ名を入力"
   cannotSave: "保存できません"
@@ -914,6 +916,8 @@ _preferencesRegistry:
   noRegistries: "レジストリは登録されていません。「新規保存」で現在のクライアント設定をサーバーに保存できます。"
   createdAt: "作成日時: {date} {time}"
   updatedAt: "更新日時: {date} {time}"
+  cannotLoad: "読み込みできません"
+  invalidFile: "ファイル形式が違います。"
 
 _registry:
   scope: "スコープ"
