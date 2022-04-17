@@ -1,7 +1,6 @@
 import { URL } from 'node:url';
 import promiseLimit from 'promise-limit';
 
-import $, { Context } from 'cafy';
 import config from '@/config/index.js';
 import { registerOrFetchInstanceDoc } from '@/services/register-or-fetch-instance-doc.js';
 import { Note } from '@/models/entities/note.js';
@@ -54,20 +53,33 @@ function validateActor(x: IObject, uri: string): IActor {
 		throw new Error(`invalid Actor type '${x.type}'`);
 	}
 
-	const validate = (name: string, value: any, validater: Context) => {
-		const e = validater.test(value);
-		if (e) throw new Error(`invalid Actor: ${name} ${e.message}`);
-	};
+	if (!(typeof x.id === 'string' && x.id.length > 0)) {
+		throw new Error('invalid Actor: wrong id');
+	}
 
-	validate('id', x.id, $.default.str.min(1));
-	validate('inbox', x.inbox, $.default.str.min(1));
-	validate('preferredUsername', x.preferredUsername, $.default.str.min(1).max(128).match(/^\w([\w-.]*\w)?$/));
+	if (!(typeof x.inbox === 'string' && x.inbox.length > 0)) {
+		throw new Error('invalid Actor: wrong inbox');
+	}
+
+	if (!(typeof x.preferredUsername === 'string' && x.preferredUsername.length > 0 && x.preferredUsername.length <= 128 && /^\w([\w-.]*\w)?$/.test(x.preferredUsername))) {
+		throw new Error('invalid Actor: wrong username');
+	}
 
 	// These fields are only informational, and some AP software allows these
 	// fields to be very long. If they are too long, we cut them off. This way
 	// we can at least see these users and their activities.
-	validate('name', truncate(x.name, nameLength), $.default.optional.nullable.str);
-	validate('summary', truncate(x.summary, summaryLength), $.default.optional.nullable.str);
+	if (x.name) {
+		if (!(typeof x.name === 'string' && x.name.length > 0)) {
+			throw new Error('invalid Actor: wrong name');
+		}
+		x.name = truncate(x.name, nameLength);
+	}
+	if (x.summary) {
+		if (!(typeof x.summary === 'string' && x.summary.length > 0)) {
+			throw new Error('invalid Actor: wrong summary');
+		}
+		x.summary = truncate(x.summary, summaryLength);
+	}
 
 	const idHost = toPuny(new URL(x.id!).hostname);
 	if (idHost !== expectHost) {

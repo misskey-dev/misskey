@@ -1591,11 +1591,6 @@ cacheable-request@^7.0.2:
     normalize-url "^6.0.1"
     responselike "^2.0.0"
 
-cafy@15.2.1:
-  version "15.2.1"
-  resolved "https://registry.yarnpkg.com/cafy/-/cafy-15.2.1.tgz#5a55eaeb721c604c7dca652f3d555c392e5f995a"
-  integrity sha512-g2zOmFb63p6XcZ/zeMWKYP8YKQYNWnhJmi6K71Ql4EAFTAay31xF0PBPtdBCCfQ0fiETgWTMxKtySAVI/Od6aQ==
-
 call-bind@^1.0.0, call-bind@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/call-bind/-/call-bind-1.0.2.tgz#b1d4e89e688119c3c9a903ad30abb2f6a919be3c"
