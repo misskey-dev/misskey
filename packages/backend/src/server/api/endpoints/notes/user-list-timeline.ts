@@ -63,12 +63,8 @@ export default define(meta, paramDef, async (ps, user) => {
 	}
 
 	//#region Construct query
-	const listQuery = UserListJoinings.createQueryBuilder('joining')
-		.select('joining.userId')
-		.where('joining.userListId = :userListId', { userListId: list.id });
-
 	const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
-		.andWhere(`note.userId IN (${ listQuery.getQuery() })`)
+		.innerJoin(UserListJoinings.metadata.targetName, 'userListJoining', 'userListJoining.userId = note.userId')
 		.innerJoinAndSelect('note.user', 'user')
 		.leftJoinAndSelect('user.avatar', 'avatar')
 		.leftJoinAndSelect('user.banner', 'banner')
@@ -80,7 +76,7 @@ export default define(meta, paramDef, async (ps, user) => {
 		.leftJoinAndSelect('renote.user', 'renoteUser')
 		.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
 		.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner')
-		.setParameters(listQuery.getParameters());
+		.andWhere('userListJoining.userListId = :userListId', { userListId: list.id });
 
 	generateVisibilityQuery(query, user);
 
