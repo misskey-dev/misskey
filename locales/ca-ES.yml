@@ -37,21 +37,60 @@ favorites: "Favorits"
 unfavorite: "Eliminar dels preferits"
 favorited: "Afegit als preferits."
 alreadyFavorited: "Ja s'ha afegit als preferits."
+cantFavorite: "No s'ha pogut afegir als preferits."
+pin: "Fixar al perfil"
+unpin: "Para de fixar del perfil"
+copyContent: "Copiar el contingut"
+copyLink: "Copiar l'enllaç"
+delete: "Eliminar"
+deleteAndEdit: "Esborrar i editar"
+deleteAndEditConfirm: "Estàs segur que vols suprimir aquesta nota i editar-la? Perdràs totes les reaccions, notes i respostes."
+addToList: "Afegir a una llista"
+sendMessage: "Enviar un missatge"
+copyUsername: "Copiar nom d'usuari"
+searchUser: "Cercar usuaris"
+reply: "Respondre"
+loadMore: "Carregar més"
+showMore: "Veure més"
+youGotNewFollower: "t'ha seguit"
+receiveFollowRequest: "Sol·licitud de seguiment rebuda"
+followRequestAccepted: "Sol·licitud de seguiment acceptada"
+mention: "Menció"
+mentions: "Mencions"
+directNotes: "Notes directes"
+importAndExport: "Importar / Exportar"
+import: "Importar"
+pinned: "Fixar al perfil"
 instances: "Instàncies"
+remove: "Eliminar"
 smtpUser: "Nom d'usuari"
 smtpPass: "Contrasenya"
 user: "Usuaris"
 searchByGoogle: "Cercar"
+_email:
+  _follow:
+    title: "t'ha seguit"
 _mfm:
+  mention: "Menció"
   search: "Cercar"
+_theme:
+  keys:
+    mention: "Menció"
 _sfx:
   notification: "Notificacions"
 _widgets:
   notifications: "Notificacions"
   timeline: "Línia de temps"
+_cw:
+  show: "Carregar més"
 _profile:
   username: "Nom d'usuari"
+_notification:
+  youWereFollowed: "t'ha seguit"
+  _types:
+    mention: "Menció"
 _deck:
   _columns:
     notifications: "Notificacions"
     tl: "Línia de temps"
+    mentions: "Mencions"
