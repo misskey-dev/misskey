@@ -60,9 +60,29 @@ mentions: "Mencions"
 directNotes: "Notes directes"
 importAndExport: "Importar / Exportar"
 import: "Importar"
+export: "Exportar"
+files: "Fitxers"
+download: "Baixar"
+lists: "Llistes"
+noLists: "No tens cap llista"
+note: "Nota"
+notes: "Notes"
+following: "Seguint"
+followers: "Seguidors"
+followsYou: "Et segueix"
+createList: "Crear llista"
+manageLists: "Gestionar les llistes"
+error: "Error"
+somethingHappened: "S'ha produït un error"
+retry: "Torna-ho a intentar"
+pageLoadError: "S'ha produït un error en carregar la pàgina"
+pageLoadErrorDescription: "Això normalment es deu a errors de xarxa o a la memòria cau del navegador. Prova d'esborrar la memòria cau i torna-ho a provar després d'esperar una estona."
+serverIsDead: "Aquest servidor no respon. Espera una estona i torna-ho a provar."
+follow: "Seguint"
 pinned: "Fixar al perfil"
 instances: "Instàncies"
 remove: "Eliminar"
+userList: "Llistes"
 smtpUser: "Nom d'usuari"
 smtpPass: "Contrasenya"
 user: "Usuaris"
@@ -77,20 +97,47 @@ _theme:
   keys:
     mention: "Menció"
 _sfx:
+  note: "Notes"
   notification: "Notificacions"
 _widgets:
   notifications: "Notificacions"
   timeline: "Línia de temps"
 _cw:
   show: "Carregar més"
+_visibility:
+  followers: "Seguidors"
 _profile:
   username: "Nom d'usuari"
+_exportOrImport:
+  followingList: "Seguint"
+  userLists: "Llistes"
+_pages:
+  script:
+    categories:
+      list: "Llistes"
+    blocks:
+      _join:
+        arg1: "Llistes"
+      _randomPick:
+        arg1: "Llistes"
+      _dailyRandomPick:
+        arg1: "Llistes"
+      _seedRandomPick:
+        arg2: "Llistes"
+      _pick:
+        arg1: "Llistes"
+      _listLen:
+        arg1: "Llistes"
+    types:
+      array: "Llistes"
 _notification:
   youWereFollowed: "t'ha seguit"
   _types:
+    follow: "Seguint"
     mention: "Menció"
 _deck:
   _columns:
     notifications: "Notificacions"
     tl: "Línia de temps"
+    list: "Llistes"
     mentions: "Mencions"
