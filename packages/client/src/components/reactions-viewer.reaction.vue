@@ -144,10 +144,6 @@ export default defineComponent({
 		> span {
 			color: var(--fgOnAccent);
 		}
-
-		> .mk-emoji {
-			filter: drop-shadow(0 0 3px var(--bg));
-		}
 	}
 
 	> span {
