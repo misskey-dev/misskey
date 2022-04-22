@@ -266,7 +266,10 @@ router.get('/users/:user', async ctx => {
 
 // Note
 router.get('/notes/:note', async (ctx, next) => {
-	const note = await Notes.findOneBy({ id: ctx.params.note });
+	const note = await Notes.findOneBy({
+		id: ctx.params.note,
+		visibility: In(['public', 'home']),
+	});
 
 	if (note) {
 		const _note = await Notes.pack(note);
@@ -283,11 +286,7 @@ router.get('/notes/:note', async (ctx, next) => {
 			themeColor: meta.themeColor,
 		});
 
-		if (['public', 'home'].includes(note.visibility)) {
-			ctx.set('Cache-Control', 'public, max-age=180');
-		} else {
-			ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
-		}
+		ctx.set('Cache-Control', 'public, max-age=180');
 
 		return;
 	}
