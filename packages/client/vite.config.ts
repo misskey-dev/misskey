@@ -1,5 +1,8 @@
 import * as fs from 'fs';
 import pluginVue from '@vitejs/plugin-vue';
+import pluginJson5 from './vite.json5';
+import pluginNode from '@rollup/plugin-node-resolve';
+import pluginCjs from '@rollup/plugin-commonjs';
 import { defineConfig } from 'vite';
 
 const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.json5', '.svg', '.sass', '.scss', '.css', '.vue'];
@@ -20,6 +23,14 @@ export default defineConfig(({ command, mode }) => {
 			pluginVue({
 				reactivityTransform: true,
 			}),
+			pluginNode({
+				//extensions,
+			}),
+			pluginCjs({
+				transformMixedEsModules: true,
+				extensions: ['.json', '.json5'],
+			}),
+			pluginJson5(),
 		],
 
 		resolve: {

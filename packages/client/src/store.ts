@@ -255,13 +255,10 @@ type Plugin = {
 /**
  * 常にメモリにロードしておく必要がないような設定情報を保管するストレージ(非リアクティブ)
  */
-import lightTheme from '@/themes/l-light.json5';
-import darkTheme from '@/themes/l-dark.json5';
-
 export class ColdDeviceStorage {
 	public static default = {
-		lightTheme,
-		darkTheme,
+		lightTheme: require('@/themes/l-light.json5') as Theme,
+		darkTheme: require('@/themes/d-dark.json5') as Theme,
 		syncDeviceDarkMode: true,
 		plugins: [] as Plugin[],
 		mediaVolume: 0.5,
