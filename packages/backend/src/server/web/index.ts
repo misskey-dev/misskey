@@ -14,7 +14,7 @@ import { createBullBoard } from '@bull-board/api';
 import { BullAdapter } from '@bull-board/api/bullAdapter.js';
 import { KoaAdapter } from '@bull-board/koa';
 
-import { IsNull } from 'typeorm';
+import { In, IsNull } from 'typeorm';
 import { fetchMeta } from '@/misc/fetch-meta.js';
 import config from '@/config/index.js';
 import { Users, Notes, UserProfiles, Pages, Channels, Clips, GalleryPosts } from '@/models/index.js';
