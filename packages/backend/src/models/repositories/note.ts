@@ -10,66 +10,7 @@ import { convertLegacyReaction, convertLegacyReactions, decodeReaction } from '@
 import { NoteReaction } from '@/models/entities/note-reaction.js';
 import { aggregateNoteEmojis, populateEmojis, prefetchEmojis } from '@/misc/populate-emojis.js';
 import { db } from '@/db/postgre.js';
-
-async function hideNote(packedNote: Packed<'Note'>, meId: User['id'] | null) {
-	// TODO: isVisibleForMe を使うようにしても良さそう(型違うけど)
-	let hide = false;
-
-	// visibility が specified かつ自分が指定されていなかったら非表示
-	if (packedNote.visibility === 'specified') {
-		if (meId == null) {
-			hide = true;
-		} else if (meId === packedNote.userId) {
-			hide = false;
-		} else {
-			// 指定されているかどうか
-			const specified = packedNote.visibleUserIds!.some((id: any) => meId === id);
-
-			if (specified) {
-				hide = false;
-			} else {
-				hide = true;
-			}
-		}
-	}
-
-	// visibility が followers かつ自分が投稿者のフォロワーでなかったら非表示
-	if (packedNote.visibility === 'followers') {
-		if (meId == null) {
-			hide = true;
-		} else if (meId === packedNote.userId) {
-			hide = false;
-		} else if (packedNote.reply && (meId === packedNote.reply.userId)) {
-			// 自分の投稿に対するリプライ
-			hide = false;
-		} else if (packedNote.mentions && packedNote.mentions.some(id => meId === id)) {
-			// 自分へのメンション
-			hide = false;
-		} else {
-			// フォロワーかどうか
-			const following = await Followings.findOneBy({
-				followeeId: packedNote.userId,
-				followerId: meId,
-			});
-
-			if (following == null) {
-				hide = true;
-			} else {
-				hide = false;
-			}
-		}
-	}
-
-	if (hide) {
-		packedNote.visibleUserIds = undefined;
-		packedNote.fileIds = [];
-		packedNote.files = [];
-		packedNote.text = null;
-		packedNote.poll = undefined;
-		packedNote.cw = null;
-		packedNote.isHidden = true;
-	}
-}
+import { IdentifiableError } from '@/misc/identifiable-error.js';
 
 async function populatePoll(note: Note, meId: User['id'] | null) {
 	const poll = await Polls.findOneByOrFail({ noteId: note.id });
@@ -193,7 +134,6 @@ export const NoteRepository = db.getRepository(Note).extend({
 		me?: { id: User['id'] } | null | undefined,
 		options?: {
 			detail?: boolean;
-			skipHide?: boolean;
 			_hint_?: {
 				myReactions: Map<Note['id'], NoteReaction | null>;
 			};
@@ -201,12 +141,15 @@ export const NoteRepository = db.getRepository(Note).extend({
 	): Promise<Packed<'Note'>> {
 		const opts = Object.assign({
 			detail: true,
-			skipHide: false,
 		}, options);
 
 		const meId = me ? me.id : null;
 		const note = typeof src === 'object' ? src : await this.findOneByOrFail({ id: src });
 		const host = note.userHost;
+
+		if (!await this.isVisibleForMe(note, meId)) {
+			throw new IdentifiableError('9725d0ce-ba28-4dde-95a7-2cbb2c15de24', 'No such note.');
+		}
 
 		let text = note.text;
 
@@ -282,10 +225,6 @@ export const NoteRepository = db.getRepository(Note).extend({
 			packed.text = mfm.toString(tokens);
 		}
 
-		if (!opts.skipHide) {
-			await hideNote(packed, meId);
-		}
-
 		return packed;
 	},
 
@@ -294,7 +233,6 @@ export const NoteRepository = db.getRepository(Note).extend({
 		me?: { id: User['id'] } | null | undefined,
 		options?: {
 			detail?: boolean;
-			skipHide?: boolean;
 		}
 	) {
 		if (notes.length === 0) return [];
@@ -316,11 +254,14 @@ export const NoteRepository = db.getRepository(Note).extend({
 
 		await prefetchEmojis(aggregateNoteEmojis(notes));
 
-		return await Promise.all(notes.map(n => this.pack(n, me, {
+		const promises = await Promise.allSettled(notes.map(n => this.pack(n, me, {
 			...options,
 			_hint_: {
 				myReactions: myReactionsMap,
 			},
 		})));
+
+		// filter out rejected promises, only keep fulfilled values
+		return promises.flatMap(result => result.status === 'fulfilled' ? [result.value] : []);
 	},
 });
