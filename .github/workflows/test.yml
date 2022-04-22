@@ -33,9 +33,13 @@ jobs:
       with:
         submodules: true
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
+        cache: 'yarn'
+        cache-dependency-path: |
+          packages/backend/yarn.lock
+          packages/client/yarn.lock
     - name: Install dependencies
       run: yarn install
     - name: Check yarn.lock
@@ -80,13 +84,13 @@ jobs:
     #- uses: browser-actions/setup-firefox@latest
     #  if: ${{ matrix.browser == 'firefox' }}
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
-    - uses: actions/cache@v2
-      with:
-        path: '**/node_modules'
-        key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+        cache: 'yarn'
+        cache-dependency-path: |
+          packages/backend/yarn.lock
+          packages/client/yarn.lock
     - name: Install dependencies
       run: yarn install
     - name: Check yarn.lock

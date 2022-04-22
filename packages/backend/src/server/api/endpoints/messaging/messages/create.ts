@@ -67,12 +67,23 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
-		userId: { type: 'string', format: 'misskey:id' },
-		groupId: { type: 'string', format: 'misskey:id' },
 		text: { type: 'string', nullable: true, maxLength: 3000 },
 		fileId: { type: 'string', format: 'misskey:id' },
 	},
-	required: [],
+	anyOf: [
+		{
+			properties: {
+				userId: { type: 'string', format: 'misskey:id' },
+			},
+			required: ['userId'],
+		},
+		{
+			properties: {
+				groupId: { type: 'string', format: 'misskey:id' },
+			},
+			required: ['groupId'],
+		},
+	],
 } as const;
 
 // eslint-disable-next-line import/no-default-export

@@ -1,8 +1,8 @@
 import { Feed } from 'feed';
+import { In, IsNull } from 'typeorm';
 import config from '@/config/index.js';
 import { User } from '@/models/entities/user.js';
-import { Notes, DriveFiles, UserProfiles } from '@/models/index.js';
-import { In, IsNull } from 'typeorm';
+import { Notes, DriveFiles, UserProfiles, Users } from '@/models/index.js';
 
 export default async function(user: User) {
 	const author = {
@@ -29,7 +29,7 @@ export default async function(user: User) {
 		generator: 'Misskey',
 		description: `${user.notesCount} Notes, ${profile.ffVisibility === 'public' ? user.followingCount : '?'} Following, ${profile.ffVisibility === 'public' ? user.followersCount : '?'} Followers${profile.description ? ` · ${profile.description}` : ''}`,
 		link: author.link,
-		image: user.avatarUrl ? user.avatarUrl : undefined,
+		image: await Users.getAvatarUrl(user),
 		feedLinks: {
 			json: `${author.link}.json`,
 			atom: `${author.link}.atom`,

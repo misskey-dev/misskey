@@ -397,11 +397,13 @@ export default define(meta, paramDef, async (ps, me) => {
 	}
 
 	await db.transaction(async transactionalEntityManager => {
-		const meta = await transactionalEntityManager.findOne(Meta, {
+		const metas = await transactionalEntityManager.find(Meta, {
 			order: {
 				id: 'DESC',
 			},
 		});
+
+		const meta = metas[0];
 
 		if (meta) {
 			await transactionalEntityManager.update(Meta, meta.id, set);

@@ -24,17 +24,17 @@ export default async (ctx: Koa.Context) => {
 		ctx.body = { error };
 	}
 
-	if (typeof username != 'string') {
+	if (typeof username !== 'string') {
 		ctx.status = 400;
 		return;
 	}
 
-	if (typeof password != 'string') {
+	if (typeof password !== 'string') {
 		ctx.status = 400;
 		return;
 	}
 
-	if (token != null && typeof token != 'string') {
+	if (token != null && typeof token !== 'string') {
 		ctx.status = 400;
 		return;
 	}

@@ -42,7 +42,8 @@ async function getCaptchaResponse(url: string, secret: string, response: string)
 		headers: {
 			'User-Agent': config.userAgent,
 		},
-		timeout: 10 * 1000,
+		// TODO
+		//timeout: 10 * 1000,
 		agent: getAgentByUrl,
 	}).catch(e => {
 		throw `${e.message || e}`;
