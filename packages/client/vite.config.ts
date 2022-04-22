@@ -1,8 +1,6 @@
 import * as fs from 'fs';
 import pluginVue from '@vitejs/plugin-vue';
 import pluginJson5 from './vite.json5';
-import pluginNode from '@rollup/plugin-node-resolve';
-import pluginCjs from '@rollup/plugin-commonjs';
 import { defineConfig } from 'vite';
 
 const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.json5', '.svg', '.sass', '.scss', '.css', '.vue'];
@@ -22,13 +20,6 @@ export default defineConfig(({ command, mode }) => {
 		plugins: [
 			pluginVue({
 				reactivityTransform: true,
-			}),
-			pluginNode({
-				//extensions,
-			}),
-			pluginCjs({
-				transformMixedEsModules: true,
-				extensions: ['.json', '.json5'],
 			}),
 			pluginJson5(),
 		],
@@ -61,19 +52,19 @@ export default defineConfig(({ command, mode }) => {
 				'firefox100',
 				'safari15',
 			],
-			manifest: true,
+			manifest: 'manifest.json',
 			rollupOptions: {
 				input: {
 					app: './src/init.ts',
 				},
 				output: {
 					manualChunks: {
-						vue: ['vue', 'vue-router', 'vuedraggable'],
+						//vue: ['vue', 'vue-router', 'vuedraggable'],
 					},
 				},
 			},
-			outDir: __dirname + '/../../built',
-			assetsDir: '_client_dist_',
+			outDir: __dirname + '/../../built/_client_dist_',
+			assetsDir: '.',
 			emptyOutDir: false,
 		},
 	}

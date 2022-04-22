@@ -25,7 +25,7 @@ const path = process.env.NODE_ENV === 'test'
 
 export default function load() {
 	const meta = JSON.parse(fs.readFileSync(`${_dirname}/../../../../built/meta.json`, 'utf-8'));
-	const clientManifest = JSON.parse(fs.readFileSync(`${_dirname}/../../../../built/manifest.json`, 'utf-8'));
+	const clientManifest = JSON.parse(fs.readFileSync(`${_dirname}/../../../../built/_client_dist_/manifest.json`, 'utf-8'));
 	const config = yaml.load(fs.readFileSync(path, 'utf-8')) as Source;
 
 	const mixin = {} as Mixin;
