@@ -1,8 +1,8 @@
 {
 	"private": true,
 	"scripts": {
-		"watch": "vite build --emptyOutDir --watch",
-		"build": "vite build --emptyOutDir",
+		"watch": "vite build --watch",
+		"build": "vite build",
 		"lint": "eslint --quiet 'src/**/*.{ts,vue}'"
 	},
 	"resolutions": {

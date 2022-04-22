@@ -59,9 +59,10 @@
 		: '';
 
 	const script = document.createElement('script');
-	script.setAttribute('src', `/assets/app.${v}.js${salt}`);
+	script.setAttribute('src', `/assets/${CLIENT_ENTRY}${salt}`);
 	script.setAttribute('async', 'true');
 	script.setAttribute('defer', 'true');
+	script.setAttribute('type', 'module');
 	script.addEventListener('error', async () => {
 		await checkUpdate();
 		renderError('APP_FETCH_FAILED');

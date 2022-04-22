@@ -45,7 +45,11 @@ export default defineConfig(({ command, mode }) => {
 		},
 
 		build: {
-			target: 'esnext',
+			target: [
+				'chrome100',
+				'firefox100',
+				'safari15',
+			],
 			manifest: true,
 			rollupOptions: {
 				input: {
@@ -57,8 +61,9 @@ export default defineConfig(({ command, mode }) => {
 					},
 				},
 			},
-			outDir: __dirname + '/../../built/_client_dist_',
-			assetsDir: 'dest',
+			outDir: __dirname + '/../../built',
+			assetsDir: '_client_dist_',
+			emptyOutDir: false,
 		},
 	}
 });
