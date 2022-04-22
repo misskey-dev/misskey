@@ -1,8 +1,8 @@
 {
 	"private": true,
 	"scripts": {
-		"watch": "webpack --watch",
-		"build": "webpack",
+		"watch": "vite build --emptyOutDir --watch",
+		"build": "vite build --emptyOutDir",
 		"lint": "eslint --quiet 'src/**/*.{ts,vue}'"
 	},
 	"resolutions": {
@@ -12,8 +12,11 @@
 	"dependencies": {
 		"@discordapp/twemoji": "13.1.1",
 		"@fortawesome/fontawesome-free": "6.1.1",
+		"@rollup/plugin-alias": "3.1.9",
+		"@rollup/plugin-node-resolve": "13.2.1",
 		"@syuilo/aiscript": "0.11.1",
 		"@typescript-eslint/parser": "5.18.0",
+		"@vitejs/plugin-vue": "2.3.1",
 		"@vue/compiler-sfc": "3.2.31",
 		"abort-controller": "3.0.0",
 		"autobind-decorator": "2.4.0",
@@ -83,6 +86,8 @@
 		"uuid": "8.3.2",
 		"v-debounce": "0.1.2",
 		"vanilla-tilt": "1.7.2",
+		"vite": "2.9.5",
+		"vite-tsconfig-paths": "3.4.1",
 		"vue": "3.2.31",
 		"vue-loader": "17.0.0",
 		"vue-prism-editor": "2.0.0-alpha.2",
