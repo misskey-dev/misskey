@@ -1,7 +1,7 @@
 {
 	"private": true,
 	"scripts": {
-		"watch": "vite build --watch",
+		"watch": "vite build --watch --mode development",
 		"build": "vite build",
 		"lint": "eslint --quiet 'src/**/*.{ts,vue}'"
 	},

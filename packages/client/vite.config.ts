@@ -3,12 +3,12 @@ import pluginVue from '@vitejs/plugin-vue';
 import pluginJson5 from './vite.json5';
 import { defineConfig } from 'vite';
 
+import locales from '../../locales';
+import meta from '../../package.json';
+
 const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.json5', '.svg', '.sass', '.scss', '.css', '.vue'];
 
 const isProduction = process.env.NODE_ENV === 'production';
-
-const locales = require('../../locales');
-const meta = require('../../package.json');
 
 export default defineConfig(({ command, mode }) => {
 	fs.mkdirSync(__dirname + '/../../built', { recursive: true });
