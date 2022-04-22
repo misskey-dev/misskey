@@ -1,5 +1,5 @@
 import { globalEvents } from '@/events';
-import * as tinycolor from 'tinycolor2';
+import tinycolor from 'tinycolor2';
 
 export type Theme = {
 	id: string;

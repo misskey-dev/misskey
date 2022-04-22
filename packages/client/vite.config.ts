@@ -1,15 +1,8 @@
 import * as fs from 'fs';
 import pluginVue from '@vitejs/plugin-vue';
-import alias from '@rollup/plugin-alias';
-import resolve from '@rollup/plugin-node-resolve';
-//import pluginTsconfigPaths from 'vite-tsconfig-paths';
 import { defineConfig } from 'vite';
 
-const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.json5', '.vue', '.svg', '.sass', '.scss', '.css'];
-
-const customResolver = resolve({
-  extensions,
-});
+const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.json5', '.svg', '.sass', '.scss', '.css', '.vue'];
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -27,19 +20,15 @@ export default defineConfig(({ command, mode }) => {
 			pluginVue({
 				reactivityTransform: true,
 			}),
-			/*pluginTsconfigPaths({
-				extensions,
-			}),*/
-			alias({
-				entries: {
-					'@/': __dirname + '/src/',
-				},
-			}),
-			customResolver,
 		],
 
 		resolve: {
 			extensions,
+			alias: {
+				'@/': __dirname + '/src/',
+				'/client-assets/': __dirname + '/assets/',
+				'/static-assets/': __dirname + '/../backend/assets/',
+			},
 		},
 
 		define: {
@@ -56,17 +45,20 @@ export default defineConfig(({ command, mode }) => {
 		},
 
 		build: {
+			target: 'esnext',
 			manifest: true,
 			rollupOptions: {
 				input: {
 					app: './src/init.ts',
-					sw: './src/sw/sw.ts'
-				}
+				},
+				output: {
+					manualChunks: {
+						vue: ['vue', 'vue-router', 'vuedraggable'],
+					},
+				},
 			},
 			outDir: __dirname + '/../../built/_client_dist_',
-			assetsDir: 'packs'
+			assetsDir: 'dest',
 		},
-
-		assetsInclude: [],
 	}
 });

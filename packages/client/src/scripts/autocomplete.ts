@@ -1,5 +1,5 @@
 import { nextTick, Ref, ref } from 'vue';
-import * as getCaretCoordinates from 'textarea-caret';
+import getCaretCoordinates from 'textarea-caret';
 import { toASCII } from 'punycode/';
 import { popup } from '@/os';
 

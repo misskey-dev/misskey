@@ -15,7 +15,7 @@ if (localStorage.getItem('accounts') != null) {
 
 import { computed, createApp, watch, markRaw, version as vueVersion } from 'vue';
 import compareVersions from 'compare-versions';
-import * as JSON5 from 'json5';
+import JSON5 from 'json5';
 
 import widgets from '@/widgets';
 import directives from '@/directives';

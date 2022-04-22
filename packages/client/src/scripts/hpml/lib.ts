@@ -1,9 +1,9 @@
-import * as tinycolor from 'tinycolor2';
+import tinycolor from 'tinycolor2';
 import { Hpml } from './evaluator';
 import { values, utils } from '@syuilo/aiscript';
 import { Fn, HpmlScope } from '.';
 import { Expr } from './expr';
-import * as seedrandom from 'seedrandom';
+import seedrandom from 'seedrandom';
 
 /* TODO: https://www.chartjs.org/docs/latest/configuration/canvas-background.html#color
 // https://stackoverflow.com/questions/38493564/chart-area-background-color-chartjs
