@@ -527,6 +527,11 @@
   resolved "https://registry.yarnpkg.com/@types/jsonld/-/jsonld-1.5.6.tgz#4396c0b17128abf5773bb68b5453b88fc565b0d4"
   integrity sha512-OUcfMjRie5IOrJulUQwVNvV57SOdKcTfBj3pjXNxzXqeOIrY2aGDNGW/Tlp83EQPkz4tCE6YWVrGuc/ZeaAQGg==
 
+"@types/jsrsasign@8.0.12":
+  version "8.0.12"
+  resolved "https://registry.yarnpkg.com/@types/jsrsasign/-/jsrsasign-8.0.12.tgz#6bfebbbde57e72748d801642bba9b431d049b952"
+  integrity sha512-FLXKbwbB+4fsJECYOpIiYX2GSqSHYnkO/UnrFqlZn6crpyyOtk4LRab+G1HC7dTbT1NB7spkHecZRQGXoCWiJQ==
+
 "@types/keygrip@*":
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/@types/keygrip/-/keygrip-1.0.2.tgz#513abfd256d7ad0bf1ee1873606317b33b1b2a72"

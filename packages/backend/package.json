@@ -138,6 +138,7 @@
 		"@types/js-yaml": "4.0.5",
 		"@types/jsdom": "16.2.14",
 		"@types/jsonld": "1.5.6",
+		"@types/jsrsasign": "8.0.12",
 		"@types/koa": "2.13.4",
 		"@types/koa-bodyparser": "4.3.7",
 		"@types/koa-cors": "0.0.2",
