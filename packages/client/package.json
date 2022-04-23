@@ -3,7 +3,7 @@
 	"scripts": {
 		"watch": "webpack --watch",
 		"build": "webpack",
-		"lint": "eslint --quiet 'src/**/*.{ts,vue}'"
+		"lint": "eslint --quiet \"src/**/*.{ts,vue}\""
 	},
 	"resolutions": {
 		"chokidar": "^3.3.1",
