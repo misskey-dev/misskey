@@ -753,10 +753,18 @@ user: "Usuarios"
 administration: "Administrar"
 accounts: "Cuentas"
 switch: "Cambiar"
+noMaintainerInformationWarning: "No se ha establecido la información del administrador"
+noBotProtectionWarning: "La protección contra los bots no está configurada"
+configure: "Configurar"
+postToGallery: "Crear una nueva publicación en la galería"
 gallery: "Galería"
 recentPosts: "Posts recientes"
 popularPosts: "Más vistos"
+shareWithNote: "Compartir con una nota"
+ads: "Anuncios"
 expiration: "Termina el"
+memo: "Notas"
+priority: "Prioridad"
 high: "Alta"
 middle: "Mediano"
 low: "Baja"
@@ -808,13 +816,24 @@ _accountDelete:
   accountDelete: "Eliminar Cuenta"
 _ad:
   back: "Deseleccionar"
+_forgotPassword:
+  contactAdmin: "Esta instancia no admite el uso de direcciones de correo electrónico, póngase en contacto con el administrador de la instancia para restablecer su contraseña"
 _gallery:
   my: "Mi galería"
+  liked: "Publicaciones que me gustan"
+  like: "¡Muy bien!"
   unlike: "Quitar me gusta"
 _email:
   _follow:
     title: "te ha seguido"
+  _receiveFollowRequest:
+    title: "Has recibido una solicitud de seguimiento"
+_plugin:
+  install: "Instalar plugins"
+  installWarn: "Por favor no instale plugins que no son de confianza"
+  manage: "Gestionar plugins"
 _registry:
+  scope: "Alcance"
   key: "Clave"
   keys: "Clave"
 _mfm:
