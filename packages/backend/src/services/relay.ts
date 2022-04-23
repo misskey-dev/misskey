@@ -88,7 +88,7 @@ export async function deliverToRelays(user: { id: User['id']; host: null; }, act
 	}));
 	if (relays.length === 0) return;
 
-	const copy = JSON.parse(JSON.stringify(activity));
+	const copy = structuredClone(activity);
 	if (!copy.to) copy.to = ['https://www.w3.org/ns/activitystreams#Public'];
 
 	const signed = await attachLdSignature(copy, user);
