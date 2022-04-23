@@ -527,10 +527,10 @@
   resolved "https://registry.yarnpkg.com/@types/jsonld/-/jsonld-1.5.6.tgz#4396c0b17128abf5773bb68b5453b88fc565b0d4"
   integrity sha512-OUcfMjRie5IOrJulUQwVNvV57SOdKcTfBj3pjXNxzXqeOIrY2aGDNGW/Tlp83EQPkz4tCE6YWVrGuc/ZeaAQGg==
 
-"@types/jsrsasign@8.0.12":
-  version "8.0.12"
-  resolved "https://registry.yarnpkg.com/@types/jsrsasign/-/jsrsasign-8.0.12.tgz#6bfebbbde57e72748d801642bba9b431d049b952"
-  integrity sha512-FLXKbwbB+4fsJECYOpIiYX2GSqSHYnkO/UnrFqlZn6crpyyOtk4LRab+G1HC7dTbT1NB7spkHecZRQGXoCWiJQ==
+"@types/jsrsasign@10.2.1":
+  version "10.2.1"
+  resolved "https://registry.yarnpkg.com/@types/jsrsasign/-/jsrsasign-10.2.1.tgz#b82882523dfb5c476673dbef344ad838f96fb43d"
+  integrity sha512-piCIOMY0+d2wwRNcRw56VBqFYCYYeZ1c/NlUKVHTV3Y9j1RE2qpgCQvClI6yhH2sk8OoXiah43i9FmnC5tL2RQ==
 
 "@types/keygrip@*":
   version "1.0.2"
@@ -4171,10 +4171,10 @@ jsprim@^2.0.2:
     json-schema "0.4.0"
     verror "1.10.0"
 
-jsrsasign@8.0.20:
-  version "8.0.20"
-  resolved "https://registry.yarnpkg.com/jsrsasign/-/jsrsasign-8.0.20.tgz#37d8029c9d8f794d8ac8d8998bce319921491f11"
-  integrity sha512-JTXt9+nqdynIB8wFsS6e8ffHhIjilhywXwdaEVHSj9OVmwldG2H0EoCqkQ+KXkm2tVqREfH/HEmklY4k1/6Rcg==
+jsrsasign@10.5.19:
+  version "10.5.19"
+  resolved "https://registry.yarnpkg.com/jsrsasign/-/jsrsasign-10.5.19.tgz#61cd378190c3e65bd1a26a088696736e4437a806"
+  integrity sha512-GgOdly2Ee9nS+qxOjLkQKaoSTKqlk6lFKcKLPlNJOApoOUcqL2z+l4dAcBzYnZkA3tg+LwFOyQnqbuFn5IPdvw==
 
 jstransformer@1.0.0:
   version "1.0.0"

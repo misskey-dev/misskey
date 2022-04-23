@@ -1,6 +1,6 @@
 import * as crypto from 'node:crypto';
-import config from '@/config/index.js';
 import * as jsrsasign from 'jsrsasign';
+import config from '@/config/index.js';
 
 const ECC_PRELUDE = Buffer.from([0x04]);
 const NULL_BYTE = Buffer.from([0]);
@@ -145,7 +145,7 @@ export function verifyLogin({
 
 export const procedures = {
 	none: {
-		verify({ publicKey }: {publicKey: Map<number, Buffer>}) {
+		verify({ publicKey }: { publicKey: Map<number, Buffer> }) {
 			const negTwo = publicKey.get(-2);
 
 			if (!negTwo || negTwo.length !== 32) {
