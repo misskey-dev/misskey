@@ -859,6 +859,7 @@ _mfm:
   mentionDescription: "El signo @ seguido de un nombre de usuario se puede utilizar para notificar a un usuario en particular."
   hashtag: "Hashtag"
   url: "URL"
+  urlDescription: "Se pueden mostrar las URL"
   link: "Vínculo"
   bold: "Negrita"
   center: "Centrar"
