@@ -108,7 +108,7 @@ type RequiredPropertyNames<s extends Obj> = {
 		s[K]['default'] extends null | string | number | boolean | Record<string, unknown> ? K : never
 }[keyof s];
 
-export interface Obj { [key: string]: Schema; }
+export type Obj = Extract<Schema, string>;
 
 export type ObjType<s extends Obj, RequiredProps extends keyof s> =
 	{ -readonly [P in keyof s]?: SchemaType<s[P]> } &
