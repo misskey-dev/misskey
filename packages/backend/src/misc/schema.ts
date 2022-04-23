@@ -89,7 +89,7 @@ export interface Schema extends OfSchema {
 	readonly optional?: boolean;
 	readonly items?: Schema;
 	readonly properties?: Obj;
-	readonly required?: ReadonlyArray<keyof NonNullable<this['properties']>>;
+	readonly required?: ReadonlyArray<Extract<keyof NonNullable<this['properties']>, string>>;
 	readonly description?: string;
 	readonly example?: any;
 	readonly format?: string;
