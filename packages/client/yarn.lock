@@ -5110,7 +5110,7 @@ rndstr@1.0.0:
     rangestr "0.0.1"
     seedrandom "2.4.2"
 
-rollup@^2.59.0:
+rollup@2.70.2, rollup@^2.59.0:
   version "2.70.2"
   resolved "https://registry.yarnpkg.com/rollup/-/rollup-2.70.2.tgz#808d206a8851628a065097b7ba2053bd83ba0c0d"
   integrity sha512-EitogNZnfku65I1DD5Mxe8JYRUCy0hkK5X84IlDtUs+O6JRMpRciXTzyCUuX11b5L5pvjH+OmFXiQ3XjabcXgg==

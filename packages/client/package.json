@@ -65,6 +65,7 @@
 		"random-seed": "0.3.0",
 		"reflect-metadata": "0.1.13",
 		"rndstr": "1.0.0",
+		"rollup": "2.70.2",
 		"s-age": "1.1.2",
 		"sass": "1.50.1",
 		"sass-loader": "12.6.0",
