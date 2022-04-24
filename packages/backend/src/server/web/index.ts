@@ -11,20 +11,20 @@ import send from 'koa-send';
 import favicon from 'koa-favicon';
 import views from 'koa-views';
 import { createBullBoard } from '@bull-board/api';
-import { BullAdapter  } from '@bull-board/api/bullAdapter.js';
+import { BullAdapter } from '@bull-board/api/bullAdapter.js';
 import { KoaAdapter } from '@bull-board/koa';
 
-import packFeed from './feed.js';
+import { IsNull } from 'typeorm';
 import { fetchMeta } from '@/misc/fetch-meta.js';
-import { genOpenapiSpec } from '../api/openapi/gen-spec.js';
 import config from '@/config/index.js';
 import { Users, Notes, UserProfiles, Pages, Channels, Clips, GalleryPosts } from '@/models/index.js';
 import * as Acct from '@/misc/acct.js';
 import { getNoteSummary } from '@/misc/get-note-summary.js';
+import { queues } from '@/queue/queues.js';
+import { genOpenapiSpec } from '../api/openapi/gen-spec.js';
 import { urlPreviewHandler } from './url-preview.js';
 import { manifestHandler } from './manifest.js';
-import { queues } from '@/queue/queues.js';
-import { IsNull } from 'typeorm';
+import packFeed from './feed.js';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -127,7 +127,7 @@ router.get('/twemoji/(.*)', async ctx => {
 		return;
 	}
 
-	ctx.set('Content-Security-Policy', `default-src 'none'; style-src 'unsafe-inline'`);
+	ctx.set('Content-Security-Policy', 'default-src \'none\'; style-src \'unsafe-inline\'');
 
 	await send(ctx as any, path, {
 		root: `${_dirname}/../../../node_modules/@discordapp/twemoji/dist/svg/`,
@@ -235,6 +235,7 @@ router.get(['/@:user', '/@:user/:sub'], async (ctx, next) => {
 
 		await ctx.render('user', {
 			user, profile, me,
+			avatarUrl: await Users.getAvatarUrl(user),
 			sub: ctx.params.sub,
 			instanceName: meta.name || 'Misskey',
 			icon: meta.iconUrl,
@@ -274,6 +275,7 @@ router.get('/notes/:note', async (ctx, next) => {
 		await ctx.render('note', {
 			note: _note,
 			profile,
+			avatarUrl: await Users.getAvatarUrl(await Users.findOneByOrFail({ id: note.userId })),
 			// TODO: Let locale changeable by instance setting
 			summary: getNoteSummary(_note),
 			instanceName: meta.name || 'Misskey',
@@ -315,6 +317,7 @@ router.get('/@:user/pages/:page', async (ctx, next) => {
 		await ctx.render('page', {
 			page: _page,
 			profile,
+			avatarUrl: await Users.getAvatarUrl(await Users.findOneByOrFail({ id: page.userId })),
 			instanceName: meta.name || 'Misskey',
 			icon: meta.iconUrl,
 			themeColor: meta.themeColor,
@@ -346,6 +349,7 @@ router.get('/clips/:clip', async (ctx, next) => {
 		await ctx.render('clip', {
 			clip: _clip,
 			profile,
+			avatarUrl: await Users.getAvatarUrl(await Users.findOneByOrFail({ id: clip.userId })),
 			instanceName: meta.name || 'Misskey',
 			icon: meta.iconUrl,
 			themeColor: meta.themeColor,
@@ -370,6 +374,7 @@ router.get('/gallery/:post', async (ctx, next) => {
 		await ctx.render('gallery-post', {
 			post: _post,
 			profile,
+			avatarUrl: await Users.getAvatarUrl(await Users.findOneByOrFail({ id: post.userId })),
 			instanceName: meta.name || 'Misskey',
 			icon: meta.iconUrl,
 			themeColor: meta.themeColor,
@@ -434,7 +439,7 @@ router.get('/cli', async ctx => {
 	});
 });
 
-const override = (source: string, target: string, depth: number = 0) =>
+const override = (source: string, target: string, depth = 0) =>
 	[, ...target.split('/').filter(x => x), ...source.split('/').filter(x => x).splice(depth)].join('/');
 
 router.get('/flush', async ctx => {
