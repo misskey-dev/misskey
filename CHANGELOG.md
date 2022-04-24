@@ -10,6 +10,12 @@
 You should also include the user name that made the change.
 -->
 
+## 12.110.1 (2022/04/23)
+
+### Bugfixes
+- Fix GOP rendering @syuilo
+- Improve performance of antenna, clip, and list @xianon
+
 ## 12.110.0 (2022/04/11)
 
 ### Improvements

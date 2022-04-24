@@ -1,6 +1,6 @@
 import { Entity, Column, Index, OneToOne, JoinColumn, PrimaryColumn } from 'typeorm';
-import { DriveFile } from './drive-file.js';
 import { id } from '../id.js';
+import { DriveFile } from './drive-file.js';
 
 @Entity()
 @Index(['usernameLower', 'host'], { unique: true })
@@ -207,7 +207,7 @@ export class User {
 
 	@Column('boolean', {
 		default: false,
-		comment: 'Whether to show users replying to other users in the timeline'
+		comment: 'Whether to show users replying to other users in the timeline',
 	})
 	public showTimelineReplies: boolean;
 
