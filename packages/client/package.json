@@ -85,12 +85,8 @@
 		"uuid": "8.3.2",
 		"v-debounce": "0.1.2",
 		"vanilla-tilt": "1.7.2",
-<<<<<<< HEAD
 		"vite": "2.9.5",
-		"vue": "3.2.31",
-=======
 		"vue": "3.2.33",
->>>>>>> develop
 		"vue-loader": "17.0.0",
 		"vue-prism-editor": "2.0.0-alpha.2",
 		"vue-router": "4.0.14",
