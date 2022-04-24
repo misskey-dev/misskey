@@ -14,7 +14,7 @@ import { createBullBoard } from '@bull-board/api';
 import { BullAdapter } from '@bull-board/api/bullAdapter.js';
 import { KoaAdapter } from '@bull-board/koa';
 
-import { IsNull } from 'typeorm';
+import { In, IsNull } from 'typeorm';
 import { fetchMeta } from '@/misc/fetch-meta.js';
 import config from '@/config/index.js';
 import { Users, Notes, UserProfiles, Pages, Channels, Clips, GalleryPosts } from '@/models/index.js';
@@ -266,7 +266,10 @@ router.get('/users/:user', async ctx => {
 
 // Note
 router.get('/notes/:note', async (ctx, next) => {
-	const note = await Notes.findOneBy({ id: ctx.params.note });
+	const note = await Notes.findOneBy({
+		id: ctx.params.note,
+		visibility: In(['public', 'home']),
+	});
 
 	if (note) {
 		const _note = await Notes.pack(note);
@@ -283,11 +286,7 @@ router.get('/notes/:note', async (ctx, next) => {
 			themeColor: meta.themeColor,
 		});
 
-		if (['public', 'home'].includes(note.visibility)) {
-			ctx.set('Cache-Control', 'public, max-age=180');
-		} else {
-			ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
-		}
+		ctx.set('Cache-Control', 'public, max-age=180');
 
 		return;
 	}
