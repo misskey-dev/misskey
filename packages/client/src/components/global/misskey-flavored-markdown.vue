@@ -31,6 +31,18 @@ const props = withDefaults(defineProps<{
 	}
 }
 
+.mfm-x2 {
+	font-size: 200%;
+}
+
+.mfm-x3 {
+	font-size: 400%;
+}
+
+.mfm-x4 {
+	font-size: 600%;
+}
+
 @keyframes mfm-spin {
 	0% { transform: rotate(0deg); }
 	100% { transform: rotate(360deg); }
