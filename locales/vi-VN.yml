@@ -727,6 +727,13 @@ useReactionPickerForContextMenu: "Nhấn chuột phải để mở bộ chọn b
 typingUsers: "{users} đang nhập…"
 jumpToSpecifiedDate: "Đến một ngày cụ thể"
 showingPastTimeline: "Hiện đang hiển thị dòng thời gian cũ"
+clear: "Hoàn lại"
+markAllAsRead: "Đánh dấu tất cả đã đọc"
+goBack: "Quay lại"
+unlikeConfirm: "Bạn có chắc muốn bỏ thích ?"
+fullView: "Kích thước đầy đủ"
+quitFullView: "Thoát toàn màn hình"
+addDescription: "Thêm mô tả"
 info: "Giới thiệu"
 user: "Người dùng"
 administration: "Quản lý"
@@ -736,6 +743,8 @@ translatedFrom: "Dịch từ {x}"
 searchByGoogle: "Google"
 _ffVisibility:
   public: "Đăng"
+_ad:
+  back: "Quay lại"
 _email:
   _follow:
     title: "đã theo dõi bạn"
