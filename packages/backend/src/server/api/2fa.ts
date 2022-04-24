@@ -121,14 +121,14 @@ export function verifyLogin({
 	signature: Buffer,
 	challenge: string
 }) {
-	if (clientData.type != 'webauthn.get') {
+	if (clientData.type !== 'webauthn.get') {
 		throw new Error('type is not webauthn.get');
 	}
 
-	if (hash(clientData.challenge).toString('hex') != challenge) {
+	if (hash(clientData.challenge).toString('hex') !== challenge) {
 		throw new Error('challenge mismatch');
 	}
-	if (clientData.origin != config.scheme + '://' + config.host) {
+	if (clientData.origin !== config.scheme + '://' + config.host) {
 		throw new Error('origin mismatch');
 	}
 
@@ -148,11 +148,11 @@ export const procedures = {
 		verify({ publicKey }: {publicKey: Map<number, Buffer>}) {
 			const negTwo = publicKey.get(-2);
 
-			if (!negTwo || negTwo.length != 32) {
+			if (!negTwo || negTwo.length !== 32) {
 				throw new Error('invalid or no -2 key given');
 			}
 			const negThree = publicKey.get(-3);
-			if (!negThree || negThree.length != 32) {
+			if (!negThree || negThree.length !== 32) {
 				throw new Error('invalid or no -3 key given');
 			}
 
@@ -183,7 +183,7 @@ export const procedures = {
 			rpIdHash: Buffer,
 			credentialId: Buffer,
 		}) {
-			if (attStmt.alg != -7) {
+			if (attStmt.alg !== -7) {
 				throw new Error('alg mismatch');
 			}
 
@@ -196,11 +196,11 @@ export const procedures = {
 
 			const negTwo = publicKey.get(-2);
 
-			if (!negTwo || negTwo.length != 32) {
+			if (!negTwo || negTwo.length !== 32) {
 				throw new Error('invalid or no -2 key given');
 			}
 			const negThree = publicKey.get(-3);
-			if (!negThree || negThree.length != 32) {
+			if (!negThree || negThree.length !== 32) {
 				throw new Error('invalid or no -3 key given');
 			}
 
@@ -263,7 +263,7 @@ export const procedures = {
 				.map((key: any) => PEMString(key))
 				.concat([GSR2]);
 
-			if (getCertSubject(certificateChain[0]).CN != 'attest.android.com') {
+			if (getCertSubject(certificateChain[0]).CN !== 'attest.android.com') {
 				throw new Error('invalid common name');
 			}
 
@@ -283,11 +283,11 @@ export const procedures = {
 
 			const negTwo = publicKey.get(-2);
 
-			if (!negTwo || negTwo.length != 32) {
+			if (!negTwo || negTwo.length !== 32) {
 				throw new Error('invalid or no -2 key given');
 			}
 			const negThree = publicKey.get(-3);
-			if (!negThree || negThree.length != 32) {
+			if (!negThree || negThree.length !== 32) {
 				throw new Error('invalid or no -3 key given');
 			}
 
@@ -332,11 +332,11 @@ export const procedures = {
 
 				const negTwo = publicKey.get(-2);
 
-				if (!negTwo || negTwo.length != 32) {
+				if (!negTwo || negTwo.length !== 32) {
 					throw new Error('invalid or no -2 key given');
 				}
 				const negThree = publicKey.get(-3);
-				if (!negThree || negThree.length != 32) {
+				if (!negThree || negThree.length !== 32) {
 					throw new Error('invalid or no -3 key given');
 				}
 
@@ -353,7 +353,7 @@ export const procedures = {
 				// https://fidoalliance.org/specs/fido-v2.0-id-20180227/fido-ecdaa-algorithm-v2.0-id-20180227.html#ecdaa-verify-operation
 				throw new Error('ECDAA-Verify is not supported');
 			} else {
-				if (attStmt.alg != -7) throw new Error('alg mismatch');
+				if (attStmt.alg !== -7) throw new Error('alg mismatch');
 
 				throw new Error('self attestation is not supported');
 			}
@@ -377,7 +377,7 @@ export const procedures = {
 			credentialId: Buffer
 		}) {
 			const x5c: Buffer[] = attStmt.x5c;
-			if (x5c.length != 1) {
+			if (x5c.length !== 1) {
 				throw new Error('x5c length does not match expectation');
 			}
 
@@ -387,11 +387,11 @@ export const procedures = {
 
 			const negTwo: Buffer = publicKey.get(-2);
 
-			if (!negTwo || negTwo.length != 32) {
+			if (!negTwo || negTwo.length !== 32) {
 				throw new Error('invalid or no -2 key given');
 			}
 			const negThree: Buffer = publicKey.get(-3);
-			if (!negThree || negThree.length != 32) {
+			if (!negThree || negThree.length !== 32) {
 				throw new Error('invalid or no -3 key given');
 			}
 

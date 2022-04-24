@@ -120,9 +120,9 @@ export const httpsAgent = config.proxy
  */
 export function getAgentByUrl(url: URL, bypassProxy = false) {
 	if (bypassProxy || (config.proxyBypassHosts || []).includes(url.hostname)) {
-		return url.protocol == 'http:' ? _http : _https;
+		return url.protocol === 'http:' ? _http : _https;
 	} else {
-		return url.protocol == 'http:' ? httpAgent : httpsAgent;
+		return url.protocol === 'http:' ? httpAgent : httpsAgent;
 	}
 }
 

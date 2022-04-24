@@ -59,5 +59,6 @@ html
 			br
 			| Please turn on your JavaScript
 		div#splash
-			img(src= icon || '/static-assets/splash.png')
+			img#splashIcon(src= icon || '/static-assets/splash.png')
+			div#splashSpinner
 		block content

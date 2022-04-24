@@ -350,8 +350,7 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 		getActiveWebhooks().then(webhooks => {
 			webhooks = webhooks.filter(x => x.userId === user.id && x.on.includes('note'));
 			for (const webhook of webhooks) {
-				webhookDeliver(webhook, {
-					type: 'note',
+				webhookDeliver(webhook, 'note', {
 					note: noteObj,
 				});
 			}
@@ -380,8 +379,7 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 
 					const webhooks = (await getActiveWebhooks()).filter(x => x.userId === data.reply!.userId && x.on.includes('reply'));
 					for (const webhook of webhooks) {
-						webhookDeliver(webhook, {
-							type: 'reply',
+						webhookDeliver(webhook, 'reply', {
 							note: noteObj,
 						});
 					}
@@ -407,8 +405,7 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 
 				const webhooks = (await getActiveWebhooks()).filter(x => x.userId === data.renote!.userId && x.on.includes('renote'));
 				for (const webhook of webhooks) {
-					webhookDeliver(webhook, {
-						type: 'renote',
+					webhookDeliver(webhook, 'renote', {
 						note: noteObj,
 					});
 				}
@@ -650,8 +647,7 @@ async function createMentionedEvents(mentionedUsers: MinimumUser[], note: Note, 
 
 		const webhooks = (await getActiveWebhooks()).filter(x => x.userId === u.id && x.on.includes('mention'));
 		for (const webhook of webhooks) {
-			webhookDeliver(webhook, {
-				type: 'mention',
+			webhookDeliver(webhook, 'mention', {
 				note: detailPackedNote,
 			});
 		}
