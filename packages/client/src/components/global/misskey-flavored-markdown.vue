@@ -32,15 +32,29 @@ const props = withDefaults(defineProps<{
 }
 
 .mfm-x2 {
-	font-size: 200%;
+	--mfm-zoom-size: 200%;
 }
 
 .mfm-x3 {
-	font-size: 400%;
+	--mfm-zoom-size: 400%;
 }
 
 .mfm-x4 {
-	font-size: 600%;
+	--mfm-zoom-size: 600%;
+}
+
+.mfm-x2, .mfm-x3, .mfm-x4 {
+	font-size: var(--mfm-zoom-size);
+
+	.mfm-x2, .mfm-x3, .mfm-x4 {
+		/* only half effective */
+		font-size: calc( ( var(--mfm-zoom-size) + 100% ) / 2 );
+
+		.mfm-x2, .mfm-x3, .mfm-x4 {
+			/* disabled */
+			font-size: 100%;
+		}
+	}
 }
 
 @keyframes mfm-spin {
