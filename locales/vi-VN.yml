@@ -978,6 +978,21 @@ _serverDisconnectedBehavior:
 _channel:
   create: "Tạo kênh"
   edit: "Chỉnh sửa kênh"
+  setBanner: "Đặt ảnh bìa"
+  removeBanner: "Xóa ảnh bìa"
+  featured: "Xu hướng"
+  owned: "Do tôi quản lý"
+  following: "Đang theo dõi"
+  usersCount: "{n} Thành viên"
+  notesCount: "{n} Tút"
+_menuDisplay:
+  sideFull: "Thanh bên"
+  sideIcon: "Thanh bên (Biểu tượng)"
+  top: "Trên cùng"
+  hide: "Ẩn"
+_wordMute:
+  muteWords: "Ẩn từ ngữ"
+  muteWordsDescription: "Separate with spaces for an AND condition or with line breaks for an OR condition."
 _theme:
   description: "Mô tả"
   installed: "{name} đã được cài đặt"
