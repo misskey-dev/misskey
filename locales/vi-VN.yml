@@ -957,6 +957,27 @@ _mfm:
   x3Description: "Hiển thị nội dung cỡ lớn hơn nữa."
   x4: "Khổng lồ"
   x4Description: "Hiển thị nội dung cỡ khổng lồ."
+  blur: "Làm mờ"
+  blurDescription: "Làm mờ nội dung. Nó sẽ được hiển thị rõ ràng khi di chuột qua."
+  font: "Phông chữ"
+  fontDescription: "Chọn phông chữ để hiển thị nội dung."
+  rainbow: "Cầu vồng"
+  rainbowDescription: "Làm cho nội dung hiển thị với màu sắc cầu vồng."
+  sparkle: "Lấp lánh"
+  sparkleDescription: "Làm cho nội dung hiệu ứng hạt lấp lánh."
+  rotate: "Xoay"
+  rotateDescription: "Xoay nội dung theo một góc cụ thể."
+_instanceTicker:
+  none: "Không hiển thị"
+  remote: "Hiện cho người dùng từ máy chủ khác"
+  always: "Luôn hiện"
+_serverDisconnectedBehavior:
+  reload: "Tự động tải lại"
+  dialog: "Hiện hộp thoại cảnh báo"
+  quiet: "Hiển thị cảnh báo không phô trương"
+_channel:
+  create: "Tạo kênh"
+  edit: "Chỉnh sửa kênh"
 _theme:
   description: "Mô tả"
   installed: "{name} đã được cài đặt"
