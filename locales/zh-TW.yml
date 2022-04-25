@@ -142,6 +142,7 @@ flagAsBotDescription: "如果本帳戶是由程式控制，請啟用此選項。
 flagAsCat: "此使用者是貓"
 flagAsCatDescription: "如果想將本帳戶標示為一隻貓，請開啟此標示"
 flagShowTimelineReplies: "在時間軸上顯示貼文的回覆"
+flagShowTimelineRepliesDescription: "啟用時，時間線除了顯示用戶的帖子以外，還會顯示用戶對其他帖子的回覆。"
 autoAcceptFollowed: "自動追隨中使用者的追隨請求"
 addAccount: "添加帳戶"
 loginFailed: "登入失敗"
