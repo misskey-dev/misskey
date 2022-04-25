@@ -95,7 +95,7 @@ async function unFollow(follower: User, followee: User) {
 		return;
 	}
 
-	await Promises.all([
+	await Promise.all([
 		Followings.delete(following.id),
 		Users.decrement({ id: follower.id }, 'followingCount', 1),
 		Users.decrement({ id: followee.id }, 'followersCount', 1),
