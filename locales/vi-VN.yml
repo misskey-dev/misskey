@@ -865,10 +865,46 @@ _accountDelete:
   inProgress: "Đang xóa dần tài khoản."
 _ad:
   back: "Quay lại"
+  reduceFrequencyOfThisAd: "Hiện ít lại"
+_forgotPassword:
+  enterEmail: "Nhập địa chỉ email bạn đã sử dụng để đăng ký. Một liên kết mà bạn có thể đặt lại mật khẩu của mình sau đó sẽ được gửi đến nó."
+  ifNoEmail: "Nếu bạn không sử dụng email lúc đăng ký, vui lòng liên hệ với quản trị viên."
+  contactAdmin: "Máy chủ này không hỗ trợ sử dụng địa chỉ email, vui lòng liên hệ với quản trị viên để đặt lại mật khẩu của bạn."
+_gallery:
+  my: "Kho Ảnh"
+  liked: "Tút Đã Thích"
+  like: "Thích"
+  unlike: "Bỏ thích"
 _email:
   _follow:
     title: "đã theo dõi bạn"
+  _receiveFollowRequest:
+    title: "Chấp nhận yêu cầu theo dõi"
+_plugin:
+  install: "Cài đặt tiện ích"
+  installWarn: "Vui lòng không cài đặt những tiện ích đáng ngờ."
+  manage: "Quản lý plugin"
+_registry:
+  scope: "Phạm vi"
+  key: "Mã"
+  keys: "Các mã"
+  domain: "Tên miền"
+  createKey: "Tạo mã"
+_aboutMisskey:
+  about: "Misskey là phần mềm mã nguồn mở được phát triển bởi syuilo từ năm 2014."
+  contributors: "Những người đóng góp nổi bật"
+  allContributors: "Toàn bộ người đóng góp"
+  source: "Mã nguồn"
+  translation: "Dịch Misskey"
+  donate: "Ủng hộ Misskey"
+  morePatrons: "Chúng tôi cũng trân trọng sự hỗ trợ của nhiều người đóng góp khác không được liệt kê ở đây. Cảm ơn! 🥰"
+  patrons: "Người ủng hộ"
+_nsfw:
+  respect: "Ẩn nội dung NSFW"
+  ignore: "Hiện nội dung NSFW"
+  force: "Ẩn mọi media"
 _mfm:
+  cheatSheet: "MFM Cheatsheet"
   mention: "Nhắc đến"
   quote: "Trích dẫn"
   emoji: "Tùy chỉnh emoji"
