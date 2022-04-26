@@ -1287,39 +1287,132 @@ _charts:
   localNotesIncDec: "Sự khác biệt về số lượng tút máy chủ này"
   remoteNotesIncDec: "Sự khác biệt về số lượng tút từ máy chủ khác"
   notesTotal: "Tổng số sút"
+  filesIncDec: "Sự khác biệt về số lượng tập tin"
+  filesTotal: "Tổng số tập tin"
+  storageUsageIncDec: "Sự khác biệt về dung lượng lưu trữ"
+  storageUsageTotal: "Tổng dung lượng lưu trữ"
 _instanceCharts:
+  requests: "Lượt yêu cầu"
   users: "Sự khác biệt về số lượng người dùng"
+  usersTotal: "Số lượng người dùng tích lũy"
   notes: "Sự khác biệt về số lượng tút"
+  notesTotal: "Số lượng tút tích lũy"
+  ff: "Sự khác biệt về số lượng người dùng được theo dõi/người theo dõi"
+  ffTotal: "Số lượng người dùng được theo dõi/người theo dõi tích lũy"
+  cacheSize: "Sự khác biệt về dung lượng bộ nhớ đệm"
+  cacheSizeTotal: "Dung lượng bộ nhớ đệm tích lũy"
+  files: "Sự khác biệt về số lượng tập tin"
+  filesTotal: "Số lượng tập tin tích lũy"
 _timelines:
   home: "Trang chính"
+  local: "Máy chủ này"
+  social: "Xã hội"
+  global: "Liên hợp"
 _pages:
+  newPage: "Tạo Trang mới"
+  editPage: "Sửa Trang này"
+  readPage: "Xem mã nguồn Trang này"
+  created: "Trang đã được tạo thành công"
+  updated: "Trang đã được cập nhật thành công"
+  deleted: "Trang đã được xóa thành công"
+  pageSetting: "Cài đặt trang"
+  nameAlreadyExists: "URL Trang đã tồn tại"
+  invalidNameTitle: "URL Trang không hợp lệ"
+  invalidNameText: "Không được để trống tựa đề Trang"
+  editThisPage: "Sửa Trang này"
+  viewSource: "Xem mã nguồn"
   viewPage: "Xem trang của tôi"
+  like: "Thích"
+  unlike: "Bỏ thích"
+  my: "Trang của tôi"
+  liked: "Trang đã thích"
+  featured: "Nổi tiếng"
+  inspector: "Thanh tra"
+  contents: "Nội dung"
+  content: "Chặn Trang"
+  variables: "Biến thể"
+  title: "Tựa đề"
+  url: "URL Trang"
+  summary: "Mô tả Trang"
+  alignCenter: "Căn giữa"
+  hideTitleWhenPinned: "Ẩn tựa đề Trang khi ghim lên hồ sơ"
+  font: "Phông chữ"
+  fontSerif: "Serif"
+  fontSansSerif: "Sans Serif"
+  eyeCatchingImageSet: "Đặt ảnh thu nhỏ"
+  eyeCatchingImageRemove: "Xóa ảnh thu nhỏ"
+  chooseBlock: "Thêm khối"
   blocks:
     image: "Hình ảnh"
+    _if:
+      variable: "Biến thể"
     _post:
       text: "Nội dung"
+    _textInput:
+      text: "Tựa đề"
+    _textareaInput:
+      text: "Tựa đề"
+    _numberInput:
+      text: "Tựa đề"
+    _switch:
+      text: "Tựa đề"
+    _counter:
+      text: "Tựa đề"
     _button:
+      text: "Tựa đề"
       _action:
         _dialog:
           content: "Nội dung"
+    _radioButton:
+      title: "Tựa đề"
+      values: "Phân tách các mục bằng cách xuống dòng"
+      default: "Giá trị mặc định"
   script:
     categories:
+      flow: "Điều khiển"
+      logical: "Hoạt động logic"
+      operation: "Tính toán"
+      comparison: "So sánh"
+      random: "Ngẫu nhiên"
+      value: "Giá trị"
+      fn: "Tính năng"
+      text: "Tác vụ văn bản"
+      convert: "Chuyển đổi"
       list: "Danh sách"
     blocks:
+      text: "Văn bản"
+      multiLineText: "Văn bản (nhiều dòng)"
+      textList: "Văn bản liệt kê"
+      _textList:
+        info: "Phân tách mục bằng cách xuống dòng"
+      strLen: "Độ dài văn bản"
+      _strLen:
+        arg1: "Văn bản"
+      strPick: "Trích xuất chuỗi"
+      _strPick:
+        arg1: "Văn bản"
+        arg2: "Vị trí chuỗi"
+      strReplace: "Thay thế chuỗi"
       _join:
         arg1: "Danh sách"
+      random: "Ngẫu nhiên"
       _randomPick:
         arg1: "Danh sách"
       _dailyRandomPick:
         arg1: "Danh sách"
       _seedRandomPick:
         arg2: "Danh sách"
+      _DRPWPM:
+        arg1: "Văn bản liệt kê"
       _pick:
         arg1: "Danh sách"
       _listLen:
         arg1: "Danh sách"
+      ref: "Biến thể"
+      fn: "Tính năng"
     types:
       array: "Danh sách"
+      stringArray: "Văn bản liệt kê"
 _notification:
   youWereFollowed: "đã theo dõi bạn"
   youWereInvitedToGroup: "Bạn đã được mời tham gia nhóm"
