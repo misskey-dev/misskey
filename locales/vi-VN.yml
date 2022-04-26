@@ -1342,21 +1342,59 @@ _pages:
   eyeCatchingImageSet: "Đặt ảnh thu nhỏ"
   eyeCatchingImageRemove: "Xóa ảnh thu nhỏ"
   chooseBlock: "Thêm khối"
+  selectType: "Chọn kiểu"
+  enterVariableName: "Nhập tên một biến thể"
+  variableNameIsAlreadyUsed: "Tên biến thể này đã được sử dụng"
+  contentBlocks: "Nội dung"
+  inputBlocks: "Nhập"
+  specialBlocks: "Đặc biệt"
   blocks:
+    text: "Văn bản"
+    textarea: "Khu vực văn bản"
+    section: "Mục "
     image: "Hình ảnh"
+    button: "Nút"
+    if: "Nếu"
     _if:
       variable: "Biến thể"
+    post: "Mẫu đăng"
     _post:
       text: "Nội dung"
+      attachCanvasImage: "Đính kèm hình canva"
+      canvasId: "ID Canva"
+    textInput: "Văn bản đầu vào"
     _textInput:
+      name: "Tên biến thể"
       text: "Tựa đề"
+      default: "Giá trị mặc định"
+    textareaInput: "Văn bản nhiều dòng đầu vào"
     _textareaInput:
+      name: "Tên biến thể"
       text: "Tựa đề"
+      default: "Giá trị mặc định"
+    numberInput: "Đầu vào số"
     _numberInput:
+      name: "Tên biến thể"
       text: "Tựa đề"
+      default: "Giá trị mặc định"
+    canvas: "Canva"
+    _canvas:
+      id: "ID Canva"
+      width: "Chiều rộng"
+      height: "Chiều cao"
+    note: "Tút đã nhúng"
+    _note:
+      id: "ID tút"
+      idDescription: "Ngoài ra, bạn có thể dán URL tút vào đây."
+      detailed: "Xem chi tiết"
+    switch: "Chuyển đổi"
     _switch:
+      name: "Tên biến thể"
       text: "Tựa đề"
+      default: "Giá trị mặc định"
+    counter: "Bộ đếm"
     _counter:
+      name: "Tên biến thể"
       text: "Tựa đề"
     _button:
       text: "Tựa đề"
@@ -1364,6 +1402,7 @@ _pages:
         _dialog:
           content: "Nội dung"
     _radioButton:
+      name: "Tên biến thể"
       title: "Tựa đề"
       values: "Phân tách các mục bằng cách xuống dòng"
       default: "Giá trị mặc định"
@@ -1393,8 +1432,68 @@ _pages:
         arg1: "Văn bản"
         arg2: "Vị trí chuỗi"
       strReplace: "Thay thế chuỗi"
+      _strReplace:
+        arg1: "Nội dung"
+        arg2: "Văn bản thay thế"
+        arg3: "Thay thế bằng"
+      strReverse: "Lật văn bản"
+      _strReverse:
+        arg1: "Văn bản"
+      join: "Nối văn bản"
       _join:
         arg1: "Danh sách"
+        arg2: "Phân cách"
+      add: "Cộng"
+      _add:
+        arg1: "A"
+        arg2: "B"
+      subtract: "Trừ"
+      _subtract:
+        arg1: "A"
+        arg2: "B"
+      multiply: "Nhân"
+      _multiply:
+        arg1: "A"
+        arg2: "B"
+      divide: "Chia"
+      _divide:
+        arg1: "A"
+        arg2: "B"
+      mod: "Phần còn lại"
+      _mod:
+        arg1: "A"
+        arg2: "B"
+      round: "Làm tròn thập phân"
+      _round:
+        arg1: "Số"
+      eq: "A và B bằng nhau"
+      _eq:
+        arg1: "A"
+        arg2: "B"
+      notEq: "A và B khác nhau"
+      _notEq:
+        arg1: "A"
+        arg2: "B"
+      _and:
+        arg1: "A"
+        arg2: "B"
+      _or:
+        arg1: "A"
+        arg2: "B"
+      _lt:
+        arg1: "A"
+        arg2: "B"
+      _gt:
+        arg1: "A"
+        arg2: "B"
+      _ltEq:
+        arg1: "A"
+        arg2: "B"
+      _gtEq:
+        arg1: "A"
+        arg2: "B"
+      _if:
+        arg1: "Nếu"
       random: "Ngẫu nhiên"
       _randomPick:
         arg1: "Danh sách"
@@ -1408,9 +1507,18 @@ _pages:
         arg1: "Danh sách"
       _listLen:
         arg1: "Danh sách"
+      number: "Số"
+      _stringToNumber:
+        arg1: "Văn bản"
+      _numberToString:
+        arg1: "Số"
+      _splitStrByLine:
+        arg1: "Văn bản"
       ref: "Biến thể"
       fn: "Tính năng"
     types:
+      string: "Văn bản"
+      number: "Số"
       array: "Danh sách"
       stringArray: "Văn bản liệt kê"
 _notification:
