@@ -48,7 +48,7 @@ const props = withDefaults(defineProps<{
 
 	.mfm-x2, .mfm-x3, .mfm-x4 {
 		/* only half effective */
-		font-size: calc( ( var(--mfm-zoom-size) + 100% ) / 2 );
+		font-size: calc(var(--mfm-zoom-size) / 2 + 50%);
 
 		.mfm-x2, .mfm-x3, .mfm-x4 {
 			/* disabled */
