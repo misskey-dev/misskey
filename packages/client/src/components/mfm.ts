@@ -178,8 +178,12 @@ export default defineComponent({
 							return h(MkSparkle, {}, genEl(token.children));
 						}
 						case 'rotate': {
+							const rotateDir =
+								token.props.args.x ? 'X' :
+								token.props.args.y ? 'Y' :
+								'';
 							const degrees = parseInt(token.props.args.deg) || '90';
-							style = `transform: rotate(${degrees}deg); transform-origin: center center;`;
+							style = `transform: rotate${rotateDir}(${degrees}deg); transform-origin: center center;`;
 							break;
 						}
 					}
