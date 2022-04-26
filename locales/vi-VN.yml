@@ -1396,11 +1396,26 @@ _pages:
     _counter:
       name: "Tên biến thể"
       text: "Tựa đề"
+      inc: "Bước"
     _button:
       text: "Tựa đề"
+      colored: "Với màu"
+      action: "Thao tác khi nhấn nút"
       _action:
+        dialog: "Hiện hộp thoại"
         _dialog:
           content: "Nội dung"
+        resetRandom: "Đặt lại seed ngẫu nhiên"
+        pushEvent: "Gửi một sự kiện"
+        _pushEvent:
+          event: "Tên sự kiện"
+          message: "Tin nhắn hiển thị khi kích hoạt"
+          variable: "Biển thể để gửi"
+          no-variable: "Không"
+        callAiScript: "Gọi AiScript"
+        _callAiScript:
+          functionName: "Tên tính năng"
+    radioButton: "Lựa chọn"
     _radioButton:
       name: "Tên biến thể"
       title: "Tựa đề"
@@ -1474,48 +1489,104 @@ _pages:
       _notEq:
         arg1: "A"
         arg2: "B"
+      and: "A VÀ B"
       _and:
         arg1: "A"
         arg2: "B"
+      or: "A HOẶC B"
       _or:
         arg1: "A"
         arg2: "B"
+      lt: "< A nhỏ hơn B"
       _lt:
         arg1: "A"
         arg2: "B"
+      gt: "> A lớn hơn B"
       _gt:
         arg1: "A"
         arg2: "B"
+      ltEq: "<= A nhỏ hơn hoặc bằng B"
       _ltEq:
         arg1: "A"
         arg2: "B"
+      gtEq: ">= A lớn hơn hoặc bằng B"
       _gtEq:
         arg1: "A"
         arg2: "B"
+      if: "Nhánh"
       _if:
         arg1: "Nếu"
+        arg2: "Sau đó"
+        arg3: "Khác"
+      not: "KHÔNG"
+      _not:
+        arg1: "KHÔNG"
       random: "Ngẫu nhiên"
+      _random:
+        arg1: "Xác suất"
+      rannum: "Số ngẫu nhiên"
+      _rannum:
+        arg1: "Giá trị tối thiểu"
+        arg2: "Giá trị tối đa"
+      randomPick: "Chọn ngẫu nhiên từ danh sách"
       _randomPick:
         arg1: "Danh sách"
+      dailyRandom: "Ngẫu nhiên (Đổi mỗi người một lần mỗi ngày)"
+      _dailyRandom:
+        arg1: "Xác suất"
+      dailyRannum: "Số ngẫu nhiên (Đổi mỗi người một lần mỗi ngày)"
+      _dailyRannum:
+        arg1: "Giá trị tối thiểu"
+        arg2: "Giá trị tối đa"
+      dailyRandomPick: "Chọn ngẫu nhiên từ một danh sách (Đổi mỗi người một lần mỗi ngày)"
       _dailyRandomPick:
         arg1: "Danh sách"
+      seedRandom: "Ngẫu nhiên (với seed)"
+      _seedRandom:
+        arg1: "Seed"
+        arg2: "Xác suất"
+      seedRannum: "Số ngẫu nhiên (với seed)"
+      _seedRannum:
+        arg1: "Seed"
+        arg2: "Giá trị tối thiểu"
+        arg3: "Giá trị tối đa"
+      seedRandomPick: "Chọn ngẫu nhiên từ danh sách (với seed)"
       _seedRandomPick:
+        arg1: "Seed"
         arg2: "Danh sách"
+      DRPWPM: "Chọn ngẫu nhiên từ danh sách nặng (Đổi mỗi người một lần mỗi ngày)"
       _DRPWPM:
         arg1: "Văn bản liệt kê"
+      pick: "Chọn từ danh sách"
       _pick:
         arg1: "Danh sách"
+        arg2: "Vị trí"
+      listLen: "Lấy độ dài danh sách"
       _listLen:
         arg1: "Danh sách"
       number: "Số"
+      stringToNumber: "Chữ thành số"
       _stringToNumber:
         arg1: "Văn bản"
+      numberToString: "Số thành chữ"
       _numberToString:
         arg1: "Số"
+      splitStrByLine: "Phân cách văn bản bằng cách xuống dòng"
       _splitStrByLine:
         arg1: "Văn bản"
       ref: "Biến thể"
+      aiScriptVar: "Biển thể AiScript"
       fn: "Tính năng"
+      _fn:
+        slots: "Chỗ"
+        slots-info: "Phân cách chỗ bằng cách xuống dòng"
+        arg1: "Đầu ra"
+      for: "để-Lặp lại"
+      _for:
+        arg1: "Số lần lặp lại"
+        arg2: "Hành động"
+    typeError: "Chỗ {slot} chấp nhận các giá trị thuộc loại \"{expect}\", nhưng giá trị được cung cấp thuộc loại \"{actual}\"!"
+    thereIsEmptySlot: "Chỗ {slot} đang trống!"
     types:
       string: "Văn bản"
       number: "Số"
