@@ -1254,23 +1254,52 @@ _postForm:
     a: "Bạn đang định làm gì?"
     b: "Hôm nay bạn có gì vui?"
     c: "Bạn đang nghĩ gì?"
+    d: "Bạn muốn nói gì?"
+    e: "Bắt đầu viết..."
+    f: "Đang chờ bạn viết..."
 _profile:
   name: "Tên"
   username: "Tên người dùng"
+  description: "Tiểu sử"
+  youCanIncludeHashtags: "Bạn có thể dùng hashtag trong tiểu sử."
+  metadata: "Thông tin bổ sung"
+  metadataEdit: "Sửa thông tin bổ sung"
+  metadataDescription: "Sử dụng phần này, bạn có thể hiển thị các mục thông tin bổ sung trong hồ sơ của mình."
+  metadataLabel: "Nhãn"
+  metadataContent: "Nội dung"
+  changeAvatar: "Đổi ảnh đại diện"
+  changeBanner: "Đổi ảnh bìa"
 _exportOrImport:
   allNotes: "Toàn bộ tút"
   followingList: "Đang theo dõi"
   muteList: "Ẩn"
   blockingList: "Chặn"
   userLists: "Danh sách"
+  excludeMutingUsers: "Loại trừ những người dùng bị ẩn"
+  excludeInactiveUsers: "Loại trừ những người dùng không hoạt động"
 _charts:
   federation: "Liên hợp"
+  apRequest: "Yêu cầu"
+  usersIncDec: "Sự khác biệt về số lượng người dùng"
+  usersTotal: "Tổng số người dùng"
+  activeUsers: "Số người đang hoạt động"
+  notesIncDec: "Sự khác biệt về số lượng tút"
+  localNotesIncDec: "Sự khác biệt về số lượng tút máy chủ này"
+_instanceCharts:
+  users: "Sự khác biệt về số lượng người dùng"
+  notes: "Sự khác biệt về số lượng tút"
 _timelines:
   home: "Trang chính"
 _pages:
   viewPage: "Xem trang của tôi"
   blocks:
     image: "Hình ảnh"
+    _post:
+      text: "Nội dung"
+    _button:
+      _action:
+        _dialog:
+          content: "Nội dung"
   script:
     categories:
       list: "Danh sách"
