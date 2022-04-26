@@ -230,7 +230,7 @@ if (lastVersion !== version) {
 		if (lastVersion != null && compareVersions(version, lastVersion) === 1) {
 			// ログインしてる場合だけ
 			if ($i) {
-				popup(import('@/components/updated.vue'), {}, {}, 'closed');
+				popup(defineAsyncComponent(() => import('@/components/updated.vue')), {}, {}, 'closed');
 			}
 		}
 	} catch (e) {

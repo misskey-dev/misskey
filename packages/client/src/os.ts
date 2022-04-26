@@ -111,10 +111,6 @@ export function promiseDialog<T extends Promise<any>>(
 	return promise;
 }
 
-function isModule(x: any): x is typeof import('*.vue') {
-	return x.default != null;
-}
-
 let popupIdCount = 0;
 export const popups = ref([]) as Ref<{
 	id: any;
@@ -132,10 +128,7 @@ export function claimZIndex(priority: 'low' | 'middle' | 'high' = 'low'): number
 	return zIndexes[priority];
 }
 
-export async function popup(component: Component | typeof import('*.vue') | Promise<Component | typeof import('*.vue')>, props: Record<string, any>, events = {}, disposeEvent?: string) {
-	if (component.then) component = await component;
-
-	if (isModule(component)) component = component.default;
+export async function popup(component: Component, props: Record<string, any>, events = {}, disposeEvent?: string) {
 	markRaw(component);
 
 	const id = ++popupIdCount;
@@ -164,7 +157,7 @@ export async function popup(component: Component | typeof import('*.vue') | Prom
 
 export function pageWindow(path: string) {
 	const { component, props } = resolve(path);
-	popup(import('@/components/page-window.vue'), {
+	popup(defineAsyncComponent(() => import('@/components/page-window.vue')), {
 		initialPath: path,
 		initialComponent: markRaw(component),
 		initialProps: props,
