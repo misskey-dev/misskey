@@ -5,14 +5,13 @@
 </template>
 
 <script lang="ts" setup>
-import { inject } from 'vue';
 import * as os from '@/os';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { router } from '@/router';
 import { url } from '@/config';
 import { popout as popout_ } from '@/scripts/popout';
 import { i18n } from '@/i18n';
-import { defaultStore } from '@/store';
+import { MisskeyNavigator } from '@/scripts/navigate';
 
 const props = withDefaults(defineProps<{
 	to: string;
@@ -23,9 +22,7 @@ const props = withDefaults(defineProps<{
 	behavior: null,
 });
 
-type Navigate = (path: string, record?: boolean) => void;
-const navHook = inject<null | Navigate>('navHook', null);
-const sideViewHook = inject<null | Navigate>('sideViewHook', null);
+const mkNav = new MisskeyNavigator();
 
 const active = $computed(() => {
 	if (props.activeClass == null) return false;
@@ -48,11 +45,11 @@ function onContextmenu(ev) {
 		action: () => {
 			os.pageWindow(props.to);
 		}
-	}, sideViewHook ? {
+	}, mkNav.sideViewHook ? {
 		icon: 'fas fa-columns',
 		text: i18n.ts.openInSideView,
 		action: () => {
-			sideViewHook(props.to);
+			if (mkNav.sideViewHook) mkNav.sideViewHook(props.to);
 		}
 	} : undefined, {
 		icon: 'fas fa-expand-alt',
@@ -101,18 +98,6 @@ function nav() {
 		}
 	}
 
-	if (navHook) {
-		navHook(props.to);
-	} else {
-		if (defaultStore.state.defaultSideView && sideViewHook && props.to !== '/') {
-			return sideViewHook(props.to);
-		}
-
-		if (router.currentRoute.value.path === props.to) {
-			window.scroll({ top: 0, behavior: 'smooth' });
-		} else {
-			router.push(props.to);
-		}
-	}
+	mkNav.push(props.to);
 }
 </script>
