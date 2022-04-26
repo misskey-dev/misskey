@@ -1080,8 +1080,12 @@ _theme:
     fgHighlighted: "Chữ nổi bật"
 _sfx:
   note: "Tút"
+  noteMy: "Tút của tôi"
   notification: "Thông báo"
   chat: "Trò chuyện"
+  chatBg: "Chat (Nền)"
+  antenna: "Trạm phát sóng"
+  channel: "Kênh"
 _ago:
   unknown: "Không rõ"
   future: "Tương lai"
@@ -1093,6 +1097,21 @@ _ago:
   weeksAgo: "{n} tuần trước"
   monthsAgo: "{n} tháng trước"
   yearsAgo: "{n} năm trước"
+_time:
+  second: "s"
+  minute: "phút"
+  hour: "giờ"
+  day: "ngày"
+_tutorial:
+  title: "Cách dùng Misskey"
+  step1_1: "Xin chào!"
+  step1_2: "Trang này gọi là \"bảng tin\". Nó hiện \"tút\" từ những người mà bạn \"theo dõi\" theo thứ tự thời gian."
+  step1_3: "Bảng tin của bạn đang trống, bởi vì bạn chưa đăng tút nào hoặc chưa theo dõi ai."
+  step2_1: "Hãy hoàn thành việc thiết lập hồ sơ của bạn trước khi viết tút hoặc theo dõi bất kỳ ai."
+  step2_2: "Cung cấp một số thông tin giới thiệu bạn là ai sẽ giúp người khác dễ dàng biết được họ muốn đọc tút hay theo dõi bạn."
+  step3_1: "Hoàn thành thiết lập hồ sơ của bạn?"
+  step3_2: "Sau đó, hãy thử đăng một tút tiếp theo. Bạn có thể làm như vậy bằng cách nhấn vào nút có biểu tượng bút chì trên màn hình."
+  step3_3: "Nhập nội dung vào khung soạn thảo và nhấn nút đăng ở góc trên."
 _widgets:
   notifications: "Thông báo"
   timeline: "Bảng tin"
@@ -1101,6 +1120,8 @@ _widgets:
   jobQueue: "Công việc chờ xử lý"
 _cw:
   show: "Tải thêm"
+_poll:
+  deadlineTime: "giờ"
 _visibility:
   home: "Trang chính"
   followers: "Người theo dõi"
