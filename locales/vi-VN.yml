@@ -1130,6 +1130,41 @@ _2fa:
   registerDevice: "Đăng ký một thiết bị"
   registerKey: "Đăng ký một mã bảo vệ"
   step1: "Trước tiên, hãy cài đặt một ứng dụng xác minh (chẳng hạn như {a} hoặc {b}) trên thiết bị của bạn."
+  step2: "Sau đó, quét mã QR hiển thị trên màn hình này."
+  step3: "Nhập mã token do ứng dụng của bạn cung cấp để hoàn tất thiết lập."
+  step4: "Kể từ bây giờ, những lần đăng nhập trong tương lai sẽ yêu cầu mã token đăng nhập đó."
+  securityKeyInfo: "Bên cạnh xác minh bằng vân tay hoặc mã PIN, bạn cũng có thể thiết lập xác minh thông qua khóa bảo mật phần cứng hỗ trợ FIDO2 để bảo mật hơn nữa cho tài khoản của mình."
+_permissions:
+  "read:account": "Xem thông tin tài khoản của bạn"
+  "write:account": "Sửa thông tin tài khoản của bạn"
+  "read:blocks": "Xem danh sách người bạn chặn"
+  "write:blocks": "Sửa danh sách người bạn chặn"
+  "read:drive": "Truy cập tập tin, thư mục trong Ổ đĩa"
+  "write:drive": "Sửa và xóa tập tin, thư mục trong Ổ đĩa"
+  "read:favorites": "Xem lượt thích của tôi"
+  "write:favorites": "Sửa lượt thích của tôi"
+  "read:following": "Xem những người bạn theo dõi"
+  "write:following": "Theo dõi hoặc ngưng theo dõi ai đó"
+  "read:messaging": "Xem lịch sử chat"
+  "write:messaging": "Soạn hoặc xóa tin nhắn"
+  "read:mutes": "Xem những người bạn ẩn"
+  "write:mutes": "Sửa những người bạn ẩn"
+  "write:notes": "Soạn hoặc xóa tút"
+  "read:notifications": "Xem thông báo của tôi"
+  "write:notifications": "Quản lý thông báo của tôi"
+  "read:reactions": "Xem lượt biểu cảm của tôi"
+  "write:reactions": "Sửa lượt biểu cảm của tôi"
+  "write:votes": "Bình chọn"
+  "read:pages": "Xem trang của tôi"
+  "write:pages": "Sửa hoặc xóa trang của tôi"
+  "read:page-likes": "Xem lượt thích trên trang của tôi"
+  "write:page-likes": "Sửa lượt thích của tôi trên trang"
+  "read:user-groups": "Xem nhóm của tôi"
+  "write:user-groups": "Sửa hoặc xóa nhóm của tôi"
+  "read:channels": "Xem kênh của tôi"
+  "write:channels": "Sửa kênh của tôi"
+  "read:gallery": "Xem kho ảnh của tôi"
+  "write:gallery": "Sửa kho ảnh của tôi"
 _widgets:
   notifications: "Thông báo"
   timeline: "Bảng tin"
@@ -1140,6 +1175,7 @@ _cw:
   show: "Tải thêm"
 _poll:
   deadlineTime: "giờ"
+  vote: "Bình chọn"
 _visibility:
   home: "Trang chính"
   followers: "Người theo dõi"
@@ -1156,6 +1192,7 @@ _charts:
 _timelines:
   home: "Trang chính"
 _pages:
+  viewPage: "Xem trang của tôi"
   blocks:
     image: "Hình ảnh"
   script:
