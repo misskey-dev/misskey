@@ -13,7 +13,7 @@ if (localStorage.getItem('accounts') != null) {
 }
 //#endregion
 
-import { computed, createApp, watch, markRaw, version as vueVersion } from 'vue';
+import { computed, createApp, watch, markRaw, version as vueVersion, defineAsyncComponent } from 'vue';
 import compareVersions from 'compare-versions';
 import JSON5 from 'json5';
 
@@ -168,14 +168,14 @@ fetchInstanceMetaPromise.then(() => {
 	initializeSw();
 });
 
-const app = createApp(await (
+const app = createApp(defineAsyncComponent(() =>
 	window.location.search === '?zen' ? import('@/ui/zen.vue') :
 	!$i                               ? import('@/ui/visitor.vue') :
 	ui === 'deck'                     ? import('@/ui/deck.vue') :
 	ui === 'desktop'                  ? import('@/ui/desktop.vue') :
 	ui === 'classic'                  ? import('@/ui/classic.vue') :
 	import('@/ui/universal.vue')
-).then(x => x.default));
+));
 
 if (_DEV_) {
 	app.config.performance = true;
