@@ -98,8 +98,8 @@ export interface Schema extends OfSchema {
 	readonly default?: (this['type'] extends TypeStringef ? StringDefToType<this['type']> : any) | null;
 	readonly maxLength?: number;
 	readonly minLength?: number;
-	readonly minimum?: number;
 	readonly maximum?: number;
+	readonly minimum?: number;
 	readonly pattern?: string;
 }
 
@@ -144,9 +144,9 @@ export type SchemaTypeDef<p extends Schema> =
 	p['type'] extends 'number' ? number :
 	p['type'] extends 'string' ? (
 		p['enum'] extends readonly string[] ?
-			p['enum'][number] :
-			p['format'] extends 'date-time' ? string : // Dateにする？？
-			string
+		p['enum'][number] :
+		p['format'] extends 'date-time' ? string : // Dateにする？？
+		string
 	) :
 	p['type'] extends 'boolean' ? boolean :
 	p['type'] extends 'object' ? (
