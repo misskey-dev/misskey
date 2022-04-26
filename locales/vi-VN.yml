@@ -1285,6 +1285,8 @@ _charts:
   activeUsers: "Số người đang hoạt động"
   notesIncDec: "Sự khác biệt về số lượng tút"
   localNotesIncDec: "Sự khác biệt về số lượng tút máy chủ này"
+  remoteNotesIncDec: "Sự khác biệt về số lượng tút từ máy chủ khác"
+  notesTotal: "Tổng số sút"
 _instanceCharts:
   users: "Sự khác biệt về số lượng người dùng"
   notes: "Sự khác biệt về số lượng tút"
