@@ -37,7 +37,7 @@ import { widgets as widgetDefs } from '@/widgets';
 
 export default defineComponent({
 	components: {
-		XDraggable: defineAsyncComponent(() => import('vuedraggable').then(x => x.default)),
+		XDraggable: defineAsyncComponent(() => import('vuedraggable')),
 		MkSelect,
 		MkButton,
 	},
