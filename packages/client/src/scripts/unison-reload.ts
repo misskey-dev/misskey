@@ -1,4 +1,6 @@
-export const reloadChannel = new BroadcastChannel('reload'); // string | null
+import { BroadcastChannel } from 'broadcast-channel';
+
+export const reloadChannel = new BroadcastChannel<string | null>('reload');
 
 // BroadcastChannelを用いて、クライアントが一斉にreloadするようにします。
 export function unisonReload(path?: string) {

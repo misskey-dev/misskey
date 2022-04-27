@@ -4,6 +4,7 @@ import { api } from './os';
 import { get, set } from './scripts/idb-proxy';
 import { defaultStore } from './store';
 import { stream } from './stream';
+import { BroadcastChannel } from 'broadcast-channel';
 
 type StateDef = Record<string, {
 	where: 'account' | 'device' | 'deviceAccount';
