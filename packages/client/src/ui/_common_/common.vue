@@ -38,7 +38,7 @@ export default defineComponent({
 					id: notification.id
 				});
 
-				popup(import('@/components/notification-toast.vue'), {
+				popup(defineAsyncComponent(() => import('@/components/notification-toast.vue')), {
 					notification
 				}, {}, 'closed');
 			}
