@@ -68,5 +68,8 @@ module.exports = {
 		}],
 		'import/no-unresolved': ['off'],
 		'import/no-default-export': ['warn'],
+		'import/order': ['warn', {
+			'groups': ['builtin', 'external', 'internal', 'parent', 'sibling', 'index', 'object', 'type'],
+		}]
 	},
 };

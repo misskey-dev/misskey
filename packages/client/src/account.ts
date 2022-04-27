@@ -72,7 +72,7 @@ export async function addAccount(id: Account['id'], token: Account['token']) {
 	}
 }
 
-function fetchAccount(token): Promise<Account> {
+function fetchAccount(token: string): Promise<Account> {
 	return new Promise((done, fail) => {
 		// Fetch user
 		fetch(`${apiUrl}/i`, {

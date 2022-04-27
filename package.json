@@ -1,6 +1,6 @@
 {
 	"name": "misskey",
-	"version": "12.108.1",
+	"version": "12.110.1",
 	"codename": "indigo",
 	"repository": {
 		"type": "git",
@@ -30,8 +30,6 @@
 		"cleanall": "npm run clean-all"
 	},
 	"dependencies": {
-		"@types/gulp": "4.0.9",
-		"@types/gulp-rename": "2.0.1",
 		"execa": "5.1.1",
 		"gulp": "4.0.2",
 		"gulp-cssnano": "2.1.3",
@@ -41,9 +39,11 @@
 		"js-yaml": "4.1.0"
 	},
 	"devDependencies": {
-		"@typescript-eslint/parser": "5.16.0",
+		"@types/gulp": "4.0.9",
+		"@types/gulp-rename": "2.0.1",
+		"@typescript-eslint/parser": "5.18.0",
 		"cross-env": "7.0.3",
-		"cypress": "9.5.2",
+		"cypress": "9.5.3",
 		"start-server-and-test": "1.14.0",
 		"typescript": "4.6.3"
 	}

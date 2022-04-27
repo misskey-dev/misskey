@@ -9,7 +9,7 @@ import { publishMainStream } from '@/services/stream.js';
 export default function(ctx: Koa.Context, user: ILocalUser, redirect = false) {
 	if (redirect) {
 		//#region Cookie
-		ctx.cookies.set('igi', user.token, {
+		ctx.cookies.set('igi', user.token!, {
 			path: '/',
 			// SEE: https://github.com/koajs/koa/issues/974
 			// When using a SSL proxy it should be configured to add the "X-Forwarded-Proto: https" header

@@ -372,9 +372,9 @@ function onDrop(e) {
 
 	> div {
 		height: calc(100% - var(--deckColumnHeaderHeight));
-		overflow: auto;
-		overflow-x: hidden;
-		overscroll-behavior: contain;
+		overflow-y: auto;
+		overflow-x: hidden; // Safari does not supports clip
+		overflow-x: clip;
 		-webkit-overflow-scrolling: touch;
 		box-sizing: border-box;
 	}
