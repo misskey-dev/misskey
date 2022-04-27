@@ -169,12 +169,12 @@ fetchInstanceMetaPromise.then(() => {
 });
 
 const app = createApp(
-	window.location.search === '?zen' ? defineAsyncComponent(() =>import('@/ui/zen.vue')) :
-	!$i                               ? defineAsyncComponent(() =>import('@/ui/visitor.vue')) :
-	ui === 'deck'                     ? defineAsyncComponent(() =>import('@/ui/deck.vue')) :
-	ui === 'desktop'                  ? defineAsyncComponent(() =>import('@/ui/desktop.vue')) :
-	ui === 'classic'                  ? defineAsyncComponent(() =>import('@/ui/classic.vue')) :
-	defineAsyncComponent(() =>import('@/ui/universal.vue'))
+	window.location.search === '?zen' ? defineAsyncComponent(() => import('@/ui/zen.vue')) :
+	!$i                               ? defineAsyncComponent(() => import('@/ui/visitor.vue')) :
+	ui === 'deck'                     ? defineAsyncComponent(() => import('@/ui/deck.vue')) :
+	ui === 'desktop'                  ? defineAsyncComponent(() => import('@/ui/desktop.vue')) :
+	ui === 'classic'                  ? defineAsyncComponent(() => import('@/ui/classic.vue')) :
+	defineAsyncComponent(() => import('@/ui/universal.vue'))
 );
 
 if (_DEV_) {
