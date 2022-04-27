@@ -92,7 +92,7 @@ export default defineComponent({
 					switch (token.props.name) {
 						case 'tada': {
 							const speed = validTime(token.props.args.speed) || '1s';
-							style = `font-size: 150%;` + (this.$store.state.animatedMfm ? 'animation: tada ${speed} linear infinite both;' : '');
+							style = `font-size: 150%;` + (this.$store.state.animatedMfm ? `animation: tada ${speed} linear infinite both;` : '');
 							break;
 						}
 						case 'jelly': {
@@ -125,12 +125,12 @@ export default defineComponent({
 						}
 						case 'jump': {
 							const speed = validTime(token.props.args.speed) || '0.75s';
-							style = this.$store.state.animatedMfm ? 'animation: mfm-jump ${speed} linear infinite;' : '';
+							style = this.$store.state.animatedMfm ? `animation: mfm-jump ${speed} linear infinite;` : '';
 							break;
 						}
 						case 'bounce': {
 							const speed = validTime(token.props.args.speed) || '0.75s';
-							style = this.$store.state.animatedMfm ? 'animation: mfm-bounce ${speed} linear infinite; transform-origin: center bottom;' : '';
+							style = this.$store.state.animatedMfm ? `animation: mfm-bounce ${speed} linear infinite; transform-origin: center bottom;` : '';
 							break;
 						}
 						case 'flip': {
@@ -172,7 +172,7 @@ export default defineComponent({
 						}
 						case 'rainbow': {
 							const speed = validTime(token.props.args.speed) || '1s';
-							style = this.$store.state.animatedMfm ? 'animation: mfm-rainbow ${speed} linear infinite;' : '';
+							style = this.$store.state.animatedMfm ? `animation: mfm-rainbow ${speed} linear infinite;` : '';
 							break;
 						}
 						case 'sparkle': {
