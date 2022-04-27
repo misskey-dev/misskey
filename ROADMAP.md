@@ -26,3 +26,11 @@ Once Phase 1 is complete and an environment conducive to the development of a st
 Once the development of the feature has settled down, this may be an opportunity to make larger modifications.
 
 - Rewriting in Rust?
+
+## (4) Change the world
+It is time to promote Misskey and change the world.
+
+- Become more major than services such as Twitter and become critical infrastructure for the world
+- MiOS will be developed and integrated into various systems - What is MiOS?
+- Letting Ai-chan interfere with the real world
+- Make Misskey a member of GAFA; Misskey's office must be a reinforced concrete brutalist building with a courtyard.

@@ -1,5 +1,6 @@
-import define from '../../../define.js';
 import { Announcements, AnnouncementReads } from '@/models/index.js';
+import { Announcement } from '@/models/entities/announcement.js';
+import define from '../../../define.js';
 import { makePaginationQuery } from '../../../common/make-pagination-query.js';
 
 export const meta = {
@@ -68,11 +69,21 @@ export default define(meta, paramDef, async (ps) => {
 
 	const announcements = await query.take(ps.limit).getMany();
 
+	const reads = new Map<Announcement, number>();
+
 	for (const announcement of announcements) {
-		(announcement as any).reads = await AnnouncementReads.countBy({
+		reads.set(announcement, await AnnouncementReads.countBy({
 			announcementId: announcement.id,
-		});
+		}));
 	}
 
-	return announcements;
+	return announcements.map(announcement => ({
+		id: announcement.id,
+		createdAt: announcement.createdAt.toISOString(),
+		updatedAt: announcement.updatedAt?.toISOString() ?? null,
+		title: announcement.title,
+		text: announcement.text,
+		imageUrl: announcement.imageUrl,
+		reads: reads.get(announcement)!,
+	}));
 });

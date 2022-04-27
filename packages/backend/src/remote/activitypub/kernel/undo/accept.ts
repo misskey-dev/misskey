@@ -1,6 +1,6 @@
 import unfollow from '@/services/following/delete.js';
 import cancelRequest from '@/services/following/requests/cancel.js';
-import {IAccept} from '../../type.js';
+import { IAccept } from '../../type.js';
 import { CacheableRemoteUser } from '@/models/entities/user.js';
 import { Followings } from '@/models/index.js';
 import DbResolver from '../../db-resolver.js';
