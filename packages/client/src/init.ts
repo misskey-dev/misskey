@@ -168,14 +168,14 @@ fetchInstanceMetaPromise.then(() => {
 	initializeSw();
 });
 
-const app = createApp(defineAsyncComponent(() =>
-	window.location.search === '?zen' ? import('@/ui/zen.vue') :
-	!$i                               ? import('@/ui/visitor.vue') :
-	ui === 'deck'                     ? import('@/ui/deck.vue') :
-	ui === 'desktop'                  ? import('@/ui/desktop.vue') :
-	ui === 'classic'                  ? import('@/ui/classic.vue') :
-	import('@/ui/universal.vue')
-));
+const app = createApp(
+	window.location.search === '?zen' ? defineAsyncComponent(() =>import('@/ui/zen.vue')) :
+	!$i                               ? defineAsyncComponent(() =>import('@/ui/visitor.vue')) :
+	ui === 'deck'                     ? defineAsyncComponent(() =>import('@/ui/deck.vue')) :
+	ui === 'desktop'                  ? defineAsyncComponent(() =>import('@/ui/desktop.vue')) :
+	ui === 'classic'                  ? defineAsyncComponent(() =>import('@/ui/classic.vue')) :
+	defineAsyncComponent(() =>import('@/ui/universal.vue'))
+);
 
 if (_DEV_) {
 	app.config.performance = true;
