@@ -19,6 +19,8 @@
 		"experimentalDecorators": true,
 		"resolveJsonModule": true,
 		"allowSyntheticDefaultImports": true,
+		"isolatedModules": true,
+		"useDefineForClassFields": true,
 		"baseUrl": ".",
 		"paths": {
 			"@/*": ["./src/*"],
@@ -26,6 +28,9 @@
 		"typeRoots": [
 			"node_modules/@types",
 			"@types",
+		],
+		"types": [
+			"vite/client",
 		],
 		"lib": [
 			"esnext",
