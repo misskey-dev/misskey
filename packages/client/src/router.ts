@@ -6,6 +6,7 @@ import MkTimeline from '@/pages/timeline.vue';
 import { $i, iAmModerator } from './account';
 import { ui } from '@/config';
 
+// pathに/が入るとrollupが解決してくれないので、() => import('*.vue')を指定すること
 const page = (path: string | AsyncComponentLoader<any>, uiName?: string) => defineAsyncComponent({
 	loader: typeof path === 'string' ? uiName ? () => import(`./ui/${ui}/pages/${path}.vue`) : () => import(`./pages/${path}.vue`) : path,
 	loadingComponent: MkLoading,
