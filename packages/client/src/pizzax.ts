@@ -4,9 +4,6 @@ import { api } from './os';
 import { get, set } from './scripts/idb-proxy';
 import { defaultStore } from './store';
 import { stream } from './stream';
-import * as deepcopy from 'deepcopy';
-// SafariがBroadcastChannel未実装なのでライブラリを使う
-import { BroadcastChannel } from 'broadcast-channel';
 
 type StateDef = Record<string, {
 	where: 'account' | 'device' | 'deviceAccount';
@@ -155,7 +152,7 @@ export class Storage<T extends StateDef> {
 	public set<K extends keyof T>(key: K, value: T[K]['default']): Promise<void> {
 		// IndexedDBやBroadcastChannelで扱うために単純なオブジェクトにする
 		// (JSON.parse(JSON.stringify(value))の代わり)
-		const rawValue = deepcopy(value);
+		const rawValue = structuredClone(value);
 
 		if (_DEV_) console.log('set', key, rawValue, value);
 
