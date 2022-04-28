@@ -31,6 +31,7 @@ import * as os from '@/os';
 import { stream } from '@/stream';
 import { Autocomplete } from '@/scripts/autocomplete';
 import { throttle } from 'throttle-debounce';
+import { uploadFile } from '@/scripts/upload';
 
 export default defineComponent({
 	props: {
@@ -164,7 +165,7 @@ export default defineComponent({
 		},
 
 		upload(file: File, name?: string) {
-			os.upload(file, this.$store.state.uploadFolder, name).then(res => {
+			uploadFile(file, this.$store.state.uploadFolder, name).then(res => {
 				this.file = res;
 			});
 		},
