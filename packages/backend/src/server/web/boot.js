@@ -13,7 +13,6 @@
 
 // ブロックの中に入れないと、定義した変数がブラウザのグローバルスコープに登録されてしまい邪魔なので
 (async () => {
-	console.log('boot!')
 	window.onerror = (e) => {
 		renderError('SOMETHING_HAPPENED', e.toString());
 	};
