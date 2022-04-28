@@ -57,12 +57,8 @@ export default define(meta, paramDef, async (ps, user) => {
 		throw new ApiError(meta.errors.noSuchClip);
 	}
 
-	const clipQuery = ClipNotes.createQueryBuilder('joining')
-		.select('joining.noteId')
-		.where('joining.clipId = :clipId', { clipId: clip.id });
-
 	const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
-		.andWhere(`note.id IN (${ clipQuery.getQuery() })`)
+		.innerJoin(ClipNotes.metadata.targetName, 'clipNote', 'clipNote.noteId = note.id')
 		.innerJoinAndSelect('note.user', 'user')
 		.leftJoinAndSelect('user.avatar', 'avatar')
 		.leftJoinAndSelect('user.banner', 'banner')
@@ -74,7 +70,7 @@ export default define(meta, paramDef, async (ps, user) => {
 		.leftJoinAndSelect('renote.user', 'renoteUser')
 		.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
 		.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner')
-		.setParameters(clipQuery.getParameters());
+		.andWhere('clipNote.clipId = :clipId', { clipId: clip.id });
 
 	if (user) {
 		generateVisibilityQuery(query, user);

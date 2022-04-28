@@ -1,4 +1,4 @@
-FROM node:16.14.0-alpine3.15 AS base
+FROM node:18.0.0-alpine3.15 AS base
 
 ENV NODE_ENV=production
 
@@ -11,16 +11,16 @@ FROM base AS builder
 COPY . ./
 
 RUN apk add --no-cache $BUILD_DEPS && \
-    git submodule update --init && \
-    yarn install && \
-    yarn build && \
-    rm -rf .git
+	git submodule update --init && \
+	yarn install && \
+	yarn build && \
+	rm -rf .git
 
 FROM base AS runner
 
 RUN apk add --no-cache \
-    ffmpeg \
-    tini
+	ffmpeg \
+	tini
 
 ENTRYPOINT ["/sbin/tini", "--"]
 
