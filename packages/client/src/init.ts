@@ -40,6 +40,8 @@ import { reactionPicker } from '@/scripts/reaction-picker';
 import { getUrlWithoutLoginId } from '@/scripts/login-id';
 import { getAccountFromId } from '@/scripts/get-account-from-id';
 
+export default async function() {
+
 console.info(`Misskey v${version}`);
 
 if (_DEV_) {
@@ -423,4 +425,6 @@ if ($i) {
 	main.on('myTokenRegenerated', () => {
 		signout();
 	});
+}
+
 }
