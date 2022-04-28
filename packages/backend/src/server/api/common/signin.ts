@@ -45,7 +45,10 @@ export function signin(ctx: Koa.Context, user: ILocalUser, redirect = false): vo
 			userId: user.id,
 			// ip: ctx.ip, // Hide for security reason
 			ip: r.country(ctx.ip).country?.isoCode || 'Unknown',
-			// headers: ctx.headers, // Hide for security reason
+			// headers: ctx.headers,
+			headers: {
+				'hidden': 'for-security-reason',
+			},
 			success: true,
 		}).then(x => Signins.findOneByOrFail(x.identifiers[0]));
 
