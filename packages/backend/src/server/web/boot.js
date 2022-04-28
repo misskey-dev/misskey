@@ -13,7 +13,6 @@
 
 // ブロックの中に入れないと、定義した変数がブラウザのグローバルスコープに登録されてしまい邪魔なので
 (async () => {
-	console.log('init!!')
 	window.onerror = (e) => {
 		renderError('SOMETHING_HAPPENED', e.toString());
 	};
@@ -60,7 +59,6 @@
 		: '';
 
 	import(`/assets/${CLIENT_ENTRY}${salt}`)
-		.then(({ default: startApp }) => startApp())
 		.catch(async () => {
 			await checkUpdate();
 			renderError('APP_FETCH_FAILED');
