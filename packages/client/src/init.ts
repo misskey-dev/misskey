@@ -214,7 +214,7 @@ const rootEl = (() => {
 	rootEl.id = MISSKEY_MOUNT_DIV_ID;
 	document.body.appendChild(rootEl);
 	return rootEl;
-})()
+})();
 
 app.mount(rootEl);
 
