@@ -1,4 +1,4 @@
-import { onUnmounted, Ref, ref, watch } from 'vue';
+import { onUnmounted, Ref, ref, toRaw, watch } from 'vue';
 import { $i } from './account';
 import { api } from './os';
 import { get, set } from './scripts/idb-proxy';
@@ -153,7 +153,7 @@ export class Storage<T extends StateDef> {
 	public set<K extends keyof T>(key: K, value: T[K]['default']): Promise<void> {
 		// IndexedDBやBroadcastChannelで扱うために単純なオブジェクトにする
 		// (JSON.parse(JSON.stringify(value))の代わり)
-		const rawValue = structuredClone(value);
+		const rawValue = structuredClone(toRaw(value));
 
 		if (_DEV_) console.log('set', key, rawValue, value);
 

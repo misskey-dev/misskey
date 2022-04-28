@@ -187,7 +187,7 @@ function loadFile() {
 async function applyRegistry(id: string) {
 	if (!registries) return;
 
-	const registry = structuredClone(registries[id]);
+	const registry = registries[id];
 
 	const { canceled: cancel1 } = await os.confirm({
 		type: 'warning',
