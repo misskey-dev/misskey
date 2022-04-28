@@ -14,11 +14,13 @@
 		"lodash": "^4.17.21"
 	},
 	"dependencies": {
+		"@bull-board/koa": "3.10.3",
 		"@discordapp/twemoji": "13.1.1",
 		"@elastic/elasticsearch": "7.11.0",
 		"@koa/cors": "3.1.0",
 		"@koa/multer": "3.0.0",
 		"@koa/router": "9.0.1",
+		"@maxmind/geoip2-node": "3.4.0",
 		"@sinonjs/fake-timers": "9.1.1",
 		"@syuilo/aiscript": "0.11.1",
 		"@types/bcryptjs": "2.4.2",
@@ -66,7 +68,6 @@
 		"@types/ws": "8.5.3",
 		"@typescript-eslint/eslint-plugin": "5.18.0",
 		"@typescript-eslint/parser": "5.18.0",
-		"@bull-board/koa": "3.10.3",
 		"abort-controller": "3.0.0",
 		"ajv": "8.11.0",
 		"archiver": "5.3.0",
