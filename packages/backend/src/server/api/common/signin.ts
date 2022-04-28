@@ -9,7 +9,7 @@ import { Reader } from '@maxmind/geoip2-node';
 import { readFileSync } from 'fs';
 
 // Open maxmind database
-const dbBuffer = readFileSync('../../../../assets/geoip.mmdb');
+const dbBuffer = readFileSync('../../../../../assets/geoip.mmdb');
 const r = Reader.openBuffer(dbBuffer);
 
 export function signin(ctx: Koa.Context, user: ILocalUser, redirect = false): void {
