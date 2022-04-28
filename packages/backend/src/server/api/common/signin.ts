@@ -8,8 +8,12 @@ import { publishMainStream } from '@/services/stream.js';
 import { Reader } from '@maxmind/geoip2-node';
 import { readFileSync } from 'fs';
 
+import path from 'path';
+import { fileURLToPath } from 'url';
+
 // Open maxmind database
-const dbBuffer = readFileSync('../../../../../assets/geoip.mmdb');
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const dbBuffer = readFileSync(path.join(__dirname, '../../../../assets/geoip.mmdb'));
 const r = Reader.openBuffer(dbBuffer);
 
 export function signin(ctx: Koa.Context, user: ILocalUser, redirect = false): void {
