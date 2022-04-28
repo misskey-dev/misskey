@@ -286,6 +286,16 @@ export class ColdDeviceStorage {
 		}
 	}
 
+	public static getAll(): Partial<typeof this.default> {
+		return (Object.keys(this.default) as (keyof typeof this.default)[]).reduce((acc, key) => {
+			const value = localStorage.getItem(PREFIX + key);
+			if (value != null) {
+				acc[key] = JSON.parse(value);
+			}
+			return acc;
+		}, {} as any);
+	}
+
 	public static set<T extends keyof typeof ColdDeviceStorage.default>(key: T, value: typeof ColdDeviceStorage.default[T]): void {
 		localStorage.setItem(PREFIX + key, JSON.stringify(value));
 

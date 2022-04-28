@@ -97,6 +97,7 @@ import * as os from '@/os';
 import { stream } from '@/stream';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
+import { uploadFile, uploads } from '@/scripts/upload';
 
 const props = withDefaults(defineProps<{
 	initialFolder?: Misskey.entities.DriveFolder;
@@ -127,8 +128,9 @@ const moreFolders = ref(false);
 const hierarchyFolders = ref<Misskey.entities.DriveFolder[]>([]);
 const selectedFiles = ref<Misskey.entities.DriveFile[]>([]);
 const selectedFolders = ref<Misskey.entities.DriveFolder[]>([]);
-const uploadings = os.uploads;
+const uploadings = uploads;
 const connection = stream.useChannel('drive');
+const keepOriginal = ref<boolean>(defaultStore.state.keepOriginalUploading); // 外部渡しが多いので$refは使わないほうがよい
 
 // ドロップされようとしているか
 const draghover = ref(false);
@@ -355,7 +357,7 @@ function onChangeFileInput() {
 }
 
 function upload(file: File, folderToUpload?: Misskey.entities.DriveFolder | null) {
-	os.upload(file, (folderToUpload && typeof folderToUpload == 'object') ? folderToUpload.id : null).then(res => {
+	uploadFile(file, (folderToUpload && typeof folderToUpload == 'object') ? folderToUpload.id : null, undefined, keepOriginal.value).then(res => {
 		addFile(res, true);
 	});
 }
@@ -562,6 +564,10 @@ function fetchMoreFiles() {
 
 function getMenu() {
 	return [{
+		type: 'switch',
+		text: i18n.ts.keepOriginalUploading,
+		ref: keepOriginal,
+	}, null, {
 		text: i18n.ts.addFile,
 		type: 'label'
 	}, {
