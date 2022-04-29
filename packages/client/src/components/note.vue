@@ -460,6 +460,8 @@ function readPromo() {
 						> .showLess {
 							width: 100%;
 							margin-top: 1em;
+							position: sticky;
+							bottom: 1em;
 
 							> span {
 								display: inline-block;
@@ -467,7 +469,8 @@ function readPromo() {
 								padding: 6px 10px;
 								font-size: 0.8em;
 								border-radius: 999px;
-								box-shadow: 0 2px 6px rgb(0 0 0 / 20%);
+								box-shadow: 0 2px 6px rgb(0 0 0 / 40%);
+								border: 1px solid var(--renote);
 							}
 						}
 					}
