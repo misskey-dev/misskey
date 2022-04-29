@@ -179,7 +179,7 @@ export class Note {
 	@Index()
 	@Column({
 		...id(),
-		nullable: true, default: null,
+		nullable: true,
 		comment: 'The ID of source channel.',
 	})
 	public channelId: Channel['id'] | null;
