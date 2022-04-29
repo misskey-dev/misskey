@@ -78,7 +78,7 @@ export class Meta {
 	public blockedHosts: string[];
 
 	@Column('varchar', {
-		length: 512, array: true, default: '{"/featured", "/channels", "/explore", "/pages", "/about-misskey"}',
+		length: 512, array: true, default: '{/featured,/channels,/explore,/pages,/about-misskey}',
 	})
 	public pinnedPages: string[];
 

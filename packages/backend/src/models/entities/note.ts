@@ -53,8 +53,8 @@ export class Note {
 	})
 	public threadId: string | null;
 
-	@Column('varchar', {
-		length: 8192, nullable: true,
+	@Column('text', {
+		nullable: true,
 	})
 	public text: string | null;
 
