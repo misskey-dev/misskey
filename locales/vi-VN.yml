@@ -1629,6 +1629,9 @@ _notification:
     followRequestAccepted: "Yêu cầu theo dõi được chấp nhận"
     groupInvited: "Mời vào nhóm"
     app: "Từ app liên kết"
+  _actions:
+    reply: "Trả lời"
+    renote: "Đăng lại"
 _deck:
   alwaysShowMainColumn: "Luôn hiện cột chính"
   columnAlign: "Căn cột"
