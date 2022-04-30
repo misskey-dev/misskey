@@ -1615,6 +1615,7 @@ _notification:
   yourFollowRequestAccepted: "Yêu cầu theo dõi của bạn đã được chấp nhận"
   youWereInvitedToGroup: "Bạn đã được mời tham gia nhóm"
   pollEnded: "Cuộc bình chọn đã kết thúc"
+  emptyPushNotificationMessage: "Đã cập nhật thông báo đẩy"
   _types:
     all: "Toàn bộ"
     follow: "Đang theo dõi"
@@ -1630,6 +1631,7 @@ _notification:
     groupInvited: "Mời vào nhóm"
     app: "Từ app liên kết"
   _actions:
+    followBack: "đã theo dõi lại bạn"
     reply: "Trả lời"
     renote: "Đăng lại"
 _deck:
