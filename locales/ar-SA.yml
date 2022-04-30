@@ -1504,6 +1504,7 @@ _notification:
     groupInvited: "دعوات الفريق"
     app: "إشعارات التطبيقات المرتبطة"
   _actions:
+    followBack: "تابعك بالمثل"
     reply: "رد"
     renote: "أعد النشر"
 _deck:
