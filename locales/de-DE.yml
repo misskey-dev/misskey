@@ -1629,6 +1629,9 @@ _notification:
     followRequestAccepted: "Akzeptierte Follow-Anfragen"
     groupInvited: "Erhaltene Gruppeneinladungen"
     app: "Benachrichtigungen von Apps"
+  _actions:
+    reply: "Antworten"
+    renote: "Renote"
 _deck:
   alwaysShowMainColumn: "Hauptspalte immer zeigen"
   columnAlign: "Spaltenausrichtung"
