@@ -544,6 +544,9 @@ _notification:
     renote: "Přeposlat"
     quote: "Citovat"
     reaction: "Reakce"
+  _actions:
+    reply: "Odpovědět"
+    renote: "Přeposlat"
 _deck:
   _columns:
     notifications: "Oznámení"
