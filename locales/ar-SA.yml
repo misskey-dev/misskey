@@ -1503,6 +1503,9 @@ _notification:
     followRequestAccepted: "طلبات المتابعة المقبولة"
     groupInvited: "دعوات الفريق"
     app: "إشعارات التطبيقات المرتبطة"
+  _actions:
+    reply: "رد"
+    renote: "أعد النشر"
 _deck:
   alwaysShowMainColumn: "أظهر العمود الرئيسي دائمًا"
   columnAlign: "حاذِ الأعمدة"
