@@ -116,6 +116,8 @@ _notification:
   _types:
     follow: "Ig ṭṭafaṛ"
     mention: "Bder"
+  _actions:
+    reply: "Err"
 _deck:
   _columns:
     notifications: "Ilɣuyen"
