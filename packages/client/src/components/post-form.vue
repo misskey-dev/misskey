@@ -87,6 +87,7 @@ import MkInfo from '@/components/ui/info.vue';
 import { i18n } from '@/i18n';
 import { instance } from '@/instance';
 import { $i, getAccounts, openAccountMenu as openAccountMenu_ } from '@/account';
+import { uploadFile } from '@/scripts/upload';
 
 const modal = inject('modal');
 
@@ -372,7 +373,7 @@ function updateFileName(file, name) {
 }
 
 function upload(file: File, name?: string) {
-	os.upload(file, defaultStore.state.uploadFolder, name).then(res => {
+	uploadFile(file, defaultStore.state.uploadFolder, name).then(res => {
 		files.push(res);
 	});
 }

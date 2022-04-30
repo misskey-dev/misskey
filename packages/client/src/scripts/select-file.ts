@@ -4,6 +4,7 @@ import { stream } from '@/stream';
 import { i18n } from '@/i18n';
 import { defaultStore } from '@/store';
 import { DriveFile } from 'misskey-js/built/entities';
+import { uploadFile } from '@/scripts/upload';
 
 function select(src: any, label: string | null, multiple: boolean): Promise<DriveFile | DriveFile[]> {
 	return new Promise((res, rej) => {
@@ -14,7 +15,7 @@ function select(src: any, label: string | null, multiple: boolean): Promise<Driv
 			input.type = 'file';
 			input.multiple = multiple;
 			input.onchange = () => {
-				const promises = Array.from(input.files).map(file => os.upload(file, defaultStore.state.uploadFolder, undefined, keepOriginal.value));
+				const promises = Array.from(input.files).map(file => uploadFile(file, defaultStore.state.uploadFolder, undefined, keepOriginal.value));
 
 				Promise.all(promises).then(driveFiles => {
 					res(multiple ? driveFiles : driveFiles[0]);
