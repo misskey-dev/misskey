@@ -1629,6 +1629,9 @@ _notification:
     followRequestAccepted: "Accepted follow requests"
     groupInvited: "Group invitations"
     app: "Notifications from linked apps"
+  _actions:
+    reply: "Reply"
+    renote: "Renote"
 _deck:
   alwaysShowMainColumn: "Always show main column"
   columnAlign: "Align columns"
