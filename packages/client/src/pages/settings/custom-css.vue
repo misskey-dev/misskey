@@ -32,7 +32,7 @@ async function apply() {
 }
 
 watch(localCustomCss, async () => {
-	apply();
+	await apply();
 });
 
 defineExpose({
