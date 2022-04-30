@@ -19,10 +19,8 @@ import * as symbols from '@/symbols';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
 
-const instanceMutes = ref('');
+const instanceMutes = ref($i!.mutedInstances.join('\n'));
 const changed = ref(false);
-
-instanceMutes.value = $i!.mutedInstances.join('\n');
 
 async function save() {
 	let mutes = instanceMutes.value
