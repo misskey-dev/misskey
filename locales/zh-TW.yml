@@ -1493,6 +1493,9 @@ _notification:
     followRequestAccepted: "追隨請求已接受"
     groupInvited: "加入社群邀請"
     app: "應用程式通知"
+  _actions:
+    reply: "回覆"
+    renote: "轉發"
 _deck:
   alwaysShowMainColumn: "總是顯示主欄"
   columnAlign: "對齊欄位"
