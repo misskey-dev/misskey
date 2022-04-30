@@ -27,6 +27,7 @@ export async function GenerateVideoThumbnail(path: string): Promise<IImage> {
 
 	const outPath = `${outDir}/output.png`;
 
+	// JPEGに変換 (Webpでもいいが、MastodonはWebpをサポートせず表示できなくなる)
 	const thumbnail = await convertToJpeg(outPath, 498, 280);
 
 	// cleanup
