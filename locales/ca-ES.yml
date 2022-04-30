@@ -173,6 +173,9 @@ _notification:
     renote: "Renotar"
     quote: "Citar"
     reaction: "Reaccions"
+  _actions:
+    reply: "Respondre"
+    renote: "Renotar"
 _deck:
   _columns:
     notifications: "Notificacions"
