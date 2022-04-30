@@ -141,7 +141,7 @@ const stats = ref<any>({});
 
 onMounted(() => {
 	os.api('users/stats', {
-		userId: $i?.id
+		userId: $i!.id
 	}).then(response => {
 		stats.value = response;
 	});
