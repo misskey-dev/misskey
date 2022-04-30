@@ -39,40 +39,35 @@ const githubForm = ref<Window | null>(null);
 
 const integrations = computed(() => $i!.integrations);
 
+function openWindow(service: string, type: string) {
+	return window.open(`${apiUrl}/${type}/${service}`,
+		`${service}_${type}_window`,
+		'height=570, width=520'
+	);
+}
+
 function connectTwitter() {
-	twitterForm.value = window.open(apiUrl + '/connect/twitter',
-		'twitter_connect_window',
-		'height=570, width=520');
+	twitterForm.value = openWindow('twitter', 'connect');
 }
 
 function disconnectTwitter() {
-	window.open(apiUrl + '/disconnect/twitter',
-		'twitter_disconnect_window',
-		'height=570, width=520');
+	openWindow('twitter', 'disconnect');
 }
 
 function connectDiscord() {
-	discordForm.value = window.open(apiUrl + '/connect/discord',
-		'discord_connect_window',
-		'height=570, width=520');
+	discordForm.value = openWindow('discord', 'connect');
 }
 
 function disconnectDiscord() {
-	window.open(apiUrl + '/disconnect/discord',
-		'discord_disconnect_window',
-		'height=570, width=520');
+	openWindow('discord', 'disconnect');
 }
 
 function connectGithub() {
-	githubForm.value = window.open(apiUrl + '/connect/github',
-		'github_connect_window',
-		'height=570, width=520');
+	githubForm.value = openWindow('github', 'connect');
 }
 
 function disconnectGithub() {
-	window.open(apiUrl + '/disconnect/github',
-		'github_disconnect_window',
-		'height=570, width=520');
+	openWindow('github', 'disconnect');
 }
 
 onMounted(() => {
