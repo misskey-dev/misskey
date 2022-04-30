@@ -49,7 +49,7 @@ import * as symbols from '@/symbols';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
 
-const emailAddress = ref($i?.email);
+const emailAddress = ref($i!.email);
 
 const onChangeReceiveAnnouncementEmail = (v) => {
 	os.api('i/update', {
@@ -70,12 +70,12 @@ const saveEmailAddress = () => {
 	});
 };
 
-const emailNotification_mention = ref($i?.emailNotificationTypes.includes('mention'));
-const emailNotification_reply = ref($i?.emailNotificationTypes.includes('reply'));
-const emailNotification_quote = ref($i?.emailNotificationTypes.includes('quote'));
-const emailNotification_follow = ref($i?.emailNotificationTypes.includes('follow'));
-const emailNotification_receiveFollowRequest = ref($i?.emailNotificationTypes.includes('receiveFollowRequest'));
-const emailNotification_groupInvited = ref($i?.emailNotificationTypes.includes('groupInvited'));
+const emailNotification_mention = ref($i!.emailNotificationTypes.includes('mention'));
+const emailNotification_reply = ref($i!.emailNotificationTypes.includes('reply'));
+const emailNotification_quote = ref($i!.emailNotificationTypes.includes('quote'));
+const emailNotification_follow = ref($i!.emailNotificationTypes.includes('follow'));
+const emailNotification_receiveFollowRequest = ref($i!.emailNotificationTypes.includes('receiveFollowRequest'));
+const emailNotification_groupInvited = ref($i!.emailNotificationTypes.includes('groupInvited'));
 
 const saveNotificationSettings = () => {
 	os.api('i/update', {
