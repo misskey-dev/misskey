@@ -715,6 +715,9 @@ _notification:
     renote: "Re-notează"
     quote: "Citează"
     reaction: "Reacție"
+  _actions:
+    reply: "Răspunde"
+    renote: "Re-notează"
 _deck:
   _columns:
     notifications: "Notificări"
