@@ -162,6 +162,9 @@ _notification:
     follow: "Seguindo"
     mention: "Menção"
     renote: "Repostar"
+  _actions:
+    reply: "Responder"
+    renote: "Repostar"
 _deck:
   _columns:
     notifications: "Notificações"
