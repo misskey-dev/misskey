@@ -1,10 +1,12 @@
-import { publishMainStream } from '@/services/stream.js';
 import define from '../../define.js';
-import { Notifications } from '@/models/index.js';
 import { readNotification } from '../../common/read-notification.js';
-import { ApiError } from '../../error.js';
 
 export const meta = {
+	desc: {
+		'ja-JP': '通知を既読にします。',
+		'en-US': 'Mark a notification as read.'
+	},
+
 	tags: ['notifications', 'account'],
 
 	requireCredential: true,
@@ -21,23 +23,26 @@ export const meta = {
 } as const;
 
 export const paramDef = {
-	type: 'object',
-	properties: {
-		notificationId: { type: 'string', format: 'misskey:id' },
-	},
-	required: ['notificationId'],
+	oneOf: [
+		{
+			type: 'object',
+			properties: {
+				notificationId: { type: 'string', format: 'misskey:id' },
+			},
+			required: ['notificationId'],
+		},
+		{
+			type: 'object',
+			properties: {
+				notificationIds: { type: 'array', items: { type: 'string', format: 'misskey:id' } },
+			},
+			required: ['notificationIds'],
+		},
+	],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, user) => {
-	const notification = await Notifications.findOneBy({
-		notifieeId: user.id,
-		id: ps.notificationId,
-	});
-
-	if (notification == null) {
-		throw new ApiError(meta.errors.noSuchNotification);
-	}
-
-	readNotification(user.id, [notification.id]);
+	if ('notificationId' in ps) return readNotification(user.id, [ps.notificationId]);
+	return readNotification(user.id, ps.notificationIds);
 });

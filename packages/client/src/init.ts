@@ -146,7 +146,6 @@ if ($i && $i.token) {
 		try {
 			document.body.innerHTML = '<div>Please wait...</div>';
 			await login(i);
-			location.reload();
 		} catch (e) {
 			// Render the error screen
 			// TODO: ちゃんとしたコンポーネントをレンダリングする(v10とかのトラブルシューティングゲーム付きのやつみたいな)

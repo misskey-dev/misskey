@@ -32,6 +32,7 @@ const _dirname = dirname(_filename);
 const staticAssets = `${_dirname}/../../../assets/`;
 const clientAssets = `${_dirname}/../../../../client/assets/`;
 const assets = `${_dirname}/../../../../../built/_client_dist_/`;
+const swAssets = `${_dirname}/../../../../../built/_sw_dist_/`;
 
 // Init app
 const app = new Koa();
@@ -136,9 +137,10 @@ router.get('/twemoji/(.*)', async ctx => {
 });
 
 // ServiceWorker
-router.get('/sw.js', async ctx => {
-	await send(ctx as any, `/sw.${config.version}.js`, {
-		root: assets,
+router.get(`/sw.js`, async ctx => {
+	await send(ctx as any, `/sw.js`, {
+		root: swAssets,
+		maxage: ms('10 minutes'),
 	});
 });
 

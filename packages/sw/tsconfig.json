@@ -18,6 +18,7 @@
 		"strictNullChecks": true,
 		"experimentalDecorators": true,
 		"resolveJsonModule": true,
+		"isolatedModules": true,
 		"baseUrl": ".",
 		"paths": {
 			"@/*": ["./src/*"],
@@ -28,12 +29,11 @@
 		],
 		"lib": [
 			"esnext",
-			"dom"
+			"webworker"
 		]
 	},
 	"compileOnSave": false,
 	"include": [
-		"./**/*.ts",
-		"./**/*.vue"
+		"./**/*.ts"
 	]
 }
