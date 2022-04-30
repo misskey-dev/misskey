@@ -1629,6 +1629,9 @@ _notification:
     followRequestAccepted: "关注请求已通过"
     groupInvited: "加入群组邀请"
     app: "关联应用的通知"
+  _actions:
+    reply: "回复"
+    renote: "转发"
 _deck:
   alwaysShowMainColumn: "总是显示主列"
   columnAlign: "列对齐"
