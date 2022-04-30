@@ -1612,6 +1612,9 @@ _notification:
     followRequestAccepted: "팔로우 요청이 승인되었을 때"
     groupInvited: "그룹에 초대되었을 때"
     app: "연동된 앱을 통한 알림"
+  _actions:
+    reply: "답글"
+    renote: "Renote"
 _deck:
   alwaysShowMainColumn: "메인 칼럼 항상 표시"
   columnAlign: "칼럼 정렬"
