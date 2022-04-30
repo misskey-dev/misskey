@@ -27,11 +27,11 @@ async function save() {
 		.trim().split('\n')
 		.map(el => el.trim())
 		.filter(el => el);
-	
+
 	await os.api('i/update', {
 		mutedInstances: mutes,
 	});
-	
+
 	changed.value = false;
 
 	// Refresh filtered list to signal to the user how they've been saved
