@@ -39,7 +39,7 @@ async function deleteAccount() {
 		title: i18n.ts._accountDelete.started,
 	});
 
-	signout();
+	await signout();
 }
 
 defineExpose({
