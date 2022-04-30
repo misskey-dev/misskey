@@ -1506,6 +1506,9 @@ _notification:
     followRequestAccepted: "El seguimiento fue aceptado"
     groupInvited: "Invitado al grupo"
     app: "Notificaciones desde aplicaciones"
+  _actions:
+    reply: "Responder"
+    renote: "Renotar"
 _deck:
   alwaysShowMainColumn: "Siempre mostrar la columna principal"
   columnAlign: "Alinear columnas"
