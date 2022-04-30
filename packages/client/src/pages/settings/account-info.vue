@@ -127,7 +127,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineExpose, ref } from 'vue';
+import { defineExpose, onMounted, ref } from 'vue';
 import FormSection from '@/components/form/section.vue';
 import MkKeyValue from '@/components/key-value.vue';
 import * as os from '@/os';
@@ -139,10 +139,12 @@ import { i18n } from '@/i18n';
 
 const stats = ref<any>({});
 
-os.api('users/stats', {
-	userId: $i?.id
-}).then(response => {
-	stats.value = response;
+onMounted(() => {
+	os.api('users/stats', {
+		userId: $i?.id
+	}).then(response => {
+		stats.value = response;
+	});
 });
 
 defineExpose({
