@@ -1627,6 +1627,9 @@ _notification:
     followRequestAccepted: "Permintaan mengikuti disetujui"
     groupInvited: "Diundang ke grup"
     app: "Pemberitahuan dari aplikasi"
+  _actions:
+    reply: "Balas"
+    renote: "Renote"
 _deck:
   alwaysShowMainColumn: "Selalu tampilkan kolom utama"
   columnAlign: "Luruskan kolom"
