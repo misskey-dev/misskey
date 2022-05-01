@@ -29,6 +29,8 @@ import {
 import 'chartjs-adapter-date-fns';
 import { enUS } from 'date-fns/locale';
 import zoomPlugin from 'chartjs-plugin-zoom';
+// https://github.com/misskey-dev/misskey/pull/8575#issuecomment-1114242002
+// We can't use gradient because Vite throws a error.
 //import gradient from 'chartjs-plugin-gradient';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
