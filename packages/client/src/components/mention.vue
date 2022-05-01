@@ -16,7 +16,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import * as tinycolor from 'tinycolor2';
+import tinycolor from 'tinycolor2';
 import { toUnicode } from 'punycode';
 import { host as localHost } from '@/config';
 import { $i } from '@/account';

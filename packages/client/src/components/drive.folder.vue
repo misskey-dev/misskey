@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, defineAsyncComponent, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
@@ -230,7 +230,7 @@ function onContextmenu(ev: MouseEvent) {
 		text: i18n.ts.openInWindow,
 		icon: 'fas fa-window-restore',
 		action: () => {
-			os.popup(import('./drive-window.vue'), {
+			os.popup(defineAsyncComponent(() => import('./drive-window.vue')), {
 				initialFolder: props.folder
 			}, {
 			}, 'closed');

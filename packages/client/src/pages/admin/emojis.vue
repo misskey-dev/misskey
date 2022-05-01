@@ -63,7 +63,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineComponent, ref, toRef } from 'vue';
+import { computed, defineAsyncComponent, defineComponent, ref, toRef } from 'vue';
 import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/form/input.vue';
 import MkPagination from '@/components/ui/pagination.vue';
@@ -130,7 +130,7 @@ const add = async (ev: MouseEvent) => {
 };
 
 const edit = (emoji) => {
-	os.popup(import('./emoji-edit-dialog.vue'), {
+	os.popup(defineAsyncComponent(() => import('./emoji-edit-dialog.vue')), {
 		emoji: emoji
 	}, {
 		done: result => {

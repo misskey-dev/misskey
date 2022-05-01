@@ -37,8 +37,8 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue';
+<script lang="ts" setup>
+import { defineExpose, ref } from 'vue';
 import MkButton from '@/components/ui/button.vue';
 import FormSection from '@/components/form/section.vue';
 import FormGroup from '@/components/form/group.vue';
@@ -48,108 +48,80 @@ import { selectFile } from '@/scripts/select-file';
 import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		FormSection,
-		FormGroup,
-		FormSwitch,
-		MkButton,
-	},
+const excludeMutingUsers = ref(false);
+const excludeInactiveUsers = ref(false);
 
-	emits: ['info'],
+const onExportSuccess = () => {
+	os.alert({
+		type: 'info',
+		text: i18n.ts.exportRequested,
+	});
+};
 
-	setup(props, context) {
-		const INFO = {
-			title: i18n.ts.importAndExport,
-			icon: 'fas fa-boxes',
-			bg: 'var(--bg)',
-		};
+const onImportSuccess = () => {
+	os.alert({
+		type: 'info',
+		text: i18n.ts.importRequested,
+	});
+};
 
-		const excludeMutingUsers = ref(false);
-		const excludeInactiveUsers = ref(false);
+const onError = (ev) => {
+	os.alert({
+		type: 'error',
+		text: ev.message,
+	});
+};
 
-		const onExportSuccess = () => {
-			os.alert({
-				type: 'info',
-				text: i18n.ts.exportRequested,
-			});
-		};
+const exportNotes = () => {
+	os.api('i/export-notes', {}).then(onExportSuccess).catch(onError);
+};
 
-		const onImportSuccess = () => {
-			os.alert({
-				type: 'info',
-				text: i18n.ts.importRequested,
-			});
-		};
+const exportFollowing = () => {
+	os.api('i/export-following', {
+		excludeMuting: excludeMutingUsers.value,
+		excludeInactive: excludeInactiveUsers.value,
+	})
+	.then(onExportSuccess).catch(onError);
+};
 
-		const onError = (e) => {
-			os.alert({
-				type: 'error',
-				text: e.message,
-			});
-		};
+const exportBlocking = () => {
+	os.api('i/export-blocking', {}).then(onExportSuccess).catch(onError);
+};
 
-		const exportNotes = () => {
-			os.api('i/export-notes', {}).then(onExportSuccess).catch(onError);
-		};
+const exportUserLists = () => {
+	os.api('i/export-user-lists', {}).then(onExportSuccess).catch(onError);
+};
 
-		const exportFollowing = () => {
-			os.api('i/export-following', {
-				excludeMuting: excludeMutingUsers.value,
-				excludeInactive: excludeInactiveUsers.value,
-			})
-			.then(onExportSuccess).catch(onError);
-		};
+const exportMuting = () => {
+	os.api('i/export-mute', {}).then(onExportSuccess).catch(onError);
+};
 
-		const exportBlocking = () => {
-			os.api('i/export-blocking', {}).then(onExportSuccess).catch(onError);
-		};
+const importFollowing = async (ev) => {
+	const file = await selectFile(ev.currentTarget ?? ev.target);
+	os.api('i/import-following', { fileId: file.id }).then(onImportSuccess).catch(onError);
+};
 
-		const exportUserLists = () => {
-			os.api('i/export-user-lists', {}).then(onExportSuccess).catch(onError);
-		};
+const importUserLists = async (ev) => {
+	const file = await selectFile(ev.currentTarget ?? ev.target);
+	os.api('i/import-user-lists', { fileId: file.id }).then(onImportSuccess).catch(onError);
+};
 
-		const exportMuting = () => {
-			os.api('i/export-mute', {}).then(onExportSuccess).catch(onError);
-		};
+const importMuting = async (ev) => {
+	const file = await selectFile(ev.currentTarget ?? ev.target);
+	os.api('i/import-muting', { fileId: file.id }).then(onImportSuccess).catch(onError);
+};
 
-		const importFollowing = async (ev) => {
-			const file = await selectFile(ev.currentTarget ?? ev.target);
-			os.api('i/import-following', { fileId: file.id }).then(onImportSuccess).catch(onError);
-		};
+const importBlocking = async (ev) => {
+	const file = await selectFile(ev.currentTarget ?? ev.target);
+	os.api('i/import-blocking', { fileId: file.id }).then(onImportSuccess).catch(onError);
+};
 
-		const importUserLists = async (ev) => {
-			const file = await selectFile(ev.currentTarget ?? ev.target);
-			os.api('i/import-user-lists', { fileId: file.id }).then(onImportSuccess).catch(onError);
-		};
-
-		const importMuting = async (ev) => {
-			const file = await selectFile(ev.currentTarget ?? ev.target);
-			os.api('i/import-muting', { fileId: file.id }).then(onImportSuccess).catch(onError);
-		};
-
-		const importBlocking = async (ev) => {
-			const file = await selectFile(ev.currentTarget ?? ev.target);
-			os.api('i/import-blocking', { fileId: file.id }).then(onImportSuccess).catch(onError);
-		};
-
-		return {
-			[symbols.PAGE_INFO]: INFO,
-			excludeMutingUsers,
-			excludeInactiveUsers,
-
-			exportNotes,
-			exportFollowing,
-			exportBlocking,
-			exportUserLists,
-			exportMuting,
-
-			importFollowing,
-			importUserLists,
-			importMuting,
-			importBlocking,
-		};
-	},
+defineExpose({
+	[symbols.PAGE_INFO]: {
+		title: i18n.ts.importAndExport,
+		icon: 'fas fa-boxes',
+		bg: 'var(--bg)',
+	}
 });
 </script>
 

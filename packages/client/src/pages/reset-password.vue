@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
+import { defineAsyncComponent, onMounted } from 'vue';
 import FormInput from '@/components/form/input.vue';
 import FormButton from '@/components/ui/button.vue';
 import * as os from '@/os';
@@ -36,7 +36,7 @@ async function save() {
 
 onMounted(() => {
 	if (props.token == null) {
-		os.popup(import('@/components/forgot-password.vue'), {}, {}, 'closed');
+		os.popup(defineAsyncComponent(() => import('@/components/forgot-password.vue')), {}, {}, 'closed');
 		router.push('/');
 	}
 });

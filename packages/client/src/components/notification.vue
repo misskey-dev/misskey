@@ -72,7 +72,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, onUnmounted } from 'vue';
+import { defineComponent, ref, onMounted, onUnmounted, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import { getNoteSummary } from '@/scripts/get-note-summary';
 import XReactionIcon from './reaction-icon.vue';
@@ -125,6 +125,10 @@ export default defineComponent({
 
 				const connection = stream.useChannel('main');
 				connection.on('readAllNotifications', () => readObserver.disconnect());
+
+				watch(props.notification.isRead, () => {
+					readObserver.disconnect();
+				});
 
 				onUnmounted(() => {
 					readObserver.disconnect();

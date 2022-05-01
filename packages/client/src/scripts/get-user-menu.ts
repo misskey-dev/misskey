@@ -6,6 +6,7 @@ import * as os from '@/os';
 import { userActions } from '@/store';
 import { router } from '@/router';
 import { $i, iAmModerator } from '@/account';
+import { defineAsyncComponent } from 'vue';
 
 export function getUserMenu(user) {
 	const meId = $i ? $i.id : null;
@@ -127,7 +128,7 @@ export function getUserMenu(user) {
 	}
 
 	function reportAbuse() {
-		os.popup(import('@/components/abuse-report-window.vue'), {
+		os.popup(defineAsyncComponent(() => import('@/components/abuse-report-window.vue')), {
 			user: user,
 		}, {}, 'closed');
 	}

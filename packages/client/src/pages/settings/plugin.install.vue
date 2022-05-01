@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineAsyncComponent, defineComponent } from 'vue';
 import { AiScript, parse } from '@syuilo/aiscript';
 import { serialize } from '@syuilo/aiscript/built/serializer';
 import { v4 as uuid } from 'uuid';
@@ -94,7 +94,7 @@ export default defineComponent({
 			}
 
 			const token = permissions == null || permissions.length === 0 ? null : await new Promise((res, rej) => {
-				os.popup(import('@/components/token-generate-window.vue'), {
+				os.popup(defineAsyncComponent(() => import('@/components/token-generate-window.vue')), {
 					title: this.$ts.tokenRequested,
 					information: this.$ts.pluginTokenRequestedDescription,
 					initialName: name,
