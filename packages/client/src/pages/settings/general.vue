@@ -174,8 +174,8 @@ watch([
 	showGapBetweenNotesInTimeline,
 	instanceTicker,
 	overridedDeviceKind
-], () => {
-	reloadAsk();
+], async () => {
+	await reloadAsk();
 });
 
 defineExpose({
