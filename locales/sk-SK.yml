@@ -1629,6 +1629,7 @@ _notification:
     groupInvited: "Pozvánky do skupín"
     app: "Oznámenia z prepojených aplikácií"
   _actions:
+    followBack: "Sledovať späť\n"
     reply: "Odpovedať"
     renote: "Preposlať"
 _deck:
