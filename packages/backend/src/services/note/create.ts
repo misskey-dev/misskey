@@ -187,6 +187,8 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 
 	if (data.text) {
 		data.text = data.text.trim();
+	} else {
+		data.text = null;
 	}
 
 	let tags = data.apHashtags;
