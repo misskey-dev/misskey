@@ -50,6 +50,10 @@ html
 		style
 			include ../style.css
 
+		script.
+			var VERSION = "#{version}";
+			var CLIENT_ENTRY = "#{clientEntry()}";
+
 		script
 			include ../boot.js
 

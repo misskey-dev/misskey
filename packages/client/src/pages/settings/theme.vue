@@ -87,7 +87,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, onActivated, onMounted, ref, watch } from 'vue';
-import * as JSON5 from 'json5';
+import JSON5 from 'json5';
 import FormSwitch from '@/components/form/switch.vue';
 import FormSelect from '@/components/form/select.vue';
 import FormGroup from '@/components/form/group.vue';

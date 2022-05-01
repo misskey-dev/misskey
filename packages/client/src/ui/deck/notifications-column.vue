@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { defineAsyncComponent } from 'vue';
 import XColumn from './column.vue';
 import XNotifications from '@/components/notifications.vue';
 import * as os from '@/os';
@@ -24,7 +24,7 @@ const emit = defineEmits<{
 }>();
 
 function func() {
-	os.popup(import('@/components/notification-setting-window.vue'), {
+	os.popup(defineAsyncComponent(() => import('@/components/notification-setting-window.vue')), {
 		includingTypes: props.column.includingTypes,
 	}, {
 		done: async (res) => {

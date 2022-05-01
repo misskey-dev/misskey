@@ -31,7 +31,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, defineAsyncComponent, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import MkDriveFileThumbnail from './drive-file-thumbnail.vue';
@@ -133,7 +133,7 @@ function rename() {
 }
 
 function describe() {
-	os.popup(import('@/components/media-caption.vue'), {
+	os.popup(defineAsyncComponent(() => import('@/components/media-caption.vue')), {
 		title: i18n.ts.describeFile,
 		input: {
 			placeholder: i18n.ts.inputNewDescription,

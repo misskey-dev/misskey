@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineAsyncComponent, defineComponent } from 'vue';
 import FormButton from '@/components/ui/button.vue';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
@@ -52,7 +52,7 @@ export default defineComponent({
 
 		configure() {
 			const includingTypes = notificationTypes.filter(x => !this.$i.mutingNotificationTypes.includes(x));
-			os.popup(import('@/components/notification-setting-window.vue'), {
+			os.popup(defineAsyncComponent(() => import('@/components/notification-setting-window.vue')), {
 				includingTypes,
 				showGlobalToggle: false,
 			}, {

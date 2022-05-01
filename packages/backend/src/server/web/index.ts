@@ -4,6 +4,7 @@
 
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { PathOrFileDescriptor, readFileSync } from 'node:fs';
 import ms from 'ms';
 import Koa from 'koa';
 import Router from '@koa/router';
@@ -73,6 +74,9 @@ app.use(views(_dirname + '/views', {
 	extension: 'pug',
 	options: {
 		version: config.version,
+		clientEntry: () => process.env.NODE_ENV === 'production' ?
+			config.clientEntry :
+			JSON.parse(readFileSync(`${_dirname}/../../../../../built/_client_dist_/manifest.json`, 'utf-8'))['src/init.ts'].file.replace(/^_client_dist_\//, ''),
 		config,
 	},
 }));
