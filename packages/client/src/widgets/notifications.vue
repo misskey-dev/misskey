@@ -15,6 +15,7 @@ import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExp
 import MkContainer from '@/components/ui/container.vue';
 import XNotifications from '@/components/notifications.vue';
 import * as os from '@/os';
+import { defineAsyncComponent } from 'vue';
 
 const name = 'notifications';
 
@@ -49,7 +50,7 @@ const { widgetProps, configure, save } = useWidgetPropsManager(name,
 );
 
 const configureNotification = () => {
-	os.popup(import('@/components/notification-setting-window.vue'), {
+	os.popup(defineAsyncComponent(() => import('@/components/notification-setting-window.vue')), {
 		includingTypes: widgetProps.includingTypes,
 	}, {
 		done: async (res) => {

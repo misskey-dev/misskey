@@ -9,8 +9,9 @@
 </div>
 </template>
 
-<script lang="ts" setup>
-import { defineExpose } from 'vue';
+<script lang="ts">
+import { defineAsyncComponent, defineExpose } from 'vue';
+import FormButton from '@/components/ui/button.vue';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import { notificationTypes } from 'misskey-js';
@@ -33,7 +34,7 @@ async function readAllNotifications() {
 
 function configure() {
 	const includingTypes = notificationTypes.filter(x => !$i!.mutingNotificationTypes.includes(x));
-	os.popup(import('@/components/notification-setting-window.vue'), {
+	os.popup(defineAsyncComponent(() => import('@/components/notification-setting-window.vue')), {
 		includingTypes,
 		showGlobalToggle: false,
 	}, {

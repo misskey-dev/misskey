@@ -270,6 +270,7 @@ onDeactivated(() => {
 
 defineExpose({
 	items,
+	queue,
 	backed,
 	reload,
 	fetchMoreAhead,

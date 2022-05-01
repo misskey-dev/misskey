@@ -67,7 +67,7 @@
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
-const getPasswordStrength = require('syuilo-password-strength');
+const getPasswordStrength = await import('syuilo-password-strength');
 import { toUnicode } from 'punycode/';
 import { host, url } from '@/config';
 import MkButton from './ui/button.vue';

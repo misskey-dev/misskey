@@ -1,5 +1,5 @@
 import { publishMainStream } from '@/services/stream.js';
-import pushSw from './push-notification.js';
+import { pushNotification } from '@/services/push-notification.js';
 import { Notifications, Mutings, UserProfiles, Users } from '@/models/index.js';
 import { genId } from '@/misc/gen-id.js';
 import { User } from '@/models/entities/user.js';
@@ -52,8 +52,8 @@ export async function createNotification(
 		//#endregion
 
 		publishMainStream(notifieeId, 'unreadNotification', packed);
+		pushNotification(notifieeId, 'notification', packed);
 
-		pushSw(notifieeId, 'notification', packed);
 		if (type === 'follow') sendEmailNotification.follow(notifieeId, await Users.findOneByOrFail({ id: data.notifierId! }));
 		if (type === 'receiveFollowRequest') sendEmailNotification.receiveFollowRequest(notifieeId, await Users.findOneByOrFail({ id: data.notifierId! }));
 	}, 2000);

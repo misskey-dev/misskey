@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineAsyncComponent, defineComponent } from 'vue';
 import FormLink from '@/components/form/link.vue';
 import FormButton from '@/components/ui/button.vue';
 import * as os from '@/os';
@@ -34,7 +34,7 @@ export default defineComponent({
 
 	methods: {
 		generateToken() {
-			os.popup(import('@/components/token-generate-window.vue'), {}, {
+			os.popup(defineAsyncComponent(() => import('@/components/token-generate-window.vue')), {}, {
 				done: async result => {
 					const { name, permissions } = result;
 					const { token } = await os.api('miauth/gen-token', {

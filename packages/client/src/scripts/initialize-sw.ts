@@ -4,26 +4,26 @@ import { api } from '@/os';
 import { lang } from '@/config';
 
 export async function initializeSw() {
-	if (instance.swPublickey &&
-		('serviceWorker' in navigator) &&
-		('PushManager' in window) &&
-		$i && $i.token) {
-		navigator.serviceWorker.register(`/sw.js`);
+	if (!('serviceWorker' in navigator)) return;
 
-		navigator.serviceWorker.ready.then(registration => {
-			registration.active?.postMessage({
-				msg: 'initialize',
-				lang,
-			});
+	navigator.serviceWorker.register(`/sw.js`, { scope: '/', type: 'classic' });
+	navigator.serviceWorker.ready.then(registration => {
+		registration.active?.postMessage({
+			msg: 'initialize',
+			lang,
+		});
+
+		if (instance.swPublickey && ('PushManager' in window) && $i && $i.token) {
 			// SEE: https://developer.mozilla.org/en-US/docs/Web/API/PushManager/subscribe#Parameters
 			registration.pushManager.subscribe({
 				userVisibleOnly: true,
 				applicationServerKey: urlBase64ToUint8Array(instance.swPublickey)
-			}).then(subscription => {
+			})
+			.then(subscription => {
 				function encode(buffer: ArrayBuffer | null) {
 					return btoa(String.fromCharCode.apply(null, new Uint8Array(buffer)));
 				}
-
+		
 				// Register
 				api('sw/register', {
 					endpoint: subscription.endpoint,
@@ -37,15 +37,15 @@ export async function initializeSw() {
 				if (err.name === 'NotAllowedError') {
 					return;
 				}
-
+		
 				// 違うapplicationServerKey (または gcm_sender_id)のサブスクリプションが
 				// 既に存在していることが原因でエラーになった可能性があるので、
 				// そのサブスクリプションを解除しておく
 				const subscription = await registration.pushManager.getSubscription();
 				if (subscription) subscription.unsubscribe();
 			});
-		});
-	}
+		}
+	});
 }
 
 /**
