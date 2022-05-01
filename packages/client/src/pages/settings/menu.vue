@@ -50,9 +50,9 @@ async function addItem() {
 		title: i18n.ts.addItem,
 		items: [...menu.map(k => ({
 			value: k, text: i18n.ts[menuDef[k].title]
-		})), ...[{
+		})), {
 			value: '-', text: i18n.ts.divider
-		}]]
+		}]
 	});
 	if (canceled) return;
 	items.value = [...split.value, item].join('\n');
