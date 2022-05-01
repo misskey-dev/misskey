@@ -19,16 +19,16 @@ import * as symbols from '@/symbols';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
 
-function readAllUnreadNotes() {
-	os.api('i/read-all-unread-notes');
+async function readAllUnreadNotes() {
+	await os.api('i/read-all-unread-notes');
 }
 
-function readAllMessagingMessages() {
-	os.api('i/read-all-messaging-messages');
+async function readAllMessagingMessages() {
+	await os.api('i/read-all-messaging-messages');
 }
 
-function readAllNotifications() {
-	os.api('notifications/mark-all-as-read');
+async function readAllNotifications() {
+	await os.api('notifications/mark-all-as-read');
 }
 
 function configure() {
