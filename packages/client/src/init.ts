@@ -210,7 +210,10 @@ const rootEl = (() => {
 
 	const currentEl = document.getElementById(MISSKEY_MOUNT_DIV_ID);
 
-	if (currentEl) return currentEl;
+	if (currentEl) {
+		console.warn('multiple import detected');
+		return currentEl;
+	}
 
 	const rootEl = document.createElement('div');
 	rootEl.id = MISSKEY_MOUNT_DIV_ID;
