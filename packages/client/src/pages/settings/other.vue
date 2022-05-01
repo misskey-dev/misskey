@@ -1,6 +1,6 @@
 <template>
 <div class="_formRoot">
-	<FormSwitch :value="$i.injectFeaturedNote" class="_formBlock" @update:modelValue="onChangeInjectFeaturedNote">
+	<FormSwitch v-model="$i.injectFeaturedNote" class="_formBlock" @update:modelValue="onChangeInjectFeaturedNote">
 		{{ i18n.ts.showFeaturedNotesInTimeline }}
 	</FormSwitch>
 
@@ -21,6 +21,7 @@ import FormLink from '@/components/form/link.vue';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
 import * as symbols from '@/symbols';
+import { $i } from '@/account';
 import { i18n } from '@/i18n';
 
 const reportError = computed(defaultStore.makeGetterSetter('reportError'));
@@ -28,6 +29,8 @@ const reportError = computed(defaultStore.makeGetterSetter('reportError'));
 function onChangeInjectFeaturedNote(v) {
 	os.api('i/update', {
 		injectFeaturedNote: v
+	}).then((i) => {
+		$i!.injectFeaturedNote = i.injectFeaturedNote;
 	});
 }
 
