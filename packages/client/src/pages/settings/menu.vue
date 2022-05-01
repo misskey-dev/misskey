@@ -58,9 +58,9 @@ async function addItem() {
 	items.value = [...split.value, item].join('\n');
 }
 
-function save() {
+async function save() {
 	defaultStore.set('menu', split.value);
-	reloadAsk();
+	await reloadAsk();
 }
 
 function reset() {
