@@ -25,6 +25,12 @@ const execa = require('execa');
 		stderr: process.stderr,
 	});
 
+	execa('npm', ['run', 'watch'], {
+		cwd: __dirname + '/../packages/sw',
+		stdout: process.stdout,
+		stderr: process.stderr,
+	});
+
 	const start = async () => {
 		try {
 			await execa('npm', ['run', 'start'], {

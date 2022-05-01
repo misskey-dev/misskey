@@ -46,7 +46,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineAsyncComponent, defineComponent } from 'vue';
 import { toUnicode } from 'punycode/';
 import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/form/input.vue';
@@ -224,7 +224,7 @@ export default defineComponent({
 		},
 
 		resetPassword() {
-			os.popup(import('@/components/forgot-password.vue'), {}, {
+			os.popup(defineAsyncComponent(() => import('@/components/forgot-password.vue')), {}, {
 			}, 'closed');
 		}
 	}

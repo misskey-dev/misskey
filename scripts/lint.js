@@ -14,4 +14,11 @@ const execa = require('execa');
 		stdout: process.stdout,
 		stderr: process.stderr,
 	});
+
+	console.log('linting packages/sw ...');
+	await execa('npm', ['run', 'lint'], {
+		cwd: __dirname + '/../packages/sw',
+		stdout: process.stdout,
+		stderr: process.stderr,
+	});
 })();

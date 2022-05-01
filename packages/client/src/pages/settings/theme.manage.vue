@@ -27,7 +27,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import * as JSON5 from 'json5';
+import JSON5 from 'json5';
 import FormTextarea from '@/components/form/textarea.vue';
 import FormSelect from '@/components/form/select.vue';
 import FormInput from '@/components/form/input.vue';

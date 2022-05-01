@@ -23,7 +23,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import * as tinycolor from 'tinycolor2';
+import tinycolor from 'tinycolor2';
 
 const localStoragePrefix = 'ui:folder:';
 

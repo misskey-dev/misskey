@@ -1,5 +1,5 @@
 import { del, get, set } from '@/scripts/idb-proxy';
-import { reactive } from 'vue';
+import { defineAsyncComponent, reactive } from 'vue';
 import * as misskey from 'misskey-js';
 import { apiUrl } from '@/config';
 import { waiting, api, popup, popupMenu, success, alert } from '@/os';
@@ -141,7 +141,7 @@ export async function openAccountMenu(opts: {
 	onChoose?: (account: misskey.entities.UserDetailed) => void;
 }, ev: MouseEvent) {
 	function showSigninDialog() {
-		popup(import('@/components/signin-dialog.vue'), {}, {
+		popup(defineAsyncComponent(() => import('@/components/signin-dialog.vue')), {}, {
 			done: res => {
 				addAccount(res.id, res.i);
 				success();
@@ -150,7 +150,7 @@ export async function openAccountMenu(opts: {
 	}
 
 	function createAccount() {
-		popup(import('@/components/signup-dialog.vue'), {}, {
+		popup(defineAsyncComponent(() => import('@/components/signup-dialog.vue')), {}, {
 			done: res => {
 				addAccount(res.id, res.i);
 				switchAccountWithToken(res.i);

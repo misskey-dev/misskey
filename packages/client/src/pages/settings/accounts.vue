@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineAsyncComponent, defineComponent } from 'vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import FormButton from '@/components/ui/button.vue';
 import * as os from '@/os';
@@ -78,7 +78,7 @@ export default defineComponent({
 		},
 
 		addExistingAccount() {
-			os.popup(import('@/components/signin-dialog.vue'), {}, {
+			os.popup(defineAsyncComponent(() => import('@/components/signin-dialog.vue')), {}, {
 				done: res => {
 					addAccount(res.id, res.i);
 					os.success();
@@ -87,7 +87,7 @@ export default defineComponent({
 		},
 
 		createAccount() {
-			os.popup(import('@/components/signup-dialog.vue'), {}, {
+			os.popup(defineAsyncComponent(() => import('@/components/signup-dialog.vue')), {}, {
 				done: res => {
 					addAccount(res.id, res.i);
 					this.switchAccountWithToken(res.i);
