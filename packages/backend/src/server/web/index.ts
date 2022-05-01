@@ -74,12 +74,10 @@ app.use(views(_dirname + '/views', {
 	extension: 'pug',
 	options: {
 		version: config.version,
+		clientEntry: () => process.env.NODE_ENV === 'production' ?
+			config.clientEntry :
+			JSON.parse(readFileSync(`${_dirname}/../../../../../built/_client_dist_/manifest.json`, 'utf-8'))['src/init.ts'].file.replace(/^_client_dist_\//, ''),
 		config,
-		...(process.env.NODE_ENV !== 'production' ? {
-			process,
-			_dirname,
-			readFileSync: (path: PathOrFileDescriptor): string => readFileSync(path, 'utf8'),
-		} : {}),
 	},
 }));
 

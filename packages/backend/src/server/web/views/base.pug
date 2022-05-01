@@ -50,16 +50,9 @@ html
 		style
 			include ../style.css
 
-		if process.env.NODE_ENV === 'production'
-			script.
-				var VERSION = "#{version}";
-				var CLIENT_ENTRY = "#{config.clientEntry}";
-		else
-			-
-				const clientEntry = JSON.parse(readFileSync(`${_dirname}/../../../../../built/_client_dist_/manifest.json`, 'utf-8'))['src/init.ts'].file.replace(/^_client_dist_\//, '');
-			script.
-				var VERSION = "#{version}";
-				var CLIENT_ENTRY = "#{clientEntry}";
+		script.
+			var VERSION = "#{version}";
+			var CLIENT_ENTRY = "#{clientEntry()}";
 
 		script
 			include ../boot.js
