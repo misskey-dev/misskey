@@ -24,6 +24,7 @@ You should also include the user name that made the change.
 - Client: fix profile tabs @futchitwo
 - Server: await promises when following or unfollowing users @Johann150
 - Client: fix abuse reports page to be able to show all reports @Johann150
+- Federation: Add rel attribute to host-meta @mei23
 
 ## 12.110.1 (2022/04/23)
 
