@@ -8,7 +8,7 @@ notifications: "通知"
 username: "用户名"
 password: "密码"
 forgotPassword: "忘记密码"
-fetchingAsApObject: "在联邦宇宙查询中..."
+fetchingAsApObject: "正在联邦宇宙查询中..."
 ok: "OK"
 gotIt: "我明白了"
 cancel: "取消"
@@ -1615,6 +1615,7 @@ _notification:
   yourFollowRequestAccepted: "您的关注请求已通过"
   youWereInvitedToGroup: "您有新的群组邀请"
   pollEnded: "问卷调查结果已生成。"
+  emptyPushNotificationMessage: "更新了推送通知"
   _types:
     all: "全部"
     follow: "关注中"
@@ -1630,6 +1631,7 @@ _notification:
     groupInvited: "加入群组邀请"
     app: "关联应用的通知"
   _actions:
+    followBack: "后续跟进"
     reply: "回复"
     renote: "转发"
 _deck:
