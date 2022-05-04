@@ -79,37 +79,6 @@ async function install() {
 	}
 
 	const token = permissions == null || permissions.length === 0 ? null : await new Promise((res, rej) => {
-		os.popup(import('@/components/token-generate-window.vue'), {
-			title: i18n.ts.tokenRequested,
-			information: i18n.ts.pluginTokenRequestedDescription,
-			initialName: name,
-			initialPermissions: permissions
-		}, {
-			done: async result => {
-				const { name, permissions } = result;
-				const { token } = await os.api('miauth/gen-token', {
-					session: null,
-					name: name,
-					permission: permissions,
-				});
-
-				res(token);
-			}
-		}, 'closed');
-	});
-
-	installPlugin({
-		id: uuid(),
-		meta: {
-			name, version, author, description, permissions, config
-		},
-		token,
-		ast: serialize(ast)
-	});
-
-	os.success();
-
-	const token = permissions == null || permissions.length === 0 ? null : await new Promise((res, rej) => {
 		os.popup(defineAsyncComponent(() => import('@/components/token-generate-window.vue')), {
 			title: i18n.ts.tokenRequested,
 			information: i18n.ts.pluginTokenRequestedDescription,
@@ -127,6 +96,17 @@ async function install() {
 			}
 		}, 'closed');
 	});
+
+	installPlugin({
+		id: uuid(),
+		meta: {
+			name, version, author, description, permissions, config
+		},
+		token,
+		ast: serialize(ast)
+	});
+
+	os.success();
 
 	nextTick(() => {
 		unisonReload();
