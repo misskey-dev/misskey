@@ -42,13 +42,15 @@ const masterVolume = computed({
 
 const volumeIcon = computed(() => masterVolume.value === 0 ? 'fas fa-volume-mute' : 'fas fa-volume-up');
 
-sounds.value.note = ColdDeviceStorage.get('sound_note');
-sounds.value.noteMy = ColdDeviceStorage.get('sound_noteMy');
-sounds.value.notification = ColdDeviceStorage.get('sound_notification');
-sounds.value.chat = ColdDeviceStorage.get('sound_chat');
-sounds.value.chatBg = ColdDeviceStorage.get('sound_chatBg');
-sounds.value.antenna = ColdDeviceStorage.get('sound_antenna');
-sounds.value.channel = ColdDeviceStorage.get('sound_channel');
+const sounds = ref({
+    note: ColdDeviceStorage.get('sound_note'),
+    noteMy: ColdDeviceStorage.get('sound_noteMy'),
+    notification: ColdDeviceStorage.get('sound_notification'),
+    chat: ColdDeviceStorage.get('sound_chat'),
+    chatBg: ColdDeviceStorage.get('sound_chatBg'),
+    antenna: ColdDeviceStorage.get('sound_antenna'),
+    channel: ColdDeviceStorage.get('sound_channel'),
+});
 
 const soundsTypes = [
 	null,
