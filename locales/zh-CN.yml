@@ -1615,7 +1615,7 @@ _notification:
   yourFollowRequestAccepted: "您的关注请求已通过"
   youWereInvitedToGroup: "您有新的群组邀请"
   pollEnded: "问卷调查结果已生成。"
-  emptyPushNotificationMessage: "更新了推送通知"
+  emptyPushNotificationMessage: "推送通知已更新"
   _types:
     all: "全部"
     follow: "关注中"
@@ -1631,7 +1631,7 @@ _notification:
     groupInvited: "加入群组邀请"
     app: "关联应用的通知"
   _actions:
-    followBack: "后续跟进"
+    followBack: "回关"
     reply: "回复"
     renote: "转发"
 _deck:
