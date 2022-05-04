@@ -29,8 +29,6 @@ import { playFile } from '@/scripts/sound';
 import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
 
-const sounds = ref<any>({});
-
 const masterVolume = computed({
 	get: () => {
 		return ColdDeviceStorage.get('sound_masterVolume');
