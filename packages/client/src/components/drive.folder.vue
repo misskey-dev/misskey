@@ -84,12 +84,12 @@ function onDragover(ev: DragEvent) {
 		return;
 	}
 
-	const isFile = ev.dataTransfer.items[0].kind == 'file';
-	const isDriveFile = ev.dataTransfer.types[0] == _DATA_TRANSFER_DRIVE_FILE_;
-	const isDriveFolder = ev.dataTransfer.types[0] == _DATA_TRANSFER_DRIVE_FOLDER_;
+	const isFile = ev.dataTransfer.items[0].kind === 'file';
+	const isDriveFile = ev.dataTransfer.types[0] === _DATA_TRANSFER_DRIVE_FILE_;
+	const isDriveFolder = ev.dataTransfer.types[0] === _DATA_TRANSFER_DRIVE_FOLDER_;
 
 	if (isFile || isDriveFile || isDriveFolder) {
-		ev.dataTransfer.dropEffect = ev.dataTransfer.effectAllowed == 'all' ? 'copy' : 'move';
+		ev.dataTransfer.dropEffect = ev.dataTransfer.effectAllowed === 'all' ? 'copy' : 'move';
 	} else {
 		ev.dataTransfer.dropEffect = 'none';
 	}
@@ -118,7 +118,7 @@ function onDrop(ev: DragEvent) {
 
 	//#region ドライブのファイル
 	const driveFile = ev.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FILE_);
-	if (driveFile != null && driveFile != '') {
+	if (driveFile != null && driveFile !== '') {
 		const file = JSON.parse(driveFile);
 		emit('removeFile', file.id);
 		os.api('drive/files/update', {
@@ -130,11 +130,11 @@ function onDrop(ev: DragEvent) {
 
 	//#region ドライブのフォルダ
 	const driveFolder = ev.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FOLDER_);
-	if (driveFolder != null && driveFolder != '') {
+	if (driveFolder != null && driveFolder !== '') {
 		const folder = JSON.parse(driveFolder);
 
 		// 移動先が自分自身ならreject
-		if (folder.id == props.folder.id) return;
+		if (folder.id === props.folder.id) return;
 
 		emit('removeFolder', folder.id);
 		os.api('drive/folders/update', {
