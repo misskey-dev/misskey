@@ -137,7 +137,7 @@ function describe() {
 		title: i18n.ts.describeFile,
 		input: {
 			placeholder: i18n.ts.inputNewDescription,
-			default: props.file.comment !== null ? props.file.comment : '',
+			default: props.file.comment != null ? props.file.comment : '',
 		},
 		image: props.file
 	}, {

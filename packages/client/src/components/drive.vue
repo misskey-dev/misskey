@@ -226,7 +226,7 @@ function onDrop(ev: DragEvent): any {
 
 	//#region ドライブのファイル
 	const driveFile = ev.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FILE_);
-	if (driveFile !== null && driveFile !== '') {
+	if (driveFile != null && driveFile !== '') {
 		const file = JSON.parse(driveFile);
 		if (files.value.some(f => f.id === file.id)) return;
 		removeFile(file.id);

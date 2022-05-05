@@ -89,7 +89,7 @@ function onDrop(ev: DragEvent) {
 
 	//#region ドライブのファイル
 	const driveFile = ev.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FILE_);
-	if (driveFile !== null && driveFile !== '') {
+	if (driveFile != null && driveFile !== '') {
 		const file = JSON.parse(driveFile);
 		emit('removeFile', file.id);
 		os.api('drive/files/update', {
@@ -101,7 +101,7 @@ function onDrop(ev: DragEvent) {
 
 	//#region ドライブのフォルダ
 	const driveFolder = ev.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FOLDER_);
-	if (driveFolder !== null && driveFolder !== '') {
+	if (driveFolder != null && driveFolder !== '') {
 		const folder = JSON.parse(driveFolder);
 		// 移動先が自分自身ならreject
 		if (props.folder && folder.id === props.folder.id) return;
