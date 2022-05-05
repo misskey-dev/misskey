@@ -1079,6 +1079,9 @@ _2fa:
   registerKey: "註冊鍵"
   step1: "首先，在您的設備上安裝二步驗證程式，例如{a}或{b}。"
   step2: "然後，掃描螢幕上的QR code。"
+  step3: "輸入您的App提供的權杖以完成設定。"
+  step4: "從現在開始，任何登入操作都將要求您提供權杖。"
+  securityKeyInfo: "您可以設定使用支援FIDO2的硬體安全鎖、終端設備的指纹認證或者PIN碼來登入。"
 _permissions:
   "read:account": "查看帳戶信息"
   "write:account": "更改帳戶信息"
@@ -1108,6 +1111,10 @@ _permissions:
   "write:user-groups": "編輯使用者群組"
   "read:channels": "已查看的頻道"
   "write:channels": "編輯頻道"
+  "read:gallery": "瀏覽圖庫"
+  "write:gallery": "操作圖庫"
+  "read:gallery-likes": "讀取喜歡的圖片"
+  "write:gallery-likes": "操作喜歡的圖片"
 _auth:
   shareAccess: "要授權「“{name}”」存取您的帳戶嗎？"
   shareAccessAsk: "您確定要授權這個應用程式使用您的帳戶嗎？"
@@ -1147,6 +1154,8 @@ _widgets:
   onlineUsers: "線上的用戶"
   jobQueue: "佇列"
   serverMetric: "服務器指標 "
+  aiscript: "AiScript控制台"
+  aichan: "小藍"
 _cw:
   hide: "隱藏"
   show: "瀏覽更多"
@@ -1172,11 +1181,13 @@ _poll:
   closed: "已結束"
   remainingDays: "{d}天{h}小時後結束"
   remainingHours: "{h}小時{m}分後結束"
+  remainingMinutes: "{m}分{s}秒後結束"
   remainingSeconds: "{s}秒後截止"
 _visibility:
   public: "公開"
   publicDescription: "發布給所有用戶 "
   home: "首頁"
+  homeDescription: "僅發送至首頁的時間軸"
   followers: "追隨者"
   specified: "指定使用者"
   specifiedDescription: "僅發送至指定使用者"
