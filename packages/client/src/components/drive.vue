@@ -239,7 +239,7 @@ function onDrop(ev: DragEvent): any {
 
 	//#region ドライブのフォルダ
 	const driveFolder = ev.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FOLDER_);
-	if (driveFolder !== null && driveFolder !== '') {
+	if (driveFolder != null && driveFolder !== '') {
 		const droppedFolder = JSON.parse(driveFolder);
 
 		// 移動先が自分自身ならreject
