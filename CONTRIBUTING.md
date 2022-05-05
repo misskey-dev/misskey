@@ -74,6 +74,8 @@ However, in case of emergency, a release can be made at the discretion of a cont
 1. commit version changes in the `develop` branch ([package.json](https://github.com/misskey-dev/misskey/blob/develop/package.json))
 2. follow the `master` branch to the `develop` branch.
 3. Create a [release of GitHub](https://github.com/misskey-dev/misskey/releases)
+ - The target branch must be `master`
+ - The tag name must be the version
 
 ## Localization (l10n)
 Misskey uses [Crowdin](https://crowdin.com/project/misskey) for localization management.
