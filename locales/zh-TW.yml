@@ -981,6 +981,7 @@ _theme:
   alpha: "透明度"
   darken: "暗度"
   lighten: "亮度"
+  deleteConstantConfirm: "確定要删除常數{const}嗎？"
   keys:
     accent: "重點色彩"
     bg: "背景"
@@ -1000,6 +1001,7 @@ _theme:
     mention: "提到"
     mentionMe: "提到了我"
     renote: "轉發貼文"
+    modalBg: "對話框背景"
     divider: "分割線"
     scrollbarHandle: "捲動條"
     scrollbarHandleHover: "捲動條 (漂浮)"
@@ -1515,6 +1517,7 @@ _pages:
       _for:
         arg1: "重複次數"
         arg2: "處理"
+    thereIsEmptySlot: "參數{slot}是空的！"
     types:
       string: "字串"
       number: "数值"
