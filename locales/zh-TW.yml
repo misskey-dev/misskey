@@ -992,12 +992,17 @@ _menuDisplay:
   hide: "隱藏"
 _wordMute:
   muteWords: "加入靜音文字"
-  muteWordsDescription: "用空格分隔指定AND，用換行符號分隔指定OR。"
+  muteWordsDescription: "用空格分隔指定AND，用換行分隔指定OR。"
   muteWordsDescription2: "將關鍵字用斜線括起來表示正規表達式。"
   softDescription: "隱藏時間軸中指定條件的貼文。"
+  hardDescription: "具有指定條件的貼文將不添加到時間軸。 即使您更改條件，未被添加的貼文也會被排除在外。"
+  soft: "軟性靜音"
+  hard: "硬性靜音"
   mutedNotes: "已靜音的貼文"
 _instanceMute:
   instanceMuteDescription: "包括對被靜音實例上的用戶的回覆，被設定的實例上所有貼文及轉發都會被靜音。"
+  instanceMuteDescription2: "設定時以換行進行分隔"
+  title: "被設定的實例，貼文將被隱藏。"
   heading: "將實例靜音"
 _theme:
   explore: "取得佈景主題"
@@ -1012,10 +1017,12 @@ _theme:
   invalid: "主題格式錯誤"
   make: "製作主題"
   base: "基於"
+  addConstant: "添加常數"
   constant: "常數"
   defaultValue: "預設值"
   color: "顏色"
   refProp: "查看屬性 "
+  refConst: "查看常數"
   key: "按鍵"
   func: "函数"
   funcKind: "功能類型"
@@ -1024,6 +1031,8 @@ _theme:
   alpha: "透明度"
   darken: "暗度"
   lighten: "亮度"
+  inputConstantName: "請輸入常數的名稱"
+  importInfo: "您可以在此貼上主題代碼，將其匯入編輯器中"
   deleteConstantConfirm: "確定要删除常數{const}嗎？"
   keys:
     accent: "重點色彩"
@@ -1545,6 +1554,7 @@ _pages:
       _seedRandomPick:
         arg1: "種子"
         arg2: "清單"
+      DRPWPM: "从機率列表中隨機選擇（每個用户每天）"
       _DRPWPM:
         arg1: "字串串列"
       pick: "從清單中選取"
@@ -1575,6 +1585,7 @@ _pages:
       _for:
         arg1: "重複次數"
         arg2: "處理"
+    typeError: "槽參數{slot}需要傳入“{expect}”，但是實際傳入為“{actual}”！"
     thereIsEmptySlot: "參數{slot}是空的！"
     types:
       string: "字串"
@@ -1598,10 +1609,12 @@ _notification:
   youRenoted: "{name} 轉發了你的貼文"
   youGotPoll: "{name}已投票"
   youGotMessagingMessageFromUser: "{name}發送給您的訊息"
+  youGotMessagingMessageFromGroup: "來自{name}的聊天室"
   youWereFollowed: "您有新的追隨者"
   youReceivedFollowRequest: "您有新的追隨請求"
   yourFollowRequestAccepted: "您的追隨請求已通過"
   youWereInvitedToGroup: "您有新的群組邀請"
+  pollEnded: "問卷調查已產生結果"
   _types:
     all: "全部 "
     follow: "追隨中"
