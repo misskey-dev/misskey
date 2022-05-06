@@ -842,8 +842,15 @@ oneDay: "1天"
 oneWeek: "1週"
 reflectMayTakeTime: "可能需要一些時間才會出現效果。"
 failedToFetchAccountInformation: "取得帳戶資訊失敗"
+_emailUnavailable:
+  used: "已經在使用中"
+  format: "格式無效"
+  disposable: "不是永久可用的地址"
+  mx: "郵件伺服器不正確"
+  smtp: "郵件伺服器沒有應答"
 _ffVisibility:
   public: "發佈"
+  followers: "只有關注你的用戶能看到"
   private: "私密"
 _signup:
   almostThere: "即將完成"
