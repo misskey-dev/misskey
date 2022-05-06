@@ -33,13 +33,13 @@ export function uploadFile(
 	name?: string,
 	keepOriginal: boolean = defaultStore.state.keepOriginalUploading
 ): Promise<Misskey.entities.DriveFile> {
-	if (folder && typeof folder == 'object') folder = folder.id;
+	if (folder && typeof folder === 'object') folder = folder.id;
 
 	return new Promise((resolve, reject) => {
 		const id = Math.random().toString();
 
 		const reader = new FileReader();
-		reader.onload = async (e) => {
+		reader.onload = async (ev) => {
 			const ctx = reactive<Uploading>({
 				id: id,
 				name: name || file.name || 'untitled',
@@ -64,24 +64,24 @@ export function uploadFile(
 				try {
 					resizedImage = await readAndCompressImage(file, config);
 					ctx.name = file.type !== imgConfig.mimeType ? `${ctx.name}.${mimeTypeMap[compressTypeMap[file.type].mimeType]}` : ctx.name;
-				} catch (e) {
-					console.error('Failed to resize image', e);
+				} catch (err) {
+					console.error('Failed to resize image', err);
 				}
 			}
 
-			const data = new FormData();
-			data.append('i', $i.token);
-			data.append('force', 'true');
-			data.append('file', resizedImage || file);
-			data.append('name', ctx.name);
-			if (folder) data.append('folderId', folder);
+			const formData = new FormData();
+			formData.append('i', $i.token);
+			formData.append('force', 'true');
+			formData.append('file', resizedImage || file);
+			formData.append('name', ctx.name);
+			if (folder) formData.append('folderId', folder);
 
 			const xhr = new XMLHttpRequest();
 			xhr.open('POST', apiUrl + '/drive/files/create', true);
 			xhr.onload = (ev) => {
 				if (xhr.status !== 200 || ev.target == null || ev.target.response == null) {
 					// TODO: 消すのではなくて再送できるようにしたい
-					uploads.value = uploads.value.filter(x => x.id != id);
+					uploads.value = uploads.value.filter(x => x.id !== id);
 
 					alert({
 						type: 'error',
@@ -97,17 +97,17 @@ export function uploadFile(
 
 				resolve(driveFile);
 
-				uploads.value = uploads.value.filter(x => x.id != id);
+				uploads.value = uploads.value.filter(x => x.id !== id);
 			};
 
-			xhr.upload.onprogress = e => {
-				if (e.lengthComputable) {
-					ctx.progressMax = e.total;
-					ctx.progressValue = e.loaded;
+			xhr.upload.onprogress = ev => {
+				if (ev.lengthComputable) {
+					ctx.progressMax = ev.total;
+					ctx.progressValue = ev.loaded;
 				}
 			};
 
-			xhr.send(data);
+			xhr.send(formData);
 		};
 		reader.readAsArrayBuffer(file);
 	});

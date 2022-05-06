@@ -19,10 +19,10 @@ function select(src: any, label: string | null, multiple: boolean): Promise<Driv
 
 				Promise.all(promises).then(driveFiles => {
 					res(multiple ? driveFiles : driveFiles[0]);
-				}).catch(e => {
+				}).catch(err => {
 					os.alert({
 						type: 'error',
-						text: e
+						text: err
 					});
 				});
 
@@ -54,9 +54,9 @@ function select(src: any, label: string | null, multiple: boolean): Promise<Driv
 				const marker = Math.random().toString(); // TODO: UUIDとか使う
 
 				const connection = stream.useChannel('main');
-				connection.on('urlUploadFinished', data => {
-					if (data.marker === marker) {
-						res(multiple ? [data.file] : data.file);
+				connection.on('urlUploadFinished', urlResponse => {
+					if (urlResponse.marker === marker) {
+						res(multiple ? [urlResponse.file] : urlResponse.file);
 						connection.dispose();
 					}
 				});
