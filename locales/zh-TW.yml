@@ -962,7 +962,11 @@ _mfm:
   font: "字型"
   fontDescription: "您可以設定顯示內容的字型"
   rainbow: "彩虹"
+  rainbowDescription: "用彩虹色來顯示內容。"
+  sparkle: "閃閃發光"
+  sparkleDescription: "添加閃閃發光的粒子效果。"
   rotate: "旋轉"
+  rotateDescription: "以指定的角度旋轉。"
 _instanceTicker:
   none: "隱藏"
   remote: "向遠端使用者顯示"
@@ -982,9 +986,14 @@ _channel:
   usersCount: "有{n}人參與"
   notesCount: "有{n}個貼文"
 _menuDisplay:
+  sideFull: "側向"
+  sideIcon: "側向（圖示）"
+  top: "頂部"
   hide: "隱藏"
 _wordMute:
   muteWords: "加入靜音文字"
+  muteWordsDescription: "用空格分隔指定AND，用換行符號分隔指定OR。"
+  muteWordsDescription2: "將關鍵字用斜線括起來表示正規表達式。"
   softDescription: "隱藏時間軸中指定條件的貼文。"
   mutedNotes: "已靜音的貼文"
 _instanceMute:
