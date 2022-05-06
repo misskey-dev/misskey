@@ -244,11 +244,10 @@ if (props.reply && props.reply.text != null) {
 												`@${x.username}@${toASCII(otherHost)}`;
 
 		// 自分は除外
-		if ($i.username === x.username && x.host == null) continue;
-		if ($i.username === x.username && x.host === host) continue;
+		if ($i.username === x.username && (x.host == null || x.host === host)) continue;
 
 		// 重複は除外
-		if (text.indexOf(`${mention} `) !== -1) continue;
+		if (text.includes(`${mention} `)) continue;
 
 		text += `${mention} `;
 	}
