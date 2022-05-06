@@ -840,6 +840,8 @@ tenMinutes: "10分鐘"
 oneHour: "1小時"
 oneDay: "1天"
 oneWeek: "1週"
+reflectMayTakeTime: "可能需要一些時間才會出現效果。"
+failedToFetchAccountInformation: "取得帳號資訊失敗"
 _ffVisibility:
   public: "發佈"
   private: "私密"
