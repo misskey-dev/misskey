@@ -1,12 +1,13 @@
 <template>
-<div class="_section"
+<div
+	ref="rootEl"
+	class="_section"
 	@dragover.prevent.stop="onDragover"
 	@drop.prevent.stop="onDrop"
-	ref="rootEl"
 >
 	<div class="_content mk-messaging-room">
 		<div class="body">
-			<MkPagination ref="pagingComponent" :key="userAcct || groupId" v-if="pagination" :pagination="pagination">
+			<MkPagination v-if="pagination" ref="pagingComponent" :key="userAcct || groupId" :pagination="pagination">
 				<template #empty>
 					<div class="_fullinfo">
 						<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
@@ -14,11 +15,11 @@
 					</div>
 				</template>
 
-				<template #default="{ items: messages, fetching }">
+				<template #default="{ items: messages, fetching: pFetching }">
 					<XList
 						v-if="messages.length > 0"
 						v-slot="{ item: message }"
-						:class="{ messages: true, 'deny-move-transition': fetching }"
+						:class="{ messages: true, 'deny-move-transition': pFetching }"
 						:items="messages"
 						direction="up"
 						reversed
@@ -32,13 +33,13 @@
 			<div v-if="typers.length > 0" class="typers">
 				<I18n :src="i18n.ts.typingUsers" text-tag="span" class="users">
 					<template #users>
-						<b v-for="user in typers" :key="user.id" class="user">{{ user.username }}</b>
+						<b v-for="typer in typers" :key="typer.id" class="user">{{ typer.username }}</b>
 					</template>
 				</I18n>
 				<MkEllipsis/>
 			</div>
 			<transition :name="animation ? 'fade' : ''">
-				<div class="new-message" v-show="showIndicator">
+				<div v-show="showIndicator" class="new-message">
 					<button class="_buttonPrimary" @click="onIndicatorClick"><i class="fas fa-fw fa-arrow-circle-down"></i>{{ i18n.ts.newMessageExists }}</button>
 				</div>
 			</transition>
@@ -133,8 +134,8 @@ async function fetch() {
 	connection.on('message', onMessage);
 	connection.on('read', onRead);
 	connection.on('deleted', onDeleted);
-	connection.on('typers', typers => {
-		typers = typers.filter(u => u.id !== $i?.id);
+	connection.on('typers', _typers => {
+		typers = _typers.filter(u => u.id !== $i?.id);
 	});
 
 	document.addEventListener('visibilitychange', onVisibilitychange);
@@ -149,27 +150,27 @@ async function fetch() {
 	});
 }
 
-function onDragover(e: DragEvent) {
-	if (!e.dataTransfer) return;
+function onDragover(ev: DragEvent) {
+	if (!ev.dataTransfer) return;
 
-	const isFile = e.dataTransfer.items[0].kind == 'file';
-	const isDriveFile = e.dataTransfer.types[0] == _DATA_TRANSFER_DRIVE_FILE_;
+	const isFile = ev.dataTransfer.items[0].kind === 'file';
+	const isDriveFile = ev.dataTransfer.types[0] === _DATA_TRANSFER_DRIVE_FILE_;
 
 	if (isFile || isDriveFile) {
-		e.dataTransfer.dropEffect = e.dataTransfer.effectAllowed == 'all' ? 'copy' : 'move';
+		ev.dataTransfer.dropEffect = ev.dataTransfer.effectAllowed === 'all' ? 'copy' : 'move';
 	} else {
-		e.dataTransfer.dropEffect = 'none';
+		ev.dataTransfer.dropEffect = 'none';
 	}
 }
 
-function onDrop(e: DragEvent): void {
-	if (!e.dataTransfer) return;
+function onDrop(ev: DragEvent): void {
+	if (!ev.dataTransfer) return;
 
 	// ファイルだったら
-	if (e.dataTransfer.files.length == 1) {
-		formEl.upload(e.dataTransfer.files[0]);
+	if (ev.dataTransfer.files.length === 1) {
+		formEl.upload(ev.dataTransfer.files[0]);
 		return;
-	} else if (e.dataTransfer.files.length > 1) {
+	} else if (ev.dataTransfer.files.length > 1) {
 		os.alert({
 			type: 'error',
 			text: i18n.ts.onlyOneFileCanBeAttached
@@ -178,8 +179,8 @@ function onDrop(e: DragEvent): void {
 	}
 
 	//#region ドライブのファイル
-	const driveFile = e.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FILE_);
-	if (driveFile != null && driveFile != '') {
+	const driveFile = ev.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FILE_);
+	if (driveFile != null && driveFile !== '') {
 		const file = JSON.parse(driveFile);
 		formEl.file = file;
 	}
@@ -192,7 +193,7 @@ function onMessage(message) {
 	const _isBottom = isBottomVisible(rootEl, 64);
 
 	pagingComponent.prepend(message);
-	if (message.userId != $i?.id && !document.hidden) {
+	if (message.userId !== $i?.id && !document.hidden) {
 		connection?.send('read', {
 			id: message.id
 		});
@@ -203,7 +204,7 @@ function onMessage(message) {
 		nextTick(() => {
 			thisScrollToBottom();
 		});
-	} else if (message.userId != $i?.id) {
+	} else if (message.userId !== $i?.id) {
 		// Notify
 		notifyNewMessage();
 	}
@@ -213,8 +214,8 @@ function onRead(x) {
 	if (user) {
 		if (!Array.isArray(x)) x = [x];
 		for (const id of x) {
-			if (pagingComponent.items.some(x => x.id == id)) {
-				const exist = pagingComponent.items.map(x => x.id).indexOf(id);
+			if (pagingComponent.items.some(y => y.id === id)) {
+				const exist = pagingComponent.items.map(y => y.id).indexOf(id);
 				pagingComponent.items[exist] = {
 					...pagingComponent.items[exist],
 					isRead: true,
@@ -223,8 +224,8 @@ function onRead(x) {
 		}
 	} else if (group) {
 		for (const id of x.ids) {
-			if (pagingComponent.items.some(x => x.id == id)) {
-				const exist = pagingComponent.items.map(x => x.id).indexOf(id);
+			if (pagingComponent.items.some(y => y.id === id)) {
+				const exist = pagingComponent.items.map(y => y.id).indexOf(id);
 				pagingComponent.items[exist] = {
 					...pagingComponent.items[exist],
 					reads: [...pagingComponent.items[exist].reads, x.userId]
