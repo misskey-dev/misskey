@@ -169,7 +169,7 @@ export function getUserMenu(user) {
 		action: () => {
 			os.post({ specified: user });
 		}
-	}, meId != user.id ? {
+	}, meId !== user.id ? {
 		type: 'link',
 		icon: 'fas fa-comments',
 		text: i18n.ts.startMessaging,
@@ -178,13 +178,13 @@ export function getUserMenu(user) {
 		icon: 'fas fa-list-ul',
 		text: i18n.ts.addToList,
 		action: pushList
-	}, meId != user.id ? {
+	}, meId !== user.id ? {
 		icon: 'fas fa-users',
 		text: i18n.ts.inviteToGroup,
 		action: inviteGroup
 	} : undefined] as any;
 
-	if ($i && meId != user.id) {
+	if ($i && meId !== user.id) {
 		menu = menu.concat([null, {
 			icon: user.isMuted ? 'fas fa-eye' : 'fas fa-eye-slash',
 			text: user.isMuted ? i18n.ts.unmute : i18n.ts.mute,

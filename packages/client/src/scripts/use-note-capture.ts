@@ -11,8 +11,8 @@ export function useNoteCapture(props: {
 	const note = props.note;
 	const connection = $i ? stream : null;
 
-	function onStreamNoteUpdated(data): void {
-		const { type, id, body } = data;
+	function onStreamNoteUpdated(noteData): void {
+		const { type, id, body } = noteData;
 
 		if (id !== note.value.id) return;
 
