@@ -50,10 +50,10 @@ export default define(meta, paramDef, async (ps, user) => {
 
 	const clientData = JSON.parse(ps.clientDataJSON);
 
-	if (clientData.type != 'webauthn.create') {
+	if (clientData.type !== 'webauthn.create') {
 		throw new Error('not a creation attestation');
 	}
-	if (clientData.origin != config.scheme + '://' + config.host) {
+	if (clientData.origin !== config.scheme + '://' + config.host) {
 		throw new Error('origin mismatch');
 	}
 
@@ -78,7 +78,7 @@ export default define(meta, paramDef, async (ps, user) => {
 	const credentialId = authData.slice(55, 55 + credentialIdLength);
 	const publicKeyData = authData.slice(55 + credentialIdLength);
 	const publicKey: Map<number, any> = await cborDecodeFirst(publicKeyData);
-	if (publicKey.get(3) != -7) {
+	if (publicKey.get(3) !== -7) {
 		throw new Error('alg mismatch');
 	}
 

@@ -56,7 +56,7 @@ export const urlPreviewHandler = async (ctx: Koa.Context) => {
 function wrap(url?: string): string | null {
 	return url != null
 		? url.match(/^https?:\/\//)
-			? `${config.url}/proxy/preview.jpg?${query({
+			? `${config.url}/proxy/preview.webp?${query({
 				url,
 				preview: '1',
 			})}`

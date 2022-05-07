@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineAsyncComponent, defineComponent } from 'vue';
 import { host } from '@/config';
 import { search } from '@/scripts/search';
 import * as os from '@/os';
@@ -121,9 +121,9 @@ export default defineComponent({
 		},
 
 		more(ev) {
-			os.popup(import('@/components/launch-pad.vue'), {}, {
+			os.popup(defineAsyncComponent(() => import('@/components/launch-pad.vue')), {
 				src: ev.currentTarget ?? ev.target,
-			}, 'closed');
+			}, {}, 'closed');
 		},
 
 		openAccountMenu:(ev) => {

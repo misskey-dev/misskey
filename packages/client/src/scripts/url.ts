@@ -4,7 +4,7 @@ export function query(obj: {}): string {
 		.reduce((a, [k, v]) => (a[k] = v, a), {} as Record<string, any>);
 
 	return Object.entries(params)
-		.map((e) => `${e[0]}=${encodeURIComponent(e[1])}`)
+		.map((p) => `${p[0]}=${encodeURIComponent(p[1])}`)
 		.join('&');
 }
 

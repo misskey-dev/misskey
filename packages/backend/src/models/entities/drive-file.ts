@@ -79,7 +79,6 @@ export class DriveFile {
 	})
 	public properties: { width?: number; height?: number; orientation?: number; avgColor?: string };
 
-	@Index()
 	@Column('boolean')
 	public storedInternal: boolean;
 

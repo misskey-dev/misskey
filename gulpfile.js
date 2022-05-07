@@ -37,7 +37,6 @@ gulp.task('copy:client:locales', cb => {
 
 gulp.task('build:backend:script', () => {
 	return gulp.src(['./packages/backend/src/server/web/boot.js', './packages/backend/src/server/web/bios.js', './packages/backend/src/server/web/cli.js'])
-		.pipe(replace('VERSION', JSON.stringify(meta.version)))
 		.pipe(replace('LANGS', JSON.stringify(Object.keys(locales))))
 		.pipe(terser({
 			toplevel: true

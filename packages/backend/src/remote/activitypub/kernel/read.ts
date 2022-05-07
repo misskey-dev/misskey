@@ -18,7 +18,7 @@ export const performReadActivity = async (actor: CacheableRemoteUser, activity: 
 		return `skip: message not found`;
 	}
 
-	if (actor.id != message.recipientId) {
+	if (actor.id !== message.recipientId) {
 		return `skip: actor is not a message recipient`;
 	}
 

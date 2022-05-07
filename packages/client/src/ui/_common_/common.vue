@@ -17,9 +17,11 @@
 
 <script lang="ts">
 import { defineAsyncComponent, defineComponent } from 'vue';
-import { popup, popups, uploads, pendingApiRequestsCount } from '@/os';
+import { popup, popups, pendingApiRequestsCount } from '@/os';
+import { uploads } from '@/scripts/upload';
 import * as sound from '@/scripts/sound';
 import { $i } from '@/account';
+import { swInject } from './sw-inject';
 import { stream } from '@/stream';
 
 export default defineComponent({
@@ -37,7 +39,7 @@ export default defineComponent({
 					id: notification.id
 				});
 
-				popup(import('@/components/notification-toast.vue'), {
+				popup(defineAsyncComponent(() => import('@/components/notification-toast.vue')), {
 					notification
 				}, {}, 'closed');
 			}
@@ -48,6 +50,11 @@ export default defineComponent({
 		if ($i) {
 			const connection = stream.useChannel('main', null, 'UI');
 			connection.on('notification', onNotification);
+
+			//#region Listen message from SW
+			if ('serviceWorker' in navigator) {
+				swInject();
+			}
 		}
 
 		return {

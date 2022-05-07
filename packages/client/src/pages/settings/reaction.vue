@@ -54,7 +54,7 @@
 </template>
 
 <script lang="ts" setup>
-import { watch } from 'vue';
+import { defineAsyncComponent, watch } from 'vue';
 import XDraggable from 'vuedraggable';
 import FormInput from '@/components/form/input.vue';
 import FormRadios from '@/components/form/radios.vue';
@@ -88,7 +88,7 @@ function remove(reaction, ev: MouseEvent) {
 }
 
 function preview(ev: MouseEvent) {
-	os.popup(import('@/components/emoji-picker-dialog.vue'), {
+	os.popup(defineAsyncComponent(() => import('@/components/emoji-picker-dialog.vue')), {
 		asReactionPicker: true,
 		src: ev.currentTarget ?? ev.target,
 	}, {}, 'closed');

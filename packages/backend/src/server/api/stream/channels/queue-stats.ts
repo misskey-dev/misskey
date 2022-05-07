@@ -1,7 +1,7 @@
-import { default as Xev } from 'xev';
+import Xev from 'xev';
 import Channel from '../channel.js';
 
-const ev = new Xev.default();
+const ev = new Xev();
 
 export default class extends Channel {
 	public readonly chName = 'queueStats';

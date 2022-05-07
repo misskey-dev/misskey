@@ -69,7 +69,7 @@ export async function updateQuestion(value: any) {
 		const oldCount = poll.votes[poll.choices.indexOf(choice)];
 		const newCount = apChoices!.filter(ap => ap.name === choice)[0].replies!.totalItems;
 
-		if (oldCount != newCount) {
+		if (oldCount !== newCount) {
 			changed = true;
 			poll.votes[poll.choices.indexOf(choice)] = newCount;
 		}
