@@ -38,6 +38,7 @@ import { throttle } from 'throttle-debounce';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
 import { Autocomplete } from '@/scripts/autocomplete';
+import { uploadFile } from '@/scripts/upload';
 
 const props = defineProps<{
 	user?: Misskey.entities.UserDetailed | null;
@@ -143,7 +144,7 @@ function onChangeFile() {
 }
 
 function upload(fileToUpload: File, name?: string) {
-	os.upload(fileToUpload, defaultStore.state.uploadFolder, name).then(res => {
+	uploadFile(fileToUpload, defaultStore.state.uploadFolder, name).then(res => {
 		file = res;
 	});
 }

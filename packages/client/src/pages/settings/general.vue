@@ -1,10 +1,10 @@
 <template>
 <div class="_formRoot">
 	<FormSelect v-model="lang" class="_formBlock">
-		<template #label>{{ $ts.uiLanguage }}</template>
+		<template #label>{{ i18n.ts.uiLanguage }}</template>
 		<option v-for="x in langs" :key="x[0]" :value="x[0]">{{ x[1] }}</option>
 		<template #caption>
-			<I18n :src="$ts.i18nInfo" tag="span">
+			<I18n :src="i18n.ts.i18nInfo" tag="span">
 				<template #link>
 					<MkLink url="https://crowdin.com/project/misskey">Crowdin</MkLink>
 				</template>
@@ -13,48 +13,48 @@
 	</FormSelect>
 
 	<FormRadios v-model="overridedDeviceKind" class="_formBlock">
-		<template #label>{{ $ts.overridedDeviceKind }}</template>
-		<option :value="null">{{ $ts.auto }}</option>
-		<option value="smartphone"><i class="fas fa-mobile-alt"/> {{ $ts.smartphone }}</option>
-		<option value="tablet"><i class="fas fa-tablet-alt"/> {{ $ts.tablet }}</option>
-		<option value="desktop"><i class="fas fa-desktop"/> {{ $ts.desktop }}</option>
+		<template #label>{{ i18n.ts.overridedDeviceKind }}</template>
+		<option :value="null">{{ i18n.ts.auto }}</option>
+		<option value="smartphone"><i class="fas fa-mobile-alt"/> {{ i18n.ts.smartphone }}</option>
+		<option value="tablet"><i class="fas fa-tablet-alt"/> {{ i18n.ts.tablet }}</option>
+		<option value="desktop"><i class="fas fa-desktop"/> {{ i18n.ts.desktop }}</option>
 	</FormRadios>
 
-	<FormSwitch v-model="showFixedPostForm" class="_formBlock">{{ $ts.showFixedPostForm }}</FormSwitch>
+	<FormSwitch v-model="showFixedPostForm" class="_formBlock">{{ i18n.ts.showFixedPostForm }}</FormSwitch>
 
 	<FormSection>
-		<template #label>{{ $ts.behavior }}</template>
-		<FormSwitch v-model="imageNewTab" class="_formBlock">{{ $ts.openImageInNewTab }}</FormSwitch>
-		<FormSwitch v-model="enableInfiniteScroll" class="_formBlock">{{ $ts.enableInfiniteScroll }}</FormSwitch>
-		<FormSwitch v-model="useReactionPickerForContextMenu" class="_formBlock">{{ $ts.useReactionPickerForContextMenu }}</FormSwitch>
-		<FormSwitch v-model="disablePagesScript" class="_formBlock">{{ $ts.disablePagesScript }}</FormSwitch>
+		<template #label>{{ i18n.ts.behavior }}</template>
+		<FormSwitch v-model="imageNewTab" class="_formBlock">{{ i18n.ts.openImageInNewTab }}</FormSwitch>
+		<FormSwitch v-model="enableInfiniteScroll" class="_formBlock">{{ i18n.ts.enableInfiniteScroll }}</FormSwitch>
+		<FormSwitch v-model="useReactionPickerForContextMenu" class="_formBlock">{{ i18n.ts.useReactionPickerForContextMenu }}</FormSwitch>
+		<FormSwitch v-model="disablePagesScript" class="_formBlock">{{ i18n.ts.disablePagesScript }}</FormSwitch>
 
 		<FormSelect v-model="serverDisconnectedBehavior" class="_formBlock">
-			<template #label>{{ $ts.whenServerDisconnected }}</template>
-			<option value="reload">{{ $ts._serverDisconnectedBehavior.reload }}</option>
-			<option value="dialog">{{ $ts._serverDisconnectedBehavior.dialog }}</option>
-			<option value="quiet">{{ $ts._serverDisconnectedBehavior.quiet }}</option>
+			<template #label>{{ i18n.ts.whenServerDisconnected }}</template>
+			<option value="reload">{{ i18n.ts._serverDisconnectedBehavior.reload }}</option>
+			<option value="dialog">{{ i18n.ts._serverDisconnectedBehavior.dialog }}</option>
+			<option value="quiet">{{ i18n.ts._serverDisconnectedBehavior.quiet }}</option>
 		</FormSelect>
 	</FormSection>
 
 	<FormSection>
-		<template #label>{{ $ts.appearance }}</template>
-		<FormSwitch v-model="disableAnimatedMfm" class="_formBlock">{{ $ts.disableAnimatedMfm }}</FormSwitch>
-		<FormSwitch v-model="reduceAnimation" class="_formBlock">{{ $ts.reduceUiAnimation }}</FormSwitch>
-		<FormSwitch v-model="useBlurEffect" class="_formBlock">{{ $ts.useBlurEffect }}</FormSwitch>
-		<FormSwitch v-model="useBlurEffectForModal" class="_formBlock">{{ $ts.useBlurEffectForModal }}</FormSwitch>
-		<FormSwitch v-model="showGapBetweenNotesInTimeline" class="_formBlock">{{ $ts.showGapBetweenNotesInTimeline }}</FormSwitch>
-		<FormSwitch v-model="loadRawImages" class="_formBlock">{{ $ts.loadRawImages }}</FormSwitch>
-		<FormSwitch v-model="disableShowingAnimatedImages" class="_formBlock">{{ $ts.disableShowingAnimatedImages }}</FormSwitch>
-		<FormSwitch v-model="squareAvatars" class="_formBlock">{{ $ts.squareAvatars }}</FormSwitch>
-		<FormSwitch v-model="useSystemFont" class="_formBlock">{{ $ts.useSystemFont }}</FormSwitch>
-		<FormSwitch v-model="useOsNativeEmojis" class="_formBlock">{{ $ts.useOsNativeEmojis }}
+		<template #label>{{ i18n.ts.appearance }}</template>
+		<FormSwitch v-model="disableAnimatedMfm" class="_formBlock">{{ i18n.ts.disableAnimatedMfm }}</FormSwitch>
+		<FormSwitch v-model="reduceAnimation" class="_formBlock">{{ i18n.ts.reduceUiAnimation }}</FormSwitch>
+		<FormSwitch v-model="useBlurEffect" class="_formBlock">{{ i18n.ts.useBlurEffect }}</FormSwitch>
+		<FormSwitch v-model="useBlurEffectForModal" class="_formBlock">{{ i18n.ts.useBlurEffectForModal }}</FormSwitch>
+		<FormSwitch v-model="showGapBetweenNotesInTimeline" class="_formBlock">{{ i18n.ts.showGapBetweenNotesInTimeline }}</FormSwitch>
+		<FormSwitch v-model="loadRawImages" class="_formBlock">{{ i18n.ts.loadRawImages }}</FormSwitch>
+		<FormSwitch v-model="disableShowingAnimatedImages" class="_formBlock">{{ i18n.ts.disableShowingAnimatedImages }}</FormSwitch>
+		<FormSwitch v-model="squareAvatars" class="_formBlock">{{ i18n.ts.squareAvatars }}</FormSwitch>
+		<FormSwitch v-model="useSystemFont" class="_formBlock">{{ i18n.ts.useSystemFont }}</FormSwitch>
+		<FormSwitch v-model="useOsNativeEmojis" class="_formBlock">{{ i18n.ts.useOsNativeEmojis }}
 			<div><Mfm :key="useOsNativeEmojis" text="🍮🍦🍭🍩🍰🍫🍬🥞🍪"/></div>
 		</FormSwitch>
-		<FormSwitch v-model="disableDrawer" class="_formBlock">{{ $ts.disableDrawer }}</FormSwitch>
+		<FormSwitch v-model="disableDrawer" class="_formBlock">{{ i18n.ts.disableDrawer }}</FormSwitch>
 
 		<FormRadios v-model="fontSize" class="_formBlock">
-			<template #label>{{ $ts.fontSize }}</template>
+			<template #label>{{ i18n.ts.fontSize }}</template>
 			<option value="small"><span style="font-size: 14px;">Aa</span></option>
 			<option :value="null"><span style="font-size: 16px;">Aa</span></option>
 			<option value="large"><span style="font-size: 18px;">Aa</span></option>
@@ -63,36 +63,36 @@
 	</FormSection>
 
 	<FormSection>
-		<FormSwitch v-model="aiChanMode">{{ $ts.aiChanMode }}</FormSwitch>
+		<FormSwitch v-model="aiChanMode">{{ i18n.ts.aiChanMode }}</FormSwitch>
 	</FormSection>
 
 	<FormSelect v-model="instanceTicker" class="_formBlock">
-		<template #label>{{ $ts.instanceTicker }}</template>
-		<option value="none">{{ $ts._instanceTicker.none }}</option>
-		<option value="remote">{{ $ts._instanceTicker.remote }}</option>
-		<option value="always">{{ $ts._instanceTicker.always }}</option>
+		<template #label>{{ i18n.ts.instanceTicker }}</template>
+		<option value="none">{{ i18n.ts._instanceTicker.none }}</option>
+		<option value="remote">{{ i18n.ts._instanceTicker.remote }}</option>
+		<option value="always">{{ i18n.ts._instanceTicker.always }}</option>
 	</FormSelect>
 
 	<FormSelect v-model="nsfw" class="_formBlock">
-		<template #label>{{ $ts.nsfw }}</template>
-		<option value="respect">{{ $ts._nsfw.respect }}</option>
-		<option value="ignore">{{ $ts._nsfw.ignore }}</option>
-		<option value="force">{{ $ts._nsfw.force }}</option>
+		<template #label>{{ i18n.ts.nsfw }}</template>
+		<option value="respect">{{ i18n.ts._nsfw.respect }}</option>
+		<option value="ignore">{{ i18n.ts._nsfw.ignore }}</option>
+		<option value="force">{{ i18n.ts._nsfw.force }}</option>
 	</FormSelect>
 
 	<FormGroup>
-		<template #label>{{ $ts.defaultNavigationBehaviour }}</template>
-		<FormSwitch v-model="defaultSideView">{{ $ts.openInSideView }}</FormSwitch>
+		<template #label>{{ i18n.ts.defaultNavigationBehaviour }}</template>
+		<FormSwitch v-model="defaultSideView">{{ i18n.ts.openInSideView }}</FormSwitch>
 	</FormGroup>
 
-	<FormLink to="/settings/deck" class="_formBlock">{{ $ts.deck }}</FormLink>
+	<FormLink to="/settings/deck" class="_formBlock">{{ i18n.ts.deck }}</FormLink>
 
-	<FormLink to="/settings/custom-css" class="_formBlock"><template #icon><i class="fas fa-code"></i></template>{{ $ts.customCss }}</FormLink>
+	<FormLink to="/settings/custom-css" class="_formBlock"><template #icon><i class="fas fa-code"></i></template>{{ i18n.ts.customCss }}</FormLink>
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { computed, defineExpose, ref, watch } from 'vue';
 import FormSwitch from '@/components/form/switch.vue';
 import FormSelect from '@/components/form/select.vue';
 import FormRadios from '@/components/form/radios.vue';
@@ -102,122 +102,87 @@ import FormLink from '@/components/form/link.vue';
 import MkLink from '@/components/link.vue';
 import { langs } from '@/config';
 import { defaultStore } from '@/store';
-import { ColdDeviceStorage } from '@/store';
 import * as os from '@/os';
 import { unisonReload } from '@/scripts/unison-reload';
 import * as symbols from '@/symbols';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		MkLink,
-		FormSwitch,
-		FormSelect,
-		FormRadios,
-		FormGroup,
-		FormLink,
-		FormSection,
-	},
+const lang = ref(localStorage.getItem('lang'));
+const fontSize = ref(localStorage.getItem('fontSize'));
+const useSystemFont = ref(localStorage.getItem('useSystemFont') != null);
 
-	emits: ['info'],
+async function reloadAsk() {
+	const { canceled } = await os.confirm({
+		type: 'info',
+		text: i18n.ts.reloadToApplySetting,
+	});
+	if (canceled) return;
 
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: this.$ts.general,
-				icon: 'fas fa-cogs',
-				bg: 'var(--bg)'
-			},
-			langs,
-			lang: localStorage.getItem('lang'),
-			fontSize: localStorage.getItem('fontSize'),
-			useSystemFont: localStorage.getItem('useSystemFont') != null,
-		}
-	},
+	unisonReload();
+}
 
-	computed: {
-		overridedDeviceKind: defaultStore.makeGetterSetter('overridedDeviceKind'),
-		serverDisconnectedBehavior: defaultStore.makeGetterSetter('serverDisconnectedBehavior'),
-		reduceAnimation: defaultStore.makeGetterSetter('animation', v => !v, v => !v),
-		useBlurEffectForModal: defaultStore.makeGetterSetter('useBlurEffectForModal'),
-		useBlurEffect: defaultStore.makeGetterSetter('useBlurEffect'),
-		showGapBetweenNotesInTimeline: defaultStore.makeGetterSetter('showGapBetweenNotesInTimeline'),
-		disableAnimatedMfm: defaultStore.makeGetterSetter('animatedMfm', v => !v, v => !v),
-		useOsNativeEmojis: defaultStore.makeGetterSetter('useOsNativeEmojis'),
-		disableDrawer: defaultStore.makeGetterSetter('disableDrawer'),
-		disableShowingAnimatedImages: defaultStore.makeGetterSetter('disableShowingAnimatedImages'),
-		loadRawImages: defaultStore.makeGetterSetter('loadRawImages'),
-		imageNewTab: defaultStore.makeGetterSetter('imageNewTab'),
-		nsfw: defaultStore.makeGetterSetter('nsfw'),
-		disablePagesScript: defaultStore.makeGetterSetter('disablePagesScript'),
-		showFixedPostForm: defaultStore.makeGetterSetter('showFixedPostForm'),
-		defaultSideView: defaultStore.makeGetterSetter('defaultSideView'),
-		instanceTicker: defaultStore.makeGetterSetter('instanceTicker'),
-		enableInfiniteScroll: defaultStore.makeGetterSetter('enableInfiniteScroll'),
-		useReactionPickerForContextMenu: defaultStore.makeGetterSetter('useReactionPickerForContextMenu'),
-		squareAvatars: defaultStore.makeGetterSetter('squareAvatars'),
-		aiChanMode: defaultStore.makeGetterSetter('aiChanMode'),
-	},
+const overridedDeviceKind = computed(defaultStore.makeGetterSetter('overridedDeviceKind'));
+const serverDisconnectedBehavior = computed(defaultStore.makeGetterSetter('serverDisconnectedBehavior'));
+const reduceAnimation = computed(defaultStore.makeGetterSetter('animation', v => !v, v => !v));
+const useBlurEffectForModal = computed(defaultStore.makeGetterSetter('useBlurEffectForModal'));
+const useBlurEffect = computed(defaultStore.makeGetterSetter('useBlurEffect'));
+const showGapBetweenNotesInTimeline = computed(defaultStore.makeGetterSetter('showGapBetweenNotesInTimeline'));
+const disableAnimatedMfm = computed(defaultStore.makeGetterSetter('animatedMfm', v => !v, v => !v));
+const useOsNativeEmojis = computed(defaultStore.makeGetterSetter('useOsNativeEmojis'));
+const disableDrawer = computed(defaultStore.makeGetterSetter('disableDrawer'));
+const disableShowingAnimatedImages = computed(defaultStore.makeGetterSetter('disableShowingAnimatedImages'));
+const loadRawImages = computed(defaultStore.makeGetterSetter('loadRawImages'));
+const imageNewTab = computed(defaultStore.makeGetterSetter('imageNewTab'));
+const nsfw = computed(defaultStore.makeGetterSetter('nsfw'));
+const disablePagesScript = computed(defaultStore.makeGetterSetter('disablePagesScript'));
+const showFixedPostForm = computed(defaultStore.makeGetterSetter('showFixedPostForm'));
+const defaultSideView = computed(defaultStore.makeGetterSetter('defaultSideView'));
+const instanceTicker = computed(defaultStore.makeGetterSetter('instanceTicker'));
+const enableInfiniteScroll = computed(defaultStore.makeGetterSetter('enableInfiniteScroll'));
+const useReactionPickerForContextMenu = computed(defaultStore.makeGetterSetter('useReactionPickerForContextMenu'));
+const squareAvatars = computed(defaultStore.makeGetterSetter('squareAvatars'));
+const aiChanMode = computed(defaultStore.makeGetterSetter('aiChanMode'));
 
-	watch: {
-		lang() {
-			localStorage.setItem('lang', this.lang);
-			localStorage.removeItem('locale');
-			this.reloadAsk();
-		},
+watch(lang, () => {
+	localStorage.setItem('lang', lang.value as string);
+	localStorage.removeItem('locale');
+});
 
-		fontSize() {
-			if (this.fontSize == null) {
-				localStorage.removeItem('fontSize');
-			} else {
-				localStorage.setItem('fontSize', this.fontSize);
-			}
-			this.reloadAsk();
-		},
+watch(fontSize, () => {
+	if (fontSize.value == null) {
+		localStorage.removeItem('fontSize');
+	} else {
+		localStorage.setItem('fontSize', fontSize.value);
+	}
+});
 
-		useSystemFont() {
-			if (this.useSystemFont) {
-				localStorage.setItem('useSystemFont', 't');
-			} else {
-				localStorage.removeItem('useSystemFont');
-			}
-			this.reloadAsk();
-		},
+watch(useSystemFont, () => {
+	if (useSystemFont.value) {
+		localStorage.setItem('useSystemFont', 't');
+	} else {
+		localStorage.removeItem('useSystemFont');
+	}
+});
 
-		enableInfiniteScroll() {
-			this.reloadAsk();
-		},
+watch([
+	lang,
+	fontSize,
+	useSystemFont,
+	enableInfiniteScroll,
+	squareAvatars,
+	aiChanMode,
+	showGapBetweenNotesInTimeline,
+	instanceTicker,
+	overridedDeviceKind
+], async () => {
+	await reloadAsk();
+});
 
-		squareAvatars() {
-			this.reloadAsk();
-		},
-
-		aiChanMode() {
-			this.reloadAsk();
-		},
-
-		showGapBetweenNotesInTimeline() {
-			this.reloadAsk();
-		},
-
-		instanceTicker() {
-			this.reloadAsk();
-		},
-
-		overridedDeviceKind() {
-			this.reloadAsk();
-		},
-	},
-
-	methods: {
-		async reloadAsk() {
-			const { canceled } = await os.confirm({
-				type: 'info',
-				text: this.$ts.reloadToApplySetting,
-			});
-			if (canceled) return;
-
-			unisonReload();
-		}
+defineExpose({
+	[symbols.PAGE_INFO]: {
+		title: i18n.ts.general,
+		icon: 'fas fa-cogs',
+		bg: 'var(--bg)'
 	}
 });
 </script>

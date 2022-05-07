@@ -1,3 +1,4 @@
+import { Brackets, In } from 'typeorm';
 import { publishNoteStream } from '@/services/stream.js';
 import renderDelete from '@/remote/activitypub/renderer/delete.js';
 import renderAnnounce from '@/remote/activitypub/renderer/announce.js';
@@ -5,28 +6,31 @@ import renderUndo from '@/remote/activitypub/renderer/undo.js';
 import { renderActivity } from '@/remote/activitypub/renderer/index.js';
 import renderTombstone from '@/remote/activitypub/renderer/tombstone.js';
 import config from '@/config/index.js';
-import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc.js';
 import { User, ILocalUser, IRemoteUser } from '@/models/entities/user.js';
 import { Note, IMentionedRemoteUsers } from '@/models/entities/note.js';
 import { Notes, Users, Instances } from '@/models/index.js';
 import { notesChart, perUserNotesChart, instanceChart } from '@/services/chart/index.js';
 import { deliverToFollowers, deliverToUser } from '@/remote/activitypub/deliver-manager.js';
 import { countSameRenotes } from '@/misc/count-same-renotes.js';
+import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc.js';
 import { deliverToRelays } from '../relay.js';
-import { Brackets, In } from 'typeorm';
 
 /**
  * 投稿を削除します。
  * @param user 投稿者
  * @param note 投稿
  */
-export default async function(user: User, note: Note, quiet = false) {
+export default async function(user: { id: User['id']; uri: User['uri']; host: User['host']; }, note: Note, quiet = false) {
 	const deletedAt = new Date();
 
 	// この投稿を除く指定したユーザーによる指定したノートのリノートが存在しないとき
 	if (note.renoteId && (await countSameRenotes(user.id, note.renoteId, note.id)) === 0) {
 		Notes.decrement({ id: note.renoteId }, 'renoteCount', 1);
 		Notes.decrement({ id: note.renoteId }, 'score', 1);
+	}
+
+	if (note.replyId) {
+		await Notes.decrement({ id: note.replyId }, 'repliesCount', 1);
 	}
 
 	if (!quiet) {
@@ -36,11 +40,11 @@ export default async function(user: User, note: Note, quiet = false) {
 
 		//#region ローカルの投稿なら削除アクティビティを配送
 		if (Users.isLocalUser(user) && !note.localOnly) {
-			let renote: Note | undefined;
+			let renote: Note | null = null;
 
 			// if deletd note is renote
 			if (note.renoteId && note.text == null && !note.hasPoll && (note.fileIds == null || note.fileIds.length === 0)) {
-				renote = await Notes.findOne({
+				renote = await Notes.findOneBy({
 					id: note.renoteId,
 				});
 			}
@@ -109,7 +113,7 @@ async function getMentionedRemoteUsers(note: Note) {
 	const uris = (JSON.parse(note.mentionedRemoteUsers) as IMentionedRemoteUsers).map(x => x.uri);
 	if (uris.length > 0) {
 		where.push(
-			{ uri: In(uris) }
+			{ uri: In(uris) },
 		);
 	}
 
@@ -127,7 +131,7 @@ async function getMentionedRemoteUsers(note: Note) {
 	}) as IRemoteUser[];
 }
 
-async function deliverToConcerned(user: ILocalUser, note: Note, content: any) {
+async function deliverToConcerned(user: { id: ILocalUser['id']; host: null; }, note: Note, content: any) {
 	deliverToFollowers(user, content);
 	deliverToRelays(user, content);
 	const remoteUsers = await getMentionedRemoteUsers(note);

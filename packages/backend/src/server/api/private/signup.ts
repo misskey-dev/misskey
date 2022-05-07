@@ -56,7 +56,7 @@ export default async (ctx: Koa.Context) => {
 			return;
 		}
 
-		const ticket = await RegistrationTickets.findOne({
+		const ticket = await RegistrationTickets.findOneBy({
 			code: invitationCode,
 		});
 

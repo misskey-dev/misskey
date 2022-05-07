@@ -3,7 +3,7 @@ import define from '../../define.js';
 import { apiLogger } from '../../logger.js';
 import { ApiError } from '../../error.js';
 import { Users } from '@/models/index.js';
-import { In } from 'typeorm';
+import { FindOptionsWhere, In, IsNull } from 'typeorm';
 import { User } from '@/models/entities/user.js';
 
 export const meta = {
@@ -23,9 +23,9 @@ export const meta = {
 				items: {
 					type: 'object',
 					ref: 'UserDetailed',
-				}
+				},
 			},
-		]
+		],
 	},
 
 	errors: {
@@ -46,15 +46,33 @@ export const meta = {
 
 export const paramDef = {
 	type: 'object',
-	properties: {
-		userId: { type: 'string', format: 'misskey:id' },
-		userIds: { type: 'array', uniqueItems: true, items: {
-			type: 'string', format: 'misskey:id',
-		} },
-		username: { type: 'string' },
-		host: { type: 'string', nullable: true },
-	},
-	required: [],
+	anyOf: [
+		{
+			properties: {
+				userId: { type: 'string', format: 'misskey:id' },
+			},
+			required: ['userId'],
+		},
+		{
+			properties: {
+				userIds: { type: 'array', uniqueItems: true, items: {
+					type: 'string', format: 'misskey:id',
+				} },
+			},
+			required: ['userIds'],
+		},
+		{
+			properties: {
+				username: { type: 'string' },
+				host: {
+					type: 'string',
+					nullable: true,
+					description: 'The local host is represented with `null`.',
+				},
+			},
+			required: ['username'],
+		},
+	],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
@@ -68,7 +86,7 @@ export default define(meta, paramDef, async (ps, me) => {
 			return [];
 		}
 
-		const users = await Users.find(isAdminOrModerator ? {
+		const users = await Users.findBy(isAdminOrModerator ? {
 			id: In(ps.userIds),
 		} : {
 			id: In(ps.userIds),
@@ -92,11 +110,11 @@ export default define(meta, paramDef, async (ps, me) => {
 				throw new ApiError(meta.errors.failedToResolveRemoteUser);
 			});
 		} else {
-			const q: any = ps.userId != null
+			const q: FindOptionsWhere<User> = ps.userId != null
 				? { id: ps.userId }
-				: { usernameLower: ps.username!.toLowerCase(), host: null };
+				: { usernameLower: ps.username!.toLowerCase(), host: IsNull() };
 
-			user = await Users.findOne(q);
+			user = await Users.findOneBy(q);
 		}
 
 		if (user == null || (!isAdminOrModerator && user.isSuspended)) {

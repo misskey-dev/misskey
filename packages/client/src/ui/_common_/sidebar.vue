@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue';
+import { computed, defineAsyncComponent, ref, watch } from 'vue';
 import * as os from '@/os';
 import { menuDef } from '@/menu';
 import { $i, openAccountMenu as openAccountMenu_ } from '@/account';
@@ -69,7 +69,7 @@ function openAccountMenu(ev: MouseEvent) {
 }
 
 function more(ev: MouseEvent) {
-	os.popup(import('@/components/launch-pad.vue'), {
+	os.popup(defineAsyncComponent(() => import('@/components/launch-pad.vue')), {
 		src: ev.currentTarget ?? ev.target,
 	}, {
 	}, 'closed');

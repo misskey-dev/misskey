@@ -1,5 +1,5 @@
-import define from '../../../define.js';
 import { DriveFiles } from '@/models/index.js';
+import define from '../../../define.js';
 
 export const meta = {
 	tags: ['drive'],
@@ -29,7 +29,7 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, user) => {
-	const files = await DriveFiles.find({
+	const files = await DriveFiles.findBy({
 		md5: ps.md5,
 		userId: user.id,
 	});

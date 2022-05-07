@@ -1,7 +1,7 @@
+import { DriveFile } from '@/models/entities/drive-file.js';
+import { DriveFiles, Users } from '@/models/index.js';
 import define from '../../../define.js';
 import { ApiError } from '../../../error.js';
-import { DriveFile } from '@/models/entities/drive-file.js';
-import { DriveFiles } from '@/models/index.js';
 
 export const meta = {
 	tags: ['drive'],
@@ -28,30 +28,33 @@ export const meta = {
 			code: 'ACCESS_DENIED',
 			id: '25b73c73-68b1-41d0-bad1-381cfdf6579f',
 		},
-
-		fileIdOrUrlRequired: {
-			message: 'fileId or url required.',
-			code: 'INVALID_PARAM',
-			id: '89674805-722c-440c-8d88-5641830dc3e4',
-		},
 	},
 } as const;
 
 export const paramDef = {
 	type: 'object',
-	properties: {
-		fileId: { type: 'string', format: 'misskey:id' },
-		url: { type: 'string' },
-	},
-	required: [],
+	anyOf: [
+		{
+			properties: {
+				fileId: { type: 'string', format: 'misskey:id' },
+			},
+			required: ['fileId'],
+		},
+		{
+			properties: {
+				url: { type: 'string' },
+			},
+			required: ['url'],
+		},
+	],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, user) => {
-	let file: DriveFile | undefined;
+	let file: DriveFile | null = null;
 
 	if (ps.fileId) {
-		file = await DriveFiles.findOne(ps.fileId);
+		file = await DriveFiles.findOneBy({ id: ps.fileId });
 	} else if (ps.url) {
 		file = await DriveFiles.findOne({
 			where: [{
@@ -62,15 +65,13 @@ export default define(meta, paramDef, async (ps, user) => {
 				thumbnailUrl: ps.url,
 			}],
 		});
-	} else {
-		throw new ApiError(meta.errors.fileIdOrUrlRequired);
 	}
 
 	if (file == null) {
 		throw new ApiError(meta.errors.noSuchFile);
 	}
 
-	if (!user.isAdmin && !user.isModerator && (file.userId !== user.id)) {
+	if ((!user.isAdmin && !user.isModerator) && (file.userId !== user.id)) {
 		throw new ApiError(meta.errors.accessDenied);
 	}
 

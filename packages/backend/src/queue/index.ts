@@ -1,4 +1,5 @@
 import httpSignature from 'http-signature';
+import { v4 as uuid } from 'uuid';
 
 import config from '@/config/index.js';
 import { envOption } from '../env.js';
@@ -8,13 +9,15 @@ import processInbox from './processors/inbox.js';
 import processDb from './processors/db/index.js';
 import processObjectStorage from './processors/object-storage/index.js';
 import processSystemQueue from './processors/system/index.js';
+import processWebhookDeliver from './processors/webhook-deliver.js';
 import { endedPollNotification } from './processors/ended-poll-notification.js';
 import { queueLogger } from './logger.js';
 import { DriveFile } from '@/models/entities/drive-file.js';
 import { getJobInfo } from './get-job-info.js';
-import { systemQueue, dbQueue, deliverQueue, inboxQueue, objectStorageQueue, endedPollNotificationQueue } from './queues.js';
+import { systemQueue, dbQueue, deliverQueue, inboxQueue, objectStorageQueue, endedPollNotificationQueue, webhookDeliverQueue } from './queues.js';
 import { ThinUser } from './types.js';
 import { IActivity } from '@/remote/activitypub/type.js';
+import { Webhook, webhookEventTypes } from '@/models/entities/webhook.js';
 
 function renderError(e: Error): any {
 	return {
@@ -26,6 +29,7 @@ function renderError(e: Error): any {
 
 const systemLogger = queueLogger.createSubLogger('system');
 const deliverLogger = queueLogger.createSubLogger('deliver');
+const webhookLogger = queueLogger.createSubLogger('webhook');
 const inboxLogger = queueLogger.createSubLogger('inbox');
 const dbLogger = queueLogger.createSubLogger('db');
 const objectStorageLogger = queueLogger.createSubLogger('objectStorage');
@@ -69,6 +73,14 @@ objectStorageQueue
 	.on('failed', (job, err) => objectStorageLogger.warn(`failed(${err}) id=${job.id}`, { job, e: renderError(err) }))
 	.on('error', (job: any, err: Error) => objectStorageLogger.error(`error ${err}`, { job, e: renderError(err) }))
 	.on('stalled', (job) => objectStorageLogger.warn(`stalled id=${job.id}`));
+
+webhookDeliverQueue
+	.on('waiting', (jobId) => webhookLogger.debug(`waiting id=${jobId}`))
+	.on('active', (job) => webhookLogger.debug(`active ${getJobInfo(job, true)} to=${job.data.to}`))
+	.on('completed', (job, result) => webhookLogger.debug(`completed(${result}) ${getJobInfo(job, true)} to=${job.data.to}`))
+	.on('failed', (job, err) => webhookLogger.warn(`failed(${err}) ${getJobInfo(job)} to=${job.data.to}`))
+	.on('error', (job: any, err: Error) => webhookLogger.error(`error ${err}`, { job, e: renderError(err) }))
+	.on('stalled', (job) => webhookLogger.warn(`stalled ${getJobInfo(job)} to=${job.data.to}`));
 
 export function deliver(user: ThinUser, content: unknown, to: string | null) {
 	if (content == null) return null;
@@ -251,18 +263,43 @@ export function createCleanRemoteFilesJob() {
 	});
 }
 
+export function webhookDeliver(webhook: Webhook, type: typeof webhookEventTypes[number], content: unknown) {
+	const data = {
+		type,
+		content,
+		webhookId: webhook.id,
+		userId: webhook.userId,
+		to: webhook.url,
+		secret: webhook.secret,
+		createdAt: Date.now(),
+		eventId: uuid(),
+	};
+
+	return webhookDeliverQueue.add(data, {
+		attempts: 4,
+		timeout: 1 * 60 * 1000,	// 1min
+		backoff: {
+			type: 'apBackoff',
+		},
+		removeOnComplete: true,
+		removeOnFail: true,
+	});
+}
+
 export default function() {
 	if (envOption.onlyServer) return;
 
 	deliverQueue.process(config.deliverJobConcurrency || 128, processDeliver);
 	inboxQueue.process(config.inboxJobConcurrency || 16, processInbox);
 	endedPollNotificationQueue.process(endedPollNotification);
+	webhookDeliverQueue.process(64, processWebhookDeliver);
 	processDb(dbQueue);
 	processObjectStorage(objectStorageQueue);
 
 	systemQueue.add('tickCharts', {
 	}, {
 		repeat: { cron: '55 * * * *' },
+		removeOnComplete: true,
 	});
 
 	systemQueue.add('resyncCharts', {
@@ -278,6 +315,7 @@ export default function() {
 	systemQueue.add('checkExpiredMutings', {
 	}, {
 		repeat: { cron: '*/5 * * * *' },
+		removeOnComplete: true,
 	});
 
 	processSystemQueue(systemQueue);

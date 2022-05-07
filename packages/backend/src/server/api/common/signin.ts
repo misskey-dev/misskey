@@ -9,7 +9,7 @@ import { publishMainStream } from '@/services/stream.js';
 export default function(ctx: Koa.Context, user: ILocalUser, redirect = false) {
 	if (redirect) {
 		//#region Cookie
-		ctx.cookies.set('igi', user.token, {
+		ctx.cookies.set('igi', user.token!, {
 			path: '/',
 			// SEE: https://github.com/koajs/koa/issues/974
 			// When using a SSL proxy it should be configured to add the "X-Forwarded-Proto: https" header
@@ -36,7 +36,7 @@ export default function(ctx: Koa.Context, user: ILocalUser, redirect = false) {
 			ip: ctx.ip,
 			headers: ctx.headers,
 			success: true,
-		}).then(x => Signins.findOneOrFail(x.identifiers[0]));
+		}).then(x => Signins.findOneByOrFail(x.identifiers[0]));
 
 		// Publish signin event
 		publishMainStream(user.id, 'signin', await Signins.pack(record));

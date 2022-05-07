@@ -6,6 +6,9 @@ Also, you might receive comments on your Issue/PR in Japanese, but you do not ne
 The accuracy of machine translation into Japanese is not high, so it will be easier for us to understand if you write it in the original language.
 It will also allow the reader to use the translation tool of their preference if necessary.
 
+## Roadmap
+See [ROADMAP.md](./ROADMAP.md)
+
 ## Issues
 Before creating an issue, please check the following:
 - To avoid duplication, please search for similar issues before creating a new issue.
@@ -58,6 +61,21 @@ Be willing to comment on the good points and not just the things you want fixed 
 	- Does the test ensure the expected behavior?
 	- Are there any omissions or gaps?
 	- Does it check for anomalies?
+
+## Merge
+For now, basically only @syuilo has the authority to merge PRs into develop because he is most familiar with the codebase.
+However, minor fixes, refactoring, and urgent changes may be merged at the discretion of a contributor.
+
+## Release
+For now, basically only @syuilo has the authority to release Misskey.
+However, in case of emergency, a release can be made at the discretion of a contributor.
+
+### Release Instructions
+1. commit version changes in the `develop` branch ([package.json](https://github.com/misskey-dev/misskey/blob/develop/package.json))
+2. follow the `master` branch to the `develop` branch.
+3. Create a [release of GitHub](https://github.com/misskey-dev/misskey/releases)
+  - The target branch must be `master`
+  - The tag name must be the version
 
 ## Localization (l10n)
 Misskey uses [Crowdin](https://crowdin.com/project/misskey) for localization management.
@@ -198,11 +216,13 @@ MongoDBの時とは違い、findOneでレコードを取得する時に対象レ
 MongoDBは`null`で返してきてたので、その感覚で`if (x === null)`とか書くとバグる。代わりに`if (x == null)`と書いてください
 
 ### Migration作成方法
-```
-npx ts-node ./node_modules/typeorm/cli.js migration:generate -n 変更の名前 -o
+packages/backendで:
+```sh
+npx typeorm migration:generate -d ormconfig.js -o <migration name>
 ```
 
-作成されたスクリプトは不必要な変更を含むため除去してください。
+- 生成後、ファイルをmigration下に移してください
+- 作成されたスクリプトは不必要な変更を含むため除去してください
 
 ### コネクションには`markRaw`せよ
 **Vueのコンポーネントのdataオプションとして**misskey.jsのコネクションを設定するとき、必ず`markRaw`でラップしてください。インスタンスが不必要にリアクティブ化されることで、misskey.js内の処理で不具合が発生するとともに、パフォーマンス上の問題にも繋がる。なお、Composition APIを使う場合はこの限りではない(リアクティブ化はマニュアルなため)。

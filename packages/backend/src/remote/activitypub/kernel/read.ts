@@ -1,10 +1,10 @@
-import { IRemoteUser } from '@/models/entities/user.js';
+import { CacheableRemoteUser } from '@/models/entities/user.js';
 import { IRead, getApId } from '../type.js';
 import { isSelfHost, extractDbHost } from '@/misc/convert-host.js';
 import { MessagingMessages } from '@/models/index.js';
 import { readUserMessagingMessage } from '../../../server/api/common/read-messaging-message.js';
 
-export const performReadActivity = async (actor: IRemoteUser, activity: IRead): Promise<string> => {
+export const performReadActivity = async (actor: CacheableRemoteUser, activity: IRead): Promise<string> => {
 	const id = await getApId(activity.object);
 
 	if (!isSelfHost(extractDbHost(id))) {
@@ -13,12 +13,12 @@ export const performReadActivity = async (actor: IRemoteUser, activity: IRead): 
 
 	const messageId = id.split('/').pop();
 
-	const message = await MessagingMessages.findOne(messageId);
+	const message = await MessagingMessages.findOneBy({ id: messageId });
 	if (message == null) {
 		return `skip: message not found`;
 	}
 
-	if (actor.id != message.recipientId) {
+	if (actor.id !== message.recipientId) {
 		return `skip: actor is not a message recipient`;
 	}
 

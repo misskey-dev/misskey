@@ -2,9 +2,10 @@
 import pg from 'pg';
 pg.types.setTypeParser(20, Number);
 
-import { createConnection, Logger, getConnection } from 'typeorm';
+import { Logger, DataSource } from 'typeorm';
 import * as highlight from 'cli-highlight';
 import config from '@/config/index.js';
+import { envOption } from '../env.js';
 
 import { dbLogger } from './logger.js';
 
@@ -61,7 +62,6 @@ import { Antenna } from '@/models/entities/antenna.js';
 import { AntennaNote } from '@/models/entities/antenna-note.js';
 import { PromoNote } from '@/models/entities/promo-note.js';
 import { PromoRead } from '@/models/entities/promo-read.js';
-import { envOption } from '../env.js';
 import { Relay } from '@/models/entities/relay.js';
 import { MutedNote } from '@/models/entities/muted-note.js';
 import { Channel } from '@/models/entities/channel.js';
@@ -73,8 +73,9 @@ import { PasswordResetRequest } from '@/models/entities/password-reset-request.j
 import { UserPending } from '@/models/entities/user-pending.js';
 
 import { entities as charts } from '@/services/chart/entities.js';
+import { Webhook } from '@/models/entities/webhook.js';
 
-const sqlLogger = dbLogger.createSubLogger('sql', 'white', false);
+const sqlLogger = dbLogger.createSubLogger('sql', 'gray', false);
 
 class MyCustomLogger implements Logger {
 	private highlight(sql: string) {
@@ -84,9 +85,7 @@ class MyCustomLogger implements Logger {
 	}
 
 	public logQuery(query: string, parameters?: any[]) {
-		if (envOption.verbose) {
-			sqlLogger.info(this.highlight(query));
-		}
+		sqlLogger.info(this.highlight(query).substring(0, 100));
 	}
 
 	public logQueryError(error: string, query: string, parameters?: any[]) {
@@ -173,58 +172,59 @@ export const entities = [
 	Ad,
 	PasswordResetRequest,
 	UserPending,
+	Webhook,
 	...charts,
 ];
 
-export function initDb(justBorrow = false, sync = false, forceRecreate = false) {
-	if (!forceRecreate) {
-		try {
-			const conn = getConnection();
-			return Promise.resolve(conn);
-		} catch (e) {}
-	}
+const log = process.env.NODE_ENV !== 'production';
 
-	const log = process.env.NODE_ENV !== 'production';
-
-	return createConnection({
-		type: 'postgres',
-		host: config.db.host,
-		port: config.db.port,
-		username: config.db.user,
-		password: config.db.pass,
-		database: config.db.db,
-		extra: {
-			statement_timeout: 1000 * 10,
-			...config.db.extra,
+export const db = new DataSource({
+	type: 'postgres',
+	host: config.db.host,
+	port: config.db.port,
+	username: config.db.user,
+	password: config.db.pass,
+	database: config.db.db,
+	extra: {
+		statement_timeout: 1000 * 10,
+		...config.db.extra,
+	},
+	synchronize: process.env.NODE_ENV === 'test',
+	dropSchema: process.env.NODE_ENV === 'test',
+	cache: !config.db.disableCache ? {
+		type: 'redis',
+		options: {
+			host: config.redis.host,
+			port: config.redis.port,
+			password: config.redis.pass,
+			prefix: `${config.redis.prefix}:query:`,
+			db: config.redis.db || 0,
 		},
-		synchronize: process.env.NODE_ENV === 'test' || sync,
-		dropSchema: process.env.NODE_ENV === 'test' && !justBorrow,
-		cache: !config.db.disableCache ? {
-			type: 'redis',
-			options: {
-				host: config.redis.host,
-				port: config.redis.port,
-				password: config.redis.pass,
-				prefix: `${config.redis.prefix}:query:`,
-				db: config.redis.db || 0,
-			},
-		} : false,
-		logging: log,
-		logger: log ? new MyCustomLogger() : undefined,
-		entities: entities,
-	});
+	} : false,
+	logging: log,
+	logger: log ? new MyCustomLogger() : undefined,
+	maxQueryExecutionTime: 300,
+	entities: entities,
+	migrations: ['../../migration/*.js'],
+});
+
+export async function initDb() {
+	if (db.isInitialized) {
+		// nop
+	} else {
+		await db.connect();
+	}
 }
 
 export async function resetDb() {
 	const reset = async () => {
-		const conn = await getConnection();
-		const tables = await conn.query(`SELECT relname AS "table"
+		const tables = await db.query(`SELECT relname AS "table"
 		FROM pg_class C LEFT JOIN pg_namespace N ON (N.oid = C.relnamespace)
 		WHERE nspname NOT IN ('pg_catalog', 'information_schema')
 			AND C.relkind = 'r'
 			AND nspname !~ '^pg_toast';`);
 		for (const table of tables) {
-			await conn.query(`DELETE FROM "${table.table}" CASCADE`);
+			await db.query(`DELETE FROM "${table.table}" CASCADE`);
 		}
 	};
 

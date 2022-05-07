@@ -1,6 +1,7 @@
 import { publishMainStream, publishGroupMessagingStream } from '@/services/stream.js';
 import { publishMessagingStream } from '@/services/stream.js';
 import { publishMessagingIndexStream } from '@/services/stream.js';
+import { pushNotification } from '@/services/push-notification.js';
 import { User, IRemoteUser } from '@/models/entities/user.js';
 import { MessagingMessage } from '@/models/entities/messaging-message.js';
 import { MessagingMessages, UserGroupJoinings, Users } from '@/models/index.js';
@@ -23,7 +24,7 @@ export async function readUserMessagingMessage(
 ) {
 	if (messageIds.length === 0) return;
 
-	const messages = await MessagingMessages.find({
+	const messages = await MessagingMessages.findBy({
 		id: In(messageIds),
 	});
 
@@ -50,6 +51,21 @@ export async function readUserMessagingMessage(
 	if (!await Users.getHasUnreadMessagingMessage(userId)) {
 		// 全ての(いままで未読だった)自分宛てのメッセージを(これで)読みましたよというイベントを発行
 		publishMainStream(userId, 'readAllMessagingMessages');
+		pushNotification(userId, 'readAllMessagingMessages', undefined);
+	} else {
+		// そのユーザーとのメッセージで未読がなければイベント発行
+		const count = await MessagingMessages.count({
+			where: {
+				userId: otherpartyId,
+				recipientId: userId,
+				isRead: false,
+			},
+			take: 1
+		});
+
+		if (!count) {
+			pushNotification(userId, 'readAllMessagingMessagesOfARoom', { userId: otherpartyId });
+		}
 	}
 }
 
@@ -64,7 +80,7 @@ export async function readGroupMessagingMessage(
 	if (messageIds.length === 0) return;
 
 	// check joined
-	const joining = await UserGroupJoinings.findOne({
+	const joining = await UserGroupJoinings.findOneBy({
 		userId: userId,
 		userGroupId: groupId,
 	});
@@ -73,7 +89,7 @@ export async function readGroupMessagingMessage(
 		throw new IdentifiableError('930a270c-714a-46b2-b776-ad27276dc569', 'Access denied (group).');
 	}
 
-	const messages = await MessagingMessages.find({
+	const messages = await MessagingMessages.findBy({
 		id: In(messageIds),
 	});
 
@@ -104,6 +120,19 @@ export async function readGroupMessagingMessage(
 	if (!await Users.getHasUnreadMessagingMessage(userId)) {
 		// 全ての(いままで未読だった)自分宛てのメッセージを(これで)読みましたよというイベントを発行
 		publishMainStream(userId, 'readAllMessagingMessages');
+		pushNotification(userId, 'readAllMessagingMessages', undefined);
+	} else {
+		// そのグループにおいて未読がなければイベント発行
+		const unreadExist = await MessagingMessages.createQueryBuilder('message')
+			.where(`message.groupId = :groupId`, { groupId: groupId })
+			.andWhere('message.userId != :userId', { userId: userId })
+			.andWhere('NOT (:userId = ANY(message.reads))', { userId: userId })
+			.andWhere('message.createdAt > :joinedAt', { joinedAt: joining.createdAt }) // 自分が加入する前の会話については、未読扱いしない
+			.getOne().then(x => x != null);
+
+		if (!unreadExist) {
+			pushNotification(userId, 'readAllMessagingMessagesOfARoom', { groupId });
+		}
 	}
 }
 

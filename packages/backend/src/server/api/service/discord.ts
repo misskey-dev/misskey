@@ -1,15 +1,16 @@
 import Koa from 'koa';
 import Router from '@koa/router';
-import { getJson } from '@/misc/fetch.js';
 import { OAuth2 } from 'oauth';
+import { v4 as uuid } from 'uuid';
+import { IsNull } from 'typeorm';
+import { getJson } from '@/misc/fetch.js';
 import config from '@/config/index.js';
 import { publishMainStream } from '@/services/stream.js';
-import { redisClient } from '../../../db/redis.js';
-import { v4 as uuid } from 'uuid';
-import signin from '../common/signin.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
 import { Users, UserProfiles } from '@/models/index.js';
 import { ILocalUser } from '@/models/entities/user.js';
+import { redisClient } from '../../../db/redis.js';
+import signin from '../common/signin.js';
 
 function getUserToken(ctx: Koa.BaseContext): string | null {
 	return ((ctx.headers['cookie'] || '').match(/igi=(\w+)/) || [null, null])[1];
@@ -40,12 +41,12 @@ router.get('/disconnect/discord', async ctx => {
 		return;
 	}
 
-	const user = await Users.findOneOrFail({
-		host: null,
+	const user = await Users.findOneByOrFail({
+		host: IsNull(),
 		token: userToken,
 	});
 
-	const profile = await UserProfiles.findOneOrFail(user.id);
+	const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
 
 	delete profile.integrations.discord;
 
@@ -53,7 +54,7 @@ router.get('/disconnect/discord', async ctx => {
 		integrations: profile.integrations,
 	});
 
-	ctx.body = `Discordの連携を解除しました :v:`;
+	ctx.body = 'Discordの連携を解除しました :v:';
 
 	// Publish i updated event
 	publishMainStream(user.id, 'meUpdated', await Users.pack(user, user, {
@@ -139,7 +140,7 @@ router.get('/dc/cb', async ctx => {
 
 		const code = ctx.query.code;
 
-		if (!code) {
+		if (!code || typeof code !== 'string') {
 			ctx.throw(400, 'invalid session');
 			return;
 		}
@@ -173,17 +174,17 @@ router.get('/dc/cb', async ctx => {
 				}
 			}));
 
-		const { id, username, discriminator } = await getJson('https://discord.com/api/users/@me', '*/*', 10 * 1000, {
+		const { id, username, discriminator } = (await getJson('https://discord.com/api/users/@me', '*/*', 10 * 1000, {
 			'Authorization': `Bearer ${accessToken}`,
-		});
+		})) as Record<string, unknown>;
 
-		if (!id || !username || !discriminator) {
+		if (typeof id !== 'string' || typeof username !== 'string' || typeof discriminator !== 'string') {
 			ctx.throw(400, 'invalid session');
 			return;
 		}
 
 		const profile = await UserProfiles.createQueryBuilder()
-			.where(`"integrations"->'discord'->>'id' = :id`, { id: id })
+			.where('"integrations"->\'discord\'->>\'id\' = :id', { id: id })
 			.andWhere('"userHost" IS NULL')
 			.getOne();
 
@@ -206,11 +207,11 @@ router.get('/dc/cb', async ctx => {
 			},
 		});
 
-		signin(ctx, await Users.findOne(profile.userId) as ILocalUser, true);
+		signin(ctx, await Users.findOneBy({ id: profile.userId }) as ILocalUser, true);
 	} else {
 		const code = ctx.query.code;
 
-		if (!code) {
+		if (!code || typeof code !== 'string') {
 			ctx.throw(400, 'invalid session');
 			return;
 		}
@@ -244,20 +245,20 @@ router.get('/dc/cb', async ctx => {
 				}
 			}));
 
-		const { id, username, discriminator } = await getJson('https://discord.com/api/users/@me', '*/*', 10 * 1000, {
+		const { id, username, discriminator } = (await getJson('https://discord.com/api/users/@me', '*/*', 10 * 1000, {
 			'Authorization': `Bearer ${accessToken}`,
-		});
-		if (!id || !username || !discriminator) {
+		})) as Record<string, unknown>;
+		if (typeof id !== 'string' || typeof username !== 'string' || typeof discriminator !== 'string') {
 			ctx.throw(400, 'invalid session');
 			return;
 		}
 
-		const user = await Users.findOneOrFail({
-			host: null,
+		const user = await Users.findOneByOrFail({
+			host: IsNull(),
 			token: userToken,
 		});
 
-		const profile = await UserProfiles.findOneOrFail(user.id);
+		const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
 
 		await UserProfiles.update(user.id, {
 			integrations: {

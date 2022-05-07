@@ -19,7 +19,7 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
-		local: { type: 'boolean' },
+		local: { type: 'boolean', default: false },
 		reply: { type: 'boolean' },
 		renote: { type: 'boolean' },
 		withFiles: { type: 'boolean' },
@@ -52,19 +52,19 @@ export default define(meta, paramDef, async (ps) => {
 		query.andWhere('note.userHost IS NULL');
 	}
 
-	if (ps.reply != undefined) {
+	if (ps.reply !== undefined) {
 		query.andWhere(ps.reply ? 'note.replyId IS NOT NULL' : 'note.replyId IS NULL');
 	}
 
-	if (ps.renote != undefined) {
+	if (ps.renote !== undefined) {
 		query.andWhere(ps.renote ? 'note.renoteId IS NOT NULL' : 'note.renoteId IS NULL');
 	}
 
-	if (ps.withFiles != undefined) {
+	if (ps.withFiles !== undefined) {
 		query.andWhere(ps.withFiles ? `note.fileIds != '{}'` : `note.fileIds = '{}'`);
 	}
 
-	if (ps.poll != undefined) {
+	if (ps.poll !== undefined) {
 		query.andWhere(ps.poll ? 'note.hasPoll = TRUE' : 'note.hasPoll = FALSE');
 	}
 

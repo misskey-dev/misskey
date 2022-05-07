@@ -48,10 +48,10 @@ export default define(meta, paramDef, async (ps, user) => {
 		throw e;
 	});
 
-	if (!user.isAdmin && !user.isModerator && (note.userId !== user.id)) {
+	if ((!user.isAdmin && !user.isModerator) && (note.userId !== user.id)) {
 		throw new ApiError(meta.errors.accessDenied);
 	}
 
 	// この操作を行うのが投稿者とは限らない(例えばモデレーター)ため
-	await deleteNote(await Users.findOneOrFail(note.userId), note);
+	await deleteNote(await Users.findOneByOrFail({ id: note.userId }), note);
 });

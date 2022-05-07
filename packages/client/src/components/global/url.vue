@@ -18,11 +18,19 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineAsyncComponent, defineComponent, ref } from 'vue';
 import { toUnicode as decodePunycode } from 'punycode/';
 import { url as local } from '@/config';
 import * as os from '@/os';
 import { useTooltip } from '@/scripts/use-tooltip';
+
+function safeURIDecode(str: string) {
+	try {
+		return decodeURIComponent(str);
+	} catch {
+		return str;
+	}
+}
 
 export default defineComponent({
 	props: {
@@ -42,7 +50,7 @@ export default defineComponent({
 		const el = ref();
 		
 		useTooltip(el, (showing) => {
-			os.popup(import('@/components/url-preview-popup.vue'), {
+			os.popup(defineAsyncComponent(() => import('@/components/url-preview-popup.vue')), {
 				showing,
 				url: props.url,
 				source: el.value,
@@ -54,9 +62,9 @@ export default defineComponent({
 			schema: url.protocol,
 			hostname: decodePunycode(url.hostname),
 			port: url.port,
-			pathname: decodeURIComponent(url.pathname),
-			query: decodeURIComponent(url.search),
-			hash: decodeURIComponent(url.hash),
+			pathname: safeURIDecode(url.pathname),
+			query: safeURIDecode(url.search),
+			hash: safeURIDecode(url.hash),
 			self: self,
 			attr: self ? 'to' : 'href',
 			target: self ? null : '_blank',

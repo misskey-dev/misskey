@@ -356,7 +356,7 @@ antennaExcludeKeywords: "除外キーワード"
 antennaKeywordsDescription: "スペースで区切るとAND指定になり、改行で区切るとOR指定になります"
 notifyAntenna: "新しいノートを通知する"
 withFileAntenna: "ファイルが添付されたノートのみ"
-enableServiceworker: "ServiceWorkerを有効にする"
+enableServiceworker: "ブラウザへのプッシュ通知を有効にする"
 antennaUsersDescription: "ユーザー名を改行で区切って指定します"
 caseSensitive: "大文字小文字を区別する"
 withReplies: "返信を含む"
@@ -830,7 +830,7 @@ auto: "自動"
 themeColor: "テーマカラー"
 size: "サイズ"
 numberOfColumn: "列の数"
-searchByGoogle: "ググる"
+searchByGoogle: "検索"
 instanceDefaultLightTheme: "インスタンスデフォルトのライトテーマ"
 instanceDefaultDarkTheme: "インスタンスデフォルトのダークテーマ"
 instanceDefaultThemeDescription: "オブジェクト形式のテーマコードを記入します。"
@@ -840,6 +840,8 @@ tenMinutes: "10分"
 oneHour: "1時間"
 oneDay: "1日"
 oneWeek: "1週間"
+reflectMayTakeTime: "反映されるまで時間がかかる場合があります。"
+failedToFetchAccountInformation: "アカウント情報の取得に失敗しました"
 
 _emailUnavailable:
   used: "既に使用されています"
@@ -1666,8 +1668,9 @@ _notification:
   youWereFollowed: "フォローされました"
   youReceivedFollowRequest: "フォローリクエストが来ました"
   yourFollowRequestAccepted: "フォローリクエストが承認されました"
-  youWereInvitedToGroup: "グループに招待されました"
+  youWereInvitedToGroup: "{userName}があなたをグループに招待しました"
   pollEnded: "アンケートの結果が出ました"
+  emptyPushNotificationMessage: "プッシュ通知の更新をしました"
 
   _types:
     all: "すべて"
@@ -1683,6 +1686,11 @@ _notification:
     followRequestAccepted: "フォローが受理された"
     groupInvited: "グループに招待された"
     app: "連携アプリからの通知"
+
+  _actions:
+    followBack: "フォローバック"
+    reply: "返信"
+    renote: "Renote"
 
 _deck:
   alwaysShowMainColumn: "常にメインカラムを表示"

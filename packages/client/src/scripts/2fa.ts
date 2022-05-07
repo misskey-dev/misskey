@@ -1,11 +1,11 @@
-export function byteify(data: string, encoding: 'ascii' | 'base64' | 'hex') {
+export function byteify(string: string, encoding: 'ascii' | 'base64' | 'hex') {
 	switch (encoding) {
 		case 'ascii':
-			return Uint8Array.from(data, c => c.charCodeAt(0));
+			return Uint8Array.from(string, c => c.charCodeAt(0));
 		case 'base64':
 			return Uint8Array.from(
 				atob(
-					data
+					string
 						.replace(/-/g, '+')
 						.replace(/_/g, '/')
 				),
@@ -13,7 +13,7 @@ export function byteify(data: string, encoding: 'ascii' | 'base64' | 'hex') {
 			);
 		case 'hex':
 			return new Uint8Array(
-				data
+				string
 					.match(/.{1,2}/g)
 					.map(byte => parseInt(byte, 16))
 			);

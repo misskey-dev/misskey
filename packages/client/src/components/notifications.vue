@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineComponent, PropType, markRaw, onUnmounted, onMounted, computed, ref } from 'vue';
+import { defineComponent, markRaw, onUnmounted, onMounted, computed, ref } from 'vue';
 import { notificationTypes } from 'misskey-js';
 import MkPagination from '@/components/ui/pagination.vue';
 import { Paging } from '@/components/ui/pagination.vue';
@@ -64,6 +64,31 @@ const onNotification = (notification) => {
 onMounted(() => {
 	const connection = stream.useChannel('main');
 	connection.on('notification', onNotification);
+	connection.on('readAllNotifications', () => {
+		if (pagingComponent.value) {
+			for (const item of pagingComponent.value.queue) {
+				item.isRead = true;
+			}
+			for (const item of pagingComponent.value.items) {
+				item.isRead = true;
+			}
+		}
+	});
+	connection.on('readNotifications', notificationIds => {
+		if (pagingComponent.value) {
+			for (let i = 0; i < pagingComponent.value.queue.length; i++) {
+				if (notificationIds.includes(pagingComponent.value.queue[i].id)) {
+					pagingComponent.value.queue[i].isRead = true;
+				}
+			}
+			for (let i = 0; i < (pagingComponent.value.items || []).length; i++) {
+				if (notificationIds.includes(pagingComponent.value.items[i].id)) {
+					pagingComponent.value.items[i].isRead = true;
+				}
+			}
+		}
+	});
+
 	onUnmounted(() => {
 		connection.dispose();
 	});

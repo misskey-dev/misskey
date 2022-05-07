@@ -1,5 +1,5 @@
 import { publishMainStream } from '@/services/stream.js';
-import pushSw from './push-notification.js';
+import { pushNotification } from '@/services/push-notification.js';
 import { Notifications, Mutings, UserProfiles, Users } from '@/models/index.js';
 import { genId } from '@/misc/gen-id.js';
 import { User } from '@/models/entities/user.js';
@@ -15,7 +15,7 @@ export async function createNotification(
 		return null;
 	}
 
-	const profile = await UserProfiles.findOne({ userId: notifieeId });
+	const profile = await UserProfiles.findOneBy({ userId: notifieeId });
 
 	const isMuted = profile?.mutingNotificationTypes.includes(type);
 
@@ -29,7 +29,7 @@ export async function createNotification(
 		isRead: isMuted,
 		...data,
 	} as Partial<Notification>)
-		.then(x => Notifications.findOneOrFail(x.identifiers[0]));
+		.then(x => Notifications.findOneByOrFail(x.identifiers[0]));
 
 	const packed = await Notifications.pack(notification, {});
 
@@ -38,12 +38,12 @@ export async function createNotification(
 
 	// 2秒経っても(今回作成した)通知が既読にならなかったら「未読の通知がありますよ」イベントを発行する
 	setTimeout(async () => {
-		const fresh = await Notifications.findOne(notification.id);
+		const fresh = await Notifications.findOneBy({ id: notification.id });
 		if (fresh == null) return; // 既に削除されているかもしれない
 		if (fresh.isRead) return;
 
 		//#region ただしミュートしているユーザーからの通知なら無視
-		const mutings = await Mutings.find({
+		const mutings = await Mutings.findBy({
 			muterId: notifieeId,
 		});
 		if (data.notifierId && mutings.map(m => m.muteeId).includes(data.notifierId)) {
@@ -52,10 +52,10 @@ export async function createNotification(
 		//#endregion
 
 		publishMainStream(notifieeId, 'unreadNotification', packed);
+		pushNotification(notifieeId, 'notification', packed);
 
-		pushSw(notifieeId, 'notification', packed);
-		if (type === 'follow') sendEmailNotification.follow(notifieeId, await Users.findOneOrFail(data.notifierId!));
-		if (type === 'receiveFollowRequest') sendEmailNotification.receiveFollowRequest(notifieeId, await Users.findOneOrFail(data.notifierId!));
+		if (type === 'follow') sendEmailNotification.follow(notifieeId, await Users.findOneByOrFail({ id: data.notifierId! }));
+		if (type === 'receiveFollowRequest') sendEmailNotification.receiveFollowRequest(notifieeId, await Users.findOneByOrFail({ id: data.notifierId! }));
 	}, 2000);
 
 	return notification;

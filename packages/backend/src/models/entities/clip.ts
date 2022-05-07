@@ -37,7 +37,7 @@ export class Clip {
 	public isPublic: boolean;
 
 	@Column('varchar', {
-		length: 2048, nullable: true, default: null,
+		length: 2048, nullable: true,
 		comment: 'The description of the Clip.',
 	})
 	public description: string | null;

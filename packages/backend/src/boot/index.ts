@@ -1,6 +1,6 @@
 import cluster from 'node:cluster';
 import chalk from 'chalk';
-import { default as Xev } from 'xev';
+import Xev from 'xev';
 
 import Logger from '@/services/logger.js';
 import { envOption } from '../env.js';
@@ -12,7 +12,7 @@ import { workerMain } from './worker.js';
 
 const logger = new Logger('core', 'cyan');
 const clusterLogger = logger.createSubLogger('cluster', 'orange', false);
-const ev = new Xev.default();
+const ev = new Xev();
 
 /**
  * Init process

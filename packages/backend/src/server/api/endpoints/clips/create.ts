@@ -20,7 +20,7 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		name: { type: 'string', minLength: 1, maxLength: 100 },
-		isPublic: { type: 'boolean' },
+		isPublic: { type: 'boolean', default: false },
 		description: { type: 'string', nullable: true, minLength: 1, maxLength: 2048 },
 	},
 	required: ['name'],
@@ -35,7 +35,7 @@ export default define(meta, paramDef, async (ps, user) => {
 		name: ps.name,
 		isPublic: ps.isPublic,
 		description: ps.description,
-	}).then(x => Clips.findOneOrFail(x.identifiers[0]));
+	}).then(x => Clips.findOneByOrFail(x.identifiers[0]));
 
 	return await Clips.pack(clip);
 });

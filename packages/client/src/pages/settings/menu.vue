@@ -1,24 +1,24 @@
 <template>
 <div class="_formRoot">
 	<FormTextarea v-model="items" tall manual-save class="_formBlock">
-		<template #label>{{ $ts.menu }}</template>
-		<template #caption><button class="_textButton" @click="addItem">{{ $ts.addItem }}</button></template>
+		<template #label>{{ i18n.ts.menu }}</template>
+		<template #caption><button class="_textButton" @click="addItem">{{ i18n.ts.addItem }}</button></template>
 	</FormTextarea>
 
 	<FormRadios v-model="menuDisplay" class="_formBlock">
-		<template #label>{{ $ts.display }}</template>
-		<option value="sideFull">{{ $ts._menuDisplay.sideFull }}</option>
-		<option value="sideIcon">{{ $ts._menuDisplay.sideIcon }}</option>
-		<option value="top">{{ $ts._menuDisplay.top }}</option>
-		<!-- <MkRadio v-model="menuDisplay" value="hide" disabled>{{ $ts._menuDisplay.hide }}</MkRadio>--> <!-- TODO: サイドバーを完全に隠せるようにすると、別途ハンバーガーボタンのようなものをUIに表示する必要があり面倒 -->
+		<template #label>{{ i18n.ts.display }}</template>
+		<option value="sideFull">{{ i18n.ts._menuDisplay.sideFull }}</option>
+		<option value="sideIcon">{{ i18n.ts._menuDisplay.sideIcon }}</option>
+		<option value="top">{{ i18n.ts._menuDisplay.top }}</option>
+		<!-- <MkRadio v-model="menuDisplay" value="hide" disabled>{{ i18n.ts._menuDisplay.hide }}</MkRadio>--> <!-- TODO: サイドバーを完全に隠せるようにすると、別途ハンバーガーボタンのようなものをUIに表示する必要があり面倒 -->
 	</FormRadios>
 
-	<FormButton danger class="_formBlock" @click="reset()"><i class="fas fa-redo"></i> {{ $ts.default }}</FormButton>
+	<FormButton danger class="_formBlock" @click="reset()"><i class="fas fa-redo"></i> {{ i18n.ts.default }}</FormButton>
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { computed, defineExpose, ref, watch } from 'vue';
 import FormTextarea from '@/components/form/textarea.vue';
 import FormRadios from '@/components/form/radios.vue';
 import FormButton from '@/components/ui/button.vue';
@@ -27,81 +27,60 @@ import { menuDef } from '@/menu';
 import { defaultStore } from '@/store';
 import * as symbols from '@/symbols';
 import { unisonReload } from '@/scripts/unison-reload';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		FormButton,
-		FormTextarea,
-		FormRadios,
-	},
+const items = ref(defaultStore.state.menu.join('\n'));
 
-	emits: ['info'],
-	
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: this.$ts.menu,
-				icon: 'fas fa-list-ul',
-				bg: 'var(--bg)',
-			},
-			menuDef: menuDef,
-			items: defaultStore.state.menu.join('\n'),
-		}
-	},
+const split = computed(() => items.value.trim().split('\n').filter(x => x.trim() !== ''));
+const menuDisplay = computed(defaultStore.makeGetterSetter('menuDisplay'));
 
-	computed: {
-		splited(): string[] {
-			return this.items.trim().split('\n').filter(x => x.trim() !== '');
-		},
+async function reloadAsk() {
+	const { canceled } = await os.confirm({
+		type: 'info',
+		text: i18n.ts.reloadToApplySetting
+	});
+	if (canceled) return;
 
-		menuDisplay: defaultStore.makeGetterSetter('menuDisplay')
-	},
+	unisonReload();
+}
 
-	watch: {
-		menuDisplay() {
-			this.reloadAsk();
-		},
+async function addItem() {
+	const menu = Object.keys(menuDef).filter(k => !defaultStore.state.menu.includes(k));
+	const { canceled, result: item } = await os.select({
+		title: i18n.ts.addItem,
+		items: [...menu.map(k => ({
+			value: k, text: i18n.ts[menuDef[k].title]
+		})), {
+			value: '-', text: i18n.ts.divider
+		}]
+	});
+	if (canceled) return;
+	items.value = [...split.value, item].join('\n');
+}
 
-		items() {
-			this.save();
-		},
-	},
+async function save() {
+	defaultStore.set('menu', split.value);
+	await reloadAsk();
+}
 
-	methods: {
-		async addItem() {
-			const menu = Object.keys(this.menuDef).filter(k => !this.$store.state.menu.includes(k));
-			const { canceled, result: item } = await os.select({
-				title: this.$ts.addItem,
-				items: [...menu.map(k => ({
-					value: k, text: this.$ts[this.menuDef[k].title]
-				})), ...[{
-					value: '-', text: this.$ts.divider
-				}]]
-			});
-			if (canceled) return;
-			this.items = [...this.splited, item].join('\n');
-		},
+function reset() {
+	defaultStore.reset('menu');
+	items.value = defaultStore.state.menu.join('\n');
+}
 
-		save() {
-			this.$store.set('menu', this.splited);
-			this.reloadAsk();
-		},
+watch(items, async () => {
+	await save();
+});
 
-		reset() {
-			this.$store.reset('menu');
-			this.items = this.$store.state.menu.join('\n');
-		},
+watch(menuDisplay, async () => {
+	await reloadAsk();
+});
 
-		async reloadAsk() {
-			const { canceled } = await os.confirm({
-				type: 'info',
-				text: this.$ts.reloadToApplySetting,
-				showCancelButton: true
-			});
-			if (canceled) return;
-
-			unisonReload();
-		}
-	},
+defineExpose({
+	[symbols.PAGE_INFO]: {
+		title: i18n.ts.menu,
+		icon: 'fas fa-list-ul',
+		bg: 'var(--bg)',
+	}
 });
 </script>

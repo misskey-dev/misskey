@@ -16,7 +16,7 @@ const logger = queueLogger.createSubLogger('export-notes');
 export async function exportNotes(job: Bull.Job<DbUserJobData>, done: any): Promise<void> {
 	logger.info(`Exporting notes of ${job.data.user.id} ...`);
 
-	const user = await Users.findOne(job.data.user.id);
+	const user = await Users.findOneBy({ id: job.data.user.id });
 	if (user == null) {
 		done();
 		return;
@@ -74,7 +74,7 @@ export async function exportNotes(job: Bull.Job<DbUserJobData>, done: any): Prom
 		for (const note of notes) {
 			let poll: Poll | undefined;
 			if (note.hasPoll) {
-				poll = await Polls.findOneOrFail({ noteId: note.id });
+				poll = await Polls.findOneByOrFail({ noteId: note.id });
 			}
 			const content = JSON.stringify(serialize(note, poll));
 			const isFirst = exportedNotesCount === 0;
@@ -82,7 +82,7 @@ export async function exportNotes(job: Bull.Job<DbUserJobData>, done: any): Prom
 			exportedNotesCount++;
 		}
 
-		const total = await Notes.count({
+		const total = await Notes.countBy({
 			userId: user.id,
 		});
 

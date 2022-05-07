@@ -1,15 +1,16 @@
 import Koa from 'koa';
 import Router from '@koa/router';
-import { getJson } from '@/misc/fetch.js';
 import { OAuth2 } from 'oauth';
+import { v4 as uuid } from 'uuid';
+import { IsNull } from 'typeorm';
+import { getJson } from '@/misc/fetch.js';
 import config from '@/config/index.js';
 import { publishMainStream } from '@/services/stream.js';
-import { redisClient } from '../../../db/redis.js';
-import { v4 as uuid } from 'uuid';
-import signin from '../common/signin.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
 import { Users, UserProfiles } from '@/models/index.js';
 import { ILocalUser } from '@/models/entities/user.js';
+import { redisClient } from '../../../db/redis.js';
+import signin from '../common/signin.js';
 
 function getUserToken(ctx: Koa.BaseContext): string | null {
 	return ((ctx.headers['cookie'] || '').match(/igi=(\w+)/) || [null, null])[1];
@@ -40,12 +41,12 @@ router.get('/disconnect/github', async ctx => {
 		return;
 	}
 
-	const user = await Users.findOneOrFail({
-		host: null,
+	const user = await Users.findOneByOrFail({
+		host: IsNull(),
 		token: userToken,
 	});
 
-	const profile = await UserProfiles.findOneOrFail(user.id);
+	const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
 
 	delete profile.integrations.github;
 
@@ -53,7 +54,7 @@ router.get('/disconnect/github', async ctx => {
 		integrations: profile.integrations,
 	});
 
-	ctx.body = `GitHubの連携を解除しました :v:`;
+	ctx.body = 'GitHubの連携を解除しました :v:';
 
 	// Publish i updated event
 	publishMainStream(user.id, 'meUpdated', await Users.pack(user, user, {
@@ -137,7 +138,7 @@ router.get('/gh/cb', async ctx => {
 
 		const code = ctx.query.code;
 
-		if (!code) {
+		if (!code || typeof code !== 'string') {
 			ctx.throw(400, 'invalid session');
 			return;
 		}
@@ -166,16 +167,16 @@ router.get('/gh/cb', async ctx => {
 				}
 			}));
 
-		const { login, id } = await getJson('https://api.github.com/user', 'application/vnd.github.v3+json', 10 * 1000, {
+		const { login, id } = (await getJson('https://api.github.com/user', 'application/vnd.github.v3+json', 10 * 1000, {
 			'Authorization': `bearer ${accessToken}`,
-		});
-		if (!login || !id) {
+		})) as Record<string, unknown>;
+		if (typeof login !== 'string' || typeof id !== 'string') {
 			ctx.throw(400, 'invalid session');
 			return;
 		}
 
 		const link = await UserProfiles.createQueryBuilder()
-			.where(`"integrations"->'github'->>'id' = :id`, { id: id })
+			.where('"integrations"->\'github\'->>\'id\' = :id', { id: id })
 			.andWhere('"userHost" IS NULL')
 			.getOne();
 
@@ -184,11 +185,11 @@ router.get('/gh/cb', async ctx => {
 			return;
 		}
 
-		signin(ctx, await Users.findOne(link.userId) as ILocalUser, true);
+		signin(ctx, await Users.findOneBy({ id: link.userId }) as ILocalUser, true);
 	} else {
 		const code = ctx.query.code;
 
-		if (!code) {
+		if (!code || typeof code !== 'string') {
 			ctx.throw(400, 'invalid session');
 			return;
 		}
@@ -218,21 +219,21 @@ router.get('/gh/cb', async ctx => {
 					}
 				}));
 
-		const { login, id } = await getJson('https://api.github.com/user', 'application/vnd.github.v3+json', 10 * 1000, {
+		const { login, id } = (await getJson('https://api.github.com/user', 'application/vnd.github.v3+json', 10 * 1000, {
 			'Authorization': `bearer ${accessToken}`,
-		});
+		})) as Record<string, unknown>;
 
-		if (!login || !id) {
+		if (typeof login !== 'string' || typeof id !== 'string') {
 			ctx.throw(400, 'invalid session');
 			return;
 		}
 
-		const user = await Users.findOneOrFail({
-			host: null,
+		const user = await Users.findOneByOrFail({
+			host: IsNull(),
 			token: userToken,
 		});
 
-		const profile = await UserProfiles.findOneOrFail(user.id);
+		const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
 
 		await UserProfiles.update(user.id, {
 			integrations: {

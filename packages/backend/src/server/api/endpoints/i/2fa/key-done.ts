@@ -35,7 +35,7 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, user) => {
-	const profile = await UserProfiles.findOneOrFail(user.id);
+	const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
 
 	// Compare password
 	const same = await bcrypt.compare(ps.password, profile.password!);
@@ -50,10 +50,10 @@ export default define(meta, paramDef, async (ps, user) => {
 
 	const clientData = JSON.parse(ps.clientDataJSON);
 
-	if (clientData.type != 'webauthn.create') {
+	if (clientData.type !== 'webauthn.create') {
 		throw new Error('not a creation attestation');
 	}
-	if (clientData.origin != config.scheme + '://' + config.host) {
+	if (clientData.origin !== config.scheme + '://' + config.host) {
 		throw new Error('origin mismatch');
 	}
 
@@ -78,7 +78,7 @@ export default define(meta, paramDef, async (ps, user) => {
 	const credentialId = authData.slice(55, 55 + credentialIdLength);
 	const publicKeyData = authData.slice(55 + credentialIdLength);
 	const publicKey: Map<number, any> = await cborDecodeFirst(publicKeyData);
-	if (publicKey.get(3) != -7) {
+	if (publicKey.get(3) !== -7) {
 		throw new Error('alg mismatch');
 	}
 
@@ -96,7 +96,7 @@ export default define(meta, paramDef, async (ps, user) => {
 	});
 	if (!verificationData.valid) throw new Error('signature invalid');
 
-	const attestationChallenge = await AttestationChallenges.findOne({
+	const attestationChallenge = await AttestationChallenges.findOneBy({
 		userId: user.id,
 		id: ps.challengeId,
 		registrationChallenge: true,

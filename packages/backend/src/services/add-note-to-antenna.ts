@@ -33,10 +33,10 @@ export async function addNoteToAntenna(antenna: Antenna, note: Note, noteUser: {
 		};
 
 		if (note.replyId != null) {
-			_note.reply = await Notes.findOneOrFail(note.replyId);
+			_note.reply = await Notes.findOneByOrFail({ id: note.replyId });
 		}
 		if (note.renoteId != null) {
-			_note.renote = await Notes.findOneOrFail(note.renoteId);
+			_note.renote = await Notes.findOneByOrFail({ id: note.renoteId });
 		}
 
 		if (isMutedUserRelated(_note, new Set<string>(mutings.map(x => x.muteeId)))) {
@@ -45,7 +45,7 @@ export async function addNoteToAntenna(antenna: Antenna, note: Note, noteUser: {
 
 		// 2秒経っても既読にならなかったら通知
 		setTimeout(async () => {
-			const unread = await AntennaNotes.findOne({ antennaId: antenna.id, read: false });
+			const unread = await AntennaNotes.findOneBy({ antennaId: antenna.id, read: false });
 			if (unread) {
 				publishMainStream(antenna.userId, 'unreadAntenna', antenna);
 			}

@@ -78,7 +78,7 @@ export class Meta {
 	public blockedHosts: string[];
 
 	@Column('varchar', {
-		length: 512, array: true, default: '{"/featured", "/channels", "/explore", "/pages", "/about-misskey"}',
+		length: 512, array: true, default: '{/featured,/channels,/explore,/pages,/about-misskey}',
 	})
 	public pinnedPages: string[];
 
@@ -346,14 +346,12 @@ export class Meta {
 
 	@Column('varchar', {
 		length: 8192,
-		default: null,
 		nullable: true,
 	})
 	public defaultLightTheme: string | null;
 
 	@Column('varchar', {
 		length: 8192,
-		default: null,
 		nullable: true,
 	})
 	public defaultDarkTheme: string | null;

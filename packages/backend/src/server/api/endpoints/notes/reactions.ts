@@ -1,9 +1,8 @@
-import define from '../../define.js';
-import { getNote } from '../../common/getters.js';
-import { ApiError } from '../../error.js';
+import { DeepPartial, FindOptionsWhere } from 'typeorm';
 import { NoteReactions } from '@/models/index.js';
-import { DeepPartial } from 'typeorm';
 import { NoteReaction } from '@/models/entities/note-reaction.js';
+import define from '../../define.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['notes', 'reactions'],
@@ -44,14 +43,9 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, user) => {
-	const note = await getNote(ps.noteId).catch(e => {
-		if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
-		throw e;
-	});
-
 	const query = {
-		noteId: note.id,
-	} as DeepPartial<NoteReaction>;
+		noteId: ps.noteId,
+	} as FindOptionsWhere<NoteReaction>;
 
 	if (ps.type) {
 		// ローカルリアクションはホスト名が . とされているが

@@ -1,12 +1,12 @@
 import Resolver from '../../resolver.js';
-import { IRemoteUser } from '@/models/entities/user.js';
+import { CacheableRemoteUser } from '@/models/entities/user.js';
 import rejectFollow from './follow.js';
 import { IReject, isFollow, getApType } from '../../type.js';
 import { apLogger } from '../../logger.js';
 
 const logger = apLogger;
 
-export default async (actor: IRemoteUser, activity: IReject): Promise<string> => {
+export default async (actor: CacheableRemoteUser, activity: IReject): Promise<string> => {
 	const uri = activity.id || activity;
 
 	logger.info(`Reject: ${uri}`);

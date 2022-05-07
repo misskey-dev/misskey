@@ -1,13 +1,12 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { db } from '@/db/postgre.js';
 import { NoteReaction } from '@/models/entities/note-reaction.js';
 import { Notes, Users } from '../index.js';
 import { Packed } from '@/misc/schema.js';
 import { convertLegacyReaction } from '@/misc/reaction-lib.js';
 import { User } from '@/models/entities/user.js';
 
-@EntityRepository(NoteReaction)
-export class NoteReactionRepository extends Repository<NoteReaction> {
-	public async pack(
+export const NoteReactionRepository = db.getRepository(NoteReaction).extend({
+	async pack(
 		src: NoteReaction['id'] | NoteReaction,
 		me?: { id: User['id'] } | null | undefined,
 		options?: {
@@ -18,7 +17,7 @@ export class NoteReactionRepository extends Repository<NoteReaction> {
 			withNote: false,
 		}, options);
 
-		const reaction = typeof src === 'object' ? src : await this.findOneOrFail(src);
+		const reaction = typeof src === 'object' ? src : await this.findOneByOrFail({ id: src });
 
 		return {
 			id: reaction.id,
@@ -29,5 +28,5 @@ export class NoteReactionRepository extends Repository<NoteReaction> {
 				note: await Notes.pack(reaction.note ?? reaction.noteId, me),
 			} : {}),
 		};
-	}
-}
+	},
+});

@@ -1,21 +1,12 @@
 import { URL } from 'node:url';
 import promiseLimit from 'promise-limit';
 
-import $, { Context } from 'cafy';
 import config from '@/config/index.js';
-import Resolver from '../resolver.js';
-import { resolveImage } from './image.js';
-import { isCollectionOrOrderedCollection, isCollection, IActor, getApId, getOneApHrefNullable, IObject, isPropertyValue, IApPropertyValue, getApType, isActor } from '../type.js';
-import { fromHtml } from '../../../mfm/from-html.js';
-import { htmlToMfm } from '../misc/html-to-mfm.js';
-import { resolveNote, extractEmojis } from './note.js';
 import { registerOrFetchInstanceDoc } from '@/services/register-or-fetch-instance-doc.js';
-import { extractApHashtags } from './tag.js';
-import { apLogger } from '../logger.js';
 import { Note } from '@/models/entities/note.js';
 import { updateUsertags } from '@/services/update-hashtag.js';
 import { Users, Instances, DriveFiles, Followings, UserProfiles, UserPublickeys } from '@/models/index.js';
-import { User, IRemoteUser } from '@/models/entities/user.js';
+import { User, IRemoteUser, CacheableUser } from '@/models/entities/user.js';
 import { Emoji } from '@/models/entities/emoji.js';
 import { UserNotePining } from '@/models/entities/user-note-pining.js';
 import { genId } from '@/misc/gen-id.js';
@@ -24,12 +15,22 @@ import { UserPublickey } from '@/models/entities/user-publickey.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
 import { toPuny } from '@/misc/convert-host.js';
 import { UserProfile } from '@/models/entities/user-profile.js';
-import { getConnection } from 'typeorm';
 import { toArray } from '@/prelude/array.js';
 import { fetchInstanceMetadata } from '@/services/fetch-instance-metadata.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { truncate } from '@/misc/truncate.js';
 import { StatusError } from '@/misc/fetch.js';
+import { uriPersonCache } from '@/services/user-cache.js';
+import { publishInternalEvent } from '@/services/stream.js';
+import { db } from '@/db/postgre.js';
+import { apLogger } from '../logger.js';
+import { htmlToMfm } from '../misc/html-to-mfm.js';
+import { fromHtml } from '../../../mfm/from-html.js';
+import { isCollectionOrOrderedCollection, isCollection, IActor, getApId, getOneApHrefNullable, IObject, isPropertyValue, IApPropertyValue, getApType, isActor } from '../type.js';
+import Resolver from '../resolver.js';
+import { extractApHashtags } from './tag.js';
+import { resolveNote, extractEmojis } from './note.js';
+import { resolveImage } from './image.js';
 
 const logger = apLogger;
 
@@ -52,20 +53,33 @@ function validateActor(x: IObject, uri: string): IActor {
 		throw new Error(`invalid Actor type '${x.type}'`);
 	}
 
-	const validate = (name: string, value: any, validater: Context) => {
-		const e = validater.test(value);
-		if (e) throw new Error(`invalid Actor: ${name} ${e.message}`);
-	};
+	if (!(typeof x.id === 'string' && x.id.length > 0)) {
+		throw new Error('invalid Actor: wrong id');
+	}
 
-	validate('id', x.id, $.default.str.min(1));
-	validate('inbox', x.inbox, $.default.str.min(1));
-	validate('preferredUsername', x.preferredUsername, $.default.str.min(1).max(128).match(/^\w([\w-.]*\w)?$/));
+	if (!(typeof x.inbox === 'string' && x.inbox.length > 0)) {
+		throw new Error('invalid Actor: wrong inbox');
+	}
+
+	if (!(typeof x.preferredUsername === 'string' && x.preferredUsername.length > 0 && x.preferredUsername.length <= 128 && /^\w([\w-.]*\w)?$/.test(x.preferredUsername))) {
+		throw new Error('invalid Actor: wrong username');
+	}
 
 	// These fields are only informational, and some AP software allows these
 	// fields to be very long. If they are too long, we cut them off. This way
 	// we can at least see these users and their activities.
-	validate('name', truncate(x.name, nameLength), $.default.optional.nullable.str);
-	validate('summary', truncate(x.summary, summaryLength), $.default.optional.nullable.str);
+	if (x.name) {
+		if (!(typeof x.name === 'string' && x.name.length > 0)) {
+			throw new Error('invalid Actor: wrong name');
+		}
+		x.name = truncate(x.name, nameLength);
+	}
+	if (x.summary) {
+		if (!(typeof x.summary === 'string' && x.summary.length > 0)) {
+			throw new Error('invalid Actor: wrong summary');
+		}
+		x.summary = truncate(x.summary, summaryLength);
+	}
 
 	const idHost = toPuny(new URL(x.id!).hostname);
 	if (idHost !== expectHost) {
@@ -91,19 +105,25 @@ function validateActor(x: IObject, uri: string): IActor {
  *
  * Misskeyに対象のPersonが登録されていればそれを返します。
  */
-export async function fetchPerson(uri: string, resolver?: Resolver): Promise<User | null> {
+export async function fetchPerson(uri: string, resolver?: Resolver): Promise<CacheableUser | null> {
 	if (typeof uri !== 'string') throw new Error('uri is not string');
+
+	const cached = uriPersonCache.get(uri);
+	if (cached) return cached;
 
 	// URIがこのサーバーを指しているならデータベースからフェッチ
 	if (uri.startsWith(config.url + '/')) {
 		const id = uri.split('/').pop();
-		return await Users.findOne(id).then(x => x || null);
+		const u = await Users.findOneBy({ id });
+		if (u) uriPersonCache.set(uri, u);
+		return u;
 	}
 
 	//#region このサーバーに既に登録されていたらそれを返す
-	const exist = await Users.findOne({ uri });
+	const exist = await Users.findOneBy({ uri });
 
 	if (exist) {
+		uriPersonCache.set(uri, exist);
 		return exist;
 	}
 	//#endregion
@@ -143,7 +163,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 	let user: IRemoteUser;
 	try {
 		// Start transaction
-		await getConnection().transaction(async transactionalEntityManager => {
+		await db.transaction(async transactionalEntityManager => {
 			user = await transactionalEntityManager.save(new User({
 				id: genId(),
 				avatarId: null,
@@ -189,7 +209,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 		// duplicate key error
 		if (isDuplicateKeyValueError(e)) {
 			// /users/@a => /users/:id のように入力がaliasなときにエラーになることがあるのを対応
-			const u = await Users.findOne({
+			const u = await Users.findOneBy({
 				uri: person.id,
 			});
 
@@ -263,7 +283,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
  * @param resolver Resolver
  * @param hint Hint of Person object (この値が正当なPersonの場合、Remote resolveをせずに更新に利用します)
  */
-export async function updatePerson(uri: string, resolver?: Resolver | null, hint?: Record<string, unknown>): Promise<void> {
+export async function updatePerson(uri: string, resolver?: Resolver | null, hint?: IObject): Promise<void> {
 	if (typeof uri !== 'string') throw new Error('uri is not string');
 
 	// URIがこのサーバーを指しているならスキップ
@@ -272,7 +292,7 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 	}
 
 	//#region このサーバーに既に登録されているか
-	const exist = await Users.findOne({ uri }) as IRemoteUser;
+	const exist = await Users.findOneBy({ uri }) as IRemoteUser;
 
 	if (exist == null) {
 		return;
@@ -281,7 +301,7 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 
 	if (resolver == null) resolver = new Resolver();
 
-	const object = hint || await resolver.resolve(uri) as any;
+	const object = hint || await resolver.resolve(uri);
 
 	const person = validateActor(object, uri);
 
@@ -352,6 +372,8 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 		location: person['vcard:Address'] || null,
 	});
 
+	publishInternalEvent('remoteUserUpdated', { id: exist.id });
+
 	// ハッシュタグ更新
 	updateUsertags(exist, tags);
 
@@ -371,7 +393,7 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
  * Misskeyに対象のPersonが登録されていればそれを返し、そうでなければ
  * リモートサーバーからフェッチしてMisskeyに登録しそれを返します。
  */
-export async function resolvePerson(uri: string, resolver?: Resolver): Promise<User> {
+export async function resolvePerson(uri: string, resolver?: Resolver): Promise<CacheableUser> {
 	if (typeof uri !== 'string') throw new Error('uri is not string');
 
 	//#region このサーバーに既に登録されていたらそれを返す
@@ -390,10 +412,10 @@ export async function resolvePerson(uri: string, resolver?: Resolver): Promise<U
 const services: {
 		[x: string]: (id: string, username: string) => any
 	} = {
-	'misskey:authentication:twitter': (userId, screenName) => ({ userId, screenName }),
-	'misskey:authentication:github': (id, login) => ({ id, login }),
-	'misskey:authentication:discord': (id, name) => $discord(id, name),
-};
+		'misskey:authentication:twitter': (userId, screenName) => ({ userId, screenName }),
+		'misskey:authentication:github': (id, login) => ({ id, login }),
+		'misskey:authentication:discord': (id, name) => $discord(id, name),
+	};
 
 const $discord = (id: string, name: string) => {
 	if (typeof name !== 'string') {
@@ -441,7 +463,7 @@ export function analyzeAttachments(attachments: IObject | IObject[] | undefined)
 }
 
 export async function updateFeatured(userId: User['id']) {
-	const user = await Users.findOneOrFail(userId);
+	const user = await Users.findOneByOrFail({ id: userId });
 	if (!Users.isRemoteUser(user)) return;
 	if (!user.featured) return;
 
@@ -451,7 +473,7 @@ export async function updateFeatured(userId: User['id']) {
 
 	// Resolve to (Ordered)Collection Object
 	const collection = await resolver.resolveCollection(user.featured);
-	if (!isCollectionOrOrderedCollection(collection)) throw new Error(`Object is not Collection or OrderedCollection`);
+	if (!isCollectionOrOrderedCollection(collection)) throw new Error('Object is not Collection or OrderedCollection');
 
 	// Resolve to Object(may be Note) arrays
 	const unresolvedItems = isCollection(collection) ? collection.items : collection.orderedItems;
@@ -464,7 +486,7 @@ export async function updateFeatured(userId: User['id']) {
 		.slice(0, 5)
 		.map(item => limit(() => resolveNote(item, resolver))));
 
-	await getConnection().transaction(async transactionalEntityManager => {
+	await db.transaction(async transactionalEntityManager => {
 		await transactionalEntityManager.delete(UserNotePining, { userId: user.id });
 
 		// とりあえずidを別の時間で生成して順番を維持

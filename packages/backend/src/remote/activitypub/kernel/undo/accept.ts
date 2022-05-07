@@ -1,11 +1,11 @@
 import unfollow from '@/services/following/delete.js';
 import cancelRequest from '@/services/following/requests/cancel.js';
-import {IAccept} from '../../type.js';
-import { IRemoteUser } from '@/models/entities/user.js';
+import { IAccept } from '../../type.js';
+import { CacheableRemoteUser } from '@/models/entities/user.js';
 import { Followings } from '@/models/index.js';
 import DbResolver from '../../db-resolver.js';
 
-export default async (actor: IRemoteUser, activity: IAccept): Promise<string> => {
+export default async (actor: CacheableRemoteUser, activity: IAccept): Promise<string> => {
 	const dbResolver = new DbResolver();
 
 	const follower = await dbResolver.getUserFromApId(activity.object);
@@ -13,7 +13,7 @@ export default async (actor: IRemoteUser, activity: IAccept): Promise<string> =>
 		return `skip: follower not found`;
 	}
 
-	const following = await Followings.findOne({
+	const following = await Followings.findOneBy({
 		followerId: follower.id,
 		followeeId: actor.id,
 	});

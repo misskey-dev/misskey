@@ -42,14 +42,18 @@ export const paramDef = {
 		includeMyRenotes: { type: 'boolean', default: true },
 		includeRenotedMyNotes: { type: 'boolean', default: true },
 		includeLocalRenotes: { type: 'boolean', default: true },
-		withFiles: { type: 'boolean' },
+		withFiles: {
+			type: 'boolean',
+			default: false,
+			description: 'Only show notes that have attached files.',
+		},
 	},
 	required: ['listId'],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, user) => {
-	const list = await UserLists.findOne({
+	const list = await UserLists.findOneBy({
 		id: ps.listId,
 		userId: user.id,
 	});
@@ -59,12 +63,8 @@ export default define(meta, paramDef, async (ps, user) => {
 	}
 
 	//#region Construct query
-	const listQuery = UserListJoinings.createQueryBuilder('joining')
-		.select('joining.userId')
-		.where('joining.userListId = :userListId', { userListId: list.id });
-
 	const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
-		.andWhere(`note.userId IN (${ listQuery.getQuery() })`)
+		.innerJoin(UserListJoinings.metadata.targetName, 'userListJoining', 'userListJoining.userId = note.userId')
 		.innerJoinAndSelect('note.user', 'user')
 		.leftJoinAndSelect('user.avatar', 'avatar')
 		.leftJoinAndSelect('user.banner', 'banner')
@@ -76,7 +76,7 @@ export default define(meta, paramDef, async (ps, user) => {
 		.leftJoinAndSelect('renote.user', 'renoteUser')
 		.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
 		.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner')
-		.setParameters(listQuery.getParameters());
+		.andWhere('userListJoining.userListId = :userListId', { userListId: list.id });
 
 	generateVisibilityQuery(query, user);
 

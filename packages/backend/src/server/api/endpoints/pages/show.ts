@@ -1,7 +1,8 @@
-import define from '../../define.js';
-import { ApiError } from '../../error.js';
+import { IsNull } from 'typeorm';
 import { Pages, Users } from '@/models/index.js';
 import { Page } from '@/models/entities/page.js';
+import define from '../../define.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['pages'],
@@ -25,27 +26,36 @@ export const meta = {
 
 export const paramDef = {
 	type: 'object',
-	properties: {
-		pageId: { type: 'string', format: 'misskey:id' },
-		name: { type: 'string' },
-		username: { type: 'string' },
-	},
-	required: [],
+	anyOf: [
+		{
+			properties: {
+				pageId: { type: 'string', format: 'misskey:id' },
+			},
+			required: ['pageId'],
+		},
+		{
+			properties: {
+				name: { type: 'string' },
+				username: { type: 'string' },
+			},
+			required: ['name', 'username'],
+		},
+	],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, user) => {
-	let page: Page | undefined;
+	let page: Page | null = null;
 
 	if (ps.pageId) {
-		page = await Pages.findOne(ps.pageId);
+		page = await Pages.findOneBy({ id: ps.pageId });
 	} else if (ps.name && ps.username) {
-		const author = await Users.findOne({
-			host: null,
+		const author = await Users.findOneBy({
+			host: IsNull(),
 			usernameLower: ps.username.toLowerCase(),
 		});
 		if (author) {
-			page = await Pages.findOne({
+			page = await Pages.findOneBy({
 				name: ps.name,
 				userId: author.id,
 			});

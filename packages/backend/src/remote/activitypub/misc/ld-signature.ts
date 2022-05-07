@@ -1,5 +1,5 @@
 import * as crypto from 'node:crypto';
-import * as jsonld from 'jsonld';
+import jsonld from 'jsonld';
 import { CONTEXTS } from './contexts.js';
 import fetch from 'node-fetch';
 import { httpAgent, httpsAgent } from '@/misc/fetch.js';
@@ -113,7 +113,8 @@ export class LdSignature {
 			headers: {
 				Accept: 'application/ld+json, application/json',
 			},
-			timeout: this.loderTimeout,
+			// TODO
+			//timeout: this.loderTimeout,
 			agent: u => u.protocol === 'http:' ? httpAgent : httpsAgent,
 		}).then(res => {
 			if (!res.ok) {

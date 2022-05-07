@@ -83,7 +83,7 @@ export default define(meta, paramDef, async (ps, user) => {
 
 	// Check blocking
 	if (note.userId !== user.id) {
-		const block = await Blockings.findOne({
+		const block = await Blockings.findOneBy({
 			blockerId: note.userId,
 			blockeeId: user.id,
 		});
@@ -92,7 +92,7 @@ export default define(meta, paramDef, async (ps, user) => {
 		}
 	}
 
-	const poll = await Polls.findOneOrFail({ noteId: note.id });
+	const poll = await Polls.findOneByOrFail({ noteId: note.id });
 
 	if (poll.expiresAt && poll.expiresAt < createdAt) {
 		throw new ApiError(meta.errors.alreadyExpired);
@@ -103,14 +103,14 @@ export default define(meta, paramDef, async (ps, user) => {
 	}
 
 	// if already voted
-	const exist = await PollVotes.find({
+	const exist = await PollVotes.findBy({
 		noteId: note.id,
 		userId: user.id,
 	});
 
 	if (exist.length) {
 		if (poll.multiple) {
-			if (exist.some(x => x.choice == ps.choice)) {
+			if (exist.some(x => x.choice === ps.choice)) {
 				throw new ApiError(meta.errors.alreadyVoted);
 			}
 		} else {
@@ -125,7 +125,7 @@ export default define(meta, paramDef, async (ps, user) => {
 		noteId: note.id,
 		userId: user.id,
 		choice: ps.choice,
-	}).then(x => PollVotes.findOneOrFail(x.identifiers[0]));
+	}).then(x => PollVotes.findOneByOrFail(x.identifiers[0]));
 
 	// Increment votes count
 	const index = ps.choice + 1; // In SQL, array index is 1 based
@@ -144,7 +144,7 @@ export default define(meta, paramDef, async (ps, user) => {
 	});
 
 	// Fetch watchers
-	NoteWatchings.find({
+	NoteWatchings.findBy({
 		noteId: note.id,
 		userId: Not(user.id),
 	}).then(watchers => {
@@ -159,7 +159,7 @@ export default define(meta, paramDef, async (ps, user) => {
 
 	// リモート投票の場合リプライ送信
 	if (note.userHost != null) {
-		const pollOwner = await Users.findOneOrFail(note.userId) as IRemoteUser;
+		const pollOwner = await Users.findOneByOrFail({ id: note.userId }) as IRemoteUser;
 
 		deliver(user, renderActivity(await renderVote(user, vote, note, poll, pollOwner)), pollOwner.inbox);
 	}

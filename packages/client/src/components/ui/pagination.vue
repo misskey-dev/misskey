@@ -346,6 +346,7 @@ onBeforeUnmount(() => {
 
 defineExpose({
 	items,
+	queue,
 	backed,
 	more,
 	inited,
