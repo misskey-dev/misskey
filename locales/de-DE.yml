@@ -1006,7 +1006,7 @@ _instanceMute:
   heading: "Liste der stummzuschaltenden Instanzen"
 _theme:
   explore: "Farbschemata erforschen"
-  install: "Farbschmata installieren"
+  install: "Farbschemata installieren"
   manage: "Farbschemaverwaltung"
   code: "Farbschemencode"
   description: "Beschreibung"
