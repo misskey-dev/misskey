@@ -11,7 +11,6 @@
 /* eslint-disable id-denylist --
   Chart.js has a `data` attribute in most chart definitions, which triggers the
   id-denylist violation when setting it. This is causing about 60+ lint issues.
-  
   As this is part of Chart.js's API it makes sense to disable the check here.
 */
 import { defineExpose, defineProps, onMounted, ref, watch, PropType, onUnmounted } from 'vue';
@@ -863,7 +862,6 @@ const fetchAndRender = async () => {
 			case 'notes-total': return fetchNotesTotalChart();
 			case 'drive': return fetchDriveChart();
 			case 'drive-files': return fetchDriveFilesChart();
-			
 			case 'instance-requests': return fetchInstanceRequestsChart();
 			case 'instance-users': return fetchInstanceUsersChart(false);
 			case 'instance-users-total': return fetchInstanceUsersChart(true);
