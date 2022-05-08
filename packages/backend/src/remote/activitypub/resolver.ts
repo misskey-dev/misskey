@@ -2,10 +2,10 @@ import config from '@/config/index.js';
 import { getJson } from '@/misc/fetch.js';
 import { ILocalUser } from '@/models/entities/user.js';
 import { getInstanceActor } from '@/services/instance-actor.js';
-import { signedGet } from './request.js';
-import { IObject, isCollectionOrOrderedCollection, ICollection, IOrderedCollection } from './type.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
 import { extractDbHost } from '@/misc/convert-host.js';
+import { signedGet } from './request.js';
+import { IObject, isCollectionOrOrderedCollection, ICollection, IOrderedCollection } from './type.js';
 
 export default class Resolver {
 	private history: Set<string>;
@@ -56,13 +56,13 @@ export default class Resolver {
 			this.user = await getInstanceActor();
 		}
 
-		const object = this.user
+		const object = (this.user
 			? await signedGet(value, this.user)
-			: await getJson(value, 'application/activity+json, application/ld+json');
+			: await getJson(value, 'application/activity+json, application/ld+json')) as IObject;
 
 		if (object == null || (
 			Array.isArray(object['@context']) ?
-				!object['@context'].includes('https://www.w3.org/ns/activitystreams') :
+				!(object['@context'] as unknown[]).includes('https://www.w3.org/ns/activitystreams') :
 				object['@context'] !== 'https://www.w3.org/ns/activitystreams'
 		)) {
 			throw new Error('invalid response');

@@ -43,20 +43,20 @@ export default defineComponent({
 		MkSwitch,
 	},
 
-	emits: ['resolved'],
-
 	props: {
 		report: {
 			type: Object,
 			required: true,
 		}
-	}
+	},
+
+	emits: ['resolved'],
 
 	data() {
 		return {
 			forward: this.report.forwarded,
 		};
-	}
+	},
 
 	methods: {
 		acct,

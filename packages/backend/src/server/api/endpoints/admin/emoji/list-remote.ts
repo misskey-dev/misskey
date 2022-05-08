@@ -40,6 +40,7 @@ export const meta = {
 				host: {
 					type: 'string',
 					optional: false, nullable: true,
+					description: 'The local host is represented with `null`.',
 				},
 				url: {
 					type: 'string',
@@ -54,7 +55,12 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		query: { type: 'string', nullable: true, default: null },
-		host: { type: 'string', nullable: true, default: null },
+		host: {
+			type: 'string',
+			nullable: true,
+			default: null,
+			description: 'Use `null` to represent the local host.',
+		},
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },

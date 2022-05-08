@@ -1,5 +1,6 @@
 import { Schema } from '@/misc/schema.js';
 
+import * as ep___admin_meta from './endpoints/admin/meta.js';
 import * as ep___admin_abuseUserReports from './endpoints/admin/abuse-user-reports.js';
 import * as ep___admin_accounts_create from './endpoints/admin/accounts/create.js';
 import * as ep___admin_accounts_delete from './endpoints/admin/accounts/delete.js';
@@ -201,6 +202,11 @@ import * as ep___i_unpin from './endpoints/i/unpin.js';
 import * as ep___i_updateEmail from './endpoints/i/update-email.js';
 import * as ep___i_update from './endpoints/i/update.js';
 import * as ep___i_userGroupInvites from './endpoints/i/user-group-invites.js';
+import * as ep___i_webhooks_create from './endpoints/i/webhooks/create.js';
+import * as ep___i_webhooks_show from './endpoints/i/webhooks/show.js';
+import * as ep___i_webhooks_list from './endpoints/i/webhooks/list.js';
+import * as ep___i_webhooks_update from './endpoints/i/webhooks/update.js';
+import * as ep___i_webhooks_delete from './endpoints/i/webhooks/delete.js';
 import * as ep___messaging_history from './endpoints/messaging/history.js';
 import * as ep___messaging_messages from './endpoints/messaging/messages.js';
 import * as ep___messaging_messages_create from './endpoints/messaging/messages/create.js';
@@ -304,6 +310,7 @@ import * as ep___users_show from './endpoints/users/show.js';
 import * as ep___users_stats from './endpoints/users/stats.js';
 
 const eps = [
+	['admin/meta', ep___admin_meta],
 	['admin/abuse-user-reports', ep___admin_abuseUserReports],
 	['admin/accounts/create', ep___admin_accounts_create],
 	['admin/accounts/delete', ep___admin_accounts_delete],
@@ -505,6 +512,11 @@ const eps = [
 	['i/update-email', ep___i_updateEmail],
 	['i/update', ep___i_update],
 	['i/user-group-invites', ep___i_userGroupInvites],
+	['i/webhooks/create', ep___i_webhooks_create],
+	['i/webhooks/list', ep___i_webhooks_list],
+	['i/webhooks/show', ep___i_webhooks_show],
+	['i/webhooks/update', ep___i_webhooks_update],
+	['i/webhooks/delete', ep___i_webhooks_delete],
 	['messaging/history', ep___messaging_history],
 	['messaging/messages', ep___messaging_messages],
 	['messaging/messages/create', ep___messaging_messages_create],

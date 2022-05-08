@@ -4,7 +4,7 @@ import * as misskey from 'misskey-js';
 import fetch from 'node-fetch';
 import FormData from 'form-data';
 import * as childProcess from 'child_process';
-import * as http from 'http';
+import * as http from 'node:http';
 import loadConfig from '../src/config/load.js';
 import { SIGKILL } from 'constants';
 import { entities } from '../src/db/postgre.js';

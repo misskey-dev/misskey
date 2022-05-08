@@ -33,8 +33,8 @@ withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(e: 'done', r?: Misskey.entities.DriveFile[]): void;
-	(e: 'closed'): void;
+	(ev: 'done', r?: Misskey.entities.DriveFile[]): void;
+	(ev: 'closed'): void;
 }>();
 
 const dialog = ref<InstanceType<typeof XModalWindow>>();

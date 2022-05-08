@@ -15,7 +15,7 @@ type IWebFinger = {
 export default async function(query: string): Promise<IWebFinger> {
 	const url = genUrl(query);
 
-	return await getJson(url, 'application/jrd+json, application/json');
+	return await getJson(url, 'application/jrd+json, application/json') as IWebFinger;
 }
 
 function genUrl(query: string) {

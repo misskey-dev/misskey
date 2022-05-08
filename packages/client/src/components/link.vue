@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { defineAsyncComponent } from 'vue';
 import { url as local } from '@/config';
 import { useTooltip } from '@/scripts/use-tooltip';
 import * as os from '@/os';
@@ -26,7 +26,7 @@ const target = self ? null : '_blank';
 const el = $ref();
 
 useTooltip($$(el), (showing) => {
-	os.popup(import('@/components/url-preview-popup.vue'), {
+	os.popup(defineAsyncComponent(() => import('@/components/url-preview-popup.vue')), {
 		showing,
 		url: props.url,
 		source: el,

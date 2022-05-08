@@ -15,6 +15,8 @@ import { genId } from '@/misc/gen-id.js';
 import { createNotification } from '../create-notification.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
 import { Packed } from '@/misc/schema.js';
+import { getActiveWebhooks } from '@/misc/webhook-cache.js';
+import { webhookDeliver } from '@/queue/index.js';
 
 const logger = new Logger('following/create');
 
@@ -65,8 +67,10 @@ export async function insertFollowingDoc(followee: { id: User['id']; host: User[
 	if (alreadyFollowed) return;
 
 	//#region Increment counts
-	Users.increment({ id: follower.id }, 'followingCount', 1);
-	Users.increment({ id: followee.id }, 'followersCount', 1);
+	await Promise.all([
+		Users.increment({ id: follower.id }, 'followingCount', 1),
+		Users.increment({ id: followee.id }, 'followersCount', 1),
+	]);
 	//#endregion
 
 	//#region Update instance stats
@@ -89,15 +93,31 @@ export async function insertFollowingDoc(followee: { id: User['id']; host: User[
 	if (Users.isLocalUser(follower)) {
 		Users.pack(followee.id, follower, {
 			detail: true,
-		}).then(packed => {
+		}).then(async packed => {
 			publishUserEvent(follower.id, 'follow', packed as Packed<"UserDetailedNotMe">);
 			publishMainStream(follower.id, 'follow', packed as Packed<"UserDetailedNotMe">);
+
+			const webhooks = (await getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('follow'));
+			for (const webhook of webhooks) {
+				webhookDeliver(webhook, 'follow', {
+					user: packed,
+				});
+			}
 		});
 	}
 
 	// Publish followed event
 	if (Users.isLocalUser(followee)) {
-		Users.pack(follower.id, followee).then(packed => publishMainStream(followee.id, 'followed', packed));
+		Users.pack(follower.id, followee).then(async packed => {
+			publishMainStream(followee.id, 'followed', packed);
+
+			const webhooks = (await getActiveWebhooks()).filter(x => x.userId === followee.id && x.on.includes('followed'));
+			for (const webhook of webhooks) {
+				webhookDeliver(webhook, 'followed', {
+					user: packed,
+				});
+			}
+		});
 
 		// 通知を作成
 		createNotification(followee.id, 'follow', {

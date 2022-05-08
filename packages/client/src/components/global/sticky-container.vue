@@ -19,7 +19,7 @@ const props = withDefaults(defineProps<{
 const rootEl = $ref<HTMLElement>();
 const bodyEl = $ref<HTMLElement>();
 
-let headerHeight: string | undefined = $ref();
+let headerHeight = $ref<string | undefined>();
 
 const calc = () => {
 	const currentStickyTop = getComputedStyle(rootEl).getPropertyValue('--stickyTop') || '0px';

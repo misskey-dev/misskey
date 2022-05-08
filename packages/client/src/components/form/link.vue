@@ -80,7 +80,7 @@ export default defineComponent({
 			margin-right: 0.75em;
 			flex-shrink: 0;
 			text-align: center;
-			opacity: 0.8;
+			color: var(--fgTransparentWeak);
 
 			&:empty {
 				display: none;

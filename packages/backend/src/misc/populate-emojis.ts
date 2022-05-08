@@ -63,7 +63,7 @@ export async function populateEmoji(emojiName: string, noteUserHost: string | nu
 
 	const isLocal = emoji.host == null;
 	const emojiUrl = emoji.publicUrl || emoji.originalUrl; // || emoji.originalUrl してるのは後方互換性のため
-	const url = isLocal ? emojiUrl : `${config.url}/proxy/image.png?${query({ url: emojiUrl })}`;
+	const url = isLocal ? emojiUrl : `${config.url}/proxy/${encodeURIComponent((new URL(emojiUrl)).pathname)}?${query({ url: emojiUrl })}`;
 
 	return {
 		name: emojiName,

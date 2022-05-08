@@ -20,8 +20,8 @@
 <script lang="ts" setup>
 import { } from 'vue';
 import * as os from '@/os';
+import { uploads } from '@/scripts/upload';
 
-const uploads = os.uploads;
 const zIndex = os.claimZIndex('high');
 </script>
 

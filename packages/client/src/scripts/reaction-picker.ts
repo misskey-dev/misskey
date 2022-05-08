@@ -1,4 +1,4 @@
-import { Ref, ref } from 'vue';
+import { defineAsyncComponent, Ref, ref } from 'vue';
 import { popup } from '@/os';
 
 class ReactionPicker {
@@ -12,7 +12,7 @@ class ReactionPicker {
 	}
 
 	public async init() {
-		await popup(import('@/components/emoji-picker-dialog.vue'), {
+		await popup(defineAsyncComponent(() => import('@/components/emoji-picker-dialog.vue')), {
 			src: this.src,
 			asReactionPicker: true,
 			manualShowing: this.manualShowing
