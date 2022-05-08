@@ -84,7 +84,7 @@ let rootEl = $ref<HTMLElement>();
  */
 let backed = $ref(false);
 
-let scrollRemove: (() => void) | null = $ref(null);
+let scrollRemove = ref<(() => void) | null>(null);
 
 const items = ref<MisskeyEntity[]>([]);
 const queue = ref<MisskeyEntity[]>([]);
