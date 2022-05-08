@@ -49,8 +49,8 @@ const props = defineProps<{
 let textEl = $ref<HTMLTextAreaElement>();
 let fileEl = $ref<HTMLInputElement>();
 
-let text: string = $ref('');
-let file: Misskey.entities.DriveFile | null = $ref(null);
+let text = $ref<string>('');
+let file = $ref<Misskey.entities.DriveFile | null>(null);
 let sending = $ref(false);
 const typing = throttle(3000, () => {
 	stream.send('typingOnMessaging', props.user ? { partner: props.user.id } : { group: props.group?.id });
