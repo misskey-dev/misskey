@@ -82,7 +82,7 @@ let rootEl = $ref<HTMLElement>();
 // 遡り中かどうか
 let backed = $ref(false);
 
-let scrollRemove = ref<(() => void) | null>(null);
+let scrollRemove = $ref<(() => void) | null>(null);
 
 const items = ref<MisskeyEntity[]>([]);
 const queue = ref<MisskeyEntity[]>([]);
