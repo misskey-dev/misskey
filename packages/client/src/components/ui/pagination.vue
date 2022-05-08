@@ -79,9 +79,7 @@ const emit = defineEmits<{
 
 let rootEl = $ref<HTMLElement>();
 
-/*
- * 遡り中かどうか
- */
+// 遡り中かどうか
 let backed = $ref(false);
 
 let scrollRemove = ref<(() => void) | null>(null);
