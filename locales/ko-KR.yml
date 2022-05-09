@@ -1264,7 +1264,7 @@ _profile:
   youCanIncludeHashtags: "해시 태그를 포함할 수 있습니다."
   metadata: "추가 정보"
   metadataEdit: "추가 정보 편집"
-  metadataDescription: "프로필에 최대 4개의 추가 정보를 표시할 수 있어요"
+  metadataDescription: "프로필에 추가 정보를 표시할 수 있어요"
   metadataLabel: "라벨"
   metadataContent: "내용"
   changeAvatar: "아바타 이미지 변경"
