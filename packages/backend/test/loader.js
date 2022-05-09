@@ -15,8 +15,8 @@ const matchPath = createMatchPath(tsconfig.absoluteBaseUrl, tsconfig.paths);
 
 function resolve(specifier, ctx, defaultResolve) {
 	let resolvedSpecifier;
-	const mayTranspiled = specifier.endsWith('.js');
-	if (mayTranspiled) {
+	if (specifier.endsWith('.js')) {
+		// maybe transpiled
 		const specifierWithoutExtension = specifier.substring(0, specifier.length - '.js'.length);
 		const matchedSpecifier = matchPath(specifierWithoutExtension);
 		if (matchedSpecifier) {
