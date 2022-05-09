@@ -13,7 +13,7 @@ import { pathToFileURL } from 'url';
 const tsconfig = loadConfig();
 const matchPath = createMatchPath(tsconfig.absoluteBaseUrl, tsconfig.paths);
 
-function resolve(specifier, ctx, defaultResolve) {
+export function resolve(specifier, ctx, defaultResolve) {
 	let resolvedSpecifier;
 	if (specifier.endsWith('.js')) {
 		// maybe transpiled
@@ -31,4 +31,4 @@ function resolve(specifier, ctx, defaultResolve) {
 	return resolveTs(resolvedSpecifier ?? specifier, ctx, defaultResolve);
 }
 
-export { resolve, load };
+export { load };
