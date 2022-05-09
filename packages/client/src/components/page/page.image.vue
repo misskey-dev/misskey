@@ -1,11 +1,12 @@
 <template>
 <div class="lzyxtsnt">
-	<img v-if="image" :src="image.url"/>
+	<ImgWithBlurhash v-if="image" :hash="image.blurhash" :src="url" :alt="image.comment" :title="image.comment" :cover="false"/>
 </div>
 </template>
 
 <script lang="ts" setup>
 import { defineComponent, PropType } from 'vue';
+import ImgWithBlurhash from '@/components/img-with-blurhash.vue';
 import * as os from '@/os';
 import { ImageBlock } from '@/scripts/hpml/block';
 import { Hpml } from '@/scripts/hpml/evaluator';
