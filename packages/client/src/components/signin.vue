@@ -49,7 +49,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, defineEmits, defineProps } from 'vue';
+import { defineAsyncComponent } from 'vue';
 import { toUnicode } from 'punycode/';
 import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/form/input.vue';
@@ -110,8 +110,6 @@ function onUsernameChange() {
 function onLogin(res) {
 	if (props.autoSet) {
 		return login(res.i);
-	} else {
-		return;
 	}
 }
 
@@ -134,8 +132,8 @@ function queryKey() {
 		queryingKey = false;
 		signing = true;
 		return os.api('signin', {
-			username: username,
-			password: password,
+			username,
+			password,
 			signature: hexify(credential.response.signature),
 			authenticatorData: hexify(credential.response.authenticatorData),
 			clientDataJSON: hexify(credential.response.clientDataJSON),
@@ -161,8 +159,8 @@ function onSubmit() {
 	if (!totpLogin && user && user.twoFactorEnabled) {
 		if (window.PublicKeyCredential && user.securityKeys) {
 			os.api('signin', {
-				username: username,
-				password: password
+				username,
+				password,
 			}).then(res => {
 				totpLogin = true;
 				signing = false;
@@ -175,11 +173,10 @@ function onSubmit() {
 		}
 	} else {
 		os.api('signin', {
-			username: username,
-			password: password,
+			username,
+			password,
 			token: user && user.twoFactorEnabled ? token : undefined
 		}).then(res => {
-			console.log('successfully signed in')
 			emit('login', res);
 			onLogin(res);
 		}).catch(loginFailed);
