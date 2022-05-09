@@ -1,6 +1,6 @@
 <template>
 <div class="lzyxtsnt">
-	<ImgWithBlurhash v-if="image" :hash="image.blurhash" :src="url" :alt="image.comment" :title="image.comment" :cover="false"/>
+	<ImgWithBlurhash v-if="image" :hash="image.blurhash" :src="image.url" :alt="image.comment" :title="image.comment" :cover="false"/>
 </div>
 </template>
 
