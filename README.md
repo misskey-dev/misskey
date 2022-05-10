@@ -3,9 +3,7 @@
 	<img src="./assets/title_float.svg" alt="Misskey logo" style="border-radius:50%" width="400"/>
 </a>
 	
-**🌎 A forever evolving, interplanetary microblogging platform. 🚀**
-
-**[Misskey](https://misskey-hub.net/)** is an open source, decentralized social media platform that's free forever!
+**🌎 **[Misskey](https://misskey-hub.net/)** is an open source, decentralized social media platform that's free forever! 🚀**
 	
 ---
 	
