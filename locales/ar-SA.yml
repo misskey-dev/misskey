@@ -880,9 +880,11 @@ _mfm:
   center: "وسط"
   centerDescription: "يمركز المحتوى في الوَسَط."
   quote: "اقتبس"
+  quoteDescription: "يعرض المحتوى كاقتباس"
   emoji: "إيموجي مخصص"
   emojiDescription: "إحاطة اسم الإيموجي بنقطتي تفسير سيستبدله بصورة الإيموجي."
   search: "البحث"
+  searchDescription: "يعرض نصًا في صندوق البحث"
   flip: "اقلب"
   flipDescription: "يقلب المحتوى عموديًا أو أفقيًا"
   jelly: "تأثير (هلام)"
@@ -1203,8 +1205,13 @@ _charts:
 _instanceCharts:
   requests: "الطلبات"
   users: "تباين عدد المستخدمين"
+  usersTotal: "تباين عدد المستخدمين"
   notes: "تباين عدد الملاحظات"
+  notesTotal: "تباين عدد الملاحظات"
+  ff: "تباين عدد حسابات المتابَعة/المتابِعة"
+  ffTotal: "تباين عدد حسابات المتابَعة/المتابِعة"
   files: "تباين عدد الملفات"
+  filesTotal: "تباين عدد الملفات"
 _timelines:
   home: "الرئيسي"
   local: "المحلي"
@@ -1323,6 +1330,7 @@ _pages:
       random: "عشوائي"
       value: "القيم"
       fn: "دوال"
+      text: "إجراءات على النصوص"
       convert: "تحويل"
       list: "القوائم"
     blocks:
