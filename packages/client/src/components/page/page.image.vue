@@ -12,15 +12,9 @@ import { ImageBlock } from '@/scripts/hpml/block';
 import { Hpml } from '@/scripts/hpml/evaluator';
 
 const props = defineProps({
-	block: {
-		type: Object as PropType<ImageBlock>,
-		required: true
-	},
-	hpml: {
-		type: Object as PropType<Hpml>,
-		required: true
-	}
-});
+	block: PropType<ImageBlock>,
+	hpml: PropType<Hpml>,
+}>();
 
 const image = props.hpml.page.attachedFiles.find(x => x.id === props.block.fileId);
 </script>
