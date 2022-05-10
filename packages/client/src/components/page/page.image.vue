@@ -11,7 +11,7 @@ import * as os from '@/os';
 import { ImageBlock } from '@/scripts/hpml/block';
 import { Hpml } from '@/scripts/hpml/evaluator';
 
-const props = defineProps({
+const props = defineProps<{
 	block: PropType<ImageBlock>,
 	hpml: PropType<Hpml>,
 }>();
