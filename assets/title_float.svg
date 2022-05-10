@@ -36,11 +36,15 @@
     	100% { transform: translate(0, 0px); }
 		}
 	</style>
+	<linearGradient id="myGradient" gradientTransform="rotate(90)">
+      <stop offset="5%"  stop-color="#A1CA03" />
+      <stop offset="95%" stop-color="#91BA03" />
+    </linearGradient>
   <defs
      id="defs14" />
   <g
      id="g8"
-     fill="#212d3a"
+     fill="url('#myGradient')"
      word-spacing="0"
      letter-spacing="0"
      font-family="OTADESIGN Rounded"
