@@ -35,7 +35,7 @@
 
 ## ✨ Features
 - **ActivityPub support**\
-Not on Misskey? No problem! Not only can Misskey instances talk each other, but you can make friends with people on other networks like Mastodon and Pixelfed!
+Not on Misskey? No problem! Not only can Misskey instances talk to each other, but you can make friends with people on other networks like Mastodon and Pixelfed!
 - **Reactions**\
 You can add emoji reactions to any post! No longer are you bound by a like button, show everyone exactly how you feel with the tap of a button.
 - **Drive**\
