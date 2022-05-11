@@ -27,8 +27,10 @@ You should also include the user name that made the change.
 - Federation: Add rel attribute to host-meta @mei23
 
 ## 12.110.1 (2022/04/23)
-**ℹ️ Important**<br>
-This version doesn't require Node.js v18.0.0 or later.
+### NOTE<br>
+Node.js v16.14.0 is recommended for building Misskey v12.110.1<br>
+This version doesn't require Node.js v16.15.0 or later.<br>
+See: https://github.com/misskey-dev/misskey/blob/master/.node-version
 
 ### Bugfixes
 - Fix GOP rendering @syuilo
