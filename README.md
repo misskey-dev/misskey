@@ -42,7 +42,7 @@ You can add emoji reactions to any post! No longer are you bound by a like butto
 Hate not being able to find something you uploaded? With Drive, you get managed and powerful cloud storage right in your social media!
 - **Rich Web UI**\
 	Misskey has a rich and complex (but easy to use) Web UI!
-	It's highly customizable, from changing the layout, adding widgets and making themes.
+	It is highly customizable, from changing the layout and adding widgets to making custom themes.
 	Furthermore, plugins can be created using AiScript, an original programming language.
 - And much more...
 
