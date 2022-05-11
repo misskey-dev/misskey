@@ -44,7 +44,7 @@ Hate not being able to find something you uploaded? With Drive, you get managed 
 	Misskey has a rich and complex (but easy to use) Web UI!
 	It's highly customizable, from changing the layout, adding widgets and making themes.
 	Furthermore, plugins can be created using AiScript, an original programming language.
-- And so more...
+- And much more...
 
 </div>
 
