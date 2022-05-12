@@ -134,13 +134,8 @@ const edit = (emoji) => {
 		emoji: emoji
 	}, {
 		done: result => {
-			if (result.updated) {
-				emojisPaginationComponent.value.replaceItem(item => item.id === emoji.id, {
-					...emoji,
-					...result.updated
-				});
-			} else if (result.deleted) {
-				emojisPaginationComponent.value.removeItem(item => item.id === emoji.id);
+			if (result.updated || result.deleted) {
+				emojisPaginationComponent.value.reload();
 			}
 		},
 	}, 'closed');
