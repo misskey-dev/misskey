@@ -1,6 +1,6 @@
 <template>
 <div ref="el" class="hiyeyicy" :class="{ wide: !narrow }">
-	<div v-if="!narrow || page == null" class="nav">
+	<div v-if="!narrow || initialPage == null" class="nav">
 		<MkHeader :info="header"></MkHeader>
 	
 		<MkSpacer :content-max="700" :margin-min="16">
@@ -12,21 +12,21 @@
 				<MkInfo v-if="noMaintainerInformation" warn class="info">{{ $ts.noMaintainerInformationWarning }} <MkA to="/admin/settings" class="_link">{{ $ts.configure }}</MkA></MkInfo>
 				<MkInfo v-if="noBotProtection" warn class="info">{{ $ts.noBotProtectionWarning }} <MkA to="/admin/security" class="_link">{{ $ts.configure }}</MkA></MkInfo>
 
-				<MkSuperMenu :def="menuDef" :grid="page == null"></MkSuperMenu>
+				<MkSuperMenu :def="menuDef" :grid="initialPage == null"></MkSuperMenu>
 			</div>
 		</MkSpacer>
 	</div>
-	<div class="main">
+	<div v-if="!(narrow && initialPage == null)" class="main">
 		<MkStickyContainer>
 			<template #header><MkHeader v-if="childInfo && !childInfo.hideHeader" :info="childInfo"/></template>
-			<component :is="component" :ref="el => pageChanged(el)" :key="page" v-bind="pageProps"/>
+			<component :is="component" :ref="el => pageChanged(el)" :key="initialPage" v-bind="pageProps"/>
 		</MkStickyContainer>
 	</div>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, isRef, nextTick, onMounted, provide, watch } from 'vue';
+import { defineAsyncComponent, nextTick, onMounted, onUnmounted, provide, watch } from 'vue';
 import { i18n } from '@/i18n';
 import MkSuperMenu from '@/components/ui/super-menu.vue';
 import MkInfo from '@/components/ui/info.vue';
@@ -35,6 +35,11 @@ import { instance } from '@/instance';
 import * as symbols from '@/symbols';
 import * as os from '@/os';
 import { lookupUser } from '@/scripts/lookup-user';
+import { MisskeyNavigator } from '@/scripts/navigate';
+
+const isEmpty = (x: any) => x == null || x === '';
+
+const nav = new MisskeyNavigator();
 
 const indexInfo = {
 	title: i18n.ts.controlPanel,
@@ -58,23 +63,15 @@ let page = $ref(props.initialPage);
 let narrow = $ref(false);
 let view = $ref(null);
 let el = $ref(null);
-const pageChanged = (page) => {
-	if (page == null) return;
-	const viewInfo = page[symbols.PAGE_INFO];
-	if (isRef(viewInfo)) {
-		watch(viewInfo, () => {
-			childInfo = viewInfo.value;
-		}, { immediate: true });
-	} else {
-		childInfo = viewInfo;
-	}
-};
-const pageProps = $ref({});
-
-const isEmpty = (x: any) => x == null || x == '';
-
+let pageProps = $ref({});
 let noMaintainerInformation = isEmpty(instance.maintainerName) || isEmpty(instance.maintainerEmail);
 let noBotProtection = !instance.enableHcaptcha && !instance.enableRecaptcha;
+
+const NARROW_THRESHOLD = 600;
+const ro = new ResizeObserver((entries, observer) => {
+	if (entries.length === 0) return;
+	narrow = entries[0].borderBoxSize[0].inlineSize < NARROW_THRESHOLD;
+});
 
 const menuDef = $computed(() => [{
 	title: i18n.ts.quickAction,
@@ -95,47 +92,47 @@ const menuDef = $computed(() => [{
 		icon: 'fas fa-tachometer-alt',
 		text: i18n.ts.dashboard,
 		to: '/admin/overview',
-		active: page === 'overview',
+		active: props.initialPage === 'overview',
 	}, {
 		icon: 'fas fa-users',
 		text: i18n.ts.users,
 		to: '/admin/users',
-		active: page === 'users',
+		active: props.initialPage === 'users',
 	}, {
 		icon: 'fas fa-laugh',
 		text: i18n.ts.customEmojis,
 		to: '/admin/emojis',
-		active: page === 'emojis',
+		active: props.initialPage === 'emojis',
 	}, {
 		icon: 'fas fa-globe',
 		text: i18n.ts.federation,
 		to: '/admin/federation',
-		active: page === 'federation',
+		active: props.initialPage === 'federation',
 	}, {
 		icon: 'fas fa-clipboard-list',
 		text: i18n.ts.jobQueue,
 		to: '/admin/queue',
-		active: page === 'queue',
+		active: props.initialPage === 'queue',
 	}, {
 		icon: 'fas fa-cloud',
 		text: i18n.ts.files,
 		to: '/admin/files',
-		active: page === 'files',
+		active: props.initialPage === 'files',
 	}, {
 		icon: 'fas fa-broadcast-tower',
 		text: i18n.ts.announcements,
 		to: '/admin/announcements',
-		active: page === 'announcements',
+		active: props.initialPage === 'announcements',
 	}, {
 		icon: 'fas fa-audio-description',
 		text: i18n.ts.ads,
 		to: '/admin/ads',
-		active: page === 'ads',
+		active: props.initialPage === 'ads',
 	}, {
 		icon: 'fas fa-exclamation-circle',
 		text: i18n.ts.abuseReports,
 		to: '/admin/abuses',
-		active: page === 'abuses',
+		active: props.initialPage === 'abuses',
 	}],
 }, {
 	title: i18n.ts.settings,
@@ -143,47 +140,47 @@ const menuDef = $computed(() => [{
 		icon: 'fas fa-cog',
 		text: i18n.ts.general,
 		to: '/admin/settings',
-		active: page === 'settings',
+		active: props.initialPage === 'settings',
 	}, {
 		icon: 'fas fa-envelope',
 		text: i18n.ts.emailServer,
 		to: '/admin/email-settings',
-		active: page === 'email-settings',
+		active: props.initialPage === 'email-settings',
 	}, {
 		icon: 'fas fa-cloud',
 		text: i18n.ts.objectStorage,
 		to: '/admin/object-storage',
-		active: page === 'object-storage',
+		active: props.initialPage === 'object-storage',
 	}, {
 		icon: 'fas fa-lock',
 		text: i18n.ts.security,
 		to: '/admin/security',
-		active: page === 'security',
+		active: props.initialPage === 'security',
 	}, {
 		icon: 'fas fa-globe',
 		text: i18n.ts.relays,
 		to: '/admin/relays',
-		active: page === 'relays',
+		active: props.initialPage === 'relays',
 	}, {
 		icon: 'fas fa-share-alt',
 		text: i18n.ts.integration,
 		to: '/admin/integrations',
-		active: page === 'integrations',
+		active: props.initialPage === 'integrations',
 	}, {
 		icon: 'fas fa-ban',
 		text: i18n.ts.instanceBlocking,
 		to: '/admin/instance-block',
-		active: page === 'instance-block',
+		active: props.initialPage === 'instance-block',
 	}, {
 		icon: 'fas fa-ghost',
 		text: i18n.ts.proxyAccount,
 		to: '/admin/proxy-account',
-		active: page === 'proxy-account',
+		active: props.initialPage === 'proxy-account',
 	}, {
 		icon: 'fas fa-cogs',
 		text: i18n.ts.other,
 		to: '/admin/other-settings',
-		active: page === 'other-settings',
+		active: props.initialPage === 'other-settings',
 	}],
 }, {
 	title: i18n.ts.info,
@@ -191,12 +188,13 @@ const menuDef = $computed(() => [{
 		icon: 'fas fa-database',
 		text: i18n.ts.database,
 		to: '/admin/database',
-		active: page === 'database',
+		active: props.initialPage === 'database',
 	}],
 }]);
+
 const component = $computed(() => {
-	if (page == null) return null;
-	switch (page) {
+	if (props.initialPage == null) return null;
+	switch (props.initialPage) {
 		case 'overview': return defineAsyncComponent(() => import('./overview.vue'));
 		case 'users': return defineAsyncComponent(() => import('./users.vue'));
 		case 'emojis': return defineAsyncComponent(() => import('./emojis.vue'));
@@ -206,7 +204,6 @@ const component = $computed(() => {
 		case 'announcements': return defineAsyncComponent(() => import('./announcements.vue'));
 		case 'ads': return defineAsyncComponent(() => import('./ads.vue'));
 		case 'database': return defineAsyncComponent(() => import('./database.vue'));
-		case 'abuses': return defineAsyncComponent(() => import('./abuses.vue'));
 		case 'settings': return defineAsyncComponent(() => import('./settings.vue'));
 		case 'email-settings': return defineAsyncComponent(() => import('./email-settings.vue'));
 		case 'object-storage': return defineAsyncComponent(() => import('./object-storage.vue'));
@@ -229,21 +226,40 @@ watch(component, () => {
 
 watch(() => props.initialPage, () => {
 	if (props.initialPage == null && !narrow) {
-		page = 'overview';
+		nav.push('/admin/overview');
 	} else {
-		page = props.initialPage;
 		if (props.initialPage == null) {
 			INFO = indexInfo;
 		}
 	}
 });
 
-onMounted(() => {
-	narrow = el.offsetWidth < 800;
-	if (!narrow) {
-		page = 'overview';
+watch(narrow, () => {
+	if (props.initialPage == null && !narrow) {
+		nav.push('/admin/overview');
 	}
 });
+
+onMounted(() => {
+	ro.observe(el);
+
+	narrow = el.offsetWidth < NARROW_THRESHOLD;
+	if (props.initialPage == null && !narrow) {
+		nav.push('/admin/overview');
+	}
+});
+
+onUnmounted(() => {
+	ro.disconnect();
+});
+
+const pageChanged = (page) => {
+	if (page == null) {
+		childInfo = null;
+	} else {
+		childInfo = page[symbols.PAGE_INFO];
+	}
+};
 
 const invite = () => {
 	os.api('admin/invite').then(x => {
