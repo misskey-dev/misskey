@@ -172,10 +172,14 @@ export default define(meta, paramDef, async (ps, user) => {
 	let files: DriveFile[] = [];
 	const fileIds = ps.fileIds != null ? ps.fileIds : ps.mediaIds != null ? ps.mediaIds : null;
 	if (fileIds != null) {
-		files = await DriveFiles.findBy({
-			userId: user.id,
-			id: In(fileIds),
-		});
+		files = await DriveFiles.createQueryBuilder('file')
+			.where('file.userId = :userId AND file.id IN (:...fileIds)', {
+				userId: user.id,
+				fileIds,
+			})
+			.orderBy('array_position(ARRAY[:...fileIds], "id")')
+			.setParameters({ fileIds })
+			.getMany();
 	}
 
 	let renote: Note | null = null;
