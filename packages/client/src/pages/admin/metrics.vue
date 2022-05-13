@@ -50,8 +50,8 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, markRaw } from 'vue';
+<script lang="ts" setup>
+import { markRaw, nextTick, onMounted, onBeforeUnmount } from 'vue';
 import {
   Chart,
   ArcElement,
@@ -76,6 +76,28 @@ import MkwFederation from '../../widgets/federation.vue';
 import { version, url } from '@/config';
 import bytes from '@/filters/bytes';
 import number from '@/filters/number';
+import * as os from '@/os';
+import { stream } from '@/stream';
+import { defaultStore } from '@/store';
+
+let stats: any = $ref(null);
+let serverInfo: any = $ref(null);
+let connection: any = $ref(null);
+let queueConnection: any = markRaw(stream.useChannel('queueStats'));
+let memUsage: number = $ref(0);
+let chartCpuMem: any = $ref(null);
+let chartNet: any = $ref(null);
+let jobs: any[] = $ref([]);
+let logs: any[] = $ref([]);
+let logLevel: string = $ref('all');
+let logDomain: string = $ref('');
+let modLogs: any[] = $ref([]);
+let dbInfo: any = $ref(null);
+let overviewHeight: string = $ref('1fr');
+let queueHeight: string = $ref('1fr');
+let paused: boolean = $ref(false);
+
+const gridColor = $computed(() => defaultStore.state.darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)');
 
 Chart.register(
   ArcElement,
@@ -99,366 +121,319 @@ const alpha = (hex, a) => {
 	const b = parseInt(result[3], 16);
 	return `rgba(${r}, ${g}, ${b}, ${a})`;
 };
-import * as os from '@/os';
-import { stream } from '@/stream';
 
-export default defineComponent({
-	components: {
-		MkButton,
-		MkSelect,
-		MkInput,
-		MkContainer,
-		MkFolder,
-		MkwFederation,
-	},
-
-	data() {
-		return {
-			version,
-			url,
-			stats: null,
-			serverInfo: null,
-			connection: null,
-			queueConnection: markRaw(stream.useChannel('queueStats')),
-			memUsage: 0,
-			chartCpuMem: null,
-			chartNet: null,
-			jobs: [],
-			logs: [],
-			logLevel: 'all',
-			logDomain: '',
-			modLogs: [],
-			dbInfo: null,
-			overviewHeight: '1fr',
-			queueHeight: '1fr',
-			paused: false,
-		}
-	},
-
-	computed: {
-		gridColor() {
-			// TODO: var(--panel)の色が暗いか明るいかで判定する
-			return this.$store.state.darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+function cpumem(el) {
+	if (chartCpuMem != null) return;
+	chartCpuMem = markRaw(new Chart(el, {
+		type: 'line',
+		data: {
+			labels: [],
+			datasets: [{
+				label: 'CPU',
+				pointRadius: 0,
+				tension: 0,
+				borderWidth: 2,
+				borderColor: '#86b300',
+				backgroundColor: alpha('#86b300', 0.1),
+				data: []
+			}, {
+				label: 'MEM (active)',
+				pointRadius: 0,
+				tension: 0,
+				borderWidth: 2,
+				borderColor: '#935dbf',
+				backgroundColor: alpha('#935dbf', 0.02),
+				data: []
+			}, {
+				label: 'MEM (used)',
+				pointRadius: 0,
+				tension: 0,
+				borderWidth: 2,
+				borderColor: '#935dbf',
+				borderDash: [5, 5],
+				fill: false,
+				data: []
+			}]
 		},
-	},
+		options: {
+			aspectRatio: 3,
+			layout: {
+				padding: {
+					left: 16,
+					right: 16,
+					top: 16,
+					bottom: 0
+				}
+			},
+			legend: {
+				position: 'bottom',
+				labels: {
+					boxWidth: 16,
+				}
+			},
+			scales: {
+				x: {
+					gridLines: {
+						display: false,
+						color: gridColor,
+						zeroLineColor: gridColor,
+					},
+					ticks: {
+						display: false,
+					}
+				},
+				y: {
+					position: 'right',
+					gridLines: {
+						display: true,
+						color: gridColor,
+						zeroLineColor: gridColor,
+					},
+					ticks: {
+						display: false,
+						max: 100
+					}
+				}
+			},
+			tooltips: {
+				intersect: false,
+				mode: 'index',
+			}
+		}
+	}));
+}
 
-	mounted() {
-		this.fetchJobs();
+function net(el) {
+	if (chartNet != null) return;
+	chartNet = markRaw(new Chart(el, {
+		type: 'line',
+		data: {
+			labels: [],
+			datasets: [{
+				label: 'In',
+				pointRadius: 0,
+				tension: 0,
+				borderWidth: 2,
+				borderColor: '#94a029',
+				backgroundColor: alpha('#94a029', 0.1),
+				data: []
+			}, {
+				label: 'Out',
+				pointRadius: 0,
+				tension: 0,
+				borderWidth: 2,
+				borderColor: '#ff9156',
+				backgroundColor: alpha('#ff9156', 0.1),
+				data: []
+			}]
+		},
+		options: {
+			aspectRatio: 3,
+			layout: {
+				padding: {
+					left: 16,
+					right: 16,
+					top: 16,
+					bottom: 0
+				}
+			},
+			legend: {
+				position: 'bottom',
+				labels: {
+					boxWidth: 16,
+				}
+			},
+			scales: {
+				x: {
+					gridLines: {
+						display: false,
+						color: gridColor,
+						zeroLineColor: gridColor,
+					},
+					ticks: {
+						display: false
+					}
+				},
+				y: {
+					position: 'right',
+					gridLines: {
+						display: true,
+						color: gridColor,
+						zeroLineColor: gridColor,
+					},
+					ticks: {
+						display: false,
+					}
+				}
+			},
+			tooltips: {
+				intersect: false,
+				mode: 'index',
+			}
+		}
+	}));
+}
 
-		Chart.defaults.color = getComputedStyle(document.documentElement).getPropertyValue('--fg');
+function disk(el) {
+	if (chartDisk != null) return;
+	chartDisk = markRaw(new Chart(el, {
+		type: 'line',
+		data: {
+			labels: [],
+			datasets: [{
+				label: 'Read',
+				pointRadius: 0,
+				tension: 0,
+				borderWidth: 2,
+				borderColor: '#94a029',
+				backgroundColor: alpha('#94a029', 0.1),
+				data: []
+			}, {
+				label: 'Write',
+				pointRadius: 0,
+				tension: 0,
+				borderWidth: 2,
+				borderColor: '#ff9156',
+				backgroundColor: alpha('#ff9156', 0.1),
+				data: []
+			}]
+		},
+		options: {
+			aspectRatio: 3,
+			layout: {
+				padding: {
+					left: 16,
+					right: 16,
+					top: 16,
+					bottom: 0
+				}
+			},
+			legend: {
+				position: 'bottom',
+				labels: {
+					boxWidth: 16,
+				}
+			},
+			scales: {
+				x: {
+					gridLines: {
+						display: false,
+						color: this.gridColor,
+						zeroLineColor: this.gridColor,
+					},
+					ticks: {
+						display: false
+					}
+				},
+				y: {
+					position: 'right',
+					gridLines: {
+						display: true,
+						color: this.gridColor,
+						zeroLineColor: this.gridColor,
+					},
+					ticks: {
+						display: false,
+					}
+				}
+			},
+			tooltips: {
+				intersect: false,
+				mode: 'index',
+			}
+		}
+	}));
+}
 
-		os.api('admin/server-info', {}).then(res => {
-			this.serverInfo = res;
+function fetchJobs() {
+	os.api('admin/queue/deliver-delayed', {}).then(jobsResponse => {
+		jobs = jobsResponse;
+	});
+}
 
-			this.connection = markRaw(stream.useChannel('serverStats'));
-			this.connection.on('stats', this.onStats);
-			this.connection.on('statsLog', this.onStatsLog);
-			this.connection.send('requestLog', {
+function onStats(stats) {
+	if (paused) return;
+
+	const cpu = (stats.cpu * 100).toFixed(0);
+	const memActive = (stats.mem.active / serverInfo.mem.total * 100).toFixed(0);
+	const memUsed = (stats.mem.used / serverInfo.mem.total * 100).toFixed(0);
+	memUsage = stats.mem.active;
+
+	chartCpuMem.data.labels.push('');
+	chartCpuMem.data.datasets[0].data.push(cpu);
+	chartCpuMem.data.datasets[1].data.push(memActive);
+	chartCpuMem.data.datasets[2].data.push(memUsed);
+	chartNet.data.labels.push('');
+	chartNet.data.datasets[0].data.push(stats.net.rx);
+	chartNet.data.datasets[1].data.push(stats.net.tx);
+	chartDisk.data.labels.push('');
+	chartDisk.data.datasets[0].data.push(stats.fs.r);
+	chartDisk.data.datasets[1].data.push(stats.fs.w);
+	if (chartCpuMem.data.datasets[0].data.length > 150) {
+		chartCpuMem.data.labels.shift();
+		chartCpuMem.data.datasets[0].data.shift();
+		chartCpuMem.data.datasets[1].data.shift();
+		chartCpuMem.data.datasets[2].data.shift();
+		chartNet.data.labels.shift();
+		chartNet.data.datasets[0].data.shift();
+		chartNet.data.datasets[1].data.shift();
+		chartDisk.data.labels.shift();
+		chartDisk.data.datasets[0].data.shift();
+		chartDisk.data.datasets[1].data.shift();
+	}
+
+	chartCpuMem.update();
+	chartNet.update();
+	chartDisk.update();
+}
+
+function onStatsLog(statsLog) {
+	for (const stats of [...statsLog].reverse()) {
+		onStats(stats);
+	}
+}
+
+function pause() {
+	paused = true;
+}
+
+function resume() {
+	paused = false;
+}
+
+onMounted(() => {
+	fetchJobs();
+
+	Chart.defaults.color = getComputedStyle(document.documentElement).getPropertyValue('--fg');
+
+	os.api('admin/server-info', {}).then(res => {
+		serverInfo = res;
+
+		connection = markRaw(stream.useChannel('serverStats'));
+		connection.on('stats', onStats);
+		connection.on('statsLog', onStatsLog);
+		connection.send('requestLog', {
+			id: Math.random().toString().substr(2, 8),
+			length: 150
+		});
+
+		nextTick(() => {
+			queueConnection.send('requestLog', {
 				id: Math.random().toString().substr(2, 8),
-				length: 150
-			});
-
-			this.$nextTick(() => {
-				this.queueConnection.send('requestLog', {
-					id: Math.random().toString().substr(2, 8),
-					length: 200
-				});
+				length: 200
 			});
 		});
-	},
+	});
+});
 
-	beforeUnmount() {
-		if (this.connection) {
-			this.connection.off('stats', this.onStats);
-			this.connection.off('statsLog', this.onStatsLog);
-			this.connection.dispose();
+onBeforeUnmount(() => {
+		if (connection) {
+			connection.off('stats', onStats);
+			connection.off('statsLog', onStatsLog);
+			connection.dispose();
 		}
-		this.queueConnection.dispose();
-	},
 
-	methods: {
-		cpumem(el) {
-			if (this.chartCpuMem != null) return;
-			this.chartCpuMem = markRaw(new Chart(el, {
-				type: 'line',
-				data: {
-					labels: [],
-					datasets: [{
-						label: 'CPU',
-						pointRadius: 0,
-						tension: 0,
-						borderWidth: 2,
-						borderColor: '#86b300',
-						backgroundColor: alpha('#86b300', 0.1),
-						data: []
-					}, {
-						label: 'MEM (active)',
-						pointRadius: 0,
-						tension: 0,
-						borderWidth: 2,
-						borderColor: '#935dbf',
-						backgroundColor: alpha('#935dbf', 0.02),
-						data: []
-					}, {
-						label: 'MEM (used)',
-						pointRadius: 0,
-						tension: 0,
-						borderWidth: 2,
-						borderColor: '#935dbf',
-						borderDash: [5, 5],
-						fill: false,
-						data: []
-					}]
-				},
-				options: {
-					aspectRatio: 3,
-					layout: {
-						padding: {
-							left: 16,
-							right: 16,
-							top: 16,
-							bottom: 0
-						}
-					},
-					legend: {
-						position: 'bottom',
-						labels: {
-							boxWidth: 16,
-						}
-					},
-					scales: {
-						x: {
-							gridLines: {
-								display: false,
-								color: this.gridColor,
-								zeroLineColor: this.gridColor,
-							},
-							ticks: {
-								display: false,
-							}
-						},
-						y: {
-							position: 'right',
-							gridLines: {
-								display: true,
-								color: this.gridColor,
-								zeroLineColor: this.gridColor,
-							},
-							ticks: {
-								display: false,
-								max: 100
-							}
-						}
-					},
-					tooltips: {
-						intersect: false,
-						mode: 'index',
-					}
-				}
-			}));
-		},
-
-		net(el) {
-			if (this.chartNet != null) return;
-			this.chartNet = markRaw(new Chart(el, {
-				type: 'line',
-				data: {
-					labels: [],
-					datasets: [{
-						label: 'In',
-						pointRadius: 0,
-						tension: 0,
-						borderWidth: 2,
-						borderColor: '#94a029',
-						backgroundColor: alpha('#94a029', 0.1),
-						data: []
-					}, {
-						label: 'Out',
-						pointRadius: 0,
-						tension: 0,
-						borderWidth: 2,
-						borderColor: '#ff9156',
-						backgroundColor: alpha('#ff9156', 0.1),
-						data: []
-					}]
-				},
-				options: {
-					aspectRatio: 3,
-					layout: {
-						padding: {
-							left: 16,
-							right: 16,
-							top: 16,
-							bottom: 0
-						}
-					},
-					legend: {
-						position: 'bottom',
-						labels: {
-							boxWidth: 16,
-						}
-					},
-					scales: {
-						x: {
-							gridLines: {
-								display: false,
-								color: this.gridColor,
-								zeroLineColor: this.gridColor,
-							},
-							ticks: {
-								display: false
-							}
-						},
-						y: {
-							position: 'right',
-							gridLines: {
-								display: true,
-								color: this.gridColor,
-								zeroLineColor: this.gridColor,
-							},
-							ticks: {
-								display: false,
-							}
-						}
-					},
-					tooltips: {
-						intersect: false,
-						mode: 'index',
-					}
-				}
-			}));
-		},
-
-		disk(el) {
-			if (this.chartDisk != null) return;
-			this.chartDisk = markRaw(new Chart(el, {
-				type: 'line',
-				data: {
-					labels: [],
-					datasets: [{
-						label: 'Read',
-						pointRadius: 0,
-						tension: 0,
-						borderWidth: 2,
-						borderColor: '#94a029',
-						backgroundColor: alpha('#94a029', 0.1),
-						data: []
-					}, {
-						label: 'Write',
-						pointRadius: 0,
-						tension: 0,
-						borderWidth: 2,
-						borderColor: '#ff9156',
-						backgroundColor: alpha('#ff9156', 0.1),
-						data: []
-					}]
-				},
-				options: {
-					aspectRatio: 3,
-					layout: {
-						padding: {
-							left: 16,
-							right: 16,
-							top: 16,
-							bottom: 0
-						}
-					},
-					legend: {
-						position: 'bottom',
-						labels: {
-							boxWidth: 16,
-						}
-					},
-					scales: {
-						x: {
-							gridLines: {
-								display: false,
-								color: this.gridColor,
-								zeroLineColor: this.gridColor,
-							},
-							ticks: {
-								display: false
-							}
-						},
-						y: {
-							position: 'right',
-							gridLines: {
-								display: true,
-								color: this.gridColor,
-								zeroLineColor: this.gridColor,
-							},
-							ticks: {
-								display: false,
-							}
-						}
-					},
-					tooltips: {
-						intersect: false,
-						mode: 'index',
-					}
-				}
-			}));
-		},
-
-		fetchJobs() {
-			os.api('admin/queue/deliver-delayed', {}).then(jobs => {
-				this.jobs = jobs;
-			});
-		},
-
-		onStats(stats) {
-			if (this.paused) return;
-
-			const cpu = (stats.cpu * 100).toFixed(0);
-			const memActive = (stats.mem.active / this.serverInfo.mem.total * 100).toFixed(0);
-			const memUsed = (stats.mem.used / this.serverInfo.mem.total * 100).toFixed(0);
-			this.memUsage = stats.mem.active;
-
-			this.chartCpuMem.data.labels.push('');
-			this.chartCpuMem.data.datasets[0].data.push(cpu);
-			this.chartCpuMem.data.datasets[1].data.push(memActive);
-			this.chartCpuMem.data.datasets[2].data.push(memUsed);
-			this.chartNet.data.labels.push('');
-			this.chartNet.data.datasets[0].data.push(stats.net.rx);
-			this.chartNet.data.datasets[1].data.push(stats.net.tx);
-			this.chartDisk.data.labels.push('');
-			this.chartDisk.data.datasets[0].data.push(stats.fs.r);
-			this.chartDisk.data.datasets[1].data.push(stats.fs.w);
-			if (this.chartCpuMem.data.datasets[0].data.length > 150) {
-				this.chartCpuMem.data.labels.shift();
-				this.chartCpuMem.data.datasets[0].data.shift();
-				this.chartCpuMem.data.datasets[1].data.shift();
-				this.chartCpuMem.data.datasets[2].data.shift();
-				this.chartNet.data.labels.shift();
-				this.chartNet.data.datasets[0].data.shift();
-				this.chartNet.data.datasets[1].data.shift();
-				this.chartDisk.data.labels.shift();
-				this.chartDisk.data.datasets[0].data.shift();
-				this.chartDisk.data.datasets[1].data.shift();
-			}
-			this.chartCpuMem.update();
-			this.chartNet.update();
-			this.chartDisk.update();
-		},
-
-		onStatsLog(statsLog) {
-			for (const stats of [...statsLog].reverse()) {
-				this.onStats(stats);
-			}
-		},
-
-		bytes,
-
-		number,
-
-		pause() {
-			this.paused = true;
-		},
-
-		resume() {
-			this.paused = false;
-		},
-	}
+		queueConnection.dispose();
 });
 </script>
 
