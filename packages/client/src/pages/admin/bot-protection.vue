@@ -79,12 +79,12 @@ async function init() {
 
 function save() {
 	os.apiWithDialog('admin/update-meta', {
-		enableHcaptcha: enableHcaptcha,
-		hcaptchaSiteKey: hcaptchaSiteKey,
-		hcaptchaSecretKey: hcaptchaSecretKey,
-		enableRecaptcha: enableRecaptcha,
-		recaptchaSiteKey: recaptchaSiteKey,
-		recaptchaSecretKey: recaptchaSecretKey,
+		enableHcaptcha,
+		hcaptchaSiteKey,
+		hcaptchaSecretKey,
+		enableRecaptcha,
+		recaptchaSiteKey,
+		recaptchaSecretKey,
 	}).then(() => {
 		fetchInstance();
 	});

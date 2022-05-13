@@ -57,7 +57,7 @@ async function init() {
 
 function save() {
 	os.apiWithDialog('admin/update-meta', {
-		summalyProxy: summalyProxy,
+		summalyProxy,
 	}).then(() => {
 		fetchInstance();
 	});
