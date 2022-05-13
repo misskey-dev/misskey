@@ -19,7 +19,7 @@ import bytes from '@/filters/bytes';
 import number from '@/filters/number';
 import { i18n } from '@/i18n';
 
-const databasePromiseFactory = () => os.api('admin/get-table-stats', {}).then(res => Object.entries(res).sort((a, b) => b[1].size - a[1].size));
+const databasePromiseFactory = () => os.api('admin/get-table-stats').then(res => Object.entries(res).sort((a, b) => b[1].size - a[1].size));
 
 defineExpose({
 	[symbols.PAGE_INFO]: {
