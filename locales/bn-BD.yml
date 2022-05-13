@@ -1621,6 +1621,9 @@ _notification:
     followRequestAccepted: "গৃহীত অনুসরণের অনুরোধসমূহ"
     groupInvited: "গ্রুপের আমন্ত্রনসমূহ"
     app: "লিঙ্ক করা অ্যাপ থেকে বিজ্ঞপ্তি"
+  _actions:
+    reply: "জবাব"
+    renote: "রিনোট"
 _deck:
   alwaysShowMainColumn: "সর্বদা মেইন কলাম দেখান"
   columnAlign: "কলাম সাজান"

@@ -1628,6 +1628,10 @@ _notification:
     followRequestAccepted: "Schválené žiadosti o sledovanie"
     groupInvited: "Pozvánky do skupín"
     app: "Oznámenia z prepojených aplikácií"
+  _actions:
+    followBack: "Sledovať späť\n"
+    reply: "Odpovedať"
+    renote: "Preposlať"
 _deck:
   alwaysShowMainColumn: "Vždy zobraziť v hlavnom stĺpci"
   columnAlign: "Zarovnať stĺpce"
