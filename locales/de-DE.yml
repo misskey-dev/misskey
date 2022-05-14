@@ -1131,6 +1131,7 @@ _2fa:
   registerKey: "Neuen Sicherheitsschlüssel registrieren"
   step1: "Installiere zuerst eine Authentifizierungsapp (z.B. {a} oder {b}) auf deinem Gerät."
   step2: "Dann, scanne den angezeigten QR-Code mit deinem Gerät."
+  step2Url: "Gib alternativ diese URL in einer Desktopanwendung ein:"
   step3: "Gib zum Abschluss den Token ein, der von deiner App angezeigt wird."
   step4: "Alle folgenden Anmeldungsversuche werden ab sofort die Eingabe eines solchen Tokens benötigen."
   securityKeyInfo: "Du kannst neben Fingerabdruck- oder PIN-Authentifizierung auf deinem Gerät auch Anmeldung mit Hilfe eines FIDO2-kompatiblen Hardware-Sicherheitsschlüssels einrichten."
