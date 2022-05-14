@@ -140,7 +140,7 @@ const edit = (emoji) => {
 					...result.updated
 				}));
 			} else if (result.deleted) {
-				emojisPaginationComponent.value.reload();
+				emojisPaginationComponent.value.removeItem((item) => item.id === emoji.id);
 			}
 		},
 	}, 'closed');
