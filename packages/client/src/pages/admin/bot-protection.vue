@@ -56,7 +56,7 @@ import { fetchInstance } from '@/instance';
 
 const MkCaptcha = defineAsyncComponent(() => import('@/components/captcha.vue'));
 
-let provider: = $ref(null);
+let provider = $ref(null);
 let hcaptchaSiteKey: string | null = $ref(null);
 let hcaptchaSecretKey: string | null = $ref(null);
 let recaptchaSiteKey: string | null = $ref(null);
