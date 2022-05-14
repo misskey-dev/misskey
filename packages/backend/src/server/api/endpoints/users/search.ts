@@ -66,7 +66,7 @@ export default define(meta, paramDef, async (ps, me) => {
 
 				// Also search username if it qualifies as username
 				if (Users.validateLocalUsername(ps.query)) {
-					qb.orWhere('user.usernameLower LIKE :username', { username: ps.query.toLowerCase() + '%' });
+					qb.orWhere('user.usernameLower LIKE :username', { username: '%' + ps.query.toLowerCase() + '%' });
 				}
 			}))
 			.andWhere(new Brackets(qb => { qb
