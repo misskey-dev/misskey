@@ -90,13 +90,13 @@ async function testEmail() {
 
 function save() {
 	os.apiWithDialog('admin/update-meta', {
-		enableEmail: enableEmail,
-		email: email,
-		smtpSecure: smtpSecure,
-		smtpHost: smtpHost,
-		smtpPort: smtpPort,
-		smtpUser: smtpUser,
-		smtpPass: smtpPass,
+		enableEmail,
+		email,
+		smtpSecure,
+		smtpHost,
+		smtpPort,
+		smtpUser,
+		smtpPass,
 	}).then(() => {
 		fetchInstance();
 	});
