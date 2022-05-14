@@ -36,16 +36,14 @@ import * as os from '@/os';
 import { unique } from '@/scripts/array';
 import { i18n } from '@/i18n';
 
-const props = defineProps({
-	emoji: {
-		required: true,
-	}
-});
+const props = defineProps<{
+	emoji: any,
+}>();
 
 let dialog = $ref(null);
 let name: string = $ref(props.emoji.name);
 let category: string = $ref(props.emoji.category);
-let aliases: string = $ref(props.emoji.aliases?.join(' '));
+let aliases: string = $ref(props.emoji.aliases.join(' '));
 let categories: string[] = $ref([]);
 
 os.api('meta', { detail: false }).then(({ emojis }) => {
@@ -64,15 +62,15 @@ function ok() {
 async function update() {
 	await os.apiWithDialog('admin/emoji/update', {
 		id: props.emoji.id,
-		name: name,
-		category: category,
+		name,
+		category,
 		aliases: aliases.split(' '),
 	});
 
 	emit('done', {
 		updated: {
-			name: name,
-			category: category,
+			name,
+			category,
 			aliases: aliases.split(' '),
 		}
 	});
