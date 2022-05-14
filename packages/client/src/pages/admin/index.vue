@@ -37,7 +37,7 @@ import * as os from '@/os';
 import { lookupUser } from '@/scripts/lookup-user';
 import { MisskeyNavigator } from '@/scripts/navigate';
 
-const isEmpty = (x: any) => x == null || x === '';
+const isEmpty = (x: string | null) => x == null || x === '';
 
 const nav = new MisskeyNavigator();
 
@@ -48,12 +48,9 @@ const indexInfo = {
 	hideHeader: true,
 };
 
-const props = defineProps({
-	initialPage: {
-		type: String,
-		required: false
-	}
-});
+const props = defineProps<{
+	initialPage?: string,
+}>();
 
 provide('shouldOmitHeaderTitle', false);
 
