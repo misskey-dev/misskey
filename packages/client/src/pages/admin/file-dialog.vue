@@ -48,11 +48,9 @@ let file: any = $ref(null);
 let info: any = $ref(null);
 let isSensitive: boolean = $ref(false);
 
-const props = defineProps({
-	fileId: {
-		required: true,
-	}
-});
+const props = defineProps<{
+	fileId: string,
+}>();
 
 async function fetch() {
 	file = await os.api('drive/files/show', { fileId: props.fileId });
