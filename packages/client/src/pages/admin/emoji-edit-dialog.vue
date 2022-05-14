@@ -66,6 +66,7 @@ async function update() {
 
 	emit('done', {
 		updated: {
+			id: props.emoji.id,
 			name,
 			category,
 			aliases: aliases.split(' '),
