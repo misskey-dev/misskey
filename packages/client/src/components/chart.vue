@@ -13,7 +13,7 @@
   id-denylist violation when setting it. This is causing about 60+ lint issues.
   As this is part of Chart.js's API it makes sense to disable the check here.
 */
-import { defineExpose, defineProps, onMounted, ref, watch, PropType, onUnmounted } from 'vue';
+import { defineProps, onMounted, ref, watch, PropType, onUnmounted } from 'vue';
 import {
 	Chart,
 	ArcElement,
@@ -894,11 +894,6 @@ onMounted(() => {
 
 onUnmounted(() => {
 	if (disposeTooltipComponent) disposeTooltipComponent();
-});
-
-defineExpose({
-	chartEl,
-	fetching,
 });
 /* eslint-enable id-denylist */
 </script>
