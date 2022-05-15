@@ -177,7 +177,7 @@ export default define(meta, paramDef, async (ps, user) => {
 				userId: user.id,
 				fileIds,
 			})
-			.orderBy('array_position(ARRAY[:...fileIds], "id")')
+			.orderBy('array_position(ARRAY[:...fileIds], "id"::text)')
 			.setParameters({ fileIds })
 			.getMany();
 	}
