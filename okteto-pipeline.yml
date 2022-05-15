@@ -1,0 +1,3 @@
+deploy:
+  - okteto build -t okteto.dev/misskey:latest
+  - helm upgrade --install misskey chart
