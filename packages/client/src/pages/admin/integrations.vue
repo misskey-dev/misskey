@@ -7,13 +7,13 @@
 			<template #suffix>{{ enableTwitterIntegration ? i18n.ts.enabled : i18n.ts.disabled }}</template>
 			<XTwitter/>
 		</FormFolder>
-		<FormFolder to="/admin/integrations/github" class="_formBlock">
+		<FormFolder class="_formBlock">
 			<template #icon><i class="fab fa-github"></i></template>
 			<template #label>GitHub</template>
 			<template #suffix>{{ enableGithubIntegration ? i18n.ts.enabled : i18n.ts.disabled }}</template>
 			<XGithub/>
 		</FormFolder>
-		<FormFolder to="/admin/integrations/discord" class="_formBlock">
+		<FormFolder class="_formBlock">
 			<template #icon><i class="fab fa-discord"></i></template>
 			<template #label>Discord</template>
 			<template #suffix>{{ enableDiscordIntegration ? i18n.ts.enabled : i18n.ts.disabled }}</template>
