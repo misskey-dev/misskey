@@ -58,8 +58,8 @@
 				</template>
 			</I18n>
 		</MkSwitch>
-		<captcha v-if="meta.enableHcaptcha" ref="hcaptcha" v-model="hCaptchaResponse" class="_formBlock captcha" provider="hcaptcha" :sitekey="meta.hcaptchaSiteKey"/>
-		<captcha v-if="meta.enableRecaptcha" ref="recaptcha" v-model="reCaptchaResponse" class="_formBlock captcha" provider="recaptcha" :sitekey="meta.recaptchaSiteKey"/>
+		<MkCaptcha v-if="meta.enableHcaptcha" ref="hcaptcha" v-model="hCaptchaResponse" class="_formBlock captcha" provider="hcaptcha" :sitekey="meta.hcaptchaSiteKey"/>
+		<MkCaptcha v-if="meta.enableRecaptcha" ref="recaptcha" v-model="reCaptchaResponse" class="_formBlock captcha" provider="recaptcha" :sitekey="meta.recaptchaSiteKey"/>
 		<MkButton class="_formBlock" type="submit" :disabled="shouldDisableSubmitting" gradate data-cy-signup-submit>{{ $ts.start }}</MkButton>
 	</template>
 </form>
@@ -81,7 +81,7 @@ export default defineComponent({
 		MkButton,
 		MkInput,
 		MkSwitch,
-		captcha: defineAsyncComponent(() => import('./captcha.vue')),
+		MkCaptcha: defineAsyncComponent(() => import('./captcha.vue')),
 	},
 
 	props: {

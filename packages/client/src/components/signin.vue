@@ -33,6 +33,8 @@
 					<template #label>{{ $ts.token }}</template>
 					<template #prefix><i class="fas fa-gavel"></i></template>
 				</MkInput>
+				<MkCaptcha v-if="meta.enableHcaptcha" ref="hcaptcha" v-model="hCaptchaResponse" class="_formBlock captcha" provider="hcaptcha" :sitekey="meta.hcaptchaSiteKey"/>
+				<MkCaptcha v-if="meta.enableRecaptcha" ref="recaptcha" v-model="reCaptchaResponse" class="_formBlock captcha" provider="recaptcha" :sitekey="meta.recaptchaSiteKey"/>
 				<MkButton type="submit" :disabled="signing" primary style="margin: 0 auto;">{{ signing ? $ts.loggingIn : $ts.login }}</MkButton>
 			</div>
 		</div>
@@ -60,6 +62,7 @@ export default defineComponent({
 	components: {
 		MkButton,
 		MkInput,
+		MkCaptcha: defineAsyncComponent(() => import('./captcha.vue')),
 	},
 
 	props: {
@@ -90,6 +93,8 @@ export default defineComponent({
 			credential: null,
 			challengeData: null,
 			queryingKey: false,
+			hCaptchaResponse: null,
+			reCaptchaResponse: null,
 		};
 	},
 
@@ -139,11 +144,13 @@ export default defineComponent({
 				return os.api('signin', {
 					username: this.username,
 					password: this.password,
+					'hcaptcha-response': this.hCaptchaResponse,
+					'g-recaptcha-response': this.reCaptchaResponse,
 					signature: hexify(credential.response.signature),
 					authenticatorData: hexify(credential.response.authenticatorData),
 					clientDataJSON: hexify(credential.response.clientDataJSON),
 					credentialId: credential.id,
-					challengeId: this.challengeData.challengeId
+					challengeId: this.challengeData.challengeId,
 				});
 			}).then(res => {
 				this.$emit('login', res);
@@ -164,7 +171,9 @@ export default defineComponent({
 				if (window.PublicKeyCredential && this.user.securityKeys) {
 					os.api('signin', {
 						username: this.username,
-						password: this.password
+						password: this.password,
+						'hcaptcha-response': this.hCaptchaResponse,
+						'g-recaptcha-response': this.reCaptchaResponse,
 					}).then(res => {
 						this.totpLogin = true;
 						this.signing = false;
@@ -179,7 +188,9 @@ export default defineComponent({
 				os.api('signin', {
 					username: this.username,
 					password: this.password,
-					token: this.user && this.user.twoFactorEnabled ? this.token : undefined
+					'hcaptcha-response': this.hCaptchaResponse,
+					'g-recaptcha-response': this.reCaptchaResponse,
+					token: this.user && this.user.twoFactorEnabled ? this.token : undefined,
 				}).then(res => {
 					this.$emit('login', res);
 					this.onLogin(res);
