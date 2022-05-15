@@ -6,7 +6,7 @@
 #───┘ URL └─────────────────────────────────────────────────────
 
 # Final accessible URL seen by a user.
-url: https://example.tld/
+# url: https://example.tld/
 
 # ONCE YOU HAVE STARTED THE INSTANCE, DO NOT CHANGE THE
 # URL SETTINGS AFTER THAT!
@@ -41,7 +41,7 @@ url: https://example.tld/
 #   You need to set Certificate in 'https' section.
 
 # To use option 1, uncomment below line.
-port: 3000    # A port that your Misskey server should listen.
+port: 3000 # A port that your Misskey server should listen.
 
 # To use option 2, uncomment below lines.
 #port: 443
@@ -89,8 +89,8 @@ redis:
 #  host: localhost
 #  port: 9200
 #  ssl: false
-#  user: 
-#  pass: 
+#  user:
+#  pass:
 
 #   ┌───────────────┐
 #───┘ ID generation └───────────────────────────────────────────
@@ -108,8 +108,7 @@ redis:
 # ONCE YOU HAVE STARTED THE INSTANCE, DO NOT CHANGE THE
 # ID SETTINGS AFTER THAT!
 
-id: 'aid'
-
+id: "aid"
 #   ┌─────────────────────┐
 #───┘ Other configuration └─────────────────────────────────────
 
