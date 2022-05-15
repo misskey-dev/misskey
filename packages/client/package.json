@@ -74,6 +74,13 @@
 		"vue-router": "4.0.15",
 		"vuedraggable": "4.0.1",
 		"websocket": "1.0.34",
+		"@vitejs/plugin-vue": "2.3.3",
+		"@vue/compiler-sfc": "3.2.33",
+		"@rollup/plugin-alias": "3.1.9",
+		"@rollup/plugin-json": "4.1.0",
+		"rollup": "2.73.0",
+		"typescript": "4.6.4",
+		"vite": "2.9.9",
 		"ws": "8.6.0"
 	},
 	"devDependencies": {
@@ -98,14 +105,6 @@
 		"@types/ws": "8.5.3",
 		"@typescript-eslint/eslint-plugin": "5.23.0",
 		"@typescript-eslint/parser": "5.23.0",
-		"@vitejs/plugin-vue": "2.3.3",
-		"@vue/compiler-sfc": "3.2.33",
-		"@rollup/plugin-alias": "3.1.9",
-		"@rollup/plugin-json": "4.1.0",
-		"rollup": "2.73.0",
-		"typescript": "4.6.4",
-
-		"vite": "2.9.9",
 		"eslint": "8.15.0",
 		"eslint-plugin-vue": "8.7.1",
 		"cross-env": "7.0.3",
