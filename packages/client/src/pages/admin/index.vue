@@ -201,6 +201,7 @@ const component = $computed(() => {
 		case 'announcements': return defineAsyncComponent(() => import('./announcements.vue'));
 		case 'ads': return defineAsyncComponent(() => import('./ads.vue'));
 		case 'database': return defineAsyncComponent(() => import('./database.vue'));
+		case 'abuses': return defineAsyncComponent(() => import('./abuses.vue'));
 		case 'settings': return defineAsyncComponent(() => import('./settings.vue'));
 		case 'email-settings': return defineAsyncComponent(() => import('./email-settings.vue'));
 		case 'object-storage': return defineAsyncComponent(() => import('./object-storage.vue'));
