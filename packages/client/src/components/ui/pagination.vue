@@ -244,6 +244,11 @@ const append = (item: Item): void => {
 	items.value.push(item);
 };
 
+const removeItem = (finder: (item: Item) => boolean) => {
+	const i = items.value.findIndex(finder);
+	items.value.splice(i, 1);
+};
+
 const updateItem = (id: Item['id'], replacer: (old: Item) => Item): void => {
 	const i = items.value.findIndex(item => item.id === id);
 	items.value[i] = replacer(items.value[i]);
@@ -276,6 +281,7 @@ defineExpose({
 	fetchMoreAhead,
 	prepend,
 	append,
+	removeItem,
 	updateItem,
 });
 </script>
