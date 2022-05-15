@@ -3,6 +3,7 @@ import { Followings } from '@/models/index.js';
 import { Brackets, SelectQueryBuilder } from 'typeorm';
 
 export function generateVisibilityQuery(q: SelectQueryBuilder<any>, me?: { id: User['id'] } | null) {
+	// This code must always be synchronized with the checks in Notes.isVisibleForMe.
 	if (me == null) {
 		q.andWhere(new Brackets(qb => { qb
 			.where(`note.visibility = 'public'`)

@@ -136,6 +136,7 @@ async function populateMyReaction(note: Note, meId: User['id'], _hint_?: {
 
 export const NoteRepository = db.getRepository(Note).extend({
 	async isVisibleForMe(note: Note, meId: User['id'] | null): Promise<boolean> {
+		// This code must always be synchronized with the checks in generateVisibilityQuery.
 		// visibility が specified かつ自分が指定されていなかったら非表示
 		if (note.visibility === 'specified') {
 			if (meId == null) {
