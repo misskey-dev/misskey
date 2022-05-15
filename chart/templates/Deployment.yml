@@ -16,9 +16,12 @@ spec:
     spec:
       containers:
         - name: misskey
-          image: okteto.dev/misskey:latest
+          image: {{ .Values.image }}
+          env:
+            - name: NODE_ENV
+              value: {{ .Values.environment }}
           volumeMounts:
-            - name: config-file
+            - name: {{ include "misskey.fullname" . }}-configuration
               mountPath: /misskey/.config
               readOnly: true
           ports:
@@ -39,6 +42,6 @@ spec:
           ports:
             - containerPort: 6379
       volumes:
-        - name: config-file
+        - name: {{ include "misskey.fullname" . }}-configuration
           configMap:
-            name: {{ include "misskey.fullname" . }}-config-file
+            name: {{ include "misskey.fullname" . }}-configuration
