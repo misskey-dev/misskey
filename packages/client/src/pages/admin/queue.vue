@@ -30,7 +30,7 @@ function clear() {
 	}).then(({ canceled }) => {
 		if (canceled) return;
 
-		os.apiWithDialog('admin/queue/clear', {});
+		os.apiWithDialog('admin/queue/clear');
 	});
 }
 
