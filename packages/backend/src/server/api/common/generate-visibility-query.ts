@@ -23,6 +23,7 @@ export function generateVisibilityQuery(q: SelectQueryBuilder<any>, me?: { id: U
 			.orWhere('note.userId = :meId')
 			// または 自分宛て
 			.orWhere(':meId = ANY(note.visibleUserIds)')
+			.orWhere(':meId = ANY(note.mentions)')
 			.orWhere(new Brackets(qb => { qb
 				// または フォロワー宛ての投稿であり、
 				.where(`note.visibility = 'followers'`)
