@@ -135,12 +135,12 @@ const edit = (emoji) => {
 	}, {
 		done: result => {
 			if (result.updated) {
-				emojisPaginationComponent.value.replaceItem(item => item.id === emoji.id, {
-					...emoji,
+				emojisPaginationComponent.value.updateItem(result.updated.id, (oldEmoji: any) => ({
+					...oldEmoji,
 					...result.updated
-				});
+				}));
 			} else if (result.deleted) {
-				emojisPaginationComponent.value.removeItem(item => item.id === emoji.id);
+				emojisPaginationComponent.value.removeItem((item) => item.id === emoji.id);
 			}
 		},
 	}, 'closed');
