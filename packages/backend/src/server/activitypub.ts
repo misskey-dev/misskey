@@ -231,13 +231,13 @@ router.get('/follows/:follower/:followee', async ctx => {
 	// check if the following exists.
 
 	const [follower, followee] = await Promise.all([
-		 Users.findOneBy({ id: ctx.params.follower }),
-		 Users.findOneBy({ id: ctx.params.followee }),
+		Users.findOneBy({ id: ctx.params.follower }),
+		Users.findOneBy({ id: ctx.params.followee }),
 	]);
 
 	if (follower == null || followee == null) {
-		 ctx.status = 404;
-		 return;
+		ctx.status = 404;
+		return;
 	}
 
 	ctx.body = renderActivity(renderFollow(follower, followee));
