@@ -45,7 +45,7 @@ function remove(inbox: string) {
 	os.api('admin/relays/remove', {
 		inbox
 	}).then(() => {
-		this.refresh();
+		refresh();
 	}).catch((err: any) => {
 		os.alert({
 			type: 'error',
