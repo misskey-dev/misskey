@@ -40,7 +40,7 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		userId: { type: 'string', format: 'misskey:id' },
-		urls: { type: 'array', items: { type: 'string' }, nullable: true },
+		urls: { type: 'array', items: { type: 'string' }, nullable: true, uniqueItems: true },
 		comment: { type: 'string', minLength: 1, maxLength: 2048 },
 	},
 	required: ['userId', 'comment'],
@@ -60,6 +60,10 @@ export default define(meta, paramDef, async (ps, me) => {
 
 	if (user.isAdmin) {
 		throw new ApiError(meta.errors.cannotReportAdmin);
+	}
+
+	if (!ps.urls.includes(user.uri)) {
+		ps.urls.push(user.uri);
 	}
 
 	const report = await AbuseUserReports.insert({
