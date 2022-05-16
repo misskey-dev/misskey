@@ -25,10 +25,6 @@ export const paramDef = {
 export default define(meta, paramDef, async (ps, me) => {
 	const report = await AbuseUserReports.findOneByOrFail({ id: ps.reportId });
 
-	if (report == null) {
-		throw new Error('report not found');
-	}
-
 	if (ps.forward && report.targetUserHost != null) {
 		const actor = await getInstanceActor();
 		const targetUser = await Users.findOneByOrFail({ id: report.targetUserId });
