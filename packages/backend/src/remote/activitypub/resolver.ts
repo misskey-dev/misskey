@@ -68,6 +68,6 @@ export default class Resolver {
 			throw new Error('invalid response');
 		}
 
-		return object;
+		return object as IObject;
 	}
 }

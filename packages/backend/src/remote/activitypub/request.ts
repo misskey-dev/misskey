@@ -34,7 +34,7 @@ export default async (user: { id: User['id'] }, url: string, object: any) => {
  * @param user http-signature user
  * @param url URL to fetch
  */
-export async function signedGet(url: string, user: { id: User['id'] }) {
+export async function signedGet(url: string, user: { id: User['id'] }) : Record<string, any> {
 	const keypair = await getUserKeypair(user.id);
 
 	const req = createSignedGet({

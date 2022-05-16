@@ -6,7 +6,7 @@ import fetch from 'node-fetch';
 import { HttpProxyAgent, HttpsProxyAgent } from 'hpagent';
 import config from '@/config/index.js';
 
-export async function getJson(url: string, accept = 'application/json, */*', timeout = 10000, headers?: Record<string, string>) {
+export async function getJson(url: string, accept = 'application/json, */*', timeout = 10000, headers?: Record<string, string>) : Record<string, any> {
 	const res = await getResponse({
 		url,
 		method: 'GET',
@@ -20,7 +20,7 @@ export async function getJson(url: string, accept = 'application/json, */*', tim
 	return await res.json();
 }
 
-export async function getHtml(url: string, accept = 'text/html, */*', timeout = 10000, headers?: Record<string, string>) {
+export async function getHtml(url: string, accept = 'text/html, */*', timeout = 10000, headers?: Record<string, string>) : string {
 	const res = await getResponse({
 		url,
 		method: 'GET',
