@@ -18,6 +18,7 @@ import { ILocalUser, User } from '@/models/entities/user.js';
 import { In, IsNull } from 'typeorm';
 import { renderLike } from '@/remote/activitypub/renderer/like.js';
 import { getUserKeypair } from '@/misc/keypair-store.js';
+import renderFollow from '@/remote/activitypub/renderer/follow.js';
 
 // Init router
 const router = new Router();
@@ -220,6 +221,26 @@ router.get('/likes/:like', async ctx => {
 	}
 
 	ctx.body = renderActivity(await renderLike(reaction, note));
+	ctx.set('Cache-Control', 'public, max-age=180');
+	setResponseType(ctx);
+});
+
+// follow
+router.get('/follows/:follower/:followee', async ctx => {
+	// This may be used before the follow is completed, so we do not
+	// check if the following exists.
+
+	const [follower, followee] = await Promise.all([
+		 Users.findOneBy({ id: ctx.params.follower }),
+		 Users.findOneBy({ id: ctx.params.followee }),
+	]);
+
+	if (follower == null || followee == null) {
+		 ctx.status = 404;
+		 return;
+	}
+
+	ctx.body = renderActivity(renderFollow(follower, followee));
 	ctx.set('Cache-Control', 'public, max-age=180');
 	setResponseType(ctx);
 });
