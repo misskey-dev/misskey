@@ -39,7 +39,7 @@ Not on Misskey? No problem! Not only can Misskey instances talk to each other, b
 - **Reactions**\
 You can add emoji reactions to any post! No longer are you bound by a like button, show everyone exactly how you feel with the tap of a button.
 - **Drive**\
-Hate not being able to find something you uploaded? With Drive, you get managed and powerful cloud storage right in your social media!
+With Misskey's built in drive, you get cloud storage right in your social media, where you can upload any files, make folders, and find media from posts you've made!
 - **Rich Web UI**\
 	Misskey has a rich and easy to use Web UI!
 	It is highly customizable, from changing the layout and adding widgets to making custom themes.
