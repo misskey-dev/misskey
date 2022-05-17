@@ -40,6 +40,7 @@ const bg = {
 	border-radius: 4px 0 0 4px;
 	overflow: hidden;
 	color: #fff;
+	text-shadow: 0 -1px 1px #000, -1px 0 1px #000, 0 1px 1px #000, 1px 0 1px #000;
 
 	> .icon {
 		height: 100%;
