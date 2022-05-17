@@ -1,7 +1,7 @@
 import * as fs from 'node:fs';
 import * as tmp from 'tmp';
 import { IImage, convertToJpeg } from './image-processor.js';
-import * as FFmpeg from 'fluent-ffmpeg';
+import FFmpeg from 'fluent-ffmpeg';
 
 export async function GenerateVideoThumbnail(path: string): Promise<IImage> {
 	const [outDir, cleanup] = await new Promise<[string, any]>((res, rej) => {
