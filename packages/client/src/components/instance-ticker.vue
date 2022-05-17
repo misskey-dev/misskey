@@ -7,6 +7,7 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
+import tinycolor from 'tinycolor2';
 import { instanceName } from '@/config';
 
 const props = defineProps<{
@@ -24,10 +25,10 @@ const instance = props.instance ?? {
 	themeColor: (document.querySelector('meta[name="theme-color-orig"]') as HTMLMetaElement)?.content
 };
 
-const themeColor = instance.themeColor ?? '#777777';
+const themeColor = tinycolor(instance.themeColor ?? '#777777');
 
 const bg = {
-	background: `linear-gradient(90deg, ${themeColor}, ${themeColor}00)`
+	background: `linear-gradient(90deg, ${themeColor}, ${themeColor.clone().setAlpha(0)})`
 };
 </script>
 
