@@ -144,11 +144,17 @@ export default () => new Promise(resolve => {
 	initializeStreamingServer(server);
 
 	server.on('error', e => {
-		serverLogger.error(e);
-
-		const code = (e as any).code;
-		if (code === 'EACCES') serverLogger.error(`You do not have permission to listen on port ${config.port}.`);
-		if (code === 'EADDRINUSE') serverLogger.error(`Port ${config.port} is already in use by another process.`);
+		switch ((e as any).code) {
+			case 'EACCES':
+				serverLogger.error(`You do not have permission to listen on port ${config.port}.`);
+				break;
+			case 'EADDRINUSE':
+				serverLogger.error(`Port ${config.port} is already in use by another process.`);
+				break;
+			default:
+				serverLogger.error(e);
+				break;
+		}
 
 		if (cluster.isWorker) {
 			process.send!('listenFailed');
