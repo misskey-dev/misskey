@@ -5,14 +5,14 @@ import { Emojis } from '@/models/index.js';
 import { IsNull } from 'typeorm';
 import renderEmoji from './emoji.js';
 
-export const renderLike = async (noteReaction: NoteReaction, note: Note) => {
+export const renderLike = async (noteReaction: NoteReaction, note?: { uri: Note['uri'] } = { uri: null }) => {
 	const reaction = noteReaction.reaction;
 
 	const object =  {
 		type: 'Like',
 		id: `${config.url}/likes/${noteReaction.id}`,
 		actor: `${config.url}/users/${noteReaction.userId}`,
-		object: note.uri ? note.uri : `${config.url}/notes/${noteReaction.noteId}`,
+		object: note.uri ?? `${config.url}/notes/${noteReaction.noteId}`,
 		content: reaction,
 		_misskey_reaction: reaction,
 	} as any;
