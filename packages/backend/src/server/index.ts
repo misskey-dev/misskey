@@ -153,6 +153,7 @@ export default () => new Promise(resolve => {
 		if (cluster.isWorker) {
 			process.send!('listenFailed');
 		} else {
+			// disableClustering
 			process.exit(1);
 		}
 	});
