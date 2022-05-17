@@ -87,7 +87,7 @@ export default class Resolver {
 			throw new Error('invalid response');
 		}
 
-		return object as IObject;
+		return object;
 	}
 
 	private resolveLocal(url: string): Promise<IObject> {
