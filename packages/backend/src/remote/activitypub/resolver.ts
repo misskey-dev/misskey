@@ -40,6 +40,13 @@ export default class Resolver {
 			return value;
 		}
 
+		if (value.includes('#')) {
+			// URLs with fragment parts cannot be resolved correctly because
+			// the fragment part does not get transmitted over HTTP(S).
+			// Avoid strange behaviour by not trying to resolve these at all.
+			throw new Error(`cannot resolve URL with fragment: ${value}`);
+		}
+
 		if (this.history.has(value)) {
 			throw new Error('cannot resolve already resolved one');
 		}
