@@ -385,6 +385,7 @@ export default define(meta, paramDef, async (ps, me) => {
 			cacheRemoteFiles: instance.cacheRemoteFiles,
 			requireSetup: (await Users.countBy({
 				host: IsNull(),
+				isAdmin: true,
 			})) === 0,
 		} : {}),
 	};
