@@ -2,6 +2,7 @@
  * Core Server
  */
 
+import cluster from 'node:cluster';
 import * as fs from 'node:fs';
 import * as http from 'node:http';
 import Koa from 'koa';
@@ -141,6 +142,27 @@ export default () => new Promise(resolve => {
 	const server = createServer();
 
 	initializeStreamingServer(server);
+
+	server.on('error', e => {
+		switch ((e as any).code) {
+			case 'EACCES':
+				serverLogger.error(`You do not have permission to listen on port ${config.port}.`);
+				break;
+			case 'EADDRINUSE':
+				serverLogger.error(`Port ${config.port} is already in use by another process.`);
+				break;
+			default:
+				serverLogger.error(e);
+				break;
+		}
+
+		if (cluster.isWorker) {
+			process.send!('listenFailed');
+		} else {
+			// disableClustering
+			process.exit(1);
+		}
+	});
 
 	server.listen(config.port, resolve);
 });
