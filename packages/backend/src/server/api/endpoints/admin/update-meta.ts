@@ -27,7 +27,7 @@ export const paramDef = {
 		blockedHosts: { type: 'array', nullable: true, items: {
 			type: 'string',
 		} },
-		themeColor: { type: 'string', nullable: true },
+		themeColor: { type: 'string', nullable: true, pattern: '^#[0-9a-fA-F]{6}$' },
 		mascotImageUrl: { type: 'string', nullable: true },
 		bannerUrl: { type: 'string', nullable: true },
 		errorImageUrl: { type: 'string', nullable: true },

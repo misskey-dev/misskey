@@ -22,6 +22,9 @@ You should also include the user name that made the change.
 - update dependencies @syuilo
 - enhance: display URL of QR code for TOTP registration @syuilo
 - make CAPTCHA required for signin to improve security @syuilo
+- The theme color is now better validated. @Johann150
+  Your own theme color may be unset if it was in an invalid format.
+  Admins should check their instance settings if in doubt.
 - Perform port diagnosis at startup only when Listen fails @mei23
 
 ### Bugfixes
@@ -37,6 +40,7 @@ You should also include the user name that made the change.
 - Server: fix internal in-memory caching @Johann150
 - Server: use correct order of attachments on notes @Johann150
 - Server: prevent crash when processing certain PNGs @syuilo
+- Server: Fix unable to generate video thumbnails @mei23
 
 ## 12.110.1 (2022/04/23)
 
