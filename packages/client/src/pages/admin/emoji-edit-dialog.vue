@@ -27,85 +27,71 @@
 </XModalWindow>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
 import XModalWindow from '@/components/ui/modal-window.vue';
 import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/form/input.vue';
 import * as os from '@/os';
 import { unique } from '@/scripts/array';
+import { i18n } from '@/i18n';
+import { emojiCategories } from '@/instance';
 
-export default defineComponent({
-	components: {
-		XModalWindow,
-		MkButton,
-		MkInput,
-	},
+const props = defineProps<{
+	emoji: any,
+}>();
 
-	props: {
-		emoji: {
-			required: true,
+let dialog = $ref(null);
+let name: string = $ref(props.emoji.name);
+let category: string = $ref(props.emoji.category);
+let aliases: string = $ref(props.emoji.aliases.join(' '));
+let categories: string[] = $ref(emojiCategories);
+
+const emit = defineEmits<{
+	(ev: 'done', v: { deleted?: boolean, updated?: any }): void,
+	(ev: 'closed'): void
+}>();
+
+function ok() {
+	update();
+}
+
+async function update() {
+	await os.apiWithDialog('admin/emoji/update', {
+		id: props.emoji.id,
+		name,
+		category,
+		aliases: aliases.split(' '),
+	});
+
+	emit('done', {
+		updated: {
+			id: props.emoji.id,
+			name,
+			category,
+			aliases: aliases.split(' '),
 		}
-	},
+	});
 
-	emits: ['done', 'closed'],
+	dialog.close();
+}
 
-	data() {
-		return {
-			name: this.emoji.name,
-			category: this.emoji.category,
-			aliases: this.emoji.aliases?.join(' '),
-			categories: [],
-		}
-	},
+async function del() {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.t('removeAreYouSure', { x: name }),
+	});
+	if (canceled) return;
 
-	created() {
-		os.api('meta', { detail: false }).then(({ emojis }) => {
-			this.categories = unique(emojis.map((x: any) => x.category || '').filter((x: string) => x !== ''));
+	os.api('admin/emoji/delete', {
+		id: props.emoji.id
+	}).then(() => {
+		emit('done', {
+			deleted: true
 		});
-	},
-
-	methods: {
-		ok() {
-			this.update();
-		},
-
-		async update() {
-			await os.apiWithDialog('admin/emoji/update', {
-				id: this.emoji.id,
-				name: this.name,
-				category: this.category,
-				aliases: this.aliases.split(' '),
-			});
-
-			this.$emit('done', {
-				updated: {
-					name: this.name,
-					category: this.category,
-					aliases: this.aliases.split(' '),
-				}
-			});
-			this.$refs.dialog.close();
-		},
-
-		async del() {
-			const { canceled } = await os.confirm({
-				type: 'warning',
-				text: this.$t('removeAreYouSure', { x: this.emoji.name }),
-			});
-			if (canceled) return;
-
-			os.api('admin/emoji/delete', {
-				id: this.emoji.id
-			}).then(() => {
-				this.$emit('done', {
-					deleted: true
-				});
-				this.$refs.dialog.close();
-			});
-		},
-	}
-});
+		dialog.close();
+	});
+}
 </script>
 
 <style lang="scss" scoped>

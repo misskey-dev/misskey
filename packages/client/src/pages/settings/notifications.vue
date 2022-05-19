@@ -9,7 +9,7 @@
 </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { defineAsyncComponent, defineExpose } from 'vue';
 import FormButton from '@/components/ui/button.vue';
 import FormLink from '@/components/form/link.vue';

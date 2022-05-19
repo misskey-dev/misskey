@@ -14,6 +14,8 @@
 				<template #prefix><i class="fas fa-lock"></i></template>
 				<template #caption><button class="_textButton" type="button" @click="resetPassword">{{ i18n.ts.forgotPassword }}</button></template>
 			</MkInput>
+			<MkCaptcha v-if="meta.enableHcaptcha" ref="hcaptcha" v-model="hCaptchaResponse" class="_formBlock captcha" provider="hcaptcha" :sitekey="meta.hcaptchaSiteKey"/>
+			<MkCaptcha v-if="meta.enableRecaptcha" ref="recaptcha" v-model="reCaptchaResponse" class="_formBlock captcha" provider="recaptcha" :sitekey="meta.recaptchaSiteKey"/>
 			<MkButton class="_formBlock" type="submit" primary :disabled="signing" style="margin: 0 auto;">{{ signing ? i18n.ts.loggingIn : i18n.ts.login }}</MkButton>
 		</div>
 		<div v-if="totpLogin" class="2fa-signin" :class="{ securityKeys: user && user.securityKeys }">
@@ -62,6 +64,8 @@ import { showSuspendedDialog } from '../scripts/show-suspended-dialog';
 import { instance } from '@/instance';
 import { i18n } from '@/i18n';
 
+const MkCaptcha = defineAsyncComponent(() => import('./captcha.vue'));
+
 let signing = $ref(false);
 let user = $ref(null);
 let username = $ref('');
@@ -72,6 +76,8 @@ let totpLogin = $ref(false);
 let credential = $ref(null);
 let challengeData = $ref(null);
 let queryingKey = $ref(false);
+let hCaptchaResponse = $ref(null);
+let reCaptchaResponse = $ref(null);
 
 const meta = $computed(() => instance);
 
@@ -138,7 +144,9 @@ function queryKey() {
 			authenticatorData: hexify(credential.response.authenticatorData),
 			clientDataJSON: hexify(credential.response.clientDataJSON),
 			credentialId: credential.id,
-			challengeId: challengeData.challengeId
+			challengeId: challengeData.challengeId,
+      'hcaptcha-response': hCaptchaResponse,
+			'g-recaptcha-response': reCaptchaResponse,
 		});
 	}).then(res => {
 		emit('login', res);
@@ -161,6 +169,8 @@ function onSubmit() {
 			os.api('signin', {
 				username,
 				password,
+        'hcaptcha-response': hCaptchaResponse,
+        'g-recaptcha-response': reCaptchaResponse,
 			}).then(res => {
 				totpLogin = true;
 				signing = false;
@@ -175,6 +185,8 @@ function onSubmit() {
 		os.api('signin', {
 			username,
 			password,
+      'hcaptcha-response': hCaptchaResponse,
+			'g-recaptcha-response': reCaptchaResponse,
 			token: user && user.twoFactorEnabled ? token : undefined
 		}).then(res => {
 			emit('login', res);

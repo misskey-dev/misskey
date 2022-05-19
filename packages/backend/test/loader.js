@@ -1,37 +1,34 @@
-import path from 'path'
-import typescript from 'typescript'
-import { createMatchPath } from 'tsconfig-paths'
-import { resolve as BaseResolve, getFormat, transformSource } from 'ts-node/esm'
+/**
+ * ts-node/esmローダーに投げる前にpath mappingを解決する
+ * 参考
+ * - https://github.com/TypeStrong/ts-node/discussions/1450#discussioncomment-1806115
+ * - https://nodejs.org/api/esm.html#loaders
+ * ※ https://github.com/TypeStrong/ts-node/pull/1585 が取り込まれたらこのカスタムローダーは必要なくなる
+ */
 
-const { readConfigFile, parseJsonConfigFileContent, sys } = typescript
+import { resolve as resolveTs, load } from 'ts-node/esm';
+import { loadConfig, createMatchPath } from 'tsconfig-paths';
+import { pathToFileURL } from 'url';
 
-const __dirname = path.dirname(new URL(import.meta.url).pathname)
+const tsconfig = loadConfig();
+const matchPath = createMatchPath(tsconfig.absoluteBaseUrl, tsconfig.paths);
 
-const configFile = readConfigFile('./test/tsconfig.json', sys.readFile)
-if (typeof configFile.error !== 'undefined') {
-  throw new Error(`Failed to load tsconfig: ${configFile.error}`)
+export function resolve(specifier, ctx, defaultResolve) {
+	let resolvedSpecifier;
+	if (specifier.endsWith('.js')) {
+		// maybe transpiled
+		const specifierWithoutExtension = specifier.substring(0, specifier.length - '.js'.length);
+		const matchedSpecifier = matchPath(specifierWithoutExtension);
+		if (matchedSpecifier) {
+			resolvedSpecifier = pathToFileURL(`${matchedSpecifier}.js`).href;
+		}
+	} else {
+		const matchedSpecifier = matchPath(specifier);
+		if (matchedSpecifier) {
+			resolvedSpecifier = pathToFileURL(matchedSpecifier).href;
+		}
+	}
+	return resolveTs(resolvedSpecifier ?? specifier, ctx, defaultResolve);
 }
 
-const { options } = parseJsonConfigFileContent(
-  configFile.config,
-  {
-    fileExists: sys.fileExists,
-    readFile: sys.readFile,
-    readDirectory: sys.readDirectory,
-    useCaseSensitiveFileNames: true,
-  },
-  __dirname
-)
-
-export { getFormat, transformSource }  // こいつらはそのまま使ってほしいので re-export する
-
-const matchPath = createMatchPath(options.baseUrl, options.paths)
-
-export async function resolve(specifier, context, defaultResolve) {
-  const matchedSpecifier = matchPath(specifier.replace('.js', '.ts'))
-  return BaseResolve(  // ts-node/esm の resolve に tsconfig-paths で解決したパスを渡す
-    matchedSpecifier ? `${matchedSpecifier}.ts` : specifier,
-    context,
-    defaultResolve
-  )
-}
+export { load };
