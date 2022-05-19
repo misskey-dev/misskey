@@ -1,14 +1,21 @@
+import { defineAsyncComponent } from 'vue';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
-import { alert } from '@/os';
+import { popup } from '@/os';
 
-export function pleaseLogin() {
+export function pleaseLogin(path?: string) {
 	if ($i) return;
 
-	alert({
-		title: i18n.ts.signinRequired,
-		text: null
-	});
+	popup(defineAsyncComponent(() => import('@/components/signin-dialog.vue')), {
+		autoSet: true,
+		message: i18n.ts.signinRequired
+	}, {
+		cancelled: () => {
+			if (path) {
+				window.location.href = path;
+			}
+		},
+	}, 'closed');
 
 	throw new Error('signin required');
 }
