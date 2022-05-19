@@ -108,6 +108,10 @@ export default defineComponent({
 	},
 	methods: {
 		fetch() {
+			this.hasPrev = false;
+			this.hasNext = false;
+			this.showPrev = false;
+			this.showNext = false;
 			this.note = null;
 			os.api('notes/show', {
 				noteId: this.noteId
