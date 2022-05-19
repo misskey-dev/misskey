@@ -35,8 +35,8 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(e: 'loaded'): void;
-	(e: 'parent-focus', direction: 'up' | 'down' | 'left' | 'right'): void;
+	(ev: 'loaded'): void;
+	(ev: 'parent-focus', direction: 'up' | 'down' | 'left' | 'right'): void;
 }>();
 
 let disabled = $ref(false);
