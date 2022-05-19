@@ -15,6 +15,7 @@ Before creating an issue, please check the following:
 - Do not use Issues to ask questions or troubleshooting.
 	- Issues should only be used to feature requests, suggestions, and bug tracking.
 	- Please ask questions or troubleshooting in the [Misskey Forum](https://forum.misskey.io/) or [Discord](https://discord.gg/Wp8gVStHW3).
+- Do not close issues that are about to be resolved. It should remain open until a commit that actually resolves it is merged.
 
 ## Before implementation
 When you want to add a feature or fix a bug, **first have the design and policy reviewed in an Issue** (if it is not there, please make one). Without this step, there is a high possibility that the PR will not be merged even if it is implemented.
