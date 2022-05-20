@@ -24,8 +24,8 @@ function onAntennaUpdated() {
 	nav.push('/my/antennas');
 }
 
-watch(() => props.antennaId, async () => {
-	antenna = await os.api('antennas/show', { antennaId: props.antennaId });
+os.api('antennas/show', { antennaId: props.antennaId }).then((antennaResponse) => {
+	antenna = antennaResponse;
 });
 
 defineExpose({

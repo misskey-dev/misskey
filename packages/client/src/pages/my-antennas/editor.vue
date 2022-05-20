@@ -92,36 +92,26 @@ watch(() => src, async () => {
 });
 
 async function saveAntenna() {
+	const antennaData = {
+		name,
+		src,
+		userListId,
+		userGroupId,
+		withReplies,
+		withFile,
+		notify,
+		caseSensitive,
+		users: users.trim().split('\n').map(x => x.trim()),
+		keywords: keywords.trim().split('\n').map(x => x.trim().split(' ')),
+		excludeKeywords: excludeKeywords.trim().split('\n').map(x => x.trim().split(' ')),
+	};
+
 	if (props.antenna.id == null) {
-		await os.apiWithDialog('antennas/create', {
-			name,
-			src,
-			userListId,
-			userGroupId,
-			withReplies,
-			withFile,
-			notify,
-			caseSensitive,
-			users: users.trim().split('\n').map(x => x.trim()),
-			keywords: keywords.trim().split('\n').map(x => x.trim().split(' ')),
-			excludeKeywords: excludeKeywords.trim().split('\n').map(x => x.trim().split(' ')),
-		});
+		await os.apiWithDialog('antennas/create', antennaData);
 		emit('created');
 	} else {
-		await os.apiWithDialog('antennas/update', {
-			antennaId: props.antenna.id,
-			name,
-			src,
-			userListId,
-			userGroupId,
-			withReplies,
-			withFile,
-			notify,
-			caseSensitive,
-			users: users.trim().split('\n').map(x => x.trim()),
-			keywords: keywords.trim().split('\n').map(x => x.trim().split(' ')),
-			excludeKeywords: excludeKeywords.trim().split('\n').map(x => x.trim().split(' ')),
-		});
+		antennaData['antennaId'] = props.antenna.id;
+		await os.apiWithDialog('antennas/update', antennaData);
 		emit('updated');
 	}
 }
