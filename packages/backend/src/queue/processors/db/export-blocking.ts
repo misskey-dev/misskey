@@ -26,64 +26,68 @@ export async function exportBlocking(job: Bull.Job<DbUserJobData>, done: any): P
 
 	logger.info(`Temp file is ${path}`);
 
-	const stream = fs.createWriteStream(path, { flags: 'a' });
+	try {
+		const stream = fs.createWriteStream(path, { flags: 'a' });
 
-	let exportedCount = 0;
-	let cursor: any = null;
+		let exportedCount = 0;
+		let cursor: any = null;
 
-	while (true) {
-		const blockings = await Blockings.find({
-			where: {
-				blockerId: user.id,
-				...(cursor ? { id: MoreThan(cursor) } : {}),
-			},
-			take: 100,
-			order: {
-				id: 1,
-			},
-		});
+		while (true) {
+			const blockings = await Blockings.find({
+				where: {
+					blockerId: user.id,
+					...(cursor ? { id: MoreThan(cursor) } : {}),
+				},
+				take: 100,
+				order: {
+					id: 1,
+				},
+			});
 
-		if (blockings.length === 0) {
-			job.progress(100);
-			break;
-		}
-
-		cursor = blockings[blockings.length - 1].id;
-
-		for (const block of blockings) {
-			const u = await Users.findOneBy({ id: block.blockeeId });
-			if (u == null) {
-				exportedCount++; continue;
+			if (blockings.length === 0) {
+				job.progress(100);
+				break;
 			}
 
-			const content = getFullApAccount(u.username, u.host);
-			await new Promise<void>((res, rej) => {
-				stream.write(content + '\n', err => {
-					if (err) {
-						logger.error(err);
-						rej(err);
-					} else {
-						res();
-					}
+			cursor = blockings[blockings.length - 1].id;
+
+			for (const block of blockings) {
+				const u = await Users.findOneBy({ id: block.blockeeId });
+				if (u == null) {
+					exportedCount++; continue;
+				}
+
+				const content = getFullApAccount(u.username, u.host);
+				await new Promise<void>((res, rej) => {
+					stream.write(content + '\n', err => {
+						if (err) {
+							logger.error(err);
+							rej(err);
+						} else {
+							res();
+						}
+					});
 				});
+				exportedCount++;
+			}
+
+			const total = await Blockings.countBy({
+				blockerId: user.id,
 			});
-			exportedCount++;
+
+			job.progress(exportedCount / total);
 		}
 
-		const total = await Blockings.countBy({
-			blockerId: user.id,
-		});
+		stream.end();
+		logger.succ(`Exported to: ${path}`);
 
-		job.progress(exportedCount / total);
+		const fileName = 'blocking-' + dateFormat(new Date(), 'yyyy-MM-dd-HH-mm-ss') + '.csv';
+		const driveFile = await addFile({ user, path, name: fileName, force: true });
+
+		logger.succ(`Exported to: ${driveFile.id}`);
+	} finally {
+		cleanup();
 	}
 
-	stream.end();
-	logger.succ(`Exported to: ${path}`);
-
-	const fileName = 'blocking-' + dateFormat(new Date(), 'yyyy-MM-dd-HH-mm-ss') + '.csv';
-	const driveFile = await addFile({ user, path, name: fileName, force: true });
-
-	logger.succ(`Exported to: ${driveFile.id}`);
-	cleanup();
 	done();
 }

@@ -26,65 +26,69 @@ export async function exportMute(job: Bull.Job<DbUserJobData>, done: any): Promi
 
 	logger.info(`Temp file is ${path}`);
 
-	const stream = fs.createWriteStream(path, { flags: 'a' });
+	try {
+		const stream = fs.createWriteStream(path, { flags: 'a' });
 
-	let exportedCount = 0;
-	let cursor: any = null;
+		let exportedCount = 0;
+		let cursor: any = null;
 
-	while (true) {
-		const mutes = await Mutings.find({
-			where: {
-				muterId: user.id,
-				expiresAt: IsNull(),
-				...(cursor ? { id: MoreThan(cursor) } : {}),
-			},
-			take: 100,
-			order: {
-				id: 1,
-			},
-		});
+		while (true) {
+			const mutes = await Mutings.find({
+				where: {
+					muterId: user.id,
+					expiresAt: IsNull(),
+					...(cursor ? { id: MoreThan(cursor) } : {}),
+				},
+				take: 100,
+				order: {
+					id: 1,
+				},
+			});
 
-		if (mutes.length === 0) {
-			job.progress(100);
-			break;
-		}
-
-		cursor = mutes[mutes.length - 1].id;
-
-		for (const mute of mutes) {
-			const u = await Users.findOneBy({ id: mute.muteeId });
-			if (u == null) {
-				exportedCount++; continue;
+			if (mutes.length === 0) {
+				job.progress(100);
+				break;
 			}
 
-			const content = getFullApAccount(u.username, u.host);
-			await new Promise<void>((res, rej) => {
-				stream.write(content + '\n', err => {
-					if (err) {
-						logger.error(err);
-						rej(err);
-					} else {
-						res();
-					}
+			cursor = mutes[mutes.length - 1].id;
+
+			for (const mute of mutes) {
+				const u = await Users.findOneBy({ id: mute.muteeId });
+				if (u == null) {
+					exportedCount++; continue;
+				}
+
+				const content = getFullApAccount(u.username, u.host);
+				await new Promise<void>((res, rej) => {
+					stream.write(content + '\n', err => {
+						if (err) {
+							logger.error(err);
+							rej(err);
+						} else {
+							res();
+						}
+					});
 				});
+				exportedCount++;
+			}
+
+			const total = await Mutings.countBy({
+				muterId: user.id,
 			});
-			exportedCount++;
+
+			job.progress(exportedCount / total);
 		}
 
-		const total = await Mutings.countBy({
-			muterId: user.id,
-		});
+		stream.end();
+		logger.succ(`Exported to: ${path}`);
 
-		job.progress(exportedCount / total);
+		const fileName = 'mute-' + dateFormat(new Date(), 'yyyy-MM-dd-HH-mm-ss') + '.csv';
+		const driveFile = await addFile({ user, path, name: fileName, force: true });
+
+		logger.succ(`Exported to: ${driveFile.id}`);
+	} finally {
+		cleanup();
 	}
 
-	stream.end();
-	logger.succ(`Exported to: ${path}`);
-
-	const fileName = 'mute-' + dateFormat(new Date(), 'yyyy-MM-dd-HH-mm-ss') + '.csv';
-	const driveFile = await addFile({ user, path, name: fileName, force: true });
-
-	logger.succ(`Exported to: ${driveFile.id}`);
-	cleanup();
 	done();
 }
