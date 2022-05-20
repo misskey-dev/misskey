@@ -163,9 +163,12 @@ export const NoteRepository = db.getRepository(Note).extend({
 			} else {
 				// フォロワーかどうか
 				const [following, user] = await Promise.all([
-					Followings.findOneBy({
-						followeeId: note.userId,
-						followerId: meId,
+					Followings.count({
+						where: {
+							followeeId: note.userId,
+							followerId: meId,
+						},
+						take: 1,
 					}),
 					Users.findOneByOrFail({ id: meId }),
 				]);
@@ -177,7 +180,7 @@ export const NoteRepository = db.getRepository(Note).extend({
 				in which case we can never know the following. Instead we have
 				to assume that the users are following each other.
 				*/
-				return following != null || (note.userHost != null && user.host != null);
+				return following > 0 || (note.userHost != null && user.host != null);
 			}
 		}
 
