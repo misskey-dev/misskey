@@ -89,10 +89,10 @@ router.get('/avatar/@:acct', async ctx => {
 });
 
 router.get('/identicon/:x', async ctx => {
-	const [temp] = await createTemp();
+	const [temp, cleanup] = await createTemp();
 	await genIdenticon(ctx.params.x, fs.createWriteStream(temp));
 	ctx.set('Content-Type', 'image/png');
-	ctx.body = fs.createReadStream(temp);
+	ctx.body = fs.createReadStream(temp).on('close', () => cleanup());
 });
 
 router.get('/verify-email/:code', async ctx => {
