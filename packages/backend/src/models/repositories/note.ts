@@ -144,13 +144,7 @@ export const NoteRepository = db.getRepository(Note).extend({
 				return true;
 			} else {
 				// 指定されているかどうか
-				const specified = note.visibleUserIds.some((id: any) => meId === id);
-
-				if (specified) {
-					return true;
-				} else {
-					return false;
-				}
+				return note.visibleUserIds.some((id: any) => meId === id);
 			}
 		}
 
