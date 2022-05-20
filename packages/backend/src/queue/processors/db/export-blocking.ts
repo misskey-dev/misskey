@@ -1,11 +1,11 @@
 import Bull from 'bull';
-import * as tmp from 'tmp';
 import * as fs from 'node:fs';
 
 import { queueLogger } from '../../logger.js';
 import { addFile } from '@/services/drive/add-file.js';
 import { format as dateFormat } from 'date-fns';
 import { getFullApAccount } from '@/misc/convert-host.js';
+import { createTemp } from '@/misc/create-temp.js';
 import { Users, Blockings } from '@/models/index.js';
 import { MoreThan } from 'typeorm';
 import { DbUserJobData } from '@/queue/types.js';
@@ -22,12 +22,7 @@ export async function exportBlocking(job: Bull.Job<DbUserJobData>, done: any): P
 	}
 
 	// Create temp file
-	const [path, cleanup] = await new Promise<[string, any]>((res, rej) => {
-		tmp.file((e, path, fd, cleanup) => {
-			if (e) return rej(e);
-			res([path, cleanup]);
-		});
-	});
+	const [path, cleanup] = await createTemp();
 
 	logger.info(`Temp file is ${path}`);
 

@@ -8,3 +8,12 @@ export function createTemp(): Promise<[string, any]> {
 		});
 	});
 }
+
+export function createTempDir(): Promise<[string, any]> {
+	return new Promise<[string, any]>((res, rej) => {
+		tmp.dir((e, path, cleanup) => {
+			if (e) return rej(e);
+			res([path, cleanup]);
+		});
+	});
+}
