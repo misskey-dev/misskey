@@ -78,25 +78,13 @@ import XMetrics from './metrics.vue';
 import * as os from '@/os';
 import { stream } from '@/stream';
 import * as symbols from '@/symbols';
-import { instance } from '@/instance';
 import { i18n } from '@/i18n';
 
 let stats: any = $ref(null);
-let meta: any = $ref(instance);
 let serverInfo: any = $ref(null);
 let usersComparedToThePrevDay: any = $ref(null);
 let notesComparedToThePrevDay: any = $ref(null);
 const queueStatsConnection = markRaw(stream.useChannel('queueStats'));
-
-async function showInstanceInfo(q) {
-	let instance = q;
-	if (typeof q === 'string') {
-		instance = await os.api('federation/show-instance', {
-			host: q
-		});
-	}
-	// TODO
-}
 
 onMounted(async () => {	
 	os.api('stats', {}).then(statsResponse => {
@@ -111,7 +99,7 @@ onMounted(async () => {
 		});
 	});
 
-	os.api('admin/server-info', {}).then(serverInfoResponse => {
+	os.api('admin/server-info').then(serverInfoResponse => {
 		serverInfo = serverInfoResponse;
 	});
 
