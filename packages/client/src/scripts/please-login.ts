@@ -3,7 +3,7 @@ import { $i } from '@/account';
 import { i18n } from '@/i18n';
 import { popup } from '@/os';
 
-export function pleaseLogin(path?: string) {
+export function pleaseLogin(path?: string, stopExecution: boolean = true) {
 	if ($i) return;
 
 	popup(defineAsyncComponent(() => import('@/components/signin-dialog.vue')), {
@@ -17,5 +17,5 @@ export function pleaseLogin(path?: string) {
 		},
 	}, 'closed');
 
-	throw new Error('signin required');
+	if (stopExecution) throw new Error('signin required');
 }
