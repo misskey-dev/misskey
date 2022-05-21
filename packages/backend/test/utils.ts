@@ -159,7 +159,7 @@ export function launchServer(callbackSpawnedProcess: (p: childProcess.ChildProce
 export async function initTestDb(justBorrow = false, initEntities?: any[]) {
 	if (process.env.NODE_ENV !== 'test') throw 'NODE_ENV is not a test';
 
-	return new DataSource({
+	const db = new DataSource({
 		type: 'postgres',
 		host: config.db.host,
 		port: config.db.port,
@@ -170,6 +170,10 @@ export async function initTestDb(justBorrow = false, initEntities?: any[]) {
 		dropSchema: true && !justBorrow,
 		entities: initEntities || entities,
 	});
+
+	await db.initialize();
+
+	return db;
 }
 
 export function startServer(timeout = 30 * 1000): Promise<childProcess.ChildProcess> {
