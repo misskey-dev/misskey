@@ -25,7 +25,7 @@ describe('Block', () => {
 
 	it('Block作成', async(async () => {
 		const res = await request('/blocking/create', {
-			userId: bob.id
+			userId: bob.id,
 		}, alice);
 
 		assert.strictEqual(res.status, 200);
