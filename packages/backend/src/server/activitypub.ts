@@ -231,8 +231,14 @@ router.get('/follows/:follower/:followee', async ctx => {
 	// check if the following exists.
 
 	const [follower, followee] = await Promise.all([
-		Users.findOneBy({ id: ctx.params.follower }),
-		Users.findOneBy({ id: ctx.params.followee }),
+		Users.findOneBy({
+			id: ctx.params.follower,
+			host: IsNull(),
+		}),
+		Users.findOneBy({
+			id: ctx.params.followee,
+			host: Not(IsNull()),
+		}),
 	]);
 
 	if (follower == null || followee == null) {
