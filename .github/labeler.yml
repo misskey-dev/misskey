@@ -1,0 +1,5 @@
+'⚙️Server':
+- packages/backend/**/*
+
+'🖥️Client':
+- packages/client/**/*
