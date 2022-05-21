@@ -15,7 +15,7 @@ const page = (path: string | AsyncComponentLoader<any>, uiName?: string) => defi
 });
 
 const signinRequired = () => {
-	pleaseLogin('/', false);
+	pleaseLogin('/');
 }
 
 let indexScrollPos = 0;
