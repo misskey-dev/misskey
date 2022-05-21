@@ -22,6 +22,7 @@ You should also include the user name that made the change.
 - update dependencies @syuilo
 - enhance: display URL of QR code for TOTP registration @syuilo
 - make CAPTCHA required for signin to improve security @syuilo
+- enhance: Supports Unicode Emoji 14.0 @mei23
 
 ### Bugfixes
 - Client: fix settings page @tamaina
