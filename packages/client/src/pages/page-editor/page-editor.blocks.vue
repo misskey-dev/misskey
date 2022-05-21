@@ -6,8 +6,8 @@
 </XDraggable>
 </template>
 
-<script lang="ts">
-import { defineComponent, defineAsyncComponent } from 'vue';
+<script lang="ts" setup>
+import { defineAsyncComponent } from 'vue';
 import XSection from './els/page-editor.el.section.vue';
 import XText from './els/page-editor.el.text.vue';
 import XTextarea from './els/page-editor.el.textarea.vue';
@@ -23,56 +23,41 @@ import XCounter from './els/page-editor.el.counter.vue';
 import XRadioButton from './els/page-editor.el.radio-button.vue';
 import XCanvas from './els/page-editor.el.canvas.vue';
 import XNote from './els/page-editor.el.note.vue';
-import * as os from '@/os';
 
-export default defineComponent({
-	components: {
-		XDraggable: defineAsyncComponent(() => import('vuedraggable').then(x => x.default)),
-		XSection, XText, XImage, XButton, XTextarea, XTextInput, XTextareaInput, XNumberInput, XSwitch, XIf, XPost, XCounter, XRadioButton, XCanvas, XNote
-	},
+const XDraggable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
-	props: {
-		modelValue: {
-			type: Array,
-			required: true
-		},
-		hpml: {
-			required: true,
-		},
-	},
+const props = defineProps<{
+	modelValue: any[],
+	hpml: any,
+}>();
 
-	emits: ['update:modelValue'],
+const emit = defineEmits<{
+	(ev: 'update:modelValue', v: any): void
+}>();
 
-	computed: {
-		blocks: {
-			get() {
-				return this.modelValue;
-			},
-			set(value) {
-				this.$emit('update:modelValue', value);
-			}
-		}
-	},
-
-	methods: {
-		updateItem(v) {
-			const i = this.blocks.findIndex(x => x.id === v.id);
-			const newValue = [
-				...this.blocks.slice(0, i),
-				v,
-				...this.blocks.slice(i + 1)
-			];
-			this.$emit('update:modelValue', newValue);
-		},
-
-		removeItem(el) {
-			const i = this.blocks.findIndex(x => x.id === el.id);
-			const newValue = [
-				...this.blocks.slice(0, i),
-				...this.blocks.slice(i + 1)
-			];
-			this.$emit('update:modelValue', newValue);
-		},
+const blocks = $computed({
+	get: () => props.modelValue,
+	set: (value) => {
+		emit('update:modelValue', value);
 	}
 });
+
+function updateItem(v) {
+	const i = blocks.findIndex(x => x.id === v.id);
+	const newValue = [
+		...blocks.slice(0, i),
+		v,
+		...blocks.slice(i + 1)
+	];
+	emit('update:modelValue', newValue);
+}
+
+function removeItem(el) {
+	const i = blocks.findIndex(x => x.id === el.id);
+	const newValue = [
+		...blocks.slice(0, i),
+		...blocks.slice(i + 1)
+	];
+	emit('update:modelValue', newValue);
+}
 </script>

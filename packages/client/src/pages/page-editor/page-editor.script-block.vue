@@ -56,9 +56,9 @@
 </XContainer>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 /* eslint-disable vue/no-mutating-props */
-import { defineAsyncComponent, defineComponent } from 'vue';
+import { defineAsyncComponent, inject, watch } from 'vue';
 import { v4 as uuid } from 'uuid';
 import XContainer from './page-editor.container.vue';
 import MkTextarea from '@/components/form/textarea.vue';
@@ -66,166 +66,128 @@ import { blockDefs } from '@/scripts/hpml/index';
 import * as os from '@/os';
 import { isLiteralValue } from '@/scripts/hpml/expr';
 import { funcDefs } from '@/scripts/hpml/lib';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		XContainer, MkTextarea,
-		XV: defineAsyncComponent(() => import('./page-editor.script-block.vue')),
-	},
+const XV = defineAsyncComponent(() => import('./page-editor.script-block.vue'));
 
-	inject: ['getScriptBlockList'],
+const props = withDefaults(defineProps<{
+	getExpectedType: any,
+	modelValue: any,
+	title: string,
+	removable: boolean,
+	hpml: any,
+	name: string,
+	fnSlots: any,
+	draggable: boolean
+}>(), {
+	getExpectedType: null,
+	removable: false,
+	draggable: false
+});
 
-	props: {
-		getExpectedType: {
-			required: false,
-			default: null
-		},
-		modelValue: {
-			required: true
-		},
-		title: {
-			required: false
-		},
-		removable: {
-			required: false,
-			default: false
-		},
-		hpml: {
-			required: true,
-		},
-		name: {
-			required: true,
-		},
-		fnSlots: {
-			required: false,
-		},
-		draggable: {
-			required: false,
-			default: false
-		}
-	},
+let error: any = $ref(null);
+let warn: any = $ref(null);
+let slots: string = $ref('');
 
-	data() {
-		return {
-			error: null,
-			warn: null,
-			slots: '',
+let getScriptBlockList = inject<(any) => any>('getScriptBlockList');
+
+let icon = $computed(() => {
+	if (props.modelValue.type === null) return null;
+	if (props.modelValue.type.startsWith('fn:')) return 'fas fa-plug';
+
+	return blockDefs.find(x => x.type === props.modelValue.type)!.icon;	
+});
+
+let typeText = $computed(() => {
+	if (props.modelValue.type === null) return null;
+	if (props.modelValue.type.startsWith('fn:')) return props.modelValue.type.split(':')[1];
+
+	return i18n.t(`_pages.script.blocks.${props.modelValue.type}`);
+});
+
+watch(() => slots, () => {
+	props.modelValue.value.slots = slots.split('\n').map(x => ({
+		name: x,
+		type: null
+	}));
+});
+
+async function changeType() {
+	const { canceled, result: type } = await os.select({
+		title: i18n.ts._pages.selectType,
+		groupedItems: getScriptBlockList!(props.getExpectedType ? getExpectedType() : null)
+	});
+	if (canceled) return;
+
+	props.modelValue.type = type;
+}
+
+function _getExpectedType(slot: number) {
+	return props.hpml.getExpectedType(props.modelValue, slot);
+}
+
+if (props.modelValue.value == null) props.modelValue.value = null;
+
+if (props.modelValue.value && props.modelValue.value.slots) slots = props.modelValue.value.slots.map(x => x.name).join('\n');
+
+watch(() => props.modelValue.type, (t) => {
+	warn = null;
+
+	if (props.modelValue.type === 'fn') {
+		const id = uuid();
+		props.modelValue.value = {
+			slots: [],
+			expression: { id, type: null }
 		};
-	},
+		return;
+	}
 
-	computed: {
-		icon(): any {
-			if (this.modelValue.type === null) return null;
-			if (this.modelValue.type.startsWith('fn:')) return 'fas fa-plug';
-			return blockDefs.find(x => x.type === this.modelValue.type).icon;
-		},
-		typeText(): any {
-			if (this.modelValue.type === null) return null;
-			if (this.modelValue.type.startsWith('fn:')) return this.modelValue.type.split(':')[1];
-			return this.$t(`_pages.script.blocks.${this.modelValue.type}`);
-		},
-	},
+	if (props.modelValue.type && props.modelValue.type.startsWith('fn:')) {
+		const fnName = props.modelValue.type.split(':')[1];
+		const fn = props.hpml.getVarByName(fnName);
 
-	watch: {
-		slots: {
-			handler() {
-				this.modelValue.value.slots = this.slots.split('\n').map(x => ({
-					name: x,
-					type: null
-				}));
-			},
-			deep: true
+		const empties: any[] = [];
+		for (let i = 0; i < fn.value.slots.length; i++) {
+			const id = uuid();
+			empties.push({ id, type: null });
 		}
-	},
+		props.modelValue.args = empties;
+		return;
+	}
 
-	created() {
-		if (this.modelValue.value == null) this.modelValue.value = null;
+	if (isLiteralValue(props.modelValue)) return;
 
-		if (this.modelValue.value && this.modelValue.value.slots) this.slots = this.modelValue.value.slots.map(x => x.name).join('\n');
+	const empties: any[] = [];
+	for (let i = 0; i < funcDefs[props.modelValue.type].in.length; i++) {
+		const id = uuid();
+		empties.push({ id, type: null });
+	}
+	props.modelValue.args = empties;
 
-		this.$watch(() => this.modelValue.type, (t) => {
-			this.warn = null;
-
-			if (this.modelValue.type === 'fn') {
-				const id = uuid();
-				this.modelValue.value = {
-					slots: [],
-					expression: { id, type: null }
-				};
-				return;
-			}
-
-			if (this.modelValue.type && this.modelValue.type.startsWith('fn:')) {
-				const fnName = this.modelValue.type.split(':')[1];
-				const fn = this.hpml.getVarByName(fnName);
-
-				const empties = [];
-				for (let i = 0; i < fn.value.slots.length; i++) {
-					const id = uuid();
-					empties.push({ id, type: null });
-				}
-				this.modelValue.args = empties;
-				return;
-			}
-
-			if (isLiteralValue(this.modelValue)) return;
-
-			const empties = [];
-			for (let i = 0; i < funcDefs[this.modelValue.type].in.length; i++) {
-				const id = uuid();
-				empties.push({ id, type: null });
-			}
-			this.modelValue.args = empties;
-
-			for (let i = 0; i < funcDefs[this.modelValue.type].in.length; i++) {
-				const inType = funcDefs[this.modelValue.type].in[i];
-				if (typeof inType !== 'number') {
-					if (inType === 'number') this.modelValue.args[i].type = 'number';
-					if (inType === 'string') this.modelValue.args[i].type = 'text';
-				}
-			}
-		});
-
-		this.$watch(() => this.modelValue.args, (args) => {
-			if (args == null) {
-				this.warn = null;
-				return;
-			}
-			const emptySlotIndex = args.findIndex(x => x.type === null);
-			if (emptySlotIndex !== -1 && emptySlotIndex < args.length) {
-				this.warn = {
-					slot: emptySlotIndex
-				};
-			} else {
-				this.warn = null;
-			}
-		}, {
-			deep: true
-		});
-
-		this.$watch(() => this.hpml.variables, () => {
-			if (this.type != null && this.modelValue) {
-				this.error = this.hpml.typeCheck(this.modelValue);
-			}
-		}, {
-			deep: true
-		});
-	},
-
-	methods: {
-		async changeType() {
-			const { canceled, result: type } = await os.select({
-				title: this.$ts._pages.selectType,
-				groupedItems: this.getScriptBlockList(this.getExpectedType ? this.getExpectedType() : null)
-			});
-			if (canceled) return;
-			this.modelValue.type = type;
-		},
-
-		_getExpectedType(slot: number) {
-			return this.hpml.getExpectedType(this.modelValue, slot);
+	for (let i = 0; i < funcDefs[props.modelValue.type].in.length; i++) {
+		const inType = funcDefs[props.modelValue.type].in[i];
+		if (typeof inType !== 'number') {
+			if (inType === 'number') props.modelValue.args[i].type = 'number';
+			if (inType === 'string') props.modelValue.args[i].type = 'text';
 		}
 	}
+});
+
+watch(() => props.modelValue.args, (args) => {
+	if (args == null) {
+		warn = null;
+		return;
+	}
+	const emptySlotIndex = args.findIndex(x => x.type === null);
+	if (emptySlotIndex !== -1 && emptySlotIndex < args.length) {
+		warn = {
+			slot: emptySlotIndex
+		};
+	} else {
+		warn = null;
+	}
+}, {
+	deep: true
 });
 </script>
 

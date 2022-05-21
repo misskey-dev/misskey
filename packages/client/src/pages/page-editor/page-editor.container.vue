@@ -24,48 +24,38 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
 
-export default defineComponent({
-	props: {
-		expanded: {
-			type: Boolean,
-			default: true
-		},
-		removable: {
-			type: Boolean,
-			default: true
-		},
-		draggable: {
-			type: Boolean,
-			default: false
-		},
-		error: {
-			required: false,
-			default: null
-		},
-		warn: {
-			required: false,
-			default: null
-		}
-	},
-	emits: ['toggle', 'remove'],
-	data() {
-		return {
-			showBody: this.expanded,
-		};
-	},
-	methods: {
-		toggleContent(show: boolean) {
-			this.showBody = show;
-			this.$emit('toggle', show);
-		},
-		remove() {
-			this.$emit('remove');
-		}
-	}
+const props = withDefaults(defineProps<{
+	expanded: boolean,
+	removable: boolean,
+	draggable: boolean,
+	error: any,
+	warn: any
+}>(), {
+	expanded: true,
+	removable: true,
+	draggable: false,
+	error: null,
+	warn: null
 });
+
+const emit = defineEmits<{
+	(ev: 'toggle', v: boolean): void,
+	(ev: 'remove'): void
+}>();
+
+let showBody = $ref(props.expanded);
+
+function toggleContent(show: boolean) {
+	showBody = show;
+	emit('toggle', show);
+}
+
+function remove() {
+	emit('remove');
+}
 </script>
 
 <style lang="scss" scoped>
