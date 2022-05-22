@@ -61,10 +61,8 @@ function onMousedown(ev) {
 		let moveLeft = me.clientX - clickX;
 		let moveTop = me.clientY - clickY;
 
-		zoom = baseZoom + (-moveTop / 20);
-		pos = basePos + moveLeft;
-		if (zoom < 1) zoom = 1;
-		if (pos > 0) pos = 0;
+		zoom = Math.max(1, baseZoom + (-moveTop / 20));
+		pos = Math.min(0, basePos + moveLeft);
 		if (pos < -(((props.activity.length - 1) * zoom) - viewBoxX)) pos = -(((props.activity.length - 1) * zoom) - viewBoxX);
 
 		render();
@@ -72,7 +70,7 @@ function onMousedown(ev) {
 }
 
 function render() {
-	const peak = Math.max.apply(null, props.activity.map(d => d.total));
+	const peak = Math.max(...props.activity.map(d => d.total));
 	if (peak !== 0) {
 		const activity = props.activity.slice().reverse();
 		pointsNote = activity.map((d, i) => `${(i * zoom) + pos},${(1 - (d.notes / peak)) * viewBoxY}`).join(' ');

@@ -31,7 +31,7 @@ const props = defineProps<{
 for (const d of props.activity) {
 	d.total = d.notes + d.replies + d.renotes;
 }
-const peak = Math.max.apply(null, props.activity.map(d => d.total));
+const peak = Math.max(...props.activity.map(d => d.total));
 
 const now = new Date();
 const year = now.getFullYear();

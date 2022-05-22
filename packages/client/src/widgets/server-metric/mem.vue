@@ -28,8 +28,8 @@ let free: number = $ref(0);
 function onStats(stats) {
 	usage = stats.mem.active / props.meta.mem.total;
 	total = props.meta.mem.total;
-  used = stats.mem.active;
-	free = props.meta.mem.total - stats.mem.active;
+	used = stats.mem.active;
+	free = total - used;
 }
 
 onMounted(() => {
