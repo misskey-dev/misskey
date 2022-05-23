@@ -142,7 +142,7 @@ watch(() => props.modelValue.type, (t) => {
 		return;
 	}
 
-	if (props.modelValue.type && props.modelValue.type.startsWith('fn:')) {
+	if (props.modelValue.type?.startsWith('fn:')) {
 		const fnName = props.modelValue.type.split(':')[1];
 		const fn = props.hpml.getVarByName(fnName);
 
