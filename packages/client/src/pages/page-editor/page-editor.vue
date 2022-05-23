@@ -108,9 +108,9 @@ import { MisskeyNavigator } from '@/scripts/navigate';
 const nav = new MisskeyNavigator();
 
 const props = defineProps<{
-	initPageId: string,
-	initPageName: string,
-	initUser: string
+	initPageId?: string,
+	initPageName?: string,
+	initUser?: string
 }>();
 
 const XDraggable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
@@ -200,14 +200,14 @@ function getSaveOptions() {
 	return {
 		title: title.trim(),
 		name: name.trim(),
-		summary: summary,
-		font: font,
-		script: script,
-		hideTitleWhenPinned: hideTitleWhenPinned,
-		alignCenter: alignCenter,
-		content: content,
-		variables: variables,
-		eyeCatchingImageId: eyeCatchingImageId,
+		summary,
+		font,
+		script,
+		hideTitleWhenPinned,
+		alignCenter,
+		content,
+		variables,
+		eyeCatchingImageId,
 	};
 }
 
@@ -262,7 +262,7 @@ function del() {
 	}).then(({ canceled }) => {
 		if (canceled) return;
 		os.api('pages/delete', {
-			pageId: pageId,
+			pageId,
 		}).then(() => {
 			os.alert({
 				type: 'success',
@@ -354,7 +354,7 @@ function getPageBlockList() {
 	}];
 }
 
-function getScriptBlockList(type: string = '') {
+function getScriptBlockList(type: string | null = null) {
 	const list: any[] = [];
 
 	const blocks = blockDefs.filter(block => type === null || block.out === null || block.out === type || typeof block.out === 'number');
