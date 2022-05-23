@@ -106,8 +106,8 @@ const props = defineProps({
 function onUsernameChange() {
 	os.api('users/show', {
 		username: username
-	}).then(user => {
-		user = user;
+	}).then(userResponse => {
+		user = userResponse;
 	}, () => {
 		user = null;
 	});
