@@ -28,11 +28,11 @@
 import { } from 'vue';
 
 const props = withDefaults(defineProps<{
-	expanded: boolean,
-	removable: boolean,
-	draggable: boolean,
-	error: any,
-	warn: any
+	expanded?: boolean,
+	removable?: boolean,
+	draggable?: boolean,
+	error?: any,
+	warn?: any
 }>(), {
 	expanded: true,
 	removable: true,

@@ -71,14 +71,14 @@ import { i18n } from '@/i18n';
 const XV = defineAsyncComponent(() => import('./page-editor.script-block.vue'));
 
 const props = withDefaults(defineProps<{
-	getExpectedType: any,
+	getExpectedType?: any,
 	modelValue: any,
-	title: string,
-	removable: boolean,
+	title?: string,
+	removable?: boolean,
 	hpml: any,
 	name: string,
-	fnSlots: any,
-	draggable: boolean
+	fnSlots?: any,
+	draggable?: boolean
 }>(), {
 	getExpectedType: null,
 	removable: false,
