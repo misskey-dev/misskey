@@ -26,6 +26,7 @@ You should also include the user name that made the change.
   Your own theme color may be unset if it was in an invalid format.
   Admins should check their instance settings if in doubt.
 - Perform port diagnosis at startup only when Listen fails @mei23
+- Add pronouns to vCard and display when replying @ThatOneCalculator
 
 ### Bugfixes
 - Client: fix settings page @tamaina
