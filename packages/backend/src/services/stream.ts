@@ -22,7 +22,6 @@ import {
 	UserListStreamTypes,
 	UserStreamTypes,
 } from '@/server/api/stream/types.js';
-import { Packed } from '@/misc/schema.js';
 
 class Publisher {
 	private publish = (channel: StreamChannels, type: string | null, value?: any): void => {
@@ -87,7 +86,7 @@ class Publisher {
 		this.publish(`messagingIndexStream:${userId}`, type, typeof value === 'undefined' ? null : value);
 	};
 
-	public publishNotesStream = (note: Packed<'Note'>): void => {
+	public publishNotesStream = (note: Note): void => {
 		this.publish('notesStream', null, note);
 	};
 

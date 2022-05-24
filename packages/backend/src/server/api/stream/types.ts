@@ -243,7 +243,7 @@ export type StreamMessages = {
 	};
 	notes: {
 		name: 'notesStream';
-		payload: Packed<'Note'>;
+		payload: Note;
 	};
 };
 

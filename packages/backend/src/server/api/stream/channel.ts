@@ -1,4 +1,8 @@
 import Connection from '.';
+import { Note } from '@/models/entities/note.js';
+import { Notes } from '@/models/index.js';
+import { Packed } from '@/misc/schema.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
 
 /**
  * Stream channel
@@ -52,6 +56,23 @@ export default abstract class Channel {
 			type: type,
 			body: body,
 		});
+	}
+
+	protected withPackedNote(callback: (Packed<'Note'>) => void): (Note) => void {
+		return async (note: Note) => {
+			try {
+				const packed = await Notes.pack(note, this.user.id, { detail: true });
+
+				callback(packed);
+			} catch (e) {
+				if (e instanceof IdentifiableError && e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') {
+					// skip: note not visible to user
+					return;
+				} else {
+					throw e;
+				}
+			}
+		};
 	}
 
 	public abstract init(params: any): void;

@@ -345,16 +345,13 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 			}
 		}
 
-		// Pack the note
-		const noteObj = await Notes.pack(note);
-
-		publishNotesStream(noteObj);
+		publishNotesStream(note);
 
 		getActiveWebhooks().then(webhooks => {
 			webhooks = webhooks.filter(x => x.userId === user.id && x.on.includes('note'));
 			for (const webhook of webhooks) {
 				webhookDeliver(webhook, 'note', {
-					note: noteObj,
+					note: await Notes.pack(note, user.id),
 				});
 			}
 		});
@@ -378,12 +375,14 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 
 				if (!threadMuted) {
 					nm.push(data.reply.userId, 'reply');
-					publishMainStream(data.reply.userId, 'reply', noteObj);
+
+					const packedReply = await Notes.pack(note, data.reply.userId);
+					publishMainStream(data.reply.userId, 'reply', packedReply);
 
 					const webhooks = (await getActiveWebhooks()).filter(x => x.userId === data.reply!.userId && x.on.includes('reply'));
 					for (const webhook of webhooks) {
 						webhookDeliver(webhook, 'reply', {
-							note: noteObj,
+							note: packedReply,
 						});
 					}
 				}
@@ -404,12 +403,13 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 
 			// Publish event
 			if ((user.id !== data.renote.userId) && data.renote.userHost === null) {
-				publishMainStream(data.renote.userId, 'renote', noteObj);
+				const packedRenote = await Notes.pack(note, data.renote.userId);
+				publishMainStream(data.renote.userId, 'renote', packedRenote);
 
 				const webhooks = (await getActiveWebhooks()).filter(x => x.userId === data.renote!.userId && x.on.includes('renote'));
 				for (const webhook of webhooks) {
 					webhookDeliver(webhook, 'renote', {
-						note: noteObj,
+						note: packedRenote,
 					});
 				}
 			}

@@ -1,5 +1,5 @@
 import Channel from '../channel.js';
-import { Notes, Users } from '@/models/index.js';
+import { Users } from '@/models/index.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import { User } from '@/models/entities/user.js';
 import { StreamMessages } from '../types.js';
@@ -15,7 +15,7 @@ export default class extends Channel {
 
 	constructor(id: string, connection: Channel['connection']) {
 		super(id, connection);
-		this.onNote = this.onNote.bind(this);
+		this.onNote = this.withPackedNote(this.onNote.bind(this));
 	}
 
 	public async init(params: any) {
@@ -29,19 +29,6 @@ export default class extends Channel {
 
 	private async onNote(note: Packed<'Note'>) {
 		if (note.channelId !== this.channelId) return;
-
-		// リプライなら再pack
-		if (note.replyId != null) {
-			note.reply = await Notes.pack(note.replyId, this.user, {
-				detail: true,
-			});
-		}
-		// Renoteなら再pack
-		if (note.renoteId != null) {
-			note.renote = await Notes.pack(note.renoteId, this.user, {
-				detail: true,
-			});
-		}
 
 		// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
 		if (isUserRelated(note, this.muting)) return;
