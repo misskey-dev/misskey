@@ -78,7 +78,7 @@ export async function renderPerson(user: ILocalUser) {
 	} as any;
 
 	if (profile?.pronouns) {
-		person['vcard:Gender'] = profile.pronouns;
+		person['vcard:Nickname'] = profile.pronouns;
 	}
 
 	if (profile?.birthday) {
