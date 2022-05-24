@@ -95,7 +95,7 @@ let icon = $computed(() => {
 	if (props.modelValue.type === null) return null;
 	if (props.modelValue.type.startsWith('fn:')) return 'fas fa-plug';
 
-	return blockDefs.find(x => x.type === props.modelValue.type)!.icon;	
+	return blockDefs.find(x => x.type === props.modelValue.type)?.icon;	
 });
 
 let typeText = $computed(() => {
@@ -110,6 +110,8 @@ watch(() => slots, () => {
 		name: x,
 		type: null
 	}));
+}, {
+	deep: true
 });
 
 async function changeType() {
@@ -160,16 +162,11 @@ watch(() => props.modelValue.type, (t) => {
 	const empties: any[] = [];
 	for (let i = 0; i < funcDefs[props.modelValue.type].in.length; i++) {
 		const id = uuid();
-		empties.push({ id, type: null });
-	}
-	props.modelValue.args = empties;
-
-	for (let i = 0; i < funcDefs[props.modelValue.type].in.length; i++) {
 		const inType = funcDefs[props.modelValue.type].in[i];
-		if (typeof inType !== 'number') {
-			if (inType === 'number') props.modelValue.args[i].type = 'number';
-			if (inType === 'string') props.modelValue.args[i].type = 'text';
-		}
+		const type = inType === 'number' || inType === 'string'
+			? funcDefs[props.modelValue.type].in[i]
+			: null;
+		empties.push({ id, type });
 	}
 });
 

@@ -81,7 +81,6 @@
 <script lang="ts" setup>
 import { defineAsyncComponent, provide, watch } from 'vue';
 import 'prismjs';
-import { highlight, languages } from 'prismjs/components/prism-core';
 import 'prismjs/components/prism-clike';
 import 'prismjs/components/prism-javascript';
 import 'prismjs/themes/prism-okaidia.css';
@@ -160,40 +159,48 @@ if (props.initPageId) {
 	os.api('pages/show', {
 		pageId: props.initPageId,
 	}).then((pageResponse) => {
-		page = pageResponse
+		page = pageResponse;
+
+		init();
 	});
 } else if (props.initPageName && props.initUser) {
 	os.api('pages/show', {
 		name: props.initPageName,
 		username: props.initUser,
 	}).then((pageResponse) => {
-		page = pageResponse
+		page = pageResponse;
+
+		init();
 	});
 	
 	readonly = true;
+} else {
+	init();
 }
 
-if (page) {
-	author = page.user;
-	pageId = page.id;
-	title = page.title;
-	name = page.name;
-	currentName = page.name;
-	summary = page.summary;
-	font = page.font;
-	script = page.script;
-	hideTitleWhenPinned = page.hideTitleWhenPinned;
-	alignCenter = page.alignCenter;
-	content = page.content;
-	variables = page.variables;
-	eyeCatchingImageId = page.eyeCatchingImageId;
-} else {
-	const id = uuid();
-	content = [{
-		id,
-		type: 'text',
-		text: 'Hello World!'
-	}];
+function init() {
+	if (page) {
+		author = page.user;
+		pageId = page.id;
+		title = page.title;
+		name = page.name;
+		currentName = page.name;
+		summary = page.summary;
+		font = page.font;
+		script = page.script;
+		hideTitleWhenPinned = page.hideTitleWhenPinned;
+		alignCenter = page.alignCenter;
+		content = page.content;
+		variables = page.variables;
+		eyeCatchingImageId = page.eyeCatchingImageId;
+	} else {
+		const id = uuid();
+		content = [{
+			id,
+			type: 'text',
+			text: 'Hello World!'
+		}];
+	}
 }
 
 function getSaveOptions() {
