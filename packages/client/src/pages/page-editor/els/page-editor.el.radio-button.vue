@@ -31,7 +31,7 @@ const props = withDefaults(defineProps<{
 
 let values: string = $ref(props.value.values.join('\n'));
 
-watch(() => values, () => {
+watch(values, () => {
 	props.value.values = values.split('\n')
 }, {
 	deep: true

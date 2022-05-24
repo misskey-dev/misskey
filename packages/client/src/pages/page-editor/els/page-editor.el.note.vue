@@ -38,9 +38,9 @@ const props = withDefaults(defineProps<{
 let id: any = $ref(props.value.note);
 let note: any = $ref(null);
 
-watch(() => id, async () => {
+watch(id, async () => {
 	if (id && (id.startsWith('http://') || id.startsWith('https://'))) {
-		props.value.note = id.endsWith('/') ? id.substr(0, id.length - 1).split('/').pop() : id.split('/').pop();
+		props.value.note = (id.endsWith('/') ? id.slice(0, -1) : id).split('/').pop();
 	} else {
 		props.value.note = id;
 	}
