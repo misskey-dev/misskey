@@ -47,6 +47,10 @@
 								<p v-else class="empty">{{ $ts.noAccountDescription }}</p>
 							</div>
 							<div class="fields system">
+								<dl v-if="user.pronouns" class="field">
+									<dt class="name"><i class="fas fa-heart fa-fw"></i> {{ $ts.pronouns }}</dt>
+									<dd class="value">{{ user.pronouns }}</dd>
+								</dl>
 								<dl v-if="user.location" class="field">
 									<dt class="name"><i class="fas fa-map-marker fa-fw"></i> {{ $ts.location }}</dt>
 									<dd class="value">{{ user.location }}</dd>

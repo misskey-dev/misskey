@@ -77,6 +77,10 @@ export async function renderPerson(user: ILocalUser) {
 		attachment: attachment.length ? attachment : undefined,
 	} as any;
 
+	if (profile?.pronouns) {
+		person['vcard:Pronouns'] = profile.pronouns;
+	}
+
 	if (profile?.birthday) {
 		person['vcard:bday'] = profile.birthday;
 	}

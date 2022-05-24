@@ -143,6 +143,11 @@ export const packedUserDetailedNotMeOnlySchema = {
 			nullable: true, optional: false,
 			example: 'Hi masters, I am Ai!',
 		},
+		pronouns: {
+			type: 'string',
+			nullable: true, optional: false,
+			example: 'They/Them',
+		},
 		location: {
 			type: 'string',
 			nullable: true, optional: false,

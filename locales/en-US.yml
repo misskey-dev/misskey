@@ -258,6 +258,7 @@ remoteUserCaution: "As this user is from a remote instance, the shown informatio
 activity: "Activity"
 images: "Images"
 birthday: "Birthday"
+pronouns: "Pronouns"
 yearsOld: "{age} years old"
 registeredDate: "Joined on"
 location: "Location"

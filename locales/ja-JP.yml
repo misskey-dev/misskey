@@ -258,6 +258,7 @@ remoteUserCaution: "リモートユーザーのため、情報が不完全です
 activity: "アクティビティ"
 images: "画像"
 birthday: "誕生日"
+pronouns: "代名詞"
 yearsOld: "{age}歳"
 registeredDate: "登録日"
 location: "場所"
@@ -1639,7 +1640,7 @@ _pages:
       _for:
         arg1: "回数"
         arg2: "処理"
-    typeError: "スロット{slot}は\"{expect}\"を受け付けますが、\"{actual}\"が入れられています！"
+    typeError: 'スロット{slot}は"{expect}"を受け付けますが、"{actual}"が入れられています！'
     thereIsEmptySlot: "スロット{slot}が空です！"
     types:
       string: "テキスト"

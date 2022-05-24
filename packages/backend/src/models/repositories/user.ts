@@ -16,7 +16,7 @@ const userInstanceCache = new Cache<Instance | null>(1000 * 60 * 60 * 3);
 
 type IsUserDetailed<Detailed extends boolean> = Detailed extends true ? Packed<'UserDetailed'> : Packed<'UserLite'>;
 type IsMeAndIsUserDetailed<ExpectsMe extends boolean | null, Detailed extends boolean> =
-	Detailed extends true ? 
+	Detailed extends true ?
 		ExpectsMe extends true ? Packed<'MeDetailed'> :
 		ExpectsMe extends false ? Packed<'UserDetailedNotMe'> :
 		Packed<'UserDetailed'> :
@@ -30,6 +30,7 @@ const nameSchema = { type: 'string', minLength: 1, maxLength: 50 } as const;
 const descriptionSchema = { type: 'string', minLength: 1, maxLength: 500 } as const;
 const locationSchema = { type: 'string', minLength: 1, maxLength: 50 } as const;
 const birthdaySchema = { type: 'string', pattern: /^([0-9]{4})-([0-9]{2})-([0-9]{2})$/.toString().slice(1, -1) } as const;
+const pronounsSchema = { type: 'string', minLength: 1, maxLength: 20 } as const;
 
 function isLocalUser(user: User): user is ILocalUser;
 function isLocalUser<T extends { host: User['host'] }>(user: T): user is T & { host: null; };
@@ -50,6 +51,7 @@ export const UserRepository = db.getRepository(User).extend({
 	descriptionSchema,
 	locationSchema,
 	birthdaySchema,
+	pronounsSchema,
 
 	//#region Validators
 	validateLocalUsername: ajv.compile(localUsernameSchema),
@@ -58,6 +60,7 @@ export const UserRepository = db.getRepository(User).extend({
 	validateDescription: ajv.compile(descriptionSchema),
 	validateLocation: ajv.compile(locationSchema),
 	validateBirthday: ajv.compile(birthdaySchema),
+	validatePronouns: ajv.compile(pronounsSchema),
 	//#endregion
 
 	async getRelation(me: User['id'], target: User['id']) {
@@ -318,6 +321,7 @@ export const UserRepository = db.getRepository(User).extend({
 				isSilenced: user.isSilenced || falsy,
 				isSuspended: user.isSuspended || falsy,
 				description: profile!.description,
+				pronouns: profile!.pronouns,
 				location: profile!.location,
 				birthday: profile!.birthday,
 				lang: profile!.lang,

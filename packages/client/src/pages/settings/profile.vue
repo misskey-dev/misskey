@@ -17,6 +17,11 @@
 		<template #caption>{{ i18n.ts._profile.youCanIncludeHashtags }}</template>
 	</FormTextarea>
 
+	<FormInput v-model="profile.pronouns" manual-save class="_formBlock">
+		<template #label>{{ i18n.ts.pronouns }}</template>
+		<template #prefix><i class="fas fa-heart"></i></template>
+	</FormInput>
+
 	<FormInput v-model="profile.location" manual-save class="_formBlock">
 		<template #label>{{ i18n.ts.location }}</template>
 		<template #prefix><i class="fas fa-map-marker-alt"></i></template>
@@ -82,6 +87,7 @@ import { langmap } from '@/scripts/langmap';
 const profile = reactive({
 	name: $i.name,
 	description: $i.description,
+	pronouns: $i.pronouns,
 	location: $i.location,
 	birthday: $i.birthday,
 	lang: $i.lang,
@@ -120,6 +126,7 @@ function save() {
 	os.apiWithDialog('i/update', {
 		name: profile.name || null,
 		description: profile.description || null,
+		pronouns: profile.pronouns || null,
 		location: profile.location || null,
 		birthday: profile.birthday || null,
 		lang: profile.lang || null,
