@@ -10,10 +10,6 @@ export const getNoteSummary = (note: misskey.entities.Note): string => {
 		return `(${i18n.ts.deletedNote})`;
 	}
 
-	if (note.isHidden) {
-		return `(${i18n.ts.invisibleNote})`;
-	}
-
 	let summary = '';
 
 	// 本文

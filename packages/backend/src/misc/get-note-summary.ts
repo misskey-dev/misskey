@@ -9,10 +9,6 @@ export const getNoteSummary = (note: Packed<'Note'>): string => {
 		return `(❌⛔)`;
 	}
 
-	if (note.isHidden) {
-		return `(⛔)`;
-	}
-
 	let summary = '';
 
 	// 本文

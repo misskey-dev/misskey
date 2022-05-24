@@ -1,7 +1,6 @@
 <template>
 <div class="wrmlmaau" :class="{ collapsed }">
 	<div class="body">
-		<span v-if="note.isHidden" style="opacity: 0.5">({{ $ts.private }})</span>
 		<span v-if="note.deletedAt" style="opacity: 0.5">({{ $ts.deleted }})</span>
 		<MkA v-if="note.replyId" class="reply" :to="`/notes/${note.replyId}`"><i class="fas fa-reply"></i></MkA>
 		<Mfm v-if="note.text" :text="note.text" :author="note.user" :i="$i" :custom-emojis="note.emojis"/>
