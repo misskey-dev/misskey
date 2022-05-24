@@ -192,7 +192,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 				description: person.summary ? htmlToMfm(truncate(person.summary, summaryLength), person.tag) : null,
 				url: getOneApHrefNullable(person.url),
 				fields,
-				pronouns: person['vcard:Pronouns'] || null,
+				pronouns: person['vcard:Gender'] || null,
 				birthday: bday ? bday[0] : null,
 				location: person['vcard:Address'] || null,
 				userHost: host,
@@ -369,7 +369,7 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 		url: getOneApHrefNullable(person.url),
 		fields,
 		description: person.summary ? htmlToMfm(truncate(person.summary, summaryLength), person.tag) : null,
-		pronouns: person['vcard:Pronouns'] || null,
+		pronouns: person['vcard:Gender'] || null,
 		birthday: bday ? bday[0] : null,
 		location: person['vcard:Address'] || null,
 	});

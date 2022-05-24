@@ -164,7 +164,7 @@ export interface IActor extends IObject {
 	endpoints?: {
 		sharedInbox?: string;
 	};
-	'vcard:Pronouns'?: string;
+	'vcard:Gender'?: string;
 	'vcard:bday'?: string;
 	'vcard:Address'?: string;
 }
