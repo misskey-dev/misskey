@@ -137,14 +137,12 @@ watch(() => props.modelValue.type, (t) => {
 
 	if (props.modelValue.type === 'fn') {
 		const id = uuid();
+
 		props.modelValue.value = {
 			slots: [],
 			expression: { id, type: null }
 		};
-		return;
-	}
-
-	if (props.modelValue.type?.startsWith('fn:')) {
+	} else if (props.modelValue.type?.startsWith('fn:')) {
 		const fnName = props.modelValue.type.split(':')[1];
 		const fn = props.hpml.getVarByName(fnName);
 
@@ -153,20 +151,23 @@ watch(() => props.modelValue.type, (t) => {
 			const id = uuid();
 			empties.push({ id, type: null });
 		}
+
 		props.modelValue.args = empties;
+	} else if (isLiteralValue(props.modelValue)) {
 		return;
-	}
+	} else {
+		const empties: any[] = [];
 
-	if (isLiteralValue(props.modelValue)) return;
+		for (let i = 0; i < funcDefs[props.modelValue.type].in.length; i++) {
+			const id = uuid();
+			const inType = funcDefs[props.modelValue.type].in[i];
+			const type = inType === 'number' || inType === 'string'
+				? funcDefs[props.modelValue.type].in[i]
+				: null;
+			empties.push({ id, type });
+		}
 
-	const empties: any[] = [];
-	for (let i = 0; i < funcDefs[props.modelValue.type].in.length; i++) {
-		const id = uuid();
-		const inType = funcDefs[props.modelValue.type].in[i];
-		const type = inType === 'number' || inType === 'string'
-			? funcDefs[props.modelValue.type].in[i]
-			: null;
-		empties.push({ id, type });
+		props.modelValue.args = empties;
 	}
 });
 
