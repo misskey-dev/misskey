@@ -14,6 +14,7 @@ export const NoteFavoriteRepository = db.getRepository(NoteFavorite).extend({
 			id: favorite.id,
 			createdAt: favorite.createdAt.toISOString(),
 			noteId: favorite.noteId,
+			// may throw error
 			note: await Notes.pack(favorite.note || favorite.noteId, me),
 		};
 	},
@@ -22,6 +23,7 @@ export const NoteFavoriteRepository = db.getRepository(NoteFavorite).extend({
 		favorites: any[],
 		me: { id: User['id'] }
 	) {
-		return Promise.all(favorites.map(x => this.pack(x, me)));
+		return Promise.allSettled(favorites.map(x => this.pack(x, me)))
+		.then(promises => promises.flatMap(result => result.status === 'fulfilled' ? [result.value] : []);
 	},
 });
