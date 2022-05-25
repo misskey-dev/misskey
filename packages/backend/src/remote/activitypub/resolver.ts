@@ -97,7 +97,7 @@ export default class Resolver {
 
 		switch (parsed.type) {
 			case 'notes':
-				return Notes.findOneByOrFail({ parsed.id })
+				return Notes.findOneByOrFail({ id: parsed.id })
 				.then(note => {
 					if (parsed.rest === 'activity') {
 						// this refers to the create activity and not the note itself
