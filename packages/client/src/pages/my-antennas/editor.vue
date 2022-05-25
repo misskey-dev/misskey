@@ -44,135 +44,100 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { watch } from 'vue';
 import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/form/input.vue';
 import MkTextarea from '@/components/form/textarea.vue';
 import MkSelect from '@/components/form/select.vue';
 import MkSwitch from '@/components/form/switch.vue';
-import * as Acct from 'misskey-js/built/acct';
 import * as os from '@/os';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		MkButton, MkInput, MkTextarea, MkSelect, MkSwitch
-	},
+const props = defineProps<{
+	antenna: any
+}>();
 
-	props: {
-		antenna: {
-			type: Object,
-			required: true
-		}
-	},
+const emit = defineEmits<{
+	(ev: 'created'): void,
+	(ev: 'updated'): void,
+	(ev: 'deleted'): void,
+}>();
 
-	data() {
-		return {
-			name: '',
-			src: '',
-			userListId: null,
-			userGroupId: null,
-			users: '',
-			keywords: '',
-			excludeKeywords: '',
-			caseSensitive: false,
-			withReplies: false,
-			withFile: false,
-			notify: false,
-			userLists: null,
-			userGroups: null,
-		};
-	},
+let name: string = $ref(props.antenna.name);
+let src: string = $ref(props.antenna.src);
+let userListId: any = $ref(props.antenna.userListId);
+let userGroupId: any = $ref(props.antenna.userGroupId);
+let users: string = $ref(props.antenna.users.join('\n'));
+let keywords: string = $ref(props.antenna.keywords.map(x => x.join(' ')).join('\n'));
+let excludeKeywords: string = $ref(props.antenna.excludeKeywords.map(x => x.join(' ')).join('\n'));
+let caseSensitive: boolean = $ref(props.antenna.caseSensitive);
+let withReplies: boolean = $ref(props.antenna.withReplies);
+let withFile: boolean = $ref(props.antenna.withFile);
+let notify: boolean = $ref(props.antenna.notify);
+let userLists: any = $ref(null);
+let userGroups: any = $ref(null);
 
-	watch: {
-		async src() {
-			if (this.src === 'list' && this.userLists === null) {
-				this.userLists = await os.api('users/lists/list');
-			}
+watch(() => src, async () => {
+	if (src === 'list' && userLists === null) {
+		userLists = await os.api('users/lists/list');
+	}
 
-			if (this.src === 'group' && this.userGroups === null) {
-				const groups1 = await os.api('users/groups/owned');
-				const groups2 = await os.api('users/groups/joined');
+	if (src === 'group' && userGroups === null) {
+		const groups1 = await os.api('users/groups/owned');
+		const groups2 = await os.api('users/groups/joined');
 
-				this.userGroups = [...groups1, ...groups2];
-			}
-		}
-	},
-
-	created() {
-		this.name = this.antenna.name;
-		this.src = this.antenna.src;
-		this.userListId = this.antenna.userListId;
-		this.userGroupId = this.antenna.userGroupId;
-		this.users = this.antenna.users.join('\n');
-		this.keywords = this.antenna.keywords.map(x => x.join(' ')).join('\n');
-		this.excludeKeywords = this.antenna.excludeKeywords.map(x => x.join(' ')).join('\n');
-		this.caseSensitive = this.antenna.caseSensitive;
-		this.withReplies = this.antenna.withReplies;
-		this.withFile = this.antenna.withFile;
-		this.notify = this.antenna.notify;
-	},
-
-	methods: {
-		async saveAntenna() {
-			if (this.antenna.id == null) {
-				await os.apiWithDialog('antennas/create', {
-					name: this.name,
-					src: this.src,
-					userListId: this.userListId,
-					userGroupId: this.userGroupId,
-					withReplies: this.withReplies,
-					withFile: this.withFile,
-					notify: this.notify,
-					caseSensitive: this.caseSensitive,
-					users: this.users.trim().split('\n').map(x => x.trim()),
-					keywords: this.keywords.trim().split('\n').map(x => x.trim().split(' ')),
-					excludeKeywords: this.excludeKeywords.trim().split('\n').map(x => x.trim().split(' ')),
-				});
-				this.$emit('created');
-			} else {
-				await os.apiWithDialog('antennas/update', {
-					antennaId: this.antenna.id,
-					name: this.name,
-					src: this.src,
-					userListId: this.userListId,
-					userGroupId: this.userGroupId,
-					withReplies: this.withReplies,
-					withFile: this.withFile,
-					notify: this.notify,
-					caseSensitive: this.caseSensitive,
-					users: this.users.trim().split('\n').map(x => x.trim()),
-					keywords: this.keywords.trim().split('\n').map(x => x.trim().split(' ')),
-					excludeKeywords: this.excludeKeywords.trim().split('\n').map(x => x.trim().split(' ')),
-				});
-				this.$emit('updated');
-			}
-		},
-
-		async deleteAntenna() {
-			const { canceled } = await os.confirm({
-				type: 'warning',
-				text: this.$t('removeAreYouSure', { x: this.antenna.name }),
-			});
-			if (canceled) return;
-
-			await os.api('antennas/delete', {
-				antennaId: this.antenna.id,
-			});
-
-			os.success();
-			this.$emit('deleted');
-		},
-
-		addUser() {
-			os.selectUser().then(user => {
-				this.users = this.users.trim();
-				this.users += '\n@' + Acct.toString(user);
-				this.users = this.users.trim();
-			});
-		}
+		userGroups = [...groups1, ...groups2];
 	}
 });
+
+async function saveAntenna() {
+	const antennaData = {
+		name,
+		src,
+		userListId,
+		userGroupId,
+		withReplies,
+		withFile,
+		notify,
+		caseSensitive,
+		users: users.trim().split('\n').map(x => x.trim()),
+		keywords: keywords.trim().split('\n').map(x => x.trim().split(' ')),
+		excludeKeywords: excludeKeywords.trim().split('\n').map(x => x.trim().split(' ')),
+	};
+
+	if (props.antenna.id == null) {
+		await os.apiWithDialog('antennas/create', antennaData);
+		emit('created');
+	} else {
+		antennaData['antennaId'] = props.antenna.id;
+		await os.apiWithDialog('antennas/update', antennaData);
+		emit('updated');
+	}
+}
+
+async function deleteAntenna() {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.t('removeAreYouSure', { x: props.antenna.name }),
+	});
+	if (canceled) return;
+
+	await os.api('antennas/delete', {
+		antennaId: props.antenna.id,
+	});
+
+	os.success();
+	emit('deleted');
+}
+
+function addUser() {
+	os.selectUser().then(user => {
+		users = users.trim();
+		users += '\n@' + Acct.toString(user as any);
+		users = users.trim();
+	});
+}
 </script>
 
 <style lang="scss" scoped>
