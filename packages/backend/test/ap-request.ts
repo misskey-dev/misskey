@@ -1,7 +1,7 @@
 import * as assert from 'assert';
+import httpSignature from 'http-signature';
 import { genRsaKeyPair } from '../src/misc/gen-key-pair.js';
 import { createSignedPost, createSignedGet } from '../src/remote/activitypub/ap-request.js';
-import httpSignature from 'http-signature';
 
 export const buildParsedSignature = (signingString: string, signature: string, algorithm: string) => {
 	return {
@@ -13,7 +13,7 @@ export const buildParsedSignature = (signingString: string, signature: string, a
 			signature: signature,
 		},
 		signingString: signingString,
-		algorithm: algorithm?.toUpperCase(),
+		algorithm: algorithm.toUpperCase(),
 		keyId: 'KeyID',	// dummy, not used for verify
 	};
 };
@@ -26,7 +26,7 @@ describe('ap-request', () => {
 		const activity = { a: 1 };
 		const body = JSON.stringify(activity);
 		const headers = {
-			'User-Agent': 'UA'
+			'User-Agent': 'UA',
 		};
 
 		const req = createSignedPost({ key, url, body, additionalHeaders: headers });
@@ -42,7 +42,7 @@ describe('ap-request', () => {
 		const key = { keyId: 'x', 'privateKeyPem': keypair.privateKey };
 		const url = 'https://example.com/outbox';
 		const headers = {
-			'User-Agent': 'UA'
+			'User-Agent': 'UA',
 		};
 
 		const req = createSignedGet({ key, url, additionalHeaders: headers });

@@ -13,37 +13,37 @@ export default async (actor: CacheableRemoteUser, activity: IDelete): Promise<st
 	}
 
 	// 削除対象objectのtype
-	let formarType: string | undefined;
+	let formerType: string | undefined;
 
 	if (typeof activity.object === 'string') {
 		// typeが不明だけど、どうせ消えてるのでremote resolveしない
-		formarType = undefined;
+		formerType = undefined;
 	} else {
 		const object = activity.object as IObject;
 		if (isTombstone(object)) {
-			formarType = toSingle(object.formerType);
+			formerType = toSingle(object.formerType);
 		} else {
-			formarType = toSingle(object.type);
+			formerType = toSingle(object.type);
 		}
 	}
 
 	const uri = getApId(activity.object);
 
 	// type不明でもactorとobjectが同じならばそれはPersonに違いない
-	if (!formarType && actor.uri === uri) {
-		formarType = 'Person';
+	if (!formerType && actor.uri === uri) {
+		formerType = 'Person';
 	}
 
 	// それでもなかったらおそらくNote
-	if (!formarType) {
-		formarType = 'Note';
+	if (!formerType) {
+		formerType = 'Note';
 	}
 
-	if (validPost.includes(formarType)) {
+	if (validPost.includes(formerType)) {
 		return await deleteNote(actor, uri);
-	} else if (validActor.includes(formarType)) {
+	} else if (validActor.includes(formerType)) {
 		return await deleteActor(actor, uri);
 	} else {
-		return `Unknown type ${formarType}`;
+		return `Unknown type ${formerType}`;
 	}
 };

@@ -8,6 +8,7 @@ export const undoAnnounce = async (actor: CacheableRemoteUser, activity: IAnnoun
 
 	const note = await Notes.findOneBy({
 		uri,
+		userId: actor.id,
 	});
 
 	if (!note) return 'skip: no such Announce';

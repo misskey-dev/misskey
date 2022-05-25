@@ -31,6 +31,32 @@ const props = withDefaults(defineProps<{
 	}
 }
 
+.mfm-x2 {
+	--mfm-zoom-size: 200%;
+}
+
+.mfm-x3 {
+	--mfm-zoom-size: 400%;
+}
+
+.mfm-x4 {
+	--mfm-zoom-size: 600%;
+}
+
+.mfm-x2, .mfm-x3, .mfm-x4 {
+	font-size: var(--mfm-zoom-size);
+
+	.mfm-x2, .mfm-x3, .mfm-x4 {
+		/* only half effective */
+		font-size: calc(var(--mfm-zoom-size) / 2 + 50%);
+
+		.mfm-x2, .mfm-x3, .mfm-x4 {
+			/* disabled */
+			font-size: 100%;
+		}
+	}
+}
+
 @keyframes mfm-spin {
 	0% { transform: rotate(0deg); }
 	100% { transform: rotate(360deg); }
