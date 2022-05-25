@@ -7,7 +7,7 @@ import { extractDbHost, isSelfHost } from '@/misc/convert-host.js';
 import { signedGet } from './request.js';
 import { IObject, isCollectionOrOrderedCollection, ICollection, IOrderedCollection } from './type.js';
 import { FollowRequests, Notes, NoteReactions, Polls, Users } from '@/models/index.js';
-import { DbResolver, parseUri } from './db-resolver.js';
+import { parseUri } from './db-resolver.js';
 import renderNote from '@/remote/activitypub/renderer/note.js';
 import { renderLike } from '@/remote/activitypub/renderer/like.js';
 import { renderPerson } from '@/remote/activitypub/renderer/person.js';
@@ -95,14 +95,10 @@ export default class Resolver {
 		const parsed = parseUri(url);
 		if (!parsed.local) throw new Error('resolveLocal: not local');
 
-		const dbResolver = new DbResolver();
-
 		switch (parsed.type) {
 			case 'notes':
-				return dbResolver.getNoteFromApId(url)
+				return Notes.findOneByOrFail({ parsed.id })
 				.then(note => {
-					if (note == null) throw new Error('resolveLocal: Note not found');
-
 					if (parsed.rest === 'activity') {
 						// this refers to the create activity and not the note itself
 						return renderActivity(renderCreate(renderNote(note)));
@@ -111,12 +107,8 @@ export default class Resolver {
 					}
 				});
 			case 'users':
-				return dbResolver.getUserFromApId(url)
-				.then(user => {
-					if (user == null) throw new Error('resolveLocal: User not found');
-
-					return renderPerson(user as ILocalUser);
-				});
+				return Users.findOneByOrFail({ id: parsed.id })
+				.then(user => renderPerson(user as ILocalUser));
 			case 'questions':
 				// Polls are indexed by the note they are attached to.
 				return Promise.all([
