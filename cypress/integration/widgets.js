@@ -3,6 +3,7 @@ describe('After user singed in', () => {
 		cy.window(win => {
 			win.indexedDB.deleteDatabase('keyval-store');
 		});
+		cy.viewport('macbook-16');
 		cy.request('POST', '/api/reset-db').as('reset');
 		cy.get('@reset').its('status').should('equal', 204);
 		cy.reload(true);
@@ -37,6 +38,7 @@ describe('After user singed in', () => {
 	});
 
   it('widget edit toggle is visible', () => {
+		cy.visit('/');
 		cy.get('.msky-widget-edit').should('be.visible');
   });
 
