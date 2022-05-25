@@ -100,9 +100,9 @@ export function connectStream(user: any, channel: string, listener: (message: Re
 		ws.on('open', () => {
 			ws.on('message', data => {
 				const msg = JSON.parse(data.toString());
-				if (msg.type == 'channel' && msg.body.id == 'a') {
+				if (msg.type === 'channel' && msg.body.id === 'a') {
 					listener(msg.body);
-				} else if (msg.type == 'connected' && msg.body.id == 'a') {
+				} else if (msg.type === 'connected' && msg.body.id === 'a') {
 					res(ws);
 				}
 			});
