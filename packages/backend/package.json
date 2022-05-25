@@ -15,7 +15,7 @@
 	},
 	"dependencies": {
 		"@bull-board/koa": "3.10.4",
-		"@discordapp/twemoji": "13.1.1",
+		"@discordapp/twemoji": "14.0.2",
 		"@elastic/elasticsearch": "7.11.0",
 		"@koa/cors": "3.1.0",
 		"@koa/multer": "3.0.0",
@@ -65,7 +65,7 @@
 		"koa-send": "5.0.1",
 		"koa-slow": "2.1.0",
 		"koa-views": "7.0.2",
-		"mfm-js": "0.21.0",
+		"mfm-js": "0.22.0",
 		"mime-types": "2.1.35",
 		"misskey-js": "0.0.14",
 		"mocha": "9.2.2",
