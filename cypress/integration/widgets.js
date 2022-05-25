@@ -1,4 +1,4 @@
-describe('After user singed in', () => {
+describe('After user signed in', () => {
 	beforeEach(() => {
 		cy.window(win => {
 			win.indexedDB.deleteDatabase('keyval-store');
@@ -42,8 +42,15 @@ describe('After user singed in', () => {
 		cy.get('.msky-widget-edit').should('be.visible');
   });
 
-	it('select should be visible in edit mode', () => {
+	it('widget select should be visible in edit mode', () => {
 		cy.get('.msky-widget-edit').click();
 		cy.get('.msky-widget-select').should('be.visible');
+  });
+
+	it('memo widget should get added', () => {
+		cy.get('.msky-widget-edit').click();
+		cy.get('.msky-widget-select select').select('memo');
+		cy.get('.msky-widget-add').click();
+		cy.get('.mkw-memo').should('be.visible');
   });
 });
