@@ -50,7 +50,7 @@ describe('After user signed in', () => {
 	it('memo widget should get added', () => {
 		cy.get('.msky-widget-edit').click();
 		cy.get('.msky-widget-select select').select('memo', { force: true });
-		cy.get('.msky-widget-add').click();
+		cy.get('.msky-widget-add').click({ force: true });
 		cy.get('.mkw-memo').should('be.visible');
   });
 });
