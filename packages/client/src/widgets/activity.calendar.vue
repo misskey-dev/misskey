@@ -1,13 +1,13 @@
 <template>
 <svg viewBox="0 0 21 7">
-	<rect v-for="record in data" class="day"
+	<rect v-for="record in activity" class="day"
 		width="1" height="1"
 		:x="record.x" :y="record.date.weekday"
 		rx="1" ry="1"
 		fill="transparent">
 		<title>{{ record.date.year }}/{{ record.date.month + 1 }}/{{ record.date.day }}</title>
 	</rect>
-	<rect v-for="record in data" class="day"
+	<rect v-for="record in activity" class="day"
 		:width="record.v" :height="record.v"
 		:x="record.x + ((1 - record.v) / 2)" :y="record.date.weekday + ((1 - record.v) / 2)"
 		rx="1" ry="1"
@@ -15,7 +15,7 @@
 		style="pointer-events: none;"/>
 	<rect class="today"
 		width="1" height="1"
-		:x="data[0].x" :y="data[0].date.weekday"
+		:x="activity[0].x" :y="activity[0].date.weekday"
 		rx="1" ry="1"
 		fill="none"
 		stroke-width="0.1"
