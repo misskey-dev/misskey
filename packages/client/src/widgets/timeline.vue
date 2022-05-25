@@ -1,5 +1,5 @@
 <template>
-<MkContainer :show-header="widgetProps.showHeader" :style="`height: ${widgetProps.height}px;`" :scrollable="true">
+<MkContainer :show-header="widgetProps.showHeader" :style="`height: ${widgetProps.height}px;`" :scrollable="true" class="mkw-timeline">
 	<template #header>
 		<button class="_button" @click="choose">
 			<i v-if="widgetProps.src === 'home'" class="fas fa-home"></i>
