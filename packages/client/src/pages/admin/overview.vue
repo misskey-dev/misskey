@@ -5,20 +5,20 @@
 			<div class="label">Users</div>
 			<div class="value _monospace">
 				{{ number(stats.originalUsersCount) }}
-				<MkNumberDiff v-if="usersComparedToThePrevDay != null" v-tooltip="$ts.dayOverDayChanges" class="diff" :value="usersComparedToThePrevDay"><template #before>(</template><template #after>)</template></MkNumberDiff>
+				<MkNumberDiff v-if="usersComparedToThePrevDay != null" v-tooltip="i18n.ts.dayOverDayChanges" class="diff" :value="usersComparedToThePrevDay"><template #before>(</template><template #after>)</template></MkNumberDiff>
 			</div>
 		</div>
 		<div class="number _panel">
 			<div class="label">Notes</div>
 			<div class="value _monospace">
 				{{ number(stats.originalNotesCount) }}
-				<MkNumberDiff v-if="notesComparedToThePrevDay != null" v-tooltip="$ts.dayOverDayChanges" class="diff" :value="notesComparedToThePrevDay"><template #before>(</template><template #after>)</template></MkNumberDiff>
+				<MkNumberDiff v-if="notesComparedToThePrevDay != null" v-tooltip="i18n.ts.dayOverDayChanges" class="diff" :value="notesComparedToThePrevDay"><template #before>(</template><template #after>)</template></MkNumberDiff>
 			</div>
 		</div>
 	</div>
 
 	<MkContainer :foldable="true" class="charts">
-		<template #header><i class="fas fa-chart-bar"></i>{{ $ts.charts }}</template>
+		<template #header><i class="fas fa-chart-bar"></i>{{ i18n.ts.charts }}</template>
 		<div style="padding: 12px;">
 			<MkInstanceStats :chart-limit="500" :detailed="true"/>
 		</div>
@@ -38,7 +38,7 @@
 		<!--<XMetrics/>-->
 
 	<MkFolder style="margin: var(--margin)">
-		<template #header><i class="fas fa-info-circle"></i> {{ $ts.info }}</template>
+		<template #header><i class="fas fa-info-circle"></i> {{ i18n.ts.info }}</template>
 		<div class="cfcdecdf">
 			<div class="number _panel">
 				<div class="label">Misskey</div>
@@ -65,103 +65,61 @@
 </div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, markRaw, version as vueVersion } from 'vue';
+<script lang="ts" setup>
+import { markRaw, version as vueVersion, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import MkInstanceStats from '@/components/instance-stats.vue';
-import MkButton from '@/components/ui/button.vue';
-import MkSelect from '@/components/form/select.vue';
 import MkNumberDiff from '@/components/number-diff.vue';
 import MkContainer from '@/components/ui/container.vue';
 import MkFolder from '@/components/ui/folder.vue';
 import MkQueueChart from '@/components/queue-chart.vue';
 import { version, url } from '@/config';
-import bytes from '@/filters/bytes';
 import number from '@/filters/number';
 import XMetrics from './metrics.vue';
 import * as os from '@/os';
 import { stream } from '@/stream';
 import * as symbols from '@/symbols';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		MkNumberDiff,
-		MkInstanceStats,
-		MkContainer,
-		MkFolder,
-		MkQueueChart,
-		XMetrics,
-	},
+let stats: any = $ref(null);
+let serverInfo: any = $ref(null);
+let usersComparedToThePrevDay: any = $ref(null);
+let notesComparedToThePrevDay: any = $ref(null);
+const queueStatsConnection = markRaw(stream.useChannel('queueStats'));
 
-	emits: ['info'],
+onMounted(async () => {	
+	os.api('stats', {}).then(statsResponse => {
+		stats = statsResponse;
 
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: this.$ts.dashboard,
-				icon: 'fas fa-tachometer-alt',
-				bg: 'var(--bg)',
-			},
-			version,
-			vueVersion,
-			url,
-			stats: null,
-			meta: null,
-			serverInfo: null,
-			usersComparedToThePrevDay: null,
-			notesComparedToThePrevDay: null,
-			fetchJobs: () => os.api('admin/queue/deliver-delayed', {}),
-			fetchModLogs: () => os.api('admin/show-moderation-logs', {}),
-			queueStatsConnection: markRaw(stream.useChannel('queueStats')),
-		}
-	},
-
-	async mounted() {
-		os.api('meta', { detail: true }).then(meta => {
-			this.meta = meta;
-		});
-		
-		os.api('stats', {}).then(stats => {
-			this.stats = stats;
-
-			os.api('charts/users', { limit: 2, span: 'day' }).then(chart => {
-				this.usersComparedToThePrevDay = this.stats.originalUsersCount - chart.local.total[1];
-			});
-
-			os.api('charts/notes', { limit: 2, span: 'day' }).then(chart => {
-				this.notesComparedToThePrevDay = this.stats.originalNotesCount - chart.local.total[1];
-			});
+		os.api('charts/users', { limit: 2, span: 'day' }).then(chart => {
+			usersComparedToThePrevDay = stats.originalUsersCount - chart.local.total[1];
 		});
 
-		os.api('admin/server-info', {}).then(serverInfo => {
-			this.serverInfo = serverInfo;
+		os.api('charts/notes', { limit: 2, span: 'day' }).then(chart => {
+			notesComparedToThePrevDay = stats.originalNotesCount - chart.local.total[1];
 		});
+	});
 
-		this.$nextTick(() => {
-			this.queueStatsConnection.send('requestLog', {
-				id: Math.random().toString().substr(2, 8),
-				length: 200
-			});
+	os.api('admin/server-info').then(serverInfoResponse => {
+		serverInfo = serverInfoResponse;
+	});
+
+	nextTick(() => {
+		queueStatsConnection.send('requestLog', {
+			id: Math.random().toString().substr(2, 8),
+			length: 200
 		});
-	},
+	});
+});
 
-	beforeUnmount() {
-		this.queueStatsConnection.dispose();
-	},
+onBeforeUnmount(() => {
+	queueStatsConnection.dispose();
+});
 
-	methods: {
-		async showInstanceInfo(q) {
-			let instance = q;
-			if (typeof q === 'string') {
-				instance = await os.api('federation/show-instance', {
-					host: q
-				});
-			}
-			// TODO
-		},
-
-		bytes,
-
-		number,
+defineExpose({
+	[symbols.PAGE_INFO]: {
+		title: i18n.ts.dashboard,
+		icon: 'fas fa-tachometer-alt',
+		bg: 'var(--bg)',
 	}
 });
 </script>
