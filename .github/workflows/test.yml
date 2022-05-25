@@ -5,6 +5,7 @@ on:
     branches:
       - master
       - develop
+      - feature/widget-tests
   pull_request:
 
 jobs:
