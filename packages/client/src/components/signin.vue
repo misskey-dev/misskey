@@ -213,6 +213,14 @@ function loginFailed(err) {
 			showSuspendedDialog();
 			break;
 		}
+		case '22d05606-fbcf-421a-a2db-b32610dcfd1b': {
+			os.alert({
+				type: 'error',
+				title: i18n.ts.loginFailed,
+				text: i18n.ts.rateLimitExceeded,
+			});
+			break;
+		}
 		default: {
 			console.log(err)
 			os.alert({
