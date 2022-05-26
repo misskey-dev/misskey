@@ -2,7 +2,7 @@ import Koa from 'koa';
 import { performance } from 'perf_hooks';
 import { limiter } from './limiter.js';
 import { CacheableLocalUser, User } from '@/models/entities/user.js';
-import endpoints, { IEndpoint } from './endpoints.js';
+import endpoints, { IEndpointMeta } from './endpoints.js';
 import { ApiError } from './error.js';
 import { apiLogger } from './logger.js';
 import { AccessToken } from '@/models/entities/access-token.js';
@@ -36,8 +36,14 @@ export default async (endpoint: string, user: CacheableLocalUser | null | undefi
 		// koa will automatically load the `X-Forwarded-For` header if `proxy: true` is configured in the app.
 		const limitActor = user ? user.id : ctx.ip;
 
+		const limit = Object.assign({}, ep.meta.limit);
+
+		if (!limit.key) {
+			limit.key = ep.name;
+		}
+
 		// Rate limit
-		await limiter(ep as IEndpoint & { meta: { limit: NonNullable<IEndpoint['meta']['limit']> } }, limitActor).catch(e => {
+		await limiter(limit as IEndpointMeta['limit'] & { key: NonNullable<string> }, limitActor).catch(e => {
 			throw new ApiError({
 				message: 'Rate limit exceeded. Please try again later.',
 				code: 'RATE_LIMIT_EXCEEDED',
