@@ -35,7 +35,7 @@ export const limiter = (limitation: IEndpointMeta['limit'] & { key: NonNullable<
 				return reject('ERR');
 			}
 
-			logger.debug(`${actor} ${endpoint.name} min remaining: ${info.remaining}`);
+			logger.debug(`${actor} ${limitation.key} min remaining: ${info.remaining}`);
 
 			if (info.remaining === 0) {
 				reject('BRIEF_REQUEST_INTERVAL');
@@ -63,7 +63,7 @@ export const limiter = (limitation: IEndpointMeta['limit'] & { key: NonNullable<
 				return reject('ERR');
 			}
 
-			logger.debug(`${actor} ${endpoint.name} max remaining: ${info.remaining}`);
+			logger.debug(`${actor} ${limitation.key} max remaining: ${info.remaining}`);
 
 			if (info.remaining === 0) {
 				reject('RATE_LIMIT_EXCEEDED');
