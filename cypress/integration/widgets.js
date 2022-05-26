@@ -1,3 +1,13 @@
+function buildWidgetTest(widgetName) {
+	it(`${widgetName} widget should get added`, () => {
+		cy.get('.msky-widget-edit').click();
+		cy.get('.msky-widget-select select').select(widgetName, { force: true });
+		cy.get('.bg._modalBg.transparent').click({ multiple: true });
+		cy.get('.msky-widget-add').click();
+		cy.get(`.mkw-${widgetName}`, { timeout: 6000 }).should('be.visible');
+  });
+}
+
 describe('After user signed in', () => {
 	beforeEach(() => {
 		cy.window(win => {
@@ -46,19 +56,23 @@ describe('After user signed in', () => {
 		cy.get('.msky-widget-select').should('be.visible');
   });
 
-	it('memo widget should get added', () => {
-		cy.get('.msky-widget-edit').click();
-		cy.get('.msky-widget-select select').select('memo', { force: true });
-		cy.get('.bg._modalBg.transparent').click({ multiple: true });
-		cy.get('.msky-widget-add').click();
-		cy.get('.mkw-memo', { timeout: 6000 }).should('be.visible');
-  });
-
-	it('timeline widget should get added', () => {
-		cy.get('.msky-widget-edit').click();
-		cy.get('.msky-widget-select select').select('timeline', { force: true });
-		cy.get('.bg._modalBg.transparent').click({ multiple: true });
-		cy.get('.msky-widget-add').click();
-		cy.get('.mkw-timeline', { timeout: 6000 }).should('be.visible');
-  });
+	buildWidgetTest('memo');
+	buildWidgetTest('notifications');
+	buildWidgetTest('timeline');
+	buildWidgetTest('calendar');
+	buildWidgetTest('rss');
+	buildWidgetTest('trends');
+	buildWidgetTest('clock');
+	buildWidgetTest('activity');
+	buildWidgetTest('photos');
+	buildWidgetTest('digitalClock');
+	buildWidgetTest('federation');
+	buildWidgetTest('postForm');
+	buildWidgetTest('slideshow');
+	buildWidgetTest('serverMetric');
+	buildWidgetTest('onlineUsers');
+	buildWidgetTest('jobQueue');
+	buildWidgetTest('button');
+	buildWidgetTest('aiscript');
+	buildWidgetTest('aichan');
 });
