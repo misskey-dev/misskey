@@ -10,6 +10,7 @@ import { genId } from '@/misc/gen-id.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
 import { verifyHcaptcha, verifyRecaptcha } from '@/misc/captcha.js';
 import { verifyLogin, hash } from '../2fa.js';
+import { limiter } from '../limiter.js';
 import signin from '../common/signin.js';
 
 export default async (ctx: Koa.Context) => {
@@ -27,6 +28,21 @@ export default async (ctx: Koa.Context) => {
 	function error(status: number, error: { id: string }) {
 		ctx.status = status;
 		ctx.body = { error };
+	}
+
+	try {
+		// not more than 1 attempt per second and not more than 10 attempts per hour
+		await limiter({ key: 'signin', duration: 60 * 60 * 1000, max: 10, minInterval: 1000 }, ctx.ip);
+	} catch (err) {
+		ctx.status = 429;
+		ctx.body = {
+			error: {
+				message: 'Too many failed attempts to sign in. Try again later.',
+				code: 'TOO_MANY_AUTHENTICATION_FAILURES',
+				id: '22d05606-fbcf-421a-a2db-b32610dcfd1b',
+			},
+		};
+		return;
 	}
 
 	if (typeof username !== 'string') {
