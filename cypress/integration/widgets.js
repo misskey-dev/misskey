@@ -49,8 +49,7 @@ describe('After user signed in', () => {
 	it('memo widget should get added', () => {
 		cy.get('.msky-widget-edit').click();
 		cy.get('.msky-widget-select select').select('memo', { force: true });
-		// Force-close select popup with clicking elsewhere
-		cy.get('.msky-widget-select .label').click();
+		cy.get('.bg ._modalBg .transparent').click();
 		cy.get('.msky-widget-add').click();
 		cy.get('.mkw-memo', { timeout: 6000 }).should('be.visible');
   });
