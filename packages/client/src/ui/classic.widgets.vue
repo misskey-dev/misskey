@@ -50,7 +50,7 @@ export default defineComponent({
 		updateWidget({ id, data }) {
 			this.$store.set('widgets', this.$store.state.widgets.map(w => w.id === id ? {
 				...w,
-				data: data
+				data,
 			} : w));
 		},
 

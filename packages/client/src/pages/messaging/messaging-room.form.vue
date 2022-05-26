@@ -89,8 +89,7 @@ export default defineComponent({
 	},
 	methods: {
 		async onPaste(e: ClipboardEvent) {
-			const data = e.clipboardData;
-			const items = data.items;
+			const items = e.clipboardData.items;
 
 			if (items.length == 1) {
 				if (items[0].kind == 'file') {
@@ -193,9 +192,9 @@ export default defineComponent({
 		},
 
 		saveDraft() {
-			const data = JSON.parse(localStorage.getItem('message_drafts') || '{}');
+			const drafts = JSON.parse(localStorage.getItem('message_drafts') || '{}');
 
-			data[this.draftKey] = {
+			drafts[this.draftKey] = {
 				updatedAt: new Date(),
 				data: {
 					text: this.text,
@@ -203,15 +202,15 @@ export default defineComponent({
 				}
 			}
 
-			localStorage.setItem('message_drafts', JSON.stringify(data));
+			localStorage.setItem('message_drafts', JSON.stringify(drafts));
 		},
 
 		deleteDraft() {
-			const data = JSON.parse(localStorage.getItem('message_drafts') || '{}');
+			const drafts = JSON.parse(localStorage.getItem('message_drafts') || '{}');
 
-			delete data[this.draftKey];
+			delete drafts[this.draftKey];
 
-			localStorage.setItem('message_drafts', JSON.stringify(data));
+			localStorage.setItem('message_drafts', JSON.stringify(drafts));
 		},
 
 		async insertEmoji(ev) {

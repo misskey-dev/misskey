@@ -38,7 +38,7 @@ function removeWidget(widget) {
 function updateWidget({ id, data }) {
 	defaultStore.set('widgets', defaultStore.state.widgets.map(w => w.id === id ? {
 		...w,
-		data: data
+		data,
 	} : w));
 }
 

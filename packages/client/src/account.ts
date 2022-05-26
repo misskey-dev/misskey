@@ -11,10 +11,10 @@ import { i18n } from './i18n';
 
 type Account = misskey.entities.MeDetailed;
 
-const data = localStorage.getItem('account');
+const accountData = localStorage.getItem('account');
 
 // TODO: 外部からはreadonlyに
-export const $i = data ? reactive(JSON.parse(data) as Account) : null;
+export const $i = accountData ? reactive(JSON.parse(accountData) as Account) : null;
 
 export const iAmModerator = $i != null && ($i.isAdmin || $i.isModerator);
 
@@ -104,8 +104,8 @@ function fetchAccount(token: string): Promise<Account> {
 	});
 }
 
-export function updateAccount(data) {
-	for (const [key, value] of Object.entries(data)) {
+export function updateAccount(accountData) {
+	for (const [key, value] of Object.entries(accountData)) {
 		$i[key] = value;
 	}
 	localStorage.setItem('account', JSON.stringify($i));

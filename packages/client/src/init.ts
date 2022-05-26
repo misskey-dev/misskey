@@ -334,7 +334,7 @@ stream.on('_disconnected_', async () => {
 	}
 });
 
-stream.on('emojiAdded', data => {
+stream.on('emojiAdded', emojiData => {
 	// TODO
 	//store.commit('instance/set', );
 });
