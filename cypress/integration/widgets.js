@@ -3,7 +3,7 @@ function buildWidgetTest(widgetName) {
 		cy.get('.msky-widget-edit').click();
 		cy.get('.msky-widget-select select').select(widgetName, { force: true });
 		cy.get('.bg._modalBg.transparent').click({ multiple: true, force: true });
-		cy.get('.msky-widget-add').click();
+		cy.get('.msky-widget-add').click({ force: true });
 		cy.get(`.mkw-${widgetName}`, { timeout: 6000 }).should('be.visible');
   });
 }
