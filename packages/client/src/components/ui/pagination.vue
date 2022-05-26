@@ -68,7 +68,7 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(e: 'queue', count: number): void;
+	(ev: 'queue', count: number): void;
 }>();
 
 type Item = { id: string; [another: string]: unknown; };
@@ -112,7 +112,7 @@ const init = async (): Promise<void> => {
 		offset.value = res.length;
 		error.value = false;
 		fetching.value = false;
-	}, e => {
+	}, err => {
 		error.value = true;
 		fetching.value = false;
 	});
@@ -155,7 +155,7 @@ const fetchMore = async (): Promise<void> => {
 		}
 		offset.value += res.length;
 		moreFetching.value = false;
-	}, e => {
+	}, err => {
 		moreFetching.value = false;
 	});
 };
@@ -183,7 +183,7 @@ const fetchMoreAhead = async (): Promise<void> => {
 		}
 		offset.value += res.length;
 		moreFetching.value = false;
-	}, e => {
+	}, err => {
 		moreFetching.value = false;
 	});
 };

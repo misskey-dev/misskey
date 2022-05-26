@@ -104,7 +104,7 @@ function add() {
 }
 
 function remove(i) {
-	choices.value = choices.value.filter((_, _i) => _i != i);
+	choices.value = choices.value.filter((_, _i) => _i !== i);
 }
 
 function get() {

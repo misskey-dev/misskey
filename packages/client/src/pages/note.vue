@@ -136,8 +136,8 @@ export default defineComponent({
 					this.hasPrev = prev.length !== 0;
 					this.hasNext = next.length !== 0;
 				});
-			}).catch(e => {
-				this.error = e;
+			}).catch(err => {
+				this.error = err;
 			});
 		}
 	}

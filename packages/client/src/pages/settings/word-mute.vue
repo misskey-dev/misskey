@@ -71,7 +71,7 @@ watch(hardMutedWords, () => {
 async function save() {
 	const parseMutes = (mutes, tab) => {
 		// split into lines, remove empty lines and unnecessary whitespace
-		let lines = mutes.trim().split('\n').map(line => line.trim()).filter(line => line != '');
+		let lines = mutes.trim().split('\n').map(line => line.trim()).filter(line => line !== '');
 
 		// check each line if it is a RegExp or not
 		for (let i = 0; i < lines.length; i++) {

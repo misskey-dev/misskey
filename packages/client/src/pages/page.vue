@@ -139,8 +139,8 @@ export default defineComponent({
 				username: this.username,
 			}).then(page => {
 				this.page = page;
-			}).catch(e => {
-				this.error = e;
+			}).catch(err => {
+				this.error = err;
 			});
 		},
 

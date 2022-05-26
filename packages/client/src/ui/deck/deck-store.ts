@@ -276,14 +276,14 @@ export function setColumnWidgets(id: Column['id'], widgets: ColumnWidget[]) {
 	saveDeck();
 }
 
-export function updateColumnWidget(id: Column['id'], widgetId: string, data: any) {
+export function updateColumnWidget(id: Column['id'], widgetId: string, WidgetData: any) {
 	const columns = copy(deckStore.state.columns);
 	const columnIndex = deckStore.state.columns.findIndex(c => c.id === id);
 	const column = copy(deckStore.state.columns[columnIndex]);
 	if (column == null) return;
 	column.widgets = column.widgets.map(w => w.id === widgetId ? {
 		...w,
-		data: data
+		data: widgetData,
 	} : w);
 	columns[columnIndex] = column;
 	deckStore.set('columns', columns);

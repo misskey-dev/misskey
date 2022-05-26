@@ -59,10 +59,10 @@ export const apiWithDialog = ((
 	token?: string | null | undefined,
 ) => {
 	const promise = api(endpoint, data, token);
-	promiseDialog(promise, null, (e) => {
+	promiseDialog(promise, null, (err) => {
 		alert({
 			type: 'error',
-			text: e.message + '\n' + (e as any).id,
+			text: err.message + '\n' + (err as any).id,
 		});
 	});
 
@@ -72,7 +72,7 @@ export const apiWithDialog = ((
 export function promiseDialog<T extends Promise<any>>(
 	promise: T,
 	onSuccess?: ((res: any) => void) | null,
-	onFailure?: ((e: Error) => void) | null,
+	onFailure?: ((err: Error) => void) | null,
 	text?: string,
 ): T {
 	const showing = ref(true);
@@ -88,14 +88,14 @@ export function promiseDialog<T extends Promise<any>>(
 				showing.value = false;
 			}, 1000);
 		}
-	}).catch(e => {
+	}).catch(err => {
 		showing.value = false;
 		if (onFailure) {
-			onFailure(e);
+			onFailure(err);
 		} else {
 			alert({
 				type: 'error',
-				text: e
+				text: err,
 			});
 		}
 	});
