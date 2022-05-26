@@ -15,6 +15,7 @@ const accessDenied = {
 
 export default async (endpoint: string, user: CacheableLocalUser | null | undefined, token: AccessToken | null | undefined, data: any, ctx?: Koa.Context) => {
 	const isSecure = user != null && token == null;
+	const isModerator = user != null && (user.isModerator || user.isAdmin);
 
 	const ep = endpoints.find(e => e.name === endpoint);
 
@@ -29,6 +30,21 @@ export default async (endpoint: string, user: CacheableLocalUser | null | undefi
 
 	if (ep.meta.secure && !isSecure) {
 		throw new ApiError(accessDenied);
+	}
+
+	if (ep.meta.requireCredential && ep.meta.limit && !isModerator) {
+		// koa will automatically load the `X-Forwarded-For` header if `proxy: true` is configured in the app.
+		const limitActor = user ? user.id : ctx.ip;
+
+		// Rate limit
+		await limiter(ep as IEndpoint & { meta: { limit: NonNullable<IEndpoint['meta']['limit']> } }, limitActor).catch(e => {
+			throw new ApiError({
+				message: 'Rate limit exceeded. Please try again later.',
+				code: 'RATE_LIMIT_EXCEEDED',
+				id: 'd5826d14-3982-4d2e-8011-b9e9f02499ef',
+				httpStatusCode: 429,
+			});
+		});
 	}
 
 	if (ep.meta.requireCredential && user == null) {
@@ -53,7 +69,7 @@ export default async (endpoint: string, user: CacheableLocalUser | null | undefi
 		throw new ApiError(accessDenied, { reason: 'You are not the admin.' });
 	}
 
-	if (ep.meta.requireModerator && !user!.isAdmin && !user!.isModerator) {
+	if (ep.meta.requireModerator && !isModerator) {
 		throw new ApiError(accessDenied, { reason: 'You are not a moderator.' });
 	}
 
@@ -62,18 +78,6 @@ export default async (endpoint: string, user: CacheableLocalUser | null | undefi
 			message: 'Your app does not have the necessary permissions to use this endpoint.',
 			code: 'PERMISSION_DENIED',
 			id: '1370e5b7-d4eb-4566-bb1d-7748ee6a1838',
-		});
-	}
-
-	if (ep.meta.requireCredential && ep.meta.limit && !user!.isAdmin && !user!.isModerator) {
-		// Rate limit
-		await limiter(ep as IEndpoint & { meta: { limit: NonNullable<IEndpoint['meta']['limit']> } }, user!).catch(e => {
-			throw new ApiError({
-				message: 'Rate limit exceeded. Please try again later.',
-				code: 'RATE_LIMIT_EXCEEDED',
-				id: 'd5826d14-3982-4d2e-8011-b9e9f02499ef',
-				httpStatusCode: 429,
-			});
 		});
 	}
 
