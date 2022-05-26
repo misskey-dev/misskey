@@ -21,6 +21,18 @@ export default async (ctx: Koa.Context) => {
 
 	const instance = await fetchMeta(true);
 
+	if (instance.enableHcaptcha && instance.hcaptchaSecretKey) {
+		await verifyHcaptcha(instance.hcaptchaSecretKey, body['hcaptcha-response']).catch(e => {
+			ctx.throw(400, e);
+		});
+	}
+
+	if (instance.enableRecaptcha && instance.recaptchaSecretKey) {
+		await verifyRecaptcha(instance.recaptchaSecretKey, body['g-recaptcha-response']).catch(e => {
+			ctx.throw(400, e);
+		});
+	}
+
 	const username = body['username'];
 	const password = body['password'];
 	const token = body['token'];
@@ -100,18 +112,6 @@ export default async (ctx: Koa.Context) => {
 	}
 
 	if (!profile.twoFactorEnabled) {
-		if (instance.enableHcaptcha && instance.hcaptchaSecretKey) {
-			await verifyHcaptcha(instance.hcaptchaSecretKey, body['hcaptcha-response']).catch(e => {
-				ctx.throw(400, e);
-			});
-		}
-	
-		if (instance.enableRecaptcha && instance.recaptchaSecretKey) {
-			await verifyRecaptcha(instance.recaptchaSecretKey, body['g-recaptcha-response']).catch(e => {
-				ctx.throw(400, e);
-			});
-		}
-	
 		if (same) {
 			signin(ctx, user);
 			return;
