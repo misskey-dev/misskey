@@ -53,4 +53,12 @@ describe('After user signed in', () => {
 		cy.get('.msky-widget-add').click();
 		cy.get('.mkw-memo', { timeout: 6000 }).should('be.visible');
   });
+
+	it('timeline widget should get added', () => {
+		cy.get('.msky-widget-edit').click();
+		cy.get('.msky-widget-select select').select('timeline', { force: true });
+		cy.get('.bg._modalBg.transparent').click({ multiple: true });
+		cy.get('.msky-widget-add').click();
+		cy.get('.mkw-timeline', { timeout: 6000 }).should('be.visible');
+  });
 });
