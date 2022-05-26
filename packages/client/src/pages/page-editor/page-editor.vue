@@ -409,42 +409,44 @@ function removeEyeCatchingImage() {
 	eyeCatchingImageId = null;
 }
 
+const INFO = $computed(() => {
+	let pageTitle = i18n.ts._pages.newPage;
+	if (props.initPageId) {
+		pageTitle = i18n.ts._pages.editPage;
+	}
+	else if (props.initPageName && props.initUser) {
+		pageTitle = i18n.ts._pages.readPage;
+	}
+	return {
+		title: pageTitle,
+		icon: 'fas fa-pencil-alt',
+		bg: 'var(--bg)',
+		tabs: [{
+			active: tab === 'settings',
+			title: i18n.ts._pages.pageSetting,
+			icon: 'fas fa-cog',
+			onClick: () => { tab = 'settings'; },
+		}, {
+			active: tab === 'contents',
+			title: i18n.ts._pages.contents,
+			icon: 'fas fa-sticky-note',
+			onClick: () => { tab = 'contents'; },
+		}, {
+			active: tab === 'variables',
+			title: i18n.ts._pages.variables,
+			icon: 'fas fa-magic',
+			onClick: () => { tab = 'variables'; },
+		}, {
+			active: tab === 'script',
+			title: i18n.ts.script,
+			icon: 'fas fa-code',
+			onClick: () => { tab = 'script'; },
+		}],
+	};
+});
+
 defineExpose({
-	[symbols.PAGE_INFO]: $computed(() => {
-		let pageTitle = i18n.ts._pages.newPage;
-		if (props.initPageId) {
-			pageTitle = i18n.ts._pages.editPage;
-		}
-		else if (props.initPageName && props.initUser) {
-			pageTitle = i18n.ts._pages.readPage;
-		}
-		return {
-			title: pageTitle,
-			icon: 'fas fa-pencil-alt',
-			bg: 'var(--bg)',
-			tabs: [{
-				active: tab === 'settings',
-				title: i18n.ts._pages.pageSetting,
-				icon: 'fas fa-cog',
-				onClick: () => { tab = 'settings'; },
-			}, {
-				active: tab === 'contents',
-				title: i18n.ts._pages.contents,
-				icon: 'fas fa-sticky-note',
-				onClick: () => { tab = 'contents'; },
-			}, {
-				active: tab === 'variables',
-				title: i18n.ts._pages.variables,
-				icon: 'fas fa-magic',
-				onClick: () => { tab = 'variables'; },
-			}, {
-				active: tab === 'script',
-				title: i18n.ts.script,
-				icon: 'fas fa-code',
-				onClick: () => { tab = 'script'; },
-			}],
-		};
-	})
+	[symbols.PAGE_INFO]: INFO
 });
 </script>
 
