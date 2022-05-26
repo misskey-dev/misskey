@@ -96,8 +96,8 @@ async function onClick() {
 				hasPendingFollowRequestFromYou.value = true;
 			}
 		}
-	} catch (e) {
-		console.error(e);
+	} catch (err) {
+		console.error(err);
 	} finally {
 		wait.value = false;
 	}

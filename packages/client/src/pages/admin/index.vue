@@ -265,10 +265,10 @@ const invite = () => {
 			type: 'info',
 			text: x.code
 		});
-	}).catch(e => {
+	}).catch(err => {
 		os.alert({
 			type: 'error',
-			text: e
+			text: err,
 		});
 	});
 };

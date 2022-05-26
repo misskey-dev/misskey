@@ -121,10 +121,10 @@ function submit() {
 	}).then(() => {
 		os.success();
 		$i!.twoFactorEnabled = true;
-	}).catch(e => {
+	}).catch(err => {
 		os.alert({
 			type: 'error',
-			text: e
+			text: err,
 		});
 	});
 }

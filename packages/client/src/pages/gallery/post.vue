@@ -119,8 +119,8 @@ export default defineComponent({
 				postId: this.postId
 			}).then(post => {
 				this.post = post;
-			}).catch(e => {
-				this.error = e;
+			}).catch(err => {
+				this.error = err;
 			});
 		},
 

@@ -29,7 +29,7 @@ function parseThemeCode(code: string) {
 
 	try {
 		theme = JSON5.parse(code);
-	} catch (e) {
+	} catch (err) {
 		os.alert({
 			type: 'error',
 			text: i18n.ts._theme.invalid

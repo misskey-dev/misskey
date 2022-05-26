@@ -43,7 +43,7 @@ async function install() {
 	let ast;
 	try {
 		ast = parse(code.value);
-	} catch (e) {
+	} catch (err) {
 		os.alert({
 			type: 'error',
 			text: 'Syntax error :('
