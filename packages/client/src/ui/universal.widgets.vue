@@ -14,7 +14,7 @@ import { i18n } from '@/i18n';
 import { defaultStore } from '@/store';
 
 const emit = defineEmits<{
-	(e: 'mounted', el: Element): void;
+	(ev: 'mounted', el: Element): void;
 }>();
 
 let editMode = $ref(false);

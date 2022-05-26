@@ -90,8 +90,8 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(e: 'done', v: { canceled: boolean; result: any }): void;
-	(e: 'closed'): void;
+	(ev: 'done', v: { canceled: boolean; result: any }): void;
+	(ev: 'closed'): void;
 }>();
 
 const modal = ref<InstanceType<typeof MkModal>>();
