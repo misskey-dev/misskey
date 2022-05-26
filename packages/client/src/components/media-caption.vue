@@ -116,17 +116,17 @@ export default defineComponent({
 			}
 		},
 
-		onKeydown(e) {
-			if (e.which === 27) { // ESC
+		onKeydown(evt) {
+			if (evt.which === 27) { // ESC
 				this.cancel();
 			}
 		},
 
-		onInputKeydown(e) {
-			if (e.which === 13) { // Enter
-				if (e.ctrlKey) {
-					e.preventDefault();
-					e.stopPropagation();
+		onInputKeydown(evt) {
+			if (evt.which === 13) { // Enter
+				if (evt.ctrlKey) {
+					evt.preventDefault();
+					evt.stopPropagation();
 					this.ok();
 				}
 			}

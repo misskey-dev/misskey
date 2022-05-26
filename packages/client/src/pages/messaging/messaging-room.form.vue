@@ -88,8 +88,8 @@ export default defineComponent({
 		}
 	},
 	methods: {
-		async onPaste(e: ClipboardEvent) {
-			const items = e.clipboardData.items;
+		async onPaste(evt: ClipboardEvent) {
+			const items = evt.clipboardData.items;
 
 			if (items.length == 1) {
 				if (items[0].kind == 'file') {
@@ -109,23 +109,23 @@ export default defineComponent({
 			}
 		},
 
-		onDragover(e) {
-			const isFile = e.dataTransfer.items[0].kind == 'file';
-			const isDriveFile = e.dataTransfer.types[0] == _DATA_TRANSFER_DRIVE_FILE_;
+		onDragover(evt) {
+			const isFile = evt.dataTransfer.items[0].kind == 'file';
+			const isDriveFile = evt.dataTransfer.types[0] == _DATA_TRANSFER_DRIVE_FILE_;
 			if (isFile || isDriveFile) {
-				e.preventDefault();
-				e.dataTransfer.dropEffect = e.dataTransfer.effectAllowed == 'all' ? 'copy' : 'move';
+				evt.preventDefault();
+				evt.dataTransfer.dropEffect = evt.dataTransfer.effectAllowed == 'all' ? 'copy' : 'move';
 			}
 		},
 
-		onDrop(e): void {
+		onDrop(evt): void {
 			// ファイルだったら
-			if (e.dataTransfer.files.length == 1) {
-				e.preventDefault();
-				this.upload(e.dataTransfer.files[0]);
+			if (evt.dataTransfer.files.length == 1) {
+				evt.preventDefault();
+				this.upload(evt.dataTransfer.files[0]);
 				return;
-			} else if (e.dataTransfer.files.length > 1) {
-				e.preventDefault();
+			} else if (evt.dataTransfer.files.length > 1) {
+				evt.preventDefault();
 				os.alert({
 					type: 'error',
 					text: this.$ts.onlyOneFileCanBeAttached
@@ -134,17 +134,17 @@ export default defineComponent({
 			}
 
 			//#region ドライブのファイル
-			const driveFile = e.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FILE_);
+			const driveFile = evt.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FILE_);
 			if (driveFile != null && driveFile != '') {
 				this.file = JSON.parse(driveFile);
-				e.preventDefault();
+				evt.preventDefault();
 			}
 			//#endregion
 		},
 
-		onKeydown(e) {
+		onKeydown(evt) {
 			this.typing();
-			if ((e.which == 10 || e.which == 13) && (e.ctrlKey || e.metaKey) && this.canSend) {
+			if ((evt.which == 10 || evt.which == 13) && (evt.ctrlKey || evt.metaKey) && this.canSend) {
 				this.send();
 			}
 		},
@@ -153,8 +153,8 @@ export default defineComponent({
 			this.typing();
 		},
 
-		chooseFile(e) {
-			selectFile(e.currentTarget ?? e.target, this.$ts.selectFile).then(file => {
+		chooseFile(evt) {
+			selectFile(evt.currentTarget ?? evt.target, this.$ts.selectFile).then(file => {
 				this.file = file;
 			});
 		},
