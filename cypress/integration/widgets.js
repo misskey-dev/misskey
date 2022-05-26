@@ -38,7 +38,6 @@ describe('After user signed in', () => {
 	});
 
   it('widget edit toggle is visible', () => {
-		cy.visit('/');
 		cy.get('.msky-widget-edit').should('be.visible');
   });
 
