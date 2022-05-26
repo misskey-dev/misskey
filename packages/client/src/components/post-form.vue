@@ -107,7 +107,7 @@ const props = withDefaults(defineProps<{
 	fixed?: boolean;
 	autofocus?: boolean;
 }>(), {
-	initialVisibleUsers: [],
+	initialVisibleUsers: () => [],
 	autofocus: true,
 });
 
