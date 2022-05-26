@@ -167,11 +167,11 @@ const Component = defineComponent({
 		},
 
 		onDragover(evt) {
-			const isFile = evt.dataTransfer.items[0].kind == 'file';
-			const isDriveFile = evt.dataTransfer.types[0] == _DATA_TRANSFER_DRIVE_FILE_;
+			const isFile = evt.dataTransfer.items[0].kind === 'file';
+			const isDriveFile = evt.dataTransfer.types[0] === _DATA_TRANSFER_DRIVE_FILE_;
 
 			if (isFile || isDriveFile) {
-				evt.dataTransfer.dropEffect = evt.dataTransfer.effectAllowed == 'all' ? 'copy' : 'move';
+				evt.dataTransfer.dropEffect = evt.dataTransfer.effectAllowed === 'all' ? 'copy' : 'move';
 			} else {
 				evt.dataTransfer.dropEffect = 'none';
 			}
@@ -179,7 +179,7 @@ const Component = defineComponent({
 
 		onDrop(evt): void {
 			// ファイルだったら
-			if (evt.dataTransfer.files.length == 1) {
+			if (evt.dataTransfer.files.length === 1) {
 				this.form.upload(evt.dataTransfer.files[0]);
 				return;
 			} else if (evt.dataTransfer.files.length > 1) {
@@ -192,7 +192,7 @@ const Component = defineComponent({
 
 			//#region ドライブのファイル
 			const driveFile = evt.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FILE_);
-			if (driveFile != null && driveFile != '') {
+			if (driveFile != null && driveFile !== '') {
 				const file = JSON.parse(driveFile);
 				this.form.file = file;
 			}
@@ -209,7 +209,7 @@ const Component = defineComponent({
 					limit: max + 1,
 					untilId: this.existMoreMessages ? this.messages[0].id : undefined
 				}).then(messages => {
-					if (messages.length == max + 1) {
+					if (messages.length === max + 1) {
 						this.existMoreMessages = true;
 						messages.pop();
 					} else {
@@ -235,7 +235,7 @@ const Component = defineComponent({
 			const _isBottom = isBottom(this.$el, 64);
 
 			this.messages.push(message);
-			if (message.userId != this.$i.id && !document.hidden) {
+			if (message.userId !== this.$i.id && !document.hidden) {
 				this.connection.send('read', {
 					id: message.id
 				});
@@ -246,7 +246,7 @@ const Component = defineComponent({
 				this.$nextTick(() => {
 					this.scrollToBottom();
 				});
-			} else if (message.userId != this.$i.id) {
+			} else if (message.userId !== this.$i.id) {
 				// Notify
 				this.notifyNewMessage();
 			}
@@ -256,7 +256,7 @@ const Component = defineComponent({
 			if (this.user) {
 				if (!Array.isArray(x)) x = [x];
 				for (const id of x) {
-					if (this.messages.some(x => x.id == id)) {
+					if (this.messages.some(x => x.id === id)) {
 						const exist = this.messages.map(x => x.id).indexOf(id);
 						this.messages[exist] = {
 							...this.messages[exist],
@@ -266,7 +266,7 @@ const Component = defineComponent({
 				}
 			} else if (this.group) {
 				for (const id of x.ids) {
-					if (this.messages.some(x => x.id == id)) {
+					if (this.messages.some(x => x.id === id)) {
 						const exist = this.messages.map(x => x.id).indexOf(id);
 						this.messages[exist] = {
 							...this.messages[exist],

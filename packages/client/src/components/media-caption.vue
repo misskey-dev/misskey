@@ -77,7 +77,7 @@ export default defineComponent({
 
 	computed: {
 		remainingLength(): number {
-			if (typeof this.inputValue != "string") return 512;
+			if (typeof this.inputValue !== "string") return 512;
 			return 512 - length(this.inputValue);
 		}
 	},

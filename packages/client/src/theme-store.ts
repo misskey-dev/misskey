@@ -28,7 +28,7 @@ export async function addTheme(theme: Theme): Promise<void> {
 }
 
 export async function removeTheme(theme: Theme): Promise<void> {
-	const themes = getThemes().filter(t => t.id != theme.id);
+	const themes = getThemes().filter(t => t.id !== theme.id);
 	await api('i/registry/set', { scope: ['client'], key: 'themes', value: themes });
 	localStorage.setItem(lsCacheKey, JSON.stringify(themes));
 }

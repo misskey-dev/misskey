@@ -64,7 +64,7 @@ onBeforeUnmount(() => {
 });
 
 function onMousedown(evt: Event) {
-	if (!contains(rootEl, evt.target) && (rootEl != evt.target)) emit('closed');
+	if (!contains(rootEl, evt.target) && (rootEl !== evt.target)) emit('closed');
 }
 </script>
 

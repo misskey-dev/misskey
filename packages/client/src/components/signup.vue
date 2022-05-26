@@ -124,20 +124,20 @@ export default defineComponent({
 				this.meta.tosUrl && !this.ToSAgreement ||
 				this.meta.enableHcaptcha && !this.hCaptchaResponse ||
 				this.meta.enableRecaptcha && !this.reCaptchaResponse ||
-				this.passwordRetypeState == 'not-match';
+				this.passwordRetypeState === 'not-match';
 		},
 
 		shouldShowProfileUrl(): boolean {
-			return (this.username != '' &&
-				this.usernameState != 'invalid-format' &&
-				this.usernameState != 'min-range' &&
-				this.usernameState != 'max-range');
+			return (this.username !== '' &&
+				this.usernameState !== 'invalid-format' &&
+				this.usernameState !== 'min-range' &&
+				this.usernameState !== 'max-range');
 		}
 	},
 
 	methods: {
 		onChangeUsername() {
-			if (this.username == '') {
+			if (this.username === '') {
 				this.usernameState = null;
 				return;
 			}
@@ -165,7 +165,7 @@ export default defineComponent({
 		},
 
 		onChangeEmail() {
-			if (this.email == '') {
+			if (this.email === '') {
 				this.emailState = null;
 				return;
 			}
@@ -188,7 +188,7 @@ export default defineComponent({
 		},
 
 		onChangePassword() {
-			if (this.password == '') {
+			if (this.password === '') {
 				this.passwordStrength = '';
 				return;
 			}
@@ -198,12 +198,12 @@ export default defineComponent({
 		},
 
 		onChangePasswordRetype() {
-			if (this.retypedPassword == '') {
+			if (this.retypedPassword === '') {
 				this.passwordRetypeState = null;
 				return;
 			}
 
-			this.passwordRetypeState = this.password == this.retypedPassword ? 'match' : 'not-match';
+			this.passwordRetypeState = this.password === this.retypedPassword ? 'match' : 'not-match';
 		},
 
 		onSubmit() {

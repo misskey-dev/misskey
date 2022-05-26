@@ -95,7 +95,7 @@ if (props.src === 'antenna') {
 		visibility: 'specified'
 	};
 	const onNote = note => {
-		if (note.visibility == 'specified') {
+		if (note.visibility === 'specified') {
 			prepend(note);
 		}
 	};

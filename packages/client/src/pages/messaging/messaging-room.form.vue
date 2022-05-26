@@ -59,7 +59,7 @@ export default defineComponent({
 			return this.user ? 'user:' + this.user.id : 'group:' + this.group.id;
 		},
 		canSend(): boolean {
-			return (this.text != null && this.text != '') || this.file != null;
+			return (this.text != null && this.text !== '') || this.file != null;
 		},
 		room(): any {
 			return this.$parent;
@@ -91,8 +91,8 @@ export default defineComponent({
 		async onPaste(evt: ClipboardEvent) {
 			const items = evt.clipboardData.items;
 
-			if (items.length == 1) {
-				if (items[0].kind == 'file') {
+			if (items.length === 1) {
+				if (items[0].kind === 'file') {
 					const file = items[0].getAsFile();
 					const lio = file.name.lastIndexOf('.');
 					const ext = lio >= 0 ? file.name.slice(lio) : '';
@@ -100,7 +100,7 @@ export default defineComponent({
 					if (formatted) this.upload(file, formatted);
 				}
 			} else {
-				if (items[0].kind == 'file') {
+				if (items[0].kind === 'file') {
 					os.alert({
 						type: 'error',
 						text: this.$ts.onlyOneFileCanBeAttached
@@ -110,17 +110,17 @@ export default defineComponent({
 		},
 
 		onDragover(evt) {
-			const isFile = evt.dataTransfer.items[0].kind == 'file';
-			const isDriveFile = evt.dataTransfer.types[0] == _DATA_TRANSFER_DRIVE_FILE_;
+			const isFile = evt.dataTransfer.items[0].kind === 'file';
+			const isDriveFile = evt.dataTransfer.types[0] === _DATA_TRANSFER_DRIVE_FILE_;
 			if (isFile || isDriveFile) {
 				evt.preventDefault();
-				evt.dataTransfer.dropEffect = evt.dataTransfer.effectAllowed == 'all' ? 'copy' : 'move';
+				evt.dataTransfer.dropEffect = evt.dataTransfer.effectAllowed === 'all' ? 'copy' : 'move';
 			}
 		},
 
 		onDrop(evt): void {
 			// ファイルだったら
-			if (evt.dataTransfer.files.length == 1) {
+			if (evt.dataTransfer.files.length === 1) {
 				evt.preventDefault();
 				this.upload(evt.dataTransfer.files[0]);
 				return;
@@ -135,7 +135,7 @@ export default defineComponent({
 
 			//#region ドライブのファイル
 			const driveFile = evt.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FILE_);
-			if (driveFile != null && driveFile != '') {
+			if (driveFile != null && driveFile !== '') {
 				this.file = JSON.parse(driveFile);
 				evt.preventDefault();
 			}
@@ -144,7 +144,7 @@ export default defineComponent({
 
 		onKeydown(evt) {
 			this.typing();
-			if ((evt.which == 10 || evt.which == 13) && (evt.ctrlKey || evt.metaKey) && this.canSend) {
+			if ((evt.which === 10 || evt.which === 13) && (evt.ctrlKey || evt.metaKey) && this.canSend) {
 				this.send();
 			}
 		},

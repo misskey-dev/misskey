@@ -32,7 +32,7 @@ function addWidget(widget) {
 }
 
 function removeWidget(widget) {
-	defaultStore.set('widgets', defaultStore.state.widgets.filter(w => w.id != widget.id));
+	defaultStore.set('widgets', defaultStore.state.widgets.filter(w => w.id !== widget.id));
 }
 
 function updateWidget({ id, data }) {

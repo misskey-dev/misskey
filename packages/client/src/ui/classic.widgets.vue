@@ -44,7 +44,7 @@ export default defineComponent({
 		},
 
 		removeWidget(widget) {
-			this.$store.set('widgets', this.$store.state.widgets.filter(w => w.id != widget.id));
+			this.$store.set('widgets', this.$store.state.widgets.filter(w => w.id !== widget.id));
 		},
 
 		updateWidget({ id, data }) {

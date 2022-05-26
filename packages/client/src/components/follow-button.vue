@@ -58,7 +58,7 @@ if (props.user.isFollowing == null) {
 }
 
 function onFollowChange(user: Misskey.entities.UserDetailed) {
-	if (user.id == props.user.id) {
+	if (user.id === props.user.id) {
 		isFollowing.value = user.isFollowing;
 		hasPendingFollowRequestFromYou.value = user.hasPendingFollowRequestFromYou;
 	}

@@ -197,7 +197,7 @@ const keymap = {
 	'q': () => renoteButton.value.renote(true),
 	'esc': blur,
 	'm|o': () => menu(true),
-	's': () => showContent.value != showContent.value,
+	's': () => showContent.value !== showContent.value,
 };
 
 useNoteCapture({
