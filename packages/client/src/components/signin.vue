@@ -62,8 +62,6 @@ import { showSuspendedDialog } from '../scripts/show-suspended-dialog';
 import { instance } from '@/instance';
 import { i18n } from '@/i18n';
 
-const MkCaptcha = defineAsyncComponent(() => import('./captcha.vue'));
-
 let signing = $ref(false);
 let user = $ref(null);
 let username = $ref('');
