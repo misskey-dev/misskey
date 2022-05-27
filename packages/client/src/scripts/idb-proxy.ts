@@ -13,8 +13,8 @@ let idbAvailable = typeof window !== 'undefined' ? !!window.indexedDB : true;
 if (idbAvailable) {
 	try {
 		await iset('idb-test', 'test');
-	} catch (e) {
-		console.error('idb error', e);
+	} catch (err) {
+		console.error('idb error', err);
 		idbAvailable = false;
 	}
 }

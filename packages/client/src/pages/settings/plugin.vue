@@ -1,38 +1,38 @@
 <template>
 <div class="_formRoot">
-	<FormLink to="/settings/plugin/install"><template #icon><i class="fas fa-download"></i></template>{{ $ts._plugin.install }}</FormLink>
+	<FormLink to="/settings/plugin/install"><template #icon><i class="fas fa-download"></i></template>{{ i18n.ts._plugin.install }}</FormLink>
 
 	<FormSection>
-		<template #label>{{ $ts.manage }}</template>
+		<template #label>{{ i18n.ts.manage }}</template>
 		<div v-for="plugin in plugins" :key="plugin.id" class="_formBlock _panel" style="padding: 20px;">
 			<span style="display: flex;"><b>{{ plugin.name }}</b><span style="margin-left: auto;">v{{ plugin.version }}</span></span>
 
-			<FormSwitch class="_formBlock" :modelValue="plugin.active" @update:modelValue="changeActive(plugin, $event)">{{ $ts.makeActive }}</FormSwitch>
+			<FormSwitch class="_formBlock" :modelValue="plugin.active" @update:modelValue="changeActive(plugin, $event)">{{ i18n.ts.makeActive }}</FormSwitch>
 
 			<MkKeyValue class="_formBlock">
-				<template #key>{{ $ts.author }}</template>
+				<template #key>{{ i18n.ts.author }}</template>
 				<template #value>{{ plugin.author }}</template>
 			</MkKeyValue>
 			<MkKeyValue class="_formBlock">
-				<template #key>{{ $ts.description }}</template>
+				<template #key>{{ i18n.ts.description }}</template>
 				<template #value>{{ plugin.description }}</template>
 			</MkKeyValue>
 			<MkKeyValue class="_formBlock">
-				<template #key>{{ $ts.permission }}</template>
+				<template #key>{{ i18n.ts.permission }}</template>
 				<template #value>{{ plugin.permission }}</template>
 			</MkKeyValue>
 
 			<div style="display: flex; gap: var(--margin); flex-wrap: wrap;">
-				<MkButton v-if="plugin.config" inline @click="config(plugin)"><i class="fas fa-cog"></i> {{ $ts.settings }}</MkButton>
-				<MkButton inline danger @click="uninstall(plugin)"><i class="fas fa-trash-alt"></i> {{ $ts.uninstall }}</MkButton>
+				<MkButton v-if="plugin.config" inline @click="config(plugin)"><i class="fas fa-cog"></i> {{ i18n.ts.settings }}</MkButton>
+				<MkButton inline danger @click="uninstall(plugin)"><i class="fas fa-trash-alt"></i> {{ i18n.ts.uninstall }}</MkButton>
 			</div>
 		</div>
 	</FormSection>
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { defineExpose, nextTick, ref } from 'vue';
 import FormLink from '@/components/form/link.vue';
 import FormSwitch from '@/components/form/switch.vue';
 import FormSection from '@/components/form/section.vue';
@@ -41,67 +41,54 @@ import MkKeyValue from '@/components/key-value.vue';
 import * as os from '@/os';
 import { ColdDeviceStorage } from '@/store';
 import * as symbols from '@/symbols';
+import { unisonReload } from '@/scripts/unison-reload';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		FormLink,
-		FormSwitch,
-		FormSection,
-		MkButton,
-		MkKeyValue,
-	},
+const plugins = ref(ColdDeviceStorage.get('plugins'));
 
-	emits: ['info'],
-	
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: this.$ts.plugins,
-				icon: 'fas fa-plug',
-				bg: 'var(--bg)',
-			},
-			plugins: ColdDeviceStorage.get('plugins'),
-		}
-	},
+function uninstall(plugin) {
+	ColdDeviceStorage.set('plugins', plugins.value.filter(x => x.id !== plugin.id));
+	os.success();
+	nextTick(() => {
+		unisonReload();
+	});
+}
 
-	methods: {
-		uninstall(plugin) {
-			ColdDeviceStorage.set('plugins', this.plugins.filter(x => x.id !== plugin.id));
-			os.success();
-			this.$nextTick(() => {
-				unisonReload();
-			});
-		},
+// TODO: この処理をstore側にactionとして移動し、設定画面を開くAiScriptAPIを実装できるようにする
+async function config(plugin) {
+	const config = plugin.config;
+	for (const key in plugin.configData) {
+		config[key].default = plugin.configData[key];
+	}
 
-		// TODO: この処理をstore側にactionとして移動し、設定画面を開くAiScriptAPIを実装できるようにする
-		async config(plugin) {
-			const config = plugin.config;
-			for (const key in plugin.configData) {
-				config[key].default = plugin.configData[key];
-			}
+	const { canceled, result } = await os.form(plugin.name, config);
+	if (canceled) return;
 
-			const { canceled, result } = await os.form(plugin.name, config);
-			if (canceled) return;
+	const coldPlugins = ColdDeviceStorage.get('plugins');
+	coldPlugins.find(p => p.id === plugin.id)!.configData = result;
+	ColdDeviceStorage.set('plugins', coldPlugins);
 
-			const plugins = ColdDeviceStorage.get('plugins');
-			plugins.find(p => p.id === plugin.id).configData = result;
-			ColdDeviceStorage.set('plugins', plugins);
+	nextTick(() => {
+		location.reload();
+	});
+}
 
-			this.$nextTick(() => {
-				location.reload();
-			});
-		},
+function changeActive(plugin, active) {
+	const coldPlugins = ColdDeviceStorage.get('plugins');
+	coldPlugins.find(p => p.id === plugin.id)!.active = active;
+	ColdDeviceStorage.set('plugins', coldPlugins);
 
-		changeActive(plugin, active) {
-			const plugins = ColdDeviceStorage.get('plugins');
-			plugins.find(p => p.id === plugin.id).active = active;
-			ColdDeviceStorage.set('plugins', plugins);
+	nextTick(() => {
+		location.reload();
+	});
+}
 
-			this.$nextTick(() => {
-				location.reload();
-			});
-		}
-	},
+defineExpose({
+	[symbols.PAGE_INFO]: {
+		title: i18n.ts.plugins,
+		icon: 'fas fa-plug',
+		bg: 'var(--bg)',
+	}
 });
 </script>
 

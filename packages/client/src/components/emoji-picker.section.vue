@@ -24,7 +24,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(e: 'chosen', v: string, ev: MouseEvent): void;
+	(ev: 'chosen', v: string, event: MouseEvent): void;
 }>();
 
 const shown = ref(!!props.initialShown);

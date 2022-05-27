@@ -61,8 +61,8 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(e: 'parent-focus', direction: 'up' | 'down' | 'left' | 'right'): void;
-	(e: 'change-active-state', v: boolean): void;
+	(ev: 'parent-focus', direction: 'up' | 'down' | 'left' | 'right'): void;
+	(ev: 'change-active-state', v: boolean): void;
 }>();
 
 let body = $ref<HTMLDivElement>();
@@ -193,9 +193,9 @@ function goTop() {
 	});
 }
 
-function onDragstart(e) {
-	e.dataTransfer.effectAllowed = 'move';
-	e.dataTransfer.setData(_DATA_TRANSFER_DECK_COLUMN_, props.column.id);
+function onDragstart(ev) {
+	ev.dataTransfer.effectAllowed = 'move';
+	ev.dataTransfer.setData(_DATA_TRANSFER_DECK_COLUMN_, props.column.id);
 
 	// Chromeのバグで、Dragstartハンドラ内ですぐにDOMを変更する(=リアクティブなプロパティを変更する)とDragが終了してしまう
 	// SEE: https://stackoverflow.com/questions/19639969/html5-dragend-event-firing-immediately
@@ -204,21 +204,21 @@ function onDragstart(e) {
 	}, 10);
 }
 
-function onDragend(e) {
+function onDragend(ev) {
 	dragging = false;
 }
 
-function onDragover(e) {
+function onDragover(ev) {
 	// 自分自身がドラッグされている場合
 	if (dragging) {
 		// 自分自身にはドロップさせない
-		e.dataTransfer.dropEffect = 'none';
+		ev.dataTransfer.dropEffect = 'none';
 		return;
 	}
 
-	const isDeckColumn = e.dataTransfer.types[0] == _DATA_TRANSFER_DECK_COLUMN_;
+	const isDeckColumn = ev.dataTransfer.types[0] === _DATA_TRANSFER_DECK_COLUMN_;
 
-	e.dataTransfer.dropEffect = isDeckColumn ? 'move' : 'none';
+	ev.dataTransfer.dropEffect = isDeckColumn ? 'move' : 'none';
 
 	if (!dragging && isDeckColumn) draghover = true;
 }
@@ -227,12 +227,12 @@ function onDragleave() {
 	draghover = false;
 }
 
-function onDrop(e) {
+function onDrop(ev) {
 	draghover = false;
 	os.deckGlobalEvents.emit('column.dragEnd');
 
-	const id = e.dataTransfer.getData(_DATA_TRANSFER_DECK_COLUMN_);
-	if (id != null && id != '') {
+	const id = ev.dataTransfer.getData(_DATA_TRANSFER_DECK_COLUMN_);
+	if (id != null && id !== '') {
 		swapColumn(props.column.id, id);
 	}
 }

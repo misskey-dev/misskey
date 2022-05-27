@@ -14,30 +14,29 @@ export function swInject() {
 			console.log('sw msg', ev.data);
 		}
 
-		const data = ev.data; // as SwMessage
-		if (data.type !== 'order') return;
+		if (ev.data.type !== 'order') return;
 
-		if (data.loginId !== $i?.id) {
-			return getAccountFromId(data.loginId).then(account => {
+		if (ev.data.loginId !== $i?.id) {
+			return getAccountFromId(ev.data.loginId).then(account => {
 				if (!account) return;
-				return login(account.token, data.url);
+				return login(account.token, ev.data.url);
 			});
 		}
 
-		switch (data.order) {
+		switch (ev.data.order) {
 			case 'post':
-				return post(data.options);
+				return post(ev.data.options);
 			case 'push':
-				if (router.currentRoute.value.path === data.url) {
+				if (router.currentRoute.value.path === ev.data.url) {
 					return window.scroll({ top: 0, behavior: 'smooth' });
 				}
 				if (navHook) {
-					return navHook(data.url);
+					return navHook(ev.data.url);
 				}
-				if (sideViewHook && defaultStore.state.defaultSideView && data.url !== '/') {
-					return sideViewHook(data.url);
+				if (sideViewHook && defaultStore.state.defaultSideView && ev.data.url !== '/') {
+					return sideViewHook(ev.data.url);
 				}
-				return router.push(data.url);
+				return router.push(ev.data.url);
 			default:
 				return;
 		}

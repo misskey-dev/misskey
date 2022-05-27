@@ -1599,6 +1599,9 @@ _notification:
     followRequestAccepted: "Запрос на подписку одобрен"
     groupInvited: "Приглашение в группы"
     app: "Уведомления из приложений"
+  _actions:
+    reply: "Ответить"
+    renote: "Репост"
 _deck:
   alwaysShowMainColumn: "Всегда показывать главную колонку"
   columnAlign: "Выравнивание колонок"

@@ -15,7 +15,6 @@ export class AccessToken {
 
 	@Column('timestamp with time zone', {
 		nullable: true,
-		default: null,
 	})
 	public lastUsedAt: Date | null;
 
@@ -29,7 +28,6 @@ export class AccessToken {
 	@Column('varchar', {
 		length: 128,
 		nullable: true,
-		default: null,
 	})
 	public session: string | null;
 
@@ -52,7 +50,6 @@ export class AccessToken {
 	@Column({
 		...id(),
 		nullable: true,
-		default: null,
 	})
 	public appId: App['id'] | null;
 
@@ -65,21 +62,18 @@ export class AccessToken {
 	@Column('varchar', {
 		length: 128,
 		nullable: true,
-		default: null,
 	})
 	public name: string | null;
 
 	@Column('varchar', {
 		length: 512,
 		nullable: true,
-		default: null,
 	})
 	public description: string | null;
 
 	@Column('varchar', {
 		length: 512,
 		nullable: true,
-		default: null,
 	})
 	public iconUrl: string | null;
 

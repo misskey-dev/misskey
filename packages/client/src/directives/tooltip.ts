@@ -1,7 +1,7 @@
 // TODO: useTooltip関数使うようにしたい
 // ただディレクティブ内でonUnmountedなどのcomposition api使えるのか不明
 
-import { Directive, ref } from 'vue';
+import { defineAsyncComponent, Directive, ref } from 'vue';
 import { isTouchUsing } from '@/scripts/touch';
 import { popup, alert } from '@/os';
 
@@ -45,7 +45,7 @@ export default {
 			if (self.text == null) return;
 
 			const showing = ref(true);
-			popup(import('@/components/ui/tooltip.vue'), {
+			popup(defineAsyncComponent(() => import('@/components/ui/tooltip.vue')), {
 				showing,
 				text: self.text,
 				targetElement: el,

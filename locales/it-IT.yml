@@ -1433,6 +1433,9 @@ _notification:
     followRequestAccepted: "Richiesta di follow accettata"
     groupInvited: "Invito a un gruppo"
     app: "Notifiche da applicazioni"
+  _actions:
+    reply: "Rispondi"
+    renote: "Rinota"
 _deck:
   alwaysShowMainColumn: "Mostra sempre la colonna principale"
   columnAlign: "Allineare colonne"

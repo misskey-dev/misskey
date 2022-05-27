@@ -1,9 +1,9 @@
 import Bull from 'bull';
-import * as tmp from 'tmp';
 import * as fs from 'node:fs';
 import unzipper from 'unzipper';
 
 import { queueLogger } from '../../logger.js';
+import { createTempDir } from '@/misc/create-temp.js';
 import { downloadUrl } from '@/misc/download-url.js';
 import { DriveFiles, Emojis } from '@/models/index.js';
 import { DbUserImportJobData } from '@/queue/types.js';
@@ -25,13 +25,7 @@ export async function importCustomEmojis(job: Bull.Job<DbUserImportJobData>, don
 		return;
 	}
 
-	// Create temp dir
-	const [path, cleanup] = await new Promise<[string, () => void]>((res, rej) => {
-		tmp.dir((e, path, cleanup) => {
-			if (e) return rej(e);
-			res([path, cleanup]);
-		});
-	});
+	const [path, cleanup] = await createTempDir();
 
 	logger.info(`Temp dir is ${path}`);
 

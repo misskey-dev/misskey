@@ -107,53 +107,53 @@ export class Instance {
 	public isSuspended: boolean;
 
 	@Column('varchar', {
-		length: 64, nullable: true, default: null,
+		length: 64, nullable: true,
 		comment: 'The software of the Instance.',
 	})
 	public softwareName: string | null;
 
 	@Column('varchar', {
-		length: 64, nullable: true, default: null,
+		length: 64, nullable: true,
 	})
 	public softwareVersion: string | null;
 
 	@Column('boolean', {
-		nullable: true, default: null,
+		nullable: true,
 	})
 	public openRegistrations: boolean | null;
 
 	@Column('varchar', {
-		length: 256, nullable: true, default: null,
+		length: 256, nullable: true,
 	})
 	public name: string | null;
 
 	@Column('varchar', {
-		length: 4096, nullable: true, default: null,
+		length: 4096, nullable: true,
 	})
 	public description: string | null;
 
 	@Column('varchar', {
-		length: 128, nullable: true, default: null,
+		length: 128, nullable: true,
 	})
 	public maintainerName: string | null;
 
 	@Column('varchar', {
-		length: 256, nullable: true, default: null,
+		length: 256, nullable: true,
 	})
 	public maintainerEmail: string | null;
 
 	@Column('varchar', {
-		length: 256, nullable: true, default: null,
+		length: 256, nullable: true,
 	})
 	public iconUrl: string | null;
 
 	@Column('varchar', {
-		length: 256, nullable: true, default: null,
+		length: 256, nullable: true,
 	})
 	public faviconUrl: string | null;
 
 	@Column('varchar', {
-		length: 64, nullable: true, default: null,
+		length: 64, nullable: true,
 	})
 	public themeColor: string | null;
 

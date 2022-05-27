@@ -37,17 +37,58 @@ favorites: "Favoritar"
 unfavorite: "Remover dos favoritos"
 favorited: "Adicionado aos favoritos."
 alreadyFavorited: "Já adicionado aos favoritos."
+cantFavorite: "Não foi possível adicionar aos favoritos."
+pin: "Afixar no perfil"
+unpin: "Desafixar do perfil"
+copyContent: "Copiar conteúdos"
+copyLink: "Copiar hiperligação"
+delete: "Eliminar"
+deleteAndEdit: "Eliminar e editar"
+deleteAndEditConfirm: "Tens a certeza que pretendes eliminar esta nota e editá-la? Irás perder todas as suas reações, renotas e respostas."
+addToList: "Adicionar a lista"
+sendMessage: "Enviar uma mensagem"
+copyUsername: "Copiar nome de utilizador"
+searchUser: "Pesquisar utilizador"
+reply: "Responder"
+loadMore: "Carregar mais"
 showMore: "Ver mais"
 youGotNewFollower: "Você tem um novo seguidor"
+receiveFollowRequest: "Pedido de seguimento recebido"
 followRequestAccepted: "Pedido de seguir aceito"
+mention: "Menção"
+mentions: "Menções"
+directNotes: "Notas diretas"
+importAndExport: "Importar/Exportar"
+import: "Importar"
+export: "Exportar"
+files: "Ficheiros"
+download: "Descarregar"
+driveFileDeleteConfirm: "Tens a certeza que pretendes apagar o ficheiro \"{name}\"? As notas que tenham este ficheiro anexado serão também apagadas."
+unfollowConfirm: "Tens a certeza que queres deixar de seguir {name}?"
+exportRequested: "Pediste uma exportação. Este processo pode demorar algum tempo. Será adicionado à tua Drive após a conclusão do processo."
+importRequested: "Pediste uma importação. Este processo pode demorar algum tempo."
+lists: "Listas"
+noLists: "Não tens nenhuma lista"
 note: "Post"
 notes: "Posts"
+following: "Seguindo"
+followers: "Seguidores"
+followsYou: "Segue-te"
+createList: "Criar lista"
+manageLists: "Gerir listas"
+error: "Erro"
+somethingHappened: "Ocorreu um erro"
+retry: "Tentar novamente"
+pageLoadError: "Ocorreu um erro ao carregar a página."
+pageLoadErrorDescription: "Isto é normalmente causado por erros de rede ou pela cache do browser. Experimenta limpar a cache e tenta novamente após algum tempo."
+follow: "Seguindo"
 enterEmoji: "Inserir emoji"
 renote: "Repostar"
 renoted: "Repostado"
 cantRenote: "Não pode repostar"
 cantReRenote: "Não pode repostar este repost"
 pinnedNote: "Post fixado"
+pinned: "Afixar no perfil"
 sensitive: "Conteúdo sensível"
 mute: "Silenciar"
 unmute: "Dessilenciar"
@@ -57,6 +98,7 @@ registeredAt: "Registrado em"
 perHour: "por hora"
 perDay: "por dia"
 noUsers: "Sem usuários"
+remove: "Eliminar"
 messageRead: "Lida"
 lightThemes: "Tema claro"
 darkThemes: "Tema escuro"
@@ -64,6 +106,7 @@ addFile: "Adicionar arquivo"
 nsfw: "Conteúdo sensível"
 monthX: "mês de {month}"
 pinnedNotes: "Post fixado"
+userList: "Listas"
 smtpUser: "Nome de usuário"
 smtpPass: "Senha"
 user: "Usuários"
@@ -72,9 +115,11 @@ _email:
   _follow:
     title: "Você tem um novo seguidor"
 _mfm:
+  mention: "Menção"
   search: "Pesquisar"
 _theme:
   keys:
+    mention: "Menção"
     renote: "Repostar"
 _sfx:
   note: "Posts"
@@ -82,15 +127,47 @@ _sfx:
 _widgets:
   notifications: "Notificações"
   timeline: "Timeline"
+_cw:
+  show: "Carregar mais"
+_visibility:
+  followers: "Seguidores"
 _profile:
   username: "Nome de usuário"
 _exportOrImport:
+  followingList: "Seguindo"
   muteList: "Silenciar"
+  userLists: "Listas"
+_pages:
+  script:
+    categories:
+      list: "Listas"
+    blocks:
+      _join:
+        arg1: "Listas"
+      _randomPick:
+        arg1: "Listas"
+      _dailyRandomPick:
+        arg1: "Listas"
+      _seedRandomPick:
+        arg2: "Listas"
+      _pick:
+        arg1: "Listas"
+      _listLen:
+        arg1: "Listas"
+    types:
+      array: "Listas"
 _notification:
   youWereFollowed: "Você tem um novo seguidor"
   _types:
+    follow: "Seguindo"
+    mention: "Menção"
+    renote: "Repostar"
+  _actions:
+    reply: "Responder"
     renote: "Repostar"
 _deck:
   _columns:
     notifications: "Notificações"
     tl: "Timeline"
+    list: "Listas"
+    mentions: "Menções"

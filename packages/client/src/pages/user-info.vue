@@ -232,10 +232,10 @@ export default defineComponent({
 				await os.api('admin/delete-all-files-of-a-user', { userId: this.user.id });
 				os.success();
 			};
-			await process().catch(e => {
+			await process().catch(err => {
 				os.alert({
 					type: 'error',
-					text: e.toString()
+					text: err.toString(),
 				});
 			});
 			await this.refreshUser();

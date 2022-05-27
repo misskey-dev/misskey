@@ -20,7 +20,7 @@ export default defineComponent({
 				uri: acct
 			});
 			promise.then(res => {
-				if (res.type == 'User') {
+				if (res.type === 'User') {
 					this.follow(res.object);
 				} else if (res.type === 'Note') {
 					this.$router.push(`/notes/${res.object.id}`);

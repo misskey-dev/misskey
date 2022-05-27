@@ -36,6 +36,7 @@ export class Emoji {
 
 	@Column('varchar', {
 		length: 512,
+		default: '',
 	})
 	public publicUrl: string;
 

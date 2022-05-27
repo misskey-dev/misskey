@@ -1,7 +1,7 @@
 import * as assert from 'assert';
 
-import { extractMentions } from '../src/misc/extract-mentions.js';
 import { parse } from 'mfm-js';
+import { extractMentions } from '../src/misc/extract-mentions.js';
 
 describe('Extract mentions', () => {
 	it('simple', () => {
@@ -10,15 +10,15 @@ describe('Extract mentions', () => {
 		assert.deepStrictEqual(mentions, [{
 			username: 'foo',
 			acct: '@foo',
-			host: null
+			host: null,
 		}, {
 			username: 'bar',
 			acct: '@bar',
-			host: null
+			host: null,
 		}, {
 			username: 'baz',
 			acct: '@baz',
-			host: null
+			host: null,
 		}]);
 	});
 
@@ -28,15 +28,15 @@ describe('Extract mentions', () => {
 		assert.deepStrictEqual(mentions, [{
 			username: 'foo',
 			acct: '@foo',
-			host: null
+			host: null,
 		}, {
 			username: 'bar',
 			acct: '@bar',
-			host: null
+			host: null,
 		}, {
 			username: 'baz',
 			acct: '@baz',
-			host: null
+			host: null,
 		}]);
 	});
 });
