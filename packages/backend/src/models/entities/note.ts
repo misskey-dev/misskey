@@ -53,8 +53,8 @@ export class Note {
 	})
 	public threadId: string | null;
 
-	@Column('varchar', {
-		length: 8192, nullable: true,
+	@Column('text', {
+		nullable: true,
 	})
 	public text: string | null;
 
@@ -179,7 +179,7 @@ export class Note {
 	@Index()
 	@Column({
 		...id(),
-		nullable: true, default: null,
+		nullable: true,
 		comment: 'The ID of source channel.',
 	})
 	public channelId: Channel['id'] | null;

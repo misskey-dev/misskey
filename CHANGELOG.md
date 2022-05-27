@@ -2,9 +2,6 @@
 ## 12.x.x (unreleased)
 
 ### Improvements
-- API: notifications/readは配列でも受け付けるように
-- /share のクエリでリプライやファイル等の情報を渡せるように
-- ページロードエラーページにリロードボタンを追加
 
 ### Bugfixes
 - 
@@ -15,12 +12,89 @@ You should also include the user name that made the change.
 ## 12.x.x (unreleased)
 
 ### Improvements
-- Bull Dashboardを組み込み、ジョブキューの確認や操作を行えるように @syuilo
-- Check that installed Node.js version fulfills version requirement @ThatOneCalculator
-- Server: performance improvements @syuilo
+- Client: Preferences Registry
+
+### NOTE
+- From this version, Node 18.0.0 or later is required.
+
+### Improvements
+- Client: Preferences Registry
+- enhance: ドライブに画像ファイルをアップロードするときオリジナル画像を破棄してwebpublicのみ保持するオプション @tamaina
+- enhance: API: notifications/readは配列でも受け付けるように #7667 @tamaina
+- enhance: プッシュ通知を複数アカウント対応に #7667 @tamaina
+- enhance: プッシュ通知にクリックやactionを設定 #7667 @tamaina
+- replaced webpack with Vite @tamaina
+- update dependencies @syuilo
+- enhance: display URL of QR code for TOTP registration @syuilo
+- make CAPTCHA required for signin to improve security @syuilo
+- enhance: Supports Unicode Emoji 14.0 @mei23
+- The theme color is now better validated. @Johann150
+  Your own theme color may be unset if it was in an invalid format.
+  Admins should check their instance settings if in doubt.
+- Perform port diagnosis at startup only when Listen fails @mei23
 
 ### Bugfixes
+- Client: fix settings page @tamaina
+- Client: fix profile tabs @futchitwo
+- Server: await promises when following or unfollowing users @Johann150
+- Client: fix abuse reports page to be able to show all reports @Johann150
+- Federation: Add rel attribute to host-meta @mei23
+- Client: fix profile picture height in mentions @tamaina
+- MFM: more animated functions support `speed` parameter @futchitwo
+- Federation: Fix quote renotes containing no text being federated correctly @Johann150
+- Server: fix missing foreign key for reports leading to reports page being unusable @Johann150
+- Server: fix internal in-memory caching @Johann150
+- Server: use correct order of attachments on notes @Johann150
+- Server: prevent crash when processing certain PNGs @syuilo
+- Server: Fix unable to generate video thumbnails @mei23
+
+## 12.110.1 (2022/04/23)
+
+### Bugfixes
+- Fix GOP rendering @syuilo
+- Improve performance of antenna, clip, and list @xianonn
+
+## 12.110.0 (2022/04/11)
+
+### Improvements
+- Improve webhook @syuilo
+- Client: Show loading icon on splash screen @syuilo
+
+### Bugfixes
+- API: parameter validation of users/show was wrong
+- Federation: リモートインスタンスへのダイレクト投稿が届かない問題を修正 @syuilo
+
+## 12.109.2 (2022/04/03)
+
+### Bugfixes
+- API: admin/update-meta was not working @syuilo
+- Client: テーマを切り替えたり読み込んだりするとmeta[name="theme-color"]のcontentがundefinedになる問題を修正 @tamaina
+
+## 12.109.1 (2022/04/02)
+
+### Bugfixes
+- API: Renoteが行えない問題を修正
+
+## 12.109.0 (2022/04/02)
+
+### Improvements
+- Webhooks @syuilo
+- Bull Dashboardを組み込み、ジョブキューの確認や操作を行えるように @syuilo
+  - Bull Dashboardを開くには、最初だけ一旦ログアウトしてから再度管理者権限を持つアカウントでログインする必要があります
+- Check that installed Node.js version fulfills version requirement @ThatOneCalculator
+- Server: overall performance improvements @syuilo
+- Federation: avoid duplicate activity delivery @Johann150
+- Federation: limit federation of reactions on direct notes @Johann150
+- Client: タッチパッド・タッチスクリーンでのデッキの操作性を向上 @tamaina
+
+### Bugfixes
+- email address validation was not working @ybw2016v
 - API: fix endpoint endpoint @Johann150
+- API: fix admin/meta endpoint @syuilo
+- API: improved validation and documentation for endpoints that accept different variants of input @Johann150
+- API: `notes/create`: The `mediaIds` property is now deprecated. @Johann150
+  - Use `fileIds` instead, it has the same behaviour.
+- Client: URIエンコーディングが異常でdecodeURIComponentが失敗するとURLが表示できなくなる問題を修正 @tamaina
 
 ## 12.108.1 (2022/03/12)
 

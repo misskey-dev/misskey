@@ -1,6 +1,6 @@
 import { URL } from 'node:url';
 import Bull from 'bull';
-import httpSignature from 'http-signature';
+import httpSignature from '@peertube/http-signature';
 import perform from '@/remote/activitypub/perform.js';
 import Logger from '@/services/logger.js';
 import { registerOrFetchInstanceDoc } from '@/services/register-or-fetch-instance-doc.js';

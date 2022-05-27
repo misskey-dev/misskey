@@ -67,9 +67,9 @@
 <script lang="ts" setup>
 import { watch } from 'vue';
 import { toUnicode } from 'punycode/';
-import * as tinycolor from 'tinycolor2';
+import tinycolor from 'tinycolor2';
 import { v4 as uuid} from 'uuid';
-import * as JSON5 from 'json5';
+import JSON5 from 'json5';
 
 import FormButton from '@/components/ui/button.vue';
 import FormTextarea from '@/components/form/textarea.vue';
@@ -128,7 +128,7 @@ function showPreview() {
 }
 
 function setBgColor(color: typeof bgColors[number]) {
-	if (theme.base != color.kind) {
+	if (theme.base !== color.kind) {
 		const base = color.kind === 'dark' ? darkTheme : lightTheme;
 		for (const prop of Object.keys(base.props)) {
 			if (prop === 'accent') continue;

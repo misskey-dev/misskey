@@ -1202,6 +1202,9 @@ _notification:
     reaction: "リアクション"
     receiveFollowRequest: "フォロー許可してほしいみたいやで"
     followRequestAccepted: "フォローが受理されたで"
+  _actions:
+    reply: "返事"
+    renote: "Renote"
 _deck:
   alwaysShowMainColumn: "いつもメインカラムを表示"
   columnAlign: "カラムの寄せ"

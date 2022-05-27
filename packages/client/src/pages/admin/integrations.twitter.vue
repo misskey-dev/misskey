@@ -24,7 +24,7 @@
 </FormSuspense>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { defineComponent } from 'vue';
 import FormSwitch from '@/components/form/switch.vue';
 import FormInput from '@/components/form/input.vue';
@@ -32,49 +32,28 @@ import FormButton from '@/components/ui/button.vue';
 import FormInfo from '@/components/ui/info.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { fetchInstance } from '@/instance';
 
-export default defineComponent({
-	components: {
-		FormSwitch,
-		FormInput,
-		FormInfo,
-		FormButton,
-		FormSuspense,
-	},
+let uri: string = $ref('');
+let enableTwitterIntegration: boolean = $ref(false);
+let twitterConsumerKey: string | null = $ref(null);
+let twitterConsumerSecret: string | null = $ref(null);
 
-	emits: ['info'],
+async function init() {
+	const meta = await os.api('admin/meta');
+	uri = meta.uri;
+	enableTwitterIntegration = meta.enableTwitterIntegration;
+	twitterConsumerKey = meta.twitterConsumerKey;
+	twitterConsumerSecret = meta.twitterConsumerSecret;
+}
 
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: 'Twitter',
-				icon: 'fab fa-twitter'
-			},
-			enableTwitterIntegration: false,
-			twitterConsumerKey: null,
-			twitterConsumerSecret: null,
-		}
-	},
-
-	methods: {
-		async init() {
-			const meta = await os.api('admin/meta');
-			this.uri = meta.uri;
-			this.enableTwitterIntegration = meta.enableTwitterIntegration;
-			this.twitterConsumerKey = meta.twitterConsumerKey;
-			this.twitterConsumerSecret = meta.twitterConsumerSecret;
-		},
-		save() {
-			os.apiWithDialog('admin/update-meta', {
-				enableTwitterIntegration: this.enableTwitterIntegration,
-				twitterConsumerKey: this.twitterConsumerKey,
-				twitterConsumerSecret: this.twitterConsumerSecret,
-			}).then(() => {
-				fetchInstance();
-			});
-		}
-	}
-});
+function save() {
+	os.apiWithDialog('admin/update-meta', {
+		enableTwitterIntegration,
+		twitterConsumerKey,
+		twitterConsumerSecret,
+	}).then(() => {
+		fetchInstance();
+	});
+}
 </script>

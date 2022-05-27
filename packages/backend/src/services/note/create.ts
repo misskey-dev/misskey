@@ -35,9 +35,11 @@ import { Channel } from '@/models/entities/channel.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { getAntennas } from '@/misc/antenna-cache.js';
 import { endedPollNotificationQueue } from '@/queue/queues.js';
+import { webhookDeliver } from '@/queue/index.js';
 import { Cache } from '@/misc/cache.js';
 import { UserProfile } from '@/models/entities/user-profile.js';
 import { db } from '@/db/postgre.js';
+import { getActiveWebhooks } from '@/misc/webhook-cache.js';
 
 const mutedWordsCache = new Cache<{ userId: UserProfile['userId']; mutedWords: UserProfile['mutedWords']; }[]>(1000 * 60 * 5);
 
@@ -185,6 +187,8 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 
 	if (data.text) {
 		data.text = data.text.trim();
+	} else {
+		data.text = null;
 	}
 
 	let tags = data.apHashtags;
@@ -345,6 +349,15 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 
 		publishNotesStream(noteObj);
 
+		getActiveWebhooks().then(webhooks => {
+			webhooks = webhooks.filter(x => x.userId === user.id && x.on.includes('note'));
+			for (const webhook of webhooks) {
+				webhookDeliver(webhook, 'note', {
+					note: noteObj,
+				});
+			}
+		});
+
 		const nm = new NotificationManager(user, note);
 		const nmRelatedPromises = [];
 
@@ -365,6 +378,13 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 				if (!threadMuted) {
 					nm.push(data.reply.userId, 'reply');
 					publishMainStream(data.reply.userId, 'reply', noteObj);
+
+					const webhooks = (await getActiveWebhooks()).filter(x => x.userId === data.reply!.userId && x.on.includes('reply'));
+					for (const webhook of webhooks) {
+						webhookDeliver(webhook, 'reply', {
+							note: noteObj,
+						});
+					}
 				}
 			}
 		}
@@ -384,6 +404,13 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 			// Publish event
 			if ((user.id !== data.renote.userId) && data.renote.userHost === null) {
 				publishMainStream(data.renote.userId, 'renote', noteObj);
+
+				const webhooks = (await getActiveWebhooks()).filter(x => x.userId === data.renote!.userId && x.on.includes('renote'));
+				for (const webhook of webhooks) {
+					webhookDeliver(webhook, 'renote', {
+						note: noteObj,
+					});
+				}
 			}
 		}
 
@@ -619,6 +646,13 @@ async function createMentionedEvents(mentionedUsers: MinimumUser[], note: Note, 
 		});
 
 		publishMainStream(u.id, 'mention', detailPackedNote);
+
+		const webhooks = (await getActiveWebhooks()).filter(x => x.userId === u.id && x.on.includes('mention'));
+		for (const webhook of webhooks) {
+			webhookDeliver(webhook, 'mention', {
+				note: detailPackedNote,
+			});
+		}
 
 		// Create notification
 		nm.push(u.id, 'mention');

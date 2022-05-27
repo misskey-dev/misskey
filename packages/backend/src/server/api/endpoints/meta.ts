@@ -169,6 +169,7 @@ export const meta = {
 						host: {
 							type: 'string',
 							optional: false, nullable: true,
+							description: 'The local host is represented with `null`.',
 						},
 						url: {
 							type: 'string',

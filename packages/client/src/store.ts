@@ -254,10 +254,13 @@ type Plugin = {
 /**
  * 常にメモリにロードしておく必要がないような設定情報を保管するストレージ(非リアクティブ)
  */
+import lightTheme from '@/themes/l-light.json5';
+import darkTheme from '@/themes/d-dark.json5'
+
 export class ColdDeviceStorage {
 	public static default = {
-		lightTheme: require('@/themes/l-light.json5') as Theme,
-		darkTheme: require('@/themes/d-dark.json5') as Theme,
+		lightTheme,
+		darkTheme,
 		syncDeviceDarkMode: true,
 		plugins: [] as Plugin[],
 	};
@@ -274,6 +277,16 @@ export class ColdDeviceStorage {
 		} else {
 			return JSON.parse(value);
 		}
+	}
+
+	public static getAll(): Partial<typeof this.default> {
+		return (Object.keys(this.default) as (keyof typeof this.default)[]).reduce((acc, key) => {
+			const value = localStorage.getItem(PREFIX + key);
+			if (value != null) {
+				acc[key] = JSON.parse(value);
+			}
+			return acc;
+		}, {} as any);
 	}
 
 	public static set<T extends keyof typeof ColdDeviceStorage.default>(key: T, value: typeof ColdDeviceStorage.default[T]): void {

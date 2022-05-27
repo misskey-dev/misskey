@@ -59,6 +59,18 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 			desc += ` / **Permission**: *${kind}*`;
 		}
 
+		const requestType = endpoint.meta.requireFile ? 'multipart/form-data' : 'application/json';
+		const schema = endpoint.params;
+
+		if (endpoint.meta.requireFile) {
+			schema.properties.file = {
+				type: 'string',
+				format: 'binary',
+				description: 'The file contents.',
+			};
+			schema.required.push('file');
+		}
+
 		const info = {
 			operationId: endpoint.name,
 			summary: endpoint.name,
@@ -78,8 +90,8 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 			requestBody: {
 				required: true,
 				content: {
-					'application/json': {
-						schema: endpoint.params,
+					[requestType]: {
+						schema,
 					},
 				},
 			},

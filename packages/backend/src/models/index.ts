@@ -64,6 +64,7 @@ import { Ad } from './entities/ad.js';
 import { PasswordResetRequest } from './entities/password-reset-request.js';
 import { UserPending } from './entities/user-pending.js';
 import { InstanceRepository } from './repositories/instance.js';
+import { Webhook } from './entities/webhook.js';
 
 export const Announcements = db.getRepository(Announcement);
 export const AnnouncementReads = db.getRepository(AnnouncementRead);
@@ -125,5 +126,6 @@ export const Channels = (ChannelRepository);
 export const ChannelFollowings = db.getRepository(ChannelFollowing);
 export const ChannelNotePinings = db.getRepository(ChannelNotePining);
 export const RegistryItems = db.getRepository(RegistryItem);
+export const Webhooks = db.getRepository(Webhook);
 export const Ads = db.getRepository(Ad);
 export const PasswordResetRequests = db.getRepository(PasswordResetRequest);

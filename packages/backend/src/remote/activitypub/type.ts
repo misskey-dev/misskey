@@ -2,7 +2,7 @@ export type obj = { [x: string]: any };
 export type ApObject = IObject | string | (IObject | string)[];
 
 export interface IObject {
-	'@context': string | obj | obj[];
+	'@context': string | string[] | obj | obj[];
 	type: string | string[];
 	id?: string;
 	summary?: string;
@@ -48,7 +48,7 @@ export function getOneApId(value: ApObject): string {
 export function getApId(value: string | IObject): string {
 	if (typeof value === 'string') return value;
 	if (typeof value.id === 'string') return value.id;
-	throw new Error(`cannot detemine id`);
+	throw new Error('cannot detemine id');
 }
 
 /**
@@ -57,7 +57,7 @@ export function getApId(value: string | IObject): string {
 export function getApType(value: IObject): string {
 	if (typeof value.type === 'string') return value.type;
 	if (Array.isArray(value.type) && typeof value.type[0] === 'string') return value.type[0];
-	throw new Error(`cannot detect type`);
+	throw new Error('cannot detect type');
 }
 
 export function getOneApHrefNullable(value: ApObject | undefined): string | undefined {

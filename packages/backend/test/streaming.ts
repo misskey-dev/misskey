@@ -2,8 +2,8 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import * as childProcess from 'child_process';
-import { connectStream, signup, request, post, startServer, shutdownServer, initTestDb } from './utils.js';
 import { Following } from '../src/models/entities/following.js';
+import { connectStream, signup, request, post, startServer, shutdownServer, initTestDb } from './utils.js';
 
 describe('Streaming', () => {
 	let p: childProcess.ChildProcess;
@@ -30,7 +30,7 @@ describe('Streaming', () => {
 			followerSharedInbox: null,
 			followeeHost: followee.host,
 			followeeInbox: null,
-			followeeSharedInbox: null
+			followeeSharedInbox: null,
 		});
 	};
 
@@ -47,7 +47,7 @@ describe('Streaming', () => {
 		});
 
 		post(alice, {
-			text: 'foo @bob bar'
+			text: 'foo @bob bar',
 		});
 	}));
 
@@ -55,7 +55,7 @@ describe('Streaming', () => {
 		const alice = await signup({ username: 'alice' });
 		const bob = await signup({ username: 'bob' });
 		const bobNote = await post(bob, {
-			text: 'foo'
+			text: 'foo',
 		});
 
 		const ws = await connectStream(bob, 'main', ({ type, body }) => {
@@ -67,14 +67,14 @@ describe('Streaming', () => {
 		});
 
 		post(alice, {
-			renoteId: bobNote.id
+			renoteId: bobNote.id,
 		});
 	}));
 
 	describe('Home Timeline', () => {
 		it('自分の投稿が流れる', () => new Promise(async done => {
 			const post = {
-				text: 'foo'
+				text: 'foo',
 			};
 
 			const me = await signup();
@@ -96,7 +96,7 @@ describe('Streaming', () => {
 
 			// Alice が Bob をフォロー
 			await request('/following/create', {
-				userId: bob.id
+				userId: bob.id,
 			}, alice);
 
 			const ws = await connectStream(alice, 'homeTimeline', ({ type, body }) => {
@@ -108,7 +108,7 @@ describe('Streaming', () => {
 			});
 
 			post(bob, {
-				text: 'foo'
+				text: 'foo',
 			});
 		}));
 
@@ -125,7 +125,7 @@ describe('Streaming', () => {
 			});
 
 			post(bob, {
-				text: 'foo'
+				text: 'foo',
 			});
 
 			setTimeout(() => {
@@ -141,7 +141,7 @@ describe('Streaming', () => {
 
 			// Alice が Bob をフォロー
 			await request('/following/create', {
-				userId: bob.id
+				userId: bob.id,
 			}, alice);
 
 			const ws = await connectStream(alice, 'homeTimeline', ({ type, body }) => {
@@ -157,7 +157,7 @@ describe('Streaming', () => {
 			post(bob, {
 				text: 'foo',
 				visibility: 'specified',
-				visibleUserIds: [alice.id]
+				visibleUserIds: [alice.id],
 			});
 		}));
 
@@ -168,7 +168,7 @@ describe('Streaming', () => {
 
 			// Alice が Bob をフォロー
 			await request('/following/create', {
-				userId: bob.id
+				userId: bob.id,
 			}, alice);
 
 			let fired = false;
@@ -183,7 +183,7 @@ describe('Streaming', () => {
 			post(bob, {
 				text: 'foo',
 				visibility: 'specified',
-				visibleUserIds: [carol.id]
+				visibleUserIds: [carol.id],
 			});
 
 			setTimeout(() => {
@@ -207,7 +207,7 @@ describe('Streaming', () => {
 			});
 
 			post(me, {
-				text: 'foo'
+				text: 'foo',
 			});
 		}));
 
@@ -224,7 +224,7 @@ describe('Streaming', () => {
 			});
 
 			post(bob, {
-				text: 'foo'
+				text: 'foo',
 			});
 		}));
 
@@ -241,7 +241,7 @@ describe('Streaming', () => {
 			});
 
 			post(bob, {
-				text: 'foo'
+				text: 'foo',
 			});
 
 			setTimeout(() => {
@@ -257,7 +257,7 @@ describe('Streaming', () => {
 
 			// Alice が Bob をフォロー
 			await request('/following/create', {
-				userId: bob.id
+				userId: bob.id,
 			}, alice);
 
 			let fired = false;
@@ -269,7 +269,7 @@ describe('Streaming', () => {
 			});
 
 			post(bob, {
-				text: 'foo'
+				text: 'foo',
 			});
 
 			setTimeout(() => {
@@ -294,7 +294,7 @@ describe('Streaming', () => {
 			// ホーム指定
 			post(bob, {
 				text: 'foo',
-				visibility: 'home'
+				visibility: 'home',
 			});
 
 			setTimeout(() => {
@@ -310,7 +310,7 @@ describe('Streaming', () => {
 
 			// Alice が Bob をフォロー
 			await request('/following/create', {
-				userId: bob.id
+				userId: bob.id,
 			}, alice);
 
 			let fired = false;
@@ -325,7 +325,7 @@ describe('Streaming', () => {
 			post(bob, {
 				text: 'foo',
 				visibility: 'specified',
-				visibleUserIds: [alice.id]
+				visibleUserIds: [alice.id],
 			});
 
 			setTimeout(() => {
@@ -350,7 +350,7 @@ describe('Streaming', () => {
 			// フォロワー宛て投稿
 			post(bob, {
 				text: 'foo',
-				visibility: 'followers'
+				visibility: 'followers',
 			});
 
 			setTimeout(() => {
@@ -374,7 +374,7 @@ describe('Streaming', () => {
 			});
 
 			post(me, {
-				text: 'foo'
+				text: 'foo',
 			});
 		}));
 
@@ -391,7 +391,7 @@ describe('Streaming', () => {
 			});
 
 			post(bob, {
-				text: 'foo'
+				text: 'foo',
 			});
 		}));
 
@@ -411,7 +411,7 @@ describe('Streaming', () => {
 			});
 
 			post(bob, {
-				text: 'foo'
+				text: 'foo',
 			});
 		}));
 
@@ -428,7 +428,7 @@ describe('Streaming', () => {
 			});
 
 			post(bob, {
-				text: 'foo'
+				text: 'foo',
 			});
 
 			setTimeout(() => {
@@ -444,7 +444,7 @@ describe('Streaming', () => {
 
 			// Alice が Bob をフォロー
 			await request('/following/create', {
-				userId: bob.id
+				userId: bob.id,
 			}, alice);
 
 			const ws = await connectStream(alice, 'hybridTimeline', ({ type, body }) => {
@@ -460,7 +460,7 @@ describe('Streaming', () => {
 			post(bob, {
 				text: 'foo',
 				visibility: 'specified',
-				visibleUserIds: [alice.id]
+				visibleUserIds: [alice.id],
 			});
 		}));
 
@@ -470,7 +470,7 @@ describe('Streaming', () => {
 
 			// Alice が Bob をフォロー
 			await request('/following/create', {
-				userId: bob.id
+				userId: bob.id,
 			}, alice);
 
 			const ws = await connectStream(alice, 'hybridTimeline', ({ type, body }) => {
@@ -485,7 +485,7 @@ describe('Streaming', () => {
 			// ホーム投稿
 			post(bob, {
 				text: 'foo',
-				visibility: 'home'
+				visibility: 'home',
 			});
 		}));
 
@@ -504,7 +504,7 @@ describe('Streaming', () => {
 			// ホーム投稿
 			post(bob, {
 				text: 'foo',
-				visibility: 'home'
+				visibility: 'home',
 			});
 
 			setTimeout(() => {
@@ -529,7 +529,7 @@ describe('Streaming', () => {
 			// フォロワー宛て投稿
 			post(bob, {
 				text: 'foo',
-				visibility: 'followers'
+				visibility: 'followers',
 			});
 
 			setTimeout(() => {
@@ -554,7 +554,7 @@ describe('Streaming', () => {
 			});
 
 			post(bob, {
-				text: 'foo'
+				text: 'foo',
 			});
 		}));
 
@@ -571,7 +571,7 @@ describe('Streaming', () => {
 			});
 
 			post(bob, {
-				text: 'foo'
+				text: 'foo',
 			});
 		}));
 
@@ -590,7 +590,7 @@ describe('Streaming', () => {
 			// ホーム投稿
 			post(bob, {
 				text: 'foo',
-				visibility: 'home'
+				visibility: 'home',
 			});
 
 			setTimeout(() => {
@@ -608,13 +608,13 @@ describe('Streaming', () => {
 
 			// リスト作成
 			const list = await request('/users/lists/create', {
-				name: 'my list'
+				name: 'my list',
 			}, alice).then(x => x.body);
 
 			// Alice が Bob をリスイン
 			await request('/users/lists/push', {
 				listId: list.id,
-				userId: bob.id
+				userId: bob.id,
 			}, alice);
 
 			const ws = await connectStream(alice, 'userList', ({ type, body }) => {
@@ -624,11 +624,11 @@ describe('Streaming', () => {
 					done();
 				}
 			}, {
-				listId: list.id
+				listId: list.id,
 			});
 
 			post(bob, {
-				text: 'foo'
+				text: 'foo',
 			});
 		}));
 
@@ -638,7 +638,7 @@ describe('Streaming', () => {
 
 			// リスト作成
 			const list = await request('/users/lists/create', {
-				name: 'my list'
+				name: 'my list',
 			}, alice).then(x => x.body);
 
 			let fired = false;
@@ -648,11 +648,11 @@ describe('Streaming', () => {
 					fired = true;
 				}
 			}, {
-				listId: list.id
+				listId: list.id,
 			});
 
 			post(bob, {
-				text: 'foo'
+				text: 'foo',
 			});
 
 			setTimeout(() => {
@@ -669,13 +669,13 @@ describe('Streaming', () => {
 
 			// リスト作成
 			const list = await request('/users/lists/create', {
-				name: 'my list'
+				name: 'my list',
 			}, alice).then(x => x.body);
 
 			// Alice が Bob をリスイン
 			await request('/users/lists/push', {
 				listId: list.id,
-				userId: bob.id
+				userId: bob.id,
 			}, alice);
 
 			const ws = await connectStream(alice, 'userList', ({ type, body }) => {
@@ -686,14 +686,14 @@ describe('Streaming', () => {
 					done();
 				}
 			}, {
-				listId: list.id
+				listId: list.id,
 			});
 
 			// Bob が Alice 宛てのダイレクト投稿
 			post(bob, {
 				text: 'foo',
 				visibility: 'specified',
-				visibleUserIds: [alice.id]
+				visibleUserIds: [alice.id],
 			});
 		}));
 
@@ -704,13 +704,13 @@ describe('Streaming', () => {
 
 			// リスト作成
 			const list = await request('/users/lists/create', {
-				name: 'my list'
+				name: 'my list',
 			}, alice).then(x => x.body);
 
 			// Alice が Bob をリスイン
 			await request('/users/lists/push', {
 				listId: list.id,
-				userId: bob.id
+				userId: bob.id,
 			}, alice);
 
 			let fired = false;
@@ -720,13 +720,13 @@ describe('Streaming', () => {
 					fired = true;
 				}
 			}, {
-				listId: list.id
+				listId: list.id,
 			});
 
 			// フォロワー宛て投稿
 			post(bob, {
 				text: 'foo',
-				visibility: 'followers'
+				visibility: 'followers',
 			});
 
 			setTimeout(() => {
@@ -749,12 +749,12 @@ describe('Streaming', () => {
 				}
 			}, {
 				q: [
-					['foo']
-				]
+					['foo'],
+				],
 			});
 
 			post(me, {
-				text: '#foo'
+				text: '#foo',
 			});
 		}));
 
@@ -773,20 +773,20 @@ describe('Streaming', () => {
 				}
 			}, {
 				q: [
-					['foo', 'bar']
-				]
+					['foo', 'bar'],
+				],
 			});
 
 			post(me, {
-				text: '#foo'
+				text: '#foo',
 			});
 
 			post(me, {
-				text: '#bar'
+				text: '#bar',
 			});
 
 			post(me, {
-				text: '#foo #bar'
+				text: '#foo #bar',
 			});
 
 			setTimeout(() => {
@@ -816,24 +816,24 @@ describe('Streaming', () => {
 			}, {
 				q: [
 					['foo'],
-					['bar']
-				]
+					['bar'],
+				],
 			});
 
 			post(me, {
-				text: '#foo'
+				text: '#foo',
 			});
 
 			post(me, {
-				text: '#bar'
+				text: '#bar',
 			});
 
 			post(me, {
-				text: '#foo #bar'
+				text: '#foo #bar',
 			});
 
 			post(me, {
-				text: '#piyo'
+				text: '#piyo',
 			});
 
 			setTimeout(() => {
@@ -866,28 +866,28 @@ describe('Streaming', () => {
 			}, {
 				q: [
 					['foo', 'bar'],
-					['piyo']
-				]
+					['piyo'],
+				],
 			});
 
 			post(me, {
-				text: '#foo'
+				text: '#foo',
 			});
 
 			post(me, {
-				text: '#bar'
+				text: '#bar',
 			});
 
 			post(me, {
-				text: '#foo #bar'
+				text: '#foo #bar',
 			});
 
 			post(me, {
-				text: '#piyo'
+				text: '#piyo',
 			});
 
 			post(me, {
-				text: '#waaa'
+				text: '#waaa',
 			});
 
 			setTimeout(() => {

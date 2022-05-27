@@ -5,9 +5,6 @@ pg.types.setTypeParser(20, Number);
 import { Logger, DataSource } from 'typeorm';
 import * as highlight from 'cli-highlight';
 import config from '@/config/index.js';
-import { envOption } from '../env.js';
-
-import { dbLogger } from './logger.js';
 
 import { User } from '@/models/entities/user.js';
 import { DriveFile } from '@/models/entities/drive-file.js';
@@ -73,6 +70,9 @@ import { PasswordResetRequest } from '@/models/entities/password-reset-request.j
 import { UserPending } from '@/models/entities/user-pending.js';
 
 import { entities as charts } from '@/services/chart/entities.js';
+import { Webhook } from '@/models/entities/webhook.js';
+import { envOption } from '../env.js';
+import { dbLogger } from './logger.js';
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'gray', false);
 
@@ -171,6 +171,7 @@ export const entities = [
 	Ad,
 	PasswordResetRequest,
 	UserPending,
+	Webhook,
 	...charts,
 ];
 
@@ -207,7 +208,11 @@ export const db = new DataSource({
 });
 
 export async function initDb() {
-	await db.connect();
+	if (db.isInitialized) {
+		// nop
+	} else {
+		await db.initialize();
+	}
 }
 
 export async function resetDb() {

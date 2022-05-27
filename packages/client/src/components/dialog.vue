@@ -90,8 +90,8 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(e: 'done', v: { canceled: boolean; result: any }): void;
-	(e: 'closed'): void;
+	(ev: 'done', v: { canceled: boolean; result: any }): void;
+	(ev: 'closed'): void;
 }>();
 
 const modal = ref<InstanceType<typeof MkModal>>();
@@ -122,14 +122,14 @@ function onBgClick() {
 	if (props.cancelableByBgClick) cancel();
 }
 */
-function onKeydown(e: KeyboardEvent) {
-	if (e.key === 'Escape') cancel();
+function onKeydown(evt: KeyboardEvent) {
+	if (evt.key === 'Escape') cancel();
 }
 
-function onInputKeydown(e: KeyboardEvent) {
-	if (e.key === 'Enter') {
-		e.preventDefault();
-		e.stopPropagation();
+function onInputKeydown(evt: KeyboardEvent) {
+	if (evt.key === 'Enter') {
+		evt.preventDefault();
+		evt.stopPropagation();
 		ok();
 	}
 }

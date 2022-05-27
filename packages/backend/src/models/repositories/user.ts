@@ -1,7 +1,6 @@
 import { EntityRepository, Repository, In, Not } from 'typeorm';
 import Ajv from 'ajv';
 import { User, ILocalUser, IRemoteUser } from '@/models/entities/user.js';
-import { Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings, UserProfiles, UserSecurityKeys, UserGroupJoinings, Pages, Announcements, AnnouncementReads, Antennas, AntennaNotes, ChannelFollowings, Instances, DriveFiles } from '../index.js';
 import config from '@/config/index.js';
 import { Packed } from '@/misc/schema.js';
 import { awaitAll, Promiseable } from '@/prelude/await-all.js';
@@ -9,8 +8,9 @@ import { populateEmojis } from '@/misc/populate-emojis.js';
 import { getAntennas } from '@/misc/antenna-cache.js';
 import { USER_ACTIVE_THRESHOLD, USER_ONLINE_THRESHOLD } from '@/const.js';
 import { Cache } from '@/misc/cache.js';
-import { Instance } from '../entities/instance.js';
 import { db } from '@/db/postgre.js';
+import { Instance } from '../entities/instance.js';
+import { Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings, UserProfiles, UserSecurityKeys, UserGroupJoinings, Pages, Announcements, AnnouncementReads, Antennas, AntennaNotes, ChannelFollowings, Instances, DriveFiles } from '../index.js';
 
 const userInstanceCache = new Cache<Instance | null>(1000 * 60 * 60 * 3);
 
@@ -112,7 +112,7 @@ export const UserRepository = db.getRepository(User).extend({
 		const joinings = await UserGroupJoinings.findBy({ userId: userId });
 
 		const groupQs = Promise.all(joinings.map(j => MessagingMessages.createQueryBuilder('message')
-			.where(`message.groupId = :groupId`, { groupId: j.userGroupId })
+			.where('message.groupId = :groupId', { groupId: j.userGroupId })
 			.andWhere('message.userId != :userId', { userId: userId })
 			.andWhere('NOT (:userId = ANY(message.reads))', { userId: userId })
 			.andWhere('message.createdAt > :joinedAt', { joinedAt: j.createdAt }) // 自分が加入する前の会話については、未読扱いしない
@@ -204,8 +204,18 @@ export const UserRepository = db.getRepository(User).extend({
 		);
 	},
 
-	getAvatarUrl(user: User): string {
-		// TODO: avatarIdがあるがavatarがない(JOINされてない)場合のハンドリング
+	async getAvatarUrl(user: User): Promise<string> {
+		if (user.avatar) {
+			return DriveFiles.getPublicUrl(user.avatar, true) || this.getIdenticonUrl(user.id);
+		} else if (user.avatarId) {
+			const avatar = await DriveFiles.findOneByOrFail({ id: user.avatarId });
+			return DriveFiles.getPublicUrl(avatar, true) || this.getIdenticonUrl(user.id);
+		} else {
+			return this.getIdenticonUrl(user.id);
+		}
+	},
+
+	getAvatarUrlSync(user: User): string {
 		if (user.avatar) {
 			return DriveFiles.getPublicUrl(user.avatar, true) || this.getIdenticonUrl(user.id);
 		} else {
@@ -223,7 +233,7 @@ export const UserRepository = db.getRepository(User).extend({
 		options?: {
 			detail?: D,
 			includeSecrets?: boolean,
-		}
+		},
 	): Promise<IsMeAndIsUserDetailed<ExpectsMe, D>> {
 		const opts = Object.assign({
 			detail: false,
@@ -274,7 +284,7 @@ export const UserRepository = db.getRepository(User).extend({
 			name: user.name,
 			username: user.username,
 			host: user.host,
-			avatarUrl: this.getAvatarUrl(user),
+			avatarUrl: this.getAvatarUrlSync(user),
 			avatarBlurhash: user.avatar?.blurhash || null,
 			avatarColor: null, // 後方互換性のため
 			isAdmin: user.isAdmin || falsy,
@@ -283,7 +293,7 @@ export const UserRepository = db.getRepository(User).extend({
 			isCat: user.isCat || falsy,
 			instance: user.host ? userInstanceCache.fetch(user.host,
 				() => Instances.findOneBy({ host: user.host! }),
-				v => v != null
+				v => v != null,
 			).then(instance => instance ? {
 				name: instance.name,
 				softwareName: instance.softwareName,
@@ -403,7 +413,7 @@ export const UserRepository = db.getRepository(User).extend({
 		options?: {
 			detail?: D,
 			includeSecrets?: boolean,
-		}
+		},
 	): Promise<IsUserDetailed<D>[]> {
 		return Promise.all(users.map(u => this.pack(u, me, options)));
 	},

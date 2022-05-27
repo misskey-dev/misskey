@@ -25,72 +25,60 @@
 </MkSpacer>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import * as JSON5 from 'json5';
+<script lang="ts" setup>
+import { ref } from 'vue';
+import JSON5 from 'json5';
 import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/form/input.vue';
 import MkTextarea from '@/components/form/textarea.vue';
 import MkSwitch from '@/components/form/switch.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
+import { Endpoints } from 'misskey-js';
 
-export default defineComponent({
-	components: {
-		MkButton, MkInput, MkTextarea, MkSwitch,
-	},
+const body = ref('{}');
+const endpoint = ref('');
+const endpoints = ref<any[]>([]);
+const sending = ref(false);
+const res = ref('');
+const withCredential = ref(true);
 
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: 'API console',
-				icon: 'fas fa-terminal'
-			},
+os.api('endpoints').then(endpointResponse => {
+	endpoints.value = endpointResponse;
+});
 
-			endpoint: '',
-			body: '{}',
-			res: null,
-			sending: false,
-			endpoints: [],
-			withCredential: true,
+function send() {
+	sending.value = true;
+	const requestBody = JSON5.parse(body.value);
+	os.api(endpoint.value as keyof Endpoints, requestBody, requestBody.i || (withCredential.value ? undefined : null)).then(resp => {
+		sending.value = false;
+		res.value = JSON5.stringify(resp, null, 2);
+	}, err => {
+		sending.value = false;
+		res.value = JSON5.stringify(err, null, 2);
+	});
+}
 
-		};
-	},
-
-	created() {
-		os.api('endpoints').then(endpoints => {
-			this.endpoints = endpoints;
-		});
-	},
-
-	methods: {
-		send() {
-			this.sending = true;
-			const body = JSON5.parse(this.body);
-			os.api(this.endpoint, body, body.i || (this.withCredential ? undefined : null)).then(res => {
-				this.sending = false;
-				this.res = JSON5.stringify(res, null, 2);
-			}, err => {
-				this.sending = false;
-				this.res = JSON5.stringify(err, null, 2);
-			});
-		},
-
-		onEndpointChange() {
-			os.api('endpoint', { endpoint: this.endpoint }, this.withCredential ? undefined : null).then(endpoint => {
-				const body = {};
-				for (const p of endpoint.params) {
-					body[p.name] =
-						p.type === 'String' ? '' :
-						p.type === 'Number' ? 0 :
-						p.type === 'Boolean' ? false :
-						p.type === 'Array' ? [] :
-						p.type === 'Object' ? {} :
-						null;
-				}
-				this.body = JSON5.stringify(body, null, 2);
-			});
+function onEndpointChange() {
+	os.api('endpoint', { endpoint: endpoint.value }, withCredential.value ? undefined : null).then(resp => {
+		const endpointBody = {};
+		for (const p of resp.params) {
+			endpointBody[p.name] =
+				p.type === 'String' ? '' :
+				p.type === 'Number' ? 0 :
+				p.type === 'Boolean' ? false :
+				p.type === 'Array' ? [] :
+				p.type === 'Object' ? {} :
+				null;
 		}
-	}
+		body.value = JSON5.stringify(endpointBody, null, 2);
+	});
+}
+
+defineExpose({
+	[symbols.PAGE_INFO]: {
+		title: 'API console',
+		icon: 'fas fa-terminal'
+	},
 });
 </script>

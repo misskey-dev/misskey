@@ -42,7 +42,7 @@
 
 <script lang="ts" setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
-import * as tinycolor from 'tinycolor2';
+import tinycolor from 'tinycolor2';
 
 withDefaults(defineProps<{
 	thickness: number;

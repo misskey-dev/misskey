@@ -91,7 +91,8 @@ export default defineComponent({
 					let style;
 					switch (token.props.name) {
 						case 'tada': {
-							style = `font-size: 150%;` + (this.$store.state.animatedMfm ? 'animation: tada 1s linear infinite both;' : '');
+							const speed = validTime(token.props.args.speed) || '1s';
+							style = 'font-size: 150%;' + (this.$store.state.animatedMfm ? `animation: tada ${speed} linear infinite both;` : '');
 							break;
 						}
 						case 'jelly': {
@@ -123,11 +124,13 @@ export default defineComponent({
 							break;
 						}
 						case 'jump': {
-							style = this.$store.state.animatedMfm ? 'animation: mfm-jump 0.75s linear infinite;' : '';
+							const speed = validTime(token.props.args.speed) || '0.75s';
+							style = this.$store.state.animatedMfm ? `animation: mfm-jump ${speed} linear infinite;` : '';
 							break;
 						}
 						case 'bounce': {
-							style = this.$store.state.animatedMfm ? 'animation: mfm-bounce 0.75s linear infinite; transform-origin: center bottom;' : '';
+							const speed = validTime(token.props.args.speed) || '0.75s';
+							style = this.$store.state.animatedMfm ? `animation: mfm-bounce ${speed} linear infinite; transform-origin: center bottom;` : '';
 							break;
 						}
 						case 'flip': {
@@ -139,16 +142,19 @@ export default defineComponent({
 							break;
 						}
 						case 'x2': {
-							style = `font-size: 200%;`;
-							break;
+							return h('span', {
+								class: 'mfm-x2',
+							}, genEl(token.children));
 						}
 						case 'x3': {
-							style = `font-size: 400%;`;
-							break;
+							return h('span', {
+								class: 'mfm-x3',
+							}, genEl(token.children));
 						}
 						case 'x4': {
-							style = `font-size: 600%;`;
-							break;
+							return h('span', {
+								class: 'mfm-x4',
+							}, genEl(token.children));
 						}
 						case 'font': {
 							const family =
@@ -168,7 +174,8 @@ export default defineComponent({
 							}, genEl(token.children));
 						}
 						case 'rainbow': {
-							style = this.$store.state.animatedMfm ? 'animation: mfm-rainbow 1s linear infinite;' : '';
+							const speed = validTime(token.props.args.speed) || '1s';
+							style = this.$store.state.animatedMfm ? `animation: mfm-rainbow ${speed} linear infinite;` : '';
 							break;
 						}
 						case 'sparkle': {

@@ -55,7 +55,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, defineAsyncComponent } from 'vue';
 import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/form/input.vue';
 import MkSelect from '@/components/form/select.vue';
@@ -93,7 +93,7 @@ function clear() {
 }
 
 function show(file) {
-	os.popup(import('./file-dialog.vue'), {
+	os.popup(defineAsyncComponent(() => import('./file-dialog.vue')), {
 		fileId: file.id
 	}, {}, 'closed');
 }
