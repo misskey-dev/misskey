@@ -137,7 +137,7 @@ async function saveNew() {
 		useSystemFont: localStorage.getItem('useSystemFont') as 't' | null,
 		wallpaper: localStorage.getItem('wallpaper'),
 	};
-	await os.api('i/registry/set', { scope, key: id, value: registry });
+	await os.apiWithDialog('i/registry/set', { scope, key: id, value: registry });
 }
 
 function loadFile() {
@@ -171,7 +171,7 @@ function loadFile() {
 		}
 
 		const id = uuid();
-		await os.api('i/registry/set', { scope, key: id, value: registry });
+		await os.apiWithDialog('i/registry/set', { scope, key: id, value: registry });
 
 		// 一応廃棄
 		(window as any).__misskey_input_ref__ = null;
@@ -248,7 +248,7 @@ async function deleteRegistry(id: string) {
 	});
 	if (canceled) return;
 
-	await os.api('i/registry/remove', { scope, key: id });
+	await os.apiWithDialog('i/registry/remove', { scope, key: id });
 	delete registries[id];
 }
 
@@ -275,7 +275,7 @@ async function save(id: string) {
 		useSystemFont: localStorage.getItem('useSystemFont') as 't' | null,
 		wallpaper: localStorage.getItem('wallpaper'),
 	};
-	await os.api('i/registry/set', { scope, key: id, value: registry });
+	await os.apiWithDialog('i/registry/set', { scope, key: id, value: registry });
 }
 
 async function rename(id: string) {
@@ -303,7 +303,7 @@ async function rename(id: string) {
 	if (cancel2) return;
 
 	registry.name = name;
-	await os.api('i/registry/set', { scope, key: id, value: registry });
+	await os.apiWithDialog('i/registry/set', { scope, key: id, value: registry });
 }
 
 function menu(ev: MouseEvent, registryId: string) {
