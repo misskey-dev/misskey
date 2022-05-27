@@ -19,8 +19,8 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(e: 'note'): void;
-	(e: 'queue', count: number): void;
+	(ev: 'note'): void;
+	(ev: 'queue', count: number): void;
 }>();
 
 provide('inChannel', computed(() => props.src === 'channel'));
@@ -95,7 +95,7 @@ if (props.src === 'antenna') {
 		visibility: 'specified'
 	};
 	const onNote = note => {
-		if (note.visibility == 'specified') {
+		if (note.visibility === 'specified') {
 			prepend(note);
 		}
 	};

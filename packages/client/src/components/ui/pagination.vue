@@ -41,7 +41,7 @@ import { defaultStore } from '@/store';
 import { MisskeyEntity } from '@/types/date-separated-list';
 
 const SECOND_FETCH_LIMIT = 30;
-const ASOBI = 16;
+const TOLERANCE = 16;
 
 export type Paging<E extends keyof misskey.Endpoints = keyof misskey.Endpoints> = {
 	endpoint: E;
@@ -79,12 +79,10 @@ const emit = defineEmits<{
 
 let rootEl = $ref<HTMLElement>();
 
-/*
- * 遡り中かどうか
- */
+// 遡り中かどうか
 let backed = $ref(false);
 
-let scrollRemove: (() => void) | null = $ref(null);
+let scrollRemove = $ref<(() => void) | null>(null);
 
 const items = ref<MisskeyEntity[]>([]);
 const queue = ref<MisskeyEntity[]>([]);
@@ -123,7 +121,7 @@ watch([$$(backed), $$(contentEl)], () => {
 	if (!backed) {
 		if (!contentEl) return;
 
-		scrollRemove = (props.pagination.reversed ? onScrollBottom : onScrollTop)(contentEl, executeQueue, ASOBI);
+		scrollRemove = (props.pagination.reversed ? onScrollBottom : onScrollTop)(contentEl, executeQueue, TOLERANCE);
 	} else {
 		if (scrollRemove) scrollRemove();
 		scrollRemove = null;
@@ -163,7 +161,7 @@ async function init(): Promise<void> {
 		offset.value = res.length;
 		error.value = false;
 		fetching.value = false;
-	}, ev => {
+	}, err => {
 		error.value = true;
 		fetching.value = false;
 	});
@@ -235,7 +233,7 @@ const fetchMore = async (): Promise<void> => {
 			}
 		}
 		offset.value += res.length;
-	}, ev => {
+	}, err => {
 		moreFetching.value = false;
 	});
 };
@@ -263,7 +261,7 @@ const fetchMoreAhead = async (): Promise<void> => {
 		}
 		offset.value += res.length;
 		moreFetching.value = false;
-	}, ev => {
+	}, err => {
 		moreFetching.value = false;
 	});
 };
@@ -275,7 +273,7 @@ const prepend = (item: MisskeyEntity): void => {
 		return;
 	}
 
-	const isTop = isBackTop.value || (props.pagination.reversed ? isBottomVisible : isTopVisible)(contentEl, ASOBI);
+	const isTop = isBackTop.value || (props.pagination.reversed ? isBottomVisible : isTopVisible)(contentEl, TOLERANCE);
 
 	if (isTop) unshiftItems([item]);
 	else prependQueue(item);
@@ -303,6 +301,11 @@ function prependQueue(newItem: MisskeyEntity) {
 
 const appendItem = (item: MisskeyEntity): void => {
 	items.value.push(item);
+};
+
+const removeItem = (finder: (item: MisskeyEntity) => boolean) => {
+	const i = items.value.findIndex(finder);
+	items.value.splice(i, 1);
 };
 
 const updateItem = (id: MisskeyEntity['id'], replacer: (old: MisskeyEntity) => MisskeyEntity): void => {
@@ -351,9 +354,9 @@ defineExpose({
 	more,
 	inited,
 	reload,
-	fetchMoreAhead,
 	prepend,
 	append: appendItem,
+	removeItem,
 	updateItem,
 });
 </script>

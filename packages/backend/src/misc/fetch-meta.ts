@@ -20,9 +20,16 @@ export async function fetchMeta(noCache = false): Promise<Meta> {
 			cache = meta;
 			return meta;
 		} else {
-			const saved = await transactionalEntityManager.save(Meta, {
-				id: 'x',
-			}) as Meta;
+			// metaが空のときfetchMetaが同時に呼ばれるとここが同時に呼ばれてしまうことがあるのでフェイルセーフなupsertを使う
+			const saved = await transactionalEntityManager
+				.upsert(
+					Meta,
+					{
+						id: 'x',
+					},
+					['id'],
+				)
+				.then((x) => transactionalEntityManager.findOneByOrFail(Meta, x.identifiers[0]));
 
 			cache = saved;
 			return saved;

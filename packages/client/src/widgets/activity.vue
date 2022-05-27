@@ -6,8 +6,8 @@
 	<div>
 		<MkLoading v-if="fetching"/>
 		<template v-else>
-			<XCalendar v-show="widgetProps.view === 0" :data="[].concat(activity)"/>
-			<XChart v-show="widgetProps.view === 1" :data="[].concat(activity)"/>
+			<XCalendar v-show="widgetProps.view === 0" :activity="[].concat(activity)"/>
+			<XChart v-show="widgetProps.view === 1" :activity="[].concat(activity)"/>
 		</template>
 	</div>
 </MkContainer>
@@ -47,7 +47,7 @@ type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 //const props = defineProps<WidgetComponentProps<WidgetProps>>();
 //const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
 const props = defineProps<{ widget?: Widget<WidgetProps>; }>();
-const emit = defineEmits<{ (e: 'updateProps', props: WidgetProps); }>();
+const emit = defineEmits<{ (ev: 'updateProps', props: WidgetProps); }>();
 
 const { widgetProps, configure, save } = useWidgetPropsManager(name,
 	widgetPropsDef,

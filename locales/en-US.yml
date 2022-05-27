@@ -1613,8 +1613,9 @@ _notification:
   youWereFollowed: "followed you"
   youReceivedFollowRequest: "You've received a follow request"
   yourFollowRequestAccepted: "Your follow request was accepted"
-  youWereInvitedToGroup: "You've been invited to a group"
+  youWereInvitedToGroup: "{userName} invited you to a group"
   pollEnded: "Poll results have become available"
+  emptyPushNotificationMessage: "Push notifications have been updated"
   _types:
     all: "All"
     follow: "New followers"
@@ -1629,6 +1630,10 @@ _notification:
     followRequestAccepted: "Accepted follow requests"
     groupInvited: "Group invitations"
     app: "Notifications from linked apps"
+  _actions:
+    followBack: "followed you back"
+    reply: "Reply"
+    renote: "Renote"
 _deck:
   alwaysShowMainColumn: "Always show main column"
   columnAlign: "Align columns"

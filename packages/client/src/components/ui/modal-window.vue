@@ -79,10 +79,10 @@ export default defineComponent({
 			this.$refs.modal.close();
 		},
 
-		onKeydown(e) {
-			if (e.which === 27) { // Esc
-				e.preventDefault();
-				e.stopPropagation();
+		onKeydown(evt) {
+			if (evt.which === 27) { // Esc
+				evt.preventDefault();
+				evt.stopPropagation();
 				this.close();
 			}
 		},

@@ -14,7 +14,7 @@ import { i18n } from '@/i18n';
 import { defaultStore } from '@/store';
 
 const emit = defineEmits<{
-	(e: 'mounted', el: Element): void;
+	(ev: 'mounted', el: Element): void;
 }>();
 
 let editMode = $ref(false);
@@ -32,13 +32,13 @@ function addWidget(widget) {
 }
 
 function removeWidget(widget) {
-	defaultStore.set('widgets', defaultStore.state.widgets.filter(w => w.id != widget.id));
+	defaultStore.set('widgets', defaultStore.state.widgets.filter(w => w.id !== widget.id));
 }
 
 function updateWidget({ id, data }) {
 	defaultStore.set('widgets', defaultStore.state.widgets.map(w => w.id === id ? {
 		...w,
-		data: data
+		data,
 	} : w));
 }
 

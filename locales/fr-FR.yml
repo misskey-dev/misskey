@@ -1615,6 +1615,9 @@ _notification:
     followRequestAccepted: "Demande d'abonnement acceptée"
     groupInvited: "Invitation à un groupe"
     app: "Notifications provenant des apps"
+  _actions:
+    reply: "Répondre"
+    renote: "Renoter"
 _deck:
   alwaysShowMainColumn: "Toujours afficher la colonne principale"
   columnAlign: "Aligner les colonnes"

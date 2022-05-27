@@ -153,11 +153,11 @@ export default defineComponent({
 				);
 			}
 			//#endregion
-		} catch (e) {
+		} catch (err) {
 			os.alert({
 				type: 'error',
-				title: e.message,
-				text: e.name
+				title: err.message,
+				text: err.name
 			});
 		}
 

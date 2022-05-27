@@ -25,7 +25,7 @@ export function getScrollPosition(el: HTMLElement | null): number {
 	return container == null ? window.scrollY : container.scrollTop;
 }
 
-export function onScrollTop(el: HTMLElement, cb: Function, asobi: number = 1, once: boolean = false) {
+export function onScrollTop(el: HTMLElement, cb: Function, tolerance: number = 1, once: boolean = false) {
 	// とりあえず評価してみる
 	if (isTopVisible(el)) {
 		cb();
@@ -36,7 +36,7 @@ export function onScrollTop(el: HTMLElement, cb: Function, asobi: number = 1, on
 
 	const onScroll = ev => {
 		if (!document.body.contains(el)) return;
-		if (isTopVisible(el, asobi)) {
+		if (isTopVisible(el, tolerance)) {
 			cb();
 			if (once) removeListener();
 		}
@@ -47,11 +47,11 @@ export function onScrollTop(el: HTMLElement, cb: Function, asobi: number = 1, on
 	return removeListener;
 }
 
-export function onScrollBottom(el: HTMLElement, cb: Function, asobi: number = 1, once: boolean = false) {
+export function onScrollBottom(el: HTMLElement, cb: Function, tolerance: number = 1, once: boolean = false) {
 	const container = getScrollContainer(el);
 
 	// とりあえず評価してみる
-	if (isBottomVisible(el, asobi, container)) {
+	if (isBottomVisible(el, tolerance, container)) {
 		cb();
 		if (once) return null;
 	}
@@ -109,14 +109,14 @@ export function scrollToBottom(
 	}
 }
 
-export function isTopVisible(el: HTMLElement, asobi: number = 1): boolean {
+export function isTopVisible(el: HTMLElement, tolerance: number = 1): boolean {
 	const scrollTop = getScrollPosition(el);
-	return scrollTop <= asobi;
+	return scrollTop <= tolerance;
 }
 
-export function isBottomVisible(el: HTMLElement, asobi = 1, container = getScrollContainer(el)) {
-	if (container) return el.scrollHeight <= container.clientHeight + Math.abs(container.scrollTop) + asobi;
-	return el.scrollHeight <= window.innerHeight + window.scrollY + asobi;
+export function isBottomVisible(el: HTMLElement, tolerance = 1, container = getScrollContainer(el)) {
+	if (container) return el.scrollHeight <= container.clientHeight + Math.abs(container.scrollTop) + tolerance;
+	return el.scrollHeight <= window.innerHeight + window.scrollY + tolerance;
 }
 
 // https://ja.javascript.info/size-and-scroll-window#ref-932

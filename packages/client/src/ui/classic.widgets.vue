@@ -44,13 +44,13 @@ export default defineComponent({
 		},
 
 		removeWidget(widget) {
-			this.$store.set('widgets', this.$store.state.widgets.filter(w => w.id != widget.id));
+			this.$store.set('widgets', this.$store.state.widgets.filter(w => w.id !== widget.id));
 		},
 
 		updateWidget({ id, data }) {
 			this.$store.set('widgets', this.$store.state.widgets.map(w => w.id === id ? {
 				...w,
-				data: data
+				data,
 			} : w));
 		},
 
