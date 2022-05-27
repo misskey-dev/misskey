@@ -33,13 +33,13 @@ const masterVolume = computed(soundConfigStore.makeGetterSetter('sound_masterVol
 const volumeIcon = computed(() => masterVolume.value === 0 ? 'fas fa-volume-mute' : 'fas fa-volume-up');
 
 const sounds = ref({
-		note: soundConfigStore.reactiveState.sound_note,
-		noteMy: soundConfigStore.reactiveState.sound_noteMy,
-		notification: soundConfigStore.reactiveState.sound_notification,
-		chat: soundConfigStore.reactiveState.sound_chat,
-		chatBg: soundConfigStore.reactiveState.sound_chatBg,
-		antenna: soundConfigStore.reactiveState.sound_antenna,
-		channel: soundConfigStore.reactiveState.sound_channel,
+	note: soundConfigStore.reactiveState.sound_note,
+	noteMy: soundConfigStore.reactiveState.sound_noteMy,
+	notification: soundConfigStore.reactiveState.sound_notification,
+	chat: soundConfigStore.reactiveState.sound_chat,
+	chatBg: soundConfigStore.reactiveState.sound_chatBg,
+	antenna: soundConfigStore.reactiveState.sound_antenna,
+	channel: soundConfigStore.reactiveState.sound_channel,
 });
 
 const soundsTypes = [
