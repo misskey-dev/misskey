@@ -1,4 +1,4 @@
-import httpSignature from 'http-signature';
+import httpSignature from '@peertube/http-signature';
 import { v4 as uuid } from 'uuid';
 
 import config from '@/config/index.js';

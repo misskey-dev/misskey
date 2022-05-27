@@ -4,11 +4,11 @@ import { dirname } from 'node:path';
 import Koa from 'koa';
 import send from 'koa-send';
 import rename from 'rename';
-import * as tmp from 'tmp';
 import { serverLogger } from '../index.js';
 import { contentDisposition } from '@/misc/content-disposition.js';
 import { DriveFiles } from '@/models/index.js';
 import { InternalStorage } from '@/services/drive/internal-storage.js';
+import { createTemp } from '@/misc/create-temp.js';
 import { downloadUrl } from '@/misc/download-url.js';
 import { detectType } from '@/misc/get-file-info.js';
 import { convertToWebp, convertToJpeg, convertToPng } from '@/services/drive/image-processor.js';
@@ -50,12 +50,7 @@ export default async function(ctx: Koa.Context) {
 
 	if (!file.storedInternal) {
 		if (file.isLink && file.uri) {	// 期限切れリモートファイル
-			const [path, cleanup] = await new Promise<[string, any]>((res, rej) => {
-				tmp.file((e, path, fd, cleanup) => {
-					if (e) return rej(e);
-					res([path, cleanup]);
-				});
-			});
+			const [path, cleanup] = await createTemp();
 
 			try {
 				await downloadUrl(file.uri, path);

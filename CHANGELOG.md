@@ -18,6 +18,15 @@ You should also include the user name that made the change.
 - enhance: API: notifications/readは配列でも受け付けるように #7667 @tamaina
 - enhance: プッシュ通知を複数アカウント対応に #7667 @tamaina
 - enhance: プッシュ通知にクリックやactionを設定 #7667 @tamaina
+- replaced webpack with Vite @tamaina
+- update dependencies @syuilo
+- enhance: display URL of QR code for TOTP registration @syuilo
+- make CAPTCHA required for signin to improve security @syuilo
+- enhance: Supports Unicode Emoji 14.0 @mei23
+- The theme color is now better validated. @Johann150
+  Your own theme color may be unset if it was in an invalid format.
+  Admins should check their instance settings if in doubt.
+- Perform port diagnosis at startup only when Listen fails @mei23
 
 ### Bugfixes
 - Client: fix settings page @tamaina
@@ -25,6 +34,14 @@ You should also include the user name that made the change.
 - Server: await promises when following or unfollowing users @Johann150
 - Client: fix abuse reports page to be able to show all reports @Johann150
 - Federation: Add rel attribute to host-meta @mei23
+- Client: fix profile picture height in mentions @tamaina
+- MFM: more animated functions support `speed` parameter @futchitwo
+- Federation: Fix quote renotes containing no text being federated correctly @Johann150
+- Server: fix missing foreign key for reports leading to reports page being unusable @Johann150
+- Server: fix internal in-memory caching @Johann150
+- Server: use correct order of attachments on notes @Johann150
+- Server: prevent crash when processing certain PNGs @syuilo
+- Server: Fix unable to generate video thumbnails @mei23
 
 ## 12.110.1 (2022/04/23)
 

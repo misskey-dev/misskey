@@ -76,6 +76,8 @@ _profile:
   username: "ಬಳಕೆಹೆಸರು"
 _notification:
   youWereFollowed: "ಹಿಂಬಾಲಿಸಿದರು"
+  _actions:
+    reply: "ಉತ್ತರಿಸು"
 _deck:
   _columns:
     notifications: "ಅಧಿಸೂಚನೆಗಳು"

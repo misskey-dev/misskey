@@ -39,28 +39,24 @@ html {
 	width: 28px;
 	height: 28px;
 	transform: translateY(70px);
+	color: var(--accent);
 }
-
-#splashSpinner:before,
-#splashSpinner:after {
-	content: " ";
-	display: block;
-	box-sizing: border-box;
-	width: 28px;
-	height: 28px;
-	border-radius: 50%;
-	border: solid 4px;
-}
-
-#splashSpinner:before {
-	border-color: currentColor;
-	opacity: 0.3;
-}
-
-#splashSpinner:after {
+#splashSpinner > .spinner {
 	position: absolute;
 	top: 0;
-	border-color: currentColor transparent transparent transparent;
+	left: 0;
+	width: 28px;
+	height: 28px;
+	fill-rule: evenodd;
+	clip-rule: evenodd;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	stroke-miterlimit: 1.5;
+}
+#splashSpinner > .spinner.bg {
+	opacity: 0.275;
+}
+#splashSpinner > .spinner.fg {
 	animation: splashSpinner 0.5s linear infinite;
 }
 

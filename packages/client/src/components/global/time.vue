@@ -17,7 +17,7 @@ const props = withDefaults(defineProps<{
 	mode: 'relative',
 });
 
-const _time = typeof props.time == 'string' ? new Date(props.time) : props.time;
+const _time = typeof props.time === 'string' ? new Date(props.time) : props.time;
 const absolute = _time.toLocaleString();
 
 let now = $ref(new Date());

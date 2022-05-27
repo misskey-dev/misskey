@@ -2,9 +2,9 @@
 <div
 	v-if="!muted"
 	v-show="!isDeleted"
+	ref="el"
 	v-hotkey="keymap"
 	v-size="{ max: [500, 450, 350, 300] }"
-	ref="el"
 	class="lxwezrsl _block"
 	:tabindex="!isDeleted ? '-1' : null"
 	:class="{ renote: isRenote }"
@@ -197,7 +197,7 @@ const keymap = {
 	'q': () => renoteButton.value.renote(true),
 	'esc': blur,
 	'm|o': () => menu(true),
-	's': () => showContent.value != showContent.value,
+	's': () => showContent.value !== showContent.value,
 };
 
 useNoteCapture({

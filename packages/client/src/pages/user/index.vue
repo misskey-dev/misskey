@@ -260,8 +260,8 @@ export default defineComponent({
 			this.user = null;
 			os.api('users/show', Acct.parse(this.acct)).then(user => {
 				this.user = user;
-			}).catch(e => {
-				this.error = e;
+			}).catch(err => {
+				this.error = err;
 			});
 		},
 
