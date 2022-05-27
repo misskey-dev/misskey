@@ -1,6 +1,6 @@
 // TODO: なんでもかんでもos.tsに突っ込むのやめたいのでよしなに分割する
 
-import { Component, markRaw, Ref, ref } from 'vue';
+import { Component, markRaw, Ref, ref, defineAsyncComponent } from 'vue';
 import { EventEmitter } from 'eventemitter3';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import * as Misskey from 'misskey-js';
@@ -59,10 +59,10 @@ export const apiWithDialog = ((
 	token?: string | null | undefined,
 ) => {
 	const promise = api(endpoint, data, token);
-	promiseDialog(promise, null, (e) => {
+	promiseDialog(promise, null, (err) => {
 		alert({
 			type: 'error',
-			text: e.message + '\n' + (e as any).id,
+			text: err.message + '\n' + (err as any).id,
 		});
 	});
 
@@ -72,7 +72,7 @@ export const apiWithDialog = ((
 export function promiseDialog<T extends Promise<any>>(
 	promise: T,
 	onSuccess?: ((res: any) => void) | null,
-	onFailure?: ((e: Error) => void) | null,
+	onFailure?: ((err: Error) => void) | null,
 	text?: string,
 ): T {
 	const showing = ref(true);
@@ -88,14 +88,14 @@ export function promiseDialog<T extends Promise<any>>(
 				showing.value = false;
 			}, 1000);
 		}
-	}).catch(e => {
+	}).catch(err => {
 		showing.value = false;
 		if (onFailure) {
-			onFailure(e);
+			onFailure(err);
 		} else {
 			alert({
 				type: 'error',
-				text: e
+				text: err,
 			});
 		}
 	});
@@ -108,10 +108,6 @@ export function promiseDialog<T extends Promise<any>>(
 	}, {}, 'closed');
 
 	return promise;
-}
-
-function isModule(x: any): x is typeof import('*.vue') {
-	return x.default != null;
 }
 
 let popupIdCount = 0;
@@ -131,10 +127,7 @@ export function claimZIndex(priority: 'low' | 'middle' | 'high' = 'low'): number
 	return zIndexes[priority];
 }
 
-export async function popup(component: Component | typeof import('*.vue') | Promise<Component | typeof import('*.vue')>, props: Record<string, any>, events = {}, disposeEvent?: string) {
-	if (component.then) component = await component;
-
-	if (isModule(component)) component = component.default;
+export async function popup(component: Component, props: Record<string, any>, events = {}, disposeEvent?: string) {
 	markRaw(component);
 
 	const id = ++popupIdCount;
@@ -163,7 +156,7 @@ export async function popup(component: Component | typeof import('*.vue') | Prom
 
 export function pageWindow(path: string) {
 	const { component, props } = resolve(path);
-	popup(import('@/components/page-window.vue'), {
+	popup(defineAsyncComponent(() => import('@/components/page-window.vue')), {
 		initialPath: path,
 		initialComponent: markRaw(component),
 		initialProps: props,
@@ -172,7 +165,7 @@ export function pageWindow(path: string) {
 
 export function modalPageWindow(path: string) {
 	const { component, props } = resolve(path);
-	popup(import('@/components/modal-page-window.vue'), {
+	popup(defineAsyncComponent(() => import('@/components/modal-page-window.vue')), {
 		initialPath: path,
 		initialComponent: markRaw(component),
 		initialProps: props,
@@ -180,7 +173,7 @@ export function modalPageWindow(path: string) {
 }
 
 export function toast(message: string) {
-	popup(import('@/components/toast.vue'), {
+	popup(defineAsyncComponent(() => import('@/components/toast.vue')), {
 		message
 	}, {}, 'closed');
 }
@@ -191,7 +184,7 @@ export function alert(props: {
 	text?: string | null;
 }): Promise<void> {
 	return new Promise((resolve, reject) => {
-		popup(import('@/components/dialog.vue'), props, {
+		popup(defineAsyncComponent(() => import('@/components/dialog.vue')), props, {
 			done: result => {
 				resolve();
 			},
@@ -205,7 +198,7 @@ export function confirm(props: {
 	text?: string | null;
 }): Promise<{ canceled: boolean }> {
 	return new Promise((resolve, reject) => {
-		popup(import('@/components/dialog.vue'), {
+		popup(defineAsyncComponent(() => import('@/components/dialog.vue')), {
 			...props,
 			showCancelButton: true,
 		}, {
@@ -226,7 +219,7 @@ export function inputText(props: {
 	canceled: false; result: string;
 }> {
 	return new Promise((resolve, reject) => {
-		popup(import('@/components/dialog.vue'), {
+		popup(defineAsyncComponent(() => import('@/components/dialog.vue')), {
 			title: props.title,
 			text: props.text,
 			input: {
@@ -251,7 +244,7 @@ export function inputNumber(props: {
 	canceled: false; result: number;
 }> {
 	return new Promise((resolve, reject) => {
-		popup(import('@/components/dialog.vue'), {
+		popup(defineAsyncComponent(() => import('@/components/dialog.vue')), {
 			title: props.title,
 			text: props.text,
 			input: {
@@ -276,7 +269,7 @@ export function inputDate(props: {
 	canceled: false; result: Date;
 }> {
 	return new Promise((resolve, reject) => {
-		popup(import('@/components/dialog.vue'), {
+		popup(defineAsyncComponent(() => import('@/components/dialog.vue')), {
 			title: props.title,
 			text: props.text,
 			input: {
@@ -313,7 +306,7 @@ export function select<C extends any = any>(props: {
 	canceled: false; result: C;
 }> {
 	return new Promise((resolve, reject) => {
-		popup(import('@/components/dialog.vue'), {
+		popup(defineAsyncComponent(() => import('@/components/dialog.vue')), {
 			title: props.title,
 			text: props.text,
 			select: {
@@ -335,7 +328,7 @@ export function success() {
 		window.setTimeout(() => {
 			showing.value = false;
 		}, 1000);
-		popup(import('@/components/waiting-dialog.vue'), {
+		popup(defineAsyncComponent(() => import('@/components/waiting-dialog.vue')), {
 			success: true,
 			showing: showing
 		}, {
@@ -347,7 +340,7 @@ export function success() {
 export function waiting() {
 	return new Promise((resolve, reject) => {
 		const showing = ref(true);
-		popup(import('@/components/waiting-dialog.vue'), {
+		popup(defineAsyncComponent(() => import('@/components/waiting-dialog.vue')), {
 			success: false,
 			showing: showing
 		}, {
@@ -358,7 +351,7 @@ export function waiting() {
 
 export function form(title, form) {
 	return new Promise((resolve, reject) => {
-		popup(import('@/components/form-dialog.vue'), { title, form }, {
+		popup(defineAsyncComponent(() => import('@/components/form-dialog.vue')), { title, form }, {
 			done: result => {
 				resolve(result);
 			},
@@ -368,7 +361,7 @@ export function form(title, form) {
 
 export async function selectUser() {
 	return new Promise((resolve, reject) => {
-		popup(import('@/components/user-select-dialog.vue'), {}, {
+		popup(defineAsyncComponent(() => import('@/components/user-select-dialog.vue')), {}, {
 			ok: user => {
 				resolve(user);
 			},
@@ -378,7 +371,7 @@ export async function selectUser() {
 
 export async function selectDriveFile(multiple: boolean) {
 	return new Promise((resolve, reject) => {
-		popup(import('@/components/drive-select-dialog.vue'), {
+		popup(defineAsyncComponent(() => import('@/components/drive-select-dialog.vue')), {
 			type: 'file',
 			multiple
 		}, {
@@ -393,7 +386,7 @@ export async function selectDriveFile(multiple: boolean) {
 
 export async function selectDriveFolder(multiple: boolean) {
 	return new Promise((resolve, reject) => {
-		popup(import('@/components/drive-select-dialog.vue'), {
+		popup(defineAsyncComponent(() => import('@/components/drive-select-dialog.vue')), {
 			type: 'folder',
 			multiple
 		}, {
@@ -408,7 +401,7 @@ export async function selectDriveFolder(multiple: boolean) {
 
 export async function pickEmoji(src: HTMLElement | null, opts) {
 	return new Promise((resolve, reject) => {
-		popup(import('@/components/emoji-picker-dialog.vue'), {
+		popup(defineAsyncComponent(() => import('@/components/emoji-picker-dialog.vue')), {
 			src,
 			...opts
 		}, {
@@ -458,7 +451,7 @@ export async function openEmojiPicker(src?: HTMLElement, opts, initialTextarea: 
 		characterData: false,
 	});
 
-	openingEmojiPicker = await popup(import('@/components/emoji-picker-window.vue'), {
+	openingEmojiPicker = await popup(defineAsyncComponent(() => import('@/components/emoji-picker-window.vue')), {
 		src,
 		...opts
 	}, {
@@ -480,7 +473,7 @@ export function popupMenu(items: MenuItem[] | Ref<MenuItem[]>, src?: HTMLElement
 }) {
 	return new Promise((resolve, reject) => {
 		let dispose;
-		popup(import('@/components/ui/popup-menu.vue'), {
+		popup(defineAsyncComponent(() => import('@/components/ui/popup-menu.vue')), {
 			items,
 			src,
 			width: options?.width,
@@ -501,7 +494,7 @@ export function contextMenu(items: MenuItem[] | Ref<MenuItem[]>, ev: MouseEvent)
 	ev.preventDefault();
 	return new Promise((resolve, reject) => {
 		let dispose;
-		popup(import('@/components/ui/context-menu.vue'), {
+		popup(defineAsyncComponent(() => import('@/components/ui/context-menu.vue')), {
 			items,
 			ev,
 		}, {

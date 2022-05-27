@@ -1,20 +1,25 @@
+import { randomBytes } from 'node:crypto';
 import Koa from 'koa';
 import bcrypt from 'bcryptjs';
 import * as speakeasy from 'speakeasy';
-import signin from '../common/signin.js';
+import { IsNull } from 'typeorm';
 import config from '@/config/index.js';
 import { Users, Signins, UserProfiles, UserSecurityKeys, AttestationChallenges } from '@/models/index.js';
 import { ILocalUser } from '@/models/entities/user.js';
 import { genId } from '@/misc/gen-id.js';
+import { fetchMeta } from '@/misc/fetch-meta.js';
+import { verifyHcaptcha, verifyRecaptcha } from '@/misc/captcha.js';
 import { verifyLogin, hash } from '../2fa.js';
-import { randomBytes } from 'node:crypto';
-import { IsNull } from 'typeorm';
+import signin from '../common/signin.js';
 
 export default async (ctx: Koa.Context) => {
 	ctx.set('Access-Control-Allow-Origin', config.url);
 	ctx.set('Access-Control-Allow-Credentials', 'true');
 
 	const body = ctx.request.body as any;
+
+	const instance = await fetchMeta(true);
+
 	const username = body['username'];
 	const password = body['password'];
 	const token = body['token'];
@@ -79,6 +84,18 @@ export default async (ctx: Koa.Context) => {
 	}
 
 	if (!profile.twoFactorEnabled) {
+		if (instance.enableHcaptcha && instance.hcaptchaSecretKey) {
+			await verifyHcaptcha(instance.hcaptchaSecretKey, body['hcaptcha-response']).catch(e => {
+				ctx.throw(400, e);
+			});
+		}
+	
+		if (instance.enableRecaptcha && instance.recaptchaSecretKey) {
+			await verifyRecaptcha(instance.recaptchaSecretKey, body['g-recaptcha-response']).catch(e => {
+				ctx.throw(400, e);
+			});
+		}
+	
 		if (same) {
 			signin(ctx, user);
 			return;
@@ -155,7 +172,7 @@ export default async (ctx: Koa.Context) => {
 				body.credentialId
 					.replace(/-/g, '+')
 					.replace(/_/g, '/'),
-					'base64'
+				'base64',
 			).toString('hex'),
 		});
 

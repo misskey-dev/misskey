@@ -25,12 +25,12 @@ export async function lookupUser() {
 			_notFound = true;
 		}
 	};
-	usernamePromise.then(show).catch(e => {
-		if (e.code === 'NO_SUCH_USER') {
+	usernamePromise.then(show).catch(err => {
+		if (err.code === 'NO_SUCH_USER') {
 			notFound();
 		}
 	});
-	idPromise.then(show).catch(e => {
+	idPromise.then(show).catch(err => {
 		notFound();
 	});
 }

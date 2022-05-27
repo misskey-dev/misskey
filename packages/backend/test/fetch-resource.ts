@@ -2,8 +2,8 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import * as childProcess from 'child_process';
-import { async, startServer, signup, post, request, simpleGet, port, shutdownServer } from './utils.js';
 import * as openapi from '@redocly/openapi-core';
+import { async, startServer, signup, post, request, simpleGet, port, shutdownServer } from './utils.js';
 
 // Request Accept
 const ONLY_AP = 'application/activity+json';
@@ -26,7 +26,7 @@ describe('Fetch resource', () => {
 		p = await startServer();
 		alice = await signup({ username: 'alice' });
 		alicesPost = await post(alice, {
-			text: 'test'
+			text: 'test',
 		});
 	});
 
@@ -70,7 +70,7 @@ describe('Fetch resource', () => {
 			const config = await openapi.loadConfig();
 			const result = await openapi.bundle({
 				config,
-				ref: `http://localhost:${port}/api.json`
+				ref: `http://localhost:${port}/api.json`,
 			});
 
 			for (const problem of result.problems) {

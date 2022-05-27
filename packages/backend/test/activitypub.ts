@@ -1,7 +1,7 @@
 process.env.NODE_ENV = 'test';
 
-import rndstr from 'rndstr';
 import * as assert from 'assert';
+import rndstr from 'rndstr';
 import { initTestDb } from './utils.js';
 
 describe('ActivityPub', () => {
@@ -57,8 +57,8 @@ describe('ActivityPub', () => {
 			const note = await createNote(post.id, resolver, true);
 
 			assert.deepStrictEqual(note?.uri, post.id);
-			assert.deepStrictEqual(note?.visibility, 'public');
-			assert.deepStrictEqual(note?.text, post.content);
+			assert.deepStrictEqual(note.visibility, 'public');
+			assert.deepStrictEqual(note.text, post.content);
 		});
 	});
 

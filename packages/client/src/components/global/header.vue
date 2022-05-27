@@ -38,7 +38,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, onUnmounted, PropType, ref, inject } from 'vue';
-import * as tinycolor from 'tinycolor2';
+import tinycolor from 'tinycolor2';
 import { popupMenu } from '@/os';
 import { url } from '@/config';
 import { scrollToTop } from '@/scripts/scroll';

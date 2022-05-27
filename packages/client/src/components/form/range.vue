@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, onUnmounted, ref, watch } from 'vue';
+import { computed, defineAsyncComponent, defineComponent, onMounted, onUnmounted, ref, watch } from 'vue';
 import * as os from '@/os';
 
 export default defineComponent({
@@ -112,7 +112,7 @@ export default defineComponent({
 			ev.preventDefault();
 
 			const tooltipShowing = ref(true);
-			os.popup(import('@/components/ui/tooltip.vue'), {
+			os.popup(defineAsyncComponent(() => import('@/components/ui/tooltip.vue')), {
 				showing: tooltipShowing,
 				text: computed(() => {
 					return props.textConverter(finalValue.value);

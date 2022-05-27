@@ -1,6 +1,6 @@
 FROM node:18.0.0-alpine3.15 AS base
 
-ENV NODE_ENV=production
+ARG NODE_ENV=production
 
 WORKDIR /misskey
 
@@ -31,5 +31,6 @@ COPY --from=builder /misskey/packages/backend/built ./packages/backend/built
 COPY --from=builder /misskey/packages/client/node_modules ./packages/client/node_modules
 COPY . ./
 
+ENV NODE_ENV=production
 CMD ["npm", "run", "migrateandstart"]
 

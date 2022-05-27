@@ -13,7 +13,7 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
-import * as JSON5 from 'json5';
+import JSON5 from 'json5';
 import FormTextarea from '@/components/form/textarea.vue';
 import FormButton from '@/components/ui/button.vue';
 import { applyTheme, validateTheme } from '@/scripts/theme';
@@ -29,7 +29,7 @@ function parseThemeCode(code: string) {
 
 	try {
 		theme = JSON5.parse(code);
-	} catch (e) {
+	} catch (err) {
 		os.alert({
 			type: 'error',
 			text: i18n.ts._theme.invalid

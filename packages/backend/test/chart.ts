@@ -2,7 +2,6 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import * as lolex from '@sinonjs/fake-timers';
-import { async, initTestDb } from './utils.js';
 import TestChart from '../src/services/chart/charts/test.js';
 import TestGroupedChart from '../src/services/chart/charts/test-grouped.js';
 import TestUniqueChart from '../src/services/chart/charts/test-unique.js';
@@ -11,6 +10,7 @@ import * as _TestChart from '../src/services/chart/charts/entities/test.js';
 import * as _TestGroupedChart from '../src/services/chart/charts/entities/test-grouped.js';
 import * as _TestUniqueChart from '../src/services/chart/charts/entities/test-unique.js';
 import * as _TestIntersectionChart from '../src/services/chart/charts/entities/test-intersection.js';
+import { async, initTestDb } from './utils.js';
 
 describe('Chart', () => {
 	let testChart: TestChart;
@@ -33,7 +33,7 @@ describe('Chart', () => {
 		testIntersectionChart = new TestIntersectionChart();
 
 		clock = lolex.install({
-			now: new Date(Date.UTC(2000, 0, 1, 0, 0, 0))
+			now: new Date(Date.UTC(2000, 0, 1, 0, 0, 0)),
 		});
 	}));
 
@@ -52,7 +52,7 @@ describe('Chart', () => {
 			foo: {
 				dec: [0, 0, 0],
 				inc: [1, 0, 0],
-				total: [1, 0, 0]
+				total: [1, 0, 0],
 			},
 		});
 
@@ -60,7 +60,7 @@ describe('Chart', () => {
 			foo: {
 				dec: [0, 0, 0],
 				inc: [1, 0, 0],
-				total: [1, 0, 0]
+				total: [1, 0, 0],
 			},
 		});
 	}));
@@ -76,7 +76,7 @@ describe('Chart', () => {
 			foo: {
 				dec: [1, 0, 0],
 				inc: [0, 0, 0],
-				total: [-1, 0, 0]
+				total: [-1, 0, 0],
 			},
 		});
 
@@ -84,7 +84,7 @@ describe('Chart', () => {
 			foo: {
 				dec: [1, 0, 0],
 				inc: [0, 0, 0],
-				total: [-1, 0, 0]
+				total: [-1, 0, 0],
 			},
 		});
 	}));
@@ -97,7 +97,7 @@ describe('Chart', () => {
 			foo: {
 				dec: [0, 0, 0],
 				inc: [0, 0, 0],
-				total: [0, 0, 0]
+				total: [0, 0, 0],
 			},
 		});
 
@@ -105,7 +105,7 @@ describe('Chart', () => {
 			foo: {
 				dec: [0, 0, 0],
 				inc: [0, 0, 0],
-				total: [0, 0, 0]
+				total: [0, 0, 0],
 			},
 		});
 	}));
@@ -123,7 +123,7 @@ describe('Chart', () => {
 			foo: {
 				dec: [0, 0, 0],
 				inc: [3, 0, 0],
-				total: [3, 0, 0]
+				total: [3, 0, 0],
 			},
 		});
 
@@ -131,7 +131,7 @@ describe('Chart', () => {
 			foo: {
 				dec: [0, 0, 0],
 				inc: [3, 0, 0],
-				total: [3, 0, 0]
+				total: [3, 0, 0],
 			},
 		});
 	}));
@@ -149,7 +149,7 @@ describe('Chart', () => {
 			foo: {
 				dec: [0, 0, 0],
 				inc: [1, 0, 0],
-				total: [1, 0, 0]
+				total: [1, 0, 0],
 			},
 		});
 
@@ -157,7 +157,7 @@ describe('Chart', () => {
 			foo: {
 				dec: [0, 0, 0],
 				inc: [1, 0, 0],
-				total: [1, 0, 0]
+				total: [1, 0, 0],
 			},
 		});
 	}));
@@ -178,7 +178,7 @@ describe('Chart', () => {
 			foo: {
 				dec: [0, 0, 0],
 				inc: [1, 1, 0],
-				total: [2, 1, 0]
+				total: [2, 1, 0],
 			},
 		});
 
@@ -186,7 +186,7 @@ describe('Chart', () => {
 			foo: {
 				dec: [0, 0, 0],
 				inc: [2, 0, 0],
-				total: [2, 0, 0]
+				total: [2, 0, 0],
 			},
 		});
 	}));
@@ -238,7 +238,7 @@ describe('Chart', () => {
 			foo: {
 				dec: [0, 0, 0],
 				inc: [1, 0, 1],
-				total: [2, 1, 1]
+				total: [2, 1, 1],
 			},
 		});
 
@@ -246,7 +246,7 @@ describe('Chart', () => {
 			foo: {
 				dec: [0, 0, 0],
 				inc: [2, 0, 0],
-				total: [2, 0, 0]
+				total: [2, 0, 0],
 			},
 		});
 	}));
@@ -265,7 +265,7 @@ describe('Chart', () => {
 			foo: {
 				dec: [0, 0, 0],
 				inc: [0, 0, 0],
-				total: [1, 1, 1]
+				total: [1, 1, 1],
 			},
 		});
 
@@ -273,7 +273,7 @@ describe('Chart', () => {
 			foo: {
 				dec: [0, 0, 0],
 				inc: [1, 0, 0],
-				total: [1, 0, 0]
+				total: [1, 0, 0],
 			},
 		});
 	}));
@@ -296,7 +296,7 @@ describe('Chart', () => {
 			foo: {
 				dec: [0, 0, 0],
 				inc: [1, 0, 0],
-				total: [2, 1, 1]
+				total: [2, 1, 1],
 			},
 		});
 
@@ -304,7 +304,7 @@ describe('Chart', () => {
 			foo: {
 				dec: [0, 0, 0],
 				inc: [2, 0, 0],
-				total: [2, 0, 0]
+				total: [2, 0, 0],
 			},
 		});
 	}));
@@ -325,7 +325,7 @@ describe('Chart', () => {
 			foo: {
 				dec: [0, 0, 0],
 				inc: [1, 0, 0],
-				total: [1, 0, 0]
+				total: [1, 0, 0],
 			},
 		});
 
@@ -333,7 +333,7 @@ describe('Chart', () => {
 			foo: {
 				dec: [0, 0, 0],
 				inc: [2, 0, 0],
-				total: [2, 0, 0]
+				total: [2, 0, 0],
 			},
 		});
 	}));
@@ -356,7 +356,7 @@ describe('Chart', () => {
 			foo: {
 				dec: [0, 0, 0],
 				inc: [1, 0, 0],
-				total: [1, 0, 0]
+				total: [1, 0, 0],
 			},
 		});
 
@@ -364,7 +364,7 @@ describe('Chart', () => {
 			foo: {
 				dec: [0, 0, 0],
 				inc: [2, 0, 0],
-				total: [2, 0, 0]
+				total: [2, 0, 0],
 			},
 		});
 	}));
@@ -383,7 +383,7 @@ describe('Chart', () => {
 				foo: {
 					dec: [0, 0, 0],
 					inc: [1, 0, 0],
-					total: [1, 0, 0]
+					total: [1, 0, 0],
 				},
 			});
 
@@ -391,7 +391,7 @@ describe('Chart', () => {
 				foo: {
 					dec: [0, 0, 0],
 					inc: [1, 0, 0],
-					total: [1, 0, 0]
+					total: [1, 0, 0],
 				},
 			});
 
@@ -399,7 +399,7 @@ describe('Chart', () => {
 				foo: {
 					dec: [0, 0, 0],
 					inc: [0, 0, 0],
-					total: [0, 0, 0]
+					total: [0, 0, 0],
 				},
 			});
 
@@ -407,7 +407,7 @@ describe('Chart', () => {
 				foo: {
 					dec: [0, 0, 0],
 					inc: [0, 0, 0],
-					total: [0, 0, 0]
+					total: [0, 0, 0],
 				},
 			});
 		}));
@@ -493,7 +493,7 @@ describe('Chart', () => {
 				foo: {
 					dec: [0, 0, 0],
 					inc: [0, 0, 0],
-					total: [1, 0, 0]
+					total: [1, 0, 0],
 				},
 			});
 
@@ -501,7 +501,7 @@ describe('Chart', () => {
 				foo: {
 					dec: [0, 0, 0],
 					inc: [0, 0, 0],
-					total: [1, 0, 0]
+					total: [1, 0, 0],
 				},
 			});
 		}));
@@ -523,7 +523,7 @@ describe('Chart', () => {
 				foo: {
 					dec: [0, 0, 0],
 					inc: [0, 1, 0],
-					total: [100, 1, 0]
+					total: [100, 1, 0],
 				},
 			});
 
@@ -531,7 +531,7 @@ describe('Chart', () => {
 				foo: {
 					dec: [0, 0, 0],
 					inc: [1, 0, 0],
-					total: [100, 0, 0]
+					total: [100, 0, 0],
 				},
 			});
 		}));

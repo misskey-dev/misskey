@@ -58,15 +58,11 @@
 		? `?salt=${localStorage.getItem('salt')}`
 		: '';
 
-	const script = document.createElement('script');
-	script.setAttribute('src', `/assets/app.${v}.js${salt}`);
-	script.setAttribute('async', 'true');
-	script.setAttribute('defer', 'true');
-	script.addEventListener('error', async () => {
-		await checkUpdate();
-		renderError('APP_FETCH_FAILED');
-	});
-	document.head.appendChild(script);
+	import(`/assets/${CLIENT_ENTRY}${salt}`)
+		.catch(async () => {
+			await checkUpdate();
+			renderError('APP_FETCH_FAILED');
+		})
 	//#endregion
 
 	//#region Theme

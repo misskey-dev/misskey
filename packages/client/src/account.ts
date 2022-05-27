@@ -1,5 +1,5 @@
 import { del, get, set } from '@/scripts/idb-proxy';
-import { reactive } from 'vue';
+import { defineAsyncComponent, reactive } from 'vue';
 import * as misskey from 'misskey-js';
 import { apiUrl } from '@/config';
 import { waiting, api, popup, popupMenu, success, alert } from '@/os';
@@ -11,10 +11,10 @@ import { i18n } from './i18n';
 
 type Account = misskey.entities.MeDetailed;
 
-const data = localStorage.getItem('account');
+const accountData = localStorage.getItem('account');
 
 // TODO: 外部からはreadonlyに
-export const $i = data ? reactive(JSON.parse(data) as Account) : null;
+export const $i = accountData ? reactive(JSON.parse(accountData) as Account) : null;
 
 export const iAmModerator = $i != null && ($i.isAdmin || $i.isModerator);
 
@@ -52,7 +52,7 @@ export async function signout() {
 					return Promise.all(registrations.map(registration => registration.unregister()));
 				});
 		}
-	} catch (e) {}
+	} catch (err) {}
 	//#endregion
 
 	document.cookie = `igi=; path=/`;
@@ -104,8 +104,8 @@ function fetchAccount(token: string): Promise<Account> {
 	});
 }
 
-export function updateAccount(data) {
-	for (const [key, value] of Object.entries(data)) {
+export function updateAccount(accountData) {
+	for (const [key, value] of Object.entries(accountData)) {
 		$i[key] = value;
 	}
 	localStorage.setItem('account', JSON.stringify($i));
@@ -141,7 +141,7 @@ export async function openAccountMenu(opts: {
 	onChoose?: (account: misskey.entities.UserDetailed) => void;
 }, ev: MouseEvent) {
 	function showSigninDialog() {
-		popup(import('@/components/signin-dialog.vue'), {}, {
+		popup(defineAsyncComponent(() => import('@/components/signin-dialog.vue')), {}, {
 			done: res => {
 				addAccount(res.id, res.i);
 				success();
@@ -150,7 +150,7 @@ export async function openAccountMenu(opts: {
 	}
 
 	function createAccount() {
-		popup(import('@/components/signup-dialog.vue'), {}, {
+		popup(defineAsyncComponent(() => import('@/components/signup-dialog.vue')), {}, {
 			done: res => {
 				addAccount(res.id, res.i);
 				switchAccountWithToken(res.i);
