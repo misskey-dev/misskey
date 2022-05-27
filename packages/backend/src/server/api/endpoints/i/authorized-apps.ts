@@ -27,7 +27,7 @@ export default define(meta, paramDef, async (ps, user) => {
 		take: ps.limit,
 		skip: ps.offset,
 		order: {
-			id: ps.sort == 'asc' ? 1 : -1,
+			id: ps.sort === 'asc' ? 1 : -1,
 		},
 	});
 

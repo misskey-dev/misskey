@@ -26,62 +26,40 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, markRaw, onMounted, onUnmounted, ref } from 'vue';
+<script lang="ts" setup>
+import { onMounted, onUnmounted, ref } from 'vue';
 import number from '@/filters/number';
 import MkQueueChart from '@/components/queue-chart.vue';
 import * as os from '@/os';
 
-export default defineComponent({
-	components: {
-		MkQueueChart
-	},
+const activeSincePrevTick = ref(0);
+const active = ref(0);
+const waiting = ref(0);
+const delayed = ref(0);
+const jobs = ref([]);
 
-	props: {
-		domain: {
-			type: String,
-			required: true,
-		},
-		connection: {
-			required: true,
-		},
-	},
+const props = defineProps<{
+	domain: string,
+	connection: any,
+}>();
 
-	setup(props) {
-		const activeSincePrevTick = ref(0);
-		const active = ref(0);
-		const waiting = ref(0);
-		const delayed = ref(0);
-		const jobs = ref([]);
+onMounted(() => {
+	os.api(props.domain === 'inbox' ? 'admin/queue/inbox-delayed' : props.domain === 'deliver' ? 'admin/queue/deliver-delayed' : null, {}).then(result => {
+		jobs.value = result;
+	});
 
-		onMounted(() => {
-			os.api(props.domain === 'inbox' ? 'admin/queue/inbox-delayed' : props.domain === 'deliver' ? 'admin/queue/deliver-delayed' : null, {}).then(result => {
-				jobs.value = result;
-			});
+	const onStats = (stats) => {
+		activeSincePrevTick.value = stats[props.domain].activeSincePrevTick;
+		active.value = stats[props.domain].active;
+		waiting.value = stats[props.domain].waiting;
+		delayed.value = stats[props.domain].delayed;
+	};
 
-			const onStats = (stats) => {
-				activeSincePrevTick.value = stats[props.domain].activeSincePrevTick;
-				active.value = stats[props.domain].active;
-				waiting.value = stats[props.domain].waiting;
-				delayed.value = stats[props.domain].delayed;
-			};
+	props.connection.on('stats', onStats);
 
-			props.connection.on('stats', onStats);
-
-			onUnmounted(() => {
-				props.connection.off('stats', onStats);
-			});
-		});
-
-		return {
-			jobs,
-			activeSincePrevTick,
-			active,
-			waiting,
-			delayed,
-			number,
-		};
-	},
+	onUnmounted(() => {
+		props.connection.off('stats', onStats);
+	});
 });
 </script>
 

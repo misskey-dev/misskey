@@ -1216,7 +1216,7 @@ _poll:
   votesCount: "{n} votes"
   totalVotes: "{n} votes au total"
   vote: "Voter"
-  showResult: "Voir les résultats"
+  showResult: "Voir résultats"
   voted: "Déjà voté"
   closed: "Terminé"
   remainingDays: "{d} jours, {h} heures restantes"
@@ -1615,6 +1615,9 @@ _notification:
     followRequestAccepted: "Demande d'abonnement acceptée"
     groupInvited: "Invitation à un groupe"
     app: "Notifications provenant des apps"
+  _actions:
+    reply: "Répondre"
+    renote: "Renoter"
 _deck:
   alwaysShowMainColumn: "Toujours afficher la colonne principale"
   columnAlign: "Aligner les colonnes"

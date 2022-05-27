@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineAsyncComponent, defineComponent, ref } from 'vue';
 import { toUnicode as decodePunycode } from 'punycode/';
 import { url as local } from '@/config';
 import * as os from '@/os';
@@ -50,7 +50,7 @@ export default defineComponent({
 		const el = ref();
 		
 		useTooltip(el, (showing) => {
-			os.popup(import('@/components/url-preview-popup.vue'), {
+			os.popup(defineAsyncComponent(() => import('@/components/url-preview-popup.vue')), {
 				showing,
 				url: props.url,
 				source: el.value,

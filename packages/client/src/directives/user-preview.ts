@@ -1,4 +1,4 @@
-import { Directive, ref } from 'vue';
+import { defineAsyncComponent, Directive, ref } from 'vue';
 import autobind from 'autobind-decorator';
 import { popup } from '@/os';
 
@@ -24,7 +24,7 @@ export class UserPreview {
 
 		const showing = ref(true);
 
-		popup(import('@/components/user-preview.vue'), {
+		popup(defineAsyncComponent(() => import('@/components/user-preview.vue')), {
 			showing,
 			q: this.user,
 			source: this.el

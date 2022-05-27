@@ -44,7 +44,7 @@
 					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
 					<template v-if="form[item].description" #caption>{{ form[item].description }}</template>
 				</FormRange>
-				<MkButton v-else-if="form[item].type === 'button'" @click="form[item].action($event, values)" class="_formBlock">
+				<MkButton v-else-if="form[item].type === 'button'" class="_formBlock" @click="form[item].action($event, values)">
 					<span v-text="form[item].content || item"></span>
 				</MkButton>
 			</template>

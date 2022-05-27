@@ -27,7 +27,7 @@ export const paramDef = {
 		blockedHosts: { type: 'array', nullable: true, items: {
 			type: 'string',
 		} },
-		themeColor: { type: 'string', nullable: true },
+		themeColor: { type: 'string', nullable: true, pattern: '^#[0-9a-fA-F]{6}$' },
 		mascotImageUrl: { type: 'string', nullable: true },
 		bannerUrl: { type: 'string', nullable: true },
 		errorImageUrl: { type: 'string', nullable: true },
@@ -397,11 +397,13 @@ export default define(meta, paramDef, async (ps, me) => {
 	}
 
 	await db.transaction(async transactionalEntityManager => {
-		const meta = await transactionalEntityManager.findOne(Meta, {
+		const metas = await transactionalEntityManager.find(Meta, {
 			order: {
 				id: 'DESC',
 			},
 		});
+
+		const meta = metas[0];
 
 		if (meta) {
 			await transactionalEntityManager.update(Meta, meta.id, set);

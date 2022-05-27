@@ -1,27 +1,25 @@
-import * as websocket from 'websocket';
-import { readNotification } from '../common/read-notification.js';
-import call from '../call.js';
-import readNote from '@/services/note/read.js';
-import Channel from './channel.js';
-import channels from './channels/index.js';
 import { EventEmitter } from 'events';
+import * as websocket from 'websocket';
+import readNote from '@/services/note/read.js';
 import { User } from '@/models/entities/user.js';
 import { Channel as ChannelModel } from '@/models/entities/channel.js';
 import { Users, Followings, Mutings, UserProfiles, ChannelFollowings, Blockings } from '@/models/index.js';
-import { ApiError } from '../error.js';
 import { AccessToken } from '@/models/entities/access-token.js';
 import { UserProfile } from '@/models/entities/user-profile.js';
 import { publishChannelStream, publishGroupMessagingStream, publishMessagingStream } from '@/services/stream.js';
 import { UserGroup } from '@/models/entities/user-group.js';
-import { StreamEventEmitter, StreamMessages } from './types.js';
 import { Packed } from '@/misc/schema.js';
+import { readNotification } from '../common/read-notification.js';
+import channels from './channels/index.js';
+import Channel from './channel.js';
+import { StreamEventEmitter, StreamMessages } from './types.js';
 
 /**
  * Main stream connection
  */
 export default class Connection {
 	public user?: User;
-	public userProfile?: UserProfile;
+	public userProfile?: UserProfile | null;
 	public following: Set<User['id']> = new Set();
 	public muting: Set<User['id']> = new Set();
 	public blocking: Set<User['id']> = new Set(); // "被"blocking
@@ -84,7 +82,7 @@ export default class Connection {
 				this.muting.delete(data.body.id);
 				break;
 
-			// TODO: block events
+				// TODO: block events
 
 			case 'followChannel':
 				this.followingChannels.add(data.body.id);
@@ -126,7 +124,6 @@ export default class Connection {
 		const { type, body } = obj;
 
 		switch (type) {
-			case 'api': this.onApiRequest(body); break;
 			case 'readNotification': this.onReadNotification(body); break;
 			case 'subNote': this.onSubscribeNote(body); break;
 			case 's': this.onSubscribeNote(body); break; // alias
@@ -181,31 +178,6 @@ export default class Connection {
 				followingChannels: this.followingChannels,
 			});
 		}
-	}
-
-	/**
-	 * APIリクエスト要求時
-	 */
-	private async onApiRequest(payload: any) {
-		// 新鮮なデータを利用するためにユーザーをフェッチ
-		const user = this.user ? await Users.findOneBy({ id: this.user.id }) : null;
-
-		const endpoint = payload.endpoint || payload.ep; // alias
-
-		// 呼び出し
-		call(endpoint, user, this.token, payload.data).then(res => {
-			this.sendMessageToWs(`api:${payload.id}`, { res });
-		}).catch((e: ApiError) => {
-			this.sendMessageToWs(`api:${payload.id}`, {
-				error: {
-					message: e.message,
-					code: e.code,
-					id: e.id,
-					kind: e.kind,
-					...(e.info ? { info: e.info } : {}),
-				},
-			});
-		});
 	}
 
 	private onReadNotification(payload: any) {

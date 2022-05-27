@@ -108,6 +108,10 @@ export default defineComponent({
 	},
 	methods: {
 		fetch() {
+			this.hasPrev = false;
+			this.hasNext = false;
+			this.showPrev = false;
+			this.showNext = false;
 			this.note = null;
 			os.api('notes/show', {
 				noteId: this.noteId
@@ -132,8 +136,8 @@ export default defineComponent({
 					this.hasPrev = prev.length !== 0;
 					this.hasNext = next.length !== 0;
 				});
-			}).catch(e => {
-				this.error = e;
+			}).catch(err => {
+				this.error = err;
 			});
 		}
 	}

@@ -61,40 +61,40 @@ describe('API visibility', () => {
 
 		const show = async (noteId: any, by: any) => {
 			return await request('/notes/show', {
-				noteId
+				noteId,
 			}, by);
 		};
 
 		before(async () => {
 			//#region prepare
 			// signup
-			alice    = await signup({ username: 'alice' });
+			alice = await signup({ username: 'alice' });
 			follower = await signup({ username: 'follower' });
-			other    = await signup({ username: 'other' });
-			target   = await signup({ username: 'target' });
-			target2  = await signup({ username: 'target2' });
+			other = await signup({ username: 'other' });
+			target = await signup({ username: 'target' });
+			target2 = await signup({ username: 'target2' });
 
 			// follow alice <= follower
 			await request('/following/create', { userId: alice.id }, follower);
 
 			// normal posts
-			pub  = await post(alice, { text: 'x', visibility: 'public' });
+			pub = await post(alice, { text: 'x', visibility: 'public' });
 			home = await post(alice, { text: 'x', visibility: 'home' });
-			fol  = await post(alice, { text: 'x', visibility: 'followers' });
-			spe  = await post(alice, { text: 'x', visibility: 'specified', visibleUserIds: [target.id] });
+			fol = await post(alice, { text: 'x', visibility: 'followers' });
+			spe = await post(alice, { text: 'x', visibility: 'specified', visibleUserIds: [target.id] });
 
 			// replies
 			tgt = await post(target, { text: 'y', visibility: 'public' });
-			pubR  = await post(alice, { text: 'x', replyId: tgt.id, visibility: 'public' });
+			pubR = await post(alice, { text: 'x', replyId: tgt.id, visibility: 'public' });
 			homeR = await post(alice, { text: 'x', replyId: tgt.id, visibility: 'home' });
-			folR  = await post(alice, { text: 'x', replyId: tgt.id, visibility: 'followers' });
-			speR  = await post(alice, { text: 'x', replyId: tgt.id, visibility: 'specified' });
+			folR = await post(alice, { text: 'x', replyId: tgt.id, visibility: 'followers' });
+			speR = await post(alice, { text: 'x', replyId: tgt.id, visibility: 'specified' });
 
 			// mentions
-			pubM  = await post(alice, { text: '@target x', replyId: tgt.id, visibility: 'public' });
+			pubM = await post(alice, { text: '@target x', replyId: tgt.id, visibility: 'public' });
 			homeM = await post(alice, { text: '@target x', replyId: tgt.id, visibility: 'home' });
-			folM  = await post(alice, { text: '@target x', replyId: tgt.id, visibility: 'followers' });
-			speM  = await post(alice, { text: '@target2 x', replyId: tgt.id, visibility: 'specified' });
+			folM = await post(alice, { text: '@target x', replyId: tgt.id, visibility: 'followers' });
+			speM = await post(alice, { text: '@target2 x', replyId: tgt.id, visibility: 'specified' });
 			//#endregion
 		});
 

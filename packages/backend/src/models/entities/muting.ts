@@ -17,7 +17,6 @@ export class Muting {
 	@Index()
 	@Column('timestamp with time zone', {
 		nullable: true,
-		default: null,
 	})
 	public expiresAt: Date | null;
 

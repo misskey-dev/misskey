@@ -27,8 +27,8 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(e: 'done'): void;
-	(e: 'closed'): void;
+	(ev: 'done'): void;
+	(ev: 'closed'): void;
 }>();
 
 const dialog = $ref<InstanceType<typeof XModalWindow>>();

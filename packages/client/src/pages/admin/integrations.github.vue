@@ -24,57 +24,36 @@
 </FormSuspense>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
 import FormSwitch from '@/components/form/switch.vue';
 import FormInput from '@/components/form/input.vue';
 import FormButton from '@/components/ui/button.vue';
 import FormInfo from '@/components/ui/info.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { fetchInstance } from '@/instance';
 
-export default defineComponent({
-	components: {
-		FormSwitch,
-		FormInput,
-		FormInfo,
-		FormButton,
-		FormSuspense,
-	},
+let uri: string = $ref('');
+let enableGithubIntegration: boolean = $ref(false);
+let githubClientId: string | null = $ref(null);
+let githubClientSecret: string | null = $ref(null);
 
-	emits: ['info'],
+async function init() {
+	const meta = await os.api('admin/meta');
+	uri = meta.uri;
+	enableGithubIntegration = meta.enableGithubIntegration;
+	githubClientId = meta.githubClientId;
+	githubClientSecret = meta.githubClientSecret;
+}
 
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: 'GitHub',
-				icon: 'fab fa-github'
-			},
-			enableGithubIntegration: false,
-			githubClientId: null,
-			githubClientSecret: null,
-		}
-	},
-
-	methods: {
-		async init() {
-			const meta = await os.api('admin/meta');
-			this.uri = meta.uri;
-			this.enableGithubIntegration = meta.enableGithubIntegration;
-			this.githubClientId = meta.githubClientId;
-			this.githubClientSecret = meta.githubClientSecret;
-		},
-		save() {
-			os.apiWithDialog('admin/update-meta', {
-				enableGithubIntegration: this.enableGithubIntegration,
-				githubClientId: this.githubClientId,
-				githubClientSecret: this.githubClientSecret,
-			}).then(() => {
-				fetchInstance();
-			});
-		}
-	}
-});
+function save() {
+	os.apiWithDialog('admin/update-meta', {
+		enableGithubIntegration,
+		githubClientId,
+		githubClientSecret,
+	}).then(() => {
+		fetchInstance();
+	});
+}
 </script>

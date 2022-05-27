@@ -42,7 +42,7 @@ const is = computed(() => {
 			"application/x-tar",
 			"application/gzip",
 			"application/x-7z-compressed"
-		].some(e => e === props.file.type)) return 'archive';
+		].some(archiveType => archiveType === props.file.type)) return 'archive';
 	return 'unknown';
 });
 

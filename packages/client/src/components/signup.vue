@@ -58,8 +58,8 @@
 				</template>
 			</I18n>
 		</MkSwitch>
-		<captcha v-if="meta.enableHcaptcha" ref="hcaptcha" v-model="hCaptchaResponse" class="_formBlock captcha" provider="hcaptcha" :sitekey="meta.hcaptchaSiteKey"/>
-		<captcha v-if="meta.enableRecaptcha" ref="recaptcha" v-model="reCaptchaResponse" class="_formBlock captcha" provider="recaptcha" :sitekey="meta.recaptchaSiteKey"/>
+		<MkCaptcha v-if="meta.enableHcaptcha" ref="hcaptcha" v-model="hCaptchaResponse" class="_formBlock captcha" provider="hcaptcha" :sitekey="meta.hcaptchaSiteKey"/>
+		<MkCaptcha v-if="meta.enableRecaptcha" ref="recaptcha" v-model="reCaptchaResponse" class="_formBlock captcha" provider="recaptcha" :sitekey="meta.recaptchaSiteKey"/>
 		<MkButton class="_formBlock" type="submit" :disabled="shouldDisableSubmitting" gradate data-cy-signup-submit>{{ $ts.start }}</MkButton>
 	</template>
 </form>
@@ -67,7 +67,7 @@
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
-const getPasswordStrength = require('syuilo-password-strength');
+const getPasswordStrength = await import('syuilo-password-strength');
 import { toUnicode } from 'punycode/';
 import { host, url } from '@/config';
 import MkButton from './ui/button.vue';
@@ -81,7 +81,7 @@ export default defineComponent({
 		MkButton,
 		MkInput,
 		MkSwitch,
-		captcha: defineAsyncComponent(() => import('./captcha.vue')),
+		MkCaptcha: defineAsyncComponent(() => import('./captcha.vue')),
 	},
 
 	props: {
@@ -124,20 +124,20 @@ export default defineComponent({
 				this.meta.tosUrl && !this.ToSAgreement ||
 				this.meta.enableHcaptcha && !this.hCaptchaResponse ||
 				this.meta.enableRecaptcha && !this.reCaptchaResponse ||
-				this.passwordRetypeState == 'not-match';
+				this.passwordRetypeState === 'not-match';
 		},
 
 		shouldShowProfileUrl(): boolean {
-			return (this.username != '' &&
-				this.usernameState != 'invalid-format' &&
-				this.usernameState != 'min-range' &&
-				this.usernameState != 'max-range');
+			return (this.username !== '' &&
+				this.usernameState !== 'invalid-format' &&
+				this.usernameState !== 'min-range' &&
+				this.usernameState !== 'max-range');
 		}
 	},
 
 	methods: {
 		onChangeUsername() {
-			if (this.username == '') {
+			if (this.username === '') {
 				this.usernameState = null;
 				return;
 			}
@@ -165,7 +165,7 @@ export default defineComponent({
 		},
 
 		onChangeEmail() {
-			if (this.email == '') {
+			if (this.email === '') {
 				this.emailState = null;
 				return;
 			}
@@ -188,7 +188,7 @@ export default defineComponent({
 		},
 
 		onChangePassword() {
-			if (this.password == '') {
+			if (this.password === '') {
 				this.passwordStrength = '';
 				return;
 			}
@@ -198,12 +198,12 @@ export default defineComponent({
 		},
 
 		onChangePasswordRetype() {
-			if (this.retypedPassword == '') {
+			if (this.retypedPassword === '') {
 				this.passwordRetypeState = null;
 				return;
 			}
 
-			this.passwordRetypeState = this.password == this.retypedPassword ? 'match' : 'not-match';
+			this.passwordRetypeState = this.password === this.retypedPassword ? 'match' : 'not-match';
 		},
 
 		onSubmit() {
