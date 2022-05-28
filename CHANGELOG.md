@@ -21,7 +21,6 @@ You should also include the user name that made the change.
 - replaced webpack with Vite @tamaina
 - update dependencies @syuilo
 - enhance: display URL of QR code for TOTP registration @syuilo
-- make CAPTCHA required for signin to improve security @syuilo
 - enhance: Supports Unicode Emoji 14.0 @mei23
 - The theme color is now better validated. @Johann150
   Your own theme color may be unset if it was in an invalid format.
