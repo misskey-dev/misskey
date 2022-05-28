@@ -1,5 +1,5 @@
 <template>
-<div :class="[$style.yxspomdl, { [$style.inline]: inline, [$style.colored]: colored, [$style.mini]: mini }]">
+<div :class="[$style.root, { [$style.inline]: inline, [$style.colored]: colored, [$style.mini]: mini }]">
 	<div :class="$style.container">
 		<svg :class="[$style.spinner, $style.bg]" viewBox="0 0 168 168" xmlns="http://www.w3.org/2000/svg">
 			<g transform="matrix(1.125,0,0,1.125,12,12)">
@@ -41,7 +41,7 @@ const props = withDefaults(defineProps<{
 	}
 }
 
-.yxspomdl {
+.root {
 	padding: 32px;
 	text-align: center;
 	cursor: wait;
