@@ -8,7 +8,7 @@ import { User } from '@/models/entities/user.js';
 export const renderActivity = (x: any): IActivity | null => {
 	if (x == null) return null;
 
-	if (x !== null && typeof x === 'object' && x.id == null) {
+	if (typeof x === 'object' && x.id == null) {
 		x.id = `${config.url}/${uuid()}`;
 	}
 
