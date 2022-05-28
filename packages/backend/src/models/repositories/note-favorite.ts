@@ -24,6 +24,6 @@ export const NoteFavoriteRepository = db.getRepository(NoteFavorite).extend({
 		me: { id: User['id'] }
 	) {
 		return Promise.allSettled(favorites.map(x => this.pack(x, me)))
-		.then(promises => promises.flatMap(result => result.status === 'fulfilled' ? [result.value] : []);
+		.then(promises => promises.flatMap(result => result.status === 'fulfilled' ? [result.value] : []));
 	},
 });
