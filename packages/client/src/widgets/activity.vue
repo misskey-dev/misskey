@@ -1,5 +1,5 @@
 <template>
-<MkContainer :show-header="widgetProps.showHeader" :naked="widgetProps.transparent">
+<MkContainer :show-header="widgetProps.showHeader" :naked="widgetProps.transparent" class="mkw-activity">
 	<template #header><i class="fas fa-chart-bar"></i>{{ $ts._widgets.activity }}</template>
 	<template #func><button class="_button" @click="toggleView()"><i class="fas fa-sort"></i></button></template>
 
