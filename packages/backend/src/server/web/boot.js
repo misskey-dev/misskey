@@ -55,9 +55,9 @@
 
 	//#region Script
 	import(`/assets/${CLIENT_ENTRY}`)
-		.catch(async () => {
+		.catch(async e => {
 			await checkUpdate();
-			renderError('APP_FETCH_FAILED');
+			renderError('APP_FETCH_FAILED', JSON.stringify(e));
 		})
 	//#endregion
 
