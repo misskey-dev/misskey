@@ -58,7 +58,7 @@ export default abstract class Channel {
 		});
 	}
 
-	protected withPackedNote(callback: (Packed<'Note'>) => void): (Note) => void {
+	protected withPackedNote(callback: (note: Packed<'Note'>) => void): (Note) => void {
 		return async (note: Note) => {
 			try {
 				const packed = await Notes.pack(note, this.user.id, { detail: true });
