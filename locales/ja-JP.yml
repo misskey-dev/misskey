@@ -842,6 +842,7 @@ oneDay: "1日"
 oneWeek: "1週間"
 reflectMayTakeTime: "反映されるまで時間がかかる場合があります。"
 failedToFetchAccountInformation: "アカウント情報の取得に失敗しました"
+rateLimitExceeded: "レート制限を超えました"
 
 _emailUnavailable:
   used: "既に使用されています"

@@ -14,8 +14,6 @@
 				<template #prefix><i class="fas fa-lock"></i></template>
 				<template #caption><button class="_textButton" type="button" @click="resetPassword">{{ i18n.ts.forgotPassword }}</button></template>
 			</MkInput>
-			<MkCaptcha v-if="meta.enableHcaptcha" ref="hcaptcha" v-model="hCaptchaResponse" class="_formBlock captcha" provider="hcaptcha" :sitekey="meta.hcaptchaSiteKey"/>
-			<MkCaptcha v-if="meta.enableRecaptcha" ref="recaptcha" v-model="reCaptchaResponse" class="_formBlock captcha" provider="recaptcha" :sitekey="meta.recaptchaSiteKey"/>
 			<MkButton class="_formBlock" type="submit" primary :disabled="signing" style="margin: 0 auto;">{{ signing ? i18n.ts.loggingIn : i18n.ts.login }}</MkButton>
 		</div>
 		<div v-if="totpLogin" class="2fa-signin" :class="{ securityKeys: user && user.securityKeys }">
@@ -63,8 +61,6 @@ import { login } from '@/account';
 import { showSuspendedDialog } from '../scripts/show-suspended-dialog';
 import { instance } from '@/instance';
 import { i18n } from '@/i18n';
-
-const MkCaptcha = defineAsyncComponent(() => import('./captcha.vue'));
 
 let signing = $ref(false);
 let user = $ref(null);
@@ -215,6 +211,14 @@ function loginFailed(err) {
 		}
 		case 'e03a5f46-d309-4865-9b69-56282d94e1eb': {
 			showSuspendedDialog();
+			break;
+		}
+		case '22d05606-fbcf-421a-a2db-b32610dcfd1b': {
+			os.alert({
+				type: 'error',
+				title: i18n.ts.loginFailed,
+				text: i18n.ts.rateLimitExceeded,
+			});
 			break;
 		}
 		default: {
