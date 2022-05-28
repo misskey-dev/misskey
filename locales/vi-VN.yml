@@ -842,6 +842,7 @@ oneDay: "1 ngày"
 oneWeek: "1 tuần"
 reflectMayTakeTime: "Có thể mất một thời gian để điều này được áp dụng."
 failedToFetchAccountInformation: "Không thể lấy thông tin tài khoản"
+rateLimitExceeded: "Giới hạn quá mức"
 _emailUnavailable:
   used: "Địa chỉ email đã được sử dụng"
   format: "Địa chỉ email không hợp lệ"
