@@ -10,13 +10,13 @@
 		</optgroup>
 	</FormSelect>
 	<template v-if="selectedTheme">
-		<FormInput readonly :modelValue="selectedTheme.author" class="_formBlock">
+		<FormInput readonly :model-value="selectedTheme.author" class="_formBlock">
 			<template #label>{{ i18n.ts.author }}</template>
 		</FormInput>
-		<FormTextarea v-if="selectedTheme.desc" readonly :modelValue="selectedTheme.desc" class="_formBlock">
+		<FormTextarea v-if="selectedTheme.desc" readonly :model-value="selectedTheme.desc" class="_formBlock">
 			<template #label>{{ i18n.ts._theme.description }}</template>
 		</FormTextarea>
-		<FormTextarea readonly tall :modelValue="selectedThemeCode" class="_formBlock">
+		<FormTextarea readonly tall :model-value="selectedThemeCode" class="_formBlock">
 			<template #label>{{ i18n.ts._theme.code }}</template>
 			<template #caption><button class="_textButton" @click="copyThemeCode()">{{ i18n.ts.copy }}</button></template>
 		</FormTextarea>
@@ -32,7 +32,7 @@ import FormTextarea from '@/components/form/textarea.vue';
 import FormSelect from '@/components/form/select.vue';
 import FormInput from '@/components/form/input.vue';
 import FormButton from '@/components/ui/button.vue';
-import { Theme, builtinThemes } from '@/scripts/theme';
+import { Theme, getBuiltinThemesRef } from '@/scripts/theme';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import * as os from '@/os';
 import { getThemes, removeTheme } from '@/theme-store';
@@ -40,9 +40,10 @@ import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
 
 const installedThemes = ref(getThemes());
+const builtinThemes = getBuiltinThemesRef();
 const selectedThemeId = ref(null);
 
-const themes = computed(() => builtinThemes.concat(installedThemes.value));
+const themes = computed(() => [ ...installedThemes.value, ...builtinThemes.value ]);
 
 const selectedTheme = computed(() => {
 	if (selectedThemeId.value == null) return null;
