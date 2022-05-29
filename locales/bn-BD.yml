@@ -1081,7 +1081,6 @@ _sfx:
   antenna: "অ্যান্টেনাগুলি"
   channel: "চ্যানেলের বিজ্ঞপ্তি"
 _ago:
-  unknown: "অজানা"
   future: "ভবিষ্যৎ"
   justNow: "এইমাত্র"
   secondsAgo: "{n} সেকেন্ড আগে"
