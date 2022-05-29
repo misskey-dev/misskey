@@ -841,6 +841,7 @@ oneDay: "1 deň"
 oneWeek: "1 týždeň"
 reflectMayTakeTime: "Zmeny môžu chvíľu trvať kým sa prejavia."
 failedToFetchAccountInformation: "Nepodarilo sa načítať informácie o účte."
+rateLimitExceeded: "Prekročený limit rýchlosti"
 _emailUnavailable:
   used: "Táto emailová adresa sa už používa"
   format: "Formát emailovej adresy je nesprávny"
