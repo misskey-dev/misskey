@@ -1074,7 +1074,6 @@ _sfx:
   antenna: "Антенна"
   channel: "Канал"
 _ago:
-  unknown: "Когда-то"
   future: "Из будущего"
   justNow: "Только что"
   secondsAgo: "{n} с назад"
