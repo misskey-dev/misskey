@@ -1088,7 +1088,6 @@ _sfx:
   antenna: "Penerimaan Antenna"
   channel: "Pemberitahuan saluran"
 _ago:
-  unknown: "Tidak diketahui"
   future: "Masa depan"
   justNow: "Baru saja"
   secondsAgo: "{n} detik lalu"
