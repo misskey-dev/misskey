@@ -1088,7 +1088,6 @@ _sfx:
   antenna: "Antennas"
   channel: "Channel notifications"
 _ago:
-  unknown: "Unknown"
   future: "Future"
   justNow: "Just now"
   secondsAgo: "{n} second(s) ago"
