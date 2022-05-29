@@ -213,14 +213,13 @@ function onDragover(ev) {
 	if (dragging) {
 		// 自分自身にはドロップさせない
 		ev.dataTransfer.dropEffect = 'none';
-		return;
+	} else {
+		const isDeckColumn = ev.dataTransfer.types[0] === _DATA_TRANSFER_DECK_COLUMN_;
+
+		ev.dataTransfer.dropEffect = isDeckColumn ? 'move' : 'none';
+
+		if (isDeckColumn) draghover = true;
 	}
-
-	const isDeckColumn = ev.dataTransfer.types[0] === _DATA_TRANSFER_DECK_COLUMN_;
-
-	ev.dataTransfer.dropEffect = isDeckColumn ? 'move' : 'none';
-
-	if (!dragging && isDeckColumn) draghover = true;
 }
 
 function onDragleave() {
