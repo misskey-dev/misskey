@@ -1086,7 +1086,6 @@ _sfx:
   antenna: "Antény"
   channel: "Upozornenia kanála"
 _ago:
-  unknown: "Neznáme"
   future: "Budúcnosť"
   justNow: "Teraz"
   secondsAgo: "pred {n} sekundami"
