@@ -3,6 +3,7 @@
 .travis
 .vscode
 .config
+.yarn
 Dockerfile
 build/
 built/
