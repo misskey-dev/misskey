@@ -5,9 +5,6 @@ pg.types.setTypeParser(20, Number);
 import { Logger, DataSource } from 'typeorm';
 import * as highlight from 'cli-highlight';
 import config from '@/config/index.js';
-import { envOption } from '../env.js';
-
-import { dbLogger } from './logger.js';
 
 import { User } from '@/models/entities/user.js';
 import { DriveFile } from '@/models/entities/drive-file.js';
@@ -74,6 +71,8 @@ import { UserPending } from '@/models/entities/user-pending.js';
 
 import { entities as charts } from '@/services/chart/entities.js';
 import { Webhook } from '@/models/entities/webhook.js';
+import { envOption } from '../env.js';
+import { dbLogger } from './logger.js';
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'gray', false);
 
@@ -212,7 +211,7 @@ export async function initDb() {
 	if (db.isInitialized) {
 		// nop
 	} else {
-		await db.connect();
+		await db.initialize();
 	}
 }
 

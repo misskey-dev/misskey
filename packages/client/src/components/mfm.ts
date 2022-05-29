@@ -142,16 +142,19 @@ export default defineComponent({
 							break;
 						}
 						case 'x2': {
-							style = `font-size: 200%;`;
-							break;
+							return h('span', {
+								class: 'mfm-x2',
+							}, genEl(token.children));
 						}
 						case 'x3': {
-							style = `font-size: 400%;`;
-							break;
+							return h('span', {
+								class: 'mfm-x3',
+							}, genEl(token.children));
 						}
 						case 'x4': {
-							style = `font-size: 600%;`;
-							break;
+							return h('span', {
+								class: 'mfm-x4',
+							}, genEl(token.children));
 						}
 						case 'font': {
 							const family =

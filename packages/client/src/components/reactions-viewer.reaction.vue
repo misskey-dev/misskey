@@ -7,8 +7,8 @@
 	:class="{ reacted: note.myReaction == reaction, canToggle }"
 	@click="toggleReaction()"
 >
-	<XReactionIcon :reaction="reaction" :custom-emojis="note.emojis"/>
-	<span>{{ count }}</span>
+	<XReactionIcon class="icon" :reaction="reaction" :custom-emojis="note.emojis"/>
+	<span class="count">{{ count }}</span>
 </button>
 </template>
 
@@ -141,12 +141,16 @@ export default defineComponent({
 			background: var(--accent);
 		}
 
-		> span {
+		> .count {
 			color: var(--fgOnAccent);
+		}
+
+		> .icon {
+			filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
 		}
 	}
 
-	> span {
+	> .count {
 		font-size: 0.9em;
 		line-height: 32px;
 		margin: 0 0 0 4px;

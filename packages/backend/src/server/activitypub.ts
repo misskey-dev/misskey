@@ -1,6 +1,6 @@
 import Router from '@koa/router';
 import json from 'koa-json-body';
-import httpSignature from 'http-signature';
+import httpSignature from '@peertube/http-signature';
 
 import { renderActivity } from '@/remote/activitypub/renderer/index.js';
 import renderNote from '@/remote/activitypub/renderer/note.js';

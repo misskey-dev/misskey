@@ -3,112 +3,98 @@
 	<section v-for="announcement in announcements" class="_card _gap announcements">
 		<div class="_content announcement">
 			<MkInput v-model="announcement.title">
-				<template #label>{{ $ts.title }}</template>
+				<template #label>{{ i18n.ts.title }}</template>
 			</MkInput>
 			<MkTextarea v-model="announcement.text">
-				<template #label>{{ $ts.text }}</template>
+				<template #label>{{ i18n.ts.text }}</template>
 			</MkTextarea>
 			<MkInput v-model="announcement.imageUrl">
-				<template #label>{{ $ts.imageUrl }}</template>
+				<template #label>{{ i18n.ts.imageUrl }}</template>
 			</MkInput>
-			<p v-if="announcement.reads">{{ $t('nUsersRead', { n: announcement.reads }) }}</p>
+			<p v-if="announcement.reads">{{ i18n.t('nUsersRead', { n: announcement.reads }) }}</p>
 			<div class="buttons">
-				<MkButton class="button" inline primary @click="save(announcement)"><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
-				<MkButton class="button" inline @click="remove(announcement)"><i class="fas fa-trash-alt"></i> {{ $ts.remove }}</MkButton>
+				<MkButton class="button" inline primary @click="save(announcement)"><i class="fas fa-save"></i> {{ i18n.ts.save }}</MkButton>
+				<MkButton class="button" inline @click="remove(announcement)"><i class="fas fa-trash-alt"></i> {{ i18n.ts.remove }}</MkButton>
 			</div>
 		</div>
 	</section>
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
 import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/form/input.vue';
 import MkTextarea from '@/components/form/textarea.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		MkButton,
-		MkInput,
-		MkTextarea,
-	},
+let announcements: any[] = $ref([]);
 
-	emits: ['info'],
+os.api('admin/announcements/list').then(announcementResponse => {
+	announcements = announcementResponse;
+});
 
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: this.$ts.announcements,
-				icon: 'fas fa-broadcast-tower',
-				bg: 'var(--bg)',
-				actions: [{
-					asFullButton: true,
-					icon: 'fas fa-plus',
-					text: this.$ts.add,
-					handler: this.add,
-				}],
-			},
-			announcements: [],
-		}
-	},
+function add() {
+	announcements.unshift({
+		id: null,
+		title: '',
+		text: '',
+		imageUrl: null
+	});
+}
 
-	created() {
-		os.api('admin/announcements/list').then(announcements => {
-			this.announcements = announcements;
+function remove(announcement) {
+	os.confirm({
+		type: 'warning',
+		text: i18n.t('removeAreYouSure', { x: announcement.title }),
+	}).then(({ canceled }) => {
+		if (canceled) return;
+		announcements = announcements.filter(x => x !== announcement);
+		os.api('admin/announcements/delete', announcement);
+	});
+}
+
+function save(announcement) {
+	if (announcement.id == null) {
+		os.api('admin/announcements/create', announcement).then(() => {
+			os.alert({
+				type: 'success',
+				text: i18n.ts.saved
+			});
+		}).catch(err => {
+			os.alert({
+				type: 'error',
+				text: err
+			});
 		});
-	},
-
-	methods: {
-		add() {
-			this.announcements.unshift({
-				id: null,
-				title: '',
-				text: '',
-				imageUrl: null
+	} else {
+		os.api('admin/announcements/update', announcement).then(() => {
+			os.alert({
+				type: 'success',
+				text: i18n.ts.saved
 			});
-		},
-
-		remove(announcement) {
-			os.confirm({
-				type: 'warning',
-				text: this.$t('removeAreYouSure', { x: announcement.title }),
-			}).then(({ canceled }) => {
-				if (canceled) return;
-				this.announcements = this.announcements.filter(x => x != announcement);
-				os.api('admin/announcements/delete', announcement);
+		}).catch(err => {
+			os.alert({
+				type: 'error',
+				text: err
 			});
-		},
+		});
+	}
+}
 
-		save(announcement) {
-			if (announcement.id == null) {
-				os.api('admin/announcements/create', announcement).then(() => {
-					os.alert({
-						type: 'success',
-						text: this.$ts.saved
-					});
-				}).catch(e => {
-					os.alert({
-						type: 'error',
-						text: e
-					});
-				});
-			} else {
-				os.api('admin/announcements/update', announcement).then(() => {
-					os.alert({
-						type: 'success',
-						text: this.$ts.saved
-					});
-				}).catch(e => {
-					os.alert({
-						type: 'error',
-						text: e
-					});
-				});
-			}
-		}
+defineExpose({
+	[symbols.PAGE_INFO]: {
+		title: i18n.ts.announcements,
+		icon: 'fas fa-broadcast-tower',
+		bg: 'var(--bg)',
+		actions: [{
+			asFullButton: true,
+			icon: 'fas fa-plus',
+			text: i18n.ts.add,
+			handler: add,
+		}],
 	}
 });
 </script>

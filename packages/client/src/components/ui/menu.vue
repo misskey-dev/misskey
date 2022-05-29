@@ -60,7 +60,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(e: 'close'): void;
+	(ev: 'close'): void;
 }>();
 
 let itemsEl = $ref<HTMLDivElement>();

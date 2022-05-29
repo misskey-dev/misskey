@@ -60,9 +60,9 @@ import * as os from '@/os';
 import { defaultStore } from '@/store';
 
 const emit = defineEmits<{
-  (e: 'ok', selected: misskey.entities.UserDetailed): void;
-  (e: 'cancel'): void;
-	(e: 'closed'): void;
+	(ev: 'ok', selected: misskey.entities.UserDetailed): void;
+	(ev: 'cancel'): void;
+	(ev: 'closed'): void;
 }>();
 
 let username = $ref('');

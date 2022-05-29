@@ -2,7 +2,7 @@
 <div class="bcekxzvu _card _gap">
 	<div class="_content target">
 		<MkAvatar class="avatar" :user="report.targetUser" :show-indicator="true"/>
-		<MkA class="info" :to="userPage(report.targetUser)" v-user-preview="report.targetUserId">
+		<MkA v-user-preview="report.targetUserId" class="info" :to="userPage(report.targetUser)">
 			<MkUserName class="name" :user="report.targetUser"/>
 			<MkAcct class="acct" :user="report.targetUser" style="display: block;"/>
 		</MkA>

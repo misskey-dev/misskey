@@ -135,12 +135,12 @@ const edit = (emoji) => {
 	}, {
 		done: result => {
 			if (result.updated) {
-				emojisPaginationComponent.value.replaceItem(item => item.id === emoji.id, {
-					...emoji,
+				emojisPaginationComponent.value.updateItem(result.updated.id, (oldEmoji: any) => ({
+					...oldEmoji,
 					...result.updated
-				});
+				}));
 			} else if (result.deleted) {
-				emojisPaginationComponent.value.removeItem(item => item.id === emoji.id);
+				emojisPaginationComponent.value.removeItem((item) => item.id === emoji.id);
 			}
 		},
 	}, 'closed');
@@ -175,10 +175,10 @@ const menu = (ev: MouseEvent) => {
 					type: 'info',
 					text: i18n.ts.exportRequested,
 				});
-			}).catch((e) => {
+			}).catch((err) => {
 				os.alert({
 					type: 'error',
-					text: e.message,
+					text: err.message,
 				});
 			});
 		}
@@ -195,10 +195,10 @@ const menu = (ev: MouseEvent) => {
 					type: 'info',
 					text: i18n.ts.importRequested,
 				});
-			}).catch((e) => {
+			}).catch((err) => {
 				os.alert({
 					type: 'error',
-					text: e.message,
+					text: err.message,
 				});
 			});
 		}

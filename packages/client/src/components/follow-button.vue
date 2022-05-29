@@ -58,7 +58,7 @@ if (props.user.isFollowing == null) {
 }
 
 function onFollowChange(user: Misskey.entities.UserDetailed) {
-	if (user.id == props.user.id) {
+	if (user.id === props.user.id) {
 		isFollowing.value = user.isFollowing;
 		hasPendingFollowRequestFromYou.value = user.hasPendingFollowRequestFromYou;
 	}
@@ -96,8 +96,8 @@ async function onClick() {
 				hasPendingFollowRequestFromYou.value = true;
 			}
 		}
-	} catch (e) {
-		console.error(e);
+	} catch (err) {
+		console.error(err);
 	} finally {
 		wait.value = false;
 	}

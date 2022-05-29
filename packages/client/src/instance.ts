@@ -4,11 +4,11 @@ import { api } from './os';
 
 // TODO: 他のタブと永続化されたstateを同期
 
-const data = localStorage.getItem('instance');
+const instanceData = localStorage.getItem('instance');
 
 // TODO: instanceをリアクティブにするかは再考の余地あり
 
-export const instance: Misskey.entities.InstanceMetadata = reactive(data ? JSON.parse(data) : {
+export const instance: Misskey.entities.InstanceMetadata = reactive(instanceData ? JSON.parse(instanceData) : {
 	// TODO: set default values
 });
 

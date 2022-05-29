@@ -19,7 +19,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(e: 'closed'): void;
+	(ev: 'closed'): void;
 }>();
 
 let rootEl = $ref<HTMLDivElement>();
@@ -63,8 +63,8 @@ onBeforeUnmount(() => {
 	}
 });
 
-function onMousedown(e: Event) {
-	if (!contains(rootEl, e.target) && (rootEl != e.target)) emit('closed');
+function onMousedown(evt: Event) {
+	if (!contains(rootEl, evt.target) && (rootEl !== evt.target)) emit('closed');
 }
 </script>
 

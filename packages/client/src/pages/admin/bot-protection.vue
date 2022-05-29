@@ -43,8 +43,8 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineAsyncComponent, defineComponent } from 'vue';
+<script lang="ts" setup>
+import { defineAsyncComponent } from 'vue';
 import FormRadios from '@/components/form/radios.vue';
 import FormInput from '@/components/form/input.vue';
 import FormButton from '@/components/ui/button.vue';
@@ -54,64 +54,39 @@ import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { fetchInstance } from '@/instance';
 
-export default defineComponent({
-	components: {
-		FormRadios,
-		FormInput,
-		FormButton,
-		FormSuspense,
-		FormSlot,
-		MkCaptcha: defineAsyncComponent(() => import('@/components/captcha.vue')),
-	},
+const MkCaptcha = defineAsyncComponent(() => import('@/components/captcha.vue'));
 
-	emits: ['info'],
+let provider = $ref(null);
+let hcaptchaSiteKey: string | null = $ref(null);
+let hcaptchaSecretKey: string | null = $ref(null);
+let recaptchaSiteKey: string | null = $ref(null);
+let recaptchaSecretKey: string | null = $ref(null);
 
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: this.$ts.botProtection,
-				icon: 'fas fa-shield-alt'
-			},
-			provider: null,
-			enableHcaptcha: false,
-			hcaptchaSiteKey: null,
-			hcaptchaSecretKey: null,
-			enableRecaptcha: false,
-			recaptchaSiteKey: null,
-			recaptchaSecretKey: null,
-		}
-	},
+const enableHcaptcha = $computed(() => provider === 'hcaptcha');
+const enableRecaptcha = $computed(() => provider === 'recaptcha');
 
-	methods: {
-		async init() {
-			const meta = await os.api('admin/meta');
-			this.enableHcaptcha = meta.enableHcaptcha;
-			this.hcaptchaSiteKey = meta.hcaptchaSiteKey;
-			this.hcaptchaSecretKey = meta.hcaptchaSecretKey;
-			this.enableRecaptcha = meta.enableRecaptcha;
-			this.recaptchaSiteKey = meta.recaptchaSiteKey;
-			this.recaptchaSecretKey = meta.recaptchaSecretKey;
+async function init() {
+	const meta = await os.api('admin/meta');
+	enableHcaptcha = meta.enableHcaptcha;
+	hcaptchaSiteKey = meta.hcaptchaSiteKey;
+	hcaptchaSecretKey = meta.hcaptchaSecretKey;
+	enableRecaptcha = meta.enableRecaptcha;
+	recaptchaSiteKey = meta.recaptchaSiteKey;
+	recaptchaSecretKey = meta.recaptchaSecretKey;
 
-			this.provider = this.enableHcaptcha ? 'hcaptcha' : this.enableRecaptcha ? 'recaptcha' : null;
+	provider = enableHcaptcha ? 'hcaptcha' : enableRecaptcha ? 'recaptcha' : null;
+}
 
-			this.$watch(() => this.provider, () => {
-				this.enableHcaptcha = this.provider === 'hcaptcha';
-				this.enableRecaptcha = this.provider === 'recaptcha';
-			});
-		},
-	
-		save() {
-			os.apiWithDialog('admin/update-meta', {
-				enableHcaptcha: this.enableHcaptcha,
-				hcaptchaSiteKey: this.hcaptchaSiteKey,
-				hcaptchaSecretKey: this.hcaptchaSecretKey,
-				enableRecaptcha: this.enableRecaptcha,
-				recaptchaSiteKey: this.recaptchaSiteKey,
-				recaptchaSecretKey: this.recaptchaSecretKey,
-			}).then(() => {
-				fetchInstance();
-			});
-		}
-	}
-});
+function save() {
+	os.apiWithDialog('admin/update-meta', {
+		enableHcaptcha,
+		hcaptchaSiteKey,
+		hcaptchaSecretKey,
+		enableRecaptcha,
+		recaptchaSiteKey,
+		recaptchaSecretKey,
+	}).then(() => {
+		fetchInstance();
+	});
+}
 </script>

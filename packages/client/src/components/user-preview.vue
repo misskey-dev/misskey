@@ -70,7 +70,7 @@ export default defineComponent({
 	},
 
 	mounted() {
-		if (typeof this.q == 'object') {
+		if (typeof this.q === 'object') {
 			this.user = this.q;
 			this.fetched = true;
 		} else {

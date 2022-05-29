@@ -1,5 +1,5 @@
 <template>
-<div class="kvausudm _panel" :style="{ height: widgetProps.height + 'px' }">
+<div class="kvausudm _panel mkw-slideshow" :style="{ height: widgetProps.height + 'px' }">
 	<div @click="choose">
 		<p v-if="widgetProps.folderId == null">
 			{{ $ts.folder }}
@@ -37,7 +37,7 @@ type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 //const props = defineProps<WidgetComponentProps<WidgetProps>>();
 //const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
 const props = defineProps<{ widget?: Widget<WidgetProps>; }>();
-const emit = defineEmits<{ (e: 'updateProps', props: WidgetProps); }>();
+const emit = defineEmits<{ (ev: 'updateProps', props: WidgetProps); }>();
 
 const { widgetProps, configure, save } = useWidgetPropsManager(name,
 	widgetPropsDef,
@@ -51,7 +51,7 @@ const slideA = ref<HTMLElement>();
 const slideB = ref<HTMLElement>();
 
 const change = () => {
-	if (images.value.length == 0) return;
+	if (images.value.length === 0) return;
 
 	const index = Math.floor(Math.random() * images.value.length);
 	const img = `url(${ images.value[index].url })`;
