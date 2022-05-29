@@ -8,6 +8,7 @@
 # Node.js
 node_modules
 report.*.json
+.yarn
 
 # Cypress
 cypress/screenshots

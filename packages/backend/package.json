@@ -122,7 +122,6 @@
 	},
 	"devDependencies": {
 		"@redocly/openapi-core": "1.0.0-beta.97",
-		"@types/semver": "7.3.9",
 		"@types/bcryptjs": "2.4.2",
 		"@types/bull": "3.15.8",
 		"@types/cbor": "6.0.0",
@@ -158,6 +157,7 @@
 		"@types/redis": "4.0.11",
 		"@types/rename": "1.0.4",
 		"@types/sanitize-html": "2.6.2",
+		"@types/semver": "7.3.9",
 		"@types/sharp": "0.30.2",
 		"@types/sinonjs__fake-timers": "8.1.2",
 		"@types/speakeasy": "2.0.7",
@@ -169,11 +169,10 @@
 		"@types/ws": "8.5.3",
 		"@typescript-eslint/eslint-plugin": "5.26.0",
 		"@typescript-eslint/parser": "5.26.0",
-		"typescript": "4.7.2",
+		"cross-env": "7.0.3",
 		"eslint": "8.16.0",
 		"eslint-plugin-import": "2.26.0",
-
-		"cross-env": "7.0.3",
-		"execa": "6.1.0"
+		"execa": "6.1.0",
+		"typescript": "4.7.2"
 	}
 }
