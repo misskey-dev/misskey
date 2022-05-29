@@ -1087,7 +1087,6 @@ _sfx:
   antenna: "天线接收"
   channel: "频道通知"
 _ago:
-  unknown: "未知"
   future: "未来"
   justNow: "最近"
   secondsAgo: "{n}秒前"
