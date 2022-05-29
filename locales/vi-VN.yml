@@ -1088,7 +1088,6 @@ _sfx:
   antenna: "Trạm phát sóng"
   channel: "Kênh"
 _ago:
-  unknown: "Không rõ"
   future: "Tương lai"
   justNow: "Vừa xong"
   secondsAgo: "{n}s trước"
