@@ -54,7 +54,7 @@
 				<FormButton v-if="user.host != null" class="_formBlock" @click="updateRemoteUser"><i class="fas fa-sync"></i> {{ $ts.updateRemoteUser }}</FormButton>
 			</FormSection>
 
-			<MkObjectView v-if="info && info.email !== undefined" tall :value="info">
+			<MkObjectView v-if="info && $i.isAdmin" tall :value="info">
 			</MkObjectView>
 
 			<MkObjectView tall :value="user">
