@@ -8,7 +8,15 @@
 # Node.js
 node_modules
 report.*.json
-.yarn
+
+# Yarn
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+packages/*/.yarn/*
 
 # Cypress
 cypress/screenshots
