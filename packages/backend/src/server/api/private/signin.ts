@@ -28,7 +28,7 @@ export default async (ctx: Koa.Context) => {
 
 	try {
 		// not more than 1 attempt per second and not more than 10 attempts per hour
-		await limiter({ key: 'signin', duration: 60 * 60 * 1000, max: 10, minInterval: 1000 }, 'ip-' + getIpHash(ctx.ip));
+		await limiter({ key: 'signin', duration: 60 * 60 * 1000, max: 10, minInterval: 1000 }, getIpHash(ctx.ip));
 	} catch (err) {
 		ctx.status = 429;
 		ctx.body = {

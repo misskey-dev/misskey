@@ -39,7 +39,7 @@ export default async (endpoint: string, user: CacheableLocalUser | null | undefi
 		if (user) {
 			limitActor = user.id;
 		} else {
-			limitActor = 'ip-' + getIpHash(ctx!.ip);
+			limitActor = getIpHash(ctx!.ip);
 		}
 
 		const limit = Object.assign({}, ep.meta.limit);
