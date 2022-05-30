@@ -28,7 +28,7 @@ You should also include the user name that made the change.
 - Perform port diagnosis at startup only when Listen fails @mei23
 - Rate limiting is now also usable for non-authenticated users. @Johann150
   Admins should make sure the reverse proxy sets the `X-Forwarded-For` header to the original address.
-- Update to Yarn v3 @ThatOneCalculator
+- Migrate to Yarn v3.2.0 @ThatOneCalculator
 
 ### Bugfixes
 - Client: fix settings page @tamaina
