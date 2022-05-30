@@ -12,14 +12,16 @@ jobs:
     strategy:
       matrix:
         workspace:
-        - backend
-        - client
+          - backend
+          - client
+          - sw
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
       with:
+        fetch-depth: 0
         submodules: true
-    - uses: actions/setup-node@v3
+    - uses: actions/setup-node@v3.2.0
       with:
         node-version: 18.x
     - run: corepack enable
