@@ -20,6 +20,7 @@ jobs:
         cache: 'yarn'
         cache-dependency-path: |
           packages/backend/yarn.lock
+    - run: corepack enable
     - run: yarn install
     - run: yarn --cwd ./packages/backend lint
 
@@ -35,5 +36,6 @@ jobs:
         cache: 'yarn'
         cache-dependency-path: |
           packages/client/yarn.lock
+    - run: corepack enable
     - run: yarn install
     - run: yarn --cwd ./packages/client lint
