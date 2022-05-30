@@ -14,11 +14,12 @@ jobs:
         workspace:
         - backend
         - client
+        - sw
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
       with:
-        submodules: true
+        submodules: false
     - uses: actions/setup-node@v3
       with:
         node-version: 18.x
