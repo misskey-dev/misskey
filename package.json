@@ -7,7 +7,7 @@
 		"url": "https://github.com/misskey-dev/misskey.git"
 	},
 	"packageManager": "yarn@3.2.1",
-	"workspaces": ["client", "server", "sw"],
+	"workspaces": ["client", "backend", "sw"],
 	"private": true,
 	"scripts": {
 		"build": "node ./scripts/build.js",
