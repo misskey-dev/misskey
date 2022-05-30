@@ -8,7 +8,12 @@ on:
   pull_request:
 
 jobs:
-  workspaces:
+  lint:
+    strategy:
+      matrix:
+        workspace:
+        - backend
+        - client
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
