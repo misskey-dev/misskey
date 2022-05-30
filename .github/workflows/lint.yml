@@ -14,16 +14,15 @@ jobs:
         workspace:
         - backend
         - client
-        - sw
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
       with:
-        submodules: false
+        submodules: true
     - uses: actions/setup-node@v3
       with:
         node-version: 18.x
-        cache: 'yarn'
     - run: corepack enable
-    - run: yarn install
+    - run: yarn install --immutable
     - run: yarn workspaces ${{ matrix.workspace }} lint
+
