@@ -20,4 +20,4 @@ jobs:
         cache: 'yarn'
     - run: corepack enable
     - run: yarn install
-    - run: yarn workspaces * lint
+    - run: yarn workspaces ${{ matrix.workspace }} lint
