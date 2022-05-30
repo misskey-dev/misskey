@@ -1,5 +1,4 @@
 import Bull from 'bull';
-import * as tmp from 'tmp';
 import * as fs from 'node:fs';
 
 import { ulid } from 'ulid';
@@ -10,6 +9,7 @@ import { addFile } from '@/services/drive/add-file.js';
 import { format as dateFormat } from 'date-fns';
 import { Users, Emojis } from '@/models/index.js';
 import {  } from '@/queue/types.js';
+import { createTemp, createTempDir } from '@/misc/create-temp.js';
 import { downloadUrl } from '@/misc/download-url.js';
 import config from '@/config/index.js';
 import { IsNull } from 'typeorm';
@@ -25,13 +25,7 @@ export async function exportCustomEmojis(job: Bull.Job, done: () => void): Promi
 		return;
 	}
 
-	// Create temp dir
-	const [path, cleanup] = await new Promise<[string, () => void]>((res, rej) => {
-		tmp.dir((e, path, cleanup) => {
-			if (e) return rej(e);
-			res([path, cleanup]);
-		});
-	});
+	const [path, cleanup] = await createTempDir();
 
 	logger.info(`Temp dir is ${path}`);
 
@@ -98,12 +92,7 @@ export async function exportCustomEmojis(job: Bull.Job, done: () => void): Promi
 	metaStream.end();
 
 	// Create archive
-	const [archivePath, archiveCleanup] = await new Promise<[string, () => void]>((res, rej) => {
-		tmp.file((e, path, fd, cleanup) => {
-			if (e) return rej(e);
-			res([path, cleanup]);
-		});
-	});
+	const [archivePath, archiveCleanup] = await createTemp();
 	const archiveStream = fs.createWriteStream(archivePath);
 	const archive = archiver('zip', {
 		zlib: { level: 0 },

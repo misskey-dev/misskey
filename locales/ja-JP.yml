@@ -425,7 +425,7 @@ quoteQuestion: "引用として添付しますか？"
 noMessagesYet: "まだチャットはありません"
 newMessageExists: "新しいメッセージがあります"
 onlyOneFileCanBeAttached: "メッセージに添付できるファイルはひとつです"
-signinRequired: "ログインしてください"
+signinRequired: "続行する前に、サインアップまたはサインインが必要です"
 invitations: "招待"
 invitationCode: "招待コード"
 checking: "確認しています"
@@ -842,6 +842,7 @@ oneDay: "1日"
 oneWeek: "1週間"
 reflectMayTakeTime: "反映されるまで時間がかかる場合があります。"
 failedToFetchAccountInformation: "アカウント情報の取得に失敗しました"
+rateLimitExceeded: "レート制限を超えました"
 
 _emailUnavailable:
   used: "既に使用されています"
@@ -1110,7 +1111,6 @@ _sfx:
   channel: "チャンネル通知"
 
 _ago:
-  unknown: "謎"
   future: "未来"
   justNow: "たった今"
   secondsAgo: "{n}秒前"
@@ -1157,6 +1157,7 @@ _2fa:
   registerKey: "キーを登録"
   step1: "まず、{a}や{b}などの認証アプリをお使いのデバイスにインストールします。"
   step2: "次に、表示されているQRコードをアプリでスキャンします。"
+  step2Url: "デスクトップアプリでは次のURLを入力します:"
   step3: "アプリに表示されているトークンを入力して完了です。"
   step4: "これからログインするときも、同じようにトークンを入力します。"
   securityKeyInfo: "FIDO2をサポートするハードウェアセキュリティキーもしくは端末の指紋認証やPINを使用してログインするように設定できます。"

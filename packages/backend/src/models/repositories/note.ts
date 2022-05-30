@@ -144,13 +144,7 @@ export const NoteRepository = db.getRepository(Note).extend({
 				return true;
 			} else {
 				// 指定されているかどうか
-				const specified = note.visibleUserIds.some((id: any) => meId === id);
-
-				if (specified) {
-					return true;
-				} else {
-					return false;
-				}
+				return note.visibleUserIds.some((id: any) => meId === id);
 			}
 		}
 
@@ -168,16 +162,25 @@ export const NoteRepository = db.getRepository(Note).extend({
 				return true;
 			} else {
 				// フォロワーかどうか
-				const following = await Followings.findOneBy({
-					followeeId: note.userId,
-					followerId: meId,
-				});
+				const [following, user] = await Promise.all([
+					Followings.count({
+						where: {
+							followeeId: note.userId,
+							followerId: meId,
+						},
+						take: 1,
+					}),
+					Users.findOneByOrFail({ id: meId }),
+				]);
 
-				if (following == null) {
-					return false;
-				} else {
-					return true;
-				}
+				/* If we know the following, everyhting is fine.
+
+				But if we do not know the following, it might be that both the
+				author of the note and the author of the like are remote users,
+				in which case we can never know the following. Instead we have
+				to assume that the users are following each other.
+				*/
+				return following > 0 || (note.userHost != null && user.host != null);
 			}
 		}
 

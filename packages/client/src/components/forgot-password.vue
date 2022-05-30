@@ -41,8 +41,8 @@ import { instance } from '@/instance';
 import { i18n } from '@/i18n';
 
 const emit = defineEmits<{
-	(e: 'done'): void;
-	(e: 'closed'): void;
+	(ev: 'done'): void;
+	(ev: 'closed'): void;
 }>();
 
 let dialog: InstanceType<typeof XModalWindow> = $ref();

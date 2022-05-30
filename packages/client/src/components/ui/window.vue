@@ -139,10 +139,10 @@ export default defineComponent({
 			this.showing = false;
 		},
 
-		onKeydown(e) {
-			if (e.which === 27) { // Esc
-				e.preventDefault();
-				e.stopPropagation();
+		onKeydown(evt) {
+			if (evt.which === 27) { // Esc
+				evt.preventDefault();
+				evt.stopPropagation();
 				this.close();
 			}
 		},
@@ -162,15 +162,15 @@ export default defineComponent({
 			this.top();
 		},
 
-		onHeaderMousedown(e) {
+		onHeaderMousedown(evt) {
 			const main = this.$el as any;
 
 			if (!contains(main, document.activeElement)) main.focus();
 
 			const position = main.getBoundingClientRect();
 
-			const clickX = e.touches && e.touches.length > 0 ? e.touches[0].clientX : e.clientX;
-			const clickY = e.touches && e.touches.length > 0 ? e.touches[0].clientY : e.clientY;
+			const clickX = evt.touches && evt.touches.length > 0 ? evt.touches[0].clientX : evt.clientX;
+			const clickY = evt.touches && evt.touches.length > 0 ? evt.touches[0].clientY : evt.clientY;
 			const moveBaseX = clickX - position.left;
 			const moveBaseY = clickY - position.top;
 			const browserWidth = window.innerWidth;
@@ -204,10 +204,10 @@ export default defineComponent({
 		},
 
 		// 上ハンドル掴み時
-		onTopHandleMousedown(e) {
+		onTopHandleMousedown(evt) {
 			const main = this.$el as any;
 
-			const base = e.clientY;
+			const base = evt.clientY;
 			const height = parseInt(getComputedStyle(main, '').height, 10);
 			const top = parseInt(getComputedStyle(main, '').top, 10);
 
@@ -230,10 +230,10 @@ export default defineComponent({
 		},
 
 		// 右ハンドル掴み時
-		onRightHandleMousedown(e) {
+		onRightHandleMousedown(evt) {
 			const main = this.$el as any;
 
-			const base = e.clientX;
+			const base = evt.clientX;
 			const width = parseInt(getComputedStyle(main, '').width, 10);
 			const left = parseInt(getComputedStyle(main, '').left, 10);
 			const browserWidth = window.innerWidth;
@@ -254,10 +254,10 @@ export default defineComponent({
 		},
 
 		// 下ハンドル掴み時
-		onBottomHandleMousedown(e) {
+		onBottomHandleMousedown(evt) {
 			const main = this.$el as any;
 
-			const base = e.clientY;
+			const base = evt.clientY;
 			const height = parseInt(getComputedStyle(main, '').height, 10);
 			const top = parseInt(getComputedStyle(main, '').top, 10);
 			const browserHeight = window.innerHeight;
@@ -278,10 +278,10 @@ export default defineComponent({
 		},
 
 		// 左ハンドル掴み時
-		onLeftHandleMousedown(e) {
+		onLeftHandleMousedown(evt) {
 			const main = this.$el as any;
 
-			const base = e.clientX;
+			const base = evt.clientX;
 			const width = parseInt(getComputedStyle(main, '').width, 10);
 			const left = parseInt(getComputedStyle(main, '').left, 10);
 
@@ -304,27 +304,27 @@ export default defineComponent({
 		},
 
 		// 左上ハンドル掴み時
-		onTopLeftHandleMousedown(e) {
-			this.onTopHandleMousedown(e);
-			this.onLeftHandleMousedown(e);
+		onTopLeftHandleMousedown(evt) {
+			this.onTopHandleMousedown(evt);
+			this.onLeftHandleMousedown(evt);
 		},
 
 		// 右上ハンドル掴み時
-		onTopRightHandleMousedown(e) {
-			this.onTopHandleMousedown(e);
-			this.onRightHandleMousedown(e);
+		onTopRightHandleMousedown(evt) {
+			this.onTopHandleMousedown(evt);
+			this.onRightHandleMousedown(evt);
 		},
 
 		// 右下ハンドル掴み時
-		onBottomRightHandleMousedown(e) {
-			this.onBottomHandleMousedown(e);
-			this.onRightHandleMousedown(e);
+		onBottomRightHandleMousedown(evt) {
+			this.onBottomHandleMousedown(evt);
+			this.onRightHandleMousedown(evt);
 		},
 
 		// 左下ハンドル掴み時
-		onBottomLeftHandleMousedown(e) {
-			this.onBottomHandleMousedown(e);
-			this.onLeftHandleMousedown(e);
+		onBottomLeftHandleMousedown(evt) {
+			this.onBottomHandleMousedown(evt);
+			this.onLeftHandleMousedown(evt);
 		},
 
 		// 高さを適用

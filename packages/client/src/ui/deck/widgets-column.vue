@@ -3,7 +3,7 @@
 	<template #header><i class="fas fa-window-maximize" style="margin-right: 8px;"></i>{{ column.name }}</template>
 
 	<div class="wtdtxvec">
-		<XWidgets v-if="column.widgets" :edit="edit" :widgets="column.widgets" @add-widget="addWidget" @remove-widget="removeWidget" @update-widget="updateWidget" @update-widgets="updateWidgets" @exit="edit = false"/>
+		<XWidgets :edit="edit" :widgets="column.widgets" @add-widget="addWidget" @remove-widget="removeWidget" @update-widget="updateWidget" @update-widgets="updateWidgets" @exit="edit = false"/>
 	</div>
 </XColumn>
 </template>
@@ -20,7 +20,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(e: 'parent-focus', direction: 'up' | 'down' | 'left' | 'right'): void;
+	(ev: 'parent-focus', direction: 'up' | 'down' | 'left' | 'right'): void;
 }>();
 
 let edit = $ref(false);

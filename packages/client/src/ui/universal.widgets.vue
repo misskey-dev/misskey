@@ -3,7 +3,7 @@
 	<XWidgets :edit="editMode" :widgets="defaultStore.reactiveState.widgets.value" @add-widget="addWidget" @remove-widget="removeWidget" @update-widget="updateWidget" @update-widgets="updateWidgets" @exit="editMode = false"/>
 
 	<button v-if="editMode" class="_textButton" style="font-size: 0.9em;" @click="editMode = false"><i class="fas fa-check"></i> {{ i18n.ts.editWidgetsExit }}</button>
-	<button v-else class="_textButton" style="font-size: 0.9em;" @click="editMode = true"><i class="fas fa-pencil-alt"></i> {{ i18n.ts.editWidgets }}</button>
+	<button v-else class="_textButton mk-widget-edit" style="font-size: 0.9em;" @click="editMode = true"><i class="fas fa-pencil-alt"></i> {{ i18n.ts.editWidgets }}</button>
 </div>
 </template>
 
@@ -14,7 +14,7 @@ import { i18n } from '@/i18n';
 import { defaultStore } from '@/store';
 
 const emit = defineEmits<{
-	(e: 'mounted', el: Element): void;
+	(ev: 'mounted', el: Element): void;
 }>();
 
 let editMode = $ref(false);
@@ -32,13 +32,13 @@ function addWidget(widget) {
 }
 
 function removeWidget(widget) {
-	defaultStore.set('widgets', defaultStore.state.widgets.filter(w => w.id != widget.id));
+	defaultStore.set('widgets', defaultStore.state.widgets.filter(w => w.id !== widget.id));
 }
 
 function updateWidget({ id, data }) {
 	defaultStore.set('widgets', defaultStore.state.widgets.map(w => w.id === id ? {
 		...w,
-		data: data
+		data,
 	} : w));
 }
 

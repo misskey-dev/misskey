@@ -10,46 +10,34 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { onMounted, onBeforeUnmount } from 'vue';
 import XPie from './pie.vue';
 import bytes from '@/filters/bytes';
 
-export default defineComponent({
-	components: {
-		XPie
-	},
-	props: {
-		connection: {
-			required: true,
-		},
-		meta: {
-			required: true,
-		}
-	},
-	data() {
-		return {
-			usage: 0,
-			total: 0,
-			used: 0,
-			free: 0,
-		};
-	},
-	mounted() {
-		this.connection.on('stats', this.onStats);
-	},
-	beforeUnmount() {
-		this.connection.off('stats', this.onStats);
-	},
-	methods: {
-		onStats(stats) {
-			this.usage = stats.mem.active / this.meta.mem.total;
-			this.total = this.meta.mem.total;
-			this.used = stats.mem.active;
-			this.free = this.meta.mem.total - stats.mem.active;
-		},
-		bytes
-	}
+const props = defineProps<{
+	connection: any,
+	meta: any
+}>();
+
+let usage: number = $ref(0);
+let total: number = $ref(0);
+let used: number = $ref(0);
+let free: number = $ref(0);
+
+function onStats(stats) {
+	usage = stats.mem.active / props.meta.mem.total;
+	total = props.meta.mem.total;
+	used = stats.mem.active;
+	free = total - used;
+}
+
+onMounted(() => {
+	props.connection.on('stats', onStats);
+});
+
+onBeforeUnmount(() => {
+	props.connection.off('stats', onStats);
 });
 </script>
 

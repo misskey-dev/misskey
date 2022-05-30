@@ -43,7 +43,7 @@ async function install() {
 	let ast;
 	try {
 		ast = parse(code.value);
-	} catch (e) {
+	} catch (err) {
 		os.alert({
 			type: 'error',
 			text: 'Syntax error :('
@@ -60,8 +60,8 @@ async function install() {
 		return;
 	}
 
-	const data = meta.get(null);
-	if (data == null) {
+	const metadata = meta.get(null);
+	if (metadata == null) {
 		os.alert({
 			type: 'error',
 			text: 'No metadata found :('
@@ -69,7 +69,7 @@ async function install() {
 		return;
 	}
 
-	const { name, version, author, description, permissions, config } = data;
+	const { name, version, author, description, permissions, config } = metadata;
 	if (name == null || version == null || author == null) {
 		os.alert({
 			type: 'error',

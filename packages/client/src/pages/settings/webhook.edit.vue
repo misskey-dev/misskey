@@ -43,6 +43,14 @@ import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
 
+defineExpose({
+	[symbols.PAGE_INFO]: {
+		title: 'Edit webhook',
+		icon: 'fas fa-bolt',
+		bg: 'var(--bg)',
+	},
+});
+
 const webhook = await os.api('i/webhooks/show', {
 	webhookId: new URLSearchParams(window.location.search).get('id')
 });
@@ -78,12 +86,4 @@ async function save(): Promise<void> {
 		active,
 	});
 }
-
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: 'Edit webhook',
-		icon: 'fas fa-bolt',
-		bg: 'var(--bg)',
-	},
-});
 </script>

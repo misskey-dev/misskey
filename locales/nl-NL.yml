@@ -371,6 +371,9 @@ _notification:
     renote: "Herdelen"
     quote: "Quote"
     reaction: "Reacties"
+  _actions:
+    reply: "Antwoord"
+    renote: "Herdelen"
 _deck:
   _columns:
     notifications: "Meldingen"

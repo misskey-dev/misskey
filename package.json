@@ -22,7 +22,7 @@
 		"cy:open": "cypress open",
 		"cy:run": "cypress run",
 		"e2e": "start-server-and-test start:test http://localhost:61812 cy:run",
-		"mocha": "cd packages/backend && cross-env TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT=\"./test/tsconfig.json\" npx mocha",
+		"mocha": "cd packages/backend && cross-env NODE_ENV=test TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT=\"./test/tsconfig.json\" npx mocha",
 		"test": "npm run mocha",
 		"format": "gulp format",
 		"clean": "node ./scripts/clean.js",

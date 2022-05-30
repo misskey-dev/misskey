@@ -52,16 +52,16 @@ export default defineComponent({
 			const promise = new Promise((ok) => {
 				const canvas = this.hpml.canvases[this.block.canvasId];
 				canvas.toBlob(blob => {
-					const data = new FormData();
-					data.append('file', blob);
-					data.append('i', this.$i.token);
+					const formData = new FormData();
+					formData.append('file', blob);
+					formData.append('i', this.$i.token);
 					if (this.$store.state.uploadFolder) {
-						data.append('folderId', this.$store.state.uploadFolder);
+						formData.append('folderId', this.$store.state.uploadFolder);
 					}
 
 					fetch(apiUrl + '/drive/files/create', {
 						method: 'POST',
-						body: data
+						body: formData,
 					})
 					.then(response => response.json())
 					.then(f => {
