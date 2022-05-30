@@ -11,7 +11,7 @@ You should also include the user name that made the change.
 
 ## 12.x.x (unreleased)
 ### NOTE
-- From this version, Node 18.0.0 or later is required.
+- From this version, Node 18.2.0 or later is required.
 
 ### Improvements
 - enhance: ドライブに画像ファイルをアップロードするときオリジナル画像を破棄してwebpublicのみ保持するオプション @tamaina

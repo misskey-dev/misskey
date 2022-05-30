@@ -6,6 +6,7 @@
 		"type": "git",
 		"url": "https://github.com/misskey-dev/misskey.git"
 	},
+	"packageManager": "yarn@3.2.1",
 	"private": true,
 	"scripts": {
 		"postinstall": "node ./scripts/install-packages.js",
