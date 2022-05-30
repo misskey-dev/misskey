@@ -36,10 +36,7 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
-        cache: 'yarn'
-        cache-dependency-path: |
-          packages/backend/yarn.lock
-          packages/client/yarn.lock
+    - run: corepack enable
     - name: Install dependencies
       run: yarn install
     - name: Check yarn.lock
@@ -87,10 +84,7 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
-        cache: 'yarn'
-        cache-dependency-path: |
-          packages/backend/yarn.lock
-          packages/client/yarn.lock
+    - run: corepack enable
     - name: Install dependencies
       run: yarn install
     - name: Check yarn.lock
