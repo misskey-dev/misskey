@@ -30,5 +30,5 @@ export default defineComponent({
 </script>
 
 <style>
-@import "../../node_modules/katex/dist/katex.min.css";
-</style>
+ @import "../../../../node_modules/katex/dist/katex.min.css";
+ </style>

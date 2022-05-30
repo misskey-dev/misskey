@@ -16,11 +16,11 @@ gulp.task('copy:backend:views', () =>
 );
 
 gulp.task('copy:client:fonts', () =>
-	gulp.src('./packages/client/node_modules/three/examples/fonts/**/*').pipe(gulp.dest('./built/_client_dist_/fonts/'))
+	gulp.src('./node_modules/three/examples/fonts/**/*').pipe(gulp.dest('./built/_client_dist_/fonts/'))
 );
 
 gulp.task('copy:client:fontawesome', () =>
-	gulp.src('./packages/client/node_modules/@fortawesome/fontawesome-free/**/*').pipe(gulp.dest('./built/_client_dist_/fontawesome/'))
+	gulp.src('./node_modules/@fortawesome/fontawesome-free/**/*').pipe(gulp.dest('./built/_client_dist_/fontawesome/'))
 );
 
 gulp.task('copy:client:locales', cb => {
