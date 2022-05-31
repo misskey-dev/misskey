@@ -6,11 +6,11 @@
 		"lint": "eslint --quiet src/**/*.{ts}"
 	},
 	"dependencies": {
-		"esbuild": "^0.14.13",
-		"idb-keyval": "^6.0.3",
+		"esbuild": "^0.14.42",
+		"idb-keyval": "^6.1.0",
 		"misskey-js": "0.0.14"
 	},
 	"devDependencies": {
-		"eslint": "^8.2.0"
+		"eslint": "^8.16.0"
 	}
 }
