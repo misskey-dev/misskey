@@ -21,7 +21,7 @@ jobs:
     - run: corepack enable
     - run: yarn set version berry
     - run: yarn workspaces foreach install --immutable
-    - run: yarn workspaces foreach run lint
-    env:
+      env:
         YARN_CHECKSUM_BEHAVIOR: update
+    - run: yarn workspaces foreach run lint
 
