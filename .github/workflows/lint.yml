@@ -19,8 +19,10 @@ jobs:
       with:
         node-version: 18.x
     - run: corepack enable
-    - run: yarn set version 4.0.0-rc.6
-    - run: yarn workspaces focus
+    - run: yarn set version berry
     - run: yarn install --immutable
+    - run: yarn workspaces foreach install --immutable
     - run: yarn workspaces foreach run lint
+    env:
+        YARN_CHECKSUM_BEHAVIOR: update
 

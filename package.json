@@ -6,7 +6,7 @@
 		"type": "git",
 		"url": "https://github.com/misskey-dev/misskey.git"
 	},
-	"packageManager": "yarn@4.0.0-rc.6",
+	"packageManager": "yarn@3.2.1",
 	"workspaces": [
 		"packages/client",
 		"packages/backend",
