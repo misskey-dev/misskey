@@ -43,6 +43,7 @@ You should also include the user name that made the change.
 - Server: use correct order of attachments on notes @Johann150
 - Server: prevent crash when processing certain PNGs @syuilo
 - Server: Fix unable to generate video thumbnails @mei23
+- Server: Fix `Cannot find module` issue @mei23
 
 ## 12.110.1 (2022/04/23)
 
