@@ -47,13 +47,14 @@
 	"devDependencies": {
 		"@types/gulp": "4.0.9",
 		"@types/gulp-rename": "2.0.1",
-		"@typescript-eslint/eslint-plugin": "^5.27.0",
+		"@typescript-eslint/eslint-plugin": "latest",
 		"@typescript-eslint/parser": "5.27.0",
 		"cross-env": "7.0.3",
 		"cypress": "9.7.0",
 		"eslint-plugin-import": "^2.26.0",
-		"eslint-plugin-vue": "^9.0.1",
+		"eslint-plugin-vue": "latest",
 		"start-server-and-test": "1.14.0",
-		"typescript": "4.7.2"
+		"typescript": "4.7.2",
+		"vue-eslint-parser": "^9.0.2"
 	}
 }
