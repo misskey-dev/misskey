@@ -9,6 +9,11 @@ on:
 
 jobs:
   lint:
+    strategy:
+      matrix:
+        workspace:
+        - backend-771cdf
+        - client-66101c
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -23,5 +28,4 @@ jobs:
     - run: yarn workspaces foreach install --immutable
       env:
         YARN_CHECKSUM_BEHAVIOR: update
-    - run: yarn workspaces foreach run lint
-
+    - run: yarn workspace ${{ matrix.workspace }} run lint
