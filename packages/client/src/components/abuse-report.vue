@@ -36,7 +36,7 @@
 				{{ $ts.forwardReport }}
 				<template #caption>{{ $ts.forwardReportIsAnonymous }}</template>
 			</MkSwitch>
-			<MkButton v-if="!report.resolved" primary @click="resolve">{{ $ts.abuseMarkAsResolved }}</MkButton>
+			<MkButton v-if="!report.resolved" class="_formBlock" style="margin-bottom: 0;" primary @click="resolve">{{ $ts.abuseMarkAsResolved }}</MkButton>
 		</div>
 	</div>
 </div>
