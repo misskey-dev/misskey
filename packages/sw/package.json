@@ -5,6 +5,7 @@
 		"build": "node build.js",
 		"lint": "eslint --quiet src/**/*.{ts}"
 	},
+	"packageManager": "yarn@3.2.1",
 	"dependencies": {
 		"esbuild": "^0.14.42",
 		"idb-keyval": "^6.1.0",
