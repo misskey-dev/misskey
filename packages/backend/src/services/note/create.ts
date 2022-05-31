@@ -312,7 +312,8 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 		endedPollNotificationQueue.add({
 			noteId: note.id,
 		}, {
-			delay
+			delay,
+			removeOnComplete: true,
 		});
 	}
 
