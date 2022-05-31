@@ -32,13 +32,15 @@ jobs:
     - uses: actions/checkout@v2
       with:
         submodules: true
+    env:
+        YARN_CHECKSUM_BEHAVIOR: update
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
     - run: corepack enable
-    - name: Install dependencies
-      run: yarn install
+    - run: yarn set version berry
+    - run: yarn workspaces foreach install --immutable
     - name: Check yarn.lock
       run: git diff --exit-code yarn.lock
     - name: Copy Configure
@@ -74,6 +76,8 @@ jobs:
     - uses: actions/checkout@v2
       with:
         submodules: true
+    env:
+        YARN_CHECKSUM_BEHAVIOR: update
     # https://github.com/cypress-io/cypress-docker-images/issues/150
     #- name: Install mplayer for FireFox
     #  run: sudo apt install mplayer -y
@@ -85,10 +89,8 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: corepack enable
-    - name: Install dependencies
-      run: yarn install
-    - name: Check yarn.lock
-      run: git diff --exit-code yarn.lock
+    - run: yarn set version berry
+    - run: yarn workspaces foreach install --immutable
     - name: Copy Configure
       run: cp .github/misskey/test.yml .config
     - name: Build
