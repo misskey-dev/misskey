@@ -33,10 +33,7 @@ describe('After setup instance', () => {
 		cy.resetState();
 
 		// インスタンス初期セットアップ
-		cy.request('POST', '/api/admin/accounts/create', {
-			username: 'admin',
-			password: 'pass',
-		}).its('body').as('admin');
+		cy.registerUser('admin', 'pass', true);
 	});
 
 	afterEach(() => {
@@ -69,16 +66,10 @@ describe('After user signup', () => {
 		cy.resetState();
 
 		// インスタンス初期セットアップ
-		cy.request('POST', '/api/admin/accounts/create', {
-			username: 'admin',
-			password: 'pass',
-		}).its('body').as('admin');
+		cy.registerUser('admin', 'pass', true);
 
 		// ユーザー作成
-		cy.request('POST', '/api/signup', {
-			username: 'alice',
-			password: 'alice1234',
-		}).its('body').as('alice');
+		cy.registerUser('alice', 'alice1234');
 	});
 
 	afterEach(() => {
