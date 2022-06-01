@@ -1,4 +1,5 @@
 {
+	"name": "client",
 	"private": true,
 	"scripts": {
 		"watch": "vite build --watch --mode development",

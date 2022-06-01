@@ -1,4 +1,5 @@
 {
+	"name": "sw",
 	"private": true,
 	"scripts": {
 		"watch": "node build.js watch",
