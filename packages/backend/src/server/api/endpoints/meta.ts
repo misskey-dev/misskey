@@ -124,6 +124,21 @@ export const meta = {
 				type: 'string',
 				optional: false, nullable: false,
 			},
+			errorImageUrl: {
+				type: 'string',
+				optional: false, nullable: false,
+				default: 'https://xn--931a.moe/assets/error.jpg',
+			},
+			notFoundImageUrl: {
+				type: 'string',
+				optional: false, nullable: false,
+				default: 'https://xn--931a.moe/assets/not-found.jpg',
+			},
+			infoImageUrl: {
+				type: 'string',
+				optional: false, nullable: false,
+				default: 'https://xn--931a.moe/assets/info.jpg',
+			},
 			iconUrl: {
 				type: 'string',
 				optional: false, nullable: true,
@@ -343,6 +358,9 @@ export default define(meta, paramDef, async (ps, me) => {
 		swPublickey: instance.swPublicKey,
 		themeColor: instance.themeColor,
 		bannerUrl: instance.bannerUrl,
+		errorImageUrl: config.images.error,
+		notFoundImageUrl: config.images.not_found,
+		infoImageUrl: config.images.info,
 		iconUrl: instance.iconUrl,
 		backgroundImageUrl: instance.backgroundImageUrl,
 		logoImageUrl: instance.logoImageUrl,

@@ -64,6 +64,12 @@ export type Source = {
 	proxyRemoteFiles?: boolean;
 
 	signToActivityPubGet?: boolean;
+
+	images?: {
+		error?: string;
+		not_found?: string;
+		info?: string;
+	};
 };
 
 /**

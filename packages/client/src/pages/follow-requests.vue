@@ -3,7 +3,7 @@
 	<MkPagination ref="paginationComponent" :pagination="pagination">
 		<template #empty>
 			<div class="_fullinfo">
-				<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
+				<img :src="instance.infoImageUrl" class="_ghost"/>
 				<div>{{ $ts.noFollowRequests }}</div>
 			</div>
 		</template>
@@ -38,6 +38,7 @@ import { userPage, acct } from '@/filters/user';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
+import { instance } from '@/instance';
 
 const paginationComponent = ref<InstanceType<typeof MkPagination>>();
 

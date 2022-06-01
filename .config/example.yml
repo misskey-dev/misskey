@@ -146,3 +146,9 @@ id: 'aid'
 
 # Upload or download file size limits (bytes)
 #maxFileSize: 262144000
+
+# Images that will be shown by the web client, for example for error pages.
+#images:
+#  error: 'https://xn--931a.moe/assets/error.jpg'
+#  not_found: 'https://xn--931a.moe/assets/not_found.jpg'
+#  info: 'https://xn--931a.moe/assets/info.jpg'

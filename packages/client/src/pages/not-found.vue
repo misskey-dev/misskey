@@ -1,7 +1,7 @@
 <template>
 <div class="ipledcug">
 	<div class="_fullinfo">
-		<img src="https://xn--931a.moe/assets/not-found.jpg" class="_ghost"/>
+		<img :src="instance.notFoundImageUrl" class="_ghost"/>
 		<div>{{ $ts.notFoundDescription }}</div>
 	</div>
 </div>
@@ -10,6 +10,7 @@
 <script lang="ts" setup>
 import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
+import { instance } from '@/instance';
 
 defineExpose({
 	[symbols.PAGE_INFO]: {

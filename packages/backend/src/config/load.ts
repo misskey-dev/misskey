@@ -50,6 +50,11 @@ export default function load() {
 
 	if (!config.redis.prefix) config.redis.prefix = mixin.host;
 
+	config.images = config.images ?? {};
+	config.images.error = config.images.error ?? 'https://xn--931a.moe/assets/error.jpg';
+	config.images.not_found = config.images.not_found ?? 'https://xn--931a.moe/assets/not-found.jpg';
+	config.images.info = config.images.info ?? 'https://xn--931a.moe/assets/info.jpg';
+
 	return Object.assign(config, mixin);
 }
 

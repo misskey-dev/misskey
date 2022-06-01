@@ -2,7 +2,7 @@
 <MkPagination ref="pagingComponent" :pagination="pagination">
 	<template #empty>
 		<div class="_fullinfo">
-			<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
+			<img :src="instance.infoImageUrl" class="_ghost"/>
 			<div>{{ $ts.noNotifications }}</div>
 		</div>
 	</template>
@@ -27,6 +27,7 @@ import XNote from '@/components/note.vue';
 import * as os from '@/os';
 import { stream } from '@/stream';
 import { $i } from '@/account';
+import { instance } from '@/instance';
 
 const props = defineProps<{
 	includeTypes?: typeof notificationTypes[number][];

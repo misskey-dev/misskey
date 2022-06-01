@@ -30,7 +30,7 @@
 			</MkA>
 		</div>
 		<div v-if="!fetching && messages.length == 0" class="_fullinfo">
-			<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
+			<img :src="hinstance.infoImageUrl" class="_ghost"/>
 			<div>{{ $ts.noHistory }}</div>
 		</div>
 		<MkLoading v-if="fetching"/>
@@ -46,6 +46,7 @@ import { acct } from '@/filters/user';
 import * as os from '@/os';
 import { stream } from '@/stream';
 import * as symbols from '@/symbols';
+import { instancen } from '@/instance';
 
 export default defineComponent({
 	components: {

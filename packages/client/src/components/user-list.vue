@@ -2,7 +2,7 @@
 <MkPagination ref="pagingComponent" :pagination="pagination">
 	<template #empty>
 		<div class="_fullinfo">
-			<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
+			<img :src="instance.infoImageUrl" class="_ghost"/>
 			<div>{{ $ts.noUsers }}</div>
 		</div>
 	</template>
@@ -21,6 +21,7 @@ import MkUserInfo from '@/components/user-info.vue';
 import MkPagination from '@/components/ui/pagination.vue';
 import { Paging } from '@/components/ui/pagination.vue';
 import { userPage } from '@/filters/user';
+import { instance } from '@/instance';
 
 const props = defineProps<{
 	pagination: Paging;

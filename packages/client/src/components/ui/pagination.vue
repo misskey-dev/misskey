@@ -7,7 +7,7 @@
 	<div v-else-if="empty" key="_empty_" class="empty">
 		<slot name="empty">
 			<div class="_fullinfo">
-				<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
+				<img :src="instance.infoImageUrl" class="_ghost"/>
 				<div>{{ $ts.nothing }}</div>
 			</div>
 		</slot>
@@ -37,6 +37,7 @@ import * as misskey from 'misskey-js';
 import * as os from '@/os';
 import { onScrollTop, isTopVisible, getScrollPosition, getScrollContainer } from '@/scripts/scroll';
 import MkButton from '@/components/ui/button.vue';
+import { instance } from '@/instance';
 
 const SECOND_FETCH_LIMIT = 30;
 
