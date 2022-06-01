@@ -49,19 +49,9 @@ export const meta = {
 				type: 'string',
 				optional: false, nullable: true,
 			},
-			mascotImageUrl: {
-				type: 'string',
-				optional: false, nullable: false,
-				default: '/assets/ai.png',
-			},
 			bannerUrl: {
 				type: 'string',
 				optional: false, nullable: false,
-			},
-			errorImageUrl: {
-				type: 'string',
-				optional: false, nullable: false,
-				default: 'https://xn--931a.moe/aiart/yubitun.png',
 			},
 			iconUrl: {
 				type: 'string',
@@ -342,9 +332,7 @@ export default define(meta, paramDef, async (ps, me) => {
 		recaptchaSiteKey: instance.recaptchaSiteKey,
 		swPublickey: instance.swPublicKey,
 		themeColor: instance.themeColor,
-		mascotImageUrl: instance.mascotImageUrl,
 		bannerUrl: instance.bannerUrl,
-		errorImageUrl: instance.errorImageUrl,
 		iconUrl: instance.iconUrl,
 		backgroundImageUrl: instance.backgroundImageUrl,
 		logoImageUrl: instance.logoImageUrl,

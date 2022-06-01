@@ -97,13 +97,6 @@ export class Meta {
 	@Column('varchar', {
 		length: 512,
 		nullable: true,
-		default: '/assets/ai.png',
-	})
-	public mascotImageUrl: string | null;
-
-	@Column('varchar', {
-		length: 512,
-		nullable: true,
 	})
 	public bannerUrl: string | null;
 
@@ -118,13 +111,6 @@ export class Meta {
 		nullable: true,
 	})
 	public logoImageUrl: string | null;
-
-	@Column('varchar', {
-		length: 512,
-		nullable: true,
-		default: 'https://xn--931a.moe/aiart/yubitun.png',
-	})
-	public errorImageUrl: string | null;
 
 	@Column('varchar', {
 		length: 512,
