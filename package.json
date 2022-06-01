@@ -8,9 +8,9 @@
 	},
 	"packageManager": "yarn@3.2.1",
 	"workspaces": [
-		"packages/client",
-		"packages/backend",
-		"packages/sw"
+		"client",
+		"backend",
+		"sw"
 	],
 	"private": true,
 	"scripts": {
