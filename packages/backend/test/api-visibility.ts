@@ -154,18 +154,18 @@ describe('API visibility', () => {
 
 		it('[show] followers-postを非フォロワーが見れない', async(async () => {
 			const res = await show(fol.id, other);
-			assert.strictEqual(res.body.isHidden, true);
+			assert.strictEqual(res.status, 404);
 		}));
 
 		it('[show] followers-postを未認証が見れない', async(async () => {
 			const res = await show(fol.id, null);
-			assert.strictEqual(res.body.isHidden, true);
+			assert.strictEqual(res.status, 404);
 		}));
 
 		// specified
 		it('[show] specified-postを自分が見れる', async(async () => {
 			const res = await show(spe.id, alice);
-			assert.strictEqual(res.body.text, 'x');
+			assert.strictEqual(res.status, 404);
 		}));
 
 		it('[show] specified-postを指定ユーザーが見れる', async(async () => {
@@ -175,17 +175,17 @@ describe('API visibility', () => {
 
 		it('[show] specified-postをフォロワーが見れない', async(async () => {
 			const res = await show(spe.id, follower);
-			assert.strictEqual(res.body.isHidden, true);
+			assert.strictEqual(res.status, 404);
 		}));
 
 		it('[show] specified-postを非フォロワーが見れない', async(async () => {
 			const res = await show(spe.id, other);
-			assert.strictEqual(res.body.isHidden, true);
+			assert.strictEqual(res.status, 404);
 		}));
 
 		it('[show] specified-postを未認証が見れない', async(async () => {
 			const res = await show(spe.id, null);
-			assert.strictEqual(res.body.isHidden, true);
+			assert.strictEqual(res.status, 404);
 		}));
 		//#endregion
 
@@ -260,12 +260,12 @@ describe('API visibility', () => {
 
 		it('[show] followers-replyを非フォロワーが見れない', async(async () => {
 			const res = await show(folR.id, other);
-			assert.strictEqual(res.body.isHidden, true);
+			assert.strictEqual(res.status, 404);
 		}));
 
 		it('[show] followers-replyを未認証が見れない', async(async () => {
 			const res = await show(folR.id, null);
-			assert.strictEqual(res.body.isHidden, true);
+			assert.strictEqual(res.status, 404);
 		}));
 
 		// specified
@@ -286,17 +286,17 @@ describe('API visibility', () => {
 
 		it('[show] specified-replyをフォロワーが見れない', async(async () => {
 			const res = await show(speR.id, follower);
-			assert.strictEqual(res.body.isHidden, true);
+			assert.strictEqual(res.status, 404);
 		}));
 
 		it('[show] specified-replyを非フォロワーが見れない', async(async () => {
 			const res = await show(speR.id, other);
-			assert.strictEqual(res.body.isHidden, true);
+			assert.strictEqual(res.status, 404);
 		}));
 
 		it('[show] specified-replyを未認証が見れない', async(async () => {
 			const res = await show(speR.id, null);
-			assert.strictEqual(res.body.isHidden, true);
+			assert.strictEqual(res.status, 404);
 		}));
 		//#endregion
 
@@ -371,12 +371,12 @@ describe('API visibility', () => {
 
 		it('[show] followers-mentionを非フォロワーが見れない', async(async () => {
 			const res = await show(folM.id, other);
-			assert.strictEqual(res.body.isHidden, true);
+			assert.strictEqual(res.status, 404);
 		}));
 
 		it('[show] followers-mentionを未認証が見れない', async(async () => {
 			const res = await show(folM.id, null);
-			assert.strictEqual(res.body.isHidden, true);
+			assert.strictEqual(res.status, 404);
 		}));
 
 		// specified
@@ -392,22 +392,22 @@ describe('API visibility', () => {
 
 		it('[show] specified-mentionをされた人が指定されてなかったら見れない', async(async () => {
 			const res = await show(speM.id, target2);
-			assert.strictEqual(res.body.isHidden, true);
+			assert.strictEqual(res.status, 404);
 		}));
 
 		it('[show] specified-mentionをフォロワーが見れない', async(async () => {
 			const res = await show(speM.id, follower);
-			assert.strictEqual(res.body.isHidden, true);
+			assert.strictEqual(res.status, 404);
 		}));
 
 		it('[show] specified-mentionを非フォロワーが見れない', async(async () => {
 			const res = await show(speM.id, other);
-			assert.strictEqual(res.body.isHidden, true);
+			assert.strictEqual(res.status, 404);
 		}));
 
 		it('[show] specified-mentionを未認証が見れない', async(async () => {
 			const res = await show(speM.id, null);
-			assert.strictEqual(res.body.isHidden, true);
+			assert.strictEqual(res.status, 404);
 		}));
 		//#endregion
 
