@@ -12,8 +12,8 @@ jobs:
     strategy:
       matrix:
         workspace:
-        - backend-771cdf
-        - client-66101c
+        - backend
+        - client
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
