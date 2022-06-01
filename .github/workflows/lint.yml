@@ -25,7 +25,7 @@ jobs:
         node-version: 18.x
     - run: corepack enable
     - run: yarn set version berry
-    - run: yarn workspaces foreach install --immutable
+    - run: yarn install --immutable
       env:
         YARN_CHECKSUM_BEHAVIOR: update
     - run: yarn workspace ${{ matrix.workspace }} run lint
