@@ -347,14 +347,15 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 
 		publishNotesStream(note);
 
-		getActiveWebhooks().then(webhooks => {
-			webhooks = webhooks.filter(x => x.userId === user.id && x.on.includes('note'));
-			for (const webhook of webhooks) {
-				webhookDeliver(webhook, 'note', {
-					note: await Notes.pack(note, user.id),
-				});
-			}
+		const webhooks = await getActiveWebhooks().then(webhooks => {
+			webhooks.filter(x => x.userId === user.id && x.on.includes('note'))
 		});
+
+		for (const webhook of webhooks) {
+			webhookDeliver(webhook, 'note', {
+				note: await Notes.pack(note, user.id),
+			});
+		}
 
 		const nm = new NotificationManager(user, note);
 		const nmRelatedPromises = [];
