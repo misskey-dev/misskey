@@ -14,7 +14,7 @@ gotIt: "Uppfattat!"
 cancel: "Avbryt"
 enterUsername: "Ange användarnamn"
 renotedBy: "Omnoterad av {user}"
-noNotes: "Inga anteckningar"
+noNotes: "Inga noteringar"
 noNotifications: "Inga aviseringar"
 instance: "Instanser"
 settings: "Inställningar"
@@ -44,7 +44,7 @@ copyContent: "Kopiera innehåll"
 copyLink: "Kopiera länk"
 delete: "Radera"
 deleteAndEdit: "Radera och ändra"
-deleteAndEditConfirm: "Är du säker att du vill radera denna anteckning och ändra den? Du kommer förlora alla reaktioner, renoter och svar till den."
+deleteAndEditConfirm: "Är du säker att du vill radera denna not och ändra den? Du kommer förlora alla reaktioner, omnoteringar och svar till den."
 addToList: "Lägg till i lista"
 sendMessage: "Skicka ett meddelande"
 copyUsername: "Kopiera användarnamn"
@@ -57,19 +57,22 @@ receiveFollowRequest: "Följarförfrågan mottagen"
 followRequestAccepted: "Följarförfrågan accepterad"
 mention: "Nämn"
 mentions: "Omnämningar"
-directNotes: "Direktanteckningar"
+directNotes: "Direktnoter"
 importAndExport: "Importera / Exportera"
 import: "Importera"
 export: "Exportera"
 files: "Filer"
 download: "Nedladdning"
-driveFileDeleteConfirm: "Är du säker att du vill radera filen \"{name}\"? Anteckningar med denna fil bifogad kommer också raderas."
+driveFileDeleteConfirm: "Är du säker att du vill radera filen \"{name}\"? Noter med denna fil bifogad kommer också raderas."
 unfollowConfirm: "Är du säker att du vill avfölja {name}?"
 exportRequested: "Du har begärt en export. Detta kan ta lite tid. Den kommer läggas till i din Drive när den blir klar."
 importRequested: "Du har begärt en import. Detta kan ta lite tid."
 lists: "Listor"
 noLists: "Du har inga listor"
 note: "Not"
+notes: "Noter"
+following: "Följer"
+follow: "Följer"
 pinned: "Fäst till profil"
 instances: "Instanser"
 remove: "Radera"
@@ -88,6 +91,7 @@ _theme:
   keys:
     mention: "Nämn"
 _sfx:
+  note: "Noter"
   notification: "Notifikationer"
 _widgets:
   notifications: "Notifikationer"
@@ -97,6 +101,7 @@ _cw:
 _profile:
   username: "Användarnamn"
 _exportOrImport:
+  followingList: "Följer"
   userLists: "Listor"
 _pages:
   script:
@@ -120,6 +125,7 @@ _pages:
 _notification:
   youWereFollowed: "följde dig"
   _types:
+    follow: "Följer"
     mention: "Nämn"
   _actions:
     reply: "Svara"
