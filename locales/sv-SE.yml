@@ -46,6 +46,15 @@ delete: "Radera"
 deleteAndEdit: "Radera och ändra"
 deleteAndEditConfirm: "Är du säker att du vill radera denna anteckning och ändra den? Du kommer förlora alla reaktioner, renoter och svar till den."
 addToList: "Lägg till i lista"
+sendMessage: "Skicka ett meddelande"
+copyUsername: "Kopiera användarnamn"
+searchUser: "Sök användare"
+reply: "Svara"
+loadMore: "Ladda mer"
+showMore: "Visa mer"
+youGotNewFollower: "följde dig"
+receiveFollowRequest: "Följarförfrågan mottagen"
+followRequestAccepted: "Följarförfrågan accepterad"
 pinned: "Fäst till profil"
 instances: "Instanser"
 remove: "Radera"
@@ -53,6 +62,9 @@ smtpUser: "Användarnamn"
 smtpPass: "Lösenord"
 user: "Användare"
 searchByGoogle: "Sök"
+_email:
+  _follow:
+    title: "följde dig"
 _mfm:
   search: "Sök"
 _sfx:
@@ -60,8 +72,14 @@ _sfx:
 _widgets:
   notifications: "Notifikationer"
   timeline: "Tidslinje"
+_cw:
+  show: "Ladda mer"
 _profile:
   username: "Användarnamn"
+_notification:
+  youWereFollowed: "följde dig"
+  _actions:
+    reply: "Svara"
 _deck:
   _columns:
     notifications: "Notifikationer"
