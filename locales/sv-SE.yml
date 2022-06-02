@@ -109,6 +109,14 @@ reaction: "Reaktioner"
 reactionSetting: "Reaktioner som ska visas i reaktionsväljaren"
 reactionSettingDescription2: "Dra för att omordna, klicka för att radera, tryck \"+\" för att lägga till."
 rememberNoteVisibility: "Komihåg notvisningsinställningar"
+attachCancel: "Ta bort bilaga"
+markAsSensitive: "Markera som känsligt innehåll"
+unmarkAsSensitive: "Avmarkera som känsligt innehåll"
+enterFileName: "Ange filnamn"
+mute: "Tysta"
+unmute: "Avtysta"
+block: "Blockera"
+unblock: "Avblockera"
 instances: "Instanser"
 remove: "Radera"
 nsfw: "Känsligt innehåll"
@@ -143,6 +151,8 @@ _profile:
   username: "Användarnamn"
 _exportOrImport:
   followingList: "Följer"
+  muteList: "Tysta"
+  blockingList: "Blockera"
   userLists: "Listor"
 _pages:
   script:
