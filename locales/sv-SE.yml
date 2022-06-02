@@ -1,3 +1,23 @@
 ---
 _lang_: "Svenska"
 headlineMisskey: "Ett nätverk kopplat av anteckningar"
+introMisskey: "Välkommen! Misskey är en öppen och decentraliserad mikrobloggningstjänst.\nSkapa en \"anteckning\" och dela dina tankar med alla runtomkring dig. 📡\nMed \"reaktioner\" kan du snabbt uttrycka dina känslor kring andras anteckningar.👍\nLåt oss utforska en nya värld!🚀"
+monthAndDay: "{day}/{month}"
+search: "Sök"
+notifications: "Notifikationer"
+username: "Användarnamn"
+password: "Lösenord"
+smtpUser: "Användarnamn"
+smtpPass: "Lösenord"
+searchByGoogle: "Sök"
+_mfm:
+  search: "Sök"
+_sfx:
+  notification: "Notifikationer"
+_widgets:
+  notifications: "Notifikationer"
+_profile:
+  username: "Användarnamn"
+_deck:
+  _columns:
+    notifications: "Notifikationer"
