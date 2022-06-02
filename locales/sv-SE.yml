@@ -86,10 +86,30 @@ youShouldUpgradeClient: "För att kunna se denna sida, vänligen ladda om sidan 
 enterListName: "Skriv ett namn till listan"
 privacy: "Integritet"
 makeFollowManuallyApprove: "Följarförfrågningar kräver manuellt godkännande"
-follow: "Följer"
+defaultNoteVisibility: "Standardsynlighet"
+follow: "Följ"
+followRequest: "Skicka följarförfrågan"
+followRequests: "Följarförfrågningar"
+unfollow: "Avfölj"
+followRequestPending: "Följarförfrågning avvaktar för svar"
+enterEmoji: "Skriv en emoji"
+renote: "Omnotera"
+unrenote: "Ta tillbaka omnotering"
+renoted: "Omnoterad."
+cantRenote: "Inlägget kunde inte bli omnoterat."
+cantReRenote: "En omnotering kan inte bli omnoterad."
+quote: "Citat"
+pinnedNote: "Fästad not"
 pinned: "Fäst till profil"
+you: "Du"
+clickToShow: "Klicka för att visa"
+sensitive: "Känsligt innehåll"
+add: "Lägg till"
+reaction: "Reaktioner"
 instances: "Instanser"
 remove: "Radera"
+nsfw: "Känsligt innehåll"
+pinnedNotes: "Fästad not"
 userList: "Listor"
 smtpUser: "Användarnamn"
 smtpPass: "Lösenord"
@@ -100,10 +120,12 @@ _email:
     title: "följde dig"
 _mfm:
   mention: "Nämn"
+  quote: "Citat"
   search: "Sök"
 _theme:
   keys:
     mention: "Nämn"
+    renote: "Omnotera"
 _sfx:
   note: "Noter"
   notification: "Notifikationer"
@@ -143,8 +165,12 @@ _notification:
   _types:
     follow: "Följer"
     mention: "Nämn"
+    renote: "Omnotera"
+    quote: "Citat"
+    reaction: "Reaktioner"
   _actions:
     reply: "Svara"
+    renote: "Omnotera"
 _deck:
   _columns:
     notifications: "Notifikationer"
