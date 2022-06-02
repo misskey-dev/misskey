@@ -10,6 +10,7 @@ import { verifyLogin, hash } from '../2fa.js';
 import { randomBytes } from 'node:crypto';
 import { IsNull } from 'typeorm';
 import { limiter } from '../limiter.js';
+import { getIpHash } from '@/misc/get-ip-hash.js';
 
 export default async (ctx: Koa.Context) => {
 	ctx.set('Access-Control-Allow-Origin', config.url);
@@ -27,7 +28,7 @@ export default async (ctx: Koa.Context) => {
 
 	try {
 		// not more than 1 attempt per second and not more than 10 attempts per hour
-		await limiter({ key: 'signin', duration: 60 * 60 * 1000, max: 10, minInterval: 1000 }, ctx.ip);
+		await limiter({ key: 'signin', duration: 60 * 60 * 1000, max: 10, minInterval: 1000 }, getIpHash(ctx.ip));
 	} catch (err) {
 		ctx.status = 429;
 		ctx.body = {

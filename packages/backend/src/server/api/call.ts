@@ -6,7 +6,7 @@ import endpoints, { IEndpointMeta } from './endpoints.js';
 import { ApiError } from './error.js';
 import { apiLogger } from './logger.js';
 import { AccessToken } from '@/models/entities/access-token.js';
-import IPCIDR from 'ip-cidr';
+import { getIpHash } from '@/misc/get-ip-hash.js';
 
 const accessDenied = {
 	message: 'Access denied.',
@@ -33,18 +33,13 @@ export default async (endpoint: string, user: CacheableLocalUser | null | undefi
 		throw new ApiError(accessDenied);
 	}
 
-	if (ep.meta.requireCredential && ep.meta.limit && !isModerator) {
+	if (ep.meta.limit && !isModerator) {
 		// koa will automatically load the `X-Forwarded-For` header if `proxy: true` is configured in the app.
 		let limitActor: string;
 		if (user) {
 			limitActor = user.id;
 		} else {
-			// because a single person may control many IPv6 addresses,
-			// only a /64 subnet prefix of any IP will be taken into account.
-			// (this means for IPv4 the entire address is used)
-			const ip = IPCIDR.createAddress(ctx.ip).mask(64);
-
-			limitActor = 'ip-' + parseInt(ip, 2).toString(36);
+			limitActor = getIpHash(ctx!.ip);
 		}
 
 		const limit = Object.assign({}, ep.meta.limit);
