@@ -40,6 +40,7 @@ jobs:
     - run: corepack enable
     - run: yarn set version berry
     - run: yarn workspaces foreach install --immutable
+      continue-on-error: true
     - name: Check yarn.lock
       run: git diff --exit-code yarn.lock
     - name: Copy Configure
