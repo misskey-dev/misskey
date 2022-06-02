@@ -14,6 +14,16 @@ gotIt: "Uppfattat!"
 cancel: "Avbryt"
 enterUsername: "Ange användarnamn"
 renotedBy: "Renote av {user}"
+noNotes: "Inga anteckningar"
+noNotifications: "Inga aviseringar"
+instance: "Instanser"
+settings: "Inställningar"
+basicSettings: "Basinställningar"
+otherSettings: "Andra inställningar"
+openInWindow: "Öppna i ett fönster"
+profile: "Profil"
+timeline: "Tidslinje"
+instances: "Instanser"
 smtpUser: "Användarnamn"
 smtpPass: "Lösenord"
 searchByGoogle: "Sök"
@@ -23,8 +33,10 @@ _sfx:
   notification: "Notifikationer"
 _widgets:
   notifications: "Notifikationer"
+  timeline: "Tidslinje"
 _profile:
   username: "Användarnamn"
 _deck:
   _columns:
     notifications: "Notifikationer"
+    tl: "Tidslinje"
