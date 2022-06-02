@@ -55,6 +55,17 @@ showMore: "Visa mer"
 youGotNewFollower: "följde dig"
 receiveFollowRequest: "Följarförfrågan mottagen"
 followRequestAccepted: "Följarförfrågan accepterad"
+mention: "Nämn"
+mentions: "Omnämningar"
+directNotes: "Direktanteckningar"
+importAndExport: "Importera / Exportera"
+import: "Importera"
+export: "Exportera"
+files: "Filer"
+download: "Nedladdning"
+driveFileDeleteConfirm: "Är du säker att du vill radera filen \"{name}\"? Anteckningar med denna fil bifogad kommer också raderas."
+unfollowConfirm: "Är du säker att du vill avfölja {name}?"
+exportRequested: "Du har begärt en export. Detta kan ta lite tid. Den kommer läggas till i din Drive när den blir klar."
 pinned: "Fäst till profil"
 instances: "Instanser"
 remove: "Radera"
@@ -66,7 +77,11 @@ _email:
   _follow:
     title: "följde dig"
 _mfm:
+  mention: "Nämn"
   search: "Sök"
+_theme:
+  keys:
+    mention: "Nämn"
 _sfx:
   notification: "Notifikationer"
 _widgets:
@@ -78,9 +93,12 @@ _profile:
   username: "Användarnamn"
 _notification:
   youWereFollowed: "följde dig"
+  _types:
+    mention: "Nämn"
   _actions:
     reply: "Svara"
 _deck:
   _columns:
     notifications: "Notifikationer"
     tl: "Tidslinje"
+    mentions: "Omnämningar"
