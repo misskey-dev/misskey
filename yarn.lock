@@ -2859,7 +2859,7 @@ __metadata:
 "browser-image-resizer@misskey-dev/browser-image-resizer#tag=v2.2.1-misskey.2":
   version: 2.2.1-misskey.2
   resolution: "browser-image-resizer@https://github.com/misskey-dev/browser-image-resizer.git#commit=a58834f5fe2af9f9f31ff115121aef3de6f9d416"
-  checksum: 5a29181ee34a407b43069dcd5e3364c3066eb4af3ffdd262ba669ea37273ac232aadebff8204a6ae9ff8d74305429191feedb5d420449acf01e1bbf9759c4847
+  checksum: eb5ddfe7f6a2de96340ef420df9be03a75f2bfd8f568a60be22cc8f2ccdcb754105b7799cf706c09add3f9d82b7ce1c6f963842f80a85f234b26ef6bf1b8da09
   languageName: node
   linkType: hard
 
