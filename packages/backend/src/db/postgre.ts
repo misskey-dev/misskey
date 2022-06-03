@@ -73,6 +73,7 @@ import { entities as charts } from '@/services/chart/entities.js';
 import { Webhook } from '@/models/entities/webhook.js';
 import { envOption } from '../env.js';
 import { dbLogger } from './logger.js';
+import { redisClient } from './redis.js';
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'gray', false);
 
@@ -217,6 +218,7 @@ export async function initDb() {
 
 export async function resetDb() {
 	const reset = async () => {
+		await redisClient.FLUSHDB();
 		const tables = await db.query(`SELECT relname AS "table"
 		FROM pg_class C LEFT JOIN pg_namespace N ON (N.oid = C.relnamespace)
 		WHERE nspname NOT IN ('pg_catalog', 'information_schema')
