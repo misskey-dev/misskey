@@ -8,7 +8,7 @@
 		"watch": "node watch.mjs",
 		"lint": "eslint --quiet \"src/**/*.ts\"",
 		"mocha": "cross-env NODE_ENV=test TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT=\"./test/tsconfig.json\" mocha",
-		"test": "npm run mocha"
+		"test": "yarn mocha"
 	},
 	"packageManager": "yarn@3.2.1",
 	"resolutions": {

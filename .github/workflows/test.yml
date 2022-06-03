@@ -101,7 +101,7 @@ jobs:
       uses: cypress-io/github-action@v2
       with:
         install: false
-        start: npm run start:test
+        start: yarn start:test
         wait-on: 'http://localhost:61812'
         headless: false
         browser: ${{ matrix.browser }}
