@@ -152,11 +152,21 @@ wallpaper: "Bakgrundsbild"
 setWallpaper: "Välj bakgrund"
 removeWallpaper: "Ta bort bakgrund"
 searchWith: "Sök: {q}"
+youHaveNoLists: "Du har inga listor"
+followConfirm: "Är du säker att du vill följa {name}?"
+proxyAccount: "Proxykonto"
+proxyAccountDescription: "Ett proxykonto är ett konto som agerar som en extern följare för användare under vissa villkor. Till exempel, när en användare lägger till en extern användare till en lista så kommer den externa användarens aktivitet inte levireras till instansen om ingen lokal användare följer det kontot, så proxykontot används istället."
+host: "Värd"
+selectUser: "Välj användare"
+recipient: "Mottagare"
+annotation: "Kommentarer"
+federation: "Federation"
 instances: "Instanser"
 remove: "Radera"
 nsfw: "Känsligt innehåll"
 pinnedNotes: "Fästad not"
 userList: "Listor"
+smtpHost: "Värd"
 smtpUser: "Användarnamn"
 smtpPass: "Lösenord"
 user: "Användare"
@@ -179,6 +189,7 @@ _sfx:
 _widgets:
   notifications: "Notifikationer"
   timeline: "Tidslinje"
+  federation: "Federation"
 _cw:
   show: "Ladda mer"
 _visibility:
@@ -190,6 +201,8 @@ _exportOrImport:
   muteList: "Tysta"
   blockingList: "Blockera"
   userLists: "Listor"
+_charts:
+  federation: "Federation"
 _pages:
   script:
     categories:
