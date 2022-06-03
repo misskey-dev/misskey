@@ -26,7 +26,7 @@ You should also include the user name that made the change.
   Your own theme color may be unset if it was in an invalid format.
   Admins should check their instance settings if in doubt.
 - Perform port diagnosis at startup only when Listen fails @mei23
-- Rate limiting is now also usable for non-authenticated users. @Johann150
+- Rate limiting is now also usable for non-authenticated users. @Johann150 @mei23
   Admins should make sure the reverse proxy sets the `X-Forwarded-For` header to the original address.
 
 ### Bugfixes
@@ -43,6 +43,7 @@ You should also include the user name that made the change.
 - Server: use correct order of attachments on notes @Johann150
 - Server: prevent crash when processing certain PNGs @syuilo
 - Server: Fix unable to generate video thumbnails @mei23
+- Server: Fix `Cannot find module` issue @mei23
 
 ## 12.110.1 (2022/04/23)
 

@@ -35,7 +35,7 @@
 
 <script lang="ts" setup>
 import { computed, defineExpose, ref } from 'vue';
-import * as tinycolor from 'tinycolor2';
+import tinycolor from 'tinycolor2';
 import FormLink from '@/components/form/link.vue';
 import FormSwitch from '@/components/form/switch.vue';
 import FormSection from '@/components/form/section.vue';
