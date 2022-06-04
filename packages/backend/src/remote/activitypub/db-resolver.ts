@@ -5,10 +5,10 @@ import { User, IRemoteUser, CacheableRemoteUser, CacheableUser } from '@/models/
 import { UserPublickey } from '@/models/entities/user-publickey.js';
 import { MessagingMessage } from '@/models/entities/messaging-message.js';
 import { Notes, Users, UserPublickeys, MessagingMessages } from '@/models/index.js';
-import { IObject, getApId } from './type.js';
-import { resolvePerson } from './models/person.js';
 import { Cache } from '@/misc/cache.js';
 import { uriPersonCache, userByIdCache } from '@/services/user-cache.js';
+import { IObject, getApId } from './type.js';
+import { resolvePerson } from './models/person.js';
 
 const publicKeyCache = new Cache<UserPublickey | null>(Infinity);
 const publicKeyByUserIdCache = new Cache<UserPublickey | null>(Infinity);
@@ -29,7 +29,7 @@ export type UriParseResult = {
 	uri: string;
 };
 
-export function parseUri(url: string) : UriParseResult {
+export function parseUri(value: string | IObject): UriParseResult {
 	const uri = getApId(value);
 
 	// the host part of a URL is case insensitive, so use the 'i' flag.
