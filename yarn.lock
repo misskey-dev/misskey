@@ -40,12 +40,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@bull-board/api@npm:3.11.0":
-  version: 3.11.0
-  resolution: "@bull-board/api@npm:3.11.0"
+"@bull-board/api@npm:3.10.4":
+  version: 3.10.4
+  resolution: "@bull-board/api@npm:3.10.4"
   dependencies:
     redis-info: ^3.0.8
-  checksum: 0973ec382ab458ddf02a8fff109a19278efa36fbe929bc9d9087f73ae97dccdada59139dd9e9adc058a52427fa4a7eca10193ab8c1bb8d66fde14fbef0008343
+  checksum: ed85e4a4da010645eff3888b5d28af13b73e57e6aceb2471155cd1179cdcdb6bd2734ea9bf07260c2e8ffeb59657a727f0db13f07f88f268bb4652fa7e107cfc
   languageName: node
   linkType: hard
 
@@ -58,28 +58,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@bull-board/koa@npm:3.11.0":
-  version: 3.11.0
-  resolution: "@bull-board/koa@npm:3.11.0"
+"@bull-board/koa@npm:3.10.4":
+  version: 3.10.4
+  resolution: "@bull-board/koa@npm:3.10.4"
   dependencies:
-    "@bull-board/api": 3.11.0
-    "@bull-board/ui": 3.11.0
-    ejs: ^3.1.7
+    "@bull-board/api": 3.10.4
+    "@bull-board/ui": 3.10.4
+    ejs: ^3.1.6
     koa: ^2.13.1
     koa-mount: ^4.0.0
     koa-router: ^10.0.0
     koa-static: ^5.0.0
     koa-views: ^7.0.1
-  checksum: 7ff134c5607177c53a890be044d9f7c55dfa6880250e10e9d39e6f021382aeca0dd329ae0b850fc0ec5db6cf5a04117de9cc1c1c02d0071427d9802d1b3985d6
+  checksum: 1d0566330884422903e2ed9a2abb222995b17c4d283d37e322dfe1f95b9aaa9176bdaec45be36a24961bf9483210e99167be90c067f95cc213991a88a5fdc232
   languageName: node
   linkType: hard
 
-"@bull-board/ui@npm:3.11.0":
-  version: 3.11.0
-  resolution: "@bull-board/ui@npm:3.11.0"
+"@bull-board/ui@npm:3.10.4":
+  version: 3.10.4
+  resolution: "@bull-board/ui@npm:3.10.4"
   dependencies:
-    "@bull-board/api": 3.11.0
-  checksum: f906e929b7ecada53721e6af45ab5b0fdd87f1f0e9f78898837eb00f9603de2b54a7cd1425363a6b2589baf2d751db812e1ae47b096c69136a4d7092ce564b2c
+    "@bull-board/api": 3.10.4
+  checksum: de72e7598ff6c02563154c2362203ab876daafa0e0b974d3a622ee72fc72cfb258202fee79976ff70d5cc340832280492c1a81e65b608cad1b76bae1e36f2943
   languageName: node
   linkType: hard
 
@@ -2497,7 +2497,7 @@ __metadata:
   resolution: "backend@workspace:packages/backend"
   dependencies:
     "@bull-board/api": ^3.11.1
-    "@bull-board/koa": 3.11.0
+    "@bull-board/koa": 3.10.4
     "@bull-board/ui": ^3.11.1
     "@discordapp/twemoji": 14.0.2
     "@elastic/elasticsearch": 7.17.0
@@ -4937,7 +4937,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ejs@npm:*, ejs@npm:^3.1.7":
+"ejs@npm:*, ejs@npm:^3.1.6":
   version: 3.1.8
   resolution: "ejs@npm:3.1.8"
   dependencies:
