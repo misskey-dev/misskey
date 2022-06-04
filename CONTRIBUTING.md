@@ -80,8 +80,8 @@ However, minor fixes, refactoring, and urgent changes may be merged at the discr
 	- Assign about 2~3 reviewers.
 3. The release PR is approved, merge it.
 4. Create a [release of GitHub](https://github.com/misskey-dev/misskey/releases)
-  - The target branch must be `master`
-  - The tag name must be the version
+	- The target branch must be `master`
+	- The tag name must be the version
 
 ## Localization (l10n)
 Misskey uses [Crowdin](https://crowdin.com/project/misskey) for localization management.
