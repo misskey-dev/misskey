@@ -4,10 +4,13 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
+		"start": "yarn node --experimental-json-modules ./built/index.js",
+		"start:test": "NODE_ENV=test yarn node --experimental-json-modules ./built/index.js",
+		"migrate": "typeorm migration:run -d ormconfig.js",
 		"build": "tsc -p tsconfig.json || echo done. && tsc-alias -p tsconfig.json",
 		"watch": "node watch.mjs",
 		"lint": "eslint --quiet \"src/**/*.ts\"",
-		"mocha": "cross-env NODE_ENV=test TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT=\"./test/tsconfig.json\" mocha",
+		"mocha": "NODE_ENV=test TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT=\"./test/tsconfig.json\" mocha",
 		"test": "yarn mocha"
 	},
 	"packageManager": "yarn@3.2.1",
@@ -16,7 +19,9 @@
 		"lodash": "^4.17.21"
 	},
 	"dependencies": {
+		"@bull-board/api": "^3.11.1",
 		"@bull-board/koa": "3.11.0",
+		"@bull-board/ui": "^3.11.1",
 		"@discordapp/twemoji": "14.0.2",
 		"@elastic/elasticsearch": "7.17.0",
 		"@koa/cors": "3.3.0",
@@ -76,6 +81,7 @@
 		"nested-property": "4.0.0",
 		"node-fetch": "3.2.4",
 		"nodemailer": "6.7.5",
+		"oauth": "^0.9.15",
 		"os-utils": "0.0.14",
 		"parse5": "6.0.1",
 		"pg": "8.7.3",
@@ -175,6 +181,7 @@
 		"eslint": "8.16.0",
 		"eslint-plugin-import": "2.26.0",
 		"execa": "6.1.0",
+		"form-data": "^4.0.0",
 		"typescript": "4.7.2"
 	}
 }

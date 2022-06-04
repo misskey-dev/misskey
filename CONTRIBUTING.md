@@ -117,7 +117,7 @@ yarn test
 
 #### Run specify test
 ```
-npx cross-env TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT="./test/tsconfig.json" npx mocha test/foo.ts --require ts-node/register
+TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT="./test/tsconfig.json" yarn dlx mocha test/foo.ts --require ts-node/register
 ```
 
 ### e2e tests
@@ -222,7 +222,7 @@ MongoDBは`null`で返してきてたので、その感覚で`if (x === null)`�
 ### Migration作成方法
 packages/backendで:
 ```sh
-npx typeorm migration:generate -d ormconfig.js -o <migration name>
+yarn dlx typeorm migration:generate -d ormconfig.js -o <migration name>
 ```
 
 - 生成後、ファイルをmigration下に移してください

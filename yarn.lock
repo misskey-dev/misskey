@@ -49,6 +49,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@bull-board/api@npm:3.11.1, @bull-board/api@npm:^3.11.1":
+  version: 3.11.1
+  resolution: "@bull-board/api@npm:3.11.1"
+  dependencies:
+    redis-info: ^3.0.8
+  checksum: 2dddd9847cc3b15030f07129068b0cfa3352b0c45e4de1c622634a0854ab9ec0fe06433f63eaa62d48ab7b5775cf8aad390711b25d44a24da11d567173ec47fa
+  languageName: node
+  linkType: hard
+
 "@bull-board/koa@npm:3.11.0":
   version: 3.11.0
   resolution: "@bull-board/koa@npm:3.11.0"
@@ -71,6 +80,15 @@ __metadata:
   dependencies:
     "@bull-board/api": 3.11.0
   checksum: f906e929b7ecada53721e6af45ab5b0fdd87f1f0e9f78898837eb00f9603de2b54a7cd1425363a6b2589baf2d751db812e1ae47b096c69136a4d7092ce564b2c
+  languageName: node
+  linkType: hard
+
+"@bull-board/ui@npm:^3.11.1":
+  version: 3.11.1
+  resolution: "@bull-board/ui@npm:3.11.1"
+  dependencies:
+    "@bull-board/api": 3.11.1
+  checksum: 316c7e53cdea8b0aa169d6390199e2ed682765facf345d94501c07cd28e8fd42a1601cc9893fcf7b9b00dfdf752e0941befb15738a2d4c34c77ef8b8c8dec827
   languageName: node
   linkType: hard
 
@@ -2478,7 +2496,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "backend@workspace:packages/backend"
   dependencies:
+    "@bull-board/api": ^3.11.1
     "@bull-board/koa": 3.11.0
+    "@bull-board/ui": ^3.11.1
     "@discordapp/twemoji": 14.0.2
     "@elastic/elasticsearch": 7.17.0
     "@koa/cors": 3.3.0
@@ -2562,6 +2582,7 @@ __metadata:
     feed: 4.2.2
     file-type: 17.1.1
     fluent-ffmpeg: 2.1.2
+    form-data: ^4.0.0
     got: 12.1.0
     hpagent: 0.1.2
     ip-cidr: 3.0.10
@@ -2590,6 +2611,7 @@ __metadata:
     nested-property: 4.0.0
     node-fetch: 3.2.4
     nodemailer: 6.7.5
+    oauth: ^0.9.15
     os-utils: 0.0.14
     parse5: 6.0.1
     pg: 8.7.3
@@ -7224,21 +7246,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"iconv-lite@npm:*, iconv-lite@npm:0.6.3, iconv-lite@npm:^0.6.2":
+  version: 0.6.3
+  resolution: "iconv-lite@npm:0.6.3"
+  dependencies:
+    safer-buffer: ">= 2.1.2 < 3.0.0"
+  checksum: 3f60d47a5c8fc3313317edfd29a00a692cc87a19cac0159e2ce711d0ebc9019064108323b5e493625e25594f11c6236647d8e256fbe7a58f4a3b33b89e6d30bf
+  languageName: node
+  linkType: hard
+
 "iconv-lite@npm:0.4.24, iconv-lite@npm:^0.4.4":
   version: 0.4.24
   resolution: "iconv-lite@npm:0.4.24"
   dependencies:
     safer-buffer: ">= 2.1.2 < 3"
   checksum: bd9f120f5a5b306f0bc0b9ae1edeb1577161503f5f8252a20f1a9e56ef8775c9959fd01c55f2d3a39d9a8abaf3e30c1abeb1895f367dcbbe0a8fd1c9ca01c4f6
-  languageName: node
-  linkType: hard
-
-"iconv-lite@npm:0.6.3, iconv-lite@npm:^0.6.2":
-  version: 0.6.3
-  resolution: "iconv-lite@npm:0.6.3"
-  dependencies:
-    safer-buffer: ">= 2.1.2 < 3.0.0"
-  checksum: 3f60d47a5c8fc3313317edfd29a00a692cc87a19cac0159e2ce711d0ebc9019064108323b5e493625e25594f11c6236647d8e256fbe7a58f4a3b33b89e6d30bf
   languageName: node
   linkType: hard
 
@@ -10044,7 +10066,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"oauth@npm:0.9.15":
+"oauth@npm:0.9.15, oauth@npm:^0.9.15":
   version: 0.9.15
   resolution: "oauth@npm:0.9.15"
   checksum: 957c0d8d85300398dcb0e293953650c0fc3facc795bee8228238414f19f59cef5fd4ee8d17a972c142924c10c5f6ec50ef80f77f4a6cc6e3c98f9d22c027801c
