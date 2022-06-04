@@ -34,9 +34,10 @@ jobs:
       with:
         submodules: true
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v3.2.0
       with:
         node-version: ${{ matrix.node-version }}
+        cache: 'yarn'
     - run: corepack enable
     - run: yarn install --immutable
     - name: Check yarn.lock
@@ -81,9 +82,10 @@ jobs:
     #- uses: browser-actions/setup-firefox@latest
     #  if: ${{ matrix.browser == 'firefox' }}
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v3.2.0
       with:
         node-version: ${{ matrix.node-version }}
+        cache: 'yarn'
     - run: corepack enable
     - run: yarn install --immutable
       env:

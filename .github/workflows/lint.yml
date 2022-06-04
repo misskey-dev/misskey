@@ -23,8 +23,7 @@ jobs:
     - uses: actions/setup-node@v3.2.0
       with:
         node-version: 18.x
+        cache: 'yarn'
     - run: corepack enable
     - run: yarn install --immutable
-      env:
-        YARN_CHECKSUM_BEHAVIOR: update
     - run: yarn workspace ${{ matrix.workspace }} run lint
