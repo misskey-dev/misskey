@@ -19,7 +19,6 @@ You should also include the user name that made the change.
 - プッシュ通知にクリックやactionを設定 #7667 @tamaina
 - ドライブに画像ファイルをアップロードするときオリジナル画像を破棄してwebpublicのみ保持するオプション @tamaina
 - Server: always remove completed tasks of job queue @Johann150
-- Server: アンテナ、クリップ、リストの表示を速くする @xianonn
 - Client: make emoji stand out more on reaction button @Johann150
 - Client: display URL of QR code for TOTP registration @tamaina
 - API: notifications/readは配列でも受け付けるように #7667 @tamaina
