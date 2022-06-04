@@ -24,7 +24,6 @@ jobs:
       with:
         node-version: 18.x
     - run: corepack enable
-    - run: yarn set version berry
     - run: yarn install --immutable
       env:
         YARN_CHECKSUM_BEHAVIOR: update

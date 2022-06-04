@@ -38,7 +38,6 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: corepack enable
-    - run: yarn set version berry
     - run: yarn workspaces foreach install --immutable
     - name: Check yarn.lock
       run: git diff --exit-code yarn.lock
@@ -86,7 +85,6 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: corepack enable
-    - run: yarn set version berry
     - run: yarn workspaces foreach install --immutable
       env:
         YARN_CHECKSUM_BEHAVIOR: update
