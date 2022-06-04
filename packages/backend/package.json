@@ -20,7 +20,7 @@
 	},
 	"dependencies": {
 		"@bull-board/api": "^3.11.1",
-		"@bull-board/koa": "3.11.0",
+		"@bull-board/koa": "3.10.4",
 		"@bull-board/ui": "^3.11.1",
 		"@discordapp/twemoji": "14.0.2",
 		"@elastic/elasticsearch": "7.17.0",
