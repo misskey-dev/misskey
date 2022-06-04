@@ -71,13 +71,15 @@ For now, basically only @syuilo has the authority to merge PRs into develop beca
 However, minor fixes, refactoring, and urgent changes may be merged at the discretion of a contributor.
 
 ## Release
-For now, basically only @syuilo has the authority to release Misskey.
-However, in case of emergency, a release can be made at the discretion of a contributor.
-
 ### Release Instructions
-1. commit version changes in the `develop` branch ([package.json](https://github.com/misskey-dev/misskey/blob/develop/package.json))
-2. follow the `master` branch to the `develop` branch.
-3. Create a [release of GitHub](https://github.com/misskey-dev/misskey/releases)
+1. Commit version changes in the `develop` branch ([package.json](https://github.com/misskey-dev/misskey/blob/develop/package.json))
+2. Create a release PR.
+	- Into `master` from `develop` branch.
+	- The title must be in the format `Release: x.y.z`.
+		- `x.y.z` is the new version you are trying to release.
+	- Assign about 2~3 reviewers.
+3. The release PR is approved, merge it.
+4. Create a [release of GitHub](https://github.com/misskey-dev/misskey/releases)
   - The target branch must be `master`
   - The tag name must be the version
 
