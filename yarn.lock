@@ -2639,7 +2639,7 @@ __metadata:
     strict-event-emitter-types: 2.0.0
     stringz: 2.1.0
     style-loader: 3.3.1
-    summaly: 2.5.0
+    summaly: 2.5.1
     syslog-pro: 1.0.0
     systeminformation: 5.11.16
     tinycolor2: 1.4.2
@@ -13136,21 +13136,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"summaly@npm:2.5.0":
-  version: 2.5.0
-  resolution: "summaly@npm:2.5.0"
+"summaly@npm:2.5.1":
+  version: 2.5.1
+  resolution: "summaly@npm:2.5.1"
   dependencies:
     cheerio: 0.22.0
     debug: 4.3.3
     escape-regexp: 0.0.1
     got: 11.5.1
     html-entities: 2.3.2
+    iconv-lite: 0.6.3
     jschardet: 3.0.0
     koa: 2.13.4
     private-ip: 2.3.3
     require-all: 3.0.0
     trace-redirect: 1.0.6
-  checksum: 07cd78f92f2ab94230151ba27c001e70cb6167509f34f688c5cfd4a94505666f8ef0e2d37b77dade6fd50d39e85ed8a1e98196cd2fd7ed147cde4b77029f2214
+  checksum: d8fcfafd61e54b80bb49d1c467782c68fea98e9fa953cd48f9bf65dd1e60c9fde84c65704018eed12abc278fc77c4ffe065dc19eecdc81b0126b6168212699b0
   languageName: node
   linkType: hard
 
