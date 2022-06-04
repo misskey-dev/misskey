@@ -4,8 +4,8 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"start": "yarn node --experimental-json-modules ./built/index.js",
-		"start:test": "NODE_ENV=test yarn node --experimental-json-modules ./built/index.js",
+		"start": "node --experimental-json-modules ./built/index.js",
+		"start:test": "NODE_ENV=test node --experimental-json-modules ./built/index.js",
 		"migrate": "typeorm migration:run -d ormconfig.js",
 		"build": "tsc -p tsconfig.json || echo done. && tsc-alias -p tsconfig.json",
 		"watch": "node watch.mjs",
