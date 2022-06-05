@@ -197,7 +197,14 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 	const cw = note.summary === '' ? null : note.summary;
 
 	// テキストのパース
-	const text = typeof note._misskey_content !== 'undefined' ? note._misskey_content : (note.content ? htmlToMfm(note.content, note.tag) : null);
+	let text: string | null = null;
+	if (note.source?.mediaType === 'text/x.misskeymarkdown' && typeof note.source?.content === 'string') {
+		text = note.source.content;
+	} else if (typeof note._misskey_content === 'string') {
+		text = note._misskey_content;
+	} else if (typeof note.content === 'string') {
+		text = htmlToMfm(note.content, note.tag);
+	}
 
 	// vote
 	if (reply && reply.hasPoll) {
