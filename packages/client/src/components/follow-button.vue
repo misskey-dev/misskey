@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onBeforeUnmount, onMounted, ref } from 'vue';
+import { onBeforeUnmount, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as os from '@/os';
 import { stream } from '@/stream';
