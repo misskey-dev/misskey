@@ -347,9 +347,7 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 
 		publishNotesStream(note);
 
-		const webhooks = await getActiveWebhooks().then(webhooks => {
-			webhooks.filter(x => x.userId === user.id && x.on.includes('note'))
-		});
+		const webhooks = await getActiveWebhooks().then(webhooks => webhooks.filter(x => x.userId === user.id && x.on.includes('note')));
 
 		for (const webhook of webhooks) {
 			webhookDeliver(webhook, 'note', {
