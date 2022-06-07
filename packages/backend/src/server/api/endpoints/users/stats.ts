@@ -7,6 +7,8 @@ export const meta = {
 
 	requireCredential: false,
 
+	description: 'Show statistics about a user.',
+
 	errors: {
 		noSuchUser: {
 			message: 'No such user.',
