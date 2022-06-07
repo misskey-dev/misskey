@@ -51,10 +51,8 @@ const connection = stream.useChannel('main');
 if (props.user.isFollowing == null) {
 	os.api('users/show', {
 		userId: props.user.id
-	}).then(u => {
-		isFollowing.value = u.isFollowing;
-		hasPendingFollowRequestFromYou.value = u.hasPendingFollowRequestFromYou;
-	});
+	})
+	.then(onFollowChange);
 }
 
 function onFollowChange(user: Misskey.entities.UserDetailed) {
