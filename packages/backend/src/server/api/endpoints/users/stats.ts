@@ -1,6 +1,7 @@
 import define from '../../define.js';
 import { ApiError } from '../../error.js';
 import { DriveFiles, Followings, NoteFavorites, NoteReactions, Notes, PageLikes, PollVotes, Users } from '@/models/index.js';
+import { awaitAll } from '@/prelude/await-all.js';
 
 export const meta = {
 	tags: ['users'],
@@ -31,109 +32,72 @@ export default define(meta, paramDef, async (ps, me) => {
 		throw new ApiError(meta.errors.noSuchUser);
 	}
 
-	const [
-		notesCount,
-		repliesCount,
-		renotesCount,
-		repliedCount,
-		renotedCount,
-		pollVotesCount,
-		pollVotedCount,
-		localFollowingCount,
-		remoteFollowingCount,
-		localFollowersCount,
-		remoteFollowersCount,
-		sentReactionsCount,
-		receivedReactionsCount,
-		noteFavoritesCount,
-		pageLikesCount,
-		pageLikedCount,
-		driveFilesCount,
-		driveUsage,
-	] = await Promise.all([
-		Notes.createQueryBuilder('note')
+	let result = await awaitAll({
+		notesCount: Notes.createQueryBuilder('note')
 			.where('note.userId = :userId', { userId: user.id })
 			.getCount(),
-		Notes.createQueryBuilder('note')
+		repliesCount: Notes.createQueryBuilder('note')
 			.where('note.userId = :userId', { userId: user.id })
 			.andWhere('note.replyId IS NOT NULL')
 			.getCount(),
-		Notes.createQueryBuilder('note')
+		renotesCount: Notes.createQueryBuilder('note')
 			.where('note.userId = :userId', { userId: user.id })
 			.andWhere('note.renoteId IS NOT NULL')
 			.getCount(),
-		Notes.createQueryBuilder('note')
+		repliedCount: Notes.createQueryBuilder('note')
 			.where('note.replyUserId = :userId', { userId: user.id })
 			.getCount(),
-		Notes.createQueryBuilder('note')
+		renotedCount: Notes.createQueryBuilder('note')
 			.where('note.renoteUserId = :userId', { userId: user.id })
 			.getCount(),
-		PollVotes.createQueryBuilder('vote')
+		pollVotesCount: PollVotes.createQueryBuilder('vote')
 			.where('vote.userId = :userId', { userId: user.id })
 			.getCount(),
-		PollVotes.createQueryBuilder('vote')
+		pollVotedCount: PollVotes.createQueryBuilder('vote')
 			.innerJoin('vote.note', 'note')
 			.where('note.userId = :userId', { userId: user.id })
 			.getCount(),
-		Followings.createQueryBuilder('following')
+		localFollowingCount: Followings.createQueryBuilder('following')
 			.where('following.followerId = :userId', { userId: user.id })
 			.andWhere('following.followeeHost IS NULL')
 			.getCount(),
-		Followings.createQueryBuilder('following')
+		remoteFollowingCount: Followings.createQueryBuilder('following')
 			.where('following.followerId = :userId', { userId: user.id })
 			.andWhere('following.followeeHost IS NOT NULL')
 			.getCount(),
-		Followings.createQueryBuilder('following')
+		localFollowersCount: Followings.createQueryBuilder('following')
 			.where('following.followeeId = :userId', { userId: user.id })
 			.andWhere('following.followerHost IS NULL')
 			.getCount(),
-		Followings.createQueryBuilder('following')
+		remoteFollowersCount: Followings.createQueryBuilder('following')
 			.where('following.followeeId = :userId', { userId: user.id })
 			.andWhere('following.followerHost IS NOT NULL')
 			.getCount(),
-		NoteReactions.createQueryBuilder('reaction')
+		sentReactionsCount: NoteReactions.createQueryBuilder('reaction')
 			.where('reaction.userId = :userId', { userId: user.id })
 			.getCount(),
-		NoteReactions.createQueryBuilder('reaction')
+		receivedReactionsCount: NoteReactions.createQueryBuilder('reaction')
 			.innerJoin('reaction.note', 'note')
 			.where('note.userId = :userId', { userId: user.id })
 			.getCount(),
-		NoteFavorites.createQueryBuilder('favorite')
+		noteFavoritesCount: NoteFavorites.createQueryBuilder('favorite')
 			.where('favorite.userId = :userId', { userId: user.id })
 			.getCount(),
-		PageLikes.createQueryBuilder('like')
+		pageLikesCount: PageLikes.createQueryBuilder('like')
 			.where('like.userId = :userId', { userId: user.id })
 			.getCount(),
-		PageLikes.createQueryBuilder('like')
+		pageLikedCount: PageLikes.createQueryBuilder('like')
 			.innerJoin('like.page', 'page')
 			.where('page.userId = :userId', { userId: user.id })
 			.getCount(),
-		DriveFiles.createQueryBuilder('file')
+		driveFilesCount: DriveFiles.createQueryBuilder('file')
 			.where('file.userId = :userId', { userId: user.id })
 			.getCount(),
-		DriveFiles.calcDriveUsageOf(user),
-	]);
+		driveUsage: DriveFiles.calcDriveUsageOf(user),
+	});
 
-	return {
-		notesCount,
-		repliesCount,
-		renotesCount,
-		repliedCount,
-		renotedCount,
-		pollVotesCount,
-		pollVotedCount,
-		localFollowingCount,
-		remoteFollowingCount,
-		localFollowersCount,
-		remoteFollowersCount,
-		followingCount: localFollowingCount + remoteFollowingCount,
-		followersCount: localFollowersCount + remoteFollowersCount,
-		sentReactionsCount,
-		receivedReactionsCount,
-		noteFavoritesCount,
-		pageLikesCount,
-		pageLikedCount,
-		driveFilesCount,
-		driveUsage,
-	};
+	result.followingCount = result.localFollowingCount + result.remoteFollowingCount;
+	result.followersCount = result.localFollowerCount + result.remoteFollowersCount;
+
+	return result;
 });
