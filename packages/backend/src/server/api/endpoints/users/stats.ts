@@ -32,7 +32,7 @@ export default define(meta, paramDef, async (ps, me) => {
 		throw new ApiError(meta.errors.noSuchUser);
 	}
 
-	let result = await awaitAll({
+	const result = await awaitAll({
 		notesCount: Notes.createQueryBuilder('note')
 			.where('note.userId = :userId', { userId: user.id })
 			.getCount(),
