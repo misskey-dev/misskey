@@ -335,16 +335,16 @@ for (const plugin of ColdDeviceStorage.get('plugins').filter(p => p.active)) {
 	});
 }
 
+const hotkeys = {
+	'd': (): void => {
+		defaultStore.set('darkMode', !defaultStore.state.darkMode);
+	},
+	's': search,
+};
+
 if ($i) {
-	// shortcut
-	document.addEventListener('keydown', makeHotkey({
-		'd': () => {
-			defaultStore.set('darkMode', !defaultStore.state.darkMode);
-		},
-		'p|n': post,
-		's': search,
-		//TODO: 'h|/': help
-	}));
+	// only add post shortcuts if logged in
+	hotkeys['p|n'] = post;
 
 	if ($i.isDeleted) {
 		alert({
@@ -440,3 +440,6 @@ if ($i) {
 		signout();
 	});
 }
+
+// shortcut
+document.addEventListener('keydown', makeHotkey(hotkeys));
