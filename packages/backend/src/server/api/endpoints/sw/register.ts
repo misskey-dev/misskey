@@ -8,6 +8,8 @@ export const meta = {
 
 	requireCredential: true,
 
+	description: 'Register to receive push notifications.',
+
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
