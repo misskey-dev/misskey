@@ -9,6 +9,8 @@ export const meta = {
 
 	kind: 'write:user-groups',
 
+	description: 'Delete an existing group.',
+
 	errors: {
 		noSuchGroup: {
 			message: 'No such group.',

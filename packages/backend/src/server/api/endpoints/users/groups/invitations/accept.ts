@@ -11,6 +11,8 @@ export const meta = {
 
 	kind: 'write:user-groups',
 
+	description: 'Join a group the authenticated user has been invited to.',
+
 	errors: {
 		noSuchInvitation: {
 			message: 'No such invitation.',
