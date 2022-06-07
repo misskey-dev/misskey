@@ -11,6 +11,8 @@ export const meta = {
 
 	kind: 'write:account',
 
+	description: 'Add a user to an existing list.',
+
 	errors: {
 		noSuchList: {
 			message: 'No such list.',
