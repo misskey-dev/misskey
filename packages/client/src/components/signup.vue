@@ -111,7 +111,7 @@ export default defineComponent({
 			ToSAgreement: false,
 			hCaptchaResponse: null,
 			reCaptchaResponse: null,
-		}
+		};
 	},
 
 	computed: {

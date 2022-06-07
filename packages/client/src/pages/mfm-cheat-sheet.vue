@@ -341,7 +341,7 @@ export default defineComponent({
 			preview_rainbow: `$[rainbow 🍮] $[rainbow.speed=5s 🍮]`,
 			preview_sparkle: `$[sparkle 🍮]`,
 			preview_rotate: `$[rotate 🍮]`,
-		}
+		};
 	},
 });
 </script>

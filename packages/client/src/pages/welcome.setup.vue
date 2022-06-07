@@ -41,7 +41,7 @@ export default defineComponent({
 			password: '',
 			submitting: false,
 			host,
-		}
+		};
 	},
 
 	methods: {

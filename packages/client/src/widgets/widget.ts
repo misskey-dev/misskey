@@ -45,7 +45,7 @@ export const useWidgetPropsManager = <F extends Form & Record<string, { default:
 	}, { deep: true, immediate: true, });
 
 	const save = throttle(3000, () => {
-		emit('updateProps', widgetProps)
+		emit('updateProps', widgetProps);
 	});
 
 	const configure = async () => {

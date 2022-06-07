@@ -127,7 +127,7 @@ function getStatus(instance) {
 	if (instance.isSuspended) return 'suspended';
 	if (instance.isNotResponding) return 'error';
 	return 'alive';
-};
+}
 
 defineExpose({
 	[symbols.PAGE_INFO]: {

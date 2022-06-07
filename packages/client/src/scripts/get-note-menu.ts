@@ -22,7 +22,7 @@ export function getNoteMenu(props: {
 		props.note.poll == null
 	);
 
-	let appearNote = isRenote ? props.note.renote as misskey.entities.Note : props.note;
+	const appearNote = isRenote ? props.note.renote as misskey.entities.Note : props.note;
 
 	function del(): void {
 		os.confirm({

@@ -96,11 +96,11 @@ export default defineComponent({
 			}
 
 			function calcCircleScale(boxW, boxH, circleCenterX, circleCenterY) {
-				const origin = {x: circleCenterX, y: circleCenterY};
-				const dist1 = distance({x: 0, y: 0}, origin);
-				const dist2 = distance({x: boxW, y: 0}, origin);
-				const dist3 = distance({x: 0, y: boxH}, origin);
-				const dist4 = distance({x: boxW, y: boxH }, origin);
+				const origin = { x: circleCenterX, y: circleCenterY };
+				const dist1 = distance({ x: 0, y: 0 }, origin);
+				const dist2 = distance({ x: boxW, y: 0 }, origin);
+				const dist3 = distance({ x: 0, y: boxH }, origin);
+				const dist4 = distance({ x: boxW, y: boxH }, origin);
 				return Math.max(dist1, dist2, dist3, dist4) * 2;
 			}
 

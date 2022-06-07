@@ -52,7 +52,7 @@ const pagination = {
 	params: {
 		sort: '+lastUsedAt'
 	}
-}
+};
 
 function revoke(token) {
 	os.api('i/revoke-token', { tokenId: token.id }).then(() => {

@@ -61,7 +61,7 @@ export default defineComponent({
 			otherMenuItemIndicated,
 			post: os.post,
 			search,
-			openAccountMenu:(ev) => {
+			openAccountMenu: (ev) => {
 				openAccountMenu({
 					withExtraOperation: true,
 				}, ev);

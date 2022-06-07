@@ -234,7 +234,7 @@ onMounted(() => {
 		}
 		fixed.value = (type.value === 'drawer') || (getFixedContainer(props.src) != null);
 
-		await nextTick()
+		await nextTick();
 		
 		align();
 	}, { immediate: true, });
