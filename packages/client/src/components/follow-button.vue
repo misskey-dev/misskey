@@ -84,6 +84,7 @@ async function onClick() {
 				await os.api('following/requests/cancel', {
 					userId: props.user.id
 				});
+				hasPendingFollowRequestFromYou.value = false;
 			} else if (props.user.isLocked) {
 				await os.api('following/create', {
 					userId: props.user.id
