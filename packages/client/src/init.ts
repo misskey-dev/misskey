@@ -293,16 +293,6 @@ fetchInstanceMetaPromise.then(() => {
 	}
 });
 
-// shortcut
-document.addEventListener('keydown', makeHotkey({
-	'd': () => {
-		defaultStore.set('darkMode', !defaultStore.state.darkMode);
-	},
-	'p|n': post,
-	's': search,
-	//TODO: 'h|/': help
-}));
-
 watch(defaultStore.reactiveState.useBlurEffectForModal, v => {
 	document.documentElement.style.setProperty('--modalBgFilter', v ? 'blur(4px)' : 'none');
 }, { immediate: true });
@@ -346,6 +336,16 @@ for (const plugin of ColdDeviceStorage.get('plugins').filter(p => p.active)) {
 }
 
 if ($i) {
+	// shortcut
+	document.addEventListener('keydown', makeHotkey({
+		'd': () => {
+			defaultStore.set('darkMode', !defaultStore.state.darkMode);
+		},
+		'p|n': post,
+		's': search,
+		//TODO: 'h|/': help
+	}));
+
 	if ($i.isDeleted) {
 		alert({
 			type: 'warning',
