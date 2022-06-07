@@ -97,7 +97,7 @@ export default define(meta, paramDef, async (ps, me) => {
 	});
 
 	result.followingCount = result.localFollowingCount + result.remoteFollowingCount;
-	result.followersCount = result.localFollowerCount + result.remoteFollowersCount;
+	result.followersCount = result.localFollowersCount + result.remoteFollowersCount;
 
 	return result;
 });
