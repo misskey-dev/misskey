@@ -61,6 +61,15 @@ export default abstract class Channel {
 	protected withPackedNote(callback: (note: Packed<'Note'>) => void): (Note) => void {
 		return async (note: Note) => {
 			try {
+				// because `note` was previously JSON.stringify'ed, the fields that
+				// were objects before are now strings and have to be restored or
+				// removed from the object
+				note.createdAt = new Date(note.createdAt);
+				delete note.reply;
+				delete note.renote;
+				delete note.user;
+				delete note.channel;
+
 				const packed = await Notes.pack(note, this.user.id, { detail: true });
 
 				callback(packed);
