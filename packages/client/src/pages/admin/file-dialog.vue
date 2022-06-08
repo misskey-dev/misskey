@@ -34,74 +34,52 @@
 </XModalWindow>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
 import MkButton from '@/components/ui/button.vue';
 import MkSwitch from '@/components/form/switch.vue';
 import XModalWindow from '@/components/ui/modal-window.vue';
 import MkDriveFileThumbnail from '@/components/drive-file-thumbnail.vue';
 import bytes from '@/filters/bytes';
 import * as os from '@/os';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		MkButton,
-		MkSwitch,
-		XModalWindow,
-		MkDriveFileThumbnail,
-	},
+let file: any = $ref(null);
+let info: any = $ref(null);
+let isSensitive: boolean = $ref(false);
 
-	props: {
-		fileId: {
-			required: true,
-		}
-	},
+const props = defineProps<{
+	fileId: string,
+}>();
 
-	emits: ['closed'],
+async function fetch() {
+	file = await os.api('drive/files/show', { fileId: props.fileId });
+	info = await os.api('admin/drive/show-file', { fileId: props.fileId });
+	isSensitive = file.isSensitive;
+}
 
-	data() {
-		return {
-			file: null,
-			info: null,
-			isSensitive: false,
-		};
-	},
+fetch();
 
-	created() {
-		this.fetch();
-	},
+function showUser() {
+	os.pageWindow(`/user-info/${file.userId}`);
+}
 
-	methods: {
-		async fetch() {
-			this.file = await os.api('drive/files/show', { fileId: this.fileId });
-			this.info = await os.api('admin/drive/show-file', { fileId: this.fileId });
-			this.isSensitive = this.file.isSensitive;
-		},
+async function del() {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.t('removeAreYouSure', { x: file.name }),
+	});
+	if (canceled) return;
 
-		showUser() {
-			os.pageWindow(`/user-info/${this.file.userId}`);
-		},
+	os.apiWithDialog('drive/files/delete', {
+		fileId: file.id
+	});
+}
 
-		async del() {
-			const { canceled } = await os.confirm({
-				type: 'warning',
-				text: this.$t('removeAreYouSure', { x: this.file.name }),
-			});
-			if (canceled) return;
-
-			os.apiWithDialog('drive/files/delete', {
-				fileId: this.file.id
-			});
-		},
-
-		async toggleIsSensitive(v) {
-			await os.api('drive/files/update', { fileId: this.fileId, isSensitive: v });
-			this.isSensitive = v;
-		},
-
-		bytes
-	}
-});
+async function toggleIsSensitive(v) {
+	await os.api('drive/files/update', { fileId: props.fileId, isSensitive: v });
+	isSensitive = v;
+}
 </script>
 
 <style lang="scss" scoped>

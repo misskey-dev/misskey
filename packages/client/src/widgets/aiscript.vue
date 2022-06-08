@@ -1,5 +1,5 @@
 <template>
-<MkContainer :show-header="widgetProps.showHeader">
+<MkContainer :show-header="widgetProps.showHeader" class="mkw-aiscript">
 	<template #header><i class="fas fa-terminal"></i>{{ $ts._widgets.aiscript }}</template>
 
 	<div class="uylguesu _monospace">
@@ -43,7 +43,7 @@ type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 //const props = defineProps<WidgetComponentProps<WidgetProps>>();
 //const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
 const props = defineProps<{ widget?: Widget<WidgetProps>; }>();
-const emit = defineEmits<{ (e: 'updateProps', props: WidgetProps); }>();
+const emit = defineEmits<{ (ev: 'updateProps', props: WidgetProps); }>();
 
 const { widgetProps, configure } = useWidgetPropsManager(name,
 	widgetPropsDef,
@@ -94,7 +94,7 @@ const run = async () => {
 	let ast;
 	try {
 		ast = parse(widgetProps.script);
-	} catch (e) {
+	} catch (err) {
 		os.alert({
 			type: 'error',
 			text: 'Syntax error :(',
@@ -103,10 +103,10 @@ const run = async () => {
 	}
 	try {
 		await aiscript.exec(ast);
-	} catch (e) {
+	} catch (err) {
 		os.alert({
 			type: 'error',
-			text: e,
+			text: err,
 		});
 	}
 };

@@ -18,7 +18,7 @@ describe('Get file info', () => {
 			md5: 'd41d8cd98f00b204e9800998ecf8427e',
 			type: {
 				mime: 'application/octet-stream',
-				ext: null
+				ext: null,
 			},
 			width: undefined,
 			height: undefined,
@@ -36,7 +36,7 @@ describe('Get file info', () => {
 			md5: '091b3f259662aa31e2ffef4519951168',
 			type: {
 				mime: 'image/jpeg',
-				ext: 'jpg'
+				ext: 'jpg',
 			},
 			width: 512,
 			height: 512,
@@ -54,7 +54,7 @@ describe('Get file info', () => {
 			md5: '08189c607bea3b952704676bb3c979e0',
 			type: {
 				mime: 'image/apng',
-				ext: 'apng'
+				ext: 'apng',
 			},
 			width: 256,
 			height: 256,
@@ -72,7 +72,7 @@ describe('Get file info', () => {
 			md5: '32c47a11555675d9267aee1a86571e7e',
 			type: {
 				mime: 'image/gif',
-				ext: 'gif'
+				ext: 'gif',
 			},
 			width: 256,
 			height: 256,
@@ -90,7 +90,7 @@ describe('Get file info', () => {
 			md5: 'f73535c3e1e27508885b69b10cf6e991',
 			type: {
 				mime: 'image/png',
-				ext: 'png'
+				ext: 'png',
 			},
 			width: 256,
 			height: 256,
@@ -108,7 +108,7 @@ describe('Get file info', () => {
 			md5: 'b6f52b4b021e7b92cdd04509c7267965',
 			type: {
 				mime: 'image/svg+xml',
-				ext: 'svg'
+				ext: 'svg',
 			},
 			width: 256,
 			height: 256,
@@ -127,7 +127,7 @@ describe('Get file info', () => {
 			md5: '4b7a346cde9ccbeb267e812567e33397',
 			type: {
 				mime: 'image/svg+xml',
-				ext: 'svg'
+				ext: 'svg',
 			},
 			width: 256,
 			height: 256,
@@ -145,7 +145,7 @@ describe('Get file info', () => {
 			md5: '268c5dde99e17cf8fe09f1ab3f97df56',
 			type: {
 				mime: 'application/octet-stream',	// do not treat as image
-				ext: null
+				ext: null,
 			},
 			width: 25000,
 			height: 25000,
@@ -163,7 +163,7 @@ describe('Get file info', () => {
 			md5: '68d5b2d8d1d1acbbce99203e3ec3857e',
 			type: {
 				mime: 'image/jpeg',
-				ext: 'jpg'
+				ext: 'jpg',
 			},
 			width: 512,
 			height: 256,

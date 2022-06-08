@@ -90,7 +90,7 @@ export default defineComponent({
 		}
 	},
 	methods: {
-		onMousedown(e: MouseEvent) {
+		onMousedown(evt: MouseEvent) {
 			function distance(p, q) {
 				return Math.hypot(p.x - q.x, p.y - q.y);
 			}
@@ -104,18 +104,18 @@ export default defineComponent({
 				return Math.max(dist1, dist2, dist3, dist4) * 2;
 			}
 
-			const rect = e.target.getBoundingClientRect();
+			const rect = evt.target.getBoundingClientRect();
 
 			const ripple = document.createElement('div');
-			ripple.style.top = (e.clientY - rect.top - 1).toString() + 'px';
-			ripple.style.left = (e.clientX - rect.left - 1).toString() + 'px';
+			ripple.style.top = (evt.clientY - rect.top - 1).toString() + 'px';
+			ripple.style.left = (evt.clientX - rect.left - 1).toString() + 'px';
 
 			this.$refs.ripples.appendChild(ripple);
 
-			const circleCenterX = e.clientX - rect.left;
-			const circleCenterY = e.clientY - rect.top;
+			const circleCenterX = evt.clientX - rect.left;
+			const circleCenterY = evt.clientY - rect.top;
 
-			const scale = calcCircleScale(e.target.clientWidth, e.target.clientHeight, circleCenterX, circleCenterY);
+			const scale = calcCircleScale(evt.target.clientWidth, evt.target.clientHeight, circleCenterX, circleCenterY);
 
 			window.setTimeout(() => {
 				ripple.style.transform = 'scale(' + (scale / 2) + ')';

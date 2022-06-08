@@ -42,6 +42,7 @@ import MkSignin from '@/components/signin.vue';
 import MkButton from '@/components/ui/button.vue';
 import * as os from '@/os';
 import { login } from '@/account';
+import { appendQuery, query } from '@/scripts/url';
 
 export default defineComponent({
 	components: {
@@ -82,7 +83,9 @@ export default defineComponent({
 
 			this.state = 'accepted';
 			if (this.callback) {
-				location.href = `${this.callback}?session=${this.session}`;
+				location.href = appendQuery(this.callback, query({
+					session: this.session
+				}));
 			}
 		},
 		deny() {

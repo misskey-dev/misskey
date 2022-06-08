@@ -45,29 +45,20 @@ export async function uploadFromUrl({
 	// Create temp file
 	const [path, cleanup] = await createTemp();
 
-	// write content at URL to temp file
-	await downloadUrl(url, path);
-
-	let driveFile: DriveFile;
-	let error;
-
 	try {
-		driveFile = await addFile({ user, path, name, comment, folderId, force, isLink, url, uri, sensitive });
+		// write content at URL to temp file
+		await downloadUrl(url, path);
+
+		const driveFile = await addFile({ user, path, name, comment, folderId, force, isLink, url, uri, sensitive });
 		logger.succ(`Got: ${driveFile.id}`);
+		return driveFile!;
 	} catch (e) {
-		error = e;
 		logger.error(`Failed to create drive file: ${e}`, {
 			url: url,
 			e: e,
 		});
-	}
-
-	// clean-up
-	cleanup();
-
-	if (error) {
-		throw error;
-	} else {
-		return driveFile!;
+		throw e;
+	} finally {
+		cleanup();
 	}
 }

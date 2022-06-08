@@ -74,9 +74,9 @@ app.use(views(_dirname + '/views', {
 	extension: 'pug',
 	options: {
 		version: config.version,
-		clientEntry: () => process.env.NODE_ENV === 'production' ?
+		getClientEntry: () => process.env.NODE_ENV === 'production' ?
 			config.clientEntry :
-			JSON.parse(readFileSync(`${_dirname}/../../../../../built/_client_dist_/manifest.json`, 'utf-8'))['src/init.ts'].file.replace(/^_client_dist_\//, ''),
+			JSON.parse(readFileSync(`${_dirname}/../../../../../built/_client_dist_/manifest.json`, 'utf-8'))['src/init.ts'],
 		config,
 	},
 }));
@@ -247,7 +247,7 @@ router.get(['/@:user', '/@:user/:sub'], async (ctx, next) => {
 			icon: meta.iconUrl,
 			themeColor: meta.themeColor,
 		});
-		ctx.set('Cache-Control', 'public, max-age=30');
+		ctx.set('Cache-Control', 'public, max-age=15');
 	} else {
 		// リモートユーザーなので
 		// モデレータがAPI経由で参照可能にするために404にはしない
@@ -292,7 +292,7 @@ router.get('/notes/:note', async (ctx, next) => {
 			themeColor: meta.themeColor,
 		});
 
-		ctx.set('Cache-Control', 'public, max-age=180');
+		ctx.set('Cache-Control', 'public, max-age=15');
 
 		return;
 	}
@@ -329,7 +329,7 @@ router.get('/@:user/pages/:page', async (ctx, next) => {
 		});
 
 		if (['public'].includes(page.visibility)) {
-			ctx.set('Cache-Control', 'public, max-age=180');
+			ctx.set('Cache-Control', 'public, max-age=15');
 		} else {
 			ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
 		}
@@ -360,7 +360,7 @@ router.get('/clips/:clip', async (ctx, next) => {
 			themeColor: meta.themeColor,
 		});
 
-		ctx.set('Cache-Control', 'public, max-age=180');
+		ctx.set('Cache-Control', 'public, max-age=15');
 
 		return;
 	}
@@ -385,7 +385,7 @@ router.get('/gallery/:post', async (ctx, next) => {
 			themeColor: meta.themeColor,
 		});
 
-		ctx.set('Cache-Control', 'public, max-age=180');
+		ctx.set('Cache-Control', 'public, max-age=15');
 
 		return;
 	}
@@ -409,7 +409,7 @@ router.get('/channels/:channel', async (ctx, next) => {
 			themeColor: meta.themeColor,
 		});
 
-		ctx.set('Cache-Control', 'public, max-age=180');
+		ctx.set('Cache-Control', 'public, max-age=15');
 
 		return;
 	}
@@ -468,7 +468,7 @@ router.get('(.*)', async ctx => {
 		icon: meta.iconUrl,
 		themeColor: meta.themeColor,
 	});
-	ctx.set('Cache-Control', 'public, max-age=300');
+	ctx.set('Cache-Control', 'public, max-age=15');
 });
 
 // Register router

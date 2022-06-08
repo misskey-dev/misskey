@@ -27,6 +27,11 @@ export default async (user: { id: User['id']; host: User['host']; }, note: Note,
 		}
 	}
 
+	// check visibility
+	if (!await Notes.isVisibleForMe(note, user.id)) {
+		throw new IdentifiableError('68e9d2d1-48bf-42c2-b90a-b20e09fd3d48', 'Note not accessible for you.');
+	}
+
 	// TODO: cache
 	reaction = await toDbReaction(reaction, user.host);
 

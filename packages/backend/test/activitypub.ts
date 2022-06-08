@@ -1,12 +1,14 @@
 process.env.NODE_ENV = 'test';
 
-import rndstr from 'rndstr';
 import * as assert from 'assert';
+import rndstr from 'rndstr';
+import { initDb } from '../src/db/postgre.js';
 import { initTestDb } from './utils.js';
 
 describe('ActivityPub', () => {
 	before(async () => {
-		await initTestDb();
+		//await initTestDb();
+		await initDb();
 	});
 
 	describe('Parse minimum object', () => {
@@ -57,8 +59,8 @@ describe('ActivityPub', () => {
 			const note = await createNote(post.id, resolver, true);
 
 			assert.deepStrictEqual(note?.uri, post.id);
-			assert.deepStrictEqual(note?.visibility, 'public');
-			assert.deepStrictEqual(note?.text, post.content);
+			assert.deepStrictEqual(note.visibility, 'public');
+			assert.deepStrictEqual(note.text, post.content);
 		});
 	});
 
