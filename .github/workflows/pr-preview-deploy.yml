@@ -21,8 +21,6 @@ jobs:
       env:
         number: ${{ github.event.client_payload.pull_request.number }}
         job: ${{ github.job }}
-        # Conveniently, job.status maps to https://developer.github.com/v3/checks/runs/#update-a-check-run
-        conclusion: ${{ job.status }}
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         result-encoding: string
@@ -41,16 +39,20 @@ jobs:
           const check = checks.check_runs.filter(c => c.name === process.env.job);
 
           return check[0].id;
+
     - uses: actions/github-script@v5
+      env:
+        check_id: ${{ steps.check-id.outputs.result }}
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
           await github.rest.checks.update({
             ...context.repo,
-            check_run_id: steps.check-id.outputs.result,
+            check_run_id: process.env.check_id,
             status: 'in_progress',
             details_url: `${{ context.repo.serverUrl }}/${{ context.repo.owner }}/${{ context.repo.repo }}/runs/${{ context.job }}`
           });
+
     # Check out merge commit
     - name: Fork based /deploy checkout
       uses: actions/checkout@v2
@@ -78,12 +80,13 @@ jobs:
       env:
         # Conveniently, job.status maps to https://developer.github.com/v3/checks/runs/#update-a-check-run
         conclusion: ${{ job.status }}
+        check_id: ${{ steps.check-id.outputs.result }}
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
           const { data: result } = await github.rest.checks.update({
             ...context.repo,
-            check_run_id: steps.check-id.outputs.result,
+            check_run_id: process.env.check_id,
             status: 'completed',
             conclusion: process.env.conclusion
           });
