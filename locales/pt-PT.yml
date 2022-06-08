@@ -81,6 +81,7 @@ somethingHappened: "Ocorreu um erro"
 retry: "Tentar novamente"
 pageLoadError: "Ocorreu um erro ao carregar a página."
 pageLoadErrorDescription: "Isto é normalmente causado por erros de rede ou pela cache do browser. Experimenta limpar a cache e tenta novamente após algum tempo."
+serverIsDead: "O servidor não está respondendo. Por favor espere um pouco e tente novamente."
 youShouldUpgradeClient: "Para visualizar essa página, por favor recarregue-a para atualizar seu cliente."
 enterListName: "Insira um nome para a lista"
 privacy: "Privacidade"
@@ -104,6 +105,9 @@ clickToShow: "Clique para ver"
 sensitive: "Conteúdo sensível"
 add: "Adicionar"
 reaction: "Reações"
+reactionSetting: "Quais reações a mostrar no selecionador de reações"
+rememberNoteVisibility: "Lembrar das configurações de visibilidade de notas"
+attachCancel: "Remover anexo"
 markAsSensitive: "Marcar como sensível"
 unmarkAsSensitive: "Desmarcar como sensível"
 enterFileName: "Digite o nome do ficheiro"
@@ -126,9 +130,18 @@ customEmojis: "Emoji personalizado"
 emoji: "Emoji"
 emojis: "Emojis"
 emojiName: "Nome do Emoji"
+emojiUrl: "URL do Emoji"
+addEmoji: "Adicionar um Emoji"
 settingGuide: "Guia de configuração"
+flagAsBot: "Marcar conta como robô"
+flagAsCat: "Marcar conta como gato"
+flagAsCatDescription: "Ative essa opção para marcar essa conta como gato."
+flagShowTimelineReplies: "Mostrar respostas na linha de tempo"
+general: "Geral"
 wallpaper: "Papel de parede"
+searchWith: "Buscar: {q}"
 youHaveNoLists: "Não tem nenhuma lista"
+followConfirm: "Tem certeza que quer deixar de seguir {name}?"
 instances: "Instância"
 registeredAt: "Registrado em"
 perHour: "por hora"
@@ -143,6 +156,7 @@ nsfw: "Conteúdo sensível"
 monthX: "mês de {month}"
 pinnedNotes: "Post fixado"
 userList: "Listas"
+none: "Nenhum"
 output: "Resultado"
 smtpUser: "Nome de usuário"
 smtpPass: "Senha"
@@ -178,17 +192,130 @@ _exportOrImport:
   blockingList: "Bloquear"
   userLists: "Listas"
 _pages:
+  blocks:
+    _button:
+      _action:
+        _pushEvent:
+          event: "Nome do evento"
+          message: "Mostrar mensagem quando ativado"
+          variable: "Variável a mandar"
+          no-variable: "Nenhum"
+        callAiScript: "Invocar AiScript"
+        _callAiScript:
+          functionName: "Nome da função"
+    radioButton: "Escolha"
+    _radioButton:
+      values: "Lista de escolhas separadas por quebras de texto"
   script:
     categories:
+      logical: "Operação lógica"
+      operation: "Cálculos"
+      comparison: "Comparação"
       list: "Listas"
     blocks:
+      _strReplace:
+        arg2: "Texto que irá ser substituído"
+        arg3: "Substituir com"
+      strReverse: "Virar texto"
+      join: "Sequência de texto"
       _join:
         arg1: "Listas"
+        arg2: "Separador"
+      add: "Somar"
+      _add:
+        arg1: "A"
+        arg2: "B"
+      subtract: "Subtrair"
+      _subtract:
+        arg1: "A"
+        arg2: "B"
+      multiply: "Multiplicar"
+      _multiply:
+        arg1: "A"
+        arg2: "B"
+      divide: "Dividir"
+      _divide:
+        arg1: "A"
+        arg2: "B"
+      mod: "O resto de"
+      _mod:
+        arg1: "A"
+        arg2: "B"
+      round: "Arredondar decimal"
+      _round:
+        arg1: "Numérico"
+      eq: "A e B são iguais"
+      _eq:
+        arg1: "A"
+        arg2: "B"
+      notEq: "A e B são diferentes"
+      _notEq:
+        arg1: "A"
+        arg2: "B"
+      and: "A e B"
+      _and:
+        arg1: "A"
+        arg2: "B"
+      or: "A OU B"
+      _or:
+        arg1: "A"
+        arg2: "B"
+      lt: "< A é menor do que B"
+      _lt:
+        arg1: "A"
+        arg2: "B"
+      gt: "> A é maior do que B"
+      _gt:
+        arg1: "A"
+        arg2: "B"
+      ltEq: "<= A é maior ou igual a B"
+      _ltEq:
+        arg1: "A"
+        arg2: "B"
+      gtEq: ">= A é maior ou igual a B"
+      _gtEq:
+        arg1: "A"
+        arg2: "B"
+      if: "Galho"
+      _if:
+        arg1: "Se"
+        arg2: "Então"
+        arg3: "Se não"
+      not: "NÃO"
+      _not:
+        arg1: "NÃO"
+      random: "Aleatório"
+      _random:
+        arg1: "Probabilidade"
+      rannum: "Numeral aleatório"
+      _rannum:
+        arg1: "Valor mínimo"
+        arg2: "Valor máximo"
+      randomPick: "Escolher aleatoriamente de uma lista"
       _randomPick:
         arg1: "Listas"
+      dailyRandom: "Aleatório (Muda uma vez por dia para cada usuário)"
+      _dailyRandom:
+        arg1: "Probabilidade"
+      dailyRannum: "Numeral aleatório (Muda uma vez por dia para cada usuário)"
+      _dailyRannum:
+        arg1: "Valor mínimo"
+        arg2: "Valor máximo"
+      dailyRandomPick: "Escolher aleatoriamente de uma lista (Muda uma vez por dia para cada usuário)"
       _dailyRandomPick:
         arg1: "Listas"
+      seedRandom: "Aleatório (com semente)"
+      _seedRandom:
+        arg1: "Semente"
+        arg2: "Probabilidade"
+      seedRannum: "Número aleatório (com semente)"
+      _seedRannum:
+        arg1: "Semente"
+        arg2: "Valor mínimo"
+        arg3: "Valor máximo"
+      seedRandomPick: "Escolher aleatoriamente de uma lista (com uma semente)"
       _seedRandomPick:
+        arg1: "Semente"
         arg2: "Listas"
       DRPWPM: "Escolher aleatoriamente de uma lista ponderada (Muda uma vez por dia para cada usuário)"
       _DRPWPM:
@@ -221,6 +348,7 @@ _pages:
       _for:
         arg1: "Número de repetições"
         arg2: "Ação"
+    typeError: "Espaço {slot} aceita valores de tipo \"{expect}\", mas o valor dado é do tipo \"{actual}\"!"
     thereIsEmptySlot: "O espaço {slot} está vazio!"
     types:
       string: "Texto"
@@ -235,6 +363,7 @@ _relayStatus:
   accepted: "Aprovado"
   rejected: "Recusado"
 _notification:
+  fileUploaded: "Carregamento de arquivo efetuado com sucesso"
   youGotMention: "{name} te mencionou"
   youGotReply: "{name} te respondeu"
   youGotQuote: "{name} te citou"
@@ -268,7 +397,13 @@ _notification:
 _deck:
   alwaysShowMainColumn: "Sempre mostrar a coluna principal"
   columnAlign: "Alinhar colunas"
+  columnMargin: "Margem entre colunas"
+  columnHeaderHeight: "Altura do cabeçalho de coluna"
   addColumn: "Adicionar coluna"
+  swapLeft: "Trocar de posição com a coluna à esquerda"
+  swapRight: "Trocar de posição com a coluna à direita"
+  swapUp: "Trocar de posição com a coluna acima"
+  swapDown: "Trocar de posição com a coluna abaixo"
   popRight: "Acoplar coluna à direita"
   profile: "Perfil"
   _columns:
