@@ -66,6 +66,13 @@ Be willing to comment on the good points and not just the things you want fixed 
 	- Are there any omissions or gaps?
 	- Does it check for anomalies?
 
+## Deploy
+The `/deploy` command by issue comment can be used to deploy the contents of a PR to the preview environment.
+```
+/deploy sha=<commit hash>
+```
+An actual domain will be assigned so you can test the federation.
+
 ## Merge
 For now, basically only @syuilo has the authority to merge PRs into develop because he is most familiar with the codebase.
 However, minor fixes, refactoring, and urgent changes may be merged at the discretion of a contributor.
@@ -77,7 +84,7 @@ However, minor fixes, refactoring, and urgent changes may be merged at the discr
 	- Into `master` from `develop` branch.
 	- The title must be in the format `Release: x.y.z`.
 		- `x.y.z` is the new version you are trying to release.
-3. ~~Deploy and perform a simple QA check. Also verify that the tests passed.~~ (TODO)
+3. Deploy and perform a simple QA check. Also verify that the tests passed.
 4. Merge it.
 5. Create a [release of GitHub](https://github.com/misskey-dev/misskey/releases)
 	- The target branch must be `master`
