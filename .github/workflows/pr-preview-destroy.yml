@@ -18,4 +18,4 @@ jobs:
       - name: Destroy preview environment
         uses: okteto/destroy-preview@latest
         with:
-          name: pr-${{ github.event.number }}-misskey-dev
+          name: pr-${{ github.event.number }}-syuilo
