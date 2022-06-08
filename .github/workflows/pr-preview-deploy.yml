@@ -43,7 +43,7 @@ jobs:
     - uses: actions/github-script@v5
       env:
         check_id: ${{ steps.check-id.outputs.result }}
-        details_url: ${{ github.server_url }}/${{ github.repository }}/runs/${{ github.job }}
+        details_url: ${{ github.server_url }}/${{ github.repository }}/runs/${{ github.run_id }}
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
