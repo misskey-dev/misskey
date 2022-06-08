@@ -32,7 +32,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        name: pr-${{ github.event.client_payload.pull_request.number }}-misskey-dev
+        name: pr-${{ github.event.client_payload.pull_request.number }}-syuilo
         timeout: 15m
 
     # Update check run called "integration-fork"
