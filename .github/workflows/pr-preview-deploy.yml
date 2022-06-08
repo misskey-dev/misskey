@@ -30,7 +30,7 @@ jobs:
     - name: Deploy preview environment
       uses: ikuradon/deploy-preview@latest
       env:
-       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         name: pr-${{ github.event.client_payload.pull_request.number }}-misskey-dev
         timeout: 15m
