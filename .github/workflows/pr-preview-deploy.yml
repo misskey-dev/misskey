@@ -43,6 +43,7 @@ jobs:
     - uses: actions/github-script@v5
       env:
         check_id: ${{ steps.check-id.outputs.result }}
+        details_url: ${{ github.server_url }}/${{ github.repository }}/runs/${{ github.job }}
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
@@ -50,7 +51,7 @@ jobs:
             ...context.repo,
             check_run_id: process.env.check_id,
             status: 'in_progress',
-            details_url: `${{ context.repo.serverUrl }}/${{ context.repo.owner }}/${{ context.repo.repo }}/runs/${{ context.job }}`
+            details_url: process.env.details_url
           });
 
     # Check out merge commit
