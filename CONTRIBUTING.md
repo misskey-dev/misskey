@@ -77,9 +77,9 @@ However, minor fixes, refactoring, and urgent changes may be merged at the discr
 	- Into `master` from `develop` branch.
 	- The title must be in the format `Release: x.y.z`.
 		- `x.y.z` is the new version you are trying to release.
-	- Assign about 2~3 reviewers.
-3. The release PR is approved, merge it.
-4. Create a [release of GitHub](https://github.com/misskey-dev/misskey/releases)
+3. ~~Deploy and perform a simple QA check. Also verify that the tests passed.~~ (TODO)
+4. Merge it.
+5. Create a [release of GitHub](https://github.com/misskey-dev/misskey/releases)
 	- The target branch must be `master`
 	- The tag name must be the version
 
