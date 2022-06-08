@@ -346,6 +346,11 @@ for (const plugin of ColdDeviceStorage.get('plugins').filter(p => p.active)) {
 }
 
 if ($i) {
+	alert({
+		type: 'warning',
+		text: 'testtesttest',
+	});
+
 	if ($i.isDeleted) {
 		alert({
 			type: 'warning',
