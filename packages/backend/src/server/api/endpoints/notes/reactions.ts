@@ -72,5 +72,5 @@ export default define(meta, paramDef, async (ps, user) => {
 		relations: ['user', 'user.avatar', 'user.banner', 'note'],
 	});
 
-	return await Promise.all(reactions.map(reaction => NoteReactions.pack(reaction, user)));
+	return await NoteReactions.packMany(reactions, user);
 });

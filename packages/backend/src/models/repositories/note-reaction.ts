@@ -25,8 +25,22 @@ export const NoteReactionRepository = db.getRepository(NoteReaction).extend({
 			user: await Users.pack(reaction.user ?? reaction.userId, me),
 			type: convertLegacyReaction(reaction.reaction),
 			...(opts.withNote ? {
+				// may throw error
 				note: await Notes.pack(reaction.note ?? reaction.noteId, me),
 			} : {}),
 		};
 	},
+
+	async packMany(
+		src: NoteReaction[],
+		me?: { id: User['id'] } | null | undefined,
+		options?: {
+			withNote: booleam;
+		},
+	): Promise<Packed<'NoteReaction'>[]> {
+		const reactions = await Promise.allSettled(src.map(reaction => this.pack(reaction, me, options)));
+
+		// filter out rejected promises, only keep fulfilled values
+		return reactions.flatMap(result => result.status === 'fulfilled' ? [result.value] : []);
+	}
 });

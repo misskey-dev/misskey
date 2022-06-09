@@ -62,5 +62,5 @@ export default define(meta, paramDef, async (ps, me) => {
 		.take(ps.limit)
 		.getMany();
 
-	return await Promise.all(reactions.map(reaction => NoteReactions.pack(reaction, me, { withNote: true })));
+	return await NoteReactions.packMany(reactions, me, { withNote: true });
 });
