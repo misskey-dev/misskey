@@ -66,20 +66,29 @@ Be willing to comment on the good points and not just the things you want fixed 
 	- Are there any omissions or gaps?
 	- Does it check for anomalies?
 
+## Deploy
+The `/deploy` command by issue comment can be used to deploy the contents of a PR to the preview environment.
+```
+/deploy sha=<commit hash>
+```
+An actual domain will be assigned so you can test the federation.
+
 ## Merge
 For now, basically only @syuilo has the authority to merge PRs into develop because he is most familiar with the codebase.
 However, minor fixes, refactoring, and urgent changes may be merged at the discretion of a contributor.
 
 ## Release
-For now, basically only @syuilo has the authority to release Misskey.
-However, in case of emergency, a release can be made at the discretion of a contributor.
-
 ### Release Instructions
-1. commit version changes in the `develop` branch ([package.json](https://github.com/misskey-dev/misskey/blob/develop/package.json))
-2. follow the `master` branch to the `develop` branch.
-3. Create a [release of GitHub](https://github.com/misskey-dev/misskey/releases)
-  - The target branch must be `master`
-  - The tag name must be the version
+1. Commit version changes in the `develop` branch ([package.json](https://github.com/misskey-dev/misskey/blob/develop/package.json))
+2. Create a release PR.
+	- Into `master` from `develop` branch.
+	- The title must be in the format `Release: x.y.z`.
+		- `x.y.z` is the new version you are trying to release.
+3. Deploy and perform a simple QA check. Also verify that the tests passed.
+4. Merge it.
+5. Create a [release of GitHub](https://github.com/misskey-dev/misskey/releases)
+	- The target branch must be `master`
+	- The tag name must be the version
 
 ## Localization (l10n)
 Misskey uses [Crowdin](https://crowdin.com/project/misskey) for localization management.

@@ -39,8 +39,8 @@ export default defineComponent({
 
 	inject: {
 		sideViewHook: {
-			default: null
-		}
+			default: null,
+		},
 	},
 
 	provide() {
@@ -94,31 +94,31 @@ export default defineComponent({
 			}, {
 				icon: 'fas fa-expand-alt',
 				text: this.$ts.showInPage,
-				action: this.expand
+				action: this.expand,
 			}, this.sideViewHook ? {
 				icon: 'fas fa-columns',
 				text: this.$ts.openInSideView,
 				action: () => {
 					this.sideViewHook(this.path);
 					this.$refs.window.close();
-				}
+				},
 			} : undefined, {
 				icon: 'fas fa-external-link-alt',
 				text: this.$ts.popout,
-				action: this.popout
+				action: this.popout,
 			}, null, {
 				icon: 'fas fa-external-link-alt',
 				text: this.$ts.openInNewTab,
 				action: () => {
 					window.open(this.url, '_blank');
 					this.$refs.window.close();
-				}
+				},
 			}, {
 				icon: 'fas fa-link',
 				text: this.$ts.copyLink,
 				action: () => {
 					copyToClipboard(this.url);
-				}
+				},
 			}];
 		},
 	},
@@ -155,7 +155,7 @@ export default defineComponent({
 
 		onContextmenu(ev: MouseEvent) {
 			os.contextMenu(this.contextmenu, ev);
-		}
+		},
 	},
 });
 </script>

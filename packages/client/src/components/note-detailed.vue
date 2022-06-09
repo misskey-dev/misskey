@@ -222,7 +222,7 @@ function react(viaKeyboard = false): void {
 	reactionPicker.show(reactButton.value, reaction => {
 		os.api('notes/reactions/create', {
 			noteId: appearNote.id,
-			reaction: reaction
+			reaction: reaction,
 		});
 	}, () => {
 		focus();
@@ -233,7 +233,7 @@ function undoReact(note): void {
 	const oldReaction = note.myReaction;
 	if (!oldReaction) return;
 	os.api('notes/reactions/delete', {
-		noteId: note.id
+		noteId: note.id,
 	});
 }
 
@@ -257,7 +257,7 @@ function onContextmenu(ev: MouseEvent): void {
 
 function menu(viaKeyboard = false): void {
 	os.popupMenu(getNoteMenu({ note: note, translating, translation, menuButton }), menuButton.value, {
-		viaKeyboard
+		viaKeyboard,
 	}).then(focus);
 }
 
@@ -269,12 +269,12 @@ function showRenoteMenu(viaKeyboard = false): void {
 		danger: true,
 		action: () => {
 			os.api('notes/delete', {
-				noteId: note.id
+				noteId: note.id,
 			});
 			isDeleted.value = true;
-		}
+		},
 	}], renoteTime.value, {
-		viaKeyboard: viaKeyboard
+		viaKeyboard: viaKeyboard,
 	});
 }
 
@@ -288,14 +288,14 @@ function blur() {
 
 os.api('notes/children', {
 	noteId: appearNote.id,
-	limit: 30
+	limit: 30,
 }).then(res => {
 	replies.value = res;
 });
 
 if (appearNote.replyId) {
 	os.api('notes/conversation', {
-		noteId: appearNote.replyId
+		noteId: appearNote.replyId,
 	}).then(res => {
 		conversation.value = res.reverse();
 	});
