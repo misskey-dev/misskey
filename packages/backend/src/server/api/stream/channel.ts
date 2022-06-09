@@ -70,7 +70,7 @@ export default abstract class Channel {
 				delete note.user;
 				delete note.channel;
 
-				const packed = await Notes.pack(note, this.user.id, { detail: true });
+				const packed = await Notes.pack(note, this.user, { detail: true });
 
 				callback(packed);
 			} catch (e) {
