@@ -60,7 +60,7 @@
 		</MkSwitch>
 		<MkCaptcha v-if="meta.enableHcaptcha" ref="hcaptcha" v-model="hCaptchaResponse" class="_formBlock captcha" provider="hcaptcha" :sitekey="meta.hcaptchaSiteKey"/>
 		<MkCaptcha v-if="meta.enableRecaptcha" ref="recaptcha" v-model="reCaptchaResponse" class="_formBlock captcha" provider="recaptcha" :sitekey="meta.recaptchaSiteKey"/>
-		<MkButton class="_formBlock" type="submit" :disabled="shouldDisableSubmitting" gradate data-cy-signup-submit>ふが</MkButton>
+		<MkButton class="_formBlock" type="submit" :disabled="shouldDisableSubmitting" gradate data-cy-signup-submit>ふがほげ</MkButton>
 	</template>
 </form>
 </template>
