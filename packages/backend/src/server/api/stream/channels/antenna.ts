@@ -35,12 +35,12 @@ export default class extends Channel {
 				this.connection.cacheNote(note);
 
 				this.send('note', note);
-			} catch (e) {
-				if (e instanceof IdentifiableError && e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') {
+			} catch (err) {
+				if (err instanceof IdentifiableError && err.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') {
 					// skip: note not visible to user
 					return;
 				} else {
-					throw e;
+					throw err;
 				}
 			}
 		} else {
