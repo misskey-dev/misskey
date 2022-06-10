@@ -94,7 +94,6 @@ onBeforeUnmount(() => {
 	os.deckGlobalEvents.off('column.dragEnd', onOtherDragEnd);
 });
 
-
 function onOtherDragStart() {
 	dropready = true;
 }

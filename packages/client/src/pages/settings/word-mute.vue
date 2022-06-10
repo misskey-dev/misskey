@@ -75,7 +75,7 @@ async function save() {
 
 		// check each line if it is a RegExp or not
 		for (let i = 0; i < lines.length; i++) {
-			const line = lines[i]
+			const line = lines[i];
 			const regexp = line.match(/^\/(.+)\/(.*)$/);
 			if (regexp) {
 				// check that the RegExp is valid

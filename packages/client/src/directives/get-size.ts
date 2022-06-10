@@ -25,12 +25,12 @@ function calc(src: Element) {
 		return;
 	}
 	if (info.intersection) {
-		info.intersection.disconnect()
+		info.intersection.disconnect();
 		delete info.intersection;
-	};
+	}
 
 	info.fn(width, height);
-};
+}
 
 export default {
 	mounted(src, binding, vn) {

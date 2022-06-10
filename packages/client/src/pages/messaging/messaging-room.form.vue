@@ -200,7 +200,7 @@ export default defineComponent({
 					text: this.text,
 					file: this.file
 				}
-			}
+			};
 
 			localStorage.setItem('message_drafts', JSON.stringify(drafts));
 		},

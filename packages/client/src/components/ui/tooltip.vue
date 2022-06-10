@@ -63,7 +63,7 @@ const setPosition = () => {
 		}
 
 		return [left, top];
-	}
+	};
 
 	const calcPosWhenBottom = () => {
 		let left: number;
@@ -84,7 +84,7 @@ const setPosition = () => {
 		}
 
 		return [left, top];
-	}
+	};
 
 	const calcPosWhenLeft = () => {
 		let left: number;
@@ -105,7 +105,7 @@ const setPosition = () => {
 		}
 
 		return [left, top];
-	}
+	};
 
 	const calcPosWhenRight = () => {
 		let left: number;
@@ -126,7 +126,7 @@ const setPosition = () => {
 		}
 
 		return [left, top];
-	}
+	};
 
 	const calc = (): {
 		left: number;
@@ -172,7 +172,7 @@ const setPosition = () => {
 		}
 
 		return null as never;
-	}
+	};
 
 	const { left, top, transformOrigin } = calc();
 	el.value.style.transformOrigin = transformOrigin;

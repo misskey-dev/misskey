@@ -45,7 +45,7 @@ const init = async () => {
 		accounts.value = response;
 		console.log(accounts.value);
 	});
-}
+};
 
 function menu(account, ev) {
 	os.popupMenu([{
