@@ -641,9 +641,15 @@ async function createMentionedEvents(mentionedUsers: MinimumUser[], note: Note, 
 			continue;
 		}
 
-		const detailPackedNote = await Notes.pack(note, u, {
-			detail: true,
-		});
+		// note with "specified" visibility might not be visible to mentioned users
+		try {
+			const detailPackedNote = await Notes.pack(note, u, {
+				detail: true,
+			});
+		} catch (err) {
+			if (err.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') continue;
+			throw err;
+		}
 
 		publishMainStream(u.id, 'mention', detailPackedNote);
 
