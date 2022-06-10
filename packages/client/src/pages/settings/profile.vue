@@ -78,6 +78,7 @@ import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
 import { $i } from '@/account';
 import { langmap } from '@/scripts/langmap';
+import { cropImage } from '@/os';
 
 const profile = reactive({
 	name: $i.name,
@@ -132,8 +133,12 @@ function save() {
 
 function changeAvatar(ev) {
 	selectFile(ev.currentTarget ?? ev.target, i18n.ts.avatar).then(async (file) => {
+		const cropped = await cropImage(file, {
+			aspectRatio: 1,
+		});
+
 		const i = await os.apiWithDialog('i/update', {
-			avatarId: file.id,
+			avatarId: cropped.id,
 		});
 		$i.avatarId = i.avatarId;
 		$i.avatarUrl = i.avatarUrl;
