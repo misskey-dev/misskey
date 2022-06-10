@@ -9,6 +9,8 @@ export const meta = {
 
 	requireCredential: false,
 
+	description: 'Show all reactions this user made.',
+
 	res: {
 		type: 'array',
 		optional: false, nullable: false,

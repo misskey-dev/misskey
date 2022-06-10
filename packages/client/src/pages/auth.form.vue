@@ -32,7 +32,7 @@ export default defineComponent({
 	computed: {
 		name(): string {
 			const el = document.createElement('div');
-			el.textContent = this.app.name
+			el.textContent = this.app.name;
 			return el.innerHTML;
 		},
 		app(): any {

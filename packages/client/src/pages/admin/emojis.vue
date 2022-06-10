@@ -159,7 +159,7 @@ const remoteMenu = (emoji, ev: MouseEvent) => {
 	}, {
 		text: i18n.ts.import,
 		icon: 'fas fa-plus',
-		action: () => { im(emoji) }
+		action: () => { im(emoji); }
 	}], ev.currentTarget ?? ev.target);
 };
 

@@ -11,6 +11,8 @@ export const meta = {
 
 	kind: 'read:account',
 
+	description: 'Show users that the authenticated user might be interested to follow.',
+
 	res: {
 		type: 'array',
 		optional: false, nullable: false,

@@ -8,11 +8,101 @@ export const meta = {
 
 	requireCredential: false,
 
+	description: 'Show statistics about a user.',
+
 	errors: {
 		noSuchUser: {
 			message: 'No such user.',
 			code: 'NO_SUCH_USER',
 			id: '9e638e45-3b25-4ef7-8f95-07e8498f1819',
+		},
+	},
+
+	res: {
+		type: 'object',
+		optional: false, nullable: false,
+		properties: {
+			notesCount: {
+				type: 'integer',
+				optional: false, nullable: false,
+			},
+			repliesCount: {
+				type: 'integer',
+				optional: false, nullable: false,
+			},
+			renotesCount: {
+				type: 'integer',
+				optional: false, nullable: false,
+			},
+			repliedCount: {
+				type: 'integer',
+				optional: false, nullable: false,
+			},
+			renotedCount: {
+				type: 'integer',
+				optional: false, nullable: false,
+			},
+			pollVotesCount: {
+				type: 'integer',
+				optional: false, nullable: false,
+			},
+			pollVotedCount: {
+				type: 'integer',
+				optional: false, nullable: false,
+			},
+			localFollowingCount: {
+				type: 'integer',
+				optional: false, nullable: false,
+			},
+			remoteFollowingCount: {
+				type: 'integer',
+				optional: false, nullable: false,
+			},
+			localFollowersCount: {
+				type: 'integer',
+				optional: false, nullable: false,
+			},
+			remoteFollowersCount: {
+				type: 'integer',
+				optional: false, nullable: false,
+			},
+			followingCount: {
+				type: 'integer',
+				optional: false, nullable: false,
+			},
+			followersCount: {
+				type: 'integer',
+				optional: false, nullable: false,
+			},
+			sentReactionsCount: {
+				type: 'integer',
+				optional: false, nullable: false,
+			},
+			receivedReactionsCount: {
+				type: 'integer',
+				optional: false, nullable: false,
+			},
+			noteFavoritesCount: {
+				type: 'integer',
+				optional: false, nullable: false,
+			},
+			pageLikesCount: {
+				type: 'integer',
+				optional: false, nullable: false,
+			},
+			pageLikedCount: {
+				type: 'integer',
+				optional: false, nullable: false,
+			},
+			driveFilesCount: {
+				type: 'integer',
+				optional: false, nullable: false,
+			},
+			driveUsage: {
+				type: 'integer',
+				optional: false, nullable: false,
+				description: 'Drive usage in bytes',
+			},
 		},
 	},
 } as const;

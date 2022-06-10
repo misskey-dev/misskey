@@ -132,7 +132,7 @@ export default defineComponent({
 			overviewHeight: '1fr',
 			queueHeight: '1fr',
 			paused: false,
-		}
+		};
 	},
 
 	computed: {

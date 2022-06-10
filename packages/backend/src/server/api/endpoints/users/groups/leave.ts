@@ -9,6 +9,8 @@ export const meta = {
 
 	kind: 'write:user-groups',
 
+	description: 'Leave a group. The owner of a group can not leave. They must transfer ownership or delete the group instead.',
+
 	errors: {
 		noSuchGroup: {
 			message: 'No such group.',

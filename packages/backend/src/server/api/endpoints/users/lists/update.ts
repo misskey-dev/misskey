@@ -9,6 +9,8 @@ export const meta = {
 
 	kind: 'write:account',
 
+	description: 'Update the properties of a list.',
+
 	res: {
 		type: 'object',
 		optional: false, nullable: false,

@@ -159,7 +159,7 @@ function queryKey() {
 
 function onSubmit() {
 	signing = true;
-	console.log('submit')
+	console.log('submit');
 	if (!totpLogin && user && user.twoFactorEnabled) {
 		if (window.PublicKeyCredential && user.securityKeys) {
 			os.api('signin', {
@@ -222,7 +222,7 @@ function loginFailed(err) {
 			break;
 		}
 		default: {
-			console.log(err)
+			console.log(err);
 			os.alert({
 				type: 'error',
 				title: i18n.ts.loginFailed,

@@ -9,6 +9,8 @@ export const meta = {
 
 	kind: 'write:account',
 
+	description: 'Delete an existing list of users.',
+
 	errors: {
 		noSuchList: {
 			message: 'No such list.',

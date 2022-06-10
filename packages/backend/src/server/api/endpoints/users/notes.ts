@@ -12,6 +12,8 @@ import { generateMutedInstanceQuery } from '../../common/generate-muted-instance
 export const meta = {
 	tags: ['users', 'notes'],
 
+	description: 'Show all notes that this user created.',
+
 	res: {
 		type: 'array',
 		optional: false, nullable: false,

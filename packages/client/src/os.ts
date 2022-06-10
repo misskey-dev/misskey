@@ -285,7 +285,7 @@ export function inputDate(props: {
 	});
 }
 
-export function select<C extends any = any>(props: {
+export function select<C = any>(props: {
 	title?: string | null;
 	text?: string | null;
 	default?: string | null;

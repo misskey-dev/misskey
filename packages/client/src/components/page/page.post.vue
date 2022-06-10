@@ -66,7 +66,7 @@ export default defineComponent({
 					.then(response => response.json())
 					.then(f => {
 						ok(f);
-					})
+					});
 				});
 			});
 			os.promiseDialog(promise);

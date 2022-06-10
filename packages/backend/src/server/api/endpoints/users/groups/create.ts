@@ -11,6 +11,8 @@ export const meta = {
 
 	kind: 'write:user-groups',
 
+	description: 'Create a new group.',
+
 	res: {
 		type: 'object',
 		optional: false, nullable: false,

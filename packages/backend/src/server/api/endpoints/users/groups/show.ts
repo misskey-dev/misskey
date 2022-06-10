@@ -9,6 +9,8 @@ export const meta = {
 
 	kind: 'read:user-groups',
 
+	description: 'Show the properties of a group.',
+
 	res: {
 		type: 'object',
 		optional: false, nullable: false,

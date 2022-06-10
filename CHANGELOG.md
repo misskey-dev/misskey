@@ -18,6 +18,7 @@ You should also include the user name that made the change.
 - Server: always remove completed tasks of job queue @Johann150
 - Client: make emoji stand out more on reaction button @Johann150
 - Client: display URL of QR code for TOTP registration @tamaina
+- Client: render quote renote CWs as MFM @pixeldesu
 - API: notifications/readは配列でも受け付けるように #7667 @tamaina
 - API: ユーザー検索で、クエリがusernameの条件を満たす場合はusernameもLIKE検索するように @tamaina
 - MFM: Allow speed changes in all animated MFMs @Johann150

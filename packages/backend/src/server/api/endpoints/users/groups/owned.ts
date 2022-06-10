@@ -8,6 +8,8 @@ export const meta = {
 
 	kind: 'read:user-groups',
 
+	description: 'List the groups that the authenticated user is the owner of.',
+
 	res: {
 		type: 'array',
 		optional: false, nullable: false,

@@ -6,6 +6,8 @@ export const meta = {
 
 	requireCredential: true,
 
+	description: 'Show the different kinds of relations between the authenticated user and the specified user(s).',
+
 	res: {
 		optional: false, nullable: false,
 		oneOf: [
