@@ -11,6 +11,8 @@ export const meta = {
 
 	requireCredential: false,
 
+	description: 'Show the properties of a user.',
+
 	res: {
 		optional: false, nullable: false,
 		oneOf: [

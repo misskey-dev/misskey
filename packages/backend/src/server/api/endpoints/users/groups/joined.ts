@@ -9,6 +9,8 @@ export const meta = {
 
 	kind: 'read:user-groups',
 
+	description: 'List the groups that the authenticated user is a member of.',
+
 	res: {
 		type: 'array',
 		optional: false, nullable: false,

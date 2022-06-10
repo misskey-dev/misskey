@@ -8,6 +8,8 @@ export const meta = {
 
 	kind: 'read:drive',
 
+	description: 'Check if a given file exists.',
+
 	res: {
 		type: 'boolean',
 		optional: false, nullable: false,

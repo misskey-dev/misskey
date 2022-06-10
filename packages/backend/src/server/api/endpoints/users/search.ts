@@ -8,6 +8,8 @@ export const meta = {
 
 	requireCredential: false,
 
+	description: 'Search for users.',
+
 	res: {
 		type: 'array',
 		optional: false, nullable: false,

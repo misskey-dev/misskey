@@ -10,6 +10,8 @@ export const meta = {
 
 	kind: 'write:user-groups',
 
+	description: 'Transfer ownership of a group from the authenticated user to another user.',
+
 	res: {
 		type: 'object',
 		optional: false, nullable: false,

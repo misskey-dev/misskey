@@ -9,6 +9,8 @@ export const meta = {
 
 	requireCredential: false,
 
+	description: 'Search for a user by username and/or host.',
+
 	res: {
 		type: 'array',
 		optional: false, nullable: false,

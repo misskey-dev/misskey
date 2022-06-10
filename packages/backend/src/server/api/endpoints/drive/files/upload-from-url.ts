@@ -13,6 +13,8 @@ export const meta = {
 		max: 60,
 	},
 
+	description: 'Request the server to download a new drive file from the specified URL.',
+
 	requireCredential: true,
 
 	kind: 'write:drive',
