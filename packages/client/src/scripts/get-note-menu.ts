@@ -137,7 +137,7 @@ export function getNoteMenu(props: {
 							});
 							if (!confirm.canceled) {
 								os.apiWithDialog('clips/remove-note', { clipId: clip.id, noteId: appearNote.id });
-								props.isDeleted.value = true;
+								if (clipId) props.isDeleted.value = true;
 							}
 						} else {
 							os.alert({

@@ -99,6 +99,7 @@ import * as ep___charts_user_notes from './endpoints/charts/user/notes.js';
 import * as ep___charts_user_reactions from './endpoints/charts/user/reactions.js';
 import * as ep___charts_users from './endpoints/charts/users.js';
 import * as ep___clips_addNote from './endpoints/clips/add-note.js';
+import * as ep___clips_removeNote from './endpoints/clips/remove-note.js';
 import * as ep___clips_create from './endpoints/clips/create.js';
 import * as ep___clips_delete from './endpoints/clips/delete.js';
 import * as ep___clips_list from './endpoints/clips/list.js';
@@ -409,6 +410,7 @@ const eps = [
 	['charts/user/reactions', ep___charts_user_reactions],
 	['charts/users', ep___charts_users],
 	['clips/add-note', ep___clips_addNote],
+	['clips/remove-note', ep___clips_removeNote],
 	['clips/create', ep___clips_create],
 	['clips/delete', ep___clips_delete],
 	['clips/list', ep___clips_list],
