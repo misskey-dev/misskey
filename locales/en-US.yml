@@ -843,6 +843,8 @@ oneWeek: "One week"
 reflectMayTakeTime: "It may take some time for this to be reflected."
 failedToFetchAccountInformation: "Could not fetch account information"
 rateLimitExceeded: "Rate limit exceeded"
+cropImage: "Crop image"
+cropImageAsk: "Do you want to crop this image?"
 _emailUnavailable:
   used: "This email address is already being used"
   format: "The format of this email address is invalid"

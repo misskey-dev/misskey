@@ -843,6 +843,8 @@ oneWeek: "Eine Woche"
 reflectMayTakeTime: "Es kann etwas dauern, bis sich dies widerspiegelt."
 failedToFetchAccountInformation: "Benutzerkontoinformationen konnten nicht abgefragt werden"
 rateLimitExceeded: "Versuchsanzahl überschritten"
+cropImage: "Bild zuschneiden"
+cropImageAsk: "Möchtest du das Bild zuschneiden?"
 _emailUnavailable:
   used: "Diese Email-Adresse wird bereits verwendet"
   format: "Das Format dieser Email-Adresse ist ungültig"
