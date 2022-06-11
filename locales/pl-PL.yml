@@ -946,7 +946,6 @@ _sfx:
   chatBg: "Rozmowy (tło)"
   channel: "Powiadomienia kanału"
 _ago:
-  unknown: "Nieznane"
   future: "W przyszłości"
   justNow: "Przed chwilą"
   secondsAgo: "{n} sek. temu"
@@ -1401,6 +1400,9 @@ _notification:
     followRequestAccepted: "Przyjęto prośbę o możliwość obserwacji"
     groupInvited: "Zaproszono do grup"
     app: "Powiadomienia z aplikacji"
+  _actions:
+    reply: "Odpowiedz"
+    renote: "Udostępnij"
 _deck:
   alwaysShowMainColumn: "Zawsze pokazuj główną kolumnę"
   columnAlign: "Wyrównaj kolumny"

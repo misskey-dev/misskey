@@ -1,5 +1,5 @@
 <template>
-<MkContainer :show-header="widgetProps.showHeader" :style="`height: ${widgetProps.height}px;`" :scrollable="true">
+<MkContainer :show-header="widgetProps.showHeader" :style="`height: ${widgetProps.height}px;`" :scrollable="true" class="mkw-timeline">
 	<template #header>
 		<button class="_button" @click="choose">
 			<i v-if="widgetProps.src === 'home'" class="fas fa-home"></i>
@@ -63,7 +63,7 @@ type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 //const props = defineProps<WidgetComponentProps<WidgetProps>>();
 //const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
 const props = defineProps<{ widget?: Widget<WidgetProps>; }>();
-const emit = defineEmits<{ (e: 'updateProps', props: WidgetProps); }>();
+const emit = defineEmits<{ (ev: 'updateProps', props: WidgetProps); }>();
 
 const { widgetProps, configure, save } = useWidgetPropsManager(name,
 	widgetPropsDef,
@@ -103,19 +103,19 @@ const choose = async (ev) => {
 	os.popupMenu([{
 		text: i18n.ts._timelines.home,
 		icon: 'fas fa-home',
-		action: () => { setSrc('home') }
+		action: () => { setSrc('home'); }
 	}, {
 		text: i18n.ts._timelines.local,
 		icon: 'fas fa-comments',
-		action: () => { setSrc('local') }
+		action: () => { setSrc('local'); }
 	}, {
 		text: i18n.ts._timelines.social,
 		icon: 'fas fa-share-alt',
-		action: () => { setSrc('social') }
+		action: () => { setSrc('social'); }
 	}, {
 		text: i18n.ts._timelines.global,
 		icon: 'fas fa-globe',
-		action: () => { setSrc('global') }
+		action: () => { setSrc('global'); }
 	}, antennaItems.length > 0 ? null : undefined, ...antennaItems, listItems.length > 0 ? null : undefined, ...listItems], ev.currentTarget ?? ev.target).then(() => {
 		menuOpened.value = false;
 	});

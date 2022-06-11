@@ -1,95 +1,77 @@
 <template>
 <div class="_formRoot">
 	<FormSelect v-model="selectedThemeId" class="_formBlock">
-		<template #label>{{ $ts.theme }}</template>
-		<optgroup :label="$ts._theme.installedThemes">
+		<template #label>{{ i18n.ts.theme }}</template>
+		<optgroup :label="i18n.ts._theme.installedThemes">
 			<option v-for="x in installedThemes" :key="x.id" :value="x.id">{{ x.name }}</option>
 		</optgroup>
-		<optgroup :label="$ts._theme.builtinThemes">
+		<optgroup :label="i18n.ts._theme.builtinThemes">
 			<option v-for="x in builtinThemes" :key="x.id" :value="x.id">{{ x.name }}</option>
 		</optgroup>
 	</FormSelect>
 	<template v-if="selectedTheme">
-		<FormInput readonly :modelValue="selectedTheme.author" class="_formBlock">
-			<template #label>{{ $ts.author }}</template>
+		<FormInput readonly :model-value="selectedTheme.author" class="_formBlock">
+			<template #label>{{ i18n.ts.author }}</template>
 		</FormInput>
-		<FormTextarea v-if="selectedTheme.desc" readonly :modelValue="selectedTheme.desc" class="_formBlock">
-			<template #label>{{ $ts._theme.description }}</template>
+		<FormTextarea v-if="selectedTheme.desc" readonly :model-value="selectedTheme.desc" class="_formBlock">
+			<template #label>{{ i18n.ts._theme.description }}</template>
 		</FormTextarea>
-		<FormTextarea readonly tall :modelValue="selectedThemeCode" class="_formBlock">
-			<template #label>{{ $ts._theme.code }}</template>
-			<template #caption><button class="_textButton" @click="copyThemeCode()">{{ $ts.copy }}</button></template>
+		<FormTextarea readonly tall :model-value="selectedThemeCode" class="_formBlock">
+			<template #label>{{ i18n.ts._theme.code }}</template>
+			<template #caption><button class="_textButton" @click="copyThemeCode()">{{ i18n.ts.copy }}</button></template>
 		</FormTextarea>
-		<FormButton v-if="!builtinThemes.some(t => t.id == selectedTheme.id)" class="_formBlock" danger @click="uninstall()"><i class="fas fa-trash-alt"></i> {{ $ts.uninstall }}</FormButton>
+		<FormButton v-if="!builtinThemes.some(t => t.id == selectedTheme.id)" class="_formBlock" danger @click="uninstall()"><i class="fas fa-trash-alt"></i> {{ i18n.ts.uninstall }}</FormButton>
 	</template>
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import * as JSON5 from 'json5';
+<script lang="ts" setup>
+import { computed, defineExpose, ref } from 'vue';
+import JSON5 from 'json5';
 import FormTextarea from '@/components/form/textarea.vue';
 import FormSelect from '@/components/form/select.vue';
 import FormInput from '@/components/form/input.vue';
 import FormButton from '@/components/ui/button.vue';
-import { Theme, builtinThemes } from '@/scripts/theme';
+import { Theme, getBuiltinThemesRef } from '@/scripts/theme';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import * as os from '@/os';
-import { ColdDeviceStorage } from '@/store';
 import { getThemes, removeTheme } from '@/theme-store';
 import * as symbols from '@/symbols';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		FormTextarea,
-		FormSelect,
-		FormInput,
-		FormButton,
-	},
+const installedThemes = ref(getThemes());
+const builtinThemes = getBuiltinThemesRef();
+const selectedThemeId = ref(null);
 
-	emits: ['info'],
-	
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: this.$ts._theme.manage,
-				icon: 'fas fa-folder-open',
-				bg: 'var(--bg)',
-			},
-			installedThemes: getThemes(),
-			builtinThemes,
-			selectedThemeId: null,
-		}
-	},
+const themes = computed(() => [ ...installedThemes.value, ...builtinThemes.value ]);
 
-	computed: {
-		themes(): Theme[] {
-			return this.builtinThemes.concat(this.installedThemes);
-		},
-	
-		selectedTheme() {
-			if (this.selectedThemeId == null) return null;
-			return this.themes.find(x => x.id === this.selectedThemeId);
-		},
+const selectedTheme = computed(() => {
+	if (selectedThemeId.value == null) return null;
+	return themes.value.find(x => x.id === selectedThemeId.value);
+});
 
-		selectedThemeCode() {
-			if (this.selectedTheme == null) return null;
-			return JSON5.stringify(this.selectedTheme, null, '\t');
-		},
-	},
+const selectedThemeCode = computed(() => {
+	if (selectedTheme.value == null) return null;
+	return JSON5.stringify(selectedTheme.value, null, '\t');
+});
 
-	methods: {
-		copyThemeCode() {
-			copyToClipboard(this.selectedThemeCode);
-			os.success();
-		},
+function copyThemeCode() {
+	copyToClipboard(selectedThemeCode.value);
+	os.success();
+}
 
-		uninstall() {
-			removeTheme(this.selectedTheme);
-			this.installedThemes = this.installedThemes.filter(t => t.id !== this.selectedThemeId);
-			this.selectedThemeId = null;
-			os.success();
-		},
+function uninstall() {
+	removeTheme(selectedTheme.value as Theme);
+	installedThemes.value = installedThemes.value.filter(t => t.id !== selectedThemeId.value);
+	selectedThemeId.value = null;
+	os.success();
+}
+
+defineExpose({
+	[symbols.PAGE_INFO]: {
+		title: i18n.ts._theme.manage,
+		icon: 'fas fa-folder-open',
+		bg: 'var(--bg)',
 	}
 });
 </script>

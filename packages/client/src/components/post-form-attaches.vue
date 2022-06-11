@@ -16,7 +16,7 @@
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
-import MkDriveFileThumbnail from './drive-file-thumbnail.vue'
+import MkDriveFileThumbnail from './drive-file-thumbnail.vue';
 import * as os from '@/os';
 
 export default defineComponent({
@@ -88,7 +88,7 @@ export default defineComponent({
 		},
 
 		async describe(file) {
-			os.popup(import("@/components/media-caption.vue"), {
+			os.popup(defineAsyncComponent(() => import("@/components/media-caption.vue")), {
 				title: this.$ts.describeFile,
 				input: {
 					placeholder: this.$ts.inputNewDescription,
@@ -98,7 +98,7 @@ export default defineComponent({
 			}, {
 				done: result => {
 					if (!result || result.canceled) return;
-					let comment = result.result.length == 0 ? null : result.result;
+					let comment = result.result.length === 0 ? null : result.result;
 					os.api('drive/files/update', {
 						fileId: file.id,
 						comment: comment,
@@ -114,19 +114,19 @@ export default defineComponent({
 			this.menu = os.popupMenu([{
 				text: this.$ts.renameFile,
 				icon: 'fas fa-i-cursor',
-				action: () => { this.rename(file) }
+				action: () => { this.rename(file); }
 			}, {
 				text: file.isSensitive ? this.$ts.unmarkAsSensitive : this.$ts.markAsSensitive,
 				icon: file.isSensitive ? 'fas fa-eye-slash' : 'fas fa-eye',
-				action: () => { this.toggleSensitive(file) }
+				action: () => { this.toggleSensitive(file); }
 			}, {
 				text: this.$ts.describeFile,
 				icon: 'fas fa-i-cursor',
-				action: () => { this.describe(file) }
+				action: () => { this.describe(file); }
 			}, {
 				text: this.$ts.attachCancel,
 				icon: 'fas fa-times-circle',
-				action: () => { this.detachMedia(file.id) }
+				action: () => { this.detachMedia(file.id); }
 			}], ev.currentTarget ?? ev.target).then(() => this.menu = null);
 		}
 	}

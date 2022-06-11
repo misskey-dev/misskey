@@ -8,7 +8,8 @@
 <div v-else class="kkjnbbplepmiyuadieoenjgutgcmtsvu">
 	<video
 		:poster="video.thumbnailUrl"
-		:title="video.name"
+		:title="video.comment"
+		:alt="video.comment"
 		preload="none"
 		controls
 		@contextmenu.stop

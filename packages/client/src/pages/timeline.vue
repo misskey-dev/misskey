@@ -20,7 +20,7 @@
 <script lang="ts">
 export default {
 	name: 'MkTimelinePage',
-}
+};
 </script>
 
 <script lang="ts" setup>

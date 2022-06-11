@@ -841,6 +841,7 @@ oneDay: "1 deň"
 oneWeek: "1 týždeň"
 reflectMayTakeTime: "Zmeny môžu chvíľu trvať kým sa prejavia."
 failedToFetchAccountInformation: "Nepodarilo sa načítať informácie o účte."
+rateLimitExceeded: "Prekročený limit rýchlosti"
 _emailUnavailable:
   used: "Táto emailová adresa sa už používa"
   format: "Formát emailovej adresy je nesprávny"
@@ -1086,7 +1087,6 @@ _sfx:
   antenna: "Antény"
   channel: "Upozornenia kanála"
 _ago:
-  unknown: "Neznáme"
   future: "Budúcnosť"
   justNow: "Teraz"
   secondsAgo: "pred {n} sekundami"
@@ -1130,6 +1130,7 @@ _2fa:
   registerKey: "Registrovať bezpečnostný kľúč"
   step1: "Najprv si nainštalujte autentifikačnú aplikáciu (napríklad {a} alebo {b}) na svoje zariadenie."
   step2: "Potom, naskenujte QR kód zobrazený na obrazovke."
+  step2Url: "Do aplikácie zadajte nasledujúcu URL adresu:"
   step3: "Nastavenie dokončíte zadaním tokenu z vašej aplikácie."
   step4: "Od teraz, všetky ďalšie prihlásenia budú vyžadovať prihlasovací token."
   securityKeyInfo: "Okrem odtlačku prsta alebo PIN autentifikácie si môžete nastaviť autentifikáciu cez hardvérový bezpečnostný kľúč podporujúci FIDO2 a tak ešte viac zabezpečiť svoj účet."
@@ -1628,6 +1629,10 @@ _notification:
     followRequestAccepted: "Schválené žiadosti o sledovanie"
     groupInvited: "Pozvánky do skupín"
     app: "Oznámenia z prepojených aplikácií"
+  _actions:
+    followBack: "Sledovať späť\n"
+    reply: "Odpovedať"
+    renote: "Preposlať"
 _deck:
   alwaysShowMainColumn: "Vždy zobraziť v hlavnom stĺpci"
   columnAlign: "Zarovnať stĺpce"

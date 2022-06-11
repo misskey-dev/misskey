@@ -1,7 +1,0 @@
-{
-	"env": {
-		"node": true,
-		"mocha": true,
-		"commonjs": true
-	}
-}

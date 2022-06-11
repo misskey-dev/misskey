@@ -150,6 +150,7 @@ const patrons = [
 	'Weeble',
 	'蝉暮せせせ',
 	'ThatOneCalculator',
+	'pixeldesu',
 ];
 
 let easterEggReady = false;

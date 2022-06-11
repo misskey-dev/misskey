@@ -1,19 +1,19 @@
 <template>
 <MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
 	<FormSuspense :p="init">
-		<MkInfo class="_formBlock">{{ $ts.proxyAccountDescription }}</MkInfo>
+		<MkInfo class="_formBlock">{{ i18n.ts.proxyAccountDescription }}</MkInfo>
 		<MkKeyValue class="_formBlock">
-			<template #key>{{ $ts.proxyAccount }}</template>
-			<template #value>{{ proxyAccount ? `@${proxyAccount.username}` : $ts.none }}</template>
+			<template #key>{{ i18n.ts.proxyAccount }}</template>
+			<template #value>{{ proxyAccount ? `@${proxyAccount.username}` : i18n.ts.none }}</template>
 		</MkKeyValue>
 
-		<FormButton primary class="_formBlock" @click="chooseProxyAccount">{{ $ts.selectAccount }}</FormButton>
+		<FormButton primary class="_formBlock" @click="chooseProxyAccount">{{ i18n.ts.selectAccount }}</FormButton>
 	</FormSuspense>
 </MkSpacer>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
 import MkKeyValue from '@/components/key-value.vue';
 import FormButton from '@/components/ui/button.vue';
 import MkInfo from '@/components/ui/info.vue';
@@ -21,53 +21,40 @@ import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { fetchInstance } from '@/instance';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		MkKeyValue,
-		FormButton,
-		MkInfo,
-		FormSuspense,
-	},
+let proxyAccount: any = $ref(null);
+let proxyAccountId: any = $ref(null);
 
-	emits: ['info'],
+async function init() {
+	const meta = await os.api('admin/meta');
+	proxyAccountId = meta.proxyAccountId;
+	if (proxyAccountId) {
+		proxyAccount = await os.api('users/show', { userId: proxyAccountId });
+	}
+}
 
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: this.$ts.proxyAccount,
-				icon: 'fas fa-ghost',
-				bg: 'var(--bg)',
-			},
-			proxyAccount: null,
-			proxyAccountId: null,
-		}
-	},
+function chooseProxyAccount() {
+	os.selectUser().then(user => {
+		proxyAccount = user;
+		proxyAccountId = user.id;
+		save();
+	});
+}
 
-	methods: {
-		async init() {
-			const meta = await os.api('admin/meta');
-			this.proxyAccountId = meta.proxyAccountId;
-			if (this.proxyAccountId) {
-				this.proxyAccount = await os.api('users/show', { userId: this.proxyAccountId });
-			}
-		},
+function save() {
+	os.apiWithDialog('admin/update-meta', {
+		proxyAccountId: proxyAccountId,
+	}).then(() => {
+		fetchInstance();
+	});
+}
 
-		chooseProxyAccount() {
-			os.selectUser().then(user => {
-				this.proxyAccount = user;
-				this.proxyAccountId = user.id;
-				this.save();
-			});
-		},
-
-		save() {
-			os.apiWithDialog('admin/update-meta', {
-				proxyAccountId: this.proxyAccountId,
-			}).then(() => {
-				fetchInstance();
-			});
-		}
+defineExpose({
+	[symbols.PAGE_INFO]: {
+		title: i18n.ts.proxyAccount,
+		icon: 'fas fa-ghost',
+		bg: 'var(--bg)',
 	}
 });
 </script>

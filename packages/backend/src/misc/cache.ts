@@ -48,6 +48,7 @@ export class Cache<T> {
 
 		// Cache MISS
 		const value = await fetcher();
+		this.set(key, value);
 		return value;
 	}
 

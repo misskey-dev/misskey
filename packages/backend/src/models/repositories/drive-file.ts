@@ -1,6 +1,5 @@
 import { db } from '@/db/postgre.js';
 import { DriveFile } from '@/models/entities/drive-file.js';
-import { Users, DriveFolders } from '../index.js';
 import { User } from '@/models/entities/user.js';
 import { toPuny } from '@/misc/convert-host.js';
 import { awaitAll, Promiseable } from '@/prelude/await-all.js';
@@ -9,6 +8,7 @@ import config from '@/config/index.js';
 import { query, appendQuery } from '@/prelude/url.js';
 import { Meta } from '@/models/entities/meta.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
+import { Users, DriveFolders } from '../index.js';
 
 type PackOptions = {
 	detail?: boolean,
@@ -29,6 +29,8 @@ export const DriveFileRepository = db.getRepository(DriveFile).extend({
 
 	getPublicProperties(file: DriveFile): DriveFile['properties'] {
 		if (file.properties.orientation != null) {
+			// TODO
+			//const properties = structuredClone(file.properties);
 			const properties = JSON.parse(JSON.stringify(file.properties));
 			if (file.properties.orientation >= 5) {
 				[properties.width, properties.height] = [properties.height, properties.width];
@@ -111,7 +113,40 @@ export const DriveFileRepository = db.getRepository(DriveFile).extend({
 
 	async pack(
 		src: DriveFile['id'] | DriveFile,
-		options?: PackOptions
+		options?: PackOptions,
+	): Promise<Packed<'DriveFile'>> {
+		const opts = Object.assign({
+			detail: false,
+			self: false,
+		}, options);
+
+		const file = typeof src === 'object' ? src : await this.findOneByOrFail({ id: src });
+
+		return await awaitAll<Packed<'DriveFile'>>({
+			id: file.id,
+			createdAt: file.createdAt.toISOString(),
+			name: file.name,
+			type: file.type,
+			md5: file.md5,
+			size: file.size,
+			isSensitive: file.isSensitive,
+			blurhash: file.blurhash,
+			properties: opts.self ? file.properties : this.getPublicProperties(file),
+			url: opts.self ? file.url : this.getPublicUrl(file, false),
+			thumbnailUrl: this.getPublicUrl(file, true),
+			comment: file.comment,
+			folderId: file.folderId,
+			folder: opts.detail && file.folderId ? DriveFolders.pack(file.folderId, {
+				detail: true,
+			}) : null,
+			userId: opts.withUser ? file.userId : null,
+			user: (opts.withUser && file.userId) ? Users.pack(file.userId) : null,
+		});
+	},
+
+	async packNullable(
+		src: DriveFile['id'] | DriveFile,
+		options?: PackOptions,
 	): Promise<Packed<'DriveFile'> | null> {
 		const opts = Object.assign({
 			detail: false,
@@ -145,9 +180,9 @@ export const DriveFileRepository = db.getRepository(DriveFile).extend({
 
 	async packMany(
 		files: (DriveFile['id'] | DriveFile)[],
-		options?: PackOptions
-	) {
-		const items = await Promise.all(files.map(f => this.pack(f, options)));
-		return items.filter(x => x != null);
+		options?: PackOptions,
+	): Promise<Packed<'DriveFile'>[]> {
+		const items = await Promise.all(files.map(f => this.packNullable(f, options)));
+		return items.filter((x): x is Packed<'DriveFile'> => x != null);
 	},
 });

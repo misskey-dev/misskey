@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onBeforeUnmount, onMounted, ref } from 'vue';
+import { onBeforeUnmount, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as os from '@/os';
 import { stream } from '@/stream';
@@ -43,32 +43,30 @@ const props = withDefaults(defineProps<{
 	large: false,
 });
 
-const isFollowing = ref(props.user.isFollowing);
-const hasPendingFollowRequestFromYou = ref(props.user.hasPendingFollowRequestFromYou);
-const wait = ref(false);
+let isFollowing = $ref(props.user.isFollowing);
+let hasPendingFollowRequestFromYou = $ref(props.user.hasPendingFollowRequestFromYou);
+let wait = $ref(false);
 const connection = stream.useChannel('main');
 
 if (props.user.isFollowing == null) {
 	os.api('users/show', {
 		userId: props.user.id
-	}).then(u => {
-		isFollowing.value = u.isFollowing;
-		hasPendingFollowRequestFromYou.value = u.hasPendingFollowRequestFromYou;
-	});
+	})
+	.then(onFollowChange);
 }
 
 function onFollowChange(user: Misskey.entities.UserDetailed) {
-	if (user.id == props.user.id) {
-		isFollowing.value = user.isFollowing;
-		hasPendingFollowRequestFromYou.value = user.hasPendingFollowRequestFromYou;
+	if (user.id === props.user.id) {
+		isFollowing = user.isFollowing;
+		hasPendingFollowRequestFromYou = user.hasPendingFollowRequestFromYou;
 	}
 }
 
 async function onClick() {
-	wait.value = true;
+	wait = true;
 
 	try {
-		if (isFollowing.value) {
+		if (isFollowing) {
 			const { canceled } = await os.confirm({
 				type: 'warning',
 				text: i18n.t('unfollowConfirm', { name: props.user.name || props.user.username }),
@@ -80,26 +78,22 @@ async function onClick() {
 				userId: props.user.id
 			});
 		} else {
-			if (hasPendingFollowRequestFromYou.value) {
+			if (hasPendingFollowRequestFromYou) {
 				await os.api('following/requests/cancel', {
 					userId: props.user.id
 				});
-			} else if (props.user.isLocked) {
-				await os.api('following/create', {
-					userId: props.user.id
-				});
-				hasPendingFollowRequestFromYou.value = true;
+				hasPendingFollowRequestFromYou = false;
 			} else {
 				await os.api('following/create', {
 					userId: props.user.id
 				});
-				hasPendingFollowRequestFromYou.value = true;
+				hasPendingFollowRequestFromYou = true;
 			}
 		}
-	} catch (e) {
-		console.error(e);
+	} catch (err) {
+		console.error(err);
 	} finally {
-		wait.value = false;
+		wait = false;
 	}
 }
 

@@ -10,6 +10,8 @@ export const meta = {
 
 	kind: 'write:account',
 
+	description: 'Create a new list of users.',
+
 	res: {
 		type: 'object',
 		optional: false, nullable: false,

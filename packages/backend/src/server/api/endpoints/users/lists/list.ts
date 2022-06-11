@@ -8,6 +8,8 @@ export const meta = {
 
 	kind: 'read:account',
 
+	description: 'Show all lists that the authenticated user has created.',
+
 	res: {
 		type: 'array',
 		optional: false, nullable: false,

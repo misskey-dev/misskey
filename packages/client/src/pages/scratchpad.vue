@@ -6,20 +6,20 @@
 	</div>
 
 	<MkContainer :foldable="true" class="_gap">
-		<template #header>{{ $ts.output }}</template>
+		<template #header>{{ i18n.ts.output }}</template>
 		<div class="bepmlvbi">
 			<div v-for="log in logs" :key="log.id" class="log" :class="{ print: log.print }">{{ log.text }}</div>
 		</div>
 	</MkContainer>
 
 	<div class="_gap">
-		{{ $ts.scratchpadDescription }}
+		{{ i18n.ts.scratchpadDescription }}
 	</div>
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { defineExpose, ref, watch } from 'vue';
 import 'prismjs';
 import { highlight, languages } from 'prismjs/components/prism-core';
 import 'prismjs/components/prism-clike';
@@ -27,103 +27,90 @@ import 'prismjs/components/prism-javascript';
 import 'prismjs/themes/prism-okaidia.css';
 import { PrismEditor } from 'vue-prism-editor';
 import 'vue-prism-editor/dist/prismeditor.min.css';
-import { AiScript, parse, utils, values } from '@syuilo/aiscript';
+import { AiScript, parse, utils } from '@syuilo/aiscript';
 import MkContainer from '@/components/ui/container.vue';
 import MkButton from '@/components/ui/button.vue';
 import { createAiScriptEnv } from '@/scripts/aiscript/api';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
+import { $i } from '@/account';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		MkContainer,
-		MkButton,
-		PrismEditor,
-	},
+const code = ref('');
+const logs = ref<any[]>([]);
 
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: this.$ts.scratchpad,
-				icon: 'fas fa-terminal',
-			},
-			code: '',
-			logs: [],
-		}
-	},
+const saved = localStorage.getItem('scratchpad');
+if (saved) {
+	code.value = saved;
+}
 
-	watch: {
-		code() {
-			localStorage.setItem('scratchpad', this.code);
-		}
-	},
+watch(code, () => {
+	localStorage.setItem('scratchpad', code.value);
+});
 
-	created() {
-		const saved = localStorage.getItem('scratchpad');
-		if (saved) {
-			this.code = saved;
-		}
-	},
-
-	methods: {
-		async run() {
-			this.logs = [];
-			const aiscript = new AiScript(createAiScriptEnv({
-				storageKey: 'scratchpad',
-				token: this.$i?.token,
-			}), {
-				in: (q) => {
-					return new Promise(ok => {
-						os.inputText({
-							title: q,
-						}).then(({ canceled, result: a }) => {
-							ok(a);
-						});
-					});
-				},
-				out: (value) => {
-					this.logs.push({
-						id: Math.random(),
-						text: value.type === 'str' ? value.value : utils.valToString(value),
-						print: true
-					});
-				},
-				log: (type, params) => {
-					switch (type) {
-						case 'end': this.logs.push({
-							id: Math.random(),
-							text: utils.valToString(params.val, true),
-							print: false
-						}); break;
-						default: break;
-					}
-				}
+async function run() {
+	logs.value = [];
+	const aiscript = new AiScript(createAiScriptEnv({
+		storageKey: 'scratchpad',
+		token: $i?.token,
+	}), {
+		in: (q) => {
+			return new Promise(ok => {
+				os.inputText({
+					title: q,
+				}).then(({ canceled, result: a }) => {
+					ok(a);
+				});
 			});
-
-			let ast;
-			try {
-				ast = parse(this.code);
-			} catch (e) {
-				os.alert({
-					type: 'error',
-					text: 'Syntax error :('
-				});
-				return;
-			}
-			try {
-				await aiscript.exec(ast);
-			} catch (e) {
-				os.alert({
-					type: 'error',
-					text: e
-				});
-			}
 		},
-
-		highlighter(code) {
-			return highlight(code, languages.js, 'javascript');
+		out: (value) => {
+			logs.value.push({
+				id: Math.random(),
+				text: value.type === 'str' ? value.value : utils.valToString(value),
+				print: true
+			});
 		},
+		log: (type, params) => {
+			switch (type) {
+				case 'end': logs.value.push({
+					id: Math.random(),
+					text: utils.valToString(params.val, true),
+					print: false
+				}); break;
+				default: break;
+			}
+		}
+	});
+
+	let ast;
+	try {
+		ast = parse(code.value);
+	} catch (error) {
+		os.alert({
+			type: 'error',
+			text: 'Syntax error :('
+		});
+		return;
 	}
+	try {
+		await aiscript.exec(ast);
+	} catch (error: any) {
+		os.alert({
+			type: 'error',
+			text: error.message
+		});
+	}
+}
+
+function highlighter(code) {
+	return highlight(code, languages.js, 'javascript');
+}
+
+defineExpose({
+	[symbols.PAGE_INFO]: {
+		title: i18n.ts.scratchpad,
+		icon: 'fas fa-terminal',
+	},
 });
 </script>
 

@@ -1,4 +1,4 @@
-import { Ref } from 'vue';
+import { defineAsyncComponent, Ref } from 'vue';
 import * as misskey from 'misskey-js';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
@@ -22,7 +22,7 @@ export function getNoteMenu(props: {
 		props.note.poll == null
 	);
 
-	let appearNote = isRenote ? props.note.renote as misskey.entities.Note : props.note;
+	const appearNote = isRenote ? props.note.renote as misskey.entities.Note : props.note;
 
 	function del(): void {
 		os.confirm({
@@ -83,8 +83,8 @@ export function getNoteMenu(props: {
 	function togglePin(pin: boolean): void {
 		os.apiWithDialog(pin ? 'i/pin' : 'i/unpin', {
 			noteId: appearNote.id
-		}, undefined, null, e => {
-			if (e.id === '72dab508-c64d-498f-8740-a8eec1ba385a') {
+		}, undefined, null, res => {
+			if (res.id === '72dab508-c64d-498f-8740-a8eec1ba385a') {
 				os.alert({
 					type: 'error',
 					text: i18n.ts.pinLimitExceeded
@@ -209,7 +209,7 @@ export function getNoteMenu(props: {
 			text: i18n.ts.clip,
 			action: () => clip()
 		},
-		(appearNote.userId != $i.id) ? statePromise.then(state => state.isWatching ? {
+		(appearNote.userId !== $i.id) ? statePromise.then(state => state.isWatching ? {
 			icon: 'fas fa-eye-slash',
 			text: i18n.ts.unwatch,
 			action: () => toggleWatch(false)
@@ -227,7 +227,7 @@ export function getNoteMenu(props: {
 			text: i18n.ts.muteThread,
 			action: () => toggleThreadMute(true)
 		}),
-		appearNote.userId == $i.id ? ($i.pinnedNoteIds || []).includes(appearNote.id) ? {
+		appearNote.userId === $i.id ? ($i.pinnedNoteIds || []).includes(appearNote.id) ? {
 			icon: 'fas fa-thumbtack',
 			text: i18n.ts.unpin,
 			action: () => togglePin(false)
@@ -246,14 +246,14 @@ export function getNoteMenu(props: {
 			}]
 			: []
 		),*/
-		...(appearNote.userId != $i.id ? [
+		...(appearNote.userId !== $i.id ? [
 			null,
 			{
 				icon: 'fas fa-exclamation-circle',
 				text: i18n.ts.reportAbuse,
 				action: () => {
 					const u = appearNote.url || appearNote.uri || `${url}/notes/${appearNote.id}`;
-					os.popup(import('@/components/abuse-report-window.vue'), {
+					os.popup(defineAsyncComponent(() => import('@/components/abuse-report-window.vue')), {
 						user: appearNote.user,
 						initialComment: `Note: ${u}\n-----\n`
 					}, {}, 'closed');
@@ -261,9 +261,9 @@ export function getNoteMenu(props: {
 			}]
 			: []
 		),
-		...(appearNote.userId == $i.id || $i.isModerator || $i.isAdmin ? [
+		...(appearNote.userId === $i.id || $i.isModerator || $i.isAdmin ? [
 			null,
-			appearNote.userId == $i.id ? {
+			appearNote.userId === $i.id ? {
 				icon: 'fas fa-edit',
 				text: i18n.ts.deleteAndEdit,
 				action: delEdit

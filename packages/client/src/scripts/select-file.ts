@@ -4,6 +4,7 @@ import { stream } from '@/stream';
 import { i18n } from '@/i18n';
 import { defaultStore } from '@/store';
 import { DriveFile } from 'misskey-js/built/entities';
+import { uploadFile } from '@/scripts/upload';
 
 function select(src: any, label: string | null, multiple: boolean): Promise<DriveFile | DriveFile[]> {
 	return new Promise((res, rej) => {
@@ -14,14 +15,14 @@ function select(src: any, label: string | null, multiple: boolean): Promise<Driv
 			input.type = 'file';
 			input.multiple = multiple;
 			input.onchange = () => {
-				const promises = Array.from(input.files).map(file => os.upload(file, defaultStore.state.uploadFolder, undefined, keepOriginal.value));
+				const promises = Array.from(input.files).map(file => uploadFile(file, defaultStore.state.uploadFolder, undefined, keepOriginal.value));
 
 				Promise.all(promises).then(driveFiles => {
 					res(multiple ? driveFiles : driveFiles[0]);
-				}).catch(e => {
+				}).catch(err => {
 					os.alert({
 						type: 'error',
-						text: e
+						text: err
 					});
 				});
 
@@ -53,9 +54,9 @@ function select(src: any, label: string | null, multiple: boolean): Promise<Driv
 				const marker = Math.random().toString(); // TODO: UUIDとか使う
 
 				const connection = stream.useChannel('main');
-				connection.on('urlUploadFinished', data => {
-					if (data.marker === marker) {
-						res(multiple ? [data.file] : data.file);
+				connection.on('urlUploadFinished', urlResponse => {
+					if (urlResponse.marker === marker) {
+						res(multiple ? [urlResponse.file] : urlResponse.file);
 						connection.dispose();
 					}
 				});

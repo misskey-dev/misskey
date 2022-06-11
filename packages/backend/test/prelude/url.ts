@@ -6,7 +6,7 @@ describe('url', () => {
 		const s = query({
 			foo: 'ふぅ',
 			bar: 'b a r',
-			baz: undefined
+			baz: undefined,
 		});
 		assert.deepStrictEqual(s, 'foo=%E3%81%B5%E3%81%85&bar=b%20a%20r');
 	});

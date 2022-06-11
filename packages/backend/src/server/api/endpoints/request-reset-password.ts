@@ -10,7 +10,11 @@ import { genId } from '@/misc/gen-id.js';
 import { IsNull } from 'typeorm';
 
 export const meta = {
+	tags: ['reset password'],
+
 	requireCredential: false,
+
+	description: 'Request a users password to be reset.',
 
 	limit: {
 		duration: ms('1hour'),

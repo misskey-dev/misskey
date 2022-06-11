@@ -356,7 +356,7 @@ antennaExcludeKeywords: "除外キーワード"
 antennaKeywordsDescription: "スペースで区切るとAND指定になり、改行で区切るとOR指定になります"
 notifyAntenna: "新しいノートを通知する"
 withFileAntenna: "ファイルが添付されたノートのみ"
-enableServiceworker: "ServiceWorkerを有効にする"
+enableServiceworker: "ブラウザへのプッシュ通知を有効にする"
 antennaUsersDescription: "ユーザー名を改行で区切って指定します"
 caseSensitive: "大文字小文字を区別する"
 withReplies: "返信を含む"
@@ -425,7 +425,7 @@ quoteQuestion: "引用として添付しますか？"
 noMessagesYet: "まだチャットはありません"
 newMessageExists: "新しいメッセージがあります"
 onlyOneFileCanBeAttached: "メッセージに添付できるファイルはひとつです"
-signinRequired: "ログインしてください"
+signinRequired: "続行する前に、サインアップまたはサインインが必要です"
 invitations: "招待"
 invitationCode: "招待コード"
 checking: "確認しています"
@@ -842,6 +842,9 @@ oneDay: "1日"
 oneWeek: "1週間"
 reflectMayTakeTime: "反映されるまで時間がかかる場合があります。"
 failedToFetchAccountInformation: "アカウント情報の取得に失敗しました"
+rateLimitExceeded: "レート制限を超えました"
+cropImage: "画像のクロップ"
+cropImageAsk: "画像をクロップしますか？"
 
 _emailUnavailable:
   used: "既に使用されています"
@@ -1110,7 +1113,6 @@ _sfx:
   channel: "チャンネル通知"
 
 _ago:
-  unknown: "謎"
   future: "未来"
   justNow: "たった今"
   secondsAgo: "{n}秒前"
@@ -1157,6 +1159,7 @@ _2fa:
   registerKey: "キーを登録"
   step1: "まず、{a}や{b}などの認証アプリをお使いのデバイスにインストールします。"
   step2: "次に、表示されているQRコードをアプリでスキャンします。"
+  step2Url: "デスクトップアプリでは次のURLを入力します:"
   step3: "アプリに表示されているトークンを入力して完了です。"
   step4: "これからログインするときも、同じようにトークンを入力します。"
   securityKeyInfo: "FIDO2をサポートするハードウェアセキュリティキーもしくは端末の指紋認証やPINを使用してログインするように設定できます。"
@@ -1668,8 +1671,9 @@ _notification:
   youWereFollowed: "フォローされました"
   youReceivedFollowRequest: "フォローリクエストが来ました"
   yourFollowRequestAccepted: "フォローリクエストが承認されました"
-  youWereInvitedToGroup: "グループに招待されました"
+  youWereInvitedToGroup: "{userName}があなたをグループに招待しました"
   pollEnded: "アンケートの結果が出ました"
+  emptyPushNotificationMessage: "プッシュ通知の更新をしました"
 
   _types:
     all: "すべて"
@@ -1685,6 +1689,11 @@ _notification:
     followRequestAccepted: "フォローが受理された"
     groupInvited: "グループに招待された"
     app: "連携アプリからの通知"
+
+  _actions:
+    followBack: "フォローバック"
+    reply: "返信"
+    renote: "Renote"
 
 _deck:
   alwaysShowMainColumn: "常にメインカラムを表示"

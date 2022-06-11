@@ -43,79 +43,71 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { onMounted, onBeforeUnmount } from 'vue';
 import bytes from '@/filters/bytes';
 
-export default defineComponent({
-	props: {
-		connection: {
-			required: true,
-		},
-		meta: {
-			required: true,
-		}
-	},
-	data() {
-		return {
-			viewBoxX: 50,
-			viewBoxY: 30,
-			stats: [],
-			inPolylinePoints: '',
-			outPolylinePoints: '',
-			inPolygonPoints: '',
-			outPolygonPoints: '',
-			inHeadX: null,
-			inHeadY: null,
-			outHeadX: null,
-			outHeadY: null,
-			inRecent: 0,
-			outRecent: 0
-		};
-	},
-	mounted() {
-		this.connection.on('stats', this.onStats);
-		this.connection.on('statsLog', this.onStatsLog);
-		this.connection.send('requestLog', {
-			id: Math.random().toString().substr(2, 8)
-		});
-	},
-	beforeUnmount() {
-		this.connection.off('stats', this.onStats);
-		this.connection.off('statsLog', this.onStatsLog);
-	},
-	methods: {
-		onStats(stats) {
-			this.stats.push(stats);
-			if (this.stats.length > 50) this.stats.shift();
+const props = defineProps<{
+	connection: any,
+	meta: any
+}>();
 
-			const inPeak = Math.max(1024 * 64, Math.max(...this.stats.map(s => s.net.rx)));
-			const outPeak = Math.max(1024 * 64, Math.max(...this.stats.map(s => s.net.tx)));
+let viewBoxX: number = $ref(50);
+let viewBoxY: number = $ref(30);
+let stats: any[] = $ref([]);
+let inPolylinePoints: string = $ref('');
+let outPolylinePoints: string = $ref('');
+let inPolygonPoints: string = $ref('');
+let outPolygonPoints: string = $ref('');
+let inHeadX: any = $ref(null);
+let inHeadY: any = $ref(null);
+let outHeadX: any = $ref(null);
+let outHeadY: any = $ref(null);
+let inRecent: number = $ref(0);
+let outRecent: number = $ref(0);
 
-			const inPolylinePoints = this.stats.map((s, i) => [this.viewBoxX - ((this.stats.length - 1) - i), (1 - (s.net.rx / inPeak)) * this.viewBoxY]);
-			const outPolylinePoints = this.stats.map((s, i) => [this.viewBoxX - ((this.stats.length - 1) - i), (1 - (s.net.tx / outPeak)) * this.viewBoxY]);
-			this.inPolylinePoints = inPolylinePoints.map(xy => `${xy[0]},${xy[1]}`).join(' ');
-			this.outPolylinePoints = outPolylinePoints.map(xy => `${xy[0]},${xy[1]}`).join(' ');
-
-			this.inPolygonPoints = `${this.viewBoxX - (this.stats.length - 1)},${this.viewBoxY} ${this.inPolylinePoints} ${this.viewBoxX},${this.viewBoxY}`;
-			this.outPolygonPoints = `${this.viewBoxX - (this.stats.length - 1)},${this.viewBoxY} ${this.outPolylinePoints} ${this.viewBoxX},${this.viewBoxY}`;
-
-			this.inHeadX = inPolylinePoints[inPolylinePoints.length - 1][0];
-			this.inHeadY = inPolylinePoints[inPolylinePoints.length - 1][1];
-			this.outHeadX = outPolylinePoints[outPolylinePoints.length - 1][0];
-			this.outHeadY = outPolylinePoints[outPolylinePoints.length - 1][1];
-
-			this.inRecent = stats.net.rx;
-			this.outRecent = stats.net.tx;
-		},
-		onStatsLog(statsLog) {
-			for (const stats of [...statsLog].reverse()) {
-				this.onStats(stats);
-			}
-		},
-		bytes
-	}
+onMounted(() => {
+	props.connection.on('stats', onStats);
+	props.connection.on('statsLog', onStatsLog);
+	props.connection.send('requestLog', {
+		id: Math.random().toString().substr(2, 8)
+	});
 });
+
+onBeforeUnmount(() => {
+	props.connection.off('stats', onStats);
+	props.connection.off('statsLog', onStatsLog);
+});
+
+function onStats(connStats) {
+	stats.push(connStats);
+	if (stats.length > 50) stats.shift();
+
+	const inPeak = Math.max(1024 * 64, Math.max(...stats.map(s => s.net.rx)));
+	const outPeak = Math.max(1024 * 64, Math.max(...stats.map(s => s.net.tx)));
+
+	let inPolylinePointsStats = stats.map((s, i) => [viewBoxX - ((stats.length - 1) - i), (1 - (s.net.rx / inPeak)) * viewBoxY]);
+	let outPolylinePointsStats = stats.map((s, i) => [viewBoxX - ((stats.length - 1) - i), (1 - (s.net.tx / outPeak)) * viewBoxY]);
+	inPolylinePoints = inPolylinePointsStats.map(xy => `${xy[0]},${xy[1]}`).join(' ');
+	outPolylinePoints = outPolylinePointsStats.map(xy => `${xy[0]},${xy[1]}`).join(' ');
+
+	inPolygonPoints = `${viewBoxX - (stats.length - 1)},${viewBoxY} ${inPolylinePoints} ${viewBoxX},${viewBoxY}`;
+	outPolygonPoints = `${viewBoxX - (stats.length - 1)},${viewBoxY} ${outPolylinePoints} ${viewBoxX},${viewBoxY}`;
+
+	inHeadX = inPolylinePointsStats[inPolylinePointsStats.length - 1][0];
+	inHeadY = inPolylinePointsStats[inPolylinePointsStats.length - 1][1];
+	outHeadX = outPolylinePointsStats[outPolylinePointsStats.length - 1][0];
+	outHeadY = outPolylinePointsStats[outPolylinePointsStats.length - 1][1];
+
+	inRecent = connStats.net.rx;
+	outRecent = connStats.net.tx;
+}
+
+function onStatsLog(statsLog) {
+	for (const revStats of [...statsLog].reverse()) {
+		onStats(revStats);
+	}
+}
 </script>
 
 <style lang="scss" scoped>

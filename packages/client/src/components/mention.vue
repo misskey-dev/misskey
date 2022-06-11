@@ -1,22 +1,22 @@
 <template>
-<MkA v-if="url.startsWith('/')" v-user-preview="canonical" class="ldlomzub" :class="{ isMe }" :to="url" :style="{ background: bg }">
-	<img class="icon" :src="`/avatar/@${username}@${host}`" alt="">
+<MkA v-if="url.startsWith('/')" v-user-preview="canonical" :class="[$style.root, { isMe }]" :to="url" :style="{ background: bg }">
+	<img :class="$style.icon" :src="`/avatar/@${username}@${host}`" alt="">
 	<span class="main">
 		<span class="username">@{{ username }}</span>
-		<span v-if="(host != localHost) || $store.state.showFullAcct" class="host">@{{ toUnicode(host) }}</span>
+		<span v-if="(host != localHost) || $store.state.showFullAcct" :class="$style.mainHost">@{{ toUnicode(host) }}</span>
 	</span>
 </MkA>
-<a v-else class="ldlomzub" :href="url" target="_blank" rel="noopener" :style="{ background: bg }">
+<a v-else :class="$style.root" :href="url" target="_blank" rel="noopener" :style="{ background: bg }">
 	<span class="main">
 		<span class="username">@{{ username }}</span>
-		<span class="host">@{{ toUnicode(host) }}</span>
+		<span :class="$style.mainHost">@{{ toUnicode(host) }}</span>
 	</span>
 </a>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import * as tinycolor from 'tinycolor2';
+import { defineComponent, useCssModule } from 'vue';
+import tinycolor from 'tinycolor2';
 import { toUnicode } from 'punycode';
 import { host as localHost } from '@/config';
 import { $i } from '@/account';
@@ -45,6 +45,8 @@ export default defineComponent({
 		const bg = tinycolor(getComputedStyle(document.documentElement).getPropertyValue(isMe ? '--mentionMe' : '--mention'));
 		bg.setAlpha(0.1);
 
+		useCssModule();
+
 		return {
 			localHost,
 			isMe,
@@ -57,8 +59,8 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-.ldlomzub {
+<style lang="scss" module>
+.root {
 	display: inline-block;
 	padding: 4px 8px 4px 4px;
 	border-radius: 999px;
@@ -67,18 +69,18 @@ export default defineComponent({
 	&.isMe {
 		color: var(--mentionMe);
 	}
+}
 
-	> .icon {
-		width: 1.5em;
-		margin: 0 0.2em 0 0;
-		vertical-align: bottom;
-		border-radius: 100%;
-	}
+.icon {
+	width: 1.5em;
+	height: 1.5em;
+	object-fit: cover;
+	margin: 0 0.2em 0 0;
+	vertical-align: bottom;
+	border-radius: 100%;
+}
 
-	> .main {
-		> .host {
-			opacity: 0.5;
-		}
-	}
+.mainHost {
+	opacity: 0.5;
 }
 </style>

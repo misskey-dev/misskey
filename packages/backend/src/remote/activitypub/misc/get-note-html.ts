@@ -3,8 +3,6 @@ import { Note } from '@/models/entities/note.js';
 import { toHtml } from '../../../mfm/to-html.js';
 
 export default function(note: Note) {
-	let html = note.text ? toHtml(mfm.parse(note.text), JSON.parse(note.mentionedRemoteUsers)) : null;
-	if (html == null) html = '<p>.</p>';
-
-	return html;
+	if (!note.text) return '';
+	return toHtml(mfm.parse(note.text), JSON.parse(note.mentionedRemoteUsers));
 }

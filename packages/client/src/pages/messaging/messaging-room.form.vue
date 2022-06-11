@@ -31,6 +31,7 @@ import * as os from '@/os';
 import { stream } from '@/stream';
 import { Autocomplete } from '@/scripts/autocomplete';
 import { throttle } from 'throttle-debounce';
+import { uploadFile } from '@/scripts/upload';
 
 export default defineComponent({
 	props: {
@@ -58,7 +59,7 @@ export default defineComponent({
 			return this.user ? 'user:' + this.user.id : 'group:' + this.group.id;
 		},
 		canSend(): boolean {
-			return (this.text != null && this.text != '') || this.file != null;
+			return (this.text != null && this.text !== '') || this.file != null;
 		},
 		room(): any {
 			return this.$parent;
@@ -87,12 +88,11 @@ export default defineComponent({
 		}
 	},
 	methods: {
-		async onPaste(e: ClipboardEvent) {
-			const data = e.clipboardData;
-			const items = data.items;
+		async onPaste(evt: ClipboardEvent) {
+			const items = evt.clipboardData.items;
 
-			if (items.length == 1) {
-				if (items[0].kind == 'file') {
+			if (items.length === 1) {
+				if (items[0].kind === 'file') {
 					const file = items[0].getAsFile();
 					const lio = file.name.lastIndexOf('.');
 					const ext = lio >= 0 ? file.name.slice(lio) : '';
@@ -100,7 +100,7 @@ export default defineComponent({
 					if (formatted) this.upload(file, formatted);
 				}
 			} else {
-				if (items[0].kind == 'file') {
+				if (items[0].kind === 'file') {
 					os.alert({
 						type: 'error',
 						text: this.$ts.onlyOneFileCanBeAttached
@@ -109,23 +109,23 @@ export default defineComponent({
 			}
 		},
 
-		onDragover(e) {
-			const isFile = e.dataTransfer.items[0].kind == 'file';
-			const isDriveFile = e.dataTransfer.types[0] == _DATA_TRANSFER_DRIVE_FILE_;
+		onDragover(evt) {
+			const isFile = evt.dataTransfer.items[0].kind === 'file';
+			const isDriveFile = evt.dataTransfer.types[0] === _DATA_TRANSFER_DRIVE_FILE_;
 			if (isFile || isDriveFile) {
-				e.preventDefault();
-				e.dataTransfer.dropEffect = e.dataTransfer.effectAllowed == 'all' ? 'copy' : 'move';
+				evt.preventDefault();
+				evt.dataTransfer.dropEffect = evt.dataTransfer.effectAllowed === 'all' ? 'copy' : 'move';
 			}
 		},
 
-		onDrop(e): void {
+		onDrop(evt): void {
 			// ファイルだったら
-			if (e.dataTransfer.files.length == 1) {
-				e.preventDefault();
-				this.upload(e.dataTransfer.files[0]);
+			if (evt.dataTransfer.files.length === 1) {
+				evt.preventDefault();
+				this.upload(evt.dataTransfer.files[0]);
 				return;
-			} else if (e.dataTransfer.files.length > 1) {
-				e.preventDefault();
+			} else if (evt.dataTransfer.files.length > 1) {
+				evt.preventDefault();
 				os.alert({
 					type: 'error',
 					text: this.$ts.onlyOneFileCanBeAttached
@@ -134,17 +134,17 @@ export default defineComponent({
 			}
 
 			//#region ドライブのファイル
-			const driveFile = e.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FILE_);
-			if (driveFile != null && driveFile != '') {
+			const driveFile = evt.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FILE_);
+			if (driveFile != null && driveFile !== '') {
 				this.file = JSON.parse(driveFile);
-				e.preventDefault();
+				evt.preventDefault();
 			}
 			//#endregion
 		},
 
-		onKeydown(e) {
+		onKeydown(evt) {
 			this.typing();
-			if ((e.which == 10 || e.which == 13) && (e.ctrlKey || e.metaKey) && this.canSend) {
+			if ((evt.which === 10 || evt.which === 13) && (evt.ctrlKey || evt.metaKey) && this.canSend) {
 				this.send();
 			}
 		},
@@ -153,8 +153,8 @@ export default defineComponent({
 			this.typing();
 		},
 
-		chooseFile(e) {
-			selectFile(e.currentTarget ?? e.target, this.$ts.selectFile).then(file => {
+		chooseFile(evt) {
+			selectFile(evt.currentTarget ?? evt.target, this.$ts.selectFile).then(file => {
 				this.file = file;
 			});
 		},
@@ -164,7 +164,7 @@ export default defineComponent({
 		},
 
 		upload(file: File, name?: string) {
-			os.upload(file, this.$store.state.uploadFolder, name).then(res => {
+			uploadFile(file, this.$store.state.uploadFolder, name).then(res => {
 				this.file = res;
 			});
 		},
@@ -192,25 +192,25 @@ export default defineComponent({
 		},
 
 		saveDraft() {
-			const data = JSON.parse(localStorage.getItem('message_drafts') || '{}');
+			const drafts = JSON.parse(localStorage.getItem('message_drafts') || '{}');
 
-			data[this.draftKey] = {
+			drafts[this.draftKey] = {
 				updatedAt: new Date(),
 				data: {
 					text: this.text,
 					file: this.file
 				}
-			}
+			};
 
-			localStorage.setItem('message_drafts', JSON.stringify(data));
+			localStorage.setItem('message_drafts', JSON.stringify(drafts));
 		},
 
 		deleteDraft() {
-			const data = JSON.parse(localStorage.getItem('message_drafts') || '{}');
+			const drafts = JSON.parse(localStorage.getItem('message_drafts') || '{}');
 
-			delete data[this.draftKey];
+			delete drafts[this.draftKey];
 
-			localStorage.setItem('message_drafts', JSON.stringify(data));
+			localStorage.setItem('message_drafts', JSON.stringify(drafts));
 		},
 
 		async insertEmoji(ev) {

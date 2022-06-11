@@ -16,7 +16,8 @@
 			<i v-else-if="notification.type === 'pollVote'" class="fas fa-poll-h"></i>
 			<i v-else-if="notification.type === 'pollEnded'" class="fas fa-poll-h"></i>
 			<!-- notification.reaction が null になることはまずないが、ここでoptional chaining使うと一部ブラウザで刺さるので念の為 -->
-			<XReactionIcon v-else-if="notification.type === 'reaction'"
+			<XReactionIcon
+				v-else-if="notification.type === 'reaction'"
 				ref="reactionRef"
 				:reaction="notification.reaction ? notification.reaction.replace(/^:(\w+):$/, ':$1@.:') : notification.reaction"
 				:custom-emojis="notification.note.emojis"
@@ -72,12 +73,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, onUnmounted } from 'vue';
+import { defineComponent, ref, onMounted, onUnmounted, watch } from 'vue';
 import * as misskey from 'misskey-js';
-import { getNoteSummary } from '@/scripts/get-note-summary';
 import XReactionIcon from './reaction-icon.vue';
 import MkFollowButton from './follow-button.vue';
 import XReactionTooltip from './reaction-tooltip.vue';
+import { getNoteSummary } from '@/scripts/get-note-summary';
 import { notePage } from '@/filters/note';
 import { userPage } from '@/filters/user';
 import { i18n } from '@/i18n';
@@ -87,7 +88,7 @@ import { useTooltip } from '@/scripts/use-tooltip';
 
 export default defineComponent({
 	components: {
-		XReactionIcon, MkFollowButton
+		XReactionIcon, MkFollowButton,
 	},
 
 	props: {
@@ -116,7 +117,7 @@ export default defineComponent({
 				const readObserver = new IntersectionObserver((entries, observer) => {
 					if (!entries.some(entry => entry.isIntersecting)) return;
 					stream.send('readNotification', {
-						id: props.notification.id
+						id: props.notification.id,
 					});
 					observer.disconnect();
 				});
@@ -125,6 +126,10 @@ export default defineComponent({
 
 				const connection = stream.useChannel('main');
 				connection.on('readAllNotifications', () => readObserver.disconnect());
+
+				watch(props.notification.isRead, () => {
+					readObserver.disconnect();
+				});
 
 				onUnmounted(() => {
 					readObserver.disconnect();

@@ -1,35 +1,35 @@
 <template>
 <div class="_formRoot">
 	<MkTab v-model="tab" class="_formBlock">
-		<option value="soft">{{ $ts._wordMute.soft }}</option>
-		<option value="hard">{{ $ts._wordMute.hard }}</option>
+		<option value="soft">{{ i18n.ts._wordMute.soft }}</option>
+		<option value="hard">{{ i18n.ts._wordMute.hard }}</option>
 	</MkTab>
 	<div class="_formBlock">
 		<div v-show="tab === 'soft'">
-			<MkInfo class="_formBlock">{{ $ts._wordMute.softDescription }}</MkInfo>
+			<MkInfo class="_formBlock">{{ i18n.ts._wordMute.softDescription }}</MkInfo>
 			<FormTextarea v-model="softMutedWords" class="_formBlock">
-				<span>{{ $ts._wordMute.muteWords }}</span>
-				<template #caption>{{ $ts._wordMute.muteWordsDescription }}<br>{{ $ts._wordMute.muteWordsDescription2 }}</template>
+				<span>{{ i18n.ts._wordMute.muteWords }}</span>
+				<template #caption>{{ i18n.ts._wordMute.muteWordsDescription }}<br>{{ i18n.ts._wordMute.muteWordsDescription2 }}</template>
 			</FormTextarea>
 		</div>
 		<div v-show="tab === 'hard'">
-			<MkInfo class="_formBlock">{{ $ts._wordMute.hardDescription }} {{ $ts.reflectMayTakeTime }}</MkInfo>
+			<MkInfo class="_formBlock">{{ i18n.ts._wordMute.hardDescription }} {{ i18n.ts.reflectMayTakeTime }}</MkInfo>
 			<FormTextarea v-model="hardMutedWords" class="_formBlock">
-				<span>{{ $ts._wordMute.muteWords }}</span>
-				<template #caption>{{ $ts._wordMute.muteWordsDescription }}<br>{{ $ts._wordMute.muteWordsDescription2 }}</template>
+				<span>{{ i18n.ts._wordMute.muteWords }}</span>
+				<template #caption>{{ i18n.ts._wordMute.muteWordsDescription }}<br>{{ i18n.ts._wordMute.muteWordsDescription2 }}</template>
 			</FormTextarea>
 			<MkKeyValue v-if="hardWordMutedNotesCount != null" class="_formBlock">
-				<template #key>{{ $ts._wordMute.mutedNotes }}</template>
+				<template #key>{{ i18n.ts._wordMute.mutedNotes }}</template>
 				<template #value>{{ number(hardWordMutedNotesCount) }}</template>
 			</MkKeyValue>
 		</div>
 	</div>
-	<MkButton primary inline :disabled="!changed" @click="save()"><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
+	<MkButton primary inline :disabled="!changed" @click="save()"><i class="fas fa-save"></i> {{ i18n.ts.save }}</MkButton>
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { defineExpose, ref, watch } from 'vue';
 import FormTextarea from '@/components/form/textarea.vue';
 import MkKeyValue from '@/components/key-value.vue';
 import MkButton from '@/components/ui/button.vue';
@@ -38,114 +38,90 @@ import MkTab from '@/components/tab.vue';
 import * as os from '@/os';
 import number from '@/filters/number';
 import * as symbols from '@/symbols';
+import { defaultStore } from '@/store';
+import { $i } from '@/account';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		MkButton,
-		FormTextarea,
-		MkKeyValue,
-		MkTab,
-		MkInfo,
-	},
+const render = (mutedWords) => mutedWords.map(x => {
+	if (Array.isArray(x)) {
+		return x.join(' ');
+	} else {
+		return x;
+	}
+}).join('\n');
 
-	emits: ['info'],
-	
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: this.$ts.wordMute,
-				icon: 'fas fa-comment-slash',
-				bg: 'var(--bg)',
-			},
-			tab: 'soft',
-			softMutedWords: '',
-			hardMutedWords: '',
-			hardWordMutedNotesCount: null,
-			changed: false,
-		}
-	},
+const tab = ref('soft');
+const softMutedWords = ref(render(defaultStore.state.mutedWords));
+const hardMutedWords = ref(render($i!.mutedWords));
+const hardWordMutedNotesCount = ref(null);
+const changed = ref(false);
 
-	watch: {
-		softMutedWords: {
-			handler() {
-				this.changed = true;
-			},
-			deep: true
-		},
-		hardMutedWords: {
-			handler() {
-				this.changed = true;
-			},
-			deep: true
-		},
-	},
+os.api('i/get-word-muted-notes-count', {}).then(response => {
+	hardWordMutedNotesCount.value = response?.count;
+});
 
-	async created() {
-		const render = (mutedWords) => mutedWords.map(x => {
-			if (Array.isArray(x)) {
-				return x.join(' ');
-			} else {
-				return x;
-			}
-		}).join('\n');
+watch(softMutedWords, () => {
+	changed.value = true;
+});
 
-		this.softMutedWords = render(this.$store.state.mutedWords);
-		this.hardMutedWords = render(this.$i.mutedWords);
+watch(hardMutedWords, () => {
+	changed.value = true;
+});
 
-		this.hardWordMutedNotesCount = (await os.api('i/get-word-muted-notes-count', {})).count;
-	},
+async function save() {
+	const parseMutes = (mutes, tab) => {
+		// split into lines, remove empty lines and unnecessary whitespace
+		let lines = mutes.trim().split('\n').map(line => line.trim()).filter(line => line !== '');
 
-	methods: {
-		async save() {
-			const parseMutes = (mutes, tab) => {
-				// split into lines, remove empty lines and unnecessary whitespace
-				let lines = mutes.trim().split('\n').map(line => line.trim()).filter(line => line != '');
-
-				// check each line if it is a RegExp or not
-				for (let i = 0; i < lines.length; i++) {
-					const line = lines[i]
-					const regexp = line.match(/^\/(.+)\/(.*)$/);
-					if (regexp) {
-						// check that the RegExp is valid
-						try {
-							new RegExp(regexp[1], regexp[2]);
-							// note that regex lines will not be split by spaces!
-						} catch (err) {
-							// invalid syntax: do not save, do not reset changed flag
-							os.alert({
-								type: 'error',
-								title: this.$ts.regexpError,
-								text: this.$t('regexpErrorDescription', { tab, line: i + 1 }) + "\n" + err.toString()
-							});
-							// re-throw error so these invalid settings are not saved
-							throw err;
-						}
-					} else {
-						lines[i] = line.split(' ');
-					}
+		// check each line if it is a RegExp or not
+		for (let i = 0; i < lines.length; i++) {
+			const line = lines[i];
+			const regexp = line.match(/^\/(.+)\/(.*)$/);
+			if (regexp) {
+				// check that the RegExp is valid
+				try {
+					new RegExp(regexp[1], regexp[2]);
+					// note that regex lines will not be split by spaces!
+				} catch (err: any) {
+					// invalid syntax: do not save, do not reset changed flag
+					os.alert({
+						type: 'error',
+						title: i18n.ts.regexpError,
+						text: i18n.t('regexpErrorDescription', { tab, line: i + 1 }) + "\n" + err.toString()
+					});
+					// re-throw error so these invalid settings are not saved
+					throw err;
 				}
-
-				return lines;
-			};
-
-			let softMutes, hardMutes;
-			try {
-				softMutes = parseMutes(this.softMutedWords, this.$ts._wordMute.soft);
-				hardMutes = parseMutes(this.hardMutedWords, this.$ts._wordMute.hard);
-			} catch (err) {
-				// already displayed error message in parseMutes
-				return;
+			} else {
+				lines[i] = line.split(' ');
 			}
+		}
 
-			this.$store.set('mutedWords', softMutes);
-			await os.api('i/update', {
-				mutedWords: hardMutes,
-			});
+		return lines;
+	};
 
-			this.changed = false;
-		},
+	let softMutes, hardMutes;
+	try {
+		softMutes = parseMutes(softMutedWords.value, i18n.ts._wordMute.soft);
+		hardMutes = parseMutes(hardMutedWords.value, i18n.ts._wordMute.hard);
+	} catch (err) {
+		// already displayed error message in parseMutes
+		return;
+	}
 
-		number
+	defaultStore.set('mutedWords', softMutes);
+	await os.api('i/update', {
+		mutedWords: hardMutes,
+	});
+
+	changed.value = false;
+}
+
+defineExpose({
+	[symbols.PAGE_INFO]: {
+		title: i18n.ts.wordMute,
+		icon: 'fas fa-comment-slash',
+		bg: 'var(--bg)',
 	}
 });
 </script>

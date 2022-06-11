@@ -8,6 +8,8 @@ export const meta = {
 
 	requireCredential: false,
 
+	description: 'Search for users.',
+
 	res: {
 		type: 'array',
 		optional: false, nullable: false,
@@ -61,7 +63,14 @@ export default define(meta, paramDef, async (ps, me) => {
 			.getMany();
 	} else {
 		const nameQuery = Users.createQueryBuilder('user')
-			.where('user.name ILIKE :query', { query: '%' + ps.query + '%' })
+			.where(new Brackets(qb => { 
+				qb.where('user.name ILIKE :query', { query: '%' + ps.query + '%' });
+
+				// Also search username if it qualifies as username
+				if (Users.validateLocalUsername(ps.query)) {
+					qb.orWhere('user.usernameLower LIKE :username', { username: '%' + ps.query.toLowerCase() + '%' });
+				}
+			}))
 			.andWhere(new Brackets(qb => { qb
 				.where('user.updatedAt IS NULL')
 				.orWhere('user.updatedAt > :activeThreshold', { activeThreshold: activeThreshold });

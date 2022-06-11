@@ -1,5 +1,5 @@
-import define from '../../../define.js';
 import { DriveFiles } from '@/models/index.js';
+import define from '../../../define.js';
 
 export const meta = {
 	tags: ['drive'],
@@ -7,6 +7,8 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'read:drive',
+
+	description: 'Search for a drive file by a hash of the contents.',
 
 	res: {
 		type: 'array',

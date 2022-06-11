@@ -1,64 +1,52 @@
 <template>
 <div class="_formRoot">
-	<FormInfo warn class="_formBlock">{{ $ts._accountDelete.mayTakeTime }}</FormInfo>
-	<FormInfo class="_formBlock">{{ $ts._accountDelete.sendEmail }}</FormInfo>
-	<FormButton v-if="!$i.isDeleted" danger class="_formBlock" @click="deleteAccount">{{ $ts._accountDelete.requestAccountDelete }}</FormButton>
-	<FormButton v-else disabled>{{ $ts._accountDelete.inProgress }}</FormButton>
+	<FormInfo warn class="_formBlock">{{ i18n.ts._accountDelete.mayTakeTime }}</FormInfo>
+	<FormInfo class="_formBlock">{{ i18n.ts._accountDelete.sendEmail }}</FormInfo>
+	<FormButton v-if="!$i.isDeleted" danger class="_formBlock" @click="deleteAccount">{{ i18n.ts._accountDelete.requestAccountDelete }}</FormButton>
+	<FormButton v-else disabled>{{ i18n.ts._accountDelete.inProgress }}</FormButton>
 </div>
 </template>
 
-<script lang="ts">
-import { defineAsyncComponent, defineComponent } from 'vue';
+<script lang="ts" setup>
+import { defineExpose } from 'vue';
 import FormInfo from '@/components/ui/info.vue';
 import FormButton from '@/components/ui/button.vue';
 import * as os from '@/os';
 import { signout } from '@/account';
 import * as symbols from '@/symbols';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		FormButton,
-		FormInfo,
-	},
+async function deleteAccount() {
+	{
+		const { canceled } = await os.confirm({
+			type: 'warning',
+			text: i18n.ts.deleteAccountConfirm,
+		});
+		if (canceled) return;
+	}
 
-	emits: ['info'],
-	
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: this.$ts._accountDelete.accountDelete,
-				icon: 'fas fa-exclamation-triangle',
-				bg: 'var(--bg)',
-			},
-		}
-	},
+	const { canceled, result: password } = await os.inputText({
+		title: i18n.ts.password,
+		type: 'password'
+	});
+	if (canceled) return;
 
-	methods: {
-		async deleteAccount() {
-			{
-				const { canceled } = await os.confirm({
-					type: 'warning',
-					text: this.$ts.deleteAccountConfirm,
-				});
-				if (canceled) return;
-			}
+	await os.apiWithDialog('i/delete-account', {
+		password: password
+	});
 
-			const { canceled, result: password } = await os.inputText({
-				title: this.$ts.password,
-				type: 'password'
-			});
-			if (canceled) return;
+	await os.alert({
+		title: i18n.ts._accountDelete.started,
+	});
 
-			await os.apiWithDialog('i/delete-account', {
-				password: password
-			});
+	await signout();
+}
 
-			await os.alert({
-				title: this.$ts._accountDelete.started,
-			});
-
-			signout();
-		}
+defineExpose({
+	[symbols.PAGE_INFO]: {
+		title: i18n.ts._accountDelete.accountDelete,
+		icon: 'fas fa-exclamation-triangle',
+		bg: 'var(--bg)',
 	}
 });
 </script>

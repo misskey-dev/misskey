@@ -1,13 +1,19 @@
 import * as fs from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { dirname } from 'node:path';
+import * as childProcess from 'child_process';
+import * as http from 'node:http';
+import { SIGKILL } from 'constants';
 import * as WebSocket from 'ws';
 import * as misskey from 'misskey-js';
 import fetch from 'node-fetch';
 import FormData from 'form-data';
-import * as childProcess from 'child_process';
-import * as http from 'http';
+import { DataSource } from 'typeorm';
 import loadConfig from '../src/config/load.js';
-import { SIGKILL } from 'constants';
 import { entities } from '../src/db/postgre.js';
+
+const _filename = fileURLToPath(import.meta.url);
+const _dirname = dirname(_filename);
 
 const config = loadConfig();
 export const port = config.port;
@@ -22,29 +28,29 @@ export const async = (fn: Function) => (done: Function) => {
 
 export const request = async (endpoint: string, params: any, me?: any): Promise<{ body: any, status: number }> => {
 	const auth = me ? {
-		i: me.token
+		i: me.token,
 	} : {};
 
 	const res = await fetch(`http://localhost:${port}/api${endpoint}`, {
 		method: 'POST',
 		headers: {
-			'Content-Type': 'application/json'
+			'Content-Type': 'application/json',
 		},
-		body: JSON.stringify(Object.assign(auth, params))
+		body: JSON.stringify(Object.assign(auth, params)),
 	});
 
 	const status = res.status;
 	const body = res.status !== 204 ? await res.json().catch() : null;
 
 	return {
-		body, status
+		body, status,
 	};
 };
 
 export const signup = async (params?: any): Promise<any> => {
 	const q = Object.assign({
 		username: 'test',
-		password: 'test'
+		password: 'test',
 	}, params);
 
 	const res = await request('/signup', q);
@@ -54,7 +60,7 @@ export const signup = async (params?: any): Promise<any> => {
 
 export const post = async (user: any, params?: misskey.Endpoints['notes/create']['req']): Promise<misskey.entities.Note> => {
 	const q = Object.assign({
-		text: 'test'
+		text: 'test',
 	}, params);
 
 	const res = await request('/notes/create', q, user);
@@ -65,26 +71,26 @@ export const post = async (user: any, params?: misskey.Endpoints['notes/create']
 export const react = async (user: any, note: any, reaction: string): Promise<any> => {
 	await request('/notes/reactions/create', {
 		noteId: note.id,
-		reaction: reaction
+		reaction: reaction,
 	}, user);
 };
 
 export const uploadFile = (user: any, path?: string): Promise<any> => {
-		const formData = new FormData();
-		formData.append('i', user.token);
-		formData.append('file', fs.createReadStream(path || __dirname + '/resources/Lenna.png'));
+	const formData = new FormData();
+	formData.append('i', user.token);
+	formData.append('file', fs.createReadStream(path || _dirname + '/resources/Lenna.png'));
 
-		return fetch(`http://localhost:${port}/api/drive/files/create`, {
-			method: 'post',
-			body: formData,
-			timeout: 30 * 1000,
-		}).then(res => {
-			if (!res.ok) {
-				throw `${res.status} ${res.statusText}`;
-			} else {
-				return res.json();
-			}
-		});
+	return fetch(`http://localhost:${port}/api/drive/files/create`, {
+		method: 'post',
+		body: formData,
+		timeout: 30 * 1000,
+	}).then(res => {
+		if (!res.ok) {
+			throw `${res.status} ${res.statusText}`;
+		} else {
+			return res.json();
+		}
+	});
 };
 
 export function connectStream(user: any, channel: string, listener: (message: Record<string, any>) => any, params?: any): Promise<WebSocket> {
@@ -94,9 +100,9 @@ export function connectStream(user: any, channel: string, listener: (message: Re
 		ws.on('open', () => {
 			ws.on('message', data => {
 				const msg = JSON.parse(data.toString());
-				if (msg.type == 'channel' && msg.body.id == 'a') {
+				if (msg.type === 'channel' && msg.body.id === 'a') {
 					listener(msg.body);
-				} else if (msg.type == 'connected' && msg.body.id == 'a') {
+				} else if (msg.type === 'connected' && msg.body.id === 'a') {
 					res(ws);
 				}
 			});
@@ -107,8 +113,8 @@ export function connectStream(user: any, channel: string, listener: (message: Re
 					channel: channel,
 					id: 'a',
 					pong: true,
-					params: params
-				}
+					params: params,
+				},
 			}));
 		});
 	});
@@ -119,8 +125,8 @@ export const simpleGet = async (path: string, accept = '*/*'): Promise<{ status?
 	return await new Promise((resolve, reject) => {
 		const req = http.request(`http://localhost:${port}${path}`, {
 			headers: {
-				Accept: accept
-			}
+				Accept: accept,
+			},
 		}, res => {
 			if (res.statusCode! >= 400) {
 				reject(res);
@@ -139,9 +145,9 @@ export const simpleGet = async (path: string, accept = '*/*'): Promise<{ status?
 
 export function launchServer(callbackSpawnedProcess: (p: childProcess.ChildProcess) => void, moreProcess: () => Promise<void> = async () => {}) {
 	return (done: (err?: Error) => any) => {
-		const p = childProcess.spawn('node', [__dirname + '/../index.js'], {
+		const p = childProcess.spawn('node', [_dirname + '/../index.js'], {
 			stdio: ['inherit', 'inherit', 'inherit', 'ipc'],
-			env: { NODE_ENV: 'test', PATH: process.env.PATH }
+			env: { NODE_ENV: 'test', PATH: process.env.PATH },
 		});
 		callbackSpawnedProcess(p);
 		p.on('message', message => {
@@ -153,12 +159,7 @@ export function launchServer(callbackSpawnedProcess: (p: childProcess.ChildProce
 export async function initTestDb(justBorrow = false, initEntities?: any[]) {
 	if (process.env.NODE_ENV !== 'test') throw 'NODE_ENV is not a test';
 
-	try {
-		const conn = await getConnection();
-		await conn.close();
-	} catch (e) {}
-
-	return await createConnection({
+	const db = new DataSource({
 		type: 'postgres',
 		host: config.db.host,
 		port: config.db.port,
@@ -167,8 +168,12 @@ export async function initTestDb(justBorrow = false, initEntities?: any[]) {
 		database: config.db.db,
 		synchronize: true && !justBorrow,
 		dropSchema: true && !justBorrow,
-		entities: initEntities || entities
+		entities: initEntities || entities,
 	});
+
+	await db.initialize();
+
+	return db;
 }
 
 export function startServer(timeout = 30 * 1000): Promise<childProcess.ChildProcess> {
@@ -178,9 +183,9 @@ export function startServer(timeout = 30 * 1000): Promise<childProcess.ChildProc
 			rej('timeout to start');
 		}, timeout);
 
-		const p = childProcess.spawn('node', [__dirname + '/../built/index.js'], {
+		const p = childProcess.spawn('node', [_dirname + '/../built/index.js'], {
 			stdio: ['inherit', 'inherit', 'inherit', 'ipc'],
-			env: { NODE_ENV: 'test', PATH: process.env.PATH }
+			env: { NODE_ENV: 'test', PATH: process.env.PATH },
 		});
 
 		p.on('error', e => rej(e));

@@ -71,7 +71,7 @@ export default defineComponent({
 			description: null,
 			title: null,
 			isSensitive: false,
-		}
+		};
 	},
 
 	watch: {
@@ -91,8 +91,8 @@ export default defineComponent({
 	},
 
 	methods: {
-		selectFile(e) {
-			selectFiles(e.currentTarget ?? e.target, null).then(files => {
+		selectFile(evt) {
+			selectFiles(evt.currentTarget ?? evt.target, null).then(files => {
 				this.files = this.files.concat(files);
 			});
 		},

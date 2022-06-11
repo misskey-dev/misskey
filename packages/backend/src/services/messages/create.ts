@@ -5,7 +5,7 @@ import { MessagingMessages, UserGroupJoinings, Mutings, Users } from '@/models/i
 import { genId } from '@/misc/gen-id.js';
 import { MessagingMessage } from '@/models/entities/messaging-message.js';
 import { publishMessagingStream, publishMessagingIndexStream, publishMainStream, publishGroupMessagingStream } from '@/services/stream.js';
-import pushNotification from '../push-notification.js';
+import { pushNotification } from '@/services/push-notification.js';
 import { Not } from 'typeorm';
 import { Note } from '@/models/entities/note.js';
 import renderNote from '@/remote/activitypub/renderer/note.js';

@@ -185,7 +185,7 @@ const keymap = {
 	'down|j|tab': focusAfter,
 	'esc': blur,
 	'm|o': () => menu(true),
-	's': () => showContent.value != showContent.value,
+	's': () => showContent.value !== showContent.value,
 };
 
 useNoteCapture({
@@ -210,7 +210,7 @@ function react(viaKeyboard = false): void {
 	reactionPicker.show(reactButton.value, reaction => {
 		os.api('notes/reactions/create', {
 			noteId: appearNote.id,
-			reaction: reaction
+			reaction: reaction,
 		});
 	}, () => {
 		focus();
@@ -221,7 +221,7 @@ function undoReact(note): void {
 	const oldReaction = note.myReaction;
 	if (!oldReaction) return;
 	os.api('notes/reactions/delete', {
-		noteId: note.id
+		noteId: note.id,
 	});
 }
 
@@ -245,7 +245,7 @@ function onContextmenu(ev: MouseEvent): void {
 
 function menu(viaKeyboard = false): void {
 	os.popupMenu(getNoteMenu({ note: note, translating, translation, menuButton }), menuButton.value, {
-		viaKeyboard
+		viaKeyboard,
 	}).then(focus);
 }
 
@@ -257,12 +257,12 @@ function showRenoteMenu(viaKeyboard = false): void {
 		danger: true,
 		action: () => {
 			os.api('notes/delete', {
-				noteId: note.id
+				noteId: note.id,
 			});
 			isDeleted.value = true;
-		}
+		},
 	}], renoteTime.value, {
-		viaKeyboard: viaKeyboard
+		viaKeyboard: viaKeyboard,
 	});
 }
 
@@ -284,7 +284,7 @@ function focusAfter() {
 
 function readPromo() {
 	os.api('promo/read', {
-		noteId: appearNote.id
+		noteId: appearNote.id,
 	});
 	isDeleted.value = true;
 }

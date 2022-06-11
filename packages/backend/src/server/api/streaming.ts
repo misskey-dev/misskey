@@ -1,4 +1,4 @@
-import * as http from 'http';
+import * as http from 'node:http';
 import * as websocket from 'websocket';
 
 import MainStreamConnection from './stream/index.js';

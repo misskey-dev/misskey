@@ -90,14 +90,14 @@ export default defineComponent({
 		getAcct: Acct.toString,
 
 		isMe(message) {
-			return message.userId == this.$i.id;
+			return message.userId === this.$i.id;
 		},
 
 		onMessage(message) {
 			if (message.recipientId) {
 				this.messages = this.messages.filter(m => !(
-					(m.recipientId == message.recipientId && m.userId == message.userId) ||
-					(m.recipientId == message.userId && m.userId == message.recipientId)));
+					(m.recipientId === message.recipientId && m.userId === message.userId) ||
+					(m.recipientId === message.userId && m.userId === message.recipientId)));
 
 				this.messages.unshift(message);
 			} else if (message.groupId) {
@@ -108,7 +108,7 @@ export default defineComponent({
 
 		onRead(ids) {
 			for (const id of ids) {
-				const found = this.messages.find(m => m.id == id);
+				const found = this.messages.find(m => m.id === id);
 				if (found) {
 					if (found.recipientId) {
 						found.isRead = true;
@@ -123,11 +123,11 @@ export default defineComponent({
 			os.popupMenu([{
 				text: this.$ts.messagingWithUser,
 				icon: 'fas fa-user',
-				action: () => { this.startUser() }
+				action: () => { this.startUser(); }
 			}, {
 				text: this.$ts.messagingWithGroup,
 				icon: 'fas fa-users',
-				action: () => { this.startGroup() }
+				action: () => { this.startGroup(); }
 			}], ev.currentTarget ?? ev.target);
 		},
 

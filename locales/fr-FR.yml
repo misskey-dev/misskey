@@ -804,7 +804,7 @@ manageAccounts: "Gérer les comptes"
 makeReactionsPublic: "Rendre les réactions publiques"
 makeReactionsPublicDescription: "Ceci rendra la liste de toutes vos réactions données publique."
 classic: "Classique"
-muteThread: "Mettre ce thread en sourdine"
+muteThread: "Masquer cette discussion"
 unmuteThread: "Ne plus masquer le fil"
 ffVisibility: "Visibilité des abonnés/abonnements"
 ffVisibilityDescription: "Permet de configurer qui peut voir les personnes que tu suis et les personnes qui te suivent."
@@ -1075,7 +1075,6 @@ _sfx:
   antenna: "Réception de l’antenne"
   channel: "Notifications de canal"
 _ago:
-  unknown: "Inconnu"
   future: "Futur"
   justNow: "à l’instant"
   secondsAgo: "Il y a {n}s"
@@ -1615,6 +1614,9 @@ _notification:
     followRequestAccepted: "Demande d'abonnement acceptée"
     groupInvited: "Invitation à un groupe"
     app: "Notifications provenant des apps"
+  _actions:
+    reply: "Répondre"
+    renote: "Renoter"
 _deck:
   alwaysShowMainColumn: "Toujours afficher la colonne principale"
   columnAlign: "Aligner les colonnes"

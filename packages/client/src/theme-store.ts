@@ -14,9 +14,9 @@ export async function fetchThemes(): Promise<void> {
 	try {
 		const themes = await api('i/registry/get', { scope: ['client'], key: 'themes' });
 		localStorage.setItem(lsCacheKey, JSON.stringify(themes));
-	} catch (e) {
-		if (e.code === 'NO_SUCH_KEY') return;
-		throw e;
+	} catch (err) {
+		if (err.code === 'NO_SUCH_KEY') return;
+		throw err;
 	}
 }
 
@@ -28,7 +28,7 @@ export async function addTheme(theme: Theme): Promise<void> {
 }
 
 export async function removeTheme(theme: Theme): Promise<void> {
-	const themes = getThemes().filter(t => t.id != theme.id);
+	const themes = getThemes().filter(t => t.id !== theme.id);
 	await api('i/registry/set', { scope: ['client'], key: 'themes', value: themes });
 	localStorage.setItem(lsCacheKey, JSON.stringify(themes));
 }

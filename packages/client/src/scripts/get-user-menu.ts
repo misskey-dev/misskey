@@ -6,6 +6,7 @@ import * as os from '@/os';
 import { userActions } from '@/store';
 import { router } from '@/router';
 import { $i, iAmModerator } from '@/account';
+import { defineAsyncComponent } from 'vue';
 
 export function getUserMenu(user) {
 	const meId = $i ? $i.id : null;
@@ -127,7 +128,7 @@ export function getUserMenu(user) {
 	}
 
 	function reportAbuse() {
-		os.popup(import('@/components/abuse-report-window.vue'), {
+		os.popup(defineAsyncComponent(() => import('@/components/abuse-report-window.vue')), {
 			user: user,
 		}, {}, 'closed');
 	}
@@ -147,7 +148,7 @@ export function getUserMenu(user) {
 			userId: user.id
 		}).then(() => {
 			user.isFollowed = !user.isFollowed;
-		})
+		});
 	}
 
 	let menu = [{
@@ -168,7 +169,7 @@ export function getUserMenu(user) {
 		action: () => {
 			os.post({ specified: user });
 		}
-	}, meId != user.id ? {
+	}, meId !== user.id ? {
 		type: 'link',
 		icon: 'fas fa-comments',
 		text: i18n.ts.startMessaging,
@@ -177,13 +178,13 @@ export function getUserMenu(user) {
 		icon: 'fas fa-list-ul',
 		text: i18n.ts.addToList,
 		action: pushList
-	}, meId != user.id ? {
+	}, meId !== user.id ? {
 		icon: 'fas fa-users',
 		text: i18n.ts.inviteToGroup,
 		action: inviteGroup
 	} : undefined] as any;
 
-	if ($i && meId != user.id) {
+	if ($i && meId !== user.id) {
 		menu = menu.concat([null, {
 			icon: user.isMuted ? 'fas fa-eye' : 'fas fa-eye-slash',
 			text: user.isMuted ? i18n.ts.unmute : i18n.ts.mute,

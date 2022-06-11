@@ -1,10 +1,10 @@
 import { db } from '@/db/postgre.js';
 import { Page } from '@/models/entities/page.js';
 import { Packed } from '@/misc/schema.js';
-import { Users, DriveFiles, PageLikes } from '../index.js';
 import { awaitAll } from '@/prelude/await-all.js';
 import { DriveFile } from '@/models/entities/drive-file.js';
 import { User } from '@/models/entities/user.js';
+import { Users, DriveFiles, PageLikes } from '../index.js';
 
 export const PageRepository = db.getRepository(Page).extend({
 	async pack(
@@ -14,7 +14,7 @@ export const PageRepository = db.getRepository(Page).extend({
 		const meId = me ? me.id : null;
 		const page = typeof src === 'object' ? src : await this.findOneByOrFail({ id: src });
 
-		const attachedFiles: Promise<DriveFile | undefined>[] = [];
+		const attachedFiles: Promise<DriveFile | null>[] = [];
 		const collectFile = (xs: any[]) => {
 			for (const x of xs) {
 				if (x.type === 'image') {
@@ -73,7 +73,7 @@ export const PageRepository = db.getRepository(Page).extend({
 			script: page.script,
 			eyeCatchingImageId: page.eyeCatchingImageId,
 			eyeCatchingImage: page.eyeCatchingImageId ? await DriveFiles.pack(page.eyeCatchingImageId) : null,
-			attachedFiles: DriveFiles.packMany(await Promise.all(attachedFiles)),
+			attachedFiles: DriveFiles.packMany((await Promise.all(attachedFiles)).filter((x): x is DriveFile => x != null)),
 			likedCount: page.likedCount,
 			isLiked: meId ? await PageLikes.findOneBy({ pageId: page.id, userId: meId }).then(x => x != null) : undefined,
 		});

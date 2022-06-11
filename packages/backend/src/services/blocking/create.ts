@@ -2,9 +2,10 @@ import { publishMainStream, publishUserEvent } from '@/services/stream.js';
 import { renderActivity } from '@/remote/activitypub/renderer/index.js';
 import renderFollow from '@/remote/activitypub/renderer/follow.js';
 import renderUndo from '@/remote/activitypub/renderer/undo.js';
-import renderBlock from '@/remote/activitypub/renderer/block.js';
+import { renderBlock } from '@/remote/activitypub/renderer/block.js';
 import { deliver } from '@/queue/index.js';
 import renderReject from '@/remote/activitypub/renderer/reject.js';
+import { Blocking } from '@/models/entities/blocking.js';
 import { User } from '@/models/entities/user.js';
 import { Blockings, Users, FollowRequests, Followings, UserListJoinings, UserLists } from '@/models/index.js';
 import { perUserFollowingChart } from '@/services/chart/index.js';
@@ -22,15 +23,19 @@ export default async function(blocker: User, blockee: User) {
 		removeFromList(blockee, blocker),
 	]);
 
-	await Blockings.insert({
+	const blocking = {
 		id: genId(),
 		createdAt: new Date(),
+		blocker,
 		blockerId: blocker.id,
+		blockee,
 		blockeeId: blockee.id,
-	});
+	} as Blocking;
+
+	await Blockings.insert(blocking);
 
 	if (Users.isLocalUser(blocker) && Users.isRemoteUser(blockee)) {
-		const content = renderActivity(renderBlock(blocker, blockee));
+		const content = renderActivity(renderBlock(blocking));
 		deliver(blocker, content, blockee.inbox);
 	}
 }
@@ -95,17 +100,12 @@ async function unFollow(follower: User, followee: User) {
 		return;
 	}
 
-	Followings.delete(following.id);
-
-	//#region Decrement following count
-	Users.decrement({ id: follower.id }, 'followingCount', 1);
-	//#endregion
-
-	//#region Decrement followers count
-	Users.decrement({ id: followee.id }, 'followersCount', 1);
-	//#endregion
-
-	perUserFollowingChart.update(follower, followee, false);
+	await Promise.all([
+		Followings.delete(following.id),
+		Users.decrement({ id: follower.id }, 'followingCount', 1),
+		Users.decrement({ id: followee.id }, 'followersCount', 1),
+		perUserFollowingChart.update(follower, followee, false),
+	]);
 
 	// Publish unfollow event
 	if (Users.isLocalUser(follower)) {

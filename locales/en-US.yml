@@ -842,6 +842,9 @@ oneDay: "One day"
 oneWeek: "One week"
 reflectMayTakeTime: "It may take some time for this to be reflected."
 failedToFetchAccountInformation: "Could not fetch account information"
+rateLimitExceeded: "Rate limit exceeded"
+cropImage: "Crop image"
+cropImageAsk: "Do you want to crop this image?"
 _emailUnavailable:
   used: "This email address is already being used"
   format: "The format of this email address is invalid"
@@ -1087,7 +1090,6 @@ _sfx:
   antenna: "Antennas"
   channel: "Channel notifications"
 _ago:
-  unknown: "Unknown"
   future: "Future"
   justNow: "Just now"
   secondsAgo: "{n} second(s) ago"
@@ -1131,6 +1133,7 @@ _2fa:
   registerKey: "Register a security key"
   step1: "First, install an authentication app (such as {a} or {b}) on your device."
   step2: "Then, scan the QR code displayed on this screen."
+  step2Url: "You can also enter this URL if you're using a desktop program:"
   step3: "Enter the token provided by your app to finish setup."
   step4: "From now on, any future login attempts will ask for such a login token."
   securityKeyInfo: "Besides fingerprint or PIN authentication, you can also setup authentication via hardware security keys that support FIDO2 to further secure your account."
@@ -1613,8 +1616,9 @@ _notification:
   youWereFollowed: "followed you"
   youReceivedFollowRequest: "You've received a follow request"
   yourFollowRequestAccepted: "Your follow request was accepted"
-  youWereInvitedToGroup: "You've been invited to a group"
+  youWereInvitedToGroup: "{userName} invited you to a group"
   pollEnded: "Poll results have become available"
+  emptyPushNotificationMessage: "Push notifications have been updated"
   _types:
     all: "All"
     follow: "New followers"
@@ -1629,6 +1633,10 @@ _notification:
     followRequestAccepted: "Accepted follow requests"
     groupInvited: "Group invitations"
     app: "Notifications from linked apps"
+  _actions:
+    followBack: "followed you back"
+    reply: "Reply"
+    renote: "Renote"
 _deck:
   alwaysShowMainColumn: "Always show main column"
   columnAlign: "Align columns"

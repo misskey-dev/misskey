@@ -36,7 +36,7 @@ export class Hpml {
 		if (this.opts.enableAiScript) {
 			this.aiscript = markRaw(new AiScript({ ...createAiScriptEnv({
 				storageKey: 'pages:' + this.page.id
-			}), ...initAiLib(this)}, {
+			}), ...initAiLib(this) }, {
 				in: (q) => {
 					return new Promise(ok => {
 						os.inputText({
@@ -85,7 +85,7 @@ export class Hpml {
 	public eval() {
 		try {
 			this.vars.value = this.evaluateVars();
-		} catch (e) {
+		} catch (err) {
 			//this.onError(e);
 		}
 	}
@@ -103,7 +103,7 @@ export class Hpml {
 	public callAiScript(fn: string) {
 		try {
 			if (this.aiscript) this.aiscript.execFn(this.aiscript.scope.get(fn), []);
-		} catch (e) {}
+		} catch (err) {}
 	}
 
 	@autobind
@@ -185,7 +185,7 @@ export class Hpml {
 				if (this.aiscript) {
 					try {
 						return utils.valToJs(this.aiscript.scope.get(expr.value));
-					} catch (e) {
+					} catch (err) {
 						return null;
 					}
 				} else {
@@ -194,7 +194,7 @@ export class Hpml {
 			}
 
 			// Define user function
-			if (expr.type == 'fn') {
+			if (expr.type === 'fn') {
 				return {
 					slots: expr.value.slots.map(x => x.name),
 					exec: (slotArg: Record<string, any>) => {

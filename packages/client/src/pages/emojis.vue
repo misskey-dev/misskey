@@ -25,10 +25,10 @@ function menu(ev) {
 					type: 'info',
 					text: i18n.ts.exportRequested,
 				});
-			}).catch((e) => {
+			}).catch((err) => {
 				os.alert({
 					type: 'error',
-					text: e.message,
+					text: err.message,
 				});
 			});
 		}

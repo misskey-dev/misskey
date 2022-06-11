@@ -24,10 +24,10 @@
 			</div>
 			<!-- TODO
 			<div class="inputs" style="display: flex; padding-top: 1.2em;">
-				<MkInput v-model="searchUsername" style="margin: 0; flex: 1;" type="text" spellcheck="false" @update:modelValue="$refs.reports.reload()">
+				<MkInput v-model="searchUsername" style="margin: 0; flex: 1;" type="text" spellcheck="false">
 					<span>{{ $ts.username }}</span>
 				</MkInput>
-				<MkInput v-model="searchHost" style="margin: 0; flex: 1;" type="text" spellcheck="false" @update:modelValue="$refs.reports.reload()" :disabled="pagination.params().origin === 'local'">
+				<MkInput v-model="searchHost" style="margin: 0; flex: 1;" type="text" spellcheck="false" :disabled="pagination.params().origin === 'local'">
 					<span>{{ $ts.host }}</span>
 				</MkInput>
 			</div>
@@ -41,8 +41,8 @@
 </div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent } from 'vue';
+<script lang="ts" setup>
+import { computed } from 'vue';
 
 import MkInput from '@/components/form/input.vue';
 import MkSelect from '@/components/form/select.vue';
@@ -50,45 +50,35 @@ import MkPagination from '@/components/ui/pagination.vue';
 import XAbuseReport from '@/components/abuse-report.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		MkInput,
-		MkSelect,
-		MkPagination,
-		XAbuseReport,
-	},
+let reports = $ref<InstanceType<typeof MkPagination>>();
 
-	emits: ['info'],
+let state = $ref('unresolved');
+let reporterOrigin = $ref('combined');
+let targetUserOrigin = $ref('combined');
+let searchUsername = $ref('');
+let searchHost = $ref('');
 
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: this.$ts.abuseReports,
-				icon: 'fas fa-exclamation-circle',
-				bg: 'var(--bg)',
-			},
-			searchUsername: '',
-			searchHost: '',
-			state: 'unresolved',
-			reporterOrigin: 'combined',
-			targetUserOrigin: 'combined',
-			pagination: {
-				endpoint: 'admin/abuse-user-reports' as const,
-				limit: 10,
-				params: computed(() => ({
-					state: this.state,
-					reporterOrigin: this.reporterOrigin,
-					targetUserOrigin: this.targetUserOrigin,
-				})),
-			},
-		}
-	},
+const pagination = {
+	endpoint: 'admin/abuse-user-reports' as const,
+	limit: 10,
+	params: computed(() => ({
+		state,
+		reporterOrigin,
+		targetUserOrigin,
+	})),
+};
 
-	methods: {
-		resolved(reportId) {
-			this.$refs.reports.removeItem(item => item.id === reportId);
-		},
+function resolved(reportId) {
+	reports.removeItem(item => item.id === reportId);
+}
+
+defineExpose({
+	[symbols.PAGE_INFO]: {
+		title: i18n.ts.abuseReports,
+		icon: 'fas fa-exclamation-circle',
+		bg: 'var(--bg)',
 	}
 });
 </script>
