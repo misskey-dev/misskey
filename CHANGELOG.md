@@ -9,7 +9,7 @@
 You should also include the user name that made the change.
 -->
 
-## 12.x.x (unreleased)
+## 12.111.0 (2022/06/11)
 ### Improvements
 - Supports Unicode Emoji 14.0 @mei23
 - プッシュ通知を複数アカウント対応に #7667 @tamaina
