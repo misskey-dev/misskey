@@ -1,4 +1,4 @@
-import { defineAsyncComponent, Ref } from 'vue';
+import { defineAsyncComponent, Ref, inject } from 'vue';
 import * as misskey from 'misskey-js';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
@@ -14,6 +14,7 @@ export function getNoteMenu(props: {
 	menuButton: Ref<HTMLElement>;
 	translation: Ref<any>;
 	translating: Ref<boolean>;
+	isDeleted: Ref<boolean>;
 }) {
 	const isRenote = (
 		props.note.renote != null &&
@@ -125,10 +126,36 @@ export function getNoteMenu(props: {
 		}, null, ...clips.map(clip => ({
 			text: clip.name,
 			action: () => {
-				os.apiWithDialog('clips/add-note', { clipId: clip.id, noteId: appearNote.id });
+				os.promiseDialog(
+					os.api('clips/add-note', { clipId: clip.id, noteId: appearNote.id }),
+					null,
+					async (err) => {
+						if (err.id === '734806c4-542c-463a-9311-15c512803965') {
+							const confirm = await os.confirm({
+								type: 'warning',
+								text: i18n.t('confirmToUnclipAlreadyClippedNote', { name: clip.name }),
+							});
+							if (!confirm.canceled) {
+								os.apiWithDialog('clips/remove-note', { clipId: clip.id, noteId: appearNote.id });
+								props.isDeleted.value = true;
+							}
+						} else {
+							os.alert({
+								type: 'error',
+								text: err.message + '\n' + err.id,
+							});
+						}
+					}
+				);
 			}
 		}))], props.menuButton.value, {
 		}).then(focus);
+	}
+
+	const clipId: string | null = inject('clipId', null);
+	async function removeFromClip(): Promise<void> {
+		os.apiWithDialog('clips/remove-note', { clipId: clipId, noteId: appearNote.id });
+		props.isDeleted.value = true;
 	}
 
 	async function promote(): Promise<void> {
@@ -169,7 +196,16 @@ export function getNoteMenu(props: {
 			noteId: appearNote.id
 		});
 
-		menu = [{
+		menu = [
+		...(
+			clipId ?[{
+				icon: 'fas fa-link-horizontal-slash',
+				text: i18n.ts.unclip,
+				danger: true,
+				action: unclip,
+			}, null] : []
+		),
+		{
 			icon: 'fas fa-copy',
 			text: i18n.ts.copyContent,
 			action: copyContent
