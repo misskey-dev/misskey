@@ -18,7 +18,7 @@
 				</div>
 			</Transition>
 			<div class="container">
-				<img ref="imgEl" crossorigin="anonymous" :src="file.url" style="display: none;" @load="onImageLoad">
+				<img ref="imgEl" :src="imgUrl" style="display: none;" @load="onImageLoad">
 			</div>
 		</div>
 	</template>
@@ -34,7 +34,8 @@ import XModalWindow from '@/components/ui/modal-window.vue';
 import * as os from '@/os';
 import { $i } from '@/account';
 import { defaultStore } from '@/store';
-import { apiUrl } from '@/config';
+import { apiUrl, url } from '@/config';
+import { query } from '@/scripts/url';
 
 const emit = defineEmits<{
 	(ev: 'ok', cropped: misskey.entities.DriveFile): void;
@@ -47,6 +48,9 @@ const props = defineProps<{
 	aspectRatio: number;
 }>();
 
+const imgUrl = `${url}/proxy/image.webp?${query({
+	url,
+})}`;
 let dialogEl = $ref<InstanceType<typeof XModalWindow>>();
 let imgEl = $ref<HTMLImageElement>();
 let cropper: Cropper | null = null;
