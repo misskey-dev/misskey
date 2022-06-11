@@ -49,7 +49,7 @@ const props = defineProps<{
 }>();
 
 const imgUrl = `${url}/proxy/image.webp?${query({
-	url,
+	url: props.file.url,
 })}`;
 let dialogEl = $ref<InstanceType<typeof XModalWindow>>();
 let imgEl = $ref<HTMLImageElement>();
