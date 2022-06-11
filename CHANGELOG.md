@@ -16,6 +16,7 @@ You should also include the user name that made the change.
 - プッシュ通知にクリックやactionを設定 #7667 @tamaina
 - ドライブに画像ファイルをアップロードするときオリジナル画像を破棄してwebpublicのみ保持するオプション @tamaina
 - Server: always remove completed tasks of job queue @Johann150
+- Client: アバターの設定で画像をクロップできるように @syuilo
 - Client: make emoji stand out more on reaction button @Johann150
 - Client: display URL of QR code for TOTP registration @tamaina
 - Client: render quote renote CWs as MFM @pixeldesu
