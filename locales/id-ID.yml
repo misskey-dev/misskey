@@ -843,6 +843,8 @@ oneWeek: "1 Bulan"
 reflectMayTakeTime: "Mungkin perlu beberapa saat untuk dicerminkan."
 failedToFetchAccountInformation: "Gagal untuk mendapatkan informasi akun"
 rateLimitExceeded: "Batas sudah terlampaui"
+cropImage: "potong gambar"
+cropImageAsk: "Ingin memotong gambar?"
 _emailUnavailable:
   used: "Alamat surel ini telah digunakan"
   format: "Format tidak valid."
