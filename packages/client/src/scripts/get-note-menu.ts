@@ -152,9 +152,9 @@ export function getNoteMenu(props: {
 		}).then(focus);
 	}
 
-	const clipId = inject<string | null>('clipId', null);
+	const cullentClipPage = inject<misskey.entities.Clip>('cullentClipPage', {});
 	async function unclip(): Promise<void> {
-		os.apiWithDialog('clips/remove-note', { clipId: clipId, noteId: appearNote.id });
+		os.apiWithDialog('clips/remove-note', { clipId: cullentClipPage.Id, noteId: appearNote.id });
 		props.isDeleted.value = true;
 	}
 
@@ -198,7 +198,7 @@ export function getNoteMenu(props: {
 
 		menu = [
 		...(
-			appearNote.userId === $i.id && clipId ? [{
+			cullentClipPage.userId === $i.id ? [{
 				icon: 'fas fa-link-horizontal-slash',
 				text: i18n.ts.unclip,
 				danger: true,
