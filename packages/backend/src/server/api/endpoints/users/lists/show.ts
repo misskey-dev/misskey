@@ -9,6 +9,8 @@ export const meta = {
 
 	kind: 'read:account',
 
+	description: 'Show the properties of a list.',
+
 	res: {
 		type: 'object',
 		optional: false, nullable: false,

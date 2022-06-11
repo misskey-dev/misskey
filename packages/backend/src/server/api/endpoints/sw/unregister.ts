@@ -5,6 +5,8 @@ export const meta = {
 	tags: ['account'],
 
 	requireCredential: true,
+
+	description: 'Unregister from receiving push notifications.',
 } as const;
 
 export const paramDef = {

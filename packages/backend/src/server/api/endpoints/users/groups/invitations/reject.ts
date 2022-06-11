@@ -9,6 +9,8 @@ export const meta = {
 
 	kind: 'write:user-groups',
 
+	description: 'Delete an existing group invitation for the authenticated user without joining the group.',
+
 	errors: {
 		noSuchInvitation: {
 			message: 'No such invitation.',

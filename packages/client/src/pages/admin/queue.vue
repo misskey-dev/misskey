@@ -20,7 +20,7 @@ import * as symbols from '@/symbols';
 import * as config from '@/config';
 import { i18n } from '@/i18n';
 
-const connection = markRaw(stream.useChannel('queueStats'))
+const connection = markRaw(stream.useChannel('queueStats'));
 
 function clear() {
 	os.confirm({
@@ -41,7 +41,7 @@ onMounted(() => {
 			length: 200
 		});
 	});
-})
+});
 
 onBeforeUnmount(() => {
 	connection.dispose();

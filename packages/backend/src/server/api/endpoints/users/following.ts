@@ -10,6 +10,8 @@ export const meta = {
 
 	requireCredential: false,
 
+	description: 'Show everyone that this user is following.',
+
 	res: {
 		type: 'array',
 		optional: false, nullable: false,

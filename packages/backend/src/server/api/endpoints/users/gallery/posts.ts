@@ -4,6 +4,18 @@ import { makePaginationQuery } from '../../../common/make-pagination-query.js';
 
 export const meta = {
 	tags: ['users', 'gallery'],
+
+	description: 'Show all gallery posts by the given user.',
+
+	res: {
+		type: 'array',
+		optional: false, nullable: false,
+		items: {
+			type: 'object',
+			optional: false, nullable: false,
+			ref: 'GalleryPost',
+		},
+	},
 } as const;
 
 export const paramDef = {

@@ -13,6 +13,8 @@ export const meta = {
 
 	kind: 'write:user-groups',
 
+	description: 'Invite a user to an existing group.',
+
 	errors: {
 		noSuchGroup: {
 			message: 'No such group.',

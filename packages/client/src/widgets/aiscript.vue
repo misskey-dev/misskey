@@ -1,5 +1,5 @@
 <template>
-<MkContainer :show-header="widgetProps.showHeader">
+<MkContainer :show-header="widgetProps.showHeader" class="mkw-aiscript">
 	<template #header><i class="fas fa-terminal"></i>{{ $ts._widgets.aiscript }}</template>
 
 	<div class="uylguesu _monospace">

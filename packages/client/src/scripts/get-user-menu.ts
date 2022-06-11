@@ -148,7 +148,7 @@ export function getUserMenu(user) {
 			userId: user.id
 		}).then(() => {
 			user.isFollowed = !user.isFollowed;
-		})
+		});
 	}
 
 	let menu = [{

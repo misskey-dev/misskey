@@ -1,5 +1,5 @@
 <template>
-<MkContainer :show-header="widgetProps.showHeader">
+<MkContainer :show-header="widgetProps.showHeader" class="mkw-trends">
 	<template #header><i class="fas fa-hashtag"></i>{{ $ts._widgets.trends }}</template>
 
 	<div class="wbrkwala">

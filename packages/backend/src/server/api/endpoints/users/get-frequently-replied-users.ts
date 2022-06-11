@@ -10,6 +10,8 @@ export const meta = {
 
 	requireCredential: false,
 
+	description: 'Get a list of other users that the specified user frequently replies to.',
+
 	res: {
 		type: 'array',
 		optional: false, nullable: false,

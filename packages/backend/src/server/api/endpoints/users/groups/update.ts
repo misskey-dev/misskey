@@ -9,6 +9,8 @@ export const meta = {
 
 	kind: 'write:user-groups',
 
+	description: 'Update the properties of a group.',
+
 	res: {
 		type: 'object',
 		optional: false, nullable: false,

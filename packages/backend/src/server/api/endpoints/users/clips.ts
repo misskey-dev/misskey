@@ -4,6 +4,18 @@ import { makePaginationQuery } from '../../common/make-pagination-query.js';
 
 export const meta = {
 	tags: ['users', 'clips'],
+
+	description: 'Show all clips this user owns.',
+
+	res: {
+		type: 'array',
+		optional: false, nullable: false,
+		items: {
+			type: 'object',
+			optional: false, nullable: false,
+			ref: 'Clip',
+		},
+	},
 } as const;
 
 export const paramDef = {

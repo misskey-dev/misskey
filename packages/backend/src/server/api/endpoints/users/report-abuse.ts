@@ -13,6 +13,8 @@ export const meta = {
 
 	requireCredential: true,
 
+	description: 'File a report.',
+
 	errors: {
 		noSuchUser: {
 			message: 'No such user.',

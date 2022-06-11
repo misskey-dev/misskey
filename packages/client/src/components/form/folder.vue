@@ -24,7 +24,7 @@ const props = withDefaults(defineProps<{
 	defaultOpen: boolean;
 }>(), {
   defaultOpen: false,
-})
+});
 
 let opened = $ref(props.defaultOpen);
 let openedAtLeastOnce = $ref(props.defaultOpen);

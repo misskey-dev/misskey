@@ -34,7 +34,7 @@ export const api = ((endpoint: string, data: Record<string, any> = {}, token?: s
 			method: 'POST',
 			body: JSON.stringify(data),
 			credentials: 'omit',
-			cache: 'no-cache'
+			cache: 'no-cache',
 		}).then(async (res) => {
 			const body = res.status === 204 ? null : await res.json();
 
@@ -142,7 +142,7 @@ export async function popup(component: Component, props: Record<string, any>, ev
 		props,
 		events: disposeEvent ? {
 			...events,
-			[disposeEvent]: dispose
+			[disposeEvent]: dispose,
 		} : events,
 		id,
 	};
@@ -174,7 +174,7 @@ export function modalPageWindow(path: string) {
 
 export function toast(message: string) {
 	popup(defineAsyncComponent(() => import('@/components/toast.vue')), {
-		message
+		message,
 	}, {}, 'closed');
 }
 
@@ -226,7 +226,7 @@ export function inputText(props: {
 				type: props.type,
 				placeholder: props.placeholder,
 				default: props.default,
-			}
+			},
 		}, {
 			done: result => {
 				resolve(result ? result : { canceled: true });
@@ -251,7 +251,7 @@ export function inputNumber(props: {
 				type: 'number',
 				placeholder: props.placeholder,
 				default: props.default,
-			}
+			},
 		}, {
 			done: result => {
 				resolve(result ? result : { canceled: true });
@@ -276,7 +276,7 @@ export function inputDate(props: {
 				type: 'date',
 				placeholder: props.placeholder,
 				default: props.default,
-			}
+			},
 		}, {
 			done: result => {
 				resolve(result ? { result: new Date(result.result), canceled: false } : { canceled: true });
@@ -285,7 +285,7 @@ export function inputDate(props: {
 	});
 }
 
-export function select<C extends any = any>(props: {
+export function select<C = any>(props: {
 	title?: string | null;
 	text?: string | null;
 	default?: string | null;
@@ -313,7 +313,7 @@ export function select<C extends any = any>(props: {
 				items: props.items,
 				groupedItems: props.groupedItems,
 				default: props.default,
-			}
+			},
 		}, {
 			done: result => {
 				resolve(result ? result : { canceled: true });
@@ -330,7 +330,7 @@ export function success() {
 		}, 1000);
 		popup(defineAsyncComponent(() => import('@/components/waiting-dialog.vue')), {
 			success: true,
-			showing: showing
+			showing: showing,
 		}, {
 			done: () => resolve(),
 		}, 'closed');
@@ -342,7 +342,7 @@ export function waiting() {
 		const showing = ref(true);
 		popup(defineAsyncComponent(() => import('@/components/waiting-dialog.vue')), {
 			success: false,
-			showing: showing
+			showing: showing,
 		}, {
 			done: () => resolve(),
 		}, 'closed');
@@ -373,7 +373,7 @@ export async function selectDriveFile(multiple: boolean) {
 	return new Promise((resolve, reject) => {
 		popup(defineAsyncComponent(() => import('@/components/drive-select-dialog.vue')), {
 			type: 'file',
-			multiple
+			multiple,
 		}, {
 			done: files => {
 				if (files) {
@@ -388,7 +388,7 @@ export async function selectDriveFolder(multiple: boolean) {
 	return new Promise((resolve, reject) => {
 		popup(defineAsyncComponent(() => import('@/components/drive-select-dialog.vue')), {
 			type: 'folder',
-			multiple
+			multiple,
 		}, {
 			done: folders => {
 				if (folders) {
@@ -403,10 +403,25 @@ export async function pickEmoji(src: HTMLElement | null, opts) {
 	return new Promise((resolve, reject) => {
 		popup(defineAsyncComponent(() => import('@/components/emoji-picker-dialog.vue')), {
 			src,
-			...opts
+			...opts,
 		}, {
 			done: emoji => {
 				resolve(emoji);
+			},
+		}, 'closed');
+	});
+}
+
+export async function cropImage(image: Misskey.entities.DriveFile, options: {
+	aspectRatio: number;
+}): Promise<Misskey.entities.DriveFile> {
+	return new Promise((resolve, reject) => {
+		popup(defineAsyncComponent(() => import('@/components/cropper-dialog.vue')), {
+			file: image,
+			aspectRatio: options.aspectRatio,
+		}, {
+			ok: x => {
+				resolve(x);
 			},
 		}, 'closed');
 	});
@@ -453,7 +468,7 @@ export async function openEmojiPicker(src?: HTMLElement, opts, initialTextarea: 
 
 	openingEmojiPicker = await popup(defineAsyncComponent(() => import('@/components/emoji-picker-window.vue')), {
 		src,
-		...opts
+		...opts,
 	}, {
 		chosen: emoji => {
 			insertTextAtCursor(activeTextarea, emoji);
@@ -462,7 +477,7 @@ export async function openEmojiPicker(src?: HTMLElement, opts, initialTextarea: 
 			openingEmojiPicker!.dispose();
 			openingEmojiPicker = null;
 			observer.disconnect();
-		}
+		},
 	});
 }
 
@@ -478,7 +493,7 @@ export function popupMenu(items: MenuItem[] | Ref<MenuItem[]>, src?: HTMLElement
 			src,
 			width: options?.width,
 			align: options?.align,
-			viaKeyboard: options?.viaKeyboard
+			viaKeyboard: options?.viaKeyboard,
 		}, {
 			closed: () => {
 				resolve();
