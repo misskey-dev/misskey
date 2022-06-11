@@ -152,8 +152,8 @@ export function getNoteMenu(props: {
 		}).then(focus);
 	}
 
-	const clipId: string | null = inject('clipId', null);
-	async function removeFromClip(): Promise<void> {
+	const clipId = inject<string | null>('clipId', null);
+	async function unclip(): Promise<void> {
 		os.apiWithDialog('clips/remove-note', { clipId: clipId, noteId: appearNote.id });
 		props.isDeleted.value = true;
 	}
@@ -198,7 +198,7 @@ export function getNoteMenu(props: {
 
 		menu = [
 		...(
-			clipId ?[{
+			appearNote.userId === $i.id && clipId ? [{
 				icon: 'fas fa-link-horizontal-slash',
 				text: i18n.ts.unclip,
 				danger: true,
