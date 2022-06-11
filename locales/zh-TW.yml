@@ -1087,7 +1087,6 @@ _sfx:
   antenna: "天線接收"
   channel: "頻道通知"
 _ago:
-  unknown: "未知"
   future: "未來"
   justNow: "剛剛"
   secondsAgo: "{n}秒前"
@@ -1131,6 +1130,7 @@ _2fa:
   registerKey: "註冊鍵"
   step1: "首先，在您的設備上安裝二步驗證程式，例如{a}或{b}。"
   step2: "然後，掃描螢幕上的QR code。"
+  step2Url: "在桌面版應用中，請輸入以下的URL："
   step3: "輸入您的App提供的權杖以完成設定。"
   step4: "從現在開始，任何登入操作都將要求您提供權杖。"
   securityKeyInfo: "您可以設定使用支援FIDO2的硬體安全鎖、終端設備的指纹認證或者PIN碼來登入。"
