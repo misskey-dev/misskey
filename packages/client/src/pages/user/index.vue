@@ -125,7 +125,7 @@
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent, computed } from 'vue';
-import * as age from 's-age';
+import age from 's-age';
 import XUserTimeline from './index.timeline.vue';
 import XNote from '@/components/note.vue';
 import MkFollowButton from '@/components/follow-button.vue';
@@ -141,6 +141,7 @@ import number from '@/filters/number';
 import { userPage, acct as getAcct } from '@/filters/user';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
+import { MisskeyNavigator } from '@/scripts/navigate';
 
 export default defineComponent({
 	components: {
@@ -190,33 +191,34 @@ export default defineComponent({
 					active: this.page === 'index',
 					title: this.$ts.overview,
 					icon: 'fas fa-home',
-					onClick: () => { this.$router.push('/@' + getAcct(this.user)); },
+					onClick: () => { this.mkNav.push('/@' + getAcct(this.user)); },
 				}, ...(this.$i && (this.$i.id === this.user.id)) || this.user.publicReactions ? [{
 					active: this.page === 'reactions',
 					title: this.$ts.reaction,
 					icon: 'fas fa-laugh',
-					onClick: () => { this.$router.push('/@' + getAcct(this.user) + '/reactions'); },
+					onClick: () => { this.mkNav.push('/@' + getAcct(this.user) + '/reactions'); },
 				}] : [], {
 					active: this.page === 'clips',
 					title: this.$ts.clips,
 					icon: 'fas fa-paperclip',
-					onClick: () => { this.$router.push('/@' + getAcct(this.user) + '/clips'); },
+					onClick: () => { this.mkNav.push('/@' + getAcct(this.user) + '/clips'); },
 				}, {
 					active: this.page === 'pages',
 					title: this.$ts.pages,
 					icon: 'fas fa-file-alt',
-					onClick: () => { this.$router.push('/@' + getAcct(this.user) + '/pages'); },
+					onClick: () => { this.mkNav.push('/@' + getAcct(this.user) + '/pages'); },
 				}, {
 					active: this.page === 'gallery',
 					title: this.$ts.gallery,
 					icon: 'fas fa-icons',
-					onClick: () => { this.$router.push('/@' + getAcct(this.user) + '/gallery'); },
+					onClick: () => { this.mkNav.push('/@' + getAcct(this.user) + '/gallery'); },
 				}],
 			} : null),
 			user: null,
 			error: null,
 			parallaxAnimationId: null,
 			narrow: null,
+			mkNav: new MisskeyNavigator(),
 		};
 	},
 
@@ -258,8 +260,8 @@ export default defineComponent({
 			this.user = null;
 			os.api('users/show', Acct.parse(this.acct)).then(user => {
 				this.user = user;
-			}).catch(e => {
-				this.error = e;
+			}).catch(err => {
+				this.error = err;
 			});
 		},
 

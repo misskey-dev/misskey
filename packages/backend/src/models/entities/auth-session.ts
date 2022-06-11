@@ -23,7 +23,7 @@ export class AuthSession {
 		...id(),
 		nullable: true,
 	})
-	public userId: User['id'];
+	public userId: User['id'] | null;
 
 	@ManyToOne(type => User, {
 		onDelete: 'CASCADE',

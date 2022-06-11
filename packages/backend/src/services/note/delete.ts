@@ -1,3 +1,4 @@
+import { Brackets, In } from 'typeorm';
 import { publishNoteStream } from '@/services/stream.js';
 import renderDelete from '@/remote/activitypub/renderer/delete.js';
 import renderAnnounce from '@/remote/activitypub/renderer/announce.js';
@@ -5,15 +6,14 @@ import renderUndo from '@/remote/activitypub/renderer/undo.js';
 import { renderActivity } from '@/remote/activitypub/renderer/index.js';
 import renderTombstone from '@/remote/activitypub/renderer/tombstone.js';
 import config from '@/config/index.js';
-import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc.js';
 import { User, ILocalUser, IRemoteUser } from '@/models/entities/user.js';
 import { Note, IMentionedRemoteUsers } from '@/models/entities/note.js';
 import { Notes, Users, Instances } from '@/models/index.js';
 import { notesChart, perUserNotesChart, instanceChart } from '@/services/chart/index.js';
 import { deliverToFollowers, deliverToUser } from '@/remote/activitypub/deliver-manager.js';
 import { countSameRenotes } from '@/misc/count-same-renotes.js';
+import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc.js';
 import { deliverToRelays } from '../relay.js';
-import { Brackets, In } from 'typeorm';
 
 /**
  * 投稿を削除します。
@@ -40,7 +40,7 @@ export default async function(user: { id: User['id']; uri: User['uri']; host: Us
 
 		//#region ローカルの投稿なら削除アクティビティを配送
 		if (Users.isLocalUser(user) && !note.localOnly) {
-			let renote: Note | null;
+			let renote: Note | null = null;
 
 			// if deletd note is renote
 			if (note.renoteId && note.text == null && !note.hasPoll && (note.fileIds == null || note.fileIds.length === 0)) {
@@ -113,7 +113,7 @@ async function getMentionedRemoteUsers(note: Note) {
 	const uris = (JSON.parse(note.mentionedRemoteUsers) as IMentionedRemoteUsers).map(x => x.uri);
 	if (uris.length > 0) {
 		where.push(
-			{ uri: In(uris) }
+			{ uri: In(uris) },
 		);
 	}
 

@@ -1,15 +1,15 @@
-import renderDocument from './document.js';
-import renderHashtag from './hashtag.js';
-import renderMention from './mention.js';
-import renderEmoji from './emoji.js';
+import { In, IsNull } from 'typeorm';
 import config from '@/config/index.js';
-import toHtml from '../misc/get-note-html.js';
 import { Note, IMentionedRemoteUsers } from '@/models/entities/note.js';
 import { DriveFile } from '@/models/entities/drive-file.js';
 import { DriveFiles, Notes, Users, Emojis, Polls } from '@/models/index.js';
-import { In, IsNull } from 'typeorm';
 import { Emoji } from '@/models/entities/emoji.js';
 import { Poll } from '@/models/entities/poll.js';
+import toHtml from '../misc/get-note-html.js';
+import renderEmoji from './emoji.js';
+import renderMention from './mention.js';
+import renderHashtag from './hashtag.js';
+import renderDocument from './document.js';
 
 export default async function renderNote(note: Note, dive = true, isTalk = false): Promise<Record<string, unknown>> {
 	const getPromisedFiles = async (ids: string[]) => {
@@ -82,15 +82,15 @@ export default async function renderNote(note: Note, dive = true, isTalk = false
 
 	const files = await getPromisedFiles(note.fileIds);
 
-	const text = note.text;
-	let poll: Poll | null;
+	// text should never be undefined
+	const text = note.text ?? null;
+	let poll: Poll | null = null;
 
 	if (note.hasPoll) {
 		poll = await Polls.findOneBy({ noteId: note.id });
 	}
 
-	let apText = text;
-	if (apText == null) apText = '';
+	let apText = text ?? '';
 
 	if (quote) {
 		apText += `\n\nRE: ${quote}`;
@@ -138,6 +138,10 @@ export default async function renderNote(note: Note, dive = true, isTalk = false
 		summary,
 		content,
 		_misskey_content: text,
+		source: {
+			content: text,
+			mediaType: "text/x.misskeymarkdown",
+		},
 		_misskey_quote: quote,
 		quoteUrl: quote,
 		published: note.createdAt.toISOString(),
@@ -159,7 +163,7 @@ export async function getEmojis(names: string[]): Promise<Emoji[]> {
 		names.map(name => Emojis.findOneBy({
 			name,
 			host: IsNull(),
-		}))
+		})),
 	);
 
 	return emojis.filter(emoji => emoji != null) as Emoji[];

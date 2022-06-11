@@ -97,6 +97,7 @@ import * as os from '@/os';
 import { stream } from '@/stream';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
+import { uploadFile, uploads } from '@/scripts/upload';
 
 const props = withDefaults(defineProps<{
 	initialFolder?: Misskey.entities.DriveFolder;
@@ -109,11 +110,11 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(e: 'selected', v: Misskey.entities.DriveFile | Misskey.entities.DriveFolder): void;
-	(e: 'change-selection', v: Misskey.entities.DriveFile[] | Misskey.entities.DriveFolder[]): void;
-	(e: 'move-root'): void;
-	(e: 'cd', v: Misskey.entities.DriveFolder | null): void;
-	(e: 'open-folder', v: Misskey.entities.DriveFolder): void;
+	(ev: 'selected', v: Misskey.entities.DriveFile | Misskey.entities.DriveFolder): void;
+	(ev: 'change-selection', v: Misskey.entities.DriveFile[] | Misskey.entities.DriveFolder[]): void;
+	(ev: 'move-root'): void;
+	(ev: 'cd', v: Misskey.entities.DriveFolder | null): void;
+	(ev: 'open-folder', v: Misskey.entities.DriveFolder): void;
 }>();
 
 const loadMoreFiles = ref<InstanceType<typeof MkButton>>();
@@ -127,8 +128,9 @@ const moreFolders = ref(false);
 const hierarchyFolders = ref<Misskey.entities.DriveFolder[]>([]);
 const selectedFiles = ref<Misskey.entities.DriveFile[]>([]);
 const selectedFolders = ref<Misskey.entities.DriveFolder[]>([]);
-const uploadings = os.uploads;
+const uploadings = uploads;
 const connection = stream.useChannel('drive');
+const keepOriginal = ref<boolean>(defaultStore.state.keepOriginalUploading); // 外部渡しが多いので$refは使わないほうがよい
 
 // ドロップされようとしているか
 const draghover = ref(false);
@@ -141,7 +143,7 @@ const fetching = ref(true);
 
 const ilFilesObserver = new IntersectionObserver(
 	(entries) => entries.some((entry) => entry.isIntersecting) && !fetching.value && moreFiles.value && fetchMoreFiles()
-)
+);
 
 watch(folder, () => emit('cd', folder.value));
 
@@ -151,7 +153,7 @@ function onStreamDriveFileCreated(file: Misskey.entities.DriveFile) {
 
 function onStreamDriveFileUpdated(file: Misskey.entities.DriveFile) {
 	const current = folder.value ? folder.value.id : null;
-	if (current != file.folderId) {
+	if (current !== file.folderId) {
 		removeFile(file);
 	} else {
 		addFile(file, true);
@@ -168,7 +170,7 @@ function onStreamDriveFolderCreated(createdFolder: Misskey.entities.DriveFolder)
 
 function onStreamDriveFolderUpdated(updatedFolder: Misskey.entities.DriveFolder) {
 	const current = folder.value ? folder.value.id : null;
-	if (current != updatedFolder.parentId) {
+	if (current !== updatedFolder.parentId) {
 		removeFolder(updatedFolder);
 	} else {
 		addFolder(updatedFolder, true);
@@ -179,23 +181,23 @@ function onStreamDriveFolderDeleted(folderId: string) {
 	removeFolder(folderId);
 }
 
-function onDragover(e: DragEvent): any {
-	if (!e.dataTransfer) return;
+function onDragover(ev: DragEvent): any {
+	if (!ev.dataTransfer) return;
 
 	// ドラッグ元が自分自身の所有するアイテムだったら
 	if (isDragSource.value) {
 		// 自分自身にはドロップさせない
-		e.dataTransfer.dropEffect = 'none';
+		ev.dataTransfer.dropEffect = 'none';
 		return;
 	}
 
-	const isFile = e.dataTransfer.items[0].kind == 'file';
-	const isDriveFile = e.dataTransfer.types[0] == _DATA_TRANSFER_DRIVE_FILE_;
-	const isDriveFolder = e.dataTransfer.types[0] == _DATA_TRANSFER_DRIVE_FOLDER_;
+	const isFile = ev.dataTransfer.items[0].kind === 'file';
+	const isDriveFile = ev.dataTransfer.types[0] === _DATA_TRANSFER_DRIVE_FILE_;
+	const isDriveFolder = ev.dataTransfer.types[0] === _DATA_TRANSFER_DRIVE_FOLDER_;
 	if (isFile || isDriveFile || isDriveFolder) {
-		e.dataTransfer.dropEffect = e.dataTransfer.effectAllowed == 'all' ? 'copy' : 'move';
+		ev.dataTransfer.dropEffect = ev.dataTransfer.effectAllowed === 'all' ? 'copy' : 'move';
 	} else {
-		e.dataTransfer.dropEffect = 'none';
+		ev.dataTransfer.dropEffect = 'none';
 	}
 
 	return false;
@@ -209,24 +211,24 @@ function onDragleave() {
 	draghover.value = false;
 }
 
-function onDrop(e: DragEvent): any {
+function onDrop(ev: DragEvent): any {
 	draghover.value = false;
 
-	if (!e.dataTransfer) return;
+	if (!ev.dataTransfer) return;
 
 	// ドロップされてきたものがファイルだったら
-	if (e.dataTransfer.files.length > 0) {
-		for (const file of Array.from(e.dataTransfer.files)) {
+	if (ev.dataTransfer.files.length > 0) {
+		for (const file of Array.from(ev.dataTransfer.files)) {
 			upload(file, folder.value);
 		}
 		return;
 	}
 
 	//#region ドライブのファイル
-	const driveFile = e.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FILE_);
-	if (driveFile != null && driveFile != '') {
+	const driveFile = ev.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FILE_);
+	if (driveFile != null && driveFile !== '') {
 		const file = JSON.parse(driveFile);
-		if (files.value.some(f => f.id == file.id)) return;
+		if (files.value.some(f => f.id === file.id)) return;
 		removeFile(file.id);
 		os.api('drive/files/update', {
 			fileId: file.id,
@@ -236,13 +238,13 @@ function onDrop(e: DragEvent): any {
 	//#endregion
 
 	//#region ドライブのフォルダ
-	const driveFolder = e.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FOLDER_);
-	if (driveFolder != null && driveFolder != '') {
+	const driveFolder = ev.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FOLDER_);
+	if (driveFolder != null && driveFolder !== '') {
 		const droppedFolder = JSON.parse(driveFolder);
 
 		// 移動先が自分自身ならreject
-		if (folder.value && droppedFolder.id == folder.value.id) return false;
-		if (folders.value.some(f => f.id == droppedFolder.id)) return false;
+		if (folder.value && droppedFolder.id === folder.value.id) return false;
+		if (folders.value.some(f => f.id === droppedFolder.id)) return false;
 		removeFolder(droppedFolder.id);
 		os.api('drive/folders/update', {
 			folderId: droppedFolder.id,
@@ -330,7 +332,7 @@ function deleteFolder(folderToDelete: Misskey.entities.DriveFolder) {
 		// 削除時に親フォルダに移動
 		move(folderToDelete.parentId);
 	}).catch(err => {
-		switch(err.id) {
+		switch (err.id) {
 			case 'b0fc8a17-963c-405d-bfbc-859a487295e1':
 				os.alert({
 					type: 'error',
@@ -355,16 +357,16 @@ function onChangeFileInput() {
 }
 
 function upload(file: File, folderToUpload?: Misskey.entities.DriveFolder | null) {
-	os.upload(file, (folderToUpload && typeof folderToUpload == 'object') ? folderToUpload.id : null).then(res => {
+	uploadFile(file, (folderToUpload && typeof folderToUpload === 'object') ? folderToUpload.id : null, undefined, keepOriginal.value).then(res => {
 		addFile(res, true);
 	});
 }
 
 function chooseFile(file: Misskey.entities.DriveFile) {
-	const isAlreadySelected = selectedFiles.value.some(f => f.id == file.id);
+	const isAlreadySelected = selectedFiles.value.some(f => f.id === file.id);
 	if (props.multiple) {
 		if (isAlreadySelected) {
-			selectedFiles.value = selectedFiles.value.filter(f => f.id != file.id);
+			selectedFiles.value = selectedFiles.value.filter(f => f.id !== file.id);
 		} else {
 			selectedFiles.value.push(file);
 		}
@@ -380,10 +382,10 @@ function chooseFile(file: Misskey.entities.DriveFile) {
 }
 
 function chooseFolder(folderToChoose: Misskey.entities.DriveFolder) {
-	const isAlreadySelected = selectedFolders.value.some(f => f.id == folderToChoose.id);
+	const isAlreadySelected = selectedFolders.value.some(f => f.id === folderToChoose.id);
 	if (props.multiple) {
 		if (isAlreadySelected) {
-			selectedFolders.value = selectedFolders.value.filter(f => f.id != folderToChoose.id);
+			selectedFolders.value = selectedFolders.value.filter(f => f.id !== folderToChoose.id);
 		} else {
 			selectedFolders.value.push(folderToChoose);
 		}
@@ -402,7 +404,7 @@ function move(target?: Misskey.entities.DriveFolder) {
 	if (!target) {
 		goRoot();
 		return;
-	} else if (typeof target == 'object') {
+	} else if (typeof target === 'object') {
 		target = target.id;
 	}
 
@@ -428,9 +430,9 @@ function move(target?: Misskey.entities.DriveFolder) {
 
 function addFolder(folderToAdd: Misskey.entities.DriveFolder, unshift = false) {
 	const current = folder.value ? folder.value.id : null;
-	if (current != folderToAdd.parentId) return;
+	if (current !== folderToAdd.parentId) return;
 
-	if (folders.value.some(f => f.id == folderToAdd.id)) {
+	if (folders.value.some(f => f.id === folderToAdd.id)) {
 		const exist = folders.value.map(f => f.id).indexOf(folderToAdd.id);
 		folders.value[exist] = folderToAdd;
 		return;
@@ -445,9 +447,9 @@ function addFolder(folderToAdd: Misskey.entities.DriveFolder, unshift = false) {
 
 function addFile(fileToAdd: Misskey.entities.DriveFile, unshift = false) {
 	const current = folder.value ? folder.value.id : null;
-	if (current != fileToAdd.folderId) return;
+	if (current !== fileToAdd.folderId) return;
 
-	if (files.value.some(f => f.id == fileToAdd.id)) {
+	if (files.value.some(f => f.id === fileToAdd.id)) {
 		const exist = files.value.map(f => f.id).indexOf(fileToAdd.id);
 		files.value[exist] = fileToAdd;
 		return;
@@ -462,12 +464,12 @@ function addFile(fileToAdd: Misskey.entities.DriveFile, unshift = false) {
 
 function removeFolder(folderToRemove: Misskey.entities.DriveFolder | string) {
 	const folderIdToRemove = typeof folderToRemove === 'object' ? folderToRemove.id : folderToRemove;
-	folders.value = folders.value.filter(f => f.id != folderIdToRemove);
+	folders.value = folders.value.filter(f => f.id !== folderIdToRemove);
 }
 
 function removeFile(file: Misskey.entities.DriveFile | string) {
 	const fileId = typeof file === 'object' ? file.id : file;
-	files.value = files.value.filter(f => f.id != fileId);
+	files.value = files.value.filter(f => f.id !== fileId);
 }
 
 function appendFile(file: Misskey.entities.DriveFile) {
@@ -510,7 +512,7 @@ async function fetch() {
 		folderId: folder.value ? folder.value.id : null,
 		limit: foldersMax + 1
 	}).then(fetchedFolders => {
-		if (fetchedFolders.length == foldersMax + 1) {
+		if (fetchedFolders.length === foldersMax + 1) {
 			moreFolders.value = true;
 			fetchedFolders.pop();
 		}
@@ -522,7 +524,7 @@ async function fetch() {
 		type: props.type,
 		limit: filesMax + 1
 	}).then(fetchedFiles => {
-		if (fetchedFiles.length == filesMax + 1) {
+		if (fetchedFiles.length === filesMax + 1) {
 			moreFiles.value = true;
 			fetchedFiles.pop();
 		}
@@ -549,7 +551,7 @@ function fetchMoreFiles() {
 		untilId: files.value[files.value.length - 1].id,
 		limit: max + 1
 	}).then(files => {
-		if (files.length == max + 1) {
+		if (files.length === max + 1) {
 			moreFiles.value = true;
 			files.pop();
 		} else {
@@ -562,6 +564,10 @@ function fetchMoreFiles() {
 
 function getMenu() {
 	return [{
+		type: 'switch',
+		text: i18n.ts.keepOriginalUploading,
+		ref: keepOriginal,
+	}, null, {
 		text: i18n.ts.addFile,
 		type: 'label'
 	}, {
@@ -601,7 +607,7 @@ function onContextmenu(ev: MouseEvent) {
 onMounted(() => {
 	if (defaultStore.state.enableInfiniteScroll && loadMoreFiles.value) {
 		nextTick(() => {
-			ilFilesObserver.observe(loadMoreFiles.value?.$el)
+			ilFilesObserver.observe(loadMoreFiles.value?.$el);
 		});
 	}
 
@@ -622,7 +628,7 @@ onMounted(() => {
 onActivated(() => {
 	if (defaultStore.state.enableInfiniteScroll) {
 		nextTick(() => {
-			ilFilesObserver.observe(loadMoreFiles.value?.$el)
+			ilFilesObserver.observe(loadMoreFiles.value?.$el);
 		});
 	}
 });

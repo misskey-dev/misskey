@@ -63,7 +63,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineComponent, ref, toRef } from 'vue';
+import { computed, defineAsyncComponent, defineComponent, ref, toRef } from 'vue';
 import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/form/input.vue';
 import MkPagination from '@/components/ui/pagination.vue';
@@ -130,17 +130,17 @@ const add = async (ev: MouseEvent) => {
 };
 
 const edit = (emoji) => {
-	os.popup(import('./emoji-edit-dialog.vue'), {
+	os.popup(defineAsyncComponent(() => import('./emoji-edit-dialog.vue')), {
 		emoji: emoji
 	}, {
 		done: result => {
 			if (result.updated) {
-				emojisPaginationComponent.value.replaceItem(item => item.id === emoji.id, {
-					...emoji,
+				emojisPaginationComponent.value.updateItem(result.updated.id, (oldEmoji: any) => ({
+					...oldEmoji,
 					...result.updated
-				});
+				}));
 			} else if (result.deleted) {
-				emojisPaginationComponent.value.removeItem(item => item.id === emoji.id);
+				emojisPaginationComponent.value.removeItem((item) => item.id === emoji.id);
 			}
 		},
 	}, 'closed');
@@ -159,7 +159,7 @@ const remoteMenu = (emoji, ev: MouseEvent) => {
 	}, {
 		text: i18n.ts.import,
 		icon: 'fas fa-plus',
-		action: () => { im(emoji) }
+		action: () => { im(emoji); }
 	}], ev.currentTarget ?? ev.target);
 };
 
@@ -175,10 +175,10 @@ const menu = (ev: MouseEvent) => {
 					type: 'info',
 					text: i18n.ts.exportRequested,
 				});
-			}).catch((e) => {
+			}).catch((err) => {
 				os.alert({
 					type: 'error',
-					text: e.message,
+					text: err.message,
 				});
 			});
 		}
@@ -195,10 +195,10 @@ const menu = (ev: MouseEvent) => {
 					type: 'info',
 					text: i18n.ts.importRequested,
 				});
-			}).catch((e) => {
+			}).catch((err) => {
 				os.alert({
 					type: 'error',
-					text: e.message,
+					text: err.message,
 				});
 			});
 		}

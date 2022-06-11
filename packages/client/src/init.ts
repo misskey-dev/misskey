@@ -13,9 +13,9 @@ if (localStorage.getItem('accounts') != null) {
 }
 //#endregion
 
-import { computed, createApp, watch, markRaw, version as vueVersion } from 'vue';
+import { computed, createApp, watch, markRaw, version as vueVersion, defineAsyncComponent } from 'vue';
 import compareVersions from 'compare-versions';
-import * as JSON5 from 'json5';
+import JSON5 from 'json5';
 
 import widgets from '@/widgets';
 import directives from '@/directives';
@@ -146,8 +146,7 @@ if ($i && $i.token) {
 		try {
 			document.body.innerHTML = '<div>Please wait...</div>';
 			await login(i);
-			location.reload();
-		} catch (e) {
+		} catch (err) {
 			// Render the error screen
 			// TODO: ちゃんとしたコンポーネントをレンダリングする(v10とかのトラブルシューティングゲーム付きのやつみたいな)
 			document.body.innerHTML = '<div id="err">Oops!</div>';
@@ -169,14 +168,14 @@ fetchInstanceMetaPromise.then(() => {
 	initializeSw();
 });
 
-const app = createApp(await (
-	window.location.search === '?zen' ? import('@/ui/zen.vue') :
-	!$i                               ? import('@/ui/visitor.vue') :
-	ui === 'deck'                     ? import('@/ui/deck.vue') :
-	ui === 'desktop'                  ? import('@/ui/desktop.vue') :
-	ui === 'classic'                  ? import('@/ui/classic.vue') :
-	import('@/ui/universal.vue')
-).then(x => x.default));
+const app = createApp(
+	window.location.search === '?zen' ? defineAsyncComponent(() => import('@/ui/zen.vue')) :
+	!$i                               ? defineAsyncComponent(() => import('@/ui/visitor.vue')) :
+	ui === 'deck'                     ? defineAsyncComponent(() => import('@/ui/deck.vue')) :
+	ui === 'desktop'                  ? defineAsyncComponent(() => import('@/ui/desktop.vue')) :
+	ui === 'classic'                  ? defineAsyncComponent(() => import('@/ui/classic.vue')) :
+	defineAsyncComponent(() => import('@/ui/universal.vue'))
+);
 
 if (_DEV_) {
 	app.config.performance = true;
@@ -204,8 +203,24 @@ if (splash) splash.addEventListener('transitionend', () => {
 	splash.remove();
 });
 
-const rootEl = document.createElement('div');
-document.body.appendChild(rootEl);
+// https://github.com/misskey-dev/misskey/pull/8575#issuecomment-1114239210
+// なぜかinit.tsの内容が2回実行されることがあるため、mountするdivを1つに制限する
+const rootEl = (() => {
+	const MISSKEY_MOUNT_DIV_ID = 'misskey_app';
+
+	const currentEl = document.getElementById(MISSKEY_MOUNT_DIV_ID);
+
+	if (currentEl) {
+		console.warn('multiple import detected');
+		return currentEl;
+	}
+
+	const rootEl = document.createElement('div');
+	rootEl.id = MISSKEY_MOUNT_DIV_ID;
+	document.body.appendChild(rootEl);
+	return rootEl;
+})();
+
 app.mount(rootEl);
 
 // boot.jsのやつを解除
@@ -231,10 +246,10 @@ if (lastVersion !== version) {
 		if (lastVersion != null && compareVersions(version, lastVersion) === 1) {
 			// ログインしてる場合だけ
 			if ($i) {
-				popup(import('@/components/updated.vue'), {}, {}, 'closed');
+				popup(defineAsyncComponent(() => import('@/components/updated.vue')), {}, {}, 'closed');
 			}
 		}
-	} catch (e) {
+	} catch (err) {
 	}
 }
 
@@ -319,7 +334,7 @@ stream.on('_disconnected_', async () => {
 	}
 });
 
-stream.on('emojiAdded', data => {
+stream.on('emojiAdded', emojiData => {
 	// TODO
 	//store.commit('instance/set', );
 });

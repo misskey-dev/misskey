@@ -1,6 +1,6 @@
 import Router from '@koa/router';
 import json from 'koa-json-body';
-import httpSignature from 'http-signature';
+import httpSignature from '@peertube/http-signature';
 
 import { renderActivity } from '@/remote/activitypub/renderer/index.js';
 import renderNote from '@/remote/activitypub/renderer/note.js';
@@ -15,9 +15,10 @@ import { inbox as processInbox } from '@/queue/index.js';
 import { isSelfHost } from '@/misc/convert-host.js';
 import { Notes, Users, Emojis, NoteReactions } from '@/models/index.js';
 import { ILocalUser, User } from '@/models/entities/user.js';
-import { In, IsNull } from 'typeorm';
+import { In, IsNull, Not } from 'typeorm';
 import { renderLike } from '@/remote/activitypub/renderer/like.js';
 import { getUserKeypair } from '@/misc/keypair-store.js';
+import renderFollow from '@/remote/activitypub/renderer/follow.js';
 
 // Init router
 const router = new Router();
@@ -220,6 +221,32 @@ router.get('/likes/:like', async ctx => {
 	}
 
 	ctx.body = renderActivity(await renderLike(reaction, note));
+	ctx.set('Cache-Control', 'public, max-age=180');
+	setResponseType(ctx);
+});
+
+// follow
+router.get('/follows/:follower/:followee', async ctx => {
+	// This may be used before the follow is completed, so we do not
+	// check if the following exists.
+
+	const [follower, followee] = await Promise.all([
+		Users.findOneBy({
+			id: ctx.params.follower,
+			host: IsNull(),
+		}),
+		Users.findOneBy({
+			id: ctx.params.followee,
+			host: Not(IsNull()),
+		}),
+	]);
+
+	if (follower == null || followee == null) {
+		ctx.status = 404;
+		return;
+	}
+
+	ctx.body = renderActivity(renderFollow(follower, followee));
 	ctx.set('Cache-Control', 'public, max-age=180');
 	setResponseType(ctx);
 });

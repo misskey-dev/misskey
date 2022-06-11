@@ -1,5 +1,5 @@
 <template>
-<MkContainer :show-header="widgetProps.showHeader" :foldable="foldable" :scrollable="scrollable">
+<MkContainer :show-header="widgetProps.showHeader" :foldable="foldable" :scrollable="scrollable" class="mkw-federation">
 	<template #header><i class="fas fa-globe"></i>{{ $ts._widgets.federation }}</template>
 
 	<div class="wbrkwalb">
@@ -41,7 +41,7 @@ type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 //const props = defineProps<WidgetComponentProps<WidgetProps> & { foldable?: boolean; scrollable?: boolean; }>();
 //const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
 const props = defineProps<{ widget?: Widget<WidgetProps>; foldable?: boolean; scrollable?: boolean; }>();
-const emit = defineEmits<{ (e: 'updateProps', props: WidgetProps); }>();
+const emit = defineEmits<{ (ev: 'updateProps', props: WidgetProps); }>();
 
 const { widgetProps, configure } = useWidgetPropsManager(name,
 	widgetPropsDef,

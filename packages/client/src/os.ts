@@ -1,6 +1,6 @@
 // TODO: なんでもかんでもos.tsに突っ込むのやめたいのでよしなに分割する
 
-import { Component, defineAsyncComponent, markRaw, reactive, Ref, ref } from 'vue';
+import { Component, markRaw, Ref, ref, defineAsyncComponent } from 'vue';
 import { EventEmitter } from 'eventemitter3';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import * as Misskey from 'misskey-js';
@@ -10,7 +10,6 @@ import MkWaitingDialog from '@/components/waiting-dialog.vue';
 import { MenuItem } from '@/types/menu';
 import { resolve } from '@/router';
 import { $i } from '@/account';
-import { defaultStore } from '@/store';
 
 export const pendingApiRequestsCount = ref(0);
 
@@ -35,7 +34,7 @@ export const api = ((endpoint: string, data: Record<string, any> = {}, token?: s
 			method: 'POST',
 			body: JSON.stringify(data),
 			credentials: 'omit',
-			cache: 'no-cache'
+			cache: 'no-cache',
 		}).then(async (res) => {
 			const body = res.status === 204 ? null : await res.json();
 
@@ -60,10 +59,10 @@ export const apiWithDialog = ((
 	token?: string | null | undefined,
 ) => {
 	const promise = api(endpoint, data, token);
-	promiseDialog(promise, null, (e) => {
+	promiseDialog(promise, null, (err) => {
 		alert({
 			type: 'error',
-			text: e.message + '\n' + (e as any).id,
+			text: err.message + '\n' + (err as any).id,
 		});
 	});
 
@@ -73,7 +72,7 @@ export const apiWithDialog = ((
 export function promiseDialog<T extends Promise<any>>(
 	promise: T,
 	onSuccess?: ((res: any) => void) | null,
-	onFailure?: ((e: Error) => void) | null,
+	onFailure?: ((err: Error) => void) | null,
 	text?: string,
 ): T {
 	const showing = ref(true);
@@ -89,14 +88,14 @@ export function promiseDialog<T extends Promise<any>>(
 				showing.value = false;
 			}, 1000);
 		}
-	}).catch(e => {
+	}).catch(err => {
 		showing.value = false;
 		if (onFailure) {
-			onFailure(e);
+			onFailure(err);
 		} else {
 			alert({
 				type: 'error',
-				text: e
+				text: err,
 			});
 		}
 	});
@@ -109,10 +108,6 @@ export function promiseDialog<T extends Promise<any>>(
 	}, {}, 'closed');
 
 	return promise;
-}
-
-function isModule(x: any): x is typeof import('*.vue') {
-	return x.default != null;
 }
 
 let popupIdCount = 0;
@@ -132,10 +127,7 @@ export function claimZIndex(priority: 'low' | 'middle' | 'high' = 'low'): number
 	return zIndexes[priority];
 }
 
-export async function popup(component: Component | typeof import('*.vue') | Promise<Component | typeof import('*.vue')>, props: Record<string, any>, events = {}, disposeEvent?: string) {
-	if (component.then) component = await component;
-
-	if (isModule(component)) component = component.default;
+export async function popup(component: Component, props: Record<string, any>, events = {}, disposeEvent?: string) {
 	markRaw(component);
 
 	const id = ++popupIdCount;
@@ -150,7 +142,7 @@ export async function popup(component: Component | typeof import('*.vue') | Prom
 		props,
 		events: disposeEvent ? {
 			...events,
-			[disposeEvent]: dispose
+			[disposeEvent]: dispose,
 		} : events,
 		id,
 	};
@@ -164,7 +156,7 @@ export async function popup(component: Component | typeof import('*.vue') | Prom
 
 export function pageWindow(path: string) {
 	const { component, props } = resolve(path);
-	popup(import('@/components/page-window.vue'), {
+	popup(defineAsyncComponent(() => import('@/components/page-window.vue')), {
 		initialPath: path,
 		initialComponent: markRaw(component),
 		initialProps: props,
@@ -173,7 +165,7 @@ export function pageWindow(path: string) {
 
 export function modalPageWindow(path: string) {
 	const { component, props } = resolve(path);
-	popup(import('@/components/modal-page-window.vue'), {
+	popup(defineAsyncComponent(() => import('@/components/modal-page-window.vue')), {
 		initialPath: path,
 		initialComponent: markRaw(component),
 		initialProps: props,
@@ -181,8 +173,8 @@ export function modalPageWindow(path: string) {
 }
 
 export function toast(message: string) {
-	popup(import('@/components/toast.vue'), {
-		message
+	popup(defineAsyncComponent(() => import('@/components/toast.vue')), {
+		message,
 	}, {}, 'closed');
 }
 
@@ -192,7 +184,7 @@ export function alert(props: {
 	text?: string | null;
 }): Promise<void> {
 	return new Promise((resolve, reject) => {
-		popup(import('@/components/dialog.vue'), props, {
+		popup(defineAsyncComponent(() => import('@/components/dialog.vue')), props, {
 			done: result => {
 				resolve();
 			},
@@ -206,7 +198,7 @@ export function confirm(props: {
 	text?: string | null;
 }): Promise<{ canceled: boolean }> {
 	return new Promise((resolve, reject) => {
-		popup(import('@/components/dialog.vue'), {
+		popup(defineAsyncComponent(() => import('@/components/dialog.vue')), {
 			...props,
 			showCancelButton: true,
 		}, {
@@ -227,14 +219,14 @@ export function inputText(props: {
 	canceled: false; result: string;
 }> {
 	return new Promise((resolve, reject) => {
-		popup(import('@/components/dialog.vue'), {
+		popup(defineAsyncComponent(() => import('@/components/dialog.vue')), {
 			title: props.title,
 			text: props.text,
 			input: {
 				type: props.type,
 				placeholder: props.placeholder,
 				default: props.default,
-			}
+			},
 		}, {
 			done: result => {
 				resolve(result ? result : { canceled: true });
@@ -252,14 +244,14 @@ export function inputNumber(props: {
 	canceled: false; result: number;
 }> {
 	return new Promise((resolve, reject) => {
-		popup(import('@/components/dialog.vue'), {
+		popup(defineAsyncComponent(() => import('@/components/dialog.vue')), {
 			title: props.title,
 			text: props.text,
 			input: {
 				type: 'number',
 				placeholder: props.placeholder,
 				default: props.default,
-			}
+			},
 		}, {
 			done: result => {
 				resolve(result ? result : { canceled: true });
@@ -277,14 +269,14 @@ export function inputDate(props: {
 	canceled: false; result: Date;
 }> {
 	return new Promise((resolve, reject) => {
-		popup(import('@/components/dialog.vue'), {
+		popup(defineAsyncComponent(() => import('@/components/dialog.vue')), {
 			title: props.title,
 			text: props.text,
 			input: {
 				type: 'date',
 				placeholder: props.placeholder,
 				default: props.default,
-			}
+			},
 		}, {
 			done: result => {
 				resolve(result ? { result: new Date(result.result), canceled: false } : { canceled: true });
@@ -293,7 +285,7 @@ export function inputDate(props: {
 	});
 }
 
-export function select<C extends any = any>(props: {
+export function select<C = any>(props: {
 	title?: string | null;
 	text?: string | null;
 	default?: string | null;
@@ -314,14 +306,14 @@ export function select<C extends any = any>(props: {
 	canceled: false; result: C;
 }> {
 	return new Promise((resolve, reject) => {
-		popup(import('@/components/dialog.vue'), {
+		popup(defineAsyncComponent(() => import('@/components/dialog.vue')), {
 			title: props.title,
 			text: props.text,
 			select: {
 				items: props.items,
 				groupedItems: props.groupedItems,
 				default: props.default,
-			}
+			},
 		}, {
 			done: result => {
 				resolve(result ? result : { canceled: true });
@@ -336,9 +328,9 @@ export function success() {
 		window.setTimeout(() => {
 			showing.value = false;
 		}, 1000);
-		popup(import('@/components/waiting-dialog.vue'), {
+		popup(defineAsyncComponent(() => import('@/components/waiting-dialog.vue')), {
 			success: true,
-			showing: showing
+			showing: showing,
 		}, {
 			done: () => resolve(),
 		}, 'closed');
@@ -348,9 +340,9 @@ export function success() {
 export function waiting() {
 	return new Promise((resolve, reject) => {
 		const showing = ref(true);
-		popup(import('@/components/waiting-dialog.vue'), {
+		popup(defineAsyncComponent(() => import('@/components/waiting-dialog.vue')), {
 			success: false,
-			showing: showing
+			showing: showing,
 		}, {
 			done: () => resolve(),
 		}, 'closed');
@@ -359,7 +351,7 @@ export function waiting() {
 
 export function form(title, form) {
 	return new Promise((resolve, reject) => {
-		popup(import('@/components/form-dialog.vue'), { title, form }, {
+		popup(defineAsyncComponent(() => import('@/components/form-dialog.vue')), { title, form }, {
 			done: result => {
 				resolve(result);
 			},
@@ -369,7 +361,7 @@ export function form(title, form) {
 
 export async function selectUser() {
 	return new Promise((resolve, reject) => {
-		popup(import('@/components/user-select-dialog.vue'), {}, {
+		popup(defineAsyncComponent(() => import('@/components/user-select-dialog.vue')), {}, {
 			ok: user => {
 				resolve(user);
 			},
@@ -379,9 +371,9 @@ export async function selectUser() {
 
 export async function selectDriveFile(multiple: boolean) {
 	return new Promise((resolve, reject) => {
-		popup(import('@/components/drive-select-dialog.vue'), {
+		popup(defineAsyncComponent(() => import('@/components/drive-select-dialog.vue')), {
 			type: 'file',
-			multiple
+			multiple,
 		}, {
 			done: files => {
 				if (files) {
@@ -394,9 +386,9 @@ export async function selectDriveFile(multiple: boolean) {
 
 export async function selectDriveFolder(multiple: boolean) {
 	return new Promise((resolve, reject) => {
-		popup(import('@/components/drive-select-dialog.vue'), {
+		popup(defineAsyncComponent(() => import('@/components/drive-select-dialog.vue')), {
 			type: 'folder',
-			multiple
+			multiple,
 		}, {
 			done: folders => {
 				if (folders) {
@@ -409,12 +401,27 @@ export async function selectDriveFolder(multiple: boolean) {
 
 export async function pickEmoji(src: HTMLElement | null, opts) {
 	return new Promise((resolve, reject) => {
-		popup(import('@/components/emoji-picker-dialog.vue'), {
+		popup(defineAsyncComponent(() => import('@/components/emoji-picker-dialog.vue')), {
 			src,
-			...opts
+			...opts,
 		}, {
 			done: emoji => {
 				resolve(emoji);
+			},
+		}, 'closed');
+	});
+}
+
+export async function cropImage(image: Misskey.entities.DriveFile, options: {
+	aspectRatio: number;
+}): Promise<Misskey.entities.DriveFile> {
+	return new Promise((resolve, reject) => {
+		popup(defineAsyncComponent(() => import('@/components/cropper-dialog.vue')), {
+			file: image,
+			aspectRatio: options.aspectRatio,
+		}, {
+			ok: x => {
+				resolve(x);
 			},
 		}, 'closed');
 	});
@@ -459,9 +466,9 @@ export async function openEmojiPicker(src?: HTMLElement, opts, initialTextarea: 
 		characterData: false,
 	});
 
-	openingEmojiPicker = await popup(import('@/components/emoji-picker-window.vue'), {
+	openingEmojiPicker = await popup(defineAsyncComponent(() => import('@/components/emoji-picker-window.vue')), {
 		src,
-		...opts
+		...opts,
 	}, {
 		chosen: emoji => {
 			insertTextAtCursor(activeTextarea, emoji);
@@ -470,7 +477,7 @@ export async function openEmojiPicker(src?: HTMLElement, opts, initialTextarea: 
 			openingEmojiPicker!.dispose();
 			openingEmojiPicker = null;
 			observer.disconnect();
-		}
+		},
 	});
 }
 
@@ -481,12 +488,12 @@ export function popupMenu(items: MenuItem[] | Ref<MenuItem[]>, src?: HTMLElement
 }) {
 	return new Promise((resolve, reject) => {
 		let dispose;
-		popup(import('@/components/ui/popup-menu.vue'), {
+		popup(defineAsyncComponent(() => import('@/components/ui/popup-menu.vue')), {
 			items,
 			src,
 			width: options?.width,
 			align: options?.align,
-			viaKeyboard: options?.viaKeyboard
+			viaKeyboard: options?.viaKeyboard,
 		}, {
 			closed: () => {
 				resolve();
@@ -502,7 +509,7 @@ export function contextMenu(items: MenuItem[] | Ref<MenuItem[]>, ev: MouseEvent)
 	ev.preventDefault();
 	return new Promise((resolve, reject) => {
 		let dispose;
-		popup(import('@/components/ui/context-menu.vue'), {
+		popup(defineAsyncComponent(() => import('@/components/ui/context-menu.vue')), {
 			items,
 			ev,
 		}, {
@@ -536,78 +543,6 @@ export function post(props: Record<string, any> = {}) {
 }
 
 export const deckGlobalEvents = new EventEmitter();
-
-export const uploads = ref<{
-	id: string;
-	name: string;
-	progressMax: number | undefined;
-	progressValue: number | undefined;
-	img: string;
-}[]>([]);
-
-export function upload(file: File, folder?: any, name?: string, keepOriginal: boolean = defaultStore.state.keepOriginalUploading): Promise<Misskey.entities.DriveFile> {
-	if (folder && typeof folder === 'object') folder = folder.id;
-
-	return new Promise((resolve, reject) => {
-		const id = Math.random().toString();
-
-		const reader = new FileReader();
-		reader.onload = (e) => {
-			const ctx = reactive({
-				id: id,
-				name: name || file.name || 'untitled',
-				progressMax: undefined,
-				progressValue: undefined,
-				img: window.URL.createObjectURL(file)
-			});
-
-			uploads.value.push(ctx);
-
-			console.log(keepOriginal);
-
-			const data = new FormData();
-			data.append('i', $i.token);
-			data.append('force', 'true');
-			data.append('file', file);
-
-			if (folder) data.append('folderId', folder);
-			if (name) data.append('name', name);
-
-			const xhr = new XMLHttpRequest();
-			xhr.open('POST', apiUrl + '/drive/files/create', true);
-			xhr.onload = (ev) => {
-				if (xhr.status !== 200 || ev.target == null || ev.target.response == null) {
-					// TODO: 消すのではなくて再送できるようにしたい
-					uploads.value = uploads.value.filter(x => x.id != id);
-
-					alert({
-						type: 'error',
-						text: 'upload failed'
-					});
-
-					reject();
-					return;
-				}
-
-				const driveFile = JSON.parse(ev.target.response);
-
-				resolve(driveFile);
-
-				uploads.value = uploads.value.filter(x => x.id != id);
-			};
-
-			xhr.upload.onprogress = e => {
-				if (e.lengthComputable) {
-					ctx.progressMax = e.total;
-					ctx.progressValue = e.loaded;
-				}
-			};
-
-			xhr.send(data);
-		};
-		reader.readAsArrayBuffer(file);
-	});
-}
 
 /*
 export function checkExistence(fileData: ArrayBuffer): Promise<any> {

@@ -3,9 +3,9 @@ import promiseLimit from 'promise-limit';
 import config from '@/config/index.js';
 import Resolver from '../resolver.js';
 import post from '@/services/note/create.js';
-import { resolvePerson, updatePerson } from './person.js';
+import { resolvePerson } from './person.js';
 import { resolveImage } from './image.js';
-import { CacheableRemoteUser, IRemoteUser } from '@/models/entities/user.js';
+import { CacheableRemoteUser } from '@/models/entities/user.js';
 import { htmlToMfm } from '../misc/html-to-mfm.js';
 import { extractApHashtags } from './tag.js';
 import { unique, toArray, toSingle } from '@/prelude/array.js';
@@ -15,7 +15,7 @@ import { apLogger } from '../logger.js';
 import { DriveFile } from '@/models/entities/drive-file.js';
 import { deliverQuestionUpdate } from '@/services/note/polls/update.js';
 import { extractDbHost, toPuny } from '@/misc/convert-host.js';
-import { Emojis, Polls, MessagingMessages, Users } from '@/models/index.js';
+import { Emojis, Polls, MessagingMessages } from '@/models/index.js';
 import { Note } from '@/models/entities/note.js';
 import { IObject, getOneApId, getApId, getOneApHrefNullable, validPost, IPost, isEmoji, getApType } from '../type.js';
 import { Emoji } from '@/models/entities/emoji.js';
@@ -197,7 +197,14 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 	const cw = note.summary === '' ? null : note.summary;
 
 	// テキストのパース
-	const text = typeof note._misskey_content !== 'undefined' ? note._misskey_content : (note.content ? htmlToMfm(note.content, note.tag) : null);
+	let text: string | null = null;
+	if (note.source?.mediaType === 'text/x.misskeymarkdown' && typeof note.source?.content === 'string') {
+		text = note.source.content;
+	} else if (typeof note._misskey_content === 'string') {
+		text = note._misskey_content;
+	} else if (typeof note.content === 'string') {
+		text = htmlToMfm(note.content, note.tag);
+	}
 
 	// vote
 	if (reply && reply.hasPoll) {

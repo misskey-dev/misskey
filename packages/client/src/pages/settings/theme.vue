@@ -85,116 +85,94 @@
 </div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, onActivated, onMounted, ref, watch } from 'vue';
-import * as JSON5 from 'json5';
+<script lang="ts" setup>
+import { computed, onActivated, ref, watch } from 'vue';
+import JSON5 from 'json5';
 import FormSwitch from '@/components/form/switch.vue';
 import FormSelect from '@/components/form/select.vue';
-import FormGroup from '@/components/form/group.vue';
 import FormSection from '@/components/form/section.vue';
 import FormLink from '@/components/form/link.vue';
 import FormButton from '@/components/ui/button.vue';
-import { builtinThemes } from '@/scripts/theme';
+import { getBuiltinThemesRef } from '@/scripts/theme';
 import { selectFile } from '@/scripts/select-file';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
 import { ColdDeviceStorage } from '@/store';
 import { i18n } from '@/i18n';
 import { defaultStore } from '@/store';
 import { instance } from '@/instance';
-import { concat, uniqueBy } from '@/scripts/array';
+import { uniqueBy } from '@/scripts/array';
 import { fetchThemes, getThemes } from '@/theme-store';
 import * as symbols from '@/symbols';
 
-export default defineComponent({
-	components: {
-		FormSwitch,
-		FormSelect,
-		FormGroup,
-		FormSection,
-		FormLink,
-		FormButton,
+const installedThemes = ref(getThemes());
+const builtinThemes = getBuiltinThemesRef();
+const instanceThemes = [];
+
+if (instance.defaultLightTheme != null) instanceThemes.push(JSON5.parse(instance.defaultLightTheme));
+if (instance.defaultDarkTheme != null) instanceThemes.push(JSON5.parse(instance.defaultDarkTheme));
+
+const themes = computed(() => uniqueBy([ ...instanceThemes, ...builtinThemes.value, ...installedThemes.value ], theme => theme.id));
+const darkThemes = computed(() => themes.value.filter(t => t.base === 'dark' || t.kind === 'dark'));
+const lightThemes = computed(() => themes.value.filter(t => t.base === 'light' || t.kind === 'light'));
+const darkTheme = ColdDeviceStorage.ref('darkTheme');
+const darkThemeId = computed({
+	get() {
+		return darkTheme.value.id;
 	},
+	set(id) {
+		ColdDeviceStorage.set('darkTheme', themes.value.find(x => x.id === id));
+	}
+});
+const lightTheme = ColdDeviceStorage.ref('lightTheme');
+const lightThemeId = computed({
+	get() {
+		return lightTheme.value.id;
+	},
+	set(id) {
+		ColdDeviceStorage.set('lightTheme', themes.value.find(x => x.id === id));
+	}
+});
+const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
+const syncDeviceDarkMode = computed(ColdDeviceStorage.makeGetterSetter('syncDeviceDarkMode'));
+const wallpaper = ref(localStorage.getItem('wallpaper'));
+const themesCount = installedThemes.value.length;
 
-	emits: ['info'],
+watch(syncDeviceDarkMode, () => {
+	if (syncDeviceDarkMode.value) {
+		defaultStore.set('darkMode', isDeviceDarkmode());
+	}
+});
 
-	setup(props, { emit }) {
-		const INFO = {
-			title: i18n.ts.theme,
-			icon: 'fas fa-palette',
-				bg: 'var(--bg)',
-		};
+watch(wallpaper, () => {
+	if (wallpaper.value == null) {
+		localStorage.removeItem('wallpaper');
+	} else {
+		localStorage.setItem('wallpaper', wallpaper.value);
+	}
+	location.reload();
+});
 
-		const installedThemes = ref(getThemes());
-		const instanceThemes = [];
-		if (instance.defaultLightTheme != null) instanceThemes.push(JSON5.parse(instance.defaultLightTheme));
-		if (instance.defaultDarkTheme != null) instanceThemes.push(JSON5.parse(instance.defaultDarkTheme));
-		const themes = computed(() => uniqueBy(instanceThemes.concat(builtinThemes.concat(installedThemes.value)), theme => theme.id));
-		const darkThemes = computed(() => themes.value.filter(t => t.base === 'dark' || t.kind === 'dark'));
-		const lightThemes = computed(() => themes.value.filter(t => t.base === 'light' || t.kind === 'light'));
-		const darkTheme = ColdDeviceStorage.ref('darkTheme');
-		const darkThemeId = computed({
-			get() {
-				return darkTheme.value.id;
-			},
-			set(id) {
-				ColdDeviceStorage.set('darkTheme', themes.value.find(x => x.id === id))
-			}
-		});
-		const lightTheme = ColdDeviceStorage.ref('lightTheme');
-		const lightThemeId = computed({
-			get() {
-				return lightTheme.value.id;
-			},
-			set(id) {
-				ColdDeviceStorage.set('lightTheme', themes.value.find(x => x.id === id))
-			}
-		});
-		const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
-		const syncDeviceDarkMode = computed(ColdDeviceStorage.makeGetterSetter('syncDeviceDarkMode'));
-		const wallpaper = ref(localStorage.getItem('wallpaper'));
-		const themesCount = installedThemes.value.length;
+onActivated(() => {
+	fetchThemes().then(() => {
+		installedThemes.value = getThemes();
+	});
+});
 
-		watch(syncDeviceDarkMode, () => {
-			if (syncDeviceDarkMode.value) {
-				defaultStore.set('darkMode', isDeviceDarkmode());
-			}
-		});
+fetchThemes().then(() => {
+	installedThemes.value = getThemes();
+});
 
-		watch(wallpaper, () => {
-			if (wallpaper.value == null) {
-				localStorage.removeItem('wallpaper');
-			} else {
-				localStorage.setItem('wallpaper', wallpaper.value);
-			}
-			location.reload();
-		});
+function setWallpaper(event) {
+	selectFile(event.currentTarget ?? event.target, null).then(file => {
+		wallpaper.value = file.url;
+	});
+}
 
-		onActivated(() => {
-			fetchThemes().then(() => {
-				installedThemes.value = getThemes();
-			});
-		});
-
-		fetchThemes().then(() => {
-			installedThemes.value = getThemes();
-		});
-
-		return {
-			[symbols.PAGE_INFO]: INFO,
-			darkThemes,
-			lightThemes,
-			darkThemeId,
-			lightThemeId,
-			darkMode,
-			syncDeviceDarkMode,
-			themesCount,
-			wallpaper,
-			setWallpaper(e) {
-				selectFile(e.currentTarget ?? e.target, null).then(file => {
-					wallpaper.value = file.url;
-				});
-			},
-		};
+defineExpose({
+	[symbols.PAGE_INFO]: {
+		title: i18n.ts.theme,
+		icon: 'fas fa-palette',
+		bg: 'var(--bg)',
 	}
 });
 </script>

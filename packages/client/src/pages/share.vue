@@ -56,7 +56,7 @@ export default defineComponent({
 			localOnly: null as boolean | null,
 			files: [] as Misskey.entities.DriveFile[],
 			visibleUsers: [] as Misskey.entities.User[],
-		}
+		};
 	},
 
 	async created() {
@@ -153,11 +153,11 @@ export default defineComponent({
 				);
 			}
 			//#endregion
-		} catch (e) {
+		} catch (err) {
 			os.alert({
 				type: 'error',
-				title: e.message,
-				text: e.name
+				title: err.message,
+				text: err.name
 			});
 		}
 

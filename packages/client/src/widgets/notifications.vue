@@ -1,5 +1,5 @@
 <template>
-<MkContainer :style="`height: ${widgetProps.height}px;`" :show-header="widgetProps.showHeader" :scrollable="true">
+<MkContainer :style="`height: ${widgetProps.height}px;`" :show-header="widgetProps.showHeader" :scrollable="true" class="mkw-notifications">
 	<template #header><i class="fas fa-bell"></i>{{ $ts.notifications }}</template>
 	<template #func><button class="_button" @click="configureNotification()"><i class="fas fa-cog"></i></button></template>
 
@@ -15,6 +15,7 @@ import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExp
 import MkContainer from '@/components/ui/container.vue';
 import XNotifications from '@/components/notifications.vue';
 import * as os from '@/os';
+import { defineAsyncComponent } from 'vue';
 
 const name = 'notifications';
 
@@ -40,7 +41,7 @@ type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 //const props = defineProps<WidgetComponentProps<WidgetProps>>();
 //const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
 const props = defineProps<{ widget?: Widget<WidgetProps>; }>();
-const emit = defineEmits<{ (e: 'updateProps', props: WidgetProps); }>();
+const emit = defineEmits<{ (ev: 'updateProps', props: WidgetProps); }>();
 
 const { widgetProps, configure, save } = useWidgetPropsManager(name,
 	widgetPropsDef,
@@ -49,7 +50,7 @@ const { widgetProps, configure, save } = useWidgetPropsManager(name,
 );
 
 const configureNotification = () => {
-	os.popup(import('@/components/notification-setting-window.vue'), {
+	os.popup(defineAsyncComponent(() => import('@/components/notification-setting-window.vue')), {
 		includingTypes: widgetProps.includingTypes,
 	}, {
 		done: async (res) => {

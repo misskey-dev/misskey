@@ -54,19 +54,11 @@
 	//#endregion
 
 	//#region Script
-	const salt = localStorage.getItem('salt')
-		? `?salt=${localStorage.getItem('salt')}`
-		: '';
-
-	const script = document.createElement('script');
-	script.setAttribute('src', `/assets/app.${v}.js${salt}`);
-	script.setAttribute('async', 'true');
-	script.setAttribute('defer', 'true');
-	script.addEventListener('error', async () => {
-		await checkUpdate();
-		renderError('APP_FETCH_FAILED');
-	});
-	document.head.appendChild(script);
+	import(`/assets/${CLIENT_ENTRY}`)
+		.catch(async e => {
+			await checkUpdate();
+			renderError('APP_FETCH_FAILED', JSON.stringify(e));
+		})
 	//#endregion
 
 	//#region Theme
@@ -146,9 +138,6 @@
 
 	// eslint-disable-next-line no-inner-declarations
 	function refresh() {
-		// Random
-		localStorage.setItem('salt', Math.random().toString().substr(2, 8));
-
 		// Clear cache (service worker)
 		try {
 			navigator.serviceWorker.controller.postMessage('clear');

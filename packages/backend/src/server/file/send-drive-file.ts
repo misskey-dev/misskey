@@ -4,14 +4,14 @@ import { dirname } from 'node:path';
 import Koa from 'koa';
 import send from 'koa-send';
 import rename from 'rename';
-import * as tmp from 'tmp';
 import { serverLogger } from '../index.js';
 import { contentDisposition } from '@/misc/content-disposition.js';
 import { DriveFiles } from '@/models/index.js';
 import { InternalStorage } from '@/services/drive/internal-storage.js';
+import { createTemp } from '@/misc/create-temp.js';
 import { downloadUrl } from '@/misc/download-url.js';
 import { detectType } from '@/misc/get-file-info.js';
-import { convertToJpeg, convertToPng, convertToPngOrJpeg } from '@/services/drive/image-processor.js';
+import { convertToWebp, convertToJpeg, convertToPng } from '@/services/drive/image-processor.js';
 import { GenerateVideoThumbnail } from '@/services/drive/generate-video-thumbnail.js';
 import { StatusError } from '@/misc/fetch.js';
 import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
@@ -50,12 +50,7 @@ export default async function(ctx: Koa.Context) {
 
 	if (!file.storedInternal) {
 		if (file.isLink && file.uri) {	// 期限切れリモートファイル
-			const [path, cleanup] = await new Promise<[string, any]>((res, rej) => {
-				tmp.file((e, path, fd, cleanup) => {
-					if (e) return rej(e);
-					res([path, cleanup]);
-				});
-			});
+			const [path, cleanup] = await createTemp();
 
 			try {
 				await downloadUrl(file.uri, path);
@@ -64,10 +59,8 @@ export default async function(ctx: Koa.Context) {
 
 				const convertFile = async () => {
 					if (isThumbnail) {
-						if (['image/jpeg', 'image/webp'].includes(mime)) {
-							return await convertToJpeg(path, 498, 280);
-						} else if (['image/png', 'image/svg+xml'].includes(mime)) {
-							return await convertToPngOrJpeg(path, 498, 280);
+						if (['image/jpeg', 'image/webp', 'image/png', 'image/svg+xml'].includes(mime)) {
+							return await convertToWebp(path, 498, 280);
 						} else if (mime.startsWith('video/')) {
 							return await GenerateVideoThumbnail(path);
 						}

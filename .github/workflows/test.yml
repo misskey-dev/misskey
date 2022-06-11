@@ -13,7 +13,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version: [18.x]
 
     services:
       postgres:
@@ -57,7 +57,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [16.x]
+        node-version: [18.x]
         browser: [chrome]
 
     services:
@@ -103,7 +103,7 @@ jobs:
     - name: ALSA Env
       run: echo -e 'pcm.!default {\n type hw\n card 0\n}\n\nctl.!default {\n type hw\n card 0\n}' > ~/.asoundrc
     - name: Cypress run
-      uses: cypress-io/github-action@v2
+      uses: cypress-io/github-action@v4
       with:
         install: false
         start: npm run start:test

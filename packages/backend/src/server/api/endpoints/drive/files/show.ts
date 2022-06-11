@@ -1,7 +1,7 @@
-import define from '../../../define.js';
-import { ApiError } from '../../../error.js';
 import { DriveFile } from '@/models/entities/drive-file.js';
 import { DriveFiles, Users } from '@/models/index.js';
+import define from '../../../define.js';
+import { ApiError } from '../../../error.js';
 
 export const meta = {
 	tags: ['drive'],
@@ -9,6 +9,8 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'read:drive',
+
+	description: 'Show the properties of a drive file.',
 
 	res: {
 		type: 'object',
@@ -51,7 +53,7 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, user) => {
-	let file: DriveFile | undefined;
+	let file: DriveFile | null = null;
 
 	if (ps.fileId) {
 		file = await DriveFiles.findOneBy({ id: ps.fileId });

@@ -2,11 +2,11 @@
 <div class="vjoppmmu">
 	<template v-if="edit">
 		<header>
-			<MkSelect v-model="widgetAdderSelected" style="margin-bottom: var(--margin)">
+			<MkSelect v-model="widgetAdderSelected" style="margin-bottom: var(--margin)" class="mk-widget-select">
 				<template #label>{{ $ts.selectWidget }}</template>
 				<option v-for="widget in widgetDefs" :key="widget" :value="widget">{{ $t(`_widgets.${widget}`) }}</option>
 			</MkSelect>
-			<MkButton inline primary @click="addWidget"><i class="fas fa-plus"></i> {{ $ts.add }}</MkButton>
+			<MkButton inline primary class="mk-widget-add" @click="addWidget"><i class="fas fa-plus"></i> {{ $ts.add }}</MkButton>
 			<MkButton inline @click="$emit('exit')">{{ $ts.close }}</MkButton>
 		</header>
 		<XDraggable
@@ -19,7 +19,7 @@
 				<div class="customize-container">
 					<button class="config _button" @click.prevent.stop="configWidget(element.id)"><i class="fas fa-cog"></i></button>
 					<button class="remove _button" @click.prevent.stop="removeWidget(element)"><i class="fas fa-times"></i></button>
-					<component class="handle" :ref="el => widgetRefs[element.id] = el" :is="`mkw-${element.name}`" :widget="element" @updateProps="updateWidget(element.id, $event)"/>
+					<component :is="`mkw-${element.name}`" :ref="el => widgetRefs[element.id] = el" class="handle" :widget="element" @updateProps="updateWidget(element.id, $event)"/>
 				</div>
 			</template>
 		</XDraggable>
@@ -37,7 +37,7 @@ import { widgets as widgetDefs } from '@/widgets';
 
 export default defineComponent({
 	components: {
-		XDraggable: defineAsyncComponent(() => import('vuedraggable').then(x => x.default)),
+		XDraggable: defineAsyncComponent(() => import('vuedraggable')),
 		MkSelect,
 		MkButton,
 	},

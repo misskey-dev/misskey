@@ -54,6 +54,9 @@
 				<FormButton v-if="user.host != null" class="_formBlock" @click="updateRemoteUser"><i class="fas fa-sync"></i> {{ $ts.updateRemoteUser }}</FormButton>
 			</FormSection>
 
+			<MkObjectView v-if="info && $i.isAdmin" tall :value="info">
+			</MkObjectView>
+
 			<MkObjectView tall :value="user">
 			</MkObjectView>
 		</div>
@@ -232,10 +235,10 @@ export default defineComponent({
 				await os.api('admin/delete-all-files-of-a-user', { userId: this.user.id });
 				os.success();
 			};
-			await process().catch(e => {
+			await process().catch(err => {
 				os.alert({
 					type: 'error',
-					text: e.toString()
+					text: err.toString(),
 				});
 			});
 			await this.refreshUser();

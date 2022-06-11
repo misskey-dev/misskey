@@ -32,7 +32,7 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(e: 'click', ev: MouseEvent): void;
+	(ev: 'click', v: MouseEvent): void;
 }>();
 
 const url = $computed(() => defaultStore.state.disableShowingAnimatedImages

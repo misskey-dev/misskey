@@ -1,11 +1,11 @@
 <template>
-<form class="qlvuhzng _formRoot" :autocomplete="Math.random()" @submit.prevent="onSubmit">
+<form class="qlvuhzng _formRoot" autocomplete="new-password" @submit.prevent="onSubmit">
 	<template v-if="meta">
-		<MkInput v-if="meta.disableRegistration" v-model="invitationCode" class="_formBlock" type="text" :autocomplete="Math.random()" spellcheck="false" required>
+		<MkInput v-if="meta.disableRegistration" v-model="invitationCode" class="_formBlock" type="text" spellcheck="false" required>
 			<template #label>{{ $ts.invitationCode }}</template>
 			<template #prefix><i class="fas fa-key"></i></template>
 		</MkInput>
-		<MkInput v-model="username" class="_formBlock" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" :autocomplete="Math.random()" spellcheck="false" required data-cy-signup-username @update:modelValue="onChangeUsername">
+		<MkInput v-model="username" class="_formBlock" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" spellcheck="false" required data-cy-signup-username @update:modelValue="onChangeUsername">
 			<template #label>{{ $ts.username }} <div v-tooltip:dialog="$ts.usernameInfo" class="_button _help"><i class="far fa-question-circle"></i></div></template>
 			<template #prefix>@</template>
 			<template #suffix>@{{ host }}</template>
@@ -19,7 +19,7 @@
 				<span v-else-if="usernameState === 'max-range'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.tooLong }}</span>
 			</template>
 		</MkInput>
-		<MkInput v-if="meta.emailRequiredForSignup" v-model="email" class="_formBlock" :debounce="true" type="email" :autocomplete="Math.random()" spellcheck="false" required data-cy-signup-email @update:modelValue="onChangeEmail">
+		<MkInput v-if="meta.emailRequiredForSignup" v-model="email" class="_formBlock" :debounce="true" type="email" spellcheck="false" required data-cy-signup-email @update:modelValue="onChangeEmail">
 			<template #label>{{ $ts.emailAddress }} <div v-tooltip:dialog="$ts._signup.emailAddressInfo" class="_button _help"><i class="far fa-question-circle"></i></div></template>
 			<template #prefix><i class="fas fa-envelope"></i></template>
 			<template #caption>
@@ -34,7 +34,7 @@
 				<span v-else-if="emailState === 'error'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.error }}</span>
 			</template>
 		</MkInput>
-		<MkInput v-model="password" class="_formBlock" type="password" :autocomplete="Math.random()" required data-cy-signup-password @update:modelValue="onChangePassword">
+		<MkInput v-model="password" class="_formBlock" type="password" autocomplete="new-password" required data-cy-signup-password @update:modelValue="onChangePassword">
 			<template #label>{{ $ts.password }}</template>
 			<template #prefix><i class="fas fa-lock"></i></template>
 			<template #caption>
@@ -43,7 +43,7 @@
 				<span v-if="passwordStrength == 'high'" style="color: var(--success)"><i class="fas fa-check fa-fw"></i> {{ $ts.strongPassword }}</span>
 			</template>
 		</MkInput>
-		<MkInput v-model="retypedPassword" class="_formBlock" type="password" :autocomplete="Math.random()" required data-cy-signup-password-retype @update:modelValue="onChangePasswordRetype">
+		<MkInput v-model="retypedPassword" class="_formBlock" type="password" autocomplete="new-password" required data-cy-signup-password-retype @update:modelValue="onChangePasswordRetype">
 			<template #label>{{ $ts.password }} ({{ $ts.retype }})</template>
 			<template #prefix><i class="fas fa-lock"></i></template>
 			<template #caption>
@@ -58,8 +58,8 @@
 				</template>
 			</I18n>
 		</MkSwitch>
-		<captcha v-if="meta.enableHcaptcha" ref="hcaptcha" v-model="hCaptchaResponse" class="_formBlock captcha" provider="hcaptcha" :sitekey="meta.hcaptchaSiteKey"/>
-		<captcha v-if="meta.enableRecaptcha" ref="recaptcha" v-model="reCaptchaResponse" class="_formBlock captcha" provider="recaptcha" :sitekey="meta.recaptchaSiteKey"/>
+		<MkCaptcha v-if="meta.enableHcaptcha" ref="hcaptcha" v-model="hCaptchaResponse" class="_formBlock captcha" provider="hcaptcha" :sitekey="meta.hcaptchaSiteKey"/>
+		<MkCaptcha v-if="meta.enableRecaptcha" ref="recaptcha" v-model="reCaptchaResponse" class="_formBlock captcha" provider="recaptcha" :sitekey="meta.recaptchaSiteKey"/>
 		<MkButton class="_formBlock" type="submit" :disabled="shouldDisableSubmitting" gradate data-cy-signup-submit>{{ $ts.start }}</MkButton>
 	</template>
 </form>
@@ -67,7 +67,7 @@
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
-const getPasswordStrength = require('syuilo-password-strength');
+const getPasswordStrength = await import('syuilo-password-strength');
 import { toUnicode } from 'punycode/';
 import { host, url } from '@/config';
 import MkButton from './ui/button.vue';
@@ -81,7 +81,7 @@ export default defineComponent({
 		MkButton,
 		MkInput,
 		MkSwitch,
-		captcha: defineAsyncComponent(() => import('./captcha.vue')),
+		MkCaptcha: defineAsyncComponent(() => import('./captcha.vue')),
 	},
 
 	props: {
@@ -111,7 +111,7 @@ export default defineComponent({
 			ToSAgreement: false,
 			hCaptchaResponse: null,
 			reCaptchaResponse: null,
-		}
+		};
 	},
 
 	computed: {
@@ -124,20 +124,20 @@ export default defineComponent({
 				this.meta.tosUrl && !this.ToSAgreement ||
 				this.meta.enableHcaptcha && !this.hCaptchaResponse ||
 				this.meta.enableRecaptcha && !this.reCaptchaResponse ||
-				this.passwordRetypeState == 'not-match';
+				this.passwordRetypeState === 'not-match';
 		},
 
 		shouldShowProfileUrl(): boolean {
-			return (this.username != '' &&
-				this.usernameState != 'invalid-format' &&
-				this.usernameState != 'min-range' &&
-				this.usernameState != 'max-range');
+			return (this.username !== '' &&
+				this.usernameState !== 'invalid-format' &&
+				this.usernameState !== 'min-range' &&
+				this.usernameState !== 'max-range');
 		}
 	},
 
 	methods: {
 		onChangeUsername() {
-			if (this.username == '') {
+			if (this.username === '') {
 				this.usernameState = null;
 				return;
 			}
@@ -165,7 +165,7 @@ export default defineComponent({
 		},
 
 		onChangeEmail() {
-			if (this.email == '') {
+			if (this.email === '') {
 				this.emailState = null;
 				return;
 			}
@@ -188,7 +188,7 @@ export default defineComponent({
 		},
 
 		onChangePassword() {
-			if (this.password == '') {
+			if (this.password === '') {
 				this.passwordStrength = '';
 				return;
 			}
@@ -198,12 +198,12 @@ export default defineComponent({
 		},
 
 		onChangePasswordRetype() {
-			if (this.retypedPassword == '') {
+			if (this.retypedPassword === '') {
 				this.passwordRetypeState = null;
 				return;
 			}
 
-			this.passwordRetypeState = this.password == this.retypedPassword ? 'match' : 'not-match';
+			this.passwordRetypeState = this.password === this.retypedPassword ? 'match' : 'not-match';
 		},
 
 		onSubmit() {

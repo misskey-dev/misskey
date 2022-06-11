@@ -19,7 +19,7 @@ defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(e: 'closed'): void;
+	(ev: 'closed'): void;
 }>();
 
 let modal = $ref<InstanceType<typeof MkModal>>();

@@ -57,9 +57,9 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(e: 'changeVisibility', v: typeof misskey.noteVisibilities[number]): void;
-	(e: 'changeLocalOnly', v: boolean): void;
-	(e: 'closed'): void;
+	(ev: 'changeVisibility', v: typeof misskey.noteVisibilities[number]): void;
+	(ev: 'changeLocalOnly', v: boolean): void;
+	(ev: 'closed'): void;
 }>();
 
 let v = $ref(props.currentVisibility);

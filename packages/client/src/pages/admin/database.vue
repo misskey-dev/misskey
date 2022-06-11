@@ -9,36 +9,23 @@
 </MkSpacer>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import MkKeyValue from '@/components/key-value.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 import bytes from '@/filters/bytes';
 import number from '@/filters/number';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		FormSuspense,
-		MkKeyValue,
-	},
+const databasePromiseFactory = () => os.api('admin/get-table-stats').then(res => Object.entries(res).sort((a, b) => b[1].size - a[1].size));
 
-	emits: ['info'],
-
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: this.$ts.database,
-				icon: 'fas fa-database',
-				bg: 'var(--bg)',
-			},
-			databasePromiseFactory: () => os.api('admin/get-table-stats', {}).then(res => Object.entries(res).sort((a, b) => b[1].size - a[1].size)),
-		}
-	},
-
-	methods: {
-		bytes, number,
+defineExpose({
+	[symbols.PAGE_INFO]: {
+		title: i18n.ts.database,
+		icon: 'fas fa-database',
+		bg: 'var(--bg)',
 	}
 });
 </script>

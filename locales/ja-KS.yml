@@ -799,7 +799,6 @@ _sfx:
   notification: "通知"
   chat: "チャット"
 _ago:
-  unknown: "わからん"
   future: "未来"
   justNow: "たった今"
   secondsAgo: "{n}秒前"
@@ -1202,6 +1201,9 @@ _notification:
     reaction: "リアクション"
     receiveFollowRequest: "フォロー許可してほしいみたいやで"
     followRequestAccepted: "フォローが受理されたで"
+  _actions:
+    reply: "返事"
+    renote: "Renote"
 _deck:
   alwaysShowMainColumn: "いつもメインカラムを表示"
   columnAlign: "カラムの寄せ"

@@ -1,6 +1,6 @@
 <template>
 <div class="omfetrab" :class="['s' + size, 'w' + width, 'h' + height, { asDrawer }]" :style="{ maxHeight: maxHeight ? maxHeight + 'px' : undefined }">
-	<input ref="search" v-model.trim="q" class="search" data-prevent-emoji-insert :class="{ filled: q != null && q != '' }" :placeholder="i18n.ts.search" @paste.stop="paste" @keyup.enter="done()">
+	<input ref="search" v-model.trim="q" class="search" data-prevent-emoji-insert :class="{ filled: q != null && q != '' }" :placeholder="i18n.ts.search" type="search" @paste.stop="paste" @keyup.enter="done()">
 	<div ref="emojis" class="emojis">
 		<section class="result">
 			<div v-if="searchResultCustom.length > 0">
@@ -61,7 +61,7 @@
 		</div>
 		<div>
 			<header class="_acrylic">{{ i18n.ts.emoji }}</header>
-			<XSection v-for="category in categories" :emojis="emojilist.filter(e => e.category === category).map(e => e.char)" @chosen="chosen">{{ category }}</XSection>
+			<XSection v-for="category in categories" :key="category" :emojis="emojilist.filter(e => e.category === category).map(e => e.char)" @chosen="chosen">{{ category }}</XSection>
 		</div>
 	</div>
 	<div class="tabs">
@@ -97,7 +97,7 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(e: 'chosen', v: string): void;
+	(ev: 'chosen', v: string): void;
 }>();
 
 const search = ref<HTMLInputElement>();
@@ -138,7 +138,7 @@ watch(q, () => {
 		const emojis = customEmojis;
 		const matches = new Set<Misskey.entities.CustomEmoji>();
 
-		const exactMatch = emojis.find(e => e.name === newQ);
+		const exactMatch = emojis.find(emoji => emoji.name === newQ);
 		if (exactMatch) matches.add(exactMatch);
 
 		if (newQ.includes(' ')) { // AND検索
@@ -201,7 +201,7 @@ watch(q, () => {
 		const emojis = emojilist;
 		const matches = new Set<UnicodeEmojiDef>();
 
-		const exactMatch = emojis.find(e => e.name === newQ);
+		const exactMatch = emojis.find(emoji => emoji.name === newQ);
 		if (exactMatch) matches.add(exactMatch);
 
 		if (newQ.includes(' ')) { // AND検索
@@ -295,7 +295,7 @@ function chosen(emoji: any, ev?: MouseEvent) {
 	// 最近使った絵文字更新
 	if (!pinned.value.includes(key)) {
 		let recents = defaultStore.state.recentlyUsedEmojis;
-		recents = recents.filter((e: any) => e !== key);
+		recents = recents.filter((emoji: any) => emoji !== key);
 		recents.unshift(key);
 		defaultStore.set('recentlyUsedEmojis', recents.splice(0, 32));
 	}
@@ -313,12 +313,12 @@ function done(query?: any): boolean | void {
 	if (query == null || typeof query !== 'string') return;
 
 	const q2 = query.replace(/:/g, '');
-	const exactMatchCustom = customEmojis.find(e => e.name === q2);
+	const exactMatchCustom = customEmojis.find(emoji => emoji.name === q2);
 	if (exactMatchCustom) {
 		chosen(exactMatchCustom);
 		return true;
 	}
-	const exactMatchUnicode = emojilist.find(e => e.char === q2 || e.name === q2);
+	const exactMatchUnicode = emojilist.find(emoji => emoji.char === q2 || emoji.name === q2);
 	if (exactMatchUnicode) {
 		chosen(exactMatchUnicode);
 		return true;

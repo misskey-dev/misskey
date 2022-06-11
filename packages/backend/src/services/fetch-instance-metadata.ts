@@ -1,5 +1,6 @@
 import { DOMWindow, JSDOM } from 'jsdom';
 import fetch from 'node-fetch';
+import tinycolor from 'tinycolor2';
 import { getJson, getHtml, getAgentByUrl } from '@/misc/fetch.js';
 import { Instance } from '@/models/entities/instance.js';
 import { Instances } from '@/models/index.js';
@@ -208,16 +209,11 @@ async function fetchIconUrl(instance: Instance, doc: DOMWindow['document'] | nul
 }
 
 async function getThemeColor(doc: DOMWindow['document'] | null, manifest: Record<string, any> | null): Promise<string | null> {
-	if (doc) {
-		const themeColor = doc.querySelector('meta[name="theme-color"]')?.getAttribute('content');
+	const themeColor = doc?.querySelector('meta[name="theme-color"]')?.getAttribute('content') || manifest?.theme_color;
 
-		if (themeColor) {
-			return themeColor;
-		}
-	}
-
-	if (manifest) {
-		return manifest.theme_color;
+	if (themeColor) {
+		const color = new tinycolor(themeColor);
+		if (color.isValid()) return color.toHexString();
 	}
 
 	return null;

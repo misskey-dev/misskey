@@ -11,7 +11,7 @@ export class MockResolver extends Resolver {
 	public async _register(uri: string, content: string | Record<string, any>, type = 'application/activity+json') {
 		this._rs.set(uri, {
 			type,
-			content: typeof content === 'string' ? content : JSON.stringify(content)
+			content: typeof content === 'string' ? content : JSON.stringify(content),
 		});
 	}
 
@@ -22,9 +22,9 @@ export class MockResolver extends Resolver {
 
 		if (!r) {
 			throw {
-				name: `StatusError`,
+				name: 'StatusError',
 				statusCode: 404,
-				message: `Not registed for mock`
+				message: 'Not registed for mock',
 			};
 		}
 

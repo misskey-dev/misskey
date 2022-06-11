@@ -1,6 +1,6 @@
 {
 	"name": "misskey",
-	"version": "12.110.1",
+	"version": "12.111.0",
 	"codename": "indigo",
 	"repository": {
 		"type": "git",
@@ -19,10 +19,10 @@
 		"watch": "npm run dev",
 		"dev": "node ./scripts/dev.js",
 		"lint": "node ./scripts/lint.js",
-		"cy:open": "cypress open",
+		"cy:open": "cypress open --browser --e2e --config-file=cypress.config.ts",
 		"cy:run": "cypress run",
 		"e2e": "start-server-and-test start:test http://localhost:61812 cy:run",
-		"mocha": "cd packages/backend && cross-env TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT=\"./test/tsconfig.json\" npx mocha",
+		"mocha": "cd packages/backend && cross-env NODE_ENV=test TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT=\"./test/tsconfig.json\" npx mocha",
 		"test": "npm run mocha",
 		"format": "gulp format",
 		"clean": "node ./scripts/clean.js",
@@ -30,8 +30,6 @@
 		"cleanall": "npm run clean-all"
 	},
 	"dependencies": {
-		"@types/gulp": "4.0.9",
-		"@types/gulp-rename": "2.0.1",
 		"execa": "5.1.1",
 		"gulp": "4.0.2",
 		"gulp-cssnano": "2.1.3",
@@ -41,10 +39,12 @@
 		"js-yaml": "4.1.0"
 	},
 	"devDependencies": {
-		"@typescript-eslint/parser": "5.18.0",
+		"@types/gulp": "4.0.9",
+		"@types/gulp-rename": "2.0.1",
+		"@typescript-eslint/parser": "5.27.1",
 		"cross-env": "7.0.3",
-		"cypress": "9.5.3",
+		"cypress": "10.0.3",
 		"start-server-and-test": "1.14.0",
-		"typescript": "4.6.3"
+		"typescript": "4.7.3"
 	}
 }

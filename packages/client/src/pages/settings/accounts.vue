@@ -1,7 +1,7 @@
 <template>
 <div class="_formRoot">
 	<FormSuspense :p="init">
-		<FormButton primary @click="addAccount"><i class="fas fa-plus"></i> {{ $ts.addAccount }}</FormButton>
+		<FormButton primary @click="addAccount"><i class="fas fa-plus"></i> {{ i18n.ts.addAccount }}</FormButton>
 
 		<div v-for="account in accounts" :key="account.id" class="_panel _button lcjjdxlm" @click="menu(account, $event)">
 			<div class="avatar">
@@ -20,90 +20,89 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { defineAsyncComponent, defineExpose, ref } from 'vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import FormButton from '@/components/ui/button.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
-import { getAccounts, addAccount, login } from '@/account';
+import { getAccounts, addAccount as addAccounts, login, $i } from '@/account';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		FormSuspense,
-		FormButton,
-	},
+const storedAccounts = ref<any>(null);
+const accounts = ref<any>(null);
 
-	emits: ['info'],
+const init = async () => {
+	getAccounts().then(accounts => {
+		storedAccounts.value = accounts.filter(x => x.id !== $i!.id);
 
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: this.$ts.accounts,
-				icon: 'fas fa-users',
-				bg: 'var(--bg)',
-			},
-			storedAccounts: getAccounts().then(accounts => accounts.filter(x => x.id !== this.$i.id)),
-			accounts: null,
-			init: async () => os.api('users/show', {
-				userIds: (await this.storedAccounts).map(x => x.id)
-			}).then(accounts => {
-				this.accounts = accounts;
-			}),
-		};
-	},
+		console.log(storedAccounts.value);
 
-	methods: {
-		menu(account, ev) {
-			os.popupMenu([{
-				text: this.$ts.switch,
-				icon: 'fas fa-exchange-alt',
-				action: () => this.switchAccount(account),
-			}, {
-				text: this.$ts.remove,
-				icon: 'fas fa-trash-alt',
-				danger: true,
-				action: () => this.removeAccount(account),
-			}], ev.currentTarget ?? ev.target);
+		return os.api('users/show', {
+			userIds: storedAccounts.value.map(x => x.id)
+		});
+	}).then(response => {
+		accounts.value = response;
+		console.log(accounts.value);
+	});
+};
+
+function menu(account, ev) {
+	os.popupMenu([{
+		text: i18n.ts.switch,
+		icon: 'fas fa-exchange-alt',
+		action: () => switchAccount(account),
+	}, {
+		text: i18n.ts.remove,
+		icon: 'fas fa-trash-alt',
+		danger: true,
+		action: () => removeAccount(account),
+	}], ev.currentTarget ?? ev.target);
+}
+
+function addAccount(ev) {
+	os.popupMenu([{
+		text: i18n.ts.existingAccount,
+		action: () => { addExistingAccount(); },
+	}, {
+		text: i18n.ts.createAccount,
+		action: () => { createAccount(); },
+	}], ev.currentTarget ?? ev.target);
+}
+
+function addExistingAccount() {
+	os.popup(defineAsyncComponent(() => import('@/components/signin-dialog.vue')), {}, {
+		done: res => {
+			addAccounts(res.id, res.i);
+			os.success();
 		},
+	}, 'closed');
+}
 
-		addAccount(ev) {
-			os.popupMenu([{
-				text: this.$ts.existingAccount,
-				action: () => { this.addExistingAccount(); },
-			}, {
-				text: this.$ts.createAccount,
-				action: () => { this.createAccount(); },
-			}], ev.currentTarget ?? ev.target);
+function createAccount() {
+	os.popup(defineAsyncComponent(() => import('@/components/signup-dialog.vue')), {}, {
+		done: res => {
+			addAccounts(res.id, res.i);
+			switchAccountWithToken(res.i);
 		},
+	}, 'closed');
+}
 
-		addExistingAccount() {
-			os.popup(import('@/components/signin-dialog.vue'), {}, {
-				done: res => {
-					addAccount(res.id, res.i);
-					os.success();
-				},
-			}, 'closed');
-		},
+async function switchAccount(account: any) {
+	const fetchedAccounts: any[] = await getAccounts();
+	const token = fetchedAccounts.find(x => x.id === account.id).token;
+	switchAccountWithToken(token);
+}
 
-		createAccount() {
-			os.popup(import('@/components/signup-dialog.vue'), {}, {
-				done: res => {
-					addAccount(res.id, res.i);
-					this.switchAccountWithToken(res.i);
-				},
-			}, 'closed');
-		},
+function switchAccountWithToken(token: string) {
+	login(token);
+}
 
-		async switchAccount(account: any) {
-			const storedAccounts = await getAccounts();
-			const token = storedAccounts.find(x => x.id === account.id).token;
-			this.switchAccountWithToken(token);
-		},
-
-		switchAccountWithToken(token: string) {
-			login(token);
-		},
+defineExpose({
+	[symbols.PAGE_INFO]: {
+		title: i18n.ts.accounts,
+		icon: 'fas fa-users',
+		bg: 'var(--bg)',
 	}
 });
 </script>

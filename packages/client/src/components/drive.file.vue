@@ -31,7 +31,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, defineAsyncComponent, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import MkDriveFileThumbnail from './drive-file-thumbnail.vue';
@@ -50,9 +50,9 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(e: 'chosen', r: Misskey.entities.DriveFile): void;
-	(e: 'dragstart'): void;
-	(e: 'dragend'): void;
+	(ev: 'chosen', r: Misskey.entities.DriveFile): void;
+	(ev: 'dragstart'): void;
+	(ev: 'dragend'): void;
 }>();
 
 const isDragging = ref(false);
@@ -99,14 +99,14 @@ function onClick(ev: MouseEvent) {
 	}
 }
 
-function onContextmenu(e: MouseEvent) {
-	os.contextMenu(getMenu(), e);
+function onContextmenu(ev: MouseEvent) {
+	os.contextMenu(getMenu(), ev);
 }
 
-function onDragstart(e: DragEvent) {
-	if (e.dataTransfer) {
-		e.dataTransfer.effectAllowed = 'move';
-		e.dataTransfer.setData(_DATA_TRANSFER_DRIVE_FILE_, JSON.stringify(props.file));
+function onDragstart(ev: DragEvent) {
+	if (ev.dataTransfer) {
+		ev.dataTransfer.effectAllowed = 'move';
+		ev.dataTransfer.setData(_DATA_TRANSFER_DRIVE_FILE_, JSON.stringify(props.file));
 	}
 	isDragging.value = true;
 
@@ -133,11 +133,11 @@ function rename() {
 }
 
 function describe() {
-	os.popup(import('@/components/media-caption.vue'), {
+	os.popup(defineAsyncComponent(() => import('@/components/media-caption.vue')), {
 		title: i18n.ts.describeFile,
 		input: {
 			placeholder: i18n.ts.inputNewDescription,
-			default: props.file.comment !== null ? props.file.comment : '',
+			default: props.file.comment != null ? props.file.comment : '',
 		},
 		image: props.file
 	}, {
@@ -146,7 +146,7 @@ function describe() {
 			let comment = result.result;
 			os.api('drive/files/update', {
 				fileId: props.file.id,
-				comment: comment.length == 0 ? null : comment
+				comment: comment.length === 0 ? null : comment
 			});
 		}
 	}, 'closed');

@@ -9,6 +9,8 @@ export const meta = {
 
 	kind: 'read:drive',
 
+	description: 'Find the notes to which the given file is attached.',
+
 	res: {
 		type: 'array',
 		optional: false, nullable: false,

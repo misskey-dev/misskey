@@ -61,47 +61,58 @@ export const UserRepository = db.getRepository(User).extend({
 	//#endregion
 
 	async getRelation(me: User['id'], target: User['id']) {
-		const [following1, following2, followReq1, followReq2, toBlocking, fromBlocked, mute] = await Promise.all([
-			Followings.findOneBy({
-				followerId: me,
-				followeeId: target,
-			}),
-			Followings.findOneBy({
-				followerId: target,
-				followeeId: me,
-			}),
-			FollowRequests.findOneBy({
-				followerId: me,
-				followeeId: target,
-			}),
-			FollowRequests.findOneBy({
-				followerId: target,
-				followeeId: me,
-			}),
-			Blockings.findOneBy({
-				blockerId: me,
-				blockeeId: target,
-			}),
-			Blockings.findOneBy({
-				blockerId: target,
-				blockeeId: me,
-			}),
-			Mutings.findOneBy({
-				muterId: me,
-				muteeId: target,
-			}),
-		]);
-
-		return {
+		return awaitAll({
 			id: target,
-			isFollowing: following1 != null,
-			hasPendingFollowRequestFromYou: followReq1 != null,
-			hasPendingFollowRequestToYou: followReq2 != null,
-			isFollowed: following2 != null,
-			isBlocking: toBlocking != null,
-			isBlocked: fromBlocked != null,
-			isMuted: mute != null,
-		};
+			isFollowing: Followings.count({
+				where: {
+					followerId: me,
+					followeeId: target,
+				},
+				take: 1,
+			}).then(n => n > 0),
+			isFollowed: Followings.count({
+				where: {
+					followerId: target,
+					followeeId: me,
+				},
+				take: 1,
+			}).then(n => n > 0),
+			hasPendingFollowRequestFromYou: FollowRequests.count({
+				where: {
+					followerId: me,
+					followeeId: target,
+				},
+				take: 1,
+			}).then(n => n > 0),
+			hasPendingFollowRequestToYou: FollowRequests.count({
+				where: {
+					followerId: target,
+					followeeId: me,
+				},
+				take: 1,
+			}).then(n => n > 0),
+			isBlocking: Blockings.count({
+				where: {
+					blockerId: me,
+					blockeeId: target,
+				},
+				take: 1,
+			}).then(n => n > 0),
+			isBlocked: Blockings.count({
+				where: {
+					blockerId: target,
+					blockeeId: me,
+				},
+				take: 1,
+			}).then(n => n > 0),
+			isMuted: Mutings.count({
+				where: {
+					muterId: me,
+					muteeId: target,
+				},
+				take: 1,
+			}).then(n => n > 0),
+		});
 	},
 
 	async getHasUnreadMessagingMessage(userId: User['id']): Promise<boolean> {

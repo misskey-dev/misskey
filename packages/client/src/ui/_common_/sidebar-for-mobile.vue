@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, toRef, watch } from 'vue';
+import { computed, defineAsyncComponent, defineComponent, ref, toRef, watch } from 'vue';
 import { host } from '@/config';
 import { search } from '@/scripts/search';
 import * as os from '@/os';
@@ -61,13 +61,13 @@ export default defineComponent({
 			otherMenuItemIndicated,
 			post: os.post,
 			search,
-			openAccountMenu:(ev) => {
+			openAccountMenu: (ev) => {
 				openAccountMenu({
 					withExtraOperation: true,
 				}, ev);
 			},
 			more: () => {
-				os.popup(import('@/components/launch-pad.vue'), {}, {
+				os.popup(defineAsyncComponent(() => import('@/components/launch-pad.vue')), {}, {
 				}, 'closed');
 			},
 		};

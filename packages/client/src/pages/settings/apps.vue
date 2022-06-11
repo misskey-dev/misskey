@@ -4,7 +4,7 @@
 		<template #empty>
 			<div class="_fullinfo">
 				<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
-				<div>{{ $ts.nothing }}</div>
+				<div>{{ i18n.ts.nothing }}</div>
 			</div>
 		</template>
 		<template v-slot="{items}">
@@ -14,18 +14,18 @@
 					<div class="name">{{ token.name }}</div>
 					<div class="description">{{ token.description }}</div>
 					<div class="_keyValue">
-						<div>{{ $ts.installedDate }}:</div>
+						<div>{{ i18n.ts.installedDate }}:</div>
 						<div><MkTime :time="token.createdAt"/></div>
 					</div>
 					<div class="_keyValue">
-						<div>{{ $ts.lastUsedDate }}:</div>
+						<div>{{ i18n.ts.lastUsedDate }}:</div>
 						<div><MkTime :time="token.lastUsedAt"/></div>
 					</div>
 					<div class="actions">
 						<button class="_button" @click="revoke(token)"><i class="fas fa-trash-alt"></i></button>
 					</div>
 					<details>
-						<summary>{{ $ts.details }}</summary>
+						<summary>{{ i18n.ts.details }}</summary>
 						<ul>
 							<li v-for="p in token.permission" :key="p">{{ $t(`_permissions.${p}`) }}</li>
 						</ul>
@@ -37,42 +37,34 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { defineExpose, ref } from 'vue';
 import FormPagination from '@/components/ui/pagination.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		FormPagination,
-	},
+const list = ref<any>(null);
 
-	emits: ['info'],
+const pagination = {
+	endpoint: 'i/apps' as const,
+	limit: 100,
+	params: {
+		sort: '+lastUsedAt'
+	}
+};
 
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: this.$ts.installedApps,
-				icon: 'fas fa-plug',
-				bg: 'var(--bg)',
-			},
-			pagination: {
-				endpoint: 'i/apps' as const,
-				limit: 100,
-				params: {
-					sort: '+lastUsedAt'
-				}
-			},
-		};
-	},
+function revoke(token) {
+	os.api('i/revoke-token', { tokenId: token.id }).then(() => {
+		list.value.reload();
+	});
+}
 
-	methods: {
-		revoke(token) {
-			os.api('i/revoke-token', { tokenId: token.id }).then(() => {
-				this.$refs.list.reload();
-			});
-		}
+defineExpose({
+	[symbols.PAGE_INFO]: {
+		title: i18n.ts.installedApps,
+		icon: 'fas fa-plug',
+		bg: 'var(--bg)',
 	}
 });
 </script>

@@ -24,57 +24,36 @@
 </FormSuspense>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
 import FormSwitch from '@/components/form/switch.vue';
 import FormInput from '@/components/form/input.vue';
 import FormButton from '@/components/ui/button.vue';
 import FormInfo from '@/components/ui/info.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { fetchInstance } from '@/instance';
 
-export default defineComponent({
-	components: {
-		FormSwitch,
-		FormInput,
-		FormInfo,
-		FormButton,
-		FormSuspense,
-	},
+let uri: string = $ref('');
+let enableDiscordIntegration: boolean = $ref(false);
+let discordClientId: string | null = $ref(null);
+let discordClientSecret: string | null = $ref(null);
 
-	emits: ['info'],
+async function init() {
+	const meta = await os.api('admin/meta');
+	uri = meta.uri;
+	enableDiscordIntegration = meta.enableDiscordIntegration;
+	discordClientId = meta.discordClientId;
+	discordClientSecret = meta.discordClientSecret;
+}
 
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: 'Discord',
-				icon: 'fab fa-discord'
-			},
-			enableDiscordIntegration: false,
-			discordClientId: null,
-			discordClientSecret: null,
-		}
-	},
-
-	methods: {
-		async init() {
-			const meta = await os.api('admin/meta');
-			this.uri = meta.uri;
-			this.enableDiscordIntegration = meta.enableDiscordIntegration;
-			this.discordClientId = meta.discordClientId;
-			this.discordClientSecret = meta.discordClientSecret;
-		},
-		save() {
-			os.apiWithDialog('admin/update-meta', {
-				enableDiscordIntegration: this.enableDiscordIntegration,
-				discordClientId: this.discordClientId,
-				discordClientSecret: this.discordClientSecret,
-			}).then(() => {
-				fetchInstance();
-			});
-		}
-	}
-});
+function save() {
+	os.apiWithDialog('admin/update-meta', {
+		enableDiscordIntegration,
+		discordClientId,
+		discordClientSecret,
+	}).then(() => {
+		fetchInstance();
+	});
+}
 </script>

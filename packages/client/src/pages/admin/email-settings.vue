@@ -3,37 +3,37 @@
 	<FormSuspense :p="init">
 		<div class="_formRoot">
 			<FormSwitch v-model="enableEmail" class="_formBlock">
-				<template #label>{{ $ts.enableEmail }}</template>
-				<template #caption>{{ $ts.emailConfigInfo }}</template>
+				<template #label>{{ i18n.ts.enableEmail }}</template>
+				<template #caption>{{ i18n.ts.emailConfigInfo }}</template>
 			</FormSwitch>
 
 			<template v-if="enableEmail">
 				<FormInput v-model="email" type="email" class="_formBlock">
-					<template #label>{{ $ts.emailAddress }}</template>
+					<template #label>{{ i18n.ts.emailAddress }}</template>
 				</FormInput>
 
 				<FormSection>
-					<template #label>{{ $ts.smtpConfig }}</template>
+					<template #label>{{ i18n.ts.smtpConfig }}</template>
 					<FormSplit :min-width="280">
 						<FormInput v-model="smtpHost" class="_formBlock">
-							<template #label>{{ $ts.smtpHost }}</template>
+							<template #label>{{ i18n.ts.smtpHost }}</template>
 						</FormInput>
 						<FormInput v-model="smtpPort" type="number" class="_formBlock">
-							<template #label>{{ $ts.smtpPort }}</template>
+							<template #label>{{ i18n.ts.smtpPort }}</template>
 						</FormInput>
 					</FormSplit>
 					<FormSplit :min-width="280">
 						<FormInput v-model="smtpUser" class="_formBlock">
-							<template #label>{{ $ts.smtpUser }}</template>
+							<template #label>{{ i18n.ts.smtpUser }}</template>
 						</FormInput>
 						<FormInput v-model="smtpPass" type="password" class="_formBlock">
-							<template #label>{{ $ts.smtpPass }}</template>
+							<template #label>{{ i18n.ts.smtpPass }}</template>
 						</FormInput>
 					</FormSplit>
-					<FormInfo class="_formBlock">{{ $ts.emptyToDisableSmtpAuth }}</FormInfo>
+					<FormInfo class="_formBlock">{{ i18n.ts.emptyToDisableSmtpAuth }}</FormInfo>
 					<FormSwitch v-model="smtpSecure" class="_formBlock">
-						<template #label>{{ $ts.smtpSecure }}</template>
-						<template #caption>{{ $ts.smtpSecureInfo }}</template>
+						<template #label>{{ i18n.ts.smtpSecure }}</template>
+						<template #caption>{{ i18n.ts.smtpSecureInfo }}</template>
 					</FormSwitch>
 				</FormSection>
 			</template>
@@ -42,8 +42,8 @@
 </MkSpacer>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
 import FormSwitch from '@/components/form/switch.vue';
 import FormInput from '@/components/form/input.vue';
 import FormInfo from '@/components/ui/info.vue';
@@ -52,86 +52,71 @@ import FormSplit from '@/components/form/split.vue';
 import FormSection from '@/components/form/section.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
-import { fetchInstance } from '@/instance';
+import { fetchInstance, instance } from '@/instance';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		FormSwitch,
-		FormInput,
-		FormSplit,
-		FormSection,
-		FormInfo,
-		FormSuspense,
-	},
+let enableEmail: boolean = $ref(false);
+let email: any = $ref(null);
+let smtpSecure: boolean = $ref(false);
+let smtpHost: string = $ref('');
+let smtpPort: number = $ref(0);
+let smtpUser: string = $ref('');
+let smtpPass: string = $ref('');
 
-	emits: ['info'],
+async function init() {
+	const meta = await os.api('admin/meta');
+	enableEmail = meta.enableEmail;
+	email = meta.email;
+	smtpSecure = meta.smtpSecure;
+	smtpHost = meta.smtpHost;
+	smtpPort = meta.smtpPort;
+	smtpUser = meta.smtpUser;
+	smtpPass = meta.smtpPass;
+}
 
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: this.$ts.emailServer,
-				icon: 'fas fa-envelope',
-				bg: 'var(--bg)',
-				actions: [{
-					asFullButton: true,
-					text: this.$ts.testEmail,
-					handler: this.testEmail,
-				}, {
-					asFullButton: true,
-					icon: 'fas fa-check',
-					text: this.$ts.save,
-					handler: this.save,
-				}],
-			},
-			enableEmail: false,
-			email: null,
-			smtpSecure: false,
-			smtpHost: '',
-			smtpPort: 0,
-			smtpUser: '',
-			smtpPass: '',
-		}
-	},
+async function testEmail() {
+	const { canceled, result: destination } = await os.inputText({
+		title: i18n.ts.destination,
+		type: 'email',
+		placeholder: instance.maintainerEmail
+	});
+	if (canceled) return;
+	os.apiWithDialog('admin/send-email', {
+		to: destination,
+		subject: 'Test email',
+		text: 'Yo'
+	});
+}
 
-	methods: {
-		async init() {
-			const meta = await os.api('admin/meta');
-			this.enableEmail = meta.enableEmail;
-			this.email = meta.email;
-			this.smtpSecure = meta.smtpSecure;
-			this.smtpHost = meta.smtpHost;
-			this.smtpPort = meta.smtpPort;
-			this.smtpUser = meta.smtpUser;
-			this.smtpPass = meta.smtpPass;
-		},
+function save() {
+	os.apiWithDialog('admin/update-meta', {
+		enableEmail,
+		email,
+		smtpSecure,
+		smtpHost,
+		smtpPort,
+		smtpUser,
+		smtpPass,
+	}).then(() => {
+		fetchInstance();
+	});
+}
 
-		async testEmail() {
-			const { canceled, result: destination } = await os.inputText({
-				title: this.$ts.destination,
-				type: 'email',
-				placeholder: this.$instance.maintainerEmail
-			});
-			if (canceled) return;
-			os.apiWithDialog('admin/send-email', {
-				to: destination,
-				subject: 'Test email',
-				text: 'Yo'
-			});
-		},
-
-		save() {
-			os.apiWithDialog('admin/update-meta', {
-				enableEmail: this.enableEmail,
-				email: this.email,
-				smtpSecure: this.smtpSecure,
-				smtpHost: this.smtpHost,
-				smtpPort: this.smtpPort,
-				smtpUser: this.smtpUser,
-				smtpPass: this.smtpPass,
-			}).then(() => {
-				fetchInstance();
-			});
-		}
+defineExpose({
+	[symbols.PAGE_INFO]: {
+		title: i18n.ts.emailServer,
+		icon: 'fas fa-envelope',
+		bg: 'var(--bg)',
+		actions: [{
+			asFullButton: true,
+			text: i18n.ts.testEmail,
+			handler: testEmail,
+		}, {
+			asFullButton: true,
+			icon: 'fas fa-check',
+			text: i18n.ts.save,
+			handler: save,
+		}],
 	}
 });
 </script>

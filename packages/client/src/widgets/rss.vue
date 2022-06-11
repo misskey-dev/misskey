@@ -1,5 +1,5 @@
 <template>
-<MkContainer :show-header="widgetProps.showHeader">
+<MkContainer :show-header="widgetProps.showHeader" class="mkw-rss">
 	<template #header><i class="fas fa-rss-square"></i>RSS</template>
 	<template #func><button class="_button" @click="configure"><i class="fas fa-cog"></i></button></template>
 
@@ -38,7 +38,7 @@ type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 //const props = defineProps<WidgetComponentProps<WidgetProps>>();
 //const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
 const props = defineProps<{ widget?: Widget<WidgetProps>; }>();
-const emit = defineEmits<{ (e: 'updateProps', props: WidgetProps); }>();
+const emit = defineEmits<{ (ev: 'updateProps', props: WidgetProps); }>();
 
 const { widgetProps, configure } = useWidgetPropsManager(name,
 	widgetPropsDef,

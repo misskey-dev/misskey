@@ -1,66 +1,44 @@
 <template>
 <div class="_formRoot">
-	<FormSwitch :value="$i.injectFeaturedNote" class="_formBlock" @update:modelValue="onChangeInjectFeaturedNote">
-		{{ $ts.showFeaturedNotesInTimeline }}
+	<FormSwitch v-model="$i.injectFeaturedNote" class="_formBlock" @update:modelValue="onChangeInjectFeaturedNote">
+		{{ i18n.ts.showFeaturedNotesInTimeline }}
 	</FormSwitch>
 
 	<!--
-	<FormSwitch v-model="reportError" class="_formBlock">{{ $ts.sendErrorReports }}<template #caption>{{ $ts.sendErrorReportsDescription }}</template></FormSwitch>
+	<FormSwitch v-model="reportError" class="_formBlock">{{ i18n.ts.sendErrorReports }}<template #caption>{{ i18n.ts.sendErrorReportsDescription }}</template></FormSwitch>
 	-->
 
-	<FormLink to="/settings/account-info" class="_formBlock">{{ $ts.accountInfo }}</FormLink>
+	<FormLink to="/settings/account-info" class="_formBlock">{{ i18n.ts.accountInfo }}</FormLink>
 
-	<FormLink to="/settings/delete-account" class="_formBlock"><template #icon><i class="fas fa-exclamation-triangle"></i></template>{{ $ts.closeAccount }}</FormLink>
+	<FormLink to="/settings/delete-account" class="_formBlock"><template #icon><i class="fas fa-exclamation-triangle"></i></template>{{ i18n.ts.closeAccount }}</FormLink>
 </div>
 </template>
 
-<script lang="ts">
-import { defineAsyncComponent, defineComponent } from 'vue';
+<script lang="ts" setup>
+import { computed, defineExpose } from 'vue';
 import FormSwitch from '@/components/form/switch.vue';
-import FormSection from '@/components/form/section.vue';
 import FormLink from '@/components/form/link.vue';
 import * as os from '@/os';
-import { debug } from '@/config';
 import { defaultStore } from '@/store';
-import { unisonReload } from '@/scripts/unison-reload';
 import * as symbols from '@/symbols';
+import { $i } from '@/account';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		FormSection,
-		FormSwitch,
-		FormLink,
-	},
+const reportError = computed(defaultStore.makeGetterSetter('reportError'));
 
-	emits: ['info'],
-	
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: this.$ts.other,
-				icon: 'fas fa-ellipsis-h',
-				bg: 'var(--bg)',
-			},
-			debug,
-		}
-	},
+function onChangeInjectFeaturedNote(v) {
+	os.api('i/update', {
+		injectFeaturedNote: v
+	}).then((i) => {
+		$i!.injectFeaturedNote = i.injectFeaturedNote;
+	});
+}
 
-	computed: {
-		reportError: defaultStore.makeGetterSetter('reportError'),
-	},
-
-	methods: {
-		changeDebug(v) {
-			console.log(v);
-			localStorage.setItem('debug', v.toString());
-			unisonReload();
-		},
-
-		onChangeInjectFeaturedNote(v) {
-			os.api('i/update', {
-				injectFeaturedNote: v
-			});
-		},
+defineExpose({
+	[symbols.PAGE_INFO]: {
+		title: i18n.ts.other,
+		icon: 'fas fa-ellipsis-h',
+		bg: 'var(--bg)',
 	}
 });
 </script>

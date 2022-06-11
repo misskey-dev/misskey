@@ -1,10 +1,11 @@
 # Contribution guide
 We're glad you're interested in contributing Misskey! In this document you will find the information you need to contribute to the project.
 
-**ℹ️ Important:** This project uses Japanese as its major language, **but you do not need to translate and write the Issues/PRs in Japanese.**
-Also, you might receive comments on your Issue/PR in Japanese, but you do not need to reply to them in Japanese as well.\
-The accuracy of machine translation into Japanese is not high, so it will be easier for us to understand if you write it in the original language.
-It will also allow the reader to use the translation tool of their preference if necessary.
+> **Note**
+> This project uses Japanese as its major language, **but you do not need to translate and write the Issues/PRs in Japanese.**
+> Also, you might receive comments on your Issue/PR in Japanese, but you do not need to reply to them in Japanese as well.\
+> The accuracy of machine translation into Japanese is not high, so it will be easier for us to understand if you write it in the original language.
+> It will also allow the reader to use the translation tool of their preference if necessary.
 
 ## Roadmap
 See [ROADMAP.md](./ROADMAP.md)
@@ -15,6 +16,9 @@ Before creating an issue, please check the following:
 - Do not use Issues to ask questions or troubleshooting.
 	- Issues should only be used to feature requests, suggestions, and bug tracking.
 	- Please ask questions or troubleshooting in the [Misskey Forum](https://forum.misskey.io/) or [Discord](https://discord.gg/Wp8gVStHW3).
+
+> **Warning**
+> Do not close issues that are about to be resolved. It should remain open until a commit that actually resolves it is merged.
 
 ## Before implementation
 When you want to add a feature or fix a bug, **first have the design and policy reviewed in an Issue** (if it is not there, please make one). Without this step, there is a high possibility that the PR will not be merged even if it is implemented.
@@ -61,6 +65,30 @@ Be willing to comment on the good points and not just the things you want fixed 
 	- Does the test ensure the expected behavior?
 	- Are there any omissions or gaps?
 	- Does it check for anomalies?
+
+## Deploy
+The `/deploy` command by issue comment can be used to deploy the contents of a PR to the preview environment.
+```
+/deploy sha=<commit hash>
+```
+An actual domain will be assigned so you can test the federation.
+
+## Merge
+For now, basically only @syuilo has the authority to merge PRs into develop because he is most familiar with the codebase.
+However, minor fixes, refactoring, and urgent changes may be merged at the discretion of a contributor.
+
+## Release
+### Release Instructions
+1. Commit version changes in the `develop` branch ([package.json](https://github.com/misskey-dev/misskey/blob/develop/package.json))
+2. Create a release PR.
+	- Into `master` from `develop` branch.
+	- The title must be in the format `Release: x.y.z`.
+		- `x.y.z` is the new version you are trying to release.
+3. Deploy and perform a simple QA check. Also verify that the tests passed.
+4. Merge it.
+5. Create a [release of GitHub](https://github.com/misskey-dev/misskey/releases)
+	- The target branch must be `master`
+	- The tag name must be the version
 
 ## Localization (l10n)
 Misskey uses [Crowdin](https://crowdin.com/project/misskey) for localization management.

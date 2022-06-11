@@ -37,7 +37,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(e: 'closed'): void;
+	(ev: 'closed'): void;
 }>();
 
 const window = ref<InstanceType<typeof XWindow>>();

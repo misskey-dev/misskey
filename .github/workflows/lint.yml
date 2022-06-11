@@ -8,7 +8,7 @@ on:
   pull_request:
 
 jobs:
-  lint:
+  backend:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -16,10 +16,24 @@ jobs:
         submodules: true
     - uses: actions/setup-node@v3
       with:
-        node-version: 16.x
+        node-version: 18.x
         cache: 'yarn'
         cache-dependency-path: |
           packages/backend/yarn.lock
+    - run: yarn install
+    - run: yarn --cwd ./packages/backend lint
+
+  client:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 18.x
+        cache: 'yarn'
+        cache-dependency-path: |
           packages/client/yarn.lock
     - run: yarn install
-    - run: yarn lint
+    - run: yarn --cwd ./packages/client lint

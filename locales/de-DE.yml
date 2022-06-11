@@ -842,6 +842,9 @@ oneDay: "Einen Tag"
 oneWeek: "Eine Woche"
 reflectMayTakeTime: "Es kann etwas dauern, bis sich dies widerspiegelt."
 failedToFetchAccountInformation: "Benutzerkontoinformationen konnten nicht abgefragt werden"
+rateLimitExceeded: "Versuchsanzahl überschritten"
+cropImage: "Bild zuschneiden"
+cropImageAsk: "Möchtest du das Bild zuschneiden?"
 _emailUnavailable:
   used: "Diese Email-Adresse wird bereits verwendet"
   format: "Das Format dieser Email-Adresse ist ungültig"
@@ -1006,7 +1009,7 @@ _instanceMute:
   heading: "Liste der stummzuschaltenden Instanzen"
 _theme:
   explore: "Farbschemata erforschen"
-  install: "Farbschmata installieren"
+  install: "Farbschemata installieren"
   manage: "Farbschemaverwaltung"
   code: "Farbschemencode"
   description: "Beschreibung"
@@ -1087,7 +1090,6 @@ _sfx:
   antenna: "Antennen"
   channel: "Kanalbenachrichtigung"
 _ago:
-  unknown: "Unbekannt"
   future: "Zukunft"
   justNow: "Gerade eben"
   secondsAgo: "vor {n} Sekunde(n)"
@@ -1131,6 +1133,7 @@ _2fa:
   registerKey: "Neuen Sicherheitsschlüssel registrieren"
   step1: "Installiere zuerst eine Authentifizierungsapp (z.B. {a} oder {b}) auf deinem Gerät."
   step2: "Dann, scanne den angezeigten QR-Code mit deinem Gerät."
+  step2Url: "Nutzt du ein Desktopprogramm kannst du alternativ diese URL eingeben:"
   step3: "Gib zum Abschluss den Token ein, der von deiner App angezeigt wird."
   step4: "Alle folgenden Anmeldungsversuche werden ab sofort die Eingabe eines solchen Tokens benötigen."
   securityKeyInfo: "Du kannst neben Fingerabdruck- oder PIN-Authentifizierung auf deinem Gerät auch Anmeldung mit Hilfe eines FIDO2-kompatiblen Hardware-Sicherheitsschlüssels einrichten."
@@ -1613,8 +1616,9 @@ _notification:
   youWereFollowed: "ist dir gefolgt"
   youReceivedFollowRequest: "Du hast eine Follow-Anfrage erhalten"
   yourFollowRequestAccepted: "Deine Follow-Anfrage wurde akzeptiert"
-  youWereInvitedToGroup: "Du wurdest in eine Gruppe eingeladen"
+  youWereInvitedToGroup: "{userName} hat dich in eine Gruppe eingeladen"
   pollEnded: "Umfrageergebnisse sind verfügbar"
+  emptyPushNotificationMessage: "Push-Benachrichtigungen wurden aktualisiert"
   _types:
     all: "Alle"
     follow: "Neue Follower"
@@ -1629,6 +1633,10 @@ _notification:
     followRequestAccepted: "Akzeptierte Follow-Anfragen"
     groupInvited: "Erhaltene Gruppeneinladungen"
     app: "Benachrichtigungen von Apps"
+  _actions:
+    followBack: "folgt dir nun auch"
+    reply: "Antworten"
+    renote: "Renote"
 _deck:
   alwaysShowMainColumn: "Hauptspalte immer zeigen"
   columnAlign: "Spaltenausrichtung"
