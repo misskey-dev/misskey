@@ -53,25 +53,33 @@ let cropper: Cropper | null = null;
 let loading = $ref(true);
 
 const ok = async () => {
-	const croppedCanvas = await cropper?.getCropperSelection()?.$toCanvas();
-	croppedCanvas.toBlob(blob => {
-		const formData = new FormData();
-		formData.append('file', blob);
-		formData.append('i', $i.token);
-		if (defaultStore.state.uploadFolder) {
-			formData.append('folderId', defaultStore.state.uploadFolder);
-		}
+	const promise = new Promise<misskey.entities.DriveFile>(async (res) => {
+		const croppedCanvas = await cropper?.getCropperSelection()?.$toCanvas();
+		croppedCanvas.toBlob(blob => {
+			const formData = new FormData();
+			formData.append('file', blob);
+			formData.append('i', $i.token);
+			if (defaultStore.state.uploadFolder) {
+				formData.append('folderId', defaultStore.state.uploadFolder);
+			}
 
-		fetch(apiUrl + '/drive/files/create', {
-			method: 'POST',
-			body: formData,
-		})
-		.then(response => response.json())
-		.then(f => {
-			emit('ok', f);
-			dialogEl.close();
+			fetch(apiUrl + '/drive/files/create', {
+				method: 'POST',
+				body: formData,
+			})
+			.then(response => response.json())
+			.then(f => {
+				res(f);
+			});
 		});
 	});
+
+	os.promiseDialog(promise);
+
+	const f = await promise;
+
+	emit('ok', f);
+	dialogEl.close();
 };
 
 const cancel = () => {
