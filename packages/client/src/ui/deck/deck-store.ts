@@ -1,9 +1,9 @@
 import { throttle } from 'throttle-debounce';
+import { markRaw } from 'vue';
+import { notificationTypes } from 'misskey-js';
+import { Storage } from '../../pizzax';
 import { i18n } from '@/i18n';
 import { api } from '@/os';
-import { markRaw } from 'vue';
-import { Storage } from '../../pizzax';
-import { notificationTypes } from 'misskey-js';
 
 type ColumnWidget = {
 	name: string;
@@ -32,35 +32,35 @@ function copy<T>(x: T): T {
 export const deckStore = markRaw(new Storage('deck', {
 	profile: {
 		where: 'deviceAccount',
-		default: 'default'
+		default: 'default',
 	},
 	columns: {
 		where: 'deviceAccount',
-		default: [] as Column[]
+		default: [] as Column[],
 	},
 	layout: {
 		where: 'deviceAccount',
-		default: [] as Column['id'][][]
+		default: [] as Column['id'][][],
 	},
 	columnAlign: {
 		where: 'deviceAccount',
-		default: 'left' as 'left' | 'right' | 'center'
+		default: 'left' as 'left' | 'right' | 'center',
 	},
 	alwaysShowMainColumn: {
 		where: 'deviceAccount',
-		default: true
+		default: true,
 	},
 	navWindow: {
 		where: 'deviceAccount',
-		default: true
+		default: true,
 	},
 	columnMargin: {
 		where: 'deviceAccount',
-		default: 16
+		default: 16,
 	},
 	columnHeaderHeight: {
 		where: 'deviceAccount',
-		default: 42
+		default: 42,
 	},
 }));
 
@@ -109,7 +109,7 @@ export const saveDeck = throttle(1000, () => {
 		value: {
 			columns: deckStore.reactiveState.columns.value,
 			layout: deckStore.reactiveState.layout.value,
-		}
+		},
 	});
 });
 
