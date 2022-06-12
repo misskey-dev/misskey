@@ -17,6 +17,9 @@ You should also include the user name that made the change.
 - Client: デッキでウィジェットの情報が保存されない問題を修正 @syuilo
 
 ## 12.111.0 (2022/06/11)
+### Note
+- Node.js 16.15.0 or later is required
+
 ### Improvements
 - Supports Unicode Emoji 14.0 @mei23
 - プッシュ通知を複数アカウント対応に #7667 @tamaina
