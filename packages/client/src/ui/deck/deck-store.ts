@@ -276,7 +276,7 @@ export function setColumnWidgets(id: Column['id'], widgets: ColumnWidget[]) {
 	saveDeck();
 }
 
-export function updateColumnWidget(id: Column['id'], widgetId: string, WidgetData: any) {
+export function updateColumnWidget(id: Column['id'], widgetId: string, widgetData: any) {
 	const columns = copy(deckStore.state.columns);
 	const columnIndex = deckStore.state.columns.findIndex(c => c.id === id);
 	const column = copy(deckStore.state.columns[columnIndex]);

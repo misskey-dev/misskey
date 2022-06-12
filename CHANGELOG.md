@@ -9,6 +9,13 @@
 You should also include the user name that made the change.
 -->
 
+## 12.x.x (unreleased)
+
+### Improvements
+
+### Bugfixes
+- Client: デッキでウィジェットの情報が保存されない問題を修正 @syuilo
+
 ## 12.111.0 (2022/06/11)
 ### Improvements
 - Supports Unicode Emoji 14.0 @mei23
