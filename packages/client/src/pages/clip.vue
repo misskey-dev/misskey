@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, watch } from 'vue';
+import { computed, watch, provide } from 'vue';
 import * as misskey from 'misskey-js';
 import XNotes from '@/components/notes.vue';
 import { $i } from '@/account';
@@ -46,6 +46,8 @@ watch(() => props.clipId, async () => {
 }, {
 	immediate: true,
 }); 
+
+provide('cullentClipPage', $$(clip));
 
 defineExpose({
 	[symbols.PAGE_INFO]: computed(() => clip ? {
