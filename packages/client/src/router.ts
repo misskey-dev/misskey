@@ -41,7 +41,7 @@ const defaultRoutes = [
 	{ path: '/gallery', component: page(() => import('./pages/gallery/index.vue')) },
 	{ path: '/gallery/new', component: page(() => import('./pages/gallery/edit.vue')) },
 	{ path: '/gallery/:postId/edit', component: page(() => import('./pages/gallery/edit.vue')), props: route => ({ postId: route.params.postId }) },
-	{ path: '/gallery/:postId', component: page(() => import('./pages/gallery/edit.vue')), props: route => ({ postId: route.params.postId }) },
+	{ path: '/gallery/:postId', component: page(() => import('./pages/gallery/post.vue')), props: route => ({ postId: route.params.postId }) },
 	{ path: '/channels', component: page('channels') },
 	{ path: '/channels/new', component: page('channel-editor') },
 	{ path: '/channels/:channelId/edit', component: page('channel-editor'), props: true },
