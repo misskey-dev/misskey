@@ -198,7 +198,7 @@ export function getNoteMenu(props: {
 
 		menu = [
 		...(
-			cullentClipPage.userId === $i.id ? [{
+			cullentClipPage?.userId === $i.id ? [{
 				icon: 'fas fa-link-horizontal-slash',
 				text: i18n.ts.unclip,
 				danger: true,
