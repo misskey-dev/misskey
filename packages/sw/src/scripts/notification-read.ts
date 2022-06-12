@@ -37,6 +37,11 @@ class SwNotificationReadManager {
 
 		account.queue.push(data.body.id as string);
 
+		if (account.queue.length >= 20) {
+			if (account.timeout) clearTimeout(account.timeout);
+			return api('notifications/read', data.userId, { notificationIds: account.queue });
+		}
+
 		// 最後の呼び出しから200ms待ってまとめて処理する
 		if (account.timeout) clearTimeout(account.timeout);
 		account.timeout = setTimeout(() => {

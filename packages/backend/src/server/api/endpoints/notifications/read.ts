@@ -34,7 +34,11 @@ export const paramDef = {
 		{
 			type: 'object',
 			properties: {
-				notificationIds: { type: 'array', items: { type: 'string', format: 'misskey:id' } },
+				notificationIds: {
+					type: 'array',
+					items: { type: 'string', format: 'misskey:id' },
+					maxItems: 100,
+				},
 			},
 			required: ['notificationIds'],
 		},
