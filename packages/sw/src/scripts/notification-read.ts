@@ -42,7 +42,7 @@ class SwNotificationReadManager {
 			const notificationIds = account.queue;
 			account.queue = [];
 			await api('notifications/read', data.userId, { notificationIds });
-			return
+			return;
 		}
 
 		// 最後の呼び出しから200ms待ってまとめて処理する
