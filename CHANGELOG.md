@@ -9,6 +9,13 @@
 You should also include the user name that made the change.
 -->
 
+## 12.x.x (unreleased)
+
+### Improvements
+
+### Bugfixes
+- Fix GenerateVideoThumbnail failed @mei23
+
 ## 12.111.1 (2022/06/13)
 
 ### Bugfixes
