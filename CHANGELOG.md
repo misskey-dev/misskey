@@ -9,7 +9,18 @@
 You should also include the user name that made the change.
 -->
 
+## 12.111.1 (2022/06/13)
+
+### Bugfixes
+- some fixes of multiple notification read @tamaina
+- some GenerateVideoThumbnail failed @Johann150
+- Client: デッキでウィジェットの情報が保存されない問題を修正 @syuilo
+- Client: ギャラリーの投稿を開こうとすると編集画面が表示される @futchitwo
+
 ## 12.111.0 (2022/06/11)
+### Note
+- Node.js 16.15.0 or later is required
+
 ### Improvements
 - Supports Unicode Emoji 14.0 @mei23
 - プッシュ通知を複数アカウント対応に #7667 @tamaina
@@ -32,10 +43,8 @@ You should also include the user name that made the change.
 
 ### Bugfixes
 - Server: keep file order of note attachement @Johann150
-- Server: fix caching @Johann150
 - Server: fix missing foreign key for reports leading to reports page being unusable @Johann150
 - Server: fix internal in-memory caching @Johann150
-- Server: use correct order of attachments on notes @Johann150
 - Server: prevent crash when processing certain PNGs @syuilo
 - Server: Fix unable to generate video thumbnails @mei23
 - Server: Fix `Cannot find module` issue @mei23
