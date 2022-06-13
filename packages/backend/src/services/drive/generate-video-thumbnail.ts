@@ -6,8 +6,6 @@ import FFmpeg from 'fluent-ffmpeg';
 export async function GenerateVideoThumbnail(source: string): Promise<IImage> {
 	const [dir, cleanup] = await createTempDir();
 
-	const outFile = `${dir}/out.png`;
-
 	try {
 		await new Promise((res, rej) => {
 			FFmpeg({
@@ -24,9 +22,8 @@ export async function GenerateVideoThumbnail(source: string): Promise<IImage> {
 		});
 
 		// JPEGに変換 (Webpでもいいが、MastodonはWebpをサポートせず表示できなくなる)
-		return await convertToJpeg(outFile, 498, 280);
+		return await convertToJpeg(`${dir}/out.png`, 498, 280);
 	} finally {
-		await fs.promises.unlink(outFile);
 		cleanup();
 	}
 }
