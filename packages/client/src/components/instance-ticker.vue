@@ -2,6 +2,7 @@
 <div class="hpaizdrt" :style="bg">
 	<img v-if="instance.faviconUrl" class="icon" :src="instance.faviconUrl"/>
 	<span class="name">{{ instance.name }}</span>
+	<span v-if="instance.softwareName" class="software">({{ instance.softwareName }})</span>
 </div>
 </template>
 
@@ -14,6 +15,7 @@ const props = defineProps<{
 		faviconUrl?: string
 		name: string
 		themeColor?: string
+		softwareName?: string
 	}
 }>();
 
@@ -21,7 +23,8 @@ const props = defineProps<{
 const instance = props.instance ?? {
 	faviconUrl: '/favicon.ico',
 	name: instanceName,
-	themeColor: (document.querySelector('meta[name="theme-color-orig"]') as HTMLMetaElement)?.content
+	themeColor: (document.querySelector('meta[name="theme-color-orig"]') as HTMLMetaElement)?.content,
+	softwareName: 'misskey',
 };
 
 const themeColor = instance.themeColor ?? '#777777';
@@ -34,6 +37,7 @@ const bg = {
 <style lang="scss" scoped>
 .hpaizdrt {
 	$height: 1.1rem;
+	position: relative;
 
 	height: $height;
 	border-radius: 4px 0 0 4px;
@@ -57,12 +61,17 @@ const bg = {
 		height: 100%;
 	}
 
-	> .name {
+	> .name, .software {
 		margin-left: 4px;
 		line-height: $height;
 		font-size: 0.9em;
 		vertical-align: top;
 		font-weight: bold;
+	}
+
+	> .software {
+		position: absolute;
+		right: .3em;
 	}
 }
 </style>
