@@ -7,7 +7,7 @@ import { resolvePerson } from './person.js';
 import { resolveImage } from './image.js';
 import { CacheableRemoteUser } from '@/models/entities/user.js';
 import { htmlToMfm } from '../misc/html-to-mfm.js';
-import { extractApHashtags } from './tag.js';
+import { extractApHashtags, extractQuoteUrl } from './tag.js';
 import { unique, toArray, toSingle } from '@/prelude/array.js';
 import { extractPollFromQuestion } from './question.js';
 import vote from '@/services/note/polls/vote.js';
@@ -155,8 +155,9 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 
 	// 引用
 	let quote: Note | undefined | null;
+	const quoteUrl = extractQuoteUrl(note.tag);
 
-	if (note._misskey_quote || note.quoteUrl) {
+	if (quoteUrl || note._misskey_quote || note.quoteUrl) {
 		const tryResolveNote = async (uri: string): Promise<{
 			status: 'ok';
 			res: Note | null;
@@ -183,7 +184,7 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 			}
 		};
 
-		const uris = unique([note._misskey_quote, note.quoteUrl].filter((x): x is string => typeof x === 'string'));
+		const uris = unique([quoteUrl, note._misskey_quote, note.quoteUrl].filter((x): x is string => typeof x === 'string'));
 		const results = await Promise.all(uris.map(uri => tryResolveNote(uri)));
 
 		quote = results.filter((x): x is { status: 'ok', res: Note | null } => x.status === 'ok').map(x => x.res).find(x => x);

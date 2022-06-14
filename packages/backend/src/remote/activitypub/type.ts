@@ -222,6 +222,15 @@ export interface IApEmoji extends IObject {
 export const isEmoji = (object: IObject): object is IApEmoji =>
 	getApType(object) === 'Emoji' && !Array.isArray(object.icon) && object.icon.url != null;
 
+export interface ILink extends IObject {
+	type: 'Link';
+	rel?: string | string[];
+	href: string;
+}
+
+export const isLink = (object: IObject): object is ILink =>
+	getApType(object) === 'Link' && object.href != null;
+
 export interface ICreate extends IActivity {
 	type: 'Create';
 }
