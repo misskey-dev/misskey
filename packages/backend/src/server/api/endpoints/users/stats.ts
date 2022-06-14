@@ -1,7 +1,7 @@
-import define from '../../define.js';
-import { ApiError } from '../../error.js';
 import { DriveFiles, Followings, NoteFavorites, NoteReactions, Notes, PageLikes, PollVotes, Users } from '@/models/index.js';
 import { awaitAll } from '@/prelude/await-all.js';
+import define from '../../define.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['users'],

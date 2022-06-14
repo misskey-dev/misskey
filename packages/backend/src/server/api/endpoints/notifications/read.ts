@@ -4,7 +4,7 @@ import { readNotification } from '../../common/read-notification.js';
 export const meta = {
 	desc: {
 		'ja-JP': '通知を既読にします。',
-		'en-US': 'Mark a notification as read.'
+		'en-US': 'Mark a notification as read.',
 	},
 
 	tags: ['notifications', 'account'],

@@ -1,12 +1,12 @@
-import Koa from 'koa';
 import { performance } from 'perf_hooks';
-import { limiter } from './limiter.js';
+import Koa from 'koa';
 import { CacheableLocalUser, User } from '@/models/entities/user.js';
+import { AccessToken } from '@/models/entities/access-token.js';
+import { getIpHash } from '@/misc/get-ip-hash.js';
+import { limiter } from './limiter.js';
 import endpoints, { IEndpointMeta } from './endpoints.js';
 import { ApiError } from './error.js';
 import { apiLogger } from './logger.js';
-import { AccessToken } from '@/models/entities/access-token.js';
-import { getIpHash } from '@/misc/get-ip-hash.js';
 
 const accessDenied = {
 	message: 'Access denied.',
@@ -120,20 +120,20 @@ export default async (endpoint: string, user: CacheableLocalUser | null | undefi
 		if (e instanceof ApiError) {
 			throw e;
 		} else {
-			apiLogger.error(`Internal error occurred in ${ep.name}: ${e?.message}`, {
+			apiLogger.error(`Internal error occurred in ${ep.name}: ${e.message}`, {
 				ep: ep.name,
 				ps: data,
 				e: {
-					message: e?.message,
-					code: e?.name,
-					stack: e?.stack,
+					message: e.message,
+					code: e.name,
+					stack: e.stack,
 				},
 			});
 			throw new ApiError(null, {
 				e: {
-					message: e?.message,
-					code: e?.name,
-					stack: e?.stack,
+					message: e.message,
+					code: e.name,
+					stack: e.stack,
 				},
 			});
 		}
