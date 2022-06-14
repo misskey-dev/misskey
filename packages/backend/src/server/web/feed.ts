@@ -44,8 +44,8 @@ export default async function(user: User, withAll = false, history = 5) {
 		let contentStr = await noteToString(note, true);
 		let next = note.renoteId ? note.renoteId : note.replyId;
 		let depth = history;
-		while(depth > 0 && next && withAll){
-			let finding = await findById(next);
+		while (depth > 0 && next && withAll) {
+			const finding = await findById(next);
 			contentStr += finding.text;
 			next = finding.next;
 			depth -= 1;
@@ -60,41 +60,41 @@ export default async function(user: User, withAll = false, history = 5) {
 		});
 	}
 
-	async function noteToString(note, isTheNote = false){
-		const author = isTheNote ? null : await Users.findOneBy({id: note.userId});
+	async function noteToString(note, isTheNote = false) {
+		const author = isTheNote ? null : await Users.findOneBy({ id: note.userId });
 		let outstr = author ? `${author.name}(@${author.username}@${author.host ? author.host : config.host}) ${(note.renoteId ? 'renotes' : (note.replyId ? 'replies' : 'says'))}: <br>` : '';
 		const files = note.fileIds.length > 0 ? await DriveFiles.findBy({
 			id: In(note.fileIds),
 		}) : [];
 		let fileEle = '';
-		for (const file of files){
-			if(file.type.startsWith('image/')){
+		for (const file of files) {
+			if (file.type.startsWith('image/')) {
 				fileEle += ` <br><img src="${DriveFiles.getPublicUrl(file)}">`;
-			}else if(file.type.startsWith('audio/')){
+			} else if (file.type.startsWith('audio/')) {
 				fileEle += ` <br><audio controls src="${DriveFiles.getPublicUrl(file)}" type="${file.type}">`;
-			}else if(file.type.startsWith('video/')){
+			} else if (file.type.startsWith('video/')) {
 				fileEle += ` <br><video controls src="${DriveFiles.getPublicUrl(file)}" type="${file.type}">`;
-			}else{
+			} else {
 				fileEle += ` <br><a href="${DriveFiles.getPublicUrl(file)}" download="${file.name}">${file.name}</a>`;
 			}
 		}
 		outstr += `${note.cw ? note.cw + '<br>' : ''}${note.text || ''}${fileEle}`;
-		if(isTheNote){
-			outstr += ` <span class="${(note.renoteId ? 'renote_note' : (note.replyId ? 'reply_note' : 'new_note'))} ${(fileEle.indexOf('img src') != -1 ? 'with_img' : 'without_img')}"></span>`;
+		if (isTheNote) {
+			outstr += ` <span class="${(note.renoteId ? 'renote_note' : (note.replyId ? 'reply_note' : 'new_note'))} ${(fileEle.indexOf('img src') !== -1 ? 'with_img' : 'without_img')}"></span>`;
 		}
 		return outstr;
 	}
 
-	async function findById(id){
+	async function findById(id) {
 		let text = '';
 		let next = null;
-		const findings = await Notes.find({where: {id: id, visibility: In(['public', 'home'])}, order: { createdAt: -1 }, take: 20});
-		for (const aFind of findings){
+		const findings = await Notes.find({ where: { id: id, visibility: In(['public', 'home']) }, order: { createdAt: -1 }, take: 20 });
+		for (const aFind of findings) {
 			text += `<hr>`;
 			text += await noteToString(aFind);
 			next = aFind.renoteId ? aFind.renoteId : aFind.replyId;
 		}
-		return {text: text, next: next};
+		return { text: text, next: next };
 	}
 
 	return feed;
