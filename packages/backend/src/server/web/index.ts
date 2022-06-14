@@ -217,7 +217,7 @@ router.get('/api.json', async ctx => {
 	ctx.body = genOpenapiSpec();
 });
 
-const getFeed = async (acct: string) => {
+const getFeed = async (acct: string, withAll = false, history = 5) => {
 	const { username, host } = Acct.parse(acct);
 	const user = await Users.findOneBy({
 		usernameLower: username.toLowerCase(),
@@ -225,12 +225,12 @@ const getFeed = async (acct: string) => {
 		isSuspended: false,
 	});
 
-	return user && await packFeed(user);
+	return user && await packFeed(user, withAll, history);
 };
 
 // Atom
 router.get('/@:user.atom', async ctx => {
-	const feed = await getFeed(ctx.params.user);
+	const feed = await getFeed(ctx.params.user, ctx.query.history ? true : false, parseInt(ctx.query.history) ? parseInt(ctx.query.history) : 5);
 
 	if (feed) {
 		ctx.set('Content-Type', 'application/atom+xml; charset=utf-8');
@@ -242,7 +242,7 @@ router.get('/@:user.atom', async ctx => {
 
 // RSS
 router.get('/@:user.rss', async ctx => {
-	const feed = await getFeed(ctx.params.user);
+	const feed = await getFeed(ctx.params.user, ctx.query.history ? true : false, parseInt(ctx.query.history) ? parseInt(ctx.query.history) : 5);
 
 	if (feed) {
 		ctx.set('Content-Type', 'application/rss+xml; charset=utf-8');
@@ -254,7 +254,7 @@ router.get('/@:user.rss', async ctx => {
 
 // JSON
 router.get('/@:user.json', async ctx => {
-	const feed = await getFeed(ctx.params.user);
+	const feed = await getFeed(ctx.params.user, ctx.query.history ? true : false, parseInt(ctx.query.history) ? parseInt(ctx.query.history) : 5);
 
 	if (feed) {
 		ctx.set('Content-Type', 'application/json; charset=utf-8');
