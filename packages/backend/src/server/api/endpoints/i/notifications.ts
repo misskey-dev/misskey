@@ -6,11 +6,17 @@ import { Notifications, Followings, Mutings, Users } from '@/models/index.js';
 import { notificationTypes } from '@/types.js';
 import read from '@/services/note/read.js';
 import { Brackets } from 'typeorm';
+import ms from 'ms';
 
 export const meta = {
 	tags: ['account', 'notifications'],
 
 	requireCredential: true,
+
+	limit: {
+		duration: ms('1minute'),
+		max: 10,
+	},
 
 	kind: 'read:notifications',
 
