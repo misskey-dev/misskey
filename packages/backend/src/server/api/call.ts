@@ -33,7 +33,7 @@ export default async (endpoint: string, user: CacheableLocalUser | null | undefi
 		throw new ApiError(accessDenied);
 	}
 
-	if (ep.meta.limit && !isModerator) {
+	if (ep.meta.limit) {
 		// koa will automatically load the `X-Forwarded-For` header if `proxy: true` is configured in the app.
 		let limitActor: string;
 		if (user) {
