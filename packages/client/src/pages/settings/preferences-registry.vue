@@ -162,11 +162,11 @@ function loadFile() {
 		try {
 			registry = JSON.parse(await file.text()) as unknown as Registry;
 			validate(registry);
-		} catch (e) {
+		} catch (err) {
 			return os.alert({
 				type: 'error',
 				title: ts._preferencesRegistry.cannotLoad,
-				text: e?.message,
+				text: err?.message,
 			});
 		}
 
