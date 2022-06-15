@@ -118,7 +118,7 @@ async function saveNew() {
 	});
 
 	if (canceled) return;
-	if (Object.entries(registries).some(e => e[1].name === name)) {
+	if (Object.entries(registries).some(registry => registry[1].name === name)) {
 		return os.alert({
 			title: ts._preferencesRegistry.cannotSave,
 			text: t('_preferencesRegistry.nameAlreadyExists', { name }),
