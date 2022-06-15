@@ -217,20 +217,23 @@ router.get('/api.json', async ctx => {
 	ctx.body = genOpenapiSpec();
 });
 
-const getFeed = async (acct: string, withAll = false, history = 5) => {
+const getFeed = async (acct: string, history:string, noteintitle:string) => {
 	const { username, host } = Acct.parse(acct);
 	const user = await Users.findOneBy({
 		usernameLower: username.toLowerCase(),
 		host: host ?? IsNull(),
 		isSuspended: false,
 	});
-
-	return user && await packFeed(user, withAll, history);
+	const thread = parseInt(history, 10);
+	if (isNaN(history) || history <= 0 || history > 30) {
+		history = 3;
+	}
+	return user && await packFeed(user, history, !isNaN(noteintitle));
 };
 
 // Atom
 router.get('/@:user.atom', async ctx => {
-	const feed = await getFeed(ctx.params.user, ctx.query.history ? true : false, parseInt(ctx.query.history) ? parseInt(ctx.query.history) : 5);
+	const feed = await getFeed(ctx.params.user, ctx.query.history, ctx.query.noteintitle);
 
 	if (feed) {
 		ctx.set('Content-Type', 'application/atom+xml; charset=utf-8');
@@ -242,7 +245,7 @@ router.get('/@:user.atom', async ctx => {
 
 // RSS
 router.get('/@:user.rss', async ctx => {
-	const feed = await getFeed(ctx.params.user, ctx.query.history ? true : false, parseInt(ctx.query.history) ? parseInt(ctx.query.history) : 5);
+	const feed = await getFeed(ctx.params.user, ctx.query.history, ctx.query.noteintitle);
 
 	if (feed) {
 		ctx.set('Content-Type', 'application/rss+xml; charset=utf-8');
@@ -254,7 +257,7 @@ router.get('/@:user.rss', async ctx => {
 
 // JSON
 router.get('/@:user.json', async ctx => {
-	const feed = await getFeed(ctx.params.user, ctx.query.history ? true : false, parseInt(ctx.query.history) ? parseInt(ctx.query.history) : 5);
+	const feed = await getFeed(ctx.params.user, ctx.query.history, ctx.query.noteintitle);
 
 	if (feed) {
 		ctx.set('Content-Type', 'application/json; charset=utf-8');
