@@ -355,8 +355,10 @@ export async function addFile({
 	const info = await getFileInfo(path, {
 		skipSensitiveDetection: skipNsfwCheck,
 		sensitiveThreshold: // 感度が高いほどしきい値は低くすることになる
-			instance.sensitiveImageDetectionSensitivity === 'high' ? 0.4 :
-			instance.sensitiveImageDetectionSensitivity === 'low' ? 0.6 :
+			instance.sensitiveImageDetectionSensitivity === 'veryHigh' ? 0.1 :
+			instance.sensitiveImageDetectionSensitivity === 'high' ? 0.3 :
+			instance.sensitiveImageDetectionSensitivity === 'low' ? 0.7 :
+			instance.sensitiveImageDetectionSensitivity === 'veryLow' ? 0.9 :
 			0.5,
 	});
 	logger.info(`${JSON.stringify(info)}`);

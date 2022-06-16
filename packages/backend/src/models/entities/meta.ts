@@ -195,10 +195,10 @@ export class Meta {
 	public sensitiveImageDetection: 'none' | 'all' | 'local' | 'remote';
 
 	@Column('enum', {
-		enum: ['medium', 'low', 'high'],
+		enum: ['medium', 'low', 'high', 'veryLow', 'veryHigh'],
 		default: 'medium',
 	})
-	public sensitiveImageDetectionSensitivity: 'medium' | 'low' | 'high';
+	public sensitiveImageDetectionSensitivity: 'medium' | 'low' | 'high' | 'veryLow' | 'veryHigh';
 
 	@Column('boolean', {
 		default: true,

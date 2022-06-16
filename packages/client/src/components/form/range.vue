@@ -12,6 +12,7 @@
 			<div ref="thumbEl" v-tooltip="textConverter(finalValue)" class="thumb" :style="{ left: thumbPosition + 'px' }" @mousedown="onMousedown" @touchstart="onMousedown"></div>
 		</div>
 	</div>
+	<div class="caption"><slot name="caption"></slot></div>
 </div>
 </template>
 
@@ -24,31 +25,31 @@ export default defineComponent({
 		modelValue: {
 			type: Number,
 			required: false,
-			default: 0
+			default: 0,
 		},
 		disabled: {
 			type: Boolean,
 			required: false,
-			default: false
+			default: false,
 		},
 		min: {
 			type: Number,
 			required: false,
-			default: 0
+			default: 0,
 		},
 		max: {
 			type: Number,
 			required: false,
-			default: 100
+			default: 100,
 		},
 		step: {
 			type: Number,
 			required: false,
-			default: 1
+			default: 1,
 		},
 		autofocus: {
 			type: Boolean,
-			required: false
+			required: false,
 		},
 		textConverter: {
 			type: Function,

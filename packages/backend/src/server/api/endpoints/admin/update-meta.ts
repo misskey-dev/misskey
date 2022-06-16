@@ -49,7 +49,7 @@ export const paramDef = {
 		recaptchaSiteKey: { type: 'string', nullable: true },
 		recaptchaSecretKey: { type: 'string', nullable: true },
 		sensitiveImageDetection: { type: 'string', enum: ['none', 'all', 'local', 'remote'] },
-		sensitiveImageDetectionSensitivity: { type: 'string', enum: ['medium', 'low', 'high'] },
+		sensitiveImageDetectionSensitivity: { type: 'string', enum: ['medium', 'low', 'high', 'veryLow', 'veryHigh'] },
 		forceIsSensitiveWhenPredicted: { type: 'boolean' },
 		disallowUploadWhenPredictedAsPorn: { type: 'boolean' },
 		proxyAccountId: { type: 'string', format: 'misskey:id', nullable: true },

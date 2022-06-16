@@ -30,13 +30,10 @@
 						<option value="remote">{{ i18n.ts.remoteOnly }}</option>
 					</FormRadios>
 
-					<FormRadios v-model="sensitiveImageDetectionSensitivity" class="_formBlock">
+					<FormRange v-model="sensitiveImageDetectionSensitivity" :min="0" :max="4" :step="1" :text-converter="(v) => `${v + 1}`" class="_formBlock">
 						<template #label>{{ i18n.ts._sensitiveImageDetection.sensitivity }}</template>
-						<option value="low">{{ i18n.ts.low }}</option>
-						<option value="medium">{{ i18n.ts.medium }}</option>
-						<option value="high">{{ i18n.ts.high }}</option>
 						<template #caption>{{ i18n.ts._sensitiveImageDetection.sensitivityDescription }}</template>
-					</FormRadios>
+					</FormRange>
 
 					<FormSwitch v-model="forceIsSensitiveWhenPredicted" class="_formBlock">
 						<template #label>{{ i18n.ts._sensitiveImageDetection.forceIsSensitiveWhenPredicted }}</template>
@@ -75,7 +72,7 @@ import FormRadios from '@/components/form/radios.vue';
 import FormSwitch from '@/components/form/switch.vue';
 import FormInfo from '@/components/ui/info.vue';
 import FormSuspense from '@/components/form/suspense.vue';
-import FormSection from '@/components/form/section.vue';
+import FormRange from '@/components/form/range.vue';
 import FormInput from '@/components/form/input.vue';
 import FormButton from '@/components/ui/button.vue';
 import * as os from '@/os';
@@ -87,7 +84,7 @@ let summalyProxy: string = $ref('');
 let enableHcaptcha: boolean = $ref(false);
 let enableRecaptcha: boolean = $ref(false);
 let sensitiveImageDetection: string = $ref('none');
-let sensitiveImageDetectionSensitivity: string = $ref('medium');
+let sensitiveImageDetectionSensitivity: number = $ref(0);
 let forceIsSensitiveWhenPredicted: boolean = $ref(false);
 let disallowUploadWhenPredictedAsPorn: boolean = $ref(false);
 
@@ -97,7 +94,12 @@ async function init() {
 	enableHcaptcha = meta.enableHcaptcha;
 	enableRecaptcha = meta.enableRecaptcha;
 	sensitiveImageDetection = meta.sensitiveImageDetection;
-	sensitiveImageDetectionSensitivity = meta.sensitiveImageDetectionSensitivity;
+	sensitiveImageDetectionSensitivity =
+		meta.sensitiveImageDetectionSensitivity === 'veryLow' ? 0 :
+		meta.sensitiveImageDetectionSensitivity === 'low' ? 1 :
+		meta.sensitiveImageDetectionSensitivity === 'medium' ? 2 :
+		meta.sensitiveImageDetectionSensitivity === 'high' ? 3 :
+		meta.sensitiveImageDetectionSensitivity === 'veryHigh' ? 4 : 0;
 	forceIsSensitiveWhenPredicted = meta.forceIsSensitiveWhenPredicted;
 	disallowUploadWhenPredictedAsPorn = meta.disallowUploadWhenPredictedAsPorn;
 }
@@ -107,7 +109,13 @@ function save() {
 		summalyProxy,
 		sensitiveImageDetection,
 		forceIsSensitiveWhenPredicted,
-		sensitiveImageDetectionSensitivity,
+		sensitiveImageDetectionSensitivity:
+			sensitiveImageDetectionSensitivity === 0 ? 'veryLow' :
+			sensitiveImageDetectionSensitivity === 1 ? 'low' :
+			sensitiveImageDetectionSensitivity === 2 ? 'medium' :
+			sensitiveImageDetectionSensitivity === 3 ? 'high' :
+			sensitiveImageDetectionSensitivity === 4 ? 'veryHigh' :
+			0,
 		disallowUploadWhenPredictedAsPorn,
 	}).then(() => {
 		fetchInstance();
