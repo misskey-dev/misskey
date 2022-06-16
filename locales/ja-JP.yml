@@ -852,7 +852,7 @@ remoteOnly: "リモートのみ"
 _sensitiveImageDetection:
   description: "機械学習を使ってセンシティブな画像を検出し、自動でNSFWフラグを設定したり、投稿を拒否することができます。サーバーの負荷が少し増えます。"
   sensitivity: "検出感度"
-  sensitivityDescription: "検出感度を高くすると、偽陰性を減らすことができます。感度を低くすると、偽陽性を減らすことができます。"
+  sensitivityDescription: "感度を低くすると、偽陽性を減らすことができます。検出感度を高くすると、偽陰性を減らすことができます。"
   forceIsSensitiveWhenPredicted: "センシティブ判定された画像のNSFW解除を不可にする"
   disallowUploadWhenPredictedAsPorn: "ポルノの可能性の高いものは投稿不可にする"
 
