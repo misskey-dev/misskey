@@ -13,7 +13,8 @@ export async function detectSensitive(path: string): Promise<nsfw.predictionType
 	try {
 		if (model == null) model = await nsfw.load(`file://${_dirname}/../../nsfw-model/`, { size: 299 });
 
-		const image = await tf.node.decodeImage(fs.readFileSync(path), 3);
+		const buffer = await fs.promises.readFile(path);
+		const image = await tf.node.decodeImage(buffer, 3) as tf.Tensor3D;
 		try {
 			const predictions = await model.classify(image);
 			return predictions;

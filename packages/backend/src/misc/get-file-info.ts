@@ -1,13 +1,17 @@
 import * as fs from 'node:fs';
 import * as crypto from 'node:crypto';
+import { join } from 'node:path';
 import * as stream from 'node:stream';
 import * as util from 'node:util';
 import { fileTypeFromFile } from 'file-type';
+import FFmpeg from 'fluent-ffmpeg';
 import isSvg from 'is-svg';
 import probeImageSize from 'probe-image-size';
+import { type predictionType } from 'nsfwjs';
 import sharp from 'sharp';
 import { encode } from 'blurhash';
 import { detectSensitive } from '@/services/detect-sensitive.js';
+import { createTempDir } from './create-temp';
 
 const pipeline = util.promisify(stream.pipeline);
 
@@ -94,16 +98,13 @@ export async function getFileInfo(path: string, opts: {
 	let sensitive = false;
 	let porn = false;
 
-	if (!opts.skipSensitiveDetection && ['image/jpeg', 'image/png', 'image/apng', 'image/webp'].includes(type.mime)) {
-		const threshold = opts.sensitiveThreshold ?? 0.5;
-		const thresholdForPorn = opts.sensitiveThresholdForPorn ?? 0.75;
-		const result = await detectSensitive(path);
-		if (result) {
-			if ((result.find(x => x.className === 'Sexy')?.probability ?? 0) > threshold) sensitive = true;
-			if ((result.find(x => x.className === 'Hentai')?.probability ?? 0) > threshold) sensitive = true;
-			if ((result.find(x => x.className === 'Porn')?.probability ?? 0) > threshold) sensitive = true;
-			if ((result.find(x => x.className === 'Porn')?.probability ?? 0) > thresholdForPorn) porn = true;
-		}
+	if (!opts.skipSensitiveDetection) {
+		[sensitive, porn] = await detectSensitivity(
+			path,
+			type.mime,
+			opts.sensitiveThreshold ?? 0.5,
+			opts.sensitiveThresholdForPorn ?? 0.75,
+		);
 	}
 
 	return {
@@ -118,6 +119,63 @@ export async function getFileInfo(path: string, opts: {
 		porn,
 		warnings,
 	};
+}
+
+async function detectSensitivity(source: string, mime: string, sensitiveThreshold: number, sensitiveThresholdForPorn: number): Promise<[sensitive: boolean, porn: boolean]> {
+	let sensitive = false;
+	let porn = false;
+
+	function assignPrediction(result: readonly predictionType[]) {
+		if ((result.find(x => x.className === 'Sexy')?.probability ?? 0) > sensitiveThreshold) sensitive = true;
+		if ((result.find(x => x.className === 'Hentai')?.probability ?? 0) > sensitiveThreshold) sensitive = true;
+		if ((result.find(x => x.className === 'Porn')?.probability ?? 0) > sensitiveThreshold) sensitive = true;
+
+		if ((result.find(x => x.className === 'Porn')?.probability ?? 0) > sensitiveThresholdForPorn) porn = true;
+	}
+
+	if (['image/jpeg', 'image/png', 'image/webp'].includes(mime)) {
+		const result = await detectSensitive(source);
+		if (result) {
+			assignPrediction(result);
+		}
+	} else if (mime === 'image/apng' || mime.startsWith('video/')) {
+		const [outDir, disposeOutDir] = await createTempDir();
+		try {
+			const command = FFmpeg()
+				.input(source)
+				.inputOptions(['-skip_frame', 'nokey']) // I-Frame のみを取得する
+				.noAudio()
+				.videoFilters([{
+					filter: 'scale',
+					options: {
+						w: 299,
+						h: 299,
+					},
+				}])
+				.format('image2')
+				.output(join(outDir, '%d.png'))
+				.outputOptions(['-vsync', '0']); // 可変フレームレートにすることで穴埋めをさせない
+			await new Promise((resolve, reject) => {
+				command.once('end', resolve);
+				command.once('error', reject);
+				command.run();
+			});
+			const intraFramePaths = await fs.promises.readdir(outDir);
+			for (const path of intraFramePaths) {
+				const result = await detectSensitive(path);
+				if (result) {
+					assignPrediction(result); // いずれかのフレームでセンシティブ判定されたら設定する
+				}
+				if (sensitive && porn) {
+					break; // 全ての項目が既に判定されていたら、これ以降のフレームを読んでいっても判定は変わらない
+				}
+			}
+		} finally {
+			disposeOutDir();
+		}
+	}
+
+	return [sensitive, porn];
 }
 
 /**
