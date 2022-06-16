@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryColumn, ManyToOne, JoinColumn } from 'typeorm';
-import { User } from './user.js';
 import { id } from '../id.js';
+import { User } from './user.js';
 import { Clip } from './clip.js';
 
 @Entity()
@@ -187,6 +187,28 @@ export class Meta {
 		nullable: true,
 	})
 	public recaptchaSecretKey: string | null;
+
+	@Column('enum', {
+		enum: ['none', 'all', 'local', 'remote'],
+		default: 'none',
+	})
+	public sensitiveImageDetection: 'none' | 'all' | 'local' | 'remote';
+
+	@Column('enum', {
+		enum: ['medium', 'low', 'high'],
+		default: 'medium',
+	})
+	public sensitiveImageDetectionSensitivity: 'medium' | 'low' | 'high';
+
+	@Column('boolean', {
+		default: true,
+	})
+	public forceIsSensitiveWhenPredicted: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public disallowUploadWhenPredictedAsPorn: boolean;
 
 	@Column('integer', {
 		default: 1024,

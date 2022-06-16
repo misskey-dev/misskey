@@ -1,8 +1,8 @@
 import { publishDriveStream } from '@/services/stream.js';
-import define from '../../../define.js';
-import { ApiError } from '../../../error.js';
 import { DriveFiles, DriveFolders, Users } from '@/models/index.js';
 import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/misc/hard-limits.js';
+import define from '../../../define.js';
+import { ApiError } from '../../../error.js';
 
 export const meta = {
 	tags: ['drive'],
@@ -77,7 +77,13 @@ export default define(meta, paramDef, async (ps, user) => {
 
 	if (ps.comment !== undefined) file.comment = ps.comment;
 
-	if (ps.isSensitive !== undefined) file.isSensitive = ps.isSensitive;
+	if (ps.isSensitive !== undefined) {
+		if (file.forceIsSensitive) {
+			if (ps.isSensitive) file.isSensitive = true;
+		} else {
+			file.isSensitive = ps.isSensitive;
+		}
+	}
 
 	if (ps.folderId !== undefined) {
 		if (ps.folderId === null) {

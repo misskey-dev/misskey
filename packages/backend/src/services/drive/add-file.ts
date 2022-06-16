@@ -2,26 +2,26 @@ import * as fs from 'node:fs';
 
 import { v4 as uuid } from 'uuid';
 
+import S3 from 'aws-sdk/clients/s3.js';
+import sharp from 'sharp';
+import { IsNull } from 'typeorm';
 import { publishMainStream, publishDriveStream } from '@/services/stream.js';
-import { deleteFile } from './delete-file.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
-import { GenerateVideoThumbnail } from './generate-video-thumbnail.js';
-import { driveLogger } from './logger.js';
-import { IImage, convertSharpToJpeg, convertSharpToWebp, convertSharpToPng } from './image-processor.js';
 import { contentDisposition } from '@/misc/content-disposition.js';
 import { getFileInfo } from '@/misc/get-file-info.js';
 import { DriveFiles, DriveFolders, Users, Instances, UserProfiles } from '@/models/index.js';
-import { InternalStorage } from './internal-storage.js';
 import { DriveFile } from '@/models/entities/drive-file.js';
 import { IRemoteUser, User } from '@/models/entities/user.js';
 import { driveChart, perUserDriveChart, instanceChart } from '@/services/chart/index.js';
 import { genId } from '@/misc/gen-id.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
-import S3 from 'aws-sdk/clients/s3.js';
-import { getS3 } from './s3.js';
-import sharp from 'sharp';
 import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
-import { IsNull } from 'typeorm';
+import { getS3 } from './s3.js';
+import { InternalStorage } from './internal-storage.js';
+import { IImage, convertSharpToJpeg, convertSharpToWebp, convertSharpToPng } from './image-processor.js';
+import { driveLogger } from './logger.js';
+import { GenerateVideoThumbnail } from './generate-video-thumbnail.js';
+import { deleteFile } from './delete-file.js';
 
 const logger = driveLogger.createSubLogger('register', 'yellow');
 
@@ -171,7 +171,7 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 	}
 
 	if (!['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml'].includes(type)) {
-		logger.debug(`web image and thumbnail not created (not an required file)`);
+		logger.debug('web image and thumbnail not created (not an required file)');
 		return {
 			webpublic: null,
 			thumbnail: null,
@@ -212,7 +212,7 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 	let webpublic: IImage | null = null;
 
 	if (generateWeb && !satisfyWebpublic) {
-		logger.info(`creating web image`);
+		logger.info('creating web image');
 
 		try {
 			if (['image/jpeg', 'image/webp'].includes(type)) {
@@ -222,14 +222,14 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 			} else if (['image/svg+xml'].includes(type)) {
 				webpublic = await convertSharpToPng(img, 2048, 2048);
 			} else {
-				logger.debug(`web image not created (not an required image)`);
+				logger.debug('web image not created (not an required image)');
 			}
 		} catch (err) {
-			logger.warn(`web image not created (an error occured)`, err as Error);
+			logger.warn('web image not created (an error occured)', err as Error);
 		}
 	} else {
-		if (satisfyWebpublic) logger.info(`web image not created (original satisfies webpublic)`);
-		else logger.info(`web image not created (from remote)`);
+		if (satisfyWebpublic) logger.info('web image not created (original satisfies webpublic)');
+		else logger.info('web image not created (from remote)');
 	}
 	// #endregion webpublic
 
@@ -240,10 +240,10 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 		if (['image/jpeg', 'image/webp', 'image/png', 'image/svg+xml'].includes(type)) {
 			thumbnail = await convertSharpToWebp(img, 498, 280);
 		} else {
-			logger.debug(`thumbnail not created (not an required file)`);
+			logger.debug('thumbnail not created (not an required file)');
 		}
 	} catch (err) {
-		logger.warn(`thumbnail not created (an error occured)`, err as Error);
+		logger.warn('thumbnail not created (an error occured)', err as Error);
 	}
 	// #endregion thumbnail
 
@@ -276,7 +276,7 @@ async function upload(key: string, stream: fs.ReadStream | Buffer, type: string,
 	const s3 = getS3(meta);
 
 	const upload = s3.upload(params, {
-		partSize: s3.endpoint?.hostname === 'storage.googleapis.com' ? 500 * 1024 * 1024 : 8 * 1024 * 1024,
+		partSize: s3.endpoint.hostname === 'storage.googleapis.com' ? 500 * 1024 * 1024 : 8 * 1024 * 1024,
 	});
 
 	const result = await upload.promise();
@@ -342,10 +342,27 @@ export async function addFile({
 	isLink = false,
 	url = null,
 	uri = null,
-	sensitive = null
+	sensitive = null,
 }: AddFileArgs): Promise<DriveFile> {
-	const info = await getFileInfo(path);
+	let skipNsfwCheck = false;
+	const instance = await fetchMeta();
+	if (user == null) skipNsfwCheck = true;
+	if (instance.sensitiveImageDetection === 'none') skipNsfwCheck = true;
+	if (user && instance.sensitiveImageDetection === 'local' && Users.isRemoteUser(user)) skipNsfwCheck = true;
+	if (user && instance.sensitiveImageDetection === 'remote' && Users.isLocalUser(user)) skipNsfwCheck = true;
+
+	const info = await getFileInfo(path, {
+		skipSensitiveDetection: skipNsfwCheck,
+		sensitiveThreshold: // 感度が高いほどしきい値は低くすることになる
+			instance.sensitiveImageDetectionSensitivity === 'high' ? 0.4 :
+			instance.sensitiveImageDetectionSensitivity === 'low' ? 0.6 :
+			0.5,
+	});
 	logger.info(`${JSON.stringify(info)}`);
+
+	if (info.porn && instance.disallowUploadWhenPredictedAsPorn) {
+		throw new Error('detected-as-porn');
+	}
 
 	// detect name
 	const detectedName = name || (info.type.ext ? `untitled.${info.type.ext}` : 'untitled');
@@ -427,12 +444,19 @@ export async function addFile({
 	file.properties = properties;
 	file.blurhash = info.blurhash || null;
 	file.isLink = isLink;
-	file.isSensitive = user
-		? Users.isLocalUser(user) && profile!.alwaysMarkNsfw ? true :
+	
+	if (info.sensitive) {
+		file.predictedIsSensitive = true;
+		file.forceIsSensitive = instance.forceIsSensitiveWhenPredicted;
+		file.isSensitive = true;
+	} else {
+		file.isSensitive = user
+			? Users.isLocalUser(user) && profile!.alwaysMarkNsfw ? true :
 			(sensitive !== null && sensitive !== undefined)
 				? sensitive
 				: false
-		: false;
+			: false;
+	}
 
 	if (url !== null) {
 		file.src = url;

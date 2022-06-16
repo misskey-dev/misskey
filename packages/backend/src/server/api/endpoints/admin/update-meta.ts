@@ -1,8 +1,8 @@
-import define from '../../define.js';
 import { Meta } from '@/models/entities/meta.js';
 import { insertModerationLog } from '@/services/insert-moderation-log.js';
 import { DB_MAX_NOTE_TEXT_LENGTH } from '@/misc/hard-limits.js';
 import { db } from '@/db/postgre.js';
+import define from '../../define.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -48,6 +48,10 @@ export const paramDef = {
 		enableRecaptcha: { type: 'boolean' },
 		recaptchaSiteKey: { type: 'string', nullable: true },
 		recaptchaSecretKey: { type: 'string', nullable: true },
+		sensitiveImageDetection: { type: 'string', enum: ['none', 'all', 'local', 'remote'] },
+		sensitiveImageDetectionSensitivity: { type: 'string', enum: ['medium', 'low', 'high'] },
+		forceIsSensitiveWhenPredicted: { type: 'boolean' },
+		disallowUploadWhenPredictedAsPorn: { type: 'boolean' },
 		proxyAccountId: { type: 'string', format: 'misskey:id', nullable: true },
 		maintainerName: { type: 'string', nullable: true },
 		maintainerEmail: { type: 'string', nullable: true },
@@ -210,6 +214,22 @@ export default define(meta, paramDef, async (ps, me) => {
 
 	if (ps.recaptchaSecretKey !== undefined) {
 		set.recaptchaSecretKey = ps.recaptchaSecretKey;
+	}
+
+	if (ps.sensitiveImageDetection !== undefined) {
+		set.sensitiveImageDetection = ps.sensitiveImageDetection;
+	}
+
+	if (ps.sensitiveImageDetectionSensitivity !== undefined) {
+		set.sensitiveImageDetectionSensitivity = ps.sensitiveImageDetectionSensitivity;
+	}
+
+	if (ps.forceIsSensitiveWhenPredicted !== undefined) {
+		set.forceIsSensitiveWhenPredicted = ps.forceIsSensitiveWhenPredicted;
+	}
+
+	if (ps.disallowUploadWhenPredictedAsPorn !== undefined) {
+		set.disallowUploadWhenPredictedAsPorn = ps.disallowUploadWhenPredictedAsPorn;
 	}
 
 	if (ps.proxyAccountId !== undefined) {

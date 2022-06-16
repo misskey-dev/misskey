@@ -1,7 +1,7 @@
 import config from '@/config/index.js';
-import define from '../../define.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
+import define from '../../define.js';
 
 export const meta = {
 	tags: ['meta'],
@@ -195,6 +195,22 @@ export const meta = {
 				type: 'string',
 				optional: true, nullable: true,
 			},
+			sensitiveImageDetection: {
+				type: 'string',
+				optional: true, nullable: false,
+			},
+			sensitiveImageDetectionSensitivity: {
+				type: 'string',
+				optional: true, nullable: false,
+			},
+			forceIsSensitiveWhenPredicted: {
+				type: 'boolean',
+				optional: true, nullable: false,
+			},
+			disallowUploadWhenPredictedAsPorn: {
+				type: 'boolean',
+				optional: true, nullable: false,
+			},
 			proxyAccountId: {
 				type: 'string',
 				optional: true, nullable: true,
@@ -367,6 +383,10 @@ export default define(meta, paramDef, async (ps, me) => {
 		blockedHosts: instance.blockedHosts,
 		hcaptchaSecretKey: instance.hcaptchaSecretKey,
 		recaptchaSecretKey: instance.recaptchaSecretKey,
+		sensitiveImageDetection: instance.sensitiveImageDetection,
+		sensitiveImageDetectionSensitivity: instance.sensitiveImageDetectionSensitivity,
+		forceIsSensitiveWhenPredicted: instance.forceIsSensitiveWhenPredicted,
+		disallowUploadWhenPredictedAsPorn: instance.disallowUploadWhenPredictedAsPorn,
 		proxyAccountId: instance.proxyAccountId,
 		twitterConsumerKey: instance.twitterConsumerKey,
 		twitterConsumerSecret: instance.twitterConsumerSecret,

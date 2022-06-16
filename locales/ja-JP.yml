@@ -845,6 +845,12 @@ failedToFetchAccountInformation: "アカウント情報の取得に失敗しま�
 rateLimitExceeded: "レート制限を超えました"
 cropImage: "画像のクロップ"
 cropImageAsk: "画像をクロップしますか？"
+sensitiveImageDetection: "センシティブな画像の検出"
+sensitivity: "感度"
+localOnly: "ローカルのみ"
+remoteOnly: "リモートのみ"
+forceIsSensitiveWhenPredicted: "センシティブ判定された画像のNSFW解除を不可にする"
+disallowUploadWhenPredictedAsPorn: "ポルノの可能性の高いものは投稿不可にする"
 
 _emailUnavailable:
   used: "既に使用されています"

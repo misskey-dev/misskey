@@ -251,6 +251,6 @@ defineExpose({
 			text: i18n.ts.save,
 			handler: save,
 		}],
-	}
+	},
 });
 </script>

@@ -7,6 +7,7 @@ import isSvg from 'is-svg';
 import probeImageSize from 'probe-image-size';
 import sharp from 'sharp';
 import { encode } from 'blurhash';
+import { detectSensitive } from '@/services/detect-sensitive.js';
 
 const pipeline = util.promisify(stream.pipeline);
 
@@ -21,6 +22,8 @@ export type FileInfo = {
 	height?: number;
 	orientation?: number;
 	blurhash?: string;
+	sensitive: boolean;
+	porn: boolean;
 	warnings: string[];
 };
 
@@ -37,7 +40,10 @@ const TYPE_SVG = {
 /**
  * Get file information
  */
-export async function getFileInfo(path: string): Promise<FileInfo> {
+export async function getFileInfo(path: string, opts: {
+	skipSensitiveDetection: boolean;
+	sensitiveThreshold?: number;
+}): Promise<FileInfo> {
 	const warnings = [] as string[];
 
 	const size = await getFileSize(path);
@@ -58,7 +64,7 @@ export async function getFileInfo(path: string): Promise<FileInfo> {
 
 		// うまく判定できない画像は octet-stream にする
 		if (!imageSize) {
-			warnings.push(`cannot detect image dimensions`);
+			warnings.push('cannot detect image dimensions');
 			type = TYPE_OCTET_STREAM;
 		} else if (imageSize.wUnits === 'px') {
 			width = imageSize.width;
@@ -67,7 +73,7 @@ export async function getFileInfo(path: string): Promise<FileInfo> {
 
 			// 制限を超えている画像は octet-stream にする
 			if (imageSize.width > 16383 || imageSize.height > 16383) {
-				warnings.push(`image dimensions exceeds limits`);
+				warnings.push('image dimensions exceeds limits');
 				type = TYPE_OCTET_STREAM;
 			}
 		} else {
@@ -84,6 +90,22 @@ export async function getFileInfo(path: string): Promise<FileInfo> {
 		});
 	}
 
+	let sensitive = false;
+	let porn = false;
+
+	if (!opts.skipSensitiveDetection && ['image/jpeg', 'image/png', 'image/apng', 'image/webp'].includes(type.mime)) {
+		const threshold = opts.sensitiveThreshold ?? 0.5;
+		const result = await detectSensitive(path);
+		if (result) {
+			if ((result.find(x => x.className === 'Sexy')?.probability ?? 0) > threshold) sensitive = true;
+			if ((result.find(x => x.className === 'Hentai')?.probability ?? 0) > threshold) sensitive = true;
+			if ((result.find(x => x.className === 'Porn')?.probability ?? 0) > threshold) {
+				sensitive = true;
+				porn = true;
+			}
+		}
+	}
+
 	return {
 		size,
 		md5,
@@ -92,6 +114,8 @@ export async function getFileInfo(path: string): Promise<FileInfo> {
 		height,
 		orientation,
 		blurhash,
+		sensitive,
+		porn,
 		warnings,
 	};
 }
