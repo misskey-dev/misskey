@@ -11,7 +11,7 @@ import { type predictionType } from 'nsfwjs';
 import sharp from 'sharp';
 import { encode } from 'blurhash';
 import { detectSensitive } from '@/services/detect-sensitive.js';
-import { createTempDir } from './create-temp';
+import { createTempDir } from './create-temp.js';
 
 const pipeline = util.promisify(stream.pipeline);
 
