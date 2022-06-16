@@ -143,15 +143,26 @@ async function detectSensitivity(source: string, mime: string, sensitiveThreshol
 		try {
 			const command = FFmpeg()
 				.input(source)
-				.inputOptions(['-skip_frame', 'nokey']) // I-Frame のみを取得する
+				.inputOptions([
+					'-skip_frame', 'nokey', // 可能ならキーフレームのみを取得してほしいとする（そうなるとは限らない）
+					'-lowres', '3', // 元の画質でデコードする必要はないので 1/8 画質でデコードしてもよいとする（そうなるとは限らない）
+				])
 				.noAudio()
-				.videoFilters([{
-					filter: 'scale',
-					options: {
-						w: 299,
-						h: 299,
+				.videoFilters([
+					{
+						filter: 'select',
+						options: {
+							e: 'eq(pict_type,PICT_TYPE_I)', // I-Frame のみをフィルタする（VP9 とかはデコードしてみないとわからないっぽい）
+						},
 					},
-				}])
+					{
+						filter: 'scale',
+						options: {
+							w: 299,
+							h: 299,
+						},
+					},
+				])
 				.format('image2')
 				.output(join(outDir, '%d.png'))
 				.outputOptions(['-vsync', '0']); // 可変フレームレートにすることで穴埋めをさせない
