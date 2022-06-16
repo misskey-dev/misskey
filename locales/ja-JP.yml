@@ -855,7 +855,7 @@ cannotUploadBecauseNoFreeSpace: "ドライブの空き容量が無いためア�
 _sensitiveImageDetection:
   description: "機械学習を使ってセンシティブな画像を検出し、自動でNSFWフラグを設定したり、投稿を拒否することができます。サーバーの負荷が少し増えます。"
   sensitivity: "検出感度"
-  sensitivityDescription: "感度を低くすると、誤検知(偽陽性)を減らすことができます。検出感度を高くすると、検出漏れ(偽陰性)を減らすことができます。"
+  sensitivityDescription: "感度を低くすると、誤検知(偽陽性)を減らすことができます。感度を高くすると、検知漏れ(偽陰性)を減らすことができます。"
   forceIsSensitiveWhenPredicted: "センシティブ判定された画像のNSFW解除を不可にする"
   disallowUploadWhenPredictedAsPorn: "ポルノの可能性の高いものは投稿不可にする"
 
