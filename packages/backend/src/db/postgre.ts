@@ -208,7 +208,15 @@ export const db = new DataSource({
 	migrations: ['../../migration/*.js'],
 });
 
-export async function initDb() {
+export async function initDb(force = false) {
+	if (force) {
+		if (db.isInitialized) {
+			await db.destroy();
+		}
+		await db.initialize();
+		return;
+	}
+
 	if (db.isInitialized) {
 		// nop
 	} else {

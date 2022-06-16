@@ -114,7 +114,7 @@ export default defineComponent({
 			readonly: this.readonly,
 			getScriptBlockList: this.getScriptBlockList,
 			getPageBlockList: this.getPageBlockList
-		}
+		};
 	},
 
 	props: {

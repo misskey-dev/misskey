@@ -42,7 +42,7 @@ export const getBuiltinThemesRef = () => {
 	const builtinThemes = ref<Theme[]>([]);
 	getBuiltinThemes().then(themes => builtinThemes.value = themes);
 	return builtinThemes;
-}
+};
 
 let timeout = null;
 

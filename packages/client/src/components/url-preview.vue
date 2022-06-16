@@ -90,7 +90,7 @@ fetch(`/url?url=${encodeURIComponent(requestUrl.href)}&lang=${requestLang}`).the
 		sitename = info.sitename;
 		fetching = false;
 		player = info.player;
-	})
+	});
 });
 
 function adjustTweetHeight(message: any) {

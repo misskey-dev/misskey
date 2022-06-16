@@ -120,7 +120,7 @@ const darkThemeId = computed({
 		return darkTheme.value.id;
 	},
 	set(id) {
-		ColdDeviceStorage.set('darkTheme', themes.value.find(x => x.id === id))
+		ColdDeviceStorage.set('darkTheme', themes.value.find(x => x.id === id));
 	}
 });
 const lightTheme = ColdDeviceStorage.ref('lightTheme');
@@ -129,7 +129,7 @@ const lightThemeId = computed({
 		return lightTheme.value.id;
 	},
 	set(id) {
-		ColdDeviceStorage.set('lightTheme', themes.value.find(x => x.id === id))
+		ColdDeviceStorage.set('lightTheme', themes.value.find(x => x.id === id));
 	}
 });
 const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));

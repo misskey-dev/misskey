@@ -71,7 +71,7 @@ export default defineComponent({
 			description: null,
 			title: null,
 			isSensitive: false,
-		}
+		};
 	},
 
 	watch: {

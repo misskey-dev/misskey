@@ -1,10 +1,10 @@
-import define from '../../../define.js';
-import { ApiError } from '../../../error.js';
-import { getUser } from '../../../common/getters.js';
 import { UserGroups, UserGroupJoinings, UserGroupInvitations } from '@/models/index.js';
 import { genId } from '@/misc/gen-id.js';
 import { UserGroupInvitation } from '@/models/entities/user-group-invitation.js';
 import { createNotification } from '@/services/create-notification.js';
+import { getUser } from '../../../common/getters.js';
+import { ApiError } from '../../../error.js';
+import define from '../../../define.js';
 
 export const meta = {
 	tags: ['groups', 'users'],
@@ -12,6 +12,8 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'write:user-groups',
+
+	description: 'Invite a user to an existing group.',
 
 	errors: {
 		noSuchGroup: {

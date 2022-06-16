@@ -3,6 +3,7 @@ import { Followings } from '@/models/index.js';
 import { Brackets, SelectQueryBuilder } from 'typeorm';
 
 export function generateVisibilityQuery(q: SelectQueryBuilder<any>, me?: { id: User['id'] } | null) {
+	// This code must always be synchronized with the checks in Notes.isVisibleForMe.
 	if (me == null) {
 		q.andWhere(new Brackets(qb => { qb
 			.where(`note.visibility = 'public'`)
@@ -11,7 +12,7 @@ export function generateVisibilityQuery(q: SelectQueryBuilder<any>, me?: { id: U
 	} else {
 		const followingQuery = Followings.createQueryBuilder('following')
 			.select('following.followeeId')
-			.where('following.followerId = :followerId', { followerId: me.id });
+			.where('following.followerId = :meId');
 
 		q.andWhere(new Brackets(qb => { qb
 			// 公開投稿である
@@ -20,21 +21,22 @@ export function generateVisibilityQuery(q: SelectQueryBuilder<any>, me?: { id: U
 				.orWhere(`note.visibility = 'home'`);
 			}))
 			// または 自分自身
-			.orWhere('note.userId = :userId1', { userId1: me.id })
+			.orWhere('note.userId = :meId')
 			// または 自分宛て
-			.orWhere(`'{"${me.id}"}' <@ note.visibleUserIds`)
+			.orWhere(':meId = ANY(note.visibleUserIds)')
+			.orWhere(':meId = ANY(note.mentions)')
 			.orWhere(new Brackets(qb => { qb
 				// または フォロワー宛ての投稿であり、
-				.where('note.visibility = \'followers\'')
+				.where(`note.visibility = 'followers'`)
 				.andWhere(new Brackets(qb => { qb
 					// 自分がフォロワーである
 					.where(`note.userId IN (${ followingQuery.getQuery() })`)
 					// または 自分の投稿へのリプライ
-					.orWhere('note.replyUserId = :userId3', { userId3: me.id });
+					.orWhere('note.replyUserId = :meId');
 				}));
 			}));
 		}));
 
-		q.setParameters(followingQuery.getParameters());
+		q.setParameters({ meId: me.id });
 	}
 }

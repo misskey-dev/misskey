@@ -19,8 +19,7 @@
 <script lang="ts" setup>
 import { defineComponent, markRaw, onUnmounted, onMounted, computed, ref } from 'vue';
 import { notificationTypes } from 'misskey-js';
-import MkPagination from '@/components/ui/pagination.vue';
-import { Paging } from '@/components/ui/pagination.vue';
+import MkPagination, { Paging } from '@/components/ui/pagination.vue';
 import XNotification from '@/components/notification.vue';
 import XList from '@/components/date-separated-list.vue';
 import XNote from '@/components/note.vue';
@@ -49,14 +48,14 @@ const onNotification = (notification) => {
 	const isMuted = props.includeTypes ? !props.includeTypes.includes(notification.type) : $i.mutingNotificationTypes.includes(notification.type);
 	if (isMuted || document.visibilityState === 'visible') {
 		stream.send('readNotification', {
-			id: notification.id
+			id: notification.id,
 		});
 	}
 
 	if (!isMuted) {
 		pagingComponent.value.prepend({
 			...notification,
-			isRead: document.visibilityState === 'visible'
+			isRead: document.visibilityState === 'visible',
 		});
 	}
 };

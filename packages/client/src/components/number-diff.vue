@@ -12,7 +12,7 @@ export default defineComponent({
 	props: {
 		value: {
 			type: Number,
-			required: true
+			required: true,
 		},
 	},
 
@@ -26,7 +26,7 @@ export default defineComponent({
 			isZero,
 			number,
 		};
-	}
+	},
 });
 </script>
 

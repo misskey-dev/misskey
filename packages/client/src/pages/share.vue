@@ -56,7 +56,7 @@ export default defineComponent({
 			localOnly: null as boolean | null,
 			files: [] as Misskey.entities.DriveFile[],
 			visibleUsers: [] as Misskey.entities.User[],
-		}
+		};
 	},
 
 	async created() {

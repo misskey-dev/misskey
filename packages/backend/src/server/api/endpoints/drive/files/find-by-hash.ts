@@ -8,6 +8,8 @@ export const meta = {
 
 	kind: 'read:drive',
 
+	description: 'Search for a drive file by a hash of the contents.',
+
 	res: {
 		type: 'array',
 		optional: false, nullable: false,
