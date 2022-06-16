@@ -15,8 +15,14 @@
 			<FormFolder class="_formBlock">
 				<template #icon><i class="fas fa-eye-slash"></i></template>
 				<template #label>{{ i18n.ts.sensitiveImageDetection }}</template>
+				<template v-if="sensitiveImageDetection === 'all'" #suffix>{{ i18n.ts.all }}</template>
+				<template v-else-if="sensitiveImageDetection === 'local'" #suffix>{{ i18n.ts.localOnly }}</template>
+				<template v-else-if="sensitiveImageDetection === 'remote'" #suffix>{{ i18n.ts.remoteOnly }}</template>
+				<template v-else #suffix>{{ i18n.ts.none }}</template>
 
 				<div class="_formRoot">
+					<span class="_formBlock">{{ i18n.ts._sensitiveImageDetection.description }}</span>
+
 					<FormRadios v-model="sensitiveImageDetection" class="_formBlock">
 						<option value="none">{{ i18n.ts.none }}</option>
 						<option value="all">{{ i18n.ts.all }}</option>
@@ -25,18 +31,19 @@
 					</FormRadios>
 
 					<FormRadios v-model="sensitiveImageDetectionSensitivity" class="_formBlock">
-						<template #label>{{ i18n.ts.sensitivity }}</template>
+						<template #label>{{ i18n.ts._sensitiveImageDetection.sensitivity }}</template>
 						<option value="low">{{ i18n.ts.low }}</option>
 						<option value="medium">{{ i18n.ts.medium }}</option>
 						<option value="high">{{ i18n.ts.high }}</option>
+						<template #caption>{{ i18n.ts._sensitiveImageDetection.sensitivityDescription }}</template>
 					</FormRadios>
 
 					<FormSwitch v-model="forceIsSensitiveWhenPredicted" class="_formBlock">
-						<template #label>{{ i18n.ts.forceIsSensitiveWhenPredicted }}</template>
+						<template #label>{{ i18n.ts._sensitiveImageDetection.forceIsSensitiveWhenPredicted }}</template>
 					</FormSwitch>
 
 					<FormSwitch v-model="disallowUploadWhenPredictedAsPorn" class="_formBlock">
-						<template #label>{{ i18n.ts.disallowUploadWhenPredictedAsPorn }}</template>
+						<template #label>{{ i18n.ts._sensitiveImageDetection.disallowUploadWhenPredictedAsPorn }}</template>
 					</FormSwitch>
 
 					<FormButton primary class="_formBlock" @click="save"><i class="fas fa-save"></i> {{ i18n.ts.save }}</FormButton>
