@@ -848,6 +848,9 @@ cropImageAsk: "画像をクロップしますか？"
 sensitiveImageDetection: "センシティブな画像の検出"
 localOnly: "ローカルのみ"
 remoteOnly: "リモートのみ"
+failedToUpload: "アップロード失敗"
+cannotUploadBecauseInappropriate: "不適切な内容を含む可能性があると判定されたためアップロードできません。"
+cannotUploadBecauseNoFreeSpace: "ドライブの空き容量が無いためアップロードできません。"
 
 _sensitiveImageDetection:
   description: "機械学習を使ってセンシティブな画像を検出し、自動でNSFWフラグを設定したり、投稿を拒否することができます。サーバーの負荷が少し増えます。"

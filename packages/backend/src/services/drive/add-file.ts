@@ -16,6 +16,7 @@ import { driveChart, perUserDriveChart, instanceChart } from '@/services/chart/i
 import { genId } from '@/misc/gen-id.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
 import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { getS3 } from './s3.js';
 import { InternalStorage } from './internal-storage.js';
 import { IImage, convertSharpToJpeg, convertSharpToWebp, convertSharpToPng } from './image-processor.js';
@@ -361,7 +362,7 @@ export async function addFile({
 	logger.info(`${JSON.stringify(info)}`);
 
 	if (info.porn && instance.disallowUploadWhenPredictedAsPorn) {
-		throw new Error('detected-as-porn');
+		throw new IdentifiableError('282f77bf-5816-4f72-9264-aa14d8261a21', 'Detected as porn.');
 	}
 
 	// detect name
@@ -392,7 +393,7 @@ export async function addFile({
 		// If usage limit exceeded
 		if (usage + info.size > driveCapacity) {
 			if (Users.isLocalUser(user)) {
-				throw new Error('no-free-space');
+				throw new IdentifiableError('c6244ed2-a39a-4e1c-bf93-f0fbd7764fa6', 'No free space.');
 			} else {
 				// (アバターまたはバナーを含まず)最も古いファイルを削除する
 				deleteOldFile(await Users.findOneByOrFail({ id: user.id }) as IRemoteUser);
