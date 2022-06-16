@@ -160,9 +160,9 @@ async function detectSensitivity(source: string, mime: string, sensitiveThreshol
 				command.once('error', reject);
 				command.run();
 			});
-			const intraFramePaths = await fs.promises.readdir(outDir);
-			for (const path of intraFramePaths) {
-				const result = await detectSensitive(path);
+			const intraFrameFilenames = await fs.promises.readdir(outDir);
+			for (const filename of intraFrameFilenames) {
+				const result = await detectSensitive(join(outDir, filename));
 				if (result) {
 					assignPrediction(result); // いずれかのフレームでセンシティブ判定されたら設定する
 				}
