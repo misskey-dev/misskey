@@ -1615,6 +1615,7 @@ _notification:
     groupInvited: "Invitation à un groupe"
     app: "Notifications provenant des apps"
   _actions:
+    followBack: "Suivre"
     reply: "Répondre"
     renote: "Renoter"
 _deck:
