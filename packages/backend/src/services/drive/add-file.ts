@@ -360,6 +360,7 @@ export async function addFile({
 			instance.sensitiveImageDetectionSensitivity === 'low' ? 0.7 :
 			instance.sensitiveImageDetectionSensitivity === 'veryLow' ? 0.9 :
 			0.5,
+		sensitiveThresholdForPorn: 0.75,
 	});
 	logger.info(`${JSON.stringify(info)}`);
 

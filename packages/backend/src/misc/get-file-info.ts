@@ -43,6 +43,7 @@ const TYPE_SVG = {
 export async function getFileInfo(path: string, opts: {
 	skipSensitiveDetection: boolean;
 	sensitiveThreshold?: number;
+	sensitiveThresholdForPorn?: number;
 }): Promise<FileInfo> {
 	const warnings = [] as string[];
 
@@ -95,15 +96,13 @@ export async function getFileInfo(path: string, opts: {
 
 	if (!opts.skipSensitiveDetection && ['image/jpeg', 'image/png', 'image/apng', 'image/webp'].includes(type.mime)) {
 		const threshold = opts.sensitiveThreshold ?? 0.5;
+		const thresholdForPorn = opts.sensitiveThresholdForPorn ?? 0.75;
 		const result = await detectSensitive(path);
 		if (result) {
 			if ((result.find(x => x.className === 'Sexy')?.probability ?? 0) > threshold) sensitive = true;
 			if ((result.find(x => x.className === 'Hentai')?.probability ?? 0) > threshold) sensitive = true;
 			if ((result.find(x => x.className === 'Porn')?.probability ?? 0) > threshold) sensitive = true;
-
-			// ポルノ判定はアップロード拒否に使われ、問題のない画像が拒否されるとユーザビリティを著しく損なうため、誤検知よりも検出漏れを許容するためしきい値は高めにする
-			// (アップロード拒否に使われるからしきい値は高めにしないといけないなどというのはこの関数とは関係のないドメイン知識であるため、理想的には probability だけを返して外側で判定するようにしても良いかも)
-			if ((result.find(x => x.className === 'Porn')?.probability ?? 0) > 0.75) porn = true;
+			if ((result.find(x => x.className === 'Porn')?.probability ?? 0) > thresholdForPorn) porn = true;
 		}
 	}
 
