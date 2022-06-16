@@ -48,8 +48,8 @@ export const paramDef = {
 		enableRecaptcha: { type: 'boolean' },
 		recaptchaSiteKey: { type: 'string', nullable: true },
 		recaptchaSecretKey: { type: 'string', nullable: true },
-		sensitiveImageDetection: { type: 'string', enum: ['none', 'all', 'local', 'remote'] },
-		sensitiveImageDetectionSensitivity: { type: 'string', enum: ['medium', 'low', 'high', 'veryLow', 'veryHigh'] },
+		sensitiveMediaDetection: { type: 'string', enum: ['none', 'all', 'local', 'remote'] },
+		sensitiveMediaDetectionSensitivity: { type: 'string', enum: ['medium', 'low', 'high', 'veryLow', 'veryHigh'] },
 		forceIsSensitiveWhenPredicted: { type: 'boolean' },
 		disallowUploadWhenPredictedAsPorn: { type: 'boolean' },
 		proxyAccountId: { type: 'string', format: 'misskey:id', nullable: true },
@@ -216,12 +216,12 @@ export default define(meta, paramDef, async (ps, me) => {
 		set.recaptchaSecretKey = ps.recaptchaSecretKey;
 	}
 
-	if (ps.sensitiveImageDetection !== undefined) {
-		set.sensitiveImageDetection = ps.sensitiveImageDetection;
+	if (ps.sensitiveMediaDetection !== undefined) {
+		set.sensitiveMediaDetection = ps.sensitiveMediaDetection;
 	}
 
-	if (ps.sensitiveImageDetectionSensitivity !== undefined) {
-		set.sensitiveImageDetectionSensitivity = ps.sensitiveImageDetectionSensitivity;
+	if (ps.sensitiveMediaDetectionSensitivity !== undefined) {
+		set.sensitiveMediaDetectionSensitivity = ps.sensitiveMediaDetectionSensitivity;
 	}
 
 	if (ps.forceIsSensitiveWhenPredicted !== undefined) {

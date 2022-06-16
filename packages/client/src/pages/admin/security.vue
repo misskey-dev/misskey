@@ -14,33 +14,33 @@
 
 			<FormFolder class="_formBlock">
 				<template #icon><i class="fas fa-eye-slash"></i></template>
-				<template #label>{{ i18n.ts.sensitiveImageDetection }}</template>
-				<template v-if="sensitiveImageDetection === 'all'" #suffix>{{ i18n.ts.all }}</template>
-				<template v-else-if="sensitiveImageDetection === 'local'" #suffix>{{ i18n.ts.localOnly }}</template>
-				<template v-else-if="sensitiveImageDetection === 'remote'" #suffix>{{ i18n.ts.remoteOnly }}</template>
+				<template #label>{{ i18n.ts.sensitiveMediaDetection }}</template>
+				<template v-if="sensitiveMediaDetection === 'all'" #suffix>{{ i18n.ts.all }}</template>
+				<template v-else-if="sensitiveMediaDetection === 'local'" #suffix>{{ i18n.ts.localOnly }}</template>
+				<template v-else-if="sensitiveMediaDetection === 'remote'" #suffix>{{ i18n.ts.remoteOnly }}</template>
 				<template v-else #suffix>{{ i18n.ts.none }}</template>
 
 				<div class="_formRoot">
-					<span class="_formBlock">{{ i18n.ts._sensitiveImageDetection.description }}</span>
+					<span class="_formBlock">{{ i18n.ts._sensitiveMediaDetection.description }}</span>
 
-					<FormRadios v-model="sensitiveImageDetection" class="_formBlock">
+					<FormRadios v-model="sensitiveMediaDetection" class="_formBlock">
 						<option value="none">{{ i18n.ts.none }}</option>
 						<option value="all">{{ i18n.ts.all }}</option>
 						<option value="local">{{ i18n.ts.localOnly }}</option>
 						<option value="remote">{{ i18n.ts.remoteOnly }}</option>
 					</FormRadios>
 
-					<FormRange v-model="sensitiveImageDetectionSensitivity" :min="0" :max="4" :step="1" :text-converter="(v) => `${v + 1}`" class="_formBlock">
-						<template #label>{{ i18n.ts._sensitiveImageDetection.sensitivity }}</template>
-						<template #caption>{{ i18n.ts._sensitiveImageDetection.sensitivityDescription }}</template>
+					<FormRange v-model="sensitiveMediaDetectionSensitivity" :min="0" :max="4" :step="1" :text-converter="(v) => `${v + 1}`" class="_formBlock">
+						<template #label>{{ i18n.ts._sensitiveMediaDetection.sensitivity }}</template>
+						<template #caption>{{ i18n.ts._sensitiveMediaDetection.sensitivityDescription }}</template>
 					</FormRange>
 
 					<FormSwitch v-model="forceIsSensitiveWhenPredicted" class="_formBlock">
-						<template #label>{{ i18n.ts._sensitiveImageDetection.forceIsSensitiveWhenPredicted }}</template>
+						<template #label>{{ i18n.ts._sensitiveMediaDetection.forceIsSensitiveWhenPredicted }}</template>
 					</FormSwitch>
 
 					<FormSwitch v-model="disallowUploadWhenPredictedAsPorn" class="_formBlock">
-						<template #label>{{ i18n.ts._sensitiveImageDetection.disallowUploadWhenPredictedAsPorn }}</template>
+						<template #label>{{ i18n.ts._sensitiveMediaDetection.disallowUploadWhenPredictedAsPorn }}</template>
 					</FormSwitch>
 
 					<FormButton primary class="_formBlock" @click="save"><i class="fas fa-save"></i> {{ i18n.ts.save }}</FormButton>
@@ -83,8 +83,8 @@ import { i18n } from '@/i18n';
 let summalyProxy: string = $ref('');
 let enableHcaptcha: boolean = $ref(false);
 let enableRecaptcha: boolean = $ref(false);
-let sensitiveImageDetection: string = $ref('none');
-let sensitiveImageDetectionSensitivity: number = $ref(0);
+let sensitiveMediaDetection: string = $ref('none');
+let sensitiveMediaDetectionSensitivity: number = $ref(0);
 let forceIsSensitiveWhenPredicted: boolean = $ref(false);
 let disallowUploadWhenPredictedAsPorn: boolean = $ref(false);
 
@@ -93,13 +93,13 @@ async function init() {
 	summalyProxy = meta.summalyProxy;
 	enableHcaptcha = meta.enableHcaptcha;
 	enableRecaptcha = meta.enableRecaptcha;
-	sensitiveImageDetection = meta.sensitiveImageDetection;
-	sensitiveImageDetectionSensitivity =
-		meta.sensitiveImageDetectionSensitivity === 'veryLow' ? 0 :
-		meta.sensitiveImageDetectionSensitivity === 'low' ? 1 :
-		meta.sensitiveImageDetectionSensitivity === 'medium' ? 2 :
-		meta.sensitiveImageDetectionSensitivity === 'high' ? 3 :
-		meta.sensitiveImageDetectionSensitivity === 'veryHigh' ? 4 : 0;
+	sensitiveMediaDetection = meta.sensitiveMediaDetection;
+	sensitiveMediaDetectionSensitivity =
+		meta.sensitiveMediaDetectionSensitivity === 'veryLow' ? 0 :
+		meta.sensitiveMediaDetectionSensitivity === 'low' ? 1 :
+		meta.sensitiveMediaDetectionSensitivity === 'medium' ? 2 :
+		meta.sensitiveMediaDetectionSensitivity === 'high' ? 3 :
+		meta.sensitiveMediaDetectionSensitivity === 'veryHigh' ? 4 : 0;
 	forceIsSensitiveWhenPredicted = meta.forceIsSensitiveWhenPredicted;
 	disallowUploadWhenPredictedAsPorn = meta.disallowUploadWhenPredictedAsPorn;
 }
@@ -107,14 +107,14 @@ async function init() {
 function save() {
 	os.apiWithDialog('admin/update-meta', {
 		summalyProxy,
-		sensitiveImageDetection,
+		sensitiveMediaDetection,
 		forceIsSensitiveWhenPredicted,
-		sensitiveImageDetectionSensitivity:
-			sensitiveImageDetectionSensitivity === 0 ? 'veryLow' :
-			sensitiveImageDetectionSensitivity === 1 ? 'low' :
-			sensitiveImageDetectionSensitivity === 2 ? 'medium' :
-			sensitiveImageDetectionSensitivity === 3 ? 'high' :
-			sensitiveImageDetectionSensitivity === 4 ? 'veryHigh' :
+		sensitiveMediaDetectionSensitivity:
+			sensitiveMediaDetectionSensitivity === 0 ? 'veryLow' :
+			sensitiveMediaDetectionSensitivity === 1 ? 'low' :
+			sensitiveMediaDetectionSensitivity === 2 ? 'medium' :
+			sensitiveMediaDetectionSensitivity === 3 ? 'high' :
+			sensitiveMediaDetectionSensitivity === 4 ? 'veryHigh' :
 			0,
 		disallowUploadWhenPredictedAsPorn,
 	}).then(() => {

@@ -195,11 +195,11 @@ export const meta = {
 				type: 'string',
 				optional: true, nullable: true,
 			},
-			sensitiveImageDetection: {
+			sensitiveMediaDetection: {
 				type: 'string',
 				optional: true, nullable: false,
 			},
-			sensitiveImageDetectionSensitivity: {
+			sensitiveMediaDetectionSensitivity: {
 				type: 'string',
 				optional: true, nullable: false,
 			},
@@ -383,8 +383,8 @@ export default define(meta, paramDef, async (ps, me) => {
 		blockedHosts: instance.blockedHosts,
 		hcaptchaSecretKey: instance.hcaptchaSecretKey,
 		recaptchaSecretKey: instance.recaptchaSecretKey,
-		sensitiveImageDetection: instance.sensitiveImageDetection,
-		sensitiveImageDetectionSensitivity: instance.sensitiveImageDetectionSensitivity,
+		sensitiveMediaDetection: instance.sensitiveMediaDetection,
+		sensitiveMediaDetectionSensitivity: instance.sensitiveMediaDetectionSensitivity,
 		forceIsSensitiveWhenPredicted: instance.forceIsSensitiveWhenPredicted,
 		disallowUploadWhenPredictedAsPorn: instance.disallowUploadWhenPredictedAsPorn,
 		proxyAccountId: instance.proxyAccountId,

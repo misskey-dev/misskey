@@ -192,13 +192,13 @@ export class Meta {
 		enum: ['none', 'all', 'local', 'remote'],
 		default: 'none',
 	})
-	public sensitiveImageDetection: 'none' | 'all' | 'local' | 'remote';
+	public sensitiveMediaDetection: 'none' | 'all' | 'local' | 'remote';
 
 	@Column('enum', {
 		enum: ['medium', 'low', 'high', 'veryLow', 'veryHigh'],
 		default: 'medium',
 	})
-	public sensitiveImageDetectionSensitivity: 'medium' | 'low' | 'high' | 'veryLow' | 'veryHigh';
+	public sensitiveMediaDetectionSensitivity: 'medium' | 'low' | 'high' | 'veryLow' | 'veryHigh';
 
 	@Column('boolean', {
 		default: true,

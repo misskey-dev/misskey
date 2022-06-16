@@ -348,17 +348,17 @@ export async function addFile({
 	let skipNsfwCheck = false;
 	const instance = await fetchMeta();
 	if (user == null) skipNsfwCheck = true;
-	if (instance.sensitiveImageDetection === 'none') skipNsfwCheck = true;
-	if (user && instance.sensitiveImageDetection === 'local' && Users.isRemoteUser(user)) skipNsfwCheck = true;
-	if (user && instance.sensitiveImageDetection === 'remote' && Users.isLocalUser(user)) skipNsfwCheck = true;
+	if (instance.sensitiveMediaDetection === 'none') skipNsfwCheck = true;
+	if (user && instance.sensitiveMediaDetection === 'local' && Users.isRemoteUser(user)) skipNsfwCheck = true;
+	if (user && instance.sensitiveMediaDetection === 'remote' && Users.isLocalUser(user)) skipNsfwCheck = true;
 
 	const info = await getFileInfo(path, {
 		skipSensitiveDetection: skipNsfwCheck,
 		sensitiveThreshold: // 感度が高いほどしきい値は低くすることになる
-			instance.sensitiveImageDetectionSensitivity === 'veryHigh' ? 0.1 :
-			instance.sensitiveImageDetectionSensitivity === 'high' ? 0.3 :
-			instance.sensitiveImageDetectionSensitivity === 'low' ? 0.7 :
-			instance.sensitiveImageDetectionSensitivity === 'veryLow' ? 0.9 :
+			instance.sensitiveMediaDetectionSensitivity === 'veryHigh' ? 0.1 :
+			instance.sensitiveMediaDetectionSensitivity === 'high' ? 0.3 :
+			instance.sensitiveMediaDetectionSensitivity === 'low' ? 0.7 :
+			instance.sensitiveMediaDetectionSensitivity === 'veryLow' ? 0.9 :
 			0.5,
 		sensitiveThresholdForPorn: 0.75,
 	});

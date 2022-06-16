@@ -845,18 +845,18 @@ failedToFetchAccountInformation: "アカウント情報の取得に失敗しま�
 rateLimitExceeded: "レート制限を超えました"
 cropImage: "画像のクロップ"
 cropImageAsk: "画像をクロップしますか？"
-sensitiveImageDetection: "センシティブな画像の検出"
+sensitiveMediaDetection: "センシティブなメディアの検出"
 localOnly: "ローカルのみ"
 remoteOnly: "リモートのみ"
 failedToUpload: "アップロード失敗"
 cannotUploadBecauseInappropriate: "不適切な内容を含む可能性があると判定されたためアップロードできません。"
 cannotUploadBecauseNoFreeSpace: "ドライブの空き容量が無いためアップロードできません。"
 
-_sensitiveImageDetection:
-  description: "機械学習を使ってセンシティブな画像を検出し、自動でNSFWフラグを設定したり、投稿を拒否することができます。サーバーの負荷が少し増えます。"
+_sensitiveMediaDetection:
+  description: "機械学習を使ってセンシティブなメディアを検出し、自動でNSFWフラグを設定したり、投稿を拒否することができます。サーバーの負荷が少し増えます。"
   sensitivity: "検出感度"
   sensitivityDescription: "感度を低くすると、誤検知(偽陽性)を減らすことができます。感度を高くすると、検知漏れ(偽陰性)を減らすことができます。"
-  forceIsSensitiveWhenPredicted: "センシティブ判定された画像のNSFW解除を不可にする"
+  forceIsSensitiveWhenPredicted: "センシティブ判定されたメディアのNSFW解除を不可にする"
   disallowUploadWhenPredictedAsPorn: "ポルノの可能性の高いものは投稿不可にする"
 
 _emailUnavailable:
