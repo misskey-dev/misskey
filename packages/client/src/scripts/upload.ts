@@ -98,6 +98,12 @@ export function uploadFile(
 								title: i18n.ts.failedToUpload,
 								text: i18n.ts.cannotUploadBecauseNoFreeSpace,
 							});
+						} else {
+							alert({
+								type: 'error',
+								title: i18n.ts.failedToUpload,
+								text: `${res.error?.message}\n${res.error?.code}\n${res.error?.id}`,
+							});
 						}
 					} else {
 						alert({
