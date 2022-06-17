@@ -15,7 +15,7 @@ const tab = ref('category');
 
 function menu(ev) {
 	os.popupMenu([{
-		icon: 'fas fa-download',
+		icon: 'ph-download-simple',
 		text: i18n.ts.export,
 		action: async () => {
 			os.api('export-custom-emojis', {
@@ -38,7 +38,7 @@ function menu(ev) {
 defineExpose({
 	[symbols.PAGE_INFO]: {
 		title: i18n.ts.customEmojis,
-		icon: 'fas fa-laugh',
+		icon: 'ph-smiley',
 		bg: 'var(--bg)',
 		actions: [{
 			icon: 'fas fa-ellipsis-h',

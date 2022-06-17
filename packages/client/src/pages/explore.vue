@@ -10,19 +10,19 @@
 
 				<template v-if="tag == null">
 					<MkFolder class="_gap" persist-key="explore-pinned-users">
-						<template #header><i class="fas fa-bookmark fa-fw" style="margin-right: 0.5em;"></i>{{ $ts.pinnedUsers }}</template>
+						<template #header><i class="fas fa-bookmark ph-fw" style="margin-right: 0.5em;"></i>{{ $ts.pinnedUsers }}</template>
 						<XUserList :pagination="pinnedUsers"/>
 					</MkFolder>
 					<MkFolder class="_gap" persist-key="explore-popular-users">
-						<template #header><i class="fas fa-chart-line fa-fw" style="margin-right: 0.5em;"></i>{{ $ts.popularUsers }}</template>
+						<template #header><i class="fas fa-chart-line ph-fw" style="margin-right: 0.5em;"></i>{{ $ts.popularUsers }}</template>
 						<XUserList :pagination="popularUsers"/>
 					</MkFolder>
 					<MkFolder class="_gap" persist-key="explore-recently-updated-users">
-						<template #header><i class="fas fa-comment-alt fa-fw" style="margin-right: 0.5em;"></i>{{ $ts.recentlyUpdatedUsers }}</template>
+						<template #header><i class="fas fa-comment-alt ph-fw" style="margin-right: 0.5em;"></i>{{ $ts.recentlyUpdatedUsers }}</template>
 						<XUserList :pagination="recentlyUpdatedUsers"/>
 					</MkFolder>
 					<MkFolder class="_gap" persist-key="explore-recently-registered-users">
-						<template #header><i class="fas fa-plus fa-fw" style="margin-right: 0.5em;"></i>{{ $ts.recentlyRegisteredUsers }}</template>
+						<template #header><i class="ph-plus ph-fw" style="margin-right: 0.5em;"></i>{{ $ts.recentlyRegisteredUsers }}</template>
 						<XUserList :pagination="recentlyRegisteredUsers"/>
 					</MkFolder>
 				</template>
@@ -33,7 +33,7 @@
 				</div>
 
 				<MkFolder ref="tags" :foldable="true" :expanded="false" class="_gap">
-					<template #header><i class="fas fa-hashtag fa-fw" style="margin-right: 0.5em;"></i>{{ $ts.popularTags }}</template>
+					<template #header><i class="ph-hash ph-fw" style="margin-right: 0.5em;"></i>{{ $ts.popularTags }}</template>
 
 					<div class="vxjfqztj">
 						<MkA v-for="tag in tagsLocal" :key="'local:' + tag.tag" :to="`/explore/tags/${tag.tag}`" class="local">{{ tag.tag }}</MkA>
@@ -42,21 +42,21 @@
 				</MkFolder>
 
 				<MkFolder v-if="tag != null" :key="`${tag}`" class="_gap">
-					<template #header><i class="fas fa-hashtag fa-fw" style="margin-right: 0.5em;"></i>{{ tag }}</template>
+					<template #header><i class="ph-hash ph-fw" style="margin-right: 0.5em;"></i>{{ tag }}</template>
 					<XUserList :pagination="tagUsers"/>
 				</MkFolder>
 
 				<template v-if="tag == null">
 					<MkFolder class="_gap">
-						<template #header><i class="fas fa-chart-line fa-fw" style="margin-right: 0.5em;"></i>{{ $ts.popularUsers }}</template>
+						<template #header><i class="fas fa-chart-line ph-fw" style="margin-right: 0.5em;"></i>{{ $ts.popularUsers }}</template>
 						<XUserList :pagination="popularUsersF"/>
 					</MkFolder>
 					<MkFolder class="_gap">
-						<template #header><i class="fas fa-comment-alt fa-fw" style="margin-right: 0.5em;"></i>{{ $ts.recentlyUpdatedUsers }}</template>
+						<template #header><i class="fas fa-comment-alt ph-fw" style="margin-right: 0.5em;"></i>{{ $ts.recentlyUpdatedUsers }}</template>
 						<XUserList :pagination="recentlyUpdatedUsersF"/>
 					</MkFolder>
 					<MkFolder class="_gap">
-						<template #header><i class="fas fa-rocket fa-fw" style="margin-right: 0.5em;"></i>{{ $ts.recentlyDiscoveredUsers }}</template>
+						<template #header><i class="fas fa-rocket ph-fw" style="margin-right: 0.5em;"></i>{{ $ts.recentlyDiscoveredUsers }}</template>
 						<XUserList :pagination="recentlyRegisteredUsersF"/>
 					</MkFolder>
 				</template>
@@ -64,7 +64,7 @@
 			<div v-else-if="tab === 'search'">
 				<div class="_isolated">
 					<MkInput v-model="searchQuery" :debounce="true" type="search">
-						<template #prefix><i class="fas fa-search"></i></template>
+						<template #prefix><i class="ph-magnifying-glass"></i></template>
 						<template #label>{{ $ts.searchUser }}</template>
 					</MkInput>
 					<MkRadios v-model="searchOrigin">
@@ -110,7 +110,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: computed(() => ({
 				title: this.$ts.explore,
-				icon: 'fas fa-hashtag',
+				icon: 'ph-hash',
 				bg: 'var(--bg)',
 				tabs: [{
 					active: this.tab === 'local',

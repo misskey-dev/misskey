@@ -20,7 +20,7 @@
 							<Mfm :text="req.follower.description" :is-note="false" :author="req.follower" :i="$i" :custom-emojis="req.follower.emojis" :plain="true" :nowrap="true"/>
 						</div>
 						<div class="actions">
-							<button class="_button" @click="accept(req.follower)"><i class="fas fa-check"></i></button>
+							<button class="_button" @click="accept(req.follower)"><i class="ph-check"></i></button>
 							<button class="_button" @click="reject(req.follower)"><i class="fas fa-times"></i></button>
 						</div>
 					</div>
@@ -61,7 +61,7 @@ function reject(user) {
 defineExpose({
 	[symbols.PAGE_INFO]: computed(() => ({
 		title: i18n.ts.followRequests,
-		icon: 'fas fa-user-clock',
+		icon: 'ph-user-plus',
 		bg: 'var(--bg)',
 	})),
 });

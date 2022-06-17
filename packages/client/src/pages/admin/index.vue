@@ -43,7 +43,7 @@ const nav = new MisskeyNavigator();
 
 const indexInfo = {
 	title: i18n.ts.controlPanel,
-	icon: 'fas fa-cog',
+	icon: 'ph-gear',
 	bg: 'var(--bg)',
 	hideHeader: true,
 };
@@ -74,7 +74,7 @@ const menuDef = $computed(() => [{
 	title: i18n.ts.quickAction,
 	items: [{
 		type: 'button',
-		icon: 'fas fa-search',
+		icon: 'ph-magnifying-glass',
 		text: i18n.ts.lookup,
 		action: lookup,
 	}, ...(instance.disableRegistration ? [{
@@ -91,17 +91,17 @@ const menuDef = $computed(() => [{
 		to: '/admin/overview',
 		active: props.initialPage === 'overview',
 	}, {
-		icon: 'fas fa-users',
+		icon: 'ph-users-three',
 		text: i18n.ts.users,
 		to: '/admin/users',
 		active: props.initialPage === 'users',
 	}, {
-		icon: 'fas fa-laugh',
+		icon: 'ph-smiley',
 		text: i18n.ts.customEmojis,
 		to: '/admin/emojis',
 		active: props.initialPage === 'emojis',
 	}, {
-		icon: 'fas fa-globe',
+		icon: 'ph-globe',
 		text: i18n.ts.federation,
 		to: '/admin/federation',
 		active: props.initialPage === 'federation',
@@ -111,12 +111,12 @@ const menuDef = $computed(() => [{
 		to: '/admin/queue',
 		active: props.initialPage === 'queue',
 	}, {
-		icon: 'fas fa-cloud',
+		icon: 'ph-cloud',
 		text: i18n.ts.files,
 		to: '/admin/files',
 		active: props.initialPage === 'files',
 	}, {
-		icon: 'fas fa-broadcast-tower',
+		icon: 'ph-megaphone',
 		text: i18n.ts.announcements,
 		to: '/admin/announcements',
 		active: props.initialPage === 'announcements',
@@ -134,27 +134,27 @@ const menuDef = $computed(() => [{
 }, {
 	title: i18n.ts.settings,
 	items: [{
-		icon: 'fas fa-cog',
+		icon: 'ph-gear',
 		text: i18n.ts.general,
 		to: '/admin/settings',
 		active: props.initialPage === 'settings',
 	}, {
-		icon: 'fas fa-envelope',
+		icon: 'ph-envelope-simple',
 		text: i18n.ts.emailServer,
 		to: '/admin/email-settings',
 		active: props.initialPage === 'email-settings',
 	}, {
-		icon: 'fas fa-cloud',
+		icon: 'ph-cloud',
 		text: i18n.ts.objectStorage,
 		to: '/admin/object-storage',
 		active: props.initialPage === 'object-storage',
 	}, {
-		icon: 'fas fa-lock',
+		icon: 'ph-lock',
 		text: i18n.ts.security,
 		to: '/admin/security',
 		active: props.initialPage === 'security',
 	}, {
-		icon: 'fas fa-globe',
+		icon: 'ph-globe',
 		text: i18n.ts.relays,
 		to: '/admin/relays',
 		active: props.initialPage === 'relays',
@@ -174,7 +174,7 @@ const menuDef = $computed(() => [{
 		to: '/admin/proxy-account',
 		active: props.initialPage === 'proxy-account',
 	}, {
-		icon: 'fas fa-cogs',
+		icon: 'ph-gears',
 		text: i18n.ts.other,
 		to: '/admin/other-settings',
 		active: props.initialPage === 'other-settings',
@@ -282,19 +282,19 @@ const lookup = (ev) => {
 		}
 	}, {
 		text: i18n.ts.note,
-		icon: 'fas fa-pencil-alt',
+		icon: 'ph-pencil',
 		action: () => {
 			alert('TODO');
 		}
 	}, {
 		text: i18n.ts.file,
-		icon: 'fas fa-cloud',
+		icon: 'ph-cloud',
 		action: () => {
 			alert('TODO');
 		}
 	}, {
 		text: i18n.ts.instance,
-		icon: 'fas fa-globe',
+		icon: 'ph-globe',
 		action: () => {
 			alert('TODO');
 		}

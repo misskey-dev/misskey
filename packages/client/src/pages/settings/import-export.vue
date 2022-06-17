@@ -2,7 +2,7 @@
 <div class="_formRoot">
 	<FormSection>
 		<template #label>{{ $ts._exportOrImport.allNotes }}</template>
-		<MkButton :class="$style.button" inline @click="exportNotes()"><i class="fas fa-download"></i> {{ $ts.export }}</MkButton>
+		<MkButton :class="$style.button" inline @click="exportNotes()"><i class="ph-download-simple"></i> {{ $ts.export }}</MkButton>
 	</FormSection>
 	<FormSection>
 		<template #label>{{ $ts._exportOrImport.followingList }}</template>
@@ -13,7 +13,7 @@
 			<FormSwitch v-model="excludeInactiveUsers" class="_formBlock">
 				{{ $ts._exportOrImport.excludeInactiveUsers }}
 			</FormSwitch>
-			<MkButton :class="$style.button" inline @click="exportFollowing()"><i class="fas fa-download"></i> {{ $ts.export }}</MkButton>
+			<MkButton :class="$style.button" inline @click="exportFollowing()"><i class="ph-download-simple"></i> {{ $ts.export }}</MkButton>
 		</FormGroup>
 		<FormGroup>
 			<MkButton :class="$style.button" inline @click="importFollowing($event)"><i class="fas fa-upload"></i> {{ $ts.import }}</MkButton>
@@ -21,17 +21,17 @@
 	</FormSection>
 	<FormSection>
 		<template #label>{{ $ts._exportOrImport.userLists }}</template>
-		<MkButton :class="$style.button" inline @click="exportUserLists()"><i class="fas fa-download"></i> {{ $ts.export }}</MkButton>
+		<MkButton :class="$style.button" inline @click="exportUserLists()"><i class="ph-download-simple"></i> {{ $ts.export }}</MkButton>
 		<MkButton :class="$style.button" inline @click="importUserLists($event)"><i class="fas fa-upload"></i> {{ $ts.import }}</MkButton>
 	</FormSection>
 	<FormSection>
 		<template #label>{{ $ts._exportOrImport.muteList }}</template>
-		<MkButton :class="$style.button" inline @click="exportMuting()"><i class="fas fa-download"></i> {{ $ts.export }}</MkButton>
+		<MkButton :class="$style.button" inline @click="exportMuting()"><i class="ph-download-simple"></i> {{ $ts.export }}</MkButton>
 		<MkButton :class="$style.button" inline @click="importMuting($event)"><i class="fas fa-upload"></i> {{ $ts.import }}</MkButton>
 	</FormSection>
 	<FormSection>
 		<template #label>{{ $ts._exportOrImport.blockingList }}</template>
-		<MkButton :class="$style.button" inline @click="exportBlocking()"><i class="fas fa-download"></i> {{ $ts.export }}</MkButton>
+		<MkButton :class="$style.button" inline @click="exportBlocking()"><i class="ph-download-simple"></i> {{ $ts.export }}</MkButton>
 		<MkButton :class="$style.button" inline @click="importBlocking($event)"><i class="fas fa-upload"></i> {{ $ts.import }}</MkButton>
 	</FormSection>
 </div>

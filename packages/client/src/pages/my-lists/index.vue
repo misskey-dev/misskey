@@ -1,7 +1,7 @@
 <template>
 <MkSpacer :content-max="700">
 	<div class="qkcjvfiv">
-		<MkButton primary class="add" @click="create"><i class="fas fa-plus"></i> {{ $ts.createList }}</MkButton>
+		<MkButton primary class="add" @click="create"><i class="ph-plus"></i> {{ $ts.createList }}</MkButton>
 
 		<MkPagination v-slot="{items}" ref="pagingComponent" :pagination="pagination" class="lists _content">
 			<MkA v-for="list in items" :key="list.id" class="list _panel" :to="`/my/lists/${ list.id }`">
@@ -41,10 +41,10 @@ async function create() {
 defineExpose({
 	[symbols.PAGE_INFO]: {
 		title: i18n.ts.manageLists,
-		icon: 'fas fa-list-ul',
+		icon: 'ph-list-bullets',
 		bg: 'var(--bg)',
 		action: {
-			icon: 'fas fa-plus',
+			icon: 'ph-plus',
 			handler: create,
 		},
 	},

@@ -4,7 +4,7 @@
 		<MkButton v-if="pageId" class="button" inline link :to="`/@${ author.username }/pages/${ currentName }`"><i class="fas fa-external-link-square-alt"></i> {{ $ts._pages.viewPage }}</MkButton>
 		<MkButton v-if="!readonly" inline primary class="button" @click="save"><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
 		<MkButton v-if="pageId" inline class="button" @click="duplicate"><i class="fas fa-copy"></i> {{ $ts.duplicate }}</MkButton>
-		<MkButton v-if="pageId && !readonly" inline class="button" danger @click="del"><i class="fas fa-trash-alt"></i> {{ $ts.delete }}</MkButton>
+		<MkButton v-if="pageId && !readonly" inline class="button" danger @click="del"><i class="ph-trash"></i> {{ $ts.delete }}</MkButton>
 	</div>
 
 	<div v-if="tab === 'settings'">
@@ -33,10 +33,10 @@
 			<MkSwitch v-model="hideTitleWhenPinned" class="_formBlock">{{ $ts._pages.hideTitleWhenPinned }}</MkSwitch>
 
 			<div class="eyeCatch">
-				<MkButton v-if="eyeCatchingImageId == null && !readonly" @click="setEyeCatchingImage"><i class="fas fa-plus"></i> {{ $ts._pages.eyeCatchingImageSet }}</MkButton>
+				<MkButton v-if="eyeCatchingImageId == null && !readonly" @click="setEyeCatchingImage"><i class="ph-plus"></i> {{ $ts._pages.eyeCatchingImageSet }}</MkButton>
 				<div v-else-if="eyeCatchingImage">
 					<img :src="eyeCatchingImage.url" :alt="eyeCatchingImage.name" style="max-width: 100%;"/>
-					<MkButton v-if="!readonly" @click="removeEyeCatchingImage()"><i class="fas fa-trash-alt"></i> {{ $ts._pages.eyeCatchingImageRemove }}</MkButton>
+					<MkButton v-if="!readonly" @click="removeEyeCatchingImage()"><i class="ph-trash"></i> {{ $ts._pages.eyeCatchingImageRemove }}</MkButton>
 				</div>
 			</div>
 		</div>
@@ -46,7 +46,7 @@
 		<div>
 			<XBlocks v-model="content" class="content" :hpml="hpml"/>
 
-			<MkButton v-if="!readonly" @click="add()"><i class="fas fa-plus"></i></MkButton>
+			<MkButton v-if="!readonly" @click="add()"><i class="ph-plus"></i></MkButton>
 		</div>
 	</div>
 
@@ -66,7 +66,7 @@
 				</template>
 			</XDraggable>
 
-			<MkButton v-if="!readonly" class="add" @click="addVariable()"><i class="fas fa-plus"></i></MkButton>
+			<MkButton v-if="!readonly" class="add" @click="addVariable()"><i class="ph-plus"></i></MkButton>
 		</div>
 	</div>
 
@@ -144,12 +144,12 @@ export default defineComponent({
 				}
 				return {
 					title: title,
-					icon: 'fas fa-pencil-alt',
+					icon: 'ph-pencil',
 					bg: 'var(--bg)',
 					tabs: [{
 						active: this.tab === 'settings',
 						title: this.$ts._pages.pageSetting,
-						icon: 'fas fa-cog',
+						icon: 'ph-gear',
 						onClick: () => { this.tab = 'settings'; },
 					}, {
 						active: this.tab === 'contents',

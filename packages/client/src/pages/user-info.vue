@@ -35,7 +35,7 @@
 				<div class="_formBlock">
 					<MkKeyValue v-if="user.host" oneline style="margin: 1em 0;">
 						<template #key>{{ $ts.instanceInfo }}</template>
-						<template #value><MkA :to="`/instance-info/${user.host}`" class="_link">{{ user.host }} <i class="fas fa-angle-right"></i></MkA></template>
+						<template #value><MkA :to="`/instance-info/${user.host}`" class="_link">{{ user.host }} <i class="ph-caret-right"></i></MkA></template>
 					</MkKeyValue>
 					<MkKeyValue v-else oneline style="margin: 1em 0;">
 						<template #key>{{ $ts.instanceInfo }}</template>
@@ -104,7 +104,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: computed(() => ({
 				title: this.user ? acct(this.user) : this.$ts.userInfo,
-				icon: 'fas fa-info-circle',
+				icon: 'ph-info',
 				bg: 'var(--bg)',
 				actions: this.user ? [this.user.url ? {
 					text: this.user.url,

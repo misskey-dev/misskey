@@ -132,11 +132,11 @@ function save() {
 defineExpose({
   [symbols.PAGE_INFO]: {
 		title: i18n.ts.objectStorage,
-		icon: 'fas fa-cloud',
+		icon: 'ph-cloud',
 		bg: 'var(--bg)',
 		actions: [{
 			asFullButton: true,
-			icon: 'fas fa-check',
+			icon: 'ph-check',
 			text: i18n.ts.save,
 			handler: save,
 		}],

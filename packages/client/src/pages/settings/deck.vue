@@ -73,7 +73,7 @@ async function setProfile() {
 defineExpose({
 	[symbols.PAGE_INFO]: {
 		title: i18n.ts.deck,
-		icon: 'fas fa-columns',
+		icon: 'ph-layout',
 		bg: 'var(--bg)',
 	}
 });

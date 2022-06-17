@@ -11,7 +11,7 @@
 			</FormTextarea>
 
 			<FormInput v-model="tosUrl" class="_formBlock">
-				<template #prefix><i class="fas fa-link"></i></template>
+				<template #prefix><i class="ph-link"></i></template>
 				<template #label>{{ i18n.ts.tosUrl }}</template>
 			</FormInput>
 
@@ -21,7 +21,7 @@
 				</FormInput>
 
 				<FormInput v-model="maintainerEmail" type="email" class="_formBlock">
-					<template #prefix><i class="fas fa-envelope"></i></template>
+					<template #prefix><i class="ph-envelope-simple"></i></template>
 					<template #label>{{ i18n.ts.maintainerEmail }}</template>
 				</FormInput>
 			</FormSplit>
@@ -51,17 +51,17 @@
 				<template #label>{{ i18n.ts.theme }}</template>
 
 				<FormInput v-model="iconUrl" class="_formBlock">
-					<template #prefix><i class="fas fa-link"></i></template>
+					<template #prefix><i class="ph-link"></i></template>
 					<template #label>{{ i18n.ts.iconUrl }}</template>
 				</FormInput>
 
 				<FormInput v-model="bannerUrl" class="_formBlock">
-					<template #prefix><i class="fas fa-link"></i></template>
+					<template #prefix><i class="ph-link"></i></template>
 					<template #label>{{ i18n.ts.bannerUrl }}</template>
 				</FormInput>
 
 				<FormInput v-model="backgroundImageUrl" class="_formBlock">
-					<template #prefix><i class="fas fa-link"></i></template>
+					<template #prefix><i class="ph-link"></i></template>
 					<template #label>{{ i18n.ts.backgroundImageUrl }}</template>
 				</FormInput>
 
@@ -243,11 +243,11 @@ function save() {
 defineExpose({
 	[symbols.PAGE_INFO]: {
 		title: i18n.ts.general,
-		icon: 'fas fa-cog',
+		icon: 'ph-gear',
 		bg: 'var(--bg)',
 		actions: [{
 			asFullButton: true,
-			icon: 'fas fa-check',
+			icon: 'ph-check',
 			text: i18n.ts.save,
 			handler: save,
 		}],

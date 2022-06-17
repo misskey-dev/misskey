@@ -29,7 +29,7 @@ const pagination = {
 defineExpose({
 	[symbols.PAGE_INFO]: computed(() => ({
 		title: i18n.t('searchWith', { q: props.query }),
-		icon: 'fas fa-search',
+		icon: 'ph-magnifying-glass',
 		bg: 'var(--bg)',
 	})),
 });

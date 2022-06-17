@@ -4,7 +4,7 @@
 	<template #header><i class="fas fa-image"></i> {{ $ts._pages.blocks.image }}</template>
 	<template #func>
 		<button @click="choose()">
-			<i class="fas fa-folder-open"></i>
+			<i class="ph-folder-open"></i>
 		</button>
 	</template>
 

@@ -10,7 +10,7 @@
 
 	<FormLink to="/settings/account-info" class="_formBlock">{{ i18n.ts.accountInfo }}</FormLink>
 
-	<FormLink to="/settings/delete-account" class="_formBlock"><template #icon><i class="fas fa-exclamation-triangle"></i></template>{{ i18n.ts.closeAccount }}</FormLink>
+	<FormLink to="/settings/delete-account" class="_formBlock"><template #icon><i class="ph-warning"></i></template>{{ i18n.ts.closeAccount }}</FormLink>
 </div>
 </template>
 

@@ -5,7 +5,7 @@
 			<div @click="showFileMenu(element, $event)" @contextmenu.prevent="showFileMenu(element, $event)">
 				<MkDriveFileThumbnail :data-id="element.id" class="thumbnail" :file="element" fit="cover"/>
 				<div v-if="element.isSensitive" class="sensitive">
-					<i class="fas fa-exclamation-triangle icon"></i>
+					<i class="ph-warning icon"></i>
 				</div>
 			</div>
 		</template>
@@ -113,19 +113,19 @@ export default defineComponent({
 			if (this.menu) return;
 			this.menu = os.popupMenu([{
 				text: this.$ts.renameFile,
-				icon: 'fas fa-i-cursor',
+				icon: 'ph-cursor-text',
 				action: () => { this.rename(file); }
 			}, {
 				text: file.isSensitive ? this.$ts.unmarkAsSensitive : this.$ts.markAsSensitive,
-				icon: file.isSensitive ? 'fas fa-eye-slash' : 'fas fa-eye',
+				icon: file.isSensitive ? 'ph-eye-slash' : 'ph-eye',
 				action: () => { this.toggleSensitive(file); }
 			}, {
 				text: this.$ts.describeFile,
-				icon: 'fas fa-i-cursor',
+				icon: 'ph-cursor-text',
 				action: () => { this.describe(file); }
 			}, {
 				text: this.$ts.attachCancel,
-				icon: 'fas fa-times-circle',
+				icon: 'ph-warning-circle',
 				action: () => { this.detachMedia(file.id); }
 			}], ev.currentTarget ?? ev.target).then(() => this.menu = null);
 		}

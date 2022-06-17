@@ -105,7 +105,7 @@ function save() {
 defineExpose({
 	[symbols.PAGE_INFO]: {
 		title: i18n.ts.emailServer,
-		icon: 'fas fa-envelope',
+		icon: 'ph-envelope-simple',
 		bg: 'var(--bg)',
 		actions: [{
 			asFullButton: true,
@@ -113,7 +113,7 @@ defineExpose({
 			handler: testEmail,
 		}, {
 			asFullButton: true,
-			icon: 'fas fa-check',
+			icon: 'ph-check',
 			text: i18n.ts.save,
 			handler: save,
 		}],

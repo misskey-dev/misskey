@@ -13,7 +13,7 @@ import { i18n } from '@/i18n';
 defineExpose({
 	[symbols.PAGE_INFO]: computed(() => ({
 		title: i18n.ts.preview,
-		icon: 'fas fa-eye',
+		icon: 'ph-eye',
 		bg: 'var(--bg)',
 	})),
 });

@@ -1,7 +1,7 @@
 <template>
 <MkSpacer :content-max="700">
 	<div class="ieepwinx">
-		<MkButton :link="true" to="/my/antennas/create" primary class="add"><i class="fas fa-plus"></i> {{ i18n.ts.add }}</MkButton>
+		<MkButton :link="true" to="/my/antennas/create" primary class="add"><i class="ph-plus"></i> {{ i18n.ts.add }}</MkButton>
 
 		<div class="">
 			<MkPagination v-slot="{items}" ref="list" :pagination="pagination">
@@ -29,7 +29,7 @@ const pagination = {
 defineExpose({
 	[symbols.PAGE_INFO]: {
 		title: i18n.ts.manageAntennas,
-		icon: 'fas fa-satellite',
+		icon: 'ph-cell-signal-full',
 		bg: 'var(--bg)'
 	}
 });

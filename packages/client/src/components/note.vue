@@ -31,7 +31,7 @@
 			<span v-if="note.visibility !== 'public'" class="visibility">
 				<i v-if="note.visibility === 'home'" class="fas fa-home"></i>
 				<i v-else-if="note.visibility === 'followers'" class="fas fa-unlock"></i>
-				<i v-else-if="note.visibility === 'specified'" class="fas fa-envelope"></i>
+				<i v-else-if="note.visibility === 'specified'" class="ph-envelope-simple"></i>
 			</span>
 			<span v-if="note.localOnly" class="localOnly"><i class="fas fa-biohazard"></i></span>
 		</div>
@@ -49,7 +49,7 @@
 				<div v-show="appearNote.cw == null || showContent" class="content" :class="{ collapsed }">
 					<div class="text">
 						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ i18n.ts.private }})</span>
-						<MkA v-if="appearNote.replyId" class="reply" :to="`/notes/${appearNote.replyId}`"><i class="fas fa-reply"></i></MkA>
+						<MkA v-if="appearNote.replyId" class="reply" :to="`/notes/${appearNote.replyId}`"><i class="ph-arrow-bend-up-left"></i></MkA>
 						<Mfm v-if="appearNote.text" :text="appearNote.text" :author="appearNote.user" :i="$i" :custom-emojis="appearNote.emojis"/>
 						<a v-if="appearNote.renote != null" class="rp">RN:</a>
 						<div v-if="translating || translation" class="translation">
@@ -70,18 +70,18 @@
 						<span>{{ i18n.ts.showMore }}</span>
 					</button>
 				</div>
-				<MkA v-if="appearNote.channel && !inChannel" class="channel" :to="`/channels/${appearNote.channel.id}`"><i class="fas fa-satellite-dish"></i> {{ appearNote.channel.name }}</MkA>
+				<MkA v-if="appearNote.channel && !inChannel" class="channel" :to="`/channels/${appearNote.channel.id}`"><i class="ph-television"></i> {{ appearNote.channel.name }}</MkA>
 			</div>
 			<footer class="footer">
 				<XReactionsViewer ref="reactionsViewer" :note="appearNote"/>
 				<button class="button _button" @click="reply()">
-					<template v-if="appearNote.reply"><i class="fas fa-reply-all"></i></template>
-					<template v-else><i class="fas fa-reply"></i></template>
+					<template v-if="appearNote.reply"><i class="ph-arrow-bend-double-left"></i></template>
+					<template v-else><i class="ph-arrow-bend-up-left"></i></template>
 					<p v-if="appearNote.repliesCount > 0" class="count">{{ appearNote.repliesCount }}</p>
 				</button>
 				<XRenoteButton ref="renoteButton" class="button" :note="appearNote" :count="appearNote.renoteCount"/>
 				<button v-if="appearNote.myReaction == null" ref="reactButton" class="button _button" @click="react()">
-					<i class="fas fa-plus"></i>
+					<i class="ph-plus"></i>
 				</button>
 				<button v-if="appearNote.myReaction != null" ref="reactButton" class="button _button reacted" @click="undoReact(appearNote)">
 					<i class="fas fa-minus"></i>
@@ -253,7 +253,7 @@ function showRenoteMenu(viaKeyboard = false): void {
 	if (!isMyRenote) return;
 	os.popupMenu([{
 		text: i18n.ts.unrenote,
-		icon: 'fas fa-trash-alt',
+		icon: 'ph-trash',
 		danger: true,
 		action: () => {
 			os.api('notes/delete', {

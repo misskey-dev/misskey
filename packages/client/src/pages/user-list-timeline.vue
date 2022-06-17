@@ -38,14 +38,14 @@ export default defineComponent({
 			queue: 0,
 			[symbols.PAGE_INFO]: computed(() => this.list ? {
 				title: this.list.name,
-				icon: 'fas fa-list-ul',
+				icon: 'ph-list-bullets',
 				bg: 'var(--bg)',
 				actions: [{
 					icon: 'fas fa-calendar-alt',
 					text: this.$ts.jumpToSpecifiedDate,
 					handler: this.timetravel
 				}, {
-					icon: 'fas fa-cog',
+					icon: 'ph-gear',
 					text: this.$ts.settings,
 					handler: this.settings
 				}],

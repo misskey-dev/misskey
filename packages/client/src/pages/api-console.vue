@@ -78,7 +78,7 @@ function onEndpointChange() {
 defineExpose({
 	[symbols.PAGE_INFO]: {
 		title: 'API console',
-		icon: 'fas fa-terminal'
+		icon: 'ph-terminal'
 	},
 });
 </script>

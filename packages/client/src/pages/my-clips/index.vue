@@ -1,7 +1,7 @@
 <template>
 <MkSpacer :content-max="700">
 	<div class="qtcaoidl">
-		<MkButton primary class="add" @click="create"><i class="fas fa-plus"></i> {{ $ts.add }}</MkButton>
+		<MkButton primary class="add" @click="create"><i class="ph-plus"></i> {{ $ts.add }}</MkButton>
 
 		<MkPagination v-slot="{items}" ref="pagingComponent" :pagination="pagination" class="list">
 			<MkA v-for="item in items" :key="item.id" :to="`/clips/${item.id}`" class="item _panel _gap">
@@ -64,10 +64,10 @@ function onClipDeleted() {
 defineExpose({
 	[symbols.PAGE_INFO]: {
 		title: i18n.ts.clip,
-		icon: 'fas fa-paperclip',
+		icon: 'ph-paperclip',
 		bg: 'var(--bg)',
 		action: {
-			icon: 'fas fa-plus',
+			icon: 'ph-plus',
 			handler: create
 		},
 	},

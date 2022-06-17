@@ -3,12 +3,12 @@
 	<div v-for="relay in relays" :key="relay.inbox" class="relaycxt _panel _block" style="padding: 16px;">
 		<div>{{ relay.inbox }}</div>
 		<div class="status">
-			<i v-if="relay.status === 'accepted'" class="fas fa-check icon accepted"></i>
+			<i v-if="relay.status === 'accepted'" class="ph-check icon accepted"></i>
 			<i v-else-if="relay.status === 'rejected'" class="fas fa-ban icon rejected"></i>
 			<i v-else class="fas fa-clock icon requesting"></i>
 			<span>{{ $t(`_relayStatus.${relay.status}`) }}</span>
 		</div>
-		<MkButton class="button" inline danger @click="remove(relay.inbox)"><i class="fas fa-trash-alt"></i> {{ i18n.ts.remove }}</MkButton>
+		<MkButton class="button" inline danger @click="remove(relay.inbox)"><i class="ph-trash"></i> {{ i18n.ts.remove }}</MkButton>
 	</div>
 </MkSpacer>
 </template>
@@ -65,11 +65,11 @@ refresh();
 defineExpose({
 	[symbols.PAGE_INFO]: {
 		title: i18n.ts.relays,
-		icon: 'fas fa-globe',
+		icon: 'ph-globe',
 		bg: 'var(--bg)',
 		actions: [{
 			asFullButton: true,
-			icon: 'fas fa-plus',
+			icon: 'ph-plus',
 			text: i18n.ts.addRelay,
 			handler: addRelay,
 		}],

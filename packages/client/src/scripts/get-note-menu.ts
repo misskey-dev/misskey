@@ -96,7 +96,7 @@ export function getNoteMenu(props: {
 	async function clip(): Promise<void> {
 		const clips = await os.api('clips/list');
 		os.popupMenu([{
-			icon: 'fas fa-plus',
+			icon: 'ph-plus',
 			text: i18n.ts.createNew,
 			action: async () => {
 				const { canceled, result } = await os.form(i18n.ts.createNewClip, {
@@ -174,7 +174,7 @@ export function getNoteMenu(props: {
 			text: i18n.ts.copyContent,
 			action: copyContent
 		}, {
-			icon: 'fas fa-link',
+			icon: 'ph-link',
 			text: i18n.ts.copyLink,
 			action: copyLink
 		}, (appearNote.url || appearNote.uri) ? {
@@ -196,25 +196,25 @@ export function getNoteMenu(props: {
 		} : undefined,
 		null,
 		statePromise.then(state => state.isFavorited ? {
-			icon: 'fas fa-star',
+			icon: 'ph-star',
 			text: i18n.ts.unfavorite,
 			action: () => toggleFavorite(false)
 		} : {
-			icon: 'fas fa-star',
+			icon: 'ph-star',
 			text: i18n.ts.favorite,
 			action: () => toggleFavorite(true)
 		}),
 		{
-			icon: 'fas fa-paperclip',
+			icon: 'ph-paperclip',
 			text: i18n.ts.clip,
 			action: () => clip()
 		},
 		(appearNote.userId !== $i.id) ? statePromise.then(state => state.isWatching ? {
-			icon: 'fas fa-eye-slash',
+			icon: 'ph-eye-slash',
 			text: i18n.ts.unwatch,
 			action: () => toggleWatch(false)
 		} : {
-			icon: 'fas fa-eye',
+			icon: 'ph-eye',
 			text: i18n.ts.watch,
 			action: () => toggleWatch(true)
 		}) : undefined,
@@ -269,7 +269,7 @@ export function getNoteMenu(props: {
 				action: delEdit
 			} : undefined,
 			{
-				icon: 'fas fa-trash-alt',
+				icon: 'ph-trash',
 				text: i18n.ts.delete,
 				danger: true,
 				action: del
@@ -283,7 +283,7 @@ export function getNoteMenu(props: {
 			text: i18n.ts.copyContent,
 			action: copyContent
 		}, {
-			icon: 'fas fa-link',
+			icon: 'ph-link',
 			text: i18n.ts.copyLink,
 			action: copyLink
 		}, (appearNote.url || appearNote.uri) ? {

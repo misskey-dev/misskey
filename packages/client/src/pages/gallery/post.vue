@@ -19,9 +19,9 @@
 						<MkButton v-else v-tooltip="$ts._gallery.like" class="button" @click="like()"><i class="far fa-heart"></i><span v-if="post.likedCount > 0" class="count">{{ post.likedCount }}</span></MkButton>
 					</div>
 					<div class="other">
-						<button v-if="$i && $i.id === post.user.id" v-tooltip="$ts.edit" v-click-anime class="_button" @click="edit"><i class="fas fa-pencil-alt fa-fw"></i></button>
-						<button v-tooltip="$ts.shareWithNote" v-click-anime class="_button" @click="shareWithNote"><i class="fas fa-retweet fa-fw"></i></button>
-						<button v-tooltip="$ts.share" v-click-anime class="_button" @click="share"><i class="fas fa-share-alt fa-fw"></i></button>
+						<button v-if="$i && $i.id === post.user.id" v-tooltip="$ts.edit" v-click-anime class="_button" @click="edit"><i class="ph-pencil ph-fw"></i></button>
+						<button v-tooltip="$ts.shareWithNote" v-click-anime class="_button" @click="shareWithNote"><i class="fas fa-retweet ph-fw"></i></button>
+						<button v-tooltip="$ts.share" v-click-anime class="_button" @click="share"><i class="fas fa-share-alt ph-fw"></i></button>
 					</div>
 				</div>
 				<div class="user">
@@ -87,7 +87,7 @@ export default defineComponent({
 					text: this.post.description,
 				},
 				actions: [{
-					icon: 'fas fa-pencil-alt',
+					icon: 'ph-pencil',
 					text: this.$ts.edit,
 					handler: this.edit
 				}]

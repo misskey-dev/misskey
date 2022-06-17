@@ -150,7 +150,7 @@ onMounted(() => {
 defineExpose({
 	[symbols.PAGE_INFO]: {
 		title: i18n.ts.accountInfo,
-		icon: 'fas fa-info-circle'
+		icon: 'ph-info'
 	}
 });
 </script>

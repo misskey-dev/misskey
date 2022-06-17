@@ -38,7 +38,7 @@ function setFilter(ev) {
 defineExpose({
 	[symbols.PAGE_INFO]: computed(() => ({
 		title: i18n.ts.notifications,
-		icon: 'fas fa-bell',
+		icon: 'ph-bell',
 		bg: 'var(--bg)',
 		actions: [{
 			text: i18n.ts.filter,
@@ -47,7 +47,7 @@ defineExpose({
 			handler: setFilter,
 		}, {
 			text: i18n.ts.markAllAsRead,
-			icon: 'fas fa-check',
+			icon: 'ph-check',
 			handler: () => {
 				os.apiWithDialog('notifications/mark-all-as-read');
 			},

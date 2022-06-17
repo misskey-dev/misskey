@@ -10,10 +10,10 @@
 		</MkTextarea>
 
 		<div class="banner">
-			<MkButton v-if="bannerId == null" @click="setBannerImage"><i class="fas fa-plus"></i> {{ $ts._channel.setBanner }}</MkButton>
+			<MkButton v-if="bannerId == null" @click="setBannerImage"><i class="ph-plus"></i> {{ $ts._channel.setBanner }}</MkButton>
 			<div v-else-if="bannerUrl">
 				<img :src="bannerUrl" style="width: 100%;"/>
-				<MkButton @click="removeBannerImage()"><i class="fas fa-trash-alt"></i> {{ $ts._channel.removeBanner }}</MkButton>
+				<MkButton @click="removeBannerImage()"><i class="ph-trash"></i> {{ $ts._channel.removeBanner }}</MkButton>
 			</div>
 		</div>
 		<div class="_formBlock">
@@ -48,11 +48,11 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: computed(() => this.channelId ? {
 				title: this.$ts._channel.edit,
-				icon: 'fas fa-satellite-dish',
+				icon: 'ph-television',
 				bg: 'var(--bg)',
 			} : {
 				title: this.$ts._channel.create,
-				icon: 'fas fa-satellite-dish',
+				icon: 'ph-television',
 				bg: 'var(--bg)',
 			}),
 			channel: null,

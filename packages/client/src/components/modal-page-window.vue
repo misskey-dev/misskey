@@ -96,7 +96,7 @@ export default defineComponent({
 				text: this.$ts.showInPage,
 				action: this.expand,
 			}, this.sideViewHook ? {
-				icon: 'fas fa-columns',
+				icon: 'ph-layout',
 				text: this.$ts.openInSideView,
 				action: () => {
 					this.sideViewHook(this.path);
@@ -114,7 +114,7 @@ export default defineComponent({
 					this.$refs.window.close();
 				},
 			}, {
-				icon: 'fas fa-link',
+				icon: 'ph-link',
 				text: this.$ts.copyLink,
 				action: () => {
 					copyToClipboard(this.url);

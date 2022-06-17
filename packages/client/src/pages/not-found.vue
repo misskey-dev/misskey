@@ -14,7 +14,7 @@ import { i18n } from '@/i18n';
 defineExpose({
 	[symbols.PAGE_INFO]: {
 		title: i18n.ts.notFound,
-		icon: 'fas fa-exclamation-triangle',
+		icon: 'ph-warning',
 		bg: 'var(--bg)',
 	},
 });

@@ -17,7 +17,7 @@
 
 				<div class="_formRoot">
 					<FormInput v-model="summalyProxy" class="_formBlock">
-						<template #prefix><i class="fas fa-link"></i></template>
+						<template #prefix><i class="ph-link"></i></template>
 						<template #label>Summaly Proxy URL</template>
 					</FormInput>
 
@@ -66,7 +66,7 @@ function save() {
 defineExpose({
 	[symbols.PAGE_INFO]: {
 		title: i18n.ts.security,
-		icon: 'fas fa-lock',
+		icon: 'ph-lock',
 		bg: 'var(--bg)',
 	}
 });

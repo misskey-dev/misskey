@@ -2,7 +2,7 @@
 <MkSpacer v-if="token" :content-max="700" :margin-min="16" :margin-max="32">
 	<div class="_formRoot">
 		<FormInput v-model="password" type="password" class="_formBlock">
-			<template #prefix><i class="fas fa-lock"></i></template>
+			<template #prefix><i class="ph-lock"></i></template>
 			<template #label>{{ i18n.ts.newPassword }}</template>
 		</FormInput>
 		
@@ -44,7 +44,7 @@ onMounted(() => {
 defineExpose({
 	[symbols.PAGE_INFO]: {
 		title: i18n.ts.resetPassword,
-		icon: 'fas fa-lock',
+		icon: 'ph-lock',
 		bg: 'var(--bg)',
 	},
 });

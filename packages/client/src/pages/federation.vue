@@ -3,7 +3,7 @@
 	<div class="taeiyria">
 		<div class="query">
 			<MkInput v-model="host" :debounce="true" class="">
-				<template #prefix><i class="fas fa-search"></i></template>
+				<template #prefix><i class="ph-magnifying-glass"></i></template>
 				<template #label>{{ $ts.host }}</template>
 			</MkInput>
 			<FormSplit style="margin-top: var(--margin);">
@@ -132,7 +132,7 @@ function getStatus(instance) {
 defineExpose({
 	[symbols.PAGE_INFO]: {
 		title: i18n.ts.federation,
-		icon: 'fas fa-globe',
+		icon: 'ph-globe',
 		bg: 'var(--bg)',
 	},
 });

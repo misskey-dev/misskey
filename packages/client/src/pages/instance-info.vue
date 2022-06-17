@@ -171,7 +171,7 @@ fetch();
 defineExpose({
 	[symbols.PAGE_INFO]: {
 		title: props.host,
-		icon: 'fas fa-info-circle',
+		icon: 'ph-info',
 		bg: 'var(--bg)',
 		actions: [{
 			text: `https://${props.host}`,

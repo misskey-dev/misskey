@@ -1,6 +1,6 @@
 <template>
 <div class="_card tbkwesmv">
-	<div class="_title"><i class="fas fa-info-circle"></i> {{ $ts._tutorial.title }}</div>
+	<div class="_title"><i class="ph-info"></i> {{ $ts._tutorial.title }}</div>
 	<div v-if="tutorial === 0" class="_content">
 		<div>{{ $ts._tutorial.step1_1 }}</div>
 		<div>{{ $ts._tutorial.step1_2 }}</div>
@@ -59,8 +59,8 @@
 				<i class="fas fa-chevron-right"></i>
 			</button>
 		</div>
-		<MkButton v-if="tutorial === 6" class="ok" primary @click="tutorial = -1"><i class="fas fa-check"></i> {{ $ts.gotIt }}</MkButton>
-		<MkButton v-else class="ok" primary @click="tutorial++"><i class="fas fa-check"></i> {{ $ts.next }}</MkButton>
+		<MkButton v-if="tutorial === 6" class="ok" primary @click="tutorial = -1"><i class="ph-check"></i> {{ $ts.gotIt }}</MkButton>
+		<MkButton v-else class="ok" primary @click="tutorial++"><i class="ph-check"></i> {{ $ts.next }}</MkButton>
 	</div>
 </div>
 </template>

@@ -14,7 +14,7 @@
 			<p v-if="announcement.reads">{{ i18n.t('nUsersRead', { n: announcement.reads }) }}</p>
 			<div class="buttons">
 				<MkButton class="button" inline primary @click="save(announcement)"><i class="fas fa-save"></i> {{ i18n.ts.save }}</MkButton>
-				<MkButton class="button" inline @click="remove(announcement)"><i class="fas fa-trash-alt"></i> {{ i18n.ts.remove }}</MkButton>
+				<MkButton class="button" inline @click="remove(announcement)"><i class="ph-trash"></i> {{ i18n.ts.remove }}</MkButton>
 			</div>
 		</div>
 	</section>
@@ -87,11 +87,11 @@ function save(announcement) {
 defineExpose({
 	[symbols.PAGE_INFO]: {
 		title: i18n.ts.announcements,
-		icon: 'fas fa-broadcast-tower',
+		icon: 'ph-megaphone',
 		bg: 'var(--bg)',
 		actions: [{
 			asFullButton: true,
-			icon: 'fas fa-plus',
+			icon: 'ph-plus',
 			text: i18n.ts.add,
 			handler: add,
 		}],

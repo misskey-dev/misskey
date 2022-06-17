@@ -16,7 +16,7 @@ let folder = $ref(null);
 defineExpose({
 	[symbols.PAGE_INFO]: computed(() => ({
 		title: folder ? folder.name : i18n.ts.drive,
-		icon: 'fas fa-cloud',
+		icon: 'ph-cloud',
 		bg: 'var(--bg)',
 		hideHeader: true,
 	})),

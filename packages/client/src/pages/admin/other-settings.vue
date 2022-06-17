@@ -27,11 +27,11 @@ function save() {
 defineExpose({
   [symbols.PAGE_INFO]: {
 		title: i18n.ts.other,
-		icon: 'fas fa-cogs',
+		icon: 'ph-gears',
 		bg: 'var(--bg)',
 		actions: [{
 			asFullButton: true,
-			icon: 'fas fa-check',
+			icon: 'ph-check',
 			text: i18n.ts.save,
 			handler: save,
 		}],

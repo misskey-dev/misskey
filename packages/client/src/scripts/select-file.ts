@@ -87,11 +87,11 @@ function select(src: any, label: string | null, multiple: boolean): Promise<Driv
 			action: chooseFileFromPc
 		}, {
 			text: i18n.ts.fromDrive,
-			icon: 'fas fa-cloud',
+			icon: 'ph-cloud',
 			action: chooseFileFromDrive
 		}, {
 			text: i18n.ts.fromUrl,
-			icon: 'fas fa-link',
+			icon: 'ph-link',
 			action: chooseFileFromUrl
 		}], src);
 	});

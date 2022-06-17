@@ -36,7 +36,7 @@
 			</MkTextarea>
 			<div class="buttons _formBlock">
 				<MkButton class="button" inline primary style="margin-right: 12px;" @click="save(ad)"><i class="fas fa-save"></i> {{ i18n.ts.save }}</MkButton>
-				<MkButton class="button" inline danger @click="remove(ad)"><i class="fas fa-trash-alt"></i> {{ i18n.ts.remove }}</MkButton>
+				<MkButton class="button" inline danger @click="remove(ad)"><i class="ph-trash"></i> {{ i18n.ts.remove }}</MkButton>
 			</div>
 		</div>
 	</div>
@@ -107,7 +107,7 @@ defineExpose({
 		bg: 'var(--bg)',
 		actions: [{
 			asFullButton: true,
-			icon: 'fas fa-plus',
+			icon: 'ph-plus',
 			text: i18n.ts.add,
 			handler: add,
 		}],

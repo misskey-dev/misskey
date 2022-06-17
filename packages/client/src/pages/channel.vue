@@ -4,15 +4,15 @@
 		<div class="wpgynlbz _panel _gap" :class="{ hide: !showBanner }">
 			<XChannelFollowButton :channel="channel" :full="true" class="subscribe"/>
 			<button class="_button toggle" @click="() => showBanner = !showBanner">
-				<template v-if="showBanner"><i class="fas fa-angle-up"></i></template>
-				<template v-else><i class="fas fa-angle-down"></i></template>
+				<template v-if="showBanner"><i class="ph-caret-up"></i></template>
+				<template v-else><i class="ph-caret-down"></i></template>
 			</button>
 			<div v-if="!showBanner" class="hideOverlay">
 			</div>
 			<div :style="{ backgroundImage: channel.bannerUrl ? `url(${channel.bannerUrl})` : null }" class="banner">
 				<div class="status">
-					<div><i class="fas fa-users fa-fw"></i><I18n :src="$ts._channel.usersCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.usersCount }}</b></template></I18n></div>
-					<div><i class="fas fa-pencil-alt fa-fw"></i><I18n :src="$ts._channel.notesCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.notesCount }}</b></template></I18n></div>
+					<div><i class="ph-users-three ph-fw"></i><I18n :src="$ts._channel.usersCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.usersCount }}</b></template></I18n></div>
+					<div><i class="ph-pencil ph-fw"></i><I18n :src="$ts._channel.notesCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.notesCount }}</b></template></I18n></div>
 				</div>
 				<div class="fade"></div>
 			</div>
@@ -56,10 +56,10 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: computed(() => this.channel ? {
 				title: this.channel.name,
-				icon: 'fas fa-satellite-dish',
+				icon: 'ph-television',
 				bg: 'var(--bg)',
 				actions: [...(this.$i && this.$i.id === this.channel.userId ? [{
-					icon: 'fas fa-cog',
+					icon: 'ph-gear',
 					text: this.$ts.edit,
 					handler: this.edit,
 				}] : [])],

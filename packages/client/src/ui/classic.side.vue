@@ -70,7 +70,7 @@ function onContextmenu(ev: MouseEvent) {
 			close();
 		}
 	}, {
-		icon: 'fas fa-window-maximize',
+		icon: 'ph-frame-corners',
 		text: i18n.ts.openInWindow,
 		action: () => {
 			if (path) os.pageWindow(path);
@@ -84,7 +84,7 @@ function onContextmenu(ev: MouseEvent) {
 			close();
 		}
 	}, {
-		icon: 'fas fa-link',
+		icon: 'ph-link',
 		text: i18n.ts.copyLink,
 		action: () => {
 			copyToClipboard(url);

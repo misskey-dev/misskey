@@ -49,7 +49,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: computed(() => this.list ? {
 				title: this.list.name,
-				icon: 'fas fa-list-ul',
+				icon: 'ph-list-bullets',
 				bg: 'var(--bg)',
 			} : null),
 			list: null,

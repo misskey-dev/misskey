@@ -114,18 +114,18 @@ function focus(): void {
 defineExpose({
 	[symbols.PAGE_INFO]: computed(() => ({
 		title: i18n.ts.timeline,
-		icon: src === 'local' ? 'fas fa-comments' : src === 'social' ? 'fas fa-share-alt' : src === 'global' ? 'fas fa-globe' : 'fas fa-home',
+		icon: src === 'local' ? 'ph-chats-circle' : src === 'social' ? 'fas fa-share-alt' : src === 'global' ? 'ph-globe' : 'fas fa-home',
 		bg: 'var(--bg)',
 		actions: [{
-			icon: 'fas fa-list-ul',
+			icon: 'ph-list-bullets',
 			text: i18n.ts.lists,
 			handler: chooseList,
 		}, {
-			icon: 'fas fa-satellite',
+			icon: 'ph-cell-signal-full',
 			text: i18n.ts.antennas,
 			handler: chooseAntenna,
 		}, {
-			icon: 'fas fa-satellite-dish',
+			icon: 'ph-television',
 			text: i18n.ts.channel,
 			handler: chooseChannel,
 		}, {
@@ -142,7 +142,7 @@ defineExpose({
 		}, ...(isLocalTimelineAvailable ? [{
 			active: src === 'local',
 			title: i18n.ts._timelines.local,
-			icon: 'fas fa-comments',
+			icon: 'ph-chats-circle',
 			iconOnly: true,
 			onClick: () => { saveSrc('local'); },
 		}, {
@@ -154,7 +154,7 @@ defineExpose({
 		}] : []), ...(isGlobalTimelineAvailable ? [{
 			active: src === 'global',
 			title: i18n.ts._timelines.global,
-			icon: 'fas fa-globe',
+			icon: 'ph-globe',
 			iconOnly: true,
 			onClick: () => { saveSrc('global'); },
 		}] : [])],

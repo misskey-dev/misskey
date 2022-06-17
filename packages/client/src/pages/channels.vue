@@ -11,7 +11,7 @@
 		</MkPagination>
 	</div>
 	<div v-else-if="tab === 'owned'" class="_content grwlizim owned">
-		<MkButton class="new" @click="create()"><i class="fas fa-plus"></i></MkButton>
+		<MkButton class="new" @click="create()"><i class="ph-plus"></i></MkButton>
 		<MkPagination v-slot="{items}" :pagination="ownedPagination">
 			<MkChannelPreview v-for="channel in items" :key="channel.id" class="_gap" :channel="channel"/>
 		</MkPagination>
@@ -34,17 +34,17 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: computed(() => ({
 				title: this.$ts.channel,
-				icon: 'fas fa-satellite-dish',
+				icon: 'ph-television',
 				bg: 'var(--bg)',
 				actions: [{
-					icon: 'fas fa-plus',
+					icon: 'ph-plus',
 					text: this.$ts.create,
 					handler: this.create,
 				}],
 				tabs: [{
 					active: this.tab === 'featured',
 					title: this.$ts._channel.featured,
-					icon: 'fas fa-fire-alt',
+					icon: 'ph-fire',
 					onClick: () => { this.tab = 'featured'; },
 				}, {
 					active: this.tab === 'following',

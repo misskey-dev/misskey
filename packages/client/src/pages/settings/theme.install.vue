@@ -5,8 +5,8 @@
 	</FormTextarea>
 
 	<div class="_formBlock" style="display: flex; gap: var(--margin); flex-wrap: wrap;">
-		<FormButton :disabled="installThemeCode == null" inline @click="() => preview(installThemeCode)"><i class="fas fa-eye"></i> {{ i18n.ts.preview }}</FormButton>
-		<FormButton :disabled="installThemeCode == null" primary inline @click="() => install(installThemeCode)"><i class="fas fa-check"></i> {{ i18n.ts.install }}</FormButton>
+		<FormButton :disabled="installThemeCode == null" inline @click="() => preview(installThemeCode)"><i class="ph-eye"></i> {{ i18n.ts.preview }}</FormButton>
+		<FormButton :disabled="installThemeCode == null" primary inline @click="() => install(installThemeCode)"><i class="ph-check"></i> {{ i18n.ts.install }}</FormButton>
 	</div>
 </div>
 </template>
@@ -72,7 +72,7 @@ async function install(code: string): Promise<void> {
 defineExpose({
 	[symbols.PAGE_INFO]: {
 		title: i18n.ts._theme.install,
-		icon: 'fas fa-download',
+		icon: 'ph-download-simple',
 		bg: 'var(--bg)',
 	},
 });

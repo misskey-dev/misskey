@@ -15,13 +15,13 @@
 			<span><MkEllipsis/></span>
 		</span>
 		<MkA v-else-if="item.type === 'link'" :to="item.to" :tabindex="i" class="_button item" @click.passive="close()">
-			<i v-if="item.icon" class="fa-fw" :class="item.icon"></i>
+			<i v-if="item.icon" class="ph-fw" :class="item.icon"></i>
 			<MkAvatar v-if="item.avatar" :user="item.avatar" class="avatar"/>
 			<span>{{ item.text }}</span>
 			<span v-if="item.indicate" class="indicator"><i class="fas fa-circle"></i></span>
 		</MkA>
 		<a v-else-if="item.type === 'a'" :href="item.href" :target="item.target" :download="item.download" :tabindex="i" class="_button item" @click="close()">
-			<i v-if="item.icon" class="fa-fw" :class="item.icon"></i>
+			<i v-if="item.icon" class="ph-fw" :class="item.icon"></i>
 			<span>{{ item.text }}</span>
 			<span v-if="item.indicate" class="indicator"><i class="fas fa-circle"></i></span>
 		</a>
@@ -33,7 +33,7 @@
 			<FormSwitch v-model="item.ref" :disabled="item.disabled" class="form-switch">{{ item.text }}</FormSwitch>
 		</span>
 		<button v-else :tabindex="i" class="_button item" :class="{ danger: item.danger, active: item.active }" :disabled="item.active" @click="clicked(item.action, $event)">
-			<i v-if="item.icon" class="fa-fw" :class="item.icon"></i>
+			<i v-if="item.icon" class="ph-fw" :class="item.icon"></i>
 			<MkAvatar v-if="item.avatar" :user="item.avatar" class="avatar"/>
 			<span>{{ item.text }}</span>
 			<span v-if="item.indicate" class="indicator"><i class="fas fa-circle"></i></span>

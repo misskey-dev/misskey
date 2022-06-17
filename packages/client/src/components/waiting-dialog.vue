@@ -1,7 +1,7 @@
 <template>
 <MkModal ref="modal" :prefer-type="'dialog'" :z-priority="'high'" @click="success ? done() : () => {}" @closed="emit('closed')">
 	<div class="iuyakobc" :class="{ iconOnly: (text == null) || success }">
-		<i v-if="success" class="fas fa-check icon success"></i>
+		<i v-if="success" class="ph-check icon success"></i>
 		<i v-else class="fas fa-spinner fa-pulse icon waiting"></i>
 		<div v-if="text && !success" class="text">{{ text }}<MkEllipsis/></div>
 	</div>

@@ -38,7 +38,7 @@
 		<!--<XMetrics/>-->
 
 	<MkFolder style="margin: var(--margin)">
-		<template #header><i class="fas fa-info-circle"></i> {{ i18n.ts.info }}</template>
+		<template #header><i class="ph-info"></i> {{ i18n.ts.info }}</template>
 		<div class="cfcdecdf">
 			<div class="number _panel">
 				<div class="label">Misskey</div>

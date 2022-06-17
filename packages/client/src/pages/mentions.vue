@@ -17,7 +17,7 @@ const pagination = {
 defineExpose({
 	[symbols.PAGE_INFO]: {
 		title: i18n.ts.mentions,
-		icon: 'fas fa-at',
+		icon: 'ph-at',
 		bg: 'var(--bg)',
 	},
 });

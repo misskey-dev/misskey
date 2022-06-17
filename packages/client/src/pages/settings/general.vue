@@ -181,7 +181,7 @@ watch([
 defineExpose({
 	[symbols.PAGE_INFO]: {
 		title: i18n.ts.general,
-		icon: 'fas fa-cogs',
+		icon: 'ph-gears',
 		bg: 'var(--bg)'
 	}
 });

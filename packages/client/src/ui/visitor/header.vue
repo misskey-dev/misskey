@@ -3,9 +3,9 @@
 	<div v-if="narrow === false" class="wide">
 		<div class="content">
 			<MkA to="/" class="link" active-class="active"><i class="fas fa-home icon"></i>{{ $ts.home }}</MkA>
-			<MkA to="/explore" class="link" active-class="active"><i class="fas fa-hashtag icon"></i>{{ $ts.explore }}</MkA>
-			<MkA to="/featured" class="link" active-class="active"><i class="fas fa-fire-alt icon"></i>{{ $ts.featured }}</MkA>
-			<MkA to="/channels" class="link" active-class="active"><i class="fas fa-satellite-dish icon"></i>{{ $ts.channel }}</MkA>
+			<MkA to="/explore" class="link" active-class="active"><i class="ph-hash icon"></i>{{ $ts.explore }}</MkA>
+			<MkA to="/featured" class="link" active-class="active"><i class="ph-fire icon"></i>{{ $ts.featured }}</MkA>
+			<MkA to="/channels" class="link" active-class="active"><i class="ph-television icon"></i>{{ $ts.channel }}</MkA>
 			<div v-if="info" class="page active link">
 				<div class="title">
 					<i v-if="info.icon" class="icon" :class="info.icon"></i>
@@ -16,7 +16,7 @@
 				<button v-if="info.action" class="_button action" @click.stop="info.action.handler"><!-- TODO --></button>
 			</div>
 			<div class="right">
-				<button class="_button search" @click="search()"><i class="fas fa-search icon"></i><span>{{ $ts.search }}</span></button>
+				<button class="_button search" @click="search()"><i class="ph-magnifying-glass icon"></i><span>{{ $ts.search }}</span></button>
 				<button class="_buttonPrimary signup" @click="signup()">{{ $ts.signup }}</button>
 				<button class="_button login" @click="signin()">{{ $ts.login }}</button>
 			</div>

@@ -96,7 +96,7 @@ const initStats = () => os.api('stats', {
 defineExpose({
 	[symbols.PAGE_INFO]: computed(() => ({
 		title: i18n.ts.instanceInfo,
-		icon: 'fas fa-info-circle',
+		icon: 'ph-info',
 		bg: 'var(--bg)',
 		tabs: [{
 			active: tab === 'overview',

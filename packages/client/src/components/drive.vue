@@ -11,7 +11,7 @@
 				@removeFolder="removeFolder"
 			/>
 			<template v-for="f in hierarchyFolders">
-				<span class="separator"><i class="fas fa-angle-right"></i></span>
+				<span class="separator"><i class="ph-caret-right"></i></span>
 				<XNavFolder
 					:folder="f"
 					:parent-folder="folder"
@@ -21,7 +21,7 @@
 					@removeFolder="removeFolder"
 				/>
 			</template>
-			<span v-if="folder != null" class="separator"><i class="fas fa-angle-right"></i></span>
+			<span v-if="folder != null" class="separator"><i class="ph-caret-right"></i></span>
 			<span v-if="folder != null" class="folder current">{{ folder.name }}</span>
 		</div>
 		<button class="menu _button" @click="showMenu"><i class="fas fa-ellipsis-h"></i></button>
@@ -576,22 +576,22 @@ function getMenu() {
 		action: () => { selectLocalFile(); }
 	}, {
 		text: i18n.ts.fromUrl,
-		icon: 'fas fa-link',
+		icon: 'ph-link',
 		action: () => { urlUpload(); }
 	}, null, {
 		text: folder.value ? folder.value.name : i18n.ts.drive,
 		type: 'label'
 	}, folder.value ? {
 		text: i18n.ts.renameFolder,
-		icon: 'fas fa-i-cursor',
+		icon: 'ph-cursor-text',
 		action: () => { renameFolder(folder.value); }
 	} : undefined, folder.value ? {
 		text: i18n.ts.deleteFolder,
-		icon: 'fas fa-trash-alt',
+		icon: 'ph-trash',
 		action: () => { deleteFolder(folder.value as Misskey.entities.DriveFolder); }
 	} : undefined, {
 		text: i18n.ts.createFolder,
-		icon: 'fas fa-folder-plus',
+		icon: 'ph-folder-plus',
 		action: () => { createFolder(); }
 	}];
 }

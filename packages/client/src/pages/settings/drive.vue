@@ -26,7 +26,7 @@
 		<FormLink @click="chooseUploadFolder()">
 			{{ i18n.ts.uploadFolder }}
 			<template #suffix>{{ uploadFolder ? uploadFolder.name : '-' }}</template>
-			<template #suffixIcon><i class="fas fa-folder-open"></i></template>
+			<template #suffixIcon><i class="ph-folder-open"></i></template>
 		</FormLink>
 		<FormSwitch v-model="keepOriginalUploading" class="_formBlock">{{ i18n.ts.keepOriginalUploading }}<template #caption>{{ i18n.ts.keepOriginalUploadingDescription }}</template></FormSwitch>
 	</FormSection>
@@ -97,7 +97,7 @@ function chooseUploadFolder() {
 defineExpose({
 	[symbols.PAGE_INFO]: {
 		title: i18n.ts.drive,
-		icon: 'fas fa-cloud',
+		icon: 'ph-cloud',
 		bg: 'var(--bg)',
 	}
 });

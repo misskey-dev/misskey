@@ -31,9 +31,9 @@
 	<div v-if="isMobile" class="buttons">
 		<button class="button nav _button" @click="drawerMenuShowing = true"><i class="fas fa-bars"></i><span v-if="menuIndicated" class="indicator"><i class="fas fa-circle"></i></span></button>
 		<button class="button home _button" @click="$route.name === 'index' ? top() : $router.push('/')"><i class="fas fa-home"></i></button>
-		<button class="button notifications _button" @click="$router.push('/my/notifications')"><i class="fas fa-bell"></i><span v-if="$i?.hasUnreadNotification" class="indicator"><i class="fas fa-circle"></i></span></button>
+		<button class="button notifications _button" @click="$router.push('/my/notifications')"><i class="ph-bell"></i><span v-if="$i?.hasUnreadNotification" class="indicator"><i class="fas fa-circle"></i></span></button>
 		<button class="button widget _button" @click="widgetsShowing = true"><i class="fas fa-layer-group"></i></button>
-		<button class="button post _button" @click="os.post()"><i class="fas fa-pencil-alt"></i></button>
+		<button class="button post _button" @click="os.post()"><i class="ph-pencil"></i></button>
 	</div>
 
 	<transition :name="$store.state.animation ? 'menuDrawer-back' : ''">
@@ -161,13 +161,13 @@ const onContextmenu = (ev) => {
 		type: 'label',
 		text: path,
 	}, {
-		icon: 'fas fa-columns',
+		icon: 'ph-layout',
 		text: i18n.ts.openInSideView,
 		action: () => {
 			sideEl.navigate(path);
 		}
 	}, {
-		icon: 'fas fa-window-maximize',
+		icon: 'ph-frame-corners',
 		text: i18n.ts.openInWindow,
 		action: () => {
 			os.pageWindow(path);

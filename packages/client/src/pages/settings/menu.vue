@@ -79,7 +79,7 @@ watch(menuDisplay, async () => {
 defineExpose({
 	[symbols.PAGE_INFO]: {
 		title: i18n.ts.menu,
-		icon: 'fas fa-list-ul',
+		icon: 'ph-list-bullets',
 		bg: 'var(--bg)',
 	}
 });

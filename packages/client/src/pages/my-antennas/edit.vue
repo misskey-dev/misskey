@@ -31,7 +31,7 @@ os.api('antennas/show', { antennaId: props.antennaId }).then((antennaResponse) =
 defineExpose({
 	[symbols.PAGE_INFO]: {
 		title: i18n.ts.manageAntennas,
-		icon: 'fas fa-satellite',
+		icon: 'ph-cell-signal-full',
 	}
 });
 </script>

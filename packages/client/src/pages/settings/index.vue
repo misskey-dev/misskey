@@ -44,7 +44,7 @@ const props = defineProps<{
 
 const indexInfo = {
 	title: i18n.ts.settings,
-	icon: 'fas fa-cog',
+	icon: 'ph-gear',
 	bg: 'var(--bg)',
 	hideHeader: true,
 };
@@ -70,27 +70,27 @@ const menuDef = computed(() => [{
 		to: '/settings/profile',
 		active: props.initialPage === 'profile',
 	}, {
-		icon: 'fas fa-lock-open',
+		icon: 'ph-lock-open',
 		text: i18n.ts.privacy,
 		to: '/settings/privacy',
 		active: props.initialPage === 'privacy',
 	}, {
-		icon: 'fas fa-laugh',
+		icon: 'ph-smiley',
 		text: i18n.ts.reaction,
 		to: '/settings/reaction',
 		active: props.initialPage === 'reaction',
 	}, {
-		icon: 'fas fa-cloud',
+		icon: 'ph-cloud',
 		text: i18n.ts.drive,
 		to: '/settings/drive',
 		active: props.initialPage === 'drive',
 	}, {
-		icon: 'fas fa-bell',
+		icon: 'ph-bell',
 		text: i18n.ts.notifications,
 		to: '/settings/notifications',
 		active: props.initialPage === 'notifications',
 	}, {
-		icon: 'fas fa-envelope',
+		icon: 'ph-envelope-simple',
 		text: i18n.ts.email,
 		to: '/settings/email',
 		active: props.initialPage === 'email',
@@ -100,7 +100,7 @@ const menuDef = computed(() => [{
 		to: '/settings/integration',
 		active: props.initialPage === 'integration',
 	}, {
-		icon: 'fas fa-lock',
+		icon: 'ph-lock',
 		text: i18n.ts.security,
 		to: '/settings/security',
 		active: props.initialPage === 'security',
@@ -108,7 +108,7 @@ const menuDef = computed(() => [{
 }, {
 	title: i18n.ts.clientSettings,
 	items: [{
-		icon: 'fas fa-cogs',
+		icon: 'ph-gears',
 		text: i18n.ts.general,
 		to: '/settings/general',
 		active: props.initialPage === 'general',
@@ -118,12 +118,12 @@ const menuDef = computed(() => [{
 		to: '/settings/theme',
 		active: props.initialPage === 'theme',
 	}, {
-		icon: 'fas fa-list-ul',
+		icon: 'ph-list-bullets',
 		text: i18n.ts.menu,
 		to: '/settings/menu',
 		active: props.initialPage === 'menu',
 	}, {
-		icon: 'fas fa-music',
+		icon: 'ph-headphones',
 		text: i18n.ts.sounds,
 		to: '/settings/sounds',
 		active: props.initialPage === 'sounds',

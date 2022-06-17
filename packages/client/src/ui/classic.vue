@@ -188,7 +188,7 @@ export default defineComponent({
 					this.fullView = !this.fullView;
 				}
 			}, {
-				icon: 'fas fa-window-maximize',
+				icon: 'ph-frame-corners',
 				text: this.$ts.openInWindow,
 				action: () => {
 					os.pageWindow(path);

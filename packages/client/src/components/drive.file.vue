@@ -62,30 +62,30 @@ const title = computed(() => `${props.file.name}\n${props.file.type} ${bytes(pro
 function getMenu() {
 	return [{
 		text: i18n.ts.rename,
-		icon: 'fas fa-i-cursor',
+		icon: 'ph-cursor-text',
 		action: rename
 	}, {
 		text: props.file.isSensitive ? i18n.ts.unmarkAsSensitive : i18n.ts.markAsSensitive,
-		icon: props.file.isSensitive ? 'fas fa-eye' : 'fas fa-eye-slash',
+		icon: props.file.isSensitive ? 'ph-eye' : 'ph-eye-slash',
 		action: toggleSensitive
 	}, {
 		text: i18n.ts.describeFile,
-		icon: 'fas fa-i-cursor',
+		icon: 'ph-cursor-text',
 		action: describe
 	}, null, {
 		text: i18n.ts.copyUrl,
-		icon: 'fas fa-link',
+		icon: 'ph-link',
 		action: copyUrl
 	}, {
 		type: 'a',
 		href: props.file.url,
 		target: '_blank',
 		text: i18n.ts.download,
-		icon: 'fas fa-download',
+		icon: 'ph-download-simple',
 		download: props.file.name
 	}, null, {
 		text: i18n.ts.delete,
-		icon: 'fas fa-trash-alt',
+		icon: 'ph-trash',
 		danger: true,
 		action: deleteFile
 	}];

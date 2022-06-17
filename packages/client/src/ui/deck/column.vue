@@ -15,14 +15,14 @@
 		@contextmenu.prevent.stop="onContextmenu"
 	>
 		<button v-if="isStacked && !isMainColumn" class="toggleActive _button" @click="toggleActive">
-			<template v-if="active"><i class="fas fa-angle-up"></i></template>
-			<template v-else><i class="fas fa-angle-down"></i></template>
+			<template v-if="active"><i class="ph-caret-up"></i></template>
+			<template v-else><i class="ph-caret-down"></i></template>
 		</button>
 		<div class="action">
 			<slot name="action"></slot>
 		</div>
 		<span class="header"><slot name="header"></slot></span>
-		<button v-if="func" v-tooltip="func.title" class="menu _button" @click.stop="func.handler"><i :class="func.icon || 'fas fa-cog'"></i></button>
+		<button v-if="func" v-tooltip="func.title" class="menu _button" @click.stop="func.handler"><i :class="func.icon || 'ph-gear'"></i></button>
 	</header>
 	<div v-show="active" ref="body">
 		<slot></slot>
@@ -111,7 +111,7 @@ function toggleActive() {
 
 function getMenu() {
 	const items = [{
-		icon: 'fas fa-pencil-alt',
+		icon: 'ph-pencil',
 		text: i18n.ts.edit,
 		action: async () => {
 			const { canceled, result } = await os.form(props.column.name, {
@@ -159,19 +159,19 @@ function getMenu() {
 			swapDownColumn(props.column.id);
 		}
 	} : undefined, null, {
-		icon: 'fas fa-window-restore',
+		icon: 'ph-cards',
 		text: i18n.ts._deck.stackLeft,
 		action: () => {
 			stackLeftColumn(props.column.id);
 		}
 	}, props.isStacked ? {
-		icon: 'fas fa-window-maximize',
+		icon: 'ph-frame-corners',
 		text: i18n.ts._deck.popRight,
 		action: () => {
 			popRightColumn(props.column.id);
 		}
 	} : undefined, null, {
-		icon: 'fas fa-trash-alt',
+		icon: 'ph-trash',
 		text: i18n.ts.remove,
 		danger: true,
 		action: () => {

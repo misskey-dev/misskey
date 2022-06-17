@@ -4,8 +4,8 @@
 		<div class="title"><slot name="header"></slot></div>
 		<div class="divider"></div>
 		<button class="_button">
-			<template v-if="showBody"><i class="fas fa-angle-up"></i></template>
-			<template v-else><i class="fas fa-angle-down"></i></template>
+			<template v-if="showBody"><i class="ph-caret-up"></i></template>
+			<template v-else><i class="ph-caret-down"></i></template>
 		</button>
 	</header>
 	<transition :name="$store.state.animation ? 'folder-toggle' : ''"

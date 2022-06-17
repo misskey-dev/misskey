@@ -10,55 +10,55 @@ import { router } from './router';
 export const menuDef = reactive({
 	notifications: {
 		title: 'notifications',
-		icon: 'fas fa-bell',
+		icon: 'ph-bell',
 		show: computed(() => $i != null),
 		indicated: computed(() => $i != null && $i.hasUnreadNotification),
 		to: '/my/notifications',
 	},
 	messaging: {
 		title: 'messaging',
-		icon: 'fas fa-comments',
+		icon: 'ph-chats-circle',
 		show: computed(() => $i != null),
 		indicated: computed(() => $i != null && $i.hasUnreadMessagingMessage),
 		to: '/my/messaging',
 	},
 	drive: {
 		title: 'drive',
-		icon: 'fas fa-cloud',
+		icon: 'ph-cloud',
 		show: computed(() => $i != null),
 		to: '/my/drive',
 	},
 	followRequests: {
 		title: 'followRequests',
-		icon: 'fas fa-user-clock',
+		icon: 'ph-user-plus',
 		show: computed(() => $i != null && $i.isLocked),
 		indicated: computed(() => $i != null && $i.hasPendingReceivedFollowRequest),
 		to: '/my/follow-requests',
 	},
 	featured: {
 		title: 'featured',
-		icon: 'fas fa-fire-alt',
+		icon: 'ph-fire',
 		to: '/featured',
 	},
 	explore: {
 		title: 'explore',
-		icon: 'fas fa-hashtag',
+		icon: 'ph-hash',
 		to: '/explore',
 	},
 	announcements: {
 		title: 'announcements',
-		icon: 'fas fa-broadcast-tower',
+		icon: 'ph-megaphone',
 		indicated: computed(() => $i != null && $i.hasUnreadAnnouncement),
 		to: '/announcements',
 	},
 	search: {
 		title: 'search',
-		icon: 'fas fa-search',
+		icon: 'ph-magnifying-glass',
 		action: () => search(),
 	},
 	lists: {
 		title: 'lists',
-		icon: 'fas fa-list-ul',
+		icon: 'ph-list-bullets',
 		show: computed(() => $i != null),
 		active: computed(() => router.currentRoute.value.path.startsWith('/timeline/list/') || router.currentRoute.value.path === '/my/lists' || router.currentRoute.value.path.startsWith('/my/lists/')),
 		action: (ev) => {
@@ -74,7 +74,7 @@ export const menuDef = reactive({
 					type: 'link',
 					to: '/my/lists',
 					text: i18n.ts.manageLists,
-					icon: 'fas fa-cog',
+					icon: 'ph-gear',
 				}];
 				items.value = _items;
 			});
@@ -83,13 +83,13 @@ export const menuDef = reactive({
 	},
 	groups: {
 		title: 'groups',
-		icon: 'fas fa-users',
+		icon: 'ph-users-three',
 		show: computed(() => $i != null),
 		to: '/my/groups',
 	},
 	antennas: {
 		title: 'antennas',
-		icon: 'fas fa-satellite',
+		icon: 'ph-cell-signal-full',
 		show: computed(() => $i != null),
 		active: computed(() => router.currentRoute.value.path.startsWith('/timeline/antenna/') || router.currentRoute.value.path === '/my/antennas' || router.currentRoute.value.path.startsWith('/my/antennas/')),
 		action: (ev) => {
@@ -105,7 +105,7 @@ export const menuDef = reactive({
 					type: 'link',
 					to: '/my/antennas',
 					text: i18n.ts.manageAntennas,
-					icon: 'fas fa-cog',
+					icon: 'ph-gear',
 				}];
 				items.value = _items;
 			});
@@ -114,63 +114,63 @@ export const menuDef = reactive({
 	},
 	mentions: {
 		title: 'mentions',
-		icon: 'fas fa-at',
+		icon: 'ph-at',
 		show: computed(() => $i != null),
 		indicated: computed(() => $i != null && $i.hasUnreadMentions),
 		to: '/my/mentions',
 	},
 	messages: {
 		title: 'directNotes',
-		icon: 'fas fa-envelope',
+		icon: 'ph-envelope-simple',
 		show: computed(() => $i != null),
 		indicated: computed(() => $i != null && $i.hasUnreadSpecifiedNotes),
 		to: '/my/messages',
 	},
 	favorites: {
 		title: 'favorites',
-		icon: 'fas fa-star',
+		icon: 'ph-star',
 		show: computed(() => $i != null),
 		to: '/my/favorites',
 	},
 	pages: {
 		title: 'pages',
-		icon: 'fas fa-file-alt',
+		icon: 'ph-file-text',
 		to: '/pages',
 	},
 	gallery: {
 		title: 'gallery',
-		icon: 'fas fa-icons',
+		icon: 'ph-image',
 		to: '/gallery',
 	},
 	clips: {
 		title: 'clip',
-		icon: 'fas fa-paperclip',
+		icon: 'ph-paperclip',
 		show: computed(() => $i != null),
 		to: '/my/clips',
 	},
 	channels: {
 		title: 'channel',
-		icon: 'fas fa-satellite-dish',
+		icon: 'ph-television',
 		to: '/channels',
 	},
 	federation: {
 		title: 'federation',
-		icon: 'fas fa-globe',
+		icon: 'ph-globe',
 		to: '/federation',
 	},
 	emojis: {
 		title: 'emojis',
-		icon: 'fas fa-laugh',
+		icon: 'ph-smiley',
 		to: '/emojis',
 	},
 	scratchpad: {
 		title: 'scratchpad',
-		icon: 'fas fa-terminal',
+		icon: 'ph-terminal',
 		to: '/scratchpad',
 	},
 	ui: {
 		title: 'switchUi',
-		icon: 'fas fa-columns',
+		icon: 'ph-layout',
 		action: (ev) => {
 			os.popupMenu([{
 				text: i18n.ts.default,

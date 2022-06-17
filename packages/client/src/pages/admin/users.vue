@@ -125,20 +125,20 @@ function show(user) {
 defineExpose({
 	[symbols.PAGE_INFO]: computed(() => ({
 		title: i18n.ts.users,
-		icon: 'fas fa-users',
+		icon: 'ph-users-three',
 		bg: 'var(--bg)',
 		actions: [{
-			icon: 'fas fa-search',
+			icon: 'ph-magnifying-glass',
 			text: i18n.ts.search,
 			handler: searchUser
 		}, {
 			asFullButton: true,
-			icon: 'fas fa-plus',
+			icon: 'ph-plus',
 			text: i18n.ts.addUser,
 			handler: addUser
 		}, {
 			asFullButton: true,
-			icon: 'fas fa-search',
+			icon: 'ph-magnifying-glass',
 			text: i18n.ts.lookup,
 			handler: lookupUser
 		}],

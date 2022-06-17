@@ -14,7 +14,7 @@ export type Fn = {
 export type Type = 'string' | 'number' | 'boolean' | 'stringArray' | null;
 
 export const literalDefs: Record<string, { out: any; category: string; icon: any; }> = {
-	text:          { out: 'string',      category: 'value', icon: 'fas fa-quote-right', },
+	text:          { out: 'string',      category: 'value', icon: 'ph-quotesright', },
 	multiLineText: { out: 'string',      category: 'value', icon: 'fas fa-align-left', },
 	textList:      { out: 'stringArray', category: 'value', icon: 'fas fa-list', },
 	number:        { out: 'number',      category: 'value', icon: 'fas fa-sort-numeric-up', },

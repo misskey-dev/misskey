@@ -6,7 +6,7 @@
 	<XQueue :connection="connection" domain="deliver">
 		<template #title>Out</template>
 	</XQueue>
-	<MkButton danger @click="clear()"><i class="fas fa-trash-alt"></i> {{ i18n.ts.clearQueue }}</MkButton>
+	<MkButton danger @click="clear()"><i class="ph-trash"></i> {{ i18n.ts.clearQueue }}</MkButton>
 </MkSpacer>
 </template>
 

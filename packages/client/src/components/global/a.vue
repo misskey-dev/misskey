@@ -40,13 +40,13 @@ function onContextmenu(ev) {
 		type: 'label',
 		text: props.to,
 	}, {
-		icon: 'fas fa-window-maximize',
+		icon: 'ph-frame-corners',
 		text: i18n.ts.openInWindow,
 		action: () => {
 			os.pageWindow(props.to);
 		}
 	}, mkNav.sideViewHook ? {
-		icon: 'fas fa-columns',
+		icon: 'ph-layout',
 		text: i18n.ts.openInSideView,
 		action: () => {
 			if (mkNav.sideViewHook) mkNav.sideViewHook(props.to);
@@ -64,7 +64,7 @@ function onContextmenu(ev) {
 			window.open(props.to, '_blank');
 		}
 	}, {
-		icon: 'fas fa-link',
+		icon: 'ph-link',
 		text: i18n.ts.copyLink,
 		action: () => {
 			copyToClipboard(`${url}${props.to}`);

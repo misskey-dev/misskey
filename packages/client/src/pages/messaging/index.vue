@@ -1,7 +1,7 @@
 <template>
 <MkSpacer :content-max="800">
 	<div v-size="{ max: [400] }" class="yweeujhr">
-		<MkButton primary class="start" @click="start"><i class="fas fa-plus"></i> {{ $ts.startMessaging }}</MkButton>
+		<MkButton primary class="start" @click="start"><i class="ph-plus"></i> {{ $ts.startMessaging }}</MkButton>
 
 		<div v-if="messages.length > 0" class="history">
 			<MkA v-for="(message, i) in messages"
@@ -56,7 +56,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.messaging,
-				icon: 'fas fa-comments',
+				icon: 'ph-chats-circle',
 				bg: 'var(--bg)',
 			},
 			fetching: true,
@@ -126,7 +126,7 @@ export default defineComponent({
 				action: () => { this.startUser(); }
 			}, {
 				text: this.$ts.messagingWithGroup,
-				icon: 'fas fa-users',
+				icon: 'ph-users-three',
 				action: () => { this.startGroup(); }
 			}], ev.currentTarget ?? ev.target);
 		},

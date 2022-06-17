@@ -68,7 +68,7 @@ export default defineComponent({
 				}
 			}, {
 				text: i18n.ts.quote,
-				icon: 'fas fa-quote-right',
+				icon: 'ph-quotesright',
 				action: () => {
 					os.post({
 						renote: props.note,

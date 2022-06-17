@@ -1,6 +1,6 @@
 <template>
 <div class="_formRoot">
-	<FormLink class="_formBlock" @click="configure"><template #icon><i class="fas fa-cog"></i></template>{{ i18n.ts.notificationSetting }}</FormLink>
+	<FormLink class="_formBlock" @click="configure"><template #icon><i class="ph-gear"></i></template>{{ i18n.ts.notificationSetting }}</FormLink>
 	<FormSection>
 		<FormLink class="_formBlock" @click="readAllNotifications">{{ i18n.ts.markAsReadAllNotifications }}</FormLink>
 		<FormLink class="_formBlock" @click="readAllUnreadNotes">{{ i18n.ts.markAsReadAllUnreadNotes }}</FormLink>
@@ -52,7 +52,7 @@ function configure() {
 defineExpose({
 	[symbols.PAGE_INFO]: {
 		title: i18n.ts.notifications,
-		icon: 'fas fa-bell',
+		icon: 'ph-bell',
 		bg: 'var(--bg)',
 	}
 });

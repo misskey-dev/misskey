@@ -22,7 +22,7 @@
 						<div><MkTime :time="token.lastUsedAt"/></div>
 					</div>
 					<div class="actions">
-						<button class="_button" @click="revoke(token)"><i class="fas fa-trash-alt"></i></button>
+						<button class="_button" @click="revoke(token)"><i class="ph-trash"></i></button>
 					</div>
 					<details>
 						<summary>{{ i18n.ts.details }}</summary>

@@ -310,7 +310,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts._mfm.cheatSheet,
-				icon: 'fas fa-question-circle',
+				icon: 'ph-question',
 			},
 			preview_mention: '@example',
 			preview_hashtag: '#test',

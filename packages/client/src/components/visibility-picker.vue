@@ -2,7 +2,7 @@
 <MkModal ref="modal" :z-priority="'high'" :src="src" @click="modal.close()" @closed="emit('closed')">
 	<div class="gqyayizv _popup">
 		<button key="public" class="_button" :class="{ active: v === 'public' }" data-index="1" @click="choose('public')">
-			<div><i class="fas fa-globe"></i></div>
+			<div><i class="ph-globe"></i></div>
 			<div>
 				<span>{{ $ts._visibility.public }}</span>
 				<span>{{ $ts._visibility.publicDescription }}</span>
@@ -23,7 +23,7 @@
 			</div>
 		</button>
 		<button key="specified" :disabled="localOnly" class="_button" :class="{ active: v === 'specified' }" data-index="4" @click="choose('specified')">
-			<div><i class="fas fa-envelope"></i></div>
+			<div><i class="ph-envelope-simple"></i></div>
 			<div>
 				<span>{{ $ts._visibility.specified }}</span>
 				<span>{{ $ts._visibility.specifiedDescription }}</span>

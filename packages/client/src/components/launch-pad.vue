@@ -17,11 +17,11 @@
 		</div>
 		<div class="sub">
 			<a v-click-anime href="https://misskey-hub.net/help.html" target="_blank" @click.passive="close()">
-				<i class="fas fa-question-circle icon"></i>
+				<i class="ph-question icon"></i>
 				<div class="text">{{ $ts.help }}</div>
 			</a>
 			<MkA v-click-anime to="/about" @click.passive="close()">
-				<i class="fas fa-info-circle icon"></i>
+				<i class="ph-info icon"></i>
 				<div class="text">{{ $t('aboutX', { x: instanceName }) }}</div>
 			</MkA>
 			<MkA v-click-anime to="/about-misskey" @click.passive="close()">

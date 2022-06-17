@@ -4,7 +4,7 @@
 	<template #header><i v-if="icon" :class="icon"></i> <template v-if="title">{{ title }} <span v-if="typeText" class="turmquns">({{ typeText }})</span></template><template v-else-if="typeText">{{ typeText }}</template></template>
 	<template #func>
 		<button class="_button" @click="changeType()">
-			<i class="fas fa-pencil-alt"></i>
+			<i class="ph-pencil"></i>
 		</button>
 	</template>
 

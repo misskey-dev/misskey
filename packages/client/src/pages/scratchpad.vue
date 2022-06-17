@@ -109,7 +109,7 @@ function highlighter(code) {
 defineExpose({
 	[symbols.PAGE_INFO]: {
 		title: i18n.ts.scratchpad,
-		icon: 'fas fa-terminal',
+		icon: 'ph-terminal',
 	},
 });
 </script>

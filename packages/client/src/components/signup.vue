@@ -10,45 +10,45 @@
 			<template #prefix>@</template>
 			<template #suffix>@{{ host }}</template>
 			<template #caption>
-				<span v-if="usernameState === 'wait'" style="color:#999"><i class="fas fa-spinner fa-pulse fa-fw"></i> {{ $ts.checking }}</span>
-				<span v-else-if="usernameState === 'ok'" style="color: var(--success)"><i class="fas fa-check fa-fw"></i> {{ $ts.available }}</span>
-				<span v-else-if="usernameState === 'unavailable'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.unavailable }}</span>
-				<span v-else-if="usernameState === 'error'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.error }}</span>
-				<span v-else-if="usernameState === 'invalid-format'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.usernameInvalidFormat }}</span>
-				<span v-else-if="usernameState === 'min-range'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.tooShort }}</span>
-				<span v-else-if="usernameState === 'max-range'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.tooLong }}</span>
+				<span v-if="usernameState === 'wait'" style="color:#999"><i class="fas fa-spinner fa-pulse ph-fw"></i> {{ $ts.checking }}</span>
+				<span v-else-if="usernameState === 'ok'" style="color: var(--success)"><i class="ph-check ph-fw"></i> {{ $ts.available }}</span>
+				<span v-else-if="usernameState === 'unavailable'" style="color: var(--error)"><i class="ph-warning ph-fw"></i> {{ $ts.unavailable }}</span>
+				<span v-else-if="usernameState === 'error'" style="color: var(--error)"><i class="ph-warning ph-fw"></i> {{ $ts.error }}</span>
+				<span v-else-if="usernameState === 'invalid-format'" style="color: var(--error)"><i class="ph-warning ph-fw"></i> {{ $ts.usernameInvalidFormat }}</span>
+				<span v-else-if="usernameState === 'min-range'" style="color: var(--error)"><i class="ph-warning ph-fw"></i> {{ $ts.tooShort }}</span>
+				<span v-else-if="usernameState === 'max-range'" style="color: var(--error)"><i class="ph-warning ph-fw"></i> {{ $ts.tooLong }}</span>
 			</template>
 		</MkInput>
 		<MkInput v-if="meta.emailRequiredForSignup" v-model="email" class="_formBlock" :debounce="true" type="email" spellcheck="false" required data-cy-signup-email @update:modelValue="onChangeEmail">
 			<template #label>{{ $ts.emailAddress }} <div v-tooltip:dialog="$ts._signup.emailAddressInfo" class="_button _help"><i class="far fa-question-circle"></i></div></template>
-			<template #prefix><i class="fas fa-envelope"></i></template>
+			<template #prefix><i class="ph-envelope-simple"></i></template>
 			<template #caption>
-				<span v-if="emailState === 'wait'" style="color:#999"><i class="fas fa-spinner fa-pulse fa-fw"></i> {{ $ts.checking }}</span>
-				<span v-else-if="emailState === 'ok'" style="color: var(--success)"><i class="fas fa-check fa-fw"></i> {{ $ts.available }}</span>
-				<span v-else-if="emailState === 'unavailable:used'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts._emailUnavailable.used }}</span>
-				<span v-else-if="emailState === 'unavailable:format'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts._emailUnavailable.format }}</span>
-				<span v-else-if="emailState === 'unavailable:disposable'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts._emailUnavailable.disposable }}</span>
-				<span v-else-if="emailState === 'unavailable:mx'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts._emailUnavailable.mx }}</span>
-				<span v-else-if="emailState === 'unavailable:smtp'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts._emailUnavailable.smtp }}</span>
-				<span v-else-if="emailState === 'unavailable'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.unavailable }}</span>
-				<span v-else-if="emailState === 'error'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.error }}</span>
+				<span v-if="emailState === 'wait'" style="color:#999"><i class="fas fa-spinner fa-pulse ph-fw"></i> {{ $ts.checking }}</span>
+				<span v-else-if="emailState === 'ok'" style="color: var(--success)"><i class="ph-check ph-fw"></i> {{ $ts.available }}</span>
+				<span v-else-if="emailState === 'unavailable:used'" style="color: var(--error)"><i class="ph-warning ph-fw"></i> {{ $ts._emailUnavailable.used }}</span>
+				<span v-else-if="emailState === 'unavailable:format'" style="color: var(--error)"><i class="ph-warning ph-fw"></i> {{ $ts._emailUnavailable.format }}</span>
+				<span v-else-if="emailState === 'unavailable:disposable'" style="color: var(--error)"><i class="ph-warning ph-fw"></i> {{ $ts._emailUnavailable.disposable }}</span>
+				<span v-else-if="emailState === 'unavailable:mx'" style="color: var(--error)"><i class="ph-warning ph-fw"></i> {{ $ts._emailUnavailable.mx }}</span>
+				<span v-else-if="emailState === 'unavailable:smtp'" style="color: var(--error)"><i class="ph-warning ph-fw"></i> {{ $ts._emailUnavailable.smtp }}</span>
+				<span v-else-if="emailState === 'unavailable'" style="color: var(--error)"><i class="ph-warning ph-fw"></i> {{ $ts.unavailable }}</span>
+				<span v-else-if="emailState === 'error'" style="color: var(--error)"><i class="ph-warning ph-fw"></i> {{ $ts.error }}</span>
 			</template>
 		</MkInput>
 		<MkInput v-model="password" class="_formBlock" type="password" autocomplete="new-password" required data-cy-signup-password @update:modelValue="onChangePassword">
 			<template #label>{{ $ts.password }}</template>
-			<template #prefix><i class="fas fa-lock"></i></template>
+			<template #prefix><i class="ph-lock"></i></template>
 			<template #caption>
-				<span v-if="passwordStrength == 'low'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.weakPassword }}</span>
-				<span v-if="passwordStrength == 'medium'" style="color: var(--warn)"><i class="fas fa-check fa-fw"></i> {{ $ts.normalPassword }}</span>
-				<span v-if="passwordStrength == 'high'" style="color: var(--success)"><i class="fas fa-check fa-fw"></i> {{ $ts.strongPassword }}</span>
+				<span v-if="passwordStrength == 'low'" style="color: var(--error)"><i class="ph-warning ph-fw"></i> {{ $ts.weakPassword }}</span>
+				<span v-if="passwordStrength == 'medium'" style="color: var(--warn)"><i class="ph-check ph-fw"></i> {{ $ts.normalPassword }}</span>
+				<span v-if="passwordStrength == 'high'" style="color: var(--success)"><i class="ph-check ph-fw"></i> {{ $ts.strongPassword }}</span>
 			</template>
 		</MkInput>
 		<MkInput v-model="retypedPassword" class="_formBlock" type="password" autocomplete="new-password" required data-cy-signup-password-retype @update:modelValue="onChangePasswordRetype">
 			<template #label>{{ $ts.password }} ({{ $ts.retype }})</template>
-			<template #prefix><i class="fas fa-lock"></i></template>
+			<template #prefix><i class="ph-lock"></i></template>
 			<template #caption>
-				<span v-if="passwordRetypeState == 'match'" style="color: var(--success)"><i class="fas fa-check fa-fw"></i> {{ $ts.passwordMatched }}</span>
-				<span v-if="passwordRetypeState == 'not-match'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.passwordNotMatched }}</span>
+				<span v-if="passwordRetypeState == 'match'" style="color: var(--success)"><i class="ph-check ph-fw"></i> {{ $ts.passwordMatched }}</span>
+				<span v-if="passwordRetypeState == 'not-match'" style="color: var(--error)"><i class="ph-warning ph-fw"></i> {{ $ts.passwordNotMatched }}</span>
 			</template>
 		</MkInput>
 		<MkSwitch v-if="meta.tosUrl" v-model="ToSAgreement" class="_formBlock tou">

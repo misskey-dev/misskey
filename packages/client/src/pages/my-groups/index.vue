@@ -1,7 +1,7 @@
 <template>
 <MkSpacer :content-max="700">
 	<div v-if="tab === 'owned'" class="_content">
-		<MkButton primary style="margin: 0 auto var(--margin) auto;" @click="create"><i class="fas fa-plus"></i> {{ $ts.createGroup }}</MkButton>
+		<MkButton primary style="margin: 0 auto var(--margin) auto;" @click="create"><i class="ph-plus"></i> {{ $ts.createGroup }}</MkButton>
 
 		<MkPagination v-slot="{items}" ref="owned" :pagination="ownedPagination">
 			<div v-for="group in items" :key="group.id" class="_card">
@@ -29,7 +29,7 @@
 				<div class="_title">{{ invitation.group.name }}</div>
 				<div class="_content"><MkAvatars :user-ids="invitation.group.userIds"/></div>
 				<div class="_footer">
-					<MkButton primary inline @click="acceptInvite(invitation)"><i class="fas fa-check"></i> {{ $ts.accept }}</MkButton>
+					<MkButton primary inline @click="acceptInvite(invitation)"><i class="ph-check"></i> {{ $ts.accept }}</MkButton>
 					<MkButton primary inline @click="rejectInvite(invitation)"><i class="fas fa-ban"></i> {{ $ts.reject }}</MkButton>
 				</div>
 			</div>
@@ -61,10 +61,10 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: computed(() => ({
 				title: this.$ts.groups,
-				icon: 'fas fa-users',
+				icon: 'ph-users-three',
 				bg: 'var(--bg)',
 				actions: [{
-					icon: 'fas fa-plus',
+					icon: 'ph-plus',
 					text: this.$ts.createGroup,
 					handler: this.create,
 				}],
@@ -81,7 +81,7 @@ export default defineComponent({
 				}, {
 					active: this.tab === 'invites',
 					title: this.$ts.invites,
-					icon: 'fas fa-envelope-open-text',
+					icon: 'ph-envelope-simple-open-text',
 					onClick: () => { this.tab = 'invites'; },
 				},]
 			})),

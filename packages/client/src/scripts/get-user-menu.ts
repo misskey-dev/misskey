@@ -152,41 +152,41 @@ export function getUserMenu(user) {
 	}
 
 	let menu = [{
-		icon: 'fas fa-at',
+		icon: 'ph-at',
 		text: i18n.ts.copyUsername,
 		action: () => {
 			copyToClipboard(`@${user.username}@${user.host || host}`);
 		}
 	}, {
-		icon: 'fas fa-info-circle',
+		icon: 'ph-info',
 		text: i18n.ts.info,
 		action: () => {
 			os.pageWindow(`/user-info/${user.id}`);
 		}
 	}, {
-		icon: 'fas fa-envelope',
+		icon: 'ph-envelope-simple',
 		text: i18n.ts.sendMessage,
 		action: () => {
 			os.post({ specified: user });
 		}
 	}, meId !== user.id ? {
 		type: 'link',
-		icon: 'fas fa-comments',
+		icon: 'ph-chats-circle',
 		text: i18n.ts.startMessaging,
 		to: '/my/messaging/' + Acct.toString(user),
 	} : undefined, null, {
-		icon: 'fas fa-list-ul',
+		icon: 'ph-list-bullets',
 		text: i18n.ts.addToList,
 		action: pushList
 	}, meId !== user.id ? {
-		icon: 'fas fa-users',
+		icon: 'ph-users-three',
 		text: i18n.ts.inviteToGroup,
 		action: inviteGroup
 	} : undefined] as any;
 
 	if ($i && meId !== user.id) {
 		menu = menu.concat([null, {
-			icon: user.isMuted ? 'fas fa-eye' : 'fas fa-eye-slash',
+			icon: user.isMuted ? 'ph-eye' : 'ph-eye-slash',
 			text: user.isMuted ? i18n.ts.unmute : i18n.ts.mute,
 			action: toggleMute
 		}, {
@@ -224,7 +224,7 @@ export function getUserMenu(user) {
 
 	if ($i && meId === user.id) {
 		menu = menu.concat([null, {
-			icon: 'fas fa-pencil-alt',
+			icon: 'ph-pencil',
 			text: i18n.ts.editProfile,
 			action: () => {
 				router.push('/settings/profile');

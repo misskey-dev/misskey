@@ -6,10 +6,10 @@
 	<div class="_content mk-messaging-room">
 		<div class="body">
 			<MkLoading v-if="fetching"/>
-			<p v-if="!fetching && messages.length == 0" class="empty"><i class="fas fa-info-circle"></i>{{ $ts.noMessagesYet }}</p>
+			<p v-if="!fetching && messages.length == 0" class="empty"><i class="ph-info"></i>{{ $ts.noMessagesYet }}</p>
 			<p v-if="!fetching && messages.length > 0 && !existMoreMessages" class="no-history"><i class="fas fa-flag"></i>{{ $ts.noMoreHistory }}</p>
 			<button v-show="existMoreMessages" ref="loadMore" class="more _button" :class="{ fetching: fetchingMoreMessages }" :disabled="fetchingMoreMessages" @click="fetchMoreMessages">
-				<template v-if="fetchingMoreMessages"><i class="fas fa-spinner fa-pulse fa-fw"></i></template>{{ fetchingMoreMessages ? $ts.loading : $ts.loadMore }}
+				<template v-if="fetchingMoreMessages"><i class="fas fa-spinner fa-pulse ph-fw"></i></template>{{ fetchingMoreMessages ? $ts.loading : $ts.loadMore }}
 			</button>
 			<XList v-if="messages.length > 0" v-slot="{ item: message }" class="messages" :items="messages" direction="up" reversed>
 				<XMessage :key="message.id" :message="message" :is-group="group != null"/>
@@ -79,7 +79,7 @@ const Component = defineComponent({
 				},
 			} : {
 				title: this.group.name,
-				icon: 'fas fa-users',
+				icon: 'ph-users-three',
 				action: {
 					icon: 'fas fa-ellipsis-h',
 					handler: this.menu,
@@ -323,7 +323,7 @@ const Component = defineComponent({
 
 			os.popupMenu([this.inWindow ? undefined : {
 				text: this.$ts.openInWindow,
-				icon: 'fas fa-window-maximize',
+				icon: 'ph-frame-corners',
 				action: () => {
 					os.pageWindow(path);
 					this.$router.back();

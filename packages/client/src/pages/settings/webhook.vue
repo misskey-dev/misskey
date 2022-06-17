@@ -13,7 +13,7 @@
 					<template #icon>
 						<i v-if="webhook.active === false" class="fas fa-circle-pause"></i>
 						<i v-else-if="webhook.latestStatus === null" class="far fa-circle"></i>
-						<i v-else-if="[200, 201, 204].includes(webhook.latestStatus)" class="fas fa-check" :style="{ color: 'var(--success)' }"></i>
+						<i v-else-if="[200, 201, 204].includes(webhook.latestStatus)" class="ph-check" :style="{ color: 'var(--success)' }"></i>
 						<i v-else class="fas fa-triangle-exclamation" :style="{ color: 'var(--error)' }"></i>
 					</template>
 					{{ webhook.name || webhook.url }}

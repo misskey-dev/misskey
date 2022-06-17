@@ -5,8 +5,8 @@
 			<div v-size="{ max: [500] }" class="ftskorzw" :class="{ wide: !narrow }">
 				<div class="main">
 					<!-- TODO -->
-					<!-- <div class="punished" v-if="user.isSuspended"><i class="fas fa-exclamation-triangle" style="margin-right: 8px;"></i> {{ $ts.userSuspended }}</div> -->
-					<!-- <div class="punished" v-if="user.isSilenced"><i class="fas fa-exclamation-triangle" style="margin-right: 8px;"></i> {{ $ts.userSilenced }}</div> -->
+					<!-- <div class="punished" v-if="user.isSuspended"><i class="ph-warning" style="margin-right: 8px;"></i> {{ $ts.userSuspended }}</div> -->
+					<!-- <div class="punished" v-if="user.isSilenced"><i class="ph-warning" style="margin-right: 8px;"></i> {{ $ts.userSilenced }}</div> -->
 
 					<div class="profile">
 						<MkRemoteCaution v-if="user.host != null" :href="user.url" class="warn"/>
@@ -21,7 +21,7 @@
 										<span class="username"><MkAcct :user="user" :detail="true" /></span>
 										<span v-if="user.isAdmin" :title="$ts.isAdmin" style="color: var(--badge);"><i class="fas fa-bookmark"></i></span>
 										<span v-if="!user.isAdmin && user.isModerator" :title="$ts.isModerator" style="color: var(--badge);"><i class="far fa-bookmark"></i></span>
-										<span v-if="user.isLocked" :title="$ts.isLocked"><i class="fas fa-lock"></i></span>
+										<span v-if="user.isLocked" :title="$ts.isLocked"><i class="ph-lock"></i></span>
 										<span v-if="user.isBot" :title="$ts.isBot"><i class="fas fa-robot"></i></span>
 									</div>
 								</div>
@@ -38,7 +38,7 @@
 									<span class="username"><MkAcct :user="user" :detail="true" /></span>
 									<span v-if="user.isAdmin" :title="$ts.isAdmin" style="color: var(--badge);"><i class="fas fa-bookmark"></i></span>
 									<span v-if="!user.isAdmin && user.isModerator" :title="$ts.isModerator" style="color: var(--badge);"><i class="far fa-bookmark"></i></span>
-									<span v-if="user.isLocked" :title="$ts.isLocked"><i class="fas fa-lock"></i></span>
+									<span v-if="user.isLocked" :title="$ts.isLocked"><i class="ph-lock"></i></span>
 									<span v-if="user.isBot" :title="$ts.isBot"><i class="fas fa-robot"></i></span>
 								</div>
 							</div>
@@ -48,15 +48,15 @@
 							</div>
 							<div class="fields system">
 								<dl v-if="user.location" class="field">
-									<dt class="name"><i class="fas fa-map-marker fa-fw"></i> {{ $ts.location }}</dt>
+									<dt class="name"><i class="fas fa-map-marker ph-fw"></i> {{ $ts.location }}</dt>
 									<dd class="value">{{ user.location }}</dd>
 								</dl>
 								<dl v-if="user.birthday" class="field">
-									<dt class="name"><i class="fas fa-birthday-cake fa-fw"></i> {{ $ts.birthday }}</dt>
+									<dt class="name"><i class="fas fa-birthday-cake ph-fw"></i> {{ $ts.birthday }}</dt>
 									<dd class="value">{{ user.birthday.replace('-', '/').replace('-', '/') }} ({{ $t('yearsOld', { age }) }})</dd>
 								</dl>
 								<dl class="field">
-									<dt class="name"><i class="fas fa-calendar-alt fa-fw"></i> {{ $ts.registeredDate }}</dt>
+									<dt class="name"><i class="fas fa-calendar-alt ph-fw"></i> {{ $ts.registeredDate }}</dt>
 									<dd class="value">{{ new Date(user.createdAt).toLocaleString() }} (<MkTime :time="user.createdAt"/>)</dd>
 								</dl>
 							</div>
@@ -195,22 +195,22 @@ export default defineComponent({
 				}, ...(this.$i && (this.$i.id === this.user.id)) || this.user.publicReactions ? [{
 					active: this.page === 'reactions',
 					title: this.$ts.reaction,
-					icon: 'fas fa-laugh',
+					icon: 'ph-smiley',
 					onClick: () => { this.mkNav.push('/@' + getAcct(this.user) + '/reactions'); },
 				}] : [], {
 					active: this.page === 'clips',
 					title: this.$ts.clips,
-					icon: 'fas fa-paperclip',
+					icon: 'ph-paperclip',
 					onClick: () => { this.mkNav.push('/@' + getAcct(this.user) + '/clips'); },
 				}, {
 					active: this.page === 'pages',
 					title: this.$ts.pages,
-					icon: 'fas fa-file-alt',
+					icon: 'ph-file-text',
 					onClick: () => { this.mkNav.push('/@' + getAcct(this.user) + '/pages'); },
 				}, {
 					active: this.page === 'gallery',
 					title: this.$ts.gallery,
-					icon: 'fas fa-icons',
+					icon: 'ph-image',
 					onClick: () => { this.mkNav.push('/@' + getAcct(this.user) + '/gallery'); },
 				}],
 			} : null),

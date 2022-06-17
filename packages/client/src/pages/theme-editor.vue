@@ -211,12 +211,12 @@ defineExpose({
 		bg: 'var(--bg)',
 		actions: [{
 			asFullButton: true,
-			icon: 'fas fa-eye',
+			icon: 'ph-eye',
 			text: i18n.ts.preview,
 			handler: showPreview,
 		}, {
 			asFullButton: true,
-			icon: 'fas fa-check',
+			icon: 'ph-check',
 			text: i18n.ts.saveAs,
 			handler: saveAs,
 		}],

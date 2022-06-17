@@ -17,8 +17,8 @@
 				<div>
 					<div v-for="item in items" :key="item.id" v-panel class="timnmucd">
 						<header>
-							<i v-if="item.success" class="fas fa-check icon succ"></i>
-							<i v-else class="fas fa-times-circle icon fail"></i>
+							<i v-if="item.success" class="ph-check icon succ"></i>
+							<i v-else class="ph-warning-circle icon fail"></i>
 							<code class="ip _monospace">{{ item.ip }}</code>
 							<MkTime :time="item.createdAt" class="time"/>
 						</header>
@@ -101,7 +101,7 @@ function regenerateToken() {
 defineExpose({
 	[symbols.PAGE_INFO]: {
 		title: i18n.ts.security,
-		icon: 'fas fa-lock',
+		icon: 'ph-lock',
 		bg: 'var(--bg)',
 	}
 });

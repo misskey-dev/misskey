@@ -127,7 +127,7 @@ function reset() {
 defineExpose({
 	[symbols.PAGE_INFO]: {
 		title: i18n.ts.sounds,
-		icon: 'fas fa-music',
+		icon: 'ph-headphones',
 		bg: 'var(--bg)',
 	}
 });

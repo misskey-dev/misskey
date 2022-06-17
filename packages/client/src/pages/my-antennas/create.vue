@@ -32,7 +32,7 @@ function onAntennaCreated() {
 defineExpose({
 	[symbols.PAGE_INFO]: {
 		title: i18n.ts.manageAntennas,
-		icon: 'fas fa-satellite',
+		icon: 'ph-cell-signal-full',
 		bg: 'var(--bg)',
 	},
 });

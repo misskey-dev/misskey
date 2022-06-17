@@ -1,6 +1,6 @@
 <template>
 <MkContainer :show-header="widgetProps.showHeader" class="mkw-trends">
-	<template #header><i class="fas fa-hashtag"></i>{{ $ts._widgets.trends }}</template>
+	<template #header><i class="ph-hash"></i>{{ $ts._widgets.trends }}</template>
 
 	<div class="wbrkwala">
 		<MkLoading v-if="fetching"/>
