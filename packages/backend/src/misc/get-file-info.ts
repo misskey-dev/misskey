@@ -3,6 +3,7 @@ import * as crypto from 'node:crypto';
 import { join } from 'node:path';
 import * as stream from 'node:stream';
 import * as util from 'node:util';
+import { FSWatcher } from 'chokidar';
 import { fileTypeFromFile } from 'file-type';
 import FFmpeg from 'fluent-ffmpeg';
 import isSvg from 'is-svg';
@@ -125,7 +126,7 @@ async function detectSensitivity(source: string, mime: string, sensitiveThreshol
 	let sensitive = false;
 	let porn = false;
 
-	function assignPrediction(result: readonly predictionType[]) {
+	function assignPrediction(result: readonly predictionType[]): void {
 		if ((result.find(x => x.className === 'Sexy')?.probability ?? 0) > sensitiveThreshold) sensitive = true;
 		if ((result.find(x => x.className === 'Hentai')?.probability ?? 0) > sensitiveThreshold) sensitive = true;
 		if ((result.find(x => x.className === 'Porn')?.probability ?? 0) > sensitiveThreshold) sensitive = true;
@@ -167,18 +168,13 @@ async function detectSensitivity(source: string, mime: string, sensitiveThreshol
 				.format('image2')
 				.output(join(outDir, '%d.png'))
 				.outputOptions(['-vsync', '0']); // 可変フレームレートにすることで穴埋めをさせない
-			await new Promise((resolve, reject) => {
-				command.once('end', resolve);
-				command.once('error', reject);
-				command.run();
-			});
-			const intraFrameFilenames = await fs.promises.readdir(outDir);
-			for (const filename of intraFrameFilenames) {
-				const result = await detectSensitive(join(outDir, filename));
+			for await (const path of asyncIterateFrames(outDir, command)) {
+				const result = await detectSensitive(path);
 				if (result) {
-					assignPrediction(result); // いずれかのフレームでセンシティブ判定されたら設定する
+					assignPrediction(result);
 				}
-				if (sensitive && porn) {
+				if (sensitive && porn) { // eslint-disable-line @typescript-eslint/no-unnecessary-condition
+					command.kill('SIGKILL');
 					break; // 全ての項目が既に判定されていたら、これ以降のフレームを読んでいっても判定は変わらない
 				}
 			}
@@ -189,6 +185,44 @@ async function detectSensitivity(source: string, mime: string, sensitiveThreshol
 	}
 
 	return [sensitive, porn];
+}
+
+async function* asyncIterateFrames(cwd: string, command: FFmpeg.FfmpegCommand): AsyncGenerator<string, void> {
+	const watcher = new FSWatcher({
+		cwd,
+		disableGlobbing: true,
+	});
+	let finished = false;
+	command.once('end', () => {
+		finished = true;
+		watcher.close();
+	});
+	await new Promise((resolve, reject) => {
+		watcher.once('ready', resolve);
+		watcher.once('error', reject);
+	});
+	command.run();
+	for (let i = 1; true; i++) { // eslint-disable-line @typescript-eslint/no-unnecessary-condition
+		const current = `${i}.png`;
+		const next = `${i + 1}.png`;
+		if (await fs.promises.access(next).then(() => true, () => false)) {
+			yield join(cwd, current);
+		} else if (!finished) { // eslint-disable-line @typescript-eslint/no-unnecessary-condition
+			watcher.add(next);
+			await new Promise<void>((resolve, reject) => {
+				watcher.on('add', function onAdd(path) {
+					if (path === next) { // 次フレームの書き出しが始まっているなら、現在フレームの書き出しは終わっている
+						watcher.unwatch(current);
+						watcher.off('add', onAdd);
+						resolve();
+					}
+				});
+				command.once('end', resolve); // 全てのフレームを処理し終わったなら、最終フレームである現在フレームの書き出しは終わっている
+				command.once('error', reject);
+			});
+			yield join(cwd, current);
+		}
+	}
 }
 
 /**
