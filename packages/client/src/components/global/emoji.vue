@@ -1,4 +1,4 @@
-<template>
+char2filePath<template>
 <img v-if="customEmoji" class="mk-emoji custom" :class="{ normal, noStyle }" :src="url" :alt="alt" :title="alt" decoding="async"/>
 <img v-else-if="char && !useOsNativeEmojis" class="mk-emoji" :src="url" :alt="alt" :title="alt" decoding="async"/>
 <span v-else-if="char && useOsNativeEmojis">{{ char }}</span>
@@ -8,7 +8,7 @@
 <script lang="ts">
 import { computed, defineComponent, ref, watch } from 'vue';
 import { getStaticImageUrl } from '@/scripts/get-static-image-url';
-import { char2file } from '@/scripts/twemoji-base';
+import { char2filePath } from '@/scripts/twemoji-base';
 import { defaultStore } from '@/store';
 import { instance } from '@/instance';
 
@@ -45,7 +45,7 @@ export default defineComponent({
 		const customEmoji = computed(() => isCustom.value ? ce.value.find(x => x.name === props.emoji.substr(1, props.emoji.length - 2)) : null);
 		const url = computed(() => {
 			if (char.value) {
-				return char2file(char.value);
+				return char2filePath(char.value);
 			} else {
 				return defaultStore.state.disableShowingAnimatedImages
 					? getStaticImageUrl(customEmoji.value.url)
