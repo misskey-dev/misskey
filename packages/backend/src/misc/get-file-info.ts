@@ -214,10 +214,6 @@ async function* asyncIterateFrames(cwd: string, command: FFmpeg.FfmpegCommand): 
 		finished = true;
 		watcher.close();
 	});
-	await new Promise((resolve, reject) => {
-		watcher.once('ready', resolve);
-		watcher.once('error', reject);
-	});
 	command.run();
 	for (let i = 1; true; i++) { // eslint-disable-line @typescript-eslint/no-unnecessary-condition
 		const current = `${i}.png`;
