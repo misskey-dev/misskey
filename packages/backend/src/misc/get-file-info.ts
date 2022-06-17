@@ -189,8 +189,8 @@ async function detectSensitivity(source: string, mime: string, sensitiveThreshol
 					results.push(judgePrediction(result));
 				}
 			}
-			sensitive = results.filter(x => x[0]).length >= Math.round(results.length * sensitiveThreshold);
-			porn = results.filter(x => x[1]).length >= Math.round(results.length * sensitiveThresholdForPorn);
+			sensitive = results.filter(x => x[0]).length >= Math.ceil(results.length * sensitiveThreshold);
+			porn = results.filter(x => x[1]).length >= Math.ceil(results.length * sensitiveThresholdForPorn);
 		} finally {
 			disposeOutDir();
 		}
