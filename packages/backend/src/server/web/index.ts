@@ -154,7 +154,10 @@ router.get('/twemoji-badge/(.*)', async ctx => {
 		{ density: 1000 },
 	)
 		.resize(488, 488)
+		.greyscale()
+		.normalise()
 		.clone()
+		.linear(1.75, -(128 * 1.75) + 128) // 1.75x contrast
 		.flatten({ background: '#000' })
 		.extend({
 			top: 12,
@@ -163,14 +166,14 @@ router.get('/twemoji-badge/(.*)', async ctx => {
 			right: 12,
 			background: '#000',
 		})
-		.threshold(100)
-		.toColourspace('b-w')
+		.toColorspace('b-w')
 		.png()
 		.toBuffer();
 
-	const buffer = await sharp(
-		{ create: { width: 512, height: 512, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } }
-	)
+	const buffer = await sharp({
+		create: { width: 512, height: 512, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } },
+	})
+		.pipelineColourspace('b-w')
 		.boolean(mask, 'eor')
 		.resize(96, 96)
 		.png()
