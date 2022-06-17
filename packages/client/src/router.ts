@@ -1,9 +1,9 @@
 import { AsyncComponentLoader, defineAsyncComponent, markRaw } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
+import { $i, iAmModerator } from './account';
 import MkLoading from '@/pages/_loading_.vue';
 import MkError from '@/pages/_error_.vue';
 import MkTimeline from '@/pages/timeline.vue';
-import { $i, iAmModerator } from './account';
 import { ui } from '@/config';
 
 // pathに/が入るとrollupが解決してくれないので、() => import('*.vue')を指定すること
@@ -70,6 +70,7 @@ const defaultRoutes = [
 	{ path: '/scratchpad', component: page('scratchpad') },
 	{ path: '/admin/:page(.*)?', component: iAmModerator ? page(() => import('./pages/admin/index.vue')) : page('not-found'), props: route => ({ initialPage: route.params.page || null }) },
 	{ path: '/admin', component: iAmModerator ? page(() => import('./pages/admin/index.vue')) : page('not-found') },
+	{ path: '/admin-file/:fileId', component: page('admin-file'), props: route => ({ fileId: route.params.fileId }) },
 	{ path: '/notes/:note', name: 'note', component: page('note'), props: route => ({ noteId: route.params.note }) },
 	{ path: '/tags/:tag', component: page('tag'), props: route => ({ tag: route.params.tag }) },
 	{ path: '/user-info/:user', component: page('user-info'), props: route => ({ userId: route.params.user }) },
@@ -82,7 +83,7 @@ const defaultRoutes = [
 	{ path: '/miauth/:session', component: page('miauth') },
 	{ path: '/authorize-follow', component: page('follow') },
 	{ path: '/share', component: page('share') },
-	{ path: '/:catchAll(.*)', component: page('not-found') }
+	{ path: '/:catchAll(.*)', component: page('not-found') },
 ];
 
 const chatRoutes = [
@@ -126,7 +127,7 @@ export const router = createRouter({
 				window.scroll({ top: 0, behavior: 'instant' });
 			}
 		};
-	}
+	},
 });
 
 router.afterEach((to, from) => {
@@ -141,6 +142,6 @@ export function resolve(path: string) {
 	return {
 		component: markRaw(route.components.default),
 		// TODO: route.propsには関数以外も入る可能性があるのでよしなにハンドリングする
-		props: route.props?.default ? route.props.default(resolved) : resolved.params
+		props: route.props.default ? route.props.default(resolved) : resolved.params,
 	};
 }

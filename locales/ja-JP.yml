@@ -845,6 +845,7 @@ failedToFetchAccountInformation: "アカウント情報の取得に失敗しま�
 rateLimitExceeded: "レート制限を超えました"
 cropImage: "画像のクロップ"
 cropImageAsk: "画像をクロップしますか？"
+file: "ファイル"
 
 _emailUnavailable:
   used: "既に使用されています"
