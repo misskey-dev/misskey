@@ -845,6 +845,7 @@ failedToFetchAccountInformation: "계정 정보를 가져오지 못했습니다"
 rateLimitExceeded: "요청 제한 횟수를 초과하였습니다"
 cropImage: "이미지 자르기"
 cropImageAsk: "이미지를 자르시겠습니까?"
+file: "파일"
 _emailUnavailable:
   used: "이 메일 주소는 사용중입니다"
   format: "형식이 올바르지 않습니다"
