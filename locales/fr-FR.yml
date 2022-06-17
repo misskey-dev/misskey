@@ -838,6 +838,7 @@ oneWeek: "1 semaine"
 rateLimitExceeded: "Limite de taux dépassée"
 cropImage: "Recadrer l'image"
 cropImageAsk: "Voulez-vous recadrer cette image ?"
+file: "Fichiers"
 _emailUnavailable:
   used: "Non disponible"
   format: "Le format de cette adresse de courriel est invalide"
