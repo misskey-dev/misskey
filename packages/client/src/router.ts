@@ -53,10 +53,20 @@ window.setInterval(() => {
 
 mainRouter.addListener('push', ctx => {
 	window.history.pushState({ key: ctx.key }, '', ctx.path);
-	window.scroll({ top: scrollPosStore.get(ctx.key) ?? 0, behavior: 'instant' });
+	const scrollPos = scrollPosStore.get(ctx.key) ?? 0;
+	window.scroll({ top: scrollPos, behavior: 'instant' });
+	if (scrollPos !== 0) {
+		window.setTimeout(() => { // 遷移直後はタイミングによってはコンポーネントが復元し切ってない可能性も考えられるため少し時間を空けて再度スクロール
+			window.scroll({ top: scrollPos, behavior: 'instant' });
+		}, 1000);
+	}
 });
 
 window.addEventListener('popstate', (event) => {
 	mainRouter.change(document.location.pathname, event.state?.key);
-	window.scroll({ top: scrollPosStore.get(event.state?.key), behavior: 'instant' });
+	const scrollPos = scrollPosStore.get(event.state?.key) ?? 0;
+	window.scroll({ top: scrollPos, behavior: 'instant' });
+	window.setTimeout(() => { // 遷移直後はタイミングによってはコンポーネントが復元し切ってない可能性も考えられるため少し時間を空けて再度スクロール
+		window.scroll({ top: scrollPos, behavior: 'instant' });
+	}, 1000);
 });
