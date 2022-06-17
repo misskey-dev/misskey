@@ -150,7 +150,8 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 						badge = `/twemoji-badge/${char2fileName(reaction)}.png`;
 					}
 
-					if (badge ? await fetch(badge).then(res => res.status !== 200) : true) {
+
+					if (badge ? await fetch(badge).then(res => res.status !== 200).catch(() => true) : true) {
 						badge = iconUrl('plus');
 					}
 
