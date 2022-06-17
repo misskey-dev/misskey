@@ -810,6 +810,7 @@ ffVisibility: "Visibilidad de seguidores y seguidos"
 hide: "Ocultar"
 searchByGoogle: "Buscar"
 indefinitely: "Sin límite de tiempo"
+file: "Archivos"
 _ffVisibility:
   public: "Publicar"
 _accountDelete:
