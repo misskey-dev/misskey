@@ -157,9 +157,24 @@ async function detectSensitivity(source: string, mime: string, sensitiveThreshol
 				.noAudio()
 				.videoFilters([
 					{
-						filter: 'select',
+						filter: 'select', // フレームのフィルタリング
 						options: {
 							e: 'eq(pict_type,PICT_TYPE_I)', // I-Frame のみをフィルタする（VP9 とかはデコードしてみないとわからないっぽい）
+						},
+					},
+					{
+						filter: 'blackframe', // 暗いフレームの検出
+						options: {
+							amount: '0', // 暗さに関わらず全てのフレームで測定値を取る
+						},
+					},
+					{
+						filter: 'metadata',
+						options: {
+							mode: 'select', // フレーム選択モード
+							key: 'lavfi.blackframe.pblack', // フレームにおける暗部の百分率（前のフィルタからのメタデータを参照する）
+							value: '50',
+							function: 'less', // 50% 未満のフレームを選択する（50% 以上暗部があるフレームだと誤検知を招くかもしれないので）
 						},
 					},
 					{
@@ -220,7 +235,9 @@ async function* asyncIterateFrames(cwd: string, command: FFmpeg.FfmpegCommand): 
 		const next = `${i + 1}.png`;
 		if (await fs.promises.access(next).then(() => true, () => false)) {
 			yield join(cwd, current);
-		} else if (!finished) { // eslint-disable-line @typescript-eslint/no-unnecessary-condition
+		} else if (finished) { // eslint-disable-line @typescript-eslint/no-unnecessary-condition
+			return;
+		} else {
 			watcher.add(next);
 			await new Promise<void>((resolve, reject) => {
 				watcher.on('add', function onAdd(path) {
