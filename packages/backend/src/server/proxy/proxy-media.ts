@@ -41,13 +41,14 @@ export async function proxyMedia(ctx: Koa.Context) {
 			const mask = sharp(path)
 				.resize(96, 96, {
 					fit: 'inside',
-					withoutEnlargement: false
+					withoutEnlargement: false,
 				})
-				.normalise(true)
+				.greyscale()
+				.normalise()
 				.clone()
+				.linear(1.75, -(128 * 1.75) + 128) // 1.75x contrast
 				.flatten({ background: '#000' })
-				.threshold(120)
-				.toColourspace('b-w');
+				.toColorspace('b-w');
 
 			const stats = await mask.clone().stats();
 
@@ -56,9 +57,10 @@ export async function proxyMedia(ctx: Koa.Context) {
 				throw new StatusError('Skip to provide badge', 404);
 			}
 
-			const data = sharp(
-				{ create: { width: 96, height: 96, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } }
-			)
+			const data = sharp({
+				create: { width: 96, height: 96, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } },
+			})
+				.pipelineColourspace('b-w')
 				.boolean(await mask.png().toBuffer(), 'eor');
 
 			image = {
