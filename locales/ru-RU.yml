@@ -832,6 +832,7 @@ searchByGoogle: "Поиск"
 instanceDefaultLightTheme: "Светлая тема по умолчанию"
 instanceDefaultDarkTheme: "Темная тема по умолчанию"
 indefinitely: "вечно"
+file: "Файлы"
 _emailUnavailable:
   used: "Уже используется"
   format: "Неверный формат"
