@@ -11,9 +11,14 @@ export function createTemp(): Promise<[string, () => void]> {
 
 export function createTempDir(): Promise<[string, () => void]> {
 	return new Promise<[string, () => void]>((res, rej) => {
-		tmp.dir((e, path, cleanup) => {
-			if (e) return rej(e);
-			res([path, cleanup]);
-		});
+		tmp.dir(
+			{
+				unsafeCleanup: true,
+			},
+			(e, path, cleanup) => {
+				if (e) return rej(e);
+				res([path, cleanup]);
+			}
+		);
 	});
 }

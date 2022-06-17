@@ -20,6 +20,8 @@ export const meta = {
 
 	kind: 'write:drive',
 
+	description: 'Upload a new drive file.',
+
 	res: {
 		type: 'object',
 		optional: false, nullable: false,

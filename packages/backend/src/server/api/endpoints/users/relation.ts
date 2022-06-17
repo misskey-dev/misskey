@@ -1,10 +1,12 @@
-import define from '../../define.js';
 import { Users } from '@/models/index.js';
+import define from '../../define.js';
 
 export const meta = {
 	tags: ['users'],
 
 	requireCredential: true,
+
+	description: 'Show the different kinds of relations between the authenticated user and the specified user(s).',
 
 	res: {
 		optional: false, nullable: false,

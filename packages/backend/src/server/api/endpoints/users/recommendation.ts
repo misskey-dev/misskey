@@ -1,6 +1,6 @@
 import ms from 'ms';
-import define from '../../define.js';
 import { Users, Followings } from '@/models/index.js';
+import define from '../../define.js';
 import { generateMutedUserQueryForUsers } from '../../common/generate-muted-user-query.js';
 import { generateBlockedUserQuery, generateBlockQueryForUsers } from '../../common/generate-block-query.js';
 
@@ -10,6 +10,8 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'read:account',
+
+	description: 'Show users that the authenticated user might be interested to follow.',
 
 	res: {
 		type: 'array',
