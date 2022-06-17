@@ -39,9 +39,11 @@
 						<template #label>{{ i18n.ts._sensitiveMediaDetection.forceIsSensitiveWhenPredicted }}</template>
 					</FormSwitch>
 
+					<!-- 現状 false positive が多すぎて実用に耐えない
 					<FormSwitch v-model="disallowUploadWhenPredictedAsPorn" class="_formBlock">
 						<template #label>{{ i18n.ts._sensitiveMediaDetection.disallowUploadWhenPredictedAsPorn }}</template>
 					</FormSwitch>
+					-->
 
 					<FormButton primary class="_formBlock" @click="save"><i class="fas fa-save"></i> {{ i18n.ts.save }}</FormButton>
 				</div>
