@@ -842,6 +842,7 @@ oneDay: "1天"
 oneWeek: "1週"
 reflectMayTakeTime: "可能需要一些時間才會出現效果。"
 failedToFetchAccountInformation: "取得帳戶資訊失敗"
+file: "檔案"
 _emailUnavailable:
   used: "已經在使用中"
   format: "格式無效"
