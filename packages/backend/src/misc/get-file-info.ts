@@ -126,18 +126,23 @@ async function detectSensitivity(source: string, mime: string, sensitiveThreshol
 	let sensitive = false;
 	let porn = false;
 
-	function assignPrediction(result: readonly predictionType[]): void {
+	function judgePrediction(result: readonly predictionType[]): [sensitive: boolean, porn: boolean] {
+		let sensitive = false;
+		let porn = false;
+
 		if ((result.find(x => x.className === 'Sexy')?.probability ?? 0) > sensitiveThreshold) sensitive = true;
 		if ((result.find(x => x.className === 'Hentai')?.probability ?? 0) > sensitiveThreshold) sensitive = true;
 		if ((result.find(x => x.className === 'Porn')?.probability ?? 0) > sensitiveThreshold) sensitive = true;
 
 		if ((result.find(x => x.className === 'Porn')?.probability ?? 0) > sensitiveThresholdForPorn) porn = true;
+
+		return [sensitive, porn];
 	}
 
 	if (['image/jpeg', 'image/png', 'image/webp'].includes(mime)) {
 		const result = await detectSensitive(source);
 		if (result) {
-			assignPrediction(result);
+			[sensitive, porn] = judgePrediction(result);
 		}
 	} else if (mime === 'image/apng' || mime.startsWith('video/')) {
 		/* 現状モデルの精度が高くないため大抵の動画はNSFW判定されてしまう あとゲロ重いから動画の1/4地点、2/4地点、3/4地点みたいに数枚にサンプリングした上で判定するとかしないとダメそう
@@ -168,16 +173,24 @@ async function detectSensitivity(source: string, mime: string, sensitiveThreshol
 				.format('image2')
 				.output(join(outDir, '%d.png'))
 				.outputOptions(['-vsync', '0']); // 可変フレームレートにすることで穴埋めをさせない
+			const results: ReturnType<typeof judgePrediction>[] = [];
+			let frameIndex = 0;
+			let targetIndex = 0;
+			let nextIndex = 1;
 			for await (const path of asyncIterateFrames(outDir, command)) {
+				const index = frameIndex++;
+				if (index !== targetIndex) {
+					continue;
+				}
+				targetIndex = nextIndex;
+				nextIndex += index; // fibonacci sequence によってフレーム数制限を掛ける
 				const result = await detectSensitive(path);
 				if (result) {
-					assignPrediction(result);
-				}
-				if (sensitive && porn) { // eslint-disable-line @typescript-eslint/no-unnecessary-condition
-					command.kill('SIGKILL');
-					break; // 全ての項目が既に判定されていたら、これ以降のフレームを読んでいっても判定は変わらない
+					results.push(judgePrediction(result));
 				}
 			}
+			sensitive = results.filter(x => x[0]).length >= Math.round(results.length * sensitiveThreshold);
+			porn = results.filter(x => x[1]).length >= Math.round(results.length * sensitiveThresholdForPorn);
 		} finally {
 			disposeOutDir();
 		}
