@@ -845,6 +845,7 @@ failedToFetchAccountInformation: "Benutzerkontoinformationen konnten nicht abgef
 rateLimitExceeded: "Versuchsanzahl überschritten"
 cropImage: "Bild zuschneiden"
 cropImageAsk: "Möchtest du das Bild zuschneiden?"
+file: "Dateien"
 _emailUnavailable:
   used: "Diese Email-Adresse wird bereits verwendet"
   format: "Das Format dieser Email-Adresse ist ungültig"
