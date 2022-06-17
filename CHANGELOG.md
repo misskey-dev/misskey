@@ -14,6 +14,8 @@ You should also include the user name that made the change.
 ### Improvements
 - Server: Add rate limit to i/notifications @tamaina
 - Client: Improve files page of control panel @syuilo
+- Migrate to Yarn Berry (v3.2.1) @ThatOneCalculator
+	- You may have to `yarn run clean-all` and `yarn set version berry` before running `yarn install` if you're still on yarn classic
 
 ### Bugfixes
 - Server: Fix GenerateVideoThumbnail failed @mei23
@@ -50,7 +52,6 @@ You should also include the user name that made the change.
 - Perform port diagnosis at startup only when Listen fails @mei23
 - Rate limiting is now also usable for non-authenticated users. @Johann150 @mei23
   Admins should make sure the reverse proxy sets the `X-Forwarded-For` header to the original address.
-- Migrate to Yarn v3.2.0 @ThatOneCalculator
 
 ### Bugfixes
 - Server: keep file order of note attachement @Johann150
