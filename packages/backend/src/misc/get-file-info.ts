@@ -178,15 +178,19 @@ async function detectSensitivity(source: string, mime: string, sensitiveThreshol
 			let targetIndex = 0;
 			let nextIndex = 1;
 			for await (const path of asyncIterateFrames(outDir, command)) {
-				const index = frameIndex++;
-				if (index !== targetIndex) {
-					continue;
-				}
-				targetIndex = nextIndex;
-				nextIndex += index; // fibonacci sequence によってフレーム数制限を掛ける
-				const result = await detectSensitive(path);
-				if (result) {
-					results.push(judgePrediction(result));
+				try {
+					const index = frameIndex++;
+					if (index !== targetIndex) {
+						continue;
+					}
+					targetIndex = nextIndex;
+					nextIndex += index; // fibonacci sequence によってフレーム数制限を掛ける
+					const result = await detectSensitive(path);
+					if (result) {
+						results.push(judgePrediction(result));
+					}
+				} finally {
+					fs.promises.unlink(path);
 				}
 			}
 			sensitive = results.filter(x => x[0]).length >= Math.ceil(results.length * sensitiveThreshold);
