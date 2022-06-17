@@ -1,7 +1,7 @@
 <template>
 <div class="timctyfi" :class="{ disabled }">
 	<div class="label"><slot name="label"></slot></div>
-	<div v-panel class="body">
+	<div v-adaptive-border class="body">
 		<div ref="containerEl" class="container">
 			<div class="track">
 				<div class="highlight" :style="{ width: (steppedValue * 100) + '%' }"></div>
@@ -193,6 +193,8 @@ export default defineComponent({
 
 	> .body {
 		padding: 12px;
+		background: var(--panel);
+		border: solid 1px var(--panel);
 		border-radius: 6px;
 
 		> .container {
