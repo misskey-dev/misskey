@@ -15,28 +15,31 @@ const page = (path: string | AsyncComponentLoader<any>, uiName?: string) => defi
 
 export const routes = [{
 	name: 'user',
-	path: [{
-		name: 'acct',
-		startsWith: '@',
-	}, {
-		name: 'page',
-		optional: true,
-		default: 'index',
-	}],
+	path: '/@:acct/:page?',
 	component: page(() => import('./pages/user/index.vue')),
 }, {
-	name: 'note',
-	path: ['notes', { name: 'noteId' }],
-	component: page(() => import('./pages/note.vue')),
+	path: '/@:initUser/pages/:initPageName/view-source',
+	component: page('pages/page-editor/page-editor'),
 }, {
-	path: ['about'],
+	path: '/@:username/pages/:pageName',
+	component: page('page'),
+}, {
+	name: 'note',
+	path: '/notes/:noteId',
+	component: page('note'),
+}, {
+	path: '/about',
 	component: page('about'),
 }, {
-	path: ['user-info', { name: 'userId' }],
+	path: '/user-info/:userId',
 	component: page('user-info'),
 }, {
+	name: 'settings',
+	path: '/settings/:initialPage(.*)?',
+	component: page(() => import('./pages/settings/index.vue')),
+}, {
 	name: 'index',
-	path: [''],
+	path: '/',
 	component: $i ? MkTimeline : page('welcome'),
 	globalCacheKey: 'index',
 }];

@@ -1,20 +1,44 @@
 import { EventEmitter } from 'eventemitter3';
 import { Ref, Component, ref } from 'vue';
 
-type RoutePathDef = (string | {
-	name: string;
-	startsWith?: string;
-	wildcard?: boolean;
-	optional?: boolean;
-	default?: string;
-})[];
-
 type RouteDef = {
-	path: RoutePathDef;
+	path: string;
 	component: Component;
 	name?: string;
 	globalCacheKey?: string;
 };
+
+type ParsedPath = (string | {
+	name: string;
+	startsWith?: string;
+	wildcard?: boolean;
+	optional?: boolean;
+})[];
+
+function parsePath(path: string): ParsedPath {
+	const res = [] as ParsedPath;
+
+	path = path.substring(1);
+
+	for (const part of path.split('/')) {
+		if (part.includes(':')) {
+			const prefix = part.substring(0, part.indexOf(':'));
+			const placeholder = part.substring(part.indexOf(':') + 1);
+			const wildcard = placeholder.includes('(*)');
+			const optional = placeholder.endsWith('?');
+			res.push({
+				name: placeholder.replace('(*)', '').replace('?', ''),
+				startsWith: prefix !== '' ? prefix : undefined,
+				wildcard,
+				optional,
+			});
+		} else {
+			res.push(part);
+		}
+	}
+
+	return res;
+}
 
 export class Router extends EventEmitter<{
 	change: (ctx: {
@@ -56,7 +80,7 @@ export class Router extends EventEmitter<{
 			const props = new Map<string, string>();
 
 			forEachRouteLoop:
-			for (const p of route.path) {
+			for (const p of parsePath(route.path)) {
 				if (typeof p === 'string') {
 					if (p === parts[0]) {
 						parts.shift();
@@ -72,7 +96,7 @@ export class Router extends EventEmitter<{
 					} else {
 						if (p.startsWith && (parts[0] == null || !parts[0].startsWith(p.startsWith))) break forEachRouteLoop;
 
-						props.set(p.name, parts[0] ?? p.default);
+						props.set(p.name, parts[0]);
 						parts.shift();
 					}
 				}
