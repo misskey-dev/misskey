@@ -1,12 +1,14 @@
-import define from '../../define.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
 import { genId } from '@/misc/gen-id.js';
 import { SwSubscriptions } from '@/models/index.js';
+import define from '../../define.js';
 
 export const meta = {
 	tags: ['account'],
 
 	requireCredential: true,
+
+	description: 'Register to receive push notifications.',
 
 	res: {
 		type: 'object',

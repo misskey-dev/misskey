@@ -2,16 +2,13 @@ import define from '../../define.js';
 import { readNotification } from '../../common/read-notification.js';
 
 export const meta = {
-	desc: {
-		'ja-JP': '通知を既読にします。',
-		'en-US': 'Mark a notification as read.'
-	},
-
 	tags: ['notifications', 'account'],
 
 	requireCredential: true,
 
 	kind: 'write:notifications',
+
+	description: 'Mark a notification as read.',
 
 	errors: {
 		noSuchNotification: {
@@ -34,7 +31,11 @@ export const paramDef = {
 		{
 			type: 'object',
 			properties: {
-				notificationIds: { type: 'array', items: { type: 'string', format: 'misskey:id' } },
+				notificationIds: {
+					type: 'array',
+					items: { type: 'string', format: 'misskey:id' },
+					maxItems: 100,
+				},
 			},
 			required: ['notificationIds'],
 		},

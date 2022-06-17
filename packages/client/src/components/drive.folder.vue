@@ -71,7 +71,7 @@ function onMouseover() {
 }
 
 function onMouseout() {
-	hover.value = false
+	hover.value = false;
 }
 
 function onDragover(ev: DragEvent) {
@@ -204,7 +204,7 @@ function deleteFolder() {
 			defaultStore.set('uploadFolder', null);
 		}
 	}).catch(err => {
-		switch(err.id) {
+		switch (err.id) {
 			case 'b0fc8a17-963c-405d-bfbc-859a487295e1':
 				os.alert({
 					type: 'error',

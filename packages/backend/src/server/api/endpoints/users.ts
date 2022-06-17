@@ -1,5 +1,5 @@
-import define from '../define.js';
 import { Users } from '@/models/index.js';
+import define from '../define.js';
 import { generateMutedUserQueryForUsers } from '../common/generate-muted-user-query.js';
 import { generateBlockQueryForUsers } from '../common/generate-block-query.js';
 
@@ -25,8 +25,8 @@ export const paramDef = {
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		offset: { type: 'integer', default: 0 },
 		sort: { type: 'string', enum: ['+follower', '-follower', '+createdAt', '-createdAt', '+updatedAt', '-updatedAt'] },
-		state: { type: 'string', enum: ['all', 'admin', 'moderator', 'adminOrModerator', 'alive'], default: "all" },
-		origin: { type: 'string', enum: ['combined', 'local', 'remote'], default: "local" },
+		state: { type: 'string', enum: ['all', 'admin', 'moderator', 'adminOrModerator', 'alive'], default: 'all' },
+		origin: { type: 'string', enum: ['combined', 'local', 'remote'], default: 'local' },
 	},
 	required: [],
 } as const;

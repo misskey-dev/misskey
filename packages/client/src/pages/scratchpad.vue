@@ -100,7 +100,7 @@ async function run() {
 			text: error.message
 		});
 	}
-};
+}
 
 function highlighter(code) {
 	return highlight(code, languages.js, 'javascript');

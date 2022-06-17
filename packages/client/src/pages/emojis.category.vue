@@ -58,7 +58,7 @@ export default defineComponent({
 			tags: emojiTags,
 			selectedTags: new Set(),
 			searchEmojis: null,
-		}
+		};
 	},
 
 	watch: {

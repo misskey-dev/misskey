@@ -32,7 +32,7 @@ defineExpose({
 		icon: 'fas fa-satellite',
 		bg: 'var(--bg)'
 	}
-})
+});
 </script>
 
 <style lang="scss" scoped>

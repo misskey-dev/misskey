@@ -143,7 +143,7 @@ const fetching = ref(true);
 
 const ilFilesObserver = new IntersectionObserver(
 	(entries) => entries.some((entry) => entry.isIntersecting) && !fetching.value && moreFiles.value && fetchMoreFiles()
-)
+);
 
 watch(folder, () => emit('cd', folder.value));
 
@@ -332,7 +332,7 @@ function deleteFolder(folderToDelete: Misskey.entities.DriveFolder) {
 		// 削除時に親フォルダに移動
 		move(folderToDelete.parentId);
 	}).catch(err => {
-		switch(err.id) {
+		switch (err.id) {
 			case 'b0fc8a17-963c-405d-bfbc-859a487295e1':
 				os.alert({
 					type: 'error',
@@ -607,7 +607,7 @@ function onContextmenu(ev: MouseEvent) {
 onMounted(() => {
 	if (defaultStore.state.enableInfiniteScroll && loadMoreFiles.value) {
 		nextTick(() => {
-			ilFilesObserver.observe(loadMoreFiles.value?.$el)
+			ilFilesObserver.observe(loadMoreFiles.value?.$el);
 		});
 	}
 
@@ -628,7 +628,7 @@ onMounted(() => {
 onActivated(() => {
 	if (defaultStore.state.enableInfiniteScroll) {
 		nextTick(() => {
-			ilFilesObserver.observe(loadMoreFiles.value?.$el)
+			ilFilesObserver.observe(loadMoreFiles.value?.$el);
 		});
 	}
 });

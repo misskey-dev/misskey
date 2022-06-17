@@ -39,7 +39,7 @@ export default defineComponent({
 		return {
 			notes: [],
 			isScrolling: false,
-		}
+		};
 	},
 
 	created() {

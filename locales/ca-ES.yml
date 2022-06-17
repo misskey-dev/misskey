@@ -134,6 +134,8 @@ _theme:
 _sfx:
   note: "Notes"
   notification: "Notificacions"
+_2fa:
+  step2Url: "També pots inserir aquest enllaç i utilitzes una aplicació d'escriptori:"
 _widgets:
   notifications: "Notificacions"
   timeline: "Línia de temps"

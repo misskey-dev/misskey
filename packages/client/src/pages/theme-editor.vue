@@ -68,7 +68,7 @@
 import { watch } from 'vue';
 import { toUnicode } from 'punycode/';
 import tinycolor from 'tinycolor2';
-import { v4 as uuid} from 'uuid';
+import { v4 as uuid } from 'uuid';
 import JSON5 from 'json5';
 
 import FormButton from '@/components/ui/button.vue';
