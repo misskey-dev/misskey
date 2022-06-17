@@ -62,7 +62,7 @@ export async function proxyMedia(ctx: Koa.Context) {
 			const data = sharp({
 				create: { width: 96, height: 96, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } },
 			})
-				.pipelineColourspace('b-w')
+				.pipelineColorspace('b-w')
 				.boolean(await mask.png().toBuffer(), 'eor');
 
 			image = {
