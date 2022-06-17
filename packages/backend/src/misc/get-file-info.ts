@@ -139,6 +139,7 @@ async function detectSensitivity(source: string, mime: string, sensitiveThreshol
 			assignPrediction(result);
 		}
 	} else if (mime === 'image/apng' || mime.startsWith('video/')) {
+		/* 現状モデルの精度が高くないため大抵の動画はNSFW判定されてしまう あとゲロ重いから動画の1/4地点、2/4地点、3/4地点みたいに数枚にサンプリングした上で判定するとかしないとダメそう
 		const [outDir, disposeOutDir] = await createTempDir();
 		try {
 			const command = FFmpeg()
@@ -184,6 +185,7 @@ async function detectSensitivity(source: string, mime: string, sensitiveThreshol
 		} finally {
 			disposeOutDir();
 		}
+		*/
 	}
 
 	return [sensitive, porn];
