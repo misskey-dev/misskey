@@ -1,5 +1,6 @@
 <template>
-<XModalWindow ref="dialog"
+<XModalWindow
+	ref="dialog"
 	:width="400"
 	:height="450"
 	:with-ok-button="true"
@@ -28,18 +29,18 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-import XModalWindow from '@/components/ui/modal-window.vue';
+import { notificationTypes } from 'misskey-js';
 import MkSwitch from './form/switch.vue';
 import MkInfo from './ui/info.vue';
 import MkButton from './ui/button.vue';
-import { notificationTypes } from 'misskey-js';
+import XModalWindow from '@/components/ui/modal-window.vue';
 
 export default defineComponent({
 	components: {
 		XModalWindow,
 		MkSwitch,
 		MkInfo,
-		MkButton
+		MkButton,
 	},
 
 	props: {
@@ -53,7 +54,7 @@ export default defineComponent({
 			type: Boolean,
 			required: false,
 			default: true,
-		}
+		},
 	},
 
 	emits: ['done', 'closed'],
@@ -93,7 +94,7 @@ export default defineComponent({
 			for (const type in this.typesMap) {
 				this.typesMap[type as typeof notificationTypes[number]] = true;
 			}
-		}
-	}
+		},
+	},
 });
 </script>

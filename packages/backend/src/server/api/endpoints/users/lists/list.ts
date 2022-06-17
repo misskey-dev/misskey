@@ -1,5 +1,5 @@
-import define from '../../../define.js';
 import { UserLists } from '@/models/index.js';
+import define from '../../../define.js';
 
 export const meta = {
 	tags: ['lists', 'account'],
@@ -7,6 +7,8 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'read:account',
+
+	description: 'Show all lists that the authenticated user has created.',
 
 	res: {
 		type: 'array',

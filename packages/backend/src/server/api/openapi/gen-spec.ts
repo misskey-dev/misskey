@@ -3,7 +3,7 @@ import config from '@/config/index.js';
 import { errors as basicErrors } from './errors.js';
 import { schemas, convertSchemaToOpenApiSchema } from './schemas.js';
 
-export function genOpenapiSpec(lang = 'ja-JP') {
+export function genOpenapiSpec() {
 	const spec = {
 		openapi: '3.0.0',
 

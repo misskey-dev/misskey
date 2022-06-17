@@ -1,7 +1,7 @@
+import { UserGroups, UserGroupJoinings } from '@/models/index.js';
 import define from '../../../define.js';
 import { ApiError } from '../../../error.js';
 import { getUser } from '../../../common/getters.js';
-import { UserGroups, UserGroupJoinings } from '@/models/index.js';
 
 export const meta = {
 	tags: ['groups', 'users'],
@@ -9,6 +9,8 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'write:user-groups',
+
+	description: 'Removes a specified user from a group. The owner can not be removed.',
 
 	errors: {
 		noSuchGroup: {

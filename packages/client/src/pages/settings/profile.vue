@@ -62,7 +62,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineComponent, reactive, watch } from 'vue';
+import { reactive, watch } from 'vue';
 import MkButton from '@/components/ui/button.vue';
 import FormInput from '@/components/form/input.vue';
 import FormTextarea from '@/components/form/textarea.vue';
@@ -132,8 +132,21 @@ function save() {
 
 function changeAvatar(ev) {
 	selectFile(ev.currentTarget ?? ev.target, i18n.ts.avatar).then(async (file) => {
+		let originalOrCropped = file;
+
+		const { canceled } = await os.confirm({
+			type: 'question',
+			text: i18n.t('cropImageAsk'),
+		});
+
+		if (!canceled) {
+			originalOrCropped = await os.cropImage(file, {
+				aspectRatio: 1,
+			});
+		}
+
 		const i = await os.apiWithDialog('i/update', {
-			avatarId: file.id,
+			avatarId: originalOrCropped.id,
 		});
 		$i.avatarId = i.avatarId;
 		$i.avatarUrl = i.avatarUrl;
@@ -142,8 +155,21 @@ function changeAvatar(ev) {
 
 function changeBanner(ev) {
 	selectFile(ev.currentTarget ?? ev.target, i18n.ts.banner).then(async (file) => {
+		let originalOrCropped = file;
+
+		const { canceled } = await os.confirm({
+			type: 'question',
+			text: i18n.t('cropImageAsk'),
+		});
+
+		if (!canceled) {
+			originalOrCropped = await os.cropImage(file, {
+				aspectRatio: 2,
+			});
+		}
+
 		const i = await os.apiWithDialog('i/update', {
-			bannerId: file.id,
+			bannerId: originalOrCropped.id,
 		});
 		$i.bannerId = i.bannerId;
 		$i.bannerUrl = i.bannerUrl;

@@ -136,6 +136,7 @@ async function populateMyReaction(note: Note, meId: User['id'], _hint_?: {
 
 export const NoteRepository = db.getRepository(Note).extend({
 	async isVisibleForMe(note: Note, meId: User['id'] | null): Promise<boolean> {
+		// This code must always be synchronized with the checks in generateVisibilityQuery.
 		// visibility が specified かつ自分が指定されていなかったら非表示
 		if (note.visibility === 'specified') {
 			if (meId == null) {
@@ -144,13 +145,7 @@ export const NoteRepository = db.getRepository(Note).extend({
 				return true;
 			} else {
 				// 指定されているかどうか
-				const specified = note.visibleUserIds.some((id: any) => meId === id);
-
-				if (specified) {
-					return true;
-				} else {
-					return false;
-				}
+				return note.visibleUserIds.some((id: any) => meId === id);
 			}
 		}
 
@@ -169,9 +164,12 @@ export const NoteRepository = db.getRepository(Note).extend({
 			} else {
 				// フォロワーかどうか
 				const [following, user] = await Promise.all([
-					Followings.findOneBy({
-						followeeId: note.userId,
-						followerId: meId,
+					Followings.count({
+						where: {
+							followeeId: note.userId,
+							followerId: meId,
+						},
+						take: 1,
 					}),
 					Users.findOneByOrFail({ id: meId }),
 				]);
@@ -183,7 +181,7 @@ export const NoteRepository = db.getRepository(Note).extend({
 				in which case we can never know the following. Instead we have
 				to assume that the users are following each other.
 				*/
-				return following != null || (note.userHost != null && user.host != null);
+				return following > 0 || (note.userHost != null && user.host != null);
 			}
 		}
 

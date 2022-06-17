@@ -68,14 +68,16 @@
 import { watch } from 'vue';
 import { toUnicode } from 'punycode/';
 import tinycolor from 'tinycolor2';
-import { v4 as uuid} from 'uuid';
+import { v4 as uuid } from 'uuid';
 import JSON5 from 'json5';
 
 import FormButton from '@/components/ui/button.vue';
 import FormTextarea from '@/components/form/textarea.vue';
 import FormFolder from '@/components/form/folder.vue';
 
-import { Theme, applyTheme, darkTheme, lightTheme } from '@/scripts/theme';
+import { Theme, applyTheme } from '@/scripts/theme';
+import lightTheme from '@/themes/_light.json5';
+import darkTheme from '@/themes/_dark.json5';
 import { host } from '@/config';
 import * as os from '@/os';
 import { ColdDeviceStorage, defaultStore } from '@/store';
@@ -124,7 +126,7 @@ let changed = $ref(false);
 useLeaveGuard($$(changed));
 
 function showPreview() {
-	os.pageWindow('preview');
+	os.pageWindow('/preview');
 }
 
 function setBgColor(color: typeof bgColors[number]) {

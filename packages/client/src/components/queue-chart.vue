@@ -222,7 +222,7 @@ export default defineComponent({
 
 		return {
 			chartEl,
-		}
+		};
 	},
 });
 </script>

@@ -654,7 +654,6 @@ export interface IEndpointMeta {
 	/**
 	 * エンドポイントのリミテーションに関するやつ
 	 * 省略した場合はリミテーションは無いものとして解釈されます。
-	 * また、withCredential が false の場合はリミテーションを行うことはできません。
 	 */
 	readonly limit?: {
 

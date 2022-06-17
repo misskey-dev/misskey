@@ -946,7 +946,6 @@ _sfx:
   chatBg: "Rozmowy (tło)"
   channel: "Powiadomienia kanału"
 _ago:
-  unknown: "Nieznane"
   future: "W przyszłości"
   justNow: "Przed chwilą"
   secondsAgo: "{n} sek. temu"

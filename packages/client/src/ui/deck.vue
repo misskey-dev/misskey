@@ -17,7 +17,7 @@
 			:key="ids[0]"
 			class="column"
 			:column="columns.find(c => c.id === ids[0])"
-			 :is-stacked="false"
+			:is-stacked="false"
 			:style="columns.find(c => c.id === ids[0])!.flexible ? { flex: 1, minWidth: '350px' } : { width: columns.find(c => c.id === ids[0])!.width + 'px' }"
 			@parent-focus="moveFocus(ids[0], $event)"
 		/>

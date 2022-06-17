@@ -1,10 +1,10 @@
+import { Notes } from '@/models/index.js';
 import define from '../../define.js';
 import { getNote } from '../../common/getters.js';
 import { ApiError } from '../../error.js';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
 import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
 import { makePaginationQuery } from '../../common/make-pagination-query.js';
-import { Notes } from '@/models/index.js';
 import { generateBlockedUserQuery } from '../../common/generate-block-query.js';
 
 export const meta = {
@@ -50,7 +50,7 @@ export default define(meta, paramDef, async (ps, user) => {
 	});
 
 	const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
-		.andWhere(`note.renoteId = :renoteId`, { renoteId: note.id })
+		.andWhere('note.renoteId = :renoteId', { renoteId: note.id })
 		.innerJoinAndSelect('note.user', 'user')
 		.leftJoinAndSelect('user.avatar', 'avatar')
 		.leftJoinAndSelect('user.banner', 'banner')
