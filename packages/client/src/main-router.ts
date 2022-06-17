@@ -34,13 +34,20 @@ export const mainRouter = new Router([{
 	component: $i ? MkTimeline : page('welcome'),
 }], location.pathname);
 
-window.history.replaceState({ key: mainRouter.getCurrentKey() }, '', location.href);
+window.history.replaceState({ key: mainRouter.getCurrentKey(), scrollPos: 0 }, '', location.href);
+
+// スクロール位置をstateに書き込むためだけのinterval
+window.setInterval(() => {
+	window.history.replaceState({ key: window.history.state?.key, scrollPos: window.scrollY }, '', location.href);
+}, 1000);
 
 mainRouter.addListener('push', ctx => {
-	window.history.pushState({ key: ctx.key }, '', ctx.path);
+	window.history.pushState({ key: ctx.key, scrollPos: window.scrollY }, '', ctx.path);
+	window.scroll({ top: 0, behavior: 'instant' });
 });
 
 window.addEventListener('popstate', (event) => {
 	mainRouter.change(document.location.pathname, event.state?.key);
+	window.scroll({ top: event.state?.scrollPos, behavior: 'instant' });
 	//mainRouter.push(document.location.pathname);
 });
