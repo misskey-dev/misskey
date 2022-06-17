@@ -8,6 +8,7 @@ import { detectType } from '@/misc/get-file-info.js';
 import { StatusError } from '@/misc/fetch.js';
 import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
 import { serverLogger } from '../index.js';
+import { isMimeImage } from '@/misc/is-mime-image.js';
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export async function proxyMedia(ctx: Koa.Context) {
@@ -25,15 +26,16 @@ export async function proxyMedia(ctx: Koa.Context) {
 		await downloadUrl(url, path);
 
 		const { mime, ext } = await detectType(path);
+		const isConvertibleImage = isMimeImage(mime, 'sharp-convertible-image');
 
 		let image: IImage;
 
-		if ('static' in ctx.query && ['image/png', 'image/gif', 'image/apng', 'image/vnd.mozilla.apng', 'image/webp', 'image/svg+xml'].includes(mime)) {
+		if ('static' in ctx.query && isConvertibleImage) {
 			image = await convertToWebp(path, 498, 280);
-		} else if ('preview' in ctx.query && ['image/jpeg', 'image/png', 'image/gif', 'image/apng', 'image/vnd.mozilla.apng', 'image/svg+xml'].includes(mime)) {
+		} else if ('preview' in ctx.query && isConvertibleImage) {
 			image = await convertToWebp(path, 200, 200);
 		} else if ('badge' in ctx.query) {
-			if (!['image/jpeg', 'image/png', 'image/gif', 'image/apng', 'image/vnd.mozilla.apng', 'image/webp', 'image/svg+xml'].includes(mime)) {
+			if (!isConvertibleImage) {
 				// 画像でないなら404でお茶を濁す
 				throw new StatusError('Unexpected mime', 404);
 			}
@@ -68,7 +70,7 @@ export async function proxyMedia(ctx: Koa.Context) {
 				ext: 'png',
 				type: 'image/png',
 			};
-		}	else if (['image/svg+xml'].includes(mime)) {
+		}	else if (mime === 'image/svg+xml') {
 			image = await convertToWebp(path, 2048, 2048, 1);
 		} else if (!mime.startsWith('image/') || !FILE_TYPE_BROWSERSAFE.includes(mime)) {
 			throw new StatusError('Rejected type', 403, 'Rejected type');
