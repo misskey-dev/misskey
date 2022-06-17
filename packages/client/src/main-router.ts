@@ -34,12 +34,13 @@ export const mainRouter = new Router([{
 	component: $i ? MkTimeline : page('welcome'),
 }], location.pathname);
 
-mainRouter.addListener('change', ctx => {
-	if (ctx.beforePath !== ctx.path) {
-		window.history.pushState({}, '', ctx.path);
-	}
+window.history.replaceState({ key: mainRouter.getCurrentKey() }, '', location.href);
+
+mainRouter.addListener('push', ctx => {
+	window.history.pushState({ key: ctx.key }, '', ctx.path);
 });
 
 window.addEventListener('popstate', (event) => {
-	mainRouter.push(document.location.pathname);
+	mainRouter.change(document.location.pathname, event.state?.key);
+	//mainRouter.push(document.location.pathname);
 });

@@ -1,5 +1,7 @@
 <template>
-<component :is="currentPageComponent" v-bind="Object.fromEntries(currentPageProps)" :ref="vnode"/>
+<KeepAlive max="5">
+	<component :is="currentPageComponent" :key="key" v-bind="Object.fromEntries(currentPageProps)" :ref="vnode"/>
+</KeepAlive>
 </template>
 
 <script lang="ts" setup>
@@ -23,6 +25,7 @@ if (router == null) {
 
 let currentPageComponent = $ref(router.getCurrentComponent());
 let currentPageProps = $ref(router.getCurrentProps());
+let key = $ref(router.getCurrentKey());
 
 function vnode(v) {
 	if (v && v[symbols.PAGE_INFO]) {
@@ -30,9 +33,10 @@ function vnode(v) {
 	}
 }
 
-function onChange({ route, props: newProps }) {
+function onChange({ route, props: newProps, key: newKey }) {
 	currentPageComponent = route.component;
 	currentPageProps = newProps;
+	key = newKey;
 }
 
 router.addListener('change', onChange);

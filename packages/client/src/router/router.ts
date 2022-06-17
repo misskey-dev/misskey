@@ -20,12 +20,21 @@ export class Router extends EventEmitter<{
 		path: string;
 		route: RouteDef | null;
 		props: Map<string, string> | null;
+		key: string;
+	}) => void;
+	push: (ctx: {
+		beforePath: string;
+		path: string;
+		route: RouteDef | null;
+		props: Map<string, string> | null;
+		key: string;
 	}) => void;
 }> {
 	private routes: RouteDef[];
 	private currentPath: string;
 	private currentComponent: Component | null = null;
 	private currentProps: Map<string, string> | null = null;
+	private currentKey = Date.now().toString();
 
 	public currentRoute: Ref<RouteDef | null> = ref(null);
 
@@ -34,7 +43,7 @@ export class Router extends EventEmitter<{
 
 		this.routes = routes;
 
-		this.navigate(currentPath);
+		this.navigate(currentPath, true);
 	}
 
 	private resolve(path: string): { route: RouteDef; props: Map<string, string>; } | null {
@@ -78,7 +87,8 @@ export class Router extends EventEmitter<{
 		return null;
 	}
 
-	private navigate(path: string) {
+	private navigate(path: string, initial = false) {
+		const beforePath = this.currentPath;
 		this.currentPath = path;
 
 		const res = this.resolve(this.currentPath);
@@ -87,6 +97,16 @@ export class Router extends EventEmitter<{
 			this.currentComponent = res.route.component;
 			this.currentProps = res.props;
 			this.currentRoute.value = res.route;
+
+			if (!initial) {
+				this.emit('change', {
+					beforePath,
+					path,
+					route: this.currentRoute.value,
+					props: this.currentProps,
+					key: this.currentKey,
+				});
+			}
 		} else {
 			// not found
 		}
@@ -100,14 +120,25 @@ export class Router extends EventEmitter<{
 		return this.currentProps;
 	}
 
+	public getCurrentKey() {
+		return this.currentKey;
+	}
+
 	public push(path: string) {
 		const beforePath = this.currentPath;
+		this.currentKey = Date.now().toString();
 		this.navigate(path);
-		this.emit('change', {
+		this.emit('push', {
 			beforePath,
 			path,
 			route: this.currentRoute.value,
 			props: this.currentProps,
+			key: this.currentKey,
 		});
+	}
+
+	public change(path: string, key?: string | null) {
+		this.currentKey = key ?? Date.now().toString();
+		this.navigate(path);
 	}
 }
