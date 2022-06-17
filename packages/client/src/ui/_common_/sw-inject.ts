@@ -3,7 +3,6 @@ import { post } from '@/os';
 import { $i, login } from '@/account';
 import { defaultStore } from '@/store';
 import { getAccountFromId } from '@/scripts/get-account-from-id';
-import { router } from '@/router';
 
 export function swInject() {
 	const navHook = inject('navHook', null);

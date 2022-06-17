@@ -8,7 +8,6 @@ import { apiUrl, url } from '@/config';
 import MkPostFormDialog from '@/components/post-form-dialog.vue';
 import MkWaitingDialog from '@/components/waiting-dialog.vue';
 import { MenuItem } from '@/types/menu';
-import { resolve } from '@/router';
 import { $i } from '@/account';
 
 export const pendingApiRequestsCount = ref(0);

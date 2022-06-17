@@ -27,7 +27,6 @@ import { defineComponent } from 'vue';
 import MkModal from '@/components/ui/modal.vue';
 import { popout } from '@/scripts/popout';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
-import { resolve } from '@/router';
 import { url } from '@/config';
 import * as symbols from '@/symbols';
 import * as os from '@/os';

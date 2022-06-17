@@ -27,7 +27,6 @@ import { deckStore, Column } from '@/ui/deck/deck-store';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
-import { router } from '@/router';
 
 defineProps<{
 	column: Column;
@@ -72,7 +71,7 @@ function onContextmenu(ev: MouseEvent) {
 		text: i18n.ts.openInWindow,
 		action: () => {
 			os.pageWindow(path);
-		}
+		},
 	}], ev);
 }
 </script>

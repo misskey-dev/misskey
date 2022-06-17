@@ -1,8 +1,10 @@
 import { inject } from 'vue';
-import { router } from '@/router';
 import { defaultStore } from '@/store';
+import { mainRouter } from '@/main-router';
 
 export type Navigate = (path: string, record?: boolean) => void;
+
+const router = mainRouter;
 
 export class MisskeyNavigator {
 	public readonly navHook: Navigate | null = null;

@@ -10,6 +10,7 @@ import MkEllipsis from './global/ellipsis.vue';
 import MkTime from './global/time.vue';
 import MkUrl from './global/url.vue';
 import I18n from './global/i18n';
+import RouterView from './global/router-view.vue';
 import MkLoading from './global/loading.vue';
 import MkError from './global/error.vue';
 import MkAd from './global/ad.vue';
@@ -19,6 +20,7 @@ import MkStickyContainer from './global/sticky-container.vue';
 
 export default function(app: App) {
 	app.component('I18n', I18n);
+	app.component('RouterView', RouterView);
 	app.component('Mfm', Mfm);
 	app.component('MkA', MkA);
 	app.component('MkAcct', MkAcct);

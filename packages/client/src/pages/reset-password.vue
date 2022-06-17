@@ -18,7 +18,7 @@ import FormButton from '@/components/ui/button.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
-import { router } from '@/router';
+import { mainRouter } from '@/main-router';
 
 const props = defineProps<{
 	token?: string;
@@ -31,13 +31,13 @@ async function save() {
 		token: props.token,
 		password: password,
 	});
-	router.push('/');
+	mainRouter.push('/');
 }
 
 onMounted(() => {
 	if (props.token == null) {
 		os.popup(defineAsyncComponent(() => import('@/components/forgot-password.vue')), {}, {}, 'closed');
-		router.push('/');
+		mainRouter.push('/');
 	}
 });
 

@@ -4,7 +4,7 @@
 		<header class="header" @contextmenu.prevent.stop="onContextmenu">
 			<button v-if="history.length > 0" class="_button" @click="back()"><i class="fas fa-chevron-left"></i></button>
 			<button v-else class="_button" style="pointer-events: none;"><!-- マージンのバランスを取るためのダミー --></button>
-			<span class="title" v-text="pageInfo?.title" />
+			<span class="title" v-text="pageInfo?.title"/>
 			<button class="_button" @click="close()"><i class="fas fa-times"></i></button>
 		</header>
 		<MkHeader class="pageHeader" :info="pageInfo"/>
@@ -17,7 +17,6 @@
 import { provide } from 'vue';
 import * as os from '@/os';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
-import { resolve, router } from '@/router';
 import { url as root } from '@/config';
 import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
@@ -68,27 +67,27 @@ function onContextmenu(ev: MouseEvent) {
 		action: () => {
 			if (path) router.push(path);
 			close();
-		}
+		},
 	}, {
 		icon: 'fas fa-window-maximize',
 		text: i18n.ts.openInWindow,
 		action: () => {
 			if (path) os.pageWindow(path);
 			close();
-		}
+		},
 	}, null, {
 		icon: 'fas fa-external-link-alt',
 		text: i18n.ts.openInNewTab,
 		action: () => {
 			window.open(url, '_blank');
 			close();
-		}
+		},
 	}, {
 		icon: 'fas fa-link',
 		text: i18n.ts.copyLink,
 		action: () => {
 			copyToClipboard(url);
-		}
+		},
 	}], ev);
 }
 

@@ -7,13 +7,7 @@
 			<div class="content">
 				<MkStickyContainer>
 					<template #header><MkHeader v-if="pageInfo && !pageInfo.hideHeader" :info="pageInfo"/></template>
-					<router-view v-slot="{ Component }">
-						<transition :name="$store.state.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
-							<keep-alive :include="['MkTimelinePage']">
-								<component :is="Component" :ref="changePage"/>
-							</keep-alive>
-						</transition>
-					</router-view>
+					<router-view/>
 				</MkStickyContainer>
 			</div>
 			<div class="spacer"></div>
@@ -37,7 +31,8 @@
 	</div>
 
 	<transition :name="$store.state.animation ? 'menuDrawer-back' : ''">
-		<div v-if="drawerMenuShowing"
+		<div
+			v-if="drawerMenuShowing"
 			class="menuDrawer-back _modalBg"
 			@click="drawerMenuShowing = false"
 			@touchstart.passive="drawerMenuShowing = false"
@@ -49,7 +44,8 @@
 	</transition>
 
 	<transition :name="$store.state.animation ? 'widgetsDrawer-back' : ''">
-		<div v-if="widgetsShowing"
+		<div
+			v-if="widgetsShowing"
 			class="widgetsDrawer-back _modalBg"
 			@click="widgetsShowing = false"
 			@touchstart.passive="widgetsShowing = false"
@@ -66,18 +62,19 @@
 
 <script lang="ts" setup>
 import { defineAsyncComponent, provide, onMounted, computed, ref, watch } from 'vue';
+import XCommon from './_common_/common.vue';
+import XSideView from './classic.side.vue';
 import { instanceName } from '@/config';
 import { StickySidebar } from '@/scripts/sticky-sidebar';
 import XDrawerMenu from '@/ui/_common_/sidebar-for-mobile.vue';
-import XCommon from './_common_/common.vue';
-import XSideView from './classic.side.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { defaultStore } from '@/store';
 import { menuDef } from '@/menu';
-import { useRoute } from 'vue-router';
 import { i18n } from '@/i18n';
 import { $i } from '@/account';
+import { Router } from '@/router/router';
+import { mainRouter } from '@/main-router';
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
 const XSidebar = defineAsyncComponent(() => import('@/ui/_common_/sidebar.vue'));
 
@@ -100,6 +97,8 @@ provide('sideViewHook', isDesktop.value ? (url) => {
 	sideEl.navigate(url);
 } : null);
 
+provide('router', mainRouter);
+
 const menuIndicated = computed(() => {
 	for (const def in menuDef) {
 		if (def === 'notifications') continue; // 通知は下にボタンとして表示されてるから
@@ -110,7 +109,7 @@ const menuIndicated = computed(() => {
 
 const drawerMenuShowing = ref(false);
 
-const route = useRoute();
+const route = 'TODO';
 watch(route, () => {
 	drawerMenuShowing.value = false;
 });
@@ -120,13 +119,13 @@ document.documentElement.style.overflowY = 'scroll';
 if (defaultStore.state.widgets.length === 0) {
 	defaultStore.set('widgets', [{
 		name: 'calendar',
-		id: 'a', place: 'right', data: {}
+		id: 'a', place: 'right', data: {},
 	}, {
 		name: 'notifications',
-		id: 'b', place: 'right', data: {}
+		id: 'b', place: 'right', data: {},
 	}, {
 		name: 'trends',
-		id: 'c', place: 'right', data: {}
+		id: 'c', place: 'right', data: {},
 	}]);
 }
 
@@ -165,13 +164,13 @@ const onContextmenu = (ev) => {
 		text: i18n.ts.openInSideView,
 		action: () => {
 			sideEl.navigate(path);
-		}
+		},
 	}, {
 		icon: 'fas fa-window-maximize',
 		text: i18n.ts.openInWindow,
 		action: () => {
 			os.pageWindow(path);
-		}
+		},
 	}], ev);
 };
 

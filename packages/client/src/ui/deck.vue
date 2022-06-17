@@ -1,18 +1,21 @@
 <template>
-<div class="mk-deck" :class="[{ isMobile }, `${deckStore.reactiveState.columnAlign.value}`]" :style="{ '--deckMargin': deckStore.reactiveState.columnMargin.value + 'px' }"
+<div
+	class="mk-deck" :class="[{ isMobile }, `${deckStore.reactiveState.columnAlign.value}`]" :style="{ '--deckMargin': deckStore.reactiveState.columnMargin.value + 'px' }"
 	@contextmenu.self.prevent="onContextmenu"
 >
 	<XSidebar v-if="!isMobile"/>
 
 	<template v-for="ids in layout">
 		<!-- sectionを利用しているのは、deck.vue側でcolumnに対してfirst-of-typeを効かせるため -->
-		<section v-if="ids.length > 1"
+		<section
+			v-if="ids.length > 1"
 			class="folder column"
 			:style="columns.filter(c => ids.includes(c.id)).some(c => c.flexible) ? { flex: 1, minWidth: '350px' } : { width: Math.max(...columns.filter(c => ids.includes(c.id)).map(c => c.width)) + 'px' }"
 		>
 			<DeckColumnCore v-for="id in ids" :ref="id" :key="id" :column="columns.find(c => c.id === id)" :is-stacked="true" @parent-focus="moveFocus(id, $event)"/>
 		</section>
-		<DeckColumnCore v-else
+		<DeckColumnCore
+			v-else
 			:ref="ids[0]"
 			:key="ids[0]"
 			class="column"
@@ -31,7 +34,8 @@
 	</div>
 
 	<transition :name="$store.state.animation ? 'menu-back' : ''">
-		<div v-if="drawerMenuShowing"
+		<div
+			v-if="drawerMenuShowing"
 			class="menu-back _modalBg"
 			@click="drawerMenuShowing = false"
 			@touchstart.passive="drawerMenuShowing = false"
@@ -49,15 +53,14 @@
 <script lang="ts" setup>
 import { computed, provide, ref, watch } from 'vue';
 import { v4 as uuid } from 'uuid';
+import XCommon from './_common_/common.vue';
+import { deckStore, addColumn as addColumnToStore, loadDeck } from './deck/deck-store';
 import DeckColumnCore from '@/ui/deck/column-core.vue';
 import XSidebar from '@/ui/_common_/sidebar.vue';
 import XDrawerMenu from '@/ui/_common_/sidebar-for-mobile.vue';
 import { getScrollContainer } from '@/scripts/scroll';
 import * as os from '@/os';
 import { menuDef } from '@/menu';
-import XCommon from './_common_/common.vue';
-import { deckStore, addColumn as addColumnToStore, loadDeck } from './deck/deck-store';
-import { useRoute } from 'vue-router';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
 
@@ -68,7 +71,7 @@ window.addEventListener('resize', () => {
 
 const drawerMenuShowing = ref(false);
 
-const route = useRoute();
+const route = 'TODO';
 watch(route, () => {
 	drawerMenuShowing.value = false;
 });
@@ -98,8 +101,8 @@ const addColumn = async (ev) => {
 	const { canceled, result: column } = await os.select({
 		title: i18n.ts._deck.addColumn,
 		items: columns.map(column => ({
-			value: column, text: i18n.t('_deck._columns.' + column)
-		}))
+			value: column, text: i18n.t('_deck._columns.' + column),
+		})),
 	});
 	if (canceled) return;
 
