@@ -130,6 +130,11 @@ const menuDef = $computed(() => [{
 		text: i18n.ts.abuseReports,
 		to: '/admin/abuses',
 		active: props.initialPage === 'abuses',
+	}, {
+		icon: 'fas fa-tools',
+		text: i18n.ts.adminTools,
+		to: '/admin/tools',
+		active: props.initialPage === 'tools',
 	}],
 }, {
 	title: i18n.ts.settings,
@@ -211,6 +216,7 @@ const component = $computed(() => {
 		case 'instance-block': return defineAsyncComponent(() => import('./instance-block.vue'));
 		case 'proxy-account': return defineAsyncComponent(() => import('./proxy-account.vue'));
 		case 'other-settings': return defineAsyncComponent(() => import('./other-settings.vue'));
+		case 'tools': return defineAsyncComponent(() => import('./tools.vue'));
 	}
 });
 
