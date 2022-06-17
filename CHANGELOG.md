@@ -14,6 +14,7 @@ You should also include the user name that made the change.
 ### Improvements
 - Server: Add rate limit to i/notifications @tamaina
 - Client: Improve files page of control panel @syuilo
+- Client: Switch from FontAwesome icons to Phosphor icons @ThatOneCalculator
 
 ### Bugfixes
 - Server: Fix GenerateVideoThumbnail failed @mei23
