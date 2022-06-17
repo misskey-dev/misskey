@@ -7,7 +7,7 @@
 			<div class="content">
 				<MkStickyContainer>
 					<template #header><MkHeader v-if="pageInfo && !pageInfo.hideHeader" :info="pageInfo"/></template>
-					<router-view/>
+					<router-view @navigated="changePage"/>
 				</MkStickyContainer>
 			</div>
 			<div class="spacer"></div>
@@ -139,10 +139,8 @@ onMounted(() => {
 
 const changePage = (page) => {
 	if (page == null) return;
-	if (page[symbols.PAGE_INFO]) {
-		pageInfo.value = page[symbols.PAGE_INFO];
-		document.title = `${pageInfo.value.title} | ${instanceName}`;
-	}
+	pageInfo.value = page;
+	document.title = `${pageInfo.value.title} | ${instanceName}`;
 };
 
 const onContextmenu = (ev) => {
