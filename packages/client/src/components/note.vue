@@ -25,7 +25,7 @@
 		</I18n>
 		<div class="info">
 			<button ref="renoteTime" class="_button time" @click="showRenoteMenu()">
-				<i v-if="isMyRenote" class="fas fa-ellipsis-h dropdownIcon"></i>
+				<i v-if="isMyRenote" class="ph-dots-three-outline dropdownIcon"></i>
 				<MkTime :time="note.createdAt"/>
 			</button>
 			<span v-if="note.visibility !== 'public'" class="visibility">
@@ -87,7 +87,7 @@
 					<i class="fas fa-minus"></i>
 				</button>
 				<button ref="menuButton" class="button _button" @click="menu()">
-					<i class="fas fa-ellipsis-h"></i>
+					<i class="ph-dots-three-outline"></i>
 				</button>
 			</footer>
 		</div>

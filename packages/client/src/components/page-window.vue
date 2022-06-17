@@ -19,7 +19,7 @@
 	<template #headerRight>
 		<button v-tooltip="$ts.showInPage" class="_button" @click="expand()"><i class="fas fa-expand-alt"></i></button>
 		<button v-tooltip="$ts.popout" class="_button" @click="popout()"><i class="fas fa-external-link-alt"></i></button>
-		<button class="_button" @click="menu"><i class="fas fa-ellipsis-h"></i></button>
+		<button class="_button" @click="menu"><i class="ph-dots-three-outline"></i></button>
 	</template>
 
 	<div class="yrolvcoq" :style="{ background: pageInfo?.bg }">

@@ -24,7 +24,7 @@
 			<span v-if="folder != null" class="separator"><i class="ph-caret-right"></i></span>
 			<span v-if="folder != null" class="folder current">{{ folder.name }}</span>
 		</div>
-		<button class="menu _button" @click="showMenu"><i class="fas fa-ellipsis-h"></i></button>
+		<button class="menu _button" @click="showMenu"><i class="ph-dots-three-outline"></i></button>
 	</nav>
 	<div ref="main" class="main"
 		:class="{ uploading: uploadings.length > 0, fetching }"
@@ -572,7 +572,7 @@ function getMenu() {
 		type: 'label'
 	}, {
 		text: i18n.ts.upload,
-		icon: 'fas fa-upload',
+		icon: 'ph-upload-simple',
 		action: () => { selectLocalFile(); }
 	}, {
 		text: i18n.ts.fromUrl,

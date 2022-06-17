@@ -166,7 +166,7 @@ const menuDef = computed(() => [{
 		to: '/settings/webhook',
 		active: props.initialPage === 'webhook',
 	}, {
-		icon: 'fas fa-ellipsis-h',
+		icon: 'ph-dots-three-outline',
 		text: i18n.ts.other,
 		to: '/settings/other',
 		active: props.initialPage === 'other',

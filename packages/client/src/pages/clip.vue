@@ -44,7 +44,7 @@ export default defineComponent({
 				icon: 'ph-paperclip',
 				bg: 'var(--bg)',
 				actions: [{
-					icon: 'fas fa-ellipsis-h',
+					icon: 'ph-dots-three-outline',
 					handler: this.menu
 				}],
 			} : null),

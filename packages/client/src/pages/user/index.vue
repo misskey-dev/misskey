@@ -27,7 +27,7 @@
 								</div>
 								<span v-if="$i && $i.id != user.id && user.isFollowed" class="followed">{{ $ts.followsYou }}</span>
 								<div v-if="$i" class="actions">
-									<button class="menu _button" @click="menu"><i class="fas fa-ellipsis-h"></i></button>
+									<button class="menu _button" @click="menu"><i class="ph-dots-three-outline"></i></button>
 									<MkFollowButton v-if="$i.id != user.id" :user="user" :inline="true" :transparent="false" :full="true" class="koudoku"/>
 								</div>
 							</div>

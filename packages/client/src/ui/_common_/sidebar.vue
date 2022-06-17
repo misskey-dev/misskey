@@ -11,7 +11,7 @@
 			<div v-if="item === '-'" class="divider"></div>
 			<component :is="menuDef[item].to ? 'MkA' : 'button'" v-else-if="menuDef[item] && (menuDef[item].show !== false)" v-click-anime class="item _button" :class="[item, { active: menuDef[item].active }]" active-class="active" :to="menuDef[item].to" v-on="menuDef[item].action ? { click: menuDef[item].action } : {}">
 				<i class="ph-fw" :class="menuDef[item].icon"></i><span class="text">{{ $ts[menuDef[item].title] }}</span>
-				<span v-if="menuDef[item].indicated" class="indicator"><i class="fas fa-circle"></i></span>
+				<span v-if="menuDef[item].indicated" class="indicator"><i class="ph-circle"></i></span>
 			</component>
 		</template>
 		<div class="divider"></div>
@@ -20,7 +20,7 @@
 		</MkA>
 		<button v-click-anime class="item _button" @click="more">
 			<i class="fa fa-ellipsis-h ph-fw"></i><span class="text">{{ $ts.more }}</span>
-			<span v-if="otherMenuItemIndicated" class="indicator"><i class="fas fa-circle"></i></span>
+			<span v-if="otherMenuItemIndicated" class="indicator"><i class="ph-circle"></i></span>
 		</button>
 		<MkA v-click-anime class="item" active-class="active" to="/settings">
 			<i class="ph-gear ph-fw"></i><span class="text">{{ $ts.settings }}</span>

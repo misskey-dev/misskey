@@ -37,7 +37,7 @@ function onChangeInjectFeaturedNote(v) {
 defineExpose({
 	[symbols.PAGE_INFO]: {
 		title: i18n.ts.other,
-		icon: 'fas fa-ellipsis-h',
+		icon: 'ph-dots-three-outline',
 		bg: 'var(--bg)',
 	}
 });

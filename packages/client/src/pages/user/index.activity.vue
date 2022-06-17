@@ -3,7 +3,7 @@
 	<template #header><i class="fas fa-chart-bar" style="margin-right: 0.5em;"></i>{{ $ts.activity }}</template>
 	<template #func>
 		<button class="_button" @click="showMenu">
-			<i class="fas fa-ellipsis-h"></i>
+			<i class="ph-dots-three-outline"></i>
 		</button>
 	</template>
 

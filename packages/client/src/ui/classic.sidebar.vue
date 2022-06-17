@@ -16,7 +16,7 @@
 		<div v-if="item === '-'" class="divider"></div>
 		<component :is="menuDef[item].to ? 'MkA' : 'button'" v-else-if="menuDef[item] && (menuDef[item].show !== false)" v-click-anime class="item _button" :class="item" active-class="active" :to="menuDef[item].to" v-on="menuDef[item].action ? { click: menuDef[item].action } : {}">
 			<i class="ph-fw" :class="menuDef[item].icon"></i><span class="text">{{ $ts[menuDef[item].title] }}</span>
-			<span v-if="menuDef[item].indicated" class="indicator"><i class="fas fa-circle"></i></span>
+			<span v-if="menuDef[item].indicated" class="indicator"><i class="ph-circle"></i></span>
 		</component>
 	</template>
 	<div class="divider"></div>
@@ -24,8 +24,8 @@
 		<i class="fas fa-door-open ph-fw"></i><span class="text">{{ $ts.controlPanel }}</span>
 	</MkA>
 	<button v-click-anime class="item _button" @click="more">
-		<i class="fas fa-ellipsis-h ph-fw"></i><span class="text">{{ $ts.more }}</span>
-		<span v-if="otherNavItemIndicated" class="indicator"><i class="fas fa-circle"></i></span>
+		<i class="ph-dots-three-outline ph-fw"></i><span class="text">{{ $ts.more }}</span>
+		<span v-if="otherNavItemIndicated" class="indicator"><i class="ph-circle"></i></span>
 	</button>
 	<MkA v-click-anime class="item" active-class="active" to="/settings" :behavior="settingsWindowed ? 'modalWindow' : null">
 		<i class="ph-gear ph-fw"></i><span class="text">{{ $ts.settings }}</span>

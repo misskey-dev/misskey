@@ -13,7 +13,7 @@
 				</div>
 				<div v-if="narrow && hasTabs" class="subtitle activeTab">
 					{{ info.tabs.find(tab => tab.active)?.title }}
-					<i class="chevron fas fa-chevron-down"></i>
+					<i class="chevron ph-caret-down"></i>
 				</div>
 			</div>
 		</div>
@@ -31,7 +31,7 @@
 				<button v-else v-tooltip="action.text" class="_button button" :class="{ highlighted: action.highlighted }" @click.stop="action.handler" @touchstart="preventDrag"><i :class="action.icon"></i></button>
 			</template>
 		</template>
-		<button v-if="shouldShowMenu" v-tooltip="$ts.menu" class="_button button" @click.stop="showMenu" @touchstart="preventDrag"><i class="fas fa-ellipsis-h"></i></button>
+		<button v-if="shouldShowMenu" v-tooltip="$ts.menu" class="_button button" @click.stop="showMenu" @touchstart="preventDrag"><i class="ph-dots-three-outline"></i></button>
 	</div>
 </div>
 </template>

@@ -183,7 +183,7 @@ const menu = (ev: MouseEvent) => {
 			});
 		}
 	}, {
-		icon: 'fas fa-upload',
+		icon: 'ph-upload-simple',
 		text: i18n.ts.import,
 		action: async () => {
 			const file = await selectFile(ev.currentTarget ?? ev.target);
@@ -276,7 +276,7 @@ defineExpose({
 			text: i18n.ts.addEmoji,
 			handler: add,
 		}, {
-			icon: 'fas fa-ellipsis-h',
+			icon: 'ph-dots-three-outline',
 			handler: menu,
 		}],
 		tabs: [{
