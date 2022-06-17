@@ -760,6 +760,7 @@ pubSub: "Konta Pub/Sub"
 hide: "Ukryj"
 searchByGoogle: "Szukaj"
 indefinitely: "Nigdy"
+file: "Pliki"
 _ffVisibility:
   public: "Publikuj"
 _ad:
