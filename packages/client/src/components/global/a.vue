@@ -5,13 +5,14 @@
 </template>
 
 <script lang="ts" setup>
+import { inject } from 'vue';
 import * as os from '@/os';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { url } from '@/config';
 import { popout as popout_ } from '@/scripts/popout';
 import { i18n } from '@/i18n';
-import { MisskeyNavigator } from '@/scripts/navigate';
-import { mainRouter } from '@/main-router';
+import { mainRouter } from '@/router';
+import { Router } from '@/nirax';
 
 const props = withDefaults(defineProps<{
 	to: string;
@@ -22,9 +23,7 @@ const props = withDefaults(defineProps<{
 	behavior: null,
 });
 
-const router = mainRouter;
-
-const mkNav = new MisskeyNavigator();
+const router: Router = inject('router') ?? mainRouter;
 
 const active = $computed(() => {
 	if (props.activeClass == null) return false;
@@ -49,13 +48,7 @@ function onContextmenu(ev) {
 		action: () => {
 			os.pageWindow(props.to);
 		},
-	}, mkNav.sideViewHook ? {
-		icon: 'fas fa-columns',
-		text: i18n.ts.openInSideView,
-		action: () => {
-			if (mkNav.sideViewHook) mkNav.sideViewHook(props.to);
-		},
-	} : undefined, {
+	}, {
 		icon: 'fas fa-expand-alt',
 		text: i18n.ts.showInPage,
 		action: () => {
@@ -102,6 +95,6 @@ function nav() {
 		}
 	}
 
-	mkNav.push(props.to);
+	router.push(props.to);
 }
 </script>

@@ -4,7 +4,8 @@
 		<MkButton primary class="start" @click="start"><i class="fas fa-plus"></i> {{ $ts.startMessaging }}</MkButton>
 
 		<div v-if="messages.length > 0" class="history">
-			<MkA v-for="(message, i) in messages"
+			<MkA
+				v-for="(message, i) in messages"
 				:key="message.id"
 				v-anim="i"
 				class="message _block"
@@ -46,10 +47,11 @@ import { acct } from '@/filters/user';
 import * as os from '@/os';
 import { stream } from '@/stream';
 import * as symbols from '@/symbols';
+import { mainRouter } from '@/router';
 
 export default defineComponent({
 	components: {
-		MkButton
+		MkButton,
 	},
 
 	data() {
@@ -123,17 +125,17 @@ export default defineComponent({
 			os.popupMenu([{
 				text: this.$ts.messagingWithUser,
 				icon: 'fas fa-user',
-				action: () => { this.startUser(); }
+				action: () => { this.startUser(); },
 			}, {
 				text: this.$ts.messagingWithGroup,
 				icon: 'fas fa-users',
-				action: () => { this.startGroup(); }
+				action: () => { this.startGroup(); },
 			}], ev.currentTarget ?? ev.target);
 		},
 
 		async startUser() {
 			os.selectUser().then(user => {
-				this.$router.push(`/my/messaging/${Acct.toString(user)}`);
+				mainRouter.push(`/my/messaging/${Acct.toString(user)}`);
 			});
 		},
 
@@ -151,15 +153,15 @@ export default defineComponent({
 			const { canceled, result: group } = await os.select({
 				title: this.$ts.group,
 				items: groups1.concat(groups2).map(group => ({
-					value: group, text: group.name
-				}))
+					value: group, text: group.name,
+				})),
 			});
 			if (canceled) return;
-			this.$router.push(`/my/messaging/group/${group.id}`);
+			mainRouter.push(`/my/messaging/group/${group.id}`);
 		},
 
-		acct
-	}
+		acct,
+	},
 });
 </script>
 

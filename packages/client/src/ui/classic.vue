@@ -31,7 +31,8 @@
 	</div>
 
 	<transition :name="$store.state.animation ? 'tray-back' : ''">
-		<div v-if="widgetsShowing"
+		<div
+			v-if="widgetsShowing"
 			class="tray-back _modalBg"
 			@click="widgetsShowing = false"
 			@touchstart.passive="widgetsShowing = false"
@@ -50,13 +51,14 @@
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent, markRaw } from 'vue';
-import { instanceName } from '@/config';
-import { StickySidebar } from '@/scripts/sticky-sidebar';
 import XSidebar from './classic.sidebar.vue';
 import XCommon from './_common_/common.vue';
+import { instanceName } from '@/config';
+import { StickySidebar } from '@/scripts/sticky-sidebar';
 import * as os from '@/os';
 import { menuDef } from '@/menu';
 import * as symbols from '@/symbols';
+import { mainRouter } from '@/router';
 
 const DESKTOP_THRESHOLD = 1100;
 
@@ -90,7 +92,7 @@ export default defineComponent({
 	computed: {
 		showMenuOnTop(): boolean {
 			return this.$store.state.menuDisplay === 'top';
-		}
+		},
 	},
 
 	created() {
@@ -104,13 +106,13 @@ export default defineComponent({
 		if (this.$store.state.widgets.length === 0) {
 			this.$store.set('widgets', [{
 				name: 'calendar',
-				id: 'a', place: null, data: {}
+				id: 'a', place: null, data: {},
 			}, {
 				name: 'notifications',
-				id: 'b', place: null, data: {}
+				id: 'b', place: null, data: {},
 			}, {
 				name: 'trends',
-				id: 'c', place: null, data: {}
+				id: 'c', place: null, data: {},
 			}]);
 		}
 	},
@@ -128,7 +130,7 @@ export default defineComponent({
 					body: {
 						x: ev.clientX - iframeRect.left,
 						y: ev.clientY - iframeRect.top,
-					}
+					},
 				}, '*');
 			}, { passive: true });
 			window.addEventListener('touchmove', ev => {
@@ -137,7 +139,7 @@ export default defineComponent({
 					body: {
 						x: ev.touches[0].clientX - iframeRect.left,
 						y: ev.touches[0].clientY - iframeRect.top,
-					}
+					},
 				}, '*');
 			}, { passive: true });
 		}
@@ -177,7 +179,7 @@ export default defineComponent({
 			if (isLink(ev.target)) return;
 			if (['INPUT', 'TEXTAREA', 'IMG', 'VIDEO', 'CANVAS'].includes(ev.target.tagName) || ev.target.attributes['contenteditable']) return;
 			if (window.getSelection().toString() !== '') return;
-			const path = this.$route.path;
+			const path = mainRouter.getCurrentPath();
 			os.contextMenu([{
 				type: 'label',
 				text: path,
@@ -186,20 +188,20 @@ export default defineComponent({
 				text: this.fullView ? this.$ts.quitFullView : this.$ts.fullView,
 				action: () => {
 					this.fullView = !this.fullView;
-				}
+				},
 			}, {
 				icon: 'fas fa-window-maximize',
 				text: this.$ts.openInWindow,
 				action: () => {
 					os.pageWindow(path);
-				}
+				},
 			}], ev);
 		},
 
 		onAiClick(ev) {
 			//if (this.live2d) this.live2d.click(ev);
-		}
-	}
+		},
+	},
 });
 </script>
 

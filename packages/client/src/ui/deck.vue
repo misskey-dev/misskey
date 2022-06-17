@@ -28,8 +28,8 @@
 
 	<div v-if="isMobile" class="buttons">
 		<button class="button nav _button" @click="drawerMenuShowing = true"><i class="fas fa-bars"></i><span v-if="menuIndicated" class="indicator"><i class="fas fa-circle"></i></span></button>
-		<button class="button home _button" @click="$router.push('/')"><i class="fas fa-home"></i></button>
-		<button class="button notifications _button" @click="$router.push('/my/notifications')"><i class="fas fa-bell"></i><span v-if="$i?.hasUnreadNotification" class="indicator"><i class="fas fa-circle"></i></span></button>
+		<button class="button home _button" @click="mainRouter.push('/')"><i class="fas fa-home"></i></button>
+		<button class="button notifications _button" @click="mainRouter.push('/my/notifications')"><i class="fas fa-bell"></i><span v-if="$i?.hasUnreadNotification" class="indicator"><i class="fas fa-circle"></i></span></button>
 		<button class="button post _button" @click="os.post()"><i class="fas fa-pencil-alt"></i></button>
 	</div>
 
@@ -63,6 +63,7 @@ import * as os from '@/os';
 import { menuDef } from '@/menu';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
+import { mainRouter } from '@/router';
 
 const isMobile = ref(window.innerWidth <= 500);
 window.addEventListener('resize', () => {

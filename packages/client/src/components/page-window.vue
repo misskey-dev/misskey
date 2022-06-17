@@ -1,6 +1,6 @@
 <template>
 <XWindow
-	ref="window"
+	ref="windowEl"
 	:initial-width="500"
 	:initial-height="500"
 	:can-resize="true"
@@ -26,161 +26,89 @@
 	<div class="yrolvcoq" :style="{ background: pageInfo?.bg }">
 		<MkStickyContainer>
 			<template #header><MkHeader v-if="pageInfo && !pageInfo.hideHeader" :info="pageInfo"/></template>
-			<component :is="component" v-bind="props" :ref="changePage"/>
+			<RouterView :router="router" @navigated="changePage"/>
 		</MkStickyContainer>
 	</div>
 </XWindow>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { inject, provide } from 'vue';
+import RouterView from './global/router-view.vue';
 import XWindow from '@/components/ui/window.vue';
-import { popout } from '@/scripts/popout';
+import { popout as _popout } from '@/scripts/popout';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { url } from '@/config';
 import * as symbols from '@/symbols';
 import * as os from '@/os';
+import { mainRouter, routes } from '@/router';
+import { Router } from '@/nirax';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		XWindow,
-	},
+const props = defineProps<{
+	initialPath: string;
+}>();
 
-	inject: {
-		sideViewHook: {
-			default: null,
+const router = new Router(routes, props.initialPath);
+
+router.addListener('push', ctx => {
+	
+});
+
+provide('router', router);
+provide('shouldHeaderThin', true);
+
+let pageInfo = $ref();
+let windowEl = $ref<InstanceType<typeof XWindow>>();
+const history = [];
+
+function changePage(page) {
+	if (page == null) return;
+	pageInfo = page;
+}
+
+function navigate(path, record = true) {
+	if (record) history.push(router.getCurrentPath());
+	router.push(path);
+}
+
+function menu(ev) {
+	os.popupMenu([{
+		icon: 'fas fa-external-link-alt',
+		text: i18n.ts.openInNewTab,
+		action: () => {
+			window.open(url + router.getCurrentPath(), '_blank');
+			windowEl.close();
 		},
-	},
-
-	provide() {
-		return {
-			navHook: (path) => {
-				this.navigate(path);
-			},
-			shouldHeaderThin: true,
-		};
-	},
-
-	props: {
-		initialPath: {
-			type: String,
-			required: true,
+	}, {
+		icon: 'fas fa-link',
+		text: i18n.ts.copyLink,
+		action: () => {
+			copyToClipboard(url + router.getCurrentPath());
 		},
-		initialComponent: {
-			type: Object,
-			required: true,
-		},
-		initialProps: {
-			type: Object,
-			required: false,
-			default: () => {},
-		},
-	},
+	}], ev.currentTarget ?? ev.target);
+}
 
-	emits: ['closed'],
+function back() {
+	navigate(history.pop(), false);
+}
 
-	data() {
-		return {
-			pageInfo: null,
-			path: this.initialPath,
-			component: this.initialComponent,
-			props: this.initialProps,
-			history: [],
-		};
-	},
+function close() {
+	windowEl.close();
+}
 
-	computed: {
-		url(): string {
-			return url + this.path;
-		},
+function expand() {
+	mainRouter.push(router.getCurrentPath());
+	windowEl.close();
+}
 
-		contextmenu() {
-			return [{
-				type: 'label',
-				text: this.path,
-			}, {
-				icon: 'fas fa-expand-alt',
-				text: this.$ts.showInPage,
-				action: this.expand,
-			}, this.sideViewHook ? {
-				icon: 'fas fa-columns',
-				text: this.$ts.openInSideView,
-				action: () => {
-					this.sideViewHook(this.path);
-					this.$refs.window.close();
-				},
-			} : undefined, {
-				icon: 'fas fa-external-link-alt',
-				text: this.$ts.popout,
-				action: this.popout,
-			}, null, {
-				icon: 'fas fa-external-link-alt',
-				text: this.$ts.openInNewTab,
-				action: () => {
-					window.open(this.url, '_blank');
-					this.$refs.window.close();
-				},
-			}, {
-				icon: 'fas fa-link',
-				text: this.$ts.copyLink,
-				action: () => {
-					copyToClipboard(this.url);
-				},
-			}];
-		},
-	},
+function popout() {
+	_popout(router.getCurrentPath(), windowEl.$el);
+	windowEl.close();
+}
 
-	methods: {
-		changePage(page) {
-			if (page == null) return;
-			if (page[symbols.PAGE_INFO]) {
-				this.pageInfo = page[symbols.PAGE_INFO];
-			}
-		},
-
-		navigate(path, record = true) {
-			if (record) this.history.push(this.path);
-			this.path = path;
-			const { component, props } = resolve(path);
-			this.component = component;
-			this.props = props;
-		},
-
-		menu(ev) {
-			os.popupMenu([{
-				icon: 'fas fa-external-link-alt',
-				text: this.$ts.openInNewTab,
-				action: () => {
-					window.open(this.url, '_blank');
-					this.$refs.window.close();
-				},
-			}, {
-				icon: 'fas fa-link',
-				text: this.$ts.copyLink,
-				action: () => {
-					copyToClipboard(this.url);
-				},
-			}], ev.currentTarget ?? ev.target);
-		},
-
-		back() {
-			this.navigate(this.history.pop(), false);
-		},
-
-		close() {
-			this.$refs.window.close();
-		},
-
-		expand() {
-			this.$router.push(this.path);
-			this.$refs.window.close();
-		},
-
-		popout() {
-			popout(this.path, this.$el);
-			this.$refs.window.close();
-		},
-	},
+defineExpose({
+	close,
 });
 </script>
 

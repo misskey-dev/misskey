@@ -30,6 +30,7 @@ import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { url } from '@/config';
 import * as symbols from '@/symbols';
 import * as os from '@/os';
+import { mainRouter } from '@/router';
 
 export default defineComponent({
 	components: {
@@ -143,7 +144,7 @@ export default defineComponent({
 		},
 
 		expand() {
-			this.$router.push(this.path);
+			mainRouter.push(this.path);
 			this.$refs.window.close();
 		},
 

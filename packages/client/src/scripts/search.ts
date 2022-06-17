@@ -1,6 +1,6 @@
 import * as os from '@/os';
 import { i18n } from '@/i18n';
-import { mainRouter } from '@/main-router';
+import { mainRouter } from '@/router';
 
 export async function search() {
 	const { canceled, result: query } = await os.inputText({

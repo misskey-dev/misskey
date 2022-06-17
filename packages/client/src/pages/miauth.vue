@@ -49,27 +49,11 @@ export default defineComponent({
 		MkSignin,
 		MkButton,
 	},
+	props: ['session', 'callback', 'name', 'icon', 'permission'],
 	data() {
 		return {
-			state: null
+			state: null,
 		};
-	},
-	computed: {
-		session(): string {
-			return this.$route.params.session;
-		},
-		callback(): string {
-			return this.$route.query.callback;
-		},
-		name(): string {
-			return this.$route.query.name;
-		},
-		icon(): string {
-			return this.$route.query.icon;
-		},
-		permission(): string[] {
-			return this.$route.query.permission ? this.$route.query.permission.split(',') : [];
-		},
 	},
 	methods: {
 		async accept() {
@@ -84,7 +68,7 @@ export default defineComponent({
 			this.state = 'accepted';
 			if (this.callback) {
 				location.href = appendQuery(this.callback, query({
-					session: this.session
+					session: this.session,
 				}));
 			}
 		},
@@ -93,8 +77,8 @@ export default defineComponent({
 		},
 		onLogin(res) {
 			login(res.i);
-		}
-	}
+		},
+	},
 });
 </script>
 

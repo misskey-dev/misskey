@@ -6,7 +6,7 @@ import { host } from '@/config';
 import * as os from '@/os';
 import { userActions } from '@/store';
 import { $i, iAmModerator } from '@/account';
-import { mainRouter } from '@/main-router';
+import { mainRouter } from '@/router';
 
 export function getUserMenu(user) {
 	const meId = $i ? $i.id : null;

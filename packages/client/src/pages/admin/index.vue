@@ -26,7 +26,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, nextTick, onMounted, onUnmounted, provide, watch } from 'vue';
+import { defineAsyncComponent, inject, nextTick, onMounted, onUnmounted, provide, watch } from 'vue';
 import { i18n } from '@/i18n';
 import MkSuperMenu from '@/components/ui/super-menu.vue';
 import MkInfo from '@/components/ui/info.vue';
@@ -35,11 +35,12 @@ import { instance } from '@/instance';
 import * as symbols from '@/symbols';
 import * as os from '@/os';
 import { lookupUser } from '@/scripts/lookup-user';
-import { MisskeyNavigator } from '@/scripts/navigate';
+import { Router } from '@/nirax';
+import { mainRouter } from '@/router';
 
 const isEmpty = (x: string | null) => x == null || x === '';
 
-const nav = new MisskeyNavigator();
+const router: Router = inject('router') ?? mainRouter;
 
 const indexInfo = {
 	title: i18n.ts.controlPanel,
@@ -224,7 +225,7 @@ watch(component, () => {
 
 watch(() => props.initialPage, () => {
 	if (props.initialPage == null && !narrow) {
-		nav.push('/admin/overview');
+		router.push('/admin/overview');
 	} else {
 		if (props.initialPage == null) {
 			INFO = indexInfo;
@@ -234,7 +235,7 @@ watch(() => props.initialPage, () => {
 
 watch(narrow, () => {
 	if (props.initialPage == null && !narrow) {
-		nav.push('/admin/overview');
+		router.push('/admin/overview');
 	}
 });
 
@@ -243,7 +244,7 @@ onMounted(() => {
 
 	narrow = el.offsetWidth < NARROW_THRESHOLD;
 	if (props.initialPage == null && !narrow) {
-		nav.push('/admin/overview');
+		router.push('/admin/overview');
 	}
 });
 
@@ -263,7 +264,7 @@ const invite = () => {
 	os.api('admin/invite').then(x => {
 		os.alert({
 			type: 'info',
-			text: x.code
+			text: x.code,
 		});
 	}).catch(err => {
 		os.alert({
@@ -279,25 +280,25 @@ const lookup = (ev) => {
 		icon: 'fas fa-user',
 		action: () => {
 			lookupUser();
-		}
+		},
 	}, {
 		text: i18n.ts.note,
 		icon: 'fas fa-pencil-alt',
 		action: () => {
 			alert('TODO');
-		}
+		},
 	}, {
 		text: i18n.ts.file,
 		icon: 'fas fa-cloud',
 		action: () => {
 			alert('TODO');
-		}
+		},
 	}, {
 		text: i18n.ts.instance,
 		icon: 'fas fa-globe',
 		action: () => {
 			alert('TODO');
-		}
+		},
 	}], ev.currentTarget ?? ev.target);
 };
 
@@ -305,7 +306,7 @@ defineExpose({
 	[symbols.PAGE_INFO]: INFO,
 	header: {
 		title: i18n.ts.controlPanel,
-	}
+	},
 });
 </script>
 

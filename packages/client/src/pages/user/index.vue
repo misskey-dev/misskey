@@ -18,7 +18,7 @@
 								<div class="title">
 									<MkUserName class="name" :user="user" :nowrap="true"/>
 									<div class="bottom">
-										<span class="username"><MkAcct :user="user" :detail="true" /></span>
+										<span class="username"><MkAcct :user="user" :detail="true"/></span>
 										<span v-if="user.isAdmin" :title="$ts.isAdmin" style="color: var(--badge);"><i class="fas fa-bookmark"></i></span>
 										<span v-if="!user.isAdmin && user.isModerator" :title="$ts.isModerator" style="color: var(--badge);"><i class="far fa-bookmark"></i></span>
 										<span v-if="user.isLocked" :title="$ts.isLocked"><i class="fas fa-lock"></i></span>
@@ -35,7 +35,7 @@
 							<div class="title">
 								<MkUserName :user="user" :nowrap="false" class="name"/>
 								<div class="bottom">
-									<span class="username"><MkAcct :user="user" :detail="true" /></span>
+									<span class="username"><MkAcct :user="user" :detail="true"/></span>
 									<span v-if="user.isAdmin" :title="$ts.isAdmin" style="color: var(--badge);"><i class="fas fa-bookmark"></i></span>
 									<span v-if="!user.isAdmin && user.isModerator" :title="$ts.isModerator" style="color: var(--badge);"><i class="far fa-bookmark"></i></span>
 									<span v-if="user.isLocked" :title="$ts.isLocked"><i class="fas fa-lock"></i></span>
@@ -126,6 +126,7 @@
 <script lang="ts">
 import { defineComponent, defineAsyncComponent, computed } from 'vue';
 import age from 's-age';
+import * as Acct from 'misskey-js/built/acct';
 import XUserTimeline from './index.timeline.vue';
 import XNote from '@/components/note.vue';
 import MkFollowButton from '@/components/follow-button.vue';
@@ -134,14 +135,17 @@ import MkFolder from '@/components/ui/folder.vue';
 import MkRemoteCaution from '@/components/remote-caution.vue';
 import MkTab from '@/components/tab.vue';
 import MkInfo from '@/components/ui/info.vue';
-import * as Acct from 'misskey-js/built/acct';
 import { getScrollPosition } from '@/scripts/scroll';
 import { getUserMenu } from '@/scripts/get-user-menu';
 import number from '@/filters/number';
 import { userPage, acct as getAcct } from '@/filters/user';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
-import { MisskeyNavigator } from '@/scripts/navigate';
+import { mainRouter } from '@/router';
+
+// TODO: setup使うようにしたらやる
+//const router: Router = inject('router') ?? mainRouter;
+const router = mainRouter;
 
 export default defineComponent({
 	components: {
@@ -165,13 +169,13 @@ export default defineComponent({
 	props: {
 		acct: {
 			type: String,
-			required: true
+			required: true,
 		},
 		page: {
 			type: String,
 			required: false,
-			default: 'index'
-		}
+			default: 'index',
+		},
 	},
 
 	data() {
@@ -191,34 +195,33 @@ export default defineComponent({
 					active: this.page === 'index',
 					title: this.$ts.overview,
 					icon: 'fas fa-home',
-					onClick: () => { this.mkNav.push('/@' + getAcct(this.user)); },
+					onClick: () => { router.push('/@' + getAcct(this.user)); },
 				}, ...(this.$i && (this.$i.id === this.user.id)) || this.user.publicReactions ? [{
 					active: this.page === 'reactions',
 					title: this.$ts.reaction,
 					icon: 'fas fa-laugh',
-					onClick: () => { this.mkNav.push('/@' + getAcct(this.user) + '/reactions'); },
+					onClick: () => { router.push('/@' + getAcct(this.user) + '/reactions'); },
 				}] : [], {
 					active: this.page === 'clips',
 					title: this.$ts.clips,
 					icon: 'fas fa-paperclip',
-					onClick: () => { this.mkNav.push('/@' + getAcct(this.user) + '/clips'); },
+					onClick: () => { router.push('/@' + getAcct(this.user) + '/clips'); },
 				}, {
 					active: this.page === 'pages',
 					title: this.$ts.pages,
 					icon: 'fas fa-file-alt',
-					onClick: () => { this.mkNav.push('/@' + getAcct(this.user) + '/pages'); },
+					onClick: () => { router.push('/@' + getAcct(this.user) + '/pages'); },
 				}, {
 					active: this.page === 'gallery',
 					title: this.$ts.gallery,
 					icon: 'fas fa-icons',
-					onClick: () => { this.mkNav.push('/@' + getAcct(this.user) + '/gallery'); },
+					onClick: () => { router.push('/@' + getAcct(this.user) + '/gallery'); },
 				}],
 			} : null),
 			user: null,
 			error: null,
 			parallaxAnimationId: null,
 			narrow: null,
-			mkNav: new MisskeyNavigator(),
 		};
 	},
 
@@ -226,17 +229,17 @@ export default defineComponent({
 		style(): any {
 			if (this.user.bannerUrl == null) return {};
 			return {
-				backgroundImage: `url(${ this.user.bannerUrl })`
+				backgroundImage: `url(${ this.user.bannerUrl })`,
 			};
 		},
 
 		age(): number {
 			return age(this.user.birthday);
-		}
+		},
 	},
 
 	watch: {
-		acct: 'fetch'
+		acct: 'fetch',
 	},
 
 	created() {
@@ -289,8 +292,8 @@ export default defineComponent({
 
 		number,
 
-		userPage
-	}
+		userPage,
+	},
 });
 </script>
 

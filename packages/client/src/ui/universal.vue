@@ -7,7 +7,7 @@
 			<div class="content">
 				<MkStickyContainer>
 					<template #header><MkHeader v-if="pageInfo && !pageInfo.hideHeader" :info="pageInfo"/></template>
-					<router-view @navigated="changePage"/>
+					<RouterView @navigated="changePage"/>
 				</MkStickyContainer>
 			</div>
 			<div class="spacer"></div>
@@ -24,8 +24,8 @@
 
 	<div v-if="isMobile" class="buttons">
 		<button class="button nav _button" @click="drawerMenuShowing = true"><i class="fas fa-bars"></i><span v-if="menuIndicated" class="indicator"><i class="fas fa-circle"></i></span></button>
-		<button class="button home _button" @click="$route.name === 'index' ? top() : $router.push('/')"><i class="fas fa-home"></i></button>
-		<button class="button notifications _button" @click="$router.push('/my/notifications')"><i class="fas fa-bell"></i><span v-if="$i?.hasUnreadNotification" class="indicator"><i class="fas fa-circle"></i></span></button>
+		<button class="button home _button" @click="mainRouter.currentRoute.value.name === 'index' ? top() : mainRouter.push('/')"><i class="fas fa-home"></i></button>
+		<button class="button notifications _button" @click="mainRouter.push('/my/notifications')"><i class="fas fa-bell"></i><span v-if="$i?.hasUnreadNotification" class="indicator"><i class="fas fa-circle"></i></span></button>
 		<button class="button widget _button" @click="widgetsShowing = true"><i class="fas fa-layer-group"></i></button>
 		<button class="button post _button" @click="os.post()"><i class="fas fa-pencil-alt"></i></button>
 	</div>
@@ -73,8 +73,8 @@ import { defaultStore } from '@/store';
 import { menuDef } from '@/menu';
 import { i18n } from '@/i18n';
 import { $i } from '@/account';
-import { Router } from '@/router/router';
-import { mainRouter } from '@/main-router';
+import { Router } from '@/nirax';
+import { mainRouter } from '@/router';
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
 const XSidebar = defineAsyncComponent(() => import('@/ui/_common_/sidebar.vue'));
 

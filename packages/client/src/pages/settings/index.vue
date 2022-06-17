@@ -26,17 +26,17 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineAsyncComponent, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
+import { computed, defineAsyncComponent, inject, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 import { i18n } from '@/i18n';
 import MkInfo from '@/components/ui/info.vue';
 import MkSuperMenu from '@/components/ui/super-menu.vue';
 import { scroll } from '@/scripts/scroll';
-import { signout } from '@/account';
+import { signout , $i } from '@/account';
 import { unisonReload } from '@/scripts/unison-reload';
 import * as symbols from '@/symbols';
 import { instance } from '@/instance';
-import { $i } from '@/account';
-import { MisskeyNavigator } from '@/scripts/navigate';
+import { Router } from '@/nirax';
+import { mainRouter } from '@/router';
 
 const props = defineProps<{
   initialPage?: string
@@ -52,7 +52,7 @@ const INFO = ref(indexInfo);
 const el = ref<HTMLElement | null>(null);
 const childInfo = ref(null);
 
-const nav = new MisskeyNavigator();
+const router: Router = inject('router') ?? mainRouter;
 
 const narrow = ref(false);
 const NARROW_THRESHOLD = 600;
@@ -189,7 +189,7 @@ const menuDef = computed(() => [{
 			signout();
 		},
 		danger: true,
-	},],
+	}],
 }]);
 
 const pageProps = ref({});
@@ -242,7 +242,7 @@ watch(component, () => {
 
 watch(() => props.initialPage, () => {
 	if (props.initialPage == null && !narrow.value) {
-		nav.push('/settings/profile');
+		router.push('/settings/profile');
 	} else {
 		if (props.initialPage == null) {
 			INFO.value = indexInfo;
@@ -252,7 +252,7 @@ watch(() => props.initialPage, () => {
 
 watch(narrow, () => {
 	if (props.initialPage == null && !narrow.value) {
-		nav.push('/settings/profile');
+		router.push('/settings/profile');
 	}
 });
 
@@ -261,7 +261,7 @@ onMounted(() => {
 
 	narrow.value = el.value.offsetWidth < NARROW_THRESHOLD;
 	if (props.initialPage == null && !narrow.value) {
-		nav.push('/settings/profile');
+		router.push('/settings/profile');
 	}
 });
 

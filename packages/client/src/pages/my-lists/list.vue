@@ -39,10 +39,17 @@ import { computed, defineComponent } from 'vue';
 import MkButton from '@/components/ui/button.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
+import { mainRouter } from '@/router';
 
 export default defineComponent({
 	components: {
-		MkButton
+		MkButton,
+	},
+
+	props: {
+		listId: {
+			type: String,
+		},
 	},
 
 	data() {
@@ -57,10 +64,6 @@ export default defineComponent({
 		};
 	},
 
-	watch: {
-		$route: 'fetch'
-	},
-
 	created() {
 		this.fetch();
 	},
@@ -68,11 +71,11 @@ export default defineComponent({
 	methods: {
 		fetch() {
 			os.api('users/lists/show', {
-				listId: this.$route.params.list
+				listId: this.listId,
 			}).then(list => {
 				this.list = list;
 				os.api('users/show', {
-					userIds: this.list.userIds
+					userIds: this.list.userIds,
 				}).then(users => {
 					this.users = users;
 				});
@@ -83,7 +86,7 @@ export default defineComponent({
 			os.selectUser().then(user => {
 				os.apiWithDialog('users/lists/push', {
 					listId: this.list.id,
-					userId: user.id
+					userId: user.id,
 				}).then(() => {
 					this.users.push(user);
 				});
@@ -93,7 +96,7 @@ export default defineComponent({
 		removeUser(user) {
 			os.api('users/lists/pull', {
 				listId: this.list.id,
-				userId: user.id
+				userId: user.id,
 			}).then(() => {
 				this.users = this.users.filter(x => x.id !== user.id);
 			});
@@ -102,13 +105,13 @@ export default defineComponent({
 		async renameList() {
 			const { canceled, result: name } = await os.inputText({
 				title: this.$ts.enterListName,
-				default: this.list.name
+				default: this.list.name,
 			});
 			if (canceled) return;
 
 			await os.api('users/lists/update', {
 				listId: this.list.id,
-				name: name
+				name: name,
 			});
 
 			this.list.name = name;
@@ -122,12 +125,12 @@ export default defineComponent({
 			if (canceled) return;
 
 			await os.api('users/lists/delete', {
-				listId: this.list.id
+				listId: this.list.id,
 			});
 			os.success();
-			this.$router.push('/my/lists');
-		}
-	}
+			mainRouter.push('/my/lists');
+		},
+	},
 });
 </script>
 

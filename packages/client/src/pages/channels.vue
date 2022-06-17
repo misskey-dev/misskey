@@ -25,6 +25,7 @@ import MkChannelPreview from '@/components/channel-preview.vue';
 import MkPagination from '@/components/ui/pagination.vue';
 import MkButton from '@/components/ui/button.vue';
 import * as symbols from '@/symbols';
+import { mainRouter } from '@/router';
 
 export default defineComponent({
 	components: {
@@ -56,7 +57,7 @@ export default defineComponent({
 					title: this.$ts._channel.owned,
 					icon: 'fas fa-edit',
 					onClick: () => { this.tab = 'owned'; },
-				},]
+				}],
 			})),
 			tab: 'featured',
 			featuredPagination: {
@@ -75,8 +76,8 @@ export default defineComponent({
 	},
 	methods: {
 		create() {
-			this.$router.push(`/channels/new`);
-		}
-	}
+			mainRouter.push('/channels/new');
+		},
+	},
 });
 </script>

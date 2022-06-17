@@ -60,6 +60,7 @@ import MkPagination from '@/components/ui/pagination.vue';
 import MkGalleryPostPreview from '@/components/gallery-post-preview.vue';
 import MkFollowButton from '@/components/follow-button.vue';
 import { url } from '@/config';
+import { mainRouter } from '@/router';
 
 export default defineComponent({
 	components: {
@@ -73,8 +74,8 @@ export default defineComponent({
 	props: {
 		postId: {
 			type: String,
-			required: true
-		}
+			required: true,
+		},
 	},
 	data() {
 		return {
@@ -89,14 +90,14 @@ export default defineComponent({
 				actions: [{
 					icon: 'fas fa-pencil-alt',
 					text: this.$ts.edit,
-					handler: this.edit
-				}]
+					handler: this.edit,
+				}],
 			} : null),
 			otherPostsPagination: {
 				endpoint: 'users/gallery/posts' as const,
 				limit: 6,
 				params: computed(() => ({
-					userId: this.post.user.id
+					userId: this.post.user.id,
 				})),
 			},
 			post: null,
@@ -105,7 +106,7 @@ export default defineComponent({
 	},
 
 	watch: {
-		postId: 'fetch'
+		postId: 'fetch',
 	},
 
 	created() {
@@ -116,7 +117,7 @@ export default defineComponent({
 		fetch() {
 			this.post = null;
 			os.api('gallery/posts/show', {
-				postId: this.postId
+				postId: this.postId,
 			}).then(post => {
 				this.post = post;
 			}).catch(err => {
@@ -128,13 +129,13 @@ export default defineComponent({
 			navigator.share({
 				title: this.post.title,
 				text: this.post.description,
-				url: `${url}/gallery/${this.post.id}`
+				url: `${url}/gallery/${this.post.id}`,
 			});
 		},
 
 		shareWithNote() {
 			os.post({
-				initialText: `${this.post.title} ${url}/gallery/${this.post.id}`
+				initialText: `${this.post.title} ${url}/gallery/${this.post.id}`,
 			});
 		},
 
@@ -162,9 +163,9 @@ export default defineComponent({
 		},
 
 		edit() {
-			this.$router.push(`/gallery/${this.post.id}/edit`);
-		}
-	}
+			mainRouter.push(`/gallery/${this.post.id}/edit`);
+		},
+	},
 });
 </script>
 

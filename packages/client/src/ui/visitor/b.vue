@@ -26,7 +26,8 @@
 	</div>
 
 	<transition :name="$store.state.animation ? 'tray-back' : ''">
-		<div v-if="showMenu"
+		<div
+			v-if="showMenu"
 			class="menu-back _modalBg"
 			@click="showMenu = false"
 			@touchstart.passive="showMenu = false"
@@ -50,6 +51,8 @@
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
+import XHeader from './header.vue';
+import XKanban from './kanban.vue';
 import { host, instanceName } from '@/config';
 import { search } from '@/scripts/search';
 import * as os from '@/os';
@@ -57,10 +60,9 @@ import MkPagination from '@/components/ui/pagination.vue';
 import XSigninDialog from '@/components/signin-dialog.vue';
 import XSignupDialog from '@/components/signup-dialog.vue';
 import MkButton from '@/components/ui/button.vue';
-import XHeader from './header.vue';
-import XKanban from './kanban.vue';
 import { ColdDeviceStorage } from '@/store';
 import * as symbols from '@/symbols';
+import { mainRouter } from '@/router';
 
 const DESKTOP_THRESHOLD = 1100;
 
@@ -96,12 +98,12 @@ export default defineComponent({
 					this.$store.set('darkMode', !this.$store.state.darkMode);
 				},
 				's': search,
-				'h|/': this.help
+				'h|/': this.help,
 			};
 		},
 
 		root(): boolean {
-			return this.$route.path === '/';
+			return mainRouter.currentRoute.value.name === 'index';
 		},
 	},
 
@@ -134,7 +136,7 @@ export default defineComponent({
 		},
 
 		help() {
-			window.open(`https://misskey-hub.net/docs/keyboard-shortcut.md`, '_blank');
+			window.open('https://misskey-hub.net/docs/keyboard-shortcut.md', '_blank');
 		},
 
 		onTransition() {
@@ -143,16 +145,16 @@ export default defineComponent({
 
 		signin() {
 			os.popup(XSigninDialog, {
-				autoSet: true
+				autoSet: true,
 			}, {}, 'closed');
 		},
 
 		signup() {
 			os.popup(XSignupDialog, {
-				autoSet: true
+				autoSet: true,
 			}, {}, 'closed');
-		}
-	}
+		},
+	},
 });
 </script>
 

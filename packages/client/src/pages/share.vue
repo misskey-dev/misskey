@@ -26,13 +26,14 @@
 // SPECIFICATION: https://misskey-hub.net/docs/features/share-form.html
 
 import { defineComponent } from 'vue';
+import { noteVisibilities } from 'misskey-js';
+import * as Acct from 'misskey-js/built/acct';
+import * as Misskey from 'misskey-js';
 import MkButton from '@/components/ui/button.vue';
 import XPostForm from '@/components/post-form.vue';
 import * as os from '@/os';
-import { noteVisibilities } from 'misskey-js';
-import * as Acct from 'misskey-js/built/acct';
 import * as symbols from '@/symbols';
-import * as Misskey from 'misskey-js';
+import { mainRouter } from '@/router';
 
 export default defineComponent({
 	components: {
@@ -44,7 +45,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.share,
-				icon: 'fas fa-share-alt'
+				icon: 'fas fa-share-alt',
 			},
 			state: 'fetching' as 'fetching' | 'writing' | 'posted',
 
@@ -85,7 +86,7 @@ export default defineComponent({
 			await Promise.all(
 				[
 					...(visibleUserIds ? visibleUserIds.split(',').map(userId => ({ userId })) : []),
-					...(visibleAccts ? visibleAccts.split(',').map(Acct.parse) : [])
+					...(visibleAccts ? visibleAccts.split(',').map(Acct.parse) : []),
 				]
 				// TypeScriptの指示通りに変換する
 				.map(q => 'username' in q ? { username: q.username, host: q.host === null ? undefined : q.host } : q)
@@ -94,8 +95,8 @@ export default defineComponent({
 						this.visibleUsers.push(user);
 					}, () => {
 						console.error(`Invalid user query: ${JSON.stringify(q)}`);
-					})
-				)
+					}),
+				),
 			);
 		}
 
@@ -109,11 +110,11 @@ export default defineComponent({
 			const replyUri = urlParams.get('replyUri');
 			if (replyId) {
 				this.reply = await os.api('notes/show', {
-					noteId: replyId
+					noteId: replyId,
 				});
 			} else if (replyUri) {
 				const obj = await os.api('ap/show', {
-					uri: replyUri
+					uri: replyUri,
 				});
 				if (obj.type === 'Note') {
 					this.reply = obj.object;
@@ -126,11 +127,11 @@ export default defineComponent({
 			const renoteUri = urlParams.get('renoteUri');
 			if (renoteId) {
 				this.renote = await os.api('notes/show', {
-					noteId: renoteId
+					noteId: renoteId,
 				});
 			} else if (renoteUri) {
 				const obj = await os.api('ap/show', {
-					uri: renoteUri
+					uri: renoteUri,
 				});
 				if (obj.type === 'Note') {
 					this.renote = obj.object;
@@ -148,8 +149,8 @@ export default defineComponent({
 							this.files.push(file);
 						}, () => {
 							console.error(`Failed to fetch a file ${fileId}`);
-						})
-					)
+						}),
+					),
 				);
 			}
 			//#endregion
@@ -157,7 +158,7 @@ export default defineComponent({
 			os.alert({
 				type: 'error',
 				title: err.message,
-				text: err.name
+				text: err.name,
 			});
 		}
 
@@ -170,10 +171,10 @@ export default defineComponent({
 
 			// 閉じなければ100ms後タイムラインに
 			window.setTimeout(() => {
-				this.$router.push('/');
+				mainRouter.push('/');
 			}, 100);
-		}
-	}
+		},
+	},
 });
 </script>
 

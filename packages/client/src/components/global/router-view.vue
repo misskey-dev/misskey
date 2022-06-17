@@ -6,7 +6,7 @@
 
 <script lang="ts" setup>
 import { inject, nextTick, onMounted, onUnmounted, watch } from 'vue';
-import { Router } from '@/router/router';
+import { Router } from '@/nirax';
 import * as symbols from '@/symbols';
 
 const props = defineProps<{

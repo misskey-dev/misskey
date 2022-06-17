@@ -31,6 +31,7 @@ import MkInput from '@/components/form/input.vue';
 import { selectFile } from '@/scripts/select-file';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
+import { mainRouter } from '@/router';
 
 export default defineComponent({
 	components: {
@@ -40,7 +41,7 @@ export default defineComponent({
 	props: {
 		channelId: {
 			type: String,
-			required: false
+			required: false,
 		},
 	},
 
@@ -106,7 +107,7 @@ export default defineComponent({
 				os.api('channels/create', params)
 				.then(channel => {
 					os.success();
-					this.$router.push(`/channels/${channel.id}`);
+					mainRouter.push(`/channels/${channel.id}`);
 				});
 			}
 		},
@@ -119,8 +120,8 @@ export default defineComponent({
 
 		removeBannerImage() {
 			this.bannerId = null;
-		}
-	}
+		},
+	},
 });
 </script>
 

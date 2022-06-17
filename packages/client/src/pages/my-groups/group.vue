@@ -38,10 +38,11 @@ import { computed, defineComponent } from 'vue';
 import MkButton from '@/components/ui/button.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
+import { mainRouter } from '@/router';
 
 export default defineComponent({
 	components: {
-		MkButton
+		MkButton,
 	},
 
 	props: {
@@ -73,11 +74,11 @@ export default defineComponent({
 	methods: {
 		fetch() {
 			os.api('users/groups/show', {
-				groupId: this.groupId
+				groupId: this.groupId,
 			}).then(group => {
 				this.group = group;
 				os.api('users/show', {
-					userIds: this.group.userIds
+					userIds: this.group.userIds,
 				}).then(users => {
 					this.users = users;
 				});
@@ -88,7 +89,7 @@ export default defineComponent({
 			os.selectUser().then(user => {
 				os.apiWithDialog('users/groups/invite', {
 					groupId: this.group.id,
-					userId: user.id
+					userId: user.id,
 				});
 			});
 		},
@@ -96,7 +97,7 @@ export default defineComponent({
 		removeUser(user) {
 			os.api('users/groups/pull', {
 				groupId: this.group.id,
-				userId: user.id
+				userId: user.id,
 			}).then(() => {
 				this.users = this.users.filter(x => x.id !== user.id);
 			});
@@ -105,13 +106,13 @@ export default defineComponent({
 		async renameGroup() {
 			const { canceled, result: name } = await os.inputText({
 				title: this.$ts.groupName,
-				default: this.group.name
+				default: this.group.name,
 			});
 			if (canceled) return;
 
 			await os.api('users/groups/update', {
 				groupId: this.group.id,
-				name: name
+				name: name,
 			});
 
 			this.group.name = name;
@@ -121,7 +122,7 @@ export default defineComponent({
 			os.selectUser().then(user => {
 				os.apiWithDialog('users/groups/transfer', {
 					groupId: this.group.id,
-					userId: user.id
+					userId: user.id,
 				});
 			});
 		},
@@ -134,11 +135,11 @@ export default defineComponent({
 			if (canceled) return;
 
 			await os.apiWithDialog('users/groups/delete', {
-				groupId: this.group.id
+				groupId: this.group.id,
 			});
-			this.$router.push('/my/groups');
-		}
-	}
+			mainRouter.push('/my/groups');
+		},
+	},
 });
 </script>
 

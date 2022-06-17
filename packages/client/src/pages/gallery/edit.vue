@@ -38,6 +38,7 @@ import FormSuspense from '@/components/form/suspense.vue';
 import { selectFiles } from '@/scripts/select-file';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
+import { mainRouter } from '@/router';
 
 export default defineComponent({
 	components: {
@@ -54,17 +55,17 @@ export default defineComponent({
 			type: String,
 			required: false,
 			default: null,
-		}
+		},
 	},
 	
 	data() {
 		return {
 			[symbols.PAGE_INFO]: computed(() => this.postId ? {
 				title: this.$ts.edit,
-				icon: 'fas fa-pencil-alt'
+				icon: 'fas fa-pencil-alt',
 			} : {
 				title: this.$ts.postToGallery,
-				icon: 'fas fa-pencil-alt'
+				icon: 'fas fa-pencil-alt',
 			}),
 			init: null,
 			files: [],
@@ -78,7 +79,7 @@ export default defineComponent({
 		postId: {
 			handler() {
 				this.init = () => this.postId ? os.api('gallery/posts/show', {
-					postId: this.postId
+					postId: this.postId,
 				}).then(post => {
 					this.files = post.files;
 					this.title = post.title;
@@ -87,7 +88,7 @@ export default defineComponent({
 				}) : Promise.resolve(null);
 			},
 			immediate: true,
-		}
+		},
 	},
 
 	methods: {
@@ -110,7 +111,7 @@ export default defineComponent({
 					fileIds: this.files.map(file => file.id),
 					isSensitive: this.isSensitive,
 				});
-				this.$router.push(`/gallery/${this.postId}`);
+				mainRouter.push(`/gallery/${this.postId}`);
 			} else {
 				const post = await os.apiWithDialog('gallery/posts/create', {
 					title: this.title,
@@ -118,7 +119,7 @@ export default defineComponent({
 					fileIds: this.files.map(file => file.id),
 					isSensitive: this.isSensitive,
 				});
-				this.$router.push(`/gallery/${post.id}`);
+				mainRouter.push(`/gallery/${post.id}`);
 			}
 		},
 
@@ -131,9 +132,9 @@ export default defineComponent({
 			await os.apiWithDialog('gallery/posts/delete', {
 				postId: this.postId,
 			});
-			this.$router.push(`/gallery`);
-		}
-	}
+			mainRouter.push('/gallery');
+		},
+	},
 });
 </script>
 

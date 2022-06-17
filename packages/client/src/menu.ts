@@ -1,6 +1,6 @@
 import { computed, ref, reactive } from 'vue';
 import { $i } from './account';
-import { mainRouter } from './main-router';
+import { mainRouter } from '@/router';
 import { search } from '@/scripts/search';
 import * as os from '@/os';
 import { i18n } from '@/i18n';

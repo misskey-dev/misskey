@@ -55,7 +55,7 @@
 			<XDraggable v-show="variables.length > 0" v-model="variables" tag="div" class="variables" item-key="name" handle=".drag-handle" :group="{ name: 'variables' }" animation="150" swap-threshold="0.5">
 				<template #item="{element}">
 					<XVariable
-						:modelValue="element"
+						:model-value="element"
 						:removable="true"
 						:hpml="hpml"
 						:name="element.name"
@@ -102,6 +102,7 @@ import { collectPageVars } from '@/scripts/collect-page-vars';
 import * as os from '@/os';
 import { selectFile } from '@/scripts/select-file';
 import * as symbols from '@/symbols';
+import { mainRouter } from '@/router';
 
 export default defineComponent({
 	components: {
@@ -113,22 +114,22 @@ export default defineComponent({
 		return {
 			readonly: this.readonly,
 			getScriptBlockList: this.getScriptBlockList,
-			getPageBlockList: this.getPageBlockList
+			getPageBlockList: this.getPageBlockList,
 		};
 	},
 
 	props: {
 		initPageId: {
 			type: String,
-			required: false
+			required: false,
 		},
 		initPageName: {
 			type: String,
-			required: false
+			required: false,
 		},
 		initUser: {
 			type: String,
-			required: false
+			required: false,
 		},
 	},
 
@@ -245,7 +246,7 @@ export default defineComponent({
 			this.content = [{
 				id,
 				type: 'text',
-				text: 'Hello World!'
+				text: 'Hello World!',
 			}];
 		}
 	},
@@ -275,13 +276,13 @@ export default defineComponent({
 						os.alert({
 							type: 'error',
 							title: this.$ts._pages.invalidNameTitle,
-							text: this.$ts._pages.invalidNameText
+							text: this.$ts._pages.invalidNameText,
 						});
 					}
 				} else if (err.code == 'NAME_ALREADY_EXISTS') {
 					os.alert({
 						type: 'error',
-						text: this.$ts._pages.nameAlreadyExists
+						text: this.$ts._pages.nameAlreadyExists,
 					});
 				}
 			};
@@ -293,7 +294,7 @@ export default defineComponent({
 					this.currentName = this.name.trim();
 					os.alert({
 						type: 'success',
-						text: this.$ts._pages.updated
+						text: this.$ts._pages.updated,
 					});
 				}).catch(onError);
 			} else {
@@ -303,9 +304,9 @@ export default defineComponent({
 					this.currentName = this.name.trim();
 					os.alert({
 						type: 'success',
-						text: this.$ts._pages.created
+						text: this.$ts._pages.created,
 					});
-					this.$router.push(`/pages/edit/${this.pageId}`);
+					mainRouter.push(`/pages/edit/${this.pageId}`);
 				}).catch(onError);
 			}
 		},
@@ -321,9 +322,9 @@ export default defineComponent({
 				}).then(() => {
 					os.alert({
 						type: 'success',
-						text: this.$ts._pages.deleted
+						text: this.$ts._pages.deleted,
 					});
-					this.$router.push(`/pages`);
+					mainRouter.push('/pages');
 				});
 			});
 		},
@@ -336,9 +337,9 @@ export default defineComponent({
 				this.currentName = this.name.trim();
 				os.alert({
 					type: 'success',
-					text: this.$ts._pages.created
+					text: this.$ts._pages.created,
 				});
-				this.$router.push(`/pages/edit/${this.pageId}`);
+				mainRouter.push(`/pages/edit/${this.pageId}`);
 			});
 		},
 
@@ -346,7 +347,7 @@ export default defineComponent({
 			const { canceled, result: type } = await os.select({
 				type: null,
 				title: this.$ts._pages.chooseBlock,
-				groupedItems: this.getPageBlockList()
+				groupedItems: this.getPageBlockList(),
 			});
 			if (canceled) return;
 
@@ -365,7 +366,7 @@ export default defineComponent({
 			if (this.hpml.isUsedName(name)) {
 				os.alert({
 					type: 'error',
-					text: this.$ts._pages.variableNameIsAlreadyUsed
+					text: this.$ts._pages.variableNameIsAlreadyUsed,
 				});
 				return;
 			}
@@ -388,7 +389,7 @@ export default defineComponent({
 					{ value: 'textarea', text: this.$ts._pages.blocks.textarea },
 					{ value: 'note', text: this.$ts._pages.blocks.note },
 					{ value: 'canvas', text: this.$ts._pages.blocks.canvas },
-				]
+				],
 			}, {
 				label: this.$ts._pages.inputBlocks,
 				items: [
@@ -398,14 +399,14 @@ export default defineComponent({
 					{ value: 'textareaInput', text: this.$ts._pages.blocks.textareaInput },
 					{ value: 'numberInput', text: this.$ts._pages.blocks.numberInput },
 					{ value: 'switch', text: this.$ts._pages.blocks.switch },
-					{ value: 'counter', text: this.$ts._pages.blocks.counter }
-				]
+					{ value: 'counter', text: this.$ts._pages.blocks.counter },
+				],
 			}, {
 				label: this.$ts._pages.specialBlocks,
 				items: [
 					{ value: 'if', text: this.$ts._pages.blocks.if },
-					{ value: 'post', text: this.$ts._pages.blocks.post }
-				]
+					{ value: 'post', text: this.$ts._pages.blocks.post },
+				],
 			}];
 		},
 
@@ -419,7 +420,7 @@ export default defineComponent({
 				if (category) {
 					category.items.push({
 						value: block.type,
-						text: this.$t(`_pages.script.blocks.${block.type}`)
+						text: this.$t(`_pages.script.blocks.${block.type}`),
 					});
 				} else {
 					list.push({
@@ -427,8 +428,8 @@ export default defineComponent({
 						label: this.$t(`_pages.script.categories.${block.category}`),
 						items: [{
 							value: block.type,
-							text: this.$t(`_pages.script.blocks.${block.type}`)
-						}]
+							text: this.$t(`_pages.script.blocks.${block.type}`),
+						}],
 					});
 				}
 			}
@@ -436,11 +437,11 @@ export default defineComponent({
 			const userFns = this.variables.filter(x => x.type === 'fn');
 			if (userFns.length > 0) {
 				list.unshift({
-					label: this.$t(`_pages.script.categories.fn`),
+					label: this.$t('_pages.script.categories.fn'),
 					items: userFns.map(v => ({
 						value: 'fn:' + v.name,
-						text: v.name
-					}))
+						text: v.name,
+					})),
 				});
 			}
 
@@ -460,7 +461,7 @@ export default defineComponent({
 		highlighter(code) {
 			return highlight(code, languages.js, 'javascript');
 		},
-	}
+	},
 });
 </script>
 

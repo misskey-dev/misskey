@@ -154,20 +154,14 @@ export async function popup(component: Component, props: Record<string, any>, ev
 }
 
 export function pageWindow(path: string) {
-	const { component, props } = resolve(path);
 	popup(defineAsyncComponent(() => import('@/components/page-window.vue')), {
 		initialPath: path,
-		initialComponent: markRaw(component),
-		initialProps: props,
 	}, {}, 'closed');
 }
 
 export function modalPageWindow(path: string) {
-	const { component, props } = resolve(path);
 	popup(defineAsyncComponent(() => import('@/components/modal-page-window.vue')), {
 		initialPath: path,
-		initialComponent: markRaw(component),
-		initialProps: props,
 	}, {}, 'closed');
 }
 

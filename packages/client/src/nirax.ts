@@ -12,6 +12,8 @@ type RoutePathDef = (string | {
 type RouteDef = {
 	path: RoutePathDef;
 	component: Component;
+	name?: string;
+	globalCacheKey?: string;
 };
 
 export class Router extends EventEmitter<{
@@ -42,8 +44,8 @@ export class Router extends EventEmitter<{
 		super();
 
 		this.routes = routes;
-
-		this.navigate(currentPath, true);
+		this.currentPath = currentPath;
+		this.navigate(currentPath, null, true);
 	}
 
 	private resolve(path: string): { route: RouteDef; props: Map<string, string>; } | null {
@@ -87,7 +89,7 @@ export class Router extends EventEmitter<{
 		return null;
 	}
 
-	private navigate(path: string, initial = false) {
+	private navigate(path: string, key: string | null | undefined, initial = false) {
 		const beforePath = this.currentPath;
 		this.currentPath = path;
 
@@ -97,6 +99,7 @@ export class Router extends EventEmitter<{
 			this.currentComponent = res.route.component;
 			this.currentProps = res.props;
 			this.currentRoute.value = res.route;
+			this.currentKey = this.currentRoute.value.globalCacheKey ?? key ?? Date.now().toString();
 
 			if (!initial) {
 				this.emit('change', {
@@ -120,14 +123,17 @@ export class Router extends EventEmitter<{
 		return this.currentProps;
 	}
 
+	public getCurrentPath() {
+		return this.currentPath;
+	}
+
 	public getCurrentKey() {
 		return this.currentKey;
 	}
 
 	public push(path: string) {
 		const beforePath = this.currentPath;
-		this.currentKey = Date.now().toString();
-		this.navigate(path);
+		this.navigate(path, null);
 		this.emit('push', {
 			beforePath,
 			path,
@@ -138,7 +144,6 @@ export class Router extends EventEmitter<{
 	}
 
 	public change(path: string, key?: string | null) {
-		this.currentKey = key ?? Date.now().toString();
-		this.navigate(path);
+		this.navigate(path, key);
 	}
 }

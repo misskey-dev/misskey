@@ -36,20 +36,21 @@ import XTimeline from '@/components/timeline.vue';
 import XChannelFollowButton from '@/components/channel-follow-button.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
+import { mainRouter } from '@/router';
 
 export default defineComponent({
 	components: {
 		MkContainer,
 		XPostForm,
 		XTimeline,
-		XChannelFollowButton
+		XChannelFollowButton,
 	},
 
 	props: {
 		channelId: {
 			type: String,
-			required: true
-		}
+			required: true,
+		},
 	},
 
 	data() {
@@ -71,7 +72,7 @@ export default defineComponent({
 				limit: 10,
 				params: computed(() => ({
 					channelId: this.channelId,
-				}))
+				})),
 			},
 		};
 	},
@@ -83,14 +84,14 @@ export default defineComponent({
 					channelId: this.channelId,
 				});
 			},
-			immediate: true
-		}
+			immediate: true,
+		},
 	},
 
 	methods: {
 		edit() {
-			this.$router.push(`/channels/${this.channel.id}/edit`);
-		}
+			mainRouter.push(`/channels/${this.channel.id}/edit`);
+		},
 	},
 });
 </script>

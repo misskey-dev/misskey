@@ -2,7 +2,8 @@
 <div v-hotkey.global="keymap" v-size="{ min: [800] }" class="tqmomfks">
 	<div v-if="queue > 0" class="new"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
 	<div class="tl _block">
-		<XTimeline ref="tl" :key="antennaId"
+		<XTimeline
+			ref="tl" :key="antennaId"
 			class="tl"
 			src="antenna"
 			:antenna="antennaId"
@@ -19,6 +20,7 @@ import XTimeline from '@/components/timeline.vue';
 import { scroll } from '@/scripts/scroll';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
+import { mainRouter } from '@/router';
 
 export default defineComponent({
 	components: {
@@ -28,8 +30,8 @@ export default defineComponent({
 	props: {
 		antennaId: {
 			type: String,
-			required: true
-		}
+			required: true,
+		},
 	},
 
 	data() {
@@ -43,11 +45,11 @@ export default defineComponent({
 				actions: [{
 					icon: 'fas fa-calendar-alt',
 					text: this.$ts.jumpToSpecifiedDate,
-					handler: this.timetravel
+					handler: this.timetravel,
 				}, {
 					icon: 'fas fa-cog',
 					text: this.$ts.settings,
-					handler: this.settings
+					handler: this.settings,
 				}],
 			} : null),
 		};
@@ -56,7 +58,7 @@ export default defineComponent({
 	computed: {
 		keymap(): any {
 			return {
-				't': this.focus
+				't': this.focus,
 			};
 		},
 	},
@@ -65,11 +67,11 @@ export default defineComponent({
 		antennaId: {
 			async handler() {
 				this.antenna = await os.api('antennas/show', {
-					antennaId: this.antennaId
+					antennaId: this.antennaId,
 				});
 			},
-			immediate: true
-		}
+			immediate: true,
+		},
 	},
 
 	methods: {
@@ -91,13 +93,13 @@ export default defineComponent({
 		},
 
 		settings() {
-			this.$router.push(`/my/antennas/${this.antennaId}`);
+			mainRouter.push(`/my/antennas/${this.antennaId}`);
 		},
 
 		focus() {
 			(this.$refs.tl as any).focus();
-		}
-	}
+		},
+	},
 });
 </script>
 

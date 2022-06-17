@@ -27,10 +27,11 @@ import MkPagePreview from '@/components/page-preview.vue';
 import MkPagination from '@/components/ui/pagination.vue';
 import MkButton from '@/components/ui/button.vue';
 import * as symbols from '@/symbols';
+import { mainRouter } from '@/router';
 
 export default defineComponent({
 	components: {
-		MkPagePreview, MkPagination, MkButton
+		MkPagePreview, MkPagination, MkButton,
 	},
 	data() {
 		return {
@@ -58,7 +59,7 @@ export default defineComponent({
 					title: this.$ts._pages.liked,
 					icon: 'fas fa-heart',
 					onClick: () => { this.tab = 'liked'; },
-				},]
+				}],
 			})),
 			tab: 'featured',
 			featuredPagesPagination: {
@@ -77,9 +78,9 @@ export default defineComponent({
 	},
 	methods: {
 		create() {
-			this.$router.push(`/pages/new`);
-		}
-	}
+			mainRouter.push('/pages/new');
+		},
+	},
 });
 </script>
 

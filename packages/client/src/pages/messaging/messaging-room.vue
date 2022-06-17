@@ -1,5 +1,6 @@
 <template>
-<div class="_section"
+<div
+	class="_section"
 	@dragover.prevent.stop="onDragover"
 	@drop.prevent.stop="onDrop"
 >
@@ -37,16 +38,17 @@
 
 <script lang="ts">
 import { computed, defineComponent, markRaw } from 'vue';
-import XList from '@/components/date-separated-list.vue';
+import * as Acct from 'misskey-js/built/acct';
 import XMessage from './messaging-room.message.vue';
 import XForm from './messaging-room.form.vue';
-import * as Acct from 'misskey-js/built/acct';
+import XList from '@/components/date-separated-list.vue';
 import { isBottom, onScrollBottom, scroll } from '@/scripts/scroll';
 import * as os from '@/os';
 import { stream } from '@/stream';
 import { popout } from '@/scripts/popout';
 import * as sound from '@/scripts/sound';
 import * as symbols from '@/symbols';
+import { mainRouter } from '@/router';
 
 const Component = defineComponent({
 	components: {
@@ -100,7 +102,7 @@ const Component = defineComponent({
 					&& !this.fetching
 					&& !this.fetchingMoreMessages
 					&& this.existMoreMessages
-					&& this.fetchMoreMessages()
+					&& this.fetchMoreMessages(),
 			),
 		};
 	},
@@ -108,7 +110,7 @@ const Component = defineComponent({
 	computed: {
 		form(): any {
 			return this.$refs.form;
-		}
+		},
 	},
 
 	watch: {
@@ -185,7 +187,7 @@ const Component = defineComponent({
 			} else if (evt.dataTransfer.files.length > 1) {
 				os.alert({
 					type: 'error',
-					text: this.$ts.onlyOneFileCanBeAttached
+					text: this.$ts.onlyOneFileCanBeAttached,
 				});
 				return;
 			}
@@ -207,7 +209,7 @@ const Component = defineComponent({
 					userId: this.user ? this.user.id : undefined,
 					groupId: this.group ? this.group.id : undefined,
 					limit: max + 1,
-					untilId: this.existMoreMessages ? this.messages[0].id : undefined
+					untilId: this.existMoreMessages ? this.messages[0].id : undefined,
 				}).then(messages => {
 					if (messages.length === max + 1) {
 						this.existMoreMessages = true;
@@ -237,7 +239,7 @@ const Component = defineComponent({
 			this.messages.push(message);
 			if (message.userId !== this.$i.id && !document.hidden) {
 				this.connection.send('read', {
-					id: message.id
+					id: message.id,
 				});
 			}
 
@@ -270,7 +272,7 @@ const Component = defineComponent({
 						const exist = this.messages.map(x => x.id).indexOf(id);
 						this.messages[exist] = {
 							...this.messages[exist],
-							reads: [...this.messages[exist].reads, x.userId]
+							reads: [...this.messages[exist].reads, x.userId],
 						};
 					}
 				}
@@ -312,7 +314,7 @@ const Component = defineComponent({
 			for (const message of this.messages) {
 				if (message.userId !== this.$i.id && !message.isRead) {
 					this.connection.send('read', {
-						id: message.id
+						id: message.id,
 					});
 				}
 			}
@@ -326,18 +328,18 @@ const Component = defineComponent({
 				icon: 'fas fa-window-maximize',
 				action: () => {
 					os.pageWindow(path);
-					this.$router.back();
+					mainRouter.back();
 				},
 			}, this.inWindow ? undefined : {
 				text: this.$ts.popout,
 				icon: 'fas fa-external-link-alt',
 				action: () => {
 					popout(path);
-					this.$router.back();
+					mainRouter.back();
 				},
 			}], ev.currentTarget ?? ev.target);
-		}
-	}
+		},
+	},
 });
 
 export default Component;
