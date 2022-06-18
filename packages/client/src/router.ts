@@ -115,6 +115,9 @@ export const routes = [{
 	path: '/my/notifications',
 	component: page(() => import('./pages/notifications.vue')),
 }, {
+	path: '/my/favorites',
+	component: page(() => import('./pages/favorites.vue')),
+}, {
 	path: '/my/messages',
 	component: page(() => import('./pages/messages.vue')),
 }, {

@@ -47,6 +47,7 @@ import * as symbols from '@/symbols';
 import { defaultStore } from '@/store';
 import MkChart from '@/components/chart.vue';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const fetching = ref(true);
 const usage = ref<any>(null);
@@ -94,12 +95,10 @@ function chooseUploadFolder() {
 	});
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.drive,
-		icon: 'fas fa-cloud',
-		bg: 'var(--bg)',
-	},
+definePageMetadata({
+	title: i18n.ts.drive,
+	icon: 'fas fa-cloud',
+	bg: 'var(--bg)',
 });
 </script>
 

@@ -28,13 +28,14 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 import JSON5 from 'json5';
+import { Endpoints } from 'misskey-js';
 import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/form/input.vue';
 import MkTextarea from '@/components/form/textarea.vue';
 import MkSwitch from '@/components/form/switch.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
-import { Endpoints } from 'misskey-js';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const body = ref('{}');
 const endpoint = ref('');
@@ -75,10 +76,8 @@ function onEndpointChange() {
 	});
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: 'API console',
-		icon: 'fas fa-terminal'
-	},
+definePageMetadata({
+	title: 'API console',
+	icon: 'fas fa-terminal',
 });
 </script>

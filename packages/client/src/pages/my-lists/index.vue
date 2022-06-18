@@ -21,6 +21,7 @@ import MkAvatars from '@/components/avatars.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const pagingComponent = $ref<InstanceType<typeof MkPagination>>();
 
@@ -38,15 +39,13 @@ async function create() {
 	pagingComponent.reload();
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.manageLists,
-		icon: 'fas fa-list-ul',
-		bg: 'var(--bg)',
-		action: {
-			icon: 'fas fa-plus',
-			handler: create,
-		},
+definePageMetadata({
+	title: i18n.ts.manageLists,
+	icon: 'fas fa-list-ul',
+	bg: 'var(--bg)',
+	action: {
+		icon: 'fas fa-plus',
+		handler: create,
 	},
 });
 </script>

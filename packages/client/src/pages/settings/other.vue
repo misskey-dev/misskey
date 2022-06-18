@@ -23,6 +23,7 @@ import { defaultStore } from '@/store';
 import * as symbols from '@/symbols';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const reportError = computed(defaultStore.makeGetterSetter('reportError'));
 
@@ -34,11 +35,9 @@ function onChangeInjectFeaturedNote(v) {
 	});
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.other,
-		icon: 'fas fa-ellipsis-h',
-		bg: 'var(--bg)',
-	},
+definePageMetadata({
+	title: i18n.ts.other,
+	icon: 'fas fa-ellipsis-h',
+	bg: 'var(--bg)',
 });
 </script>

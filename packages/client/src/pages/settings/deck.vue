@@ -41,6 +41,7 @@ import * as os from '@/os';
 import { unisonReload } from '@/scripts/unison-reload';
 import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const navWindow = computed(deckStore.makeGetterSetter('navWindow'));
 const alwaysShowMainColumn = computed(deckStore.makeGetterSetter('alwaysShowMainColumn'));
@@ -70,11 +71,9 @@ async function setProfile() {
 	unisonReload();
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.deck,
-		icon: 'fas fa-columns',
-		bg: 'var(--bg)',
-	},
+definePageMetadata({
+	title: i18n.ts.deck,
+	icon: 'fas fa-columns',
+	bg: 'var(--bg)',
 });
 </script>

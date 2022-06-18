@@ -96,13 +96,13 @@ import FormButton from '@/components/ui/button.vue';
 import { getBuiltinThemesRef } from '@/scripts/theme';
 import { selectFile } from '@/scripts/select-file';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
-import { ColdDeviceStorage } from '@/store';
+import { ColdDeviceStorage , defaultStore } from '@/store';
 import { i18n } from '@/i18n';
-import { defaultStore } from '@/store';
 import { instance } from '@/instance';
 import { uniqueBy } from '@/scripts/array';
 import { fetchThemes, getThemes } from '@/theme-store';
 import * as symbols from '@/symbols';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const installedThemes = ref(getThemes());
 const builtinThemes = getBuiltinThemesRef();
@@ -121,7 +121,7 @@ const darkThemeId = computed({
 	},
 	set(id) {
 		ColdDeviceStorage.set('darkTheme', themes.value.find(x => x.id === id));
-	}
+	},
 });
 const lightTheme = ColdDeviceStorage.ref('lightTheme');
 const lightThemeId = computed({
@@ -130,7 +130,7 @@ const lightThemeId = computed({
 	},
 	set(id) {
 		ColdDeviceStorage.set('lightTheme', themes.value.find(x => x.id === id));
-	}
+	},
 });
 const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
 const syncDeviceDarkMode = computed(ColdDeviceStorage.makeGetterSetter('syncDeviceDarkMode'));
@@ -168,12 +168,10 @@ function setWallpaper(event) {
 	});
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.theme,
-		icon: 'fas fa-palette',
-		bg: 'var(--bg)',
-	}
+definePageMetadata({
+	title: i18n.ts.theme,
+	icon: 'fas fa-palette',
+	bg: 'var(--bg)',
 });
 </script>
 

@@ -14,6 +14,7 @@ import * as os from '@/os';
 import { signout } from '@/account';
 import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 async function deleteAccount() {
 	{
@@ -41,11 +42,9 @@ async function deleteAccount() {
 	await signout();
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts._accountDelete.accountDelete,
-		icon: 'fas fa-exclamation-triangle',
-		bg: 'var(--bg)',
-	},
+definePageMetadata({
+	title: i18n.ts._accountDelete.accountDelete,
+	icon: 'fas fa-exclamation-triangle',
+	bg: 'var(--bg)',
 });
 </script>

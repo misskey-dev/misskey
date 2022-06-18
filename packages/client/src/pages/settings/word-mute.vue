@@ -41,6 +41,7 @@ import * as symbols from '@/symbols';
 import { defaultStore } from '@/store';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const render = (mutedWords) => mutedWords.map(x => {
 	if (Array.isArray(x)) {
@@ -117,11 +118,9 @@ async function save() {
 	changed.value = false;
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.wordMute,
-		icon: 'fas fa-comment-slash',
-		bg: 'var(--bg)',
-	},
+definePageMetadata({
+	title: i18n.ts.wordMute,
+	icon: 'fas fa-comment-slash',
+	bg: 'var(--bg)',
 });
 </script>

@@ -32,6 +32,7 @@ import * as symbols from '@/symbols';
 import { $i } from '@/account';
 import { instance } from '@/instance';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const twitterForm = ref<Window | null>(null);
 const discordForm = ref<Window | null>(null);
@@ -88,11 +89,9 @@ onMounted(() => {
 	});
 });
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.integration,
-		icon: 'fas fa-share-alt',
-		bg: 'var(--bg)',
-	},
+definePageMetadata({
+	title: i18n.ts.integration,
+	icon: 'fas fa-share-alt',
+	bg: 'var(--bg)',
 });
 </script>

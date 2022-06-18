@@ -20,6 +20,7 @@ import MkButton from '@/components/ui/button.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const pagination = {
 	endpoint: 'clips/list' as const,
@@ -61,15 +62,13 @@ function onClipDeleted() {
 	pagingComponent.reload();
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.clip,
-		icon: 'fas fa-paperclip',
-		bg: 'var(--bg)',
-		action: {
-			icon: 'fas fa-plus',
-			handler: create
-		},
+definePageMetadata({
+	title: i18n.ts.clip,
+	icon: 'fas fa-paperclip',
+	bg: 'var(--bg)',
+	action: {
+		icon: 'fas fa-plus',
+		handler: create,
 	},
 });
 </script>

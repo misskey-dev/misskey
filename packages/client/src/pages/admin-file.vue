@@ -36,6 +36,7 @@ import bytes from '@/filters/bytes';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import * as symbols from '@/symbols';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 let file: any = $ref(null);
 let info: any = $ref(null);
@@ -74,13 +75,11 @@ async function toggleIsSensitive(v) {
 	isSensitive = v;
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: computed(() => ({
-		title: file ? i18n.ts.file + ': ' + file.name : i18n.ts.file,
-		icon: 'fas fa-file',
-		bg: 'var(--bg)',
-	})),
-});
+definePageMetadata(computed(() => ({
+	title: file ? i18n.ts.file + ': ' + file.name : i18n.ts.file,
+	icon: 'fas fa-file',
+	bg: 'var(--bg)',
+})));
 </script>
 
 <style lang="scss" scoped>

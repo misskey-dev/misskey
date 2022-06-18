@@ -40,6 +40,7 @@ import FormButton from '@/components/ui/button.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 let name = $ref('');
 let url = $ref('');
@@ -71,11 +72,9 @@ async function create(): Promise<void> {
 	});
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: 'Create new webhook',
-		icon: 'fas fa-bolt',
-		bg: 'var(--bg)',
-	},
+definePageMetadata({
+	title: 'Create new webhook',
+	icon: 'fas fa-bolt',
+	bg: 'var(--bg)',
 });
 </script>

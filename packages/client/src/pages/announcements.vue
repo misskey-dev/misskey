@@ -15,43 +15,33 @@
 </MkSpacer>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
 import MkPagination from '@/components/ui/pagination.vue';
 import MkButton from '@/components/ui/button.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
+import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
-export default defineComponent({
-	components: {
-		MkPagination,
-		MkButton
-	},
+const paignation = {
+	endpoint: 'announcements' as const,
+	limit: 10,
+};
 
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: this.$ts.announcements,
-				icon: 'fas fa-broadcast-tower',
-				bg: 'var(--bg)',
-			},
-			pagination: {
-				endpoint: 'announcements' as const,
-				limit: 10,
-			},
-		};
-	},
+// TODO: これは実質的に親コンポーネントから子コンポーネントのプロパティを変更してるのでなんとかしたい
+function read(items, announcement, i) {
+	items[i] = {
+		...announcement,
+		isRead: true,
+	};
+	os.api('i/read-announcement', { announcementId: announcement.id });
+}
 
-	methods: {
-		// TODO: これは実質的に親コンポーネントから子コンポーネントのプロパティを変更してるのでなんとかしたい
-		read(items, announcement, i) {
-			items[i] = {
-				...announcement,
-				isRead: true,
-			};
-			os.api('i/read-announcement', { announcementId: announcement.id });
-		},
-	}
+definePageMetadata({
+	title: i18n.ts.announcements,
+	icon: 'fas fa-broadcast-tower',
+	bg: 'var(--bg)',
 });
 </script>
 

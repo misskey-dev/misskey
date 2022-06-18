@@ -28,6 +28,7 @@ import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { getAccounts, addAccount as addAccounts, login, $i } from '@/account';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const storedAccounts = ref<any>(null);
 const accounts = ref<any>(null);
@@ -98,12 +99,10 @@ function switchAccountWithToken(token: string) {
 	login(token);
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.accounts,
-		icon: 'fas fa-users',
-		bg: 'var(--bg)',
-	},
+definePageMetadata({
+	title: i18n.ts.accounts,
+	icon: 'fas fa-users',
+	bg: 'var(--bg)',
 });
 </script>
 

@@ -101,6 +101,7 @@ import FormSplit from '@/components/form/split.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 let host = $ref('');
 let state = $ref('federating');
@@ -119,8 +120,8 @@ const pagination = {
 			state === 'suspended' ? { suspended: true } :
 			state === 'blocked' ? { blocked: true } :
 			state === 'notResponding' ? { notResponding: true } :
-			{})
-	}))
+			{}),
+	})),
 };
 
 function getStatus(instance) {
@@ -129,12 +130,10 @@ function getStatus(instance) {
 	return 'alive';
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.federation,
-		icon: 'fas fa-globe',
-		bg: 'var(--bg)',
-	},
+definePageMetadata({
+	title: i18n.ts.federation,
+	icon: 'fas fa-globe',
+	bg: 'var(--bg)',
 });
 </script>
 

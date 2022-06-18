@@ -136,6 +136,7 @@ import bytes from '@/filters/bytes';
 import * as symbols from '@/symbols';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const stats = ref<any>({});
 
@@ -147,10 +148,8 @@ onMounted(() => {
 	});
 });
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.accountInfo,
-		icon: 'fas fa-info-circle',
-	},
+definePageMetadata({
+	title: i18n.ts.accountInfo,
+	icon: 'fas fa-info-circle',
 });
 </script>

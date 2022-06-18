@@ -21,6 +21,7 @@ import * as os from '@/os';
 import { addTheme, getThemes } from '@/theme-store';
 import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 let installThemeCode = $ref(null);
 
@@ -32,21 +33,21 @@ function parseThemeCode(code: string) {
 	} catch (err) {
 		os.alert({
 			type: 'error',
-			text: i18n.ts._theme.invalid
+			text: i18n.ts._theme.invalid,
 		});
 		return false;
 	}
 	if (!validateTheme(theme)) {
 		os.alert({
 			type: 'error',
-			text: i18n.ts._theme.invalid
+			text: i18n.ts._theme.invalid,
 		});
 		return false;
 	}
 	if (getThemes().some(t => t.id === theme.id)) {
 		os.alert({
 			type: 'info',
-			text: i18n.ts._theme.alreadyInstalled
+			text: i18n.ts._theme.alreadyInstalled,
 		});
 		return false;
 	}
@@ -65,15 +66,13 @@ async function install(code: string): Promise<void> {
 	await addTheme(theme);
 	os.alert({
 		type: 'success',
-		text: i18n.t('_theme.installed', { name: theme.name })
+		text: i18n.t('_theme.installed', { name: theme.name }),
 	});
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts._theme.install,
-		icon: 'fas fa-download',
-		bg: 'var(--bg)',
-	},
+definePageMetadata({
+	title: i18n.ts._theme.install,
+	icon: 'fas fa-download',
+	bg: 'var(--bg)',
 });
 </script>

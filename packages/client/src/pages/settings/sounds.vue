@@ -28,6 +28,7 @@ import { ColdDeviceStorage } from '@/store';
 import { playFile } from '@/scripts/sound';
 import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const masterVolume = computed({
 	get: () => {
@@ -124,11 +125,9 @@ function reset() {
 	}
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.sounds,
-		icon: 'fas fa-music',
-		bg: 'var(--bg)',
-	},
+definePageMetadata({
+	title: i18n.ts.sounds,
+	icon: 'fas fa-music',
+	bg: 'var(--bg)',
 });
 </script>

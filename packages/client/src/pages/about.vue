@@ -72,7 +72,7 @@
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
-import { version, instanceName } from '@/config';
+import { version, instanceName , host } from '@/config';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import FormSuspense from '@/components/form/suspense.vue';
@@ -82,8 +82,8 @@ import MkInstanceStats from '@/components/instance-stats.vue';
 import * as os from '@/os';
 import number from '@/filters/number';
 import * as symbols from '@/symbols';
-import { host } from '@/config';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 let stats = $ref(null);
 let tab = $ref('overview');
@@ -93,23 +93,21 @@ const initStats = () => os.api('stats', {
 	stats = res;
 });
 
-defineExpose({
-	[symbols.PAGE_INFO]: computed(() => ({
-		title: i18n.ts.instanceInfo,
-		icon: 'fas fa-info-circle',
-		bg: 'var(--bg)',
-		tabs: [{
-			active: tab === 'overview',
-			title: i18n.ts.overview,
-			onClick: () => { tab = 'overview'; },
-		}, {
-			active: tab === 'charts',
-			title: i18n.ts.charts,
-			icon: 'fas fa-chart-bar',
-			onClick: () => { tab = 'charts'; },
-		},],
-	})),
-});
+definePageMetadata(computed(() => ({
+	title: i18n.ts.instanceInfo,
+	icon: 'fas fa-info-circle',
+	bg: 'var(--bg)',
+	tabs: [{
+		active: tab === 'overview',
+		title: i18n.ts.overview,
+		onClick: () => { tab = 'overview'; },
+	}, {
+		active: tab === 'charts',
+		title: i18n.ts.charts,
+		icon: 'fas fa-chart-bar',
+		onClick: () => { tab = 'charts'; },
+	}],
+})));
 </script>
 
 <style lang="scss" scoped>

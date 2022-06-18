@@ -155,6 +155,7 @@ import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { fetchInstance } from '@/instance';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 let name: string | null = $ref(null);
 let description: string | null = $ref(null);
@@ -240,17 +241,15 @@ function save() {
 	});
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.general,
-		icon: 'fas fa-cog',
-		bg: 'var(--bg)',
-		actions: [{
-			asFullButton: true,
-			icon: 'fas fa-check',
-			text: i18n.ts.save,
-			handler: save,
-		}],
-	}
+definePageMetadata({
+	title: i18n.ts.general,
+	icon: 'fas fa-cog',
+	bg: 'var(--bg)',
+	actions: [{
+		asFullButton: true,
+		icon: 'fas fa-check',
+		text: i18n.ts.save,
+		handler: save,
+	}],
 });
 </script>

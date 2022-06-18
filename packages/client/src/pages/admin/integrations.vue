@@ -25,14 +25,15 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
-import FormFolder from '@/components/form/folder.vue';
-import FormSuspense from '@/components/form/suspense.vue';
 import XTwitter from './integrations.twitter.vue';
 import XGithub from './integrations.github.vue';
 import XDiscord from './integrations.discord.vue';
+import FormSuspense from '@/components/form/suspense.vue';
+import FormFolder from '@/components/form/folder.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 let enableTwitterIntegration: boolean = $ref(false);
 let enableGithubIntegration: boolean = $ref(false);
@@ -45,11 +46,9 @@ async function init() {
 	enableDiscordIntegration = meta.enableDiscordIntegration;
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.integration,
-		icon: 'fas fa-share-alt',
-		bg: 'var(--bg)',
-	}
+definePageMetadata({
+	title: i18n.ts.integration,
+	icon: 'fas fa-share-alt',
+	bg: 'var(--bg)',
 });
 </script>

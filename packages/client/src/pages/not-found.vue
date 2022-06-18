@@ -10,12 +10,11 @@
 <script lang="ts" setup>
 import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.notFound,
-		icon: 'fas fa-exclamation-triangle',
-		bg: 'var(--bg)',
-	},
+definePageMetadata({
+	title: i18n.ts.notFound,
+	icon: 'fas fa-exclamation-triangle',
+	bg: 'var(--bg)',
 });
 </script>

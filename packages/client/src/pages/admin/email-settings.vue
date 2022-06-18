@@ -54,6 +54,7 @@ import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { fetchInstance, instance } from '@/instance';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 let enableEmail: boolean = $ref(false);
 let email: any = $ref(null);
@@ -78,13 +79,13 @@ async function testEmail() {
 	const { canceled, result: destination } = await os.inputText({
 		title: i18n.ts.destination,
 		type: 'email',
-		placeholder: instance.maintainerEmail
+		placeholder: instance.maintainerEmail,
 	});
 	if (canceled) return;
 	os.apiWithDialog('admin/send-email', {
 		to: destination,
 		subject: 'Test email',
-		text: 'Yo'
+		text: 'Yo',
 	});
 }
 
@@ -102,21 +103,19 @@ function save() {
 	});
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.emailServer,
-		icon: 'fas fa-envelope',
-		bg: 'var(--bg)',
-		actions: [{
-			asFullButton: true,
-			text: i18n.ts.testEmail,
-			handler: testEmail,
-		}, {
-			asFullButton: true,
-			icon: 'fas fa-check',
-			text: i18n.ts.save,
-			handler: save,
-		}],
-	}
+definePageMetadata({
+	title: i18n.ts.emailServer,
+	icon: 'fas fa-envelope',
+	bg: 'var(--bg)',
+	actions: [{
+		asFullButton: true,
+		text: i18n.ts.testEmail,
+		handler: testEmail,
+	}, {
+		asFullButton: true,
+		icon: 'fas fa-check',
+		text: i18n.ts.save,
+		handler: save,
+	}],
 });
 </script>

@@ -19,6 +19,7 @@ import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 async function readAllUnreadNotes() {
 	await os.api('i/read-all-unread-notes');
@@ -49,11 +50,9 @@ function configure() {
 	}, 'closed');
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.notifications,
-		icon: 'fas fa-bell',
-		bg: 'var(--bg)',
-	},
+definePageMetadata({
+	title: i18n.ts.notifications,
+	icon: 'fas fa-bell',
+	bg: 'var(--bg)',
 });
 </script>

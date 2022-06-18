@@ -25,6 +25,7 @@ import { ColdDeviceStorage } from '@/store';
 import { unisonReload } from '@/scripts/unison-reload';
 import { i18n } from '@/i18n';
 import * as symbols from '@/symbols';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const code = ref(null);
 
@@ -113,11 +114,9 @@ async function install() {
 	});
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts._plugin.install,
-		icon: 'fas fa-download',
-		bg: 'var(--bg)',
-	},
+definePageMetadata({
+	title: i18n.ts._plugin.install,
+	icon: 'fas fa-download',
+	bg: 'var(--bg)',
 });
 </script>

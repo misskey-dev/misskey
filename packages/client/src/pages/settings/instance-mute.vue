@@ -18,6 +18,7 @@ import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const instanceMutes = ref($i!.mutedInstances.join('\n'));
 const changed = ref(false);
@@ -42,10 +43,8 @@ watch(instanceMutes, () => {
 	changed.value = true;
 });
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.instanceMute,
-		icon: 'fas fa-volume-mute',
-	},
+definePageMetadata({
+	title: i18n.ts.instanceMute,
+	icon: 'fas fa-volume-mute',
 });
 </script>

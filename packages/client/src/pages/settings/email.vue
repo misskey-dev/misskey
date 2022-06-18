@@ -48,6 +48,7 @@ import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const emailAddress = ref($i!.email);
 
@@ -100,11 +101,9 @@ onMounted(() => {
 	});
 });
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.email,
-		icon: 'fas fa-envelope',
-		bg: 'var(--bg)',
-	},
+definePageMetadata({
+	title: i18n.ts.email,
+	icon: 'fas fa-envelope',
+	bg: 'var(--bg)',
 });
 </script>

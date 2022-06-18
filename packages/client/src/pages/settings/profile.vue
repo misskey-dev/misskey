@@ -78,6 +78,7 @@ import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
 import { $i } from '@/account';
 import { langmap } from '@/scripts/langmap';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const profile = reactive({
 	name: $i.name,
@@ -176,12 +177,10 @@ function changeBanner(ev) {
 	});
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.profile,
-		icon: 'fas fa-user',
-		bg: 'var(--bg)',
-	},
+definePageMetadata({
+	title: i18n.ts.profile,
+	icon: 'fas fa-user',
+	bg: 'var(--bg)',
 });
 </script>
 

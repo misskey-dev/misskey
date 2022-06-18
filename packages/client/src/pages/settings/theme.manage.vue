@@ -38,6 +38,7 @@ import * as os from '@/os';
 import { getThemes, removeTheme } from '@/theme-store';
 import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const installedThemes = ref(getThemes());
 const builtinThemes = getBuiltinThemesRef();
@@ -67,11 +68,9 @@ function uninstall() {
 	os.success();
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts._theme.manage,
-		icon: 'fas fa-folder-open',
-		bg: 'var(--bg)',
-	},
+definePageMetadata({
+	title: i18n.ts._theme.manage,
+	icon: 'fas fa-folder-open',
+	bg: 'var(--bg)',
 });
 </script>

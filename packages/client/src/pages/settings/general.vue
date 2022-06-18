@@ -107,6 +107,7 @@ import * as os from '@/os';
 import { unisonReload } from '@/scripts/unison-reload';
 import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const lang = ref(localStorage.getItem('lang'));
 const fontSize = ref(localStorage.getItem('fontSize'));
@@ -179,11 +180,9 @@ watch([
 	await reloadAsk();
 });
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.general,
-		icon: 'fas fa-cogs',
-		bg: 'var(--bg)',
-	},
+definePageMetadata({
+	title: i18n.ts.general,
+	icon: 'fas fa-cogs',
+	bg: 'var(--bg)',
 });
 </script>

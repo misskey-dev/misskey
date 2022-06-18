@@ -17,7 +17,7 @@
 			</div>
 			<div v-if="!(narrow && initialPage == null)" class="main">
 				<div class="bkzroven">
-					<component :is="component" :ref="el => pageChanged(el)" :key="initialPage" v-bind="pageProps"/>
+					<component :is="component" :key="initialPage" v-bind="pageProps"/>
 				</div>
 			</div>
 		</div>
@@ -26,7 +26,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineAsyncComponent, inject, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
+import { computed, defineAsyncComponent, inject, nextTick, onMounted, onUnmounted, provide, ref, watch } from 'vue';
 import { i18n } from '@/i18n';
 import MkInfo from '@/components/ui/info.vue';
 import MkSuperMenu from '@/components/ui/super-menu.vue';
@@ -37,6 +37,7 @@ import * as symbols from '@/symbols';
 import { instance } from '@/instance';
 import { Router } from '@/nirax';
 import { mainRouter } from '@/router';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const props = defineProps<{
   initialPage?: string
@@ -271,17 +272,15 @@ onUnmounted(() => {
 
 const emailNotConfigured = computed(() => instance.enableEmail && ($i.email == null || !$i.emailVerified));
 
-const pageChanged = (page) => {
-	if (page == null) {
+provide('setPageMetadata', (info) => {
+	if (info == null) {
 		childInfo.value = null;
 	} else {
-		childInfo.value = page[symbols.PAGE_INFO];
+		childInfo.value = info;
 	}
-};
-
-defineExpose({
-	[symbols.PAGE_INFO]: INFO,
 });
+
+definePageMetadata(INFO);
 </script>
 
 <style lang="scss" scoped>

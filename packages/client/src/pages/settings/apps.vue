@@ -43,6 +43,7 @@ import FormPagination from '@/components/ui/pagination.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const list = ref<any>(null);
 
@@ -60,12 +61,10 @@ function revoke(token) {
 	});
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.installedApps,
-		icon: 'fas fa-plug',
-		bg: 'var(--bg)',
-	},
+definePageMetadata({
+	title: i18n.ts.installedApps,
+	icon: 'fas fa-plug',
+	bg: 'var(--bg)',
 });
 </script>
 

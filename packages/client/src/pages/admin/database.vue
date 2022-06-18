@@ -18,14 +18,13 @@ import * as symbols from '@/symbols';
 import bytes from '@/filters/bytes';
 import number from '@/filters/number';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const databasePromiseFactory = () => os.api('admin/get-table-stats').then(res => Object.entries(res).sort((a, b) => b[1].size - a[1].size));
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.database,
-		icon: 'fas fa-database',
-		bg: 'var(--bg)',
-	}
+definePageMetadata({
+	title: i18n.ts.database,
+	icon: 'fas fa-database',
+	bg: 'var(--bg)',
 });
 </script>

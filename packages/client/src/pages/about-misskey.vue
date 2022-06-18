@@ -71,6 +71,7 @@ import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
 import { defaultStore } from '@/store';
 import * as os from '@/os';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const patrons = [
 	'まっちゃとーにゅ',
@@ -194,12 +195,10 @@ onBeforeUnmount(() => {
 	}
 });
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.aboutMisskey,
-		icon: null,
-		bg: 'var(--bg)',
-	},
+definePageMetadata({
+	title: i18n.ts.aboutMisskey,
+	icon: null,
+	bg: 'var(--bg)',
 });
 </script>
 

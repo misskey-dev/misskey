@@ -43,6 +43,7 @@ import { ColdDeviceStorage } from '@/store';
 import * as symbols from '@/symbols';
 import { unisonReload } from '@/scripts/unison-reload';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const plugins = ref(ColdDeviceStorage.get('plugins'));
 
@@ -83,12 +84,10 @@ function changeActive(plugin, active) {
 	});
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.plugins,
-		icon: 'fas fa-plug',
-		bg: 'var(--bg)',
-	},
+definePageMetadata({
+	title: i18n.ts.plugins,
+	icon: 'fas fa-plug',
+	bg: 'var(--bg)',
 });
 </script>
 

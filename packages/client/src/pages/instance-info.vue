@@ -122,6 +122,7 @@ import number from '@/filters/number';
 import bytes from '@/filters/bytes';
 import * as symbols from '@/symbols';
 import { iAmModerator } from '@/account';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const props = defineProps<{
 	host: string;
@@ -146,7 +147,7 @@ async function fetch() {
 async function toggleBlock(ev) {
 	if (meta == null) return;
 	await os.api('admin/update-meta', {
-		blockedHosts: isBlocked ? meta.blockedHosts.concat([instance.host]) : meta.blockedHosts.filter(x => x !== instance.host)
+		blockedHosts: isBlocked ? meta.blockedHosts.concat([instance.host]) : meta.blockedHosts.filter(x => x !== instance.host),
 	});
 }
 
@@ -168,19 +169,17 @@ function refreshMetadata() {
 
 fetch();
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: props.host,
-		icon: 'fas fa-info-circle',
-		bg: 'var(--bg)',
-		actions: [{
-			text: `https://${props.host}`,
-			icon: 'fas fa-external-link-alt',
-			handler: () => {
-				window.open(`https://${props.host}`, '_blank');
-			}
-		}],
-	},
+definePageMetadata({
+	title: props.host,
+	icon: 'fas fa-info-circle',
+	bg: 'var(--bg)',
+	actions: [{
+		text: `https://${props.host}`,
+		icon: 'fas fa-external-link-alt',
+		handler: () => {
+			window.open(`https://${props.host}`, '_blank');
+		},
+	}],
 });
 </script>
 

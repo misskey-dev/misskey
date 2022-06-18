@@ -204,23 +204,21 @@ async function saveAs() {
 
 watch($$(theme), apply, { deep: true });
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.themeEditor,
-		icon: 'fas fa-palette',
-		bg: 'var(--bg)',
-		actions: [{
-			asFullButton: true,
-			icon: 'fas fa-eye',
-			text: i18n.ts.preview,
-			handler: showPreview,
-		}, {
-			asFullButton: true,
-			icon: 'fas fa-check',
-			text: i18n.ts.saveAs,
-			handler: saveAs,
-		}],
-	},
+definePageMetadata({
+	title: i18n.ts.themeEditor,
+	icon: 'fas fa-palette',
+	bg: 'var(--bg)',
+	actions: [{
+		asFullButton: true,
+		icon: 'fas fa-eye',
+		text: i18n.ts.preview,
+		handler: showPreview,
+	}, {
+		asFullButton: true,
+		icon: 'fas fa-check',
+		text: i18n.ts.saveAs,
+		handler: saveAs,
+	}],
 });
 </script>
 

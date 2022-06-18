@@ -28,6 +28,7 @@ import { defaultStore } from '@/store';
 import * as symbols from '@/symbols';
 import { unisonReload } from '@/scripts/unison-reload';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const items = ref(defaultStore.state.menu.join('\n'));
 
@@ -76,11 +77,9 @@ watch(menuDisplay, async () => {
 	await reloadAsk();
 });
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.menu,
-		icon: 'fas fa-list-ul',
-		bg: 'var(--bg)',
-	},
+definePageMetadata({
+	title: i18n.ts.menu,
+	icon: 'fas fa-list-ul',
+	bg: 'var(--bg)',
 });
 </script>

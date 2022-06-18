@@ -12,6 +12,7 @@ import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { Router } from '@/nirax';
 import { mainRouter } from '@/router';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const router: Router = inject('router') ?? mainRouter;
 
@@ -29,11 +30,9 @@ os.api('antennas/show', { antennaId: props.antennaId }).then((antennaResponse) =
 	antenna = antennaResponse;
 });
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.manageAntennas,
-		icon: 'fas fa-satellite',
-	},
+definePageMetadata({
+	title: i18n.ts.manageAntennas,
+	icon: 'fas fa-satellite',
 });
 </script>
 

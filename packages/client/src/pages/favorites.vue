@@ -24,6 +24,7 @@ import XNote from '@/components/note.vue';
 import XList from '@/components/date-separated-list.vue';
 import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const pagination = {
 	endpoint: 'i/favorites' as const,
@@ -32,12 +33,10 @@ const pagination = {
 
 const pagingComponent = ref<InstanceType<typeof MkPagination>>();
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.favorites,
-		icon: 'fas fa-star',
-		bg: 'var(--bg)',
-	},
+definePageMetadata({
+	title: i18n.ts.favorites,
+	icon: 'fas fa-star',
+	bg: 'var(--bg)',
 });
 </script>
 

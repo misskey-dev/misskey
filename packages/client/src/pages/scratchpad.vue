@@ -35,6 +35,7 @@ import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const code = ref('');
 const logs = ref<any[]>([]);
@@ -106,11 +107,9 @@ function highlighter(code) {
 	return highlight(code, languages.js, 'javascript');
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.scratchpad,
-		icon: 'fas fa-terminal',
-	},
+definePageMetadata({
+	title: i18n.ts.scratchpad,
+	icon: 'fas fa-terminal',
 });
 </script>
 

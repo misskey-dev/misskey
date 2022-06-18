@@ -26,6 +26,7 @@ import { version } from '@/config';
 import * as os from '@/os';
 import { unisonReload } from '@/scripts/unison-reload';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const props = withDefaults(defineProps<{
 	error?: Error;
@@ -52,11 +53,9 @@ function reload() {
 	unisonReload();
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.error,
-		icon: 'fas fa-exclamation-triangle',
-	},
+definePageMetadata({
+	title: i18n.ts.error,
+	icon: 'fas fa-exclamation-triangle',
 });
 </script>
 

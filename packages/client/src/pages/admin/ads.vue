@@ -53,6 +53,7 @@ import FormSplit from '@/components/form/split.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 let ads: any[] = $ref([]);
 
@@ -81,7 +82,7 @@ function remove(ad) {
 		if (canceled) return;
 		ads = ads.filter(x => x !== ad);
 		os.apiWithDialog('admin/ad/delete', {
-			id: ad.id
+			id: ad.id,
 		});
 	});
 }
@@ -90,28 +91,26 @@ function save(ad) {
 	if (ad.id == null) {
 		os.apiWithDialog('admin/ad/create', {
 			...ad,
-			expiresAt: new Date(ad.expiresAt).getTime()
+			expiresAt: new Date(ad.expiresAt).getTime(),
 		});
 	} else {
 		os.apiWithDialog('admin/ad/update', {
 			...ad,
-			expiresAt: new Date(ad.expiresAt).getTime()
+			expiresAt: new Date(ad.expiresAt).getTime(),
 		});
 	}
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.ads,
-		icon: 'fas fa-audio-description',
-		bg: 'var(--bg)',
-		actions: [{
-			asFullButton: true,
-			icon: 'fas fa-plus',
-			text: i18n.ts.add,
-			handler: add,
-		}],
-	}
+definePageMetadata({
+	title: i18n.ts.ads,
+	icon: 'fas fa-audio-description',
+	bg: 'var(--bg)',
+	actions: [{
+		asFullButton: true,
+		icon: 'fas fa-plus',
+		text: i18n.ts.add,
+		handler: add,
+	}],
 });
 </script>
 

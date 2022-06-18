@@ -139,7 +139,7 @@ export class Router extends EventEmitter<{
 		const res = this.resolve(this.currentPath);
 
 		if (res == null) {
-			throw new Error('no route found');
+			throw new Error('no route found for: ' + path);
 		}
 
 		const isSameRoute = beforeRoute === res.route;

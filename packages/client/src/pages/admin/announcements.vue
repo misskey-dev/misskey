@@ -29,6 +29,7 @@ import MkTextarea from '@/components/form/textarea.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 let announcements: any[] = $ref([]);
 
@@ -41,7 +42,7 @@ function add() {
 		id: null,
 		title: '',
 		text: '',
-		imageUrl: null
+		imageUrl: null,
 	});
 }
 
@@ -61,41 +62,39 @@ function save(announcement) {
 		os.api('admin/announcements/create', announcement).then(() => {
 			os.alert({
 				type: 'success',
-				text: i18n.ts.saved
+				text: i18n.ts.saved,
 			});
 		}).catch(err => {
 			os.alert({
 				type: 'error',
-				text: err
+				text: err,
 			});
 		});
 	} else {
 		os.api('admin/announcements/update', announcement).then(() => {
 			os.alert({
 				type: 'success',
-				text: i18n.ts.saved
+				text: i18n.ts.saved,
 			});
 		}).catch(err => {
 			os.alert({
 				type: 'error',
-				text: err
+				text: err,
 			});
 		});
 	}
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.announcements,
-		icon: 'fas fa-broadcast-tower',
-		bg: 'var(--bg)',
-		actions: [{
-			asFullButton: true,
-			icon: 'fas fa-plus',
-			text: i18n.ts.add,
-			handler: add,
-		}],
-	}
+definePageMetadata({
+	title: i18n.ts.announcements,
+	icon: 'fas fa-broadcast-tower',
+	bg: 'var(--bg)',
+	actions: [{
+		asFullButton: true,
+		icon: 'fas fa-plus',
+		text: i18n.ts.add,
+		handler: add,
+	}],
 });
 </script>
 

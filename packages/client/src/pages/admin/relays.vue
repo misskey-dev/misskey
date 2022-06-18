@@ -19,6 +19,7 @@ import MkButton from '@/components/ui/button.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 let relays: any[] = $ref([]);
 
@@ -26,30 +27,30 @@ async function addRelay() {
 	const { canceled, result: inbox } = await os.inputText({
 		title: i18n.ts.addRelay,
 		type: 'url',
-		placeholder: i18n.ts.inboxUrl
+		placeholder: i18n.ts.inboxUrl,
 	});
 	if (canceled) return;
 	os.api('admin/relays/add', {
-		inbox
+		inbox,
 	}).then((relay: any) => {
 		refresh();
 	}).catch((err: any) => {
 		os.alert({
 			type: 'error',
-			text: err.message || err
+			text: err.message || err,
 		});
 	});
 }
 
 function remove(inbox: string) {
 	os.api('admin/relays/remove', {
-		inbox
+		inbox,
 	}).then(() => {
 		refresh();
 	}).catch((err: any) => {
 		os.alert({
 			type: 'error',
-			text: err.message || err
+			text: err.message || err,
 		});
 	});
 }
@@ -62,18 +63,16 @@ function refresh() {
 
 refresh();
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.relays,
-		icon: 'fas fa-globe',
-		bg: 'var(--bg)',
-		actions: [{
-			asFullButton: true,
-			icon: 'fas fa-plus',
-			text: i18n.ts.addRelay,
-			handler: addRelay,
-		}],
-	}
+definePageMetadata({
+	title: i18n.ts.relays,
+	icon: 'fas fa-globe',
+	bg: 'var(--bg)',
+	actions: [{
+		asFullButton: true,
+		icon: 'fas fa-plus',
+		text: i18n.ts.addRelay,
+		handler: addRelay,
+	}],
 });
 </script>
 

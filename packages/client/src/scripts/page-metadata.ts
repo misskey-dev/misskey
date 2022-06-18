@@ -1,25 +1,26 @@
-import { ComputedRef, inject, onActivated, onMounted } from 'vue';
+import { ComputedRef, inject, isRef, onActivated, onMounted, ref, Ref } from 'vue';
 
 export type PageMetadata = {
 	title: string;
-	icon: string;
+	icon: string | null;
 	// ...
 };
 
-export function definePageMetadata(metadata: PageMetadata | null | ComputedRef<PageMetadata | null>): void {
-	const set = inject('setPageMetadata') as null | ((meta: PageMetadata | null | ComputedRef<PageMetadata | null>) => void);
+export function definePageMetadata(metadata: PageMetadata | null | Ref<PageMetadata | null> | ComputedRef<PageMetadata | null>): void {
+	const _metadata = isRef(metadata) ? metadata : { value: metadata };
+	const set = inject('setPageMetadata') as any;
 	if (set == null) {
 		if (_DEV_) console.error('no setPageMetadata provided');
 		return;
 	}
 
-	set(metadata);
+	set(_metadata);
 
 	onMounted(() => {
-		set(metadata);
+		set(_metadata);
 	});
 
 	onActivated(() => {
-		set(metadata);
+		set(_metadata);
 	});
 }

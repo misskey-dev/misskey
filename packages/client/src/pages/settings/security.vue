@@ -46,6 +46,7 @@ import MkPagination from '@/components/ui/pagination.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const pagination = {
 	endpoint: 'i/signin-history' as const,
@@ -97,12 +98,10 @@ function regenerateToken() {
 	});
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.security,
-		icon: 'fas fa-lock',
-		bg: 'var(--bg)',
-	},
+definePageMetadata({
+	title: i18n.ts.security,
+	icon: 'fas fa-lock',
+	bg: 'var(--bg)',
 });
 </script>
 

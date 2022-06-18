@@ -47,6 +47,7 @@ import * as os from '@/os';
 import { selectFile } from '@/scripts/select-file';
 import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const excludeMutingUsers = ref(false);
 const excludeInactiveUsers = ref(false);
@@ -116,12 +117,10 @@ const importBlocking = async (ev) => {
 	os.api('i/import-blocking', { fileId: file.id }).then(onImportSuccess).catch(onError);
 };
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.importAndExport,
-		icon: 'fas fa-boxes',
-		bg: 'var(--bg)',
-	},
+definePageMetadata({
+	title: i18n.ts.importAndExport,
+	icon: 'fas fa-boxes',
+	bg: 'var(--bg)',
 });
 </script>
 

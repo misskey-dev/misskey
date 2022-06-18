@@ -31,6 +31,7 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
+import XBotProtection from './bot-protection.vue';
 import FormFolder from '@/components/form/folder.vue';
 import FormSwitch from '@/components/form/switch.vue';
 import FormInfo from '@/components/ui/info.vue';
@@ -38,11 +39,11 @@ import FormSuspense from '@/components/form/suspense.vue';
 import FormSection from '@/components/form/section.vue';
 import FormInput from '@/components/form/input.vue';
 import FormButton from '@/components/ui/button.vue';
-import XBotProtection from './bot-protection.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { fetchInstance } from '@/instance';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 let summalyProxy: string = $ref('');
 let enableHcaptcha: boolean = $ref(false);
@@ -63,11 +64,9 @@ function save() {
 	});
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.security,
-		icon: 'fas fa-lock',
-		bg: 'var(--bg)',
-	}
+definePageMetadata({
+	title: i18n.ts.security,
+	icon: 'fas fa-lock',
+	bg: 'var(--bg)',
 });
 </script>

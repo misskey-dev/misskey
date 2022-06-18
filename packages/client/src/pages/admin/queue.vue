@@ -12,13 +12,14 @@
 
 <script lang="ts" setup>
 import { markRaw, onMounted, onBeforeUnmount, nextTick } from 'vue';
-import MkButton from '@/components/ui/button.vue';
 import XQueue from './queue.chart.vue';
+import MkButton from '@/components/ui/button.vue';
 import * as os from '@/os';
 import { stream } from '@/stream';
 import * as symbols from '@/symbols';
 import * as config from '@/config';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const connection = markRaw(stream.useChannel('queueStats'));
 
@@ -38,7 +39,7 @@ onMounted(() => {
 	nextTick(() => {
 		connection.send('requestLog', {
 			id: Math.random().toString().substr(2, 8),
-			length: 200
+			length: 200,
 		});
 	});
 });
@@ -47,19 +48,17 @@ onBeforeUnmount(() => {
 	connection.dispose();
 });
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.jobQueue,
-		icon: 'fas fa-clipboard-list',
-		bg: 'var(--bg)',
-		actions: [{
-			asFullButton: true,
-			icon: 'fas fa-up-right-from-square',
-			text: i18n.ts.dashboard,
-			handler: () => {
-				window.open(config.url + '/queue', '_blank');
-			},
-		}],
-	}
+definePageMetadata({
+	title: i18n.ts.jobQueue,
+	icon: 'fas fa-clipboard-list',
+	bg: 'var(--bg)',
+	actions: [{
+		asFullButton: true,
+		icon: 'fas fa-up-right-from-square',
+		text: i18n.ts.dashboard,
+		handler: () => {
+			window.open(config.url + '/queue', '_blank');
+		},
+	}],
 });
 </script>
