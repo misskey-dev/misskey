@@ -8,7 +8,7 @@
 	</template>
 
 	<MkStickyContainer>
-		<template #header><MkHeader v-if="pageMetadata?.value && !pageMetadata?.value?.hideHeader" :info="pageMetadata"/></template>
+		<template #header><MkHeader v-if="pageMetadata?.value && !pageMetadata?.value?.hideHeader" :info="pageMetadata?.value"/></template>
 		<RouterView @contextmenu.stop="onContextmenu"/>
 	</MkStickyContainer>
 </XColumn>

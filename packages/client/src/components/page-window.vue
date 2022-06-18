@@ -15,7 +15,7 @@
 		</template>
 	</template>
 	<template #headerLeft>
-		<button v-if="history.length > 0" v-tooltip="$ts.goBack" class="_button" @click="back()"><i class="fas fa-arrow-left"></i></button>
+		<button v-if="history.length > 1" v-tooltip="$ts.goBack" class="_button" @click="back"><i class="fas fa-arrow-left"></i></button>
 	</template>
 	<template #headerRight>
 		<button v-tooltip="$ts.showInPage" class="_button" @click="expand()"><i class="fas fa-expand-alt"></i></button>
@@ -55,24 +55,19 @@ defineEmits<{
 
 const router = new Router(routes, props.initialPath);
 
-router.addListener('push', ctx => {
-	
-});
-
 let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();
 let windowEl = $ref<InstanceType<typeof XWindow>>();
-const history = [];
+const history = $ref<string[]>([props.initialPath]);
+
+router.addListener('push', ctx => {
+	history.push(router.getCurrentPath());
+});
 
 provide('router', router);
 provide('setPageMetadata', (info) => {
 	pageMetadata = info;
 });
 provide('shouldHeaderThin', true);
-
-function navigate(path, record = true) {
-	if (record) history.push(router.getCurrentPath());
-	router.push(path);
-}
 
 function menu(ev) {
 	os.popupMenu([{
@@ -92,7 +87,8 @@ function menu(ev) {
 }
 
 function back() {
-	navigate(history.pop(), false);
+	history.pop();
+	router.change(history[history.length - 1]);
 }
 
 function close() {

@@ -65,20 +65,20 @@ let error = $ref();
 const prevPagination = {
 	endpoint: 'users/notes' as const,
 	limit: 10,
-	params: computed(() => ({
+	params: computed(() => note ? ({
 		userId: note.userId,
 		untilId: note.id,
-	})),
+	}) : null),
 };
 
 const nextPagination = {
 	reversed: true,
 	endpoint: 'users/notes' as const,
 	limit: 10,
-	params: computed(() => ({
+	params: computed(() => note ? ({
 		userId: note.userId,
 		sinceId: note.id,
-	})),
+	}) : null),
 };
 
 function fetchNote() {
