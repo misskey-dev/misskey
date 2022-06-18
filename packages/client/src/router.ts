@@ -5,8 +5,8 @@ import MkLoading from '@/pages/_loading_.vue';
 import MkError from '@/pages/_error_.vue';
 import { ui } from '@/config';
 
-const page = (path: AsyncComponentLoader<any>) => defineAsyncComponent({
-	loader: path,
+const page = (loader: AsyncComponentLoader<any>) => defineAsyncComponent({
+	loader: loader,
 	loadingComponent: MkLoading,
 	errorComponent: MkError,
 });
@@ -26,8 +26,14 @@ export const routes = [{
 	path: '/notes/:noteId',
 	component: page(() => import('./pages/note.vue')),
 }, {
+	path: '/clips/:clipId',
+	component: page(() => import('./pages/clip.vue')),
+}, {
 	path: '/user-info/:userId',
 	component: page(() => import('./pages/user-info.vue')),
+}, {
+	path: '/instance-info/:host',
+	component: page(() => import('./pages/instance-info.vue')),
 }, {
 	name: 'settings',
 	path: '/settings/:initialPage(*)?',
@@ -103,6 +109,9 @@ export const routes = [{
 		permission: 'permission',
 	},
 }, {
+	path: '/tags/:tag',
+	component: page(() => import('./pages/tag.vue')),
+}, {
 	path: '/pages/new',
 	component: page(() => import('./pages/page-editor/page-editor.vue')),
 }, {
@@ -111,6 +120,33 @@ export const routes = [{
 }, {
 	path: '/pages',
 	component: page(() => import('./pages/pages.vue')),
+}, {
+	path: '/gallery/:postId/edit',
+	component: page(() => import('./pages/gallery/edit.vue')),
+}, {
+	path: '/gallery/new',
+	component: page(() => import('./pages/gallery/edit.vue')),
+}, {
+	path: '/gallery/:postId',
+	component: page(() => import('./pages/gallery/post.vue')),
+}, {
+	path: '/gallery',
+	component: page(() => import('./pages/gallery/index.vue')),
+}, {
+	path: '/channels/:channelId/edit',
+	component: page(() => import('./pages/channel-editor.vue')),
+}, {
+	path: '/channels/new',
+	component: page(() => import('./pages/channel-editor.vue')),
+}, {
+	path: '/channels/:channelId',
+	component: page(() => import('./pages/channel.vue')),
+}, {
+	path: '/channels',
+	component: page(() => import('./pages/channels.vue')),
+}, {
+	path: '/admin/file/:fileId',
+	component: iAmModerator ? page(() => import('./pages/admin-file.vue')) : page(() => import('./pages/not-found.vue')),
 }, {
 	path: '/admin/:initialPage(*)?',
 	component: iAmModerator ? page(() => import('./pages/admin/index.vue')) : page(() => import('./pages/not-found.vue')),
@@ -151,6 +187,24 @@ export const routes = [{
 }, {
 	path: '/my/lists',
 	component: page(() => import('./pages/my-lists/index.vue')),
+}, {
+	path: '/my/clips',
+	component: page(() => import('./pages/my-clips/index.vue')),
+}, {
+	path: '/my/antennas/create',
+	component: page(() => import('./pages/my-antennas/create.vue')),
+}, {
+	path: '/my/antennas/:antennaId',
+	component: page(() => import('./pages/my-antennas/edit.vue')),
+}, {
+	path: '/my/antennas',
+	component: page(() => import('./pages/my-antennas/index.vue')),
+}, {
+	path: '/timeline/list/:listId',
+	component: page(() => import('./pages/user-list-timeline.vue')),
+}, {
+	path: '/timeline/antenna/:antennaId',
+	component: page(() => import('./pages/antenna-timeline.vue')),
 }, {
 	name: 'index',
 	path: '/',

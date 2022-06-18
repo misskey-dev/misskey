@@ -5,12 +5,15 @@
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { inject } from 'vue';
 import XAntenna from './editor.vue';
 import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
-import { router } from '@/router';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { Router } from '@/nirax';
+import { mainRouter } from '@/router';
+
+const router: Router = inject('router') ?? mainRouter;
 
 let draft = $ref({
 	name: '',
