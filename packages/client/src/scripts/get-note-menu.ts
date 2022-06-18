@@ -15,7 +15,7 @@ export function getNoteMenu(props: {
 	translation: Ref<any>;
 	translating: Ref<boolean>;
 	isDeleted: Ref<boolean>;
-	cullentClipPage?: Ref<misskey.entities.Clip>;
+	currentClipPage?: Ref<misskey.entities.Clip>;
 }) {
 	const isRenote = (
 		props.note.renote != null &&
@@ -138,7 +138,7 @@ export function getNoteMenu(props: {
 							});
 							if (!confirm.canceled) {
 								os.apiWithDialog('clips/remove-note', { clipId: clip.id, noteId: appearNote.id });
-								if (props.cullentClipPage?.value.id === clip.id) props.isDeleted.value = true;
+								if (props.currentClipPage?.value.id === clip.id) props.isDeleted.value = true;
 							}
 						} else {
 							os.alert({
@@ -154,7 +154,7 @@ export function getNoteMenu(props: {
 	}
 
 	async function unclip(): Promise<void> {
-		os.apiWithDialog('clips/remove-note', { clipId: props.cullentClipPage.value.id, noteId: appearNote.id });
+		os.apiWithDialog('clips/remove-note', { clipId: props.currentClipPage.value.id, noteId: appearNote.id });
 		props.isDeleted.value = true;
 	}
 
@@ -198,7 +198,7 @@ export function getNoteMenu(props: {
 
 		menu = [
 		...(
-			props.cullentClipPage?.value.userId === $i.id ? [{
+			props.currentClipPage?.value.userId === $i.id ? [{
 				icon: 'fas fa-circle-minus',
 				text: i18n.ts.unclip,
 				danger: true,

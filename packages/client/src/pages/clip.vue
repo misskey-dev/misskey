@@ -47,7 +47,7 @@ watch(() => props.clipId, async () => {
 	immediate: true,
 }); 
 
-provide('cullentClipPage', $$(clip));
+provide('currentClipPage', $$(clip));
 
 defineExpose({
 	[symbols.PAGE_INFO]: computed(() => clip ? {
