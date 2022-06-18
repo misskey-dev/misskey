@@ -48,7 +48,7 @@ import MkButton from '@/components/ui/button.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { definePageMetadata } from '@/scripts/page-metadata';
-import i18n from '@/components/global/i18n';
+import { i18n } from '@/i18n';
 
 const props = defineProps<{
 	noteId: string;
