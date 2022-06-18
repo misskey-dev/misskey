@@ -14,13 +14,7 @@
 			<div class="content">
 				<MkStickyContainer>
 					<template #header><MkHeader v-if="pageInfo && !pageInfo.hideHeader" :info="pageInfo"/></template>
-					<router-view v-slot="{ Component }">
-						<transition :name="$store.state.animation ? 'page' : ''" mode="out-in">
-							<keep-alive :include="['MkTimelinePage']">
-								<component :is="Component" :ref="changePage"/>
-							</keep-alive>
-						</transition>
-					</router-view>
+					<RouterView/>
 				</MkStickyContainer>
 			</div>
 		</main>

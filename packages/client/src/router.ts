@@ -112,6 +112,9 @@ export const routes = [{
 	path: '/pages',
 	component: page(() => import('./pages/pages.vue')),
 }, {
+	path: '/admin/:initialPage(*)?',
+	component: iAmModerator ? page(() => import('./pages/admin/index.vue')) : page(() => import('./pages/not-found.vue')),
+}, {
 	path: '/my/notifications',
 	component: page(() => import('./pages/notifications.vue')),
 }, {
@@ -153,6 +156,9 @@ export const routes = [{
 	path: '/',
 	component: $i ? page(() => import('./pages/timeline.vue')) : page(() => import('./pages/welcome.vue')),
 	globalCacheKey: 'index',
+}, {
+	path: '/(*)',
+	component: page(() => import('./pages/not-found.vue')),
 }];
 
 export const mainRouter = new Router(routes, location.pathname + location.search);

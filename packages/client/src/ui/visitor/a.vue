@@ -24,11 +24,7 @@
 				<XHeader :info="pageInfo"/>
 			</header>
 			<main ref="main">
-				<router-view v-slot="{ Component }">
-					<transition :name="$store.state.animation ? 'page' : ''" mode="out-in">
-						<component :is="Component" :ref="changePage"/>
-					</transition>
-				</router-view>
+				<RouterView/>
 			</main>
 			<div class="powered-by">
 				<b><MkA to="/">{{ host }}</MkA></b>

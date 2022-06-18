@@ -1,33 +1,28 @@
 <template>
 <XColumn v-if="deckStore.state.alwaysShowMainColumn || mainRouter.currentRoute.value.name !== 'index'" :column="column" :is-stacked="isStacked" @parent-focus="$event => emit('parent-focus', $event)">
 	<template #header>
-		<template v-if="pageInfo">
-			<i :class="pageInfo.icon"></i>
-			{{ pageInfo.title }}
+		<template v-if="pageMetadata?.value">
+			<i :class="pageMetadata?.value.icon"></i>
+			{{ pageMetadata?.value.title }}
 		</template>
 	</template>
 
 	<MkStickyContainer>
-		<template #header><MkHeader v-if="pageInfo && !pageInfo.hideHeader" :info="pageInfo"/></template>
-		<router-view v-slot="{ Component }">
-			<transition>
-				<keep-alive :include="['MkTimelinePage']">
-					<component :is="Component" :ref="changePage" @contextmenu.stop="onContextmenu"/>
-				</keep-alive>
-			</transition>
-		</router-view>
+		<template #header><MkHeader v-if="pageMetadata?.value && !pageMetadata?.value?.hideHeader" :info="pageMetadata"/></template>
+		<RouterView @contextmenu.stop="onContextmenu"/>
 	</MkStickyContainer>
 </XColumn>
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ComputedRef, provide } from 'vue';
 import XColumn from './column.vue';
 import { deckStore, Column } from '@/ui/deck/deck-store';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
 import { mainRouter } from '@/router';
+import { PageMetadata } from '@/scripts/page-metadata';
 
 defineProps<{
 	column: Column;
@@ -38,14 +33,13 @@ const emit = defineEmits<{
 	(ev: 'parent-focus', direction: 'up' | 'down' | 'left' | 'right'): void;
 }>();
 
-let pageInfo = $ref<Record<string, any> | null>(null);
+let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();
 
-function changePage(page) {
-	if (page == null) return;
-	if (page[symbols.PAGE_INFO]) {
-		pageInfo = page[symbols.PAGE_INFO];
-	}
-}
+provide('router', mainRouter);
+provide('setPageMetadata', (info: ComputedRef<PageMetadata>) => {
+	pageMetadata = info;
+});
+
 /*
 function back() {
 	history.back();

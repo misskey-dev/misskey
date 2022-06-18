@@ -2,17 +2,11 @@
 <div class="mk-app">
 	<div class="contents">
 		<header class="header">
-			<MkHeader :info="pageInfo"/>
+			<MkHeader :info="pageMetadata"/>
 		</header>
 		<main ref="main">
 			<div class="content">
-				<router-view v-slot="{ Component }">
-					<transition :name="$store.state.animation ? 'page' : ''" mode="out-in">
-						<keep-alive :include="['MkTimelinePage']">
-							<component :is="Component" :ref="changePage"/>
-						</keep-alive>
-					</transition>
-				</router-view>
+				<RouterView/>
 			</div>
 		</main>
 	</div>
@@ -21,45 +15,23 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, defineAsyncComponent } from 'vue';
+<script lang="ts" setup>
+import { provide, ComputedRef } from 'vue';
 import XCommon from './_common_/common.vue';
-import { host } from '@/config';
-import * as symbols from '@/symbols';
+import { mainRouter } from '@/router';
+import { PageMetadata } from '@/scripts/page-metadata';
 
-export default defineComponent({
-	components: {
-		XCommon,
-	},
+let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();
 
-	data() {
-		return {
-			host: host,
-			pageInfo: null,
-		};
-	},
-
-	created() {
-		document.documentElement.style.overflowY = 'scroll';
-	},
-
-	methods: {
-		changePage(page) {
-			if (page == null) return;
-			if (page[symbols.PAGE_INFO]) {
-				this.pageInfo = page[symbols.PAGE_INFO];
-			}
-		},
-
-		top() {
-			window.scroll({ top: 0, behavior: 'smooth' });
-		},
-
-		help() {
-			window.open('https://misskey-hub.net/docs/keyboard-shortcut.md', '_blank');
-		},
-	},
+provide('router', mainRouter);
+provide('setPageMetadata', (info: ComputedRef<PageMetadata>) => {
+	pageMetadata = info;
+	if (pageMetadata.value) {
+		document.title = `${pageMetadata.value.title} | ${instanceName}`;
+	}
 });
+
+document.documentElement.style.overflowY = 'scroll';
 </script>
 
 <style lang="scss" scoped>

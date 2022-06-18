@@ -34,104 +34,90 @@
 </MkSpacer>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent } from 'vue';
+<script lang="ts" setup>
+import { computed, defineComponent, watch } from 'vue';
 import MkButton from '@/components/ui/button.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { mainRouter } from '@/router';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
-export default defineComponent({
-	components: {
-		MkButton,
-	},
+const props = defineProps<{
+	listId: string;
+}>();
 
-	props: {
-		listId: {
-			type: String,
-		},
-	},
+let list = $ref(null);
+let users = $ref([]);
 
-	data() {
-		return {
-			[symbols.PAGE_INFO]: computed(() => this.list ? {
-				title: this.list.name,
-				icon: 'fas fa-list-ul',
-				bg: 'var(--bg)',
-			} : null),
-			list: null,
-			users: [],
-		};
-	},
+function fetchList() {
+	os.api('users/lists/show', {
+		listId: props.listId,
+	}).then(_list => {
+		list = _list;
+		os.api('users/show', {
+			userIds: list.userIds,
+		}).then(_users => {
+			users = _users;
+		});
+	});
+}
 
-	created() {
-		this.fetch();
-	},
+function addUser() {
+	os.selectUser().then(user => {
+		os.apiWithDialog('users/lists/push', {
+			listId: list.id,
+			userId: user.id,
+		}).then(() => {
+			users.push(user);
+		});
+	});
+}
 
-	methods: {
-		fetch() {
-			os.api('users/lists/show', {
-				listId: this.listId,
-			}).then(list => {
-				this.list = list;
-				os.api('users/show', {
-					userIds: this.list.userIds,
-				}).then(users => {
-					this.users = users;
-				});
-			});
-		},
+function removeUser(user) {
+	os.api('users/lists/pull', {
+		listId: list.id,
+		userId: user.id,
+	}).then(() => {
+		users = users.filter(x => x.id !== user.id);
+	});
+}
 
-		addUser() {
-			os.selectUser().then(user => {
-				os.apiWithDialog('users/lists/push', {
-					listId: this.list.id,
-					userId: user.id,
-				}).then(() => {
-					this.users.push(user);
-				});
-			});
-		},
+async function renameList() {
+	const { canceled, result: name } = await os.inputText({
+		title: i18n.ts.enterListName,
+		default: list.name,
+	});
+	if (canceled) return;
 
-		removeUser(user) {
-			os.api('users/lists/pull', {
-				listId: this.list.id,
-				userId: user.id,
-			}).then(() => {
-				this.users = this.users.filter(x => x.id !== user.id);
-			});
-		},
+	await os.api('users/lists/update', {
+		listId: list.id,
+		name: name,
+	});
 
-		async renameList() {
-			const { canceled, result: name } = await os.inputText({
-				title: this.$ts.enterListName,
-				default: this.list.name,
-			});
-			if (canceled) return;
+	list.name = name;
+}
 
-			await os.api('users/lists/update', {
-				listId: this.list.id,
-				name: name,
-			});
+async function deleteList() {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.t('removeAreYouSure', { x: list.name }),
+	});
+	if (canceled) return;
 
-			this.list.name = name;
-		},
+	await os.api('users/lists/delete', {
+		listId: list.id,
+	});
+	os.success();
+	mainRouter.push('/my/lists');
+}
 
-		async deleteList() {
-			const { canceled } = await os.confirm({
-				type: 'warning',
-				text: this.$t('removeAreYouSure', { x: this.list.name }),
-			});
-			if (canceled) return;
+watch(() => props.listId, fetchList, { immediate: true });
 
-			await os.api('users/lists/delete', {
-				listId: this.list.id,
-			});
-			os.success();
-			mainRouter.push('/my/lists');
-		},
-	},
-});
+definePageMetadata(computed(() => list ? {
+	title: list.name,
+	icon: 'fas fa-list-ul',
+	bg: 'var(--bg)',
+} : null));
 </script>
 
 <style lang="scss" scoped>

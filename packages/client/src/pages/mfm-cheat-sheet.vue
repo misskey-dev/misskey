@@ -301,7 +301,7 @@ import { defineComponent } from 'vue';
 import MkTextarea from '@/components/form/textarea.vue';
 import * as symbols from '@/symbols';
 import { definePageMetadata } from '@/scripts/page-metadata';
-import i18n from '@/i18n';
+import { i18n } from '@/i18n';
 import { instance } from '@/instance';
 
 const preview_mention = '@example';
