@@ -19,7 +19,7 @@
 	<div v-if="!(narrow && initialPage == null)" class="main">
 		<MkStickyContainer>
 			<template #header><MkHeader v-if="childInfo && !childInfo.hideHeader" :info="childInfo"/></template>
-			<component :is="component" :ref="el => pageChanged(el)" :key="initialPage" v-bind="pageProps"/>
+			<component :is="component" :key="initialPage" v-bind="pageProps"/>
 		</MkStickyContainer>
 	</div>
 </div>
@@ -37,6 +37,7 @@ import * as os from '@/os';
 import { lookupUser } from '@/scripts/lookup-user';
 import { Router } from '@/nirax';
 import { mainRouter } from '@/router';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const isEmpty = (x: string | null) => x == null || x === '';
 
@@ -252,13 +253,13 @@ onUnmounted(() => {
 	ro.disconnect();
 });
 
-const pageChanged = (page) => {
-	if (page == null) {
+provide('setPageMetadata', (info) => {
+	if (info == null) {
 		childInfo = null;
 	} else {
-		childInfo = page[symbols.PAGE_INFO];
+		childInfo = info;
 	}
-};
+});
 
 const invite = () => {
 	os.api('admin/invite').then(x => {
@@ -302,8 +303,9 @@ const lookup = (ev) => {
 	}], ev.currentTarget ?? ev.target);
 };
 
+definePageMetadata(INFO);
+
 defineExpose({
-	[symbols.PAGE_INFO]: INFO,
 	header: {
 		title: i18n.ts.controlPanel,
 	},

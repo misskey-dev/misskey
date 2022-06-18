@@ -12,6 +12,7 @@ import XEntrance from './welcome.entrance.a.vue';
 import { instanceName } from '@/config';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 let meta = $ref(null);
 
@@ -19,10 +20,8 @@ os.api('meta', { detail: true }).then(res => {
 	meta = res;
 });
 
-defineExpose({
-	[symbols.PAGE_INFO]: computed(() => ({
-		title: instanceName,
-		icon: null,
-	})),
-});
+definePageMetadata(computed(() => ({
+	title: instanceName,
+	icon: null,
+})));
 </script>

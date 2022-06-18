@@ -19,7 +19,7 @@
 			</div>
 			<MkPagination ref="emojisPaginationComponent" :pagination="pagination">
 				<template #empty><span>{{ $ts.noCustomEmojis }}</span></template>
-				<template v-slot="{items}">
+				<template #default="{items}">
 					<div class="ldhfsamy">
 						<button v-for="emoji in items" :key="emoji.id" class="emoji _panel _button" :class="{ selected: selectedEmojis.includes(emoji.id) }" @click="selectMode ? toggleSelect(emoji) : edit(emoji)">
 							<img :src="emoji.url" class="img" :alt="emoji.name"/>
@@ -45,7 +45,7 @@
 			</FormSplit>
 			<MkPagination :pagination="remotePagination">
 				<template #empty><span>{{ $ts.noCustomEmojis }}</span></template>
-				<template v-slot="{items}">
+				<template #default="{items}">
 					<div class="ldhfsamy">
 						<div v-for="emoji in items" :key="emoji.id" class="emoji _panel _button" @click="remoteMenu(emoji, $event)">
 							<img :src="emoji.url" class="img" :alt="emoji.name"/>
@@ -74,6 +74,7 @@ import { selectFile, selectFiles } from '@/scripts/select-file';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const emojisPaginationComponent = ref<InstanceType<typeof MkPagination>>();
 
@@ -131,13 +132,13 @@ const add = async (ev: MouseEvent) => {
 
 const edit = (emoji) => {
 	os.popup(defineAsyncComponent(() => import('./emoji-edit-dialog.vue')), {
-		emoji: emoji
+		emoji: emoji,
 	}, {
 		done: result => {
 			if (result.updated) {
 				emojisPaginationComponent.value.updateItem(result.updated.id, (oldEmoji: any) => ({
 					...oldEmoji,
-					...result.updated
+					...result.updated,
 				}));
 			} else if (result.deleted) {
 				emojisPaginationComponent.value.removeItem((item) => item.id === emoji.id);
@@ -159,7 +160,7 @@ const remoteMenu = (emoji, ev: MouseEvent) => {
 	}, {
 		text: i18n.ts.import,
 		icon: 'fas fa-plus',
-		action: () => { im(emoji); }
+		action: () => { im(emoji); },
 	}], ev.currentTarget ?? ev.target);
 };
 
@@ -181,7 +182,7 @@ const menu = (ev: MouseEvent) => {
 					text: err.message,
 				});
 			});
-		}
+		},
 	}, {
 		icon: 'fas fa-upload',
 		text: i18n.ts.import,
@@ -201,7 +202,7 @@ const menu = (ev: MouseEvent) => {
 					text: err.message,
 				});
 			});
-		}
+		},
 	}], ev.currentTarget ?? ev.target);
 };
 
@@ -265,31 +266,29 @@ const delBulk = async () => {
 	emojisPaginationComponent.value.reload();
 };
 
-defineExpose({
-	[symbols.PAGE_INFO]: computed(() => ({
-		title: i18n.ts.customEmojis,
-		icon: 'fas fa-laugh',
-		bg: 'var(--bg)',
-		actions: [{
-			asFullButton: true,
-			icon: 'fas fa-plus',
-			text: i18n.ts.addEmoji,
-			handler: add,
-		}, {
-			icon: 'fas fa-ellipsis-h',
-			handler: menu,
-		}],
-		tabs: [{
-			active: tab.value === 'local',
-			title: i18n.ts.local,
-			onClick: () => { tab.value = 'local'; },
-		}, {
-			active: tab.value === 'remote',
-			title: i18n.ts.remote,
-			onClick: () => { tab.value = 'remote'; },
-		},]
-	})),
-});
+definePageMetadata(computed(() => ({
+	title: i18n.ts.customEmojis,
+	icon: 'fas fa-laugh',
+	bg: 'var(--bg)',
+	actions: [{
+		asFullButton: true,
+		icon: 'fas fa-plus',
+		text: i18n.ts.addEmoji,
+		handler: add,
+	}, {
+		icon: 'fas fa-ellipsis-h',
+		handler: menu,
+	}],
+	tabs: [{
+		active: tab.value === 'local',
+		title: i18n.ts.local,
+		onClick: () => { tab.value = 'local'; },
+	}, {
+		active: tab.value === 'remote',
+		title: i18n.ts.remote,
+		onClick: () => { tab.value = 'remote'; },
+	}],
+})));
 </script>
 
 <style lang="scss" scoped>

@@ -149,12 +149,6 @@ export const routes = [{
 	path: '/my/lists',
 	component: page(() => import('./pages/my-lists/index.vue')),
 }, {
-	path: '/my/groups/:groupId',
-	component: page(() => import('./pages/my-groups/group.vue')),
-}, {
-	path: '/my/groups',
-	component: page(() => import('./pages/my-groups/index.vue')),
-}, {
 	name: 'index',
 	path: '/',
 	component: $i ? page(() => import('./pages/timeline.vue')) : page(() => import('./pages/welcome.vue')),
