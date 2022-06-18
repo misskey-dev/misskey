@@ -4,6 +4,7 @@ import { Ref, Component, ref, shallowRef, ShallowRef } from 'vue';
 type RouteDef = {
 	path: string;
 	component: Component;
+	query?: Record<string, string>;
 	name?: string;
 	globalCacheKey?: string;
 };
@@ -73,7 +74,13 @@ export class Router extends EventEmitter<{
 	}
 
 	private resolve(path: string): { route: RouteDef; props: Map<string, string>; } | null {
+		let queryString: string | null = null;
 		if (path[0] === '/') path = path.substring(1);
+		if (path.includes('?')) {
+			queryString = path.substring(path.indexOf('?') + 1);
+			path = path.substring(0, path.indexOf('?'));
+		}
+		console.log(path, queryString);
 
 		for (const route of this.routes) {
 			const parts = path.split('/');
@@ -103,6 +110,17 @@ export class Router extends EventEmitter<{
 			}
 
 			if (parts.length === 0) {
+				if (route.query != null && queryString != null) {
+					const queryObject = [...new URLSearchParams(queryString).entries()]
+						.reduce((obj, entry) => ({ ...obj, [entry[0]]: entry[1] }), {});
+
+					for (const q in route.query) {
+						const as = route.query[q];
+						if (queryObject[q]) {
+							props.set(as, queryObject[q]);
+						}
+					}
+				}
 				return {
 					route,
 					props,
