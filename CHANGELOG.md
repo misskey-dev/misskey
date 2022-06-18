@@ -14,6 +14,7 @@ You should also include the user name that made the change.
 ### Improvements
 - Server: Add rate limit to i/notifications @tamaina
 - Client: Improve files page of control panel @syuilo
+- Improve player detection in URL preview @mei23
 
 ### Bugfixes
 - Server: Fix GenerateVideoThumbnail failed @mei23
