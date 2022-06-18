@@ -25,7 +25,7 @@
 			</header>
 			<main ref="main">
 				<router-view v-slot="{ Component }">
-					<transition :name="$store.state.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
+					<transition :name="$store.state.animation ? 'page' : ''" mode="out-in">
 						<component :is="Component" :ref="changePage"/>
 					</transition>
 				</router-view>
@@ -123,10 +123,6 @@ export default defineComponent({
 
 		help() {
 			window.open('https://misskey-hub.net/docs/keyboard-shortcut.md', '_blank');
-		},
-
-		onTransition() {
-			if (window._scroll) window._scroll();
 		},
 	},
 });

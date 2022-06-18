@@ -15,7 +15,7 @@
 				<MkStickyContainer>
 					<template #header><MkHeader v-if="pageInfo && !pageInfo.hideHeader" :info="pageInfo"/></template>
 					<router-view v-slot="{ Component }">
-						<transition :name="$store.state.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
+						<transition :name="$store.state.animation ? 'page' : ''" mode="out-in">
 							<keep-alive :include="['MkTimelinePage']">
 								<component :is="Component" :ref="changePage"/>
 							</keep-alive>
@@ -163,10 +163,6 @@ export default defineComponent({
 
 		top() {
 			window.scroll({ top: 0, behavior: 'smooth' });
-		},
-
-		onTransition() {
-			if (window._scroll) window._scroll();
 		},
 
 		onContextmenu(ev: MouseEvent) {

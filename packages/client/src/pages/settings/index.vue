@@ -39,9 +39,13 @@ import { Router } from '@/nirax';
 import { mainRouter } from '@/router';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
-const props = defineProps<{
-  initialPage?: string
-}>();
+const props = withDefaults(defineProps<{
+  initialPage?: string;
+}>(), {
+	initialPage: 'profile',
+});
+
+console.log(props);
 
 const indexInfo = {
 	title: i18n.ts.settings,

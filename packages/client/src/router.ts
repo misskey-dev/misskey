@@ -30,7 +30,7 @@ export const routes = [{
 	component: page(() => import('./pages/user-info.vue')),
 }, {
 	name: 'settings',
-	path: '/settings/:initialPage(.*)?',
+	path: '/settings/:initialPage(*)?',
 	component: page(() => import('./pages/settings/index.vue')),
 }, {
 	path: '/reset-password/:token?',

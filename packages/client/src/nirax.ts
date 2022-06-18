@@ -83,7 +83,7 @@ export class Router extends EventEmitter<{
 		console.log(path, queryString);
 
 		for (const route of this.routes) {
-			const parts = path.split('/');
+			let parts = path.split('/');
 			const props = new Map<string, string>();
 
 			forEachRouteLoop:
@@ -99,7 +99,11 @@ export class Router extends EventEmitter<{
 						break forEachRouteLoop;
 					}
 					if (p.wildcard) {
-						// TODO
+						if (parts.length !== 0) {
+							props.set(p.name, parts.join('/'));
+							parts = [];
+						}
+						break forEachRouteLoop;
 					} else {
 						if (p.startsWith && (parts[0] == null || !parts[0].startsWith(p.startsWith))) break forEachRouteLoop;
 

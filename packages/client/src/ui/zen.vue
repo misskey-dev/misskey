@@ -7,7 +7,7 @@
 		<main ref="main">
 			<div class="content">
 				<router-view v-slot="{ Component }">
-					<transition :name="$store.state.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
+					<transition :name="$store.state.animation ? 'page' : ''" mode="out-in">
 						<keep-alive :include="['MkTimelinePage']">
 							<component :is="Component" :ref="changePage"/>
 						</keep-alive>
@@ -23,8 +23,8 @@
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
-import { host } from '@/config';
 import XCommon from './_common_/common.vue';
+import { host } from '@/config';
 import * as symbols from '@/symbols';
 
 export default defineComponent({
@@ -56,13 +56,9 @@ export default defineComponent({
 		},
 
 		help() {
-			window.open(`https://misskey-hub.net/docs/keyboard-shortcut.md`, '_blank');
+			window.open('https://misskey-hub.net/docs/keyboard-shortcut.md', '_blank');
 		},
-
-		onTransition() {
-			if (window._scroll) window._scroll();
-		},
-	}
+	},
 });
 </script>
 

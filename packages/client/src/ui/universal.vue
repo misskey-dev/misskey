@@ -108,8 +108,7 @@ const menuIndicated = computed(() => {
 
 const drawerMenuShowing = ref(false);
 
-const route = 'TODO';
-watch(route, () => {
+mainRouter.on('change', () => {
 	drawerMenuShowing.value = false;
 });
 
@@ -146,7 +145,7 @@ const onContextmenu = (ev) => {
 	if (isLink(ev.target)) return;
 	if (['INPUT', 'TEXTAREA', 'IMG', 'VIDEO', 'CANVAS'].includes(ev.target.tagName) || ev.target.attributes['contenteditable']) return;
 	if (window.getSelection()?.toString() !== '') return;
-	const path = route.path;
+	const path = mainRouter.getCurrentPath();
 	os.contextMenu([{
 		type: 'label',
 		text: path,
@@ -168,10 +167,6 @@ const attachSticky = (el) => {
 
 function top() {
 	window.scroll({ top: 0, behavior: 'smooth' });
-}
-
-function onTransition() {
-	if (window._scroll) window._scroll();
 }
 
 const wallpaper = localStorage.getItem('wallpaper') != null;
