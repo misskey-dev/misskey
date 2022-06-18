@@ -21,67 +21,64 @@
 </MkSpacer>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent } from 'vue';
+<script lang="ts" setup>
+import { computed, inject } from 'vue';
 import MkPagePreview from '@/components/page-preview.vue';
 import MkPagination from '@/components/ui/pagination.vue';
 import MkButton from '@/components/ui/button.vue';
 import * as symbols from '@/symbols';
 import { mainRouter } from '@/router';
+import { Router } from '@/nirax';
+import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
-export default defineComponent({
-	components: {
-		MkPagePreview, MkPagination, MkButton,
-	},
-	data() {
-		return {
-			[symbols.PAGE_INFO]: computed(() => ({
-				title: this.$ts.pages,
-				icon: 'fas fa-sticky-note',
-				bg: 'var(--bg)',
-				actions: [{
-					icon: 'fas fa-plus',
-					text: this.$ts.create,
-					handler: this.create,
-				}],
-				tabs: [{
-					active: this.tab === 'featured',
-					title: this.$ts._pages.featured,
-					icon: 'fas fa-fire-alt',
-					onClick: () => { this.tab = 'featured'; },
-				}, {
-					active: this.tab === 'my',
-					title: this.$ts._pages.my,
-					icon: 'fas fa-edit',
-					onClick: () => { this.tab = 'my'; },
-				}, {
-					active: this.tab === 'liked',
-					title: this.$ts._pages.liked,
-					icon: 'fas fa-heart',
-					onClick: () => { this.tab = 'liked'; },
-				}],
-			})),
-			tab: 'featured',
-			featuredPagesPagination: {
-				endpoint: 'pages/featured' as const,
-				noPaging: true,
-			},
-			myPagesPagination: {
-				endpoint: 'i/pages' as const,
-				limit: 5,
-			},
-			likedPagesPagination: {
-				endpoint: 'i/page-likes' as const,
-				limit: 5,
-			},
-		};
-	},
-	methods: {
-		create() {
-			mainRouter.push('/pages/new');
-		},
-	},
-});
+const router: Router = inject('router') ?? mainRouter;
+
+let tab = $ref('featured');
+
+const featuredPagesPagination = {
+	endpoint: 'pages/featured' as const,
+	noPaging: true,
+};
+const myPagesPagination = {
+	endpoint: 'i/pages' as const,
+	limit: 5,
+};
+const likedPagesPagination = {
+	endpoint: 'i/page-likes' as const,
+	limit: 5,
+};
+
+function create() {
+	router.push('/pages/new');
+}
+
+definePageMetadata(computed(() => ({
+	title: i18n.ts.pages,
+	icon: 'fas fa-sticky-note',
+	bg: 'var(--bg)',
+	actions: [{
+		icon: 'fas fa-plus',
+		text: i18n.ts.create,
+		handler: create,
+	}],
+	tabs: [{
+		active: tab === 'featured',
+		title: i18n.ts._pages.featured,
+		icon: 'fas fa-fire-alt',
+		onClick: () => { tab = 'featured'; },
+	}, {
+		active: tab === 'my',
+		title: i18n.ts._pages.my,
+		icon: 'fas fa-edit',
+		onClick: () => { tab = 'my'; },
+	}, {
+		active: tab === 'liked',
+		title: i18n.ts._pages.liked,
+		icon: 'fas fa-heart',
+		onClick: () => { tab = 'liked'; },
+	}],
+})));
 </script>
 
 <style lang="scss" scoped>
