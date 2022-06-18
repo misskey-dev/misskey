@@ -80,32 +80,34 @@ export class Router extends EventEmitter<{
 			queryString = path.substring(path.indexOf('?') + 1);
 			path = path.substring(0, path.indexOf('?'));
 		}
-		console.log(path, queryString);
 
+		if (_DEV_) console.log('Routing: ', path, queryString);
+
+		forEachRouteLoop:
 		for (const route of this.routes) {
 			let parts = path.split('/');
 			const props = new Map<string, string>();
 
-			forEachRouteLoop:
+			pathMatchLoop:
 			for (const p of parsePath(route.path)) {
 				if (typeof p === 'string') {
 					if (p === parts[0]) {
 						parts.shift();
 					} else {
-						break forEachRouteLoop;
+						continue forEachRouteLoop;
 					}
 				} else {
 					if (parts[0] == null && !p.optional) {
-						break forEachRouteLoop;
+						continue forEachRouteLoop;
 					}
 					if (p.wildcard) {
 						if (parts.length !== 0) {
 							props.set(p.name, parts.join('/'));
 							parts = [];
 						}
-						break forEachRouteLoop;
+						break pathMatchLoop;
 					} else {
-						if (p.startsWith && (parts[0] == null || !parts[0].startsWith(p.startsWith))) break forEachRouteLoop;
+						if (p.startsWith && (parts[0] == null || !parts[0].startsWith(p.startsWith))) continue forEachRouteLoop;
 
 						props.set(p.name, parts[0]);
 						parts.shift();
@@ -113,23 +115,23 @@ export class Router extends EventEmitter<{
 				}
 			}
 
-			if (parts.length === 0) {
-				if (route.query != null && queryString != null) {
-					const queryObject = [...new URLSearchParams(queryString).entries()]
-						.reduce((obj, entry) => ({ ...obj, [entry[0]]: entry[1] }), {});
+			if (parts.length !== 0) continue forEachRouteLoop;
 
-					for (const q in route.query) {
-						const as = route.query[q];
-						if (queryObject[q]) {
-							props.set(as, queryObject[q]);
-						}
+			if (route.query != null && queryString != null) {
+				const queryObject = [...new URLSearchParams(queryString).entries()]
+					.reduce((obj, entry) => ({ ...obj, [entry[0]]: entry[1] }), {});
+
+				for (const q in route.query) {
+					const as = route.query[q];
+					if (queryObject[q]) {
+						props.set(as, queryObject[q]);
 					}
 				}
-				return {
-					route,
-					props,
-				};
 			}
+			return {
+				route,
+				props,
+			};
 		}
 
 		return null;

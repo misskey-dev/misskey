@@ -83,7 +83,7 @@ function clear() {
 }
 
 function show(file) {
-	os.pageWindow(`/admin-file/${file.id}`);
+	os.pageWindow(`/admin/file/${file.id}`);
 }
 
 async function find() {
