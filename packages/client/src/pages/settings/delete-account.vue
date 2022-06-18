@@ -8,7 +8,6 @@
 </template>
 
 <script lang="ts" setup>
-import { defineExpose } from 'vue';
 import FormInfo from '@/components/ui/info.vue';
 import FormButton from '@/components/ui/button.vue';
 import * as os from '@/os';
@@ -27,12 +26,12 @@ async function deleteAccount() {
 
 	const { canceled, result: password } = await os.inputText({
 		title: i18n.ts.password,
-		type: 'password'
+		type: 'password',
 	});
 	if (canceled) return;
 
 	await os.apiWithDialog('i/delete-account', {
-		password: password
+		password: password,
 	});
 
 	await os.alert({
@@ -47,6 +46,6 @@ defineExpose({
 		title: i18n.ts._accountDelete.accountDelete,
 		icon: 'fas fa-exclamation-triangle',
 		bg: 'var(--bg)',
-	}
+	},
 });
 </script>

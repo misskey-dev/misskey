@@ -54,9 +54,6 @@ export const routes = [{
 	path: '/theme-editor',
 	component: page(() => import('./pages/theme-editor.vue')),
 }, {
-	path: '/advanced-theme-editor',
-	component: page(() => import('./pages/advanced-theme-editor.vue')),
-}, {
 	path: '/explore/tags/:tag',
 	component: page(() => import('./pages/explore.vue')),
 }, {

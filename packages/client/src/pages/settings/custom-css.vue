@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineExpose, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 import FormTextarea from '@/components/form/textarea.vue';
 import FormInfo from '@/components/ui/info.vue';
 import * as os from '@/os';
@@ -40,6 +40,6 @@ defineExpose({
 		title: i18n.ts.customCss,
 		icon: 'fas fa-code',
 		bg: 'var(--bg)',
-	}
+	},
 });
 </script>

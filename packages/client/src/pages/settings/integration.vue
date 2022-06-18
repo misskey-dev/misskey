@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineExpose, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { apiUrl } from '@/config';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/ui/button.vue';
@@ -42,7 +42,7 @@ const integrations = computed(() => $i!.integrations);
 function openWindow(service: string, type: string) {
 	return window.open(`${apiUrl}/${type}/${service}`,
 		`${service}_${type}_window`,
-		'height=570, width=520'
+		'height=570, width=520',
 	);
 }
 
@@ -72,7 +72,7 @@ function disconnectGithub() {
 
 onMounted(() => {
 	document.cookie = `igi=${$i!.token}; path=/;` +
-		` max-age=31536000;` +
+		' max-age=31536000;' +
 		(document.location.protocol.startsWith('https') ? ' secure' : '');
 
 	watch(integrations, () => {
@@ -93,6 +93,6 @@ defineExpose({
 		title: i18n.ts.integration,
 		icon: 'fas fa-share-alt',
 		bg: 'var(--bg)',
-	}
+	},
 });
 </script>

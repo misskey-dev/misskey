@@ -193,14 +193,7 @@ export const menuDef = reactive({
 					localStorage.setItem('ui', 'classic');
 					unisonReload();
 				},
-			}, /*{
-				text: i18n.ts.desktop + ' (β)',
-				active: ui === 'desktop',
-				action: () => {
-					localStorage.setItem('ui', 'desktop');
-					unisonReload();
-				}
-			}*/], ev.currentTarget ?? ev.target);
+			}], ev.currentTarget ?? ev.target);
 		},
 	},
 });

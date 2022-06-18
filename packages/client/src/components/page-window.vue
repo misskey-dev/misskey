@@ -39,7 +39,6 @@ import XWindow from '@/components/ui/window.vue';
 import { popout as _popout } from '@/scripts/popout';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { url } from '@/config';
-import * as symbols from '@/symbols';
 import * as os from '@/os';
 import { mainRouter, routes } from '@/router';
 import { Router } from '@/nirax';
@@ -48,6 +47,10 @@ import { PageMetadata } from '@/scripts/page-metadata';
 
 const props = defineProps<{
 	initialPath: string;
+}>();
+
+defineEmits<{
+	(ev: 'closed'): void;
 }>();
 
 const router = new Router(routes, props.initialPath);

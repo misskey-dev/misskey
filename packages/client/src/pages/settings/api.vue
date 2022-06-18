@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, defineExpose, ref } from 'vue';
+import { defineAsyncComponent, ref } from 'vue';
 import FormLink from '@/components/form/link.vue';
 import FormButton from '@/components/ui/button.vue';
 import * as os from '@/os';
@@ -29,7 +29,7 @@ function generateToken() {
 			os.alert({
 				type: 'success',
 				title: i18n.ts.token,
-				text: token
+				text: token,
 			});
 		},
 	}, 'closed');
@@ -40,6 +40,6 @@ defineExpose({
 		title: 'API',
 		icon: 'fas fa-key',
 		bg: 'var(--bg)',
-	}
+	},
 });
 </script>

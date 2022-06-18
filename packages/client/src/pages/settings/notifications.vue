@@ -10,11 +10,11 @@
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, defineExpose } from 'vue';
+import { defineAsyncComponent } from 'vue';
+import { notificationTypes } from 'misskey-js';
 import FormButton from '@/components/ui/button.vue';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
-import { notificationTypes } from 'misskey-js';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { $i } from '@/account';
@@ -45,7 +45,7 @@ function configure() {
 			}).then(i => {
 				$i!.mutingNotificationTypes = i.mutingNotificationTypes;
 			});
-		}
+		},
 	}, 'closed');
 }
 
@@ -54,6 +54,6 @@ defineExpose({
 		title: i18n.ts.notifications,
 		icon: 'fas fa-bell',
 		bg: 'var(--bg)',
-	}
+	},
 });
 </script>

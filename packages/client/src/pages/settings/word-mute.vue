@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineExpose, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 import FormTextarea from '@/components/form/textarea.vue';
 import MkKeyValue from '@/components/key-value.vue';
 import MkButton from '@/components/ui/button.vue';
@@ -87,7 +87,7 @@ async function save() {
 					os.alert({
 						type: 'error',
 						title: i18n.ts.regexpError,
-						text: i18n.t('regexpErrorDescription', { tab, line: i + 1 }) + "\n" + err.toString()
+						text: i18n.t('regexpErrorDescription', { tab, line: i + 1 }) + '\n' + err.toString(),
 					});
 					// re-throw error so these invalid settings are not saved
 					throw err;
@@ -122,6 +122,6 @@ defineExpose({
 		title: i18n.ts.wordMute,
 		icon: 'fas fa-comment-slash',
 		bg: 'var(--bg)',
-	}
+	},
 });
 </script>

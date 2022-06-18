@@ -127,7 +127,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineExpose, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import FormSection from '@/components/form/section.vue';
 import MkKeyValue from '@/components/key-value.vue';
 import * as os from '@/os';
@@ -141,7 +141,7 @@ const stats = ref<any>({});
 
 onMounted(() => {
 	os.api('users/stats', {
-		userId: $i!.id
+		userId: $i!.id,
 	}).then(response => {
 		stats.value = response;
 	});
@@ -150,7 +150,7 @@ onMounted(() => {
 defineExpose({
 	[symbols.PAGE_INFO]: {
 		title: i18n.ts.accountInfo,
-		icon: 'fas fa-info-circle'
-	}
+		icon: 'fas fa-info-circle',
+	},
 });
 </script>

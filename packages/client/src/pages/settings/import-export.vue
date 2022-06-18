@@ -38,7 +38,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineExpose, ref } from 'vue';
+import { ref } from 'vue';
 import MkButton from '@/components/ui/button.vue';
 import FormSection from '@/components/form/section.vue';
 import FormGroup from '@/components/form/group.vue';
@@ -121,7 +121,7 @@ defineExpose({
 		title: i18n.ts.importAndExport,
 		icon: 'fas fa-boxes',
 		bg: 'var(--bg)',
-	}
+	},
 });
 </script>
 

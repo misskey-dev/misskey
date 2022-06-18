@@ -14,8 +14,6 @@
 		</main>
 	</div>
 
-	<XSideView v-if="isDesktop" ref="sideEl" class="side"/>
-
 	<div v-if="isDesktop" ref="widgetsEl" class="widgets">
 		<XWidgets @mounted="attachSticky"/>
 	</div>
@@ -63,7 +61,6 @@
 <script lang="ts" setup>
 import { defineAsyncComponent, provide, onMounted, computed, ref, watch, ComputedRef } from 'vue';
 import XCommon from './_common_/common.vue';
-import XSideView from './classic.side.vue';
 import { instanceName } from '@/config';
 import { StickySidebar } from '@/scripts/sticky-sidebar';
 import XDrawerMenu from '@/ui/_common_/sidebar-for-mobile.vue';
@@ -91,12 +88,6 @@ window.addEventListener('resize', () => {
 let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();
 const widgetsEl = $ref<HTMLElement>();
 const widgetsShowing = ref(false);
-
-let sideEl = $ref<InstanceType<typeof XSideView>>();
-
-provide('sideViewHook', isDesktop.value ? (url) => {
-	sideEl.navigate(url);
-} : null);
 
 provide('router', mainRouter);
 provide('setPageMetadata', (info: ComputedRef<PageMetadata>) => {
@@ -159,12 +150,6 @@ const onContextmenu = (ev) => {
 	os.contextMenu([{
 		type: 'label',
 		text: path,
-	}, {
-		icon: 'fas fa-columns',
-		text: i18n.ts.openInSideView,
-		action: () => {
-			sideEl.navigate(path);
-		},
 	}, {
 		icon: 'fas fa-window-maximize',
 		text: i18n.ts.openInWindow,
@@ -271,12 +256,6 @@ const wallpaper = localStorage.getItem('wallpaper') != null;
 				}
 			}
 		}
-	}
-
-	> .side {
-		min-width: 370px;
-		max-width: 370px;
-		border-left: solid 0.5px var(--divider);
 	}
 
 	> .widgets {

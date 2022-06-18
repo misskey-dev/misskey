@@ -30,7 +30,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineExpose, watch } from 'vue';
+import { computed, watch } from 'vue';
 import FormSwitch from '@/components/form/switch.vue';
 import FormLink from '@/components/form/link.vue';
 import FormRadios from '@/components/form/radios.vue';
@@ -62,7 +62,7 @@ watch(navWindow, async () => {
 async function setProfile() {
 	const { canceled, result: name } = await os.inputText({
 		title: i18n.ts._deck.profile,
-		allowEmpty: false
+		allowEmpty: false,
 	});
 	if (canceled) return;
 	
@@ -75,6 +75,6 @@ defineExpose({
 		title: i18n.ts.deck,
 		icon: 'fas fa-columns',
 		bg: 'var(--bg)',
-	}
+	},
 });
 </script>

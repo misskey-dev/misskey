@@ -7,7 +7,7 @@
 		<div v-for="plugin in plugins" :key="plugin.id" class="_formBlock _panel" style="padding: 20px;">
 			<span style="display: flex;"><b>{{ plugin.name }}</b><span style="margin-left: auto;">v{{ plugin.version }}</span></span>
 
-			<FormSwitch class="_formBlock" :modelValue="plugin.active" @update:modelValue="changeActive(plugin, $event)">{{ i18n.ts.makeActive }}</FormSwitch>
+			<FormSwitch class="_formBlock" :model-value="plugin.active" @update:modelValue="changeActive(plugin, $event)">{{ i18n.ts.makeActive }}</FormSwitch>
 
 			<MkKeyValue class="_formBlock">
 				<template #key>{{ i18n.ts.author }}</template>
@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineExpose, nextTick, ref } from 'vue';
+import { nextTick, ref } from 'vue';
 import FormLink from '@/components/form/link.vue';
 import FormSwitch from '@/components/form/switch.vue';
 import FormSection from '@/components/form/section.vue';
@@ -88,7 +88,7 @@ defineExpose({
 		title: i18n.ts.plugins,
 		icon: 'fas fa-plug',
 		bg: 'var(--bg)',
-	}
+	},
 });
 </script>
 

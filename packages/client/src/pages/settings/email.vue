@@ -40,7 +40,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineExpose, onMounted, ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import FormSection from '@/components/form/section.vue';
 import FormInput from '@/components/form/input.vue';
 import FormSwitch from '@/components/form/switch.vue';
@@ -53,14 +53,14 @@ const emailAddress = ref($i!.email);
 
 const onChangeReceiveAnnouncementEmail = (v) => {
 	os.api('i/update', {
-		receiveAnnouncementEmail: v
+		receiveAnnouncementEmail: v,
 	});
 };
 
 const saveEmailAddress = () => {
 	os.inputText({
 		title: i18n.ts.password,
-		type: 'password'
+		type: 'password',
 	}).then(({ canceled, result: password }) => {
 		if (canceled) return;
 		os.apiWithDialog('i/update-email', {
@@ -86,7 +86,7 @@ const saveNotificationSettings = () => {
 			...[emailNotification_follow.value ? 'follow' : null],
 			...[emailNotification_receiveFollowRequest.value ? 'receiveFollowRequest' : null],
 			...[emailNotification_groupInvited.value ? 'groupInvited' : null],
-		].filter(x => x != null)
+		].filter(x => x != null),
 	});
 };
 
@@ -105,6 +105,6 @@ defineExpose({
 		title: i18n.ts.email,
 		icon: 'fas fa-envelope',
 		bg: 'var(--bg)',
-	}
+	},
 });
 </script>

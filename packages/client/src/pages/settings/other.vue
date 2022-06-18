@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineExpose } from 'vue';
+import { computed } from 'vue';
 import FormSwitch from '@/components/form/switch.vue';
 import FormLink from '@/components/form/link.vue';
 import * as os from '@/os';
@@ -28,7 +28,7 @@ const reportError = computed(defaultStore.makeGetterSetter('reportError'));
 
 function onChangeInjectFeaturedNote(v) {
 	os.api('i/update', {
-		injectFeaturedNote: v
+		injectFeaturedNote: v,
 	}).then((i) => {
 		$i!.injectFeaturedNote = i.injectFeaturedNote;
 	});
@@ -39,6 +39,6 @@ defineExpose({
 		title: i18n.ts.other,
 		icon: 'fas fa-ellipsis-h',
 		bg: 'var(--bg)',
-	}
+	},
 });
 </script>

@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, defineExpose, ref } from 'vue';
+import { defineAsyncComponent, ref } from 'vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import FormButton from '@/components/ui/button.vue';
 import * as os from '@/os';
@@ -39,7 +39,7 @@ const init = async () => {
 		console.log(storedAccounts.value);
 
 		return os.api('users/show', {
-			userIds: storedAccounts.value.map(x => x.id)
+			userIds: storedAccounts.value.map(x => x.id),
 		});
 	}).then(response => {
 		accounts.value = response;
@@ -103,7 +103,7 @@ defineExpose({
 		title: i18n.ts.accounts,
 		icon: 'fas fa-users',
 		bg: 'var(--bg)',
-	}
+	},
 });
 </script>
 

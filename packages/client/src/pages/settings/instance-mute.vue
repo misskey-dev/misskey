@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineExpose, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 import FormTextarea from '@/components/form/textarea.vue';
 import MkInfo from '@/components/ui/info.vue';
 import MkButton from '@/components/ui/button.vue';
@@ -45,7 +45,7 @@ watch(instanceMutes, () => {
 defineExpose({
 	[symbols.PAGE_INFO]: {
 		title: i18n.ts.instanceMute,
-		icon: 'fas fa-volume-mute'
-	}
+		icon: 'fas fa-volume-mute',
+	},
 });
 </script>

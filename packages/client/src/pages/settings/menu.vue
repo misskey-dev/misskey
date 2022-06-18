@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineExpose, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import FormTextarea from '@/components/form/textarea.vue';
 import FormRadios from '@/components/form/radios.vue';
 import FormButton from '@/components/ui/button.vue';
@@ -37,7 +37,7 @@ const menuDisplay = computed(defaultStore.makeGetterSetter('menuDisplay'));
 async function reloadAsk() {
 	const { canceled } = await os.confirm({
 		type: 'info',
-		text: i18n.ts.reloadToApplySetting
+		text: i18n.ts.reloadToApplySetting,
 	});
 	if (canceled) return;
 
@@ -49,10 +49,10 @@ async function addItem() {
 	const { canceled, result: item } = await os.select({
 		title: i18n.ts.addItem,
 		items: [...menu.map(k => ({
-			value: k, text: i18n.ts[menuDef[k].title]
+			value: k, text: i18n.ts[menuDef[k].title],
 		})), {
-			value: '-', text: i18n.ts.divider
-		}]
+			value: '-', text: i18n.ts.divider,
+		}],
 	});
 	if (canceled) return;
 	items.value = [...split.value, item].join('\n');
@@ -81,6 +81,6 @@ defineExpose({
 		title: i18n.ts.menu,
 		icon: 'fas fa-list-ul',
 		bg: 'var(--bg)',
-	}
+	},
 });
 </script>

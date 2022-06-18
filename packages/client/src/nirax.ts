@@ -138,25 +138,25 @@ export class Router extends EventEmitter<{
 
 		const res = this.resolve(this.currentPath);
 
-		if (res) {
-			const isSameRoute = beforeRoute === res.route;
-			if (isSameRoute && key == null) key = this.currentKey;
-			this.currentComponent = res.route.component;
-			this.currentProps = res.props;
-			this.currentRoute.value = res.route;
-			this.currentKey = this.currentRoute.value.globalCacheKey ?? key ?? Date.now().toString();
+		if (res == null) {
+			throw new Error('no route found');
+		}
 
-			if (!initial) {
-				this.emit('change', {
-					beforePath,
-					path,
-					route: this.currentRoute.value,
-					props: this.currentProps,
-					key: this.currentKey,
-				});
-			}
-		} else {
-			// not found
+		const isSameRoute = beforeRoute === res.route;
+		if (isSameRoute && key == null) key = this.currentKey;
+		this.currentComponent = res.route.component;
+		this.currentProps = res.props;
+		this.currentRoute.value = res.route;
+		this.currentKey = this.currentRoute.value.globalCacheKey ?? key ?? Date.now().toString();
+
+		if (!initial) {
+			this.emit('change', {
+				beforePath,
+				path,
+				route: this.currentRoute.value,
+				props: this.currentProps,
+				key: this.currentKey,
+			});
 		}
 	}
 

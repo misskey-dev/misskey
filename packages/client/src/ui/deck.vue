@@ -123,11 +123,6 @@ const onContextmenu = (ev) => {
 };
 
 provide('shouldSpacerMin', true);
-if (deckStore.state.navWindow) {
-	provide('navHook', (url) => {
-		os.pageWindow(url);
-	});
-}
 
 document.documentElement.style.overflowY = 'hidden';
 document.documentElement.style.scrollBehavior = 'auto';

@@ -26,7 +26,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineExpose, ref } from 'vue';
+import { computed, ref } from 'vue';
 import JSON5 from 'json5';
 import FormTextarea from '@/components/form/textarea.vue';
 import FormSelect from '@/components/form/select.vue';
@@ -72,6 +72,6 @@ defineExpose({
 		title: i18n.ts._theme.manage,
 		icon: 'fas fa-folder-open',
 		bg: 'var(--bg)',
-	}
+	},
 });
 </script>
