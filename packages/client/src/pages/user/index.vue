@@ -1,5 +1,5 @@
 <template>
-<div>
+<div ref="rootEl">
 	<transition name="fade" mode="out-in">
 		<MkSpacer v-if="user" :content-max="narrow ? 800 : 1100">
 			<div v-size="{ max: [500] }" class="ftskorzw" :class="{ wide: !narrow }">
@@ -13,7 +13,7 @@
 
 						<div :key="user.id" class="_block main">
 							<div class="banner-container" :style="style">
-								<div ref="banner" class="banner" :style="style"></div>
+								<div ref="bannerEl" class="banner" :style="style"></div>
 								<div class="fade"></div>
 								<div class="title">
 									<MkUserName class="name" :user="user" :nowrap="true"/>
@@ -123,10 +123,11 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, defineAsyncComponent, computed } from 'vue';
-import age from 's-age';
+<script lang="ts" setup>
+import { defineComponent, defineAsyncComponent, computed, inject, onMounted, onUnmounted, watch } from 'vue';
+import calcAge from 's-age';
 import * as Acct from 'misskey-js/built/acct';
+import * as misskey from 'misskey-js';
 import XUserTimeline from './index.timeline.vue';
 import XNote from '@/components/note.vue';
 import MkFollowButton from '@/components/follow-button.vue';
@@ -140,161 +141,133 @@ import { getUserMenu } from '@/scripts/get-user-menu';
 import number from '@/filters/number';
 import { userPage, acct as getAcct } from '@/filters/user';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { mainRouter } from '@/router';
+import { Router } from '@/nirax';
+import { definePageMetadata } from '@/scripts/page-metadata';
+import { i18n } from '@/i18n';
+import { $i } from '@/account';
 
-// TODO: setup使うようにしたらやる
-//const router: Router = inject('router') ?? mainRouter;
-const router = mainRouter;
+const XFollowList = defineAsyncComponent(() => import('./follow-list.vue'));
+const XReactions = defineAsyncComponent(() => import('./reactions.vue'));
+const XClips = defineAsyncComponent(() => import('./clips.vue'));
+const XPages = defineAsyncComponent(() => import('./pages.vue'));
+const XGallery = defineAsyncComponent(() => import('./gallery.vue'));
+const XPhotos = defineAsyncComponent(() => import('./index.photos.vue'));
+const XActivity = defineAsyncComponent(() => import('./index.activity.vue'));
 
-export default defineComponent({
-	components: {
-		XUserTimeline,
-		XNote,
-		MkFollowButton,
-		MkContainer,
-		MkRemoteCaution,
-		MkFolder,
-		MkTab,
-		MkInfo,
-		XFollowList: defineAsyncComponent(() => import('./follow-list.vue')),
-		XReactions: defineAsyncComponent(() => import('./reactions.vue')),
-		XClips: defineAsyncComponent(() => import('./clips.vue')),
-		XPages: defineAsyncComponent(() => import('./pages.vue')),
-		XGallery: defineAsyncComponent(() => import('./gallery.vue')),
-		XPhotos: defineAsyncComponent(() => import('./index.photos.vue')),
-		XActivity: defineAsyncComponent(() => import('./index.activity.vue')),
-	},
-
-	props: {
-		acct: {
-			type: String,
-			required: true,
-		},
-		page: {
-			type: String,
-			required: false,
-			default: 'index',
-		},
-	},
-
-	data() {
-		return {
-			[symbols.PAGE_INFO]: computed(() => this.user ? {
-				icon: 'fas fa-user',
-				title: this.user.name ? `${this.user.name} (@${this.user.username})` : `@${this.user.username}`,
-				subtitle: `@${getAcct(this.user)}`,
-				userName: this.user,
-				avatar: this.user,
-				path: `/@${this.user.username}`,
-				share: {
-					title: this.user.name,
-				},
-				bg: 'var(--bg)',
-				tabs: [{
-					active: this.page === 'index',
-					title: this.$ts.overview,
-					icon: 'fas fa-home',
-					onClick: () => { router.push('/@' + getAcct(this.user)); },
-				}, ...(this.$i && (this.$i.id === this.user.id)) || this.user.publicReactions ? [{
-					active: this.page === 'reactions',
-					title: this.$ts.reaction,
-					icon: 'fas fa-laugh',
-					onClick: () => { router.push('/@' + getAcct(this.user) + '/reactions'); },
-				}] : [], {
-					active: this.page === 'clips',
-					title: this.$ts.clips,
-					icon: 'fas fa-paperclip',
-					onClick: () => { router.push('/@' + getAcct(this.user) + '/clips'); },
-				}, {
-					active: this.page === 'pages',
-					title: this.$ts.pages,
-					icon: 'fas fa-file-alt',
-					onClick: () => { router.push('/@' + getAcct(this.user) + '/pages'); },
-				}, {
-					active: this.page === 'gallery',
-					title: this.$ts.gallery,
-					icon: 'fas fa-icons',
-					onClick: () => { router.push('/@' + getAcct(this.user) + '/gallery'); },
-				}],
-			} : null),
-			user: null,
-			error: null,
-			parallaxAnimationId: null,
-			narrow: null,
-		};
-	},
-
-	computed: {
-		style(): any {
-			if (this.user.bannerUrl == null) return {};
-			return {
-				backgroundImage: `url(${ this.user.bannerUrl })`,
-			};
-		},
-
-		age(): number {
-			return age(this.user.birthday);
-		},
-	},
-
-	watch: {
-		acct: 'fetch',
-	},
-
-	created() {
-		this.fetch();
-	},
-
-	mounted() {
-		window.requestAnimationFrame(this.parallaxLoop);
-		this.narrow = this.$el.clientWidth < 1000;
-	},
-
-	beforeUnmount() {
-		window.cancelAnimationFrame(this.parallaxAnimationId);
-	},
-
-	methods: {
-		getAcct,
-
-		fetch() {
-			if (this.acct == null) return;
-			this.user = null;
-			os.api('users/show', Acct.parse(this.acct)).then(user => {
-				this.user = user;
-			}).catch(err => {
-				this.error = err;
-			});
-		},
-
-		menu(ev) {
-			os.popupMenu(getUserMenu(this.user), ev.currentTarget ?? ev.target);
-		},
-
-		parallaxLoop() {
-			this.parallaxAnimationId = window.requestAnimationFrame(this.parallaxLoop);
-			this.parallax();
-		},
-
-		parallax() {
-			const banner = this.$refs.banner as any;
-			if (banner == null) return;
-
-			const top = getScrollPosition(this.$el);
-
-			if (top < 0) return;
-
-			const z = 1.75; // 奥行き(小さいほど奥)
-			const pos = -(top / z);
-			banner.style.backgroundPosition = `center calc(50% - ${pos}px)`;
-		},
-
-		number,
-
-		userPage,
-	},
+const props = withDefaults(defineProps<{
+	acct: string;
+	page?: string;
+}>(), {
+	page: 'index',
 });
+
+const router: Router = inject('router') ?? mainRouter;
+
+let user = $ref<null | misskey.entities.UserDetailed>(null);
+let error = $ref(null);
+let parallaxAnimationId = $ref<null | number>(null);
+let narrow = $ref<null | boolean>(null);
+let rootEl = $ref<null | HTMLElement>(null);
+let bannerEl = $ref<null | HTMLElement>(null);
+
+const style = $computed(() => {
+	if (user?.bannerUrl == null) return {};
+	return {
+		backgroundImage: `url(${ user.bannerUrl })`,
+	};
+});
+
+const age = $computed(() => {
+	if (user == null) return null;
+	return calcAge(user.birthday);
+});
+
+function fetchUser(): void {
+	if (props.acct == null) return;
+	user = null;
+	os.api('users/show', Acct.parse(props.acct)).then(u => {
+		user = u;
+	}).catch(err => {
+		error = err;
+	});
+}
+
+watch(() => props.acct, fetchUser, {
+	immediate: true,
+});
+
+function menu(ev) {
+	os.popupMenu(getUserMenu(user), ev.currentTarget ?? ev.target);
+}
+
+function parallaxLoop() {
+	parallaxAnimationId = window.requestAnimationFrame(parallaxLoop);
+	parallax();
+}
+
+function parallax() {
+	const banner = bannerEl as any;
+	if (banner == null) return;
+
+	const top = getScrollPosition(rootEl);
+
+	if (top < 0) return;
+
+	const z = 1.75; // 奥行き(小さいほど奥)
+	const pos = -(top / z);
+	banner.style.backgroundPosition = `center calc(50% - ${pos}px)`;
+}
+
+onMounted(() => {
+	window.requestAnimationFrame(parallaxLoop);
+	narrow = rootEl!.clientWidth < 1000;
+});
+
+onUnmounted(() => {
+	if (parallaxAnimationId) {
+		window.cancelAnimationFrame(parallaxAnimationId);
+	}
+});
+
+definePageMetadata(computed(() => user ? {
+	icon: 'fas fa-user',
+	title: user.name ? `${user.name} (@${user.username})` : `@${user.username}`,
+	subtitle: `@${getAcct(user)}`,
+	userName: user,
+	avatar: user,
+	path: `/@${user.username}`,
+	share: {
+		title: user.name,
+	},
+	bg: 'var(--bg)',
+	tabs: [{
+		active: props.page === 'index',
+		title: i18n.ts.overview,
+		icon: 'fas fa-home',
+		onClick: () => { router.push('/@' + getAcct(user)); },
+	}, ...($i && ($i.id === user.id)) || user.publicReactions ? [{
+		active: props.page === 'reactions',
+		title: i18n.ts.reaction,
+		icon: 'fas fa-laugh',
+		onClick: () => { router.push('/@' + getAcct(user) + '/reactions'); },
+	}] : [], {
+		active: props.page === 'clips',
+		title: i18n.ts.clips,
+		icon: 'fas fa-paperclip',
+		onClick: () => { router.push('/@' + getAcct(user) + '/clips'); },
+	}, {
+		active: props.page === 'pages',
+		title: i18n.ts.pages,
+		icon: 'fas fa-file-alt',
+		onClick: () => { router.push('/@' + getAcct(user) + '/pages'); },
+	}, {
+		active: props.page === 'gallery',
+		title: i18n.ts.gallery,
+		icon: 'fas fa-icons',
+		onClick: () => { router.push('/@' + getAcct(user) + '/gallery'); },
+	}],
+} : null));
 </script>
 
 <style lang="scss" scoped>

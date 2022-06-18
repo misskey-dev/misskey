@@ -9,9 +9,9 @@
 	@closed="$emit('closed')"
 >
 	<template #header>
-		<template v-if="pageInfo">
-			<i v-if="pageInfo.icon" class="icon" :class="pageInfo.icon" style="margin-right: 0.5em;"></i>
-			<span>{{ pageInfo.title }}</span>
+		<template v-if="pageMetadata?.value">
+			<i v-if="pageMetadata.value.icon" class="icon" :class="pageMetadata.value.icon" style="margin-right: 0.5em;"></i>
+			<span>{{ pageMetadata.value.title }}</span>
 		</template>
 	</template>
 	<template #headerLeft>
@@ -23,17 +23,17 @@
 		<button class="_button" @click="menu"><i class="fas fa-ellipsis-h"></i></button>
 	</template>
 
-	<div class="yrolvcoq" :style="{ background: pageInfo?.bg }">
+	<div class="yrolvcoq" :style="{ background: pageMetadata?.value?.bg }">
 		<MkStickyContainer>
-			<template #header><MkHeader v-if="pageInfo && !pageInfo.hideHeader" :info="pageInfo"/></template>
-			<RouterView :router="router" @navigated="changePage"/>
+			<template #header><MkHeader v-if="pageMetadata?.value && !pageMetadata.value.hideHeader" :info="pageMetadata.value"/></template>
+			<RouterView :router="router"/>
 		</MkStickyContainer>
 	</div>
 </XWindow>
 </template>
 
 <script lang="ts" setup>
-import { inject, provide } from 'vue';
+import { ComputedRef, inject, provide } from 'vue';
 import RouterView from './global/router-view.vue';
 import XWindow from '@/components/ui/window.vue';
 import { popout as _popout } from '@/scripts/popout';
@@ -44,6 +44,7 @@ import * as os from '@/os';
 import { mainRouter, routes } from '@/router';
 import { Router } from '@/nirax';
 import { i18n } from '@/i18n';
+import { PageMetadata } from '@/scripts/page-metadata';
 
 const props = defineProps<{
 	initialPath: string;
@@ -55,17 +56,15 @@ router.addListener('push', ctx => {
 	
 });
 
-provide('router', router);
-provide('shouldHeaderThin', true);
-
-let pageInfo = $ref();
+let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();
 let windowEl = $ref<InstanceType<typeof XWindow>>();
 const history = [];
 
-function changePage(page) {
-	if (page == null) return;
-	pageInfo = page;
-}
+provide('router', router);
+provide('setPageMetadata', (info) => {
+	pageMetadata = info;
+});
+provide('shouldHeaderThin', true);
 
 function navigate(path, record = true) {
 	if (record) history.push(router.getCurrentPath());

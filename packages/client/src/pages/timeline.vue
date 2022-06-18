@@ -6,7 +6,8 @@
 
 		<div v-if="queue > 0" class="new"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
 		<div class="tl _block">
-			<XTimeline ref="tl" :key="src"
+			<XTimeline
+				ref="tl" :key="src"
 				class="tl"
 				:src="src"
 				:sound="true"
@@ -16,12 +17,6 @@
 	</div>
 </MkSpacer>
 </template>
-
-<script lang="ts">
-export default {
-	name: 'MkTimelinePage',
-};
-</script>
 
 <script lang="ts" setup>
 import { defineAsyncComponent, computed, watch } from 'vue';
@@ -34,6 +29,7 @@ import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
 import { instance } from '@/instance';
 import { $i } from '@/account';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const XTutorial = defineAsyncComponent(() => import('./timeline.tutorial.vue'));
 
@@ -111,55 +107,53 @@ function focus(): void {
 	tlComponent.focus();
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: computed(() => ({
-		title: i18n.ts.timeline,
-		icon: src === 'local' ? 'fas fa-comments' : src === 'social' ? 'fas fa-share-alt' : src === 'global' ? 'fas fa-globe' : 'fas fa-home',
-		bg: 'var(--bg)',
-		actions: [{
-			icon: 'fas fa-list-ul',
-			text: i18n.ts.lists,
-			handler: chooseList,
-		}, {
-			icon: 'fas fa-satellite',
-			text: i18n.ts.antennas,
-			handler: chooseAntenna,
-		}, {
-			icon: 'fas fa-satellite-dish',
-			text: i18n.ts.channel,
-			handler: chooseChannel,
-		}, {
-			icon: 'fas fa-calendar-alt',
-			text: i18n.ts.jumpToSpecifiedDate,
-			handler: timetravel,
-		}],
-		tabs: [{
-			active: src === 'home',
-			title: i18n.ts._timelines.home,
-			icon: 'fas fa-home',
-			iconOnly: true,
-			onClick: () => { saveSrc('home'); },
-		}, ...(isLocalTimelineAvailable ? [{
-			active: src === 'local',
-			title: i18n.ts._timelines.local,
-			icon: 'fas fa-comments',
-			iconOnly: true,
-			onClick: () => { saveSrc('local'); },
-		}, {
-			active: src === 'social',
-			title: i18n.ts._timelines.social,
-			icon: 'fas fa-share-alt',
-			iconOnly: true,
-			onClick: () => { saveSrc('social'); },
-		}] : []), ...(isGlobalTimelineAvailable ? [{
-			active: src === 'global',
-			title: i18n.ts._timelines.global,
-			icon: 'fas fa-globe',
-			iconOnly: true,
-			onClick: () => { saveSrc('global'); },
-		}] : [])],
-	})),
-});
+definePageMetadata(computed(() => ({
+	title: i18n.ts.timeline,
+	icon: src === 'local' ? 'fas fa-comments' : src === 'social' ? 'fas fa-share-alt' : src === 'global' ? 'fas fa-globe' : 'fas fa-home',
+	bg: 'var(--bg)',
+	actions: [{
+		icon: 'fas fa-list-ul',
+		text: i18n.ts.lists,
+		handler: chooseList,
+	}, {
+		icon: 'fas fa-satellite',
+		text: i18n.ts.antennas,
+		handler: chooseAntenna,
+	}, {
+		icon: 'fas fa-satellite-dish',
+		text: i18n.ts.channel,
+		handler: chooseChannel,
+	}, {
+		icon: 'fas fa-calendar-alt',
+		text: i18n.ts.jumpToSpecifiedDate,
+		handler: timetravel,
+	}],
+	tabs: [{
+		active: src === 'home',
+		title: i18n.ts._timelines.home,
+		icon: 'fas fa-home',
+		iconOnly: true,
+		onClick: () => { saveSrc('home'); },
+	}, ...(isLocalTimelineAvailable ? [{
+		active: src === 'local',
+		title: i18n.ts._timelines.local,
+		icon: 'fas fa-comments',
+		iconOnly: true,
+		onClick: () => { saveSrc('local'); },
+	}, {
+		active: src === 'social',
+		title: i18n.ts._timelines.social,
+		icon: 'fas fa-share-alt',
+		iconOnly: true,
+		onClick: () => { saveSrc('social'); },
+	}] : []), ...(isGlobalTimelineAvailable ? [{
+		active: src === 'global',
+		title: i18n.ts._timelines.global,
+		icon: 'fas fa-globe',
+		iconOnly: true,
+		onClick: () => { saveSrc('global'); },
+	}] : [])],
+})));
 </script>
 
 <style lang="scss" scoped>

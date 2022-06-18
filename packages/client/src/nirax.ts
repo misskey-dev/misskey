@@ -1,5 +1,5 @@
 import { EventEmitter } from 'eventemitter3';
-import { Ref, Component, ref } from 'vue';
+import { Ref, Component, ref, shallowRef, ShallowRef } from 'vue';
 
 type RouteDef = {
 	path: string;
@@ -62,7 +62,7 @@ export class Router extends EventEmitter<{
 	private currentProps: Map<string, string> | null = null;
 	private currentKey = Date.now().toString();
 
-	public currentRoute: Ref<RouteDef | null> = ref(null);
+	public currentRoute: ShallowRef<RouteDef | null> = shallowRef(null);
 
 	constructor(routes: Router['routes'], currentPath: Router['currentPath']) {
 		super();
@@ -115,11 +115,14 @@ export class Router extends EventEmitter<{
 
 	private navigate(path: string, key: string | null | undefined, initial = false) {
 		const beforePath = this.currentPath;
+		const beforeRoute = this.currentRoute.value;
 		this.currentPath = path;
 
 		const res = this.resolve(this.currentPath);
 
 		if (res) {
+			const isSameRoute = beforeRoute === res.route;
+			if (isSameRoute && key == null) key = this.currentKey;
 			this.currentComponent = res.route.component;
 			this.currentProps = res.props;
 			this.currentRoute.value = res.route;

@@ -2,12 +2,12 @@
 <div class="dkgtipfy" :class="{ wallpaper }">
 	<XSidebar v-if="!isMobile" class="sidebar"/>
 
-	<div class="contents" :style="{ background: pageInfo?.bg }" @contextmenu.stop="onContextmenu">
+	<div class="contents" :style="{ background: pageMetadata?.value?.bg }" @contextmenu.stop="onContextmenu">
 		<main>
 			<div class="content">
 				<MkStickyContainer>
-					<template #header><MkHeader v-if="pageInfo && !pageInfo.hideHeader" :info="pageInfo"/></template>
-					<RouterView @navigated="changePage"/>
+					<template #header><MkHeader v-if="pageMetadata?.value && !pageMetadata.value.hideHeader" :info="pageMetadata.value"/></template>
+					<RouterView/>
 				</MkStickyContainer>
 			</div>
 			<div class="spacer"></div>
@@ -61,7 +61,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, provide, onMounted, computed, ref, watch } from 'vue';
+import { defineAsyncComponent, provide, onMounted, computed, ref, watch, ComputedRef } from 'vue';
 import XCommon from './_common_/common.vue';
 import XSideView from './classic.side.vue';
 import { instanceName } from '@/config';
@@ -75,6 +75,7 @@ import { i18n } from '@/i18n';
 import { $i } from '@/account';
 import { Router } from '@/nirax';
 import { mainRouter } from '@/router';
+import { PageMetadata } from '@/scripts/page-metadata';
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
 const XSidebar = defineAsyncComponent(() => import('@/ui/_common_/sidebar.vue'));
 
@@ -87,7 +88,7 @@ window.addEventListener('resize', () => {
 	isMobile.value = window.innerWidth <= MOBILE_THRESHOLD;
 });
 
-const pageInfo = ref();
+let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();
 const widgetsEl = $ref<HTMLElement>();
 const widgetsShowing = ref(false);
 
@@ -98,6 +99,13 @@ provide('sideViewHook', isDesktop.value ? (url) => {
 } : null);
 
 provide('router', mainRouter);
+provide('setPageMetadata', (info: ComputedRef<PageMetadata>) => {
+	console.log(info);
+	pageMetadata = info;
+	if (pageMetadata.value) {
+		document.title = `${pageMetadata.value.title} | ${instanceName}`;
+	}
+});
 
 const menuIndicated = computed(() => {
 	for (const def in menuDef) {
@@ -136,12 +144,6 @@ onMounted(() => {
 		}, { passive: true });
 	}
 });
-
-const changePage = (page) => {
-	if (page == null) return;
-	pageInfo.value = page;
-	document.title = `${pageInfo.value.title} | ${instanceName}`;
-};
 
 const onContextmenu = (ev) => {
 	const isLink = (el: HTMLElement) => {
