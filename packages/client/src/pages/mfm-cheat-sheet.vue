@@ -296,53 +296,47 @@
 </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { defineComponent } from 'vue';
 import MkTextarea from '@/components/form/textarea.vue';
 import * as symbols from '@/symbols';
+import { definePageMetadata } from '@/scripts/page-metadata';
+import i18n from '@/i18n';
+import { instance } from '@/instance';
 
-export default defineComponent({
-	components: {
-		MkTextarea
-	},
+const preview_mention = '@example';
+const preview_hashtag = '#test';
+const preview_url = 'https://example.com';
+const preview_link = `[${i18n.ts._mfm.dummy}](https://example.com)`;
+const preview_emoji = instance.emojis.length ? `:${instance.emojis[0].name}:` : ':emojiname:';
+const preview_bold = `**${i18n.ts._mfm.dummy}**`;
+const preview_small = `<small>${i18n.ts._mfm.dummy}</small>`;
+const preview_center = `<center>${i18n.ts._mfm.dummy}</center>`;
+const preview_inlineCode = '`<: "Hello, world!"`';
+const preview_blockCode = '```\n~ (#i, 100) {\n\t<: ? ((i % 15) = 0) "FizzBuzz"\n\t\t.? ((i % 3) = 0) "Fizz"\n\t\t.? ((i % 5) = 0) "Buzz"\n\t\t. i\n}\n```';
+const preview_inlineMath = '\\(x= \\frac{-b\' \\pm \\sqrt{(b\')^2-ac}}{a}\\)';
+const preview_quote = `> ${i18n.ts._mfm.dummy}`;
+const preview_search = `${i18n.ts._mfm.dummy} 検索`;
+const preview_jelly = '$[jelly 🍮] $[jelly.speed=5s 🍮]';
+const preview_tada = '$[tada 🍮] $[tada.speed=5s 🍮]';
+const preview_jump = '$[jump 🍮] $[jump.speed=5s 🍮]';
+const preview_bounce = '$[bounce 🍮] $[bounce.speed=5s 🍮]';
+const preview_shake = '$[shake 🍮] $[shake.speed=5s 🍮]';
+const preview_twitch = '$[twitch 🍮] $[twitch.speed=5s 🍮]';
+const preview_spin = '$[spin 🍮] $[spin.left 🍮] $[spin.alternate 🍮]\n$[spin.x 🍮] $[spin.x,left 🍮] $[spin.x,alternate 🍮]\n$[spin.y 🍮] $[spin.y,left 🍮] $[spin.y,alternate 🍮]\n\n$[spin.speed=5s 🍮]';
+const preview_flip = `$[flip ${i18n.ts._mfm.dummy}]\n$[flip.v ${i18n.ts._mfm.dummy}]\n$[flip.h,v ${i18n.ts._mfm.dummy}]`;
+const preview_font = `$[font.serif ${i18n.ts._mfm.dummy}]\n$[font.monospace ${i18n.ts._mfm.dummy}]\n$[font.cursive ${i18n.ts._mfm.dummy}]\n$[font.fantasy ${i18n.ts._mfm.dummy}]`;
+const preview_x2 = '$[x2 🍮]';
+const preview_x3 = '$[x3 🍮]';
+const preview_x4 = '$[x4 🍮]';
+const preview_blur = `$[blur ${i18n.ts._mfm.dummy}]`;
+const preview_rainbow = '$[rainbow 🍮] $[rainbow.speed=5s 🍮]';
+const preview_sparkle = '$[sparkle 🍮]';
+const preview_rotate = '$[rotate 🍮]';
 
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: this.$ts._mfm.cheatSheet,
-				icon: 'fas fa-question-circle',
-			},
-			preview_mention: '@example',
-			preview_hashtag: '#test',
-			preview_url: `https://example.com`,
-			preview_link: `[${this.$ts._mfm.dummy}](https://example.com)`,
-			preview_emoji: this.$instance.emojis.length ? `:${this.$instance.emojis[0].name}:` : `:emojiname:`,
-			preview_bold: `**${this.$ts._mfm.dummy}**`,
-			preview_small: `<small>${this.$ts._mfm.dummy}</small>`,
-			preview_center: `<center>${this.$ts._mfm.dummy}</center>`,
-			preview_inlineCode: '`<: "Hello, world!"`',
-			preview_blockCode: '```\n~ (#i, 100) {\n\t<: ? ((i % 15) = 0) "FizzBuzz"\n\t\t.? ((i % 3) = 0) "Fizz"\n\t\t.? ((i % 5) = 0) "Buzz"\n\t\t. i\n}\n```',
-			preview_inlineMath: '\\(x= \\frac{-b\' \\pm \\sqrt{(b\')^2-ac}}{a}\\)',
-			preview_quote: `> ${this.$ts._mfm.dummy}`,
-			preview_search: `${this.$ts._mfm.dummy} 検索`,
-			preview_jelly: `$[jelly 🍮] $[jelly.speed=5s 🍮]`,
-			preview_tada: `$[tada 🍮] $[tada.speed=5s 🍮]`,
-			preview_jump: `$[jump 🍮] $[jump.speed=5s 🍮]`,
-			preview_bounce: `$[bounce 🍮] $[bounce.speed=5s 🍮]`,
-			preview_shake: `$[shake 🍮] $[shake.speed=5s 🍮]`,
-			preview_twitch: `$[twitch 🍮] $[twitch.speed=5s 🍮]`,
-			preview_spin: `$[spin 🍮] $[spin.left 🍮] $[spin.alternate 🍮]\n$[spin.x 🍮] $[spin.x,left 🍮] $[spin.x,alternate 🍮]\n$[spin.y 🍮] $[spin.y,left 🍮] $[spin.y,alternate 🍮]\n\n$[spin.speed=5s 🍮]`,
-			preview_flip: `$[flip ${this.$ts._mfm.dummy}]\n$[flip.v ${this.$ts._mfm.dummy}]\n$[flip.h,v ${this.$ts._mfm.dummy}]`,
-			preview_font: `$[font.serif ${this.$ts._mfm.dummy}]\n$[font.monospace ${this.$ts._mfm.dummy}]\n$[font.cursive ${this.$ts._mfm.dummy}]\n$[font.fantasy ${this.$ts._mfm.dummy}]`,
-			preview_x2: `$[x2 🍮]`,
-			preview_x3: `$[x3 🍮]`,
-			preview_x4: `$[x4 🍮]`,
-			preview_blur: `$[blur ${this.$ts._mfm.dummy}]`,
-			preview_rainbow: `$[rainbow 🍮] $[rainbow.speed=5s 🍮]`,
-			preview_sparkle: `$[sparkle 🍮]`,
-			preview_rotate: `$[rotate 🍮]`,
-		};
-	},
+definePageMetadata({
+	title: i18n.ts._mfm.cheatSheet,
+	icon: 'fas fa-question-circle',
 });
 </script>
 
