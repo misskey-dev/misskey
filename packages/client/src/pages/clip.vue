@@ -23,6 +23,7 @@ import { $i } from '@/account';
 import { i18n } from '@/i18n';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const props = defineProps<{
 	clipId: string,
@@ -49,59 +50,57 @@ watch(() => props.clipId, async () => {
 
 provide('currentClipPage', $$(clip));
 
-defineExpose({
-	[symbols.PAGE_INFO]: computed(() => clip ? {
-		title: clip.name,
-		icon: 'fas fa-paperclip',
-		bg: 'var(--bg)',
-		actions: isOwned ? [{
-			icon: 'fas fa-pencil-alt',
-			text: i18n.ts.edit,
-			handler: async (): Promise<void> => {
-				const { canceled, result } = await os.form(clip.name, {
-					name: {
-						type: 'string',
-						label: i18n.ts.name,
-						default: clip.name,
-					},
-					description: {
-						type: 'string',
-						required: false,
-						multiline: true,
-						label: i18n.ts.description,
-						default: clip.description,
-					},
-					isPublic: {
-						type: 'boolean',
-						label: i18n.ts.public,
-						default: clip.isPublic,
-					},
-				});
-				if (canceled) return;
+definePageMetadata(computed(() => clip ? {
+	title: clip.name,
+	icon: 'fas fa-paperclip',
+	bg: 'var(--bg)',
+	actions: isOwned ? [{
+		icon: 'fas fa-pencil-alt',
+		text: i18n.ts.edit,
+		handler: async (): Promise<void> => {
+			const { canceled, result } = await os.form(clip.name, {
+				name: {
+					type: 'string',
+					label: i18n.ts.name,
+					default: clip.name,
+				},
+				description: {
+					type: 'string',
+					required: false,
+					multiline: true,
+					label: i18n.ts.description,
+					default: clip.description,
+				},
+				isPublic: {
+					type: 'boolean',
+					label: i18n.ts.public,
+					default: clip.isPublic,
+				},
+			});
+			if (canceled) return;
 
-				os.apiWithDialog('clips/update', {
-					clipId: clip.id,
-					...result,
-				});
-			},
-		}, {
-			icon: 'fas fa-trash-alt',
-			text: i18n.ts.delete,
-			danger: true,
-			handler: async (): Promise<void> => {
-				const { canceled } = await os.confirm({
-					type: 'warning',
-					text: i18n.t('deleteAreYouSure', { x: clip.name }),
-				});
-				if (canceled) return;
+			os.apiWithDialog('clips/update', {
+				clipId: clip.id,
+				...result,
+			});
+		},
+	}, {
+		icon: 'fas fa-trash-alt',
+		text: i18n.ts.delete,
+		danger: true,
+		handler: async (): Promise<void> => {
+			const { canceled } = await os.confirm({
+				type: 'warning',
+				text: i18n.t('deleteAreYouSure', { x: clip.name }),
+			});
+			if (canceled) return;
 
-				await os.apiWithDialog('clips/delete', {
-					clipId: clip.id,
-				});
-			},
-		}] : [],
-	} : null),
-});
+			await os.apiWithDialog('clips/delete', {
+				clipId: clip.id,
+			});
+		},
+	}] : [],
+} : null));
 </script>
 
 <style lang="scss" scoped>
