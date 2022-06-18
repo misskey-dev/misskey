@@ -55,6 +55,7 @@ import bytes from '@/filters/bytes';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 let origin = $ref('local');
 let type = $ref(null);
@@ -104,22 +105,20 @@ async function find() {
 	});
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: computed(() => ({
-		title: i18n.ts.files,
-		icon: 'fas fa-cloud',
-		bg: 'var(--bg)',
-		actions: [{
-			text: i18n.ts.lookup,
-			icon: 'fas fa-search',
-			handler: find,
-		}, {
-			text: i18n.ts.clearCachedFiles,
-			icon: 'fas fa-trash-alt',
-			handler: clear,
-		}],
-	})),
-});
+definePageMetadata(computed(() => ({
+	title: i18n.ts.files,
+	icon: 'fas fa-cloud',
+	bg: 'var(--bg)',
+	actions: [{
+		text: i18n.ts.lookup,
+		icon: 'fas fa-search',
+		handler: find,
+	}, {
+		text: i18n.ts.clearCachedFiles,
+		icon: 'fas fa-trash-alt',
+		handler: clear,
+	}],
+})));
 </script>
 
 <style lang="scss" scoped>

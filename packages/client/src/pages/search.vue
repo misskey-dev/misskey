@@ -11,6 +11,7 @@ import { computed } from 'vue';
 import XNotes from '@/components/notes.vue';
 import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const props = defineProps<{
 	query: string;
@@ -23,14 +24,12 @@ const pagination = {
 	params: computed(() => ({
 		query: props.query,
 		channelId: props.channel,
-	}))
+	})),
 };
 
-defineExpose({
-	[symbols.PAGE_INFO]: computed(() => ({
-		title: i18n.t('searchWith', { q: props.query }),
-		icon: 'fas fa-search',
-		bg: 'var(--bg)',
-	})),
-});
+definePageMetadata(computed(() => ({
+	title: i18n.t('searchWith', { q: props.query }),
+	icon: 'fas fa-search',
+	bg: 'var(--bg)',
+})));
 </script>

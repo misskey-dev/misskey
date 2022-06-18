@@ -77,6 +77,7 @@ import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { fetchInstance } from '@/instance';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 let useObjectStorage: boolean = $ref(false);
 let objectStorageBaseUrl: string | null = $ref(null);
@@ -129,17 +130,15 @@ function save() {
 	});
 }
 
-defineExpose({
-  [symbols.PAGE_INFO]: {
-		title: i18n.ts.objectStorage,
-		icon: 'fas fa-cloud',
-		bg: 'var(--bg)',
-		actions: [{
-			asFullButton: true,
-			icon: 'fas fa-check',
-			text: i18n.ts.save,
-			handler: save,
-		}],
-	}
+definePageMetadata({
+	title: i18n.ts.objectStorage,
+	icon: 'fas fa-cloud',
+	bg: 'var(--bg)',
+	actions: [{
+		asFullButton: true,
+		icon: 'fas fa-check',
+		text: i18n.ts.save,
+		handler: save,
+	}],
 });
 </script>
