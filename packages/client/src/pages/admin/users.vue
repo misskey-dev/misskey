@@ -71,6 +71,7 @@ import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { lookupUser } from '@/scripts/lookup-user';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 let paginationComponent = $ref<InstanceType<typeof MkPagination>>();
 
@@ -89,7 +90,7 @@ const pagination = {
 		username: searchUsername,
 		hostname: searchHost,
 	})),
-	offsetMode: true
+	offsetMode: true,
 };
 
 function searchUser() {
@@ -106,7 +107,7 @@ async function addUser() {
 
 	const { canceled: canceled2, result: password } = await os.inputText({
 		title: i18n.ts.password,
-		type: 'password'
+		type: 'password',
 	});
 	if (canceled2) return;
 
@@ -122,28 +123,26 @@ function show(user) {
 	os.pageWindow(`/user-info/${user.id}`);
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: computed(() => ({
-		title: i18n.ts.users,
-		icon: 'fas fa-users',
-		bg: 'var(--bg)',
-		actions: [{
-			icon: 'fas fa-search',
-			text: i18n.ts.search,
-			handler: searchUser
-		}, {
-			asFullButton: true,
-			icon: 'fas fa-plus',
-			text: i18n.ts.addUser,
-			handler: addUser
-		}, {
-			asFullButton: true,
-			icon: 'fas fa-search',
-			text: i18n.ts.lookup,
-			handler: lookupUser
-		}],
-	})),
-});
+definePageMetadata(computed(() => ({
+	title: i18n.ts.users,
+	icon: 'fas fa-users',
+	bg: 'var(--bg)',
+	actions: [{
+		icon: 'fas fa-search',
+		text: i18n.ts.search,
+		handler: searchUser,
+	}, {
+		asFullButton: true,
+		icon: 'fas fa-plus',
+		text: i18n.ts.addUser,
+		handler: addUser,
+	}, {
+		asFullButton: true,
+		icon: 'fas fa-search',
+		text: i18n.ts.lookup,
+		handler: lookupUser,
+	}],
+})));
 </script>
 
 <style lang="scss" scoped>
