@@ -28,8 +28,8 @@
 </MkSpacer>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent } from 'vue';
+<script lang="ts" setup>
+import { computed, inject, watch } from 'vue';
 import MkContainer from '@/components/ui/container.vue';
 import XPostForm from '@/components/post-form.vue';
 import XTimeline from '@/components/timeline.vue';
@@ -37,63 +37,46 @@ import XChannelFollowButton from '@/components/channel-follow-button.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { mainRouter } from '@/router';
+import { Router } from '@/nirax';
+import { $i } from '@/account';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		MkContainer,
-		XPostForm,
-		XTimeline,
-		XChannelFollowButton,
-	},
+const router: Router = inject('router') ?? mainRouter;
 
-	props: {
-		channelId: {
-			type: String,
-			required: true,
-		},
-	},
+const props = defineProps<{
+	channelId: string;
+}>();
 
-	data() {
-		return {
-			[symbols.PAGE_INFO]: computed(() => this.channel ? {
-				title: this.channel.name,
-				icon: 'fas fa-satellite-dish',
-				bg: 'var(--bg)',
-				actions: [...(this.$i && this.$i.id === this.channel.userId ? [{
-					icon: 'fas fa-cog',
-					text: this.$ts.edit,
-					handler: this.edit,
-				}] : [])],
-			} : null),
-			channel: null,
-			showBanner: true,
-			pagination: {
-				endpoint: 'channels/timeline' as const,
-				limit: 10,
-				params: computed(() => ({
-					channelId: this.channelId,
-				})),
-			},
-		};
-	},
+let channel = $ref(null);
+let showBanner = $ref(true);
+const pagination = {
+	endpoint: 'channels/timeline' as const,
+	limit: 10,
+	params: computed(() => ({
+		channelId: props.channelId,
+	})),
+};
 
-	watch: {
-		channelId: {
-			async handler() {
-				this.channel = await os.api('channels/show', {
-					channelId: this.channelId,
-				});
-			},
-			immediate: true,
-		},
-	},
+watch(() => props.channelId, async () => {
+	channel = await os.api('channels/show', {
+		channelId: props.channelId,
+	});
+}, { immediate: true });
 
-	methods: {
-		edit() {
-			mainRouter.push(`/channels/${this.channel.id}/edit`);
-		},
-	},
-});
+function edit() {
+	router.push(`/channels/${channel.id}/edit`);
+}
+
+definePageMetadata(computed(() => channel ? {
+	title: channel.name,
+	icon: 'fas fa-satellite-dish',
+	bg: 'var(--bg)',
+	actions: [...($i && $i.id === channel.userId ? [{
+		icon: 'fas fa-cog',
+		text: i18n.ts.edit,
+		handler: edit,
+	}] : [])],
+} : null));
 </script>
 
 <style lang="scss" scoped>
