@@ -15,121 +15,92 @@
 </MkSpacer>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent } from 'vue';
-import MkContainer from '@/components/ui/container.vue';
-import XPostForm from '@/components/post-form.vue';
+<script lang="ts" setup>
+import { computed, watch, provide } from 'vue';
+import * as misskey from 'misskey-js';
 import XNotes from '@/components/notes.vue';
+import { $i } from '@/account';
+import { i18n } from '@/i18n';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 
-export default defineComponent({
-	components: {
-		MkContainer,
-		XPostForm,
-		XNotes,
-	},
+const props = defineProps<{
+	clipId: string,
+}>();
 
-	props: {
-		clipId: {
-			type: String,
-			required: true
-		}
-	},
+let clip: misskey.entities.Clip = $ref<misskey.entities.Clip>();
+const pagination = {
+	endpoint: 'clips/notes' as const,
+	limit: 10,
+	params: computed(() => ({
+		clipId: props.clipId,
+	})),
+};
 
-	data() {
-		return {
-			[symbols.PAGE_INFO]: computed(() => this.clip ? {
-				title: this.clip.name,
-				icon: 'fas fa-paperclip',
-				bg: 'var(--bg)',
-				actions: [{
-					icon: 'fas fa-ellipsis-h',
-					handler: this.menu
-				}],
-			} : null),
-			clip: null,
-			pagination: {
-				endpoint: 'clips/notes' as const,
-				limit: 10,
-				params: computed(() => ({
-					clipId: this.clipId,
-				}))
-			},
-		};
-	},
+const isOwned: boolean | null = $computed<boolean | null>(() => $i && clip && ($i.id === clip.userId));
 
-	computed: {
-		isOwned(): boolean {
-			return this.$i && this.clip && (this.$i.id === this.clip.userId);
-		}
-	},
+watch(() => props.clipId, async () => {
+	clip = await os.api('clips/show', {
+		clipId: props.clipId,
+	});
+}, {
+	immediate: true,
+}); 
 
-	watch: {
-		clipId: {
-			async handler() {
-				this.clip = await os.api('clips/show', {
-					clipId: this.clipId,
+provide('currentClipPage', $$(clip));
+
+defineExpose({
+	[symbols.PAGE_INFO]: computed(() => clip ? {
+		title: clip.name,
+		icon: 'fas fa-paperclip',
+		bg: 'var(--bg)',
+		actions: isOwned ? [{
+			icon: 'fas fa-pencil-alt',
+			text: i18n.ts.edit,
+			handler: async (): Promise<void> => {
+				const { canceled, result } = await os.form(clip.name, {
+					name: {
+						type: 'string',
+						label: i18n.ts.name,
+						default: clip.name,
+					},
+					description: {
+						type: 'string',
+						required: false,
+						multiline: true,
+						label: i18n.ts.description,
+						default: clip.description,
+					},
+					isPublic: {
+						type: 'boolean',
+						label: i18n.ts.public,
+						default: clip.isPublic,
+					},
+				});
+				if (canceled) return;
+
+				os.apiWithDialog('clips/update', {
+					clipId: clip.id,
+					...result,
 				});
 			},
-			immediate: true
-		}
-	},
+		}, {
+			icon: 'fas fa-trash-alt',
+			text: i18n.ts.delete,
+			danger: true,
+			handler: async (): Promise<void> => {
+				const { canceled } = await os.confirm({
+					type: 'warning',
+					text: i18n.t('deleteAreYouSure', { x: clip.name }),
+				});
+				if (canceled) return;
 
-	created() {
-
-	},
-
-	methods: {
-		menu(ev) {
-			os.popupMenu([this.isOwned ? {
-				icon: 'fas fa-pencil-alt',
-				text: this.$ts.edit,
-				action: async () => {
-					const { canceled, result } = await os.form(this.clip.name, {
-						name: {
-							type: 'string',
-							label: this.$ts.name,
-							default: this.clip.name
-						},
-						description: {
-							type: 'string',
-							required: false,
-							multiline: true,
-							label: this.$ts.description,
-							default: this.clip.description
-						},
-						isPublic: {
-							type: 'boolean',
-							label: this.$ts.public,
-							default: this.clip.isPublic
-						}
-					});
-					if (canceled) return;
-
-					os.apiWithDialog('clips/update', {
-						clipId: this.clip.id,
-						...result
-					});
-				}
-			} : undefined, this.isOwned ? {
-				icon: 'fas fa-trash-alt',
-				text: this.$ts.delete,
-				danger: true,
-				action: async () => {
-					const { canceled } = await os.confirm({
-						type: 'warning',
-						text: this.$t('deleteAreYouSure', { x: this.clip.name }),
-					});
-					if (canceled) return;
-
-					await os.apiWithDialog('clips/delete', {
-						clipId: this.clip.id,
-					});
-				}
-			} : undefined], ev.currentTarget ?? ev.target);
-		}
-	}
+				await os.apiWithDialog('clips/delete', {
+					clipId: clip.id,
+				});
+			},
+		}] : [],
+	} : null),
 });
 </script>
 
