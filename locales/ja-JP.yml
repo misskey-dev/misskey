@@ -850,6 +850,13 @@ adminTools: "ツール"
 
 _adminTools:
   freeze: "一括凍結"
+  _freeze:
+    funcDescription: "指定したユーザーIDをまとめて凍結することができます。"
+    inputBoxCaption: "改行で区切る。1行1ユーザー"
+    buttonLabels:
+      doFreeze: "凍結実行"
+    dialogMessages:
+      confirmFreeze: "本当に実行しますか？この操作は取り消せません。"
 
 _emailUnavailable:
   used: "既に使用されています"

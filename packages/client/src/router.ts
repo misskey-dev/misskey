@@ -84,6 +84,7 @@ const defaultRoutes = [
 	{ path: '/authorize-follow', component: page('follow') },
 	{ path: '/share', component: page('share') },
 	{ path: '/:catchAll(.*)', component: page('not-found') },
+	{ path: '/admin/tools/freeze', component: page(() => import('./pages/admin/tools/freeze.vue')) },
 ];
 
 const chatRoutes = [
