@@ -1,9 +1,9 @@
 <template>
-<div v-hotkey.global="keymap" v-size="{ min: [800] }" class="eqqrhokj">
+<div ref="rootEl" v-hotkey.global="keymap" v-size="{ min: [800] }" class="eqqrhokj">
 	<div v-if="queue > 0" class="new"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
 	<div class="tl _block">
 		<XTimeline
-			ref="tl" :key="listId"
+			ref="tlEl" :key="listId"
 			class="tl"
 			src="list"
 			:list="listId"
@@ -14,93 +14,69 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, defineAsyncComponent, computed } from 'vue';
+<script lang="ts" setup>
+import { computed, watch, inject } from 'vue';
 import XTimeline from '@/components/timeline.vue';
 import { scroll } from '@/scripts/scroll';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { mainRouter } from '@/router';
+import { definePageMetadata } from '@/scripts/page-metadata';
+import { i18n } from '@/i18n';
+import { Router } from '@/nirax';
 
-export default defineComponent({
-	components: {
-		XTimeline,
-	},
+const router: Router = inject('router') ?? mainRouter;
 
-	props: {
-		listId: {
-			type: String,
-			required: true,
-		},
-	},
+const props = defineProps<{
+	listId: string;
+}>();
 
-	data() {
-		return {
-			list: null,
-			queue: 0,
-			[symbols.PAGE_INFO]: computed(() => this.list ? {
-				title: this.list.name,
-				icon: 'fas fa-list-ul',
-				bg: 'var(--bg)',
-				actions: [{
-					icon: 'fas fa-calendar-alt',
-					text: this.$ts.jumpToSpecifiedDate,
-					handler: this.timetravel,
-				}, {
-					icon: 'fas fa-cog',
-					text: this.$ts.settings,
-					handler: this.settings,
-				}],
-			} : null),
-		};
-	},
+let list = $ref(null);
+let queue = $ref(0);
+let tlEl = $ref<InstanceType<typeof XTimeline>>();
+let rootEl = $ref<HTMLElement>();
 
-	computed: {
-		keymap(): any {
-			return {
-				't': this.focus,
-			};
-		},
-	},
+watch(() => props.listId, async () => {
+	list = await os.api('users/lists/show', {
+		listId: props.listId,
+	});
+}, { immediate: true });
 
-	watch: {
-		listId: {
-			async handler() {
-				this.list = await os.api('users/lists/show', {
-					listId: this.listId,
-				});
-			},
-			immediate: true,
-		},
-	},
+function queueUpdated(q) {
+	queue = q;
+}
 
-	methods: {
-		queueUpdated(q) {
-			this.queue = q;
-		},
+function top() {
+	scroll(rootEl, { top: 0 });
+}
 
-		top() {
-			scroll(this.$el, { top: 0 });
-		},
+function settings() {
+	router.push(`/my/lists/${props.listId}`);
+}
 
-		settings() {
-			mainRouter.push(`/my/lists/${this.listId}`);
-		},
+async function timetravel() {
+	const { canceled, result: date } = await os.inputDate({
+		title: i18n.ts.date,
+	});
+	if (canceled) return;
 
-		async timetravel() {
-			const { canceled, result: date } = await os.inputDate({
-				title: this.$ts.date,
-			});
-			if (canceled) return;
+	tlEl.timetravel(date);
+}
 
-			this.$refs.tl.timetravel(date);
-		},
-
-		focus() {
-			(this.$refs.tl as any).focus();
-		},
-	},
-});
+definePageMetadata(computed(() => list ? {
+	title: list.name,
+	icon: 'fas fa-list-ul',
+	bg: 'var(--bg)',
+	actions: [{
+		icon: 'fas fa-calendar-alt',
+		text: i18n.ts.jumpToSpecifiedDate,
+		handler: timetravel,
+	}, {
+		icon: 'fas fa-cog',
+		text: i18n.ts.settings,
+		handler: settings,
+	}],
+} : null));
 </script>
 
 <style lang="scss" scoped>
