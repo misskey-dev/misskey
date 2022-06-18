@@ -1,12 +1,12 @@
 import * as sanitizeHtml from 'sanitize-html';
-import define from '../../define.js';
 import { publishAdminStream } from '@/services/stream.js';
-import { ApiError } from '../../error.js';
-import { getUser } from '../../common/getters.js';
 import { AbuseUserReports, Users } from '@/models/index.js';
 import { genId } from '@/misc/gen-id.js';
 import { sendEmail } from '@/services/send-email.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
+import { getUser } from '../../common/getters.js';
+import { ApiError } from '../../error.js';
+import define from '../../define.js';
 
 export const meta = {
 	tags: ['users'],

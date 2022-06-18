@@ -1,11 +1,11 @@
+import { Brackets } from 'typeorm';
+import { Notes, Followings } from '@/models/index.js';
+import { activeUsersChart } from '@/services/chart/index.js';
 import define from '../../define.js';
 import { makePaginationQuery } from '../../common/make-pagination-query.js';
-import { Notes, Followings } from '@/models/index.js';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
 import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
 import { generateMutedInstanceQuery } from '../../common/generate-muted-instance-query.js';
-import { activeUsersChart } from '@/services/chart/index.js';
-import { Brackets } from 'typeorm';
 import { generateRepliesQuery } from '../../common/generate-replies-query.js';
 import { generateMutedNoteQuery } from '../../common/generate-muted-note-query.js';
 import { generateChannelQuery } from '../../common/generate-channel-query.js';
@@ -62,10 +62,10 @@ export default define(meta, paramDef, async (ps, user) => {
 		.where('following.followerId = :followerId', { followerId: user.id });
 
 	const query = makePaginationQuery(Notes.createQueryBuilder('note'),
-			ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
+		ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
 		.andWhere(new Brackets(qb => { qb
 			.where('note.userId = :meId', { meId: user.id });
-			if (hasFollowing) qb.orWhere(`note.userId IN (${ followingQuery.getQuery() })`);
+		if (hasFollowing) qb.orWhere(`note.userId IN (${ followingQuery.getQuery() })`);
 		}))
 		.innerJoinAndSelect('note.user', 'user')
 		.leftJoinAndSelect('user.avatar', 'avatar')

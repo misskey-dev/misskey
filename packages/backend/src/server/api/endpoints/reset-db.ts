@@ -1,6 +1,6 @@
+import { resetDb } from '@/db/postgre.js';
 import define from '../define.js';
 import { ApiError } from '../error.js';
-import { resetDb } from '@/db/postgre.js';
 
 export const meta = {
 	tags: ['non-productive'],

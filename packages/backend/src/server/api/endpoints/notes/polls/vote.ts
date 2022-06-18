@@ -1,16 +1,16 @@
+import { Not } from 'typeorm';
 import { publishNoteStream } from '@/services/stream.js';
 import { createNotification } from '@/services/create-notification.js';
-import define from '../../../define.js';
-import { ApiError } from '../../../error.js';
-import { getNote } from '../../../common/getters.js';
 import { deliver } from '@/queue/index.js';
 import { renderActivity } from '@/remote/activitypub/renderer/index.js';
 import renderVote from '@/remote/activitypub/renderer/vote.js';
 import { deliverQuestionUpdate } from '@/services/note/polls/update.js';
 import { PollVotes, NoteWatchings, Users, Polls, Blockings } from '@/models/index.js';
-import { Not } from 'typeorm';
 import { IRemoteUser } from '@/models/entities/user.js';
 import { genId } from '@/misc/gen-id.js';
+import { getNote } from '../../../common/getters.js';
+import { ApiError } from '../../../error.js';
+import define from '../../../define.js';
 
 export const meta = {
 	tags: ['notes'],

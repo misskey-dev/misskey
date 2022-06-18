@@ -1,7 +1,7 @@
+import { NoteThreadMutings } from '@/models/index.js';
 import define from '../../../define.js';
 import { getNote } from '../../../common/getters.js';
 import { ApiError } from '../../../error.js';
-import { NoteThreadMutings } from '@/models/index.js';
 
 export const meta = {
 	tags: ['notes'],
