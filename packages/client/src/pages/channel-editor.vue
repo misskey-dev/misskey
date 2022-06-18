@@ -23,8 +23,8 @@
 </MkSpacer>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent } from 'vue';
+<script lang="ts" setup>
+import { computed, inject, watch } from 'vue';
 import MkTextarea from '@/components/form/textarea.vue';
 import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/form/input.vue';
@@ -32,97 +32,86 @@ import { selectFile } from '@/scripts/select-file';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { mainRouter } from '@/router';
+import { definePageMetadata } from '@/scripts/page-metadata';
+import { i18n } from '@/i18n';
+import { Router } from '@/nirax';
 
-export default defineComponent({
-	components: {
-		MkTextarea, MkButton, MkInput,
-	},
+const router: Router = inject('router') ?? mainRouter;
 
-	props: {
-		channelId: {
-			type: String,
-			required: false,
-		},
-	},
+const props = defineProps<{
+	channelId?: string;
+}>();
 
-	data() {
-		return {
-			[symbols.PAGE_INFO]: computed(() => this.channelId ? {
-				title: this.$ts._channel.edit,
-				icon: 'fas fa-satellite-dish',
-				bg: 'var(--bg)',
-			} : {
-				title: this.$ts._channel.create,
-				icon: 'fas fa-satellite-dish',
-				bg: 'var(--bg)',
-			}),
-			channel: null,
-			name: null,
-			description: null,
-			bannerUrl: null,
-			bannerId: null,
-		};
-	},
+let channel = $ref(null);
+let name = $ref(null);
+let description = $ref(null);
+let bannerUrl = $ref<string | null>(null);
+let bannerId = $ref<string | null>(null);
 
-	watch: {
-		async bannerId() {
-			if (this.bannerId == null) {
-				this.bannerUrl = null;
-			} else {
-				this.bannerUrl = (await os.api('drive/files/show', {
-					fileId: this.bannerId,
-				})).url;
-			}
-		},
-	},
-
-	async created() {
-		if (this.channelId) {
-			this.channel = await os.api('channels/show', {
-				channelId: this.channelId,
-			});
-
-			this.name = this.channel.name;
-			this.description = this.channel.description;
-			this.bannerId = this.channel.bannerId;
-			this.bannerUrl = this.channel.bannerUrl;
-		}
-	},
-
-	methods: {
-		save() {
-			const params = {
-				name: this.name,
-				description: this.description,
-				bannerId: this.bannerId,
-			};
-
-			if (this.channelId) {
-				params.channelId = this.channelId;
-				os.api('channels/update', params)
-				.then(channel => {
-					os.success();
-				});
-			} else {
-				os.api('channels/create', params)
-				.then(channel => {
-					os.success();
-					mainRouter.push(`/channels/${channel.id}`);
-				});
-			}
-		},
-
-		setBannerImage(evt) {
-			selectFile(evt.currentTarget ?? evt.target, null).then(file => {
-				this.bannerId = file.id;
-			});
-		},
-
-		removeBannerImage() {
-			this.bannerId = null;
-		},
-	},
+watch(() => bannerId, async () => {
+	if (bannerId == null) {
+		bannerUrl = null;
+	} else {
+		bannerUrl = (await os.api('drive/files/show', {
+			fileId: bannerId,
+		})).url;
+	}
 });
+
+async function fetchChannel() {
+	if (props.channelId == null) return;
+
+	channel = await os.api('channels/show', {
+		channelId: props.channelId,
+	});
+
+	name = channel.name;
+	description = channel.description;
+	bannerId = channel.bannerId;
+	bannerUrl = channel.bannerUrl;
+}
+
+fetchChannel();
+
+function save() {
+	const params = {
+		name: name,
+		description: description,
+		bannerId: bannerId,
+	};
+
+	if (props.channelId) {
+		params.channelId = props.channelId;
+		os.api('channels/update', params).then(() => {
+			os.success();
+		});
+	} else {
+		os.api('channels/create', params).then(created => {
+			os.success();
+			router.push(`/channels/${created.id}`);
+		});
+	}
+}
+
+function setBannerImage(evt) {
+	selectFile(evt.currentTarget ?? evt.target, null).then(file => {
+		bannerId = file.id;
+	});
+}
+
+function removeBannerImage() {
+	bannerId = null;
+}
+
+definePageMetadata(computed(() => props.channelId ? {
+	title: i18n.ts._channel.edit,
+	icon: 'fas fa-satellite-dish',
+	bg: 'var(--bg)',
+} : {
+	title: i18n.ts._channel.create,
+	icon: 'fas fa-satellite-dish',
+	bg: 'var(--bg)',
+}));
 </script>
 
 <style lang="scss" scoped>
