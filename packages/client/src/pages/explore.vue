@@ -3,9 +3,9 @@
 	<MkSpacer :content-max="1200">
 		<div class="lznhrdub">
 			<div v-if="tab === 'local'">
-				<div v-if="meta && stats && tag == null" class="localfedi7 _block _isolated" :style="{ backgroundImage: meta.bannerUrl ? `url(${meta.bannerUrl})` : null }">
-					<header><span>{{ $t('explore', { host: meta.name || 'Misskey' }) }}</span></header>
-					<div><span>{{ $t('exploreUsersCount', { count: num(stats.originalUsersCount) }) }}</span></div>
+				<div v-if="instance && stats && tag == null" class="localfedi7 _block _isolated" :style="{ backgroundImage: instance.bannerUrl ? `url(${instance.bannerUrl})` : null }">
+					<header><span>{{ $t('explore', { host: instance.name || 'Misskey' }) }}</span></header>
+					<div><span>{{ $t('exploreUsersCount', { count: number(stats.originalUsersCount) }) }}</span></div>
 				</div>
 
 				<template v-if="tag == null">
@@ -32,7 +32,7 @@
 					<header><span>{{ $ts.exploreFediverse }}</span></header>
 				</div>
 
-				<MkFolder ref="tags" :foldable="true" :expanded="false" class="_gap">
+				<MkFolder ref="tagsEl" :foldable="true" :expanded="false" class="_gap">
 					<template #header><i class="fas fa-hashtag fa-fw" style="margin-right: 0.5em;"></i>{{ $ts.popularTags }}</template>
 
 					<div class="vxjfqztj">
@@ -74,15 +74,15 @@
 					</MkRadios>
 				</div>
 
-				<XUserList v-if="searchQuery" ref="search" class="_gap" :pagination="searchPagination"/>
+				<XUserList v-if="searchQuery" ref="searchEl" class="_gap" :pagination="searchPagination"/>
 			</div>
 		</div>
 	</MkSpacer>
 </div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent } from 'vue';
+<script lang="ts" setup>
+import { computed, defineComponent, watch } from 'vue';
 import XUserList from '@/components/user-list.vue';
 import MkFolder from '@/components/ui/folder.vue';
 import MkInput from '@/components/form/input.vue';
@@ -90,131 +90,109 @@ import MkRadios from '@/components/form/radios.vue';
 import number from '@/filters/number';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
+import { definePageMetadata } from '@/scripts/page-metadata';
+import { i18n } from '@/i18n';
+import { instance } from '@/instance';
 
-export default defineComponent({
-	components: {
-		XUserList,
-		MkFolder,
-		MkInput,
-		MkRadios,
-	},
+const props = defineProps<{
+	tag?: string;
+}>();
 
-	props: {
-		tag: {
-			type: String,
-			required: false
-		}
-	},
+let tab = $ref('local');
+let tagsEl = $ref<InstanceType<typeof MkFolder>>();
+let tagsLocal = $ref([]);
+let tagsRemote = $ref([]);
+let stats = $ref(null);
+let searchQuery = $ref(null);
+let searchOrigin = $ref('combined');
 
-	data() {
-		return {
-			[symbols.PAGE_INFO]: computed(() => ({
-				title: this.$ts.explore,
-				icon: 'fas fa-hashtag',
-				bg: 'var(--bg)',
-				tabs: [{
-					active: this.tab === 'local',
-					title: this.$ts.local,
-					onClick: () => { this.tab = 'local'; },
-				}, {
-					active: this.tab === 'remote',
-					title: this.$ts.remote,
-					onClick: () => { this.tab = 'remote'; },
-				}, {
-					active: this.tab === 'search',
-					title: this.$ts.search,
-					onClick: () => { this.tab = 'search'; },
-				},]
-			})),
-			tab: 'local',
-			pinnedUsers: { endpoint: 'pinned-users' },
-			popularUsers: { endpoint: 'users', limit: 10, noPaging: true, params: {
-				state: 'alive',
-				origin: 'local',
-				sort: '+follower',
-			} },
-			recentlyUpdatedUsers: { endpoint: 'users', limit: 10, noPaging: true, params: {
-				origin: 'local',
-				sort: '+updatedAt',
-			} },
-			recentlyRegisteredUsers: { endpoint: 'users', limit: 10, noPaging: true, params: {
-				origin: 'local',
-				state: 'alive',
-				sort: '+createdAt',
-			} },
-			popularUsersF: { endpoint: 'users', limit: 10, noPaging: true, params: {
-				state: 'alive',
-				origin: 'remote',
-				sort: '+follower',
-			} },
-			recentlyUpdatedUsersF: { endpoint: 'users', limit: 10, noPaging: true, params: {
-				origin: 'combined',
-				sort: '+updatedAt',
-			} },
-			recentlyRegisteredUsersF: { endpoint: 'users', limit: 10, noPaging: true, params: {
-				origin: 'combined',
-				sort: '+createdAt',
-			} },
-			searchPagination: {
-				endpoint: 'users/search' as const,
-				limit: 10,
-				params: computed(() => (this.searchQuery && this.searchQuery !== '') ? {
-					query: this.searchQuery,
-					origin: this.searchOrigin,
-				} : null)
-			},
-			tagsLocal: [],
-			tagsRemote: [],
-			stats: null,
-			searchQuery: null,
-			searchOrigin: 'combined',
-			num: number,
-		};
-	},
-
-	computed: {
-		meta() {
-			return this.$instance;
-		},
-		tagUsers(): any {
-			return {
-				endpoint: 'hashtags/users' as const,
-				limit: 30,
-				params: {
-					tag: this.tag,
-					origin: 'combined',
-					sort: '+follower',
-				}
-			};
-		},
-	},
-
-	watch: {
-		tag() {
-			if (this.$refs.tags) this.$refs.tags.toggleContent(this.tag == null);
-		},
-	},
-
-	created() {
-		os.api('hashtags/list', {
-			sort: '+attachedLocalUsers',
-			attachedToLocalUserOnly: true,
-			limit: 30
-		}).then(tags => {
-			this.tagsLocal = tags;
-		});
-		os.api('hashtags/list', {
-			sort: '+attachedRemoteUsers',
-			attachedToRemoteUserOnly: true,
-			limit: 30
-		}).then(tags => {
-			this.tagsRemote = tags;
-		});
-		os.api('stats').then(stats => {
-			this.stats = stats;
-		});
-	},
+watch(() => props.tag, () => {
+	if (tagsEl) tagsEl.toggleContent(props.tag == null);
 });
+
+const tagUsers = $computed(() => ({
+	endpoint: 'hashtags/users' as const,
+	limit: 30,
+	params: {
+		tag: props.tag,
+		origin: 'combined',
+		sort: '+follower',
+	},
+}));
+
+const pinnedUsers = { endpoint: 'pinned-users' };
+const popularUsers = { endpoint: 'users', limit: 10, noPaging: true, params: {
+	state: 'alive',
+	origin: 'local',
+	sort: '+follower',
+} };
+const recentlyUpdatedUsers = { endpoint: 'users', limit: 10, noPaging: true, params: {
+	origin: 'local',
+	sort: '+updatedAt',
+} };
+const recentlyRegisteredUsers = { endpoint: 'users', limit: 10, noPaging: true, params: {
+	origin: 'local',
+	state: 'alive',
+	sort: '+createdAt',
+} };
+const popularUsersF = { endpoint: 'users', limit: 10, noPaging: true, params: {
+	state: 'alive',
+	origin: 'remote',
+	sort: '+follower',
+} };
+const recentlyUpdatedUsersF = { endpoint: 'users', limit: 10, noPaging: true, params: {
+	origin: 'combined',
+	sort: '+updatedAt',
+} };
+const recentlyRegisteredUsersF = { endpoint: 'users', limit: 10, noPaging: true, params: {
+	origin: 'combined',
+	sort: '+createdAt',
+} };
+const searchPagination = {
+	endpoint: 'users/search' as const,
+	limit: 10,
+	params: computed(() => (searchQuery && searchQuery !== '') ? {
+		query: searchQuery,
+		origin: searchOrigin,
+	} : null),
+};
+
+os.api('hashtags/list', {
+	sort: '+attachedLocalUsers',
+	attachedToLocalUserOnly: true,
+	limit: 30,
+}).then(tags => {
+	tagsLocal = tags;
+});
+os.api('hashtags/list', {
+	sort: '+attachedRemoteUsers',
+	attachedToRemoteUserOnly: true,
+	limit: 30,
+}).then(tags => {
+	tagsRemote = tags;
+});
+os.api('stats').then(_stats => {
+	stats = _stats;
+});
+
+definePageMetadata(computed(() => ({
+	title: i18n.ts.explore,
+	icon: 'fas fa-hashtag',
+	bg: 'var(--bg)',
+	tabs: [{
+		active: tab === 'local',
+		title: i18n.ts.local,
+		onClick: () => { tab = 'local'; },
+	}, {
+		active: tab === 'remote',
+		title: i18n.ts.remote,
+		onClick: () => { tab = 'remote'; },
+	}, {
+		active: tab === 'search',
+		title: i18n.ts.search,
+		onClick: () => { tab = 'search'; },
+	}],
+})));
 </script>
 
 <style lang="scss" scoped>
