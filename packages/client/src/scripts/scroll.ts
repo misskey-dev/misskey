@@ -1,9 +1,13 @@
 type ScrollBehavior = 'auto' | 'smooth' | 'instant';
 
-export function getScrollContainer(el: Element | null): Element | null {
-	if (el == null || el.tagName === 'BODY') return null;
+export function getScrollContainer(el: HTMLElement | null): HTMLElement | null {
+	if (el == null || el.tagName === 'HTML') return null;
 	const overflow = window.getComputedStyle(el).getPropertyValue('overflow');
-	if (overflow.endsWith('auto')) { // xとyを個別に指定している場合、hidden auto みたいな値になる
+	if (
+		// xとyを個別に指定している場合、`hidden scroll`みたいな値になる
+		overflow.endsWith('scroll') ||
+		overflow.endsWith('auto')
+	) {
 		return el;
 	} else {
 		return getScrollContainer(el.parentElement);
