@@ -2,7 +2,7 @@
 <div class="mk-app">
 	<div class="contents">
 		<header class="header">
-			<MkHeader :info="pageMetadata"/>
+			<MkPageHeader :info="pageMetadata"/>
 		</header>
 		<main ref="main">
 			<div class="content">

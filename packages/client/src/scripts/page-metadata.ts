@@ -1,10 +1,21 @@
+import * as misskey from 'misskey-js';
 import { ComputedRef, inject, isRef, onActivated, onMounted, provide, ref, Ref } from 'vue';
 
 export const setPageMetadata = Symbol('setPageMetadata');
 
 export type PageMetadata = {
 	title: string;
-	icon: string | null;
+	subtitle?: string;
+	icon?: string | null;
+	avatar?: misskey.entities.User | null;
+	userName?: misskey.entities.User | null;
+	tabs?: {
+		title: string;
+		active: boolean;
+		icon?: string;
+		iconOnly?: boolean;
+		onClick: () => void;
+	}[];
 	// ...
 };
 

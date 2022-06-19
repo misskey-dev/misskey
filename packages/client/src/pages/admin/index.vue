@@ -1,7 +1,7 @@
 <template>
 <div ref="el" class="hiyeyicy" :class="{ wide: !narrow }">
 	<div v-if="!narrow || initialPage == null" class="nav">
-		<MkHeader :info="header"></MkHeader>
+		<MkPageHeader :info="header"></MkPageHeader>
 	
 		<MkSpacer :content-max="700" :margin-min="16">
 			<div class="lxpfedzu">
@@ -18,7 +18,7 @@
 	</div>
 	<div v-if="!(narrow && initialPage == null)" class="main">
 		<MkStickyContainer>
-			<template #header><MkHeader v-if="childInfo && !childInfo.hideHeader" :info="childInfo"/></template>
+			<template #header><MkPageHeader v-if="childInfo?.value && !childInfo.value.hideHeader" :info="childInfo.value"/></template>
 			<component :is="component" :key="initialPage" v-bind="pageProps"/>
 		</MkStickyContainer>
 	</div>

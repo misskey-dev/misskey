@@ -73,7 +73,7 @@ export class Router extends EventEmitter<{
 		this.navigate(currentPath, null, true);
 	}
 
-	private resolve(path: string): { route: RouteDef; props: Map<string, string>; } | null {
+	public resolve(path: string): { route: RouteDef; props: Map<string, string>; } | null {
 		let queryString: string | null = null;
 		if (path[0] === '/') path = path.substring(1);
 		if (path.includes('?')) {

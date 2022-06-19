@@ -36,8 +36,8 @@
 </div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, onMounted, onUnmounted, PropType, ref, inject } from 'vue';
+<script lang="ts" setup>
+import { computed, onMounted, onUnmounted, ref, inject } from 'vue';
 import tinycolor from 'tinycolor2';
 import { popupMenu } from '@/os';
 import { url } from '@/config';
@@ -45,142 +45,111 @@ import { scrollToTop } from '@/scripts/scroll';
 import MkButton from '@/components/ui/button.vue';
 import { i18n } from '@/i18n';
 import { globalEvents } from '@/events';
+import { PageMetadata } from '@/scripts/page-metadata';
 
-export default defineComponent({
-	components: {
-		MkButton
-	},
+const props = defineProps<{
+	info: PageMetadata | null;
+	menu?: any;
+	thin?: boolean;
+}>();
 
-	props: {
-		info: {
-			type: Object as PropType<{
-				actions?: {}[];
-				tabs?: {}[];
-			}>,
-			required: true
-		},
-		menu: {
-			required: false
-		},
-		thin: {
-			required: false,
-			default: false
-		},
-	},
+const hideTitle = inject('shouldOmitHeaderTitle', false);
+const thin_ = props.thin || inject('shouldHeaderThin', false);
 
-	setup(props) {
-		const el = ref<HTMLElement>(null);
-		const bg = ref(null);
-		const narrow = ref(false);
-		const height = ref(0);
-		const hasTabs = computed(() => {
-			return props.info.tabs && props.info.tabs.length > 0;
+const el = ref<HTMLElement>(null);
+const bg = ref(null);
+const narrow = ref(false);
+const height = ref(0);
+const hasTabs = computed(() => {
+	return props.info.tabs && props.info.tabs.length > 0;
+});
+const shouldShowMenu = computed(() => {
+	if (props.info == null) return false;
+	if (props.info.actions != null && narrow.value) return true;
+	if (props.info.menu != null) return true;
+	if (props.info.share != null) return true;
+	if (props.menu != null) return true;
+	return false;
+});
+
+const share = () => {
+	navigator.share({
+		url: url + props.info.path,
+		...props.info.share,
+	});
+};
+
+const showMenu = (ev: MouseEvent) => {
+	let menu = props.info.menu ? props.info.menu() : [];
+	if (narrow.value && props.info.actions) {
+		menu = [...props.info.actions.map(x => ({
+			text: x.text,
+			icon: x.icon,
+			action: x.handler,
+		})), menu.length > 0 ? null : undefined, ...menu];
+	}
+	if (props.info.share) {
+		if (menu.length > 0) menu.push(null);
+		menu.push({
+			text: i18n.ts.share,
+			icon: 'fas fa-share-alt',
+			action: share,
 		});
-		const shouldShowMenu = computed(() => {
-			if (props.info == null) return false;
-			if (props.info.actions != null && narrow.value) return true;
-			if (props.info.menu != null) return true;
-			if (props.info.share != null) return true;
-			if (props.menu != null) return true;
-			return false;
-		});
+	}
+	if (props.menu) {
+		if (menu.length > 0) menu.push(null);
+		menu = menu.concat(props.menu);
+	}
+	popupMenu(menu, ev.currentTarget ?? ev.target);
+};
 
-		const share = () => {
-			navigator.share({
-				url: url + props.info.path,
-				...props.info.share,
-			});
-		};
+const showTabsPopup = (ev: MouseEvent) => {
+	if (!hasTabs.value) return;
+	if (!narrow.value) return;
+	ev.preventDefault();
+	ev.stopPropagation();
+	const menu = props.info.tabs.map(tab => ({
+		text: tab.title,
+		icon: tab.icon,
+		action: tab.onClick,
+	}));
+	popupMenu(menu, ev.currentTarget ?? ev.target);
+};
 
-		const showMenu = (ev: MouseEvent) => {
-			let menu = props.info.menu ? props.info.menu() : [];
-			if (narrow.value && props.info.actions) {
-				menu = [...props.info.actions.map(x => ({
-					text: x.text,
-					icon: x.icon,
-					action: x.handler
-				})), menu.length > 0 ? null : undefined, ...menu];
-			}
-			if (props.info.share) {
-				if (menu.length > 0) menu.push(null);
-				menu.push({
-					text: i18n.ts.share,
-					icon: 'fas fa-share-alt',
-					action: share
-				});
-			}
-			if (props.menu) {
-				if (menu.length > 0) menu.push(null);
-				menu = menu.concat(props.menu);
-			}
-			popupMenu(menu, ev.currentTarget ?? ev.target);
-		};
+const preventDrag = (ev: TouchEvent) => {
+	ev.stopPropagation();
+};
 
-		const showTabsPopup = (ev: MouseEvent) => {
-			if (!hasTabs.value) return;
-			if (!narrow.value) return;
-			ev.preventDefault();
-			ev.stopPropagation();
-			const menu = props.info.tabs.map(tab => ({
-				text: tab.title,
-				icon: tab.icon,
-				action: tab.onClick,
-			}));
-			popupMenu(menu, ev.currentTarget ?? ev.target);
-		};
+const onClick = () => {
+	scrollToTop(el.value, { behavior: 'smooth' });
+};
 
-		const preventDrag = (ev: TouchEvent) => {
-			ev.stopPropagation();
-		};
+const calcBg = () => {
+	const rawBg = props.info?.bg || 'var(--bg)';
+	const tinyBg = tinycolor(rawBg.startsWith('var(') ? getComputedStyle(document.documentElement).getPropertyValue(rawBg.slice(4, -1)) : rawBg);
+	tinyBg.setAlpha(0.85);
+	bg.value = tinyBg.toRgbString();
+};
 
-		const onClick = () => {
-			scrollToTop(el.value, { behavior: 'smooth' });
-		};
+onMounted(() => {
+	calcBg();
+	globalEvents.on('themeChanged', calcBg);
+	onUnmounted(() => {
+		globalEvents.off('themeChanged', calcBg);
+	});
 
-		const calcBg = () => {
-			const rawBg = props.info?.bg || 'var(--bg)';
-			const tinyBg = tinycolor(rawBg.startsWith('var(') ? getComputedStyle(document.documentElement).getPropertyValue(rawBg.slice(4, -1)) : rawBg);
-			tinyBg.setAlpha(0.85);
-			bg.value = tinyBg.toRgbString();
-		};
-
-		onMounted(() => {
-			calcBg();
-			globalEvents.on('themeChanged', calcBg);
-			onUnmounted(() => {
-				globalEvents.off('themeChanged', calcBg);
-			});
-		
-			if (el.value.parentElement) {
+	if (el.value.parentElement) {
+		narrow.value = el.value.parentElement.offsetWidth < 500;
+		const ro = new ResizeObserver((entries, observer) => {
+			if (el.value) {
 				narrow.value = el.value.parentElement.offsetWidth < 500;
-				const ro = new ResizeObserver((entries, observer) => {
-					if (el.value) {
-						narrow.value = el.value.parentElement.offsetWidth < 500;
-					}
-				});
-				ro.observe(el.value.parentElement);
-				onUnmounted(() => {
-					ro.disconnect();
-				});
 			}
 		});
-
-		return {
-			el,
-			bg,
-			narrow,
-			height,
-			hasTabs,
-			shouldShowMenu,
-			share,
-			showMenu,
-			showTabsPopup,
-			preventDrag,
-			onClick,
-			hideTitle: inject('shouldOmitHeaderTitle', false),
-			thin_: props.thin || inject('shouldHeaderThin', false)
-		};
-	},
+		ro.observe(el.value.parentElement);
+		onUnmounted(() => {
+			ro.disconnect();
+		});
+	}
 });
 </script>
 

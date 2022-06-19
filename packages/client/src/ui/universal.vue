@@ -6,7 +6,7 @@
 		<main>
 			<div class="content">
 				<MkStickyContainer>
-					<template #header><MkHeader v-if="pageMetadata?.value && !pageMetadata.value.hideHeader" :info="pageMetadata.value"/></template>
+					<template #header><MkPageHeader v-if="pageMetadata?.value && !pageMetadata.value.hideHeader" :info="pageMetadata.value"/></template>
 					<RouterView/>
 				</MkStickyContainer>
 			</div>

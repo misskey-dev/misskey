@@ -27,13 +27,12 @@ const router: Router = inject('router') ?? mainRouter;
 
 const active = $computed(() => {
 	if (props.activeClass == null) return false;
-	/* TODO
 	const resolved = router.resolve(props.to);
-	if (resolved.path === router.currentRoute.value.path) return true;
-	if (resolved.name == null) return false;
+	if (resolved == null) return false;
+	if (resolved.route.path === router.currentRoute.value.path) return true;
+	if (resolved.route.name == null) return false;
 	if (router.currentRoute.value.name == null) return false;
-	return resolved.name === router.currentRoute.value.name;
-	*/
+	return resolved.route.name === router.currentRoute.value.name;
 });
 
 function onContextmenu(ev) {
