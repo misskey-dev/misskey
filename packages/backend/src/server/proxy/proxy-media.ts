@@ -47,7 +47,6 @@ export async function proxyMedia(ctx: Koa.Context) {
 				})
 				.greyscale()
 				.normalise()
-				.clone()
 				.linear(1.75, -(128 * 1.75) + 128) // 1.75x contrast
 				.flatten({ background: '#000' })
 				.toColorspace('b-w');

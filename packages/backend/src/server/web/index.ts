@@ -156,7 +156,6 @@ router.get('/twemoji-badge/(.*)', async ctx => {
 		.resize(488, 488)
 		.greyscale()
 		.normalise()
-		.clone()
 		.linear(1.75, -(128 * 1.75) + 128) // 1.75x contrast
 		.flatten({ background: '#000' })
 		.extend({
