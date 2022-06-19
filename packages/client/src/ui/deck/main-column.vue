@@ -22,7 +22,7 @@ import * as os from '@/os';
 import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
 import { mainRouter } from '@/router';
-import { PageMetadata, setPageMetadata } from '@/scripts/page-metadata';
+import { PageMetadata, provideMetadataReceiver, setPageMetadata } from '@/scripts/page-metadata';
 
 defineProps<{
 	column: Column;
@@ -36,7 +36,7 @@ const emit = defineEmits<{
 let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();
 
 provide('router', mainRouter);
-provide(setPageMetadata, (info: ComputedRef<PageMetadata>) => {
+provideMetadataReceiver((info) => {
 	pageMetadata = info;
 });
 

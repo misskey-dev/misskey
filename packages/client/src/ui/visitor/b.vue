@@ -59,14 +59,14 @@ import MkButton from '@/components/ui/button.vue';
 import { ColdDeviceStorage, defaultStore } from '@/store';
 import * as symbols from '@/symbols';
 import { mainRouter } from '@/router';
-import { PageMetadata, setPageMetadata } from '@/scripts/page-metadata';
+import { PageMetadata, provideMetadataReceiver, setPageMetadata } from '@/scripts/page-metadata';
 
 const DESKTOP_THRESHOLD = 1100;
 
 let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();
 
 provide('router', mainRouter);
-provide(setPageMetadata, (info: ComputedRef<PageMetadata>) => {
+provideMetadataReceiver((info) => {
 	pageMetadata = info;
 	if (pageMetadata.value) {
 		document.title = `${pageMetadata.value.title} | ${instanceName}`;

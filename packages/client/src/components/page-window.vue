@@ -43,7 +43,7 @@ import * as os from '@/os';
 import { mainRouter, routes } from '@/router';
 import { Router } from '@/nirax';
 import { i18n } from '@/i18n';
-import { PageMetadata, setPageMetadata } from '@/scripts/page-metadata';
+import { PageMetadata, provideMetadataReceiver, setPageMetadata } from '@/scripts/page-metadata';
 
 const props = defineProps<{
 	initialPath: string;
@@ -64,7 +64,7 @@ router.addListener('push', ctx => {
 });
 
 provide('router', router);
-provide(setPageMetadata, (info) => {
+provideMetadataReceiver((info) => {
 	pageMetadata = info;
 });
 provide('shouldHeaderThin', true);

@@ -1,4 +1,4 @@
-import { ComputedRef, inject, isRef, onActivated, onMounted, ref, Ref } from 'vue';
+import { ComputedRef, inject, isRef, onActivated, onMounted, provide, ref, Ref } from 'vue';
 
 export const setPageMetadata = Symbol('setPageMetadata');
 
@@ -25,4 +25,8 @@ export function definePageMetadata(metadata: PageMetadata | null | Ref<PageMetad
 	onActivated(() => {
 		set(_metadata);
 	});
+}
+
+export function provideMetadataReceiver(callback: (info: ComputedRef<PageMetadata>) => void): void {
+	provide(setPageMetadata, callback);
 }

@@ -37,7 +37,7 @@ import * as os from '@/os';
 import { lookupUser } from '@/scripts/lookup-user';
 import { Router } from '@/nirax';
 import { mainRouter } from '@/router';
-import { definePageMetadata, setPageMetadata } from '@/scripts/page-metadata';
+import { definePageMetadata, provideMetadataReceiver, setPageMetadata } from '@/scripts/page-metadata';
 
 const isEmpty = (x: string | null) => x == null || x === '';
 
@@ -253,7 +253,7 @@ onUnmounted(() => {
 	ro.disconnect();
 });
 
-provide(setPageMetadata, (info) => {
+provideMetadataReceiver((info) => {
 	if (info == null) {
 		childInfo = null;
 	} else {
