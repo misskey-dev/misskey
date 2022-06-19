@@ -1,5 +1,6 @@
-<template>
-<MkSpacer :content-max="700">
+<template><MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+		<MkSpacer :content-max="700">
 	<div class="ieepwinx">
 		<MkButton :link="true" to="/my/antennas/create" primary class="add"><i class="fas fa-plus"></i> {{ i18n.ts.add }}</MkButton>
 
@@ -11,7 +12,7 @@
 			</MkPagination>
 		</div>
 	</div>
-</MkSpacer>
+</MkSpacer></MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
@@ -26,6 +27,10 @@ const pagination = {
 	endpoint: 'antennas/list' as const,
 	limit: 10,
 };
+
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.manageAntennas,

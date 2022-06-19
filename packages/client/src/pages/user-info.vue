@@ -1,67 +1,70 @@
 <template>
-<MkSpacer :content-max="500" :margin-min="16" :margin-max="32">
-	<FormSuspense :p="init">
-		<div class="_formRoot">
-			<div class="_formBlock aeakzknw">
-				<MkAvatar class="avatar" :user="user" :show-indicator="true"/>
-			</div>
+<MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<MkSpacer :content-max="500" :margin-min="16" :margin-max="32">
+		<FormSuspense :p="init">
+			<div class="_formRoot">
+				<div class="_formBlock aeakzknw">
+					<MkAvatar class="avatar" :user="user" :show-indicator="true"/>
+				</div>
 
-			<FormLink :to="userPage(user)">Profile</FormLink>
-
-			<div class="_formBlock">
-				<MkKeyValue :copy="acct(user)" oneline style="margin: 1em 0;">
-					<template #key>Acct</template>
-					<template #value><span class="_monospace">{{ acct(user) }}</span></template>
-				</MkKeyValue>
-
-				<MkKeyValue :copy="user.id" oneline style="margin: 1em 0;">
-					<template #key>ID</template>
-					<template #value><span class="_monospace">{{ user.id }}</span></template>
-				</MkKeyValue>
-			</div>
-
-			<FormSection v-if="iAmModerator">
-				<template #label>Moderation</template>
-				<FormSwitch v-if="user.host == null && $i.isAdmin && (moderator || !user.isAdmin)" v-model="moderator" class="_formBlock" @update:modelValue="toggleModerator">{{ $ts.moderator }}</FormSwitch>
-				<FormSwitch v-model="silenced" class="_formBlock" @update:modelValue="toggleSilence">{{ $ts.silence }}</FormSwitch>
-				<FormSwitch v-model="suspended" class="_formBlock" @update:modelValue="toggleSuspend">{{ $ts.suspend }}</FormSwitch>
-				{{ $ts.reflectMayTakeTime }}
-				<FormButton v-if="user.host == null && iAmModerator" class="_formBlock" @click="resetPassword"><i class="fas fa-key"></i> {{ $ts.resetPassword }}</FormButton>
-			</FormSection>
-
-			<FormSection>
-				<template #label>ActivityPub</template>
+				<FormLink :to="userPage(user)">Profile</FormLink>
 
 				<div class="_formBlock">
-					<MkKeyValue v-if="user.host" oneline style="margin: 1em 0;">
-						<template #key>{{ $ts.instanceInfo }}</template>
-						<template #value><MkA :to="`/instance-info/${user.host}`" class="_link">{{ user.host }} <i class="fas fa-angle-right"></i></MkA></template>
+					<MkKeyValue :copy="acct(user)" oneline style="margin: 1em 0;">
+						<template #key>Acct</template>
+						<template #value><span class="_monospace">{{ acct(user) }}</span></template>
 					</MkKeyValue>
-					<MkKeyValue v-else oneline style="margin: 1em 0;">
-						<template #key>{{ $ts.instanceInfo }}</template>
-						<template #value>(Local user)</template>
-					</MkKeyValue>
-					<MkKeyValue oneline style="margin: 1em 0;">
-						<template #key>{{ $ts.updatedAt }}</template>
-						<template #value><MkTime v-if="user.lastFetchedAt" mode="detail" :time="user.lastFetchedAt"/><span v-else>N/A</span></template>
-					</MkKeyValue>
-					<MkKeyValue v-if="ap" oneline style="margin: 1em 0;">
-						<template #key>Type</template>
-						<template #value><span class="_monospace">{{ ap.type }}</span></template>
+
+					<MkKeyValue :copy="user.id" oneline style="margin: 1em 0;">
+						<template #key>ID</template>
+						<template #value><span class="_monospace">{{ user.id }}</span></template>
 					</MkKeyValue>
 				</div>
 
-				<FormButton v-if="user.host != null" class="_formBlock" @click="updateRemoteUser"><i class="fas fa-sync"></i> {{ $ts.updateRemoteUser }}</FormButton>
-			</FormSection>
+				<FormSection v-if="iAmModerator">
+					<template #label>Moderation</template>
+					<FormSwitch v-if="user.host == null && $i.isAdmin && (moderator || !user.isAdmin)" v-model="moderator" class="_formBlock" @update:modelValue="toggleModerator">{{ $ts.moderator }}</FormSwitch>
+					<FormSwitch v-model="silenced" class="_formBlock" @update:modelValue="toggleSilence">{{ $ts.silence }}</FormSwitch>
+					<FormSwitch v-model="suspended" class="_formBlock" @update:modelValue="toggleSuspend">{{ $ts.suspend }}</FormSwitch>
+					{{ $ts.reflectMayTakeTime }}
+					<FormButton v-if="user.host == null && iAmModerator" class="_formBlock" @click="resetPassword"><i class="fas fa-key"></i> {{ $ts.resetPassword }}</FormButton>
+				</FormSection>
 
-			<MkObjectView v-if="info && $i.isAdmin" tall :value="info">
-			</MkObjectView>
+				<FormSection>
+					<template #label>ActivityPub</template>
 
-			<MkObjectView tall :value="user">
-			</MkObjectView>
-		</div>
-	</FormSuspense>
-</MkSpacer>
+					<div class="_formBlock">
+						<MkKeyValue v-if="user.host" oneline style="margin: 1em 0;">
+							<template #key>{{ $ts.instanceInfo }}</template>
+							<template #value><MkA :to="`/instance-info/${user.host}`" class="_link">{{ user.host }} <i class="fas fa-angle-right"></i></MkA></template>
+						</MkKeyValue>
+						<MkKeyValue v-else oneline style="margin: 1em 0;">
+							<template #key>{{ $ts.instanceInfo }}</template>
+							<template #value>(Local user)</template>
+						</MkKeyValue>
+						<MkKeyValue oneline style="margin: 1em 0;">
+							<template #key>{{ $ts.updatedAt }}</template>
+							<template #value><MkTime v-if="user.lastFetchedAt" mode="detail" :time="user.lastFetchedAt"/><span v-else>N/A</span></template>
+						</MkKeyValue>
+						<MkKeyValue v-if="ap" oneline style="margin: 1em 0;">
+							<template #key>Type</template>
+							<template #value><span class="_monospace">{{ ap.type }}</span></template>
+						</MkKeyValue>
+					</div>
+
+					<FormButton v-if="user.host != null" class="_formBlock" @click="updateRemoteUser"><i class="fas fa-sync"></i> {{ $ts.updateRemoteUser }}</FormButton>
+				</FormSection>
+
+				<MkObjectView v-if="info && $i.isAdmin" tall :value="info">
+				</MkObjectView>
+
+				<MkObjectView tall :value="user">
+				</MkObjectView>
+			</div>
+		</FormSuspense>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
@@ -203,17 +206,20 @@ watch(() => user, () => {
 	});
 });
 
+const headerActions = $computed(() => user && user.url ? [{
+	text: user.url,
+	icon: 'fas fa-external-link-alt',
+	handler: () => {
+		window.open(user.url, '_blank');
+	},
+}] : []);
+
+const headerTabs = $computed(() => []);
+
 definePageMetadata(computed(() => ({
 	title: user ? acct(user) : i18n.ts.userInfo,
 	icon: 'fas fa-info-circle',
 	bg: 'var(--bg)',
-	actions: user ? [user.url ? {
-		text: user.url,
-		icon: 'fas fa-external-link-alt',
-		handler: () => {
-			window.open(user.url, '_blank');
-		},
-	} : undefined].filter(x => x !== undefined) : [],
 })));
 </script>
 

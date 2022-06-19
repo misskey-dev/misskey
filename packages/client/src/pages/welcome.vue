@@ -20,6 +20,10 @@ os.api('meta', { detail: true }).then(res => {
 	meta = res;
 });
 
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
 definePageMetadata(computed(() => ({
 	title: instanceName,
 	icon: null,

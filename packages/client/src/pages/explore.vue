@@ -1,5 +1,6 @@
 <template>
-<div>
+<MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="1200">
 		<div class="lznhrdub">
 			<div v-if="tab === 'local'">
@@ -78,7 +79,7 @@
 			</div>
 		</div>
 	</MkSpacer>
-</div>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
@@ -175,23 +176,26 @@ os.api('stats').then(_stats => {
 	stats = _stats;
 });
 
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => [{
+	active: tab === 'local',
+	title: i18n.ts.local,
+	onClick: () => { tab = 'local'; },
+}, {
+	active: tab === 'remote',
+	title: i18n.ts.remote,
+	onClick: () => { tab = 'remote'; },
+}, {
+	active: tab === 'search',
+	title: i18n.ts.search,
+	onClick: () => { tab = 'search'; },
+}]);
+
 definePageMetadata(computed(() => ({
 	title: i18n.ts.explore,
 	icon: 'fas fa-hashtag',
 	bg: 'var(--bg)',
-	tabs: [{
-		active: tab === 'local',
-		title: i18n.ts.local,
-		onClick: () => { tab = 'local'; },
-	}, {
-		active: tab === 'remote',
-		title: i18n.ts.remote,
-		onClick: () => { tab = 'remote'; },
-	}, {
-		active: tab === 'search',
-		title: i18n.ts.search,
-		onClick: () => { tab = 'search'; },
-	}],
 })));
 </script>
 

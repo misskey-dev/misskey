@@ -177,6 +177,10 @@ function changeBanner(ev) {
 	});
 }
 
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
 definePageMetadata({
 	title: i18n.ts.profile,
 	icon: 'fas fa-user',

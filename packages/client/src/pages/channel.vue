@@ -1,31 +1,34 @@
 <template>
-<MkSpacer :content-max="700">
-	<div v-if="channel">
-		<div class="wpgynlbz _panel _gap" :class="{ hide: !showBanner }">
-			<XChannelFollowButton :channel="channel" :full="true" class="subscribe"/>
-			<button class="_button toggle" @click="() => showBanner = !showBanner">
-				<template v-if="showBanner"><i class="fas fa-angle-up"></i></template>
-				<template v-else><i class="fas fa-angle-down"></i></template>
-			</button>
-			<div v-if="!showBanner" class="hideOverlay">
-			</div>
-			<div :style="{ backgroundImage: channel.bannerUrl ? `url(${channel.bannerUrl})` : null }" class="banner">
-				<div class="status">
-					<div><i class="fas fa-users fa-fw"></i><I18n :src="$ts._channel.usersCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.usersCount }}</b></template></I18n></div>
-					<div><i class="fas fa-pencil-alt fa-fw"></i><I18n :src="$ts._channel.notesCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.notesCount }}</b></template></I18n></div>
+<MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<MkSpacer :content-max="700">
+		<div v-if="channel">
+			<div class="wpgynlbz _panel _gap" :class="{ hide: !showBanner }">
+				<XChannelFollowButton :channel="channel" :full="true" class="subscribe"/>
+				<button class="_button toggle" @click="() => showBanner = !showBanner">
+					<template v-if="showBanner"><i class="fas fa-angle-up"></i></template>
+					<template v-else><i class="fas fa-angle-down"></i></template>
+				</button>
+				<div v-if="!showBanner" class="hideOverlay">
 				</div>
-				<div class="fade"></div>
+				<div :style="{ backgroundImage: channel.bannerUrl ? `url(${channel.bannerUrl})` : null }" class="banner">
+					<div class="status">
+						<div><i class="fas fa-users fa-fw"></i><I18n :src="$ts._channel.usersCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.usersCount }}</b></template></I18n></div>
+						<div><i class="fas fa-pencil-alt fa-fw"></i><I18n :src="$ts._channel.notesCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.notesCount }}</b></template></I18n></div>
+					</div>
+					<div class="fade"></div>
+				</div>
+				<div v-if="channel.description" class="description">
+					<Mfm :text="channel.description" :is-note="false" :i="$i"/>
+				</div>
 			</div>
-			<div v-if="channel.description" class="description">
-				<Mfm :text="channel.description" :is-note="false" :i="$i"/>
-			</div>
+
+			<XPostForm v-if="$i" :channel="channel" class="post-form _panel _gap" fixed/>
+
+			<XTimeline :key="channelId" class="_gap" src="channel" :channel="channelId" @before="before" @after="after"/>
 		</div>
-
-		<XPostForm v-if="$i" :channel="channel" class="post-form _panel _gap" fixed/>
-
-		<XTimeline :key="channelId" class="_gap" src="channel" :channel="channelId" @before="before" @after="after"/>
-	</div>
-</MkSpacer>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
@@ -40,6 +43,7 @@ import { mainRouter } from '@/router';
 import { Router } from '@/nirax';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const router: Router = inject('router') ?? mainRouter;
 
@@ -67,15 +71,18 @@ function edit() {
 	router.push(`/channels/${channel.id}/edit`);
 }
 
+const headerActions = $computed(() => channel && channel.userId ? [{
+	icon: 'fas fa-cog',
+	text: i18n.ts.edit,
+	handler: edit,
+}] : null);
+
+const headerTabs = $computed(() => []);
+
 definePageMetadata(computed(() => channel ? {
 	title: channel.name,
 	icon: 'fas fa-satellite-dish',
 	bg: 'var(--bg)',
-	actions: [...($i && $i.id === channel.userId ? [{
-		icon: 'fas fa-cog',
-		text: i18n.ts.edit,
-		handler: edit,
-	}] : [])],
 } : null));
 </script>
 

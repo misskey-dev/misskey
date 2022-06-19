@@ -85,6 +85,10 @@ function save(announcement) {
 	}
 }
 
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
 definePageMetadata({
 	title: i18n.ts.announcements,
 	icon: 'fas fa-broadcast-tower',

@@ -1,5 +1,6 @@
-<template>
-<MkSpacer :content-max="800" :margin-min="16" :margin-max="32">
+<template><MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+		<MkSpacer :content-max="800" :margin-min="16" :margin-max="32">
 	<div class="cwepdizn _formRoot">
 		<FormFolder :default-open="true" class="_formBlock">
 			<template #label>{{ i18n.ts.backgroundColor }}</template>
@@ -61,7 +62,7 @@
 			</div>
 		</FormFolder>
 	</div>
-</MkSpacer>
+</MkSpacer></MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
@@ -203,6 +204,10 @@ async function saveAs() {
 }
 
 watch($$(theme), apply, { deep: true });
+
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.themeEditor,

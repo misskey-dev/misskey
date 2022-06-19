@@ -1,18 +1,21 @@
 <template>
-<MkSpacer :content-max="800">
-	<div v-if="clip">
-		<div class="okzinsic _panel">
-			<div v-if="clip.description" class="description">
-				<Mfm :text="clip.description" :is-note="false" :i="$i"/>
+<MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions"/></template>
+		<MkSpacer :content-max="800">
+		<div v-if="clip">
+			<div class="okzinsic _panel">
+				<div v-if="clip.description" class="description">
+					<Mfm :text="clip.description" :is-note="false" :i="$i"/>
+				</div>
+				<div class="user">
+					<MkAvatar :user="clip.user" class="avatar" :show-indicator="true"/> <MkUserName :user="clip.user" :nowrap="false"/>
+				</div>
 			</div>
-			<div class="user">
-				<MkAvatar :user="clip.user" class="avatar" :show-indicator="true"/> <MkUserName :user="clip.user" :nowrap="false"/>
-			</div>
-		</div>
 
-		<XNotes :pagination="pagination" :detail="true"/>
-	</div>
-</MkSpacer>
+			<XNotes :pagination="pagination" :detail="true"/>
+		</div>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
@@ -50,56 +53,57 @@ watch(() => props.clipId, async () => {
 
 provide('currentClipPage', $$(clip));
 
+const headerActions = $computed(() => clip && isOwned ? [{
+	icon: 'fas fa-pencil-alt',
+	text: i18n.ts.edit,
+	handler: async (): Promise<void> => {
+		const { canceled, result } = await os.form(clip.name, {
+			name: {
+				type: 'string',
+				label: i18n.ts.name,
+				default: clip.name,
+			},
+			description: {
+				type: 'string',
+				required: false,
+				multiline: true,
+				label: i18n.ts.description,
+				default: clip.description,
+			},
+			isPublic: {
+				type: 'boolean',
+				label: i18n.ts.public,
+				default: clip.isPublic,
+			},
+		});
+		if (canceled) return;
+
+		os.apiWithDialog('clips/update', {
+			clipId: clip.id,
+			...result,
+		});
+	},
+}, {
+	icon: 'fas fa-trash-alt',
+	text: i18n.ts.delete,
+	danger: true,
+	handler: async (): Promise<void> => {
+		const { canceled } = await os.confirm({
+			type: 'warning',
+			text: i18n.t('deleteAreYouSure', { x: clip.name }),
+		});
+		if (canceled) return;
+
+		await os.apiWithDialog('clips/delete', {
+			clipId: clip.id,
+		});
+	},
+}] : null);
+
 definePageMetadata(computed(() => clip ? {
 	title: clip.name,
 	icon: 'fas fa-paperclip',
 	bg: 'var(--bg)',
-	actions: isOwned ? [{
-		icon: 'fas fa-pencil-alt',
-		text: i18n.ts.edit,
-		handler: async (): Promise<void> => {
-			const { canceled, result } = await os.form(clip.name, {
-				name: {
-					type: 'string',
-					label: i18n.ts.name,
-					default: clip.name,
-				},
-				description: {
-					type: 'string',
-					required: false,
-					multiline: true,
-					label: i18n.ts.description,
-					default: clip.description,
-				},
-				isPublic: {
-					type: 'boolean',
-					label: i18n.ts.public,
-					default: clip.isPublic,
-				},
-			});
-			if (canceled) return;
-
-			os.apiWithDialog('clips/update', {
-				clipId: clip.id,
-				...result,
-			});
-		},
-	}, {
-		icon: 'fas fa-trash-alt',
-		text: i18n.ts.delete,
-		danger: true,
-		handler: async (): Promise<void> => {
-			const { canceled } = await os.confirm({
-				type: 'warning',
-				text: i18n.t('deleteAreYouSure', { x: clip.name }),
-			});
-			if (canceled) return;
-
-			await os.apiWithDialog('clips/delete', {
-				clipId: clip.id,
-			});
-		},
-	}] : [],
 } : null));
 </script>
 

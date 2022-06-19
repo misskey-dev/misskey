@@ -44,6 +44,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 
+import XHeader from './_header_.vue';
 import MkInput from '@/components/form/input.vue';
 import MkSelect from '@/components/form/select.vue';
 import MkPagination from '@/components/ui/pagination.vue';
@@ -74,6 +75,10 @@ const pagination = {
 function resolved(reportId) {
 	reports.removeItem(item => item.id === reportId);
 }
+
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.abuseReports,

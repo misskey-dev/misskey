@@ -63,6 +63,10 @@ async function timetravel() {
 	tlEl.timetravel(date);
 }
 
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
 definePageMetadata(computed(() => list ? {
 	title: list.name,
 	icon: 'fas fa-list-ul',

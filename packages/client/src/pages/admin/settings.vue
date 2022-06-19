@@ -1,7 +1,7 @@
 <template>
 <div>
 	<MkStickyContainer>
-		<template #header><XHeader :info="header"/></template>
+		<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
 		<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
 			<FormSuspense :p="init">
 				<div class="_formRoot">
@@ -247,17 +247,14 @@ function save() {
 	});
 }
 
-const header = {
-	title: i18n.ts.general,
-	icon: 'fas fa-cog',
-	bg: 'var(--bg)',
-	actions: [{
-		asFullButton: true,
-		icon: 'fas fa-check',
-		text: i18n.ts.save,
-		handler: save,
-	}],
-};
+const headerActions = $computed(() => [{
+	asFullButton: true,
+	icon: 'fas fa-check',
+	text: i18n.ts.save,
+	handler: save,
+}]);
+
+const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.general,

@@ -148,8 +148,8 @@ export class Router extends EventEmitter<{
 			throw new Error('no route found for: ' + path);
 		}
 
-		const isSameRoute = beforeRoute === res.route;
-		if (isSameRoute && key == null) key = this.currentKey;
+		const isSamePath = beforePath === path;
+		if (isSamePath && key == null) key = this.currentKey;
 		this.currentComponent = res.route.component;
 		this.currentProps = res.props;
 		this.currentRoute.value = res.route;

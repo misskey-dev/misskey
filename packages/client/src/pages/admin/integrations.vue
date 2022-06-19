@@ -1,5 +1,6 @@
-<template>
-<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
+<template><MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+		<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
 	<FormSuspense :p="init">
 		<FormFolder class="_formBlock">
 			<template #icon><i class="fab fa-twitter"></i></template>
@@ -20,7 +21,7 @@
 			<XDiscord/>
 		</FormFolder>
 	</FormSuspense>
-</MkSpacer>
+</MkSpacer></MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
@@ -45,6 +46,10 @@ async function init() {
 	enableGithubIntegration = meta.enableGithubIntegration;
 	enableDiscordIntegration = meta.enableDiscordIntegration;
 }
+
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.integration,

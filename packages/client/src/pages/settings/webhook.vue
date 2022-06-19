@@ -43,6 +43,10 @@ const pagination = {
 	limit: 10,
 };
 
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
 definePageMetadata({
 	title: 'Webhook',
 	icon: 'fas fa-bolt',

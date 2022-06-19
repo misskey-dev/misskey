@@ -70,6 +70,10 @@ watch(() => props.antennaId, async () => {
 	});
 }, { immediate: true });
 
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
 definePageMetadata(computed(() => antenna ? {
 	title: antenna.name,
 	icon: 'fas fa-satellite',

@@ -1,5 +1,6 @@
-<template>
-<MkSpacer :content-max="700">
+<template><MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+		<MkSpacer :content-max="700">
 	<div v-if="tab === 'featured'" class="rknalgpo">
 		<MkPagination v-slot="{items}" :pagination="featuredPagesPagination">
 			<MkPagePreview v-for="page in items" :key="page.id" class="ckltabjg" :page="page"/>
@@ -18,7 +19,7 @@
 			<MkPagePreview v-for="like in items" :key="like.page.id" class="ckltabjg" :page="like.page"/>
 		</MkPagination>
 	</div>
-</MkSpacer>
+</MkSpacer></MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
@@ -52,6 +53,10 @@ const likedPagesPagination = {
 function create() {
 	router.push('/pages/new');
 }
+
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
 
 definePageMetadata(computed(() => ({
 	title: i18n.ts.pages,

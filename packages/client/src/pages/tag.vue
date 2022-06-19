@@ -22,6 +22,10 @@ const pagination = {
 	})),
 };
 
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
 definePageMetadata(computed(() => ({
 	title: props.tag,
 	icon: 'fas fa-hashtag',

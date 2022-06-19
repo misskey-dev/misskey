@@ -1,7 +1,10 @@
 <template>
-<MkSpacer :content-max="800">
-	<XNotes ref="notes" :pagination="pagination"/>
-</MkSpacer>
+<MkStickyContainer>
+	<template #header><MkPageHeader/></template>
+	<MkSpacer :content-max="800">
+		<XNotes ref="notes" :pagination="pagination"/>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>

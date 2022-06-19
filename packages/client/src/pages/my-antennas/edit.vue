@@ -30,6 +30,10 @@ os.api('antennas/show', { antennaId: props.antennaId }).then((antennaResponse) =
 	antenna = antennaResponse;
 });
 
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
 definePageMetadata({
 	title: i18n.ts.manageAntennas,
 	icon: 'fas fa-satellite',

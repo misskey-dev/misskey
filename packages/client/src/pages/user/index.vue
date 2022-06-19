@@ -1,22 +1,41 @@
 <template>
-<div ref="rootEl">
-	<transition name="fade" mode="out-in">
-		<MkSpacer v-if="user" :content-max="narrow ? 800 : 1100">
-			<div v-size="{ max: [500] }" class="ftskorzw" :class="{ wide: !narrow }">
-				<div class="main">
-					<!-- TODO -->
-					<!-- <div class="punished" v-if="user.isSuspended"><i class="fas fa-exclamation-triangle" style="margin-right: 8px;"></i> {{ $ts.userSuspended }}</div> -->
-					<!-- <div class="punished" v-if="user.isSilenced"><i class="fas fa-exclamation-triangle" style="margin-right: 8px;"></i> {{ $ts.userSilenced }}</div> -->
+<MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<div ref="rootEl">
+		<transition name="fade" mode="out-in">
+			<MkSpacer v-if="user" :content-max="narrow ? 800 : 1100">
+				<div v-size="{ max: [500] }" class="ftskorzw" :class="{ wide: !narrow }">
+					<div class="main">
+						<!-- TODO -->
+						<!-- <div class="punished" v-if="user.isSuspended"><i class="fas fa-exclamation-triangle" style="margin-right: 8px;"></i> {{ $ts.userSuspended }}</div> -->
+						<!-- <div class="punished" v-if="user.isSilenced"><i class="fas fa-exclamation-triangle" style="margin-right: 8px;"></i> {{ $ts.userSilenced }}</div> -->
 
-					<div class="profile">
-						<MkRemoteCaution v-if="user.host != null" :href="user.url" class="warn"/>
+						<div class="profile">
+							<MkRemoteCaution v-if="user.host != null" :href="user.url" class="warn"/>
 
-						<div :key="user.id" class="_block main">
-							<div class="banner-container" :style="style">
-								<div ref="bannerEl" class="banner" :style="style"></div>
-								<div class="fade"></div>
+							<div :key="user.id" class="_block main">
+								<div class="banner-container" :style="style">
+									<div ref="bannerEl" class="banner" :style="style"></div>
+									<div class="fade"></div>
+									<div class="title">
+										<MkUserName class="name" :user="user" :nowrap="true"/>
+										<div class="bottom">
+											<span class="username"><MkAcct :user="user" :detail="true"/></span>
+											<span v-if="user.isAdmin" :title="$ts.isAdmin" style="color: var(--badge);"><i class="fas fa-bookmark"></i></span>
+											<span v-if="!user.isAdmin && user.isModerator" :title="$ts.isModerator" style="color: var(--badge);"><i class="far fa-bookmark"></i></span>
+											<span v-if="user.isLocked" :title="$ts.isLocked"><i class="fas fa-lock"></i></span>
+											<span v-if="user.isBot" :title="$ts.isBot"><i class="fas fa-robot"></i></span>
+										</div>
+									</div>
+									<span v-if="$i && $i.id != user.id && user.isFollowed" class="followed">{{ $ts.followsYou }}</span>
+									<div v-if="$i" class="actions">
+										<button class="menu _button" @click="menu"><i class="fas fa-ellipsis-h"></i></button>
+										<MkFollowButton v-if="$i.id != user.id" :user="user" :inline="true" :transparent="false" :full="true" class="koudoku"/>
+									</div>
+								</div>
+								<MkAvatar class="avatar" :user="user" :disable-preview="true" :show-indicator="true"/>
 								<div class="title">
-									<MkUserName class="name" :user="user" :nowrap="true"/>
+									<MkUserName :user="user" :nowrap="false" class="name"/>
 									<div class="bottom">
 										<span class="username"><MkAcct :user="user" :detail="true"/></span>
 										<span v-if="user.isAdmin" :title="$ts.isAdmin" style="color: var(--badge);"><i class="fas fa-bookmark"></i></span>
@@ -25,106 +44,90 @@
 										<span v-if="user.isBot" :title="$ts.isBot"><i class="fas fa-robot"></i></span>
 									</div>
 								</div>
-								<span v-if="$i && $i.id != user.id && user.isFollowed" class="followed">{{ $ts.followsYou }}</span>
-								<div v-if="$i" class="actions">
-									<button class="menu _button" @click="menu"><i class="fas fa-ellipsis-h"></i></button>
-									<MkFollowButton v-if="$i.id != user.id" :user="user" :inline="true" :transparent="false" :full="true" class="koudoku"/>
+								<div class="description">
+									<Mfm v-if="user.description" :text="user.description" :is-note="false" :author="user" :i="$i" :custom-emojis="user.emojis"/>
+									<p v-else class="empty">{{ $ts.noAccountDescription }}</p>
 								</div>
-							</div>
-							<MkAvatar class="avatar" :user="user" :disable-preview="true" :show-indicator="true"/>
-							<div class="title">
-								<MkUserName :user="user" :nowrap="false" class="name"/>
-								<div class="bottom">
-									<span class="username"><MkAcct :user="user" :detail="true"/></span>
-									<span v-if="user.isAdmin" :title="$ts.isAdmin" style="color: var(--badge);"><i class="fas fa-bookmark"></i></span>
-									<span v-if="!user.isAdmin && user.isModerator" :title="$ts.isModerator" style="color: var(--badge);"><i class="far fa-bookmark"></i></span>
-									<span v-if="user.isLocked" :title="$ts.isLocked"><i class="fas fa-lock"></i></span>
-									<span v-if="user.isBot" :title="$ts.isBot"><i class="fas fa-robot"></i></span>
+								<div class="fields system">
+									<dl v-if="user.location" class="field">
+										<dt class="name"><i class="fas fa-map-marker fa-fw"></i> {{ $ts.location }}</dt>
+										<dd class="value">{{ user.location }}</dd>
+									</dl>
+									<dl v-if="user.birthday" class="field">
+										<dt class="name"><i class="fas fa-birthday-cake fa-fw"></i> {{ $ts.birthday }}</dt>
+										<dd class="value">{{ user.birthday.replace('-', '/').replace('-', '/') }} ({{ $t('yearsOld', { age }) }})</dd>
+									</dl>
+									<dl class="field">
+										<dt class="name"><i class="fas fa-calendar-alt fa-fw"></i> {{ $ts.registeredDate }}</dt>
+										<dd class="value">{{ new Date(user.createdAt).toLocaleString() }} (<MkTime :time="user.createdAt"/>)</dd>
+									</dl>
 								</div>
-							</div>
-							<div class="description">
-								<Mfm v-if="user.description" :text="user.description" :is-note="false" :author="user" :i="$i" :custom-emojis="user.emojis"/>
-								<p v-else class="empty">{{ $ts.noAccountDescription }}</p>
-							</div>
-							<div class="fields system">
-								<dl v-if="user.location" class="field">
-									<dt class="name"><i class="fas fa-map-marker fa-fw"></i> {{ $ts.location }}</dt>
-									<dd class="value">{{ user.location }}</dd>
-								</dl>
-								<dl v-if="user.birthday" class="field">
-									<dt class="name"><i class="fas fa-birthday-cake fa-fw"></i> {{ $ts.birthday }}</dt>
-									<dd class="value">{{ user.birthday.replace('-', '/').replace('-', '/') }} ({{ $t('yearsOld', { age }) }})</dd>
-								</dl>
-								<dl class="field">
-									<dt class="name"><i class="fas fa-calendar-alt fa-fw"></i> {{ $ts.registeredDate }}</dt>
-									<dd class="value">{{ new Date(user.createdAt).toLocaleString() }} (<MkTime :time="user.createdAt"/>)</dd>
-								</dl>
-							</div>
-							<div v-if="user.fields.length > 0" class="fields">
-								<dl v-for="(field, i) in user.fields" :key="i" class="field">
-									<dt class="name">
-										<Mfm :text="field.name" :plain="true" :custom-emojis="user.emojis" :colored="false"/>
-									</dt>
-									<dd class="value">
-										<Mfm :text="field.value" :author="user" :i="$i" :custom-emojis="user.emojis" :colored="false"/>
-									</dd>
-								</dl>
-							</div>
-							<div class="status">
-								<MkA v-click-anime :to="userPage(user)" :class="{ active: page === 'index' }">
-									<b>{{ number(user.notesCount) }}</b>
-									<span>{{ $ts.notes }}</span>
-								</MkA>
-								<MkA v-click-anime :to="userPage(user, 'following')" :class="{ active: page === 'following' }">
-									<b>{{ number(user.followingCount) }}</b>
-									<span>{{ $ts.following }}</span>
-								</MkA>
-								<MkA v-click-anime :to="userPage(user, 'followers')" :class="{ active: page === 'followers' }">
-									<b>{{ number(user.followersCount) }}</b>
-									<span>{{ $ts.followers }}</span>
-								</MkA>
+								<div v-if="user.fields.length > 0" class="fields">
+									<dl v-for="(field, i) in user.fields" :key="i" class="field">
+										<dt class="name">
+											<Mfm :text="field.name" :plain="true" :custom-emojis="user.emojis" :colored="false"/>
+										</dt>
+										<dd class="value">
+											<Mfm :text="field.value" :author="user" :i="$i" :custom-emojis="user.emojis" :colored="false"/>
+										</dd>
+									</dl>
+								</div>
+								<div class="status">
+									<MkA v-click-anime :to="userPage(user)" :class="{ active: page === 'index' }">
+										<b>{{ number(user.notesCount) }}</b>
+										<span>{{ $ts.notes }}</span>
+									</MkA>
+									<MkA v-click-anime :to="userPage(user, 'following')" :class="{ active: page === 'following' }">
+										<b>{{ number(user.followingCount) }}</b>
+										<span>{{ $ts.following }}</span>
+									</MkA>
+									<MkA v-click-anime :to="userPage(user, 'followers')" :class="{ active: page === 'followers' }">
+										<b>{{ number(user.followersCount) }}</b>
+										<span>{{ $ts.followers }}</span>
+									</MkA>
+								</div>
 							</div>
 						</div>
-					</div>
 
-					<div class="contents">
-						<template v-if="page === 'index'">
-							<div>
-								<div v-if="user.pinnedNotes.length > 0" class="_gap">
-									<XNote v-for="note in user.pinnedNotes" :key="note.id" class="note _block" :note="note" :pinned="true"/>
+						<div class="contents">
+							<template v-if="page === 'index'">
+								<div>
+									<div v-if="user.pinnedNotes.length > 0" class="_gap">
+										<XNote v-for="note in user.pinnedNotes" :key="note.id" class="note _block" :note="note" :pinned="true"/>
+									</div>
+									<MkInfo v-else-if="$i && $i.id === user.id">{{ $ts.userPagePinTip }}</MkInfo>
+									<template v-if="narrow">
+										<XPhotos :key="user.id" :user="user"/>
+										<XActivity :key="user.id" :user="user" style="margin-top: var(--margin);"/>
+									</template>
 								</div>
-								<MkInfo v-else-if="$i && $i.id === user.id">{{ $ts.userPagePinTip }}</MkInfo>
-								<template v-if="narrow">
-									<XPhotos :key="user.id" :user="user"/>
-									<XActivity :key="user.id" :user="user" style="margin-top: var(--margin);"/>
-								</template>
-							</div>
-							<div>
-								<XUserTimeline :user="user"/>
-							</div>
-						</template>
-						<XFollowList v-else-if="page === 'following'" type="following" :user="user" class="_content _gap"/>
-						<XFollowList v-else-if="page === 'followers'" type="followers" :user="user" class="_content _gap"/>
-						<XReactions v-else-if="page === 'reactions'" :user="user" class="_gap"/>
-						<XClips v-else-if="page === 'clips'" :user="user" class="_gap"/>
-						<XPages v-else-if="page === 'pages'" :user="user" class="_gap"/>
-						<XGallery v-else-if="page === 'gallery'" :user="user" class="_gap"/>
+								<div>
+									<XUserTimeline :user="user"/>
+								</div>
+							</template>
+							<XFollowList v-else-if="page === 'following'" type="following" :user="user" class="_content _gap"/>
+							<XFollowList v-else-if="page === 'followers'" type="followers" :user="user" class="_content _gap"/>
+							<XReactions v-else-if="page === 'reactions'" :user="user" class="_gap"/>
+							<XClips v-else-if="page === 'clips'" :user="user" class="_gap"/>
+							<XPages v-else-if="page === 'pages'" :user="user" class="_gap"/>
+							<XGallery v-else-if="page === 'gallery'" :user="user" class="_gap"/>
+						</div>
+					</div>
+					<div v-if="!narrow" class="sub">
+						<XPhotos :key="user.id" :user="user"/>
+						<XActivity :key="user.id" :user="user" style="margin-top: var(--margin);"/>
 					</div>
 				</div>
-				<div v-if="!narrow" class="sub">
-					<XPhotos :key="user.id" :user="user"/>
-					<XActivity :key="user.id" :user="user" style="margin-top: var(--margin);"/>
-				</div>
-			</div>
-		</MkSpacer>
-		<MkError v-else-if="error" @retry="fetch()"/>
-		<MkLoading v-else/>
-	</transition>
-</div>
+			</MkSpacer>
+			<MkError v-else-if="error" @retry="fetch()"/>
+			<MkLoading v-else/>
+		</transition>
+	</div>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
-import { defineComponent, defineAsyncComponent, computed, inject, onMounted, onUnmounted, watch } from 'vue';
+import { defineAsyncComponent, computed, inject, onMounted, onUnmounted, watch } from 'vue';
 import calcAge from 's-age';
 import * as Acct from 'misskey-js/built/acct';
 import * as misskey from 'misskey-js';
@@ -230,6 +233,35 @@ onUnmounted(() => {
 	}
 });
 
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => user ? [{
+	active: props.page === 'index',
+	title: i18n.ts.overview,
+	icon: 'fas fa-home',
+	onClick: () => { router.push('/@' + getAcct(user)); },
+}, ...($i && ($i.id === user.id)) || user.publicReactions ? [{
+	active: props.page === 'reactions',
+	title: i18n.ts.reaction,
+	icon: 'fas fa-laugh',
+	onClick: () => { router.push('/@' + getAcct(user) + '/reactions'); },
+}] : [], {
+	active: props.page === 'clips',
+	title: i18n.ts.clips,
+	icon: 'fas fa-paperclip',
+	onClick: () => { router.push('/@' + getAcct(user) + '/clips'); },
+}, {
+	active: props.page === 'pages',
+	title: i18n.ts.pages,
+	icon: 'fas fa-file-alt',
+	onClick: () => { router.push('/@' + getAcct(user) + '/pages'); },
+}, {
+	active: props.page === 'gallery',
+	title: i18n.ts.gallery,
+	icon: 'fas fa-icons',
+	onClick: () => { router.push('/@' + getAcct(user) + '/gallery'); },
+}] : null);
+
 definePageMetadata(computed(() => user ? {
 	icon: 'fas fa-user',
 	title: user.name ? `${user.name} (@${user.username})` : `@${user.username}`,
@@ -241,32 +273,6 @@ definePageMetadata(computed(() => user ? {
 		title: user.name,
 	},
 	bg: 'var(--bg)',
-	tabs: [{
-		active: props.page === 'index',
-		title: i18n.ts.overview,
-		icon: 'fas fa-home',
-		onClick: () => { router.push('/@' + getAcct(user)); },
-	}, ...($i && ($i.id === user.id)) || user.publicReactions ? [{
-		active: props.page === 'reactions',
-		title: i18n.ts.reaction,
-		icon: 'fas fa-laugh',
-		onClick: () => { router.push('/@' + getAcct(user) + '/reactions'); },
-	}] : [], {
-		active: props.page === 'clips',
-		title: i18n.ts.clips,
-		icon: 'fas fa-paperclip',
-		onClick: () => { router.push('/@' + getAcct(user) + '/clips'); },
-	}, {
-		active: props.page === 'pages',
-		title: i18n.ts.pages,
-		icon: 'fas fa-file-alt',
-		onClick: () => { router.push('/@' + getAcct(user) + '/pages'); },
-	}, {
-		active: props.page === 'gallery',
-		title: i18n.ts.gallery,
-		icon: 'fas fa-icons',
-		onClick: () => { router.push('/@' + getAcct(user) + '/gallery'); },
-	}],
 } : null));
 </script>
 

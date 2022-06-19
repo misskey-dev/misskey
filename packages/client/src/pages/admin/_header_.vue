@@ -1,23 +1,23 @@
 <template>
 <div ref="el" class="fdidabkc" :style="{ background: bg }" @click="onClick">
-	<template v-if="info">
+	<template v-if="metadata">
 		<div class="titleContainer" @click="showTabsPopup">
-			<i v-if="info.icon" class="icon" :class="info.icon"></i>
+			<i v-if="metadata.icon" class="icon" :class="metadata.icon"></i>
 
 			<div class="title">
-				<div class="title">{{ info.title }}</div>
+				<div class="title">{{ metadata.title }}</div>
 			</div>
 		</div>
 		<div class="tabs">
-			<button v-for="tab in info.tabs" v-tooltip="tab.title" class="tab _button" :class="{ active: tab.active }" @click="tab.onClick">
+			<button v-for="tab in tabs" v-tooltip="tab.title" class="tab _button" :class="{ active: tab.active }" @click="tab.onClick">
 				<i v-if="tab.icon" class="icon" :class="tab.icon"></i>
 				<span v-if="!tab.iconOnly" class="title">{{ tab.title }}</span>
 			</button>
 		</div>
 	</template>
 	<div class="buttons right">
-		<template v-if="info && info.actions">
-			<template v-for="action in info.actions">
+		<template v-if="actions">
+			<template v-for="action in actions">
 				<MkButton v-if="action.asFullButton" class="fullButton" primary @click.stop="action.handler"><i :class="action.icon" style="margin-right: 6px;"></i>{{ action.text }}</MkButton>
 				<button v-else v-tooltip="action.text" class="_button button" :class="{ highlighted: action.highlighted }" @click.stop="action.handler" @touchstart="preventDrag"><i :class="action.icon"></i></button>
 			</template>
@@ -35,19 +35,32 @@ import { scrollToTop } from '@/scripts/scroll';
 import MkButton from '@/components/ui/button.vue';
 import { i18n } from '@/i18n';
 import { globalEvents } from '@/events';
-import { PageMetadata } from '@/scripts/page-metadata';
+import { injectPageMetadata, PageMetadata } from '@/scripts/page-metadata';
 
 const props = defineProps<{
-	info: PageMetadata | null;
-	menu?: any;
+	tabs?: {
+		title: string;
+		active: boolean;
+		icon?: string;
+		iconOnly?: boolean;
+		onClick: () => void;
+	}[];
+	actions?: {
+		text: string;
+		icon: string;
+		asFullButton?: boolean;
+		handler: (ev: MouseEvent) => void;
+	}[];
 	thin?: boolean;
 }>();
+
+const metadata = injectPageMetadata();
 
 const el = ref<HTMLElement>(null);
 const bg = ref(null);
 const height = ref(0);
 const hasTabs = computed(() => {
-	return props.info.tabs && props.info.tabs.length > 0;
+	return props.tabs && props.tabs.length > 0;
 });
 
 const showTabsPopup = (ev: MouseEvent) => {
@@ -55,7 +68,7 @@ const showTabsPopup = (ev: MouseEvent) => {
 	if (!narrow.value) return;
 	ev.preventDefault();
 	ev.stopPropagation();
-	const menu = props.info.tabs.map(tab => ({
+	const menu = props.tabs.map(tab => ({
 		text: tab.title,
 		icon: tab.icon,
 		action: tab.onClick,
@@ -72,7 +85,7 @@ const onClick = () => {
 };
 
 const calcBg = () => {
-	const rawBg = props.info?.bg || 'var(--bg)';
+	const rawBg = metadata?.bg || 'var(--bg)';
 	const tinyBg = tinycolor(rawBg.startsWith('var(') ? getComputedStyle(document.documentElement).getPropertyValue(rawBg.slice(4, -1)) : rawBg);
 	tinyBg.setAlpha(0.85);
 	bg.value = tinyBg.toRgbString();

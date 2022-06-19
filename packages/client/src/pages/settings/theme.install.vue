@@ -70,6 +70,10 @@ async function install(code: string): Promise<void> {
 	});
 }
 
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
 definePageMetadata({
 	title: i18n.ts._theme.install,
 	icon: 'fas fa-download',

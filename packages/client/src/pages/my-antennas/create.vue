@@ -33,6 +33,10 @@ function onAntennaCreated() {
 	router.push('/my/antennas');
 }
 
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
 definePageMetadata({
 	title: i18n.ts.manageAntennas,
 	icon: 'fas fa-satellite',

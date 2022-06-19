@@ -154,6 +154,10 @@ function close(): void {
 	}, 100);
 }
 
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
 definePageMetadata({
 	title: i18n.ts.share,
 	icon: 'fas fa-share-alt',

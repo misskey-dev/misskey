@@ -27,6 +27,10 @@ onMounted(async () => {
 	login(res.i, '/');
 });
 
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
 definePageMetadata({
 	title: i18n.ts.signup,
 	icon: 'fas fa-user',

@@ -71,6 +71,10 @@ async function setProfile() {
 	unisonReload();
 }
 
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
 definePageMetadata({
 	title: i18n.ts.deck,
 	icon: 'fas fa-columns',

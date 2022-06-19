@@ -85,6 +85,10 @@ function save() {
 	});
 }
 
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
 definePageMetadata({
 	title: i18n.ts.privacy,
 	icon: 'fas fa-lock-open',

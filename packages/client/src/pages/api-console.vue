@@ -1,28 +1,31 @@
 <template>
-<MkSpacer :content-max="700">
-	<div class="_formRoot">
-		<div class="_formBlock">
-			<MkInput v-model="endpoint" :datalist="endpoints" class="_formBlock" @update:modelValue="onEndpointChange()">
-				<template #label>Endpoint</template>
-			</MkInput>
-			<MkTextarea v-model="body" class="_formBlock" code>
-				<template #label>Params (JSON or JSON5)</template>
-			</MkTextarea>
-			<MkSwitch v-model="withCredential" class="_formBlock">
-				With credential
-			</MkSwitch>
-			<MkButton class="_formBlock" primary :disabled="sending" @click="send">
-				<template v-if="sending"><MkEllipsis/></template>
-				<template v-else><i class="fas fa-paper-plane"></i> Send</template>
-			</MkButton>
+<MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<MkSpacer :content-max="700">
+		<div class="_formRoot">
+			<div class="_formBlock">
+				<MkInput v-model="endpoint" :datalist="endpoints" class="_formBlock" @update:modelValue="onEndpointChange()">
+					<template #label>Endpoint</template>
+				</MkInput>
+				<MkTextarea v-model="body" class="_formBlock" code>
+					<template #label>Params (JSON or JSON5)</template>
+				</MkTextarea>
+				<MkSwitch v-model="withCredential" class="_formBlock">
+					With credential
+				</MkSwitch>
+				<MkButton class="_formBlock" primary :disabled="sending" @click="send">
+					<template v-if="sending"><MkEllipsis/></template>
+					<template v-else><i class="fas fa-paper-plane"></i> Send</template>
+				</MkButton>
+			</div>
+			<div v-if="res" class="_formBlock">
+				<MkTextarea v-model="res" code readonly tall>
+					<template #label>Response</template>
+				</MkTextarea>
+			</div>
 		</div>
-		<div v-if="res" class="_formBlock">
-			<MkTextarea v-model="res" code readonly tall>
-				<template #label>Response</template>
-			</MkTextarea>
-		</div>
-	</div>
-</MkSpacer>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
@@ -75,6 +78,10 @@ function onEndpointChange() {
 		body.value = JSON5.stringify(endpointBody, null, 2);
 	});
 }
+
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: 'API console',

@@ -53,6 +53,10 @@ function reload() {
 	unisonReload();
 }
 
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
 definePageMetadata({
 	title: i18n.ts.error,
 	icon: 'fas fa-exclamation-triangle',

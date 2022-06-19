@@ -1,9 +1,6 @@
 <template>
 <div class="mk-app">
 	<div class="contents">
-		<header class="header">
-			<MkPageHeader :info="pageMetadata"/>
-		</header>
 		<main ref="main">
 			<div class="content">
 				<RouterView/>

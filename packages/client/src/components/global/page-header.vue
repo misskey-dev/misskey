@@ -1,37 +1,33 @@
 <template>
-<div ref="el" class="fdidabkb" :class="{ slim: narrow, thin: thin_ }" :style="{ background: bg }" @click="onClick">
-	<template v-if="info">
+<div v-if="show" ref="el" class="fdidabkb" :class="{ slim: narrow, thin: thin_ }" :style="{ background: bg }" @click="onClick">
+	<template v-if="metadata">
 		<div v-if="!hideTitle" class="titleContainer" @click="showTabsPopup">
-			<MkAvatar v-if="info.avatar" class="avatar" :user="info.avatar" :disable-preview="true" :show-indicator="true"/>
-			<i v-else-if="info.icon" class="icon" :class="info.icon"></i>
+			<MkAvatar v-if="metadata.avatar" class="avatar" :user="metadata.avatar" :disable-preview="true" :show-indicator="true"/>
+			<i v-else-if="metadata.icon" class="icon" :class="metadata.icon"></i>
 
 			<div class="title">
-				<MkUserName v-if="info.userName" :user="info.userName" :nowrap="true" class="title"/>
-				<div v-else-if="info.title" class="title">{{ info.title }}</div>
-				<div v-if="!narrow && info.subtitle" class="subtitle">
-					{{ info.subtitle }}
+				<MkUserName v-if="metadata.userName" :user="metadata.userName" :nowrap="true" class="title"/>
+				<div v-else-if="metadata.title" class="title">{{ metadata.title }}</div>
+				<div v-if="!narrow && metadata.subtitle" class="subtitle">
+					{{ metadata.subtitle }}
 				</div>
 				<div v-if="narrow && hasTabs" class="subtitle activeTab">
-					{{ info.tabs.find(tab => tab.active)?.title }}
+					{{ tabs.find(tab => tab.active)?.title }}
 					<i class="chevron fas fa-chevron-down"></i>
 				</div>
 			</div>
 		</div>
 		<div v-if="!narrow || hideTitle" class="tabs">
-			<button v-for="tab in info.tabs" v-tooltip="tab.title" class="tab _button" :class="{ active: tab.active }" @click="tab.onClick">
+			<button v-for="tab in tabs" v-tooltip="tab.title" class="tab _button" :class="{ active: tab.active }" @click="tab.onClick">
 				<i v-if="tab.icon" class="icon" :class="tab.icon"></i>
 				<span v-if="!tab.iconOnly" class="title">{{ tab.title }}</span>
 			</button>
 		</div>
 	</template>
 	<div class="buttons right">
-		<template v-if="info && info.actions && !narrow">
-			<template v-for="action in info.actions">
-				<MkButton v-if="action.asFullButton" class="fullButton" primary @click.stop="action.handler"><i :class="action.icon" style="margin-right: 6px;"></i>{{ action.text }}</MkButton>
-				<button v-else v-tooltip="action.text" class="_button button" :class="{ highlighted: action.highlighted }" @click.stop="action.handler" @touchstart="preventDrag"><i :class="action.icon"></i></button>
-			</template>
+		<template v-for="action in actions">
+			<button v-tooltip="action.text" class="_button button" :class="{ highlighted: action.highlighted }" @click.stop="action.handler" @touchstart="preventDrag"><i :class="action.icon"></i></button>
 		</template>
-		<button v-if="shouldShowMenu" v-tooltip="$ts.menu" class="_button button" @click.stop="showMenu" @touchstart="preventDrag"><i class="fas fa-ellipsis-h"></i></button>
 	</div>
 </div>
 </template>
@@ -40,75 +36,48 @@
 import { computed, onMounted, onUnmounted, ref, inject } from 'vue';
 import tinycolor from 'tinycolor2';
 import { popupMenu } from '@/os';
-import { url } from '@/config';
 import { scrollToTop } from '@/scripts/scroll';
-import MkButton from '@/components/ui/button.vue';
 import { i18n } from '@/i18n';
 import { globalEvents } from '@/events';
-import { PageMetadata } from '@/scripts/page-metadata';
+import { injectPageMetadata, PageMetadata } from '@/scripts/page-metadata';
 
 const props = defineProps<{
-	info: PageMetadata | null;
-	menu?: any;
+	tabs?: {
+		title: string;
+		active: boolean;
+		icon?: string;
+		iconOnly?: boolean;
+		onClick: () => void;
+	}[];
+	actions?: {
+		text: string;
+		icon: string;
+		handler: (ev: MouseEvent) => void;
+	}[];
 	thin?: boolean;
 }>();
+
+const metadata = injectPageMetadata();
 
 const hideTitle = inject('shouldOmitHeaderTitle', false);
 const thin_ = props.thin || inject('shouldHeaderThin', false);
 
-const el = ref<HTMLElement>(null);
+const el = $ref<HTMLElement | null>(null);
 const bg = ref(null);
-const narrow = ref(false);
+const narrow = $ref(false);
 const height = ref(0);
-const hasTabs = computed(() => {
-	return props.info.tabs && props.info.tabs.length > 0;
+const hasTabs = $computed(() => props.tabs && props.tabs.length > 0);
+const hasActions = $computed(() => props.actions && props.actions.length > 0);
+const show = $computed(() => {
+	return !hideTitle || hasTabs || hasActions;
 });
-const shouldShowMenu = computed(() => {
-	if (props.info == null) return false;
-	if (props.info.actions != null && narrow.value) return true;
-	if (props.info.menu != null) return true;
-	if (props.info.share != null) return true;
-	if (props.menu != null) return true;
-	return false;
-});
-
-const share = () => {
-	navigator.share({
-		url: url + props.info.path,
-		...props.info.share,
-	});
-};
-
-const showMenu = (ev: MouseEvent) => {
-	let menu = props.info.menu ? props.info.menu() : [];
-	if (narrow.value && props.info.actions) {
-		menu = [...props.info.actions.map(x => ({
-			text: x.text,
-			icon: x.icon,
-			action: x.handler,
-		})), menu.length > 0 ? null : undefined, ...menu];
-	}
-	if (props.info.share) {
-		if (menu.length > 0) menu.push(null);
-		menu.push({
-			text: i18n.ts.share,
-			icon: 'fas fa-share-alt',
-			action: share,
-		});
-	}
-	if (props.menu) {
-		if (menu.length > 0) menu.push(null);
-		menu = menu.concat(props.menu);
-	}
-	popupMenu(menu, ev.currentTarget ?? ev.target);
-};
 
 const showTabsPopup = (ev: MouseEvent) => {
-	if (!hasTabs.value) return;
-	if (!narrow.value) return;
+	if (!hasTabs) return;
+	if (!narrow) return;
 	ev.preventDefault();
 	ev.stopPropagation();
-	const menu = props.info.tabs.map(tab => ({
+	const menu = props.tabs.map(tab => ({
 		text: tab.title,
 		icon: tab.icon,
 		action: tab.onClick,
@@ -121,11 +90,11 @@ const preventDrag = (ev: TouchEvent) => {
 };
 
 const onClick = () => {
-	scrollToTop(el.value, { behavior: 'smooth' });
+	scrollToTop(el, { behavior: 'smooth' });
 };
 
 const calcBg = () => {
-	const rawBg = props.info?.bg || 'var(--bg)';
+	const rawBg = metadata?.bg || 'var(--bg)';
 	const tinyBg = tinycolor(rawBg.startsWith('var(') ? getComputedStyle(document.documentElement).getPropertyValue(rawBg.slice(4, -1)) : rawBg);
 	tinyBg.setAlpha(0.85);
 	bg.value = tinyBg.toRgbString();
@@ -137,14 +106,14 @@ onMounted(() => {
 	calcBg();
 	globalEvents.on('themeChanged', calcBg);
 
-	if (el.value.parentElement) {
-		narrow.value = el.value.parentElement.offsetWidth < 500;
+	if (el && el.parentElement) {
+		narrow = el.parentElement.offsetWidth < 500;
 		ro = new ResizeObserver((entries, observer) => {
-			if (el.value) {
-				narrow.value = el.value.parentElement.offsetWidth < 500;
+			if (el) {
+				narrow = el.parentElement.offsetWidth < 500;
 			}
 		});
-		ro.observe(el.value.parentElement);
+		ro.observe(el.parentElement);
 	}
 });
 

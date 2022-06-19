@@ -80,6 +80,10 @@ async function save(): Promise<void> {
 	});
 }
 
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
 definePageMetadata({
 	title: 'Edit webhook',
 	icon: 'fas fa-bolt',

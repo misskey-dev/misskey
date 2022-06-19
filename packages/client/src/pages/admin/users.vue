@@ -1,7 +1,7 @@
 <template>
 <div>
 	<MkStickyContainer>
-		<template #header><XHeader :info="header"/></template>
+		<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
 		<MkSpacer :content-max="900">
 			<div class="lknzcolw">
 				<div class="users">
@@ -131,26 +131,23 @@ function show(user) {
 	os.pageWindow(`/user-info/${user.id}`);
 }
 
-const header = computed(() => ({
-	title: i18n.ts.users,
-	icon: 'fas fa-users',
-	bg: 'var(--bg)',
-	actions: [{
-		icon: 'fas fa-search',
-		text: i18n.ts.search,
-		handler: searchUser,
-	}, {
-		asFullButton: true,
-		icon: 'fas fa-plus',
-		text: i18n.ts.addUser,
-		handler: addUser,
-	}, {
-		asFullButton: true,
-		icon: 'fas fa-search',
-		text: i18n.ts.lookup,
-		handler: lookupUser,
-	}],
-}));
+const headerActions = $computed(() => [{
+	icon: 'fas fa-search',
+	text: i18n.ts.search,
+	handler: searchUser,
+}, {
+	asFullButton: true,
+	icon: 'fas fa-plus',
+	text: i18n.ts.addUser,
+	handler: addUser,
+}, {
+	asFullButton: true,
+	icon: 'fas fa-search',
+	text: i18n.ts.lookup,
+	handler: lookupUser,
+}]);
+
+const headerTabs = $computed(() => []);
 
 definePageMetadata(computed(() => ({
 	title: i18n.ts.users,

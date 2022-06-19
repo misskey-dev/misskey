@@ -1,7 +1,10 @@
 <template>
-<div :class="$style.root">
-	<XCategory v-if="tab === 'category'"/>
-</div>
+<MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<div :class="$style.root">
+		<XCategory v-if="tab === 'category'"/>
+	</div>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
@@ -36,14 +39,17 @@ function menu(ev) {
 	}], ev.currentTarget ?? ev.target);
 }
 
+const headerActions = $computed(() => [{
+	icon: 'fas fa-ellipsis-h',
+	handler: menu,
+}]);
+
+const headerTabs = $computed(() => []);
+
 definePageMetadata({
 	title: i18n.ts.customEmojis,
 	icon: 'fas fa-laugh',
 	bg: 'var(--bg)',
-	actions: [{
-		icon: 'fas fa-ellipsis-h',
-		handler: menu,
-	}],
 });
 </script>
 

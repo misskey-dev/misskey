@@ -135,6 +135,10 @@ function edit() {
 
 watch(() => props.postId, fetchPost, { immediate: true });
 
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
 definePageMetadata(computed(() => post ? {
 	title: post.title,
 	avatar: post.user,

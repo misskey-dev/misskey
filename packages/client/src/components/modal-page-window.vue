@@ -59,6 +59,7 @@ provide('router', router);
 provideMetadataReceiver((info) => {
 	pageMetadata = info;
 });
+provide('shouldOmitHeaderTitle', true);
 provide('shouldHeaderThin', true);
 
 const pageUrl = $computed(() => url + path);

@@ -12,10 +12,7 @@
 
 		<main class="main" :style="{ background: pageMetadata?.value?.bg }" @contextmenu.stop="onContextmenu">
 			<div class="content">
-				<MkStickyContainer>
-					<template #header><MkPageHeader v-if="pageMetadata?.value && !pageMetadata?.value?.hideHeader" :info="pageMetadata?.value"/></template>
-					<RouterView/>
-				</MkStickyContainer>
+				<RouterView/>
 			</div>
 		</main>
 

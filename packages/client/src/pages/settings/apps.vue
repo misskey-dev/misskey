@@ -61,6 +61,10 @@ function revoke(token) {
 	});
 }
 
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
 definePageMetadata({
 	title: i18n.ts.installedApps,
 	icon: 'fas fa-plug',

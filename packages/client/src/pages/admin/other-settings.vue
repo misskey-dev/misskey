@@ -1,13 +1,17 @@
 <template>
-<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
-	<FormSuspense :p="init">
-		none
-	</FormSuspense>
-</MkSpacer>
+<MkStickyContainer>
+	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
+		<FormSuspense :p="init">
+			none
+		</FormSuspense>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
 import { } from 'vue';
+import XHeader from './_header_.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
@@ -25,15 +29,18 @@ function save() {
 	});
 }
 
+const headerActions = $computed(() => [{
+	asFullButton: true,
+	icon: 'fas fa-check',
+	text: i18n.ts.save,
+	handler: save,
+}]);
+
+const headerTabs = $computed(() => []);
+
 definePageMetadata({
 	title: i18n.ts.other,
 	icon: 'fas fa-cogs',
 	bg: 'var(--bg)',
-	actions: [{
-		asFullButton: true,
-		icon: 'fas fa-check',
-		text: i18n.ts.save,
-		handler: save,
-	}],
 });
 </script>

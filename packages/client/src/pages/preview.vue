@@ -11,6 +11,10 @@ import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
 definePageMetadata(computed(() => ({
 	title: i18n.ts.preview,
 	icon: 'fas fa-eye',

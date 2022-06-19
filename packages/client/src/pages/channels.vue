@@ -1,22 +1,25 @@
 <template>
-<MkSpacer :content-max="700">
-	<div v-if="tab === 'featured'" class="_content grwlizim featured">
-		<MkPagination v-slot="{items}" :pagination="featuredPagination">
-			<MkChannelPreview v-for="channel in items" :key="channel.id" class="_gap" :channel="channel"/>
-		</MkPagination>
-	</div>
-	<div v-else-if="tab === 'following'" class="_content grwlizim following">
-		<MkPagination v-slot="{items}" :pagination="followingPagination">
-			<MkChannelPreview v-for="channel in items" :key="channel.id" class="_gap" :channel="channel"/>
-		</MkPagination>
-	</div>
-	<div v-else-if="tab === 'owned'" class="_content grwlizim owned">
-		<MkButton class="new" @click="create()"><i class="fas fa-plus"></i></MkButton>
-		<MkPagination v-slot="{items}" :pagination="ownedPagination">
-			<MkChannelPreview v-for="channel in items" :key="channel.id" class="_gap" :channel="channel"/>
-		</MkPagination>
-	</div>
-</MkSpacer>
+<MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+		<MkSpacer :content-max="700">
+		<div v-if="tab === 'featured'" class="_content grwlizim featured">
+			<MkPagination v-slot="{items}" :pagination="featuredPagination">
+				<MkChannelPreview v-for="channel in items" :key="channel.id" class="_gap" :channel="channel"/>
+			</MkPagination>
+		</div>
+		<div v-else-if="tab === 'following'" class="_content grwlizim following">
+			<MkPagination v-slot="{items}" :pagination="followingPagination">
+				<MkChannelPreview v-for="channel in items" :key="channel.id" class="_gap" :channel="channel"/>
+			</MkPagination>
+		</div>
+		<div v-else-if="tab === 'owned'" class="_content grwlizim owned">
+			<MkButton class="new" @click="create()"><i class="fas fa-plus"></i></MkButton>
+			<MkPagination v-slot="{items}" :pagination="ownedPagination">
+				<MkChannelPreview v-for="channel in items" :key="channel.id" class="_gap" :channel="channel"/>
+			</MkPagination>
+		</div>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
@@ -51,30 +54,32 @@ function create() {
 	router.push('/channels/new');
 }
 
+const headerActions = $computed(() => [{
+	icon: 'fas fa-plus',
+	text: i18n.ts.create,
+	handler: create,
+}]);
+
+const headerTabs = $computed(() => [{
+	active: tab === 'featured',
+	title: i18n.ts._channel.featured,
+	icon: 'fas fa-fire-alt',
+	onClick: () => { tab = 'featured'; },
+}, {
+	active: tab === 'following',
+	title: i18n.ts._channel.following,
+	icon: 'fas fa-heart',
+	onClick: () => { tab = 'following'; },
+}, {
+	active: tab === 'owned',
+	title: i18n.ts._channel.owned,
+	icon: 'fas fa-edit',
+	onClick: () => { tab = 'owned'; },
+}]);
+
 definePageMetadata(computed(() => ({
 	title: i18n.ts.channel,
 	icon: 'fas fa-satellite-dish',
 	bg: 'var(--bg)',
-	actions: [{
-		icon: 'fas fa-plus',
-		text: i18n.ts.create,
-		handler: create,
-	}],
-	tabs: [{
-		active: tab === 'featured',
-		title: i18n.ts._channel.featured,
-		icon: 'fas fa-fire-alt',
-		onClick: () => { tab = 'featured'; },
-	}, {
-		active: tab === 'following',
-		title: i18n.ts._channel.following,
-		icon: 'fas fa-heart',
-		onClick: () => { tab = 'following'; },
-	}, {
-		active: tab === 'owned',
-		title: i18n.ts._channel.owned,
-		icon: 'fas fa-edit',
-		onClick: () => { tab = 'owned'; },
-	}],
 })));
 </script>

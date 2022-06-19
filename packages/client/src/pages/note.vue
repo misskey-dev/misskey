@@ -1,5 +1,6 @@
-<template>
-<MkSpacer :content-max="800">
+<template><MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+		<MkSpacer :content-max="800">
 	<div class="fcuexfpr">
 		<transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
 			<div v-if="note" class="note">
@@ -34,7 +35,7 @@
 			<MkLoading v-else/>
 		</transition>
 	</div>
-</MkSpacer>
+</MkSpacer></MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
@@ -118,6 +119,10 @@ function fetchNote() {
 watch(() => props.noteId, fetchNote, {
 	immediate: true,
 });
+
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
 
 definePageMetadata(computed(() => note ? {
 	title: i18n.ts.note,

@@ -1,5 +1,6 @@
-<template>
-<MkSpacer :content-max="600" :margin-min="16" :margin-max="32">
+<template><MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+		<MkSpacer :content-max="600" :margin-min="16" :margin-max="32">
 	<div v-if="instance" class="_formRoot">
 		<div class="fnfelxur">
 			<img :src="instance.iconUrl || instance.faviconUrl" alt="" class="icon"/>
@@ -102,7 +103,7 @@
 			<FormLink :to="`https://${host}/manifest.json`" external style="margin-bottom: 8px;">manifest.json</FormLink>
 		</FormSection>
 	</div>
-</MkSpacer>
+</MkSpacer></MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
@@ -168,6 +169,10 @@ function refreshMetadata() {
 }
 
 fetch();
+
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: props.host,

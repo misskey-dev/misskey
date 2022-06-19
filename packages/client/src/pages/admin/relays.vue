@@ -1,20 +1,24 @@
 <template>
-<MkSpacer :content-max="800">
-	<div v-for="relay in relays" :key="relay.inbox" class="relaycxt _panel _block" style="padding: 16px;">
-		<div>{{ relay.inbox }}</div>
-		<div class="status">
-			<i v-if="relay.status === 'accepted'" class="fas fa-check icon accepted"></i>
-			<i v-else-if="relay.status === 'rejected'" class="fas fa-ban icon rejected"></i>
-			<i v-else class="fas fa-clock icon requesting"></i>
-			<span>{{ $t(`_relayStatus.${relay.status}`) }}</span>
+<MkStickyContainer>
+	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<MkSpacer :content-max="800">
+		<div v-for="relay in relays" :key="relay.inbox" class="relaycxt _panel _block" style="padding: 16px;">
+			<div>{{ relay.inbox }}</div>
+			<div class="status">
+				<i v-if="relay.status === 'accepted'" class="fas fa-check icon accepted"></i>
+				<i v-else-if="relay.status === 'rejected'" class="fas fa-ban icon rejected"></i>
+				<i v-else class="fas fa-clock icon requesting"></i>
+				<span>{{ $t(`_relayStatus.${relay.status}`) }}</span>
+			</div>
+			<MkButton class="button" inline danger @click="remove(relay.inbox)"><i class="fas fa-trash-alt"></i> {{ i18n.ts.remove }}</MkButton>
 		</div>
-		<MkButton class="button" inline danger @click="remove(relay.inbox)"><i class="fas fa-trash-alt"></i> {{ i18n.ts.remove }}</MkButton>
-	</div>
-</MkSpacer>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
 import { } from 'vue';
+import XHeader from './_header_.vue';
 import MkButton from '@/components/ui/button.vue';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
@@ -63,16 +67,19 @@ function refresh() {
 
 refresh();
 
+const headerActions = $computed(() => [{
+	asFullButton: true,
+	icon: 'fas fa-plus',
+	text: i18n.ts.addRelay,
+	handler: addRelay,
+}]);
+
+const headerTabs = $computed(() => []);
+
 definePageMetadata({
 	title: i18n.ts.relays,
 	icon: 'fas fa-globe',
 	bg: 'var(--bg)',
-	actions: [{
-		asFullButton: true,
-		icon: 'fas fa-plus',
-		text: i18n.ts.addRelay,
-		handler: addRelay,
-	}],
 });
 </script>
 

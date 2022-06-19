@@ -84,6 +84,10 @@ function changeActive(plugin, active) {
 	});
 }
 
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
 definePageMetadata({
 	title: i18n.ts.plugins,
 	icon: 'fas fa-plug',

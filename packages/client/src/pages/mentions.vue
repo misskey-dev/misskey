@@ -1,7 +1,8 @@
-<template>
-<MkSpacer :content-max="800">
+<template><MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+		<MkSpacer :content-max="800">
 	<XNotes :pagination="pagination"/>
-</MkSpacer>
+</MkSpacer></MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
@@ -14,6 +15,10 @@ const pagination = {
 	endpoint: 'notes/mentions' as const,
 	limit: 10,
 };
+
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.mentions,

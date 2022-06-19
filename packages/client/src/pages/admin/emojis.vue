@@ -1,7 +1,7 @@
 <template>
 <div>
 	<MkStickyContainer>
-		<template #header><XHeader :info="header"/></template>
+		<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
 		<MkSpacer :content-max="900">
 			<div class="ogwlenmc">
 				<div v-if="tab === 'local'" class="local">
@@ -272,29 +272,25 @@ const delBulk = async () => {
 	emojisPaginationComponent.value.reload();
 };
 
-const header = computed(() => ({
-	title: i18n.ts.customEmojis,
-	icon: 'fas fa-laugh',
-	bg: 'var(--bg)',
-	actions: [{
-		asFullButton: true,
-		icon: 'fas fa-plus',
-		text: i18n.ts.addEmoji,
-		handler: add,
-	}, {
-		icon: 'fas fa-ellipsis-h',
-		handler: menu,
-	}],
-	tabs: [{
-		active: tab.value === 'local',
-		title: i18n.ts.local,
-		onClick: () => { tab.value = 'local'; },
-	}, {
-		active: tab.value === 'remote',
-		title: i18n.ts.remote,
-		onClick: () => { tab.value = 'remote'; },
-	}],
-}));
+const headerActions = $computed(() => [{
+	asFullButton: true,
+	icon: 'fas fa-plus',
+	text: i18n.ts.addEmoji,
+	handler: add,
+}, {
+	icon: 'fas fa-ellipsis-h',
+	handler: menu,
+}]);
+
+const headerTabs = $computed(() => [{
+	active: tab.value === 'local',
+	title: i18n.ts.local,
+	onClick: () => { tab.value = 'local'; },
+}, {
+	active: tab.value === 'remote',
+	title: i18n.ts.remote,
+	onClick: () => { tab.value = 'remote'; },
+}]);
 
 definePageMetadata(computed(() => ({
 	title: i18n.ts.customEmojis,

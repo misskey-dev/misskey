@@ -1,7 +1,7 @@
 <template>
 <div>
 	<MkStickyContainer>
-		<template #header><XHeader :info="header"/></template>
+		<template #header><XHeader :actions="headerActions"/></template>
 		<MkSpacer :content-max="900">
 			<div class="xrmjdkdw">
 				<div>
@@ -113,20 +113,17 @@ async function find() {
 	});
 }
 
-const header = computed(() => ({
-	title: i18n.ts.files,
-	icon: 'fas fa-cloud',
-	bg: 'var(--bg)',
-	actions: [{
-		text: i18n.ts.lookup,
-		icon: 'fas fa-search',
-		handler: find,
-	}, {
-		text: i18n.ts.clearCachedFiles,
-		icon: 'fas fa-trash-alt',
-		handler: clear,
-	}],
-}));
+const headerActions = $computed(() => [{
+	text: i18n.ts.lookup,
+	icon: 'fas fa-search',
+	handler: find,
+}, {
+	text: i18n.ts.clearCachedFiles,
+	icon: 'fas fa-trash-alt',
+	handler: clear,
+}]);
+
+const headerTabs = $computed(() => []);
 
 definePageMetadata(computed(() => ({
 	title: i18n.ts.files,

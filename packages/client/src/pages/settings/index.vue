@@ -1,28 +1,24 @@
 <template>
-<MkSpacer :content-max="900" :margin-min="20" :margin-max="32">
-	<div ref="el" class="vvcocwet" :class="{ wide: !narrow }">
-		<div class="header">
-			<div class="title">
-				<MkA v-if="narrow" to="/settings">{{ $ts.settings }}</MkA>
-				<template v-else>{{ $ts.settings }}</template>
-			</div>
-			<div v-if="childInfo" class="subtitle">{{ childInfo.title }}</div>
-		</div>
-		<div class="body">
-			<div v-if="!narrow || initialPage == null" class="nav">
-				<div class="baaadecd">
-					<MkInfo v-if="emailNotConfigured" warn class="info">{{ $ts.emailNotConfiguredWarning }} <MkA to="/settings/email" class="_link">{{ $ts.configure }}</MkA></MkInfo>
-					<MkSuperMenu :def="menuDef" :grid="initialPage == null"></MkSuperMenu>
+<MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+		<MkSpacer :content-max="900" :margin-min="20" :margin-max="32">
+		<div ref="el" class="vvcocwet" :class="{ wide: !narrow }">
+			<div class="body">
+				<div v-if="!narrow || initialPage == null" class="nav">
+					<div class="baaadecd">
+						<MkInfo v-if="emailNotConfigured" warn class="info">{{ $ts.emailNotConfiguredWarning }} <MkA to="/settings/email" class="_link">{{ $ts.configure }}</MkA></MkInfo>
+						<MkSuperMenu :def="menuDef" :grid="initialPage == null"></MkSuperMenu>
+					</div>
 				</div>
-			</div>
-			<div v-if="!(narrow && initialPage == null)" class="main">
-				<div class="bkzroven">
-					<component :is="component" :key="initialPage" v-bind="pageProps"/>
+				<div v-if="!(narrow && initialPage == null)" class="main">
+					<div class="bkzroven">
+						<component :is="component" :key="initialPage" v-bind="pageProps"/>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-</MkSpacer>
+	</MkSpacer>
+</mkstickycontainer>
 </template>
 
 <script setup lang="ts">
@@ -281,28 +277,15 @@ provideMetadataReceiver((info) => {
 	}
 });
 
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
 definePageMetadata(INFO);
 </script>
 
 <style lang="scss" scoped>
 .vvcocwet {
-	> .header {
-		display: flex;
-		margin-bottom: 24px;
-		font-size: 1.3em;
-		font-weight: bold;
-
-		> .title {
-			display: block;
-			width: 34%;
-		}
-
-		> .subtitle {
-			flex: 1;
-			min-width: 0;
-		}
-	}
-
 	> .body {
 		> .nav {
 			.baaadecd {

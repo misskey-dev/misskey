@@ -1,5 +1,6 @@
-<template>
-<MkSpacer :content-max="700">
+<template><MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+		<MkSpacer :content-max="700">
 	<transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
 		<div v-if="page" :key="page.id" v-size="{ max: [450] }" class="xcukqgmh">
 			<div class="_block main">
@@ -56,7 +57,7 @@
 		<MkError v-else-if="error" @retry="fetch()"/>
 		<MkLoading v-else/>
 	</transition>
-</MkSpacer>
+</MkSpacer></MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
@@ -145,6 +146,10 @@ function pin(pin) {
 }
 
 watch(() => path, fetchPage, { immediate: true });
+
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
 
 definePageMetadata(computed(() => page ? {
 	title: computed(() => page.title || page.name),

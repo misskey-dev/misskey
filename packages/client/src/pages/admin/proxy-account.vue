@@ -1,5 +1,6 @@
-<template>
-<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
+<template><MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+		<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
 	<FormSuspense :p="init">
 		<MkInfo class="_formBlock">{{ i18n.ts.proxyAccountDescription }}</MkInfo>
 		<MkKeyValue class="_formBlock">
@@ -9,7 +10,7 @@
 
 		<FormButton primary class="_formBlock" @click="chooseProxyAccount">{{ i18n.ts.selectAccount }}</FormButton>
 	</FormSuspense>
-</MkSpacer>
+</MkSpacer></MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
@@ -50,6 +51,10 @@ function save() {
 		fetchInstance();
 	});
 }
+
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.proxyAccount,

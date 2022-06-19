@@ -96,6 +96,10 @@ watch(() => props.tag, () => {
 	if (tagsRef) tagsRef.tags.toggleContent(props.tag == null);
 });
 
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
 definePageMetadata({
 	title: i18n.ts.gallery,
 	icon: 'fas fa-icons',

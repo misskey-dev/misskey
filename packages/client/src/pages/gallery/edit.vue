@@ -109,6 +109,10 @@ watch(() => props.postId, () => {
 	}) : Promise.resolve(null);
 }, { immediate: true });
 
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
 definePageMetadata(computed(() => props.postId ? {
 	title: i18n.ts.edit,
 	icon: 'fas fa-pencil-alt',

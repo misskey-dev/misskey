@@ -1,7 +1,8 @@
-<template>
-<MkSpacer :content-max="800">
+<template><MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+		<MkSpacer :content-max="800">
 	<XNotes :pagination="pagination"/>
-</MkSpacer>
+</MkSpacer></MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
@@ -17,6 +18,10 @@ const pagination = {
 		visibility: 'specified',
 	},
 };
+
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.directNotes,
