@@ -140,9 +140,7 @@ async function fetch() {
 	document.addEventListener('visibilitychange', onVisibilitychange);
 
 	nextTick(() => {
-		pagingComponent.inited.then(() => {
-			thisScrollToBottom();
-		});
+		thisScrollToBottom();
 		window.setTimeout(() => {
 			fetching = false;
 		}, 300);
@@ -325,7 +323,7 @@ defineExpose({
 		}
 
 		.messages {
-			padding-top: 8px;
+			padding: 8px 0;
 
 			> ::v-deep(*) {
 				margin-bottom: 16px;
