@@ -1,13 +1,13 @@
-import { publishMainStream } from '@/services/stream.js';
-import define from '../define.js';
 import rndstr from 'rndstr';
-import config from '@/config/index.js';
 import ms from 'ms';
+import { IsNull } from 'typeorm';
+import { publishMainStream } from '@/services/stream.js';
+import config from '@/config/index.js';
 import { Users, UserProfiles, PasswordResetRequests } from '@/models/index.js';
 import { sendEmail } from '@/services/send-email.js';
-import { ApiError } from '../error.js';
 import { genId } from '@/misc/gen-id.js';
-import { IsNull } from 'typeorm';
+import { ApiError } from '../error.js';
+import define from '../define.js';
 
 export const meta = {
 	tags: ['reset password'],

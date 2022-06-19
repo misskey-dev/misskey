@@ -1,6 +1,6 @@
+import { Notes } from '@/models/index.js';
 import define from '../../define.js';
 import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
-import { Notes } from '@/models/index.js';
 import { generateBlockedUserQuery } from '../../common/generate-block-query.js';
 
 export const meta = {
@@ -36,9 +36,9 @@ export default define(meta, paramDef, async (ps, user) => {
 	const query = Notes.createQueryBuilder('note')
 		.addSelect('note.score')
 		.where('note.userHost IS NULL')
-		.andWhere(`note.score > 0`)
-		.andWhere(`note.createdAt > :date`, { date: new Date(Date.now() - day) })
-		.andWhere(`note.visibility = 'public'`)
+		.andWhere('note.score > 0')
+		.andWhere('note.createdAt > :date', { date: new Date(Date.now() - day) })
+		.andWhere('note.visibility = \'public\'')
 		.innerJoinAndSelect('note.user', 'user')
 		.leftJoinAndSelect('user.avatar', 'avatar')
 		.leftJoinAndSelect('user.banner', 'banner')
