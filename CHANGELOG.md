@@ -15,6 +15,7 @@ You should also include the user name that made the change.
 - Server: Add rate limit to i/notifications @tamaina
 - Client: Improve files page of control panel @syuilo
 - Improve player detection in URL preview @mei23
+- Add Badge Image to Push Notification #8012 @tamaina
 
 ### Bugfixes
 - Server: Fix GenerateVideoThumbnail failed @mei23
