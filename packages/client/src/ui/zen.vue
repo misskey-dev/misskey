@@ -19,12 +19,12 @@
 import { provide, ComputedRef } from 'vue';
 import XCommon from './_common_/common.vue';
 import { mainRouter } from '@/router';
-import { PageMetadata } from '@/scripts/page-metadata';
+import { PageMetadata, setPageMetadata } from '@/scripts/page-metadata';
 
 let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();
 
 provide('router', mainRouter);
-provide('setPageMetadata', (info: ComputedRef<PageMetadata>) => {
+provide(setPageMetadata, (info: ComputedRef<PageMetadata>) => {
 	pageMetadata = info;
 	if (pageMetadata.value) {
 		document.title = `${pageMetadata.value.title} | ${instanceName}`;

@@ -37,7 +37,7 @@ import * as symbols from '@/symbols';
 import { instance } from '@/instance';
 import { Router } from '@/nirax';
 import { mainRouter } from '@/router';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import { definePageMetadata, setPageMetadata } from '@/scripts/page-metadata';
 
 const props = withDefaults(defineProps<{
   initialPage?: string;
@@ -276,7 +276,7 @@ onUnmounted(() => {
 
 const emailNotConfigured = computed(() => instance.enableEmail && ($i.email == null || !$i.emailVerified));
 
-provide('setPageMetadata', (info) => {
+provide(setPageMetadata, (info) => {
 	if (info == null) {
 		childInfo.value = null;
 	} else {

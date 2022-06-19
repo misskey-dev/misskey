@@ -72,7 +72,7 @@ import { i18n } from '@/i18n';
 import { $i } from '@/account';
 import { Router } from '@/nirax';
 import { mainRouter } from '@/router';
-import { PageMetadata } from '@/scripts/page-metadata';
+import { PageMetadata, setPageMetadata } from '@/scripts/page-metadata';
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
 const XSidebar = defineAsyncComponent(() => import('@/ui/_common_/sidebar.vue'));
 
@@ -90,7 +90,7 @@ const widgetsEl = $ref<HTMLElement>();
 const widgetsShowing = $ref(false);
 
 provide('router', mainRouter);
-provide('setPageMetadata', (info: ComputedRef<PageMetadata>) => {
+provide(setPageMetadata, (info: ComputedRef<PageMetadata>) => {
 	console.log(info);
 	pageMetadata = info;
 	if (pageMetadata.value) {

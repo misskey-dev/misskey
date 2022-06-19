@@ -53,7 +53,7 @@ import * as os from '@/os';
 import { menuDef } from '@/menu';
 import * as symbols from '@/symbols';
 import { mainRouter } from '@/router';
-import { PageMetadata } from '@/scripts/page-metadata';
+import { PageMetadata, setPageMetadata } from '@/scripts/page-metadata';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
 const XHeaderMenu = defineAsyncComponent(() => import('./classic.header.vue'));
@@ -74,7 +74,7 @@ let widgetsLeft = $ref();
 let widgetsRight = $ref();
 
 provide('router', mainRouter);
-provide('setPageMetadata', (info: ComputedRef<PageMetadata>) => {
+provide(setPageMetadata, (info: ComputedRef<PageMetadata>) => {
 	pageMetadata = info;
 	if (pageMetadata.value) {
 		document.title = `${pageMetadata.value.title} | ${instanceName}`;
