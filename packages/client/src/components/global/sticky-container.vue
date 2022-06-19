@@ -14,7 +14,7 @@ const props = withDefaults(defineProps<{
 	autoSticky?: boolean;
 }>(), {
 	autoSticky: false,
-})
+});
 
 const rootEl = $ref<HTMLElement>();
 const bodyEl = $ref<HTMLElement>();
