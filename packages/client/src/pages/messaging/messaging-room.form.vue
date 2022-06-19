@@ -31,11 +31,11 @@ import { onMounted, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import autosize from 'autosize';
 //import insertTextAtCursor from 'insert-text-at-cursor';
+import { throttle } from 'throttle-debounce';
 import { formatTimeString } from '@/scripts/format-time-string';
 import { selectFile } from '@/scripts/select-file';
 import * as os from '@/os';
 import { stream } from '@/stream';
-import { throttle } from 'throttle-debounce';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
 //import { Autocomplete } from '@/scripts/autocomplete';
@@ -80,7 +80,7 @@ async function onPaste(ev: ClipboardEvent) {
 		if (items[0].kind === 'file') {
 			os.alert({
 				type: 'error',
-				text: i18n.ts.onlyOneFileCanBeAttached
+				text: i18n.ts.onlyOneFileCanBeAttached,
 			});
 		}
 	}
@@ -109,7 +109,7 @@ function onDrop(ev: DragEvent): void {
 		ev.preventDefault();
 		os.alert({
 			type: 'error',
-			text: i18n.ts.onlyOneFileCanBeAttached
+			text: i18n.ts.onlyOneFileCanBeAttached,
 		});
 		return;
 	}
@@ -141,7 +141,7 @@ function chooseFile(ev: MouseEvent) {
 }
 
 function onChangeFile() {
-	if (fileEl?.files![0]) upload(fileEl.files[0]);
+	if (fileEl.files![0]) upload(fileEl.files[0]);
 }
 
 function upload(fileToUpload: File, name?: string) {
@@ -156,7 +156,7 @@ function send() {
 		userId: props.user ? props.user.id : undefined,
 		groupId: props.group ? props.group.id : undefined,
 		text: text ? text : undefined,
-		fileId: file ? file.id : undefined
+		fileId: file ? file.id : undefined,
 	}).then(message => {
 		clear();
 	}).catch(err => {
@@ -180,9 +180,9 @@ function saveDraft() {
 		// eslint-disable-next-line id-denylist
 		data: {
 			text: text,
-			file: file
-		}
-	}
+			file: file,
+		},
+	};
 
 	localStorage.setItem('message_drafts', JSON.stringify(drafts));
 }
