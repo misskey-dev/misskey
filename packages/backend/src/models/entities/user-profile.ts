@@ -203,6 +203,11 @@ export class UserProfile {
 	})
 	public mutingNotificationTypes: typeof notificationTypes[number][];
 
+	@Column('boolean', {
+		default: false,
+	})
+	public isOjosama: boolean;
+
 	//#region Denormalized fields
 	@Index()
 	@Column('varchar', {

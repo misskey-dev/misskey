@@ -6,7 +6,6 @@
 	</FormTextarea>
 	<MkButton class="_formBlock" inline danger :disabled="!changed" @click="do_freeze()"><i class="fas fa-gavel"></i> {{ i18n.ts._adminTools._freeze.buttonLabels.doFreeze }}</MkButton> 
 </MkSpacer>
-    
 </template>
 
 <script lang="ts" setup>

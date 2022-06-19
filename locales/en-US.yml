@@ -845,6 +845,8 @@ failedToFetchAccountInformation: "Could not fetch account information"
 rateLimitExceeded: "Rate limit exceeded"
 cropImage: "Crop image"
 cropImageAsk: "Do you want to crop this image?"
+ojosamaMode: "Ojosama Mode"
+ojosamaModeDescription: ""
 _adminTools:
   freeze: "Freeze at once"
   _freeze:
