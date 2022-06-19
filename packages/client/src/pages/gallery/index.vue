@@ -43,8 +43,7 @@
 </template>
 
 <script lang="ts" setup>
-import { watch } from 'fs';
-import { computed, defineComponent } from 'vue';
+import { computed, defineComponent, watch } from 'vue';
 import XUserList from '@/components/user-list.vue';
 import MkFolder from '@/components/ui/folder.vue';
 import MkInput from '@/components/form/input.vue';
