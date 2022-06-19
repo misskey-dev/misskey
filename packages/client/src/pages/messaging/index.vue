@@ -39,8 +39,8 @@
 </MkSpacer>
 </template>
 
-<script lang="ts">
-import { defineAsyncComponent, defineComponent, markRaw } from 'vue';
+<script lang="ts" setup>
+import { defineAsyncComponent, defineComponent, inject, markRaw, onMounted, onUnmounted } from 'vue';
 import * as Acct from 'misskey-js/built/acct';
 import MkButton from '@/components/ui/button.vue';
 import { acct } from '@/filters/user';
@@ -48,120 +48,113 @@ import * as os from '@/os';
 import { stream } from '@/stream';
 import * as symbols from '@/symbols';
 import { mainRouter } from '@/router';
+import { Router } from '@/nirax';
+import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
+import { $i } from '@/account';
 
-export default defineComponent({
-	components: {
-		MkButton,
-	},
+const router: Router = inject('router') ?? mainRouter;
 
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: this.$ts.messaging,
-				icon: 'fas fa-comments',
-				bg: 'var(--bg)',
-			},
-			fetching: true,
-			moreFetching: false,
-			messages: [],
-			connection: null,
-		};
-	},
+let fetching = $ref(true);
+let moreFetching = $ref(false);
+let messages = $ref([]);
+let connection = $ref(null);
 
-	mounted() {
-		this.connection = markRaw(stream.useChannel('messagingIndex'));
+const getAcct = Acct.toString;
 
-		this.connection.on('message', this.onMessage);
-		this.connection.on('read', this.onRead);
+function isMe(message) {
+	return message.userId === $i.id;
+}
 
-		os.api('messaging/history', { group: false }).then(userMessages => {
-			os.api('messaging/history', { group: true }).then(groupMessages => {
-				const messages = userMessages.concat(groupMessages);
-				messages.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-				this.messages = messages;
-				this.fetching = false;
-			});
+function onMessage(message) {
+	if (message.recipientId) {
+		messages = messages.filter(m => !(
+			(m.recipientId === message.recipientId && m.userId === message.userId) ||
+			(m.recipientId === message.userId && m.userId === message.recipientId)));
+
+		messages.unshift(message);
+	} else if (message.groupId) {
+		messages = messages.filter(m => m.groupId !== message.groupId);
+		messages.unshift(message);
+	}
+}
+
+function onRead(ids) {
+	for (const id of ids) {
+		const found = messages.find(m => m.id === id);
+		if (found) {
+			if (found.recipientId) {
+				found.isRead = true;
+			} else if (found.groupId) {
+				found.reads.push($i.id);
+			}
+		}
+	}
+}
+
+function start(ev) {
+	os.popupMenu([{
+		text: i18n.ts.messagingWithUser,
+		icon: 'fas fa-user',
+		action: () => { startUser(); },
+	}, {
+		text: i18n.ts.messagingWithGroup,
+		icon: 'fas fa-users',
+		action: () => { startGroup(); },
+	}], ev.currentTarget ?? ev.target);
+}
+
+async function startUser() {
+	os.selectUser().then(user => {
+		mainRouter.push(`/my/messaging/${Acct.toString(user)}`);
+	});
+}
+
+async function startGroup() {
+	const groups1 = await os.api('users/groups/owned');
+	const groups2 = await os.api('users/groups/joined');
+	if (groups1.length === 0 && groups2.length === 0) {
+		os.alert({
+			type: 'warning',
+			title: i18n.ts.youHaveNoGroups,
+			text: i18n.ts.joinOrCreateGroup,
 		});
-	},
+		return;
+	}
+	const { canceled, result: group } = await os.select({
+		title: i18n.ts.group,
+		items: groups1.concat(groups2).map(group => ({
+			value: group, text: group.name,
+		})),
+	});
+	if (canceled) return;
+	mainRouter.push(`/my/messaging/group/${group.id}`);
+}
 
-	beforeUnmount() {
-		this.connection.dispose();
-	},
+onMounted(() => {
+	connection = markRaw(stream.useChannel('messagingIndex'));
 
-	methods: {
-		getAcct: Acct.toString,
+	connection.on('message', onMessage);
+	connection.on('read', onRead);
 
-		isMe(message) {
-			return message.userId === this.$i.id;
-		},
+	os.api('messaging/history', { group: false }).then(userMessages => {
+		os.api('messaging/history', { group: true }).then(groupMessages => {
+			const _messages = userMessages.concat(groupMessages);
+			_messages.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+			messages = _messages;
+			fetching = false;
+		});
+	});
+});
 
-		onMessage(message) {
-			if (message.recipientId) {
-				this.messages = this.messages.filter(m => !(
-					(m.recipientId === message.recipientId && m.userId === message.userId) ||
-					(m.recipientId === message.userId && m.userId === message.recipientId)));
+onUnmounted(() => {
+	if (connection) connection.dispose();
+});
 
-				this.messages.unshift(message);
-			} else if (message.groupId) {
-				this.messages = this.messages.filter(m => m.groupId !== message.groupId);
-				this.messages.unshift(message);
-			}
-		},
-
-		onRead(ids) {
-			for (const id of ids) {
-				const found = this.messages.find(m => m.id === id);
-				if (found) {
-					if (found.recipientId) {
-						found.isRead = true;
-					} else if (found.groupId) {
-						found.reads.push(this.$i.id);
-					}
-				}
-			}
-		},
-
-		start(ev) {
-			os.popupMenu([{
-				text: this.$ts.messagingWithUser,
-				icon: 'fas fa-user',
-				action: () => { this.startUser(); },
-			}, {
-				text: this.$ts.messagingWithGroup,
-				icon: 'fas fa-users',
-				action: () => { this.startGroup(); },
-			}], ev.currentTarget ?? ev.target);
-		},
-
-		async startUser() {
-			os.selectUser().then(user => {
-				mainRouter.push(`/my/messaging/${Acct.toString(user)}`);
-			});
-		},
-
-		async startGroup() {
-			const groups1 = await os.api('users/groups/owned');
-			const groups2 = await os.api('users/groups/joined');
-			if (groups1.length === 0 && groups2.length === 0) {
-				os.alert({
-					type: 'warning',
-					title: this.$ts.youHaveNoGroups,
-					text: this.$ts.joinOrCreateGroup,
-				});
-				return;
-			}
-			const { canceled, result: group } = await os.select({
-				title: this.$ts.group,
-				items: groups1.concat(groups2).map(group => ({
-					value: group, text: group.name,
-				})),
-			});
-			if (canceled) return;
-			mainRouter.push(`/my/messaging/group/${group.id}`);
-		},
-
-		acct,
-	},
+definePageMetadata({
+	title: i18n.ts.messaging,
+	icon: 'fas fa-comments',
+	bg: 'var(--bg)',
 });
 </script>
 
