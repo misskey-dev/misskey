@@ -42,10 +42,7 @@ import { definePageMetadata, provideMetadataReceiver, setPageMetadata } from '@/
 const props = withDefaults(defineProps<{
   initialPage?: string;
 }>(), {
-	initialPage: 'profile',
 });
-
-console.log(props);
 
 const indexInfo = {
 	title: i18n.ts.settings,

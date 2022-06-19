@@ -1,50 +1,58 @@
 <template>
-<div class="xrmjdkdw">
-	<div>
-		<div class="inputs" style="display: flex; gap: var(--margin); flex-wrap: wrap;">
-			<MkSelect v-model="origin" style="margin: 0; flex: 1;">
-				<template #label>{{ $ts.instance }}</template>
-				<option value="combined">{{ $ts.all }}</option>
-				<option value="local">{{ $ts.local }}</option>
-				<option value="remote">{{ $ts.remote }}</option>
-			</MkSelect>
-			<MkInput v-model="searchHost" :debounce="true" type="search" style="margin: 0; flex: 1;" :disabled="pagination.params.origin === 'local'">
-				<template #label>{{ $ts.host }}</template>
-			</MkInput>
-		</div>
-		<div class="inputs" style="display: flex; padding-top: 1.2em;">
-			<MkInput v-model="type" :debounce="true" type="search" style="margin: 0; flex: 1;">
-				<template #label>MIME type</template>
-			</MkInput>
-		</div>
-		<MkPagination v-slot="{items}" :pagination="pagination" class="urempief" :class="{ grid: viewMode === 'grid' }">
-			<button v-for="file in items" :key="file.id" v-tooltip.mfm="`${file.type}\n${bytes(file.size)}\n${new Date(file.createdAt).toLocaleString()}\nby ${file.user ? '@' + Acct.toString(file.user) : 'system'}`" class="file _panel _button" @click="show(file, $event)">
-				<MkDriveFileThumbnail class="thumbnail" :file="file" fit="contain"/>
-				<div v-if="viewMode === 'list'" class="body">
-					<div>
-						<small style="opacity: 0.7;">{{ file.name }}</small>
+<div>
+	<MkStickyContainer>
+		<template #header><XHeader :info="header"/></template>
+		<MkSpacer :content-max="900">
+			<div class="xrmjdkdw">
+				<div>
+					<div class="inputs" style="display: flex; gap: var(--margin); flex-wrap: wrap;">
+						<MkSelect v-model="origin" style="margin: 0; flex: 1;">
+							<template #label>{{ $ts.instance }}</template>
+							<option value="combined">{{ $ts.all }}</option>
+							<option value="local">{{ $ts.local }}</option>
+							<option value="remote">{{ $ts.remote }}</option>
+						</MkSelect>
+						<MkInput v-model="searchHost" :debounce="true" type="search" style="margin: 0; flex: 1;" :disabled="pagination.params.origin === 'local'">
+							<template #label>{{ $ts.host }}</template>
+						</MkInput>
 					</div>
-					<div>
-						<MkAcct v-if="file.user" :user="file.user"/>
-						<div v-else>{{ $ts.system }}</div>
+					<div class="inputs" style="display: flex; padding-top: 1.2em;">
+						<MkInput v-model="type" :debounce="true" type="search" style="margin: 0; flex: 1;">
+							<template #label>MIME type</template>
+						</MkInput>
 					</div>
-					<div>
-						<span style="margin-right: 1em;">{{ file.type }}</span>
-						<span>{{ bytes(file.size) }}</span>
-					</div>
-					<div>
-						<span>{{ $ts.registeredDate }}: <MkTime :time="file.createdAt" mode="detail"/></span>
-					</div>
+					<MkPagination v-slot="{items}" :pagination="pagination" class="urempief" :class="{ grid: viewMode === 'grid' }">
+						<button v-for="file in items" :key="file.id" v-tooltip.mfm="`${file.type}\n${bytes(file.size)}\n${new Date(file.createdAt).toLocaleString()}\nby ${file.user ? '@' + Acct.toString(file.user) : 'system'}`" class="file _button" @click="show(file, $event)">
+							<MkDriveFileThumbnail class="thumbnail" :file="file" fit="contain"/>
+							<div v-if="viewMode === 'list'" class="body">
+								<div>
+									<small style="opacity: 0.7;">{{ file.name }}</small>
+								</div>
+								<div>
+									<MkAcct v-if="file.user" :user="file.user"/>
+									<div v-else>{{ $ts.system }}</div>
+								</div>
+								<div>
+									<span style="margin-right: 1em;">{{ file.type }}</span>
+									<span>{{ bytes(file.size) }}</span>
+								</div>
+								<div>
+									<span>{{ $ts.registeredDate }}: <MkTime :time="file.createdAt" mode="detail"/></span>
+								</div>
+							</div>
+						</button>
+					</MkPagination>
 				</div>
-			</button>
-		</MkPagination>
-	</div>
+			</div>
+		</MkSpacer>
+	</MkStickyContainer>
 </div>
 </template>
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent } from 'vue';
 import * as Acct from 'misskey-js/built/acct';
+import XHeader from './_header_.vue';
 import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/form/input.vue';
 import MkSelect from '@/components/form/select.vue';
@@ -105,7 +113,7 @@ async function find() {
 	});
 }
 
-definePageMetadata(computed(() => ({
+const header = computed(() => ({
 	title: i18n.ts.files,
 	icon: 'fas fa-cloud',
 	bg: 'var(--bg)',
@@ -118,6 +126,12 @@ definePageMetadata(computed(() => ({
 		icon: 'fas fa-trash-alt',
 		handler: clear,
 	}],
+}));
+
+definePageMetadata(computed(() => ({
+	title: i18n.ts.files,
+	icon: 'fas fa-cloud',
+	bg: 'var(--bg)',
 })));
 </script>
 

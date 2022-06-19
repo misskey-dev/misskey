@@ -1,69 +1,75 @@
 <template>
-<MkSpacer :content-max="900">
-	<div class="ogwlenmc">
-		<div v-if="tab === 'local'" class="local">
-			<MkInput v-model="query" :debounce="true" type="search">
-				<template #prefix><i class="fas fa-search"></i></template>
-				<template #label>{{ $ts.search }}</template>
-			</MkInput>
-			<MkSwitch v-model="selectMode" style="margin: 8px 0;">
-				<template #label>Select mode</template>
-			</MkSwitch>
-			<div v-if="selectMode" style="display: flex; gap: var(--margin); flex-wrap: wrap;">
-				<MkButton inline @click="selectAll">Select all</MkButton>
-				<MkButton inline @click="setCategoryBulk">Set category</MkButton>
-				<MkButton inline @click="addTagBulk">Add tag</MkButton>
-				<MkButton inline @click="removeTagBulk">Remove tag</MkButton>
-				<MkButton inline @click="setTagBulk">Set tag</MkButton>
-				<MkButton inline danger @click="delBulk">Delete</MkButton>
-			</div>
-			<MkPagination ref="emojisPaginationComponent" :pagination="pagination">
-				<template #empty><span>{{ $ts.noCustomEmojis }}</span></template>
-				<template #default="{items}">
-					<div class="ldhfsamy">
-						<button v-for="emoji in items" :key="emoji.id" class="emoji _panel _button" :class="{ selected: selectedEmojis.includes(emoji.id) }" @click="selectMode ? toggleSelect(emoji) : edit(emoji)">
-							<img :src="emoji.url" class="img" :alt="emoji.name"/>
-							<div class="body">
-								<div class="name _monospace">{{ emoji.name }}</div>
-								<div class="info">{{ emoji.category }}</div>
-							</div>
-						</button>
+<div>
+	<MkStickyContainer>
+		<template #header><XHeader :info="header"/></template>
+		<MkSpacer :content-max="900">
+			<div class="ogwlenmc">
+				<div v-if="tab === 'local'" class="local">
+					<MkInput v-model="query" :debounce="true" type="search">
+						<template #prefix><i class="fas fa-search"></i></template>
+						<template #label>{{ $ts.search }}</template>
+					</MkInput>
+					<MkSwitch v-model="selectMode" style="margin: 8px 0;">
+						<template #label>Select mode</template>
+					</MkSwitch>
+					<div v-if="selectMode" style="display: flex; gap: var(--margin); flex-wrap: wrap;">
+						<MkButton inline @click="selectAll">Select all</MkButton>
+						<MkButton inline @click="setCategoryBulk">Set category</MkButton>
+						<MkButton inline @click="addTagBulk">Add tag</MkButton>
+						<MkButton inline @click="removeTagBulk">Remove tag</MkButton>
+						<MkButton inline @click="setTagBulk">Set tag</MkButton>
+						<MkButton inline danger @click="delBulk">Delete</MkButton>
 					</div>
-				</template>
-			</MkPagination>
-		</div>
+					<MkPagination ref="emojisPaginationComponent" :pagination="pagination">
+						<template #empty><span>{{ $ts.noCustomEmojis }}</span></template>
+						<template #default="{items}">
+							<div class="ldhfsamy">
+								<button v-for="emoji in items" :key="emoji.id" class="emoji _panel _button" :class="{ selected: selectedEmojis.includes(emoji.id) }" @click="selectMode ? toggleSelect(emoji) : edit(emoji)">
+									<img :src="emoji.url" class="img" :alt="emoji.name"/>
+									<div class="body">
+										<div class="name _monospace">{{ emoji.name }}</div>
+										<div class="info">{{ emoji.category }}</div>
+									</div>
+								</button>
+							</div>
+						</template>
+					</MkPagination>
+				</div>
 
-		<div v-else-if="tab === 'remote'" class="remote">
-			<FormSplit>
-				<MkInput v-model="queryRemote" :debounce="true" type="search">
-					<template #prefix><i class="fas fa-search"></i></template>
-					<template #label>{{ $ts.search }}</template>
-				</MkInput>
-				<MkInput v-model="host" :debounce="true">
-					<template #label>{{ $ts.host }}</template>
-				</MkInput>
-			</FormSplit>
-			<MkPagination :pagination="remotePagination">
-				<template #empty><span>{{ $ts.noCustomEmojis }}</span></template>
-				<template #default="{items}">
-					<div class="ldhfsamy">
-						<div v-for="emoji in items" :key="emoji.id" class="emoji _panel _button" @click="remoteMenu(emoji, $event)">
-							<img :src="emoji.url" class="img" :alt="emoji.name"/>
-							<div class="body">
-								<div class="name _monospace">{{ emoji.name }}</div>
-								<div class="info">{{ emoji.host }}</div>
+				<div v-else-if="tab === 'remote'" class="remote">
+					<FormSplit>
+						<MkInput v-model="queryRemote" :debounce="true" type="search">
+							<template #prefix><i class="fas fa-search"></i></template>
+							<template #label>{{ $ts.search }}</template>
+						</MkInput>
+						<MkInput v-model="host" :debounce="true">
+							<template #label>{{ $ts.host }}</template>
+						</MkInput>
+					</FormSplit>
+					<MkPagination :pagination="remotePagination">
+						<template #empty><span>{{ $ts.noCustomEmojis }}</span></template>
+						<template #default="{items}">
+							<div class="ldhfsamy">
+								<div v-for="emoji in items" :key="emoji.id" class="emoji _panel _button" @click="remoteMenu(emoji, $event)">
+									<img :src="emoji.url" class="img" :alt="emoji.name"/>
+									<div class="body">
+										<div class="name _monospace">{{ emoji.name }}</div>
+										<div class="info">{{ emoji.host }}</div>
+									</div>
+								</div>
 							</div>
-						</div>
-					</div>
-				</template>
-			</MkPagination>
-		</div>
-	</div>
-</MkSpacer>
+						</template>
+					</MkPagination>
+				</div>
+			</div>
+		</MkSpacer>
+	</MkStickyContainer>
+</div>
 </template>
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, defineComponent, ref, toRef } from 'vue';
+import XHeader from './_header_.vue';
 import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/form/input.vue';
 import MkPagination from '@/components/ui/pagination.vue';
@@ -266,7 +272,7 @@ const delBulk = async () => {
 	emojisPaginationComponent.value.reload();
 };
 
-definePageMetadata(computed(() => ({
+const header = computed(() => ({
 	title: i18n.ts.customEmojis,
 	icon: 'fas fa-laugh',
 	bg: 'var(--bg)',
@@ -288,6 +294,12 @@ definePageMetadata(computed(() => ({
 		title: i18n.ts.remote,
 		onClick: () => { tab.value = 'remote'; },
 	}],
+}));
+
+definePageMetadata(computed(() => ({
+	title: i18n.ts.customEmojis,
+	icon: 'fas fa-laugh',
+	bg: 'var(--bg)',
 })));
 </script>
 

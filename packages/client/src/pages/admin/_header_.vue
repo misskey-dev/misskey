@@ -1,23 +1,14 @@
 <template>
-<div ref="el" class="fdidabkb" :class="{ slim: narrow, thin: thin_ }" :style="{ background: bg }" @click="onClick">
+<div ref="el" class="fdidabkc" :style="{ background: bg }" @click="onClick">
 	<template v-if="info">
-		<div v-if="!hideTitle" class="titleContainer" @click="showTabsPopup">
-			<MkAvatar v-if="info.avatar" class="avatar" :user="info.avatar" :disable-preview="true" :show-indicator="true"/>
-			<i v-else-if="info.icon" class="icon" :class="info.icon"></i>
+		<div class="titleContainer" @click="showTabsPopup">
+			<i v-if="info.icon" class="icon" :class="info.icon"></i>
 
 			<div class="title">
-				<MkUserName v-if="info.userName" :user="info.userName" :nowrap="true" class="title"/>
-				<div v-else-if="info.title" class="title">{{ info.title }}</div>
-				<div v-if="!narrow && info.subtitle" class="subtitle">
-					{{ info.subtitle }}
-				</div>
-				<div v-if="narrow && hasTabs" class="subtitle activeTab">
-					{{ info.tabs.find(tab => tab.active)?.title }}
-					<i class="chevron fas fa-chevron-down"></i>
-				</div>
+				<div class="title">{{ info.title }}</div>
 			</div>
 		</div>
-		<div v-if="!narrow || hideTitle" class="tabs">
+		<div class="tabs">
 			<button v-for="tab in info.tabs" v-tooltip="tab.title" class="tab _button" :class="{ active: tab.active }" @click="tab.onClick">
 				<i v-if="tab.icon" class="icon" :class="tab.icon"></i>
 				<span v-if="!tab.iconOnly" class="title">{{ tab.title }}</span>
@@ -25,13 +16,12 @@
 		</div>
 	</template>
 	<div class="buttons right">
-		<template v-if="info && info.actions && !narrow">
+		<template v-if="info && info.actions">
 			<template v-for="action in info.actions">
 				<MkButton v-if="action.asFullButton" class="fullButton" primary @click.stop="action.handler"><i :class="action.icon" style="margin-right: 6px;"></i>{{ action.text }}</MkButton>
 				<button v-else v-tooltip="action.text" class="_button button" :class="{ highlighted: action.highlighted }" @click.stop="action.handler" @touchstart="preventDrag"><i :class="action.icon"></i></button>
 			</template>
 		</template>
-		<button v-if="shouldShowMenu" v-tooltip="$ts.menu" class="_button button" @click.stop="showMenu" @touchstart="preventDrag"><i class="fas fa-ellipsis-h"></i></button>
 	</div>
 </div>
 </template>
@@ -53,55 +43,12 @@ const props = defineProps<{
 	thin?: boolean;
 }>();
 
-const hideTitle = inject('shouldOmitHeaderTitle', false);
-const thin_ = props.thin || inject('shouldHeaderThin', false);
-
 const el = ref<HTMLElement>(null);
 const bg = ref(null);
-const narrow = ref(false);
 const height = ref(0);
 const hasTabs = computed(() => {
 	return props.info.tabs && props.info.tabs.length > 0;
 });
-const shouldShowMenu = computed(() => {
-	if (props.info == null) return false;
-	if (props.info.actions != null && narrow.value) return true;
-	if (props.info.menu != null) return true;
-	if (props.info.share != null) return true;
-	if (props.menu != null) return true;
-	return false;
-});
-
-const share = () => {
-	navigator.share({
-		url: url + props.info.path,
-		...props.info.share,
-	});
-};
-
-const showMenu = (ev: MouseEvent) => {
-	let menu = props.info.menu ? props.info.menu() : [];
-	if (narrow.value && props.info.actions) {
-		menu = [...props.info.actions.map(x => ({
-			text: x.text,
-			icon: x.icon,
-			action: x.handler,
-		})), menu.length > 0 ? null : undefined, ...menu];
-	}
-	if (props.info.share) {
-		if (menu.length > 0) menu.push(null);
-		menu.push({
-			text: i18n.ts.share,
-			icon: 'fas fa-share-alt',
-			action: share,
-		});
-	}
-	if (props.menu) {
-		if (menu.length > 0) menu.push(null);
-		menu = menu.concat(props.menu);
-	}
-	popupMenu(menu, ev.currentTarget ?? ev.target);
-};
 
 const showTabsPopup = (ev: MouseEvent) => {
 	if (!hasTabs.value) return;
@@ -131,31 +78,18 @@ const calcBg = () => {
 	bg.value = tinyBg.toRgbString();
 };
 
-let ro: ResizeObserver | null;
-
 onMounted(() => {
 	calcBg();
 	globalEvents.on('themeChanged', calcBg);
-
-	if (el.value.parentElement) {
-		narrow.value = el.value.parentElement.offsetWidth < 500;
-		ro = new ResizeObserver((entries, observer) => {
-			if (el.value) {
-				narrow.value = el.value.parentElement.offsetWidth < 500;
-			}
-		});
-		ro.observe(el.value.parentElement);
-	}
 });
 
 onUnmounted(() => {
 	globalEvents.off('themeChanged', calcBg);
-	if (ro) ro.disconnect();
 });
 </script>
 
 <style lang="scss" scoped>
-.fdidabkb {
+.fdidabkc {
 	--height: 60px;
 	display: flex;
 	position: sticky;
@@ -164,35 +98,6 @@ onUnmounted(() => {
 	width: 100%;
 	-webkit-backdrop-filter: var(--blur, blur(15px));
 	backdrop-filter: var(--blur, blur(15px));
-	border-bottom: solid 0.5px var(--divider);
-
-	&.thin {
-		--height: 50px;
-
-		> .buttons {
-			> .button {
-				font-size: 0.9em;
-			}
-		}
-	}
-
-	&.slim {
-		text-align: center;
-
-		> .titleContainer {
-			flex: 1;
-			margin: 0 auto;
-			margin-left: var(--height);
-
-			> *:first-child {
-				margin-left: auto;
-			}
-
-			> *:last-child {
-				margin-right: auto;
-			}
-		}
-	}
 
 	> .buttons {
 		--margin: 8px;
