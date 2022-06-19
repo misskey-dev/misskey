@@ -26,6 +26,11 @@ export function isTopVisible(el: Element | null): boolean {
 	return scrollTop <= topPosition;
 }
 
+export function isBottomVisible(el: HTMLElement, tolerance = 1, container = getScrollContainer(el)) {
+	if (container) return el.scrollHeight <= container.clientHeight + Math.abs(container.scrollTop) + tolerance;
+	return el.scrollHeight <= window.innerHeight + window.scrollY + tolerance;
+}
+
 export function onScrollTop(el: Element, cb) {
 	const container = getScrollContainer(el) || window;
 	const onScroll = ev => {
