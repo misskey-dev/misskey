@@ -42,7 +42,8 @@
 </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
+import { watch } from 'fs';
 import { computed, defineComponent } from 'vue';
 import XUserList from '@/components/user-list.vue';
 import MkFolder from '@/components/ui/folder.vue';
@@ -54,82 +55,51 @@ import MkGalleryPostPreview from '@/components/gallery-post-preview.vue';
 import number from '@/filters/number';
 import * as os from '@/os';
 import * as symbols from '@/symbols';
+import { definePageMetadata } from '@/scripts/page-metadata';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		XUserList,
-		MkFolder,
-		MkInput,
-		MkButton,
-		MkTab,
-		MkPagination,
-		MkGalleryPostPreview,
+const props = defineProps<{
+	tag?: string;
+}>();
+
+let tab = $ref('explore');
+let tags = $ref([]);
+let tagsRef = $ref();
+
+const recentPostsPagination = {
+	endpoint: 'gallery/posts' as const,
+	limit: 6,
+};
+const popularPostsPagination = {
+	endpoint: 'gallery/featured' as const,
+	limit: 5,
+};
+const myPostsPagination = {
+	endpoint: 'i/gallery/posts' as const,
+	limit: 5,
+};
+const likedPostsPagination = {
+	endpoint: 'i/gallery/likes' as const,
+	limit: 5,
+};
+
+const tagUsersPagination = $computed(() => ({
+	endpoint: 'hashtags/users' as const,
+	limit: 30,
+	params: {
+		tag: this.tag,
+		origin: 'combined',
+		sort: '+follower',
 	},
+}));
 
-	props: {
-		tag: {
-			type: String,
-			required: false
-		}
-	},
+watch(() => props.tag, () => {
+	if (tagsRef) tagsRef.tags.toggleContent(props.tag == null);
+});
 
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: this.$ts.gallery,
-				icon: 'fas fa-icons'
-			},
-			tab: 'explore',
-			recentPostsPagination: {
-				endpoint: 'gallery/posts' as const,
-				limit: 6,
-			},
-			popularPostsPagination: {
-				endpoint: 'gallery/featured' as const,
-				limit: 5,
-			},
-			myPostsPagination: {
-				endpoint: 'i/gallery/posts' as const,
-				limit: 5,
-			},
-			likedPostsPagination: {
-				endpoint: 'i/gallery/likes' as const,
-				limit: 5,
-			},
-			tags: [],
-		};
-	},
-
-	computed: {
-		meta() {
-			return this.$instance;
-		},
-		tagUsers(): any {
-			return {
-				endpoint: 'hashtags/users' as const,
-				limit: 30,
-				params: {
-					tag: this.tag,
-					origin: 'combined',
-					sort: '+follower',
-				}
-			};
-		},
-	},
-
-	watch: {
-		tag() {
-			if (this.$refs.tags) this.$refs.tags.toggleContent(this.tag == null);
-		},
-	},
-
-	created() {
-
-	},
-
-	methods: {
-
-	}
+definePageMetadata({
+	title: i18n.ts.gallery,
+	icon: 'fas fa-icons',
 });
 </script>
 
