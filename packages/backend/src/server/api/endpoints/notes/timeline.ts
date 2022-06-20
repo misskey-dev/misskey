@@ -124,9 +124,7 @@ export default define(meta, paramDef, async (ps, user) => {
 	const timeline = await query.take(ps.limit).getMany();
 
 	process.nextTick(() => {
-		if (user) {
-			activeUsersChart.read(user);
-		}
+		activeUsersChart.read(user);
 	});
 
 	return await Notes.packMany(timeline, user);
