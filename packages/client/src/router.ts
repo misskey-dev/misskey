@@ -1,4 +1,4 @@
-import { AsyncComponentLoader, defineAsyncComponent } from 'vue';
+import { AsyncComponentLoader, defineAsyncComponent, inject } from 'vue';
 import { Router } from '@/nirax';
 import { $i, iAmModerator } from '@/account';
 import MkLoading from '@/pages/_loading_.vue';
@@ -244,3 +244,7 @@ window.addEventListener('popstate', (event) => {
 		window.scroll({ top: scrollPos, behavior: 'instant' });
 	}, 1000);
 });
+
+export function useRouter(): Router {
+	return inject<Router | null>('router', null) ?? mainRouter;
+}

@@ -29,13 +29,12 @@ import { scroll } from '@/scripts/scroll';
 import { instance } from '@/instance';
 import * as os from '@/os';
 import { lookupUser } from '@/scripts/lookup-user';
-import { Router } from '@/nirax';
-import { mainRouter } from '@/router';
+import { useRouter } from '@/router';
 import { definePageMetadata, provideMetadataReceiver, setPageMetadata } from '@/scripts/page-metadata';
 
 const isEmpty = (x: string | null) => x == null || x === '';
 
-const router: Router = inject('router') ?? mainRouter;
+const router = useRouter();
 
 const indexInfo = {
 	title: i18n.ts.controlPanel,

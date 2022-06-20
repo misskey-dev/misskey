@@ -59,12 +59,11 @@ import MkPagination from '@/components/ui/pagination.vue';
 import MkGalleryPostPreview from '@/components/gallery-post-preview.vue';
 import MkFollowButton from '@/components/follow-button.vue';
 import { url } from '@/config';
-import { mainRouter } from '@/router';
+import { useRouter } from '@/router';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
-import { Router } from '@/nirax';
 
-const router: Router = inject('router') ?? mainRouter;
+const router = useRouter();
 
 const props = defineProps<{
 	postId: string;

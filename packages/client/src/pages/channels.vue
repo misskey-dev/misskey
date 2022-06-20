@@ -1,7 +1,7 @@
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-		<MkSpacer :content-max="700">
+	<MkSpacer :content-max="700">
 		<div v-if="tab === 'featured'" class="_content grwlizim featured">
 			<MkPagination v-slot="{items}" :pagination="featuredPagination">
 				<MkChannelPreview v-for="channel in items" :key="channel.id" class="_gap" :channel="channel"/>
@@ -27,12 +27,11 @@ import { computed, defineComponent, inject } from 'vue';
 import MkChannelPreview from '@/components/channel-preview.vue';
 import MkPagination from '@/components/ui/pagination.vue';
 import MkButton from '@/components/ui/button.vue';
-import { mainRouter } from '@/router';
-import { Router } from '@/nirax';
+import { useRouter } from '@/router';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
 
-const router: Router = inject('router') ?? mainRouter;
+const router = useRouter();
 
 let tab = $ref('featured');
 

@@ -38,13 +38,12 @@ import XPostForm from '@/components/post-form.vue';
 import XTimeline from '@/components/timeline.vue';
 import XChannelFollowButton from '@/components/channel-follow-button.vue';
 import * as os from '@/os';
-import { mainRouter } from '@/router';
-import { Router } from '@/nirax';
+import { useRouter } from '@/router';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
-const router: Router = inject('router') ?? mainRouter;
+const router = useRouter();
 
 const props = defineProps<{
 	channelId: string;

@@ -9,10 +9,9 @@ import { inject } from 'vue';
 import XAntenna from './editor.vue';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
-import { Router } from '@/nirax';
-import { mainRouter } from '@/router';
+import { useRouter } from '@/router';
 
-const router: Router = inject('router') ?? mainRouter;
+const router = useRouter();
 
 let draft = $ref({
 	name: '',

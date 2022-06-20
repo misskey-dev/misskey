@@ -1,7 +1,7 @@
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-		<MkSpacer :content-max="900" :margin-min="20" :margin-max="32">
+	<MkSpacer :content-max="900" :margin-min="20" :margin-max="32">
 		<div ref="el" class="vvcocwet" :class="{ wide: !narrow }">
 			<div class="body">
 				<div v-if="!narrow || initialPage == null" class="nav">
@@ -30,8 +30,7 @@ import { scroll } from '@/scripts/scroll';
 import { signout , $i } from '@/account';
 import { unisonReload } from '@/scripts/unison-reload';
 import { instance } from '@/instance';
-import { Router } from '@/nirax';
-import { mainRouter } from '@/router';
+import { useRouter } from '@/router';
 import { definePageMetadata, provideMetadataReceiver, setPageMetadata } from '@/scripts/page-metadata';
 
 const props = withDefaults(defineProps<{
@@ -49,7 +48,7 @@ const INFO = ref(indexInfo);
 const el = ref<HTMLElement | null>(null);
 const childInfo = ref(null);
 
-const router: Router = inject('router') ?? mainRouter;
+const router = useRouter();
 
 const narrow = ref(false);
 const NARROW_THRESHOLD = 600;

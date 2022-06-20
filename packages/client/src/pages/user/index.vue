@@ -144,8 +144,7 @@ import { getUserMenu } from '@/scripts/get-user-menu';
 import number from '@/filters/number';
 import { userPage, acct as getAcct } from '@/filters/user';
 import * as os from '@/os';
-import { mainRouter } from '@/router';
-import { Router } from '@/nirax';
+import { useRouter } from '@/router';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
 import { $i } from '@/account';
@@ -165,7 +164,7 @@ const props = withDefaults(defineProps<{
 	page: 'index',
 });
 
-const router: Router = inject('router') ?? mainRouter;
+const router = useRouter();
 
 let user = $ref<null | misskey.entities.UserDetailed>(null);
 let error = $ref(null);

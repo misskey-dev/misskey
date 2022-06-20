@@ -1,43 +1,45 @@
-<template><MkStickyContainer>
+<template>
+<MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-		<MkSpacer :content-max="800">
-	<div v-size="{ max: [400] }" class="yweeujhr">
-		<MkButton primary class="start" @click="start"><i class="fas fa-plus"></i> {{ $ts.startMessaging }}</MkButton>
+	<MkSpacer :content-max="800">
+		<div v-size="{ max: [400] }" class="yweeujhr">
+			<MkButton primary class="start" @click="start"><i class="fas fa-plus"></i> {{ $ts.startMessaging }}</MkButton>
 
-		<div v-if="messages.length > 0" class="history">
-			<MkA
-				v-for="(message, i) in messages"
-				:key="message.id"
-				v-anim="i"
-				class="message _block"
-				:class="{ isMe: isMe(message), isRead: message.groupId ? message.reads.includes($i.id) : message.isRead }"
-				:to="message.groupId ? `/my/messaging/group/${message.groupId}` : `/my/messaging/${getAcct(isMe(message) ? message.recipient : message.user)}`"
-				:data-index="i"
-			>
-				<div>
-					<MkAvatar class="avatar" :user="message.groupId ? message.user : isMe(message) ? message.recipient : message.user" :show-indicator="true"/>
-					<header v-if="message.groupId">
-						<span class="name">{{ message.group.name }}</span>
-						<MkTime :time="message.createdAt" class="time"/>
-					</header>
-					<header v-else>
-						<span class="name"><MkUserName :user="isMe(message) ? message.recipient : message.user"/></span>
-						<span class="username">@{{ acct(isMe(message) ? message.recipient : message.user) }}</span>
-						<MkTime :time="message.createdAt" class="time"/>
-					</header>
-					<div class="body">
-						<p class="text"><span v-if="isMe(message)" class="me">{{ $ts.you }}:</span>{{ message.text }}</p>
+			<div v-if="messages.length > 0" class="history">
+				<MkA
+					v-for="(message, i) in messages"
+					:key="message.id"
+					v-anim="i"
+					class="message _block"
+					:class="{ isMe: isMe(message), isRead: message.groupId ? message.reads.includes($i.id) : message.isRead }"
+					:to="message.groupId ? `/my/messaging/group/${message.groupId}` : `/my/messaging/${getAcct(isMe(message) ? message.recipient : message.user)}`"
+					:data-index="i"
+				>
+					<div>
+						<MkAvatar class="avatar" :user="message.groupId ? message.user : isMe(message) ? message.recipient : message.user" :show-indicator="true"/>
+						<header v-if="message.groupId">
+							<span class="name">{{ message.group.name }}</span>
+							<MkTime :time="message.createdAt" class="time"/>
+						</header>
+						<header v-else>
+							<span class="name"><MkUserName :user="isMe(message) ? message.recipient : message.user"/></span>
+							<span class="username">@{{ acct(isMe(message) ? message.recipient : message.user) }}</span>
+							<MkTime :time="message.createdAt" class="time"/>
+						</header>
+						<div class="body">
+							<p class="text"><span v-if="isMe(message)" class="me">{{ $ts.you }}:</span>{{ message.text }}</p>
+						</div>
 					</div>
-				</div>
-			</MkA>
+				</MkA>
+			</div>
+			<div v-if="!fetching && messages.length == 0" class="_fullinfo">
+				<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
+				<div>{{ $ts.noHistory }}</div>
+			</div>
+			<MkLoading v-if="fetching"/>
 		</div>
-		<div v-if="!fetching && messages.length == 0" class="_fullinfo">
-			<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
-			<div>{{ $ts.noHistory }}</div>
-		</div>
-		<MkLoading v-if="fetching"/>
-	</div>
-</MkSpacer></MkStickyContainer>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
@@ -47,13 +49,12 @@ import MkButton from '@/components/ui/button.vue';
 import { acct } from '@/filters/user';
 import * as os from '@/os';
 import { stream } from '@/stream';
-import { mainRouter } from '@/router';
-import { Router } from '@/nirax';
+import { useRouter } from '@/router';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { $i } from '@/account';
 
-const router: Router = inject('router') ?? mainRouter;
+const router = useRouter();
 
 let fetching = $ref(true);
 let moreFetching = $ref(false);
@@ -106,7 +107,7 @@ function start(ev) {
 
 async function startUser() {
 	os.selectUser().then(user => {
-		mainRouter.push(`/my/messaging/${Acct.toString(user)}`);
+		router.push(`/my/messaging/${Acct.toString(user)}`);
 	});
 }
 
@@ -128,7 +129,7 @@ async function startGroup() {
 		})),
 	});
 	if (canceled) return;
-	mainRouter.push(`/my/messaging/group/${group.id}`);
+	router.push(`/my/messaging/group/${group.id}`);
 }
 
 onMounted(() => {

@@ -1,7 +1,7 @@
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-		<MkSpacer :content-max="700">
+	<MkSpacer :content-max="700">
 		<div class="_formRoot">
 			<MkInput v-model="name" class="_formBlock">
 				<template #label>{{ $ts.name }}</template>
@@ -33,12 +33,11 @@ import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/form/input.vue';
 import { selectFile } from '@/scripts/select-file';
 import * as os from '@/os';
-import { mainRouter } from '@/router';
+import { useRouter } from '@/router';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
-import { Router } from '@/nirax';
 
-const router: Router = inject('router') ?? mainRouter;
+const router = useRouter();
 
 const props = defineProps<{
 	channelId?: string;

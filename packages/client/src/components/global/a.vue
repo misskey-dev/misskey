@@ -11,8 +11,7 @@ import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { url } from '@/config';
 import { popout as popout_ } from '@/scripts/popout';
 import { i18n } from '@/i18n';
-import { mainRouter } from '@/router';
-import { Router } from '@/nirax';
+import { useRouter } from '@/router';
 
 const props = withDefaults(defineProps<{
 	to: string;
@@ -23,7 +22,7 @@ const props = withDefaults(defineProps<{
 	behavior: null,
 });
 
-const router: Router = inject('router') ?? mainRouter;
+const router = useRouter();
 
 const active = $computed(() => {
 	if (props.activeClass == null) return false;
