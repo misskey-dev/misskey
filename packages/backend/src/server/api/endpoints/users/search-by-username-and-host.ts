@@ -1,13 +1,15 @@
-import define from '../../define.js';
-import { Followings, Users } from '@/models/index.js';
 import { Brackets } from 'typeorm';
+import { Followings, Users } from '@/models/index.js';
 import { USER_ACTIVE_THRESHOLD } from '@/const.js';
 import { User } from '@/models/entities/user.js';
+import define from '../../define.js';
 
 export const meta = {
 	tags: ['users'],
 
 	requireCredential: false,
+
+	description: 'Search for a user by username and/or host.',
 
 	res: {
 		type: 'array',
@@ -65,7 +67,7 @@ export default define(meta, paramDef, async (ps, me) => {
 
 			const query = Users.createQueryBuilder('user')
 				.where(`user.id IN (${ followingQuery.getQuery() })`)
-				.andWhere(`user.id != :meId`, { meId: me.id })
+				.andWhere('user.id != :meId', { meId: me.id })
 				.andWhere('user.isSuspended = FALSE')
 				.andWhere('user.usernameLower LIKE :username', { username: ps.username.toLowerCase() + '%' })
 				.andWhere(new Brackets(qb => { qb
@@ -83,7 +85,7 @@ export default define(meta, paramDef, async (ps, me) => {
 			if (users.length < ps.limit) {
 				const otherQuery = await Users.createQueryBuilder('user')
 					.where(`user.id NOT IN (${ followingQuery.getQuery() })`)
-					.andWhere(`user.id != :meId`, { meId: me.id })
+					.andWhere('user.id != :meId', { meId: me.id })
 					.andWhere('user.isSuspended = FALSE')
 					.andWhere('user.usernameLower LIKE :username', { username: ps.username.toLowerCase() + '%' })
 					.andWhere('user.updatedAt IS NOT NULL');

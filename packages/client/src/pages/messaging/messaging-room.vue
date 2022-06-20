@@ -1,379 +1,300 @@
 <template>
-<div class="_section"
+<div
+	ref="rootEl"
+	class="_section"
 	@dragover.prevent.stop="onDragover"
 	@drop.prevent.stop="onDrop"
 >
 	<div class="_content mk-messaging-room">
 		<div class="body">
-			<MkLoading v-if="fetching"/>
-			<p v-if="!fetching && messages.length == 0" class="empty"><i class="fas fa-info-circle"></i>{{ $ts.noMessagesYet }}</p>
-			<p v-if="!fetching && messages.length > 0 && !existMoreMessages" class="no-history"><i class="fas fa-flag"></i>{{ $ts.noMoreHistory }}</p>
-			<button v-show="existMoreMessages" ref="loadMore" class="more _button" :class="{ fetching: fetchingMoreMessages }" :disabled="fetchingMoreMessages" @click="fetchMoreMessages">
-				<template v-if="fetchingMoreMessages"><i class="fas fa-spinner fa-pulse fa-fw"></i></template>{{ fetchingMoreMessages ? $ts.loading : $ts.loadMore }}
-			</button>
-			<XList v-if="messages.length > 0" v-slot="{ item: message }" class="messages" :items="messages" direction="up" reversed>
-				<XMessage :key="message.id" :message="message" :is-group="group != null"/>
-			</XList>
+			<MkPagination v-if="pagination" ref="pagingComponent" :key="userAcct || groupId" :pagination="pagination">
+				<template #empty>
+					<div class="_fullinfo">
+						<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
+						<div>{{ i18n.ts.noMessagesYet }}</div>
+					</div>
+				</template>
+
+				<template #default="{ items: messages, fetching: pFetching }">
+					<XList
+						v-if="messages.length > 0"
+						v-slot="{ item: message }"
+						:class="{ messages: true, 'deny-move-transition': pFetching }"
+						:items="messages"
+						direction="up"
+						reversed
+					>
+						<XMessage :key="message.id" :message="message" :is-group="group != null"/>
+					</XList>
+				</template>
+			</MkPagination>
 		</div>
 		<footer>
 			<div v-if="typers.length > 0" class="typers">
-				<I18n :src="$ts.typingUsers" text-tag="span" class="users">
+				<I18n :src="i18n.ts.typingUsers" text-tag="span" class="users">
 					<template #users>
-						<b v-for="user in typers" :key="user.id" class="user">{{ user.username }}</b>
+						<b v-for="typer in typers" :key="typer.id" class="user">{{ typer.username }}</b>
 					</template>
 				</I18n>
 				<MkEllipsis/>
 			</div>
-			<transition :name="$store.state.animation ? 'fade' : ''">
+			<transition :name="animation ? 'fade' : ''">
 				<div v-show="showIndicator" class="new-message">
-					<button class="_buttonPrimary" @click="onIndicatorClick"><i class="fas fa-arrow-circle-down"></i>{{ $ts.newMessageExists }}</button>
+					<button class="_buttonPrimary" @click="onIndicatorClick"><i class="fas fa-fw fa-arrow-circle-down"></i>{{ i18n.ts.newMessageExists }}</button>
 				</div>
 			</transition>
-			<XForm v-if="!fetching" ref="form" :user="user" :group="group" class="form"/>
+			<XForm v-if="!fetching" ref="formEl" :user="user" :group="group" class="form"/>
 		</footer>
 	</div>
 </div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, markRaw } from 'vue';
-import XList from '@/components/date-separated-list.vue';
+<script lang="ts" setup>
+import { computed, watch, onMounted, nextTick, onBeforeUnmount } from 'vue';
+import * as Misskey from 'misskey-js';
+import * as Acct from 'misskey-js/built/acct';
 import XMessage from './messaging-room.message.vue';
 import XForm from './messaging-room.form.vue';
-import * as Acct from 'misskey-js/built/acct';
-import { isBottom, onScrollBottom, scroll } from '@/scripts/scroll';
+import XList from '@/components/date-separated-list.vue';
+import MkPagination, { Paging } from '@/components/ui/pagination.vue';
+import { isBottomVisible, onScrollBottom, scrollToBottom } from '@/scripts/scroll';
 import * as os from '@/os';
 import { stream } from '@/stream';
-import { popout } from '@/scripts/popout';
 import * as sound from '@/scripts/sound';
-import * as symbols from '@/symbols';
+import { i18n } from '@/i18n';
+import { $i } from '@/account';
+import { defaultStore } from '@/store';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
-const Component = defineComponent({
-	components: {
-		XMessage,
-		XForm,
-		XList,
-	},
+const props = defineProps<{
+	userAcct?: string;
+	groupId?: string;
+}>();
 
-	inject: ['inWindow'],
+let rootEl = $ref<HTMLDivElement>();
+let formEl = $ref<InstanceType<typeof XForm>>();
+let pagingComponent = $ref<InstanceType<typeof MkPagination>>();
 
-	props: {
-		userAcct: {
-			type: String,
-			required: false,
-		},
-		groupId: {
-			type: String,
-			required: false,
-		},
-	},
+let fetching = $ref(true);
+let user: Misskey.entities.UserDetailed | null = $ref(null);
+let group: Misskey.entities.UserGroup | null = $ref(null);
+let typers: Misskey.entities.User[] = $ref([]);
+let connection: Misskey.ChannelConnection<Misskey.Channels['messaging']> | null = $ref(null);
+let showIndicator = $ref(false);
+const {
+	animation,
+} = defaultStore.reactiveState;
 
-	data() {
-		return {
-			[symbols.PAGE_INFO]: computed(() => !this.fetching ? this.user ? {
-				userName: this.user,
-				avatar: this.user,
-				action: {
-					icon: 'fas fa-ellipsis-h',
-					handler: this.menu,
-				},
-			} : {
-				title: this.group.name,
-				icon: 'fas fa-users',
-				action: {
-					icon: 'fas fa-ellipsis-h',
-					handler: this.menu,
-				},
-			} : null),
-			fetching: true,
-			user: null,
-			group: null,
-			fetchingMoreMessages: false,
-			messages: [],
-			existMoreMessages: false,
-			connection: null,
-			showIndicator: false,
-			timer: null,
-			typers: [],
-			ilObserver: new IntersectionObserver(
-				(entries) => entries.some((entry) => entry.isIntersecting)
-					&& !this.fetching
-					&& !this.fetchingMoreMessages
-					&& this.existMoreMessages
-					&& this.fetchMoreMessages()
-			),
-		};
-	},
+let pagination: Paging | null = $ref(null);
 
-	computed: {
-		form(): any {
-			return this.$refs.form;
-		}
-	},
-
-	watch: {
-		userAcct: 'fetch',
-		groupId: 'fetch',
-	},
-
-	mounted() {
-		this.fetch();
-		if (this.$store.state.enableInfiniteScroll) {
-			this.$nextTick(() => this.ilObserver.observe(this.$refs.loadMore as Element));
-		}
-	},
-
-	beforeUnmount() {
-		this.connection.dispose();
-
-		document.removeEventListener('visibilitychange', this.onVisibilitychange);
-
-		this.ilObserver.disconnect();
-	},
-
-	methods: {
-		async fetch() {
-			this.fetching = true;
-			if (this.userAcct) {
-				const user = await os.api('users/show', Acct.parse(this.userAcct));
-				this.user = user;
-			} else {
-				const group = await os.api('users/groups/show', { groupId: this.groupId });
-				this.group = group;
-			}
-
-			this.connection = markRaw(stream.useChannel('messaging', {
-				otherparty: this.user ? this.user.id : undefined,
-				group: this.group ? this.group.id : undefined,
-			}));
-
-			this.connection.on('message', this.onMessage);
-			this.connection.on('read', this.onRead);
-			this.connection.on('deleted', this.onDeleted);
-			this.connection.on('typers', typers => {
-				this.typers = typers.filter(u => u.id !== this.$i.id);
-			});
-
-			document.addEventListener('visibilitychange', this.onVisibilitychange);
-
-			this.fetchMessages().then(() => {
-				this.scrollToBottom();
-
-				// もっと見るの交差検知を発火させないためにfetchは
-				// スクロールが終わるまでfalseにしておく
-				// scrollendのようなイベントはないのでsetTimeoutで
-				window.setTimeout(() => this.fetching = false, 300);
-			});
-		},
-
-		onDragover(evt) {
-			const isFile = evt.dataTransfer.items[0].kind === 'file';
-			const isDriveFile = evt.dataTransfer.types[0] === _DATA_TRANSFER_DRIVE_FILE_;
-
-			if (isFile || isDriveFile) {
-				evt.dataTransfer.dropEffect = evt.dataTransfer.effectAllowed === 'all' ? 'copy' : 'move';
-			} else {
-				evt.dataTransfer.dropEffect = 'none';
-			}
-		},
-
-		onDrop(evt): void {
-			// ファイルだったら
-			if (evt.dataTransfer.files.length === 1) {
-				this.form.upload(evt.dataTransfer.files[0]);
-				return;
-			} else if (evt.dataTransfer.files.length > 1) {
-				os.alert({
-					type: 'error',
-					text: this.$ts.onlyOneFileCanBeAttached
-				});
-				return;
-			}
-
-			//#region ドライブのファイル
-			const driveFile = evt.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FILE_);
-			if (driveFile != null && driveFile !== '') {
-				const file = JSON.parse(driveFile);
-				this.form.file = file;
-			}
-			//#endregion
-		},
-
-		fetchMessages() {
-			return new Promise((resolve, reject) => {
-				const max = this.existMoreMessages ? 20 : 10;
-
-				os.api('messaging/messages', {
-					userId: this.user ? this.user.id : undefined,
-					groupId: this.group ? this.group.id : undefined,
-					limit: max + 1,
-					untilId: this.existMoreMessages ? this.messages[0].id : undefined
-				}).then(messages => {
-					if (messages.length === max + 1) {
-						this.existMoreMessages = true;
-						messages.pop();
-					} else {
-						this.existMoreMessages = false;
-					}
-
-					this.messages.unshift.apply(this.messages, messages.reverse());
-					resolve();
-				});
-			});
-		},
-
-		fetchMoreMessages() {
-			this.fetchingMoreMessages = true;
-			this.fetchMessages().then(() => {
-				this.fetchingMoreMessages = false;
-			});
-		},
-
-		onMessage(message) {
-			sound.play('chat');
-
-			const _isBottom = isBottom(this.$el, 64);
-
-			this.messages.push(message);
-			if (message.userId !== this.$i.id && !document.hidden) {
-				this.connection.send('read', {
-					id: message.id
-				});
-			}
-
-			if (_isBottom) {
-				// Scroll to bottom
-				this.$nextTick(() => {
-					this.scrollToBottom();
-				});
-			} else if (message.userId !== this.$i.id) {
-				// Notify
-				this.notifyNewMessage();
-			}
-		},
-
-		onRead(x) {
-			if (this.user) {
-				if (!Array.isArray(x)) x = [x];
-				for (const id of x) {
-					if (this.messages.some(x => x.id === id)) {
-						const exist = this.messages.map(x => x.id).indexOf(id);
-						this.messages[exist] = {
-							...this.messages[exist],
-							isRead: true,
-						};
-					}
-				}
-			} else if (this.group) {
-				for (const id of x.ids) {
-					if (this.messages.some(x => x.id === id)) {
-						const exist = this.messages.map(x => x.id).indexOf(id);
-						this.messages[exist] = {
-							...this.messages[exist],
-							reads: [...this.messages[exist].reads, x.userId]
-						};
-					}
-				}
-			}
-		},
-
-		onDeleted(id) {
-			const msg = this.messages.find(m => m.id === id);
-			if (msg) {
-				this.messages = this.messages.filter(m => m.id !== msg.id);
-			}
-		},
-
-		scrollToBottom() {
-			scroll(this.$el, { top: this.$el.offsetHeight });
-		},
-
-		onIndicatorClick() {
-			this.showIndicator = false;
-			this.scrollToBottom();
-		},
-
-		notifyNewMessage() {
-			this.showIndicator = true;
-
-			onScrollBottom(this.$el, () => {
-				this.showIndicator = false;
-			});
-
-			if (this.timer) window.clearTimeout(this.timer);
-
-			this.timer = window.setTimeout(() => {
-				this.showIndicator = false;
-			}, 4000);
-		},
-
-		onVisibilitychange() {
-			if (document.hidden) return;
-			for (const message of this.messages) {
-				if (message.userId !== this.$i.id && !message.isRead) {
-					this.connection.send('read', {
-						id: message.id
-					});
-				}
-			}
-		},
-
-		menu(ev) {
-			const path = this.groupId ? `/my/messaging/group/${this.groupId}` : `/my/messaging/${this.userAcct}`;
-
-			os.popupMenu([this.inWindow ? undefined : {
-				text: this.$ts.openInWindow,
-				icon: 'fas fa-window-maximize',
-				action: () => {
-					os.pageWindow(path);
-					this.$router.back();
-				},
-			}, this.inWindow ? undefined : {
-				text: this.$ts.popout,
-				icon: 'fas fa-external-link-alt',
-				action: () => {
-					popout(path);
-					this.$router.back();
-				},
-			}], ev.currentTarget ?? ev.target);
-		}
-	}
+watch([() => props.userAcct, () => props.groupId], () => {
+	if (connection) connection.dispose();
+	fetch();
 });
 
-export default Component;
+async function fetch() {
+	fetching = true;
+
+	if (props.userAcct) {
+		const acct = Acct.parse(props.userAcct);
+		user = await os.api('users/show', { username: acct.username, host: acct.host || undefined });
+		group = null;
+		
+		pagination = {
+			endpoint: 'messaging/messages',
+			limit: 20,
+			params: {
+				userId: user.id,
+			},
+			reversed: true,
+			pageEl: $$(rootEl).value,
+		};
+		connection = stream.useChannel('messaging', {
+			otherparty: user.id,
+		});
+	} else {
+		user = null;
+		group = await os.api('users/groups/show', { groupId: props.groupId });
+
+		pagination = {
+			endpoint: 'messaging/messages',
+			limit: 20,
+			params: {
+				groupId: group?.id,
+			},
+			reversed: true,
+			pageEl: $$(rootEl).value,
+		};
+		connection = stream.useChannel('messaging', {
+			group: group?.id,
+		});
+	}
+
+	connection.on('message', onMessage);
+	connection.on('read', onRead);
+	connection.on('deleted', onDeleted);
+	connection.on('typers', _typers => {
+		typers = _typers.filter(u => u.id !== $i?.id);
+	});
+
+	document.addEventListener('visibilitychange', onVisibilitychange);
+
+	nextTick(() => {
+		thisScrollToBottom();
+		window.setTimeout(() => {
+			fetching = false;
+		}, 300);
+	});
+}
+
+function onDragover(ev: DragEvent) {
+	if (!ev.dataTransfer) return;
+
+	const isFile = ev.dataTransfer.items[0].kind === 'file';
+	const isDriveFile = ev.dataTransfer.types[0] === _DATA_TRANSFER_DRIVE_FILE_;
+
+	if (isFile || isDriveFile) {
+		ev.dataTransfer.dropEffect = ev.dataTransfer.effectAllowed === 'all' ? 'copy' : 'move';
+	} else {
+		ev.dataTransfer.dropEffect = 'none';
+	}
+}
+
+function onDrop(ev: DragEvent): void {
+	if (!ev.dataTransfer) return;
+
+	// ファイルだったら
+	if (ev.dataTransfer.files.length === 1) {
+		formEl.upload(ev.dataTransfer.files[0]);
+		return;
+	} else if (ev.dataTransfer.files.length > 1) {
+		os.alert({
+			type: 'error',
+			text: i18n.ts.onlyOneFileCanBeAttached,
+		});
+		return;
+	}
+
+	//#region ドライブのファイル
+	const driveFile = ev.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FILE_);
+	if (driveFile != null && driveFile !== '') {
+		const file = JSON.parse(driveFile);
+		formEl.file = file;
+	}
+	//#endregion
+}
+
+function onMessage(message) {
+	sound.play('chat');
+
+	const _isBottom = isBottomVisible(rootEl, 64);
+
+	pagingComponent.prepend(message);
+	if (message.userId !== $i?.id && !document.hidden) {
+		connection?.send('read', {
+			id: message.id,
+		});
+	}
+
+	if (_isBottom) {
+		// Scroll to bottom
+		nextTick(() => {
+			thisScrollToBottom();
+		});
+	} else if (message.userId !== $i?.id) {
+		// Notify
+		notifyNewMessage();
+	}
+}
+
+function onRead(x) {
+	if (user) {
+		if (!Array.isArray(x)) x = [x];
+		for (const id of x) {
+			if (pagingComponent.items.some(y => y.id === id)) {
+				const exist = pagingComponent.items.map(y => y.id).indexOf(id);
+				pagingComponent.items[exist] = {
+					...pagingComponent.items[exist],
+					isRead: true,
+				};
+			}
+		}
+	} else if (group) {
+		for (const id of x.ids) {
+			if (pagingComponent.items.some(y => y.id === id)) {
+				const exist = pagingComponent.items.map(y => y.id).indexOf(id);
+				pagingComponent.items[exist] = {
+					...pagingComponent.items[exist],
+					reads: [...pagingComponent.items[exist].reads, x.userId],
+				};
+			}
+		}
+	}
+}
+
+function onDeleted(id) {
+	const msg = pagingComponent.items.find(m => m.id === id);
+	if (msg) {
+		pagingComponent.items = pagingComponent.items.filter(m => m.id !== msg.id);
+	}
+}
+
+function thisScrollToBottom() {
+	scrollToBottom($$(rootEl).value, { behavior: 'smooth' });
+}
+
+function onIndicatorClick() {
+	showIndicator = false;
+	thisScrollToBottom();
+}
+
+let scrollRemove: (() => void) | null = $ref(null);
+
+function notifyNewMessage() {
+	showIndicator = true;
+
+	scrollRemove = onScrollBottom(rootEl, () => {
+		showIndicator = false;
+		scrollRemove = null;
+	});
+}
+
+function onVisibilitychange() {
+	if (document.hidden) return;
+	for (const message of pagingComponent.items) {
+		if (message.userId !== $i?.id && !message.isRead) {
+			connection?.send('read', {
+				id: message.id,
+			});
+		}
+	}
+}
+
+onMounted(() => {
+	fetch();
+});
+
+onBeforeUnmount(() => {
+	connection?.dispose();
+	document.removeEventListener('visibilitychange', onVisibilitychange);
+	if (scrollRemove) scrollRemove();
+});
+
+definePageMetadata(computed(() => !fetching ? user ? {
+	userName: user,
+	avatar: user,
+} : {
+	title: group?.name,
+	icon: 'fas fa-users',
+} : null));
 </script>
 
 <style lang="scss" scoped>
 .mk-messaging-room {
+	position: relative;
+
 	> .body {
-		> .empty {
-			width: 100%;
-			margin: 0;
-			padding: 16px 8px 8px 8px;
-			text-align: center;
-			font-size: 0.8em;
-			opacity: 0.5;
-
-			i {
-				margin-right: 4px;
-			}
-		}
-
-		> .no-history {
-			display: block;
-			margin: 0;
-			padding: 16px;
-			text-align: center;
-			font-size: 0.8em;
-			color: var(--messagingRoomInfo);
-			opacity: 0.5;
-
-			i {
-				margin-right: 4px;
-			}
-		}
-
-		> .more {
+		.more {
 			display: block;
 			margin: 16px auto;
 			padding: 0 12px;
@@ -399,7 +320,9 @@ export default Component;
 			}
 		}
 
-		> .messages {
+		.messages {
+			padding: 8px 0;
+
 			> ::v-deep(*) {
 				margin-bottom: 16px;
 			}
@@ -408,29 +331,31 @@ export default Component;
 
 	> footer {
 		width: 100%;
-		position: relative;
+		position: sticky;
+		z-index: 2;
+		bottom: 0;
+		padding-top: 8px;
+
+		@media (max-width: 500px) {
+			bottom: calc(env(safe-area-inset-bottom, 0px) + 92px);
+		}
 
 		> .new-message {
-			position: absolute;
-			top: -48px;
 			width: 100%;
-			padding: 8px 0;
+			padding-bottom: 8px;
 			text-align: center;
 
 			> button {
 				display: inline-block;
 				margin: 0;
-				padding: 0 12px 0 30px;
+				padding: 0 12px;
 				line-height: 32px;
 				font-size: 12px;
 				border-radius: 16px;
 
 				> i {
-					position: absolute;
-					top: 0;
-					left: 10px;
-					line-height: 32px;
-					font-size: 16px;
+					display: inline-block;
+					margin-right: 8px;
 				}
 			}
 		}
@@ -455,6 +380,8 @@ export default Component;
 		}
 
 		> .form {
+			max-height: 12em;
+			overflow-y: scroll;
 			border-top: solid 0.5px var(--divider);
 		}
 	}

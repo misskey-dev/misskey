@@ -1,16 +1,21 @@
+import { Brackets } from 'typeorm';
+import { Notifications, Followings, Mutings, Users } from '@/models/index.js';
+import { notificationTypes } from '@/types.js';
+import read from '@/services/note/read.js';
 import { readNotification } from '../../common/read-notification.js';
 import define from '../../define.js';
 import { makePaginationQuery } from '../../common/make-pagination-query.js';
 import { generateMutedInstanceNotificationQuery } from '../../common/generate-muted-instance-query.js';
-import { Notifications, Followings, Mutings, Users } from '@/models/index.js';
-import { notificationTypes } from '@/types.js';
-import read from '@/services/note/read.js';
-import { Brackets } from 'typeorm';
 
 export const meta = {
 	tags: ['account', 'notifications'],
 
 	requireCredential: true,
+
+	limit: {
+		duration: 60000,
+		max: 10,
+	},
 
 	kind: 'read:notifications',
 
@@ -67,7 +72,7 @@ export default define(meta, paramDef, async (ps, user) => {
 		.where('users.isSuspended = TRUE');
 
 	const query = makePaginationQuery(Notifications.createQueryBuilder('notification'), ps.sinceId, ps.untilId)
-		.andWhere(`notification.notifieeId = :meId`, { meId: user.id })
+		.andWhere('notification.notifieeId = :meId', { meId: user.id })
 		.leftJoinAndSelect('notification.notifier', 'notifier')
 		.leftJoinAndSelect('notification.note', 'note')
 		.leftJoinAndSelect('notifier.avatar', 'notifierAvatar')
@@ -103,13 +108,13 @@ export default define(meta, paramDef, async (ps, user) => {
 	}
 
 	if (ps.includeTypes && ps.includeTypes.length > 0) {
-		query.andWhere(`notification.type IN (:...includeTypes)`, { includeTypes: ps.includeTypes });
+		query.andWhere('notification.type IN (:...includeTypes)', { includeTypes: ps.includeTypes });
 	} else if (ps.excludeTypes && ps.excludeTypes.length > 0) {
-		query.andWhere(`notification.type NOT IN (:...excludeTypes)`, { excludeTypes: ps.excludeTypes });
+		query.andWhere('notification.type NOT IN (:...excludeTypes)', { excludeTypes: ps.excludeTypes });
 	}
 
 	if (ps.unreadOnly) {
-		query.andWhere(`notification.isRead = false`);
+		query.andWhere('notification.isRead = false');
 	}
 
 	const notifications = await query.take(ps.limit).getMany();

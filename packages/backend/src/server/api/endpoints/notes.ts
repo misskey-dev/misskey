@@ -1,6 +1,6 @@
+import { Notes } from '@/models/index.js';
 import define from '../define.js';
 import { makePaginationQuery } from '../common/make-pagination-query.js';
-import { Notes } from '@/models/index.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -34,8 +34,8 @@ export const paramDef = {
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps) => {
 	const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
-		.andWhere(`note.visibility = 'public'`)
-		.andWhere(`note.localOnly = FALSE`)
+		.andWhere('note.visibility = \'public\'')
+		.andWhere('note.localOnly = FALSE')
 		.innerJoinAndSelect('note.user', 'user')
 		.leftJoinAndSelect('user.avatar', 'avatar')
 		.leftJoinAndSelect('user.banner', 'banner')
@@ -61,7 +61,7 @@ export default define(meta, paramDef, async (ps) => {
 	}
 
 	if (ps.withFiles !== undefined) {
-		query.andWhere(ps.withFiles ? `note.fileIds != '{}'` : `note.fileIds = '{}'`);
+		query.andWhere(ps.withFiles ? 'note.fileIds != \'{}\'' : 'note.fileIds = \'{}\'');
 	}
 
 	if (ps.poll !== undefined) {

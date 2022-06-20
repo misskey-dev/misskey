@@ -1,6 +1,10 @@
 import define from '../define.js';
 
 export const meta = {
+	tags: ['non-productive'],
+
+	description: 'Endpoint for testing input validation.',
+
 	requireCredential: false,
 } as const;
 

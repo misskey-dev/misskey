@@ -842,6 +842,7 @@ oneDay: "1 ngày"
 oneWeek: "1 tuần"
 reflectMayTakeTime: "Có thể mất một thời gian để điều này được áp dụng."
 failedToFetchAccountInformation: "Không thể lấy thông tin tài khoản"
+rateLimitExceeded: "Giới hạn quá mức"
 _emailUnavailable:
   used: "Địa chỉ email đã được sử dụng"
   format: "Địa chỉ email không hợp lệ"
@@ -1087,7 +1088,6 @@ _sfx:
   antenna: "Trạm phát sóng"
   channel: "Kênh"
 _ago:
-  unknown: "Không rõ"
   future: "Tương lai"
   justNow: "Vừa xong"
   secondsAgo: "{n}s trước"
@@ -1131,6 +1131,7 @@ _2fa:
   registerKey: "Đăng ký một mã bảo vệ"
   step1: "Trước tiên, hãy cài đặt một ứng dụng xác minh (chẳng hạn như {a} hoặc {b}) trên thiết bị của bạn."
   step2: "Sau đó, quét mã QR hiển thị trên màn hình này."
+  step2Url: "Bạn cũng có thể nhập URL này nếu sử dụng một chương trình máy tính:"
   step3: "Nhập mã token do ứng dụng của bạn cung cấp để hoàn tất thiết lập."
   step4: "Kể từ bây giờ, những lần đăng nhập trong tương lai sẽ yêu cầu mã token đăng nhập đó."
   securityKeyInfo: "Bên cạnh xác minh bằng vân tay hoặc mã PIN, bạn cũng có thể thiết lập xác minh thông qua khóa bảo mật phần cứng hỗ trợ FIDO2 để bảo mật hơn nữa cho tài khoản của mình."

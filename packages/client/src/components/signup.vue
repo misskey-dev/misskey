@@ -1,11 +1,11 @@
 <template>
-<form class="qlvuhzng _formRoot" :autocomplete="Math.random()" @submit.prevent="onSubmit">
+<form class="qlvuhzng _formRoot" autocomplete="new-password" @submit.prevent="onSubmit">
 	<template v-if="meta">
-		<MkInput v-if="meta.disableRegistration" v-model="invitationCode" class="_formBlock" type="text" :autocomplete="Math.random()" spellcheck="false" required>
+		<MkInput v-if="meta.disableRegistration" v-model="invitationCode" class="_formBlock" type="text" spellcheck="false" required>
 			<template #label>{{ $ts.invitationCode }}</template>
 			<template #prefix><i class="fas fa-key"></i></template>
 		</MkInput>
-		<MkInput v-model="username" class="_formBlock" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" :autocomplete="Math.random()" spellcheck="false" required data-cy-signup-username @update:modelValue="onChangeUsername">
+		<MkInput v-model="username" class="_formBlock" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" spellcheck="false" required data-cy-signup-username @update:modelValue="onChangeUsername">
 			<template #label>{{ $ts.username }} <div v-tooltip:dialog="$ts.usernameInfo" class="_button _help"><i class="far fa-question-circle"></i></div></template>
 			<template #prefix>@</template>
 			<template #suffix>@{{ host }}</template>
@@ -19,7 +19,7 @@
 				<span v-else-if="usernameState === 'max-range'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.tooLong }}</span>
 			</template>
 		</MkInput>
-		<MkInput v-if="meta.emailRequiredForSignup" v-model="email" class="_formBlock" :debounce="true" type="email" :autocomplete="Math.random()" spellcheck="false" required data-cy-signup-email @update:modelValue="onChangeEmail">
+		<MkInput v-if="meta.emailRequiredForSignup" v-model="email" class="_formBlock" :debounce="true" type="email" spellcheck="false" required data-cy-signup-email @update:modelValue="onChangeEmail">
 			<template #label>{{ $ts.emailAddress }} <div v-tooltip:dialog="$ts._signup.emailAddressInfo" class="_button _help"><i class="far fa-question-circle"></i></div></template>
 			<template #prefix><i class="fas fa-envelope"></i></template>
 			<template #caption>
@@ -34,7 +34,7 @@
 				<span v-else-if="emailState === 'error'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.error }}</span>
 			</template>
 		</MkInput>
-		<MkInput v-model="password" class="_formBlock" type="password" :autocomplete="Math.random()" required data-cy-signup-password @update:modelValue="onChangePassword">
+		<MkInput v-model="password" class="_formBlock" type="password" autocomplete="new-password" required data-cy-signup-password @update:modelValue="onChangePassword">
 			<template #label>{{ $ts.password }}</template>
 			<template #prefix><i class="fas fa-lock"></i></template>
 			<template #caption>
@@ -43,7 +43,7 @@
 				<span v-if="passwordStrength == 'high'" style="color: var(--success)"><i class="fas fa-check fa-fw"></i> {{ $ts.strongPassword }}</span>
 			</template>
 		</MkInput>
-		<MkInput v-model="retypedPassword" class="_formBlock" type="password" :autocomplete="Math.random()" required data-cy-signup-password-retype @update:modelValue="onChangePasswordRetype">
+		<MkInput v-model="retypedPassword" class="_formBlock" type="password" autocomplete="new-password" required data-cy-signup-password-retype @update:modelValue="onChangePasswordRetype">
 			<template #label>{{ $ts.password }} ({{ $ts.retype }})</template>
 			<template #prefix><i class="fas fa-lock"></i></template>
 			<template #caption>
@@ -111,7 +111,7 @@ export default defineComponent({
 			ToSAgreement: false,
 			hCaptchaResponse: null,
 			reCaptchaResponse: null,
-		}
+		};
 	},
 
 	computed: {

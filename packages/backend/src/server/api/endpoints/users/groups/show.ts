@@ -1,6 +1,6 @@
+import { UserGroups, UserGroupJoinings } from '@/models/index.js';
 import define from '../../../define.js';
 import { ApiError } from '../../../error.js';
-import { UserGroups, UserGroupJoinings } from '@/models/index.js';
 
 export const meta = {
 	tags: ['groups', 'account'],
@@ -8,6 +8,8 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'read:user-groups',
+
+	description: 'Show the properties of a group.',
 
 	res: {
 		type: 'object',

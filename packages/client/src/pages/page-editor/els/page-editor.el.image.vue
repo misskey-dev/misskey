@@ -14,53 +14,39 @@
 </XContainer>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 /* eslint-disable vue/no-mutating-props */
-import { defineComponent } from 'vue';
+import { onMounted } from 'vue';
 import XContainer from '../page-editor.container.vue';
 import MkDriveFileThumbnail from '@/components/drive-file-thumbnail.vue';
 import * as os from '@/os';
 
-export default defineComponent({
-	components: {
-		XContainer, MkDriveFileThumbnail
-	},
+const props = withDefaults(defineProps<{
+	value: any
+}>(), {
+	value: {
+		fileId: null
+	}
+});
 
-	props: {
-		value: {
-			required: true
-		},
-	},
+let file: any = $ref(null);
 
-	data() {
-		return {
-			file: null,
-		};
-	},
+async function choose() {
+	os.selectDriveFile(false).then((fileResponse: any) => {
+		file = fileResponse;
+		props.value.fileId = fileResponse.id;
+	});
+}
 
-	created() {
-		if (this.value.fileId === undefined) this.value.fileId = null;
-	},
-
-	mounted() {
-		if (this.value.fileId == null) {
-			this.choose();
-		} else {
-			os.api('drive/files/show', {
-				fileId: this.value.fileId
-			}).then(file => {
-				this.file = file;
-			});
-		}
-	},
-
-	methods: {
-		async choose() {
-			os.selectDriveFile(false).then(file => {
-				this.file = file;
-				this.value.fileId = file.id;
-			});
-		},
+onMounted(async () => {
+	if (props.value.fileId == null) {
+		await choose();
+	} else {
+		os.api('drive/files/show', {
+			fileId: props.value.fileId
+		}).then(fileResponse => {
+			file = fileResponse;
+		});
 	}
 });
 </script>

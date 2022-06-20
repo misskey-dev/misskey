@@ -10,6 +10,8 @@ export const meta = {
 
 	kind: 'read:drive',
 
+	description: 'Show the properties of a drive file.',
+
 	res: {
 		type: 'object',
 		optional: false, nullable: false,

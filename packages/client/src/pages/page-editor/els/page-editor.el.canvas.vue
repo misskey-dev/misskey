@@ -20,33 +20,19 @@
 </XContainer>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 /* eslint-disable vue/no-mutating-props */
-import { defineComponent } from 'vue';
+import { } from 'vue';
 import XContainer from '../page-editor.container.vue';
 import MkInput from '@/components/form/input.vue';
-import * as os from '@/os';
 
-export default defineComponent({
-	components: {
-		XContainer, MkInput
-	},
-
-	props: {
-		value: {
-			required: true
-		},
-	},
-
-	data() {
-		return {
-		};
-	},
-
-	created() {
-		if (this.value.name == null) this.value.name = '';
-		if (this.value.width == null) this.value.width = 300;
-		if (this.value.height == null) this.value.height = 200;
-	},
+withDefaults(defineProps<{
+	value: any
+}>(), {
+	value: {
+		name: '',
+		width: 300,
+		height: 200
+	}
 });
 </script>
