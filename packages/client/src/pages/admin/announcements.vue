@@ -1,28 +1,34 @@
 <template>
-<div class="ztgjmzrw">
-	<section v-for="announcement in announcements" class="_card _gap announcements">
-		<div class="_content announcement">
-			<MkInput v-model="announcement.title">
-				<template #label>{{ i18n.ts.title }}</template>
-			</MkInput>
-			<MkTextarea v-model="announcement.text">
-				<template #label>{{ i18n.ts.text }}</template>
-			</MkTextarea>
-			<MkInput v-model="announcement.imageUrl">
-				<template #label>{{ i18n.ts.imageUrl }}</template>
-			</MkInput>
-			<p v-if="announcement.reads">{{ i18n.t('nUsersRead', { n: announcement.reads }) }}</p>
-			<div class="buttons">
-				<MkButton class="button" inline primary @click="save(announcement)"><i class="fas fa-save"></i> {{ i18n.ts.save }}</MkButton>
-				<MkButton class="button" inline @click="remove(announcement)"><i class="fas fa-trash-alt"></i> {{ i18n.ts.remove }}</MkButton>
-			</div>
+<MkStickyContainer>
+	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<MkSpacer :content-max="900">
+		<div class="ztgjmzrw">
+			<section v-for="announcement in announcements" class="_card _gap announcements">
+				<div class="_content announcement">
+					<MkInput v-model="announcement.title">
+						<template #label>{{ i18n.ts.title }}</template>
+					</MkInput>
+					<MkTextarea v-model="announcement.text">
+						<template #label>{{ i18n.ts.text }}</template>
+					</MkTextarea>
+					<MkInput v-model="announcement.imageUrl">
+						<template #label>{{ i18n.ts.imageUrl }}</template>
+					</MkInput>
+					<p v-if="announcement.reads">{{ i18n.t('nUsersRead', { n: announcement.reads }) }}</p>
+					<div class="buttons">
+						<MkButton class="button" inline primary @click="save(announcement)"><i class="fas fa-save"></i> {{ i18n.ts.save }}</MkButton>
+						<MkButton class="button" inline @click="remove(announcement)"><i class="fas fa-trash-alt"></i> {{ i18n.ts.remove }}</MkButton>
+					</div>
+				</div>
+			</section>
 		</div>
-	</section>
-</div>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
 import { } from 'vue';
+import XHeader from './_header_.vue';
 import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/form/input.vue';
 import MkTextarea from '@/components/form/textarea.vue';
@@ -84,7 +90,12 @@ function save(announcement) {
 	}
 }
 
-const headerActions = $computed(() => []);
+const headerActions = $computed(() => [{
+	asFullButton: true,
+	icon: 'fas fa-plus',
+	text: i18n.ts.add,
+	handler: add,
+}]);
 
 const headerTabs = $computed(() => []);
 
@@ -92,12 +103,6 @@ definePageMetadata({
 	title: i18n.ts.announcements,
 	icon: 'fas fa-broadcast-tower',
 	bg: 'var(--bg)',
-	actions: [{
-		asFullButton: true,
-		icon: 'fas fa-plus',
-		text: i18n.ts.add,
-		handler: add,
-	}],
 });
 </script>
 

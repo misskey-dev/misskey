@@ -182,7 +182,7 @@ export const routes = [{
 	path: '/my/follow-requests',
 	component: page(() => import('./pages/follow-requests.vue')),
 }, {
-	path: '/my/lists/:list',
+	path: '/my/lists/:listId',
 	component: page(() => import('./pages/my-lists/list.vue')),
 }, {
 	path: '/my/lists',

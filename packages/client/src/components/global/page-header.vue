@@ -64,7 +64,7 @@ const thin_ = props.thin || inject('shouldHeaderThin', false);
 
 const el = $ref<HTMLElement | null>(null);
 const bg = ref(null);
-const narrow = $ref(false);
+let narrow = $ref(false);
 const height = ref(0);
 const hasTabs = $computed(() => props.tabs && props.tabs.length > 0);
 const hasActions = $computed(() => props.actions && props.actions.length > 0);
@@ -109,7 +109,7 @@ onMounted(() => {
 	if (el && el.parentElement) {
 		narrow = el.parentElement.offsetWidth < 500;
 		ro = new ResizeObserver((entries, observer) => {
-			if (el) {
+			if (el.parentElement) {
 				narrow = el.parentElement.offsetWidth < 500;
 			}
 		});
