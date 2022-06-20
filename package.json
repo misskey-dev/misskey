@@ -30,6 +30,7 @@
 		"cleanall": "npm run clean-all"
 	},
 	"dependencies": {
+		"@expo/spawn-async": "1.6.0",
 		"execa": "5.1.1",
 		"gulp": "4.0.2",
 		"gulp-cssnano": "2.1.3",
