@@ -138,12 +138,17 @@ let chartSrc = $ref('instance-requests');
 let chartSpan = $ref('hour');
 
 async function fetch() {
-	meta = await os.api('meta', { detail: true });
-	instance = await os.api('federation/show-instance', {
-		host: props.host,
-	});
-	suspended = instance.isSuspended;
-	isBlocked = meta.blockedHosts.includes(instance.host);
+	if (iAmModerator) {
+		// suspended and blocked information is only displayed to moderators.
+		// otherwise the API will error anyway
+
+		meta = await os.api('admin/meta', { detail: true });
+		instance = await os.api('federation/show-instance', {
+			host: props.host,
+		});
+		suspended = instance.isSuspended;
+		isBlocked = meta.blockedHosts.includes(instance.host);
+	}
 }
 
 async function toggleBlock(ev) {
