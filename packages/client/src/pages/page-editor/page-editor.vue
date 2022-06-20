@@ -1,82 +1,84 @@
-<template><MkStickyContainer>
+<template>
+<MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-		<MkSpacer :content-max="700">
-	<div class="jqqmcavi">
-		<MkButton v-if="pageId" class="button" inline link :to="`/@${ author.username }/pages/${ currentName }`"><i class="fas fa-external-link-square-alt"></i> {{ $ts._pages.viewPage }}</MkButton>
-		<MkButton v-if="!readonly" inline primary class="button" @click="save"><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
-		<MkButton v-if="pageId" inline class="button" @click="duplicate"><i class="fas fa-copy"></i> {{ $ts.duplicate }}</MkButton>
-		<MkButton v-if="pageId && !readonly" inline class="button" danger @click="del"><i class="fas fa-trash-alt"></i> {{ $ts.delete }}</MkButton>
-	</div>
+	<MkSpacer :content-max="700">
+		<div class="jqqmcavi">
+			<MkButton v-if="pageId" class="button" inline link :to="`/@${ author.username }/pages/${ currentName }`"><i class="fas fa-external-link-square-alt"></i> {{ $ts._pages.viewPage }}</MkButton>
+			<MkButton v-if="!readonly" inline primary class="button" @click="save"><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
+			<MkButton v-if="pageId" inline class="button" @click="duplicate"><i class="fas fa-copy"></i> {{ $ts.duplicate }}</MkButton>
+			<MkButton v-if="pageId && !readonly" inline class="button" danger @click="del"><i class="fas fa-trash-alt"></i> {{ $ts.delete }}</MkButton>
+		</div>
 
-	<div v-if="tab === 'settings'">
-		<div class="_formRoot">
-			<MkInput v-model="title" class="_formBlock">
-				<template #label>{{ $ts._pages.title }}</template>
-			</MkInput>
+		<div v-if="tab === 'settings'">
+			<div class="_formRoot">
+				<MkInput v-model="title" class="_formBlock">
+					<template #label>{{ $ts._pages.title }}</template>
+				</MkInput>
 
-			<MkInput v-model="summary" class="_formBlock">
-				<template #label>{{ $ts._pages.summary }}</template>
-			</MkInput>
+				<MkInput v-model="summary" class="_formBlock">
+					<template #label>{{ $ts._pages.summary }}</template>
+				</MkInput>
 
-			<MkInput v-model="name" class="_formBlock">
-				<template #prefix>{{ url }}/@{{ author.username }}/pages/</template>
-				<template #label>{{ $ts._pages.url }}</template>
-			</MkInput>
+				<MkInput v-model="name" class="_formBlock">
+					<template #prefix>{{ url }}/@{{ author.username }}/pages/</template>
+					<template #label>{{ $ts._pages.url }}</template>
+				</MkInput>
 
-			<MkSwitch v-model="alignCenter" class="_formBlock">{{ $ts._pages.alignCenter }}</MkSwitch>
+				<MkSwitch v-model="alignCenter" class="_formBlock">{{ $ts._pages.alignCenter }}</MkSwitch>
 
-			<MkSelect v-model="font" class="_formBlock">
-				<template #label>{{ $ts._pages.font }}</template>
-				<option value="serif">{{ $ts._pages.fontSerif }}</option>
-				<option value="sans-serif">{{ $ts._pages.fontSansSerif }}</option>
-			</MkSelect>
+				<MkSelect v-model="font" class="_formBlock">
+					<template #label>{{ $ts._pages.font }}</template>
+					<option value="serif">{{ $ts._pages.fontSerif }}</option>
+					<option value="sans-serif">{{ $ts._pages.fontSansSerif }}</option>
+				</MkSelect>
 
-			<MkSwitch v-model="hideTitleWhenPinned" class="_formBlock">{{ $ts._pages.hideTitleWhenPinned }}</MkSwitch>
+				<MkSwitch v-model="hideTitleWhenPinned" class="_formBlock">{{ $ts._pages.hideTitleWhenPinned }}</MkSwitch>
 
-			<div class="eyeCatch">
-				<MkButton v-if="eyeCatchingImageId == null && !readonly" @click="setEyeCatchingImage"><i class="fas fa-plus"></i> {{ $ts._pages.eyeCatchingImageSet }}</MkButton>
-				<div v-else-if="eyeCatchingImage">
-					<img :src="eyeCatchingImage.url" :alt="eyeCatchingImage.name" style="max-width: 100%;"/>
-					<MkButton v-if="!readonly" @click="removeEyeCatchingImage()"><i class="fas fa-trash-alt"></i> {{ $ts._pages.eyeCatchingImageRemove }}</MkButton>
+				<div class="eyeCatch">
+					<MkButton v-if="eyeCatchingImageId == null && !readonly" @click="setEyeCatchingImage"><i class="fas fa-plus"></i> {{ $ts._pages.eyeCatchingImageSet }}</MkButton>
+					<div v-else-if="eyeCatchingImage">
+						<img :src="eyeCatchingImage.url" :alt="eyeCatchingImage.name" style="max-width: 100%;"/>
+						<MkButton v-if="!readonly" @click="removeEyeCatchingImage()"><i class="fas fa-trash-alt"></i> {{ $ts._pages.eyeCatchingImageRemove }}</MkButton>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
 
-	<div v-else-if="tab === 'contents'">
-		<div>
-			<XBlocks v-model="content" class="content" :hpml="hpml"/>
+		<div v-else-if="tab === 'contents'">
+			<div>
+				<XBlocks v-model="content" class="content" :hpml="hpml"/>
 
-			<MkButton v-if="!readonly" @click="add()"><i class="fas fa-plus"></i></MkButton>
+				<MkButton v-if="!readonly" @click="add()"><i class="fas fa-plus"></i></MkButton>
+			</div>
 		</div>
-	</div>
 
-	<div v-else-if="tab === 'variables'">
-		<div class="qmuvgica">
-			<XDraggable v-show="variables.length > 0" v-model="variables" tag="div" class="variables" item-key="name" handle=".drag-handle" :group="{ name: 'variables' }" animation="150" swap-threshold="0.5">
-				<template #item="{element}">
-					<XVariable
-						:model-value="element"
-						:removable="true"
-						:hpml="hpml"
-						:name="element.name"
-						:title="element.name"
-						:draggable="true"
-						@remove="() => removeVariable(element)"
-					/>
-				</template>
-			</XDraggable>
+		<div v-else-if="tab === 'variables'">
+			<div class="qmuvgica">
+				<XDraggable v-show="variables.length > 0" v-model="variables" tag="div" class="variables" item-key="name" handle=".drag-handle" :group="{ name: 'variables' }" animation="150" swap-threshold="0.5">
+					<template #item="{element}">
+						<XVariable
+							:model-value="element"
+							:removable="true"
+							:hpml="hpml"
+							:name="element.name"
+							:title="element.name"
+							:draggable="true"
+							@remove="() => removeVariable(element)"
+						/>
+					</template>
+				</XDraggable>
 
-			<MkButton v-if="!readonly" class="add" @click="addVariable()"><i class="fas fa-plus"></i></MkButton>
+				<MkButton v-if="!readonly" class="add" @click="addVariable()"><i class="fas fa-plus"></i></MkButton>
+			</div>
 		</div>
-	</div>
 
-	<div v-else-if="tab === 'script'">
-		<div>
-			<MkTextarea v-model="script" class="_code"/>
+		<div v-else-if="tab === 'script'">
+			<div>
+				<MkTextarea v-model="script" class="_code"/>
+			</div>
 		</div>
-	</div>
-</MkSpacer></MkStickyContainer>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
@@ -408,7 +410,27 @@ init();
 
 const headerActions = $computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = $computed(() => [{
+	active: tab === 'settings',
+	title: i18n.ts._pages.pageSetting,
+	icon: 'fas fa-cog',
+	onClick: () => { tab = 'settings'; },
+}, {
+	active: tab === 'contents',
+	title: i18n.ts._pages.contents,
+	icon: 'fas fa-sticky-note',
+	onClick: () => { tab = 'contents'; },
+}, {
+	active: tab === 'variables',
+	title: i18n.ts._pages.variables,
+	icon: 'fas fa-magic',
+	onClick: () => { tab = 'variables'; },
+}, {
+	active: tab === 'script',
+	title: i18n.ts.script,
+	icon: 'fas fa-code',
+	onClick: () => { tab = 'script'; },
+}]);
 
 definePageMetadata(computed(() => {
 	let title = i18n.ts._pages.newPage;
@@ -422,27 +444,6 @@ definePageMetadata(computed(() => {
 		title: title,
 		icon: 'fas fa-pencil-alt',
 		bg: 'var(--bg)',
-		tabs: [{
-			active: tab === 'settings',
-			title: i18n.ts._pages.pageSetting,
-			icon: 'fas fa-cog',
-			onClick: () => { tab = 'settings'; },
-		}, {
-			active: tab === 'contents',
-			title: i18n.ts._pages.contents,
-			icon: 'fas fa-sticky-note',
-			onClick: () => { tab = 'contents'; },
-		}, {
-			active: tab === 'variables',
-			title: i18n.ts._pages.variables,
-			icon: 'fas fa-magic',
-			onClick: () => { tab = 'variables'; },
-		}, {
-			active: tab === 'script',
-			title: i18n.ts.script,
-			icon: 'fas fa-code',
-			onClick: () => { tab = 'script'; },
-		}],
 	};
 }));
 </script>
