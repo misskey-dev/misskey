@@ -1,9 +1,13 @@
 type ScrollBehavior = 'auto' | 'smooth' | 'instant';
 
-export function getScrollContainer(el: Element | null): Element | null {
-	if (el == null || el.tagName === 'BODY') return null;
+export function getScrollContainer(el: HTMLElement | null): HTMLElement | null {
+	if (el == null || el.tagName === 'HTML') return null;
 	const overflow = window.getComputedStyle(el).getPropertyValue('overflow');
-	if (overflow.endsWith('auto')) { // xとyを個別に指定している場合、hidden auto みたいな値になる
+	if (
+		// xとyを個別に指定している場合、`hidden scroll`みたいな値になる
+		overflow.endsWith('scroll') ||
+		overflow.endsWith('auto')
+	) {
 		return el;
 	} else {
 		return getScrollContainer(el.parentElement);
@@ -20,6 +24,11 @@ export function isTopVisible(el: Element | null): boolean {
 	const topPosition = el.offsetTop; // TODO: container内でのelの相対位置を取得できればより正確になる
 
 	return scrollTop <= topPosition;
+}
+
+export function isBottomVisible(el: HTMLElement, tolerance = 1, container = getScrollContainer(el)) {
+	if (container) return el.scrollHeight <= container.clientHeight + Math.abs(container.scrollTop) + tolerance;
+	return el.scrollHeight <= window.innerHeight + window.scrollY + tolerance;
 }
 
 export function onScrollTop(el: Element, cb) {
