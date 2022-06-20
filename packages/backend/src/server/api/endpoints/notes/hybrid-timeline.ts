@@ -7,7 +7,6 @@ import { ApiError } from '../../error.js';
 import { makePaginationQuery } from '../../common/make-pagination-query.js';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
 import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
-import { generateMutedInstanceQuery } from '../../common/generate-muted-instance-query.js';
 import { generateRepliesQuery } from '../../common/generate-replies-query.js';
 import { generateMutedNoteQuery } from '../../common/generate-muted-note-query.js';
 import { generateChannelQuery } from '../../common/generate-channel-query.js';
@@ -92,7 +91,6 @@ export default define(meta, paramDef, async (ps, user) => {
 	generateRepliesQuery(query, user);
 	generateVisibilityQuery(query, user);
 	generateMutedUserQuery(query, user);
-	generateMutedInstanceQuery(query, user);
 	generateMutedNoteQuery(query, user);
 	generateBlockedUserQuery(query, user);
 

@@ -7,7 +7,6 @@ import { makePaginationQuery } from '../../common/make-pagination-query.js';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
 import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
 import { generateBlockedUserQuery } from '../../common/generate-block-query.js';
-import { generateMutedInstanceQuery } from '../../common/generate-muted-instance-query.js';
 
 export const meta = {
 	tags: ['users', 'notes'],
@@ -77,9 +76,10 @@ export default define(meta, paramDef, async (ps, me) => {
 		.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner');
 
 	generateVisibilityQuery(query, me);
-	if (me) generateMutedUserQuery(query, me, user);
-	if (me) generateBlockedUserQuery(query, me);
-	if (me) generateMutedInstanceQuery(query, me);
+	if (me) {
+		generateMutedUserQuery(query, me, user);
+		generateBlockedUserQuery(query, me);
+	}
 
 	if (ps.withFiles) {
 		query.andWhere('note.fileIds != \'{}\'');

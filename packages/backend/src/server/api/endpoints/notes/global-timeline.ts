@@ -5,7 +5,6 @@ import define from '../../define.js';
 import { ApiError } from '../../error.js';
 import { makePaginationQuery } from '../../common/make-pagination-query.js';
 import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
-import { generateMutedInstanceQuery } from '../../common/generate-muted-instance-query.js';
 import { generateRepliesQuery } from '../../common/generate-replies-query.js';
 import { generateMutedNoteQuery } from '../../common/generate-muted-note-query.js';
 import { generateBlockedUserQuery } from '../../common/generate-block-query.js';
@@ -76,10 +75,11 @@ export default define(meta, paramDef, async (ps, user) => {
 		.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner');
 
 	generateRepliesQuery(query, user);
-	if (user) generateMutedUserQuery(query, user);
-	if (user) generateMutedNoteQuery(query, user);
-	if (user) generateBlockedUserQuery(query, user);
-	if (user) generateMutedInstanceQuery(query, user);
+	if (user) {
+		generateMutedUserQuery(query, user);
+		generateMutedNoteQuery(query, user);
+		generateBlockedUserQuery(query, user);
+	}
 
 	if (ps.withFiles) {
 		query.andWhere('note.fileIds != \'{}\'');
