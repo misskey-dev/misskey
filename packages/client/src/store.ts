@@ -53,7 +53,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	reactions: {
 		where: 'account',
-		default: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮']
+		default: ['👍', '❤️', '😆', '🤔', '🥴' , '😮', '🎉', '💢', '😥', '😇', '🍮']
 	},
 	mutedWords: {
 		where: 'account',
@@ -236,6 +236,10 @@ export const defaultStore = markRaw(new Storage('base', {
 	aiChanMode: {
 		where: 'device',
 		default: false
+	},
+	loadEruda: {
+		where: 'device',
+		default: false,
 	},
 }));
 

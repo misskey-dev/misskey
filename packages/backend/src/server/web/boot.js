@@ -102,6 +102,14 @@
 		document.head.appendChild(style);
 	}
 
+	const useEruda = localStorage.getItem('useEruda') === 'true' ? true : false;
+	if (useEruda) {
+		const eruda_lib = document.createElement('script');
+		eruda_lib.src = '//cdn.jsdelivr.net/npm/eruda';
+		eruda_lib.onload = () => { eruda.init() };
+		document.head.appendChild(eruda_lib);
+	}
+
 	// eslint-disable-next-line no-inner-declarations
 	function renderError(code, details) {
 		document.documentElement.innerHTML = `

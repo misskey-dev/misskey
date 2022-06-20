@@ -3,6 +3,10 @@
 	<FormSwitch v-model="$i.injectFeaturedNote" class="_formBlock" @update:modelValue="onChangeInjectFeaturedNote">
 		{{ i18n.ts.showFeaturedNotesInTimeline }}
 	</FormSwitch>
+	<FormSwitch v-model="useEruda" class="_formBlock">
+		{{ i18n.ts.loadErudaDevTool }}
+		<template #caption>{{ i18n.ts.loadErudaDevToolDescription }}</template>
+	</FormSwitch>
 
 	<!--
 	<FormSwitch v-model="reportError" class="_formBlock">{{ i18n.ts.sendErrorReports }}<template #caption>{{ i18n.ts.sendErrorReportsDescription }}</template></FormSwitch>
@@ -15,7 +19,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 import FormSwitch from '@/components/form/switch.vue';
 import FormLink from '@/components/form/link.vue';
 import * as os from '@/os';
@@ -25,6 +29,11 @@ import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
 const reportError = computed(defaultStore.makeGetterSetter('reportError'));
+const useEruda = ref(localStorage.getItem('useEruda') === 'true' ? true : false);
+
+watch(useEruda, (v) => {
+	localStorage.setItem('useEruda', v ? 'true' : 'false');
+});
 
 function onChangeInjectFeaturedNote(v) {
 	os.api('i/update', {

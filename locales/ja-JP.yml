@@ -852,6 +852,8 @@ adminTools: "ツール"
 ojosamaMode: "壱百満天原サロメ（お嬢様）風モード"
 ojosamaModeDescription: "このフラグをオンにすると、投稿本文が送信時に壱百満天原サロメ（お嬢様）風文章に変換されます。後から元の文章に戻すことはできません。"
 ojosamaModeDescription2: "例: 「今日は暑いです！」→「今日は暑いですわ～！！」"
+loadErudaDevTool: "Erudaを使用する"
+loadErudaDevToolDescription: "モバイル端末でも開発者ツールが使えるようになります。"
 _adminTools:
   freeze: "一括凍結"
   _freeze:
