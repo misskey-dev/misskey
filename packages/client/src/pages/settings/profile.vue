@@ -129,6 +129,7 @@ function save() {
 		isCat: !!profile.isCat,
 		showTimelineReplies: !!profile.showTimelineReplies,
 		alwaysMarkNsfw: !!profile.alwaysMarkNsfw,
+		isOjosama: !!profile.isOjosama,
 	});
 }
 

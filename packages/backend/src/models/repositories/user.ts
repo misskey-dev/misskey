@@ -328,6 +328,7 @@ export const UserRepository = db.getRepository(User).extend({
 				isLocked: user.isLocked,
 				isSilenced: user.isSilenced || falsy,
 				isSuspended: user.isSuspended || falsy,
+				isOjosama: profile!.isOjosama || falsy,
 				description: profile!.description,
 				location: profile!.location,
 				birthday: profile!.birthday,

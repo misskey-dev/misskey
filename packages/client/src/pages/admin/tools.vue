@@ -7,16 +7,14 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
 
 import FormLink from '@/components/form/link.vue';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
-defineExpose({
-  [symbols.PAGE_INFO]: {
-		title: i18n.ts.adminTools,
-		icon: 'fas fa-tools',
-		bg: 'var(--bg)',
-	}
+definePageMetadata({
+	title: i18n.ts.adminTools,
+	icon: 'fas fa-tools',
+	bg: 'var(--bg)',
 });
 </script>

@@ -260,9 +260,13 @@ export default define(meta, paramDef, async (ps, user) => {
 	if (up != null) {
 		if (typeof up.isOjosama === 'boolean') {
 			if (up.isOjosama && ps.text) {
-				const cnvproc = spawnAsync('ojosama', ['-t', ps.text]);
-				const { stdout } = await cnvproc;
-				filteredText = stdout;
+				try {
+					const cnvproc = spawnAsync(process.env.HOME + '/go/bin/ojosama', ['-t', ps.text]);
+					const { stdout } = await cnvproc;
+					filteredText = stdout;
+				} catch (e) {
+					return new ApiError(meta.errors.textFilteringFailed);
+				}
 			}
 		}
 	}

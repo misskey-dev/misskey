@@ -116,6 +116,7 @@ export const paramDef = {
 		emailNotificationTypes: { type: 'array', items: {
 			type: 'string',
 		} },
+		isOjosama: { type: 'boolean' },
 	},
 } as const;
 

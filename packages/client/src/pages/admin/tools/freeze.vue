@@ -10,7 +10,6 @@
 
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
 import * as os from '@/os';
 
@@ -19,6 +18,7 @@ import FormSuspense from '@/components/form/suspense.vue';
 import MkButton from '@/components/ui/button.vue';
 import MkInfo from '@/components/ui/info.vue';
 import FormTextarea from '@/components/form/textarea.vue';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 async function init() {
 	await os.api('admin/meta');
@@ -73,11 +73,9 @@ async function do_freeze() {
 
 }
 
-defineExpose({
-  [symbols.PAGE_INFO]: {
-		title: i18n.ts._adminTools.freeze,
-		icon: 'fas fa-tools',
-		bg: 'var(--bg)',
-	}
+definePageMetadata({
+	title: i18n.ts._adminTools.freeze,
+	icon: 'fas fa-tools',
+	bg: 'var(--bg)'
 });
 </script>

@@ -8,6 +8,7 @@
 	},
 	"private": true,
 	"scripts": {
+		"preinstall": "which go || sh -c 'echo golang not installed. To continue, please install golang.;exit 1' && go install github.com/jiro4989/ojosama/cmd/ojosama@latest",
 		"postinstall": "node ./scripts/install-packages.js",
 		"build": "node ./scripts/build.js",
 		"start": "cd packages/backend && node --experimental-json-modules ./built/index.js",
