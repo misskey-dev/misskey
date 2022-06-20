@@ -77,7 +77,6 @@
 		"vite": "2.9.10",
 		"vue": "3.2.37",
 		"vue-prism-editor": "2.0.0-alpha.2",
-		"vue-router": "4.0.16",
 		"vuedraggable": "4.0.1",
 		"websocket": "1.0.34",
 		"ws": "8.8.0"

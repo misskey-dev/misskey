@@ -1,5 +1,6 @@
-<template>
-<MkSpacer :content-max="700">
+<template><MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+		<MkSpacer :content-max="700">
 	<transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
 		<div v-if="page" :key="page.id" v-size="{ max: [450] }" class="xcukqgmh">
 			<div class="_block main">
@@ -56,138 +57,108 @@
 		<MkError v-else-if="error" @retry="fetch()"/>
 		<MkLoading v-else/>
 	</transition>
-</MkSpacer>
+</MkSpacer></MkStickyContainer>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent } from 'vue';
+<script lang="ts" setup>
+import { computed, watch } from 'vue';
 import XPage from '@/components/page/page.vue';
 import MkButton from '@/components/ui/button.vue';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { url } from '@/config';
 import MkFollowButton from '@/components/follow-button.vue';
 import MkContainer from '@/components/ui/container.vue';
 import MkPagination from '@/components/ui/pagination.vue';
 import MkPagePreview from '@/components/page-preview.vue';
+import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
-export default defineComponent({
-	components: {
-		XPage,
-		MkButton,
-		MkFollowButton,
-		MkContainer,
-		MkPagination,
-		MkPagePreview,
+const props = defineProps<{
+	pageName: string;
+	username: string;
+}>();
+
+let page = $ref(null);
+let error = $ref(null);
+const otherPostsPagination = {
+	endpoint: 'users/pages' as const,
+	limit: 6,
+	params: computed(() => ({
+		userId: page.user.id,
+	})),
+};
+const path = $computed(() => props.username + '/' + props.pageName);
+
+function fetchPage() {
+	page = null;
+	os.api('pages/show', {
+		name: props.pageName,
+		username: props.username,
+	}).then(_page => {
+		page = _page;
+	}).catch(err => {
+		error = err;
+	});
+}
+
+function share() {
+	navigator.share({
+		title: page.title ?? page.name,
+		text: page.summary,
+		url: `${url}/@${page.user.username}/pages/${page.name}`,
+	});
+}
+
+function shareWithNote() {
+	os.post({
+		initialText: `${page.title || page.name} ${url}/@${page.user.username}/pages/${page.name}`,
+	});
+}
+
+function like() {
+	os.apiWithDialog('pages/like', {
+		pageId: page.id,
+	}).then(() => {
+		page.isLiked = true;
+		page.likedCount++;
+	});
+}
+
+async function unlike() {
+	const confirm = await os.confirm({
+		type: 'warning',
+		text: i18n.ts.unlikeConfirm,
+	});
+	if (confirm.canceled) return;
+	os.apiWithDialog('pages/unlike', {
+		pageId: page.id,
+	}).then(() => {
+		page.isLiked = false;
+		page.likedCount--;
+	});
+}
+
+function pin(pin) {
+	os.apiWithDialog('i/update', {
+		pinnedPageId: pin ? page.id : null,
+	});
+}
+
+watch(() => path, fetchPage, { immediate: true });
+
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata(computed(() => page ? {
+	title: computed(() => page.title || page.name),
+	avatar: page.user,
+	path: `/@${page.user.username}/pages/${page.name}`,
+	share: {
+		title: page.title || page.name,
+		text: page.summary,
 	},
-
-	props: {
-		pageName: {
-			type: String,
-			required: true
-		},
-		username: {
-			type: String,
-			required: true
-		},
-	},
-
-	data() {
-		return {
-			[symbols.PAGE_INFO]: computed(() => this.page ? {
-				title: computed(() => this.page.title || this.page.name),
-				avatar: this.page.user,
-				path: `/@${this.page.user.username}/pages/${this.page.name}`,
-				share: {
-					title: this.page.title || this.page.name,
-					text: this.page.summary,
-				},
-			} : null),
-			page: null,
-			error: null,
-			otherPostsPagination: {
-				endpoint: 'users/pages' as const,
-				limit: 6,
-				params: computed(() => ({
-					userId: this.page.user.id
-				})),
-			},
-		};
-	},
-
-	computed: {
-		path(): string {
-			return this.username + '/' + this.pageName;
-		}
-	},
-
-	watch: {
-		path() {
-			this.fetch();
-		}
-	},
-
-	created() {
-		this.fetch();
-	},
-
-	methods: {
-		fetch() {
-			this.page = null;
-			os.api('pages/show', {
-				name: this.pageName,
-				username: this.username,
-			}).then(page => {
-				this.page = page;
-			}).catch(err => {
-				this.error = err;
-			});
-		},
-
-		share() {
-			navigator.share({
-				title: this.page.title || this.page.name,
-				text: this.page.summary,
-				url: `${url}/@${this.page.user.username}/pages/${this.page.name}`
-			});
-		},
-
-		shareWithNote() {
-			os.post({
-				initialText: `${this.page.title || this.page.name} ${url}/@${this.page.user.username}/pages/${this.page.name}`
-			});
-		},
-
-		like() {
-			os.apiWithDialog('pages/like', {
-				pageId: this.page.id,
-			}).then(() => {
-				this.page.isLiked = true;
-				this.page.likedCount++;
-			});
-		},
-
-		async unlike() {
-			const confirm = await os.confirm({
-				type: 'warning',
-				text: this.$ts.unlikeConfirm,
-			});
-			if (confirm.canceled) return;
-			os.apiWithDialog('pages/unlike', {
-				pageId: this.page.id,
-			}).then(() => {
-				this.page.isLiked = false;
-				this.page.likedCount--;
-			});
-		},
-
-		pin(pin) {
-			os.apiWithDialog('i/update', {
-				pinnedPageId: pin ? this.page.id : null,
-			});
-		}
-	}
-});
+} : null));
 </script>
 
 <style lang="scss" scoped>

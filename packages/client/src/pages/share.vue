@@ -22,158 +22,144 @@
 </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 // SPECIFICATION: https://misskey-hub.net/docs/features/share-form.html
 
 import { defineComponent } from 'vue';
+import { noteVisibilities } from 'misskey-js';
+import * as Acct from 'misskey-js/built/acct';
+import * as Misskey from 'misskey-js';
 import MkButton from '@/components/ui/button.vue';
 import XPostForm from '@/components/post-form.vue';
 import * as os from '@/os';
-import { noteVisibilities } from 'misskey-js';
-import * as Acct from 'misskey-js/built/acct';
-import * as symbols from '@/symbols';
-import * as Misskey from 'misskey-js';
+import { mainRouter } from '@/router';
+import { definePageMetadata } from '@/scripts/page-metadata';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		XPostForm,
-		MkButton,
-	},
+const urlParams = new URLSearchParams(window.location.search);
+const localOnlyQuery = urlParams.get('localOnly');
+const visibilityQuery = urlParams.get('visibility');
 
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: this.$ts.share,
-				icon: 'fas fa-share-alt'
-			},
-			state: 'fetching' as 'fetching' | 'writing' | 'posted',
+let state = $ref('fetching' as 'fetching' | 'writing' | 'posted');
+let title = $ref(urlParams.get('title'));
+const text = urlParams.get('text');
+const url = urlParams.get('url');
+let initialText = $ref(null as string | null);
+let reply = $ref(null as Misskey.entities.Note | null);
+let renote = $ref(null as Misskey.entities.Note | null);
+let visibility = $ref(noteVisibilities.includes(visibilityQuery) ? visibilityQuery : null);
+let localOnly = $ref(localOnlyQuery === '0' ? false : localOnlyQuery === '1' ? true : null);
+let files = $ref([] as Misskey.entities.DriveFile[]);
+let visibleUsers = $ref([] as Misskey.entities.User[]);
 
-			title: null as string | null,
-			initialText: null as string | null,
-			reply: null as Misskey.entities.Note | null,
-			renote: null as Misskey.entities.Note | null,
-			visibility: null as string | null,
-			localOnly: null as boolean | null,
-			files: [] as Misskey.entities.DriveFile[],
-			visibleUsers: [] as Misskey.entities.User[],
-		};
-	},
+async function init() {
+	let noteText = '';
+	if (title) noteText += `[ ${title} ]\n`;
+	// Googleニュース対策
+	if (text?.startsWith(`${title}.\n`)) noteText += text.replace(`${title}.\n`, '');
+	else if (text && title !== text) noteText += `${text}\n`;
+	if (url) noteText += `${url}`;
+	initialText = noteText.trim();
 
-	async created() {
-		const urlParams = new URLSearchParams(window.location.search);
+	if (visibility === 'specified') {
+		const visibleUserIds = urlParams.get('visibleUserIds');
+		const visibleAccts = urlParams.get('visibleAccts');
+		await Promise.all(
+			[
+				...(visibleUserIds ? visibleUserIds.split(',').map(userId => ({ userId })) : []),
+				...(visibleAccts ? visibleAccts.split(',').map(Acct.parse) : []),
+			]
+			// TypeScriptの指示通りに変換する
+			.map(q => 'username' in q ? { username: q.username, host: q.host === null ? undefined : q.host } : q)
+			.map(q => os.api('users/show', q)
+				.then(user => {
+					visibleUsers.push(user);
+				}, () => {
+					console.error(`Invalid user query: ${JSON.stringify(q)}`);
+				}),
+			),
+		);
+	}
 
-		this.title = urlParams.get('title');
-		const text = urlParams.get('text');
-		const url = urlParams.get('url');
-
-		let noteText = '';
-		if (this.title) noteText += `[ ${this.title} ]\n`;
-		// Googleニュース対策
-		if (text?.startsWith(`${this.title}.\n`)) noteText += text.replace(`${this.title}.\n`, '');
-		else if (text && this.title !== text) noteText += `${text}\n`;
-		if (url) noteText += `${url}`;
-		this.initialText = noteText.trim();
-
-		const visibility = urlParams.get('visibility');
-		if (noteVisibilities.includes(visibility)) {
-			this.visibility = visibility;
+	try {
+		//#region Reply
+		const replyId = urlParams.get('replyId');
+		const replyUri = urlParams.get('replyUri');
+		if (replyId) {
+			reply = await os.api('notes/show', {
+				noteId: replyId,
+			});
+		} else if (replyUri) {
+			const obj = await os.api('ap/show', {
+				uri: replyUri,
+			});
+			if (obj.type === 'Note') {
+				reply = obj.object;
+			}
 		}
+		//#endregion
 
-		if (this.visibility === 'specified') {
-			const visibleUserIds = urlParams.get('visibleUserIds');
-			const visibleAccts = urlParams.get('visibleAccts');
+		//#region Renote
+		const renoteId = urlParams.get('renoteId');
+		const renoteUri = urlParams.get('renoteUri');
+		if (renoteId) {
+			renote = await os.api('notes/show', {
+				noteId: renoteId,
+			});
+		} else if (renoteUri) {
+			const obj = await os.api('ap/show', {
+				uri: renoteUri,
+			});
+			if (obj.type === 'Note') {
+				renote = obj.object;
+			}
+		}
+		//#endregion
+
+		//#region Drive files
+		const fileIds = urlParams.get('fileIds');
+		if (fileIds) {
 			await Promise.all(
-				[
-					...(visibleUserIds ? visibleUserIds.split(',').map(userId => ({ userId })) : []),
-					...(visibleAccts ? visibleAccts.split(',').map(Acct.parse) : [])
-				]
-				// TypeScriptの指示通りに変換する
-				.map(q => 'username' in q ? { username: q.username, host: q.host === null ? undefined : q.host } : q)
-				.map(q => os.api('users/show', q)
-					.then(user => {
-						this.visibleUsers.push(user);
+				fileIds.split(',')
+				.map(fileId => os.api('drive/files/show', { fileId })
+					.then(file => {
+						files.push(file);
 					}, () => {
-						console.error(`Invalid user query: ${JSON.stringify(q)}`);
-					})
-				)
+						console.error(`Failed to fetch a file ${fileId}`);
+					}),
+				),
 			);
 		}
-
-		const localOnly = urlParams.get('localOnly');
-		if (localOnly === '0') this.localOnly = false;
-		else if (localOnly === '1') this.localOnly = true;
-
-		try {
-			//#region Reply
-			const replyId = urlParams.get('replyId');
-			const replyUri = urlParams.get('replyUri');
-			if (replyId) {
-				this.reply = await os.api('notes/show', {
-					noteId: replyId
-				});
-			} else if (replyUri) {
-				const obj = await os.api('ap/show', {
-					uri: replyUri
-				});
-				if (obj.type === 'Note') {
-					this.reply = obj.object;
-				}
-			}
-			//#endregion
-
-			//#region Renote
-			const renoteId = urlParams.get('renoteId');
-			const renoteUri = urlParams.get('renoteUri');
-			if (renoteId) {
-				this.renote = await os.api('notes/show', {
-					noteId: renoteId
-				});
-			} else if (renoteUri) {
-				const obj = await os.api('ap/show', {
-					uri: renoteUri
-				});
-				if (obj.type === 'Note') {
-					this.renote = obj.object;
-				}
-			}
-			//#endregion
-
-			//#region Drive files
-			const fileIds = urlParams.get('fileIds');
-			if (fileIds) {
-				await Promise.all(
-					fileIds.split(',')
-					.map(fileId => os.api('drive/files/show', { fileId })
-						.then(file => {
-							this.files.push(file);
-						}, () => {
-							console.error(`Failed to fetch a file ${fileId}`);
-						})
-					)
-				);
-			}
-			//#endregion
-		} catch (err) {
-			os.alert({
-				type: 'error',
-				title: err.message,
-				text: err.name
-			});
-		}
-
-		this.state = 'writing';
-	},
-
-	methods: {
-		close() {
-			window.close();
-
-			// 閉じなければ100ms後タイムラインに
-			window.setTimeout(() => {
-				this.$router.push('/');
-			}, 100);
-		}
+		//#endregion
+	} catch (err) {
+		os.alert({
+			type: 'error',
+			title: err.message,
+			text: err.name,
+		});
 	}
+
+	state = 'writing';
+}
+
+init();
+
+function close(): void {
+	window.close();
+
+	// 閉じなければ100ms後タイムラインに
+	window.setTimeout(() => {
+		mainRouter.push('/');
+	}, 100);
+}
+
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: i18n.ts.share,
+	icon: 'fas fa-share-alt',
 });
 </script>
 

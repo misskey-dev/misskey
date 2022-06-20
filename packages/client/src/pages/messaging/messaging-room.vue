@@ -61,10 +61,10 @@ import { isBottomVisible, onScrollBottom, scrollToBottom } from '@/scripts/scrol
 import * as os from '@/os';
 import { stream } from '@/stream';
 import * as sound from '@/scripts/sound';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
 import { $i } from '@/account';
 import { defaultStore } from '@/store';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const props = defineProps<{
 	userAcct?: string;
@@ -280,15 +280,13 @@ onBeforeUnmount(() => {
 	if (scrollRemove) scrollRemove();
 });
 
-defineExpose({
-	[symbols.PAGE_INFO]: computed(() => !fetching ? user ? {
-		userName: user,
-		avatar: user,
-	} : {
-		title: group?.name,
-		icon: 'fas fa-users',
-	} : null),
-});
+definePageMetadata(computed(() => !fetching ? user ? {
+	userName: user,
+	avatar: user,
+} : {
+	title: group?.name,
+	icon: 'fas fa-users',
+} : null));
 </script>
 
 <style lang="scss" scoped>

@@ -27,8 +27,8 @@
 </div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent } from 'vue';
+<script lang="ts" setup>
+import { computed, inject, watch } from 'vue';
 import FormButton from '@/components/ui/button.vue';
 import FormInput from '@/components/form/input.vue';
 import FormTextarea from '@/components/form/textarea.vue';
@@ -37,104 +37,87 @@ import FormGroup from '@/components/form/group.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import { selectFiles } from '@/scripts/select-file';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
+import { useRouter } from '@/router';
+import { definePageMetadata } from '@/scripts/page-metadata';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		FormButton,
-		FormInput,
-		FormTextarea,
-		FormSwitch,
-		FormGroup,
-		FormSuspense,
-	},
+const router = useRouter();
 
-	props: {
-		postId: {
-			type: String,
-			required: false,
-			default: null,
-		}
-	},
-	
-	data() {
-		return {
-			[symbols.PAGE_INFO]: computed(() => this.postId ? {
-				title: this.$ts.edit,
-				icon: 'fas fa-pencil-alt'
-			} : {
-				title: this.$ts.postToGallery,
-				icon: 'fas fa-pencil-alt'
-			}),
-			init: null,
-			files: [],
-			description: null,
-			title: null,
-			isSensitive: false,
-		};
-	},
+const props = defineProps<{
+	postId?: string;
+}>();
 
-	watch: {
-		postId: {
-			handler() {
-				this.init = () => this.postId ? os.api('gallery/posts/show', {
-					postId: this.postId
-				}).then(post => {
-					this.files = post.files;
-					this.title = post.title;
-					this.description = post.description;
-					this.isSensitive = post.isSensitive;
-				}) : Promise.resolve(null);
-			},
-			immediate: true,
-		}
-	},
+let init = $ref(null);
+let files = $ref([]);
+let description = $ref(null);
+let title = $ref(null);
+let isSensitive = $ref(false);
 
-	methods: {
-		selectFile(evt) {
-			selectFiles(evt.currentTarget ?? evt.target, null).then(files => {
-				this.files = this.files.concat(files);
-			});
-		},
+function selectFile(evt) {
+	selectFiles(evt.currentTarget ?? evt.target, null).then(selected => {
+		files = files.concat(selected);
+	});
+}
 
-		remove(file) {
-			this.files = this.files.filter(f => f.id !== file.id);
-		},
+function remove(file) {
+	files = files.filter(f => f.id !== file.id);
+}
 
-		async save() {
-			if (this.postId) {
-				await os.apiWithDialog('gallery/posts/update', {
-					postId: this.postId,
-					title: this.title,
-					description: this.description,
-					fileIds: this.files.map(file => file.id),
-					isSensitive: this.isSensitive,
-				});
-				this.$router.push(`/gallery/${this.postId}`);
-			} else {
-				const post = await os.apiWithDialog('gallery/posts/create', {
-					title: this.title,
-					description: this.description,
-					fileIds: this.files.map(file => file.id),
-					isSensitive: this.isSensitive,
-				});
-				this.$router.push(`/gallery/${post.id}`);
-			}
-		},
-
-		async del() {
-			const { canceled } = await os.confirm({
-				type: 'warning',
-				text: this.$ts.deleteConfirm,
-			});
-			if (canceled) return;
-			await os.apiWithDialog('gallery/posts/delete', {
-				postId: this.postId,
-			});
-			this.$router.push(`/gallery`);
-		}
+async function save() {
+	if (props.postId) {
+		await os.apiWithDialog('gallery/posts/update', {
+			postId: props.postId,
+			title: title,
+			description: description,
+			fileIds: files.map(file => file.id),
+			isSensitive: isSensitive,
+		});
+		mainRouter.push(`/gallery/${props.postId}`);
+	} else {
+		const created = await os.apiWithDialog('gallery/posts/create', {
+			title: title,
+			description: description,
+			fileIds: files.map(file => file.id),
+			isSensitive: isSensitive,
+		});
+		router.push(`/gallery/${created.id}`);
 	}
-});
+}
+
+async function del() {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.ts.deleteConfirm,
+	});
+	if (canceled) return;
+	await os.apiWithDialog('gallery/posts/delete', {
+		postId: props.postId,
+	});
+	mainRouter.push('/gallery');
+}
+
+watch(() => props.postId, () => {
+	init = () => props.postId ? os.api('gallery/posts/show', {
+		postId: props.postId,
+	}).then(post => {
+		files = post.files;
+		title = post.title;
+		description = post.description;
+		isSensitive = post.isSensitive;
+	}) : Promise.resolve(null);
+}, { immediate: true });
+
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata(computed(() => props.postId ? {
+	title: i18n.ts.edit,
+	icon: 'fas fa-pencil-alt',
+} : {
+	title: i18n.ts.postToGallery,
+	icon: 'fas fa-pencil-alt',
+}));
 </script>
 
 <style lang="scss" scoped>

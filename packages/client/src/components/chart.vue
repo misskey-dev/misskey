@@ -13,7 +13,7 @@
   id-denylist violation when setting it. This is causing about 60+ lint issues.
   As this is part of Chart.js's API it makes sense to disable the check here.
 */
-import { defineProps, onMounted, ref, watch, PropType, onUnmounted } from 'vue';
+import { onMounted, ref, watch, PropType, onUnmounted } from 'vue';
 import {
 	Chart,
 	ArcElement,
@@ -53,7 +53,7 @@ const props = defineProps({
 	limit: {
 		type: Number,
 		required: false,
-		default: 90
+		default: 90,
 	},
 	span: {
 		type: String as PropType<'hour' | 'day'>,
@@ -62,22 +62,22 @@ const props = defineProps({
 	detailed: {
 		type: Boolean,
 		required: false,
-		default: false
+		default: false,
 	},
 	stacked: {
 		type: Boolean,
 		required: false,
-		default: false
+		default: false,
 	},
 	bar: {
 		type: Boolean,
 		required: false,
-		default: false
+		default: false,
 	},
 	aspectRatio: {
 		type: Number,
 		required: false,
-		default: null
+		default: null,
 	},
 });
 
@@ -156,7 +156,7 @@ const getDate = (ago: number) => {
 const format = (arr) => {
 	return arr.map((v, i) => ({
 		x: getDate(i).getTime(),
-		y: v
+		y: v,
 	}));
 };
 
@@ -343,7 +343,7 @@ const render = () => {
 							min: 'original',
 							max: 'original',
 						},
-					}
+					},
 				} : undefined,
 				//gradient,
 			},
@@ -367,8 +367,8 @@ const render = () => {
 					ctx.stroke();
 					ctx.restore();
 				}
-			}
-		}]
+			},
+		}],
 	});
 };
 
@@ -433,18 +433,18 @@ const fetchApRequestChart = async (): Promise<typeof chartData> => {
 			name: 'In',
 			type: 'area',
 			color: '#008FFB',
-			data: format(raw.inboxReceived)
+			data: format(raw.inboxReceived),
 		}, {
 			name: 'Out (succ)',
 			type: 'area',
 			color: '#00E396',
-			data: format(raw.deliverSucceeded)
+			data: format(raw.deliverSucceeded),
 		}, {
 			name: 'Out (fail)',
 			type: 'area',
 			color: '#FEB019',
-			data: format(raw.deliverFailed)
-		}]
+			data: format(raw.deliverFailed),
+		}],
 	};
 };
 
@@ -456,7 +456,7 @@ const fetchNotesChart = async (type: string): Promise<typeof chartData> => {
 			type: 'line',
 			data: format(type === 'combined'
 				? sum(raw.local.inc, negate(raw.local.dec), raw.remote.inc, negate(raw.remote.dec))
-				: sum(raw[type].inc, negate(raw[type].dec))
+				: sum(raw[type].inc, negate(raw[type].dec)),
 			),
 			color: '#888888',
 		}, {
@@ -464,7 +464,7 @@ const fetchNotesChart = async (type: string): Promise<typeof chartData> => {
 			type: 'area',
 			data: format(type === 'combined'
 				? sum(raw.local.diffs.renote, raw.remote.diffs.renote)
-				: raw[type].diffs.renote
+				: raw[type].diffs.renote,
 			),
 			color: colors.green,
 		}, {
@@ -472,7 +472,7 @@ const fetchNotesChart = async (type: string): Promise<typeof chartData> => {
 			type: 'area',
 			data: format(type === 'combined'
 				? sum(raw.local.diffs.reply, raw.remote.diffs.reply)
-				: raw[type].diffs.reply
+				: raw[type].diffs.reply,
 			),
 			color: colors.yellow,
 		}, {
@@ -480,7 +480,7 @@ const fetchNotesChart = async (type: string): Promise<typeof chartData> => {
 			type: 'area',
 			data: format(type === 'combined'
 				? sum(raw.local.diffs.normal, raw.remote.diffs.normal)
-				: raw[type].diffs.normal
+				: raw[type].diffs.normal,
 			),
 			color: colors.blue,
 		}, {
@@ -488,7 +488,7 @@ const fetchNotesChart = async (type: string): Promise<typeof chartData> => {
 			type: 'area',
 			data: format(type === 'combined'
 				? sum(raw.local.diffs.withFile, raw.remote.diffs.withFile)
-				: raw[type].diffs.withFile
+				: raw[type].diffs.withFile,
 			),
 			color: colors.purple,
 		}],
@@ -522,21 +522,21 @@ const fetchUsersChart = async (total: boolean): Promise<typeof chartData> => {
 			type: 'line',
 			data: format(total
 				? sum(raw.local.total, raw.remote.total)
-				: sum(raw.local.inc, negate(raw.local.dec), raw.remote.inc, negate(raw.remote.dec))
+				: sum(raw.local.inc, negate(raw.local.dec), raw.remote.inc, negate(raw.remote.dec)),
 			),
 		}, {
 			name: 'Local',
 			type: 'area',
 			data: format(total
 				? raw.local.total
-				: sum(raw.local.inc, negate(raw.local.dec))
+				: sum(raw.local.inc, negate(raw.local.dec)),
 			),
 		}, {
 			name: 'Remote',
 			type: 'area',
 			data: format(total
 				? raw.remote.total
-				: sum(raw.remote.inc, negate(raw.remote.dec))
+				: sum(raw.remote.inc, negate(raw.remote.dec)),
 			),
 		}],
 	};
@@ -607,8 +607,8 @@ const fetchDriveChart = async (): Promise<typeof chartData> => {
 					raw.local.incSize,
 					negate(raw.local.decSize),
 					raw.remote.incSize,
-					negate(raw.remote.decSize)
-				)
+					negate(raw.remote.decSize),
+				),
 			),
 		}, {
 			name: 'Local +',
@@ -642,8 +642,8 @@ const fetchDriveFilesChart = async (): Promise<typeof chartData> => {
 					raw.local.incCount,
 					negate(raw.local.decCount),
 					raw.remote.incCount,
-					negate(raw.remote.decCount)
-				)
+					negate(raw.remote.decCount),
+				),
 			),
 		}, {
 			name: 'Local +',
@@ -672,18 +672,18 @@ const fetchInstanceRequestsChart = async (): Promise<typeof chartData> => {
 			name: 'In',
 			type: 'area',
 			color: '#008FFB',
-			data: format(raw.requests.received)
+			data: format(raw.requests.received),
 		}, {
 			name: 'Out (succ)',
 			type: 'area',
 			color: '#00E396',
-			data: format(raw.requests.succeeded)
+			data: format(raw.requests.succeeded),
 		}, {
 			name: 'Out (fail)',
 			type: 'area',
 			color: '#FEB019',
-			data: format(raw.requests.failed)
-		}]
+			data: format(raw.requests.failed),
+		}],
 	};
 };
 
@@ -696,9 +696,9 @@ const fetchInstanceUsersChart = async (total: boolean): Promise<typeof chartData
 			color: '#008FFB',
 			data: format(total
 				? raw.users.total
-				: sum(raw.users.inc, negate(raw.users.dec))
-			)
-		}]
+				: sum(raw.users.inc, negate(raw.users.dec)),
+			),
+		}],
 	};
 };
 
@@ -711,9 +711,9 @@ const fetchInstanceNotesChart = async (total: boolean): Promise<typeof chartData
 			color: '#008FFB',
 			data: format(total
 				? raw.notes.total
-				: sum(raw.notes.inc, negate(raw.notes.dec))
-			)
-		}]
+				: sum(raw.notes.inc, negate(raw.notes.dec)),
+			),
+		}],
 	};
 };
 
@@ -726,17 +726,17 @@ const fetchInstanceFfChart = async (total: boolean): Promise<typeof chartData> =
 			color: '#008FFB',
 			data: format(total
 				? raw.following.total
-				: sum(raw.following.inc, negate(raw.following.dec))
-			)
+				: sum(raw.following.inc, negate(raw.following.dec)),
+			),
 		}, {
 			name: 'Followers',
 			type: 'area',
 			color: '#00E396',
 			data: format(total
 				? raw.followers.total
-				: sum(raw.followers.inc, negate(raw.followers.dec))
-			)
-		}]
+				: sum(raw.followers.inc, negate(raw.followers.dec)),
+			),
+		}],
 	};
 };
 
@@ -750,9 +750,9 @@ const fetchInstanceDriveUsageChart = async (total: boolean): Promise<typeof char
 			color: '#008FFB',
 			data: format(total
 				? raw.drive.totalUsage
-				: sum(raw.drive.incUsage, negate(raw.drive.decUsage))
-			)
-		}]
+				: sum(raw.drive.incUsage, negate(raw.drive.decUsage)),
+			),
+		}],
 	};
 };
 
@@ -765,9 +765,9 @@ const fetchInstanceDriveFilesChart = async (total: boolean): Promise<typeof char
 			color: '#008FFB',
 			data: format(total
 				? raw.drive.totalFiles
-				: sum(raw.drive.incFiles, negate(raw.drive.decFiles))
-			)
-		}]
+				: sum(raw.drive.incFiles, negate(raw.drive.decFiles)),
+			),
+		}],
 	};
 };
 
