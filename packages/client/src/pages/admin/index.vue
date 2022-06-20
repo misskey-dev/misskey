@@ -1,8 +1,6 @@
 <template>
 <div ref="el" class="hiyeyicy" :class="{ wide: !narrow }">
-	<div v-if="!narrow || initialPage == null" class="nav">
-		<MkHeader :info="header"></MkHeader>
-	
+	<div v-if="!narrow || initialPage == null" class="nav">	
 		<MkSpacer :content-max="700" :margin-min="16">
 			<div class="lxpfedzu">
 				<div class="banner">
@@ -17,29 +15,26 @@
 		</MkSpacer>
 	</div>
 	<div v-if="!(narrow && initialPage == null)" class="main">
-		<MkStickyContainer>
-			<template #header><MkHeader v-if="childInfo && !childInfo.hideHeader" :info="childInfo"/></template>
-			<component :is="component" :ref="el => pageChanged(el)" :key="initialPage" v-bind="pageProps"/>
-		</MkStickyContainer>
+		<component :is="component" :key="initialPage" v-bind="pageProps"/>
 	</div>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, nextTick, onMounted, onUnmounted, provide, watch } from 'vue';
+import { defineAsyncComponent, inject, nextTick, onMounted, onUnmounted, provide, watch } from 'vue';
 import { i18n } from '@/i18n';
 import MkSuperMenu from '@/components/ui/super-menu.vue';
 import MkInfo from '@/components/ui/info.vue';
 import { scroll } from '@/scripts/scroll';
 import { instance } from '@/instance';
-import * as symbols from '@/symbols';
 import * as os from '@/os';
 import { lookupUser } from '@/scripts/lookup-user';
-import { MisskeyNavigator } from '@/scripts/navigate';
+import { useRouter } from '@/router';
+import { definePageMetadata, provideMetadataReceiver, setPageMetadata } from '@/scripts/page-metadata';
 
 const isEmpty = (x: string | null) => x == null || x === '';
 
-const nav = new MisskeyNavigator();
+const router = useRouter();
 
 const indexInfo = {
 	title: i18n.ts.controlPanel,
@@ -230,7 +225,7 @@ watch(component, () => {
 
 watch(() => props.initialPage, () => {
 	if (props.initialPage == null && !narrow) {
-		nav.push('/admin/overview');
+		router.push('/admin/overview');
 	} else {
 		if (props.initialPage == null) {
 			INFO = indexInfo;
@@ -240,7 +235,7 @@ watch(() => props.initialPage, () => {
 
 watch(narrow, () => {
 	if (props.initialPage == null && !narrow) {
-		nav.push('/admin/overview');
+		router.push('/admin/overview');
 	}
 });
 
@@ -249,7 +244,7 @@ onMounted(() => {
 
 	narrow = el.offsetWidth < NARROW_THRESHOLD;
 	if (props.initialPage == null && !narrow) {
-		nav.push('/admin/overview');
+		router.push('/admin/overview');
 	}
 });
 
@@ -257,19 +252,19 @@ onUnmounted(() => {
 	ro.disconnect();
 });
 
-const pageChanged = (page) => {
-	if (page == null) {
+provideMetadataReceiver((info) => {
+	if (info == null) {
 		childInfo = null;
 	} else {
-		childInfo = page[symbols.PAGE_INFO];
+		childInfo = info;
 	}
-};
+});
 
 const invite = () => {
 	os.api('admin/invite').then(x => {
 		os.alert({
 			type: 'info',
-			text: x.code
+			text: x.code,
 		});
 	}).catch(err => {
 		os.alert({
@@ -285,33 +280,38 @@ const lookup = (ev) => {
 		icon: 'fas fa-user',
 		action: () => {
 			lookupUser();
-		}
+		},
 	}, {
 		text: i18n.ts.note,
 		icon: 'fas fa-pencil-alt',
 		action: () => {
 			alert('TODO');
-		}
+		},
 	}, {
 		text: i18n.ts.file,
 		icon: 'fas fa-cloud',
 		action: () => {
 			alert('TODO');
-		}
+		},
 	}, {
 		text: i18n.ts.instance,
 		icon: 'fas fa-globe',
 		action: () => {
 			alert('TODO');
-		}
+		},
 	}], ev.currentTarget ?? ev.target);
 };
 
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata(INFO);
+
 defineExpose({
-	[symbols.PAGE_INFO]: INFO,
 	header: {
 		title: i18n.ts.controlPanel,
-	}
+	},
 });
 </script>
 

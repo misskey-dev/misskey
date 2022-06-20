@@ -1,10 +1,10 @@
 import * as fs from 'fs';
 import pluginVue from '@vitejs/plugin-vue';
-import pluginJson5 from './vite.json5';
 import { defineConfig } from 'vite';
 
 import locales from '../../locales';
 import meta from '../../package.json';
+import pluginJson5 from './vite.json5';
 
 const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.json5', '.svg', '.sass', '.scss', '.css', '.vue'];
 
@@ -57,7 +57,7 @@ export default defineConfig(({ command, mode }) => {
 				},
 				output: {
 					manualChunks: {
-						vue: ['vue', 'vue-router'],
+						vue: ['vue'],
 					},
 				},
 			},
@@ -68,5 +68,5 @@ export default defineConfig(({ command, mode }) => {
 			sourcemap: process.env.NODE_ENV !== 'production',
 			reportCompressedSize: false,
 		},
-	}
+	};
 });

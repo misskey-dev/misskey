@@ -1,5 +1,6 @@
-<template>
-<MkSpacer :content-max="600" :margin-min="16" :margin-max="32">
+<template><MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+		<MkSpacer :content-max="600" :margin-min="16" :margin-max="32">
 	<div v-if="instance" class="_formRoot">
 		<div class="fnfelxur">
 			<img :src="instance.iconUrl || instance.faviconUrl" alt="" class="icon"/>
@@ -102,7 +103,7 @@
 			<FormLink :to="`https://${host}/manifest.json`" external style="margin-bottom: 8px;">manifest.json</FormLink>
 		</FormSection>
 	</div>
-</MkSpacer>
+</MkSpacer></MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
@@ -120,8 +121,8 @@ import FormSwitch from '@/components/form/switch.vue';
 import * as os from '@/os';
 import number from '@/filters/number';
 import bytes from '@/filters/bytes';
-import * as symbols from '@/symbols';
 import { iAmModerator } from '@/account';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const props = defineProps<{
 	host: string;
@@ -146,7 +147,7 @@ async function fetch() {
 async function toggleBlock(ev) {
 	if (meta == null) return;
 	await os.api('admin/update-meta', {
-		blockedHosts: isBlocked ? meta.blockedHosts.concat([instance.host]) : meta.blockedHosts.filter(x => x !== instance.host)
+		blockedHosts: isBlocked ? meta.blockedHosts.concat([instance.host]) : meta.blockedHosts.filter(x => x !== instance.host),
 	});
 }
 
@@ -168,19 +169,21 @@ function refreshMetadata() {
 
 fetch();
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: props.host,
-		icon: 'fas fa-info-circle',
-		bg: 'var(--bg)',
-		actions: [{
-			text: `https://${props.host}`,
-			icon: 'fas fa-external-link-alt',
-			handler: () => {
-				window.open(`https://${props.host}`, '_blank');
-			}
-		}],
-	},
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: props.host,
+	icon: 'fas fa-info-circle',
+	bg: 'var(--bg)',
+	actions: [{
+		text: `https://${props.host}`,
+		icon: 'fas fa-external-link-alt',
+		handler: () => {
+			window.open(`https://${props.host}`, '_blank');
+		},
+	}],
 });
 </script>
 

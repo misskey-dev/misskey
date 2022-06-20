@@ -1,30 +1,33 @@
 <template>
-<MkSpacer :content-max="500" :margin-min="16" :margin-max="32">
-	<div v-if="file" class="cxqhhsmd _formRoot">
-		<div class="_formBlock">
-			<MkDriveFileThumbnail class="thumbnail" :file="file" fit="contain"/>
-			<div class="info">
-				<span style="margin-right: 1em;">{{ file.type }}</span>
-				<span>{{ bytes(file.size) }}</span>
-				<MkTime :time="file.createdAt" mode="detail" style="display: block;"/>
+<MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<MkSpacer :content-max="500" :margin-min="16" :margin-max="32">
+		<div v-if="file" class="cxqhhsmd _formRoot">
+			<div class="_formBlock">
+				<MkDriveFileThumbnail class="thumbnail" :file="file" fit="contain"/>
+				<div class="info">
+					<span style="margin-right: 1em;">{{ file.type }}</span>
+					<span>{{ bytes(file.size) }}</span>
+					<MkTime :time="file.createdAt" mode="detail" style="display: block;"/>
+				</div>
+			</div>
+			<div class="_formBlock">
+				<MkSwitch v-model="isSensitive" @update:modelValue="toggleIsSensitive">NSFW</MkSwitch>
+			</div>
+			<div class="_formBlock">
+				<MkButton full @click="showUser"><i class="fas fa-external-link-square-alt"></i> {{ $ts.user }}</MkButton>
+			</div>
+			<div class="_formBlock">
+				<MkButton full danger @click="del"><i class="fas fa-trash-alt"></i> {{ $ts.delete }}</MkButton>
+			</div>
+			<div v-if="info" class="_formBlock">
+				<details class="_content rawdata">
+					<pre><code>{{ JSON.stringify(info, null, 2) }}</code></pre>
+				</details>
 			</div>
 		</div>
-		<div class="_formBlock">
-			<MkSwitch v-model="isSensitive" @update:modelValue="toggleIsSensitive">NSFW</MkSwitch>
-		</div>
-		<div class="_formBlock">
-			<MkButton full @click="showUser"><i class="fas fa-external-link-square-alt"></i> {{ $ts.user }}</MkButton>
-		</div>
-		<div class="_formBlock">
-			<MkButton full danger @click="del"><i class="fas fa-trash-alt"></i> {{ $ts.delete }}</MkButton>
-		</div>
-		<div v-if="info" class="_formBlock">
-			<details class="_content rawdata">
-				<pre><code>{{ JSON.stringify(info, null, 2) }}</code></pre>
-			</details>
-		</div>
-	</div>
-</MkSpacer>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
@@ -35,7 +38,7 @@ import MkDriveFileThumbnail from '@/components/drive-file-thumbnail.vue';
 import bytes from '@/filters/bytes';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
-import * as symbols from '@/symbols';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 let file: any = $ref(null);
 let info: any = $ref(null);
@@ -74,13 +77,15 @@ async function toggleIsSensitive(v) {
 	isSensitive = v;
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: computed(() => ({
-		title: file ? i18n.ts.file + ': ' + file.name : i18n.ts.file,
-		icon: 'fas fa-file',
-		bg: 'var(--bg)',
-	})),
-});
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata(computed(() => ({
+	title: file ? i18n.ts.file + ': ' + file.name : i18n.ts.file,
+	icon: 'fas fa-file',
+	bg: 'var(--bg)',
+})));
 </script>
 
 <style lang="scss" scoped>

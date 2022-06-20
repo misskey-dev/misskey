@@ -5,13 +5,13 @@
 </template>
 
 <script lang="ts" setup>
+import { inject } from 'vue';
 import * as os from '@/os';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
-import { router } from '@/router';
 import { url } from '@/config';
 import { popout as popout_ } from '@/scripts/popout';
 import { i18n } from '@/i18n';
-import { MisskeyNavigator } from '@/scripts/navigate';
+import { useRouter } from '@/router';
 
 const props = withDefaults(defineProps<{
 	to: string;
@@ -22,15 +22,16 @@ const props = withDefaults(defineProps<{
 	behavior: null,
 });
 
-const mkNav = new MisskeyNavigator();
+const router = useRouter();
 
 const active = $computed(() => {
 	if (props.activeClass == null) return false;
 	const resolved = router.resolve(props.to);
-	if (resolved.path === router.currentRoute.value.path) return true;
-	if (resolved.name == null) return false;
+	if (resolved == null) return false;
+	if (resolved.route.path === router.currentRoute.value.path) return true;
+	if (resolved.route.name == null) return false;
 	if (router.currentRoute.value.name == null) return false;
-	return resolved.name === router.currentRoute.value.name;
+	return resolved.route.name === router.currentRoute.value.name;
 });
 
 function onContextmenu(ev) {
@@ -44,31 +45,25 @@ function onContextmenu(ev) {
 		text: i18n.ts.openInWindow,
 		action: () => {
 			os.pageWindow(props.to);
-		}
-	}, mkNav.sideViewHook ? {
-		icon: 'fas fa-columns',
-		text: i18n.ts.openInSideView,
-		action: () => {
-			if (mkNav.sideViewHook) mkNav.sideViewHook(props.to);
-		}
-	} : undefined, {
+		},
+	}, {
 		icon: 'fas fa-expand-alt',
 		text: i18n.ts.showInPage,
 		action: () => {
 			router.push(props.to);
-		}
+		},
 	}, null, {
 		icon: 'fas fa-external-link-alt',
 		text: i18n.ts.openInNewTab,
 		action: () => {
 			window.open(props.to, '_blank');
-		}
+		},
 	}, {
 		icon: 'fas fa-link',
 		text: i18n.ts.copyLink,
 		action: () => {
 			copyToClipboard(`${url}${props.to}`);
-		}
+		},
 	}], ev);
 }
 
@@ -98,6 +93,6 @@ function nav() {
 		}
 	}
 
-	mkNav.push(props.to);
+	router.push(props.to);
 }
 </script>
