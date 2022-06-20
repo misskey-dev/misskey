@@ -53,7 +53,6 @@
 import { computed, defineComponent, inject, watch } from 'vue';
 import MkButton from '@/components/ui/button.vue';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import MkContainer from '@/components/ui/container.vue';
 import ImgWithBlurhash from '@/components/img-with-blurhash.vue';
 import MkPagination from '@/components/ui/pagination.vue';

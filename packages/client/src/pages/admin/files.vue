@@ -61,7 +61,6 @@ import MkContainer from '@/components/ui/container.vue';
 import MkDriveFileThumbnail from '@/components/drive-file-thumbnail.vue';
 import bytes from '@/filters/bytes';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 

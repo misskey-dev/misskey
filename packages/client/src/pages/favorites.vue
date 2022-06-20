@@ -25,7 +25,6 @@ import { ref } from 'vue';
 import MkPagination from '@/components/ui/pagination.vue';
 import XNote from '@/components/note.vue';
 import XList from '@/components/date-separated-list.vue';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 

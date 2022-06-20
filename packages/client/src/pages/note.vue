@@ -47,7 +47,6 @@ import XNotes from '@/components/notes.vue';
 import MkRemoteCaution from '@/components/remote-caution.vue';
 import MkButton from '@/components/ui/button.vue';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
 

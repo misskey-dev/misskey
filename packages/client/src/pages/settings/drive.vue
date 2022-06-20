@@ -43,7 +43,6 @@ import MkKeyValue from '@/components/key-value.vue';
 import FormSplit from '@/components/form/split.vue';
 import * as os from '@/os';
 import bytes from '@/filters/bytes';
-import * as symbols from '@/symbols';
 import { defaultStore } from '@/store';
 import MkChart from '@/components/chart.vue';
 import { i18n } from '@/i18n';

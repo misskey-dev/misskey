@@ -7,7 +7,6 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 import MkSample from '@/components/sample.vue';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 

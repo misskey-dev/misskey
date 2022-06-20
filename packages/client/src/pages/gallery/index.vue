@@ -53,7 +53,6 @@ import MkPagination from '@/components/ui/pagination.vue';
 import MkGalleryPostPreview from '@/components/gallery-post-preview.vue';
 import number from '@/filters/number';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
 

@@ -16,7 +16,6 @@ import { ComputedRef, provide } from 'vue';
 import XColumn from './column.vue';
 import { deckStore, Column } from '@/ui/deck/deck-store';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
 import { mainRouter } from '@/router';
 import { PageMetadata, provideMetadataReceiver, setPageMetadata } from '@/scripts/page-metadata';

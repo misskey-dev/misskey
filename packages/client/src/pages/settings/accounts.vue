@@ -25,7 +25,6 @@ import { defineAsyncComponent, ref } from 'vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import FormButton from '@/components/ui/button.vue';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { getAccounts, addAccount as addAccounts, login, $i } from '@/account';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';

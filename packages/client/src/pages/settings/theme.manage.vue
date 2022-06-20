@@ -36,7 +36,6 @@ import { Theme, getBuiltinThemesRef } from '@/scripts/theme';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import * as os from '@/os';
 import { getThemes, removeTheme } from '@/theme-store';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 

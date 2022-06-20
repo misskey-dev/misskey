@@ -102,7 +102,6 @@ import { url } from '@/config';
 import { collectPageVars } from '@/scripts/collect-page-vars';
 import * as os from '@/os';
 import { selectFile } from '@/scripts/select-file';
-import * as symbols from '@/symbols';
 import { mainRouter } from '@/router';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';

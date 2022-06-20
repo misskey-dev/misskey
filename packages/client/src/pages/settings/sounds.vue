@@ -26,7 +26,6 @@ import FormSection from '@/components/form/section.vue';
 import * as os from '@/os';
 import { ColdDeviceStorage } from '@/store';
 import { playFile } from '@/scripts/sound';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 

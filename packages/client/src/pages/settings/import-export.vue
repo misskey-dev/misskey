@@ -45,7 +45,6 @@ import FormGroup from '@/components/form/group.vue';
 import FormSwitch from '@/components/form/switch.vue';
 import * as os from '@/os';
 import { selectFile } from '@/scripts/select-file';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 

@@ -48,7 +48,6 @@ import { instanceName } from '@/config';
 import { StickySidebar } from '@/scripts/sticky-sidebar';
 import * as os from '@/os';
 import { menuDef } from '@/menu';
-import * as symbols from '@/symbols';
 import { mainRouter } from '@/router';
 import { PageMetadata, provideMetadataReceiver, setPageMetadata } from '@/scripts/page-metadata';
 import { defaultStore } from '@/store';

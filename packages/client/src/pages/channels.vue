@@ -27,7 +27,6 @@ import { computed, defineComponent, inject } from 'vue';
 import MkChannelPreview from '@/components/channel-preview.vue';
 import MkPagination from '@/components/ui/pagination.vue';
 import MkButton from '@/components/ui/button.vue';
-import * as symbols from '@/symbols';
 import { mainRouter } from '@/router';
 import { Router } from '@/nirax';
 import { definePageMetadata } from '@/scripts/page-metadata';

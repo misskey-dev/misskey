@@ -78,7 +78,6 @@ import MkSwitch from '@/components/form/switch.vue';
 import FormSplit from '@/components/form/split.vue';
 import { selectFile, selectFiles } from '@/scripts/select-file';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 

@@ -20,7 +20,6 @@ import XHeader from './_header_.vue';
 import MkButton from '@/components/ui/button.vue';
 import * as os from '@/os';
 import { stream } from '@/stream';
-import * as symbols from '@/symbols';
 import * as config from '@/config';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';

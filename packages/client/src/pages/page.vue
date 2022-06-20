@@ -65,7 +65,6 @@ import { computed, watch } from 'vue';
 import XPage from '@/components/page/page.vue';
 import MkButton from '@/components/ui/button.vue';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { url } from '@/config';
 import MkFollowButton from '@/components/follow-button.vue';
 import MkContainer from '@/components/ui/container.vue';

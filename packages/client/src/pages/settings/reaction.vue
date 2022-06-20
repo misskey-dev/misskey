@@ -64,7 +64,6 @@ import FormSection from '@/components/form/section.vue';
 import FormSwitch from '@/components/form/switch.vue';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 

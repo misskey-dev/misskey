@@ -38,7 +38,6 @@ import MkDriveFileThumbnail from '@/components/drive-file-thumbnail.vue';
 import bytes from '@/filters/bytes';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
-import * as symbols from '@/symbols';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
 let file: any = $ref(null);

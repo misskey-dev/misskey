@@ -15,7 +15,6 @@ import FormTextarea from '@/components/form/textarea.vue';
 import MkInfo from '@/components/ui/info.vue';
 import MkButton from '@/components/ui/button.vue';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';

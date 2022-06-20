@@ -21,7 +21,6 @@
 import { } from 'vue';
 import * as misskey from 'misskey-js';
 import MkButton from '@/components/ui/button.vue';
-import * as symbols from '@/symbols';
 import { version } from '@/config';
 import * as os from '@/os';
 import { unisonReload } from '@/scripts/unison-reload';

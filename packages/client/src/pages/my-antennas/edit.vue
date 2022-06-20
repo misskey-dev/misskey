@@ -7,7 +7,6 @@
 <script lang="ts" setup>
 import { inject, watch } from 'vue';
 import XAntenna from './editor.vue';
-import * as symbols from '@/symbols';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { Router } from '@/nirax';

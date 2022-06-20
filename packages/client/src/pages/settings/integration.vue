@@ -28,7 +28,6 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { apiUrl } from '@/config';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/ui/button.vue';
-import * as symbols from '@/symbols';
 import { $i } from '@/account';
 import { instance } from '@/instance';
 import { i18n } from '@/i18n';

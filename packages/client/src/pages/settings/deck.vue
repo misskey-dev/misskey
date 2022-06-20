@@ -39,7 +39,6 @@ import FormGroup from '@/components/form/group.vue';
 import { deckStore } from '@/ui/deck/deck-store';
 import * as os from '@/os';
 import { unisonReload } from '@/scripts/unison-reload';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 

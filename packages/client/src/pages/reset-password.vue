@@ -19,7 +19,6 @@ import { defineAsyncComponent, onMounted } from 'vue';
 import FormInput from '@/components/form/input.vue';
 import FormButton from '@/components/ui/button.vue';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
 import { mainRouter } from '@/router';
 import { definePageMetadata } from '@/scripts/page-metadata';

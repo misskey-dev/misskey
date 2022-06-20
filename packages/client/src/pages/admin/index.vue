@@ -27,7 +27,6 @@ import MkSuperMenu from '@/components/ui/super-menu.vue';
 import MkInfo from '@/components/ui/info.vue';
 import { scroll } from '@/scripts/scroll';
 import { instance } from '@/instance';
-import * as symbols from '@/symbols';
 import * as os from '@/os';
 import { lookupUser } from '@/scripts/lookup-user';
 import { Router } from '@/nirax';

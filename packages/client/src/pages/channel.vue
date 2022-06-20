@@ -38,7 +38,6 @@ import XPostForm from '@/components/post-form.vue';
 import XTimeline from '@/components/timeline.vue';
 import XChannelFollowButton from '@/components/channel-follow-button.vue';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { mainRouter } from '@/router';
 import { Router } from '@/nirax';
 import { $i } from '@/account';

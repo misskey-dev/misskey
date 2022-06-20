@@ -24,7 +24,6 @@ import * as os from '@/os';
 import { ColdDeviceStorage } from '@/store';
 import { unisonReload } from '@/scripts/unison-reload';
 import { i18n } from '@/i18n';
-import * as symbols from '@/symbols';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
 const code = ref(null);

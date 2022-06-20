@@ -50,7 +50,6 @@ import MkSelect from '@/components/form/select.vue';
 import MkPagination from '@/components/ui/pagination.vue';
 import XAbuseReport from '@/components/abuse-report.vue';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 

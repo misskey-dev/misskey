@@ -25,7 +25,6 @@ import XNotes from '@/components/notes.vue';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
 const props = defineProps<{

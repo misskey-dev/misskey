@@ -27,7 +27,6 @@ import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/form/input.vue';
 import MkTextarea from '@/components/form/textarea.vue';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 

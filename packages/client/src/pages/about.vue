@@ -84,7 +84,6 @@ import MkKeyValue from '@/components/key-value.vue';
 import MkInstanceStats from '@/components/instance-stats.vue';
 import * as os from '@/os';
 import number from '@/filters/number';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 

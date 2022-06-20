@@ -57,7 +57,6 @@ import XSigninDialog from '@/components/signin-dialog.vue';
 import XSignupDialog from '@/components/signup-dialog.vue';
 import MkButton from '@/components/ui/button.vue';
 import { ColdDeviceStorage, defaultStore } from '@/store';
-import * as symbols from '@/symbols';
 import { mainRouter } from '@/router';
 import { PageMetadata, provideMetadataReceiver, setPageMetadata } from '@/scripts/page-metadata';
 

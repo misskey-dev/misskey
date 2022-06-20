@@ -44,7 +44,6 @@ import * as os from '@/os';
 import MkPagination from '@/components/ui/pagination.vue';
 import MkButton from '@/components/ui/button.vue';
 import { ColdDeviceStorage } from '@/store';
-import * as symbols from '@/symbols';
 import { mainRouter } from '@/router';
 
 const DESKTOP_THRESHOLD = 1100;

@@ -20,7 +20,6 @@ import FormButton from '@/components/ui/button.vue';
 import MkInfo from '@/components/ui/info.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { fetchInstance } from '@/instance';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';

@@ -77,7 +77,6 @@ import { version, url } from '@/config';
 import number from '@/filters/number';
 import * as os from '@/os';
 import { stream } from '@/stream';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 

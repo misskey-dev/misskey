@@ -101,7 +101,6 @@ import { i18n } from '@/i18n';
 import { instance } from '@/instance';
 import { uniqueBy } from '@/scripts/array';
 import { fetchThemes, getThemes } from '@/theme-store';
-import * as symbols from '@/symbols';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
 const installedThemes = ref(getThemes());

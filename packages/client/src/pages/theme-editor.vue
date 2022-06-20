@@ -83,7 +83,6 @@ import { host } from '@/config';
 import * as os from '@/os';
 import { ColdDeviceStorage, defaultStore } from '@/store';
 import { addTheme } from '@/theme-store';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
 import { useLeaveGuard } from '@/scripts/use-leave-guard';
 

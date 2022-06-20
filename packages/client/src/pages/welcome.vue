@@ -11,7 +11,6 @@ import XSetup from './welcome.setup.vue';
 import XEntrance from './welcome.entrance.a.vue';
 import { instanceName } from '@/config';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
 let meta = $ref(null);

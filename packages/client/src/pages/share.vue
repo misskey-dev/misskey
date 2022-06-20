@@ -32,7 +32,6 @@ import * as Misskey from 'misskey-js';
 import MkButton from '@/components/ui/button.vue';
 import XPostForm from '@/components/post-form.vue';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { mainRouter } from '@/router';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';

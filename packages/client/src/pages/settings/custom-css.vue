@@ -14,7 +14,6 @@ import FormTextarea from '@/components/form/textarea.vue';
 import FormInfo from '@/components/ui/info.vue';
 import * as os from '@/os';
 import { unisonReload } from '@/scripts/unison-reload';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 

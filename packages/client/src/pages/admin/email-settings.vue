@@ -55,7 +55,6 @@ import FormSuspense from '@/components/form/suspense.vue';
 import FormSplit from '@/components/form/split.vue';
 import FormSection from '@/components/form/section.vue';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { fetchInstance, instance } from '@/instance';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';

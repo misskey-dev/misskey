@@ -33,7 +33,6 @@ import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/form/input.vue';
 import { selectFile } from '@/scripts/select-file';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { mainRouter } from '@/router';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';

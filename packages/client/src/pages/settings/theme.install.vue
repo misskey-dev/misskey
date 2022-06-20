@@ -19,7 +19,6 @@ import FormButton from '@/components/ui/button.vue';
 import { applyTheme, validateTheme } from '@/scripts/theme';
 import * as os from '@/os';
 import { addTheme, getThemes } from '@/theme-store';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 

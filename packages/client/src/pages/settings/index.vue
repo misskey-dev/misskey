@@ -29,7 +29,6 @@ import MkSuperMenu from '@/components/ui/super-menu.vue';
 import { scroll } from '@/scripts/scroll';
 import { signout , $i } from '@/account';
 import { unisonReload } from '@/scripts/unison-reload';
-import * as symbols from '@/symbols';
 import { instance } from '@/instance';
 import { Router } from '@/nirax';
 import { mainRouter } from '@/router';

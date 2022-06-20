@@ -32,7 +32,6 @@ import XDiscord from './integrations.discord.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import FormFolder from '@/components/form/folder.vue';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 

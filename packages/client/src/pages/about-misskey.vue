@@ -70,7 +70,6 @@ import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/ui/button.vue';
 import MkLink from '@/components/link.vue';
 import { physics } from '@/scripts/physics';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
 import { defaultStore } from '@/store';
 import * as os from '@/os';

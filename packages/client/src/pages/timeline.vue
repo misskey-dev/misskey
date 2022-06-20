@@ -27,7 +27,6 @@ import XTimeline from '@/components/timeline.vue';
 import XPostForm from '@/components/post-form.vue';
 import { scroll } from '@/scripts/scroll';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
 import { instance } from '@/instance';

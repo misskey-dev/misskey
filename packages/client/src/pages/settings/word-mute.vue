@@ -37,7 +37,6 @@ import MkInfo from '@/components/ui/info.vue';
 import MkTab from '@/components/tab.vue';
 import * as os from '@/os';
 import number from '@/filters/number';
-import * as symbols from '@/symbols';
 import { defaultStore } from '@/store';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';

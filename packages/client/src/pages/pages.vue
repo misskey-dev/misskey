@@ -27,7 +27,6 @@ import { computed, inject } from 'vue';
 import MkPagePreview from '@/components/page-preview.vue';
 import MkPagination from '@/components/ui/pagination.vue';
 import MkButton from '@/components/ui/button.vue';
-import * as symbols from '@/symbols';
 import { mainRouter } from '@/router';
 import { Router } from '@/nirax';
 import { i18n } from '@/i18n';

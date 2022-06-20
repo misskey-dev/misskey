@@ -19,7 +19,6 @@ import { computed, inject, watch } from 'vue';
 import XTimeline from '@/components/timeline.vue';
 import { scroll } from '@/scripts/scroll';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { mainRouter } from '@/router';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import i18n from '@/components/global/i18n';
