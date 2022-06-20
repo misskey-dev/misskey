@@ -14,9 +14,9 @@
 			<div class="_formBlock">
 				<MkSwitch v-model="isSensitive" @update:modelValue="toggleIsSensitive">NSFW</MkSwitch>
 			</div>
-			<div class="_formBlock">
-				<MkButton full @click="showUser"><i class="fas fa-external-link-square-alt"></i> {{ $ts.user }}</MkButton>
-			</div>
+			<FormLink class="_formBlock" :to="file.url" :external="true">Open</FormLink>
+			<FormLink class="_formBlock" :to="`/user-info/${file.userId}`">{{ $ts.user }}</FormLink>
+
 			<div class="_formBlock">
 				<MkButton full danger @click="del"><i class="fas fa-trash-alt"></i> {{ $ts.delete }}</MkButton>
 			</div>
@@ -35,6 +35,7 @@ import { computed } from 'vue';
 import MkButton from '@/components/ui/button.vue';
 import MkSwitch from '@/components/form/switch.vue';
 import MkDriveFileThumbnail from '@/components/drive-file-thumbnail.vue';
+import FormLink from '@/components/form/link.vue';
 import bytes from '@/filters/bytes';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
@@ -55,10 +56,6 @@ async function fetch() {
 }
 
 fetch();
-
-function showUser() {
-	os.pageWindow(`/user-info/${file.userId}`);
-}
 
 async function del() {
 	const { canceled } = await os.confirm({

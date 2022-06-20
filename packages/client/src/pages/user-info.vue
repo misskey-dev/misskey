@@ -8,7 +8,9 @@
 					<MkAvatar class="avatar" :user="user" :show-indicator="true"/>
 				</div>
 
-				<FormLink :to="userPage(user)">Profile</FormLink>
+				<FormLink class="_formBlock" :to="userPage(user)">Profile</FormLink>
+
+				<FormLink v-if="user.url" class="_formBlock" :to="user.url" :external="true">Profile (remote)</FormLink>
 
 				<div class="_formBlock">
 					<MkKeyValue :copy="acct(user)" oneline style="margin: 1em 0;">
@@ -205,13 +207,7 @@ watch(() => user, () => {
 	});
 });
 
-const headerActions = $computed(() => user && user.url ? [{
-	text: user.url,
-	icon: 'fas fa-external-link-alt',
-	handler: () => {
-		window.open(user.url, '_blank');
-	},
-}] : []);
+const headerActions = $computed(() => []);
 
 const headerTabs = $computed(() => []);
 
