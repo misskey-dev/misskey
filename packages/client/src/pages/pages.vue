@@ -54,35 +54,33 @@ function create() {
 	router.push('/pages/new');
 }
 
-const headerActions = $computed(() => []);
+const headerActions = $computed(() => [{
+	icon: 'fas fa-plus',
+	text: i18n.ts.create,
+	handler: create,
+}]);
 
-const headerTabs = $computed(() => []);
+const headerTabs = $computed(() => [{
+	active: tab === 'featured',
+	title: i18n.ts._pages.featured,
+	icon: 'fas fa-fire-alt',
+	onClick: () => { tab = 'featured'; },
+}, {
+	active: tab === 'my',
+	title: i18n.ts._pages.my,
+	icon: 'fas fa-edit',
+	onClick: () => { tab = 'my'; },
+}, {
+	active: tab === 'liked',
+	title: i18n.ts._pages.liked,
+	icon: 'fas fa-heart',
+	onClick: () => { tab = 'liked'; },
+}]);
 
 definePageMetadata(computed(() => ({
 	title: i18n.ts.pages,
 	icon: 'fas fa-sticky-note',
 	bg: 'var(--bg)',
-	actions: [{
-		icon: 'fas fa-plus',
-		text: i18n.ts.create,
-		handler: create,
-	}],
-	tabs: [{
-		active: tab === 'featured',
-		title: i18n.ts._pages.featured,
-		icon: 'fas fa-fire-alt',
-		onClick: () => { tab = 'featured'; },
-	}, {
-		active: tab === 'my',
-		title: i18n.ts._pages.my,
-		icon: 'fas fa-edit',
-		onClick: () => { tab = 'my'; },
-	}, {
-		active: tab === 'liked',
-		title: i18n.ts._pages.liked,
-		icon: 'fas fa-heart',
-		onClick: () => { tab = 'liked'; },
-	}],
 })));
 </script>
 

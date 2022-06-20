@@ -219,6 +219,9 @@ export const mainRouter = new Router(routes, location.pathname + location.search
 
 window.history.replaceState({ key: mainRouter.getCurrentKey() }, '', location.href);
 
+// TODO: このファイルでスクロール位置も管理する設計だとdeckに対応できないのでなんとかする
+// スクロール位置取得+スクロール位置設定関数をprovideする感じでも良いかも
+
 const scrollPosStore = new Map<string, number>();
 
 window.setInterval(() => {
