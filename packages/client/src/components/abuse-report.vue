@@ -79,7 +79,8 @@ function resolve() {
 			align-items: center;
 			padding: 14px;
 			border-radius: 8px;
-			background-image: linear-gradient(45deg, rgb(255 196 0 / 15%) 16.67%, transparent 16.67%, transparent 50%, rgb(255 196 0 / 15%) 50%, rgb(255 196 0 / 15%) 66.67%, transparent 66.67%, transparent 100%);
+			--c: rgb(255 196 0 / 15%);
+			background-image: linear-gradient(45deg, var(--c) 16.67%, transparent 16.67%, transparent 50%, var(--c) 50%, var(--c) 66.67%, transparent 66.67%, transparent 100%);
 			background-size: 16px 16px;
 
 			> .avatar {

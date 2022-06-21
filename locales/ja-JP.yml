@@ -848,6 +848,8 @@ rateLimitExceeded: "レート制限を超えました"
 cropImage: "画像のクロップ"
 cropImageAsk: "画像をクロップしますか？"
 file: "ファイル"
+recentNHours: "直近{n}時間"
+recentNDays: "直近{n}日"
 
 _emailUnavailable:
   used: "既に使用されています"
