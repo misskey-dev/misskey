@@ -1,8 +1,8 @@
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="600" :margin-min="16" :margin-max="32">
-		<div v-if="instance" class="_formRoot">
+	<MkSpacer v-if="instance" :content-max="600" :margin-min="16" :margin-max="32">
+		<div v-if="tab === 'overview'" class="_formRoot">
 			<div class="fnfelxur">
 				<img :src="instance.iconUrl || instance.faviconUrl" alt="" class="icon"/>
 			</div>
@@ -65,37 +65,6 @@
 			</FormSection>
 
 			<FormSection>
-				<template #label>{{ $ts.statistics }}</template>
-				<div class="cmhjzshl">
-					<div class="selects">
-						<MkSelect v-model="chartSrc" style="margin: 0 10px 0 0; flex: 1;">
-							<option value="instance-requests">{{ $ts._instanceCharts.requests }}</option>
-							<option value="instance-users">{{ $ts._instanceCharts.users }}</option>
-							<option value="instance-users-total">{{ $ts._instanceCharts.usersTotal }}</option>
-							<option value="instance-notes">{{ $ts._instanceCharts.notes }}</option>
-							<option value="instance-notes-total">{{ $ts._instanceCharts.notesTotal }}</option>
-							<option value="instance-ff">{{ $ts._instanceCharts.ff }}</option>
-							<option value="instance-ff-total">{{ $ts._instanceCharts.ffTotal }}</option>
-							<option value="instance-drive-usage">{{ $ts._instanceCharts.cacheSize }}</option>
-							<option value="instance-drive-usage-total">{{ $ts._instanceCharts.cacheSizeTotal }}</option>
-							<option value="instance-drive-files">{{ $ts._instanceCharts.files }}</option>
-							<option value="instance-drive-files-total">{{ $ts._instanceCharts.filesTotal }}</option>
-						</MkSelect>
-						<MkSelect v-model="chartSpan" style="margin: 0;">
-							<option value="hour">{{ $ts.perHour }}</option>
-							<option value="day">{{ $ts.perDay }}</option>
-						</MkSelect>
-					</div>
-					<div class="chart">
-						<MkChart :src="chartSrc" :span="chartSpan" :limit="90" :args="{ host: host }" :detailed="true"></MkChart>
-					</div>
-				</div>
-			</FormSection>
-
-			<MkObjectView tall :value="instance">
-			</MkObjectView>
-
-			<FormSection>
 				<template #label>Well-known resources</template>
 				<FormLink :to="`https://${host}/.well-known/host-meta`" external style="margin-bottom: 8px;">host-meta</FormLink>
 				<FormLink :to="`https://${host}/.well-known/host-meta.json`" external style="margin-bottom: 8px;">host-meta.json</FormLink>
@@ -103,6 +72,35 @@
 				<FormLink :to="`https://${host}/robots.txt`" external style="margin-bottom: 8px;">robots.txt</FormLink>
 				<FormLink :to="`https://${host}/manifest.json`" external style="margin-bottom: 8px;">manifest.json</FormLink>
 			</FormSection>
+		</div>
+		<div v-if="tab === 'chart'" class="_formRoot">
+			<div class="cmhjzshl">
+				<div class="selects">
+					<MkSelect v-model="chartSrc" style="margin: 0 10px 0 0; flex: 1;">
+						<option value="instance-requests">{{ $ts._instanceCharts.requests }}</option>
+						<option value="instance-users">{{ $ts._instanceCharts.users }}</option>
+						<option value="instance-users-total">{{ $ts._instanceCharts.usersTotal }}</option>
+						<option value="instance-notes">{{ $ts._instanceCharts.notes }}</option>
+						<option value="instance-notes-total">{{ $ts._instanceCharts.notesTotal }}</option>
+						<option value="instance-ff">{{ $ts._instanceCharts.ff }}</option>
+						<option value="instance-ff-total">{{ $ts._instanceCharts.ffTotal }}</option>
+						<option value="instance-drive-usage">{{ $ts._instanceCharts.cacheSize }}</option>
+						<option value="instance-drive-usage-total">{{ $ts._instanceCharts.cacheSizeTotal }}</option>
+						<option value="instance-drive-files">{{ $ts._instanceCharts.files }}</option>
+						<option value="instance-drive-files-total">{{ $ts._instanceCharts.filesTotal }}</option>
+					</MkSelect>
+				</div>
+				<div class="charts">
+					<div class="label">{{ i18n.t('recentNHours', { n: 90 }) }}</div>
+					<MkChart class="chart" :src="chartSrc" span="hour" :limit="90" :args="{ host: host }" :detailed="true"></MkChart>
+					<div class="label">{{ i18n.t('recentNDays', { n: 90 }) }}</div>
+					<MkChart class="chart" :src="chartSrc" span="day" :limit="90" :args="{ host: host }" :detailed="true"></MkChart>
+				</div>
+			</div>
+		</div>
+		<div v-if="tab === 'raw'" class="_formRoot">
+			<MkObjectView tall :value="instance">
+			</MkObjectView>
 		</div>
 	</MkSpacer>
 </MkStickyContainer>
@@ -125,17 +123,18 @@ import number from '@/filters/number';
 import bytes from '@/filters/bytes';
 import { iAmModerator } from '@/account';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { i18n } from '@/i18n';
 
 const props = defineProps<{
 	host: string;
 }>();
 
+let tab = $ref('overview');
 let meta = $ref<misskey.entities.DetailedInstanceMetadata | null>(null);
 let instance = $ref<misskey.entities.Instance | null>(null);
 let suspended = $ref(false);
 let isBlocked = $ref(false);
 let chartSrc = $ref('instance-requests');
-let chartSpan = $ref('hour');
 
 async function fetch() {
 	if (iAmModerator) {
@@ -184,11 +183,26 @@ const headerActions = $computed(() => [{
 	},
 }]);
 
-const headerTabs = $computed(() => []);
+const headerTabs = $computed(() => [{
+	active: tab === 'overview',
+	title: i18n.ts.overview,
+	icon: 'fas fa-info-circle',
+	onClick: () => { tab = 'overview'; },
+}, {
+	active: tab === 'chart',
+	title: i18n.ts.charts,
+	icon: 'fas fa-chart-simple',
+	onClick: () => { tab = 'chart'; },
+}, {
+	active: tab === 'raw',
+	title: 'Raw data',
+	icon: 'fas fa-code',
+	onClick: () => { tab = 'raw'; },
+}]);
 
 definePageMetadata({
 	title: props.host,
-	icon: 'fas fa-info-circle',
+	icon: 'fas fa-server',
 	bg: 'var(--bg)',
 });
 </script>
@@ -207,6 +221,13 @@ definePageMetadata({
 	> .selects {
 		display: flex;
 		margin: 0 0 16px 0;
+	}
+
+	> .charts {
+		> .label {
+			margin-bottom: 12px;
+			font-weight: bold;
+		}
 	}
 }
 </style>

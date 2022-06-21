@@ -52,6 +52,10 @@ export const packedFederationInstanceSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
+		isBlocked: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
 		softwareName: {
 			type: 'string',
 			optional: false, nullable: true,
