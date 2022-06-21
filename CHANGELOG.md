@@ -12,21 +12,6 @@ You should also include the user name that made the change.
 ## 12.x.x (unreleased)
 
 ### Improvements
-### NOTE
-- From this version, Node 18.0.0 or later is required.
-
-### Improvements
-- Client: Preferences Registry
-- enhance: ドライブに画像ファイルをアップロードするときオリジナル画像を破棄してwebpublicのみ保持するオプション @tamaina
-- enhance: API: notifications/readは配列でも受け付けるように #7667 @tamaina
-- enhance: プッシュ通知を複数アカウント対応に #7667 @tamaina
-- enhance: プッシュ通知にクリックやactionを設定 #7667 @tamaina
-- replaced webpack with Vite @tamaina
-- update dependencies @syuilo
-- enhance: display URL of QR code for TOTP registration @syuilo
-- make CAPTCHA required for signin to improve security @syuilo
-- enhance: Supports Unicode Emoji 14.0 @mei23
-=======
 - Server: Add rate limit to i/notifications @tamaina
 - Client: Improve files page of control panel @syuilo
 - Client: Show warning in control panel when there is an unresolved abuse report @syuilo
