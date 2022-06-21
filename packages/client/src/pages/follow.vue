@@ -5,8 +5,9 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import * as os from '@/os';
 import * as Acct from 'misskey-js/built/acct';
+import * as os from '@/os';
+import { mainRouter } from '@/router';
 
 export default defineComponent({
 	created() {
@@ -17,17 +18,17 @@ export default defineComponent({
 
 		if (acct.startsWith('https://')) {
 			promise = os.api('ap/show', {
-				uri: acct
+				uri: acct,
 			});
 			promise.then(res => {
 				if (res.type === 'User') {
 					this.follow(res.object);
 				} else if (res.type === 'Note') {
-					this.$router.push(`/notes/${res.object.id}`);
+					mainRouter.push(`/notes/${res.object.id}`);
 				} else {
 					os.alert({
 						type: 'error',
-						text: 'Not a user'
+						text: 'Not a user',
 					}).then(() => {
 						window.close();
 					});
@@ -56,9 +57,9 @@ export default defineComponent({
 			}
 			
 			os.apiWithDialog('following/create', {
-				userId: user.id
+				userId: user.id,
 			});
-		}
-	}
+		},
+	},
 });
 </script>

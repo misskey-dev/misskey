@@ -55,9 +55,9 @@ import FormSection from '@/components/form/section.vue';
 import FormGroup from '@/components/form/group.vue';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
 import { $i } from '@/account';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 let isLocked = $ref($i.isLocked);
 let autoAcceptFollowed = $ref($i.autoAcceptFollowed);
@@ -84,11 +84,13 @@ function save() {
 	});
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.privacy,
-		icon: 'fas fa-lock-open',
-		bg: 'var(--bg)',
-	},
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: i18n.ts.privacy,
+	icon: 'fas fa-lock-open',
+	bg: 'var(--bg)',
 });
 </script>
