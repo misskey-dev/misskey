@@ -7,8 +7,10 @@
 					<img :src="$instance.iconUrl || '/favicon.ico'" alt="" class="icon"/>
 				</div>
 
+				<MkInfo v-if="thereIsUnresolvedAbuseReport" warn class="info">{{ $ts.thereIsUnresolvedAbuseReportWarning }} <MkA to="/admin/abuses" class="_link">{{ $ts.check }}</MkA></MkInfo>
 				<MkInfo v-if="noMaintainerInformation" warn class="info">{{ $ts.noMaintainerInformationWarning }} <MkA to="/admin/settings" class="_link">{{ $ts.configure }}</MkA></MkInfo>
 				<MkInfo v-if="noBotProtection" warn class="info">{{ $ts.noBotProtectionWarning }} <MkA to="/admin/security" class="_link">{{ $ts.configure }}</MkA></MkInfo>
+				<MkInfo v-if="noEmailServer" warn class="info">{{ $ts.noEmailServerWarning }} <MkA to="/admin/email-settings" class="_link">{{ $ts.configure }}</MkA></MkInfo>
 
 				<MkSuperMenu :def="menuDef" :grid="initialPage == null"></MkSuperMenu>
 			</div>
@@ -58,6 +60,15 @@ let el = $ref(null);
 let pageProps = $ref({});
 let noMaintainerInformation = isEmpty(instance.maintainerName) || isEmpty(instance.maintainerEmail);
 let noBotProtection = !instance.enableHcaptcha && !instance.enableRecaptcha;
+let noEmailServer = !instance.enableEmail;
+let thereIsUnresolvedAbuseReport = $ref(false);
+
+os.api('admin/abuse-user-reports', {
+	state: 'unresolved',
+	limit: 1,
+}).then(reports => {
+	if (reports.length > 0) thereIsUnresolvedAbuseReport = true;
+});
 
 const NARROW_THRESHOLD = 600;
 const ro = new ResizeObserver((entries, observer) => {

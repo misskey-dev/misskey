@@ -14,6 +14,7 @@ You should also include the user name that made the change.
 ### Improvements
 - Server: Add rate limit to i/notifications @tamaina
 - Client: Improve files page of control panel @syuilo
+- Client: Show warning in control panel when there is an unresolved abuse report @syuilo
 - Improve player detection in URL preview @mei23
 - Add Badge Image to Push Notification #8012 @tamaina
 
