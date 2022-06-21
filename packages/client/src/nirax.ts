@@ -1,3 +1,5 @@
+// NIRAX --- A lightweight router
+
 import { EventEmitter } from 'eventemitter3';
 import { Ref, Component, ref, shallowRef, ShallowRef } from 'vue';
 
