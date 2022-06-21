@@ -11,35 +11,21 @@
 </XContainer>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 /* eslint-disable vue/no-mutating-props */
-import { defineComponent } from 'vue';
+import { } from 'vue';
 import XContainer from '../page-editor.container.vue';
 import MkTextarea from '@/components/form/textarea.vue';
 import MkInput from '@/components/form/input.vue';
 import MkSwitch from '@/components/form/switch.vue';
-import * as os from '@/os';
 
-export default defineComponent({
-	components: {
-		XContainer, MkTextarea, MkInput, MkSwitch
-	},
-
-	props: {
-		value: {
-			required: true
-		},
-	},
-
-	data() {
-		return {
-		};
-	},
-
-	created() {
-		if (this.value.text == null) this.value.text = '';
-		if (this.value.attachCanvasImage == null) this.value.attachCanvasImage = false;
-		if (this.value.canvasId == null) this.value.canvasId = '';
-	},
+withDefaults(defineProps<{
+	value: any
+}>(), {
+	value: {
+		text: '',
+		attachCanvasImage: false,
+		canvasId: ''
+	}
 });
 </script>

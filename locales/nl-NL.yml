@@ -303,6 +303,8 @@ muteThread: "Discussies dempen "
 unmuteThread: "Dempen van discussie ongedaan maken"
 hide: "Verbergen"
 searchByGoogle: "Zoeken"
+cropImage: "Afbeelding bijsnijden"
+cropImageAsk: "Bijsnijdengevraagd"
 _email:
   _follow:
     title: "volgde jou"

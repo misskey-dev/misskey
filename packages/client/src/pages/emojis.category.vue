@@ -36,7 +36,6 @@ import MkSelect from '@/components/form/select.vue';
 import MkFolder from '@/components/ui/folder.vue';
 import MkTab from '@/components/tab.vue';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { emojiCategories, emojiTags } from '@/instance';
 import XEmoji from './emojis.emoji.vue';
 
@@ -58,7 +57,7 @@ export default defineComponent({
 			tags: emojiTags,
 			selectedTags: new Set(),
 			searchEmojis: null,
-		}
+		};
 	},
 
 	watch: {

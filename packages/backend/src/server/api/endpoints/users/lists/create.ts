@@ -1,7 +1,7 @@
-import define from '../../../define.js';
 import { UserLists } from '@/models/index.js';
 import { genId } from '@/misc/gen-id.js';
 import { UserList } from '@/models/entities/user-list.js';
+import define from '../../../define.js';
 
 export const meta = {
 	tags: ['lists'],
@@ -9,6 +9,8 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'write:account',
+
+	description: 'Create a new list of users.',
 
 	res: {
 		type: 'object',

@@ -1,11 +1,13 @@
+// PIZZAX --- A lightweight store
+
 import { onUnmounted, Ref, ref, watch } from 'vue';
+import { BroadcastChannel } from 'broadcast-channel';
+import deepcopy from 'deepcopy';
 import { $i } from './account';
 import { api } from './os';
 import { get, set } from './scripts/idb-proxy';
 import { defaultStore } from './store';
 import { stream } from './stream';
-import { BroadcastChannel } from 'broadcast-channel';
-import deepcopy from 'deepcopy';
 
 type StateDef = Record<string, {
 	where: 'account' | 'device' | 'deviceAccount';
@@ -195,7 +197,7 @@ export class Storage<T extends StateDef> {
 					await api('i/registry/set', {
 						scope: ['client', this.key],
 						key: key.toString(),
-						value: rawValue
+						value: rawValue,
 					});
 					break;
 				}
@@ -243,7 +245,7 @@ export class Storage<T extends StateDef> {
 				const val = setter ? setter(value) : value;
 				this.set(key, val);
 				valueRef.value = val;
-			}
+			},
 		};
 	}
 

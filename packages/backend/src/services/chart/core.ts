@@ -91,27 +91,20 @@ type ToJsonSchema<S> = {
 };
 
 export function getJsonSchema<S extends Schema>(schema: S): ToJsonSchema<Unflatten<ChartResult<S>>> {
-	const object = {};
-	for (const [k, v] of Object.entries(schema)) {
-		nestedProperty.set(object, k, null);
-	}
+	const jsonSchema = {
+		type: 'object',
+		properties: {} as Record<string, unknown>,
+		required: [],
+	};
 
-	function f(obj: Record<string, null | Record<string, unknown>>) {
-		const jsonSchema = {
-			type: 'object',
-			properties: {} as Record<string, unknown>,
-			required: [],
+	for (const k in schema) {
+		jsonSchema.properties[k] = {
+			type: 'array',
+			items: { type: 'number' },
 		};
-		for (const [k, v] of Object.entries(obj)) {
-			jsonSchema.properties[k] = v === null ? {
-				type: 'array',
-				items: { type: 'number' },
-			} : f(v as Record<string, null | Record<string, unknown>>);
-		}
-		return jsonSchema;
 	}
 
-	return f(object) as ToJsonSchema<Unflatten<ChartResult<S>>>;
+	return jsonSchema as ToJsonSchema<Unflatten<ChartResult<S>>>;
 }
 
 /**

@@ -88,6 +88,11 @@ export const packedFederationInstanceSchema = {
 			optional: false, nullable: true,
 			format: 'url',
 		},
+		faviconUrl: {
+			type: 'string',
+			optional: false, nullable: true,
+			format: 'url',
+		},
 		infoUpdatedAt: {
 			type: 'string',
 			optional: false, nullable: true,

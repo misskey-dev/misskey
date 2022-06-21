@@ -645,6 +645,8 @@ clip: "クリップ"
 createNew: "新規作成"
 optional: "任意"
 createNewClip: "新しいクリップを作成"
+unclip: "クリップ解除"
+confirmToUnclipAlreadyClippedNote: "このノートはすでにクリップ「{name}」に含まれています。ノートをこのクリップから除外しますか？"
 public: "パブリック"
 i18nInfo: "Misskeyは有志によって様々な言語に翻訳されています。{link}で翻訳に協力できます。"
 manageAccessTokens: "アクセストークンの管理"
@@ -844,6 +846,10 @@ oneDay: "1日"
 oneWeek: "1週間"
 reflectMayTakeTime: "反映されるまで時間がかかる場合があります。"
 failedToFetchAccountInformation: "アカウント情報の取得に失敗しました"
+rateLimitExceeded: "レート制限を超えました"
+cropImage: "画像のクロップ"
+cropImageAsk: "画像をクロップしますか？"
+file: "ファイル"
 
 _emailUnavailable:
   used: "既に使用されています"
@@ -1135,7 +1141,6 @@ _sfx:
   channel: "チャンネル通知"
 
 _ago:
-  unknown: "謎"
   future: "未来"
   justNow: "たった今"
   secondsAgo: "{n}秒前"

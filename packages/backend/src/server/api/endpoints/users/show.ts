@@ -1,15 +1,17 @@
+import { FindOptionsWhere, In, IsNull } from 'typeorm';
 import { resolveUser } from '@/remote/resolve-user.js';
+import { Users } from '@/models/index.js';
+import { User } from '@/models/entities/user.js';
 import define from '../../define.js';
 import { apiLogger } from '../../logger.js';
 import { ApiError } from '../../error.js';
-import { Users } from '@/models/index.js';
-import { FindOptionsWhere, In, IsNull } from 'typeorm';
-import { User } from '@/models/entities/user.js';
 
 export const meta = {
 	tags: ['users'],
 
 	requireCredential: false,
+
+	description: 'Show the properties of a user.',
 
 	res: {
 		optional: false, nullable: false,

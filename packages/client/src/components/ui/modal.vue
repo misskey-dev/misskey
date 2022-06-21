@@ -1,5 +1,5 @@
 <template>
-<transition :name="$store.state.animation ? (type === 'drawer') ? 'modal-drawer' : (type === 'popup') ? 'modal-popup' : 'modal' : ''" :duration="$store.state.animation ? 200 : 0" appear @after-leave="emit('closed')" @enter="emit('opening')" @after-enter="childRendered">
+<transition :name="$store.state.animation ? (type === 'drawer') ? 'modal-drawer' : (type === 'popup') ? 'modal-popup' : 'modal' : ''" :duration="$store.state.animation ? 200 : 0" appear @after-leave="emit('closed')" @enter="emit('opening')" @after-enter="onOpened">
 	<div v-show="manualShowing != null ? manualShowing : showing" v-hotkey.global="keymap" class="qzhlnise" :class="{ drawer: type === 'drawer', dialog: type === 'dialog' || type === 'dialog:top', popup: type === 'popup' }" :style="{ zIndex, pointerEvents: (manualShowing != null ? manualShowing : showing) ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
 		<div class="bg _modalBg" :class="{ transparent: transparentBg && (type === 'popup') }" :style="{ zIndex }" @click="onBgClick" @contextmenu.prevent.stop="() => {}"></div>
 		<div ref="content" class="content" :class="{ fixed, top: type === 'dialog:top' }" :style="{ zIndex }" @click.self="onBgClick">
@@ -48,6 +48,7 @@ const props = withDefaults(defineProps<{
 
 const emit = defineEmits<{
 	(ev: 'opening'): void;
+	(ev: 'opened'): void;
 	(ev: 'click'): void;
 	(ev: 'esc'): void;
 	(ev: 'close'): void;
@@ -212,7 +213,9 @@ const align = () => {
 	popover.style.top = top + 'px';
 };
 
-const childRendered = () => {
+const onOpened = () => {
+	emit('opened');
+
 	// モーダルコンテンツにマウスボタンが押され、コンテンツ外でマウスボタンが離されたときにモーダルバックグラウンドクリックと判定させないためにマウスイベントを監視しフラグ管理する
 	const el = content.value!.children[0];
 	el.addEventListener('mousedown', ev => {
@@ -234,10 +237,10 @@ onMounted(() => {
 		}
 		fixed.value = (type.value === 'drawer') || (getFixedContainer(props.src) != null);
 
-		await nextTick()
+		await nextTick();
 		
 		align();
-	}, { immediate: true, });
+	}, { immediate: true });
 
 	nextTick(() => {
 		const popover = content.value;

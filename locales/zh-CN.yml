@@ -1087,7 +1087,6 @@ _sfx:
   antenna: "天线接收"
   channel: "频道通知"
 _ago:
-  unknown: "未知"
   future: "未来"
   justNow: "最近"
   secondsAgo: "{n}秒前"
@@ -1131,6 +1130,7 @@ _2fa:
   registerKey: "注册密钥"
   step1: "首先，在您的设备上安装验证应用，例如{a}或{b}。"
   step2: "然后，扫描屏幕上显示的二维码。"
+  step2Url: "在桌面应用程序中输入以下URL："
   step3: "输入您的应用提供的动态口令以完成设置。"
   step4: "从现在开始，任何登录操作都将要求您提供动态口令。"
   securityKeyInfo: "您可以设置使用支持FIDO2的硬件安全密钥、设备上的指纹或PIN来保护您的登录过程。"

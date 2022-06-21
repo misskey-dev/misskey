@@ -1,6 +1,6 @@
+import { UserGroupInvitations } from '@/models/index.js';
 import define from '../../../../define.js';
 import { ApiError } from '../../../../error.js';
-import { UserGroupInvitations } from '@/models/index.js';
 
 export const meta = {
 	tags: ['groups', 'users'],
@@ -8,6 +8,8 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'write:user-groups',
+
+	description: 'Delete an existing group invitation for the authenticated user without joining the group.',
 
 	errors: {
 		noSuchInvitation: {

@@ -1,5 +1,6 @@
-<template>
-<MkSpacer :content-max="800" :margin-min="16" :margin-max="32">
+<template><MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+		<MkSpacer :content-max="800" :margin-min="16" :margin-max="32">
 	<div class="cwepdizn _formRoot">
 		<FormFolder :default-open="true" class="_formBlock">
 			<template #label>{{ i18n.ts.backgroundColor }}</template>
@@ -61,26 +62,27 @@
 			</div>
 		</FormFolder>
 	</div>
-</MkSpacer>
+</MkSpacer></MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
 import { watch } from 'vue';
 import { toUnicode } from 'punycode/';
 import tinycolor from 'tinycolor2';
-import { v4 as uuid} from 'uuid';
+import { v4 as uuid } from 'uuid';
 import JSON5 from 'json5';
 
 import FormButton from '@/components/ui/button.vue';
 import FormTextarea from '@/components/form/textarea.vue';
 import FormFolder from '@/components/form/folder.vue';
 
-import { Theme, applyTheme, darkTheme, lightTheme } from '@/scripts/theme';
+import { Theme, applyTheme } from '@/scripts/theme';
+import lightTheme from '@/themes/_light.json5';
+import darkTheme from '@/themes/_dark.json5';
 import { host } from '@/config';
 import * as os from '@/os';
 import { ColdDeviceStorage, defaultStore } from '@/store';
 import { addTheme } from '@/theme-store';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
 import { useLeaveGuard } from '@/scripts/use-leave-guard';
 
@@ -124,7 +126,7 @@ let changed = $ref(false);
 useLeaveGuard($$(changed));
 
 function showPreview() {
-	os.pageWindow('preview');
+	os.pageWindow('/preview');
 }
 
 function setBgColor(color: typeof bgColors[number]) {
@@ -202,23 +204,25 @@ async function saveAs() {
 
 watch($$(theme), apply, { deep: true });
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.themeEditor,
-		icon: 'fas fa-palette',
-		bg: 'var(--bg)',
-		actions: [{
-			asFullButton: true,
-			icon: 'fas fa-eye',
-			text: i18n.ts.preview,
-			handler: showPreview,
-		}, {
-			asFullButton: true,
-			icon: 'fas fa-check',
-			text: i18n.ts.saveAs,
-			handler: saveAs,
-		}],
-	},
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: i18n.ts.themeEditor,
+	icon: 'fas fa-palette',
+	bg: 'var(--bg)',
+	actions: [{
+		asFullButton: true,
+		icon: 'fas fa-eye',
+		text: i18n.ts.preview,
+		handler: showPreview,
+	}, {
+		asFullButton: true,
+		icon: 'fas fa-check',
+		text: i18n.ts.saveAs,
+		handler: saveAs,
+	}],
 });
 </script>
 

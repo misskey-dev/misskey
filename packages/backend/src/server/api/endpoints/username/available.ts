@@ -1,6 +1,6 @@
-import define from '../../define.js';
-import { Users, UsedUsernames } from '@/models/index.js';
 import { IsNull } from 'typeorm';
+import { Users, UsedUsernames } from '@/models/index.js';
+import define from '../../define.js';
 
 export const meta = {
 	tags: ['users'],

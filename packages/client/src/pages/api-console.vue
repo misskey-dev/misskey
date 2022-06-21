@@ -1,40 +1,43 @@
 <template>
-<MkSpacer :content-max="700">
-	<div class="_formRoot">
-		<div class="_formBlock">
-			<MkInput v-model="endpoint" :datalist="endpoints" class="_formBlock" @update:modelValue="onEndpointChange()">
-				<template #label>Endpoint</template>
-			</MkInput>
-			<MkTextarea v-model="body" class="_formBlock" code>
-				<template #label>Params (JSON or JSON5)</template>
-			</MkTextarea>
-			<MkSwitch v-model="withCredential" class="_formBlock">
-				With credential
-			</MkSwitch>
-			<MkButton class="_formBlock" primary :disabled="sending" @click="send">
-				<template v-if="sending"><MkEllipsis/></template>
-				<template v-else><i class="fas fa-paper-plane"></i> Send</template>
-			</MkButton>
+<MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<MkSpacer :content-max="700">
+		<div class="_formRoot">
+			<div class="_formBlock">
+				<MkInput v-model="endpoint" :datalist="endpoints" class="_formBlock" @update:modelValue="onEndpointChange()">
+					<template #label>Endpoint</template>
+				</MkInput>
+				<MkTextarea v-model="body" class="_formBlock" code>
+					<template #label>Params (JSON or JSON5)</template>
+				</MkTextarea>
+				<MkSwitch v-model="withCredential" class="_formBlock">
+					With credential
+				</MkSwitch>
+				<MkButton class="_formBlock" primary :disabled="sending" @click="send">
+					<template v-if="sending"><MkEllipsis/></template>
+					<template v-else><i class="fas fa-paper-plane"></i> Send</template>
+				</MkButton>
+			</div>
+			<div v-if="res" class="_formBlock">
+				<MkTextarea v-model="res" code readonly tall>
+					<template #label>Response</template>
+				</MkTextarea>
+			</div>
 		</div>
-		<div v-if="res" class="_formBlock">
-			<MkTextarea v-model="res" code readonly tall>
-				<template #label>Response</template>
-			</MkTextarea>
-		</div>
-	</div>
-</MkSpacer>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue';
 import JSON5 from 'json5';
+import { Endpoints } from 'misskey-js';
 import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/form/input.vue';
 import MkTextarea from '@/components/form/textarea.vue';
 import MkSwitch from '@/components/form/switch.vue';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
-import { Endpoints } from 'misskey-js';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const body = ref('{}');
 const endpoint = ref('');
@@ -75,10 +78,12 @@ function onEndpointChange() {
 	});
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: 'API console',
-		icon: 'fas fa-terminal'
-	},
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: 'API console',
+	icon: 'fas fa-terminal',
 });
 </script>

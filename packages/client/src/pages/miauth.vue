@@ -42,33 +42,18 @@ import MkSignin from '@/components/signin.vue';
 import MkButton from '@/components/ui/button.vue';
 import * as os from '@/os';
 import { login } from '@/account';
+import { appendQuery, query } from '@/scripts/url';
 
 export default defineComponent({
 	components: {
 		MkSignin,
 		MkButton,
 	},
+	props: ['session', 'callback', 'name', 'icon', 'permission'],
 	data() {
 		return {
-			state: null
+			state: null,
 		};
-	},
-	computed: {
-		session(): string {
-			return this.$route.params.session;
-		},
-		callback(): string {
-			return this.$route.query.callback;
-		},
-		name(): string {
-			return this.$route.query.name;
-		},
-		icon(): string {
-			return this.$route.query.icon;
-		},
-		permission(): string[] {
-			return this.$route.query.permission ? this.$route.query.permission.split(',') : [];
-		},
 	},
 	methods: {
 		async accept() {
@@ -82,7 +67,9 @@ export default defineComponent({
 
 			this.state = 'accepted';
 			if (this.callback) {
-				location.href = `${this.callback}?session=${this.session}`;
+				location.href = appendQuery(this.callback, query({
+					session: this.session,
+				}));
 			}
 		},
 		deny() {
@@ -90,8 +77,8 @@ export default defineComponent({
 		},
 		onLogin(res) {
 			login(res.i);
-		}
-	}
+		},
+	},
 });
 </script>
 

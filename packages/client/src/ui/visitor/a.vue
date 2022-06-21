@@ -1,6 +1,6 @@
 <template>
 <div class="mk-app">
-	<div v-if="$route.path === '/'" class="banner" :style="{ backgroundImage: `url(${ $instance.bannerUrl })` }">
+	<div v-if="mainRouter.currentRoute?.name === 'index'" class="banner" :style="{ backgroundImage: `url(${ $instance.bannerUrl })` }">
 		<div>
 			<h1 v-if="meta"><img v-if="meta.logoImageUrl" class="logo" :src="meta.logoImageUrl"><span v-else class="text">{{ instanceName }}</span></h1>
 			<div v-if="meta" class="about">
@@ -20,15 +20,11 @@
 
 	<div class="main">
 		<div ref="contents" class="contents" :class="{ wallpaper }">
-			<header v-show="$route.path !== '/'" ref="header" class="header">
+			<header v-show="mainRouter.currentRoute?.name !== 'index'" ref="header" class="header">
 				<XHeader :info="pageInfo"/>
 			</header>
 			<main ref="main">
-				<router-view v-slot="{ Component }">
-					<transition :name="$store.state.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
-						<component :is="Component" :ref="changePage"/>
-					</transition>
-				</router-view>
+				<RouterView/>
 			</main>
 			<div class="powered-by">
 				<b><MkA to="/">{{ host }}</MkA></b>
@@ -41,14 +37,14 @@
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
+import XHeader from './header.vue';
 import { host, instanceName } from '@/config';
 import { search } from '@/scripts/search';
 import * as os from '@/os';
 import MkPagination from '@/components/ui/pagination.vue';
 import MkButton from '@/components/ui/button.vue';
-import XHeader from './header.vue';
 import { ColdDeviceStorage } from '@/store';
-import * as symbols from '@/symbols';
+import { mainRouter } from '@/router';
 
 const DESKTOP_THRESHOLD = 1100;
 
@@ -70,6 +66,7 @@ export default defineComponent({
 				endpoint: 'announcements',
 				limit: 10,
 			},
+			mainRouter,
 			isDesktop: window.innerWidth >= DESKTOP_THRESHOLD,
 		};
 	},
@@ -82,7 +79,7 @@ export default defineComponent({
 					this.$store.set('darkMode', !this.$store.state.darkMode);
 				},
 				's': search,
-				'h|/': this.help
+				'h|/': this.help,
 			};
 		},
 	},
@@ -120,13 +117,9 @@ export default defineComponent({
 		},
 
 		help() {
-			window.open(`https://misskey-hub.net/docs/keyboard-shortcut.md`, '_blank');
+			window.open('https://misskey-hub.net/docs/keyboard-shortcut.md', '_blank');
 		},
-
-		onTransition() {
-			if (window._scroll) window._scroll();
-		},
-	}
+	},
 });
 </script>
 

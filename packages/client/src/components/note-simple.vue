@@ -5,7 +5,7 @@
 		<XNoteHeader class="header" :note="note" :mini="true"/>
 		<div class="body">
 			<p v-if="note.cw != null" class="cw">
-				<span v-if="note.cw != ''" class="text">{{ note.cw }}</span>
+				<Mfm v-if="note.cw != ''" class="text" :text="note.cw" :author="note.user" :i="$i" :custom-emojis="note.emojis"/>
 				<XCwButton v-model="showContent" :note="note"/>
 			</p>
 			<div v-show="note.cw == null || showContent" class="content">

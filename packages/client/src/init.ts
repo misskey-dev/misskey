@@ -21,7 +21,6 @@ import widgets from '@/widgets';
 import directives from '@/directives';
 import components from '@/components';
 import { version, ui, lang, host } from '@/config';
-import { router } from '@/router';
 import { applyTheme } from '@/scripts/theme';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
 import { i18n } from '@/i18n';
@@ -173,11 +172,10 @@ fetchInstanceMetaPromise.then(() => {
 
 const app = createApp(
 	window.location.search === '?zen' ? defineAsyncComponent(() => import('@/ui/zen.vue')) :
-	!$i                               ? defineAsyncComponent(() => import('@/ui/visitor.vue')) :
-	ui === 'deck'                     ? defineAsyncComponent(() => import('@/ui/deck.vue')) :
-	ui === 'desktop'                  ? defineAsyncComponent(() => import('@/ui/desktop.vue')) :
-	ui === 'classic'                  ? defineAsyncComponent(() => import('@/ui/classic.vue')) :
-	defineAsyncComponent(() => import('@/ui/universal.vue'))
+	!$i ? defineAsyncComponent(() => import('@/ui/visitor.vue')) :
+	ui === 'deck' ? defineAsyncComponent(() => import('@/ui/deck.vue')) :
+	ui === 'classic' ? defineAsyncComponent(() => import('@/ui/classic.vue')) :
+	defineAsyncComponent(() => import('@/ui/universal.vue')),
 );
 
 if (_DEV_) {
@@ -192,13 +190,9 @@ app.config.globalProperties = {
 	$ts: i18n.ts,
 };
 
-app.use(router);
-
 widgets(app);
 directives(app);
 components(app);
-
-await router.isReady();
 
 const splash = document.getElementById('splash');
 // 念のためnullチェック(HTMLが古い場合があるため(そのうち消す))

@@ -9,6 +9,8 @@ export async function readNotification(
 	userId: User['id'],
 	notificationIds: Notification['id'][]
 ) {
+	if (notificationIds.length === 0) return;
+
 	// Update documents
 	await Notifications.update({
 		id: In(notificationIds),

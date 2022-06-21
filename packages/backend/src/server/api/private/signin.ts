@@ -1,25 +1,22 @@
-import { randomBytes } from 'node:crypto';
 import Koa from 'koa';
 import bcrypt from 'bcryptjs';
 import * as speakeasy from 'speakeasy';
-import { IsNull } from 'typeorm';
+import signin from '../common/signin.js';
 import config from '@/config/index.js';
 import { Users, Signins, UserProfiles, UserSecurityKeys, AttestationChallenges } from '@/models/index.js';
 import { ILocalUser } from '@/models/entities/user.js';
 import { genId } from '@/misc/gen-id.js';
-import { fetchMeta } from '@/misc/fetch-meta.js';
-import { verifyHcaptcha, verifyRecaptcha } from '@/misc/captcha.js';
 import { verifyLogin, hash } from '../2fa.js';
-import signin from '../common/signin.js';
+import { randomBytes } from 'node:crypto';
+import { IsNull } from 'typeorm';
+import { limiter } from '../limiter.js';
+import { getIpHash } from '@/misc/get-ip-hash.js';
 
 export default async (ctx: Koa.Context) => {
 	ctx.set('Access-Control-Allow-Origin', config.url);
 	ctx.set('Access-Control-Allow-Credentials', 'true');
 
 	const body = ctx.request.body as any;
-
-	const instance = await fetchMeta(true);
-
 	const username = body['username'];
 	const password = body['password'];
 	const token = body['token'];
@@ -27,6 +24,21 @@ export default async (ctx: Koa.Context) => {
 	function error(status: number, error: { id: string }) {
 		ctx.status = status;
 		ctx.body = { error };
+	}
+
+	try {
+		// not more than 1 attempt per second and not more than 10 attempts per hour
+		await limiter({ key: 'signin', duration: 60 * 60 * 1000, max: 10, minInterval: 1000 }, getIpHash(ctx.ip));
+	} catch (err) {
+		ctx.status = 429;
+		ctx.body = {
+			error: {
+				message: 'Too many failed attempts to sign in. Try again later.',
+				code: 'TOO_MANY_AUTHENTICATION_FAILURES',
+				id: '22d05606-fbcf-421a-a2db-b32610dcfd1b',
+			},
+		};
+		return;
 	}
 
 	if (typeof username !== 'string') {
@@ -84,18 +96,6 @@ export default async (ctx: Koa.Context) => {
 	}
 
 	if (!profile.twoFactorEnabled) {
-		if (instance.enableHcaptcha && instance.hcaptchaSecretKey) {
-			await verifyHcaptcha(instance.hcaptchaSecretKey, body['hcaptcha-response']).catch(e => {
-				ctx.throw(400, e);
-			});
-		}
-	
-		if (instance.enableRecaptcha && instance.recaptchaSecretKey) {
-			await verifyRecaptcha(instance.recaptchaSecretKey, body['g-recaptcha-response']).catch(e => {
-				ctx.throw(400, e);
-			});
-		}
-	
 		if (same) {
 			signin(ctx, user);
 			return;
@@ -172,7 +172,7 @@ export default async (ctx: Koa.Context) => {
 				body.credentialId
 					.replace(/-/g, '+')
 					.replace(/_/g, '/'),
-				'base64',
+					'base64'
 			).toString('hex'),
 		});
 
