@@ -109,23 +109,7 @@ function focus(): void {
 	tlComponent.focus();
 }
 
-const headerActions = $computed(() => [{
-	icon: 'fas fa-list-ul',
-	text: i18n.ts.lists,
-	handler: chooseList,
-}, {
-	icon: 'fas fa-satellite',
-	text: i18n.ts.antennas,
-	handler: chooseAntenna,
-}, {
-	icon: 'fas fa-satellite-dish',
-	text: i18n.ts.channel,
-	handler: chooseChannel,
-}, {
-	icon: 'fas fa-calendar-alt',
-	text: i18n.ts.jumpToSpecifiedDate,
-	handler: timetravel,
-}]);
+const headerActions = $computed(() => []);
 
 const headerTabs = $computed(() => [{
 	active: src === 'home',
@@ -151,7 +135,22 @@ const headerTabs = $computed(() => [{
 	icon: 'fas fa-globe',
 	iconOnly: true,
 	onClick: () => { saveSrc('global'); },
-}] : [])]);
+}] : []), {
+	icon: 'fas fa-list-ul',
+	title: i18n.ts.lists,
+	iconOnly: true,
+	onClick: chooseList,
+}, {
+	icon: 'fas fa-satellite',
+	title: i18n.ts.antennas,
+	iconOnly: true,
+	onClick: chooseAntenna,
+}, {
+	icon: 'fas fa-satellite-dish',
+	title: i18n.ts.channel,
+	iconOnly: true,
+	onClick: chooseChannel,
+}]);
 
 definePageMetadata(computed(() => ({
 	title: i18n.ts.timeline,

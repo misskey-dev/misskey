@@ -151,21 +151,21 @@ watch($$(eyeCatchingImageId), async () => {
 
 function getSaveOptions() {
 	return {
-		title: tatitle.trim(),
-		name: taname.trim(),
-		summary: tasummary,
-		font: tafont,
-		script: tascript,
-		hideTitleWhenPinned: tahideTitleWhenPinned,
-		alignCenter: taalignCenter,
-		content: tacontent,
-		variables: tavariables,
-		eyeCatchingImageId: taeyeCatchingImageId,
+		title: title.trim(),
+		name: name.trim(),
+		summary: summary,
+		font: font,
+		script: script,
+		hideTitleWhenPinned: hideTitleWhenPinned,
+		alignCenter: alignCenter,
+		content: content,
+		variables: variables,
+		eyeCatchingImageId: eyeCatchingImageId,
 	};
 }
 
 function save() {
-	const options = tagetSaveOptions();
+	const options = getSaveOptions();
 
 	const onError = err => {
 		if (err.id == '3d81ceae-475f-4600-b2a8-2bc116157532') {
@@ -184,11 +184,11 @@ function save() {
 		}
 	};
 
-	if (tapageId) {
-		options.pageId = tapageId;
+	if (pageId) {
+		options.pageId = pageId;
 		os.api('pages/update', options)
 		.then(page => {
-			tacurrentName = taname.trim();
+			currentName = name.trim();
 			os.alert({
 				type: 'success',
 				text: i18n.ts._pages.updated,
@@ -197,8 +197,8 @@ function save() {
 	} else {
 		os.api('pages/create', options)
 		.then(created => {
-			tapageId = created.id;
-			tacurrentName = name.trim();
+			pageId = created.id;
+			currentName = name.trim();
 			os.alert({
 				type: 'success',
 				text: i18n.ts._pages.created,
@@ -227,11 +227,11 @@ function del() {
 }
 
 function duplicate() {
-	tatitle = tatitle + ' - copy';
-	taname = taname + '-copy';
-	os.api('pages/create', tagetSaveOptions()).then(created => {
-		tapageId = created.id;
-		tacurrentName = taname.trim();
+	title = title + ' - copy';
+	name = name + '-copy';
+	os.api('pages/create', getSaveOptions()).then(created => {
+		pageId = created.id;
+		currentName = name.trim();
 		os.alert({
 			type: 'success',
 			text: i18n.ts._pages.created,
@@ -244,12 +244,12 @@ async function add() {
 	const { canceled, result: type } = await os.select({
 		type: null,
 		title: i18n.ts._pages.chooseBlock,
-		groupedItems: tagetPageBlockList(),
+		groupedItems: getPageBlockList(),
 	});
 	if (canceled) return;
 
 	const id = uuid();
-	tacontent.push({ id, type });
+	content.push({ id, type });
 }
 
 async function addVariable() {
@@ -260,7 +260,7 @@ async function addVariable() {
 
 	name = name.trim();
 
-	if (tahpml.isUsedName(name)) {
+	if (hpml.isUsedName(name)) {
 		os.alert({
 			type: 'error',
 			text: i18n.ts._pages.variableNameIsAlreadyUsed,
@@ -269,11 +269,11 @@ async function addVariable() {
 	}
 
 	const id = uuid();
-	tavariables.push({ id, name, type: null });
+	variables.push({ id, name, type: null });
 }
 
 function removeVariable(v) {
-	tavariables = tavariables.filter(x => x.name !== v.name);
+	variables = variables.filter(x => x.name !== v.name);
 }
 
 function getPageBlockList() {
@@ -352,7 +352,7 @@ function setEyeCatchingImage(e) {
 }
 
 function removeEyeCatchingImage() {
-	taeyeCatchingImageId = null;
+	eyeCatchingImageId = null;
 }
 
 function highlighter(code) {
