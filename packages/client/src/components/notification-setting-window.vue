@@ -37,7 +37,7 @@ import XModalWindow from '@/components/ui/modal-window.vue';
 import { i18n } from '@/i18n';
 
 const emit = defineEmits<{
-	(ev: 'done', v: { includingTypes: string[] }): void,
+	(ev: 'done', v: { includingTypes: string[] | null }): void,
 	(ev: 'closed'): void,
 }>();
 
