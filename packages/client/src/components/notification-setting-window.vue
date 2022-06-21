@@ -46,7 +46,7 @@ const props = withDefaults(defineProps<{
 	includingTypes?: typeof notificationTypes[number][];
 	showGlobalToggle?: boolean;
 }>(), {
-	includingTypes: [],
+	includingTypes: () => [],
 	showGlobalToggle: true,
 });
 
