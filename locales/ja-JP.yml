@@ -854,6 +854,9 @@ ojosamaModeDescription: "このフラグをオンにすると、投稿本文が�
 ojosamaModeDescription2: "例: 「今日は暑いです！」→「今日は暑いですわ～！！」"
 loadErudaDevTool: "Erudaを使用する"
 loadErudaDevToolDescription: "モバイル端末でも開発者ツールが使えるようになります。"
+driveCapOverrideLabel: "個別にドライブ容量の上限を変更:"
+driveCapOverrideCaption: "0または-1を指定すると個別指定が解除されます。"
+purgeLocaleDataButtonLabel: "言語ファイルのキャッシュ更新"
 _adminTools:
   freeze: "一括凍結"
   _freeze:

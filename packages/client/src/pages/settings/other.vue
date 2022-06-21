@@ -8,6 +8,11 @@
 		<template #caption>{{ i18n.ts.loadErudaDevToolDescription }}</template>
 	</FormSwitch>
 
+	<FormButton class="_formBlock" @click="purgeLocaleData">
+		<template #icon><i class="fas fa-sync"></i></template>
+		{{ i18n.ts.purgeLocaleDataButtonLabel }}
+	</FormButton>
+
 	<!--
 	<FormSwitch v-model="reportError" class="_formBlock">{{ i18n.ts.sendErrorReports }}<template #caption>{{ i18n.ts.sendErrorReportsDescription }}</template></FormSwitch>
 	-->
@@ -22,12 +27,13 @@
 import { computed, ref, watch } from 'vue';
 import FormSwitch from '@/components/form/switch.vue';
 import FormLink from '@/components/form/link.vue';
+import FormButton from '@/components/ui/button.vue';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
-
+import { unisonReload } from '@/scripts/unison-reload';
 const reportError = computed(defaultStore.makeGetterSetter('reportError'));
 const useEruda = ref(localStorage.getItem('useEruda') === 'true' ? true : false);
 
@@ -41,6 +47,11 @@ function onChangeInjectFeaturedNote(v) {
 	}).then((i) => {
 		$i!.injectFeaturedNote = i.injectFeaturedNote;
 	});
+}
+
+async function purgeLocaleData() {
+	localStorage.removeItem('locale');
+	unisonReload();
 }
 
 const headerActions = $computed(() => []);

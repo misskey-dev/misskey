@@ -309,6 +309,7 @@ import * as ep___users_searchByUsernameAndHost from './endpoints/users/search-by
 import * as ep___users_search from './endpoints/users/search.js';
 import * as ep___users_show from './endpoints/users/show.js';
 import * as ep___users_stats from './endpoints/users/stats.js';
+import * as ep___admin_driveCapOverride from './endpoints/admin/drive-capacity-override.js';
 
 const eps = [
 	['admin/meta', ep___admin_meta],
@@ -370,6 +371,7 @@ const eps = [
 	['admin/unsuspend-user', ep___admin_unsuspendUser],
 	['admin/update-meta', ep___admin_updateMeta],
 	['admin/vacuum', ep___admin_vacuum],
+	['admin/drive-capacity-override', ep___admin_driveCapOverride],
 	['announcements', ep___announcements],
 	['antennas/create', ep___antennas_create],
 	['antennas/delete', ep___antennas_delete],
