@@ -141,12 +141,11 @@ async function fetch() {
 		// suspended and blocked information is only displayed to moderators.
 		// otherwise the API will error anyway
 
-		meta = await os.api('admin/meta', { detail: true });
 		instance = await os.api('federation/show-instance', {
 			host: props.host,
 		});
 		suspended = instance.isSuspended;
-		isBlocked = meta.blockedHosts.includes(instance.host);
+		isBlocked = instance.isBlocked;
 	}
 }
 
