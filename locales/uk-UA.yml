@@ -919,7 +919,6 @@ _sfx:
   antenna: "Прийом антени"
   channel: "Повідомлення каналу"
 _ago:
-  unknown: "Невідомо"
   future: "Майбутнє"
   justNow: "Щойно"
   secondsAgo: "{n}с тому"

@@ -1,5 +1,7 @@
-import { Theme } from '../src/scripts/theme';
-
 declare module '@/themes/*.json5' {
-	export = Theme;
+	import { Theme } from "@/scripts/theme";
+
+	const theme: Theme;
+
+	export default theme;
 }

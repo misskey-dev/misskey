@@ -1,6 +1,6 @@
+import { UserLists } from '@/models/index.js';
 import define from '../../../define.js';
 import { ApiError } from '../../../error.js';
-import { UserLists } from '@/models/index.js';
 
 export const meta = {
 	tags: ['lists', 'account'],
@@ -8,6 +8,8 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'read:account',
+
+	description: 'Show the properties of a list.',
 
 	res: {
 		type: 'object',

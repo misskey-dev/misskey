@@ -48,6 +48,7 @@ export default {
 			popup(defineAsyncComponent(() => import('@/components/ui/tooltip.vue')), {
 				showing,
 				text: self.text,
+				asMfm: binding.modifiers.mfm,
 				targetElement: el,
 			}, {}, 'closed');
 

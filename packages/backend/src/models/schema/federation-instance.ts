@@ -52,6 +52,10 @@ export const packedFederationInstanceSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
+		isBlocked: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
 		softwareName: {
 			type: 'string',
 			optional: false, nullable: true,
@@ -84,6 +88,11 @@ export const packedFederationInstanceSchema = {
 			optional: false, nullable: true,
 		},
 		iconUrl: {
+			type: 'string',
+			optional: false, nullable: true,
+			format: 'url',
+		},
+		faviconUrl: {
 			type: 'string',
 			optional: false, nullable: true,
 			format: 'url',

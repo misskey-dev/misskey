@@ -1,5 +1,5 @@
 <template>
-<MkContainer :show-header="widgetProps.showHeader" :foldable="foldable" :scrollable="scrollable">
+<MkContainer :show-header="widgetProps.showHeader" :foldable="foldable" :scrollable="scrollable" class="mkw-federation">
 	<template #header><i class="fas fa-globe"></i>{{ $ts._widgets.federation }}</template>
 
 	<div class="wbrkwalb">

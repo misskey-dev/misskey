@@ -6,26 +6,17 @@ import TestChart from '../src/services/chart/charts/test.js';
 import TestGroupedChart from '../src/services/chart/charts/test-grouped.js';
 import TestUniqueChart from '../src/services/chart/charts/test-unique.js';
 import TestIntersectionChart from '../src/services/chart/charts/test-intersection.js';
-import * as _TestChart from '../src/services/chart/charts/entities/test.js';
-import * as _TestGroupedChart from '../src/services/chart/charts/entities/test-grouped.js';
-import * as _TestUniqueChart from '../src/services/chart/charts/entities/test-unique.js';
-import * as _TestIntersectionChart from '../src/services/chart/charts/entities/test-intersection.js';
-import { async, initTestDb } from './utils.js';
+import { initDb } from '../src/db/postgre.js';
 
 describe('Chart', () => {
 	let testChart: TestChart;
 	let testGroupedChart: TestGroupedChart;
 	let testUniqueChart: TestUniqueChart;
 	let testIntersectionChart: TestIntersectionChart;
-	let clock: lolex.Clock;
+	let clock: lolex.InstalledClock;
 
-	beforeEach(async(async () => {
-		await initTestDb(false, [
-			_TestChart.entity.hour, _TestChart.entity.day,
-			_TestGroupedChart.entity.hour, _TestGroupedChart.entity.day,
-			_TestUniqueChart.entity.hour, _TestUniqueChart.entity.day,
-			_TestIntersectionChart.entity.hour, _TestIntersectionChart.entity.day,
-		]);
+	beforeEach(async () => {
+		await initDb(true);
 
 		testChart = new TestChart();
 		testGroupedChart = new TestGroupedChart();
@@ -34,14 +25,15 @@ describe('Chart', () => {
 
 		clock = lolex.install({
 			now: new Date(Date.UTC(2000, 0, 1, 0, 0, 0)),
+			shouldClearNativeTimers: true,
 		});
-	}));
+	});
 
-	afterEach(async(async () => {
+	afterEach(() => {
 		clock.uninstall();
-	}));
+	});
 
-	it('Can updates', async(async () => {
+	it('Can updates', async () => {
 		await testChart.increment();
 		await testChart.save();
 
@@ -63,9 +55,9 @@ describe('Chart', () => {
 				total: [1, 0, 0],
 			},
 		});
-	}));
+	});
 
-	it('Can updates (dec)', async(async () => {
+	it('Can updates (dec)', async () => {
 		await testChart.decrement();
 		await testChart.save();
 
@@ -87,9 +79,9 @@ describe('Chart', () => {
 				total: [-1, 0, 0],
 			},
 		});
-	}));
+	});
 
-	it('Empty chart', async(async () => {
+	it('Empty chart', async () => {
 		const chartHours = await testChart.getChart('hour', 3, null);
 		const chartDays = await testChart.getChart('day', 3, null);
 
@@ -108,9 +100,9 @@ describe('Chart', () => {
 				total: [0, 0, 0],
 			},
 		});
-	}));
+	});
 
-	it('Can updates at multiple times at same time', async(async () => {
+	it('Can updates at multiple times at same time', async () => {
 		await testChart.increment();
 		await testChart.increment();
 		await testChart.increment();
@@ -134,9 +126,9 @@ describe('Chart', () => {
 				total: [3, 0, 0],
 			},
 		});
-	}));
+	});
 
-	it('複数回saveされてもデータの更新は一度だけ', async(async () => {
+	it('複数回saveされてもデータの更新は一度だけ', async () => {
 		await testChart.increment();
 		await testChart.save();
 		await testChart.save();
@@ -160,9 +152,9 @@ describe('Chart', () => {
 				total: [1, 0, 0],
 			},
 		});
-	}));
+	});
 
-	it('Can updates at different times', async(async () => {
+	it('Can updates at different times', async () => {
 		await testChart.increment();
 		await testChart.save();
 
@@ -189,11 +181,11 @@ describe('Chart', () => {
 				total: [2, 0, 0],
 			},
 		});
-	}));
+	});
 
 	// 仕様上はこうなってほしいけど、実装は難しそうなのでskip
 	/*
-	it('Can updates at different times without save', async(async () => {
+	it('Can updates at different times without save', async () => {
 		await testChart.increment();
 
 		clock.tick('01:00:00');
@@ -219,10 +211,10 @@ describe('Chart', () => {
 				total: [2, 0, 0]
 			},
 		});
-	}));
+	});
 	*/
 
-	it('Can padding', async(async () => {
+	it('Can padding', async () => {
 		await testChart.increment();
 		await testChart.save();
 
@@ -249,10 +241,10 @@ describe('Chart', () => {
 				total: [2, 0, 0],
 			},
 		});
-	}));
+	});
 
 	// 要求された範囲にログがひとつもない場合でもパディングできる
-	it('Can padding from past range', async(async () => {
+	it('Can padding from past range', async () => {
 		await testChart.increment();
 		await testChart.save();
 
@@ -276,11 +268,11 @@ describe('Chart', () => {
 				total: [1, 0, 0],
 			},
 		});
-	}));
+	});
 
 	// 要求された範囲の最も古い箇所に位置するログが存在しない場合でもパディングできる
 	// Issue #3190
-	it('Can padding from past range 2', async(async () => {
+	it('Can padding from past range 2', async () => {
 		await testChart.increment();
 		await testChart.save();
 
@@ -307,9 +299,9 @@ describe('Chart', () => {
 				total: [2, 0, 0],
 			},
 		});
-	}));
+	});
 
-	it('Can specify offset', async(async () => {
+	it('Can specify offset', async () => {
 		await testChart.increment();
 		await testChart.save();
 
@@ -336,9 +328,9 @@ describe('Chart', () => {
 				total: [2, 0, 0],
 			},
 		});
-	}));
+	});
 
-	it('Can specify offset (floor time)', async(async () => {
+	it('Can specify offset (floor time)', async () => {
 		clock.tick('00:30:00');
 
 		await testChart.increment();
@@ -367,10 +359,10 @@ describe('Chart', () => {
 				total: [2, 0, 0],
 			},
 		});
-	}));
+	});
 
 	describe('Grouped', () => {
-		it('Can updates', async(async () => {
+		it('Can updates', async () => {
 			await testGroupedChart.increment('alice');
 			await testGroupedChart.save();
 
@@ -410,11 +402,11 @@ describe('Chart', () => {
 					total: [0, 0, 0],
 				},
 			});
-		}));
+		});
 	});
 
 	describe('Unique increment', () => {
-		it('Can updates', async(async () => {
+		it('Can updates', async () => {
 			await testUniqueChart.uniqueIncrement('alice');
 			await testUniqueChart.uniqueIncrement('alice');
 			await testUniqueChart.uniqueIncrement('bob');
@@ -430,10 +422,10 @@ describe('Chart', () => {
 			assert.deepStrictEqual(chartDays, {
 				foo: [2, 0, 0],
 			});
-		}));
+		});
 
 		describe('Intersection', () => {
-			it('条件が満たされていない場合はカウントされない', async(async () => {
+			it('条件が満たされていない場合はカウントされない', async () => {
 				await testIntersectionChart.addA('alice');
 				await testIntersectionChart.addA('bob');
 				await testIntersectionChart.addB('carol');
@@ -453,9 +445,9 @@ describe('Chart', () => {
 					b: [1, 0, 0],
 					aAndB: [0, 0, 0],
 				});
-			}));
+			});
 
-			it('条件が満たされている場合にカウントされる', async(async () => {
+			it('条件が満たされている場合にカウントされる', async () => {
 				await testIntersectionChart.addA('alice');
 				await testIntersectionChart.addA('bob');
 				await testIntersectionChart.addB('carol');
@@ -476,12 +468,12 @@ describe('Chart', () => {
 					b: [2, 0, 0],
 					aAndB: [1, 0, 0],
 				});
-			}));
+			});
 		});
 	});
 
 	describe('Resync', () => {
-		it('Can resync', async(async () => {
+		it('Can resync', async () => {
 			testChart.total = 1;
 
 			await testChart.resync();
@@ -504,9 +496,9 @@ describe('Chart', () => {
 					total: [1, 0, 0],
 				},
 			});
-		}));
+		});
 
-		it('Can resync (2)', async(async () => {
+		it('Can resync (2)', async () => {
 			await testChart.increment();
 			await testChart.save();
 
@@ -534,6 +526,6 @@ describe('Chart', () => {
 					total: [100, 0, 0],
 				},
 			});
-		}));
+		});
 	});
 });

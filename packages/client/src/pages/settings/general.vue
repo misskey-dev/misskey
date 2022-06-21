@@ -48,7 +48,8 @@
 		<FormSwitch v-model="disableShowingAnimatedImages" class="_formBlock">{{ i18n.ts.disableShowingAnimatedImages }}</FormSwitch>
 		<FormSwitch v-model="squareAvatars" class="_formBlock">{{ i18n.ts.squareAvatars }}</FormSwitch>
 		<FormSwitch v-model="useSystemFont" class="_formBlock">{{ i18n.ts.useSystemFont }}</FormSwitch>
-		<FormSwitch v-model="useOsNativeEmojis" class="_formBlock">{{ i18n.ts.useOsNativeEmojis }}
+		<FormSwitch v-model="useOsNativeEmojis" class="_formBlock">
+			{{ i18n.ts.useOsNativeEmojis }}
 			<div><Mfm :key="useOsNativeEmojis" text="🍮🍦🍭🍩🍰🍫🍬🥞🍪"/></div>
 		</FormSwitch>
 		<FormSwitch v-model="disableDrawer" class="_formBlock">{{ i18n.ts.disableDrawer }}</FormSwitch>
@@ -92,7 +93,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineExpose, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import FormSwitch from '@/components/form/switch.vue';
 import FormSelect from '@/components/form/select.vue';
 import FormRadios from '@/components/form/radios.vue';
@@ -104,8 +105,8 @@ import { langs } from '@/config';
 import { defaultStore } from '@/store';
 import * as os from '@/os';
 import { unisonReload } from '@/scripts/unison-reload';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const lang = ref(localStorage.getItem('lang'));
 const fontSize = ref(localStorage.getItem('fontSize'));
@@ -173,16 +174,18 @@ watch([
 	aiChanMode,
 	showGapBetweenNotesInTimeline,
 	instanceTicker,
-	overridedDeviceKind
+	overridedDeviceKind,
 ], async () => {
 	await reloadAsk();
 });
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.general,
-		icon: 'fas fa-cogs',
-		bg: 'var(--bg)'
-	}
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: i18n.ts.general,
+	icon: 'fas fa-cogs',
+	bg: 'var(--bg)',
 });
 </script>

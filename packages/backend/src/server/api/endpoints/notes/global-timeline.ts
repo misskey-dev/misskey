@@ -1,11 +1,11 @@
-import define from '../../define.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
+import { Notes, Users } from '@/models/index.js';
+import { activeUsersChart } from '@/services/chart/index.js';
+import define from '../../define.js';
 import { ApiError } from '../../error.js';
 import { makePaginationQuery } from '../../common/make-pagination-query.js';
-import { Notes, Users } from '@/models/index.js';
 import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
 import { generateMutedInstanceQuery } from '../../common/generate-muted-instance-query.js';
-import { activeUsersChart } from '@/services/chart/index.js';
 import { generateRepliesQuery } from '../../common/generate-replies-query.js';
 import { generateMutedNoteQuery } from '../../common/generate-muted-note-query.js';
 import { generateBlockedUserQuery } from '../../common/generate-block-query.js';
@@ -60,7 +60,7 @@ export default define(meta, paramDef, async (ps, user) => {
 
 	//#region Construct query
 	const query = makePaginationQuery(Notes.createQueryBuilder('note'),
-			ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
+		ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
 		.andWhere('note.visibility = \'public\'')
 		.andWhere('note.channelId IS NULL')
 		.innerJoinAndSelect('note.user', 'user')

@@ -105,7 +105,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, onMounted, onUnmounted, reactive, ref } from 'vue';
+import { computed, inject, onMounted, onUnmounted, reactive, ref, Ref } from 'vue';
 import * as mfm from 'mfm-js';
 import * as misskey from 'misskey-js';
 import MkNoteSub from './MkNoteSub.vue';
@@ -210,7 +210,7 @@ function react(viaKeyboard = false): void {
 	reactionPicker.show(reactButton.value, reaction => {
 		os.api('notes/reactions/create', {
 			noteId: appearNote.id,
-			reaction: reaction
+			reaction: reaction,
 		});
 	}, () => {
 		focus();
@@ -221,9 +221,11 @@ function undoReact(note): void {
 	const oldReaction = note.myReaction;
 	if (!oldReaction) return;
 	os.api('notes/reactions/delete', {
-		noteId: note.id
+		noteId: note.id,
 	});
 }
+
+const currentClipPage = inject<Ref<misskey.entities.Clip> | null>('currentClipPage', null);
 
 function onContextmenu(ev: MouseEvent): void {
 	const isLink = (el: HTMLElement) => {
@@ -239,13 +241,13 @@ function onContextmenu(ev: MouseEvent): void {
 		ev.preventDefault();
 		react();
 	} else {
-		os.contextMenu(getNoteMenu({ note: note, translating, translation, menuButton }), ev).then(focus);
+		os.contextMenu(getNoteMenu({ note: note, translating, translation, menuButton, isDeleted, currentClipPage }), ev).then(focus);
 	}
 }
 
 function menu(viaKeyboard = false): void {
-	os.popupMenu(getNoteMenu({ note: note, translating, translation, menuButton }), menuButton.value, {
-		viaKeyboard
+	os.popupMenu(getNoteMenu({ note: note, translating, translation, menuButton, isDeleted, currentClipPage }), menuButton.value, {
+		viaKeyboard,
 	}).then(focus);
 }
 
@@ -257,12 +259,12 @@ function showRenoteMenu(viaKeyboard = false): void {
 		danger: true,
 		action: () => {
 			os.api('notes/delete', {
-				noteId: note.id
+				noteId: note.id,
 			});
 			isDeleted.value = true;
-		}
+		},
 	}], renoteTime.value, {
-		viaKeyboard: viaKeyboard
+		viaKeyboard: viaKeyboard,
 	});
 }
 
@@ -284,7 +286,7 @@ function focusAfter() {
 
 function readPromo() {
 	os.api('promo/read', {
-		noteId: appearNote.id
+		noteId: appearNote.id,
 	});
 	isDeleted.value = true;
 }

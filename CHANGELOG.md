@@ -11,38 +11,75 @@ You should also include the user name that made the change.
 -->
 
 ## 12.x.x (unreleased)
-### NOTE
-- From this version, Node 18.0.0 or later is required.
 
 ### Improvements
-- enhance: ドライブに画像ファイルをアップロードするときオリジナル画像を破棄してwebpublicのみ保持するオプション @tamaina
-- enhance: API: notifications/readは配列でも受け付けるように #7667 @tamaina
-- enhance: プッシュ通知を複数アカウント対応に #7667 @tamaina
-- enhance: プッシュ通知にクリックやactionを設定 #7667 @tamaina
-- replaced webpack with Vite @tamaina
-- update dependencies @syuilo
-- enhance: display URL of QR code for TOTP registration @syuilo
-- make CAPTCHA required for signin to improve security @syuilo
-- enhance: Supports Unicode Emoji 14.0 @mei23
+- Server: Add rate limit to i/notifications @tamaina
+- Client: Improve files page of control panel @syuilo
+- Client: Show warning in control panel when there is an unresolved abuse report @syuilo
+- Improve player detection in URL preview @mei23
+- Add Badge Image to Push Notification #8012 @tamaina
+
+### Bugfixes
+- Server: Fix GenerateVideoThumbnail failed @mei23
+- Server: Ensure temp directory cleanup @Johann150
+- favicons of federated instances not showing @syuilo
+
+## 12.111.1 (2022/06/13)
+
+### Bugfixes
+- some fixes of multiple notification read @tamaina
+- some GenerateVideoThumbnail failed @Johann150
+- Client: デッキでウィジェットの情報が保存されない問題を修正 @syuilo
+- Client: ギャラリーの投稿を開こうとすると編集画面が表示される @futchitwo
+
+## 12.111.0 (2022/06/11)
+### Note
+- Node.js 16.15.0 or later is required
+
+### Improvements
+- Supports Unicode Emoji 14.0 @mei23
+- プッシュ通知を複数アカウント対応に #7667 @tamaina
+- プッシュ通知にクリックやactionを設定 #7667 @tamaina
+- ドライブに画像ファイルをアップロードするときオリジナル画像を破棄してwebpublicのみ保持するオプション @tamaina
+- Server: always remove completed tasks of job queue @Johann150
+- Client: アバターの設定で画像をクロップできるように @syuilo
+- Client: make emoji stand out more on reaction button @Johann150
+- Client: display URL of QR code for TOTP registration @tamaina
+- Client: render quote renote CWs as MFM @pixeldesu
+- API: notifications/readは配列でも受け付けるように #7667 @tamaina
+- API: ユーザー検索で、クエリがusernameの条件を満たす場合はusernameもLIKE検索するように @tamaina
+- MFM: Allow speed changes in all animated MFMs @Johann150
 - The theme color is now better validated. @Johann150
   Your own theme color may be unset if it was in an invalid format.
   Admins should check their instance settings if in doubt.
 - Perform port diagnosis at startup only when Listen fails @mei23
+- Rate limiting is now also usable for non-authenticated users. @Johann150 @mei23
+  Admins should make sure the reverse proxy sets the `X-Forwarded-For` header to the original address.
 
 ### Bugfixes
-- Client: fix settings page @tamaina
-- Client: fix profile tabs @futchitwo
-- Server: await promises when following or unfollowing users @Johann150
-- Client: fix abuse reports page to be able to show all reports @Johann150
-- Federation: Add rel attribute to host-meta @mei23
-- Client: fix profile picture height in mentions @tamaina
-- MFM: more animated functions support `speed` parameter @futchitwo
-- Federation: Fix quote renotes containing no text being federated correctly @Johann150
+- Server: keep file order of note attachement @Johann150
 - Server: fix missing foreign key for reports leading to reports page being unusable @Johann150
 - Server: fix internal in-memory caching @Johann150
-- Server: use correct order of attachments on notes @Johann150
 - Server: prevent crash when processing certain PNGs @syuilo
 - Server: Fix unable to generate video thumbnails @mei23
+- Server: Fix `Cannot find module` issue @mei23
+- Federation: Add rel attribute to host-meta @mei23
+- Federation: add id for activitypub follows @Johann150
+- Federation: use `source` instead of `_misskey_content` @Johann150
+- Federation: ensure resolver does not fetch local resources via HTTP(S) @Johann150
+- Federation: correctly render empty note text @Johann150
+- Federation: Fix quote renotes containing no text being federated correctly @Johann150
+- Federation: remove duplicate br tag/newline @Johann150
+- Federation: add missing authorization checks @Johann150
+- Client: fix profile picture height in mentions @tamaina
+- Client: fix abuse reports page to be able to show all reports @Johann150
+- Client: fix settings page @tamaina
+- Client: fix profile tabs @futchitwo
+- Client: fix popout URL @futchitwo
+- Client: correctly handle MiAuth URLs with query string @sn0w
+- Client: ノート詳細ページの新しいノートを表示する機能の動作が正しくなるように修正する @xianonn
+- MFM: more animated functions support `speed` parameter @futchitwo
+- MFM: limit large MFM @Johann150
 
 ## 12.110.1 (2022/04/23)
 

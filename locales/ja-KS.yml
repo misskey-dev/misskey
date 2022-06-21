@@ -799,7 +799,6 @@ _sfx:
   notification: "通知"
   chat: "チャット"
 _ago:
-  unknown: "わからん"
   future: "未来"
   justNow: "たった今"
   secondsAgo: "{n}秒前"

@@ -11,6 +11,8 @@ export const meta = {
 
 	kind: 'write:drive',
 
+	description: 'Update the properties of a drive file.',
+
 	errors: {
 		invalidFileName: {
 			message: 'Invalid file name.',

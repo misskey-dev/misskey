@@ -1,16 +1,18 @@
+import { Brackets } from 'typeorm';
+import { Notes } from '@/models/index.js';
 import define from '../../define.js';
 import { ApiError } from '../../error.js';
 import { getUser } from '../../common/getters.js';
 import { makePaginationQuery } from '../../common/make-pagination-query.js';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
-import { Notes } from '@/models/index.js';
 import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
-import { Brackets } from 'typeorm';
 import { generateBlockedUserQuery } from '../../common/generate-block-query.js';
 import { generateMutedInstanceQuery } from '../../common/generate-muted-instance-query.js';
 
 export const meta = {
 	tags: ['users', 'notes'],
+
+	description: 'Show all notes that this user created.',
 
 	res: {
 		type: 'array',

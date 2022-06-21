@@ -1,6 +1,6 @@
 import * as os from '@/os';
 import { i18n } from '@/i18n';
-import { router } from '@/router';
+import { mainRouter } from '@/router';
 
 export async function search() {
 	const { canceled, result: query } = await os.inputText({
@@ -11,12 +11,12 @@ export async function search() {
 	const q = query.trim();
 
 	if (q.startsWith('@') && !q.includes(' ')) {
-		router.push(`/${q}`);
+		mainRouter.push(`/${q}`);
 		return;
 	}
 
 	if (q.startsWith('#')) {
-		router.push(`/tags/${encodeURIComponent(q.substr(1))}`);
+		mainRouter.push(`/tags/${encodeURIComponent(q.substr(1))}`);
 		return;
 	}
 
@@ -36,14 +36,14 @@ export async function search() {
 		//v.$root.$emit('warp', date);
 		os.alert({
 			icon: 'fas fa-history',
-			iconOnly: true, autoClose: true
+			iconOnly: true, autoClose: true,
 		});
 		return;
 	}
 
 	if (q.startsWith('https://')) {
 		const promise = os.api('ap/show', {
-			uri: q
+			uri: q,
 		});
 
 		os.promiseDialog(promise, null, null, i18n.ts.fetchingAsApObject);
@@ -51,13 +51,13 @@ export async function search() {
 		const res = await promise;
 
 		if (res.type === 'User') {
-			router.push(`/@${res.object.username}@${res.object.host}`);
+			mainRouter.push(`/@${res.object.username}@${res.object.host}`);
 		} else if (res.type === 'Note') {
-			router.push(`/notes/${res.object.id}`);
+			mainRouter.push(`/notes/${res.object.id}`);
 		}
 
 		return;
 	}
 
-	router.push(`/search?q=${encodeURIComponent(q)}`);
+	mainRouter.push(`/search?q=${encodeURIComponent(q)}`);
 }
