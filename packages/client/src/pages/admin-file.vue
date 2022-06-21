@@ -1,30 +1,46 @@
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="500" :margin-min="16" :margin-max="32">
-		<div v-if="file" class="cxqhhsmd _formRoot">
-			<div class="_formBlock">
+	<MkSpacer v-if="file" :content-max="500" :margin-min="16" :margin-max="32">
+		<div v-if="tab === 'overview'" class="cxqhhsmd _formRoot">
+			<a class="_formBlock thumbnail" :href="file.url" target="_blank">
 				<MkDriveFileThumbnail class="thumbnail" :file="file" fit="contain"/>
-				<div class="info">
-					<span style="margin-right: 1em;">{{ file.type }}</span>
-					<span>{{ bytes(file.size) }}</span>
-					<MkTime :time="file.createdAt" mode="detail" style="display: block;"/>
-				</div>
+			</a>
+			<div class="_formBlock">
+				<MkKeyValue :copy="file.type" oneline style="margin: 1em 0;">
+					<template #key>MIME Type</template>
+					<template #value><span class="_monospace">{{ file.type }}</span></template>
+				</MkKeyValue>
+				<MkKeyValue oneline style="margin: 1em 0;">
+					<template #key>Size</template>
+					<template #value><span class="_monospace">{{ bytes(file.size) }}</span></template>
+				</MkKeyValue>
+				<MkKeyValue :copy="file.id" oneline style="margin: 1em 0;">
+					<template #key>ID</template>
+					<template #value><span class="_monospace">{{ file.id }}</span></template>
+				</MkKeyValue>
+				<MkKeyValue :copy="file.md5" oneline style="margin: 1em 0;">
+					<template #key>MD5</template>
+					<template #value><span class="_monospace">{{ file.md5 }}</span></template>
+				</MkKeyValue>
+				<MkKeyValue oneline style="margin: 1em 0;">
+					<template #key>{{ i18n.ts.createdAt }}</template>
+					<template #value><span class="_monospace"><MkTime :time="file.createdAt" mode="detail" style="display: block;"/></span></template>
+				</MkKeyValue>
 			</div>
 			<div class="_formBlock">
 				<MkSwitch v-model="isSensitive" @update:modelValue="toggleIsSensitive">NSFW</MkSwitch>
 			</div>
 			<FormLink class="_formBlock" :to="file.url" :external="true">Open</FormLink>
-			<FormLink class="_formBlock" :to="`/user-info/${file.userId}`">{{ $ts.user }}</FormLink>
+			<FormLink class="_formBlock" :to="`/user-info/${file.userId}`">{{ $ts.user }} ({{ acct(file.user) }})</FormLink>
 
 			<div class="_formBlock">
 				<MkButton full danger @click="del"><i class="fas fa-trash-alt"></i> {{ $ts.delete }}</MkButton>
 			</div>
-			<div v-if="info" class="_formBlock">
-				<details class="_content rawdata">
-					<pre><code>{{ JSON.stringify(info, null, 2) }}</code></pre>
-				</details>
-			</div>
+		</div>
+		<div v-else-if="tab === 'raw'" class="_formRoot">
+			<MkObjectView v-if="info" tall :value="info">
+			</MkObjectView>
 		</div>
 	</MkSpacer>
 </MkStickyContainer>
@@ -34,13 +50,17 @@
 import { computed } from 'vue';
 import MkButton from '@/components/ui/button.vue';
 import MkSwitch from '@/components/form/switch.vue';
+import MkObjectView from '@/components/object-view.vue';
 import MkDriveFileThumbnail from '@/components/drive-file-thumbnail.vue';
+import MkKeyValue from '@/components/key-value.vue';
 import FormLink from '@/components/form/link.vue';
 import bytes from '@/filters/bytes';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { acct } from '@/filters/user';
 
+let tab = $ref('overview');
 let file: any = $ref(null);
 let info: any = $ref(null);
 let isSensitive: boolean = $ref(false);
@@ -74,9 +94,25 @@ async function toggleIsSensitive(v) {
 	isSensitive = v;
 }
 
-const headerActions = $computed(() => []);
+const headerActions = $computed(() => [{
+	text: i18n.ts.openInNewTab,
+	icon: 'fas fa-external-link-alt',
+	handler: () => {
+		window.open(file.url, '_blank');
+	},
+}]);
 
-const headerTabs = $computed(() => []);
+const headerTabs = $computed(() => [{
+	active: tab === 'overview',
+	title: i18n.ts.overview,
+	icon: 'fas fa-info-circle',
+	onClick: () => { tab = 'overview'; },
+}, {
+	active: tab === 'raw',
+	title: 'Raw data',
+	icon: 'fas fa-code',
+	onClick: () => { tab = 'raw'; },
+}]);
 
 definePageMetadata(computed(() => ({
 	title: file ? i18n.ts.file + ': ' + file.name : i18n.ts.file,
@@ -87,19 +123,12 @@ definePageMetadata(computed(() => ({
 
 <style lang="scss" scoped>
 .cxqhhsmd {
-	> ._section {
-		> .thumbnail {
-			height: 150px;
-			max-width: 100%;
-		}
+	> .thumbnail {
+		display: block;
 
-		> .info {
-			text-align: center;
-			margin-top: 8px;
-		}
-		
-		> .rawdata {
-			overflow: auto;
+		> .thumbnail {
+			height: 300px;
+			max-width: 100%;
 		}
 	}
 }
