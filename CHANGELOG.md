@@ -20,6 +20,7 @@ You should also include the user name that made the change.
 ### Bugfixes
 - Server: Fix GenerateVideoThumbnail failed @mei23
 - Server: Ensure temp directory cleanup @Johann150
+- favicons of federated instances not showing @syuilo
 
 ## 12.111.1 (2022/06/13)
 
