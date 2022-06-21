@@ -93,24 +93,24 @@ import FormSelect from '@/components/form/select.vue';
 import FormSection from '@/components/form/section.vue';
 import FormLink from '@/components/form/link.vue';
 import FormButton from '@/components/ui/button.vue';
-import { builtinThemes } from '@/scripts/theme';
+import { getBuiltinThemesRef } from '@/scripts/theme';
 import { selectFile } from '@/scripts/select-file';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
-import { ColdDeviceStorage } from '@/store';
+import { ColdDeviceStorage , defaultStore } from '@/store';
 import { i18n } from '@/i18n';
-import { defaultStore } from '@/store';
 import { instance } from '@/instance';
 import { uniqueBy } from '@/scripts/array';
 import { fetchThemes, getThemes } from '@/theme-store';
-import * as symbols from '@/symbols';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const installedThemes = ref(getThemes());
+const builtinThemes = getBuiltinThemesRef();
 const instanceThemes = [];
 
 if (instance.defaultLightTheme != null) instanceThemes.push(JSON5.parse(instance.defaultLightTheme));
 if (instance.defaultDarkTheme != null) instanceThemes.push(JSON5.parse(instance.defaultDarkTheme));
 
-const themes = computed(() => uniqueBy(instanceThemes.concat(builtinThemes.concat(installedThemes.value)), theme => theme.id));
+const themes = computed(() => uniqueBy([ ...instanceThemes, ...builtinThemes.value, ...installedThemes.value ], theme => theme.id));
 const darkThemes = computed(() => themes.value.filter(t => t.base === 'dark' || t.kind === 'dark'));
 const lightThemes = computed(() => themes.value.filter(t => t.base === 'light' || t.kind === 'light'));
 const darkTheme = ColdDeviceStorage.ref('darkTheme');
@@ -119,8 +119,8 @@ const darkThemeId = computed({
 		return darkTheme.value.id;
 	},
 	set(id) {
-		ColdDeviceStorage.set('darkTheme', themes.value.find(x => x.id === id))
-	}
+		ColdDeviceStorage.set('darkTheme', themes.value.find(x => x.id === id));
+	},
 });
 const lightTheme = ColdDeviceStorage.ref('lightTheme');
 const lightThemeId = computed({
@@ -128,8 +128,8 @@ const lightThemeId = computed({
 		return lightTheme.value.id;
 	},
 	set(id) {
-		ColdDeviceStorage.set('lightTheme', themes.value.find(x => x.id === id))
-	}
+		ColdDeviceStorage.set('lightTheme', themes.value.find(x => x.id === id));
+	},
 });
 const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
 const syncDeviceDarkMode = computed(ColdDeviceStorage.makeGetterSetter('syncDeviceDarkMode'));
@@ -167,12 +167,14 @@ function setWallpaper(event) {
 	});
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.theme,
-		icon: 'fas fa-palette',
-		bg: 'var(--bg)',
-	}
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: i18n.ts.theme,
+	icon: 'fas fa-palette',
+	bg: 'var(--bg)',
 });
 </script>
 

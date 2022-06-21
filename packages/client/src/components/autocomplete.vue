@@ -35,7 +35,7 @@
 <script lang="ts">
 import { markRaw, ref, onUpdated, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
 import contains from '@/scripts/contains';
-import { char2file } from '@/scripts/twemoji-base';
+import { char2filePath } from '@/scripts/twemoji-base';
 import { getStaticImageUrl } from '@/scripts/get-static-image-url';
 import { acct } from '@/filters/user';
 import * as os from '@/os';
@@ -58,7 +58,7 @@ const lib = emojilist.filter(x => x.category !== 'flags');
 const emjdb: EmojiDef[] = lib.map(x => ({
 	emoji: x.char,
 	name: x.name,
-	url: char2file(x.char),
+	url: char2filePath(x.char),
 }));
 
 for (const x of lib) {
@@ -68,7 +68,7 @@ for (const x of lib) {
 				emoji: x.char,
 				name: k,
 				aliasOf: x.name,
-				url: char2file(x.char),
+				url: char2filePath(x.char),
 			});
 		}
 	}

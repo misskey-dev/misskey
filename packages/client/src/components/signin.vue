@@ -14,8 +14,6 @@
 				<template #prefix><i class="fas fa-lock"></i></template>
 				<template #caption><button class="_textButton" type="button" @click="resetPassword">{{ i18n.ts.forgotPassword }}</button></template>
 			</MkInput>
-			<MkCaptcha v-if="meta.enableHcaptcha" ref="hcaptcha" v-model="hCaptchaResponse" class="_formBlock captcha" provider="hcaptcha" :sitekey="meta.hcaptchaSiteKey"/>
-			<MkCaptcha v-if="meta.enableRecaptcha" ref="recaptcha" v-model="reCaptchaResponse" class="_formBlock captcha" provider="recaptcha" :sitekey="meta.recaptchaSiteKey"/>
 			<MkButton class="_formBlock" type="submit" primary :disabled="signing" style="margin: 0 auto;">{{ signing ? i18n.ts.loggingIn : i18n.ts.login }}</MkButton>
 		</div>
 		<div v-if="totpLogin" class="2fa-signin" :class="{ securityKeys: user && user.securityKeys }">
@@ -63,8 +61,6 @@ import { login } from '@/account';
 import { showSuspendedDialog } from '../scripts/show-suspended-dialog';
 import { instance } from '@/instance';
 import { i18n } from '@/i18n';
-
-const MkCaptcha = defineAsyncComponent(() => import('./captcha.vue'));
 
 let signing = $ref(false);
 let user = $ref(null);
@@ -163,7 +159,7 @@ function queryKey() {
 
 function onSubmit() {
 	signing = true;
-	console.log('submit')
+	console.log('submit');
 	if (!totpLogin && user && user.twoFactorEnabled) {
 		if (window.PublicKeyCredential && user.securityKeys) {
 			os.api('signin', {
@@ -217,8 +213,16 @@ function loginFailed(err) {
 			showSuspendedDialog();
 			break;
 		}
+		case '22d05606-fbcf-421a-a2db-b32610dcfd1b': {
+			os.alert({
+				type: 'error',
+				title: i18n.ts.loginFailed,
+				text: i18n.ts.rateLimitExceeded,
+			});
+			break;
+		}
 		default: {
-			console.log(err)
+			console.log(err);
 			os.alert({
 				type: 'error',
 				title: i18n.ts.loginFailed,

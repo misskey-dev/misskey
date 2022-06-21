@@ -1,9 +1,21 @@
-import define from '../../define.js';
 import { Pages } from '@/models/index.js';
+import define from '../../define.js';
 import { makePaginationQuery } from '../../common/make-pagination-query.js';
 
 export const meta = {
 	tags: ['users', 'pages'],
+
+	description: 'Show all pages this user created.',
+
+	res: {
+		type: 'array',
+		optional: false, nullable: false,
+		items: {
+			type: 'object',
+			optional: false, nullable: false,
+			ref: 'Page',
+		},
+	},
 } as const;
 
 export const paramDef = {
@@ -20,7 +32,7 @@ export const paramDef = {
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, user) => {
 	const query = makePaginationQuery(Pages.createQueryBuilder('page'), ps.sinceId, ps.untilId)
-		.andWhere(`page.userId = :userId`, { userId: ps.userId })
+		.andWhere('page.userId = :userId', { userId: ps.userId })
 		.andWhere('page.visibility = \'public\'');
 
 	const pages = await query

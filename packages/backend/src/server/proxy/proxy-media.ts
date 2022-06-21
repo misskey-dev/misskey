@@ -8,6 +8,7 @@ import { detectType } from '@/misc/get-file-info.js';
 import { StatusError } from '@/misc/fetch.js';
 import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
 import { serverLogger } from '../index.js';
+import { isMimeImage } from '@/misc/is-mime-image.js';
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export async function proxyMedia(ctx: Koa.Context) {
@@ -25,15 +26,16 @@ export async function proxyMedia(ctx: Koa.Context) {
 		await downloadUrl(url, path);
 
 		const { mime, ext } = await detectType(path);
+		const isConvertibleImage = isMimeImage(mime, 'sharp-convertible-image');
 
 		let image: IImage;
 
-		if ('static' in ctx.query && ['image/png', 'image/gif', 'image/apng', 'image/vnd.mozilla.apng', 'image/webp', 'image/svg+xml'].includes(mime)) {
+		if ('static' in ctx.query && isConvertibleImage) {
 			image = await convertToWebp(path, 498, 280);
-		} else if ('preview' in ctx.query && ['image/jpeg', 'image/png', 'image/gif', 'image/apng', 'image/vnd.mozilla.apng', 'image/svg+xml'].includes(mime)) {
+		} else if ('preview' in ctx.query && isConvertibleImage) {
 			image = await convertToWebp(path, 200, 200);
 		} else if ('badge' in ctx.query) {
-			if (!['image/jpeg', 'image/png', 'image/gif', 'image/apng', 'image/vnd.mozilla.apng', 'image/webp', 'image/svg+xml'].includes(mime)) {
+			if (!isConvertibleImage) {
 				// 画像でないなら404でお茶を濁す
 				throw new StatusError('Unexpected mime', 404);
 			}
@@ -41,13 +43,13 @@ export async function proxyMedia(ctx: Koa.Context) {
 			const mask = sharp(path)
 				.resize(96, 96, {
 					fit: 'inside',
-					withoutEnlargement: false
+					withoutEnlargement: false,
 				})
-				.normalise(true)
-				.clone()
+				.greyscale()
+				.normalise()
+				.linear(1.75, -(128 * 1.75) + 128) // 1.75x contrast
 				.flatten({ background: '#000' })
-				.threshold(120)
-				.toColourspace('b-w');
+				.toColorspace('b-w');
 
 			const stats = await mask.clone().stats();
 
@@ -56,9 +58,10 @@ export async function proxyMedia(ctx: Koa.Context) {
 				throw new StatusError('Skip to provide badge', 404);
 			}
 
-			const data = sharp(
-				{ create: { width: 96, height: 96, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } }
-			)
+			const data = sharp({
+				create: { width: 96, height: 96, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } },
+			})
+				.pipelineColorspace('b-w')
 				.boolean(await mask.png().toBuffer(), 'eor');
 
 			image = {
@@ -66,7 +69,7 @@ export async function proxyMedia(ctx: Koa.Context) {
 				ext: 'png',
 				type: 'image/png',
 			};
-		}	else if (['image/svg+xml'].includes(mime)) {
+		}	else if (mime === 'image/svg+xml') {
 			image = await convertToWebp(path, 2048, 2048, 1);
 		} else if (!mime.startsWith('image/') || !FILE_TYPE_BROWSERSAFE.includes(mime)) {
 			throw new StatusError('Rejected type', 403, 'Rejected type');

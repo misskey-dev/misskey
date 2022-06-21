@@ -17,66 +17,51 @@
 </XContainer>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 /* eslint-disable vue/no-mutating-props */
-import { defineComponent, defineAsyncComponent } from 'vue';
+import { defineAsyncComponent, inject, onMounted } from 'vue';
 import { v4 as uuid } from 'uuid';
 import XContainer from '../page-editor.container.vue';
 import * as os from '@/os';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		XContainer,
-		XBlocks: defineAsyncComponent(() => import('../page-editor.blocks.vue')),
-	},
+const XBlocks = defineAsyncComponent(() => import('../page-editor.blocks.vue'));
 
-	inject: ['getPageBlockList'],
+const props = withDefaults(defineProps<{
+	value: any,
+	hpml: any
+}>(), {
+	value: {
+		title: null,
+		children: []
+	}
+});
 
-	props: {
-		value: {
-			required: true
-		},
-		hpml: {
-			required: true,
-		},
-	},
+const getPageBlockList = inject<(any) => any>('getPageBlockList');
 
-	data() {
-		return {
-		};
-	},
+async function rename() {
+	const { canceled, result: title } = await os.inputText({
+		title: 'Enter title',
+		default: props.value.title
+	});
+	if (canceled) return;
+	props.value.title = title;
+}
 
-	created() {
-		if (this.value.title == null) this.value.title = null;
-		if (this.value.children == null) this.value.children = [];
-	},
+async function add() {
+	const { canceled, result: type } = await os.select({
+		title: i18n.ts._pages.chooseBlock,
+		groupedItems: getPageBlockList()
+	});
+	if (canceled) return;
 
-	mounted() {
-		if (this.value.title == null) {
-			this.rename();
-		}
-	},
+	const id = uuid();
+	props.value.children.push({ id, type });
+}
 
-	methods: {
-		async rename() {
-			const { canceled, result: title } = await os.inputText({
-				title: 'Enter title',
-				default: this.value.title
-			});
-			if (canceled) return;
-			this.value.title = title;
-		},
-
-		async add() {
-			const { canceled, result: type } = await os.select({
-				title: this.$ts._pages.chooseBlock,
-				groupedItems: this.getPageBlockList()
-			});
-			if (canceled) return;
-
-			const id = uuid();
-			this.value.children.push({ id, type });
-		},
+onMounted(() => {
+	if (props.value.title == null) {
+		rename();
 	}
 });
 </script>

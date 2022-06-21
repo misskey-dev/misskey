@@ -54,14 +54,10 @@
 	//#endregion
 
 	//#region Script
-	const salt = localStorage.getItem('salt')
-		? `?salt=${localStorage.getItem('salt')}`
-		: '';
-
-	import(`/assets/${CLIENT_ENTRY}${salt}`)
-		.catch(async () => {
+	import(`/assets/${CLIENT_ENTRY}`)
+		.catch(async e => {
 			await checkUpdate();
-			renderError('APP_FETCH_FAILED');
+			renderError('APP_FETCH_FAILED', JSON.stringify(e));
 		})
 	//#endregion
 
@@ -142,9 +138,6 @@
 
 	// eslint-disable-next-line no-inner-declarations
 	function refresh() {
-		// Random
-		localStorage.setItem('salt', Math.random().toString().substr(2, 8));
-
 		// Clear cache (service worker)
 		try {
 			navigator.serviceWorker.controller.postMessage('clear');

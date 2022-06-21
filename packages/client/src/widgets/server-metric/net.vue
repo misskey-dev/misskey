@@ -94,10 +94,10 @@ function onStats(connStats) {
 	inPolygonPoints = `${viewBoxX - (stats.length - 1)},${viewBoxY} ${inPolylinePoints} ${viewBoxX},${viewBoxY}`;
 	outPolygonPoints = `${viewBoxX - (stats.length - 1)},${viewBoxY} ${outPolylinePoints} ${viewBoxX},${viewBoxY}`;
 
-	inHeadX = inPolylinePoints[inPolylinePoints.length - 1][0];
-	inHeadY = inPolylinePoints[inPolylinePoints.length - 1][1];
-	outHeadX = outPolylinePoints[outPolylinePoints.length - 1][0];
-	outHeadY = outPolylinePoints[outPolylinePoints.length - 1][1];
+	inHeadX = inPolylinePointsStats[inPolylinePointsStats.length - 1][0];
+	inHeadY = inPolylinePointsStats[inPolylinePointsStats.length - 1][1];
+	outHeadX = outPolylinePointsStats[outPolylinePointsStats.length - 1][0];
+	outHeadY = outPolylinePointsStats[outPolylinePointsStats.length - 1][1];
 
 	inRecent = connStats.net.rx;
 	outRecent = connStats.net.tx;

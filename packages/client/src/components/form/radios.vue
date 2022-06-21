@@ -14,7 +14,7 @@ export default defineComponent({
 	data() {
 		return {
 			value: this.modelValue,
-		}
+		};
 	},
 	watch: {
 		value() {

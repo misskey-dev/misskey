@@ -142,7 +142,7 @@ function registerKey() {
 		registration.value = null;
 		key.lastUsed = new Date();
 		os.success();
-	})
+	});
 }
 
 function unregisterKey(key) {

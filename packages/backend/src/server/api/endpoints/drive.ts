@@ -1,6 +1,6 @@
-import define from '../define.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
 import { DriveFiles } from '@/models/index.js';
+import define from '../define.js';
 
 export const meta = {
 	tags: ['drive', 'account'],

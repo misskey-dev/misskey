@@ -34,8 +34,8 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineExpose, ref } from 'vue';
-import * as tinycolor from 'tinycolor2';
+import { computed, ref } from 'vue';
+import tinycolor from 'tinycolor2';
 import FormLink from '@/components/form/link.vue';
 import FormSwitch from '@/components/form/switch.vue';
 import FormSection from '@/components/form/section.vue';
@@ -43,10 +43,10 @@ import MkKeyValue from '@/components/key-value.vue';
 import FormSplit from '@/components/form/split.vue';
 import * as os from '@/os';
 import bytes from '@/filters/bytes';
-import * as symbols from '@/symbols';
 import { defaultStore } from '@/store';
 import MkChart from '@/components/chart.vue';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const fetching = ref(true);
 const usage = ref<any>(null);
@@ -59,8 +59,8 @@ const meterStyle = computed(() => {
 		background: tinycolor({
 			h: 180 - (usage.value / capacity.value * 180),
 			s: 0.7,
-			l: 0.5
-		})
+			l: 0.5,
+		}),
 	};
 });
 
@@ -74,7 +74,7 @@ os.api('drive').then(info => {
 
 if (defaultStore.state.uploadFolder) {
 	os.api('drive/folders/show', {
-		folderId: defaultStore.state.uploadFolder
+		folderId: defaultStore.state.uploadFolder,
 	}).then(response => {
 		uploadFolder.value = response;
 	});
@@ -86,7 +86,7 @@ function chooseUploadFolder() {
 		os.success();
 		if (defaultStore.state.uploadFolder) {
 			uploadFolder.value = await os.api('drive/folders/show', {
-				folderId: defaultStore.state.uploadFolder
+				folderId: defaultStore.state.uploadFolder,
 			});
 		} else {
 			uploadFolder.value = null;
@@ -94,12 +94,14 @@ function chooseUploadFolder() {
 	});
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.drive,
-		icon: 'fas fa-cloud',
-		bg: 'var(--bg)',
-	}
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: i18n.ts.drive,
+	icon: 'fas fa-cloud',
+	bg: 'var(--bg)',
 });
 </script>
 

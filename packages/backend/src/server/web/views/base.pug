@@ -1,17 +1,21 @@
 block vars
 
+block loadClientEntry
+	- const clientEntry = getClientEntry();
+
 doctype html
 
-!= '<!--\n'
-!= '  _____ _         _           \n'
-!= ' |     |_|___ ___| |_ ___ _ _ \n'
-!= ' | | | | |_ -|_ -| \'_| -_| | |\n'
-!= ' |_|_|_|_|___|___|_,_|___|_  |\n'
-!= '                         |___|\n'
-!= ' Thank you for using Misskey!\n'
-!= ' If you are reading this message... how about joining the development?\n'
-!= ' https://github.com/misskey-dev/misskey'
-!= '\n-->\n'
+//
+	-
+	  _____ _         _           
+	 |     |_|___ ___| |_ ___ _ _ 
+	 | | | | |_ -|_ -| '_| -_| | |
+	 |_|_|_|_|___|___|_,_|___|_  |
+	                         |___|
+	 Thank you for using Misskey!
+	 If you are reading this message... how about joining the development?
+	 https://github.com/misskey-dev/misskey
+	 
 
 html
 
@@ -30,8 +34,14 @@ html
 		link(rel='prefetch' href='https://xn--931a.moe/assets/info.jpg')
 		link(rel='prefetch' href='https://xn--931a.moe/assets/not-found.jpg')
 		link(rel='prefetch' href='https://xn--931a.moe/assets/error.jpg')
-		link(rel='preload' href='/assets/fontawesome/css/all.css' as='style')
 		link(rel='stylesheet' href='/assets/fontawesome/css/all.css')
+		link(rel='modulepreload' href=`/assets/${clientEntry.file}`)
+
+		each href in clientEntry.css
+			link(rel='preload' href=`/assets/${href}` as='style')
+
+		each href in clientEntry.css
+			link(rel='preload' href=`/assets/${href}` as='style')
 
 		title
 			block title
@@ -52,7 +62,7 @@ html
 
 		script.
 			var VERSION = "#{version}";
-			var CLIENT_ENTRY = "#{clientEntry()}";
+			var CLIENT_ENTRY = "#{clientEntry.file}";
 
 		script
 			include ../boot.js
