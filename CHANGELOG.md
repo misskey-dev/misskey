@@ -18,11 +18,13 @@ You should also include the user name that made the change.
 - Client: Show warning in control panel when there is an unresolved abuse report @syuilo
 - Improve player detection in URL preview @mei23
 - Add Badge Image to Push Notification #8012 @tamaina
+- Client: Removing entries from a clip @futchitwo
 
 ### Bugfixes
 - Server: Fix GenerateVideoThumbnail failed @mei23
 - Server: Ensure temp directory cleanup @Johann150
 - favicons of federated instances not showing @syuilo
+- Admin: The checkbox for blocking an instance works again @Johann150
 
 ## 12.111.1 (2022/06/13)
 

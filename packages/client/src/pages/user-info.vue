@@ -3,14 +3,18 @@
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="500" :margin-min="16" :margin-max="32">
 		<FormSuspense :p="init">
-			<div class="_formRoot">
+			<div v-if="tab === 'overview'" class="_formRoot">
 				<div class="_formBlock aeakzknw">
 					<MkAvatar class="avatar" :user="user" :show-indicator="true"/>
 				</div>
 
-				<FormLink class="_formBlock" :to="userPage(user)">Profile</FormLink>
+				<div v-if="user.url" class="_formLinksGrid _formBlock">
+					<FormLink :to="userPage(user)">Profile</FormLink>
+					<FormLink :to="user.url" :external="true">Profile (remote)</FormLink>
+				</div>
+				<FormLink v-else class="_formBlock" :to="userPage(user)">Profile</FormLink>
 
-				<FormLink v-if="user.url" class="_formBlock" :to="user.url" :external="true">Profile (remote)</FormLink>
+				<FormLink v-if="user.host" class="_formBlock" :to="`/instance-info/${user.host}`">{{ i18n.ts.instanceInfo }}</FormLink>
 
 				<div class="_formBlock">
 					<MkKeyValue :copy="acct(user)" oneline style="margin: 1em 0;">
@@ -57,7 +61,23 @@
 
 					<FormButton v-if="user.host != null" class="_formBlock" @click="updateRemoteUser"><i class="fas fa-sync"></i> {{ $ts.updateRemoteUser }}</FormButton>
 				</FormSection>
-
+			</div>
+			<div v-else-if="tab === 'chart'" class="_formRoot">
+				<div class="cmhjzshm">
+					<div class="selects">
+						<MkSelect v-model="chartSrc" style="margin: 0 10px 0 0; flex: 1;">
+							<option value="per-user-notes">{{ $ts.notes }}</option>
+						</MkSelect>
+					</div>
+					<div class="charts">
+						<div class="label">{{ i18n.t('recentNHours', { n: 90 }) }}</div>
+						<MkChart class="chart" :src="chartSrc" span="hour" :limit="90" :args="{ user, withoutAll: true }" :detailed="true"></MkChart>
+						<div class="label">{{ i18n.t('recentNDays', { n: 90 }) }}</div>
+						<MkChart class="chart" :src="chartSrc" span="day" :limit="90" :args="{ user, withoutAll: true }" :detailed="true"></MkChart>
+					</div>
+				</div>
+			</div>
+			<div v-else-if="tab === 'raw'" class="_formRoot">
 				<MkObjectView v-if="info && $i.isAdmin" tall :value="info">
 				</MkObjectView>
 
@@ -72,6 +92,7 @@
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, defineComponent, watch } from 'vue';
 import * as misskey from 'misskey-js';
+import MkChart from '@/components/chart.vue';
 import MkObjectView from '@/components/object-view.vue';
 import FormTextarea from '@/components/form/textarea.vue';
 import FormSwitch from '@/components/form/switch.vue';
@@ -79,6 +100,7 @@ import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import FormButton from '@/components/ui/button.vue';
 import MkKeyValue from '@/components/key-value.vue';
+import MkSelect from '@/components/form/select.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os';
 import number from '@/filters/number';
@@ -93,6 +115,8 @@ const props = defineProps<{
 	userId: string;
 }>();
 
+let tab = $ref('overview');
+let chartSrc = $ref('per-user-notes');
 let user = $ref<null | misskey.entities.UserDetailed>();
 let init = $ref();
 let info = $ref();
@@ -209,7 +233,22 @@ watch(() => user, () => {
 
 const headerActions = $computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = $computed(() => [{
+	active: tab === 'overview',
+	title: i18n.ts.overview,
+	icon: 'fas fa-info-circle',
+	onClick: () => { tab = 'overview'; },
+}, {
+	active: tab === 'chart',
+	title: i18n.ts.charts,
+	icon: 'fas fa-chart-simple',
+	onClick: () => { tab = 'chart'; },
+}, {
+	active: tab === 'raw',
+	title: 'Raw data',
+	icon: 'fas fa-code',
+	onClick: () => { tab = 'raw'; },
+}]);
 
 definePageMetadata(computed(() => ({
 	title: user ? acct(user) : i18n.ts.userInfo,
@@ -224,6 +263,20 @@ definePageMetadata(computed(() => ({
 		display: block;
 		width: 64px;
 		height: 64px;
+	}
+}
+
+.cmhjzshm {
+	> .selects {
+		display: flex;
+		margin: 0 0 16px 0;
+	}
+
+	> .charts {
+		> .label {
+			margin-bottom: 12px;
+			font-weight: bold;
+		}
 	}
 }
 </style>

@@ -30,6 +30,7 @@
 		panelHeaderDivider: 'rgba(0, 0, 0, 0)',
 		panelBorder: '" solid 1px var(--divider)',
 		acrylicPanel: ':alpha<0.5<@panel',
+		windowHeader: ':alpha<0.85<@panel',
 		popup: ':lighten<3<@panel',
 		shadow: 'rgba(0, 0, 0, 0.3)',
 		header: ':alpha<0.7<@panel',
