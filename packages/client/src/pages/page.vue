@@ -1,63 +1,65 @@
-<template><MkStickyContainer>
+<template>
+<MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-		<MkSpacer :content-max="700">
-	<transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
-		<div v-if="page" :key="page.id" v-size="{ max: [450] }" class="xcukqgmh">
-			<div class="_block main">
-				<!--
+	<MkSpacer :content-max="700">
+		<transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
+			<div v-if="page" :key="page.id" v-size="{ max: [450] }" class="xcukqgmh">
+				<div class="_block main">
+					<!--
 				<div class="header">
 					<h1>{{ page.title }}</h1>
 				</div>
 				-->
-				<div class="banner">
-					<img v-if="page.eyeCatchingImageId" :src="page.eyeCatchingImage.url"/>
-				</div>
-				<div class="content">
-					<XPage :page="page"/>
-				</div>
-				<div class="actions">
-					<div class="like">
-						<MkButton v-if="page.isLiked" v-tooltip="$ts._pages.unlike" class="button" primary @click="unlike()"><i class="fas fa-heart"></i><span v-if="page.likedCount > 0" class="count">{{ page.likedCount }}</span></MkButton>
-						<MkButton v-else v-tooltip="$ts._pages.like" class="button" @click="like()"><i class="far fa-heart"></i><span v-if="page.likedCount > 0" class="count">{{ page.likedCount }}</span></MkButton>
+					<div class="banner">
+						<img v-if="page.eyeCatchingImageId" :src="page.eyeCatchingImage.url"/>
 					</div>
-					<div class="other">
-						<button v-tooltip="$ts.shareWithNote" v-click-anime class="_button" @click="shareWithNote"><i class="fas fa-retweet fa-fw"></i></button>
-						<button v-tooltip="$ts.share" v-click-anime class="_button" @click="share"><i class="fas fa-share-alt fa-fw"></i></button>
+					<div class="content">
+						<XPage :page="page"/>
+					</div>
+					<div class="actions">
+						<div class="like">
+							<MkButton v-if="page.isLiked" v-tooltip="$ts._pages.unlike" class="button" primary @click="unlike()"><i class="fas fa-heart"></i><span v-if="page.likedCount > 0" class="count">{{ page.likedCount }}</span></MkButton>
+							<MkButton v-else v-tooltip="$ts._pages.like" class="button" @click="like()"><i class="far fa-heart"></i><span v-if="page.likedCount > 0" class="count">{{ page.likedCount }}</span></MkButton>
+						</div>
+						<div class="other">
+							<button v-tooltip="$ts.shareWithNote" v-click-anime class="_button" @click="shareWithNote"><i class="fas fa-retweet fa-fw"></i></button>
+							<button v-tooltip="$ts.share" v-click-anime class="_button" @click="share"><i class="fas fa-share-alt fa-fw"></i></button>
+						</div>
+					</div>
+					<div class="user">
+						<MkAvatar :user="page.user" class="avatar"/>
+						<div class="name">
+							<MkUserName :user="page.user" style="display: block;"/>
+							<MkAcct :user="page.user"/>
+						</div>
+						<MkFollowButton v-if="!$i || $i.id != page.user.id" :user="page.user" :inline="true" :transparent="false" :full="true" large class="koudoku"/>
+					</div>
+					<div class="links">
+						<MkA :to="`/@${username}/pages/${pageName}/view-source`" class="link">{{ $ts._pages.viewSource }}</MkA>
+						<template v-if="$i && $i.id === page.userId">
+							<MkA :to="`/pages/edit/${page.id}`" class="link">{{ $ts._pages.editThisPage }}</MkA>
+							<button v-if="$i.pinnedPageId === page.id" class="link _textButton" @click="pin(false)">{{ $ts.unpin }}</button>
+							<button v-else class="link _textButton" @click="pin(true)">{{ $ts.pin }}</button>
+						</template>
 					</div>
 				</div>
-				<div class="user">
-					<MkAvatar :user="page.user" class="avatar"/>
-					<div class="name">
-						<MkUserName :user="page.user" style="display: block;"/>
-						<MkAcct :user="page.user"/>
-					</div>
-					<MkFollowButton v-if="!$i || $i.id != page.user.id" :user="page.user" :inline="true" :transparent="false" :full="true" large class="koudoku"/>
+				<div class="footer">
+					<div><i class="far fa-clock"></i> {{ $ts.createdAt }}: <MkTime :time="page.createdAt" mode="detail"/></div>
+					<div v-if="page.createdAt != page.updatedAt"><i class="far fa-clock"></i> {{ $ts.updatedAt }}: <MkTime :time="page.updatedAt" mode="detail"/></div>
 				</div>
-				<div class="links">
-					<MkA :to="`/@${username}/pages/${pageName}/view-source`" class="link">{{ $ts._pages.viewSource }}</MkA>
-					<template v-if="$i && $i.id === page.userId">
-						<MkA :to="`/pages/edit/${page.id}`" class="link">{{ $ts._pages.editThisPage }}</MkA>
-						<button v-if="$i.pinnedPageId === page.id" class="link _textButton" @click="pin(false)">{{ $ts.unpin }}</button>
-						<button v-else class="link _textButton" @click="pin(true)">{{ $ts.pin }}</button>
-					</template>
-				</div>
+				<MkAd :prefer="['horizontal', 'horizontal-big']"/>
+				<MkContainer :max-height="300" :foldable="true" class="other">
+					<template #header><i class="fas fa-clock"></i> {{ $ts.recentPosts }}</template>
+					<MkPagination v-slot="{items}" :pagination="otherPostsPagination">
+						<MkPagePreview v-for="page in items" :key="page.id" :page="page" class="_gap"/>
+					</MkPagination>
+				</MkContainer>
 			</div>
-			<div class="footer">
-				<div><i class="far fa-clock"></i> {{ $ts.createdAt }}: <MkTime :time="page.createdAt" mode="detail"/></div>
-				<div v-if="page.createdAt != page.updatedAt"><i class="far fa-clock"></i> {{ $ts.updatedAt }}: <MkTime :time="page.updatedAt" mode="detail"/></div>
-			</div>
-			<MkAd :prefer="['horizontal', 'horizontal-big']"/>
-			<MkContainer :max-height="300" :foldable="true" class="other">
-				<template #header><i class="fas fa-clock"></i> {{ $ts.recentPosts }}</template>
-				<MkPagination v-slot="{items}" :pagination="otherPostsPagination">
-					<MkPagePreview v-for="page in items" :key="page.id" :page="page" class="_gap"/>
-				</MkPagination>
-			</MkContainer>
-		</div>
-		<MkError v-else-if="error" @retry="fetch()"/>
-		<MkLoading v-else/>
-	</transition>
-</MkSpacer></MkStickyContainer>
+			<MkError v-else-if="error" @retry="fetchPage()"/>
+			<MkLoading v-else/>
+		</transition>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>

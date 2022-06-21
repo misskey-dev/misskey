@@ -1,3 +1,5 @@
+// NIRAX --- A lightweight router
+
 import { EventEmitter } from 'eventemitter3';
 import { Ref, Component, ref, shallowRef, ShallowRef } from 'vue';
 
@@ -107,10 +109,15 @@ export class Router extends EventEmitter<{
 						}
 						break pathMatchLoop;
 					} else {
-						if (p.startsWith && (parts[0] == null || !parts[0].startsWith(p.startsWith))) continue forEachRouteLoop;
+						if (p.startsWith) {
+							if (parts[0] == null || !parts[0].startsWith(p.startsWith)) continue forEachRouteLoop;
 
-						props.set(p.name, parts[0]);
-						parts.shift();
+							props.set(p.name, parts[0].substring(p.startsWith.length));
+							parts.shift();
+						} else {
+							props.set(p.name, parts[0]);
+							parts.shift();
+						}
 					}
 				}
 			}

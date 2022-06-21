@@ -26,6 +26,7 @@ export const InstanceRepository = db.getRepository(Instance).extend({
 			maintainerName: instance.maintainerName,
 			maintainerEmail: instance.maintainerEmail,
 			iconUrl: instance.iconUrl,
+			faviconUrl: instance.faviconUrl,
 			infoUpdatedAt: instance.infoUpdatedAt ? instance.infoUpdatedAt.toISOString() : null,
 		};
 	},
