@@ -1,11 +1,11 @@
-import define from '../../define.js';
-import { makePaginationQuery } from '../../common/make-pagination-query.js';
-import { Notes } from '@/models/index.js';
-import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
-import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
 import { Brackets } from 'typeorm';
+import { Notes } from '@/models/index.js';
 import { safeForSql } from '@/misc/safe-for-sql.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
+import define from '../../define.js';
+import { makePaginationQuery } from '../../common/make-pagination-query.js';
+import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
+import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
 import { generateBlockedUserQuery } from '../../common/generate-block-query.js';
 
 export const meta = {

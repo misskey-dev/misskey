@@ -9,13 +9,13 @@
 			<i v-else class="fas fa-angle-down icon"></i>
 		</span>
 	</div>
-	<keep-alive>
+	<KeepAlive>
 		<div v-if="openedAtLeastOnce" v-show="opened" class="body">
 			<MkSpacer :margin-min="14" :margin-max="22">
 				<slot></slot>
 			</MkSpacer>
 		</div>
-	</keep-alive>
+	</KeepAlive>
 </div>
 </template>
 
@@ -24,7 +24,7 @@ const props = withDefaults(defineProps<{
 	defaultOpen: boolean;
 }>(), {
   defaultOpen: false,
-})
+});
 
 let opened = $ref(props.defaultOpen);
 let openedAtLeastOnce = $ref(props.defaultOpen);

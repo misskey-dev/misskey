@@ -1,3 +1,4 @@
+import { ref } from 'vue';
 import { globalEvents } from '@/events';
 import tinycolor from 'tinycolor2';
 
@@ -10,30 +11,38 @@ export type Theme = {
 	props: Record<string, string>;
 };
 
-export const lightTheme: Theme = await import('@/themes/_light.json5');
-export const darkTheme: Theme = await import('@/themes/_dark.json5');
+import lightTheme from '@/themes/_light.json5';
+import darkTheme from '@/themes/_dark.json5';
 
 export const themeProps = Object.keys(lightTheme.props).filter(key => !key.startsWith('X'));
 
-export const builtinThemes = [
-	await import('@/themes/l-light.json5'),
-	await import('@/themes/l-coffee.json5'),
-	await import('@/themes/l-apricot.json5'),
-	await import('@/themes/l-rainy.json5'),
-	await import('@/themes/l-vivid.json5'),
-	await import('@/themes/l-cherry.json5'),
-	await import('@/themes/l-sushi.json5'),
+export const getBuiltinThemes = () => Promise.all(
+	[
+		'l-light',
+		'l-coffee',
+		'l-apricot',
+		'l-rainy',
+		'l-vivid',
+		'l-cherry',
+		'l-sushi',
 
-	await import('@/themes/d-dark.json5'),
-	await import('@/themes/d-persimmon.json5'),
-	await import('@/themes/d-astro.json5'),
-	await import('@/themes/d-future.json5'),
-	await import('@/themes/d-botanical.json5'),
-	await import('@/themes/d-cherry.json5'),
-	await import('@/themes/d-ice.json5'),
-	await import('@/themes/d-pumpkin.json5'),
-	await import('@/themes/d-black.json5'),
-] as Theme[];
+		'd-dark',
+		'd-persimmon',
+		'd-astro',
+		'd-future',
+		'd-botanical',
+		'd-cherry',
+		'd-ice',
+		'd-pumpkin',
+		'd-black',
+	].map(name => import(`../themes/${name}.json5`).then(({ default: _default }): Theme => _default))
+);
+
+export const getBuiltinThemesRef = () => {
+	const builtinThemes = ref<Theme[]>([]);
+	getBuiltinThemes().then(themes => builtinThemes.value = themes);
+	return builtinThemes;
+};
 
 let timeout = null;
 

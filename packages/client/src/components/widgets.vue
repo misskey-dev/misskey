@@ -2,11 +2,11 @@
 <div class="vjoppmmu">
 	<template v-if="edit">
 		<header>
-			<MkSelect v-model="widgetAdderSelected" style="margin-bottom: var(--margin)">
+			<MkSelect v-model="widgetAdderSelected" style="margin-bottom: var(--margin)" class="mk-widget-select">
 				<template #label>{{ $ts.selectWidget }}</template>
 				<option v-for="widget in widgetDefs" :key="widget" :value="widget">{{ $t(`_widgets.${widget}`) }}</option>
 			</MkSelect>
-			<MkButton inline primary @click="addWidget"><i class="fas fa-plus"></i> {{ $ts.add }}</MkButton>
+			<MkButton inline primary class="mk-widget-add" @click="addWidget"><i class="fas fa-plus"></i> {{ $ts.add }}</MkButton>
 			<MkButton inline @click="$emit('exit')">{{ $ts.close }}</MkButton>
 		</header>
 		<XDraggable

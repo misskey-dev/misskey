@@ -1007,7 +1007,6 @@ _sfx:
   antenna: "الهوائيات"
   channel: "إشعارات القنات"
 _ago:
-  unknown: "مجهول"
   future: "المستقبَل"
   justNow: "اللحظة"
   secondsAgo: "منذ {n} ثوانٍ"

@@ -1,5 +1,5 @@
 <template>
-<MkContainer :show-header="widgetProps.showHeader">
+<MkContainer :show-header="widgetProps.showHeader" class="mkw-memo">
 	<template #header><i class="fas fa-sticky-note"></i>{{ $ts._widgets.memo }}</template>
 
 	<div class="otgbylcu">

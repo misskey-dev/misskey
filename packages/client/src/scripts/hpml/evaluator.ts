@@ -36,7 +36,7 @@ export class Hpml {
 		if (this.opts.enableAiScript) {
 			this.aiscript = markRaw(new AiScript({ ...createAiScriptEnv({
 				storageKey: 'pages:' + this.page.id
-			}), ...initAiLib(this)}, {
+			}), ...initAiLib(this) }, {
 				in: (q) => {
 					return new Promise(ok => {
 						os.inputText({

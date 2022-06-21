@@ -2,7 +2,8 @@
 <div ref="rootEl" v-hotkey.global="keymap" v-size="{ min: [800] }" class="tqmomfks">
 	<div v-if="queue > 0" class="new"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
 	<div class="tl _block">
-		<XTimeline ref="tlComponent" :key="antennaId"
+		<XTimeline
+			ref="tlEl" :key="antennaId"
 			class="tl"
 			src="antenna"
 			:antenna="antennaId"
@@ -14,30 +15,24 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, watch } from 'vue';
-import * as Misskey from 'misskey-js';
+import { computed, inject, watch } from 'vue';
 import XTimeline from '@/components/timeline.vue';
 import { scroll } from '@/scripts/scroll';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
-import { i18n } from '@/i18n';
-import { router } from '@/router';
+import { useRouter } from '@/router';
+import { definePageMetadata } from '@/scripts/page-metadata';
+import i18n from '@/components/global/i18n';
+
+const router = useRouter();
 
 const props = defineProps<{
 	antennaId: string;
 }>();
 
-let antenna: Misskey.entities.Antenna | null = $ref(null);
+let antenna = $ref(null);
 let queue = $ref(0);
-let tlComponent = $ref<InstanceType<typeof XTimeline>>();
 let rootEl = $ref<HTMLElement>();
-
-watch(() => props.antennaId, async () => {
-	antenna = await os.api('antennas/show', {
-		antennaId: props.antennaId
-	});
-}, { immediate: true, });
-
+let tlEl = $ref<InstanceType<typeof XTimeline>>();
 const keymap = $computed(() => ({
 	't': focus,
 }));
@@ -55,7 +50,8 @@ async function timetravel() {
 		title: i18n.ts.date,
 	});
 	if (canceled) return;
-	tlComponent.timetravel(date);
+
+	tlEl.timetravel(date);
 }
 
 function settings() {
@@ -63,26 +59,33 @@ function settings() {
 }
 
 function focus() {
-	tlComponent?.focus();
+	tlEl.focus();
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: computed(() => antenna ? {
-		title: antenna.name,
-		icon: 'fas fa-satellite',
-		bg: 'var(--bg)',
-		actions: [{
-			icon: 'fas fa-calendar-alt',
-			text: i18n.ts.jumpToSpecifiedDate,
-			handler: timetravel
-		}, {
-			icon: 'fas fa-cog',
-			text: i18n.ts.settings,
-			handler: settings
-		}],
-	} : null),
-});
+watch(() => props.antennaId, async () => {
+	antenna = await os.api('antennas/show', {
+		antennaId: props.antennaId,
+	});
+}, { immediate: true });
 
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata(computed(() => antenna ? {
+	title: antenna.name,
+	icon: 'fas fa-satellite',
+	bg: 'var(--bg)',
+	actions: [{
+		icon: 'fas fa-calendar-alt',
+		text: i18n.ts.jumpToSpecifiedDate,
+		handler: timetravel,
+	}, {
+		icon: 'fas fa-cog',
+		text: i18n.ts.settings,
+		handler: settings,
+	}],
+} : null));
 </script>
 
 <style lang="scss" scoped>

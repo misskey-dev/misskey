@@ -60,9 +60,9 @@ function calc(el: Element) {
 		return;
 	}
 	if (info.intersection) {
-		info.intersection.disconnect()
+		info.intersection.disconnect();
 		delete info.intersection;
-	};
+	}
 
 	mountings.set(el, Object.assign(info, { previousWidth: width }));
 

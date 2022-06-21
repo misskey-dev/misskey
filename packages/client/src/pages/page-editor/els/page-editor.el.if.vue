@@ -25,54 +25,39 @@
 </XContainer>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 /* eslint-disable vue/no-mutating-props */
-import { defineComponent, defineAsyncComponent } from 'vue';
+import { defineAsyncComponent, inject } from 'vue';
 import { v4 as uuid } from 'uuid';
 import XContainer from '../page-editor.container.vue';
 import MkSelect from '@/components/form/select.vue';
 import * as os from '@/os';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		XContainer, MkSelect,
-		XBlocks: defineAsyncComponent(() => import('../page-editor.blocks.vue')),
-	},
+const XBlocks = defineAsyncComponent(() => import('../page-editor.blocks.vue'));
 
-	inject: ['getPageBlockList'],
-
-	props: {
-		value: {
-			required: true
-		},
-		hpml: {
-			required: true,
-		},
-	},
-
-	data() {
-		return {
-		};
-	},
-
-	created() {
-		if (this.value.children == null) this.value.children = [];
-		if (this.value.var === undefined) this.value.var = null;
-	},
-
-	methods: {
-		async add() {
-			const { canceled, result: type } = await os.select({
-				title: this.$ts._pages.chooseBlock,
-				groupedItems: this.getPageBlockList()
-			});
-			if (canceled) return;
-
-			const id = uuid();
-			this.value.children.push({ id, type });
-		},
+const props = withDefaults(defineProps<{
+	value: any,
+	hpml: any
+}>(), {
+	value: {
+		children: [],
+		var: null
 	}
 });
+
+const getPageBlockList = inject<(any) => any>('getPageBlockList');
+
+async function add() {
+	const { canceled, result: type } = await os.select({
+		title: i18n.ts._pages.chooseBlock,
+		groupedItems: getPageBlockList()
+	});
+	if (canceled) return;
+
+	const id = uuid();
+	props.value.children.push({ id, type });
+}
 </script>
 
 <style lang="scss" scoped>

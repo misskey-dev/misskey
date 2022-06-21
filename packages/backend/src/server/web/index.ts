@@ -11,6 +11,7 @@ import Router from '@koa/router';
 import send from 'koa-send';
 import favicon from 'koa-favicon';
 import views from 'koa-views';
+import sharp from 'sharp';
 import { createBullBoard } from '@bull-board/api';
 import { BullAdapter } from '@bull-board/api/bullAdapter.js';
 import { KoaAdapter } from '@bull-board/koa';
@@ -74,9 +75,9 @@ app.use(views(_dirname + '/views', {
 	extension: 'pug',
 	options: {
 		version: config.version,
-		clientEntry: () => process.env.NODE_ENV === 'production' ?
+		getClientEntry: () => process.env.NODE_ENV === 'production' ?
 			config.clientEntry :
-			JSON.parse(readFileSync(`${_dirname}/../../../../../built/_client_dist_/manifest.json`, 'utf-8'))['src/init.ts'].file.replace(/^_client_dist_\//, ''),
+			JSON.parse(readFileSync(`${_dirname}/../../../../../built/_client_dist_/manifest.json`, 'utf-8'))['src/init.ts'],
 		config,
 	},
 }));
@@ -138,6 +139,49 @@ router.get('/twemoji/(.*)', async ctx => {
 		root: `${_dirname}/../../../node_modules/@discordapp/twemoji/dist/svg/`,
 		maxage: ms('30 days'),
 	});
+});
+
+router.get('/twemoji-badge/(.*)', async ctx => {
+	const path = ctx.path.replace('/twemoji-badge/', '');
+
+	if (!path.match(/^[0-9a-f-]+\.png$/)) {
+		ctx.status = 404;
+		return;
+	}
+
+	const mask = await sharp(
+		`${_dirname}/../../../node_modules/@discordapp/twemoji/dist/svg/${path.replace('.png', '')}.svg`,
+		{ density: 1000 },
+	)
+		.resize(488, 488)
+		.greyscale()
+		.normalise()
+		.linear(1.75, -(128 * 1.75) + 128) // 1.75x contrast
+		.flatten({ background: '#000' })
+		.extend({
+			top: 12,
+			bottom: 12,
+			left: 12,
+			right: 12,
+			background: '#000',
+		})
+		.toColorspace('b-w')
+		.png()
+		.toBuffer();
+
+	const buffer = await sharp({
+		create: { width: 512, height: 512, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } },
+	})
+		.pipelineColorspace('b-w')
+		.boolean(mask, 'eor')
+		.resize(96, 96)
+		.png()
+		.toBuffer();
+
+	ctx.set('Content-Security-Policy', 'default-src \'none\'; style-src \'unsafe-inline\'');
+	ctx.set('Cache-Control', 'max-age=2592000');
+	ctx.set('Content-Type', 'image/png');
+	ctx.body = buffer;
 });
 
 // ServiceWorker
@@ -247,7 +291,7 @@ router.get(['/@:user', '/@:user/:sub'], async (ctx, next) => {
 			icon: meta.iconUrl,
 			themeColor: meta.themeColor,
 		});
-		ctx.set('Cache-Control', 'public, max-age=30');
+		ctx.set('Cache-Control', 'public, max-age=15');
 	} else {
 		// リモートユーザーなので
 		// モデレータがAPI経由で参照可能にするために404にはしない
@@ -292,7 +336,7 @@ router.get('/notes/:note', async (ctx, next) => {
 			themeColor: meta.themeColor,
 		});
 
-		ctx.set('Cache-Control', 'public, max-age=180');
+		ctx.set('Cache-Control', 'public, max-age=15');
 
 		return;
 	}
@@ -329,7 +373,7 @@ router.get('/@:user/pages/:page', async (ctx, next) => {
 		});
 
 		if (['public'].includes(page.visibility)) {
-			ctx.set('Cache-Control', 'public, max-age=180');
+			ctx.set('Cache-Control', 'public, max-age=15');
 		} else {
 			ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
 		}
@@ -360,7 +404,7 @@ router.get('/clips/:clip', async (ctx, next) => {
 			themeColor: meta.themeColor,
 		});
 
-		ctx.set('Cache-Control', 'public, max-age=180');
+		ctx.set('Cache-Control', 'public, max-age=15');
 
 		return;
 	}
@@ -385,7 +429,7 @@ router.get('/gallery/:post', async (ctx, next) => {
 			themeColor: meta.themeColor,
 		});
 
-		ctx.set('Cache-Control', 'public, max-age=180');
+		ctx.set('Cache-Control', 'public, max-age=15');
 
 		return;
 	}
@@ -409,7 +453,7 @@ router.get('/channels/:channel', async (ctx, next) => {
 			themeColor: meta.themeColor,
 		});
 
-		ctx.set('Cache-Control', 'public, max-age=180');
+		ctx.set('Cache-Control', 'public, max-age=15');
 
 		return;
 	}
@@ -468,7 +512,7 @@ router.get('(.*)', async ctx => {
 		icon: meta.iconUrl,
 		themeColor: meta.themeColor,
 	});
-	ctx.set('Cache-Control', 'public, max-age=300');
+	ctx.set('Cache-Control', 'public, max-age=15');
 });
 
 // Register router

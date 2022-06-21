@@ -52,9 +52,9 @@ const props = defineProps<{
 const isMe = $computed(() => props.message.userId === $i?.id);
 const urls = $computed(() => props.message.text ? extractUrlFromMfm(mfm.parse(props.message.text)) : []);
 
-function del() {
+function del(): void {
 	os.api('messaging/messages/delete', {
-		messageId: props.message.id
+		messageId: props.message.id,
 	});
 }
 </script>

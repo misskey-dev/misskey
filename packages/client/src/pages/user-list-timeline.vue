@@ -1,46 +1,47 @@
 <template>
-<div ref="rootEl" v-hotkey.global="keymap" v-size="{ min: [800] }" class="eqqrhokj">
-	<div v-if="queue > 0" class="new"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
-	<div class="tl _block">
-		<XTimeline ref="tlComponent" :key="listId"
-			class="tl"
-			src="list"
-			:list="listId"
-			:sound="true"
-			@queue="queueUpdated"
-		/>
+<MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<div ref="rootEl" v-size="{ min: [800] }" class="eqqrhokj">
+		<div v-if="queue > 0" class="new"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
+		<div class="tl _block">
+			<XTimeline
+				ref="tlEl" :key="listId"
+				class="tl"
+				src="list"
+				:list="listId"
+				:sound="true"
+				@queue="queueUpdated"
+			/>
+		</div>
 	</div>
-</div>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
-import { computed, watch } from 'vue';
-import * as Misskey from 'misskey-js';
+import { computed, watch, inject } from 'vue';
 import XTimeline from '@/components/timeline.vue';
 import { scroll } from '@/scripts/scroll';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
+import { useRouter } from '@/router';
+import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
-import { router } from '@/router';
+
+const router = useRouter();
 
 const props = defineProps<{
 	listId: string;
 }>();
 
-let list: Misskey.entities.UserList | null = $ref(null);
-let queue: number = $ref(0);
-let tlComponent = $ref<InstanceType<typeof XTimeline>>();
+let list = $ref(null);
+let queue = $ref(0);
+let tlEl = $ref<InstanceType<typeof XTimeline>>();
 let rootEl = $ref<HTMLElement>();
-
-const keymap = $computed(() => ({
-	't': focus,
-}));
 
 watch(() => props.listId, async () => {
 	list = await os.api('users/lists/show', {
-		listId: props.listId
+		listId: props.listId,
 	});
-}, { immediate: true, });
+}, { immediate: true });
 
 function queueUpdated(q) {
 	queue = q;
@@ -50,38 +51,36 @@ function top() {
 	scroll(rootEl, { top: 0 });
 }
 
+function settings() {
+	router.push(`/my/lists/${props.listId}`);
+}
+
 async function timetravel() {
 	const { canceled, result: date } = await os.inputDate({
 		title: i18n.ts.date,
 	});
 	if (canceled) return;
-	tlComponent.timetravel(date);
+
+	tlEl.timetravel(date);
 }
 
-function settings() {
-	router.push(`/my/lists/${props.listId}`);
-}
+const headerActions = $computed(() => list ? [{
+	icon: 'fas fa-calendar-alt',
+	text: i18n.ts.jumpToSpecifiedDate,
+	handler: timetravel,
+}, {
+	icon: 'fas fa-cog',
+	text: i18n.ts.settings,
+	handler: settings,
+}] : []);
 
-function focus() {
-	tlComponent?.focus();
-}
+const headerTabs = $computed(() => []);
 
-defineExpose({
-	[symbols.PAGE_INFO]: computed(() => list ? {
-		title: list.name,
-		icon: 'fas fa-list-ul',
-		bg: 'var(--bg)',
-		actions: [{
-			icon: 'fas fa-calendar-alt',
-			text: i18n.ts.jumpToSpecifiedDate,
-			handler: timetravel
-		}, {
-			icon: 'fas fa-cog',
-			text: i18n.ts.settings,
-			handler: settings
-		}],
-	} : null),
-});
+definePageMetadata(computed(() => list ? {
+	title: list.name,
+	icon: 'fas fa-list-ul',
+	bg: 'var(--bg)',
+} : null));
 </script>
 
 <style lang="scss" scoped>

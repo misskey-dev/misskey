@@ -27,8 +27,7 @@ type CaptchaContainer = {
 };
 
 declare global {
-	interface Window extends CaptchaContainer {
-	}
+	interface Window extends CaptchaContainer { }
 }
 
 const props = defineProps<{

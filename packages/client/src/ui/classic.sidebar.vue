@@ -126,7 +126,7 @@ export default defineComponent({
 			}, {}, 'closed');
 		},
 
-		openAccountMenu:(ev) => {
+		openAccountMenu: (ev) => {
 			openAccountMenu({
 				withExtraOperation: true,
 			}, ev);

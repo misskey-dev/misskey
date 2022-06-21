@@ -11,6 +11,11 @@ import { entity as PerUserFollowingChart } from './charts/entities/per-user-foll
 import { entity as PerUserDriveChart } from './charts/entities/per-user-drive.js';
 import { entity as ApRequestChart } from './charts/entities/ap-request.js';
 
+import { entity as TestChart } from './charts/entities/test.js';
+import { entity as TestGroupedChart } from './charts/entities/test-grouped.js';
+import { entity as TestUniqueChart } from './charts/entities/test-unique.js';
+import { entity as TestIntersectionChart } from './charts/entities/test-intersection.js';
+
 export const entities = [
 	FederationChart.hour, FederationChart.day,
 	NotesChart.hour, NotesChart.day,
@@ -24,4 +29,11 @@ export const entities = [
 	PerUserFollowingChart.hour, PerUserFollowingChart.day,
 	PerUserDriveChart.hour, PerUserDriveChart.day,
 	ApRequestChart.hour, ApRequestChart.day,
+
+	...(process.env.NODE_ENV === 'test' ? [
+		TestChart.hour, TestChart.day,
+		TestGroupedChart.hour, TestGroupedChart.day,
+		TestUniqueChart.hour, TestUniqueChart.day,
+		TestIntersectionChart.hour, TestIntersectionChart.day,
+	] : []),
 ];

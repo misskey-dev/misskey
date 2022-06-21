@@ -9,6 +9,8 @@ export const meta = {
 
 	kind: 'read:drive',
 
+	description: 'Search for a drive file by the given parameters.',
+
 	res: {
 		type: 'array',
 		optional: false, nullable: false,

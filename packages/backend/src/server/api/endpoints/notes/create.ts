@@ -134,7 +134,7 @@ export const paramDef = {
 		{
 			// (re)note with text, files and poll are optional
 			properties: {
-				text: { type: 'string', maxLength: MAX_NOTE_TEXT_LENGTH, nullable: false },
+				text: { type: 'string', minLength: 1, maxLength: MAX_NOTE_TEXT_LENGTH, nullable: false },
 			},
 			required: ['text'],
 		},

@@ -82,7 +82,7 @@ export default async function renderNote(note: Note, dive = true, isTalk = false
 
 	const files = await getPromisedFiles(note.fileIds);
 
-	const text = note.text;
+	const text = note.text ?? '';
 	let poll: Poll | null = null;
 
 	if (note.hasPoll) {
@@ -90,7 +90,6 @@ export default async function renderNote(note: Note, dive = true, isTalk = false
 	}
 
 	let apText = text;
-	if (apText == null) apText = '';
 
 	if (quote) {
 		apText += `\n\nRE: ${quote}`;
@@ -138,6 +137,10 @@ export default async function renderNote(note: Note, dive = true, isTalk = false
 		summary,
 		content,
 		_misskey_content: text,
+		source: {
+			content: text,
+			mediaType: "text/x.misskeymarkdown",
+		},
 		_misskey_quote: quote,
 		quoteUrl: quote,
 		published: note.createdAt.toISOString(),

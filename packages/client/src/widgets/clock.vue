@@ -1,5 +1,5 @@
 <template>
-<MkContainer :naked="widgetProps.transparent" :show-header="false">
+<MkContainer :naked="widgetProps.transparent" :show-header="false" class="mkw-clock">
 	<div class="vubelbmv">
 		<MkAnalogClock class="clock" :thickness="widgetProps.thickness"/>
 	</div>
