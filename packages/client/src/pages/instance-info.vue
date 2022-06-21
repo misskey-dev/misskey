@@ -73,7 +73,7 @@
 				<FormLink :to="`https://${host}/manifest.json`" external style="margin-bottom: 8px;">manifest.json</FormLink>
 			</FormSection>
 		</div>
-		<div v-if="tab === 'chart'" class="_formRoot">
+		<div v-else-if="tab === 'chart'" class="_formRoot">
 			<div class="cmhjzshl">
 				<div class="selects">
 					<MkSelect v-model="chartSrc" style="margin: 0 10px 0 0; flex: 1;">
@@ -98,7 +98,7 @@
 				</div>
 			</div>
 		</div>
-		<div v-if="tab === 'raw'" class="_formRoot">
+		<div v-else-if="tab === 'raw'" class="_formRoot">
 			<MkObjectView tall :value="instance">
 			</MkObjectView>
 		</div>
@@ -130,11 +130,11 @@ const props = defineProps<{
 }>();
 
 let tab = $ref('overview');
+let chartSrc = $ref('instance-requests');
 let meta = $ref<misskey.entities.DetailedInstanceMetadata | null>(null);
 let instance = $ref<misskey.entities.Instance | null>(null);
 let suspended = $ref(false);
 let isBlocked = $ref(false);
-let chartSrc = $ref('instance-requests');
 
 async function fetch() {
 	if (iAmModerator) {
