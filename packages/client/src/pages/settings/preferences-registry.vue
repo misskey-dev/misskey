@@ -30,19 +30,19 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, useCssModule } from 'vue';
+import { computed, onMounted, onUnmounted, useCssModule } from 'vue';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/ui/button.vue';
 import MkInfo from '@/components/ui/info.vue';
 import * as os from '@/os';
 import { v4 as uuid } from 'uuid';
 import { ColdDeviceStorage, defaultStore } from '@/store';
-import * as symbols from '@/symbols';
 import { unisonReload } from '@/scripts/unison-reload';
 import { stream } from '@/stream';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
 import { version } from '@/config';
+import { definePageMetadata } from '@/scripts/page-metadata';
 const { t, ts } = i18n;
 
 useCssModule();
@@ -349,13 +349,11 @@ onUnmounted(() => {
 	connection?.off('registryUpdated');
 });
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: ts.preferencesRegistry,
-		icon: 'fas fa-floppy-disk',
-		bg: 'var(--bg)',
-	}
-})
+definePageMetadata(computed(() => ({
+	title: ts.preferencesRegistry,
+	icon: 'fas fa-floppy-disk',
+	bg: 'var(--bg)',
+})));
 </script>
 
 <style lang="scss" module>
