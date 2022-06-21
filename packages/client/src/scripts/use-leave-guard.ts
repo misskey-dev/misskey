@@ -1,5 +1,4 @@
 import { inject, onUnmounted, Ref } from 'vue';
-import { onBeforeRouteLeave } from 'vue-router';
 import { i18n } from '@/i18n';
 import * as os from '@/os';
 

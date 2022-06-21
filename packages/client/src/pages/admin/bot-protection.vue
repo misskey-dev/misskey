@@ -51,7 +51,6 @@ import FormButton from '@/components/ui/button.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import FormSlot from '@/components/form/slot.vue';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { fetchInstance } from '@/instance';
 
 const MkCaptcha = defineAsyncComponent(() => import('@/components/captcha.vue'));
