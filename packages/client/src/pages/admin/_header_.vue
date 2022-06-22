@@ -9,10 +9,11 @@
 			</div>
 		</div>
 		<div class="tabs">
-			<button v-for="tab in tabs" v-tooltip="tab.title" class="tab _button" :class="{ active: tab.active }" @click="tab.onClick">
+			<button v-for="tab in tabs" :ref="(el) => tabRefs[tab.key] = el" v-tooltip="tab.title" class="tab _button" :class="{ active: tab.key != null && tab.key === props.tab }" @mousedown="(ev) => onTabMousedown(tab, ev)" @click="(ev) => onTabClick(tab, ev)">
 				<i v-if="tab.icon" class="icon" :class="tab.icon"></i>
 				<span v-if="!tab.iconOnly" class="title">{{ tab.title }}</span>
 			</button>
+			<div ref="tabHighlightEl" class="highlight"></div>
 		</div>
 	</template>
 	<div class="buttons right">
@@ -27,7 +28,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, onUnmounted, ref, inject } from 'vue';
+import { computed, onMounted, onUnmounted, ref, inject, watch } from 'vue';
 import tinycolor from 'tinycolor2';
 import { popupMenu } from '@/os';
 import { url } from '@/config';
@@ -35,16 +36,19 @@ import { scrollToTop } from '@/scripts/scroll';
 import MkButton from '@/components/ui/button.vue';
 import { i18n } from '@/i18n';
 import { globalEvents } from '@/events';
-import { injectPageMetadata, PageMetadata } from '@/scripts/page-metadata';
+import { injectPageMetadata } from '@/scripts/page-metadata';
+
+type Tab = {
+	key?: string | null;
+	title: string;
+	icon?: string;
+	iconOnly?: boolean;
+	onClick?: (ev: MouseEvent) => void;
+};
 
 const props = defineProps<{
-	tabs?: {
-		title: string;
-		active: boolean;
-		icon?: string;
-		iconOnly?: boolean;
-		onClick: () => void;
-	}[];
+	tabs?: Tab[];
+	tab?: string;
 	actions?: {
 		text: string;
 		icon: string;
@@ -54,9 +58,15 @@ const props = defineProps<{
 	thin?: boolean;
 }>();
 
+const emit = defineEmits<{
+	(ev: 'update:tab', key: string);
+}>();
+
 const metadata = injectPageMetadata();
 
 const el = ref<HTMLElement>(null);
+const tabRefs = {};
+const tabHighlightEl = $ref<HTMLElement | null>(null);
 const bg = ref(null);
 const height = ref(0);
 const hasTabs = computed(() => {
@@ -71,7 +81,10 @@ const showTabsPopup = (ev: MouseEvent) => {
 	const menu = props.tabs.map(tab => ({
 		text: tab.title,
 		icon: tab.icon,
-		action: tab.onClick,
+		active: tab.key != null && tab.key === props.tab,
+		action: (ev) => {
+			onTabClick(tab, ev);
+		},
 	}));
 	popupMenu(menu, ev.currentTarget ?? ev.target);
 };
@@ -84,6 +97,20 @@ const onClick = () => {
 	scrollToTop(el.value, { behavior: 'smooth' });
 };
 
+function onTabMousedown(tab: Tab, ev: MouseEvent): void {
+	// ユーザビリティの観点からmousedown時にはonClickは呼ばない
+	if (tab.key) {
+		emit('update:tab', tab.key);
+	}
+}
+
+function onTabClick(tab: Tab, ev: MouseEvent): void {
+	if (tab.onClick) tab.onClick(ev);
+	if (tab.key) {
+		emit('update:tab', tab.key);
+	}
+}
+
 const calcBg = () => {
 	const rawBg = metadata?.bg || 'var(--bg)';
 	const tinyBg = tinycolor(rawBg.startsWith('var(') ? getComputedStyle(document.documentElement).getPropertyValue(rawBg.slice(4, -1)) : rawBg);
@@ -94,6 +121,20 @@ const calcBg = () => {
 onMounted(() => {
 	calcBg();
 	globalEvents.on('themeChanged', calcBg);
+
+	watch(() => props.tab, () => {
+		const tabEl = tabRefs[props.tab];
+		if (tabEl && tabHighlightEl) {
+			// offsetWidth や offsetLeft は少数を丸めてしまうため getBoundingClientRect を使う必要がある
+			// https://developer.mozilla.org/ja/docs/Web/API/HTMLElement/offsetWidth#%E5%80%A4
+			const parentRect = tabEl.parentElement.getBoundingClientRect();
+			const rect = tabEl.getBoundingClientRect();
+			tabHighlightEl.style.width = rect.width + 'px';
+			tabHighlightEl.style.left = (rect.left - parentRect.left) + 'px';
+		}
+	}, {
+		immediate: true,
+	});
 });
 
 onUnmounted(() => {
@@ -206,6 +247,7 @@ onUnmounted(() => {
 	}
 
 	> .tabs {
+		position: relative;
 		margin-left: 16px;
 		font-size: 0.8em;
 		overflow: auto;
@@ -225,24 +267,21 @@ onUnmounted(() => {
 
 			&.active {
 				opacity: 1;
-
-				&:after {
-					content: "";
-					display: block;
-					position: absolute;
-					bottom: 0;
-					left: 0;
-					right: 0;
-					margin: 0 auto;
-					width: 100%;
-					height: 3px;
-					background: var(--accent);
-				}
 			}
 
 			> .icon + .title {
 				margin-left: 8px;
 			}
+		}
+
+		> .highlight {
+			position: absolute;
+			bottom: 0;
+			height: 3px;
+			background: var(--accent);
+			border-radius: 999px;
+			transition: all 0.2s ease;
+			pointer-events: none;
 		}
 	}
 }

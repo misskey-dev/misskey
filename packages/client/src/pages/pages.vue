@@ -1,6 +1,6 @@
 <template>
 <MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="700">
 		<div v-if="tab === 'featured'" class="rknalgpo">
 			<MkPagination v-slot="{items}" :pagination="featuredPagesPagination">
@@ -61,20 +61,17 @@ const headerActions = $computed(() => [{
 }]);
 
 const headerTabs = $computed(() => [{
-	active: tab === 'featured',
+	key: 'featured',
 	title: i18n.ts._pages.featured,
 	icon: 'fas fa-fire-alt',
-	onClick: () => { tab = 'featured'; },
 }, {
-	active: tab === 'my',
+	key: 'my',
 	title: i18n.ts._pages.my,
 	icon: 'fas fa-edit',
-	onClick: () => { tab = 'my'; },
 }, {
-	active: tab === 'liked',
+	key: 'liked',
 	title: i18n.ts._pages.liked,
 	icon: 'fas fa-heart',
-	onClick: () => { tab = 'liked'; },
 }]);
 
 definePageMetadata(computed(() => ({

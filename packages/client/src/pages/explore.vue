@@ -1,6 +1,6 @@
 <template>
 <MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="1200">
 		<div class="lznhrdub">
 			<div v-if="tab === 'local'">
@@ -178,17 +178,14 @@ os.api('stats').then(_stats => {
 const headerActions = $computed(() => []);
 
 const headerTabs = $computed(() => [{
-	active: tab === 'local',
+	key: 'local',
 	title: i18n.ts.local,
-	onClick: () => { tab = 'local'; },
 }, {
-	active: tab === 'remote',
+	key: 'remote',
 	title: i18n.ts.remote,
-	onClick: () => { tab = 'remote'; },
 }, {
-	active: tab === 'search',
+	key: 'search',
 	title: i18n.ts.search,
-	onClick: () => { tab = 'search'; },
 }]);
 
 definePageMetadata(computed(() => ({

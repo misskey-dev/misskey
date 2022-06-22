@@ -1,6 +1,6 @@
 <template>
 <MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer v-if="tab === 'overview'" :content-max="600" :margin-min="20">
 		<div class="_formRoot">
 			<div class="_formBlock fwhjspax" :style="{ backgroundImage: `url(${ $instance.bannerUrl })` }">
@@ -98,14 +98,12 @@ const initStats = () => os.api('stats', {
 const headerActions = $computed(() => []);
 
 const headerTabs = $computed(() => [{
-	active: tab === 'overview',
+	key: 'overview',
 	title: i18n.ts.overview,
-	onClick: () => { tab = 'overview'; },
 }, {
-	active: tab === 'charts',
+	key: 'charts',
 	title: i18n.ts.charts,
 	icon: 'fas fa-chart-bar',
-	onClick: () => { tab = 'charts'; },
 }]);
 
 definePageMetadata(computed(() => ({

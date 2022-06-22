@@ -1,6 +1,6 @@
 <template>
 <MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer v-if="file" :content-max="500" :margin-min="16" :margin-max="32">
 		<div v-if="tab === 'overview'" class="cxqhhsmd _formRoot">
 			<a class="_formBlock thumbnail" :href="file.url" target="_blank">
@@ -103,15 +103,13 @@ const headerActions = $computed(() => [{
 }]);
 
 const headerTabs = $computed(() => [{
-	active: tab === 'overview',
+	key: 'overview',
 	title: i18n.ts.overview,
 	icon: 'fas fa-info-circle',
-	onClick: () => { tab = 'overview'; },
 }, {
-	active: tab === 'raw',
+	key: 'raw',
 	title: 'Raw data',
 	icon: 'fas fa-code',
-	onClick: () => { tab = 'raw'; },
 }]);
 
 definePageMetadata(computed(() => ({

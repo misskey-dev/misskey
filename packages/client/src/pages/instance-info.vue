@@ -1,6 +1,6 @@
 <template>
 <MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer v-if="instance" :content-max="600" :margin-min="16" :margin-max="32">
 		<div v-if="tab === 'overview'" class="_formRoot">
 			<div class="fnfelxur">
@@ -183,20 +183,17 @@ const headerActions = $computed(() => [{
 }]);
 
 const headerTabs = $computed(() => [{
-	active: tab === 'overview',
+	key: 'overview',
 	title: i18n.ts.overview,
 	icon: 'fas fa-info-circle',
-	onClick: () => { tab = 'overview'; },
 }, {
-	active: tab === 'chart',
+	key: 'chart',
 	title: i18n.ts.charts,
 	icon: 'fas fa-chart-simple',
-	onClick: () => { tab = 'chart'; },
 }, {
-	active: tab === 'raw',
+	key: 'raw',
 	title: 'Raw data',
 	icon: 'fas fa-code',
-	onClick: () => { tab = 'raw'; },
 }]);
 
 definePageMetadata({
