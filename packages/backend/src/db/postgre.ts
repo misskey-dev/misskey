@@ -192,12 +192,13 @@ export const db = new DataSource({
 	synchronize: process.env.NODE_ENV === 'test',
 	dropSchema: process.env.NODE_ENV === 'test',
 	cache: !config.db.disableCache ? {
-		type: 'redis',
+		type: 'ioredis',
 		options: {
 			host: config.redis.host,
 			port: config.redis.port,
+			family: 0,
 			password: config.redis.pass,
-			prefix: `${config.redis.prefix}:query:`,
+			keyPrefix: `${config.redis.prefix}:query:`,
 			db: config.redis.db || 0,
 		},
 	} : false,
