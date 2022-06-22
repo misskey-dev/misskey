@@ -227,7 +227,7 @@ export async function initDb(force = false) {
 
 export async function resetDb() {
 	const reset = async () => {
-		await redisClient.FLUSHDB();
+		await redisClient.flushdb();
 		const tables = await db.query(`SELECT relname AS "table"
 		FROM pg_class C LEFT JOIN pg_namespace N ON (N.oid = C.relnamespace)
 		WHERE nspname NOT IN ('pg_catalog', 'information_schema')
