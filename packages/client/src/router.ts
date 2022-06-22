@@ -148,9 +148,6 @@ export const routes = [{
 	path: '/admin/file/:fileId',
 	component: iAmModerator ? page(() => import('./pages/admin-file.vue')) : page(() => import('./pages/not-found.vue')),
 }, {
-	path: '/admin/tools/freeze',
-	component: page(() => import('./pages/admin/tools/freeze.vue')),
-}, {
 	path: '/admin/:initialPage(*)?',
 	component: iAmModerator ? page(() => import('./pages/admin/index.vue')) : page(() => import('./pages/not-found.vue')),
 }, {

@@ -116,7 +116,6 @@ export const paramDef = {
 		emailNotificationTypes: { type: 'array', items: {
 			type: 'string',
 		} },
-		isOjosama: { type: 'boolean' },
 	},
 } as const;
 
@@ -170,7 +169,6 @@ export default define(meta, paramDef, async (ps, _user, token) => {
 	if (typeof ps.receiveAnnouncementEmail === 'boolean') profileUpdates.receiveAnnouncementEmail = ps.receiveAnnouncementEmail;
 	if (typeof ps.alwaysMarkNsfw === 'boolean') profileUpdates.alwaysMarkNsfw = ps.alwaysMarkNsfw;
 	if (ps.emailNotificationTypes !== undefined) profileUpdates.emailNotificationTypes = ps.emailNotificationTypes;
-	if (typeof ps.isOjosama === 'boolean') profileUpdates.isOjosama = ps.isOjosama;
 
 	if (ps.avatarId) {
 		const avatar = await DriveFiles.findOneBy({ id: ps.avatarId });

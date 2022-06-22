@@ -2,7 +2,7 @@ import ms from 'ms';
 import { In } from 'typeorm';
 import create from '@/services/note/create.js';
 import { User } from '@/models/entities/user.js';
-import { Users, DriveFiles, Notes, Channels, Blockings, UserProfiles } from '@/models/index.js';
+import { Users, DriveFiles, Notes, Channels, Blockings } from '@/models/index.js';
 import { DriveFile } from '@/models/entities/drive-file.js';
 import { Note } from '@/models/entities/note.js';
 import { Channel } from '@/models/entities/channel.js';
@@ -10,7 +10,6 @@ import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { noteVisibilities } from '../../../../types.js';
 import { ApiError } from '../../error.js';
 import define from '../../define.js';
-import spawnAsync from '@expo/spawn-async';
 
 export const meta = {
 	tags: ['notes'],
@@ -77,12 +76,6 @@ export const meta = {
 			message: 'You have been blocked by this user.',
 			code: 'YOU_HAVE_BEEN_BLOCKED',
 			id: 'b390d7e1-8a5e-46ed-b625-06271cafd3d3',
-		},
-
-		textFilteringFailed: {
-			message: 'Failed to apply text filter. Are you installed related softwares?',
-			code: 'TEXT_FILTERING_FAILED',
-			id: '79ed2b1d-5ea1-4085-9c04-a25c01cf5c33',
 		},
 	},
 } as const;
@@ -254,23 +247,6 @@ export default define(meta, paramDef, async (ps, user) => {
 		}
 	}
 
-	let filteredText: string | null = null;
-	// お嬢様文章変換
-	const up = await UserProfiles.findOneBy({ userId: user.id });
-	if (up != null) {
-		if (typeof up.isOjosama === 'boolean') {
-			if (up.isOjosama && ps.text) {
-				try {
-					const cnvproc = spawnAsync(process.env.HOME + '/go/bin/ojosama', ['-t', ps.text]);
-					const { stdout } = await cnvproc;
-					filteredText = stdout;
-				} catch (e) {
-					return new ApiError(meta.errors.textFilteringFailed);
-				}
-			}
-		}
-	}
-
 	// 投稿を作成
 	const note = await create(user, {
 		createdAt: new Date(),
@@ -280,7 +256,7 @@ export default define(meta, paramDef, async (ps, user) => {
 			multiple: ps.poll.multiple || false,
 			expiresAt: ps.poll.expiresAt ? new Date(ps.poll.expiresAt) : null,
 		} : undefined,
-		text: filteredText || ps.text || undefined,
+		text: ps.text || undefined,
 		reply,
 		renote,
 		cw: ps.cw,
