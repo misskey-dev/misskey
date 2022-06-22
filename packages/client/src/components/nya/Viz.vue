@@ -558,7 +558,7 @@ const drawFragment = (props: FragmentProps) => {
         pointer-events: none;
       }
       &.played {
-        background-color: #ddd;
+        background-color: #96baf3;
         pointer-events: none;
       }
     }
