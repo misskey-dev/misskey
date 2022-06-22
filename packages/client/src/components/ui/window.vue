@@ -402,7 +402,7 @@ export default defineComponent({
     height: 100%;
 
 		> .header {
-			--height: 50px;
+			--height: 45px;
 
 			&.mini {
 				--height: 38px;
@@ -415,6 +415,7 @@ export default defineComponent({
 			user-select: none;
 			height: var(--height);
 			border-bottom: solid 1px var(--divider);
+			font-size: 95%;
 
 			> .left, > .right {
 				> .button {

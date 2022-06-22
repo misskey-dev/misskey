@@ -114,7 +114,11 @@ function onTabMousedown(tab: Tab, ev: MouseEvent): void {
 }
 
 function onTabClick(tab: Tab, ev: MouseEvent): void {
-	if (tab.onClick) tab.onClick(ev);
+	if (tab.onClick) {
+		ev.preventDefault();
+		ev.stopPropagation();
+		tab.onClick(ev);
+	}
 	if (tab.key) {
 		emit('update:tab', tab.key);
 	}
@@ -150,7 +154,7 @@ onMounted(() => {
 	if (el && el.parentElement) {
 		narrow = el.parentElement.offsetWidth < 500;
 		ro = new ResizeObserver((entries, observer) => {
-			if (el.parentElement) {
+			if (el.parentElement && document.body.contains(el)) {
 				narrow = el.parentElement.offsetWidth < 500;
 			}
 		});
@@ -268,6 +272,8 @@ onUnmounted(() => {
 
 		> .icon {
 			margin-right: 8px;
+			width: 16px;
+			text-align: center;
 		}
 
 		> .title {
