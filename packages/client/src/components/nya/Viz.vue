@@ -122,7 +122,7 @@ const isPlaying = ref(false);
 const isMuted = ref(false);
 let isSeeking = false;
 let colors = {
-  bg: '#000c',
+  bg: '#333',
   freq: '#fff',
   fragments: '#fff6',
 };
@@ -147,18 +147,19 @@ const init = (src: string) => {
   initAudio(src);
   initAudioAnalyser();
   initFragments();
+	initWrapperBG();
 
-  window.addEventListener('resize', () => {
-    if (wrapper.value?.clientWidth) {
-      initCanvasSize(wrapper.value.clientWidth);
-      initFragmentsSize();
+	new ResizeObserver(() => {
+		if (wrapper.value?.clientWidth) {
+			initCanvasSize(wrapper.value.clientWidth);
+			initFragmentsSize();
 
-      // Flush canvas
-      if (flushEventId === 0) {
-        requestAnimationFrame(render);
-      } // else will be auto flushed
-    }
-  });
+			// Flush canvas
+			if (flushEventId === 0) {
+				requestAnimationFrame(render);
+			} // else will be auto flushed
+		}
+	}).observe(wrapper.value!);
 
   // Start render
   requestAnimationFrame(render);
@@ -262,6 +263,10 @@ const initFragments = () => {
     };
     drawFragment(fragmentsArray[i]);
   }
+};
+
+const initWrapperBG = () => {
+	wrapper.value!.style.backgroundColor = colors.bg;
 };
 
 const startStep = () => {
