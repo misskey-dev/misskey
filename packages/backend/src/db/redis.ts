@@ -6,6 +6,7 @@ export function createConnection() {
 		config.redis.port,
 		config.redis.host,
 		{
+			family: config.redis.addressFamily || 'IPv4',
 			password: config.redis.pass,
 			prefix: config.redis.prefix,
 			db: config.redis.db || 0,

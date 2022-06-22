@@ -196,6 +196,7 @@ export const db = new DataSource({
 		options: {
 			host: config.redis.host,
 			port: config.redis.port,
+			family: config.redis.addressFamily || 'IPv4',
 			password: config.redis.pass,
 			prefix: `${config.redis.prefix}:query:`,
 			db: config.redis.db || 0,

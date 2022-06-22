@@ -57,6 +57,7 @@ db:
 redis:
   host: localhost
   port: 6379
+  #addressFamily: IPv4
   #pass: example-pass
   #prefix: example-prefix
   #db: 1
