@@ -845,20 +845,6 @@ failedToFetchAccountInformation: "Could not fetch account information"
 rateLimitExceeded: "Rate limit exceeded"
 cropImage: "Crop image"
 cropImageAsk: "Do you want to crop this image?"
-ojosamaMode: "Ojosama Mode"
-ojosamaModeDescription: ""
-driveCapOverrideLabel: "Change drive capacity limits manually:"
-driveCapOverrideCaption: "Specifying 0 or -1 removes the override."
-purgeLocaleDataButtonLabel: "Refresh locale data"
-_adminTools:
-  freeze: "Freeze at once"
-  _freeze:
-    funcDescription: "Freeze all specified user IDs at once."
-    inputBoxCaption: "Separated by a new line. 1 user per line."
-  buttonLabels:
-    doFreeze: "Freeze"
-  dialogMessages:
-    confirmFreeze: "Are you sure you want to do this? This operation cannot be undone."
 _emailUnavailable:
   used: "This email address is already being used"
   format: "The format of this email address is invalid"

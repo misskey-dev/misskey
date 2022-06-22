@@ -1,6 +1,6 @@
 {
 	"name": "misskey",
-	"version": "12.111.1-CBR-2206.2",
+	"version": "12.111.1-test.1",
 	"codename": "indigo",
 	"repository": {
 		"type": "git",
@@ -8,7 +8,6 @@
 	},
 	"private": true,
 	"scripts": {
-		"preinstall": "which go || sh -c 'echo golang not installed. To continue, please install golang.;exit 1' && go install github.com/jiro4989/ojosama/cmd/ojosama@latest",
 		"postinstall": "node ./scripts/install-packages.js",
 		"build": "node ./scripts/build.js",
 		"start": "cd packages/backend && node --experimental-json-modules ./built/index.js",
@@ -31,7 +30,6 @@
 		"cleanall": "npm run clean-all"
 	},
 	"dependencies": {
-		"@expo/spawn-async": "1.6.0",
 		"execa": "5.1.1",
 		"gulp": "4.0.2",
 		"gulp-cssnano": "2.1.3",

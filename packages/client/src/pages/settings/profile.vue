@@ -56,7 +56,6 @@
 	<FormSwitch v-model="profile.isCat" class="_formBlock">{{ i18n.ts.flagAsCat }}<template #caption>{{ i18n.ts.flagAsCatDescription }}</template></FormSwitch>
 	<FormSwitch v-model="profile.showTimelineReplies" class="_formBlock">{{ i18n.ts.flagShowTimelineReplies }}<template #caption>{{ i18n.ts.flagShowTimelineRepliesDescription }} {{ i18n.ts.reflectMayTakeTime }}</template></FormSwitch>
 	<FormSwitch v-model="profile.isBot" class="_formBlock">{{ i18n.ts.flagAsBot }}<template #caption>{{ i18n.ts.flagAsBotDescription }}</template></FormSwitch>
-	<FormSwitch v-model="profile.isOjosama" class="_formBlock">{{ i18n.ts.ojosamaMode }}<template #caption>{{ i18n.ts.ojosamaModeDescription }}<br>{{ i18n.ts.ojosamaModeDescription2 }}</template></FormSwitch>
 
 	<FormSwitch v-model="profile.alwaysMarkNsfw" class="_formBlock">{{ i18n.ts.alwaysMarkSensitive }}</FormSwitch>
 </div>
@@ -90,7 +89,6 @@ const profile = reactive({
 	isCat: $i.isCat,
 	showTimelineReplies: $i.showTimelineReplies,
 	alwaysMarkNsfw: $i.alwaysMarkNsfw,
-	isOjosama: $i.isOjosama,
 });
 
 watch(() => profile, () => {
@@ -129,7 +127,6 @@ function save() {
 		isCat: !!profile.isCat,
 		showTimelineReplies: !!profile.showTimelineReplies,
 		alwaysMarkNsfw: !!profile.alwaysMarkNsfw,
-		isOjosama: !!profile.isOjosama,
 	});
 }
 

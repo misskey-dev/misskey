@@ -3,15 +3,6 @@
 	<FormSwitch v-model="$i.injectFeaturedNote" class="_formBlock" @update:modelValue="onChangeInjectFeaturedNote">
 		{{ i18n.ts.showFeaturedNotesInTimeline }}
 	</FormSwitch>
-	<FormSwitch v-model="useEruda" class="_formBlock">
-		{{ i18n.ts.loadErudaDevTool }}
-		<template #caption>{{ i18n.ts.loadErudaDevToolDescription }}</template>
-	</FormSwitch>
-
-	<FormButton class="_formBlock" @click="purgeLocaleData">
-		<template #icon><i class="fas fa-sync"></i></template>
-		{{ i18n.ts.purgeLocaleDataButtonLabel }}
-	</FormButton>
 
 	<!--
 	<FormSwitch v-model="reportError" class="_formBlock">{{ i18n.ts.sendErrorReports }}<template #caption>{{ i18n.ts.sendErrorReportsDescription }}</template></FormSwitch>
@@ -24,22 +15,16 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue';
+import { computed } from 'vue';
 import FormSwitch from '@/components/form/switch.vue';
 import FormLink from '@/components/form/link.vue';
-import FormButton from '@/components/ui/button.vue';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
-import { unisonReload } from '@/scripts/unison-reload';
-const reportError = computed(defaultStore.makeGetterSetter('reportError'));
-const useEruda = ref(localStorage.getItem('useEruda') === 'true' ? true : false);
 
-watch(useEruda, (v) => {
-	localStorage.setItem('useEruda', v ? 'true' : 'false');
-});
+const reportError = computed(defaultStore.makeGetterSetter('reportError'));
 
 function onChangeInjectFeaturedNote(v) {
 	os.api('i/update', {
@@ -47,11 +32,6 @@ function onChangeInjectFeaturedNote(v) {
 	}).then((i) => {
 		$i!.injectFeaturedNote = i.injectFeaturedNote;
 	});
-}
-
-async function purgeLocaleData() {
-	localStorage.removeItem('locale');
-	unisonReload();
 }
 
 const headerActions = $computed(() => []);
