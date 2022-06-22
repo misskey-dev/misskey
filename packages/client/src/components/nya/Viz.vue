@@ -45,7 +45,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, onBeforeUnmount, ref } from 'vue';
 import { ColdDeviceStorage } from '@/store';
 
 const props = defineProps({
@@ -74,6 +74,13 @@ onMounted(() => {
   } else {
     console.error('audio is required');
   }
+});
+
+onBeforeUnmount(() => {
+	// Pause audio
+	if (!audio.paused) {
+		audio.pause();
+	}
 });
 
 // Define constants
