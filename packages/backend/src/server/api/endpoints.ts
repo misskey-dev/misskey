@@ -309,6 +309,7 @@ import * as ep___users_searchByUsernameAndHost from './endpoints/users/search-by
 import * as ep___users_search from './endpoints/users/search.js';
 import * as ep___users_show from './endpoints/users/show.js';
 import * as ep___users_stats from './endpoints/users/stats.js';
+import * as ep___admin_driveCapOverride from './endpoints/admin/drive-capacity-override.js';
 
 const eps = [
 	['admin/meta', ep___admin_meta],
@@ -620,6 +621,7 @@ const eps = [
 	['users/search', ep___users_search],
 	['users/show', ep___users_show],
 	['users/stats', ep___users_stats],
+	['admin/drive-capacity-override', ep___admin_driveCapOverride],
 ];
 
 export interface IEndpointMeta {

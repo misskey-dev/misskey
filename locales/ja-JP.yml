@@ -854,6 +854,8 @@ noEmailServerWarning: "メールサーバーの設定がされていません。
 thereIsUnresolvedAbuseReportWarning: "未対応の通報があります。"
 recommended: "推奨"
 check: "チェック"
+driveCapOverrideLabel: "このユーザーのドライブ容量上限を変更:"
+driveCapOverrideCaption: "0以下を指定すると解除されます。"
 
 _emailUnavailable:
   used: "既に使用されています"
