@@ -1,6 +1,6 @@
 <template>
 <MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="800">
 		<div class="clupoqwt">
 			<XNotifications class="notifications" :include-types="includeTypes" :unread-only="tab === 'unread'"/>
@@ -52,13 +52,11 @@ const headerActions = $computed(() => [{
 }]);
 
 const headerTabs = $computed(() => [{
-	active: tab === 'all',
+	key: 'all',
 	title: i18n.ts.all,
-	onClick: () => { tab = 'all'; },
 }, {
-	active: tab === 'unread',
+	key: 'unread',
 	title: i18n.ts.unread,
-	onClick: () => { tab = 'unread'; },
 }]);
 
 definePageMetadata(computed(() => ({

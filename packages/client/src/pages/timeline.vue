@@ -1,6 +1,6 @@
 <template>
 <MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<template #header><MkPageHeader v-model:tab="src" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="800">
 		<div ref="rootEl" v-hotkey.global="keymap" class="cmuxhskf">
 			<XTutorial v-if="$store.reactiveState.tutorial.value != -1" class="tutorial _block"/>
@@ -45,7 +45,7 @@ const tlComponent = $ref<InstanceType<typeof XTimeline>>();
 const rootEl = $ref<HTMLElement>();
 
 let queue = $ref(0);
-const src = $computed(() => defaultStore.reactiveState.tl.value.src);
+const src = $computed({ get: () => defaultStore.reactiveState.tl.value.src, set: (x) => saveSrc(x) });
 
 watch ($$(src), () => queue = 0);
 
@@ -112,29 +112,25 @@ function focus(): void {
 const headerActions = $computed(() => []);
 
 const headerTabs = $computed(() => [{
-	active: src === 'home',
+	key: 'home',
 	title: i18n.ts._timelines.home,
 	icon: 'fas fa-home',
 	iconOnly: true,
-	onClick: () => { saveSrc('home'); },
 }, ...(isLocalTimelineAvailable ? [{
-	active: src === 'local',
+	key: 'local',
 	title: i18n.ts._timelines.local,
 	icon: 'fas fa-comments',
 	iconOnly: true,
-	onClick: () => { saveSrc('local'); },
 }, {
-	active: src === 'social',
+	key: 'social',
 	title: i18n.ts._timelines.social,
 	icon: 'fas fa-share-alt',
 	iconOnly: true,
-	onClick: () => { saveSrc('social'); },
 }] : []), ...(isGlobalTimelineAvailable ? [{
-	active: src === 'global',
+	key: 'global',
 	title: i18n.ts._timelines.global,
 	icon: 'fas fa-globe',
 	iconOnly: true,
-	onClick: () => { saveSrc('global'); },
 }] : []), {
 	icon: 'fas fa-list-ul',
 	title: i18n.ts.lists,

@@ -1,6 +1,6 @@
 <template>
 <MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs" v-model:tab="tab"/></template>
 	<MkSpacer :content-max="700">
 		<div class="jqqmcavi">
 			<MkButton v-if="pageId" class="button" inline link :to="`/@${ author.username }/pages/${ currentName }`"><i class="fas fa-external-link-square-alt"></i> {{ $ts._pages.viewPage }}</MkButton>
@@ -411,25 +411,21 @@ init();
 const headerActions = $computed(() => []);
 
 const headerTabs = $computed(() => [{
-	active: tab === 'settings',
+	key: 'settings',
 	title: i18n.ts._pages.pageSetting,
 	icon: 'fas fa-cog',
-	onClick: () => { tab = 'settings'; },
 }, {
-	active: tab === 'contents',
+	key: 'contents',
 	title: i18n.ts._pages.contents,
 	icon: 'fas fa-sticky-note',
-	onClick: () => { tab = 'contents'; },
 }, {
-	active: tab === 'variables',
+	key: 'variables',
 	title: i18n.ts._pages.variables,
 	icon: 'fas fa-magic',
-	onClick: () => { tab = 'variables'; },
 }, {
-	active: tab === 'script',
+	key: 'script',
 	title: i18n.ts.script,
 	icon: 'fas fa-code',
-	onClick: () => { tab = 'script'; },
 }]);
 
 definePageMetadata(computed(() => {
