@@ -4,7 +4,7 @@
   }">
     <canvas ref="vizplayer" class="vizplayer" />
     <div ref="cover" class="cover">
-			<div ref="coverIcon" class="fas fa-music"/>
+			<div ref="coverIcon" class="cover-icon fas fa-music"/>
 		</div>
     <div class="control-bar">
       <div class="button" @click="togglePlay">
@@ -70,7 +70,6 @@ const barVolumeNow = ref<HTMLDivElement | null>(null);
 onMounted(() => {
   if (props.audioSrc) {
     // Initialize
-    console.log('Viz mounted');
     init(props.audioSrc);
   } else {
     console.error('audio is required');
@@ -598,7 +597,6 @@ const drawFragment = (props: FragmentProps) => {
     align-items: center;
     background-color: #aaa6;
     border-radius: 100%;
-    font-size: 1.5rem;
     opacity: 0;
     transition: opacity .3s ease-in-out;
     color: #fffc;
