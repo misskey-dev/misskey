@@ -38,7 +38,7 @@
       </div>
       <div class="mute-button" @click="toggleMute">
         <i v-if="isMuted" class="fas fa-volume-slash" />
-        <i v-else class="fas fa-volume" />
+        <i v-else class="fas fa-volume-high" />
       </div>
     </div>
   </div>
