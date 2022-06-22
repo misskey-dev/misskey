@@ -105,7 +105,11 @@ function onTabMousedown(tab: Tab, ev: MouseEvent): void {
 }
 
 function onTabClick(tab: Tab, ev: MouseEvent): void {
-	if (tab.onClick) tab.onClick(ev);
+	if (tab.onClick) {
+		ev.preventDefault();
+		ev.stopPropagation();
+		tab.onClick(ev);
+	}
 	if (tab.key) {
 		emit('update:tab', tab.key);
 	}
@@ -217,6 +221,8 @@ onUnmounted(() => {
 
 		> .icon {
 			margin-right: 8px;
+			width: 16px;
+			text-align: center;
 		}
 
 		> .title {
