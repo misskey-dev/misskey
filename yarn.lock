@@ -34,13 +34,6 @@
     debug "^3.1.0"
     lodash.once "^4.1.1"
 
-"@expo/spawn-async@1.6.0":
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/@expo/spawn-async/-/spawn-async-1.6.0.tgz#b7267af6791134d47c69bf0986f151599535309f"
-  integrity sha512-CynFS2y9S0OXgoBN3o6qvLSD5tBXCxEQnbByIleEocbKKYKb+/gjrjxYVvxPY8G+zqe82xG6IcmHbJoPl5g1WA==
-  dependencies:
-    cross-spawn "^7.0.3"
-
 "@hapi/hoek@^9.0.0":
   version "9.2.0"
   resolved "https://registry.yarnpkg.com/@hapi/hoek/-/hoek-9.2.0.tgz#f3933a44e365864f4dad5db94158106d511e8131"
