@@ -77,6 +77,10 @@
 					</div>
 				</div>
 			</div>
+			<div v-else-if="tab === 'ap'" class="_formRoot">
+				<MkObjectView v-if="ap" tall :value="user">
+				</MkObjectView>
+			</div>
 			<div v-else-if="tab === 'raw'" class="_formRoot">
 				<MkObjectView v-if="info && $i.isAdmin" tall :value="info">
 				</MkObjectView>
@@ -225,7 +229,7 @@ watch(() => props.userId, () => {
 
 watch(() => user, () => {
 	os.api('ap/get', {
-		uri: user.uri || `${url}/users/${user.id}`,
+		uri: user.uri ?? `${url}/users/${user.id}`,
 	}).then(res => {
 		ap = res;
 	});
@@ -241,6 +245,10 @@ const headerTabs = $computed(() => [{
 	key: 'chart',
 	title: i18n.ts.charts,
 	icon: 'fas fa-chart-simple',
+}, {
+	key: 'ap',
+	title: 'AP',
+	icon: 'fas fa-share-alt',
 }, {
 	key: 'raw',
 	title: 'Raw data',

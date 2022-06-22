@@ -1,11 +1,11 @@
 <template>
-<div :class="[$style.root, { yellow: instance.isNotResponding, red: instance.isBlocked, gray: instance.isSuspended }]">
-	<img v-if="instance.iconUrl" class="icon" :src="instance.iconUrl" alt=""/>
+<div :class="[$style.root, { yellow: user.isSilenced, red: user.isSuspended, gray: false }]">
+	<MkAvatar class="avatar" :user="user" :disable-link="true" :show-indicator="true"/>
 	<div class="body">
-		<span class="host">{{ instance.host }}</span>
-		<span class="sub">{{ instance.softwareName || '?' }} {{ instance.softwareVersion }}</span>
+		<span class="name"><MkUserName class="name" :user="user"/></span>
+		<span class="sub"><span class="acct _monospace">@{{ acct(user) }}</span></span>
 	</div>
-	<MkMiniChart v-if="chart" class="chart" :src="chart.requests.received"/>
+	<MkMiniChart v-if="chart" class="chart" :src="chart.inc"/>
 </div>
 </template>
 
@@ -13,14 +13,15 @@
 import * as misskey from 'misskey-js';
 import MkMiniChart from '@/components/mini-chart.vue';
 import * as os from '@/os';
+import { acct } from '@/filters/user';
 
 const props = defineProps<{
-	instance: misskey.entities.Instance;
+	user: misskey.entities.User;
 }>();
 
 const chart = $ref(null);
 
-os.api('charts/instance', { host: props.instance.host, limit: 16, span: 'hour' }).then(res => {
+os.api('charts/user/notes', { userId: props.user.id, limit: 16, span: 'day' }).then(res => {
 	chart = res;
 });
 </script>
@@ -36,13 +37,11 @@ os.api('charts/instance', { host: props.instance.host, limit: 16, span: 'hour' }
 	background: var(--panel);
 	border-radius: 8px;
 
-	> :global(.icon) {
+	> :global(.avatar) {
 		display: block;
 		width: ($bodyTitleHieght + $bodyInfoHieght);
 		height: ($bodyTitleHieght + $bodyInfoHieght);
-		object-fit: cover;
-		border-radius: 4px;
-		margin-right: 8px;
+		margin-right: 12px;
 	}
 
 	> :global(.body) {
@@ -52,7 +51,7 @@ os.api('charts/instance', { host: props.instance.host, limit: 16, span: 'hour' }
 		color: var(--fg);
 		padding-right: 8px;
 
-		> :global(.host) {
+		> :global(.name) {
 			display: block;
 			width: 100%;
 			white-space: nowrap;
