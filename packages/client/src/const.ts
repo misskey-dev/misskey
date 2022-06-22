@@ -11,6 +11,7 @@ export const FILE_TYPE_BROWSERSAFE = [
 	'image/bmp',
 	'image/tiff',
 	'image/x-icon',
+	'image/svg+xml',
 
 	// OggS
 	'audio/opus',
