@@ -656,6 +656,7 @@ const drawFragment = (props: FragmentProps) => {
   .mute-button {
     color: #ccc;
     cursor: pointer;
+		width: 1.5rem;
   }
 }
 
