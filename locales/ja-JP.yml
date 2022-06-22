@@ -1728,22 +1728,5 @@ _deck:
     mentions: "あなた宛て"
     direct: "ダイレクト"
 
-adminTools: "ツール"
-ojosamaMode: "壱百満天原サロメ（お嬢様）風モード"
-ojosamaModeDescription: "このフラグをオンにすると、投稿本文が送信時に壱百満天原サロメ（お嬢様）風文章に変換されます。後から元の文章に戻すことはできません。"
-ojosamaModeDescription2: "例: 「今日は暑いです！」→「今日は暑いですわ～！！」"
-loadErudaDevTool: "Erudaを使用する"
-loadErudaDevToolDescription: "モバイル端末でも開発者ツールが使えるようになります。"
 driveCapOverrideLabel: "個別にドライブ容量の上限を変更:"
 driveCapOverrideCaption: "0または-1を指定すると個別指定が解除されます。"
-purgeLocaleDataButtonLabel: "言語ファイルのキャッシュ更新"
-
-_adminTools:
-  freeze: "一括凍結"
-  _freeze:
-    funcDescription: "指定したユーザーIDをまとめて凍結することができます。"
-    inputBoxCaption: "改行で区切る。1行1ユーザー"
-    buttonLabels:
-      doFreeze: "凍結実行"
-    dialogMessages:
-      confirmFreeze: "本当に実行しますか？この操作は取り消せません。"
