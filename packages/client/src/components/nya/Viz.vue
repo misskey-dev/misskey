@@ -37,7 +37,7 @@
         <div v-show="!isMuted" ref="barVolumeNow" class="bar now" />
       </div>
       <div class="mute-button" @click="toggleMute">
-        <i v-if="isMuted" class="fas fa-volume-slash" />
+        <i v-if="isMuted" class="fas fa-volume-off" />
         <i v-else class="fas fa-volume-high" />
       </div>
     </div>
