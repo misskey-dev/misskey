@@ -7,8 +7,8 @@ export function createConnection() {
 		host: config.redis.host,
 		family: 0,
 		password: config.redis.pass,
-		db: config.redis.db || 0,
 		keyPrefix: `${config.redis.prefix}:query:`,
+		db: config.redis.db || 0,
 	});
 }
 
