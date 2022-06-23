@@ -35,6 +35,7 @@ import * as ep___admin_federation_removeAllFollowing from './endpoints/admin/fed
 import * as ep___admin_federation_updateInstance from './endpoints/admin/federation/update-instance.js';
 import * as ep___admin_getIndexStats from './endpoints/admin/get-index-stats.js';
 import * as ep___admin_getTableStats from './endpoints/admin/get-table-stats.js';
+import * as ep___admin_getUserIps from './endpoints/admin/get-user-ips.js';
 import * as ep___admin_invite from './endpoints/admin/invite.js';
 import * as ep___admin_moderators_add from './endpoints/admin/moderators/add.js';
 import * as ep___admin_moderators_remove from './endpoints/admin/moderators/remove.js';
@@ -346,6 +347,7 @@ const eps = [
 	['admin/federation/update-instance', ep___admin_federation_updateInstance],
 	['admin/get-index-stats', ep___admin_getIndexStats],
 	['admin/get-table-stats', ep___admin_getTableStats],
+	['admin/get-user-ips', ep___admin_getUserIps],
 	['admin/invite', ep___admin_invite],
 	['admin/moderators/add', ep___admin_moderators_add],
 	['admin/moderators/remove', ep___admin_moderators_remove],

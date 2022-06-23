@@ -68,9 +68,10 @@ import { RegistryItem } from '@/models/entities/registry-item.js';
 import { Ad } from '@/models/entities/ad.js';
 import { PasswordResetRequest } from '@/models/entities/password-reset-request.js';
 import { UserPending } from '@/models/entities/user-pending.js';
+import { Webhook } from '@/models/entities/webhook.js';
+import { UserIp } from '@/models/entities/user-ip.js';
 
 import { entities as charts } from '@/services/chart/entities.js';
-import { Webhook } from '@/models/entities/webhook.js';
 import { envOption } from '../env.js';
 import { dbLogger } from './logger.js';
 import { redisClient } from './redis.js';
@@ -173,6 +174,7 @@ export const entities = [
 	PasswordResetRequest,
 	UserPending,
 	Webhook,
+	UserIp,
 	...charts,
 ];
 
