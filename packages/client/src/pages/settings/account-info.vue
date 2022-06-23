@@ -127,30 +127,32 @@
 </template>
 
 <script lang="ts" setup>
-import { defineExpose, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import FormSection from '@/components/form/section.vue';
 import MkKeyValue from '@/components/key-value.vue';
 import * as os from '@/os';
 import number from '@/filters/number';
 import bytes from '@/filters/bytes';
-import * as symbols from '@/symbols';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const stats = ref<any>({});
 
 onMounted(() => {
 	os.api('users/stats', {
-		userId: $i!.id
+		userId: $i!.id,
 	}).then(response => {
 		stats.value = response;
 	});
 });
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.accountInfo,
-		icon: 'fas fa-info-circle'
-	}
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: i18n.ts.accountInfo,
+	icon: 'fas fa-info-circle',
 });
 </script>

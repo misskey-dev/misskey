@@ -1,15 +1,18 @@
 <template>
-<div :class="$style.root">
-	<XCategory v-if="tab === 'category'"/>
-</div>
+<MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<div :class="$style.root">
+		<XCategory v-if="tab === 'category'"/>
+	</div>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
-import * as os from '@/os';
-import * as symbols from '@/symbols';
 import XCategory from './emojis.category.vue';
+import * as os from '@/os';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const tab = ref('category');
 
@@ -31,20 +34,21 @@ function menu(ev) {
 					text: err.message,
 				});
 			});
-		}
+		},
 	}], ev.currentTarget ?? ev.target);
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.customEmojis,
-		icon: 'fas fa-laugh',
-		bg: 'var(--bg)',
-		actions: [{
-			icon: 'fas fa-ellipsis-h',
-			handler: menu,
-		}],
-	},
+const headerActions = $computed(() => [{
+	icon: 'fas fa-ellipsis-h',
+	handler: menu,
+}]);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: i18n.ts.customEmojis,
+	icon: 'fas fa-laugh',
+	bg: 'var(--bg)',
 });
 </script>
 

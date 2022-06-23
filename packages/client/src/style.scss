@@ -339,9 +339,11 @@ hr {
 }
 
 ._window {
-	background: var(--panel);
+	background: var(--windowHeader);
 	border-radius: var(--radius);
 	contain: content;
+	-webkit-backdrop-filter: var(--blur, blur(15px));
+	backdrop-filter: var(--blur, blur(15px));
 }
 
 ._popup {

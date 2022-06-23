@@ -38,44 +38,28 @@
 </XContainer>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 /* eslint-disable vue/no-mutating-props */
-import { defineComponent } from 'vue';
+import { } from 'vue';
 import XContainer from '../page-editor.container.vue';
 import MkSelect from '@/components/form/select.vue';
 import MkInput from '@/components/form/input.vue';
 import MkSwitch from '@/components/form/switch.vue';
-import * as os from '@/os';
 
-export default defineComponent({
-	components: {
-		XContainer, MkSelect, MkInput, MkSwitch
-	},
-
-	props: {
-		value: {
-			required: true
-		},
-		hpml: {
-			required: true,
-		},
-	},
-
-	data() {
-		return {
-		};
-	},
-
-	created() {
-		if (this.value.text == null) this.value.text = '';
-		if (this.value.action == null) this.value.action = 'dialog';
-		if (this.value.content == null) this.value.content = null;
-		if (this.value.event == null) this.value.event = null;
-		if (this.value.message == null) this.value.message = null;
-		if (this.value.primary == null) this.value.primary = false;
-		if (this.value.var == null) this.value.var = null;
-		if (this.value.fn == null) this.value.fn = null;
-	},
+withDefaults(defineProps<{
+	value: any,
+	hpml: any
+}>(), {
+	value: {
+		text: '',
+		action: 'dialog',
+		content: null,
+		event: null,
+		message: null,
+		primary: false,
+		var: null,
+		fn: null
+	}
 });
 </script>
 

@@ -21,11 +21,11 @@
 import { } from 'vue';
 import * as misskey from 'misskey-js';
 import MkButton from '@/components/ui/button.vue';
-import * as symbols from '@/symbols';
 import { version } from '@/config';
 import * as os from '@/os';
 import { unisonReload } from '@/scripts/unison-reload';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const props = withDefaults(defineProps<{
 	error?: Error;
@@ -52,11 +52,13 @@ function reload() {
 	unisonReload();
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.error,
-		icon: 'fas fa-exclamation-triangle',
-	},
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: i18n.ts.error,
+	icon: 'fas fa-exclamation-triangle',
 });
 </script>
 

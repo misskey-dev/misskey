@@ -4,14 +4,14 @@
 		<div class="body _window _shadow _narrow_" @mousedown="onBodyMousedown" @keydown="onKeydown">
 			<div class="header" :class="{ mini }" @contextmenu.prevent.stop="onContextmenu">
 				<span class="left">
-					<slot name="headerLeft"></slot>
+					<button v-for="button in buttonsLeft" v-tooltip="button.title" class="button _button" :class="{ highlighted: button.highlighted }" @click="button.onClick"><i :class="button.icon"></i></button>
 				</span>
 				<span class="title" @mousedown.prevent="onHeaderMousedown" @touchstart.prevent="onHeaderMousedown">
 					<slot name="header"></slot>
 				</span>
 				<span class="right">
-					<slot name="headerRight"></slot>
-					<button v-if="closeButton" class="_button" @click="close()"><i class="fas fa-times"></i></button>
+					<button v-for="button in buttonsRight" v-tooltip="button.title" class="button _button" :class="{ highlighted: button.highlighted }" @click="button.onClick"><i :class="button.icon"></i></button>
+					<button v-if="closeButton" class="button _button" @click="close()"><i class="fas fa-times"></i></button>
 				</span>
 			</div>
 			<div v-if="padding" class="body">
@@ -46,41 +46,41 @@ const minHeight = 50;
 const minWidth = 250;
 
 function dragListen(fn) {
-	window.addEventListener('mousemove',  fn);
-	window.addEventListener('touchmove',  fn);
+	window.addEventListener('mousemove', fn);
+	window.addEventListener('touchmove', fn);
 	window.addEventListener('mouseleave', dragClear.bind(null, fn));
-	window.addEventListener('mouseup',    dragClear.bind(null, fn));
-	window.addEventListener('touchend',   dragClear.bind(null, fn));
+	window.addEventListener('mouseup', dragClear.bind(null, fn));
+	window.addEventListener('touchend', dragClear.bind(null, fn));
 }
 
 function dragClear(fn) {
-	window.removeEventListener('mousemove',  fn);
-	window.removeEventListener('touchmove',  fn);
+	window.removeEventListener('mousemove', fn);
+	window.removeEventListener('touchmove', fn);
 	window.removeEventListener('mouseleave', dragClear);
-	window.removeEventListener('mouseup',    dragClear);
-	window.removeEventListener('touchend',   dragClear);
+	window.removeEventListener('mouseup', dragClear);
+	window.removeEventListener('touchend', dragClear);
 }
 
 export default defineComponent({
 	provide: {
-		inWindow: true
+		inWindow: true,
 	},
 
 	props: {
 		padding: {
 			type: Boolean,
 			required: false,
-			default: false
+			default: false,
 		},
 		initialWidth: {
 			type: Number,
 			required: false,
-			default: 400
+			default: 400,
 		},
 		initialHeight: {
 			type: Number,
 			required: false,
-			default: null
+			default: null,
 		},
 		canResize: {
 			type: Boolean,
@@ -105,7 +105,17 @@ export default defineComponent({
 		contextmenu: {
 			type: Array,
 			required: false,
-		}
+		},
+		buttonsLeft: {
+			type: Array,
+			required: false,
+			default: [],
+		},
+		buttonsRight: {
+			type: Array,
+			required: false,
+			default: [],
+		},
 	},
 
 	emits: ['closed'],
@@ -162,7 +172,10 @@ export default defineComponent({
 			this.top();
 		},
 
-		onHeaderMousedown(evt) {
+		onHeaderMousedown(evt: MouseEvent) {
+			// 右クリックはコンテキストメニューを開こうとした可能性が高いため無視
+			if (evt.button === 2) return;
+
 			const main = this.$el as any;
 
 			if (!contains(main, document.activeElement)) main.focus();
@@ -356,12 +369,12 @@ export default defineComponent({
 			const browserHeight = window.innerHeight;
 			const windowWidth = main.offsetWidth;
 			const windowHeight = main.offsetHeight;
-			if (position.left < 0) main.style.left = 0;     // 左はみ出し
-			if (position.top + windowHeight > browserHeight) main.style.top = browserHeight - windowHeight + 'px';  // 下はみ出し
-			if (position.left + windowWidth > browserWidth) main.style.left = browserWidth - windowWidth + 'px';    // 右はみ出し
-			if (position.top < 0) main.style.top = 0;       // 上はみ出し
-		}
-	}
+			if (position.left < 0) main.style.left = 0; // 左はみ出し
+			if (position.top + windowHeight > browserHeight) main.style.top = browserHeight - windowHeight + 'px'; // 下はみ出し
+			if (position.left + windowWidth > browserWidth) main.style.left = browserWidth - windowWidth + 'px'; // 右はみ出し
+			if (position.top < 0) main.style.top = 0; // 上はみ出し
+		},
+	},
 });
 </script>
 
@@ -389,7 +402,7 @@ export default defineComponent({
     height: 100%;
 
 		> .header {
-			--height: 50px;
+			--height: 45px;
 
 			&.mini {
 				--height: 38px;
@@ -402,19 +415,28 @@ export default defineComponent({
 			user-select: none;
 			height: var(--height);
 			border-bottom: solid 1px var(--divider);
+			font-size: 95%;
 
 			> .left, > .right {
-				> ::v-deep(button) {
+				> .button {
 					height: var(--height);
 					width: var(--height);
 
 					&:hover {
 						color: var(--fgHighlighted);
 					}
+
+					&.highlighted {
+						color: var(--accent);
+					}
 				}
 			}
 
 			> .left {
+				margin-right: 16px;
+			}
+
+			> .right {
 				min-width: 16px;
 			}
 
