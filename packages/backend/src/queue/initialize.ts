@@ -6,7 +6,7 @@ export function initialize<T>(name: string, limitPerSec = -1) {
 		redis: {
 			port: config.redis.port,
 			host: config.redis.host,
-			family: 0,
+			family: config.redis.family == null ? 0 : config.redis.family,
 			password: config.redis.pass,
 			db: config.redis.db || 0,
 		},
