@@ -121,10 +121,10 @@
 			errorsElement = document.getElementById('errors');
 		}
 
-		const details = document.createElement('details');
-		details.innerHTML = `<summary><code>ERROR CODE: ${code}</code></summary>${details}`;
+		const detailsElement = document.createElement('details');
+		detailsElement.innerHTML = `<summary><code>ERROR CODE: ${code}</code></summary>${details}`;
 
-		errorsElement.appendChild(details);
+		errorsElement.appendChild(detailsElement);
 	}
 
 	// eslint-disable-next-line no-inner-declarations
