@@ -99,12 +99,16 @@ export default define(meta, paramDef, async () => {
 	const fsStats = await si.fsSize();
 	const netInterface = await si.networkInterfaceDefault();
 
+	const redisServerInfo = await redisClient.info('Server');
+	const m = redisServerInfo.match(new RegExp('^redis_version:(.*)', 'm'));
+	const redis_version = m?.[1];
+
 	return {
 		machine: os.hostname(),
 		os: os.platform(),
 		node: process.version,
 		psql: await db.query('SHOW server_version').then(x => x[0].server_version),
-		redis: redisClient.server_info.redis_version,
+		redis: redis_version,
 		cpu: {
 			model: os.cpus()[0].model,
 			cores: os.cpus().length,
