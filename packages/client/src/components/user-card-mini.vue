@@ -61,7 +61,9 @@ os.api('charts/user/notes', { userId: props.user.id, limit: 16, span: 'day' }).t
 		}
 
 		> :global(.sub) {
-			font-size: 75%;
+			display: block;
+			width: 100%;
+			font-size: 95%;
 			opacity: 0.7;
 			line-height: $bodyInfoHieght;
 			white-space: nowrap;
