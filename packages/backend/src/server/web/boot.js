@@ -57,7 +57,7 @@
 	import(`/assets/${CLIENT_ENTRY}`)
 		.catch(async e => {
 			await checkUpdate();
-			renderError('APP_FETCH_FAILED', JSON.stringify(e));
+			renderError('APP_FETCH_FAILED', e);
 		})
 	//#endregion
 
@@ -122,7 +122,7 @@
 		}
 
 		const detailsElement = document.createElement('details');
-		detailsElement.innerHTML = `<summary><code>ERROR CODE: ${code}</code></summary>${details}`;
+		detailsElement.innerHTML = `<summary><code>ERROR CODE: ${code}</code></summary>${JSON.stringify(details)}`;
 
 		errorsElement.appendChild(detailsElement);
 	}
