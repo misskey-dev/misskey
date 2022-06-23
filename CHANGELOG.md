@@ -18,6 +18,8 @@ You should also include the user name that made the change.
 - Improve player detection in URL preview @mei23
 - Add Badge Image to Push Notification #8012 @tamaina
 - Client: Removing entries from a clip @futchitwo
+- Server: Supports IPv6 on Redis transport. @mei23  
+  IPv4/IPv6 is used by default. You can tune this behavior via `redis.family`.
 
 ### Bugfixes
 - Server: Fix GenerateVideoThumbnail failed @mei23
