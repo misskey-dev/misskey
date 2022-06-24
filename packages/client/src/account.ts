@@ -22,7 +22,7 @@ export async function signout() {
 	waiting();
 	localStorage.removeItem('account');
 
-	await removeAccount($i.id);
+	const accounts = await removeAccount($i.id);
 
 	//#region Remove service worker registration
 	try {
@@ -66,12 +66,14 @@ export async function addAccount(id: Account['id'], token: Account['token']) {
 	}
 }
 
-export async function removeAccount(id: Account['id']) {
+export async function removeAccount(id: Account['id']): Promise<{ id: Account['id'], token: Account['token'] }[]> {
 	const accounts = await getAccounts();
 	accounts.splice(accounts.findIndex(x => x.id === id), 1);
 
 	if (accounts.length > 0) await set('accounts', accounts);
 	else await del('accounts');
+
+	return accounts;
 }
 
 function fetchAccount(token: string): Promise<Account> {
