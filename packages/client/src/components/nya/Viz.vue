@@ -10,7 +10,8 @@
 	</div>
 	<div class="control-bar">
 		<div class="button" @click="togglePlay">
-			<i v-if="isPlaying" class="fas fa-pause"/>
+			<i v-if="isLoading" class="fa fa-spinner fa-spin"/>
+			<i v-else-if="isPlaying" class="fas fa-pause"/>
 			<i v-else class="fas fa-play"/>
 		</div>
 		<div class="time">
@@ -127,6 +128,7 @@ let isContextResumed = false;
 let angleOffset = 0;
 let stepEventId: ReturnType<typeof setInterval> | null = null;
 let flushEventId = 0;
+const isLoading = ref(true);
 const isPlaying = ref(false);
 const isMuted = ref(false);
 let isSeeking = false;
@@ -234,6 +236,30 @@ const initAudio = (src: string) => {
 		if (timeFull.value) {
 			timeFull.value.innerText = parseSecondsToTime(audio.duration);
 		}
+	});
+	audio.addEventListener('progress', (e) => {
+		// Buffered more
+		//// Update buffered progress
+		////// Find latest buffer
+		let latestBuffered = 0;
+		for (let i = 0; i < audio.buffered.length; i++) {
+			if (audio.buffered.end(i) > latestBuffered) {
+				latestBuffered = audio.buffered.end(i);
+			}
+		}
+		////// Update progress style
+		barBuffered.value!.style.width = `${latestBuffered / audio.duration * 100}%`;
+	});
+	audio.addEventListener('waiting', () => {
+		isPlaying.value = false;
+		isLoading.value = true;
+	});
+	audio.addEventListener('playing', () => {
+		isPlaying.value = true;
+		isLoading.value = false;
+	});
+	audio.addEventListener('canplay', () => {
+		isLoading.value = false;
 	});
 
 	// Init volume
@@ -381,16 +407,7 @@ const render = () => {
     timeNow.value!.innerText = parseSecondsToTime(audio.currentTime);
     seeker.value!.style.left = `${playedPercent}%`;
   }
-  //// Update buffered progress
-  ////// Find latest buffer
-  let latestBuffered = 0;
-  for (let i = 0; i < audio.buffered.length; i++) {
-  	if (audio.buffered.end(i) > latestBuffered) {
-  		latestBuffered = audio.buffered.end(i);
-  	}
   }
-  ////// Update progress style
-  barBuffered.value!.style.width = `${latestBuffered / audio.duration * 100}%`;
 
   if (flushEventId !== 0) {
 		// Not single run
@@ -414,7 +431,7 @@ const parseSecondsToTime = (seconds: number): string => {
 };
 
 const togglePlay = () => {
-	if (audio.paused) {
+	if (!isLoading.value && audio.paused) {
 		if (!isContextResumed) {
 			// Resume audio
 			context.resume();
