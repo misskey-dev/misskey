@@ -28,14 +28,15 @@
 					<template #value><span class="_monospace"><MkTime :time="file.createdAt" mode="detail" style="display: block;"/></span></template>
 				</MkKeyValue>
 			</div>
+			<MkA class="user" :to="`/user-info/${file.user.id}`" :behavior="'window'">
+				<MkUserCardMini :user="file.user"/>
+			</MkA>
 			<div class="_formBlock">
 				<MkSwitch v-model="isSensitive" @update:modelValue="toggleIsSensitive">NSFW</MkSwitch>
 			</div>
-			<FormLink class="_formBlock" :to="file.url" :external="true">Open</FormLink>
-			<FormLink class="_formBlock" :to="`/user-info/${file.userId}`">{{ $ts.user }} ({{ acct(file.user) }})</FormLink>
 
 			<div class="_formBlock">
-				<MkButton full danger @click="del"><i class="fas fa-trash-alt"></i> {{ $ts.delete }}</MkButton>
+				<MkButton danger @click="del"><i class="fas fa-trash-alt"></i> {{ i18n.ts.delete }}</MkButton>
 			</div>
 		</div>
 		<div v-else-if="tab === 'raw'" class="_formRoot">
@@ -54,6 +55,7 @@ import MkObjectView from '@/components/object-view.vue';
 import MkDriveFileThumbnail from '@/components/drive-file-thumbnail.vue';
 import MkKeyValue from '@/components/key-value.vue';
 import FormLink from '@/components/form/link.vue';
+import MkUserCardMini from '@/components/user-card-mini.vue';
 import bytes from '@/filters/bytes';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
@@ -127,6 +129,12 @@ definePageMetadata(computed(() => ({
 		> .thumbnail {
 			height: 300px;
 			max-width: 100%;
+		}
+	}
+
+	> .user {
+		&:hover {
+			text-decoration: none;
 		}
 	}
 }
