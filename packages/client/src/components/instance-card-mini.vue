@@ -62,7 +62,9 @@ os.api('charts/instance', { host: props.instance.host, limit: 16, span: 'day' })
 		}
 
 		> :global(.sub) {
-			font-size: 75%;
+			display: block;
+			width: 100%;
+			font-size: 80%;
 			opacity: 0.7;
 			line-height: $bodyInfoHieght;
 			white-space: nowrap;
