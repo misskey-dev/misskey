@@ -1,7 +1,14 @@
 <template>
 <div>
 	<MkPagination v-slot="{items}" :pagination="pagination" class="urempief" :class="{ grid: viewMode === 'grid' }">
-		<button v-for="file in items" :key="file.id" v-tooltip.mfm="`${file.type}\n${bytes(file.size)}\n${new Date(file.createdAt).toLocaleString()}\nby ${file.user ? '@' + Acct.toString(file.user) : 'system'}`" class="file _button">
+		<MkA
+			v-for="file in items"
+			:key="file.id"
+			v-tooltip.mfm="`${file.type}\n${bytes(file.size)}\n${new Date(file.createdAt).toLocaleString()}\nby ${file.user ? '@' + Acct.toString(file.user) : 'system'}`"
+			:to="`/admin/file/${file.id}`"
+			behavior="window"
+			class="file _button"
+		>
 			<MkDriveFileThumbnail class="thumbnail" :file="file" fit="contain"/>
 			<div v-if="viewMode === 'list'" class="body">
 				<div>
@@ -19,7 +26,7 @@
 					<span>{{ $ts.registeredDate }}: <MkTime :time="file.createdAt" mode="detail"/></span>
 				</div>
 			</div>
-		</button>
+		</MkA>
 	</MkPagination>
 </div>
 </template>
