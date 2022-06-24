@@ -6,7 +6,6 @@
 			:key="file.id"
 			v-tooltip.mfm="`${file.type}\n${bytes(file.size)}\n${new Date(file.createdAt).toLocaleString()}\nby ${file.user ? '@' + Acct.toString(file.user) : 'system'}`"
 			:to="`/admin/file/${file.id}`"
-			behavior="window"
 			class="file _button"
 		>
 			<MkDriveFileThumbnail class="thumbnail" :file="file" fit="contain"/>
