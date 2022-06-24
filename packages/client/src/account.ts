@@ -24,6 +24,8 @@ export async function signout() {
 
 	await removeAccount($i.id);
 
+	const accounts = await getAccounts();
+
 	//#region Remove service worker registration
 	try {
 		if (navigator.serviceWorker.controller) {
