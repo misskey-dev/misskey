@@ -49,8 +49,22 @@ export default async function(user: User, history = 5, noteintitle = false) {
 			depth -= 1;
 		}
 
-		let title = `${author.name} ${(note.renoteId ? 'renotes' : (note.replyId ? 'replies' : 'says'))}`;
-		title += noteintitle ? `: ${note.cw ? note.cw : (note.text ? note.text : 'post a new note')}` : '';
+		let title = `${author.name} `;
+		if (note.renoteId) {
+			title += 'renotes';
+		} else if (note.replyId) {
+			title += 'replies';
+		} else {
+			title += 'says';
+		}
+		if (noteintitle) {
+			const content = note.cw ?? note.text;
+			if (content) {
+				title += `: ${content}`;
+			} else {
+				title += 'something';
+			}
+		}
 
 		feed.addItem({
 			title: title.replace(/[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]/g, '').substring(0,100),
