@@ -2,21 +2,13 @@
 <svg :viewBox="`0 0 ${ viewBoxX } ${ viewBoxY }`" style="overflow:visible">
 	<defs>
 		<linearGradient :id="gradientId" x1="0" x2="0" y1="1" y2="0">
-			<stop offset="0%" :stop-color="color"></stop>
-			<stop offset="100%" :stop-color="colorAlpha"></stop>
+			<stop offset="0%" :stop-color="color" stop-opacity="0"></stop>
+			<stop offset="100%" :stop-color="color" stop-opacity="0.65"></stop>
 		</linearGradient>
-		<mask :id="maskId" x="0" y="0" :width="viewBoxX" :height="viewBoxY">
-			<polygon
-				:points="polygonPoints"
-				fill="#fff"
-				fill-opacity="0.5"
-			/>
-		</mask>
 	</defs>
-	<rect
-		x="-10" y="-10"
-		:width="viewBoxX + 20" :height="viewBoxY + 20"
-		:style="`stroke: none; fill: url(#${ gradientId }); mask: url(#${ maskId })`"
+	<polygon
+		:points="polygonPoints"
+		:style="`stroke: none; fill: url(#${ gradientId });`"
 	/>
 	<polyline
 		:points="polylinePoints"
@@ -45,7 +37,6 @@ const props = defineProps<{
 const viewBoxX = 50;
 const viewBoxY = 50;
 const gradientId = uuid();
-const maskId = uuid();
 let polylinePoints = $ref('');
 let polygonPoints = $ref('');
 let headX = $ref<number | null>(null);
@@ -53,7 +44,6 @@ let headY = $ref<number | null>(null);
 let clock = $ref<number | null>(null);
 const accent = tinycolor(getComputedStyle(document.documentElement).getPropertyValue('--accent'));
 const color = accent.toRgbString();
-const colorAlpha = accent.clone().setAlpha(1).toRgbString();
 
 function draw(): void {
 	const stats = props.src.slice().reverse();
