@@ -24,6 +24,7 @@
 <script lang="ts">
 import { computed, defineComponent, onUnmounted, ref, toRef } from 'vue';
 import { sum } from '@/scripts/array';
+import { pleaseLogin } from '@/scripts/please-login';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 
@@ -75,6 +76,8 @@ export default defineComponent({
 		}
 
 		const vote = async (id) => {
+			pleaseLogin();
+
 			if (props.readOnly || closed.value || isVoted.value) return;
 
 			const { canceled } = await os.confirm({
