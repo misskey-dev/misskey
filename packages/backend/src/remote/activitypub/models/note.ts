@@ -155,7 +155,7 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 
 	// 引用
 	let quote: Note | undefined | null;
-	const quoteUrl = extractQuoteUrl(note.tag);
+	const quoteUrl = extractQuoteUrl(note.attachment.concat(note.tag));
 
 	if (quoteUrl || note._misskey_quote || note.quoteUrl) {
 		const tryResolveNote = async (uri: string): Promise<{

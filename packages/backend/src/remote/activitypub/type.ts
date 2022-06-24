@@ -224,6 +224,7 @@ export const isEmoji = (object: IObject): object is IApEmoji =>
 
 export interface ILink extends IObject {
 	type: 'Link';
+	mediaType?: string;
 	rel?: string | string[];
 	href: string;
 }

@@ -19,9 +19,16 @@ export function extractApHashtagObjects(tags: IObject | IObject[] | null | undef
 
 export function extractQuoteUrl(tags: IObject | IObject[] | null | undefined): string | null {
 	if (tags == null) return null;
-	const quotes: ILink[] = toArray(tags)
+
+	let quotes: ILink[] = toArray(tags)
 		.filter(isLink)
-		.filter((link) => toArray(tag.rel).includes('https://misskey-hub.net/ns#_misskey_quote'));
+		.filter(link => link.mediaType === 'application/activity+json');
+
+	if (quotes.length > 1) {
+		// There are multiple quotes? Not supported.
+		// Check if there maybe is one intended for Misskey.
+		quotes = quotes.filter(link => toArray(link.rel).includes('https://misskey-hub.net/ns#_misskey_quote'));
+	}
 
 	if (quotes.length === 1) {
 		return quotes.href;
