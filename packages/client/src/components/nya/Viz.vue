@@ -248,7 +248,9 @@ const initAudio = (src: string) => {
 			}
 		}
 		////// Update progress style
-		barBuffered.value!.style.width = `${latestBuffered / audio.duration * 100}%`;
+		if (barBuffered.value) {
+			barBuffered.value.style.width = `${latestBuffered / audio.duration * 100}%`;
+		}
 	});
 	audio.addEventListener('waiting', () => {
 		isPlaying.value = false;
@@ -402,17 +404,22 @@ const render = () => {
 	// Update progress
 	//// Update played progress
 	const playedPercent = audio.currentTime / audio.duration * 100;
-  barPlayed.value!.style.width = `${playedPercent}%`;
-  if (!isSeeking) {
-    timeNow.value!.innerText = parseSecondsToTime(audio.currentTime);
-    seeker.value!.style.left = `${playedPercent}%`;
-  }
-  }
+	if (barPlayed.value) {
+		barPlayed.value.style.width = `${playedPercent}%`;
+	}
+	if (!isSeeking) {
+		if (timeNow.value) {
+			timeNow.value.innerText = parseSecondsToTime(audio.currentTime);
+		}
+		if (seeker.value) {
+			seeker.value.style.left = `${playedPercent}%`;
+		}
+	}
 
-  if (flushEventId !== 0) {
+	if (flushEventId !== 0) {
 		// Not single run
-    requestAnimationFrame(render);
-  }
+		requestAnimationFrame(render);
+	}
 };
 
 const convertPolarToCartesian = (radius: number, angleInDegrees: number, offsetX = canvasSize.width / 2, offsetY = canvasSize.height / 2) => {
