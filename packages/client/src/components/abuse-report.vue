@@ -1,7 +1,7 @@
 <template>
 <div class="bcekxzvu _gap _panel">
 	<div class="target">
-		<MkA v-user-preview="report.targetUserId" class="info" :to="`/user-info/${report.targetUserId}`" :behavior="'window'">
+		<MkA v-user-preview="report.targetUserId" class="info" :to="`/user-info/${report.targetUserId}`">
 			<MkAvatar class="avatar" :user="report.targetUser" :show-indicator="true" :disable-link="true"/>
 			<div class="names">
 				<MkUserName class="name" :user="report.targetUser"/>

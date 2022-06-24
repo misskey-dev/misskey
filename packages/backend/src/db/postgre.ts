@@ -194,12 +194,13 @@ export const db = new DataSource({
 	synchronize: process.env.NODE_ENV === 'test',
 	dropSchema: process.env.NODE_ENV === 'test',
 	cache: !config.db.disableCache ? {
-		type: 'redis',
+		type: 'ioredis',
 		options: {
 			host: config.redis.host,
 			port: config.redis.port,
+			family: config.redis.family == null ? 0 : config.redis.family,
 			password: config.redis.pass,
-			prefix: `${config.redis.prefix}:query:`,
+			keyPrefix: `${config.redis.prefix}:query:`,
 			db: config.redis.db || 0,
 		},
 	} : false,
@@ -228,7 +229,7 @@ export async function initDb(force = false) {
 
 export async function resetDb() {
 	const reset = async () => {
-		await redisClient.FLUSHDB();
+		await redisClient.flushdb();
 		const tables = await db.query(`SELECT relname AS "table"
 		FROM pg_class C LEFT JOIN pg_namespace N ON (N.oid = C.relnamespace)
 		WHERE nspname NOT IN ('pg_catalog', 'information_schema')
