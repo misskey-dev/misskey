@@ -139,6 +139,26 @@ export const uploadFile = async (user: any, _path?: string): Promise<any> => {
 	return body;
 };
 
+export const uploadUrl = async (user: any, url: string) => {
+	let file: any;
+
+	const ws = await connectStream(user, 'main', (msg) => {
+		if (msg.type === 'driveFileCreated') {
+			file = msg.body;
+		}
+	});
+
+	await api('drive/files/upload-from-url', {
+		url,
+		force: true,
+	}, user);
+
+	await sleep(5000);
+	ws.close();
+
+	return file;
+};
+
 export function connectStream(user: any, channel: string, listener: (message: Record<string, any>) => any, params?: any): Promise<WebSocket> {
 	return new Promise((res, rej) => {
 		const ws = new WebSocket(`ws://localhost:${port}/streaming?i=${user.token}`);

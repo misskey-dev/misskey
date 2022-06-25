@@ -3,7 +3,7 @@ process.env.NODE_ENV = 'test';
 import * as assert from 'assert';
 import * as childProcess from 'child_process';
 import { Note } from '../src/models/entities/note.js';
-import { async, signup, request, post, uploadFile, startServer, shutdownServer, initTestDb, api } from './utils.js';
+import { async, signup, request, post, uploadUrl, startServer, shutdownServer, initTestDb, api } from './utils.js';
 
 describe('Note', () => {
 	let p: childProcess.ChildProcess;
@@ -37,7 +37,7 @@ describe('Note', () => {
 	}));
 
 	it('ファイルを添付できる', async(async () => {
-		const file = await uploadFile(alice);
+		const file = await uploadUrl(alice, 'https://raw.githubusercontent.com/misskey-dev/misskey/develop/packages/backend/test/resources/Lenna.jpg');
 
 		const res = await request('/notes/create', {
 			fileIds: [file.id],
@@ -49,7 +49,7 @@ describe('Note', () => {
 	}));
 
 	it('他人のファイルは無視', async(async () => {
-		const file = await uploadFile(bob);
+		const file = await uploadUrl(bob, 'https://raw.githubusercontent.com/misskey-dev/misskey/develop/packages/backend/test/resources/Lenna.jpg');
 
 		const res = await request('/notes/create', {
 			text: 'test',
