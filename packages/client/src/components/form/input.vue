@@ -3,7 +3,8 @@
 	<div class="label" @click="focus"><slot name="label"></slot></div>
 	<div class="input" :class="{ inline, disabled, focused }">
 		<div ref="prefixEl" class="prefix"><slot name="prefix"></slot></div>
-		<input ref="inputEl"
+		<input
+			ref="inputEl"
 			v-model="v"
 			v-adaptive-border
 			:type="type"
@@ -34,8 +35,9 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, onUnmounted, nextTick, ref, watch, computed, toRefs } from 'vue';
-import MkButton from '@/components/ui/button.vue';
 import { debounce } from 'throttle-debounce';
+import MkButton from '@/components/ui/button.vue';
+import { useInterval } from '@/scripts/use-interval';
 
 export default defineComponent({
 	components: {
@@ -44,45 +46,45 @@ export default defineComponent({
 
 	props: {
 		modelValue: {
-			required: true
+			required: true,
 		},
 		type: {
 			type: String,
-			required: false
+			required: false,
 		},
 		required: {
 			type: Boolean,
-			required: false
+			required: false,
 		},
 		readonly: {
 			type: Boolean,
-			required: false
+			required: false,
 		},
 		disabled: {
 			type: Boolean,
-			required: false
+			required: false,
 		},
 		pattern: {
 			type: String,
-			required: false
+			required: false,
 		},
 		placeholder: {
 			type: String,
-			required: false
+			required: false,
 		},
 		autofocus: {
 			type: Boolean,
 			required: false,
-			default: false
+			default: false,
 		},
 		autocomplete: {
-			required: false
+			required: false,
 		},
 		spellcheck: {
-			required: false
+			required: false,
 		},
 		step: {
-			required: false
+			required: false,
 		},
 		datalist: {
 			type: Array,
@@ -91,17 +93,17 @@ export default defineComponent({
 		inline: {
 			type: Boolean,
 			required: false,
-			default: false
+			default: false,
 		},
 		debounce: {
 			type: Boolean,
 			required: false,
-			default: false
+			default: false,
 		},
 		manualSave: {
 			type: Boolean,
 			required: false,
-			default: false
+			default: false,
 		},
 	},
 
@@ -134,7 +136,7 @@ export default defineComponent({
 
 		const updated = () => {
 			changed.value = false;
-			if (type?.value === 'number') {
+			if (type.value === 'number') {
 				context.emit('update:modelValue', parseFloat(v.value));
 			} else {
 				context.emit('update:modelValue', v.value);
@@ -159,30 +161,29 @@ export default defineComponent({
 			invalid.value = inputEl.value.validity.badInput;
 		});
 
+		// このコンポーネントが作成された時、非表示状態である場合がある
+		// 非表示状態だと要素の幅などは0になってしまうので、定期的に計算する
+		useInterval(() => {
+			if (prefixEl.value) {
+				if (prefixEl.value.offsetWidth) {
+					inputEl.value.style.paddingLeft = prefixEl.value.offsetWidth + 'px';
+				}
+			}
+			if (suffixEl.value) {
+				if (suffixEl.value.offsetWidth) {
+					inputEl.value.style.paddingRight = suffixEl.value.offsetWidth + 'px';
+				}
+			}
+		}, 100, {
+			immediate: true,
+			afterMounted: true,
+		});
+
 		onMounted(() => {
 			nextTick(() => {
 				if (autofocus.value) {
 					focus();
 				}
-
-				// このコンポーネントが作成された時、非表示状態である場合がある
-				// 非表示状態だと要素の幅などは0になってしまうので、定期的に計算する
-				const clock = window.setInterval(() => {
-					if (prefixEl.value) {
-						if (prefixEl.value.offsetWidth) {
-							inputEl.value.style.paddingLeft = prefixEl.value.offsetWidth + 'px';
-						}
-					}
-					if (suffixEl.value) {
-						if (suffixEl.value.offsetWidth) {
-							inputEl.value.style.paddingRight = suffixEl.value.offsetWidth + 'px';
-						}
-					}
-				}, 100);
-
-				onUnmounted(() => {
-					window.clearInterval(clock);
-				});
 			});
 		});
 

@@ -29,6 +29,7 @@
 import { onUnmounted, watch } from 'vue';
 import { v4 as uuid } from 'uuid';
 import tinycolor from 'tinycolor2';
+import { useInterval } from '@/scripts/use-interval';
 
 const props = defineProps<{
 	src: number[];
@@ -65,9 +66,8 @@ function draw(): void {
 watch(() => props.src, draw, { immediate: true });
 
 // Vueが何故かWatchを発動させない場合があるので
-clock = window.setInterval(draw, 1000);
-
-onUnmounted(() => {
-	window.clearInterval(clock);
+useInterval(draw, 1000, {
+	immediate: false,
+	afterMounted: true,
 });
 </script>

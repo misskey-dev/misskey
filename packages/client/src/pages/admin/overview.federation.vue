@@ -18,6 +18,7 @@
 import { onMounted, onUnmounted, ref } from 'vue';
 import MkMiniChart from '@/components/mini-chart.vue';
 import * as os from '@/os';
+import { useInterval } from '@/scripts/use-interval';
 
 const instances = ref([]);
 const charts = ref([]);
@@ -34,15 +35,9 @@ const fetch = async () => {
 	fetching.value = false;
 };
 
-let intervalId;
-
-onMounted(() => {
-	fetch();
-	intervalId = window.setInterval(fetch, 1000 * 60);
-});
-
-onUnmounted(() => {
-	window.clearInterval(intervalId);
+useInterval(fetch, 1000 * 60, {
+	immediate: true,
+	afterMounted: true,
 });
 </script>
 
