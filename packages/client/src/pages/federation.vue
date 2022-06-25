@@ -41,7 +41,7 @@
 
 			<MkPagination v-slot="{items}" ref="instances" :key="host + state" :pagination="pagination">
 				<div class="dqokceoi">
-					<MkA v-for="instance in items" :key="instance.id" v-tooltip.mfm="`Last communicated: ${new Date(instance.lastCommunicatedAt).toLocaleString()}\nStatus: ${getStatus(instance)}`" class="instance" :to="`/instance-info/${instance.host}`" :behavior="'window'">
+					<MkA v-for="instance in items" :key="instance.id" v-tooltip.mfm="`Last communicated: ${new Date(instance.lastCommunicatedAt).toLocaleString()}\nStatus: ${getStatus(instance)}`" class="instance" :to="`/instance-info/${instance.host}`">
 						<MkInstanceCardMini :instance="instance"/>
 					</MkA>
 				</div>

@@ -6,9 +6,9 @@
 			:key="file.id"
 			v-tooltip.mfm="`${file.type}\n${bytes(file.size)}\n${new Date(file.createdAt).toLocaleString()}\nby ${file.user ? '@' + Acct.toString(file.user) : 'system'}`"
 			:to="`/admin/file/${file.id}`"
-			behavior="window"
 			class="file _button"
 		>
+			<div v-if="file.isSensitive" class="sensitive-label">{{ i18n.ts.sensitive }}</div>
 			<MkDriveFileThumbnail class="thumbnail" :file="file" fit="contain"/>
 			<div v-if="viewMode === 'list'" class="body">
 				<div>
@@ -16,14 +16,14 @@
 				</div>
 				<div>
 					<MkAcct v-if="file.user" :user="file.user"/>
-					<div v-else>{{ $ts.system }}</div>
+					<div v-else>{{ i18n.ts.system }}</div>
 				</div>
 				<div>
 					<span style="margin-right: 1em;">{{ file.type }}</span>
 					<span>{{ bytes(file.size) }}</span>
 				</div>
 				<div>
-					<span>{{ $ts.registeredDate }}: <MkTime :time="file.createdAt" mode="detail"/></span>
+					<span>{{ i18n.ts.registeredDate }}: <MkTime :time="file.createdAt" mode="detail"/></span>
 				</div>
 			</div>
 		</MkA>
@@ -48,6 +48,11 @@ const props = defineProps<{
 </script>
 
 <style lang="scss" scoped>
+@keyframes sensitive-blink {
+	0% { opacity: 1; }
+	50% { opacity: 0; }
+}
+
 .urempief {
 	margin-top: var(--margin);
 
@@ -87,11 +92,25 @@ const props = defineProps<{
 		margin: var(--margin) 0;
 
 		> .file {
+			position: relative;
 			aspect-ratio: 1;
 		
 			> .thumbnail {
 				width: 100%;
 				height: 100%;
+			}
+
+			> .sensitive-label {
+				position: absolute;
+				z-index: 10;
+				top: 8px;
+				left: 8px;
+				padding: 2px 4px;
+				background: #ff0000bf;
+				color: #fff;
+				border-radius: 4px;
+				font-size: 85%;
+				animation: sensitive-blink 1s infinite;
 			}
 		}
 	}
